@@ -1,0 +1,2 @@
+add_subdirectory(parsers)
+add_subdirectory(uml)

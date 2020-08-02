@@ -1,0 +1,1 @@
+add_library(Parsers inputParser.cpp projectParser.cpp templateParser.cpp)

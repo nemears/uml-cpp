@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/jonme/ALL_PROJECTS/test/src/parsers/inputParser.h
+fstream
+-
+string
+-
+string.h
+-
+
+C:/Users/jonme/ALL_PROJECTS/test/src/parsers/projectParser.cpp
+projectParser.h
+C:/Users/jonme/ALL_PROJECTS/test/src/parsers/projectParser.h
+
+C:/Users/jonme/ALL_PROJECTS/test/src/parsers/projectParser.h
+templateParser.h
+C:/Users/jonme/ALL_PROJECTS/test/src/parsers/templateParser.h
+../uml/project.h
+C:/Users/jonme/ALL_PROJECTS/test/src/uml/project.h
+
+C:/Users/jonme/ALL_PROJECTS/test/src/parsers/templateParser.h
+fstream
+-
+string
+-
+inputParser.h
+C:/Users/jonme/ALL_PROJECTS/test/src/parsers/inputParser.h
+../uml/element.h
+C:/Users/jonme/ALL_PROJECTS/test/src/uml/element.h
+iostream
+-
+
+C:/Users/jonme/ALL_PROJECTS/test/src/uml/element.h
+
+C:/Users/jonme/ALL_PROJECTS/test/src/uml/project.h
+element.h
+C:/Users/jonme/ALL_PROJECTS/test/src/uml/element.h
+string
+-
+

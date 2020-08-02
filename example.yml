@@ -1,0 +1,39 @@
+---
+  # an example of a possible yuml file format
+  - project:
+      name: "Example"
+      id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+      children:
+        model:
+          name: "Model"
+          id: ea46d546-757f-47af-9244-cfd86d15c48a
+          children:
+            class:
+              name: "Class 1"
+              id: c0ab87cc-d00b-4afb-9558-538253b442b2
+              attributes:
+                property:
+                  name: "prop 1"
+                  id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+                  classifier: d0f0c583-c72d-4fb8-b416-44d9dc11318e #This is supposed to be referencing a uml primitive data type
+                property:
+                  name: "prop 2"
+                  id: 190d1cb9-13dc-44e6-a064-126891ae0033
+                  classifier: feca8589-0de8-40aa-9e38-24e5c6a1f2c6
+              operations:
+                operation:
+                  name: "main"
+                  id: 73ab051f-5f49-4efc-9c07-f51aa357e530
+                  parameters:
+                    id: a7e52bb8-5bad-44d5-a945-3f22a13ecaf4
+                  methods:
+                    id: c63d585c-1117-4967-96e2-bcd3e3b52188
+                  children:
+                    parameter:
+                      name: "arg"
+                      id: a7e52bb8-5bad-44d5-a945-3f22a13ecaf4
+                      classifier: d0f0c583-c72d-4fb8-b416-44d9dc11318e
+                    opaqueBehavior:
+                      name: main
+                      id: c63d585c-1117-4967-96e2-bcd3e3b52188
+                      body: "printf(arg)\\nprop_2 = true;"

@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/jonme/ALL_PROJECTS/test/src
+# Install script for directory: C:/Users/jonme/ALL_PROJECTS/yuml/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/Yuml")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/yuml")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -39,8 +39,8 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("C:/Users/jonme/ALL_PROJECTS/test/build/src/parsers/cmake_install.cmake")
-  include("C:/Users/jonme/ALL_PROJECTS/test/build/src/uml/cmake_install.cmake")
+  include("C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/cmake_install.cmake")
+  include("C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml/cmake_install.cmake")
 
 endif()
 

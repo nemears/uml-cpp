@@ -6,7 +6,11 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/jonme/ALL_PROJECTS/test/src/parsers/inputParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.cpp
+inputParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.h
 fstream
 -
 string
@@ -14,33 +18,37 @@ string
 string.h
 -
 
-C:/Users/jonme/ALL_PROJECTS/test/src/parsers/projectParser.cpp
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/projectParser.cpp
 projectParser.h
-C:/Users/jonme/ALL_PROJECTS/test/src/parsers/projectParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/projectParser.h
 
-C:/Users/jonme/ALL_PROJECTS/test/src/parsers/projectParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/projectParser.h
 templateParser.h
-C:/Users/jonme/ALL_PROJECTS/test/src/parsers/templateParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
 ../uml/project.h
-C:/Users/jonme/ALL_PROJECTS/test/src/uml/project.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/project.h
 
-C:/Users/jonme/ALL_PROJECTS/test/src/parsers/templateParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.cpp
+templateParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
 fstream
 -
 string
 -
 inputParser.h
-C:/Users/jonme/ALL_PROJECTS/test/src/parsers/inputParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.h
 ../uml/element.h
-C:/Users/jonme/ALL_PROJECTS/test/src/uml/element.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
 iostream
 -
 
-C:/Users/jonme/ALL_PROJECTS/test/src/uml/element.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
 
-C:/Users/jonme/ALL_PROJECTS/test/src/uml/project.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/project.h
 element.h
-C:/Users/jonme/ALL_PROJECTS/test/src/uml/element.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
 string
 -
 

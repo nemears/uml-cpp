@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "C:/Users/jonme/ALL_PROJECTS/test/src/parsers/inputParser.cpp" "C:/Users/jonme/ALL_PROJECTS/test/build/src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.obj"
-  "C:/Users/jonme/ALL_PROJECTS/test/src/parsers/projectParser.cpp" "C:/Users/jonme/ALL_PROJECTS/test/build/src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.obj"
-  "C:/Users/jonme/ALL_PROJECTS/test/src/parsers/templateParser.cpp" "C:/Users/jonme/ALL_PROJECTS/test/build/src/parsers/CMakeFiles/Parsers.dir/templateParser.cpp.obj"
+  "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.obj"
+  "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/projectParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.obj"
+  "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/templateParser.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

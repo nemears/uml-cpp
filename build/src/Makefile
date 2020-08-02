@@ -66,10 +66,10 @@ RM = "C:\Program Files\CMake\bin\cmake.exe" -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\jonme\ALL_PROJECTS\test
+CMAKE_SOURCE_DIR = C:\Users\jonme\ALL_PROJECTS\yuml
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\jonme\ALL_PROJECTS\test\build
+CMAKE_BINARY_DIR = C:\Users\jonme\ALL_PROJECTS\yuml\build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -77,7 +77,7 @@ CMAKE_BINARY_DIR = C:\Users\jonme\ALL_PROJECTS\test\build
 # Special rule for the target package
 package: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool..."
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && "C:\Program Files\CMake\bin\cpack.exe" --config ./CPackConfig.cmake
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && "C:\Program Files\CMake\bin\cpack.exe" --config ./CPackConfig.cmake
 .PHONY : package
 
 # Special rule for the target package
@@ -88,7 +88,7 @@ package/fast: package
 # Special rule for the target package_source
 package_source:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool for source..."
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && "C:\Program Files\CMake\bin\cpack.exe" --config ./CPackSourceConfig.cmake C:/Users/jonme/ALL_PROJECTS/test/build/CPackSourceConfig.cmake
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && "C:\Program Files\CMake\bin\cpack.exe" --config ./CPackSourceConfig.cmake C:/Users/jonme/ALL_PROJECTS/yuml/build/CPackSourceConfig.cmake
 .PHONY : package_source
 
 # Special rule for the target package_source
@@ -131,14 +131,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\test\build\CMakeFiles C:\Users\jonme\ALL_PROJECTS\test\build\src\\CMakeFiles\progress.marks
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/all
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\test\build\CMakeFiles 0
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles C:\Users\jonme\ALL_PROJECTS\yuml\build\src\\CMakeFiles\progress.marks
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/all
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/clean
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/clean
 .PHONY : clean
 
 # The main clean target
@@ -148,17 +148,17 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/preinstall
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/preinstall
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 1
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 1
 .PHONY : depend
 
 # Help Target
@@ -183,6 +183,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 0
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

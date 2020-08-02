@@ -1,22 +1,22 @@
 [
 {
-  "directory": "C:/Users/jonme/ALL_PROJECTS/test/build",
-  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\yuml.dir\\src\\application.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\test\\src\\application.cpp",
-  "file": "C:/Users/jonme/ALL_PROJECTS/test/src/application.cpp"
+  "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build",
+  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\yuml.dir\\src\\application.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\application.cpp",
+  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/application.cpp"
 },
 {
-  "directory": "C:/Users/jonme/ALL_PROJECTS/test/build/src/parsers",
-  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\Parsers.dir\\inputParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\test\\src\\parsers\\inputParser.cpp",
-  "file": "C:/Users/jonme/ALL_PROJECTS/test/src/parsers/inputParser.cpp"
+  "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers",
+  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\Parsers.dir\\inputParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\parsers\\inputParser.cpp",
+  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.cpp"
 },
 {
-  "directory": "C:/Users/jonme/ALL_PROJECTS/test/build/src/parsers",
-  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\Parsers.dir\\projectParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\test\\src\\parsers\\projectParser.cpp",
-  "file": "C:/Users/jonme/ALL_PROJECTS/test/src/parsers/projectParser.cpp"
+  "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers",
+  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\Parsers.dir\\projectParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\parsers\\projectParser.cpp",
+  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/projectParser.cpp"
 },
 {
-  "directory": "C:/Users/jonme/ALL_PROJECTS/test/build/src/parsers",
-  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\Parsers.dir\\templateParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\test\\src\\parsers\\templateParser.cpp",
-  "file": "C:/Users/jonme/ALL_PROJECTS/test/src/parsers/templateParser.cpp"
+  "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers",
+  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\Parsers.dir\\templateParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\parsers\\templateParser.cpp",
+  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.cpp"
 }
 ]

@@ -4,8 +4,8 @@
 
 
 # Configuration directories and files
-SourceDirectory: C:/Users/jonme/ALL_PROJECTS/test
-BuildDirectory: C:/Users/jonme/ALL_PROJECTS/test/build
+SourceDirectory: C:/Users/jonme/ALL_PROJECTS/yuml
+BuildDirectory: C:/Users/jonme/ALL_PROJECTS/yuml/build
 
 # Where to place the cost data store
 CostDataFile: 
@@ -26,7 +26,7 @@ SubmitURL: http://
 NightlyStartTime: 00:00:00 EDT
 
 # Commands for the build/test/submit cycle
-ConfigureCommand: "C:/Program Files/CMake/bin/cmake.exe" "C:/Users/jonme/ALL_PROJECTS/test"
+ConfigureCommand: "C:/Program Files/CMake/bin/cmake.exe" "C:/Users/jonme/ALL_PROJECTS/yuml"
 MakeCommand: C:/Program\ Files/CMake/bin/cmake.exe --build . --config "${CTEST_CONFIGURATION_TYPE}" -- -i
 DefaultCTestConfigurationType: Release
 
@@ -57,9 +57,9 @@ P4UpdateOptions:
 P4UpdateCustom: 
 
 # Generic update command
-UpdateCommand: 
+UpdateCommand: C:/Program Files/Git/cmd/git.exe
 UpdateOptions: 
-UpdateType: 
+UpdateType: git
 
 # Compiler info
 Compiler: C:/MinGW/bin/g++.exe

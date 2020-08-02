@@ -66,10 +66,10 @@ RM = "C:\Program Files\CMake\bin\cmake.exe" -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\jonme\ALL_PROJECTS\test
+CMAKE_SOURCE_DIR = C:\Users\jonme\ALL_PROJECTS\yuml
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\jonme\ALL_PROJECTS\test\build
+CMAKE_BINARY_DIR = C:\Users\jonme\ALL_PROJECTS\yuml\build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -77,7 +77,7 @@ CMAKE_BINARY_DIR = C:\Users\jonme\ALL_PROJECTS\test\build
 # Special rule for the target package
 package: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool..."
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && "C:\Program Files\CMake\bin\cpack.exe" --config ./CPackConfig.cmake
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && "C:\Program Files\CMake\bin\cpack.exe" --config ./CPackConfig.cmake
 .PHONY : package
 
 # Special rule for the target package
@@ -88,7 +88,7 @@ package/fast: package
 # Special rule for the target package_source
 package_source:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool for source..."
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && "C:\Program Files\CMake\bin\cpack.exe" --config ./CPackSourceConfig.cmake C:/Users/jonme/ALL_PROJECTS/test/build/CPackSourceConfig.cmake
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && "C:\Program Files\CMake\bin\cpack.exe" --config ./CPackSourceConfig.cmake C:/Users/jonme/ALL_PROJECTS/yuml/build/CPackSourceConfig.cmake
 .PHONY : package_source
 
 # Special rule for the target package_source
@@ -131,14 +131,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\test\build\CMakeFiles C:\Users\jonme\ALL_PROJECTS\test\build\src\parsers\\CMakeFiles\progress.marks
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/parsers/all
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\test\build\CMakeFiles 0
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles C:\Users\jonme\ALL_PROJECTS\yuml\build\src\parsers\\CMakeFiles\progress.marks
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/parsers/all
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/parsers/clean
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/parsers/clean
 .PHONY : clean
 
 # The main clean target
@@ -148,22 +148,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/parsers/preinstall
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/parsers/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/parsers/preinstall
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/parsers/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 1
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 src/parsers/CMakeFiles/Parsers.dir/rule:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/parsers/CMakeFiles/Parsers.dir/rule
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/parsers/CMakeFiles/Parsers.dir/rule
 .PHONY : src/parsers/CMakeFiles/Parsers.dir/rule
 
 # Convenience name for target.
@@ -173,7 +173,7 @@ Parsers: src/parsers/CMakeFiles/Parsers.dir/rule
 
 # fast build rule for target.
 Parsers/fast:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/build
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/build
 .PHONY : Parsers/fast
 
 inputParser.obj: inputParser.cpp.obj
@@ -182,7 +182,7 @@ inputParser.obj: inputParser.cpp.obj
 
 # target to build an object file
 inputParser.cpp.obj:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.obj
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.obj
 .PHONY : inputParser.cpp.obj
 
 inputParser.i: inputParser.cpp.i
@@ -191,7 +191,7 @@ inputParser.i: inputParser.cpp.i
 
 # target to preprocess a source file
 inputParser.cpp.i:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.i
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.i
 .PHONY : inputParser.cpp.i
 
 inputParser.s: inputParser.cpp.s
@@ -200,7 +200,7 @@ inputParser.s: inputParser.cpp.s
 
 # target to generate assembly for a file
 inputParser.cpp.s:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.s
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.s
 .PHONY : inputParser.cpp.s
 
 projectParser.obj: projectParser.cpp.obj
@@ -209,7 +209,7 @@ projectParser.obj: projectParser.cpp.obj
 
 # target to build an object file
 projectParser.cpp.obj:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.obj
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.obj
 .PHONY : projectParser.cpp.obj
 
 projectParser.i: projectParser.cpp.i
@@ -218,7 +218,7 @@ projectParser.i: projectParser.cpp.i
 
 # target to preprocess a source file
 projectParser.cpp.i:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.i
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.i
 .PHONY : projectParser.cpp.i
 
 projectParser.s: projectParser.cpp.s
@@ -227,7 +227,7 @@ projectParser.s: projectParser.cpp.s
 
 # target to generate assembly for a file
 projectParser.cpp.s:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.s
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.s
 .PHONY : projectParser.cpp.s
 
 templateParser.obj: templateParser.cpp.obj
@@ -236,7 +236,7 @@ templateParser.obj: templateParser.cpp.obj
 
 # target to build an object file
 templateParser.cpp.obj:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/templateParser.cpp.obj
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/templateParser.cpp.obj
 .PHONY : templateParser.cpp.obj
 
 templateParser.i: templateParser.cpp.i
@@ -245,7 +245,7 @@ templateParser.i: templateParser.cpp.i
 
 # target to preprocess a source file
 templateParser.cpp.i:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/templateParser.cpp.i
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/templateParser.cpp.i
 .PHONY : templateParser.cpp.i
 
 templateParser.s: templateParser.cpp.s
@@ -254,7 +254,7 @@ templateParser.s: templateParser.cpp.s
 
 # target to generate assembly for a file
 templateParser.cpp.s:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/templateParser.cpp.s
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/templateParser.cpp.s
 .PHONY : templateParser.cpp.s
 
 # Help Target
@@ -289,6 +289,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /d C:\Users\jonme\ALL_PROJECTS\test\build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 0
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

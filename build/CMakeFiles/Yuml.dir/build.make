@@ -98,6 +98,8 @@ yuml_EXTERNAL_OBJECTS =
 yuml.exe: CMakeFiles/yuml.dir/src/application.cpp.obj
 yuml.exe: CMakeFiles/yuml.dir/build.make
 yuml.exe: src/parsers/libParsers.a
+yuml.exe: src/uml/libUml.a
+yuml.exe: src/libLogger.a
 yuml.exe: CMakeFiles/yuml.dir/linklibs.rsp
 yuml.exe: CMakeFiles/yuml.dir/objects1.rsp
 yuml.exe: CMakeFiles/yuml.dir/link.txt

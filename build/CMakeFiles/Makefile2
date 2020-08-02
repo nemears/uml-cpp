@@ -119,6 +119,7 @@ clean: src/clean
 # Directory level rules for directory src
 
 # Recursive "all" directory target.
+src/all: src/CMakeFiles/Logger.dir/all
 src/all: src/parsers/all
 src/all: src/uml/all
 
@@ -131,6 +132,7 @@ src/preinstall: src/uml/preinstall
 .PHONY : src/preinstall
 
 # Recursive "clean" directory target.
+src/clean: src/CMakeFiles/Logger.dir/clean
 src/clean: src/parsers/clean
 src/clean: src/uml/clean
 
@@ -158,7 +160,7 @@ src/parsers/clean: src/parsers/CMakeFiles/Parsers.dir/clean
 # Directory level rules for directory src/uml
 
 # Recursive "all" directory target.
-src/uml/all:
+src/uml/all: src/uml/CMakeFiles/Uml.dir/all
 
 .PHONY : src/uml/all
 
@@ -168,7 +170,7 @@ src/uml/preinstall:
 .PHONY : src/uml/preinstall
 
 # Recursive "clean" directory target.
-src/uml/clean:
+src/uml/clean: src/uml/CMakeFiles/Uml.dir/clean
 
 .PHONY : src/uml/clean
 
@@ -338,15 +340,17 @@ CMakeFiles/NightlyStart.dir/clean:
 # Target rules for target CMakeFiles/yuml.dir
 
 # All Build rule for target.
+CMakeFiles/yuml.dir/all: src/CMakeFiles/Logger.dir/all
+CMakeFiles/yuml.dir/all: src/uml/CMakeFiles/Uml.dir/all
 CMakeFiles/yuml.dir/all: src/parsers/CMakeFiles/Parsers.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\yuml.dir\build.make CMakeFiles/yuml.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\yuml.dir\build.make CMakeFiles/yuml.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=5,6 "Built target yuml"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=9,10 "Built target yuml"
 .PHONY : CMakeFiles/yuml.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/yuml.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles 10
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/yuml.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles 0
 .PHONY : CMakeFiles/yuml.dir/rule
@@ -956,13 +960,40 @@ CMakeFiles/ContinuousCoverage.dir/clean:
 .PHONY : CMakeFiles/ContinuousCoverage.dir/clean
 
 #=============================================================================
+# Target rules for target src/CMakeFiles/Logger.dir
+
+# All Build rule for target.
+src/CMakeFiles/Logger.dir/all:
+	$(MAKE) $(MAKESILENT) -f src\CMakeFiles\Logger.dir\build.make src/CMakeFiles/Logger.dir/depend
+	$(MAKE) $(MAKESILENT) -f src\CMakeFiles\Logger.dir\build.make src/CMakeFiles/Logger.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=1,2 "Built target Logger"
+.PHONY : src/CMakeFiles/Logger.dir/all
+
+# Build rule for subdir invocation for target.
+src/CMakeFiles/Logger.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/CMakeFiles/Logger.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles 0
+.PHONY : src/CMakeFiles/Logger.dir/rule
+
+# Convenience name for target.
+Logger: src/CMakeFiles/Logger.dir/rule
+
+.PHONY : Logger
+
+# clean rule for target.
+src/CMakeFiles/Logger.dir/clean:
+	$(MAKE) $(MAKESILENT) -f src\CMakeFiles\Logger.dir\build.make src/CMakeFiles/Logger.dir/clean
+.PHONY : src/CMakeFiles/Logger.dir/clean
+
+#=============================================================================
 # Target rules for target src/parsers/CMakeFiles/Parsers.dir
 
 # All Build rule for target.
 src/parsers/CMakeFiles/Parsers.dir/all:
 	$(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=1,2,3,4 "Built target Parsers"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=3,4,5,6 "Built target Parsers"
 .PHONY : src/parsers/CMakeFiles/Parsers.dir/all
 
 # Build rule for subdir invocation for target.
@@ -981,6 +1012,33 @@ Parsers: src/parsers/CMakeFiles/Parsers.dir/rule
 src/parsers/CMakeFiles/Parsers.dir/clean:
 	$(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/clean
 .PHONY : src/parsers/CMakeFiles/Parsers.dir/clean
+
+#=============================================================================
+# Target rules for target src/uml/CMakeFiles/Uml.dir
+
+# All Build rule for target.
+src/uml/CMakeFiles/Uml.dir/all:
+	$(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/depend
+	$(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=7,8 "Built target Uml"
+.PHONY : src/uml/CMakeFiles/Uml.dir/all
+
+# Build rule for subdir invocation for target.
+src/uml/CMakeFiles/Uml.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/uml/CMakeFiles/Uml.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles 0
+.PHONY : src/uml/CMakeFiles/Uml.dir/rule
+
+# Convenience name for target.
+Uml: src/uml/CMakeFiles/Uml.dir/rule
+
+.PHONY : Uml
+
+# clean rule for target.
+src/uml/CMakeFiles/Uml.dir/clean:
+	$(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/clean
+.PHONY : src/uml/CMakeFiles/Uml.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

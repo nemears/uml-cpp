@@ -74,28 +74,6 @@ CMAKE_BINARY_DIR = C:\Users\jonme\ALL_PROJECTS\yuml\build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target package
-package: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool..."
-	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && "C:\Program Files\CMake\bin\cpack.exe" --config ./CPackConfig.cmake
-.PHONY : package
-
-# Special rule for the target package
-package/fast: package
-
-.PHONY : package/fast
-
-# Special rule for the target package_source
-package_source:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool for source..."
-	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && "C:\Program Files\CMake\bin\cpack.exe" --config ./CPackSourceConfig.cmake C:/Users/jonme/ALL_PROJECTS/yuml/build/CPackSourceConfig.cmake
-.PHONY : package_source
-
-# Special rule for the target package_source
-package_source/fast: package_source
-
-.PHONY : package_source/fast
-
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -117,6 +95,28 @@ test:
 test/fast: test
 
 .PHONY : test/fast
+
+# Special rule for the target package
+package: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool..."
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && "C:\Program Files\CMake\bin\cpack.exe" --config ./CPackConfig.cmake
+.PHONY : package
+
+# Special rule for the target package
+package/fast: package
+
+.PHONY : package/fast
+
+# Special rule for the target package_source
+package_source:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool for source..."
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && "C:\Program Files\CMake\bin\cpack.exe" --config ./CPackSourceConfig.cmake C:/Users/jonme/ALL_PROJECTS/yuml/build/CPackSourceConfig.cmake
+.PHONY : package_source
+
+# Special rule for the target package_source
+package_source/fast: package_source
+
+.PHONY : package_source/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -161,6 +161,48 @@ depend:
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 1
 .PHONY : depend
 
+# Convenience name for target.
+src/CMakeFiles/Logger.dir/rule:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/CMakeFiles/Logger.dir/rule
+.PHONY : src/CMakeFiles/Logger.dir/rule
+
+# Convenience name for target.
+Logger: src/CMakeFiles/Logger.dir/rule
+
+.PHONY : Logger
+
+# fast build rule for target.
+Logger/fast:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\CMakeFiles\Logger.dir\build.make src/CMakeFiles/Logger.dir/build
+.PHONY : Logger/fast
+
+logger.obj: logger.cpp.obj
+
+.PHONY : logger.obj
+
+# target to build an object file
+logger.cpp.obj:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\CMakeFiles\Logger.dir\build.make src/CMakeFiles/Logger.dir/logger.cpp.obj
+.PHONY : logger.cpp.obj
+
+logger.i: logger.cpp.i
+
+.PHONY : logger.i
+
+# target to preprocess a source file
+logger.cpp.i:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\CMakeFiles\Logger.dir\build.make src/CMakeFiles/Logger.dir/logger.cpp.i
+.PHONY : logger.cpp.i
+
+logger.s: logger.cpp.s
+
+.PHONY : logger.s
+
+# target to generate assembly for a file
+logger.cpp.s:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\CMakeFiles\Logger.dir\build.make src/CMakeFiles/Logger.dir/logger.cpp.s
+.PHONY : logger.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -172,6 +214,10 @@ help:
 	@echo ... package_source
 	@echo ... rebuild_cache
 	@echo ... test
+	@echo ... Logger
+	@echo ... logger.obj
+	@echo ... logger.i
+	@echo ... logger.s
 .PHONY : help
 
 

@@ -5,20 +5,45 @@ using namespace std;
 bool InputParser::readNextLine() {
     
     currentLine.clear();
+    firstWord.clear();
 
     if (getline(file,currentLine)) {
 
         lineNumber++;
 
+        cout << "[Info] " << lineNumber << ": " << currentLine;
+
         //get first word
-        int n = currentLine.length();
-        tokenizedLine = (char*)realloc(tokenizedLine, n*sizeof(char));
-        firstWord = strtok(tokenizedLine, " :");
+        int i = 0;
+        int firstChar = currentLine.length();
+        int lastChar = currentLine.length();
+        char currChar= currentLine[0];
+      //  cout << "\n\n";
+        while (i < currentLine.length()) {
+            //cout << currChar << '\n';
+            if (currChar != ' ' && currChar != '\t' && currChar != ':') {
+                if (i < firstChar) {
+                    // specific yaml syntax check
+                    if (currChar != '-') {
+                        firstChar = i;
+                    }
+                }
+            }
+            else if (i > firstChar) {
+                lastChar = i;
+                break;
+            }
+            i++;
+            currChar = currentLine[i];
+        }
+        //cout << "first char " << firstChar << ", last char " << lastChar;
+        firstWord = currentLine.substr(firstChar,lastChar-firstChar);
+        cout << ", first word: <" << firstWord << ">\n";
 
         //count tabs
-        char currChar= currentLine[0];
+        currChar= currentLine[0];
         int tabCount = 0;
-        int i = 0;
+        i = 0;
         while (currChar == ' ' || currChar == '\t') {
             i++;
             if (currChar == ' ') {

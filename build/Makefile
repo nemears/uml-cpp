@@ -539,6 +539,19 @@ ContinuousCoverage/fast:
 .PHONY : ContinuousCoverage/fast
 
 #=============================================================================
+# Target rules for targets named Logger
+
+# Build rule for target.
+Logger: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 Logger
+.PHONY : Logger
+
+# fast build rule for target.
+Logger/fast:
+	$(MAKE) $(MAKESILENT) -f src\CMakeFiles\Logger.dir\build.make src/CMakeFiles/Logger.dir/build
+.PHONY : Logger/fast
+
+#=============================================================================
 # Target rules for targets named Parsers
 
 # Build rule for target.
@@ -550,6 +563,19 @@ Parsers: cmake_check_build_system
 Parsers/fast:
 	$(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/build
 .PHONY : Parsers/fast
+
+#=============================================================================
+# Target rules for targets named Uml
+
+# Build rule for target.
+Uml: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 Uml
+.PHONY : Uml
+
+# fast build rule for target.
+Uml/fast:
+	$(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/build
+.PHONY : Uml/fast
 
 src/application.obj: src/application.cpp.obj
 
@@ -617,7 +643,9 @@ help:
 	@echo ... NightlySubmit
 	@echo ... NightlyTest
 	@echo ... NightlyUpdate
+	@echo ... Logger
 	@echo ... Parsers
+	@echo ... Uml
 	@echo ... yuml
 	@echo ... src/application.obj
 	@echo ... src/application.i

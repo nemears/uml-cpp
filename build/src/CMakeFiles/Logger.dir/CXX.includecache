@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/logger.cpp
+logger.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/logger.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/logger.h
+string
+-
+iostream
+-
+

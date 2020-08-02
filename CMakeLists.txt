@@ -8,8 +8,7 @@ add_subdirectory(src)
 
 add_executable(yuml src/application.cpp)
 
-target_link_libraries(yuml PUBLIC Parsers)
-#target_link_libraries(yuml Public Uml)
+target_link_libraries(yuml PUBLIC Parsers Uml Logger)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

@@ -5,6 +5,11 @@
   "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/application.cpp"
 },
 {
+  "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src",
+  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\Logger.dir\\logger.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\logger.cpp",
+  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/logger.cpp"
+},
+{
   "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers",
   "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\Parsers.dir\\inputParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\parsers\\inputParser.cpp",
   "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.cpp"
@@ -18,5 +23,10 @@
   "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers",
   "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\Parsers.dir\\templateParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\parsers\\templateParser.cpp",
   "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.cpp"
+},
+{
+  "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml",
+  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\Uml.dir\\project.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\uml\\project.cpp",
+  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/project.cpp"
 }
 ]

@@ -59,6 +59,14 @@
 	[
 		{
 			"backtrace" : 2,
+			"id" : "Logger::@145eef247bfb46b6828c"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "Uml::@6e3bd9cc5e786ffccd6c"
+		},
+		{
+			"backtrace" : 2,
 			"id" : "Parsers::@2954e2d20de220b2eeb2"
 		}
 	],
@@ -78,6 +86,16 @@
 			{
 				"backtrace" : 2,
 				"fragment" : "src\\parsers\\libParsers.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "src\\uml\\libUml.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "src\\libLogger.a",
 				"role" : "libraries"
 			},
 			{

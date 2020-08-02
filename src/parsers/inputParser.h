@@ -3,6 +3,8 @@
 #include <fstream>
 #include <string>
 #include <string.h>
+#include <iostream>
+#include <algorithm>
 using namespace std;
 
 class InputParser {

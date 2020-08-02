@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/project.cpp
+project.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/project.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/project.h
+element.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
+string
+-
+

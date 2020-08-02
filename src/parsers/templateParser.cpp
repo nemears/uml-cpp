@@ -7,9 +7,11 @@ bool TemplateParser::parse(InputParser* input) {
     while (input->readNextLine()) {
         // identify comments 
         if (input->shouldSkip()) {
+            cout << "skipping\n";
             continue;
         // parse element
         } else if (input->firstWord.compare(keyword)) {
+            cout << "parsing element " << keyword << '\n';
             element = parseElement(input);
             return true;
         // it ended

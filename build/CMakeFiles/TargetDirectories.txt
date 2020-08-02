@@ -32,10 +32,11 @@ C:/Users/jonme/ALL_PROJECTS/yuml/build/CMakeFiles/package.dir
 C:/Users/jonme/ALL_PROJECTS/yuml/build/CMakeFiles/test.dir
 C:/Users/jonme/ALL_PROJECTS/yuml/build/CMakeFiles/edit_cache.dir
 C:/Users/jonme/ALL_PROJECTS/yuml/build/CMakeFiles/rebuild_cache.dir
-C:/Users/jonme/ALL_PROJECTS/yuml/build/src/CMakeFiles/package.dir
-C:/Users/jonme/ALL_PROJECTS/yuml/build/src/CMakeFiles/package_source.dir
 C:/Users/jonme/ALL_PROJECTS/yuml/build/src/CMakeFiles/rebuild_cache.dir
 C:/Users/jonme/ALL_PROJECTS/yuml/build/src/CMakeFiles/test.dir
+C:/Users/jonme/ALL_PROJECTS/yuml/build/src/CMakeFiles/Logger.dir
+C:/Users/jonme/ALL_PROJECTS/yuml/build/src/CMakeFiles/package.dir
+C:/Users/jonme/ALL_PROJECTS/yuml/build/src/CMakeFiles/package_source.dir
 C:/Users/jonme/ALL_PROJECTS/yuml/build/src/CMakeFiles/edit_cache.dir
 C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/package.dir
 C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir
@@ -43,8 +44,9 @@ C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/package_source.dir
 C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/rebuild_cache.dir
 C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/test.dir
 C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/edit_cache.dir
-C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml/CMakeFiles/package.dir
 C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml/CMakeFiles/package_source.dir
+C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml/CMakeFiles/Uml.dir
+C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml/CMakeFiles/package.dir
 C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml/CMakeFiles/rebuild_cache.dir
 C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml/CMakeFiles/test.dir
 C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml/CMakeFiles/edit_cache.dir

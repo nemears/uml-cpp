@@ -74,17 +74,6 @@ CMAKE_BINARY_DIR = C:\Users\jonme\ALL_PROJECTS\yuml\build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target package
-package: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool..."
-	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && "C:\Program Files\CMake\bin\cpack.exe" --config ./CPackConfig.cmake
-.PHONY : package
-
-# Special rule for the target package
-package/fast: package
-
-.PHONY : package/fast
-
 # Special rule for the target package_source
 package_source:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool for source..."
@@ -95,6 +84,17 @@ package_source:
 package_source/fast: package_source
 
 .PHONY : package_source/fast
+
+# Special rule for the target package
+package: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool..."
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && "C:\Program Files\CMake\bin\cpack.exe" --config ./CPackConfig.cmake
+.PHONY : package
+
+# Special rule for the target package
+package/fast: package
+
+.PHONY : package/fast
 
 # Special rule for the target rebuild_cache
 rebuild_cache:
@@ -161,6 +161,48 @@ depend:
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 1
 .PHONY : depend
 
+# Convenience name for target.
+src/uml/CMakeFiles/Uml.dir/rule:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/uml/CMakeFiles/Uml.dir/rule
+.PHONY : src/uml/CMakeFiles/Uml.dir/rule
+
+# Convenience name for target.
+Uml: src/uml/CMakeFiles/Uml.dir/rule
+
+.PHONY : Uml
+
+# fast build rule for target.
+Uml/fast:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/build
+.PHONY : Uml/fast
+
+project.obj: project.cpp.obj
+
+.PHONY : project.obj
+
+# target to build an object file
+project.cpp.obj:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/project.cpp.obj
+.PHONY : project.cpp.obj
+
+project.i: project.cpp.i
+
+.PHONY : project.i
+
+# target to preprocess a source file
+project.cpp.i:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/project.cpp.i
+.PHONY : project.cpp.i
+
+project.s: project.cpp.s
+
+.PHONY : project.s
+
+# target to generate assembly for a file
+project.cpp.s:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/project.cpp.s
+.PHONY : project.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -172,6 +214,10 @@ help:
 	@echo ... package_source
 	@echo ... rebuild_cache
 	@echo ... test
+	@echo ... Uml
+	@echo ... project.obj
+	@echo ... project.i
+	@echo ... project.s
 .PHONY : help
 
 

@@ -76,6 +76,7 @@ include src/CMakeFiles/Logger.dir/progress.make
 include src/CMakeFiles/Logger.dir/flags.make
 
 src/CMakeFiles/Logger.dir/logger.cpp.obj: src/CMakeFiles/Logger.dir/flags.make
+src/CMakeFiles/Logger.dir/logger.cpp.obj: src/CMakeFiles/Logger.dir/includes_CXX.rsp
 src/CMakeFiles/Logger.dir/logger.cpp.obj: ../src/logger.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/CMakeFiles/Logger.dir/logger.cpp.obj"
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\Logger.dir\logger.cpp.obj -c C:\Users\jonme\ALL_PROJECTS\yuml\src\logger.cpp

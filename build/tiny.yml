@@ -1,3 +1,6 @@
 ---
-  - project:
+  - model:
     name: "Example"
+    children:
+      class:
+        name: "Dick Cheney"

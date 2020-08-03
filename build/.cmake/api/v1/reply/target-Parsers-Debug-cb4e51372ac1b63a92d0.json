@@ -39,12 +39,22 @@
 					"fragment" : "-g"
 				}
 			],
+			"includes" : 
+			[
+				{
+					"path" : "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers"
+				},
+				{
+					"path" : "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers"
+				}
+			],
 			"language" : "CXX",
 			"sourceIndexes" : 
 			[
 				0,
 				1,
-				2
+				2,
+				3
 			]
 		}
 	],
@@ -64,7 +74,8 @@
 			[
 				0,
 				1,
-				2
+				2,
+				3
 			]
 		}
 	],
@@ -79,13 +90,19 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/parsers/projectParser.cpp",
+			"path" : "src/parsers/templateParser.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/parsers/templateParser.cpp",
+			"path" : "src/parsers/namespaceParser.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/parsers/modelParser.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

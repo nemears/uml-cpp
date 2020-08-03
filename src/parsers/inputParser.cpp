@@ -18,9 +18,7 @@ bool InputParser::readNextLine() {
         int firstChar = currentLine.length();
         int lastChar = currentLine.length();
         char currChar= currentLine[0];
-      //  cout << "\n\n";
         while (i < currentLine.length()) {
-            //cout << currChar << '\n';
             if (currChar != ' ' && currChar != '\t' && currChar != ':') {
                 if (i < firstChar) {
                     // specific yaml syntax check
@@ -36,7 +34,6 @@ bool InputParser::readNextLine() {
             i++;
             currChar = currentLine[i];
         }
-        //cout << "first char " << firstChar << ", last char " << lastChar;
         firstWord = currentLine.substr(firstChar,lastChar-firstChar);
         cout << ", first word: <" << firstWord << ">\n";
 
@@ -69,4 +66,27 @@ bool InputParser::shouldSkip() {
         }
     }
     return false;
+}
+
+// This function expects that it is a simple tag within quotes
+string InputParser::getTag() {
+    int colon = currentLine.find_first_of(':');
+    
+    int i = colon + 1;
+    char currChar = currentLine[i];
+    int firstQuote = currentLine.length();
+    int lastQuote = currentLine.length();
+    while (i < currentLine.length()) {
+        if (currChar == '\"') {
+            if (i < firstQuote) {
+                firstQuote = i;
+            } else {
+                lastQuote = i;
+            }
+        }
+        i++;
+        currChar = currentLine[i];
+    }
+
+    return currentLine.substr(firstQuote + 1, lastQuote - firstQuote - 1);
 }

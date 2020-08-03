@@ -1,1 +1,1 @@
-add_library(Uml project.cpp)
+add_library(Uml namespace.cpp model.cpp element.cpp)

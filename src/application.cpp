@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
             string fileName = argv[1];
             cout << "parsing file " << fileName << "\n";
             InputParser input(fileName);
-            ProjectParser pp;
+            ModelParser pp;
             input.readNextLine();
             if (!pp.parse(&input)) {
                 cerr << "could not parse " << fileName << "\n";

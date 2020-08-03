@@ -75,30 +75,63 @@ include src/uml/CMakeFiles/Uml.dir/progress.make
 # Include the compile flags for this target's objects.
 include src/uml/CMakeFiles/Uml.dir/flags.make
 
-src/uml/CMakeFiles/Uml.dir/project.cpp.obj: src/uml/CMakeFiles/Uml.dir/flags.make
-src/uml/CMakeFiles/Uml.dir/project.cpp.obj: ../src/uml/project.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/uml/CMakeFiles/Uml.dir/project.cpp.obj"
-	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\uml && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\Uml.dir\project.cpp.obj -c C:\Users\jonme\ALL_PROJECTS\yuml\src\uml\project.cpp
+src/uml/CMakeFiles/Uml.dir/namespace.cpp.obj: src/uml/CMakeFiles/Uml.dir/flags.make
+src/uml/CMakeFiles/Uml.dir/namespace.cpp.obj: src/uml/CMakeFiles/Uml.dir/includes_CXX.rsp
+src/uml/CMakeFiles/Uml.dir/namespace.cpp.obj: ../src/uml/namespace.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/uml/CMakeFiles/Uml.dir/namespace.cpp.obj"
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\uml && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\Uml.dir\namespace.cpp.obj -c C:\Users\jonme\ALL_PROJECTS\yuml\src\uml\namespace.cpp
 
-src/uml/CMakeFiles/Uml.dir/project.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Uml.dir/project.cpp.i"
-	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\uml && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\jonme\ALL_PROJECTS\yuml\src\uml\project.cpp > CMakeFiles\Uml.dir\project.cpp.i
+src/uml/CMakeFiles/Uml.dir/namespace.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Uml.dir/namespace.cpp.i"
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\uml && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\jonme\ALL_PROJECTS\yuml\src\uml\namespace.cpp > CMakeFiles\Uml.dir\namespace.cpp.i
 
-src/uml/CMakeFiles/Uml.dir/project.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Uml.dir/project.cpp.s"
-	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\uml && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\jonme\ALL_PROJECTS\yuml\src\uml\project.cpp -o CMakeFiles\Uml.dir\project.cpp.s
+src/uml/CMakeFiles/Uml.dir/namespace.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Uml.dir/namespace.cpp.s"
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\uml && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\jonme\ALL_PROJECTS\yuml\src\uml\namespace.cpp -o CMakeFiles\Uml.dir\namespace.cpp.s
+
+src/uml/CMakeFiles/Uml.dir/model.cpp.obj: src/uml/CMakeFiles/Uml.dir/flags.make
+src/uml/CMakeFiles/Uml.dir/model.cpp.obj: src/uml/CMakeFiles/Uml.dir/includes_CXX.rsp
+src/uml/CMakeFiles/Uml.dir/model.cpp.obj: ../src/uml/model.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/uml/CMakeFiles/Uml.dir/model.cpp.obj"
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\uml && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\Uml.dir\model.cpp.obj -c C:\Users\jonme\ALL_PROJECTS\yuml\src\uml\model.cpp
+
+src/uml/CMakeFiles/Uml.dir/model.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Uml.dir/model.cpp.i"
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\uml && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\jonme\ALL_PROJECTS\yuml\src\uml\model.cpp > CMakeFiles\Uml.dir\model.cpp.i
+
+src/uml/CMakeFiles/Uml.dir/model.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Uml.dir/model.cpp.s"
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\uml && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\jonme\ALL_PROJECTS\yuml\src\uml\model.cpp -o CMakeFiles\Uml.dir\model.cpp.s
+
+src/uml/CMakeFiles/Uml.dir/element.cpp.obj: src/uml/CMakeFiles/Uml.dir/flags.make
+src/uml/CMakeFiles/Uml.dir/element.cpp.obj: src/uml/CMakeFiles/Uml.dir/includes_CXX.rsp
+src/uml/CMakeFiles/Uml.dir/element.cpp.obj: ../src/uml/element.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/uml/CMakeFiles/Uml.dir/element.cpp.obj"
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\uml && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\Uml.dir\element.cpp.obj -c C:\Users\jonme\ALL_PROJECTS\yuml\src\uml\element.cpp
+
+src/uml/CMakeFiles/Uml.dir/element.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Uml.dir/element.cpp.i"
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\uml && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\jonme\ALL_PROJECTS\yuml\src\uml\element.cpp > CMakeFiles\Uml.dir\element.cpp.i
+
+src/uml/CMakeFiles/Uml.dir/element.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Uml.dir/element.cpp.s"
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\uml && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\jonme\ALL_PROJECTS\yuml\src\uml\element.cpp -o CMakeFiles\Uml.dir\element.cpp.s
 
 # Object files for target Uml
 Uml_OBJECTS = \
-"CMakeFiles/Uml.dir/project.cpp.obj"
+"CMakeFiles/Uml.dir/namespace.cpp.obj" \
+"CMakeFiles/Uml.dir/model.cpp.obj" \
+"CMakeFiles/Uml.dir/element.cpp.obj"
 
 # External object files for target Uml
 Uml_EXTERNAL_OBJECTS =
 
-src/uml/libUml.a: src/uml/CMakeFiles/Uml.dir/project.cpp.obj
+src/uml/libUml.a: src/uml/CMakeFiles/Uml.dir/namespace.cpp.obj
+src/uml/libUml.a: src/uml/CMakeFiles/Uml.dir/model.cpp.obj
+src/uml/libUml.a: src/uml/CMakeFiles/Uml.dir/element.cpp.obj
 src/uml/libUml.a: src/uml/CMakeFiles/Uml.dir/build.make
 src/uml/libUml.a: src/uml/CMakeFiles/Uml.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libUml.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX static library libUml.a"
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\uml && $(CMAKE_COMMAND) -P CMakeFiles\Uml.dir\cmake_clean_target.cmake
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\uml && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\Uml.dir\link.txt --verbose=$(VERBOSE)
 

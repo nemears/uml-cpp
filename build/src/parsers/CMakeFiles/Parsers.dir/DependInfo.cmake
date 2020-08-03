@@ -5,13 +5,16 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.obj"
-  "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/projectParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.obj"
+  "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/modelParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/modelParser.cpp.obj"
+  "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/namespaceParser.cpp.obj"
   "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/templateParser.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "src/parsers"
+  "../src/parsers"
   )
 
 # Targets to which this target links.

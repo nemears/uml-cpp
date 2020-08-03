@@ -39,6 +39,15 @@
 					"fragment" : "-g"
 				}
 			],
+			"includes" : 
+			[
+				{
+					"path" : "C:/Users/jonme/ALL_PROJECTS/yuml/build/src"
+				},
+				{
+					"path" : "C:/Users/jonme/ALL_PROJECTS/yuml/src"
+				}
+			],
 			"language" : "CXX",
 			"sourceIndexes" : 
 			[

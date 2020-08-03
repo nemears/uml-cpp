@@ -31,7 +31,6 @@ class InputParser {
 
     bool readNextLine();
     bool shouldSkip();
-    string getNextTerm();
     string getTag();
 };
 #endif

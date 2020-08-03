@@ -9,7 +9,7 @@ void Logger::logWarning(string msg) {
 }
 
 void Logger::logError(string msg) {
-    cerr << '[Error] ' << msg << '\n';
+    cerr << "[Error] " << msg << '\n';
 }
 
 void Logger::clearLog() {

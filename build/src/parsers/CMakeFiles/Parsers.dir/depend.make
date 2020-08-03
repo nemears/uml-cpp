@@ -4,12 +4,21 @@
 src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.obj: ../src/parsers/inputParser.cpp
 src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.obj: ../src/parsers/inputParser.h
 
-src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.obj: ../src/parsers/inputParser.h
-src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.obj: ../src/parsers/projectParser.cpp
-src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.obj: ../src/parsers/projectParser.h
-src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.obj: ../src/parsers/templateParser.h
-src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.obj: ../src/uml/element.h
-src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.obj: ../src/uml/project.h
+src/parsers/CMakeFiles/Parsers.dir/modelParser.cpp.obj: ../src/parsers/inputParser.h
+src/parsers/CMakeFiles/Parsers.dir/modelParser.cpp.obj: ../src/parsers/modelParser.cpp
+src/parsers/CMakeFiles/Parsers.dir/modelParser.cpp.obj: ../src/parsers/modelParser.h
+src/parsers/CMakeFiles/Parsers.dir/modelParser.cpp.obj: ../src/parsers/namespaceParser.h
+src/parsers/CMakeFiles/Parsers.dir/modelParser.cpp.obj: ../src/parsers/templateParser.h
+src/parsers/CMakeFiles/Parsers.dir/modelParser.cpp.obj: ../src/uml/element.h
+src/parsers/CMakeFiles/Parsers.dir/modelParser.cpp.obj: ../src/uml/model.h
+src/parsers/CMakeFiles/Parsers.dir/modelParser.cpp.obj: ../src/uml/namespace.h
+
+src/parsers/CMakeFiles/Parsers.dir/namespaceParser.cpp.obj: ../src/parsers/inputParser.h
+src/parsers/CMakeFiles/Parsers.dir/namespaceParser.cpp.obj: ../src/parsers/namespaceParser.cpp
+src/parsers/CMakeFiles/Parsers.dir/namespaceParser.cpp.obj: ../src/parsers/namespaceParser.h
+src/parsers/CMakeFiles/Parsers.dir/namespaceParser.cpp.obj: ../src/parsers/templateParser.h
+src/parsers/CMakeFiles/Parsers.dir/namespaceParser.cpp.obj: ../src/uml/element.h
+src/parsers/CMakeFiles/Parsers.dir/namespaceParser.cpp.obj: ../src/uml/namespace.h
 
 src/parsers/CMakeFiles/Parsers.dir/templateParser.cpp.obj: ../src/parsers/inputParser.h
 src/parsers/CMakeFiles/Parsers.dir/templateParser.cpp.obj: ../src/parsers/templateParser.cpp

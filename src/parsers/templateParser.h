@@ -12,11 +12,14 @@ using namespace std;
 
 class TemplateParser {
 
+    private:
+    Element parseElement(InputParser* inputParser);
+
     protected:
     string keyword;
     Element element;
-    virtual Element parseElement(InputParser* inputParser) {return Element();};
     virtual bool parseTag(InputParser* inputParser, Element el) {return false;};
+    virtual Element createElement() = 0; // interface
 
     public:
     bool parse(InputParser* inputParser);

@@ -176,32 +176,86 @@ Uml/fast:
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/build
 .PHONY : Uml/fast
 
-project.obj: project.cpp.obj
+element.obj: element.cpp.obj
 
-.PHONY : project.obj
+.PHONY : element.obj
 
 # target to build an object file
-project.cpp.obj:
-	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/project.cpp.obj
-.PHONY : project.cpp.obj
+element.cpp.obj:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/element.cpp.obj
+.PHONY : element.cpp.obj
 
-project.i: project.cpp.i
+element.i: element.cpp.i
 
-.PHONY : project.i
+.PHONY : element.i
 
 # target to preprocess a source file
-project.cpp.i:
-	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/project.cpp.i
-.PHONY : project.cpp.i
+element.cpp.i:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/element.cpp.i
+.PHONY : element.cpp.i
 
-project.s: project.cpp.s
+element.s: element.cpp.s
 
-.PHONY : project.s
+.PHONY : element.s
 
 # target to generate assembly for a file
-project.cpp.s:
-	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/project.cpp.s
-.PHONY : project.cpp.s
+element.cpp.s:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/element.cpp.s
+.PHONY : element.cpp.s
+
+model.obj: model.cpp.obj
+
+.PHONY : model.obj
+
+# target to build an object file
+model.cpp.obj:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/model.cpp.obj
+.PHONY : model.cpp.obj
+
+model.i: model.cpp.i
+
+.PHONY : model.i
+
+# target to preprocess a source file
+model.cpp.i:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/model.cpp.i
+.PHONY : model.cpp.i
+
+model.s: model.cpp.s
+
+.PHONY : model.s
+
+# target to generate assembly for a file
+model.cpp.s:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/model.cpp.s
+.PHONY : model.cpp.s
+
+namespace.obj: namespace.cpp.obj
+
+.PHONY : namespace.obj
+
+# target to build an object file
+namespace.cpp.obj:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/namespace.cpp.obj
+.PHONY : namespace.cpp.obj
+
+namespace.i: namespace.cpp.i
+
+.PHONY : namespace.i
+
+# target to preprocess a source file
+namespace.cpp.i:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/namespace.cpp.i
+.PHONY : namespace.cpp.i
+
+namespace.s: namespace.cpp.s
+
+.PHONY : namespace.s
+
+# target to generate assembly for a file
+namespace.cpp.s:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/namespace.cpp.s
+.PHONY : namespace.cpp.s
 
 # Help Target
 help:
@@ -215,9 +269,15 @@ help:
 	@echo ... rebuild_cache
 	@echo ... test
 	@echo ... Uml
-	@echo ... project.obj
-	@echo ... project.i
-	@echo ... project.s
+	@echo ... element.obj
+	@echo ... element.i
+	@echo ... element.s
+	@echo ... model.obj
+	@echo ... model.i
+	@echo ... model.s
+	@echo ... namespace.obj
+	@echo ... namespace.i
+	@echo ... namespace.s
 .PHONY : help
 
 

@@ -1,5 +1,7 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Uml.dir/project.cpp.obj"
+  "CMakeFiles/Uml.dir/element.cpp.obj"
+  "CMakeFiles/Uml.dir/model.cpp.obj"
+  "CMakeFiles/Uml.dir/namespace.cpp.obj"
   "libUml.a"
   "libUml.pdb"
 )

@@ -203,32 +203,59 @@ inputParser.cpp.s:
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.s
 .PHONY : inputParser.cpp.s
 
-projectParser.obj: projectParser.cpp.obj
+modelParser.obj: modelParser.cpp.obj
 
-.PHONY : projectParser.obj
+.PHONY : modelParser.obj
 
 # target to build an object file
-projectParser.cpp.obj:
-	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.obj
-.PHONY : projectParser.cpp.obj
+modelParser.cpp.obj:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/modelParser.cpp.obj
+.PHONY : modelParser.cpp.obj
 
-projectParser.i: projectParser.cpp.i
+modelParser.i: modelParser.cpp.i
 
-.PHONY : projectParser.i
+.PHONY : modelParser.i
 
 # target to preprocess a source file
-projectParser.cpp.i:
-	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.i
-.PHONY : projectParser.cpp.i
+modelParser.cpp.i:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/modelParser.cpp.i
+.PHONY : modelParser.cpp.i
 
-projectParser.s: projectParser.cpp.s
+modelParser.s: modelParser.cpp.s
 
-.PHONY : projectParser.s
+.PHONY : modelParser.s
 
 # target to generate assembly for a file
-projectParser.cpp.s:
-	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/projectParser.cpp.s
-.PHONY : projectParser.cpp.s
+modelParser.cpp.s:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/modelParser.cpp.s
+.PHONY : modelParser.cpp.s
+
+namespaceParser.obj: namespaceParser.cpp.obj
+
+.PHONY : namespaceParser.obj
+
+# target to build an object file
+namespaceParser.cpp.obj:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/namespaceParser.cpp.obj
+.PHONY : namespaceParser.cpp.obj
+
+namespaceParser.i: namespaceParser.cpp.i
+
+.PHONY : namespaceParser.i
+
+# target to preprocess a source file
+namespaceParser.cpp.i:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/namespaceParser.cpp.i
+.PHONY : namespaceParser.cpp.i
+
+namespaceParser.s: namespaceParser.cpp.s
+
+.PHONY : namespaceParser.s
+
+# target to generate assembly for a file
+namespaceParser.cpp.s:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/namespaceParser.cpp.s
+.PHONY : namespaceParser.cpp.s
 
 templateParser.obj: templateParser.cpp.obj
 
@@ -272,9 +299,12 @@ help:
 	@echo ... inputParser.obj
 	@echo ... inputParser.i
 	@echo ... inputParser.s
-	@echo ... projectParser.obj
-	@echo ... projectParser.i
-	@echo ... projectParser.s
+	@echo ... modelParser.obj
+	@echo ... modelParser.i
+	@echo ... modelParser.s
+	@echo ... namespaceParser.obj
+	@echo ... namespaceParser.i
+	@echo ... namespaceParser.s
 	@echo ... templateParser.obj
 	@echo ... templateParser.i
 	@echo ... templateParser.s

@@ -1,32 +1,47 @@
 [
 {
   "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build",
-  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\yuml.dir\\src\\application.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\application.cpp",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/yuml.dir/includes_CXX.rsp -g -o CMakeFiles\\yuml.dir\\src\\application.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\application.cpp",
   "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/application.cpp"
 },
 {
   "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src",
-  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\Logger.dir\\logger.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\logger.cpp",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Logger.dir/includes_CXX.rsp -g -o CMakeFiles\\Logger.dir\\logger.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\logger.cpp",
   "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/logger.cpp"
 },
 {
   "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers",
-  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\Parsers.dir\\inputParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\parsers\\inputParser.cpp",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Parsers.dir/includes_CXX.rsp -g -o CMakeFiles\\Parsers.dir\\inputParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\parsers\\inputParser.cpp",
   "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.cpp"
 },
 {
   "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers",
-  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\Parsers.dir\\projectParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\parsers\\projectParser.cpp",
-  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/projectParser.cpp"
-},
-{
-  "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers",
-  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\Parsers.dir\\templateParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\parsers\\templateParser.cpp",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Parsers.dir/includes_CXX.rsp -g -o CMakeFiles\\Parsers.dir\\templateParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\parsers\\templateParser.cpp",
   "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.cpp"
 },
 {
+  "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Parsers.dir/includes_CXX.rsp -g -o CMakeFiles\\Parsers.dir\\namespaceParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\parsers\\namespaceParser.cpp",
+  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.cpp"
+},
+{
+  "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Parsers.dir/includes_CXX.rsp -g -o CMakeFiles\\Parsers.dir\\modelParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\parsers\\modelParser.cpp",
+  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/modelParser.cpp"
+},
+{
   "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml",
-  "command": "C:\\MinGW\\bin\\g++.exe   -g -o CMakeFiles\\Uml.dir\\project.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\uml\\project.cpp",
-  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/project.cpp"
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Uml.dir/includes_CXX.rsp -g -o CMakeFiles\\Uml.dir\\namespace.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\uml\\namespace.cpp",
+  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.cpp"
+},
+{
+  "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Uml.dir/includes_CXX.rsp -g -o CMakeFiles\\Uml.dir\\model.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\uml\\model.cpp",
+  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/model.cpp"
+},
+{
+  "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Uml.dir/includes_CXX.rsp -g -o CMakeFiles\\Uml.dir\\element.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\uml\\element.cpp",
+  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.cpp"
 }
 ]

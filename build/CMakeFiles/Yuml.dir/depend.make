@@ -4,8 +4,10 @@
 CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/application.cpp
 CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/application.h
 CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/parsers/inputParser.h
-CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/parsers/projectParser.h
+CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/parsers/modelParser.h
+CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/parsers/namespaceParser.h
 CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/parsers/templateParser.h
 CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/uml/element.h
-CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/uml/project.h
+CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/uml/model.h
+CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/uml/namespace.h
 

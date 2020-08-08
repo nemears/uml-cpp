@@ -1,6 +1,5 @@
 #ifndef MODELPARSER
 #define MODELPARSER
-#include <memory>
 #include "templateParser.h"
 #include "namespaceParser.h"
 #include "../uml/model.h"

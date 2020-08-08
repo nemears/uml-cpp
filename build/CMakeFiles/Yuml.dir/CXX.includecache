@@ -33,8 +33,6 @@ algorithm
 -
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/modelParser.h
-memory
--
 templateParser.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
 namespaceParser.h

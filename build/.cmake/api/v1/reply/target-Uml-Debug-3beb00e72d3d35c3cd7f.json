@@ -11,7 +11,8 @@
 	{
 		"commands" : 
 		[
-			"add_library"
+			"add_library",
+			"target_include_directories"
 		],
 		"files" : 
 		[
@@ -25,7 +26,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 1,
+				"line" : 10,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 11,
 				"parent" : 0
 			}
 		]
@@ -46,6 +53,10 @@
 				},
 				{
 					"path" : "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Boost/boost_1_73_0"
 				}
 			],
 			"language" : "CXX",

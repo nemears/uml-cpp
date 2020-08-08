@@ -7,6 +7,8 @@
 #IncludeRegexTransform: 
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
+string
+-
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/model.cpp
 model.h
@@ -24,6 +26,8 @@ C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
 string
+-
+iostream
 -
 element.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h

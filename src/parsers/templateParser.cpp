@@ -14,7 +14,7 @@ bool TemplateParser::parse(InputParser* input) {
         // parse element
         } else if (input->firstWord.compare(keyword) == 0) {
             cout << "parsing element " << keyword << '\n';
-            element = parseElement(input);
+            parseElement(input);
             return true;
         // it ended
         } else if (input->numTabs <= startTabs) {
@@ -25,9 +25,9 @@ bool TemplateParser::parse(InputParser* input) {
     return false;
 }
 
-Element TemplateParser::parseElement(InputParser* input) {
+Element *TemplateParser::parseElement(InputParser* input) {
     int numTabs = input->numTabs;
-    Element ret = createElement();
+    Element * el = createElement();
     while(input->readNextLine()) {
         // check if line is valid
         if (input->shouldSkip()) {
@@ -36,10 +36,10 @@ Element TemplateParser::parseElement(InputParser* input) {
             // TODO something?
             break;
         // check if value is readable
-        } else if (!parseTag(input, ret)) {
+        } else if (!parseTag(input, el)) {
             // TODO log error
             cerr << "[Error] Could not recognize tag " << input->firstWord << " line " << input->lineNumber << "\n";
         }
     }
-    return ret;
+    return el;
 }

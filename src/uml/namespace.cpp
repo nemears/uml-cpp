@@ -1,6 +1,6 @@
 #include "namespace.h"
 
-void Namespace::setName(string name) {
+void Namespace::setName(const string &name) {
     this->name = name;
 }
 

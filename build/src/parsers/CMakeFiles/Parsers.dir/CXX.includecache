@@ -23,6 +23,8 @@ modelParser.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/modelParser.h
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/modelParser.h
+memory
+-
 templateParser.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
 namespaceParser.h
@@ -30,11 +32,19 @@ C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.h
 ../uml/model.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/model.h
 
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.cpp
+namespaceParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.h
+
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.h
 templateParser.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
 ../uml/namespace.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.cpp
+templateParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
 fstream
@@ -49,6 +59,8 @@ iostream
 -
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
+string
+-
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/model.h
 namespace.h
@@ -58,6 +70,8 @@ string
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
 string
+-
+iostream
 -
 element.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h

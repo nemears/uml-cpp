@@ -13,15 +13,15 @@ using namespace std;
 class TemplateParser {
 
     private:
-    Element parseElement(InputParser* inputParser);
+    Element* parseElement(InputParser* inputParser);
 
     protected:
     string keyword;
-    Element element;
-    virtual bool parseTag(InputParser* inputParser, Element el) {return false;};
-    virtual Element createElement() = 0; // interface
+    virtual bool parseTag(InputParser* inputParser, Element* el) = 0;
+    virtual Element* createElement() = 0; // interface
 
     public:
     bool parse(InputParser* inputParser);
+    virtual ~TemplateParser() {};
 };
 #endif

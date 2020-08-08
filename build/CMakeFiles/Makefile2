@@ -340,9 +340,9 @@ CMakeFiles/NightlyStart.dir/clean:
 # Target rules for target CMakeFiles/yuml.dir
 
 # All Build rule for target.
-CMakeFiles/yuml.dir/all: src/parsers/CMakeFiles/Parsers.dir/all
-CMakeFiles/yuml.dir/all: src/CMakeFiles/Logger.dir/all
 CMakeFiles/yuml.dir/all: src/uml/CMakeFiles/Uml.dir/all
+CMakeFiles/yuml.dir/all: src/CMakeFiles/Logger.dir/all
+CMakeFiles/yuml.dir/all: src/parsers/CMakeFiles/Parsers.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\yuml.dir\build.make CMakeFiles/yuml.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\yuml.dir\build.make CMakeFiles/yuml.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=12,13 "Built target yuml"

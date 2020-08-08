@@ -14,6 +14,7 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "src/uml"
   "../src/uml"
+  "C:/Boost/boost_1_73_0"
   )
 
 # Targets to which this target links.

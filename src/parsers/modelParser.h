@@ -1,5 +1,6 @@
 #ifndef MODELPARSER
 #define MODELPARSER
+#include <memory>
 #include "templateParser.h"
 #include "namespaceParser.h"
 #include "../uml/model.h"
@@ -7,8 +8,8 @@ using namespace std;
 
 class ModelParser : public NamespaceParser {
     protected:
-    Element createElement();
-    bool parseTag(InputParser* input, Model el);
+    Element* createElement();
+    bool parseTag(InputParser* input, Element * el);
 
     public:
     ModelParser() {

@@ -7,11 +7,15 @@ enable_testing()
 set(CMAKE_AUTOMOC ON)
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 
+FIND_PACKAGE( Boost 1.73.0 REQUIRED )
+INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
+
 add_subdirectory(src)
 
 add_executable(yuml src/application.cpp)
 
 target_link_libraries(yuml PUBLIC Parsers Uml Logger)
+TARGET_LINK_LIBRARIES(yuml LINK_PUBLIC ${Boost_LIBRARIES} )
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

@@ -62,6 +62,38 @@
 			"value" : "C:/Boost/boost_1_73_0"
 		},
 		{
+			"name" : "Boost_SYSTEM_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Boost system library (debug)"
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "Boost_SYSTEM_LIBRARY_DEBUG-NOTFOUND"
+		},
+		{
+			"name" : "Boost_SYSTEM_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Boost system library (release)"
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "Boost_SYSTEM_LIBRARY_RELEASE-NOTFOUND"
+		},
+		{
 			"name" : "CMAKE_ADDR2LINE",
 			"properties" : 
 			[
@@ -1631,7 +1663,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "[C:/Boost/boost_1_73_0][c ][v1.73.0(1.43.0)]"
+			"value" : "[C:/Boost/boost_1_73_0][c ][v1.73.0(1.73.0)]"
 		},
 		{
 			"name" : "GITCOMMAND",
@@ -1794,30 +1826,6 @@
 			"value" : "SVNCOMMAND-NOTFOUND"
 		},
 		{
-			"name" : "_BOOST_INCLUDEDIR_LAST",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Last used BOOST_INCLUDEDIR value."
-				}
-			],
-			"type" : "INTERNAL",
-			"value" : "C:/Boost/boost_1_73_0"
-		},
-		{
-			"name" : "_BOOST_LIBRARYDIR_LAST",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Last used BOOST_LIBRARYDIR value."
-				}
-			],
-			"type" : "INTERNAL",
-			"value" : "C:/Boost/boost_1_73_0/lib"
-		},
-		{
 			"name" : "_Boost_COMPONENTS_SEARCHED",
 			"properties" : 
 			[
@@ -1863,31 +1871,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "ON"
-		},
-		{
-			"name" : "_Boost_USE_STATIC_LIBS_LAST",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Last used Boost_USE_STATIC_LIBS value."
-				}
-			],
-			"type" : "INTERNAL",
-			"value" : "OFF"
-		},
-		{
-			"name" : "_Boost_USE_STATIC_RUNTIME_LAST",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Last used Boost_USE_STATIC_RUNTIME value."
-				}
-			],
-			"type" : "INTERNAL",
-			"value" : "OFF"
+			"value" : "TRUE"
 		},
 		{
 			"name" : "yuml_BINARY_DIR",

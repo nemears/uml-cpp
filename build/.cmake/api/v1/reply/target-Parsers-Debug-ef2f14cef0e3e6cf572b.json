@@ -11,11 +11,13 @@
 	{
 		"commands" : 
 		[
-			"add_library"
+			"add_library",
+			"INCLUDE_DIRECTORIES"
 		],
 		"files" : 
 		[
-			"src/parsers/CMakeLists.txt"
+			"src/parsers/CMakeLists.txt",
+			"CMakeLists.txt"
 		],
 		"nodes" : 
 		[
@@ -27,6 +29,15 @@
 				"file" : 0,
 				"line" : 1,
 				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 11,
+				"parent" : 2
 			}
 		]
 	},
@@ -46,6 +57,10 @@
 				},
 				{
 					"path" : "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "C:/Boost/boost_1_73_0"
 				}
 			],
 			"language" : "CXX",

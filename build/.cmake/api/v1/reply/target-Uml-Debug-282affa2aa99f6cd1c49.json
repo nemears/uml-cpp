@@ -12,11 +12,12 @@
 		"commands" : 
 		[
 			"add_library",
-			"target_include_directories"
+			"INCLUDE_DIRECTORIES"
 		],
 		"files" : 
 		[
-			"src/uml/CMakeLists.txt"
+			"src/uml/CMakeLists.txt",
+			"CMakeLists.txt"
 		],
 		"nodes" : 
 		[
@@ -26,14 +27,17 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 10,
+				"line" : 1,
 				"parent" : 0
 			},
 			{
+				"file" : 1
+			},
+			{
 				"command" : 1,
-				"file" : 0,
+				"file" : 1,
 				"line" : 11,
-				"parent" : 0
+				"parent" : 2
 			}
 		]
 	},
@@ -55,7 +59,7 @@
 					"path" : "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 3,
 					"path" : "C:/Boost/boost_1_73_0"
 				}
 			],

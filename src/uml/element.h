@@ -4,17 +4,19 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include <boost/lexical_cast.hpp>
 using namespace std;
 
 class Element {
     protected:
-    //boost::uuids::uuid uuid;
+    boost::uuids::uuid uuid;
 
     public:
     Element() {
-        //uuid = boost::uuids::random_generator()();
+        uuid = boost::uuids::random_generator()();
     };
     virtual ~Element() {};
-    //boost::uuids::uuid getID();
+    boost::uuids::uuid getID();
+    void setId(string id);
 };
 #endif

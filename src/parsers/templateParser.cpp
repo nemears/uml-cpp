@@ -13,7 +13,6 @@ bool TemplateParser::parse(InputParser* input) {
             continue;
         // parse element
         } else if (input->firstWord.compare(keyword) == 0) {
-            cout << "parsing element " << keyword << '\n';
             parseElement(input);
             return true;
         // it ended
@@ -41,5 +40,6 @@ Element *TemplateParser::parseElement(InputParser* input) {
             cerr << "[Error] Could not recognize tag " << input->firstWord << " line " << input->lineNumber << "\n";
         }
     }
+    cout << "[Info] created " << keyword << " " << el->getID() << '\n' << '\n';
     return el;
 }

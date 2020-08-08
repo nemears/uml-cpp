@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/Parsers.dir/elementParser.cpp.obj"
   "CMakeFiles/Parsers.dir/inputParser.cpp.obj"
   "CMakeFiles/Parsers.dir/modelParser.cpp.obj"
   "CMakeFiles/Parsers.dir/namespaceParser.cpp.obj"

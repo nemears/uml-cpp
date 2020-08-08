@@ -8554,6 +8554,10 @@ stdlib.h
 iostream
 -
 
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.h
+templateParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
+
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.h
 fstream
 -
@@ -8575,8 +8579,8 @@ C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/model.h
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.h
-templateParser.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
+elementParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.h
 ../uml/namespace.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
 

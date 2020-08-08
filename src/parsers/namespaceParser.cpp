@@ -17,5 +17,5 @@ bool NamespaceParser::parseTag(InputParser* input, Element* el) {
         return true;
     }
 
-    return false;
+    return ElementParser::parseTag(input, el);
 }

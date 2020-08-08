@@ -1,2 +1,2 @@
-C:\MinGW\bin\ar.exe qc libParsers.a CMakeFiles/Parsers.dir/inputParser.cpp.obj CMakeFiles/Parsers.dir/templateParser.cpp.obj CMakeFiles/Parsers.dir/namespaceParser.cpp.obj CMakeFiles/Parsers.dir/modelParser.cpp.obj
+C:\MinGW\bin\ar.exe qc libParsers.a CMakeFiles/Parsers.dir/inputParser.cpp.obj CMakeFiles/Parsers.dir/templateParser.cpp.obj CMakeFiles/Parsers.dir/namespaceParser.cpp.obj CMakeFiles/Parsers.dir/modelParser.cpp.obj CMakeFiles/Parsers.dir/elementParser.cpp.obj
 C:\MinGW\bin\ranlib.exe libParsers.a

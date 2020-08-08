@@ -1,1 +1,1 @@
-add_library(Parsers inputParser.cpp templateParser.cpp namespaceParser.cpp modelParser.cpp)
+add_library(Parsers inputParser.cpp templateParser.cpp namespaceParser.cpp modelParser.cpp elementParser.cpp)

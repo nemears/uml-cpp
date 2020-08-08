@@ -90,3 +90,15 @@ string InputParser::getTag() {
 
     return currentLine.substr(firstQuote + 1, lastQuote - firstQuote - 1);
 }
+
+// this function gets a string of everything after the : and with greater indentation
+string InputParser::getElement() {
+    int colon = currentLine.find_first_of(':');
+
+    // get rest of line
+    string ret = currentLine.substr(colon + 1, currentLine.length() - colon - 1);
+
+    // TODO do the tabs thing
+
+    return ret;
+}

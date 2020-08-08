@@ -790,6 +790,7 @@ CMakeFiles/yuml.dir/src/application.cpp.obj: C:/Boost/boost_1_73_0/boost/winapi/
 CMakeFiles/yuml.dir/src/application.cpp.obj: C:/Boost/boost_1_73_0/boost/winapi/get_last_error.hpp
 CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/application.cpp
 CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/application.h
+CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/parsers/elementParser.h
 CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/parsers/inputParser.h
 CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/parsers/modelParser.h
 CMakeFiles/yuml.dir/src/application.cpp.obj: ../src/parsers/namespaceParser.h

@@ -8540,6 +8540,14 @@ C:/Boost/boost_1_73_0/boost/winapi/get_last_error.hpp
 boost/winapi/basic_types.hpp
 -
 
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.cpp
+elementParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.h
+templateParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
+
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.h
 fstream
 -
@@ -8551,10 +8559,6 @@ iostream
 -
 algorithm
 -
-
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.cpp
-templateParser.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
 fstream

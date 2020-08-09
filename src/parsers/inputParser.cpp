@@ -1,7 +1,5 @@
 #include "inputParser.h"
 
-using namespace std;
-
 bool InputParser::readNextLine() {
     
     currentLine.clear();

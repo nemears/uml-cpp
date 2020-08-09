@@ -1,6 +1,5 @@
 #include "namedElement.h"
 
-
 void NamedElement::setName(const string &name) {
     this->name = name;
 }

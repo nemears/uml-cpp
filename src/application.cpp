@@ -1,7 +1,5 @@
 #include "application.h"
 
-using namespace std;
-
 int main(int argc, char** argv) {
     switch (argc)
     {
@@ -19,6 +17,10 @@ int main(int argc, char** argv) {
                 cerr << "could not parse " << fileName << "\n";
                 return -1;
             }
+
+            // TODO print model
+            
+
             return 0;
         }
         default: {

@@ -7,12 +7,12 @@ using namespace std;
 
 class ModelParser : public NamespaceParser {
     protected:
-    Element* createElement();
-    bool parseTag(InputParser* input, Element * el);
+        Element* createElement();
+        bool parseTag(InputParser* input, Element * el);
 
     public:
-    ModelParser() {
-        this->keyword = "model";
-    }
+        ModelParser() {
+            this->keyword = "model";
+        }
 };
 #endif

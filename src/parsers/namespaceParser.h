@@ -6,8 +6,7 @@
 
 class NamespaceParser : public NamedElementParser {
     protected:
-    Element parseElement(InputParser* inputParser);
-    bool parseTag(InputParser* inputParser, Element * el);
+        bool parseTag(InputParser* inputParser, Element * el);
 };
 
 #endif

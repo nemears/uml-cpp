@@ -1,7 +1,5 @@
 #include "templateParser.h"
 
-using namespace std;
-
 bool TemplateParser::parse(InputParser* input) {
     cout << "[Info] keyword " << keyword << '\n';
     int startTabs = input->numTabs;

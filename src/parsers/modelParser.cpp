@@ -1,7 +1,5 @@
 #include "modelParser.h"
 
-using namespace std;
-
 Element* ModelParser::createElement() {
     return new Model;
 }

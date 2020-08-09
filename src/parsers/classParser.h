@@ -6,13 +6,13 @@ using namespace std;
 
 class ClassParser : public NamedElementParser {
     protected:
-    Element* createElement();
-    bool parseTag(InputParser* input, Element * el);
+        Element* createElement();
+        bool parseTag(InputParser* input, Element * el);
 
     public:
-    ClassParser() {
-        this->keyword = "class";
-    }
+        ClassParser() {
+            this->keyword = "class";
+        }
 };
 
 #endif

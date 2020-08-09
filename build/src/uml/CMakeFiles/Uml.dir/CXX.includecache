@@ -8540,16 +8540,6 @@ C:/Boost/boost_1_73_0/boost/winapi/get_last_error.hpp
 boost/winapi/basic_types.hpp
 -
 
-C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/classifier.cpp
-classifier.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/classifier.h
-
-C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/classifier.h
-list
--
-namedElement.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
-
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
 string
 -
@@ -8569,4 +8559,12 @@ string
 -
 element.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/property.cpp
+property.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/property.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/property.h
+namedElement.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 

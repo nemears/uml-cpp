@@ -338,6 +338,33 @@ namespace.cpp.s:
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/namespace.cpp.s
 .PHONY : namespace.cpp.s
 
+property.obj: property.cpp.obj
+
+.PHONY : property.obj
+
+# target to build an object file
+property.cpp.obj:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/property.cpp.obj
+.PHONY : property.cpp.obj
+
+property.i: property.cpp.i
+
+.PHONY : property.i
+
+# target to preprocess a source file
+property.cpp.i:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/property.cpp.i
+.PHONY : property.cpp.i
+
+property.s: property.cpp.s
+
+.PHONY : property.s
+
+# target to generate assembly for a file
+property.cpp.s:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/property.cpp.s
+.PHONY : property.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -368,6 +395,9 @@ help:
 	@echo ... namespace.obj
 	@echo ... namespace.i
 	@echo ... namespace.s
+	@echo ... property.obj
+	@echo ... property.i
+	@echo ... property.s
 .PHONY : help
 
 

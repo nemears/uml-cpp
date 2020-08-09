@@ -1,4 +1,4 @@
-add_library(Uml namespace.cpp model.cpp element.cpp namedElement.cpp class.cpp classifier.cpp)
+add_library(Uml namespace.cpp model.cpp element.cpp namedElement.cpp class.cpp classifier.cpp property.cpp)
 
 #set(Boost_USE_STATIC_LIBS OFF) 
 #set(Boost_USE_MULTITHREADED ON)  

@@ -2,12 +2,13 @@
 #define CLASSIFIER
 #include <list>
 #include "namedElement.h"
+#include "property.h"
 using namespace std;
 
 class Classifie: public NamedElement {
     protected:
-        // TODO list<Property*> ownedAttributes;
+        list<Property*> ownedAttributes;
     public:
-        // list<Property*> getOwnedAttributes();
+        list<Property*> getOwnedAttributes();
 };
 #endif

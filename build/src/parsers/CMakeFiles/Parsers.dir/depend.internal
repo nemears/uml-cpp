@@ -1586,11 +1586,15 @@ src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj
  C:/Boost/boost_1_73_0/boost/winapi/config.hpp
  C:/Boost/boost_1_73_0/boost/winapi/crypt.hpp
  C:/Boost/boost_1_73_0/boost/winapi/get_last_error.hpp
+ C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/classParser.h
  C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.cpp
  C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.h
  C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.h
+ C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.h
  C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
+ C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/class.h
  C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
+ C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.obj
  C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.cpp
  C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.h

@@ -8548,6 +8548,10 @@ C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/class.h
 namedElement.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.cpp
+element.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
+
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
 string
 -
@@ -8562,9 +8566,35 @@ boost/uuid/uuid_io.hpp
 boost/lexical_cast.hpp
 -
 
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/model.cpp
+model.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/model.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/model.h
+namespace.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
+string
+-
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.cpp
+namedElement.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
+
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 string
 -
 element.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.cpp
+namespace.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
+string
+-
+iostream
+-
+namedElement.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 

@@ -11,7 +11,7 @@ using namespace std;
 class Element {
     protected:
     boost::uuids::uuid uuid;
-    list<Element> ownedElements;
+    list<Element*> ownedElements;
 
     public:
     Element() {
@@ -20,6 +20,6 @@ class Element {
     virtual ~Element() {};
     boost::uuids::uuid getID();
     void setId(string id);
-    list<Element> getOwnedElements();
+    list<Element*> getOwnedElements();
 };
 #endif

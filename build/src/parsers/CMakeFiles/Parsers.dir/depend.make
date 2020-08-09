@@ -1585,11 +1585,15 @@ src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: C:/Boost/boost_1_73_0/
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: C:/Boost/boost_1_73_0/boost/winapi/config.hpp
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: C:/Boost/boost_1_73_0/boost/winapi/crypt.hpp
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: C:/Boost/boost_1_73_0/boost/winapi/get_last_error.hpp
+src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/parsers/classParser.h
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/parsers/elementParser.cpp
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/parsers/elementParser.h
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/parsers/inputParser.h
+src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/parsers/namedElementParser.h
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/parsers/templateParser.h
+src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/uml/class.h
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/uml/element.h
+src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/uml/namedElement.h
 
 src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.obj: ../src/parsers/inputParser.cpp
 src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.obj: ../src/parsers/inputParser.h

@@ -6,7 +6,6 @@ using namespace std;
 
 class NamedElementParser : public ElementParser {
     protected:
-        Element parseElement(InputParser* inputParser);
         bool parseTag(InputParser* inputParser, Element * el);
 };
 

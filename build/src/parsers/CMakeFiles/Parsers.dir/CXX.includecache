@@ -8540,17 +8540,21 @@ C:/Boost/boost_1_73_0/boost/winapi/get_last_error.hpp
 boost/winapi/basic_types.hpp
 -
 
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/classParser.cpp
-classParser.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/classParser.h
-
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/classParser.h
 namedElementParser.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.h
 ../uml/class.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/class.h
 
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.cpp
+elementParser.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.h
+classParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/classParser.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.h
+list
+-
 templateParser.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
 

@@ -3,14 +3,11 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-    string fileName = "tiny.yml";
-    Model damn;
-    damn.setName("damn");
-    cout << damn.getName() << '\n';
     switch (argc)
     {
         case 1: {
             cout << "Application running!\n";
+            // TODO GUI
         }
         case 2: {
             string fileName = argv[1];

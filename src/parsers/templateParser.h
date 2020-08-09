@@ -9,17 +9,14 @@
 using namespace std;
 
 class TemplateParser {
-
-    private:
-    Element* parseElement(InputParser* inputParser);
-
     protected:
-    string keyword;
     virtual bool parseTag(InputParser* inputParser, Element* el) = 0;
     virtual Element* createElement() = 0; // interface
 
     public:
+    string keyword;
     bool parse(InputParser* inputParser);
     virtual ~TemplateParser() {};
+    Element* parseElement(InputParser* inputParser);
 };
 #endif

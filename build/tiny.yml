@@ -3,4 +3,13 @@
     name: "Example"
     children:
       class:
+        name: "Pace Maker"
+        property:
+            name: "pacemaker frequency"
+      class:
         name: "Dick Cheney"
+        attributes:
+          property: 
+            name: "pace-maker"
+            type: "Pace Maker"
+

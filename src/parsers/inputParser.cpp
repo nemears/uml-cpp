@@ -48,6 +48,7 @@ bool InputParser::readNextLine() {
             }
             currChar = currentLine[i];
         }
+        numTabs = tabCount;
 
         return true;
     }

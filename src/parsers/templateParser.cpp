@@ -29,8 +29,8 @@ Element *TemplateParser::parseElement(InputParser* input) {
         // check if line is valid
         if (input->shouldSkip()) {
             continue;
-        } else if (input->numTabs < numTabs) {
-            // TODO something?
+        } else if (input->numTabs <= numTabs) {
+            cout << "[Info] Finished parsing " << keyword << " " << el->getID() << '\n';
             break;
         // check if value is readable
         } else if (!parseTag(input, el)) {

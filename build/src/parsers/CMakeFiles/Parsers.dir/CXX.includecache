@@ -8540,6 +8540,10 @@ C:/Boost/boost_1_73_0/boost/winapi/get_last_error.hpp
 boost/winapi/basic_types.hpp
 -
 
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.cpp
+elementParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.h
+
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.h
 templateParser.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
@@ -8568,6 +8572,10 @@ C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.h
 ../uml/model.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/model.h
 
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.cpp
+namedElementParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.h
+
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.h
 ../uml/namedElement.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
@@ -8584,6 +8592,10 @@ C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.h
 ../uml/namespace.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
 
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.cpp
+templateParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
+
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
 fstream
 -
@@ -8598,6 +8610,8 @@ iostream
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
 string
+-
+list
 -
 boost/uuid/uuid.hpp
 -

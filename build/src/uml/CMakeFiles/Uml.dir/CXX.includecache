@@ -8540,8 +8540,14 @@ C:/Boost/boost_1_73_0/boost/winapi/get_last_error.hpp
 boost/winapi/basic_types.hpp
 -
 
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.cpp
+element.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
+
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
 string
+-
+list
 -
 boost/uuid/uuid.hpp
 -
@@ -8561,6 +8567,10 @@ namespace.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
 string
 -
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.cpp
+namedElement.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 string

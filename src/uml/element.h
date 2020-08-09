@@ -1,6 +1,7 @@
 #ifndef ELEMENT
 #define ELEMENT
 #include <string>
+#include <list>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -10,6 +11,7 @@ using namespace std;
 class Element {
     protected:
     boost::uuids::uuid uuid;
+    list<Element> ownedElements;
 
     public:
     Element() {
@@ -18,5 +20,6 @@ class Element {
     virtual ~Element() {};
     boost::uuids::uuid getID();
     void setId(string id);
+    list<Element> getOwnedElements();
 };
 #endif

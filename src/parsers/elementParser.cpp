@@ -6,6 +6,10 @@ bool ElementParser::parseTag(InputParser* input, Element* el) {
         el->setId(input->getTag());
 
         return true;
+    } else if (input->firstWord.compare("children")) {
+
+        // TODO   
+
     }
 
     return false;

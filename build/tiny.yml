@@ -4,8 +4,9 @@
     children:
       class:
         name: "Pace Maker"
-        property:
-            name: "pacemaker frequency"
+        attributes:
+          property:
+              name: "pacemaker frequency"
       class:
         name: "Dick Cheney"
         attributes:

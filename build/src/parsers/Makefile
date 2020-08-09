@@ -203,6 +203,33 @@ classParser.cpp.s:
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/classParser.cpp.s
 .PHONY : classParser.cpp.s
 
+classifierParser.obj: classifierParser.cpp.obj
+
+.PHONY : classifierParser.obj
+
+# target to build an object file
+classifierParser.cpp.obj:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj
+.PHONY : classifierParser.cpp.obj
+
+classifierParser.i: classifierParser.cpp.i
+
+.PHONY : classifierParser.i
+
+# target to preprocess a source file
+classifierParser.cpp.i:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.i
+.PHONY : classifierParser.cpp.i
+
+classifierParser.s: classifierParser.cpp.s
+
+.PHONY : classifierParser.s
+
+# target to generate assembly for a file
+classifierParser.cpp.s:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.s
+.PHONY : classifierParser.cpp.s
+
 elementParser.obj: elementParser.cpp.obj
 
 .PHONY : elementParser.obj
@@ -380,6 +407,9 @@ help:
 	@echo ... classParser.obj
 	@echo ... classParser.i
 	@echo ... classParser.s
+	@echo ... classifierParser.obj
+	@echo ... classifierParser.i
+	@echo ... classifierParser.s
 	@echo ... elementParser.obj
 	@echo ... elementParser.i
 	@echo ... elementParser.s

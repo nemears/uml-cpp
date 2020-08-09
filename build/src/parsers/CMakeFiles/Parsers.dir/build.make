@@ -173,6 +173,20 @@ src/parsers/CMakeFiles/Parsers.dir/classParser.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Parsers.dir/classParser.cpp.s"
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\parsers && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\jonme\ALL_PROJECTS\yuml\src\parsers\classParser.cpp -o CMakeFiles\Parsers.dir\classParser.cpp.s
 
+src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj: src/parsers/CMakeFiles/Parsers.dir/flags.make
+src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj: src/parsers/CMakeFiles/Parsers.dir/includes_CXX.rsp
+src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj: ../src/parsers/classifierParser.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj"
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\parsers && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\Parsers.dir\classifierParser.cpp.obj -c C:\Users\jonme\ALL_PROJECTS\yuml\src\parsers\classifierParser.cpp
+
+src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Parsers.dir/classifierParser.cpp.i"
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\parsers && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\jonme\ALL_PROJECTS\yuml\src\parsers\classifierParser.cpp > CMakeFiles\Parsers.dir\classifierParser.cpp.i
+
+src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Parsers.dir/classifierParser.cpp.s"
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\parsers && C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\jonme\ALL_PROJECTS\yuml\src\parsers\classifierParser.cpp -o CMakeFiles\Parsers.dir\classifierParser.cpp.s
+
 # Object files for target Parsers
 Parsers_OBJECTS = \
 "CMakeFiles/Parsers.dir/inputParser.cpp.obj" \
@@ -181,7 +195,8 @@ Parsers_OBJECTS = \
 "CMakeFiles/Parsers.dir/modelParser.cpp.obj" \
 "CMakeFiles/Parsers.dir/elementParser.cpp.obj" \
 "CMakeFiles/Parsers.dir/namedElementParser.cpp.obj" \
-"CMakeFiles/Parsers.dir/classParser.cpp.obj"
+"CMakeFiles/Parsers.dir/classParser.cpp.obj" \
+"CMakeFiles/Parsers.dir/classifierParser.cpp.obj"
 
 # External object files for target Parsers
 Parsers_EXTERNAL_OBJECTS =
@@ -193,9 +208,10 @@ src/parsers/libParsers.a: src/parsers/CMakeFiles/Parsers.dir/modelParser.cpp.obj
 src/parsers/libParsers.a: src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj
 src/parsers/libParsers.a: src/parsers/CMakeFiles/Parsers.dir/namedElementParser.cpp.obj
 src/parsers/libParsers.a: src/parsers/CMakeFiles/Parsers.dir/classParser.cpp.obj
+src/parsers/libParsers.a: src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj
 src/parsers/libParsers.a: src/parsers/CMakeFiles/Parsers.dir/build.make
 src/parsers/libParsers.a: src/parsers/CMakeFiles/Parsers.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX static library libParsers.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX static library libParsers.a"
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\parsers && $(CMAKE_COMMAND) -P CMakeFiles\Parsers.dir\cmake_clean_target.cmake
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build\src\parsers && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\Parsers.dir\link.txt --verbose=$(VERBOSE)
 

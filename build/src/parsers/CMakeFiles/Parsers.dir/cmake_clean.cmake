@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/Parsers.dir/classParser.cpp.obj"
+  "CMakeFiles/Parsers.dir/classifierParser.cpp.obj"
   "CMakeFiles/Parsers.dir/elementParser.cpp.obj"
   "CMakeFiles/Parsers.dir/inputParser.cpp.obj"
   "CMakeFiles/Parsers.dir/modelParser.cpp.obj"

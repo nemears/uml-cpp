@@ -1,10 +1,10 @@
 #ifndef CLASSPARSER
 #define CLASSPARSER
-#include "namedElementParser.h"
+#include "classifierParser.h"
 #include "../uml/class.h"
 using namespace std;
 
-class ClassParser : public NamedElementParser {
+class ClassParser : public ClassifierParser {
     protected:
         Element* createElement();
         bool parseTag(InputParser* input, Element * el);

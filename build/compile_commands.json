@@ -45,6 +45,11 @@
   "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/classParser.cpp"
 },
 {
+  "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Parsers.dir/includes_CXX.rsp -g -o CMakeFiles\\Parsers.dir\\classifierParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\parsers\\classifierParser.cpp",
+  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/classifierParser.cpp"
+},
+{
   "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml",
   "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Uml.dir/includes_CXX.rsp -g -o CMakeFiles\\Uml.dir\\namespace.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\uml\\namespace.cpp",
   "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.cpp"

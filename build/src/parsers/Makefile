@@ -176,6 +176,33 @@ Parsers/fast:
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/build
 .PHONY : Parsers/fast
 
+classParser.obj: classParser.cpp.obj
+
+.PHONY : classParser.obj
+
+# target to build an object file
+classParser.cpp.obj:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/classParser.cpp.obj
+.PHONY : classParser.cpp.obj
+
+classParser.i: classParser.cpp.i
+
+.PHONY : classParser.i
+
+# target to preprocess a source file
+classParser.cpp.i:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/classParser.cpp.i
+.PHONY : classParser.cpp.i
+
+classParser.s: classParser.cpp.s
+
+.PHONY : classParser.s
+
+# target to generate assembly for a file
+classParser.cpp.s:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/classParser.cpp.s
+.PHONY : classParser.cpp.s
+
 elementParser.obj: elementParser.cpp.obj
 
 .PHONY : elementParser.obj
@@ -350,6 +377,9 @@ help:
 	@echo ... rebuild_cache
 	@echo ... test
 	@echo ... Parsers
+	@echo ... classParser.obj
+	@echo ... classParser.i
+	@echo ... classParser.s
 	@echo ... elementParser.obj
 	@echo ... elementParser.i
 	@echo ... elementParser.s

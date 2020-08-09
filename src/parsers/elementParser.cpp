@@ -8,7 +8,7 @@ bool ElementParser::parseTag(InputParser* input, Element* el) {
         return true;
     } else if (input->firstWord.compare("children")) {
 
-        // TODO   
+        // TODO 
 
     }
 

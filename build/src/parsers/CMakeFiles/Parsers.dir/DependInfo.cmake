@@ -4,6 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/classParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/classParser.cpp.obj"
   "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj"
   "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.obj"
   "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/modelParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/modelParser.cpp.obj"

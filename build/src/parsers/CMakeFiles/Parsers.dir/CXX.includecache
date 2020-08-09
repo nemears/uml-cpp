@@ -8540,9 +8540,15 @@ C:/Boost/boost_1_73_0/boost/winapi/get_last_error.hpp
 boost/winapi/basic_types.hpp
 -
 
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.cpp
-elementParser.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/classParser.cpp
+classParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/classParser.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/classParser.h
+namedElementParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.h
+../uml/class.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/class.h
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.h
 templateParser.h
@@ -8560,41 +8566,11 @@ iostream
 algorithm
 -
 
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/modelParser.cpp
-modelParser.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/modelParser.h
-
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/modelParser.h
-templateParser.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
-namespaceParser.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.h
-../uml/model.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/model.h
-
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.cpp
-namedElementParser.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.h
-
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.h
 ../uml/namedElement.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 elementParser.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.h
-
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.cpp
-namespaceParser.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.h
-
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.h
-namedElementParser.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.h
-../uml/namespace.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
-
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.cpp
-templateParser.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
 fstream
@@ -8607,6 +8583,10 @@ C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
 iostream
 -
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/class.h
+namedElement.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
 string
@@ -8622,23 +8602,9 @@ boost/uuid/uuid_io.hpp
 boost/lexical_cast.hpp
 -
 
-C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/model.h
-namespace.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
-string
--
-
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 string
 -
 element.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
-
-C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
-string
--
-iostream
--
-namedElement.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 

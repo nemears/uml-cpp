@@ -3,7 +3,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "src/uml/libUml.a"
+			"path" : "src/parsers/libParsers.a"
 		}
 	],
 	"backtrace" : 1,
@@ -16,7 +16,7 @@
 		],
 		"files" : 
 		[
-			"src/uml/CMakeLists.txt",
+			"src/parsers/CMakeLists.txt",
 			"CMakeLists.txt"
 		],
 		"nodes" : 
@@ -53,10 +53,10 @@
 			"includes" : 
 			[
 				{
-					"path" : "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml"
+					"path" : "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers"
 				},
 				{
-					"path" : "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml"
+					"path" : "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers"
 				},
 				{
 					"backtrace" : 3,
@@ -69,17 +69,20 @@
 				0,
 				1,
 				2,
-				3
+				3,
+				4,
+				5,
+				6
 			]
 		}
 	],
-	"id" : "Uml::@6e3bd9cc5e786ffccd6c",
-	"name" : "Uml",
-	"nameOnDisk" : "libUml.a",
+	"id" : "Parsers::@2954e2d20de220b2eeb2",
+	"name" : "Parsers",
+	"nameOnDisk" : "libParsers.a",
 	"paths" : 
 	{
-		"build" : "src/uml",
-		"source" : "src/uml"
+		"build" : "src/parsers",
+		"source" : "src/parsers"
 	},
 	"sourceGroups" : 
 	[
@@ -90,7 +93,10 @@
 				0,
 				1,
 				2,
-				3
+				3,
+				4,
+				5,
+				6
 			]
 		}
 	],
@@ -99,25 +105,43 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/uml/namespace.cpp",
+			"path" : "src/parsers/inputParser.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/uml/model.cpp",
+			"path" : "src/parsers/templateParser.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/uml/element.cpp",
+			"path" : "src/parsers/namespaceParser.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/uml/namedElement.cpp",
+			"path" : "src/parsers/modelParser.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/parsers/elementParser.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/parsers/namedElementParser.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/parsers/classParser.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

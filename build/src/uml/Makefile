@@ -176,6 +176,33 @@ Uml/fast:
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/build
 .PHONY : Uml/fast
 
+class.obj: class.cpp.obj
+
+.PHONY : class.obj
+
+# target to build an object file
+class.cpp.obj:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/class.cpp.obj
+.PHONY : class.cpp.obj
+
+class.i: class.cpp.i
+
+.PHONY : class.i
+
+# target to preprocess a source file
+class.cpp.i:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/class.cpp.i
+.PHONY : class.cpp.i
+
+class.s: class.cpp.s
+
+.PHONY : class.s
+
+# target to generate assembly for a file
+class.cpp.s:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/class.cpp.s
+.PHONY : class.cpp.s
+
 element.obj: element.cpp.obj
 
 .PHONY : element.obj
@@ -296,6 +323,9 @@ help:
 	@echo ... rebuild_cache
 	@echo ... test
 	@echo ... Uml
+	@echo ... class.obj
+	@echo ... class.i
+	@echo ... class.s
 	@echo ... element.obj
 	@echo ... element.i
 	@echo ... element.s

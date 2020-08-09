@@ -203,6 +203,33 @@ class.cpp.s:
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/class.cpp.s
 .PHONY : class.cpp.s
 
+classifier.obj: classifier.cpp.obj
+
+.PHONY : classifier.obj
+
+# target to build an object file
+classifier.cpp.obj:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/classifier.cpp.obj
+.PHONY : classifier.cpp.obj
+
+classifier.i: classifier.cpp.i
+
+.PHONY : classifier.i
+
+# target to preprocess a source file
+classifier.cpp.i:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/classifier.cpp.i
+.PHONY : classifier.cpp.i
+
+classifier.s: classifier.cpp.s
+
+.PHONY : classifier.s
+
+# target to generate assembly for a file
+classifier.cpp.s:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/classifier.cpp.s
+.PHONY : classifier.cpp.s
+
 element.obj: element.cpp.obj
 
 .PHONY : element.obj
@@ -326,6 +353,9 @@ help:
 	@echo ... class.obj
 	@echo ... class.i
 	@echo ... class.s
+	@echo ... classifier.obj
+	@echo ... classifier.i
+	@echo ... classifier.s
 	@echo ... element.obj
 	@echo ... element.i
 	@echo ... element.s

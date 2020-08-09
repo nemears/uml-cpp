@@ -79,15 +79,15 @@
 	[
 		{
 			"backtrace" : 2,
-			"id" : "Logger::@145eef247bfb46b6828c"
-		},
-		{
-			"backtrace" : 2,
 			"id" : "Parsers::@2954e2d20de220b2eeb2"
 		},
 		{
 			"backtrace" : 2,
 			"id" : "Uml::@6e3bd9cc5e786ffccd6c"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "Logger::@145eef247bfb46b6828c"
 		}
 	],
 	"id" : "yuml::@6890427a1f51a3e7e1df",

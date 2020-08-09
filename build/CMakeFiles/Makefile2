@@ -340,17 +340,17 @@ CMakeFiles/NightlyStart.dir/clean:
 # Target rules for target CMakeFiles/yuml.dir
 
 # All Build rule for target.
-CMakeFiles/yuml.dir/all: src/CMakeFiles/Logger.dir/all
 CMakeFiles/yuml.dir/all: src/parsers/CMakeFiles/Parsers.dir/all
 CMakeFiles/yuml.dir/all: src/uml/CMakeFiles/Uml.dir/all
+CMakeFiles/yuml.dir/all: src/CMakeFiles/Logger.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\yuml.dir\build.make CMakeFiles/yuml.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\yuml.dir\build.make CMakeFiles/yuml.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=17,18 "Built target yuml"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=18,19 "Built target yuml"
 .PHONY : CMakeFiles/yuml.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/yuml.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles 18
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles 19
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/yuml.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles 0
 .PHONY : CMakeFiles/yuml.dir/rule
@@ -1020,12 +1020,12 @@ src/parsers/CMakeFiles/Parsers.dir/clean:
 src/uml/CMakeFiles/Uml.dir/all:
 	$(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=11,12,13,14,15,16 "Built target Uml"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles --progress-num=11,12,13,14,15,16,17 "Built target Uml"
 .PHONY : src/uml/CMakeFiles/Uml.dir/all
 
 # Build rule for subdir invocation for target.
 src/uml/CMakeFiles/Uml.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles 7
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/uml/CMakeFiles/Uml.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jonme\ALL_PROJECTS\yuml\build\CMakeFiles 0
 .PHONY : src/uml/CMakeFiles/Uml.dir/rule

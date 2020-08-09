@@ -796,8 +796,10 @@ src/parsers/CMakeFiles/Parsers.dir/classParser.cpp.obj
  C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.h
  C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
  C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/class.h
+ C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/classifier.h
  C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
  C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
+ C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/property.h
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj
  C:/Boost/boost_1_73_0/boost/array.hpp
  C:/Boost/boost_1_73_0/boost/assert.hpp
@@ -1593,8 +1595,10 @@ src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj
  C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.h
  C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
  C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/class.h
+ C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/classifier.h
  C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
  C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
+ C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/property.h
 src/parsers/CMakeFiles/Parsers.dir/inputParser.cpp.obj
  C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.cpp
  C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/inputParser.h

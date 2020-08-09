@@ -5,7 +5,7 @@
 #include "property.h"
 using namespace std;
 
-class Classifie: public NamedElement {
+class Classifier: public NamedElement {
     protected:
         list<Property*> ownedAttributes;
     public:

@@ -790,8 +790,10 @@ src/uml/CMakeFiles/Uml.dir/class.cpp.obj: C:/Boost/boost_1_73_0/boost/winapi/cry
 src/uml/CMakeFiles/Uml.dir/class.cpp.obj: C:/Boost/boost_1_73_0/boost/winapi/get_last_error.hpp
 src/uml/CMakeFiles/Uml.dir/class.cpp.obj: ../src/uml/class.cpp
 src/uml/CMakeFiles/Uml.dir/class.cpp.obj: ../src/uml/class.h
+src/uml/CMakeFiles/Uml.dir/class.cpp.obj: ../src/uml/classifier.h
 src/uml/CMakeFiles/Uml.dir/class.cpp.obj: ../src/uml/element.h
 src/uml/CMakeFiles/Uml.dir/class.cpp.obj: ../src/uml/namedElement.h
+src/uml/CMakeFiles/Uml.dir/class.cpp.obj: ../src/uml/property.h
 
 src/uml/CMakeFiles/Uml.dir/classifier.cpp.obj: C:/Boost/boost_1_73_0/boost/array.hpp
 src/uml/CMakeFiles/Uml.dir/classifier.cpp.obj: C:/Boost/boost_1_73_0/boost/assert.hpp

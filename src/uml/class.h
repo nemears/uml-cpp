@@ -1,9 +1,9 @@
 #ifndef CLASS
 #define CLASS
-#include "namedElement.h"
+#include "classifier.h"
 using namespace std;
 
-class Class : public NamedElement {
+class Class : public Classifier {
 
 };
 

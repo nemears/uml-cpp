@@ -1,5 +1,5 @@
 # yuml
-UML based mMBSE application based on yaml based uml format
+Lightweight UML based MBSE application built on yaml syntax UML files
 
 ## Currently Implemented
 

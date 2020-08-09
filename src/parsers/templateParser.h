@@ -1,8 +1,6 @@
 #ifndef TEMPLATEPARSER
 #define TEMPLATEPARSER
 
-#define NULL Element
-
 #include <fstream>
 #include <string>
 #include "inputParser.h"

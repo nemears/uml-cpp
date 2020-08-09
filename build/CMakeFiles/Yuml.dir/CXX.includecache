@@ -8578,9 +8578,15 @@ C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.h
 ../uml/model.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/model.h
 
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.h
+../uml/namedElement.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 elementParser.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.h
+namedElementParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.h
 ../uml/namespace.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
 
@@ -8614,11 +8620,17 @@ C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
 string
 -
 
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
+string
+-
+element.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
+
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
 string
 -
 iostream
 -
-element.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
+namedElement.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 

@@ -1,10 +1,10 @@
 #ifndef NAMESPACEPARSER
 #define NAMESPACEPARSER
 
-#include "elementParser.h"
+#include "namedElementParser.h"
 #include "../uml/namespace.h"
 
-class NamespaceParser : public ElementParser {
+class NamespaceParser : public NamedElementParser {
     protected:
     Element parseElement(InputParser* inputParser);
     bool parseTag(InputParser* inputParser, Element * el);

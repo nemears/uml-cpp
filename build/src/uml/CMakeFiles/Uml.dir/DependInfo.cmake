@@ -6,6 +6,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml/CMakeFiles/Uml.dir/element.cpp.obj"
   "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/model.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml/CMakeFiles/Uml.dir/model.cpp.obj"
+  "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml/CMakeFiles/Uml.dir/namedElement.cpp.obj"
   "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml/CMakeFiles/Uml.dir/namespace.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

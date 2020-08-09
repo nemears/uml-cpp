@@ -35,6 +35,11 @@
   "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.cpp"
 },
 {
+  "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Parsers.dir/includes_CXX.rsp -g -o CMakeFiles\\Parsers.dir\\namedElementParser.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\parsers\\namedElementParser.cpp",
+  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.cpp"
+},
+{
   "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml",
   "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Uml.dir/includes_CXX.rsp -g -o CMakeFiles\\Uml.dir\\namespace.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\uml\\namespace.cpp",
   "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.cpp"
@@ -48,5 +53,10 @@
   "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml",
   "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Uml.dir/includes_CXX.rsp -g -o CMakeFiles\\Uml.dir\\element.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\uml\\element.cpp",
   "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.cpp"
+},
+{
+  "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Uml.dir/includes_CXX.rsp -g -o CMakeFiles\\Uml.dir\\namedElement.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\uml\\namedElement.cpp",
+  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.cpp"
 }
 ]

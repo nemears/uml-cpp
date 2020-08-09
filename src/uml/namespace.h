@@ -1,18 +1,12 @@
 #ifndef NAMESPACE
 #define NAMESPACE
-
 #include <string>
 #include <iostream>
-#include "element.h"
+#include "namedElement.h"
 
 using namespace std;
 
-class Namespace : public Element {
-    private:
-
-    public:
-        string name;
-        string getName();
-        void setName(const string &name);
+class Namespace : public NamedElement {
+    
 };
 #endif

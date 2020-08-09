@@ -230,6 +230,33 @@ model.cpp.s:
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/model.cpp.s
 .PHONY : model.cpp.s
 
+namedElement.obj: namedElement.cpp.obj
+
+.PHONY : namedElement.obj
+
+# target to build an object file
+namedElement.cpp.obj:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/namedElement.cpp.obj
+.PHONY : namedElement.cpp.obj
+
+namedElement.i: namedElement.cpp.i
+
+.PHONY : namedElement.i
+
+# target to preprocess a source file
+namedElement.cpp.i:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/namedElement.cpp.i
+.PHONY : namedElement.cpp.i
+
+namedElement.s: namedElement.cpp.s
+
+.PHONY : namedElement.s
+
+# target to generate assembly for a file
+namedElement.cpp.s:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/namedElement.cpp.s
+.PHONY : namedElement.cpp.s
+
 namespace.obj: namespace.cpp.obj
 
 .PHONY : namespace.obj
@@ -275,6 +302,9 @@ help:
 	@echo ... model.obj
 	@echo ... model.i
 	@echo ... model.s
+	@echo ... namedElement.obj
+	@echo ... namedElement.i
+	@echo ... namedElement.s
 	@echo ... namespace.obj
 	@echo ... namespace.i
 	@echo ... namespace.s

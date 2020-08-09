@@ -8540,14 +8540,6 @@ C:/Boost/boost_1_73_0/boost/winapi/get_last_error.hpp
 boost/winapi/basic_types.hpp
 -
 
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/classifierParser.cpp
-classifierParser.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/classifierParser.h
-
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/classifierParser.h
-namespaceParser.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.h
-
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.h
 list
 -
@@ -8572,11 +8564,15 @@ C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 elementParser.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/elementParser.h
 
-C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/propertyParser.cpp
+propertyParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/propertyParser.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/propertyParser.h
 namedElementParser.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.h
-../uml/namespace.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
+../uml/property.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/property.h
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.h
 fstream
@@ -8610,11 +8606,7 @@ string
 element.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
 
-C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
-string
--
-iostream
--
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/property.h
 namedElement.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 

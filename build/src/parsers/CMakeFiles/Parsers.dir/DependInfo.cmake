@@ -11,6 +11,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/modelParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/modelParser.cpp.obj"
   "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/namedElementParser.cpp.obj"
   "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namespaceParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/namespaceParser.cpp.obj"
+  "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/propertyParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/propertyParser.cpp.obj"
   "C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/templateParser.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/parsers/CMakeFiles/Parsers.dir/templateParser.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

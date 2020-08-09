@@ -5,5 +5,5 @@ Element* ClassParser::createElement() {
 }
 
 bool ClassParser::parseTag(InputParser* input, Element* el) {
-    return NamedElementParser::parseTag(input,el);
+    return ClassifierParser::parseTag(input,el);
 }

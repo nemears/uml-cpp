@@ -795,6 +795,7 @@ src/parsers/CMakeFiles/Parsers.dir/classParser.cpp.obj: ../src/parsers/elementPa
 src/parsers/CMakeFiles/Parsers.dir/classParser.cpp.obj: ../src/parsers/inputParser.h
 src/parsers/CMakeFiles/Parsers.dir/classParser.cpp.obj: ../src/parsers/namedElementParser.h
 src/parsers/CMakeFiles/Parsers.dir/classParser.cpp.obj: ../src/parsers/namespaceParser.h
+src/parsers/CMakeFiles/Parsers.dir/classParser.cpp.obj: ../src/parsers/propertyParser.h
 src/parsers/CMakeFiles/Parsers.dir/classParser.cpp.obj: ../src/parsers/templateParser.h
 src/parsers/CMakeFiles/Parsers.dir/classParser.cpp.obj: ../src/uml/class.h
 src/parsers/CMakeFiles/Parsers.dir/classParser.cpp.obj: ../src/uml/classifier.h
@@ -1596,10 +1597,13 @@ src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj: ../src/parsers/elem
 src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj: ../src/parsers/inputParser.h
 src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj: ../src/parsers/namedElementParser.h
 src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj: ../src/parsers/namespaceParser.h
+src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj: ../src/parsers/propertyParser.h
 src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj: ../src/parsers/templateParser.h
+src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj: ../src/uml/classifier.h
 src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj: ../src/uml/element.h
 src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj: ../src/uml/namedElement.h
 src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj: ../src/uml/namespace.h
+src/parsers/CMakeFiles/Parsers.dir/classifierParser.cpp.obj: ../src/uml/property.h
 
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: C:/Boost/boost_1_73_0/boost/array.hpp
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: C:/Boost/boost_1_73_0/boost/assert.hpp
@@ -2395,6 +2399,7 @@ src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/parsers/element
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/parsers/inputParser.h
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/parsers/namedElementParser.h
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/parsers/namespaceParser.h
+src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/parsers/propertyParser.h
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/parsers/templateParser.h
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/uml/class.h
 src/parsers/CMakeFiles/Parsers.dir/elementParser.cpp.obj: ../src/uml/classifier.h

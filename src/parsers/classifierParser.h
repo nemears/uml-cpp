@@ -1,6 +1,8 @@
 #ifndef CLASSIFIERPARSER
 #define CLASSIFIERPARSER
 #include "namespaceParser.h"
+#include "propertyParser.h"
+#include "../uml/classifier.h"
 using namespace std;
 
 class ClassifierParser: public NamespaceParser {

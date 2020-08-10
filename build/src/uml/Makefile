@@ -392,6 +392,33 @@ type.cpp.s:
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/type.cpp.s
 .PHONY : type.cpp.s
 
+typedElement.obj: typedElement.cpp.obj
+
+.PHONY : typedElement.obj
+
+# target to build an object file
+typedElement.cpp.obj:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/typedElement.cpp.obj
+.PHONY : typedElement.cpp.obj
+
+typedElement.i: typedElement.cpp.i
+
+.PHONY : typedElement.i
+
+# target to preprocess a source file
+typedElement.cpp.i:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/typedElement.cpp.i
+.PHONY : typedElement.cpp.i
+
+typedElement.s: typedElement.cpp.s
+
+.PHONY : typedElement.s
+
+# target to generate assembly for a file
+typedElement.cpp.s:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\uml\CMakeFiles\Uml.dir\build.make src/uml/CMakeFiles/Uml.dir/typedElement.cpp.s
+.PHONY : typedElement.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -428,6 +455,9 @@ help:
 	@echo ... type.obj
 	@echo ... type.i
 	@echo ... type.s
+	@echo ... typedElement.obj
+	@echo ... typedElement.i
+	@echo ... typedElement.s
 .PHONY : help
 
 

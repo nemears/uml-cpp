@@ -8598,6 +8598,10 @@ C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.h
 ../uml/namespace.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namespace.h
 
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/propertyParser.cpp
+propertyParser.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/propertyParser.h
+
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/propertyParser.h
 namedElementParser.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/parsers/namedElementParser.h
@@ -8657,10 +8661,16 @@ namedElement.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/property.h
-namedElement.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
+typedElement.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/typedElement.h
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/type.h
 namedElement.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/typedElement.h
+namedElement.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
+type.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/type.h
 

@@ -93,5 +93,10 @@
   "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml",
   "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Uml.dir/includes_CXX.rsp -g -o CMakeFiles\\Uml.dir\\type.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\uml\\type.cpp",
   "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/type.cpp"
+},
+{
+  "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Uml.dir/includes_CXX.rsp -g -o CMakeFiles\\Uml.dir\\typedElement.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\uml\\typedElement.cpp",
+  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/typedElement.cpp"
 }
 ]

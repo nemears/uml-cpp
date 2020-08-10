@@ -1,9 +1,9 @@
 #ifndef PROPERTY
 #define PROPERTY
-#include "namedElement.h"
+#include "typedElement.h"
 using namespace std;
 
-class Property: public NamedElement {
+class Property: public TypedElement {
 
 };
 #endif

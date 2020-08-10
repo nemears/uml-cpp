@@ -8548,11 +8548,15 @@ C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/class.h
 classifier.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/classifier.h
 
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/classifier.cpp
+classifier.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/classifier.h
+
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/classifier.h
 list
 -
-namedElement.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
+type.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/type.h
 property.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/property.h
 
@@ -8577,6 +8581,14 @@ element.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/element.h
 
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/property.h
+namedElement.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/type.cpp
+type.h
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/type.h
+
+C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/type.h
 namedElement.h
 C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/namedElement.h
 

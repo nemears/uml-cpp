@@ -88,5 +88,10 @@
   "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml",
   "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Uml.dir/includes_CXX.rsp -g -o CMakeFiles\\Uml.dir\\property.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\uml\\property.cpp",
   "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/property.cpp"
+},
+{
+  "directory": "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/uml",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Uml.dir/includes_CXX.rsp -g -o CMakeFiles\\Uml.dir\\type.cpp.obj -c C:\\Users\\jonme\\ALL_PROJECTS\\yuml\\src\\uml\\type.cpp",
+  "file": "C:/Users/jonme/ALL_PROJECTS/yuml/src/uml/type.cpp"
 }
 ]

@@ -12,3 +12,4 @@ Have some representation of Element, NamedElement, Class, Namespace and Model
 ## TODO
 There is a lot to do right now this is just the next couple items I plan on looking into:
 Types (Uml primitive types), Relationships, Qt front end with diagrams (after prior two)
+    

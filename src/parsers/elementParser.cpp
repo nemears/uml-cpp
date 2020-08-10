@@ -9,18 +9,23 @@ bool ElementParser::parseTag(InputParser* input, Element* el) {
         return true;
     } else if (input->firstWord.compare("children") == 0) {
         int numTabs = input->numTabs;
-        if (input->readNextLine()) {
+        while(input->readNextLine()) {
 
             // parse within children scope
-            while (input->numTabs >= numTabs) {
+            if (input->numTabs >= numTabs) {
                 if (input->firstWord.compare("class") == 0) {
                     ClassParser classParser;
                     Element* parsedEl = classParser.parseElement(input);
                     el->getOwnedElements().push_back(parsedEl);
+                    if (input->nextLineTabs <= numTabs) {
+                        break;
+                    }
                 }
+            } else {
+                break;
             }
-            return true;
         }
+        return true;
     }
 
     return false;

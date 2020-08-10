@@ -12,14 +12,15 @@ class InputParser {
     private:
         fstream file;
         string fileName;
-        char* tokenizedLine;
 
     public:
         string currentLine;
+        string nextLine;
         string currTag;
         string firstWord;
         int lineNumber;
         int numTabs;
+        int nextLineTabs;
         InputParser(string f) {
             fileName = f;
             file.open(f);

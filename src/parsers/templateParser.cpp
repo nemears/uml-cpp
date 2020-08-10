@@ -33,11 +33,15 @@ Element *TemplateParser::parseElement(InputParser* input) {
             cout << "[Info] Finished parsing " << keyword << " " << el->getID() << '\n';
             break;
         // check if value is readable
-        } else if (!parseTag(input, el)) {
+        } else if (parseTag(input, el)) {
+            if (input->nextLineTabs <= numTabs) {
+                break;
+            }
+        } else {
             // TODO log error
             cerr << "[Error] Could not recognize tag " << input->firstWord << " line " << input->lineNumber << "\n";
         }
     }
-    cout << "[Info] created " << keyword << " " << el->getID() << '\n' << '\n';
+    cout << "\n[Info] created " << keyword << " " << el->getID() << '\n';
     return el;
 }

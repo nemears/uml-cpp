@@ -5,7 +5,15 @@ bool InputParser::readNextLine() {
     currentLine.clear();
     firstWord.clear();
 
-    if (getline(file,currentLine)) {
+    if (lineNumber == 0) {
+        if (!getline(file,currentLine)) {
+            return false;
+        }
+    } else {
+        currentLine = nextLine;
+    }
+
+    if (getline(file,nextLine)) {
 
         lineNumber++;
 
@@ -36,7 +44,8 @@ bool InputParser::readNextLine() {
         cout << ", first word: <" << firstWord << ">\n";
 
         //count tabs
-        currChar= currentLine[0];
+        numTabs = nextLineTabs;
+        currChar= nextLine[0];
         int tabCount = 0;
         i = 0;
         while (currChar == ' ' || currChar == '\t') {
@@ -46,9 +55,9 @@ bool InputParser::readNextLine() {
             } else {
                 tabCount += 2; // TODO check
             }
-            currChar = currentLine[i];
+            currChar = nextLine[i];
         }
-        numTabs = tabCount;
+        nextLineTabs = tabCount;
 
         return true;
     }

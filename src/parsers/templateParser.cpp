@@ -29,17 +29,18 @@ Element *TemplateParser::parseElement(InputParser* input) {
         // check if line is valid
         if (input->shouldSkip()) {
             continue;
-        } else if (input->numTabs <= numTabs) {
-            cout << "[Info] Finished parsing " << keyword << " " << el->getID() << '\n';
-            break;
+        //} else if (input->numTabs <= numTabs) {
+            // cout << "[Info] Finished parsing " << keyword << " " << el->getID() << '\n';
+            // break;
         // check if value is readable
         } else if (parseTag(input, el)) {
-            if (input->nextLineTabs <= numTabs) {
-                break;
-            }
+            
         } else {
             // TODO log error
             cerr << "[Error] Could not recognize tag " << input->firstWord << " line " << input->lineNumber << "\n";
+        }
+        if (input->nextLineTabs <= numTabs) {
+            break;
         }
     }
     cout << "\n[Info] created " << keyword << " " << el->getID() << '\n';

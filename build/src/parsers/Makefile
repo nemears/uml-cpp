@@ -419,6 +419,33 @@ templateParser.cpp.s:
 	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/templateParser.cpp.s
 .PHONY : templateParser.cpp.s
 
+typedElementParser.obj: typedElementParser.cpp.obj
+
+.PHONY : typedElementParser.obj
+
+# target to build an object file
+typedElementParser.cpp.obj:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/typedElementParser.cpp.obj
+.PHONY : typedElementParser.cpp.obj
+
+typedElementParser.i: typedElementParser.cpp.i
+
+.PHONY : typedElementParser.i
+
+# target to preprocess a source file
+typedElementParser.cpp.i:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/typedElementParser.cpp.i
+.PHONY : typedElementParser.cpp.i
+
+typedElementParser.s: typedElementParser.cpp.s
+
+.PHONY : typedElementParser.s
+
+# target to generate assembly for a file
+typedElementParser.cpp.s:
+	cd /d C:\Users\jonme\ALL_PROJECTS\yuml\build && $(MAKE) $(MAKESILENT) -f src\parsers\CMakeFiles\Parsers.dir\build.make src/parsers/CMakeFiles/Parsers.dir/typedElementParser.cpp.s
+.PHONY : typedElementParser.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -458,6 +485,9 @@ help:
 	@echo ... templateParser.obj
 	@echo ... templateParser.i
 	@echo ... templateParser.s
+	@echo ... typedElementParser.obj
+	@echo ... typedElementParser.i
+	@echo ... typedElementParser.s
 .PHONY : help
 
 

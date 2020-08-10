@@ -11,11 +11,11 @@
             property:
               name: "prop 1"
               id: "16c345b4-5ae2-41ca-a0e7-a9c386ac941d"
-              classifier: "d0f0c583-c72d-4fb8-b416-44d9dc11318e" #This is supposed to be referencing a uml primitive data type
+              type: "d0f0c583-c72d-4fb8-b416-44d9dc11318e" #This is supposed to be referencing a uml primitive data type
             property:
               name: "prop 2"
               id: "190d1cb9-13dc-44e6-a064-126891ae0033"
-              classifier: "feca8589-0de8-40aa-9e38-24e5c6a1f2c6"
+              type: "feca8589-0de8-40aa-9e38-24e5c6a1f2c6"
           operations:
             operation:
               name: "main"
@@ -28,7 +28,7 @@
                 parameter:
                   name: "arg"
                   id: "a7e52bb8-5bad-44d5-a945-3f22a13ecaf4"
-                  classifier: "d0f0c583-c72d-4fb8-b416-44d9dc11318e"
+                  type: "d0f0c583-c72d-4fb8-b416-44d9dc11318e"
                 opaqueBehavior:
                   name: main
                   id: "c63d585c-1117-4967-96e2-bcd3e3b52188"

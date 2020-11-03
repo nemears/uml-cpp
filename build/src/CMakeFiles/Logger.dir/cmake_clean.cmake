@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Logger.dir/logger.cpp.obj"
+  "CMakeFiles/Logger.dir/logger.cpp.o"
   "libLogger.a"
   "libLogger.pdb"
 )

@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/jonme/ALL_PROJECTS/yuml/src/logger.cpp
+/home/stinky/Projects/yuml/src/logger.cpp
 logger.h
-C:/Users/jonme/ALL_PROJECTS/yuml/src/logger.h
+/home/stinky/Projects/yuml/src/logger.h
 
-C:/Users/jonme/ALL_PROJECTS/yuml/src/logger.h
+/home/stinky/Projects/yuml/src/logger.h
 string
 -
 iostream

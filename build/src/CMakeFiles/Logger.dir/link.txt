@@ -1,2 +1,2 @@
-C:\MinGW\bin\ar.exe qc libLogger.a CMakeFiles/Logger.dir/logger.cpp.obj
-C:\MinGW\bin\ranlib.exe libLogger.a
+/usr/bin/ar qc libLogger.a  CMakeFiles/Logger.dir/logger.cpp.o
+/usr/bin/ranlib libLogger.a

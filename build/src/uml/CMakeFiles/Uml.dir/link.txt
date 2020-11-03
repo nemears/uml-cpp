@@ -1,2 +1,2 @@
-C:\MinGW\bin\ar.exe qc libUml.a CMakeFiles/Uml.dir/namespace.cpp.obj CMakeFiles/Uml.dir/model.cpp.obj CMakeFiles/Uml.dir/element.cpp.obj CMakeFiles/Uml.dir/namedElement.cpp.obj CMakeFiles/Uml.dir/class.cpp.obj CMakeFiles/Uml.dir/classifier.cpp.obj CMakeFiles/Uml.dir/property.cpp.obj CMakeFiles/Uml.dir/type.cpp.obj CMakeFiles/Uml.dir/typedElement.cpp.obj
-C:\MinGW\bin\ranlib.exe libUml.a
+/usr/bin/ar qc libUml.a  CMakeFiles/Uml.dir/namespace.cpp.o CMakeFiles/Uml.dir/model.cpp.o CMakeFiles/Uml.dir/element.cpp.o CMakeFiles/Uml.dir/namedElement.cpp.o CMakeFiles/Uml.dir/class.cpp.o CMakeFiles/Uml.dir/classifier.cpp.o CMakeFiles/Uml.dir/property.cpp.o CMakeFiles/Uml.dir/type.cpp.o CMakeFiles/Uml.dir/typedElement.cpp.o
+/usr/bin/ranlib libUml.a

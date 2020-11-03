@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "C:/Users/jonme/ALL_PROJECTS/yuml/src/logger.cpp" "C:/Users/jonme/ALL_PROJECTS/yuml/build/src/CMakeFiles/Logger.dir/logger.cpp.obj"
+  "/home/stinky/Projects/yuml/src/logger.cpp" "/home/stinky/Projects/yuml/build/src/CMakeFiles/Logger.dir/logger.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -12,7 +12,6 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "src"
   "../src"
-  "C:/Boost/boost_1_73_0"
   )
 
 # Targets to which this target links.

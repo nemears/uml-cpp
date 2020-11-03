@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/stinky/Projects/yuml/build/libs/cmake_install.cmake")
+  include("/home/stinky/Projects/yuml/build/libs/google_test/google_test_source/googletest/cmake_install.cmake")
   include("/home/stinky/Projects/yuml/build/src/cmake_install.cmake")
 
 endif()

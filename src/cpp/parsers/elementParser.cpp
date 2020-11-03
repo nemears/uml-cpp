@@ -4,7 +4,7 @@
 bool ElementParser::parseTag(InputParser* input, Element* el) {
     if (input->firstWord.compare("id") == 0) {
 
-        el->setId(input->getTag());
+        el->setID(input->getTag());
 
         return true;
     } else if (input->firstWord.compare("children") == 0) {

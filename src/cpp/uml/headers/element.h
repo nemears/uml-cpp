@@ -19,7 +19,7 @@ class Element {
         };
         virtual ~Element() {};
         boost::uuids::uuid getID();
-        void setId(string id);
+        void setID(string id);
         list<Element*> getOwnedElements();
 };
 #endif

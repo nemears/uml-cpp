@@ -1,13 +1,16 @@
 #include "gtest/gtest.h"
-#include "../../../../cpp/uml/element.h"
+#include "../../../cpp/uml/headers/element.h"
 
-class ElementTest : public ::testing:Test {
+class ElementTest : public ::testing::Test {
+    public:
+    Element el;
+    boost::uuids::uuid uuid;
     protected:
   // You can remove any or all of the following functions if their bodies would
   // be empty.
 
   ElementTest() {
-     // You can do set-up work for each test here.
+     
   }
 
   ~ElementTest() override {
@@ -18,13 +21,12 @@ class ElementTest : public ::testing:Test {
   // and cleaning up each test, you can define the following methods:
 
   void SetUp() override {
-     // Code here will be called immediately after the constructor (right
-     // before each test).
+     uuid = boost::uuids::random_generator()();
+     el.setID(boost::lexical_cast<std::string>(uuid));
   }
 
   void TearDown() override {
-     // Code here will be called immediately after each test (right
-     // before the destructor).
+   
   }
 
   // Class members declared here can be used by all tests in the test suite
@@ -32,9 +34,11 @@ class ElementTest : public ::testing:Test {
 };
 
 TEST_F(ElementTest, OverrideID_Test) {
-    Element el;
-    boost::uuids::uuid uuid = boost::uuids::random_generator()();
-    el.setId(uuid);
     EXPECT_EQ(el.getID(), uuid);
+}
+
+int main(int argc, char **argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }
 

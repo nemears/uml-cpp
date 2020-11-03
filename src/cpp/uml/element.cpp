@@ -4,7 +4,7 @@ boost::uuids::uuid Element::getID(){
     return uuid;
 }
 
-void Element::setId(string id) {
+void Element::setID(string id) {
     uuid = boost::lexical_cast<boost::uuids::uuid>(id);
 }
 

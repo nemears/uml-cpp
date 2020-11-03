@@ -95,16 +95,19 @@ libs/clean: libs/CMakeFiles/gtest.dir/clean
 
 # Recursive "all" directory target.
 src/all: src/cpp/all
+src/all: src/test/cpp/all
 
 .PHONY : src/all
 
 # Recursive "preinstall" directory target.
 src/preinstall: src/cpp/preinstall
+src/preinstall: src/test/cpp/preinstall
 
 .PHONY : src/preinstall
 
 # Recursive "clean" directory target.
 src/clean: src/cpp/clean
+src/clean: src/test/cpp/clean
 
 .PHONY : src/clean
 
@@ -168,6 +171,42 @@ src/cpp/uml/clean: src/cpp/uml/CMakeFiles/Uml.dir/clean
 .PHONY : src/cpp/uml/clean
 
 #=============================================================================
+# Directory level rules for directory src/test/cpp
+
+# Recursive "all" directory target.
+src/test/cpp/all: src/test/cpp/uml/all
+
+.PHONY : src/test/cpp/all
+
+# Recursive "preinstall" directory target.
+src/test/cpp/preinstall: src/test/cpp/uml/preinstall
+
+.PHONY : src/test/cpp/preinstall
+
+# Recursive "clean" directory target.
+src/test/cpp/clean: src/test/cpp/uml/clean
+
+.PHONY : src/test/cpp/clean
+
+#=============================================================================
+# Directory level rules for directory src/test/cpp/uml
+
+# Recursive "all" directory target.
+src/test/cpp/uml/all: src/test/cpp/uml/CMakeFiles/umltest.dir/all
+
+.PHONY : src/test/cpp/uml/all
+
+# Recursive "preinstall" directory target.
+src/test/cpp/uml/preinstall:
+
+.PHONY : src/test/cpp/uml/preinstall
+
+# Recursive "clean" directory target.
+src/test/cpp/uml/clean: src/test/cpp/uml/CMakeFiles/umltest.dir/clean
+
+.PHONY : src/test/cpp/uml/clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/yuml.dir
 
 # All Build rule for target.
@@ -177,7 +216,7 @@ CMakeFiles/yuml.dir/all: src/cpp/parsers/CMakeFiles/Parsers.dir/all
 CMakeFiles/yuml.dir/all: src/cpp/uml/CMakeFiles/Uml.dir/all
 	$(MAKE) -f CMakeFiles/yuml.dir/build.make CMakeFiles/yuml.dir/depend
 	$(MAKE) -f CMakeFiles/yuml.dir/build.make CMakeFiles/yuml.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/stinky/Projects/yuml/build/CMakeFiles --progress-num=25,26 "Built target yuml"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/stinky/Projects/yuml/build/CMakeFiles --progress-num=27,28 "Built target yuml"
 .PHONY : CMakeFiles/yuml.dir/all
 
 # Build rule for subdir invocation for target.
@@ -304,6 +343,33 @@ Uml: src/cpp/uml/CMakeFiles/Uml.dir/rule
 src/cpp/uml/CMakeFiles/Uml.dir/clean:
 	$(MAKE) -f src/cpp/uml/CMakeFiles/Uml.dir/build.make src/cpp/uml/CMakeFiles/Uml.dir/clean
 .PHONY : src/cpp/uml/CMakeFiles/Uml.dir/clean
+
+#=============================================================================
+# Target rules for target src/test/cpp/uml/CMakeFiles/umltest.dir
+
+# All Build rule for target.
+src/test/cpp/uml/CMakeFiles/umltest.dir/all: libs/CMakeFiles/gtest.dir/all
+	$(MAKE) -f src/test/cpp/uml/CMakeFiles/umltest.dir/build.make src/test/cpp/uml/CMakeFiles/umltest.dir/depend
+	$(MAKE) -f src/test/cpp/uml/CMakeFiles/umltest.dir/build.make src/test/cpp/uml/CMakeFiles/umltest.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/stinky/Projects/yuml/build/CMakeFiles --progress-num=25,26 "Built target umltest"
+.PHONY : src/test/cpp/uml/CMakeFiles/umltest.dir/all
+
+# Build rule for subdir invocation for target.
+src/test/cpp/uml/CMakeFiles/umltest.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/stinky/Projects/yuml/build/CMakeFiles 3
+	$(MAKE) -f CMakeFiles/Makefile2 src/test/cpp/uml/CMakeFiles/umltest.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/stinky/Projects/yuml/build/CMakeFiles 0
+.PHONY : src/test/cpp/uml/CMakeFiles/umltest.dir/rule
+
+# Convenience name for target.
+umltest: src/test/cpp/uml/CMakeFiles/umltest.dir/rule
+
+.PHONY : umltest
+
+# clean rule for target.
+src/test/cpp/uml/CMakeFiles/umltest.dir/clean:
+	$(MAKE) -f src/test/cpp/uml/CMakeFiles/umltest.dir/build.make src/test/cpp/uml/CMakeFiles/umltest.dir/clean
+.PHONY : src/test/cpp/uml/CMakeFiles/umltest.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

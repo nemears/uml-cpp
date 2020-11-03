@@ -16,6 +16,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "../src/cpp/CMakeLists.txt"
   "../src/cpp/parsers/CMakeLists.txt"
   "../src/cpp/uml/CMakeLists.txt"
+  "../src/test/cpp/CMakeLists.txt"
+  "../src/test/cpp/uml/CMakeLists.txt"
   "/usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfig.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfigVersion.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.71.0/boost_headers-config-version.cmake"
@@ -63,6 +65,8 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "src/cpp/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/cpp/parsers/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/cpp/uml/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "src/test/cpp/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "src/test/cpp/uml/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
@@ -72,4 +76,5 @@ set(CMAKE_DEPEND_INFO_FILES
   "src/cpp/CMakeFiles/Logger.dir/DependInfo.cmake"
   "src/cpp/parsers/CMakeFiles/Parsers.dir/DependInfo.cmake"
   "src/cpp/uml/CMakeFiles/Uml.dir/DependInfo.cmake"
+  "src/test/cpp/uml/CMakeFiles/umltest.dir/DependInfo.cmake"
   )

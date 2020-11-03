@@ -103,5 +103,10 @@
   "directory": "/home/stinky/Projects/yuml/build/src/cpp/uml",
   "command": "/usr/bin/c++   -I/home/stinky/Projects/yuml/build/src/cpp/uml -I/home/stinky/Projects/yuml/src/cpp/uml  -g   -o CMakeFiles/Uml.dir/typedElement.cpp.o -c /home/stinky/Projects/yuml/src/cpp/uml/typedElement.cpp",
   "file": "/home/stinky/Projects/yuml/src/cpp/uml/typedElement.cpp"
+},
+{
+  "directory": "/home/stinky/Projects/yuml/build/src/test/cpp/uml",
+  "command": "/usr/bin/c++   -I/home/stinky/Projects/yuml/build/src/test/cpp/uml -I/home/stinky/Projects/yuml/src/test/cpp/uml  -g   -o CMakeFiles/umltest.dir/elementTest.cpp.o -c /home/stinky/Projects/yuml/src/test/cpp/uml/elementTest.cpp",
+  "file": "/home/stinky/Projects/yuml/src/test/cpp/uml/elementTest.cpp"
 }
 ]

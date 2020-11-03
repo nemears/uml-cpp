@@ -67,6 +67,17 @@ edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
+	/usr/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+
+.PHONY : test/fast
+
 # Special rule for the target package_source
 package_source:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool for source..."
@@ -197,6 +208,19 @@ Uml/fast:
 	$(MAKE) -f src/cpp/uml/CMakeFiles/Uml.dir/build.make src/cpp/uml/CMakeFiles/Uml.dir/build
 .PHONY : Uml/fast
 
+#=============================================================================
+# Target rules for targets named umltest
+
+# Build rule for target.
+umltest: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 umltest
+.PHONY : umltest
+
+# fast build rule for target.
+umltest/fast:
+	$(MAKE) -f src/test/cpp/uml/CMakeFiles/umltest.dir/build.make src/test/cpp/uml/CMakeFiles/umltest.dir/build
+.PHONY : umltest/fast
+
 src/cpp/application.o: src/cpp/application.cpp.o
 
 .PHONY : src/cpp/application.o
@@ -231,6 +255,7 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
+	@echo "... test"
 	@echo "... package_source"
 	@echo "... rebuild_cache"
 	@echo "... package"
@@ -239,6 +264,7 @@ help:
 	@echo "... Logger"
 	@echo "... Parsers"
 	@echo "... Uml"
+	@echo "... umltest"
 	@echo "... src/cpp/application.o"
 	@echo "... src/cpp/application.i"
 	@echo "... src/cpp/application.s"

@@ -1,2 +1,2 @@
-add_library(gtest STATIC libgtest.a)
+add_library(gtest STATIC libgtest_main.a)
 SET_TARGET_PROPERTIES(gtest PROPERTIES LINKER_LANGUAGE CXX)

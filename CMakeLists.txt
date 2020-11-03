@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(yuml VERSION 0.1.0)
 
-#include(CTest)
-#enable_testing()
+enable_testing()
 
 set(CMAKE_AUTOMOC ON)
 set (CMAKE_INCLUDE_CURRENT_DIR ON)

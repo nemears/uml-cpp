@@ -40,6 +40,7 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/stinky/Projects/yuml/build/src/cpp/cmake_install.cmake")
+  include("/home/stinky/Projects/yuml/build/src/test/cpp/cmake_install.cmake")
 
 endif()
 

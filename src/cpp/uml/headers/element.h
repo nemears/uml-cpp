@@ -10,16 +10,15 @@ using namespace std;
 
 class Element {
     protected:
-        boost::uuids::uuid uuid;
-        list<Element*> ownedElements;
+        // Moved everything to public for now
 
     public:
+        list<Element*> ownedElements;
+        boost::uuids::uuid uuid;
         Element() {
             uuid = boost::uuids::random_generator()();
         };
         virtual ~Element() {};
-        boost::uuids::uuid getID();
         void setID(string id);
-        list<Element*> getOwnedElements();
 };
 #endif

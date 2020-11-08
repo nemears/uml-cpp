@@ -1,6 +1,12 @@
 #include "application.h"
 
 int main(int argc, char** argv) {
+
+    Element e1;
+    Element e2;
+    e1.ownedElements.push_front(&e2);
+    Element* e2ptr = e1.ownedElements.front();
+
     switch (argc)
     {
         case 1: {

@@ -43,6 +43,6 @@ Element *TemplateParser::parseElement(InputParser* input) {
             break;
         }
     }
-    cout << "\n[Info] created " << keyword << " " << el->getID() << '\n';
+    cout << "\n[Info] created " << keyword << " " << el->uuid << '\n';
     return el;
 }

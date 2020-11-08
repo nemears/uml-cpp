@@ -16,7 +16,7 @@ bool ElementParser::parseTag(InputParser* input, Element* el) {
                 if (input->firstWord.compare("class") == 0) {
                     ClassParser classParser;
                     Element* parsedEl = classParser.parseElement(input);
-                    el->getOwnedElements().push_back(parsedEl);
+                    el->ownedElements.push_back(parsedEl);
                     if (input->nextLineTabs <= numTabs) {
                         break;
                     }

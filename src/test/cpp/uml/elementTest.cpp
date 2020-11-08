@@ -1,28 +1,37 @@
 #include "gtest/gtest.h"
 #include "../../../cpp/uml/headers/element.h"
+#include "../../../cpp/uml/headers/class.h"
 
 class ElementTest : public ::testing::Test {
     public:
-    Element el;
+    Element* el1;
+    Element* el2;
+    Element* el3;
     boost::uuids::uuid uuid;
+
     protected:
   // You can remove any or all of the following functions if their bodies would
   // be empty.
 
   ElementTest() {
-     
+     el1 = new Element;
+     el2 = new Element;
+     el3 = new Element;
   }
 
   ~ElementTest() override {
-     // You can do clean-up work that doesn't throw exceptions here.
+     delete el1;
+     delete el2;
+     delete el3;
   }
 
-  // If the constructor and destructor are not enough for setting up
-  // and cleaning up each test, you can define the following methods:
-
   void SetUp() override {
+    // Override uuid on Element (not reccomended use of lib)
      uuid = boost::uuids::random_generator()();
-     el.setID(boost::lexical_cast<std::string>(uuid));
+     el1->setID(boost::lexical_cast<std::string>(uuid));
+
+     // add element to owned element list
+     el2->ownedElements.push_front(el3);
   }
 
   void TearDown() override {
@@ -34,7 +43,12 @@ class ElementTest : public ::testing::Test {
 };
 
 TEST_F(ElementTest, OverrideID_Test) {
-    EXPECT_EQ(el.getID(), uuid);
+    EXPECT_EQ(el1->uuid, uuid);
+}
+
+TEST_F(ElementTest, GetOwnedElementsTest) {
+  EXPECT_FALSE(el2->ownedElements.empty());
+  EXPECT_EQ(el2->ownedElements.front(), el3);
 }
 
 int main(int argc, char **argv) {

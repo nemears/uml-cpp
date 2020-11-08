@@ -6,7 +6,7 @@ using namespace std;
 
 class NamedElement : public Element {
     protected:
-        string name;
+        string name; // Move this to public ?
     
     public:
         string getName();

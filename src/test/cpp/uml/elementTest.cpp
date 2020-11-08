@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include "../../../cpp/uml/headers/element.h"
-#include "../../../cpp/uml/headers/class.h"
 
 class ElementTest : public ::testing::Test {
     public:
@@ -35,11 +34,11 @@ class ElementTest : public ::testing::Test {
   }
 
   void TearDown() override {
-   
+    // nothing right now
   }
 
   // Class members declared here can be used by all tests in the test suite
-  // for Foo.
+  // for Element
 };
 
 TEST_F(ElementTest, OverrideID_Test) {
@@ -51,8 +50,8 @@ TEST_F(ElementTest, GetOwnedElementsTest) {
   EXPECT_EQ(el2->ownedElements.front(), el3);
 }
 
-int main(int argc, char **argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
+// int main(int argc, char **argv) {
+//   ::testing::InitGoogleTest(&argc, argv);
+//   return RUN_ALL_TESTS();
+// }
 

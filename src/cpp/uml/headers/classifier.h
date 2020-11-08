@@ -7,8 +7,9 @@ using namespace std;
 
 class Classifier: public Type {
     protected:
-        list<Property*> ownedAttributes;
+        
     public:
-        list<Property*> getOwnedAttributes();
+        list<Property*> ownedAttributes;
+        //list<Property*> getOwnedAttributes();
 };
 #endif

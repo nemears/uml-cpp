@@ -14,7 +14,7 @@ bool ElementParser::parseTag(InputParser* input, Element* el) {
             // parse within children scope
             if (input->numTabs >= numTabs) {
                 if (input->firstWord.compare("class") == 0) {
-                    ClassParser classParser;
+                    ClassParser classParser(elements);
                     Element* parsedEl = classParser.parseElement(input);
                     el->ownedElements.push_back(parsedEl);
                     if (input->nextLineTabs <= numTabs) {

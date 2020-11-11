@@ -11,8 +11,9 @@ class ModelParser : public NamespaceParser {
         bool parseTag(InputParser* input, Element * el);
 
     public:
-        ModelParser() {
+        ModelParser(map<boost::uuids::uuid, Element*>* elements) : NamespaceParser(elements){
             this->keyword = "model";
+            // this->elements = elements;
         }
 };
 #endif

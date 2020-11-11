@@ -11,19 +11,22 @@ using namespace std;
 
 class TemplateParser {
     protected:
-        map<boost::uuids::uuid, Element*>* elements;
         virtual bool parseTag(InputParser* inputParser, Element* el) = 0;
         virtual Element* createElement() = 0; // interface
 
     public:
         string keyword;
+        map<boost::uuids::uuid, Element*>* elements;
+
         bool parse(InputParser* inputParser);
-        virtual ~TemplateParser() {}; // Do i need this
+        virtual ~TemplateParser() {
+            delete elements;
+        };
         Element* parseElement(InputParser* inputParser);
         
         // TODO add map pointer of all elements to constructor of each parser to be shared
-        // TemplateParser(map<boost::uuids::uuid, Element*>* elements) {
-        //     this->elements = elements;
-        // };
+        TemplateParser(map<boost::uuids::uuid, Element*>* elements) {
+            this->elements = elements;
+        };
 };
 #endif

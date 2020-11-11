@@ -8,7 +8,7 @@ bool ClassifierParser::parseTag(InputParser* input, Element* el) {
             // parse within attributes scope
             if (input->numTabs >= numTabs) {
                 if (input->firstWord.compare("property") == 0) {
-                    PropertyParser propertyParser;
+                    PropertyParser propertyParser(elements);
                     Property* createdEl = (Property*) propertyParser.parseElement(input);
                     ((Classifier*)el)->ownedAttributes.push_back(createdEl);
                     if (input->nextLineTabs <= numTabs) {

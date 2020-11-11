@@ -10,8 +10,9 @@ class ClassParser : public ClassifierParser {
         bool parseTag(InputParser* input, Element * el);
 
     public:
-        ClassParser() {
+        ClassParser(map<boost::uuids::uuid, Element*>* elements) : ClassifierParser(elements){
             this->keyword = "class";
+            // this->elements = elements;
         }
 };
 

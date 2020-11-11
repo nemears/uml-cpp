@@ -2,11 +2,6 @@
 
 int main(int argc, char** argv) {
 
-    Element e1;
-    Element e2;
-    e1.ownedElements.push_front(&e2);
-    Element* e2ptr = e1.ownedElements.front();
-
     switch (argc)
     {
         case 1: {
@@ -17,7 +12,7 @@ int main(int argc, char** argv) {
             string fileName = argv[1];
             cout << "parsing file " << fileName << "\n";
             InputParser input(fileName);
-            ModelParser pp;
+            ModelParser pp(new map<boost::uuids::uuid, Element*>);
             input.readNextLine();
             if (!pp.parse(&input)) {
                 cerr << "could not parse " << fileName << "\n";

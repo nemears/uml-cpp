@@ -6,5 +6,9 @@
 class TypedElementParser : public NamedElementParser {
     protected:
         bool parseTag(InputParser* inputParser, Element * el);
+    public:
+        TypedElementParser(map<boost::uuids::uuid, Element*>* elements) : NamedElementParser(elements){
+            // this->elements = elements;
+        };
 };
 #endif

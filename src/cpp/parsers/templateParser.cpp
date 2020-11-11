@@ -25,6 +25,7 @@ bool TemplateParser::parse(InputParser* input) {
 Element *TemplateParser::parseElement(InputParser* input) {
     int numTabs = input->numTabs;
     Element * el = createElement();
+    (*elements)[el->uuid] = el;
     while(input->readNextLine()) {
         // check if line is valid
         if (input->shouldSkip()) {

@@ -20,7 +20,7 @@ class TemplateParser {
 
         bool parse(InputParser* inputParser);
         virtual ~TemplateParser() {
-            delete elements;
+            //delete elements;
         };
         Element* parseElement(InputParser* inputParser);
         

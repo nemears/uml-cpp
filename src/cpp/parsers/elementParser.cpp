@@ -4,7 +4,13 @@
 bool ElementParser::parseTag(InputParser* input, Element* el) {
     if (input->firstWord.compare("id") == 0) {
 
+        boost::uuids::uuid oldId = el->uuid;
+
         el->setID(input->getTag());
+
+        // override elements entry
+        elements->erase(oldId);
+        (*elements)[el->uuid] = el;
 
         return true;
     } else if (input->firstWord.compare("children") == 0) {

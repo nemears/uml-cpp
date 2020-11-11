@@ -6,6 +6,8 @@ class ClassifierTest : public ::testing::Test {
     Classifier classifier1;
     Property prop;
     Classifier* classifierPtr;
+    Property prop2;
+    Property* propPtr;
 
     protected:
   // You can remove any or all of the following functions if their bodies would
@@ -13,6 +15,7 @@ class ClassifierTest : public ::testing::Test {
 
   ClassifierTest() {
      classifierPtr = new Classifier;
+     propPtr = new Property;
   }
 
   ~ClassifierTest() override {
@@ -22,6 +25,8 @@ class ClassifierTest : public ::testing::Test {
   void SetUp() override {
      // add element to owned element list
      classifier1.ownedAttributes.push_front(&prop);
+     classifier1.ownedAttributes.push_back(propPtr);
+     classifierPtr->ownedAttributes.push_back(&prop2);
   }
 
   void TearDown() override {
@@ -35,4 +40,6 @@ class ClassifierTest : public ::testing::Test {
 TEST_F(ClassifierTest, GetOwnedAttributesTest) {
   EXPECT_FALSE(classifier1.ownedAttributes.empty());
   EXPECT_EQ(classifier1.ownedAttributes.front(), &prop);
+  EXPECT_EQ(classifier1.ownedAttributes.back(), propPtr);
+  EXPECT_EQ(classifierPtr->ownedAttributes.front(), &prop2);
 }

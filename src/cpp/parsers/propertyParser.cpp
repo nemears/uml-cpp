@@ -5,5 +5,5 @@ Element* PropertyParser::createElement(){
 }
 
 bool PropertyParser::parseTag(InputParser* input, Element* el) {
-    return NamedElementParser::parseTag(input, el);
+    return TypedElementParser::parseTag(input, el);
 }

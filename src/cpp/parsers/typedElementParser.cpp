@@ -5,10 +5,15 @@ bool TypedElementParser::parseTag(InputParser * input, Element * el) {
 
         // TODO check if overiding
 
+        boost::uuids::uuid typeId = boost::lexical_cast<boost::uuids::uuid>(input->getTag());
+
         // TODO get element from Map???
+        Type* type = (Type*)(*elements)[typeId];
 
-        //((TypedElement*)el)->setType(/*TODO*/)
+        ((TypedElement*)el)->setType(type);
 
+        return true;
     }
-    return false;
+
+    return NamedElementParser::parseTag(input, el);
 }

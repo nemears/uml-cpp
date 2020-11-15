@@ -12,6 +12,7 @@ class InputParser {
     private:
         fstream file;
         string fileName;
+        bool lastLine;
 
     public:
         string currentLine;

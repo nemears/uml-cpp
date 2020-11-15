@@ -2,6 +2,9 @@
 
 bool InputParser::readNextLine() {
     
+    if (lastLine) {
+        return false;
+    }
     currentLine.clear();
     firstWord.clear();
 
@@ -13,36 +16,35 @@ bool InputParser::readNextLine() {
         currentLine = nextLine;
     }
 
-    if (getline(file,nextLine)) {
+    lineNumber++;
 
-        lineNumber++;
+    cout << "[Info] " << lineNumber << ": " << currentLine;
 
-        cout << "[Info] " << lineNumber << ": " << currentLine;
-
-        //get first word
-        int i = 0;
-        int firstChar = currentLine.length();
-        int lastChar = currentLine.length();
-        char currChar= currentLine[0];
-        while (i < currentLine.length()) {
-            if (currChar != ' ' && currChar != '\t' && currChar != ':') {
-                if (i < firstChar) {
-                    // specific yaml syntax check
-                    if (currChar != '-') {
-                        firstChar = i;
-                    }
+    //get first word
+    int i = 0;
+    int firstChar = currentLine.length();
+    int lastChar = currentLine.length();
+    char currChar= currentLine[0];
+    while (i < currentLine.length()) {
+        if (currChar != ' ' && currChar != '\t' && currChar != ':') {
+            if (i < firstChar) {
+                // specific yaml syntax check
+                if (currChar != '-') {
+                    firstChar = i;
                 }
             }
-            else if (i > firstChar) {
-                lastChar = i;
-                break;
-            }
-            i++;
-            currChar = currentLine[i];
         }
-        firstWord = currentLine.substr(firstChar,lastChar-firstChar);
-        cout << ", first word: <" << firstWord << ">\n";
+        else if (i > firstChar) {
+            lastChar = i;
+            break;
+        }
+        i++;
+        currChar = currentLine[i];
+    }
+    firstWord = currentLine.substr(firstChar,lastChar-firstChar);
+    cout << ", first word: <" << firstWord << ">\n";
 
+    if (getline(file,nextLine)) {
         //count tabs
         numTabs = nextLineTabs;
         currChar= nextLine[0];
@@ -59,6 +61,9 @@ bool InputParser::readNextLine() {
         }
         nextLineTabs = tabCount;
 
+        return true;
+    } else {
+        lastLine = true;
         return true;
     }
 

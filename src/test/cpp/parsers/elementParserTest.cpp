@@ -36,4 +36,5 @@ class ElementParserTest : public ::testing::Test {
 
 TEST_F(ElementParserTest, ParseID_Test) {
     EXPECT_TRUE((*pp->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")] != NULL);
+    EXPECT_TRUE((*pp->elements)[boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d")] != NULL);
 }

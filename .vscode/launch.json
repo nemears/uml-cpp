@@ -7,7 +7,7 @@
             "request": "launch",
             // Resolved by CMake Tobols:
             "program": "${command:cmake.launchTargetPath}",
-            "args": ["tiny.yml"],
+            "args": ["element.yml"],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}\\build",
             "environment": [

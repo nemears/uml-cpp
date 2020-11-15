@@ -12,11 +12,13 @@ class ElementParserTest : public ::testing::Test {
 
   ElementParserTest() {
     pp = new ClassParser(new map<boost::uuids::uuid, Element*>);
-    input = new InputParser("../../yml/element.yml");
+    input = new InputParser("../../../../../src/test/yml/element.yml"); // root file is the gmock_main which is like 7 down right now
+    // TODO fix google_test within directory structure
   }
 
   ~ElementParserTest() override {
-    
+    delete pp;
+    delete input;
   }
 
   void SetUp() override {

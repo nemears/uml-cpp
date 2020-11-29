@@ -1,7 +1,6 @@
 #include "gtest/gtest.h"
 #include "../../../cpp/parsers/headers/classParser.h"
 #include "../../../cpp/parsers/headers/inputParser.h"
-#include "pthread.h"
 
 class ElementParserTest : public ::testing::Test {
     public:

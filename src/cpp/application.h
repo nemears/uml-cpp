@@ -1,6 +1,7 @@
 #ifndef APPLICATION
 #define APPLICATION
 #include "parsers/headers/modelParser.h"
+#include "parsers/headers/classParser.h"
 #include <string>
 #include <stdlib.h>
 #include <iostream>

@@ -26,7 +26,12 @@ class InputParser {
             fileName = f;
             file.open(f);
             lineNumber = 0;
+            lastLine = false;
         };
+        ~InputParser() {
+            file.close();
+            lineNumber = 0;
+        }
         bool readNextLine();
         bool shouldSkip();
         string getTag();

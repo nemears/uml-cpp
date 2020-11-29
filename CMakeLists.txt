@@ -13,6 +13,8 @@ INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
 add_subdirectory(libs/google_test/google_test_source/googletest)
 
+
+
 add_subdirectory(src)
 
 add_executable(yuml src/cpp/application.cpp)

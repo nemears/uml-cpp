@@ -25,11 +25,8 @@ class ElementParserTest : public ::testing::Test {
   void SetUp() override {
     input->readNextLine();
     pp->parse(input);
-    printf(boost::lexical_cast<std::string>((*pp->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->ownedElements.back()->uuid).c_str());
     id1 = (*pp->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->ownedElements.back()->uuid;
     id2 = (*pp->elements)[boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d")]->uuid;
-    cout << "\nParent id:" << id1 << '\n';
-    cout << "child id:" << id2 << '\n';
   }
 
   void TearDown() override {
@@ -45,8 +42,10 @@ class ElementParserTest : public ::testing::Test {
 TEST_F(ElementParserTest, ParseID_Test) {
     EXPECT_TRUE((*pp->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")] != NULL);
     EXPECT_TRUE((*pp->elements)[boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d")] != NULL);
+    EXPECT_EQ((*pp->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->uuid, boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
+    EXPECT_EQ((*pp->elements)[boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d")]->uuid, boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
 }
 
 TEST_F(ElementParserTest, ParseChildrenTest) {
-    ASSERT_TRUE(true);
+    EXPECT_EQ((*pp->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->ownedElements.back()->uuid, id1);
 }

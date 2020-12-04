@@ -11,7 +11,7 @@ bool ElementParser::parseTag(InputParser* input, Element* el) {
             // override elements entry
             elements->erase(oldId);
             (*elements)[el->uuid] = el;
-        } catch (exception& e) { // TODO implement exception
+        } catch (exception& e) {
             cerr << e.what() << '\n';
         }
 

@@ -11,8 +11,8 @@ bool ElementParser::parseTag(InputParser* input, Element* el) {
             // override elements entry
             elements->erase(oldId);
             (*elements)[el->uuid] = el;
-        } catch (...) { // TODO implement exception
-            cerr << "invalid id found, not overriding\n";
+        } catch (exception& e) { // TODO implement exception
+            cerr << e.what() << '\n';
         }
 
         return true;

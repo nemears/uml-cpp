@@ -4,8 +4,8 @@
 
 class ElementParserTest : public ::testing::Test {
     public:
-        ClassParser* pp, *invalidIDpp;
-        InputParser* input, *invalidIdInput;
+        ClassParser* pp, *invalidIDpp, *emptyChildrenpp;
+        InputParser* input, *invalidIdInput, *emptyChildrenInput;
         boost::uuids::uuid id1, id2;
     protected:
   // You can remove any or all of the following functions if their bodies would
@@ -16,6 +16,8 @@ class ElementParserTest : public ::testing::Test {
     input = new InputParser("../../../../../src/test/yml/elementTests/element.yml"); // root file is the gmock_main which is like 7 down right now
     invalidIdInput = new InputParser("../../../../../src/test/yml/elementTests/invalidID.yml");
     invalidIDpp = new ClassParser(new map<boost::uuids::uuid, Element*>);
+    emptyChildrenpp = new ClassParser(new map<boost::uuids::uuid, Element*>);
+    emptyChildrenInput = new InputParser("../../../../../src/test/yml/elementTests/emptyChildren.yml");
     // TODO fix google_test within directory structure
   }
 
@@ -32,15 +34,21 @@ class ElementParserTest : public ::testing::Test {
 
     // invalid ID tests
     invalidIdInput->readNextLine();
+
+    // empty children tests
+    emptyChildrenInput->readNextLine();
   }
 
   void TearDown() override {
     delete pp->elements;
     delete pp;
     delete input;
-    delete invalidIDpp;
     delete invalidIDpp->elements;
+    delete invalidIDpp;
     delete invalidIdInput;
+    delete emptyChildrenpp->elements;
+    delete emptyChildrenpp;
+    delete emptyChildrenInput;
   }
 
   // Class members declared here can be used by all tests in the test suite
@@ -61,4 +69,9 @@ TEST_F(ElementParserTest, ParseChildrenTest) {
 TEST_F(ElementParserTest, ParseSingleCharID_Test) {
   EXPECT_NO_THROW(invalidIDpp->parse(invalidIdInput));
   EXPECT_TRUE(invalidIDpp->elements->empty() == false);
+}
+
+TEST_F(ElementParserTest, ParseEmptyChildrenTest) {
+  EXPECT_NO_THROW(emptyChildrenpp->parse(emptyChildrenInput));
+  EXPECT_TRUE(emptyChildrenpp->elements->empty() == false);
 }

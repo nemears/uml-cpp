@@ -13,7 +13,7 @@ class TypedElementParserTest : public ::testing::Test {
 
   TypedElementParserTest() {
     pp = new ModelParser(new map<boost::uuids::uuid, Element*>);
-    input = new InputParser("../../../../../src/test/yml/typedElement.yml"); // root file is the gmock_main which is like 7 down right now
+    input = new InputParser("../../../../../src/test/yml/typedElementTests/typedElement.yml"); // root file is the gmock_main which is like 7 down right now
     // TODO fix google_test within directory structure
   }
 

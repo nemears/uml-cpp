@@ -5,12 +5,15 @@ bool ElementParser::parseTag(InputParser* input, Element* el) {
     if (input->firstWord.compare("id") == 0) {
 
         boost::uuids::uuid oldId = el->uuid;
+        try {
+            el->setID(input->getTag());
 
-        el->setID(input->getTag());
-
-        // override elements entry
-        elements->erase(oldId);
-        (*elements)[el->uuid] = el;
+            // override elements entry
+            elements->erase(oldId);
+            (*elements)[el->uuid] = el;
+        } catch (...) { // TODO implement exception
+            cerr << "invalid id found, not overriding\n";
+        }
 
         return true;
     } else if (input->firstWord.compare("children") == 0) {

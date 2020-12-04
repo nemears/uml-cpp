@@ -1,6 +1,7 @@
 #ifndef ELEMENTPARSER
 #define ELEMENTPARSER
 #include <list>
+#include <iostream>
 #include "templateParser.h"
 using namespace std;
 

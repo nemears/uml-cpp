@@ -55,8 +55,3 @@ TEST_F(ElementTest, InvalidID_Test) {
   EXPECT_NO_THROW(el3->setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
 }
 
-// int main(int argc, char **argv) {
-//   ::testing::InitGoogleTest(&argc, argv);
-//   return RUN_ALL_TESTS();
-// }
-

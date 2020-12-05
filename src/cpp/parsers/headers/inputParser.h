@@ -13,6 +13,7 @@ class InputParser {
         fstream file;
         string fileName;
         bool lastLine;
+        bool resetLastLine;
 
     public:
         string currentLine;
@@ -37,5 +38,6 @@ class InputParser {
         string getTag();
         string getElement();
         string getFileName();
+        bool resetLine();
 };
 #endif

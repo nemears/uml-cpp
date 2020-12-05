@@ -2,6 +2,10 @@
 
 bool InputParser::readNextLine() {
     
+    if (resetLastLine) {
+        resetLastLine = false;
+        return true;
+    }
     if (lastLine) {
         return false;
     }
@@ -45,7 +49,6 @@ bool InputParser::readNextLine() {
     cout << ", first word: <" << firstWord << ">\n";
 
     if (getline(file,nextLine)) {
-        //count tabs
         numTabs = nextLineTabs;
         currChar= nextLine[0];
         int tabCount = 0;
@@ -118,4 +121,12 @@ string InputParser::getElement() {
 
 string InputParser::getFileName() {
     return fileName;
+}
+
+bool InputParser::resetLine() {
+    if (lineNumber >= 2) {
+        resetLastLine = true;
+        return true;
+    }
+    return false;
 }

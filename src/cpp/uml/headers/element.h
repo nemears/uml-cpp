@@ -22,5 +22,12 @@ class Element {
         };
         virtual ~Element() {};
         void setID(string id);
+        class InvalidID_Exception: public exception
+        {
+        virtual const char* what() const throw()
+        {
+            return "String of id is not a valid UUID4";
+        }
+        } invalidID_Exception;
 };
 #endif

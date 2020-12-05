@@ -115,3 +115,7 @@ string InputParser::getElement() {
 
     return ret;
 }
+
+string InputParser::getFileName() {
+    return fileName;
+}

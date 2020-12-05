@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "../../../cpp/parsers/headers/classParser.h"
 #include "../../../cpp/parsers/headers/inputParser.h"
+#include "../../../cpp/uml/headers/namedElement.h"
 
 class ElementParserTest : public ::testing::Test {
     public:
@@ -74,4 +75,5 @@ TEST_F(ElementParserTest, ParseSingleCharID_Test) {
 TEST_F(ElementParserTest, ParseEmptyChildrenTest) {
   EXPECT_NO_THROW(emptyChildrenpp->parse(emptyChildrenInput));
   EXPECT_TRUE(emptyChildrenpp->elements->empty() == false);
+  EXPECT_EQ(((NamedElement*)emptyChildrenpp->elements->begin()->second)->getName(), "pete");
 }

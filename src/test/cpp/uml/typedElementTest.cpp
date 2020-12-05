@@ -33,7 +33,7 @@ class TypedElementTest : public ::testing::Test {
   // for Element
 };
 
-TEST_F(TypedElementTest, GetOwnedAttributesTest) {
+TEST_F(TypedElementTest, GetTypeTest) {
   EXPECT_EQ(typedEl.getType(), &type);
   EXPECT_EQ(typedElPtr->getType(), &type);
 }

@@ -36,5 +36,6 @@ class InputParser {
         bool shouldSkip();
         string getTag();
         string getElement();
+        string getFileName();
 };
 #endif

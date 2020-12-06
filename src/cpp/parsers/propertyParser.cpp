@@ -5,5 +5,10 @@ Element* PropertyParser::createElement(){
 }
 
 bool PropertyParser::parseTag(InputParser* input, Element* el) {
+
+    if (input->firstWord.compare("defaultValue")) {
+        // TODO process default value of property
+    }
+
     return TypedElementParser::parseTag(input, el);
 }

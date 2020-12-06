@@ -4,6 +4,10 @@
 
 class PrimitiveType : public Classifier {
     public:
-        enum primitives {INT, REAL, BOOL, STRING};
+        enum Primitive {INT, REAL, BOOL, STRING};
+        void setPrimitiveType(Primitive primitive);
+        Primitive getPrimitiveType();
+    private:
+        Primitive primitiveType;
 };
 #endif

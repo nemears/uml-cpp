@@ -5,6 +5,7 @@
 #include <string.h>
 #include <iostream>
 #include <algorithm>
+#include <sstream>
 using namespace std;
 
 class InputParser {
@@ -39,5 +40,14 @@ class InputParser {
         string getElement();
         string getFileName();
         bool resetLine();
+        class InvalidTagException: public exception {
+            string msg;
+            public:
+            InvalidTagException(const string& fileName, int lineNumber) 
+                :msg(string("Could not find string value for tag, no quotes found in file " + fileName + " at line number " + to_string(lineNumber))) {};
+            virtual const char* what() const throw() {
+                return msg.c_str();
+            }
+        };
 };
 #endif

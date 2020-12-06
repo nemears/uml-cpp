@@ -105,7 +105,7 @@ string InputParser::getTag() {
     }
 
     if (firstQuote == currentLine.length()) {
-        throw 55;
+        throw InvalidTagException(fileName, lineNumber);
     }
 
     return currentLine.substr(firstQuote + 1, lastQuote - firstQuote - 1);

@@ -48,8 +48,8 @@ bool InputParser::readNextLine() {
     firstWord = currentLine.substr(firstChar,lastChar-firstChar);
     cout << ", first word: <" << firstWord << ">\n";
 
+    numTabs = nextLineTabs;
     if (getline(file,nextLine)) {
-        numTabs = nextLineTabs;
         currChar= nextLine[0];
         int tabCount = 0;
         i = 0;

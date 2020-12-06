@@ -33,7 +33,9 @@ bool ElementParser::parseTag(InputParser* input, Element* el) {
                 // this is if it cannot find any valid option
                 else {
                     cerr << "could not find any suitable keyword after children scope, File: " << input->getFileName() << ", line number " << input->lineNumber << '\n';
-                    input->resetLine();
+                    if (input->numTabs <= numTabs){
+                        input->resetLine();
+                    }
                     return true;
                 }
             } else {

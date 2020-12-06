@@ -104,6 +104,10 @@ string InputParser::getTag() {
         currChar = currentLine[i];
     }
 
+    if (firstQuote == currentLine.length()) {
+        throw 55;
+    }
+
     return currentLine.substr(firstQuote + 1, lastQuote - firstQuote - 1);
 }
 

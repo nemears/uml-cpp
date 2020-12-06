@@ -9,8 +9,14 @@ bool NamedElementParser::parseTag(InputParser* input, Element* el) {
             cout << " line number " << input->lineNumber << '\n';
             return false;
         }
-        ((NamedElement*)el)->setName(input->getTag());
-        cout << "[Info] " << keyword << " name: " << ((NamedElement*)el)->getName() << "\n";
+
+        try {
+            ((NamedElement*)el)->setName(input->getTag());
+            cout << "[Info] " << keyword << " name: " << ((NamedElement*)el)->getName() << "\n";
+            return true;
+        } catch(exception& e) {
+                cerr << e.what() << '\n';
+        }
         return true;
     }
 

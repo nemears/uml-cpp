@@ -5,8 +5,8 @@
 
 class ElementParserTest : public ::testing::Test {
     public:
-        ClassParser* pp, *invalidIDpp, *emptyChildrenpp;
-        InputParser* input, *invalidIdInput, *emptyChildrenInput;
+        ClassParser* pp, *invalidIDpp, *emptyChildrenpp, *emptyChildren2pp;
+        InputParser* input, *invalidIdInput, *emptyChildrenInput, *emptyChildren2Input;
         boost::uuids::uuid id1, id2;
     protected:
   // You can remove any or all of the following functions if their bodies would
@@ -19,6 +19,8 @@ class ElementParserTest : public ::testing::Test {
     invalidIDpp = new ClassParser(new map<boost::uuids::uuid, Element*>);
     emptyChildrenpp = new ClassParser(new map<boost::uuids::uuid, Element*>);
     emptyChildrenInput = new InputParser("../../../../../src/test/yml/elementTests/emptyChildren.yml");
+    emptyChildren2pp = new ClassParser(new map<boost::uuids::uuid, Element*>);
+    emptyChildren2Input = new InputParser("../../../../../src/test/yml/elementTests/emptyChildren2.yml");
     // TODO fix google_test within directory structure
   }
 
@@ -38,6 +40,7 @@ class ElementParserTest : public ::testing::Test {
 
     // empty children tests
     emptyChildrenInput->readNextLine();
+    emptyChildren2Input->readNextLine();
   }
 
   void TearDown() override {
@@ -76,4 +79,6 @@ TEST_F(ElementParserTest, ParseEmptyChildrenTest) {
   EXPECT_NO_THROW(emptyChildrenpp->parse(emptyChildrenInput));
   EXPECT_TRUE(emptyChildrenpp->elements->empty() == false);
   EXPECT_EQ(((NamedElement*)emptyChildrenpp->elements->begin()->second)->getName(), "pete");
+  EXPECT_NO_THROW(emptyChildren2pp->parse(emptyChildrenInput));
+  EXPECT_TRUE(((NamedElement*)emptyChildrenpp->elements->begin()->second)->getName().empty());
 }

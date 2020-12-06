@@ -17,7 +17,7 @@ class NamedElementParserTest : public ::testing::Test {
 
     //Invalid type tests
     invalidTypepp = new ClassParser(new map<boost::uuids::uuid, Element*>);
-    input = new InputParser("../../../../../src/test/yml/namedElementTests/improperType.yml");
+    invalidTypeInput = new InputParser("../../../../../src/test/yml/namedElementTests/improperType.yml");
   }
 
   ~NamedElementParserTest() override {

@@ -9,5 +9,10 @@
         "any": "cpp",
         "string_view": "cpp",
         "regex": "cpp"
+    },
+    // cmake options
+    "cmake.configureSettings" : {
+        // this optioin turns off testing for yaml-cpp library
+        "YAML_CPP_BUILD_TESTS":"OFF"
     }
 }

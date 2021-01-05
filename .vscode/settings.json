@@ -13,6 +13,8 @@
     // cmake options
     "cmake.configureSettings" : {
         // this optioin turns off testing for yaml-cpp library
-        "YAML_CPP_BUILD_TESTS":"OFF"
+        "YAML_CPP_BUILD_TESTS":"OFF",
+        "YAML_CPP_BUILD_TOOLS":"OFF",
+        "YAML_CPP_BUILD_CONTRIB":"OFF"
     }
 }

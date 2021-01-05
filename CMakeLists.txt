@@ -20,7 +20,7 @@ add_subdirectory(src)
 add_executable(yuml src/cpp/application.cpp)
 
 target_link_libraries(yuml PUBLIC Parsers Uml Logger gtest)
-TARGET_LINK_LIBRARIES(yuml LINK_PUBLIC ${Boost_LIBRARIES} )
+TARGET_LINK_LIBRARIES(yuml LINK_PUBLIC ${Boost_LIBRARIES})
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

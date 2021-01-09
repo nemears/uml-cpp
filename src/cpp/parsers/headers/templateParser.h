@@ -5,6 +5,7 @@
 #include <iostream>
 #include <map>
 #include <boost/uuid/uuid.hpp>
+#include "yaml-cpp/yaml.h"
 #include "inputParser.h"
 #include "../../uml/headers/element.h"
 using namespace std;
@@ -23,6 +24,7 @@ class TemplateParser {
             //delete elements;
         };
         Element* parseElement(InputParser* inputParser);
+        Element* parseElement(YAML::Node node);
         
         // TODO add map pointer of all elements to constructor of each parser to be shared
         TemplateParser(map<boost::uuids::uuid, Element*>* elements) {

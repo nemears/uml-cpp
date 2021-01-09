@@ -1,3 +1,2 @@
-add_library(Parsers inputParser.cpp templateParser.cpp namespaceParser.cpp modelParser.cpp elementParser.cpp namedElementParser.cpp classParser.cpp classifierParser.cpp propertyParser.cpp typedElementParser.cpp yamlCppParser.cpp)
-target_link_libraries(Parsers  
-                           PRIVATE yaml-cpp)
+add_library(Parsers inputParser.cpp templateParser.cpp namespaceParser.cpp modelParser.cpp elementParser.cpp namedElementParser.cpp classParser.cpp classifierParser.cpp propertyParser.cpp typedElementParser.cpp)
+target_link_libraries(Parsers PUBLIC yaml-cpp)

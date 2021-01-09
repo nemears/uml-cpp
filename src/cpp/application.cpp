@@ -17,8 +17,6 @@ int main(int argc, char** argv) {
             //         cout << it->first.as<string>() << " : " << it->second.as<string>() << '\n';
             //     }
             // }
-            YamlCppParser yp(argv[1]);
-            yp.readNextLine();
 
             string fileName = argv[1];
             cout << "parsing file " << fileName << "\n";

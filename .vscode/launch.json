@@ -7,7 +7,7 @@
             "request": "launch",
             // Resolved by CMake Tobols:
             "program": "${command:cmake.launchTargetPath}",
-            "args": ["../src/test/yml/classifier.yml"],
+            "args": ["tiny.yml"],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}\\build",
             "environment": [

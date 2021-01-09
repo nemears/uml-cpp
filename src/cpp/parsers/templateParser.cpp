@@ -22,6 +22,16 @@ bool TemplateParser::parse(InputParser* input) {
     return false;
 }
 
+bool TemplateParser::parse(YAML::Node node) {
+    cout << "[Info] keyword " << keyword << '\n';
+    if (node[keyword]) {
+        parseElement(node[keyword]);
+        return true;
+    }
+
+    return false;
+}
+
 Element *TemplateParser::parseElement(InputParser* input) {
     int numTabs = input->numTabs;
     Element * el = createElement();
@@ -45,5 +55,13 @@ Element *TemplateParser::parseElement(InputParser* input) {
         }
     }
     cout << "\n[Info] created " << keyword << " " << el->uuid << '\n';
+    return el;
+}
+
+Element* TemplateParser::parseElement(YAML::Node node) {
+    Element* el = createElement();
+    if (!parseFeatures(node)) {
+        //Error
+    }
     return el;
 }

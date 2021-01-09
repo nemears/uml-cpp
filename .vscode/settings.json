@@ -8,7 +8,8 @@
         "array": "cpp",
         "any": "cpp",
         "string_view": "cpp",
-        "regex": "cpp"
+        "regex": "cpp",
+        "iostream": "cpp"
     },
     // cmake options
     "cmake.configureSettings" : {

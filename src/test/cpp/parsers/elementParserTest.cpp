@@ -5,8 +5,10 @@
 
 class ElementParserTest : public ::testing::Test {
     public:
-        ClassParser* pp, *invalidIDpp, *emptyChildrenpp, *emptyChildren2pp;
+        ClassParser* pp, *invalidIDpp, *emptyChildrenpp, *emptyChildren2pp, 
+                    *ppYAML, *invalidIDppYAML, *emptyChildrenppYAML, *emptyChildren2ppYAML;
         InputParser* input, *invalidIdInput, *emptyChildrenInput, *emptyChildren2Input;
+        YAML::Node node, invalidIDNode, emptyChildrenNode, emptyChildren2Node;
         boost::uuids::uuid id1, id2;
     protected:
   // You can remove any or all of the following functions if their bodies would
@@ -22,6 +24,18 @@ class ElementParserTest : public ::testing::Test {
     emptyChildren2pp = new ClassParser(new map<boost::uuids::uuid, Element*>);
     emptyChildren2Input = new InputParser("../../../../../src/test/yml/elementTests/emptyChildren2.yml");
     // TODO fix google_test within directory structure
+
+    ppYAML = new ClassParser(new map<boost::uuids::uuid, Element*>);
+    node = YAML::LoadFile("../../../../../src/test/yml/elementTests/element.yml");
+
+    invalidIDppYAML = new ClassParser(new map<boost::uuids::uuid, Element*>);
+    invalidIDNode = YAML::LoadFile("../../../../../src/test/yml/elementTests/invalidID.yml");
+
+    emptyChildrenppYAML = new ClassParser(new map<boost::uuids::uuid, Element*>);
+    emptyChildrenNode = YAML::LoadFile("../../../../../src/test/yml/elementTests/emptyChildren.yml");
+
+    emptyChildren2ppYAML = new ClassParser(new map<boost::uuids::uuid, Element*>);
+    emptyChildren2Node = YAML::LoadFile("../../../../../src/test/yml/elementTests/emptyChildren2.yml");
   }
 
   ~ElementParserTest() override {
@@ -34,6 +48,8 @@ class ElementParserTest : public ::testing::Test {
     pp->parse(input);
     id1 = (*pp->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->ownedElements.back()->uuid;
     id2 = (*pp->elements)[boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d")]->uuid;
+
+    ppYAML->parse(node);
 
     // invalid ID tests
     invalidIdInput->readNextLine();
@@ -53,6 +69,14 @@ class ElementParserTest : public ::testing::Test {
     delete emptyChildrenpp->elements;
     delete emptyChildrenpp;
     delete emptyChildrenInput;
+    delete ppYAML->elements;
+    delete ppYAML;
+    delete invalidIDppYAML->elements;
+    delete invalidIDppYAML;
+    delete emptyChildrenppYAML->elements;
+    delete emptyChildrenppYAML;
+    delete emptyChildren2ppYAML->elements;
+    delete emptyChildren2ppYAML;
   }
 
   // Class members declared here can be used by all tests in the test suite
@@ -64,6 +88,11 @@ TEST_F(ElementParserTest, ParseID_Test) {
     EXPECT_TRUE((*pp->elements)[boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d")] != NULL);
     EXPECT_EQ((*pp->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->uuid, boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
     EXPECT_EQ((*pp->elements)[boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d")]->uuid, boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
+
+    ASSERT_TRUE((*ppYAML->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")] != NULL);
+    ASSERT_TRUE((*ppYAML->elements)[boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d")] != NULL);
+    EXPECT_EQ((*ppYAML->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->uuid, boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
+    EXPECT_EQ((*ppYAML->elements)[boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d")]->uuid, boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
 }
 
 TEST_F(ElementParserTest, ParseChildrenTest) {

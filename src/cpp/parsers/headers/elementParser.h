@@ -8,6 +8,8 @@ using namespace std;
 class ElementParser : public TemplateParser {
     protected:
         bool parseTag(InputParser* inputParser, Element * el);
+
+        bool parseFeatures(YAML::Node node, Element* el);
     public:
         ElementParser(map<boost::uuids::uuid, Element*>* elements) : TemplateParser(elements) {
             

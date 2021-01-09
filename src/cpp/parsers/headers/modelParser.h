@@ -10,6 +10,8 @@ class ModelParser : public NamespaceParser {
         Element* createElement();
         bool parseTag(InputParser* input, Element * el);
 
+        virtual bool parseFeatures(YAML::Node node, Element* el);
+
     public:
         ModelParser(map<boost::uuids::uuid, Element*>* elements) : NamespaceParser(elements){
             this->keyword = "model";

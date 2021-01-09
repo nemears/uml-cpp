@@ -47,3 +47,21 @@ bool ElementParser::parseTag(InputParser* input, Element* el) {
 
     return false;
 }
+
+bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
+    if (node["id"]) {
+        boost::uuids::uuid oldId = el->uuid;
+        try {
+            el->setID(node["id"].as<string>());
+
+            // override elements entry
+            elements->erase(oldId);
+            (*elements)[el->uuid] = el;
+        } catch (exception& e) {
+            cerr << e.what() << '\n';
+        }
+    } else if (node["children"]) {
+        // TODO
+    }
+    return true;
+}

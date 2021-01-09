@@ -22,11 +22,15 @@ int main(int argc, char** argv) {
             cout << "parsing file " << fileName << "\n";
             InputParser input(fileName);
             ModelParser pp(new map<boost::uuids::uuid, Element*>);
-            input.readNextLine();
-            if (!pp.parse(&input)) {
+            if(!pp.parse(node)) {
                 cerr << "could not parse " << fileName << "\n";
-                return -1;
+                 return -1;
             }
+            // input.readNextLine();
+            // if (!pp.parse(&input)) {
+            //     cerr << "could not parse " << fileName << "\n";
+            //     return -1;
+            // }
 
             // TODO print model
             

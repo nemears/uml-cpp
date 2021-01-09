@@ -7,6 +7,8 @@ using namespace std;
 class NamedElementParser : public ElementParser {
     protected:
         bool parseTag(InputParser* inputParser, Element * el);
+
+        virtual bool parseFeatures(YAML::Node node, Element* el);
     public:
         NamedElementParser(map<boost::uuids::uuid, Element*>* elements) : ElementParser(elements){
             //this->elements = elements;

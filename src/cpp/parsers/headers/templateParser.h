@@ -16,7 +16,7 @@ class TemplateParser {
         virtual Element* createElement() = 0; // interface
 
         // new function interface for yaml-cpp parser to get details of uml element type from file
-        virtual bool parseFeatures(YAML::Node node) = 0;
+        virtual bool parseFeatures(YAML::Node node, Element* el) = 0;
 
     public:
         string keyword;

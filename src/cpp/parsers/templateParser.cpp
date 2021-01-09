@@ -60,7 +60,7 @@ Element *TemplateParser::parseElement(InputParser* input) {
 
 Element* TemplateParser::parseElement(YAML::Node node) {
     Element* el = createElement();
-    if (!parseFeatures(node)) {
+    if (!parseFeatures(node, el)) {
         //Error
     }
     return el;

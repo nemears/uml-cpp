@@ -62,6 +62,19 @@ bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
         }
     } else if (node["children"]) {
         // TODO
+        if (node["children"].IsSequence()) {
+            for (std::size_t i=0; i<node["children"].size(); i++) {
+                if (node["children"][i]["class"]) {
+                    ClassParser classParser(elements);
+                    Element* parsedEl = classParser.parseElement(node["children"][i]["class"]);
+                    el->ownedElements.push_back(parsedEl);
+                } else if (node["children"][i]["other types here"]) {
+                    // TODO TODO TODO
+                }
+            }
+        } else {
+            // ERROR
+        }
     }
     return true;
 }

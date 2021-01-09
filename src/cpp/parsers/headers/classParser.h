@@ -9,6 +9,8 @@ class ClassParser : public ClassifierParser {
         Element* createElement();
         bool parseTag(InputParser* input, Element * el);
 
+        bool parseFeatures(YAML::Node node, Element* el);
+
     public:
         ClassParser(map<boost::uuids::uuid, Element*>* elements) : ClassifierParser(elements){
             this->keyword = "class";

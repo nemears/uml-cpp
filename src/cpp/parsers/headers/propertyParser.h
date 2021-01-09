@@ -9,6 +9,8 @@ class PropertyParser : public TypedElementParser {
         Element* createElement();
         bool parseTag(InputParser* input, Element * el);
 
+        bool parseFeatures(YAML::Node node, Element* el);
+
     public:
         PropertyParser(map<boost::uuids::uuid, Element*>* elements) : TypedElementParser(elements){
             this->keyword = "property";

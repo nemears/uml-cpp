@@ -60,7 +60,8 @@ bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
         } catch (exception& e) {
             cerr << e.what() << '\n';
         }
-    } else if (node["children"]) {
+    } 
+    if (node["children"]) {
         // TODO
         if (node["children"].IsSequence()) {
             for (std::size_t i=0; i<node["children"].size(); i++) {

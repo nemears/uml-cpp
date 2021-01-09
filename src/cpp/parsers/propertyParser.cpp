@@ -12,3 +12,11 @@ bool PropertyParser::parseTag(InputParser* input, Element* el) {
 
     return TypedElementParser::parseTag(input, el);
 }
+
+bool PropertyParser::parseFeatures(YAML::Node node, Element* el) {
+    if (node["defaultValue"]) {
+        // TODO
+    }
+
+    return TypedElementParser::parseFeatures(node, el);
+}

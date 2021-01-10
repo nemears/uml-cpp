@@ -10,9 +10,11 @@
 #include <boost/lexical_cast.hpp>
 using namespace std;
 
-namespace UML{
+namespace UML {
 
-static bool isValidUUID4(string strn);
+static bool isValidUUID4(string strn) {
+    return regex_match (strn, regex("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"));
+}
 
 class Element {
     protected:

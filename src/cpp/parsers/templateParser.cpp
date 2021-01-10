@@ -60,6 +60,7 @@ Element *TemplateParser::parseElement(InputParser* input) {
 
 Element* TemplateParser::parseElement(YAML::Node node) {
     Element* el = createElement();
+    (*elements)[el->uuid] = el;
     if (!parseFeatures(node, el)) {
         //Error
     }

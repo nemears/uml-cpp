@@ -97,11 +97,17 @@ TEST_F(ElementParserTest, ParseID_Test) {
 
 TEST_F(ElementParserTest, ParseChildrenTest) {
     EXPECT_EQ((*pp->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->ownedElements.back()->uuid, id1);
+    
+    EXPECT_EQ((*ppYAML->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->ownedElements.back()->uuid, 
+        (*ppYAML->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->ownedElements.back()->uuid);
 }
 
 TEST_F(ElementParserTest, ParseSingleCharID_Test) {
   EXPECT_NO_THROW(invalidIDpp->parse(invalidIdInput));
   EXPECT_TRUE(invalidIDpp->elements->empty() == false);
+
+  EXPECT_NO_THROW(invalidIDppYAML->parse(invalidIDNode));
+  EXPECT_TRUE(invalidIDppYAML->elements->empty() == false);
 }
 
 TEST_F(ElementParserTest, ParseEmptyChildrenTest) {
@@ -110,4 +116,6 @@ TEST_F(ElementParserTest, ParseEmptyChildrenTest) {
   EXPECT_EQ(((NamedElement*)emptyChildrenpp->elements->begin()->second)->getName(), "pete");
   EXPECT_NO_THROW(emptyChildren2pp->parse(emptyChildren2Input));
   EXPECT_TRUE(((NamedElement*)emptyChildren2pp->elements->begin()->second)->getName().empty());
+
+
 }

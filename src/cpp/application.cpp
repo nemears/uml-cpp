@@ -12,25 +12,13 @@ int main(int argc, char** argv) {
         case 2: {
 
             YAML::Node node = YAML::LoadFile(argv[1]);
-            // if (node.IsMap()) {
-            //     for(YAML::const_iterator it=node.begin();it!=node.end();++it) {
-            //         cout << it->first.as<string>() << " : " << it->second.as<string>() << '\n';
-            //     }
-            // }
-
             string fileName = argv[1];
             cout << "parsing file " << fileName << "\n";
-            InputParser input(fileName);
             ModelParser pp(new map<boost::uuids::uuid, Element*>);
             if(!pp.parse(node)) {
                 cerr << "could not parse " << fileName << "\n";
                  return -1;
             }
-            // input.readNextLine();
-            // if (!pp.parse(&input)) {
-            //     cerr << "could not parse " << fileName << "\n";
-            //     return -1;
-            // }
 
             // TODO print model
             

@@ -7,8 +7,6 @@ using namespace std;
 
 class ClassifierParser: public NamespaceParser {
     protected:
-        bool parseTag(InputParser* inputParser, Element * el);
-
         bool parseFeatures(YAML::Node node, Element* el);
 
     public:

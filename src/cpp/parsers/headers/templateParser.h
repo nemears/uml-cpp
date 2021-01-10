@@ -6,7 +6,6 @@
 #include <map>
 #include <boost/uuid/uuid.hpp>
 #include "yaml-cpp/yaml.h"
-#include "inputParser.h"
 #include "../../uml/headers/element.h"
 using namespace std;
 
@@ -23,7 +22,7 @@ class TemplateParser {
         virtual ~TemplateParser() {
             //delete elements;
         };
-        
+
         Element* parseElement(YAML::Node node);
         
         /**

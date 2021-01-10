@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include "../../../cpp/parsers/headers/modelParser.h"
-#include "../../../cpp/parsers/headers/inputParser.h"
 #include "../../../cpp/uml/headers/typedElement.h"
 
 class TypedElementParserTest : public ::testing::Test {

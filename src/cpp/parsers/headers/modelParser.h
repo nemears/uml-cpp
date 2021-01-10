@@ -8,8 +8,6 @@ using namespace std;
 class ModelParser : public NamespaceParser {
     protected:
         Element* createElement();
-        bool parseTag(InputParser* input, Element * el);
-
         virtual bool parseFeatures(YAML::Node node, Element* el);
 
     public:

@@ -5,8 +5,6 @@
 
 class TypedElementParser : public NamedElementParser {
     protected:
-        bool parseTag(InputParser* inputParser, Element * el);
-
         bool parseFeatures(YAML::Node, Element* el);
 
     public:

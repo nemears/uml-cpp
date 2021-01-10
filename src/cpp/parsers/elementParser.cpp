@@ -1,7 +1,7 @@
 #include "headers/elementParser.h"
 #include "headers/classParser.h"
 
-bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
+bool ElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
     if (node["id"]) {
         boost::uuids::uuid oldId = el->uuid;
         try {
@@ -20,7 +20,7 @@ bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
             for (std::size_t i=0; i<node["children"].size(); i++) {
                 if (node["children"][i]["class"]) {
                     ClassParser classParser(elements);
-                    Element* parsedEl = classParser.parseElement(node["children"][i]["class"]);
+                    UML::Element* parsedEl = classParser.parseElement(node["children"][i]["class"]);
                     el->ownedElements.push_back(parsedEl);
                 } else if (node["children"][i]["other types here"]) {
                     // TODO TODO TODO

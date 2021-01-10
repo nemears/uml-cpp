@@ -7,11 +7,11 @@ using namespace std;
 
 class ModelParser : public NamespaceParser {
     protected:
-        Element* createElement();
-        virtual bool parseFeatures(YAML::Node node, Element* el);
+        UML::Element* createElement();
+        virtual bool parseFeatures(YAML::Node node, UML::Element* el);
 
     public:
-        ModelParser(map<boost::uuids::uuid, Element*>* elements) : NamespaceParser(elements){
+        ModelParser(map<boost::uuids::uuid, UML::Element*>* elements) : NamespaceParser(elements){
             this->keyword = "model";
             // this->elements = elements;
         }

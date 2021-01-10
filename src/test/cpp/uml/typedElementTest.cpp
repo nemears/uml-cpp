@@ -1,6 +1,8 @@
 #include "gtest/gtest.h"
 #include "../../../cpp/uml/headers/typedElement.h"
 
+using namespace UML;
+
 class TypedElementTest : public ::testing::Test {
     public:
     TypedElement typedEl;

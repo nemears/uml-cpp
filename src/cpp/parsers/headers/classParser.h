@@ -6,11 +6,11 @@ using namespace std;
 
 class ClassParser : public ClassifierParser {
     protected:
-        Element* createElement();
-        bool parseFeatures(YAML::Node node, Element* el);
+        UML::Element* createElement();
+        bool parseFeatures(YAML::Node node, UML::Element* el);
 
     public:
-        ClassParser(map<boost::uuids::uuid, Element*>* elements) : ClassifierParser(elements){
+        ClassParser(map<boost::uuids::uuid, UML::Element*>* elements) : ClassifierParser(elements){
             this->keyword = "class";
             // this->elements = elements;
         }

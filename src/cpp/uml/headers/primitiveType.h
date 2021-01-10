@@ -2,6 +2,7 @@
 #define PRIMITIVETYPE
 #include "classifier.h"
 
+namespace UML{
 class PrimitiveType : public Classifier {
     public:
         enum Primitive {INT, REAL, BOOL, STRING};
@@ -10,4 +11,5 @@ class PrimitiveType : public Classifier {
     private:
         Primitive primitiveType;
 };
+}
 #endif

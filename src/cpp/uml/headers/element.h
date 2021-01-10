@@ -10,6 +10,10 @@
 #include <boost/lexical_cast.hpp>
 using namespace std;
 
+namespace UML{
+
+static bool isValidUUID4(string strn);
+
 class Element {
     protected:
         // Moved everything to public for now
@@ -28,4 +32,5 @@ class Element {
             }
         } invalidID_Exception;
 };
+}
 #endif

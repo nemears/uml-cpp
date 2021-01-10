@@ -3,19 +3,19 @@
 
 class ClassifierTest : public ::testing::Test {
     public:
-    Classifier classifier1;
-    Property prop;
-    Classifier* classifierPtr;
-    Property prop2;
-    Property* propPtr;
+    UML::Classifier classifier1;
+    UML::Property prop;
+    UML::Classifier* classifierPtr;
+    UML::Property prop2;
+    UML::Property* propPtr;
 
     protected:
   // You can remove any or all of the following functions if their bodies would
   // be empty.
 
   ClassifierTest() {
-     classifierPtr = new Classifier;
-     propPtr = new Property;
+     classifierPtr = new UML::Classifier;
+     propPtr = new UML::Property;
   }
 
   ~ClassifierTest() override {

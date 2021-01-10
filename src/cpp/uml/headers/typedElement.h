@@ -4,6 +4,7 @@
 #include "type.h"
 using namespace std;
 
+namespace UML{
 class TypedElement : public NamedElement {
     protected:
         Type* type;
@@ -12,5 +13,6 @@ class TypedElement : public NamedElement {
         Type* getType();
         void setType(Type* type);
 };
+}
 
 #endif

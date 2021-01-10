@@ -1,10 +1,10 @@
 #include "headers/propertyParser.h"
 
-Element* PropertyParser::createElement(){
-    return new Property;
+UML::Element* PropertyParser::createElement(){
+    return new UML::Property;
 }
 
-bool PropertyParser::parseFeatures(YAML::Node node, Element* el) {
+bool PropertyParser::parseFeatures(YAML::Node node, UML::Element* el) {
     if (node["defaultValue"]) {
         // TODO
     }

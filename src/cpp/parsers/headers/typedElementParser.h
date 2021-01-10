@@ -5,10 +5,10 @@
 
 class TypedElementParser : public NamedElementParser {
     protected:
-        bool parseFeatures(YAML::Node, Element* el);
+        bool parseFeatures(YAML::Node, UML::Element* el);
 
     public:
-        TypedElementParser(map<boost::uuids::uuid, Element*>* elements) : NamedElementParser(elements){
+        TypedElementParser(map<boost::uuids::uuid, UML::Element*>* elements) : NamedElementParser(elements){
             // this->elements = elements;
         };
 };

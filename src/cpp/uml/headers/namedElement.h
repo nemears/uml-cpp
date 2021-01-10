@@ -4,6 +4,7 @@
 #include "element.h"
 using namespace std;
 
+namespace UML{
 class NamedElement : public Element {
     protected:
         string name; // Move this to public ?
@@ -12,5 +13,6 @@ class NamedElement : public Element {
         string getName();
         void setName(const string &name);
 };
+}
 
 #endif

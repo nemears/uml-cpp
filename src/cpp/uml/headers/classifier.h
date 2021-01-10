@@ -5,6 +5,7 @@
 #include "property.h"
 using namespace std;
 
+namespace UML{
 class Classifier: public Type {
     protected:
         
@@ -12,4 +13,5 @@ class Classifier: public Type {
         list<Property*> ownedAttributes;
         //list<Property*> getOwnedAttributes();
 };
+}
 #endif

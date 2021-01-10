@@ -7,9 +7,9 @@ using namespace std;
 
 class ElementParser : public TemplateParser {
     protected:
-        bool parseFeatures(YAML::Node node, Element* el);
+        bool parseFeatures(YAML::Node node, UML::Element* el);
     public:
-        ElementParser(map<boost::uuids::uuid, Element*>* elements) : TemplateParser(elements) {
+        ElementParser(map<boost::uuids::uuid, UML::Element*>* elements) : TemplateParser(elements) {
             
         };
 };

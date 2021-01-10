@@ -1,9 +1,9 @@
 #include "headers/modelParser.h"
 
-Element* ModelParser::createElement() {
-    return new Model;
+UML::Element* ModelParser::createElement() {
+    return new UML::Model;
 }
 
-bool ModelParser::parseFeatures(YAML::Node node, Element* el) {
+bool ModelParser::parseFeatures(YAML::Node node, UML::Element* el) {
     return NamespaceParser::parseFeatures(node, el);
 }

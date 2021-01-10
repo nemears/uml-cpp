@@ -1,9 +1,9 @@
 #include "headers/namedElement.h"
 
-void NamedElement::setName(const string &name) {
+void UML::NamedElement::setName(const string &name) {
     this->name = name;
 }
 
-string NamedElement::getName() {
+string UML::NamedElement::getName() {
     return name;
 }

@@ -4,8 +4,10 @@
 #include "valueSpecification.h"
 using namespace std;
 
+namespace UML{
 class Property: public TypedElement {
     public:
         ValueSpecification * defaultValue;
 };
+}
 #endif

@@ -13,16 +13,16 @@ class ElementParserTest : public ::testing::Test {
 
   ElementParserTest() {
     // TODO fix google_test within directory structure
-    ppYAML = new ClassParser(new map<boost::uuids::uuid, Element*>);
+    ppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>);
     node = YAML::LoadFile("../../../../../src/test/yml/elementTests/element.yml");
 
-    invalidIDppYAML = new ClassParser(new map<boost::uuids::uuid, Element*>);
+    invalidIDppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>);
     invalidIDNode = YAML::LoadFile("../../../../../src/test/yml/elementTests/invalidID.yml");
 
-    emptyChildrenppYAML = new ClassParser(new map<boost::uuids::uuid, Element*>);
+    emptyChildrenppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>);
     emptyChildrenNode = YAML::LoadFile("../../../../../src/test/yml/elementTests/emptyChildren.yml");
 
-    emptyChildren2ppYAML = new ClassParser(new map<boost::uuids::uuid, Element*>);
+    emptyChildren2ppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>);
     emptyChildren2Node = YAML::LoadFile("../../../../../src/test/yml/elementTests/emptyChildren2.yml");
   }
 
@@ -69,7 +69,7 @@ TEST_F(ElementParserTest, ParseSingleCharID_Test) {
 TEST_F(ElementParserTest, ParseEmptyChildrenTest) {
   EXPECT_NO_THROW(emptyChildrenppYAML->parse(emptyChildrenNode));
   EXPECT_TRUE(emptyChildrenppYAML->elements->empty() == false);
-  EXPECT_EQ(((NamedElement*)emptyChildrenppYAML->elements->begin()->second)->getName(), "pete");
+  EXPECT_EQ(((UML::NamedElement*)emptyChildrenppYAML->elements->begin()->second)->getName(), "pete");
   EXPECT_NO_THROW(emptyChildren2ppYAML->parse(emptyChildren2Node));
-  EXPECT_TRUE(((NamedElement*)emptyChildren2ppYAML->elements->begin()->second)->getName().empty());
+  EXPECT_TRUE(((UML::NamedElement*)emptyChildren2ppYAML->elements->begin()->second)->getName().empty());
 }

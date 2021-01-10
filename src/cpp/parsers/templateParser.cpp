@@ -10,8 +10,8 @@ bool TemplateParser::parse(YAML::Node node) {
     return false;
 }
 
-Element* TemplateParser::parseElement(YAML::Node node) {
-    Element* el = createElement();
+UML::Element* TemplateParser::parseElement(YAML::Node node) {
+    UML::Element* el = createElement();
     (*elements)[el->uuid] = el;
     if (!parseFeatures(node, el)) {
         //Error

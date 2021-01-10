@@ -1,9 +1,9 @@
 #include "headers/primitiveType.h"
 
-void PrimitiveType::setPrimitiveType(Primitive primitive) {
+void UML::PrimitiveType::setPrimitiveType(Primitive primitive) {
     this->primitiveType = primitive;
 }
 
-PrimitiveType::Primitive PrimitiveType::getPrimitiveType() {
+UML::PrimitiveType::Primitive UML::PrimitiveType::getPrimitiveType() {
     return this->primitiveType;
 }

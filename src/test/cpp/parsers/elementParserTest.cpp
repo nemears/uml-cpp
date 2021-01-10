@@ -117,5 +117,9 @@ TEST_F(ElementParserTest, ParseEmptyChildrenTest) {
   EXPECT_NO_THROW(emptyChildren2pp->parse(emptyChildren2Input));
   EXPECT_TRUE(((NamedElement*)emptyChildren2pp->elements->begin()->second)->getName().empty());
 
-
+  EXPECT_NO_THROW(emptyChildrenppYAML->parse(emptyChildrenNode));
+  EXPECT_TRUE(emptyChildrenppYAML->elements->empty() == false);
+  EXPECT_EQ(((NamedElement*)emptyChildrenppYAML->elements->begin()->second)->getName(), "pete");
+  EXPECT_NO_THROW(emptyChildren2ppYAML->parse(emptyChildren2Node));
+  EXPECT_TRUE(((NamedElement*)emptyChildren2ppYAML->elements->begin()->second)->getName().empty());
 }

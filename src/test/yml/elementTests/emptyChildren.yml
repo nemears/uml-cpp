@@ -1,4 +1,4 @@
 ---
-  - class :
-      children :
-      name: "pete"
+  class :
+    children :
+    name: "pete"

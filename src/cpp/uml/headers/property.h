@@ -6,8 +6,11 @@ using namespace std;
 
 namespace UML{
 class Property: public TypedElement {
-    public:
+    protected:
         ValueSpecification * defaultValue;
+    public: 
+        void setDefaultValue(ValueSpecification* val);
+        ValueSpecification* getDefaultValue();
 };
 }
 #endif

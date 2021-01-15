@@ -1,12 +1,13 @@
 #include "gtest/gtest.h"
 #include "../../../cpp/uml/headers/typedElement.h"
+#include "../../../cpp/uml/headers/class.h"
 
 using namespace UML;
 
 class TypedElementTest : public ::testing::Test {
     public:
     TypedElement typedEl;
-    Type type;
+    Class type;
     TypedElement* typedElPtr;
 
     protected:

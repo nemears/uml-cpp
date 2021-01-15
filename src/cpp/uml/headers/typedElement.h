@@ -12,6 +12,9 @@ class TypedElement : public NamedElement {
     public:
         Type* getType();
         void setType(Type* type);
+        TypedElement() {
+            type = NULL;
+        };
 };
 }
 

@@ -1,11 +1,12 @@
 #include "gtest/gtest.h"
 #include "../../../cpp/parsers/headers/modelParser.h"
 #include "../../../cpp/uml/headers/typedElement.h"
+#include "../../../cpp/uml/headers/primitiveType.h"
 
 class TypedElementParserTest : public ::testing::Test {
     public:
-        ModelParser *ppYAML;
-        YAML::Node node;
+        ModelParser *ppYAML, * ppPrimitive;
+        YAML::Node node, primitiveNode;
     protected:
   // You can remove any or all of the following functions if their bodies would
   // be empty.
@@ -35,4 +36,16 @@ class TypedElementParserTest : public ::testing::Test {
 TEST_F(TypedElementParserTest, ParseTypeTest) {
   EXPECT_EQ(((UML::TypedElement*)(*ppYAML->elements)[boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d")])->getType()->uuid, boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2"));
   EXPECT_EQ(((UML::TypedElement*)(*ppYAML->elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getType()->uuid, boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
+}
+
+TEST_F(TypedElementParserTest, ParsePrimitiveTest) {
+
+  ppPrimitive = new ModelParser(new map<boost::uuids::uuid, UML::Element*>);
+
+  primitiveNode = YAML::LoadFile("../../../../../src/test/yml/typedElementTests/primitives.yml");
+  EXPECT_NO_THROW(ppPrimitive->parse(primitiveNode));
+  EXPECT_EQ(((UML::PrimitiveType*)((UML::TypedElement*)(*ppPrimitive->elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getType())->getPrimitiveType(), UML::PrimitiveType::Primitive::STRING);
+
+  delete ppPrimitive->elements;
+  delete ppPrimitive;
 }

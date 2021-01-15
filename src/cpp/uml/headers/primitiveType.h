@@ -5,7 +5,7 @@
 namespace UML{
 class PrimitiveType : public Classifier {
     public:
-        enum Primitive {INT, REAL, BOOL, STRING};
+        enum Primitive {INT = 0, REAL = 1, BOOL = 2, STRING = 3};
         void setPrimitiveType(Primitive primitive);
         Primitive getPrimitiveType();
     private:

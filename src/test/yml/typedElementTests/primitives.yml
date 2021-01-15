@@ -1,0 +1,11 @@
+---
+  model :
+    children:
+      - class:
+          attributes:
+            - property:
+                type : STRING
+                id : "c0ab87cc-d00b-4afb-9558-538253b442b2"
+            - property:
+                type : INT
+                id : "7d18ee42-82c6-4f52-8ec4-fab67a75ff35"

@@ -30,6 +30,7 @@ TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
     Property p;
     PrimitiveType stringP;
     stringP.setPrimitiveType(PrimitiveType::Primitive::STRING);
+    p.setType(&stringP);
     LiteralString ls;
     ls.setValue("test");
     ASSERT_NO_THROW(p.setDefaultValue(&ls));
@@ -41,6 +42,9 @@ TEST_F(PropertyTest, setDefaultValueOfImproperTypeTestString) {
 
     // assign it improper type if expecting string
     stringP.setPrimitiveType(PrimitiveType::Primitive::INT);
+
+    p.setType(&stringP);
+    
     LiteralString ls;
     ls.setValue("test");
     EXPECT_THROW(p.setDefaultValue(&ls), Property::InvalidValueException);

@@ -6,6 +6,6 @@
 
 using namespace UML;
 
-bool Classifier::isPrimitive() {
-    return false;
-}
+// bool Classifier::isPrimitive() {
+//     return false;
+// }

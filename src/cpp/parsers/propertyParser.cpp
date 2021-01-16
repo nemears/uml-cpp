@@ -16,23 +16,35 @@ bool PropertyParser::parseFeatures(YAML::Node node, UML::Element* el) {
             switch (((PrimitiveType*) ((Property*)el)->getType())->getPrimitiveType()) {
                 case PrimitiveType::Primitive::STRING : {
                     string stringVal = node["defaultValue"].as<string>();
-                    LiteralString ls;
-                    ls.setValue(stringVal);
+                    LiteralString* ls = new LiteralString;
+                    ls->setValue(stringVal);
+                    ((Property *) el)->setDefaultValue(ls);
+                    break;
                 }
                 case PrimitiveType::Primitive::INT : {
                     int intVal = node["defaultValue"].as<int>();
-                    LiteralInt li;
-                    li.setValue(intVal);
+                    LiteralInt* li = new LiteralInt;
+                    li->setValue(intVal);
+                    ((Property *) el)->setDefaultValue(li);
+                    break;
                 }
                 case PrimitiveType::Primitive::REAL : {
                     double realVal = node["defaultValue"].as<double>();
-                    LiteralReal lr;
-                    lr.setValue(realVal);
+                    LiteralReal* lr = new LiteralReal;
+                    lr->setValue(realVal);
+                    ((Property *) el)->setDefaultValue(lr);
+                    break;
                 }
                 case PrimitiveType::Primitive::BOOL : {
-                    bool boolBal = node["defaultValue"].as<bool>();
-                    LiteralBool lb;
-                    lb.setValue(boolBal);
+                    bool boolVal = node["defaultValue"].as<bool>();
+                    LiteralBool* lb = new LiteralBool;
+                    lb->setValue(boolVal);
+                    ((Property *) el)->setDefaultValue(lb);
+                    break;
+                }
+                default : {
+                    //TODO error
+                    break;
                 }
             }
         } else {

@@ -4,8 +4,23 @@
       - class :
           attributes :
             - property :
-                name : "test"
+                name : "testString"
                 id : "16c345b4-5ae2-41ca-a0e7-a9c386ac941d"
                 type : STRING
                 defaultValue: "testValue"
+            - property :
+                name : "testInt"
+                id : "7d18ee42-82c6-4f52-8ec4-fab67a75ff35"
+                type : INT
+                defaultValue: -444
+            - property :
+                name : "testReal"
+                id : "c0ab87cc-d00b-4afb-9558-538253b442b2"
+                type : REAL
+                defaultValue: 555.888
+            - property :
+                name : "testBool"
+                id : "190d1cb9-13dc-44e6-a064-126891ae0033"
+                type : BOOL
+                defaultValue: false
 ...

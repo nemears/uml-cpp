@@ -1,5 +1,6 @@
 #include "headers/elementParser.h"
 #include "headers/classParser.h"
+#include "headers/instanceSpecificationParser.h"
 
 bool ElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
     if (node["id"]) {
@@ -21,6 +22,10 @@ bool ElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
                 if (node["children"][i]["class"]) {
                     ClassParser classParser(elements);
                     UML::Element* parsedEl = classParser.parseElement(node["children"][i]["class"]);
+                    el->ownedElements.push_back(parsedEl);
+                } else if (node["children"][i]["instanceSpecification"]){
+                    InstanceSpecificationParser instanceParser(elements);
+                    UML::Element* parsedEl = instanceParser.parseElement(node["children"][i]["instanceSpecification"]);
                     el->ownedElements.push_back(parsedEl);
                 } else if (node["children"][i]["other types here"]) {
                     // TODO TODO TODO

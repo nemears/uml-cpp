@@ -55,7 +55,7 @@ TEST_F(PropertyParserTest, defaultValueTest) {
     ASSERT_TRUE(((PrimitiveType*)((Property*)(*ppDefaultValue->elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getDefaultValue()->getType())->getPrimitiveType() == PrimitiveType::Primitive::REAL);
     ASSERT_TRUE(((LiteralReal*)((Property*)(*ppDefaultValue->elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getDefaultValue())->getValue() == 555.888);
 
-    // test int
+    // test bool
     ASSERT_TRUE(((Property*)(*ppDefaultValue->elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getType()->isPrimitive());
     ASSERT_TRUE(((PrimitiveType*)((Property*)(*ppDefaultValue->elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getType())->getPrimitiveType() == PrimitiveType::Primitive::BOOL);
     ASSERT_TRUE(((Property*)(*ppDefaultValue->elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getDefaultValue()->getType()->isPrimitive());

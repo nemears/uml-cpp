@@ -27,9 +27,11 @@ TEST_F(InstanceSpecificationTest, setStringValueSlots) {
     LiteralString ls;
     ls.setValue("test");
     Slot stringSlot;
+    stringSlot.setDefiningFeature(&stringP);
     stringSlot.values.push_back(&ls);
     InstanceSpecification i;
     i.slots.push_back(&stringSlot);
     ASSERT_TRUE(i.slots.front()->uuid == stringSlot.uuid);
+    ASSERT_TRUE(i.slots.front()->getDefiningFeature()->uuid == stringP.uuid);
     ASSERT_TRUE(i.slots.front()->values.front()->uuid == ls.uuid);
 }

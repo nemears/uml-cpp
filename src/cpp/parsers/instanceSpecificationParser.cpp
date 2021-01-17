@@ -1,5 +1,6 @@
 #include "headers/instanceSpecificationParser.h"
 #include "../uml/headers/instanceSpecification.h"
+#include "headers/slotParser.h"
 
 Element* InstanceSpecificationParser::createElement() {
     return new InstanceSpecification;
@@ -20,7 +21,11 @@ bool InstanceSpecificationParser::parseFeatures(YAML::Node node, UML::Element* e
 
     if (node["slots"]) {
         for (std::size_t i = 0; i < node["slots"].size(); i++) {
-            // TODO slot parser
+            if (node["slots"][i]["slot"]) {
+                SlotParser slotParser(elements);
+                Slot* parsedEl = (Slot*) slotParser.parseElement(node["slots"][i]["slot"]);
+                ((InstanceSpecification*) el)->slots.push_back(parsedEl);
+            }
         }
     }
 

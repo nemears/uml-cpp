@@ -2,6 +2,12 @@
 #define SLOTPARSER
 
 #include "elementParser.h"
+#include "../uml/headers/slot.h"
+#include "../uml/headers/primitiveType.h"
+#include "../../uml/headers/literalString.h"
+#include "../../uml/headers/literalInt.h"
+#include "../../uml/headers/literalReal.h"
+#include "../../uml/headers/literalBool.h"
 
 using namespace UML;
 

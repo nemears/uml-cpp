@@ -8,6 +8,7 @@
 #include "../../uml/headers/literalInt.h"
 #include "../../uml/headers/literalReal.h"
 #include "../../uml/headers/literalBool.h"
+#include "../../uml/headers/instanceSpecification.h"
 
 using namespace UML;
 

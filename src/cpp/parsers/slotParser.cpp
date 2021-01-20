@@ -56,7 +56,17 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
                     }
                 }
             } else {
-                // instances
+                string parsedId = node["value"].as<string>();
+
+                if (UML::isValidUUID4(parsedId)) {
+                    boost::uuids::uuid valueId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
+
+                    InstanceSpecification* value = (InstanceSpecification*)(*elements)[valueId];
+
+                    // TODO UML::InstanceValue
+
+                    //((Slot*)el)->values.push_back(value);
+                }
             }
         } else {
             // TODO ERROR

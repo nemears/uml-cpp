@@ -3,6 +3,7 @@
 #include "../../../cpp/uml/headers/class.h"
 #include "../../../cpp/uml/headers/primitiveType.h"
 #include "../../../cpp/uml/headers/literalString.h"
+#include "../../../cpp/uml/headers/instanceValue.h"
 
 using namespace UML;
 
@@ -35,3 +36,27 @@ TEST_F(InstanceSpecificationTest, setStringValueSlots) {
     ASSERT_TRUE(i.slots.front()->getDefiningFeature()->uuid == stringP.uuid);
     ASSERT_TRUE(i.slots.front()->values.front()->uuid == ls.uuid);
 }
+
+TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
+    Class c;
+    c.setName("typeA");
+    Class b;
+    b.setName("typeB");
+    Property bProp;
+    bProp.setName("b");
+    bProp.setType(&b);
+    c.ownedAttributes.push_back(&bProp);
+    InstanceSpecification bInst;
+    bInst.setClassifier(&b);
+    InstanceSpecification aInst;
+    aInst.setClassifier(&c);
+    InstanceValue bVal;
+    bVal.setInstance(&bInst);
+    Slot aSlot;
+    aSlot.setDefiningFeature(&bProp);
+    aSlot.values.push_back(&bVal);
+    aInst.slots.push_back(&aSlot);
+    ASSERT_TRUE(aInst.slots.front()->getDefiningFeature()->uuid == bProp.uuid);
+}
+
+// TODO add throw for pushing slots that don't correspond structural feature

@@ -39,6 +39,6 @@ TEST_F(InstanceSpecificationParserTest, PrimitiveSlotTest) {
     ASSERT_TRUE(((InstanceSpecification*)(*ppInstanceSpecification->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")])->slots.front()->getDefiningFeature()->getType()->isPrimitive());
     ASSERT_TRUE(((PrimitiveType*)((InstanceSpecification*)(*ppInstanceSpecification->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")])->slots.front()->getDefiningFeature()->getType())->getPrimitiveType() == PrimitiveType::Primitive::STRING);
     ASSERT_TRUE(((InstanceSpecification*)(*ppInstanceSpecification->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")])->slots.front()->values.empty() == false);
-    //ASSERT_TRUE(((LiteralString*)((InstanceSpecification*)(*ppInstanceSpecification->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")])->slots.front()->values.front())->getValue().compare("test") == 0);
+    ASSERT_TRUE(((LiteralString*)((InstanceSpecification*)(*ppInstanceSpecification->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")])->slots.front()->values.front())->getValue().compare("test") == 0);
     
 }

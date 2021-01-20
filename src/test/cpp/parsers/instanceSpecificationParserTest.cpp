@@ -16,7 +16,7 @@ class InstanceSpecificationParserTest : public ::testing::Test {
 
   void SetUp() override {
     ppInstanceSpecification = new ModelParser(new map<boost::uuids::uuid, Element*>);
-    instanceSpecificationNode = YAML::LoadFile("../../../../../src/test/yml/instanceSpecificationTests/instanceSpecification.yml");
+    instanceSpecificationNode = YAML::LoadFile("../../../../../src/test/yml/instanceSpecificationTests/primitiveSlot.yml");
   }
 
   void TearDown() override {

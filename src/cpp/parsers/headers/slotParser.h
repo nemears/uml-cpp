@@ -9,6 +9,7 @@
 #include "../../uml/headers/literalReal.h"
 #include "../../uml/headers/literalBool.h"
 #include "../../uml/headers/instanceSpecification.h"
+#include "../../uml/headers/instanceValue.h"
 
 using namespace UML;
 

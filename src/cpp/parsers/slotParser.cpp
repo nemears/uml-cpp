@@ -63,9 +63,10 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
 
                     InstanceSpecification* value = (InstanceSpecification*)(*elements)[valueId];
 
-                    // TODO UML::InstanceValue
+                    InstanceValue instVal;
+                    instVal.setInstance(value);
 
-                    //((Slot*)el)->values.push_back(value);
+                    ((Slot*)el)->values.push_back(&instVal);
                 }
             }
         } else {

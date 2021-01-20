@@ -8,8 +8,8 @@ using namespace UML;
 
 class InstanceSpecificationParserTest : public ::testing::Test {
     public:
-        ModelParser* ppInstanceSpecification;
-        YAML::Node instanceSpecificationNode;
+        ModelParser* ppInstanceSpecification, * ppInstanceValue;
+        YAML::Node instanceSpecificationNode, instanceValueNode;
     protected:
   // You can remove any or all of the following functions if their bodies would
   // be empty.
@@ -17,6 +17,9 @@ class InstanceSpecificationParserTest : public ::testing::Test {
   void SetUp() override {
     ppInstanceSpecification = new ModelParser(new map<boost::uuids::uuid, Element*>);
     instanceSpecificationNode = YAML::LoadFile("../../../../../src/test/yml/instanceSpecificationTests/primitiveSlot.yml");
+
+    ppInstanceValue = new ModelParser(new map<boost::uuids::uuid, Element*>);
+    instanceValueNode = YAML::LoadFile("../../../../../src/test/yml/instanceSpecificationTests/instanceSlot.yml");
   }
 
   void TearDown() override {
@@ -41,4 +44,8 @@ TEST_F(InstanceSpecificationParserTest, PrimitiveSlotTest) {
     ASSERT_TRUE(((InstanceSpecification*)(*ppInstanceSpecification->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")])->slots.front()->values.empty() == false);
     ASSERT_TRUE(((LiteralString*)((InstanceSpecification*)(*ppInstanceSpecification->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")])->slots.front()->values.front())->getValue().compare("test") == 0);
     
+}
+
+TEST_F(InstanceSpecificationParserTest, InstanceSlotTest) {
+  ASSERT_NO_THROW(ppInstanceValue->parse(instanceValueNode));
 }

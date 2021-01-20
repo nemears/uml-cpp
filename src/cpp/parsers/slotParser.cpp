@@ -19,42 +19,42 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
         }
     }
     if (node["value"]) {
-        if (((StructuralFeature*)((Slot*) el)->getDefiningFeature())->getType() == NULL) {
+        if (((StructuralFeature*)((Slot*) el)->getDefiningFeature())->getType() != NULL) {
             if (((StructuralFeature*)((Slot*) el)->getDefiningFeature())->getType()->isPrimitive()) {
-            switch (((PrimitiveType*) ((StructuralFeature*)el)->getType())->getPrimitiveType()) {
-                case PrimitiveType::Primitive::STRING : {
-                    string stringVal = node["value"].as<string>();
-                    LiteralString* ls = new LiteralString;
-                    ls->setValue(stringVal);
-                    ((Slot *) el)->values.push_back(ls);
-                    break;
+                switch (((PrimitiveType*) ((StructuralFeature*)((Slot*) el)->getDefiningFeature())->getType())->getPrimitiveType()) {
+                    case PrimitiveType::Primitive::STRING : {
+                        string stringVal = node["value"].as<string>();
+                        LiteralString* ls = new LiteralString;
+                        ls->setValue(stringVal);
+                        ((Slot *) el)->values.push_back(ls);
+                        break;
+                    }
+                    case PrimitiveType::Primitive::INT : {
+                        int intVal = node["value"].as<int>();
+                        LiteralInt* li = new LiteralInt;
+                        li->setValue(intVal);
+                        ((Slot *) el)->values.push_back(li);
+                        break;
+                    }
+                    case PrimitiveType::Primitive::REAL : {
+                        double realVal = node["value"].as<double>();
+                        LiteralReal* lr = new LiteralReal;
+                        lr->setValue(realVal);
+                        ((Slot *) el)->values.push_back(lr);
+                        break;
+                    }
+                    case PrimitiveType::Primitive::BOOL : {
+                        bool boolVal = node["value"].as<bool>();
+                        LiteralBool* lb = new LiteralBool;
+                        lb->setValue(boolVal);
+                        ((Slot *) el)->values.push_back(lb);
+                        break;
+                    }
+                    default : {
+                        //TODO error
+                        break;
+                    }
                 }
-                case PrimitiveType::Primitive::INT : {
-                    int intVal = node["value"].as<int>();
-                    LiteralInt* li = new LiteralInt;
-                    li->setValue(intVal);
-                    ((Slot *) el)->values.push_back(li);
-                    break;
-                }
-                case PrimitiveType::Primitive::REAL : {
-                    double realVal = node["value"].as<double>();
-                    LiteralReal* lr = new LiteralReal;
-                    lr->setValue(realVal);
-                    ((Slot *) el)->values.push_back(lr);
-                    break;
-                }
-                case PrimitiveType::Primitive::BOOL : {
-                    bool boolVal = node["value"].as<bool>();
-                    LiteralBool* lb = new LiteralBool;
-                    lb->setValue(boolVal);
-                    ((Slot *) el)->values.push_back(lb);
-                    break;
-                }
-                default : {
-                    //TODO error
-                    break;
-                }
-            }
             } else {
                 // instances
             }

@@ -10,6 +10,9 @@ namespace UML{
             list<Slot*> slots;
             Classifier* getClassifier();
             void setClassifier(Classifier* classifier);
+            InstanceSpecification() {
+                classifier = NULL;
+            }
         protected:
             Classifier* classifier;
     };

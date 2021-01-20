@@ -3,6 +3,7 @@
 #include "../../../cpp/uml/headers/instanceSpecification.h"
 #include "../../../cpp/uml/headers/primitiveType.h"
 #include "../../../cpp/uml/headers/literalString.h"
+#include "../../../cpp/uml/headers/instanceValue.h"
 
 using namespace UML;
 
@@ -48,4 +49,16 @@ TEST_F(InstanceSpecificationParserTest, PrimitiveSlotTest) {
 
 TEST_F(InstanceSpecificationParserTest, InstanceSlotTest) {
   ASSERT_NO_THROW(ppInstanceValue->parse(instanceValueNode));
+  ASSERT_TRUE(((InstanceSpecification*)(*ppInstanceValue->elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getClassifier() != NULL);
+  ASSERT_TRUE(((InstanceSpecification*)(*ppInstanceValue->elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getClassifier()->uuid == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
+  ASSERT_TRUE(((InstanceSpecification*)(*ppInstanceValue->elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->slots.empty());
+  ASSERT_TRUE(((InstanceSpecification*)(*ppInstanceValue->elements)[boost::lexical_cast<boost::uuids::uuid>("563f4740-e107-4d08-8618-2489f0fe1865")])->getClassifier() != NULL);
+  ASSERT_TRUE(((InstanceSpecification*)(*ppInstanceValue->elements)[boost::lexical_cast<boost::uuids::uuid>("563f4740-e107-4d08-8618-2489f0fe1865")])->getClassifier()->uuid == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
+  ASSERT_TRUE(((InstanceSpecification*)(*ppInstanceValue->elements)[boost::lexical_cast<boost::uuids::uuid>("563f4740-e107-4d08-8618-2489f0fe1865")])->slots.empty() == false);
+  ASSERT_TRUE(((InstanceSpecification*)(*ppInstanceValue->elements)[boost::lexical_cast<boost::uuids::uuid>("563f4740-e107-4d08-8618-2489f0fe1865")])->slots.front()->uuid == boost::lexical_cast<boost::uuids::uuid>("d9ab2f06-4c2c-4330-9e1b-7eaee423a66a"));
+  ASSERT_TRUE(((InstanceSpecification*)(*ppInstanceValue->elements)[boost::lexical_cast<boost::uuids::uuid>("563f4740-e107-4d08-8618-2489f0fe1865")])->slots.front()->getDefiningFeature()->uuid == boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
+  ASSERT_TRUE(((InstanceSpecification*)(*ppInstanceValue->elements)[boost::lexical_cast<boost::uuids::uuid>("563f4740-e107-4d08-8618-2489f0fe1865")])->slots.front()->getDefiningFeature()->getType() != NULL);
+  ASSERT_TRUE(((InstanceSpecification*)(*ppInstanceValue->elements)[boost::lexical_cast<boost::uuids::uuid>("563f4740-e107-4d08-8618-2489f0fe1865")])->slots.front()->getDefiningFeature()->getType()->uuid == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
+  ASSERT_TRUE(((InstanceValue*)((InstanceSpecification*)(*ppInstanceValue->elements)[boost::lexical_cast<boost::uuids::uuid>("563f4740-e107-4d08-8618-2489f0fe1865")])->slots.front()->values.front())->getInstance()->uuid == boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2"));
+    
 }

@@ -63,10 +63,10 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
 
                     InstanceSpecification* value = (InstanceSpecification*)(*elements)[valueId];
 
-                    InstanceValue instVal;
-                    instVal.setInstance(value);
+                    InstanceValue* instVal = new InstanceValue();
+                    instVal->setInstance(value);
 
-                    ((Slot*)el)->values.push_back(&instVal);
+                    ((Slot*)el)->values.push_back(instVal);
                 }
             }
         } else {

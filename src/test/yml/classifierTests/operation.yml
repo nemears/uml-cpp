@@ -1,0 +1,16 @@
+---
+  model:
+    children:
+      - class:
+          name: "test"
+          operations:
+            - operation:
+                name: isValid
+                parameter:
+                  name : debug
+                  type : BOOL
+                methods:
+                  - opaqueBehavior:
+                      name: isValid
+                      body: "return true"
+...

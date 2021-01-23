@@ -1,4 +1,4 @@
 add_executable(parserTest elementParserTest.cpp namedElementParserTest.cpp typedElementParserTest.cpp classifierParserTest.cpp 
-                          propertyParserTest.cpp instanceSpecificationParserTest.cpp)
+                          propertyParserTest.cpp instanceSpecificationParserTest.cpp classParserTest.cpp)
 target_link_libraries(parserTest PUBLIC gtest gmock gtest_main Parsers Uml)
 add_test(parserTest parserTest)

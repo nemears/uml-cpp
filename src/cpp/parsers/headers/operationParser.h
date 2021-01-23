@@ -13,7 +13,7 @@ class OperationParser : public NamedElementParser {
 
     public:
         OperationParser(map<boost::uuids::uuid, UML::Element*>* elements) : NamedElementParser(elements){
-            // this->elements = elements;
+            this->keyword = "operation";
         };
 };
 

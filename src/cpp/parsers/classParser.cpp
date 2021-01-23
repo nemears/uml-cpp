@@ -5,5 +5,14 @@ UML::Element* ClassParser::createElement() {
 }
 
 bool ClassParser::parseFeatures(YAML::Node node, UML::Element* el) {
+
+    if (node["operations"]) {
+        if (node["operations"].IsSequence()) {
+            for (std::size_t i=0; i<node["operations"].size(); i++) {
+                // TODO operations parser
+            }
+        }
+    }
+
     return ClassifierParser::parseFeatures(node, el);
 }

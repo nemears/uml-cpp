@@ -1,12 +1,24 @@
 #ifndef CLASS
 #define CLASS
+#include <list>
 #include "classifier.h"
 using namespace std;
 
 namespace UML{
-class Class : public Classifier {
 
-};
+    /**
+     * This is a forward declaration of Operation because the method field in Operation is of type Behavior
+     * which inherits from this class (Class), so we just declare operation here and include the header in class.cpp
+     **/
+    class Operation;
+
+    /**
+     * Definition of class here
+     **/
+    class Class : public Classifier {
+        public:
+            list<Operation*> operations;
+    };
 }
 
 #endif

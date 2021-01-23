@@ -11,9 +11,9 @@ set(Boost_DEBUG 1)
 FIND_PACKAGE( Boost 1.71.0 REQUIRED )
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
-add_subdirectory(libs/google_test/google_test_source/googletest)
+add_subdirectory(libs/googletest)
 
-add_subdirectory(libs/yaml-cpp-yaml-cpp-0.6.3)
+add_subdirectory(libs/yaml-cpp)
 
 add_subdirectory(src)
 

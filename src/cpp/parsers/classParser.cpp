@@ -1,15 +1,19 @@
 #include "headers/classParser.h"
 
-UML::Element* ClassParser::createElement() {
-    return new UML::Class;
+using namespace UML;
+
+Element* ClassParser::createElement() {
+    return new Class;
 }
 
-bool ClassParser::parseFeatures(YAML::Node node, UML::Element* el) {
+bool ClassParser::parseFeatures(YAML::Node node, Element* el) {
 
     if (node["operations"]) {
         if (node["operations"].IsSequence()) {
             for (std::size_t i=0; i<node["operations"].size(); i++) {
-                // TODO operations parser
+                OperationParser operationParser(elements);
+                Element* parsedEl = operationParser.parseElement(node);
+                ((Class*) el)->operations.push_back((Operation*) parsedEl);
             }
         }
     }

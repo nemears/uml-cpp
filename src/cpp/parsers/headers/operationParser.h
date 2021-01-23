@@ -2,11 +2,13 @@
 #define OPERATIONPARSER
 
 #include "namedElementParser.h"
+#include "../../uml/headers/operation.h"
 
 using namespace UML;
 
 class OperationParser : public NamedElementParser {
     protected:
+        UML::Element* createElement();
         bool parseFeatures(YAML::Node node, UML::Element* el);
 
     public:

@@ -1,6 +1,7 @@
 #ifndef CLASSPARSER
 #define CLASSPARSER
 #include "classifierParser.h"
+#include "operationParser.h"
 #include "../../uml/headers/class.h"
 using namespace std;
 

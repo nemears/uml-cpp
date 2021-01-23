@@ -2,6 +2,7 @@
 #define OPERATIONPARSER
 
 #include "namedElementParser.h"
+#include "parameterParser.h"
 #include "../../uml/headers/operation.h"
 
 using namespace UML;

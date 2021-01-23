@@ -12,7 +12,7 @@ bool ClassParser::parseFeatures(YAML::Node node, Element* el) {
         if (node["operations"].IsSequence()) {
             for (std::size_t i=0; i<node["operations"].size(); i++) {
                 OperationParser operationParser(elements);
-                Element* parsedEl = operationParser.parseElement(node);
+                Element* parsedEl = operationParser.parseElement(node["operations"][i]["operation"]);
                 ((Class*) el)->operations.push_back((Operation*) parsedEl);
             }
         }

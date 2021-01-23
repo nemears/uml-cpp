@@ -9,7 +9,9 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["parameters"]) {
         if (node["parameters"].IsSequence()) {
             for (std::size_t i=0; i<node["parameters"].size(); i++) {
-                // TODO parameterParser
+                ParameterParser parameterParser(elements);
+                Element* parsedEl = parameterParser.parseElement(node["parameters"][i]["parameter"]);
+                ((Operation*) el)->parameters.push_back((Parameter*) parsedEl);
             }
         }
     }

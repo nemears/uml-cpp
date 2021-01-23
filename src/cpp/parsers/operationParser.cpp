@@ -19,7 +19,13 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["methods"]) {
         if (node["methods"].IsSequence()) {
             for (std::size_t i=0; i<node["methods"].size(); i++) {
-                // TODO opaqueBehaviorParser
+                if (node["methods"][i]["opaqueBehavior"]) {
+                    OpaqueBehaviorParser opaqueBehaviorParser(elements);
+                    Element* parsedEl = opaqueBehaviorParser.parseElement(node["methods"][i]["opaqueBehavior"]);
+                    ((Operation*) el)->methods.push_back((OpaqueBehavior*) parsedEl);
+                }
+
+                // TODO other types here
             }
         }
     }

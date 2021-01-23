@@ -1,4 +1,5 @@
 #include "headers/classParser.h"
+#include "headers/operationParser.h"
 
 using namespace UML;
 

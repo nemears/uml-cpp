@@ -30,5 +30,39 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
         }
     }
 
+    if (node["type"]) {
+        string parsedId = node["type"].as<string>();
+
+        if (UML::isValidUUID4(parsedId)) {
+            boost::uuids::uuid typeId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
+
+            Type* type = (Type*)(*elements)[typeId];
+
+            ((TypedElement*)el)->setType(type);
+        } else {
+            if (parsedId.compare("STRING") == 0) {
+                PrimitiveType* stringType = new PrimitiveType;
+                stringType->setPrimitiveType(PrimitiveType::Primitive::STRING);
+                ((Operation*)el)->setType(stringType);
+            } else if (parsedId.compare("INT") == 0) {
+                PrimitiveType* intType = new PrimitiveType;
+                intType->setPrimitiveType(PrimitiveType::Primitive::INT);
+                ((Operation*)el)->setType(intType);
+            } else if (parsedId.compare("REAL") == 0) {
+                PrimitiveType* realType = new PrimitiveType;
+                realType->setPrimitiveType(PrimitiveType::Primitive::REAL);
+                ((Operation*)el)->setType(realType);
+            } else if (parsedId.compare("BOOL") == 0) {
+                PrimitiveType* boolType = new PrimitiveType;
+                boolType->setPrimitiveType(PrimitiveType::Primitive::BOOL);
+                ((Operation*)el)->setType(boolType);
+            } else {
+                // ERROR
+                cerr << "Invalid type detected " << parsedId << '\n';
+            }
+        }
+        
+    }
+
     return NamedElementParser::parseFeatures(node, el);
 }

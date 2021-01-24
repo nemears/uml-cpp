@@ -12,6 +12,10 @@ namespace UML {
         public:
             list<Behavior*> methods;
             list<Parameter*> parameters;
+            Type* getType();
+            void setType(Type* type);
+        protected:
+            Type* type;
     };
 }
 

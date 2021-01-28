@@ -1,4 +1,4 @@
-#include "parsers/modelParser.h"
+#include "yuml-parsers/modelParser.h"
 
 UML::Element* ModelParser::createElement() {
     return new UML::Model;

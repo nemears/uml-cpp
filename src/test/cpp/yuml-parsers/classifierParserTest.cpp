@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "parsers/modelParser.h"
+#include "yuml-parsers/modelParser.h"
 #include "uml/classifier.h"
 
 class ClassifierParserTest : public ::testing::Test {

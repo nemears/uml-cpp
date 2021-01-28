@@ -1,4 +1,4 @@
-#include "parsers/parameterParser.h"
+#include "yuml-parsers/parameterParser.h"
 
 Element* ParameterParser::createElement() {
     return new Parameter;

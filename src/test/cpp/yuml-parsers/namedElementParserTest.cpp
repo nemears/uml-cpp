@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "parsers/classParser.h"
+#include "yuml-parsers/classParser.h"
 
 class NamedElementParserTest : public ::testing::Test {
     public:

@@ -1,7 +1,7 @@
 #ifndef APPLICATION
 #define APPLICATION
-#include "parsers/modelParser.h"
-#include "parsers/classParser.h"
+#include "yuml-parsers/modelParser.h"
+#include "yuml-parsers/classParser.h"
 #include "yaml-cpp/yaml.h"
 #include <string>
 #include <stdlib.h>

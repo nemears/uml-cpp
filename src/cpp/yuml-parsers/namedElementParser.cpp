@@ -1,4 +1,4 @@
-#include "parsers/namedElementParser.h"
+#include "yuml-parsers/namedElementParser.h"
 
 bool NamedElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
 

@@ -1,6 +1,6 @@
-#include "parsers/elementParser.h"
-#include "parsers/classParser.h"
-#include "parsers/instanceSpecificationParser.h"
+#include "yuml-parsers/elementParser.h"
+#include "yuml-parsers/classParser.h"
+#include "yuml-parsers/instanceSpecificationParser.h"
 
 bool ElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
     if (node["id"]) {

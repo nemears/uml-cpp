@@ -1,4 +1,4 @@
-#include "parsers/opaqueBehaviorParser.h"
+#include "yuml-parsers/opaqueBehaviorParser.h"
 
 Element* OpaqueBehaviorParser::createElement() {
     return new OpaqueBehavior;

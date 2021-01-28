@@ -1,5 +1,5 @@
-#include "parsers/classParser.h"
-#include "parsers/operationParser.h"
+#include "yuml-parsers/classParser.h"
+#include "yuml-parsers/operationParser.h"
 
 using namespace UML;
 

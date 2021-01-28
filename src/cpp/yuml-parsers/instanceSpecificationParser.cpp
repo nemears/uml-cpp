@@ -1,6 +1,6 @@
-#include "parsers/instanceSpecificationParser.h"
+#include "yuml-parsers/instanceSpecificationParser.h"
 #include "uml/instanceSpecification.h"
-#include "parsers/slotParser.h"
+#include "yuml-parsers/slotParser.h"
 
 Element* InstanceSpecificationParser::createElement() {
     return new InstanceSpecification;

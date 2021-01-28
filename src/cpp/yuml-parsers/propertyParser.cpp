@@ -1,4 +1,4 @@
-#include "parsers/propertyParser.h"
+#include "yuml-parsers/propertyParser.h"
 
 using namespace UML;
 

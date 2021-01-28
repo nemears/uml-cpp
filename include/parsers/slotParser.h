@@ -2,14 +2,14 @@
 #define SLOTPARSER
 
 #include "elementParser.h"
-#include "../uml/headers/slot.h"
-#include "../uml/headers/primitiveType.h"
-#include "../../uml/headers/literalString.h"
-#include "../../uml/headers/literalInt.h"
-#include "../../uml/headers/literalReal.h"
-#include "../../uml/headers/literalBool.h"
-#include "../../uml/headers/instanceSpecification.h"
-#include "../../uml/headers/instanceValue.h"
+#include "uml/slot.h"
+#include "uml/primitiveType.h"
+#include "uml/literalString.h"
+#include "uml/literalInt.h"
+#include "uml/literalReal.h"
+#include "uml/literalBool.h"
+#include "uml/instanceSpecification.h"
+#include "uml/instanceValue.h"
 
 using namespace UML;
 

@@ -2,7 +2,7 @@
 #define MODELPARSER
 #include "templateParser.h"
 #include "namespaceParser.h"
-#include "../../uml/headers/model.h"
+#include "uml/model.h"
 using namespace std;
 
 class ModelParser : public NamespaceParser {

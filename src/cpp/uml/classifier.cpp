@@ -1,4 +1,4 @@
-#include "headers/classifier.h"
+#include "uml/classifier.h"
 
 // list<Property*> Classifier::getOwnedAttributes() {
 //     return ownedAttributes;

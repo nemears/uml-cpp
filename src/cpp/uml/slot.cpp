@@ -1,4 +1,4 @@
-#include "headers/slot.h"
+#include "uml/slot.h"
 
 using namespace UML;
 

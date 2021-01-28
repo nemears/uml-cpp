@@ -4,7 +4,7 @@
 #include "namedElementParser.h"
 #include "parameterParser.h"
 #include "opaqueBehaviorParser.h"
-#include "../../uml/headers/operation.h"
+#include "uml/operation.h"
 
 using namespace UML;
 

@@ -1,4 +1,4 @@
-#include "headers/instanceValue.h"
+#include "uml/instanceValue.h"
 
 using namespace UML;
 

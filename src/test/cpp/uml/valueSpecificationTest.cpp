@@ -1,11 +1,11 @@
 #include "gtest/gtest.h"
-#include "../../../cpp/uml/headers/valueSpecification.h"
-#include "../../../cpp/uml/headers/property.h"
-#include "../../../cpp/uml/headers/primitiveType.h"
-#include "../../../cpp/uml/headers/literalString.h"
-#include "../../../cpp/uml/headers/literalInt.h"
-#include "../../../cpp/uml/headers/literalReal.h"
-#include "../../../cpp/uml/headers/literalBool.h"
+#include "uml/valueSpecification.h"
+#include "uml/property.h"
+#include "uml/primitiveType.h"
+#include "uml/literalString.h"
+#include "uml/literalInt.h"
+#include "uml/literalReal.h"
+#include "uml/literalBool.h"
 
 using namespace UML;
 

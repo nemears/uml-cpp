@@ -1,4 +1,4 @@
-#include "headers/slotParser.h"
+#include "parsers/slotParser.h"
 
 using namespace UML;
 

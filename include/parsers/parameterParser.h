@@ -2,7 +2,7 @@
 #define PARAMETERPARSER
 
 #include "typedElementParser.h"
-#include "../../uml/headers/parameter.h"
+#include "uml/parameter.h"
 
 using namespace std;
 using namespace UML;

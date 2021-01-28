@@ -1,4 +1,4 @@
-#include "headers/typedElementParser.h"
+#include "parsers/typedElementParser.h"
 
 bool TypedElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
     if (node["type"]) {

@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
-#include "../../../cpp/parsers/headers/modelParser.h"
-#include "../../../cpp/uml/headers/typedElement.h"
-#include "../../../cpp/uml/headers/primitiveType.h"
+#include "parsers/modelParser.h"
+#include "uml/typedElement.h"
+#include "uml/primitiveType.h"
 
 class TypedElementParserTest : public ::testing::Test {
     public:

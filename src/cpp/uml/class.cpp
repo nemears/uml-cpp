@@ -1,2 +1,2 @@
-#include "headers/class.h"
-#include "headers/operation.h"
+#include "uml/class.h"
+#include "uml/operation.h"

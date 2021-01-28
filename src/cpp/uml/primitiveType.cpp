@@ -1,4 +1,4 @@
-#include "headers/primitiveType.h"
+#include "uml/primitiveType.h"
 
 using namespace UML;
 

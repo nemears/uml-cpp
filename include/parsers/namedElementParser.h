@@ -1,6 +1,6 @@
 #ifndef NAMEDELEMENTPARSER
 #define NAMEDELEMENTPARSER
-#include "../../uml/headers/namedElement.h"
+#include "uml/namedElement.h"
 #include "elementParser.h"
 using namespace std;
 

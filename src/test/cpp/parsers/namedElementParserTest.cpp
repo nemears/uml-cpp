@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "../../../cpp/parsers/headers/classParser.h"
+#include "parsers/classParser.h"
 
 class NamedElementParserTest : public ::testing::Test {
     public:

@@ -1,4 +1,4 @@
-#include "headers/type.h"
+#include "uml/type.h"
 
 using namespace UML;
 

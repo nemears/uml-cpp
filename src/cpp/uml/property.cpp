@@ -1,5 +1,5 @@
-#include "headers/property.h"
-#include "headers/primitiveType.h"
+#include "uml/property.h"
+#include "uml/primitiveType.h"
 
 using namespace UML;
 

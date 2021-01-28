@@ -2,7 +2,7 @@
 #define NAMESPACEPARSER
 
 #include "namedElementParser.h"
-#include "../../uml/headers/namespace.h"
+#include "uml/namespace.h"
 
 class NamespaceParser : public NamedElementParser {
     protected:

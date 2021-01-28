@@ -1,12 +1,12 @@
 #ifndef PROPERTYPARSER
 #define PROPERTYPARSER
 #include "typedElementParser.h"
-#include "../../uml/headers/property.h"
-#include "../../uml/headers/primitiveType.h"
-#include "../../uml/headers/literalString.h"
-#include "../../uml/headers/literalInt.h"
-#include "../../uml/headers/literalReal.h"
-#include "../../uml/headers/literalBool.h"
+#include "uml/property.h"
+#include "uml/primitiveType.h"
+#include "uml/literalString.h"
+#include "uml/literalInt.h"
+#include "uml/literalReal.h"
+#include "uml/literalBool.h"
 using namespace std;
 
 class PropertyParser : public TypedElementParser {

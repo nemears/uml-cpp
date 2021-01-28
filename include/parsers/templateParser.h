@@ -6,7 +6,7 @@
 #include <map>
 #include <boost/uuid/uuid.hpp>
 #include "yaml-cpp/yaml.h"
-#include "../../uml/headers/element.h"
+#include "uml/element.h"
 using namespace std;
 
 class TemplateParser {

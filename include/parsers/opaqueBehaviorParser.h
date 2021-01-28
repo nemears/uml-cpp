@@ -2,7 +2,7 @@
 #define OPAQUEBEHAVIORPARSER
 
 #include "classParser.h"
-#include "../../uml/headers/opaqueBehavior.h"
+#include "uml/opaqueBehavior.h"
 
 using namespace UML;
 

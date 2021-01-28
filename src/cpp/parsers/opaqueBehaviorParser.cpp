@@ -1,4 +1,4 @@
-#include "headers/opaqueBehaviorParser.h"
+#include "parsers/opaqueBehaviorParser.h"
 
 Element* OpaqueBehaviorParser::createElement() {
     return new OpaqueBehavior;

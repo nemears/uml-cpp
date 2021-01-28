@@ -1,4 +1,4 @@
-#include "headers/literalInt.h"
+#include "uml/literalInt.h"
 
 using namespace UML;
 

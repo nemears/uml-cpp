@@ -1,4 +1,4 @@
-#include "headers/templateParser.h"
+#include "parsers/templateParser.h"
 
 bool TemplateParser::parse(YAML::Node node) {
     cout << "[Info] keyword " << keyword << '\n';

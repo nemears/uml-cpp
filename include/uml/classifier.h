@@ -11,7 +11,6 @@ class Classifier: public Type {
         
     public:
         list<Property*> ownedAttributes;
-        //list<Property*> getOwnedAttributes();
 };
 }
 #endif

@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "../../../cpp/uml/headers/classifier.h"
+#include "uml/classifier.h"
 
 class ClassifierTest : public ::testing::Test {
     public:

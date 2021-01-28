@@ -1,9 +1,9 @@
 #ifndef TYPEDELEMENTPARSER
 #define TYPEDELEMENTPARSER
 #include "namedElementParser.h"
-#include "../../uml/headers/element.h"
-#include "../../uml/headers/typedElement.h"
-#include "../../uml/headers/primitiveType.h"
+#include "uml/element.h"
+#include "uml/typedElement.h"
+#include "uml/primitiveType.h"
 
 class TypedElementParser : public NamedElementParser {
     protected:

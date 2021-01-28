@@ -1,8 +1,8 @@
 #include "gtest/gtest.h"
-#include "../../../cpp/uml/headers/class.h"
-#include "../../../cpp/uml/headers/operation.h"
-#include "../../../cpp/uml/headers/opaqueBehavior.h"
-#include "../../../cpp/uml/headers/parameter.h"
+#include "uml/class.h"
+#include "uml/operation.h"
+#include "uml/opaqueBehavior.h"
+#include "uml/parameter.h"
 
 using namespace UML;
 

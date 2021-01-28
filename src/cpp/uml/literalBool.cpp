@@ -1,4 +1,4 @@
-#include "headers/literalBool.h"
+#include "uml/literalBool.h"
 
 using namespace UML;
 

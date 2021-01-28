@@ -1,1 +1,1 @@
-#include "headers/structuralFeature.h"
+#include "uml/structuralFeature.h"

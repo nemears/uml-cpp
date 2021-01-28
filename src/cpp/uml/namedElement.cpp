@@ -1,4 +1,4 @@
-#include "headers/namedElement.h"
+#include "uml/namedElement.h"
 
 void UML::NamedElement::setName(const string &name) {
     this->name = name;

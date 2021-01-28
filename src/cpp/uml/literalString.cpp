@@ -1,4 +1,4 @@
-#include "headers/literalString.h"
+#include "uml/literalString.h"
 
 using namespace UML;
 

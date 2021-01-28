@@ -1,4 +1,4 @@
-#include "headers/classifierParser.h"
+#include "parsers/classifierParser.h"
 
 bool ClassifierParser::parseFeatures(YAML::Node node, UML::Element* el) {
     if (node["attributes"]) {

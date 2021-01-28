@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "../../../cpp/uml/headers/namedElement.h"
+#include "uml/namedElement.h"
 
 using namespace UML;
 

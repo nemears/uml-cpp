@@ -1,9 +1,9 @@
 #include "gtest/gtest.h"
-#include "../../../cpp/parsers/headers/modelParser.h"
-#include "../../../cpp/uml/headers/instanceSpecification.h"
-#include "../../../cpp/uml/headers/primitiveType.h"
-#include "../../../cpp/uml/headers/literalString.h"
-#include "../../../cpp/uml/headers/instanceValue.h"
+#include "parsers/modelParser.h"
+#include "uml/instanceSpecification.h"
+#include "uml/primitiveType.h"
+#include "uml/literalString.h"
+#include "uml/instanceValue.h"
 
 using namespace UML;
 

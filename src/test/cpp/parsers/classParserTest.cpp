@@ -1,9 +1,9 @@
 #include "gtest/gtest.h"
-#include "../../../cpp/parsers/headers/modelParser.h"
-#include "../../../cpp/uml/headers/class.h"
-#include "../../../cpp/uml/headers/operation.h"
-#include "../../../cpp/uml/headers/primitiveType.h"
-#include "../../../cpp/uml/headers/opaqueBehavior.h"
+#include "parsers/modelParser.h"
+#include "uml/class.h"
+#include "uml/operation.h"
+#include "uml/primitiveType.h"
+#include "uml/opaqueBehavior.h"
 
 using namespace UML;
 

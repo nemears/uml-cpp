@@ -1,4 +1,4 @@
-#include "headers/instanceSpecification.h"
+#include "uml/instanceSpecification.h"
 
 using namespace UML;
 

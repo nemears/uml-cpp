@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
-#include "../../../cpp/uml/headers/typedElement.h"
-#include "../../../cpp/uml/headers/class.h"
+#include "uml/typedElement.h"
+#include "uml/class.h"
 
 using namespace UML;
 

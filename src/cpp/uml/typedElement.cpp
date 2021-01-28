@@ -1,4 +1,4 @@
-#include "headers/typedElement.h"
+#include "uml/typedElement.h"
 
 UML::Type* UML::TypedElement::getType() {
     return type;

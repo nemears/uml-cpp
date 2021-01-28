@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
-#include "../../../cpp/parsers/headers/modelParser.h"
-#include "../../../cpp/uml/headers/classifier.h"
+#include "parsers/modelParser.h"
+#include "uml/classifier.h"
 
 class ClassifierParserTest : public ::testing::Test {
     public:

@@ -1,5 +1,5 @@
 # yuml
-Lightweight UML based MBSE application built on yaml syntax UML files
+Lightweight UML based MBSE application built on yaml syntax UML config files
 
 ## Currently Implemented
 
@@ -20,16 +20,20 @@ Currently Implemented
     -ValueSpecification (not parsed)
     -Namespace
     -Model
+    -Literals
+    -Operations
+    -OpaqueBehaviors
 
-### emf uml2 implementation
-Have some representation of Element, NamedElement, Class, Namespace and Model Value
 
 ## TODO
 There is a lot to do right now this is just the next couple items I plan on looking into:
     longterm:
         Jenkins integration
-        yaml-cpp parser (can also have json source files and automatic emit)
-        submodule setup for gtest and eventually yaml-cpp
+        front-end implementation (look into options, ask for opinions)
+            -possibilities : Qt, react js
+        cpp parsers
+        further definition of uml
     short-term:
-        value implementation
+        test test test
+        emit to yml
     

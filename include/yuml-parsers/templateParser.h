@@ -7,7 +7,9 @@
 #include <boost/uuid/uuid.hpp>
 #include "yaml-cpp/yaml.h"
 #include "uml/element.h"
+
 using namespace std;
+using namespace UML;
 
 /**
  * This class sets up the variables and methods for all of the yuml-parsers
@@ -21,7 +23,7 @@ class TemplateParser {
          * Creates the element of scope to this parser if the parser reads that it needs to create an element
          * @return the Element type corrsponding to this parser
          **/
-        virtual UML::Element* createElement() = 0; // interface
+        virtual Element* createElement() = 0; // interface
 
         /**
          * Parses features relevant to the uml feature in the yaml config file
@@ -29,7 +31,7 @@ class TemplateParser {
          * @param el - the uml element of current scope to fill out from the config file
          * @return flag whether a fatal error was found
          **/
-        virtual bool parseFeatures(YAML::Node node, UML::Element* el) = 0;
+        virtual bool parseFeatures(YAML::Node node, Element* el) = 0;
 
     public:
         /**
@@ -41,7 +43,7 @@ class TemplateParser {
         /**
          * The map of elements parsed within the document so far, key is uuid of element, value is the element of interest
          **/
-        map<boost::uuids::uuid, UML::Element*>* elements;
+        map<boost::uuids::uuid, Element*>* elements;
 
         /**
          * The public method to begin parsing a document. The node should be the root node of the document,
@@ -63,14 +65,14 @@ class TemplateParser {
          * @param node - the yaml-cpp node to parse
          * @return the element parsed
          **/
-        UML::Element* parseElement(YAML::Node node);
+        Element* parseElement(YAML::Node node);
         
         /**
          * Constructor
          * @param std::map<boost::uuids:uuid, Element*> elements is a map of key :id, value : element 
          *      containing all elements in the parsed model
          */
-        TemplateParser(map<boost::uuids::uuid, UML::Element*>* elements) {
+        TemplateParser(map<boost::uuids::uuid, Element*>* elements) {
             this->elements = elements;
         };
 };

@@ -9,20 +9,60 @@
 #include "uml/element.h"
 using namespace std;
 
+/**
+ * This class sets up the variables and methods for all of the yuml-parsers
+ * based off of yml configuration files
+ **/
+
 class TemplateParser {
     protected:
+
+        /**
+         * Creates the element of scope to this parser if the parser reads that it needs to create an element
+         * @return the Element type corrsponding to this parser
+         **/
         virtual UML::Element* createElement() = 0; // interface
+
+        /**
+         * Parses features relevant to the uml feature in the yaml config file
+         * @param node  - the Yaml node for parsing
+         * @param el - the uml element of current scope to fill out from the config file
+         * @return flag whether a fatal error was found
+         **/
         virtual bool parseFeatures(YAML::Node node, UML::Element* el) = 0;
 
     public:
+        /**
+         * The keyword to parse for relevant to this parser note: will only appear if it can be defined,
+         * e.g. Classifier is never a valid keyword
+         **/
         string keyword;
+
+        /**
+         * The map of elements parsed within the document so far, key is uuid of element, value is the element of interest
+         **/
         map<boost::uuids::uuid, UML::Element*>* elements;
+
+        /**
+         * The public method to begin parsing a document. The node should be the root node of the document,
+         * it can work intermediately however
+         * @param node - the yaml-cpp node of the document to be parsed
+         * @return whether a fatal error occured
+         **/
         bool parse(YAML::Node node);
 
+        /**
+         * Destructor, unused for now
+         */
         virtual ~TemplateParser() {
             //delete elements;
         };
 
+        /**
+         * method that parses current node and returns the uml Element corresponding to that node parsed
+         * @param node - the yaml-cpp node to parse
+         * @return the element parsed
+         **/
         UML::Element* parseElement(YAML::Node node);
         
         /**

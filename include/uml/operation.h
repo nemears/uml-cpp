@@ -1,5 +1,5 @@
-#ifndef OPERATION
-#define OPERATION
+#ifndef OPERATIONH
+#define OPERATIONH
 
 #include <list>
 #include "namedElement.h"

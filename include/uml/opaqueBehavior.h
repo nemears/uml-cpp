@@ -1,5 +1,5 @@
-#ifndef OPAQUEBEHAVIOR
-#define OPAQUEBEHAVIOR
+#ifndef OPAQUEBEHAVIORH
+#define OPAQUEBEHAVIORH
 
 #include <list>
 #include <string>

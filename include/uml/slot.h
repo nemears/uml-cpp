@@ -1,5 +1,5 @@
-#ifndef SLOT
-#define SLOT
+#ifndef SLOTH
+#define SLOTH
 #include "element.h"
 #include "valueSpecification.h"
 #include "structuralFeature.h"

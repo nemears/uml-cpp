@@ -1,5 +1,5 @@
-#ifndef NAMEDELEMENT
-#define NAMEDELEMENT
+#ifndef NAMEDELEMENTH
+#define NAMEDELEMENTH
 #include <string>
 #include "element.h"
 using namespace std;

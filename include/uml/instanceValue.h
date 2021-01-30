@@ -1,5 +1,5 @@
-#ifndef INSTANCEVALUE
-#define INSTANCEVALUE
+#ifndef INSTANCEVALUEH
+#define INSTANCEVALUEH
 
 #include "valueSpecification.h"
 #include "instanceSpecification.h"

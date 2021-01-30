@@ -1,5 +1,5 @@
-#ifndef CLASSIFIER
-#define CLASSIFIER
+#ifndef CLASSIFIERH
+#define CLASSIFIERH
 #include <list>
 #include "type.h"
 #include "property.h"

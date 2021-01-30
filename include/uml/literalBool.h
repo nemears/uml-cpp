@@ -1,5 +1,5 @@
-#ifndef LITERALBOOL
-#define LITERALBOOL
+#ifndef LITERALBOOLH
+#define LITERALBOOLH
 #include "valueSpecification.h"
 #include "primitiveType.h"
 

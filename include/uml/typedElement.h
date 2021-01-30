@@ -1,5 +1,5 @@
-#ifndef TYPEDELEMENT
-#define TYPEDELEMENT
+#ifndef TYPEDELEMENTH
+#define TYPEDELEMENTH
 #include "namedElement.h"
 #include "type.h"
 using namespace std;

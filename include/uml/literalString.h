@@ -1,5 +1,5 @@
-#ifndef LITERALSTRING
-#define LITERALSTRING
+#ifndef LITERALSTRINGH
+#define LITERALSTRINGH
 #include "valueSpecification.h"
 #include "primitiveType.h"
 #include <string>

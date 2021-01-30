@@ -1,5 +1,5 @@
-#ifndef MODEL
-#define MODEL
+#ifndef MODELH
+#define MODELH
 #include "namespace.h"
 #include <string>
 using namespace std;

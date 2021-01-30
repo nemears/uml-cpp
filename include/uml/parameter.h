@@ -1,5 +1,5 @@
-#ifndef PARAMETER
-#define PARAMETER
+#ifndef PARAMETERH
+#define PARAMETERH
 #include "typedElement.h"
 
 namespace UML {

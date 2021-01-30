@@ -1,5 +1,5 @@
-#ifndef PROPERTY
-#define PROPERTY
+#ifndef PROPERTYH
+#define PROPERTYH
 #include "structuralFeature.h"
 #include "valueSpecification.h"
 using namespace std;

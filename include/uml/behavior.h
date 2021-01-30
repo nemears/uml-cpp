@@ -1,5 +1,5 @@
-#ifndef BEHAVIOR
-#define BEHAVIOR
+#ifndef BEHAVIORH
+#define BEHAVIORH
 #include "class.h"
 
 namespace UML {

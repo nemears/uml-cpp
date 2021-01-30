@@ -1,5 +1,5 @@
-#ifndef CLASS
-#define CLASS
+#ifndef CLASSH
+#define CLASSH
 #include <list>
 #include "classifier.h"
 using namespace std;

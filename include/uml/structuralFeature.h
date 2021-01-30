@@ -1,5 +1,5 @@
-#ifndef STRUCTURALFEATURE
-#define STRUCTURALFEATURE
+#ifndef STRUCTURALFEATUREH
+#define STRUCTURALFEATUREH
 
 #include "typedElement.h"
 

@@ -1,5 +1,5 @@
-#ifndef INSTANCESPECIFICATION
-#define INSTANCESPECIFICATION
+#ifndef INSTANCESPECIFICATIONH
+#define INSTANCESPECIFICATIONH
 #include "namedElement.h"
 #include "slot.h"
 #include "classifier.h"

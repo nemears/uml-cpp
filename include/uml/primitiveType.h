@@ -1,5 +1,5 @@
-#ifndef PRIMITIVETYPE
-#define PRIMITIVETYPE
+#ifndef PRIMITIVETYPEH
+#define PRIMITIVETYPEH
 #include "classifier.h"
 
 namespace UML{

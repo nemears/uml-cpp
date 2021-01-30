@@ -1,5 +1,5 @@
-#ifndef LITERALINT
-#define LITERALINT
+#ifndef LITERALINTH
+#define LITERALINTH
 #include "valueSpecification.h"
 #include "primitiveType.h"
 

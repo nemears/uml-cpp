@@ -1,5 +1,5 @@
-#ifndef VALUESPECIFICATION
-#define VALUESPECIFICATION
+#ifndef VALUESPECIFICATIONH
+#define VALUESPECIFICATIONH
 #include "typedElement.h"
 
 namespace UML {

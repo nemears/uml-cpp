@@ -1,5 +1,5 @@
-#ifndef NAMESPACE
-#define NAMESPACE
+#ifndef NAMESPACEH
+#define NAMESPACEH
 #include <iostream>
 #include "namedElement.h"
 using namespace std;

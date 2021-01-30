@@ -29,3 +29,9 @@ TEST_F(NamedElementTest, SetNameTest) {
     EXPECT_EQ(namedEl.getName(), "test");
     EXPECT_EQ(namedElPtr->getName(), "ptrTest");
 }
+
+TEST_F(NamedElementTest, GetNullNameTest) {
+    NamedElement ne;
+    ASSERT_NO_THROW(ne.getName());
+    EXPECT_TRUE(ne.getName().compare("") == 0);
+}

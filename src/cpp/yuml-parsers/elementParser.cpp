@@ -37,3 +37,23 @@ bool ElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
     }
     return true;
 }
+
+bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
+
+    emitter << YAML::BeginMap;
+    emitter << YAML::Key << "id";
+    emitter << YAML::Value << boost::lexical_cast<string>(el->uuid);
+    emitter << YAML::EndMap;
+
+    if (!el->ownedElements.empty()){
+        emitter << YAML::BeginMap;
+        emitter << YAML::Key << "ownedElements";
+        emitter << YAML::Value << YAML::BeginSeq;
+        for (auto const& child: el->ownedElements) {
+            // emit children, problem is we need to know what type they are so we can choose the right parser
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    return true;
+}

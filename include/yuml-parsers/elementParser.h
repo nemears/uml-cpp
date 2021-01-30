@@ -12,5 +12,7 @@ class ElementParser : public TemplateParser {
         ElementParser(map<boost::uuids::uuid, UML::Element*>* elements) : TemplateParser(elements) {
             
         };
+
+        virtual bool emit(YAML::Emitter& emitter, Element* el) override;
 };
 #endif

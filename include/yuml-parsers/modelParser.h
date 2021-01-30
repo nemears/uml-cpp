@@ -13,7 +13,8 @@ class ModelParser : public NamespaceParser {
     public:
         ModelParser(map<boost::uuids::uuid, UML::Element*>* elements) : NamespaceParser(elements){
             this->keyword = "model";
-            // this->elements = elements;
         }
+
+        bool emit(YAML::Emitter& emitter, Element* el);
 };
 #endif

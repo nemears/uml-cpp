@@ -75,5 +75,7 @@ class TemplateParser {
         TemplateParser(map<boost::uuids::uuid, Element*>* elements) {
             this->elements = elements;
         };
+
+        virtual bool emit(YAML::Emitter& emitter, Element* el) = 0;
 };
 #endif

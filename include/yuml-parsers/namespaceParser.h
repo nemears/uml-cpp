@@ -9,8 +9,10 @@ class NamespaceParser : public NamedElementParser {
         virtual bool parseFeatures(YAML::Node node, UML::Element* el);
     public:
         NamespaceParser(map<boost::uuids::uuid, UML::Element*>* elements) : NamedElementParser(elements){
-            //this->elements = elements;
+
         };
+
+        bool emit(YAML::Emitter& emitter, Element* el);
 };
 
 #endif

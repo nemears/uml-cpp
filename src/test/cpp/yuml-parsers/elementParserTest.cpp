@@ -93,3 +93,26 @@ TEST_F(ElementParserTest, EmitBasicIDTest) {
   ASSERT_TRUE(emitter.good());
   ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(ElementParserTest, EmitBasicChildrenOfTypeClass) {
+  Model el;
+  el.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+  Class c;
+  c.setID("c0ab87cc-d00b-4afb-9558-538253b442b2");
+  el.ownedElements.push_back(&c);
+
+  string expectedEmit = R""""(model:
+  id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+  children:
+    - class:
+        id: c0ab87cc-d00b-4afb-9558-538253b442b2)"""";
+
+  ModelParser mp(new map<boost::uuids::uuid, Element*>);
+  string generatedEmit;
+  YAML::Emitter emitter;
+  ASSERT_NO_THROW(mp.emit(emitter, &el));
+  generatedEmit = emitter.c_str();
+  cout << generatedEmit << '\n';
+  ASSERT_TRUE(emitter.good());
+  ASSERT_EQ(expectedEmit, generatedEmit);
+}

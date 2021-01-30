@@ -26,11 +26,13 @@ bool ClassParser::emit(YAML::Emitter& emitter, Element* el) {
     if (el->getElementType() == ElementType::CLASS) {
         emitter << YAML::BeginMap;
         emitter << YAML::Key << "class";
+        emitter << YAML::Value << YAML::BeginMap;
     }
 
     bool ret = ClassifierParser::emit(emitter, el);
 
     if (el->getElementType() == ElementType::CLASS) {
+        emitter << YAML::EndMap;
         emitter << YAML::EndMap;
     }
 

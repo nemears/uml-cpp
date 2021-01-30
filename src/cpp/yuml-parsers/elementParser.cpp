@@ -44,14 +44,15 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
     emitter << YAML::Value << boost::lexical_cast<string>(el->uuid);
 
     if (!el->ownedElements.empty()){
-        emitter << YAML::Key << "ownedElements";
+        emitter << YAML::Key << "children";
         emitter << YAML::Value << YAML::BeginSeq;
         for (auto const& child: el->ownedElements) {
-            // emit children, problem is we need to know what type they are so we can choose the right parser
             switch (child->getElementType()) {
                 case ElementType::CLASS : {
-                    // TODO
-                    
+                    ClassParser cp(elements);
+                    if (!cp.emit(emitter, child)) {
+                        return false;
+                    }
                 }
             }
         }

@@ -23,7 +23,6 @@ bool NamedElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
 bool NamedElementParser::emit(YAML::Emitter& emitter, Element* el) {
 
     if (((NamedElement*) el)->getName().compare("") != 0) {
-        emitter << YAML::BeginMap;
         emitter << YAML::Key << "name";
         emitter << YAML::Value << ((NamedElement*) el)->getName();
     }

@@ -1,5 +1,7 @@
 #include "gtest/gtest.h"
 #include "yuml-parsers/classParser.h"
+#include "yuml-parsers/modelParser.h"
+#include "uml/model.h"
 
 class NamedElementParserTest : public ::testing::Test {
     public:
@@ -46,4 +48,20 @@ TEST_F(NamedElementParserTest, ParseInvalidTypeTest) {
   // Commented below out because i think that it should assign numerical values as types
   // EXPECT_NO_THROW(invalidTypeppYAML->parse(invalidTypeNode));
   // EXPECT_TRUE(((NamedElement*)(*invalidTypeppYAML->elements).begin()->second)->getName().empty());
+}
+
+TEST_F(NamedElementParserTest, EmitBasicNameTest) {
+  Model m;
+  m.setName("test");
+  m.setID("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
+  string expectedEmit = R""""(model:
+  name: test
+  id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d)"""";
+
+  ModelParser mp(new map<boost::uuids::uuid, Element*>);
+  YAML::Emitter emitter;
+  ASSERT_NO_THROW(mp.emit(emitter, &m));
+  cout << emitter.c_str() << '\n';
+  string generatedEmit = emitter.c_str();
+  ASSERT_EQ(expectedEmit, generatedEmit);
 }

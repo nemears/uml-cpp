@@ -18,3 +18,16 @@ bool ClassifierParser::parseFeatures(YAML::Node node, UML::Element* el) {
     }
     return NamedElementParser::parseFeatures(node, el);
 }
+
+bool ClassifierParser::emit(YAML::Emitter& emitter, Element* el) {
+    if (!((Classifier*)el)->ownedAttributes.empty()) {
+        emitter << YAML::Key << "attributes";
+        emitter << YAML::Value << YAML::BeginSeq;
+        for (auto const& property: ((Classifier*)el)->ownedAttributes) {
+
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    return NamedElementParser::emit(emitter, el);
+}

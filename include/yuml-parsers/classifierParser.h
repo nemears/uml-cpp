@@ -13,5 +13,7 @@ class ClassifierParser: public NamespaceParser {
         ClassifierParser(map<boost::uuids::uuid, UML::Element*>* elements) : NamespaceParser(elements){
             // this->elements = elements;
         };
+
+        bool emit(YAML::Emitter& emitter, Element* el);
 };
 #endif

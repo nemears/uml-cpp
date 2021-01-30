@@ -19,5 +19,7 @@ class PropertyParser : public TypedElementParser {
             this->keyword = "property";
             // this->elements = elements;
         }
+
+        bool emit(YAML::Emitter& emitter, Element* el);
 };
 #endif

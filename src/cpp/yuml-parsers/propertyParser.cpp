@@ -54,3 +54,14 @@ bool PropertyParser::parseFeatures(YAML::Node node, UML::Element* el) {
 
     return ret;
 }
+
+bool PropertyParser::emit(YAML::Emitter& emitter, Element* el) {
+
+    if (el->getElementType() == ElementType::PROPERTY) {
+        emitter << YAML::BeginMap;
+        // TODO do TypedElementParser::emit and call it here
+        if (((Property*) el)->getDefaultValue() != NULL) {
+            // TODO do value emit
+        }
+    }
+}

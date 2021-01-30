@@ -1,6 +1,9 @@
 #include "gtest/gtest.h"
 #include "yuml-parsers/classParser.h"
+#include "yuml-parsers/modelParser.h"
 #include "uml/namedElement.h"
+#include "uml/model.h"
+#include "uml/class.h"
 
 class ElementParserTest : public ::testing::Test {
     public:
@@ -72,4 +75,21 @@ TEST_F(ElementParserTest, ParseEmptyChildrenTest) {
   EXPECT_EQ(((UML::NamedElement*)emptyChildrenppYAML->elements->begin()->second)->getName(), "pete");
   EXPECT_NO_THROW(emptyChildren2ppYAML->parse(emptyChildren2Node));
   EXPECT_TRUE(((UML::NamedElement*)emptyChildren2ppYAML->elements->begin()->second)->getName().empty());
+}
+
+TEST_F(ElementParserTest, EmitBasicIDTest) {
+  Model el;
+  el.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+
+  string expectedEmit = R""""(model:
+  id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35)"""";
+  
+  ModelParser mp(new map<boost::uuids::uuid, Element*>);
+  string generatedEmit;
+  YAML::Emitter emitter;
+  ASSERT_NO_THROW(mp.emit(emitter, &el));
+  generatedEmit = emitter.c_str();
+  cout << generatedEmit << '\n';
+  ASSERT_TRUE(emitter.good());
+  ASSERT_EQ(expectedEmit, generatedEmit);
 }

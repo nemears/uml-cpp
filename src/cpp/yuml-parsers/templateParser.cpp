@@ -18,3 +18,27 @@ Element* TemplateParser::parseElement(YAML::Node node) {
     }
     return el;
 }
+
+string TemplateParser::emitDocument(Element* el) {
+    YAML::Emitter emitter;
+    emitter << YAML::BeginDoc;
+    if (emit(emitter, el)) {
+        emitter << YAML::EndDoc;
+        return emitter.c_str();
+    } else {
+        // TODO throw fatal emit error
+        return NULL;
+    }
+}
+
+// YAML::Emitter TemplateParser::emitEmitter(Element* el) {
+//     YAML::Emitter emitter;
+//     emitter << YAML::BeginDoc;
+//     if (emit(emitter, el)) {
+//         emitter << YAML::EndDoc;
+//         return emitter;
+//     } else {
+//         // TODO throw fatal emit error
+//         return emitter;
+//     }
+// }

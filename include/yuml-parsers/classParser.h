@@ -19,6 +19,8 @@ class ClassParser : public ClassifierParser {
             this->keyword = "class";
             // this->elements = elements;
         }
+
+        bool emit(YAML::Emitter& emitter, Element* el);
 };
 
 #endif

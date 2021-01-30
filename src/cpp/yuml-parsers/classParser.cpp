@@ -21,3 +21,18 @@ bool ClassParser::parseFeatures(YAML::Node node, Element* el) {
 
     return ClassifierParser::parseFeatures(node, el);
 }
+
+bool ClassParser::emit(YAML::Emitter& emitter, Element* el) {
+    if (el->getElementType() == ElementType::CLASS) {
+        emitter << YAML::BeginMap;
+        emitter << YAML::Key << "class";
+    }
+
+    bool ret = ClassifierParser::emit(emitter, el);
+
+    if (el->getElementType() == ElementType::CLASS) {
+        emitter << YAML::EndMap;
+    }
+
+    return ret;
+}

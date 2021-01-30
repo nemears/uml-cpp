@@ -9,3 +9,7 @@ double LiteralReal::getValue() {
 void LiteralReal::setValue(double val) {
     value = val;
 }
+
+ElementType LiteralReal::getElementType() {
+    return ElementType::LITERAL_REAL;
+}

@@ -1,9 +1,15 @@
 #include "uml/typedElement.h"
 
-UML::Type* UML::TypedElement::getType() {
+using namespace UML;
+
+Type* TypedElement::getType() {
     return type;
 }
 
-void UML::TypedElement::setType(Type* type) {
+void TypedElement::setType(Type* type) {
     this->type = type;
+}
+
+ElementType TypedElement::getElementType() {
+    return ElementType::TYPED_ELEMENT;
 }

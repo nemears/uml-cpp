@@ -15,6 +15,7 @@ namespace UML {
                 realPrimitive->setPrimitiveType(PrimitiveType::Primitive::REAL);
                 setType(realPrimitive);
             }
+            ElementType getElementType() override;
     };
 }
 

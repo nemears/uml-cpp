@@ -15,6 +15,7 @@ class TypedElement : public NamedElement {
         TypedElement() {
             type = NULL;
         };
+        ElementType getElementType() override;
 };
 }
 

@@ -18,6 +18,7 @@ namespace UML{
     class Class : public Classifier {
         public:
             list<Operation*> operations;
+            ElementType getElementType() override;
     };
 }
 

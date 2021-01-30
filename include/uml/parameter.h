@@ -4,7 +4,8 @@
 
 namespace UML {
     class Parameter : public TypedElement {
-
+        public:
+            ElementType getElementType() override;
     };
 }
 #endif

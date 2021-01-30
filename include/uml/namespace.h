@@ -6,7 +6,8 @@ using namespace std;
 
 namespace UML{
 class Namespace : public NamedElement {
-    
+    public:
+        ElementType getElementType() override;
 };
 }
 #endif

@@ -9,3 +9,7 @@ Classifier* InstanceSpecification::getClassifier() {
 void InstanceSpecification::setClassifier(Classifier* classifier) {
     this->classifier = classifier;
 }
+
+ElementType InstanceSpecification::getElementType() {
+    return ElementType::INSTANCE_SPECIFICATION;
+}

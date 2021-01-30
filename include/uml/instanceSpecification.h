@@ -13,6 +13,7 @@ namespace UML{
             InstanceSpecification() {
                 classifier = NULL;
             }
+            ElementType getElementType() override;
         protected:
             Classifier* classifier;
     };

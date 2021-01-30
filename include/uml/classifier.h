@@ -11,6 +11,7 @@ class Classifier: public Type {
         
     public:
         list<Property*> ownedAttributes;
+        ElementType getElementType() override;
 };
 }
 #endif

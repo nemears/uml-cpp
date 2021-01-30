@@ -12,6 +12,7 @@ class NamedElement : public Element {
     public:
         string getName();
         void setName(const string &name);
+        ElementType getElementType() override;
 };
 }
 

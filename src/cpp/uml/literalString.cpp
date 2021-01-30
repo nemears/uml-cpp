@@ -9,3 +9,7 @@ string LiteralString::getValue() {
 void LiteralString::setValue(string val) {
     value = val;
 }
+
+ElementType LiteralString::getElementType() {
+    return ElementType::LITERAL_STRING;
+}

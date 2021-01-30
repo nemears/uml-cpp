@@ -9,6 +9,7 @@ class PrimitiveType : public Classifier {
         void setPrimitiveType(Primitive primitive);
         Primitive getPrimitiveType();
         bool isPrimitive();
+        ElementType getElementType() override;
     private:
         Primitive primitiveType;
 };

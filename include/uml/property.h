@@ -16,6 +16,7 @@ class Property: public StructuralFeature {
                 return "tried to assign property value that does not match it's corresponded type";
             }
         } invalidValueException;
+        ElementType getElementType() override;
 };
 }
 #endif

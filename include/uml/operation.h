@@ -14,6 +14,7 @@ namespace UML {
             list<Parameter*> parameters;
             Type* getType();
             void setType(Type* type);
+            ElementType getElementType() override;
         protected:
             Type* type;
     };

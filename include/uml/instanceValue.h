@@ -9,6 +9,7 @@ namespace UML {
         public:
             InstanceSpecification* getInstance();
             void setInstance(InstanceSpecification* inst);
+            ElementType getElementType() override;
         protected:
             InstanceSpecification* instance;
     };

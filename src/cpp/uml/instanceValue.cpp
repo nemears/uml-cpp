@@ -9,3 +9,7 @@ InstanceSpecification*  InstanceValue::getInstance() {
 void InstanceValue::setInstance(InstanceSpecification* inst) {
     instance = inst;
 }
+
+ElementType InstanceValue::getElementType() {
+    return ElementType::INSTANCE_VALUE;
+}

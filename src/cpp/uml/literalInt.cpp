@@ -9,3 +9,7 @@ int LiteralInt::getValue() {
 void LiteralInt::setValue(int val) {
     value = val;
 }
+
+ElementType LiteralInt::getElementType() {
+    return ElementType::LITERAL_INT;
+}

@@ -13,3 +13,7 @@ PrimitiveType::Primitive PrimitiveType::getPrimitiveType() {
 bool PrimitiveType::isPrimitive() {
     return true;
 }
+
+ElementType PrimitiveType::getElementType() {
+    return ElementType::PRIMITIVE_TYPE;
+}

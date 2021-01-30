@@ -7,6 +7,7 @@ namespace UML{
 class Type : public NamedElement {
     public:
         virtual bool isPrimitive();
+        ElementType getElementType() override;
 };
 }
 

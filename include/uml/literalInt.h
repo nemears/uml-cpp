@@ -15,6 +15,7 @@ namespace UML {
                 intPrimitive->setPrimitiveType(PrimitiveType::Primitive::INT);
                 setType(intPrimitive);
             }
+            ElementType getElementType() override;
     };
 }
 

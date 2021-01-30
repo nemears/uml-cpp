@@ -9,6 +9,7 @@ namespace UML {
     class OpaqueBehavior : public Behavior {
         public:
             list<string> bodies;
+            ElementType getElementType() override;
     };
 }
 

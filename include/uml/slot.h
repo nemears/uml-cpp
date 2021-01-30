@@ -10,6 +10,7 @@ namespace UML {
             list<ValueSpecification*> values;
             StructuralFeature* getDefiningFeature();
             void setDefiningFeature(StructuralFeature* definingFeature);
+            ElementType getElementType() override;
         protected:
             StructuralFeature* definingFeature;
     };

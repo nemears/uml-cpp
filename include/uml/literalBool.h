@@ -15,6 +15,7 @@ namespace UML {
                 boolPrimitive->setPrimitiveType(PrimitiveType::Primitive::BOOL);
                 setType(boolPrimitive);
             }
+            ElementType getElementType() override;
     };
 }
 

@@ -9,3 +9,7 @@ StructuralFeature* Slot::getDefiningFeature() {
 void Slot::setDefiningFeature(StructuralFeature* definingFeature) {
     this->definingFeature = definingFeature;
 }
+
+ElementType Slot::getElementType() {
+    return ElementType::SLOT;
+}

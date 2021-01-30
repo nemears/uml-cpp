@@ -5,7 +5,8 @@
 
 namespace UML {
     class StructuralFeature : public TypedElement {
-
+        public:
+            ElementType getElementType() override;
     };
 }
 

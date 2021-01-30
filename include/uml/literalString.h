@@ -16,6 +16,7 @@ namespace UML {
                 stringPrimitive->setPrimitiveType(PrimitiveType::Primitive::STRING);
                 setType(stringPrimitive);
             }
+            ElementType getElementType() override;
     };
 }
 

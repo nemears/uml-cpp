@@ -28,3 +28,7 @@ void Property::setDefaultValue(ValueSpecification* val) {
 ValueSpecification* Property::getDefaultValue() {
     return defaultValue;
 }
+
+ElementType Property::getElementType() {
+    return ElementType::PROPERTY;
+}

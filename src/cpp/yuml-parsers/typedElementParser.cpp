@@ -37,3 +37,37 @@ bool TypedElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
 
     return NamedElementParser::parseFeatures(node, el);
 }
+
+bool TypedElementParser::emit(YAML::Emitter& emitter, Element* el) {
+    if (((TypedElement*) el)->getType() != NULL) {
+        emitter << YAML::Key << "type";
+        if (((TypedElement*)el)->getType()->isPrimitive()) {
+            switch (el->getElementType()) {
+                case ElementType::LITERAL_BOOL : {
+                    emitter << YAML::Value << "BOOL";
+                    break;
+                }
+                case ElementType::LITERAL_INT : {
+                    emitter << YAML::Value << "INT";
+                    break;
+                }
+                case ElementType::LITERAL_REAL : {
+                    emitter << YAML::Value << "REAL";
+                    break;
+                }
+                case ElementType::LITERAL_STRING : {
+                    emitter << YAML::Value << "STRING";
+                    break;
+                }
+                default : {
+                    //TODO error
+                    return false;
+                }
+            }
+        } else {
+            emitter << YAML::Value << boost::lexical_cast<string>(((TypedElement*) el)->getType()->uuid);
+        }
+    }
+
+    return NamedElementParser::emit(emitter, el);
+}

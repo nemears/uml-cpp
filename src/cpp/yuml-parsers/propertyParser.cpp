@@ -59,9 +59,17 @@ bool PropertyParser::emit(YAML::Emitter& emitter, Element* el) {
 
     if (el->getElementType() == ElementType::PROPERTY) {
         emitter << YAML::BeginMap;
-        // TODO do TypedElementParser::emit and call it here
-        if (((Property*) el)->getDefaultValue() != NULL) {
-            // TODO do value emit
-        }
+        emitter << YAML::Key << "property";
     }
+    bool ret = TypedElementParser::emit(emitter, el);
+
+    if (((Property*) el)->getDefaultValue() != NULL) {
+        // TODO
+    }
+
+    if (el->getElementType() == ElementType::PROPERTY) {
+        emitter << YAML::EndMap;
+    }
+
+    return ret;
 }

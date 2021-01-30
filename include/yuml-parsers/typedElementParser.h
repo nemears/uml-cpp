@@ -13,5 +13,7 @@ class TypedElementParser : public NamedElementParser {
         TypedElementParser(map<boost::uuids::uuid, UML::Element*>* elements) : NamedElementParser(elements){
             // this->elements = elements;
         };
+
+        bool emit(YAML::Emitter& emitter, Element* el);
 };
 #endif

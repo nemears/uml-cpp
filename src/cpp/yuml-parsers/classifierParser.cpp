@@ -24,7 +24,8 @@ bool ClassifierParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Key << "attributes";
         emitter << YAML::Value << YAML::BeginSeq;
         for (auto const& property: ((Classifier*)el)->ownedAttributes) {
-
+            PropertyParser pp(elements);
+            pp.emit(emitter, el);
         }
         emitter << YAML::EndSeq;
     }

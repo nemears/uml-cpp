@@ -49,6 +49,14 @@ bool PropertyParser::parseFeatures(YAML::Node node, UML::Element* el) {
             }
         } else {
             // instances
+            string parsedId = node["defaultValue"].as<string>();
+            if (isValidUUID4(parsedId)) {
+                boost::uuids::uuid typeId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
+                InstanceSpecification* defaultVal = (InstanceSpecification*) (*elements)[typeId];
+                InstanceValue* instanceVal = new InstanceValue;
+                instanceVal->setInstance(defaultVal);
+                ((Property*) el)->setDefaultValue(instanceVal);
+            }
         }
     }
 

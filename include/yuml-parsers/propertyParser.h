@@ -7,6 +7,9 @@
 #include "uml/literalInt.h"
 #include "uml/literalReal.h"
 #include "uml/literalBool.h"
+#include "uml/instanceSpecification.h"
+#include "uml/instanceValue.h"
+
 using namespace std;
 
 class PropertyParser : public TypedElementParser {

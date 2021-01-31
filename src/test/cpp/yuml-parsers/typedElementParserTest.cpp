@@ -2,6 +2,7 @@
 #include "yuml-parsers/modelParser.h"
 #include "uml/typedElement.h"
 #include "uml/primitiveType.h"
+#include "uml/class.h"
 
 class TypedElementParserTest : public ::testing::Test {
     public:
@@ -59,4 +60,73 @@ TEST_F(TypedElementParserTest, ParseInvalidPrimitive) {
   ASSERT_NO_THROW(invalidPrimitiveParser.parse(invalidPrimitiveNode));
   UML::TypedElement* val = (UML::TypedElement*)(*invalidPrimitiveParser.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")];
   EXPECT_TRUE(((UML::TypedElement*)(*invalidPrimitiveParser.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getType() == NULL);
+}
+
+TEST_F(TypedElementParserTest, EmitLiteralTypeTest) {
+  Model m;
+  m.setID("c0ab87cc-d00b-4afb-9558-538253b442b2");
+  Class c;
+  c.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+  Property p;
+  p.setID("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
+  PrimitiveType pt;
+  pt.setPrimitiveType(PrimitiveType::Primitive::STRING);
+  p.setType(&pt);
+  c.ownedAttributes.push_back(&p);
+  m.ownedElements.push_back(&c);
+
+  string expectedEmit = R""""(model:
+  id: c0ab87cc-d00b-4afb-9558-538253b442b2
+  children:
+    - class:
+        id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+        attributes:
+          - property:
+              type: STRING
+              id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d)"""";
+
+  ModelParser mp(new map<boost::uuids::uuid, Element*>);
+  string generatedEmit;
+  YAML::Emitter emitter;
+  ASSERT_NO_THROW(mp.emit(emitter, &m));
+  generatedEmit = emitter.c_str();
+  cout << generatedEmit << '\n';
+  ASSERT_TRUE(emitter.good());
+  ASSERT_EQ(expectedEmit, generatedEmit);
+}
+
+TEST_F(TypedElementParserTest, EmitAttributesOfClassiferTypeTest) {
+  Model m;
+  m.setID("c0ab87cc-d00b-4afb-9558-538253b442b2");
+  Class c;
+  c.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+  Property p;
+  p.setID("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
+  Class c2;
+  c2.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
+  p.setType(&c2);
+  c.ownedAttributes.push_back(&p);
+  m.ownedElements.push_back(&c);
+  m.ownedElements.push_back(&c2);
+
+  string expectedEmit = R""""(model:
+  id: c0ab87cc-d00b-4afb-9558-538253b442b2
+  children:
+    - class:
+        id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+        attributes:
+          - property:
+              type: 190d1cb9-13dc-44e6-a064-126891ae0033
+              id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+    - class:
+        id: 190d1cb9-13dc-44e6-a064-126891ae0033)"""";
+
+  ModelParser mp(new map<boost::uuids::uuid, Element*>);
+  string generatedEmit;
+  YAML::Emitter emitter;
+  ASSERT_NO_THROW(mp.emit(emitter, &m));
+  generatedEmit = emitter.c_str();
+  cout << generatedEmit << '\n';
+  ASSERT_TRUE(emitter.good());
+  ASSERT_EQ(expectedEmit, generatedEmit);
 }

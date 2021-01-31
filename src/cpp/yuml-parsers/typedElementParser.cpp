@@ -44,20 +44,20 @@ bool TypedElementParser::emit(YAML::Emitter& emitter, Element* el) {
         Type* typeeee = ((TypedElement*) el)->getType();
         emitter << YAML::Key << "type";
         if (((TypedElement*)el)->getType()->isPrimitive()) {
-            switch (el->getElementType()) {
-                case ElementType::LITERAL_BOOL : {
+            switch (((PrimitiveType*)((TypedElement*)el)->getType())->getPrimitiveType()) {
+                case PrimitiveType::Primitive::BOOL : {
                     emitter << YAML::Value << "BOOL";
                     break;
                 }
-                case ElementType::LITERAL_INT : {
+                case PrimitiveType::Primitive::INT : {
                     emitter << YAML::Value << "INT";
                     break;
                 }
-                case ElementType::LITERAL_REAL : {
+                case PrimitiveType::Primitive::REAL : {
                     emitter << YAML::Value << "REAL";
                     break;
                 }
-                case ElementType::LITERAL_STRING : {
+                case PrimitiveType::Primitive::STRING : {
                     emitter << YAML::Value << "STRING";
                     break;
                 }

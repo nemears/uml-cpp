@@ -40,3 +40,8 @@ TEST_F(TypedElementTest, GetTypeTest) {
   EXPECT_EQ(typedEl.getType(), &type);
   EXPECT_EQ(typedElPtr->getType(), &type);
 }
+
+TEST_F(TypedElementTest, GetTypeReturnsNullTest) {
+  TypedElement t;
+  ASSERT_TRUE(t.getType() == NULL);
+}

@@ -60,6 +60,7 @@ bool PropertyParser::emit(YAML::Emitter& emitter, Element* el) {
     if (el->getElementType() == ElementType::PROPERTY) {
         emitter << YAML::BeginMap;
         emitter << YAML::Key << "property";
+        emitter << YAML::Value << YAML::BeginMap;
     }
     bool ret = TypedElementParser::emit(emitter, el);
 
@@ -68,6 +69,7 @@ bool PropertyParser::emit(YAML::Emitter& emitter, Element* el) {
     }
 
     if (el->getElementType() == ElementType::PROPERTY) {
+        emitter << YAML::EndMap;
         emitter << YAML::EndMap;
     }
 

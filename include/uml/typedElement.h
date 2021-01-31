@@ -13,7 +13,7 @@ class TypedElement : public NamedElement {
         Type* getType();
         void setType(Type* type);
         TypedElement() {
-            type = NULL;
+            type = 0;
         };
         ElementType getElementType() override;
 };

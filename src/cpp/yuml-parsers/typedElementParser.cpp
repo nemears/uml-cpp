@@ -40,8 +40,6 @@ bool TypedElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
 
 bool TypedElementParser::emit(YAML::Emitter& emitter, Element* el) {
     if (((TypedElement*) el)->getType() != NULL) {
-        TypedElement t = *((TypedElement*) el);
-        Type* typeeee = ((TypedElement*) el)->getType();
         emitter << YAML::Key << "type";
         if (((TypedElement*)el)->getType()->isPrimitive()) {
             switch (((PrimitiveType*)((TypedElement*)el)->getType())->getPrimitiveType()) {

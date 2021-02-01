@@ -54,6 +54,9 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
                         return false;
                     }
                 }
+                case ElementType::INSTANCE_SPECIFICATION : {
+                    // TODO
+                }
             }
         }
         emitter << YAML::EndSeq;

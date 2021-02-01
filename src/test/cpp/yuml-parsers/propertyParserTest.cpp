@@ -101,8 +101,8 @@ TEST_F(PropertyParserTest, EmitLiteralDefaultValue) {
   p.setDefaultValue(&ls);
   c.ownedAttributes.push_back(&p);
   m.ownedElements.push_back(&c);
-  ModelParser emitLiteralDefaultValueParser(new map<boost::uuids::uuid, Element*>);
 
+  ModelParser emitLiteralDefaultValueParser(new map<boost::uuids::uuid, Element*>);
   string expectedEmit = R""""(model:
   id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
   children:
@@ -117,6 +117,53 @@ TEST_F(PropertyParserTest, EmitLiteralDefaultValue) {
   string generatedEmit;
   YAML::Emitter emitter;
   ASSERT_NO_THROW(emitLiteralDefaultValueParser.emit(emitter, &m));
+  generatedEmit = emitter.c_str();
+  cout << generatedEmit << '\n';
+  ASSERT_TRUE(emitter.good());
+  ASSERT_EQ(expectedEmit, generatedEmit);
+}
+
+TEST_F(PropertyParserTest, EmitInstanceValueTest) {
+  // Setup
+  Model m;
+  m.setID("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
+  Class c;
+  c.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
+  Class c2;
+  c2.setID("c0ab87cc-d00b-4afb-9558-538253b442b2");
+  Property p;
+  p.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+  InstanceSpecification i;
+  i.setID("563f4740-e107-4d08-8618-2489f0fe1865");
+  i.setClassifier(&c2);
+  p.setType(&c2);
+  InstanceValue iv;
+  iv.setInstance(&i);
+  p.setDefaultValue(&iv);
+  c.ownedAttributes.push_back(&p);
+  m.ownedElements.push_back(&c2);
+  m.ownedElements.push_back(&i);
+  m.ownedElements.push_back(&c);
+
+  ModelParser emitInstanceDefaultValueParser(new map<boost::uuids::uuid, Element*>);
+  string expectedEmit = R""""(model:
+  id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+  children:
+    - class:
+        id: c0ab87cc-d00b-4afb-9558-538253b442b2
+    - instanceSpecification:
+        id: 563f4740-e107-4d08-8618-2489f0fe1865
+    - class:
+        id: 190d1cb9-13dc-44e6-a064-126891ae0033
+        attributes:
+          - property:
+              type: c0ab87cc-d00b-4afb-9558-538253b442b2
+              id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+              defaultValue: 563f4740-e107-4d08-8618-2489f0fe1865)"""";
+
+  string generatedEmit;
+  YAML::Emitter emitter;
+  ASSERT_NO_THROW(emitInstanceDefaultValueParser.emit(emitter, &m));
   generatedEmit = emitter.c_str();
   cout << generatedEmit << '\n';
   ASSERT_TRUE(emitter.good());

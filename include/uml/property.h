@@ -17,6 +17,9 @@ class Property: public StructuralFeature {
             }
         } invalidValueException;
         ElementType getElementType() override;
+        Property() {
+            defaultValue = NULL;
+        }
 };
 }
 #endif

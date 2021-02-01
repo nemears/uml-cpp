@@ -7,6 +7,7 @@
 #include "uml/literalReal.h"
 #include "uml/literalBool.h"
 #include "uml/instanceValue.h"
+#include "uml/class.h"
 
 using namespace UML;
 
@@ -82,4 +83,42 @@ TEST_F(PropertyParserTest, InstanceValueDefaultValueTest) {
   ASSERT_TRUE((*instanceValueTestParser.elements)[((InstanceValue*)((Property*)(*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getDefaultValue())->getInstance()->uuid]->getElementType() == ElementType::INSTANCE_SPECIFICATION);
   ASSERT_TRUE(((InstanceSpecification*)((InstanceValue*)((Property*)(*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getDefaultValue())->getInstance())->getClassifier()->uuid == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
   ASSERT_TRUE(((InstanceSpecification*)((InstanceValue*)((Property*)(*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getDefaultValue())->getInstance())->getClassifier()->uuid == ((Property*)(*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getType()->uuid);
+}
+
+TEST_F(PropertyParserTest, EmitLiteralDefaultValue) {
+  // Setup
+  Model m;
+  m.setID("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
+  Class c;
+  c.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
+  Property p;
+  p.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+  PrimitiveType pt;
+  pt.setPrimitiveType(PrimitiveType::Primitive::STRING);
+  LiteralString ls;
+  ls.setValue("test");
+  p.setType(&pt);
+  p.setDefaultValue(&ls);
+  c.ownedAttributes.push_back(&p);
+  m.ownedElements.push_back(&c);
+  ModelParser emitLiteralDefaultValueParser(new map<boost::uuids::uuid, Element*>);
+
+  string expectedEmit = R""""(model:
+  id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+  children:
+    - class:
+        id: 190d1cb9-13dc-44e6-a064-126891ae0033
+        attributes:
+          - property:
+              type: STRING
+              id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+              defaultValue: test)"""";
+
+  string generatedEmit;
+  YAML::Emitter emitter;
+  ASSERT_NO_THROW(emitLiteralDefaultValueParser.emit(emitter, &m));
+  generatedEmit = emitter.c_str();
+  cout << generatedEmit << '\n';
+  ASSERT_TRUE(emitter.good());
+  ASSERT_EQ(expectedEmit, generatedEmit);
 }

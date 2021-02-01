@@ -6,6 +6,7 @@
 #include "uml/literalInt.h"
 #include "uml/literalReal.h"
 #include "uml/literalBool.h"
+#include "uml/instanceValue.h"
 
 using namespace UML;
 
@@ -31,7 +32,7 @@ class PropertyParserTest : public ::testing::Test {
   // for Element
 };
 
-TEST_F(PropertyParserTest, defaultValueTest) {
+TEST_F(PropertyParserTest, defaultLiteralValueTest) {
     EXPECT_NO_THROW(ppDefaultValue->parse(defaultValueNode));
 
     // test string
@@ -61,4 +62,24 @@ TEST_F(PropertyParserTest, defaultValueTest) {
     ASSERT_TRUE(((Property*)(*ppDefaultValue->elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getDefaultValue()->getType()->isPrimitive());
     ASSERT_TRUE(((PrimitiveType*)((Property*)(*ppDefaultValue->elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getDefaultValue()->getType())->getPrimitiveType() == PrimitiveType::Primitive::BOOL);
     ASSERT_TRUE(((LiteralBool*)((Property*)(*ppDefaultValue->elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getDefaultValue())->getValue() == false);
+}
+
+TEST_F(PropertyParserTest, InstanceValueDefaultValueTest) {
+  // Setup
+  ModelParser instanceValueTestParser(new map<boost::uuids::uuid, Element*>);
+  YAML::Node instanceValueTestNode = YAML::LoadFile("../../../../../src/test/yml/propertyTests/defaultInstanceValue.yml");
+  ASSERT_NO_THROW(instanceValueTestParser.parse(instanceValueTestNode));
+
+  ASSERT_TRUE((*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")] != NULL);
+  ASSERT_TRUE((*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")]->getElementType() == ElementType::PROPERTY);
+  ASSERT_TRUE(((Property*)(*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getType() != NULL);
+  ASSERT_TRUE(((Property*)(*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getType()->uuid == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
+  ASSERT_TRUE((*instanceValueTestParser.elements)[((Property*)(*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getType()->uuid]->getElementType() == ElementType::CLASS);
+  ASSERT_TRUE(((Property*)(*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getDefaultValue() != NULL);
+  ASSERT_TRUE(((Property*)(*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getDefaultValue()->getElementType() == ElementType::INSTANCE_VALUE);
+  ASSERT_TRUE(((InstanceValue*)((Property*)(*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getDefaultValue())->getInstance()!= NULL);
+  ASSERT_TRUE(((InstanceValue*)((Property*)(*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getDefaultValue())->getInstance()->uuid == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
+  ASSERT_TRUE((*instanceValueTestParser.elements)[((InstanceValue*)((Property*)(*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getDefaultValue())->getInstance()->uuid]->getElementType() == ElementType::INSTANCE_SPECIFICATION);
+  ASSERT_TRUE(((InstanceSpecification*)((InstanceValue*)((Property*)(*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getDefaultValue())->getInstance())->getClassifier()->uuid == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
+  ASSERT_TRUE(((InstanceSpecification*)((InstanceValue*)((Property*)(*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getDefaultValue())->getInstance())->getClassifier()->uuid == ((Property*)(*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getType()->uuid);
 }

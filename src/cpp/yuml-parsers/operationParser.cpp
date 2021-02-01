@@ -102,6 +102,7 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
                 }
                 default : {
                     // TODO Error
+                    return false;
                 }
             }
         }

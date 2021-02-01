@@ -21,6 +21,8 @@ int main(int argc, char** argv) {
             }
 
             // TODO print model
+            YAML::Emitter emitter;
+            cout << pp.emitDocument(pp.theEl);
             
 
             return 0;

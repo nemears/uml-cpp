@@ -80,5 +80,7 @@ class TemplateParser {
 
         string emitDocument(Element* rootEl);
         // YAML::Emitter emitEmitter(Element* rootEl);
+
+        Element* theEl;
 };
 #endif

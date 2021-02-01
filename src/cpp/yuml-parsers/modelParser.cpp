@@ -1,7 +1,8 @@
 #include "yuml-parsers/modelParser.h"
 
 UML::Element* ModelParser::createElement() {
-    return new UML::Model;
+    theEl = new UML::Model;
+    return theEl;
 }
 
 bool ModelParser::parseFeatures(YAML::Node node, UML::Element* el) {

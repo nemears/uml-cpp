@@ -31,6 +31,18 @@ bool ClassParser::emit(YAML::Emitter& emitter, Element* el) {
 
     bool ret = ClassifierParser::emit(emitter, el);
 
+    if (!((Class*)el)->operations.empty()) {
+        emitter << YAML::Key << "operations";
+        emitter << YAML::BeginSeq;
+        for (auto const& operation: ((Class*)el)->operations) {
+            OperationParser op(elements);
+            if (!op.emit(emitter, operation)) {
+                return false;
+            }
+        }
+        emitter << YAML::EndSeq;
+    }
+
     if (el->getElementType() == ElementType::CLASS) {
         emitter << YAML::EndMap;
         emitter << YAML::EndMap;

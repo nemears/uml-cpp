@@ -17,6 +17,7 @@ class OperationParser : public NamedElementParser {
         OperationParser(map<boost::uuids::uuid, UML::Element*>* elements) : NamedElementParser(elements){
             this->keyword = "operation";
         };
+        bool emit(YAML::Emitter& emitter, Element* el);
 };
 
 #endif

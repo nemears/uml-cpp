@@ -66,3 +66,20 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
 
     return NamedElementParser::parseFeatures(node, el);
 }
+
+bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
+    if (el->getElementType() == ElementType::OPERATION) {
+        emitter << YAML::BeginMap;
+        emitter << YAML::Key << "operation";
+        emitter << YAML::BeginMap;
+    }
+    
+    bool ret = NamedElementParser::emit(emitter, el);
+
+    if (el->getElementType() == ElementType::OPERATION) {
+        emitter << YAML::EndMap;
+        emitter << YAML::EndMap;
+    }
+
+    return ret;
+}

@@ -29,7 +29,7 @@ bool InstanceSpecificationParser::parseFeatures(YAML::Node node, UML::Element* e
         }
     }
 
-    return ClassifierParser::parseFeatures(node, el);
+    return NamedElementParser::parseFeatures(node, el);
 }
 
 bool InstanceSpecificationParser::emit(YAML::Emitter& emitter, Element* el) {
@@ -39,7 +39,7 @@ bool InstanceSpecificationParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Value << YAML::BeginMap;
     }
 
-    bool ret = ClassifierParser::emit(emitter, el);
+    bool ret = NamedElementParser::emit(emitter, el);
 
     if (((InstanceSpecification*)el)->getClassifier() != NULL) {
         emitter << YAML::Key << "classifier";
@@ -56,6 +56,8 @@ bool InstanceSpecificationParser::emit(YAML::Emitter& emitter, Element* el) {
                 return false;
             }
         }
+
+        emitter << YAML::EndSeq;
     }
 
     if (el->getElementType() == ElementType::INSTANCE_SPECIFICATION) {

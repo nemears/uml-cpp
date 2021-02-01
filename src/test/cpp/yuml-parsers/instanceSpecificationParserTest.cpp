@@ -94,3 +94,60 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithClassifierTest) {
   ASSERT_TRUE(emitter.good());
   ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(InstanceSpecificationParserTest, EmitInstanceWithLiteralSlotsTest) {
+  // Setup
+  Model m;
+  m.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
+  Class c;
+  c.setID("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
+  Property p;
+  p.setID("c0ab87cc-d00b-4afb-9558-538253b442b2");
+  PrimitiveType pt;
+  pt.setPrimitiveType(PrimitiveType::Primitive::STRING);
+  InstanceSpecification i;
+  i.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+  Slot s;
+  s.setID("563f4740-e107-4d08-8618-2489f0fe1865");
+  LiteralString ls;
+  ls.setValue("test");
+  p.setType(&pt);
+  c.ownedAttributes.push_back(&p);
+  i.setClassifier(&c);
+  s.setDefiningFeature(&p);
+  s.values.push_back(&ls);
+  i.slots.push_back(&s);
+  m.ownedElements.push_back(&c);
+  m.ownedElements.push_back(&i);
+
+  ModelParser emitInstanceWithLiteralSlotTestParser(new map<boost::uuids::uuid, Element*>);
+  string expectedEmit = R""""(model:
+  id: 190d1cb9-13dc-44e6-a064-126891ae0033
+  children:
+    - class:
+        id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+        attributes:
+          - property:
+              type: STRING
+              id: c0ab87cc-d00b-4afb-9558-538253b442b2
+    - instanceSpecification:
+        id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+        classifier: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+        slots:
+          - slot:
+              id: 563f4740-e107-4d08-8618-2489f0fe1865
+              definingFeature: c0ab87cc-d00b-4afb-9558-538253b442b2
+              value: test)"""";
+
+  string generatedEmit;
+  YAML::Emitter emitter;
+  ASSERT_NO_THROW(emitInstanceWithLiteralSlotTestParser.emit(emitter, &m));
+  generatedEmit = emitter.c_str();
+  cout << generatedEmit << '\n';
+  if (!emitter.good()) {
+    cout << "emitter error!:\n";
+    cout << emitter.GetLastError() << '\n';
+  }
+  ASSERT_TRUE(emitter.good());
+  ASSERT_EQ(expectedEmit, generatedEmit);
+}

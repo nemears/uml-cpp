@@ -4,6 +4,7 @@
 #include "uml/primitiveType.h"
 #include "uml/literalString.h"
 #include "uml/instanceValue.h"
+#include "uml/class.h"
 
 using namespace UML;
 
@@ -61,4 +62,35 @@ TEST_F(InstanceSpecificationParserTest, InstanceSlotTest) {
   ASSERT_TRUE(((InstanceSpecification*)(*ppInstanceValue->elements)[boost::lexical_cast<boost::uuids::uuid>("563f4740-e107-4d08-8618-2489f0fe1865")])->slots.front()->getDefiningFeature()->getType()->uuid == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
   ASSERT_TRUE(((InstanceValue*)((InstanceSpecification*)(*ppInstanceValue->elements)[boost::lexical_cast<boost::uuids::uuid>("563f4740-e107-4d08-8618-2489f0fe1865")])->slots.front()->values.front())->getInstance()->uuid == boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2"));
     
+}
+
+TEST_F(InstanceSpecificationParserTest, EmitInstanceWithClassifierTest) {
+  // Setup
+  Model m;
+  m.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
+  Class c;
+  c.setID("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
+  InstanceSpecification i;
+  i.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+  i.setClassifier(&c);
+  m.ownedElements.push_back(&c);
+  m.ownedElements.push_back(&i);
+
+  ModelParser emitInstanceWithClassTestParser(new map<boost::uuids::uuid, Element*>);
+  string expectedEmit = R""""(model:
+  id: 190d1cb9-13dc-44e6-a064-126891ae0033
+  children:
+    - class:
+        id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+    - instanceSpecification:
+        id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+        classifier: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d)"""";
+
+  string generatedEmit;
+  YAML::Emitter emitter;
+  ASSERT_NO_THROW(emitInstanceWithClassTestParser.emit(emitter, &m));
+  generatedEmit = emitter.c_str();
+  cout << generatedEmit << '\n';
+  ASSERT_TRUE(emitter.good());
+  ASSERT_EQ(expectedEmit, generatedEmit);
 }

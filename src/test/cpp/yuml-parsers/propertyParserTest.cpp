@@ -153,6 +153,7 @@ TEST_F(PropertyParserTest, EmitInstanceValueTest) {
         id: c0ab87cc-d00b-4afb-9558-538253b442b2
     - instanceSpecification:
         id: 563f4740-e107-4d08-8618-2489f0fe1865
+        classifier: c0ab87cc-d00b-4afb-9558-538253b442b2
     - class:
         id: 190d1cb9-13dc-44e6-a064-126891ae0033
         attributes:

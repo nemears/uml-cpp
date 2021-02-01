@@ -41,6 +41,20 @@ bool InstanceSpecificationParser::emit(YAML::Emitter& emitter, Element* el) {
 
     bool ret = ClassifierParser::emit(emitter, el);
 
+    if (((InstanceSpecification*)el)->getClassifier() != NULL) {
+        emitter << YAML::Key << "classifier";
+        emitter << YAML::Value << boost::lexical_cast<string>(((InstanceSpecification*)el)->getClassifier()->uuid);
+    }
+
+    if (!((InstanceSpecification*)el)->slots.empty()) {
+        emitter << YAML::Key << "slots";
+        emitter << YAML::Value << YAML::BeginSeq;
+
+        for (auto const& slot: ((InstanceSpecification*)el)->slots) {
+            // TODO
+        }
+    }
+
     if (el->getElementType() == ElementType::INSTANCE_SPECIFICATION) {
         emitter << YAML::EndMap;
         emitter << YAML::EndMap;

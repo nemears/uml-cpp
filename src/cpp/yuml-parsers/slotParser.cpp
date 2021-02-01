@@ -76,3 +76,61 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
 
     return ElementParser::parseFeatures(node, el);
 }
+
+bool SlotParser::emit(YAML::Emitter& emitter, Element* el) {
+    if (el->getElementType() == ElementType::SLOT) {
+        emitter << YAML::BeginMap;
+        emitter << YAML::Key << "slot";
+        emitter << YAML::BeginMap;
+    }
+
+    bool ret = ElementParser::emit(emitter, el);
+
+    if (((Slot*)el)->getDefiningFeature() != NULL) {
+        emitter << YAML::Key << "definingFeature";
+        emitter << YAML::Value << boost::lexical_cast<string>(((Slot*)el)->getDefiningFeature()->uuid);
+    }
+
+    if (!((Slot*)el)->values.empty()) {
+        if (((Slot*)el)->getDefiningFeature()->getType() != NULL) {
+            emitter << YAML::Key << "value";
+            if (((Slot*)el)->getDefiningFeature()->getType()->isPrimitive()) {
+                switch (((PrimitiveType*)((Slot*)el)->getDefiningFeature()->getType())->getPrimitiveType()) {
+                    case PrimitiveType::Primitive::BOOL : {
+                        emitter << YAML::Value << ((LiteralBool*)((Slot*)el)->values.front())->getValue();
+                        break;
+                    }
+                    case PrimitiveType::Primitive::INT : {
+                        emitter << YAML::Value << ((LiteralInt*)((Slot*)el)->values.front())->getValue();
+                        break;
+                    }
+                    case PrimitiveType::Primitive::REAL : {
+                        emitter << YAML::Value << ((LiteralReal*)((Slot*)el)->values.front())->getValue();
+                        break;
+                    }
+                    case PrimitiveType::Primitive::STRING : {
+                        emitter << YAML::Value << ((LiteralString*)((Slot*)el)->values.front())->getValue();
+                        break;
+                    }
+                }
+            } else {
+                if (((Slot*)el)->values.front()->getElementType() == ElementType::INSTANCE_VALUE) {
+                    if (((InstanceValue*)((Slot*)el)->values.front())->getInstance() != NULL) {
+                        emitter << YAML::Value << boost::lexical_cast<string>(((InstanceValue*)((Slot*)el)->values.front())->getInstance()->uuid);
+                    }
+                } else {
+                    // TODO Error
+                }
+            }
+        } else {
+            // TODO Error
+        }
+    }
+
+    if (el->getElementType() == ElementType::SLOT) {
+        emitter << YAML::EndMap;
+        emitter << YAML::EndMap;
+    }
+
+    return ret;
+}

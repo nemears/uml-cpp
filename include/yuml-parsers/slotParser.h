@@ -21,8 +21,8 @@ class SlotParser : public ElementParser {
     public:
         SlotParser(map<boost::uuids::uuid, UML::Element*>* elements) : ElementParser(elements){
             this->keyword = "slot";
-            // this->elements = elements;
         }
+        bool emit(YAML::Emitter& emitter, Element* el);
 };
 
 #endif

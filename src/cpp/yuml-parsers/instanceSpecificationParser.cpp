@@ -51,7 +51,10 @@ bool InstanceSpecificationParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Value << YAML::BeginSeq;
 
         for (auto const& slot: ((InstanceSpecification*)el)->slots) {
-            // TODO
+            SlotParser sp(elements);
+            if(!sp.emit(emitter, slot)) {
+                return false;
+            }
         }
     }
 

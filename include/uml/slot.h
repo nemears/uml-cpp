@@ -6,13 +6,16 @@
 
 namespace UML {
     class Slot : public Element {
+        protected:
+            StructuralFeature* definingFeature;
         public:
             list<ValueSpecification*> values;
             StructuralFeature* getDefiningFeature();
             void setDefiningFeature(StructuralFeature* definingFeature);
             ElementType getElementType() override;
-        protected:
-            StructuralFeature* definingFeature;
+            Slot() {
+                definingFeature = NULL;
+            }
     };
 }
 

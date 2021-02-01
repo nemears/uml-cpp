@@ -108,6 +108,36 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::EndSeq;
     }
 
+    if (((Operation*)el)->getType() != NULL) {
+        emitter << YAML::Key << "type";
+        if (((Operation*)el)->getType()->isPrimitive()) {
+            switch (((PrimitiveType*)((Operation*)el)->getType())->getPrimitiveType()) {
+                case PrimitiveType::Primitive::BOOL : {
+                    emitter << YAML::Value << "BOOL";
+                    break;
+                }
+                case PrimitiveType::Primitive::INT : {
+                    emitter << YAML::Value << "INT";
+                    break;
+                }
+                case PrimitiveType::Primitive::REAL : {
+                    emitter << YAML::Value << "REAL";
+                    break;
+                }
+                case PrimitiveType::Primitive::STRING : {
+                    emitter << YAML::Value << "STRING";
+                    break;
+                }
+                default : {
+                    //TODO error
+                    return false;
+                }
+            }
+        } else {
+            emitter << YAML::Value << boost::lexical_cast<string>(((Operation*) el)->getType()->uuid);
+        }
+    }
+
     if (el->getElementType() == ElementType::OPERATION) {
         emitter << YAML::EndMap;
         emitter << YAML::EndMap;

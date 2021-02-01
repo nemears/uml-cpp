@@ -76,7 +76,36 @@ bool PropertyParser::emit(YAML::Emitter& emitter, Element* el) {
     bool ret = TypedElementParser::emit(emitter, el);
 
     if (((Property*) el)->getDefaultValue() != NULL) {
-        // TODO
+        emitter << YAML::Key << "defaultValue";
+        if (((Property*)el)->getType() != NULL) {
+            if (((Property*)el)->getType()->isPrimitive()) {
+                switch (((PrimitiveType*)((Property*)el)->getType())->getPrimitiveType()) {
+                    case PrimitiveType::Primitive::BOOL : {
+                        emitter << YAML::Value << ((LiteralBool*)((Property*)el)->getDefaultValue())->getValue();
+                        break;
+                    }
+                    case PrimitiveType::Primitive::INT : {
+                        emitter << YAML::Value << ((LiteralInt*)((Property*)el)->getDefaultValue())->getValue();
+                        break;
+                    }
+                    case PrimitiveType::Primitive::REAL : {
+                        emitter << YAML::Value << ((LiteralReal*)((Property*)el)->getDefaultValue())->getValue();
+                        break;
+                    }
+                    case PrimitiveType::Primitive::STRING : {
+                        emitter << YAML::Value << ((LiteralString*)((Property*)el)->getDefaultValue())->getValue();
+                        break;
+                    }
+                    default : {
+                        // TODO ERROR
+                    }
+                }
+            } else {
+                emitter << YAML::Value << boost::lexical_cast<string>(((InstanceValue*)((Property*) el)->getDefaultValue())->getInstance()->uuid);
+            }
+        } else {
+            // TODO error
+        }
     }
 
     if (el->getElementType() == ElementType::PROPERTY) {

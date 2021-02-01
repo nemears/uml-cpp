@@ -53,9 +53,14 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
                     if (!cp.emit(emitter, child)) {
                         return false;
                     }
+                    break;
                 }
                 case ElementType::INSTANCE_SPECIFICATION : {
-                    // TODO
+                    InstanceSpecificationParser ip(elements);
+                    if (!ip.emit(emitter, child)) {
+                        return false;
+                    }
+                    break;
                 }
             }
         }

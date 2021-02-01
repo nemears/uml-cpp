@@ -31,3 +31,20 @@ bool InstanceSpecificationParser::parseFeatures(YAML::Node node, UML::Element* e
 
     return ClassifierParser::parseFeatures(node, el);
 }
+
+bool InstanceSpecificationParser::emit(YAML::Emitter& emitter, Element* el) {
+    if (el->getElementType() == ElementType::INSTANCE_SPECIFICATION) {
+        emitter << YAML::BeginMap;
+        emitter << YAML::Key << "instanceSpecification";
+        emitter << YAML::Value << YAML::BeginMap;
+    }
+
+    bool ret = ClassifierParser::emit(emitter, el);
+
+    if (el->getElementType() == ElementType::INSTANCE_SPECIFICATION) {
+        emitter << YAML::EndMap;
+        emitter << YAML::EndMap;
+    }
+
+    return ret;
+}

@@ -12,8 +12,9 @@ class InstanceSpecificationParser : public ClassifierParser {
 
     public:
         InstanceSpecificationParser(map<boost::uuids::uuid, UML::Element*>* elements) : ClassifierParser(elements){
-            // this->elements = elements;
+
         };
+        bool emit(YAML::Emitter& emitter, Element* el);
 };
 
 #endif

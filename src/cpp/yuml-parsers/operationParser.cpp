@@ -76,6 +76,38 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
     
     bool ret = NamedElementParser::emit(emitter, el);
 
+    if (!((Operation*)el)->parameters.empty()) {
+        emitter << YAML::Key << "parameters";
+        emitter << YAML::Value << YAML::BeginSeq;
+        for (auto const& parameter: ((Operation*)el)->parameters) {
+            ParameterParser pp(elements);
+            if (!pp.emit(emitter, el)) {
+                return false;
+            }
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (!((Operation*) el)->methods.empty()) {
+        emitter << YAML::Key << "methods";
+        emitter << YAML::Value << YAML::BeginSeq;
+        for (auto const& method: ((Operation*)el)->methods) {
+            switch(method->getElementType()) {
+                case ElementType::OPAQUE_BEHAVIOR : {
+                    OpaqueBehaviorParser op(elements);
+                    if (!op.emit(emitter, el)) {
+                        return false;
+                    }
+                    break;
+                }
+                default : {
+                    // TODO Error
+                }
+            }
+        }
+        emitter << YAML::EndSeq;
+    }
+
     if (el->getElementType() == ElementType::OPERATION) {
         emitter << YAML::EndMap;
         emitter << YAML::EndMap;

@@ -4,7 +4,8 @@
 
 namespace UML {
     class Behavior : public Class {
-        ElementType getElementType() override;
+        public:
+            ElementType getElementType() override;
     };
 }
 

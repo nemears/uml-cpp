@@ -33,4 +33,6 @@ bool OpaqueBehaviorParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::EndMap;
         emitter << YAML::EndMap;
     }
+
+    return ret;
 }

@@ -13,3 +13,24 @@ bool OpaqueBehaviorParser::parseFeatures(YAML::Node node, Element* el) {
 
     return ClassParser::parseFeatures(node, el);
 }
+
+bool OpaqueBehaviorParser::emit(YAML::Emitter& emitter, Element* el) {
+    if (el->getElementType() == ElementType::OPAQUE_BEHAVIOR) {
+        emitter << YAML::BeginMap;
+        emitter << YAML::Key << "opaqueBehavior";
+        emitter << YAML:: BeginMap;
+    }
+
+    bool ret = ClassParser::emit(emitter, el);
+
+    // TODO multiples
+    if (!((OpaqueBehavior*)el)->bodies.empty()) {
+        emitter << YAML::Key << "body";
+        emitter << YAML::Value << ((OpaqueBehavior*) el)->bodies.front();
+    }
+
+    if (el->getElementType() ==  ElementType::OPAQUE_BEHAVIOR) {
+        emitter << YAML::EndMap;
+        emitter << YAML::EndMap;
+    }
+}

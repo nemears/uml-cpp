@@ -16,6 +16,7 @@ class OpaqueBehaviorParser : public ClassParser {
         OpaqueBehaviorParser(map<boost::uuids::uuid, Element*>* elements) : ClassParser(elements){
             this->keyword = "opaqueBehavior";
         }
+        bool emit(YAML::Emitter& emitter, Element* el);
 };
 
 #endif

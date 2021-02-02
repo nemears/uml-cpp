@@ -81,7 +81,7 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Value << YAML::BeginSeq;
         for (auto const& parameter: ((Operation*)el)->parameters) {
             ParameterParser pp(elements);
-            if (!pp.emit(emitter, el)) {
+            if (!pp.emit(emitter, parameter)) {
                 return false;
             }
         }

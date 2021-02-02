@@ -32,3 +32,32 @@ TEST_F(ClassParserTest, testBasicOperations) {
     ASSERT_TRUE(((Operation*)((Class*)(*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front())->getType()->isPrimitive());
     ASSERT_TRUE(((PrimitiveType*)((Operation*)((Class*)(*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front())->getType())->getPrimitiveType() == PrimitiveType::Primitive::BOOL);
 }
+
+TEST_F(ClassParserTest, EmitOperationTest) {
+    Model m;
+    m.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
+    Class c;
+    c.setID("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
+    Operation o;
+    o.setID("563f4740-e107-4d08-8618-2489f0fe1865");
+    c.operations.push_back(&o);
+    m.ownedElements.push_back(&c);
+
+    ModelParser emitBasicOperationParser(new map<boost::uuids::uuid, Element*>);
+    string expectedEmit = R""""(model:
+  id: 190d1cb9-13dc-44e6-a064-126891ae0033
+  children:
+    - class:
+        id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+        operations:
+          - operation:
+              id: 563f4740-e107-4d08-8618-2489f0fe1865)"""";
+
+    string generatedEmit;
+    YAML::Emitter emitter;
+    ASSERT_NO_THROW(emitBasicOperationParser.emit(emitter, &m));
+    generatedEmit = emitter.c_str();
+    cout << generatedEmit << '\n';
+    ASSERT_TRUE(emitter.good());
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

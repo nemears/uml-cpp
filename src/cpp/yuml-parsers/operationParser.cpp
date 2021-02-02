@@ -95,7 +95,7 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
             switch(method->getElementType()) {
                 case ElementType::OPAQUE_BEHAVIOR : {
                     OpaqueBehaviorParser op(elements);
-                    if (!op.emit(emitter, el)) {
+                    if (!op.emit(emitter, method)) {
                         return false;
                     }
                     break;

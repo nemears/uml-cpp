@@ -29,5 +29,20 @@ class ElementParser : public TemplateParser {
                 return msg.c_str();
             }
         };
+
+        // error for trying to emit abstract types
+        class AbstractTypeEmitException : public exception {
+
+            private:
+            string msg;
+
+            public:
+            AbstractTypeEmitException(const string type) :
+                msg("Abstract type " + type + " was attempted to be emit\n")
+                {}
+            virtual const char* what() const throw() {
+                return msg.c_str();
+            }
+        };
 };
 #endif

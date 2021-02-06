@@ -106,7 +106,8 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
                     break;
                 }
                 default : {
-                    // TODO Error
+                    // Error
+                    throw new AbstractTypeEmitException(child->getElementTypeString());
                 }
             }
         }

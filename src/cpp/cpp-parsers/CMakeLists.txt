@@ -1,2 +1,2 @@
-add_library(cppParsers cppClassParser.cpp)
-target_link_libraries(cppParsers clangParse)
+#add_library(cppParsers cppClassParser.cpp)
+#target_link_libraries(cppParsers PUBLIC clang)

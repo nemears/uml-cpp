@@ -14,7 +14,6 @@ INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 # llvm clang dependency
 find_package(Clang REQUIRED)
 include_directories(${LLVM_INCLUDE_DIRS})
-include_directories(${CLANG_INCLUDEDIR})
 add_definitions(${LLVM_DEFINITIONS})
 add_definitions(${CLANG_DEFINITIONS})
 
@@ -34,7 +33,7 @@ add_subdirectory(src)
 add_executable(yuml src/cpp/application.cpp)
 
 # Link them all
-target_link_libraries(yuml PUBLIC Parsers Uml Logger gtest yaml-cpp cppParsers)
+target_link_libraries(yuml PUBLIC Parsers Uml Logger gtest yaml-cpp)
 TARGET_LINK_LIBRARIES(yuml LINK_PUBLIC ${Boost_LIBRARIES})
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

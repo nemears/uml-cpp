@@ -107,8 +107,7 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
                     break;
                 }
                 default : {
-                    // TODO Error
-                    return false;
+                    throw AbstractTypeEmitException(method->getElementTypeString(), boost::lexical_cast<string>(method->uuid));
                 }
             }
         }

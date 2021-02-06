@@ -162,3 +162,17 @@ TEST_F(OperationParserTest, EmitOperationWithBlankOpaqueBehaviorTest) {
   ASSERT_TRUE(emitter.good());
   ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(OperationParserTest, EmitAbstractMethodTest) {
+  // Setup
+  Model m;
+  Class c;
+  Operation o;
+  Behavior b;
+  o.methods.push_back(&b);
+  c.operations.push_back(&o);
+  m.ownedElements.push_back(&c);
+  ModelParser abstractMethodParser(new map<boost::uuids::uuid, Element*>);
+
+  EXPECT_THROW(abstractMethodParser.emitDocument(&m), ElementParser::AbstractTypeEmitException);
+}

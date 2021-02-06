@@ -24,9 +24,18 @@ TEST_F(OperationParserTest, ParseInvalidParameterTest) {
 
 TEST_F(OperationParserTest, ParseInvalidMethodTest) {
   ModelParser invalidMethodParser(new map<boost::uuids::uuid, Element*>);
-  YAML::Node invalideMethodNode = YAML::LoadFile("../../../../../src/test/yml/operationTests/invalidMethodList.yml");
+  YAML::Node invalidMethodNode = YAML::LoadFile("../../../../../src/test/yml/operationTests/invalidMethodList.yml");
 
-  EXPECT_THROW(invalidMethodParser.parse(invalideMethodNode), ElementParser::InvalidNodeTypeException);
+  EXPECT_THROW(invalidMethodParser.parse(invalidMethodNode), ElementParser::InvalidNodeTypeException);
+}
+
+TEST_F(OperationParserTest, ParseInvalidTypeTest) {
+  // Setup
+  ModelParser invalidTypeParser(new map<boost::uuids::uuid, Element*>);
+  YAML::Node invalidTypeNode = YAML::LoadFile("../../../../../src/test/yml/operationTests/invalidType.yml");
+
+  // Test
+  EXPECT_THROW(invalidTypeParser.parse(invalidTypeNode), ElementParser::InvalidIdentifierException);
 }
 
 TEST_F(OperationParserTest, EmitOperationWithLiteralParameter) {

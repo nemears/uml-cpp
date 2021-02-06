@@ -1,7 +1,7 @@
 ---
   model:
     children:
-      - OpaqueBehavior:
+      - opaqueBehavior:
           children:
             - parameter:
                 id: "190d1cb9-13dc-44e6-a064-126891ae0033"

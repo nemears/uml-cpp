@@ -34,6 +34,29 @@ bool ParameterParser::emit(YAML::Emitter& emitter, Element* el) {
 
     bool ret = TypedElementParser::emit(emitter, el);
 
+    if (((Parameter*)el)->getDirection() != ParameterDirectionKind::NONE) {
+        emitter << YAML::Key << "direction";
+        
+        switch (((Parameter*)el)->getDirection()) {
+            case ParameterDirectionKind::IN : {
+                emitter << YAML::Value << "IN";
+                break;
+            }
+            case ParameterDirectionKind::OUT : {
+                emitter << YAML::Value << "OUT";
+                break;
+            }
+            case ParameterDirectionKind::INOUT : {
+                emitter << YAML::Value << "INOUT";
+                break;
+            }
+            case ParameterDirectionKind::RETURN : {
+                emitter << YAML::Value << "RETURN";
+                break;
+            }
+        }
+    }
+
     if (el->getElementType() == ElementType::PARAMETER) {
         emitter << YAML::EndMap;
         emitter << YAML::EndMap;

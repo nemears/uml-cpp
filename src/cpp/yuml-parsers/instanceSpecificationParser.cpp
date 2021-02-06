@@ -15,7 +15,8 @@ bool InstanceSpecificationParser::parseFeatures(YAML::Node node, UML::Element* e
             Classifier* instClassifier = (Classifier*) (*elements)[classifierId];
             ((InstanceSpecification*) el)->setClassifier(instClassifier);
         } else {
-            // TODO error
+            // error
+            throw el->invalidID_Exception;
         }
     }
 

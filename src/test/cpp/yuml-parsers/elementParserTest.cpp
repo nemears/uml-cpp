@@ -86,6 +86,17 @@ TEST_F(ElementParserTest, ThrowInvalidIdentifierExceptionTest) {
   ASSERT_THROW(invalidIdentifierTestParser.parse(invalidIdentifierTestNode), ElementParser::InvalidIdentifierException*);
 }
 
+TEST_F(ElementParserTest, ThrowAbstractEmitExceptionTest) {
+  // Setup
+  Model m;
+  Element e;
+  m.ownedElements.push_back(&e);
+  ModelParser abstractEmitExceptionParser(new map<boost::uuids::uuid, Element*>);
+
+  // Test
+  ASSERT_THROW(abstractEmitExceptionParser.emitDocument(&m), ElementParser::AbstractTypeEmitException*);
+}
+
 TEST_F(ElementParserTest, EmitBasicIDTest) {
   Model el;
   el.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");

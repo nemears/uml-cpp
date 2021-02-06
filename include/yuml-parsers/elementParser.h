@@ -37,8 +37,8 @@ class ElementParser : public TemplateParser {
             string msg;
 
             public:
-            AbstractTypeEmitException(const string type) :
-                msg("Abstract type " + type + " was attempted to be emit\n")
+            AbstractTypeEmitException(const string type, const string uuid) :
+                msg("Abstract type " + type + " and uuid: " + uuid + " was attempted to be emit\n")
                 {}
             virtual const char* what() const throw() {
                 return msg.c_str();

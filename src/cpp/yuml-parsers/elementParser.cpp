@@ -107,7 +107,7 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
                 }
                 default : {
                     // Error
-                    throw new AbstractTypeEmitException(child->getElementTypeString());
+                    throw new AbstractTypeEmitException(child->getElementTypeString(), boost::lexical_cast<string>(child->uuid));
                 }
             }
         }

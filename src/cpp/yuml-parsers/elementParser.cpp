@@ -3,6 +3,7 @@
 #include "yuml-parsers/instanceSpecificationParser.h"
 #include "yuml-parsers/opaqueBehaviorParser.h"
 #include "yuml-parsers/parameterParser.h"
+#include "yuml-parsers/namespaceParser.h"
 
 using namespace UML;
 
@@ -31,7 +32,11 @@ bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
                     InstanceSpecificationParser instanceParser(elements);
                     Element* parsedEl = instanceParser.parseElement(node["children"][i]["instanceSpecification"]);
                     el->ownedElements.push_back(parsedEl);
-                } else if (node["children"][i]["opaqueBehavior"]) {
+                } else if (node["children"][i]["namespace"]) {
+                    NamespaceParser namespaceParser(elements);
+                    Element* parsedEl = namespaceParser.parseElement(node["children"][i]["namespace"]);
+                    el->ownedElements.push_back(parsedEl);
+                }else if (node["children"][i]["opaqueBehavior"]) {
                     OpaqueBehaviorParser opaqueBehaviorParser(elements);
                     Element* parsedEl = opaqueBehaviorParser.parseElement(node["children"][i]["opaqueBehavior"]);
                     el->ownedElements.push_back(parsedEl);

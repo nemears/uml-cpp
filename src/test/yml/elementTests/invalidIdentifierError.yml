@@ -1,0 +1,6 @@
+---
+  model:
+    children:
+      - notavalididentifier:
+          name: ha
+...

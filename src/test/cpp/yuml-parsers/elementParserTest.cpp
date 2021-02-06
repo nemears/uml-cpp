@@ -77,6 +77,15 @@ TEST_F(ElementParserTest, ParseEmptyChildrenTest) {
   EXPECT_TRUE(((UML::NamedElement*)emptyChildren2ppYAML->elements->begin()->second)->getName().empty());
 }
 
+TEST_F(ElementParserTest, ThrowInvalidIdentifierExceptionTest) {
+  // Setup
+  ModelParser invalidIdentifierTestParser(new map<boost::uuids::uuid, Element*>);
+  YAML::Node invalidIdentifierTestNode = YAML::LoadFile("../../../../../src/test/yml/elementTests/invalidIdentifierError.yml");
+
+  // Test
+  ASSERT_THROW(invalidIdentifierTestParser.parse(invalidIdentifierTestNode), ElementParser::InvalidIdentifierException*);
+}
+
 TEST_F(ElementParserTest, EmitBasicIDTest) {
   Model el;
   el.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");

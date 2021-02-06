@@ -49,7 +49,7 @@ bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
                 // TODO literals?
                 
                 else {
-                    // ERROR
+                    // ERROR, string could not be identified to uml schema
                     throw new InvalidIdentifierException(node["children"][i].Mark().line, node["children"][i].Scalar());
                 }
             }

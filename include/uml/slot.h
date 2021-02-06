@@ -16,6 +16,12 @@ namespace UML {
             Slot() {
                 definingFeature = NULL;
             }
+            class NullDefiningFeatureException : public exception {
+                public:
+                    virtual const char* what() const throw() {
+                        return "Tried to assign value to slot without setting definingFeature";
+                    }
+            } nullDefiningFeatureException;
     };
 }
 

@@ -19,6 +19,10 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
         }
     }
     if (node["value"]) {
+        if (((Slot*) el)->getDefiningFeature() == NULL) {
+            // Error
+            throw ((Slot*)el)->nullDefiningFeatureException;
+        }
         if (((StructuralFeature*)((Slot*) el)->getDefiningFeature())->getType() != NULL) {
             if (((StructuralFeature*)((Slot*) el)->getDefiningFeature())->getType()->isPrimitive()) {
                 switch (((PrimitiveType*) ((StructuralFeature*)((Slot*) el)->getDefiningFeature())->getType())->getPrimitiveType()) {
@@ -51,8 +55,7 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
                         break;
                     }
                     default : {
-                        //TODO error
-                        break;
+                        throw InvalidIdentifierException(node["value"].Mark().line, node["value"].as<string>());
                     }
                 }
             } else {
@@ -70,7 +73,8 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
                 }
             }
         } else {
-            // TODO ERROR
+            // Error
+            throw ((Slot*)el)->getDefiningFeature()->invalidValueException;
         }
     }
 

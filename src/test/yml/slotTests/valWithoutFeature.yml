@@ -1,0 +1,10 @@
+---
+  model:
+    children:
+      - class:
+          id : "d9ab2f06-4c2c-4330-9e1b-7eaee423a66a"
+      - instanceSpecification:
+          classifier: "d9ab2f06-4c2c-4330-9e1b-7eaee423a66a"
+          slots:
+            - slot:
+                value: 5

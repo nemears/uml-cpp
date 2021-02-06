@@ -1,8 +1,12 @@
 #include "yuml-parsers/elementParser.h"
 #include "yuml-parsers/classParser.h"
 #include "yuml-parsers/instanceSpecificationParser.h"
+#include "yuml-parsers/opaqueBehaviorParser.h"
+#include "yuml-parsers/parameterParser.h"
 
-bool ElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
+using namespace UML;
+
+bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["id"]) {
         boost::uuids::uuid oldId = el->uuid;
         try {
@@ -21,15 +25,21 @@ bool ElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
             for (std::size_t i=0; i<node["children"].size(); i++) {
                 if (node["children"][i]["class"]) {
                     ClassParser classParser(elements);
-                    UML::Element* parsedEl = classParser.parseElement(node["children"][i]["class"]);
+                    Element* parsedEl = classParser.parseElement(node["children"][i]["class"]);
                     el->ownedElements.push_back(parsedEl);
                 } else if (node["children"][i]["instanceSpecification"]){
                     InstanceSpecificationParser instanceParser(elements);
-                    UML::Element* parsedEl = instanceParser.parseElement(node["children"][i]["instanceSpecification"]);
+                    Element* parsedEl = instanceParser.parseElement(node["children"][i]["instanceSpecification"]);
                     el->ownedElements.push_back(parsedEl);
-                } else if (node["children"][i]["other types here"]) {
-                    // TODO TODO TODO
-                }
+                } else if (node["children"][i]["opaqueBehavior"]) {
+                    OpaqueBehaviorParser opaqueBehaviorParser(elements);
+                    Element* parsedEl = opaqueBehaviorParser.parseElement(node["children"][i]["opaqueBehavior"]);
+                    el->ownedElements.push_back(parsedEl);
+                } else if (node["children"][i]["parameter"]) {
+                    ParameterParser parameterParser(elements);
+                    Element* parsedEl = parameterParser.parseElement(node["children"][i]["parameter"]);
+                    el->ownedElements.push_back(parsedEl);
+                } // TODO literals?
             }
         } else {
             // ERROR

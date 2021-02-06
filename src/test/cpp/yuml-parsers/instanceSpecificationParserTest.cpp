@@ -64,6 +64,15 @@ TEST_F(InstanceSpecificationParserTest, InstanceSlotTest) {
     
 }
 
+TEST_F(InstanceSpecificationParserTest, ParseInvalidClassifierID_Test) {
+  // Setup
+  ModelParser invalidClassifierParser(new map<boost::uuids::uuid, Element*>);
+  YAML::Node invalidClassifierNode = YAML::LoadFile("../../../../../src/test/yml/instanceSpecificationTests/invalidClassifier.yml");
+
+  // test
+  EXPECT_THROW(invalidClassifierParser.parse(invalidClassifierNode), Element::InvalidID_Exception);
+}
+
 TEST_F(InstanceSpecificationParserTest, EmitInstanceWithClassifierTest) {
   // Setup
   Model m;

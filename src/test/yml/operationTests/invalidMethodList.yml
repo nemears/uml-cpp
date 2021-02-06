@@ -1,0 +1,9 @@
+---
+  model:
+    children:
+      - class:
+          operations:
+            - operation:
+                methods:
+                  opaqueBehavior:
+                    name: skip

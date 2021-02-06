@@ -13,6 +13,22 @@ class OperationParserTest : public ::testing::Test {
 
 };
 
+TEST_F(OperationParserTest, ParseInvalidParameterTest) {
+  // Setup
+  ModelParser invalidParameterParser(new map<boost::uuids::uuid, Element*>);
+  YAML::Node invalidParameterNode = YAML::LoadFile("../../../../../src/test/yml/operationTests/invalidParameterList.yml");
+
+  // Test
+  EXPECT_THROW(invalidParameterParser.parse(invalidParameterNode), ElementParser::InvalidNodeTypeException);
+}
+
+TEST_F(OperationParserTest, ParseInvalidMethodTest) {
+  ModelParser invalidMethodParser(new map<boost::uuids::uuid, Element*>);
+  YAML::Node invalideMethodNode = YAML::LoadFile("../../../../../src/test/yml/operationTests/invalidMethodList.yml");
+
+  EXPECT_THROW(invalidMethodParser.parse(invalideMethodNode), ElementParser::InvalidNodeTypeException);
+}
+
 TEST_F(OperationParserTest, EmitOperationWithLiteralParameter) {
   // Setup
   Model m;

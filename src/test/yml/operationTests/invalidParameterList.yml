@@ -1,0 +1,9 @@
+---
+  model:
+    children:
+      - class:
+          operations:
+            - operation:
+                parameters:
+                  parameter:
+                    name: skip

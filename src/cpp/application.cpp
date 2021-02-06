@@ -26,18 +26,18 @@ int main(int argc, char** argv) {
 
             return 0;
         }
-        case 3: {
-            // this means that there is an extra option
-            cout << "application received argument " << argv[1] << endl;
-            if (strcmp(argv[1], "cppParse") == 0) {
-                cout << "parsing cpp" << endl;
-                CppClassParser cppClassParser;
-                string tmp(argv[2]);
-                cppClassParser.parse(tmp);
-            }
+        // case 3: {
+        //     // this means that there is an extra option
+        //     cout << "application received argument " << argv[1] << endl;
+        //     if (strcmp(argv[1], "cppParse") == 0) {
+        //         cout << "parsing cpp" << endl;
+        //         CppClassParser cppClassParser;
+        //         string tmp(argv[2]);
+        //         cppClassParser.parse(tmp);
+        //     }
 
-            return 0;
-        }
+        //     return 0;
+        // }
         default: {
             cerr << "Improper number of arguments\n";
             return 1;

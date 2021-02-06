@@ -60,6 +60,7 @@ class Element {
             }
         } invalidID_Exception;
         virtual ElementType getElementType();
+        string getElementTypeString();
 };
 }
 #endif

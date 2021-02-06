@@ -29,7 +29,7 @@ bool TypedElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
                 ((UML::TypedElement*)el)->setType(boolType);
             } else {
                 // ERROR
-                cerr << "Invalid type detected " << parsedId << '\n';
+                throw InvalidIdentifierException(node["type"].Mark().line, node["type"].as<string>());
             }
         }
         

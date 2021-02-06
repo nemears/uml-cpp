@@ -57,9 +57,7 @@ TEST_F(TypedElementParserTest, ParseInvalidPrimitive) {
   invalidPrimitiveNode = YAML::LoadFile("../../../../../src/test/yml/typedElementTests/invalidPrimitive.yml");
 
   ModelParser invalidPrimitiveParser = ModelParser(new map<boost::uuids::uuid, UML::Element*>);
-  ASSERT_NO_THROW(invalidPrimitiveParser.parse(invalidPrimitiveNode));
-  UML::TypedElement* val = (UML::TypedElement*)(*invalidPrimitiveParser.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")];
-  EXPECT_TRUE(((UML::TypedElement*)(*invalidPrimitiveParser.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getType() == NULL);
+  ASSERT_THROW(invalidPrimitiveParser.parse(invalidPrimitiveNode), ElementParser::InvalidIdentifierException);
 }
 
 TEST_F(TypedElementParserTest, EmitLiteralTypeTest) {

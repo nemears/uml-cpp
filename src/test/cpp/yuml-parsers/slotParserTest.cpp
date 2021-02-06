@@ -16,3 +16,12 @@ TEST_F(SlotParserTest, ParseValueWithoutFeatureTest) {
     // Test
     ASSERT_THROW(valWithoutFeatureParser.parse(valWithoutFeatureNode), Slot::NullDefiningFeatureException);
 }
+
+TEST_F(SlotParserTest, ParseNullTypeTest) {
+    // Setup
+    ModelParser valWithNullTypeParser(new map<boost::uuids::uuid, Element*>);
+    YAML::Node valWithNullTypeNode = YAML::LoadFile("../../../../../src/test/yml/slotTests/nullType.yml");
+
+    // Test
+    ASSERT_THROW(valWithNullTypeParser.parse(valWithNullTypeNode), StructuralFeature::InvalidValueException);
+}

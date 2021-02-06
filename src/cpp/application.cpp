@@ -14,15 +14,22 @@ int main(int argc, char** argv) {
             string fileName = argv[1];
             cout << "parsing file " << fileName << "\n";
             ModelParser pp(new map<boost::uuids::uuid, UML::Element*>);
-            if(!pp.parse(node)) {
-                cerr << "could not parse " << fileName << "\n";
-                 return -1;
+            try {
+                if(!pp.parse(node)) {
+                    cerr << "could not parse " << fileName << endl;
+                    return -1;
+                }
+            } catch (exception& e) {
+                cerr << e.what() << endl;
             }
 
             // TODO print model
             YAML::Emitter emitter;
-            cout << pp.emitDocument(pp.theEl) << '\n';
-            
+            try {
+                cout << pp.emitDocument(pp.theEl) << '\n';
+            } catch (exception& e) {
+                cerr << e.what() << endl;
+            }
 
             return 0;
         }

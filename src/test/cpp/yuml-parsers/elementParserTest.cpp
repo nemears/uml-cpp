@@ -83,7 +83,7 @@ TEST_F(ElementParserTest, ThrowInvalidIdentifierExceptionTest) {
   YAML::Node invalidIdentifierTestNode = YAML::LoadFile("../../../../../src/test/yml/elementTests/invalidIdentifierError.yml");
 
   // Test
-  ASSERT_THROW(invalidIdentifierTestParser.parse(invalidIdentifierTestNode), ElementParser::InvalidIdentifierException*);
+  ASSERT_THROW(invalidIdentifierTestParser.parse(invalidIdentifierTestNode), ElementParser::InvalidIdentifierException);
 }
 
 TEST_F(ElementParserTest, ThrowAbstractEmitExceptionTest) {
@@ -94,7 +94,7 @@ TEST_F(ElementParserTest, ThrowAbstractEmitExceptionTest) {
   ModelParser abstractEmitExceptionParser(new map<boost::uuids::uuid, Element*>);
 
   // Test
-  ASSERT_THROW(abstractEmitExceptionParser.emitDocument(&m), ElementParser::AbstractTypeEmitException*);
+  ASSERT_THROW(abstractEmitExceptionParser.emitDocument(&m), ElementParser::AbstractTypeEmitException);
 }
 
 TEST_F(ElementParserTest, EmitBasicIDTest) {

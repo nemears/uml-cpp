@@ -50,7 +50,7 @@ bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
                 
                 else {
                     // ERROR, string could not be identified to uml schema
-                    throw new InvalidIdentifierException(node["children"][i].Mark().line, node["children"][i].Scalar());
+                    throw InvalidIdentifierException(node["children"][i].Mark().line, node["children"][i].Scalar());
                 }
             }
         } else {
@@ -107,7 +107,7 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
                 }
                 default : {
                     // Error
-                    throw new AbstractTypeEmitException(child->getElementTypeString(), boost::lexical_cast<string>(child->uuid));
+                    throw AbstractTypeEmitException(child->getElementTypeString(), boost::lexical_cast<string>(child->uuid));
                 }
             }
         }

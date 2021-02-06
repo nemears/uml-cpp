@@ -70,10 +70,10 @@ TEST_F(ElementParserTest, ParseSingleCharID_Test) {
 }
 
 TEST_F(ElementParserTest, ParseEmptyChildrenTest) {
-  EXPECT_NO_THROW(emptyChildrenppYAML->parse(emptyChildrenNode));
+  EXPECT_THROW(emptyChildrenppYAML->parse(emptyChildrenNode), ElementParser::InvalidNodeTypeException);
   EXPECT_TRUE(emptyChildrenppYAML->elements->empty() == false);
   EXPECT_EQ(((UML::NamedElement*)emptyChildrenppYAML->elements->begin()->second)->getName(), "pete");
-  EXPECT_NO_THROW(emptyChildren2ppYAML->parse(emptyChildren2Node));
+  EXPECT_THROW(emptyChildren2ppYAML->parse(emptyChildren2Node), ElementParser::InvalidNodeTypeException);
   EXPECT_TRUE(((UML::NamedElement*)emptyChildren2ppYAML->elements->begin()->second)->getName().empty());
 }
 

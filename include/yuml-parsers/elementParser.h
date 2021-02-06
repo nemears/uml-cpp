@@ -44,5 +44,18 @@ class ElementParser : public TemplateParser {
                 return msg.c_str();
             }
         };
+
+        class InvalidNodeTypeException: public exception {
+
+            private:
+                string msg;
+            public: 
+                InvalidNodeTypeException(const int line, const string type) :
+                    msg("Invalid node type on line " + to_string(line) + ", Expected node of type " + type + '\n')
+                    {}
+                virtual const char* what() const throw() {
+                    return msg.c_str();
+                }
+        };
 };
 #endif

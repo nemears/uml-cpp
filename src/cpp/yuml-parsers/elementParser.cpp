@@ -20,6 +20,7 @@ bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
             cerr << e.what() << '\n';
         }
     } 
+
     if (node["children"]) {
         // TODO
         if (node["children"].IsSequence()) {
@@ -54,9 +55,11 @@ bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
                 }
             }
         } else {
-            // ERROR
+            // ERROR, was not a sequence
+            throw InvalidNodeTypeException(node["children"].Mark().line, "sequence");
         }
     }
+    
     return true;
 }
 

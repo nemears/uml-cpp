@@ -13,6 +13,9 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
                 Element* parsedEl = parameterParser.parseElement(node["parameters"][i]["parameter"]);
                 ((Operation*) el)->parameters.push_back((Parameter*) parsedEl);
             }
+        } else {
+            // Error
+            throw InvalidNodeTypeException(node["parameters"].Mark().line, "sequence");
         }
     }
 
@@ -27,6 +30,9 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
 
                 // TODO other types here
             }
+        } else {
+            // Error
+            throw InvalidNodeTypeException(node["parameters"].Mark().line, "sequence");
         }
     }
 
@@ -57,8 +63,8 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
                 boolType->setPrimitiveType(PrimitiveType::Primitive::BOOL);
                 ((Operation*)el)->setType(boolType);
             } else {
-                // ERROR
-                cerr << "Invalid type detected " << parsedId << '\n';
+                // Error
+                throw InvalidIdentifierException(node["type"].Mark().line, node["type"].as<string>());
             }
         }
         

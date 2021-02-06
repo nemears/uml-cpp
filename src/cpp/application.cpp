@@ -16,11 +16,11 @@ int main(int argc, char** argv) {
             ModelParser pp(new map<boost::uuids::uuid, UML::Element*>);
             try {
                 if(!pp.parse(node)) {
-                    cerr << "could not parse " << fileName << endl;
+                    cerr << "[FATAL ERROR] could not parse " << fileName << endl;
                     return -1;
                 }
             } catch (exception& e) {
-                cerr << e.what() << endl;
+                cerr << "[FATAL ERROR] " << e.what() << endl;
             }
 
             // TODO print model
@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
             try {
                 cout << pp.emitDocument(pp.theEl) << '\n';
             } catch (exception& e) {
-                cerr << e.what() << endl;
+                cerr << "[FATAL ERROR] " << e.what() << endl;
             }
 
             return 0;

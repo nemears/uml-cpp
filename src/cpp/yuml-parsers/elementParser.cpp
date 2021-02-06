@@ -44,7 +44,14 @@ bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
                     ParameterParser parameterParser(elements);
                     Element* parsedEl = parameterParser.parseElement(node["children"][i]["parameter"]);
                     el->ownedElements.push_back(parsedEl);
-                } // TODO literals?
+                } 
+                
+                // TODO literals?
+                
+                else {
+                    // ERROR
+                    throw new InvalidIdentifierException(node["children"][i].Mark().line, node["children"][i].Scalar());
+                }
             }
         } else {
             // ERROR
@@ -82,18 +89,24 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
                     if (!np.emit(emitter, child)) {
                         return false;
                     }
+                    break;
                 }
                 case ElementType::OPAQUE_BEHAVIOR : {
                     OpaqueBehaviorParser obp(elements);
                     if (!obp.emit(emitter, child)) {
                         return false;
                     }
+                    break;
                 }
                 case ElementType::PARAMETER : {
                     ParameterParser pp(elements);
                     if (!pp.emit(emitter, child)) {
                         return false;
                     }
+                    break;
+                }
+                default : {
+                    // TODO Error
                 }
             }
         }

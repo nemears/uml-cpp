@@ -14,5 +14,20 @@ class ElementParser : public TemplateParser {
         };
 
         virtual bool emit(YAML::Emitter& emitter, Element* el) override;
+
+        // error for invalid element keyword
+        class InvalidIdentifierException: public exception {
+
+            private:
+            string msg;
+
+            public:
+            InvalidIdentifierException(const int lineNumber, const string scalar) : 
+                msg("Invalid identifier for config file at line number: " + to_string(lineNumber) + ", value: <" + scalar + ">\n")
+                {}
+            virtual const char* what() const throw() {
+                return msg.c_str();
+            }
+        };
 };
 #endif

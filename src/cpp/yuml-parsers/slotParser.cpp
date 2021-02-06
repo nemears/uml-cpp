@@ -55,6 +55,7 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
                         break;
                     }
                     default : {
+                        // should never get here
                         throw InvalidIdentifierException(node["value"].Mark().line, node["value"].as<string>());
                     }
                 }
@@ -123,11 +124,13 @@ bool SlotParser::emit(YAML::Emitter& emitter, Element* el) {
                         emitter << YAML::Value << boost::lexical_cast<string>(((InstanceValue*)((Slot*)el)->values.front())->getInstance()->uuid);
                     }
                 } else {
-                    // TODO Error
+                    // Error
+                    throw AbstractTypeEmitException(((Slot*)el)->values.front()->getElementTypeString(), boost::lexical_cast<string>(((Slot*)el)->values.front()->uuid));
                 }
             }
         } else {
-            // TODO Error
+            // Error
+            throw(((Slot*)el)->getDefiningFeature()->invalidValueException);
         }
     }
 

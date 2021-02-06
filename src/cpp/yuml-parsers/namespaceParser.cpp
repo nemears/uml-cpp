@@ -11,6 +11,18 @@ bool NamespaceParser::parseFeatures(YAML::Node node, Element* el) {
 }
 
 bool NamespaceParser::emit(YAML::Emitter& emitter, Element* el) {
+
+    if (el->getElementType() == ElementType::NAMESPACE) {
+        emitter << YAML::BeginMap;
+        emitter << YAML::Key << "namespace";
+        emitter << YAML::BeginMap;
+    }
+
     bool ret = NamedElementParser::emit(emitter, el);
+
+    if (el->getElementType() == ElementType::NAMESPACE) {
+        emitter << YAML::EndMap;
+        emitter << YAML::EndMap;
+    }
     return ret;
 }

@@ -77,6 +77,24 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
                     }
                     break;
                 }
+                case ElementType::NAMESPACE : {
+                    NamespaceParser np(elements);
+                    if (!np.emit(emitter, child)) {
+                        return false;
+                    }
+                }
+                case ElementType::OPAQUE_BEHAVIOR : {
+                    OpaqueBehaviorParser obp(elements);
+                    if (!obp.emit(emitter, child)) {
+                        return false;
+                    }
+                }
+                case ElementType::PARAMETER : {
+                    ParameterParser pp(elements);
+                    if (!pp.emit(emitter, child)) {
+                        return false;
+                    }
+                }
             }
         }
         emitter << YAML::EndSeq;

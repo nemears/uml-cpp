@@ -8,13 +8,17 @@ namespace UML {
         IN, 
         INOUT, 
         OUT, 
-        RETURN};
+        RETURN,
+        NONE};
 
     class Parameter : public TypedElement {
         public:
             ElementType getElementType() override;
             ParameterDirectionKind getDirection();
             void setDirection(ParameterDirectionKind direction);
+            Parameter() {
+                direction = ParameterDirectionKind::NONE;
+            }
         protected:
             ParameterDirectionKind direction;
         

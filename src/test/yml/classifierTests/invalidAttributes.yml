@@ -1,0 +1,8 @@
+---
+  model:
+    children:
+      class:
+        operations:
+          operation:
+            name: "bad"
+...

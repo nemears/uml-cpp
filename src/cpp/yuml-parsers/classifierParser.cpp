@@ -14,6 +14,7 @@ bool ClassifierParser::parseFeatures(YAML::Node node, UML::Element* el) {
             }
         } else {
             // ERROR
+            throw InvalidNodeTypeException(node["attributes"].Mark().line, "sequence");
         }
     }
     return NamedElementParser::parseFeatures(node, el);

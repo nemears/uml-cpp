@@ -41,6 +41,15 @@ TEST_F(ClassifierParserTest, ParseAttributesTest) {
   EXPECT_EQ(((UML::Classifier*)(*pp2->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")])->ownedAttributes.back()->uuid, boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
 }
 
+TEST_F(ClassifierParserTest, ParseAttributesNotSequenceTest) {
+  // Setup
+  ModelParser attributesNotSequenceParser(new map<boost::uuids::uuid, Element*>);
+  YAML::Node attributesNotSequenceNode = YAML::LoadFile("../../../../../src/test/yml/classifierTests/invalidAttributes.yml");
+
+  // Test
+  ASSERT_THROW(attributesNotSequenceParser.parse(attributesNotSequenceNode), ElementParser::InvalidNodeTypeException);
+}
+
 TEST_F(ClassifierParserTest, EmitSingleBasicAttributeTest) {
   Model el;
   el.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");

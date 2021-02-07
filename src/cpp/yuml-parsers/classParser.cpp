@@ -16,6 +16,8 @@ bool ClassParser::parseFeatures(YAML::Node node, Element* el) {
                 Element* parsedEl = operationParser.parseElement(node["operations"][i]["operation"]);
                 ((Class*) el)->operations.push_back((Operation*) parsedEl);
             }
+        } else {
+            throw ElementParser::InvalidNodeTypeException(node["operations"].Mark().line, "sequence");
         }
     }
 

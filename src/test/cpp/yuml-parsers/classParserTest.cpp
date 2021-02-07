@@ -33,6 +33,15 @@ TEST_F(ClassParserTest, testBasicOperations) {
     ASSERT_TRUE(((PrimitiveType*)((Operation*)((Class*)(*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front())->getType())->getPrimitiveType() == PrimitiveType::Primitive::BOOL);
 }
 
+TEST_F(ClassParserTest, NonSequenceOperationsExceptionTest) {
+  // Setup
+  ModelParser nonSequenceOperationParser(new map<boost::uuids::uuid, Element*>);
+  YAML::Node nonSequenceOperationNode = YAML::LoadFile("../../../../../src/test/yml/classTests/invalidOperation.yml");
+
+  // Test
+  ASSERT_THROW(nonSequenceOperationParser.parse(nonSequenceOperationNode), ElementParser::InvalidNodeTypeException);
+}
+
 TEST_F(ClassParserTest, EmitOperationTest) {
     Model m;
     m.setID("190d1cb9-13dc-44e6-a064-126891ae0033");

@@ -26,6 +26,9 @@ add_subdirectory(libs/googletest)
 # yaml-cpp dependency
 add_subdirectory(libs/yaml-cpp)
 
+# pybind11
+add_subdirectory(libs/pybind11)
+
 # src
 add_subdirectory(src)
 

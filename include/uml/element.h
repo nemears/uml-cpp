@@ -55,12 +55,14 @@ class Element {
         virtual ~Element() {};
         void setID(string id);
         class InvalidID_Exception: public exception {
+            public:
             virtual const char* what() const throw() {
                 return "String of id is not a valid UUID4";
             }
         } invalidID_Exception;
         virtual ElementType getElementType();
         string getElementTypeString();
+        string getIDstring();
 };
 }
 #endif

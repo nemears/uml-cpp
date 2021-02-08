@@ -6,6 +6,9 @@ enable_testing()
 set(CMAKE_AUTOMOC ON)
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 
+SET(GCC_COMPILER_FLAGS "-fPIC")
+add_definitions(${GCC_COMPILER_FLAGS})
+
 # Boost dependencies
 set(Boost_DEBUG 1)
 FIND_PACKAGE( Boost 1.71.0 REQUIRED )

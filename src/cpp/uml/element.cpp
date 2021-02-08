@@ -90,3 +90,7 @@ string Element::getElementTypeString() {
         }
     }
 }
+
+string Element::getIDstring() {
+    return boost::lexical_cast<string>(uuid);
+}

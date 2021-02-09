@@ -2,8 +2,21 @@
 #include <pybind11/stl.h>
 #include "uml/element.h"
 #include "uml/namedElement.h"
+#include "uml/type.h"
+#include "uml/typedElement.h"
 
 using namespace UML;
+
+// class TypePy : public Type {
+//     public:
+//         using Type::Type;
+//         bool isPrimitive() override {
+//             PYBIND11_OVERRIDE_PURE(
+//             bool,
+//             Type,
+//             isPrimitive);
+//         }
+// };
 
 namespace py = pybind11;
 
@@ -36,4 +49,15 @@ PYBIND11_MODULE(yuml_python, m) {
         .def(py::init<>())
         .def("setName", &NamedElement::setName)
         .def("getName", &NamedElement::getName);
+
+    py::class_<Type, NamedElement>(m, "Type")
+        .def(py::init<>())
+        .def("isPrimitve", &Type::isPrimitive); // this funcion is now registering
+
+    py::class_<TypedElement, NamedElement>(m, "TypedElement")
+        .def(py::init<>())
+        .def("getType", &TypedElement::getType, py::return_value_policy::reference)
+        .def("setType", &TypedElement::setType);
+
+    
 }

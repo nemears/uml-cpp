@@ -8,9 +8,10 @@ class NamedElementTest(unittest.TestCase):
         n.setName("test")
         self.assertEqual(n.getName(), "test")
     
+    # this is just my sanity check that inheritance works
     def testElementConstructor(self):
         n = NamedElement()
-        self.assertTrue(isValidUUID4(n.getID()))
+        self.assertTrue(isValidUUID4(n.getID())) 
 
 if __name__ == '__main__':
     unittest.main()

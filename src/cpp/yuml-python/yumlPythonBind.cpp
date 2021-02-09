@@ -1,14 +1,17 @@
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 #include "uml/element.h"
 
 using namespace UML;
+
 namespace py = pybind11;
 
 PYBIND11_MODULE(yuml_python, m) {
+
     m.def("isValidUUID4", isValidUUID4);
 
+    // InvalidID_Exception
     static py::exception<Element::InvalidID_Exception>exc(m, "InvalidID_Exception");
-
     py::register_exception_translator([](std::exception_ptr p) {
         try {
             if (p) std::rethrow_exception(p);
@@ -19,8 +22,10 @@ PYBIND11_MODULE(yuml_python, m) {
         }
     });
 
+    // Element
     py::class_<Element>(m, "Element")
         .def(py::init<>())
         .def("getID", &Element::getIDstring)
-        .def("setID", &Element::setID);
+        .def("setID", &Element::setID)
+        .def_readwrite("ownedElements", &Element::ownedElements);
 }

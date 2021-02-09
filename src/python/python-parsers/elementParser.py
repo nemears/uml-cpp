@@ -3,6 +3,9 @@ from yuml_python import *
 def test():
     e = Element()
     print(e.getID())
+    child = Element()
+    e.ownedElements.append(child)
+    print(e.ownedElements[0].getID())
     return isValidUUID4(e.getID())
 
 if __name__ == "__main__":

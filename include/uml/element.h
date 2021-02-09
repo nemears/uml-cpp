@@ -63,6 +63,7 @@ class Element {
         virtual ElementType getElementType();
         string getElementTypeString();
         string getIDstring();
+        void addOwnedElement(Element& el);
 };
 }
 #endif

@@ -27,5 +27,6 @@ PYBIND11_MODULE(yuml_python, m) {
         .def(py::init<>())
         .def("getID", &Element::getIDstring)
         .def("setID", &Element::setID)
-        .def_readwrite("ownedElements", &Element::ownedElements);
+        .def_readwrite("ownedElements", &Element::ownedElements)
+        .def("addOwnedElement", &Element::addOwnedElement);
 }

@@ -94,3 +94,7 @@ string Element::getElementTypeString() {
 string Element::getIDstring() {
     return boost::lexical_cast<string>(uuid);
 }
+
+void Element::addOwnedElement(Element& el) {
+    ownedElements.push_back(&el);
+}

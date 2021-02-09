@@ -1,4 +1,6 @@
 from shutil import copyfile
+import pathlib
+
 if __name__ == '__main__':
-    copyfile("/home/stinky/Projects/yuml_projects/yuml/build/src/cpp/yuml-python/yuml_python.cpython-38-x86_64-linux-gnu.so", "/home/stinky/Projects/yuml_projects/yuml/src/python/python-parsers/yuml_python.cpython-38-x86_64-linux-gnu.so")
-    copyfile("/home/stinky/Projects/yuml_projects/yuml/build/src/cpp/yuml-python/yuml_python.cpython-38-x86_64-linux-gnu.so", "/home/stinky/Projects/yuml_projects/yuml/src/test/python/uml/yuml_python.cpython-38-x86_64-linux-gnu.so")
+    copyfile(str(pathlib.Path(__file__).parent.absolute()) +  "/../../build/src/cpp/yuml-python/yuml_python.cpython-38-x86_64-linux-gnu.so", str(pathlib.Path(__file__).parent.absolute()) + "/python-parsers/yuml_python.cpython-38-x86_64-linux-gnu.so")
+    copyfile(str(pathlib.Path(__file__).parent.absolute()) +  "/../../build/src/cpp/yuml-python/yuml_python.cpython-38-x86_64-linux-gnu.so", str(pathlib.Path(__file__).parent.absolute()) + "/../test/python/uml/yuml_python.cpython-38-x86_64-linux-gnu.so")

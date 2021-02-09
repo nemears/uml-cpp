@@ -98,3 +98,14 @@ string Element::getIDstring() {
 void Element::addOwnedElement(Element& el) {
     ownedElements.push_back(&el);
 }
+
+void Element::removeOwnedElement(Element& el) {
+    list<Element*>::iterator i = ownedElements.begin();
+    while (i != ownedElements.end()) {
+        if ((*i)->uuid == el.uuid) {
+            ownedElements.erase(i);
+            break;
+        }
+        ++i;
+    }
+}

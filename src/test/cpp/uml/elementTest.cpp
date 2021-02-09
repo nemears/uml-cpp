@@ -64,3 +64,10 @@ TEST_F(ElementTest, AddOwnedElementTest) {
   ASSERT_TRUE(parent.ownedElements.front()->uuid == child.uuid);
 }
 
+TEST_F(ElementTest, RemoveOwnedElementTest) {
+  Element parent;
+  Element child;
+  parent.addOwnedElement(child);
+  ASSERT_NO_THROW(parent.removeOwnedElement(child));
+  ASSERT_TRUE(parent.ownedElements.empty());
+}

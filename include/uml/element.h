@@ -64,6 +64,7 @@ class Element {
         string getElementTypeString();
         string getIDstring();
         void addOwnedElement(Element& el);
+        void removeOwnedElement(Element& el);
 };
 }
 #endif

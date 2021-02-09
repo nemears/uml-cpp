@@ -4,6 +4,7 @@
 #include "uml/namedElement.h"
 #include "uml/type.h"
 #include "uml/typedElement.h"
+#include "uml/classifier.h"
 
 using namespace UML;
 
@@ -59,5 +60,16 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("getType", &TypedElement::getType, py::return_value_policy::reference)
         .def("setType", &TypedElement::setType);
 
+    py::class_<StructuralFeature, TypedElement>(m, "StructuralFeature")
+        .def(py::init<>());
+    
+    py::class_<Property, StructuralFeature>(m, "Property")
+        .def(py::init<>());
+
+    py::class_<Classifier, Type>(m, "Classifier")
+        .def(py::init<>())
+        .def("addAttribute", &Classifier::addAttribute)
+        .def("removeAttribute", &Classifier::removeAttribute)
+        .def_readonly("attributes", &Classifier::ownedAttributes);
     
 }

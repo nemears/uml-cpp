@@ -1,6 +1,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include "uml/element.h"
+#include "uml/namedElement.h"
 
 using namespace UML;
 
@@ -30,4 +31,9 @@ PYBIND11_MODULE(yuml_python, m) {
         .def_readonly("ownedElements", &Element::ownedElements)
         .def("addOwnedElement", &Element::addOwnedElement)
         .def("removeOwnedElement", &Element::removeOwnedElement);
+    
+    py::class_<NamedElement, Element>(m, "NamedElement")
+        .def(py::init<>())
+        .def("setName", &NamedElement::setName)
+        .def("getName", &NamedElement::getName);
 }

@@ -9,5 +9,12 @@ class ClassifierTest(unittest.TestCase):
         c.addAttribute(p)
         self.assertEqual(c.attributes[0].getID(), p.getID())
 
+    def testRemoveAttribute(self):
+        c = Classifier()
+        p = Property()
+        c.addAttribute(p)
+        c.removeAttribute(p)
+        self.assertTrue(len(c.attributes) == 0)
+
 if __name__ == '__main__':
     unittest.main()

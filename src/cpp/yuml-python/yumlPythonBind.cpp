@@ -9,6 +9,7 @@
 #include "uml/operation.h"
 #include "uml/opaqueBehavior.h"
 #include "uml/instanceSpecification.h"
+#include "uml/instanceValue.h"
 
 using namespace UML;
 
@@ -96,6 +97,12 @@ PYBIND11_MODULE(yuml_python, m) {
     // ValueSpecification
     py::class_<ValueSpecification, TypedElement>(m, "ValueSpecification")
         .def(py::init<>());
+
+    // InstanceValue
+    py::class_<InstanceValue, ValueSpecification>(m, "InstanceValue")
+        .def(py::init<>())
+        .def("getInstance", &InstanceValue::getInstance)
+        .def("setInstance", &InstanceValue::setInstance);
 
     // StructuralFeature
     py::class_<StructuralFeature, TypedElement>(m, "StructuralFeature")

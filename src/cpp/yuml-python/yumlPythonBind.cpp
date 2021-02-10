@@ -21,36 +21,7 @@ using namespace UML;
 //         }
 // };
 
-class ParameterPy : public Parameter {
-    public:
-        string getDirectionString() {
-            switch(direction) {
-                case ParameterDirectionKind::IN : {
-                    return "IN";
-                } case ParameterDirectionKind::OUT : {
-                    return "OUT";
-                } case ParameterDirectionKind::INOUT : {
-                    return "INOUT";
-                } case ParameterDirectionKind::RETURN : {
-                    return "RETURN";
-                } default : {
-                    return "NONE";
-                }
-            }
-        }
 
-        void setDirectionString(string& directionString) {
-            if (directionString.compare("IN") == 0) {
-                setDirection(ParameterDirectionKind::IN);
-            } else if (directionString.compare("INOUT") == 0) {
-                setDirection(ParameterDirectionKind::INOUT);
-            } else if (directionString.compare("OUT") == 0) {
-                setDirection(ParameterDirectionKind::OUT);
-            } else if (directionString.compare("RETURN") == 0) {
-                setDirection(ParameterDirectionKind::RETURN);
-            }
-        }
-};
 
 namespace py = pybind11;
 
@@ -112,15 +83,18 @@ PYBIND11_MODULE(yuml_python, m) {
         .def_readonly("attributes", &Classifier::ownedAttributes);
 
     // Parameter
-    py::class_<ParameterPy, TypedElement>(m, "Parameter")
+    py::class_<Parameter, TypedElement>(m, "Parameter")
         .def(py::init<>())
-        .def("getDirection", &ParameterPy::getDirectionString)
-        .def("setDirection", &ParameterPy::setDirectionString);
+        .def("getDirection", &Parameter::getDirectionString)
+        .def("setDirection", &Parameter::setDirectionString);
     
     py::class_<Operation, NamedElement>(m, "Operation")
         .def(py::init<>())
         .def("getType", &Operation::getType)
-        .def("setType", &Operation::setType);
+        .def("setType", &Operation::setType)
+        .def("addParameter", &Operation::addParameter)
+        .def("removeParameter", &Operation::removeParameter)
+        .def_readonly("parameters", &Operation::parameters);
 
     // Class
     py::class_<Class, Classifier>(m, "Class")

@@ -19,8 +19,16 @@ namespace UML {
             Parameter() {
                 direction = ParameterDirectionKind::NONE;
             }
+            string getDirectionString();
+            void setDirectionString(string& directionString);
         protected:
             ParameterDirectionKind direction;
+            class InvalidDirectionException : public exception {
+                public:
+                    virtual const char* what() const throw() {
+                        return "Invalid direction given, options are IN, INOUT, OUT or RETURN";
+                    }
+            }invalidDirectionException;
         
     };
 }

@@ -8,6 +8,7 @@
 #include "uml/class.h"
 #include "uml/operation.h"
 #include "uml/opaqueBehavior.h"
+#include "uml/instanceSpecification.h"
 
 using namespace UML;
 
@@ -82,6 +83,12 @@ PYBIND11_MODULE(yuml_python, m) {
     // StructuralFeature
     py::class_<StructuralFeature, TypedElement>(m, "StructuralFeature")
         .def(py::init<>());
+
+    // InstanceSpecification
+    py::class_<InstanceSpecification, NamedElement>(m, "InstanceSpecification")
+        .def(py::init<>())
+        .def("setClassifier", &InstanceSpecification::setClassifier)
+        .def("getClassifier", &InstanceSpecification::getClassifier);
     
     // Property
     py::class_<Property, StructuralFeature>(m, "Property")
@@ -123,6 +130,7 @@ PYBIND11_MODULE(yuml_python, m) {
     py::class_<Behavior, Class> (m, "Behavior")
         .def(py::init<>());
 
+    // Opaque Behavior
     py::class_<OpaqueBehavior, Behavior>(m, "OpaqueBehavior")
         .def(py::init<>())
         .def("setBody", &OpaqueBehavior::setSingletonBody)

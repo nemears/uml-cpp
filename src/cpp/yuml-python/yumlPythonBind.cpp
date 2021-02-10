@@ -84,11 +84,18 @@ PYBIND11_MODULE(yuml_python, m) {
     py::class_<StructuralFeature, TypedElement>(m, "StructuralFeature")
         .def(py::init<>());
 
+    // Slot
+    py::class_<Slot, Element>(m, "Slot")
+        .def(py::init<>());
+
     // InstanceSpecification
     py::class_<InstanceSpecification, NamedElement>(m, "InstanceSpecification")
         .def(py::init<>())
         .def("setClassifier", &InstanceSpecification::setClassifier)
-        .def("getClassifier", &InstanceSpecification::getClassifier);
+        .def("getClassifier", &InstanceSpecification::getClassifier)
+        .def("addSlot", &InstanceSpecification::addSlot)
+        .def("removeSlot", &InstanceSpecification::removeSlot)
+        .def_readonly("slots", &InstanceSpecification::slots);
     
     // Property
     py::class_<Property, StructuralFeature>(m, "Property")

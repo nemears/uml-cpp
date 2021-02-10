@@ -41,3 +41,10 @@ TEST_F(OperationTest, RemoveMethodTest) {
     ASSERT_NO_THROW(o.removeMethod(b));
     ASSERT_TRUE(o.methods.front()->uuid == b2.uuid);
 }
+
+TEST_F(OperationTest, SetAndGetTypeTest) {
+    Class c;
+    Operation o;
+    ASSERT_NO_THROW(o.setType(&c));
+    ASSERT_TRUE(o.getType()->uuid == c.uuid);
+}

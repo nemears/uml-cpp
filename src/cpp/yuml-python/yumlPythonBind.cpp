@@ -43,6 +43,19 @@ PYBIND11_MODULE(yuml_python, m) {
         }
     });
 
+    //InvalidValueException
+    static py::exception<StructuralFeature::InvalidValueException>excVal(m, "InvalidValueException");
+    py::register_exception_translator([](std::exception_ptr p) {
+        try {
+            if (p) std::rethrow_exception(p);
+        } catch (const StructuralFeature::InvalidValueException &e) {
+            excVal(e.what());
+        } catch (const py::error_already_set &e) {
+            PyErr_SetString(PyExc_RuntimeError, e.what());
+        }
+    });
+
+    // InvalidDirectionException
     static py::exception<Parameter::InvalidDirectionException>excDir(m, "InvalidDirectionException");
     py::register_exception_translator([](std::exception_ptr p) {
         try {
@@ -80,6 +93,10 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("getType", &TypedElement::getType, py::return_value_policy::reference)
         .def("setType", &TypedElement::setType);
 
+    // ValueSpecification
+    py::class_<ValueSpecification, TypedElement>(m, "ValueSpecification")
+        .def(py::init<>());
+
     // StructuralFeature
     py::class_<StructuralFeature, TypedElement>(m, "StructuralFeature")
         .def(py::init<>());
@@ -101,7 +118,9 @@ PYBIND11_MODULE(yuml_python, m) {
     
     // Property
     py::class_<Property, StructuralFeature>(m, "Property")
-        .def(py::init<>());
+        .def(py::init<>())
+        .def("setDefaultValue", &Property::setDefaultValue)
+        .def("getDefaultValue", &Property::getDefaultValue);
 
     // Classifier
     py::class_<Classifier, Type>(m, "Classifier")

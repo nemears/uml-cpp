@@ -7,6 +7,7 @@
 #include "uml/classifier.h"
 #include "uml/class.h"
 #include "uml/operation.h"
+#include "uml/opaqueBehavior.h"
 
 using namespace UML;
 
@@ -118,6 +119,12 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeOperation", &Class::removeOperation)
         .def_readonly("operations", &Class::operations);
     
+    // Behavior
     py::class_<Behavior, Class> (m, "Behavior")
         .def(py::init<>());
+
+    py::class_<OpaqueBehavior, Behavior>(m, "OpaqueBehavior")
+        .def(py::init<>())
+        .def("setBody", &OpaqueBehavior::setSingletonBody)
+        .def("getBody", &OpaqueBehavior::getSingletonBody);
 }

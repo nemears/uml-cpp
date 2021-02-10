@@ -10,6 +10,10 @@ namespace UML {
         public:
             list<string> bodies;
             ElementType getElementType() override;
+            string getSingletonBody();
+            void setSingletonBody(const string& sb);
+        protected:
+            string singletonBody;
     };
 }
 

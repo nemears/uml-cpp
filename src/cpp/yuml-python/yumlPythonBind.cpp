@@ -30,12 +30,23 @@ PYBIND11_MODULE(yuml_python, m) {
     m.def("isValidUUID4", isValidUUID4);
 
     // InvalidID_Exception
-    static py::exception<Element::InvalidID_Exception>exc(m, "InvalidID_Exception");
+    static py::exception<Element::InvalidID_Exception>excID(m, "InvalidID_Exception");
     py::register_exception_translator([](std::exception_ptr p) {
         try {
             if (p) std::rethrow_exception(p);
         } catch (const Element::InvalidID_Exception &e) {
-            exc(e.what());
+            excID(e.what());
+        } catch (const py::error_already_set &e) {
+            PyErr_SetString(PyExc_RuntimeError, e.what());
+        }
+    });
+
+    static py::exception<Parameter::InvalidDirectionException>excDir(m, "InvalidDirectionException");
+    py::register_exception_translator([](std::exception_ptr p) {
+        try {
+            if (p) std::rethrow_exception(p);
+        } catch (const Parameter::InvalidDirectionException &e) {
+            excDir(e.what());
         } catch (const py::error_already_set &e) {
             PyErr_SetString(PyExc_RuntimeError, e.what());
         }

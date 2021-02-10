@@ -106,7 +106,10 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("setType", &Operation::setType)
         .def("addParameter", &Operation::addParameter)
         .def("removeParameter", &Operation::removeParameter)
-        .def_readonly("parameters", &Operation::parameters);
+        .def_readonly("parameters", &Operation::parameters)
+        .def("addMethod", &Operation::addMethod)
+        .def("removeMethod", &Operation::removeMethod)
+        .def_readonly("methods", &Operation::methods);
 
     // Class
     py::class_<Class, Classifier>(m, "Class")
@@ -115,4 +118,6 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeOperation", &Class::removeOperation)
         .def_readonly("operations", &Class::operations);
     
+    py::class_<Behavior, Class> (m, "Behavior")
+        .def(py::init<>());
 }

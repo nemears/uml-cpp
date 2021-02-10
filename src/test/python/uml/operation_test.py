@@ -17,5 +17,13 @@ class OperationTest(unittest.TestCase):
         o.removeParameter(p)
         self.assertEqual(len(o.parameters) , 0)
 
+    def testAddAndRemoveMethod(self):
+        o = Operation()
+        b = Behavior()
+        o.addMethod(b)
+        self.assertEqual(o.methods[0].getID(), b.getID())
+        o.removeMethod(b)
+        self.assertEqual(len(o.methods), 0)
+
 if __name__ == '__main__':
     unittest.main()

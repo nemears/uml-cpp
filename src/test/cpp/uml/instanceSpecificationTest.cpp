@@ -60,3 +60,22 @@ TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
 }
 
 // TODO add throw for pushing slots that don't correspond structural feature
+
+
+TEST_F(InstanceSpecificationTest, AddSlotTest) {
+    InstanceSpecification i;
+    Slot s;
+    ASSERT_NO_THROW(i.addSlot(s));
+    ASSERT_TRUE(i.slots.front()->uuid == s.uuid);
+}
+
+TEST_F(InstanceSpecificationTest, AddAndRemoveSlotTest) {
+    InstanceSpecification i;
+    Slot s;
+    Slot s2;
+    i.addSlot(s);
+    i.addSlot(s2);
+    ASSERT_TRUE(i.slots.front()->uuid ==s.uuid);
+    ASSERT_NO_THROW(i.removeSlot(s));
+    ASSERT_TRUE(i.slots.front()->uuid == s2.uuid);
+}

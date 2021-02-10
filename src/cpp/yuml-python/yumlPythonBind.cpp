@@ -99,6 +99,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("getDirection", &Parameter::getDirectionString)
         .def("setDirection", &Parameter::setDirectionString);
     
+    // Operation
     py::class_<Operation, NamedElement>(m, "Operation")
         .def(py::init<>())
         .def("getType", &Operation::getType)
@@ -109,6 +110,9 @@ PYBIND11_MODULE(yuml_python, m) {
 
     // Class
     py::class_<Class, Classifier>(m, "Class")
-        .def(py::init<>());
+        .def(py::init<>())
+        .def("addOperation", &Class::addOperation)
+        .def("removeOperation", &Class::removeOperation)
+        .def_readonly("operations", &Class::operations);
     
 }

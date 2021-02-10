@@ -86,7 +86,9 @@ PYBIND11_MODULE(yuml_python, m) {
 
     // Slot
     py::class_<Slot, Element>(m, "Slot")
-        .def(py::init<>());
+        .def(py::init<>())
+        .def("getDefiningFeature", &Slot::getDefiningFeature)
+        .def("setDefiningFeature", &Slot::setDefiningFeature);
 
     // InstanceSpecification
     py::class_<InstanceSpecification, NamedElement>(m, "InstanceSpecification")

@@ -10,6 +10,11 @@
 #include "uml/opaqueBehavior.h"
 #include "uml/instanceSpecification.h"
 #include "uml/instanceValue.h"
+#include "uml/primitiveType.h"
+#include "uml/literalBool.h"
+#include "uml/literalInt.h"
+#include "uml/literalReal.h"
+#include "uml/literalString.h"
 
 using namespace UML;
 
@@ -86,7 +91,13 @@ PYBIND11_MODULE(yuml_python, m) {
     // Type TODO fix isPrimitive bind
     py::class_<Type, NamedElement>(m, "Type")
         .def(py::init<>())
-        .def("isPrimitve", &Type::isPrimitive); // this funcion is now registering
+        .def("isPrimitve", &Type::isPrimitive); // this funcion is not registering
+
+    // PrimitiveType
+    py::class_<PrimitiveType, Type>(m, "PrimitiveType")
+        .def(py::init<>())
+        .def("setPrimitiveType", &PrimitiveType::setPrimitiveTypeString)
+        .def("getPrimitiveType", &PrimitiveType::getPrimitiveTypeString);
 
     // TypedElement
     py::class_<TypedElement, NamedElement>(m, "TypedElement")
@@ -103,6 +114,30 @@ PYBIND11_MODULE(yuml_python, m) {
         .def(py::init<>())
         .def("getInstance", &InstanceValue::getInstance)
         .def("setInstance", &InstanceValue::setInstance);
+
+    // LiteralBool
+    py::class_<LiteralBool, ValueSpecification>(m, "LiteralBool")
+        .def(py::init<>())
+        .def("setValue", &LiteralBool::setValue)
+        .def("getValue", &LiteralBool::getValue);
+
+    // LiteralInt
+    py::class_<LiteralInt, ValueSpecification>(m, "LiteralInt")
+        .def(py::init<>())
+        .def("setValue", &LiteralInt::setValue)
+        .def("getValue", &LiteralInt::getValue);
+
+    // LiteralReal
+    py::class_<LiteralReal, ValueSpecification>(m, "LiteralReal")
+        .def(py::init<>())
+        .def("setValue", &LiteralReal::setValue)
+        .def("getValue", &LiteralReal::getValue);
+
+    // LiteralString
+    py::class_<LiteralString, ValueSpecification>(m, "LiteralString")
+        .def(py::init<>())
+        .def("setValue", &LiteralString::setValue)
+        .def("getValue", &LiteralString::getValue);
 
     // StructuralFeature
     py::class_<StructuralFeature, TypedElement>(m, "StructuralFeature")

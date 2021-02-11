@@ -53,7 +53,7 @@ class Element {
             uuid = boost::uuids::random_generator()();
         };
         virtual ~Element() {};
-        void setID(string id);
+        virtual void setID(string id);
         class InvalidID_Exception: public exception {
             public:
             virtual const char* what() const throw() {
@@ -61,8 +61,8 @@ class Element {
             }
         } invalidID_Exception;
         virtual ElementType getElementType();
-        string getElementTypeString();
-        string getIDstring();
+        virtual string getElementTypeString();
+        virtual string getIDstring();
         void addOwnedElement(Element& el);
         void removeOwnedElement(Element& el);
 };

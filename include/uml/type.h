@@ -6,7 +6,7 @@ using namespace std;
 namespace UML{
 class Type : public NamedElement {
     public:
-        virtual bool isPrimitive();
+        virtual bool isPrimitive() = 0;
         ElementType getElementType() override;
 };
 }

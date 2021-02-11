@@ -10,8 +10,8 @@ class NamedElement : public Element {
         string name; // Move this to public ?
     
     public:
-        string getName();
-        void setName(const string &name);
+        virtual string getName();
+        virtual void setName(const string &name);
         ElementType getElementType() override;
 };
 }

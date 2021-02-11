@@ -15,21 +15,105 @@
 #include "uml/literalInt.h"
 #include "uml/literalReal.h"
 #include "uml/literalString.h"
+#include "uml/model.h"
 
 using namespace UML;
 
-// class TypePy : public Type {
-//     public:
-//         using Type::Type;
-//         bool isPrimitive() override {
-//             PYBIND11_OVERRIDE_PURE(
-//             bool,
-//             Type,
-//             isPrimitive);
-//         }
-// };
+template <class TypeBase = Type> class TypePy : public TypeBase {
+    public:
+        using TypeBase::TypeBase;
+        bool isPrimitive() override {
+                PYBIND11_OVERRIDE_PURE(
+                bool,
+                TypeBase,
+                isPrimitive,
+            );
+        }
+        string getName() override {
+            PYBIND11_OVERRIDE(
+                string,
+                TypeBase,
+                getName,
+            );
+        }
+        void setName(const string& name) override {
+            PYBIND11_OVERRIDE(
+                void,
+                TypeBase,
+                setName,
+                name
+            );
+        }
+        virtual string getIDstring() override {
+            PYBIND11_OVERRIDE(
+                string,
+                TypeBase,
+                getIDstring,
+            );
+        }
+        virtual void setID(string id) override {
+            PYBIND11_OVERRIDE(
+                void,
+                TypeBase,
+                setID,
+                id
+            );
+        }
+};
 
+template <class ClassifierBase = Classifier> class ClassifierPy : public TypePy<ClassifierBase> {
+    public:
+        using TypePy<ClassifierBase>::TypePy;
+        bool isPrimitive() override {
+                PYBIND11_OVERRIDE(
+                bool,
+                ClassifierBase,
+                isPrimitive,
+            );
+        }
+        string getName() override {
+            PYBIND11_OVERRIDE(
+                string,
+                ClassifierBase,
+                getName,
+            );
+        }
+        void setName(const string& name) override {
+            PYBIND11_OVERRIDE(
+                void,
+                ClassifierBase,
+                setName,
+                name
+            );
+        }
+        virtual string getIDstring() override {
+            PYBIND11_OVERRIDE(
+                string,
+                ClassifierBase,
+                getIDstring,
+            );
+        }
+        virtual void setID(string id) override {
+            PYBIND11_OVERRIDE(
+                void,
+                ClassifierBase,
+                setID,
+                id
+            );
+        }
+};
 
+template <class PrimitiveTypeBase = PrimitiveType> class PrimitiveTypePy : public TypePy<PrimitiveTypeBase> {
+    public:
+        using TypePy<PrimitiveTypeBase>::TypePy;
+        bool isPrimitive() override {
+                PYBIND11_OVERRIDE(
+                bool,
+                PrimitiveTypeBase,
+                isPrimitive,
+            );
+        }
+};
 
 namespace py = pybind11;
 
@@ -88,14 +172,22 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("setName", &NamedElement::setName)
         .def("getName", &NamedElement::getName);
 
+    // Namespace
+    py::class_<Namespace, NamedElement>(m, "Namespace")
+        .def(py::init<>());
+
+    // Model
+    py::class_<Model, Namespace>(m, "Model")
+        .def(py::init<>());
+
     // Type TODO fix isPrimitive bind
-    py::class_<Type, NamedElement>(m, "Type")
-        .def(py::init<>())
+    py::class_<Type, TypePy<>> type(m, "Type");
+    type.def(py::init<>())
         .def("isPrimitve", &Type::isPrimitive); // this funcion is not registering
 
     // PrimitiveType
-    py::class_<PrimitiveType, Type>(m, "PrimitiveType")
-        .def(py::init<>())
+    py::class_<PrimitiveType, Type, PrimitiveTypePy<>> pType(m, "PrimitiveType");
+    pType.def(py::init<>())
         .def("setPrimitiveType", &PrimitiveType::setPrimitiveTypeString)
         .def("getPrimitiveType", &PrimitiveType::getPrimitiveTypeString);
 
@@ -165,8 +257,8 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("getDefaultValue", &Property::getDefaultValue);
 
     // Classifier
-    py::class_<Classifier, Type>(m, "Classifier")
-        .def(py::init<>())
+    py::class_<Classifier, Type, ClassifierPy<>> classifier (m, "Classifier");
+    classifier.def(py::init<>())
         .def("addAttribute", &Classifier::addAttribute)
         .def("removeAttribute", &Classifier::removeAttribute)
         .def_readonly("attributes", &Classifier::ownedAttributes);
@@ -190,7 +282,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def_readonly("methods", &Operation::methods);
 
     // Class
-    py::class_<Class, Classifier>(m, "Class")
+    py::class_<Class, Classifier, ClassifierPy<Class>>(m, "Class")
         .def(py::init<>())
         .def("addOperation", &Class::addOperation)
         .def("removeOperation", &Class::removeOperation)

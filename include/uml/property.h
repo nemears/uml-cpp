@@ -2,10 +2,11 @@
 #define PROPERTYH
 #include "structuralFeature.h"
 #include "valueSpecification.h"
+#include "multiplicityElement.h"
 using namespace std;
 
 namespace UML{
-class Property: public StructuralFeature {
+class Property: public StructuralFeature /*, public MultiplicityElement*/ {
     protected:
         ValueSpecification * defaultValue;
     public: 

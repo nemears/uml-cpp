@@ -19,44 +19,19 @@
 
 using namespace UML;
 
-template <class TypeBase = Type> class TypePy : public TypeBase {
+template <class ElementBase = Element> class ElementPy: public ElementBase {
     public:
-        using TypeBase::TypeBase;
+        using ElementBase::ElementBase;
+};
+
+template <class TypeBase = Type> class TypePy : public ElementPy<TypeBase> {
+    public:
+        using ElementPy<TypeBase>::ElementPy;
         bool isPrimitive() override {
                 PYBIND11_OVERRIDE_PURE(
                 bool,
                 TypeBase,
                 isPrimitive,
-            );
-        }
-        string getName() override {
-            PYBIND11_OVERRIDE(
-                string,
-                TypeBase,
-                getName,
-            );
-        }
-        void setName(const string& name) override {
-            PYBIND11_OVERRIDE(
-                void,
-                TypeBase,
-                setName,
-                name
-            );
-        }
-        virtual string getIDstring() override {
-            PYBIND11_OVERRIDE(
-                string,
-                TypeBase,
-                getIDstring,
-            );
-        }
-        virtual void setID(string id) override {
-            PYBIND11_OVERRIDE(
-                void,
-                TypeBase,
-                setID,
-                id
             );
         }
 };
@@ -69,36 +44,6 @@ template <class ClassifierBase = Classifier> class ClassifierPy : public TypePy<
                 bool,
                 ClassifierBase,
                 isPrimitive,
-            );
-        }
-        string getName() override {
-            PYBIND11_OVERRIDE(
-                string,
-                ClassifierBase,
-                getName,
-            );
-        }
-        void setName(const string& name) override {
-            PYBIND11_OVERRIDE(
-                void,
-                ClassifierBase,
-                setName,
-                name
-            );
-        }
-        virtual string getIDstring() override {
-            PYBIND11_OVERRIDE(
-                string,
-                ClassifierBase,
-                getIDstring,
-            );
-        }
-        virtual void setID(string id) override {
-            PYBIND11_OVERRIDE(
-                void,
-                ClassifierBase,
-                setID,
-                id
             );
         }
 };
@@ -158,7 +103,7 @@ PYBIND11_MODULE(yuml_python, m) {
     });
 
     // Element
-    py::class_<Element>(m, "Element")
+    py::class_<Element, ElementPy<>>(m, "Element")
         .def(py::init<>())
         .def("getID", &Element::getIDstring)
         .def("setID", &Element::setID)
@@ -167,82 +112,82 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeOwnedElement", &Element::removeOwnedElement);
     
     // NamedElement
-    py::class_<NamedElement, Element>(m, "NamedElement")
+    py::class_<NamedElement, Element, ElementPy<NamedElement>>(m, "NamedElement")
         .def(py::init<>())
         .def("setName", &NamedElement::setName)
         .def("getName", &NamedElement::getName);
 
     // Namespace
-    py::class_<Namespace, NamedElement>(m, "Namespace")
+    py::class_<Namespace, NamedElement, ElementPy<Namespace>>(m, "Namespace")
         .def(py::init<>());
 
     // Model
-    py::class_<Model, Namespace>(m, "Model")
+    py::class_<Model, Namespace, ElementPy<Model>>(m, "Model")
         .def(py::init<>());
 
     // Type TODO fix isPrimitive bind
-    py::class_<Type, TypePy<>> type(m, "Type");
-    type.def(py::init<>())
+    py::class_<Type, NamedElement, TypePy<>>(m, "Type")
+        .def(py::init<>())
         .def("isPrimitve", &Type::isPrimitive); // this funcion is not registering
 
     // PrimitiveType
-    py::class_<PrimitiveType, Type, PrimitiveTypePy<>> pType(m, "PrimitiveType");
-    pType.def(py::init<>())
+    py::class_<PrimitiveType, Type, PrimitiveTypePy<>> (m, "PrimitiveType")
+        .def(py::init<>())
         .def("setPrimitiveType", &PrimitiveType::setPrimitiveTypeString)
         .def("getPrimitiveType", &PrimitiveType::getPrimitiveTypeString);
 
     // TypedElement
-    py::class_<TypedElement, NamedElement>(m, "TypedElement")
+    py::class_<TypedElement, NamedElement, ElementPy<TypedElement>>(m, "TypedElement")
         .def(py::init<>())
         .def("getType", &TypedElement::getType, py::return_value_policy::reference)
         .def("setType", &TypedElement::setType);
 
     // ValueSpecification
-    py::class_<ValueSpecification, TypedElement>(m, "ValueSpecification")
+    py::class_<ValueSpecification, TypedElement, ElementPy<ValueSpecification>>(m, "ValueSpecification")
         .def(py::init<>());
 
     // InstanceValue
-    py::class_<InstanceValue, ValueSpecification>(m, "InstanceValue")
+    py::class_<InstanceValue, ValueSpecification, ElementPy<InstanceValue>>(m, "InstanceValue")
         .def(py::init<>())
         .def("getInstance", &InstanceValue::getInstance)
         .def("setInstance", &InstanceValue::setInstance);
 
     // LiteralBool
-    py::class_<LiteralBool, ValueSpecification>(m, "LiteralBool")
+    py::class_<LiteralBool, ValueSpecification, ElementPy<LiteralBool>>(m, "LiteralBool")
         .def(py::init<>())
         .def("setValue", &LiteralBool::setValue)
         .def("getValue", &LiteralBool::getValue);
 
     // LiteralInt
-    py::class_<LiteralInt, ValueSpecification>(m, "LiteralInt")
+    py::class_<LiteralInt, ValueSpecification, ElementPy<LiteralInt>>(m, "LiteralInt")
         .def(py::init<>())
         .def("setValue", &LiteralInt::setValue)
         .def("getValue", &LiteralInt::getValue);
 
     // LiteralReal
-    py::class_<LiteralReal, ValueSpecification>(m, "LiteralReal")
+    py::class_<LiteralReal, ValueSpecification, ElementPy<LiteralReal>>(m, "LiteralReal")
         .def(py::init<>())
         .def("setValue", &LiteralReal::setValue)
         .def("getValue", &LiteralReal::getValue);
 
     // LiteralString
-    py::class_<LiteralString, ValueSpecification>(m, "LiteralString")
+    py::class_<LiteralString, ValueSpecification, ElementPy<LiteralString>>(m, "LiteralString")
         .def(py::init<>())
         .def("setValue", &LiteralString::setValue)
         .def("getValue", &LiteralString::getValue);
 
     // StructuralFeature
-    py::class_<StructuralFeature, TypedElement>(m, "StructuralFeature")
+    py::class_<StructuralFeature, TypedElement, ElementPy<StructuralFeature>>(m, "StructuralFeature")
         .def(py::init<>());
 
     // Slot
-    py::class_<Slot, Element>(m, "Slot")
+    py::class_<Slot, Element, ElementPy<Slot>>(m, "Slot")
         .def(py::init<>())
         .def("getDefiningFeature", &Slot::getDefiningFeature)
         .def("setDefiningFeature", &Slot::setDefiningFeature);
 
     // InstanceSpecification
-    py::class_<InstanceSpecification, NamedElement>(m, "InstanceSpecification")
+    py::class_<InstanceSpecification, NamedElement, ElementPy<InstanceSpecification>>(m, "InstanceSpecification")
         .def(py::init<>())
         .def("setClassifier", &InstanceSpecification::setClassifier)
         .def("getClassifier", &InstanceSpecification::getClassifier)
@@ -251,7 +196,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def_readonly("slots", &InstanceSpecification::slots);
     
     // Property
-    py::class_<Property, StructuralFeature>(m, "Property")
+    py::class_<Property, StructuralFeature, ElementPy<Property>>(m, "Property")
         .def(py::init<>())
         .def("setDefaultValue", &Property::setDefaultValue)
         .def("getDefaultValue", &Property::getDefaultValue);
@@ -264,13 +209,13 @@ PYBIND11_MODULE(yuml_python, m) {
         .def_readonly("attributes", &Classifier::ownedAttributes);
 
     // Parameter
-    py::class_<Parameter, TypedElement>(m, "Parameter")
+    py::class_<Parameter, TypedElement, ElementPy<Parameter>>(m, "Parameter")
         .def(py::init<>())
         .def("getDirection", &Parameter::getDirectionString)
         .def("setDirection", &Parameter::setDirectionString);
     
     // Operation
-    py::class_<Operation, NamedElement>(m, "Operation")
+    py::class_<Operation, NamedElement, ElementPy<Operation>>(m, "Operation")
         .def(py::init<>())
         .def("getType", &Operation::getType)
         .def("setType", &Operation::setType)
@@ -289,11 +234,11 @@ PYBIND11_MODULE(yuml_python, m) {
         .def_readonly("operations", &Class::operations);
     
     // Behavior
-    py::class_<Behavior, Class> (m, "Behavior")
+    py::class_<Behavior, Class, ClassifierPy<Behavior>> (m, "Behavior")
         .def(py::init<>());
 
     // Opaque Behavior
-    py::class_<OpaqueBehavior, Behavior>(m, "OpaqueBehavior")
+    py::class_<OpaqueBehavior, Behavior, ClassifierPy<OpaqueBehavior>>(m, "OpaqueBehavior")
         .def(py::init<>())
         .def("setBody", &OpaqueBehavior::setSingletonBody)
         .def("getBody", &OpaqueBehavior::getSingletonBody);

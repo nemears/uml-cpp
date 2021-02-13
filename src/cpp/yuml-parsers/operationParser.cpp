@@ -11,7 +11,7 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
             for (std::size_t i=0; i<node["parameters"].size(); i++) {
                 ParameterParser parameterParser(elements);
                 Element* parsedEl = parameterParser.parseElement(node["parameters"][i]["parameter"]);
-                ((Operation*) el)->parameters.push_back((Parameter*) parsedEl);
+                ((Operation*) el)->parameters.push_back(dynamic_cast<Parameter*>(parsedEl));
             }
         } else {
             // Error
@@ -44,7 +44,7 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
 
             Type* type = (Type*)(*elements)[typeId];
 
-            ((TypedElement*)el)->setType(type);
+            dynamic_cast<TypedElement*>(el)->setType(type);
         } else {
             if (parsedId.compare("STRING") == 0) {
                 PrimitiveType* stringType = new PrimitiveType;

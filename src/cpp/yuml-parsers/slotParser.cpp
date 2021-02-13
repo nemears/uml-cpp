@@ -13,7 +13,7 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
         if (UML::isValidUUID4(parsedId)) {
             boost::uuids::uuid definingFeatureId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-            StructuralFeature* definingFeature = (StructuralFeature*)(*elements)[definingFeatureId];
+            StructuralFeature* definingFeature = dynamic_cast<StructuralFeature*>((*elements)[definingFeatureId]);
 
             ((Slot*)el)->setDefiningFeature(definingFeature);
         }

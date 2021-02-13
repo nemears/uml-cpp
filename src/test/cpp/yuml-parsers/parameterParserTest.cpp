@@ -15,7 +15,7 @@ TEST_F(ParameterParserTest, TestParseDirection) {
 
     // Test
     ASSERT_NO_THROW(directionParser.parse(directionNode));
-    ASSERT_TRUE(((Parameter*)(*directionParser.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getDirection() == ParameterDirectionKind::IN);
+    ASSERT_TRUE(dynamic_cast<Parameter*>((*directionParser.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getDirection() == ParameterDirectionKind::IN);
 }
 
 TEST_F(ParameterParserTest, TestEmitDirection) {

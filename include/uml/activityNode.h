@@ -5,7 +5,7 @@
 #include "activityEdge.h"
 
 namespace UML {
-    class ActivityNode : public NamedElement {
+    class ActivityNode : virtual public NamedElement {
         public:
             list<ActivityEdge*> incoming;
             list<ActivityEdge*> outgoing;

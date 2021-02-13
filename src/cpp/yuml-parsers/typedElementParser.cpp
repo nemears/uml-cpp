@@ -1,32 +1,34 @@
 #include "yuml-parsers/typedElementParser.h"
 
-bool TypedElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
+using namespace UML;
+
+bool TypedElementParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["type"]) {
         string parsedId = node["type"].as<string>();
 
         if (UML::isValidUUID4(parsedId)) {
             boost::uuids::uuid typeId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-            UML::Type* type = (UML::Type*)(*elements)[typeId];
+            Type* type = (Type*)(*elements)[typeId];
 
-            ((UML::TypedElement*)el)->setType(type);
+            dynamic_cast<TypedElement*>(el)->setType(type);
         } else {
             if (parsedId.compare("STRING") == 0) {
-                UML::PrimitiveType* stringType = new UML::PrimitiveType;
+                PrimitiveType* stringType = new PrimitiveType;
                 stringType->setPrimitiveType(UML::PrimitiveType::Primitive::STRING);
-                ((UML::TypedElement*)el)->setType(stringType);
+                dynamic_cast<TypedElement*>(el)->setType(stringType);
             } else if (parsedId.compare("INT") == 0) {
-                UML::PrimitiveType* intType = new UML::PrimitiveType;
+                PrimitiveType* intType = new PrimitiveType;
                 intType->setPrimitiveType(UML::PrimitiveType::Primitive::INT);
-                ((UML::TypedElement*)el)->setType(intType);
+                dynamic_cast<TypedElement*>(el)->setType(intType);
             } else if (parsedId.compare("REAL") == 0) {
                 UML::PrimitiveType* realType = new UML::PrimitiveType;
                 realType->setPrimitiveType(UML::PrimitiveType::Primitive::REAL);
-                ((UML::TypedElement*)el)->setType(realType);
+                dynamic_cast<TypedElement*>(el)->setType(realType);
             } else if (parsedId.compare("BOOL") == 0) {
                 UML::PrimitiveType* boolType = new UML::PrimitiveType;
                 boolType->setPrimitiveType(UML::PrimitiveType::Primitive::BOOL);
-                ((UML::TypedElement*)el)->setType(boolType);
+                dynamic_cast<TypedElement*>(el)->setType(boolType);
             } else {
                 // ERROR
                 throw InvalidIdentifierException(node["type"].Mark().line, node["type"].as<string>());
@@ -39,10 +41,10 @@ bool TypedElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
 }
 
 bool TypedElementParser::emit(YAML::Emitter& emitter, Element* el) {
-    if (((TypedElement*) el)->getType() != NULL) {
+    if (dynamic_cast<TypedElement*>(el)->getType() != NULL) {
         emitter << YAML::Key << "type";
-        if (((TypedElement*)el)->getType()->isPrimitive()) {
-            switch (((PrimitiveType*)((TypedElement*)el)->getType())->getPrimitiveType()) {
+        if (dynamic_cast<TypedElement*>(el)->getType()->isPrimitive()) {
+            switch (((PrimitiveType*)dynamic_cast<TypedElement*>(el)->getType())->getPrimitiveType()) {
                 case PrimitiveType::Primitive::BOOL : {
                     emitter << YAML::Value << "BOOL";
                     break;
@@ -65,7 +67,7 @@ bool TypedElementParser::emit(YAML::Emitter& emitter, Element* el) {
                 }
             }
         } else {
-            emitter << YAML::Value << boost::lexical_cast<string>(((TypedElement*) el)->getType()->uuid);
+            emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<TypedElement*>(el)->getType()->uuid);
         }
     }
 

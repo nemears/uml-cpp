@@ -5,7 +5,7 @@
 using namespace std;
 
 namespace UML{
-class TypedElement : public NamedElement {
+class TypedElement : virtual public NamedElement {
     protected:
         Type* type;
 

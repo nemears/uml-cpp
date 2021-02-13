@@ -9,6 +9,7 @@ namespace UML {
         public:
             list<ActivityEdge*> incoming;
             list<ActivityEdge*> outgoing;
+            ActivityNode(){};
     };
 }
 

@@ -14,6 +14,10 @@ namespace UML {
             void setSource(ActivityNode* source);
             ActivityNode* getTarget();
             void setTarget(ActivityNode* target);
+            ActivityEdge() {
+                source = 0;
+                target = 0;
+            }
 
         protected:
             ActivityNode* source;

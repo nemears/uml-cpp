@@ -4,6 +4,7 @@
 #include "yuml-parsers/opaqueBehaviorParser.h"
 #include "yuml-parsers/parameterParser.h"
 #include "yuml-parsers/namespaceParser.h"
+#include "yuml-parsers/activityParser.h"
 
 using namespace UML;
 
@@ -25,7 +26,11 @@ bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
         // TODO
         if (node["children"].IsSequence()) {
             for (std::size_t i=0; i<node["children"].size(); i++) {
-                if (node["children"][i]["class"]) {
+                if (node["children"][i]["activity"]) {
+                    ActivityParser activityParser(elements);
+                    Element* parsedEl = activityParser.parseElement(node["children"][i]["activity"]);
+                    el->ownedElements.push_back(parsedEl);
+                } else if (node["children"][i]["class"]) {
                     ClassParser classParser(elements);
                     Element* parsedEl = classParser.parseElement(node["children"][i]["class"]);
                     el->ownedElements.push_back(parsedEl);

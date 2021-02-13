@@ -79,7 +79,6 @@ class TemplateParser {
         virtual bool emit(YAML::Emitter& emitter, Element* el) = 0;
 
         string emitDocument(Element* rootEl);
-        // YAML::Emitter emitEmitter(Element* rootEl);
 
         Element* theEl;
 };

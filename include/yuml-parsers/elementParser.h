@@ -7,13 +7,13 @@ using namespace std;
 
 class ElementParser : public TemplateParser {
     protected:
-        bool parseFeatures(YAML::Node node, UML::Element* el);
+        bool parseFeatures(YAML::Node node, UML::Element* el) override;
     public:
         ElementParser(map<boost::uuids::uuid, UML::Element*>* elements) : TemplateParser(elements) {
             
         };
 
-        virtual bool emit(YAML::Emitter& emitter, Element* el) override;
+        bool emit(YAML::Emitter& emitter, Element* el) override;
 
         // error for invalid element keyword
         class InvalidIdentifierException: public exception {

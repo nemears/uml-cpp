@@ -20,7 +20,7 @@ class ClassParser : public ClassifierParser {
             // this->elements = elements;
         }
 
-        bool emit(YAML::Emitter& emitter, Element* el);
+        bool emit(YAML::Emitter& emitter, Element* el) override;
 };
 
 #endif

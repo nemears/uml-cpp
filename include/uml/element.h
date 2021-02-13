@@ -39,6 +39,7 @@ enum class ElementType {
     OBJECT_NODE,
     OPAQUE_BEHAVIOR,
     OPERATION,
+    OUTPUT_PIN,
     PARAMETER,
     PIN,
     PRIMITIVE_TYPE,

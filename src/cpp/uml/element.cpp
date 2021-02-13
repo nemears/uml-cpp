@@ -82,6 +82,9 @@ string Element::getElementTypeString() {
         case ElementType::OPERATION : {
             return "OPERATION";
         }
+        case ElementType::OUTPUT_PIN : {
+            return "OUTPUT_PIN";
+        }
         case ElementType::PARAMETER : {
             return "PARAMETER";
         }

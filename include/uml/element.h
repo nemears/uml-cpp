@@ -17,6 +17,7 @@ static bool isValidUUID4(string strn) {
 }
 
 enum class ElementType {
+    ACTION,
     ACTIVITY,
     ACTIVITY_EDGE,
     ACTIVITY_NODE,

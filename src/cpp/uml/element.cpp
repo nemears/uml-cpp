@@ -16,6 +16,18 @@ ElementType Element::getElementType() {
 
 string Element::getElementTypeString() {
     switch(getElementType()) {
+        case ElementType::ACTION : {
+            return "ACTION";
+        }
+        case ElementType::ACTIVITY : {
+            return "ACTIVITY";
+        }
+        case ElementType::ACTIVITY_EDGE : {
+            return "ACTIVITY_EDGE";
+        }
+        case ElementType::ACTIVITY_NODE : {
+            return "ACTIVITY_NODE";
+        }
         case ElementType::BEHAVIOR : {
             return "BEHAVIOR";
         }
@@ -49,11 +61,17 @@ string Element::getElementTypeString() {
         case ElementType::MODEL : {
             return "MODEL";
         }
+        case ElementType::MULTIPLICITY_ELEMENT : {
+            return "MULTIPLICITY_ELEMENT";
+        }
         case ElementType::NAMED_ELEMENT : {
             return "NAMED_ELEMENT";
         }
         case ElementType::NAMESPACE : {
             return "NAMESPACE";
+        }
+        case ElementType::OBJECT_NODE : {
+            return "OBJECT_NODE";
         }
         case ElementType::OPAQUE_BEHAVIOR : {
             return "OPAQUE_BEHAVIOR";
@@ -63,6 +81,9 @@ string Element::getElementTypeString() {
         }
         case ElementType::PARAMETER : {
             return "PARAMETER";
+        }
+        case ElementType::PIN : {
+            return "PIN";
         }
         case ElementType::PRIMITIVE_TYPE : {
             return "PRIMITIVE_TYPE";

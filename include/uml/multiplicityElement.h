@@ -17,6 +17,7 @@ namespace UML {
                     }
             } multiplicityNotSpecifiedException;
             bool multiplicitySpecified();
+            ElementType getElementType() override;
         protected:
             int lower;
             int upper;

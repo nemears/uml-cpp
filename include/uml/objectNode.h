@@ -6,7 +6,8 @@
 
 namespace UML {
     class ObjectNode : public ActivityNode, public TypedElement {
-
+        public:
+            ElementType getElementType() override;
     };
 }
 

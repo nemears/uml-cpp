@@ -11,6 +11,7 @@ namespace UML {
             ~Activity(){};
             list<ActivityNode*> nodes;
             list<ActivityEdge*> edges;
+            ElementType getElementType() override;
     };
 }
 

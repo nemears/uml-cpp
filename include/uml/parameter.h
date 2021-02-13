@@ -1,6 +1,7 @@
 #ifndef PARAMETERH
 #define PARAMETERH
 #include "typedElement.h"
+#include "multiplicityElement.h"
 
 namespace UML {
 
@@ -11,7 +12,7 @@ namespace UML {
         RETURN,
         NONE};
 
-    class Parameter : public TypedElement {
+    class Parameter : public TypedElement , public MultiplicityElement {
         public:
             ElementType getElementType() override;
             ParameterDirectionKind getDirection();

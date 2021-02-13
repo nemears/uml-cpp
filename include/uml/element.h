@@ -17,6 +17,9 @@ static bool isValidUUID4(string strn) {
 }
 
 enum class ElementType {
+    ACTIVITY,
+    ACTIVITY_EDGE,
+    ACTIVITY_NODE,
     BEHAVIOR,
     CLASS,
     CLASSIFIER,
@@ -28,11 +31,14 @@ enum class ElementType {
     LITERAL_REAL,
     LITERAL_STRING,
     MODEL,
+    MULTIPLICITY_ELEMENT,
     NAMED_ELEMENT,
     NAMESPACE,
+    OBJECT_NODE,
     OPAQUE_BEHAVIOR,
     OPERATION,
     PARAMETER,
+    PIN,
     PRIMITIVE_TYPE,
     PROPERTY,
     SLOT,

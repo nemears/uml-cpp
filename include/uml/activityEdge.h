@@ -18,6 +18,7 @@ namespace UML {
                 source = 0;
                 target = 0;
             }
+            ElementType getElementType() override;
 
         protected:
             ActivityNode* source;

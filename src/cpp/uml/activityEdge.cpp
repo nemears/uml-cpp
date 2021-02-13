@@ -18,3 +18,7 @@ ActivityNode* ActivityEdge::getTarget() {
 void ActivityEdge::setTarget(ActivityNode* target) {
     this->target = target;
 }
+
+ElementType ActivityEdge::getElementType() {
+    return ElementType::ACTIVITY_EDGE;
+}

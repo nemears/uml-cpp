@@ -41,3 +41,7 @@ void MultiplicityElement::setUpper(const int up) {
 bool MultiplicityElement::multiplicitySpecified() {
     return multiplicityIsSpecified;
 }
+
+ElementType MultiplicityElement::getElementType() {
+    return ElementType::MULTIPLICITY_ELEMENT;
+}

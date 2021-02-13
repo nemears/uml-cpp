@@ -13,6 +13,7 @@ class NamedElement : virtual public Element {
         virtual string getName();
         virtual void setName(const string &name);
         ElementType getElementType() override;
+        NamedElement(){};
 };
 }
 

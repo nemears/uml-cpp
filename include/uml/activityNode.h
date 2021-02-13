@@ -10,6 +10,7 @@ namespace UML {
             list<ActivityEdge*> incoming;
             list<ActivityEdge*> outgoing;
             ActivityNode(){};
+            ElementType getElementType() override;
     };
 }
 

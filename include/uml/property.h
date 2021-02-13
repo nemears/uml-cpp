@@ -6,7 +6,7 @@
 using namespace std;
 
 namespace UML{
-class Property: public StructuralFeature /*, public MultiplicityElement*/ {
+class Property: public StructuralFeature , public MultiplicityElement {
     protected:
         ValueSpecification * defaultValue;
     public: 

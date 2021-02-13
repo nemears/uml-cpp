@@ -9,7 +9,7 @@ bool ClassifierParser::parseFeatures(YAML::Node node, Element* el) {
                 if (node["attributes"][i]["property"]) {
                     PropertyParser propertyParser(elements);
                     Element* parsedEl = propertyParser.parseElement(node["attributes"][i]["property"]);
-                    ((Classifier*) el)->ownedAttributes.push_back(dynamic_cast<Property*>(parsedEl));
+                    dynamic_cast<Classifier*>(el)->ownedAttributes.push_back(dynamic_cast<Property*>(parsedEl));
                 } else if (node["attributes"][i]["other types here"]) {
                     // TODO TODO TODO
                 }
@@ -26,10 +26,10 @@ bool ClassifierParser::emit(YAML::Emitter& emitter, Element* el) {
 
     bool ret = NamedElementParser::emit(emitter, el);
 
-    if (!((Classifier*)el)->ownedAttributes.empty()) {
+    if (!dynamic_cast<Classifier*>(el)->ownedAttributes.empty()) {
         emitter << YAML::Key << "attributes";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& property: ((Classifier*)el)->ownedAttributes) {
+        for (auto const& property: dynamic_cast<Classifier*>(el)->ownedAttributes) {
             PropertyParser pp(elements);
             pp.emit(emitter, property);
         }

@@ -1,16 +1,16 @@
 #include "yuml-parsers/namedElementParser.h"
 
-bool NamedElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
+bool NamedElementParser::parseFeatures(YAML::Node node, Element* el) {
 
     if (node["name"]) {
-        if (((UML::NamedElement*)el)->getName().compare("") != 0) {
-            cout << "[Error] " << keyword << " " << ((UML::NamedElement*)el)->getName() << " duplicate name found";
+        if (dynamic_cast<NamedElement*>(el)->getName().compare("") != 0) {
+            cout << "[Error] " << keyword << " " << dynamic_cast<NamedElement*>(el)->getName() << " duplicate name found";
             cout << " line number " << node["name"].Mark().line << '\n';
         }
 
         try {
-            ((UML::NamedElement*)el)->setName(node["name"].as<string>());
-            cout << "[Info] " << keyword << " name: " << ((UML::NamedElement*)el)->getName() << "\n";
+            dynamic_cast<NamedElement*>(el)->setName(node["name"].as<string>());
+            cout << "[Info] " << keyword << " name: " << dynamic_cast<NamedElement*>(el)->getName() << "\n";
         } catch(exception& e) {
                 cerr << e.what() << '\n';
         }
@@ -22,9 +22,9 @@ bool NamedElementParser::parseFeatures(YAML::Node node, UML::Element* el) {
 
 bool NamedElementParser::emit(YAML::Emitter& emitter, Element* el) {
 
-    if (((NamedElement*) el)->getName().compare("") != 0) {
+    if (dynamic_cast<NamedElement*>(el)->getName().compare("") != 0) {
         emitter << YAML::Key << "name";
-        emitter << YAML::Value << ((NamedElement*) el)->getName();
+        emitter << YAML::Value << dynamic_cast<NamedElement*>(el)->getName();
     }
 
     return ElementParser::emit(emitter, el);

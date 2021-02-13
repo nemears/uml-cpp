@@ -5,7 +5,7 @@
 using namespace std;
 
 namespace UML{
-class NamedElement : public Element {
+class NamedElement : virtual public Element {
     protected:
         string name; // Move this to public ?
     

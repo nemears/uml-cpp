@@ -65,7 +65,7 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
                 if (UML::isValidUUID4(parsedId)) {
                     boost::uuids::uuid valueId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-                    InstanceSpecification* value = (InstanceSpecification*)(*elements)[valueId];
+                    InstanceSpecification* value = dynamic_cast<InstanceSpecification*>((*elements)[valueId]);
 
                     InstanceValue* instVal = new InstanceValue();
                     instVal->setInstance(value);

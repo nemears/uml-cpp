@@ -11,7 +11,7 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
             for (std::size_t i=0; i<node["parameters"].size(); i++) {
                 ParameterParser parameterParser(elements);
                 Element* parsedEl = parameterParser.parseElement(node["parameters"][i]["parameter"]);
-                ((Operation*) el)->parameters.push_back(dynamic_cast<Parameter*>(parsedEl));
+                dynamic_cast<Operation*>(el)->parameters.push_back(dynamic_cast<Parameter*>(parsedEl));
             }
         } else {
             // Error
@@ -25,7 +25,7 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
                 if (node["methods"][i]["opaqueBehavior"]) {
                     OpaqueBehaviorParser opaqueBehaviorParser(elements);
                     Element* parsedEl = opaqueBehaviorParser.parseElement(node["methods"][i]["opaqueBehavior"]);
-                    ((Operation*) el)->methods.push_back((OpaqueBehavior*) parsedEl);
+                    dynamic_cast<Operation*>(el)->methods.push_back(dynamic_cast<OpaqueBehavior*>(parsedEl));
                 }
 
                 // TODO other types here
@@ -42,26 +42,26 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
         if (UML::isValidUUID4(parsedId)) {
             boost::uuids::uuid typeId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-            Type* type = (Type*)(*elements)[typeId];
+            Type* type = dynamic_cast<Type*>((*elements)[typeId]);
 
             dynamic_cast<TypedElement*>(el)->setType(type);
         } else {
             if (parsedId.compare("STRING") == 0) {
                 PrimitiveType* stringType = new PrimitiveType;
                 stringType->setPrimitiveType(PrimitiveType::Primitive::STRING);
-                ((Operation*)el)->setType(stringType);
+                dynamic_cast<Operation*>(el)->setType(stringType);
             } else if (parsedId.compare("INT") == 0) {
                 PrimitiveType* intType = new PrimitiveType;
                 intType->setPrimitiveType(PrimitiveType::Primitive::INT);
-                ((Operation*)el)->setType(intType);
+                dynamic_cast<Operation*>(el)->setType(intType);
             } else if (parsedId.compare("REAL") == 0) {
                 PrimitiveType* realType = new PrimitiveType;
                 realType->setPrimitiveType(PrimitiveType::Primitive::REAL);
-                ((Operation*)el)->setType(realType);
+                dynamic_cast<Operation*>(el)->setType(realType);
             } else if (parsedId.compare("BOOL") == 0) {
                 PrimitiveType* boolType = new PrimitiveType;
                 boolType->setPrimitiveType(PrimitiveType::Primitive::BOOL);
-                ((Operation*)el)->setType(boolType);
+                dynamic_cast<Operation*>(el)->setType(boolType);
             } else {
                 // Error
                 throw InvalidIdentifierException(node["type"].Mark().line, node["type"].as<string>());
@@ -82,10 +82,10 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
     
     bool ret = NamedElementParser::emit(emitter, el);
 
-    if (!((Operation*)el)->parameters.empty()) {
+    if (!dynamic_cast<Operation*>(el)->parameters.empty()) {
         emitter << YAML::Key << "parameters";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& parameter: ((Operation*)el)->parameters) {
+        for (auto const& parameter: dynamic_cast<Operation*>(el)->parameters) {
             ParameterParser pp(elements);
             if (!pp.emit(emitter, parameter)) {
                 return false;
@@ -94,10 +94,10 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::EndSeq;
     }
 
-    if (!((Operation*) el)->methods.empty()) {
+    if (!dynamic_cast<Operation*>(el)->methods.empty()) {
         emitter << YAML::Key << "methods";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& method: ((Operation*)el)->methods) {
+        for (auto const& method: dynamic_cast<Operation*>(el)->methods) {
             switch(method->getElementType()) {
                 case ElementType::OPAQUE_BEHAVIOR : {
                     OpaqueBehaviorParser op(elements);
@@ -114,10 +114,10 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::EndSeq;
     }
 
-    if (((Operation*)el)->getType() != NULL) {
+    if (dynamic_cast<Operation*>(el)->getType() != NULL) {
         emitter << YAML::Key << "type";
-        if (((Operation*)el)->getType()->isPrimitive()) {
-            switch (((PrimitiveType*)((Operation*)el)->getType())->getPrimitiveType()) {
+        if (dynamic_cast<Operation*>(el)->getType()->isPrimitive()) {
+            switch (((PrimitiveType*)dynamic_cast<Operation*>(el)->getType())->getPrimitiveType()) {
                 case PrimitiveType::Primitive::BOOL : {
                     emitter << YAML::Value << "BOOL";
                     break;
@@ -140,7 +140,7 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
                 }
             }
         } else {
-            emitter << YAML::Value << boost::lexical_cast<string>(((Operation*) el)->getType()->uuid);
+            emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<Operation*>(el)->getType()->uuid);
         }
     }
 

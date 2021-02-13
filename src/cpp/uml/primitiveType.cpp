@@ -41,6 +41,7 @@ string PrimitiveType::getPrimitiveTypeString() {
             break;
         }
     }
+    return "NONE";
 }
 
 void PrimitiveType::setPrimitiveTypeString(const string& primitiveString) {

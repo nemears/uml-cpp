@@ -3,6 +3,8 @@
 #include "uml/classifier.h"
 #include "uml/class.h"
 
+using namespace UML;
+
 class ClassifierParserTest : public ::testing::Test {
     public:
         ModelParser* pp2;
@@ -13,7 +15,7 @@ class ClassifierParserTest : public ::testing::Test {
   // be empty.
 
   ClassifierParserTest() {
-    pp2 = new ModelParser(new map<boost::uuids::uuid, UML::Element*>);
+    pp2 = new ModelParser(new map<boost::uuids::uuid, Element*>);
     modelNode = YAML::LoadFile("../../../../../src/test/yml/classifierTests/classifier.yml");
     // TODO fix google_test within directory structure
   }
@@ -37,8 +39,8 @@ class ClassifierParserTest : public ::testing::Test {
 };
 
 TEST_F(ClassifierParserTest, ParseAttributesTest) {
-  EXPECT_EQ(((UML::Classifier*)(*pp2->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")])->ownedAttributes.front()->uuid , boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
-  EXPECT_EQ(((UML::Classifier*)(*pp2->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")])->ownedAttributes.back()->uuid, boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
+  EXPECT_EQ(dynamic_cast<Classifier*>((*pp2->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")])->ownedAttributes.front()->uuid , boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
+  EXPECT_EQ(dynamic_cast<Classifier*>((*pp2->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")])->ownedAttributes.back()->uuid, boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
 }
 
 TEST_F(ClassifierParserTest, ParseAttributesNotSequenceTest) {

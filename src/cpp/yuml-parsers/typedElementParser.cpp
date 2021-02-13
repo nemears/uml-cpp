@@ -9,7 +9,7 @@ bool TypedElementParser::parseFeatures(YAML::Node node, Element* el) {
         if (UML::isValidUUID4(parsedId)) {
             boost::uuids::uuid typeId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-            Type* type = (Type*)(*elements)[typeId];
+            Type* type = dynamic_cast<Type*>((*elements)[typeId]);
 
             dynamic_cast<TypedElement*>(el)->setType(type);
         } else {

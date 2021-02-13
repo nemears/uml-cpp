@@ -6,14 +6,14 @@ Element* InstanceSpecificationParser::createElement() {
     return new InstanceSpecification;
 }
 
-bool InstanceSpecificationParser::parseFeatures(YAML::Node node, UML::Element* el) {
+bool InstanceSpecificationParser::parseFeatures(YAML::Node node, Element* el) {
 
     if(node["classifier"]) {
         string parsedId = node["classifier"].as<string>();
         if (UML::isValidUUID4(parsedId)) {
             boost::uuids::uuid classifierId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
-            Classifier* instClassifier = (Classifier*) (*elements)[classifierId];
-            ((InstanceSpecification*) el)->setClassifier(instClassifier);
+            Classifier* instClassifier = dynamic_cast<Classifier*>((*elements)[classifierId]);
+            dynamic_cast<InstanceSpecification*>(el)->setClassifier(instClassifier);
         } else {
             // error
             throw el->invalidID_Exception;
@@ -25,7 +25,7 @@ bool InstanceSpecificationParser::parseFeatures(YAML::Node node, UML::Element* e
             if (node["slots"][i]["slot"]) {
                 SlotParser slotParser(elements);
                 Slot* parsedEl = (Slot*) slotParser.parseElement(node["slots"][i]["slot"]);
-                ((InstanceSpecification*) el)->slots.push_back(parsedEl);
+                dynamic_cast<InstanceSpecification*>(el)->slots.push_back(parsedEl);
             }
         }
     }
@@ -42,16 +42,16 @@ bool InstanceSpecificationParser::emit(YAML::Emitter& emitter, Element* el) {
 
     bool ret = NamedElementParser::emit(emitter, el);
 
-    if (((InstanceSpecification*)el)->getClassifier() != NULL) {
+    if (dynamic_cast<InstanceSpecification*>(el)->getClassifier() != NULL) {
         emitter << YAML::Key << "classifier";
-        emitter << YAML::Value << boost::lexical_cast<string>(((InstanceSpecification*)el)->getClassifier()->uuid);
+        emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<InstanceSpecification*>(el)->getClassifier()->uuid);
     }
 
-    if (!((InstanceSpecification*)el)->slots.empty()) {
+    if (!dynamic_cast<InstanceSpecification*>(el)->slots.empty()) {
         emitter << YAML::Key << "slots";
         emitter << YAML::Value << YAML::BeginSeq;
 
-        for (auto const& slot: ((InstanceSpecification*)el)->slots) {
+        for (auto const& slot: dynamic_cast<InstanceSpecification*>(el)->slots) {
             SlotParser sp(elements);
             if(!sp.emit(emitter, slot)) {
                 return false;

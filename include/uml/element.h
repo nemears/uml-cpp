@@ -25,6 +25,7 @@ enum class ElementType {
     CLASS,
     CLASSIFIER,
     ELEMENT,
+    INPUT_PIN,
     INSTANCE_SPECIFICATION,
     INSTANCE_VALUE,
     LITERAL_BOOL,

@@ -40,6 +40,9 @@ string Element::getElementTypeString() {
         case ElementType::ELEMENT : {
             return "ELEMENT";
         }
+        case ElementType::INPUT_PIN : {
+            return "INPUT_PIN";
+        }
         case ElementType::INSTANCE_SPECIFICATION : {
             return "INSTANCE_SPECIFICATION";
         }

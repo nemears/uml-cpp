@@ -32,6 +32,7 @@ template <class TypeBase = Type> class TypePy : public ElementPy<TypeBase> {
                 bool,
                 TypeBase,
                 isPrimitive,
+
             );
         }
 };
@@ -44,6 +45,7 @@ template <class ClassifierBase = Classifier> class ClassifierPy : public TypePy<
                 bool,
                 ClassifierBase,
                 isPrimitive,
+
             );
         }
 };
@@ -56,6 +58,7 @@ template <class PrimitiveTypeBase = PrimitiveType> class PrimitiveTypePy : publi
                 bool,
                 PrimitiveTypeBase,
                 isPrimitive,
+
             );
         }
 };
@@ -134,7 +137,8 @@ PYBIND11_MODULE(yuml_python, m) {
     py::class_<PrimitiveType, Type, PrimitiveTypePy<>> (m, "PrimitiveType")
         .def(py::init<>())
         .def("setPrimitiveType", &PrimitiveType::setPrimitiveTypeString)
-        .def("getPrimitiveType", &PrimitiveType::getPrimitiveTypeString);
+        .def("getPrimitiveType", &PrimitiveType::getPrimitiveTypeString)
+        .def("isPrimitive", &PrimitiveType::isPrimitive);
 
     // TypedElement
     py::class_<TypedElement, NamedElement, ElementPy<TypedElement>>(m, "TypedElement")
@@ -206,7 +210,8 @@ PYBIND11_MODULE(yuml_python, m) {
     classifier.def(py::init<>())
         .def("addAttribute", &Classifier::addAttribute)
         .def("removeAttribute", &Classifier::removeAttribute)
-        .def_readonly("attributes", &Classifier::ownedAttributes);
+        .def_readonly("attributes", &Classifier::ownedAttributes)
+        .def("isPrimitive", &Classifier::isPrimitive);
 
     // Parameter
     py::class_<Parameter, TypedElement, ElementPy<Parameter>>(m, "Parameter")

@@ -3,7 +3,7 @@
 using namespace UML;
 
 int MultiplicityElement::getLower() {
-    if (multiplicityIsSpecified) {
+    if (lowSpecified) {
         return lower;
     } else {
         throw multiplicityNotSpecifiedException;
@@ -21,7 +21,7 @@ void MultiplicityElement::setLower(const int low) {
 }
 
 int MultiplicityElement::getUpper() {
-    if (multiplicityIsSpecified) {
+    if (upSpecified) {
         return upper;
     } else {
         throw multiplicityNotSpecifiedException;
@@ -36,4 +36,8 @@ void MultiplicityElement::setUpper(const int up) {
     if (lowSpecified) {
         multiplicityIsSpecified = true;
     }
+}
+
+bool MultiplicityElement::multiplicitySpecified() {
+    return multiplicityIsSpecified;
 }

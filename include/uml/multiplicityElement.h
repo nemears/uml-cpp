@@ -16,6 +16,7 @@ namespace UML {
                         return "tried to access multiplicity but it was not specified yet";
                     }
             } multiplicityNotSpecifiedException;
+            bool multiplicitySpecified();
         protected:
             int lower;
             int upper;

@@ -22,7 +22,11 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["methods"]) {
         if (node["methods"].IsSequence()) {
             for (std::size_t i=0; i<node["methods"].size(); i++) {
-                if (node["methods"][i]["opaqueBehavior"]) {
+                if (node["methods"][i]["activity"]) {
+                    ActivityParser activityParser(elements);
+                    Element* parsedEl = activityParser.parseElement(node["methods"][i]["activity"]);
+                    dynamic_cast<Operation*>(el)->methods.push_back(dynamic_cast<Activity*>(parsedEl));
+                } else if (node["methods"][i]["opaqueBehavior"]) {
                     OpaqueBehaviorParser opaqueBehaviorParser(elements);
                     Element* parsedEl = opaqueBehaviorParser.parseElement(node["methods"][i]["opaqueBehavior"]);
                     dynamic_cast<Operation*>(el)->methods.push_back(dynamic_cast<OpaqueBehavior*>(parsedEl));
@@ -99,6 +103,12 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Value << YAML::BeginSeq;
         for (auto const& method: dynamic_cast<Operation*>(el)->methods) {
             switch(method->getElementType()) {
+                case ElementType::ACTIVITY : {
+                    ActivityParser ap(elements);
+                    if (!ap.emit(emitter, method)) {
+                        return false;
+                    }
+                }
                 case ElementType::OPAQUE_BEHAVIOR : {
                     OpaqueBehaviorParser op(elements);
                     if (!op.emit(emitter, method)) {

@@ -5,6 +5,7 @@
 #include "parameterParser.h"
 #include "opaqueBehaviorParser.h"
 #include "uml/operation.h"
+#include "activityParser.h"
 
 using namespace UML;
 

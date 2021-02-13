@@ -78,6 +78,12 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Value << YAML::BeginSeq;
         for (auto const& child: el->ownedElements) {
             switch (child->getElementType()) {
+                case ElementType::ACTIVITY : {
+                    ActivityParser ap(elements);
+                    if(!ap.emit(emitter, child)) {
+                        return false;
+                    }
+                }
                 case ElementType::CLASS : {
                     ClassParser cp(elements);
                     if (!cp.emit(emitter, child)) {

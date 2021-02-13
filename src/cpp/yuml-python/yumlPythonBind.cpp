@@ -19,11 +19,13 @@
 
 using namespace UML;
 
+// Element Trampoline
 template <class ElementBase = Element> class ElementPy: public ElementBase {
     public:
         using ElementBase::ElementBase;
 };
 
+// Type Trampoline
 template <class TypeBase = Type> class TypePy : public ElementPy<TypeBase> {
     public:
         using ElementPy<TypeBase>::ElementPy;
@@ -37,6 +39,7 @@ template <class TypeBase = Type> class TypePy : public ElementPy<TypeBase> {
         }
 };
 
+// Classifier Trampoline
 template <class ClassifierBase = Classifier> class ClassifierPy : public TypePy<ClassifierBase> {
     public:
         using TypePy<ClassifierBase>::TypePy;
@@ -50,6 +53,7 @@ template <class ClassifierBase = Classifier> class ClassifierPy : public TypePy<
         }
 };
 
+// PrimitiveType Trampoline
 template <class PrimitiveTypeBase = PrimitiveType> class PrimitiveTypePy : public TypePy<PrimitiveTypeBase> {
     public:
         using TypePy<PrimitiveTypeBase>::TypePy;

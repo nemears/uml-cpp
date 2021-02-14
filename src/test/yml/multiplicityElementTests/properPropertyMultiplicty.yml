@@ -1,0 +1,9 @@
+---
+  model:
+    children:
+      - class:
+          attributes:
+            - property:
+                lower: 0
+                upper: 1
+...

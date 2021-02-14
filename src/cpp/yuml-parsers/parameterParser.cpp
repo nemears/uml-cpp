@@ -6,7 +6,7 @@ Element* ParameterParser::createElement() {
 
 bool ParameterParser::parseFeatures(YAML::Node node, Element* el) {
 
-    if (node["lower"] && node["uppder"]) {
+    if (node["lower"] && node["upper"]) {
         MultiplicityElementParser mp;
         if (!mp.parseMultiplicityFeatures(node, el)) {
             return false;

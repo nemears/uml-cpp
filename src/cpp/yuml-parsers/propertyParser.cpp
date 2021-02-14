@@ -10,7 +10,7 @@ bool PropertyParser::parseFeatures(YAML::Node node, UML::Element* el) {
 
     bool ret = TypedElementParser::parseFeatures(node, el);
 
-    if (node["lower"] && node["uppder"]) {
+    if (node["lower"] && node["upper"]) {
         MultiplicityElementParser mp;
         if (!mp.parseMultiplicityFeatures(node, el)) {
             return false;

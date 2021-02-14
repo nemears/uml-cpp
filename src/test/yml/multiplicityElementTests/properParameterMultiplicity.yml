@@ -1,0 +1,11 @@
+---
+  model:
+    children:
+      - class:
+          operations:
+            - operation:
+                parameters:
+                  - parameter:
+                      lower: 0
+                      upper: 1
+...

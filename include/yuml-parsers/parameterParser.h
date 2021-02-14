@@ -2,6 +2,7 @@
 #define PARAMETERPARSER
 
 #include "typedElementParser.h"
+#include "multiplicityElementParser.h"
 #include "uml/parameter.h"
 
 using namespace std;

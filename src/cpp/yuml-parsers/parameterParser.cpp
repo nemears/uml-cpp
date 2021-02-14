@@ -6,6 +6,13 @@ Element* ParameterParser::createElement() {
 
 bool ParameterParser::parseFeatures(YAML::Node node, Element* el) {
 
+    if (node["lower"] && node["uppder"]) {
+        MultiplicityElementParser mp;
+        if (!mp.parseMultiplicityFeatures(node, el)) {
+            return false;
+        }
+    }
+
     if (node["direction"]) {
         string directionString = node["direction"].as<string>();
 
@@ -33,6 +40,11 @@ bool ParameterParser::emit(YAML::Emitter& emitter, Element* el) {
     }
 
     bool ret = TypedElementParser::emit(emitter, el);
+
+    MultiplicityElementParser mp;
+    if (!mp.emit(emitter, el)) {
+        ret = false;
+    }
 
     if (dynamic_cast<Parameter*>(el)->getDirection() != ParameterDirectionKind::NONE) {
         emitter << YAML::Key << "direction";

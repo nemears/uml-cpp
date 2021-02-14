@@ -52,6 +52,17 @@ bool TypedElementParser::parseTypeFeatures(YAML::Node node, Element* el) {
 }
 
 bool TypedElementParser::emit(YAML::Emitter& emitter, Element* el) {
+    
+    bool ret = emitType(emitter, el);
+
+    if (!NamedElementParser::emit(emitter, el)) {
+        ret = false;
+    }
+
+    return ret;
+}
+
+bool TypedElementParser::emitType(YAML::Emitter& emitter, Element* el) {
     if (dynamic_cast<TypedElement*>(el)->getType() != NULL) {
         emitter << YAML::Key << "type";
         if (dynamic_cast<TypedElement*>(el)->getType()->isPrimitive()) {
@@ -82,5 +93,5 @@ bool TypedElementParser::emit(YAML::Emitter& emitter, Element* el) {
         }
     }
 
-    return NamedElementParser::emit(emitter, el);
+    return true;
 }

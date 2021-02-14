@@ -3,7 +3,7 @@
 bool ActivityNodeParser::parseFeatures(YAML::Node node, Element* el) {
     
     bool ret = parseActivityNodeFeatures(node, el);
-    
+
     if (!NamedElementParser::parseFeatures(node, el)) {
         ret = false;
     }
@@ -37,6 +37,16 @@ bool ActivityNodeParser::parseActivityNodeFeatures(YAML::Node node, Element* el)
 
 bool ActivityNodeParser::emit(YAML::Emitter& emitter, Element* el) {
 
+    bool ret = emitActivityNode(emitter, el);
+
+    if(!NamedElementParser::emit(emitter, el)) {
+        ret = false;
+    }
+
+    return ret;
+}
+
+bool ActivityNodeParser::emitActivityNode(YAML::Emitter& emitter, Element* el) {
     if (!dynamic_cast<ActivityNode*>(el)->incoming.empty()) {
         for (auto const& edge : dynamic_cast<ActivityNode*>(el)->incoming) {
             // TODO Edge parsers
@@ -49,5 +59,5 @@ bool ActivityNodeParser::emit(YAML::Emitter& emitter, Element* el) {
         }
     }
 
-    return NamedElementParser::emit(emitter, el);
+    return true;
 }

@@ -7,11 +7,12 @@
 
 class TypedElementParser : virtual public NamedElementParser {
     protected:
-        bool parseFeatures(YAML::Node, UML::Element* el) override;
-        bool parseTypeFeatures(YAML::Node, UML::Element* el);
+        bool parseFeatures(YAML::Node, Element* el) override;
+        bool parseTypeFeatures(YAML::Node, Element* el);
+        bool emitType(YAML::Emitter& emitter, Element* el);
 
     public:
-        TypedElementParser(map<boost::uuids::uuid, UML::Element*>* elements) : NamedElementParser(elements){
+        TypedElementParser(map<boost::uuids::uuid, Element*>* elements) : NamedElementParser(elements){
             // this->elements = elements;
         };
 

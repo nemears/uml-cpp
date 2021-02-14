@@ -3,6 +3,17 @@
 using namespace UML;
 
 bool TypedElementParser::parseFeatures(YAML::Node node, Element* el) {
+    
+    bool ret = parseTypeFeatures(node, el);
+
+    if(!NamedElementParser::parseFeatures(node, el)) {
+        ret = false;
+    }
+
+    return ret;
+}
+
+bool TypedElementParser::parseTypeFeatures(YAML::Node node, Element* el) {
     if (node["type"]) {
         string parsedId = node["type"].as<string>();
 
@@ -37,7 +48,7 @@ bool TypedElementParser::parseFeatures(YAML::Node node, Element* el) {
         
     }
 
-    return NamedElementParser::parseFeatures(node, el);
+    return true;
 }
 
 bool TypedElementParser::emit(YAML::Emitter& emitter, Element* el) {

@@ -14,7 +14,7 @@ class ParameterParser : public TypedElementParser {
         bool parseFeatures(YAML::Node node, Element* el);
 
     public:
-        ParameterParser(map<boost::uuids::uuid, Element*>* elements) : TypedElementParser(elements){
+        ParameterParser(map<boost::uuids::uuid, Element*>* elements) : TypedElementParser(elements), NamedElementParser(elements){
             this->keyword = "parameter";
         }
         bool emit(YAML::Emitter& emitter, Element* el);

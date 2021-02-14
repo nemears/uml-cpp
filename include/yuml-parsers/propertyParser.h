@@ -18,7 +18,7 @@ class PropertyParser : public TypedElementParser {
         bool parseFeatures(YAML::Node node, UML::Element* el);
 
     public:
-        PropertyParser(map<boost::uuids::uuid, UML::Element*>* elements) : TypedElementParser(elements) {
+        PropertyParser(map<boost::uuids::uuid, UML::Element*>* elements) : TypedElementParser(elements) , NamedElementParser(elements) {
             this->keyword = "property";
             // this->elements = elements;
         }

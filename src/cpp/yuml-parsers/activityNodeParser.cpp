@@ -2,6 +2,16 @@
 
 bool ActivityNodeParser::parseFeatures(YAML::Node node, Element* el) {
     
+    bool ret = parseActivityNodeFeatures(node, el);
+    
+    if (!NamedElementParser::parseFeatures(node, el)) {
+        ret = false;
+    }
+
+    return ret;
+}
+
+bool ActivityNodeParser::parseActivityNodeFeatures(YAML::Node node, Element* el) {
     if (node["incoming"]) {
         if (node["incoming"].IsSequence()) {
             for (std::size_t i=0; i<node["incoming"].size(); i++) {
@@ -22,7 +32,7 @@ bool ActivityNodeParser::parseFeatures(YAML::Node node, Element* el) {
         }
     }
 
-    return NamedElementParser::parseFeatures(node, el);
+    return true;
 }
 
 bool ActivityNodeParser::emit(YAML::Emitter& emitter, Element* el) {

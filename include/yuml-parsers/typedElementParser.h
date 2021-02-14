@@ -5,15 +5,16 @@
 #include "uml/typedElement.h"
 #include "uml/primitiveType.h"
 
-class TypedElementParser : public NamedElementParser {
+class TypedElementParser : virtual public NamedElementParser {
     protected:
-        bool parseFeatures(YAML::Node, UML::Element* el);
+        bool parseFeatures(YAML::Node, UML::Element* el) override;
+        bool parseTypeFeatures(YAML::Node, UML::Element* el);
 
     public:
         TypedElementParser(map<boost::uuids::uuid, UML::Element*>* elements) : NamedElementParser(elements){
             // this->elements = elements;
         };
 
-        bool emit(YAML::Emitter& emitter, Element* el);
+        bool emit(YAML::Emitter& emitter, Element* el) override;
 };
 #endif

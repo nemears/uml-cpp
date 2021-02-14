@@ -4,15 +4,12 @@
 #include "elementParser.h"
 #include "uml/multiplicityElement.h"
 
-class MultiplicityElementParser : public ElementParser {
+class MultiplicityElementParser {
     protected:
-        bool parseFeatures(YAML::Node node, UML::Element* el) override;
+        bool parseFeatures(YAML::Node node, UML::Element* el);
     public:
-        MultiplicityElementParser(map<boost::uuids::uuid, UML::Element*>* elements) : ElementParser(elements){
-            
-        };
-
-        bool emit(YAML::Emitter& emitter, Element* el) override;
+        bool emit(YAML::Emitter& emitter, Element* el);
+        bool parseMultiplicityFeatures(YAML::Node node, Element* el);
 };
 
 #endif

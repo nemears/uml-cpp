@@ -10,6 +10,13 @@ bool PropertyParser::parseFeatures(YAML::Node node, UML::Element* el) {
 
     bool ret = TypedElementParser::parseFeatures(node, el);
 
+    if (node["lower"] && node["uppder"]) {
+        MultiplicityElementParser mp;
+        if (!mp.parseMultiplicityFeatures(node, el)) {
+            return false;
+        }
+    }
+
     if (node["defaultValue"]) {
         if (dynamic_cast<Property*>(el)->getType() != NULL) {
             if (dynamic_cast<Property*>(el)->getType()->isPrimitive()) {
@@ -73,7 +80,13 @@ bool PropertyParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Key << "property";
         emitter << YAML::Value << YAML::BeginMap;
     }
+
     bool ret = TypedElementParser::emit(emitter, el);
+
+    MultiplicityElementParser mp;
+    if (!mp.emit(emitter, el)) {
+        ret = false;
+    }
 
     if (dynamic_cast<Property*>(el)->getDefaultValue() != NULL) {
         emitter << YAML::Key << "defaultValue";

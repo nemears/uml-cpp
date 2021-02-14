@@ -14,6 +14,10 @@ bool MultiplicityElementParser::parseFeatures(YAML::Node node, Element* el) {
     return true;
 }
 
+bool MultiplicityElementParser::parseMultiplicityFeatures(YAML::Node node, Element* el) {
+    return parseFeatures(node, el);
+}
+
 bool MultiplicityElementParser::emit(YAML::Emitter& emitter, Element* el) {
 
     if (dynamic_cast<MultiplicityElement*>(el)->multiplicitySpecified()) {

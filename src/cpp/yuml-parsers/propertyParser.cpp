@@ -11,8 +11,7 @@ bool PropertyParser::parseFeatures(YAML::Node node, UML::Element* el) {
     bool ret = TypedElementParser::parseFeatures(node, el);
 
     if (node["lower"] && node["upper"]) {
-        MultiplicityElementParser mp;
-        if (!mp.parseMultiplicityFeatures(node, el)) {
+        if (!parseMultiplicityFeatures(node, el)) {
             return false;
         }
     }
@@ -59,7 +58,7 @@ bool PropertyParser::parseFeatures(YAML::Node node, UML::Element* el) {
                 string parsedId = node["defaultValue"].as<string>();
                 if (isValidUUID4(parsedId)) {
                     boost::uuids::uuid typeId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
-                    InstanceSpecification* defaultVal = dynamic_cast<InstanceSpecification*>((*elements)[typeId]);
+                    InstanceSpecification* defaultVal = dynamic_cast<InstanceSpecification*>((*TypedElementParser::elements)[typeId]);
                     InstanceValue* instanceVal = new InstanceValue;
                     instanceVal->setInstance(defaultVal);
                     dynamic_cast<Property*>(el)->setDefaultValue(instanceVal);
@@ -83,8 +82,7 @@ bool PropertyParser::emit(YAML::Emitter& emitter, Element* el) {
 
     bool ret = TypedElementParser::emit(emitter, el);
 
-    MultiplicityElementParser mp;
-    if (!mp.emit(emitter, el)) {
+    if (!emitMultiplicity(emitter, el)) {
         ret = false;
     }
 

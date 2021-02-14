@@ -8,14 +8,14 @@
 using namespace std;
 using namespace UML;
 
-class ParameterParser : public TypedElementParser {
+class ParameterParser : public TypedElementParser, public MultiplicityElementParser {
     protected:
         Element* createElement();
         bool parseFeatures(YAML::Node node, Element* el);
 
     public:
-        ParameterParser(map<boost::uuids::uuid, Element*>* elements) : TypedElementParser(elements), NamedElementParser(elements){
-            this->keyword = "parameter";
+        ParameterParser(map<boost::uuids::uuid, Element*>* elements) : TypedElementParser(elements), MultiplicityElementParser(elements), NamedElementParser(elements), ElementParser(elements) {
+            this->TypedElementParser::keyword = "parameter";
         }
         bool emit(YAML::Emitter& emitter, Element* el);
 };

@@ -8,7 +8,7 @@ bool ClassifierParser::parseFeatures(YAML::Node node, Element* el) {
             for (std::size_t i=0; i<node["attributes"].size(); i++) {
                 if (node["attributes"][i]["property"]) {
                     PropertyParser propertyParser(elements);
-                    Element* parsedEl = propertyParser.parseElement(node["attributes"][i]["property"]);
+                    Element* parsedEl = propertyParser.TypedElementParser::parseElement(node["attributes"][i]["property"]);
                     dynamic_cast<Classifier*>(el)->ownedAttributes.push_back(dynamic_cast<Property*>(parsedEl));
                 } else if (node["attributes"][i]["other types here"]) {
                     // TODO TODO TODO

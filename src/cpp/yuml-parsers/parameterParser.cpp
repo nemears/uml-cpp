@@ -7,8 +7,7 @@ Element* ParameterParser::createElement() {
 bool ParameterParser::parseFeatures(YAML::Node node, Element* el) {
 
     if (node["lower"] && node["upper"]) {
-        MultiplicityElementParser mp;
-        if (!mp.parseMultiplicityFeatures(node, el)) {
+        if (!parseMultiplicityFeatures(node, el)) {
             return false;
         }
     }
@@ -41,8 +40,7 @@ bool ParameterParser::emit(YAML::Emitter& emitter, Element* el) {
 
     bool ret = TypedElementParser::emit(emitter, el);
 
-    MultiplicityElementParser mp;
-    if (!mp.emit(emitter, el)) {
+    if (!emitMultiplicity(emitter, el)) {
         ret = false;
     }
 

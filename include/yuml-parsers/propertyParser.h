@@ -12,17 +12,17 @@
 #include "multiplicityElementParser.h"
 using namespace std;
 
-class PropertyParser : public TypedElementParser {
+class PropertyParser : public TypedElementParser, public MultiplicityElementParser {
     protected:
         UML::Element* createElement();
-        bool parseFeatures(YAML::Node node, UML::Element* el);
+        bool parseFeatures(YAML::Node node, UML::Element* el) override;
 
     public:
-        PropertyParser(map<boost::uuids::uuid, UML::Element*>* elements) : TypedElementParser(elements) , NamedElementParser(elements) {
-            this->keyword = "property";
+        PropertyParser(map<boost::uuids::uuid, UML::Element*>* elements) : TypedElementParser(elements) , MultiplicityElementParser(elements), NamedElementParser(elements), ElementParser(elements) {
+            this->TypedElementParser::keyword = "property";
             // this->elements = elements;
         }
 
-        bool emit(YAML::Emitter& emitter, Element* el);
+        bool emit(YAML::Emitter& emitter, Element* el) override;
 };
 #endif

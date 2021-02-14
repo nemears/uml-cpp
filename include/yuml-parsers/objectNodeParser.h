@@ -9,7 +9,9 @@ class ObjectNodeParser : public ActivityNodeParser, public TypedElementParser {
     bool parseFeatures(YAML::Node node, Element* el) override;
 
     public:
-    ObjectNodeParser(map<boost::uuids::uuid, Element*>* elements) : ActivityNodeParser(elements), TypedElementParser(elements) {};
+    ObjectNodeParser(map<boost::uuids::uuid, Element*>* elements) : ActivityNodeParser(elements), TypedElementParser(elements) {
+        this->keyword = "objectNode";
+    };
     bool emit(YAML::Emitter& emitter, Element* el) override;
 
 };

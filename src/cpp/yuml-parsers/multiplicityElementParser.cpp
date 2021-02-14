@@ -3,6 +3,10 @@
 using namespace UML;
 
 bool MultiplicityElementParser::parseFeatures(YAML::Node node, Element* el) {
+    return parseMultiplicityFeatures(node, el);
+}
+
+bool MultiplicityElementParser::parseMultiplicityFeatures(YAML::Node node, Element* el) {
     if (node["lower"]) {
         dynamic_cast<MultiplicityElement*>(el)->setLower(node["lower"].as<int>());
     }
@@ -14,12 +18,11 @@ bool MultiplicityElementParser::parseFeatures(YAML::Node node, Element* el) {
     return true;
 }
 
-bool MultiplicityElementParser::parseMultiplicityFeatures(YAML::Node node, Element* el) {
-    return parseFeatures(node, el);
+bool MultiplicityElementParser::emit(YAML::Emitter& emitter, Element* el) {
+    return emitMultiplicity(emitter, el);
 }
 
-bool MultiplicityElementParser::emit(YAML::Emitter& emitter, Element* el) {
-
+bool MultiplicityElementParser::emitMultiplicity(YAML::Emitter& emitter, Element* el) {
     if (dynamic_cast<MultiplicityElement*>(el)->multiplicitySpecified()) {
         emitter << YAML::Key << "lower";
         emitter << YAML::Value << dynamic_cast<MultiplicityElement*>(el)->getLower();

@@ -48,7 +48,7 @@ bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
                     el->ownedElements.push_back(parsedEl);
                 } else if (node["children"][i]["parameter"]) {
                     ParameterParser parameterParser(elements);
-                    Element* parsedEl = parameterParser.parseElement(node["children"][i]["parameter"]);
+                    Element* parsedEl = parameterParser.TypedElementParser::parseElement(node["children"][i]["parameter"]);
                     el->ownedElements.push_back(parsedEl);
                 } 
                 

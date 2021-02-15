@@ -42,7 +42,17 @@ bool ActivityParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["edges"]) {
         if (node["edges"].IsSequence()) {
             for (std::size_t i=0; i<node["edges"].size(); i++) {
-                // TODO Edge parsers
+                if (node["edges"][i]["controlFlow"]) {
+                    ControlFlowParser controlFlowParser(elements);
+                    Element* parsedEl = controlFlowParser.parseElement(node["edges"][i]["controlFlow"]);
+                    dynamic_cast<Activity*>(el)->edges.push_back(dynamic_cast<ControlFlow*>(parsedEl));
+                } else if (node["edges"][i]["objectFlow"]) {
+                    ObjectFlowParser objectFlowParser(elements);
+                    Element* parsedEl = objectFlowParser.parseElement(node["edges"][i]["objectFlow"]);
+                    dynamic_cast<Activity*>(el)->edges.push_back(dynamic_cast<ObjectFlow*>(parsedEl));
+                } else {
+                    // TODO error
+                }
             }
         } else {
             throw ElementParser::InvalidNodeTypeException(node["edges"].Mark().line, "sequence");
@@ -63,13 +73,48 @@ bool ActivityParser::emit(YAML::Emitter& emitter, Element* el) {
 
     if (!dynamic_cast<Activity*>(el)->nodes.empty()) {
         for(auto const& node : dynamic_cast<Activity*>(el)->nodes) {
-            // TODO node parsers
+            switch(node.getElementType()) {
+                case ElementType::ACTION : {
+                    ActionParser ap(elements);
+                    ap.emit(emitter, node);
+                    break;
+                }
+                case ElementType::INPUT_PIN : {
+                    InputPinParser ipp(elements);
+                    ipp.emit(emitter, node);
+                    break;
+                }
+                case ElementType::OBJECT_NODE : {
+                    ObjectNodeParser onp(elements);
+                    onp.emit(emitter, node);
+                    break;
+                }
+                case ElementType::OUTPUT_PIN : {
+                    OutputPinParser opp(elements);
+                    opp.emit(emitter, node);
+                    break;
+                }
+                default : {
+                    // TODO error
+                }
+            }
         }
     }
 
     if (!dynamic_cast<Activity*>(el)->edges.empty()) {
         for (auto const& edge: dynamic_cast<Activity*>(el)->edges) {
-            // TODO edge parsers
+            switch(edge->getElementType()) {
+                case ElementType::CONTROL_FLOW : {
+                    ControlFlowParser cfp(elements);
+                    cfp.emit(emitter, edge);
+                    break;
+                }
+                case ElementType::OBJECT_FLOW : {
+                    ObjectFlowParser ofp(elements);
+                    ofp.emit(emitter, edge);
+                    break;
+                }
+            }
         }
     }
 

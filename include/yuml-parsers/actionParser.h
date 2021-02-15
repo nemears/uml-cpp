@@ -2,6 +2,7 @@
 #define ACTIONPARSER_H
 
 #include "activityNodeParser.h"
+#include "uml/action.h"
 
 class ActionParser : public ActivityNodeParser {
     protected:

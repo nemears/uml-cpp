@@ -73,7 +73,7 @@ bool ActivityParser::emit(YAML::Emitter& emitter, Element* el) {
 
     if (!dynamic_cast<Activity*>(el)->nodes.empty()) {
         for(auto const& node : dynamic_cast<Activity*>(el)->nodes) {
-            switch(node.getElementType()) {
+            switch(node->getElementType()) {
                 case ElementType::ACTION : {
                     ActionParser ap(elements);
                     ap.emit(emitter, node);

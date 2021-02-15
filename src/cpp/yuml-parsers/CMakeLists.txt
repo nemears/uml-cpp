@@ -2,5 +2,5 @@ add_library(Parsers templateParser.cpp namespaceParser.cpp modelParser.cpp eleme
                     classifierParser.cpp propertyParser.cpp typedElementParser.cpp instanceSpecificationParser.cpp slotParser.cpp
                     operationParser.cpp parameterParser.cpp opaqueBehaviorParser.cpp activityParser.cpp activityNodeParser.cpp
                     multiplicityElementParser.cpp objectNodeParser.cpp actionParser.cpp pinParser.cpp inputPinParser.cpp outputPinParser.cpp
-                    activityEdgeParser.cpp)
+                    activityEdgeParser.cpp controlFlowParser.cpp)
 target_link_libraries(Parsers PUBLIC yaml-cpp)

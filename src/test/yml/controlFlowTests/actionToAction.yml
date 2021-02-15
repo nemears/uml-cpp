@@ -1,18 +1,19 @@
 ---
   model:
-    activity:
-      nodes:
-        - action:
-            id: 2c2fc607-48c6-4879-800b-7e659441cba1
-            outgoing:
-              - 9cdae5be-6b75-4284-b1e3-445fcb3dd071
-        - action:
-            id: 7d4b6b0b-f6c2-4670-868c-87709cede18e
-            incoming:
-              - 9cdae5be-6b75-4284-b1e3-445fcb3dd071
-      edges:
-        - controlFlow:
-            id: 9cdae5be-6b75-4284-b1e3-445fcb3dd071
-            source: 2c2fc607-48c6-4879-800b-7e659441cba1
-            target: 7d4b6b0b-f6c2-4670-868c-87709cede18e
+    children:
+      - activity:
+          nodes:
+            - action:
+                id: 2c2fc607-48c6-4879-800b-7e659441cba1
+                outgoing:
+                  - 9cdae5be-6b75-4284-b1e3-445fcb3dd071
+            - action:
+                id: 7d4b6b0b-f6c2-4670-868c-87709cede18e
+                incoming:
+                  - 9cdae5be-6b75-4284-b1e3-445fcb3dd071
+          edges:
+            - controlFlow:
+                id: 9cdae5be-6b75-4284-b1e3-445fcb3dd071
+                source: 2c2fc607-48c6-4879-800b-7e659441cba1
+                target: 7d4b6b0b-f6c2-4670-868c-87709cede18e
 ...

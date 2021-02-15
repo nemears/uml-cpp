@@ -1,5 +1,10 @@
 #include "yuml-parsers/actionParser.h"
 
+Element* ActionParser::createElement() {
+    theEl = new Action;
+    return theEl;
+}
+
 bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
 
     if (node["inputs"]) {

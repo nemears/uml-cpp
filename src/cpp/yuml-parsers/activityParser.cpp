@@ -13,7 +13,25 @@ bool ActivityParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["nodes"]) {
         if (node["nodes"].IsSequence()) {
             for (std::size_t i=0; i<node["nodes"].size(); i++) {
-                // TODO Node parsers
+                if (node["nodes"][i]["action"]) {
+                    ActionParser actionParser(elements);
+                    Element* parsedEl = actionParser.parseElement(node["nodes"][i]["action"]);
+                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<Action*>(parsedEl));
+                } else if (node["nodes"][i]["inputPin"]) {
+                    InputPinParser inputPinParser(elements);
+                    Element* parsedEl = inputPinParser.TypedElementParser::parseElement(node["nodes"][i]["inputPin"]);
+                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<InputPin*>(parsedEl));
+                } else if (node["nodes"][i]["objectNode"]) {
+                    ObjectNodeParser objectNodeParser(elements);
+                    Element* parsedEl = objectNodeParser.parseElement(node["nodes"][i]["objectNode"]);
+                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ObjectNode*>(parsedEl));
+                } else if (node["nodes"][i]["outputPin"]) {
+                    OutputPinParser outputPinParser(elements);
+                    Element* parsedEl = outputPinParser.TypedElementParser::parseElement(node["nodes"][i]["outputPin"]);
+                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<OutputPin*>(parsedEl));
+                } else {
+                    // TODO error
+                }
             }
         } else {
             throw ElementParser::InvalidNodeTypeException(node["nodes"].Mark().line, "sequence");

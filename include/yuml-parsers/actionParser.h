@@ -11,8 +11,9 @@ class ActionParser : public ActivityNodeParser {
         bool parseFeatures(YAML::Node node, Element * el) override;
     
     public:
+        Element* createElement() override;
         bool emit(YAML::Emitter& emitter, Element* el) override;
-        ActionParser(map<boost::uuids::uuid, Element*>* elements) : ActivityNodeParser(elements) {
+        ActionParser(map<boost::uuids::uuid, Element*>* elements) : ActivityNodeParser(elements) , NamedElementParser(elements){
             this->keyword = "action";
         };
 };

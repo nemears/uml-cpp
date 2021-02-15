@@ -2,6 +2,12 @@
 #define ACTIVITYPARSER
 
 #include "classParser.h" 
+#include "actionParser.h"
+#include "objectNodeParser.h"
+#include "inputPinParser.h"
+#include "outputPinParser.h"
+#include "controlFlowParser.h"
+#include "objectFlowParser.h"
 #include "uml/activity.h"
 
 class ActivityParser : public ClassParser {

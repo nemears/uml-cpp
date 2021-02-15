@@ -1,5 +1,10 @@
 #include "yuml-parsers/objectNodeParser.h"
 
+Element* ObjectNodeParser::createElement() {
+    theEl = new ObjectNode;
+    return theEl;
+}
+
 bool ObjectNodeParser::parseFeatures(YAML::Node node, Element* el) {
     return parseObjectNodeFeatures(node, el);    
 }

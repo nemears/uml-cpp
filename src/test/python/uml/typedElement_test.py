@@ -4,8 +4,8 @@ from yuml_python import *
 class TypedElementTest(unittest.TestCase):
 
     def testSetType(self):
-        typedEl = TypedElement()
-        t = Type()
+        typedEl = Property()
+        t = Class()
         typedEl.setType(t)
         self.assertEqual(typedEl.getType().getID(), t.getID())
 

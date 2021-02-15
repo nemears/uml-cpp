@@ -203,8 +203,16 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeSlot", &InstanceSpecification::removeSlot)
         .def_readonly("slots", &InstanceSpecification::slots);
     
+    // MultiplicityElement
+    py::class_<MultiplicityElement, Element, ElementPy<MultiplicityElement>>(m, "MultiplicityElement")
+        .def(py::init<>())
+        .def("getLower", &MultiplicityElement::getLower)
+        .def("setLower", &MultiplicityElement::setLower)
+        .def("getUpper", &MultiplicityElement::getUpper)
+        .def("setUpper", &MultiplicityElement::setUpper);
+
     // Property
-    py::class_<Property, StructuralFeature, ElementPy<Property>>(m, "Property")
+    py::class_<Property, StructuralFeature, MultiplicityElement, ElementPy<Property>>(m, "Property")
         .def(py::init<>())
         .def("setDefaultValue", &Property::setDefaultValue)
         .def("getDefaultValue", &Property::getDefaultValue);
@@ -218,7 +226,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("isPrimitive", &Classifier::isPrimitive);
 
     // Parameter
-    py::class_<Parameter, TypedElement, ElementPy<Parameter>>(m, "Parameter")
+    py::class_<Parameter, TypedElement, MultiplicityElement, ElementPy<Parameter>>(m, "Parameter")
         .def(py::init<>())
         .def("getDirection", &Parameter::getDirectionString)
         .def("setDirection", &Parameter::setDirectionString);

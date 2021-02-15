@@ -1,9 +1,23 @@
 #include "yuml-parsers/pinParser.h"
 
 bool PinParser::parseFeatures(YAML::Node node, Element* el) {
-    return true;
+
+    bool ret = parseObjectNodeFeatures(node, el);
+
+    if (!parseMultiplicityFeatures(node, el)) {
+        ret = false;
+    }
+
+    return ret;
 }
 
 bool PinParser::emit(YAML::Emitter& emitter, Element* el) {
-    return true;
+    
+    bool ret = emitObjectNode(emitter, el);
+
+    if(!emitMultiplicity(emitter, el)) {
+        ret = false;
+    }
+
+    return ret;
 }

@@ -5,7 +5,9 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["inputs"]) {
         if (node["inputs"].IsSequence()) {
             for (std::size_t i=0; i<node["inputs"].size(); i++) {
-                // TODO inputPin parsers
+                InputPinParser ip(elements);
+                Element* parsedEl = ip.TypedElementParser::parseElement(node["inputs"][i]);
+                dynamic_cast<Action*>(el)->inputs.push_back(dynamic_cast<InputPin*>(parsedEl));
             }
         } else {
             throw ElementParser::InvalidNodeTypeException(node["inputs"].Mark().line, "sequence");

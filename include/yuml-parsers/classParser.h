@@ -11,7 +11,7 @@ class OperationParser;
 
 class ClassParser : public ClassifierParser {
     protected:
-        UML::Element* createElement();
+        UML::Element* createElement() override;
         bool parseFeatures(YAML::Node node, UML::Element* el);
 
     public:

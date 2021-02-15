@@ -24,6 +24,7 @@ enum class ElementType {
     BEHAVIOR,
     CLASS,
     CLASSIFIER,
+    CONTROL_FLOW,
     ELEMENT,
     INPUT_PIN,
     INSTANCE_SPECIFICATION,

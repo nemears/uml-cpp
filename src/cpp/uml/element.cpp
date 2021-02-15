@@ -37,6 +37,9 @@ string Element::getElementTypeString() {
         case ElementType::CLASSIFIER : {
             return "CLASSIFIER";
         }
+        case ElementType::CONTROL_FLOW : {
+            return "CONTROL_FLOW";
+        }
         case ElementType::ELEMENT : {
             return "ELEMENT";
         }

@@ -76,6 +76,9 @@ string Element::getElementTypeString() {
         case ElementType::NAMESPACE : {
             return "NAMESPACE";
         }
+        case ElementType::OBJECT_FLOW : {
+            return "OBJECT_FLOW";
+        }
         case ElementType::OBJECT_NODE : {
             return "OBJECT_NODE";
         }

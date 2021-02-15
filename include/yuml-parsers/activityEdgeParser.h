@@ -2,6 +2,8 @@
 #define ACTIVITYEDGEPARSER_H
 
 #include "namedElementParser.h"
+#include "uml/activityEdge.h"
+#include "uml/activityNode.h"
 
 class ActivityEdgeParser : public NamedElementParser {
     protected:

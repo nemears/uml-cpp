@@ -3,6 +3,7 @@
 
 #include "activityNodeParser.h"
 #include "inputPinParser.h"
+#include "outputPinParser.h"
 #include "uml/action.h"
 
 class ActionParser : public ActivityNodeParser {

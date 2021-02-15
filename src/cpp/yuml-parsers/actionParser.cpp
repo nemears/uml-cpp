@@ -17,7 +17,9 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["outputs"]) {
         if (node["outputs"].IsSequence()) {
             for (std::size_t i=0; i<node["inputs"].size(); i++) {
-                // TODO outputPin parsers
+                OutputPinParser op(elements);
+                Element* parsedEl = op.TypedElementParser::parseElement(node["outputs"][i]);
+                dynamic_cast<Action*>(el)->outputs.push_back(dynamic_cast<OutputPin*>(parsedEl));
             }
         } else {
             throw ElementParser::InvalidNodeTypeException(node["outputs"].Mark().line, "sequence");
@@ -37,13 +39,15 @@ bool ActionParser::emit(YAML::Emitter& emitter, Element* el) {
 
     if (!dynamic_cast<Action*>(el)->inputs.empty()) {
         for (auto const& input : dynamic_cast<Action*>(el)->inputs) {
-            // TODO inputPin parser
+            InputPinParser ip(elements);
+            ip.emit(emitter, input);
         }
     }
 
     if (!dynamic_cast<Action*>(el)->outputs.empty()) {
-        for (auto const& input : dynamic_cast<Action*>(el)->outputs) {
-            // TODO inputPin parser
+        for (auto const& output : dynamic_cast<Action*>(el)->outputs) {
+            OutputPinParser op(elements);
+            op.emit(emitter, output);
         }
     }
 

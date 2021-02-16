@@ -15,10 +15,12 @@ class ActivityParser : public ClassParser {
         Element* createElement();
         bool parseFeatures(YAML::Node node, Element* el);
     public:
-        ActivityParser(map<boost::uuids::uuid, Element*>* elements) : ClassParser(elements) {
+        ActivityParser(map<boost::uuids::uuid, Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            ClassParser(elements, postParsers) {
             keyword = "Activity";
         }
         bool emit(YAML::Emitter& emitter, Element* el) override;
+        static ActivityParser createNewParser();
 };
 
 #endif

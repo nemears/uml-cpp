@@ -12,7 +12,7 @@ class ClassParserTest : public ::testing::Test {
 };
 
 TEST_F(ClassParserTest, testBasicOperations) {
-    ModelParser pp(new map<boost::uuids::uuid, Element*>);
+    ModelParser pp = ModelParser::createNewParser();
     YAML::Node node = YAML::LoadFile("../../../../../src/test/yml/classTests/operation.yml");
     ASSERT_NO_THROW(pp.parse(node));
     ASSERT_TRUE((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")]);
@@ -35,7 +35,7 @@ TEST_F(ClassParserTest, testBasicOperations) {
 
 TEST_F(ClassParserTest, NonSequenceOperationsExceptionTest) {
   // Setup
-  ModelParser nonSequenceOperationParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser nonSequenceOperationParser = ModelParser::createNewParser();
   YAML::Node nonSequenceOperationNode = YAML::LoadFile("../../../../../src/test/yml/classTests/invalidOperation.yml");
 
   // Test
@@ -52,7 +52,7 @@ TEST_F(ClassParserTest, EmitOperationTest) {
     c.operations.push_back(&o);
     m.ownedElements.push_back(&c);
 
-    ModelParser emitBasicOperationParser(new map<boost::uuids::uuid, Element*>);
+    ModelParser emitBasicOperationParser = ModelParser::createNewParser();
     string expectedEmit = R""""(model:
   id: 190d1cb9-13dc-44e6-a064-126891ae0033
   children:

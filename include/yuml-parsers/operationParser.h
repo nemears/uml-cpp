@@ -15,10 +15,12 @@ class OperationParser : public NamedElementParser {
         bool parseFeatures(YAML::Node node, UML::Element* el);
 
     public:
-        OperationParser(map<boost::uuids::uuid, UML::Element*>* elements) : NamedElementParser(elements){
+        OperationParser(map<boost::uuids::uuid, UML::Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            NamedElementParser(elements, postParsers){
             this->keyword = "operation";
         };
         bool emit(YAML::Emitter& emitter, Element* el);
+        static OperationParser createNewParser();
 };
 
 #endif

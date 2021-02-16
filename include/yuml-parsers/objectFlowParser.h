@@ -7,9 +7,11 @@
 class ObjectFlowParser : public ActivityEdgeParser {
     public:
         Element* createElement() override;
-        ObjectFlowParser(map<boost::uuids::uuid, Element*>* elements) : ActivityEdgeParser(elements) {
+        ObjectFlowParser(map<boost::uuids::uuid, Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            ActivityEdgeParser(elements, postParsers) {
             this->keyword = "objectFlow";
         }
+        static ObjectFlowParser createNewParser();
 };
 
 #endif

@@ -8,7 +8,8 @@ class NamedElementParser : public ElementParser {
     protected:
         bool parseFeatures(YAML::Node node, UML::Element* el) override;
     public:
-        NamedElementParser(map<boost::uuids::uuid, UML::Element*>* elements) : ElementParser(elements){
+        NamedElementParser(map<boost::uuids::uuid, UML::Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            ElementParser(elements, postParsers){
             
         };
 

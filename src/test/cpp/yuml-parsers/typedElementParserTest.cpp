@@ -15,7 +15,7 @@ class TypedElementParserTest : public ::testing::Test {
   // be empty.
 
   TypedElementParserTest() {
-    ppYAML = new ModelParser(new map<boost::uuids::uuid, Element*>);
+    ppYAML = new ModelParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
     node = YAML::LoadFile("../../../../../src/test/yml/typedElementTests/typedElement.yml");
   }
 
@@ -43,7 +43,7 @@ TEST_F(TypedElementParserTest, ParseTypeTest) {
 
 TEST_F(TypedElementParserTest, ParsePrimitiveTest) {
 
-  ppPrimitive = new ModelParser(new map<boost::uuids::uuid, UML::Element*>);
+  ppPrimitive = new ModelParser(new map<boost::uuids::uuid, UML::Element*>, new map<boost::uuids::uuid, PostParser*>);
 
   primitiveNode = YAML::LoadFile("../../../../../src/test/yml/typedElementTests/primitives.yml");
   EXPECT_NO_THROW(ppPrimitive->parse(primitiveNode));
@@ -58,7 +58,7 @@ TEST_F(TypedElementParserTest, ParsePrimitiveTest) {
 TEST_F(TypedElementParserTest, ParseInvalidPrimitive) {
   invalidPrimitiveNode = YAML::LoadFile("../../../../../src/test/yml/typedElementTests/invalidPrimitive.yml");
 
-  ModelParser invalidPrimitiveParser = ModelParser(new map<boost::uuids::uuid, UML::Element*>);
+  ModelParser invalidPrimitiveParser = ModelParser::createNewParser();
   ASSERT_THROW(invalidPrimitiveParser.parse(invalidPrimitiveNode), ElementParser::InvalidIdentifierException);
 }
 
@@ -85,7 +85,7 @@ TEST_F(TypedElementParserTest, EmitLiteralTypeTest) {
               type: STRING
               id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d)"""";
 
-  ModelParser mp(new map<boost::uuids::uuid, Element*>);
+  ModelParser mp = ModelParser::createNewParser();
   string generatedEmit;
   YAML::Emitter emitter;
   ASSERT_NO_THROW(mp.emit(emitter, &m));
@@ -121,7 +121,7 @@ TEST_F(TypedElementParserTest, EmitAttributesOfClassiferTypeTest) {
     - class:
         id: 190d1cb9-13dc-44e6-a064-126891ae0033)"""";
 
-  ModelParser mp(new map<boost::uuids::uuid, Element*>);
+  ModelParser mp = ModelParser::createNewParser();
   string generatedEmit;
   YAML::Emitter emitter;
   ASSERT_NO_THROW(mp.emit(emitter, &m));

@@ -7,9 +7,11 @@
 class ControlFlowParser : public ActivityEdgeParser {
     public:
         Element* createElement() override;
-        ControlFlowParser(map<boost::uuids::uuid, Element*>* elements) : ActivityEdgeParser(elements) {
+        ControlFlowParser(map<boost::uuids::uuid, Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            ActivityEdgeParser(elements, postParsers) {
             this->keyword = "controlFlow";
         };
+        static ControlFlowParser createNewParser();
 };
 
 #endif

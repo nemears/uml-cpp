@@ -10,7 +10,8 @@ class ActivityEdgeParser : public NamedElementParser {
         bool parseFeatures(YAML::Node node, Element* el) override;
     public:
         bool emit(YAML::Emitter& emitter, Element* el) override;
-        ActivityEdgeParser(map<boost::uuids::uuid, Element*>* elements) : NamedElementParser(elements) {};
+        ActivityEdgeParser(map<boost::uuids::uuid, Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            NamedElementParser(elements, postParsers) {};
 };
 
 #endif

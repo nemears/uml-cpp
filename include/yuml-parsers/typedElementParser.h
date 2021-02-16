@@ -12,7 +12,8 @@ class TypedElementParser : virtual public NamedElementParser {
         bool emitType(YAML::Emitter& emitter, Element* el);
 
     public:
-        TypedElementParser(map<boost::uuids::uuid, Element*>* elements) : NamedElementParser(elements){
+        TypedElementParser(map<boost::uuids::uuid, Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            NamedElementParser(elements, postParsers){
             // this->elements = elements;
         };
 

@@ -46,3 +46,7 @@ bool ObjectNodeParser::emitObjectNode(YAML::Emitter& emitter, Element* el) {
 
     return ret;
 }
+
+ObjectNodeParser ObjectNodeParser::createNewParser() {
+    return ObjectNodeParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
+}

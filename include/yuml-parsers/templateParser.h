@@ -81,8 +81,9 @@ class TemplateParser {
          * @param std::map<boost::uuids:uuid, Element*> elements is a map of key :id, value : element 
          *      containing all elements in the parsed model
          */
-        TemplateParser(map<boost::uuids::uuid, Element*>* elements) {
+        TemplateParser(map<boost::uuids::uuid, Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) {
             this->elements = elements;
+            this->postProcessFlag = postParsers;
         };
 
         virtual bool emit(YAML::Emitter& emitter, Element* el) = 0;

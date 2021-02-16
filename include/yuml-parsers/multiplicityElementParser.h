@@ -11,7 +11,8 @@ class MultiplicityElementParser : virtual public ElementParser {
         bool emitMultiplicity(YAML::Emitter& emitter, Element* el);
     public:
         bool emit(YAML::Emitter& emitter, Element* el) override;
-        MultiplicityElementParser(map<boost::uuids::uuid, Element*>* elements) : ElementParser(elements) {};
+        MultiplicityElementParser(map<boost::uuids::uuid, Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            ElementParser(elements, postParsers) {};
 };
 
 #endif

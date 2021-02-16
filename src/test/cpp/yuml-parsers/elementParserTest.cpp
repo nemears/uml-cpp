@@ -16,16 +16,16 @@ class ElementParserTest : public ::testing::Test {
 
   ElementParserTest() {
     // TODO fix google_test within directory structure
-    ppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>);
+    ppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>, new map<boost::uuids::uuid, PostParser*>);
     node = YAML::LoadFile("../../../../../src/test/yml/elementTests/element.yml");
 
-    invalidIDppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>);
+    invalidIDppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>, new map<boost::uuids::uuid, PostParser*>);
     invalidIDNode = YAML::LoadFile("../../../../../src/test/yml/elementTests/invalidID.yml");
 
-    emptyChildrenppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>);
+    emptyChildrenppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>, new map<boost::uuids::uuid, PostParser*>);
     emptyChildrenNode = YAML::LoadFile("../../../../../src/test/yml/elementTests/emptyChildren.yml");
 
-    emptyChildren2ppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>);
+    emptyChildren2ppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>, new map<boost::uuids::uuid, PostParser*>);
     emptyChildren2Node = YAML::LoadFile("../../../../../src/test/yml/elementTests/emptyChildren2.yml");
   }
 
@@ -79,7 +79,7 @@ TEST_F(ElementParserTest, ParseEmptyChildrenTest) {
 
 TEST_F(ElementParserTest, ThrowInvalidIdentifierExceptionTest) {
   // Setup
-  ModelParser invalidIdentifierTestParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser invalidIdentifierTestParser = ModelParser::createNewParser();
   YAML::Node invalidIdentifierTestNode = YAML::LoadFile("../../../../../src/test/yml/elementTests/invalidIdentifierError.yml");
 
   // Test
@@ -91,7 +91,7 @@ TEST_F(ElementParserTest, ThrowAbstractEmitExceptionTest) {
   Model m;
   Element e;
   m.ownedElements.push_back(&e);
-  ModelParser abstractEmitExceptionParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser abstractEmitExceptionParser = ModelParser::createNewParser();
 
   // Test
   ASSERT_THROW(abstractEmitExceptionParser.emitDocument(&m), ElementParser::AbstractTypeEmitException);
@@ -104,7 +104,7 @@ TEST_F(ElementParserTest, EmitBasicIDTest) {
   string expectedEmit = R""""(model:
   id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35)"""";
   
-  ModelParser mp(new map<boost::uuids::uuid, Element*>);
+  ModelParser mp = ModelParser::createNewParser();
   string generatedEmit;
   YAML::Emitter emitter;
   ASSERT_NO_THROW(mp.emit(emitter, &el));
@@ -127,7 +127,7 @@ TEST_F(ElementParserTest, EmitBasicChildrenOfTypeClass) {
     - class:
         id: c0ab87cc-d00b-4afb-9558-538253b442b2)"""";
 
-  ModelParser mp(new map<boost::uuids::uuid, Element*>);
+  ModelParser mp = ModelParser::createNewParser();
   string generatedEmit;
   YAML::Emitter emitter;
   ASSERT_NO_THROW(mp.emit(emitter, &el));

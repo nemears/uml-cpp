@@ -14,10 +14,10 @@ class NamedElementParserTest : public ::testing::Test {
   // be empty.
 
   NamedElementParserTest() {
-    ppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>);
+    ppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>, new map<boost::uuids::uuid, PostParser*>);
     node = YAML::LoadFile("../../../../../src/test/yml/namedElementTests/namedElement.yml");
 
-    invalidTypeppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>);
+    invalidTypeppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>, new map<boost::uuids::uuid, PostParser*>);
     invalidTypeNode = YAML::LoadFile("../../../../../src/test/yml/namedElementTests/improperType.yml");
   }
 
@@ -60,7 +60,7 @@ TEST_F(NamedElementParserTest, EmitBasicNameTest) {
   name: test
   id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d)"""";
 
-  ModelParser mp(new map<boost::uuids::uuid, Element*>);
+  ModelParser mp = ModelParser::createNewParser();
   YAML::Emitter emitter;
   ASSERT_NO_THROW(mp.emit(emitter, &m));
   cout << emitter.c_str() << '\n';

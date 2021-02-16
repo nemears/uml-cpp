@@ -17,3 +17,7 @@ bool ModelParser::emit(YAML::Emitter& emitter, Element* el) {
     emitter << YAML::EndMap;
     return ret;
 }
+
+ModelParser ModelParser::createNewParser() {
+    return ModelParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
+}

@@ -10,7 +10,8 @@ class PinParser : public ObjectNodeParser, public MultiplicityElementParser {
 
     public:
         bool emit(YAML::Emitter& emitter, Element* el) override;
-        PinParser(map<boost::uuids::uuid, Element*>* elements) : ObjectNodeParser(elements), MultiplicityElementParser(elements) {};
+        PinParser(map<boost::uuids::uuid, Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            ObjectNodeParser(elements, postParsers), MultiplicityElementParser(elements, postParsers) {};
 };
 
 #endif

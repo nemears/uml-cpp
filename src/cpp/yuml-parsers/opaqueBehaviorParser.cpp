@@ -36,3 +36,7 @@ bool OpaqueBehaviorParser::emit(YAML::Emitter& emitter, Element* el) {
 
     return ret;
 }
+
+OpaqueBehaviorParser OpaqueBehaviorParser::createNewParser() {
+    return OpaqueBehaviorParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
+}

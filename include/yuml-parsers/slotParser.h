@@ -19,10 +19,12 @@ class SlotParser : public ElementParser {
         bool parseFeatures(YAML::Node node, UML::Element* el);
 
     public:
-        SlotParser(map<boost::uuids::uuid, UML::Element*>* elements) : ElementParser(elements){
+        SlotParser(map<boost::uuids::uuid, UML::Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            ElementParser(elements, postParsers){
             this->keyword = "slot";
         }
         bool emit(YAML::Emitter& emitter, Element* el);
+        static SlotParser createNewParser();
 };
 
 #endif

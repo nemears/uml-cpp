@@ -15,7 +15,7 @@ class OperationParserTest : public ::testing::Test {
 
 TEST_F(OperationParserTest, ParseInvalidParameterTest) {
   // Setup
-  ModelParser invalidParameterParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser invalidParameterParser = ModelParser::createNewParser();
   YAML::Node invalidParameterNode = YAML::LoadFile("../../../../../src/test/yml/operationTests/invalidParameterList.yml");
 
   // Test
@@ -23,7 +23,7 @@ TEST_F(OperationParserTest, ParseInvalidParameterTest) {
 }
 
 TEST_F(OperationParserTest, ParseInvalidMethodTest) {
-  ModelParser invalidMethodParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser invalidMethodParser = ModelParser::createNewParser();
   YAML::Node invalidMethodNode = YAML::LoadFile("../../../../../src/test/yml/operationTests/invalidMethodList.yml");
 
   EXPECT_THROW(invalidMethodParser.parse(invalidMethodNode), ElementParser::InvalidNodeTypeException);
@@ -31,7 +31,7 @@ TEST_F(OperationParserTest, ParseInvalidMethodTest) {
 
 TEST_F(OperationParserTest, ParseInvalidTypeTest) {
   // Setup
-  ModelParser invalidTypeParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser invalidTypeParser = ModelParser::createNewParser();
   YAML::Node invalidTypeNode = YAML::LoadFile("../../../../../src/test/yml/operationTests/invalidType.yml");
 
   // Test
@@ -56,7 +56,7 @@ TEST_F(OperationParserTest, EmitOperationWithLiteralParameter) {
   c.operations.push_back(&o);
   m.ownedElements.push_back(&c);
 
-  ModelParser emitOperationWithParameterTestParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser emitOperationWithParameterTestParser = ModelParser::createNewParser();
   string expectedEmit = R""""(model:
   id: 190d1cb9-13dc-44e6-a064-126891ae0033
   children:
@@ -99,7 +99,7 @@ TEST_F(OperationParserTest, EmitOperationWithInstanceParameter) {
   m.ownedElements.push_back(&c2);
   m.ownedElements.push_back(&c);
 
-  ModelParser emitOperationWithInstanceParameterTestParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser emitOperationWithInstanceParameterTestParser = ModelParser::createNewParser();
   string expectedEmit = R""""(model:
   id: 190d1cb9-13dc-44e6-a064-126891ae0033
   children:
@@ -140,7 +140,7 @@ TEST_F(OperationParserTest, EmitOperationWithBlankOpaqueBehaviorTest) {
   c.operations.push_back(&o);
   m.ownedElements.push_back(&c);
 
-  ModelParser emitOperationWithBlankOpaqueBehaviorTestParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser emitOperationWithBlankOpaqueBehaviorTestParser = ModelParser::createNewParser();
   string expectedEmit = R""""(model:
   id: 190d1cb9-13dc-44e6-a064-126891ae0033
   children:
@@ -172,7 +172,7 @@ TEST_F(OperationParserTest, EmitAbstractMethodTest) {
   o.methods.push_back(&b);
   c.operations.push_back(&o);
   m.ownedElements.push_back(&c);
-  ModelParser abstractMethodParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser abstractMethodParser = ModelParser::createNewParser();
 
   EXPECT_THROW(abstractMethodParser.emitDocument(&m), ElementParser::AbstractTypeEmitException);
 }

@@ -126,3 +126,7 @@ bool PropertyParser::emit(YAML::Emitter& emitter, Element* el) {
 
     return ret;
 }
+
+PropertyParser PropertyParser::createNewParser() {
+    return PropertyParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
+}

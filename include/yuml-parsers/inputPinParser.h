@@ -7,9 +7,13 @@
 class InputPinParser : public PinParser {
     public:
         Element* createElement() override;
-        InputPinParser(map<boost::uuids::uuid, Element*>* elements) : PinParser(elements), NamedElementParser(elements), ElementParser(elements) {
+        InputPinParser(map<boost::uuids::uuid, Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            PinParser(elements, postParsers), 
+            NamedElementParser(elements, postParsers), 
+            ElementParser(elements, postParsers) {
             this->TypedElementParser::keyword = "inputPin";
         }
+        static InputPinParser createNewParser();
 };
 
 #endif

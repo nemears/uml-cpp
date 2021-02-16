@@ -26,3 +26,7 @@ bool NamespaceParser::emit(YAML::Emitter& emitter, Element* el) {
     }
     return ret;
 }
+
+NamespaceParser NamespaceParser::createNewParser() {
+    return NamespaceParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
+}

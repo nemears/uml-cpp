@@ -27,27 +27,27 @@ bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
         if (node["children"].IsSequence()) {
             for (std::size_t i=0; i<node["children"].size(); i++) {
                 if (node["children"][i]["activity"]) {
-                    ActivityParser activityParser(elements);
+                    ActivityParser activityParser(elements, postProcessFlag);
                     Element* parsedEl = activityParser.parseElement(node["children"][i]["activity"]);
                     el->ownedElements.push_back(parsedEl);
                 } else if (node["children"][i]["class"]) {
-                    ClassParser classParser(elements);
+                    ClassParser classParser(elements, postProcessFlag);
                     Element* parsedEl = classParser.parseElement(node["children"][i]["class"]);
                     el->ownedElements.push_back(parsedEl);
                 } else if (node["children"][i]["instanceSpecification"]){
-                    InstanceSpecificationParser instanceParser(elements);
+                    InstanceSpecificationParser instanceParser(elements, postProcessFlag);
                     Element* parsedEl = instanceParser.parseElement(node["children"][i]["instanceSpecification"]);
                     el->ownedElements.push_back(parsedEl);
                 } else if (node["children"][i]["namespace"]) {
-                    NamespaceParser namespaceParser(elements);
+                    NamespaceParser namespaceParser(elements, postProcessFlag);
                     Element* parsedEl = namespaceParser.parseElement(node["children"][i]["namespace"]);
                     el->ownedElements.push_back(parsedEl);
                 }else if (node["children"][i]["opaqueBehavior"]) {
-                    OpaqueBehaviorParser opaqueBehaviorParser(elements);
+                    OpaqueBehaviorParser opaqueBehaviorParser(elements, postProcessFlag);
                     Element* parsedEl = opaqueBehaviorParser.parseElement(node["children"][i]["opaqueBehavior"]);
                     el->ownedElements.push_back(parsedEl);
                 } else if (node["children"][i]["parameter"]) {
-                    ParameterParser parameterParser(elements);
+                    ParameterParser parameterParser(elements, postProcessFlag);
                     Element* parsedEl = parameterParser.TypedElementParser::parseElement(node["children"][i]["parameter"]);
                     el->ownedElements.push_back(parsedEl);
                 } 
@@ -79,41 +79,41 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
         for (auto const& child: el->ownedElements) {
             switch (child->getElementType()) {
                 case ElementType::ACTIVITY : {
-                    ActivityParser ap(elements);
+                    ActivityParser ap(elements, postProcessFlag);
                     if(!ap.emit(emitter, child)) {
                         return false;
                     }
                 }
                 case ElementType::CLASS : {
-                    ClassParser cp(elements);
+                    ClassParser cp(elements, postProcessFlag);
                     if (!cp.emit(emitter, child)) {
                         return false;
                     }
                     break;
                 }
                 case ElementType::INSTANCE_SPECIFICATION : {
-                    InstanceSpecificationParser ip(elements);
+                    InstanceSpecificationParser ip(elements, postProcessFlag);
                     if (!ip.emit(emitter, child)) {
                         return false;
                     }
                     break;
                 }
                 case ElementType::NAMESPACE : {
-                    NamespaceParser np(elements);
+                    NamespaceParser np(elements, postProcessFlag);
                     if (!np.emit(emitter, child)) {
                         return false;
                     }
                     break;
                 }
                 case ElementType::OPAQUE_BEHAVIOR : {
-                    OpaqueBehaviorParser obp(elements);
+                    OpaqueBehaviorParser obp(elements, postProcessFlag);
                     if (!obp.emit(emitter, child)) {
                         return false;
                     }
                     break;
                 }
                 case ElementType::PARAMETER : {
-                    ParameterParser pp(elements);
+                    ParameterParser pp(elements, postProcessFlag);
                     if (!pp.emit(emitter, child)) {
                         return false;
                     }

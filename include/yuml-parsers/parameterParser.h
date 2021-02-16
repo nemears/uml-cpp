@@ -14,10 +14,15 @@ class ParameterParser : public TypedElementParser, public MultiplicityElementPar
         bool parseFeatures(YAML::Node node, Element* el);
 
     public:
-        ParameterParser(map<boost::uuids::uuid, Element*>* elements) : TypedElementParser(elements), MultiplicityElementParser(elements), NamedElementParser(elements), ElementParser(elements) {
+        ParameterParser(map<boost::uuids::uuid, Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            TypedElementParser(elements, postParsers), 
+            MultiplicityElementParser(elements, postParsers), 
+            NamedElementParser(elements, postParsers), 
+            ElementParser(elements, postParsers) {
             this->TypedElementParser::keyword = "parameter";
         }
         bool emit(YAML::Emitter& emitter, Element* el);
+        static ParameterParser createNewParser();
 };
 
 #endif

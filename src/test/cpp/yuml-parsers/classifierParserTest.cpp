@@ -15,7 +15,7 @@ class ClassifierParserTest : public ::testing::Test {
   // be empty.
 
   ClassifierParserTest() {
-    pp2 = new ModelParser(new map<boost::uuids::uuid, Element*>);
+    pp2 = new ModelParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
     modelNode = YAML::LoadFile("../../../../../src/test/yml/classifierTests/classifier.yml");
     // TODO fix google_test within directory structure
   }
@@ -45,7 +45,7 @@ TEST_F(ClassifierParserTest, ParseAttributesTest) {
 
 TEST_F(ClassifierParserTest, ParseAttributesNotSequenceTest) {
   // Setup
-  ModelParser attributesNotSequenceParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser attributesNotSequenceParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
   YAML::Node attributesNotSequenceNode = YAML::LoadFile("../../../../../src/test/yml/classifierTests/invalidAttributes.yml");
 
   // Test
@@ -71,7 +71,7 @@ TEST_F(ClassifierParserTest, EmitSingleBasicAttributeTest) {
           - property:
               id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d)"""";
 
-  ModelParser mp(new map<boost::uuids::uuid, Element*>);
+  ModelParser mp = ModelParser::createNewParser();
   string generatedEmit;
   YAML::Emitter emitter;
   ASSERT_NO_THROW(mp.emit(emitter, &el));

@@ -10,7 +10,7 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["inputs"]) {
         if (node["inputs"].IsSequence()) {
             for (std::size_t i=0; i<node["inputs"].size(); i++) {
-                InputPinParser ip(elements);
+                InputPinParser ip(elements, postProcessFlag);
                 Element* parsedEl = ip.TypedElementParser::parseElement(node["inputs"][i]);
                 dynamic_cast<Action*>(el)->inputs.push_back(dynamic_cast<InputPin*>(parsedEl));
             }
@@ -22,7 +22,7 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["outputs"]) {
         if (node["outputs"].IsSequence()) {
             for (std::size_t i=0; i<node["inputs"].size(); i++) {
-                OutputPinParser op(elements);
+                OutputPinParser op(elements, postProcessFlag);
                 Element* parsedEl = op.TypedElementParser::parseElement(node["outputs"][i]);
                 dynamic_cast<Action*>(el)->outputs.push_back(dynamic_cast<OutputPin*>(parsedEl));
             }
@@ -44,14 +44,14 @@ bool ActionParser::emit(YAML::Emitter& emitter, Element* el) {
 
     if (!dynamic_cast<Action*>(el)->inputs.empty()) {
         for (auto const& input : dynamic_cast<Action*>(el)->inputs) {
-            InputPinParser ip(elements);
+            InputPinParser ip(elements, postProcessFlag);
             ip.emit(emitter, input);
         }
     }
 
     if (!dynamic_cast<Action*>(el)->outputs.empty()) {
         for (auto const& output : dynamic_cast<Action*>(el)->outputs) {
-            OutputPinParser op(elements);
+            OutputPinParser op(elements, postProcessFlag);
             op.emit(emitter, output);
         }
     }
@@ -64,4 +64,8 @@ bool ActionParser::emit(YAML::Emitter& emitter, Element* el) {
     }
 
     return ret;
+}
+
+ActionParser ActionParser::createNewParser() {
+    return ActionParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
 }

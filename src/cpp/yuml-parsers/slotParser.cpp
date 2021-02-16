@@ -141,3 +141,7 @@ bool SlotParser::emit(YAML::Emitter& emitter, Element* el) {
 
     return ret;
 }
+
+SlotParser SlotParser::createNewParser() {
+    return SlotParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
+}

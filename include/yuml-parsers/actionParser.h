@@ -13,9 +13,12 @@ class ActionParser : public ActivityNodeParser {
     public:
         Element* createElement() override;
         bool emit(YAML::Emitter& emitter, Element* el) override;
-        ActionParser(map<boost::uuids::uuid, Element*>* elements) : ActivityNodeParser(elements) , NamedElementParser(elements){
+        ActionParser(map<boost::uuids::uuid, Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            ActivityNodeParser(elements, postParsers), 
+            NamedElementParser(elements, postParsers){
             this->keyword = "action";
         };
+        static ActionParser createNewParser();
 };
 
 #endif

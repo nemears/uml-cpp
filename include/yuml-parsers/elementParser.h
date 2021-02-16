@@ -9,7 +9,8 @@ class ElementParser : public TemplateParser {
     protected:
         bool parseFeatures(YAML::Node node, UML::Element* el) override;
     public:
-        ElementParser(map<boost::uuids::uuid, UML::Element*>* elements) : TemplateParser(elements) {
+        ElementParser(map<boost::uuids::uuid, UML::Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            TemplateParser(elements, postParsers) {
             
         };
 

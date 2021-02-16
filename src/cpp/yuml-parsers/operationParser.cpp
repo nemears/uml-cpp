@@ -9,7 +9,7 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["parameters"]) {
         if (node["parameters"].IsSequence()) {
             for (std::size_t i=0; i<node["parameters"].size(); i++) {
-                ParameterParser parameterParser(elements);
+                ParameterParser parameterParser(elements, postProcessFlag);
                 Element* parsedEl = parameterParser.TypedElementParser::parseElement(node["parameters"][i]["parameter"]);
                 dynamic_cast<Operation*>(el)->parameters.push_back(dynamic_cast<Parameter*>(parsedEl));
             }
@@ -23,11 +23,11 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
         if (node["methods"].IsSequence()) {
             for (std::size_t i=0; i<node["methods"].size(); i++) {
                 if (node["methods"][i]["activity"]) {
-                    ActivityParser activityParser(elements);
+                    ActivityParser activityParser(elements, postProcessFlag);
                     Element* parsedEl = activityParser.parseElement(node["methods"][i]["activity"]);
                     dynamic_cast<Operation*>(el)->methods.push_back(dynamic_cast<Activity*>(parsedEl));
                 } else if (node["methods"][i]["opaqueBehavior"]) {
-                    OpaqueBehaviorParser opaqueBehaviorParser(elements);
+                    OpaqueBehaviorParser opaqueBehaviorParser(elements, postProcessFlag);
                     Element* parsedEl = opaqueBehaviorParser.parseElement(node["methods"][i]["opaqueBehavior"]);
                     dynamic_cast<Operation*>(el)->methods.push_back(dynamic_cast<OpaqueBehavior*>(parsedEl));
                 }
@@ -90,7 +90,7 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Key << "parameters";
         emitter << YAML::Value << YAML::BeginSeq;
         for (auto const& parameter: dynamic_cast<Operation*>(el)->parameters) {
-            ParameterParser pp(elements);
+            ParameterParser pp(elements, postProcessFlag);
             if (!pp.emit(emitter, parameter)) {
                 return false;
             }
@@ -104,14 +104,14 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
         for (auto const& method: dynamic_cast<Operation*>(el)->methods) {
             switch(method->getElementType()) {
                 case ElementType::ACTIVITY : {
-                    ActivityParser ap(elements);
+                    ActivityParser ap(elements, postProcessFlag);
                     if (!ap.emit(emitter, method)) {
                         return false;
                     }
                     break;
                 }
                 case ElementType::OPAQUE_BEHAVIOR : {
-                    OpaqueBehaviorParser op(elements);
+                    OpaqueBehaviorParser op(elements, postProcessFlag);
                     if (!op.emit(emitter, method)) {
                         return false;
                     }
@@ -161,4 +161,8 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
     }
 
     return ret;
+}
+
+OperationParser OperationParser::createNewParser() {
+    return OperationParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
 }

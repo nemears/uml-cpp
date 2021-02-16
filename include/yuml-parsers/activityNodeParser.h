@@ -10,9 +10,8 @@ class ActivityNodeParser : virtual public NamedElementParser {
         bool parseActivityNodeFeatures(YAML::Node node, Element* el);
         bool emitActivityNode(YAML::Emitter& emitter, Element* el);
     public:
-        ActivityNodeParser(map<boost::uuids::uuid, UML::Element*>* elements) : NamedElementParser(elements){
-            
-        };
+        ActivityNodeParser(map<boost::uuids::uuid, UML::Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            NamedElementParser(elements, postParsers){};
 
         bool emit(YAML::Emitter& emitter, Element* el) override;
         static void addIncomingEdgeLater(Element* activityNode, Element* incomingEdge) {

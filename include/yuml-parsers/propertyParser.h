@@ -18,11 +18,16 @@ class PropertyParser : public TypedElementParser, public MultiplicityElementPars
         bool parseFeatures(YAML::Node node, UML::Element* el) override;
 
     public:
-        PropertyParser(map<boost::uuids::uuid, UML::Element*>* elements) : TypedElementParser(elements) , MultiplicityElementParser(elements), NamedElementParser(elements), ElementParser(elements) {
+        PropertyParser(map<boost::uuids::uuid, UML::Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            TypedElementParser(elements, postParsers), 
+            MultiplicityElementParser(elements, postParsers), 
+            NamedElementParser(elements, postParsers), 
+            ElementParser(elements, postParsers) {
             this->TypedElementParser::keyword = "property";
             // this->elements = elements;
         }
 
         bool emit(YAML::Emitter& emitter, Element* el) override;
+        static PropertyParser createNewParser();
 };
 #endif

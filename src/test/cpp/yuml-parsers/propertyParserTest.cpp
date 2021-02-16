@@ -20,7 +20,7 @@ class PropertyParserTest : public ::testing::Test {
   // be empty.
 
   void SetUp() override {
-    ppDefaultValue = new ModelParser(new map<boost::uuids::uuid, Element*>);
+    ppDefaultValue = new ModelParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
     defaultValueNode = YAML::LoadFile("../../../../../src/test/yml/propertyTests/defaultValue.yml");
   }
 
@@ -67,7 +67,7 @@ TEST_F(PropertyParserTest, defaultLiteralValueTest) {
 
 TEST_F(PropertyParserTest, InstanceValueDefaultValueTest) {
   // Setup
-  ModelParser instanceValueTestParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser instanceValueTestParser = ModelParser::createNewParser();
   YAML::Node instanceValueTestNode = YAML::LoadFile("../../../../../src/test/yml/propertyTests/defaultInstanceValue.yml");
   ASSERT_NO_THROW(instanceValueTestParser.parse(instanceValueTestNode));
 
@@ -102,7 +102,7 @@ TEST_F(PropertyParserTest, EmitLiteralDefaultValue) {
   c.ownedAttributes.push_back(&p);
   m.ownedElements.push_back(&c);
 
-  ModelParser emitLiteralDefaultValueParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser emitLiteralDefaultValueParser = ModelParser::createNewParser();
   string expectedEmit = R""""(model:
   id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
   children:
@@ -145,7 +145,7 @@ TEST_F(PropertyParserTest, EmitInstanceValueTest) {
   m.ownedElements.push_back(&i);
   m.ownedElements.push_back(&c);
 
-  ModelParser emitInstanceDefaultValueParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser emitInstanceDefaultValueParser = ModelParser::createNewParser();
   string expectedEmit = R""""(model:
   id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
   children:

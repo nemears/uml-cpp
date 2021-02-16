@@ -12,7 +12,7 @@ bool ClassParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["operations"]) {
         if (node["operations"].IsSequence()) {
             for (std::size_t i=0; i<node["operations"].size(); i++) {
-                OperationParser operationParser(elements);
+                OperationParser operationParser(elements, postProcessFlag);
                 Element* parsedEl = operationParser.parseElement(node["operations"][i]["operation"]);
                 dynamic_cast<Class*>(el)->operations.push_back(dynamic_cast<Operation*>(parsedEl));
             }
@@ -37,7 +37,7 @@ bool ClassParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Key << "operations";
         emitter << YAML::BeginSeq;
         for (auto const& operation: dynamic_cast<Class*>(el)->operations) {
-            OperationParser op(elements);
+            OperationParser op(elements, postProcessFlag);
             if (!op.emit(emitter, operation)) {
                 return false;
             }
@@ -51,4 +51,8 @@ bool ClassParser::emit(YAML::Emitter& emitter, Element* el) {
     }
 
     return ret;
+}
+
+ClassParser ClassParser::createNewParser() {
+    return ClassParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
 }

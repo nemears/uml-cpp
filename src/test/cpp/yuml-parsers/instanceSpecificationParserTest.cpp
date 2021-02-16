@@ -17,10 +17,10 @@ class InstanceSpecificationParserTest : public ::testing::Test {
   // be empty.
 
   void SetUp() override {
-    ppInstanceSpecification = new ModelParser(new map<boost::uuids::uuid, Element*>);
+    ppInstanceSpecification = new ModelParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
     instanceSpecificationNode = YAML::LoadFile("../../../../../src/test/yml/instanceSpecificationTests/primitiveSlot.yml");
 
-    ppInstanceValue = new ModelParser(new map<boost::uuids::uuid, Element*>);
+    ppInstanceValue = new ModelParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
     instanceValueNode = YAML::LoadFile("../../../../../src/test/yml/instanceSpecificationTests/instanceSlot.yml");
   }
 
@@ -66,7 +66,7 @@ TEST_F(InstanceSpecificationParserTest, InstanceSlotTest) {
 
 TEST_F(InstanceSpecificationParserTest, ParseInvalidClassifierID_Test) {
   // Setup
-  ModelParser invalidClassifierParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser invalidClassifierParser = ModelParser::createNewParser();
   YAML::Node invalidClassifierNode = YAML::LoadFile("../../../../../src/test/yml/instanceSpecificationTests/invalidClassifier.yml");
 
   // test
@@ -85,7 +85,7 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithClassifierTest) {
   m.ownedElements.push_back(&c);
   m.ownedElements.push_back(&i);
 
-  ModelParser emitInstanceWithClassTestParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser emitInstanceWithClassTestParser = ModelParser::createNewParser();
   string expectedEmit = R""""(model:
   id: 190d1cb9-13dc-44e6-a064-126891ae0033
   children:
@@ -129,7 +129,7 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithLiteralSlotsTest) {
   m.ownedElements.push_back(&c);
   m.ownedElements.push_back(&i);
 
-  ModelParser emitInstanceWithLiteralSlotTestParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser emitInstanceWithLiteralSlotTestParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
   string expectedEmit = R""""(model:
   id: 190d1cb9-13dc-44e6-a064-126891ae0033
   children:
@@ -191,7 +191,7 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithInstanceSlotTest) {
   m.ownedElements.push_back(&i);
   m.ownedElements.push_back(&i2);
 
-  ModelParser emitInstanceWithClassTestParser(new map<boost::uuids::uuid, Element*>);
+  ModelParser emitInstanceWithClassTestParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
   string expectedEmit = R""""(model:
   id: 190d1cb9-13dc-44e6-a064-126891ae0033
   children:

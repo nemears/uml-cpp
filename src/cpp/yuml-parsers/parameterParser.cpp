@@ -74,3 +74,7 @@ bool ParameterParser::emit(YAML::Emitter& emitter, Element* el) {
 
     return ret;
 }
+
+ParameterParser ParameterParser::createNewParser() {
+    return ParameterParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
+}

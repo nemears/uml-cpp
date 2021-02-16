@@ -11,11 +11,13 @@ class InstanceSpecificationParser : public NamedElementParser {
         bool parseFeatures(YAML::Node node, UML::Element* el);
 
     public:
-        InstanceSpecificationParser(map<boost::uuids::uuid, UML::Element*>* elements) : NamedElementParser(elements){
-
+        InstanceSpecificationParser(map<boost::uuids::uuid, UML::Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            NamedElementParser(elements, postParsers){
+                keyword = "instanceSpecification";
         };
 
         bool emit(YAML::Emitter& emitter, Element* el);
+        static InstanceSpecificationParser createNewParser();
 };
 
 #endif

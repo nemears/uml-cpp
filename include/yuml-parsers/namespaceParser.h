@@ -9,11 +9,13 @@ class NamespaceParser : public NamedElementParser {
         UML::Element* createElement();
         virtual bool parseFeatures(YAML::Node node, UML::Element* el);
     public:
-        NamespaceParser(map<boost::uuids::uuid, UML::Element*>* elements) : NamedElementParser(elements){
+        NamespaceParser(map<boost::uuids::uuid, UML::Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+            NamedElementParser(elements, postParsers){
             keyword = "namespace";
         };
 
         bool emit(YAML::Emitter& emitter, Element* el);
+        static NamespaceParser createNewParser();
 };
 
 #endif

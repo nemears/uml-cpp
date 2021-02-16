@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
             YAML::Node node = YAML::LoadFile(argv[1]);
             string fileName = argv[1];
             cout << "parsing file " << fileName << "\n";
-            ModelParser pp(new map<boost::uuids::uuid, UML::Element*>);
+            ModelParser pp = ModelParser::createNewParser();
             try {
                 if(!pp.parse(node)) {
                     cerr << "[FATAL ERROR] could not parse " << fileName << endl;

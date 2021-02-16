@@ -10,7 +10,7 @@ class ControlFlowParserTest : public ::testing::Test {
 
 TEST_F(ControlFlowParserTest, ActionToActionFlowTest) {
     // Setup
-    ModelParser actionToActionFlowParser(new map<boost::uuids::uuid, Element*>);
+    ModelParser actionToActionFlowParser = ModelParser::createNewParser();
     YAML::Node actionToActionFlowNode = YAML::LoadFile("../../../../../src/test/yml/controlFlowTests/actionToAction.yml");
 
     // Test

@@ -15,6 +15,12 @@ class ActivityNodeParser : virtual public NamedElementParser {
         };
 
         bool emit(YAML::Emitter& emitter, Element* el) override;
+        static void addIncomingEdgeLater(Element* activityNode, Element* incomingEdge) {
+            dynamic_cast<ActivityNode*>(activityNode)->incoming.push_back(dynamic_cast<ActivityEdge*>(incomingEdge));
+        }
+        static void addOutgoingEdgeLater(Element* activityNode, Element* outgoingEdge) {
+            dynamic_cast<ActivityNode*>(activityNode)->outgoing.push_back(dynamic_cast<ActivityEdge*>(outgoingEdge));
+        }
 };
 
 #endif

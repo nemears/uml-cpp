@@ -11,6 +11,11 @@
 using namespace std;
 using namespace UML;
 
+typedef struct {
+    boost::uuids::uuid otherEl;
+    list<void (*)(Element*, Element*)> applyOnEl;
+} PostParser;
+
 /**
  * This class sets up the variables and methods for all of the yuml-parsers
  * based off of yml configuration files
@@ -33,6 +38,10 @@ class TemplateParser {
          **/
         virtual bool parseFeatures(YAML::Node node, Element* el) = 0;
 
+        /**
+         * This is a map that just holds postParsing info to be called on element after instantiation
+         **/
+        map<boost::uuids::uuid, PostParser*>* postProcessFlag;
     public:
         /**
          * The keyword to parse for relevant to this parser note: will only appear if it can be defined,

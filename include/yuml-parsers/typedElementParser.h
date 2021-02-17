@@ -18,5 +18,8 @@ class TypedElementParser : virtual public NamedElementParser {
         };
 
         bool emit(YAML::Emitter& emitter, Element* el) override;
+        static void setTypeLater(Element* el1, Element* el2) {
+            dynamic_cast<TypedElement*>(el1)->setType(dynamic_cast<Type*>(el2));
+        }
 };
 #endif

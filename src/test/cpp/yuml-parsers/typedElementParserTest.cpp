@@ -29,6 +29,7 @@ class TypedElementParserTest : public ::testing::Test {
 
   void TearDown() override {
     delete ppYAML->elements;
+    delete ppYAML->postProcessFlag;
     delete ppYAML;
   }
 

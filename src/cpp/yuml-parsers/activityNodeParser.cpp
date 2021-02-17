@@ -2,9 +2,9 @@
 
 bool ActivityNodeParser::parseFeatures(YAML::Node node, Element* el) {
     
-    bool ret = parseActivityNodeFeatures(node, el);
+    bool ret = NamedElementParser::parseFeatures(node, el);
 
-    if (!NamedElementParser::parseFeatures(node, el)) {
+    if (!parseActivityNodeFeatures(node, el)) {
         ret = false;
     }
 
@@ -27,12 +27,13 @@ bool ActivityNodeParser::parseActivityNodeFeatures(YAML::Node node, Element* el)
 
                         // check if struct created
                         if ((*postProcessFlag)[incomingId] == 0) {
-                            list<void(*)(Element*, Element*)> fList;
-                            PostParser postParser {incomingId, fList};
-                            (*postProcessFlag)[incomingId] = &postParser;
+                            list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;;
+                            PostParser* postParser  =  new PostParser{el->uuid, *fList};
+                            (*postProcessFlag)[incomingId] = postParser;
                         } 
 
                         // add flag with function pointer
+                        //list<void(*)(Element*, Element*)> funList = (*postProcessFlag)[incomingId]->applyOnEl;
                         (*postProcessFlag)[incomingId]->applyOnEl.push_back(&ActivityNodeParser::addIncomingEdgeLater);
                         continue;
                     }
@@ -63,12 +64,13 @@ bool ActivityNodeParser::parseActivityNodeFeatures(YAML::Node node, Element* el)
 
                         // check if struct created
                         if ((*postProcessFlag)[outgoingId] == 0) {
-                            list<void(*)(Element*, Element*)> fList;
-                            PostParser postParser {outgoingId, fList};
-                            (*postProcessFlag)[outgoingId] = &postParser;
+                            list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;
+                            PostParser* postParser = new PostParser{el->uuid, *fList};
+                            (*postProcessFlag)[outgoingId] = postParser;
                         } 
 
                         // add flag with function pointer
+                        //list<void(*)(Element*, Element*)> funList = (*postProcessFlag)[outgoingId]->applyOnEl;
                         (*postProcessFlag)[outgoingId]->applyOnEl.push_back(&ActivityNodeParser::addOutgoingEdgeLater);
                         continue;
                     }

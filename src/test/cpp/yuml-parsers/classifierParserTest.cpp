@@ -31,6 +31,7 @@ class ClassifierParserTest : public ::testing::Test {
 
   void TearDown() override {
     delete pp2->elements;
+    delete pp2->postProcessFlag;
     delete pp2;
   }
 

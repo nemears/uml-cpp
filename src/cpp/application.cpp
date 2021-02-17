@@ -23,6 +23,8 @@ int main(int argc, char** argv) {
                 cerr << "[FATAL ERROR] " << e.what() << endl;
             }
 
+            ModelParser::deleteParser(&pp);
+
             // TODO print model
             YAML::Emitter emitter;
             try {

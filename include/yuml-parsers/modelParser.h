@@ -18,5 +18,6 @@ class ModelParser : public NamespaceParser {
 
         bool emit(YAML::Emitter& emitter, Element* el);
         static ModelParser createNewParser();
+        static void deleteParser(TemplateParser* parser);
 };
 #endif

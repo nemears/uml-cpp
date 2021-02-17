@@ -38,10 +38,6 @@ class TemplateParser {
          **/
         virtual bool parseFeatures(YAML::Node node, Element* el) = 0;
 
-        /**
-         * This is a map that just holds postParsing info to be called on element after instantiation
-         **/
-        map<boost::uuids::uuid, PostParser*>* postProcessFlag;
     public:
         /**
          * The keyword to parse for relevant to this parser note: will only appear if it can be defined,
@@ -53,6 +49,11 @@ class TemplateParser {
          * The map of elements parsed within the document so far, key is uuid of element, value is the element of interest
          **/
         map<boost::uuids::uuid, Element*>* elements;
+
+        /**
+         * This is a map that just holds postParsing info to be called on element after instantiation
+         **/
+        map<boost::uuids::uuid, PostParser*>* postProcessFlag;
 
         /**
          * The public method to begin parsing a document. The node should be the root node of the document,

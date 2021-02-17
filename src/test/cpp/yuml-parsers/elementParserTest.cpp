@@ -39,12 +39,16 @@ class ElementParserTest : public ::testing::Test {
 
   void TearDown() override {
     delete ppYAML->elements;
+    delete ppYAML->postProcessFlag;
     delete ppYAML;
     delete invalidIDppYAML->elements;
+    delete invalidIDppYAML->postProcessFlag;
     delete invalidIDppYAML;
     delete emptyChildrenppYAML->elements;
+    delete emptyChildrenppYAML->postProcessFlag;
     delete emptyChildrenppYAML;
     delete emptyChildren2ppYAML->elements;
+    delete emptyChildren2ppYAML->postProcessFlag;
     delete emptyChildren2ppYAML;
   }
 

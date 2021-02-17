@@ -26,6 +26,7 @@ class PropertyParserTest : public ::testing::Test {
 
   void TearDown() override {
     delete ppDefaultValue->elements;
+    delete ppDefaultValue->postProcessFlag;
     delete ppDefaultValue;
   }
 

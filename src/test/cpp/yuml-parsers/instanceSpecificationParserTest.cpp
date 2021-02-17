@@ -26,6 +26,7 @@ class InstanceSpecificationParserTest : public ::testing::Test {
 
   void TearDown() override {
     delete ppInstanceSpecification->elements;
+    delete ppInstanceSpecification->postProcessFlag;
     delete ppInstanceSpecification;
   }
 

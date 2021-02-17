@@ -20,7 +20,9 @@ Element* TemplateParser::parseElement(YAML::Node node) {
     // backwards parsing
     if ((*postProcessFlag)[el->uuid]) {
         for (auto const& fun : (*postProcessFlag)[el->uuid]->applyOnEl) {
-            (*fun)((*elements)[el->uuid], (*elements)[(*postProcessFlag)[el->uuid]->otherEl]);
+            Element* me = (*elements)[el->uuid];
+            Element* someoneWhoNeedsMe = (*elements)[(*postProcessFlag)[el->uuid]->otherEl];
+            (*fun)(someoneWhoNeedsMe, me);
         }
     }
 

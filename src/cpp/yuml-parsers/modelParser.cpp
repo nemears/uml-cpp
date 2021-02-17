@@ -21,3 +21,8 @@ bool ModelParser::emit(YAML::Emitter& emitter, Element* el) {
 ModelParser ModelParser::createNewParser() {
     return ModelParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
 }
+
+void ModelParser::deleteParser(TemplateParser* parser) {
+    delete parser->elements;
+    delete parser->postProcessFlag;
+}

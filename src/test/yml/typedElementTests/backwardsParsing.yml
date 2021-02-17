@@ -1,0 +1,10 @@
+---
+  model:
+    children:
+      - class:
+          id: 190d1cb9-13dc-44e6-a064-126891ae0033
+          attributes:
+            - property:
+                type: "7d18ee42-82c6-4f52-8ec4-fab67a75ff35"
+      - class:
+          id: "7d18ee42-82c6-4f52-8ec4-fab67a75ff35"

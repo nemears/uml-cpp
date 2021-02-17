@@ -131,3 +131,18 @@ TEST_F(TypedElementParserTest, EmitAttributesOfClassiferTypeTest) {
   ASSERT_TRUE(emitter.good());
   ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(TypedElementParserTest, BackwardsParsingTest) {
+  // Setup
+  ModelParser backwardsParsingParser = ModelParser::createNewParser();
+  YAML::Node backwardsParsingNode = YAML::LoadFile("../../../../../src/test/yml/typedElementTests/backwardsParsing.yml");
+
+  // Test
+  ASSERT_NO_THROW(backwardsParsingParser.parse(backwardsParsingNode));
+  ASSERT_TRUE(backwardsParsingParser.theEl->ownedElements.size() == 2);
+  ASSERT_TRUE(backwardsParsingParser.theEl->ownedElements.front()->uuid == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
+  ASSERT_TRUE(backwardsParsingParser.theEl->ownedElements.front()->getElementType() == ElementType::CLASS);
+  ASSERT_TRUE(dynamic_cast<Class*>(backwardsParsingParser.theEl->ownedElements.front())->ownedAttributes.size() == 1);
+  ASSERT_TRUE(dynamic_cast<Class*>(backwardsParsingParser.theEl->ownedElements.front())->ownedAttributes.front()->getType() != NULL);
+  ASSERT_TRUE(dynamic_cast<Class*>(backwardsParsingParser.theEl->ownedElements.front())->ownedAttributes.front()->getType()->uuid == backwardsParsingParser.theEl->ownedElements.back()->uuid);
+}

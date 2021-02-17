@@ -1,6 +1,4 @@
 #include "yuml-parsers/instanceSpecificationParser.h"
-#include "uml/instanceSpecification.h"
-#include "yuml-parsers/slotParser.h"
 
 Element* InstanceSpecificationParser::createElement() {
     return new InstanceSpecification;
@@ -12,8 +10,27 @@ bool InstanceSpecificationParser::parseFeatures(YAML::Node node, Element* el) {
         string parsedId = node["classifier"].as<string>();
         if (UML::isValidUUID4(parsedId)) {
             boost::uuids::uuid classifierId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
-            Classifier* instClassifier = dynamic_cast<Classifier*>((*elements)[classifierId]);
-            dynamic_cast<InstanceSpecification*>(el)->setClassifier(instClassifier);
+
+            // check if null
+            // if null we make a flag for backwards parsing
+            if((*elements)[classifierId] == 0) {
+
+                // check if struct created
+                if ((*postProcessFlag)[classifierId] == 0) {
+                    list<boost::uuids::uuid>* eList = new list<boost::uuids::uuid>;
+                    list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;;
+                    PostParser* postParser  =  new PostParser{*eList, *fList};
+                    (*postProcessFlag)[classifierId] = postParser;
+                } 
+
+                // add flag with function pointer
+                (*postProcessFlag)[classifierId]->otherEls.push_back(el->uuid);
+                (*postProcessFlag)[classifierId]->applyOnEl.push_back(&InstanceSpecificationParser::setClassifierLater);
+            } else {
+                Classifier* instClassifier = dynamic_cast<Classifier*>((*elements)[classifierId]);
+                dynamic_cast<InstanceSpecification*>(el)->setClassifier(instClassifier);
+            }
+            
         } else {
             // error
             throw el->invalidID_Exception;

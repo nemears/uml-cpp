@@ -1,6 +1,8 @@
 #ifndef INSTANCESPECIFICATIONPARSER
 #define INSTANCESPECIFICATIONPARSER
 #include "namedElementParser.h"
+#include "uml/instanceSpecification.h"
+#include "yuml-parsers/slotParser.h"
 
 using namespace std;
 using namespace UML;
@@ -18,6 +20,9 @@ class InstanceSpecificationParser : public NamedElementParser {
 
         bool emit(YAML::Emitter& emitter, Element* el);
         static InstanceSpecificationParser createNewParser();
+        static void setClassifierLater(Element* inst, Element* classifier) {
+            dynamic_cast<InstanceSpecification*>(inst)->setClassifier(dynamic_cast<Classifier*>(classifier));
+        }
 };
 
 #endif

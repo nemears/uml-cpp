@@ -28,6 +28,11 @@ class SlotParser : public ElementParser {
         static void setDefiningFeatureLater(Element* slot, Element* definingFeature) {
             dynamic_cast<Slot*>(slot)->setDefiningFeature(dynamic_cast<StructuralFeature*>(definingFeature));
         }
+        static void setInstanceValueLater(Element* slot, Element* value) {
+            InstanceValue* iv = new InstanceValue;
+            iv->setInstance(dynamic_cast<InstanceSpecification*>(value));
+            dynamic_cast<Slot*>(slot)->values.push_back(iv);
+        }
 };
 
 #endif

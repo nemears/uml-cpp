@@ -83,12 +83,31 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
                 if (UML::isValidUUID4(parsedId)) {
                     boost::uuids::uuid valueId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-                    InstanceSpecification* value = dynamic_cast<InstanceSpecification*>((*elements)[valueId]);
+                    // check if null
+                    // if null we make a flag for backwards parsing
+                    if((*elements)[valueId] == 0) {
 
-                    InstanceValue* instVal = new InstanceValue();
-                    instVal->setInstance(value);
+                        // check if struct created
+                        if ((*postProcessFlag)[valueId] == 0) {
+                            list<boost::uuids::uuid>* eList = new list<boost::uuids::uuid>;
+                            list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;;
+                            PostParser* postParser  =  new PostParser{*eList, *fList};
+                            (*postProcessFlag)[valueId] = postParser;
+                        } 
 
-                    ((Slot*)el)->values.push_back(instVal);
+                        // add flag with function pointer
+                        (*postProcessFlag)[valueId]->otherEls.push_back(el->uuid);
+                        (*postProcessFlag)[valueId]->applyOnEl.push_back(&SlotParser::setInstanceValueLater);
+                    } else {
+                        // set the definingFeature
+                        InstanceSpecification* value = dynamic_cast<InstanceSpecification*>((*elements)[valueId]);
+
+                        InstanceValue* instVal = new InstanceValue();
+                        instVal->setInstance(value);
+
+                        ((Slot*)el)->values.push_back(instVal);
+                    }
+                    
                 }
             }
         } else {

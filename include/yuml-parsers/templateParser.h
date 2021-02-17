@@ -12,7 +12,7 @@ using namespace std;
 using namespace UML;
 
 typedef struct {
-    boost::uuids::uuid otherEl;
+    list<boost::uuids::uuid> otherEls;
     list<void (*)(Element*, Element*)> applyOnEl;
 } PostParser;
 

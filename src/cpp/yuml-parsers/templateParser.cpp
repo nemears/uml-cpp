@@ -19,10 +19,12 @@ Element* TemplateParser::parseElement(YAML::Node node) {
     
     // backwards parsing
     if ((*postProcessFlag)[el->uuid]) {
+        list<boost::uuids::uuid>::iterator elIt = (*postProcessFlag)[el->uuid]->otherEls.begin();
         for (auto const& fun : (*postProcessFlag)[el->uuid]->applyOnEl) {
             Element* me = (*elements)[el->uuid];
-            Element* someoneWhoNeedsMe = (*elements)[(*postProcessFlag)[el->uuid]->otherEl];
+            Element* someoneWhoNeedsMe = (*elements)[(*elIt)];
             (*fun)(someoneWhoNeedsMe, me);
+            ++elIt;
         }
 
         delete (*postProcessFlag)[el->uuid];

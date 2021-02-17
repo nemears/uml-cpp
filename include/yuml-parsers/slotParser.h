@@ -25,6 +25,9 @@ class SlotParser : public ElementParser {
         }
         bool emit(YAML::Emitter& emitter, Element* el);
         static SlotParser createNewParser();
+        static void setDefiningFeatureLater(Element* slot, Element* definingFeature) {
+            dynamic_cast<Slot*>(slot)->setDefiningFeature(dynamic_cast<StructuralFeature*>(definingFeature));
+        }
 };
 
 #endif

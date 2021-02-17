@@ -24,6 +24,8 @@ Element* TemplateParser::parseElement(YAML::Node node) {
             Element* someoneWhoNeedsMe = (*elements)[(*postProcessFlag)[el->uuid]->otherEl];
             (*fun)(someoneWhoNeedsMe, me);
         }
+
+        delete (*postProcessFlag)[el->uuid];
     }
 
     return el;

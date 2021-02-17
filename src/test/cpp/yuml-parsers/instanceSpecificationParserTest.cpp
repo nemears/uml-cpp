@@ -224,3 +224,17 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithInstanceSlotTest) {
   ASSERT_TRUE(emitter.good());
   ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(InstanceSpecificationParserTest, BackwardsClassifierTest) {
+  // Setup
+  ModelParser backwardsClassifierParser = ModelParser::createNewParser();
+  YAML::Node backwardsClassifierNode = YAML::LoadFile("../../../../../src/test/yml/instanceSpecificationTests/backwardsClassifier.yml");
+
+  // Test
+  ASSERT_NO_THROW(backwardsClassifierParser.parse(backwardsClassifierNode));
+  ASSERT_TRUE(backwardsClassifierParser.theEl->ownedElements.size() == 2);
+  ASSERT_TRUE(backwardsClassifierParser.theEl->ownedElements.back()->uuid == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
+  ASSERT_TRUE(backwardsClassifierParser.theEl->ownedElements.front()->getElementType() == ElementType::INSTANCE_SPECIFICATION);
+  ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsClassifierParser.theEl->ownedElements.front())->getClassifier() != NULL);
+  ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsClassifierParser.theEl->ownedElements.front())->getClassifier()->uuid == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
+}

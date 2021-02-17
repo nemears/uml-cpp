@@ -1,0 +1,8 @@
+---
+  model:
+    children:
+      - instanceSpecification:
+          classifier: "190d1cb9-13dc-44e6-a064-126891ae0033"
+      - class:
+          id: "190d1cb9-13dc-44e6-a064-126891ae0033"
+...

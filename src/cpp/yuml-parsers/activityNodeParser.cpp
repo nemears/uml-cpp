@@ -106,13 +106,43 @@ bool ActivityNodeParser::emit(YAML::Emitter& emitter, Element* el) {
 bool ActivityNodeParser::emitActivityNode(YAML::Emitter& emitter, Element* el) {
     if (!dynamic_cast<ActivityNode*>(el)->incoming.empty()) {
         for (auto const& edge : dynamic_cast<ActivityNode*>(el)->incoming) {
-            // TODO Edge parsers
+            switch(edge->getElementType()) {
+                case ElementType::CONTROL_FLOW : {
+                    ControlFlowParser cfp(elements, postProcessFlag);
+                    cfp.emit(emitter, edge);
+                    break;
+                }
+                case ElementType::OBJECT_FLOW : {
+                    ObjectFlowParser ofp(elements, postProcessFlag);
+                    ofp.emit(emitter, edge);
+                    break;
+                }
+                default : {
+                    // Error
+                    throw AbstractTypeEmitException(edge->getElementTypeString(), boost::lexical_cast<string>(edge->uuid));
+                }
+            }
         }
     }
 
     if (!dynamic_cast<ActivityNode*>(el)->outgoing.empty()) {
         for (auto const& edge : dynamic_cast<ActivityNode*>(el)->outgoing) {
-            // TODO Edge parsers
+            switch(edge->getElementType()) {
+                case ElementType::CONTROL_FLOW : {
+                    ControlFlowParser cfp(elements, postProcessFlag);
+                    cfp.emit(emitter, edge);
+                    break;
+                }
+                case ElementType::OBJECT_FLOW : {
+                    ObjectFlowParser ofp(elements, postProcessFlag);
+                    ofp.emit(emitter, edge);
+                    break;
+                }
+                default : {
+                    // Error
+                    throw AbstractTypeEmitException(edge->getElementTypeString(), boost::lexical_cast<string>(edge->uuid));
+                }
+            }
         }
     }
 

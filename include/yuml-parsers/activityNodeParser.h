@@ -3,6 +3,8 @@
 
 #include "namedElementParser.h"
 #include "uml/activityNode.h"
+#include "controlFlowParser.h"
+#include "objectFlowParser.h"
 
 class ActivityNodeParser : virtual public NamedElementParser {
     protected:

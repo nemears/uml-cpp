@@ -11,7 +11,7 @@ class ControlFlowParser : public ActivityEdgeParser {
             ActivityEdgeParser(elements, postParsers) {
             this->keyword = "controlFlow";
         };
-        bool emit(YAML::Emitter& emitter, Element* el);
+        bool emit(YAML::Emitter& emitter, Element* el) override;
         static ControlFlowParser createNewParser();
 };
 

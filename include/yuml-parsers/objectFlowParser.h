@@ -11,6 +11,7 @@ class ObjectFlowParser : public ActivityEdgeParser {
             ActivityEdgeParser(elements, postParsers) {
             this->keyword = "objectFlow";
         }
+        bool emit(YAML::Emitter& emitter, Element* el) override;
         static ObjectFlowParser createNewParser();
 };
 

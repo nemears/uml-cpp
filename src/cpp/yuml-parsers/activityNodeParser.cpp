@@ -94,9 +94,9 @@ bool ActivityNodeParser::parseActivityNodeFeatures(YAML::Node node, Element* el)
 
 bool ActivityNodeParser::emit(YAML::Emitter& emitter, Element* el) {
 
-    bool ret = emitActivityNode(emitter, el);
+    bool ret = NamedElementParser::emit(emitter, el);
 
-    if(!NamedElementParser::emit(emitter, el)) {
+    if(!emitActivityNode(emitter, el)) {
         ret = false;
     }
 
@@ -105,45 +105,21 @@ bool ActivityNodeParser::emit(YAML::Emitter& emitter, Element* el) {
 
 bool ActivityNodeParser::emitActivityNode(YAML::Emitter& emitter, Element* el) {
     if (!dynamic_cast<ActivityNode*>(el)->incoming.empty()) {
+        emitter << YAML::Key << "incoming";
+        emitter << YAML::Value << YAML::BeginSeq;
         for (auto const& edge : dynamic_cast<ActivityNode*>(el)->incoming) {
-            switch(edge->getElementType()) {
-                case ElementType::CONTROL_FLOW : {
-                    ControlFlowParser cfp(elements, postProcessFlag);
-                    cfp.emit(emitter, edge);
-                    break;
-                }
-                case ElementType::OBJECT_FLOW : {
-                    ObjectFlowParser ofp(elements, postProcessFlag);
-                    ofp.emit(emitter, edge);
-                    break;
-                }
-                default : {
-                    // Error
-                    throw AbstractTypeEmitException(edge->getElementTypeString(), boost::lexical_cast<string>(edge->uuid));
-                }
-            }
+            emitter << YAML::Value << edge->getIDstring();
         }
+        emitter << YAML::EndSeq;
     }
 
     if (!dynamic_cast<ActivityNode*>(el)->outgoing.empty()) {
+        emitter << YAML::Key << "outgoing";
+        emitter << YAML::Value << YAML::BeginSeq;
         for (auto const& edge : dynamic_cast<ActivityNode*>(el)->outgoing) {
-            switch(edge->getElementType()) {
-                case ElementType::CONTROL_FLOW : {
-                    ControlFlowParser cfp(elements, postProcessFlag);
-                    cfp.emit(emitter, edge);
-                    break;
-                }
-                case ElementType::OBJECT_FLOW : {
-                    ObjectFlowParser ofp(elements, postProcessFlag);
-                    ofp.emit(emitter, edge);
-                    break;
-                }
-                default : {
-                    // Error
-                    throw AbstractTypeEmitException(edge->getElementTypeString(), boost::lexical_cast<string>(edge->uuid));
-                }
-            }
+            emitter << YAML::Value << edge->getIDstring();
         }
+        emitter << YAML::EndSeq;
     }
 
     return true;

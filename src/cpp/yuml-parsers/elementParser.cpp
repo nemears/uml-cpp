@@ -83,6 +83,7 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
                     if(!ap.emit(emitter, child)) {
                         return false;
                     }
+                    break;
                 }
                 case ElementType::CLASS : {
                     ClassParser cp(elements, postProcessFlag);

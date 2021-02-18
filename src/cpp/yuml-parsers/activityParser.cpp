@@ -72,6 +72,8 @@ bool ActivityParser::emit(YAML::Emitter& emitter, Element* el) {
     bool ret = ClassParser::emit(emitter, el);
 
     if (!dynamic_cast<Activity*>(el)->nodes.empty()) {
+        emitter << YAML::Key << "nodes";
+        emitter << YAML::Value << YAML::BeginSeq;
         for(auto const& node : dynamic_cast<Activity*>(el)->nodes) {
             switch(node->getElementType()) {
                 case ElementType::ACTION : {
@@ -99,9 +101,12 @@ bool ActivityParser::emit(YAML::Emitter& emitter, Element* el) {
                 }
             }
         }
+        emitter << YAML::EndSeq;
     }
 
     if (!dynamic_cast<Activity*>(el)->edges.empty()) {
+        emitter << YAML::Key << "edges";
+        emitter << YAML::Value << YAML::BeginSeq;
         for (auto const& edge: dynamic_cast<Activity*>(el)->edges) {
             switch(edge->getElementType()) {
                 case ElementType::CONTROL_FLOW : {
@@ -116,6 +121,7 @@ bool ActivityParser::emit(YAML::Emitter& emitter, Element* el) {
                 }
             }
         }
+        emitter << YAML::EndSeq;
     }
 
     if (el->getElementType() == ElementType::ACTIVITY) {

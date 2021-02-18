@@ -1,0 +1,21 @@
+---
+  model:
+    children:
+      - instanceSpecification:
+          classifier: "190d1cb9-13dc-44e6-a064-126891ae0033"
+          slots:
+            - slot:
+                definingFeature: "d9ab2f06-4c2c-4330-9e1b-7eaee423a66a"
+                value: 9cdae5be-6b75-4284-b1e3-445fcb3dd071
+      - class:
+          id: 2c2fc607-48c6-4879-800b-7e659441cba1
+      - instanceSpecification:
+          id: 9cdae5be-6b75-4284-b1e3-445fcb3dd071
+          classifier: 2c2fc607-48c6-4879-800b-7e659441cba1
+      - class:
+          id: "190d1cb9-13dc-44e6-a064-126891ae0033"
+          attributes:
+            - property:
+                id: "d9ab2f06-4c2c-4330-9e1b-7eaee423a66a"
+                type: 2c2fc607-48c6-4879-800b-7e659441cba1
+...

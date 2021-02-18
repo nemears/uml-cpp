@@ -1,0 +1,14 @@
+---
+  model:
+    children:
+      - instanceSpecification:
+          classifier: "190d1cb9-13dc-44e6-a064-126891ae0033"
+          slots:
+            - slot:
+                definingFeature: "d9ab2f06-4c2c-4330-9e1b-7eaee423a66a"
+      - class:
+          id: "190d1cb9-13dc-44e6-a064-126891ae0033"
+          attributes:
+            - property:
+                id: "d9ab2f06-4c2c-4330-9e1b-7eaee423a66a"
+...

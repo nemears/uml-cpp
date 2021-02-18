@@ -7,6 +7,9 @@ Element* SlotParser::createElement() {
 }
 
 bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
+
+    bool postParseDefiningFeature = false;
+
     if (node["definingFeature"]) {
         string parsedId = node["definingFeature"].as<string>();
 
@@ -26,8 +29,9 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
                 } 
 
                 // add flag with function pointer
-                (*postProcessFlag)[definingFeatureId]->otherEls.push_back(el->uuid);
-                (*postProcessFlag)[definingFeatureId]->applyOnEl.push_back(&SlotParser::setDefiningFeatureLater);
+                (*postProcessFlag)[definingFeatureId]->otherEls.push_front(el->uuid);
+                (*postProcessFlag)[definingFeatureId]->applyOnEl.push_front(&SlotParser::setDefiningFeatureLater);
+                postParseDefiningFeature = true;
             } else {
 
                 // set the definingFeature
@@ -37,86 +41,99 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
         }
     }
     if (node["value"]) {
+        bool skipValueParseNow = false;
         if (((Slot*) el)->getDefiningFeature() == NULL) {
             // Error
-            throw ((Slot*)el)->nullDefiningFeatureException;
+            if (!postParseDefiningFeature) {
+                throw ((Slot*)el)->nullDefiningFeatureException;
+            }
+            skipValueParseNow = true;
         }
-        if (((StructuralFeature*)((Slot*) el)->getDefiningFeature())->getType() != NULL) {
-            if (((StructuralFeature*)((Slot*) el)->getDefiningFeature())->getType()->isPrimitive()) {
-                switch (((PrimitiveType*) ((StructuralFeature*)((Slot*) el)->getDefiningFeature())->getType())->getPrimitiveType()) {
-                    case PrimitiveType::Primitive::STRING : {
-                        string stringVal = node["value"].as<string>();
-                        LiteralString* ls = new LiteralString;
-                        ls->setValue(stringVal);
-                        ((Slot *) el)->values.push_back(ls);
-                        break;
+        if (!skipValueParseNow){
+            if (((StructuralFeature*)((Slot*) el)->getDefiningFeature())->getType() != NULL) {
+                if (((StructuralFeature*)((Slot*) el)->getDefiningFeature())->getType()->isPrimitive()) {
+                    switch (((PrimitiveType*) ((StructuralFeature*)((Slot*) el)->getDefiningFeature())->getType())->getPrimitiveType()) {
+                        case PrimitiveType::Primitive::STRING : {
+                            string stringVal = node["value"].as<string>();
+                            LiteralString* ls = new LiteralString;
+                            ls->setValue(stringVal);
+                            ((Slot *) el)->values.push_back(ls);
+                            break;
+                        }
+                        case PrimitiveType::Primitive::INT : {
+                            int intVal = node["value"].as<int>();
+                            LiteralInt* li = new LiteralInt;
+                            li->setValue(intVal);
+                            ((Slot *) el)->values.push_back(li);
+                            break;
+                        }
+                        case PrimitiveType::Primitive::REAL : {
+                            double realVal = node["value"].as<double>();
+                            LiteralReal* lr = new LiteralReal;
+                            lr->setValue(realVal);
+                            ((Slot *) el)->values.push_back(lr);
+                            break;
+                        }
+                        case PrimitiveType::Primitive::BOOL : {
+                            bool boolVal = node["value"].as<bool>();
+                            LiteralBool* lb = new LiteralBool;
+                            lb->setValue(boolVal);
+                            ((Slot *) el)->values.push_back(lb);
+                            break;
+                        }
+                        default : {
+                            // should never get here
+                            throw InvalidIdentifierException(node["value"].Mark().line, node["value"].as<string>());
+                        }
                     }
-                    case PrimitiveType::Primitive::INT : {
-                        int intVal = node["value"].as<int>();
-                        LiteralInt* li = new LiteralInt;
-                        li->setValue(intVal);
-                        ((Slot *) el)->values.push_back(li);
-                        break;
-                    }
-                    case PrimitiveType::Primitive::REAL : {
-                        double realVal = node["value"].as<double>();
-                        LiteralReal* lr = new LiteralReal;
-                        lr->setValue(realVal);
-                        ((Slot *) el)->values.push_back(lr);
-                        break;
-                    }
-                    case PrimitiveType::Primitive::BOOL : {
-                        bool boolVal = node["value"].as<bool>();
-                        LiteralBool* lb = new LiteralBool;
-                        lb->setValue(boolVal);
-                        ((Slot *) el)->values.push_back(lb);
-                        break;
-                    }
-                    default : {
-                        // should never get here
-                        throw InvalidIdentifierException(node["value"].Mark().line, node["value"].as<string>());
-                    }
+                } else {
+                    parseInstanceValueFeatures(node, el);
                 }
             } else {
-                string parsedId = node["value"].as<string>();
-
-                if (UML::isValidUUID4(parsedId)) {
-                    boost::uuids::uuid valueId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
-
-                    // check if null
-                    // if null we make a flag for backwards parsing
-                    if((*elements)[valueId] == 0) {
-
-                        // check if struct created
-                        if ((*postProcessFlag)[valueId] == 0) {
-                            list<boost::uuids::uuid>* eList = new list<boost::uuids::uuid>;
-                            list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;;
-                            PostParser* postParser  =  new PostParser{*eList, *fList};
-                            (*postProcessFlag)[valueId] = postParser;
-                        } 
-
-                        // add flag with function pointer
-                        (*postProcessFlag)[valueId]->otherEls.push_back(el->uuid);
-                        (*postProcessFlag)[valueId]->applyOnEl.push_back(&SlotParser::setInstanceValueLater);
-                    } else {
-                        // set the definingFeature
-                        InstanceSpecification* value = dynamic_cast<InstanceSpecification*>((*elements)[valueId]);
-
-                        InstanceValue* instVal = new InstanceValue();
-                        instVal->setInstance(value);
-
-                        ((Slot*)el)->values.push_back(instVal);
-                    }
-                    
-                }
+                // Error
+                throw ((Slot*)el)->getDefiningFeature()->invalidValueException;
             }
         } else {
-            // Error
-            throw ((Slot*)el)->getDefiningFeature()->invalidValueException;
+            // so we were told to skip, if we can get a uuid from value mark it is not an error, it is backwards parsing
+            parseInstanceValueFeatures(node, el);
         }
     }
 
     return ElementParser::parseFeatures(node, el);
+}
+
+void SlotParser::parseInstanceValueFeatures(YAML::Node node, Element* el) {
+    string parsedId = node["value"].as<string>();
+
+    if (UML::isValidUUID4(parsedId)) {
+        boost::uuids::uuid valueId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
+
+        // check if null
+        // if null we make a flag for backwards parsing
+        if((*elements)[valueId] == 0) {
+
+            // check if struct created
+            if ((*postProcessFlag)[valueId] == 0) {
+                list<boost::uuids::uuid>* eList = new list<boost::uuids::uuid>;
+                list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;;
+                PostParser* postParser  =  new PostParser{*eList, *fList};
+                (*postProcessFlag)[valueId] = postParser;
+            } 
+
+            // add flag with function pointer
+            (*postProcessFlag)[valueId]->otherEls.push_back(el->uuid);
+            (*postProcessFlag)[valueId]->applyOnEl.push_back(&SlotParser::setInstanceValueLater);
+        } else {
+            // set the definingFeature
+            InstanceSpecification* value = dynamic_cast<InstanceSpecification*>((*elements)[valueId]);
+
+            InstanceValue* instVal = new InstanceValue();
+            instVal->setInstance(value);
+
+            ((Slot*)el)->values.push_back(instVal);
+        }
+        
+    }
 }
 
 bool SlotParser::emit(YAML::Emitter& emitter, Element* el) {

@@ -13,9 +13,36 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["inputs"]) {
         if (node["inputs"].IsSequence()) {
             for (std::size_t i=0; i<node["inputs"].size(); i++) {
-                InputPinParser ip(elements, postProcessFlag);
-                Element* parsedEl = ip.TypedElementParser::parseElement(node["inputs"][i]["inputPin"]); // this should also be able to be an id
-                dynamic_cast<Action*>(el)->inputs.push_back(dynamic_cast<InputPin*>(parsedEl));
+                if (node["inputs"][i]["inputPin"]) {
+                    InputPinParser ip(elements, postProcessFlag);
+                    Element* parsedEl = ip.TypedElementParser::parseElement(node["inputs"][i]["inputPin"]);
+                    dynamic_cast<Action*>(el)->inputs.push_back(dynamic_cast<InputPin*>(parsedEl));
+                } else if (isValidUUID4(node["inputs"][i].as<string>())) {
+                    boost::uuids::uuid inputId = boost::lexical_cast<boost::uuids::uuid>(node["inputs"][i].as<string>());
+
+                    // check if null
+                    // if null we make a flag for backwards parsing
+                    if((*elements)[inputId] == 0) {
+
+                        // check if struct created
+                        if ((*postProcessFlag)[inputId] == 0) {
+                            list<boost::uuids::uuid>* eList = new list<boost::uuids::uuid>;
+                            list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;;
+                            PostParser* postParser  =  new PostParser{*eList, *fList};
+                            (*postProcessFlag)[inputId] = postParser;
+                        } 
+
+                        // add flag with function pointer
+                        (*postProcessFlag)[inputId]->otherEls.push_back(el->uuid);
+                        (*postProcessFlag)[inputId]->applyOnEl.push_back(&ActionParser::addInputPinLater);
+                    } else {
+                        dynamic_cast<Action*>(el)->inputs.push_back(dynamic_cast<InputPin*>((*elements)[inputId]));
+                    }
+                } else {
+                    YAML::Emitter errEmit;
+                    errEmit << node["inputs"];
+                    throw ElementParser::InvalidIdentifierException(node["inputs"][i].Mark().line, errEmit.c_str());
+                }
             }
         } else {
             throw ElementParser::InvalidNodeTypeException(node["inputs"].Mark().line, "sequence");
@@ -24,10 +51,37 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
 
     if (node["outputs"]) {
         if (node["outputs"].IsSequence()) {
-            for (std::size_t i=0; i<node["inputs"].size(); i++) {
-                OutputPinParser op(elements, postProcessFlag);
-                Element* parsedEl = op.TypedElementParser::parseElement(node["outputs"][i]["outputPin"]);
-                dynamic_cast<Action*>(el)->outputs.push_back(dynamic_cast<OutputPin*>(parsedEl));
+            for (std::size_t i=0; i<node["outputs"].size(); i++) {
+                if (node["outputs"][i]["outputPin"]) {
+                    OutputPinParser op(elements, postProcessFlag);
+                    Element* parsedEl = op.TypedElementParser::parseElement(node["outputs"][i]["outputPin"]);
+                    dynamic_cast<Action*>(el)->outputs.push_back(dynamic_cast<OutputPin*>(parsedEl));
+                } else if (isValidUUID4(node["outputs"][i].as<string>())) {
+                    boost::uuids::uuid outputId = boost::lexical_cast<boost::uuids::uuid>(node["outputs"][i].as<string>());
+
+                    // check if null
+                    // if null we make a flag for backwards parsing
+                    if((*elements)[outputId] == 0) {
+
+                        // check if struct created
+                        if ((*postProcessFlag)[outputId] == 0) {
+                            list<boost::uuids::uuid>* eList = new list<boost::uuids::uuid>;
+                            list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;;
+                            PostParser* postParser  =  new PostParser{*eList, *fList};
+                            (*postProcessFlag)[outputId] = postParser;
+                        } 
+
+                        // add flag with function pointer
+                        (*postProcessFlag)[outputId]->otherEls.push_back(el->uuid);
+                        (*postProcessFlag)[outputId]->applyOnEl.push_back(&ActionParser::addOutputPinLater);
+                    } else {
+                        dynamic_cast<Action*>(el)->inputs.push_back(dynamic_cast<InputPin*>((*elements)[outputId]));
+                    }
+                } else {
+                    YAML::Emitter errEmit;
+                    errEmit << node["outputs"];
+                    throw ElementParser::InvalidIdentifierException(node["outputs"][i].Mark().line, errEmit.c_str());
+                }
             }
         } else {
             throw ElementParser::InvalidNodeTypeException(node["outputs"].Mark().line, "sequence");

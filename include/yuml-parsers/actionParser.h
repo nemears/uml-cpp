@@ -18,6 +18,12 @@ class ActionParser : public ActivityNodeParser {
             NamedElementParser(elements, postParsers){
             this->keyword = "action";
         };
+        static void addInputPinLater(Element* action, Element* inputPin) {
+            dynamic_cast<Action*>(action)->inputs.push_back(dynamic_cast<InputPin*>(inputPin));
+        }
+        static void addOutputPinLater(Element* action, Element* inputPin) {
+            dynamic_cast<Action*>(action)->outputs.push_back(dynamic_cast<OutputPin*>(inputPin));
+        }
         static ActionParser createNewParser();
 };
 

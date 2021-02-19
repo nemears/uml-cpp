@@ -1,5 +1,6 @@
 #include "uml/property.h"
 #include "uml/primitiveType.h"
+#include "uml/classifier.h"
 
 using namespace UML;
 
@@ -27,6 +28,14 @@ void Property::setDefaultValue(ValueSpecification* val) {
 
 ValueSpecification* Property::getDefaultValue() {
     return defaultValue;
+}
+
+Classifier* Property::getClassifer() {
+    return classifier;
+}
+
+void Property::setClassifier(Classifier* classifier) {
+    this->classifier = classifier;
 }
 
 ElementType Property::getElementType() {

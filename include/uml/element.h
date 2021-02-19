@@ -55,7 +55,6 @@ enum class ElementType {
 
 class Element {
     protected:
-        // Moved everything to public for now
         Element* owner;
 
     public:

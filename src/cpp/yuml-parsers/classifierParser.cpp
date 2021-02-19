@@ -10,6 +10,7 @@ bool ClassifierParser::parseFeatures(YAML::Node node, Element* el) {
                     PropertyParser propertyParser(elements, postProcessFlag);
                     Element* parsedEl = propertyParser.TypedElementParser::parseElement(node["attributes"][i]["property"]);
                     dynamic_cast<Classifier*>(el)->ownedAttributes.push_back(dynamic_cast<Property*>(parsedEl));
+                    dynamic_cast<Property*>(parsedEl)->setClassifier(dynamic_cast<Classifier*>(el));
                 } else if (node["attributes"][i]["other types here"]) {
                     // TODO TODO TODO
                 }

@@ -22,6 +22,7 @@ namespace UML{
             ElementType getElementType() override;
             Property() {
                 defaultValue = NULL;
+                classifier = NULL;
             }
     };
 }

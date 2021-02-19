@@ -14,7 +14,7 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
         if (node["inputs"].IsSequence()) {
             for (std::size_t i=0; i<node["inputs"].size(); i++) {
                 InputPinParser ip(elements, postProcessFlag);
-                Element* parsedEl = ip.TypedElementParser::parseElement(node["inputs"][i]);
+                Element* parsedEl = ip.TypedElementParser::parseElement(node["inputs"][i]["inputPin"]); // this should also be able to be an id
                 dynamic_cast<Action*>(el)->inputs.push_back(dynamic_cast<InputPin*>(parsedEl));
             }
         } else {
@@ -26,7 +26,7 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
         if (node["outputs"].IsSequence()) {
             for (std::size_t i=0; i<node["inputs"].size(); i++) {
                 OutputPinParser op(elements, postProcessFlag);
-                Element* parsedEl = op.TypedElementParser::parseElement(node["outputs"][i]);
+                Element* parsedEl = op.TypedElementParser::parseElement(node["outputs"][i]["outputPin"]);
                 dynamic_cast<Action*>(el)->outputs.push_back(dynamic_cast<OutputPin*>(parsedEl));
             }
         } else {

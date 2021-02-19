@@ -10,6 +10,14 @@ void Element::setID(string id) {
     }
 }
 
+Element* Element::getOwner() {
+    return owner;
+}
+
+void Element::setOwner(Element* owner) {
+    this->owner = owner;
+}
+
 ElementType Element::getElementType() {
     return ElementType::ELEMENT;
 }

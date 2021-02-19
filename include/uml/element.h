@@ -56,12 +56,14 @@ enum class ElementType {
 class Element {
     protected:
         // Moved everything to public for now
+        Element* owner;
 
     public:
         list<Element*> ownedElements;
         boost::uuids::uuid uuid;
         Element() {
             uuid = boost::uuids::random_generator()();
+            owner = NULL;
         };
         virtual ~Element() {};
         virtual void setID(string id);
@@ -76,6 +78,8 @@ class Element {
         virtual string getIDstring();
         void addOwnedElement(Element& el);
         void removeOwnedElement(Element& el);
+        Element* getOwner();
+        void setOwner(Element* owner);
 };
 }
 #endif

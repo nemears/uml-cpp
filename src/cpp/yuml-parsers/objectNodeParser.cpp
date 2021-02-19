@@ -10,7 +10,14 @@ bool ObjectNodeParser::parseFeatures(YAML::Node node, Element* el) {
 }
 
 bool ObjectNodeParser::parseObjectNodeFeatures(YAML::Node node, Element* el) {
-    bool ret = parseTypeFeatures(node, el);
+
+
+
+    bool ret = NamedElementParser::parseFeatures(node, el);
+    
+    if (!parseTypeFeatures(node, el)) {
+        ret = false;
+    }
 
     if (!parseActivityNodeFeatures(node, el)) {
         ret = false;

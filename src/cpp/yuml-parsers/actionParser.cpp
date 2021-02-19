@@ -1,4 +1,5 @@
 #include "yuml-parsers/actionParser.h"
+#include "uml/activity.h"
 
 Element* ActionParser::createElement() {
     theEl = new Action;
@@ -6,6 +7,8 @@ Element* ActionParser::createElement() {
 }
 
 bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
+
+    bool ret = ActivityNodeParser::parseFeatures(node, el);
 
     if (node["inputs"]) {
         if (node["inputs"].IsSequence()) {
@@ -31,7 +34,7 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
         }
     }
 
-    return ActivityNodeParser::parseFeatures(node, el);
+    return ret;
 }
 
 bool ActionParser::emit(YAML::Emitter& emitter, Element* el) {

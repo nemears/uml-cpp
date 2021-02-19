@@ -66,6 +66,7 @@ TEST_F(ElementParserTest, ParseID_Test) {
 TEST_F(ElementParserTest, ParseChildrenTest) {
   EXPECT_EQ((*ppYAML->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->ownedElements.back()->uuid, 
         (*ppYAML->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->ownedElements.back()->uuid);
+  EXPECT_EQ(ppYAML->theEl->uuid, ppYAML->theEl->ownedElements.front()->getOwner()->uuid);
 }
 
 TEST_F(ElementParserTest, ParseSingleCharID_Test) {

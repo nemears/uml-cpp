@@ -4,7 +4,8 @@
 using namespace UML;
 
 Element* ClassParser::createElement() {
-    return new Class;
+    theEl = new Class;
+    return theEl;
 }
 
 bool ClassParser::parseFeatures(YAML::Node node, Element* el) {

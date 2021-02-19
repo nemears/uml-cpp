@@ -17,18 +17,22 @@ bool ActivityParser::parseFeatures(YAML::Node node, Element* el) {
                     ActionParser actionParser(elements, postProcessFlag);
                     Element* parsedEl = actionParser.parseElement(node["nodes"][i]["action"]);
                     dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<Action*>(parsedEl));
+                    dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
                 } else if (node["nodes"][i]["inputPin"]) {
                     InputPinParser inputPinParser(elements, postProcessFlag);
                     Element* parsedEl = inputPinParser.TypedElementParser::parseElement(node["nodes"][i]["inputPin"]);
                     dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<InputPin*>(parsedEl));
+                    dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
                 } else if (node["nodes"][i]["objectNode"]) {
                     ObjectNodeParser objectNodeParser(elements, postProcessFlag);
                     Element* parsedEl = objectNodeParser.parseElement(node["nodes"][i]["objectNode"]);
                     dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ObjectNode*>(parsedEl));
+                    dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
                 } else if (node["nodes"][i]["outputPin"]) {
                     OutputPinParser outputPinParser(elements, postProcessFlag);
                     Element* parsedEl = outputPinParser.TypedElementParser::parseElement(node["nodes"][i]["outputPin"]);
                     dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<OutputPin*>(parsedEl));
+                    dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
                 } else {
                     // TODO error
                 }

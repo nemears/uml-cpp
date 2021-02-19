@@ -2,7 +2,11 @@
 
 bool PinParser::parseFeatures(YAML::Node node, Element* el) {
 
-    bool ret = parseObjectNodeFeatures(node, el);
+    bool ret = NamedElementParser::parseFeatures(node, el);
+    
+    if(!parseObjectNodeFeatures(node, el)) {
+        ret = false;
+    }
 
     if (!parseMultiplicityFeatures(node, el)) {
         ret = false;

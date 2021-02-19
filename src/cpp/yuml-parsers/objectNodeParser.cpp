@@ -6,18 +6,18 @@ Element* ObjectNodeParser::createElement() {
 }
 
 bool ObjectNodeParser::parseFeatures(YAML::Node node, Element* el) {
-    return parseObjectNodeFeatures(node, el);    
+    bool ret = NamedElementParser::parseFeatures(node, el);
+
+    if(!parseObjectNodeFeatures(node, el)) {
+        ret = false;
+    }
+
+    return ret;
 }
 
 bool ObjectNodeParser::parseObjectNodeFeatures(YAML::Node node, Element* el) {
-
-
-
-    bool ret = NamedElementParser::parseFeatures(node, el);
     
-    if (!parseTypeFeatures(node, el)) {
-        ret = false;
-    }
+    bool ret = parseTypeFeatures(node, el);
 
     if (!parseActivityNodeFeatures(node, el)) {
         ret = false;

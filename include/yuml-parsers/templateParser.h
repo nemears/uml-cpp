@@ -38,6 +38,15 @@ class TemplateParser {
          **/
         virtual bool parseFeatures(YAML::Node node, Element* el) = 0;
 
+        /**
+         * Parses feature either now, or queues it up for later
+         * @param laterId - the elemebt that might be parsed later
+         * @param myId - the element that is currently being parsed
+         * @param funPtr - the pointer to the function that assigns relations during parsing
+         * @return true if it parsed now, false if it was flagged to be parsed later
+         **/
+        bool parseNowOrLater(boost::uuids::uuid laterId, boost::uuids::uuid myId, void(*funPtr)(Element*, Element*));
+
     public:
         /**
          * The keyword to parse for relevant to this parser note: will only appear if it can be defined,

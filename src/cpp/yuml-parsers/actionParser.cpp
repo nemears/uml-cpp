@@ -22,24 +22,7 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
                 } else if (isValidUUID4(node["inputs"][i].as<string>())) {
                     boost::uuids::uuid inputId = boost::lexical_cast<boost::uuids::uuid>(node["inputs"][i].as<string>());
 
-                    // check if null
-                    // if null we make a flag for backwards parsing
-                    if((*elements)[inputId] == 0) {
-
-                        // check if struct created
-                        if ((*postProcessFlag)[inputId] == 0) {
-                            list<boost::uuids::uuid>* eList = new list<boost::uuids::uuid>;
-                            list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;;
-                            PostParser* postParser  =  new PostParser{*eList, *fList};
-                            (*postProcessFlag)[inputId] = postParser;
-                        } 
-
-                        // add flag with function pointer
-                        (*postProcessFlag)[inputId]->otherEls.push_back(el->uuid);
-                        (*postProcessFlag)[inputId]->applyOnEl.push_back(&ActionParser::addInputPinLater);
-                    } else {
-                        dynamic_cast<Action*>(el)->inputs.push_back(dynamic_cast<InputPin*>((*elements)[inputId]));
-                    }
+                    parseNowOrLater(inputId, el->uuid, &ActionParser::addInputPinLater);
                 } else {
                     YAML::Emitter errEmit;
                     errEmit << node["inputs"];
@@ -63,24 +46,7 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
                 } else if (isValidUUID4(node["outputs"][i].as<string>())) {
                     boost::uuids::uuid outputId = boost::lexical_cast<boost::uuids::uuid>(node["outputs"][i].as<string>());
 
-                    // check if null
-                    // if null we make a flag for backwards parsing
-                    if((*elements)[outputId] == 0) {
-
-                        // check if struct created
-                        if ((*postProcessFlag)[outputId] == 0) {
-                            list<boost::uuids::uuid>* eList = new list<boost::uuids::uuid>;
-                            list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;;
-                            PostParser* postParser  =  new PostParser{*eList, *fList};
-                            (*postProcessFlag)[outputId] = postParser;
-                        } 
-
-                        // add flag with function pointer
-                        (*postProcessFlag)[outputId]->otherEls.push_back(el->uuid);
-                        (*postProcessFlag)[outputId]->applyOnEl.push_back(&ActionParser::addOutputPinLater);
-                    } else {
-                        dynamic_cast<Action*>(el)->inputs.push_back(dynamic_cast<InputPin*>((*elements)[outputId]));
-                    }
+                    parseNowOrLater(outputId, el->uuid, &ActionParser::addOutputPinLater);
                 } else {
                     YAML::Emitter errEmit;
                     errEmit << node["outputs"];

@@ -11,25 +11,7 @@ bool InstanceSpecificationParser::parseFeatures(YAML::Node node, Element* el) {
         if (UML::isValidUUID4(parsedId)) {
             boost::uuids::uuid classifierId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-            // check if null
-            // if null we make a flag for backwards parsing
-            if((*elements)[classifierId] == 0) {
-
-                // check if struct created
-                if ((*postProcessFlag)[classifierId] == 0) {
-                    list<boost::uuids::uuid>* eList = new list<boost::uuids::uuid>;
-                    list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;;
-                    PostParser* postParser  =  new PostParser{*eList, *fList};
-                    (*postProcessFlag)[classifierId] = postParser;
-                } 
-
-                // add flag with function pointer
-                (*postProcessFlag)[classifierId]->otherEls.push_back(el->uuid);
-                (*postProcessFlag)[classifierId]->applyOnEl.push_back(&InstanceSpecificationParser::setClassifierLater);
-            } else {
-                Classifier* instClassifier = dynamic_cast<Classifier*>((*elements)[classifierId]);
-                dynamic_cast<InstanceSpecification*>(el)->setClassifier(instClassifier);
-            }
+            parseNowOrLater(classifierId, el->uuid, &InstanceSpecificationParser::setClassifierLater);
             
         } else {
             // error

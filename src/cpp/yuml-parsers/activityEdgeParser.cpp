@@ -5,6 +5,7 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["source"]) {
         string parsedId = node["source"].as<string>();
 
+        // assumption is that edges always defined after nodes
         if (UML::isValidUUID4(parsedId)) {
             boost::uuids::uuid sourceId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 

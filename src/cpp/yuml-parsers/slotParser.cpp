@@ -16,28 +16,7 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
         if (UML::isValidUUID4(parsedId)) {
             boost::uuids::uuid definingFeatureId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-            // check if null
-            // if null we make a flag for backwards parsing
-            if((*elements)[definingFeatureId] == 0) {
-
-                // check if struct created
-                if ((*postProcessFlag)[definingFeatureId] == 0) {
-                    list<boost::uuids::uuid>* eList = new list<boost::uuids::uuid>;
-                    list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;;
-                    PostParser* postParser  =  new PostParser{*eList, *fList};
-                    (*postProcessFlag)[definingFeatureId] = postParser;
-                } 
-
-                // add flag with function pointer
-                (*postProcessFlag)[definingFeatureId]->otherEls.push_front(el->uuid);
-                (*postProcessFlag)[definingFeatureId]->applyOnEl.push_front(&SlotParser::setDefiningFeatureLater);
-                postParseDefiningFeature = true;
-            } else {
-
-                // set the definingFeature
-                StructuralFeature* definingFeature = dynamic_cast<StructuralFeature*>((*elements)[definingFeatureId]);
-                ((Slot*)el)->setDefiningFeature(definingFeature);
-            }
+            postParseDefiningFeature = !parseNowOrLater(definingFeatureId, el->uuid, &SlotParser::setDefiningFeatureLater);
         }
     }
     if (node["value"]) {
@@ -108,31 +87,7 @@ void SlotParser::parseInstanceValueFeatures(YAML::Node node, Element* el) {
     if (UML::isValidUUID4(parsedId)) {
         boost::uuids::uuid valueId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-        // check if null
-        // if null we make a flag for backwards parsing
-        if((*elements)[valueId] == 0) {
-
-            // check if struct created
-            if ((*postProcessFlag)[valueId] == 0) {
-                list<boost::uuids::uuid>* eList = new list<boost::uuids::uuid>;
-                list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;;
-                PostParser* postParser  =  new PostParser{*eList, *fList};
-                (*postProcessFlag)[valueId] = postParser;
-            } 
-
-            // add flag with function pointer
-            (*postProcessFlag)[valueId]->otherEls.push_back(el->uuid);
-            (*postProcessFlag)[valueId]->applyOnEl.push_back(&SlotParser::setInstanceValueLater);
-        } else {
-            // set the definingFeature
-            InstanceSpecification* value = dynamic_cast<InstanceSpecification*>((*elements)[valueId]);
-
-            InstanceValue* instVal = new InstanceValue();
-            instVal->setInstance(value);
-
-            ((Slot*)el)->values.push_back(instVal);
-        }
-        
+        parseNowOrLater(valueId, el->uuid, &SlotParser::setInstanceValueLater);
     }
 }
 

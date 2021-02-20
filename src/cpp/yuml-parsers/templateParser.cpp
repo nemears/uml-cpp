@@ -33,6 +33,29 @@ Element* TemplateParser::parseElement(YAML::Node node) {
     return el;
 }
 
+bool TemplateParser::parseNowOrLater(boost::uuids::uuid laterId, boost::uuids::uuid myId, void(*funPtr)(Element*, Element*)) {
+    // check if null
+    // if null we make a flag for backwards parsing
+    if((*elements)[laterId] == 0) {
+
+        // check if struct created
+        if ((*postProcessFlag)[laterId] == 0) {
+            list<boost::uuids::uuid>* eList = new list<boost::uuids::uuid>;
+            list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;
+            PostParser* postParser = new PostParser{*eList, *fList};
+            (*postProcessFlag)[laterId] = postParser;
+        } 
+
+        // add flag with function pointer
+        (*postProcessFlag)[laterId]->otherEls.push_back(myId);
+        (*postProcessFlag)[laterId]->applyOnEl.push_back(funPtr);
+        return false;
+    } else {
+        (*funPtr)((*elements)[myId], (*elements)[laterId]);
+        return true;
+    }
+}
+
 string TemplateParser::emitDocument(Element* el) {
     YAML::Emitter emitter;
     emitter << YAML::BeginDoc;

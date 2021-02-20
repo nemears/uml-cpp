@@ -20,28 +20,7 @@ bool TypedElementParser::parseTypeFeatures(YAML::Node node, Element* el) {
         if (UML::isValidUUID4(parsedId)) {
             boost::uuids::uuid typeId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-            // check if null
-            // if null we make a flag for backwards parsing
-            if((*elements)[typeId] == 0) {
-
-                // check if struct created
-                if ((*postProcessFlag)[typeId] == 0) {
-                    list<boost::uuids::uuid>* eList = new list<boost::uuids::uuid>;
-                    list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;;
-                    PostParser* postParser  =  new PostParser{*eList, *fList};
-                    (*postProcessFlag)[typeId] = postParser;
-                } 
-
-                // add flag with function pointer
-                (*postProcessFlag)[typeId]->otherEls.push_back(el->uuid);
-                (*postProcessFlag)[typeId]->applyOnEl.push_back(&TypedElementParser::setTypeLater);
-            } else {
-
-                // set the type
-                Type* type = dynamic_cast<Type*>((*elements)[typeId]);
-
-                dynamic_cast<TypedElement*>(el)->setType(type);
-            }
+            parseNowOrLater(typeId, el->uuid, &TypedElementParser::setTypeLater);
         } else {
             if (parsedId.compare("STRING") == 0) {
                 PrimitiveType* stringType = new PrimitiveType;

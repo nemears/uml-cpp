@@ -21,27 +21,7 @@ bool ActivityNodeParser::parseActivityNodeFeatures(YAML::Node node, Element* el)
                 if (UML::isValidUUID4(parsedId)) {
                     boost::uuids::uuid incomingId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-                    // check if null
-                    // if null we make a flag for backwards parsing
-                    if((*elements)[incomingId] == 0) {
-
-                        // check if struct created
-                        if ((*postProcessFlag)[incomingId] == 0) {
-                            list<boost::uuids::uuid>* eList = new list<boost::uuids::uuid>;
-                            list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;;
-                            PostParser* postParser  =  new PostParser{*eList, *fList};
-                            (*postProcessFlag)[incomingId] = postParser;
-                        } 
-
-                        // add flag with function pointer
-                        (*postProcessFlag)[incomingId]->otherEls.push_back(el->uuid);
-                        (*postProcessFlag)[incomingId]->applyOnEl.push_back(&ActivityNodeParser::addIncomingEdgeLater);
-                        continue;
-                    }
-
-                    ActivityEdge* incomingEdge = dynamic_cast<ActivityEdge*>((*elements)[incomingId]);
-
-                    dynamic_cast<ActivityNode*>(el)->incoming.push_back(incomingEdge);
+                    parseNowOrLater(incomingId, el->uuid, &ActivityNodeParser::addIncomingEdgeLater);
                 } else {
                     // TODO node definitions in nodes?
                 }
@@ -59,27 +39,7 @@ bool ActivityNodeParser::parseActivityNodeFeatures(YAML::Node node, Element* el)
                 if (UML::isValidUUID4(parsedId)) {
                     boost::uuids::uuid outgoingId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-                    // check if null
-                    // if null we make a flag for backwards parsing
-                    if((*elements)[outgoingId] == 0) {
-
-                        // check if struct created
-                        if ((*postProcessFlag)[outgoingId] == 0) {
-                            list<boost::uuids::uuid>* eList = new list<boost::uuids::uuid>;
-                            list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;
-                            PostParser* postParser = new PostParser{*eList, *fList};
-                            (*postProcessFlag)[outgoingId] = postParser;
-                        } 
-
-                        // add flag with function pointer
-                        (*postProcessFlag)[outgoingId]->otherEls.push_back(el->uuid);
-                        (*postProcessFlag)[outgoingId]->applyOnEl.push_back(&ActivityNodeParser::addOutgoingEdgeLater);
-                        continue;
-                    }
-
-                    ActivityEdge* outgoingEdge = dynamic_cast<ActivityEdge*>((*elements)[outgoingId]);
-
-                    dynamic_cast<ActivityNode*>(el)->outgoing.push_back(outgoingEdge);
+                    parseNowOrLater(outgoingId, el->uuid, &ActivityNodeParser::addOutgoingEdgeLater);
                 } else {
                     // TODO node definitions in nodes?
                 }

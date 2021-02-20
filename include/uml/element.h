@@ -25,6 +25,7 @@ enum class ElementType {
     CLASS,
     CLASSIFIER,
     CONTROL_FLOW,
+    INITIAL_NODE,
     ELEMENT,
     INPUT_PIN,
     INSTANCE_SPECIFICATION,

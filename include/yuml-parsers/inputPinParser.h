@@ -13,6 +13,7 @@ class InputPinParser : public PinParser {
             ElementParser(elements, postParsers) {
             this->TypedElementParser::keyword = "inputPin";
         }
+        bool emit(YAML::Emitter& emitter, Element* el) override;
         static InputPinParser createNewParser();
 };
 

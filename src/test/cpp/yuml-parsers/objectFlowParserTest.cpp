@@ -55,3 +55,12 @@ TEST_F(ObjectFlowParserTest, ParseObjectNodeToActionTest) {
     ASSERT_EQ(inputPin->incoming.front()->uuid, dynamic_cast<Activity*>(objectToActionParser.theEl->ownedElements.front())->edges.front()->uuid);
     ASSERT_EQ(inputPin->uuid, dynamic_cast<Activity*>(objectToActionParser.theEl->ownedElements.front())->edges.front()->getTarget()->uuid);
 }
+
+TEST_F(ObjectFlowParserTest, ParseBackwardsOutputPinTest) {
+    // Setup
+    ModelParser backwardsOutputParser = ModelParser::createNewParser();
+    YAML::Node backwardsOutputNode = YAML::LoadFile("../../../../../src/test/yml/objectFlowTests/backwardsOutput.yml");
+
+    // Test
+    ASSERT_NO_THROW(backwardsOutputParser.parse(backwardsOutputNode));
+}

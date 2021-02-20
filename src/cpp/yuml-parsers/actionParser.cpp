@@ -13,10 +13,12 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["inputs"]) {
         if (node["inputs"].IsSequence()) {
             for (std::size_t i=0; i<node["inputs"].size(); i++) {
-                if (node["inputs"][i]["inputPin"]) {
-                    InputPinParser ip(elements, postProcessFlag);
-                    Element* parsedEl = ip.TypedElementParser::parseElement(node["inputs"][i]["inputPin"]);
-                    dynamic_cast<Action*>(el)->inputs.push_back(dynamic_cast<InputPin*>(parsedEl));
+                if (node["inputs"][i].IsMap()) {
+                    if (node["inputs"][i]["inputPin"]) {
+                        InputPinParser ip(elements, postProcessFlag);
+                        Element* parsedEl = ip.TypedElementParser::parseElement(node["inputs"][i]["inputPin"]);
+                        dynamic_cast<Action*>(el)->inputs.push_back(dynamic_cast<InputPin*>(parsedEl));
+                    }
                 } else if (isValidUUID4(node["inputs"][i].as<string>())) {
                     boost::uuids::uuid inputId = boost::lexical_cast<boost::uuids::uuid>(node["inputs"][i].as<string>());
 
@@ -52,10 +54,12 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["outputs"]) {
         if (node["outputs"].IsSequence()) {
             for (std::size_t i=0; i<node["outputs"].size(); i++) {
-                if (node["outputs"][i]["outputPin"]) {
-                    OutputPinParser op(elements, postProcessFlag);
-                    Element* parsedEl = op.TypedElementParser::parseElement(node["outputs"][i]["outputPin"]);
-                    dynamic_cast<Action*>(el)->outputs.push_back(dynamic_cast<OutputPin*>(parsedEl));
+                if (node["outputs"][i].IsMap()) {
+                    if (node["outputs"][i]["outputPin"]) {
+                        OutputPinParser op(elements, postProcessFlag);
+                        Element* parsedEl = op.TypedElementParser::parseElement(node["outputs"][i]["outputPin"]);
+                        dynamic_cast<Action*>(el)->outputs.push_back(dynamic_cast<OutputPin*>(parsedEl));
+                    } 
                 } else if (isValidUUID4(node["outputs"][i].as<string>())) {
                     boost::uuids::uuid outputId = boost::lexical_cast<boost::uuids::uuid>(node["outputs"][i].as<string>());
 

@@ -4,6 +4,7 @@
 #include "uml/objectNode.h"
 #include "uml/primitiveType.h"
 #include "uml/action.h"
+#include "uml/objectFlow.h"
 
 using namespace UML;
 
@@ -63,4 +64,40 @@ TEST_F(ObjectFlowParserTest, ParseBackwardsOutputPinTest) {
 
     // Test
     ASSERT_NO_THROW(backwardsOutputParser.parse(backwardsOutputNode));
+
+    //Activity
+    ASSERT_TRUE(backwardsOutputParser.theEl->ownedElements.size() == 1);
+    ASSERT_TRUE(backwardsOutputParser.theEl->ownedElements.front()->getElementType() == ElementType::ACTIVITY);
+    ASSERT_TRUE(dynamic_cast<Activity*>(backwardsOutputParser.theEl->ownedElements.front())->nodes.size() ==3); 
+    ASSERT_TRUE(dynamic_cast<Activity*>(backwardsOutputParser.theEl->ownedElements.front())->edges.size() ==1); 
+
+    // Action
+    ASSERT_TRUE(dynamic_cast<Activity*>(backwardsOutputParser.theEl->ownedElements.front())->nodes.front()->getElementType() == ElementType::ACTION);
+    Action* act = dynamic_cast<Action*>(dynamic_cast<Activity*>(backwardsOutputParser.theEl->ownedElements.front())->nodes.front());
+    ASSERT_TRUE(act->outputs.size() == 1);
+    ASSERT_TRUE(act->outputs.front()->uuid == boost::lexical_cast<boost::uuids::uuid>("7d4b6b0b-f6c2-4670-868c-87709cede18e"));
+
+    // OutputPin
+    list<ActivityNode*>::iterator outIt = dynamic_cast<Activity*>(backwardsOutputParser.theEl->ownedElements.front())->nodes.begin();
+    ++outIt;
+    ASSERT_TRUE((*outIt)->getElementType() == ElementType::OUTPUT_PIN);
+    OutputPin* op = dynamic_cast<OutputPin*>((*outIt));
+    ASSERT_TRUE(op->uuid == act->outputs.front()->uuid);
+    ASSERT_TRUE(op->outgoing.size() == 1);
+    ASSERT_TRUE(op->outgoing.front()->uuid == dynamic_cast<Activity*>(backwardsOutputParser.theEl->ownedElements.front())->edges.front()->uuid);
+
+    // ObjectFlow
+    ASSERT_TRUE(op->outgoing.front()->getElementType() == ElementType::OBJECT_FLOW);
+    ObjectFlow* of = dynamic_cast<ObjectFlow*>(op->outgoing.front());
+    ASSERT_TRUE(of->getSource()->uuid == op->uuid);
+    ASSERT_TRUE(of->uuid == boost::lexical_cast<boost::uuids::uuid>("9cdae5be-6b75-4284-b1e3-445fcb3dd071"));
+
+    // ObjectNode
+    ++outIt;
+    ASSERT_TRUE((*outIt)->getElementType() == ElementType::OBJECT_NODE);
+    ObjectNode* ob = dynamic_cast<ObjectNode*>((*outIt));
+    ASSERT_TRUE(ob->incoming.size() == 1);
+    ASSERT_TRUE(ob->incoming.front()->uuid == of->uuid);
+    ASSERT_TRUE(of->getTarget()->uuid == ob->uuid);
+    ASSERT_TRUE(ob->getActivity()->uuid == backwardsOutputParser.theEl->ownedElements.front()->uuid);
 }

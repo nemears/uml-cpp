@@ -9,9 +9,11 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["parameters"]) {
         if (node["parameters"].IsSequence()) {
             for (std::size_t i=0; i<node["parameters"].size(); i++) {
-                ParameterParser parameterParser(elements, postProcessFlag);
-                Element* parsedEl = parameterParser.TypedElementParser::parseElement(node["parameters"][i]["parameter"]);
-                dynamic_cast<Operation*>(el)->parameters.push_back(dynamic_cast<Parameter*>(parsedEl));
+                if (node["parameters"][i].IsMap()) {
+                    ParameterParser parameterParser(elements, postProcessFlag);
+                    Element* parsedEl = parameterParser.TypedElementParser::parseElement(node["parameters"][i]["parameter"]);
+                    dynamic_cast<Operation*>(el)->parameters.push_back(dynamic_cast<Parameter*>(parsedEl));
+                }
             }
         } else {
             // Error
@@ -22,17 +24,25 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["methods"]) {
         if (node["methods"].IsSequence()) {
             for (std::size_t i=0; i<node["methods"].size(); i++) {
-                if (node["methods"][i]["activity"]) {
-                    ActivityParser activityParser(elements, postProcessFlag);
-                    Element* parsedEl = activityParser.parseElement(node["methods"][i]["activity"]);
-                    dynamic_cast<Operation*>(el)->methods.push_back(dynamic_cast<Activity*>(parsedEl));
-                } else if (node["methods"][i]["opaqueBehavior"]) {
-                    OpaqueBehaviorParser opaqueBehaviorParser(elements, postProcessFlag);
-                    Element* parsedEl = opaqueBehaviorParser.parseElement(node["methods"][i]["opaqueBehavior"]);
-                    dynamic_cast<Operation*>(el)->methods.push_back(dynamic_cast<OpaqueBehavior*>(parsedEl));
-                }
+                if (node["methods"][i].IsMap()) {
+                    if (node["methods"][i]["activity"]) {
+                        ActivityParser activityParser(elements, postProcessFlag);
+                        Element* parsedEl = activityParser.parseElement(node["methods"][i]["activity"]);
+                        dynamic_cast<Operation*>(el)->methods.push_back(dynamic_cast<Activity*>(parsedEl));
+                    } else if (node["methods"][i]["opaqueBehavior"]) {
+                        OpaqueBehaviorParser opaqueBehaviorParser(elements, postProcessFlag);
+                        Element* parsedEl = opaqueBehaviorParser.parseElement(node["methods"][i]["opaqueBehavior"]);
+                        dynamic_cast<Operation*>(el)->methods.push_back(dynamic_cast<OpaqueBehavior*>(parsedEl));
+                    }
 
-                // TODO other types here
+                    // TODO other types here
+                } else if (node["methods"][i].IsScalar()) {
+                    if (isValidUUID4(node["methods"][i].as<string>())) {
+                        boost::uuids::uuid methodId = boost::lexical_cast<boost::uuids::uuid>(node["methods"][i].as<string>());
+
+                        parseNowOrLater(methodId, el->uuid, &OperationParser::addMethodLater);
+                    }
+                }
             }
         } else {
             // Error

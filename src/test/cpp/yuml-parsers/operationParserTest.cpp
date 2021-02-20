@@ -6,6 +6,7 @@
 #include "uml/primitiveType.h"
 #include "uml/opaqueBehavior.h"
 #include "yuml-parsers/modelParser.h"
+#include "uml/activity.h"
 
 using namespace UML;
 
@@ -175,4 +176,54 @@ TEST_F(OperationParserTest, EmitAbstractMethodTest) {
   ModelParser abstractMethodParser = ModelParser::createNewParser();
 
   EXPECT_THROW(abstractMethodParser.emitDocument(&m), ElementParser::AbstractTypeEmitException);
+}
+
+TEST_F(OperationParserTest, ParseBackwardsMethodTest) {
+  // Setup
+  ModelParser backwardsMethodParser = ModelParser::createNewParser();
+  YAML::Node backwardsMethodsNode = YAML::LoadFile("../../../../../src/test/yml/operationTests/backwardsMethod.yml");
+
+  //Test
+  ASSERT_NO_THROW(backwardsMethodParser.parse(backwardsMethodsNode));
+  ASSERT_TRUE(backwardsMethodParser.theEl->ownedElements.size() == 2);
+
+  // Class
+  ASSERT_TRUE(backwardsMethodParser.theEl->ownedElements.front()->getElementType() == ElementType::CLASS);
+  ASSERT_TRUE(dynamic_cast<Class*>(backwardsMethodParser.theEl->ownedElements.front())->operations.size() == 1);
+  
+  // Operation
+  Operation* op = dynamic_cast<Class*>(backwardsMethodParser.theEl->ownedElements.front())->operations.front();
+  ASSERT_TRUE(op->methods.size() == 1);
+  ASSERT_TRUE(op->methods.front()->getElementType() == ElementType::ACTIVITY);
+  ASSERT_TRUE(op->methods.front()->uuid == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
+  
+  // Activity
+  ASSERT_TRUE(backwardsMethodParser.theEl->ownedElements.back()->getElementType() == ElementType::ACTIVITY);
+  Activity* a = dynamic_cast<Activity*>(backwardsMethodParser.theEl->ownedElements.back());
+  ASSERT_TRUE(a->uuid == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
+}
+
+TEST_F(OperationParserTest, ParseForwardMethodTest) {
+  // Setup
+  ModelParser forwardsMethodParser = ModelParser::createNewParser();
+  YAML::Node forwardsMethodsNode = YAML::LoadFile("../../../../../src/test/yml/operationTests/forwardsMethod.yml");
+
+  // Test
+  ASSERT_NO_THROW(forwardsMethodParser.parse(forwardsMethodsNode));
+  ASSERT_TRUE(forwardsMethodParser.theEl->ownedElements.size() == 2);
+
+  // Class
+  ASSERT_TRUE(forwardsMethodParser.theEl->ownedElements.back()->getElementType() == ElementType::CLASS);
+  ASSERT_TRUE(dynamic_cast<Class*>(forwardsMethodParser.theEl->ownedElements.back())->operations.size() == 1);
+  
+  // Operation
+  Operation* op = dynamic_cast<Class*>(forwardsMethodParser.theEl->ownedElements.back())->operations.front();
+  ASSERT_TRUE(op->methods.size() == 1);
+  ASSERT_TRUE(op->methods.front()->getElementType() == ElementType::ACTIVITY);
+  ASSERT_TRUE(op->methods.front()->uuid == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
+  
+  // Activity
+  ASSERT_TRUE(forwardsMethodParser.theEl->ownedElements.front()->getElementType() == ElementType::ACTIVITY);
+  Activity* a = dynamic_cast<Activity*>(forwardsMethodParser.theEl->ownedElements.front());
+  ASSERT_TRUE(a->uuid == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
 }

@@ -21,6 +21,9 @@ class OperationParser : public NamedElementParser {
         };
         bool emit(YAML::Emitter& emitter, Element* el);
         static OperationParser createNewParser();
+        static void addMethodLater(Element* operation, Element* method) {
+            dynamic_cast<Operation*>(operation)->methods.push_back(dynamic_cast<Behavior*>(method));
+        };
 };
 
 #endif

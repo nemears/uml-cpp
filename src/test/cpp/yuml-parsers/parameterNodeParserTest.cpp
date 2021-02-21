@@ -7,11 +7,11 @@
 
 using namespace UML;
 
-class ParameterNodeTest : public ::testing::Test {
+class ParameterNodeParserTest : public ::testing::Test {
 
 };
 
-TEST_F(ParameterNodeTest, ParseParameterNodeTest) {
+TEST_F(ParameterNodeParserTest, ParseParameterNodeTest) {
     // Setup
     ModelParser parameterNodeParser = ModelParser::createNewParser();
     YAML::Node parameterNodeNode = YAML::LoadFile("../../../../../src/test/yml/parameterNodeTests/parameterNode.yml");
@@ -63,4 +63,73 @@ TEST_F(ParameterNodeTest, ParseParameterNodeTest) {
     ASSERT_TRUE(objFlow->uuid == boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
     ASSERT_TRUE(objFlow->getSource()->uuid == paramNode->uuid);
     ASSERT_TRUE(objFlow->getTarget()->uuid == objNode->uuid);
+}
+
+TEST_F(ParameterNodeParserTest, EmitParameterNodeTest) {
+    // Setup
+    Model m;
+    Activity a;
+    Parameter param;
+    ParameterNode paramNode;
+    ObjectNode objNode;
+    ObjectFlow objFlow;
+    PrimitiveType pt;
+    m.setID("1bfe131b-0d9a-4e6f-9a9b-1dae55626202");
+    a.setID("4b9519d3-cfd4-4bda-b1dc-6c7d0f521647");
+    param.setID("2f821a87-6a14-47a0-bf78-cf57e24876d6");
+    paramNode.setID("f73c6d44-5436-4021-83a6-ed90345c1f5f");
+    objNode.setID("25a0f5f5-0d02-40e6-a70e-c3c606fcfde0");
+    objFlow.setID("0734d34f-066f-4029-97d9-e39ac2f40f2b");
+    a.parameters.push_back(&param);
+    pt.setPrimitiveType(PrimitiveType::Primitive::INT);
+    param.setType(&pt);
+    paramNode.setType(&pt);
+    objNode.setType(&pt);
+    param.setDirection(ParameterDirectionKind::IN);
+    paramNode.setParameter(&param);
+    paramNode.outgoing.push_back(&objFlow);
+    objNode.incoming.push_back(&objFlow);
+    objFlow.setSource(&paramNode);
+    objFlow.setTarget(&objNode);
+    a.nodes.push_back(&paramNode);
+    a.nodes.push_back(&objNode);
+    a.edges.push_back(&objFlow);
+    m.ownedElements.push_back(&a);
+    string expectedEmit = R""""(model:
+  id: 1bfe131b-0d9a-4e6f-9a9b-1dae55626202
+  children:
+    - activity:
+        id: 4b9519d3-cfd4-4bda-b1dc-6c7d0f521647
+        parameters:
+          - parameter:
+              type: INT
+              id: 2f821a87-6a14-47a0-bf78-cf57e24876d6
+              direction: IN
+        nodes:
+          - parameterNode:
+              parameter: 2f821a87-6a14-47a0-bf78-cf57e24876d6
+              id: f73c6d44-5436-4021-83a6-ed90345c1f5f
+              type: INT
+              outgoing:
+                - 0734d34f-066f-4029-97d9-e39ac2f40f2b
+          - objectNode:
+              id: 25a0f5f5-0d02-40e6-a70e-c3c606fcfde0
+              type: INT
+              incoming:
+                - 0734d34f-066f-4029-97d9-e39ac2f40f2b
+        edges:
+          - objectFlow:
+              id: 0734d34f-066f-4029-97d9-e39ac2f40f2b
+              source: f73c6d44-5436-4021-83a6-ed90345c1f5f
+              target: 25a0f5f5-0d02-40e6-a70e-c3c606fcfde0)"""";
+
+    // Test
+    ModelParser mp = ModelParser::createNewParser();
+    string generatedEmit;
+    YAML::Emitter emitter;
+    ASSERT_NO_THROW(mp.emit(emitter, &m));
+    generatedEmit = emitter.c_str();
+    cout << generatedEmit << '\n';
+    ASSERT_TRUE(emitter.good());
+    ASSERT_EQ(expectedEmit, generatedEmit);
 }

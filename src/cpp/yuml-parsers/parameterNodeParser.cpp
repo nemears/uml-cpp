@@ -33,12 +33,12 @@ bool ParameterNodeParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Value << YAML::BeginMap;
     }
 
-    bool ret = ObjectNodeParser::emit(emitter, el);
-
     if (dynamic_cast<ParameterNode*>(el)->getParameter() != NULL) {
         emitter << YAML::Key << "parameter";
         emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<ParameterNode*>(el)->getParameter()->uuid);
     }
+
+    bool ret = ObjectNodeParser::emit(emitter, el);
 
     if (el->getElementType() == ElementType::PARAMETER_NODE) {
         emitter << YAML::EndMap;

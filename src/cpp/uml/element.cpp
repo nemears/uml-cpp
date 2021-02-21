@@ -48,6 +48,9 @@ string Element::getElementTypeString() {
         case ElementType::CONTROL_FLOW : {
             return "CONTROL_FLOW";
         }
+        case ElementType::DECISION_NODE : {
+            return "DECISION_NODE";
+        }
         case ElementType::ELEMENT : {
             return "ELEMENT";
         }

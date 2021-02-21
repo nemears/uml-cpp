@@ -9,18 +9,3 @@ bool Classifier::isPrimitive() {
 ElementType Classifier::getElementType() {
     return ElementType::CLASSIFIER;
 }
-
-void Classifier::addAttribute(Property& p) {
-    ownedAttributes.push_back(&p);
-}
-
-void Classifier::removeAttribute(Property& p) {
-    list<Property*>::iterator i = ownedAttributes.begin();
-    while (i != ownedAttributes.end()) {
-        if ((*i)->uuid == p.uuid) {
-            ownedAttributes.erase(i);
-            break;
-        }
-        ++i;
-    }
-}

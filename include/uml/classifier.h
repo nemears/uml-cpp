@@ -13,8 +13,6 @@ class Classifier: public Type {
         list<Property*> ownedAttributes;
         ElementType getElementType() override;
         bool isPrimitive() override;
-        void addAttribute(Property& p);
-        void removeAttribute(Property& p);
 };
 }
 #endif

@@ -12,7 +12,7 @@ bool OutputPinParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::BeginMap;
     }
 
-    bool ret = ActivityNodeParser::emit(emitter, el);
+    bool ret = PinParser::emit(emitter, el);
 
     if (el->getElementType() == ElementType::OUTPUT_PIN) {
         emitter << YAML::EndMap;

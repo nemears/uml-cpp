@@ -34,7 +34,10 @@ bool ObjectNodeParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::BeginMap;
     }
 
-    bool ret = emitObjectNode(emitter, el);
+    bool ret = NamedElementParser::emit(emitter, el);
+    if(!emitObjectNode(emitter, el)) {
+        ret = false;
+    }
 
     if (el->getElementType() == ElementType::OBJECT_NODE) {
         emitter << YAML::EndMap;
@@ -45,6 +48,7 @@ bool ObjectNodeParser::emit(YAML::Emitter& emitter, Element* el) {
 }
 
 bool ObjectNodeParser::emitObjectNode(YAML::Emitter& emitter, Element* el) {
+        
     bool ret = emitType(emitter, el);
 
     if (!emitActivityNode(emitter, el)) {

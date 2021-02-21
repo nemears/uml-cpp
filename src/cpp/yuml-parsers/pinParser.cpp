@@ -17,7 +17,11 @@ bool PinParser::parseFeatures(YAML::Node node, Element* el) {
 
 bool PinParser::emit(YAML::Emitter& emitter, Element* el) {
     
-    bool ret = emitObjectNode(emitter, el);
+    bool ret = NamedElementParser::emit(emitter, el);
+
+    if(!emitObjectNode(emitter, el)) {
+        ret = false;
+    }
 
     if(!emitMultiplicity(emitter, el)) {
         ret = false;

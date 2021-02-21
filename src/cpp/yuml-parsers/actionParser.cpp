@@ -69,21 +69,25 @@ bool ActionParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::BeginMap;
     }
 
+    bool ret = ActivityNodeParser::emit(emitter, el);
+
     if (!dynamic_cast<Action*>(el)->inputs.empty()) {
+        emitter << YAML::Key << "inputs";
+        emitter << YAML::Value << YAML::BeginSeq;
         for (auto const& input : dynamic_cast<Action*>(el)->inputs) {
-            InputPinParser ip(elements, postProcessFlag);
-            ip.emit(emitter, input);
+            emitter << YAML::Value << boost::lexical_cast<string>(input->uuid);
         }
+        emitter << YAML::EndSeq;
     }
 
     if (!dynamic_cast<Action*>(el)->outputs.empty()) {
+        emitter << YAML::Key << "outputs";
+        emitter << YAML::Value << YAML::BeginSeq;
         for (auto const& output : dynamic_cast<Action*>(el)->outputs) {
-            OutputPinParser op(elements, postProcessFlag);
-            op.emit(emitter, output);
+            emitter << YAML::Value << boost::lexical_cast<string>(output->uuid);
         }
+        emitter << YAML::EndSeq;
     }
-
-    bool ret = ActivityNodeParser::emit(emitter, el);
 
     if (el->getElementType() == ElementType::ACTION) {
         emitter << YAML::EndMap;

@@ -101,3 +101,68 @@ TEST_F(ObjectFlowParserTest, ParseBackwardsOutputPinTest) {
     ASSERT_TRUE(of->getTarget()->uuid == ob->uuid);
     ASSERT_TRUE(ob->getActivity()->uuid == backwardsOutputParser.theEl->ownedElements.front()->uuid);
 }
+
+TEST_F(ObjectFlowParserTest, EmitObjectNodeToActionTest) {
+    // Setup
+    Model m;
+    m.setID("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
+    Activity a;
+    a.setID("563f4740-e107-4d08-8618-2489f0fe1865");
+    ObjectNode o;
+    o.setID("c0ab87cc-d00b-4afb-9558-538253b442b2");
+    Action act;
+    act.setID("d9ab2f06-4c2c-4330-9e1b-7eaee423a66a");
+    InputPin i;
+    i.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+    ObjectFlow of;
+    of.setID("32bb88f4-1ee7-41f9-aa30-6403111061f2");
+    act.inputs.push_back(&i);
+    o.outgoing.push_back(&of);
+    PrimitiveType pt;
+    pt.setPrimitiveType(PrimitiveType::Primitive::INT);
+    o.setType(&pt);
+    i.incoming.push_back(&of);
+    i.setType(&pt);
+    of.setSource(&o);
+    of.setTarget(&i);
+    a.nodes.push_back(&o);
+    a.nodes.push_back(&act);
+    a.nodes.push_back(&i);
+    a.edges.push_back(&of);
+    m.ownedElements.push_back(&a);
+    ModelParser emitObjectNodeToActionParser = ModelParser::createNewParser();
+    string expectedEmit = R""""(model:
+  id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+  children:
+    - activity:
+        id: 563f4740-e107-4d08-8618-2489f0fe1865
+        nodes:
+          - objectNode:
+              id: c0ab87cc-d00b-4afb-9558-538253b442b2
+              type: INT
+              outgoing:
+                - 32bb88f4-1ee7-41f9-aa30-6403111061f2
+          - action:
+              id: d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
+              inputs:
+                - 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+          - inputPin:
+              id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+              type: INT
+              incoming:
+                - 32bb88f4-1ee7-41f9-aa30-6403111061f2
+        edges:
+          - objectFlow:
+              id: 32bb88f4-1ee7-41f9-aa30-6403111061f2
+              source: c0ab87cc-d00b-4afb-9558-538253b442b2
+              target: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35)"""";
+
+    // Test
+    string generatedEmit;
+    YAML::Emitter emitter;
+    ASSERT_NO_THROW(emitObjectNodeToActionParser.emit(emitter, &m));
+    generatedEmit = emitter.c_str();
+    cout << generatedEmit << '\n';
+    ASSERT_TRUE(emitter.good());
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

@@ -21,7 +21,7 @@ bool ParameterParser::parseFeatures(YAML::Node node, Element* el) {
             dynamic_cast<Parameter*>(el)->setDirection(ParameterDirectionKind::OUT);
         } else if (directionString.compare("INOUT") == 0) {
             dynamic_cast<Parameter*>(el)->setDirection(ParameterDirectionKind::INOUT);
-        } else if (directionString.compare("RETURN")) {
+        } else if (directionString.compare("RETURN") == 0) {
             dynamic_cast<Parameter*>(el)->setDirection(ParameterDirectionKind::RETURN);
         } else {
             // TODO ERROR

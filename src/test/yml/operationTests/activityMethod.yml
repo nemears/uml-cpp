@@ -1,0 +1,105 @@
+---
+  model:
+    children:
+      - class:
+          name: testClass
+          operations:
+            - operation:
+                name: testOp
+                parameters:
+                  - parameter:
+                      name: testNum
+                      id: 1bfe131b-0d9a-4e6f-9a9b-1dae55626202
+                      type: INT
+                      direction: IN
+                  - parameter:
+                      name: testRet
+                      id: 4b9519d3-cfd4-4bda-b1dc-6c7d0f521647
+                      type: BOOL
+                      direction: RETURN
+                methods:
+                  - activity:
+                      id: 54e8f139-9581-48a4-8021-32ff00606c93
+                      name: testAct
+                      parameters: 
+                        - 1bfe131b-0d9a-4e6f-9a9b-1dae55626202
+                        - 4b9519d3-cfd4-4bda-b1dc-6c7d0f521647
+                      nodes:
+                        - initialNode:
+                            id: 25a0f5f5-0d02-40e6-a70e-c3c606fcfde0
+                            outgoing:
+                              - 190d1cb9-13dc-44e6-a064-126891ae0033
+                        - parameterNode:
+                            id: 2f821a87-6a14-47a0-bf78-cf57e24876d6
+                            parameter: 1bfe131b-0d9a-4e6f-9a9b-1dae55626202
+                            type: INT
+                            outgoing:
+                              - f73c6d44-5436-4021-83a6-ed90345c1f5f
+                        - action:
+                            name: isValid
+                            id: 0734d34f-066f-4029-97d9-e39ac2f40f2b
+                            inputs:
+                              - inputPin:
+                                  id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+                                  type: INT
+                                  incoming: 
+                                    - f73c6d44-5436-4021-83a6-ed90345c1f5f
+                            incoming:
+                              - 190d1cb9-13dc-44e6-a064-126891ae0033
+                            outgoing:
+                              - c0ab87cc-d00b-4afb-9558-538253b442b2
+                        - decisionNode:
+                            id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+                            incoming:
+                              - c0ab87cc-d00b-4afb-9558-538253b442b2
+                            outgoing:
+                              - d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
+                              - 4680c886-40c6-45ed-9ae2-6aa37aa096e0
+                        - action:
+                            id: 563f4740-e107-4d08-8618-2489f0fe1865
+                            name: actA
+                            incoming:
+                              - d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
+                            outgoing:
+                              - ddb5dde3-4c5a-47be-99db-9b7fb7247793
+                        - joinNode:
+                            id: 2fd853ac-e07e-48e5-96a9-21f5a251e571
+                            incoming:
+                              - 4680c886-40c6-45ed-9ae2-6aa37aa096e0    
+                              - ddb5dde3-4c5a-47be-99db-9b7fb7247793
+                            outgoing:
+                              - f5c03bef-5578-4551-a0da-162d8734666d
+                        - finalNode:
+                            id: 880fffc9-d291-48c4-8cb6-e8ac6bd4a454
+                            incoming:
+                              - f5c03bef-5578-4551-a0da-162d8734666d  
+                      edges:
+                        - objectFlow:
+                            id: f73c6d44-5436-4021-83a6-ed90345c1f5f
+                            source: 2f821a87-6a14-47a0-bf78-cf57e24876d6
+                            target: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+                        - controlFlow: 
+                            id: 190d1cb9-13dc-44e6-a064-126891ae0033
+                            source: 25a0f5f5-0d02-40e6-a70e-c3c606fcfde0
+                            target: 0734d34f-066f-4029-97d9-e39ac2f40f2b
+                        - controlFlow:
+                            id: c0ab87cc-d00b-4afb-9558-538253b442b2
+                            source: 0734d34f-066f-4029-97d9-e39ac2f40f2b
+                            target: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+                        - controlFlow:
+                            id: d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
+                            source: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+                            target: 563f4740-e107-4d08-8618-2489f0fe1865
+                        - controlFlow:
+                            id: 4680c886-40c6-45ed-9ae2-6aa37aa096e0
+                            source: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+                            target: 2fd853ac-e07e-48e5-96a9-21f5a251e571
+                        - controlFlow:
+                            id: ddb5dde3-4c5a-47be-99db-9b7fb7247793
+                            source: 563f4740-e107-4d08-8618-2489f0fe1865
+                            target: 2fd853ac-e07e-48e5-96a9-21f5a251e571
+                        - controlFlow:
+                            id: f5c03bef-5578-4551-a0da-162d8734666d
+                            source: 2fd853ac-e07e-48e5-96a9-21f5a251e571
+                            target: 880fffc9-d291-48c4-8cb6-e8ac6bd4a454
+...

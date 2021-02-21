@@ -11,7 +11,7 @@ class JoinNodeParser : public ActivityNodeParser {
             ActivityNodeParser(elements, postParsers),
             NamedElementParser(elements, postParsers)
             {
-                keyword = "finalNode";
+                keyword = "joinNode";
             };
         bool emit(YAML::Emitter& emitter, Element* el) override;
         static JoinNodeParser createNewParser();

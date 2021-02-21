@@ -87,6 +87,9 @@ string Element::getElementTypeString() {
         case ElementType::LITERAL_STRING : {
             return "LITERAL_STRING";
         }
+        case ElementType::MERGE_NODE : {
+            return "MERGE_NODE";
+        }
         case ElementType::MODEL : {
             return "MODEL";
         }

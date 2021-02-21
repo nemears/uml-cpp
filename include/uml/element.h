@@ -38,6 +38,7 @@ enum class ElementType {
     LITERAL_INT,
     LITERAL_REAL,
     LITERAL_STRING,
+    MERGE_NODE,
     MODEL,
     MULTIPLICITY_ELEMENT,
     NAMED_ELEMENT,

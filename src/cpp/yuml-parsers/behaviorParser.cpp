@@ -41,5 +41,18 @@ bool BehaviorParser::parseFeatures(YAML::Node node, Element* el) {
 }
 
 bool BehaviorParser::emit(YAML::Emitter& emitter, Element* el) {
-    return true;
+    bool ret = ClassParser::emit(emitter, el);
+
+    if(!dynamic_cast<Behavior*>(el)->parameters.empty()) {
+        emitter << YAML::Key << "parameters";
+        emitter << YAML::Value << YAML::BeginSeq;
+        for(auto const& param : dynamic_cast<Behavior*>(el)->parameters) {
+            // TODO don't conflict with operation paired parameter
+            ParameterParser pp (elements, postProcessFlag);
+            pp.emit(emitter, param);
+        }
+        emitter << YAML::EndSeq;
+    }
+    
+    return ret;
 }

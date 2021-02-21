@@ -16,6 +16,7 @@
 #include "uml/literalReal.h"
 #include "uml/literalString.h"
 #include "uml/model.h"
+#include "uml/activity.h"
 
 using namespace UML;
 
@@ -64,6 +65,23 @@ template <class PrimitiveTypeBase = PrimitiveType> class PrimitiveTypePy : publi
                 isPrimitive,
 
             );
+        }
+};
+
+class ActivityPy : public Activity {
+    public:
+        void addNode(ActivityNode& node) {
+            nodes.push_back(&node);
+        }
+        void removeNode(ActivityNode& node) {
+            list<ActivityNode*>::iterator i = nodes.begin();
+            while (i != nodes.end()) {
+                if ((*i)->uuid == node.uuid) {
+                    nodes.erase(i);
+                    break;
+                }
+                ++i;
+            }
         }
 };
 
@@ -259,4 +277,15 @@ PYBIND11_MODULE(yuml_python, m) {
         .def(py::init<>())
         .def("setBody", &OpaqueBehavior::setSingletonBody)
         .def("getBody", &OpaqueBehavior::getSingletonBody);
+
+    // Activity
+    py::class_<ActivityPy, Behavior, ClassifierPy<ActivityPy>>(m, "Activity")
+        .def(py::init<>())
+        .def("addNode", &ActivityPy::addNode)
+        .def("removeNode", &ActivityPy::removeNode)
+        .def_readonly("nodes", &ActivityPy::nodes);
+    
+    // ActivityNode
+    py::class_<ActivityNode, NamedElement, ElementPy<ActivityNode>>(m, "ActivityNode")
+        .def(py::init<>());
 }

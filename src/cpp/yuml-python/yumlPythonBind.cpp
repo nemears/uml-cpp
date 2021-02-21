@@ -219,7 +219,19 @@ PYBIND11_MODULE(yuml_python, m) {
     py::class_<Slot, Element, ElementPy<Slot>>(m, "Slot")
         .def(py::init<>())
         .def("getDefiningFeature", &Slot::getDefiningFeature)
-        .def("setDefiningFeature", &Slot::setDefiningFeature);
+        .def("setDefiningFeature", &Slot::setDefiningFeature)
+        .def_readonly("values", &Slot::values)
+        .def("addValue", [](Slot& me, ValueSpecification& val) { me.values.push_back(&val); })
+        .def("removeValue", [](Slot& me, ValueSpecification& val) {
+            list<ValueSpecification*>::iterator i = me.values.begin();
+            while (i != me.values.end()) {
+                if ((*i)->uuid == val.uuid) {
+                    me.values.erase(i);
+                    break;
+                }
+                ++i;
+            }
+        });
 
     // InstanceSpecification
     py::class_<InstanceSpecification, NamedElement, ElementPy<InstanceSpecification>>(m, "InstanceSpecification")

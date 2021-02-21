@@ -131,9 +131,39 @@ bool ActivityParser::emit(YAML::Emitter& emitter, Element* el) {
                     ap.emit(emitter, node);
                     break;
                 }
+                case ElementType::DECISION_NODE : {
+                    DecisionNodeParser dnp(elements, postProcessFlag);
+                    dnp.emit(emitter, node);
+                    break;
+                }
+                case ElementType::FINAL_NODE : {
+                    FinalNodeParser fnp(elements, postProcessFlag);
+                    fnp.emit(emitter, node);
+                    break;
+                }
+                case ElementType::FORK_NODE : {
+                    ForkNodeParser frknp(elements, postProcessFlag);
+                    frknp.emit(emitter, node);
+                    break;
+                }
+                case ElementType::INITIAL_NODE : {
+                    InitialNodeParser inp(elements, postProcessFlag);
+                    inp.emit(emitter, node);
+                    break;
+                }
                 case ElementType::INPUT_PIN : {
                     InputPinParser ipp(elements, postProcessFlag);
                     ipp.emit(emitter, node);
+                    break;
+                }
+                case ElementType::JOIN_NODE : {
+                    JoinNodeParser jnp(elements, postProcessFlag);
+                    jnp.emit(emitter, node);
+                    break;
+                }
+                case ElementType::MERGE_NODE : {
+                    MergeNodeParser mnp(elements, postProcessFlag);
+                    mnp.emit(emitter, node);
                     break;
                 }
                 case ElementType::OBJECT_NODE : {

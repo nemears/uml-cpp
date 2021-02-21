@@ -21,10 +21,6 @@ namespace UML {
             Operation() {
                 type = NULL;
             }
-            void addMethod(Behavior& behavior);
-            void addParameter(Parameter& parameter);
-            void removeMethod(Behavior& behavior);
-            void removeParameter(Parameter& parameter);
     };
 }
 

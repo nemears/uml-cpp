@@ -293,11 +293,29 @@ PYBIND11_MODULE(yuml_python, m) {
         .def(py::init<>())
         .def("getType", &Operation::getType)
         .def("setType", &Operation::setType)
-        .def("addParameter", &Operation::addParameter)
-        .def("removeParameter", &Operation::removeParameter)
+        .def("addParameter", [] (Operation& me, Parameter& param) { me.parameters.push_back(&param); })
+        .def("removeParameter", [] (Operation& me, Parameter& param) {
+            list<Parameter*>::iterator i = me.parameters.begin();
+            while (i != me.parameters.end()) {
+                if ((*i)->uuid == param.uuid) {
+                    me.parameters.erase(i);
+                    break;
+                }
+                ++i;
+            }
+        })
         .def_readonly("parameters", &Operation::parameters)
-        .def("addMethod", &Operation::addMethod)
-        .def("removeMethod", &Operation::removeMethod)
+        .def("addMethod", [] (Operation& me, Behavior& method) { me.methods.push_back(&method); })
+        .def("removeMethod", [] (Operation& me, Behavior& method) {
+            list<Behavior*>::iterator i = me.methods.begin();
+            while (i != me.methods.end()) {
+                if ((*i)->uuid == method.uuid) {
+                    me.methods.erase(i);
+                    break;
+                }
+                ++i;
+            }
+        })
         .def_readonly("methods", &Operation::methods);
 
     // Class

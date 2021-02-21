@@ -49,6 +49,7 @@ enum class ElementType {
     OPERATION,
     OUTPUT_PIN,
     PARAMETER,
+    PARAMETER_NODE,
     PIN,
     PRIMITIVE_TYPE,
     PROPERTY,

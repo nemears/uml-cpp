@@ -120,6 +120,9 @@ string Element::getElementTypeString() {
         case ElementType::PARAMETER : {
             return "PARAMETER";
         }
+        case ElementType::PARAMETER_NODE : {
+            return "PARAMETER_NODE";
+        }
         case ElementType::PIN : {
             return "PIN";
         }

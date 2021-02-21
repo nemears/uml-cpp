@@ -119,7 +119,7 @@ bool ActivityParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Value << YAML::BeginMap;
     }
 
-    bool ret = ClassParser::emit(emitter, el);
+    bool ret = BehaviorParser::emit(emitter, el);
 
     if (!dynamic_cast<Activity*>(el)->nodes.empty()) {
         emitter << YAML::Key << "nodes";
@@ -144,6 +144,11 @@ bool ActivityParser::emit(YAML::Emitter& emitter, Element* el) {
                 case ElementType::OUTPUT_PIN : {
                     OutputPinParser opp(elements, postProcessFlag);
                     opp.emit(emitter, node);
+                    break;
+                }
+                case ElementType::PARAMETER_NODE : {
+                    ParameterNodeParser pnp(elements, postProcessFlag);
+                    pnp.emit(emitter, node);
                     break;
                 }
                 default : {

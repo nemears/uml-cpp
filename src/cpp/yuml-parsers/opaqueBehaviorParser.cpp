@@ -21,7 +21,7 @@ bool OpaqueBehaviorParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML:: BeginMap;
     }
 
-    bool ret = ClassParser::emit(emitter, el);
+    bool ret = BehaviorParser::emit(emitter, el);
 
     // TODO multiples
     if (!dynamic_cast<OpaqueBehavior*>(el)->bodies.empty()) {

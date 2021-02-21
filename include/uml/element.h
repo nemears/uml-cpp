@@ -28,6 +28,7 @@ enum class ElementType {
     DECISION_NODE,
     ELEMENT,
     FINAL_NODE,
+    FORK_NODE,
     INITIAL_NODE,
     INPUT_PIN,
     INSTANCE_SPECIFICATION,

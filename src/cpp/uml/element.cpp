@@ -57,6 +57,9 @@ string Element::getElementTypeString() {
         case ElementType::FINAL_NODE : {
             return "FINAL_NODE";
         }
+        case ElementType::FORK_NODE : {
+            return "FORK_NODE";
+        }
         case ElementType::INITIAL_NODE : {
             return "INITIAL_NODE";
         }

@@ -8,9 +8,16 @@ bool BehaviorParser::parseFeatures(YAML::Node node, Element* el) {
         if (node["parameters"].IsSequence()) {
             for (std::size_t i=0; i<node["parameters"].size(); i++) {
                 if (node["parameters"][i].IsMap()) {
-                    ParameterParser pp(elements, postProcessFlag);
-                    Element* parsedEl = pp.TypedElementParser::parseElement(node["parameters"][i]);
-                    dynamic_cast<Behavior*>(el)->parameters.push_back(dynamic_cast<Parameter*>(parsedEl));
+                    if (node["parameters"][i]["parameter"]) {
+                        ParameterParser pp(elements, postProcessFlag);
+                        Element* parsedEl = pp.TypedElementParser::parseElement(node["parameters"][i]["parameter"]);
+                        dynamic_cast<Behavior*>(el)->parameters.push_back(dynamic_cast<Parameter*>(parsedEl));
+                    } else {
+                        // error
+                        YAML::Emitter errEmit;
+                        errEmit << node["parameters"][i];
+                        throw ElementParser::InvalidIdentifierException(node["parameters"][i].Mark().line, errEmit.c_str());
+                    }
                 } else {
                     if (node["parameters"][i].IsScalar()) {
                         if (isValidUUID4(node["parameters"][i].as<string>())) {

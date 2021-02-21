@@ -12,6 +12,9 @@ namespace UML {
             Parameter* getParameter();
             void setParameter(Parameter* parameter);
             ElementType getElementType() override;
+            ParameterNode() {
+                parameter = NULL;
+            }
     };
 }
 

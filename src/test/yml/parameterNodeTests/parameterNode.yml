@@ -6,6 +6,7 @@
             - parameter:
                 id: 190d1cb9-13dc-44e6-a064-126891ae0033
                 type: INT
+                direction: IN
           nodes:
             - parameterNode:
                 id: 2c2fc607-48c6-4879-800b-7e659441cba1

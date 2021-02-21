@@ -12,6 +12,7 @@
 #include "joinNodeParser.h"
 #include "forkNodeParser.h"
 #include "mergeNodeParser.h"
+#include "parameterNodeParser.h"
 #include "controlFlowParser.h"
 #include "objectFlowParser.h"
 #include "uml/activity.h"

@@ -14,6 +14,8 @@ class InstanceSpecificationTest(unittest.TestCase):
         s = Slot()
         i.addSlot(s)
         self.assertEqual(i.slots[0].getID(), s.getID())
+        i.removeSlot(s)
+        self.assertEqual(len(i.slots), 0)
 
 if __name__ == '__main__':
     unittest.main()

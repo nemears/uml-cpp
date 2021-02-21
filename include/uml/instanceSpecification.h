@@ -14,8 +14,6 @@ namespace UML{
                 classifier = NULL;
             }
             ElementType getElementType() override;
-            void addSlot(Slot& slot);
-            void removeSlot(Slot& slot);
         protected:
             Classifier* classifier;
     };

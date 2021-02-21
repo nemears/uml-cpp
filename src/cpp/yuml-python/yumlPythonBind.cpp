@@ -238,8 +238,17 @@ PYBIND11_MODULE(yuml_python, m) {
         .def(py::init<>())
         .def("setClassifier", &InstanceSpecification::setClassifier)
         .def("getClassifier", &InstanceSpecification::getClassifier)
-        .def("addSlot", &InstanceSpecification::addSlot)
-        .def("removeSlot", &InstanceSpecification::removeSlot)
+        .def("addSlot", [](InstanceSpecification& me, Slot& slot) { me.slots.push_back(&slot); })
+        .def("removeSlot", [](InstanceSpecification& me, Slot& slot) {
+            list<Slot*>::iterator i = me.slots.begin();
+            while (i != me.slots.end()) {
+                if ((*i)->uuid == slot.uuid) {
+                    me.slots.erase(i);
+                    break;
+                }
+                ++i;
+            }
+         } )
         .def_readonly("slots", &InstanceSpecification::slots);
     
     // MultiplicityElement

@@ -27,5 +27,23 @@ Element* ParameterNodeParser::createElement() {
 }
 
 bool ParameterNodeParser::emit(YAML::Emitter& emitter, Element* el) {
-    return true;
+    if (el->getElementType() == ElementType::PARAMETER_NODE) {
+        emitter << YAML::BeginMap;
+        emitter << YAML::Key << "parameterNode";
+        emitter << YAML::Value << YAML::BeginMap;
+    }
+
+    bool ret = ObjectNodeParser::emit(emitter, el);
+
+    if (dynamic_cast<ParameterNode*>(el)->getParameter() != NULL) {
+        emitter << YAML::Key << "parameter";
+        emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<ParameterNode*>(el)->getParameter()->uuid);
+    }
+
+    if (el->getElementType() == ElementType::PARAMETER_NODE) {
+        emitter << YAML::EndMap;
+        emitter << YAML::EndMap;
+    }
+    
+    return ret;
 }

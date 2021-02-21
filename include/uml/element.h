@@ -82,8 +82,6 @@ class Element {
         virtual ElementType getElementType();
         virtual string getElementTypeString();
         virtual string getIDstring();
-        void addOwnedElement(Element& el);
-        void removeOwnedElement(Element& el);
         Element* getOwner();
         void setOwner(Element* owner);
 };

@@ -57,17 +57,17 @@ TEST_F(ElementTest, InvalidID_Test) {
   EXPECT_NO_THROW(el3->setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
 }
 
-TEST_F(ElementTest, AddOwnedElementTest) {
-  Element parent;
-  Element child;
-  ASSERT_NO_THROW(parent.addOwnedElement(child));
-  ASSERT_TRUE(parent.ownedElements.front()->uuid == child.uuid);
-}
+// TEST_F(ElementTest, AddOwnedElementTest) {
+//   Element parent;
+//   Element child;
+//   ASSERT_NO_THROW(parent.addOwnedElement(child));
+//   ASSERT_TRUE(parent.ownedElements.front()->uuid == child.uuid);
+// }
 
-TEST_F(ElementTest, RemoveOwnedElementTest) {
-  Element parent;
-  Element child;
-  parent.addOwnedElement(child);
-  ASSERT_NO_THROW(parent.removeOwnedElement(child));
-  ASSERT_TRUE(parent.ownedElements.empty());
-}
+// TEST_F(ElementTest, RemoveOwnedElementTest) {
+//   Element parent;
+//   Element child;
+//   parent.addOwnedElement(child);
+//   ASSERT_NO_THROW(parent.removeOwnedElement(child));
+//   ASSERT_TRUE(parent.ownedElements.empty());
+// }

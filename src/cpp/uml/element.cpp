@@ -156,18 +156,3 @@ string Element::getElementTypeString() {
 string Element::getIDstring() {
     return boost::lexical_cast<string>(uuid);
 }
-
-void Element::addOwnedElement(Element& el) {
-    ownedElements.push_back(&el);
-}
-
-void Element::removeOwnedElement(Element& el) {
-    list<Element*>::iterator i = ownedElements.begin();
-    while (i != ownedElements.end()) {
-        if ((*i)->uuid == el.uuid) {
-            ownedElements.erase(i);
-            break;
-        }
-        ++i;
-    }
-}

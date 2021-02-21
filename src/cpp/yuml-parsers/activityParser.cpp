@@ -104,7 +104,7 @@ bool ActivityParser::parseFeatures(YAML::Node node, Element* el) {
         }
     }
 
-    return ClassParser::parseFeatures(node, el);
+    return BehaviorParser::parseFeatures(node, el);
 }
 
 bool ActivityParser::emit(YAML::Emitter& emitter, Element* el) {

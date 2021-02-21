@@ -1,12 +1,12 @@
 #ifndef OPAQUEBEHAVIORPARSER
 #define OPAQUEBEHAVIORPARSER
 
-#include "classParser.h"
+#include "behaviorParser.h"
 #include "uml/opaqueBehavior.h"
 
 using namespace UML;
 
-class OpaqueBehaviorParser : public ClassParser {
+class OpaqueBehaviorParser : public BehaviorParser {
 
     protected:
         Element* createElement();
@@ -14,7 +14,7 @@ class OpaqueBehaviorParser : public ClassParser {
 
     public:
         OpaqueBehaviorParser(map<boost::uuids::uuid, Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
-            ClassParser(elements, postParsers){
+            BehaviorParser(elements, postParsers){
             this->keyword = "opaqueBehavior";
         }
         bool emit(YAML::Emitter& emitter, Element* el);

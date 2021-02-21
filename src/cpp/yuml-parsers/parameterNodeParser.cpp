@@ -2,7 +2,7 @@
 
 bool ParameterNodeParser::parseFeatures(YAML::Node node, Element* el) {
 
-    bool ret = ObjectNodeParser::parseFeatures(node, el);
+    bool ret = NamedElementParser::parseFeatures(node, el);
 
     if (node["parameter"]) {
         if (node["parameter"].IsScalar()) {
@@ -13,7 +13,11 @@ bool ParameterNodeParser::parseFeatures(YAML::Node node, Element* el) {
             }
         }
     }
-    
+
+    if (!parseObjectNodeFeatures(node, el)) {
+        ret = false;
+    }
+
     return ret;
 }
 

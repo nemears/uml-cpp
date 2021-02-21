@@ -11,7 +11,7 @@ bool OpaqueBehaviorParser::parseFeatures(YAML::Node node, Element* el) {
         dynamic_cast<OpaqueBehavior*>(el)->bodies.push_back(node["body"].as<string>());
     }
 
-    return ClassParser::parseFeatures(node, el);
+    return BehaviorParser::parseFeatures(node, el);
 }
 
 bool OpaqueBehaviorParser::emit(YAML::Emitter& emitter, Element* el) {

@@ -1,0 +1,26 @@
+---
+  model:
+    children:
+      - activity:
+          parameters:
+            - parameter:
+                id: 190d1cb9-13dc-44e6-a064-126891ae0033
+                type: INT
+          nodes:
+            - parameterNode:
+                id: 2c2fc607-48c6-4879-800b-7e659441cba1
+                parameter: 190d1cb9-13dc-44e6-a064-126891ae0033
+                type: INT
+                outgoing: 
+                  - 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+            - objectNode:
+                id: 7d4b6b0b-f6c2-4670-868c-87709cede18e
+                type: INT
+                incoming:
+                  - 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+          edges:
+            - objectFlow:
+                id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+                source: 2c2fc607-48c6-4879-800b-7e659441cba1
+                target: 7d4b6b0b-f6c2-4670-868c-87709cede18e
+...

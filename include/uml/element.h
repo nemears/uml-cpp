@@ -32,6 +32,7 @@ enum class ElementType {
     INPUT_PIN,
     INSTANCE_SPECIFICATION,
     INSTANCE_VALUE,
+    JOIN_NODE,
     LITERAL_BOOL,
     LITERAL_INT,
     LITERAL_REAL,

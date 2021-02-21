@@ -69,6 +69,9 @@ string Element::getElementTypeString() {
         case ElementType::INSTANCE_VALUE : {
             return "INSTANCE_VALUE";
         }
+        case ElementType::JOIN_NODE : {
+            return "JOIN_NODE";
+        }
         case ElementType::LITERAL_BOOL : {
             return "LITERAL_BOOL";
         }

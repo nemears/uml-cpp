@@ -31,6 +31,7 @@
 #include "uml/forkNode.h"
 #include "uml/mergeNode.h"
 #include "uml/parameterNode.h"
+#include "yuml-parsers/modelParser.h"
 
 using namespace UML;
 
@@ -80,6 +81,23 @@ template <class PrimitiveTypeBase = PrimitiveType> class PrimitiveTypePy : publi
 
             );
         }
+};
+
+class ModelParserPy {
+    protected:
+        ModelParser modelParser;
+    public:
+        ModelParserPy () : modelParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>) {};
+        void parse(string f) {
+            modelParser.parse(YAML::LoadFile(f));
+        }
+        Element* getParsedEl() {
+            return modelParser.theEl;
+        };
+        string emit(Model* m) {
+            return modelParser.emitDocument(m);
+        }
+
 };
 
 namespace py = pybind11;
@@ -474,4 +492,11 @@ PYBIND11_MODULE(yuml_python, m) {
             .def(py::init<>())
             .def("getParameter", &ParameterNode::getParameter)
             .def("setParameter", &ParameterNode::setParameter);
+
+        // ModelParser
+        py::class_<ModelParserPy>(m, "ModelParser")
+            .def(py::init<>())
+            .def("parse", &ModelParserPy::parse)
+            .def("emit", &ModelParserPy::emit)
+            .def("getParsedElement", &ModelParserPy::getParsedEl);
 }

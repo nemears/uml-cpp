@@ -1,7 +1,9 @@
 ---
   model:
+    id: fa3e6863-9ca0-4a9e-a288-da3e99045f3f
     children:
       - activity:
+          id: 48ab55ad-62d0-4282-b624-c46e0de94486
           nodes:
             - action:
                 id: 2c2fc607-48c6-4879-800b-7e659441cba1

@@ -81,6 +81,7 @@
         "-v",
         "-s",
         "src/test/python/uml",
+        "src/test/python/yuml-parser",
         "-p",
         "*_test.py"
     ],

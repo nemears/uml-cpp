@@ -21,20 +21,20 @@ TEST_F(ClassTest, BasicOperationTest) {
     ASSERT_NO_THROW(c.operations.push_back(&o));
 }
 
-TEST_F(ClassTest, AddOperationTest) {
-    Class c;
-    Operation o;
-    ASSERT_NO_THROW(c.addOperation(o));
-    ASSERT_TRUE(c.operations.front()->uuid == o.uuid);
-}
+// TEST_F(ClassTest, AddOperationTest) {
+//     Class c;
+//     Operation o;
+//     ASSERT_NO_THROW(c.addOperation(o));
+//     ASSERT_TRUE(c.operations.front()->uuid == o.uuid);
+// }
 
-TEST_F(ClassTest, RemoveOperationTest) {
-    Class c;
-    Operation o;
-    Operation o2;
-    c.addOperation(o);
-    c.addOperation(o2);
-    ASSERT_TRUE(c.operations.front()->uuid == o.uuid);
-    ASSERT_NO_THROW(c.removeOperation(o));
-    ASSERT_TRUE(c.operations.front()->uuid == o2.uuid);
-}
+// TEST_F(ClassTest, RemoveOperationTest) {
+//     Class c;
+//     Operation o;
+//     Operation o2;
+//     c.addOperation(o);
+//     c.addOperation(o2);
+//     ASSERT_TRUE(c.operations.front()->uuid == o.uuid);
+//     ASSERT_NO_THROW(c.removeOperation(o));
+//     ASSERT_TRUE(c.operations.front()->uuid == o2.uuid);
+// }

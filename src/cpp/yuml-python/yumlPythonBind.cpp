@@ -321,8 +321,17 @@ PYBIND11_MODULE(yuml_python, m) {
     // Class
     py::class_<Class, Classifier, ClassifierPy<Class>>(m, "Class")
         .def(py::init<>())
-        .def("addOperation", &Class::addOperation)
-        .def("removeOperation", &Class::removeOperation)
+        .def("addOperation", [] (Class& me, Operation& op) { me.operations.push_back(&op); })
+        .def("removeOperation", [] (Class& me, Operation& op) {
+            list<Operation*>::iterator i = me.operations.begin();
+            while (i != me.operations.end()) {
+                if ((*i)->uuid == op.uuid) {
+                    me.operations.erase(i);
+                    break;
+                }
+                ++i;
+            }
+        })
         .def_readonly("operations", &Class::operations);
     
     // Behavior

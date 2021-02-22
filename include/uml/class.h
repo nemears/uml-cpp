@@ -19,8 +19,6 @@ namespace UML{
         public:
             list<Operation*> operations;
             ElementType getElementType() override;
-            void addOperation(Operation& o);
-            void removeOperation(Operation& o);
     };
 }
 

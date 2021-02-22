@@ -22,6 +22,15 @@
 #include "uml/pin.h"
 #include "uml/inputPin.h"
 #include "uml/outputPin.h"
+#include "uml/controlFlow.h"
+#include "uml/objectFlow.h"
+#include "uml/initialNode.h"
+#include "uml/finalNode.h"
+#include "uml/decisionNode.h"
+#include "uml/joinNode.h"
+#include "uml/forkNode.h"
+#include "uml/mergeNode.h"
+#include "uml/parameterNode.h"
 
 using namespace UML;
 
@@ -427,4 +436,42 @@ PYBIND11_MODULE(yuml_python, m) {
                 ++i;
             }
         });
+
+        // ControlFlow
+        py::class_<ControlFlow, ActivityEdge, ElementPy<ControlFlow>>(m, "ControlFlow")
+            .def(py::init<>());
+
+        // ObjectFlow
+        py::class_<ObjectFlow, ActivityEdge, ElementPy<ObjectFlow>>(m, "ObjectFlow")
+            .def(py::init<>());
+
+        // InitialNode
+        py::class_<InitialNode, ActivityNode, ElementPy<InitialNode>>(m, "InitialNode")
+            .def(py::init<>());
+        
+        // FinalNode
+        py::class_<FinalNode, ActivityNode, ElementPy<FinalNode>>(m, "FinalNode")
+            .def(py::init<>());
+
+        // DecisionNode
+        py::class_<DecisionNode, ActivityNode, ElementPy<DecisionNode>>(m, "DecisionNode")
+            .def(py::init<>());
+
+        // JoinNode
+        py::class_<JoinNode, ActivityNode, ElementPy<JoinNode>>(m, "JoinNode")
+            .def(py::init<>());
+
+        // ForkNode
+        py::class_<ForkNode, ActivityNode, ElementPy<ForkNode>>(m, "ForkNode")
+            .def(py::init<>());
+
+        // MergeNode
+        py::class_<MergeNode, ActivityNode, ElementPy<MergeNode>>(m, "MergeNode")
+            .def(py::init<>());
+
+        // ParameterNode
+        py::class_<ParameterNode, ObjectNode, ElementPy<ParameterNode>>(m, "ParameterNode")
+            .def(py::init<>())
+            .def("getParameter", &ParameterNode::getParameter)
+            .def("setParameter", &ParameterNode::setParameter);
 }

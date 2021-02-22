@@ -68,23 +68,6 @@ template <class PrimitiveTypeBase = PrimitiveType> class PrimitiveTypePy : publi
         }
 };
 
-class ActivityPy : public Activity {
-    public:
-        void addNode(ActivityNode& node) {
-            nodes.push_back(&node);
-        }
-        void removeNode(ActivityNode& node) {
-            list<ActivityNode*>::iterator i = nodes.begin();
-            while (i != nodes.end()) {
-                if ((*i)->uuid == node.uuid) {
-                    nodes.erase(i);
-                    break;
-                }
-                ++i;
-            }
-        }
-};
-
 namespace py = pybind11;
 
 PYBIND11_MODULE(yuml_python, m) {
@@ -345,11 +328,20 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("getBody", &OpaqueBehavior::getSingletonBody);
 
     // Activity
-    py::class_<ActivityPy, Behavior, ClassifierPy<ActivityPy>>(m, "Activity")
+    py::class_<Activity, Behavior, ClassifierPy<Activity>>(m, "Activity")
         .def(py::init<>())
-        .def("addNode", &ActivityPy::addNode)
-        .def("removeNode", &ActivityPy::removeNode)
-        .def_readonly("nodes", &ActivityPy::nodes);
+        .def("addNode", [] (Activity& me, ActivityNode& node) { me.nodes.push_back(&node); })
+        .def("removeNode", [] (Activity& me, ActivityNode& node) {
+            list<ActivityNode*>::iterator i = me.nodes.begin();
+            while (i != me.nodes.end()) {
+                if ((*i)->uuid == node.uuid) {
+                    me.nodes.erase(i);
+                    break;
+                }
+                ++i;
+            }
+        })
+        .def_readonly("nodes", &Activity::nodes);
     
     // ActivityNode
     py::class_<ActivityNode, NamedElement, ElementPy<ActivityNode>>(m, "ActivityNode")

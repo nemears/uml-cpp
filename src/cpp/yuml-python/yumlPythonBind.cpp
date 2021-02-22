@@ -17,6 +17,11 @@
 #include "uml/literalString.h"
 #include "uml/model.h"
 #include "uml/activity.h"
+#include "uml/action.h"
+#include "uml/objectNode.h"
+#include "uml/pin.h"
+#include "uml/inputPin.h"
+#include "uml/outputPin.h"
 
 using namespace UML;
 
@@ -373,6 +378,50 @@ PYBIND11_MODULE(yuml_python, m) {
             while (i != me.outgoing.end()) {
                 if ((*i)->uuid == edge.uuid) {
                     me.outgoing.erase(i);
+                    break;
+                }
+                ++i;
+            }
+        });
+
+    // ObjectNode
+    py::class_<ObjectNode, TypedElement, ActivityNode, ElementPy<ObjectNode>>(m, "ObjectNode")
+        .def(py::init<>());
+
+    // Pin
+    py::class_<Pin, ObjectNode, MultiplicityElement, ElementPy<Pin>>(m, "Pin")
+        .def(py::init<>());
+
+    // InputPin
+    py::class_<InputPin, Pin, ElementPy<InputPin>>(m, "InputPin")
+        .def(py::init<>());
+
+    // OutputPin
+    py::class_<OutputPin, Pin, ElementPy<OutputPin>>(m, "OutputPin")
+        .def(py::init<>());
+    
+    // Action
+    py::class_<Action, ActivityNode, ElementPy<Action>>(m, "Action")
+        .def(py::init<>())
+        .def_readonly("inputs", &Action::inputs)
+        .def_readonly("outputs", &Action::outputs)
+        .def("addInput", [] (Action& me, InputPin& in) { me.inputs.push_back(&in); } )
+        .def("removeInput", [] (Action& me, InputPin& in) {
+            list<InputPin*>::iterator i = me.inputs.begin();
+            while (i != me.inputs.end()) {
+                if ((*i)->uuid == in.uuid) {
+                    me.inputs.erase(i);
+                    break;
+                }
+                ++i;
+            }
+        })
+        .def("addOutput", [] (Action& me, OutputPin& out) { me.outputs.push_back(&out); })
+        .def("removeOutput", [] (Action& me, OutputPin& out) {
+            list<OutputPin*>::iterator i = me.outputs.begin();
+            while (i != me.outputs.end()) {
+                if ((*i)->uuid == out.uuid) {
+                    me.outputs.erase(i);
                     break;
                 }
                 ++i;

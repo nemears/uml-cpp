@@ -343,7 +343,39 @@ PYBIND11_MODULE(yuml_python, m) {
         })
         .def_readonly("nodes", &Activity::nodes);
     
+    // ActivityEdge
+    py::class_<ActivityEdge, NamedElement, ElementPy<ActivityEdge>> (m, "ActivityEdge")
+        .def(py::init<>())
+        .def("getSource", &ActivityEdge::getSource)
+        .def("setSource", &ActivityEdge::setSource)
+        .def("getTarget", &ActivityEdge::getTarget)
+        .def("setTarget", &ActivityEdge::setTarget);
+
     // ActivityNode
     py::class_<ActivityNode, NamedElement, ElementPy<ActivityNode>>(m, "ActivityNode")
-        .def(py::init<>());
+        .def(py::init<>())
+        .def_readonly("incoming", &ActivityNode::incoming)
+        .def_readonly("outgoing", &ActivityNode::outgoing)
+        .def("addIncoming", [] (ActivityNode& me, ActivityEdge& edge) { me.incoming.push_back(&edge); })
+        .def("addOutgoing", [] (ActivityNode& me, ActivityEdge& edge) { me.outgoing.push_back(&edge); })
+        .def("removeIncoming", [] (ActivityNode& me, ActivityEdge& edge) {
+            list<ActivityEdge*>::iterator i = me.incoming.begin();
+            while (i != me.incoming.end()) {
+                if ((*i)->uuid == edge.uuid) {
+                    me.incoming.erase(i);
+                    break;
+                }
+                ++i;
+            }
+        })
+        .def("removeOutgoing", [] (ActivityNode& me, ActivityEdge& edge) {
+            list<ActivityEdge*>::iterator i = me.outgoing.begin();
+            while (i != me.outgoing.end()) {
+                if ((*i)->uuid == edge.uuid) {
+                    me.outgoing.erase(i);
+                    break;
+                }
+                ++i;
+            }
+        });
 }

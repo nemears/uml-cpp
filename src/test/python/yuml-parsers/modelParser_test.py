@@ -1,13 +1,10 @@
 import unittest
 from yuml_python import *
 
-import os
-
 class ModelParserTest(unittest.TestCase):
     
     def testParseAndEmit(self):
         parser = ModelParser()
-        print(os.getcwd())
         parser.parse('src/test/yml/controlFlowTests/actionToSelf.yml')
         expectedEmit = """---
 model:

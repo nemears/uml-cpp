@@ -37,11 +37,15 @@ def parseModule2(path, d):
 def parseClass2(clazzNode, d):
     clazz = Class()
     d[clazz.getID()] = clazz
+    clazz.setName(clazzNode.name)
     for node in clazzNode.body:
         if type(node) is ast.FunctionDef:
             fun = Operation()
             d[fun.getID()] = fun
+            fun.setName(node.name)
             bhv = parseFunction(node, d)
+            for param in bhv.parameters:
+                fun.addParameter(param)
             fun.addMethod(bhv)
             clazz.addOperation(fun)
             
@@ -50,6 +54,13 @@ def parseClass2(clazzNode, d):
 def parseFunction(defNode, d):
     fun = Activity()
     d[fun.getID()] = fun
+    fun.setName(defNode.name)
+    for arg in defNode.args.args:
+        p = Parameter()
+        p.setName(arg.arg)
+        d[p.getID()] = p
+        p.setDirection("IN")
+        fun.addParameter(p)
     
     for node in defNode.body:
         if type(node) is ast.If:

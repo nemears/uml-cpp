@@ -25,9 +25,12 @@ def parseModule2(path, d):
         d[moduleUML.getID()] = moduleUML
         for node in moduleNode.body:
             if type(node) is ast.ClassDef:
-                c = Class()#parseClass(node)
+                c = parseClass2(node, d)
                 moduleUML.addOwnedElement(c)
                 d[c.getID()] = c
+            if type(node) is ast.FunctionDef:
+                bhv = parseFunction(node, d)
+                moduleUML.addOwnedElement(bhv)
             #if type(n) is ast.Import:
         return moduleUML
 
@@ -37,7 +40,20 @@ def parseClass2(clazzNode, d):
     for node in clazzNode.body:
         if type(node) is ast.FunctionDef:
             fun = Operation()
+            d[fun.getID()] = fun
+            bhv = parseFunction(node, d)
+            fun.addMethod(bhv)
+            clazz.addOperation(fun)
+            
     return clazz
+
+def parseFunction(defNode, d):
+    fun = Activity()
+    d[fun.getID()] = fun
+    for node in defNode.body:
+        if type(node) is ast.If:
+            d = DecisionNode()
+    return fun
 
 if __name__ == '__main__':
     n = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/test/python/yuml_parsers/modelParser_test.py')

@@ -50,9 +50,16 @@ def parseClass2(clazzNode, d):
 def parseFunction(defNode, d):
     fun = Activity()
     d[fun.getID()] = fun
+    
     for node in defNode.body:
         if type(node) is ast.If:
-            d = DecisionNode()
+            dec = DecisionNode()
+        elif type(node) is ast.Return:
+            retParam = Parameter()
+            d[retParam.getID()] = retParam
+            retParam.setDirection('RETURN')
+            fun.addParameter(retParam)
+
     return fun
 
 if __name__ == '__main__':

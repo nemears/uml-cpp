@@ -351,7 +351,19 @@ PYBIND11_MODULE(yuml_python, m) {
     
     // Behavior
     py::class_<Behavior, Class, ClassifierPy<Behavior>> (m, "Behavior")
-        .def(py::init<>());
+        .def(py::init<>())
+        .def_readonly("parameters", &Behavior::parameters)
+        .def("addParameter", [] (Behavior& me, Parameter& param) { me.parameters.push_back(&param); })
+        .def("removeParameter", [] (Behavior& me, Parameter& param) {
+            list<Parameter*>::iterator i = me.parameters.begin();
+            while (i != me.parameters.end()) {
+                if ((*i)->uuid == param.uuid) {
+                    me.parameters.erase(i);
+                    break;
+                }
+                ++i;
+            }
+        });
 
     // Opaque Behavior
     py::class_<OpaqueBehavior, Behavior, ClassifierPy<OpaqueBehavior>>(m, "OpaqueBehavior")

@@ -23,6 +23,15 @@ class parseModuleTest(unittest.TestCase):
         self.assertEqual(type(m), Namespace)
         self.assertEqual(len(m.ownedElements), 2)
         self.assertEqual(type(m.ownedElements[0]), Activity)
+        self.assertEqual(type(m.ownedElements[1]), Activity)
+        self.assertEqual(m.ownedElements[0].getName(), 'noParam')
+        self.assertEqual(len(m.ownedElements[0].parameters), 1)
+        self.assertEqual(m.ownedElements[0].parameters[0].getDirection(), 'RETURN')
+        self.assertEqual(m.ownedElements[1].getName(), 'numParam')
+        self.assertEqual(len(m.ownedElements[1].parameters), 2)
+        self.assertEqual(m.ownedElements[1].parameters[0].getName(), 'f')
+        self.assertEqual(m.ownedElements[1].parameters[0].getDirection(), 'IN')
+        self.assertEqual(m.ownedElements[1].parameters[1].getDirection(), 'RETURN')
 
 
 if __name__ == '__main__':

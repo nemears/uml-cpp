@@ -14,7 +14,7 @@ class parseModuleTest(unittest.TestCase):
 
         #attributes
         #int
-        self.assertEqual(len(m.ownedElements[0].attributes), 3)
+        self.assertEqual(len(m.ownedElements[0].attributes), 4)
         self.assertEqual(m.ownedElements[0].attributes[0].getName(), 'i')
         self.assertEqual(m.ownedElements[0].attributes[0].getType().isPrimitive(), True)
         self.assertEqual(m.ownedElements[0].attributes[0].getType().getPrimitiveType(), 'INT')
@@ -24,6 +24,16 @@ class parseModuleTest(unittest.TestCase):
         self.assertEqual(m.ownedElements[0].attributes[1].getType().isPrimitive(), True)
         self.assertEqual(m.ownedElements[0].attributes[1].getType().getPrimitiveType(), 'BOOL')
         self.assertEqual(m.ownedElements[0].attributes[1].getDefaultValue().getValue(), False)
+        #str
+        self.assertEqual(m.ownedElements[0].attributes[2].getName(), 's')
+        self.assertEqual(m.ownedElements[0].attributes[2].getType().isPrimitive(), True)
+        self.assertEqual(m.ownedElements[0].attributes[2].getType().getPrimitiveType(), 'STRING')
+        self.assertEqual(m.ownedElements[0].attributes[2].getDefaultValue().getValue(), 'a')
+        #real
+        self.assertEqual(m.ownedElements[0].attributes[3].getName(), 'r')
+        self.assertEqual(m.ownedElements[0].attributes[3].getType().isPrimitive(), True)
+        self.assertEqual(m.ownedElements[0].attributes[3].getType().getPrimitiveType(), 'REAL')
+        self.assertEqual(m.ownedElements[0].attributes[3].getDefaultValue().getValue(), 3.14)
         
         # operation
         self.assertEqual(len(m.ownedElements[0].operations), 1)

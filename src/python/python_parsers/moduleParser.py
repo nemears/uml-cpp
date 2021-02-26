@@ -47,9 +47,7 @@ def parseClass(clazzNode, d):
                     defaultValue = LiteralBool()
                     d[defaultValue.getID()] = defaultValue
                     defaultValue.setValue(node.value.value)
-                    for prop in props:
-                        prop.setType(boolType)
-                        prop.setDefaultValue(defaultValue)
+                    attributeHelper(props, boolType, defaultValue)
                 elif type(node.value.value) is int:
                     intType = PrimitiveType()
                     d[intType.getID()] = intType
@@ -57,10 +55,22 @@ def parseClass(clazzNode, d):
                     defaultValue = LiteralInt()
                     d[defaultValue.getID()] = defaultValue
                     defaultValue.setValue(node.value.value)
-                    for prop in props:
-                        prop.setType(intType)
-                        prop.setDefaultValue(defaultValue)
-
+                    attributeHelper(props, intType, defaultValue)
+                elif type(node.value.value) is str:
+                    strType = PrimitiveType()
+                    d[strType.getID()] = strType
+                    strType.setPrimitiveType('STRING')
+                    defaultValue = LiteralString()
+                    d[defaultValue.getID()] = defaultValue
+                    defaultValue.setValue(node.value.value)
+                    attributeHelper(props, strType, defaultValue)
+                elif type(node.value.value) is float:
+                    realType = PrimitiveType()
+                    d[realType.getID()] = realType
+                    realType.setPrimitiveType('REAL')
+                    defaultValue = LiteralReal()
+                    defaultValue.setValue(node.value.value)
+                    attributeHelper(props, realType, defaultValue)
         elif type(node) is ast.FunctionDef:
             fun = Operation()
             d[fun.getID()] = fun
@@ -72,6 +82,11 @@ def parseClass(clazzNode, d):
             clazz.addOperation(fun)
             
     return clazz
+
+def attributeHelper(props, primitive, defaultValue):
+    for prop in props:
+        prop.setType(primitive)
+        prop.setDefaultValue(defaultValue)
 
 def parseFunction(defNode, d):
     fun = Activity()

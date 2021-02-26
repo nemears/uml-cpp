@@ -116,6 +116,16 @@ def parseFunction(defNode, d):
             dec = DecisionNode()
             d[dec.getID()] = dec
 
+            # map control flow to decision
+            flow = ControlFlow()
+            d[flow.getID()] = flow
+            fun.addEdge(flow)
+            flow.setSource(lastNode)
+            flow.setTarget(dec)
+            dec.addIncoming(flow)
+            lastNode.addOutgoing(flow)
+            fun.addNode(dec)
+
             # get object input to decision node
             # if it is a name node it is referencing a previously defined variable, so search through all
             # of the objectNode type nodes defined so far for a match and set flow
@@ -137,16 +147,7 @@ def parseFunction(defNode, d):
 
             # map outgoing controlFlow
 
-
-            # map control flow to decision
-            flow = ControlFlow()
-            d[flow.getID()] = flow
-            fun.addEdge(flow)
-            flow.setSource(lastNode)
-            flow.setTarget(dec)
-            dec.addIncoming(flow)
-            lastNode.addOutgoing(flow)
-            fun.addNode(dec)
+            # override lastNode
             lastNode = dec
 
         # find return param

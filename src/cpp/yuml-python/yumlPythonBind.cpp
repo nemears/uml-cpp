@@ -437,7 +437,9 @@ PYBIND11_MODULE(yuml_python, m) {
 
     // ObjectNode
     py::class_<ObjectNode, TypedElement, ActivityNode, ElementPy<ObjectNode>>(m, "ObjectNode")
-        .def(py::init<>());
+        .def(py::init<>())
+        .def("getUpperBound", &ObjectNode::getUpperBound)
+        .def("setUpperBound", &ObjectNode::setUpperBound);
 
     // Pin
     py::class_<Pin, ObjectNode, MultiplicityElement, ElementPy<Pin>>(m, "Pin")

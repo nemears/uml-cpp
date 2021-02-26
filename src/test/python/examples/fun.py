@@ -10,3 +10,7 @@ def decisionFlow(b):
         print('b is true')
     else:
         print('b is false')
+
+def callBehavior()
+    noParam()
+    return numParam(1)

@@ -1,7 +1,7 @@
 import ast
 from yuml_python import *
 
-# This is needs a dict to keep c++ memory not garbage collected for now
+# This needs a dict to keep c++ memory not garbage collected for now
 # There may be a solution on the pybind11 side with these issues if they implement fixes
 # https://github.com/pybind/pybind11/issues/1333
 # https://github.com/pybind/pybind11/pull/2839
@@ -29,12 +29,38 @@ def parseClass(clazzNode, d):
 
         # property with default value
         if type(node) is ast.Assign:
-            prop = Property()
-            d[prop.getID()] = prop
+            props = []
             for target in node.targets:
                 if type(target) is ast.Name:
+                    prop = Property()
+                    d[prop.getID()] = prop
+                    props.append(prop)
                     prop.setName(target.id)
             clazz.addAttribute(prop) 
+            if type(node.value) is ast.Constant:
+                # This is the default value of all of the attributes
+                # TODO determine type
+                if type(node.value.value) is bool:
+                    boolType = PrimitiveType()
+                    d[boolType.getID()] = boolType
+                    boolType.setPrimitiveType('BOOL')
+                    defaultValue = LiteralBool()
+                    d[defaultValue.getID()] = defaultValue
+                    defaultValue.setValue(node.value.value)
+                    for prop in props:
+                        prop.setType(boolType)
+                        prop.setDefaultValue(defaultValue)
+                elif type(node.value.value) is int:
+                    intType = PrimitiveType()
+                    d[intType.getID()] = intType
+                    intType.setPrimitiveType('INT')
+                    defaultValue = LiteralInt()
+                    d[defaultValue.getID()] = defaultValue
+                    defaultValue.setValue(node.value.value)
+                    for prop in props:
+                        prop.setType(intType)
+                        prop.setDefaultValue(defaultValue)
+
         elif type(node) is ast.FunctionDef:
             fun = Operation()
             d[fun.getID()] = fun
@@ -58,11 +84,11 @@ def parseFunction(defNode, d):
         p.setName(arg.arg)
         d[p.getID()] = p
         p.setDirection("IN")
-        fun.addParameter(p)
-    
+        fun.addParameter(p) 
     for node in defNode.body:
         if type(node) is ast.If:
             dec = DecisionNode()
+            d[dec.getID()] = dec
 
         # find return param
         elif type(node) is ast.Return:
@@ -74,5 +100,11 @@ def parseFunction(defNode, d):
     return fun
 
 if __name__ == '__main__':
-    n = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/test/python/yuml_parsers/modelParser_test.py')
+    d = {}
+    n = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/test/python/yuml_parsers/modelParser_test.py', d)
     print('length of module children: ', len(n.ownedElements))
+    m = Model()
+    m.setName('root')
+    m.addOwnedElement(n)
+    emitter = ModelParser()
+    print(emitter.emit(m))

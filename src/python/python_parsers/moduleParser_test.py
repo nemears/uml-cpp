@@ -12,11 +12,19 @@ class parseModuleTest(unittest.TestCase):
         self.assertEqual(type(m.ownedElements[0]), Class)
         self.assertEqual(m.ownedElements[0].getName(), 'Test')
 
-        #attribute
-        self.assertEqual(len(m.ownedElements[0].attributes), 1)
+        #attributes
+        #int
+        self.assertEqual(len(m.ownedElements[0].attributes), 3)
         self.assertEqual(m.ownedElements[0].attributes[0].getName(), 'i')
+        self.assertEqual(m.ownedElements[0].attributes[0].getType().isPrimitive(), True)
+        self.assertEqual(m.ownedElements[0].attributes[0].getType().getPrimitiveType(), 'INT')
+        self.assertEqual(m.ownedElements[0].attributes[0].getDefaultValue().getValue(), 1)
+        #bool
+        self.assertEqual(m.ownedElements[0].attributes[1].getName(), 'b')
+        self.assertEqual(m.ownedElements[0].attributes[1].getType().isPrimitive(), True)
+        self.assertEqual(m.ownedElements[0].attributes[1].getType().getPrimitiveType(), 'BOOL')
+        self.assertEqual(m.ownedElements[0].attributes[1].getDefaultValue().getValue(), False)
         
-
         # operation
         self.assertEqual(len(m.ownedElements[0].operations), 1)
         self.assertEqual(type(m.ownedElements[0].operations[0]), Operation)

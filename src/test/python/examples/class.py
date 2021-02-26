@@ -1,6 +1,7 @@
 class Test:
 
     i = 1
+    b = False
     s = 'a'
 
     def foo():

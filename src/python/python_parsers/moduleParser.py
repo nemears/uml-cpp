@@ -69,6 +69,7 @@ def parseClass(clazzNode, d):
                     d[realType.getID()] = realType
                     realType.setPrimitiveType('REAL')
                     defaultValue = LiteralReal()
+                    d[defaultValue.getID()] = defaultValue
                     defaultValue.setValue(node.value.value)
                     attributeHelper(props, realType, defaultValue)
         elif type(node) is ast.FunctionDef:

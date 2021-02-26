@@ -385,7 +385,19 @@ PYBIND11_MODULE(yuml_python, m) {
                 ++i;
             }
         })
-        .def_readonly("nodes", &Activity::nodes);
+        .def_readonly("nodes", &Activity::nodes)
+        .def("addEdge", [] (Activity& me, ActivityEdge& edge) { me.edges.push_back(&edge); })
+        .def("removeEdge", [] (Activity&me, ActivityEdge& edge) {
+            list<ActivityEdge*>::iterator i = me.edges.begin();
+            while (i != me.edges.end()) {
+                if ((*i)->uuid == edge.uuid) {
+                    me.edges.erase(i);
+                    break;
+                }
+                ++i;
+            }
+        })
+        .def_readonly("edges", &Activity::edges);
     
     // ActivityEdge
     py::class_<ActivityEdge, NamedElement, ElementPy<ActivityEdge>> (m, "ActivityEdge")

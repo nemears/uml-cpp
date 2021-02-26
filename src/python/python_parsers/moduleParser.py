@@ -93,6 +93,10 @@ def parseFunction(defNode, d):
     fun = Activity()
     d[fun.getID()] = fun
     fun.setName(defNode.name)
+    initialNode = InitialNode()
+    d[initialNode.getID()] = initialNode
+    fun.addNode(initialNode)
+    lastNode = initialNode
 
     # Go through input parameters
     for arg in defNode.args.args:
@@ -101,10 +105,49 @@ def parseFunction(defNode, d):
         d[p.getID()] = p
         p.setDirection("IN")
         fun.addParameter(p) 
+        pNode = ParameterNode()
+        d[pNode.getID()] = pNode
+        pNode.setParameter(p)
+        fun.addNode(pNode)
     for node in defNode.body:
-        if type(node) is ast.If:
+        if type(node) is ast.Call:
+            print('TODO: callBehaviorAction')
+        elif type(node) is ast.If:
             dec = DecisionNode()
             d[dec.getID()] = dec
+
+            # get object input to decision node
+            # if it is a name node it is referencing a previously defined variable, so search through all
+            # of the objectNode type nodes defined so far for a match and set flow
+            if type(node.test) is ast.Name:
+                for funNode in fun.nodes:
+                    if issubclass(funNode.__class__, ObjectNode):
+                        inputFlow = ObjectFlow()
+                        d[inputFlow.getID()] = inputFlow
+                        fun.addEdge(inputFlow)
+                        inputFlow.setSource(funNode)
+                        inputFlow.setTarget(dec)
+                        funNode.addOutgoing(inputFlow)
+                        dec.addIncoming(inputFlow)
+            # other possibilites are an expression
+            elif type(node.test) is ast.Expr:
+                # TODO
+                print('TODO: expressions in if statements')
+            # other possibilites are functions (ast.Call) and maybe more
+
+            # map outgoing controlFlow
+
+
+            # map control flow to decision
+            flow = ControlFlow()
+            d[flow.getID()] = flow
+            fun.addEdge(flow)
+            flow.setSource(lastNode)
+            flow.setTarget(dec)
+            dec.addIncoming(flow)
+            lastNode.addOutgoing(flow)
+            fun.addNode(dec)
+            lastNode = dec
 
         # find return param
         elif type(node) is ast.Return:

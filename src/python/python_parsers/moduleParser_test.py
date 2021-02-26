@@ -46,7 +46,7 @@ class parseModuleTest(unittest.TestCase):
         d = {}
         m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/test/python/examples/fun.py', d)
         self.assertEqual(type(m), Namespace)
-        self.assertEqual(len(m.ownedElements), 2)
+        self.assertEqual(len(m.ownedElements), 3)
         self.assertEqual(type(m.ownedElements[0]), Activity)
         self.assertEqual(type(m.ownedElements[1]), Activity)
         self.assertEqual(m.ownedElements[0].getName(), 'noParam')
@@ -57,6 +57,9 @@ class parseModuleTest(unittest.TestCase):
         self.assertEqual(m.ownedElements[1].parameters[0].getName(), 'f')
         self.assertEqual(m.ownedElements[1].parameters[0].getDirection(), 'IN')
         self.assertEqual(m.ownedElements[1].parameters[1].getDirection(), 'RETURN')
+
+        self.assertEqual(type(m.ownedElements[2]), Activity)
+        self.assertEqual(len(m.ownedElements[2].nodes), 3)
 
 
 if __name__ == '__main__':

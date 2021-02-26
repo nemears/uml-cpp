@@ -11,6 +11,6 @@ def decisionFlow(b):
     else:
         print('b is false')
 
-def callBehavior()
+def callBehavior():
     noParam()
     return numParam(1)

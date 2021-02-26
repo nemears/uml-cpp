@@ -109,9 +109,13 @@ def parseFunction(defNode, d):
         d[pNode.getID()] = pNode
         pNode.setParameter(p)
         fun.addNode(pNode)
+
+    # go through body
     for node in defNode.body:
-        if type(node) is ast.Call:
-            print('TODO: callBehaviorAction')
+        if type(node) is ast.Expr:
+            if type(node.value) is ast.Call:
+                
+                print('TODO: callBehaviorAction')
         elif type(node) is ast.If:
             dec = DecisionNode()
             d[dec.getID()] = dec

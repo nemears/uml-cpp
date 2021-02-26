@@ -158,7 +158,9 @@ PYBIND11_MODULE(yuml_python, m) {
                 }
                 ++i;
             }
-        });
+        })
+        .def("getOwner", &Element::getOwner)
+        .def("setOwner", &Element::setOwner);
     
     // NamedElement
     py::class_<NamedElement, Element, ElementPy<NamedElement>>(m, "NamedElement")

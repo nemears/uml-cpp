@@ -71,3 +71,16 @@ TEST_F(ElementTest, InvalidID_Test) {
 //   ASSERT_NO_THROW(parent.removeOwnedElement(child));
 //   ASSERT_TRUE(parent.ownedElements.empty());
 // }
+
+TEST_F(ElementTest, getNullOwnerTest) {
+  Element e;
+  ASSERT_TRUE(e.getOwner() == NULL);
+}
+
+TEST_F(ElementTest, setAndGetOwnerTest) {
+  Element e;
+  Element c;
+  c.setOwner(&e);
+  ASSERT_TRUE(c.getOwner() == &e);
+  ASSERT_TRUE(c.getOwner()->uuid == e.uuid);
+}

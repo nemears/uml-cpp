@@ -25,5 +25,13 @@ class ObjectNodeTest(unittest.TestCase):
         n.removeOutgoing(e)
         self.assertEqual(len(n.outgoing), 0)
 
+    def testSetAndGetUpperBound(self):
+        n = ObjectNode()
+        i = LiteralInt()
+        i.setValue(0)
+        n.setUpperBound(i)
+        self.assertEqual(n.getUpperBound().getID(), i.getID())
+        self.assertEqual(n.getUpperBound().getValue(), 0)
+
 if __name__ == '__main__':
     unittest.main()

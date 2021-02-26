@@ -26,5 +26,11 @@ class ElementTest(unittest.TestCase):
         parent.removeOwnedElement(child)
         self.assertEqual(len(parent.ownedElements), 0)
 
+    def testSetAndGetOwner(self):
+        parent = Element()
+        child = Element()
+        child.setOwner(parent)
+        self.assertEqual(child.getOwner().getID(), parent.getID())
+
 if __name__ == '__main__':
     unittest.main()

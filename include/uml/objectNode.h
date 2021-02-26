@@ -13,6 +13,9 @@ namespace UML {
             ElementType getElementType() override;
             ValueSpecification* getUpperBound();
             void setUpperBound(ValueSpecification* upperBound);
+            ObjectNode() {
+                upperBound = NULL;
+            };
     };
 }
 

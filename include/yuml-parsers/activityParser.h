@@ -15,6 +15,7 @@
 #include "parameterNodeParser.h"
 #include "controlFlowParser.h"
 #include "objectFlowParser.h"
+#include "callBehaviorActionParser.h"
 #include "uml/activity.h"
 
 class ActivityParser : public BehaviorParser {

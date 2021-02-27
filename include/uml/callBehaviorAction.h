@@ -9,10 +9,10 @@ namespace UML {
         protected:
             Behavior* behavior;
         public:
-            Behavior* getBehavior;
+            Behavior* getBehavior();
             void setBehavior(Behavior* bhv);
             ElementType getElementType() override;
-    }
-};
+    };
+}
 
 #endif

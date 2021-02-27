@@ -31,6 +31,7 @@
 #include "uml/forkNode.h"
 #include "uml/mergeNode.h"
 #include "uml/parameterNode.h"
+#include "uml/callBehaviorAction.h"
 #include "yuml-parsers/modelParser.h"
 
 using namespace UML;
@@ -520,6 +521,11 @@ PYBIND11_MODULE(yuml_python, m) {
             .def(py::init<>())
             .def("getParameter", &ParameterNode::getParameter)
             .def("setParameter", &ParameterNode::setParameter);
+
+        py::class_<CallBehaviorAction, Action, ElementPy<CallBehaviorAction>>(m, "CallBehaviorAction")
+            .def(py::init<>())
+            .def("getBehavior", &CallBehaviorAction::getBehavior)
+            .def("setBehavior", &CallBehaviorAction::setBehavior);
 
         // ModelParser
         py::class_<ModelParserPy>(m, "ModelParser")

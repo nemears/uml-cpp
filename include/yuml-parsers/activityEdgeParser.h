@@ -5,6 +5,12 @@
 #include "uml/activityEdge.h"
 #include "uml/activityNode.h"
 #include "uml/instanceValue.h"
+#include "uml/objectNode.h"
+#include "uml/primitiveType.h"
+#include "uml/literalBool.h"
+#include "uml/literalInt.h"
+#include "uml/literalReal.h"
+#include "uml/literalString.h"
 
 class ActivityEdgeParser : public NamedElementParser {
     protected:

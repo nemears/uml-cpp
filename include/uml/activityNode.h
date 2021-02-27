@@ -18,6 +18,7 @@ namespace UML {
             ElementType getElementType() override;
             Activity* getActivity();
             void setActivity(Activity* activity);
+            virtual bool isObjectNode();
     };
 }
 

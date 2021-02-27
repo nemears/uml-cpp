@@ -16,6 +16,7 @@ namespace UML {
             ObjectNode() {
                 upperBound = NULL;
             };
+            bool isObjectNode() override;
     };
 }
 

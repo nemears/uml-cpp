@@ -14,3 +14,7 @@ Activity* ActivityNode::getActivity() {
 void ActivityNode::setActivity(Activity* activity) {
     this->activity = activity;
 }
+
+bool ActivityNode::isObjectNode() {
+    return false;
+}

@@ -43,7 +43,54 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
             //     to get type of the guard so we can parse this properly
             // 2)  another way is we could get it from the format of the entry, this is less definite though
             //     would need some functions to determing type from string
+
+            // this is an attempt at 1
             cerr << "[ERROR] Literal Guards not implemented yet!" << endl;
+            if (dynamic_cast<ActivityEdge*>(el)->getSource() != NULL){
+                if (dynamic_cast<ActivityEdge*>(el)->getSource()->isObjectNode()) {
+                    if (dynamic_cast<ObjectNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getType() != NULL) {
+                        if (dynamic_cast<ObjectNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getType()->isPrimitive()) {
+                            // Literals
+                            switch(dynamic_cast<PrimitiveType*>(dynamic_cast<ObjectNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getType())->getPrimitiveType()) {
+                                case PrimitiveType::Primitive::BOOL : {
+                                    LiteralBool lb;
+                                    lb.setValue(node["guard"].as<bool>());
+                                    dynamic_cast<ActivityEdge*>(el)->setGuard(&lb);
+                                    break;
+                                }
+                                case PrimitiveType::Primitive::INT : {
+                                    LiteralInt li;
+                                    li.setValue(node["guard"].as<int>());
+                                    dynamic_cast<ActivityEdge*>(el)->setGuard(&li);
+                                    break;
+                                }
+                                case PrimitiveType::Primitive::STRING : {
+                                    LiteralString ls;
+                                    ls.setValue(node["guard"].as<string>());
+                                    dynamic_cast<ActivityEdge*>(el)->setGuard(&ls);
+                                    break;
+                                }
+                                case PrimitiveType::Primitive::REAL : {
+                                    LiteralReal lr;
+                                    lr.setValue(node["guard"].as<double>());
+                                    dynamic_cast<ActivityEdge*>(el)->setGuard(&lr);
+                                    break;
+                                }
+                                default : {
+                                    // ERROR
+                                    return false;
+                                }
+                            }
+                        } else {
+                            // instance
+                            // Error?
+                            return false;
+                        }
+                    }
+                }
+            } else {
+                // TODO backwards parsing
+            }
         }
     }
 

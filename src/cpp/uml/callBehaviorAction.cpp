@@ -2,6 +2,10 @@
 
 using namespace UML;
 
+ElementType CallBehaviorAction::getElementType() {
+    return ElementType::CALL_BEHAVIOR_ACTION;
+}
+
 Behavior* CallBehaviorAction::getBehavior() {
     return behavior;
 }

@@ -39,6 +39,9 @@ string Element::getElementTypeString() {
         case ElementType::BEHAVIOR : {
             return "BEHAVIOR";
         }
+        case ElementType::CALL_BEHAVIOR_ACTION : {
+            return "CALL_BEHAVIOR_ACTION";
+        }
         case ElementType::CLASS : {
             return "CLASS";
         }

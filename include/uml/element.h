@@ -22,6 +22,7 @@ enum class ElementType {
     ACTIVITY_EDGE,
     ACTIVITY_NODE,
     BEHAVIOR,
+    CALL_BEHAVIOR_ACTION,
     CLASS,
     CLASSIFIER,
     CONTROL_FLOW,

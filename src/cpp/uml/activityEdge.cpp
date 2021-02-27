@@ -19,6 +19,14 @@ void ActivityEdge::setTarget(ActivityNode* target) {
     this->target = target;
 }
 
+ValueSpecification* ActivityEdge::getGuard() {
+    return guard;
+}
+
+void ActivityEdge::setGuard(ValueSpecification* guard) {
+    this->guard = guard;
+}
+
 ElementType ActivityEdge::getElementType() {
     return ElementType::ACTIVITY_EDGE;
 }

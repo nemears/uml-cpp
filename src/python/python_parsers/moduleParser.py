@@ -131,7 +131,7 @@ def parseFunction(defNode, d, owner):
                             if el.getName() == node.value.func.id:
                                 behaviorNode = CallBehaviorAction()
                                 d[behaviorNode.getID()] = behaviorNode
-                                behaviorNode.addMethod(el)
+                                behaviorNode.setBehavior(el)
                                 controlFlow = ControlFlow()
                                 d[controlFlow.getID()] = controlFlow
                                 controlFlow.setSource(lastNode)
@@ -190,7 +190,7 @@ def parseFunction(defNode, d, owner):
 
 if __name__ == '__main__':
     d = {}
-    n = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/test/python/yuml_parsers/modelParser_test.py', d)
+    n = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/test/python/examples/knapsack.py', d)
     print('length of module children: ', len(n.ownedElements))
     m = Model()
     m.setName('root')

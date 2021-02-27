@@ -93,7 +93,7 @@ def attributeHelper(props, primitive, defaultValue):
 
 def parseBody(bodyNode, d, uml, owner, lastNode):
     # go through body
-    for node in bodyNode.body:
+    for node in bodyNode:
         if type(node) is ast.Expr:
             if type(node.value) is ast.Call:
                 if type(node.value.func) is ast.Name:
@@ -155,6 +155,9 @@ def parseBody(bodyNode, d, uml, owner, lastNode):
             # other possibilites are functions (ast.Call) and maybe more
 
             # map outgoing controlFlow
+            parseBody(node.body, d, uml, owner, dec)
+            parseBody(node.orelse, d, uml, owner, dec)
+            # TODO add guards, true, false to outgoing control flow
 
             # override lastNode
             lastNode = dec
@@ -187,7 +190,7 @@ def parseFunction(defNode, d, owner):
         pNode.setParameter(p)
         fun.addNode(pNode)
 
-    parseBody(defNode, d, fun, owner, initialNode)
+    parseBody(defNode.body, d, fun, owner, initialNode)
 
     return fun
 

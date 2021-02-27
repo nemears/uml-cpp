@@ -14,10 +14,12 @@ def parseModule(path, d):
             if type(node) is ast.ClassDef:
                 c = parseClass(node, d)
                 moduleUML.addOwnedElement(c)
+                c.setOwner(moduleUML)
                 d[c.getID()] = c
-            if type(node) is ast.FunctionDef:
-                bhv = parseFunction(node, d)
+            elif type(node) is ast.FunctionDef:
+                bhv = parseFunction(node, d, moduleUML)
                 moduleUML.addOwnedElement(bhv)
+                bhv.setOwner(moduleUML)
             #if type(n) is ast.Import:
         return moduleUML
 
@@ -76,7 +78,7 @@ def parseClass(clazzNode, d):
             fun = Operation()
             d[fun.getID()] = fun
             fun.setName(node.name)
-            bhv = parseFunction(node, d)
+            bhv = parseFunction(node, d, clazz)
             for param in bhv.parameters:
                 fun.addParameter(param)
             fun.addMethod(bhv)
@@ -89,7 +91,7 @@ def attributeHelper(props, primitive, defaultValue):
         prop.setType(primitive)
         prop.setDefaultValue(defaultValue)
 
-def parseFunction(defNode, d):
+def parseFunction(defNode, d, owner):
     fun = Activity()
     d[fun.getID()] = fun
     fun.setName(defNode.name)
@@ -114,8 +116,31 @@ def parseFunction(defNode, d):
     for node in defNode.body:
         if type(node) is ast.Expr:
             if type(node.value) is ast.Call:
-                
-                print('TODO: callBehaviorAction')
+                if type(node.value.func) is ast.Name:
+                    # find the behavior it is referencing
+                    # so we need to go through:
+                    # 1) all owners functions
+                    # 2) all module owned functions
+                    # 3) all python generic functions
+                    # 4) all imported functions
+
+                    # owner's functions
+                    for el in owner.ownedElements:
+                        # filter for behaviors
+                        if issubclass(el.__class__, Behavior):
+                            if el.getName() == node.value.func.id:
+                                behaviorNode = CallBehaviorAction()
+                                d[behaviorNode.getID()] = behaviorNode
+                                behaviorNode.addMethod(el)
+                                controlFlow = ControlFlow()
+                                d[controlFlow.getID()] = controlFlow
+                                controlFlow.setSource(lastNode)
+                                controlFlow.setTarget(behaviorNode)
+                                lastNode.addOutgoing(controlFlow)
+                                behaviorNode.addIncoming(controlFlow)
+                                lastNode = behaviorNode
+                                break
+                                
         elif type(node) is ast.If:
             dec = DecisionNode()
             d[dec.getID()] = dec

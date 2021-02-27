@@ -91,29 +91,9 @@ def attributeHelper(props, primitive, defaultValue):
         prop.setType(primitive)
         prop.setDefaultValue(defaultValue)
 
-def parseFunction(defNode, d, owner):
-    fun = Activity()
-    d[fun.getID()] = fun
-    fun.setName(defNode.name)
-    initialNode = InitialNode()
-    d[initialNode.getID()] = initialNode
-    fun.addNode(initialNode)
-    lastNode = initialNode
-
-    # Go through input parameters
-    for arg in defNode.args.args:
-        p = Parameter()
-        p.setName(arg.arg)
-        d[p.getID()] = p
-        p.setDirection("IN")
-        fun.addParameter(p) 
-        pNode = ParameterNode()
-        d[pNode.getID()] = pNode
-        pNode.setParameter(p)
-        fun.addNode(pNode)
-
+def parseBody(bodyNode, d, uml, owner, lastNode):
     # go through body
-    for node in defNode.body:
+    for node in bodyNode.body:
         if type(node) is ast.Expr:
             if type(node.value) is ast.Call:
                 if type(node.value.func) is ast.Name:
@@ -148,22 +128,22 @@ def parseFunction(defNode, d, owner):
             # map control flow to decision
             flow = ControlFlow()
             d[flow.getID()] = flow
-            fun.addEdge(flow)
+            uml.addEdge(flow)
             flow.setSource(lastNode)
             flow.setTarget(dec)
             dec.addIncoming(flow)
             lastNode.addOutgoing(flow)
-            fun.addNode(dec)
+            uml.addNode(dec)
 
             # get object input to decision node
             # if it is a name node it is referencing a previously defined variable, so search through all
             # of the objectNode type nodes defined so far for a match and set flow
             if type(node.test) is ast.Name:
-                for funNode in fun.nodes:
+                for funNode in uml.nodes:
                     if issubclass(funNode.__class__, ObjectNode):
                         inputFlow = ObjectFlow()
                         d[inputFlow.getID()] = inputFlow
-                        fun.addEdge(inputFlow)
+                        uml.addEdge(inputFlow)
                         inputFlow.setSource(funNode)
                         inputFlow.setTarget(dec)
                         funNode.addOutgoing(inputFlow)
@@ -184,7 +164,30 @@ def parseFunction(defNode, d, owner):
             retParam = Parameter()
             d[retParam.getID()] = retParam
             retParam.setDirection('RETURN')
-            fun.addParameter(retParam)
+            uml.addParameter(retParam)
+
+def parseFunction(defNode, d, owner):
+    fun = Activity()
+    d[fun.getID()] = fun
+    fun.setName(defNode.name)
+    initialNode = InitialNode()
+    d[initialNode.getID()] = initialNode
+    fun.addNode(initialNode)
+    lastNode = initialNode
+
+    # Go through input parameters
+    for arg in defNode.args.args:
+        p = Parameter()
+        p.setName(arg.arg)
+        d[p.getID()] = p
+        p.setDirection("IN")
+        fun.addParameter(p) 
+        pNode = ParameterNode()
+        d[pNode.getID()] = pNode
+        pNode.setParameter(p)
+        fun.addNode(pNode)
+
+    parseBody(defNode, d, fun, owner, initialNode)
 
     return fun
 

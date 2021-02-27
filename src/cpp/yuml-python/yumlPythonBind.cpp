@@ -522,6 +522,7 @@ PYBIND11_MODULE(yuml_python, m) {
             .def("getParameter", &ParameterNode::getParameter)
             .def("setParameter", &ParameterNode::setParameter);
 
+        // CallBehaviorAction
         py::class_<CallBehaviorAction, Action, ElementPy<CallBehaviorAction>>(m, "CallBehaviorAction")
             .def(py::init<>())
             .def("getBehavior", &CallBehaviorAction::getBehavior)

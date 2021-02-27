@@ -1,0 +1,17 @@
+---
+  model:
+    children:
+      - activity:
+            nodes:
+              - callBehaviorAction:
+                  behavior: 190d1cb9-13dc-44e6-a064-126891ae0033
+                  outputs:
+                    - outputPin:
+                        type: BOOL
+      - opaqueBehavior:
+          id: 190d1cb9-13dc-44e6-a064-126891ae0033
+          body: return true
+          parameters:
+            - parameter:
+              direction: IN
+...

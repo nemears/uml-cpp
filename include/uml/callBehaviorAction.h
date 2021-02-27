@@ -12,6 +12,9 @@ namespace UML {
             Behavior* getBehavior();
             void setBehavior(Behavior* bhv);
             ElementType getElementType() override;
+            CallBehaviorAction() {
+                behavior = NULL;
+            };
     };
 }
 

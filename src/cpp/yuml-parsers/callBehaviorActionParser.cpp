@@ -22,5 +22,23 @@ bool CallBehaviorActionParser::parseFeatures(YAML::Node node, Element* el) {
 }
 
 bool CallBehaviorActionParser::emit(YAML::Emitter& emitter, Element* el) {
-    return true;
+    if (el->getElementType() == ElementType::CALL_BEHAVIOR_ACTION) {
+        emitter << YAML::BeginMap;
+        emitter << YAML::Key << "callBehaviorAction";
+        emitter << YAML::Value << YAML::BeginMap;
+    }
+
+    bool ret = ActionParser::emit(emitter, el);
+
+    if (dynamic_cast<CallBehaviorAction*>(el)->getBehavior() != NULL) {
+        emitter << YAML::Key << "behavior";
+        emitter << YAML::Value << dynamic_cast<CallBehaviorAction*>(el)->getBehavior()->getIDstring();
+    }
+
+    if (el->getElementType() == ElementType::CALL_BEHAVIOR_ACTION) {
+        emitter << YAML::EndMap;
+        emitter << YAML::EndMap;
+    }
+
+    return ret;
 }

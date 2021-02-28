@@ -12,7 +12,7 @@ bool CallBehaviorActionParser::parseFeatures(YAML::Node node, Element* el) {
         if (node["behavior"].IsScalar()) {
             boost::uuids::uuid behaviorId = boost::lexical_cast<boost::uuids::uuid>(node["behavior"].as<string>());
 
-            parseNowOrLater(behaviorId, el->uuid, &CallBehaviorActionParser::setBehaviorLater);
+            parseNowOrLater(behaviorId, el->uuid, node, &CallBehaviorActionParser::setBehaviorLater);
         } else if (node["behavior"].IsMap()) {
             // TODO
         }

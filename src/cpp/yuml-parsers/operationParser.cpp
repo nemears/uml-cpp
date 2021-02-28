@@ -40,7 +40,7 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
                     if (isValidUUID4(node["methods"][i].as<string>())) {
                         boost::uuids::uuid methodId = boost::lexical_cast<boost::uuids::uuid>(node["methods"][i].as<string>());
 
-                        parseNowOrLater(methodId, el->uuid, &OperationParser::addMethodLater);
+                        parseNowOrLater(methodId, el->uuid, node, &OperationParser::addMethodLater);
                     }
                 }
             }

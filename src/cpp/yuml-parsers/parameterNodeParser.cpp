@@ -9,7 +9,7 @@ bool ParameterNodeParser::parseFeatures(YAML::Node node, Element* el) {
             if (isValidUUID4(node["parameter"].as<string>())) {
                 boost::uuids::uuid paramId = boost::lexical_cast<boost::uuids::uuid>(node["parameter"].as<string>());
 
-                parseNowOrLater(paramId, el->uuid, &ParameterNodeParser::setParameterLater);
+                parseNowOrLater(paramId, el->uuid, node, &ParameterNodeParser::setParameterLater);
             }
         }
     }

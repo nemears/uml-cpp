@@ -22,7 +22,7 @@ bool BehaviorParser::parseFeatures(YAML::Node node, Element* el) {
                     if (node["parameters"][i].IsScalar()) {
                         if (isValidUUID4(node["parameters"][i].as<string>())) {
                             boost::uuids::uuid paramId = boost::lexical_cast<boost::uuids::uuid>(node["parameters"][i].as<string>());
-                            parseNowOrLater(paramId, el->uuid, &BehaviorParser::addParameterLater);
+                            parseNowOrLater(paramId, el->uuid, node, &BehaviorParser::addParameterLater);
                         } else {
                             throw el->invalidID_Exception;
                         }

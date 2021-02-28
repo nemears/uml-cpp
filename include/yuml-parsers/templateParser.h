@@ -13,7 +13,8 @@ using namespace UML;
 
 typedef struct {
     list<boost::uuids::uuid> otherEls;
-    list<void (*)(Element*, Element*)> applyOnEl;
+    list<YAML::Node> relevantNodes;
+    list<void (*)(YAML::Node, Element*, Element*)> applyOnEl;
 } PostParser;
 
 /**
@@ -45,7 +46,7 @@ class TemplateParser {
          * @param funPtr - the pointer to the function that assigns relations during parsing
          * @return true if it parsed now, false if it was flagged to be parsed later
          **/
-        bool parseNowOrLater(boost::uuids::uuid laterId, boost::uuids::uuid myId, void(*funPtr)(Element*, Element*));
+        bool parseNowOrLater(boost::uuids::uuid laterId, boost::uuids::uuid myId, YAML::Node relevantNode, void(*funPtr)(YAML::Node, Element*, Element*));
 
     public:
         /**

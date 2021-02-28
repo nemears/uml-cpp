@@ -11,7 +11,7 @@ bool InstanceSpecificationParser::parseFeatures(YAML::Node node, Element* el) {
         if (UML::isValidUUID4(parsedId)) {
             boost::uuids::uuid classifierId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-            parseNowOrLater(classifierId, el->uuid, &InstanceSpecificationParser::setClassifierLater);
+            parseNowOrLater(classifierId, el->uuid, node, &InstanceSpecificationParser::setClassifierLater);
             
         } else {
             // error

@@ -17,7 +17,7 @@ class ParameterNodeParser : public ObjectNodeParser {
             {
                 keyword = "parameterNode";
             };
-        static void setParameterLater(Element* parameterNode, Element* parameter) {
+        static void setParameterLater(YAML::Node node, Element* parameterNode, Element* parameter) {
             dynamic_cast<ParameterNode*>(parameterNode)->setParameter(dynamic_cast<Parameter*>(parameter));
         };
 };

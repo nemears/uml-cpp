@@ -21,7 +21,7 @@ bool ActivityNodeParser::parseActivityNodeFeatures(YAML::Node node, Element* el)
                 if (UML::isValidUUID4(parsedId)) {
                     boost::uuids::uuid incomingId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-                    parseNowOrLater(incomingId, el->uuid, &ActivityNodeParser::addIncomingEdgeLater);
+                    parseNowOrLater(incomingId, el->uuid, node, &ActivityNodeParser::addIncomingEdgeLater);
                 } else {
                     // TODO edge definitions in nodes?
                 }
@@ -39,7 +39,7 @@ bool ActivityNodeParser::parseActivityNodeFeatures(YAML::Node node, Element* el)
                 if (UML::isValidUUID4(parsedId)) {
                     boost::uuids::uuid outgoingId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-                    parseNowOrLater(outgoingId, el->uuid, &ActivityNodeParser::addOutgoingEdgeLater);
+                    parseNowOrLater(outgoingId, el->uuid, node, &ActivityNodeParser::addOutgoingEdgeLater);
                 } else {
                     // TODO edge definitions in nodes?
                 }

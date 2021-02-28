@@ -15,7 +15,7 @@ class CallBehaviorActionParser : public ActionParser {
             NamedElementParser(elements, postParsers){
             this->keyword = "callBehaviorAction";
         };
-        static void setBehaviorLater(Element* callBehaviorAction, Element* behavior) {
+        static void setBehaviorLater(YAML::Node node, Element* callBehaviorAction, Element* behavior) {
             dynamic_cast<CallBehaviorAction*>(callBehaviorAction)->setBehavior(dynamic_cast<Behavior*>(behavior));
         }
 };

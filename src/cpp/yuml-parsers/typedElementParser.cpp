@@ -20,7 +20,7 @@ bool TypedElementParser::parseTypeFeatures(YAML::Node node, Element* el) {
         if (UML::isValidUUID4(parsedId)) {
             boost::uuids::uuid typeId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-            parseNowOrLater(typeId, el->uuid, &TypedElementParser::setTypeLater);
+            parseNowOrLater(typeId, el->uuid, node, &TypedElementParser::setTypeLater);
         } else {
             if (parsedId.compare("STRING") == 0) {
                 PrimitiveType* stringType = new PrimitiveType;

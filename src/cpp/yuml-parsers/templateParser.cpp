@@ -20,11 +20,14 @@ Element* TemplateParser::parseElement(YAML::Node node) {
     // backwards parsing
     if ((*postProcessFlag)[el->uuid]) {
         list<boost::uuids::uuid>::iterator elIt = (*postProcessFlag)[el->uuid]->otherEls.begin();
+        list<YAML::Node>::iterator nodeIt = (*postProcessFlag)[el->uuid]->relevantNodes.begin();
         for (auto const& fun : (*postProcessFlag)[el->uuid]->applyOnEl) {
+            YAML::Node relevantNode = (*nodeIt);
             Element* me = (*elements)[el->uuid];
             Element* someoneWhoNeedsMe = (*elements)[(*elIt)];
-            (*fun)(someoneWhoNeedsMe, me);
+            (*fun)(relevantNode, someoneWhoNeedsMe, me);
             ++elIt;
+            ++nodeIt;
         }
 
         delete (*postProcessFlag)[el->uuid];
@@ -33,7 +36,7 @@ Element* TemplateParser::parseElement(YAML::Node node) {
     return el;
 }
 
-bool TemplateParser::parseNowOrLater(boost::uuids::uuid laterId, boost::uuids::uuid myId, void(*funPtr)(Element*, Element*)) {
+bool TemplateParser::parseNowOrLater(boost::uuids::uuid laterId, boost::uuids::uuid myId, YAML::Node relevantNode, void(*funPtr)(YAML::Node, Element*, Element*)) {
     // check if null
     // if null we make a flag for backwards parsing
     if((*elements)[laterId] == 0) {
@@ -41,17 +44,19 @@ bool TemplateParser::parseNowOrLater(boost::uuids::uuid laterId, boost::uuids::u
         // check if struct created
         if ((*postProcessFlag)[laterId] == 0) {
             list<boost::uuids::uuid>* eList = new list<boost::uuids::uuid>;
-            list<void(*)(Element*, Element*)>* fList = new list<void(*)(Element*, Element*)>;
-            PostParser* postParser = new PostParser{*eList, *fList};
+            list<YAML::Node>* nList = new list<YAML::Node>;
+            list<void(*)(YAML::Node, Element*, Element*)>* fList = new list<void(*)(YAML::Node, Element*, Element*)>;
+            PostParser* postParser = new PostParser{*eList, *nList, *fList};
             (*postProcessFlag)[laterId] = postParser;
         } 
 
         // add flag with function pointer
         (*postProcessFlag)[laterId]->otherEls.push_back(myId);
+        (*postProcessFlag)[laterId]->relevantNodes.push_back(relevantNode);
         (*postProcessFlag)[laterId]->applyOnEl.push_back(funPtr);
         return false;
     } else {
-        (*funPtr)((*elements)[myId], (*elements)[laterId]);
+        (*funPtr)(relevantNode, (*elements)[myId], (*elements)[laterId]);
         return true;
     }
 }

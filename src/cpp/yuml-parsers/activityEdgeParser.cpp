@@ -36,7 +36,7 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
             // This means it is an instance
             boost::uuids::uuid guardID = boost::lexical_cast<boost::uuids::uuid>(node["guard"].as<string>());
 
-            parseNowOrLater(guardID, el->uuid, &ActivityEdgeParser::setInstanceGuardLater);
+            parseNowOrLater(guardID, el->uuid, node, &ActivityEdgeParser::setInstanceGuardLater);
         } else {
             if (dynamic_cast<ActivityEdge*>(el)->getSource() != NULL){
                 if (dynamic_cast<ActivityEdge*>(el)->getSource()->isObjectNode()) {
@@ -80,12 +80,11 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
                     }
                 } else if (dynamic_cast<ActivityEdge*>(el)->getSource()->getElementType() == ElementType::DECISION_NODE) {
                     // get type from input to decision node
-                    // This is when a guard is for a decision (proper use i think) but could use the field in UML 2.0 "decisionInputFlow" type ObjectFlow
-                    // Current detection would just be slightly slower, and lossy if multiple object flows to decision node for some reason (don't know use case)
-                    for (auto const& decisionIncomingEdge: dynamic_cast<ActivityEdge*>(el)->getSource()->incoming) {
-                        if (decisionIncomingEdge->getElementType() == ElementType::OBJECT_FLOW) {
-                            if (dynamic_cast<ObjectNode*>(decisionIncomingEdge->getSource())->getType()->isPrimitive()) {
-                                switch(dynamic_cast<PrimitiveType*>(dynamic_cast<ObjectNode*>(decisionIncomingEdge->getSource())->getType())->getPrimitiveType()) {
+                    if (dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->getSource() != NULL
+                            && dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->getTarget() != NULL) {
+                        if (dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->getSource()->isObjectNode()) {
+                            if (dynamic_cast<ObjectNode*>(dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->getSource())->getType()->isPrimitive()) {
+                                switch (dynamic_cast<PrimitiveType*>(dynamic_cast<ObjectNode*>(dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->getSource())->getType())->getPrimitiveType()) {
                                     case PrimitiveType::Primitive::BOOL : {
                                         LiteralBool* lb = new LiteralBool;
                                         lb->setValue(node["guard"].as<bool>());
@@ -116,13 +115,55 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
                                     }
                                 }
                             }
-                            break;
-                        }
-                        if (dynamic_cast<ActivityEdge*>(el)->getGuard() == 0) {
-                            // Here we can see that we failed so signal for backwards parsing?
+                        } else {
+                            // ERROR
                             return false;
                         }
+                    } else {
+                        // backwards parsing
+                        
                     }
+                    // for (auto const& decisionIncomingEdge: dynamic_cast<ActivityEdge*>(el)->getSource()->incoming) {
+                    //     if (decisionIncomingEdge->getElementType() == ElementType::OBJECT_FLOW) {
+                    //         if (dynamic_cast<ObjectNode*>(decisionIncomingEdge->getSource())->getType()->isPrimitive()) {
+                    //             switch(dynamic_cast<PrimitiveType*>(dynamic_cast<ObjectNode*>(decisionIncomingEdge->getSource())->getType())->getPrimitiveType()) {
+                    //                 case PrimitiveType::Primitive::BOOL : {
+                    //                     LiteralBool* lb = new LiteralBool;
+                    //                     lb->setValue(node["guard"].as<bool>());
+                    //                     dynamic_cast<ActivityEdge*>(el)->setGuard(lb);
+                    //                     break;
+                    //                 }
+                    //                 case PrimitiveType::Primitive::INT : {
+                    //                     LiteralInt* li = new LiteralInt;
+                    //                     li->setValue(node["guard"].as<int>());
+                    //                     dynamic_cast<ActivityEdge*>(el)->setGuard(li);
+                    //                     break;
+                    //                 }
+                    //                 case PrimitiveType::Primitive::STRING : {
+                    //                     LiteralString* ls = new LiteralString;
+                    //                     ls->setValue(node["guard"].as<string>());
+                    //                     dynamic_cast<ActivityEdge*>(el)->setGuard(ls);
+                    //                     break;
+                    //                 }
+                    //                 case PrimitiveType::Primitive::REAL : {
+                    //                     LiteralReal* lr = new LiteralReal;
+                    //                     lr->setValue(node["guard"].as<double>());
+                    //                     dynamic_cast<ActivityEdge*>(el)->setGuard(lr);
+                    //                     break;
+                    //                 }
+                    //                 default : {
+                    //                     // ERROR
+                    //                     return false;
+                    //                 }
+                    //             }
+                    //         }
+                    //         break;
+                    //     }
+                    //     if (dynamic_cast<ActivityEdge*>(el)->getGuard() == 0) {
+                    //         // Here we can see that we failed so signal for backwards parsing?
+                    //         return false;
+                    //     }
+                    // }
                 } else {
                     // Cannot determine guard
                 }

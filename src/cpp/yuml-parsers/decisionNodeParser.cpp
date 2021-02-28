@@ -13,7 +13,10 @@ bool DecisionNodeParser::parseFeatures(YAML::Node node, Element* el) {
             if (isValidUUID4(node["decisionInputFlow"].as<string>())) {
                 boost::uuids::uuid decisionInputFlowID = boost::lexical_cast<boost::uuids::uuid>(node["decisionInputFlow"].as<string>());
 
-                parseNowOrLater(decisionInputFlowID, el->uuid, &DecisionNodeParser::parseDecisionInputFlowLater);
+                if(!parseNowOrLater(decisionInputFlowID, el->uuid, node, &DecisionNodeParser::parseDecisionInputFlowLater)) {
+                    ObjectFlow* tempObjFlow = new ObjectFlow;
+                    dynamic_cast<DecisionNode*>(el)->setDecisionInputFlow(tempObjFlow);
+                }
             } else {
                 // decision input flow definition in body?
                 // probably not, fatal error

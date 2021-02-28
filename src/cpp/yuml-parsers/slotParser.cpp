@@ -16,7 +16,7 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
         if (UML::isValidUUID4(parsedId)) {
             boost::uuids::uuid definingFeatureId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-            postParseDefiningFeature = !parseNowOrLater(definingFeatureId, el->uuid, &SlotParser::setDefiningFeatureLater);
+            postParseDefiningFeature = !parseNowOrLater(definingFeatureId, el->uuid, node, &SlotParser::setDefiningFeatureLater);
         }
     }
     if (node["value"]) {
@@ -87,7 +87,7 @@ void SlotParser::parseInstanceValueFeatures(YAML::Node node, Element* el) {
     if (UML::isValidUUID4(parsedId)) {
         boost::uuids::uuid valueId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-        parseNowOrLater(valueId, el->uuid, &SlotParser::setInstanceValueLater);
+        parseNowOrLater(valueId, el->uuid, node, &SlotParser::setInstanceValueLater);
     }
 }
 

@@ -20,7 +20,7 @@ class InstanceSpecificationParser : public NamedElementParser {
 
         bool emit(YAML::Emitter& emitter, Element* el);
         static InstanceSpecificationParser createNewParser();
-        static void setClassifierLater(Element* inst, Element* classifier) {
+        static void setClassifierLater(YAML::Node node, Element* inst, Element* classifier) {
             dynamic_cast<InstanceSpecification*>(inst)->setClassifier(dynamic_cast<Classifier*>(classifier));
         }
 };

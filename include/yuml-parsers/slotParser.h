@@ -26,10 +26,10 @@ class SlotParser : public ElementParser {
         }
         bool emit(YAML::Emitter& emitter, Element* el);
         static SlotParser createNewParser();
-        static void setDefiningFeatureLater(Element* slot, Element* definingFeature) {
+        static void setDefiningFeatureLater(YAML::Node node, Element* slot, Element* definingFeature) {
             dynamic_cast<Slot*>(slot)->setDefiningFeature(dynamic_cast<StructuralFeature*>(definingFeature));
         }
-        static void setInstanceValueLater(Element* slot, Element* value) {
+        static void setInstanceValueLater(YAML::Node node, Element* slot, Element* value) {
             if (((Slot*) slot)->getDefiningFeature() == NULL) {
 
                 /**

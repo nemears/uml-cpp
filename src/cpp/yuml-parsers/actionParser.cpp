@@ -22,7 +22,7 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
                 } else if (isValidUUID4(node["inputs"][i].as<string>())) {
                     boost::uuids::uuid inputId = boost::lexical_cast<boost::uuids::uuid>(node["inputs"][i].as<string>());
 
-                    parseNowOrLater(inputId, el->uuid, &ActionParser::addInputPinLater);
+                    parseNowOrLater(inputId, el->uuid, node, &ActionParser::addInputPinLater);
                 } else {
                     YAML::Emitter errEmit;
                     errEmit << node["inputs"];
@@ -46,7 +46,7 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
                 } else if (isValidUUID4(node["outputs"][i].as<string>())) {
                     boost::uuids::uuid outputId = boost::lexical_cast<boost::uuids::uuid>(node["outputs"][i].as<string>());
 
-                    parseNowOrLater(outputId, el->uuid, &ActionParser::addOutputPinLater);
+                    parseNowOrLater(outputId, el->uuid, node, &ActionParser::addOutputPinLater);
                 } else {
                     YAML::Emitter errEmit;
                     errEmit << node["outputs"];

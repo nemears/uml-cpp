@@ -53,27 +53,26 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
                             // Literals
                             switch(dynamic_cast<PrimitiveType*>(dynamic_cast<ObjectNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getType())->getPrimitiveType()) {
                                 case PrimitiveType::Primitive::BOOL : {
-                                    LiteralBool lb;
-                                    lb.setValue(node["guard"].as<bool>());
-                                    dynamic_cast<ActivityEdge*>(el)->setGuard(&lb);
-                                    break;
+                                    LiteralBool* lb = new LiteralBool;
+                                    lb->setValue(node["guard"].as<bool>());
+                                    dynamic_cast<ActivityEdge*>(el)->setGuard(lb);
                                 }
                                 case PrimitiveType::Primitive::INT : {
-                                    LiteralInt li;
-                                    li.setValue(node["guard"].as<int>());
-                                    dynamic_cast<ActivityEdge*>(el)->setGuard(&li);
+                                    LiteralInt* li = new LiteralInt;
+                                    li->setValue(node["guard"].as<int>());
+                                    dynamic_cast<ActivityEdge*>(el)->setGuard(li);
                                     break;
                                 }
                                 case PrimitiveType::Primitive::STRING : {
-                                    LiteralString ls;
-                                    ls.setValue(node["guard"].as<string>());
-                                    dynamic_cast<ActivityEdge*>(el)->setGuard(&ls);
+                                    LiteralString* ls = new LiteralString;
+                                    ls->setValue(node["guard"].as<string>());
+                                    dynamic_cast<ActivityEdge*>(el)->setGuard(ls);
                                     break;
                                 }
                                 case PrimitiveType::Primitive::REAL : {
-                                    LiteralReal lr;
-                                    lr.setValue(node["guard"].as<double>());
-                                    dynamic_cast<ActivityEdge*>(el)->setGuard(&lr);
+                                    LiteralReal* lr = new LiteralReal;
+                                    lr->setValue(node["guard"].as<double>());
+                                    dynamic_cast<ActivityEdge*>(el)->setGuard(lr);
                                     break;
                                 }
                                 default : {
@@ -96,27 +95,27 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
                             if (dynamic_cast<ObjectNode*>(decisionIncomingEdge->getSource())->getType()->isPrimitive()) {
                                 switch(dynamic_cast<PrimitiveType*>(dynamic_cast<ObjectNode*>(decisionIncomingEdge->getSource())->getType())->getPrimitiveType()) {
                                     case PrimitiveType::Primitive::BOOL : {
-                                        LiteralBool lb;
-                                        lb.setValue(node["guard"].as<bool>());
-                                        dynamic_cast<ActivityEdge*>(el)->setGuard(&lb);
+                                        LiteralBool* lb = new LiteralBool;
+                                        lb->setValue(node["guard"].as<bool>());
+                                        dynamic_cast<ActivityEdge*>(el)->setGuard(lb);
                                         break;
                                     }
                                     case PrimitiveType::Primitive::INT : {
-                                        LiteralInt li;
-                                        li.setValue(node["guard"].as<int>());
-                                        dynamic_cast<ActivityEdge*>(el)->setGuard(&li);
+                                        LiteralInt* li = new LiteralInt;
+                                        li->setValue(node["guard"].as<int>());
+                                        dynamic_cast<ActivityEdge*>(el)->setGuard(li);
                                         break;
                                     }
                                     case PrimitiveType::Primitive::STRING : {
-                                        LiteralString ls;
-                                        ls.setValue(node["guard"].as<string>());
-                                        dynamic_cast<ActivityEdge*>(el)->setGuard(&ls);
+                                        LiteralString* ls = new LiteralString;
+                                        ls->setValue(node["guard"].as<string>());
+                                        dynamic_cast<ActivityEdge*>(el)->setGuard(ls);
                                         break;
                                     }
                                     case PrimitiveType::Primitive::REAL : {
-                                        LiteralReal lr;
-                                        lr.setValue(node["guard"].as<double>());
-                                        dynamic_cast<ActivityEdge*>(el)->setGuard(&lr);
+                                        LiteralReal* lr = new LiteralReal;
+                                        lr->setValue(node["guard"].as<double>());
+                                        dynamic_cast<ActivityEdge*>(el)->setGuard(lr);
                                         break;
                                     }
                                     default : {

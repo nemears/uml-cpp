@@ -154,5 +154,36 @@ bool ActivityEdgeParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<ActivityEdge*>(el)->getTarget()->uuid);
     }
 
+    if (dynamic_cast<ActivityEdge*>(el)->getGuard() != NULL) {
+        emitter << YAML::Key << "guard";
+        if (dynamic_cast<ActivityEdge*>(el)->getGuard()->getType() != NULL) {
+            if (dynamic_cast<ActivityEdge*>(el)->getGuard()->getType()->isPrimitive()) {
+                switch (((PrimitiveType*) dynamic_cast<ActivityEdge*>(el)->getGuard()->getType())->getPrimitiveType()) {
+                    case PrimitiveType::Primitive::BOOL : {
+                        emitter << YAML::Value << ((LiteralBool*)dynamic_cast<ActivityEdge*>(el)->getGuard())->getValue();
+                        break;
+                    }
+                    case PrimitiveType::Primitive::INT : {
+                        emitter << YAML::Value << ((LiteralInt*)dynamic_cast<ActivityEdge*>(el)->getGuard())->getValue();
+                        break;
+                    }
+                    case PrimitiveType::Primitive::REAL : {
+                        emitter << YAML::Value << ((LiteralReal*)dynamic_cast<ActivityEdge*>(el)->getGuard())->getValue();
+                        break;
+                    }
+                    case PrimitiveType::Primitive::STRING : {
+                        emitter << YAML::Value << ((LiteralString*)dynamic_cast<ActivityEdge*>(el)->getGuard())->getValue();
+                        break;
+                    }
+                }
+            } else {
+                // it is instance emit uuid
+                emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<InstanceValue*>(dynamic_cast<ActivityEdge*>(el)->getGuard())->getInstance()->uuid);
+            }
+        } else {
+            // ERROR
+        }
+    }
+
     return ret;
 }

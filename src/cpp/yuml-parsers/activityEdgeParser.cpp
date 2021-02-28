@@ -45,7 +45,7 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
             //     would need some functions to determining type from string
 
             // this is an attempt at 1
-            cerr << "[ERROR] Literal Guards not implemented yet!" << endl;
+            //cerr << "[ERROR] Literal Guards not implemented yet!" << endl;
             if (dynamic_cast<ActivityEdge*>(el)->getSource() != NULL){
                 if (dynamic_cast<ActivityEdge*>(el)->getSource()->isObjectNode()) {
                     if (dynamic_cast<ObjectNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getType() != NULL) {
@@ -126,6 +126,9 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
                                 }
                             }
                             break;
+                        }
+                        if (dynamic_cast<ActivityEdge*>(el)->getGuard() == 0) {
+                            return false;
                         }
                     }
                 } else {

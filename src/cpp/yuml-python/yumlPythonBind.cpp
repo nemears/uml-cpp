@@ -408,7 +408,9 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("getSource", &ActivityEdge::getSource)
         .def("setSource", &ActivityEdge::setSource)
         .def("getTarget", &ActivityEdge::getTarget)
-        .def("setTarget", &ActivityEdge::setTarget);
+        .def("setTarget", &ActivityEdge::setTarget)
+        .def("getGuard", &ActivityEdge::getGuard)
+        .def("setGuard", &ActivityEdge::setGuard);
 
     // ActivityNode
     py::class_<ActivityNode, NamedElement, ElementPy<ActivityNode>>(m, "ActivityNode")
@@ -502,7 +504,9 @@ PYBIND11_MODULE(yuml_python, m) {
 
         // DecisionNode
         py::class_<DecisionNode, ActivityNode, ElementPy<DecisionNode>>(m, "DecisionNode")
-            .def(py::init<>());
+            .def(py::init<>())
+            .def("getDecisionInputFlow", &DecisionNode::getDecisionInputFlow)
+            .def("setDecisionInputFlow", &DecisionNode::setDecisionInputFlow);
 
         // JoinNode
         py::class_<JoinNode, ActivityNode, ElementPy<JoinNode>>(m, "JoinNode")

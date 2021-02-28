@@ -13,3 +13,7 @@ void ObjectNode::setUpperBound(ValueSpecification* upperBound) {
 ElementType ObjectNode::getElementType() {
     return ElementType::OBJECT_NODE;
 }
+
+bool ObjectNode::isObjectNode() {
+    return true;
+}

@@ -20,6 +20,7 @@
                 outgoing:
                   - fa128118-7efc-4881-8ed9-38bbed3110f2
                   - 4fab86da-e35b-441d-a1ea-0d02ecb94133
+                decisionInputFlow: 563f4740-e107-4d08-8618-2489f0fe1865
             - action:
                 name: action1
                 id: 2f64bc10-4517-4b97-a021-a38379f55656

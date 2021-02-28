@@ -2,6 +2,8 @@
 
 bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
 
+    bool ret = NamedElementParser::parseFeatures(node, el);
+
     if (node["source"]) {
         string parsedId = node["source"].as<string>();
 
@@ -121,49 +123,11 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
                         }
                     } else {
                         // backwards parsing
-                        
+                        parseNowOrLater(dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->uuid, 
+                                        el->uuid, 
+                                        node, 
+                                        &ActivityEdgeParser::setDecisionNodeLiteralGuardLater);
                     }
-                    // for (auto const& decisionIncomingEdge: dynamic_cast<ActivityEdge*>(el)->getSource()->incoming) {
-                    //     if (decisionIncomingEdge->getElementType() == ElementType::OBJECT_FLOW) {
-                    //         if (dynamic_cast<ObjectNode*>(decisionIncomingEdge->getSource())->getType()->isPrimitive()) {
-                    //             switch(dynamic_cast<PrimitiveType*>(dynamic_cast<ObjectNode*>(decisionIncomingEdge->getSource())->getType())->getPrimitiveType()) {
-                    //                 case PrimitiveType::Primitive::BOOL : {
-                    //                     LiteralBool* lb = new LiteralBool;
-                    //                     lb->setValue(node["guard"].as<bool>());
-                    //                     dynamic_cast<ActivityEdge*>(el)->setGuard(lb);
-                    //                     break;
-                    //                 }
-                    //                 case PrimitiveType::Primitive::INT : {
-                    //                     LiteralInt* li = new LiteralInt;
-                    //                     li->setValue(node["guard"].as<int>());
-                    //                     dynamic_cast<ActivityEdge*>(el)->setGuard(li);
-                    //                     break;
-                    //                 }
-                    //                 case PrimitiveType::Primitive::STRING : {
-                    //                     LiteralString* ls = new LiteralString;
-                    //                     ls->setValue(node["guard"].as<string>());
-                    //                     dynamic_cast<ActivityEdge*>(el)->setGuard(ls);
-                    //                     break;
-                    //                 }
-                    //                 case PrimitiveType::Primitive::REAL : {
-                    //                     LiteralReal* lr = new LiteralReal;
-                    //                     lr->setValue(node["guard"].as<double>());
-                    //                     dynamic_cast<ActivityEdge*>(el)->setGuard(lr);
-                    //                     break;
-                    //                 }
-                    //                 default : {
-                    //                     // ERROR
-                    //                     return false;
-                    //                 }
-                    //             }
-                    //         }
-                    //         break;
-                    //     }
-                    //     if (dynamic_cast<ActivityEdge*>(el)->getGuard() == 0) {
-                    //         // Here we can see that we failed so signal for backwards parsing?
-                    //         return false;
-                    //     }
-                    // }
                 } else {
                     // Cannot determine guard
                 }
@@ -173,7 +137,7 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
         }
     }
 
-    return NamedElementParser::parseFeatures(node, el);
+    return ret;
 }
 
 bool ActivityEdgeParser::emit(YAML::Emitter& emitter, Element* el) {

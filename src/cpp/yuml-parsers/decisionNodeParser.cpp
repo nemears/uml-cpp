@@ -15,6 +15,7 @@ bool DecisionNodeParser::parseFeatures(YAML::Node node, Element* el) {
 
                 if(!parseNowOrLater(decisionInputFlowID, el->uuid, node, &DecisionNodeParser::parseDecisionInputFlowLater)) {
                     ObjectFlow* tempObjFlow = new ObjectFlow;
+                    tempObjFlow->setID(node["decisionInputFlow"].as<string>());
                     dynamic_cast<DecisionNode*>(el)->setDecisionInputFlow(tempObjFlow);
                 }
             } else {

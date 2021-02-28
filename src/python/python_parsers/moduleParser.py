@@ -92,6 +92,8 @@ def attributeHelper(props, primitive, defaultValue):
         prop.setDefaultValue(defaultValue)
 
 def parseBody(bodyNode, d, uml, owner, lastNode):
+    initNode = lastNode
+    init = True
     # go through body
     for node in bodyNode:
         if type(node) is ast.Expr:
@@ -148,19 +150,45 @@ def parseBody(bodyNode, d, uml, owner, lastNode):
                         inputFlow.setTarget(dec)
                         funNode.addOutgoing(inputFlow)
                         dec.addIncoming(inputFlow)
+                        dec.setDecisionInputFlow(inputFlow)
             # other possibilites are an expression
             elif type(node.test) is ast.Expr:
                 # TODO
                 print('TODO: expressions in if statements')
             # other possibilites are functions (ast.Call) and maybe more
 
-            # map outgoing controlFlow
-            parseBody(node.body, d, uml, owner, dec)
-            parseBody(node.orelse, d, uml, owner, dec)
-            # TODO add guards, true, false to outgoing control flow
+            # parse body of decision
+            firstAndLastNodes1 = parseBody(node.body, d, uml, owner, dec)
+            firstAndLastNodes2 = parseBody(node.orelse, d, uml, owner, dec)
+
+            #map outgoing control flow
+            outFlow1 = ControlFlow()
+            outFlow2 = ControlFlow()
+            d[outFlow1.getID()] = outFlow1
+            d[outFlow2.getID()] = outFlow2
+            outFlow1.setSource(dec)
+            outFlow2.setSource(dec)
+            dec.addOutgoing(outFlow1)
+            dec.addOutgoing(outFlow1)
+            outFlow1.setTarget(firstAndLastNodes1[0])
+            outFlow2.setTarget(firstAndLastNodes2[0])
+
+            # map join node
+            join = JoinNode()
+            d[join.getID()] = join
+            joinFlow1 = ControlFlow()
+            joinFlow2 = ControlFlow()
+            d[joinFlow1.getID()] = joinFlow1
+            d[joinFlow2.getID()] = joinFlow2
+            join.addIncoming(joinFlow1)
+            join.addIncoming(joinFlow2)
+            joinFlow1.setSource(firstAndLastNodes1[1])
+            joinFlow2.setSource(firstAndLastNodes2[1])
+            joinFlow1.setTarget(join)
+            joinFlow2.setTarget(join)
 
             # override lastNode
-            lastNode = dec
+            lastNode = join
 
         # find return param
         elif type(node) is ast.Return:
@@ -169,6 +197,12 @@ def parseBody(bodyNode, d, uml, owner, lastNode):
             retParam.setDirection('RETURN')
             uml.addParameter(retParam)
 
+        if init:
+            initNode = lastNode
+            init = False
+
+    return (initNode, lastNode)
+
 def parseFunction(defNode, d, owner):
     fun = Activity()
     d[fun.getID()] = fun
@@ -176,7 +210,6 @@ def parseFunction(defNode, d, owner):
     initialNode = InitialNode()
     d[initialNode.getID()] = initialNode
     fun.addNode(initialNode)
-    lastNode = initialNode
 
     # Go through input parameters
     for arg in defNode.args.args:

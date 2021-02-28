@@ -1,12 +1,15 @@
 import unittest
-from moduleParser import parseModule
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
+from python_parsers.moduleParser import parseModule
 from yuml_python import Namespace, Class, Activity, Operation
 
 class parseModuleTest(unittest.TestCase):
 
     def testParseClass(self):
         d = {}
-        m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/test/python/examples/class.py', d)
+        m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/examples/class.py', d)
         self.assertEqual(type(m), Namespace)
         self.assertEqual(len(m.ownedElements), 1)
         self.assertEqual(type(m.ownedElements[0]), Class)
@@ -45,7 +48,7 @@ class parseModuleTest(unittest.TestCase):
 
     def testParseFunc(self):
         d = {}
-        m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/test/python/examples/fun.py', d)
+        m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/examples/fun.py', d)
         self.assertEqual(type(m), Namespace)
         self.assertEqual(len(m.ownedElements), 4)
         self.assertEqual(type(m.ownedElements[0]), Activity)

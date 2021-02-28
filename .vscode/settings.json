@@ -77,11 +77,12 @@
         "YAML_CPP_BUILD_TOOLS":"OFF",
         "YAML_CPP_BUILD_CONTRIB":"OFF"
     },
+    // python testing options
+    //"python.testing.cwd":"${workspaceFolder}/src/python/",
     "python.testing.unittestArgs": [
         "-v",
         "-s",
-        "src/test/python/uml",
-        "src/test/python/yuml-parser",
+        "src/python",
         "-p",
         "*_test.py"
     ],

@@ -57,6 +57,8 @@ TEST_F(ActivityEdgeParserTest, ParseDecisionNodeGuardTest) {
     ASSERT_TRUE(decisionNode->incoming.back()->getElementType() == ElementType::CONTROL_FLOW);
     ASSERT_TRUE(decisionNode->outgoing.front()->getElementType() == ElementType::CONTROL_FLOW);
     ASSERT_TRUE(decisionNode->outgoing.back()->getElementType() == ElementType::CONTROL_FLOW);
+    ASSERT_TRUE(decisionNode->getDecisionInputFlow() != NULL);
+    ASSERT_TRUE(decisionNode->getDecisionInputFlow()->uuid == boost::lexical_cast<boost::uuids::uuid>("563f4740-e107-4d08-8618-2489f0fe1865"));
     ASSERT_TRUE(decisionNode->outgoing.front()->getGuard() != NULL);
     ASSERT_TRUE(decisionNode->outgoing.front()->getGuard()->getElementType() == ElementType::LITERAL_BOOL);
     ASSERT_TRUE(dynamic_cast<LiteralBool*>(decisionNode->outgoing.front()->getGuard())->getValue());
@@ -111,6 +113,8 @@ TEST_F(ActivityEdgeParserTest, ParseBackwardsGuardTest) {
     ASSERT_TRUE(decisionNode->incoming.back()->getElementType() == ElementType::CONTROL_FLOW);
     ASSERT_TRUE(decisionNode->outgoing.front()->getElementType() == ElementType::CONTROL_FLOW);
     ASSERT_TRUE(decisionNode->outgoing.back()->getElementType() == ElementType::CONTROL_FLOW);
+    ASSERT_TRUE(decisionNode->getDecisionInputFlow() != NULL);
+    ASSERT_TRUE(decisionNode->getDecisionInputFlow()->uuid == boost::lexical_cast<boost::uuids::uuid>("563f4740-e107-4d08-8618-2489f0fe1865"));
     ASSERT_TRUE(decisionNode->outgoing.front()->getGuard() != NULL);
     ASSERT_TRUE(decisionNode->outgoing.front()->getGuard()->getElementType() == ElementType::LITERAL_BOOL);
     ASSERT_TRUE(dynamic_cast<LiteralBool*>(decisionNode->outgoing.front()->getGuard())->getValue());

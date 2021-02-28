@@ -1,0 +1,53 @@
+---
+  model:
+    children:
+      - activity:
+          nodes:
+            - objectNode:
+                id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+                type: BOOL
+                outgoing:
+                  - 563f4740-e107-4d08-8618-2489f0fe1865
+            - initialNode:
+                id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+                outgoing:
+                  - d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
+            - decisionNode:
+                id: c0ab87cc-d00b-4afb-9558-538253b442b2
+                incoming: 
+                  - 563f4740-e107-4d08-8618-2489f0fe1865
+                  - d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
+                outgoing:
+                  - fa128118-7efc-4881-8ed9-38bbed3110f2
+                  - 4fab86da-e35b-441d-a1ea-0d02ecb94133
+            - action:
+                name: action1
+                id: 2f64bc10-4517-4b97-a021-a38379f55656
+                incoming:
+                  - fa128118-7efc-4881-8ed9-38bbed3110f2
+            - action:
+                name: action2
+                id: b4b80cfd-4649-4b94-b17d-9f6bd67f2fd8
+                incoming:
+                  - 4fab86da-e35b-441d-a1ea-0d02ecb94133
+          edges:
+            - controlFlow:
+                id: fa128118-7efc-4881-8ed9-38bbed3110f2
+                guard: True
+                source: c0ab87cc-d00b-4afb-9558-538253b442b2
+                target: 2f64bc10-4517-4b97-a021-a38379f55656
+            - controlFlow:
+                id: 4fab86da-e35b-441d-a1ea-0d02ecb94133
+                guard: False
+                source: c0ab87cc-d00b-4afb-9558-538253b442b2
+                target: b4b80cfd-4649-4b94-b17d-9f6bd67f2fd8
+            - objectFlow:
+                id: 563f4740-e107-4d08-8618-2489f0fe1865
+                source: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+                target: c0ab87cc-d00b-4afb-9558-538253b442b2
+            - controlFlow:
+                id: d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
+                source: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+                target: c0ab87cc-d00b-4afb-9558-538253b442b2
+...
+            

@@ -23,7 +23,7 @@ bool ActivityNodeParser::parseActivityNodeFeatures(YAML::Node node, Element* el)
 
                     parseNowOrLater(incomingId, el->uuid, &ActivityNodeParser::addIncomingEdgeLater);
                 } else {
-                    // TODO node definitions in nodes?
+                    // TODO edge definitions in nodes?
                 }
             }
         } else {
@@ -41,7 +41,7 @@ bool ActivityNodeParser::parseActivityNodeFeatures(YAML::Node node, Element* el)
 
                     parseNowOrLater(outgoingId, el->uuid, &ActivityNodeParser::addOutgoingEdgeLater);
                 } else {
-                    // TODO node definitions in nodes?
+                    // TODO edge definitions in nodes?
                 }
             }
         } else {

@@ -19,7 +19,7 @@ class ActivityEdgeParser : public NamedElementParser {
         bool emit(YAML::Emitter& emitter, Element* el) override;
         ActivityEdgeParser(map<boost::uuids::uuid, Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
             NamedElementParser(elements, postParsers) {};
-        static void setGuardLater(Element* edge, Element* instGuard) {
+        static void setInstanceGuardLater(Element* edge, Element* instGuard) {
             InstanceValue* iv = new InstanceValue;
             iv->setInstance(dynamic_cast<InstanceSpecification*>(instGuard));
             dynamic_cast<ActivityEdge*>(edge)->setGuard(dynamic_cast<ValueSpecification*>(iv));

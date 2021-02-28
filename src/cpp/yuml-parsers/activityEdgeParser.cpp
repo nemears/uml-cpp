@@ -36,16 +36,8 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
             // This means it is an instance
             boost::uuids::uuid guardID = boost::lexical_cast<boost::uuids::uuid>(node["guard"].as<string>());
 
-            parseNowOrLater(guardID, el->uuid, &ActivityEdgeParser::setGuardLater);
+            parseNowOrLater(guardID, el->uuid, &ActivityEdgeParser::setInstanceGuardLater);
         } else {
-            // Literal parsing has relied on finding info from rest of model so i see two solutions here
-            // 1)  get info now or later from edge, guards are associated with decision nodes and object flows usually
-            //     to get type of the guard so we can parse this properly
-            // 2)  another way is we could get it from the format of the entry, this is less definite though
-            //     would need some functions to determining type from string
-
-            // this is an attempt at 1
-            //cerr << "[ERROR] Literal Guards not implemented yet!" << endl;
             if (dynamic_cast<ActivityEdge*>(el)->getSource() != NULL){
                 if (dynamic_cast<ActivityEdge*>(el)->getSource()->isObjectNode()) {
                     if (dynamic_cast<ObjectNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getType() != NULL) {
@@ -127,6 +119,7 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
                             break;
                         }
                         if (dynamic_cast<ActivityEdge*>(el)->getGuard() == 0) {
+                            // Here we can see that we failed so signal for backwards parsing?
                             return false;
                         }
                     }

@@ -21,7 +21,6 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(len(m.ownedElements[0].parameters), 1)
         self.assertEqual(m.ownedElements[0].parameters[0].getDirection(), 'RETURN')
         self.assertFalse(m.ownedElements[0].parameters[0].getType() == None)
-        typeP = m.ownedElements[0].parameters[0].getType()
         self.assertEqual(issubclass(m.ownedElements[0].parameters[0].getType().__class__, PrimitiveType), True)
         self.assertEqual(m.ownedElements[0].parameters[0].getType().getPrimitiveType(), 'BOOL')
 
@@ -31,6 +30,10 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(type(noParam.nodes[0]), InitialNode)
         self.assertEqual(type(noParam.nodes[1]), ParameterNode)
         self.assertEqual(noParam.nodes[1].getParameter(), noParam.parameters[0])
+        self.assertTrue(noParam.nodes[1].getType() != None)
+        self.assertTrue(issubclass(noParam.nodes[1].getType().__class__, PrimitiveType))
+        self.assertEqual(noParam.nodes[1].getType().getPrimitiveType(), 'BOOL')
+        self.assertTrue(noParam.nodes[1].getUpperBound().getValue())
 
         #test edges
         self.assertEqual(len(noParam.edges), 1)

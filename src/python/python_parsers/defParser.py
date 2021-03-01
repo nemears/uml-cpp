@@ -1,5 +1,5 @@
 import ast
-from yuml_python import CallBehaviorAction, ControlFlow, ObjectFlow, DecisionNode, JoinNode, ObjectNode, Activity, InitialNode, FinalNode, Parameter, ParameterNode, Behavior, PrimitiveType
+from yuml_python import CallBehaviorAction, ControlFlow, ObjectFlow, DecisionNode, JoinNode, ObjectNode, Activity, InitialNode, FinalNode, Parameter, ParameterNode, Behavior, PrimitiveType, LiteralBool, LiteralInt, LiteralReal, LiteralString
 
 def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
     initNode = lastNode
@@ -139,6 +139,40 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                     boolType.setPrimitiveType("BOOL")
                     retParam.setType(boolType)
                     retParamNode.setType(boolType)
+                    upperBound = LiteralBool()
+                    d[upperBound.getID()] = upperBound
+                    upperBound.setValue(node.value.value)
+                    retParamNode.setUpperBound(upperBound)
+                elif type(node.value.value) is int:
+                    intType = PrimitiveType()
+                    d[intType.getID()] = intType
+                    intType.setPrimitiveType("INT")
+                    retParam.setType(intType)
+                    retParamNode.setType(intType)
+                    upperBound = LiteralInt()
+                    d[upperBound.getID()] = upperBound
+                    upperBound.setValue(node.value.value)
+                    retParamNode.setUpperBound(upperBound)
+                elif type(node.value.value) is float:
+                    realType = PrimitiveType()
+                    d[realType.getID()] = realType
+                    realType.setPrimitiveType("REAL")
+                    retParam.setType(realType)
+                    retParamNode.setType(realType)
+                    upperBound = LiteralReal()
+                    d[upperBound.getID()] = upperBound
+                    upperBound.setValue(node.value.value)
+                    retParamNode.setUpperBound(upperBound)
+                elif type(node.value.value) is str:
+                    strType = PrimitiveType()
+                    d[strType.getID()] = strType
+                    strType.setPrimitiveType("STRING")
+                    retParam.setType(strType)
+                    retParamNode.setType(strType)
+                    upperBound = LiteralString()
+                    d[upperBound.getID()] = upperBound
+                    upperBound.setValue(node.value.value)
+                    retParamNode.setUpperBound(upperBound)
             lastNode = retParamNode
         if init:
             initNode = lastNode

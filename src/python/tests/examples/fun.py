@@ -2,7 +2,7 @@ def noParam():
     return True
 
 def numParam(f):
-    f += 1
+    f = 1
     return f
 
 def decisionFlow(b):

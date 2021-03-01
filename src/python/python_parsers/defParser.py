@@ -1,12 +1,28 @@
 import ast
-from yuml_python import CallBehaviorAction, ControlFlow, ObjectFlow, DecisionNode, JoinNode, ObjectNode, Activity, InitialNode, FinalNode, Parameter, ParameterNode, Behavior, PrimitiveType, LiteralBool, LiteralInt, LiteralReal, LiteralString
+from yuml_python import CallBehaviorAction, ControlFlow, ObjectFlow, DecisionNode, JoinNode, ObjectNode, Activity, InitialNode, FinalNode, Parameter, ParameterNode, Behavior, PrimitiveType, LiteralBool, LiteralInt, LiteralReal, LiteralString, Action
 
 def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
     initNode = lastNode
     init = True
     # go through body
     for node in bodyNode:
-        if type(node) is ast.Expr:
+        if type(node) is ast.Assign:
+            for p in node.targets:
+                if type(p) is ast.Name:
+                    # get object node from parsed nodes
+                    for parsedNode in uml.nodes:
+                        if parsedNode.getName() == p.id:
+                            # found the node we need to assign
+                            if type(node.value) is ast.Constant:
+                                valNode = ObjectNode()
+                                d[valNode.getID()] = valNode
+                                setNodeTypeLiteral(valNode, node, d)
+                                objFlow = ObjectFlow()
+                                d[objFlow.getID()] = objFlow
+                                setSourceAndTarget(objFlow, valNode, parsedNode)
+                                uml.addEdge(objFlow)
+                            break
+        elif type(node) is ast.Expr:
             if type(node.value) is ast.Call:
                 if type(node.value.func) is ast.Name:
                     # find the behavior it is referencing
@@ -76,12 +92,10 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
             outFlow2 = ControlFlow()
             d[outFlow1.getID()] = outFlow1
             d[outFlow2.getID()] = outFlow2
-            outFlow1.setSource(dec)
-            outFlow2.setSource(dec)
-            dec.addOutgoing(outFlow1)
-            dec.addOutgoing(outFlow1)
-            outFlow1.setTarget(firstAndLastNodes1[0])
-            outFlow2.setTarget(firstAndLastNodes2[0])
+            setSourceAndTarget(outFlow1, dec, firstAndLastNodes1[0])
+            setSourceAndTarget(outFlow2, dec, firstAndLastNodes2[0])
+            uml.addEdge(outFlow1)
+            uml.addEdge(outFlow2)
 
             # map join node
             join = JoinNode()
@@ -90,12 +104,11 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
             joinFlow2 = ControlFlow()
             d[joinFlow1.getID()] = joinFlow1
             d[joinFlow2.getID()] = joinFlow2
-            join.addIncoming(joinFlow1)
-            join.addIncoming(joinFlow2)
-            joinFlow1.setSource(firstAndLastNodes1[1])
-            joinFlow2.setSource(firstAndLastNodes2[1])
-            joinFlow1.setTarget(join)
-            joinFlow2.setTarget(join)
+            setSourceAndTarget(joinFlow1, firstAndLastNodes1[1], join)
+            setSourceAndTarget(joinFlow2, firstAndLastNodes2[1], join)
+            uml.addNode(join)
+            uml.addEdge(joinFlow1)
+            uml.addEdge(joinFlow2)
 
             # override lastNode
             lastNode = join
@@ -118,67 +131,70 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                 returnFlow = ObjectFlow()
                 d[returnFlow.getID()] = returnFlow
                 uml.addEdge(returnFlow)
-                returnFlow.setSource(lastNode)
-                lastNode.addOutgoing(returnFlow)
-                returnFlow.setTarget(retParamNode)
-                retParamNode.addIncoming(returnFlow)
+                setSourceAndTarget(returnFlow, lastNode, retParamNode)
             else:
                 returnFlow = ControlFlow()
                 d[returnFlow.getID()] = returnFlow
                 uml.addEdge(returnFlow)
-                returnFlow.setSource(lastNode)
-                lastNode.addOutgoing(returnFlow)
-                returnFlow.setTarget(retParamNode)
-                retParamNode.addIncoming(returnFlow)
+                setSourceAndTarget(returnFlow, lastNode, retParamNode)
             
             # get type of return/ objectnode
             if type(node.value) is ast.Constant:
-                if type(node.value.value) is bool:
-                    boolType = PrimitiveType()
-                    d[boolType.getID()] = boolType
-                    boolType.setPrimitiveType("BOOL")
-                    retParam.setType(boolType)
-                    retParamNode.setType(boolType)
-                    upperBound = LiteralBool()
-                    d[upperBound.getID()] = upperBound
-                    upperBound.setValue(node.value.value)
-                    retParamNode.setUpperBound(upperBound)
-                elif type(node.value.value) is int:
-                    intType = PrimitiveType()
-                    d[intType.getID()] = intType
-                    intType.setPrimitiveType("INT")
-                    retParam.setType(intType)
-                    retParamNode.setType(intType)
-                    upperBound = LiteralInt()
-                    d[upperBound.getID()] = upperBound
-                    upperBound.setValue(node.value.value)
-                    retParamNode.setUpperBound(upperBound)
-                elif type(node.value.value) is float:
-                    realType = PrimitiveType()
-                    d[realType.getID()] = realType
-                    realType.setPrimitiveType("REAL")
-                    retParam.setType(realType)
-                    retParamNode.setType(realType)
-                    upperBound = LiteralReal()
-                    d[upperBound.getID()] = upperBound
-                    upperBound.setValue(node.value.value)
-                    retParamNode.setUpperBound(upperBound)
-                elif type(node.value.value) is str:
-                    strType = PrimitiveType()
-                    d[strType.getID()] = strType
-                    strType.setPrimitiveType("STRING")
-                    retParam.setType(strType)
-                    retParamNode.setType(strType)
-                    upperBound = LiteralString()
-                    d[upperBound.getID()] = upperBound
-                    upperBound.setValue(node.value.value)
-                    retParamNode.setUpperBound(upperBound)
+                setNodeTypeLiteral(retParamNode, node, d)
+                retParam.setType(retParamNode.getType())
             lastNode = retParamNode
         if init:
             initNode = lastNode
             init = False
 
     return (initNode, lastNode)
+
+def setSourceAndTarget(flow, source, target):
+    flow.setSource(source)
+    source.addOutgoing(flow)
+    flow.setTarget(target)
+    target.addIncoming(flow)
+
+def setNodeTypeLiteral(typedElement, astNode, d):
+    if type(astNode.value.value) is bool:
+        boolType = PrimitiveType()
+        d[boolType.getID()] = boolType
+        boolType.setPrimitiveType("BOOL")
+        typedElement.setType(boolType)
+        upperBound = LiteralBool()
+        d[upperBound.getID()] = upperBound
+        upperBound.setValue(astNode.value.value)
+        typedElement.setUpperBound(upperBound)
+    elif type(astNode.value.value) is int:
+        intType = PrimitiveType()
+        d[intType.getID()] = intType
+        intType.setPrimitiveType("INT")
+        typedElement.setType(intType)
+        upperBound = LiteralInt()
+        d[upperBound.getID()] = upperBound
+        upperBound.setValue(astNode.value.value)
+        typedElement.setUpperBound(upperBound)
+    elif type(astNode.value.value) is float:
+        realType = PrimitiveType()
+        d[realType.getID()] = realType
+        realType.setPrimitiveType("REAL")
+        typedElement.setType(realType)
+        upperBound = LiteralReal()
+        d[upperBound.getID()] = upperBound
+        upperBound.setValue(astNode.value.value)
+        typedElement.setUpperBound(upperBound)
+    elif type(astNode.value.value) is str:
+        strType = PrimitiveType()
+        d[strType.getID()] = strType
+        strType.setPrimitiveType("STRING")
+        typedElement.setType(strType)
+        upperBound = LiteralString()
+        d[upperBound.getID()] = upperBound
+        upperBound.setValue(astNode.value.value)
+        typedElement.setUpperBound(upperBound)
+    else:
+        #TODO throw exception
+        print('could not get type of constant return param')
 
 def parseFunction(defNode, d, owner):
     fun = Activity()

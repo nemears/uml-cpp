@@ -60,7 +60,7 @@ class defParserTest(unittest.TestCase):
 
         self.assertEqual(m.ownedElements[2].getOwner().getID(), m.getID())
         self.assertEqual(type(m.ownedElements[2]), Activity)
-        self.assertEqual(len(m.ownedElements[2].nodes), 3)
+        self.assertEqual(len(m.ownedElements[2].nodes), 4)
 
 if __name__ == '__main__':
     unittest.main()

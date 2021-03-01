@@ -25,7 +25,7 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(m.ownedElements[0].parameters[0].getType().getPrimitiveType(), 'BOOL')
 
         #test nodes
-        self.assertEqual(len(m.ownedElements[0].nodes), 2)
+        self.assertEqual(len(m.ownedElements[0].nodes), 3)
         noParam = m.ownedElements[0]
         self.assertEqual(type(noParam.nodes[0]), InitialNode)
         self.assertEqual(type(noParam.nodes[1]), ParameterNode)
@@ -47,8 +47,11 @@ class defParserTest(unittest.TestCase):
         m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/examples/fun.py', d)
         self.assertEqual(type(m), Namespace)
         self.assertEqual(len(m.ownedElements), 4)
-        self.assertEqual(type(m.ownedElements[0]), Activity)
+
+        # test activity
         self.assertEqual(type(m.ownedElements[1]), Activity)
+        numFunc = m.ownedElements[1]
+        self.assertEqual(len(numFunc.nodes), 5)
 
         #this tests numParam function
         self.assertEqual(m.ownedElements[1].getOwner().getID(), m.getID())
@@ -63,7 +66,7 @@ class defParserTest(unittest.TestCase):
         m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/examples/fun.py', d)
         self.assertEqual(m.ownedElements[2].getOwner().getID(), m.getID())
         self.assertEqual(type(m.ownedElements[2]), Activity)
-        self.assertEqual(len(m.ownedElements[2].nodes), 4)
+        self.assertEqual(len(m.ownedElements[2].nodes), 5)
 
 if __name__ == '__main__':
     unittest.main()

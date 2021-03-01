@@ -20,6 +20,7 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                                 # create object node representing value we will assign the node
                                 valNode = ObjectNode()
                                 d[valNode.getID()] = valNode
+                                uml.addNode(valNode)
 
                                 # get type and upper bound
                                 setNodeTypeLiteral(valNode, node, d)
@@ -27,6 +28,10 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                                 # give it a name why not
                                 if valNode.getUpperBound != None:
                                     valNode.setName(str(valNode.getUpperBound().getValue()))
+
+                                # if other node didn't know type yet let it know
+                                if parsedNode.getType() == None:
+                                    parsedNode.setType(valNode.getType())
 
                                 # map flow
                                 objFlow = ObjectFlow()
@@ -229,6 +234,7 @@ def parseFunction(defNode, d, owner):
         p.setDirection("IN")
         fun.addParameter(p) 
         pNode = ParameterNode()
+        pNode.setName(arg.arg)
         d[pNode.getID()] = pNode
         pNode.setParameter(p)
         fun.addNode(pNode)
@@ -249,6 +255,7 @@ def parseFunction(defNode, d, owner):
     d[lastToFinalFlow.getID()] = lastToFinalFlow
     finalNode = FinalNode() 
     d[finalNode.getID()] = finalNode
+    fun.addNode(finalNode)
     setSourceAndTarget(lastToFinalFlow, firstAndLastNodes[1], finalNode)
 
     return fun

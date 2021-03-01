@@ -102,11 +102,35 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
 
         # find return param
         elif type(node) is ast.Return:
+            # create parameter
             retParam = Parameter()
             d[retParam.getID()] = retParam
             retParam.setDirection('RETURN')
             uml.addParameter(retParam)
 
+            #create parameterNode
+            retParamNode = ParameterNode()
+            d[retParamNode.getID()] = retParamNode
+            retParamNode.setParameter(retParam)
+            uml.addNode(retParamNode)
+            #retParamNode.setActivity(uml)
+            if issubclass(lastNode.__class__, ObjectNode):
+                returnFlow = ObjectFlow()
+                d[returnFlow.getID()] = returnFlow
+                uml.addEdge(returnFlow)
+                returnFlow.setSource(lastNode)
+                lastNode.addOutgoing(returnFlow)
+                returnFlow.setTarget(retParamNode)
+                retParamNode.addIncoming(returnFlow)
+            else:
+                returnFlow = ControlFlow()
+                d[returnFlow.getID()] = returnFlow
+                uml.addEdge(returnFlow)
+                returnFlow.setSource(lastNode)
+                lastNode.addOutgoing(returnFlow)
+                returnFlow.setTarget(retParamNode)
+                retParamNode.addIncoming(returnFlow)
+            lastNode = retParamNode
         if init:
             initNode = lastNode
             init = False

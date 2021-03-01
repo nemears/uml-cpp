@@ -7,17 +7,43 @@ from yuml_python import *
 
 class defParserTest(unittest.TestCase):
 
-    def testParseFunc(self):
+    def testParseFuncNoParam(self):
         d = {}
         m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/examples/fun.py', d)
         self.assertEqual(type(m), Namespace)
         self.assertEqual(len(m.ownedElements), 4)
         self.assertEqual(type(m.ownedElements[0]), Activity)
         self.assertEqual(type(m.ownedElements[1]), Activity)
+
+        # test parameters
         self.assertEqual(m.ownedElements[0].getOwner().getID(), m.getID())
         self.assertEqual(m.ownedElements[0].getName(), 'noParam')
         self.assertEqual(len(m.ownedElements[0].parameters), 1)
         self.assertEqual(m.ownedElements[0].parameters[0].getDirection(), 'RETURN')
+
+        #test nodes
+        self.assertEqual(len(m.ownedElements[0].nodes), 2)
+        noParam = m.ownedElements[0]
+        self.assertEqual(type(noParam.nodes[0]), InitialNode)
+        self.assertEqual(type(noParam.nodes[1]), ParameterNode)
+        self.assertEqual(noParam.nodes[1].getParameter(), noParam.parameters[0])
+
+        #test edges
+        self.assertEqual(len(noParam.edges), 1)
+        self.assertEqual(type(noParam.edges[0]), ControlFlow)
+        self.assertEqual(noParam.edges[0].getSource(), noParam.nodes[0])
+        self.assertEqual(noParam.edges[0].getTarget(), noParam.nodes[1])
+
+
+    def testParseFuncNumParam(self):
+        d = {}
+        m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/examples/fun.py', d)
+        self.assertEqual(type(m), Namespace)
+        self.assertEqual(len(m.ownedElements), 4)
+        self.assertEqual(type(m.ownedElements[0]), Activity)
+        self.assertEqual(type(m.ownedElements[1]), Activity)
+
+        #this tests numParam function
         self.assertEqual(m.ownedElements[1].getOwner().getID(), m.getID())
         self.assertEqual(m.ownedElements[1].getName(), 'numParam')
         self.assertEqual(len(m.ownedElements[1].parameters), 2)

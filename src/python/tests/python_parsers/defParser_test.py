@@ -69,6 +69,8 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(numFunc.parameters[0].getType().getPrimitiveType(), 'INT')
         self.assertEqual(numFunc.parameters[1].getDirection(), 'RETURN')
         self.assertTrue(numFunc.parameters[1].getType() != None)
+        self.assertTrue(issubclass(numFunc.parameters[1].getType().__class__, PrimitiveType))
+        self.assertEqual(numFunc.parameters[1].getType().getPrimitiveType(), 'INT')
 
     def testParseDecisionNode(self):
         d = {}

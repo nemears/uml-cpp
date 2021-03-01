@@ -168,6 +168,13 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
             if type(node.value) is ast.Constant:
                 setNodeTypeLiteral(retParamNode, node, d)
                 retParam.setType(retParamNode.getType())
+            elif type(node.value) is ast.Name:
+                # find that node in parsed nodes
+                for parsedNode in uml.nodes:
+                    if parsedNode.getName() == node.value.id:
+                        retParamNode.setType(parsedNode.getType())
+                        retParam.setType(parsedNode.getType())
+                        break
             lastNode = retParamNode
         if init:
             initNode = lastNode

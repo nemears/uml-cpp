@@ -36,10 +36,13 @@ class defParserTest(unittest.TestCase):
         self.assertTrue(noParam.nodes[1].getUpperBound().getValue())
 
         #test edges
-        self.assertEqual(len(noParam.edges), 1)
+        self.assertEqual(len(noParam.edges), 2)
         self.assertEqual(type(noParam.edges[0]), ControlFlow)
         self.assertEqual(noParam.edges[0].getSource(), noParam.nodes[0])
         self.assertEqual(noParam.edges[0].getTarget(), noParam.nodes[1])
+        self.assertEqual(type(noParam.edges[1]), ControlFlow)
+        self.assertEqual(noParam.edges[1].getSource(), noParam.nodes[1])
+        self.assertEqual(noParam.edges[1].getTarget(), noParam.nodes[2])
 
 
     def testParseFuncNumParam(self):
@@ -52,6 +55,7 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(type(m.ownedElements[1]), Activity)
         numFunc = m.ownedElements[1]
         self.assertEqual(len(numFunc.nodes), 5)
+        self.assertEqual(len(numFunc.edges), 4)
 
         #this tests numParam function
         self.assertEqual(m.ownedElements[1].getOwner().getID(), m.getID())

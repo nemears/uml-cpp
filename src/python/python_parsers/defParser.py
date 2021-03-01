@@ -147,16 +147,20 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
             retParamNode.setParameter(retParam)
             uml.addNode(retParamNode)
             #retParamNode.setActivity(uml)
-            if issubclass(lastNode.__class__, ObjectNode):
-                returnFlow = ObjectFlow()
-                d[returnFlow.getID()] = returnFlow
-                uml.addEdge(returnFlow)
-                setSourceAndTarget(returnFlow, lastNode, retParamNode)
-            else:
-                returnFlow = ControlFlow()
-                d[returnFlow.getID()] = returnFlow
-                uml.addEdge(returnFlow)
-                setSourceAndTarget(returnFlow, lastNode, retParamNode)
+
+            # determine which type of flow to do
+            # first if is for edge case with initial node
+            if not init:
+                if issubclass(lastNode.__class__, ObjectNode):
+                    returnFlow = ObjectFlow()
+                    d[returnFlow.getID()] = returnFlow
+                    uml.addEdge(returnFlow)
+                    setSourceAndTarget(returnFlow, lastNode, retParamNode)
+                else:
+                    returnFlow = ControlFlow()
+                    d[returnFlow.getID()] = returnFlow
+                    uml.addEdge(returnFlow)
+                    setSourceAndTarget(returnFlow, lastNode, retParamNode)
             
             # get type of return/ objectnode
             if type(node.value) is ast.Constant:
@@ -244,6 +248,7 @@ def parseFunction(defNode, d, owner):
 
     # map control flow
     initToFirstFlow = ControlFlow()
+    fun.addEdge(initToFirstFlow)
     d[initToFirstFlow.getID()] = initToFirstFlow
     setSourceAndTarget(initToFirstFlow, initialNode, firstAndLastNodes[0])
 
@@ -256,6 +261,7 @@ def parseFunction(defNode, d, owner):
     finalNode = FinalNode() 
     d[finalNode.getID()] = finalNode
     fun.addNode(finalNode)
+    fun.addEdge(lastToFinalFlow)
     setSourceAndTarget(lastToFinalFlow, firstAndLastNodes[1], finalNode)
 
     return fun

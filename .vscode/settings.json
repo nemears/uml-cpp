@@ -78,7 +78,6 @@
         "YAML_CPP_BUILD_CONTRIB":"OFF"
     },
     // python testing options
-    //"python.testing.cwd":"${workspaceFolder}/src/python/",
     "python.testing.unittestArgs": [
         "-v",
         "-s",

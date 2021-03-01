@@ -388,7 +388,7 @@ PYBIND11_MODULE(yuml_python, m) {
                 ++i;
             }
         })
-        .def_readonly("nodes", &Activity::nodes)
+        .def_readwrite("nodes", &Activity::nodes)
         .def("addEdge", [] (Activity& me, ActivityEdge& edge) { me.edges.push_back(&edge); })
         .def("removeEdge", [] (Activity&me, ActivityEdge& edge) {
             list<ActivityEdge*>::iterator i = me.edges.begin();

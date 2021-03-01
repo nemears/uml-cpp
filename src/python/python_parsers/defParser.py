@@ -32,6 +32,8 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                                 # if other node didn't know type yet let it know
                                 if parsedNode.getType() == None:
                                     parsedNode.setType(valNode.getType())
+                                    if type(parsedNode) is ParameterNode:
+                                        parsedNode.getParameter().setType(valNode.getType())
 
                                 # map flow
                                 objFlow = ObjectFlow()

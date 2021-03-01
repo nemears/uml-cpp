@@ -53,17 +53,20 @@ class defParserTest(unittest.TestCase):
 
         # test activity
         self.assertEqual(type(m.ownedElements[1]), Activity)
+        self.assertEqual(m.ownedElements[1].getName(), 'numParam')
         numFunc = m.ownedElements[1]
         self.assertEqual(len(numFunc.nodes), 5)
         self.assertEqual(len(numFunc.edges), 4)
 
-        #this tests numParam function
-        self.assertEqual(m.ownedElements[1].getOwner().getID(), m.getID())
-        self.assertEqual(m.ownedElements[1].getName(), 'numParam')
-        self.assertEqual(len(m.ownedElements[1].parameters), 2)
-        self.assertEqual(m.ownedElements[1].parameters[0].getName(), 'f')
-        self.assertEqual(m.ownedElements[1].parameters[0].getDirection(), 'IN')
-        self.assertEqual(m.ownedElements[1].parameters[1].getDirection(), 'RETURN')
+        t = numFunc.nodes[2].getType()
+
+        # parameters
+        self.assertEqual(len(numFunc.parameters), 2)
+        self.assertEqual(numFunc.parameters[0].getName(), 'f')
+        self.assertEqual(numFunc.parameters[0].getDirection(), 'IN')
+        self.assertTrue(numFunc.parameters[0].getType() != None)
+        self.assertTrue(issubclass(numFunc.parameters[0].getType().__class__, PrimitiveType))
+        self.assertEqual(numFunc.parameters[1].getDirection(), 'RETURN')
 
     def testParseDecisionNode(self):
         d = {}

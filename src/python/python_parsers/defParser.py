@@ -1,5 +1,5 @@
 import ast
-from yuml_python import CallBehaviorAction, ControlFlow, ObjectFlow, DecisionNode, JoinNode, ObjectNode, Activity, InitialNode, FinalNode, Parameter, ParameterNode, Behavior
+from yuml_python import CallBehaviorAction, ControlFlow, ObjectFlow, DecisionNode, JoinNode, ObjectNode, Activity, InitialNode, FinalNode, Parameter, ParameterNode, Behavior, PrimitiveType
 
 def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
     initNode = lastNode
@@ -130,6 +130,15 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                 lastNode.addOutgoing(returnFlow)
                 returnFlow.setTarget(retParamNode)
                 retParamNode.addIncoming(returnFlow)
+            
+            # get type of return/ objectnode
+            if type(node.value) is ast.Constant:
+                if type(node.value.value) is bool:
+                    boolType = PrimitiveType()
+                    d[boolType.getID()] = boolType
+                    boolType.setPrimitiveType("BOOL")
+                    retParam.setType(boolType)
+                    retParamNode.setType(boolType)
             lastNode = retParamNode
         if init:
             initNode = lastNode

@@ -1,5 +1,5 @@
 def noParam():
-    return true
+    return True
 
 def numParam(f):
     f += 1

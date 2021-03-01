@@ -25,12 +25,12 @@ def parseModule(path, d):
             #if type(n) is ast.Import:
         return moduleUML
 
-if __name__ == '__main__':
-    d = {}
-    n = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/test/python/examples/knapsack.py', d)
-    print('length of module children: ', len(n.ownedElements))
-    m = Model()
-    m.setName('root')
-    m.addOwnedElement(n)
-    emitter = ModelParser()
-    print(emitter.emit(m))
+# if __name__ == '__main__':
+#     d = {}
+#     n = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/test/python/examples/knapsack.py', d)
+#     print('length of module children: ', len(n.ownedElements))
+#     m = Model()
+#     m.setName('root')
+#     m.addOwnedElement(n)
+#     emitter = ModelParser()
+#     print(emitter.emit(m))

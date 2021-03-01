@@ -1,5 +1,5 @@
 import ast
-from yuml_python import CallBehaviorAction, ControlFlow, ObjectFlow, DecisionNode, JoinNode, ObjectNode, Activity, InitialNode, Parameter, ParameterNode, Behavior
+from yuml_python import CallBehaviorAction, ControlFlow, ObjectFlow, DecisionNode, JoinNode, ObjectNode, Activity, InitialNode, FinalNode, Parameter, ParameterNode, Behavior
 
 def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
     initNode = lastNode
@@ -133,6 +133,20 @@ def parseFunction(defNode, d, owner):
         pNode.setParameter(p)
         fun.addNode(pNode)
 
-    parseFunctionBody(defNode.body, d, fun, owner, initialNode)
+    firstAndLastNodes = parseFunctionBody(defNode.body, d, fun, owner, initialNode)
+    initToFirstFlow = ControlFlow()
+    d[initToFirstFlow.getID()] = initToFirstFlow
+    lastToFinalFlow = ControlFlow()
+    d[lastToFinalFlow.getID()] = lastToFinalFlow
+    finalNode = FinalNode() 
+    d[finalNode.getID()] = finalNode
+    initToFirstFlow.setSource(initialNode)
+    initToFirstFlow.setTarget(firstAndLastNodes[0])
+    initialNode.addOutgoing(initToFirstFlow)
+    firstAndLastNodes[0].addIncoming(initToFirstFlow)
+    lastToFinalFlow.setSource(firstAndLastNodes[1])
+    lastToFinalFlow.setTarget(finalNode)
+    firstAndLastNodes[1].addOutgoing(lastToFinalFlow)
+    finalNode.addIncoming(lastToFinalFlow)
 
     return fun

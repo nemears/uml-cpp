@@ -9,18 +9,33 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
         if type(node) is ast.Assign:
             for p in node.targets:
                 if type(p) is ast.Name:
+
                     # get object node from parsed nodes
                     for parsedNode in uml.nodes:
                         if parsedNode.getName() == p.id:
+
                             # found the node we need to assign
                             if type(node.value) is ast.Constant:
+
+                                # create object node representing value we will assign the node
                                 valNode = ObjectNode()
                                 d[valNode.getID()] = valNode
+
+                                # get type and upper bound
                                 setNodeTypeLiteral(valNode, node, d)
+
+                                # give it a name why not
+                                if valNode.getUpperBound != None:
+                                    valNode.setName(str(valNode.getUpperBound().getValue()))
+
+                                # map flow
                                 objFlow = ObjectFlow()
                                 d[objFlow.getID()] = objFlow
                                 setSourceAndTarget(objFlow, valNode, parsedNode)
                                 uml.addEdge(objFlow)
+
+                                # Override lastNode
+                                lastNode = parsedNode
                             break
         elif type(node) is ast.Expr:
             if type(node.value) is ast.Call:
@@ -197,6 +212,8 @@ def setNodeTypeLiteral(typedElement, astNode, d):
         print('could not get type of constant return param')
 
 def parseFunction(defNode, d, owner):
+
+    # create action and initial node
     fun = Activity()
     d[fun.getID()] = fun
     fun.setName(defNode.name)
@@ -216,20 +233,22 @@ def parseFunction(defNode, d, owner):
         pNode.setParameter(p)
         fun.addNode(pNode)
 
+    # parse body
     firstAndLastNodes = parseFunctionBody(defNode.body, d, fun, owner, initialNode)
+
+    # map control flow
     initToFirstFlow = ControlFlow()
     d[initToFirstFlow.getID()] = initToFirstFlow
+    setSourceAndTarget(initToFirstFlow, initialNode, firstAndLastNodes[0])
+
+    # create final node and flow to final if return node was not last item parsed
+    # TODO is this right behavior, or is there always finalNode (CHECK)
+    # if (type(firstAndLastNodes[1]) is not ParameterNode):
+    #     if firstAndLastNodes[1].getDirection() != 'RETURN':
     lastToFinalFlow = ControlFlow()
     d[lastToFinalFlow.getID()] = lastToFinalFlow
     finalNode = FinalNode() 
     d[finalNode.getID()] = finalNode
-    initToFirstFlow.setSource(initialNode)
-    initToFirstFlow.setTarget(firstAndLastNodes[0])
-    initialNode.addOutgoing(initToFirstFlow)
-    firstAndLastNodes[0].addIncoming(initToFirstFlow)
-    lastToFinalFlow.setSource(firstAndLastNodes[1])
-    lastToFinalFlow.setTarget(finalNode)
-    firstAndLastNodes[1].addOutgoing(lastToFinalFlow)
-    finalNode.addIncoming(lastToFinalFlow)
+    setSourceAndTarget(lastToFinalFlow, firstAndLastNodes[1], finalNode)
 
     return fun

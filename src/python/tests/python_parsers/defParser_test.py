@@ -58,6 +58,9 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(m.ownedElements[1].parameters[0].getDirection(), 'IN')
         self.assertEqual(m.ownedElements[1].parameters[1].getDirection(), 'RETURN')
 
+    def testParseDecisionNode(self):
+        d = {}
+        m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/examples/fun.py', d)
         self.assertEqual(m.ownedElements[2].getOwner().getID(), m.getID())
         self.assertEqual(type(m.ownedElements[2]), Activity)
         self.assertEqual(len(m.ownedElements[2].nodes), 4)

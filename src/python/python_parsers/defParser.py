@@ -74,16 +74,14 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
         elif type(node) is ast.If:
             dec = DecisionNode()
             d[dec.getID()] = dec
+            uml.addNode(dec)
 
             # map control flow to decision
-            flow = ControlFlow()
-            d[flow.getID()] = flow
-            uml.addEdge(flow)
-            flow.setSource(lastNode)
-            flow.setTarget(dec)
-            dec.addIncoming(flow)
-            lastNode.addOutgoing(flow)
-            uml.addNode(dec)
+            if not init:
+                flow = ControlFlow()
+                d[flow.getID()] = flow
+                uml.addEdge(flow)
+                setSourceAndTarget(flow, lastNode, dec)
 
             # get object input to decision node
             # if it is a name node it is referencing a previously defined variable, so search through all
@@ -137,19 +135,47 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
 
         # find return param
         elif type(node) is ast.Return:
-            # create parameter
-            retParam = Parameter()
-            d[retParam.getID()] = retParam
-            retParam.setDirection('RETURN')
-            uml.addParameter(retParam)
 
-            #create parameterNode
-            retParamNode = ParameterNode()
-            d[retParamNode.getID()] = retParamNode
-            retParamNode.setParameter(retParam)
-            uml.addNode(retParamNode)
-            #retParamNode.setActivity(uml)
+            # placeholder
+            retParamNode = None
+            
+            # determine if return has already been determined
+            defineParameter = True
+            for param in uml.parameters:
+                if param.getDirection() == 'RETURN':
+                    defineParameter = False
+                    for umlNode in uml.nodes:
+                        if type(umlNode) is ParameterNode:
+                            if umlNode.getParameter().getDirection() == 'RETURN':
+                                retParamNode = umlNode
+                    break
+            
+            # if its not determined create it
+            if defineParameter:
+                # create parameter
+                retParam = Parameter()
+                d[retParam.getID()] = retParam
+                retParam.setDirection('RETURN')
+                uml.addParameter(retParam)
 
+                #create parameterNode
+                retParamNode = ParameterNode()
+                d[retParamNode.getID()] = retParamNode
+                retParamNode.setParameter(retParam)
+                uml.addNode(retParamNode)
+                #retParamNode.setActivity(uml)
+
+                # get type of return/ objectnode
+                if type(node.value) is ast.Constant:
+                    setNodeTypeLiteral(retParamNode, node, d)
+                    retParam.setType(retParamNode.getType())
+                elif type(node.value) is ast.Name:
+                    # find that node in parsed nodes
+                    for parsedNode in uml.nodes:
+                        if parsedNode.getName() == node.value.id:
+                            retParamNode.setType(parsedNode.getType())
+                            retParam.setType(parsedNode.getType())
+                            break
             # determine which type of flow to do
             # first if is for edge case with initial node
             if not init:
@@ -163,18 +189,6 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                     d[returnFlow.getID()] = returnFlow
                     uml.addEdge(returnFlow)
                     setSourceAndTarget(returnFlow, lastNode, retParamNode)
-            
-            # get type of return/ objectnode
-            if type(node.value) is ast.Constant:
-                setNodeTypeLiteral(retParamNode, node, d)
-                retParam.setType(retParamNode.getType())
-            elif type(node.value) is ast.Name:
-                # find that node in parsed nodes
-                for parsedNode in uml.nodes:
-                    if parsedNode.getName() == node.value.id:
-                        retParamNode.setType(parsedNode.getType())
-                        retParam.setType(parsedNode.getType())
-                        break
             lastNode = retParamNode
         if init:
             initNode = lastNode

@@ -6,10 +6,10 @@ def numParam(f):
     return f
 
 def decisionFlow(b):
-    if b:
-        print('b is true')
+    if b == True:
+        return noParam()
     else:
-        print('b is false')
+        return False
 
 def callBehavior():
     noParam()

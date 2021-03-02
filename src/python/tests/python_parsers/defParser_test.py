@@ -102,7 +102,24 @@ class defParserTest(unittest.TestCase):
         m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/examples/fun.py', d)
         self.assertEqual(m.ownedElements[2].getOwner().getID(), m.getID())
         self.assertEqual(type(m.ownedElements[2]), Activity)
-        self.assertEqual(len(m.ownedElements[2].nodes), 5)
+        self.assertEqual(len(m.ownedElements[2].nodes), 6)
+        decision = m.ownedElements[2]
+
+        #Parameters
+        self.assertEqual(len(decision.parameters), 2)
+        self.assertTrue(decision.parameters[0].getName() != '')
+        self.assertEqual(decision.parameters[0].getName(), 'b')
+        self.assertTrue(decision.parameters[0].getType() != None)
+        self.assertEqual(decision.parameters[0].getType(), PrimitiveType)
+        self.assertEqual(decision.parameters[0].getType().getPrimitiveType(), 'BOOL')
+
+
+        # Initial node
+        self.assertEqual(type(decision.nodes[0]), InitialNode)
+        initNode = decision.nodes[0]
+        self.assertEqual(len(initNode.incoming), 0)
+        self.assertEqual(len(initNode.outgoing), 1)
+        self.assertEqual(type(initNode.outgoing[0]), ControlFlow)
 
 if __name__ == '__main__':
     unittest.main()

@@ -28,6 +28,7 @@ enum class ElementType {
     CONTROL_FLOW,
     DECISION_NODE,
     ELEMENT,
+    EXPRESSION,
     FINAL_NODE,
     FORK_NODE,
     INITIAL_NODE,

@@ -57,6 +57,9 @@ string Element::getElementTypeString() {
         case ElementType::ELEMENT : {
             return "ELEMENT";
         }
+        case ElementType::EXPRESSION : {
+            return "EXPRESSION";
+        }
         case ElementType::FINAL_NODE : {
             return "FINAL_NODE";
         }

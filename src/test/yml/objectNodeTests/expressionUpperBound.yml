@@ -1,0 +1,13 @@
+---
+  model:
+    children:
+      - activity:
+          nodes:
+            - objectNode:
+                type: INT
+                upperBound:
+                  expression:
+                    type: BOOL
+                    operand: 5
+                    symbol: <
+...

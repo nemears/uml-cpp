@@ -1,0 +1,9 @@
+---
+  model:
+    children:
+      - activity:
+          nodes:
+            - objectNode:
+                type: INT
+                upperBound: 5
+...

@@ -24,44 +24,45 @@ bool ObjectNodeParser::parseObjectNodeFeatures(YAML::Node node, Element* el) {
     }
 
     if (node["upperBound"]) {
-        if (dynamic_cast<ObjectNode*>(el)->getType() != NULL) {
-            if (dynamic_cast<ObjectNode*>(el)->getType()->isPrimitive()) {
-                switch (((PrimitiveType*) dynamic_cast<ObjectNode*>(el)->getType())->getPrimitiveType()) {
-                    case PrimitiveType::Primitive::STRING : {
-                        string stringVal = node["upperBound"].as<string>();
-                        LiteralString* ls = new LiteralString;
-                        ls->setValue(stringVal);
-                        dynamic_cast<ObjectNode*>(el)->setUpperBound(ls);
-                        break;
+        if (node["upperBound"].IsScalar()) {
+            // Assume it is same as type (TODO CHECK ASSUMPTION)
+            if (dynamic_cast<ObjectNode*>(el)->getType() != NULL) {
+                if (dynamic_cast<ObjectNode*>(el)->getType()->isPrimitive()) {
+                    switch (((PrimitiveType*) dynamic_cast<ObjectNode*>(el)->getType())->getPrimitiveType()) {
+                        case PrimitiveType::Primitive::STRING : {
+                            string stringVal = node["upperBound"].as<string>();
+                            LiteralString* ls = new LiteralString;
+                            ls->setValue(stringVal);
+                            dynamic_cast<ObjectNode*>(el)->setUpperBound(ls);
+                            break;
+                        }
+                        case PrimitiveType::Primitive::INT : {
+                            int intVal = node["upperBound"].as<int>();
+                            LiteralInt* li = new LiteralInt;
+                            li->setValue(intVal);
+                            dynamic_cast<ObjectNode*>(el)->setUpperBound(li);
+                            break;
+                        }
+                        case PrimitiveType::Primitive::REAL : {
+                            double realVal = node["upperBound"].as<double>();
+                            LiteralReal* lr = new LiteralReal;
+                            lr->setValue(realVal);
+                            dynamic_cast<ObjectNode*>(el)->setUpperBound(lr);
+                            break;
+                        }
+                        case PrimitiveType::Primitive::BOOL : {
+                            bool boolVal = node["upperBound"].as<bool>();
+                            LiteralBool* lb = new LiteralBool;
+                            lb->setValue(boolVal);
+                            dynamic_cast<ObjectNode*>(el)->setUpperBound(lb);
+                            break;
+                        }
+                        default : {
+                            //TODO error
+                            break;
+                        }
                     }
-                    case PrimitiveType::Primitive::INT : {
-                        int intVal = node["upperBound"].as<int>();
-                        LiteralInt* li = new LiteralInt;
-                        li->setValue(intVal);
-                        dynamic_cast<ObjectNode*>(el)->setUpperBound(li);
-                        break;
-                    }
-                    case PrimitiveType::Primitive::REAL : {
-                        double realVal = node["upperBound"].as<double>();
-                        LiteralReal* lr = new LiteralReal;
-                        lr->setValue(realVal);
-                        dynamic_cast<ObjectNode*>(el)->setUpperBound(lr);
-                        break;
-                    }
-                    case PrimitiveType::Primitive::BOOL : {
-                        bool boolVal = node["upperBound"].as<bool>();
-                        LiteralBool* lb = new LiteralBool;
-                        lb->setValue(boolVal);
-                        dynamic_cast<ObjectNode*>(el)->setUpperBound(lb);
-                        break;
-                    }
-                    default : {
-                        //TODO error
-                        break;
-                    }
-                }
-            } else {
-                if (node["upperBound"].IsScalar()) {
+                } else {
                     // instances
                     string parsedId = node["upperBound"].as<string>();
                     if (isValidUUID4(parsedId)) {
@@ -71,16 +72,13 @@ bool ObjectNodeParser::parseObjectNodeFeatures(YAML::Node node, Element* el) {
                         instanceVal->setInstance(defaultVal);
                         dynamic_cast<ObjectNode*>(el)->setUpperBound(instanceVal);
                     }
-                } else if (node["upperBound"].IsMap()) {
-                    if (node["upperBound"]["expression"]) {
-                        ExpressionParser ep(TypedElementParser::elements, TypedElementParser::postProcessFlag);
-                        Element* parsedEl = ep.parseElement(node["upperBound"]["expression"]);
-                        dynamic_cast<ObjectNode*>(el)->setUpperBound(dynamic_cast<ValueSpecification*>(parsedEl));
-                    }
-                } else {
-                    // TODO throw error
-                    ret = false
                 }
+            }
+        } else if (node["upperBound"].IsMap()) {
+            if (node["upperBound"]["expression"]) {
+                ExpressionParser ep(TypedElementParser::elements, TypedElementParser::postProcessFlag);
+                Element* parsedEl = ep.parseElement(node["upperBound"]["expression"]);
+                dynamic_cast<ObjectNode*>(el)->setUpperBound(dynamic_cast<ValueSpecification*>(parsedEl));
             }
         } else {
             // TODO throw error

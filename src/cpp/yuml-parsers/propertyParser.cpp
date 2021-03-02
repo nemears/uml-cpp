@@ -54,18 +54,27 @@ bool PropertyParser::parseFeatures(YAML::Node node, UML::Element* el) {
                     }
                 }
             } else {
-                // instances
-                string parsedId = node["defaultValue"].as<string>();
-                if (isValidUUID4(parsedId)) {
-                    boost::uuids::uuid typeId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
-                    InstanceSpecification* defaultVal = dynamic_cast<InstanceSpecification*>((*TypedElementParser::elements)[typeId]);
-                    InstanceValue* instanceVal = new InstanceValue;
-                    instanceVal->setInstance(defaultVal);
-                    dynamic_cast<Property*>(el)->setDefaultValue(instanceVal);
+                if (node["defaultValue"].IsScalar()) {
+                    // instances
+                    string parsedId = node["defaultValue"].as<string>();
+                    if (isValidUUID4(parsedId)) {
+                        boost::uuids::uuid typeId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
+                        InstanceSpecification* defaultVal = dynamic_cast<InstanceSpecification*>((*TypedElementParser::elements)[typeId]);
+                        InstanceValue* instanceVal = new InstanceValue;
+                        instanceVal->setInstance(defaultVal);
+                        dynamic_cast<Property*>(el)->setDefaultValue(instanceVal);
+                    }
+                } else if (node["defaultValue"].IsMap()) {
+                    if (node["defaultValue"]["expression"]) {
+                        ExpressionParser ep(TypedElementParser::elements, TypedElementParser::postProcessFlag);
+                        Element* parsedEl = ep.parseElement(node["defaultValue"]["expression"]);
+                        dynamic_cast<Property*>(el)->setDefaultValue(dynamic_cast<ValueSpecification*>(parsedEl));
+                    }
                 }
             }
         } else {
             // TODO throw error
+            ret = false;
         }
     }
 

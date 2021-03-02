@@ -10,6 +10,8 @@
 #include "uml/instanceSpecification.h"
 #include "uml/instanceValue.h"
 #include "multiplicityElementParser.h"
+#include "expressionParser.h"
+
 using namespace std;
 
 class PropertyParser : public TypedElementParser, public MultiplicityElementParser {

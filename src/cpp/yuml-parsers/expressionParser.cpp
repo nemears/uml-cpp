@@ -22,6 +22,13 @@ bool ExpressionParser::parseFeatures(YAML::Node node, Element* el) {
         }
     }
 
+    if (node["symbol"]) {
+        if (!node["symbol"].IsScalar()) {
+            throw ElementParser::InvalidNodeTypeException(node["symbol"].Mark().line, "scalar");
+        }
+        dynamic_cast<Expression*>(el)->setSymbol(node["symbol"].as<string>());
+    }
+
     return ret;
 }
 

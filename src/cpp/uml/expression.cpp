@@ -10,6 +10,6 @@ void Expression::setSymbol(string sym) {
     this->symbol = sym;
 }
 
-ElementType getElementType() {
+ElementType Expression::getElementType() {
     return ElementType::EXPRESSION;
 }

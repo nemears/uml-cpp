@@ -12,6 +12,9 @@ namespace UML {
             string getSymbol();
             void setSymbol(string sym);
             ElementType getElementType() override;
+            Expression() {
+                symbol = "";
+            };
     };
 }
 #endif

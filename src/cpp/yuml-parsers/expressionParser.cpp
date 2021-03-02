@@ -80,6 +80,8 @@ bool ExpressionParser::parseOperand(YAML::Node node, Element* expression) {
             return false;
         }
     }
+
+    return true;
 }
 
 bool ExpressionParser::emit(YAML::Emitter& emitter, Element* el) {

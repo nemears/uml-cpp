@@ -11,9 +11,6 @@ namespace UML {
             list<ValueSpecification*> operands;
             string getSymbol();
             void setSymbol(string sym);
-            Expression() {
-                symbol = "";
-            };
             ElementType getElementType() override;
     };
 }

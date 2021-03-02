@@ -66,7 +66,7 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
                         }
                     }
                 } else {
-                    parseInstanceValueFeatures(node, el);
+                    parseNonPimitiveValueFeatures(node, el);
                 }
             } else {
                 // Error
@@ -74,20 +74,28 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
             }
         } else {
             // so we were told to skip, if we can get a uuid from value mark it is not an error, it is backwards parsing
-            parseInstanceValueFeatures(node, el);
+            parseNonPimitiveValueFeatures(node, el);
         }
     }
 
     return ElementParser::parseFeatures(node, el);
 }
 
-void SlotParser::parseInstanceValueFeatures(YAML::Node node, Element* el) {
-    string parsedId = node["value"].as<string>();
+void SlotParser::parseNonPimitiveValueFeatures(YAML::Node node, Element* el) {
+    if (node["value"].IsScalar()) {
+        string parsedId = node["value"].as<string>();
 
-    if (UML::isValidUUID4(parsedId)) {
-        boost::uuids::uuid valueId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
+        if (UML::isValidUUID4(parsedId)) {
+            boost::uuids::uuid valueId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-        parseNowOrLater(valueId, el->uuid, node, &SlotParser::setInstanceValueLater);
+            parseNowOrLater(valueId, el->uuid, node, &SlotParser::setInstanceValueLater);
+        }
+    } else if (node["value"].IsMap()) {
+        if (node["value"]["expression"]) {
+            ExpressionParser ep(elements, postProcessFlag);
+            Element* parsedEl = ep.parseElement(node["value"]["expression"]);
+            dynamic_cast<Slot*>(el)->values.push_back(dynamic_cast<ValueSpecification*>(parsedEl));
+        }
     }
 }
 

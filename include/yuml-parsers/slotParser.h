@@ -10,6 +10,7 @@
 #include "uml/literalBool.h"
 #include "uml/instanceSpecification.h"
 #include "uml/instanceValue.h"
+#include "expressionParser.h"
 
 using namespace UML;
 
@@ -17,7 +18,7 @@ class SlotParser : public ElementParser {
     protected:
         UML::Element* createElement();
         bool parseFeatures(YAML::Node node, UML::Element* el);
-        void parseInstanceValueFeatures(YAML::Node node, Element* el);
+        void parseNonPimitiveValueFeatures(YAML::Node node, Element* el);
 
     public:
         SlotParser(map<boost::uuids::uuid, UML::Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 

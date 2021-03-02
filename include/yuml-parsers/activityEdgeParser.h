@@ -12,6 +12,7 @@
 #include "uml/literalReal.h"
 #include "uml/literalString.h"
 #include "uml/decisionNode.h"
+#include "expressionParser.h"
 
 class ActivityEdgeParser : public NamedElementParser {
     protected:

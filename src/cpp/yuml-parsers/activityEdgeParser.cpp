@@ -34,64 +34,23 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
     }
     
     if (node["guard"]) {
-        if(isValidUUID4(node["guard"].as<string>())) {
-            // This means it is an instance
-            boost::uuids::uuid guardID = boost::lexical_cast<boost::uuids::uuid>(node["guard"].as<string>());
+        if (node["guard"].IsScalar()) {
+            if(isValidUUID4(node["guard"].as<string>())) {
+                // This means it is an instance
+                boost::uuids::uuid guardID = boost::lexical_cast<boost::uuids::uuid>(node["guard"].as<string>());
 
-            parseNowOrLater(guardID, el->uuid, node, &ActivityEdgeParser::setInstanceGuardLater);
-        } else {
-            if (dynamic_cast<ActivityEdge*>(el)->getSource() != NULL){
-                if (dynamic_cast<ActivityEdge*>(el)->getSource()->isObjectNode()) {
-                    if (dynamic_cast<ObjectNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getType() != NULL) {
-                        if (dynamic_cast<ObjectNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getType()->isPrimitive()) {
-                            // Literals
-                            switch(dynamic_cast<PrimitiveType*>(dynamic_cast<ObjectNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getType())->getPrimitiveType()) {
-                                case PrimitiveType::Primitive::BOOL : {
-                                    LiteralBool* lb = new LiteralBool;
-                                    lb->setValue(node["guard"].as<bool>());
-                                    dynamic_cast<ActivityEdge*>(el)->setGuard(lb);
-                                }
-                                case PrimitiveType::Primitive::INT : {
-                                    LiteralInt* li = new LiteralInt;
-                                    li->setValue(node["guard"].as<int>());
-                                    dynamic_cast<ActivityEdge*>(el)->setGuard(li);
-                                    break;
-                                }
-                                case PrimitiveType::Primitive::STRING : {
-                                    LiteralString* ls = new LiteralString;
-                                    ls->setValue(node["guard"].as<string>());
-                                    dynamic_cast<ActivityEdge*>(el)->setGuard(ls);
-                                    break;
-                                }
-                                case PrimitiveType::Primitive::REAL : {
-                                    LiteralReal* lr = new LiteralReal;
-                                    lr->setValue(node["guard"].as<double>());
-                                    dynamic_cast<ActivityEdge*>(el)->setGuard(lr);
-                                    break;
-                                }
-                                default : {
-                                    // ERROR
-                                    return false;
-                                }
-                            }
-                        } else {
-                            // instance
-                            // Error?
-                            return false;
-                        }
-                    }
-                } else if (dynamic_cast<ActivityEdge*>(el)->getSource()->getElementType() == ElementType::DECISION_NODE) {
-                    // get type from input to decision node
-                    if (dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->getSource() != NULL
-                            && dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->getTarget() != NULL) {
-                        if (dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->getSource()->isObjectNode()) {
-                            if (dynamic_cast<ObjectNode*>(dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->getSource())->getType()->isPrimitive()) {
-                                switch (dynamic_cast<PrimitiveType*>(dynamic_cast<ObjectNode*>(dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->getSource())->getType())->getPrimitiveType()) {
+                parseNowOrLater(guardID, el->uuid, node, &ActivityEdgeParser::setInstanceGuardLater);
+            } else {
+                if (dynamic_cast<ActivityEdge*>(el)->getSource() != NULL){
+                    if (dynamic_cast<ActivityEdge*>(el)->getSource()->isObjectNode()) {
+                        if (dynamic_cast<ObjectNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getType() != NULL) {
+                            if (dynamic_cast<ObjectNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getType()->isPrimitive()) {
+                                // Literals
+                                switch(dynamic_cast<PrimitiveType*>(dynamic_cast<ObjectNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getType())->getPrimitiveType()) {
                                     case PrimitiveType::Primitive::BOOL : {
                                         LiteralBool* lb = new LiteralBool;
                                         lb->setValue(node["guard"].as<bool>());
                                         dynamic_cast<ActivityEdge*>(el)->setGuard(lb);
-                                        break;
                                     }
                                     case PrimitiveType::Primitive::INT : {
                                         LiteralInt* li = new LiteralInt;
@@ -116,24 +75,78 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
                                         return false;
                                     }
                                 }
+                            } else {
+                                // instance
+                                // Error?
+                                return false;
+                            }
+                        }
+                    } else if (dynamic_cast<ActivityEdge*>(el)->getSource()->getElementType() == ElementType::DECISION_NODE) {
+                        // get type from input to decision node
+                        if (dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->getSource() != NULL
+                                && dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->getTarget() != NULL) {
+                            if (dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->getSource()->isObjectNode()) {
+                                if (dynamic_cast<ObjectNode*>(dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->getSource())->getType()->isPrimitive()) {
+                                    switch (dynamic_cast<PrimitiveType*>(dynamic_cast<ObjectNode*>(dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->getSource())->getType())->getPrimitiveType()) {
+                                        case PrimitiveType::Primitive::BOOL : {
+                                            LiteralBool* lb = new LiteralBool;
+                                            lb->setValue(node["guard"].as<bool>());
+                                            dynamic_cast<ActivityEdge*>(el)->setGuard(lb);
+                                            break;
+                                        }
+                                        case PrimitiveType::Primitive::INT : {
+                                            LiteralInt* li = new LiteralInt;
+                                            li->setValue(node["guard"].as<int>());
+                                            dynamic_cast<ActivityEdge*>(el)->setGuard(li);
+                                            break;
+                                        }
+                                        case PrimitiveType::Primitive::STRING : {
+                                            LiteralString* ls = new LiteralString;
+                                            ls->setValue(node["guard"].as<string>());
+                                            dynamic_cast<ActivityEdge*>(el)->setGuard(ls);
+                                            break;
+                                        }
+                                        case PrimitiveType::Primitive::REAL : {
+                                            LiteralReal* lr = new LiteralReal;
+                                            lr->setValue(node["guard"].as<double>());
+                                            dynamic_cast<ActivityEdge*>(el)->setGuard(lr);
+                                            break;
+                                        }
+                                        default : {
+                                            // ERROR
+                                            return false;
+                                        }
+                                    }
+                                }
+                            } else {
+                                // ERROR
+                                return false;
                             }
                         } else {
-                            // ERROR
-                            return false;
+                            // backwards parsing
+                            parseNowOrLater(dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->uuid, 
+                                            el->uuid, 
+                                            node, 
+                                            &ActivityEdgeParser::setDecisionNodeLiteralGuardLater);
                         }
                     } else {
-                        // backwards parsing
-                        parseNowOrLater(dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->uuid, 
-                                        el->uuid, 
-                                        node, 
-                                        &ActivityEdgeParser::setDecisionNodeLiteralGuardLater);
+                        // Cannot determine guard
                     }
                 } else {
-                    // Cannot determine guard
+                    // TODO backwards parsing
                 }
-            } else {
-                // TODO backwards parsing
             }
+        } else if (node["guard"].IsMap()) {
+            if (node["guard"]["expression"]) {
+                ExpressionParser ep(elements, postProcessFlag);
+                Element* parsedEl = ep.parseElement(node["guard"]["expression"]);
+                dynamic_cast<ActivityEdge*>(el)->setGuard(dynamic_cast<ValueSpecification*>(parsedEl));
+            } else {
+                // TODO more types explicityly written out
+            }
+        } else {
+            // Error
+            throw ElementParser::InvalidNodeTypeException(node["guard"].Mark().line, "scalar or map");
         }
     }
 

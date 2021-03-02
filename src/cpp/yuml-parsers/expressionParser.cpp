@@ -8,14 +8,19 @@ bool ExpressionParser::parseFeatures(YAML::Node node, Element* el) {
     }
 
     if (node["operand"]) {
-        if (node["operand"].IsScalar()) {
+        if (node["operand"].IsScalar() || node["operand"].IsMap()) {
             // If it is a scalar that means it is a uuid or a value as a string
             if (!parseOperand(node["operand"], el)) {
                 ret = false;
             }
         } else if (node["operand"].IsSequence()) {
             for (std::size_t i = 0; i < node["operand"].size(); i++) {
-                if (!parseOperand(node["operand"][i], el)) {
+                if (isValidUUID4(node["operand"].as<string>())) {
+                    // if uuid it is an instance value
+                    boost::uuids::uuid operandID = boost::lexical_cast<boost::uuids::uuid>(node["operand"].as<string>());
+
+                    parseNowOrLater(operandID, el->uuid, node, &ExpressionParser::addInstanceOperandLater);
+                } else if (!parseOperand(node["operand"][i], el)) {
                     ret = false;
                 }
             }
@@ -33,52 +38,46 @@ bool ExpressionParser::parseFeatures(YAML::Node node, Element* el) {
 }
 
 bool ExpressionParser::parseOperand(YAML::Node node, Element* expression) {
-    if (isValidUUID4(node.as<string>())) {
-        // if uuid it is an instance value
-        boost::uuids::uuid operandID = boost::lexical_cast<boost::uuids::uuid>(node["operand"].as<string>());
+    
+    if (node["expression"]) {
+        ExpressionParser op = ExpressionParser(elements, postProcessFlag);
+        Element* parsedEl = op.parseElement(node["expression"]);
+        dynamic_cast<Expression*>(expression)->operands.push_back(dynamic_cast<ValueSpecification*>(parsedEl));
+    } else if (node["instanceValue"]) {
+        if (node["instanceValue"].IsScalar()) {
+            if (isValidUUID4(node["instanceValue"].as<string>())) {
+                boost::uuids::uuid instanceID = boost::lexical_cast<boost::uuids::uuid>(node["instanceValue"].as<string>());
 
-        parseNowOrLater(operandID, expression->uuid, node, &ExpressionParser::addInstanceOperandLater);
-    } else {
-        if (node["expression"]) {
-            ExpressionParser op = ExpressionParser(elements, postProcessFlag);
-            Element* parsedEl = op.parseElement(node["expression"]);
-            dynamic_cast<Expression*>(expression)->operands.push_back(dynamic_cast<ValueSpecification*>(parsedEl));
-        } else if (node["instanceValue"]) {
-            if (node["instanceValue"].IsScalar()) {
-                if (isValidUUID4(node["instanceValue"].as<string>())) {
-                    boost::uuids::uuid instanceID = boost::lexical_cast<boost::uuids::uuid>(node["instanceValue"].as<string>());
-
-                    parseNowOrLater(instanceID, expression->uuid, node, &ExpressionParser::addInstanceOperandLater);
-                }
+                parseNowOrLater(instanceID, expression->uuid, node, &ExpressionParser::addInstanceOperandLater);
             }
-        } else if (node["literalBool"]) {
-            if (node["literalBool"].IsScalar()) {
-                LiteralBool* lb;
-                lb->setValue(node["literalBool"].as<bool>());
-                dynamic_cast<Expression*>(expression)->operands.push_back(dynamic_cast<ValueSpecification*>(lb));
-            }
-        } else if (node["literalInt"]) {
-            if (node["literalInt"].IsScalar()) {
-                LiteralInt* li;
-                li->setValue(node["literalInt"].as<int>());
-                dynamic_cast<Expression*>(expression)->operands.push_back(dynamic_cast<ValueSpecification*>(li));
-            }
-        } else if (node["literalReal"]) {
-            if (node["literalReal"].IsScalar()) {
-                LiteralReal* lr;
-                lr->setValue(node["literalReal"].as<double>());
-                dynamic_cast<Expression*>(expression)->operands.push_back(dynamic_cast<ValueSpecification*>(lr));
-            }
-        } else if (node["literalString"]) {
-            if (node["literalString"].IsScalar()) {
-                LiteralString* ls;
-                ls->setValue(node["literalString"].as<string>());
-                dynamic_cast<Expression*>(expression)->operands.push_back(dynamic_cast<ValueSpecification*>(ls));
-            }
-        } else {
-            // Error
-            return false;
         }
+    } else if (node["literalBool"]) {
+        if (node["literalBool"].IsScalar()) {
+            LiteralBool* lb = new LiteralBool;
+            lb->setValue(node["literalBool"].as<bool>());
+            dynamic_cast<Expression*>(expression)->operands.push_back(dynamic_cast<ValueSpecification*>(lb));
+        }
+    } else if (node["literalInt"]) {
+        if (node["literalInt"].IsScalar()) {
+            LiteralInt* li = new LiteralInt;
+            li->setValue(node["literalInt"].as<int>());
+            dynamic_cast<Expression*>(expression)->operands.push_back(dynamic_cast<ValueSpecification*>(li));
+        }
+    } else if (node["literalReal"]) {
+        if (node["literalReal"].IsScalar()) {
+            LiteralReal* lr = new LiteralReal;
+            lr->setValue(node["literalReal"].as<double>());
+            dynamic_cast<Expression*>(expression)->operands.push_back(dynamic_cast<ValueSpecification*>(lr));
+        }
+    } else if (node["literalString"]) {
+        if (node["literalString"].IsScalar()) {
+            LiteralString* ls = new LiteralString;
+            ls->setValue(node["literalString"].as<string>());
+            dynamic_cast<Expression*>(expression)->operands.push_back(dynamic_cast<ValueSpecification*>(ls));
+        }
+    } else {
+        // Error
+        return false;
     }
 
     return true;

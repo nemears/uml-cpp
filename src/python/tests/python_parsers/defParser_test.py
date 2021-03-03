@@ -112,7 +112,8 @@ class defParserTest(unittest.TestCase):
         self.assertTrue(decision.parameters[0].getType() != None)
         self.assertEqual(type(decision.parameters[0].getType()), PrimitiveType)
         self.assertEqual(decision.parameters[0].getType().getPrimitiveType(), 'BOOL')
-
+        self.assertEqual(decision.parameters[1].getDirection(), 'RETURN')
+        # TODO return type test
 
         # Initial node
         self.assertEqual(type(decision.nodes[0]), InitialNode)
@@ -120,6 +121,9 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(len(initNode.incoming), 0)
         self.assertEqual(len(initNode.outgoing), 1)
         self.assertEqual(type(initNode.outgoing[0]), ControlFlow)
+
+        #decision node
+        self.assertEqual(type(initNode.outgoing[0].getTarget()), DecisionNode)
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,5 @@
 import ast
-from yuml_python import CallBehaviorAction, ControlFlow, ObjectFlow, DecisionNode, JoinNode, ObjectNode, Activity, InitialNode, FinalNode, Parameter, ParameterNode, Behavior, PrimitiveType, LiteralBool, LiteralInt, LiteralReal, LiteralString, Action
+from yuml_python import CallBehaviorAction, ControlFlow, ObjectFlow, DecisionNode, JoinNode, ObjectNode, Activity, InitialNode, FinalNode, Parameter, ParameterNode, Behavior, PrimitiveType, LiteralBool, LiteralInt, LiteralReal, LiteralString, Action, Expression
 
 def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
     initNode = lastNode
@@ -83,26 +83,6 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                 uml.addEdge(flow)
                 setSourceAndTarget(flow, lastNode, dec)
 
-            # get object input to decision node
-            # if it is a name node it is referencing a previously defined variable, so search through all
-            # of the objectNode type nodes defined so far for a match and set flow
-            if type(node.test) is ast.Name:
-                for funNode in uml.nodes:
-                    if issubclass(funNode.__class__, ObjectNode):
-                        inputFlow = ObjectFlow()
-                        d[inputFlow.getID()] = inputFlow
-                        uml.addEdge(inputFlow)
-                        inputFlow.setSource(funNode)
-                        inputFlow.setTarget(dec)
-                        funNode.addOutgoing(inputFlow)
-                        dec.addIncoming(inputFlow)
-                        dec.setDecisionInputFlow(inputFlow)
-            # other possibilites are an expression
-            elif type(node.test) is ast.Expr:
-                # TODO
-                print('TODO: expressions in if statements')
-            # other possibilites are functions (ast.Call) and maybe more
-
             # parse body of decision
             firstAndLastNodes1 = parseFunctionBody(node.body, d, uml, owner, dec)
             firstAndLastNodes2 = parseFunctionBody(node.orelse, d, uml, owner, dec)
@@ -116,6 +96,56 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
             setSourceAndTarget(outFlow2, dec, firstAndLastNodes2[0])
             uml.addEdge(outFlow1)
             uml.addEdge(outFlow2)
+
+            # get object input to decision node
+            # if it is a name node it is referencing a previously defined variable, so search through all
+            # of the objectNode type nodes defined so far for a match and set flow
+            if type(node.test) is ast.Compare:
+                ifExpr = Expression()
+                d[ifExpr.getID()] = ifExpr
+                boolType = PrimitiveType()
+                d[boolType.getID()] = boolType
+                boolType.setPrimitiveType('BOOL')
+                ifExpr.setType(boolType)
+
+                # map input
+                if type(node.test.left) is ast.Name:
+                    mapDecisionInputFlow(dec, uml, node.test.left.id, d)
+
+                # map guards
+                for comp in node.test.comparators:
+                    if type(comp.value) is bool:
+                        opBool = LiteralBool()
+                        d[opBool.getID()] = opBool
+                        opBool.setValue(comp.value)
+                        ifExpr.addOperand(opBool)
+                        mapNodeTypeFromDecision(dec, 'BOOL', d)
+                    elif type(comp.value) is int:
+                        opInt = LiteralInt()
+                        d[opInt.getID()] = opInt
+                        opInt.setValue(comp.value)
+                        ifExpr.addOperand(opInt)
+                        mapNodeTypeFromDecision(dec, 'INT', d)
+                    elif type(comp.value) is float:
+                        opReal = LiteralReal()
+                        d[opReal.getID()] = opReal
+                        opReal.setValue(comp.value)
+                        ifExpr.addOperand(opReal)
+                        mapNodeTypeFromDecision(dec, 'REAL', d)
+                    elif type(comp.value) is str:
+                        opString = LiteralString()
+                        d[opString.getID()] = opString
+                        opString.setValue(comp.value)
+                        ifExpr.addOperand(opString)
+                        mapNodeTypeFromDecision(dec, 'STRING', d)
+                outFlow1.setGuard(ifExpr)
+
+            elif type(node.test) is ast.Name:
+                mapDecisionInputFlow(dec, uml, node.test.id, d)
+            elif type(node.test) is ast.Expr:
+                # TODO
+                print('TODO: expressions in if statements')
+            # other possibilites are functions (ast.Call) and maybe more
 
             # map join node
             join = JoinNode()
@@ -195,6 +225,29 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
             init = False
 
     return (initNode, lastNode)
+
+def mapNodeTypeFromDecision(dec, typeName, d):
+    if dec.getDecisionInputFlow() != None:
+        if dec.getDecisionInputFlow().getSource().getType() == None:
+            decType = PrimitiveType()
+            d[decType.getID()] = decType
+            decType.setPrimitiveType(typeName)
+            dec.getDecisionInputFlow().getSource().setType(decType)
+            if issubclass(dec.getDecisionInputFlow().getSource().__class__, ParameterNode):
+                dec.getDecisionInputFlow().getSource().getParameter().setType(decType)
+
+def mapDecisionInputFlow(dec, uml, name, d):
+    for funNode in uml.nodes:
+        if funNode.getName() == name:
+            if issubclass(funNode.__class__, ObjectNode):
+                inputFlow = ObjectFlow()
+                d[inputFlow.getID()] = inputFlow
+                uml.addEdge(inputFlow)
+                inputFlow.setSource(funNode)
+                inputFlow.setTarget(dec)
+                funNode.addOutgoing(inputFlow)
+                dec.addIncoming(inputFlow)
+                dec.setDecisionInputFlow(inputFlow)
 
 def setSourceAndTarget(flow, source, target):
     flow.setSource(source)

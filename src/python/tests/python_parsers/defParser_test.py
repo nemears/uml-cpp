@@ -110,7 +110,7 @@ class defParserTest(unittest.TestCase):
         self.assertTrue(decision.parameters[0].getName() != '')
         self.assertEqual(decision.parameters[0].getName(), 'b')
         self.assertTrue(decision.parameters[0].getType() != None)
-        self.assertEqual(decision.parameters[0].getType(), PrimitiveType)
+        self.assertEqual(type(decision.parameters[0].getType()), PrimitiveType)
         self.assertEqual(decision.parameters[0].getType().getPrimitiveType(), 'BOOL')
 
 

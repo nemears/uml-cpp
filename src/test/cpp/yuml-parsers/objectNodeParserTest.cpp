@@ -114,3 +114,54 @@ TEST_F(ObjectNodeParserTest, EmitLiteralUpperBoundTest) {
     ASSERT_TRUE(emitter.good());
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(ObjectNodeParserTest, EmitExpressionUpperBound) {
+    // Setup
+    Model m;
+    m.setID("fa8cc066-6191-4903-a766-ee91d216c929");
+    Activity a;
+    a.setID("c7f09553-c13a-4d21-9e00-b9364c0aeaed");
+    ObjectNode o;
+    o.setID("9c16720e-a366-4eef-825a-d46b5232a1d5");
+    PrimitiveType pt;
+    pt.setPrimitiveType(PrimitiveType::Primitive::BOOL);
+    Expression expr;
+    expr.setID("fa7a57e9-88cf-489c-8345-8351336aec05");
+    LiteralBool lb;
+    lb.setValue(false);
+    expr.operands.push_back(&lb);
+    expr.setSymbol("!");
+    expr.setType(&pt);
+    o.setType(&pt);
+    o.setUpperBound(&expr);
+    a.nodes.push_back(&o);
+    o.setActivity(&a);
+    m.ownedElements.push_back(&a);
+    a.setOwner(&m);
+    ModelParser emitExpressionUpperValue = ModelParser::createNewParser();
+    string expectedEmit = R""""(model:
+  id: fa8cc066-6191-4903-a766-ee91d216c929
+  children:
+    - activity:
+        id: c7f09553-c13a-4d21-9e00-b9364c0aeaed
+        nodes:
+          - objectNode:
+              id: 9c16720e-a366-4eef-825a-d46b5232a1d5
+              type: BOOL
+              upperBound:
+                expression:
+                  type: BOOL
+                  id: fa7a57e9-88cf-489c-8345-8351336aec05
+                  operand:
+                    - literalBool: false
+                  symbol: "!")"""";
+
+    // Test
+    string generatedEmit;
+    YAML::Emitter emitter;
+    ASSERT_NO_THROW(emitExpressionUpperValue.emit(emitter, &m));
+    generatedEmit = emitter.c_str();
+    cout << generatedEmit << '\n';
+    ASSERT_TRUE(emitter.good());
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

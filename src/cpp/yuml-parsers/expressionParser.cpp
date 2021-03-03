@@ -84,7 +84,77 @@ bool ExpressionParser::parseOperand(YAML::Node node, Element* expression) {
 }
 
 bool ExpressionParser::emit(YAML::Emitter& emitter, Element* el) {
-    return true;
+    if (el->getElementType() == ElementType::EXPRESSION) {
+        emitter << YAML::BeginMap;
+        emitter << YAML::Key << "expression";
+        emitter << YAML::Value << YAML::BeginMap;
+    }
+
+    bool ret = TypedElementParser::emit(emitter, el);
+
+    if (!dynamic_cast<Expression*>(el)->operands.empty()) {
+        emitter << YAML::Key << "operand";
+        emitter << YAML::Value << YAML::BeginSeq;
+        for (auto const& operand : dynamic_cast<Expression*>(el)->operands) {
+            switch(operand->getElementType()) {
+                case ElementType::EXPRESSION : {
+                    ExpressionParser ep(elements, postProcessFlag);
+                    if (!ep.emit(emitter,operand)) {
+                        ret = false;
+                    }
+                    break;
+                }
+                case ElementType::LITERAL_BOOL : {
+                    emitter << YAML::Value << YAML::BeginMap;
+                    emitter << YAML::Key << "literalBool";
+                    emitter << YAML::Value << dynamic_cast<LiteralBool*>(operand)->getValue();
+                    emitter << YAML::EndMap;
+                    break;
+                }
+                case ElementType::LITERAL_INT : {
+                    emitter << YAML::Value << YAML::BeginMap;
+                    emitter << YAML::Key << "literalInt";
+                    emitter << YAML::Value << dynamic_cast<LiteralInt*>(operand)->getValue();
+                    emitter << YAML::EndMap;
+                    break;
+                }
+                case ElementType::LITERAL_REAL : {
+                    emitter << YAML::Value << YAML::BeginMap;
+                    emitter << YAML::Key << "literalReal";
+                    emitter << YAML::Value << dynamic_cast<LiteralReal*>(operand)->getValue();
+                    emitter << YAML::EndMap;
+                    break;
+                }
+                case ElementType::LITERAL_STRING : {
+                    emitter << YAML::Value << YAML::BeginMap;
+                    emitter << YAML::Key << "literalString";
+                    emitter << YAML::Value << dynamic_cast<LiteralString*>(operand)->getValue();
+                    emitter << YAML::EndMap;
+                    break;
+                }
+                case ElementType::INSTANCE_VALUE : {
+                    emitter << YAML::Value << YAML::BeginMap;
+                    emitter << YAML::Key << "instanceValue";
+                    emitter << YAML::Value << dynamic_cast<InstanceValue*>(operand)->getInstance()->getIDstring();
+                    emitter << YAML::EndMap;
+                    break;
+                }
+            }
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (dynamic_cast<Expression*>(el)->getSymbol().compare("") != 0) {
+        emitter << YAML::Key << "symbol";
+        emitter << YAML::Value << dynamic_cast<Expression*>(el)->getSymbol();
+    }
+
+    if (el->getElementType() == ElementType::EXPRESSION) {
+        emitter << YAML::EndMap;
+        emitter << YAML::EndMap;
+    }
+
+    return ret;
 }
 
 Element* ExpressionParser::createElement(){

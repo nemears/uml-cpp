@@ -5,6 +5,7 @@
 #include "uml/primitiveType.h"
 #include "uml/literalInt.h"
 #include "uml/expression.h"
+#include "uml/literalBool.h"
 
 using namespace UML;
 
@@ -71,4 +72,45 @@ TEST_F(ObjectNodeParserTest, ParseExpressionUpperBoundTest) {
 
     // Tear Down
     ModelParser::deleteParser(&expressionUpperBoundParser);
+}
+
+TEST_F(ObjectNodeParserTest, EmitLiteralUpperBoundTest) {
+    // Setup
+    Model m;
+    m.setID("fa8cc066-6191-4903-a766-ee91d216c929");
+    Activity a;
+    a.setID("c7f09553-c13a-4d21-9e00-b9364c0aeaed");
+    ObjectNode o;
+    o.setID("9c16720e-a366-4eef-825a-d46b5232a1d5");
+    PrimitiveType pt;
+    pt.setPrimitiveType(PrimitiveType::Primitive::BOOL);
+    LiteralBool b;
+    b.setValue(true);
+    o.setType(&pt);
+    o.setUpperBound(&b);
+    a.nodes.push_back(&o);
+    o.setActivity(&a);
+    m.ownedElements.push_back(&a);
+    a.setOwner(&m);
+    ModelParser emitLiteralUpperValue = ModelParser::createNewParser();
+    string expectedEmit = R""""(model:
+  id: fa8cc066-6191-4903-a766-ee91d216c929
+  children:
+    - activity:
+        id: c7f09553-c13a-4d21-9e00-b9364c0aeaed
+        nodes:
+          - objectNode:
+              id: 9c16720e-a366-4eef-825a-d46b5232a1d5
+              type: BOOL
+              upperBound:
+                literalBool: true)"""";
+
+    // Test
+    string generatedEmit;
+    YAML::Emitter emitter;
+    ASSERT_NO_THROW(emitLiteralUpperValue.emit(emitter, &m));
+    generatedEmit = emitter.c_str();
+    cout << generatedEmit << '\n';
+    ASSERT_TRUE(emitter.good());
+    ASSERT_EQ(expectedEmit, generatedEmit);
 }

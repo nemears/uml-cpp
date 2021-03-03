@@ -98,6 +98,7 @@ bool ObjectNodeParser::emit(YAML::Emitter& emitter, Element* el) {
     }
 
     bool ret = NamedElementParser::emit(emitter, el);
+
     if(!emitObjectNode(emitter, el)) {
         ret = false;
     }
@@ -116,6 +117,54 @@ bool ObjectNodeParser::emitObjectNode(YAML::Emitter& emitter, Element* el) {
 
     if (!emitActivityNode(emitter, el)) {
         ret = false;
+    }
+
+    if (dynamic_cast<ObjectNode*>(el)->getUpperBound() != NULL) {
+        emitter << YAML::Key << "upperBound";
+        switch (dynamic_cast<ObjectNode*>(el)->getUpperBound()->getElementType()) {
+            case ElementType::EXPRESSION : {
+                ExpressionParser ep(elements, postProcessFlag);
+                if (!ep.emit(emitter, dynamic_cast<ObjectNode*>(el)->getUpperBound())) {
+                    ret = false;
+                }
+                break;
+            }
+            case ElementType::LITERAL_BOOL : {
+                emitter << YAML::Value << YAML::BeginMap;
+                emitter << YAML::Key << "literalBool";
+                emitter << YAML::Value << dynamic_cast<LiteralBool*>(dynamic_cast<ObjectNode*>(el)->getUpperBound())->getValue();
+                emitter << YAML::EndMap;
+                break;
+            }
+            case ElementType::LITERAL_INT : {
+                emitter << YAML::Value << YAML::BeginMap;
+                emitter << YAML::Key << "literalInt";
+                emitter << YAML::Value << dynamic_cast<LiteralInt*>(dynamic_cast<ObjectNode*>(el)->getUpperBound())->getValue();
+                emitter << YAML::EndMap;
+                break;
+            }
+            case ElementType::LITERAL_REAL : {
+                emitter << YAML::Value << YAML::BeginMap;
+                emitter << YAML::Key << "literalReal";
+                emitter << YAML::Value << dynamic_cast<LiteralReal*>(dynamic_cast<ObjectNode*>(el)->getUpperBound())->getValue();
+                emitter << YAML::EndMap;
+                break;
+            }
+            case ElementType::LITERAL_STRING : {
+                emitter << YAML::Value << YAML::BeginMap;
+                emitter << YAML::Key << "literalString";
+                emitter << YAML::Value << dynamic_cast<LiteralString*>(dynamic_cast<ObjectNode*>(el)->getUpperBound())->getValue();
+                emitter << YAML::EndMap;
+                break;
+            }
+            case ElementType::INSTANCE_VALUE : {
+                emitter << YAML::Value << YAML::BeginMap;
+                emitter << YAML::Key << "instanceValue";
+                emitter << YAML::Value << dynamic_cast<InstanceValue*>(dynamic_cast<ObjectNode*>(el)->getUpperBound())->getInstance()->getIDstring();
+                emitter << YAML::EndMap;
+                break;
+            }
+        }
     }
 
     return ret;

@@ -32,6 +32,7 @@
 #include "uml/mergeNode.h"
 #include "uml/parameterNode.h"
 #include "uml/callBehaviorAction.h"
+#include "uml/expression.h"
 #include "yuml-parsers/modelParser.h"
 
 using namespace UML;
@@ -228,6 +229,24 @@ PYBIND11_MODULE(yuml_python, m) {
         .def(py::init<>())
         .def("setValue", &LiteralString::setValue)
         .def("getValue", &LiteralString::getValue);
+
+    // Expression
+    py::class_<Expression, ValueSpecification, ElementPy<Expression>>(m, "Expression")
+        .def(py::init<>())
+        .def("addOperand", [](Expression& me, ValueSpecification& operand) { me.operands.push_back(&operand); })
+        .def("removeOperand", [](Expression& me, ValueSpecification& operand) {
+            list<ValueSpecification*>::iterator i = me.operands.begin();
+            while (i != me.operands.end()) {
+                if ((*i)->uuid == operand.uuid) {
+                    me.operands.erase(i);
+                    break;
+                }
+                ++i;
+            }
+        })
+        .def_readonly("operands", &Expression::operands)
+        .def("getSymbol", &Expression::getSymbol)
+        .def("setSymbol", &Expression::setSymbol);
 
     // StructuralFeature
     py::class_<StructuralFeature, TypedElement, ElementPy<StructuralFeature>>(m, "StructuralFeature")
@@ -438,7 +457,9 @@ PYBIND11_MODULE(yuml_python, m) {
                 }
                 ++i;
             }
-        });
+        })
+        .def("getActivity", &ActivityNode::getActivity)
+        .def("setActivity", &ActivityNode::setActivity);
 
     // ObjectNode
     py::class_<ObjectNode, TypedElement, ActivityNode, ElementPy<ObjectNode>>(m, "ObjectNode")

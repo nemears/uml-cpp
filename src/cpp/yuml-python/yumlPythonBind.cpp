@@ -32,6 +32,7 @@
 #include "uml/mergeNode.h"
 #include "uml/parameterNode.h"
 #include "uml/callBehaviorAction.h"
+#include "uml/createObjectAction.h"
 #include "uml/expression.h"
 #include "yuml-parsers/modelParser.h"
 
@@ -552,6 +553,12 @@ PYBIND11_MODULE(yuml_python, m) {
             .def(py::init<>())
             .def("getBehavior", &CallBehaviorAction::getBehavior)
             .def("setBehavior", &CallBehaviorAction::setBehavior);
+
+        // CreateObjectAction
+        py::class_<CreateObjectAction, Action, ElementPy<CreateObjectAction>>(m, "CreateObjectAction")
+            .def(py::init<>())
+            .def("getClassifier", &CreateObjectAction::getClassifier)
+            .def("setClassifier", &CreateObjectAction::setClassifier);
 
         // ModelParser
         py::class_<ModelParserPy>(m, "ModelParser")

@@ -51,6 +51,9 @@ string Element::getElementTypeString() {
         case ElementType::CONTROL_FLOW : {
             return "CONTROL_FLOW";
         }
+        case ElementType::CREATE_OBJECT_ACTION : {
+            return "CREATE_OBJECT_ACTION";
+        }
         case ElementType::DECISION_NODE : {
             return "DECISION_NODE";
         }

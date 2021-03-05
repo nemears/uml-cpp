@@ -26,6 +26,7 @@ enum class ElementType {
     CLASS,
     CLASSIFIER,
     CONTROL_FLOW,
+    CREATE_OBJECT_ACTION,
     DECISION_NODE,
     ELEMENT,
     EXPRESSION,

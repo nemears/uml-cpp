@@ -73,9 +73,9 @@ template <class ClassifierBase = Classifier> class ClassifierPy : public TypePy<
 };
 
 // PrimitiveType Trampoline
-template <class PrimitiveTypeBase = PrimitiveType> class PrimitiveTypePy : public TypePy<PrimitiveTypeBase> {
+template <class PrimitiveTypeBase = PrimitiveType> class PrimitiveTypePy : public ClassifierPy<PrimitiveTypeBase> {
     public:
-        using TypePy<PrimitiveTypeBase>::TypePy;
+        using ClassifierPy<PrimitiveTypeBase>::ClassifierPy;
         bool isPrimitive() override {
                 PYBIND11_OVERRIDE(
                 bool,
@@ -108,6 +108,26 @@ namespace py = pybind11;
 PYBIND11_MODULE(yuml_python, m) {
 
     m.def("isValidUUID4", isValidUUID4);
+
+    // Element
+    py::class_<Element, ElementPy<>>(m, "Element")
+        .def(py::init<>())
+        .def("getID", &Element::getIDstring)
+        .def("setID", &Element::setID)
+        .def_readonly("ownedElements", &Element::ownedElements)
+        .def("addOwnedElement", [](Element& me, Element& el) { me.ownedElements.push_back(&el); })
+        .def("removeOwnedElement", [](Element& me, Element& el) {
+            list<Element*>::iterator i = me.ownedElements.begin();
+            while (i != me.ownedElements.end()) {
+                if ((*i)->uuid == el.uuid) {
+                    me.ownedElements.erase(i);
+                    break;
+                }
+                ++i;
+            }
+        })
+        .def("getOwner", &Element::getOwner)
+        .def("setOwner", &Element::setOwner);
 
     // InvalidID_Exception
     static py::exception<Element::InvalidID_Exception>excID(m, "InvalidID_Exception");
@@ -144,26 +164,6 @@ PYBIND11_MODULE(yuml_python, m) {
             PyErr_SetString(PyExc_RuntimeError, e.what());
         }
     });
-
-    // Element
-    py::class_<Element, ElementPy<>>(m, "Element")
-        .def(py::init<>())
-        .def("getID", &Element::getIDstring)
-        .def("setID", &Element::setID)
-        .def_readonly("ownedElements", &Element::ownedElements)
-        .def("addOwnedElement", [](Element& me, Element& el) { me.ownedElements.push_back(&el); })
-        .def("removeOwnedElement", [](Element& me, Element& el) {
-            list<Element*>::iterator i = me.ownedElements.begin();
-            while (i != me.ownedElements.end()) {
-                if ((*i)->uuid == el.uuid) {
-                    me.ownedElements.erase(i);
-                    break;
-                }
-                ++i;
-            }
-        })
-        .def("getOwner", &Element::getOwner)
-        .def("setOwner", &Element::setOwner);
     
     // NamedElement
     py::class_<NamedElement, Element, ElementPy<NamedElement>>(m, "NamedElement")
@@ -183,13 +183,6 @@ PYBIND11_MODULE(yuml_python, m) {
     py::class_<Type, NamedElement, TypePy<>>(m, "Type")
         .def(py::init<>())
         .def("isPrimitve", &Type::isPrimitive); // this funcion is not registering
-
-    // PrimitiveType
-    py::class_<PrimitiveType, Type, PrimitiveTypePy<>> (m, "PrimitiveType")
-        .def(py::init<>())
-        .def("setPrimitiveType", &PrimitiveType::setPrimitiveTypeString)
-        .def("getPrimitiveType", &PrimitiveType::getPrimitiveTypeString)
-        .def("isPrimitive", &PrimitiveType::isPrimitive);
 
     // TypedElement
     py::class_<TypedElement, NamedElement, ElementPy<TypedElement>>(m, "TypedElement")
@@ -319,6 +312,13 @@ PYBIND11_MODULE(yuml_python, m) {
         })
         .def_readonly("attributes", &Classifier::ownedAttributes)
         .def("isPrimitive", &Classifier::isPrimitive);
+    
+    // PrimitiveType
+    py::class_<PrimitiveType,  Classifier, PrimitiveTypePy<>> primitiveType (m, "PrimitiveType");
+        primitiveType.def(py::init<>())
+        .def("setPrimitiveType", &PrimitiveType::setPrimitiveTypeString)
+        .def("getPrimitiveType", &PrimitiveType::getPrimitiveTypeString)
+        .def("isPrimitive", &PrimitiveType::isPrimitive);
 
     // Parameter
     py::class_<Parameter, TypedElement, MultiplicityElement, ElementPy<Parameter>>(m, "Parameter")

@@ -166,6 +166,11 @@ bool ActivityParser::emit(YAML::Emitter& emitter, Element* el) {
                     cbap.emit(emitter, node);
                     break;
                 }
+                case ElementType::CREATE_OBJECT_ACTION : {
+                    CreateObjectActionParser coap(elements, postProcessFlag);
+                    coap.emit(emitter, node);
+                    break;
+                }
                 case ElementType::DECISION_NODE : {
                     DecisionNodeParser dnp(elements, postProcessFlag);
                     dnp.emit(emitter, node);

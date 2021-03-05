@@ -49,6 +49,16 @@ bool CreateObjectActionParser::emit(YAML::Emitter& emitter, Element* el) {
 
     bool ret = ActionParser::emit(emitter, el);
 
+    if (dynamic_cast<CreateObjectAction*>(el)->getClassifier() != NULL) {
+        emitter << YAML::Key << "classifier";
+        
+        if (dynamic_cast<CreateObjectAction*>(el)->getClassifier()->isPrimitive()) {
+            emitter << YAML::Value << dynamic_cast<PrimitivieType*>(dynamic_cast<CreateObjectAction*>(el)->getClassifier())->getPrimitiveTypeString();
+        } else {
+            emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<CreateObjectAction*>(el)->getClassifier()->uuid);
+        }
+    }
+
     if (el->getElementType() == ElementType::CREATE_OBJECT_ACTION) {
         emitter << YAML::EndMap;
         emitter << YAML::EndMap;

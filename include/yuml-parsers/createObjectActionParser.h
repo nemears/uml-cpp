@@ -3,6 +3,7 @@
 
 #include "actionParser.h"
 #include "uml/createObjectAction.h"
+#include "uml/primitiveType.h"
 
 class CreateObjectActionParser : public ActionParser {
     protected:

@@ -1,0 +1,13 @@
+---
+  model:
+    children:
+      - activity:
+          nodes:
+            - createObjectAction:
+                classifier: a222707b-f308-49e3-99e1-b84eb717eb36
+                outputs:
+                  - outputPin:
+                      type: a222707b-f308-49e3-99e1-b84eb717eb36
+      - class:
+          id: a222707b-f308-49e3-99e1-b84eb717eb36
+...

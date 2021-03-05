@@ -1,0 +1,11 @@
+---
+  model:
+    children:
+      - activity:
+          nodes:
+            - createObjectAction:
+                classifier: BOOL
+                outputs:
+                  - outputPin:
+                      type: BOOL
+...

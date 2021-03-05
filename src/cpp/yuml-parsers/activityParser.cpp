@@ -44,6 +44,21 @@ bool ActivityParser::parseFeatures(YAML::Node node, Element* el) {
                         pin->setActivity(dynamic_cast<Activity*>(el));
                         dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(pin));
                     }
+                } else if (node["nodes"][i]["createObjectAction"]) {
+                    CreateObjectActionParser createObjectActionParser(elements, postProcessFlag);
+                    Element* parsedEl = createObjectActionParser.parseElement(node["nodes"][i]["createObjectAction"]);
+                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(parsedEl));
+                    dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
+
+                    for (auto const& pin : dynamic_cast<Action*>(parsedEl)->inputs) {
+                        pin->setActivity(dynamic_cast<Activity*>(el));
+                        dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(pin));
+                    }
+
+                    for (auto const& pin : dynamic_cast<Action*>(parsedEl)->outputs) {
+                        pin->setActivity(dynamic_cast<Activity*>(el));
+                        dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(pin));
+                    }
                 } else if (node["nodes"][i]["decisionNode"]) {
                     DecisionNodeParser decisionNodeParser(elements, postProcessFlag);
                     Element* parsedEl = decisionNodeParser.parseElement(node["nodes"][i]["decisionNode"]);

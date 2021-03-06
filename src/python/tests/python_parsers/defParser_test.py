@@ -13,7 +13,6 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(type(m), Namespace)
         self.assertEqual(len(m.ownedElements), 4)
         self.assertEqual(type(m.ownedElements[0]), Activity)
-        self.assertEqual(type(m.ownedElements[1]), Activity)
 
         # test parameters
         self.assertEqual(m.ownedElements[0].getOwner().getID(), m.getID())
@@ -25,7 +24,7 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(m.ownedElements[0].parameters[0].getType().getPrimitiveType(), 'BOOL')
 
         #test nodes
-        self.assertEqual(len(m.ownedElements[0].nodes), 3)
+        self.assertEqual(len(m.ownedElements[0].nodes), 5)
         noParam = m.ownedElements[0]
         self.assertEqual(type(noParam.nodes[0]), InitialNode)
         self.assertEqual(type(noParam.nodes[1]), ParameterNode)
@@ -35,14 +34,28 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(noParam.nodes[1].getType().getPrimitiveType(), 'BOOL')
         self.assertTrue(noParam.nodes[1].getUpperBound().getValue())
 
+        # Create Object Action
+        self.assertEqual(type(noParam.nodes[2]), CreateObjectAction)
+        self.assertTrue(noParam.nodes[2].getClassifier() != None)
+        self.assertEqual(type(noParam.nodes[2].getClassifier()), PrimitiveType)
+        self.assertEqual(noParam.nodes[2].getClassifier().getPrimitiveType(), 'BOOL')
+        self.assertTrue(len(noParam.nodes[2].outputs) == 1)
+        self.assertEqual(noParam.nodes[3], noParam.nodes[2].outputs[0])
+        self.assertEqual(type(noParam.nodes[3].getType()), PrimitiveType)
+        self.assertEqual(noParam.nodes[3].getType().getPrimitiveType(), 'BOOL')
+        self.assertTrue(noParam.nodes[3].getUpperBound() != None)
+        self.assertTrue(noParam.nodes[3].getUpperBound().getValue())
+        self.assertEqual(len(noParam.nodes[2].incoming), 1)
+        self.assertEqual(len(noParam.nodes[2].outgoing), 1)
+
         #test edges
         self.assertEqual(len(noParam.edges), 2)
         self.assertEqual(type(noParam.edges[0]), ControlFlow)
         self.assertEqual(noParam.edges[0].getSource(), noParam.nodes[0])
-        self.assertEqual(noParam.edges[0].getTarget(), noParam.nodes[1])
+        self.assertEqual(noParam.edges[0].getTarget(), noParam.nodes[2])
         self.assertEqual(type(noParam.edges[1]), ControlFlow)
-        self.assertEqual(noParam.edges[1].getSource(), noParam.nodes[1])
-        self.assertEqual(noParam.edges[1].getTarget(), noParam.nodes[2])
+        self.assertEqual(noParam.edges[1].getSource(), noParam.nodes[2])
+        self.assertEqual(noParam.edges[1].getTarget(), noParam.nodes[4])
 
 
     def testParseFuncNumParam(self):

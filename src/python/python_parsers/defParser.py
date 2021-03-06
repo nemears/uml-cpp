@@ -232,11 +232,16 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                     # find that node in parsed nodes
                     for parsedNode in uml.nodes:
                         if parsedNode.getName() == node.value.id:
-                            retParamNode.setType(parsedNode.getType())
-                            retParam.setType(parsedNode.getType())
-                            break
-            
-                    lastNode = retParamNode
+                            if type(parsedNode) is ParameterNode:
+                                retParamNode.setType(parsedNode.getType())
+                                retParam.setType(parsedNode.getType())
+                                obFlow = ObjectFlow()
+                                d[obFlow.getID()] = obFlow
+                                setSourceAndTarget(obFlow, parsedNode, retParamNode)
+                                uml.addEdge(obFlow)
+                                # don't override last node
+                                lastNode = lastNode
+                                break
         if init:
             initNode = lastNode
             init = False

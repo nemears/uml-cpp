@@ -48,6 +48,10 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(len(noParam.nodes[2].incoming), 1)
         self.assertEqual(len(noParam.nodes[2].outgoing), 1)
 
+        # Final node
+        self.assertEqual(type(noParam.nodes[4]), FinalNode)
+        self.assertEqual(len(noParam.nodes[4].incoming), 1)
+
         #test edges
         self.assertEqual(len(noParam.edges), 2)
         self.assertEqual(type(noParam.edges[0]), ControlFlow)
@@ -68,7 +72,7 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(type(m.ownedElements[1]), Activity)
         self.assertEqual(m.ownedElements[1].getName(), 'numParam')
         numFunc = m.ownedElements[1]
-        self.assertEqual(len(numFunc.nodes), 5)
+        self.assertEqual(len(numFunc.nodes), 6)
         self.assertEqual(len(numFunc.edges), 4)
 
         # parameters
@@ -88,27 +92,46 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(len(numFunc.nodes[0].outgoing), 1)
         self.assertEqual(type(numFunc.nodes[1]), ParameterNode)
         self.assertEqual(numFunc.nodes[1].getParameter(), numFunc.parameters[0])
-        self.assertEqual(len(numFunc.nodes[1].incoming), 2)
-        self.assertEqual(numFunc.nodes[1].incoming[1].getSource(), numFunc.nodes[0])
-        objNod = numFunc.nodes[1].incoming[0].getSource()
-        self.assertEqual(len(objNod.incoming), 0)
-        self.assertEqual(len(objNod.outgoing), 1)
-        self.assertTrue(objNod.getType() != None)
-        self.assertTrue(issubclass(objNod.getType().__class__, PrimitiveType))
-        self.assertEqual(objNod.getType().getPrimitiveType(), 'INT')
-        self.assertEqual(objNod, numFunc.nodes[2])
-        self.assertEqual(type(numFunc.nodes[3]), ParameterNode)
-        self.assertEqual(numFunc.nodes[3].getParameter(), numFunc.parameters[1])
-        self.assertTrue(numFunc.nodes[3].getType() != None)
-        self.assertEqual(type(numFunc.nodes[3].getType()), PrimitiveType)
-        self.assertEqual(numFunc.nodes[3].getType().getPrimitiveType(), 'INT')
-        self.assertEqual(type(numFunc.nodes[4]), FinalNode)
+        self.assertEqual(len(numFunc.nodes[1].incoming), 1)
+        self.assertEqual(numFunc.nodes[1].incoming[0].getSource(), numFunc.nodes[3])
+        
+        # createObjectAction
+        self.assertEqual(type(numFunc.nodes[2]), CreateObjectAction)
+        coa = numFunc.nodes[2]
+        self.assertEqual(len(coa.incoming), 1)
+        self.assertEqual(type(coa.incoming[0]), ControlFlow)
+        self.assertEqual(len(coa.outgoing), 1)
+        self.assertEqual(type(coa.outgoing[0]), ControlFlow)
+        self.assertEqual(len(coa.inputs), 0)
+        self.assertEqual(len(coa.outputs), 1)
+        self.assertTrue(coa.getClassifier() != None)
+        self.assertEqual(type(coa.getClassifier()), PrimitiveType)
+        self.assertEqual(coa.getClassifier().getPrimitiveType(), 'INT')
+        self.assertEqual(coa.outputs[0], numFunc.nodes[3])
+        
+        # outputPin
+        self.assertEqual(type(coa.outputs[0]), OutputPin)
+        out = coa.outputs[0]
+        self.assertEqual(len(out.incoming), 0)
+        self.assertEqual(len(out.outgoing), 1)
+        self.assertTrue(out.getType() != None)
+        self.assertEqual(type(out.getType()), PrimitiveType)
+        self.assertEqual(out.getType().getPrimitiveType(), 'INT')
+        self.assertTrue(out.getUpperBound() != None)
+        self.assertEqual(type(out.getUpperBound()), LiteralInt)
+        self.assertEqual(out.getUpperBound().getValue(), 1)
 
-        #edges
-        self.assertEqual(numFunc.nodes[0].outgoing[0], numFunc.nodes[1].incoming[1])
-        self.assertEqual(numFunc.nodes[1].incoming[0], numFunc.nodes[2].outgoing[0])
-        self.assertEqual(numFunc.nodes[1].outgoing[0], numFunc.nodes[3].incoming[0])
-        self.assertEqual(numFunc.nodes[3].outgoing[0], numFunc.nodes[4].incoming[0])
+        # Return Node
+        self.assertEqual(type(numFunc.nodes[4]), ParameterNode)
+        retNode = numFunc.nodes[4]
+        self.assertEqual(len(retNode.incoming), 1)
+        self.assertEqual(len(retNode.outgoing), 0)
+
+        # Final Node
+        self.assertEqual(type(numFunc.nodes[5]), FinalNode)
+        finNode = numFunc.nodes[5]
+        self.assertEqual(len(finNode.incoming), 1)
+        self.assertEqual(len(finNode.outgoing), 0)
 
     def testParseDecisionNode(self):
         d = {}

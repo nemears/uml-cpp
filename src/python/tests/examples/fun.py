@@ -5,11 +5,11 @@ def numParam(f):
     f = 1
     return f
 
-def decisionFlow(b):
+def decisionFlow(n):
     ret = 'c'
-    if b == 1:
+    if n == 1:
         ret = 'b'
-    elif b == 2:
+    else:
         ret = 'a'
     return ret
 

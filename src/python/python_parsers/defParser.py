@@ -1,5 +1,5 @@
 import ast
-from yuml_python import CallBehaviorAction, ControlFlow, ObjectFlow, DecisionNode, JoinNode, ObjectNode, CreateObjectAction, Activity, InitialNode, FinalNode, Parameter, ParameterNode, Behavior, PrimitiveType, LiteralBool, LiteralInt, LiteralReal, LiteralString, Action, Expression, OutputPin
+from yuml_python import CallBehaviorAction, ControlFlow, ObjectFlow, DecisionNode, MergeNode, ObjectNode, CreateObjectAction, Activity, InitialNode, FinalNode, Parameter, ParameterNode, Behavior, PrimitiveType, LiteralBool, LiteralInt, LiteralReal, LiteralString, Action, Expression, OutputPin
 
 def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
     initNode = lastNode
@@ -68,7 +68,20 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                         setNodeTypeLiteral(outPin, node, d)
                         createObject.setClassifier(outPin.getType())
 
-                        createObject.setName(p.id)
+                        # Create Object node to store value of ret
+                        objNode = ObjectNode()
+                        d[objNode.getID()] = objNode
+                        objNode.setType(outPin.getType())
+                        objNode.setName(p.id)
+                        uml.addNode(objNode)
+
+                        # Create flow from create to obj
+                        objFlow = ObjectFlow()
+                        d[objFlow.getID()] = objFlow
+                        setSourceAndTarget(objFlow, outPin, objNode)
+                        uml.addEdge(objFlow)
+
+                        # last node for control flow is create
                         lastNode = createObject
 
 
@@ -115,13 +128,17 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
             firstAndLastNodes1 = parseFunctionBody(node.body, d, uml, owner, dec)
             firstAndLastNodes2 = parseFunctionBody(node.orelse, d, uml, owner, dec)
 
+            # create join node now
+            merge = MergeNode()
+            d[merge.getID()] = merge
+
             #map outgoing control flow
             outFlow1 = ControlFlow()
             outFlow2 = ControlFlow()
             d[outFlow1.getID()] = outFlow1
             d[outFlow2.getID()] = outFlow2
             setSourceAndTarget(outFlow1, dec, firstAndLastNodes1[0])
-            setSourceAndTarget(outFlow2, dec, firstAndLastNodes2[0])
+            setSourceAndTarget(outFlow2, dec, joinNode  if firstAndLastNodes2[0].getID() == dec.getID() else firstAndLastNodes2[0])
             uml.addEdge(outFlow1)
             uml.addEdge(outFlow2)
 
@@ -166,6 +183,11 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                         opString.setValue(comp.value)
                         ifExpr.addOperand(opString)
                         mapNodeTypeFromDecision(dec, 'STRING', d)
+                
+                # map symbol
+                for sym in node.test.ops:
+                    if type(sym) is ast.Eq:
+                        ifExpr.setSymbol('==')
                 outFlow1.setGuard(ifExpr)
 
             elif type(node.test) is ast.Name:
@@ -175,21 +197,27 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                 print('TODO: expressions in if statements')
             # other possibilites are functions (ast.Call) and maybe more
 
+            # handle other bodies
+            if firstAndLastNodes2[0].getID() != dec.getID():
+                # ControlFlow to body with else guard
+                elseExpr = Expression()
+                d[elseExpr.getID()] = elseExpr
+                elseExpr.setSymbol('else')
+                outFlow2.setGuard(elseExpr)
+
             # map join node
-            join = JoinNode()
-            d[join.getID()] = join
-            joinFlow1 = ControlFlow()
-            joinFlow2 = ControlFlow()
-            d[joinFlow1.getID()] = joinFlow1
-            d[joinFlow2.getID()] = joinFlow2
-            setSourceAndTarget(joinFlow1, firstAndLastNodes1[1], join)
-            setSourceAndTarget(joinFlow2, firstAndLastNodes2[1], join)
-            uml.addNode(join)
-            uml.addEdge(joinFlow1)
-            uml.addEdge(joinFlow2)
+            mergeFlow1 = ControlFlow()
+            mergeFlow2 = ControlFlow()
+            d[mergeFlow1.getID()] = mergeFlow1
+            d[mergeFlow2.getID()] = mergeFlow2
+            setSourceAndTarget(mergeFlow1, firstAndLastNodes1[1], merge)
+            setSourceAndTarget(mergeFlow2, firstAndLastNodes2[1], merge)
+            uml.addNode(merge)
+            uml.addEdge(mergeFlow1)
+            uml.addEdge(mergeFlow2)
 
             # override lastNode
-            lastNode = join
+            lastNode = merge
 
         # find return param
         elif type(node) is ast.Return:
@@ -256,7 +284,7 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                     # find that node in parsed nodes
                     for parsedNode in uml.nodes:
                         if parsedNode.getName() == node.value.id:
-                            if type(parsedNode) is ParameterNode:
+                            if issubclass(parsedNode.__class__, ObjectNode):
                                 retParamNode.setType(parsedNode.getType())
                                 retParam.setType(parsedNode.getType())
                                 obFlow = ObjectFlow()

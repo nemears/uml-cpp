@@ -147,28 +147,108 @@ class defParserTest(unittest.TestCase):
         m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/examples/fun.py', d)
         self.assertEqual(m.ownedElements[2].getOwner().getID(), m.getID())
         self.assertEqual(type(m.ownedElements[2]), Activity)
-        self.assertEqual(len(m.ownedElements[2].nodes), 6)
+        self.assertEqual(len(m.ownedElements[2].nodes), 13)
         decision = m.ownedElements[2]
 
-        #Parameters
-        self.assertEqual(len(decision.parameters), 2)
-        self.assertTrue(decision.parameters[0].getName() != '')
-        self.assertEqual(decision.parameters[0].getName(), 'b')
-        self.assertTrue(decision.parameters[0].getType() != None)
-        self.assertEqual(type(decision.parameters[0].getType()), PrimitiveType)
-        self.assertEqual(decision.parameters[0].getType().getPrimitiveType(), 'BOOL')
-        self.assertEqual(decision.parameters[1].getDirection(), 'RETURN')
-        # TODO return type test
-
-        # Initial node
+        # Test nodes one at a time
+        # initial node
         self.assertEqual(type(decision.nodes[0]), InitialNode)
         initNode = decision.nodes[0]
         self.assertEqual(len(initNode.incoming), 0)
         self.assertEqual(len(initNode.outgoing), 1)
-        self.assertEqual(type(initNode.outgoing[0]), ControlFlow)
 
-        #decision node
-        self.assertEqual(type(initNode.outgoing[0].getTarget()), DecisionNode)
+        # parameter node
+        self.assertEqual(type(decision.nodes[1]), ParameterNode)
+        inParamNode = decision.nodes[1]
+        self.assertEqual(decision.parameters[0], inParamNode.getParameter())
+        self.assertEqual(len(inParamNode.incoming), 0)
+        self.assertEqual(len(inParamNode.outgoing), 1)
+        self.assertTrue(inParamNode.getType() != None)
+        self.assertEqual(type(inParamNode.getType()), PrimitiveType)
+        self.assertEqual(inParamNode.getType().getPrimitiveType(), 'INT')
+        
+        # create object action 1
+        self.assertEqual(type(decision.nodes[2]), CreateObjectAction)
+        coa1 = decision.nodes[2]
+        self.assertEqual(len(coa1.incoming), 1)
+        self.assertEqual(len(coa1.outgoing), 1)
+        self.assertTrue(coa1.getClassifier() != None)
+        self.assertEqual(type(coa1.getClassifier()), PrimitiveType)
+        self.assertEqual(coa1.getClassifier().getPrimitiveType(), 'STRING')
+        self.assertEqual(len(coa1.inputs), 0)
+        self.assertEqual(len(coa1.outputs), 1)
+
+        # outputPin 1
+        self.assertEqual(coa1.outputs[0], decision.nodes[3])
+        self.assertEqual(type(coa1.outputs[0]), OutputPin)
+        outPin1 = coa1.outputs[0]
+        self.assertEqual(len(outPin1.incoming), 0)
+        self.assertEqual(len(outPin1.outgoing), 1)
+        self.assertTrue(outPin1.getType() != None)
+        self.assertEqual(type(outPin1.getType()), PrimitiveType)
+        self.assertEqual(outPin1.getType().getPrimitiveType(), 'STRING')
+        self.assertTrue(outPin1.getUpperBound() != None)
+        self.assertEqual(type(outPin1.getUpperBound()), LiteralString)
+        self.assertEqual(outPin1.getUpperBound().getValue(), 'c')
+
+        # ObjectNode for ret
+        self.assertEqual(outPin1.outgoing[0].getTarget(), decision.nodes[4])
+        self.assertEqual(type(decision.nodes[4]), ObjectNode)
+        retObNode = decision.nodes[4]
+        self.assertEqual(len(retObNode.incoming), 3)
+        self.assertEqual(len(retObNode.outgoing), 1)
+        self.assertTrue(retObNode.getType() != None)
+        self.assertEqual(type(retObNode.getType()), PrimitiveType)
+        self.assertEqual(retObNode.getType().getPrimitiveType(), 'STRING')
+        
+        # decision node
+        self.assertEqual(decision.nodes[5], coa1.outgoing[0].getTarget())
+        self.assertEqual(type(decision.nodes[5]), DecisionNode)
+        decisionNode = decision.nodes[5]
+        self.assertEqual(len(decisionNode.incoming), 2)
+        self.assertEqual(len(decisionNode.outgoing), 2)
+        self.assertTrue(decisionNode.getDecisionInputFlow() != None)
+        self.assertEqual(decisionNode.getDecisionInputFlow().getSource(), decision.nodes[1])
+        self.assertTrue(decisionNode.outgoing[0].getGuard() != None)
+        self.assertEqual(type(decisionNode.outgoing[0].getGuard()), Expression)
+        self.assertEqual(decisionNode.outgoing[0].getGuard().getSymbol(), '==')
+        self.assertEqual(len(decisionNode.outgoing[0].getGuard().operands), 1)
+        self.assertTrue(decisionNode.outgoing[1].getGuard() != None)
+        self.assertEqual(type(decisionNode.outgoing[1].getGuard()), Expression)
+        self.assertEqual(len(decisionNode.outgoing[1].getGuard().operands), 0)
+        self.assertEqual(decisionNode.outgoing[1].getGuard().getSymbol(), 'else')
+
+        # CreateObjectAction2 (positive)
+        self.assertEqual(decision.nodes[6], decisionNode.outgoing[0].getTarget())
+        self.assertEqual(type(decision.nodes[6]), CreateObjectAction)
+
+        #CreateObjectAction3 (els)
+        self.assertEqual(decision.nodes[8], decisionNode.outgoing[1].getTarget())
+        self.assertEqual(type(decision.nodes[8]), CreateObjectAction)
+
+        # merge
+        self.assertEqual(decision.nodes[6].outgoing[0].getTarget(), decision.nodes[8].outgoing[0].getTarget())
+        self.assertEqual(decision.nodes[10], decision.nodes[6].outgoing[0].getTarget())
+        mergeNode = decision.nodes[10]
+        self.assertEqual(type(mergeNode), MergeNode)
+        self.assertEqual(len(mergeNode.incoming), 2)
+        self.assertEqual(len(mergeNode.outgoing), 1)
+        
+        # return parameter
+        self.assertEqual(type(decision.nodes[11]), ParameterNode)
+        retNode = decision.nodes[11]
+        self.assertTrue(retNode.getParameter() != None)
+        self.assertEqual(retNode.getParameter(), decision.parameters[1])
+        self.assertTrue(retNode.getType() != None)
+        self.assertEqual(type(retNode.getType()), PrimitiveType)
+        self.assertEqual(retNode.getType().getPrimitiveType(), 'STRING')
+
+        # final node
+        self.assertEqual(decision.nodes[12], mergeNode.outgoing[0].getTarget())
+        self.assertEqual(type(decision.nodes[12]), FinalNode)
+        finalNode = decision.nodes[12]
+        self.assertEqual(len(finalNode.incoming), 1)
+        self.assertEqual(len(finalNode.outgoing), 0)
 
 if __name__ == '__main__':
     unittest.main()

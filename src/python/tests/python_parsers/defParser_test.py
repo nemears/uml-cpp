@@ -53,14 +53,23 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(len(noParam.nodes[4].incoming), 1)
 
         #test edges
-        self.assertEqual(len(noParam.edges), 2)
-        self.assertEqual(type(noParam.edges[0]), ControlFlow)
-        self.assertEqual(noParam.edges[0].getSource(), noParam.nodes[0])
-        self.assertEqual(noParam.edges[0].getTarget(), noParam.nodes[2])
+        self.assertEqual(len(noParam.edges), 3)
+        self.assertEqual(type(noParam.edges[0]), ObjectFlow)
+        self.assertEqual(noParam.edges[0].getSource(), noParam.nodes[3])
+        self.assertEqual(noParam.edges[0].getTarget(), noParam.nodes[1])
         self.assertEqual(type(noParam.edges[1]), ControlFlow)
-        self.assertEqual(noParam.edges[1].getSource(), noParam.nodes[2])
-        self.assertEqual(noParam.edges[1].getTarget(), noParam.nodes[4])
+        self.assertEqual(noParam.edges[1].getSource(), noParam.nodes[0])
+        self.assertEqual(noParam.edges[1].getTarget(), noParam.nodes[2])
+        self.assertEqual(type(noParam.edges[2]), ControlFlow)
+        self.assertEqual(noParam.edges[2].getSource(), noParam.nodes[2])
+        self.assertEqual(noParam.edges[2].getTarget(), noParam.nodes[4])
 
+        uml = Model()
+        uml.addOwnedElement(m)
+        emitter = ModelParser()
+        with open('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/python_parsers/output/defParserTestOutput.yml', 'w') as f:
+            f.write(emitter.emit(uml))
+            f.close()
 
     def testParseFuncNumParam(self):
         d = {}

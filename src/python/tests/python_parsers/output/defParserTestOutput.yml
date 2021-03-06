@@ -1,0 +1,300 @@
+---
+model:
+  id: a9329626-d75a-46cf-9310-a1be33d75597
+  children:
+    - namespace:
+        id: baf41239-b3a9-4aa1-b199-fcff8ea945c9
+        children:
+          - activity:
+              name: noParam
+              id: 2e7d07ad-d119-4f84-a0e6-95f7e13434d5
+              parameters:
+                - parameter:
+                    type: BOOL
+                    id: 8c93346e-49e5-4b4f-b925-923208ddf8a6
+                    direction: RETURN
+              nodes:
+                - initialNode:
+                    id: 00237272-91ec-40da-aee8-6852af7176e2
+                    outgoing:
+                      - 9ba30a71-d6f0-4e04-b423-d0514bd481dc
+                - parameterNode:
+                    parameter: 8c93346e-49e5-4b4f-b925-923208ddf8a6
+                    id: f8cdc2ef-d47b-4329-a1e0-0a5f2d8c0f4d
+                    type: BOOL
+                    incoming:
+                      - d4a1eab0-2a53-4dc4-b9b4-63d35e736e46
+                    upperBound:
+                      literalBool: true
+                - createObjectAction:
+                    id: 2548b71c-218a-43c7-a002-a8663f8842bb
+                    incoming:
+                      - 9ba30a71-d6f0-4e04-b423-d0514bd481dc
+                    outgoing:
+                      - 35f410e0-93c7-46a7-876d-eb547e6ebdc7
+                    outputs:
+                      - 679b0f6f-34ab-475f-9f2d-0de1fb2243b9
+                    classifier: BOOL
+                - outputPin:
+                    id: 679b0f6f-34ab-475f-9f2d-0de1fb2243b9
+                    type: BOOL
+                    outgoing:
+                      - d4a1eab0-2a53-4dc4-b9b4-63d35e736e46
+                    upperBound:
+                      literalBool: true
+                - finalNode:
+                    id: 6cc3e46a-6da3-4d90-aae2-288e5a69943f
+                    incoming:
+                      - 35f410e0-93c7-46a7-876d-eb547e6ebdc7
+              edges:
+                - objectFlow:
+                    id: d4a1eab0-2a53-4dc4-b9b4-63d35e736e46
+                    source: 679b0f6f-34ab-475f-9f2d-0de1fb2243b9
+                    target: f8cdc2ef-d47b-4329-a1e0-0a5f2d8c0f4d
+                - controlFlow:
+                    id: 9ba30a71-d6f0-4e04-b423-d0514bd481dc
+                    source: 00237272-91ec-40da-aee8-6852af7176e2
+                    target: 2548b71c-218a-43c7-a002-a8663f8842bb
+                - controlFlow:
+                    id: 35f410e0-93c7-46a7-876d-eb547e6ebdc7
+                    source: 2548b71c-218a-43c7-a002-a8663f8842bb
+                    target: 6cc3e46a-6da3-4d90-aae2-288e5a69943f
+          - activity:
+              name: numParam
+              id: 276b3a07-8c1e-4143-b1ef-8ecf127b88e7
+              parameters:
+                - parameter:
+                    type: INT
+                    name: f
+                    id: 2e153e5d-9f2a-4167-b999-600a5e4c0ee9
+                    direction: IN
+                - parameter:
+                    type: INT
+                    id: d14d5c5f-4aa2-49c6-92b2-0ae2a4cd994f
+                    direction: RETURN
+              nodes:
+                - initialNode:
+                    id: 91b8f56b-6d39-4e66-8e3a-c8f17cea73e9
+                    outgoing:
+                      - e414de88-e079-4616-ab2d-76fd2a132e4b
+                - parameterNode:
+                    parameter: 2e153e5d-9f2a-4167-b999-600a5e4c0ee9
+                    name: f
+                    id: 572eab70-eeb0-40cc-8f5c-03e0ada5ff84
+                    type: INT
+                    incoming:
+                      - 5e8489b8-8d64-4fd1-aaed-e794c8eabcc5
+                    outgoing:
+                      - de919110-66dc-4b39-819c-0c773f23e692
+                - createObjectAction:
+                    name: 1
+                    id: 554ad103-ed12-4934-9502-1c413baf08e6
+                    incoming:
+                      - e414de88-e079-4616-ab2d-76fd2a132e4b
+                    outgoing:
+                      - 5915399f-b438-423d-8d00-45f7b70e4120
+                    outputs:
+                      - 953e11ba-c09b-4e5f-afcf-cfa0da401182
+                    classifier: INT
+                - outputPin:
+                    id: 953e11ba-c09b-4e5f-afcf-cfa0da401182
+                    type: INT
+                    outgoing:
+                      - 5e8489b8-8d64-4fd1-aaed-e794c8eabcc5
+                    upperBound:
+                      literalInt: 1
+                - parameterNode:
+                    parameter: d14d5c5f-4aa2-49c6-92b2-0ae2a4cd994f
+                    id: 60de1605-1552-4887-896e-e4e5af8ea419
+                    type: INT
+                    incoming:
+                      - de919110-66dc-4b39-819c-0c773f23e692
+                - finalNode:
+                    id: fb0a004c-f378-4e21-9965-196cf51d9b4a
+                    incoming:
+                      - 5915399f-b438-423d-8d00-45f7b70e4120
+              edges:
+                - objectFlow:
+                    id: 5e8489b8-8d64-4fd1-aaed-e794c8eabcc5
+                    source: 953e11ba-c09b-4e5f-afcf-cfa0da401182
+                    target: 572eab70-eeb0-40cc-8f5c-03e0ada5ff84
+                - objectFlow:
+                    id: de919110-66dc-4b39-819c-0c773f23e692
+                    source: 572eab70-eeb0-40cc-8f5c-03e0ada5ff84
+                    target: 60de1605-1552-4887-896e-e4e5af8ea419
+                - controlFlow:
+                    id: e414de88-e079-4616-ab2d-76fd2a132e4b
+                    source: 91b8f56b-6d39-4e66-8e3a-c8f17cea73e9
+                    target: 554ad103-ed12-4934-9502-1c413baf08e6
+                - controlFlow:
+                    id: 5915399f-b438-423d-8d00-45f7b70e4120
+                    source: 554ad103-ed12-4934-9502-1c413baf08e6
+                    target: fb0a004c-f378-4e21-9965-196cf51d9b4a
+          - activity:
+              name: decisionFlow
+              id: 361fb047-5524-4a94-a790-cca05cab7193
+              parameters:
+                - parameter:
+                    type: BOOL
+                    name: b
+                    id: 8e713fbe-ebeb-4557-b69f-adbff5bf1ac7
+                    direction: IN
+                - parameter:
+                    id: d8fbab8d-16e3-481d-b239-129688190c34
+                    direction: RETURN
+              nodes:
+                - initialNode:
+                    id: 588392fc-c3a9-431e-bb16-28e70356dba6
+                    outgoing:
+                      - f4c3e775-cee4-4ead-b8ce-14eb494319c3
+                - parameterNode:
+                    parameter: 8e713fbe-ebeb-4557-b69f-adbff5bf1ac7
+                    name: b
+                    id: 71ce1b3d-b97c-4a10-b654-cbe7da1e4e0d
+                    type: BOOL
+                    outgoing:
+                      - b012f832-d6d7-47d0-9a8e-765013815d75
+                - createObjectAction:
+                    name: ret
+                    id: 828e1cec-d4d3-4004-a8fa-3deeda63400f
+                    incoming:
+                      - 0437496f-bc22-4634-9f55-c44a17fa0019
+                      - 16a447d2-9b15-4daa-aec5-25ca989a7264
+                      - f4c3e775-cee4-4ead-b8ce-14eb494319c3
+                    outgoing:
+                      - 1403e869-804b-4694-a2bb-dfd1a6a31ce8
+                    outputs:
+                      - 2250f8d1-b2b9-4fa4-9934-e467e1a56607
+                    classifier: STRING
+                - outputPin:
+                    id: 2250f8d1-b2b9-4fa4-9934-e467e1a56607
+                    type: STRING
+                    upperBound:
+                      literalString: c
+                - decisionNode:
+                    id: fa07db64-ce82-4a8b-8f2e-bb4db038df72
+                    incoming:
+                      - 1403e869-804b-4694-a2bb-dfd1a6a31ce8
+                      - b012f832-d6d7-47d0-9a8e-765013815d75
+                    outgoing:
+                      - f0af7ad8-337b-405c-a68d-e271e609dc67
+                      - c6b2d80b-5995-43dd-b41b-561e9e718530
+                - createObjectAction:
+                    name: b
+                    id: edc852d2-af4b-4150-a3dc-46d717c6ee3d
+                    incoming:
+                      - f0af7ad8-337b-405c-a68d-e271e609dc67
+                    outgoing:
+                      - ea1e7d4f-0aed-46db-aee2-b83691e4212e
+                    outputs:
+                      - 93c5d273-bbce-4f7b-822c-9d193b152d57
+                    classifier: STRING
+                - outputPin:
+                    id: 93c5d273-bbce-4f7b-822c-9d193b152d57
+                    type: STRING
+                    outgoing:
+                      - 0437496f-bc22-4634-9f55-c44a17fa0019
+                    upperBound:
+                      literalString: b
+                - createObjectAction:
+                    name: a
+                    id: 87d58c8c-ccc3-4608-8f5c-bdc3949a420a
+                    incoming:
+                      - c6b2d80b-5995-43dd-b41b-561e9e718530
+                    outgoing:
+                      - b62adfb3-4603-4f90-b0e0-5a91fd5155b8
+                    outputs:
+                      - d4d019b2-f57e-43e6-891a-b7b06284284f
+                    classifier: STRING
+                - outputPin:
+                    id: d4d019b2-f57e-43e6-891a-b7b06284284f
+                    type: STRING
+                    outgoing:
+                      - 16a447d2-9b15-4daa-aec5-25ca989a7264
+                    upperBound:
+                      literalString: a
+                - joinNode:
+                    id: f808d5a3-5084-4a09-b8ae-51d82fd64cfb
+                    incoming:
+                      - ea1e7d4f-0aed-46db-aee2-b83691e4212e
+                      - b62adfb3-4603-4f90-b0e0-5a91fd5155b8
+                    outgoing:
+                      - d1827ebf-fc86-413f-8f04-7ca6c271ff89
+                - parameterNode:
+                    parameter: d8fbab8d-16e3-481d-b239-129688190c34
+                    id: 9a118f58-d96c-47cb-a1ec-cb014b928e88
+                - finalNode:
+                    id: 96322b75-f6c0-4cae-8868-8bdc7e3fa83c
+                    incoming:
+                      - d1827ebf-fc86-413f-8f04-7ca6c271ff89
+              edges:
+                - controlFlow:
+                    id: 1403e869-804b-4694-a2bb-dfd1a6a31ce8
+                    source: 828e1cec-d4d3-4004-a8fa-3deeda63400f
+                    target: fa07db64-ce82-4a8b-8f2e-bb4db038df72
+                - objectFlow:
+                    id: 0437496f-bc22-4634-9f55-c44a17fa0019
+                    source: 93c5d273-bbce-4f7b-822c-9d193b152d57
+                    target: 828e1cec-d4d3-4004-a8fa-3deeda63400f
+                - objectFlow:
+                    id: 16a447d2-9b15-4daa-aec5-25ca989a7264
+                    source: d4d019b2-f57e-43e6-891a-b7b06284284f
+                    target: 828e1cec-d4d3-4004-a8fa-3deeda63400f
+                - controlFlow:
+                    id: f0af7ad8-337b-405c-a68d-e271e609dc67
+                    source: fa07db64-ce82-4a8b-8f2e-bb4db038df72
+                    target: edc852d2-af4b-4150-a3dc-46d717c6ee3d
+                    guard: true
+                - controlFlow:
+                    id: c6b2d80b-5995-43dd-b41b-561e9e718530
+                    source: fa07db64-ce82-4a8b-8f2e-bb4db038df72
+                    target: 87d58c8c-ccc3-4608-8f5c-bdc3949a420a
+                - objectFlow:
+                    id: b012f832-d6d7-47d0-9a8e-765013815d75
+                    source: 71ce1b3d-b97c-4a10-b654-cbe7da1e4e0d
+                    target: fa07db64-ce82-4a8b-8f2e-bb4db038df72
+                - controlFlow:
+                    id: ea1e7d4f-0aed-46db-aee2-b83691e4212e
+                    source: edc852d2-af4b-4150-a3dc-46d717c6ee3d
+                    target: f808d5a3-5084-4a09-b8ae-51d82fd64cfb
+                - controlFlow:
+                    id: b62adfb3-4603-4f90-b0e0-5a91fd5155b8
+                    source: 87d58c8c-ccc3-4608-8f5c-bdc3949a420a
+                    target: f808d5a3-5084-4a09-b8ae-51d82fd64cfb
+                - controlFlow:
+                    id: f4c3e775-cee4-4ead-b8ce-14eb494319c3
+                    source: 588392fc-c3a9-431e-bb16-28e70356dba6
+                    target: 828e1cec-d4d3-4004-a8fa-3deeda63400f
+                - controlFlow:
+                    id: d1827ebf-fc86-413f-8f04-7ca6c271ff89
+                    source: f808d5a3-5084-4a09-b8ae-51d82fd64cfb
+                    target: 96322b75-f6c0-4cae-8868-8bdc7e3fa83c
+          - activity:
+              name: callBehavior
+              id: 753f7475-6cc6-4471-bdb3-f6a5bfce6190
+              parameters:
+                - parameter:
+                    id: e947d2fa-c487-4d0f-bc02-fd8e955de65a
+                    direction: RETURN
+              nodes:
+                - initialNode:
+                    id: 47288278-b296-487c-a8be-0257249870f0
+                    outgoing:
+                      - 647a401d-db09-4a6d-a38c-7f516b8ee220
+                      - 304eb44b-de67-4a42-bc1d-bb77d17fe1c5
+                - parameterNode:
+                    parameter: e947d2fa-c487-4d0f-bc02-fd8e955de65a
+                    id: 211dd4bd-7f8c-4304-a329-81744bd090f1
+                - finalNode:
+                    id: 038bd39b-7b8e-49a3-9e1e-ec5b04f4a80d
+                    incoming:
+                      - aa9187ba-1455-450f-81b9-b0d49701d26b
+              edges:
+                - controlFlow:
+                    id: 304eb44b-de67-4a42-bc1d-bb77d17fe1c5
+                    source: 47288278-b296-487c-a8be-0257249870f0
+                    target: 26b0b57a-b700-4b22-b7d1-d9875f571e86
+                - controlFlow:
+                    id: aa9187ba-1455-450f-81b9-b0d49701d26b
+                    source: 26b0b57a-b700-4b22-b7d1-d9875f571e86
+                    target: 038bd39b-7b8e-49a3-9e1e-ec5b04f4a80d

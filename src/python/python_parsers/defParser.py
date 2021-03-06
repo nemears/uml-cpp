@@ -11,6 +11,7 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                 if type(p) is ast.Name:
 
                     # get object node from parsed nodes
+                    foundNode = False
                     for parsedNode in uml.nodes:
                         if parsedNode.getName() == p.id:
 
@@ -35,10 +36,14 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                                     valNode.setName(str(valPin.getUpperBound().getValue()))
 
                                 # if other node didn't know type yet let it know
-                                if parsedNode.getType() == None:
-                                    parsedNode.setType(valPin.getType())
-                                    if type(parsedNode) is ParameterNode:
-                                        parsedNode.getParameter().setType(valPin.getType())
+                                if issubclass(parsedNode.__class__, ObjectNode):
+                                    if parsedNode.getType() == None:
+                                        parsedNode.setType(valPin.getType())
+                                        if type(parsedNode) is ParameterNode:
+                                            parsedNode.getParameter().setType(valPin.getType())
+                                elif type(parsedNode) is CreateObjectAction:
+                                    if parsedNode.getClassifier() == None:
+                                        parsedNode.setClassifier(valPin.getType())
 
                                 # map flow
                                 objFlow = ObjectFlow()
@@ -48,7 +53,25 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
 
                                 # Override lastNode
                                 lastNode = valNode
+                                foundNode = True
                             break
+                    if not foundNode:
+                        # it is a new object
+                        createObject = CreateObjectAction()
+                        d[createObject.getID()] = createObject
+                        outPin = OutputPin()
+                        d[outPin.getID()] = outPin
+                        createObject.addOutput(outPin)
+                        uml.addNode(createObject)
+                        uml.addNode(outPin)
+
+                        setNodeTypeLiteral(outPin, node, d)
+                        createObject.setClassifier(outPin.getType())
+
+                        createObject.setName(p.id)
+                        lastNode = createObject
+
+
         elif type(node) is ast.Expr:
             if type(node.value) is ast.Call:
                 if type(node.value.func) is ast.Name:
@@ -226,6 +249,7 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                         obFlow = ObjectFlow()
                         d[obFlow.getID()] = obFlow
                         setSourceAndTarget(obFlow, boolPin, retParamNode)
+                        uml.addEdge(obFlow)
                         lastNode = boolOb
 
                 elif type(node.value) is ast.Name:

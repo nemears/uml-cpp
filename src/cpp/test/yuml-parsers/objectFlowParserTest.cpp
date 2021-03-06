@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "test/yumlParsersTest.h"
 #include "yuml-parsers/modelParser.h"
 #include "uml/activity.h"
 #include "uml/objectNode.h"
@@ -9,13 +10,17 @@
 using namespace UML;
 
 class ObjectFlowParserTest : public ::testing::Test {
-
+  public:
+        string ymlPath;
+        void SetUp() override {
+            ymlPath = YML_FILES_PATH;
+        };
 };
 
 TEST_F(ObjectFlowParserTest, ParseObjectNodeToActionTest) {
     // Setup
     ModelParser objectToActionParser = ModelParser::createNewParser();
-    YAML::Node objectToActionNode = YAML::LoadFile("../../../../../src/test/yml/objectFlowTests/objectNodeToAction.yml");
+    YAML::Node objectToActionNode = YAML::LoadFile(ymlPath + "objectFlowTests/objectNodeToAction.yml");
 
     // Test
     // Activity
@@ -60,7 +65,7 @@ TEST_F(ObjectFlowParserTest, ParseObjectNodeToActionTest) {
 TEST_F(ObjectFlowParserTest, ParseBackwardsOutputPinTest) {
     // Setup
     ModelParser backwardsOutputParser = ModelParser::createNewParser();
-    YAML::Node backwardsOutputNode = YAML::LoadFile("../../../../../src/test/yml/objectFlowTests/backwardsOutput.yml");
+    YAML::Node backwardsOutputNode = YAML::LoadFile(ymlPath + "objectFlowTests/backwardsOutput.yml");
 
     // Test
     ASSERT_NO_THROW(backwardsOutputParser.parse(backwardsOutputNode));

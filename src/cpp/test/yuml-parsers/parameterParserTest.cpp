@@ -1,17 +1,22 @@
 #include "gtest/gtest.h"
+#include "test/yumlParsersTest.h"
 #include "yuml-parsers/modelParser.h"
 #include "uml/parameter.h"
 
 using namespace UML;
 
 class ParameterParserTest : public ::testing::Test {
-
+    public:
+        string ymlPath;
+        void SetUp() override {
+            ymlPath = YML_FILES_PATH;
+        };
 };
 
 TEST_F(ParameterParserTest, TestParseDirection) {
     // Setup
     ModelParser directionParser = ModelParser::createNewParser();
-    YAML::Node directionNode = YAML::LoadFile("../../../../../src/test/yml/parameterTests/parameterDirection.yml");
+    YAML::Node directionNode = YAML::LoadFile(ymlPath + "parameterTests/parameterDirection.yml");
 
     // Test
     ASSERT_NO_THROW(directionParser.parse(directionNode));

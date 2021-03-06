@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "test/yumlParsersTest.h"
 #include "yuml-parsers/modelParser.h"
 #include "uml/typedElement.h"
 #include "uml/primitiveType.h"
@@ -10,13 +11,15 @@ class TypedElementParserTest : public ::testing::Test {
     public:
         ModelParser *ppYAML, * ppPrimitive;
         YAML::Node node, primitiveNode, invalidPrimitiveNode;
+        string ymlPath;
     protected:
   // You can remove any or all of the following functions if their bodies would
   // be empty.
 
   TypedElementParserTest() {
+    ymlPath = YML_FILES_PATH;
     ppYAML = new ModelParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
-    node = YAML::LoadFile("../../../../../src/test/yml/typedElementTests/typedElement.yml");
+    node = YAML::LoadFile(ymlPath + "typedElementTests/typedElement.yml");
   }
 
   ~TypedElementParserTest() override {
@@ -46,7 +49,7 @@ TEST_F(TypedElementParserTest, ParsePrimitiveTest) {
 
   ppPrimitive = new ModelParser(new map<boost::uuids::uuid, UML::Element*>, new map<boost::uuids::uuid, PostParser*>);
 
-  primitiveNode = YAML::LoadFile("../../../../../src/test/yml/typedElementTests/primitives.yml");
+  primitiveNode = YAML::LoadFile(ymlPath + "typedElementTests/primitives.yml");
   EXPECT_NO_THROW(ppPrimitive->parse(primitiveNode));
   EXPECT_EQ(((PrimitiveType*)dynamic_cast<TypedElement*>((*ppPrimitive->elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")])->getType())->getPrimitiveType(), UML::PrimitiveType::Primitive::STRING);
   EXPECT_EQ(((PrimitiveType*)dynamic_cast<TypedElement*>((*ppPrimitive->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")])->getType())->getPrimitiveType(), UML::PrimitiveType::Primitive::INT);
@@ -57,7 +60,7 @@ TEST_F(TypedElementParserTest, ParsePrimitiveTest) {
 }
 
 TEST_F(TypedElementParserTest, ParseInvalidPrimitive) {
-  invalidPrimitiveNode = YAML::LoadFile("../../../../../src/test/yml/typedElementTests/invalidPrimitive.yml");
+  invalidPrimitiveNode = YAML::LoadFile(ymlPath + "typedElementTests/invalidPrimitive.yml");
 
   ModelParser invalidPrimitiveParser = ModelParser::createNewParser();
   ASSERT_THROW(invalidPrimitiveParser.parse(invalidPrimitiveNode), ElementParser::InvalidIdentifierException);
@@ -135,7 +138,7 @@ TEST_F(TypedElementParserTest, EmitAttributesOfClassiferTypeTest) {
 TEST_F(TypedElementParserTest, BackwardsParsingTest) {
   // Setup
   ModelParser backwardsParsingParser = ModelParser::createNewParser();
-  YAML::Node backwardsParsingNode = YAML::LoadFile("../../../../../src/test/yml/typedElementTests/backwardsParsing.yml");
+  YAML::Node backwardsParsingNode = YAML::LoadFile(ymlPath + "typedElementTests/backwardsParsing.yml");
 
   // Test
   ASSERT_NO_THROW(backwardsParsingParser.parse(backwardsParsingNode));

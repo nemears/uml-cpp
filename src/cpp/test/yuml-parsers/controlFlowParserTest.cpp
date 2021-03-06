@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "test/yumlParsersTest.h"
 #include "yuml-parsers/modelParser.h"
 #include "uml/activity.h"
 #include "uml/action.h"
@@ -11,13 +12,17 @@
 using namespace UML;
 
 class ControlFlowParserTest : public ::testing::Test {
-
+  public:
+        string ymlPath;
+    void SetUp() override {
+        ymlPath = YML_FILES_PATH;
+    };
 };
 
 TEST_F(ControlFlowParserTest, ActionToActionFlowTest) {
     // Setup
     ModelParser actionToActionFlowParser = ModelParser::createNewParser();
-    YAML::Node actionToActionFlowNode = YAML::LoadFile("../../../../../src/test/yml/controlFlowTests/actionToAction.yml");
+    YAML::Node actionToActionFlowNode = YAML::LoadFile(ymlPath + "controlFlowTests/actionToAction.yml");
 
     // Test
     ASSERT_NO_THROW(actionToActionFlowParser.parse(actionToActionFlowNode));
@@ -51,7 +56,7 @@ TEST_F(ControlFlowParserTest, ActionToActionFlowTest) {
 TEST_F(ControlFlowParserTest, ActionToSelfTest) {
     // Setup
     ModelParser actionToSelfFlowParser = ModelParser::createNewParser();
-    YAML::Node actionToSelfFlowNode = YAML::LoadFile("../../../../../src/test/yml/controlFlowTests/actionToSelf.yml");
+    YAML::Node actionToSelfFlowNode = YAML::LoadFile(ymlPath + "controlFlowTests/actionToSelf.yml");
 
     // Test
     ASSERT_NO_THROW(actionToSelfFlowParser.parse(actionToSelfFlowNode));

@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "test/yumlParsersTest.h"
 #include "yuml-parsers/modelParser.h"
 #include "uml/instanceSpecification.h"
 #include "uml/primitiveType.h"
@@ -12,16 +13,18 @@ class InstanceSpecificationParserTest : public ::testing::Test {
     public:
         ModelParser* ppInstanceSpecification, * ppInstanceValue;
         YAML::Node instanceSpecificationNode, instanceValueNode;
+        string ymlPath;
     protected:
   // You can remove any or all of the following functions if their bodies would
   // be empty.
 
   void SetUp() override {
+    ymlPath = YML_FILES_PATH;
     ppInstanceSpecification = new ModelParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
-    instanceSpecificationNode = YAML::LoadFile("../../../../../src/test/yml/instanceSpecificationTests/primitiveSlot.yml");
+    instanceSpecificationNode = YAML::LoadFile(ymlPath + "instanceSpecificationTests/primitiveSlot.yml");
 
     ppInstanceValue = new ModelParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
-    instanceValueNode = YAML::LoadFile("../../../../../src/test/yml/instanceSpecificationTests/instanceSlot.yml");
+    instanceValueNode = YAML::LoadFile(ymlPath + "instanceSpecificationTests/instanceSlot.yml");
   }
 
   void TearDown() override {
@@ -68,7 +71,7 @@ TEST_F(InstanceSpecificationParserTest, InstanceSlotTest) {
 TEST_F(InstanceSpecificationParserTest, ParseInvalidClassifierID_Test) {
   // Setup
   ModelParser invalidClassifierParser = ModelParser::createNewParser();
-  YAML::Node invalidClassifierNode = YAML::LoadFile("../../../../../src/test/yml/instanceSpecificationTests/invalidClassifier.yml");
+  YAML::Node invalidClassifierNode = YAML::LoadFile(ymlPath + "instanceSpecificationTests/invalidClassifier.yml");
 
   // test
   EXPECT_THROW(invalidClassifierParser.parse(invalidClassifierNode), Element::InvalidID_Exception);
@@ -228,7 +231,7 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithInstanceSlotTest) {
 TEST_F(InstanceSpecificationParserTest, BackwardsClassifierTest) {
   // Setup
   ModelParser backwardsClassifierParser = ModelParser::createNewParser();
-  YAML::Node backwardsClassifierNode = YAML::LoadFile("../../../../../src/test/yml/instanceSpecificationTests/backwardsClassifier.yml");
+  YAML::Node backwardsClassifierNode = YAML::LoadFile(ymlPath + "instanceSpecificationTests/backwardsClassifier.yml");
 
   // Test
   ASSERT_NO_THROW(backwardsClassifierParser.parse(backwardsClassifierNode));

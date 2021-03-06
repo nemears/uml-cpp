@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "test/yumlParsersTest.h"
 #include "yuml-parsers/modelParser.h"
 #include "uml/classifier.h"
 #include "uml/property.h"
@@ -10,14 +11,16 @@ class ClassifierParserTest : public ::testing::Test {
     public:
         ModelParser* pp2;
         YAML::Node modelNode;
+        string ymlPath;
         
     protected:
   // You can remove any or all of the following functions if their bodies would
   // be empty.
 
   ClassifierParserTest() {
+    ymlPath = YML_FILES_PATH;
     pp2 = new ModelParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
-    modelNode = YAML::LoadFile("../../../../../src/test/yml/classifierTests/classifier.yml");
+    modelNode = YAML::LoadFile(ymlPath + "classifierTests/classifier.yml");
     // TODO fix google_test within directory structure
   }
 
@@ -27,7 +30,6 @@ class ClassifierParserTest : public ::testing::Test {
 
   void SetUp() override {
     pp2->parse(modelNode);
-
   }
 
   void TearDown() override {
@@ -49,7 +51,7 @@ TEST_F(ClassifierParserTest, ParseAttributesTest) {
 TEST_F(ClassifierParserTest, ParseAttributesNotSequenceTest) {
   // Setup
   ModelParser attributesNotSequenceParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
-  YAML::Node attributesNotSequenceNode = YAML::LoadFile("../../../../../src/test/yml/classifierTests/invalidAttributes.yml");
+  YAML::Node attributesNotSequenceNode = YAML::LoadFile(ymlPath + "classifierTests/invalidAttributes.yml");
 
   // Test
   ASSERT_THROW(attributesNotSequenceParser.parse(attributesNotSequenceNode), ElementParser::InvalidNodeTypeException);

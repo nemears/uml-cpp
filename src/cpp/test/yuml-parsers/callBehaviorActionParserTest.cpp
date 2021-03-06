@@ -1,16 +1,21 @@
 #include "gtest/gtest.h"
+#include "test/yumlParsersTest.h"
 #include "yuml-parsers/modelParser.h"
 #include "uml/activity.h"
 #include "uml/callBehaviorAction.h"
 #include "uml/opaqueBehavior.h"
 
 class CallBehaviorActionParserTest : public ::testing::Test {
-
+    public:
+        string ymlPath;
+    void SetUp() override {
+        ymlPath = YML_FILES_PATH;
+    };
 };
 
 TEST_F(CallBehaviorActionParserTest, ForwardBehaviorParseTest) {
     ModelParser forwardBehaviorParser = ModelParser::createNewParser();
-    YAML::Node forwardBehaviorNode = YAML::LoadFile("../../../../../src/test/yml/callBehaviorActionTests/forwardBehavior.yml");
+    YAML::Node forwardBehaviorNode = YAML::LoadFile(ymlPath + "callBehaviorActionTests/forwardBehavior.yml");
 
     ASSERT_NO_THROW(forwardBehaviorParser.parse(forwardBehaviorNode));
     ASSERT_TRUE(forwardBehaviorParser.theEl->ownedElements.size() == 2);
@@ -28,7 +33,7 @@ TEST_F(CallBehaviorActionParserTest, ForwardBehaviorParseTest) {
 
 TEST_F(CallBehaviorActionParserTest, BackwardsBehaviorParseTest) {
     ModelParser backwardsBehaviorParser = ModelParser::createNewParser();
-    YAML::Node backwardsBehaviorNode = YAML::LoadFile("../../../../../src/test/yml/callBehaviorActionTests/backwardsBehavior.yml");
+    YAML::Node backwardsBehaviorNode = YAML::LoadFile(ymlPath + "callBehaviorActionTests/backwardsBehavior.yml");
 
     ASSERT_NO_THROW(backwardsBehaviorParser.parse(backwardsBehaviorNode));
     ASSERT_TRUE(backwardsBehaviorParser.theEl->ownedElements.size() == 2);

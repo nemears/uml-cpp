@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "test/yumlParsersTest.h"
 #include "yuml-parsers/modelParser.h"
 #include "uml/parameterNode.h"
 #include "uml/activity.h"
@@ -8,13 +9,17 @@
 using namespace UML;
 
 class ParameterNodeParserTest : public ::testing::Test {
-
+   public:
+        string ymlPath;
+        void SetUp() override {
+            ymlPath = YML_FILES_PATH;
+        };
 };
 
 TEST_F(ParameterNodeParserTest, ParseParameterNodeTest) {
     // Setup
     ModelParser parameterNodeParser = ModelParser::createNewParser();
-    YAML::Node parameterNodeNode = YAML::LoadFile("../../../../../src/test/yml/parameterNodeTests/parameterNode.yml");
+    YAML::Node parameterNodeNode = YAML::LoadFile(ymlPath + "parameterNodeTests/parameterNode.yml");
 
     // Test
     ASSERT_NO_THROW(parameterNodeParser.parse(parameterNodeNode));

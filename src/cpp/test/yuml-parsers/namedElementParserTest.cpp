@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "test/yumlParsersTest.h"
 #include "yuml-parsers/classParser.h"
 #include "yuml-parsers/modelParser.h"
 #include "uml/model.h"
@@ -8,17 +9,19 @@ using namespace UML;
 class NamedElementParserTest : public ::testing::Test {
     public:
         ClassParser* ppYAML, *invalidTypeppYAML;
+        string ymlPath;
         YAML::Node node, invalidTypeNode;
     protected:
   // You can remove any or all of the following functions if their bodies would
   // be empty.
 
   NamedElementParserTest() {
+    ymlPath = YML_FILES_PATH;
     ppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>, new map<boost::uuids::uuid, PostParser*>);
-    node = YAML::LoadFile("../../../../../src/test/yml/namedElementTests/namedElement.yml");
+    node = YAML::LoadFile(ymlPath + "namedElementTests/namedElement.yml");
 
     invalidTypeppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>, new map<boost::uuids::uuid, PostParser*>);
-    invalidTypeNode = YAML::LoadFile("../../../../../src/test/yml/namedElementTests/improperType.yml");
+    invalidTypeNode = YAML::LoadFile(ymlPath + "namedElementTests/improperType.yml");
   }
 
   ~NamedElementParserTest() override {

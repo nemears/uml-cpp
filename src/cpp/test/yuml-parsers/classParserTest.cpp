@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "test/yumlParsersTest.h"
 #include "yuml-parsers/modelParser.h"
 #include "uml/class.h"
 #include "uml/operation.h"
@@ -8,12 +9,16 @@
 using namespace UML;
 
 class ClassParserTest : public ::testing::Test {
-
+  public:
+        string ymlPath;
+    void SetUp() override {
+        ymlPath = YML_FILES_PATH;
+    };
 };
 
 TEST_F(ClassParserTest, testBasicOperations) {
     ModelParser pp = ModelParser::createNewParser();
-    YAML::Node node = YAML::LoadFile("../../../../../src/test/yml/classTests/operation.yml");
+    YAML::Node node = YAML::LoadFile(ymlPath + "classTests/operation.yml");
     ASSERT_NO_THROW(pp.parse(node));
     ASSERT_TRUE((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")]);
     ASSERT_TRUE(dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.empty() == false);
@@ -36,7 +41,7 @@ TEST_F(ClassParserTest, testBasicOperations) {
 TEST_F(ClassParserTest, NonSequenceOperationsExceptionTest) {
   // Setup
   ModelParser nonSequenceOperationParser = ModelParser::createNewParser();
-  YAML::Node nonSequenceOperationNode = YAML::LoadFile("../../../../../src/test/yml/classTests/invalidOperation.yml");
+  YAML::Node nonSequenceOperationNode = YAML::LoadFile(ymlPath + "classTests/invalidOperation.yml");
 
   // Test
   ASSERT_THROW(nonSequenceOperationParser.parse(nonSequenceOperationNode), ElementParser::InvalidNodeTypeException);

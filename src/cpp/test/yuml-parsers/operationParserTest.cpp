@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "test/yumlParsersTest.h"
 #include "uml/model.h"
 #include "uml/class.h"
 #include "uml/operation.h"
@@ -20,13 +21,17 @@
 using namespace UML;
 
 class OperationParserTest : public ::testing::Test {
-
+   public:
+        string ymlPath;
+        void SetUp() override {
+            ymlPath = YML_FILES_PATH;
+        };
 };
 
 TEST_F(OperationParserTest, ParseInvalidParameterTest) {
   // Setup
   ModelParser invalidParameterParser = ModelParser::createNewParser();
-  YAML::Node invalidParameterNode = YAML::LoadFile("../../../../../src/test/yml/operationTests/invalidParameterList.yml");
+  YAML::Node invalidParameterNode = YAML::LoadFile(ymlPath + "operationTests/invalidParameterList.yml");
 
   // Test
   EXPECT_THROW(invalidParameterParser.parse(invalidParameterNode), ElementParser::InvalidNodeTypeException);
@@ -34,7 +39,7 @@ TEST_F(OperationParserTest, ParseInvalidParameterTest) {
 
 TEST_F(OperationParserTest, ParseInvalidMethodTest) {
   ModelParser invalidMethodParser = ModelParser::createNewParser();
-  YAML::Node invalidMethodNode = YAML::LoadFile("../../../../../src/test/yml/operationTests/invalidMethodList.yml");
+  YAML::Node invalidMethodNode = YAML::LoadFile(ymlPath + "operationTests/invalidMethodList.yml");
 
   EXPECT_THROW(invalidMethodParser.parse(invalidMethodNode), ElementParser::InvalidNodeTypeException);
 }
@@ -42,7 +47,7 @@ TEST_F(OperationParserTest, ParseInvalidMethodTest) {
 TEST_F(OperationParserTest, ParseInvalidTypeTest) {
   // Setup
   ModelParser invalidTypeParser = ModelParser::createNewParser();
-  YAML::Node invalidTypeNode = YAML::LoadFile("../../../../../src/test/yml/operationTests/invalidType.yml");
+  YAML::Node invalidTypeNode = YAML::LoadFile(ymlPath + "operationTests/invalidType.yml");
 
   // Test
   EXPECT_THROW(invalidTypeParser.parse(invalidTypeNode), ElementParser::InvalidIdentifierException);
@@ -190,7 +195,7 @@ TEST_F(OperationParserTest, EmitAbstractMethodTest) {
 TEST_F(OperationParserTest, ParseBackwardsMethodTest) {
   // Setup
   ModelParser backwardsMethodParser = ModelParser::createNewParser();
-  YAML::Node backwardsMethodsNode = YAML::LoadFile("../../../../../src/test/yml/operationTests/backwardsMethod.yml");
+  YAML::Node backwardsMethodsNode = YAML::LoadFile(ymlPath + "operationTests/backwardsMethod.yml");
 
   //Test
   ASSERT_NO_THROW(backwardsMethodParser.parse(backwardsMethodsNode));
@@ -215,7 +220,7 @@ TEST_F(OperationParserTest, ParseBackwardsMethodTest) {
 TEST_F(OperationParserTest, ParseForwardMethodTest) {
   // Setup
   ModelParser forwardsMethodParser = ModelParser::createNewParser();
-  YAML::Node forwardsMethodsNode = YAML::LoadFile("../../../../../src/test/yml/operationTests/forwardsMethod.yml");
+  YAML::Node forwardsMethodsNode = YAML::LoadFile(ymlPath + "operationTests/forwardsMethod.yml");
 
   // Test
   ASSERT_NO_THROW(forwardsMethodParser.parse(forwardsMethodsNode));
@@ -240,7 +245,7 @@ TEST_F(OperationParserTest, ParseForwardMethodTest) {
 TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
   // Setup
   ModelParser actvityAndOperationParser = ModelParser::createNewParser();
-  YAML::Node activityAndOperationNode = YAML::LoadFile("../../../../../src/test/yml/operationTests/activityMethod.yml");
+  YAML::Node activityAndOperationNode = YAML::LoadFile(ymlPath + "operationTests/activityMethod.yml");
 
   // Test
   ASSERT_NO_THROW(actvityAndOperationParser.parse(activityAndOperationNode));

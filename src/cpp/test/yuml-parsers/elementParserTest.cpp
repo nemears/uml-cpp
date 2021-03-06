@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "test/yumlParsersTest.h"
 #include "yuml-parsers/classParser.h"
 #include "yuml-parsers/modelParser.h"
 #include "uml/namedElement.h"
@@ -10,23 +11,25 @@ class ElementParserTest : public ::testing::Test {
         ClassParser* ppYAML, *invalidIDppYAML, *emptyChildrenppYAML, *emptyChildren2ppYAML;
         YAML::Node node, invalidIDNode, emptyChildrenNode, emptyChildren2Node;
         boost::uuids::uuid id1, id2;
+        string ymlPath;
     protected:
   // You can remove any or all of the following functions if their bodies would
   // be empty.
 
   ElementParserTest() {
+    ymlPath = YML_FILES_PATH;
     // TODO fix google_test within directory structure
     ppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>, new map<boost::uuids::uuid, PostParser*>);
-    node = YAML::LoadFile("../../../../../src/test/yml/elementTests/element.yml");
+    node = YAML::LoadFile(ymlPath + "elementTests/element.yml");
 
     invalidIDppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>, new map<boost::uuids::uuid, PostParser*>);
-    invalidIDNode = YAML::LoadFile("../../../../../src/test/yml/elementTests/invalidID.yml");
+    invalidIDNode = YAML::LoadFile(ymlPath + "elementTests/invalidID.yml");
 
     emptyChildrenppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>, new map<boost::uuids::uuid, PostParser*>);
-    emptyChildrenNode = YAML::LoadFile("../../../../../src/test/yml/elementTests/emptyChildren.yml");
+    emptyChildrenNode = YAML::LoadFile(ymlPath + "elementTests/emptyChildren.yml");
 
     emptyChildren2ppYAML = new ClassParser(new map<boost::uuids::uuid, UML::Element*>, new map<boost::uuids::uuid, PostParser*>);
-    emptyChildren2Node = YAML::LoadFile("../../../../../src/test/yml/elementTests/emptyChildren2.yml");
+    emptyChildren2Node = YAML::LoadFile(ymlPath + "elementTests/emptyChildren2.yml");
   }
 
   ~ElementParserTest() override {
@@ -85,7 +88,7 @@ TEST_F(ElementParserTest, ParseEmptyChildrenTest) {
 TEST_F(ElementParserTest, ThrowInvalidIdentifierExceptionTest) {
   // Setup
   ModelParser invalidIdentifierTestParser = ModelParser::createNewParser();
-  YAML::Node invalidIdentifierTestNode = YAML::LoadFile("../../../../../src/test/yml/elementTests/invalidIdentifierError.yml");
+  YAML::Node invalidIdentifierTestNode = YAML::LoadFile(ymlPath + "elementTests/invalidIdentifierError.yml");
 
   // Test
   ASSERT_THROW(invalidIdentifierTestParser.parse(invalidIdentifierTestNode), ElementParser::InvalidIdentifierException);

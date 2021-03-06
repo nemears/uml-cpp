@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "test/yumlParsersTest.h"
 #include "yuml-parsers/modelParser.h"
 #include "uml/activity.h"
 #include "uml/createObjectAction.h"
@@ -8,13 +9,17 @@
 using namespace UML;
 
 class CreateObjectParserTest : public ::testing::Test {
-
+  public:
+        string ymlPath;
+    void SetUp() override {
+        ymlPath = YML_FILES_PATH;
+    };
 };
 
 TEST_F(CreateObjectParserTest, ParseLiteralClassifierTest) {
     // Setup
     ModelParser literalClassifierParser = ModelParser::createNewParser();
-    YAML::Node literalClassifierNode = YAML::LoadFile("../../../../../src/test/yml/createObjectActionTests/primitiveClassifier.yml");
+    YAML::Node literalClassifierNode = YAML::LoadFile(ymlPath + "createObjectActionTests/primitiveClassifier.yml");
 
     // Test
     ASSERT_NO_THROW(literalClassifierParser.parse(literalClassifierNode));
@@ -42,7 +47,7 @@ TEST_F(CreateObjectParserTest, ParseLiteralClassifierTest) {
 TEST_F(CreateObjectParserTest, ParseClassClassifierTest) {
     // Setup
     ModelParser classClassifierParser = ModelParser::createNewParser();
-    YAML::Node classClassifierNode = YAML::LoadFile("../../../../../src/test/yml/createObjectActionTests/classClassifier.yml");
+    YAML::Node classClassifierNode = YAML::LoadFile(ymlPath +  "createObjectActionTests/classClassifier.yml");
 
     // Test
     ASSERT_NO_THROW(classClassifierParser.parse(classClassifierNode));

@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "test/yumlParsersTest.h"
 #include "yuml-parsers/modelParser.h"
 #include "uml/activity.h"
 #include "uml/objectNode.h"
@@ -19,7 +20,8 @@ class ActivityEdgeParserTest : public ::testing::Test {
 TEST_F(ActivityEdgeParserTest, ParseDecisionNodeGuardTest) {
     // Setup
     ModelParser decisionNodeGuardParser = ModelParser::createNewParser();
-    YAML::Node decisionNodeGuardNode = YAML::LoadFile("../../../../../src/test/yml/activityEdgeTests/guardForDecision.yml");
+    string ymlPath = YML_FILES_PATH;
+    YAML::Node decisionNodeGuardNode = YAML::LoadFile(ymlPath + "activityEdgeTests/guardForDecision.yml");
 
     // Test
     ASSERT_NO_THROW(decisionNodeGuardParser.parse(decisionNodeGuardNode));
@@ -77,7 +79,8 @@ TEST_F(ActivityEdgeParserTest, ParseBackwardsGuardTest) {
     // Setup
     ModelParser decisionNodeGuardParser = ModelParser::createNewParser();
     // Everything here is the same except as last test except for ordering of edges in this file
-    YAML::Node decisionNodeGuardNode = YAML::LoadFile("../../../../../src/test/yml/activityEdgeTests/backwardsEdge.yml");
+    string ymlPath = YML_FILES_PATH;
+    YAML::Node decisionNodeGuardNode = YAML::LoadFile(ymlPath + "activityEdgeTests/backwardsEdge.yml");
 
     // Test
     ASSERT_NO_THROW(decisionNodeGuardParser.parse(decisionNodeGuardNode));

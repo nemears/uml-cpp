@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "test/yumlParsersTest.h"
 #include "yuml-parsers/modelParser.h"
 #include "uml/activity.h"
 #include "uml/objectNode.h"
@@ -10,13 +11,17 @@
 using namespace UML;
 
 class ObjectNodeParserTest : public ::testing::Test {
-
+  public:
+        string ymlPath;
+        void SetUp() override {
+            ymlPath = YML_FILES_PATH;
+        };
 };
 
 TEST_F(ObjectNodeParserTest, ParseLiteralUpperBoundTest) {
     // Setup
     ModelParser literalUpperBoundParser = ModelParser::createNewParser();
-    YAML::Node literalUpperBoundNode = YAML::LoadFile("../../../../../src/test/yml/objectNodeTests/literalUpperBound.yml");
+    YAML::Node literalUpperBoundNode = YAML::LoadFile(ymlPath + "objectNodeTests/literalUpperBound.yml");
 
     // Test
     ASSERT_TRUE(literalUpperBoundParser.parse(literalUpperBoundNode));
@@ -45,7 +50,7 @@ TEST_F(ObjectNodeParserTest, ParseLiteralUpperBoundTest) {
 TEST_F(ObjectNodeParserTest, ParseExpressionUpperBoundTest) {
     // Setup
     ModelParser expressionUpperBoundParser = ModelParser::createNewParser();
-    YAML::Node expressionUpperBoundNode = YAML::LoadFile("../../../../../src/test/yml/objectNodeTests/expressionUpperBound.yml");
+    YAML::Node expressionUpperBoundNode = YAML::LoadFile(ymlPath + "objectNodeTests/expressionUpperBound.yml");
 
     // Test
     ASSERT_NO_THROW(expressionUpperBoundParser.parse(expressionUpperBoundNode));

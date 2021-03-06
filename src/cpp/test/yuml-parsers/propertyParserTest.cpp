@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "test/yumlParsersTest.h"
 #include "yuml-parsers/modelParser.h"
 #include "uml/typedElement.h"
 #include "uml/primitiveType.h"
@@ -15,13 +16,15 @@ class PropertyParserTest : public ::testing::Test {
     public:
         ModelParser* ppDefaultValue;
         YAML::Node defaultValueNode;
+        string ymlPath;
     protected:
   // You can remove any or all of the following functions if their bodies would
   // be empty.
 
   void SetUp() override {
+    ymlPath = YML_FILES_PATH;
     ppDefaultValue = new ModelParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
-    defaultValueNode = YAML::LoadFile("../../../../../src/test/yml/propertyTests/defaultValue.yml");
+    defaultValueNode = YAML::LoadFile(ymlPath + "propertyTests/defaultValue.yml");
   }
 
   void TearDown() override {
@@ -69,7 +72,7 @@ TEST_F(PropertyParserTest, defaultLiteralValueTest) {
 TEST_F(PropertyParserTest, InstanceValueDefaultValueTest) {
   // Setup
   ModelParser instanceValueTestParser = ModelParser::createNewParser();
-  YAML::Node instanceValueTestNode = YAML::LoadFile("../../../../../src/test/yml/propertyTests/defaultInstanceValue.yml");
+  YAML::Node instanceValueTestNode = YAML::LoadFile(ymlPath + "propertyTests/defaultInstanceValue.yml");
   ASSERT_NO_THROW(instanceValueTestParser.parse(instanceValueTestNode));
 
   ASSERT_TRUE((*instanceValueTestParser.elements)[boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2")] != NULL);

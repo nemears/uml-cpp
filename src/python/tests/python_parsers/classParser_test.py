@@ -1,6 +1,7 @@
 import unittest
 import sys
 import os
+import pathlib
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 from python_parsers.moduleParser import parseModule
 from yuml_python import *
@@ -9,7 +10,7 @@ class classParserTest(unittest.TestCase):
 
     def testParseClass(self):
         d = {}
-        m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/examples/class.py', d)
+        m = parseModule(str(pathlib.Path(__file__).parent.absolute()) + '/../examples/classParser_test/class.py', d)
         self.assertEqual(type(m), Namespace)
         self.assertEqual(len(m.ownedElements), 1)
         self.assertEqual(type(m.ownedElements[0]), Class)
@@ -45,6 +46,13 @@ class classParserTest(unittest.TestCase):
         self.assertEqual(m.ownedElements[0].operations[0].getName(), 'foo')
         self.assertEqual(len(m.ownedElements[0].operations[0].parameters), 1)
         self.assertEqual(m.ownedElements[0].operations[0].parameters[0].getDirection(), 'RETURN')
+
+        uml = Model()
+        uml.addOwnedElement(m)
+        emitter = ModelParser()
+        with open(str(pathlib.Path(__file__).parent.absolute()) + '/output/classParserTestOutput.yml', 'w') as f:
+            f.write(emitter.emit(uml))
+            f.close()
 
 if __name__ == '__main__':
     unittest.main()

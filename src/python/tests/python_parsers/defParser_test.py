@@ -1,6 +1,7 @@
 import unittest
 import sys
 import os
+import pathlib
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 from python_parsers.moduleParser import parseModule
 from yuml_python import *
@@ -9,7 +10,7 @@ class defParserTest(unittest.TestCase):
 
     def testParseFuncNoParam(self):
         d = {}
-        m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/examples/fun.py', d)
+        m = parseModule(str(pathlib.Path(__file__).parent.absolute()) + '/../examples/defParser_test/fun.py', d)
         self.assertEqual(type(m), Namespace)
         self.assertEqual(len(m.ownedElements), 4)
         self.assertEqual(type(m.ownedElements[0]), Activity)
@@ -67,13 +68,13 @@ class defParserTest(unittest.TestCase):
         uml = Model()
         uml.addOwnedElement(m)
         emitter = ModelParser()
-        with open('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/python_parsers/output/defParserTestOutput.yml', 'w') as f:
+        with open(str(pathlib.Path(__file__).parent.absolute()) + '/output/defParserTestOutput.yml', 'w') as f:
             f.write(emitter.emit(uml))
             f.close()
 
     def testParseFuncNumParam(self):
         d = {}
-        m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/examples/fun.py', d)
+        m = parseModule(str(pathlib.Path(__file__).parent.absolute()) + '/../examples/defParser_test/fun.py', d)
         self.assertEqual(type(m), Namespace)
         self.assertEqual(len(m.ownedElements), 4)
 
@@ -144,7 +145,7 @@ class defParserTest(unittest.TestCase):
 
     def testParseDecisionNode(self):
         d = {}
-        m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/examples/fun.py', d)
+        m = parseModule(str(pathlib.Path(__file__).parent.absolute()) + '/../examples/defParser_test/fun.py', d)
         self.assertEqual(m.ownedElements[2].getOwner().getID(), m.getID())
         self.assertEqual(type(m.ownedElements[2]), Activity)
         self.assertEqual(len(m.ownedElements[2].nodes), 13)
@@ -252,7 +253,7 @@ class defParserTest(unittest.TestCase):
 
     def testCallBehavior(self):
         d = {}
-        m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/examples/fun.py', d)
+        m = parseModule(str(pathlib.Path(__file__).parent.absolute()) + '/../examples/defParser_test/fun.py', d)
         callBhv = m.ownedElements[3]
         self.assertEqual(type(callBhv), Activity)
         self.assertEqual(len(callBhv.nodes), 8)
@@ -283,8 +284,9 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(len(cba.outgoing), 1)
         self.assertEqual(len(cba.inputs), 1)
         self.assertEqual(len(cba.outputs), 1)
+        self.assertEqual(cba.getBehavior(), m.ownedElements[1])
 
-        
+
 
 if __name__ == '__main__':
     unittest.main()

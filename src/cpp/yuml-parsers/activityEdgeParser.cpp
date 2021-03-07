@@ -169,7 +169,12 @@ bool ActivityEdgeParser::emit(YAML::Emitter& emitter, Element* el) {
 
     if (dynamic_cast<ActivityEdge*>(el)->getGuard() != NULL) {
         emitter << YAML::Key << "guard";
-        if (dynamic_cast<ActivityEdge*>(el)->getGuard()->getType() != NULL) {
+
+        // fix below logic, (messy)
+        if (dynamic_cast<ActivityEdge*>(el)->getGuard()->getElementType() == ElementType::EXPRESSION) {
+                ExpressionParser ep(elements, postProcessFlag);
+                ep.emit(emitter, dynamic_cast<ActivityEdge*>(el)->getGuard());
+        } else if (dynamic_cast<ActivityEdge*>(el)->getGuard()->getType() != NULL) {
             if (dynamic_cast<ActivityEdge*>(el)->getGuard()->getType()->isPrimitive()) {
                 switch (((PrimitiveType*) dynamic_cast<ActivityEdge*>(el)->getGuard()->getType())->getPrimitiveType()) {
                     case PrimitiveType::Primitive::BOOL : {
@@ -190,8 +195,13 @@ bool ActivityEdgeParser::emit(YAML::Emitter& emitter, Element* el) {
                     }
                 }
             } else {
-                // it is instance emit uuid
-                emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<InstanceValue*>(dynamic_cast<ActivityEdge*>(el)->getGuard())->getInstance()->uuid);
+                // it is instance
+                if (dynamic_cast<ActivityEdge*>(el)->getGuard()->getType()->getElementType() == ElementType::INSTANCE_VALUE) {
+                    emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<InstanceValue*>(dynamic_cast<ActivityEdge*>(el)->getGuard())->getInstance()->uuid);
+                } else {
+                    // error 
+                    return false;
+                }
             }
         } else {
             // ERROR

@@ -1,5 +1,5 @@
 import ast
-from yuml_python import CallBehaviorAction, ControlFlow, ObjectFlow, DecisionNode, MergeNode, ObjectNode, CreateObjectAction, Activity, InitialNode, FinalNode, Parameter, ParameterNode, Behavior, PrimitiveType, LiteralBool, LiteralInt, LiteralReal, LiteralString, Action, Expression, OutputPin
+from yuml_python import CallBehaviorAction, ControlFlow, ObjectFlow, DecisionNode, MergeNode, ObjectNode, CreateObjectAction, Activity, InitialNode, FinalNode, Parameter, ParameterNode, Behavior, PrimitiveType, LiteralBool, LiteralInt, LiteralReal, LiteralString, Action, Expression, OutputPin, InputPin
 
 def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
     initNode = lastNode
@@ -252,7 +252,50 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                 #retParamNode.setActivity(uml)
 
                 # get type of return/ objectnode
-                if type(node.value) is ast.Constant:
+                if type(node.value) is ast.Call:
+                    for parsedNode in uml.getOwner().ownedElements:
+                        if issubclass(parsedNode.__class__, Behavior):
+                            if parsedNode.getName() == node.value.func.id:
+                                cba = CallBehaviorAction()
+                                d[cba.getID()] = cba
+                                cba.setBehavior(parsedNode)
+                                uml.addNode(cba)
+                                #loop through input params (zip should cut off return)
+                                for param in zip(parsedNode.parameters, node.value.args):
+                                    pNode = InputPin()
+                                    d[pNode.getID()] = pNode
+                                    pNode.setType(param[0].getType())
+                                    cba.addInput(pNode)
+                                    if type(param[1]) is ast.Constant:
+                                        coa = CreateObjectAction()
+                                        d[coa.getID()] = coa
+                                        coa.setClassifier(param[0].getType())
+                                        outPin = OutputPin()
+                                        d[outPin.getID()] = outPin
+                                        coa.addOutput(outPin)
+                                        outPin.setType(param[0].getType())
+                                        uml.addNode(coa)
+                                        uml.addNode(outPin)
+                                        paramFlow = ObjectFlow()
+                                        d[paramFlow.getID()] = paramFlow
+                                        setSourceAndTarget(paramFlow, outPin, pNode)
+                                        uml.addEdge(paramFlow)
+                                    uml.addNode(pNode)
+                                for param in parsedNode.parameters:
+                                    if param.getDirection() == 'RETURN':
+                                        pNode = OutputPin()
+                                        d[pNode.getID()] = pNode
+                                        cba.addOutput(pNode)
+                                        pNode.setType(param.getType())
+                                        uml.addNode(pNode)
+                                        retFlow = ObjectFlow()
+                                        d[retFlow.getID()] = retFlow
+                                        setSourceAndTarget(retFlow, pNode, retParamNode)
+                                        uml.addEdge(retFlow)
+                                lastNode = cba
+                                break
+
+                elif type(node.value) is ast.Constant:
                     setNodeTypeLiteral(retParamNode, node, d)
                     retParam.setType(retParamNode.getType())
                     if type(node.value.value) is bool:
@@ -375,6 +418,7 @@ def parseFunction(defNode, d, owner):
     # create action and initial node
     fun = Activity()
     d[fun.getID()] = fun
+    fun.setOwner(owner)
     fun.setName(defNode.name)
     initialNode = InitialNode()
     d[initialNode.getID()] = initialNode

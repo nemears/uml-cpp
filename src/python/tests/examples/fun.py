@@ -14,5 +14,4 @@ def decisionFlow(n):
     return ret
 
 def callBehavior():
-    noParam()
     return numParam(1)

@@ -250,5 +250,13 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(len(finalNode.incoming), 1)
         self.assertEqual(len(finalNode.outgoing), 0)
 
+    def testCallBehavior(self):
+        d = {}
+        m = parseModule('/home/stinky/Projects/yuml_projects/yuml/src/python/tests/examples/fun.py', d)
+        callBhv = m.ownedElements[3]
+        self.assertEqual(type(callBhv), Activity)
+        self.assertEqual(len(callBhv.nodes), 8)
+        self.assertEqual(len(callBhv.edges), 4)
+
 if __name__ == '__main__':
     unittest.main()

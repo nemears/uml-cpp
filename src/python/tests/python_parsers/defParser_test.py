@@ -8,6 +8,22 @@ from yuml_python import *
 
 class defParserTest(unittest.TestCase):
 
+    def assertProperInitialNode(self, activity):
+        self.assertEqual(type(activity.nodes[0]), InitialNode)
+        initNode = activity.nodes[0]
+        self.assertEqual(len(initNode.incoming), 0)
+        self.assertEqual(len(initNode.outgoing), 1)
+    
+    def assertProperInputParameter(self, activity, index, pType, incoming, outgoing):
+        self.assertEqual(type(activity.nodes[index]), ParameterNode)
+        inParamNode = activity.nodes[index]
+        self.assertEqual(activity.parameters[index-1], inParamNode.getParameter())
+        self.assertEqual(len(inParamNode.incoming), incoming)
+        self.assertEqual(len(inParamNode.outgoing), outgoing)
+        self.assertTrue(inParamNode.getType() != None)
+        self.assertEqual(type(inParamNode.getType()), PrimitiveType)
+        self.assertEqual(inParamNode.getType().getPrimitiveType(), pType)
+
     def testParseFuncNoParam(self):
         d = {}
         m = parseModule(str(pathlib.Path(__file__).parent.absolute()) + '/../examples/defParser_test/fun.py', d)
@@ -27,7 +43,7 @@ class defParserTest(unittest.TestCase):
         #test nodes
         self.assertEqual(len(m.ownedElements[0].nodes), 5)
         noParam = m.ownedElements[0]
-        self.assertEqual(type(noParam.nodes[0]), InitialNode)
+        self.assertProperInitialNode(noParam)
         self.assertEqual(type(noParam.nodes[1]), ParameterNode)
         self.assertEqual(noParam.nodes[1].getParameter(), noParam.parameters[0])
         self.assertTrue(noParam.nodes[1].getType() != None)
@@ -98,12 +114,14 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(numFunc.parameters[1].getType().getPrimitiveType(), 'INT')
 
         # nodes
-        self.assertEqual(type(numFunc.nodes[0]), InitialNode)
-        self.assertEqual(len(numFunc.nodes[0].outgoing), 1)
+        self.assertProperInitialNode(numFunc)
         self.assertEqual(type(numFunc.nodes[1]), ParameterNode)
         self.assertEqual(numFunc.nodes[1].getParameter(), numFunc.parameters[0])
         self.assertEqual(len(numFunc.nodes[1].incoming), 1)
         self.assertEqual(numFunc.nodes[1].incoming[0].getSource(), numFunc.nodes[3])
+
+        # parameter node
+        self.assertProperInputParameter(numFunc, 1, 'INT', 1, 1)
         
         # createObjectAction
         self.assertEqual(type(numFunc.nodes[2]), CreateObjectAction)
@@ -153,20 +171,10 @@ class defParserTest(unittest.TestCase):
 
         # Test nodes one at a time
         # initial node
-        self.assertEqual(type(decision.nodes[0]), InitialNode)
-        initNode = decision.nodes[0]
-        self.assertEqual(len(initNode.incoming), 0)
-        self.assertEqual(len(initNode.outgoing), 1)
+        self.assertProperInitialNode(decision)
 
         # parameter node
-        self.assertEqual(type(decision.nodes[1]), ParameterNode)
-        inParamNode = decision.nodes[1]
-        self.assertEqual(decision.parameters[0], inParamNode.getParameter())
-        self.assertEqual(len(inParamNode.incoming), 0)
-        self.assertEqual(len(inParamNode.outgoing), 1)
-        self.assertTrue(inParamNode.getType() != None)
-        self.assertEqual(type(inParamNode.getType()), PrimitiveType)
-        self.assertEqual(inParamNode.getType().getPrimitiveType(), 'INT')
+        self.assertProperInputParameter(decision, 1, 'INT', 0, 1)
         
         # create object action 1
         self.assertEqual(type(decision.nodes[2]), CreateObjectAction)
@@ -261,10 +269,7 @@ class defParserTest(unittest.TestCase):
 
         # go through nodes
         # initial node
-        self.assertEqual(type(callBhv.nodes[0]), InitialNode)
-        initNode = callBhv.nodes[0]
-        self.assertEqual(len(initNode.incoming), 0)
-        self.assertEqual(len(initNode.outgoing), 1)
+        self.assertProperInitialNode(callBhv)
 
         # return node
         self.assertEqual(type(callBhv.nodes[1]), ParameterNode)

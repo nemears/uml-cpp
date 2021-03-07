@@ -258,5 +258,33 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(len(callBhv.nodes), 8)
         self.assertEqual(len(callBhv.edges), 4)
 
+        # go through nodes
+        # initial node
+        self.assertEqual(type(callBhv.nodes[0]), InitialNode)
+        initNode = callBhv.nodes[0]
+        self.assertEqual(len(initNode.incoming), 0)
+        self.assertEqual(len(initNode.outgoing), 1)
+
+        # return node
+        self.assertEqual(type(callBhv.nodes[1]), ParameterNode)
+        retNode = callBhv.nodes[1]
+        self.assertEqual(len(retNode.incoming), 1)
+        self.assertEqual(len(retNode.outgoing), 0)
+        self.assertTrue(retNode.getParameter() != None)
+        self.assertTrue(retNode.getParameter().getType() != None)
+        self.assertEqual(type(retNode.getType()), PrimitiveType)
+        self.assertEqual(retNode.getType().getPrimitiveType(), 'INT')
+        self.assertEqual(retNode.getParameter().getType().getPrimitiveType(), 'INT')
+
+        # calBehaviorAction
+        self.assertEqual(type(callBhv.nodes[2]), CallBehaviorAction)
+        cba = callBhv.nodes[2]
+        self.assertEqual(len(cba.incoming), 1)
+        self.assertEqual(len(cba.outgoing), 1)
+        self.assertEqual(len(cba.inputs), 1)
+        self.assertEqual(len(cba.outputs), 1)
+
+        
+
 if __name__ == '__main__':
     unittest.main()

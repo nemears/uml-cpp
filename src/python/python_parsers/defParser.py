@@ -266,6 +266,7 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                                     d[pNode.getID()] = pNode
                                     pNode.setType(param[0].getType())
                                     cba.addInput(pNode)
+                                    uml.addNode(pNode)
                                     if type(param[1]) is ast.Constant:
                                         coa = CreateObjectAction()
                                         d[coa.getID()] = coa
@@ -280,13 +281,14 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                                         d[paramFlow.getID()] = paramFlow
                                         setSourceAndTarget(paramFlow, outPin, pNode)
                                         uml.addEdge(paramFlow)
-                                    uml.addNode(pNode)
                                 for param in parsedNode.parameters:
                                     if param.getDirection() == 'RETURN':
                                         pNode = OutputPin()
                                         d[pNode.getID()] = pNode
                                         cba.addOutput(pNode)
                                         pNode.setType(param.getType())
+                                        retParamNode.setType(param.getType())
+                                        retParam.setType(param.getType())
                                         uml.addNode(pNode)
                                         retFlow = ObjectFlow()
                                         d[retFlow.getID()] = retFlow

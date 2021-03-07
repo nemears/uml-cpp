@@ -275,6 +275,26 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                                         d[outPin.getID()] = outPin
                                         coa.addOutput(outPin)
                                         outPin.setType(param[0].getType())
+                                        if type(param[1].value) is int:
+                                            intVal = LiteralInt()
+                                            d[intVal.getID()] = intVal
+                                            intVal.setValue(param[1].value)
+                                            outPin.setUpperBound(intVal)
+                                        elif type(param[1].value) is bool:
+                                            boolVal = LiteralBool()
+                                            d[boolVal.getID()] = boolVal
+                                            boolVal.setValue(param[1].value)
+                                            outPin.setUpperBound(boolVal)
+                                        elif type(param[1].value) is float:
+                                            realVal = LiteralReal()
+                                            d[realVal.getID()] = realVal
+                                            realVal.setValue(param[1].value)
+                                            outPin.setUpperBound(realVal)
+                                        elif type(param[1].value) is str:
+                                            strVal = LiteralString()
+                                            d[strVal.getID()] = strVal
+                                            strVal.setValue(param[1].value)
+                                            outPin.setUpperBound(strVal)
                                         uml.addNode(coa)
                                         uml.addNode(outPin)
                                         paramFlow = ObjectFlow()

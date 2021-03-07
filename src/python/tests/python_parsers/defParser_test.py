@@ -23,6 +23,67 @@ class defParserTest(unittest.TestCase):
         self.assertTrue(inParamNode.getType() != None)
         self.assertEqual(type(inParamNode.getType()), PrimitiveType)
         self.assertEqual(inParamNode.getType().getPrimitiveType(), pType)
+    
+    def assertProperCreateObjectAction(self, activity, index, incoming, outgoing, ctype):
+        self.assertEqual(type(activity.nodes[index]), CreateObjectAction)
+        coa = activity.nodes[index]
+        self.assertEqual(len(coa.incoming), incoming)
+        if incoming > 0:
+            self.assertEqual(type(coa.incoming[0]), ControlFlow)
+        self.assertEqual(len(coa.outgoing), outgoing)
+        if outgoing > 0:
+            self.assertEqual(type(coa.outgoing[0]), ControlFlow)
+        self.assertEqual(len(coa.inputs), 0)
+        self.assertEqual(len(coa.outputs), 1)
+        self.assertTrue(coa.getClassifier() != None)
+        self.assertEqual(type(coa.getClassifier()), PrimitiveType)
+        self.assertEqual(coa.getClassifier().getPrimitiveType(), ctype)
+
+    def assertProperFinalNode(self, activity, index):
+        self.assertEqual(type(activity.nodes[index]), FinalNode)
+        finalNode = activity.nodes[index]
+        self.assertEqual(len(finalNode.incoming), 1)
+        self.assertEqual(len(finalNode.outgoing), 0)
+
+    def assertProperOutputPin(self, action, index, ptype, upperBound):
+        self.assertEqual(type(action.outputs[index]), OutputPin)
+        out = action.outputs[index]
+        self.assertEqual(len(out.incoming), 0)
+        self.assertEqual(len(out.outgoing), 1)
+        self.assertTrue(out.getType() != None)
+        self.assertEqual(type(out.getType()), PrimitiveType)
+        if ptype == 'INT':
+            self.assertEqual(out.getType().getPrimitiveType(), 'INT')
+            if upperBound != None:
+                self.assertTrue(out.getUpperBound() != None)
+                self.assertEqual(type(out.getUpperBound()), LiteralInt)
+                self.assertEqual(out.getUpperBound().getValue(), upperBound)
+            else:
+                self.assertTrue(out.getUpperBound() == None)
+        elif ptype == 'BOOL':
+            self.assertEqual(out.getType().getPrimitiveType(), 'BOOL')
+            if upperBound != None:
+                self.assertTrue(out.getUpperBound() != None)
+                self.assertEqual(type(out.getUpperBound()), LiteralBool)
+                self.assertEqual(out.getUpperBound().getValue(), upperBound)
+            else:
+                self.assertTrue(out.getUpperBound() == None)
+        elif ptype == 'STRING':
+            self.assertEqual(out.getType().getPrimitiveType(), 'STRING')
+            if upperBound != None:
+                self.assertTrue(out.getUpperBound() != None)
+                self.assertEqual(type(out.getUpperBound()), LiteralString)
+                self.assertEqual(out.getUpperBound().getValue(), upperBound)
+            else:
+                self.assertTrue(out.getUpperBound() == None)
+        elif ptype == 'REAL':
+            self.assertEqual(out.getType().getPrimitiveType(), 'REAL')
+            if upperBound != None:
+                self.assertTrue(out.getUpperBound() != None)
+                self.assertEqual(type(out.getUpperBound()), LiteralReal)
+                self.assertEqual(out.getUpperBound().getValue(), upperBound)
+            else:
+                self.assertTrue(out.getUpperBound() == None)
 
     def testParseFuncNoParam(self):
         d = {}
@@ -52,22 +113,13 @@ class defParserTest(unittest.TestCase):
         self.assertTrue(noParam.nodes[1].getUpperBound().getValue())
 
         # Create Object Action
-        self.assertEqual(type(noParam.nodes[2]), CreateObjectAction)
-        self.assertTrue(noParam.nodes[2].getClassifier() != None)
-        self.assertEqual(type(noParam.nodes[2].getClassifier()), PrimitiveType)
-        self.assertEqual(noParam.nodes[2].getClassifier().getPrimitiveType(), 'BOOL')
-        self.assertTrue(len(noParam.nodes[2].outputs) == 1)
-        self.assertEqual(noParam.nodes[3], noParam.nodes[2].outputs[0])
-        self.assertEqual(type(noParam.nodes[3].getType()), PrimitiveType)
-        self.assertEqual(noParam.nodes[3].getType().getPrimitiveType(), 'BOOL')
-        self.assertTrue(noParam.nodes[3].getUpperBound() != None)
-        self.assertTrue(noParam.nodes[3].getUpperBound().getValue())
-        self.assertEqual(len(noParam.nodes[2].incoming), 1)
-        self.assertEqual(len(noParam.nodes[2].outgoing), 1)
+        self.assertProperCreateObjectAction(noParam, 2, 1, 1, 'BOOL')
+
+        # Output Pin
+        self.assertProperOutputPin(noParam.nodes[2], 0, 'BOOL', True)
 
         # Final node
-        self.assertEqual(type(noParam.nodes[4]), FinalNode)
-        self.assertEqual(len(noParam.nodes[4].incoming), 1)
+        self.assertProperFinalNode(noParam, 4)
 
         #test edges
         self.assertEqual(len(noParam.edges), 3)
@@ -124,30 +176,10 @@ class defParserTest(unittest.TestCase):
         self.assertProperInputParameter(numFunc, 1, 'INT', 1, 1)
         
         # createObjectAction
-        self.assertEqual(type(numFunc.nodes[2]), CreateObjectAction)
+        self.assertProperCreateObjectAction(numFunc, 2, 1, 1, 'INT')
         coa = numFunc.nodes[2]
-        self.assertEqual(len(coa.incoming), 1)
-        self.assertEqual(type(coa.incoming[0]), ControlFlow)
-        self.assertEqual(len(coa.outgoing), 1)
-        self.assertEqual(type(coa.outgoing[0]), ControlFlow)
-        self.assertEqual(len(coa.inputs), 0)
-        self.assertEqual(len(coa.outputs), 1)
-        self.assertTrue(coa.getClassifier() != None)
-        self.assertEqual(type(coa.getClassifier()), PrimitiveType)
-        self.assertEqual(coa.getClassifier().getPrimitiveType(), 'INT')
         self.assertEqual(coa.outputs[0], numFunc.nodes[3])
-        
-        # outputPin
-        self.assertEqual(type(coa.outputs[0]), OutputPin)
-        out = coa.outputs[0]
-        self.assertEqual(len(out.incoming), 0)
-        self.assertEqual(len(out.outgoing), 1)
-        self.assertTrue(out.getType() != None)
-        self.assertEqual(type(out.getType()), PrimitiveType)
-        self.assertEqual(out.getType().getPrimitiveType(), 'INT')
-        self.assertTrue(out.getUpperBound() != None)
-        self.assertEqual(type(out.getUpperBound()), LiteralInt)
-        self.assertEqual(out.getUpperBound().getValue(), 1)
+        self.assertProperOutputPin(coa, 0, 'INT', 1)
 
         # Return Node
         self.assertEqual(type(numFunc.nodes[4]), ParameterNode)
@@ -156,10 +188,7 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(len(retNode.outgoing), 0)
 
         # Final Node
-        self.assertEqual(type(numFunc.nodes[5]), FinalNode)
-        finNode = numFunc.nodes[5]
-        self.assertEqual(len(finNode.incoming), 1)
-        self.assertEqual(len(finNode.outgoing), 0)
+        self.assertProperFinalNode(numFunc, 5)
 
     def testParseDecisionNode(self):
         d = {}
@@ -177,28 +206,13 @@ class defParserTest(unittest.TestCase):
         self.assertProperInputParameter(decision, 1, 'INT', 0, 1)
         
         # create object action 1
-        self.assertEqual(type(decision.nodes[2]), CreateObjectAction)
+        self.assertProperCreateObjectAction(decision, 2, 1, 1, 'STRING')
         coa1 = decision.nodes[2]
-        self.assertEqual(len(coa1.incoming), 1)
-        self.assertEqual(len(coa1.outgoing), 1)
-        self.assertTrue(coa1.getClassifier() != None)
-        self.assertEqual(type(coa1.getClassifier()), PrimitiveType)
-        self.assertEqual(coa1.getClassifier().getPrimitiveType(), 'STRING')
-        self.assertEqual(len(coa1.inputs), 0)
-        self.assertEqual(len(coa1.outputs), 1)
 
         # outputPin 1
         self.assertEqual(coa1.outputs[0], decision.nodes[3])
-        self.assertEqual(type(coa1.outputs[0]), OutputPin)
+        self.assertProperOutputPin(coa1, 0, 'STRING', 'c')
         outPin1 = coa1.outputs[0]
-        self.assertEqual(len(outPin1.incoming), 0)
-        self.assertEqual(len(outPin1.outgoing), 1)
-        self.assertTrue(outPin1.getType() != None)
-        self.assertEqual(type(outPin1.getType()), PrimitiveType)
-        self.assertEqual(outPin1.getType().getPrimitiveType(), 'STRING')
-        self.assertTrue(outPin1.getUpperBound() != None)
-        self.assertEqual(type(outPin1.getUpperBound()), LiteralString)
-        self.assertEqual(outPin1.getUpperBound().getValue(), 'c')
 
         # ObjectNode for ret
         self.assertEqual(outPin1.outgoing[0].getTarget(), decision.nodes[4])
@@ -228,12 +242,12 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(decisionNode.outgoing[1].getGuard().getSymbol(), 'else')
 
         # CreateObjectAction2 (positive)
-        self.assertEqual(decision.nodes[6], decisionNode.outgoing[0].getTarget())
-        self.assertEqual(type(decision.nodes[6]), CreateObjectAction)
+        self.assertProperCreateObjectAction(decision, 6, 1, 1, 'STRING')
+        self.assertProperOutputPin(decision.nodes[6], 0, 'STRING', 'b')
 
-        #CreateObjectAction3 (els)
-        self.assertEqual(decision.nodes[8], decisionNode.outgoing[1].getTarget())
-        self.assertEqual(type(decision.nodes[8]), CreateObjectAction)
+        #CreateObjectAction3 (else)
+        self.assertProperCreateObjectAction(decision, 8, 1, 1, 'STRING')
+        self.assertProperOutputPin(decision.nodes[8], 0, 'STRING', 'a')
 
         # merge
         self.assertEqual(decision.nodes[6].outgoing[0].getTarget(), decision.nodes[8].outgoing[0].getTarget())
@@ -254,10 +268,7 @@ class defParserTest(unittest.TestCase):
 
         # final node
         self.assertEqual(decision.nodes[12], mergeNode.outgoing[0].getTarget())
-        self.assertEqual(type(decision.nodes[12]), FinalNode)
-        finalNode = decision.nodes[12]
-        self.assertEqual(len(finalNode.incoming), 1)
-        self.assertEqual(len(finalNode.outgoing), 0)
+        self.assertProperFinalNode(decision, 12)
 
     def testCallBehavior(self):
         d = {}
@@ -290,6 +301,28 @@ class defParserTest(unittest.TestCase):
         self.assertEqual(len(cba.inputs), 1)
         self.assertEqual(len(cba.outputs), 1)
         self.assertEqual(cba.getBehavior(), m.ownedElements[1])
+
+        # InputPin
+        self.assertEqual(type(callBhv.nodes[3]), InputPin)
+        cbaIn = callBhv.nodes[3]
+        self.assertEqual(len(cbaIn.incoming), 1)
+        self.assertEqual(len(cbaIn.outgoing), 0)
+        self.assertTrue(cbaIn.getType() != None)
+        self.assertEqual(type(cbaIn.getType()), PrimitiveType)
+
+        # create object action for cba input
+        # TODO think about if it should be control flow from create to call instead of no control flow to create
+        self.assertProperCreateObjectAction(callBhv, 4, 0, 0, 'INT')
+
+        # OutputPin
+        self.assertProperOutputPin(callBhv.nodes[4], 0, 'INT', 1)
+
+        # OutputPin
+        self.assertProperOutputPin(cba, 0, 'INT', None)
+
+
+        # final node
+        self.assertProperFinalNode(callBhv, 7)
 
 
 

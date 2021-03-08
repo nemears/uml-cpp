@@ -320,7 +320,6 @@ class defParserTest(unittest.TestCase):
         # OutputPin
         self.assertProperOutputPin(cba, 0, 'INT', None)
 
-
         # final node
         self.assertProperFinalNode(callBhv, 7)
 

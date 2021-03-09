@@ -1,5 +1,6 @@
 import ast
-from yuml_python import CallBehaviorAction, ControlFlow, ObjectFlow, DecisionNode, MergeNode, ObjectNode, CreateObjectAction, Activity, InitialNode, FinalNode, Parameter, ParameterNode, Behavior, PrimitiveType, LiteralBool, LiteralInt, LiteralReal, LiteralString, Action, Expression, OutputPin, InputPin
+from yuml_python import *
+#from yuml_python import CallBehaviorAction, ControlFlow, ObjectFlow, DecisionNode, MergeNode, ObjectNode, CreateObjectAction, Activity, InitialNode, FinalNode, Parameter, ParameterNode, Behavior, PrimitiveType, LiteralBool, LiteralInt, LiteralReal, LiteralString, Action, Expression, OutputPin, InputPin
 
 def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
     initNode = lastNode
@@ -26,7 +27,6 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
                                 valNode.addOutput(valPin)
                                 uml.addNode(valNode)
                                 uml.addNode(valPin)
-
                                 # get type and upper bound
                                 setNodeTypeLiteral(valPin, node, d)
                                 valNode.setClassifier(valPin.getType())
@@ -83,8 +83,6 @@ def parseFunctionBody(bodyNode, d, uml, owner, lastNode):
 
                         # last node for control flow is create
                         lastNode = createObject
-
-
         elif type(node) is ast.Expr:
             if type(node.value) is ast.Call:
                 if type(node.value.func) is ast.Name:

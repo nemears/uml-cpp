@@ -1,95 +1,95 @@
 ---
 model:
-  id: 58f0ff9b-0e10-4446-ad83-3b340414d040
+  id: 22174870-8726-45b6-990d-071d371fd369
   children:
     - namespace:
-        id: 13847c0a-a8fe-444c-977a-279c7950007f
+        id: a6006f2b-2bdd-476a-b43c-57dcccc1bcd9
         children:
           - class:
               name: Test
-              id: 26fa13f8-0d06-4198-a680-d307f1dd23d9
+              id: 4dc9ffb9-ecee-4841-8ed7-be50f3ce45e6
               attributes:
                 - property:
                     type: INT
                     name: i
-                    id: 28f9d1df-6e4f-40c6-9f0e-a4e13fe6abf0
+                    id: d8cf35a1-d386-4969-897b-32be7cff9aa7
                     defaultValue: 1
                 - property:
                     type: BOOL
                     name: b
-                    id: 7ef66bac-f7a6-4e21-bd92-7dec41f672f9
+                    id: 49eaf0ee-4347-41a2-8b0c-34f614ac3a4b
                     defaultValue: false
                 - property:
                     type: STRING
                     name: s
-                    id: c8049676-19aa-4824-b755-dbe442545e63
+                    id: 6535846d-5386-4474-a2c9-fdfc0a8511b1
                     defaultValue: a
                 - property:
                     type: REAL
                     name: r
-                    id: 933d70d1-2929-4e78-9532-7fdf1b75e33c
+                    id: bde6c40b-2929-41f7-9f51-b7aae23e300f
                     defaultValue: 3.1400000000000001
               operations:
                 - operation:
                     name: foo
-                    id: fe88bf6c-af2f-4ced-81f0-fc915ba88cba
+                    id: 67731d5c-a48d-400d-b951-b18f6761814e
                     parameters:
                       - parameter:
                           type: BOOL
-                          id: f44cdb89-3e41-4ad6-b0a8-f5011a7d8343
+                          id: 29838edf-0b54-418b-aac3-3f67141cd5c8
                           direction: RETURN
                     methods:
                       - activity:
                           name: foo
-                          id: 15c9203c-5ad6-432b-8fe3-8bd4015d88af
+                          id: 6b91a244-a13d-4fa9-b204-8fd41eff8e48
                           parameters:
                             - parameter:
                                 type: BOOL
-                                id: f44cdb89-3e41-4ad6-b0a8-f5011a7d8343
+                                id: 29838edf-0b54-418b-aac3-3f67141cd5c8
                                 direction: RETURN
                           nodes:
                             - initialNode:
-                                id: 3abe46da-d31c-47e6-8edb-6160111e8ecf
+                                id: 1454ee93-b272-4aa6-846b-74708879dcfa
                                 outgoing:
-                                  - 63a9a2b2-cde2-4990-b550-1a52703005d7
+                                  - dd7b4b85-2ae6-43a5-a345-4447db8ec731
                             - parameterNode:
-                                parameter: f44cdb89-3e41-4ad6-b0a8-f5011a7d8343
-                                id: 470cedcf-bfbf-4f2d-904e-588836a564b2
+                                parameter: 29838edf-0b54-418b-aac3-3f67141cd5c8
+                                id: 0a4021b5-0734-410c-a3a9-89357457ea3f
                                 type: BOOL
                                 incoming:
-                                  - be2d2104-56fd-412a-b2b6-82f81d929836
+                                  - 03775c5d-300a-4576-8b15-9a8794c78877
                                 upperBound:
                                   literalBool: true
                             - createObjectAction:
-                                id: 2f575805-1ca6-4b59-a917-538098149ac4
+                                id: 490a85aa-c9d3-4e29-8bc2-cd7c7ca39b55
                                 incoming:
-                                  - 63a9a2b2-cde2-4990-b550-1a52703005d7
+                                  - dd7b4b85-2ae6-43a5-a345-4447db8ec731
                                 outgoing:
-                                  - 9204f773-25d8-454b-8861-f608ad8fb9ec
+                                  - c074429b-1b45-4427-9cd2-9ade0b99efda
                                 outputs:
-                                  - 7f28af0e-2b40-44ce-a680-84296e66dfe3
+                                  - 4d0b6241-98ab-4540-9dc4-9fe8eba8c715
                                 classifier: BOOL
                             - outputPin:
-                                id: 7f28af0e-2b40-44ce-a680-84296e66dfe3
+                                id: 4d0b6241-98ab-4540-9dc4-9fe8eba8c715
                                 type: BOOL
                                 outgoing:
-                                  - be2d2104-56fd-412a-b2b6-82f81d929836
+                                  - 03775c5d-300a-4576-8b15-9a8794c78877
                                 upperBound:
                                   literalBool: true
                             - finalNode:
-                                id: e9e3801e-d741-4f02-ad53-433cc3748b83
+                                id: f6b15fda-d393-45ff-a614-4d82b4b71afa
                                 incoming:
-                                  - 9204f773-25d8-454b-8861-f608ad8fb9ec
+                                  - c074429b-1b45-4427-9cd2-9ade0b99efda
                           edges:
                             - objectFlow:
-                                id: be2d2104-56fd-412a-b2b6-82f81d929836
-                                source: 7f28af0e-2b40-44ce-a680-84296e66dfe3
-                                target: 470cedcf-bfbf-4f2d-904e-588836a564b2
+                                id: 03775c5d-300a-4576-8b15-9a8794c78877
+                                source: 4d0b6241-98ab-4540-9dc4-9fe8eba8c715
+                                target: 0a4021b5-0734-410c-a3a9-89357457ea3f
                             - controlFlow:
-                                id: 63a9a2b2-cde2-4990-b550-1a52703005d7
-                                source: 3abe46da-d31c-47e6-8edb-6160111e8ecf
-                                target: 2f575805-1ca6-4b59-a917-538098149ac4
+                                id: dd7b4b85-2ae6-43a5-a345-4447db8ec731
+                                source: 1454ee93-b272-4aa6-846b-74708879dcfa
+                                target: 490a85aa-c9d3-4e29-8bc2-cd7c7ca39b55
                             - controlFlow:
-                                id: 9204f773-25d8-454b-8861-f608ad8fb9ec
-                                source: 2f575805-1ca6-4b59-a917-538098149ac4
-                                target: e9e3801e-d741-4f02-ad53-433cc3748b83
+                                id: c074429b-1b45-4427-9cd2-9ade0b99efda
+                                source: 490a85aa-c9d3-4e29-8bc2-cd7c7ca39b55
+                                target: f6b15fda-d393-45ff-a614-4d82b4b71afa

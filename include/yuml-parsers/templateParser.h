@@ -43,6 +43,7 @@ class TemplateParser {
          * Parses feature either now, or queues it up for later
          * @param laterId - the elemebt that might be parsed later
          * @param myId - the element that is currently being parsed
+         * @param relevantNode - the yaml node that holds the context of the element being parsed
          * @param funPtr - the pointer to the function that assigns relations during parsing
          * @return true if it parsed now, false if it was flagged to be parsed later
          **/

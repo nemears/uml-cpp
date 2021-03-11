@@ -5,16 +5,16 @@
 using namespace std;
 
 namespace UML{
-class NamedElement : virtual public Element {
-    protected:
-        string name; // Move this to public ?
-    
-    public:
-        virtual string getName();
-        virtual void setName(const string &name);
-        ElementType getElementType() override;
-        NamedElement(){};
-};
+    class NamedElement : virtual public Element {
+        protected:
+            string name; // Move this to public ?
+        
+        public:
+            virtual string getName();
+            virtual void setName(const string &name);
+            ElementType getElementType() override;
+            NamedElement(){};
+    };
 }
 
 #endif

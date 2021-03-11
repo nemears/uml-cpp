@@ -1,7 +1,14 @@
 #include "uml/element.h"
-#include "uml/namedElement.h"
+#include "uml/sequence.h"
 
 using namespace UML;
+
+// Constructor
+Element::Element() {
+    uuid = boost::uuids::random_generator()();
+    owner = NULL;
+    m_ownedElements = new Sequence<Element>;
+}
 
 void Element::setID(string id) {
     if (UML::isValidUUID4(id)) {
@@ -17,6 +24,10 @@ Element* Element::getOwner() {
 
 void Element::setOwner(Element* owner) {
     this->owner = owner;
+}
+
+Sequence<>& Element::getOwnedElements() {
+    return *m_ownedElements;
 }
 
 ElementType Element::getElementType() {

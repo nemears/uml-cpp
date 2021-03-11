@@ -1,5 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/element.h"
+#include "uml/namedElement.h"
+#include "uml/sequence.h"
 
 using namespace UML;
 
@@ -83,4 +85,23 @@ TEST_F(ElementTest, setAndGetOwnerTest) {
   c.setOwner(&e);
   ASSERT_TRUE(c.getOwner() == &e);
   ASSERT_TRUE(c.getOwner()->uuid == e.uuid);
+}
+
+TEST_F(ElementTest, getOwnedElementsBasicTest) {
+  Element e;
+  Element c;
+  ASSERT_NO_THROW(e.getOwnedElements().add(c));
+  ASSERT_TRUE(e.getOwnedElements().get(c.uuid));
+}
+
+TEST_F(ElementTest, getOwnedElementByNameTest) {
+  Element e;
+  NamedElement n;
+  n.setName("name");
+  Element b;
+  ASSERT_NO_THROW(e.getOwnedElements().add(b));
+  ASSERT_NO_THROW(e.getOwnedElements().add(n));
+  ASSERT_TRUE(e.getOwnedElements().get("name") == &n);
+  ASSERT_TRUE(e.getOwnedElements().get(n.uuid) == &n);
+  ASSERT_TRUE(e.getOwnedElements().get(b.uuid) == &b);
 }

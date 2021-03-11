@@ -1,4 +1,5 @@
 #include "uml/namedElement.h"
+#include "uml/element.h"
 
 using namespace UML;
 

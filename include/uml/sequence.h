@@ -9,6 +9,32 @@
 
 namespace UML {
 
+    // Exceptions
+    class ElementAlreadyExistsException : public exception {
+        private:
+            string msg;
+
+        public:
+            ElementAlreadyExistsException(const Element& el) : 
+                msg("Added element that was already in the Sequence\nuuid: " + boost::lexical_cast<string>(el.uuid))
+                {}
+            virtual const char* what() const throw() {
+                return msg.c_str();
+            }
+    };
+    class ElementDoesntExistException : public exception {
+        private:
+            string msg;
+
+        public:
+            ElementDoesntExistException(const Element& el) : 
+                msg("Removed element that isn't in the Sequence\nuuid: " + boost::lexical_cast<string>(el.uuid))
+                {}
+            virtual const char* what() const throw() {
+                return msg.c_str();
+            }
+            };
+
     template <class T> class SequenceIterator;
 
     template <class T = Element> class Sequence {
@@ -18,6 +44,8 @@ namespace UML {
             vector<boost::uuids::uuid> m_order;
             map<string, T*> m_nameTranslation;
         public:
+
+            // Methods
             void add(T& el) {
                 if (!m_data.count(el.uuid)) {
                     m_data[el.uuid] = &el;
@@ -26,7 +54,7 @@ namespace UML {
                         m_nameTranslation[dynamic_cast<NamedElement*>(&el)->getName()] = &el;
                     }
                 } else {
-                    // TODO throw error
+                    throw ElementAlreadyExistsException(el);
                 }
             };
             void remove(T& el) {
@@ -39,13 +67,13 @@ namespace UML {
                     if ((*orderIt) == el.uuid) {
                         m_order.erase(orderIt);
                     } else {
-                        // TODO error
+                        throw ElementDoesntExistException(el);
                     }
                     if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
                         m_nameTranslation.erase(dynamic_cast<NamedElement*>(&el)->getName());
                     }
                 } else {
-                    // TODO error or warning
+                    throw ElementDoesntExistException(el);
                 }
             };
             size_t size() { return m_data.size(); };
@@ -54,6 +82,8 @@ namespace UML {
             SequenceIterator<T> iterator() { return SequenceIterator<T>(this); };
     };
 
+
+    // Iterator
     template <class T = Element> class SequenceIterator {
         friend class Sequence<T>;
         private:

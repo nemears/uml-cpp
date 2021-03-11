@@ -22,6 +22,78 @@ ElementType Element::getElementType() {
     return ElementType::ELEMENT;
 }
 
+bool Element::isSubClassOf(ElementType eType) {
+
+    ElementType myType = getElementType();
+
+    if (myType == eType) {
+        return true;
+    }
+
+    switch (eType) {
+        case ElementType::ACTION : {
+            return myType == ElementType::CALL_BEHAVIOR_ACTION || myType == ElementType::CREATE_OBJECT_ACTION;
+        }
+        case ElementType::ACTIVITY_EDGE : {
+            return myType == ElementType::CONTROL_FLOW || myType == ElementType::OBJECT_FLOW;
+        }
+        case ElementType::ACTIVITY_NODE : {
+            return myType == ElementType::CALL_BEHAVIOR_ACTION || myType == ElementType::CREATE_OBJECT_ACTION
+                   || myType == ElementType::DECISION_NODE || myType == ElementType::FINAL_NODE || myType == ElementType::FORK_NODE
+                   || myType == ElementType::INITIAL_NODE || myType == ElementType::INPUT_PIN || myType == ElementType::JOIN_NODE
+                   || myType == ElementType::MERGE_NODE || myType == ElementType::OBJECT_NODE || myType == ElementType::OUTPUT_PIN
+                   || myType == ElementType::PARAMETER_NODE || myType == ElementType::PIN;
+        }
+        case ElementType::BEHAVIOR : {
+            return myType == ElementType::ACTIVITY || myType == ElementType::OPAQUE_BEHAVIOR;
+        }
+        case ElementType::CLASS : {
+            return myType == ElementType::BEHAVIOR || myType == ElementType::ACTIVITY || myType == ElementType::OPAQUE_BEHAVIOR;
+        }
+        case ElementType::CLASSIFIER : {
+            return myType == ElementType::BEHAVIOR || myType == ElementType::ACTIVITY || myType == ElementType::OPAQUE_BEHAVIOR
+                   || myType == ElementType::CLASS || myType == ElementType::PRIMITIVE_TYPE;
+        }
+        case ElementType::ELEMENT : {
+            return true;
+        }
+        case ElementType::MULTIPLICITY_ELEMENT : {
+            return myType == ElementType::PROPERTY || myType == ElementType::PARAMETER || myType == ElementType::PIN;
+        }
+        case ElementType::NAMED_ELEMENT : {
+            // xor it
+            return !(myType != ElementType::ELEMENT) != !(myType == ElementType::SLOT);
+        }
+        case ElementType::NAMESPACE : {
+            return myType == ElementType::MODEL;
+        }
+        case ElementType::OBJECT_NODE : {
+            return myType == ElementType::INPUT_PIN || myType == ElementType::OUTPUT_PIN || myType == ElementType::PIN
+                   || myType == ElementType::PARAMETER_NODE;
+        }
+        case ElementType::STRUCTURAL_FEATURE : {
+            return myType != ElementType::PROPERTY;
+        }
+        case ElementType::TYPE : {
+            return myType == ElementType::BEHAVIOR || myType == ElementType::ACTIVITY || myType == ElementType::OPAQUE_BEHAVIOR
+                   || myType == ElementType::CLASS || myType == ElementType::PRIMITIVE_TYPE || myType == ElementType::CLASSIFIER;
+        }
+        case ElementType::TYPED_ELEMENT : {
+            return myType == ElementType::INSTANCE_VALUE || myType == ElementType::LITERAL_BOOL || myType == ElementType::LITERAL_INT
+                   || myType == ElementType::LITERAL_REAL || myType == ElementType::LITERAL_STRING || myType == ElementType::OBJECT_NODE
+                   || myType == ElementType::INPUT_PIN || myType == ElementType::OUTPUT_PIN || myType == ElementType::PIN
+                   || myType == ElementType::EXPRESSION || myType == ElementType::PARAMETER || myType == ElementType::PARAMETER_NODE
+                   || myType == ElementType::PROPERTY || myType == ElementType::VALUE_SPECIFICATION;
+        }
+        case ElementType::VALUE_SPECIFICATION : {
+            return myType == ElementType::INSTANCE_VALUE || myType == ElementType::LITERAL_BOOL || myType == ElementType::LITERAL_INT
+                   || myType == ElementType::LITERAL_REAL || myType == ElementType::LITERAL_STRING || myType == ElementType::EXPRESSION;
+        }
+    }
+
+    return false;
+}
+
 string Element::getElementTypeString() {
     switch(getElementType()) {
         case ElementType::ACTION : {

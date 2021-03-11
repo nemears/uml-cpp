@@ -83,6 +83,7 @@ class Element {
             }
         } invalidID_Exception;
         virtual ElementType getElementType();
+        bool isSubClassOf(ElementType eType);
         virtual string getElementTypeString();
         virtual string getIDstring();
         Element* getOwner();

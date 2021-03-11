@@ -3,5 +3,4 @@ add_library(Uml namespace.cpp model.cpp element.cpp namedElement.cpp class.cpp c
                 instanceSpecification.cpp slot.cpp structuralFeature.cpp instanceValue.cpp operation.cpp behavior.cpp parameter.cpp
                 opaqueBehavior.cpp activity.cpp activityNode.cpp activityEdge.cpp objectNode.cpp multiplicityElement.cpp pin.cpp
                 action.cpp inputPin.cpp outputPin.cpp controlFlow.cpp objectFlow.cpp initialNode.cpp finalNode.cpp decisionNode.cpp
-                joinNode.cpp forkNode.cpp mergeNode.cpp parameterNode.cpp callBehaviorAction.cpp expression.cpp createObjectAction.cpp
-                sequence.cpp)
+                joinNode.cpp forkNode.cpp mergeNode.cpp parameterNode.cpp callBehaviorAction.cpp expression.cpp createObjectAction.cpp)

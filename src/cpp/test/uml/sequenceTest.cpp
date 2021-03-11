@@ -8,7 +8,7 @@ class SequenceTest : public ::testing::Test {
 };
 
 TEST_F(SequenceTest, addGetAndRemoveElementTest) {
-    Sequence seq;
+    Sequence<> seq;
     ASSERT_TRUE(seq.size() == 0);
     Element e;
     seq.add(e);
@@ -19,13 +19,13 @@ TEST_F(SequenceTest, addGetAndRemoveElementTest) {
 }
 
 TEST_F(SequenceTest, sequenceIteratorTest) {
-    Sequence seq;
+    Sequence<> seq;
     Element e;
     Element f;
     seq.add(e);
     seq.add(f);
     ASSERT_TRUE(seq.size() == 2);
-    SequenceIterator it = seq.iterator();
+    SequenceIterator<> it = seq.iterator();
     ASSERT_TRUE(it.hasNext());
     Element* first = it.getNext();
     ASSERT_TRUE(first == &e);

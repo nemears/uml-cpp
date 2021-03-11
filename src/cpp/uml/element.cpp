@@ -5,8 +5,7 @@ using namespace UML;
 
 // Constructor
 Element::Element() {
-    uuid = boost::uuids::random_generator()();
-    m_id = boost::uuids::random_generator()();
+    m_id = uuid = boost::uuids::random_generator()();
     owner = NULL;
     m_ownedElements = new Sequence<Element>;
 }

@@ -14,7 +14,7 @@ TEST_F(SequenceTest, addGetAndRemoveElementTest) {
     ASSERT_TRUE(seq.size() == 0);
     Element e;
     ASSERT_NO_THROW(seq.add(e));
-    ASSERT_TRUE(seq.get(e.uuid) == &e);
+    ASSERT_TRUE(seq.get(e.getID()) == &e);
     ASSERT_TRUE(seq.size() == 1);
     seq.remove(e);
     ASSERT_TRUE(seq.size() == 0);
@@ -45,15 +45,31 @@ TEST_F(SequenceTest, addGetAndRemoveElementByNameTest) {
     seq.add(e);
     seq.add(n);
     ASSERT_TRUE(seq.get("test") == &n);
-    ASSERT_TRUE(seq.get(n.uuid) == &n);
-    ASSERT_TRUE(seq.get(e.uuid) == &e);
+    ASSERT_TRUE(seq.get(n.getID()) == &n);
+    ASSERT_TRUE(seq.get(e.getID()) == &e);
 }
 
 TEST_F(SequenceTest, addElementTwiceTest) {
     Sequence<> seq;
     Element e;
     ASSERT_NO_THROW(seq.add(e));
-    ASSERT_THROW(seq.add(e), ElementAlreadyExistsException);
+    ASSERT_NO_THROW(seq.add(e));
+    ASSERT_TRUE(seq.get(e.getID()) == &e);
+    ASSERT_NO_THROW(seq.remove(e));
+    ASSERT_TRUE(seq.get(e.getID()) == NULL);
+}
+
+TEST_F(SequenceTest, addNamedElementTwiceTest) {
+    Sequence<> seq;
+    NamedElement n;
+    n.setName("name");
+    ASSERT_NO_THROW(seq.add(n));
+    ASSERT_NO_THROW(seq.add(n));
+    ASSERT_TRUE(seq.get("name") == &n);
+    ASSERT_TRUE(seq.get(n.getID()) == &n);
+    ASSERT_NO_THROW(seq.remove(n));
+    ASSERT_TRUE(seq.get("name") == NULL);
+    ASSERT_TRUE(seq.get(n.getID()) == NULL);
 }
 
 TEST_F(SequenceTest, removeElementThatWasntAddedTest) {

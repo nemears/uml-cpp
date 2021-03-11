@@ -17,31 +17,30 @@ namespace UML {
 
             // Methods
             void add(T& el) {
-                if (!m_data.count(el.uuid)) {
-                    m_data[el.uuid] = &el;
-                    m_order.push_back(el.uuid);
+                if (!m_data.count(el.getID())) {
+                    m_data[el.getID()] = &el;
+                    m_order.push_back(el.getID());
                     if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
                         m_nameTranslation[dynamic_cast<NamedElement*>(&el)->getName()] = &el;
                     }
                 } else {
-                    throw ElementAlreadyExistsException(el);
+                    m_order.push_back(el.getID());
                 }
             };
             void remove(T& el) {
-                if (m_data.count(el.uuid)) {
-                    m_data.erase(el.uuid);
-                    vector<boost::uuids::uuid>::iterator orderIt = m_order.begin();
-                    while((*orderIt) != el.uuid && orderIt != m_order.end()) {
-                        ++orderIt;
-                    }
-                    if ((*orderIt) == el.uuid) {
-                        m_order.erase(orderIt);
-                    } else {
-                        throw ElementDoesntExistException(el);
-                    }
+                if (m_data.count(el.getID())) {
+                    // erase element in uuid map
+                    m_data.erase(el.getID());
+
+                    // erase element in name map
                     if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
-                        m_nameTranslation.erase(dynamic_cast<NamedElement*>(&el)->getName());
+                        if (!dynamic_cast<NamedElement*>(&el)->getName().empty()) {
+                            m_nameTranslation.erase(dynamic_cast<NamedElement*>(&el)->getName());
+                        }
                     }
+
+                    // erase all uuids in order
+                    m_order.erase(std::remove(m_order.begin(), m_order.end(), el.getID()), m_order.end());
                 } else {
                     throw ElementDoesntExistException(el);
                 }

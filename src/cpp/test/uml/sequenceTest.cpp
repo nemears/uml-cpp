@@ -34,3 +34,15 @@ TEST_F(SequenceTest, sequenceIteratorTest) {
     ASSERT_TRUE(second == &f);
     ASSERT_FALSE(it.hasNext());
 }
+
+TEST_F(SequenceTest, addGetAndRemoveElementByNameTest) {
+    Sequence<> seq;
+    Element e;
+    NamedElement n;
+    n.setName("test");
+    seq.add(e);
+    seq.add(n);
+    ASSERT_TRUE(seq.get("test") == &n);
+    ASSERT_TRUE(seq.get(n.uuid) == &n);
+    ASSERT_TRUE(seq.get(e.uuid) == &e);
+}

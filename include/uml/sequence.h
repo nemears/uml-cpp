@@ -22,7 +22,9 @@ namespace UML {
                 if (!m_data.count(el.uuid)) {
                     m_data[el.uuid] = &el;
                     m_order.push_back(el.uuid);
-                    // TODO add to name_translations
+                    if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
+                        m_nameTranslation[dynamic_cast<NamedElement*>(&el)->getName()] = &el;
+                    }
                 } else {
                     // TODO throw error
                 }
@@ -39,7 +41,9 @@ namespace UML {
                     } else {
                         // TODO error
                     }
-                    // TODO remove from name_translations
+                    if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
+                        m_nameTranslation.erase(dynamic_cast<NamedElement*>(&el)->getName());
+                    }
                 } else {
                     // TODO error or warning
                 }

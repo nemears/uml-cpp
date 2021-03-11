@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
-#include "uml/sequence.h"
+#include "uml/element.h"
+#include "uml/namedElement.h"
 
 using namespace UML;
 

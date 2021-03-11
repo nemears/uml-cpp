@@ -55,8 +55,13 @@ TEST_F(SequenceTest, addElementTwiceTest) {
     ASSERT_NO_THROW(seq.add(e));
     ASSERT_NO_THROW(seq.add(e));
     ASSERT_TRUE(seq.get(e.getID()) == &e);
+    ASSERT_TRUE(seq.size() == 2);
+    ASSERT_TRUE(seq.get(0) == &e);
+    ASSERT_TRUE(seq.get(1) == &e);
     ASSERT_NO_THROW(seq.remove(e));
     ASSERT_TRUE(seq.get(e.getID()) == NULL);
+    ASSERT_TRUE(seq.size() == 0);
+    ASSERT_TRUE(seq.empty());
 }
 
 TEST_F(SequenceTest, addNamedElementTwiceTest) {

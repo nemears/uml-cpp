@@ -45,9 +45,11 @@ namespace UML {
                     throw ElementDoesntExistException(el);
                 }
             };
-            size_t size() { return m_data.size(); };
+            size_t size() { return m_order.size(); };
+            bool empty() { return m_order.empty(); };
             T* get(boost::uuids::uuid id) { return m_data[id]; };
             T* get(string name) { return m_nameTranslation[name]; };
+            T* get(size_t index) { return m_data[m_order[index]]; };
             SequenceIterator<T> iterator() { return SequenceIterator<T>(this); };
     };
 

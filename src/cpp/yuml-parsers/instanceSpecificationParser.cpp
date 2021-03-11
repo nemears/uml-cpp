@@ -15,7 +15,7 @@ bool InstanceSpecificationParser::parseFeatures(YAML::Node node, Element* el) {
             
         } else {
             // error
-            throw el->invalidID_Exception;
+            throw InvalidID_Exception();
         }
     }
 

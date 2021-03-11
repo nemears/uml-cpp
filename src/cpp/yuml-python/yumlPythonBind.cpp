@@ -113,7 +113,7 @@ PYBIND11_MODULE(yuml_python, m) {
     py::class_<Element, ElementPy<>>(m, "Element")
         .def(py::init<>())
         .def("getID", &Element::getIDstring)
-        .def("setID", &Element::setID)
+        .def("setID", [](Element& me, string id) { me.setID(id); })
         .def_readonly("ownedElements", &Element::ownedElements)
         .def("addOwnedElement", [](Element& me, Element& el) { me.ownedElements.push_back(&el); })
         .def("removeOwnedElement", [](Element& me, Element& el) {
@@ -130,11 +130,11 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("setOwner", &Element::setOwner);
 
     // InvalidID_Exception
-    static py::exception<Element::InvalidID_Exception>excID(m, "InvalidID_Exception");
+    static py::exception<InvalidID_Exception>excID(m, "InvalidID_Exception");
     py::register_exception_translator([](std::exception_ptr p) {
         try {
             if (p) std::rethrow_exception(p);
-        } catch (const Element::InvalidID_Exception &e) {
+        } catch (const InvalidID_Exception &e) {
             excID(e.what());
         } catch (const py::error_already_set &e) {
             PyErr_SetString(PyExc_RuntimeError, e.what());

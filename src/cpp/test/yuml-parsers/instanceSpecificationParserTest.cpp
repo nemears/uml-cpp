@@ -74,7 +74,7 @@ TEST_F(InstanceSpecificationParserTest, ParseInvalidClassifierID_Test) {
   YAML::Node invalidClassifierNode = YAML::LoadFile(ymlPath + "instanceSpecificationTests/invalidClassifier.yml");
 
   // test
-  EXPECT_THROW(invalidClassifierParser.parse(invalidClassifierNode), Element::InvalidID_Exception);
+  EXPECT_THROW(invalidClassifierParser.parse(invalidClassifierNode), InvalidID_Exception);
 }
 
 TEST_F(InstanceSpecificationParserTest, EmitInstanceWithClassifierTest) {

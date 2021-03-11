@@ -55,7 +55,7 @@ TEST_F(ElementTest, GetOwnedElementsTest) {
 }
 
 TEST_F(ElementTest, InvalidID_Test) {
-  EXPECT_THROW(el3->setID("not a uuid4"), Element::InvalidID_Exception);
+  EXPECT_THROW(el3->setID("not a uuid4"), InvalidID_Exception);
   EXPECT_NO_THROW(el3->setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
 }
 

@@ -80,20 +80,16 @@ namespace UML {
         protected:
             Element* owner;
             Sequence<Element>* m_ownedElements;
-
+            boost::uuids::uuid m_id;
         public:
             list<Element*> ownedElements;
             boost::uuids::uuid uuid;
             Element();
-            Sequence<Element>& getOwnedElements();
             virtual ~Element() {};
+            Sequence<Element>& getOwnedElements();
+            boost::uuids::uuid getID() { return m_id; };
             virtual void setID(string id);
-            class InvalidID_Exception: public exception {
-                public:
-                virtual const char* what() const throw() {
-                    return "String of id is not a valid UUID4";
-                }
-            } invalidID_Exception;
+            void setID(boost::uuids::uuid id);
             virtual ElementType getElementType();
             bool isSubClassOf(ElementType eType);
             virtual string getElementTypeString();
@@ -103,6 +99,14 @@ namespace UML {
     };
 
     //Exceptions
+
+    class InvalidID_Exception: public exception {
+        public:
+        virtual const char* what() const throw() {
+            return "String of id is not a valid UUID4";
+        }
+    };
+
     class ElementAlreadyExistsException : public exception {
         private:
             string msg;
@@ -115,6 +119,7 @@ namespace UML {
                 return msg.c_str();
             }
     };
+    
     class ElementDoesntExistException : public exception {
         private:
             string msg;

@@ -24,7 +24,7 @@ bool BehaviorParser::parseFeatures(YAML::Node node, Element* el) {
                             boost::uuids::uuid paramId = boost::lexical_cast<boost::uuids::uuid>(node["parameters"][i].as<string>());
                             parseNowOrLater(paramId, el->uuid, node, &BehaviorParser::addParameterLater);
                         } else {
-                            throw el->invalidID_Exception;
+                            throw InvalidID_Exception();
                         }
                     } else {
                         throw ElementParser::InvalidNodeTypeException(node["parameters"][i].Mark().line, "map or scalar");

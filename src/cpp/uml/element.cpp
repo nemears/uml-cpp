@@ -6,6 +6,7 @@ using namespace UML;
 // Constructor
 Element::Element() {
     uuid = boost::uuids::random_generator()();
+    m_id = boost::uuids::random_generator()();
     owner = NULL;
     m_ownedElements = new Sequence<Element>;
 }
@@ -13,9 +14,15 @@ Element::Element() {
 void Element::setID(string id) {
     if (UML::isValidUUID4(id)) {
         uuid = boost::lexical_cast<boost::uuids::uuid>(id);
+        m_id = boost::lexical_cast<boost::uuids::uuid>(id);
     } else {
-        throw invalidID_Exception;
+        throw InvalidID_Exception();
     }
+}
+
+void Element::setID(boost::uuids::uuid id) {
+    uuid = id;
+    m_id = id;
 }
 
 Element* Element::getOwner() {

@@ -61,13 +61,16 @@ namespace UML {
         VALUE_SPECIFICATION
     };
 
-    // Forward Declarations for Sequence
-    template <class T> class Sequence;
-
     // Helper function to assess possible uuids
     static bool isValidUUID4(string strn) {
         return regex_match (strn, regex("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"));
     }
+
+    // Forward Declarations for Sequence
+    template <class T> class Sequence;
+
+    // Forward Declaration for errors
+    class ElementDoesntExistException;
 
     /**
      * Element is the base class of all UML classes
@@ -77,13 +80,13 @@ namespace UML {
      * id - the elements unique id for quick comparison and indexing
      **/
     class Element {
+        friend class ElementDoesntExistException;
         protected:
             Element* owner;
             Sequence<Element>* m_ownedElements;
             boost::uuids::uuid m_id;
         public:
             list<Element*> ownedElements;
-            boost::uuids::uuid uuid;
             Element();
             virtual ~Element() {};
             Sequence<Element>& getOwnedElements();
@@ -106,27 +109,15 @@ namespace UML {
             return "String of id is not a valid UUID4";
         }
     };
-
-    class ElementAlreadyExistsException : public exception {
-        private:
-            string msg;
-
-        public:
-            ElementAlreadyExistsException(const Element& el) : 
-                msg("Added element that was already in the Sequence\nuuid: " + boost::lexical_cast<string>(el.uuid))
-                {}
-            virtual const char* what() const throw() {
-                return msg.c_str();
-            }
-    };
     
     class ElementDoesntExistException : public exception {
+        friend class Element;
         private:
             string msg;
 
         public:
             ElementDoesntExistException(const Element& el) : 
-                msg("Removed element that isn't in the Sequence\nuuid: " + boost::lexical_cast<string>(el.uuid))
+                msg("Removed element that isn't in the Sequence\nuuid: " + boost::lexical_cast<string>(el.m_id))
                 {}
             virtual const char* what() const throw() {
                 return msg.c_str();

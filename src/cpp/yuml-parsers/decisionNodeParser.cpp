@@ -13,7 +13,7 @@ bool DecisionNodeParser::parseFeatures(YAML::Node node, Element* el) {
             if (isValidUUID4(node["decisionInputFlow"].as<string>())) {
                 boost::uuids::uuid decisionInputFlowID = boost::lexical_cast<boost::uuids::uuid>(node["decisionInputFlow"].as<string>());
 
-                if(!parseNowOrLater(decisionInputFlowID, el->uuid, node, &DecisionNodeParser::parseDecisionInputFlowLater)) {
+                if(!parseNowOrLater(decisionInputFlowID, el->getID(), node, &DecisionNodeParser::parseDecisionInputFlowLater)) {
                     ObjectFlow* tempObjFlow = new ObjectFlow;
                     tempObjFlow->setID(node["decisionInputFlow"].as<string>());
                     dynamic_cast<DecisionNode*>(el)->setDecisionInputFlow(tempObjFlow);

@@ -9,7 +9,7 @@ bool ParameterNodeParser::parseFeatures(YAML::Node node, Element* el) {
             if (isValidUUID4(node["parameter"].as<string>())) {
                 boost::uuids::uuid paramId = boost::lexical_cast<boost::uuids::uuid>(node["parameter"].as<string>());
 
-                parseNowOrLater(paramId, el->uuid, node, &ParameterNodeParser::setParameterLater);
+                parseNowOrLater(paramId, el->getID(), node, &ParameterNodeParser::setParameterLater);
             }
         }
     }
@@ -35,7 +35,7 @@ bool ParameterNodeParser::emit(YAML::Emitter& emitter, Element* el) {
 
     if (dynamic_cast<ParameterNode*>(el)->getParameter() != NULL) {
         emitter << YAML::Key << "parameter";
-        emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<ParameterNode*>(el)->getParameter()->uuid);
+        emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<ParameterNode*>(el)->getParameter()->getID());
     }
 
     bool ret = ObjectNodeParser::emit(emitter, el);

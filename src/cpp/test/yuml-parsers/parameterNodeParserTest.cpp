@@ -34,8 +34,8 @@ TEST_F(ParameterNodeParserTest, ParseParameterNodeTest) {
 
     // Parameter
     Parameter* param = activity->parameters.front();
-    cout << boost::lexical_cast<string>(param->uuid) << endl;
-    ASSERT_TRUE(param->uuid == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
+    cout << boost::lexical_cast<string>(param->getID()) << endl;
+    ASSERT_TRUE(param->getID() == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
     ASSERT_TRUE(param->getType()->isPrimitive());
     ASSERT_TRUE(dynamic_cast<PrimitiveType*>(param->getType())->getPrimitiveType() == PrimitiveType::Primitive::INT);
     ASSERT_TRUE(param->getDirection() == ParameterDirectionKind::IN);
@@ -43,20 +43,20 @@ TEST_F(ParameterNodeParserTest, ParseParameterNodeTest) {
     // Parameter Node
     ASSERT_TRUE(activity->nodes.front()->getElementType() == ElementType::PARAMETER_NODE);
     ParameterNode* paramNode = dynamic_cast<ParameterNode*>(activity->nodes.front());
-    ASSERT_TRUE(paramNode->uuid == boost::lexical_cast<boost::uuids::uuid>("2c2fc607-48c6-4879-800b-7e659441cba1"));
+    ASSERT_TRUE(paramNode->getID() == boost::lexical_cast<boost::uuids::uuid>("2c2fc607-48c6-4879-800b-7e659441cba1"));
     ASSERT_TRUE(paramNode->getParameter() != NULL);
-    ASSERT_TRUE(paramNode->getParameter()->uuid == param->uuid);
+    ASSERT_TRUE(paramNode->getParameter()->getID() == param->getID());
     ASSERT_TRUE(paramNode->getType() != NULL);
     ASSERT_TRUE(paramNode->getType()->isPrimitive());
     ASSERT_TRUE(dynamic_cast<PrimitiveType*>(paramNode->getType())->getPrimitiveType() == PrimitiveType::Primitive::INT);
     ASSERT_TRUE(paramNode->outgoing.size() == 1);
     ASSERT_TRUE(paramNode->outgoing.front()->getElementType() == ElementType::OBJECT_FLOW);
-    ASSERT_TRUE(paramNode->outgoing.front()->uuid == boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
+    ASSERT_TRUE(paramNode->outgoing.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
 
     // Object Node
     ASSERT_TRUE(activity->nodes.back()->getElementType() == ElementType::OBJECT_NODE);
     ObjectNode* objNode = dynamic_cast<ObjectNode*>(activity->nodes.back());
-    ASSERT_TRUE(objNode->uuid == boost::lexical_cast<boost::uuids::uuid>("7d4b6b0b-f6c2-4670-868c-87709cede18e"));
+    ASSERT_TRUE(objNode->getID() == boost::lexical_cast<boost::uuids::uuid>("7d4b6b0b-f6c2-4670-868c-87709cede18e"));
     ASSERT_TRUE(objNode->getType() != NULL);
     ASSERT_TRUE(objNode->getType()->isPrimitive());
     ASSERT_TRUE(dynamic_cast<PrimitiveType*>(objNode->getType())->getPrimitiveType() == PrimitiveType::Primitive::INT);
@@ -65,9 +65,9 @@ TEST_F(ParameterNodeParserTest, ParseParameterNodeTest) {
     // Object Flow
     ASSERT_TRUE(activity->edges.front()->getElementType() == ElementType::OBJECT_FLOW);
     ObjectFlow* objFlow = dynamic_cast<ObjectFlow*>(activity->edges.front());
-    ASSERT_TRUE(objFlow->uuid == boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
-    ASSERT_TRUE(objFlow->getSource()->uuid == paramNode->uuid);
-    ASSERT_TRUE(objFlow->getTarget()->uuid == objNode->uuid);
+    ASSERT_TRUE(objFlow->getID() == boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
+    ASSERT_TRUE(objFlow->getSource()->getID() == paramNode->getID());
+    ASSERT_TRUE(objFlow->getTarget()->getID() == objNode->getID());
 }
 
 TEST_F(ParameterNodeParserTest, EmitParameterNodeTest) {

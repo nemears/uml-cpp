@@ -11,7 +11,7 @@ bool InstanceSpecificationParser::parseFeatures(YAML::Node node, Element* el) {
         if (UML::isValidUUID4(parsedId)) {
             boost::uuids::uuid classifierId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-            parseNowOrLater(classifierId, el->uuid, node, &InstanceSpecificationParser::setClassifierLater);
+            parseNowOrLater(classifierId, el->getID(), node, &InstanceSpecificationParser::setClassifierLater);
             
         } else {
             // error
@@ -43,7 +43,7 @@ bool InstanceSpecificationParser::emit(YAML::Emitter& emitter, Element* el) {
 
     if (dynamic_cast<InstanceSpecification*>(el)->getClassifier() != NULL) {
         emitter << YAML::Key << "classifier";
-        emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<InstanceSpecification*>(el)->getClassifier()->uuid);
+        emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<InstanceSpecification*>(el)->getClassifier()->getID());
     }
 
     if (!dynamic_cast<InstanceSpecification*>(el)->slots.empty()) {

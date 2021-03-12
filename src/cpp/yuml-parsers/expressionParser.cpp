@@ -19,7 +19,7 @@ bool ExpressionParser::parseFeatures(YAML::Node node, Element* el) {
                     // if uuid it is an instance value
                     boost::uuids::uuid operandID = boost::lexical_cast<boost::uuids::uuid>(node["operand"].as<string>());
 
-                    parseNowOrLater(operandID, el->uuid, node, &ExpressionParser::addInstanceOperandLater);
+                    parseNowOrLater(operandID, el->getID(), node, &ExpressionParser::addInstanceOperandLater);
                 } else if (!parseOperand(node["operand"][i], el)) {
                     ret = false;
                 }
@@ -48,7 +48,7 @@ bool ExpressionParser::parseOperand(YAML::Node node, Element* expression) {
             if (isValidUUID4(node["instanceValue"].as<string>())) {
                 boost::uuids::uuid instanceID = boost::lexical_cast<boost::uuids::uuid>(node["instanceValue"].as<string>());
 
-                parseNowOrLater(instanceID, expression->uuid, node, &ExpressionParser::addInstanceOperandLater);
+                parseNowOrLater(instanceID, expression->getID(), node, &ExpressionParser::addInstanceOperandLater);
             }
         }
     } else if (node["literalBool"]) {

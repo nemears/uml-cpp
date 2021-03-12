@@ -25,7 +25,7 @@ TEST_F(ClassTest, BasicOperationTest) {
 //     Class c;
 //     Operation o;
 //     ASSERT_NO_THROW(c.addOperation(o));
-//     ASSERT_TRUE(c.operations.front()->uuid == o.uuid);
+//     ASSERT_TRUE(c.operations.front()->getID() == o.getID());
 // }
 
 // TEST_F(ClassTest, RemoveOperationTest) {
@@ -34,7 +34,7 @@ TEST_F(ClassTest, BasicOperationTest) {
 //     Operation o2;
 //     c.addOperation(o);
 //     c.addOperation(o2);
-//     ASSERT_TRUE(c.operations.front()->uuid == o.uuid);
+//     ASSERT_TRUE(c.operations.front()->getID() == o.getID());
 //     ASSERT_NO_THROW(c.removeOperation(o));
-//     ASSERT_TRUE(c.operations.front()->uuid == o2.uuid);
+//     ASSERT_TRUE(c.operations.front()->getID() == o2.getID());
 // }

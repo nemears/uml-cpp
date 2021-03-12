@@ -16,7 +16,7 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
         if (UML::isValidUUID4(parsedId)) {
             boost::uuids::uuid definingFeatureId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-            postParseDefiningFeature = !parseNowOrLater(definingFeatureId, el->uuid, node, &SlotParser::setDefiningFeatureLater);
+            postParseDefiningFeature = !parseNowOrLater(definingFeatureId, el->getID(), node, &SlotParser::setDefiningFeatureLater);
         }
     }
     if (node["value"]) {
@@ -88,7 +88,7 @@ void SlotParser::parseNonPimitiveValueFeatures(YAML::Node node, Element* el) {
         if (UML::isValidUUID4(parsedId)) {
             boost::uuids::uuid valueId = boost::lexical_cast<boost::uuids::uuid>(parsedId);
 
-            parseNowOrLater(valueId, el->uuid, node, &SlotParser::setInstanceValueLater);
+            parseNowOrLater(valueId, el->getID(), node, &SlotParser::setInstanceValueLater);
         }
     } else if (node["value"].IsMap()) {
         if (node["value"]["expression"]) {
@@ -110,7 +110,7 @@ bool SlotParser::emit(YAML::Emitter& emitter, Element* el) {
 
     if (((Slot*)el)->getDefiningFeature() != NULL) {
         emitter << YAML::Key << "definingFeature";
-        emitter << YAML::Value << boost::lexical_cast<string>(((Slot*)el)->getDefiningFeature()->uuid);
+        emitter << YAML::Value << boost::lexical_cast<string>(((Slot*)el)->getDefiningFeature()->getID());
     }
 
     if (!((Slot*)el)->values.empty()) {
@@ -138,11 +138,11 @@ bool SlotParser::emit(YAML::Emitter& emitter, Element* el) {
             } else {
                 if (((Slot*)el)->values.front()->getElementType() == ElementType::INSTANCE_VALUE) {
                     if (((InstanceValue*)((Slot*)el)->values.front())->getInstance() != NULL) {
-                        emitter << YAML::Value << boost::lexical_cast<string>(((InstanceValue*)((Slot*)el)->values.front())->getInstance()->uuid);
+                        emitter << YAML::Value << boost::lexical_cast<string>(((InstanceValue*)((Slot*)el)->values.front())->getInstance()->getID());
                     }
                 } else {
                     // Error
-                    throw AbstractTypeEmitException(((Slot*)el)->values.front()->getElementTypeString(), boost::lexical_cast<string>(((Slot*)el)->values.front()->uuid));
+                    throw AbstractTypeEmitException(((Slot*)el)->values.front()->getElementTypeString(), boost::lexical_cast<string>(((Slot*)el)->values.front()->getID()));
                 }
             }
         } else {

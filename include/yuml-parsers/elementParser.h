@@ -3,6 +3,7 @@
 #include <list>
 #include <iostream>
 #include "templateParser.h"
+#include "uml/sequence.h"
 using namespace std;
 
 class ElementParser : public TemplateParser {

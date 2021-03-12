@@ -10,13 +10,13 @@ using namespace UML;
 
 bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
     if (node["id"]) {
-        boost::uuids::uuid oldId = el->uuid;
+        boost::uuids::uuid oldId = el->getID();
         try {
             el->setID(node["id"].as<string>());
 
             // override elements entry
             elements->erase(oldId);
-            (*elements)[el->uuid] = el;
+            (*elements)[el->getID()] = el;
         } catch (exception& e) {
             cerr << e.what() << '\n';
         }
@@ -77,7 +77,7 @@ bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
 bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
 
     emitter << YAML::Key << "id";
-    emitter << YAML::Value << boost::lexical_cast<string>(el->uuid);
+    emitter << YAML::Value << boost::lexical_cast<string>(el->getID());
 
     if (!el->ownedElements.empty()){
         emitter << YAML::Key << "children";
@@ -128,7 +128,7 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
                 }
                 default : {
                     // Error
-                    throw AbstractTypeEmitException(child->getElementTypeString(), boost::lexical_cast<string>(child->uuid));
+                    throw AbstractTypeEmitException(child->getElementTypeString(), boost::lexical_cast<string>(child->getID()));
                 }
             }
         }

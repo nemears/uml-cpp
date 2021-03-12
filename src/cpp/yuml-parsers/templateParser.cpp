@@ -12,25 +12,25 @@ bool TemplateParser::parse(YAML::Node node) {
 
 Element* TemplateParser::parseElement(YAML::Node node) {
     Element* el = createElement();
-    (*elements)[el->uuid] = el;
+    (*elements)[el->getID()] = el;
     if (!parseFeatures(node, el)) {
         //Error
     }
     
     // backwards parsing
-    if ((*postProcessFlag)[el->uuid]) {
-        list<boost::uuids::uuid>::iterator elIt = (*postProcessFlag)[el->uuid]->otherEls.begin();
-        list<YAML::Node>::iterator nodeIt = (*postProcessFlag)[el->uuid]->relevantNodes.begin();
-        for (auto const& fun : (*postProcessFlag)[el->uuid]->applyOnEl) {
+    if ((*postProcessFlag)[el->getID()]) {
+        list<boost::uuids::uuid>::iterator elIt = (*postProcessFlag)[el->getID()]->otherEls.begin();
+        list<YAML::Node>::iterator nodeIt = (*postProcessFlag)[el->getID()]->relevantNodes.begin();
+        for (auto const& fun : (*postProcessFlag)[el->getID()]->applyOnEl) {
             YAML::Node relevantNode = (*nodeIt);
-            Element* me = (*elements)[el->uuid];
+            Element* me = (*elements)[el->getID()];
             Element* someoneWhoNeedsMe = (*elements)[(*elIt)];
             (*fun)(relevantNode, someoneWhoNeedsMe, me);
             ++elIt;
             ++nodeIt;
         }
 
-        delete (*postProcessFlag)[el->uuid];
+        delete (*postProcessFlag)[el->getID()];
     }
 
     return el;

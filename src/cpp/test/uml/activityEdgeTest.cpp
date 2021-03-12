@@ -22,12 +22,12 @@ TEST_F(ActivityEdgeTest, SetRegularTargetTest) {
     ActivityEdge e;
     ActivityNode n;
     e.setTarget(&n);
-    ASSERT_TRUE(e.getTarget()->uuid == n.uuid);
+    ASSERT_TRUE(e.getTarget()->getID() == n.getID());
 }
 
 TEST_F(ActivityEdgeTest, SetRegularSourceTest) {
     ActivityEdge e;
     ActivityNode n;
     e.setSource(&n);
-    ASSERT_TRUE(e.getSource()->uuid == n.uuid);
+    ASSERT_TRUE(e.getSource()->getID() == n.getID());
 }

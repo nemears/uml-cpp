@@ -22,7 +22,7 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
                 } else if (isValidUUID4(node["inputs"][i].as<string>())) {
                     boost::uuids::uuid inputId = boost::lexical_cast<boost::uuids::uuid>(node["inputs"][i].as<string>());
 
-                    parseNowOrLater(inputId, el->uuid, node, &ActionParser::addInputPinLater);
+                    parseNowOrLater(inputId, el->getID(), node, &ActionParser::addInputPinLater);
                 } else {
                     YAML::Emitter errEmit;
                     errEmit << node["inputs"];
@@ -46,7 +46,7 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
                 } else if (isValidUUID4(node["outputs"][i].as<string>())) {
                     boost::uuids::uuid outputId = boost::lexical_cast<boost::uuids::uuid>(node["outputs"][i].as<string>());
 
-                    parseNowOrLater(outputId, el->uuid, node, &ActionParser::addOutputPinLater);
+                    parseNowOrLater(outputId, el->getID(), node, &ActionParser::addOutputPinLater);
                 } else {
                     YAML::Emitter errEmit;
                     errEmit << node["outputs"];
@@ -75,7 +75,7 @@ bool ActionParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Key << "inputs";
         emitter << YAML::Value << YAML::BeginSeq;
         for (auto const& input : dynamic_cast<Action*>(el)->inputs) {
-            emitter << YAML::Value << boost::lexical_cast<string>(input->uuid);
+            emitter << YAML::Value << boost::lexical_cast<string>(input->getID());
         }
         emitter << YAML::EndSeq;
     }
@@ -84,7 +84,7 @@ bool ActionParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Key << "outputs";
         emitter << YAML::Value << YAML::BeginSeq;
         for (auto const& output : dynamic_cast<Action*>(el)->outputs) {
-            emitter << YAML::Value << boost::lexical_cast<string>(output->uuid);
+            emitter << YAML::Value << boost::lexical_cast<string>(output->getID());
         }
         emitter << YAML::EndSeq;
     }

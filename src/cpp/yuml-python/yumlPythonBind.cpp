@@ -119,7 +119,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeOwnedElement", [](Element& me, Element& el) {
             list<Element*>::iterator i = me.ownedElements.begin();
             while (i != me.ownedElements.end()) {
-                if ((*i)->uuid == el.uuid) {
+                if ((*i)->getID() == el.getID()) {
                     me.ownedElements.erase(i);
                     break;
                 }
@@ -231,7 +231,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeOperand", [](Expression& me, ValueSpecification& operand) {
             list<ValueSpecification*>::iterator i = me.operands.begin();
             while (i != me.operands.end()) {
-                if ((*i)->uuid == operand.uuid) {
+                if ((*i)->getID() == operand.getID()) {
                     me.operands.erase(i);
                     break;
                 }
@@ -256,7 +256,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeValue", [](Slot& me, ValueSpecification& val) {
             list<ValueSpecification*>::iterator i = me.values.begin();
             while (i != me.values.end()) {
-                if ((*i)->uuid == val.uuid) {
+                if ((*i)->getID() == val.getID()) {
                     me.values.erase(i);
                     break;
                 }
@@ -273,7 +273,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeSlot", [](InstanceSpecification& me, Slot& slot) {
             list<Slot*>::iterator i = me.slots.begin();
             while (i != me.slots.end()) {
-                if ((*i)->uuid == slot.uuid) {
+                if ((*i)->getID() == slot.getID()) {
                     me.slots.erase(i);
                     break;
                 }
@@ -303,7 +303,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeAttribute", [] (Classifier& me, Property& prop) {
             list<Property*>::iterator i = me.ownedAttributes.begin();
             while (i != me.ownedAttributes.end()) {
-                if ((*i)->uuid == prop.uuid) {
+                if ((*i)->getID() == prop.getID()) {
                     me.ownedAttributes.erase(i);
                     break;
                 }
@@ -335,7 +335,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeParameter", [] (Operation& me, Parameter& param) {
             list<Parameter*>::iterator i = me.parameters.begin();
             while (i != me.parameters.end()) {
-                if ((*i)->uuid == param.uuid) {
+                if ((*i)->getID() == param.getID()) {
                     me.parameters.erase(i);
                     break;
                 }
@@ -347,7 +347,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeMethod", [] (Operation& me, Behavior& method) {
             list<Behavior*>::iterator i = me.methods.begin();
             while (i != me.methods.end()) {
-                if ((*i)->uuid == method.uuid) {
+                if ((*i)->getID() == method.getID()) {
                     me.methods.erase(i);
                     break;
                 }
@@ -363,7 +363,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeOperation", [] (Class& me, Operation& op) {
             list<Operation*>::iterator i = me.operations.begin();
             while (i != me.operations.end()) {
-                if ((*i)->uuid == op.uuid) {
+                if ((*i)->getID() == op.getID()) {
                     me.operations.erase(i);
                     break;
                 }
@@ -380,7 +380,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeParameter", [] (Behavior& me, Parameter& param) {
             list<Parameter*>::iterator i = me.parameters.begin();
             while (i != me.parameters.end()) {
-                if ((*i)->uuid == param.uuid) {
+                if ((*i)->getID() == param.getID()) {
                     me.parameters.erase(i);
                     break;
                 }
@@ -401,7 +401,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeNode", [] (Activity& me, ActivityNode& node) {
             list<ActivityNode*>::iterator i = me.nodes.begin();
             while (i != me.nodes.end()) {
-                if ((*i)->uuid == node.uuid) {
+                if ((*i)->getID() == node.getID()) {
                     me.nodes.erase(i);
                     break;
                 }
@@ -413,7 +413,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeEdge", [] (Activity&me, ActivityEdge& edge) {
             list<ActivityEdge*>::iterator i = me.edges.begin();
             while (i != me.edges.end()) {
-                if ((*i)->uuid == edge.uuid) {
+                if ((*i)->getID() == edge.getID()) {
                     me.edges.erase(i);
                     break;
                 }
@@ -442,7 +442,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeIncoming", [] (ActivityNode& me, ActivityEdge& edge) {
             list<ActivityEdge*>::iterator i = me.incoming.begin();
             while (i != me.incoming.end()) {
-                if ((*i)->uuid == edge.uuid) {
+                if ((*i)->getID() == edge.getID()) {
                     me.incoming.erase(i);
                     break;
                 }
@@ -452,7 +452,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeOutgoing", [] (ActivityNode& me, ActivityEdge& edge) {
             list<ActivityEdge*>::iterator i = me.outgoing.begin();
             while (i != me.outgoing.end()) {
-                if ((*i)->uuid == edge.uuid) {
+                if ((*i)->getID() == edge.getID()) {
                     me.outgoing.erase(i);
                     break;
                 }
@@ -489,7 +489,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeInput", [] (Action& me, InputPin& in) {
             list<InputPin*>::iterator i = me.inputs.begin();
             while (i != me.inputs.end()) {
-                if ((*i)->uuid == in.uuid) {
+                if ((*i)->getID() == in.getID()) {
                     me.inputs.erase(i);
                     break;
                 }
@@ -500,7 +500,7 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("removeOutput", [] (Action& me, OutputPin& out) {
             list<OutputPin*>::iterator i = me.outputs.begin();
             while (i != me.outputs.end()) {
-                if ((*i)->uuid == out.uuid) {
+                if ((*i)->getID() == out.getID()) {
                     me.outputs.erase(i);
                     break;
                 }

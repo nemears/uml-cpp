@@ -67,13 +67,13 @@ TEST_F(CreateObjectParserTest, ParseClassClassifierTest) {
 
     // Test corespondence to class
     Class* clazz = dynamic_cast<Class*>(classClassifierParser.theEl->ownedElements.back());
-    ASSERT_TRUE(coa->getClassifier()->uuid == clazz->uuid);
+    ASSERT_TRUE(coa->getClassifier()->getID() == clazz->getID());
     ASSERT_TRUE(coa->getClassifier() == clazz);
 
     // OutputPin
     ASSERT_TRUE(coa->outputs.size() == 1);
     ASSERT_TRUE(coa->outputs.front()->getType()->getElementType() == ElementType::CLASS);
-    ASSERT_TRUE(coa->outputs.front()->getType()->uuid == clazz->uuid);
+    ASSERT_TRUE(coa->outputs.front()->getType()->getID() == clazz->getID());
     ASSERT_TRUE(coa->outputs.front()->getType() == clazz);
 
     // Tear down

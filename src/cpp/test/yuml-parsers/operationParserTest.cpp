@@ -209,12 +209,12 @@ TEST_F(OperationParserTest, ParseBackwardsMethodTest) {
   Operation* op = dynamic_cast<Class*>(backwardsMethodParser.theEl->ownedElements.front())->operations.front();
   ASSERT_TRUE(op->methods.size() == 1);
   ASSERT_TRUE(op->methods.front()->getElementType() == ElementType::ACTIVITY);
-  ASSERT_TRUE(op->methods.front()->uuid == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
+  ASSERT_TRUE(op->methods.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
   
   // Activity
   ASSERT_TRUE(backwardsMethodParser.theEl->ownedElements.back()->getElementType() == ElementType::ACTIVITY);
   Activity* a = dynamic_cast<Activity*>(backwardsMethodParser.theEl->ownedElements.back());
-  ASSERT_TRUE(a->uuid == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
+  ASSERT_TRUE(a->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
 }
 
 TEST_F(OperationParserTest, ParseForwardMethodTest) {
@@ -234,12 +234,12 @@ TEST_F(OperationParserTest, ParseForwardMethodTest) {
   Operation* op = dynamic_cast<Class*>(forwardsMethodParser.theEl->ownedElements.back())->operations.front();
   ASSERT_TRUE(op->methods.size() == 1);
   ASSERT_TRUE(op->methods.front()->getElementType() == ElementType::ACTIVITY);
-  ASSERT_TRUE(op->methods.front()->uuid == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
+  ASSERT_TRUE(op->methods.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
   
   // Activity
   ASSERT_TRUE(forwardsMethodParser.theEl->ownedElements.front()->getElementType() == ElementType::ACTIVITY);
   Activity* a = dynamic_cast<Activity*>(forwardsMethodParser.theEl->ownedElements.front());
-  ASSERT_TRUE(a->uuid == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
+  ASSERT_TRUE(a->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
 }
 
 TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
@@ -262,14 +262,14 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
   ASSERT_TRUE(op->methods.size() == 1);
 
   //Parameters
-  ASSERT_TRUE(op->parameters.front()->uuid == boost::lexical_cast<boost::uuids::uuid>("1bfe131b-0d9a-4e6f-9a9b-1dae55626202"));
+  ASSERT_TRUE(op->parameters.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("1bfe131b-0d9a-4e6f-9a9b-1dae55626202"));
   Parameter* inParam = op->parameters.front();
   ASSERT_TRUE(inParam->getType() != NULL);
   ASSERT_TRUE(inParam->getType()->isPrimitive());
   ASSERT_TRUE(dynamic_cast<PrimitiveType*>(inParam->getType())->getPrimitiveType() == PrimitiveType::Primitive::INT);
   ASSERT_TRUE(inParam->getDirection() == ParameterDirectionKind::IN);
 
-  ASSERT_TRUE(op->parameters.back()->uuid == boost::lexical_cast<boost::uuids::uuid>("4b9519d3-cfd4-4bda-b1dc-6c7d0f521647"));
+  ASSERT_TRUE(op->parameters.back()->getID() == boost::lexical_cast<boost::uuids::uuid>("4b9519d3-cfd4-4bda-b1dc-6c7d0f521647"));
   Parameter* retParam = op->parameters.back();
   ASSERT_TRUE(retParam->getType() != NULL);
   ASSERT_TRUE(retParam->getType()->isPrimitive());
@@ -278,7 +278,7 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
 
   // Activity
   ASSERT_TRUE(op->methods.front()->getElementType() == ElementType::ACTIVITY);
-  ASSERT_TRUE(op->methods.front()->uuid == boost::lexical_cast<boost::uuids::uuid>("54e8f139-9581-48a4-8021-32ff00606c93"));
+  ASSERT_TRUE(op->methods.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("54e8f139-9581-48a4-8021-32ff00606c93"));
   Activity* activity = dynamic_cast<Activity*>(op->methods.front());
   ASSERT_TRUE(activity->parameters.size() == 2);
   ASSERT_TRUE(activity->parameters.front() == inParam);
@@ -289,13 +289,13 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
   list<ActivityEdge*>::iterator edgeIt = activity->edges.begin();
 
   // InitialNode
-  ASSERT_TRUE((*nodeIt)->uuid == boost::lexical_cast<boost::uuids::uuid>("25a0f5f5-0d02-40e6-a70e-c3c606fcfde0"));
+  ASSERT_TRUE((*nodeIt)->getID() == boost::lexical_cast<boost::uuids::uuid>("25a0f5f5-0d02-40e6-a70e-c3c606fcfde0"));
   ASSERT_TRUE((*nodeIt)->getElementType() == ElementType::INITIAL_NODE);
   InitialNode* initNode = dynamic_cast<InitialNode*>((*nodeIt));
 
   // ParameterNode
   ++nodeIt;
-  ASSERT_TRUE((*nodeIt)->uuid == boost::lexical_cast<boost::uuids::uuid>("2f821a87-6a14-47a0-bf78-cf57e24876d6"));
+  ASSERT_TRUE((*nodeIt)->getID() == boost::lexical_cast<boost::uuids::uuid>("2f821a87-6a14-47a0-bf78-cf57e24876d6"));
   ASSERT_TRUE((*nodeIt)->getElementType() == ElementType::PARAMETER_NODE);
   ParameterNode* paramNode = dynamic_cast<ParameterNode*>((*nodeIt));
   ASSERT_TRUE(paramNode->getParameter() != NULL);
@@ -306,14 +306,14 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
 
   // Action 1
   ++nodeIt;
-  ASSERT_TRUE((*nodeIt)->uuid == boost::lexical_cast<boost::uuids::uuid>("0734d34f-066f-4029-97d9-e39ac2f40f2b"));
+  ASSERT_TRUE((*nodeIt)->getID() == boost::lexical_cast<boost::uuids::uuid>("0734d34f-066f-4029-97d9-e39ac2f40f2b"));
   ASSERT_TRUE((*nodeIt)->getElementType() == ElementType::ACTION);
   Action* action1 = dynamic_cast<Action*>((*nodeIt));
   ASSERT_TRUE(action1->getName().compare("isValid") == 0);
 
   // InputPin
   ++nodeIt;
-  ASSERT_TRUE((*nodeIt)->uuid == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
+  ASSERT_TRUE((*nodeIt)->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
   ASSERT_TRUE((*nodeIt)->getElementType() == ElementType::INPUT_PIN);
   InputPin* inputPin = dynamic_cast<InputPin*>((*nodeIt));
   ASSERT_TRUE(inputPin->getType() != NULL);
@@ -322,32 +322,32 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
 
   // DecisionNode
   ++nodeIt;
-  ASSERT_TRUE((*nodeIt)->uuid == boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
+  ASSERT_TRUE((*nodeIt)->getID() == boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
   ASSERT_TRUE((*nodeIt)->getElementType() == ElementType::DECISION_NODE);
   DecisionNode* decision = dynamic_cast<DecisionNode*>((*nodeIt));
 
   // Action 2
   ++nodeIt;
-  ASSERT_TRUE((*nodeIt)->uuid == boost::lexical_cast<boost::uuids::uuid>("563f4740-e107-4d08-8618-2489f0fe1865"));
+  ASSERT_TRUE((*nodeIt)->getID() == boost::lexical_cast<boost::uuids::uuid>("563f4740-e107-4d08-8618-2489f0fe1865"));
   ASSERT_TRUE((*nodeIt)->getElementType() == ElementType::ACTION);
   Action* action2 = dynamic_cast<Action*>((*nodeIt));
   ASSERT_TRUE(action2->getName().compare("actA") == 0);
 
   // Join Node
   ++nodeIt;
-  ASSERT_TRUE((*nodeIt)->uuid == boost::lexical_cast<boost::uuids::uuid>("2fd853ac-e07e-48e5-96a9-21f5a251e571"));
+  ASSERT_TRUE((*nodeIt)->getID() == boost::lexical_cast<boost::uuids::uuid>("2fd853ac-e07e-48e5-96a9-21f5a251e571"));
   ASSERT_TRUE((*nodeIt)->getElementType() == ElementType::JOIN_NODE);
   JoinNode* joinNode = dynamic_cast<JoinNode*>((*nodeIt));
 
   // Final Node
   ++nodeIt;
-  ASSERT_TRUE((*nodeIt)->uuid == boost::lexical_cast<boost::uuids::uuid>("880fffc9-d291-48c4-8cb6-e8ac6bd4a454"));
+  ASSERT_TRUE((*nodeIt)->getID() == boost::lexical_cast<boost::uuids::uuid>("880fffc9-d291-48c4-8cb6-e8ac6bd4a454"));
   ASSERT_TRUE((*nodeIt)->getElementType() == ElementType::FINAL_NODE);
   FinalNode* finalNode = dynamic_cast<FinalNode*>((*nodeIt));
 
   // Edges
   // ParameterNode to isValid InputPin
-  ASSERT_TRUE((*edgeIt)->uuid == boost::lexical_cast<boost::uuids::uuid>("f73c6d44-5436-4021-83a6-ed90345c1f5f"));
+  ASSERT_TRUE((*edgeIt)->getID() == boost::lexical_cast<boost::uuids::uuid>("f73c6d44-5436-4021-83a6-ed90345c1f5f"));
   ASSERT_TRUE((*edgeIt)->getElementType() == ElementType::OBJECT_FLOW);
   ObjectFlow* paramNodeToInputPin = dynamic_cast<ObjectFlow*>((*edgeIt));
   ASSERT_TRUE(paramNodeToInputPin->getSource() == paramNode);
@@ -357,7 +357,7 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
   
   // InitialNode to isValid
   ++edgeIt;
-  ASSERT_TRUE((*edgeIt)->uuid == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
+  ASSERT_TRUE((*edgeIt)->getID() == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
   ASSERT_TRUE((*edgeIt)->getElementType() == ElementType::CONTROL_FLOW);
   ControlFlow* initialNodeToAction = dynamic_cast<ControlFlow*>((*edgeIt));
   ASSERT_TRUE(initialNodeToAction->getSource() == initNode);
@@ -367,7 +367,7 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
 
   // isValid to DecisionNode
   ++edgeIt;
-  ASSERT_TRUE((*edgeIt)->uuid == boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2"));
+  ASSERT_TRUE((*edgeIt)->getID() == boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2"));
   ASSERT_TRUE((*edgeIt)->getElementType() == ElementType::CONTROL_FLOW);
   ControlFlow* action1ToDecision = dynamic_cast<ControlFlow*>((*edgeIt));
   ASSERT_TRUE(action1ToDecision->getSource() == action1);
@@ -377,7 +377,7 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
 
   // DecisionNode to ActA
   ++edgeIt;
-  ASSERT_TRUE((*edgeIt)->uuid == boost::lexical_cast<boost::uuids::uuid>("d9ab2f06-4c2c-4330-9e1b-7eaee423a66a"));
+  ASSERT_TRUE((*edgeIt)->getID() == boost::lexical_cast<boost::uuids::uuid>("d9ab2f06-4c2c-4330-9e1b-7eaee423a66a"));
   ASSERT_TRUE((*edgeIt)->getElementType() == ElementType::CONTROL_FLOW);
   ControlFlow* decisionToAction2 = dynamic_cast<ControlFlow*>((*edgeIt));
   ASSERT_TRUE(decisionToAction2->getSource() == decision);
@@ -387,7 +387,7 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
 
   // DecisionNode to JoinNode
   ++edgeIt;
-  ASSERT_TRUE((*edgeIt)->uuid == boost::lexical_cast<boost::uuids::uuid>("4680c886-40c6-45ed-9ae2-6aa37aa096e0"));
+  ASSERT_TRUE((*edgeIt)->getID() == boost::lexical_cast<boost::uuids::uuid>("4680c886-40c6-45ed-9ae2-6aa37aa096e0"));
   ASSERT_TRUE((*edgeIt)->getElementType() == ElementType::CONTROL_FLOW);
   ControlFlow* decisionToJoin = dynamic_cast<ControlFlow*>((*edgeIt));
   ASSERT_TRUE(decisionToJoin->getSource() == decision);
@@ -397,7 +397,7 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
 
   // Action2 to JoinNode
   ++edgeIt;
-  ASSERT_TRUE((*edgeIt)->uuid == boost::lexical_cast<boost::uuids::uuid>("ddb5dde3-4c5a-47be-99db-9b7fb7247793"));
+  ASSERT_TRUE((*edgeIt)->getID() == boost::lexical_cast<boost::uuids::uuid>("ddb5dde3-4c5a-47be-99db-9b7fb7247793"));
   ASSERT_TRUE((*edgeIt)->getElementType() == ElementType::CONTROL_FLOW);
   ControlFlow* action2ToJoin = dynamic_cast<ControlFlow*>((*edgeIt));
   ASSERT_TRUE(action2ToJoin->getSource() == action2);
@@ -407,7 +407,7 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
 
   // JoinNode to Final
   ++edgeIt;
-  ASSERT_TRUE((*edgeIt)->uuid == boost::lexical_cast<boost::uuids::uuid>("f5c03bef-5578-4551-a0da-162d8734666d"));
+  ASSERT_TRUE((*edgeIt)->getID() == boost::lexical_cast<boost::uuids::uuid>("f5c03bef-5578-4551-a0da-162d8734666d"));
   ASSERT_TRUE((*edgeIt)->getElementType() == ElementType::CONTROL_FLOW);
   ControlFlow* joinToFinal = dynamic_cast<ControlFlow*>((*edgeIt));
   ASSERT_TRUE(joinToFinal->getSource() == joinNode);

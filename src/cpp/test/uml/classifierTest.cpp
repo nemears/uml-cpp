@@ -50,7 +50,7 @@ TEST_F(ClassifierTest, GetOwnedAttributesTest) {
 //   Classifier c;
 //   Property p;
 //   ASSERT_NO_THROW(c.addAttribute(p));
-//   ASSERT_EQ(c.ownedAttributes.front()->uuid, p.uuid);
+//   ASSERT_EQ(c.ownedAttributes.front()->getID(), p.getID());
 // }
 
 // TEST_F(ClassifierTest, RemoveOwnedAttributeTest) {

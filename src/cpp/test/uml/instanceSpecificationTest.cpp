@@ -15,7 +15,7 @@ TEST_F(InstanceSpecificationTest, setClassifierAsClass) {
     Class c;
     InstanceSpecification i;
     ASSERT_NO_THROW(i.setClassifier(&c));
-    EXPECT_TRUE(i.getClassifier()->uuid == c.uuid);
+    EXPECT_TRUE(i.getClassifier()->getID() == c.getID());
 }
 
 TEST_F(InstanceSpecificationTest, setStringValueSlots) {
@@ -32,9 +32,9 @@ TEST_F(InstanceSpecificationTest, setStringValueSlots) {
     stringSlot.values.push_back(&ls);
     InstanceSpecification i;
     i.slots.push_back(&stringSlot);
-    ASSERT_TRUE(i.slots.front()->uuid == stringSlot.uuid);
-    ASSERT_TRUE(i.slots.front()->getDefiningFeature()->uuid == stringP.uuid);
-    ASSERT_TRUE(i.slots.front()->values.front()->uuid == ls.uuid);
+    ASSERT_TRUE(i.slots.front()->getID() == stringSlot.getID());
+    ASSERT_TRUE(i.slots.front()->getDefiningFeature()->getID() == stringP.getID());
+    ASSERT_TRUE(i.slots.front()->values.front()->getID() == ls.getID());
 }
 
 TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
@@ -56,7 +56,7 @@ TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
     aSlot.setDefiningFeature(&bProp);
     aSlot.values.push_back(&bVal);
     aInst.slots.push_back(&aSlot);
-    ASSERT_TRUE(aInst.slots.front()->getDefiningFeature()->uuid == bProp.uuid);
+    ASSERT_TRUE(aInst.slots.front()->getDefiningFeature()->getID() == bProp.getID());
 }
 
 // TODO add throw for pushing slots that don't correspond structural feature
@@ -66,7 +66,7 @@ TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
 //     InstanceSpecification i;
 //     Slot s;
 //     ASSERT_NO_THROW(i.addSlot(s));
-//     ASSERT_TRUE(i.slots.front()->uuid == s.uuid);
+//     ASSERT_TRUE(i.slots.front()->uuid == s.getID());
 // }
 
 // TEST_F(InstanceSpecificationTest, AddAndRemoveSlotTest) {
@@ -75,7 +75,7 @@ TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
 //     Slot s2;
 //     i.addSlot(s);
 //     i.addSlot(s2);
-//     ASSERT_TRUE(i.slots.front()->uuid ==s.uuid);
+//     ASSERT_TRUE(i.slots.front()->uuid ==s.getID());
 //     ASSERT_NO_THROW(i.removeSlot(s));
-//     ASSERT_TRUE(i.slots.front()->uuid == s2.uuid);
+//     ASSERT_TRUE(i.slots.front()->uuid == s2.getID());
 // }

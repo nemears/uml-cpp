@@ -26,7 +26,7 @@ TEST_F(CallBehaviorActionParserTest, ForwardBehaviorParseTest) {
     ASSERT_TRUE(act->nodes.front()->getElementType() == ElementType::CALL_BEHAVIOR_ACTION);
     CallBehaviorAction* cba = dynamic_cast<CallBehaviorAction*>(act->nodes.front());
     ASSERT_TRUE(cba->getBehavior() != NULL);
-    ASSERT_TRUE(cba->getBehavior()->uuid == forwardBehaviorParser.theEl->ownedElements.front()->uuid);
+    ASSERT_TRUE(cba->getBehavior()->getID() == forwardBehaviorParser.theEl->ownedElements.front()->getID());
     ASSERT_TRUE(cba->getBehavior() == forwardBehaviorParser.theEl->ownedElements.front());
     ModelParser::deleteParser(&forwardBehaviorParser);
 }
@@ -44,7 +44,7 @@ TEST_F(CallBehaviorActionParserTest, BackwardsBehaviorParseTest) {
     ASSERT_TRUE(act->nodes.front()->getElementType() == ElementType::CALL_BEHAVIOR_ACTION);
     CallBehaviorAction* cba = dynamic_cast<CallBehaviorAction*>(act->nodes.front());
     ASSERT_TRUE(cba->getBehavior() != NULL);
-    ASSERT_TRUE(cba->getBehavior()->uuid == backwardsBehaviorParser.theEl->ownedElements.back()->uuid);
+    ASSERT_TRUE(cba->getBehavior()->getID() == backwardsBehaviorParser.theEl->ownedElements.back()->getID());
     ASSERT_TRUE(cba->getBehavior() == backwardsBehaviorParser.theEl->ownedElements.back());
     ModelParser::deleteParser(&backwardsBehaviorParser);
 }

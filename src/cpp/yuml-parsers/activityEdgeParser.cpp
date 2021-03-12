@@ -39,7 +39,7 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
                 // This means it is an instance
                 boost::uuids::uuid guardID = boost::lexical_cast<boost::uuids::uuid>(node["guard"].as<string>());
 
-                parseNowOrLater(guardID, el->uuid, node, &ActivityEdgeParser::setInstanceGuardLater);
+                parseNowOrLater(guardID, el->getID(), node, &ActivityEdgeParser::setInstanceGuardLater);
             } else {
                 if (dynamic_cast<ActivityEdge*>(el)->getSource() != NULL){
                     if (dynamic_cast<ActivityEdge*>(el)->getSource()->isObjectNode()) {
@@ -124,8 +124,8 @@ bool ActivityEdgeParser::parseFeatures(YAML::Node node, Element* el) {
                             }
                         } else {
                             // backwards parsing
-                            parseNowOrLater(dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->uuid, 
-                                            el->uuid, 
+                            parseNowOrLater(dynamic_cast<DecisionNode*>(dynamic_cast<ActivityEdge*>(el)->getSource())->getDecisionInputFlow()->getID(), 
+                                            el->getID(), 
                                             node, 
                                             &ActivityEdgeParser::setDecisionNodeLiteralGuardLater);
                         }
@@ -159,12 +159,12 @@ bool ActivityEdgeParser::emit(YAML::Emitter& emitter, Element* el) {
 
     if (dynamic_cast<ActivityEdge*>(el)->getSource() != NULL) {
         emitter << YAML::Key << "source";
-        emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<ActivityEdge*>(el)->getSource()->uuid);
+        emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<ActivityEdge*>(el)->getSource()->getID());
     }
 
     if (dynamic_cast<ActivityEdge*>(el)->getTarget() != NULL) {
         emitter << YAML::Key << "target";
-        emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<ActivityEdge*>(el)->getTarget()->uuid);
+        emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<ActivityEdge*>(el)->getTarget()->getID());
     }
 
     if (dynamic_cast<ActivityEdge*>(el)->getGuard() != NULL) {
@@ -197,7 +197,7 @@ bool ActivityEdgeParser::emit(YAML::Emitter& emitter, Element* el) {
             } else {
                 // it is instance
                 if (dynamic_cast<ActivityEdge*>(el)->getGuard()->getType()->getElementType() == ElementType::INSTANCE_VALUE) {
-                    emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<InstanceValue*>(dynamic_cast<ActivityEdge*>(el)->getGuard())->getInstance()->uuid);
+                    emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<InstanceValue*>(dynamic_cast<ActivityEdge*>(el)->getGuard())->getInstance()->getID());
                 } else {
                     // error 
                     return false;

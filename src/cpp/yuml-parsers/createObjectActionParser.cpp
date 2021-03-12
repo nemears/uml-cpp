@@ -13,7 +13,7 @@ bool CreateObjectActionParser::parseFeatures(YAML::Node node, Element* el) {
             if (isValidUUID4(node["classifier"].as<string>())) {
                 boost::uuids::uuid classifierID = boost::lexical_cast<boost::uuids::uuid>(node["classifier"].as<string>());
 
-                parseNowOrLater(classifierID, el->uuid, node["classifier"], &CreateObjectActionParser::setClassifierLater);
+                parseNowOrLater(classifierID, el->getID(), node["classifier"], &CreateObjectActionParser::setClassifierLater);
             } else if (node["classifier"].as<string>().compare("BOOL") == 0) {
                 PrimitiveType* boolType = new PrimitiveType;
                 boolType->setPrimitiveType(PrimitiveType::Primitive::BOOL);
@@ -55,7 +55,7 @@ bool CreateObjectActionParser::emit(YAML::Emitter& emitter, Element* el) {
         if (dynamic_cast<CreateObjectAction*>(el)->getClassifier()->isPrimitive()) {
             emitter << YAML::Value << dynamic_cast<PrimitiveType*>(dynamic_cast<CreateObjectAction*>(el)->getClassifier())->getPrimitiveTypeString();
         } else {
-            emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<CreateObjectAction*>(el)->getClassifier()->uuid);
+            emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<CreateObjectAction*>(el)->getClassifier()->getID());
         }
     }
 

@@ -46,7 +46,7 @@ class ElementTest : public ::testing::Test {
 };
 
 TEST_F(ElementTest, OverrideID_Test) {
-    EXPECT_EQ(el1->uuid, uuid);
+    EXPECT_EQ(el1->getID(), uuid);
 }
 
 TEST_F(ElementTest, GetOwnedElementsTest) {
@@ -63,7 +63,7 @@ TEST_F(ElementTest, InvalidID_Test) {
 //   Element parent;
 //   Element child;
 //   ASSERT_NO_THROW(parent.addOwnedElement(child));
-//   ASSERT_TRUE(parent.ownedElements.front()->uuid == child.uuid);
+//   ASSERT_TRUE(parent.ownedElements.front()->uuid == child.getID());
 // }
 
 // TEST_F(ElementTest, RemoveOwnedElementTest) {
@@ -84,14 +84,14 @@ TEST_F(ElementTest, setAndGetOwnerTest) {
   Element c;
   c.setOwner(&e);
   ASSERT_TRUE(c.getOwner() == &e);
-  ASSERT_TRUE(c.getOwner()->uuid == e.uuid);
+  ASSERT_TRUE(c.getOwner()->getID() == e.getID());
 }
 
 TEST_F(ElementTest, getOwnedElementsBasicTest) {
   Element e;
   Element c;
   ASSERT_NO_THROW(e.getOwnedElements().add(c));
-  ASSERT_TRUE(e.getOwnedElements().get(c.uuid));
+  ASSERT_TRUE(e.getOwnedElements().get(c.getID()));
 }
 
 TEST_F(ElementTest, getOwnedElementByNameTest) {
@@ -102,6 +102,6 @@ TEST_F(ElementTest, getOwnedElementByNameTest) {
   ASSERT_NO_THROW(e.getOwnedElements().add(b));
   ASSERT_NO_THROW(e.getOwnedElements().add(n));
   ASSERT_TRUE(e.getOwnedElements().get("name") == &n);
-  ASSERT_TRUE(e.getOwnedElements().get(n.uuid) == &n);
-  ASSERT_TRUE(e.getOwnedElements().get(b.uuid) == &b);
+  ASSERT_TRUE(e.getOwnedElements().get(n.getID()) == &n);
+  ASSERT_TRUE(e.getOwnedElements().get(b.getID()) == &b);
 }

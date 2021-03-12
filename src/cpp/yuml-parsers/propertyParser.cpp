@@ -121,7 +121,7 @@ bool PropertyParser::emit(YAML::Emitter& emitter, Element* el) {
                     }
                 }
             } else {
-                emitter << YAML::Value << boost::lexical_cast<string>(((InstanceValue*)dynamic_cast<Property*>(el)->getDefaultValue())->getInstance()->uuid);
+                emitter << YAML::Value << boost::lexical_cast<string>(((InstanceValue*)dynamic_cast<Property*>(el)->getDefaultValue())->getInstance()->getID());
             }
         } else {
             // TODO error

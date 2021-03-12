@@ -69,7 +69,7 @@ TEST_F(OperationParserTest, EmitOperationWithLiteralParameter) {
   p.setType(&pt);
   o.parameters.push_back(&p);
   c.operations.push_back(&o);
-  m.ownedElements.push_back(&c);
+  m.getOwnedElements().add(c);
 
   ModelParser emitOperationWithParameterTestParser = ModelParser::createNewParser();
   string expectedEmit = R""""(model:
@@ -111,8 +111,8 @@ TEST_F(OperationParserTest, EmitOperationWithInstanceParameter) {
   p.setType(&c2);
   o.parameters.push_back(&p);
   c.operations.push_back(&o);
-  m.ownedElements.push_back(&c2);
-  m.ownedElements.push_back(&c);
+  m.getOwnedElements().add(c2);
+  m.getOwnedElements().add(c);
 
   ModelParser emitOperationWithInstanceParameterTestParser = ModelParser::createNewParser();
   string expectedEmit = R""""(model:
@@ -153,7 +153,7 @@ TEST_F(OperationParserTest, EmitOperationWithBlankOpaqueBehaviorTest) {
   ob.setName("foo");
   o.methods.push_back(&ob);
   c.operations.push_back(&o);
-  m.ownedElements.push_back(&c);
+  m.getOwnedElements().add(c);
 
   ModelParser emitOperationWithBlankOpaqueBehaviorTestParser = ModelParser::createNewParser();
   string expectedEmit = R""""(model:
@@ -186,7 +186,7 @@ TEST_F(OperationParserTest, EmitAbstractMethodTest) {
   Behavior b;
   o.methods.push_back(&b);
   c.operations.push_back(&o);
-  m.ownedElements.push_back(&c);
+  m.getOwnedElements().add(c);
   ModelParser abstractMethodParser = ModelParser::createNewParser();
 
   EXPECT_THROW(abstractMethodParser.emitDocument(&m), ElementParser::AbstractTypeEmitException);
@@ -199,21 +199,21 @@ TEST_F(OperationParserTest, ParseBackwardsMethodTest) {
 
   //Test
   ASSERT_NO_THROW(backwardsMethodParser.parse(backwardsMethodsNode));
-  ASSERT_TRUE(backwardsMethodParser.theEl->ownedElements.size() == 2);
+  ASSERT_TRUE(backwardsMethodParser.theEl->getOwnedElements().size() == 2);
 
   // Class
-  ASSERT_TRUE(backwardsMethodParser.theEl->ownedElements.front()->getElementType() == ElementType::CLASS);
-  ASSERT_TRUE(dynamic_cast<Class*>(backwardsMethodParser.theEl->ownedElements.front())->operations.size() == 1);
+  ASSERT_TRUE(backwardsMethodParser.theEl->getOwnedElements().front()->getElementType() == ElementType::CLASS);
+  ASSERT_TRUE(dynamic_cast<Class*>(backwardsMethodParser.theEl->getOwnedElements().front())->operations.size() == 1);
   
   // Operation
-  Operation* op = dynamic_cast<Class*>(backwardsMethodParser.theEl->ownedElements.front())->operations.front();
+  Operation* op = dynamic_cast<Class*>(backwardsMethodParser.theEl->getOwnedElements().front())->operations.front();
   ASSERT_TRUE(op->methods.size() == 1);
   ASSERT_TRUE(op->methods.front()->getElementType() == ElementType::ACTIVITY);
   ASSERT_TRUE(op->methods.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
   
   // Activity
-  ASSERT_TRUE(backwardsMethodParser.theEl->ownedElements.back()->getElementType() == ElementType::ACTIVITY);
-  Activity* a = dynamic_cast<Activity*>(backwardsMethodParser.theEl->ownedElements.back());
+  ASSERT_TRUE(backwardsMethodParser.theEl->getOwnedElements().back()->getElementType() == ElementType::ACTIVITY);
+  Activity* a = dynamic_cast<Activity*>(backwardsMethodParser.theEl->getOwnedElements().back());
   ASSERT_TRUE(a->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
 }
 
@@ -224,21 +224,21 @@ TEST_F(OperationParserTest, ParseForwardMethodTest) {
 
   // Test
   ASSERT_NO_THROW(forwardsMethodParser.parse(forwardsMethodsNode));
-  ASSERT_TRUE(forwardsMethodParser.theEl->ownedElements.size() == 2);
+  ASSERT_TRUE(forwardsMethodParser.theEl->getOwnedElements().size() == 2);
 
   // Class
-  ASSERT_TRUE(forwardsMethodParser.theEl->ownedElements.back()->getElementType() == ElementType::CLASS);
-  ASSERT_TRUE(dynamic_cast<Class*>(forwardsMethodParser.theEl->ownedElements.back())->operations.size() == 1);
+  ASSERT_TRUE(forwardsMethodParser.theEl->getOwnedElements().back()->getElementType() == ElementType::CLASS);
+  ASSERT_TRUE(dynamic_cast<Class*>(forwardsMethodParser.theEl->getOwnedElements().back())->operations.size() == 1);
   
   // Operation
-  Operation* op = dynamic_cast<Class*>(forwardsMethodParser.theEl->ownedElements.back())->operations.front();
+  Operation* op = dynamic_cast<Class*>(forwardsMethodParser.theEl->getOwnedElements().back())->operations.front();
   ASSERT_TRUE(op->methods.size() == 1);
   ASSERT_TRUE(op->methods.front()->getElementType() == ElementType::ACTIVITY);
   ASSERT_TRUE(op->methods.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
   
   // Activity
-  ASSERT_TRUE(forwardsMethodParser.theEl->ownedElements.front()->getElementType() == ElementType::ACTIVITY);
-  Activity* a = dynamic_cast<Activity*>(forwardsMethodParser.theEl->ownedElements.front());
+  ASSERT_TRUE(forwardsMethodParser.theEl->getOwnedElements().front()->getElementType() == ElementType::ACTIVITY);
+  Activity* a = dynamic_cast<Activity*>(forwardsMethodParser.theEl->getOwnedElements().front());
   ASSERT_TRUE(a->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
 }
 
@@ -249,11 +249,11 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
 
   // Test
   ASSERT_NO_THROW(actvityAndOperationParser.parse(activityAndOperationNode));
-  ASSERT_TRUE(actvityAndOperationParser.theEl->ownedElements.size() == 1);
-  ASSERT_TRUE(actvityAndOperationParser.theEl->ownedElements.front()->getElementType() == ElementType::CLASS);
+  ASSERT_TRUE(actvityAndOperationParser.theEl->getOwnedElements().size() == 1);
+  ASSERT_TRUE(actvityAndOperationParser.theEl->getOwnedElements().front()->getElementType() == ElementType::CLASS);
 
   // Class
-  Class* clazz = dynamic_cast<Class*>(actvityAndOperationParser.theEl->ownedElements.front());
+  Class* clazz = dynamic_cast<Class*>(actvityAndOperationParser.theEl->getOwnedElements().front());
   ASSERT_TRUE(clazz->operations.size() == 1);
   
   // Operation

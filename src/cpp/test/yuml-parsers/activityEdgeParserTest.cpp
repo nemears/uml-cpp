@@ -25,11 +25,11 @@ TEST_F(ActivityEdgeParserTest, ParseDecisionNodeGuardTest) {
 
     // Test
     ASSERT_NO_THROW(decisionNodeGuardParser.parse(decisionNodeGuardNode));
-    ASSERT_TRUE(decisionNodeGuardParser.theEl->ownedElements.size() == 1);
-    ASSERT_TRUE(decisionNodeGuardParser.theEl->ownedElements.front()->getElementType() == ElementType::ACTIVITY);
+    ASSERT_TRUE(decisionNodeGuardParser.theEl->getOwnedElements().size() == 1);
+    ASSERT_TRUE(decisionNodeGuardParser.theEl->getOwnedElements().get(0)->getElementType() == ElementType::ACTIVITY);
 
     // Activity
-    Activity* activity = dynamic_cast<Activity*>(decisionNodeGuardParser.theEl->ownedElements.front());
+    Activity* activity = dynamic_cast<Activity*>(decisionNodeGuardParser.theEl->getOwnedElements().front());
     ASSERT_TRUE(activity->nodes.size() == 5);
     ASSERT_TRUE(activity->edges.size() == 4);
     list<ActivityNode*>::iterator nodeIt = activity->nodes.begin();
@@ -86,7 +86,7 @@ TEST_F(ActivityEdgeParserTest, ParseBackwardsGuardTest) {
     ASSERT_NO_THROW(decisionNodeGuardParser.parse(decisionNodeGuardNode));
 
     // Activity
-    Activity* activity = dynamic_cast<Activity*>(decisionNodeGuardParser.theEl->ownedElements.front());
+    Activity* activity = dynamic_cast<Activity*>(decisionNodeGuardParser.theEl->getOwnedElements().front());
     ASSERT_TRUE(activity->nodes.size() == 5);
     ASSERT_TRUE(activity->edges.size() == 4);
     list<ActivityNode*>::iterator nodeIt = activity->nodes.begin();
@@ -196,7 +196,7 @@ TEST_F(ActivityEdgeParserTest, EmitEdgeGuardTest) {
     activity.edges.push_back(&objToDecision);
     activity.edges.push_back(&decToAction1);
     activity.edges.push_back(&decToAction2);
-    m.ownedElements.push_back(&activity);
+    m.getOwnedElements().add(activity);
     activity.setOwner(&m);
     string expectedEmit = R""""(model:
   id: fa8cc066-6191-4903-a766-ee91d216c929

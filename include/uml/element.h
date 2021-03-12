@@ -86,7 +86,6 @@ namespace UML {
             Sequence<Element>* m_ownedElements;
             boost::uuids::uuid m_id;
         public:
-            list<Element*> ownedElements;
             Element();
             virtual ~Element() {};
             Sequence<Element>& getOwnedElements();

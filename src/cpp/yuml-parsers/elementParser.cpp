@@ -29,32 +29,32 @@ bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
                 if (node["children"][i]["activity"]) {
                     ActivityParser activityParser(elements, postProcessFlag);
                     Element* parsedEl = activityParser.parseElement(node["children"][i]["activity"]);
-                    el->ownedElements.push_back(parsedEl);
+                    el->getOwnedElements().add(*parsedEl);
                     parsedEl->setOwner(el);
                 } else if (node["children"][i]["class"]) {
                     ClassParser classParser(elements, postProcessFlag);
                     Element* parsedEl = classParser.parseElement(node["children"][i]["class"]);
-                    el->ownedElements.push_back(parsedEl);
+                    el->getOwnedElements().add(*parsedEl);
                     parsedEl->setOwner(el);
                 } else if (node["children"][i]["instanceSpecification"]){
                     InstanceSpecificationParser instanceParser(elements, postProcessFlag);
                     Element* parsedEl = instanceParser.parseElement(node["children"][i]["instanceSpecification"]);
-                    el->ownedElements.push_back(parsedEl);
+                    el->getOwnedElements().add(*parsedEl);
                     parsedEl->setOwner(el);
                 } else if (node["children"][i]["namespace"]) {
                     NamespaceParser namespaceParser(elements, postProcessFlag);
                     Element* parsedEl = namespaceParser.parseElement(node["children"][i]["namespace"]);
-                    el->ownedElements.push_back(parsedEl);
+                    el->getOwnedElements().add(*parsedEl);
                     parsedEl->setOwner(el);
                 }else if (node["children"][i]["opaqueBehavior"]) {
                     OpaqueBehaviorParser opaqueBehaviorParser(elements, postProcessFlag);
                     Element* parsedEl = opaqueBehaviorParser.parseElement(node["children"][i]["opaqueBehavior"]);
-                    el->ownedElements.push_back(parsedEl);
+                    el->getOwnedElements().add(*parsedEl);
                     parsedEl->setOwner(el);
                 } else if (node["children"][i]["parameter"]) {
                     ParameterParser parameterParser(elements, postProcessFlag);
                     Element* parsedEl = parameterParser.TypedElementParser::parseElement(node["children"][i]["parameter"]);
-                    el->ownedElements.push_back(parsedEl);
+                    el->getOwnedElements().add(*parsedEl);
                     parsedEl->setOwner(el);
                 } 
                 
@@ -79,10 +79,10 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
     emitter << YAML::Key << "id";
     emitter << YAML::Value << boost::lexical_cast<string>(el->getID());
 
-    if (!el->ownedElements.empty()){
+    if (!el->getOwnedElements().empty()){
         emitter << YAML::Key << "children";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& child: el->ownedElements) {
+        for (auto const& child: el->getOwnedElements().iterator()) {
             switch (child->getElementType()) {
                 case ElementType::ACTIVITY : {
                     ActivityParser ap(elements, postProcessFlag);

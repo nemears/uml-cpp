@@ -17,12 +17,12 @@ TEST_F(MultiplicityElementParserTest, ProperPropertyMultiplicityParsingTest) {
     YAML::Node properPropertyMultiplicityNode = YAML::LoadFile(ymlPath + "multiplicityElementTests/properPropertyMultiplicty.yml");
 
     ASSERT_NO_THROW(properPropertyMultiplicityParser.parse(properPropertyMultiplicityNode));
-    ASSERT_TRUE(dynamic_cast<Class*>(properPropertyMultiplicityParser.theEl->ownedElements.front())->ownedAttributes.front()->multiplicitySpecified());
+    ASSERT_TRUE(dynamic_cast<Class*>(properPropertyMultiplicityParser.theEl->getOwnedElements().front())->ownedAttributes.front()->multiplicitySpecified());
 }
 
 TEST_F(MultiplicityElementParserTest, ProperParameterMultiplicityParsingTest) {
     ModelParser properParameterMultiplicityParser = ModelParser::createNewParser();
     YAML::Node properParameterMultiplicityNode = YAML::LoadFile(ymlPath + "multiplicityElementTests/properParameterMultiplicity.yml");
     ASSERT_NO_THROW(properParameterMultiplicityParser.parse(properParameterMultiplicityNode));
-    ASSERT_TRUE(dynamic_cast<Class*>(properParameterMultiplicityParser.theEl->ownedElements.front())->operations.front()->parameters.front()->multiplicitySpecified());
+    ASSERT_TRUE(dynamic_cast<Class*>(properParameterMultiplicityParser.theEl->getOwnedElements().front())->operations.front()->parameters.front()->multiplicitySpecified());
 }

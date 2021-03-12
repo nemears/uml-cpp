@@ -114,18 +114,9 @@ PYBIND11_MODULE(yuml_python, m) {
         .def(py::init<>())
         .def("getID", &Element::getIDstring)
         .def("setID", [](Element& me, string id) { me.setID(id); })
-        .def_readonly("ownedElements", &Element::ownedElements)
-        .def("addOwnedElement", [](Element& me, Element& el) { me.ownedElements.push_back(&el); })
-        .def("removeOwnedElement", [](Element& me, Element& el) {
-            list<Element*>::iterator i = me.ownedElements.begin();
-            while (i != me.ownedElements.end()) {
-                if ((*i)->getID() == el.getID()) {
-                    me.ownedElements.erase(i);
-                    break;
-                }
-                ++i;
-            }
-        })
+        //.def_readonly("ownedElements", [] (Element& me) { me.getOwnedElements().copyToVector(); })
+        .def("addOwnedElement", [](Element& me, Element& el) { me.getOwnedElements().add(el); })
+        .def("removeOwnedElement", [](Element& me, Element& el) { me.getOwnedElements().remove(el); })
         .def("getOwner", &Element::getOwner)
         .def("setOwner", &Element::setOwner);
 

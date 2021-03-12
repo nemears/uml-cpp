@@ -30,7 +30,7 @@ TEST_F(ParameterParserTest, TestEmitDirection) {
     Parameter p;
     p.setID("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
     p.setDirection(ParameterDirectionKind::RETURN);
-    m.ownedElements.push_back(&p);
+    m.getOwnedElements().add(p);
 
     string expectedEmit = R""""(model:
   id: 190d1cb9-13dc-44e6-a064-126891ae0033

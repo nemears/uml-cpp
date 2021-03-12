@@ -77,7 +77,7 @@ TEST_F(TypedElementParserTest, EmitLiteralTypeTest) {
   pt.setPrimitiveType(PrimitiveType::Primitive::STRING);
   p.setType(&pt);
   c.ownedAttributes.push_back(&p);
-  m.ownedElements.push_back(&c);
+  m.getOwnedElements().add(c);
 
   string expectedEmit = R""""(model:
   id: c0ab87cc-d00b-4afb-9558-538253b442b2
@@ -110,8 +110,8 @@ TEST_F(TypedElementParserTest, EmitAttributesOfClassiferTypeTest) {
   c2.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
   p.setType(&c2);
   c.ownedAttributes.push_back(&p);
-  m.ownedElements.push_back(&c);
-  m.ownedElements.push_back(&c2);
+  m.getOwnedElements().add(c);
+  m.getOwnedElements().add(c2);
 
   string expectedEmit = R""""(model:
   id: c0ab87cc-d00b-4afb-9558-538253b442b2
@@ -142,10 +142,10 @@ TEST_F(TypedElementParserTest, BackwardsParsingTest) {
 
   // Test
   ASSERT_NO_THROW(backwardsParsingParser.parse(backwardsParsingNode));
-  ASSERT_TRUE(backwardsParsingParser.theEl->ownedElements.size() == 2);
-  ASSERT_TRUE(backwardsParsingParser.theEl->ownedElements.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
-  ASSERT_TRUE(backwardsParsingParser.theEl->ownedElements.front()->getElementType() == ElementType::CLASS);
-  ASSERT_TRUE(dynamic_cast<Class*>(backwardsParsingParser.theEl->ownedElements.front())->ownedAttributes.size() == 1);
-  ASSERT_TRUE(dynamic_cast<Class*>(backwardsParsingParser.theEl->ownedElements.front())->ownedAttributes.front()->getType() != NULL);
-  ASSERT_TRUE(dynamic_cast<Class*>(backwardsParsingParser.theEl->ownedElements.front())->ownedAttributes.front()->getType()->getID() == backwardsParsingParser.theEl->ownedElements.back()->getID());
+  ASSERT_TRUE(backwardsParsingParser.theEl->getOwnedElements().size() == 2);
+  ASSERT_TRUE(backwardsParsingParser.theEl->getOwnedElements().front()->getID() == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
+  ASSERT_TRUE(backwardsParsingParser.theEl->getOwnedElements().front()->getElementType() == ElementType::CLASS);
+  ASSERT_TRUE(dynamic_cast<Class*>(backwardsParsingParser.theEl->getOwnedElements().front())->ownedAttributes.size() == 1);
+  ASSERT_TRUE(dynamic_cast<Class*>(backwardsParsingParser.theEl->getOwnedElements().front())->ownedAttributes.front()->getType() != NULL);
+  ASSERT_TRUE(dynamic_cast<Class*>(backwardsParsingParser.theEl->getOwnedElements().front())->ownedAttributes.front()->getType()->getID() == backwardsParsingParser.theEl->getOwnedElements().back()->getID());
 }

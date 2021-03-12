@@ -34,7 +34,7 @@ class ElementTest : public ::testing::Test {
      el1->setID(boost::lexical_cast<std::string>(uuid));
 
      // add element to owned element list
-     el2->ownedElements.push_front(el3);
+     el2->getOwnedElements().add(*el3);
   }
 
   void TearDown() override {
@@ -50,8 +50,8 @@ TEST_F(ElementTest, OverrideID_Test) {
 }
 
 TEST_F(ElementTest, GetOwnedElementsTest) {
-  EXPECT_FALSE(el2->ownedElements.empty());
-  EXPECT_EQ(el2->ownedElements.front(), el3);
+  EXPECT_FALSE(el2->getOwnedElements().empty());
+  EXPECT_EQ(el2->getOwnedElements().get(0), el3);
 }
 
 TEST_F(ElementTest, InvalidID_Test) {

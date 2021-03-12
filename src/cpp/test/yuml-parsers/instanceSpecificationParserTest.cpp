@@ -86,8 +86,8 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithClassifierTest) {
   InstanceSpecification i;
   i.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
   i.setClassifier(&c);
-  m.ownedElements.push_back(&c);
-  m.ownedElements.push_back(&i);
+  m.getOwnedElements().add(c);
+  m.getOwnedElements().add(i);
 
   ModelParser emitInstanceWithClassTestParser = ModelParser::createNewParser();
   string expectedEmit = R""""(model:
@@ -130,8 +130,8 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithLiteralSlotsTest) {
   s.setDefiningFeature(&p);
   s.values.push_back(&ls);
   i.slots.push_back(&s);
-  m.ownedElements.push_back(&c);
-  m.ownedElements.push_back(&i);
+  m.getOwnedElements().add(c);
+  m.getOwnedElements().add(i);
 
   ModelParser emitInstanceWithLiteralSlotTestParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
   string expectedEmit = R""""(model:
@@ -190,10 +190,10 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithInstanceSlotTest) {
   s.values.push_back(&iv);
   i2.setClassifier(&c2);
   i2.slots.push_back(&s);
-  m.ownedElements.push_back(&c);
-  m.ownedElements.push_back(&c2);
-  m.ownedElements.push_back(&i);
-  m.ownedElements.push_back(&i2);
+  m.getOwnedElements().add(c);
+  m.getOwnedElements().add(c2);
+  m.getOwnedElements().add(i);
+  m.getOwnedElements().add(i2);
 
   ModelParser emitInstanceWithClassTestParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>);
   string expectedEmit = R""""(model:
@@ -235,9 +235,9 @@ TEST_F(InstanceSpecificationParserTest, BackwardsClassifierTest) {
 
   // Test
   ASSERT_NO_THROW(backwardsClassifierParser.parse(backwardsClassifierNode));
-  ASSERT_TRUE(backwardsClassifierParser.theEl->ownedElements.size() == 2);
-  ASSERT_TRUE(backwardsClassifierParser.theEl->ownedElements.back()->getID() == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
-  ASSERT_TRUE(backwardsClassifierParser.theEl->ownedElements.front()->getElementType() == ElementType::INSTANCE_SPECIFICATION);
-  ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsClassifierParser.theEl->ownedElements.front())->getClassifier() != NULL);
-  ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsClassifierParser.theEl->ownedElements.front())->getClassifier()->getID() == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
+  ASSERT_TRUE(backwardsClassifierParser.theEl->getOwnedElements().size() == 2);
+  ASSERT_TRUE(backwardsClassifierParser.theEl->getOwnedElements().back()->getID() == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
+  ASSERT_TRUE(backwardsClassifierParser.theEl->getOwnedElements().front()->getElementType() == ElementType::INSTANCE_SPECIFICATION);
+  ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsClassifierParser.theEl->getOwnedElements().front())->getClassifier() != NULL);
+  ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsClassifierParser.theEl->getOwnedElements().front())->getClassifier()->getID() == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
 }

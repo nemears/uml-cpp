@@ -50,6 +50,16 @@ namespace UML {
             T* get(boost::uuids::uuid id) { return m_data[id]; };
             T* get(string name) { return m_nameTranslation[name]; };
             T* get(size_t index) { return m_data[m_order[index]]; };
+            T* front() { return m_data[m_order.front()]; };
+            T* back() { return m_data[m_order.back()]; }
+            vector<T*> copyToVector() { 
+                vector<T*> ret;
+                for (auto const& id : m_order) {
+                    ret.push_back(m_data[id]);
+                }
+                ret.shrink_to_fit();
+                return ret;
+            };
             SequenceIterator<T> iterator() { return SequenceIterator<T>(this); };
     };
 
@@ -65,10 +75,10 @@ namespace UML {
             SequenceIterator(Sequence<T>* seq) : m_sequence(seq){
                 m_curr = m_sequence->m_order.begin();
                 m_end = m_sequence->m_order.end();
-                m_iter.resize(m_sequence->m_order.size());
-                for (int i = 0; i < m_sequence->m_order.size(); i++) {
-                    m_iter.assign(i, m_sequence->m_data[m_sequence->m_order[i]]);
+                for (auto const& id : m_sequence->m_order) {
+                    m_iter.push_back(m_sequence->m_data[id]);
                 }
+                m_iter.shrink_to_fit();
             };
         public:
             T* getNext() {

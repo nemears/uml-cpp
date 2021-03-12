@@ -67,9 +67,9 @@ TEST_F(ElementParserTest, ParseID_Test) {
 }
 
 TEST_F(ElementParserTest, ParseChildrenTest) {
-  EXPECT_EQ((*ppYAML->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->ownedElements.back()->getID(), 
-        (*ppYAML->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->ownedElements.back()->getID());
-  EXPECT_EQ(ppYAML->theEl->getID(), ppYAML->theEl->ownedElements.front()->getOwner()->getID());
+  EXPECT_EQ((*ppYAML->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->getOwnedElements().get((*ppYAML->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->getOwnedElements().size()-1)->getID(), 
+        (*ppYAML->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->getOwnedElements().get((*ppYAML->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")]->getOwnedElements().size() - 1)->getID());
+  EXPECT_EQ(ppYAML->theEl->getID(), ppYAML->theEl->getOwnedElements().get(0)->getOwner()->getID());
 }
 
 TEST_F(ElementParserTest, ParseSingleCharID_Test) {
@@ -98,7 +98,7 @@ TEST_F(ElementParserTest, ThrowAbstractEmitExceptionTest) {
   // Setup
   Model m;
   Element e;
-  m.ownedElements.push_back(&e);
+  m.getOwnedElements().add(e);
   ModelParser abstractEmitExceptionParser = ModelParser::createNewParser();
 
   // Test
@@ -127,7 +127,7 @@ TEST_F(ElementParserTest, EmitBasicChildrenOfTypeClass) {
   el.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
   Class c;
   c.setID("c0ab87cc-d00b-4afb-9558-538253b442b2");
-  el.ownedElements.push_back(&c);
+  el.getOwnedElements().add(c);
 
   string expectedEmit = R""""(model:
   id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35

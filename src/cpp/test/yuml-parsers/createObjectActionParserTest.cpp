@@ -23,11 +23,11 @@ TEST_F(CreateObjectParserTest, ParseLiteralClassifierTest) {
 
     // Test
     ASSERT_NO_THROW(literalClassifierParser.parse(literalClassifierNode));
-    ASSERT_TRUE(literalClassifierParser.theEl->ownedElements.size() == 1);
-    ASSERT_TRUE(literalClassifierParser.theEl->ownedElements.front()->getElementType() == ElementType::ACTIVITY);
+    ASSERT_TRUE(literalClassifierParser.theEl->getOwnedElements().size() == 1);
+    ASSERT_TRUE(literalClassifierParser.theEl->getOwnedElements().front()->getElementType() == ElementType::ACTIVITY);
     
     // Activity
-    Activity* act = dynamic_cast<Activity*>(literalClassifierParser.theEl->ownedElements.front());
+    Activity* act = dynamic_cast<Activity*>(literalClassifierParser.theEl->getOwnedElements().front());
     ASSERT_TRUE(act->nodes.size() == 2);
     ASSERT_TRUE(act->nodes.front()->getElementType() == ElementType::CREATE_OBJECT_ACTION);
 
@@ -51,12 +51,12 @@ TEST_F(CreateObjectParserTest, ParseClassClassifierTest) {
 
     // Test
     ASSERT_NO_THROW(classClassifierParser.parse(classClassifierNode));
-    ASSERT_TRUE(classClassifierParser.theEl->ownedElements.size() == 2);
-    ASSERT_TRUE(classClassifierParser.theEl->ownedElements.front()->getElementType() == ElementType::ACTIVITY);
-    ASSERT_TRUE(classClassifierParser.theEl->ownedElements.back()->getElementType() == ElementType::CLASS);
+    ASSERT_TRUE(classClassifierParser.theEl->getOwnedElements().size() == 2);
+    ASSERT_TRUE(classClassifierParser.theEl->getOwnedElements().front()->getElementType() == ElementType::ACTIVITY);
+    ASSERT_TRUE(classClassifierParser.theEl->getOwnedElements().back()->getElementType() == ElementType::CLASS);
     
     // Activity
-    Activity* act = dynamic_cast<Activity*>(classClassifierParser.theEl->ownedElements.front());
+    Activity* act = dynamic_cast<Activity*>(classClassifierParser.theEl->getOwnedElements().front());
     ASSERT_TRUE(act->nodes.size() == 2);
     ASSERT_TRUE(act->nodes.front()->getElementType() == ElementType::CREATE_OBJECT_ACTION);
 
@@ -66,7 +66,7 @@ TEST_F(CreateObjectParserTest, ParseClassClassifierTest) {
     ASSERT_TRUE(coa->getClassifier()->getElementType() == ElementType::CLASS);
 
     // Test corespondence to class
-    Class* clazz = dynamic_cast<Class*>(classClassifierParser.theEl->ownedElements.back());
+    Class* clazz = dynamic_cast<Class*>(classClassifierParser.theEl->getOwnedElements().back());
     ASSERT_TRUE(coa->getClassifier()->getID() == clazz->getID());
     ASSERT_TRUE(coa->getClassifier() == clazz);
 
@@ -109,9 +109,9 @@ TEST_F(CreateObjectParserTest, EmitCreateObjectActionTest) {
     a.nodes.push_back(&p1);
     a.nodes.push_back(&coa2);
     a.nodes.push_back(&p2);
-    m.ownedElements.push_back(&a);
+    m.getOwnedElements().add(a);
     a.setOwner(&m);
-    m.ownedElements.push_back(&c);
+    m.getOwnedElements().add(c);
     c.setOwner(&m);
 
     ModelParser emitCreateObjectActionParser = ModelParser::createNewParser();

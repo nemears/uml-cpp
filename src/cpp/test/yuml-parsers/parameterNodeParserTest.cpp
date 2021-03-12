@@ -25,9 +25,9 @@ TEST_F(ParameterNodeParserTest, ParseParameterNodeTest) {
     ASSERT_NO_THROW(parameterNodeParser.parse(parameterNodeNode));
 
     // Activity
-    ASSERT_TRUE(parameterNodeParser.theEl->ownedElements.size() == 1);
-    ASSERT_TRUE(parameterNodeParser.theEl->ownedElements.front()->getElementType() == ElementType::ACTIVITY);
-    Activity* activity = dynamic_cast<Activity*>(parameterNodeParser.theEl->ownedElements.front());
+    ASSERT_TRUE(parameterNodeParser.theEl->getOwnedElements().size() == 1);
+    ASSERT_TRUE(parameterNodeParser.theEl->getOwnedElements().front()->getElementType() == ElementType::ACTIVITY);
+    Activity* activity = dynamic_cast<Activity*>(parameterNodeParser.theEl->getOwnedElements().front());
     ASSERT_TRUE(activity->parameters.size() == 1);
     ASSERT_TRUE(activity->nodes.size() == 2);
     ASSERT_TRUE(activity->edges.size() == 1);
@@ -99,7 +99,7 @@ TEST_F(ParameterNodeParserTest, EmitParameterNodeTest) {
     a.nodes.push_back(&paramNode);
     a.nodes.push_back(&objNode);
     a.edges.push_back(&objFlow);
-    m.ownedElements.push_back(&a);
+    m.getOwnedElements().add(a);
     string expectedEmit = R""""(model:
   id: 1bfe131b-0d9a-4e6f-9a9b-1dae55626202
   children:

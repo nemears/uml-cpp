@@ -25,11 +25,11 @@ TEST_F(ObjectNodeParserTest, ParseLiteralUpperBoundTest) {
 
     // Test
     ASSERT_TRUE(literalUpperBoundParser.parse(literalUpperBoundNode));
-    ASSERT_TRUE(literalUpperBoundParser.theEl->ownedElements.size() == 1);
-    ASSERT_TRUE(literalUpperBoundParser.theEl->ownedElements.front()->getElementType() == ElementType::ACTIVITY);
+    ASSERT_TRUE(literalUpperBoundParser.theEl->getOwnedElements().size() == 1);
+    ASSERT_TRUE(literalUpperBoundParser.theEl->getOwnedElements().front()->getElementType() == ElementType::ACTIVITY);
 
     // Activity
-    Activity* activity = dynamic_cast<Activity*>(literalUpperBoundParser.theEl->ownedElements.front());
+    Activity* activity = dynamic_cast<Activity*>(literalUpperBoundParser.theEl->getOwnedElements().front());
     ASSERT_TRUE(activity->nodes.size() == 1);
     ASSERT_TRUE(activity->edges.size() == 0);
     ASSERT_TRUE(activity->nodes.front()->getElementType() == ElementType::OBJECT_NODE);
@@ -54,11 +54,11 @@ TEST_F(ObjectNodeParserTest, ParseExpressionUpperBoundTest) {
 
     // Test
     ASSERT_NO_THROW(expressionUpperBoundParser.parse(expressionUpperBoundNode));
-    ASSERT_TRUE(expressionUpperBoundParser.theEl->ownedElements.size() == 1);
-    ASSERT_TRUE(expressionUpperBoundParser.theEl->ownedElements.front()->getElementType() == ElementType::ACTIVITY);
+    ASSERT_TRUE(expressionUpperBoundParser.theEl->getOwnedElements().size() == 1);
+    ASSERT_TRUE(expressionUpperBoundParser.theEl->getOwnedElements().front()->getElementType() == ElementType::ACTIVITY);
 
     // Activity
-    Activity* activity = dynamic_cast<Activity*>(expressionUpperBoundParser.theEl->ownedElements.front());
+    Activity* activity = dynamic_cast<Activity*>(expressionUpperBoundParser.theEl->getOwnedElements().front());
     ASSERT_TRUE(activity->nodes.size() == 1);
     ASSERT_TRUE(activity->edges.size() == 0);
     ASSERT_TRUE(activity->nodes.front()->getElementType() == ElementType::OBJECT_NODE);
@@ -95,7 +95,7 @@ TEST_F(ObjectNodeParserTest, EmitLiteralUpperBoundTest) {
     o.setUpperBound(&b);
     a.nodes.push_back(&o);
     o.setActivity(&a);
-    m.ownedElements.push_back(&a);
+    m.getOwnedElements().add(a);
     a.setOwner(&m);
     ModelParser emitLiteralUpperValue = ModelParser::createNewParser();
     string expectedEmit = R""""(model:
@@ -141,7 +141,7 @@ TEST_F(ObjectNodeParserTest, EmitExpressionUpperBound) {
     o.setUpperBound(&expr);
     a.nodes.push_back(&o);
     o.setActivity(&a);
-    m.ownedElements.push_back(&a);
+    m.getOwnedElements().add(a);
     a.setOwner(&m);
     ModelParser emitExpressionUpperValue = ModelParser::createNewParser();
     string expectedEmit = R""""(model:

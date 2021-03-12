@@ -55,7 +55,7 @@ TEST_F(ClassParserTest, EmitOperationTest) {
     Operation o;
     o.setID("563f4740-e107-4d08-8618-2489f0fe1865");
     c.operations.push_back(&o);
-    m.ownedElements.push_back(&c);
+    m.getOwnedElements().add(c);
 
     ModelParser emitBasicOperationParser = ModelParser::createNewParser();
     string expectedEmit = R""""(model:

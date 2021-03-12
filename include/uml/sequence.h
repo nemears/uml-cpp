@@ -61,9 +61,14 @@ namespace UML {
             Sequence<T>* m_sequence;
             vector<boost::uuids::uuid>::iterator m_curr;
             vector<boost::uuids::uuid>::iterator m_end;
+            vector<T*> m_iter;
             SequenceIterator(Sequence<T>* seq) : m_sequence(seq){
                 m_curr = m_sequence->m_order.begin();
                 m_end = m_sequence->m_order.end();
+                m_iter.resize(m_sequence->m_order.size());
+                for (int i = 0; i < m_sequence->m_order.size(); i++) {
+                    m_iter.assign(i, m_sequence->m_data[m_sequence->m_order[i]]);
+                }
             };
         public:
             T* getNext() {
@@ -72,6 +77,8 @@ namespace UML {
                 return ret;
             };
             bool hasNext() { return m_curr != m_end; };
+            typename vector<T*>::iterator begin() { return m_iter.begin(); };
+            typename vector<T*>::iterator end() { return m_iter.end(); };
     };
 }
 

@@ -82,3 +82,18 @@ TEST_F(SequenceTest, removeElementThatWasntAddedTest) {
     Element e;
     ASSERT_THROW(seq.remove(e), ElementDoesntExistException);
 }
+
+TEST_F(SequenceTest, useAutoForLoop) {
+    Sequence<> seq;
+    Element e;
+    NamedElement f;
+    Element b;
+    Element c;
+    seq.add(e);
+    seq.add(f);
+    seq.add(b);
+    seq.add(c);
+    for (auto const& e: seq.iterator()) {
+        ASSERT_TRUE(e != NULL);
+    }
+}

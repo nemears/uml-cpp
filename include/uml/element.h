@@ -82,7 +82,7 @@ namespace UML {
     class Element {
         friend class ElementDoesntExistException;
         protected:
-            Element* owner;
+            Element* m_owner;
             Sequence<Element>* m_ownedElements;
             boost::uuids::uuid m_id;
         public:

@@ -24,7 +24,7 @@ bool InstanceSpecificationParser::parseFeatures(YAML::Node node, Element* el) {
             if (node["slots"][i]["slot"]) {
                 SlotParser slotParser(elements, postProcessFlag);
                 Slot* parsedEl = (Slot*) slotParser.parseElement(node["slots"][i]["slot"]);
-                dynamic_cast<InstanceSpecification*>(el)->slots.push_back(parsedEl);
+                dynamic_cast<InstanceSpecification*>(el)->getSlots().add(*parsedEl);
             }
         }
     }
@@ -46,11 +46,11 @@ bool InstanceSpecificationParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Value << boost::lexical_cast<string>(dynamic_cast<InstanceSpecification*>(el)->getClassifier()->getID());
     }
 
-    if (!dynamic_cast<InstanceSpecification*>(el)->slots.empty()) {
+    if (!dynamic_cast<InstanceSpecification*>(el)->getSlots().empty()) {
         emitter << YAML::Key << "slots";
         emitter << YAML::Value << YAML::BeginSeq;
 
-        for (auto const& slot: dynamic_cast<InstanceSpecification*>(el)->slots) {
+        for (auto const& slot: dynamic_cast<InstanceSpecification*>(el)->getSlots().iterator()) {
             SlotParser sp(elements, postProcessFlag);
             if(!sp.emit(emitter, slot)) {
                 return false;

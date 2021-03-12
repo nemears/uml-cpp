@@ -6,7 +6,7 @@ using namespace UML;
 // Constructor
 Element::Element() {
     m_id = boost::uuids::random_generator()();
-    owner = NULL;
+    m_owner = NULL;
     m_ownedElements = new Sequence<Element>;
 }
 
@@ -28,11 +28,11 @@ void Element::setID(boost::uuids::uuid id) {
 }
 
 Element* Element::getOwner() {
-    return owner;
+    return m_owner;
 }
 
 void Element::setOwner(Element* owner) {
-    this->owner = owner;
+    this->m_owner = owner;
 }
 
 Sequence<>& Element::getOwnedElements() {

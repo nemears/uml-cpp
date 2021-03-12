@@ -6,16 +6,16 @@
 
 namespace UML{
     class InstanceSpecification : public NamedElement {
+        protected:
+            Classifier* m_classifier;
+            Sequence<Slot>* m_slots;
         public:
-            list<Slot*> slots;
             Classifier* getClassifier();
             void setClassifier(Classifier* classifier);
-            InstanceSpecification() {
-                classifier = NULL;
-            }
+            Sequence<Slot>& getSlots();
+            InstanceSpecification();
+            ~InstanceSpecification();
             ElementType getElementType() override;
-        protected:
-            Classifier* classifier;
     };
 }
 

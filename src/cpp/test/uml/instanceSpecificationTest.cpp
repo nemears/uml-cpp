@@ -31,10 +31,10 @@ TEST_F(InstanceSpecificationTest, setStringValueSlots) {
     stringSlot.setDefiningFeature(&stringP);
     stringSlot.values.push_back(&ls);
     InstanceSpecification i;
-    i.slots.push_back(&stringSlot);
-    ASSERT_TRUE(i.slots.front()->getID() == stringSlot.getID());
-    ASSERT_TRUE(i.slots.front()->getDefiningFeature()->getID() == stringP.getID());
-    ASSERT_TRUE(i.slots.front()->values.front()->getID() == ls.getID());
+    i.getSlots().add(stringSlot);
+    ASSERT_TRUE(i.getSlots().front()->getID() == stringSlot.getID());
+    ASSERT_TRUE(i.getSlots().front()->getDefiningFeature()->getID() == stringP.getID());
+    ASSERT_TRUE(i.getSlots().front()->values.front()->getID() == ls.getID());
 }
 
 TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
@@ -55,8 +55,8 @@ TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
     Slot aSlot;
     aSlot.setDefiningFeature(&bProp);
     aSlot.values.push_back(&bVal);
-    aInst.slots.push_back(&aSlot);
-    ASSERT_TRUE(aInst.slots.front()->getDefiningFeature()->getID() == bProp.getID());
+    aInst.getSlots().add(aSlot);
+    ASSERT_TRUE(aInst.getSlots().front()->getDefiningFeature()->getID() == bProp.getID());
 }
 
 // TODO add throw for pushing slots that don't correspond structural feature

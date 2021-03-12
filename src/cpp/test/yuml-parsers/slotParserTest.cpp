@@ -50,7 +50,7 @@ TEST_F(SlotParserTest, EmitAbstractValue) {
     i.setClassifier(&c);
     s.setDefiningFeature(&p);
     s.values.push_back(&vs);
-    i.slots.push_back(&s);
+    i.getSlots().add(s);
     m.getOwnedElements().add(c2);
     m.getOwnedElements().add(c);
     m.getOwnedElements().add(i);
@@ -73,7 +73,7 @@ TEST_F(SlotParserTest, EmitValueW_NullTypeTest) {
     s.setDefiningFeature(&p);
     s.values.push_back(&ls);
     i.setClassifier(&c);
-    i.slots.push_back(&s);
+    i.getSlots().add(s);
     m.getOwnedElements().add(c);
     m.getOwnedElements().add(i);
     ModelParser valueW_NullTypeParser = ModelParser::createNewParser();
@@ -92,9 +92,9 @@ TEST_F(SlotParserTest, BackwardsDefiningFeatureTest) {
     ASSERT_TRUE(backwardsDefiningFeatureParser.theEl->getOwnedElements().size() == 2);
     ASSERT_TRUE(backwardsDefiningFeatureParser.theEl->getOwnedElements().back()->getID() == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
     ASSERT_TRUE(backwardsDefiningFeatureParser.theEl->getOwnedElements().front()->getElementType() == ElementType::INSTANCE_SPECIFICATION);
-    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsDefiningFeatureParser.theEl->getOwnedElements().front())->slots.size() == 1);
-    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsDefiningFeatureParser.theEl->getOwnedElements().front())->slots.front()->getDefiningFeature() != NULL);
-    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsDefiningFeatureParser.theEl->getOwnedElements().front())->slots.front()->getDefiningFeature()->getID() == dynamic_cast<Classifier*>(backwardsDefiningFeatureParser.theEl->getOwnedElements().back())->getAttributes().front()->getID());
+    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsDefiningFeatureParser.theEl->getOwnedElements().front())->getSlots().size() == 1);
+    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsDefiningFeatureParser.theEl->getOwnedElements().front())->getSlots().front()->getDefiningFeature() != NULL);
+    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsDefiningFeatureParser.theEl->getOwnedElements().front())->getSlots().front()->getDefiningFeature()->getID() == dynamic_cast<Classifier*>(backwardsDefiningFeatureParser.theEl->getOwnedElements().back())->getAttributes().front()->getID());
 }
 
 TEST_F(SlotParserTest, BackwardsValueTest) {
@@ -106,10 +106,10 @@ TEST_F(SlotParserTest, BackwardsValueTest) {
     ASSERT_NO_THROW(backwardsValueParser.parse(backwardsValueNode));
     ASSERT_TRUE(backwardsValueParser.theEl->getOwnedElements().size() == 4);
     ASSERT_TRUE(backwardsValueParser.theEl->getOwnedElements().front()->getElementType() == ElementType::INSTANCE_SPECIFICATION);
-    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsValueParser.theEl->getOwnedElements().front())->slots.size() == 1);
-    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsValueParser.theEl->getOwnedElements().front())->slots.front()->getDefiningFeature() !=  NULL);
-    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsValueParser.theEl->getOwnedElements().front())->slots.front()->getDefiningFeature()->getID() == boost::lexical_cast<boost::uuids::uuid>("d9ab2f06-4c2c-4330-9e1b-7eaee423a66a"));
-    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsValueParser.theEl->getOwnedElements().front())->slots.front()->values.size() == 1);
-    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsValueParser.theEl->getOwnedElements().front())->slots.front()->values.front()->getElementType() == ElementType::INSTANCE_VALUE);
-    ASSERT_TRUE(dynamic_cast<InstanceValue*>(dynamic_cast<InstanceSpecification*>(backwardsValueParser.theEl->getOwnedElements().front())->slots.front()->values.front())->getInstance()->getID() == boost::lexical_cast<boost::uuids::uuid>("9cdae5be-6b75-4284-b1e3-445fcb3dd071"));
+    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsValueParser.theEl->getOwnedElements().front())->getSlots().size() == 1);
+    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsValueParser.theEl->getOwnedElements().front())->getSlots().front()->getDefiningFeature() !=  NULL);
+    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsValueParser.theEl->getOwnedElements().front())->getSlots().front()->getDefiningFeature()->getID() == boost::lexical_cast<boost::uuids::uuid>("d9ab2f06-4c2c-4330-9e1b-7eaee423a66a"));
+    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsValueParser.theEl->getOwnedElements().front())->getSlots().front()->values.size() == 1);
+    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsValueParser.theEl->getOwnedElements().front())->getSlots().front()->values.front()->getElementType() == ElementType::INSTANCE_VALUE);
+    ASSERT_TRUE(dynamic_cast<InstanceValue*>(dynamic_cast<InstanceSpecification*>(backwardsValueParser.theEl->getOwnedElements().front())->getSlots().front()->values.front())->getInstance()->getID() == boost::lexical_cast<boost::uuids::uuid>("9cdae5be-6b75-4284-b1e3-445fcb3dd071"));
 }

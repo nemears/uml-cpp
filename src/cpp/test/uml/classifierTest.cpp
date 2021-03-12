@@ -26,9 +26,9 @@ class ClassifierTest : public ::testing::Test {
 
   void SetUp() override {
      // add element to owned element list
-     classifier1.ownedAttributes.push_front(&prop);
-     classifier1.ownedAttributes.push_back(propPtr);
-     classifierPtr->ownedAttributes.push_back(&prop2);
+     classifier1.getAttributes().add(prop);
+     classifier1.getAttributes().add(*propPtr);
+     classifierPtr->getAttributes().add(prop2);
   }
 
   void TearDown() override {
@@ -40,10 +40,10 @@ class ClassifierTest : public ::testing::Test {
 };
 
 TEST_F(ClassifierTest, GetOwnedAttributesTest) {
-  EXPECT_FALSE(classifier1.ownedAttributes.empty());
-  EXPECT_EQ(classifier1.ownedAttributes.front(), &prop);
-  EXPECT_EQ(classifier1.ownedAttributes.back(), propPtr);
-  EXPECT_EQ(classifierPtr->ownedAttributes.front(), &prop2);
+  EXPECT_FALSE(classifier1.getAttributes().empty());
+  EXPECT_EQ(classifier1.getAttributes().front(), &prop);
+  EXPECT_EQ(classifier1.getAttributes().back(), propPtr);
+  EXPECT_EQ(classifierPtr->getAttributes().front(), &prop2);
 }
 
 // TEST_F(ClassifierTest, AddOwnedAttributesTest) {

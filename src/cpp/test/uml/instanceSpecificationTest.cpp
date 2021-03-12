@@ -24,7 +24,7 @@ TEST_F(InstanceSpecificationTest, setStringValueSlots) {
     PrimitiveType stringPrim;
     stringPrim.setPrimitiveType(PrimitiveType::Primitive::STRING);
     stringP.setType(&stringPrim);
-    c.ownedAttributes.push_back(&stringP);
+    c.getAttributes().add(stringP);
     LiteralString ls;
     ls.setValue("test");
     Slot stringSlot;
@@ -45,7 +45,7 @@ TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
     Property bProp;
     bProp.setName("b");
     bProp.setType(&b);
-    c.ownedAttributes.push_back(&bProp);
+    c.getAttributes().add(bProp);
     InstanceSpecification bInst;
     bInst.setClassifier(&b);
     InstanceSpecification aInst;

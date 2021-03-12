@@ -125,7 +125,7 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithLiteralSlotsTest) {
   LiteralString ls;
   ls.setValue("test");
   p.setType(&pt);
-  c.ownedAttributes.push_back(&p);
+  c.getAttributes().add(p);
   i.setClassifier(&c);
   s.setDefiningFeature(&p);
   s.values.push_back(&ls);
@@ -185,7 +185,7 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithInstanceSlotTest) {
   i.setClassifier(&c);
   iv.setInstance(&i);
   p.setType(&c);
-  c2.ownedAttributes.push_back(&p);
+  c2.getAttributes().add(p);
   s.setDefiningFeature(&p);
   s.values.push_back(&iv);
   i2.setClassifier(&c2);

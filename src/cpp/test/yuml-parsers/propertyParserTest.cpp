@@ -103,7 +103,7 @@ TEST_F(PropertyParserTest, EmitLiteralDefaultValue) {
   ls.setValue("test");
   p.setType(&pt);
   p.setDefaultValue(&ls);
-  c.ownedAttributes.push_back(&p);
+  c.getAttributes().add(p);
   m.getOwnedElements().add(c);
 
   ModelParser emitLiteralDefaultValueParser = ModelParser::createNewParser();
@@ -144,7 +144,7 @@ TEST_F(PropertyParserTest, EmitInstanceValueTest) {
   InstanceValue iv;
   iv.setInstance(&i);
   p.setDefaultValue(&iv);
-  c.ownedAttributes.push_back(&p);
+  c.getAttributes().add(p);
   m.getOwnedElements().add(c2);
   m.getOwnedElements().add(i);
   m.getOwnedElements().add(c);

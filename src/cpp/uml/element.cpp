@@ -10,6 +10,11 @@ Element::Element() {
     m_ownedElements = new Sequence<Element>;
 }
 
+// Destructor
+Element::~Element() {
+    delete m_ownedElements;
+}
+
 void Element::setID(string id) {
     if (UML::isValidUUID4(id)) {
         m_id = boost::lexical_cast<boost::uuids::uuid>(id);

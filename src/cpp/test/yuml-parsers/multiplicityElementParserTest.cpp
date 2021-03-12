@@ -17,7 +17,7 @@ TEST_F(MultiplicityElementParserTest, ProperPropertyMultiplicityParsingTest) {
     YAML::Node properPropertyMultiplicityNode = YAML::LoadFile(ymlPath + "multiplicityElementTests/properPropertyMultiplicty.yml");
 
     ASSERT_NO_THROW(properPropertyMultiplicityParser.parse(properPropertyMultiplicityNode));
-    ASSERT_TRUE(dynamic_cast<Class*>(properPropertyMultiplicityParser.theEl->getOwnedElements().front())->ownedAttributes.front()->multiplicitySpecified());
+    ASSERT_TRUE(dynamic_cast<Class*>(properPropertyMultiplicityParser.theEl->getOwnedElements().front())->getAttributes().front()->multiplicitySpecified());
 }
 
 TEST_F(MultiplicityElementParserTest, ProperParameterMultiplicityParsingTest) {

@@ -87,7 +87,7 @@ namespace UML {
             boost::uuids::uuid m_id;
         public:
             Element();
-            virtual ~Element() {};
+            ~Element();
             Sequence<Element>& getOwnedElements();
             boost::uuids::uuid getID() { return m_id; };
             virtual void setID(string id);

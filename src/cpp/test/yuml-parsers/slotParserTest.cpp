@@ -46,7 +46,7 @@ TEST_F(SlotParserTest, EmitAbstractValue) {
     Slot s;
     ValueSpecification vs;
     p.setType(&c2);
-    c.ownedAttributes.push_back(&p);
+    c.getAttributes().add(p);
     i.setClassifier(&c);
     s.setDefiningFeature(&p);
     s.values.push_back(&vs);
@@ -68,7 +68,7 @@ TEST_F(SlotParserTest, EmitValueW_NullTypeTest) {
     InstanceSpecification i;
     Slot s;
     LiteralString ls;
-    c.ownedAttributes.push_back(&p);
+    c.getAttributes().add(p);
     ls.setValue("test");
     s.setDefiningFeature(&p);
     s.values.push_back(&ls);
@@ -94,7 +94,7 @@ TEST_F(SlotParserTest, BackwardsDefiningFeatureTest) {
     ASSERT_TRUE(backwardsDefiningFeatureParser.theEl->getOwnedElements().front()->getElementType() == ElementType::INSTANCE_SPECIFICATION);
     ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsDefiningFeatureParser.theEl->getOwnedElements().front())->slots.size() == 1);
     ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsDefiningFeatureParser.theEl->getOwnedElements().front())->slots.front()->getDefiningFeature() != NULL);
-    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsDefiningFeatureParser.theEl->getOwnedElements().front())->slots.front()->getDefiningFeature()->getID() == dynamic_cast<Classifier*>(backwardsDefiningFeatureParser.theEl->getOwnedElements().back())->ownedAttributes.front()->getID());
+    ASSERT_TRUE(dynamic_cast<InstanceSpecification*>(backwardsDefiningFeatureParser.theEl->getOwnedElements().front())->slots.front()->getDefiningFeature()->getID() == dynamic_cast<Classifier*>(backwardsDefiningFeatureParser.theEl->getOwnedElements().back())->getAttributes().front()->getID());
 }
 
 TEST_F(SlotParserTest, BackwardsValueTest) {

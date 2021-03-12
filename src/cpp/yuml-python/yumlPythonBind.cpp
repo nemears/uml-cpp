@@ -290,18 +290,9 @@ PYBIND11_MODULE(yuml_python, m) {
     // Classifier
     py::class_<Classifier, Type, ClassifierPy<>> classifier (m, "Classifier");
     classifier.def(py::init<>())
-        .def("addAttribute", [] (Classifier& me, Property& prop) { me.ownedAttributes.push_back(&prop); })
-        .def("removeAttribute", [] (Classifier& me, Property& prop) {
-            list<Property*>::iterator i = me.ownedAttributes.begin();
-            while (i != me.ownedAttributes.end()) {
-                if ((*i)->getID() == prop.getID()) {
-                    me.ownedAttributes.erase(i);
-                    break;
-                }
-                ++i;
-            }
-        })
-        .def_readonly("attributes", &Classifier::ownedAttributes)
+        .def("addAttribute", [] (Classifier& me, Property& prop) { me.getAttributes().add(prop); })
+        .def("removeAttribute", [] (Classifier& me, Property& prop) {me.getAttributes().remove(prop); })
+        //.def_readonly("attributes", &Classifier::ownedAttributes)
         .def("isPrimitive", &Classifier::isPrimitive);
     
     // PrimitiveType

@@ -76,7 +76,7 @@ TEST_F(TypedElementParserTest, EmitLiteralTypeTest) {
   PrimitiveType pt;
   pt.setPrimitiveType(PrimitiveType::Primitive::STRING);
   p.setType(&pt);
-  c.ownedAttributes.push_back(&p);
+  c.getAttributes().add(p);
   m.getOwnedElements().add(c);
 
   string expectedEmit = R""""(model:
@@ -109,7 +109,7 @@ TEST_F(TypedElementParserTest, EmitAttributesOfClassiferTypeTest) {
   Class c2;
   c2.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
   p.setType(&c2);
-  c.ownedAttributes.push_back(&p);
+  c.getAttributes().add(p);
   m.getOwnedElements().add(c);
   m.getOwnedElements().add(c2);
 
@@ -145,7 +145,7 @@ TEST_F(TypedElementParserTest, BackwardsParsingTest) {
   ASSERT_TRUE(backwardsParsingParser.theEl->getOwnedElements().size() == 2);
   ASSERT_TRUE(backwardsParsingParser.theEl->getOwnedElements().front()->getID() == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
   ASSERT_TRUE(backwardsParsingParser.theEl->getOwnedElements().front()->getElementType() == ElementType::CLASS);
-  ASSERT_TRUE(dynamic_cast<Class*>(backwardsParsingParser.theEl->getOwnedElements().front())->ownedAttributes.size() == 1);
-  ASSERT_TRUE(dynamic_cast<Class*>(backwardsParsingParser.theEl->getOwnedElements().front())->ownedAttributes.front()->getType() != NULL);
-  ASSERT_TRUE(dynamic_cast<Class*>(backwardsParsingParser.theEl->getOwnedElements().front())->ownedAttributes.front()->getType()->getID() == backwardsParsingParser.theEl->getOwnedElements().back()->getID());
+  ASSERT_TRUE(dynamic_cast<Class*>(backwardsParsingParser.theEl->getOwnedElements().front())->getAttributes().size() == 1);
+  ASSERT_TRUE(dynamic_cast<Class*>(backwardsParsingParser.theEl->getOwnedElements().front())->getAttributes().front()->getType() != NULL);
+  ASSERT_TRUE(dynamic_cast<Class*>(backwardsParsingParser.theEl->getOwnedElements().front())->getAttributes().front()->getType()->getID() == backwardsParsingParser.theEl->getOwnedElements().back()->getID());
 }

@@ -29,12 +29,12 @@ TEST_F(InstanceSpecificationTest, setStringValueSlots) {
     ls.setValue("test");
     Slot stringSlot;
     stringSlot.setDefiningFeature(&stringP);
-    stringSlot.values.push_back(&ls);
+    stringSlot.getValues().add(ls);
     InstanceSpecification i;
     i.getSlots().add(stringSlot);
     ASSERT_TRUE(i.getSlots().front()->getID() == stringSlot.getID());
     ASSERT_TRUE(i.getSlots().front()->getDefiningFeature()->getID() == stringP.getID());
-    ASSERT_TRUE(i.getSlots().front()->values.front()->getID() == ls.getID());
+    ASSERT_TRUE(i.getSlots().front()->getValues().front()->getID() == ls.getID());
 }
 
 TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
@@ -54,7 +54,7 @@ TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
     bVal.setInstance(&bInst);
     Slot aSlot;
     aSlot.setDefiningFeature(&bProp);
-    aSlot.values.push_back(&bVal);
+    aSlot.getValues().add(bVal);
     aInst.getSlots().add(aSlot);
     ASSERT_TRUE(aInst.getSlots().front()->getDefiningFeature()->getID() == bProp.getID());
 }

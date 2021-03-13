@@ -3,19 +3,20 @@
 #include "element.h"
 #include "valueSpecification.h"
 #include "structuralFeature.h"
+#include "sequence.h"
 
 namespace UML {
     class Slot : public Element {
         protected:
-            StructuralFeature* definingFeature;
+            StructuralFeature* m_definingFeature;
+            Sequence<ValueSpecification>* m_values;
         public:
-            list<ValueSpecification*> values;
+            Slot();
+            ~Slot();
+            Sequence<ValueSpecification>& getValues();
             StructuralFeature* getDefiningFeature();
             void setDefiningFeature(StructuralFeature* definingFeature);
             ElementType getElementType() override;
-            Slot() {
-                definingFeature = NULL;
-            }
             class NullDefiningFeatureException : public exception {
                 public:
                     virtual const char* what() const throw() {

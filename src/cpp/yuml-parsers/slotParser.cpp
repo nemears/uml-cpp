@@ -36,28 +36,28 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
                             string stringVal = node["value"].as<string>();
                             LiteralString* ls = new LiteralString;
                             ls->setValue(stringVal);
-                            ((Slot *) el)->values.push_back(ls);
+                            ((Slot *) el)->getValues().add(*ls);
                             break;
                         }
                         case PrimitiveType::Primitive::INT : {
                             int intVal = node["value"].as<int>();
                             LiteralInt* li = new LiteralInt;
                             li->setValue(intVal);
-                            ((Slot *) el)->values.push_back(li);
+                            ((Slot *) el)->getValues().add(*li);
                             break;
                         }
                         case PrimitiveType::Primitive::REAL : {
                             double realVal = node["value"].as<double>();
                             LiteralReal* lr = new LiteralReal;
                             lr->setValue(realVal);
-                            ((Slot *) el)->values.push_back(lr);
+                            ((Slot *) el)->getValues().add(*lr);
                             break;
                         }
                         case PrimitiveType::Primitive::BOOL : {
                             bool boolVal = node["value"].as<bool>();
                             LiteralBool* lb = new LiteralBool;
                             lb->setValue(boolVal);
-                            ((Slot *) el)->values.push_back(lb);
+                            ((Slot *) el)->getValues().add(*lb);
                             break;
                         }
                         default : {
@@ -94,7 +94,7 @@ void SlotParser::parseNonPimitiveValueFeatures(YAML::Node node, Element* el) {
         if (node["value"]["expression"]) {
             ExpressionParser ep(elements, postProcessFlag);
             Element* parsedEl = ep.parseElement(node["value"]["expression"]);
-            dynamic_cast<Slot*>(el)->values.push_back(dynamic_cast<ValueSpecification*>(parsedEl));
+            dynamic_cast<Slot*>(el)->getValues().add(*dynamic_cast<ValueSpecification*>(parsedEl));
         }
     }
 }
@@ -113,36 +113,36 @@ bool SlotParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Value << boost::lexical_cast<string>(((Slot*)el)->getDefiningFeature()->getID());
     }
 
-    if (!((Slot*)el)->values.empty()) {
+    if (!((Slot*)el)->getValues().empty()) {
         if (((Slot*)el)->getDefiningFeature()->getType() != NULL) {
             emitter << YAML::Key << "value";
             if (((Slot*)el)->getDefiningFeature()->getType()->isPrimitive()) {
                 switch (((PrimitiveType*)((Slot*)el)->getDefiningFeature()->getType())->getPrimitiveType()) {
                     case PrimitiveType::Primitive::BOOL : {
-                        emitter << YAML::Value << ((LiteralBool*)((Slot*)el)->values.front())->getValue();
+                        emitter << YAML::Value << ((LiteralBool*)((Slot*)el)->getValues().front())->getValue();
                         break;
                     }
                     case PrimitiveType::Primitive::INT : {
-                        emitter << YAML::Value << ((LiteralInt*)((Slot*)el)->values.front())->getValue();
+                        emitter << YAML::Value << ((LiteralInt*)((Slot*)el)->getValues().front())->getValue();
                         break;
                     }
                     case PrimitiveType::Primitive::REAL : {
-                        emitter << YAML::Value << ((LiteralReal*)((Slot*)el)->values.front())->getValue();
+                        emitter << YAML::Value << ((LiteralReal*)((Slot*)el)->getValues().front())->getValue();
                         break;
                     }
                     case PrimitiveType::Primitive::STRING : {
-                        emitter << YAML::Value << ((LiteralString*)((Slot*)el)->values.front())->getValue();
+                        emitter << YAML::Value << ((LiteralString*)((Slot*)el)->getValues().front())->getValue();
                         break;
                     }
                 }
             } else {
-                if (((Slot*)el)->values.front()->getElementType() == ElementType::INSTANCE_VALUE) {
-                    if (((InstanceValue*)((Slot*)el)->values.front())->getInstance() != NULL) {
-                        emitter << YAML::Value << boost::lexical_cast<string>(((InstanceValue*)((Slot*)el)->values.front())->getInstance()->getID());
+                if (((Slot*)el)->getValues().front()->getElementType() == ElementType::INSTANCE_VALUE) {
+                    if (((InstanceValue*)((Slot*)el)->getValues().front())->getInstance() != NULL) {
+                        emitter << YAML::Value << boost::lexical_cast<string>(((InstanceValue*)((Slot*)el)->getValues().front())->getInstance()->getID());
                     }
                 } else {
                     // Error
-                    throw AbstractTypeEmitException(((Slot*)el)->values.front()->getElementTypeString(), boost::lexical_cast<string>(((Slot*)el)->values.front()->getID()));
+                    throw AbstractTypeEmitException(((Slot*)el)->getValues().front()->getElementTypeString(), boost::lexical_cast<string>(((Slot*)el)->getValues().front()->getID()));
                 }
             }
         } else {

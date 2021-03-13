@@ -233,18 +233,9 @@ PYBIND11_MODULE(yuml_python, m) {
         .def(py::init<>())
         .def("getDefiningFeature", &Slot::getDefiningFeature)
         .def("setDefiningFeature", &Slot::setDefiningFeature)
-        .def_readonly("values", &Slot::values)
-        .def("addValue", [](Slot& me, ValueSpecification& val) { me.values.push_back(&val); })
-        .def("removeValue", [](Slot& me, ValueSpecification& val) {
-            list<ValueSpecification*>::iterator i = me.values.begin();
-            while (i != me.values.end()) {
-                if ((*i)->getID() == val.getID()) {
-                    me.values.erase(i);
-                    break;
-                }
-                ++i;
-            }
-        });
+        //.def_readonly("values", &Slot::values)
+        .def("addValue", [](Slot& me, ValueSpecification& val) { me.getValues().add(val); })
+        .def("removeValue", [](Slot& me, ValueSpecification& val) { me.getValues().remove(val); });
 
     // InstanceSpecification
     py::class_<InstanceSpecification, NamedElement, ElementPy<InstanceSpecification>>(m, "InstanceSpecification")

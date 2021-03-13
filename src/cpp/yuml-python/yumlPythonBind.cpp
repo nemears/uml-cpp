@@ -295,30 +295,12 @@ PYBIND11_MODULE(yuml_python, m) {
         .def(py::init<>())
         .def("getType", &Operation::getType)
         .def("setType", &Operation::setType)
-        .def("addParameter", [] (Operation& me, Parameter& param) { me.parameters.push_back(&param); })
-        .def("removeParameter", [] (Operation& me, Parameter& param) {
-            list<Parameter*>::iterator i = me.parameters.begin();
-            while (i != me.parameters.end()) {
-                if ((*i)->getID() == param.getID()) {
-                    me.parameters.erase(i);
-                    break;
-                }
-                ++i;
-            }
-        })
-        .def_readonly("parameters", &Operation::parameters)
-        .def("addMethod", [] (Operation& me, Behavior& method) { me.methods.push_back(&method); })
-        .def("removeMethod", [] (Operation& me, Behavior& method) {
-            list<Behavior*>::iterator i = me.methods.begin();
-            while (i != me.methods.end()) {
-                if ((*i)->getID() == method.getID()) {
-                    me.methods.erase(i);
-                    break;
-                }
-                ++i;
-            }
-        })
-        .def_readonly("methods", &Operation::methods);
+        .def("addParameter", [] (Operation& me, Parameter& param) { me.getParameters().add(param); })
+        .def("removeParameter", [] (Operation& me, Parameter& param) { me.getParameters().remove(param); })
+        //.def_readonly("parameters", &Operation::parameters)
+        .def("addMethod", [] (Operation& me, Behavior& method) { me.getMethods().add(method); })
+        .def("removeMethod", [] (Operation& me, Behavior& method) { me.getMethods().remove(method); });
+        //.def_readonly("methods", &Operation::methods);
 
     // Class
     py::class_<Class, Classifier, ClassifierPy<Class>>(m, "Class")

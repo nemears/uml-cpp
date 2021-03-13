@@ -3,6 +3,7 @@
 #include "uml/operation.h"
 #include "uml/opaqueBehavior.h"
 #include "uml/parameter.h"
+#include "uml/sequence.h"
 
 using namespace UML;
 
@@ -15,9 +16,9 @@ TEST_F(ClassTest, BasicOperationTest) {
     Operation o;
     OpaqueBehavior oB;
     Parameter p;
-    ASSERT_NO_THROW(o.parameters.push_back(&p));
+    ASSERT_NO_THROW(o.getParameters().add(p));
     ASSERT_NO_THROW(oB.bodies.push_back("return true"));
-    ASSERT_NO_THROW(o.methods.push_back(&oB));
+    ASSERT_NO_THROW(o.getMethods().add(oB));
     ASSERT_NO_THROW(c.getOperations().add(o));
 }
 

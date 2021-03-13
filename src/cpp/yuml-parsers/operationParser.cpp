@@ -12,7 +12,7 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
                 if (node["parameters"][i].IsMap()) {
                     ParameterParser parameterParser(elements, postProcessFlag);
                     Element* parsedEl = parameterParser.TypedElementParser::parseElement(node["parameters"][i]["parameter"]);
-                    dynamic_cast<Operation*>(el)->parameters.push_back(dynamic_cast<Parameter*>(parsedEl));
+                    dynamic_cast<Operation*>(el)->getParameters().add(*dynamic_cast<Parameter*>(parsedEl));
                 }
             }
         } else {
@@ -28,11 +28,11 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
                     if (node["methods"][i]["activity"]) {
                         ActivityParser activityParser(elements, postProcessFlag);
                         Element* parsedEl = activityParser.parseElement(node["methods"][i]["activity"]);
-                        dynamic_cast<Operation*>(el)->methods.push_back(dynamic_cast<Activity*>(parsedEl));
+                        dynamic_cast<Operation*>(el)->getMethods().add(*dynamic_cast<Activity*>(parsedEl));
                     } else if (node["methods"][i]["opaqueBehavior"]) {
                         OpaqueBehaviorParser opaqueBehaviorParser(elements, postProcessFlag);
                         Element* parsedEl = opaqueBehaviorParser.parseElement(node["methods"][i]["opaqueBehavior"]);
-                        dynamic_cast<Operation*>(el)->methods.push_back(dynamic_cast<OpaqueBehavior*>(parsedEl));
+                        dynamic_cast<Operation*>(el)->getMethods().add(*dynamic_cast<OpaqueBehavior*>(parsedEl));
                     }
 
                     // TODO other types here
@@ -96,10 +96,10 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
     
     bool ret = NamedElementParser::emit(emitter, el);
 
-    if (!dynamic_cast<Operation*>(el)->parameters.empty()) {
+    if (!dynamic_cast<Operation*>(el)->getParameters().empty()) {
         emitter << YAML::Key << "parameters";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& parameter: dynamic_cast<Operation*>(el)->parameters) {
+        for (auto const& parameter: dynamic_cast<Operation*>(el)->getParameters().iterator()) {
             ParameterParser pp(elements, postProcessFlag);
             if (!pp.emit(emitter, parameter)) {
                 return false;
@@ -108,10 +108,10 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::EndSeq;
     }
 
-    if (!dynamic_cast<Operation*>(el)->methods.empty()) {
+    if (!dynamic_cast<Operation*>(el)->getMethods().empty()) {
         emitter << YAML::Key << "methods";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& method: dynamic_cast<Operation*>(el)->methods) {
+        for (auto const& method: dynamic_cast<Operation*>(el)->getMethods().iterator()) {
             switch(method->getElementType()) {
                 case ElementType::ACTIVITY : {
                     ActivityParser ap(elements, postProcessFlag);

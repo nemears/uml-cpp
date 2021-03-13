@@ -11,16 +11,17 @@ using namespace std;
 namespace UML {
     class Operation : public NamedElement {
         protected:
-            Type* type;
+            Type* m_type;
+            Sequence<Behavior>* m_methods;
+            Sequence<Parameter>* m_parameters;
         public:
-            list<Behavior*> methods;
-            list<Parameter*> parameters;
+            Operation();
+            ~Operation();
+            Sequence<Behavior>& getMethods();
+            Sequence<Parameter>& getParameters();
             Type* getType();
             void setType(Type* type);
             ElementType getElementType() override;
-            Operation() {
-                type = NULL;
-            }
     };
 }
 

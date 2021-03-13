@@ -7,13 +7,14 @@
 
 namespace UML {
     class OpaqueBehavior : public Behavior {
+        protected:
+            
+            string singletonBody;
         public:
             list<string> bodies;
             ElementType getElementType() override;
             string getSingletonBody();
             void setSingletonBody(const string& sb);
-        protected:
-            string singletonBody;
     };
 }
 

@@ -5,6 +5,7 @@
 #include "parameterParser.h"
 #include "opaqueBehaviorParser.h"
 #include "uml/operation.h"
+#include "uml/sequence.h"
 #include "activityParser.h"
 
 using namespace UML;
@@ -22,7 +23,7 @@ class OperationParser : public NamedElementParser {
         bool emit(YAML::Emitter& emitter, Element* el);
         static OperationParser createNewParser();
         static void addMethodLater(YAML::Node node, Element* operation, Element* method) {
-            dynamic_cast<Operation*>(operation)->methods.push_back(dynamic_cast<Behavior*>(method));
+            dynamic_cast<Operation*>(operation)->getMethods().add(*dynamic_cast<Behavior*>(method));
         };
 };
 

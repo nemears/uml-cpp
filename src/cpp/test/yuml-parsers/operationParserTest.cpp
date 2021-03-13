@@ -67,7 +67,7 @@ TEST_F(OperationParserTest, EmitOperationWithLiteralParameter) {
   PrimitiveType pt;
   pt.setPrimitiveType(PrimitiveType::Primitive::STRING);
   p.setType(&pt);
-  o.parameters.push_back(&p);
+  o.getParameters().add(p);
   c.getOperations().add(o);
   m.getOwnedElements().add(c);
 
@@ -109,7 +109,7 @@ TEST_F(OperationParserTest, EmitOperationWithInstanceParameter) {
   p.setID("563f4740-e107-4d08-8618-2489f0fe1865");
   p.setName("test");
   p.setType(&c2);
-  o.parameters.push_back(&p);
+  o.getParameters().add(p);
   c.getOperations().add(o);
   m.getOwnedElements().add(c2);
   m.getOwnedElements().add(c);
@@ -151,7 +151,7 @@ TEST_F(OperationParserTest, EmitOperationWithBlankOpaqueBehaviorTest) {
   OpaqueBehavior ob;
   ob.setID("d9ab2f06-4c2c-4330-9e1b-7eaee423a66a");
   ob.setName("foo");
-  o.methods.push_back(&ob);
+  o.getMethods().add(ob);
   c.getOperations().add(o);
   m.getOwnedElements().add(c);
 
@@ -184,7 +184,7 @@ TEST_F(OperationParserTest, EmitAbstractMethodTest) {
   Class c;
   Operation o;
   Behavior b;
-  o.methods.push_back(&b);
+  o.getMethods().add(b);
   c.getOperations().add(o);
   m.getOwnedElements().add(c);
   ModelParser abstractMethodParser = ModelParser::createNewParser();
@@ -207,9 +207,9 @@ TEST_F(OperationParserTest, ParseBackwardsMethodTest) {
   
   // Operation
   Operation* op = dynamic_cast<Class*>(backwardsMethodParser.theEl->getOwnedElements().front())->getOperations().front();
-  ASSERT_TRUE(op->methods.size() == 1);
-  ASSERT_TRUE(op->methods.front()->getElementType() == ElementType::ACTIVITY);
-  ASSERT_TRUE(op->methods.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
+  ASSERT_TRUE(op->getMethods().size() == 1);
+  ASSERT_TRUE(op->getMethods().front()->getElementType() == ElementType::ACTIVITY);
+  ASSERT_TRUE(op->getMethods().front()->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
   
   // Activity
   ASSERT_TRUE(backwardsMethodParser.theEl->getOwnedElements().back()->getElementType() == ElementType::ACTIVITY);
@@ -232,9 +232,9 @@ TEST_F(OperationParserTest, ParseForwardMethodTest) {
   
   // Operation
   Operation* op = dynamic_cast<Class*>(forwardsMethodParser.theEl->getOwnedElements().back())->getOperations().front();
-  ASSERT_TRUE(op->methods.size() == 1);
-  ASSERT_TRUE(op->methods.front()->getElementType() == ElementType::ACTIVITY);
-  ASSERT_TRUE(op->methods.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
+  ASSERT_TRUE(op->getMethods().size() == 1);
+  ASSERT_TRUE(op->getMethods().front()->getElementType() == ElementType::ACTIVITY);
+  ASSERT_TRUE(op->getMethods().front()->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
   
   // Activity
   ASSERT_TRUE(forwardsMethodParser.theEl->getOwnedElements().front()->getElementType() == ElementType::ACTIVITY);
@@ -258,28 +258,28 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
   
   // Operation
   Operation * op = clazz->getOperations().front();
-  ASSERT_TRUE(op->parameters.size() == 2);
-  ASSERT_TRUE(op->methods.size() == 1);
+  ASSERT_TRUE(op->getParameters().size() == 2);
+  ASSERT_TRUE(op->getMethods().size() == 1);
 
   //Parameters
-  ASSERT_TRUE(op->parameters.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("1bfe131b-0d9a-4e6f-9a9b-1dae55626202"));
-  Parameter* inParam = op->parameters.front();
+  ASSERT_TRUE(op->getParameters().front()->getID() == boost::lexical_cast<boost::uuids::uuid>("1bfe131b-0d9a-4e6f-9a9b-1dae55626202"));
+  Parameter* inParam = op->getParameters().front();
   ASSERT_TRUE(inParam->getType() != NULL);
   ASSERT_TRUE(inParam->getType()->isPrimitive());
   ASSERT_TRUE(dynamic_cast<PrimitiveType*>(inParam->getType())->getPrimitiveType() == PrimitiveType::Primitive::INT);
   ASSERT_TRUE(inParam->getDirection() == ParameterDirectionKind::IN);
 
-  ASSERT_TRUE(op->parameters.back()->getID() == boost::lexical_cast<boost::uuids::uuid>("4b9519d3-cfd4-4bda-b1dc-6c7d0f521647"));
-  Parameter* retParam = op->parameters.back();
+  ASSERT_TRUE(op->getParameters().back()->getID() == boost::lexical_cast<boost::uuids::uuid>("4b9519d3-cfd4-4bda-b1dc-6c7d0f521647"));
+  Parameter* retParam = op->getParameters().back();
   ASSERT_TRUE(retParam->getType() != NULL);
   ASSERT_TRUE(retParam->getType()->isPrimitive());
   ASSERT_TRUE(dynamic_cast<PrimitiveType*>(retParam->getType())->getPrimitiveType() == PrimitiveType::Primitive::BOOL);
   ASSERT_TRUE(retParam->getDirection() == ParameterDirectionKind::RETURN);
 
   // Activity
-  ASSERT_TRUE(op->methods.front()->getElementType() == ElementType::ACTIVITY);
-  ASSERT_TRUE(op->methods.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("54e8f139-9581-48a4-8021-32ff00606c93"));
-  Activity* activity = dynamic_cast<Activity*>(op->methods.front());
+  ASSERT_TRUE(op->getMethods().front()->getElementType() == ElementType::ACTIVITY);
+  ASSERT_TRUE(op->getMethods().front()->getID() == boost::lexical_cast<boost::uuids::uuid>("54e8f139-9581-48a4-8021-32ff00606c93"));
+  Activity* activity = dynamic_cast<Activity*>(op->getMethods().front());
   ASSERT_TRUE(activity->getParameters().size() == 2);
   ASSERT_TRUE(activity->getParameters().front() == inParam);
   ASSERT_TRUE(activity->getParameters().back() == retParam);

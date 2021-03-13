@@ -28,12 +28,12 @@ TEST_F(ParameterNodeParserTest, ParseParameterNodeTest) {
     ASSERT_TRUE(parameterNodeParser.theEl->getOwnedElements().size() == 1);
     ASSERT_TRUE(parameterNodeParser.theEl->getOwnedElements().front()->getElementType() == ElementType::ACTIVITY);
     Activity* activity = dynamic_cast<Activity*>(parameterNodeParser.theEl->getOwnedElements().front());
-    ASSERT_TRUE(activity->parameters.size() == 1);
+    ASSERT_TRUE(activity->getParameters().size() == 1);
     ASSERT_TRUE(activity->nodes.size() == 2);
     ASSERT_TRUE(activity->edges.size() == 1);
 
     // Parameter
-    Parameter* param = activity->parameters.front();
+    Parameter* param = activity->getParameters().front();
     cout << boost::lexical_cast<string>(param->getID()) << endl;
     ASSERT_TRUE(param->getID() == boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
     ASSERT_TRUE(param->getType()->isPrimitive());
@@ -85,7 +85,7 @@ TEST_F(ParameterNodeParserTest, EmitParameterNodeTest) {
     paramNode.setID("f73c6d44-5436-4021-83a6-ed90345c1f5f");
     objNode.setID("25a0f5f5-0d02-40e6-a70e-c3c606fcfde0");
     objFlow.setID("0734d34f-066f-4029-97d9-e39ac2f40f2b");
-    a.parameters.push_back(&param);
+    a.getParameters().add(param);
     pt.setPrimitiveType(PrimitiveType::Primitive::INT);
     param.setType(&pt);
     paramNode.setType(&pt);

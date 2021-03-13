@@ -280,9 +280,9 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
   ASSERT_TRUE(op->methods.front()->getElementType() == ElementType::ACTIVITY);
   ASSERT_TRUE(op->methods.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("54e8f139-9581-48a4-8021-32ff00606c93"));
   Activity* activity = dynamic_cast<Activity*>(op->methods.front());
-  ASSERT_TRUE(activity->parameters.size() == 2);
-  ASSERT_TRUE(activity->parameters.front() == inParam);
-  ASSERT_TRUE(activity->parameters.back() == retParam);
+  ASSERT_TRUE(activity->getParameters().size() == 2);
+  ASSERT_TRUE(activity->getParameters().front() == inParam);
+  ASSERT_TRUE(activity->getParameters().back() == retParam);
   ASSERT_TRUE(activity->nodes.size() == 8);
   ASSERT_TRUE(activity->edges.size() == 7);
   list<ActivityNode*>::iterator nodeIt = activity->nodes.begin();

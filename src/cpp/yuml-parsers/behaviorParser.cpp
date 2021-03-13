@@ -11,7 +11,7 @@ bool BehaviorParser::parseFeatures(YAML::Node node, Element* el) {
                     if (node["parameters"][i]["parameter"]) {
                         ParameterParser pp(elements, postProcessFlag);
                         Element* parsedEl = pp.TypedElementParser::parseElement(node["parameters"][i]["parameter"]);
-                        dynamic_cast<Behavior*>(el)->parameters.push_back(dynamic_cast<Parameter*>(parsedEl));
+                        dynamic_cast<Behavior*>(el)->getParameters().add(*dynamic_cast<Parameter*>(parsedEl));
                     } else {
                         // error
                         YAML::Emitter errEmit;
@@ -43,10 +43,10 @@ bool BehaviorParser::parseFeatures(YAML::Node node, Element* el) {
 bool BehaviorParser::emit(YAML::Emitter& emitter, Element* el) {
     bool ret = ClassParser::emit(emitter, el);
 
-    if(!dynamic_cast<Behavior*>(el)->parameters.empty()) {
+    if(!dynamic_cast<Behavior*>(el)->getParameters().empty()) {
         emitter << YAML::Key << "parameters";
         emitter << YAML::Value << YAML::BeginSeq;
-        for(auto const& param : dynamic_cast<Behavior*>(el)->parameters) {
+        for(auto const& param : dynamic_cast<Behavior*>(el)->getParameters().iterator()) {
             // TODO don't conflict with operation paired parameter
             ParameterParser pp (elements, postProcessFlag);
             pp.emit(emitter, param);

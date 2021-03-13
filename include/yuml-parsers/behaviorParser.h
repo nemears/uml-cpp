@@ -13,7 +13,7 @@ class BehaviorParser : public ClassParser {
             ClassParser(elements, postParsers) {};
         bool emit(YAML::Emitter& emitter, Element* el) override;
         static void addParameterLater(YAML::Node node, Element* behavior, Element* param) {
-            dynamic_cast<Behavior*>(behavior)->parameters.push_back(dynamic_cast<Parameter*>(param));
+            dynamic_cast<Behavior*>(behavior)->getParameters().add(*dynamic_cast<Parameter*>(param));
         };
 };
 

@@ -5,8 +5,12 @@
 
 namespace UML {
     class Behavior : public Class {
+        protected:
+            Sequence<Parameter>* m_parameters;
         public:
-            list<Parameter*> parameters;
+            Behavior();
+            ~Behavior();
+            Sequence<Parameter>& getParameters();
             ElementType getElementType() override;
     };
 }

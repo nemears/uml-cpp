@@ -24,5 +24,5 @@ TEST_F(MultiplicityElementParserTest, ProperParameterMultiplicityParsingTest) {
     ModelParser properParameterMultiplicityParser = ModelParser::createNewParser();
     YAML::Node properParameterMultiplicityNode = YAML::LoadFile(ymlPath + "multiplicityElementTests/properParameterMultiplicity.yml");
     ASSERT_NO_THROW(properParameterMultiplicityParser.parse(properParameterMultiplicityNode));
-    ASSERT_TRUE(dynamic_cast<Class*>(properParameterMultiplicityParser.theEl->getOwnedElements().front())->operations.front()->parameters.front()->multiplicitySpecified());
+    ASSERT_TRUE(dynamic_cast<Class*>(properParameterMultiplicityParser.theEl->getOwnedElements().front())->getOperations().front()->parameters.front()->multiplicitySpecified());
 }

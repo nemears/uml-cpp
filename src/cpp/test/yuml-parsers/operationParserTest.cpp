@@ -68,7 +68,7 @@ TEST_F(OperationParserTest, EmitOperationWithLiteralParameter) {
   pt.setPrimitiveType(PrimitiveType::Primitive::STRING);
   p.setType(&pt);
   o.parameters.push_back(&p);
-  c.operations.push_back(&o);
+  c.getOperations().add(o);
   m.getOwnedElements().add(c);
 
   ModelParser emitOperationWithParameterTestParser = ModelParser::createNewParser();
@@ -110,7 +110,7 @@ TEST_F(OperationParserTest, EmitOperationWithInstanceParameter) {
   p.setName("test");
   p.setType(&c2);
   o.parameters.push_back(&p);
-  c.operations.push_back(&o);
+  c.getOperations().add(o);
   m.getOwnedElements().add(c2);
   m.getOwnedElements().add(c);
 
@@ -152,7 +152,7 @@ TEST_F(OperationParserTest, EmitOperationWithBlankOpaqueBehaviorTest) {
   ob.setID("d9ab2f06-4c2c-4330-9e1b-7eaee423a66a");
   ob.setName("foo");
   o.methods.push_back(&ob);
-  c.operations.push_back(&o);
+  c.getOperations().add(o);
   m.getOwnedElements().add(c);
 
   ModelParser emitOperationWithBlankOpaqueBehaviorTestParser = ModelParser::createNewParser();
@@ -185,7 +185,7 @@ TEST_F(OperationParserTest, EmitAbstractMethodTest) {
   Operation o;
   Behavior b;
   o.methods.push_back(&b);
-  c.operations.push_back(&o);
+  c.getOperations().add(o);
   m.getOwnedElements().add(c);
   ModelParser abstractMethodParser = ModelParser::createNewParser();
 
@@ -203,10 +203,10 @@ TEST_F(OperationParserTest, ParseBackwardsMethodTest) {
 
   // Class
   ASSERT_TRUE(backwardsMethodParser.theEl->getOwnedElements().front()->getElementType() == ElementType::CLASS);
-  ASSERT_TRUE(dynamic_cast<Class*>(backwardsMethodParser.theEl->getOwnedElements().front())->operations.size() == 1);
+  ASSERT_TRUE(dynamic_cast<Class*>(backwardsMethodParser.theEl->getOwnedElements().front())->getOperations().size() == 1);
   
   // Operation
-  Operation* op = dynamic_cast<Class*>(backwardsMethodParser.theEl->getOwnedElements().front())->operations.front();
+  Operation* op = dynamic_cast<Class*>(backwardsMethodParser.theEl->getOwnedElements().front())->getOperations().front();
   ASSERT_TRUE(op->methods.size() == 1);
   ASSERT_TRUE(op->methods.front()->getElementType() == ElementType::ACTIVITY);
   ASSERT_TRUE(op->methods.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
@@ -228,10 +228,10 @@ TEST_F(OperationParserTest, ParseForwardMethodTest) {
 
   // Class
   ASSERT_TRUE(forwardsMethodParser.theEl->getOwnedElements().back()->getElementType() == ElementType::CLASS);
-  ASSERT_TRUE(dynamic_cast<Class*>(forwardsMethodParser.theEl->getOwnedElements().back())->operations.size() == 1);
+  ASSERT_TRUE(dynamic_cast<Class*>(forwardsMethodParser.theEl->getOwnedElements().back())->getOperations().size() == 1);
   
   // Operation
-  Operation* op = dynamic_cast<Class*>(forwardsMethodParser.theEl->getOwnedElements().back())->operations.front();
+  Operation* op = dynamic_cast<Class*>(forwardsMethodParser.theEl->getOwnedElements().back())->getOperations().front();
   ASSERT_TRUE(op->methods.size() == 1);
   ASSERT_TRUE(op->methods.front()->getElementType() == ElementType::ACTIVITY);
   ASSERT_TRUE(op->methods.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
@@ -254,10 +254,10 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
 
   // Class
   Class* clazz = dynamic_cast<Class*>(actvityAndOperationParser.theEl->getOwnedElements().front());
-  ASSERT_TRUE(clazz->operations.size() == 1);
+  ASSERT_TRUE(clazz->getOperations().size() == 1);
   
   // Operation
-  Operation * op = clazz->operations.front();
+  Operation * op = clazz->getOperations().front();
   ASSERT_TRUE(op->parameters.size() == 2);
   ASSERT_TRUE(op->methods.size() == 1);
 

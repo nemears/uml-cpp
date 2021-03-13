@@ -15,7 +15,7 @@ bool ClassParser::parseFeatures(YAML::Node node, Element* el) {
             for (std::size_t i=0; i<node["operations"].size(); i++) {
                 OperationParser operationParser(elements, postProcessFlag);
                 Element* parsedEl = operationParser.parseElement(node["operations"][i]["operation"]);
-                dynamic_cast<Class*>(el)->operations.push_back(dynamic_cast<Operation*>(parsedEl));
+                dynamic_cast<Class*>(el)->getOperations().add(*dynamic_cast<Operation*>(parsedEl));
             }
         } else {
             throw ElementParser::InvalidNodeTypeException(node["operations"].Mark().line, "sequence");
@@ -34,10 +34,10 @@ bool ClassParser::emit(YAML::Emitter& emitter, Element* el) {
 
     bool ret = ClassifierParser::emit(emitter, el);
 
-    if (!dynamic_cast<Class*>(el)->operations.empty()) {
+    if (!dynamic_cast<Class*>(el)->getOperations().empty()) {
         emitter << YAML::Key << "operations";
         emitter << YAML::BeginSeq;
-        for (auto const& operation: dynamic_cast<Class*>(el)->operations) {
+        for (auto const& operation: dynamic_cast<Class*>(el)->getOperations().iterator()) {
             OperationParser op(elements, postProcessFlag);
             if (!op.emit(emitter, operation)) {
                 return false;

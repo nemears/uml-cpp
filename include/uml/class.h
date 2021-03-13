@@ -16,8 +16,12 @@ namespace UML{
      * Definition of class here
      **/
     class Class : public Classifier {
+        protected:
+            Sequence<Operation>* m_operations;
         public:
-            list<Operation*> operations;
+            Class();
+            ~Class();
+            Sequence<Operation>& getOperations();
             ElementType getElementType() override;
     };
 }

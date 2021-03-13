@@ -18,7 +18,7 @@ TEST_F(ClassTest, BasicOperationTest) {
     ASSERT_NO_THROW(o.parameters.push_back(&p));
     ASSERT_NO_THROW(oB.bodies.push_back("return true"));
     ASSERT_NO_THROW(o.methods.push_back(&oB));
-    ASSERT_NO_THROW(c.operations.push_back(&o));
+    ASSERT_NO_THROW(c.getOperations().add(o));
 }
 
 // TEST_F(ClassTest, AddOperationTest) {

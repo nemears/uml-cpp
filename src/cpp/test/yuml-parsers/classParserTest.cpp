@@ -21,21 +21,21 @@ TEST_F(ClassParserTest, testBasicOperations) {
     YAML::Node node = YAML::LoadFile(ymlPath + "classTests/operation.yml");
     ASSERT_NO_THROW(pp.parse(node));
     ASSERT_TRUE((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")]);
-    ASSERT_TRUE(dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.empty() == false);
-    ASSERT_TRUE(dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
-    ASSERT_TRUE(((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front())->parameters.empty() == false);
-    ASSERT_TRUE(((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front())->parameters.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
-    ASSERT_TRUE(((Parameter*)((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front())->parameters.front())->getType()->isPrimitive());
-    ASSERT_TRUE(((PrimitiveType*)((Parameter*)((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front())->parameters.front())->getType())->getPrimitiveType() == PrimitiveType::Primitive::BOOL);
-    ASSERT_TRUE(((Parameter*)((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front())->parameters.front())->getName().compare("debug") == 0);
-    ASSERT_TRUE(((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front())->methods.empty() == false);
-    ASSERT_TRUE(((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front())->methods.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2"));
-    ASSERT_TRUE(((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front())->methods.front()->getName().compare("isValid") == 0);
-    ASSERT_TRUE(((OpaqueBehavior*)((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front())->methods.front())->bodies.empty() == false);
-    ASSERT_TRUE(((OpaqueBehavior*)((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front())->methods.front())->bodies.front().compare("return true") == 0);
-    ASSERT_TRUE(((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front())->getType() != NULL);
-    ASSERT_TRUE(((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front())->getType()->isPrimitive());
-    ASSERT_TRUE(((PrimitiveType*)((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->operations.front())->getType())->getPrimitiveType() == PrimitiveType::Primitive::BOOL);
+    ASSERT_TRUE(dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getOperations().empty() == false);
+    ASSERT_TRUE(dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getOperations().front()->getID() == boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
+    ASSERT_TRUE(((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getOperations().front())->parameters.empty() == false);
+    ASSERT_TRUE(((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getOperations().front())->parameters.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
+    ASSERT_TRUE(((Parameter*)((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getOperations().front())->parameters.front())->getType()->isPrimitive());
+    ASSERT_TRUE(((PrimitiveType*)((Parameter*)((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getOperations().front())->parameters.front())->getType())->getPrimitiveType() == PrimitiveType::Primitive::BOOL);
+    ASSERT_TRUE(((Parameter*)((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getOperations().front())->parameters.front())->getName().compare("debug") == 0);
+    ASSERT_TRUE(((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getOperations().front())->methods.empty() == false);
+    ASSERT_TRUE(((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getOperations().front())->methods.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("c0ab87cc-d00b-4afb-9558-538253b442b2"));
+    ASSERT_TRUE(((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getOperations().front())->methods.front()->getName().compare("isValid") == 0);
+    ASSERT_TRUE(((OpaqueBehavior*)((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getOperations().front())->methods.front())->bodies.empty() == false);
+    ASSERT_TRUE(((OpaqueBehavior*)((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getOperations().front())->methods.front())->bodies.front().compare("return true") == 0);
+    ASSERT_TRUE(((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getOperations().front())->getType() != NULL);
+    ASSERT_TRUE(((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getOperations().front())->getType()->isPrimitive());
+    ASSERT_TRUE(((PrimitiveType*)((Operation*)dynamic_cast<Class*>((*pp.elements)[boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033")])->getOperations().front())->getType())->getPrimitiveType() == PrimitiveType::Primitive::BOOL);
 }
 
 TEST_F(ClassParserTest, NonSequenceOperationsExceptionTest) {
@@ -54,7 +54,7 @@ TEST_F(ClassParserTest, EmitOperationTest) {
     c.setID("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
     Operation o;
     o.setID("563f4740-e107-4d08-8618-2489f0fe1865");
-    c.operations.push_back(&o);
+    c.getOperations().add(o);
     m.getOwnedElements().add(c);
 
     ModelParser emitBasicOperationParser = ModelParser::createNewParser();

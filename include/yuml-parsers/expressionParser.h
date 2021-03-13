@@ -24,7 +24,7 @@ class ExpressionParser : public TypedElementParser {
         static void addInstanceOperandLater(YAML::Node node, Element* expression, Element* inst) {
             InstanceValue* operand = new InstanceValue;
             operand->setInstance(dynamic_cast<InstanceSpecification*>(inst));
-            dynamic_cast<Expression*>(expression)->operands.push_back(dynamic_cast<ValueSpecification*>(operand));
+            dynamic_cast<Expression*>(expression)->getOperands().add(*dynamic_cast<ValueSpecification*>(operand));
         };
 };
 

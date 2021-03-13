@@ -218,18 +218,9 @@ PYBIND11_MODULE(yuml_python, m) {
     // Expression
     py::class_<Expression, ValueSpecification, ElementPy<Expression>>(m, "Expression")
         .def(py::init<>())
-        .def("addOperand", [](Expression& me, ValueSpecification& operand) { me.operands.push_back(&operand); })
-        .def("removeOperand", [](Expression& me, ValueSpecification& operand) {
-            list<ValueSpecification*>::iterator i = me.operands.begin();
-            while (i != me.operands.end()) {
-                if ((*i)->getID() == operand.getID()) {
-                    me.operands.erase(i);
-                    break;
-                }
-                ++i;
-            }
-        })
-        .def_readonly("operands", &Expression::operands)
+        .def("addOperand", [](Expression& me, ValueSpecification& operand) { me.getOperands().add(operand); })
+        .def("removeOperand", [](Expression& me, ValueSpecification& operand) { me.getOperands().remove(operand); })
+        //.def_readonly("operands", &Expression::operands)
         .def("getSymbol", &Expression::getSymbol)
         .def("setSymbol", &Expression::setSymbol);
 

@@ -70,9 +70,9 @@ TEST_F(ObjectNodeParserTest, ParseExpressionUpperBoundTest) {
     ASSERT_TRUE(dynamic_cast<PrimitiveType*>(objNode->getType())->getPrimitiveType() == PrimitiveType::Primitive::INT);
     ASSERT_TRUE(objNode->getUpperBound() != NULL);
     ASSERT_TRUE(objNode->getUpperBound()->getElementType() == ElementType::EXPRESSION);
-    ASSERT_TRUE(dynamic_cast<Expression*>(objNode->getUpperBound())->operands.size() == 1);
-    ASSERT_TRUE(dynamic_cast<Expression*>(objNode->getUpperBound())->operands.front()->getElementType() == ElementType::LITERAL_INT);
-    ASSERT_TRUE(dynamic_cast<LiteralInt*>(dynamic_cast<Expression*>(objNode->getUpperBound())->operands.front())->getValue() == 5);
+    ASSERT_TRUE(dynamic_cast<Expression*>(objNode->getUpperBound())->getOperands().size() == 1);
+    ASSERT_TRUE(dynamic_cast<Expression*>(objNode->getUpperBound())->getOperands().front()->getElementType() == ElementType::LITERAL_INT);
+    ASSERT_TRUE(dynamic_cast<LiteralInt*>(dynamic_cast<Expression*>(objNode->getUpperBound())->getOperands().front())->getValue() == 5);
     ASSERT_TRUE(dynamic_cast<Expression*>(objNode->getUpperBound())->getSymbol().compare("<") == 0);
 
     // Tear Down
@@ -134,7 +134,7 @@ TEST_F(ObjectNodeParserTest, EmitExpressionUpperBound) {
     expr.setID("fa7a57e9-88cf-489c-8345-8351336aec05");
     LiteralBool lb;
     lb.setValue(false);
-    expr.operands.push_back(&lb);
+    expr.getOperands().add(lb);
     expr.setSymbol("!");
     expr.setType(&pt);
     o.setType(&pt);

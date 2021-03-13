@@ -2,12 +2,25 @@
 
 using namespace UML;
 
+Expression::Expression() {
+    m_symbol = "";
+    m_operands = new Sequence<ValueSpecification>;
+}
+
+Expression::~Expression() {
+    delete m_operands;
+}
+
+Sequence<ValueSpecification>& Expression::getOperands() {
+    return *m_operands;
+}
+
 string Expression::getSymbol() {
-    return symbol;
+    return m_symbol;
 }
 
 void Expression::setSymbol(string sym) {
-    this->symbol = sym;
+    m_symbol = sym;
 }
 
 ElementType Expression::getElementType() {

@@ -22,9 +22,9 @@ TEST_F(CallBehaviorActionParserTest, ForwardBehaviorParseTest) {
     ASSERT_TRUE(forwardBehaviorParser.theEl->getOwnedElements().front()->getElementType() == ElementType::OPAQUE_BEHAVIOR);
     ASSERT_TRUE(forwardBehaviorParser.theEl->getOwnedElements().back()->getElementType() == ElementType::ACTIVITY);
     Activity* act = dynamic_cast<Activity*>(forwardBehaviorParser.theEl->getOwnedElements().back());
-    ASSERT_TRUE(act->nodes.size() == 2);
-    ASSERT_TRUE(act->nodes.front()->getElementType() == ElementType::CALL_BEHAVIOR_ACTION);
-    CallBehaviorAction* cba = dynamic_cast<CallBehaviorAction*>(act->nodes.front());
+    ASSERT_TRUE(act->getNodes().size() == 2);
+    ASSERT_TRUE(act->getNodes().front()->getElementType() == ElementType::CALL_BEHAVIOR_ACTION);
+    CallBehaviorAction* cba = dynamic_cast<CallBehaviorAction*>(act->getNodes().front());
     ASSERT_TRUE(cba->getBehavior() != NULL);
     ASSERT_TRUE(cba->getBehavior()->getID() == forwardBehaviorParser.theEl->getOwnedElements().front()->getID());
     ASSERT_TRUE(cba->getBehavior() == forwardBehaviorParser.theEl->getOwnedElements().front());
@@ -40,9 +40,9 @@ TEST_F(CallBehaviorActionParserTest, BackwardsBehaviorParseTest) {
     ASSERT_TRUE(backwardsBehaviorParser.theEl->getOwnedElements().back()->getElementType() == ElementType::OPAQUE_BEHAVIOR);
     ASSERT_TRUE(backwardsBehaviorParser.theEl->getOwnedElements().front()->getElementType() == ElementType::ACTIVITY);
     Activity* act = dynamic_cast<Activity*>(backwardsBehaviorParser.theEl->getOwnedElements().front());
-    ASSERT_TRUE(act->nodes.size() == 2);
-    ASSERT_TRUE(act->nodes.front()->getElementType() == ElementType::CALL_BEHAVIOR_ACTION);
-    CallBehaviorAction* cba = dynamic_cast<CallBehaviorAction*>(act->nodes.front());
+    ASSERT_TRUE(act->getNodes().size() == 2);
+    ASSERT_TRUE(act->getNodes().front()->getElementType() == ElementType::CALL_BEHAVIOR_ACTION);
+    CallBehaviorAction* cba = dynamic_cast<CallBehaviorAction*>(act->getNodes().front());
     ASSERT_TRUE(cba->getBehavior() != NULL);
     ASSERT_TRUE(cba->getBehavior()->getID() == backwardsBehaviorParser.theEl->getOwnedElements().back()->getID());
     ASSERT_TRUE(cba->getBehavior() == backwardsBehaviorParser.theEl->getOwnedElements().back());
@@ -59,7 +59,7 @@ TEST_F(CallBehaviorActionParserTest, EmitBehaviorTest) {
     act.setID("c7f09553-c13a-4d21-9e00-b9364c0aeaed");
     CallBehaviorAction cba;
     cba.setID("fa7a57e9-88cf-489c-8345-8351336aec05");
-    act.nodes.push_back(&cba);
+    act.getNodes().add(cba);
     cba.setActivity(&act);
     ob.setOwner(&m);
     m.getOwnedElements().add(ob);

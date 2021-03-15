@@ -28,7 +28,7 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
             }
             skipValueParseNow = true;
         }
-        if (!skipValueParseNow){
+        if (!skipValueParseNow) {
             if (((StructuralFeature*)((Slot*) el)->getDefiningFeature())->getType() != NULL) {
                 if (((StructuralFeature*)((Slot*) el)->getDefiningFeature())->getType()->isPrimitive()) {
                     switch (((PrimitiveType*) ((StructuralFeature*)((Slot*) el)->getDefiningFeature())->getType())->getPrimitiveType()) {

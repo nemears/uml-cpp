@@ -30,9 +30,9 @@ TEST_F(ActivityEdgeParserTest, ParseDecisionNodeGuardTest) {
 
     // Activity
     Activity* activity = dynamic_cast<Activity*>(decisionNodeGuardParser.theEl->getOwnedElements().front());
-    ASSERT_TRUE(activity->nodes.size() == 5);
-    ASSERT_TRUE(activity->edges.size() == 4);
-    list<ActivityNode*>::iterator nodeIt = activity->nodes.begin();
+    ASSERT_TRUE(activity->getNodes().size() == 5);
+    ASSERT_TRUE(activity->getEdges().size() == 4);
+    vector<ActivityNode*>::iterator nodeIt = activity->getNodes().begin();
 
     // Object Node
     ASSERT_TRUE((*nodeIt)->getElementType() == ElementType::OBJECT_NODE);
@@ -87,9 +87,9 @@ TEST_F(ActivityEdgeParserTest, ParseBackwardsGuardTest) {
 
     // Activity
     Activity* activity = dynamic_cast<Activity*>(decisionNodeGuardParser.theEl->getOwnedElements().front());
-    ASSERT_TRUE(activity->nodes.size() == 5);
-    ASSERT_TRUE(activity->edges.size() == 4);
-    list<ActivityNode*>::iterator nodeIt = activity->nodes.begin();
+    ASSERT_TRUE(activity->getNodes().size() == 5);
+    ASSERT_TRUE(activity->getEdges().size() == 4);
+    vector<ActivityNode*>::iterator nodeIt = activity->getNodes().begin();
 
     // Object Node
     ASSERT_TRUE((*nodeIt)->getElementType() == ElementType::OBJECT_NODE);
@@ -182,20 +182,20 @@ TEST_F(ActivityEdgeParserTest, EmitEdgeGuardTest) {
     obj.outgoing.push_back(&objToDecision);
     dec.incoming.push_back(&objToDecision);
     dec.setDecisionInputFlow(&objToDecision);
-    activity.nodes.push_back(&init);
+    activity.getNodes().add(init);
     init.setActivity(&activity);
-    activity.nodes.push_back(&dec);
+    activity.getNodes().add(dec);
     dec.setActivity(&activity);
-    activity.nodes.push_back(&obj);
+    activity.getNodes().add(obj);
     obj.setActivity(&activity);
-    activity.nodes.push_back(&action1);
+    activity.getNodes().add(action1);
     action1.setActivity(&activity);
-    activity.nodes.push_back(&action2);
+    activity.getNodes().add(action2);
     action2.setActivity(&activity);
-    activity.edges.push_back(&initToDec);
-    activity.edges.push_back(&objToDecision);
-    activity.edges.push_back(&decToAction1);
-    activity.edges.push_back(&decToAction2);
+    activity.getEdges().add(initToDec);
+    activity.getEdges().add(objToDecision);
+    activity.getEdges().add(decToAction1);
+    activity.getEdges().add(decToAction2);
     m.getOwnedElements().add(activity);
     activity.setOwner(&m);
     string expectedEmit = R""""(model:

@@ -283,10 +283,10 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
   ASSERT_TRUE(activity->getParameters().size() == 2);
   ASSERT_TRUE(activity->getParameters().front() == inParam);
   ASSERT_TRUE(activity->getParameters().back() == retParam);
-  ASSERT_TRUE(activity->nodes.size() == 8);
-  ASSERT_TRUE(activity->edges.size() == 7);
-  list<ActivityNode*>::iterator nodeIt = activity->nodes.begin();
-  list<ActivityEdge*>::iterator edgeIt = activity->edges.begin();
+  ASSERT_TRUE(activity->getNodes().size() == 8);
+  ASSERT_TRUE(activity->getEdges().size() == 7);
+  vector<ActivityNode*>::iterator nodeIt = activity->getNodes().begin();
+  vector<ActivityEdge*>::iterator edgeIt = activity->getEdges().begin();
 
   // InitialNode
   ASSERT_TRUE((*nodeIt)->getID() == boost::lexical_cast<boost::uuids::uuid>("25a0f5f5-0d02-40e6-a70e-c3c606fcfde0"));

@@ -13,6 +13,7 @@ namespace UML {
             map<boost::uuids::uuid, T*> m_data;
             vector<boost::uuids::uuid> m_order;
             map<string, T*> m_nameTranslation;
+            vector<T*> m_rep;
         public:
 
             // Methods
@@ -20,11 +21,13 @@ namespace UML {
                 if (!m_data.count(el.getID())) {
                     m_data[el.getID()] = &el;
                     m_order.push_back(el.getID());
+                    m_rep.push_back(&el);
                     if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
                         m_nameTranslation[dynamic_cast<NamedElement*>(&el)->getName()] = &el;
                     }
                 } else {
                     m_order.push_back(el.getID());
+                    m_rep.push_back(&el);
                 }
             };
             void remove(T& el) {
@@ -41,6 +44,7 @@ namespace UML {
 
                     // erase all uuids in order
                     m_order.erase(std::remove(m_order.begin(), m_order.end(), el.getID()), m_order.end());
+                    m_rep.erase(std::remove(m_rep.begin(), m_rep.end(), &el), m_rep.end());
                 } else {
                     throw ElementDoesntExistException(el);
                 }
@@ -52,6 +56,8 @@ namespace UML {
             T* get(size_t index) { return m_data[m_order[index]]; };
             T* front() { return m_data[m_order.front()]; };
             T* back() { return m_data[m_order.back()]; }
+            typename vector<T*>::iterator begin() { return m_rep.begin(); };
+            typename vector<T*>::iterator end() { return m_rep.end(); };
             vector<T*> copyToVector() { 
                 vector<T*> ret;
                 for (auto const& id : m_order) {

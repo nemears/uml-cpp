@@ -29,8 +29,8 @@ TEST_F(ParameterNodeParserTest, ParseParameterNodeTest) {
     ASSERT_TRUE(parameterNodeParser.theEl->getOwnedElements().front()->getElementType() == ElementType::ACTIVITY);
     Activity* activity = dynamic_cast<Activity*>(parameterNodeParser.theEl->getOwnedElements().front());
     ASSERT_TRUE(activity->getParameters().size() == 1);
-    ASSERT_TRUE(activity->nodes.size() == 2);
-    ASSERT_TRUE(activity->edges.size() == 1);
+    ASSERT_TRUE(activity->getNodes().size() == 2);
+    ASSERT_TRUE(activity->getEdges().size() == 1);
 
     // Parameter
     Parameter* param = activity->getParameters().front();
@@ -41,8 +41,8 @@ TEST_F(ParameterNodeParserTest, ParseParameterNodeTest) {
     ASSERT_TRUE(param->getDirection() == ParameterDirectionKind::IN);
 
     // Parameter Node
-    ASSERT_TRUE(activity->nodes.front()->getElementType() == ElementType::PARAMETER_NODE);
-    ParameterNode* paramNode = dynamic_cast<ParameterNode*>(activity->nodes.front());
+    ASSERT_TRUE(activity->getNodes().front()->getElementType() == ElementType::PARAMETER_NODE);
+    ParameterNode* paramNode = dynamic_cast<ParameterNode*>(activity->getNodes().front());
     ASSERT_TRUE(paramNode->getID() == boost::lexical_cast<boost::uuids::uuid>("2c2fc607-48c6-4879-800b-7e659441cba1"));
     ASSERT_TRUE(paramNode->getParameter() != NULL);
     ASSERT_TRUE(paramNode->getParameter()->getID() == param->getID());
@@ -54,8 +54,8 @@ TEST_F(ParameterNodeParserTest, ParseParameterNodeTest) {
     ASSERT_TRUE(paramNode->outgoing.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
 
     // Object Node
-    ASSERT_TRUE(activity->nodes.back()->getElementType() == ElementType::OBJECT_NODE);
-    ObjectNode* objNode = dynamic_cast<ObjectNode*>(activity->nodes.back());
+    ASSERT_TRUE(activity->getNodes().back()->getElementType() == ElementType::OBJECT_NODE);
+    ObjectNode* objNode = dynamic_cast<ObjectNode*>(activity->getNodes().back());
     ASSERT_TRUE(objNode->getID() == boost::lexical_cast<boost::uuids::uuid>("7d4b6b0b-f6c2-4670-868c-87709cede18e"));
     ASSERT_TRUE(objNode->getType() != NULL);
     ASSERT_TRUE(objNode->getType()->isPrimitive());
@@ -63,8 +63,8 @@ TEST_F(ParameterNodeParserTest, ParseParameterNodeTest) {
     ASSERT_TRUE(objNode->incoming.size() == 1);
 
     // Object Flow
-    ASSERT_TRUE(activity->edges.front()->getElementType() == ElementType::OBJECT_FLOW);
-    ObjectFlow* objFlow = dynamic_cast<ObjectFlow*>(activity->edges.front());
+    ASSERT_TRUE(activity->getEdges().front()->getElementType() == ElementType::OBJECT_FLOW);
+    ObjectFlow* objFlow = dynamic_cast<ObjectFlow*>(activity->getEdges().front());
     ASSERT_TRUE(objFlow->getID() == boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
     ASSERT_TRUE(objFlow->getSource()->getID() == paramNode->getID());
     ASSERT_TRUE(objFlow->getTarget()->getID() == objNode->getID());
@@ -96,9 +96,9 @@ TEST_F(ParameterNodeParserTest, EmitParameterNodeTest) {
     objNode.incoming.push_back(&objFlow);
     objFlow.setSource(&paramNode);
     objFlow.setTarget(&objNode);
-    a.nodes.push_back(&paramNode);
-    a.nodes.push_back(&objNode);
-    a.edges.push_back(&objFlow);
+    a.getNodes().add(paramNode);
+    a.getNodes().add(objNode);
+    a.getEdges().add(objFlow);
     m.getOwnedElements().add(a);
     string expectedEmit = R""""(model:
   id: 1bfe131b-0d9a-4e6f-9a9b-1dae55626202

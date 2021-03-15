@@ -27,24 +27,24 @@ TEST_F(ObjectFlowParserTest, ParseObjectNodeToActionTest) {
     ASSERT_NO_THROW(objectToActionParser.parse(objectToActionNode));
     ASSERT_TRUE(objectToActionParser.theEl->getOwnedElements().size() == 1);
     ASSERT_TRUE(objectToActionParser.theEl->getOwnedElements().front()->getElementType() == ElementType::ACTIVITY);
-    ASSERT_TRUE(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->nodes.size() ==3); 
-    ASSERT_TRUE(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->edges.size() ==1); 
+    ASSERT_TRUE(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getNodes().size() ==3); 
+    ASSERT_TRUE(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getEdges().size() ==1); 
 
     // Object Node
-    ASSERT_TRUE(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->nodes.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("9cdae5be-6b75-4284-b1e3-445fcb3dd071"));
-    ASSERT_TRUE(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->nodes.front()->getElementType() == ElementType::OBJECT_NODE);
-    ASSERT_TRUE(dynamic_cast<ObjectNode*>(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->nodes.front())->getType() != NULL);
-    ASSERT_TRUE(dynamic_cast<ObjectNode*>(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->nodes.front())->getType()->isPrimitive());
-    ASSERT_TRUE(dynamic_cast<PrimitiveType*>(dynamic_cast<ObjectNode*>(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->nodes.front())->getType())->getPrimitiveType() == PrimitiveType::Primitive::INT);
-    ASSERT_TRUE(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->nodes.front()->outgoing.size() == 1);
-    ASSERT_TRUE(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->nodes.front()->outgoing.front()->getElementType() == ElementType::OBJECT_FLOW);
+    ASSERT_TRUE(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getNodes().front()->getID() == boost::lexical_cast<boost::uuids::uuid>("9cdae5be-6b75-4284-b1e3-445fcb3dd071"));
+    ASSERT_TRUE(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getNodes().front()->getElementType() == ElementType::OBJECT_NODE);
+    ASSERT_TRUE(dynamic_cast<ObjectNode*>(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getNodes().front())->getType() != NULL);
+    ASSERT_TRUE(dynamic_cast<ObjectNode*>(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getNodes().front())->getType()->isPrimitive());
+    ASSERT_TRUE(dynamic_cast<PrimitiveType*>(dynamic_cast<ObjectNode*>(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getNodes().front())->getType())->getPrimitiveType() == PrimitiveType::Primitive::INT);
+    ASSERT_TRUE(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getNodes().front()->outgoing.size() == 1);
+    ASSERT_TRUE(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getNodes().front()->outgoing.front()->getElementType() == ElementType::OBJECT_FLOW);
 
     // Object Flow
-    ASSERT_EQ(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->nodes.front()->outgoing.front()->getID(), dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->edges.front()->getID());
-    ASSERT_EQ(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->edges.front()->getSource()->getID(), dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->nodes.front()->getID());
+    ASSERT_EQ(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getNodes().front()->outgoing.front()->getID(), dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getEdges().front()->getID());
+    ASSERT_EQ(dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getEdges().front()->getSource()->getID(), dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getNodes().front()->getID());
 
     // Action
-    list<ActivityNode*>::iterator nodeIt = dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->nodes.begin();
+    vector<ActivityNode*>::iterator nodeIt = dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getNodes().begin();
     ++nodeIt;
     ASSERT_TRUE((*nodeIt)->getElementType() == ElementType::ACTION);
     Action* act = dynamic_cast<Action*>(*nodeIt);
@@ -53,13 +53,13 @@ TEST_F(ObjectFlowParserTest, ParseObjectNodeToActionTest) {
 
     // Input Pin
     InputPin* inputPin = dynamic_cast<InputPin*>(act->inputs.front());
-    ASSERT_EQ(inputPin->getID(), dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->nodes.back()->getID());
+    ASSERT_EQ(inputPin->getID(), dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getNodes().back()->getID());
     ASSERT_TRUE(inputPin->getType() != NULL);
     ASSERT_TRUE(inputPin->getType()->isPrimitive());
     ASSERT_TRUE(dynamic_cast<PrimitiveType*>(inputPin->getType())->getPrimitiveType() == PrimitiveType::Primitive::INT);
     ASSERT_TRUE(inputPin->incoming.size() == 1);
-    ASSERT_EQ(inputPin->incoming.front()->getID(), dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->edges.front()->getID());
-    ASSERT_EQ(inputPin->getID(), dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->edges.front()->getTarget()->getID());
+    ASSERT_EQ(inputPin->incoming.front()->getID(), dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getEdges().front()->getID());
+    ASSERT_EQ(inputPin->getID(), dynamic_cast<Activity*>(objectToActionParser.theEl->getOwnedElements().front())->getEdges().front()->getTarget()->getID());
 }
 
 TEST_F(ObjectFlowParserTest, ParseBackwardsOutputPinTest) {
@@ -73,23 +73,23 @@ TEST_F(ObjectFlowParserTest, ParseBackwardsOutputPinTest) {
     //Activity
     ASSERT_TRUE(backwardsOutputParser.theEl->getOwnedElements().size() == 1);
     ASSERT_TRUE(backwardsOutputParser.theEl->getOwnedElements().front()->getElementType() == ElementType::ACTIVITY);
-    ASSERT_TRUE(dynamic_cast<Activity*>(backwardsOutputParser.theEl->getOwnedElements().front())->nodes.size() ==3); 
-    ASSERT_TRUE(dynamic_cast<Activity*>(backwardsOutputParser.theEl->getOwnedElements().front())->edges.size() ==1); 
+    ASSERT_TRUE(dynamic_cast<Activity*>(backwardsOutputParser.theEl->getOwnedElements().front())->getNodes().size() ==3); 
+    ASSERT_TRUE(dynamic_cast<Activity*>(backwardsOutputParser.theEl->getOwnedElements().front())->getEdges().size() ==1); 
 
     // Action
-    ASSERT_TRUE(dynamic_cast<Activity*>(backwardsOutputParser.theEl->getOwnedElements().front())->nodes.front()->getElementType() == ElementType::ACTION);
-    Action* act = dynamic_cast<Action*>(dynamic_cast<Activity*>(backwardsOutputParser.theEl->getOwnedElements().front())->nodes.front());
+    ASSERT_TRUE(dynamic_cast<Activity*>(backwardsOutputParser.theEl->getOwnedElements().front())->getNodes().front()->getElementType() == ElementType::ACTION);
+    Action* act = dynamic_cast<Action*>(dynamic_cast<Activity*>(backwardsOutputParser.theEl->getOwnedElements().front())->getNodes().front());
     ASSERT_TRUE(act->outputs.size() == 1);
     ASSERT_TRUE(act->outputs.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("7d4b6b0b-f6c2-4670-868c-87709cede18e"));
 
     // OutputPin
-    list<ActivityNode*>::iterator outIt = dynamic_cast<Activity*>(backwardsOutputParser.theEl->getOwnedElements().front())->nodes.begin();
+    vector<ActivityNode*>::iterator outIt = dynamic_cast<Activity*>(backwardsOutputParser.theEl->getOwnedElements().front())->getNodes().begin();
     ++outIt;
     ASSERT_TRUE((*outIt)->getElementType() == ElementType::OUTPUT_PIN);
     OutputPin* op = dynamic_cast<OutputPin*>((*outIt));
     ASSERT_TRUE(op->getID() == act->outputs.front()->getID());
     ASSERT_TRUE(op->outgoing.size() == 1);
-    ASSERT_TRUE(op->outgoing.front()->getID() == dynamic_cast<Activity*>(backwardsOutputParser.theEl->getOwnedElements().front())->edges.front()->getID());
+    ASSERT_TRUE(op->outgoing.front()->getID() == dynamic_cast<Activity*>(backwardsOutputParser.theEl->getOwnedElements().front())->getEdges().front()->getID());
 
     // ObjectFlow
     ASSERT_TRUE(op->outgoing.front()->getElementType() == ElementType::OBJECT_FLOW);
@@ -130,10 +130,10 @@ TEST_F(ObjectFlowParserTest, EmitObjectNodeToActionTest) {
     i.setType(&pt);
     of.setSource(&o);
     of.setTarget(&i);
-    a.nodes.push_back(&o);
-    a.nodes.push_back(&act);
-    a.nodes.push_back(&i);
-    a.edges.push_back(&of);
+    a.getNodes().add(o);
+    a.getNodes().add(act);
+    a.getNodes().add(i);
+    a.getEdges().add(of);
     m.getOwnedElements().add(a);
     ModelParser emitObjectNodeToActionParser = ModelParser::createNewParser();
     string expectedEmit = R""""(model:

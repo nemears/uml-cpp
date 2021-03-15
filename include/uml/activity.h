@@ -6,11 +6,14 @@
 
 namespace UML {
     class Activity : public Behavior {
+        protected:
+            Sequence<ActivityNode>* m_nodes;
+            Sequence<ActivityEdge>* m_edges;
         public:
-            Activity(){};
-            ~Activity(){};
-            list<ActivityNode*> nodes;
-            list<ActivityEdge*> edges;
+            Activity();
+            ~Activity();
+            Sequence<ActivityNode>& getNodes();
+            Sequence<ActivityEdge>& getEdges();
             ElementType getElementType() override;
     };
 }

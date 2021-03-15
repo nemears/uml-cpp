@@ -17,97 +17,97 @@ bool ActivityParser::parseFeatures(YAML::Node node, Element* el) {
                     ActionParser actionParser(elements, postProcessFlag);
                     Element* parsedEl = actionParser.parseElement(node["nodes"][i]["action"]);
 
-                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(parsedEl));
+                    dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(parsedEl));
                     dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
 
                     for (auto const& pin : dynamic_cast<Action*>(parsedEl)->inputs) {
                         pin->setActivity(dynamic_cast<Activity*>(el));
-                        dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(pin));
+                        dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(pin));
                     }
 
                     for (auto const& pin : dynamic_cast<Action*>(parsedEl)->outputs) {
                         pin->setActivity(dynamic_cast<Activity*>(el));
-                        dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(pin));
+                        dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(pin));
                     }
                 } else if (node["nodes"][i]["callBehaviorAction"]) {
                     CallBehaviorActionParser callBehaviorActionParser(elements, postProcessFlag);
                     Element* parsedEl = callBehaviorActionParser.parseElement(node["nodes"][i]["callBehaviorAction"]);
-                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(parsedEl));
+                    dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(parsedEl));
                     dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
 
                     for (auto const& pin : dynamic_cast<Action*>(parsedEl)->inputs) {
                         pin->setActivity(dynamic_cast<Activity*>(el));
-                        dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(pin));
+                        dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(pin));
                     }
 
                     for (auto const& pin : dynamic_cast<Action*>(parsedEl)->outputs) {
                         pin->setActivity(dynamic_cast<Activity*>(el));
-                        dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(pin));
+                        dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(pin));
                     }
                 } else if (node["nodes"][i]["createObjectAction"]) {
                     CreateObjectActionParser createObjectActionParser(elements, postProcessFlag);
                     Element* parsedEl = createObjectActionParser.parseElement(node["nodes"][i]["createObjectAction"]);
-                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(parsedEl));
+                    dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(parsedEl));
                     dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
 
                     for (auto const& pin : dynamic_cast<Action*>(parsedEl)->inputs) {
                         pin->setActivity(dynamic_cast<Activity*>(el));
-                        dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(pin));
+                        dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(pin));
                     }
 
                     for (auto const& pin : dynamic_cast<Action*>(parsedEl)->outputs) {
                         pin->setActivity(dynamic_cast<Activity*>(el));
-                        dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(pin));
+                        dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(pin));
                     }
                 } else if (node["nodes"][i]["decisionNode"]) {
                     DecisionNodeParser decisionNodeParser(elements, postProcessFlag);
                     Element* parsedEl = decisionNodeParser.parseElement(node["nodes"][i]["decisionNode"]);
-                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(parsedEl));
+                    dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(parsedEl));
                     dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
                 } else if (node ["nodes"][i]["finalNode"]) {
                     FinalNodeParser finalNodeParser(elements, postProcessFlag);
                     Element* parsedEl = finalNodeParser.parseElement(node["nodes"][i]["finalNode"]);
-                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(parsedEl));
+                    dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(parsedEl));
                     dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
                 } else if (node["nodes"][i]["forkNode"]) {
                     ForkNodeParser forkNodeParser(elements, postProcessFlag);
                     Element* parsedEl = forkNodeParser.parseElement(node["nodes"][i]["forkNode"]);
-                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(parsedEl));
+                    dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(parsedEl));
                     dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
                 } else if (node["nodes"][i]["initialNode"]) {
                     InitialNodeParser initialNodeParser(elements, postProcessFlag);
                     Element* parsedEl = initialNodeParser.parseElement(node["nodes"][i]["initialNode"]);
-                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(parsedEl));
+                    dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(parsedEl));
                     dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
                 } else if (node["nodes"][i]["inputPin"]) {
                     InputPinParser inputPinParser(elements, postProcessFlag);
                     Element* parsedEl = inputPinParser.TypedElementParser::parseElement(node["nodes"][i]["inputPin"]);
-                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(parsedEl));
+                    dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(parsedEl));
                     dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
                 } else if (node["nodes"][i]["joinNode"]) {
                     JoinNodeParser joinNodeParser(elements, postProcessFlag);
                     Element* parsedEl = joinNodeParser.parseElement(node["nodes"][i]["joinNode"]);
-                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(parsedEl));
+                    dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(parsedEl));
                     dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
                 } else if (node["nodes"][i]["mergeNode"]) {
                     MergeNodeParser mergeNodeParser(elements, postProcessFlag);
                     Element* parsedEl = mergeNodeParser.parseElement(node["nodes"][i]["mergeNode"]);
-                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(parsedEl));
+                    dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(parsedEl));
                     dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
                 } else if (node["nodes"][i]["objectNode"]) {
                     ObjectNodeParser objectNodeParser(elements, postProcessFlag);
                     Element* parsedEl = objectNodeParser.parseElement(node["nodes"][i]["objectNode"]);
-                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(parsedEl));
+                    dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(parsedEl));
                     dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
                 } else if (node["nodes"][i]["outputPin"]) {
                     OutputPinParser outputPinParser(elements, postProcessFlag);
                     Element* parsedEl = outputPinParser.TypedElementParser::parseElement(node["nodes"][i]["outputPin"]);
-                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(parsedEl));
+                    dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(parsedEl));
                     dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
                 } else if (node["nodes"][i]["parameterNode"]) {
                     ParameterNodeParser parameterNodeParser(elements, postProcessFlag);
                     Element* parsedEl = parameterNodeParser.parseElement(node["nodes"][i]["parameterNode"]);
-                    dynamic_cast<Activity*>(el)->nodes.push_back(dynamic_cast<ActivityNode*>(parsedEl));
+                    dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(parsedEl));
                     dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
                 } else {
                     // TODO error
@@ -125,11 +125,11 @@ bool ActivityParser::parseFeatures(YAML::Node node, Element* el) {
                 if (node["edges"][i]["controlFlow"]) {
                     ControlFlowParser controlFlowParser(elements, postProcessFlag);
                     Element* parsedEl = controlFlowParser.parseElement(node["edges"][i]["controlFlow"]);
-                    dynamic_cast<Activity*>(el)->edges.push_back(dynamic_cast<ControlFlow*>(parsedEl));
+                    dynamic_cast<Activity*>(el)->getEdges().add(*dynamic_cast<ControlFlow*>(parsedEl));
                 } else if (node["edges"][i]["objectFlow"]) {
                     ObjectFlowParser objectFlowParser(elements, postProcessFlag);
                     Element* parsedEl = objectFlowParser.parseElement(node["edges"][i]["objectFlow"]);
-                    dynamic_cast<Activity*>(el)->edges.push_back(dynamic_cast<ObjectFlow*>(parsedEl));
+                    dynamic_cast<Activity*>(el)->getEdges().add(*dynamic_cast<ObjectFlow*>(parsedEl));
                 } else {
                     // TODO error
                 }
@@ -151,10 +151,10 @@ bool ActivityParser::emit(YAML::Emitter& emitter, Element* el) {
 
     bool ret = BehaviorParser::emit(emitter, el);
 
-    if (!dynamic_cast<Activity*>(el)->nodes.empty()) {
+    if (!dynamic_cast<Activity*>(el)->getNodes().empty()) {
         emitter << YAML::Key << "nodes";
         emitter << YAML::Value << YAML::BeginSeq;
-        for(auto const& node : dynamic_cast<Activity*>(el)->nodes) {
+        for(auto const& node : dynamic_cast<Activity*>(el)->getNodes().iterator()) {
             switch(node->getElementType()) {
                 case ElementType::ACTION : {
                     ActionParser ap(elements, postProcessFlag);
@@ -229,10 +229,10 @@ bool ActivityParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::EndSeq;
     }
 
-    if (!dynamic_cast<Activity*>(el)->edges.empty()) {
+    if (!dynamic_cast<Activity*>(el)->getEdges().empty()) {
         emitter << YAML::Key << "edges";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& edge: dynamic_cast<Activity*>(el)->edges) {
+        for (auto const& edge: dynamic_cast<Activity*>(el)->getEdges().iterator()) {
             switch(edge->getElementType()) {
                 case ElementType::CONTROL_FLOW : {
                     ControlFlowParser cfp(elements, postProcessFlag);

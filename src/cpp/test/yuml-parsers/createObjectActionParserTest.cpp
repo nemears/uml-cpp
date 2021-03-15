@@ -28,11 +28,11 @@ TEST_F(CreateObjectParserTest, ParseLiteralClassifierTest) {
     
     // Activity
     Activity* act = dynamic_cast<Activity*>(literalClassifierParser.theEl->getOwnedElements().front());
-    ASSERT_TRUE(act->nodes.size() == 2);
-    ASSERT_TRUE(act->nodes.front()->getElementType() == ElementType::CREATE_OBJECT_ACTION);
+    ASSERT_TRUE(act->getNodes().size() == 2);
+    ASSERT_TRUE(act->getNodes().front()->getElementType() == ElementType::CREATE_OBJECT_ACTION);
 
     // CreateObjectAction
-    CreateObjectAction* coa = dynamic_cast<CreateObjectAction*>(act->nodes.front());
+    CreateObjectAction* coa = dynamic_cast<CreateObjectAction*>(act->getNodes().front());
     ASSERT_TRUE(coa->getClassifier() != NULL);
     ASSERT_TRUE(coa->getClassifier()->isPrimitive());
     ASSERT_TRUE(dynamic_cast<PrimitiveType*>(coa->getClassifier())->getPrimitiveType() == PrimitiveType::Primitive::BOOL);
@@ -57,11 +57,11 @@ TEST_F(CreateObjectParserTest, ParseClassClassifierTest) {
     
     // Activity
     Activity* act = dynamic_cast<Activity*>(classClassifierParser.theEl->getOwnedElements().front());
-    ASSERT_TRUE(act->nodes.size() == 2);
-    ASSERT_TRUE(act->nodes.front()->getElementType() == ElementType::CREATE_OBJECT_ACTION);
+    ASSERT_TRUE(act->getNodes().size() == 2);
+    ASSERT_TRUE(act->getNodes().front()->getElementType() == ElementType::CREATE_OBJECT_ACTION);
 
     // CreateObjectAction
-    CreateObjectAction* coa = dynamic_cast<CreateObjectAction*>(act->nodes.front());
+    CreateObjectAction* coa = dynamic_cast<CreateObjectAction*>(act->getNodes().front());
     ASSERT_TRUE(coa->getClassifier() != NULL);
     ASSERT_TRUE(coa->getClassifier()->getElementType() == ElementType::CLASS);
 
@@ -105,10 +105,10 @@ TEST_F(CreateObjectParserTest, EmitCreateObjectActionTest) {
     coa2.outputs.push_back(&p2);
     coa1.setActivity(&a);
     coa2.setActivity(&a);
-    a.nodes.push_back(&coa1);
-    a.nodes.push_back(&p1);
-    a.nodes.push_back(&coa2);
-    a.nodes.push_back(&p2);
+    a.getNodes().add(coa1);
+    a.getNodes().add(p1);
+    a.getNodes().add(coa2);
+    a.getNodes().add(p2);
     m.getOwnedElements().add(a);
     a.setOwner(&m);
     m.getOwnedElements().add(c);

@@ -316,30 +316,12 @@ PYBIND11_MODULE(yuml_python, m) {
     // Activity
     py::class_<Activity, Behavior, ClassifierPy<Activity>>(m, "Activity")
         .def(py::init<>())
-        .def("addNode", [] (Activity& me, ActivityNode& node) { me.nodes.push_back(&node); })
-        .def("removeNode", [] (Activity& me, ActivityNode& node) {
-            list<ActivityNode*>::iterator i = me.nodes.begin();
-            while (i != me.nodes.end()) {
-                if ((*i)->getID() == node.getID()) {
-                    me.nodes.erase(i);
-                    break;
-                }
-                ++i;
-            }
-        })
-        .def_readwrite("nodes", &Activity::nodes)
-        .def("addEdge", [] (Activity& me, ActivityEdge& edge) { me.edges.push_back(&edge); })
-        .def("removeEdge", [] (Activity&me, ActivityEdge& edge) {
-            list<ActivityEdge*>::iterator i = me.edges.begin();
-            while (i != me.edges.end()) {
-                if ((*i)->getID() == edge.getID()) {
-                    me.edges.erase(i);
-                    break;
-                }
-                ++i;
-            }
-        })
-        .def_readonly("edges", &Activity::edges);
+        .def("addNode", [] (Activity& me, ActivityNode& node) { me.getNodes().add(node); })
+        .def("removeNode", [] (Activity& me, ActivityNode& node) { me.getNodes().remove(node); })
+        //.def_readwrite("nodes", &Activity::nodes)
+        .def("addEdge", [] (Activity& me, ActivityEdge& edge) { me.getEdges().add(edge); })
+        .def("removeEdge", [] (Activity&me, ActivityEdge& edge) { me.getEdges().remove(edge); });
+        // .def_readonly("edges", &Activity::edges);
     
     // ActivityEdge
     py::class_<ActivityEdge, NamedElement, ElementPy<ActivityEdge>> (m, "ActivityEdge")

@@ -6,9 +6,7 @@ namespace UML {
     /**
      * Sequence Class, Holds collections of uml elements
      **/
-    template<class T> class SequenceIterator;
     template <class T = Element> class Sequence {
-        friend class SequenceIterator<T>;
         private:
             map<boost::uuids::uuid, T*> m_data;
             vector<boost::uuids::uuid> m_order;
@@ -58,43 +56,6 @@ namespace UML {
             T* back() { return m_data[m_order.back()]; }
             typename vector<T*>::iterator begin() { return m_rep.begin(); };
             typename vector<T*>::iterator end() { return m_rep.end(); };
-            vector<T*> copyToVector() { 
-                vector<T*> ret;
-                for (auto const& id : m_order) {
-                    ret.push_back(m_data[id]);
-                }
-                ret.shrink_to_fit();
-                return ret;
-            };
-            SequenceIterator<T> iterator() { return SequenceIterator<T>(this); };
-    };
-
-
-    // Sequence Iterator
-    template <class T = Element> class SequenceIterator {
-        friend class Sequence<T>;
-        private:
-            Sequence<T>* m_sequence;
-            vector<boost::uuids::uuid>::iterator m_curr;
-            vector<boost::uuids::uuid>::iterator m_end;
-            vector<T*> m_iter;
-            SequenceIterator(Sequence<T>* seq) : m_sequence(seq){
-                m_curr = m_sequence->m_order.begin();
-                m_end = m_sequence->m_order.end();
-                for (auto const& id : m_sequence->m_order) {
-                    m_iter.push_back(m_sequence->m_data[id]);
-                }
-                m_iter.shrink_to_fit();
-            };
-        public:
-            T* getNext() {
-                Element* ret = m_sequence->m_data[(*m_curr)];
-                ++m_curr;
-                return ret;
-            };
-            bool hasNext() { return m_curr != m_end; };
-            typename vector<T*>::iterator begin() { return m_iter.begin(); };
-            typename vector<T*>::iterator end() { return m_iter.end(); };
     };
 }
 

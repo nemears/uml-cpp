@@ -50,7 +50,7 @@ bool InstanceSpecificationParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::Key << "slots";
         emitter << YAML::Value << YAML::BeginSeq;
 
-        for (auto const& slot: dynamic_cast<InstanceSpecification*>(el)->getSlots().iterator()) {
+        for (auto const& slot: dynamic_cast<InstanceSpecification*>(el)->getSlots()) {
             SlotParser sp(elements, postProcessFlag);
             if(!sp.emit(emitter, slot)) {
                 return false;

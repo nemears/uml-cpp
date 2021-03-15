@@ -37,7 +37,7 @@ bool ClassParser::emit(YAML::Emitter& emitter, Element* el) {
     if (!dynamic_cast<Class*>(el)->getOperations().empty()) {
         emitter << YAML::Key << "operations";
         emitter << YAML::BeginSeq;
-        for (auto const& operation: dynamic_cast<Class*>(el)->getOperations().iterator()) {
+        for (auto const& operation: dynamic_cast<Class*>(el)->getOperations()) {
             OperationParser op(elements, postProcessFlag);
             if (!op.emit(emitter, operation)) {
                 return false;

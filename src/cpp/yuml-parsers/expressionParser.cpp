@@ -95,7 +95,7 @@ bool ExpressionParser::emit(YAML::Emitter& emitter, Element* el) {
     if (!dynamic_cast<Expression*>(el)->getOperands().empty()) {
         emitter << YAML::Key << "operand";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& operand : dynamic_cast<Expression*>(el)->getOperands().iterator()) {
+        for (auto const& operand : dynamic_cast<Expression*>(el)->getOperands()) {
             switch(operand->getElementType()) {
                 case ElementType::EXPRESSION : {
                     ExpressionParser ep(elements, postProcessFlag);

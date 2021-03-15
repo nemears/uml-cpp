@@ -99,7 +99,7 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
     if (!dynamic_cast<Operation*>(el)->getParameters().empty()) {
         emitter << YAML::Key << "parameters";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& parameter: dynamic_cast<Operation*>(el)->getParameters().iterator()) {
+        for (auto const& parameter: dynamic_cast<Operation*>(el)->getParameters()) {
             ParameterParser pp(elements, postProcessFlag);
             if (!pp.emit(emitter, parameter)) {
                 return false;
@@ -111,7 +111,7 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
     if (!dynamic_cast<Operation*>(el)->getMethods().empty()) {
         emitter << YAML::Key << "methods";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& method: dynamic_cast<Operation*>(el)->getMethods().iterator()) {
+        for (auto const& method: dynamic_cast<Operation*>(el)->getMethods()) {
             switch(method->getElementType()) {
                 case ElementType::ACTIVITY : {
                     ActivityParser ap(elements, postProcessFlag);

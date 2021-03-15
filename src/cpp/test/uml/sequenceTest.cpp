@@ -20,23 +20,6 @@ TEST_F(SequenceTest, addGetAndRemoveElementTest) {
     ASSERT_TRUE(seq.size() == 0);
 }
 
-TEST_F(SequenceTest, sequenceIteratorTest) {
-    Sequence<> seq;
-    Element e;
-    Element f;
-    ASSERT_NO_THROW(seq.add(e));
-    ASSERT_NO_THROW(seq.add(f));
-    ASSERT_TRUE(seq.size() == 2);
-    SequenceIterator<> it = seq.iterator();
-    ASSERT_TRUE(it.hasNext());
-    Element* first = it.getNext();
-    ASSERT_TRUE(first == &e);
-    ASSERT_TRUE(it.hasNext());
-    Element* second = it.getNext();
-    ASSERT_TRUE(second == &f);
-    ASSERT_FALSE(it.hasNext());
-}
-
 TEST_F(SequenceTest, addGetAndRemoveElementByNameTest) {
     Sequence<> seq;
     Element e;
@@ -81,21 +64,6 @@ TEST_F(SequenceTest, removeElementThatWasntAddedTest) {
     Sequence<> seq;
     Element e;
     ASSERT_THROW(seq.remove(e), ElementDoesntExistException);
-}
-
-TEST_F(SequenceTest, useAutoForLoop) {
-    Sequence<> seq;
-    Element e;
-    NamedElement f;
-    Element b;
-    Element c;
-    seq.add(e);
-    seq.add(f);
-    seq.add(b);
-    seq.add(c);
-    for (auto const& e: seq.iterator()) {
-        ASSERT_TRUE(e != NULL);
-    }
 }
 
 TEST_F(SequenceTest, useAutoForLoop2) {

@@ -82,7 +82,7 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
     if (!el->getOwnedElements().empty()){
         emitter << YAML::Key << "children";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& child: el->getOwnedElements().iterator()) {
+        for (auto const& child: el->getOwnedElements()) {
             switch (child->getElementType()) {
                 case ElementType::ACTIVITY : {
                     ActivityParser ap(elements, postProcessFlag);

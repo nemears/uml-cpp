@@ -154,7 +154,7 @@ bool ActivityParser::emit(YAML::Emitter& emitter, Element* el) {
     if (!dynamic_cast<Activity*>(el)->getNodes().empty()) {
         emitter << YAML::Key << "nodes";
         emitter << YAML::Value << YAML::BeginSeq;
-        for(auto const& node : dynamic_cast<Activity*>(el)->getNodes().iterator()) {
+        for(auto const& node : dynamic_cast<Activity*>(el)->getNodes()) {
             switch(node->getElementType()) {
                 case ElementType::ACTION : {
                     ActionParser ap(elements, postProcessFlag);
@@ -232,7 +232,7 @@ bool ActivityParser::emit(YAML::Emitter& emitter, Element* el) {
     if (!dynamic_cast<Activity*>(el)->getEdges().empty()) {
         emitter << YAML::Key << "edges";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& edge: dynamic_cast<Activity*>(el)->getEdges().iterator()) {
+        for (auto const& edge: dynamic_cast<Activity*>(el)->getEdges()) {
             switch(edge->getElementType()) {
                 case ElementType::CONTROL_FLOW : {
                     ControlFlowParser cfp(elements, postProcessFlag);

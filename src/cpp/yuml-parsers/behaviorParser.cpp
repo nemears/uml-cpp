@@ -46,7 +46,7 @@ bool BehaviorParser::emit(YAML::Emitter& emitter, Element* el) {
     if(!dynamic_cast<Behavior*>(el)->getParameters().empty()) {
         emitter << YAML::Key << "parameters";
         emitter << YAML::Value << YAML::BeginSeq;
-        for(auto const& param : dynamic_cast<Behavior*>(el)->getParameters().iterator()) {
+        for(auto const& param : dynamic_cast<Behavior*>(el)->getParameters()) {
             // TODO don't conflict with operation paired parameter
             ParameterParser pp (elements, postProcessFlag);
             pp.emit(emitter, param);

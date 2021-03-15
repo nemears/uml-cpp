@@ -30,7 +30,7 @@ bool ClassifierParser::emit(YAML::Emitter& emitter, Element* el) {
     if (!dynamic_cast<Classifier*>(el)->getAttributes().empty()) {
         emitter << YAML::Key << "attributes";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& property: dynamic_cast<Classifier*>(el)->getAttributes().iterator()) {
+        for (auto const& property: dynamic_cast<Classifier*>(el)->getAttributes()) {
             PropertyParser pp(elements, postProcessFlag);
             pp.emit(emitter, property);
         }

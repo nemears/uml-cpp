@@ -17,7 +17,7 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
                     if (node["inputs"][i]["inputPin"]) {
                         InputPinParser ip(elements, postProcessFlag);
                         Element* parsedEl = ip.TypedElementParser::parseElement(node["inputs"][i]["inputPin"]);
-                        dynamic_cast<Action*>(el)->inputs.push_back(dynamic_cast<InputPin*>(parsedEl));
+                        dynamic_cast<Action*>(el)->getInputs().add(*dynamic_cast<InputPin*>(parsedEl));
                     }
                 } else if (isValidUUID4(node["inputs"][i].as<string>())) {
                     boost::uuids::uuid inputId = boost::lexical_cast<boost::uuids::uuid>(node["inputs"][i].as<string>());
@@ -41,7 +41,7 @@ bool ActionParser::parseFeatures(YAML::Node node, Element* el) {
                     if (node["outputs"][i]["outputPin"]) {
                         OutputPinParser op(elements, postProcessFlag);
                         Element* parsedEl = op.TypedElementParser::parseElement(node["outputs"][i]["outputPin"]);
-                        dynamic_cast<Action*>(el)->outputs.push_back(dynamic_cast<OutputPin*>(parsedEl));
+                        dynamic_cast<Action*>(el)->getOutputs().add(*dynamic_cast<OutputPin*>(parsedEl));
                     } 
                 } else if (isValidUUID4(node["outputs"][i].as<string>())) {
                     boost::uuids::uuid outputId = boost::lexical_cast<boost::uuids::uuid>(node["outputs"][i].as<string>());
@@ -71,19 +71,19 @@ bool ActionParser::emit(YAML::Emitter& emitter, Element* el) {
 
     bool ret = ActivityNodeParser::emit(emitter, el);
 
-    if (!dynamic_cast<Action*>(el)->inputs.empty()) {
+    if (!dynamic_cast<Action*>(el)->getInputs().empty()) {
         emitter << YAML::Key << "inputs";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& input : dynamic_cast<Action*>(el)->inputs) {
+        for (auto const& input : dynamic_cast<Action*>(el)->getInputs()) {
             emitter << YAML::Value << boost::lexical_cast<string>(input->getID());
         }
         emitter << YAML::EndSeq;
     }
 
-    if (!dynamic_cast<Action*>(el)->outputs.empty()) {
+    if (!dynamic_cast<Action*>(el)->getOutputs().empty()) {
         emitter << YAML::Key << "outputs";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& output : dynamic_cast<Action*>(el)->outputs) {
+        for (auto const& output : dynamic_cast<Action*>(el)->getOutputs()) {
             emitter << YAML::Value << boost::lexical_cast<string>(output->getID());
         }
         emitter << YAML::EndSeq;

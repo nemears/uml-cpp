@@ -19,10 +19,10 @@ class ActionParser : public ActivityNodeParser {
             this->keyword = "action";
         };
         static void addInputPinLater(YAML::Node node, Element* action, Element* inputPin) {
-            dynamic_cast<Action*>(action)->inputs.push_back(dynamic_cast<InputPin*>(inputPin));
+            dynamic_cast<Action*>(action)->getInputs().add(*dynamic_cast<InputPin*>(inputPin));
         }
         static void addOutputPinLater(YAML::Node node, Element* action, Element* inputPin) {
-            dynamic_cast<Action*>(action)->outputs.push_back(dynamic_cast<OutputPin*>(inputPin));
+            dynamic_cast<Action*>(action)->getOutputs().add(*dynamic_cast<OutputPin*>(inputPin));
         }
         static ActionParser createNewParser();
 };

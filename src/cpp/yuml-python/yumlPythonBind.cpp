@@ -384,30 +384,12 @@ PYBIND11_MODULE(yuml_python, m) {
     // Action
     py::class_<Action, ActivityNode, ElementPy<Action>>(m, "Action")
         .def(py::init<>())
-        .def_readonly("inputs", &Action::inputs)
-        .def_readonly("outputs", &Action::outputs)
-        .def("addInput", [] (Action& me, InputPin& in) { me.inputs.push_back(&in); } )
-        .def("removeInput", [] (Action& me, InputPin& in) {
-            list<InputPin*>::iterator i = me.inputs.begin();
-            while (i != me.inputs.end()) {
-                if ((*i)->getID() == in.getID()) {
-                    me.inputs.erase(i);
-                    break;
-                }
-                ++i;
-            }
-        })
-        .def("addOutput", [] (Action& me, OutputPin& out) { me.outputs.push_back(&out); })
-        .def("removeOutput", [] (Action& me, OutputPin& out) {
-            list<OutputPin*>::iterator i = me.outputs.begin();
-            while (i != me.outputs.end()) {
-                if ((*i)->getID() == out.getID()) {
-                    me.outputs.erase(i);
-                    break;
-                }
-                ++i;
-            }
-        });
+        //.def_readonly("inputs", &Action::inputs)
+        //.def_readonly("outputs", &Action::outputs)
+        .def("addInput", [] (Action& me, InputPin& in) { me.getInputs().add(in); } )
+        .def("removeInput", [] (Action& me, InputPin& in) { me.getInputs().remove(in); })
+        .def("addOutput", [] (Action& me, OutputPin& out) { me.getOutputs().add(out); })
+        .def("removeOutput", [] (Action& me, OutputPin& out) { me.getOutputs().remove(out); });
 
         // ControlFlow
         py::class_<ControlFlow, ActivityEdge, ElementPy<ControlFlow>>(m, "ControlFlow")

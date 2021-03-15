@@ -20,12 +20,12 @@ bool ActivityParser::parseFeatures(YAML::Node node, Element* el) {
                     dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(parsedEl));
                     dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
 
-                    for (auto const& pin : dynamic_cast<Action*>(parsedEl)->inputs) {
+                    for (auto const& pin : dynamic_cast<Action*>(parsedEl)->getInputs()) {
                         pin->setActivity(dynamic_cast<Activity*>(el));
                         dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(pin));
                     }
 
-                    for (auto const& pin : dynamic_cast<Action*>(parsedEl)->outputs) {
+                    for (auto const& pin : dynamic_cast<Action*>(parsedEl)->getOutputs()) {
                         pin->setActivity(dynamic_cast<Activity*>(el));
                         dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(pin));
                     }
@@ -35,12 +35,12 @@ bool ActivityParser::parseFeatures(YAML::Node node, Element* el) {
                     dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(parsedEl));
                     dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
 
-                    for (auto const& pin : dynamic_cast<Action*>(parsedEl)->inputs) {
+                    for (auto const& pin : dynamic_cast<Action*>(parsedEl)->getInputs()) {
                         pin->setActivity(dynamic_cast<Activity*>(el));
                         dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(pin));
                     }
 
-                    for (auto const& pin : dynamic_cast<Action*>(parsedEl)->outputs) {
+                    for (auto const& pin : dynamic_cast<Action*>(parsedEl)->getOutputs()) {
                         pin->setActivity(dynamic_cast<Activity*>(el));
                         dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(pin));
                     }
@@ -50,12 +50,12 @@ bool ActivityParser::parseFeatures(YAML::Node node, Element* el) {
                     dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(parsedEl));
                     dynamic_cast<ActivityNode*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
 
-                    for (auto const& pin : dynamic_cast<Action*>(parsedEl)->inputs) {
+                    for (auto const& pin : dynamic_cast<Action*>(parsedEl)->getInputs()) {
                         pin->setActivity(dynamic_cast<Activity*>(el));
                         dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(pin));
                     }
 
-                    for (auto const& pin : dynamic_cast<Action*>(parsedEl)->outputs) {
+                    for (auto const& pin : dynamic_cast<Action*>(parsedEl)->getOutputs()) {
                         pin->setActivity(dynamic_cast<Activity*>(el));
                         dynamic_cast<Activity*>(el)->getNodes().add(*dynamic_cast<ActivityNode*>(pin));
                     }

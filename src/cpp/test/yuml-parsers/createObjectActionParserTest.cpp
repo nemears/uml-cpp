@@ -36,9 +36,9 @@ TEST_F(CreateObjectParserTest, ParseLiteralClassifierTest) {
     ASSERT_TRUE(coa->getClassifier() != NULL);
     ASSERT_TRUE(coa->getClassifier()->isPrimitive());
     ASSERT_TRUE(dynamic_cast<PrimitiveType*>(coa->getClassifier())->getPrimitiveType() == PrimitiveType::Primitive::BOOL);
-    ASSERT_TRUE(coa->outputs.size() == 1);
-    ASSERT_TRUE(coa->outputs.front()->getType()->isPrimitive());
-    ASSERT_TRUE(dynamic_cast<PrimitiveType*>(coa->outputs.front()->getType())->getPrimitiveType() == PrimitiveType::Primitive::BOOL);
+    ASSERT_TRUE(coa->getOutputs().size() == 1);
+    ASSERT_TRUE(coa->getOutputs().front()->getType()->isPrimitive());
+    ASSERT_TRUE(dynamic_cast<PrimitiveType*>(coa->getOutputs().front()->getType())->getPrimitiveType() == PrimitiveType::Primitive::BOOL);
 
     // Tear down
     ModelParser::deleteParser(&literalClassifierParser);
@@ -71,10 +71,10 @@ TEST_F(CreateObjectParserTest, ParseClassClassifierTest) {
     ASSERT_TRUE(coa->getClassifier() == clazz);
 
     // OutputPin
-    ASSERT_TRUE(coa->outputs.size() == 1);
-    ASSERT_TRUE(coa->outputs.front()->getType()->getElementType() == ElementType::CLASS);
-    ASSERT_TRUE(coa->outputs.front()->getType()->getID() == clazz->getID());
-    ASSERT_TRUE(coa->outputs.front()->getType() == clazz);
+    ASSERT_TRUE(coa->getOutputs().size() == 1);
+    ASSERT_TRUE(coa->getOutputs().front()->getType()->getElementType() == ElementType::CLASS);
+    ASSERT_TRUE(coa->getOutputs().front()->getType()->getID() == clazz->getID());
+    ASSERT_TRUE(coa->getOutputs().front()->getType() == clazz);
 
     // Tear down
     ModelParser::deleteParser(&classClassifierParser);
@@ -99,10 +99,10 @@ TEST_F(CreateObjectParserTest, EmitCreateObjectActionTest) {
     boolType.setPrimitiveType(PrimitiveType::Primitive::BOOL);
     coa1.setClassifier(&boolType);
     p1.setType(&boolType);
-    coa1.outputs.push_back(&p1);
+    coa1.getOutputs().add(p1);
     coa2.setClassifier(&c);
     p2.setType(&c);
-    coa2.outputs.push_back(&p2);
+    coa2.getOutputs().add(p2);
     coa1.setActivity(&a);
     coa2.setActivity(&a);
     a.getNodes().add(coa1);

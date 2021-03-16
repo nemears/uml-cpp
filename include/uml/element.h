@@ -85,6 +85,7 @@ namespace UML {
             Element* m_owner;
             Sequence<Element>* m_ownedElements;
             boost::uuids::uuid m_id;
+            virtual void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID);
         public:
             Element();
             ~Element();

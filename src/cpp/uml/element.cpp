@@ -17,14 +17,21 @@ Element::~Element() {
 
 void Element::setID(string id) {
     if (UML::isValidUUID4(id)) {
-        m_id = boost::lexical_cast<boost::uuids::uuid>(id);
+        setID(boost::lexical_cast<boost::uuids::uuid>(id));
     } else {
         throw InvalidID_Exception();
     }
 }
 
 void Element::setID(boost::uuids::uuid id) {
+    reindexID(m_id, id);
     m_id = id;
+}
+
+void Element::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+    if (m_owner) {
+        m_owner->m_ownedElements->reindex(oldID, newID);
+    }
 }
 
 Element* Element::getOwner() {

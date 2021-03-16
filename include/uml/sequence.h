@@ -7,11 +7,22 @@ namespace UML {
      * Sequence Class, Holds collections of uml elements
      **/
     template <class T = Element> class Sequence {
+        friend class Element;
         private:
             map<boost::uuids::uuid, T*> m_data;
             vector<boost::uuids::uuid> m_order;
             map<string, T*> m_nameTranslation;
             vector<T*> m_rep;
+            void reindex(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+
+                // m_data
+                T* temp = m_data[oldID];
+                m_data.erase(oldID);
+                m_data[newID] = temp;
+
+                // m_order
+                std::replace(m_order.begin(), m_order.end(), oldID, newID);
+            }
         public:
 
             // Methods

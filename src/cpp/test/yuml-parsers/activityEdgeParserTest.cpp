@@ -39,37 +39,37 @@ TEST_F(ActivityEdgeParserTest, ParseDecisionNodeGuardTest) {
     ObjectNode* objNode = dynamic_cast<ObjectNode*>((*nodeIt));
     ASSERT_TRUE(objNode->getType()->isPrimitive());
     ASSERT_TRUE(dynamic_cast<PrimitiveType*>(objNode->getType())->getPrimitiveType() == PrimitiveType::Primitive::BOOL);
-    ASSERT_TRUE(objNode->outgoing.size() == 1);
-    ASSERT_TRUE(objNode->outgoing.front()->getElementType() == ElementType::OBJECT_FLOW);
-    ASSERT_TRUE(objNode->outgoing.front()->getTarget()->getElementType() == ElementType::DECISION_NODE);
+    ASSERT_TRUE(objNode->getOutgoing().size() == 1);
+    ASSERT_TRUE(objNode->getOutgoing().front()->getElementType() == ElementType::OBJECT_FLOW);
+    ASSERT_TRUE(objNode->getOutgoing().front()->getTarget()->getElementType() == ElementType::DECISION_NODE);
 
     //InitialNode
     ++nodeIt;
     ASSERT_TRUE((*nodeIt)->getElementType() == ElementType::INITIAL_NODE);
     InitialNode* initialNode = dynamic_cast<InitialNode*>((*nodeIt));
-    ASSERT_TRUE(initialNode->incoming.size() == 0);
-    ASSERT_TRUE(initialNode->outgoing.size() == 1);
-    ASSERT_TRUE(initialNode->outgoing.front()->getElementType() == ElementType::CONTROL_FLOW);
-    ASSERT_TRUE(initialNode->outgoing.front()->getTarget()->getElementType() == ElementType::DECISION_NODE);
+    ASSERT_TRUE(initialNode->getIncoming().size() == 0);
+    ASSERT_TRUE(initialNode->getOutgoing().size() == 1);
+    ASSERT_TRUE(initialNode->getOutgoing().front()->getElementType() == ElementType::CONTROL_FLOW);
+    ASSERT_TRUE(initialNode->getOutgoing().front()->getTarget()->getElementType() == ElementType::DECISION_NODE);
 
     // DecisionNode
     ++nodeIt;
     ASSERT_TRUE((*nodeIt)->getElementType() == ElementType::DECISION_NODE);
     DecisionNode* decisionNode = dynamic_cast<DecisionNode*>((*nodeIt));
-    ASSERT_TRUE(decisionNode->incoming.size() == 2);
-    ASSERT_TRUE(decisionNode->outgoing.size() == 2);
-    ASSERT_TRUE(decisionNode->incoming.front()->getElementType() == ElementType::OBJECT_FLOW);
-    ASSERT_TRUE(decisionNode->incoming.back()->getElementType() == ElementType::CONTROL_FLOW);
-    ASSERT_TRUE(decisionNode->outgoing.front()->getElementType() == ElementType::CONTROL_FLOW);
-    ASSERT_TRUE(decisionNode->outgoing.back()->getElementType() == ElementType::CONTROL_FLOW);
+    ASSERT_TRUE(decisionNode->getIncoming().size() == 2);
+    ASSERT_TRUE(decisionNode->getOutgoing().size() == 2);
+    ASSERT_TRUE(decisionNode->getIncoming().front()->getElementType() == ElementType::OBJECT_FLOW);
+    ASSERT_TRUE(decisionNode->getIncoming().back()->getElementType() == ElementType::CONTROL_FLOW);
+    ASSERT_TRUE(decisionNode->getOutgoing().front()->getElementType() == ElementType::CONTROL_FLOW);
+    ASSERT_TRUE(decisionNode->getOutgoing().back()->getElementType() == ElementType::CONTROL_FLOW);
     ASSERT_TRUE(decisionNode->getDecisionInputFlow() != NULL);
     ASSERT_TRUE(decisionNode->getDecisionInputFlow()->getID() == boost::lexical_cast<boost::uuids::uuid>("563f4740-e107-4d08-8618-2489f0fe1865"));
-    ASSERT_TRUE(decisionNode->outgoing.front()->getGuard() != NULL);
-    ASSERT_TRUE(decisionNode->outgoing.front()->getGuard()->getElementType() == ElementType::LITERAL_BOOL);
-    ASSERT_TRUE(dynamic_cast<LiteralBool*>(decisionNode->outgoing.front()->getGuard())->getValue());
-    ASSERT_TRUE(decisionNode->outgoing.back()->getGuard() != NULL);
-    ASSERT_TRUE(decisionNode->outgoing.back()->getGuard()->getElementType() == ElementType::LITERAL_BOOL);
-    ASSERT_TRUE(dynamic_cast<LiteralBool*>(decisionNode->outgoing.back()->getGuard())->getValue() == false);
+    ASSERT_TRUE(decisionNode->getOutgoing().front()->getGuard() != NULL);
+    ASSERT_TRUE(decisionNode->getOutgoing().front()->getGuard()->getElementType() == ElementType::LITERAL_BOOL);
+    ASSERT_TRUE(dynamic_cast<LiteralBool*>(decisionNode->getOutgoing().front()->getGuard())->getValue());
+    ASSERT_TRUE(decisionNode->getOutgoing().back()->getGuard() != NULL);
+    ASSERT_TRUE(decisionNode->getOutgoing().back()->getGuard()->getElementType() == ElementType::LITERAL_BOOL);
+    ASSERT_TRUE(dynamic_cast<LiteralBool*>(decisionNode->getOutgoing().back()->getGuard())->getValue() == false);
 
     // Delete
     ModelParser::deleteParser(&decisionNodeGuardParser);
@@ -96,37 +96,37 @@ TEST_F(ActivityEdgeParserTest, ParseBackwardsGuardTest) {
     ObjectNode* objNode = dynamic_cast<ObjectNode*>((*nodeIt));
     ASSERT_TRUE(objNode->getType()->isPrimitive());
     ASSERT_TRUE(dynamic_cast<PrimitiveType*>(objNode->getType())->getPrimitiveType() == PrimitiveType::Primitive::BOOL);
-    ASSERT_TRUE(objNode->outgoing.size() == 1);
-    ASSERT_TRUE(objNode->outgoing.front()->getElementType() == ElementType::OBJECT_FLOW);
-    ASSERT_TRUE(objNode->outgoing.front()->getTarget()->getElementType() == ElementType::DECISION_NODE);
+    ASSERT_TRUE(objNode->getOutgoing().size() == 1);
+    ASSERT_TRUE(objNode->getOutgoing().front()->getElementType() == ElementType::OBJECT_FLOW);
+    ASSERT_TRUE(objNode->getOutgoing().front()->getTarget()->getElementType() == ElementType::DECISION_NODE);
 
     //InitialNode
     ++nodeIt;
     ASSERT_TRUE((*nodeIt)->getElementType() == ElementType::INITIAL_NODE);
     InitialNode* initialNode = dynamic_cast<InitialNode*>((*nodeIt));
-    ASSERT_TRUE(initialNode->incoming.size() == 0);
-    ASSERT_TRUE(initialNode->outgoing.size() == 1);
-    ASSERT_TRUE(initialNode->outgoing.front()->getElementType() == ElementType::CONTROL_FLOW);
-    ASSERT_TRUE(initialNode->outgoing.front()->getTarget()->getElementType() == ElementType::DECISION_NODE);
+    ASSERT_TRUE(initialNode->getIncoming().size() == 0);
+    ASSERT_TRUE(initialNode->getOutgoing().size() == 1);
+    ASSERT_TRUE(initialNode->getOutgoing().front()->getElementType() == ElementType::CONTROL_FLOW);
+    ASSERT_TRUE(initialNode->getOutgoing().front()->getTarget()->getElementType() == ElementType::DECISION_NODE);
 
     // DecisionNode
     ++nodeIt;
     ASSERT_TRUE((*nodeIt)->getElementType() == ElementType::DECISION_NODE);
     DecisionNode* decisionNode = dynamic_cast<DecisionNode*>((*nodeIt));
-    ASSERT_TRUE(decisionNode->incoming.size() == 2);
-    ASSERT_TRUE(decisionNode->outgoing.size() == 2);
-    ASSERT_TRUE(decisionNode->incoming.front()->getElementType() == ElementType::OBJECT_FLOW);
-    ASSERT_TRUE(decisionNode->incoming.back()->getElementType() == ElementType::CONTROL_FLOW);
-    ASSERT_TRUE(decisionNode->outgoing.front()->getElementType() == ElementType::CONTROL_FLOW);
-    ASSERT_TRUE(decisionNode->outgoing.back()->getElementType() == ElementType::CONTROL_FLOW);
+    ASSERT_TRUE(decisionNode->getIncoming().size() == 2);
+    ASSERT_TRUE(decisionNode->getOutgoing().size() == 2);
+    ASSERT_TRUE(decisionNode->getIncoming().front()->getElementType() == ElementType::OBJECT_FLOW);
+    ASSERT_TRUE(decisionNode->getIncoming().back()->getElementType() == ElementType::CONTROL_FLOW);
+    ASSERT_TRUE(decisionNode->getOutgoing().front()->getElementType() == ElementType::CONTROL_FLOW);
+    ASSERT_TRUE(decisionNode->getOutgoing().back()->getElementType() == ElementType::CONTROL_FLOW);
     ASSERT_TRUE(decisionNode->getDecisionInputFlow() != NULL);
     ASSERT_TRUE(decisionNode->getDecisionInputFlow()->getID() == boost::lexical_cast<boost::uuids::uuid>("563f4740-e107-4d08-8618-2489f0fe1865"));
-    ASSERT_TRUE(decisionNode->outgoing.front()->getGuard() != NULL);
-    ASSERT_TRUE(decisionNode->outgoing.front()->getGuard()->getElementType() == ElementType::LITERAL_BOOL);
-    ASSERT_TRUE(dynamic_cast<LiteralBool*>(decisionNode->outgoing.front()->getGuard())->getValue());
-    ASSERT_TRUE(decisionNode->outgoing.back()->getGuard() != NULL);
-    ASSERT_TRUE(decisionNode->outgoing.back()->getGuard()->getElementType() == ElementType::LITERAL_BOOL);
-    ASSERT_TRUE(dynamic_cast<LiteralBool*>(decisionNode->outgoing.back()->getGuard())->getValue() == false);
+    ASSERT_TRUE(decisionNode->getOutgoing().front()->getGuard() != NULL);
+    ASSERT_TRUE(decisionNode->getOutgoing().front()->getGuard()->getElementType() == ElementType::LITERAL_BOOL);
+    ASSERT_TRUE(dynamic_cast<LiteralBool*>(decisionNode->getOutgoing().front()->getGuard())->getValue());
+    ASSERT_TRUE(decisionNode->getOutgoing().back()->getGuard() != NULL);
+    ASSERT_TRUE(decisionNode->getOutgoing().back()->getGuard()->getElementType() == ElementType::LITERAL_BOOL);
+    ASSERT_TRUE(dynamic_cast<LiteralBool*>(decisionNode->getOutgoing().back()->getGuard())->getValue() == false);
 
     // Delete
     ModelParser::deleteParser(&decisionNodeGuardParser);
@@ -161,26 +161,26 @@ TEST_F(ActivityEdgeParserTest, EmitEdgeGuardTest) {
     obj.setType(&boolType);
     initToDec.setSource(&init);
     initToDec.setTarget(&dec);
-    init.outgoing.push_back(&initToDec);
-    dec.incoming.push_back(&initToDec);
+    init.getOutgoing().add(initToDec);
+    dec.getIncoming().add(initToDec);
     decToAction1.setSource(&dec);
     LiteralBool lbTrue;
     lbTrue.setValue(true);
     decToAction1.setGuard(&lbTrue);
     decToAction1.setTarget(&action1);
-    dec.outgoing.push_back(&decToAction1);
-    action1.incoming.push_back(&decToAction1);
+    dec.getOutgoing().add(decToAction1);
+    action1.getIncoming().add(decToAction1);
     decToAction2.setSource(&dec);
     LiteralBool lbFalse;
     lbFalse.setValue(false);
     decToAction2.setGuard(&lbFalse);
     decToAction2.setTarget(&action2);
-    dec.outgoing.push_back(&decToAction2);
-    action2.incoming.push_back(&decToAction2);
+    dec.getOutgoing().add(decToAction2);
+    action2.getIncoming().add(decToAction2);
     objToDecision.setSource(&obj);
     objToDecision.setTarget(&dec);
-    obj.outgoing.push_back(&objToDecision);
-    dec.incoming.push_back(&objToDecision);
+    obj.getOutgoing().add(objToDecision);
+    dec.getIncoming().add(objToDecision);
     dec.setDecisionInputFlow(&objToDecision);
     activity.getNodes().add(init);
     init.setActivity(&activity);

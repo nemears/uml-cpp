@@ -49,9 +49,9 @@ TEST_F(ParameterNodeParserTest, ParseParameterNodeTest) {
     ASSERT_TRUE(paramNode->getType() != NULL);
     ASSERT_TRUE(paramNode->getType()->isPrimitive());
     ASSERT_TRUE(dynamic_cast<PrimitiveType*>(paramNode->getType())->getPrimitiveType() == PrimitiveType::Primitive::INT);
-    ASSERT_TRUE(paramNode->outgoing.size() == 1);
-    ASSERT_TRUE(paramNode->outgoing.front()->getElementType() == ElementType::OBJECT_FLOW);
-    ASSERT_TRUE(paramNode->outgoing.front()->getID() == boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
+    ASSERT_TRUE(paramNode->getOutgoing().size() == 1);
+    ASSERT_TRUE(paramNode->getOutgoing().front()->getElementType() == ElementType::OBJECT_FLOW);
+    ASSERT_TRUE(paramNode->getOutgoing().front()->getID() == boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
 
     // Object Node
     ASSERT_TRUE(activity->getNodes().back()->getElementType() == ElementType::OBJECT_NODE);
@@ -60,7 +60,7 @@ TEST_F(ParameterNodeParserTest, ParseParameterNodeTest) {
     ASSERT_TRUE(objNode->getType() != NULL);
     ASSERT_TRUE(objNode->getType()->isPrimitive());
     ASSERT_TRUE(dynamic_cast<PrimitiveType*>(objNode->getType())->getPrimitiveType() == PrimitiveType::Primitive::INT);
-    ASSERT_TRUE(objNode->incoming.size() == 1);
+    ASSERT_TRUE(objNode->getIncoming().size() == 1);
 
     // Object Flow
     ASSERT_TRUE(activity->getEdges().front()->getElementType() == ElementType::OBJECT_FLOW);
@@ -92,8 +92,8 @@ TEST_F(ParameterNodeParserTest, EmitParameterNodeTest) {
     objNode.setType(&pt);
     param.setDirection(ParameterDirectionKind::IN);
     paramNode.setParameter(&param);
-    paramNode.outgoing.push_back(&objFlow);
-    objNode.incoming.push_back(&objFlow);
+    paramNode.getOutgoing().add(objFlow);
+    objNode.getIncoming().add(objFlow);
     objFlow.setSource(&paramNode);
     objFlow.setTarget(&objNode);
     a.getNodes().add(paramNode);

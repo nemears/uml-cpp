@@ -11,10 +11,13 @@ namespace UML {
     class ActivityNode : virtual public NamedElement {
         protected:
             Activity* activity;
+            Sequence<ActivityEdge>* m_incoming;
+            Sequence<ActivityEdge>* m_outgoing;
         public:
-            list<ActivityEdge*> incoming;
-            list<ActivityEdge*> outgoing;
-            ActivityNode(){};
+            ActivityNode();
+            ~ActivityNode();
+            Sequence<ActivityEdge>& getIncoming();
+            Sequence<ActivityEdge>& getOutgoing();
             ElementType getElementType() override;
             Activity* getActivity();
             void setActivity(Activity* activity);

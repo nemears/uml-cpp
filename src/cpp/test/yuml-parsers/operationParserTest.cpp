@@ -351,9 +351,9 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
   ASSERT_TRUE((*edgeIt)->getElementType() == ElementType::OBJECT_FLOW);
   ObjectFlow* paramNodeToInputPin = dynamic_cast<ObjectFlow*>((*edgeIt));
   ASSERT_TRUE(paramNodeToInputPin->getSource() == paramNode);
-  ASSERT_TRUE(paramNode->outgoing.front() = paramNodeToInputPin);
+  ASSERT_TRUE(paramNode->getOutgoing().front() == paramNodeToInputPin);
   ASSERT_TRUE(paramNodeToInputPin->getTarget() == inputPin);
-  ASSERT_TRUE(inputPin->incoming.front() == paramNodeToInputPin);
+  ASSERT_TRUE(inputPin->getIncoming().front() == paramNodeToInputPin);
   
   // InitialNode to isValid
   ++edgeIt;
@@ -361,9 +361,9 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
   ASSERT_TRUE((*edgeIt)->getElementType() == ElementType::CONTROL_FLOW);
   ControlFlow* initialNodeToAction = dynamic_cast<ControlFlow*>((*edgeIt));
   ASSERT_TRUE(initialNodeToAction->getSource() == initNode);
-  ASSERT_TRUE(initNode->outgoing.front() = initialNodeToAction);
+  ASSERT_TRUE(initNode->getOutgoing().front() == initialNodeToAction);
   ASSERT_TRUE(initialNodeToAction->getTarget() == action1);
-  ASSERT_TRUE(action1->incoming.front() == initialNodeToAction);
+  ASSERT_TRUE(action1->getIncoming().front() == initialNodeToAction);
 
   // isValid to DecisionNode
   ++edgeIt;
@@ -371,9 +371,9 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
   ASSERT_TRUE((*edgeIt)->getElementType() == ElementType::CONTROL_FLOW);
   ControlFlow* action1ToDecision = dynamic_cast<ControlFlow*>((*edgeIt));
   ASSERT_TRUE(action1ToDecision->getSource() == action1);
-  ASSERT_TRUE(action1->outgoing.front() = action1ToDecision);
+  ASSERT_TRUE(action1->getOutgoing().front() == action1ToDecision);
   ASSERT_TRUE(action1ToDecision->getTarget() == decision);
-  ASSERT_TRUE(decision->incoming.front() == action1ToDecision);
+  ASSERT_TRUE(decision->getIncoming().front() == action1ToDecision);
 
   // DecisionNode to ActA
   ++edgeIt;
@@ -381,9 +381,9 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
   ASSERT_TRUE((*edgeIt)->getElementType() == ElementType::CONTROL_FLOW);
   ControlFlow* decisionToAction2 = dynamic_cast<ControlFlow*>((*edgeIt));
   ASSERT_TRUE(decisionToAction2->getSource() == decision);
-  ASSERT_TRUE(decision->outgoing.front() = decisionToAction2);
+  ASSERT_TRUE(decision->getOutgoing().front() == decisionToAction2);
   ASSERT_TRUE(decisionToAction2->getTarget() == action2);
-  ASSERT_TRUE(action2->incoming.front() == decisionToAction2);
+  ASSERT_TRUE(action2->getIncoming().front() == decisionToAction2);
 
   // DecisionNode to JoinNode
   ++edgeIt;
@@ -391,9 +391,9 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
   ASSERT_TRUE((*edgeIt)->getElementType() == ElementType::CONTROL_FLOW);
   ControlFlow* decisionToJoin = dynamic_cast<ControlFlow*>((*edgeIt));
   ASSERT_TRUE(decisionToJoin->getSource() == decision);
-  ASSERT_TRUE(decision->outgoing.front() = decisionToJoin);
+  ASSERT_TRUE(decision->getOutgoing().back() == decisionToJoin);
   ASSERT_TRUE(decisionToJoin->getTarget() == joinNode);
-  ASSERT_TRUE(joinNode->incoming.front() == decisionToJoin);
+  ASSERT_TRUE(joinNode->getIncoming().front() == decisionToJoin);
 
   // Action2 to JoinNode
   ++edgeIt;
@@ -401,9 +401,9 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
   ASSERT_TRUE((*edgeIt)->getElementType() == ElementType::CONTROL_FLOW);
   ControlFlow* action2ToJoin = dynamic_cast<ControlFlow*>((*edgeIt));
   ASSERT_TRUE(action2ToJoin->getSource() == action2);
-  ASSERT_TRUE(action2->outgoing.front() = action2ToJoin);
+  ASSERT_TRUE(action2->getOutgoing().front() == action2ToJoin);
   ASSERT_TRUE(action2ToJoin->getTarget() == joinNode);
-  ASSERT_TRUE(joinNode->incoming.back() == action2ToJoin);
+  ASSERT_TRUE(joinNode->getIncoming().back() == action2ToJoin);
 
   // JoinNode to Final
   ++edgeIt;
@@ -411,7 +411,7 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
   ASSERT_TRUE((*edgeIt)->getElementType() == ElementType::CONTROL_FLOW);
   ControlFlow* joinToFinal = dynamic_cast<ControlFlow*>((*edgeIt));
   ASSERT_TRUE(joinToFinal->getSource() == joinNode);
-  ASSERT_TRUE(joinNode->outgoing.front() = joinToFinal);
+  ASSERT_TRUE(joinNode->getOutgoing().front() == joinToFinal);
   ASSERT_TRUE(joinToFinal->getTarget() == finalNode);
-  ASSERT_TRUE(finalNode->incoming.front() == joinToFinal);
+  ASSERT_TRUE(finalNode->getIncoming().front() == joinToFinal);
 }

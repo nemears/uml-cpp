@@ -3,6 +3,24 @@
 
 using namespace UML;
 
+ActivityNode::ActivityNode() {
+    m_incoming = new Sequence<ActivityEdge>;
+    m_outgoing = new Sequence<ActivityEdge>;
+}
+
+ActivityNode::~ActivityNode() {
+    delete m_incoming;
+    delete m_outgoing;
+}
+
+Sequence<ActivityEdge>& ActivityNode::getIncoming() {
+    return *m_incoming;
+}
+
+Sequence<ActivityEdge>& ActivityNode::getOutgoing() {
+    return *m_outgoing;
+}
+
 ElementType ActivityNode::getElementType() {
     return ElementType::ACTIVITY_NODE;
 }

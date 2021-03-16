@@ -336,30 +336,12 @@ PYBIND11_MODULE(yuml_python, m) {
     // ActivityNode
     py::class_<ActivityNode, NamedElement, ElementPy<ActivityNode>>(m, "ActivityNode")
         .def(py::init<>())
-        .def_readonly("incoming", &ActivityNode::incoming)
-        .def_readonly("outgoing", &ActivityNode::outgoing)
-        .def("addIncoming", [] (ActivityNode& me, ActivityEdge& edge) { me.incoming.push_back(&edge); })
-        .def("addOutgoing", [] (ActivityNode& me, ActivityEdge& edge) { me.outgoing.push_back(&edge); })
-        .def("removeIncoming", [] (ActivityNode& me, ActivityEdge& edge) {
-            list<ActivityEdge*>::iterator i = me.incoming.begin();
-            while (i != me.incoming.end()) {
-                if ((*i)->getID() == edge.getID()) {
-                    me.incoming.erase(i);
-                    break;
-                }
-                ++i;
-            }
-        })
-        .def("removeOutgoing", [] (ActivityNode& me, ActivityEdge& edge) {
-            list<ActivityEdge*>::iterator i = me.outgoing.begin();
-            while (i != me.outgoing.end()) {
-                if ((*i)->getID() == edge.getID()) {
-                    me.outgoing.erase(i);
-                    break;
-                }
-                ++i;
-            }
-        })
+        // .def_readonly("incoming", &ActivityNode::incoming)
+        // .def_readonly("outgoing", &ActivityNode::outgoing)
+        .def("addIncoming", [] (ActivityNode& me, ActivityEdge& edge) { me.getIncoming().add(edge); })
+        .def("addOutgoing", [] (ActivityNode& me, ActivityEdge& edge) { me.getOutgoing().add(edge); })
+        .def("removeIncoming", [] (ActivityNode& me, ActivityEdge& edge) { me.getIncoming().remove(edge); })
+        .def("removeOutgoing", [] (ActivityNode& me, ActivityEdge& edge) { me.getOutgoing().remove(edge); })
         .def("getActivity", &ActivityNode::getActivity)
         .def("setActivity", &ActivityNode::setActivity);
 

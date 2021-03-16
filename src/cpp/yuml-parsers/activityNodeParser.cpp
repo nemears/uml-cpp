@@ -64,19 +64,19 @@ bool ActivityNodeParser::emit(YAML::Emitter& emitter, Element* el) {
 }
 
 bool ActivityNodeParser::emitActivityNode(YAML::Emitter& emitter, Element* el) {
-    if (!dynamic_cast<ActivityNode*>(el)->incoming.empty()) {
+    if (!dynamic_cast<ActivityNode*>(el)->getIncoming().empty()) {
         emitter << YAML::Key << "incoming";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& edge : dynamic_cast<ActivityNode*>(el)->incoming) {
+        for (auto const& edge : dynamic_cast<ActivityNode*>(el)->getIncoming()) {
             emitter << YAML::Value << edge->getIDstring();
         }
         emitter << YAML::EndSeq;
     }
 
-    if (!dynamic_cast<ActivityNode*>(el)->outgoing.empty()) {
+    if (!dynamic_cast<ActivityNode*>(el)->getOutgoing().empty()) {
         emitter << YAML::Key << "outgoing";
         emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& edge : dynamic_cast<ActivityNode*>(el)->outgoing) {
+        for (auto const& edge : dynamic_cast<ActivityNode*>(el)->getOutgoing()) {
             emitter << YAML::Value << edge->getIDstring();
         }
         emitter << YAML::EndSeq;

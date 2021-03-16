@@ -35,22 +35,22 @@ TEST_F(ControlFlowParserTest, ActionToActionFlowTest) {
     ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().back()->getID() == boost::lexical_cast<boost::uuids::uuid>("7d4b6b0b-f6c2-4670-868c-87709cede18e"));
     
     // Test first action
-    ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().front()->outgoing.size() == 1);
-    ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().front()->outgoing.front() != 0);
+    ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().front()->getOutgoing().size() == 1);
+    ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().front()->getOutgoing().front() != 0);
     ASSERT_EQ(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getID(), dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().front()->getActivity()->getID());
     
     // Test control flow
-    ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().front()->outgoing.front()->getSource()->getID() == boost::lexical_cast<boost::uuids::uuid>("2c2fc607-48c6-4879-800b-7e659441cba1"));
-    ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().front()->outgoing.front()->getTarget()->getID() == boost::lexical_cast<boost::uuids::uuid>("7d4b6b0b-f6c2-4670-868c-87709cede18e"));
+    ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().front()->getOutgoing().front()->getSource()->getID() == boost::lexical_cast<boost::uuids::uuid>("2c2fc607-48c6-4879-800b-7e659441cba1"));
+    ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().front()->getOutgoing().front()->getTarget()->getID() == boost::lexical_cast<boost::uuids::uuid>("7d4b6b0b-f6c2-4670-868c-87709cede18e"));
 
     // Test second action
-    ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().back()->incoming.size() == 1);
-    ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().back()->incoming.front() != 0);
+    ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().back()->getIncoming().size() == 1);
+    ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().back()->getIncoming().front() != 0);
     ASSERT_EQ(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getID(), dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().back()->getActivity()->getID());
     
     // Test control flow
-    ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().back()->incoming.front()->getSource()->getID() == boost::lexical_cast<boost::uuids::uuid>("2c2fc607-48c6-4879-800b-7e659441cba1"));
-    ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().back()->incoming.front()->getTarget()->getID() == boost::lexical_cast<boost::uuids::uuid>("7d4b6b0b-f6c2-4670-868c-87709cede18e"));
+    ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().back()->getIncoming().front()->getSource()->getID() == boost::lexical_cast<boost::uuids::uuid>("2c2fc607-48c6-4879-800b-7e659441cba1"));
+    ASSERT_TRUE(dynamic_cast<Activity*>(actionToActionFlowParser.theEl->getOwnedElements().front())->getNodes().back()->getIncoming().front()->getTarget()->getID() == boost::lexical_cast<boost::uuids::uuid>("7d4b6b0b-f6c2-4670-868c-87709cede18e"));
 }
 
 TEST_F(ControlFlowParserTest, ActionToSelfTest) {
@@ -68,15 +68,15 @@ TEST_F(ControlFlowParserTest, ActionToSelfTest) {
     ASSERT_TRUE(dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getNodes().front()->getID() == boost::lexical_cast<boost::uuids::uuid>("2c2fc607-48c6-4879-800b-7e659441cba1"));
     
     // Test first action
-    ASSERT_TRUE(dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getNodes().front()->outgoing.size() == 1);
-    ASSERT_TRUE(dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getNodes().front()->outgoing.front() != 0);
-    ASSERT_TRUE(dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getNodes().front()->incoming.size() == 1);
-    ASSERT_TRUE(dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getNodes().front()->incoming.front() != 0);
-    ASSERT_TRUE(dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getNodes().front()->incoming.front()->getID() == dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getEdges().front()->getID());
+    ASSERT_TRUE(dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getNodes().front()->getOutgoing().size() == 1);
+    ASSERT_TRUE(dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getNodes().front()->getOutgoing().front() != 0);
+    ASSERT_TRUE(dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getNodes().front()->getIncoming().size() == 1);
+    ASSERT_TRUE(dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getNodes().front()->getIncoming().front() != 0);
+    ASSERT_TRUE(dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getNodes().front()->getIncoming().front()->getID() == dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getEdges().front()->getID());
 
     // Test control flow
-    ASSERT_TRUE(dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getNodes().front()->outgoing.front()->getSource()->getID() == boost::lexical_cast<boost::uuids::uuid>("2c2fc607-48c6-4879-800b-7e659441cba1"));
-    ASSERT_TRUE(dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getNodes().front()->outgoing.front()->getTarget()->getID() == boost::lexical_cast<boost::uuids::uuid>("2c2fc607-48c6-4879-800b-7e659441cba1"));
+    ASSERT_TRUE(dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getNodes().front()->getOutgoing().front()->getSource()->getID() == boost::lexical_cast<boost::uuids::uuid>("2c2fc607-48c6-4879-800b-7e659441cba1"));
+    ASSERT_TRUE(dynamic_cast<Activity*>(actionToSelfFlowParser.theEl->getOwnedElements().front())->getNodes().front()->getOutgoing().front()->getTarget()->getID() == boost::lexical_cast<boost::uuids::uuid>("2c2fc607-48c6-4879-800b-7e659441cba1"));
 
 }
 
@@ -92,8 +92,8 @@ TEST_F(ControlFlowParserTest, EmitActionToSelfTest) {
     cf.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
     cf.setSource(&act);
     cf.setTarget(&act);
-    act.incoming.push_back(&cf);
-    act.outgoing.push_back(&cf);
+    act.getIncoming().add(cf);
+    act.getOutgoing().add(cf);
     a.getNodes().add(act);
     a.getEdges().add(cf);
     m.getOwnedElements().add(a);
@@ -139,8 +139,8 @@ TEST_F(ControlFlowParserTest, EmitActionToActionTest) {
     cf.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
     cf.setSource(&act);
     cf.setTarget(&act2);
-    act.outgoing.push_back(&cf);
-    act2.incoming.push_back(&cf);
+    act.getOutgoing().add(cf);
+    act2.getIncoming().add(cf);
     a.getNodes().add(act);
     a.getNodes().add(act2);
     a.getEdges().add(cf);
@@ -205,29 +205,29 @@ TEST_F(ControlFlowParserTest, EmitDecsionAndJoinTest) {
   a22j.setID("5a3b3462-3f0a-47a3-8123-b1005954c2d1");
   ControlFlow j2f;
   j2f.setID("7f85ebe1-3a0c-4bbb-95e5-ae7e9f512caa");
-  i.outgoing.push_back(&i2d);
-  d.incoming.push_back(&i2d);
+  i.getOutgoing().add(i2d);
+  d.getIncoming().add(i2d);
   i2d.setSource(&i);
   i2d.setTarget(&d);
-  d.outgoing.push_back(&d2a1);
-  d.outgoing.push_back(&d2a2);
+  d.getOutgoing().add(d2a1);
+  d.getOutgoing().add(d2a2);
   d2a1.setSource(&d);
   d2a2.setSource(&d);
-  act1.incoming.push_back(&d2a1);
+  act1.getIncoming().add(d2a1);
   d2a1.setTarget(&act1);
-  act2.incoming.push_back(&d2a2);
+  act2.getIncoming().add(d2a2);
   d2a2.setTarget(&act2);
-  act1.outgoing.push_back(&a12j);
+  act1.getOutgoing().add(a12j);
   a12j.setSource(&act1);
-  act2.outgoing.push_back(&a22j);
+  act2.getOutgoing().add(a22j);
   a22j.setSource(&act2);
-  j.incoming.push_back(&a12j);
-  j.incoming.push_back(&a22j);
+  j.getIncoming().add(a12j);
+  j.getIncoming().add(a22j);
   a12j.setTarget(&j);
   a22j.setTarget(&j);
-  j.outgoing.push_back(&j2f);
+  j.getOutgoing().add(j2f);
   j2f.setSource(&j);
-  f.incoming.push_back(&j2f);
+  f.getIncoming().add(j2f);
   j2f.setTarget(&f);
   a.getNodes().add(i);
   a.getNodes().add(d);

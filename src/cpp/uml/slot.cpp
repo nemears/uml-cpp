@@ -1,10 +1,12 @@
 #include "uml/slot.h"
+#include "uml/instanceSpecification.h"
 
 using namespace UML;
 
 Slot::Slot() {
     m_definingFeature = 0;
     m_values = new Sequence<ValueSpecification>;
+    m_owningInstance = new InstanceSpecification;
 }
 
 Slot::~Slot() {
@@ -21,6 +23,14 @@ StructuralFeature* Slot::getDefiningFeature() {
 
 void Slot::setDefiningFeature(StructuralFeature* definingFeature) {
     m_definingFeature = definingFeature;
+}
+
+InstanceSpecification* Slot::getOwningInstance() {
+    return m_owningInstance;
+}
+
+void Slot::setOwningInstance(InstanceSpecification* inst) {
+    m_owningInstance = inst;
 }
 
 ElementType Slot::getElementType() {

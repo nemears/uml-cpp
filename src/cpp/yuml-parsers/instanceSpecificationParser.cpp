@@ -25,6 +25,7 @@ bool InstanceSpecificationParser::parseFeatures(YAML::Node node, Element* el) {
                 SlotParser slotParser(elements, postProcessFlag);
                 Slot* parsedEl = (Slot*) slotParser.parseElement(node["slots"][i]["slot"]);
                 dynamic_cast<InstanceSpecification*>(el)->getSlots().add(*parsedEl);
+                dynamic_cast<Slot*>(parsedEl)->setOwningInstance(dynamic_cast<InstanceSpecification*>(el));
             }
         }
     }

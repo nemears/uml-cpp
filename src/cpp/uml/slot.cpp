@@ -6,7 +6,7 @@ using namespace UML;
 Slot::Slot() {
     m_definingFeature = 0;
     m_values = new Sequence<ValueSpecification>;
-    m_owningInstance = new InstanceSpecification;
+    m_owningInstance = NULL;
 }
 
 Slot::~Slot() {

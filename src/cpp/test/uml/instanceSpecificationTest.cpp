@@ -62,20 +62,14 @@ TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
 // TODO add throw for pushing slots that don't correspond structural feature
 
 
-// TEST_F(InstanceSpecificationTest, AddSlotTest) {
-//     InstanceSpecification i;
-//     Slot s;
-//     ASSERT_NO_THROW(i.addSlot(s));
-//     ASSERT_TRUE(i.slots.front()->uuid == s.getID());
-// }
-
-// TEST_F(InstanceSpecificationTest, AddAndRemoveSlotTest) {
-//     InstanceSpecification i;
-//     Slot s;
-//     Slot s2;
-//     i.addSlot(s);
-//     i.addSlot(s2);
-//     ASSERT_TRUE(i.slots.front()->uuid ==s.getID());
-//     ASSERT_NO_THROW(i.removeSlot(s));
-//     ASSERT_TRUE(i.slots.front()->uuid == s2.getID());
-// }
+TEST_F(InstanceSpecificationTest, reindexSlotID_Test) {
+    InstanceSpecification i;
+    Slot s;
+    i.getSlots().add(s);
+    s.setOwningInstance(&i);
+    i.getOwnedElements().add(s);
+    s.setOwner(&i);
+    s.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
+    ASSERT_TRUE(i.getSlots().get(s.getID()) != NULL);
+    ASSERT_TRUE(i.getOwnedElements().get(s.getID()) != NULL);
+}

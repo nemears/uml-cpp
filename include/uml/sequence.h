@@ -4,6 +4,7 @@
 
 namespace UML {
     class Property;
+    class Slot;
     /**
      * Sequence Class, Holds collections of uml elements
      **/
@@ -11,6 +12,7 @@ namespace UML {
         friend class Element;
         friend class NamedElement;
         friend class Property;
+        friend class Slot;
         private:
             map<boost::uuids::uuid, T*> m_data;
             vector<boost::uuids::uuid> m_order;

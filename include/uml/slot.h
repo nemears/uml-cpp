@@ -14,6 +14,7 @@ namespace UML {
             StructuralFeature* m_definingFeature;
             Sequence<ValueSpecification>* m_values;
             InstanceSpecification* m_owningInstance;
+            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
         public:
             Slot();
             ~Slot();

@@ -3,6 +3,13 @@
 
 using namespace UML;
 
+void Slot::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+    if (m_owningInstance) {
+        m_owningInstance->getSlots().reindex(oldID, newID);
+    }
+    Element::reindexID(oldID, newID);
+}
+
 Slot::Slot() {
     m_definingFeature = 0;
     m_values = new Sequence<ValueSpecification>;

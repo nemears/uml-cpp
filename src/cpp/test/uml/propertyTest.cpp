@@ -3,6 +3,7 @@
 #include "uml/property.h"
 #include "uml/primitiveType.h"
 #include "uml/literalString.h"
+#include "uml/class.h"
 
 using namespace UML;
 
@@ -48,4 +49,22 @@ TEST_F(PropertyTest, setDefaultValueOfImproperTypeTestString) {
     LiteralString ls;
     ls.setValue("test");
     EXPECT_THROW(p.setDefaultValue(&ls), Property::InvalidValueException);
+}
+
+TEST_F(PropertyTest, reindexID_forClassiferTest) {
+  Class c;
+  Property p;
+  c.getAttributes().add(p);
+  p.setClassifier(&c);
+  p.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
+  ASSERT_TRUE(c.getAttributes().get(p.getID()) != NULL);
+}
+
+TEST_F(PropertyTest, reindexNameForClassifierTest) {
+  Class c;
+  Property p;
+  c.getAttributes().add(p);
+  p.setClassifier(&c);
+  p.setName("test");
+  ASSERT_TRUE(c.getAttributes().get("test") != NULL);
 }

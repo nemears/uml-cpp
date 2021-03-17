@@ -13,7 +13,9 @@ namespace UML{
     class Property: public StructuralFeature , public MultiplicityElement {
         protected:
             ValueSpecification * defaultValue;
-            Classifier* classifier;
+            Classifier* m_classifier;
+            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
+            void reindexName(string oldName, string newName) override;
         public: 
             void setDefaultValue(ValueSpecification* val);
             ValueSpecification* getDefaultValue();
@@ -22,7 +24,7 @@ namespace UML{
             ElementType getElementType() override;
             Property() {
                 defaultValue = NULL;
-                classifier = NULL;
+                m_classifier = NULL;
             }
     };
 }

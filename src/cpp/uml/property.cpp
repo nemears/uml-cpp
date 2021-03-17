@@ -4,6 +4,20 @@
 
 using namespace UML;
 
+void Property::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+    if (m_classifier) {
+        m_classifier->getAttributes().reindex(oldID, newID);
+    }
+    Element::reindexID(oldID, newID);
+}
+
+void Property::reindexName(string oldName, string newName) {
+    if (m_classifier) {
+        m_classifier->getAttributes().reindex(m_id, oldName, newName);
+    }
+    NamedElement::reindexName(oldName, newName);
+}
+
 void Property::setDefaultValue(ValueSpecification* val) {
 
     // TODO add checks to see if defaultValue corresponds with type
@@ -31,11 +45,11 @@ ValueSpecification* Property::getDefaultValue() {
 }
 
 Classifier* Property::getClassifer() {
-    return classifier;
+    return m_classifier;
 }
 
 void Property::setClassifier(Classifier* classifier) {
-    this->classifier = classifier;
+    m_classifier = classifier;
 }
 
 ElementType Property::getElementType() {

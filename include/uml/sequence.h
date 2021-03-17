@@ -3,12 +3,14 @@
 #include "namedElement.h"
 
 namespace UML {
+    class Property;
     /**
      * Sequence Class, Holds collections of uml elements
      **/
     template <class T> class Sequence {
         friend class Element;
         friend class NamedElement;
+        friend class Property;
         private:
             map<boost::uuids::uuid, T*> m_data;
             vector<boost::uuids::uuid> m_order;

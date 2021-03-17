@@ -54,17 +54,25 @@ TEST_F(PropertyTest, setDefaultValueOfImproperTypeTestString) {
 TEST_F(PropertyTest, reindexID_forClassiferTest) {
   Class c;
   Property p;
+  Element e;
   c.getAttributes().add(p);
   p.setClassifier(&c);
+  e.getOwnedElements().add(p);
+  p.setOwner(&e);
   p.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
   ASSERT_TRUE(c.getAttributes().get(p.getID()) != NULL);
+  ASSERT_TRUE(e.getOwnedElements().get(p.getID()) != NULL);
 }
 
 TEST_F(PropertyTest, reindexNameForClassifierTest) {
   Class c;
   Property p;
+  Element e;
   c.getAttributes().add(p);
   p.setClassifier(&c);
+  e.getOwnedElements().add(p);
+  p.setOwner(&e);
   p.setName("test");
   ASSERT_TRUE(c.getAttributes().get("test") != NULL);
+  ASSERT_TRUE(e.getOwnedElements().get("test") != NULL);
 }

@@ -16,6 +16,7 @@ bool ClassParser::parseFeatures(YAML::Node node, Element* el) {
                 OperationParser operationParser(elements, postProcessFlag);
                 Element* parsedEl = operationParser.parseElement(node["operations"][i]["operation"]);
                 dynamic_cast<Class*>(el)->getOperations().add(*dynamic_cast<Operation*>(parsedEl));
+                dynamic_cast<Operation*>(parsedEl)->setClass(dynamic_cast<Class*>(el));
             }
         } else {
             throw ElementParser::InvalidNodeTypeException(node["operations"].Mark().line, "sequence");

@@ -9,11 +9,15 @@
 
 using namespace std;
 namespace UML {
+
+    class Class;
+
     class Operation : public NamedElement {
         protected:
             Type* m_type;
             Sequence<Behavior>* m_methods;
             Sequence<Parameter>* m_parameters;
+            Class* m_class;
         public:
             Operation();
             ~Operation();
@@ -21,6 +25,8 @@ namespace UML {
             Sequence<Parameter>& getParameters();
             Type* getType();
             void setType(Type* type);
+            Class* getClass();
+            void setClass(Class* clazz);
             ElementType getElementType() override;
     };
 }

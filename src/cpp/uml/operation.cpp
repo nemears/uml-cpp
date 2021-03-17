@@ -3,6 +3,20 @@
 
 using namespace UML;
 
+void Operation::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+    if (m_class) {
+        m_class->getOperations().reindex(oldID, newID);
+    }
+    Element::reindexID(oldID, newID);
+}
+
+void Operation::reindexName(string oldName, string newName) {
+    if (m_class) {
+        m_class->getOperations().reindex(m_id, oldName, newName);
+    }
+    NamedElement::reindexName(oldName, newName);
+}
+
 Operation::Operation() {
     m_type = 0;
     m_methods = new Sequence<Behavior>;

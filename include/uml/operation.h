@@ -18,6 +18,8 @@ namespace UML {
             Sequence<Behavior>* m_methods;
             Sequence<Parameter>* m_parameters;
             Class* m_class;
+            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
+            void reindexName(string oldName, string newName) override;
         public:
             Operation();
             ~Operation();

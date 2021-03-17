@@ -6,8 +6,9 @@ namespace UML {
     /**
      * Sequence Class, Holds collections of uml elements
      **/
-    template <class T = Element> class Sequence {
+    template <class T> class Sequence {
         friend class Element;
+        friend class NamedElement;
         private:
             map<boost::uuids::uuid, T*> m_data;
             vector<boost::uuids::uuid> m_order;
@@ -22,6 +23,16 @@ namespace UML {
 
                 // m_order
                 std::replace(m_order.begin(), m_order.end(), oldID, newID);
+            };
+            void reindex(boost::uuids::uuid elID, string oldName, string newName) {
+
+                // m_nameTranslation
+                T* temp = m_data[elID];
+                if (m_nameTranslation[newName]) {
+                    // TODO error throw duplicate name exception
+                }
+                m_nameTranslation.erase(oldName);
+                m_nameTranslation[newName] = temp;
             }
         public:
 
@@ -32,7 +43,9 @@ namespace UML {
                     m_order.push_back(el.getID());
                     m_rep.push_back(&el);
                     if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
-                        m_nameTranslation[dynamic_cast<NamedElement*>(&el)->getName()] = &el;
+                        if (dynamic_cast<NamedElement*>(&el)->getName().length() > 0) {
+                            m_nameTranslation[dynamic_cast<NamedElement*>(&el)->getName()] = &el;
+                        }
                     }
                 } else {
                     m_order.push_back(el.getID());

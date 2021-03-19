@@ -7,7 +7,17 @@ Element* NamespaceParser::createElement() {
 }
 
 bool NamespaceParser::parseFeatures(YAML::Node node, Element* el) {
-    return NamedElementParser::parseFeatures(node, el);
+    bool ret = NamedElementParser::parseFeatures(node, el);
+
+    // add all children that are members
+    for (auto const& child : el->getOwnedElements()) {
+        if (child->isSubClassOf(ElementType::NAMED_ELEMENT)) {
+            dynamic_cast<Namespace*>(el)->getMembers().add(*dynamic_cast<NamedElement*>(child));
+            dynamic_cast<NamedElement*>(child)->setNamespace(dynamic_cast<Namespace*>(el));
+        }
+    }
+
+    return ret;
 }
 
 bool NamespaceParser::emit(YAML::Emitter& emitter, Element* el) {

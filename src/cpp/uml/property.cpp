@@ -8,7 +8,7 @@ void Property::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
     if (m_classifier) {
         m_classifier->getAttributes().reindex(oldID, newID);
     }
-    Element::reindexID(oldID, newID);
+    NamedElement::reindexID(oldID, newID);
 }
 
 void Property::reindexName(string oldName, string newName) {

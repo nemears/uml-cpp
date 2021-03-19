@@ -5,16 +5,22 @@
 using namespace std;
 
 namespace UML{
+
     template <class T = Element> class Sequence;
+    class Namespace;
     class NamedElement : virtual public Element {
         protected:
             string m_name;
+            Namespace* m_namespace;
             virtual void reindexName(string oldName, string newName);
+            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
         public:
+            NamedElement();
             virtual string getName();
             virtual void setName(const string &name);
+            Namespace* getNamespace();
+            void setNamespace(Namespace* nmspc);
             ElementType getElementType() override;
-            NamedElement(){};
     };
 }
 

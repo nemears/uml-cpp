@@ -7,15 +7,15 @@ ElementType Parameter::getElementType() {
 }
 
 ParameterDirectionKind Parameter::getDirection() {
-    return direction;
+    return m_direction;
 }
 
 void Parameter::setDirection(ParameterDirectionKind direction) {
-    this->direction = direction;
+    m_direction = direction;
 }
 
 string Parameter::getDirectionString() {
-    switch(direction) {
+    switch(m_direction) {
         case ParameterDirectionKind::IN : {
             return "IN";
         } case ParameterDirectionKind::OUT : {

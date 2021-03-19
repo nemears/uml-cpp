@@ -13,12 +13,14 @@ namespace UML {
         NONE};
 
     class Parameter : public TypedElement , public MultiplicityElement {
+        protected:
+            ParameterDirectionKind m_direction;
         public:
             ElementType getElementType() override;
             ParameterDirectionKind getDirection();
             void setDirection(ParameterDirectionKind direction);
             Parameter() {
-                direction = ParameterDirectionKind::NONE;
+                m_direction = ParameterDirectionKind::NONE;
             }
             string getDirectionString();
             void setDirectionString(string& directionString);
@@ -27,10 +29,7 @@ namespace UML {
                     virtual const char* what() const throw() {
                         return "Invalid direction given, options are IN, INOUT, OUT or RETURN";
                     }
-            }invalidDirectionException;
-        protected:
-            ParameterDirectionKind direction;
-        
+            }invalidDirectionException;        
     };
 }
 #endif

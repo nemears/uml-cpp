@@ -7,6 +7,7 @@ void Slot::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
     if (m_owningInstance) {
         m_owningInstance->getSlots().reindex(oldID, newID);
     }
+    
     Element::reindexID(oldID, newID);
 }
 

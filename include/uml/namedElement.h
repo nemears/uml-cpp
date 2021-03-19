@@ -8,6 +8,10 @@ namespace UML{
 
     template <class T = Element> class Sequence;
     class Namespace;
+
+    /**
+     * A NamedElement is an Element in a model that may have a name
+     **/
     class NamedElement : virtual public Element {
         protected:
             string m_name;

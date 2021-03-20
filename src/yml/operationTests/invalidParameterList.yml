@@ -4,6 +4,8 @@
       - class:
           operations:
             - operation:
-                parameters:
-                  parameter:
-                    name: skip
+                methods:
+                  - opaqueBehavior:
+                      parameters:
+                        parameter:
+                          name: skip

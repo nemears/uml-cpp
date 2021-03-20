@@ -20,21 +20,15 @@ void Operation::reindexName(string oldName, string newName) {
 Operation::Operation() {
     m_type = 0;
     m_methods = new Sequence<Behavior>;
-    m_parameters = new Sequence<Parameter>;
     m_class = 0;
 }
 
 Operation::~Operation() {
     delete m_methods;
-    delete m_parameters;
 }
 
 Sequence<Behavior>& Operation::getMethods() {
     return *m_methods;
-}
-
-Sequence<Parameter>& Operation::getParameters() {
-    return *m_parameters;
 }
 
 Type* Operation::getType() {

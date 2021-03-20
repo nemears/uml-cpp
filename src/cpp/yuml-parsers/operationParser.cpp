@@ -6,20 +6,20 @@ Element* OperationParser::createElement() {
 
 bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
 
-    if (node["parameters"]) {
-        if (node["parameters"].IsSequence()) {
-            for (std::size_t i=0; i<node["parameters"].size(); i++) {
-                if (node["parameters"][i].IsMap()) {
-                    ParameterParser parameterParser(elements, postProcessFlag);
-                    Element* parsedEl = parameterParser.TypedElementParser::parseElement(node["parameters"][i]["parameter"]);
-                    dynamic_cast<Operation*>(el)->getParameters().add(*dynamic_cast<Parameter*>(parsedEl));
-                }
-            }
-        } else {
-            // Error
-            throw InvalidNodeTypeException(node["parameters"].Mark().line, "sequence");
-        }
-    }
+    // if (node["parameters"]) {
+    //     if (node["parameters"].IsSequence()) {
+    //         for (std::size_t i=0; i<node["parameters"].size(); i++) {
+    //             if (node["parameters"][i].IsMap()) {
+    //                 ParameterParser parameterParser(elements, postProcessFlag);
+    //                 Element* parsedEl = parameterParser.TypedElementParser::parseElement(node["parameters"][i]["parameter"]);
+    //                 dynamic_cast<Operation*>(el)->getParameters().add(*dynamic_cast<Parameter*>(parsedEl));
+    //             }
+    //         }
+    //     } else {
+    //         // Error
+    //         throw InvalidNodeTypeException(node["parameters"].Mark().line, "sequence");
+    //     }
+    // }
 
     if (node["methods"]) {
         if (node["methods"].IsSequence()) {
@@ -96,17 +96,17 @@ bool OperationParser::emit(YAML::Emitter& emitter, Element* el) {
     
     bool ret = NamedElementParser::emit(emitter, el);
 
-    if (!dynamic_cast<Operation*>(el)->getParameters().empty()) {
-        emitter << YAML::Key << "parameters";
-        emitter << YAML::Value << YAML::BeginSeq;
-        for (auto const& parameter: dynamic_cast<Operation*>(el)->getParameters()) {
-            ParameterParser pp(elements, postProcessFlag);
-            if (!pp.emit(emitter, parameter)) {
-                return false;
-            }
-        }
-        emitter << YAML::EndSeq;
-    }
+    // if (!dynamic_cast<Operation*>(el)->getParameters().empty()) {
+    //     emitter << YAML::Key << "parameters";
+    //     emitter << YAML::Value << YAML::BeginSeq;
+    //     for (auto const& parameter: dynamic_cast<Operation*>(el)->getParameters()) {
+    //         ParameterParser pp(elements, postProcessFlag);
+    //         if (!pp.emit(emitter, parameter)) {
+    //             return false;
+    //         }
+    //     }
+    //     emitter << YAML::EndSeq;
+    // }
 
     if (!dynamic_cast<Operation*>(el)->getMethods().empty()) {
         emitter << YAML::Key << "methods";

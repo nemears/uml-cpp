@@ -4,8 +4,10 @@
       - class:
           operations:
             - operation:
-                parameters:
-                  - parameter:
-                      lower: 0
-                      upper: 1
+                methods:
+                  - opaqueBehavior:
+                      parameters:
+                        - parameter:
+                            lower: 0
+                            upper: 1
 ...

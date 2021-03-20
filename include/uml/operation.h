@@ -16,7 +16,6 @@ namespace UML {
         protected:
             Type* m_type;
             Sequence<Behavior>* m_methods;
-            Sequence<Parameter>* m_parameters;
             Class* m_class;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
             void reindexName(string oldName, string newName) override;
@@ -24,7 +23,6 @@ namespace UML {
             Operation();
             ~Operation();
             Sequence<Behavior>& getMethods();
-            Sequence<Parameter>& getParameters();
             Type* getType();
             void setType(Type* type);
             Class* getClass();

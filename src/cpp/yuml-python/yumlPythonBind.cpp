@@ -286,9 +286,6 @@ PYBIND11_MODULE(yuml_python, m) {
         .def(py::init<>())
         .def("getType", &Operation::getType)
         .def("setType", &Operation::setType)
-        .def("addParameter", [] (Operation& me, Parameter& param) { me.getParameters().add(param); })
-        .def("removeParameter", [] (Operation& me, Parameter& param) { me.getParameters().remove(param); })
-        //.def_readonly("parameters", &Operation::parameters)
         .def("addMethod", [] (Operation& me, Behavior& method) { me.getMethods().add(method); })
         .def("removeMethod", [] (Operation& me, Behavior& method) { me.getMethods().remove(method); });
         //.def_readonly("methods", &Operation::methods);

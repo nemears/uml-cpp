@@ -6,24 +6,21 @@
           operations:
             - operation:
                 name: testOp
-                parameters:
-                  - parameter:
-                      name: testNum
-                      id: 1bfe131b-0d9a-4e6f-9a9b-1dae55626202
-                      type: INT
-                      direction: IN
-                  - parameter:
-                      name: testRet
-                      id: 4b9519d3-cfd4-4bda-b1dc-6c7d0f521647
-                      type: BOOL
-                      direction: RETURN
                 methods:
                   - activity:
                       id: 54e8f139-9581-48a4-8021-32ff00606c93
                       name: testAct
-                      parameters: 
-                        - 1bfe131b-0d9a-4e6f-9a9b-1dae55626202
-                        - 4b9519d3-cfd4-4bda-b1dc-6c7d0f521647
+                      parameters:
+                        - parameter:
+                            name: testNum
+                            id: 1bfe131b-0d9a-4e6f-9a9b-1dae55626202
+                            type: INT
+                            direction: IN
+                        - parameter:
+                            name: testRet
+                            id: 4b9519d3-cfd4-4bda-b1dc-6c7d0f521647
+                            type: BOOL
+                            direction: RETURN
                       nodes:
                         - initialNode:
                             id: 25a0f5f5-0d02-40e6-a70e-c3c606fcfde0

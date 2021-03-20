@@ -61,13 +61,16 @@ TEST_F(OperationParserTest, EmitOperationWithLiteralParameter) {
   c.setID("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
   Operation o;
   o.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+  OpaqueBehavior ob;
+  ob.setID("56d58664-da38-408a-9b65-8372a011dd64");
   Parameter p;
   p.setID("563f4740-e107-4d08-8618-2489f0fe1865");
   p.setName("test");
   PrimitiveType pt;
   pt.setPrimitiveType(PrimitiveType::Primitive::STRING);
   p.setType(&pt);
-  o.getParameters().add(p);
+  ob.getParameters().add(p);
+  o.getMethods().add(ob);
   c.getOperations().add(o);
   m.getOwnedElements().add(c);
 
@@ -80,11 +83,14 @@ TEST_F(OperationParserTest, EmitOperationWithLiteralParameter) {
         operations:
           - operation:
               id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
-              parameters:
-                - parameter:
-                    type: STRING
-                    name: test
-                    id: 563f4740-e107-4d08-8618-2489f0fe1865)"""";
+              methods:
+                - opaqueBehavior:
+                    id: 56d58664-da38-408a-9b65-8372a011dd64
+                    parameters:
+                      - parameter:
+                          type: STRING
+                          name: test
+                          id: 563f4740-e107-4d08-8618-2489f0fe1865)"""";
 
   string generatedEmit;
   YAML::Emitter emitter;
@@ -105,11 +111,14 @@ TEST_F(OperationParserTest, EmitOperationWithInstanceParameter) {
   c.setID("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
   Operation o;
   o.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+  OpaqueBehavior ob;
+  ob.setID("56d58664-da38-408a-9b65-8372a011dd64");
   Parameter p;
   p.setID("563f4740-e107-4d08-8618-2489f0fe1865");
   p.setName("test");
   p.setType(&c2);
-  o.getParameters().add(p);
+  ob.getParameters().add(p);
+  o.getMethods().add(ob);
   c.getOperations().add(o);
   m.getOwnedElements().add(c2);
   m.getOwnedElements().add(c);
@@ -125,11 +134,14 @@ TEST_F(OperationParserTest, EmitOperationWithInstanceParameter) {
         operations:
           - operation:
               id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
-              parameters:
-                - parameter:
-                    type: d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
-                    name: test
-                    id: 563f4740-e107-4d08-8618-2489f0fe1865)"""";
+              methods:
+                - opaqueBehavior:
+                    id: 56d58664-da38-408a-9b65-8372a011dd64
+                    parameters:
+                      - parameter:
+                          type: d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
+                          name: test
+                          id: 563f4740-e107-4d08-8618-2489f0fe1865)"""";
 
   string generatedEmit;
   YAML::Emitter emitter;
@@ -258,19 +270,19 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
   
   // Operation
   Operation * op = clazz->getOperations().front();
-  ASSERT_TRUE(op->getParameters().size() == 2);
   ASSERT_TRUE(op->getMethods().size() == 1);
+  ASSERT_TRUE(op->getMethods().front()->getParameters().size() == 2);
 
   //Parameters
-  ASSERT_TRUE(op->getParameters().front()->getID() == boost::lexical_cast<boost::uuids::uuid>("1bfe131b-0d9a-4e6f-9a9b-1dae55626202"));
-  Parameter* inParam = op->getParameters().front();
+  ASSERT_TRUE(op->getMethods().front()->getParameters().front()->getID() == boost::lexical_cast<boost::uuids::uuid>("1bfe131b-0d9a-4e6f-9a9b-1dae55626202"));
+  Parameter* inParam = op->getMethods().front()->getParameters().front();
   ASSERT_TRUE(inParam->getType() != NULL);
   ASSERT_TRUE(inParam->getType()->isPrimitive());
   ASSERT_TRUE(dynamic_cast<PrimitiveType*>(inParam->getType())->getPrimitiveType() == PrimitiveType::Primitive::INT);
   ASSERT_TRUE(inParam->getDirection() == ParameterDirectionKind::IN);
 
-  ASSERT_TRUE(op->getParameters().back()->getID() == boost::lexical_cast<boost::uuids::uuid>("4b9519d3-cfd4-4bda-b1dc-6c7d0f521647"));
-  Parameter* retParam = op->getParameters().back();
+  ASSERT_TRUE(op->getMethods().front()->getParameters().back()->getID() == boost::lexical_cast<boost::uuids::uuid>("4b9519d3-cfd4-4bda-b1dc-6c7d0f521647"));
+  Parameter* retParam = op->getMethods().front()->getParameters().back();
   ASSERT_TRUE(retParam->getType() != NULL);
   ASSERT_TRUE(retParam->getType()->isPrimitive());
   ASSERT_TRUE(dynamic_cast<PrimitiveType*>(retParam->getType())->getPrimitiveType() == PrimitiveType::Primitive::BOOL);

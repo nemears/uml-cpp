@@ -10,7 +10,7 @@ namespace UML {
 
     class ActivityNode : virtual public NamedElement {
         protected:
-            Activity* activity;
+            Activity* m_activity;
             Sequence<ActivityEdge>* m_incoming;
             Sequence<ActivityEdge>* m_outgoing;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;

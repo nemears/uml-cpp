@@ -3,13 +3,22 @@
 
 #include "namedElement.h"
 #include "valueSpecification.h"
+#include "sequence.h"
 
 namespace UML {
 
     // forward declaration
     class ActivityNode;
+    class Activity;
 
     class ActivityEdge : public NamedElement {
+        protected:
+            Activity* m_activity;
+            ActivityNode* m_source;
+            ActivityNode* m_target;
+            ValueSpecification* m_guard;
+            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
+            void reindexName(string oldName, string newName) override;
         public:
             ActivityNode* getSource();
             void setSource(ActivityNode* source);
@@ -18,16 +27,12 @@ namespace UML {
             ValueSpecification* getGuard();
             void setGuard(ValueSpecification* guard);
             ActivityEdge() {
-                source = 0;
-                target = 0;
-                guard = 0;
+                m_activity = 0;
+                m_source = 0;
+                m_target = 0;
+                m_guard = 0;
             }
             ElementType getElementType() override;
-
-        protected:
-            ActivityNode* source;
-            ActivityNode* target;
-            ValueSpecification* guard;
     };
 }
 

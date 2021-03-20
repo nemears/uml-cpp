@@ -4,6 +4,7 @@
 using namespace UML;
 
 ActivityNode::ActivityNode() {
+    m_activity = 0;
     m_incoming = new Sequence<ActivityEdge>;
     m_outgoing = new Sequence<ActivityEdge>;
 }
@@ -14,16 +15,16 @@ ActivityNode::~ActivityNode() {
 }
 
 void ActivityNode::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
-    if (activity) {
-        activity->getNodes().reindex(oldID, newID);
+    if (m_activity) {
+        m_activity->getNodes().reindex(oldID, newID);
     }
 
     NamedElement::reindexID(oldID, newID);
 }
 
 void ActivityNode::reindexName(string oldName, string newName) {
-    if (activity) {
-        activity->getNodes().reindex(m_id, oldName, newName);
+    if (m_activity) {
+        m_activity->getNodes().reindex(m_id, oldName, newName);
     }
 
     NamedElement::reindexName(oldName, newName);
@@ -42,11 +43,11 @@ ElementType ActivityNode::getElementType() {
 }
 
 Activity* ActivityNode::getActivity() {
-    return activity;
+    return m_activity;
 }
 
 void ActivityNode::setActivity(Activity* activity) {
-    this->activity = activity;
+    m_activity = activity;
 }
 
 bool ActivityNode::isObjectNode() {

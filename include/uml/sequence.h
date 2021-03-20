@@ -7,6 +7,7 @@ namespace UML {
     class Slot;
     class Operation;
     class ActivityNode;
+    class ActivityEdge;
     /**
      * Sequence Class, Holds collections of uml elements
      **/
@@ -17,6 +18,7 @@ namespace UML {
         friend class Slot;
         friend class Operation;
         friend class ActivityNode;
+        friend class ActivityEdge;
         private:
             map<boost::uuids::uuid, T*> m_data;
             vector<boost::uuids::uuid> m_order;

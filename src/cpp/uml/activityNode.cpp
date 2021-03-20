@@ -13,6 +13,22 @@ ActivityNode::~ActivityNode() {
     delete m_outgoing;
 }
 
+void ActivityNode::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+    if (activity) {
+        activity->getNodes().reindex(oldID, newID);
+    }
+
+    NamedElement::reindexID(oldID, newID);
+}
+
+void ActivityNode::reindexName(string oldName, string newName) {
+    if (activity) {
+        activity->getNodes().reindex(m_id, oldName, newName);
+    }
+
+    NamedElement::reindexName(oldName, newName);
+}
+
 Sequence<ActivityEdge>& ActivityNode::getIncoming() {
     return *m_incoming;
 }

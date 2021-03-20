@@ -13,6 +13,8 @@ namespace UML {
             Activity* activity;
             Sequence<ActivityEdge>* m_incoming;
             Sequence<ActivityEdge>* m_outgoing;
+            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
+            void reindexName(string oldName, string newName) override;
         public:
             ActivityNode();
             ~ActivityNode();

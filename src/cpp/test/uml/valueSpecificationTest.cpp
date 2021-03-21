@@ -6,6 +6,7 @@
 #include "uml/literalInt.h"
 #include "uml/literalReal.h"
 #include "uml/literalBool.h"
+#include "uml/slot.h"
 
 using namespace UML;
 
@@ -75,4 +76,26 @@ TEST_F(ValueSpecificationTest, LiteralBoolTest) {
     ASSERT_NO_THROW(ls.setValue(val));
     EXPECT_EQ(ls.getValue(), val);
     EXPECT_EQ(ls.getValue(), false);
+}
+
+TEST_F(ValueSpecificationTest, reindexID_forSlotTest) {
+    LiteralBool v;
+    Slot s;
+    s.getValues().add(v);
+    v.setOwner(&s);
+    s.getOwnedElements().add(v);
+    v.setID("eb092018-0bef-4ad6-b80f-05fa124f98c3");
+    ASSERT_TRUE(s.getValues().get(v.getID()));
+    ASSERT_TRUE(s.getOwnedElements().get(v.getID()));
+}
+
+TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
+    LiteralInt v;
+    Slot s;
+    s.getValues().add(v);
+    v.setOwner(&s);
+    s.getOwnedElements().add(v);
+    v.setName("test");
+    ASSERT_TRUE(s.getValues().get("test"));
+    ASSERT_TRUE(s.getOwnedElements().get("test"));
 }

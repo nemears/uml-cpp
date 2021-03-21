@@ -43,6 +43,8 @@ class SlotParser : public ElementParser {
             InstanceValue* iv = new InstanceValue;
             iv->setInstance(dynamic_cast<InstanceSpecification*>(value));
             dynamic_cast<Slot*>(slot)->getValues().add(*iv);
+            slot->getOwnedElements().add(*iv);
+            iv->setOwner(slot);
         }
 };
 

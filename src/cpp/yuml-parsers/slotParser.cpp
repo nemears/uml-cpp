@@ -37,6 +37,8 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
                             LiteralString* ls = new LiteralString;
                             ls->setValue(stringVal);
                             ((Slot *) el)->getValues().add(*ls);
+                            el->getOwnedElements().add(*ls);
+                            ls->setOwner(el);
                             break;
                         }
                         case PrimitiveType::Primitive::INT : {
@@ -44,6 +46,8 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
                             LiteralInt* li = new LiteralInt;
                             li->setValue(intVal);
                             ((Slot *) el)->getValues().add(*li);
+                            el->getOwnedElements().add(*li);
+                            li->setOwner(el);
                             break;
                         }
                         case PrimitiveType::Primitive::REAL : {
@@ -51,6 +55,8 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
                             LiteralReal* lr = new LiteralReal;
                             lr->setValue(realVal);
                             ((Slot *) el)->getValues().add(*lr);
+                            el->getOwnedElements().add(*lr);
+                            lr->setOwner(el);
                             break;
                         }
                         case PrimitiveType::Primitive::BOOL : {
@@ -58,6 +64,8 @@ bool SlotParser::parseFeatures(YAML::Node node, Element* el) {
                             LiteralBool* lb = new LiteralBool;
                             lb->setValue(boolVal);
                             ((Slot *) el)->getValues().add(*lb);
+                            el->getOwnedElements().add(*lb);
+                            lb->setOwner(el);
                             break;
                         }
                         default : {

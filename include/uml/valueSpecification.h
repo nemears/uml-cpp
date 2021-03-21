@@ -1,9 +1,14 @@
 #ifndef VALUESPECIFICATIONH
 #define VALUESPECIFICATIONH
 #include "typedElement.h"
+#include "sequence.h"
 
 namespace UML {
 class ValueSpecification : public TypedElement {
+
+    protected:
+        void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
+        void reindexName(string oldName, string newName) override;
 
     /**
      * perhaps return type void* function gets overiden but right now it is commented out

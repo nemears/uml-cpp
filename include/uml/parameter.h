@@ -2,6 +2,7 @@
 #define PARAMETERH
 #include "typedElement.h"
 #include "multiplicityElement.h"
+#include "sequence.h"
 
 namespace UML {
 
@@ -18,6 +19,8 @@ namespace UML {
         protected:
             ParameterDirectionKind m_direction;
             Operation* m_operation;
+            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
+            void reindexName(string oldName, string newName) override;
         public:
             Operation* getOperation();
             void setOperation(Operation* operation);

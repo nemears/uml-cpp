@@ -11,6 +11,7 @@ namespace UML {
     class OutputPin;
     class InputPin;
     class ValueSpecification;
+    class Parameter;
     /**
      * Sequence Class, Holds collections of uml elements
      **/
@@ -25,6 +26,7 @@ namespace UML {
         friend class OutputPin;
         friend class InputPin;
         friend class ValueSpecification;
+        friend class Parameter;
         private:
             map<boost::uuids::uuid, T*> m_data;
             vector<boost::uuids::uuid> m_order;

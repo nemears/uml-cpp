@@ -7,6 +7,38 @@ ElementType Parameter::getElementType() {
     return ElementType::PARAMETER;
 }
 
+void Parameter::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+    if (m_owner) {
+        if (m_owner->isSubClassOf(ElementType::BEHAVIOR)) {
+            dynamic_cast<Behavior*>(m_owner)->getParameters().reindex(oldID, newID);
+        }
+    }
+
+    if (m_operation) {
+        for (auto const& bhv : m_operation->getMethods()) {
+            bhv->getParameters().reindex(oldID, newID);
+        }
+    }
+
+    NamedElement::reindexID(oldID, newID);
+}
+
+void Parameter::reindexName(string oldName, string newName) {
+    if (m_owner) {
+        if (m_owner->isSubClassOf(ElementType::BEHAVIOR)) {
+            dynamic_cast<Behavior*>(m_owner)->getParameters().reindex(m_id, oldName, newName);
+        }
+    }
+
+    if (m_operation) {
+        for (auto const& bhv : m_operation->getMethods()) {
+            bhv->getParameters().reindex(m_id, oldName, newName);
+        }
+    }
+
+    NamedElement::reindexName(oldName, newName);
+}
+
 Operation* Parameter::getOperation() {
     return m_operation;
 }
@@ -40,17 +72,17 @@ string Parameter::getDirectionString() {
 }
 
 void Parameter::setDirectionString(string& directionString) {
-if (directionString.compare("IN") == 0) {
-    setDirection(ParameterDirectionKind::IN);
-} else if (directionString.compare("INOUT") == 0) {
-    setDirection(ParameterDirectionKind::INOUT);
-} else if (directionString.compare("OUT") == 0) {
-    setDirection(ParameterDirectionKind::OUT);
-} else if (directionString.compare("RETURN") == 0) {
-    setDirection(ParameterDirectionKind::RETURN);
-} else if (directionString.compare("NONE") == 0) {
-    setDirection(ParameterDirectionKind::NONE);
-} else {
-    throw invalidDirectionException;
-}
+    if (directionString.compare("IN") == 0) {
+        setDirection(ParameterDirectionKind::IN);
+    } else if (directionString.compare("INOUT") == 0) {
+        setDirection(ParameterDirectionKind::INOUT);
+    } else if (directionString.compare("OUT") == 0) {
+        setDirection(ParameterDirectionKind::OUT);
+    } else if (directionString.compare("RETURN") == 0) {
+        setDirection(ParameterDirectionKind::RETURN);
+    } else if (directionString.compare("NONE") == 0) {
+        setDirection(ParameterDirectionKind::NONE);
+    } else {
+        throw invalidDirectionException;
+    }
 }

@@ -7,6 +7,7 @@
 #include "uml/literalReal.h"
 #include "uml/literalBool.h"
 #include "uml/slot.h"
+#include "uml/expression.h"
 
 using namespace UML;
 
@@ -98,4 +99,28 @@ TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
     v.setName("test");
     ASSERT_TRUE(s.getValues().get("test"));
     ASSERT_TRUE(s.getOwnedElements().get("test"));
+}
+
+TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
+    Expression e;
+    LiteralBool b;
+    b.setOwner(&e);
+    e.getOwnedElements().add(b);
+    e.getOperands().add(b);
+    e.setSymbol("==");
+    b.setID("eb092018-0bef-4ad6-b80f-05fa124f98c3");
+    ASSERT_TRUE(e.getOperands().get(b.getID()));
+    ASSERT_TRUE(e.getOwnedElements().get(b.getID()));
+}
+
+TEST_F(ValueSpecificationTest, reindexNameExpressionTest) {
+    Expression e;
+    LiteralBool b;
+    b.setOwner(&e);
+    e.getOwnedElements().add(b);
+    e.getOperands().add(b);
+    e.setSymbol("==");
+    b.setName("test");
+    ASSERT_TRUE(e.getOperands().get("test"));
+    ASSERT_TRUE(e.getOwnedElements().get("test"));
 }

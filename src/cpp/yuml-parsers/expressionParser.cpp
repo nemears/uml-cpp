@@ -56,24 +56,32 @@ bool ExpressionParser::parseOperand(YAML::Node node, Element* expression) {
             LiteralBool* lb = new LiteralBool;
             lb->setValue(node["literalBool"].as<bool>());
             dynamic_cast<Expression*>(expression)->getOperands().add(*dynamic_cast<ValueSpecification*>(lb));
+            expression->getOwnedElements().add(*lb);
+            lb->setOwner(expression);
         }
     } else if (node["literalInt"]) {
         if (node["literalInt"].IsScalar()) {
             LiteralInt* li = new LiteralInt;
             li->setValue(node["literalInt"].as<int>());
             dynamic_cast<Expression*>(expression)->getOperands().add(*dynamic_cast<ValueSpecification*>(li));
+            expression->getOwnedElements().add(*li);
+            li->setOwner(expression);
         }
     } else if (node["literalReal"]) {
         if (node["literalReal"].IsScalar()) {
             LiteralReal* lr = new LiteralReal;
             lr->setValue(node["literalReal"].as<double>());
             dynamic_cast<Expression*>(expression)->getOperands().add(*dynamic_cast<ValueSpecification*>(lr));
+            expression->getOwnedElements().add(*lr);
+            lr->setOwner(expression);
         }
     } else if (node["literalString"]) {
         if (node["literalString"].IsScalar()) {
             LiteralString* ls = new LiteralString;
             ls->setValue(node["literalString"].as<string>());
             dynamic_cast<Expression*>(expression)->getOperands().add(*dynamic_cast<ValueSpecification*>(ls));
+            expression->getOwnedElements().add(*ls);
+            ls->setOwner(expression);
         }
     } else {
         // Error

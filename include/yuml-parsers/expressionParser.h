@@ -25,6 +25,8 @@ class ExpressionParser : public TypedElementParser {
             InstanceValue* operand = new InstanceValue;
             operand->setInstance(dynamic_cast<InstanceSpecification*>(inst));
             dynamic_cast<Expression*>(expression)->getOperands().add(*dynamic_cast<ValueSpecification*>(operand));
+            expression->getOwnedElements().add(*operand);
+            operand->setOwner(expression);
         };
 };
 

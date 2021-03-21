@@ -8,6 +8,8 @@ namespace UML {
     class Operation;
     class ActivityNode;
     class ActivityEdge;
+    class OutputPin;
+    class InputPin;
     /**
      * Sequence Class, Holds collections of uml elements
      **/
@@ -19,6 +21,8 @@ namespace UML {
         friend class Operation;
         friend class ActivityNode;
         friend class ActivityEdge;
+        friend class OutputPin;
+        friend class InputPin;
         private:
             map<boost::uuids::uuid, T*> m_data;
             vector<boost::uuids::uuid> m_order;

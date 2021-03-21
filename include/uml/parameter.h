@@ -5,6 +5,8 @@
 
 namespace UML {
 
+    class Operation;
+
     enum class ParameterDirectionKind {
         IN, 
         INOUT, 
@@ -15,12 +17,16 @@ namespace UML {
     class Parameter : public TypedElement , public MultiplicityElement {
         protected:
             ParameterDirectionKind m_direction;
+            Operation* m_operation;
         public:
+            Operation* getOperation();
+            void setOperation(Operation* operation);
             ElementType getElementType() override;
             ParameterDirectionKind getDirection();
             void setDirection(ParameterDirectionKind direction);
             Parameter() {
                 m_direction = ParameterDirectionKind::NONE;
+                m_operation = 0;
             }
             string getDirectionString();
             void setDirectionString(string& directionString);

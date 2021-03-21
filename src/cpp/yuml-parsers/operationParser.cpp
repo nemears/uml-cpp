@@ -14,13 +14,19 @@ bool OperationParser::parseFeatures(YAML::Node node, Element* el) {
                         ActivityParser activityParser(elements, postProcessFlag);
                         Element* parsedEl = activityParser.parseElement(node["methods"][i]["activity"]);
                         dynamic_cast<Operation*>(el)->getMethods().add(*dynamic_cast<Activity*>(parsedEl));
+                        dynamic_cast<Behavior*>(parsedEl)->setSpecification(dynamic_cast<Operation*>(el));
+                        for (auto const& param: dynamic_cast<Behavior*>(parsedEl)->getParameters()) {
+                            param->setOperation(dynamic_cast<Operation*>(el));
+                        }
                     } else if (node["methods"][i]["opaqueBehavior"]) {
                         OpaqueBehaviorParser opaqueBehaviorParser(elements, postProcessFlag);
                         Element* parsedEl = opaqueBehaviorParser.parseElement(node["methods"][i]["opaqueBehavior"]);
                         dynamic_cast<Operation*>(el)->getMethods().add(*dynamic_cast<OpaqueBehavior*>(parsedEl));
-                    }
-
-                    // TODO other types here
+                        dynamic_cast<Behavior*>(parsedEl)->setSpecification(dynamic_cast<Operation*>(el));
+                        for (auto const& param: dynamic_cast<Behavior*>(parsedEl)->getParameters()) {
+                            param->setOperation(dynamic_cast<Operation*>(el));
+                        }
+                    } // TODO other types here
                 } else if (node["methods"][i].IsScalar()) {
                     if (isValidUUID4(node["methods"][i].as<string>())) {
                         boost::uuids::uuid methodId = boost::lexical_cast<boost::uuids::uuid>(node["methods"][i].as<string>());

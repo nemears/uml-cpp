@@ -1,9 +1,18 @@
 #include "uml/parameter.h"
+#include "uml/operation.h"
 
 using namespace UML;
 
 ElementType Parameter::getElementType() {
     return ElementType::PARAMETER;
+}
+
+Operation* Parameter::getOperation() {
+    return m_operation;
+}
+
+void Parameter::setOperation(Operation* operation) {
+    m_operation = operation;
 }
 
 ParameterDirectionKind Parameter::getDirection() {

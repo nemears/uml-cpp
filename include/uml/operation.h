@@ -4,7 +4,6 @@
 #include <list>
 #include "namedElement.h"
 #include "behavior.h"
-#include "parameter.h"
 
 
 using namespace std;

@@ -24,6 +24,10 @@ class OperationParser : public NamedElementParser {
         static OperationParser createNewParser();
         static void addMethodLater(YAML::Node node, Element* operation, Element* method) {
             dynamic_cast<Operation*>(operation)->getMethods().add(*dynamic_cast<Behavior*>(method));
+            dynamic_cast<Behavior*>(method)->setSpecification(dynamic_cast<Operation*>(operation));
+            for (auto const& param: dynamic_cast<Behavior*>(method)->getParameters()) {
+                param->setOperation(dynamic_cast<Operation*>(operation));
+            }
         };
 };
 

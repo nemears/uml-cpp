@@ -126,10 +126,12 @@ bool ActivityParser::parseFeatures(YAML::Node node, Element* el) {
                     ControlFlowParser controlFlowParser(elements, postProcessFlag);
                     Element* parsedEl = controlFlowParser.parseElement(node["edges"][i]["controlFlow"]);
                     dynamic_cast<Activity*>(el)->getEdges().add(*dynamic_cast<ControlFlow*>(parsedEl));
+                    dynamic_cast<ActivityEdge*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
                 } else if (node["edges"][i]["objectFlow"]) {
                     ObjectFlowParser objectFlowParser(elements, postProcessFlag);
                     Element* parsedEl = objectFlowParser.parseElement(node["edges"][i]["objectFlow"]);
                     dynamic_cast<Activity*>(el)->getEdges().add(*dynamic_cast<ObjectFlow*>(parsedEl));
+                    dynamic_cast<ActivityEdge*>(parsedEl)->setActivity(dynamic_cast<Activity*>(el));
                 } else {
                     // TODO error
                 }

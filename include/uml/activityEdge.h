@@ -20,6 +20,8 @@ namespace UML {
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
             void reindexName(string oldName, string newName) override;
         public:
+            Activity* getActivity();
+            void setActivity(Activity* activity);
             ActivityNode* getSource();
             void setSource(ActivityNode* source);
             ActivityNode* getTarget();

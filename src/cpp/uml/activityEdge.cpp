@@ -28,6 +28,14 @@ void ActivityEdge::reindexName(string oldName, string newName) {
     NamedElement::reindexName(oldName, newName);
 }
 
+Activity* ActivityEdge::getActivity() {
+    return m_activity;
+}
+
+void ActivityEdge::setActivity(Activity* activity) {
+    m_activity = activity;
+}
+
 ActivityNode* ActivityEdge::getSource() {
     return m_source;
 }

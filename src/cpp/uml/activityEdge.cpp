@@ -13,6 +13,10 @@ void ActivityEdge::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID)
         m_source->getOutgoing().reindex(oldID, newID);
     }
 
+    if (m_activity) {
+        m_activity->getEdges().reindex(oldID, newID);
+    }
+
     NamedElement::reindexID(oldID, newID);
 }
 
@@ -23,6 +27,10 @@ void ActivityEdge::reindexName(string oldName, string newName) {
 
     if (m_source) {
         m_source->getOutgoing().reindex(m_id, oldName, newName);
+    }
+
+    if (m_activity) {
+        m_activity->getEdges().reindex(m_id, oldName, newName);
     }
 
     NamedElement::reindexName(oldName, newName);

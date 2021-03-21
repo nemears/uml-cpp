@@ -427,3 +427,31 @@ TEST_F(OperationParserTest, ParseActvityCorrespondedToOperationTest) {
   ASSERT_TRUE(joinToFinal->getTarget() == finalNode);
   ASSERT_TRUE(finalNode->getIncoming().front() == joinToFinal);
 }
+
+TEST_F(OperationParserTest, parameterAndSpecificationTest) {
+  ModelParser pnsParser = ModelParser::createNewParser();
+  YAML::Node pnsNode = YAML::LoadFile(ymlPath + "operationTests/parameterAndSpecification.yml");
+
+  ASSERT_NO_THROW(pnsParser.parse(pnsNode));
+
+  ASSERT_TRUE(pnsParser.theEl);
+  ASSERT_TRUE(pnsParser.theEl->getOwnedElements().size() == 1);
+  ASSERT_TRUE(pnsParser.theEl->getOwnedElements().front()->getElementType() == ElementType::CLASS);
+
+  Class* clazz = dynamic_cast<Class*>(pnsParser.theEl->getOwnedElements().front());
+  ASSERT_TRUE(clazz->getOperations().size() == 1);
+  ASSERT_TRUE(clazz->getOperations().front());
+  
+  Operation* op = dynamic_cast<Operation*>(clazz->getOperations().front());
+  ASSERT_TRUE(op->getMethods().size() == 1);
+  ASSERT_TRUE(op->getMethods().front()->getElementType() == ElementType::ACTIVITY);
+  
+  Activity* a = dynamic_cast<Activity*>(op->getMethods().front());
+  ASSERT_TRUE(a->getSpecification());
+  ASSERT_TRUE(a->getSpecification() == op);
+  ASSERT_TRUE(a->getParameters().size() == 1);
+
+  Parameter* p = a->getParameters().front();
+  ASSERT_TRUE(p->getOperation());
+  ASSERT_TRUE(p->getOperation() == op);
+}

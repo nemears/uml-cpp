@@ -1,0 +1,12 @@
+---
+  model:
+    children:
+      - class:
+          operations:
+            - operation:
+                methods:
+                  - activity:
+                      parameters:
+                        - parameter:
+                            name: test
+...

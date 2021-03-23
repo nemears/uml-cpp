@@ -54,6 +54,7 @@ namespace UML {
         PIN,
         PRIMITIVE_TYPE,
         PROPERTY,
+        RELATIONSHIP,
         SLOT,
         STRUCTURAL_FEATURE,
         TYPE,
@@ -84,12 +85,14 @@ namespace UML {
         protected:
             Element* m_owner;
             Sequence<Element>* m_ownedElements;
+            Sequence<Element>* m_relationships;
             boost::uuids::uuid m_id;
             virtual void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID);
         public:
             Element();
             ~Element();
             Sequence<Element>& getOwnedElements();
+            Sequence<Element>& getRelationships();
             boost::uuids::uuid getID() { return m_id; };
             virtual void setID(string id);
             void setID(boost::uuids::uuid id);

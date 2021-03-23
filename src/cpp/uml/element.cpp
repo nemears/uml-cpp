@@ -8,11 +8,13 @@ Element::Element() {
     m_id = boost::uuids::random_generator()();
     m_owner = NULL;
     m_ownedElements = new Sequence<Element>;
+    m_relationships = new Sequence<Element>;
 }
 
 // Destructor
 Element::~Element() {
     delete m_ownedElements;
+    delete m_relationships;
 }
 
 void Element::setID(string id) {
@@ -44,6 +46,10 @@ void Element::setOwner(Element* owner) {
 
 Sequence<>& Element::getOwnedElements() {
     return *m_ownedElements;
+}
+
+Sequence<>& Element::getRelationships() {
+    return *m_relationships;
 }
 
 ElementType Element::getElementType() {
@@ -240,6 +246,9 @@ string Element::getElementTypeString() {
         }
         case ElementType::PROPERTY : {
             return "PROPERTY";
+        }
+        case ElementType::RELATIONSHIP : {
+            return "RELATIONSHIP";
         }
         case ElementType::SLOT : {
             return "SLOT";

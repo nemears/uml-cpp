@@ -28,3 +28,14 @@ TEST_F(DirectedRelationshipTest, sourceAndTargetTest) {
     ASSERT_TRUE(dr.getTargets().size() == 1);
     ASSERT_TRUE(dr.getTargets().front() == &b);
 }
+
+TEST_F(DirectedRelationshipTest, addTargetFunctorTest) {
+    DirectedRelationship dr;
+    Element a;
+    Element b;
+    dr.getTargets().add(a);
+    dr.getSources().add(b);
+    ASSERT_TRUE(dr.getRelatedElements().size() == 2);
+    ASSERT_TRUE(dr.getRelatedElements().front() == &a);
+    ASSERT_TRUE(dr.getRelatedElements().back() == &b);
+}

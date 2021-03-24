@@ -80,3 +80,12 @@ TEST_F(SequenceTest, useAutoForLoop2) {
         ASSERT_TRUE(e != NULL);
     }
 }
+
+TEST_F(SequenceTest, getNonexistentElementByID_Test) {
+    Element e;
+    Element a;
+    e.getOwnedElements().add(a);
+    Element b;
+    ASSERT_FALSE(e.getOwnedElements().get(b.getID()));
+    ASSERT_TRUE(e.getOwnedElements().get(a.getID()));
+}

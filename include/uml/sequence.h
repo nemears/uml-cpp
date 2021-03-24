@@ -3,6 +3,17 @@
 #include "namedElement.h"
 
 namespace UML {
+
+    class AbstractSequenceFunctor {
+        protected:
+            Element* m_el;
+        public:
+            AbstractSequenceFunctor(Element* me) {
+                m_el = me;
+            };
+            virtual void operator()(Element& el) const = 0;
+    };
+
     class Property;
     class Slot;
     class Operation;
@@ -13,6 +24,7 @@ namespace UML {
     class ValueSpecification;
     class Parameter;
     class Relationship;
+    class DirectedRelationship;
     /**
      * Sequence Class, Holds collections of uml elements
      **/
@@ -29,11 +41,14 @@ namespace UML {
         friend class ValueSpecification;
         friend class Parameter;
         friend class Relationship;
+        friend class DirectedRelationship;
         private:
             map<boost::uuids::uuid, T*> m_data;
             vector<boost::uuids::uuid> m_order;
             map<string, T*> m_nameTranslation;
             vector<T*> m_rep;
+            vector<AbstractSequenceFunctor*> addProcedures;
+            vector<AbstractSequenceFunctor*> removeProcedures;
             void reindex(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
 
                 // m_data
@@ -56,6 +71,17 @@ namespace UML {
             }
         public:
 
+            // destructor
+            ~Sequence<T>() {
+                for (auto const& addProc: addProcedures) {
+                    delete addProc;
+                }
+
+                for (auto const& remProc: removeProcedures) {
+                    delete remProc;
+                }
+            }
+
             // Methods
             void add(T& el) {
                 if (!m_data.count(el.getID())) {
@@ -70,6 +96,9 @@ namespace UML {
                 } else {
                     m_order.push_back(el.getID());
                     m_rep.push_back(&el);
+                }
+                for (auto const& fun : addProcedures) {
+                    (*fun)(el);
                 }
             };
             void remove(T& el) {
@@ -87,6 +116,9 @@ namespace UML {
                     // erase all uuids in order
                     m_order.erase(std::remove(m_order.begin(), m_order.end(), el.getID()), m_order.end());
                     m_rep.erase(std::remove(m_rep.begin(), m_rep.end(), &el), m_rep.end());
+                    for (auto const& fun : removeProcedures) {
+                        (*fun)(el);
+                    }
                 } else {
                     throw ElementDoesntExistException(el);
                 }
@@ -94,6 +126,7 @@ namespace UML {
             size_t size() { return m_order.size(); };
             bool empty() { return m_order.empty(); };
             T* get(boost::uuids::uuid id) { return m_data[id]; };
+            size_t count(boost::uuids::uuid id) { return m_data.count(id); };
             T* get(string name) { return m_nameTranslation[name]; };
             T* get(size_t index) { return m_data[m_order[index]]; };
             T* front() { return m_data[m_order.front()]; };

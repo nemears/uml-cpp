@@ -107,8 +107,8 @@ TEST_F(ElementTest, basicRelationshipTest) {
   Relationship r;
   r.getRelatedElements().add(e);
   r.getRelatedElements().add(a);
-  e.getRelationships().add(r);
-  a.getRelationships().add(r);
+  // e.getRelationships().add(r);
+  // a.getRelationships().add(r);
   ASSERT_TRUE(r.getRelatedElements().size() == 2);
   ASSERT_TRUE(r.getRelatedElements().front() == &e);
   ASSERT_TRUE(r.getRelatedElements().back() == &a);
@@ -124,8 +124,8 @@ TEST_F(ElementTest, reindexRelationshipID_test) {
   Relationship r;
   r.getRelatedElements().add(e);
   r.getRelatedElements().add(a);
-  e.getRelationships().add(r);
-  a.getRelationships().add(r);
+  // e.getRelationships().add(r);
+  // a.getRelationships().add(r);
   r.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
   e.setID("eb092018-0bef-4ad6-b80f-05fa124f98c3");
   ASSERT_TRUE(r.getRelatedElements().get(e.getID()));

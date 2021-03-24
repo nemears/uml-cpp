@@ -84,6 +84,9 @@ namespace UML {
 
             // Methods
             void add(T& el) {
+                for (auto const& fun : addProcedures) {
+                    (*fun)(el);
+                }
                 if (!m_data.count(el.getID())) {
                     m_data[el.getID()] = &el;
                     m_order.push_back(el.getID());
@@ -96,9 +99,6 @@ namespace UML {
                 } else {
                     m_order.push_back(el.getID());
                     m_rep.push_back(&el);
-                }
-                for (auto const& fun : addProcedures) {
-                    (*fun)(el);
                 }
             };
             void remove(T& el) {

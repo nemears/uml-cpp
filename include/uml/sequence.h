@@ -104,10 +104,6 @@ namespace UML {
             void remove(T& el) {
                 if (m_data.count(el.getID())) {
 
-                    for (auto const& fun : removeProcedures) {
-                        (*fun)(el);
-                    }
-
                     // erase element in uuid map
                     m_data.erase(el.getID());
 
@@ -121,6 +117,9 @@ namespace UML {
                     // erase all uuids in order
                     m_order.erase(std::remove(m_order.begin(), m_order.end(), el.getID()), m_order.end());
                     m_rep.erase(std::remove(m_rep.begin(), m_rep.end(), &el), m_rep.end());
+                    for (auto const& fun : removeProcedures) {
+                        (*fun)(el);
+                    }
                 } else {
                     throw ElementDoesntExistException(el);
                 }

@@ -24,14 +24,14 @@ void Relationship::RemoveRelationshipFunctor::operator()(Element& el) const {
     if (el.getRelationships().count(m_el->getID())) {
         el.getRelationships().remove(*dynamic_cast<Relationship*>(m_el));
     }
-    // if (m_el->isSubClassOf(ElementType::DIRECTED_RELATIONSHIP)) {
-    //     if (dynamic_cast<DirectedRelationship*>(m_el)->getTargets().count(el.getID())) {
-    //         dynamic_cast<DirectedRelationship*>(m_el)->getTargets().remove(el);
-    //     }
-    //     if (dynamic_cast<DirectedRelationship*>(m_el)->getSources().count(el.getID())) {
-    //         dynamic_cast<DirectedRelationship*>(m_el)->getSources().remove(el);
-    //     }
-    // }
+    if (m_el->isSubClassOf(ElementType::DIRECTED_RELATIONSHIP)) {
+        if (dynamic_cast<DirectedRelationship*>(m_el)->getTargets().count(el.getID())) {
+            dynamic_cast<DirectedRelationship*>(m_el)->getTargets().remove(el);
+        }
+        if (dynamic_cast<DirectedRelationship*>(m_el)->getSources().count(el.getID())) {
+            dynamic_cast<DirectedRelationship*>(m_el)->getSources().remove(el);
+        }
+    }
 }
 
 Relationship::Relationship() {

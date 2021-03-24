@@ -7,6 +7,7 @@ namespace UML {
     class Relationship : public Element {
         protected:
             Sequence<>* m_relatedElements;
+            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
         public:
             Relationship();
             ~Relationship();

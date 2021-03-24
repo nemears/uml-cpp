@@ -2,6 +2,14 @@
 
 using namespace UML;
 
+void Relationship::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+    for (auto const& relEl : *m_relatedElements) {
+        relEl->getRelationships().reindex(oldID, newID);
+    }
+
+    Element::reindexID(oldID, newID);
+}
+
 Relationship::Relationship() {
     m_relatedElements = new Sequence<>;
 }

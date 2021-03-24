@@ -35,6 +35,10 @@ void Element::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
     if (m_owner) {
         m_owner->m_ownedElements->reindex(oldID, newID);
     }
+
+    for (auto const& relationship : *m_relationships) {
+        relationship->getRelatedElements().reindex(oldID, newID);
+    }
 }
 
 Element* Element::getOwner() {

@@ -100,8 +100,7 @@ bool Element::isSubClassOf(ElementType eType) {
             return myType == ElementType::PROPERTY || myType == ElementType::PARAMETER || myType == ElementType::PIN;
         }
         case ElementType::NAMED_ELEMENT : {
-            // xor it
-            return !(!(myType != ElementType::ELEMENT) != !(myType == ElementType::SLOT)) != !(myType == ElementType::RELATIONSHIP);
+            return myType != ElementType::ELEMENT && myType != ElementType::SLOT && myType != ElementType::RELATIONSHIP && myType != ElementType::DIRECTED_RELATIONSHIP;
         }
         case ElementType::NAMESPACE : {
             return myType == ElementType::MODEL;
@@ -109,6 +108,9 @@ bool Element::isSubClassOf(ElementType eType) {
         case ElementType::OBJECT_NODE : {
             return myType == ElementType::INPUT_PIN || myType == ElementType::OUTPUT_PIN || myType == ElementType::PIN
                    || myType == ElementType::PARAMETER_NODE;
+        }
+        case ElementType::RELATIONSHIP : {
+            return myType != ElementType::DIRECTED_RELATIONSHIP;
         }
         case ElementType::STRUCTURAL_FEATURE : {
             return myType != ElementType::PROPERTY;
@@ -167,6 +169,9 @@ string Element::getElementTypeString() {
         }
         case ElementType::DECISION_NODE : {
             return "DECISION_NODE";
+        }
+        case ElementType::DIRECTED_RELATIONSHIP : {
+            return "DIRECTED_RELATIONSHIP";
         }
         case ElementType::ELEMENT : {
             return "ELEMENT";

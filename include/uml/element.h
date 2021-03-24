@@ -26,6 +26,7 @@ namespace UML {
         CONTROL_FLOW,
         CREATE_OBJECT_ACTION,
         DECISION_NODE,
+        DIRECTED_RELATIONSHIP,
         ELEMENT,
         EXPRESSION,
         FINAL_NODE,

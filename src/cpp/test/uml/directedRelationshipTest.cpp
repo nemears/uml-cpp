@@ -48,3 +48,20 @@ TEST_F(DirectedRelationshipTest, duplicateRelationshipExceptionTest) {
     dr.getSources().add(b);
     ASSERT_THROW(dr.getRelatedElements().add(a), DuplicateRelationshipException);
 }
+
+TEST_F(DirectedRelationshipTest, removeRelationshipFunctorTest) {
+    DirectedRelationship dr;
+    Element a;
+    Element b;
+    dr.getTargets().add(a);
+    dr.getSources().add(b);
+    dr.getTargets().remove(a);
+    dr.getRelatedElements().remove(b);
+    ASSERT_FALSE(dr.getTargets().count(a.getID()));
+    ASSERT_FALSE(dr.getRelatedElements().count(a.getID()));
+    ASSERT_FALSE(a.getRelationships().count(dr.getID()));
+    
+    ASSERT_FALSE(dr.getSources().count(b.getID()));
+    ASSERT_FALSE(dr.getRelatedElements().count(b.getID()));
+    ASSERT_FALSE(b.getRelationships().count(dr.getID()));
+}

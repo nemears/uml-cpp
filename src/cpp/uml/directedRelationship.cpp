@@ -9,11 +9,17 @@ void DirectedRelationship::AddRelatedElementFunctor::operator()(Element& el) con
     }
 }
 
+void DirectedRelationship::RemoveRelatedElementFunctor::operator()(Element& el) const {
+    dynamic_cast<DirectedRelationship*>(m_el)->getRelatedElements().remove(el);
+}
+
 DirectedRelationship::DirectedRelationship() {
     m_targets = new Sequence<>;
     m_targets->addProcedures.push_back(new AddRelatedElementFunctor(this));
+    m_targets->removeProcedures.push_back(new RemoveRelatedElementFunctor(this));
     m_sources = new Sequence<>;
     m_sources->addProcedures.push_back(new AddRelatedElementFunctor(this));
+    m_sources->removeProcedures.push_back(new RemoveRelatedElementFunctor(this));
 }
 
 DirectedRelationship::~DirectedRelationship() {

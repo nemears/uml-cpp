@@ -2,6 +2,7 @@
 #include "uml/element.h"
 #include "uml/namedElement.h"
 #include "uml/sequence.h"
+#include "uml/relationship.h"
 
 using namespace UML;
 
@@ -113,4 +114,21 @@ TEST_F(ElementTest, reIndexID_Test) {
   e2.setOwner(&e1);
   e2.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
   ASSERT_TRUE(e1.getOwnedElements().get(e2.getID()) != NULL);
+}
+
+TEST_F(ElementTest, basicRelationshipTest) {
+  Element e;
+  Element a;
+  Relationship r;
+  r.getRelatedElements().add(e);
+  r.getRelatedElements().add(a);
+  e.getRelationships().add(r);
+  a.getRelationships().add(r);
+  ASSERT_TRUE(r.getRelatedElements().size() == 2);
+  ASSERT_TRUE(r.getRelatedElements().front() == &e);
+  ASSERT_TRUE(r.getRelatedElements().back() == &a);
+  ASSERT_TRUE(e.getRelationships().size() == 1);
+  ASSERT_TRUE(e.getRelationships().front() == &r);
+  ASSERT_TRUE(a.getRelationships().size() == 1);
+  ASSERT_TRUE(a.getRelationships().front() == &r);
 }

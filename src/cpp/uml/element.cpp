@@ -1,5 +1,6 @@
 #include "uml/element.h"
 #include "uml/sequence.h"
+#include "uml/relationship.h"
 
 using namespace UML;
 
@@ -8,7 +9,7 @@ Element::Element() {
     m_id = boost::uuids::random_generator()();
     m_owner = NULL;
     m_ownedElements = new Sequence<Element>;
-    m_relationships = new Sequence<Element>;
+    m_relationships = new Sequence<Relationship>;
 }
 
 // Destructor
@@ -48,7 +49,7 @@ Sequence<>& Element::getOwnedElements() {
     return *m_ownedElements;
 }
 
-Sequence<>& Element::getRelationships() {
+Sequence<Relationship>& Element::getRelationships() {
     return *m_relationships;
 }
 
@@ -96,7 +97,7 @@ bool Element::isSubClassOf(ElementType eType) {
         }
         case ElementType::NAMED_ELEMENT : {
             // xor it
-            return !(myType != ElementType::ELEMENT) != !(myType == ElementType::SLOT);
+            return !(!(myType != ElementType::ELEMENT) != !(myType == ElementType::SLOT)) != !(myType == ElementType::RELATIONSHIP);
         }
         case ElementType::NAMESPACE : {
             return myType == ElementType::MODEL;

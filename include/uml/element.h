@@ -73,6 +73,8 @@ namespace UML {
     // Forward Declaration for errors
     class ElementDoesntExistException;
 
+    class Relationship;
+
     /**
      * Element is the base class of all UML classes
      * It has three main attributes
@@ -85,14 +87,14 @@ namespace UML {
         protected:
             Element* m_owner;
             Sequence<Element>* m_ownedElements;
-            Sequence<Element>* m_relationships;
+            Sequence<Relationship>* m_relationships;
             boost::uuids::uuid m_id;
             virtual void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID);
         public:
             Element();
             ~Element();
             Sequence<Element>& getOwnedElements();
-            Sequence<Element>& getRelationships();
+            Sequence<Relationship>& getRelationships();
             boost::uuids::uuid getID() { return m_id; };
             virtual void setID(string id);
             void setID(boost::uuids::uuid id);

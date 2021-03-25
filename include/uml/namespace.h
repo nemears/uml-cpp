@@ -12,6 +12,11 @@ namespace UML{
     class Namespace : virtual public NamedElement {
         protected:
             Sequence<NamedElement>* m_members;
+            class AddMemberFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Namespace();
             ~Namespace();

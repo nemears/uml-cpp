@@ -41,6 +41,9 @@ Namespace* NamedElement::getNamespace() {
 
 void NamedElement::setNamespace(Namespace* nmspc) {
     m_namespace = nmspc;
+    if (!m_namespace->getMembers().count(m_id)) {
+        m_namespace->getMembers().add(*this);
+    }
 }
 
 ElementType NamedElement::getElementType() {

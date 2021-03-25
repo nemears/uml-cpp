@@ -56,3 +56,20 @@ TEST_F(NamespaceTest, reindexNameTest) {
     ASSERT_TRUE(nmspc.getOwnedElements().get("test") != NULL);
     ASSERT_TRUE(nmspc.getMembers().get("test") != NULL);
 }
+
+TEST_F(NamespaceTest, AddMemeberFunctorTest) {
+    Namespace n;
+    NamedElement m;
+    n.getMembers().add(m);
+    ASSERT_TRUE(n.getMembers().size() == 1);
+    ASSERT_TRUE(n.getMembers().front() == &m);
+    ASSERT_TRUE(m.getNamespace() == &n);
+}
+
+TEST_F(NamespaceTest, setNamespaceTest) {
+    Namespace n;
+    NamedElement m;
+    m.setNamespace(&n);
+    ASSERT_TRUE(n.getMembers().size() == 1);
+    ASSERT_TRUE(n.getMembers().front() == &m);
+}

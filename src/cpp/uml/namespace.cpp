@@ -2,8 +2,13 @@
 
 using namespace UML;
 
+void Namespace::AddMemberFunctor::operator()(Element& el) const {
+    dynamic_cast<NamedElement&>(el).setNamespace(dynamic_cast<Namespace*>(m_el));
+}
+
 Namespace::Namespace() {
     m_members = new Sequence<NamedElement>;
+    m_members->addProcedures.push_back(new AddMemberFunctor(this));
 }
 
 Namespace::~Namespace() {

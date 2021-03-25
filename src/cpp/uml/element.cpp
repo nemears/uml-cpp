@@ -1,6 +1,7 @@
 #include "uml/element.h"
 #include "uml/sequence.h"
 #include "uml/relationship.h"
+#include "uml/elementFunctors.h"
 
 using namespace UML;
 
@@ -9,6 +10,7 @@ Element::Element() {
     m_id = boost::uuids::random_generator()();
     m_owner = NULL;
     m_ownedElements = new Sequence<Element>;
+    m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
     m_relationships = new Sequence<Relationship>;
 }
 
@@ -46,7 +48,10 @@ Element* Element::getOwner() {
 }
 
 void Element::setOwner(Element* owner) {
-    this->m_owner = owner;
+    m_owner = owner;
+    if (!m_owner->getOwnedElements().count(getID())) {
+        m_owner->getOwnedElements().add(*this);
+    }
 }
 
 Sequence<>& Element::getOwnedElements() {

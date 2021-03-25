@@ -131,3 +131,17 @@ TEST_F(ElementTest, reindexRelationshipID_test) {
   ASSERT_TRUE(r.getRelatedElements().get(e.getID()));
   ASSERT_TRUE(e.getRelationships().get(r.getID()));
 }
+
+TEST_F(ElementTest, setOwnerFunctorTest) {
+  Element e;
+  Element c;
+  e.getOwnedElements().add(c);
+  ASSERT_TRUE(c.getOwner() == &e);
+}
+
+TEST_F(ElementTest, setOwnerTest) {
+  Element e;
+  Element c;
+  c.setOwner(&e);
+  ASSERT_TRUE(e.getOwnedElements().count(c.getID()));
+}

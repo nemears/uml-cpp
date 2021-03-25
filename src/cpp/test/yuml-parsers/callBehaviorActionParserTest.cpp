@@ -62,8 +62,6 @@ TEST_F(CallBehaviorActionParserTest, EmitBehaviorTest) {
     act.getNodes().add(cba);
     cba.setActivity(&act);
     ob.setOwner(&m);
-    m.getOwnedElements().add(ob);
-    m.getOwnedElements().add(act);
     act.setOwner(&m);
     ModelParser emitBehaviorParser = ModelParser::createNewParser();
     

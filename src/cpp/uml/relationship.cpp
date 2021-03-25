@@ -15,8 +15,13 @@ void Relationship::AddRelationshipFunctor::operator()(Element& el) const {
     // add to related elements if not duplicate
     if (!el.getRelationships().count(m_el->getID())) {
         el.getRelationships().add(*dynamic_cast<Relationship*>(m_el));
-    } else {
-        throw DuplicateRelationshipException(boost::lexical_cast<string>(m_el->getID()));
+    }
+}
+
+void Relationship::AddRelationshipCheck::operator()(Element& el) const {
+    // add to related elements if not duplicate
+    if (el.getRelationships().count(m_el->getID())) {
+        throw DuplicateRelationshipException(boost::lexical_cast<string>(m_el->getID())); 
     }
 }
 
@@ -37,6 +42,7 @@ void Relationship::RemoveRelationshipFunctor::operator()(Element& el) const {
 Relationship::Relationship() {
     m_relatedElements = new Sequence<>;
     m_relatedElements->addProcedures.push_back(new AddRelationshipFunctor(this));
+    m_relatedElements->addChecks.push_back(new AddRelationshipCheck(this));
     m_relatedElements->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
 }
 

@@ -30,32 +30,26 @@ bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
                     ActivityParser activityParser(elements, postProcessFlag);
                     Element* parsedEl = activityParser.parseElement(node["children"][i]["activity"]);
                     el->getOwnedElements().add(*parsedEl);
-                    parsedEl->setOwner(el);
                 } else if (node["children"][i]["class"]) {
                     ClassParser classParser(elements, postProcessFlag);
                     Element* parsedEl = classParser.parseElement(node["children"][i]["class"]);
                     el->getOwnedElements().add(*parsedEl);
-                    parsedEl->setOwner(el);
                 } else if (node["children"][i]["instanceSpecification"]){
                     InstanceSpecificationParser instanceParser(elements, postProcessFlag);
                     Element* parsedEl = instanceParser.parseElement(node["children"][i]["instanceSpecification"]);
                     el->getOwnedElements().add(*parsedEl);
-                    parsedEl->setOwner(el);
                 } else if (node["children"][i]["namespace"]) {
                     NamespaceParser namespaceParser(elements, postProcessFlag);
                     Element* parsedEl = namespaceParser.parseElement(node["children"][i]["namespace"]);
                     el->getOwnedElements().add(*parsedEl);
-                    parsedEl->setOwner(el);
                 }else if (node["children"][i]["opaqueBehavior"]) {
                     OpaqueBehaviorParser opaqueBehaviorParser(elements, postProcessFlag);
                     Element* parsedEl = opaqueBehaviorParser.parseElement(node["children"][i]["opaqueBehavior"]);
                     el->getOwnedElements().add(*parsedEl);
-                    parsedEl->setOwner(el);
                 } else if (node["children"][i]["parameter"]) {
                     ParameterParser parameterParser(elements, postProcessFlag);
                     Element* parsedEl = parameterParser.TypedElementParser::parseElement(node["children"][i]["parameter"]);
                     el->getOwnedElements().add(*parsedEl);
-                    parsedEl->setOwner(el);
                 } 
                 
                 // TODO literals?

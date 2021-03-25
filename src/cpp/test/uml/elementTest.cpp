@@ -137,6 +137,7 @@ TEST_F(ElementTest, setOwnerFunctorTest) {
   Element c;
   e.getOwnedElements().add(c);
   ASSERT_TRUE(c.getOwner() == &e);
+  ASSERT_TRUE(e.getOwnedElements().size() == 1);
 }
 
 TEST_F(ElementTest, setOwnerTest) {
@@ -144,4 +145,5 @@ TEST_F(ElementTest, setOwnerTest) {
   Element c;
   c.setOwner(&e);
   ASSERT_TRUE(e.getOwnedElements().count(c.getID()));
+  ASSERT_TRUE(e.getOwnedElements().size() == 1);
 }

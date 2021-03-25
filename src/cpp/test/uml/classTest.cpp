@@ -22,20 +22,20 @@ TEST_F(ClassTest, BasicOperationTest) {
     ASSERT_NO_THROW(c.getOperations().add(o));
 }
 
-// TEST_F(ClassTest, AddOperationTest) {
-//     Class c;
-//     Operation o;
-//     ASSERT_NO_THROW(c.addOperation(o));
-//     ASSERT_TRUE(c.operations.front()->getID() == o.getID());
-// }
+TEST_F(ClassTest, addOperationFunctorTest) {
+    Class c;
+    Operation o;
+    c.getOperations().add(o);
+    ASSERT_TRUE(c.getOperations().size() == 1);
+    ASSERT_TRUE(c.getOperations().front() == &o);
+    ASSERT_TRUE(o.getClass() == &c);
+}
 
-// TEST_F(ClassTest, RemoveOperationTest) {
-//     Class c;
-//     Operation o;
-//     Operation o2;
-//     c.addOperation(o);
-//     c.addOperation(o2);
-//     ASSERT_TRUE(c.operations.front()->getID() == o.getID());
-//     ASSERT_NO_THROW(c.removeOperation(o));
-//     ASSERT_TRUE(c.operations.front()->getID() == o2.getID());
-// }
+TEST_F(ClassTest, setClassTest) {
+    Class c;
+    Operation o;
+    o.setClass(&c);
+    ASSERT_TRUE(c.getOperations().size() == 1);
+    ASSERT_TRUE(c.getOperations().front() == &o);
+    ASSERT_TRUE(o.getClass() == &c);
+}

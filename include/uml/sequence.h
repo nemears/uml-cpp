@@ -27,6 +27,7 @@ namespace UML {
     class DirectedRelationship;
     class Classifier;
     class Namespace;
+    class Class;
     /**
      * Sequence Class, Holds collections of uml elements
      **/
@@ -46,6 +47,7 @@ namespace UML {
         friend class DirectedRelationship;
         friend class Classifier;
         friend class Namespace;
+        friend class Class;
         private:
             map<boost::uuids::uuid, T*> m_data;
             vector<boost::uuids::uuid> m_order;

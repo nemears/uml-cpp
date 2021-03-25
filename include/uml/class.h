@@ -18,6 +18,11 @@ namespace UML{
     class Class : public Classifier {
         protected:
             Sequence<Operation>* m_operations;
+            class AddOperationFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddOperationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Class();
             ~Class();

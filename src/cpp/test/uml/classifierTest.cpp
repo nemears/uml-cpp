@@ -54,3 +54,12 @@ TEST_F(ClassifierTest, addAttributeFunctorTest) {
   ASSERT_TRUE(c.getAttributes().front() == &p);
   ASSERT_TRUE(p.getClassifier() == &c);
 }
+
+TEST_F(ClassifierTest, setClassifierTest) {
+  Property p;
+  Classifier c;
+  p.setClassifier(&c);
+  ASSERT_TRUE(c.getAttributes().size() == 1);
+  ASSERT_TRUE(c.getAttributes().front() == &p);
+  ASSERT_TRUE(p.getClassifier() == &c);
+}

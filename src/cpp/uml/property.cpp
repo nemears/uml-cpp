@@ -50,6 +50,9 @@ Classifier* Property::getClassifier() {
 
 void Property::setClassifier(Classifier* classifier) {
     m_classifier = classifier;
+    if (!m_classifier->getAttributes().count(m_id)) {
+        m_classifier->getAttributes().add(*this);
+    }
 }
 
 ElementType Property::getElementType() {

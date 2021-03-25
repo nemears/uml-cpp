@@ -19,7 +19,7 @@ namespace UML{
         public: 
             void setDefaultValue(ValueSpecification* val);
             ValueSpecification* getDefaultValue();
-            Classifier* getClassifer();
+            Classifier* getClassifier();
             void setClassifier(Classifier* classifier);
             ElementType getElementType() override;
             Property() {

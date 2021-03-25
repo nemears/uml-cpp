@@ -1,9 +1,11 @@
 #include "uml/classifier.h"
+#include "uml/property.h"
 
 using namespace UML;
 
 Classifier::Classifier() {
     m_attributes = new Sequence<Property>;
+    m_attributes->addProcedures.push_back(new AddAttributeFunctor(this));
 }
 
 Classifier::~Classifier() {
@@ -16,6 +18,12 @@ void Classifier::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
 
 void Classifier::reindexName(string oldName, string newName) {
     Namespace::reindexName(oldName, newName);
+}
+
+void Classifier::AddAttributeFunctor::operator()(Element& el) const {
+    if (!dynamic_cast<Property&>(el).getClassifier()) {
+        dynamic_cast<Property&>(el).setClassifier(dynamic_cast<Classifier*>(m_el));
+    }
 }
 
 string Classifier::getName() {

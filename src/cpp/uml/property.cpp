@@ -44,7 +44,7 @@ ValueSpecification* Property::getDefaultValue() {
     return defaultValue;
 }
 
-Classifier* Property::getClassifer() {
+Classifier* Property::getClassifier() {
     return m_classifier;
 }
 

@@ -46,17 +46,11 @@ TEST_F(ClassifierTest, GetOwnedAttributesTest) {
   EXPECT_EQ(classifierPtr->getAttributes().front(), &prop2);
 }
 
-// TEST_F(ClassifierTest, AddOwnedAttributesTest) {
-//   Classifier c;
-//   Property p;
-//   ASSERT_NO_THROW(c.addAttribute(p));
-//   ASSERT_EQ(c.ownedAttributes.front()->getID(), p.getID());
-// }
-
-// TEST_F(ClassifierTest, RemoveOwnedAttributeTest) {
-//   Classifier c;
-//   Property p;
-//   c.addAttribute(p);
-//   ASSERT_NO_THROW(c.removeAttribute(p));
-//   ASSERT_TRUE(c.ownedAttributes.empty());
-// }
+TEST_F(ClassifierTest, addAttributeFunctorTest) {
+  Classifier c;
+  Property p;
+  c.getAttributes().add(p);
+  ASSERT_TRUE(c.getAttributes().size() == 1);
+  ASSERT_TRUE(c.getAttributes().front() == &p);
+  ASSERT_TRUE(p.getClassifier() == &c);
+}

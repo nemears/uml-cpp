@@ -45,7 +45,7 @@ class ClassifierParserTest : public ::testing::Test {
 TEST_F(ClassifierParserTest, ParseAttributesTest) {
   EXPECT_EQ(dynamic_cast<Classifier*>((*pp2->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")])->getAttributes().front()->getID() , boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d"));
   EXPECT_EQ(dynamic_cast<Classifier*>((*pp2->elements)[boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35")])->getAttributes().back()->getID(), boost::lexical_cast<boost::uuids::uuid>("190d1cb9-13dc-44e6-a064-126891ae0033"));
-  EXPECT_EQ(dynamic_cast<Classifier*>(pp2->theEl->getOwnedElements().back())->getID(), dynamic_cast<Classifier*>(pp2->theEl->getOwnedElements().back())->getAttributes().front()->getClassifer()->getID());
+  EXPECT_EQ(dynamic_cast<Classifier*>(pp2->theEl->getOwnedElements().back())->getID(), dynamic_cast<Classifier*>(pp2->theEl->getOwnedElements().back())->getAttributes().front()->getClassifier()->getID());
 }
 
 TEST_F(ClassifierParserTest, ParseAttributesNotSequenceTest) {

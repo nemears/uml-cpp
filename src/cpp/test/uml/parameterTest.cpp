@@ -64,14 +64,8 @@ TEST_F(ParameterTest, reindexID_operationTest) {
     a2.setOwner(&o);
     p1.setOwner(&o);
     p2.setOwner(&o);
-    o.getOwnedElements().add(a1);
-    o.getOwnedElements().add(a2);
-    o.getOwnedElements().add(p1);
-    o.getOwnedElements().add(p2);
     p1.setOperation(&o);
     p2.setOperation(&o);
-    a1.setSpecification(&o);
-    a2.setSpecification(&o);
     o.getMethods().add(a1);
     o.getMethods().add(a2);
     c.getOperations().add(o);

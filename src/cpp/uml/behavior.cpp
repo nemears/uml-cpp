@@ -22,6 +22,9 @@ Operation* Behavior::getSpecification() {
 
 void Behavior::setSpecification(Operation* specification) {
     m_specification = specification;
+    if (!m_specification->getMethods().count(m_id)) {
+        m_specification->getMethods().add(*this);
+    }
 }
 
 ElementType Behavior::getElementType() {

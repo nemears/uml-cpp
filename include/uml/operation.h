@@ -18,6 +18,11 @@ namespace UML {
             Class* m_class;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
             void reindexName(string oldName, string newName) override;
+            class AddMethodFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddMethodFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Operation();
             ~Operation();

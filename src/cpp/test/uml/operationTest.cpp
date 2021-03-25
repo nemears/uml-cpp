@@ -36,3 +36,21 @@ TEST_F(OperationTest, reIndexNameTest) {
     ASSERT_TRUE(c.getOperations().get("test") != NULL);
     ASSERT_TRUE(c.getOwnedElements().get("test") != NULL);
 }
+
+TEST_F(OperationTest, AddMethodFunctorTest) {
+    Operation o;
+    Behavior m;
+    o.getMethods().add(m);
+    ASSERT_TRUE(o.getMethods().size() == 1);
+    ASSERT_TRUE(o.getMethods().front() == &m);
+    ASSERT_TRUE(m.getSpecification() == & o);
+}
+
+TEST_F(OperationTest, SetSpecificationTest) {
+    Operation o;
+    Behavior m;
+    m.setSpecification(&o);
+    ASSERT_TRUE(o.getMethods().size() == 1);
+    ASSERT_TRUE(o.getMethods().front() == &m);
+    ASSERT_TRUE(m.getSpecification() == & o);
+}

@@ -120,6 +120,15 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
                     }
                     break;
                 }
+                case ElementType::PROPERTY : {
+                    // if appropriate check and skip
+                    if (el->isSubClassOf(ElementType::CLASSIFIER)) {
+                        if (dynamic_cast<Classifier*>(el)->getAttributes().count(child->getID())) {
+                            emitter << YAML::Value << child->getIDstring();
+                            break;
+                        }
+                    }
+                }
                 default : {
                     // Error
                     throw AbstractTypeEmitException(child->getElementTypeString(), boost::lexical_cast<string>(child->getID()));

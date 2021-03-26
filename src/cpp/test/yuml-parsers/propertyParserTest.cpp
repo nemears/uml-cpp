@@ -112,6 +112,8 @@ TEST_F(PropertyParserTest, EmitLiteralDefaultValue) {
   children:
     - class:
         id: 190d1cb9-13dc-44e6-a064-126891ae0033
+        children:
+          - 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
         attributes:
           - property:
               type: STRING
@@ -160,6 +162,8 @@ TEST_F(PropertyParserTest, EmitInstanceValueTest) {
         classifier: c0ab87cc-d00b-4afb-9558-538253b442b2
     - class:
         id: 190d1cb9-13dc-44e6-a064-126891ae0033
+        children:
+          - 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
         attributes:
           - property:
               type: c0ab87cc-d00b-4afb-9558-538253b442b2

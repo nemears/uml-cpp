@@ -72,6 +72,8 @@ TEST_F(ClassifierParserTest, EmitSingleBasicAttributeTest) {
   children:
     - class:
         id: c0ab87cc-d00b-4afb-9558-538253b442b2
+        children:
+          - 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
         attributes:
           - property:
               id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d)"""";

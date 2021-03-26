@@ -139,6 +139,8 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithLiteralSlotsTest) {
   children:
     - class:
         id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+        children:
+          - c0ab87cc-d00b-4afb-9558-538253b442b2
         attributes:
           - property:
               type: STRING
@@ -203,6 +205,8 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithInstanceSlotTest) {
         id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
     - class:
         id: 563f4740-e107-4d08-8618-2489f0fe1865
+        children:
+          - c0ab87cc-d00b-4afb-9558-538253b442b2
         attributes:
           - property:
               type: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d

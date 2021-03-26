@@ -24,6 +24,10 @@ void Classifier::AddAttributeFunctor::operator()(Element& el) const {
     if (!dynamic_cast<Property&>(el).getClassifier()) {
         dynamic_cast<Property&>(el).setClassifier(dynamic_cast<Classifier*>(m_el));
     }
+
+    if (!dynamic_cast<Property&>(el).getNamespace()) {
+        dynamic_cast<Property&>(el).setNamespace(dynamic_cast<Classifier*>(m_el));
+    }
 }
 
 string Classifier::getName() {

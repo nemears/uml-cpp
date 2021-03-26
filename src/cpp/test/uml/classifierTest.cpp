@@ -53,6 +53,10 @@ TEST_F(ClassifierTest, addAttributeFunctorTest) {
   ASSERT_TRUE(c.getAttributes().size() == 1);
   ASSERT_TRUE(c.getAttributes().front() == &p);
   ASSERT_TRUE(p.getClassifier() == &c);
+  ASSERT_TRUE(c.getMembers().count(p.getID()));
+  ASSERT_TRUE(c.getOwnedElements().count(p.getID()));
+  ASSERT_TRUE(p.getNamespace() == &c);
+  ASSERT_TRUE(p.getOwner() == &c);
 }
 
 TEST_F(ClassifierTest, setClassifierTest) {

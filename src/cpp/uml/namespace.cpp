@@ -4,6 +4,9 @@ using namespace UML;
 
 void Namespace::AddMemberFunctor::operator()(Element& el) const {
     dynamic_cast<NamedElement&>(el).setNamespace(dynamic_cast<Namespace*>(m_el));
+    if (!el.getOwner()) {
+        m_el->getOwnedElements().add(el);
+    }
 }
 
 Namespace::Namespace() {

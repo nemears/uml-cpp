@@ -103,14 +103,11 @@ TEST_F(CreateObjectParserTest, EmitCreateObjectActionTest) {
     coa2.setClassifier(&c);
     p2.setType(&c);
     coa2.getOutputs().add(p2);
-    coa1.setActivity(&a);
-    coa2.setActivity(&a);
     a.getNodes().add(coa1);
     a.getNodes().add(p1);
     a.getNodes().add(coa2);
     a.getNodes().add(p2);
     m.getOwnedElements().add(a);
-    a.setOwner(&m);
     m.getOwnedElements().add(c);
     c.setOwner(&m);
 
@@ -120,6 +117,11 @@ TEST_F(CreateObjectParserTest, EmitCreateObjectActionTest) {
   children:
     - activity:
         id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+        children:
+          - c6681a3f-ea10-4069-a4e8-bb9e1cc4bb0b
+          - 2ebcd640-e405-4b15-bf4b-805ae7f69457
+          - 9a8b4d56-45fe-4041-bac5-6ed8319064a9
+          - dea1b287-79d1-43f0-ad70-2c19275aa9c8
         nodes:
           - createObjectAction:
               id: c6681a3f-ea10-4069-a4e8-bb9e1cc4bb0b

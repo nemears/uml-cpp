@@ -203,6 +203,16 @@ TEST_F(ActivityEdgeParserTest, EmitEdgeGuardTest) {
   children:
     - activity:
         id: 9c16720e-a366-4eef-825a-d46b5232a1d5
+        children:
+          - c7f09553-c13a-4d21-9e00-b9364c0aeaed
+          - c0ab87cc-d00b-4afb-9558-538253b442b2
+          - 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+          - fa7a57e9-88cf-489c-8345-8351336aec05
+          - 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+          - 1bfe131b-0d9a-4e6f-9a9b-1dae55626202
+          - f73c6d44-5436-4021-83a6-ed90345c1f5f
+          - 4b9519d3-cfd4-4bda-b1dc-6c7d0f521647
+          - 2f821a87-6a14-47a0-bf78-cf57e24876d6
         nodes:
           - initialNode:
               id: c7f09553-c13a-4d21-9e00-b9364c0aeaed

@@ -103,6 +103,8 @@ TEST_F(ObjectNodeParserTest, EmitLiteralUpperBoundTest) {
   children:
     - activity:
         id: c7f09553-c13a-4d21-9e00-b9364c0aeaed
+        children:
+          - 9c16720e-a366-4eef-825a-d46b5232a1d5
         nodes:
           - objectNode:
               id: 9c16720e-a366-4eef-825a-d46b5232a1d5
@@ -150,6 +152,8 @@ TEST_F(ObjectNodeParserTest, EmitExpressionUpperBound) {
   children:
     - activity:
         id: c7f09553-c13a-4d21-9e00-b9364c0aeaed
+        children:
+          - 9c16720e-a366-4eef-825a-d46b5232a1d5
         nodes:
           - objectNode:
               id: 9c16720e-a366-4eef-825a-d46b5232a1d5

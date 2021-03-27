@@ -48,6 +48,9 @@ Activity* ActivityNode::getActivity() {
 
 void ActivityNode::setActivity(Activity* activity) {
     m_activity = activity;
+    if (!m_activity->getNodes().count(m_id)) {
+        m_activity->getNodes().add(*this);
+    }
 }
 
 bool ActivityNode::isObjectNode() {

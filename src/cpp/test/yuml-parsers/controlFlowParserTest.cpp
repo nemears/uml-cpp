@@ -103,6 +103,9 @@ TEST_F(ControlFlowParserTest, EmitActionToSelfTest) {
   children:
     - activity:
         id: 563f4740-e107-4d08-8618-2489f0fe1865
+        children:
+          - c0ab87cc-d00b-4afb-9558-538253b442b2
+          - 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
         nodes:
           - action:
               id: c0ab87cc-d00b-4afb-9558-538253b442b2
@@ -151,6 +154,10 @@ TEST_F(ControlFlowParserTest, EmitActionToActionTest) {
   children:
     - activity:
         id: 563f4740-e107-4d08-8618-2489f0fe1865
+        children:
+          - c0ab87cc-d00b-4afb-9558-538253b442b2
+          - d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
+          - 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
         nodes:
           - action:
               id: c0ab87cc-d00b-4afb-9558-538253b442b2
@@ -249,6 +256,19 @@ TEST_F(ControlFlowParserTest, EmitDecsionAndJoinTest) {
   children:
     - activity:
         id: fa128118-7efc-4881-8ed9-38bbed3110f2
+        children:
+          - b4b80cfd-4649-4b94-b17d-9f6bd67f2fd8
+          - 4fab86da-e35b-441d-a1ea-0d02ecb94133
+          - ac8ffe61-ee91-4331-9cdf-87b03f89a895
+          - 59125ce2-89cb-4ccc-84f4-b311694153bb
+          - 606a8afb-b620-46e1-80fd-cdeea48af9bd
+          - f0aa7518-8a8e-44a7-b06b-fc7da5616873
+          - 76a2bc3b-7135-4de5-b22f-b0f4d6b45d2e
+          - 5b2299a5-924f-4a80-a30c-de1992f9dc75
+          - c0c38491-d273-498e-962e-dc8125565884
+          - 1937bc94-db2d-47f8-9615-2d28fc408094
+          - 5a3b3462-3f0a-47a3-8123-b1005954c2d1
+          - 7f85ebe1-3a0c-4bbb-95e5-ae7e9f512caa
         nodes:
           - initialNode:
               id: b4b80cfd-4649-4b94-b17d-9f6bd67f2fd8

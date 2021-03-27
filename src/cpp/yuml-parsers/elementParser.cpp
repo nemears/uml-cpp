@@ -157,6 +157,19 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
                             break;
                         }
                     }
+                    if (el->isSubClassOf(ElementType::ACTIVITY)) {
+                        if (child->isSubClassOf(ElementType::ACTIVITY_NODE)) {
+                            if (dynamic_cast<Activity*>(el)->getNodes().count(child->getID())) {
+                                emitter << YAML::Value << child->getIDstring();
+                                break;
+                            }
+                        } else if (child->isSubClassOf(ElementType::ACTIVITY_EDGE)) {
+                            if (dynamic_cast<Activity*>(el)->getEdges().count(child->getID())) {
+                                emitter << YAML::Value << child->getIDstring();
+                                break;
+                            }
+                        }
+                    }
 
                     // Error
                     throw AbstractTypeEmitException(child->getElementTypeString(), boost::lexical_cast<string>(child->getID()));

@@ -107,6 +107,9 @@ TEST_F(ParameterNodeParserTest, EmitParameterNodeTest) {
         id: 4b9519d3-cfd4-4bda-b1dc-6c7d0f521647
         children:
           - 2f821a87-6a14-47a0-bf78-cf57e24876d6
+          - f73c6d44-5436-4021-83a6-ed90345c1f5f
+          - 25a0f5f5-0d02-40e6-a70e-c3c606fcfde0
+          - 0734d34f-066f-4029-97d9-e39ac2f40f2b
         parameters:
           - parameter:
               type: INT

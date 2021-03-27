@@ -31,6 +31,7 @@ namespace UML {
     class InstanceSpecification;
     class Behavior;
     class Expression;
+    class Activity;
     /**
      * Sequence Class, Holds collections of uml elements
      **/
@@ -54,6 +55,7 @@ namespace UML {
         friend class InstanceSpecification;
         friend class Behavior;
         friend class Expression;
+        friend class Activity;
         private:
             map<boost::uuids::uuid, T*> m_data;
             vector<boost::uuids::uuid> m_order;

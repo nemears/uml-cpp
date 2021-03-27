@@ -86,7 +86,7 @@ bool Element::isSubClassOf(ElementType eType) {
                    || myType == ElementType::DECISION_NODE || myType == ElementType::FINAL_NODE || myType == ElementType::FORK_NODE
                    || myType == ElementType::INITIAL_NODE || myType == ElementType::INPUT_PIN || myType == ElementType::JOIN_NODE
                    || myType == ElementType::MERGE_NODE || myType == ElementType::OBJECT_NODE || myType == ElementType::OUTPUT_PIN
-                   || myType == ElementType::PARAMETER_NODE || myType == ElementType::PIN;
+                   || myType == ElementType::PARAMETER_NODE || myType == ElementType::PIN || myType == ElementType::ACTION;
         }
         case ElementType::BEHAVIOR : {
             return myType == ElementType::ACTIVITY || myType == ElementType::OPAQUE_BEHAVIOR;

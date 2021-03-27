@@ -73,6 +73,8 @@ TEST_F(CallBehaviorActionParserTest, EmitBehaviorTest) {
         body: return true
     - activity:
         id: c7f09553-c13a-4d21-9e00-b9364c0aeaed
+        children:
+          - fa7a57e9-88cf-489c-8345-8351336aec05
         nodes:
           - callBehaviorAction:
               id: fa7a57e9-88cf-489c-8345-8351336aec05)"""";

@@ -42,6 +42,9 @@ Activity* ActivityEdge::getActivity() {
 
 void ActivityEdge::setActivity(Activity* activity) {
     m_activity = activity;
+    if(!m_activity->getEdges().count(m_id)) {
+        m_activity->getEdges().add(*this);
+    }
 }
 
 ActivityNode* ActivityEdge::getSource() {

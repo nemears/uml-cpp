@@ -9,6 +9,16 @@ namespace UML {
         protected:
             Sequence<ActivityNode>* m_nodes;
             Sequence<ActivityEdge>* m_edges;
+            class AddNodeFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddNodeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
+            class AddEdgeFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddEdgeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Activity();
             ~Activity();

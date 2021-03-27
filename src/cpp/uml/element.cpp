@@ -48,7 +48,18 @@ Element* Element::getOwner() {
 }
 
 void Element::setOwner(Element* owner) {
+
+    // if owner was already set we need to get rid of previous relationship
+    if (m_owner) {
+        if (m_owner->getOwnedElements().count(m_id)) {
+            m_owner->getOwnedElements().remove(*this);
+        }
+    }
+
+    // overwrite owner
     m_owner = owner;
+
+    // add this to owner's owned elements if not already added
     if (!m_owner->getOwnedElements().count(getID())) {
         m_owner->getOwnedElements().add(*this);
     }

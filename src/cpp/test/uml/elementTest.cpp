@@ -107,8 +107,6 @@ TEST_F(ElementTest, basicRelationshipTest) {
   Relationship r;
   r.getRelatedElements().add(e);
   r.getRelatedElements().add(a);
-  // e.getRelationships().add(r);
-  // a.getRelationships().add(r);
   ASSERT_TRUE(r.getRelatedElements().size() == 2);
   ASSERT_TRUE(r.getRelatedElements().front() == &e);
   ASSERT_TRUE(r.getRelatedElements().back() == &a);
@@ -124,8 +122,6 @@ TEST_F(ElementTest, reindexRelationshipID_test) {
   Relationship r;
   r.getRelatedElements().add(e);
   r.getRelatedElements().add(a);
-  // e.getRelationships().add(r);
-  // a.getRelationships().add(r);
   r.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
   e.setID("eb092018-0bef-4ad6-b80f-05fa124f98c3");
   ASSERT_TRUE(r.getRelatedElements().get(e.getID()));
@@ -146,4 +142,28 @@ TEST_F(ElementTest, setOwnerTest) {
   c.setOwner(&e);
   ASSERT_TRUE(e.getOwnedElements().count(c.getID()));
   ASSERT_TRUE(e.getOwnedElements().size() == 1);
+}
+
+TEST_F(ElementTest, overwriteOwnerTest) {
+  Element p1;
+  Element p2;
+  Element c;
+  p1.getOwnedElements().add(c);
+  c.setOwner(&p2);
+  ASSERT_TRUE(p2.getOwnedElements().size() == 1);
+  ASSERT_TRUE(p2.getOwnedElements().front() == &c);
+  ASSERT_TRUE(c.getOwner() == &p2);
+  ASSERT_TRUE(p1.getOwnedElements().size() == 0);
+}
+
+TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
+  Element p1;
+  Element p2;
+  Element c;
+  p1.getOwnedElements().add(c);
+  p2.getOwnedElements().add(c);
+  ASSERT_TRUE(p2.getOwnedElements().size() == 1);
+  ASSERT_TRUE(p2.getOwnedElements().front() == &c);
+  ASSERT_TRUE(c.getOwner() == &p2);
+  ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }

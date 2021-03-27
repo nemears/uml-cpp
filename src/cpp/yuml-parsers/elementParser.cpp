@@ -114,6 +114,12 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
                     break;
                 }
                 case ElementType::PARAMETER : {
+                    if (el->isSubClassOf(ElementType::BEHAVIOR)) {
+                        if (dynamic_cast<Behavior*>(el)->getParameters().count(child->getID())) {
+                            emitter << YAML::Value << child->getIDstring();
+                            break;
+                        }
+                    }
                     ParameterParser pp(elements, postProcessFlag);
                     if (!pp.emit(emitter, child)) {
                         return false;

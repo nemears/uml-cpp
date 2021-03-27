@@ -86,6 +86,8 @@ TEST_F(OperationParserTest, EmitOperationWithLiteralParameter) {
               methods:
                 - opaqueBehavior:
                     id: 56d58664-da38-408a-9b65-8372a011dd64
+                    children:
+                      - 563f4740-e107-4d08-8618-2489f0fe1865
                     parameters:
                       - parameter:
                           type: STRING
@@ -137,6 +139,8 @@ TEST_F(OperationParserTest, EmitOperationWithInstanceParameter) {
               methods:
                 - opaqueBehavior:
                     id: 56d58664-da38-408a-9b65-8372a011dd64
+                    children:
+                      - 563f4740-e107-4d08-8618-2489f0fe1865
                     parameters:
                       - parameter:
                           type: d9ab2f06-4c2c-4330-9e1b-7eaee423a66a

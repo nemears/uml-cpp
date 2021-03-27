@@ -11,6 +11,11 @@ namespace UML {
         protected:
             Sequence<Parameter>* m_parameters;
             Operation* m_specification;
+            class AddParameterFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddParameterFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Behavior();
             ~Behavior();

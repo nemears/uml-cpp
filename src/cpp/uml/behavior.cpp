@@ -3,8 +3,19 @@
 
 using namespace UML;
 
+void Behavior::AddParameterFunctor::operator()(Element& el) const {
+    if (!m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().add(el);
+    }
+
+    if (dynamic_cast<Behavior*>(m_el)->getSpecification()) {
+        dynamic_cast<Parameter&>(el).setOperation(dynamic_cast<Behavior*>(m_el)->getSpecification());
+    }
+}
+
 Behavior::Behavior() {
     m_parameters = new Sequence<Parameter>();
+    m_parameters->addProcedures.push_back(new AddParameterFunctor(this));
     m_specification = 0;
 }
 

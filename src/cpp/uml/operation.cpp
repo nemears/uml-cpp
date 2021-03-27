@@ -51,6 +51,11 @@ Class* Operation::getClass() {
 }
 
 void Operation::setClass(Class* clazz) {
+    if (m_class) {
+        if(m_class->getOperations().count(m_id)) {
+            m_class->getOperations().remove(*this);
+        }
+    }
     m_class = clazz;
     if (!m_class->getOperations().count(m_id)) {
         m_class->getOperations().add(*this);

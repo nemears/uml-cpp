@@ -39,3 +39,27 @@ TEST_F(ClassTest, setClassTest) {
     ASSERT_TRUE(c.getOperations().front() == &o);
     ASSERT_TRUE(o.getClass() == &c);
 }
+
+TEST_F(ClassTest, overwriteClassTest) {
+  Class p1;
+  Class p2;
+  Operation c;
+  p1.getOperations().add(c);
+  c.setClass(&p2);
+  ASSERT_TRUE(p2.getOperations().size() == 1);
+  ASSERT_TRUE(p2.getOperations().front() == &c);
+  ASSERT_TRUE(c.getClass() == &p2);
+  ASSERT_TRUE(p1.getOperations().size() == 0);
+}
+
+TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
+  Class p1;
+  Class p2;
+  Operation c;
+  p1.getOperations().add(c);
+  p2.getOperations().add(c);
+  ASSERT_TRUE(p2.getOperations().size() == 1);
+  ASSERT_TRUE(p2.getOperations().front() == &c);
+  ASSERT_TRUE(c.getClass() == &p2);
+  ASSERT_TRUE(p1.getOperations().size() == 0);
+}

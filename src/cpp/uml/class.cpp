@@ -4,7 +4,9 @@
 using namespace UML;
 
 void Class::AddOperationFunctor::operator()(Element& el) const {
-    dynamic_cast<Operation&>(el).setClass(dynamic_cast<Class*>(m_el));
+    if (dynamic_cast<Operation&>(el).getClass() != m_el) {
+        dynamic_cast<Operation&>(el).setClass(dynamic_cast<Class*>(m_el));
+    }
 }
 
 Class::Class() {

@@ -76,3 +76,27 @@ TEST_F(PropertyTest, reindexNameForClassifierTest) {
   ASSERT_TRUE(c.getAttributes().get("test") != NULL);
   ASSERT_TRUE(e.getOwnedElements().get("test") != NULL);
 }
+
+TEST_F(PropertyTest, overwriteClassifierTest) {
+  Classifier p1;
+  Classifier p2;
+  Property c;
+  p1.getAttributes().add(c);
+  c.setClassifier(&p2);
+  ASSERT_TRUE(p2.getAttributes().size() == 1);
+  ASSERT_TRUE(p2.getAttributes().front() == &c);
+  ASSERT_TRUE(c.getClassifier() == &p2);
+  ASSERT_TRUE(p1.getAttributes().size() == 0);
+}
+
+TEST_F(PropertyTest, overwriteClassifierByAttributesAddTest) {
+  Classifier p1;
+  Classifier p2;
+  Property c;
+  p1.getAttributes().add(c);
+  p2.getAttributes().add(c);
+  ASSERT_TRUE(p2.getAttributes().size() == 1);
+  ASSERT_TRUE(p2.getAttributes().front() == &c);
+  ASSERT_TRUE(c.getClassifier() == &p2);
+  ASSERT_TRUE(p1.getAttributes().size() == 0);
+}

@@ -49,6 +49,11 @@ Classifier* Property::getClassifier() {
 }
 
 void Property::setClassifier(Classifier* classifier) {
+    if (m_classifier) {
+        if (m_classifier->getAttributes().count(m_id)) {
+            m_classifier->getAttributes().remove(*this);
+        }
+    }
     m_classifier = classifier;
     if (!m_classifier->getAttributes().count(m_id)) {
         m_classifier->getAttributes().add(*this);

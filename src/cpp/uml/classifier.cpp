@@ -21,11 +21,11 @@ void Classifier::reindexName(string oldName, string newName) {
 }
 
 void Classifier::AddAttributeFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<Property&>(el).getClassifier()) {
+    if (dynamic_cast<Property&>(el).getClassifier() != m_el) {
         dynamic_cast<Property&>(el).setClassifier(dynamic_cast<Classifier*>(m_el));
     }
 
-    if (!dynamic_cast<Property&>(el).getNamespace()) {
+    if (dynamic_cast<Property&>(el).getNamespace() != m_el) {
         dynamic_cast<Property&>(el).setNamespace(dynamic_cast<Classifier*>(m_el));
     }
 }

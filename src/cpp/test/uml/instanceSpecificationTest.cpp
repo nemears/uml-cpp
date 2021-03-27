@@ -73,3 +73,25 @@ TEST_F(InstanceSpecificationTest, reindexSlotID_Test) {
     ASSERT_TRUE(i.getSlots().get(s.getID()) != NULL);
     ASSERT_TRUE(i.getOwnedElements().get(s.getID()) != NULL);
 }
+
+TEST_F(InstanceSpecificationTest, addSlotFunctorTest) {
+    InstanceSpecification i;
+    Slot s;
+    i.getSlots().add(s);
+    ASSERT_TRUE(i.getSlots().get(s.getID()) == &s);
+    ASSERT_TRUE(i.getSlots().size() == 1);
+    ASSERT_TRUE(i.getOwnedElements().get(s.getID()) == &s);
+    ASSERT_TRUE(i.getOwnedElements().size() == 1);
+    ASSERT_TRUE(s.getOwningInstance() == &i);
+}
+
+TEST_F(InstanceSpecificationTest, SetOwningInstanceFunctionalityTest) {
+    InstanceSpecification i;
+    Slot s;
+    s.setOwningInstance(&i);
+    ASSERT_TRUE(i.getSlots().get(s.getID()) == &s);
+    ASSERT_TRUE(i.getSlots().size() == 1);
+    ASSERT_TRUE(i.getOwnedElements().get(s.getID()) == &s);
+    ASSERT_TRUE(i.getOwnedElements().size() == 1);
+    ASSERT_TRUE(s.getOwningInstance() == &i);
+}

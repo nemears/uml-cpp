@@ -9,6 +9,11 @@ namespace UML{
         protected:
             Classifier* m_classifier;
             Sequence<Slot>* m_slots;
+            class AddSlotFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddSlotFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Classifier* getClassifier();
             void setClassifier(Classifier* classifier);

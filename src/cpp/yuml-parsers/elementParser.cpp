@@ -129,6 +129,15 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
                         }
                     }
                 }
+                case ElementType::SLOT : {
+                    // if appropriate check and skip
+                    if (el->isSubClassOf(ElementType::INSTANCE_SPECIFICATION)) {
+                        if (dynamic_cast<InstanceSpecification*>(el)->getSlots().count(child->getID())) {
+                            emitter << YAML::Value << child->getIDstring();
+                            break;
+                        }
+                    }
+                }
                 default : {
                     // Error
                     throw AbstractTypeEmitException(child->getElementTypeString(), boost::lexical_cast<string>(child->getID()));

@@ -147,6 +147,8 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithLiteralSlotsTest) {
               id: c0ab87cc-d00b-4afb-9558-538253b442b2
     - instanceSpecification:
         id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+        children:
+          - 563f4740-e107-4d08-8618-2489f0fe1865
         classifier: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
         slots:
           - slot:
@@ -216,6 +218,8 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithInstanceSlotTest) {
         classifier: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
     - instanceSpecification:
         id: a8d7638e-ab95-462a-9fb8-ba3c950a4fcc
+        children:
+          - d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
         classifier: 563f4740-e107-4d08-8618-2489f0fe1865
         slots:
           - slot:

@@ -11,9 +11,16 @@ void Slot::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
     Element::reindexID(oldID, newID);
 }
 
+void Slot::AddValueFunctor::operator()(Element& el) const {
+    if (!el.getOwner()) {
+        el.setOwner(m_el);
+    }
+}
+
 Slot::Slot() {
     m_definingFeature = 0;
     m_values = new Sequence<ValueSpecification>;
+    m_values->addProcedures.push_back(new AddValueFunctor(this));
     m_owningInstance = NULL;
 }
 

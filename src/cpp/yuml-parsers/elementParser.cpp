@@ -140,6 +140,12 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
                 }
                 default : {
                     // Error
+                    if (el->isSubClassOf(ElementType::SLOT)) {
+                        if (dynamic_cast<Slot*>(el)->getValues().count(child->getID())) {
+                            emitter << YAML::Value << child->getIDstring();
+                            break;
+                        }
+                    }
                     throw AbstractTypeEmitException(child->getElementTypeString(), boost::lexical_cast<string>(child->getID()));
                 }
             }

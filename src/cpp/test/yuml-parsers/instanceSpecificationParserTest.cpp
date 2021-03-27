@@ -123,6 +123,7 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithLiteralSlotsTest) {
   Slot s;
   s.setID("563f4740-e107-4d08-8618-2489f0fe1865");
   LiteralString ls;
+  ls.setID("6799346f-9a33-4150-ba6e-f466ad414a8e");
   ls.setValue("test");
   p.setType(&pt);
   c.getAttributes().add(p);
@@ -153,6 +154,8 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithLiteralSlotsTest) {
         slots:
           - slot:
               id: 563f4740-e107-4d08-8618-2489f0fe1865
+              children:
+                - 6799346f-9a33-4150-ba6e-f466ad414a8e
               definingFeature: c0ab87cc-d00b-4afb-9558-538253b442b2
               value: test)"""";
 
@@ -186,6 +189,7 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithInstanceSlotTest) {
   Slot s;
   s.setID("d9ab2f06-4c2c-4330-9e1b-7eaee423a66a");
   InstanceValue iv;
+  iv.setID("6799346f-9a33-4150-ba6e-f466ad414a8e");
   i.setClassifier(&c);
   iv.setInstance(&i);
   p.setType(&c);
@@ -224,6 +228,8 @@ TEST_F(InstanceSpecificationParserTest, EmitInstanceWithInstanceSlotTest) {
         slots:
           - slot:
               id: d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
+              children:
+                - 6799346f-9a33-4150-ba6e-f466ad414a8e
               definingFeature: c0ab87cc-d00b-4afb-9558-538253b442b2
               value: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35)"""";
 

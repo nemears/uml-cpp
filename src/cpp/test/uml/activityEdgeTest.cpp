@@ -84,3 +84,51 @@ TEST_F(ActivityEdgeTest, reindexNameTest) {
     ASSERT_TRUE(a.getMembers().get("test"));
     ASSERT_TRUE(a.getOwnedElements().get("test"));
 }
+
+TEST_F(ActivityEdgeTest, overwriteIncomingTest) {
+  ActivityNode p1;
+  ActivityNode p2;
+  ActivityEdge c;
+  p1.getIncoming().add(c);
+  c.setTarget(&p2);
+  ASSERT_TRUE(p2.getIncoming().size() == 1);
+  ASSERT_TRUE(p2.getIncoming().front() == &c);
+  ASSERT_TRUE(c.getTarget() == &p2);
+  ASSERT_TRUE(p1.getIncoming().size() == 0);
+}
+
+TEST_F(ActivityEdgeTest, overwriteIncomingByIncomingAddTest) {
+  ActivityNode p1;
+  ActivityNode p2;
+  ActivityEdge c;
+  p1.getIncoming().add(c);
+  p2.getIncoming().add(c);
+  ASSERT_TRUE(p2.getIncoming().size() == 1);
+  ASSERT_TRUE(p2.getIncoming().front() == &c);
+  ASSERT_TRUE(c.getTarget() == &p2);
+  ASSERT_TRUE(p1.getIncoming().size() == 0);
+}
+
+TEST_F(ActivityEdgeTest, overwriteOutgoingTest) {
+  ActivityNode p1;
+  ActivityNode p2;
+  ActivityEdge c;
+  p1.getOutgoing().add(c);
+  c.setSource(&p2);
+  ASSERT_TRUE(p2.getOutgoing().size() == 1);
+  ASSERT_TRUE(p2.getOutgoing().front() == &c);
+  ASSERT_TRUE(c.getSource() == &p2);
+  ASSERT_TRUE(p1.getOutgoing().size() == 0);
+}
+
+TEST_F(ActivityEdgeTest, overwriteOutgoingByOutgoingAddTest) {
+  ActivityNode p1;
+  ActivityNode p2;
+  ActivityEdge c;
+  p1.getOutgoing().add(c);
+  p2.getOutgoing().add(c);
+  ASSERT_TRUE(p2.getOutgoing().size() == 1);
+  ASSERT_TRUE(p2.getOutgoing().front() == &c);
+  ASSERT_TRUE(c.getSource() == &p2);
+  ASSERT_TRUE(p1.getOutgoing().size() == 0);
+}

@@ -52,6 +52,11 @@ ActivityNode* ActivityEdge::getSource() {
 }
 
 void ActivityEdge::setSource(ActivityNode* source) {
+    if (m_source) {
+        if (dynamic_cast<ActivityNode*>(m_source)->getOutgoing().count(m_id)) {
+            dynamic_cast<ActivityNode*>(m_source)->getOutgoing().remove(*this);
+        }
+    }
     m_source = source;
     if (!m_source->getOutgoing().count(m_id)) {
         m_source->getOutgoing().add(*this);
@@ -63,6 +68,11 @@ ActivityNode* ActivityEdge::getTarget() {
 }
 
 void ActivityEdge::setTarget(ActivityNode* target) {
+    if (m_target) {
+        if (dynamic_cast<ActivityNode*>(m_target)->getIncoming().count(m_id)) {
+            dynamic_cast<ActivityNode*>(m_target)->getIncoming().remove(*this);
+        }
+    }
     m_target = target;
     if (!m_target->getIncoming().count(m_id)) {
         m_target->getIncoming().add(*this);

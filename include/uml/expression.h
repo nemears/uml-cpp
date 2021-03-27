@@ -9,6 +9,11 @@ namespace UML {
         protected:
             string m_symbol;
             Sequence<ValueSpecification>* m_operands;
+            class AddOperandFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddOperandFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Sequence<ValueSpecification>& getOperands();
             string getSymbol();

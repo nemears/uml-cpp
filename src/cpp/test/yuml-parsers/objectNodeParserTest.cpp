@@ -133,6 +133,7 @@ TEST_F(ObjectNodeParserTest, EmitExpressionUpperBound) {
     Expression expr;
     expr.setID("fa7a57e9-88cf-489c-8345-8351336aec05");
     LiteralBool lb;
+    lb.setID("6799346f-9a33-4150-ba6e-f466ad414a8e");
     lb.setValue(false);
     expr.getOperands().add(lb);
     expr.setSymbol("!");
@@ -157,6 +158,8 @@ TEST_F(ObjectNodeParserTest, EmitExpressionUpperBound) {
                 expression:
                   type: BOOL
                   id: fa7a57e9-88cf-489c-8345-8351336aec05
+                  children:
+                    - 6799346f-9a33-4150-ba6e-f466ad414a8e
                   operand:
                     - literalBool: false
                   symbol: "!")"""";

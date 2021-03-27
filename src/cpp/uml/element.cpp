@@ -109,6 +109,9 @@ bool Element::isSubClassOf(ElementType eType) {
             return myType == ElementType::BEHAVIOR || myType == ElementType::ACTIVITY || myType == ElementType::OPAQUE_BEHAVIOR
                    || myType == ElementType::CLASS || myType == ElementType::PRIMITIVE_TYPE;
         }
+        case ElementType::DIRECTED_RELATIONSHIP : {
+            return myType == ElementType::GENERALIZATION;
+        }
         case ElementType::ELEMENT : {
             return true;
         }
@@ -116,7 +119,8 @@ bool Element::isSubClassOf(ElementType eType) {
             return myType == ElementType::PROPERTY || myType == ElementType::PARAMETER || myType == ElementType::PIN;
         }
         case ElementType::NAMED_ELEMENT : {
-            return myType != ElementType::ELEMENT && myType != ElementType::SLOT && myType != ElementType::RELATIONSHIP && myType != ElementType::DIRECTED_RELATIONSHIP;
+            return myType != ElementType::ELEMENT && myType != ElementType::SLOT && myType != ElementType::RELATIONSHIP && myType != ElementType::DIRECTED_RELATIONSHIP
+                   && myType != ElementType::GENERALIZATION;
         }
         case ElementType::NAMESPACE : {
             return myType == ElementType::MODEL;
@@ -129,7 +133,7 @@ bool Element::isSubClassOf(ElementType eType) {
             return myType == ElementType::INPUT_PIN || myType == ElementType::OUTPUT_PIN;
         }
         case ElementType::RELATIONSHIP : {
-            return myType != ElementType::DIRECTED_RELATIONSHIP;
+            return myType != ElementType::DIRECTED_RELATIONSHIP || myType != ElementType::GENERALIZATION;
         }
         case ElementType::STRUCTURAL_FEATURE : {
             return myType != ElementType::PROPERTY;
@@ -203,6 +207,9 @@ string Element::getElementTypeString() {
         }
         case ElementType::FORK_NODE : {
             return "FORK_NODE";
+        }
+        case ElementType::GENERALIZATION : {
+            return "GENERALIZATION";
         }
         case ElementType::INITIAL_NODE : {
             return "INITIAL_NODE";

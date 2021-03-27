@@ -31,6 +31,7 @@ namespace UML {
         EXPRESSION,
         FINAL_NODE,
         FORK_NODE,
+        GENERALIZATION,
         INITIAL_NODE,
         INPUT_PIN,
         INSTANCE_SPECIFICATION,

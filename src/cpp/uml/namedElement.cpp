@@ -40,7 +40,18 @@ Namespace* NamedElement::getNamespace() {
 }
 
 void NamedElement::setNamespace(Namespace* nmspc) {
+
+    // if in another namespace remove it
+    if (m_namespace) {
+        if (m_namespace != nmspc) {
+            m_namespace->getMembers().remove(*this);
+        }
+    }
+
+    // overwrite namespace
     m_namespace = nmspc;
+
+    // add to members of namespace
     if (!m_namespace->getMembers().count(m_id)) {
         m_namespace->getMembers().add(*this);
     }

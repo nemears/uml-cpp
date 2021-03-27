@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/namedElement.h"
 #include "uml/sequence.h"
+#include "uml/namespace.h"
 
 using namespace UML;
 
@@ -44,4 +45,28 @@ TEST_F(NamedElementTest, reIndexNameTest) {
   e2.setOwner(&e1);
   e2.setName("test");
   ASSERT_TRUE(e1.getOwnedElements().get("test") != NULL);
+}
+
+TEST_F(NamedElementTest, overwriteNamespaceTest) {
+  Namespace p1;
+  Namespace p2;
+  NamedElement c;
+  p1.getMembers().add(c);
+  c.setNamespace(&p2);
+  ASSERT_TRUE(p2.getMembers().size() == 1);
+  ASSERT_TRUE(p2.getMembers().front() == &c);
+  ASSERT_TRUE(c.getNamespace() == &p2);
+  ASSERT_TRUE(p1.getMembers().size() == 0);
+}
+
+TEST_F(NamedElementTest, overwriteNamespaceByMemebersAddTest) {
+  Namespace p1;
+  Namespace p2;
+  NamedElement c;
+  p1.getMembers().add(c);
+  p2.getMembers().add(c);
+  ASSERT_TRUE(p2.getMembers().size() == 1);
+  ASSERT_TRUE(p2.getMembers().front() == &c);
+  ASSERT_TRUE(c.getNamespace() == &p2);
+  ASSERT_TRUE(p1.getMembers().size() == 0);
 }

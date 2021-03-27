@@ -39,8 +39,6 @@ TEST_F(ActivityEdgeTest, reindexID_Test) {
     ActivityNode n;
     e.setSource(&n);
     e.setTarget(&n);
-    n.getIncoming().add(e);
-    n.getOutgoing().add(e);
     a.getNodes().add(n);
     a.getEdges().add(e);
     n.setActivity(&a);
@@ -67,8 +65,6 @@ TEST_F(ActivityEdgeTest, reindexNameTest) {
     ActivityNode n;
     e.setSource(&n);
     e.setTarget(&n);
-    n.getIncoming().add(e);
-    n.getOutgoing().add(e);
     a.getNodes().add(n);
     a.getEdges().add(e);
     n.setActivity(&a);

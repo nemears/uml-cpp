@@ -25,6 +25,16 @@ namespace UML {
                     AddOutgoingFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class CheckIncomingFunctor : public AbstractSequenceFunctor {
+                public:
+                    CheckIncomingFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
+            class CheckOutgoingFunctor : public AbstractSequenceFunctor {
+                public:
+                    CheckOutgoingFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             ActivityNode();
             ~ActivityNode();
@@ -34,6 +44,20 @@ namespace UML {
             Activity* getActivity();
             void setActivity(Activity* activity);
             virtual bool isObjectNode();
+    };
+
+    // Errors
+
+    class DuplicateEdgeException: public exception {
+        private:
+            string msg;
+        public:
+            DuplicateEdgeException(string uuid) :
+                msg("Duplicate edge (uuid: " + uuid + ") added to sequence specified as set!")
+                {};
+            virtual const char* what() const throw() {
+                return msg.c_str();
+            };
     };
 }
 

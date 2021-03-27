@@ -7,8 +7,10 @@ ActivityNode::ActivityNode() {
     m_activity = 0;
     m_incoming = new Sequence<ActivityEdge>;
     m_incoming->addProcedures.push_back(new AddIncomingFunctor(this));
+    m_incoming->addChecks.push_back(new CheckIncomingFunctor(this));
     m_outgoing = new Sequence<ActivityEdge>;
     m_outgoing->addProcedures.push_back(new AddOutgoingFunctor(this));
+    m_outgoing->addChecks.push_back(new CheckOutgoingFunctor(this));
 }
 
 ActivityNode::~ActivityNode() {
@@ -41,6 +43,18 @@ void ActivityNode::AddIncomingFunctor::operator()(Element& el) const {
 void ActivityNode::AddOutgoingFunctor::operator()(Element& el) const {
     if (dynamic_cast<ActivityEdge&>(el).getSource() != m_el) {
         dynamic_cast<ActivityEdge&>(el).setSource(dynamic_cast<ActivityNode*>(m_el));
+    }
+}
+
+void ActivityNode::CheckIncomingFunctor::operator()(Element& el) const {
+    if(dynamic_cast<ActivityNode*>(m_el)->getIncoming().count(el.getID())) {
+        throw DuplicateEdgeException(el.getIDstring());
+    }
+}
+
+void ActivityNode::CheckOutgoingFunctor::operator()(Element& el) const {
+    if(dynamic_cast<ActivityNode*>(m_el)->getOutgoing().count(el.getID())) {
+        throw DuplicateEdgeException(el.getIDstring());
     }
 }
 

@@ -62,3 +62,23 @@ TEST_F(ActivityNodeTest, setSourceTest) {
     ASSERT_TRUE(n.getOutgoing().front() == &e);
     ASSERT_TRUE(e.getSource() == &n);
 }
+
+TEST_F(ActivityNodeTest, DuplicateEdgeExceptionIncomingTest) {
+    ActivityNode n;
+    ActivityEdge e;
+    n.getIncoming().add(e);
+    ASSERT_THROW(n.getIncoming().add(e), DuplicateEdgeException);
+    n.getIncoming().remove(e);
+    e.setTarget(&n);
+    ASSERT_THROW(n.getIncoming().add(e), DuplicateEdgeException);
+}
+
+TEST_F(ActivityNodeTest, DuplicateEdgeExceptionOutgoingTest) {
+    ActivityNode n;
+    ActivityEdge e;
+    n.getOutgoing().add(e);
+    ASSERT_THROW(n.getOutgoing().add(e), DuplicateEdgeException);
+    n.getOutgoing().remove(e);
+    e.setSource(&n);
+    ASSERT_THROW(n.getOutgoing().add(e), DuplicateEdgeException);
+}

@@ -144,7 +144,6 @@ TEST_F(ObjectFlowParserTest, EmitObjectNodeToActionTest) {
         children:
           - c0ab87cc-d00b-4afb-9558-538253b442b2
           - d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
-          - 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
           - 32bb88f4-1ee7-41f9-aa30-6403111061f2
         nodes:
           - objectNode:
@@ -154,6 +153,8 @@ TEST_F(ObjectFlowParserTest, EmitObjectNodeToActionTest) {
                 - 32bb88f4-1ee7-41f9-aa30-6403111061f2
           - action:
               id: d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
+              children:
+                - 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
               inputs:
                 - 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
           - inputPin:

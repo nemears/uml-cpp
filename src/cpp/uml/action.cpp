@@ -2,9 +2,17 @@
 
 using namespace UML;
 
+void Action::AddPinFunctor::operator()(Element& el) const {
+    if (el.getOwner() != m_el) {
+        m_el->getOwnedElements().add(el);
+    }
+}
+
 Action::Action() {
     m_inputs = new Sequence<InputPin>;
+    m_inputs->addProcedures.push_back(new AddPinFunctor(this));
     m_outputs = new Sequence<OutputPin>;
+    m_outputs->addProcedures.push_back(new AddPinFunctor(this));
 }
 
 Action::~Action() {

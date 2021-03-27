@@ -7,8 +7,11 @@ void Activity::AddNodeFunctor::operator()(Element& el) const {
         dynamic_cast<ActivityNode&>(el).setActivity(dynamic_cast<Activity*>(m_el));
     }
 
-    if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().add(dynamic_cast<ActivityNode&>(el));
+    // if owner not already specified make it the activity (don't overwrite pins ownership)
+    if (!el.getOwner()) {
+        if (!m_el->getOwnedElements().count(el.getID())) {
+            m_el->getOwnedElements().add(dynamic_cast<ActivityNode&>(el));
+        }
     }
 }
 

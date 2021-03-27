@@ -28,3 +28,14 @@ TEST_F(InputPinTest, reindexNameTest) {
     ASSERT_TRUE(a.getInputs().get("test"));
     ASSERT_TRUE(a.getOwnedElements().get("test"));
 }
+
+TEST_F(InputPinTest, AddPinFunctorTest) {
+    Action a;
+    InputPin i;
+    a.getInputs().add(i);
+    ASSERT_TRUE(a.getInputs().size() == 1);
+    ASSERT_TRUE(a.getInputs().front() == &i);
+    ASSERT_TRUE(a.getOwnedElements().size() == 1);
+    ASSERT_TRUE(a.getOwnedElements().front() == &i);
+    ASSERT_TRUE(i.getOwner() == &a);
+}

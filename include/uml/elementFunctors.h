@@ -8,7 +8,7 @@ namespace UML {
         public:
             SetOwnerFunctor(Element* me) : AbstractSequenceFunctor(me) {};
             void operator()(Element& el) const override {
-                if (!el.getOwner()) {
+                if (el.getOwner() != m_el) {
                     el.setOwner(m_el);
                 }
             };

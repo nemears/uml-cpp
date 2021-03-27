@@ -114,6 +114,9 @@ bool Element::isSubClassOf(ElementType eType) {
             return myType == ElementType::INPUT_PIN || myType == ElementType::OUTPUT_PIN || myType == ElementType::PIN
                    || myType == ElementType::PARAMETER_NODE;
         }
+        case ElementType::PIN : {
+            return myType == ElementType::INPUT_PIN || myType == ElementType::OUTPUT_PIN;
+        }
         case ElementType::RELATIONSHIP : {
             return myType != ElementType::DIRECTED_RELATIONSHIP;
         }

@@ -170,6 +170,12 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
                             }
                         }
                     }
+                    if (el->isSubClassOf(ElementType::ACTION)) {
+                        if (child->isSubClassOf(ElementType::PIN)) {
+                            emitter << YAML::Value << child->getIDstring();
+                            break;
+                        }
+                    }
 
                     // Error
                     throw AbstractTypeEmitException(child->getElementTypeString(), boost::lexical_cast<string>(child->getID()));

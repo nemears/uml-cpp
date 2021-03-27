@@ -119,12 +119,12 @@ TEST_F(CreateObjectParserTest, EmitCreateObjectActionTest) {
         id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
         children:
           - c6681a3f-ea10-4069-a4e8-bb9e1cc4bb0b
-          - 2ebcd640-e405-4b15-bf4b-805ae7f69457
           - 9a8b4d56-45fe-4041-bac5-6ed8319064a9
-          - dea1b287-79d1-43f0-ad70-2c19275aa9c8
         nodes:
           - createObjectAction:
               id: c6681a3f-ea10-4069-a4e8-bb9e1cc4bb0b
+              children:
+                - 2ebcd640-e405-4b15-bf4b-805ae7f69457
               outputs:
                 - 2ebcd640-e405-4b15-bf4b-805ae7f69457
               classifier: BOOL
@@ -133,6 +133,8 @@ TEST_F(CreateObjectParserTest, EmitCreateObjectActionTest) {
               type: BOOL
           - createObjectAction:
               id: 9a8b4d56-45fe-4041-bac5-6ed8319064a9
+              children:
+                - dea1b287-79d1-43f0-ad70-2c19275aa9c8
               outputs:
                 - dea1b287-79d1-43f0-ad70-2c19275aa9c8
               classifier: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d

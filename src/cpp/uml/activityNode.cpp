@@ -6,7 +6,9 @@ using namespace UML;
 ActivityNode::ActivityNode() {
     m_activity = 0;
     m_incoming = new Sequence<ActivityEdge>;
+    m_incoming->addProcedures.push_back(new AddIncomingFunctor(this));
     m_outgoing = new Sequence<ActivityEdge>;
+    m_outgoing->addProcedures.push_back(new AddOutgoingFunctor(this));
 }
 
 ActivityNode::~ActivityNode() {
@@ -28,6 +30,18 @@ void ActivityNode::reindexName(string oldName, string newName) {
     }
 
     NamedElement::reindexName(oldName, newName);
+}
+
+void ActivityNode::AddIncomingFunctor::operator()(Element& el) const {
+    if (dynamic_cast<ActivityEdge&>(el).getTarget() != m_el) {
+        dynamic_cast<ActivityEdge&>(el).setTarget(dynamic_cast<ActivityNode*>(m_el));
+    }
+}
+
+void ActivityNode::AddOutgoingFunctor::operator()(Element& el) const {
+    if (dynamic_cast<ActivityEdge&>(el).getSource() != m_el) {
+        dynamic_cast<ActivityEdge&>(el).setSource(dynamic_cast<ActivityNode*>(m_el));
+    }
 }
 
 Sequence<ActivityEdge>& ActivityNode::getIncoming() {

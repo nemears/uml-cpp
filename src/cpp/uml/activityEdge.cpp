@@ -53,6 +53,9 @@ ActivityNode* ActivityEdge::getSource() {
 
 void ActivityEdge::setSource(ActivityNode* source) {
     m_source = source;
+    if (!m_source->getOutgoing().count(m_id)) {
+        m_source->getOutgoing().add(*this);
+    }
 }
 
 ActivityNode* ActivityEdge::getTarget() {
@@ -61,6 +64,9 @@ ActivityNode* ActivityEdge::getTarget() {
 
 void ActivityEdge::setTarget(ActivityNode* target) {
     m_target = target;
+    if (!m_target->getIncoming().count(m_id)) {
+        m_target->getIncoming().add(*this);
+    }
 }
 
 ValueSpecification* ActivityEdge::getGuard() {

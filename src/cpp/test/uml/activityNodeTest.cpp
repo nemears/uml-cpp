@@ -26,3 +26,39 @@ TEST_F(ActivityNodeTest, reindexNameTest) {
     n.setName("test");
     ASSERT_TRUE(a.getNodes().get("test"));
 }
+
+TEST_F(ActivityNodeTest, addIncomingFunctorTest) {
+    ActivityNode n;
+    ActivityEdge e;
+    n.getIncoming().add(e);
+    ASSERT_TRUE(n.getIncoming().size() == 1);
+    ASSERT_TRUE(n.getIncoming().front() == &e);
+    ASSERT_TRUE(e.getTarget() == &n);
+}
+
+TEST_F(ActivityNodeTest, setTargetTest) {
+    ActivityNode n;
+    ActivityEdge e;
+    e.setTarget(&n);
+    ASSERT_TRUE(n.getIncoming().size() == 1);
+    ASSERT_TRUE(n.getIncoming().front() == &e);
+    ASSERT_TRUE(e.getTarget() == &n);
+}
+
+TEST_F(ActivityNodeTest, addOutgoingFunctorTest) {
+    ActivityNode n;
+    ActivityEdge e;
+    n.getOutgoing().add(e);
+    ASSERT_TRUE(n.getOutgoing().size() == 1);
+    ASSERT_TRUE(n.getOutgoing().front() == &e);
+    ASSERT_TRUE(e.getSource() == &n);
+}
+
+TEST_F(ActivityNodeTest, setSourceTest) {
+    ActivityNode n;
+    ActivityEdge e;
+    e.setSource(&n);
+    ASSERT_TRUE(n.getOutgoing().size() == 1);
+    ASSERT_TRUE(n.getOutgoing().front() == &e);
+    ASSERT_TRUE(e.getSource() == &n);
+}

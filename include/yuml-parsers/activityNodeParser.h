@@ -17,10 +17,14 @@ class ActivityNodeParser : virtual public NamedElementParser {
 
         bool emit(YAML::Emitter& emitter, Element* el) override;
         static void addIncomingEdgeLater(YAML::Node node, Element* activityNode, Element* incomingEdge) {
-            dynamic_cast<ActivityNode*>(activityNode)->getIncoming().add(*dynamic_cast<ActivityEdge*>(incomingEdge));
+            if (!dynamic_cast<ActivityNode*>(activityNode)->getIncoming().count(incomingEdge->getID())) {
+                dynamic_cast<ActivityNode*>(activityNode)->getIncoming().add(*dynamic_cast<ActivityEdge*>(incomingEdge));
+            }
         }
         static void addOutgoingEdgeLater(YAML::Node node, Element* activityNode, Element* outgoingEdge) {
-            dynamic_cast<ActivityNode*>(activityNode)->getOutgoing().add(*dynamic_cast<ActivityEdge*>(outgoingEdge));
+            if (!dynamic_cast<ActivityNode*>(activityNode)->getOutgoing().count(outgoingEdge->getID())) {
+                dynamic_cast<ActivityNode*>(activityNode)->getOutgoing().add(*dynamic_cast<ActivityEdge*>(outgoingEdge));
+            }
         }
 };
 

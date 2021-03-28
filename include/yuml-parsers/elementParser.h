@@ -4,6 +4,8 @@
 #include <iostream>
 #include "templateParser.h"
 #include "uml/sequence.h"
+#include "uml/relationship.h"
+
 using namespace std;
 
 class ElementParser : public TemplateParser {
@@ -14,7 +16,7 @@ class ElementParser : public TemplateParser {
             TemplateParser(elements, postParsers) {
             
         };
-
+        static void addRelationshipLater(YAML::Node node, Element* el, Element* relationship);
         bool emit(YAML::Emitter& emitter, Element* el) override;
 
         // error for invalid element keyword

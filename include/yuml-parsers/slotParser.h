@@ -17,7 +17,7 @@ using namespace UML;
 class SlotParser : public ElementParser {
     protected:
         UML::Element* createElement();
-        bool parseFeatures(YAML::Node node, UML::Element* el);
+        bool parseFeatures(YAML::Node node, UML::Element* el) override;
         void parseNonPimitiveValueFeatures(YAML::Node node, Element* el);
 
     public:

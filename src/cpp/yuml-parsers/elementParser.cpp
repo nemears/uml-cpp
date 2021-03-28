@@ -64,8 +64,33 @@ bool ElementParser::parseFeatures(YAML::Node node, Element* el) {
             throw InvalidNodeTypeException(node["children"].Mark().line, "sequence");
         }
     }
+
+    if (node["relationships"]) {
+        if (node["relationships"].IsSequence()) {
+            for (std::size_t i=0; i<node["relationships"].size(); i++) {
+                if (node["relationships"][i].IsScalar()) {
+                    // relationship not defined here just id
+                    if (isValidUUID4(node["relationships"][i].as<string>())) {
+                        parseNowOrLater(boost::lexical_cast<boost::uuids::uuid>(node["relationships"][i].as<string>()),
+                        el->getID(),
+                        node["relationships"][i],
+                        &ElementParser::addRelationshipLater);
+                    }
+                } else if (node["relationships"][i].IsMap()) {
+                    // relationship is defined here
+                    if (node["relationships"][i]["generalization"]) {
+                        // generalization parser
+                    }
+                }
+            }
+        }
+    }
     
     return true;
+}
+
+void ElementParser::addRelationshipLater(YAML::Node node, Element* el, Element* relationship) {
+    el->getRelationships().add(*dynamic_cast<Relationship*>(relationship));
 }
 
 bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {

@@ -18,7 +18,6 @@ void Relationship::AddRelationshipFunctor::operator()(Element& el) const {
     }
 }
 
-// TODO move this to addRelationship not relatedElements
 void Relationship::CheckRelatedElementsFuncto::operator()(Element& el) const {
     // add to related elements if not duplicate
     if (dynamic_cast<Relationship*>(m_el)->getRelatedElements().count(el.getID())) {

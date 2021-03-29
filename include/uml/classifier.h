@@ -42,7 +42,15 @@ namespace UML{
             string getName() override;
             void setName(const string& name) override;
             Sequence<Property>& getAttributes();
+
+            /**
+             * Generalizations to inherited classifier
+             * the generalizations specific reference is this classifier
+             **/
             Sequence<Generalization>& getGeneralizations();
+            /**
+             * this returns all classifiers this classifier inherits from
+             **/
             Sequence<Classifier>& getGenerals();
             ElementType getElementType() override;
             bool isPrimitive() override;

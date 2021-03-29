@@ -28,8 +28,8 @@ TEST_F(GeneralizationTest, basicSetSpecificAndGeneralTest) {
     ASSERT_TRUE(g.getRelationships().front() == &r);
     ASSERT_TRUE(s.getGeneralizations().size() == 1);
     ASSERT_TRUE(s.getGeneralizations().front() == &r);
-    ASSERT_TRUE(g.getGeneralizations().size() == 1);
-    ASSERT_TRUE(g.getGeneralizations().front() == &r);
+    // ASSERT_TRUE(g.getGeneralizations().size() == 1);
+    // ASSERT_TRUE(g.getGeneralizations().front() == &r);
     ASSERT_TRUE(s.getGenerals().size() == 1);
     ASSERT_TRUE(s.getGenerals().front() == &g);
 }
@@ -57,6 +57,6 @@ TEST_F(GeneralizationTest, addGeneralizationFunctorTest) {
     ASSERT_TRUE(g.getRelationships().front() == r);
     ASSERT_TRUE(s.getGeneralizations().size() == 1);
     ASSERT_TRUE(s.getGeneralizations().front() == r);
-    ASSERT_TRUE(g.getGeneralizations().size() == 1);
-    ASSERT_TRUE(g.getGeneralizations().front() == r);
+    // ASSERT_TRUE(g.getGeneralizations().size() == 1);
+    // ASSERT_TRUE(g.getGeneralizations().front() == r);
 }

@@ -16,9 +16,6 @@ void Generalization::setGeneral(Classifier* general) {
     if (!getTargets().count(m_general->getID())) {
         getTargets().add(*m_general);
     }
-    if (!m_general->getGeneralizations().count(m_id)) {
-        m_general->getGeneralizations().add(*this);
-    }
     if (m_specific) {
         if (!m_specific->getGenerals().count(m_general->getID())) {
             m_specific->getGenerals().add(*m_general);
@@ -37,11 +34,6 @@ void Generalization::setSpecific(Classifier* specific) {
     }
     if (!m_specific->getGeneralizations().count(m_id)) {
         m_specific->getGeneralizations().add(*this);
-    }
-    if (m_general) {
-        if (!m_specific->getGenerals().count(m_general->getID())) {
-            m_specific->getGenerals().add(*m_general);
-        }
     }
 }
 

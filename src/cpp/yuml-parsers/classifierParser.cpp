@@ -30,15 +30,14 @@ bool ClassifierParser::parseFeatures(YAML::Node node, Element* el) {
                 if (node["generalizations"][i].IsScalar()) {
                     if (isValidUUID4(node["generalizations"][i].as<string>())) {
                         parseNowOrLater(boost::lexical_cast<boost::uuids::uuid>(node["generalizations"][i].as<string>()),
-                        el->getID(),
-                        node["generalizations"][i],
-                        &ClassifierParser::addGeneralizationLater);
+                                        el->getID(),
+                                        node["generalizations"][i],
+                                        &ClassifierParser::addGeneralizationLater);
                     }
                 }else if (node["generalizations"][i]["generalization"]) {
                     if (node["generalizations"][i]["generalization"].IsMap()) {
                         GeneralizationParser gp(elements, postProcessFlag);
                         Element* parsedEl = gp.parseElement(node["generalizations"][i]["generalization"]);
-                        dynamic_cast<Classifier*>(el)->getGeneralizations().add(*dynamic_cast<Generalization*>(parsedEl));
                     }
                 }
             }

@@ -4,6 +4,7 @@
 #include "uml/classifier.h"
 #include "uml/property.h"
 #include "uml/class.h"
+#include "uml/generalization.h"
 
 using namespace UML;
 
@@ -104,10 +105,12 @@ TEST_F(ClassifierParserTest, ParseBasicGeneralizationTest) {
   Classifier* c1 = dynamic_cast<Classifier*>(m->getOwnedElements().front());
   Classifier* c2 = dynamic_cast<Classifier*>(m->getOwnedElements().back());
   
-  ASSERT_TRUE(c1->getGeneralizations().size() == 1);
+  ASSERT_TRUE(c1->getGeneralizations().size() == 0);
   ASSERT_TRUE(c2->getGeneralizations().size() == 1);
   ASSERT_TRUE(c1->getRelationships().size() == 1);
   ASSERT_TRUE(c2->getRelationships().size() == 1);
 
-  Generalization* g = c1->getGeneralizations().front();
+  Generalization* g = c2->getGeneralizations().front();
+  ASSERT_TRUE(g->getGeneral() == c1);
+  ASSERT_TRUE(g->getSpecific() == c2);
 }

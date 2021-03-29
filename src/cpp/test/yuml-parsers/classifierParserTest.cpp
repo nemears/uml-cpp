@@ -87,3 +87,27 @@ TEST_F(ClassifierParserTest, EmitSingleBasicAttributeTest) {
   ASSERT_TRUE(emitter.good());
   ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(ClassifierParserTest, ParseBasicGeneralizationTest) {
+  // Setup
+  ModelParser basicGeneralizationParser = ModelParser::createNewParser();
+  YAML::Node basicGeneralizationNode = YAML::LoadFile(ymlPath + "classifierTests/generalization.yml");
+  
+  // TEST
+  ASSERT_NO_THROW(basicGeneralizationParser.parse(basicGeneralizationNode));
+  Model* m = dynamic_cast<Model*>(basicGeneralizationParser.theEl);
+  
+  ASSERT_TRUE(m->getOwnedElements().size() == 2);
+  ASSERT_TRUE(m->getOwnedElements().front()->getElementType() == ElementType::CLASS);
+  ASSERT_TRUE(m->getOwnedElements().back()->getElementType() == ElementType::CLASS);
+
+  Classifier* c1 = dynamic_cast<Classifier*>(m->getOwnedElements().front());
+  Classifier* c2 = dynamic_cast<Classifier*>(m->getOwnedElements().back());
+  
+  ASSERT_TRUE(c1->getGeneralizations().size() == 1);
+  ASSERT_TRUE(c2->getGeneralizations().size() == 1);
+  ASSERT_TRUE(c1->getRelationships().size() == 1);
+  ASSERT_TRUE(c2->getRelationships().size() == 1);
+
+  Generalization* g = c1->getGeneralizations().front();
+}

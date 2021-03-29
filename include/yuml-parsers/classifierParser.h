@@ -3,6 +3,7 @@
 #include "namespaceParser.h"
 #include "propertyParser.h"
 #include "uml/classifier.h"
+#include "generalizationParser.h"
 using namespace std;
 
 class ClassifierParser: public NamespaceParser {
@@ -12,7 +13,7 @@ class ClassifierParser: public NamespaceParser {
     public:
         ClassifierParser(map<boost::uuids::uuid, UML::Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
             NamespaceParser(elements, postParsers){};
-
+        static void addGeneralizationLater(YAML::Node node, Element* classifier, Element* generalization);
         bool emit(YAML::Emitter& emitter, Element* el);
 };
 #endif

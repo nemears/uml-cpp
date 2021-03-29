@@ -3,6 +3,9 @@
 using namespace UML;
 
 bool ClassifierParser::parseFeatures(YAML::Node node, Element* el) {
+
+    bool ret = NamedElementParser::parseFeatures(node, el);
+
     if (node["attributes"]) {
         if (node["attributes"].IsSequence()) {
             for (std::size_t i=0; i<node["attributes"].size(); i++) {
@@ -20,7 +23,33 @@ bool ClassifierParser::parseFeatures(YAML::Node node, Element* el) {
             throw InvalidNodeTypeException(node["attributes"].Mark().line, "sequence");
         }
     }
-    return NamedElementParser::parseFeatures(node, el);
+
+    if (node["generalizations"]) {
+        if (node["generalizations"].IsSequence()) {
+            for (size_t i = 0; i<node["generalizations"].size(); i++) {
+                if (node["generalizations"][i].IsScalar()) {
+                    if (isValidUUID4(node["generalizations"][i].as<string>())) {
+                        parseNowOrLater(boost::lexical_cast<boost::uuids::uuid>(node["generalizations"][i].as<string>()),
+                        el->getID(),
+                        node["generalizations"][i],
+                        &ClassifierParser::addGeneralizationLater);
+                    }
+                }else if (node["generalizations"][i]["generalization"]) {
+                    if (node["generalizations"][i]["generalization"].IsMap()) {
+                        GeneralizationParser gp(elements, postProcessFlag);
+                        Element* parsedEl = gp.parseElement(node["generalizations"][i]["generalization"]);
+                        dynamic_cast<Classifier*>(el)->getGeneralizations().add(*dynamic_cast<Generalization*>(parsedEl));
+                    }
+                }
+            }
+        }
+    }
+    
+    return ret;
+}
+
+void ClassifierParser::addGeneralizationLater(YAML::Node node, Element* classifier, Element* generalization) {
+    dynamic_cast<Classifier*>(classifier)->getGeneralizations().add(*dynamic_cast<Generalization*>(generalization));
 }
 
 bool ClassifierParser::emit(YAML::Emitter& emitter, Element* el) {

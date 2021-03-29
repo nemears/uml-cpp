@@ -14,9 +14,9 @@ namespace UML {
                     AddRelationshipFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
-            class AddRelationshipCheck : public AbstractSequenceFunctor {
+            class CheckRelatedElementsFuncto : public AbstractSequenceFunctor {
                 public:
-                    AddRelationshipCheck(Element* me) : AbstractSequenceFunctor(me) {};
+                    CheckRelatedElementsFuncto(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
             class RemoveRelationshipFunctor : public AbstractSequenceFunctor {
@@ -33,11 +33,11 @@ namespace UML {
 
     //Exceptions
 
-    class DuplicateRelationshipException: public exception {
+    class DuplicateRelatedElementException: public exception {
         private:
             string msg;
         public:
-            DuplicateRelationshipException(string uuid) :
+            DuplicateRelatedElementException(string uuid) :
                 msg("Duplicate relationship (uuid: " + uuid + ") added to sequence specified as set!")
                 {};
             virtual const char* what() const throw() {

@@ -46,7 +46,7 @@ TEST_F(DirectedRelationshipTest, duplicateRelationshipExceptionTest) {
     Element b;
     dr.getTargets().add(a);
     dr.getSources().add(b);
-    ASSERT_THROW(dr.getRelatedElements().add(a), DuplicateRelationshipException);
+    ASSERT_THROW(dr.getRelatedElements().add(a), DuplicateRelatedElementException);
 }
 
 TEST_F(DirectedRelationshipTest, removeRelationshipFunctorTest) {

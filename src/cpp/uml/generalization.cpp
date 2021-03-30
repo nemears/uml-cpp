@@ -38,6 +38,14 @@ Classifier* Generalization::getSpecific() {
 }
 
 void Generalization::setSpecific(Classifier* specific) {
+    if (m_specific) {
+        if (m_specific->getRelationships().count(m_id)) {
+            m_specific->getRelationships().remove(*this);
+        }
+        if (m_specific->getGeneralizations().count(m_id)) {
+            m_specific->getGeneralizations().remove(*this);
+        }
+    }
     m_specific = specific;
     if (!getSources().count(m_specific->getID())) {
         getSources().add(*m_specific);

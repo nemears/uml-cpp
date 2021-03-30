@@ -28,6 +28,7 @@ bool ClassifierParser::parseFeatures(YAML::Node node, Element* el) {
         if (node["generalizations"].IsSequence()) {
             for (size_t i = 0; i<node["generalizations"].size(); i++) {
                 if (node["generalizations"][i].IsScalar()) {
+                    // TODO this shouldn't be valid, generalizations should be specified here only from specific so it should never be scalar
                     if (isValidUUID4(node["generalizations"][i].as<string>())) {
                         parseNowOrLater(boost::lexical_cast<boost::uuids::uuid>(node["generalizations"][i].as<string>()),
                                         el->getID(),

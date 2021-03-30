@@ -28,13 +28,12 @@ TEST_F(GeneralizationTest, basicSetSpecificAndGeneralTest) {
     ASSERT_TRUE(g.getRelationships().front() == &r);
     ASSERT_TRUE(s.getGeneralizations().size() == 1);
     ASSERT_TRUE(s.getGeneralizations().front() == &r);
-    // ASSERT_TRUE(g.getGeneralizations().size() == 1);
-    // ASSERT_TRUE(g.getGeneralizations().front() == &r);
+    ASSERT_TRUE(g.getGeneralizations().size() == 0);
     ASSERT_TRUE(s.getGenerals().size() == 1);
     ASSERT_TRUE(s.getGenerals().front() == &g);
 }
 
-TEST_F(GeneralizationTest, addGeneralizationFunctorTest) {
+TEST_F(GeneralizationTest, addGeneralFunctorTest) {
     Classifier s;
     Classifier g;
     s.getGenerals().add(g);
@@ -57,6 +56,31 @@ TEST_F(GeneralizationTest, addGeneralizationFunctorTest) {
     ASSERT_TRUE(g.getRelationships().front() == r);
     ASSERT_TRUE(s.getGeneralizations().size() == 1);
     ASSERT_TRUE(s.getGeneralizations().front() == r);
-    // ASSERT_TRUE(g.getGeneralizations().size() == 1);
-    // ASSERT_TRUE(g.getGeneralizations().front() == r);
+}
+
+TEST_F(GeneralizationTest, AddGeneralizationFunctorTest) {
+    Classifier s;
+    Classifier g;
+    Generalization r;
+    s.getGeneralizations().add(r);
+    r.setGeneral(&g);
+    ASSERT_TRUE(r.getSpecific() == &s);
+}
+
+TEST_F(GeneralizationTest, AddGeneralizationFunctorGeneralSetTest) {
+    Classifier s;
+    Classifier g;
+    Generalization r;
+    r.setGeneral(&g);
+    s.getGeneralizations().add(r);
+    ASSERT_TRUE(r.getSpecific() == &s);
+}
+
+TEST_F(GeneralizationTest, CheckGeneralizationFunctorTest) {
+    Generalization r;
+    Classifier g;
+    Classifier s;
+    r.setGeneral(&g);
+    r.setSpecific(&s);
+    ASSERT_THROW(g.getGeneralizations().add(r), InvalidGeneralizationException);
 }

@@ -11,10 +11,13 @@ class GeneralizationParser : public DirectedRelationshipParser {
     public:
         GeneralizationParser(map<boost::uuids::uuid, UML::Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
             DirectedRelationshipParser(elements, postParsers)
-            {};
+            {
+                keyword = "generalization";
+            };
         static void setSpecificLater(YAML::Node node, Element* generalization, Element* specific);
         static void setGeneralLater(YAML::Node node, Element* generalization, Element* general);
         Element* createElement() override;
+        bool emit(YAML::Emitter& emitter, Element* el) override;
 };
 
 #endif

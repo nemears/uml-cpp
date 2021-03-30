@@ -55,3 +55,25 @@ void DirectedRelationshipParser::addSourceLater(YAML::Node node, Element* relati
 void DirectedRelationshipParser::addTargetLater(YAML::Node node, Element* relationship, Element* target) {
     dynamic_cast<DirectedRelationship*>(relationship)->getTargets().add(*target);
 }
+
+bool DirectedRelationshipParser::emit(YAML::Emitter& emitter, Element* el) {
+    bool ret = RelationshipParser::emit(emitter, el);
+
+    if (!dynamic_cast<DirectedRelationship*>(el)->getTargets().empty()) {
+        emitter << YAML::Key << "targets";
+        emitter << YAML::Value << YAML::BeginSeq;
+        for (auto const& target : dynamic_cast<DirectedRelationship*>(el)->getTargets()) {
+            emitter << YAML::Value << target->getIDstring();
+        }
+    }
+
+    if (!dynamic_cast<DirectedRelationship*>(el)->getSources().empty()) {
+        emitter << YAML::Key << "sources";
+        emitter << YAML::Value << YAML::BeginSeq;
+        for (auto const& source : dynamic_cast<DirectedRelationship*>(el)->getSources()) {
+            emitter << YAML::Value << source->getIDstring();
+        }
+    }
+
+    return ret;
+}

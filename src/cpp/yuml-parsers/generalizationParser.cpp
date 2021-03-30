@@ -48,3 +48,30 @@ Element* GeneralizationParser::createElement() {
     theEl = new Generalization;
     return theEl;
 }
+
+bool GeneralizationParser::emit(YAML::Emitter& emitter, Element* el) {
+    if (el->getElementType() == ElementType::GENERALIZATION) {
+        emitter << YAML::BeginMap;
+        emitter << YAML::Key << "generalization";
+        emitter << YAML::Value << YAML::BeginMap;
+    }
+
+    bool ret = DirectedRelationshipParser::emit(emitter, el);
+
+    if (dynamic_cast<Generalization*>(el)->getGeneral()) {
+        emitter << YAML::Key << "general";
+        emitter << YAML::Value << dynamic_cast<Generalization*>(el)->getGeneral()->getIDstring();
+    }
+
+    if (dynamic_cast<Generalization*>(el)->getSpecific()) {
+        emitter << YAML::Key << "specific";
+        emitter << YAML::Value << dynamic_cast<Generalization*>(el)->getSpecific()->getIDstring();
+    }
+
+    if (el->getElementType() == ElementType::GENERALIZATION) {
+        emitter << YAML::EndMap;
+        emitter << YAML::EndMap;
+    }
+
+    return ret;
+}

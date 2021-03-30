@@ -27,3 +27,17 @@ bool RelationshipParser::parseFeatures(YAML::Node node, UML::Element* el) {
 void RelationshipParser::addRelatedElementLater(YAML::Node node, Element* relationship, Element* relatedElement) {
     dynamic_cast<Relationship*>(relationship)->getRelatedElements().add(*relatedElement);
 }
+
+bool RelationshipParser::emit(YAML::Emitter& emitter, Element* el) {
+    bool ret = ElementParser::emit(emitter, el);
+
+    if (!dynamic_cast<Relationship*>(el)->getRelatedElements().empty()) {
+        emitter << YAML::Key << "relatedElements";
+        emitter << YAML::Value << YAML::BeginSeq;
+        for (auto const& relatedElement : dynamic_cast<Relationship*>(el)->getRelatedElements()) {
+            emitter << YAML::Value << relatedElement->getIDstring();
+        }
+    }
+
+    return ret;
+}

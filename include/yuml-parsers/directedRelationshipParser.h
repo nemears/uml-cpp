@@ -13,6 +13,7 @@ class DirectedRelationshipParser : public RelationshipParser {
             {};
         static void addSourceLater(YAML::Node node, Element* relationship, Element* source);
         static void addTargetLater(YAML::Node node, Element* relationship, Element* target);
+        bool emit(YAML::Emitter& emitter, Element* el) override;
 };
 
 #endif

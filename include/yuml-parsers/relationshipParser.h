@@ -12,6 +12,7 @@ class RelationshipParser : public ElementParser {
             ElementParser(elements, postParsers)
             {};
         static void addRelatedElementLater(YAML::Node node, Element* relationship, Element* relatedElement);
+        bool emit(YAML::Emitter& emitter, Element* el) override;
 };
 
 #endif

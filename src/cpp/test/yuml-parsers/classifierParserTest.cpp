@@ -114,3 +114,50 @@ TEST_F(ClassifierParserTest, ParseBasicGeneralizationTest) {
   ASSERT_TRUE(g->getGeneral() == c1);
   ASSERT_TRUE(g->getSpecific() == c2);
 }
+
+TEST_F(ClassifierParserTest, EmitSingleGeneralizationTest) {
+  // Setup
+  Model m;
+  m.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+  Class g;
+  g.setID("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
+  Class s;
+  s.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
+  s.getGenerals().add(g);
+  s.getGeneralizations().front()->setID("c0ab87cc-d00b-4afb-9558-538253b442b2");
+  m.getOwnedElements().add(g);
+  m.getOwnedElements().add(s);
+
+  string expectedEmit = R""""(model:
+  id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+  children:
+    - class:
+        id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+        relationships:
+          - c0ab87cc-d00b-4afb-9558-538253b442b2
+    - class:
+        id: 190d1cb9-13dc-44e6-a064-126891ae0033
+        relationships:
+          - c0ab87cc-d00b-4afb-9558-538253b442b2
+        generalizations:
+          - generalization:
+              id: c0ab87cc-d00b-4afb-9558-538253b442b2
+              relatedElements:
+                - 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+                - 190d1cb9-13dc-44e6-a064-126891ae0033
+              targets:
+                - 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+              sources:
+                - 190d1cb9-13dc-44e6-a064-126891ae0033
+              general: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+              specific: 190d1cb9-13dc-44e6-a064-126891ae0033)"""";
+
+  ModelParser mp = ModelParser::createNewParser();
+  string generatedEmit;
+  YAML::Emitter emitter;
+  ASSERT_NO_THROW(mp.emit(emitter, &m));
+  generatedEmit = emitter.c_str();
+  cout << generatedEmit << '\n';
+  ASSERT_TRUE(emitter.good());
+  ASSERT_EQ(expectedEmit, generatedEmit);
+}

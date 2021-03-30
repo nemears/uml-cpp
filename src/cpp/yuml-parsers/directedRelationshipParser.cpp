@@ -65,6 +65,7 @@ bool DirectedRelationshipParser::emit(YAML::Emitter& emitter, Element* el) {
         for (auto const& target : dynamic_cast<DirectedRelationship*>(el)->getTargets()) {
             emitter << YAML::Value << target->getIDstring();
         }
+        emitter << YAML::EndSeq;
     }
 
     if (!dynamic_cast<DirectedRelationship*>(el)->getSources().empty()) {
@@ -73,6 +74,7 @@ bool DirectedRelationshipParser::emit(YAML::Emitter& emitter, Element* el) {
         for (auto const& source : dynamic_cast<DirectedRelationship*>(el)->getSources()) {
             emitter << YAML::Value << source->getIDstring();
         }
+        emitter << YAML::EndSeq;
     }
 
     return ret;

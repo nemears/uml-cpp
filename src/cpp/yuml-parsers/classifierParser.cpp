@@ -67,5 +67,15 @@ bool ClassifierParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::EndSeq;
     }
 
+    if (!dynamic_cast<Classifier*>(el)->getGeneralizations().empty()) {
+        emitter << YAML::Key << "generalizations";
+        emitter << YAML::Value << YAML::BeginSeq;
+        for (auto const& generalization : dynamic_cast<Classifier*>(el)->getGeneralizations()) {
+            GeneralizationParser gp(elements, postProcessFlag);
+            gp.emit(emitter, generalization);
+        }
+        emitter << YAML::EndSeq;
+    }
+
     return ret;
 }

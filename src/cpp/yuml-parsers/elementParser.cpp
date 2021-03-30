@@ -210,5 +210,14 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
         emitter << YAML::EndSeq;
     }
 
+    if (!el->getRelationships().empty()) {
+        emitter << YAML::Key << "relationships";
+        emitter << YAML::Value << YAML::BeginSeq;
+        for (auto const& relationship : el->getRelationships()) {
+            emitter << YAML::Value << relationship->getIDstring();
+        }
+        emitter << YAML::EndSeq;
+    }
+
     return true;
 }

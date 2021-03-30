@@ -37,6 +37,7 @@ bool RelationshipParser::emit(YAML::Emitter& emitter, Element* el) {
         for (auto const& relatedElement : dynamic_cast<Relationship*>(el)->getRelatedElements()) {
             emitter << YAML::Value << relatedElement->getIDstring();
         }
+        emitter << YAML::EndSeq;
     }
 
     return ret;

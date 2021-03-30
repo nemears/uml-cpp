@@ -12,6 +12,7 @@ Element::Element() {
     m_ownedElements = new Sequence<Element>;
     m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
     m_relationships = new Sequence<Relationship>;
+    m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
 }
 
 // Destructor

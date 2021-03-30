@@ -25,7 +25,7 @@ void Relationship::CheckRelatedElementsFuncto::operator()(Element& el) const {
     }
 }
 
-void Relationship::RemoveRelationshipFunctor::operator()(Element& el) const {
+void Relationship::RemoveRelatedElementsFunctor::operator()(Element& el) const {
     if (el.getRelationships().count(m_el->getID())) {
         el.getRelationships().remove(*dynamic_cast<Relationship*>(m_el));
     }
@@ -43,7 +43,7 @@ Relationship::Relationship() {
     m_relatedElements = new Sequence<>;
     m_relatedElements->addProcedures.push_back(new AddRelationshipFunctor(this));
     m_relatedElements->addChecks.push_back(new CheckRelatedElementsFuncto(this));
-    m_relatedElements->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
+    m_relatedElements->removeProcedures.push_back(new RemoveRelatedElementsFunctor(this));
 }
 
 Relationship::~Relationship() {

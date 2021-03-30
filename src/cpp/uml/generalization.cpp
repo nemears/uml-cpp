@@ -12,6 +12,16 @@ Classifier* Generalization::getGeneral() {
 }
 
 void Generalization::setGeneral(Classifier* general) {
+    if (m_general) {
+        if (m_general->getRelationships().count(m_id)) {
+            m_general->getRelationships().remove(*this);
+        }
+        if (m_specific) {
+            if (m_specific->getGenerals().count(m_general->getID())) {
+                m_specific->getGenerals().remove(*m_general);
+            }
+        }
+    }
     m_general = general;
     if (!getTargets().count(m_general->getID())) {
         getTargets().add(*m_general);

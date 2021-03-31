@@ -8,21 +8,19 @@ namespace UML {
     class SetOwnerFunctor : public AbstractSequenceFunctor {
         public:
             SetOwnerFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-            void operator()(Element& el) const override {
-                if (el.getOwner() != m_el) {
-                    el.setOwner(m_el);
-                }
-            };
+            void operator()(Element& el) const override;
+    };
+
+    class RemoveOwnerFunctor : public AbstractSequenceFunctor {
+        public:
+            RemoveOwnerFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+            void operator()(Element& el) const override;
     };
 
     class RemoveRelationshipFunctor : public AbstractSequenceFunctor {
         public:
             RemoveRelationshipFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-            void operator()(Element& el) const override {
-                if (dynamic_cast<Relationship&>(el).getRelatedElements().count(m_el->getID())) {
-                    dynamic_cast<Relationship&>(el).getRelatedElements().remove(*m_el);
-                }
-            };
+            void operator()(Element& el) const override;
     };
 }
 

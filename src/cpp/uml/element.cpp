@@ -5,12 +5,31 @@
 
 using namespace UML;
 
+void SetOwnerFunctor::operator()(Element& el) const{
+    if (el.getOwner() != m_el) {
+        el.setOwner(m_el);
+    }
+}
+
+void RemoveRelationshipFunctor::operator()(Element& el) const {
+    if (dynamic_cast<Relationship&>(el).getRelatedElements().count(m_el->getID())) {
+        dynamic_cast<Relationship&>(el).getRelatedElements().remove(*m_el);
+    }
+}
+
+void RemoveOwnerFunctor::operator()(Element& el) const {
+    if (el.getOwner() == m_el) {
+        el.setOwner(0);
+    }
+}
+
 // Constructor
 Element::Element() {
     m_id = boost::uuids::random_generator()();
     m_owner = NULL;
     m_ownedElements = new Sequence<Element>;
     m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
+    m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
     m_relationships = new Sequence<Relationship>;
     m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
 }
@@ -60,9 +79,11 @@ void Element::setOwner(Element* owner) {
     // overwrite owner
     m_owner = owner;
 
-    // add this to owner's owned elements if not already added
-    if (!m_owner->getOwnedElements().count(getID())) {
-        m_owner->getOwnedElements().add(*this);
+    // add this to owner's owned elements if not already added and not null
+    if (m_owner) {
+        if (!m_owner->getOwnedElements().count(getID())) {
+            m_owner->getOwnedElements().add(*this);
+        }
     }
 }
 

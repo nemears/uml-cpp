@@ -96,7 +96,6 @@ TEST_F(ElementTest, reIndexID_Test) {
   Element e1;
   Element e2;
   e1.getOwnedElements().add(e2);
-  e2.setOwner(&e1);
   e2.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
   ASSERT_TRUE(e1.getOwnedElements().get(e2.getID()) != NULL);
 }

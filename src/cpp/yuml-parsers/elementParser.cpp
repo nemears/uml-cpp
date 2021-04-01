@@ -201,6 +201,12 @@ bool ElementParser::emit(YAML::Emitter& emitter, Element* el) {
                             break;
                         }
                     }
+                    if (el->isSubClassOf(ElementType::CLASS)) {
+                        if (child->isSubClassOf(ElementType::OPERATION)) {
+                            emitter << YAML::Value << child->getIDstring();
+                            break;
+                        }
+                    }
 
                     // Error
                     throw AbstractTypeEmitException(child->getElementTypeString(), boost::lexical_cast<string>(child->getID()));

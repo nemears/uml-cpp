@@ -23,6 +23,11 @@ namespace UML{
                     AddOperationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class RemoveOperationFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveOperationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Class();
             ~Class();

@@ -80,6 +80,8 @@ TEST_F(OperationParserTest, EmitOperationWithLiteralParameter) {
   children:
     - class:
         id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+        children:
+          - 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
         operations:
           - operation:
               id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
@@ -133,6 +135,8 @@ TEST_F(OperationParserTest, EmitOperationWithInstanceParameter) {
         id: d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
     - class:
         id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+        children:
+          - 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
         operations:
           - operation:
               id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
@@ -177,6 +181,8 @@ TEST_F(OperationParserTest, EmitOperationWithBlankOpaqueBehaviorTest) {
   children:
     - class:
         id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+        children:
+          - 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
         operations:
           - operation:
               id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35

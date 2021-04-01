@@ -63,6 +63,8 @@ TEST_F(ClassParserTest, EmitOperationTest) {
   children:
     - class:
         id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+        children:
+          - 563f4740-e107-4d08-8618-2489f0fe1865
         operations:
           - operation:
               id: 563f4740-e107-4d08-8618-2489f0fe1865)"""";

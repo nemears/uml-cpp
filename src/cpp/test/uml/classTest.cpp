@@ -29,6 +29,9 @@ TEST_F(ClassTest, addOperationFunctorTest) {
     ASSERT_TRUE(c.getOperations().size() == 1);
     ASSERT_TRUE(c.getOperations().front() == &o);
     ASSERT_TRUE(o.getClass() == &c);
+    ASSERT_TRUE(c.getOwnedElements().size() == 1);
+    ASSERT_TRUE(c.getOwnedElements().front() == &o);
+    ASSERT_TRUE(o.getOwner() == &c);
 }
 
 TEST_F(ClassTest, setClassTest) {
@@ -62,4 +65,15 @@ TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
   ASSERT_TRUE(p2.getOperations().front() == &c);
   ASSERT_TRUE(c.getClass() == &p2);
   ASSERT_TRUE(p1.getOperations().size() == 0);
+}
+
+TEST_F(ClassTest, removeOperationFunctorTest) {
+  Class c;
+  Operation o;
+  c.getOperations().add(o);
+  ASSERT_NO_THROW(c.getOperations().remove(o));
+  ASSERT_TRUE(c.getOperations().size() == 0);
+  ASSERT_TRUE(c.getOwnedElements().size() == 0);
+  ASSERT_TRUE(!o.getClass());
+  ASSERT_TRUE(!o.getOwner());
 }

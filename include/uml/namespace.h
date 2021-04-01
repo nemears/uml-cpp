@@ -17,6 +17,11 @@ namespace UML{
                     AddMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class RemoveMemberFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Namespace();
             ~Namespace();

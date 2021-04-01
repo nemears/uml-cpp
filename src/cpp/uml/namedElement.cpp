@@ -54,8 +54,10 @@ void NamedElement::setNamespace(Namespace* nmspc) {
     m_namespace = nmspc;
 
     // add to members of namespace
-    if (!m_namespace->getMembers().count(m_id)) {
-        m_namespace->getMembers().add(*this);
+    if (m_namespace) {
+        if (!m_namespace->getMembers().count(m_id)) {
+            m_namespace->getMembers().add(*this);
+        }
     }
 }
 

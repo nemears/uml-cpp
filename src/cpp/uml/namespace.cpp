@@ -9,9 +9,20 @@ void Namespace::AddMemberFunctor::operator()(Element& el) const {
     }
 }
 
+void Namespace::RemoveMemberFunctor::operator()(Element& el) const {
+    if (dynamic_cast<NamedElement&>(el).getNamespace() == m_el) {
+        dynamic_cast<NamedElement&>(el).setNamespace(0);
+    }
+
+    if (m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().remove(el);
+    }
+}
+
 Namespace::Namespace() {
     m_members = new Sequence<NamedElement>;
     m_members->addProcedures.push_back(new AddMemberFunctor(this));
+    m_members->removeProcedures.push_back(new RemoveMemberFunctor(this));
 }
 
 Namespace::~Namespace() {

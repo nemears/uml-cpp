@@ -13,9 +13,36 @@ void Behavior::AddParameterFunctor::operator()(Element& el) const {
     }
 }
 
+void Behavior::RemoveParameterFunctor::operator()(Element& el) const {
+    if (dynamic_cast<Behavior*>(m_el)->getSpecification()) {
+        if (dynamic_cast<Parameter&>(el).getOperation() == dynamic_cast<Behavior*>(m_el)->getSpecification()) {
+
+            bool usedElsewhere = false;
+
+            // note slow performance for removing
+            for (auto const& method : dynamic_cast<Parameter&>(el).getOperation()->getMethods()) {
+                if (method != m_el) {
+                    if (method->getParameters().count(el.getID())) {
+                        usedElsewhere = true;
+                    }
+                }
+            }
+
+            if (!usedElsewhere) {
+                dynamic_cast<Parameter&>(el).setOperation(0);
+            }
+        }
+    }
+
+    if (m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().remove(el);
+    }
+}
+
 Behavior::Behavior() {
     m_parameters = new Sequence<Parameter>();
     m_parameters->addProcedures.push_back(new AddParameterFunctor(this));
+    m_parameters->removeProcedures.push_back(new RemoveParameterFunctor(this));
     m_specification = 0;
 }
 

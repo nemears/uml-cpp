@@ -44,7 +44,9 @@ void NamedElement::setNamespace(Namespace* nmspc) {
     // if in another namespace remove it
     if (m_namespace) {
         if (m_namespace != nmspc) {
-            m_namespace->getMembers().remove(*this);
+            if (m_namespace->getMembers().count(m_id)) {
+                m_namespace->getMembers().remove(*this);
+            }
         }
     }
 

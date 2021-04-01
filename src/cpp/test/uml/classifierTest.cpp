@@ -67,3 +67,16 @@ TEST_F(ClassifierTest, setClassifierTest) {
   ASSERT_TRUE(c.getAttributes().front() == &p);
   ASSERT_TRUE(p.getClassifier() == &c);
 }
+
+TEST_F(ClassifierTest, removeAttributeFunctorTest) {
+  Property p;
+  Classifier c;
+  c.getAttributes().add(p);
+  ASSERT_NO_THROW(c.getAttributes().remove(p));
+  ASSERT_TRUE(c.getAttributes().size() == 0);
+  ASSERT_TRUE(c.getMembers().size() == 0);
+  ASSERT_TRUE(c.getOwnedElements().size() == 0);
+  ASSERT_TRUE(!p.getClassifier());
+  ASSERT_TRUE(!p.getNamespace());
+  ASSERT_TRUE(!p.getOwner());
+}

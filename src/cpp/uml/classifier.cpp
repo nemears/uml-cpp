@@ -7,6 +7,7 @@ using namespace UML;
 Classifier::Classifier() {
     m_attributes = new Sequence<Property>;
     m_attributes->addProcedures.push_back(new AddAttributeFunctor(this));
+    m_attributes->removeProcedures.push_back(new RemoveAttributeFunctor(this));
     m_generalizations = new Sequence<Generalization>;
     m_generalizations->addProcedures.push_back(new AddGeneralizationFunctor(this));
     m_generalizations->addChecks.push_back(new CheckGeneralizationFunctor(this));
@@ -35,6 +36,18 @@ void Classifier::AddAttributeFunctor::operator()(Element& el) const {
 
     if (dynamic_cast<Property&>(el).getNamespace() != m_el) {
         dynamic_cast<Property&>(el).setNamespace(dynamic_cast<Classifier*>(m_el));
+    }
+}
+
+void Classifier::RemoveAttributeFunctor::operator()(Element& el) const {
+    if (dynamic_cast<Property&>(el).getClassifier() == m_el) {
+        dynamic_cast<Property&>(el).setClassifier(0);
+    }
+
+    if (dynamic_cast<Property&>(el).getNamespace() == m_el) {
+        if (dynamic_cast<Property&>(el).getNamespace()->getMembers().count(el.getID())) {
+            dynamic_cast<Property&>(el).getNamespace()->getMembers().remove(dynamic_cast<Property&>(el));
+        }
     }
 }
 

@@ -26,6 +26,11 @@ namespace UML{
                     AddAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class RemoveAttributeFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
             class CheckGeneralizationFunctor : public AbstractSequenceFunctor {
                 public:
                     CheckGeneralizationFunctor(Element* me) : AbstractSequenceFunctor(me) {};

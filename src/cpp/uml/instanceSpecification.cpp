@@ -16,10 +16,21 @@ void InstanceSpecification::AddSlotFunctor::operator()(Element& el) const {
     }
 }
 
+void InstanceSpecification::RemoveSlotFunctor::operator()(Element& el) const {
+    if (dynamic_cast<Slot&>(el).getOwningInstance() == m_el) {
+        dynamic_cast<Slot&>(el).setOwningInstance(0);
+    }
+
+    if (dynamic_cast<InstanceSpecification*>(m_el)->getOwnedElements().count(el.getID())) {
+        dynamic_cast<InstanceSpecification*>(m_el)->getOwnedElements().remove(el);
+    }
+}
+
 InstanceSpecification::InstanceSpecification() {
     m_classifier = NULL;
     m_slots = new Sequence<Slot>;
     m_slots->addProcedures.push_back(new AddSlotFunctor(this));
+    m_slots->removeProcedures.push_back(new RemoveSlotFunctor(this));
 }
 
 InstanceSpecification::~InstanceSpecification() {

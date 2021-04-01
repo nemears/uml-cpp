@@ -46,8 +46,10 @@ InstanceSpecification* Slot::getOwningInstance() {
 
 void Slot::setOwningInstance(InstanceSpecification* inst) {
     m_owningInstance = inst;
-    if (!m_owningInstance->getSlots().count(m_id)) {
-        m_owningInstance->getSlots().add(*this);
+    if (m_owningInstance) {
+        if (!m_owningInstance->getSlots().count(m_id)) {
+            m_owningInstance->getSlots().add(*this);
+        }
     }
 }
 

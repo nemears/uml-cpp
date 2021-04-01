@@ -14,6 +14,11 @@ namespace UML{
                     AddSlotFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class RemoveSlotFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveSlotFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Classifier* getClassifier();
             void setClassifier(Classifier* classifier);

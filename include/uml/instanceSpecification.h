@@ -1,11 +1,11 @@
 #ifndef INSTANCESPECIFICATIONH
 #define INSTANCESPECIFICATIONH
-#include "namedElement.h"
+#include "packageableElement.h"
 #include "slot.h"
 #include "classifier.h"
 
 namespace UML{
-    class InstanceSpecification : public NamedElement {
+    class InstanceSpecification : public PackageableElement {
         protected:
             Classifier* m_classifier;
             Sequence<Slot>* m_slots;

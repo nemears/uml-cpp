@@ -16,6 +16,9 @@ namespace UML {
             void setOwningPackage(Package* package);
             ElementType getElementType() override;
             bool isSubClassOf(ElementType eType) override;
+            PackageableElement& operator=(PackageableElement&&) {
+                return *this;
+            };
     };
 }
 

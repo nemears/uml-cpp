@@ -2,9 +2,10 @@
 #define VALUESPECIFICATIONH
 #include "typedElement.h"
 #include "sequence.h"
+#include "packageableElement.h"
 
 namespace UML {
-class ValueSpecification : public TypedElement {
+class ValueSpecification : public TypedElement , public PackageableElement {
 
     protected:
         void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;

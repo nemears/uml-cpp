@@ -1,10 +1,10 @@
 #ifndef TYPEH
 #define TYPEH
-#include "namedElement.h"
+#include "packageableElement.h"
 using namespace std;
 
 namespace UML{
-    class Type : virtual public NamedElement {
+    class Type : virtual public PackageableElement {
         public:
             virtual bool isPrimitive() = 0;
             ElementType getElementType() override;

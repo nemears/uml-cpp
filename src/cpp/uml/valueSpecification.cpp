@@ -36,6 +36,10 @@ bool ValueSpecification::isSubClassOf(ElementType eType) {
     bool ret = TypedElement::isSubClassOf(eType);
 
     if (!ret) {
+        ret = PackageableElement::isSubClassOf(eType);
+    }
+
+    if (!ret) {
         ret = eType == ElementType::VALUE_SPECIFICATION;
     }
 

@@ -11,7 +11,7 @@ ElementType Type::getElementType() {
 }
 
 bool Type::isSubClassOf(ElementType eType) {
-    bool ret = NamedElement::isSubClassOf(eType);
+    bool ret = PackageableElement::isSubClassOf(eType);
 
     if (!ret) {
         ret = eType == ElementType::TYPE;

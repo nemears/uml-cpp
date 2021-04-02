@@ -54,7 +54,7 @@ ElementType InstanceSpecification::getElementType() {
 }
 
 bool InstanceSpecification::isSubClassOf(ElementType eType) {
-    bool ret = NamedElement::isSubClassOf(eType);
+    bool ret = PackageableElement::isSubClassOf(eType);
 
     if (!ret) {
         ret = eType == ElementType::INSTANCE_SPECIFICATION;

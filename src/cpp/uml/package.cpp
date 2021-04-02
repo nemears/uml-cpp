@@ -3,15 +3,15 @@
 using namespace UML;
 
 Package::Package() {
-    m_ownedPackages = new Sequence<PackageableElement>();
+    m_packagedElements = new Sequence<PackageableElement>();
 }
 
 Package::~Package() {
-    delete m_ownedPackages;
+    delete m_packagedElements;
 }
 
-Sequence<PackageableElement>& Package::getOwnedPackages() {
-    return *m_ownedPackages;
+Sequence<PackageableElement>& Package::getPackagedElements() {
+    return *m_packagedElements;
 }
 
 ElementType Package::getElementType() {

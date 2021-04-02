@@ -7,11 +7,11 @@
 namespace UML {
     class Package : public PackageableElement, public Namespace {
         protected:
-            Sequence<PackageableElement>* m_ownedPackages;
+            Sequence<PackageableElement>* m_packagedElements;
         public:
             Package();
             ~Package();
-            Sequence<PackageableElement>& getOwnedPackages();
+            Sequence<PackageableElement>& getPackagedElements();
             ElementType getElementType() override;
             bool isSubClassOf(ElementType eType) override;
     };

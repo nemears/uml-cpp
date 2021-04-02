@@ -51,6 +51,8 @@ namespace UML {
         OPAQUE_BEHAVIOR,
         OPERATION,
         OUTPUT_PIN,
+        PACKAGE,
+        PACKAGEABLE_ELEMENT,
         PARAMETER,
         PARAMETER_NODE,
         PIN,

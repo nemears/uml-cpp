@@ -218,6 +218,12 @@ string Element::getElementTypeString() {
         case ElementType::OUTPUT_PIN : {
             return "OUTPUT_PIN";
         }
+        case ElementType::PACKAGE : {
+            return "PACKAGE";
+        }
+        case ElementType::PACKAGEABLE_ELEMENT : {
+            return "PACKAGEABLE_ELEMENT";
+        }
         case ElementType::PARAMETER : {
             return "PARAMETER";
         }

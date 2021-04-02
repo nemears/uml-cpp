@@ -86,6 +86,27 @@ namespace UML {
                 m_nameTranslation.erase(oldName);
                 m_nameTranslation[newName] = temp;
             }
+
+            // add without checks
+            void internalAdd(T& el) {
+                if (!m_data.count(el.getID())) {
+                    m_data[el.getID()] = &el;
+                    m_order.push_back(el.getID());
+                    m_rep.push_back(&el);
+                    if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
+                        if (dynamic_cast<NamedElement*>(&el)->getName().length() > 0) {
+                            m_nameTranslation[dynamic_cast<NamedElement*>(&el)->getName()] = &el;
+                        }
+                    }
+                } else {
+                    m_order.push_back(el.getID());
+                    m_rep.push_back(&el);
+                }
+
+                for (auto const& fun : addProcedures) {
+                    (*fun)(el);
+                }
+            }
         public:
 
             // destructor
@@ -105,23 +126,7 @@ namespace UML {
                     (*fun)(el);
                 }
 
-                if (!m_data.count(el.getID())) {
-                    m_data[el.getID()] = &el;
-                    m_order.push_back(el.getID());
-                    m_rep.push_back(&el);
-                    if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
-                        if (dynamic_cast<NamedElement*>(&el)->getName().length() > 0) {
-                            m_nameTranslation[dynamic_cast<NamedElement*>(&el)->getName()] = &el;
-                        }
-                    }
-                } else {
-                    m_order.push_back(el.getID());
-                    m_rep.push_back(&el);
-                }
-
-                for (auto const& fun : addProcedures) {
-                    (*fun)(el);
-                }
+                internalAdd(el);
             };
             void remove(T& el) {
                 if (m_data.count(el.getID())) {

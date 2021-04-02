@@ -95,7 +95,17 @@ namespace UML {
         public:
             Element();
             ~Element();
+            /**
+             * Container for owned elements
+             * opposite is getOwner
+             * read_only (TODO implement)
+             **/
             Sequence<Element>& getOwnedElements();
+            /**
+             * Container for relationships
+             * opposite is relatedElements
+             * read_only (TODO implement)
+             **/
             Sequence<Relationship>& getRelationships();
             boost::uuids::uuid getID() { return m_id; };
             virtual void setID(string id);
@@ -105,6 +115,10 @@ namespace UML {
             virtual string getElementTypeString();
             virtual string getIDstring();
             Element* getOwner();
+            /**
+             * TODO delete, owner should be read_only
+             * opposite is owned elements
+             **/
             void setOwner(Element* owner);
     };
 

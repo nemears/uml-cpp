@@ -13,3 +13,13 @@ void TypedElement::setType(Type* type) {
 ElementType TypedElement::getElementType() {
     return ElementType::TYPED_ELEMENT;
 }
+
+bool TypedElement::isSubClassOf(ElementType eType) {
+    bool ret = NamedElement::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::TYPED_ELEMENT;
+    }
+
+    return ret;
+}

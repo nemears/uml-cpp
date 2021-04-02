@@ -12,6 +12,7 @@ class PrimitiveType : public Classifier {
         ElementType getElementType() override;
         string getPrimitiveTypeString();
         void setPrimitiveTypeString(const string& primitiveString);
+        bool isSubClassOf(ElementType eType) override;
     private:
         Primitive primitiveType;
 };

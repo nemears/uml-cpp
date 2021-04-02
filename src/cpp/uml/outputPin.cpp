@@ -26,3 +26,13 @@ void OutputPin::reindexName(string oldName, string newName) {
 ElementType OutputPin::getElementType() {
     return ElementType::OUTPUT_PIN;
 }
+
+bool OutputPin::isSubClassOf(ElementType eType) {
+    bool ret = Pin::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::OUTPUT_PIN;
+    }
+
+    return ret;
+}

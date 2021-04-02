@@ -28,6 +28,7 @@ namespace UML {
             Sequence<>& getTargets();
             Sequence<>& getSources();
             ElementType getElementType() override;
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

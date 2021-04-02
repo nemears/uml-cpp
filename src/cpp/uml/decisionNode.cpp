@@ -13,3 +13,13 @@ void DecisionNode::setDecisionInputFlow(ObjectFlow* inputFlow) {
 ElementType DecisionNode::getElementType() {
     return ElementType::DECISION_NODE;
 }
+
+bool DecisionNode::isSubClassOf(ElementType eType) {
+    bool ret = ActivityNode::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::DECISION_NODE;
+    }
+
+    return ret;
+}

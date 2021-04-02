@@ -27,6 +27,7 @@ namespace UML{
             ~Namespace();
             Sequence<NamedElement>& getMembers();
             ElementType getElementType() override;
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 #endif

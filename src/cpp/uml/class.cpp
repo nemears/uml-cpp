@@ -40,3 +40,13 @@ Sequence<Operation>& Class::getOperations() {
 ElementType Class::getElementType() {
     return ElementType::CLASS;
 }
+
+bool Class::isSubClassOf(ElementType eType) {
+    bool ret = Classifier::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::CLASS;
+    }
+    
+    return ret;
+}

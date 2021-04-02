@@ -48,3 +48,13 @@ Sequence<ActivityEdge>& Activity::getEdges() {
 ElementType Activity::getElementType() {
     return ElementType::ACTIVITY;
 }
+
+bool Activity::isSubClassOf(ElementType eType) {
+    bool ret = Behavior::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::ACTIVITY;
+    }
+
+    return ret;
+}

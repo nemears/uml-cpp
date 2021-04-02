@@ -18,6 +18,7 @@ class ValueSpecification : public TypedElement {
     //virtual void* getValue() = 0;
     public:
         ElementType getElementType() override;
+        bool isSubClassOf(ElementType eType) override;
 };
 }
 #endif

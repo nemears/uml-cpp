@@ -17,3 +17,13 @@ void OpaqueBehavior::setSingletonBody(const string& sb) {
     }
     singletonBody = sb;
 }
+
+bool OpaqueBehavior::isSubClassOf(ElementType eType) {
+    bool ret = Behavior::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::OPAQUE_BEHAVIOR;
+    }
+
+    return ret;
+}

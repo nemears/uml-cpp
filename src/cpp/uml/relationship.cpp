@@ -57,3 +57,13 @@ Sequence<>& Relationship::getRelatedElements() {
 ElementType Relationship::getElementType() {
     return ElementType::RELATIONSHIP;
 }
+
+bool Relationship::isSubClassOf(ElementType eType) {
+    bool ret = Element::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::RELATIONSHIP;
+    }
+
+    return ret;
+}

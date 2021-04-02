@@ -17,6 +17,7 @@ namespace UML {
                 upperBound = NULL;
             };
             bool isObjectNode() override;
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

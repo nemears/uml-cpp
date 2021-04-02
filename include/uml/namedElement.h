@@ -25,6 +25,7 @@ namespace UML{
             Namespace* getNamespace();
             void setNamespace(Namespace* nmspc);
             ElementType getElementType() override;
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

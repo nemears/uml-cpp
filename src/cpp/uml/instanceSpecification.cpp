@@ -52,3 +52,13 @@ Sequence<Slot>& InstanceSpecification::getSlots() {
 ElementType InstanceSpecification::getElementType() {
     return ElementType::INSTANCE_SPECIFICATION;
 }
+
+bool InstanceSpecification::isSubClassOf(ElementType eType) {
+    bool ret = NamedElement::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::INSTANCE_SPECIFICATION;
+    }
+
+    return ret;
+}

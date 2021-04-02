@@ -56,3 +56,13 @@ void Slot::setOwningInstance(InstanceSpecification* inst) {
 ElementType Slot::getElementType() {
     return ElementType::SLOT;
 }
+
+bool Slot::isSubClassOf(ElementType eType) {
+    bool ret = Element::isSubClassOf(eType);
+
+    if(!ret) {
+        ret = eType == ElementType::SLOT;
+    }
+
+    return ret;
+}

@@ -45,3 +45,13 @@ bool MultiplicityElement::multiplicitySpecified() {
 ElementType MultiplicityElement::getElementType() {
     return ElementType::MULTIPLICITY_ELEMENT;
 }
+
+bool MultiplicityElement::isSubClassOf(ElementType eType) {
+    bool ret = Element::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::MULTIPLICITY_ELEMENT;
+    }
+
+    return ret;
+}

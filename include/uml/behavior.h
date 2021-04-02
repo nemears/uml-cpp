@@ -28,6 +28,7 @@ namespace UML {
             Operation* getSpecification();
             void setSpecification(Operation* specification);
             ElementType getElementType() override;
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

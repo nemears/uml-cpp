@@ -32,6 +32,7 @@ namespace UML {
             Class* getClass();
             void setClass(Class* clazz);
             ElementType getElementType() override;
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

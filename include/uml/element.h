@@ -111,7 +111,7 @@ namespace UML {
             virtual void setID(string id);
             void setID(boost::uuids::uuid id);
             virtual ElementType getElementType();
-            bool isSubClassOf(ElementType eType);
+            virtual bool isSubClassOf(ElementType eType);
             virtual string getElementTypeString();
             virtual string getIDstring();
             Element* getOwner();

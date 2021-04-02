@@ -19,6 +19,7 @@ class TypedElement : virtual public NamedElement {
         TypedElement& operator=(TypedElement&&) {
             return *this;
         };
+        bool isSubClassOf(ElementType eType) override;
 };
 }
 

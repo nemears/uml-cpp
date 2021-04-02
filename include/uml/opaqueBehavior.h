@@ -15,6 +15,7 @@ namespace UML {
             ElementType getElementType() override;
             string getSingletonBody();
             void setSingletonBody(const string& sb);
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

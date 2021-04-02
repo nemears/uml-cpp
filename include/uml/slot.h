@@ -35,6 +35,7 @@ namespace UML {
                         return "Tried to assign value to slot without setting definingFeature";
                     }
             } nullDefiningFeatureException;
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

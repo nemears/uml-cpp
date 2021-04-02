@@ -15,6 +15,7 @@ namespace UML {
             CallBehaviorAction() {
                 behavior = NULL;
             };
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

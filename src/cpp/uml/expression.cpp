@@ -33,3 +33,13 @@ void Expression::setSymbol(string sym) {
 ElementType Expression::getElementType() {
     return ElementType::EXPRESSION;
 }
+
+bool Expression::isSubClassOf(ElementType eType) {
+    bool ret = ValueSpecification::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::EXPRESSION;
+    }
+
+    return ret;
+}

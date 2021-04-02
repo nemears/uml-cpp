@@ -16,6 +16,7 @@ namespace UML {
                 setType(boolPrimitive);
             }
             ElementType getElementType() override;
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

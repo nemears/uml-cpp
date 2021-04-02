@@ -31,3 +31,13 @@ void ValueSpecification::reindexName(string oldName, string newName) {
 ElementType ValueSpecification::getElementType() {
     return ElementType::VALUE_SPECIFICATION;
 }
+
+bool ValueSpecification::isSubClassOf(ElementType eType) {
+    bool ret = TypedElement::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::VALUE_SPECIFICATION;
+    }
+
+    return ret;
+}

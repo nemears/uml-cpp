@@ -40,3 +40,13 @@ Sequence<>& DirectedRelationship::getSources() {
 ElementType DirectedRelationship::getElementType() {
     return ElementType::DIRECTED_RELATIONSHIP;
 }
+
+bool DirectedRelationship::isSubClassOf(ElementType eType) {
+    bool ret = Relationship::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::DIRECTED_RELATIONSHIP;
+    }
+
+    return ret;
+}

@@ -13,3 +13,13 @@ void ParameterNode::setParameter(Parameter* parameter) {
 ElementType ParameterNode::getElementType() {
     return ElementType::PARAMETER_NODE;
 }
+
+bool ParameterNode::isSubClassOf(ElementType eType) {
+    bool ret = ObjectNode::isSubClassOf(eType);
+
+    if(!ret) {
+        ret = eType == ElementType::PARAMETER_NODE;
+    }
+
+    return ret;
+}

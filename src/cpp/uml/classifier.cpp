@@ -119,3 +119,17 @@ bool Classifier::isPrimitive() {
 ElementType Classifier::getElementType() {
     return ElementType::CLASSIFIER;
 }
+
+bool Classifier::isSubClassOf(ElementType eType) {
+    bool ret = Namespace::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = Type::isSubClassOf(eType);
+    }
+
+    if (!ret) {
+        ret = eType == ElementType::CLASSIFIER;
+    }
+
+    return ret;
+}

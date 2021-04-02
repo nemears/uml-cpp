@@ -11,6 +11,7 @@ namespace UML{
             Type& operator=(Type&&) {
                 return *this;
             };
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

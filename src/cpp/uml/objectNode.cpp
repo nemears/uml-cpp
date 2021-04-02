@@ -17,3 +17,17 @@ ElementType ObjectNode::getElementType() {
 bool ObjectNode::isObjectNode() {
     return true;
 }
+
+bool ObjectNode::isSubClassOf(ElementType eType) {
+    bool ret = ActivityNode::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = TypedElement::isSubClassOf(eType);
+    }
+
+    if (!ret) {
+        ret = eType == ElementType::OBJECT_NODE;
+    }
+
+    return ret;
+}

@@ -68,3 +68,13 @@ void Behavior::setSpecification(Operation* specification) {
 ElementType Behavior::getElementType() {
     return ElementType::BEHAVIOR;
 }
+
+bool Behavior::isSubClassOf(ElementType eType) {
+    bool ret = Class::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::BEHAVIOR;
+    }
+    
+    return ret;
+}

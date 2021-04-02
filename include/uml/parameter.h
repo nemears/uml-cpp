@@ -38,7 +38,8 @@ namespace UML {
                     virtual const char* what() const throw() {
                         return "Invalid direction given, options are IN, INOUT, OUT or RETURN";
                     }
-            }invalidDirectionException;        
+            }invalidDirectionException;
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 #endif

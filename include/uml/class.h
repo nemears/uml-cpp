@@ -33,6 +33,7 @@ namespace UML{
             ~Class();
             Sequence<Operation>& getOperations();
             ElementType getElementType() override;
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

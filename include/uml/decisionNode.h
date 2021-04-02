@@ -15,6 +15,7 @@ namespace UML {
             DecisionNode() {
                 decisionInputFlow = 0;
             };
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

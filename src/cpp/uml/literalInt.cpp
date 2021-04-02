@@ -13,3 +13,13 @@ void LiteralInt::setValue(int val) {
 ElementType LiteralInt::getElementType() {
     return ElementType::LITERAL_INT;
 }
+
+bool LiteralInt::isSubClassOf(ElementType eType) {
+    bool ret = ValueSpecification::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::LITERAL_INT;
+    }
+
+    return ret;
+}

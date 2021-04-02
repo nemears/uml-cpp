@@ -90,3 +90,13 @@ void ActivityEdge::setGuard(ValueSpecification* guard) {
 ElementType ActivityEdge::getElementType() {
     return ElementType::ACTIVITY_EDGE;
 }
+
+bool ActivityEdge::isSubClassOf(ElementType eType) {
+    bool ret = NamedElement::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::ACTIVITY_EDGE;
+    }
+
+    return ret;
+}

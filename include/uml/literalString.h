@@ -17,6 +17,7 @@ namespace UML {
                 setType(stringPrimitive);
             }
             ElementType getElementType() override;
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

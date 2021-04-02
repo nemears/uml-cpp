@@ -15,6 +15,7 @@ namespace UML {
                 classifier = NULL;
             };
             ElementType getElementType() override;
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

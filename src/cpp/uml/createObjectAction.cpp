@@ -13,3 +13,13 @@ void CreateObjectAction::setClassifier(Classifier* classifier) {
 ElementType CreateObjectAction::getElementType() {
     return ElementType::CREATE_OBJECT_ACTION;
 }
+
+bool CreateObjectAction::isSubClassOf(ElementType eType) {
+    bool ret = Action::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::CREATE_OBJECT_ACTION;
+    }
+
+    return ret;
+}

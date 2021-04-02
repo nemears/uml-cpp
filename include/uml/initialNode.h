@@ -6,6 +6,7 @@
 namespace UML {
     class InitialNode : public ActivityNode {
         ElementType getElementType() override;
+        bool isSubClassOf(ElementType eType) override;
     };
 }
 

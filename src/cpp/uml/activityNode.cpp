@@ -84,3 +84,13 @@ void ActivityNode::setActivity(Activity* activity) {
 bool ActivityNode::isObjectNode() {
     return false;
 }
+
+bool ActivityNode::isSubClassOf(ElementType eType) {
+    bool ret = NamedElement::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::ACTIVITY_NODE;
+    }
+
+    return ret;
+}

@@ -26,6 +26,7 @@ namespace UML{
                 defaultValue = NULL;
                 m_classifier = NULL;
             }
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 #endif

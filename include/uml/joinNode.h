@@ -7,6 +7,7 @@ namespace UML {
     class JoinNode : public ActivityNode {
         public:
             ElementType getElementType() override;
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

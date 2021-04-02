@@ -29,6 +29,7 @@ namespace UML {
             ~Relationship();
             Sequence<>& getRelatedElements();
             ElementType getElementType() override;
+            bool isSubClassOf(ElementType eType) override;
     };
 
     //Exceptions

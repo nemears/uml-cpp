@@ -26,6 +26,7 @@ namespace UML{
             InstanceSpecification();
             ~InstanceSpecification();
             ElementType getElementType() override;
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

@@ -18,6 +18,7 @@ namespace UML {
             } multiplicityNotSpecifiedException;
             bool multiplicitySpecified();
             ElementType getElementType() override;
+            bool isSubClassOf(ElementType eType) override;
         protected:
             int lower;
             int upper;

@@ -8,6 +8,7 @@ namespace UML{
 class Model : public Namespace {
     public:
         ElementType getElementType() override;
+        bool isSubClassOf(ElementType eType) override;
 };
 }
 #endif

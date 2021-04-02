@@ -64,3 +64,13 @@ void NamedElement::setNamespace(Namespace* nmspc) {
 ElementType NamedElement::getElementType() {
     return ElementType::NAMED_ELEMENT;
 }
+
+bool NamedElement::isSubClassOf(ElementType eType) {
+    bool ret = Element::isSubClassOf(eType);
+    
+    if (!ret) {
+        ret = eType == ElementType::NAMED_ELEMENT;
+    }
+
+    return ret;
+}

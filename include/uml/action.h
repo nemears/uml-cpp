@@ -22,6 +22,7 @@ namespace UML {
             Sequence<InputPin>& getInputs();
             Sequence<OutputPin>& getOutputs();
             ElementType getElementType() override;
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

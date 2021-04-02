@@ -31,3 +31,13 @@ Sequence<OutputPin>& Action::getOutputs() {
 ElementType Action::getElementType() {
     return ElementType::ACTION;
 }
+
+bool Action::isSubClassOf(ElementType eType) {
+    bool ret = ActivityNode::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::ACTION;
+    }
+
+    return ret;
+}

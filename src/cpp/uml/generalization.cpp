@@ -58,3 +58,13 @@ void Generalization::setSpecific(Classifier* specific) {
 ElementType Generalization::getElementType() {
     return ElementType::GENERALIZATION;
 }
+
+bool Generalization::isSubClassOf(ElementType eType) {
+    bool ret = DirectedRelationship::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::GENERALIZATION;
+    }
+
+    return ret;
+}

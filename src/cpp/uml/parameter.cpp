@@ -86,3 +86,17 @@ void Parameter::setDirectionString(string& directionString) {
         throw invalidDirectionException;
     }
 }
+
+bool Parameter::isSubClassOf(ElementType eType) {
+    bool ret = TypedElement::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = MultiplicityElement::isSubClassOf(eType);
+    }
+
+    if (!ret) {
+        ret = eType == ElementType::PARAMETER;
+    }
+
+    return ret;
+}

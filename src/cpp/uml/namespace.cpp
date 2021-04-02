@@ -36,3 +36,13 @@ Sequence<NamedElement>& Namespace::getMembers() {
 ElementType Namespace::getElementType() {
     return ElementType::NAMESPACE;
 }
+
+bool Namespace::isSubClassOf(ElementType eType) {
+    bool ret = NamedElement::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::NAMESPACE;
+    }
+
+    return ret;
+}

@@ -13,3 +13,13 @@ void LiteralBool::setValue(bool val) {
 ElementType LiteralBool::getElementType() {
     return ElementType::LITERAL_BOOL;
 }
+
+bool LiteralBool::isSubClassOf(ElementType eType) {
+    bool ret = ValueSpecification::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::LITERAL_BOOL;
+    }
+
+    return ret;
+}

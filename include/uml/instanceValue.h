@@ -10,6 +10,7 @@ namespace UML {
             InstanceSpecification* getInstance();
             void setInstance(InstanceSpecification* inst);
             ElementType getElementType() override;
+            bool isSubClassOf(ElementType eType) override;
         protected:
             InstanceSpecification* instance;
     };

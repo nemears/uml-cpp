@@ -67,3 +67,13 @@ void Operation::setClass(Class* clazz) {
 ElementType Operation::getElementType(){
     return ElementType::OPERATION;
 }
+
+bool Operation::isSubClassOf(ElementType eType) {
+    bool ret = NamedElement::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::OPERATION;
+    }
+
+    return ret;
+}

@@ -9,3 +9,13 @@ using namespace UML;
 ElementType Type::getElementType() {
     return ElementType::TYPE;
 }
+
+bool Type::isSubClassOf(ElementType eType) {
+    bool ret = NamedElement::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::TYPE;
+    }
+
+    return ret;
+}

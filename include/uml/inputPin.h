@@ -11,6 +11,7 @@ namespace UML {
             void reindexName(string oldName, string newName) override;
         public:
             ElementType getElementType() override;
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

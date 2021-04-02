@@ -23,12 +23,17 @@ void RemoveOwnerFunctor::operator()(Element& el) const {
     }
 }
 
+void ReadOnlyOwnedElementsFunctor::operator()(Element& el) const {
+    throw ReadOnlySequenceException(m_el->getIDstring(), "ownedElements");
+}
+
 // Constructor
 Element::Element() {
     m_id = boost::uuids::random_generator()();
     m_owner = NULL;
     m_ownedElements = new Sequence<Element>;
     m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
+    //m_ownedElements->addChecks.push_back(new ReadOnlyOwnedElementsFunctor(this));
     m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
     m_relationships = new Sequence<Relationship>;
     m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));

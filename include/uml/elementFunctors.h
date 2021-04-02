@@ -22,6 +22,12 @@ namespace UML {
             RemoveRelationshipFunctor(Element* me) : AbstractSequenceFunctor(me) {};
             void operator()(Element& el) const override;
     };
+
+    class ReadOnlyOwnedElementsFunctor : public AbstractSequenceFunctor {
+        public:
+            ReadOnlyOwnedElementsFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+            void operator()(Element& el) const override;
+    };
 }
 
 #endif

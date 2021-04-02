@@ -162,6 +162,20 @@ namespace UML {
             typename vector<T*>::iterator begin() { return m_rep.begin(); };
             typename vector<T*>::iterator end() { return m_rep.end(); };
     };
+
+    class ReadOnlySequenceException : public exception {
+        friend class Element;
+        private:
+            string msg;
+
+        public:
+            ReadOnlySequenceException(string elID, string nameOfSequence) : 
+                msg("Sequence " + nameOfSequence + " for element uuid: " + elID + " is read only!")
+                {}
+            virtual const char* what() const throw() {
+                return msg.c_str();
+            }
+    };
 }
 
 #endif

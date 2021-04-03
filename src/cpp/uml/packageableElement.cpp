@@ -12,7 +12,19 @@ Package* PackageableElement::getOwningPackage() {
 }
 
 void PackageableElement::setOwningPackage(Package* package) {
+    if (m_owningPackage) {
+        if (m_owningPackage->getPackagedElements().count(m_id)) {
+            m_owningPackage->getPackagedElements().remove(*this);
+        }
+    }
+    
     m_owningPackage = package;
+
+    if (m_owningPackage) {
+        if (!m_owningPackage->getPackagedElements().count(m_id)) {
+            m_owningPackage->getPackagedElements().add(*this);
+        }
+    }
 }
 
 ElementType PackageableElement::getElementType() {

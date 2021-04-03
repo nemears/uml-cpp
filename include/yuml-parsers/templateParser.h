@@ -103,5 +103,6 @@ class TemplateParser {
         string emitDocument(Element* rootEl);
 
         Element* theEl;
+        virtual Element* parsedElement();
 };
 #endif

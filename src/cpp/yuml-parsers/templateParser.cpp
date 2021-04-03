@@ -72,3 +72,7 @@ string TemplateParser::emitDocument(Element* el) {
         return NULL;
     }
 }
+
+Element* TemplateParser::parsedElement() {
+    return theEl;
+}

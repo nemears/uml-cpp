@@ -11,11 +11,11 @@ class OperationParser;
 
 class ClassParser : public ClassifierParser {
     protected:
-        UML::Element* createElement() override;
-        bool parseFeatures(YAML::Node node, UML::Element* el);
+        Element* createElement() override;
+        bool parseFeatures(YAML::Node node, Element* el);
 
     public:
-        ClassParser(map<boost::uuids::uuid, UML::Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
+        ClassParser(map<boost::uuids::uuid, Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
             ClassifierParser(elements, postParsers){
             this->keyword = "class";    
         }

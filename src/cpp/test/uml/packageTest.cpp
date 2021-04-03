@@ -57,3 +57,7 @@ TEST_F(PackageTest, overwriteOwningPackageTest) {
     ASSERT_TRUE(p1.getMembers().size() == 0);
     ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }
+
+TEST_F(PackageTest, overwritePackagedElementsTest) {
+    // TODO Error or overwrite when we do p2.getPackagedElements().add(e) instead of e.setowningPackage(&p2) in above test
+}

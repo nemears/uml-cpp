@@ -7,7 +7,7 @@ ElementType Model::getElementType() {
 }
 
 bool Model::isSubClassOf(ElementType eType) {
-    bool ret = Namespace::isSubClassOf(eType);
+    bool ret = Package::isSubClassOf(eType);
 
     if (!ret) {
         ret = eType == ElementType::MODEL;

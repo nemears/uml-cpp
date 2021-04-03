@@ -3,6 +3,7 @@
 
 #include "namespaceParser.h"
 #include "packageableElementParser.h"
+#include "uml/package.h"
 
 class PackageParser : public NamespaceParser, public PackageableElementParser {
     protected:

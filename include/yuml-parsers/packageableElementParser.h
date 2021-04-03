@@ -7,6 +7,7 @@
 class PackageableElementParser : virtual public NamedElementParser {
     protected:
         bool parseFeatures(YAML::Node node, UML::Element* el) override;
+        bool parsePackageableElementFeatures(YAML::Node node, Element* el);
     public:
         PackageableElementParser(map<boost::uuids::uuid, UML::Element*>* elements, map<boost::uuids::uuid, PostParser*>* postParsers) : 
             NamedElementParser(elements, postParsers){};

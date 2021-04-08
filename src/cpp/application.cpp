@@ -1,4 +1,7 @@
 #include "application.h"
+#include "uml/element.h"
+
+using namespace UML;
 
 int main(int argc, char** argv) {
 
@@ -13,25 +16,21 @@ int main(int argc, char** argv) {
             YAML::Node node = YAML::LoadFile(argv[1]);
             string fileName = argv[1];
             cout << "parsing file " << fileName << "\n";
-            ModelParser pp = ModelParser::createNewParser();
+            //ModelParser pp = ModelParser::createNewParser();
+            Element* el;
             try {
-                if(!pp.parse(node)) {
-                    cerr << "[FATAL ERROR] could not parse " << fileName << endl;
-                    return -1;
-                }
+                el = UML::Parsers::parse(node);
             } catch (exception& e) {
                 cerr << "[FATAL ERROR] " << e.what() << endl;
             }
-
-            ModelParser::deleteParser(&pp);
 
             // TODO print model
-            YAML::Emitter emitter;
-            try {
-                cout << pp.emitDocument(pp.theEl) << '\n';
-            } catch (exception& e) {
-                cerr << "[FATAL ERROR] " << e.what() << endl;
-            }
+            // YAML::Emitter emitter;
+            // try {
+            //     cout << pp.emitDocument(pp.theEl) << '\n';
+            // } catch (exception& e) {
+            //     cerr << "[FATAL ERROR] " << e.what() << endl;
+            // }
 
             return 0;
         }

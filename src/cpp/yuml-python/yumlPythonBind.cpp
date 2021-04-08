@@ -34,7 +34,7 @@
 #include "uml/callBehaviorAction.h"
 #include "uml/createObjectAction.h"
 #include "uml/expression.h"
-#include "yuml-parsers/modelParser.h"
+// #include "yuml-parsers/modelParser.h"
 
 using namespace UML;
 
@@ -86,22 +86,22 @@ template <class PrimitiveTypeBase = PrimitiveType> class PrimitiveTypePy : publi
         }
 };
 
-class ModelParserPy {
-    protected:
-        ModelParser modelParser;
-    public:
-        ModelParserPy () : modelParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>) {};
-        void parse(string f) {
-            modelParser.parse(YAML::LoadFile(f));
-        }
-        Element* getParsedEl() {
-            return modelParser.theEl;
-        };
-        string emit(Model* m) {
-            return modelParser.emitDocument(m);
-        }
+// class ModelParserPy {
+//     protected:
+//         ModelParser modelParser;
+//     public:
+//         ModelParserPy () : modelParser(new map<boost::uuids::uuid, Element*>, new map<boost::uuids::uuid, PostParser*>) {};
+//         void parse(string f) {
+//             modelParser.parse(YAML::LoadFile(f));
+//         }
+//         Element* getParsedEl() {
+//             return modelParser.theEl;
+//         };
+//         string emit(Model* m) {
+//             return modelParser.emitDocument(m);
+//         }
 
-};
+// };
 
 namespace py = pybind11;
 
@@ -423,9 +423,9 @@ PYBIND11_MODULE(yuml_python, m) {
             .def("setClassifier", &CreateObjectAction::setClassifier);
 
         // ModelParser
-        py::class_<ModelParserPy>(m, "ModelParser")
-            .def(py::init<>())
-            .def("parse", &ModelParserPy::parse)
-            .def("emit", &ModelParserPy::emit)
-            .def("getParsedElement", &ModelParserPy::getParsedEl);
+        // py::class_<ModelParserPy>(m, "ModelParser")
+        //     .def(py::init<>())
+        //     .def("parse", &ModelParserPy::parse)
+        //     .def("emit", &ModelParserPy::emit)
+        //     .def("getParsedElement", &ModelParserPy::getParsedEl);
 }

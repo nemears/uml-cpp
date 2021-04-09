@@ -1,7 +1,11 @@
 #include "uml/parsers/packageParser.h"
+#include "uml/parsers/packageableElementParser.h"
 #include "uml/activity.h"
 
 void UML::Parsers::parsePackage(YAML::Node node, Package& pckg) {
+
+    UML::Parsers::parsePackageableElement(node, pckg);
+
     if (node["packagedElements"]) {
         if (node["packagedElements"].IsSequence()) {
             for (size_t i=0; i<node["packagedElements"].size(); i++) {

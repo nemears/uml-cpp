@@ -1,4 +1,3 @@
-add_subdirectory(yuml-parsers)
 add_subdirectory(uml)
 add_subdirectory(cpp-parsers)
 add_subdirectory(yuml-python)

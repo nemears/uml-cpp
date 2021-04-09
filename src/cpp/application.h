@@ -2,7 +2,7 @@
 #define APPLICATION
 // #include "yuml-parsers/modelParser.h"
 // #include "yuml-parsers/classParser.h"
-#include "yuml-parsers/parser.h"
+#include "uml/parsers/parser.h"
 // #include "yaml-cpp/yaml.h"
 // #include <string>
 // #include <stdlib.h>

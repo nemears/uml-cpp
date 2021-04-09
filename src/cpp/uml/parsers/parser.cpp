@@ -1,4 +1,4 @@
-#include "yuml-parsers/parser.h"
+#include "uml/parsers/parser.h"
 
 UML::Element* UML::Parsers::parse(YAML::Node node) {
     if (node["package"]) {

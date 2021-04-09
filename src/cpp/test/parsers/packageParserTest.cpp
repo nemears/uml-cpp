@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "yuml-parsers/parser.h"
+#include "uml/parsers/parser.h"
 #include "test/yumlParsersTest.h"
 #include "uml/package.h"
 #include "uml/activity.h"

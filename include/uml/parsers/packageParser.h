@@ -8,8 +8,8 @@
 
 namespace UML {
     namespace Parsers {
-        void parsePackage(YAML::Node node, UML::Package& pckg);
-        void emitPackage(YAML::Emitter& emitter, UML::Package& el);
+        void parsePackage(YAML::Node node, Package& pckg);
+        void emitPackage(YAML::Emitter& emitter, Package& el);
     }
 }
 

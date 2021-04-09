@@ -66,3 +66,10 @@ TEST_F(PackageParserTest, parse3PackagesTest) {
     ASSERT_TRUE(act2->getNamespace() == pckg3);
     ASSERT_TRUE(act2->getOwner() == pckg3);
 }
+
+TEST_F(PackageParserTest, NamedElementFeaturesTest) {
+    Element* el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/packageWithName.yml"));
+    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
+    Package* pckg = dynamic_cast<Package*>(el);
+    ASSERT_TRUE(pckg->getName().compare("test") == 0);
+}

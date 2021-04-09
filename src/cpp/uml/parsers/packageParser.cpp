@@ -1,10 +1,16 @@
 #include "uml/parsers/packageParser.h"
 #include "uml/parsers/packageableElementParser.h"
+#include "uml/parsers/namespaceParser.h"
 #include "uml/activity.h"
+
+using namespace UML;
+using namespace Parsers;
 
 void UML::Parsers::parsePackage(YAML::Node node, Package& pckg) {
 
-    UML::Parsers::parsePackageableElement(node, pckg);
+    parseNamespace(node, pckg);
+
+    parsePackageableElement(node, pckg);
 
     if (node["packagedElements"]) {
         if (node["packagedElements"].IsSequence()) {
@@ -19,7 +25,7 @@ void UML::Parsers::parsePackage(YAML::Node node, Package& pckg) {
 
                     } else if (node["packagedElements"][i]["package"]) {
                         Package* package = new Package;
-                        parsePackage(node["packagedElements"][i]["package"], *package);
+                        UML::Parsers::parsePackage(node["packagedElements"][i]["package"], *package);
                         package->setOwningPackage(&pckg);
                     }
                 } else {

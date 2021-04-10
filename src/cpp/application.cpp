@@ -1,5 +1,6 @@
 #include "application.h"
 #include "uml/element.h"
+#include "iostream"
 
 using namespace UML;
 

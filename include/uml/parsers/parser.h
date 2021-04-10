@@ -1,7 +1,6 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include "packageParser.h"
 #include "yaml-cpp/yaml.h"
 #include "uml/element.h"
 

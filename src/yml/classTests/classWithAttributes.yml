@@ -1,0 +1,8 @@
+---
+  class:
+    attributes:
+      - property:
+          name: test
+      - property:
+          name: other_test
+...

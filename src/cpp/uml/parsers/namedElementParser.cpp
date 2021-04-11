@@ -4,9 +4,9 @@
 using namespace UML;
 using namespace Parsers;
 
-void UML::Parsers::parseNamedElement(YAML::Node node, NamedElement& el) {
+void UML::Parsers::parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) {
 
-    parseElement(node, el);
+    parseElement(node, el, data);
 
     if (node["name"]) {
         if (node["name"].IsScalar()) {

@@ -3,10 +3,11 @@
 
 #include "yaml-cpp/yaml.h"
 #include "uml/packageableElement.h"
+#include "uml/parsers/parserMetaData.h"
 
 namespace UML {
     namespace Parsers {
-        void parsePackageableElement(YAML::Node node, PackageableElement& el);
+        void parsePackageableElement(YAML::Node node, PackageableElement& el, ParserMetaData& data);
     }
 }
 

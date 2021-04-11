@@ -4,8 +4,8 @@
 using namespace UML;
 using namespace Parsers;
 
-void UML::Parsers::parseClass(YAML::Node node, Class& clazz) {
-    parseClassifier(node, clazz);
+void UML::Parsers::parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
+    parseClassifier(node, clazz, data);
 
     if (node["operations"]) {
         // TODO

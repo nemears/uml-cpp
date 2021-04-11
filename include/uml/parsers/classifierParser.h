@@ -3,10 +3,11 @@
 
 #include "yaml-cpp/yaml.h"
 #include "uml/classifier.h"
+#include "uml/parsers/parserMetaData.h"
 
 namespace UML {
     namespace Parsers {
-        void parseClassifier(YAML::Node node, Classifier& clazz);
+        void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
     }
 }
 

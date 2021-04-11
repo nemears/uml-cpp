@@ -6,11 +6,11 @@
 using namespace UML;
 using namespace Parsers;
 
-void UML::Parsers::parsePackage(YAML::Node node, Package& pckg) {
+void UML::Parsers::parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
 
-    parseNamespace(node, pckg);
+    parseNamespace(node, pckg, data);
 
-    parsePackageableElement(node, pckg);
+    parsePackageableElement(node, pckg, data);
 
     if (node["packagedElements"]) {
         if (node["packagedElements"].IsSequence()) {
@@ -25,7 +25,7 @@ void UML::Parsers::parsePackage(YAML::Node node, Package& pckg) {
 
                     } else if (node["packagedElements"][i]["package"]) {
                         Package* package = new Package;
-                        UML::Parsers::parsePackage(node["packagedElements"][i]["package"], *package);
+                        UML::Parsers::parsePackage(node["packagedElements"][i]["package"], *package, data);
                         package->setOwningPackage(&pckg);
                     }
                 } else {

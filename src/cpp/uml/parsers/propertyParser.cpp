@@ -3,8 +3,8 @@
 using namespace UML;
 using namespace Parsers;
 
-void UML::Parsers::parseProperty(YAML::Node node, Property& prop) {
-    parseTypedElement(node, prop);
+void UML::Parsers::parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
+    parseTypedElement(node, prop, data);
 
     if (node["defaultValue"]) {
         // TODO

@@ -5,8 +5,8 @@
 using namespace UML;
 using namespace Parsers;
 
-void UML::Parsers::parseClassifier(YAML::Node node, Classifier& clazz) {
-    parseNamespace(node, clazz);
+void UML::Parsers::parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
+    parseNamespace(node, clazz, data);
 
     if (node["attributes"]) {
         if (node["attributes"].IsSequence()) {
@@ -14,7 +14,7 @@ void UML::Parsers::parseClassifier(YAML::Node node, Classifier& clazz) {
                 if (node["attributes"][i]["property"]) {
                     if (node["attributes"][i]["property"].IsMap()) {
                         Property* prop = new Property;
-                        parseProperty(node["attributes"][i]["property"], *prop);
+                        parseProperty(node["attributes"][i]["property"], *prop, data);
                         clazz.getAttributes().add(*prop);
                     } else {
                         // error

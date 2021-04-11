@@ -3,7 +3,7 @@
 using namespace UML;
 using namespace Parsers;
 
-void UML::Parsers::parseElement(YAML::Node node, Element& el) {
+void UML::Parsers::parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
     if (node["id"]) {
         if (node["id"].IsScalar()) {
             string id = node["id"].as<string>();

@@ -8,13 +8,15 @@ using namespace Parsers;
 UML::Element* UML::Parsers::parse(YAML::Node node) {
     if (node["class"]) {
         Class* clazz = new Class;
-        parseClass(node["class"], *clazz);
+        ParserMetaData data;
+        parseClass(node["class"], *clazz, data);
         return clazz;
     }
 
     if (node["package"]) {
         Package* pckg = new Package;
-        UML::Parsers::parsePackage(node["package"], *pckg);
+        ParserMetaData data;
+        UML::Parsers::parsePackage(node["package"], *pckg, data);
         return pckg;
     }
 

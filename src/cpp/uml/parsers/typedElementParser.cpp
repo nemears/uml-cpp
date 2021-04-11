@@ -4,9 +4,9 @@
 using namespace UML;
 using namespace Parsers;
 
-void UML::Parsers::parseTypedElement(YAML::Node node, TypedElement& el) {
+void UML::Parsers::parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data) {
 
-    parseNamedElement(node, el);
+    parseNamedElement(node, el, data);
 
     if (node["type"]) {
         // TODO

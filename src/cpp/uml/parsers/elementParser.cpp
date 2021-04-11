@@ -17,6 +17,8 @@ void UML::Parsers::parseElement(YAML::Node node, Element& el, ParserMetaData& da
         }
     }
 
+    data.elements.add(el);
+
     // TODO change tests
     if (node["ownedElements"]) {
         // TODO validate

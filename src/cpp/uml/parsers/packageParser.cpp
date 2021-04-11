@@ -1,7 +1,9 @@
 #include "uml/parsers/packageParser.h"
 #include "uml/parsers/packageableElementParser.h"
 #include "uml/parsers/namespaceParser.h"
+#include "uml/parsers/classParser.h"
 #include "uml/activity.h"
+#include "uml/class.h"
 
 using namespace UML;
 using namespace Parsers;
@@ -20,12 +22,13 @@ void UML::Parsers::parsePackage(YAML::Node node, Package& pckg, ParserMetaData& 
                         Activity* activity = new Activity;
                         // TODO parse activity
                         activity->setOwningPackage(&pckg);
-
-                    // TODO all the others
-
+                    } else if (node["packagedElements"][i]["class"]) {
+                        Class* clazz = new Class;
+                        parseClass(node["packagedElements"][i]["class"], *clazz, data);
+                        pckg.getPackagedElements().add(*clazz);
                     } else if (node["packagedElements"][i]["package"]) {
                         Package* package = new Package;
-                        UML::Parsers::parsePackage(node["packagedElements"][i]["package"], *package, data);
+                        parsePackage(node["packagedElements"][i]["package"], *package, data);
                         package->setOwningPackage(&pckg);
                     }
                 } else {

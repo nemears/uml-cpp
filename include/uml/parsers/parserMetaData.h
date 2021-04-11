@@ -6,7 +6,8 @@
 namespace UML{
     namespace Parsers {
         class ParserMetaData {
-            Sequence<> elements;
+            public:
+                Sequence<> elements;
         };
     }
 }

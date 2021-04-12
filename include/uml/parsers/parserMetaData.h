@@ -2,20 +2,19 @@
 #define PARSER_METADATA_H
 
 #include "uml/sequence.h"
-#include <list>
 #include <map>
 
 namespace UML{
     namespace Parsers {
 
-        class PostProcessFunctor {
-            private:
+        class AbstractPostProcessFunctor {
+            protected:
                 Element* m_el;
             public:
-                PostProcessFunctor(Element* el) {
+                AbstractPostProcessFunctor(Element* el) {
                     m_el = el;
                 };
-                virtual void operator()(Element& el) const;
+                virtual void operator()(Element& el) const = 0;
         };
 
         class ParserMetaData {
@@ -32,7 +31,7 @@ namespace UML{
             public:
                 ParserMetaData();
                 Sequence<> elements;
-                map<boost::uuids::uuid, vector<PostProcessFunctor>> postProcessFlag;
+                map<boost::uuids::uuid, vector<AbstractPostProcessFunctor*>*> postProcessFlag;
         };
     }
 }

@@ -5,12 +5,15 @@ using namespace UML;
 using namespace Parsers;
 
 void UML::Parsers::ParserMetaData::ElementsFunctor::operator()(Element& el) const {
-    if (postProcessFlag.count(el.getID())) {
-        for (auto const& func: postProcessFlag[el.getID()]) {
-            func(el);
+    if (data->postProcessFlag.count(el.getID())) {
+        for (auto const& func: *(data->postProcessFlag[el.getID()])) {
+            (*func)(el);
+        }
+        for (auto const& func: *(data->postProcessFlag[el.getID()])) {
+            delete func;
         }
     }
-    postProcessFlag.erase(el.getID());
+    data->postProcessFlag.erase(el.getID());
 }
 
 UML::Parsers::ParserMetaData::ParserMetaData() {

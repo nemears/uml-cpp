@@ -7,6 +7,13 @@
 
 namespace UML {
     namespace Parsers {
+
+        class SetTypeFunctor : public AbstractPostProcessFunctor {
+            public:
+                SetTypeFunctor(Element* el) : AbstractPostProcessFunctor(el) {};
+                void operator()(Element& el) const override;
+        };
+
         void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data);
     }
 }

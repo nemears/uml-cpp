@@ -4,6 +4,10 @@
 using namespace UML;
 using namespace Parsers;
 
+void UML::Parsers::SetTypeFunctor::operator()(Element& el) const {
+    dynamic_cast<TypedElement*>(m_el)->setType(&dynamic_cast<Type&>(el));
+}
+
 void UML::Parsers::parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data) {
 
     parseNamedElement(node, el, data);
@@ -17,10 +21,13 @@ void UML::Parsers::parseTypedElement(YAML::Node node, TypedElement& el, ParserMe
                     if (data.elements.get(typeID)->isSubClassOf(ElementType::TYPE)) {
                         el.setType(dynamic_cast<Type*>(data.elements.get(typeID)));
                     } else {
-                        // error
+                        // ERROR
                     }
                 } else {
-                    // TODO add flag to set later in metadata
+                    if (!data.postProcessFlag.count(typeID)) {
+                        data.postProcessFlag[typeID] = new vector<AbstractPostProcessFunctor*>;
+                    }
+                    data.postProcessFlag[typeID]->push_back(new SetTypeFunctor(&el));
                 }
             } else {
                 // error

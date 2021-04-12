@@ -28,3 +28,17 @@ TEST_F(PropertyParserTest, forwardTypeTest) {
     Property* prop = clazz2->getAttributes().front();
     ASSERT_TRUE(prop->getType() == clazz1);
 }
+
+TEST_F(PropertyParserTest, backwardsTypeTest) {
+    Element* el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/backwardTypeTest.yml"));
+    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
+    Package* pckg = dynamic_cast<Package*>(el);
+    ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
+    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    ASSERT_TRUE(pckg->getPackagedElements().back()->getElementType() == ElementType::CLASS);
+    Class* clazz1 = dynamic_cast<Class*>(pckg->getPackagedElements().front());
+    Class* clazz2 = dynamic_cast<Class*>(pckg->getPackagedElements().back());
+    ASSERT_TRUE(clazz1->getAttributes().size() == 1);
+    Property* prop = clazz1->getAttributes().front();
+    ASSERT_TRUE(prop->getType() == clazz2);
+}

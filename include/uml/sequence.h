@@ -4,6 +4,10 @@
 
 namespace UML {
 
+    namespace Parsers {
+        class ParserMetaData;
+    }
+
     class AbstractSequenceFunctor {
         protected:
             Element* m_el;
@@ -38,6 +42,7 @@ namespace UML {
      * Sequence Class, Holds collections of uml elements
      **/
     template <class T> class Sequence {
+        friend class Parsers::ParserMetaData;
         friend class Element;
         friend class NamedElement;
         friend class Property;
@@ -115,6 +120,10 @@ namespace UML {
             ~Sequence<T>() {
                 for (auto const& addProc: addProcedures) {
                     delete addProc;
+                }
+
+                for (auto const& addCheck: addChecks) {
+                    delete addCheck;
                 }
 
                 for (auto const& remProc: removeProcedures) {

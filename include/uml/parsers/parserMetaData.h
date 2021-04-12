@@ -33,6 +33,8 @@ namespace UML{
                 Sequence<> elements;
                 map<boost::uuids::uuid, vector<AbstractPostProcessFunctor*>*> postProcessFlag;
         };
+
+        void applyFunctor(ParserMetaData& data, boost::uuids::uuid relEl, AbstractPostProcessFunctor* functor);
     }
 }
 

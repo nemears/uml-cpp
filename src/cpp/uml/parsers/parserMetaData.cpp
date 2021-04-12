@@ -19,3 +19,14 @@ void UML::Parsers::ParserMetaData::ElementsFunctor::operator()(Element& el) cons
 UML::Parsers::ParserMetaData::ParserMetaData() {
     elements.addProcedures.push_back(new ElementsFunctor(0, this));
 }
+
+void UML::Parsers::applyFunctor(ParserMetaData& data, boost::uuids::uuid relEl, AbstractPostProcessFunctor* functor) {
+    if (data.elements.count(relEl)) {
+        (*functor)(*data.elements.get(relEl));
+    } else {
+        if (!data.postProcessFlag.count(relEl)) {
+            data.postProcessFlag[relEl] = new vector<AbstractPostProcessFunctor*>;
+        }
+        data.postProcessFlag[relEl]->push_back(functor);
+    }
+}

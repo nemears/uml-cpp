@@ -17,18 +17,7 @@ void UML::Parsers::parseTypedElement(YAML::Node node, TypedElement& el, ParserMe
             string typeIDstring = node["type"].as<string>();
             if (isValidUUID4(typeIDstring)) {
                 boost::uuids::uuid typeID = boost::lexical_cast<boost::uuids::uuid>(typeIDstring);
-                if (data.elements.count(typeID)) {
-                    if (data.elements.get(typeID)->isSubClassOf(ElementType::TYPE)) {
-                        el.setType(dynamic_cast<Type*>(data.elements.get(typeID)));
-                    } else {
-                        // ERROR
-                    }
-                } else {
-                    if (!data.postProcessFlag.count(typeID)) {
-                        data.postProcessFlag[typeID] = new vector<AbstractPostProcessFunctor*>;
-                    }
-                    data.postProcessFlag[typeID]->push_back(new SetTypeFunctor(&el));
-                }
+                applyFunctor(data, typeID, new SetTypeFunctor(&el));
             } else {
                 // error
             }

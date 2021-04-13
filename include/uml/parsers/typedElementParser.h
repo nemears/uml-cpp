@@ -10,7 +10,7 @@ namespace UML {
 
         class SetTypeFunctor : public AbstractPostProcessFunctor {
             public:
-                SetTypeFunctor(Element* el) : AbstractPostProcessFunctor(el) {};
+                SetTypeFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
                 void operator()(Element& el) const override;
         };
 

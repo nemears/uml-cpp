@@ -1,6 +1,7 @@
 #ifndef PARSER_METADATA_H
 #define PARSER_METADATA_H
 
+#include "yaml-cpp/yaml.h"
 #include "uml/sequence.h"
 #include <map>
 
@@ -10,9 +11,11 @@ namespace UML{
         class AbstractPostProcessFunctor {
             protected:
                 Element* m_el;
+                YAML::Node m_node;
             public:
-                AbstractPostProcessFunctor(Element* el) {
+                AbstractPostProcessFunctor(Element* el, YAML::Node node) {
                     m_el = el;
+                    m_node = node;
                 };
                 virtual void operator()(Element& el) const = 0;
         };

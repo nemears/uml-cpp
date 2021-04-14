@@ -7,7 +7,5 @@ using namespace Parsers;
 void UML::Parsers::parseNamespace(YAML::Node node, Namespace& nmspc, ParserMetaData& data) {
     parseNamedElement(node, nmspc, data);
 
-    if(node["members"]) {
-        // TODO validate
-    }
+    // probably don't need this function
 }

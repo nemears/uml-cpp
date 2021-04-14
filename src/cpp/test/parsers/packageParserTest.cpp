@@ -79,7 +79,3 @@ TEST_F(PackageParserTest, ElementFeaturesTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     ASSERT_TRUE(el->getID() == boost::lexical_cast<boost::uuids::uuid>("54e8f139-9581-48a4-8021-32ff00606c93"));
 }
-
-TEST_F(PackageParserTest, ownedElementCheckTest) {
-    ASSERT_NO_THROW(Element* el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/packageWithOwner.yml")));
-}

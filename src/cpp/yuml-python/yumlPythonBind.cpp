@@ -306,9 +306,9 @@ PYBIND11_MODULE(yuml_python, m) {
 
     // Opaque Behavior
     py::class_<OpaqueBehavior, Behavior, ClassifierPy<OpaqueBehavior>>(m, "OpaqueBehavior")
-        .def(py::init<>())
-        .def("setBody", &OpaqueBehavior::setSingletonBody)
-        .def("getBody", &OpaqueBehavior::getSingletonBody);
+        .def(py::init<>());
+        // .def("setBody", &OpaqueBehavior::setSingletonBody)
+        // .def("getBody", &OpaqueBehavior::getSingletonBody);
 
     // Activity
     py::class_<Activity, Behavior, ClassifierPy<Activity>>(m, "Activity")

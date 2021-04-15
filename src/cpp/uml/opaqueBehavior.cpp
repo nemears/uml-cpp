@@ -2,20 +2,20 @@
 
 using namespace UML;
 
+OpaqueBehavior::OpaqueBehavior() {
+    m_bodies = new Sequence<LiteralString>();
+}
+
+OpaqueBehavior::~OpaqueBehavior() {
+    delete m_bodies;
+}
+
+Sequence<LiteralString>& OpaqueBehavior::getBodies() {
+    return *m_bodies;
+}
+
 ElementType OpaqueBehavior::getElementType() {
     return ElementType::OPAQUE_BEHAVIOR;
-}
-
-string OpaqueBehavior::getSingletonBody() {
-    return singletonBody;
-}
-
-void OpaqueBehavior::setSingletonBody(const string& sb) {
-    bodies.push_front(sb);
-    if (bodies.size() == 2) {
-        bodies.pop_back();
-    }
-    singletonBody = sb;
 }
 
 bool OpaqueBehavior::isSubClassOf(ElementType eType) {

@@ -15,9 +15,11 @@ TEST_F(ClassTest, BasicOperationTest) {
     Class c;
     Operation o;
     OpaqueBehavior oB;
+    LiteralString val;
     Parameter p;
     ASSERT_NO_THROW(oB.getParameters().add(p));
-    ASSERT_NO_THROW(oB.bodies.push_back("return true"));
+    ASSERT_NO_THROW(val.setValue("return true"));
+    ASSERT_NO_THROW(oB.getBodies().add(val));
     ASSERT_NO_THROW(o.getMethods().add(oB));
     ASSERT_NO_THROW(c.getOperations().add(o));
 }

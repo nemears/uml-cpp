@@ -1,20 +1,18 @@
 #ifndef OPAQUEBEHAVIORH
 #define OPAQUEBEHAVIORH
 
-#include <list>
-#include <string>
+#include "literalString.h"
 #include "behavior.h"
 
 namespace UML {
     class OpaqueBehavior : public Behavior {
         protected:
-            
-            string singletonBody;
+            Sequence<LiteralString>* m_bodies;
         public:
-            list<string> bodies;
+            OpaqueBehavior();
+            ~OpaqueBehavior();
+            Sequence<LiteralString>& getBodies();
             ElementType getElementType() override;
-            string getSingletonBody();
-            void setSingletonBody(const string& sb);
             bool isSubClassOf(ElementType eType) override;
     };
 }

@@ -15,7 +15,10 @@ namespace UML {
                 PrimitiveType* stringPrimitive = new PrimitiveType;
                 stringPrimitive->setPrimitiveType(PrimitiveType::Primitive::STRING);
                 setType(stringPrimitive);
-            }
+            };
+            ~LiteralString() {
+                
+            };
             ElementType getElementType() override;
             bool isSubClassOf(ElementType eType) override;
     };

@@ -2,6 +2,7 @@
 #include "uml/parsers/packageParser.h"
 #include "uml/parsers/classParser.h"
 #include "uml/parsers/propertyParser.h"
+#include "uml/parsers/opaqueBehaviorParser.h"
 
 using namespace UML;
 using namespace Parsers;
@@ -12,6 +13,13 @@ UML::Element* UML::Parsers::parse(YAML::Node node) {
         ParserMetaData data;
         parseClass(node["class"], *clazz, data);
         return clazz;
+    }
+
+    if (node["opaqueBehavior"]) {
+        OpaqueBehavior* bhv = new OpaqueBehavior;
+        ParserMetaData data;
+        parseOpaqueBehavior(node["opaqueBehavior"], *bhv, data);
+        return bhv;
     }
 
     if (node["package"]) {

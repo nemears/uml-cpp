@@ -1,6 +1,6 @@
 #include "uml/opaqueBehavior.h"
 
-using namespace UML;
+namespace UML {
 
 OpaqueBehavior::OpaqueBehavior() {
     m_bodies = new Sequence<LiteralString>();
@@ -26,4 +26,5 @@ bool OpaqueBehavior::isSubClassOf(ElementType eType) {
     }
 
     return ret;
+}
 }

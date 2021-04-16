@@ -10,14 +10,14 @@ void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& d
 
     if (node["bodies"]) {
         if (node["bodies"].IsSequence()) {
-            for (size_t i=0; i<node["parameters"].size(); i++) {
+            for (size_t i=0; i<node["bodies"].size(); i++) {
                 if (node["bodies"][i].IsMap()) {
                     if (node["bodies"][i]["literalString"]) {
                         // TODO literal string parsers
                     } else {
                         // error
                     }
-                } else if (node["bodies"].IsScalar()) {
+                } else if (node["bodies"][i].IsScalar()) {
                     string body = node["bodies"][i].as<string>();
                     if (isValidUUID4(body)) {
                         // TODO

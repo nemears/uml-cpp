@@ -16,7 +16,8 @@ class PropertyParserTest : public ::testing::Test {
 };
 
 TEST_F(PropertyParserTest, forwardTypeTest) {
-    Element* el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/forwardType.yml"));
+    Element* el;
+    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/forwardType.yml")));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -30,7 +31,8 @@ TEST_F(PropertyParserTest, forwardTypeTest) {
 }
 
 TEST_F(PropertyParserTest, backwardsTypeTest) {
-    Element* el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/backwardTypeTest.yml"));
+    Element* el;
+    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/backwardTypeTest.yml")));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);

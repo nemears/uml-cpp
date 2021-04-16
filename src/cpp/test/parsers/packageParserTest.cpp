@@ -15,7 +15,8 @@ class PackageParserTest : public ::testing::Test {
 };
 
 TEST_F(PackageParserTest, parsePackageWithActivityTest) {
-    Element* el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/packageWithActivity.yml"));
+    Element* el;
+    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/packageWithActivity.yml")));
     ASSERT_TRUE(el);
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
@@ -32,7 +33,8 @@ TEST_F(PackageParserTest, parsePackageWithActivityTest) {
 }
 
 TEST_F(PackageParserTest, parse3PackagesTest) {
-    Element* el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/3packages.yml"));
+    Element* el;
+    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/3packages.yml")));
     ASSERT_TRUE(el);
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg1 = dynamic_cast<Package*>(el);
@@ -68,14 +70,16 @@ TEST_F(PackageParserTest, parse3PackagesTest) {
 }
 
 TEST_F(PackageParserTest, NamedElementFeaturesTest) {
-    Element* el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/packageWithName.yml"));
+    Element* el;
+    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/packageWithName.yml")));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getName().compare("test") == 0);
 }
 
 TEST_F(PackageParserTest, ElementFeaturesTest) {
-    Element* el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/packagewID.yml"));
+    Element* el;
+    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/packagewID.yml")));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     ASSERT_TRUE(el->getID() == boost::lexical_cast<boost::uuids::uuid>("54e8f139-9581-48a4-8021-32ff00606c93"));
 }

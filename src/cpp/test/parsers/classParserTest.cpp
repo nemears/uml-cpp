@@ -14,7 +14,8 @@ class ClassParserTest : public ::testing::Test {
 };
 
 TEST_F(ClassParserTest, parseID_andName) {
-    Element* el = Parsers::parse(YAML::LoadFile(ymlPath + "classTests/class_w_id_and_name.yml"));
+    Element* el;
+    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "classTests/class_w_id_and_name.yml")));
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
     ASSERT_TRUE(clazz->getID() == boost::lexical_cast<boost::uuids::uuid>("54e8f139-9581-48a4-8021-32ff00606c93"));
@@ -22,7 +23,8 @@ TEST_F(ClassParserTest, parseID_andName) {
 }
 
 TEST_F(ClassParserTest, parseBasicProperty) {
-    Element* el = Parsers::parse(YAML::LoadFile(ymlPath + "classTests/classWithAttributes.yml"));
+    Element* el;
+    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "classTests/classWithAttributes.yml")));
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
     ASSERT_TRUE(clazz->getAttributes().size() == 2);

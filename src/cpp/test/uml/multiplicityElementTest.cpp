@@ -49,4 +49,5 @@ TEST_F(MultiplicityElementTest, MultiplicityValueTest) {
     ASSERT_TRUE(p.getLower() == 0);
     ASSERT_TRUE(p.getUpperValue() == &up);
     ASSERT_TRUE(p.getUpper() == 10);
+    ASSERT_TRUE(p.multiplicitySpecified());
 }

@@ -197,6 +197,8 @@ void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& d
 
 void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
     parseTypedElement(node, prop, data);
+    // TODO structural feature parser?
+    parseMultiplicityElement(node, prop, data);
 
     if (node["defaultValue"]) {
         // TODO
@@ -205,6 +207,7 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
 
 void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data) {
     parseTypedElement(node, el, data);
+    parseMultiplicityElement(node, el, data);
 
     if (node["direction"]) {
         if (node["direction"].IsScalar()) {
@@ -287,8 +290,36 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
 }
 
 void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data) {
-    if (node["multiplicity"]) {
-        
+    if (node["lower"]) {
+        if (node["lower"].IsScalar()) {
+            LiteralInt* lower = new LiteralInt;
+            lower->setValue(node["lower"].as<int>());
+            el.setLowerValue(lower);
+        } else if (node["lower"].IsMap()) {
+            if (node["lower"]["literalInt"]) {
+                // TODO parse literal int
+            } else if (node["lower"]["expression"]) {
+                // TODO parse and evaluate expression
+            }
+        } else {
+            // error
+        }
+    }
+
+    if (node["upper"]) {
+        if (node["upper"].IsScalar()) {
+            LiteralInt* upper = new LiteralInt;
+            upper->setValue(node["upper"].as<int>());
+            el.setUpperValue(upper);
+        } else if (node["upper"].IsMap()) {
+            if (node["upper"]["literalInt"]) {
+                // TODO parse literal int
+            } else if (node["upper"]["expression"]) {
+                // TODO parse and evaluate expression
+            }
+        } else {
+            // error
+        }
     }
 }
 

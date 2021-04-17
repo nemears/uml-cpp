@@ -44,3 +44,20 @@ TEST_F(PropertyParserTest, backwardsTypeTest) {
     Property* prop = clazz1->getAttributes().front();
     ASSERT_TRUE(prop->getType() == clazz2);
 }
+
+TEST_F(PropertyParserTest, multiplicityTest) {
+    Element* el;
+    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/multiplicityTest.yml")));
+    ASSERT_TRUE(el);
+    ASSERT_TRUE(el->getElementType() == ElementType::PROPERTY);
+    Property* prop = dynamic_cast<Property*>(el);
+    ASSERT_TRUE(prop->multiplicitySpecified());
+    ASSERT_TRUE(prop->getLowerValue());
+    ASSERT_TRUE(prop->getLower() == 0);
+    ASSERT_TRUE(prop->getLowerValue()->getElementType() == ElementType::LITERAL_INT);
+    ASSERT_TRUE(prop->getLower() == dynamic_cast<LiteralInt*>(prop->getLowerValue())->getValue());
+    ASSERT_TRUE(prop->getUpperValue());
+    ASSERT_TRUE(prop->getUpper() == 1);
+    ASSERT_TRUE(prop->getUpperValue()->getElementType() == ElementType::LITERAL_INT);
+    ASSERT_TRUE(prop->getUpper() == dynamic_cast<LiteralInt*>(prop->getUpperValue())->getValue());
+}

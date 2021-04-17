@@ -20,6 +20,7 @@
 
 #include "uml/literalString.h"
 #include "uml/activity.h"
+#include "uml/literalInt.h"
 
 namespace UML {
     namespace Parsers {

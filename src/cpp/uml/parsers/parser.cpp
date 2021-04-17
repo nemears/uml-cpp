@@ -286,5 +286,11 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
     }
 }
 
+void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data) {
+    if (node["multiplicity"]) {
+        
+    }
+}
+
 }
 }

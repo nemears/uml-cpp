@@ -16,6 +16,8 @@
 #include "uml/class.h"
 #include "uml/opaqueBehavior.h"
 #include "uml/operation.h"
+#include "uml/multiplicityElement.h"
+
 #include "uml/literalString.h"
 #include "uml/activity.h"
 
@@ -46,6 +48,7 @@ namespace UML {
         void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data);
         void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& data);
         void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data);
+        void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data);
     }
 }
 

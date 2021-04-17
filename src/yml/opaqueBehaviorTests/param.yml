@@ -3,4 +3,5 @@
     parameters:
       - parameter:
           name: test
+          direction: IN
 ...

@@ -34,4 +34,5 @@ TEST_F(OpaqueBehaviorParserTest, parseParameter) {
     ASSERT_TRUE(bhv->getParameters().size() == 1);
     Parameter* param = bhv->getParameters().front();
     ASSERT_TRUE(param->getName().compare("test") == 0);
+    ASSERT_TRUE(param->getDirection() == ParameterDirectionKind::IN);
 }

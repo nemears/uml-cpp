@@ -10,7 +10,7 @@ namespace UML{
 
     class Classifier;
 
-    class Property: public StructuralFeature , public MultiplicityElement {
+    class Property: public StructuralFeature {
         protected:
             ValueSpecification * defaultValue;
             Classifier* m_classifier;

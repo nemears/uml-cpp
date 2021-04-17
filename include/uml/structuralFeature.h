@@ -2,9 +2,10 @@
 #define STRUCTURALFEATUREH
 
 #include "typedElement.h"
+#include "multiplicityElement.h"
 
 namespace UML {
-    class StructuralFeature : public TypedElement {
+    class StructuralFeature : public TypedElement, public MultiplicityElement {
         public:
             ElementType getElementType() override;
             class InvalidValueException: public exception {

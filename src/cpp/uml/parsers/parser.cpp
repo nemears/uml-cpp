@@ -49,7 +49,7 @@ void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
         }
     }
 
-    // apply post processing here
+    // apply post processing here via functor
     data.elements.add(el);
 }
 

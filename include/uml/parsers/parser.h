@@ -1,6 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include <exception>
 #include "yaml-cpp/yaml.h"
 #include "uml/parsers/parserMetaData.h"
 #include "uml/element.h"
@@ -29,6 +30,19 @@ namespace UML {
             public:
                 SetTypeFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
                 void operator()(Element& el) const override;
+        };
+
+        class UmlParserException : public exception {
+            private:
+            string m_msg;
+
+            public:
+                UmlParserException(string msg) : 
+                    m_msg(msg)
+                    {}
+                virtual const char* what() const throw() {
+                    return m_msg.c_str();
+                }
         };
 
         /**

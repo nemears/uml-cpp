@@ -42,10 +42,10 @@ void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
             if (isValidUUID4(id)) {
                 el.setID(boost::lexical_cast<boost::uuids::uuid>(id));
             } else {
-                // error
+                throw UmlParserException("Value for id is not a valid UUID4, line " + node["id"].Mark().line);
             }
         } else {
-            // error
+            throw UmlParserException("Improper YAML node type for id field, must be scalar, line " + node["id"].Mark().line);
         }
     }
 

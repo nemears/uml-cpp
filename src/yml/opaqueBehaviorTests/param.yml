@@ -1,0 +1,6 @@
+---
+  opaqueBehavior:
+    parameters:
+      - parameter:
+          name: test
+...

@@ -25,3 +25,13 @@ TEST_F(OpaqueBehaviorParserTest, parseMultipleSimpleBodies) {
     ASSERT_TRUE(bhv->getBodies().get(1)->getValue().compare("1") == 0);
     ASSERT_TRUE(bhv->getBodies().get(2)->getValue().compare("true") == 0);
 }
+
+TEST_F(OpaqueBehaviorParserTest, parseParameter) {
+    Element* el;
+    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "opaqueBehaviorTests/param.yml")));
+    ASSERT_TRUE(el->getElementType() == ElementType::OPAQUE_BEHAVIOR);
+    OpaqueBehavior* bhv = dynamic_cast<OpaqueBehavior*>(el);
+    ASSERT_TRUE(bhv->getParameters().size() == 1);
+    Parameter* param = bhv->getParameters().front();
+    ASSERT_TRUE(param->getName().compare("test") == 0);
+}

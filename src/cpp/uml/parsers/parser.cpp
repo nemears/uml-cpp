@@ -4,10 +4,9 @@
 #include "uml/parsers/propertyParser.h"
 #include "uml/parsers/opaqueBehaviorParser.h"
 
-using namespace UML;
-using namespace Parsers;
-
-UML::Element* UML::Parsers::parse(YAML::Node node) {
+namespace UML {
+namespace Parsers {
+Element* parse(YAML::Node node) {
     if (node["class"]) {
         Class* clazz = new Class;
         ParserMetaData data;
@@ -37,4 +36,6 @@ UML::Element* UML::Parsers::parse(YAML::Node node) {
     }
 
     return 0;
+}
+}
 }

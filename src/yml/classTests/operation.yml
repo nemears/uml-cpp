@@ -1,22 +1,21 @@
 ---
-  model :
-    children :
-      - class :
-          name : "test"
-          id : "190d1cb9-13dc-44e6-a064-126891ae0033"
-          operations :
-            - operation :
+  class :
+    name : "test"
+    id : "190d1cb9-13dc-44e6-a064-126891ae0033"
+    operations :
+      - operation :
+          name : isValid
+          id : "16c345b4-5ae2-41ca-a0e7-a9c386ac941d"
+          methods :
+            - opaqueBehavior :
+                id : "c0ab87cc-d00b-4afb-9558-538253b442b2"
                 name : isValid
-                id : "16c345b4-5ae2-41ca-a0e7-a9c386ac941d"
-                type : BOOL
-                methods :
-                  - opaqueBehavior :
-                      id : "c0ab87cc-d00b-4afb-9558-538253b442b2"
-                      name : isValid
-                      parameters :
-                        - parameter :
-                            name : "debug"
-                            type : BOOL
-                            id : "7d18ee42-82c6-4f52-8ec4-fab67a75ff35"
-                      body : "return true"
+                bodies : 
+                  - "return true"
+                parameters :
+                  - parameter :
+                      name : "debug"
+                 #     type : BOOL
+                      id : "7d18ee42-82c6-4f52-8ec4-fab67a75ff35"
+                      direction: IN
 ...

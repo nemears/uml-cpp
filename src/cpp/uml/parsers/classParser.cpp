@@ -1,13 +1,29 @@
 #include "uml/parsers/classParser.h"
 #include "uml/parsers/classifierParser.h"
+#include "uml/parsers/operationParser.h"
 
-using namespace UML;
-using namespace Parsers;
+namespace UML {
+namespace Parsers {
 
-void UML::Parsers::parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
+void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
     parseClassifier(node, clazz, data);
 
     if (node["operations"]) {
-        // TODO
+        if (node["operations"].IsSequence()) {
+            for (size_t i=0; i<node["operations"].size(); i++) {
+                if (node["operations"][i]["operation"]) {
+                    Operation * op = new Operation;
+                    parseOperation(node["operations"][i]["operation"], *op, data);
+                    clazz.getOperations().add(*op);
+                } else {
+                    // error
+                }
+            }
+        } else {
+            // error
+        }
     }
+}
+
+}
 }

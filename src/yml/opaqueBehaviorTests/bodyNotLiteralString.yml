@@ -1,0 +1,6 @@
+---
+  opaqueBehavior:
+    bodies:
+      - notA_LiteralString:
+          xd: LALA
+...

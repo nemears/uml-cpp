@@ -61,3 +61,14 @@ TEST_F(PropertyParserTest, multiplicityTest) {
     ASSERT_TRUE(prop->getUpperValue()->getElementType() == ElementType::LITERAL_INT);
     ASSERT_TRUE(prop->getUpper() == dynamic_cast<LiteralInt*>(prop->getUpperValue())->getValue());
 }
+
+TEST_F(PropertyParserTest, improperTypeTest) {
+    Element* el;
+    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/improperType.yml")), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/improperType2.yml")), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/improperType3.yml")), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/propertyNotMap.yml")), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/attributesNotSequence.yml")), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/invalidLower.yml")), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/invalidUpper.yml")), Parsers::UmlParserException);
+}

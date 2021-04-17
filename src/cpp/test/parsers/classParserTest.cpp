@@ -59,3 +59,9 @@ TEST_F(ClassParserTest, parseOperation) {
     ASSERT_TRUE(bhv->getBodies().front()->getValue().compare("return true") == 0);
     ASSERT_TRUE(bhv->getParameters().size() == 1);
 }
+
+TEST_F(ClassParserTest, properErrors) {
+    Element* el;
+    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "classTests/improperOperationIdentifier.yml")), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "classTests/operationsNotSequence.yml")), Parsers::UmlParserException);
+}

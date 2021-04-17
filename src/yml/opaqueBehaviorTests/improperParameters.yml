@@ -1,0 +1,5 @@
+---
+  opaqueBehavior:
+    parameters:
+      parameter:
+        name: lol?

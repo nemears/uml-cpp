@@ -1,0 +1,9 @@
+---
+  package:
+    id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+    packagedElements:
+      - class:
+          attributes:
+            - property:
+                type: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+...

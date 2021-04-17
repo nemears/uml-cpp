@@ -1,0 +1,6 @@
+---
+  package:
+    name:
+      not: a
+      correct: format
+...

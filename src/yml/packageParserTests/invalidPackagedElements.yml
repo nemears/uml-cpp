@@ -1,0 +1,6 @@
+---
+  package:
+    packagedElements:
+      class:
+        name: hahahaha
+...

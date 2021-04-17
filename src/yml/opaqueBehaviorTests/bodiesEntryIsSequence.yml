@@ -1,0 +1,8 @@
+---
+  opaqueBehavior:
+    bodies:
+    # this is a wierd one
+      -
+        - xd
+        - stinky
+...

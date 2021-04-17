@@ -36,3 +36,11 @@ TEST_F(OpaqueBehaviorParserTest, parseParameter) {
     ASSERT_TRUE(param->getName().compare("test") == 0);
     ASSERT_TRUE(param->getDirection() == ParameterDirectionKind::IN);
 }
+
+TEST_F(OpaqueBehaviorParserTest, properParameters) {
+    Element* el;
+    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "opaqueBehaviorTests/improperParameters.yml")), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "opaqueBehaviorTests/bodyNotLiteralString.yml")), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "opaqueBehaviorTests/bodiesEntryIsSequence.yml")), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "opaqueBehaviorTests/bodiesNotSequence.yml")), Parsers::UmlParserException);
+}

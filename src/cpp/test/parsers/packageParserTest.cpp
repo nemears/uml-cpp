@@ -89,3 +89,14 @@ TEST_F(PackageParserTest, ElementParserExceptionTest) {
     ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/improperID.yml")), Parsers::UmlParserException);
     ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/otherImproperID.yml")), Parsers::UmlParserException);
 }
+
+TEST_F(PackageParserTest, NamedElementParserExceptionTest) {
+    Element* el;
+    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/improperName.yml")), Parsers::UmlParserException);
+}
+
+TEST_F(PackageParserTest, properExceptions) {
+    Element* el;
+    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/improperPackagedElement.yml")), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/invalidPackagedElements.yml")), Parsers::UmlParserException);
+}

@@ -166,3 +166,11 @@ TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
   ASSERT_TRUE(c.getOwner() == &p2);
   ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }
+
+TEST_F(ElementTest, CopyTest) {
+  Element e1;
+  Element c1;
+  e1.getOwnedElements().add(c1);
+  Element e2 = e1;
+  ASSERT_TRUE(e2.getOwnedElements().size() == 1);
+}

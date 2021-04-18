@@ -45,6 +45,11 @@ Operation* Parameter::getOperation() {
 
 void Parameter::setOperation(Operation* operation) {
     m_operation = operation;
+    if (m_operation) {
+        if (!m_operation->getOwnedParameters().count(m_id)) {
+            m_operation->getOwnedParameters().add(*this);
+        }
+    }
 }
 
 ParameterDirectionKind Parameter::getDirection() {

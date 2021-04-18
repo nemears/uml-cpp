@@ -16,6 +16,11 @@ namespace UML {
                     AddMethodFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class AddParameterFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddParameterFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             BehavioralFeature();
             ~BehavioralFeature();

@@ -60,3 +60,56 @@ TEST_F(OperationTest, SetSpecificationTest) {
     ASSERT_TRUE(o.getOwnedElements().front() == &m);
     ASSERT_TRUE(m.getOwner() == &o);
 }
+
+TEST_F(OperationTest, AddParameterFunctorForAbstractOperationTest) {
+    Operation o;
+    Parameter p;
+    o.getOwnedParameters().add(p);
+    ASSERT_TRUE(o.getOwnedParameters().size() == 1);
+    ASSERT_TRUE(o.getOwnedParameters().front() == &p);
+    ASSERT_TRUE(p.getOperation() == &o);
+    ASSERT_TRUE(o.getMembers().size() == 1);
+    ASSERT_TRUE(o.getMembers().front() == &p);
+    ASSERT_TRUE(p.getNamespace() == &o);
+    ASSERT_TRUE(o.getOwnedElements().size() == 1);
+    ASSERT_TRUE(o.getOwnedElements().front() == &p);
+    ASSERT_TRUE(p.getOwner() == &o);
+}
+
+TEST_F(OperationTest, SetOperationAbstractOperationTest) {
+    Operation o;
+    Parameter p;
+    p.setOperation(&o);
+    ASSERT_TRUE(o.getOwnedParameters().size() == 1);
+    ASSERT_TRUE(o.getOwnedParameters().front() == &p);
+    ASSERT_TRUE(p.getOperation() == &o);
+    ASSERT_TRUE(o.getMembers().size() == 1);
+    ASSERT_TRUE(o.getMembers().front() == &p);
+    ASSERT_TRUE(p.getNamespace() == &o);
+    ASSERT_TRUE(o.getOwnedElements().size() == 1);
+    ASSERT_TRUE(o.getOwnedElements().front() == &p);
+    ASSERT_TRUE(p.getOwner() == &o);
+}
+
+TEST_F(OperationTest, AddParameterW_MethodTest) {
+    Operation o;
+    Parameter p;
+    OpaqueBehavior b;
+    o.getMethods().add(b);
+    o.getOwnedParameters().add(p);
+    ASSERT_TRUE(o.getOwnedParameters().size() == 1);
+    ASSERT_TRUE(o.getOwnedParameters().front() == &p);
+    ASSERT_TRUE(p.getOperation() == &o);
+    ASSERT_TRUE(o.getMembers().size() == 1);
+    ASSERT_TRUE(o.getMembers().front() == &p);
+    ASSERT_TRUE(p.getNamespace() == &o);
+    ASSERT_TRUE(o.getOwnedElements().size() == 1);
+    ASSERT_TRUE(o.getOwnedElements().front() == &p);
+    ASSERT_TRUE(p.getOwner() == &o);
+
+    // TODO thinking about exact implementatin
+    ASSERT_TRUE(b.getSpecification() == &o);
+    ASSERT_TRUE(o.getMethods().size() == 1);
+    ASSERT_TRUE(o.getMethods().front() == &b);
+    ASSERT_TRUE(b.getParameters().size() == 1);
+}

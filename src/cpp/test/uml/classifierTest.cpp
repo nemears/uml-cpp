@@ -22,6 +22,7 @@ class ClassifierTest : public ::testing::Test {
 
   ~ClassifierTest() override {
      delete classifierPtr;
+     delete propPtr;
   }
 
   void SetUp() override {
@@ -53,6 +54,9 @@ TEST_F(ClassifierTest, addAttributeFunctorTest) {
   ASSERT_TRUE(c.getAttributes().size() == 1);
   ASSERT_TRUE(c.getAttributes().front() == &p);
   ASSERT_TRUE(p.getClassifier() == &c);
+  ASSERT_TRUE(c.getFeatures().size() == 1);
+  ASSERT_TRUE(c.getFeatures().front() == &p);
+  ASSERT_TRUE(p.getFeaturingClassifier() == &c);
   ASSERT_TRUE(c.getMembers().count(p.getID()));
   ASSERT_TRUE(c.getOwnedElements().count(p.getID()));
   ASSERT_TRUE(p.getNamespace() == &c);
@@ -66,6 +70,13 @@ TEST_F(ClassifierTest, setClassifierTest) {
   ASSERT_TRUE(c.getAttributes().size() == 1);
   ASSERT_TRUE(c.getAttributes().front() == &p);
   ASSERT_TRUE(p.getClassifier() == &c);
+  ASSERT_TRUE(c.getFeatures().size() == 1);
+  ASSERT_TRUE(c.getFeatures().front() == &p);
+  ASSERT_TRUE(p.getFeaturingClassifier() == &c);
+  ASSERT_TRUE(c.getMembers().count(p.getID()));
+  ASSERT_TRUE(c.getOwnedElements().count(p.getID()));
+  ASSERT_TRUE(p.getNamespace() == &c);
+  ASSERT_TRUE(p.getOwner() == &c);
 }
 
 TEST_F(ClassifierTest, removeAttributeFunctorTest) {
@@ -74,9 +85,11 @@ TEST_F(ClassifierTest, removeAttributeFunctorTest) {
   c.getAttributes().add(p);
   ASSERT_NO_THROW(c.getAttributes().remove(p));
   ASSERT_TRUE(c.getAttributes().size() == 0);
+  ASSERT_TRUE(c.getFeatures().size() == 0);
   ASSERT_TRUE(c.getMembers().size() == 0);
   ASSERT_TRUE(c.getOwnedElements().size() == 0);
   ASSERT_TRUE(!p.getClassifier());
+  ASSERT_TRUE(!p.getFeaturingClassifier());
   ASSERT_TRUE(!p.getNamespace());
   ASSERT_TRUE(!p.getOwner());
 }

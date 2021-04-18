@@ -3,12 +3,22 @@
 
 using namespace UML;
 
+Feature::Feature() {
+    m_featuringClassifier = 0;
+    m_static = false;
+}
+
 Classifier* Feature::getFeaturingClassifier() {
     return m_featuringClassifier;
 }
 
 void Feature::setFeaturingClassifier(Classifier* clazz) {
     m_featuringClassifier = clazz;
+    if (m_featuringClassifier) {
+        if (!m_featuringClassifier->getFeatures().count(m_id)) {
+            m_featuringClassifier->getFeatures().add(*this);
+        }
+    }
 }
 
 bool Feature::isStatic() {
@@ -24,7 +34,7 @@ ElementType Feature::getElementType() {
 }
 
 bool Feature::isSubClassOf(ElementType eType) {
-    bool ret = Element::isSubClassOf(eType);
+    bool ret = NamedElement::isSubClassOf(eType);
 
     if (!ret) {
         ret = eType == ElementType::FEATURE;

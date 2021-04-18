@@ -1,23 +1,27 @@
 #ifndef FEATURE_H
 #define FEATURE_H
 
-#include "element.h"
+#include "namedElement.h"
 
 namespace UML {
 
     class Classifier;
 
-    class Feature : virtual public Element { // TODO redefineable element
+    class Feature : virtual public NamedElement { // TODO redefineable element
         protected:
             Classifier* m_featuringClassifier;
             bool m_static;
         public:
+            Feature();
             Classifier* getFeaturingClassifier();
             void setFeaturingClassifier(Classifier* clazz);
             bool isStatic();
             void setStatic(bool isStatic);
             ElementType getElementType() override;
             bool isSubClassOf(ElementType eType) override;
+            Feature& operator=(Feature&&) {
+                return *this;
+            };
     };
 }
 

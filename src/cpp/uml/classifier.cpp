@@ -13,12 +13,16 @@ Classifier::Classifier() {
     m_generalizations->addChecks.push_back(new CheckGeneralizationFunctor(this));
     m_generals = new Sequence<Classifier>;
     m_generals->addProcedures.push_back(new AddGeneralFunctor(this));
+    m_features = new Sequence<Feature>;
+    m_features->addProcedures.push_back(new AddFeatureFunctor(this));
+    m_features->removeProcedures.push_back(new RemoveFeatureFunctor(this));
 }
 
 Classifier::~Classifier() {
     delete m_attributes;
     delete m_generalizations;
     delete m_generals;
+    delete m_features;
 }
 
 void Classifier::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
@@ -34,8 +38,8 @@ void Classifier::AddAttributeFunctor::operator()(Element& el) const {
         dynamic_cast<Property&>(el).setClassifier(dynamic_cast<Classifier*>(m_el));
     }
 
-    if (dynamic_cast<Property&>(el).getNamespace() != m_el) {
-        dynamic_cast<Property&>(el).setNamespace(dynamic_cast<Classifier*>(m_el));
+    if (dynamic_cast<Property&>(el).getFeaturingClassifier() != m_el) {
+        dynamic_cast<Property&>(el).setFeaturingClassifier(dynamic_cast<Classifier*>(m_el));
     }
 }
 
@@ -44,9 +48,9 @@ void Classifier::RemoveAttributeFunctor::operator()(Element& el) const {
         dynamic_cast<Property&>(el).setClassifier(0);
     }
 
-    if (dynamic_cast<Property&>(el).getNamespace() == m_el) {
-        if (dynamic_cast<Property&>(el).getNamespace()->getMembers().count(el.getID())) {
-            dynamic_cast<Property&>(el).getNamespace()->getMembers().remove(dynamic_cast<Property&>(el));
+    if (dynamic_cast<Property&>(el).getFeaturingClassifier() == m_el) {
+        if (dynamic_cast<Property&>(el).getFeaturingClassifier()->getFeatures().count(el.getID())) {
+            dynamic_cast<Property&>(el).getFeaturingClassifier()->getFeatures().remove(dynamic_cast<Property&>(el));
         }
     }
 }
@@ -89,6 +93,28 @@ void Classifier::AddGeneralFunctor::operator()(Element& el) const {
         Generalization* newGen = new Generalization;
         newGen->setGeneral(&dynamic_cast<Classifier&>(el));
         newGen->setSpecific(dynamic_cast<Classifier*>(m_el));
+    }
+}
+
+void Classifier::AddFeatureFunctor::operator()(Element& el) const {
+    if (dynamic_cast<Feature&>(el).getFeaturingClassifier() != m_el) {
+        dynamic_cast<Feature&>(el).setFeaturingClassifier(dynamic_cast<Classifier*>(m_el));
+    }
+
+    if (dynamic_cast<Feature&>(el).getNamespace() != m_el) {
+        dynamic_cast<Feature&>(el).setNamespace(dynamic_cast<Classifier*>(m_el));
+    }
+}
+
+void Classifier::RemoveFeatureFunctor::operator()(Element& el) const {
+    if (dynamic_cast<Feature&>(el).getFeaturingClassifier() == m_el) {
+        dynamic_cast<Feature&>(el).setFeaturingClassifier(0);
+    }
+
+    if (dynamic_cast<Feature&>(el).getNamespace()) {
+        if (dynamic_cast<Feature&>(el).getNamespace()->getMembers().count(el.getID())) {
+            dynamic_cast<Feature&>(el).getNamespace()->getMembers().remove(dynamic_cast<Feature&>(el));
+        }
     }
 }
 

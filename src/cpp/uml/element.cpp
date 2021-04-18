@@ -125,6 +125,9 @@ string Element::getElementTypeString() {
         case ElementType::BEHAVIOR : {
             return "BEHAVIOR";
         }
+        case ElementType::BEHAVIORAL_FEATURE : {
+            return "BEHAVIOR_FEATURE";
+        }
         case ElementType::CALL_BEHAVIOR_ACTION : {
             return "CALL_BEHAVIOR_ACTION";
         }

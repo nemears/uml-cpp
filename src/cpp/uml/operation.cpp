@@ -69,7 +69,7 @@ ElementType Operation::getElementType(){
 }
 
 bool Operation::isSubClassOf(ElementType eType) {
-    bool ret = NamedElement::isSubClassOf(eType);
+    bool ret = BehavioralFeature::isSubClassOf(eType);
 
     if (!ret) {
         ret = eType == ElementType::OPERATION;

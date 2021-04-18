@@ -1,17 +1,14 @@
 #ifndef OPERATIONH
 #define OPERATIONH
 
-#include <list>
-#include "namedElement.h"
+#include "behavioralFeature.h"
 #include "behavior.h"
 
-
-using namespace std;
 namespace UML {
 
     class Class;
 
-    class Operation : public NamedElement {
+    class Operation : public BehavioralFeature {
         protected:
             Type* m_type;
             Sequence<Behavior>* m_methods;

@@ -20,6 +20,7 @@ namespace UML {
         ACTIVITY_EDGE,
         ACTIVITY_NODE,
         BEHAVIOR,
+        BEHAVIORAL_FEATURE,
         CALL_BEHAVIOR_ACTION,
         CLASS,
         CLASSIFIER,

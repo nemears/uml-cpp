@@ -29,6 +29,7 @@ namespace UML {
         DIRECTED_RELATIONSHIP,
         ELEMENT,
         EXPRESSION,
+        FEATURE,
         FINAL_NODE,
         FORK_NODE,
         GENERALIZATION,

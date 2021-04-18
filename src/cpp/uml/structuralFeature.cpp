@@ -14,6 +14,10 @@ bool StructuralFeature::isSubClassOf(ElementType eType) {
     }
 
     if (!ret) {
+        ret = Feature::isSubClassOf(eType);
+    }
+
+    if (!ret) {
         ret = eType == ElementType::STRUCTURAL_FEATURE;
     }
 

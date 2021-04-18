@@ -152,6 +152,9 @@ string Element::getElementTypeString() {
         case ElementType::EXPRESSION : {
             return "EXPRESSION";
         }
+        case ElementType::FEATURE : {
+            return "FEATURE";
+        }
         case ElementType::FINAL_NODE : {
             return "FINAL_NODE";
         }

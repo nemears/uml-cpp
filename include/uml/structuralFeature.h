@@ -3,9 +3,10 @@
 
 #include "typedElement.h"
 #include "multiplicityElement.h"
+#include "feature.h"
 
 namespace UML {
-    class StructuralFeature : public TypedElement, public MultiplicityElement {
+    class StructuralFeature : public TypedElement, public MultiplicityElement, public Feature {
         public:
             ElementType getElementType() override;
             class InvalidValueException: public exception {

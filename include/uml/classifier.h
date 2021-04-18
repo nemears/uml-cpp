@@ -1,11 +1,11 @@
 #ifndef CLASSIFIERH
 #define CLASSIFIERH
-#include <list>
+
 #include "type.h"
 #include "property.h"
 #include "sequence.h"
 #include "namespace.h"
-using namespace std;
+#include "feature.h"
 
 namespace UML{
 
@@ -16,6 +16,7 @@ namespace UML{
      **/
     class Classifier: public Namespace, public Type {
         protected:
+            Sequence<Feature>* m_features;
             Sequence<Property>* m_attributes;
             Sequence<Generalization>* m_generalizations;
             Sequence<Classifier>* m_generals;
@@ -51,8 +52,8 @@ namespace UML{
             ~Classifier();
             string getName() override;
             void setName(const string& name) override;
+            Sequence<Feature>& getFeatures();
             Sequence<Property>& getAttributes();
-
             /**
              * Generalizations to inherited classifier
              * the generalizations specific reference is this classifier

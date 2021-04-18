@@ -100,6 +100,10 @@ void Classifier::setName(const string& name) {
     Namespace::setName(name);
 }
 
+Sequence<Feature>& Classifier::getFeatures() {
+    return *m_features;
+}
+
 Sequence<Property>& Classifier::getAttributes() {
     return *m_attributes;
 }

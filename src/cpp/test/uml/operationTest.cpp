@@ -17,9 +17,6 @@ TEST_F(OperationTest, reIndexID_Test) {
     Class c;
     Operation o;
     o.setClass(&c);
-    c.getOperations().add(o);
-    c.getOwnedElements().add(o);
-    o.setOwner(&c);
     o.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
     ASSERT_TRUE(c.getOperations().get(o.getID()) != NULL);
     ASSERT_TRUE(c.getOwnedElements().get(o.getID()) != NULL);
@@ -29,9 +26,6 @@ TEST_F(OperationTest, reIndexNameTest) {
     Class c;
     Operation o;
     o.setClass(&c);
-    c.getOperations().add(o);
-    c.getOwnedElements().add(o);
-    o.setOwner(&c);
     o.setName("test");
     ASSERT_TRUE(c.getOperations().get("test") != NULL);
     ASSERT_TRUE(c.getOwnedElements().get("test") != NULL);
@@ -44,6 +38,12 @@ TEST_F(OperationTest, AddMethodFunctorTest) {
     ASSERT_TRUE(o.getMethods().size() == 1);
     ASSERT_TRUE(o.getMethods().front() == &m);
     ASSERT_TRUE(m.getSpecification() == & o);
+    ASSERT_TRUE(o.getMembers().size() == 1);
+    ASSERT_TRUE(o.getMembers().front() == &m);
+    ASSERT_TRUE(m.getNamespace() == &o);
+    ASSERT_TRUE(o.getOwnedElements().size() == 1);
+    ASSERT_TRUE(o.getOwnedElements().front() == &m);
+    ASSERT_TRUE(m.getOwner() == &o);
 }
 
 TEST_F(OperationTest, SetSpecificationTest) {
@@ -53,4 +53,10 @@ TEST_F(OperationTest, SetSpecificationTest) {
     ASSERT_TRUE(o.getMethods().size() == 1);
     ASSERT_TRUE(o.getMethods().front() == &m);
     ASSERT_TRUE(m.getSpecification() == & o);
+    ASSERT_TRUE(o.getMembers().size() == 1);
+    ASSERT_TRUE(o.getMembers().front() == &m);
+    ASSERT_TRUE(m.getNamespace() == &o);
+    ASSERT_TRUE(o.getOwnedElements().size() == 1);
+    ASSERT_TRUE(o.getOwnedElements().front() == &m);
+    ASSERT_TRUE(m.getOwner() == &o);
 }

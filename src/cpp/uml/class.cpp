@@ -18,8 +18,8 @@ void Class::RemoveOperationFunctor::operator()(Element& el) const {
         dynamic_cast<Operation&>(el).setClass(0);
     }
 
-    if (m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().remove(el);
+    if (dynamic_cast<Class*>(m_el)->getFeatures().count(el.getID())) {
+        dynamic_cast<Class*>(m_el)->getFeatures().remove(dynamic_cast<Operation&>(el));
     }
 }
 

@@ -32,6 +32,12 @@ TEST_F(ClassTest, addOperationFunctorTest) {
     ASSERT_TRUE(c.getOperations().size() == 1);
     ASSERT_TRUE(c.getOperations().front() == &o);
     ASSERT_TRUE(o.getClass() == &c);
+    ASSERT_TRUE(c.getFeatures().size() == 1);
+    ASSERT_TRUE(c.getFeatures().front() == &o);
+    ASSERT_TRUE(o.getFeaturingClassifier() == &c);
+    ASSERT_TRUE(c.getMembers().size() == 1);
+    ASSERT_TRUE(c.getMembers().front() == &o);
+    ASSERT_TRUE(o.getNamespace() == &c);
     ASSERT_TRUE(c.getOwnedElements().size() == 1);
     ASSERT_TRUE(c.getOwnedElements().front() == &o);
     ASSERT_TRUE(o.getOwner() == &c);
@@ -44,6 +50,15 @@ TEST_F(ClassTest, setClassTest) {
     ASSERT_TRUE(c.getOperations().size() == 1);
     ASSERT_TRUE(c.getOperations().front() == &o);
     ASSERT_TRUE(o.getClass() == &c);
+    ASSERT_TRUE(c.getFeatures().size() == 1);
+    ASSERT_TRUE(c.getFeatures().front() == &o);
+    ASSERT_TRUE(o.getFeaturingClassifier() == &c);
+    ASSERT_TRUE(c.getMembers().size() == 1);
+    ASSERT_TRUE(c.getMembers().front() == &o);
+    ASSERT_TRUE(o.getNamespace() == &c);
+    ASSERT_TRUE(c.getOwnedElements().size() == 1);
+    ASSERT_TRUE(c.getOwnedElements().front() == &o);
+    ASSERT_TRUE(o.getOwner() == &c);
 }
 
 TEST_F(ClassTest, overwriteClassTest) {
@@ -55,7 +70,19 @@ TEST_F(ClassTest, overwriteClassTest) {
   ASSERT_TRUE(p2.getOperations().size() == 1);
   ASSERT_TRUE(p2.getOperations().front() == &c);
   ASSERT_TRUE(c.getClass() == &p2);
+  ASSERT_TRUE(p2.getFeatures().size() == 1);
+  ASSERT_TRUE(p2.getFeatures().front() == &c);
+  ASSERT_TRUE(c.getFeaturingClassifier() == &p2);
+  ASSERT_TRUE(p2.getMembers().size() == 1);
+  ASSERT_TRUE(p2.getMembers().front() == &c);
+  ASSERT_TRUE(c.getNamespace() == &p2);
+  ASSERT_TRUE(p2.getOwnedElements().size() == 1);
+  ASSERT_TRUE(p2.getOwnedElements().front() == &c);
+  ASSERT_TRUE(c.getOwner() == &p2);
   ASSERT_TRUE(p1.getOperations().size() == 0);
+  ASSERT_TRUE(p1.getFeatures().size() == 0);
+  ASSERT_TRUE(p1.getMembers().size() == 0);
+  ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }
 
 TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
@@ -67,7 +94,19 @@ TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
   ASSERT_TRUE(p2.getOperations().size() == 1);
   ASSERT_TRUE(p2.getOperations().front() == &c);
   ASSERT_TRUE(c.getClass() == &p2);
+  ASSERT_TRUE(p2.getFeatures().size() == 1);
+  ASSERT_TRUE(p2.getFeatures().front() == &c);
+  ASSERT_TRUE(c.getFeaturingClassifier() == &p2);
+  ASSERT_TRUE(p2.getMembers().size() == 1);
+  ASSERT_TRUE(p2.getMembers().front() == &c);
+  ASSERT_TRUE(c.getNamespace() == &p2);
+  ASSERT_TRUE(p2.getOwnedElements().size() == 1);
+  ASSERT_TRUE(p2.getOwnedElements().front() == &c);
+  ASSERT_TRUE(c.getOwner() == &p2);
   ASSERT_TRUE(p1.getOperations().size() == 0);
+  ASSERT_TRUE(p1.getFeatures().size() == 0);
+  ASSERT_TRUE(p1.getMembers().size() == 0);
+  ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }
 
 TEST_F(ClassTest, removeOperationFunctorTest) {
@@ -76,7 +115,11 @@ TEST_F(ClassTest, removeOperationFunctorTest) {
   c.getOperations().add(o);
   ASSERT_NO_THROW(c.getOperations().remove(o));
   ASSERT_TRUE(c.getOperations().size() == 0);
+  ASSERT_TRUE(c.getFeatures().size() == 0);
+  ASSERT_TRUE(c.getMembers().size() == 0);
   ASSERT_TRUE(c.getOwnedElements().size() == 0);
   ASSERT_TRUE(!o.getClass());
+  ASSERT_TRUE(!o.getFeaturingClassifier());
+  ASSERT_TRUE(!o.getNamespace());
   ASSERT_TRUE(!o.getOwner());
 }

@@ -4,11 +4,13 @@
 #include "feature.h"
 #include "namespace.h"
 #include "behavior.h"
+#include "parameter.h"
 
 namespace UML {
     class BehavioralFeature : public Feature , public Namespace {
         protected:
             Sequence<Behavior>* m_methods;
+            Sequence<Parameter>* m_ownedParameters;
             class AddMethodFunctor : public AbstractSequenceFunctor {
                 public:
                     AddMethodFunctor(Element* me) : AbstractSequenceFunctor(me) {};
@@ -18,6 +20,8 @@ namespace UML {
             BehavioralFeature();
             ~BehavioralFeature();
             Sequence<Behavior>& getMethods();
+            Sequence<Parameter>& getOwnedParameters();
+            bool isAbstract();
             ElementType getElementType() override;
             bool isSubClassOf(ElementType eType) override;
     };

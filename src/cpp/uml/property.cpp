@@ -70,10 +70,6 @@ bool Property::isSubClassOf(ElementType eType) {
     bool ret = StructuralFeature::isSubClassOf(eType);
 
     if (!ret) {
-        ret = MultiplicityElement::isSubClassOf(eType);
-    }
-
-    if (!ret) {
         ret = eType == ElementType::PROPERTY;
     }
 

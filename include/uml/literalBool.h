@@ -1,10 +1,10 @@
 #ifndef LITERALBOOLH
 #define LITERALBOOLH
-#include "valueSpecification.h"
+#include "literalSpecification.h"
 #include "primitiveType.h"
 
 namespace UML {
-    class LiteralBool : public ValueSpecification {
+    class LiteralBool : public LiteralSpecification {
         protected:
             bool value;
         public:

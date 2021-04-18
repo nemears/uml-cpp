@@ -1,10 +1,10 @@
 #ifndef LITERALREALH
 #define LITERALREALH
-#include "valueSpecification.h"
+#include "literalSpecification.h"
 #include "primitiveType.h"
 
 namespace UML {
-    class LiteralReal : public ValueSpecification {
+    class LiteralReal : public LiteralSpecification {
         protected:
             double value;
         public:

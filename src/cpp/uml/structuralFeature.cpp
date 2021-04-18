@@ -8,6 +8,10 @@ ElementType StructuralFeature::getElementType() {
 
 bool StructuralFeature::isSubClassOf(ElementType eType) {
     bool ret = TypedElement::isSubClassOf(eType);
+    
+    if (!ret) {
+        ret = MultiplicityElement::isSubClassOf(eType);
+    }
 
     if (!ret) {
         ret = eType == ElementType::STRUCTURAL_FEATURE;

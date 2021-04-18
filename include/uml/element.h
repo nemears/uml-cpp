@@ -40,6 +40,7 @@ namespace UML {
         LITERAL_BOOL,
         LITERAL_INT,
         LITERAL_REAL,
+        LITERAL_SPECIFICATION,
         LITERAL_STRING,
         MERGE_NODE,
         MODEL,

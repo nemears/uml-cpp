@@ -185,6 +185,9 @@ string Element::getElementTypeString() {
         case ElementType::LITERAL_REAL : {
             return "LITERAL_REAL";
         }
+        case ElementType::LITERAL_SPECIFICATION : {
+            return "LITERAL_SPECIFICATION";
+        }
         case ElementType::LITERAL_STRING : {
             return "LITERAL_STRING";
         }

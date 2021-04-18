@@ -15,7 +15,7 @@ ElementType LiteralReal::getElementType() {
 }
 
 bool LiteralReal::isSubClassOf(ElementType eType) {
-    bool ret = ValueSpecification::isSubClassOf(eType);
+    bool ret = LiteralSpecification::isSubClassOf(eType);
 
     if (!ret) {
         ret = eType == ElementType::LITERAL_REAL;

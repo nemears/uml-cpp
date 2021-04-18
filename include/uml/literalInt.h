@@ -1,10 +1,10 @@
 #ifndef LITERALINTH
 #define LITERALINTH
-#include "valueSpecification.h"
+#include "literalSpecification.h"
 #include "primitiveType.h"
 
 namespace UML {
-    class LiteralInt : public ValueSpecification {
+    class LiteralInt : public LiteralSpecification {
         protected:
             int value;
         public:

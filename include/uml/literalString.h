@@ -1,11 +1,11 @@
 #ifndef LITERALSTRINGH
 #define LITERALSTRINGH
-#include "valueSpecification.h"
+#include "literalSpecification.h"
 #include "primitiveType.h"
 #include <string>
 
 namespace UML {
-    class LiteralString : public ValueSpecification {
+    class LiteralString : public LiteralSpecification {
         protected:
             string value;
         public:

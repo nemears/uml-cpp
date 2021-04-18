@@ -1,4 +1,5 @@
 #include "uml/behavior.h"
+#include "uml/behavioralFeature.h"
 #include "uml/operation.h"
 
 using namespace UML;
@@ -9,7 +10,7 @@ void Behavior::AddParameterFunctor::operator()(Element& el) const {
     }
 
     if (dynamic_cast<Behavior*>(m_el)->getSpecification()) {
-        dynamic_cast<Parameter&>(el).setOperation(dynamic_cast<Behavior*>(m_el)->getSpecification());
+        dynamic_cast<Parameter&>(el).setOperation(dynamic_cast<Operation*>(dynamic_cast<Behavior*>(m_el)->getSpecification()));
     }
 }
 
@@ -20,7 +21,7 @@ void Behavior::RemoveParameterFunctor::operator()(Element& el) const {
             bool usedElsewhere = false;
 
             // note slow performance for removing
-            for (auto const& method : dynamic_cast<Parameter&>(el).getOperation()->getMethods()) {
+            for (auto const& method : dynamic_cast<Operation*>(dynamic_cast<Parameter&>(el).getOperation())->getMethods()) {
                 if (method != m_el) {
                     if (method->getParameters().count(el.getID())) {
                         usedElsewhere = true;
@@ -54,11 +55,11 @@ Sequence<Parameter>& Behavior::getParameters() {
     return *m_parameters;
 }
 
-Operation* Behavior::getSpecification() {
+BehavioralFeature* Behavior::getSpecification() {
     return m_specification;
 }
 
-void Behavior::setSpecification(Operation* specification) {
+void Behavior::setSpecification(BehavioralFeature* specification) {
     m_specification = specification;
     if (!m_specification->getMethods().count(m_id)) {
         m_specification->getMethods().add(*this);

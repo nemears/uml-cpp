@@ -17,25 +17,9 @@ void Operation::reindexName(string oldName, string newName) {
     NamedElement::reindexName(oldName, newName);
 }
 
-void Operation::AddMethodFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<Behavior&>(el).getSpecification()) {
-        dynamic_cast<Behavior&>(el).setSpecification(dynamic_cast<Operation*>(m_el));
-    }
-}
-
 Operation::Operation() {
     m_type = 0;
-    m_methods = new Sequence<Behavior>;
-    m_methods->addProcedures.push_back(new AddMethodFunctor(this));
     m_class = 0;
-}
-
-Operation::~Operation() {
-    delete m_methods;
-}
-
-Sequence<Behavior>& Operation::getMethods() {
-    return *m_methods;
 }
 
 Type* Operation::getType() {

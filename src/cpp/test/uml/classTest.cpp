@@ -4,6 +4,7 @@
 #include "uml/opaqueBehavior.h"
 #include "uml/parameter.h"
 #include "uml/sequence.h"
+#include "uml/operation.h"
 
 using namespace UML;
 

@@ -20,6 +20,7 @@ namespace UML {
 
     class Property;
     class Slot;
+    class BehavioralFeature;
     class Operation;
     class ActivityNode;
     class ActivityEdge;
@@ -47,6 +48,7 @@ namespace UML {
         friend class NamedElement;
         friend class Property;
         friend class Slot;
+        friend class BehavioralFeature;
         friend class Operation;
         friend class ActivityNode;
         friend class ActivityEdge;

@@ -100,6 +100,7 @@ namespace UML {
         public:
             Element();
             ~Element();
+            Element(const Element& el);
             /**
              * Container for owned elements
              * opposite is getOwner

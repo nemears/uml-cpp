@@ -170,7 +170,12 @@ TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
 TEST_F(ElementTest, CopyTest) {
   Element e1;
   Element c1;
+  Element p1;
+  e1.setOwner(&p1);
   e1.getOwnedElements().add(c1);
   Element e2 = e1;
   ASSERT_TRUE(e2.getOwnedElements().size() == 1);
+  ASSERT_TRUE(e2.getOwnedElements().front() == &c1);
+  ASSERT_TRUE(e2.getID() == e1.getID());
+  ASSERT_TRUE(e2.getOwner() == &p1);
 }

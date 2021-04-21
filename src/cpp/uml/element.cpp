@@ -45,6 +45,19 @@ Element::~Element() {
     delete m_relationships;
 }
 
+Element::Element(const Element& el) {
+    m_id = el.m_id;
+    m_owner = el.m_owner;
+    m_ownedElements = new Sequence<>(*el.m_ownedElements);
+    m_relationships = new Sequence<Relationship>(*el.m_relationships);
+    m_ownedElements->addProcedures.clear();
+    m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
+    m_ownedElements->removeProcedures.clear();
+    m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
+    m_relationships->removeProcedures.clear();
+    m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
+}
+
 void Element::setID(string id) {
     if (UML::isValidUUID4(id)) {
         setID(boost::lexical_cast<boost::uuids::uuid>(id));

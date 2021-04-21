@@ -73,3 +73,15 @@ TEST_F(NamespaceTest, setNamespaceTest) {
     ASSERT_TRUE(n.getMembers().size() == 1);
     ASSERT_TRUE(n.getMembers().front() == &m);
 }
+
+TEST_F(NamespaceTest, copyNamespaceTest) {
+    Namespace n;
+    n.setName("test");
+    NamedElement m;
+    n.getMembers().add(m);
+    Namespace n2 = n;
+    ASSERT_TRUE(n2.getID() == n.getID());
+    ASSERT_TRUE(n2.getName().compare(n.getName()) == 0);
+    ASSERT_TRUE(n2.getMembers().size() == 1);
+    ASSERT_TRUE(n2.getMembers().front() == &m);
+}

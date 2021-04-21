@@ -100,6 +100,8 @@ namespace UML {
         public:
             Element();
             ~Element();
+            // Think about making the api non copyable, copying messes with the pointer vals
+            // Maybe move to copy function
             Element(const Element& el);
             /**
              * Container for owned elements

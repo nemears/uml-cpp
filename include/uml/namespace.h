@@ -25,6 +25,7 @@ namespace UML{
         public:
             Namespace();
             ~Namespace();
+            Namespace(const Namespace& nmspc);
             Sequence<NamedElement>& getMembers();
             ElementType getElementType() override;
             bool isSubClassOf(ElementType eType) override;

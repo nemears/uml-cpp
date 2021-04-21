@@ -29,6 +29,14 @@ Namespace::~Namespace() {
     delete m_members;
 }
 
+Namespace::Namespace(const Namespace& nmspc) : NamedElement(nmspc), Element(nmspc) {
+    m_members = new Sequence<NamedElement>(*nmspc.m_members);
+    m_members->addProcedures.clear();
+    m_members->addProcedures.push_back(new AddMemberFunctor(this));
+    m_members->removeProcedures.clear();
+    m_members->removeProcedures.push_back(new RemoveMemberFunctor(this));
+}
+
 Sequence<NamedElement>& Namespace::getMembers() {
     return *m_members;
 }

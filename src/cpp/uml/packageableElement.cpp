@@ -7,6 +7,10 @@ PackageableElement::PackageableElement() {
     m_owningPackage = 0;
 }
 
+PackageableElement::PackageableElement(const PackageableElement& el) {
+    m_owningPackage = el.m_owningPackage;
+}
+
 Package* PackageableElement::getOwningPackage() {
     return m_owningPackage;
 }

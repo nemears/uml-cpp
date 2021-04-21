@@ -16,6 +16,7 @@ namespace UML {
         public:
             Package();
             ~Package();
+            Package(const Package& pckg);
             Sequence<PackageableElement>& getPackagedElements();
             ElementType getElementType() override;
             bool isSubClassOf(ElementType eType) override;

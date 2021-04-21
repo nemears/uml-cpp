@@ -21,6 +21,12 @@ Package::~Package() {
     delete m_packagedElements;
 }
 
+Package::Package(const Package& pckg) : Namespace(pckg), PackageableElement(pckg), NamedElement(pckg), Element(pckg) {
+    m_packagedElements = new Sequence<PackageableElement>(*pckg.m_packagedElements);
+    m_packagedElements->addProcedures.clear();
+    m_packagedElements->addProcedures.push_back(new AddPackagedElementFunctor(this));
+}
+
 Sequence<PackageableElement>& Package::getPackagedElements() {
     return *m_packagedElements;
 }

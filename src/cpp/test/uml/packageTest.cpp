@@ -61,3 +61,18 @@ TEST_F(PackageTest, overwriteOwningPackageTest) {
 TEST_F(PackageTest, overwritePackagedElementsTest) {
     // TODO Error or overwrite when we do p2.getPackagedElements().add(e) instead of e.setowningPackage(&p2) in above test
 }
+
+TEST_F(PackageTest, copyPackageTest) {
+    Package s;
+    Package p;
+    s.getPackagedElements().add(p);
+    p.setName("test");
+    Package c;
+    p.getPackagedElements().add(c);
+    Package p2 = p;
+    ASSERT_TRUE(p2.getID() == p.getID());
+    ASSERT_TRUE(p2.getName().compare("test") == 0);
+    ASSERT_TRUE(p2.getPackagedElements().size() == 1);
+    ASSERT_TRUE(p2.getPackagedElements().front() == &c);
+    ASSERT_TRUE(p2.getOwningPackage() == &s);
+}

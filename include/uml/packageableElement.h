@@ -12,6 +12,7 @@ namespace UML {
             Package* m_owningPackage;
         public:
             PackageableElement();
+            PackageableElement(const PackageableElement& el);
             Package* getOwningPackage();
             void setOwningPackage(Package* package);
             ElementType getElementType() override;

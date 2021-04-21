@@ -2,6 +2,10 @@
 
 using namespace UML;
 
+TypedElement::TypedElement(const TypedElement& el) {
+    type = el.type;
+}
+
 Type* TypedElement::getType() {
     return type;
 }

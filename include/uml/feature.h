@@ -13,6 +13,7 @@ namespace UML {
             bool m_static;
         public:
             Feature();
+            Feature(const Feature& feature);
             Classifier* getFeaturingClassifier();
             void setFeaturingClassifier(Classifier* clazz);
             bool isStatic();

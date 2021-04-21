@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "uml/classifier.h"
+#include "uml/package.h"
 
 using namespace UML;
 
@@ -92,4 +93,28 @@ TEST_F(ClassifierTest, removeAttributeFunctorTest) {
   ASSERT_TRUE(!p.getFeaturingClassifier());
   ASSERT_TRUE(!p.getNamespace());
   ASSERT_TRUE(!p.getOwner());
+}
+
+TEST_F(ClassifierTest, copyClassifierTest) {
+  Classifier c;
+  c.setName("test");
+  Package d;
+  Property p;
+  Classifier b;
+  c.getAttributes().add(p);
+  c.getGenerals().add(b);
+  d.getPackagedElements().add(c);
+  d.getPackagedElements().add(b);
+  Classifier c2 = c;
+  ASSERT_TRUE(c2.getID() == c.getID());
+  ASSERT_TRUE(c2.getName().compare(c.getName()) == 0);
+  ASSERT_TRUE(c2.getAttributes().size() == 1);
+  ASSERT_TRUE(c2.getAttributes().front() == &p);
+  ASSERT_TRUE(c2.getFeatures().size() == 1);
+  ASSERT_TRUE(c2.getFeatures().front() == &p);
+  ASSERT_TRUE(c2.getMembers().size() == 1);
+  ASSERT_TRUE(c2.getMembers().front() == &p);
+  ASSERT_TRUE(c2.getOwnedElements().size() == 1);
+  ASSERT_TRUE(c2.getOwnedElements().front() == &p);
+  ASSERT_TRUE(c2.getOwningPackage() == &d);
 }

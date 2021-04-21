@@ -26,6 +26,7 @@ namespace UML{
                 defaultValue = NULL;
                 m_classifier = NULL;
             }
+            Property(const Property& prop);
             bool isSubClassOf(ElementType eType) override;
     };
 }

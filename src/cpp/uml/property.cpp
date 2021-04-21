@@ -40,6 +40,11 @@ void Property::setDefaultValue(ValueSpecification* val) {
     defaultValue = val;
 }
 
+Property::Property(const Property& prop) : StructuralFeature(prop), NamedElement(prop), Element(prop) {
+    defaultValue = prop.defaultValue;
+    m_classifier = prop.m_classifier;
+}
+
 ValueSpecification* Property::getDefaultValue() {
     return defaultValue;
 }

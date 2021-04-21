@@ -102,6 +102,7 @@ namespace UML {
             ~Element();
             // Think about making the api non copyable, copying messes with the pointer vals
             // Maybe move to copy function
+            // WARNING copying element dereferences it from model, elements it points to won't point to it
             Element(const Element& el);
             /**
              * Container for owned elements

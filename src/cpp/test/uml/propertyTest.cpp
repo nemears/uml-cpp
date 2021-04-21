@@ -100,3 +100,22 @@ TEST_F(PropertyTest, overwriteClassifierByAttributesAddTest) {
   ASSERT_TRUE(c.getClassifier() == &p2);
   ASSERT_TRUE(p1.getAttributes().size() == 0);
 }
+
+TEST_F(PropertyTest, copyPropertyTest) {
+  Property p;
+  p.setName("test");
+  p.setStatic(true);
+  Classifier c;
+  c.getAttributes().add(p);
+  Classifier t;
+  p.setType(&t);
+  Property p2 = p;
+  ASSERT_TRUE(p2.getID() == p.getID());
+  ASSERT_TRUE(p.getName().compare(p2.getName()) == 0);
+  ASSERT_TRUE(p2.getType() == &t);
+  ASSERT_TRUE(p2.getClassifier() == &c);
+  ASSERT_TRUE(p2.getNamespace() == &c);
+  ASSERT_TRUE(p2.getOwner() == &c);
+  ASSERT_TRUE(p2.getFeaturingClassifier() == &c);
+  ASSERT_TRUE(p2.isStatic());
+}

@@ -8,6 +8,11 @@ Feature::Feature() {
     m_static = false;
 }
 
+Feature::Feature(const Feature& feature) {
+    m_featuringClassifier = feature.m_featuringClassifier;
+    m_static = feature.m_static;
+}
+
 Classifier* Feature::getFeaturingClassifier() {
     return m_featuringClassifier;
 }

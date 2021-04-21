@@ -25,6 +25,27 @@ Classifier::~Classifier() {
     delete m_features;
 }
 
+Classifier::Classifier(const Classifier& clazz) : Namespace(clazz), NamedElement(clazz), PackageableElement(clazz), Element(clazz) {
+    m_attributes = new Sequence<Property>(*clazz.m_attributes);
+    m_attributes->addProcedures.clear();
+    m_attributes->addProcedures.push_back(new AddAttributeFunctor(this));
+    m_attributes->removeProcedures.clear();
+    m_attributes->removeProcedures.push_back(new RemoveAttributeFunctor(this));
+    m_generalizations = new Sequence<Generalization>(*clazz.m_generalizations);
+    m_generalizations->addProcedures.clear();
+    m_generalizations->addProcedures.push_back(new AddGeneralizationFunctor(this));
+    m_generalizations->addChecks.clear();
+    m_generalizations->addChecks.push_back(new CheckGeneralizationFunctor(this));
+    m_generals = new Sequence<Classifier>(*clazz.m_generals);
+    m_generals->addProcedures.clear();
+    m_generals->addProcedures.push_back(new AddGeneralFunctor(this));
+    m_features = new Sequence<Feature>(*clazz.m_features);
+    m_features->addProcedures.clear();
+    m_features->addProcedures.push_back(new AddFeatureFunctor(this));
+    m_features->removeProcedures.clear();
+    m_features->removeProcedures.push_back(new RemoveFeatureFunctor(this));
+}
+
 void Classifier::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
     Namespace::reindexID(oldID, newID);
 }

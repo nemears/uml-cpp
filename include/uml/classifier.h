@@ -60,6 +60,7 @@ namespace UML{
         public:
             Classifier();
             ~Classifier();
+            Classifier(const Classifier& clazz);
             string getName() override;
             void setName(const string& name) override;
             Sequence<Feature>& getFeatures();

@@ -70,3 +70,20 @@ TEST_F(NamedElementTest, overwriteNamespaceByMemebersAddTest) {
   ASSERT_TRUE(c.getNamespace() == &p2);
   ASSERT_TRUE(p1.getMembers().size() == 0);
 }
+
+TEST_F(NamedElementTest, copyNamedElementTest) {
+    NamedElement n;
+    n.setName("test");
+    Namespace p;
+    Element c;
+    n.setNamespace(&p);
+    n.getOwnedElements().add(c);
+    NamedElement n2 = n;
+    ASSERT_TRUE(n2.getName().compare("test") == 0);
+    ASSERT_TRUE(n2.getID() == n.getID());
+    ASSERT_TRUE(n2.getOwner() == &p);
+    ASSERT_TRUE(n2.getNamespace() == &p);
+    ASSERT_TRUE(n2.getOwnedElements().size() == 1);
+    ASSERT_TRUE(n2.getOwnedElements().front() == &c);
+    ASSERT_TRUE(c.getOwner() == &n);
+}

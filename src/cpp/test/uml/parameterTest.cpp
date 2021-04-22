@@ -125,3 +125,16 @@ TEST_F(ParameterTest, reindexNameOperationTest) {
     ASSERT_TRUE(o.getOwnedElements().get("test1"));
     ASSERT_TRUE(o.getOwnedElements().get("test2"));
 }
+
+TEST_F(ParameterTest, copyParameterTest) {
+    Parameter p;
+    Classifier t;
+    Operation o;
+    p.setDirection(ParameterDirectionKind::IN);
+    p.setType(&t);
+    p.setOperation(&o);
+    Parameter p2 = p;
+    ASSERT_TRUE(p2.getDirection() == ParameterDirectionKind::IN);
+    ASSERT_TRUE(p2.getType() == &t);
+    ASSERT_TRUE(p2.getOperation() == &o);
+}

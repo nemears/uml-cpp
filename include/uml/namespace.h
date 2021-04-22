@@ -12,6 +12,7 @@ namespace UML{
     class Namespace : virtual public NamedElement {
         protected:
             Sequence<NamedElement>* m_members;
+            Sequence<NamedElement>* m_ownedMembers;
             class AddMemberFunctor : public AbstractSequenceFunctor {
                 public:
                     AddMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
@@ -22,11 +23,22 @@ namespace UML{
                     RemoveMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class AddOwnedMemberFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddOwnedMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
+            class RemoveOwnedMemberFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveOwnedMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Namespace();
             ~Namespace();
             Namespace(const Namespace& nmspc);
             Sequence<NamedElement>& getMembers();
+            Sequence<NamedElement>& getOwnedMembers();
             ElementType getElementType() override;
             bool isSubClassOf(ElementType eType) override;
     };

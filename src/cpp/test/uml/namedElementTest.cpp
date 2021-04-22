@@ -51,24 +51,24 @@ TEST_F(NamedElementTest, overwriteNamespaceTest) {
   Namespace p1;
   Namespace p2;
   NamedElement c;
-  p1.getMembers().add(c);
+  p1.getOwnedMembers().add(c);
   c.setNamespace(&p2);
-  ASSERT_TRUE(p2.getMembers().size() == 1);
-  ASSERT_TRUE(p2.getMembers().front() == &c);
+  ASSERT_TRUE(p2.getOwnedMembers().size() == 1);
+  ASSERT_TRUE(p2.getOwnedMembers().front() == &c);
   ASSERT_TRUE(c.getNamespace() == &p2);
-  ASSERT_TRUE(p1.getMembers().size() == 0);
+  ASSERT_TRUE(p1.getOwnedMembers().size() == 0);
 }
 
-TEST_F(NamedElementTest, overwriteNamespaceByMemebersAddTest) {
+TEST_F(NamedElementTest, overwriteNamespaceByOwnedMemebersAddTest) {
   Namespace p1;
   Namespace p2;
   NamedElement c;
-  p1.getMembers().add(c);
-  p2.getMembers().add(c);
-  ASSERT_TRUE(p2.getMembers().size() == 1);
-  ASSERT_TRUE(p2.getMembers().front() == &c);
+  p1.getOwnedMembers().add(c);
+  p2.getOwnedMembers().add(c);
+  ASSERT_TRUE(p2.getOwnedMembers().size() == 1);
+  ASSERT_TRUE(p2.getOwnedMembers().front() == &c);
   ASSERT_TRUE(c.getNamespace() == &p2);
-  ASSERT_TRUE(p1.getMembers().size() == 0);
+  ASSERT_TRUE(p1.getOwnedMembers().size() == 0);
 }
 
 TEST_F(NamedElementTest, copyNamedElementTest) {

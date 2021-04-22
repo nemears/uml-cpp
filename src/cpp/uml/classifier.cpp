@@ -122,8 +122,8 @@ void Classifier::AddFeatureFunctor::operator()(Element& el) const {
         dynamic_cast<Feature&>(el).setFeaturingClassifier(dynamic_cast<Classifier*>(m_el));
     }
 
-    if (dynamic_cast<Feature&>(el).getNamespace() != m_el) {
-        dynamic_cast<Feature&>(el).setNamespace(dynamic_cast<Classifier*>(m_el));
+    if (!dynamic_cast<Feature&>(el).getMemberNamespace().count(m_el->getID())) {
+        dynamic_cast<Feature&>(el).getMemberNamespace().add(*dynamic_cast<Classifier*>(m_el));
     }
 }
 
@@ -132,9 +132,9 @@ void Classifier::RemoveFeatureFunctor::operator()(Element& el) const {
         dynamic_cast<Feature&>(el).setFeaturingClassifier(0);
     }
 
-    if (dynamic_cast<Feature&>(el).getNamespace()) {
-        if (dynamic_cast<Feature&>(el).getNamespace()->getMembers().count(el.getID())) {
-            dynamic_cast<Feature&>(el).getNamespace()->getMembers().remove(dynamic_cast<Feature&>(el));
+    if (!dynamic_cast<Feature&>(el).getMemberNamespace().count(m_el->getID())) {
+        if (dynamic_cast<Classifier*>(m_el)->getMembers().count(el.getID())) {
+            dynamic_cast<Classifier*>(m_el)->getMembers().remove(dynamic_cast<Feature&>(el));
         }
     }
 }

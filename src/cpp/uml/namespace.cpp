@@ -4,17 +4,14 @@ using namespace UML;
 
 void Namespace::AddMemberFunctor::operator()(Element& el) const {
     dynamic_cast<NamedElement&>(el).getMemberNamespace().add(*dynamic_cast<Namespace*>(m_el));
-    // if (!el.getOwner()) {
-    //     m_el->getOwnedElements().add(el);
-    // }
 }
 
 void Namespace::RemoveMemberFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<NamedElement&>(el).getMemberNamespace().count(m_el->getID())) {
+    if (dynamic_cast<NamedElement&>(el).getMemberNamespace().count(m_el->getID())) {
         dynamic_cast<NamedElement&>(el).getMemberNamespace().remove(*dynamic_cast<Namespace*>(m_el));
     }
 
-    if (!dynamic_cast<Namespace*>(m_el)->getOwnedMembers().count(el.getID())) {
+    if (dynamic_cast<Namespace*>(m_el)->getOwnedMembers().count(el.getID())) {
         dynamic_cast<Namespace*>(m_el)->getOwnedMembers().remove(dynamic_cast<NamedElement&>(el));
     }
 }

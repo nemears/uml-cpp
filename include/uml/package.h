@@ -13,6 +13,11 @@ namespace UML {
                     AddPackagedElementFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class RemovePackagedElementFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemovePackagedElementFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Package();
             ~Package();

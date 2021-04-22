@@ -116,4 +116,14 @@ TEST_F(NamespaceTest, SharedMemberTest) {
     ASSERT_TRUE(m.getMemberNamespace().back() == &n2);
 }
 
-// TODO check the remove functor
+TEST_F(NamespaceTest, removeMemeberFunctorTest) {
+    Namespace n;
+    NamedElement m;
+    n.getOwnedMembers().add(m);
+    ASSERT_NO_THROW(n.getMembers().remove(m));
+    ASSERT_TRUE(n.getOwnedMembers().size() == 0);
+    ASSERT_TRUE(n.getMembers().size() == 0);
+    ASSERT_TRUE(n.getOwnedElements().size() == 0);
+    ASSERT_TRUE(m.getNamespace() == 0);
+    ASSERT_TRUE(m.getMemberNamespace().size() == 0);
+}

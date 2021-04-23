@@ -26,6 +26,7 @@ namespace UML {
         CLASSIFIER,
         CONTROL_FLOW,
         CREATE_OBJECT_ACTION,
+        DATA_TYPE,
         DECISION_NODE,
         DIRECTED_RELATIONSHIP,
         ELEMENT,

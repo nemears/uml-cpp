@@ -156,6 +156,9 @@ string Element::getElementTypeString() {
         case ElementType::CREATE_OBJECT_ACTION : {
             return "CREATE_OBJECT_ACTION";
         }
+        case ElementType::DATA_TYPE : {
+            return "DATA_TYPE";
+        }
         case ElementType::DECISION_NODE : {
             return "DECISION_NODE";
         }

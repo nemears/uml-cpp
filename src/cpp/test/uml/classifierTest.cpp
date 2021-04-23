@@ -59,9 +59,7 @@ TEST_F(ClassifierTest, addAttributeFunctorTest) {
   ASSERT_TRUE(c.getFeatures().front() == &p);
   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
   ASSERT_TRUE(c.getMembers().count(p.getID()));
-  ASSERT_TRUE(c.getOwnedElements().count(p.getID()));
-  ASSERT_TRUE(p.getNamespace() == &c);
-  ASSERT_TRUE(p.getOwner() == &c);
+  ASSERT_TRUE(p.getMemberNamespace().count(c.getID()));
 }
 
 TEST_F(ClassifierTest, setClassifierTest) {
@@ -75,9 +73,7 @@ TEST_F(ClassifierTest, setClassifierTest) {
   ASSERT_TRUE(c.getFeatures().front() == &p);
   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
   ASSERT_TRUE(c.getMembers().count(p.getID()));
-  ASSERT_TRUE(c.getOwnedElements().count(p.getID()));
-  ASSERT_TRUE(p.getNamespace() == &c);
-  ASSERT_TRUE(p.getOwner() == &c);
+  ASSERT_TRUE(p.getMemberNamespace().count(c.getID()));
 }
 
 TEST_F(ClassifierTest, removeAttributeFunctorTest) {
@@ -114,7 +110,5 @@ TEST_F(ClassifierTest, copyClassifierTest) {
   ASSERT_TRUE(c2.getFeatures().front() == &p);
   ASSERT_TRUE(c2.getMembers().size() == 1);
   ASSERT_TRUE(c2.getMembers().front() == &p);
-  ASSERT_TRUE(c2.getOwnedElements().size() == 1);
-  ASSERT_TRUE(c2.getOwnedElements().front() == &p);
   ASSERT_TRUE(c2.getOwningPackage() == &d);
 }

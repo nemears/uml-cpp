@@ -1,9 +1,10 @@
 #ifndef PRIMITIVETYPEH
 #define PRIMITIVETYPEH
-#include "classifier.h"
+
+#include "dataType.h"
 
 namespace UML{
-class PrimitiveType : public Classifier {
+class PrimitiveType : public DataType {
     public:
         enum Primitive {INT = 0, REAL = 1, BOOL = 2, STRING = 3, NONE = 4};
         void setPrimitiveType(Primitive primitive);

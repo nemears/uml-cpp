@@ -132,7 +132,7 @@ void Classifier::RemoveFeatureFunctor::operator()(Element& el) const {
         dynamic_cast<Feature&>(el).setFeaturingClassifier(0);
     }
 
-    if (!dynamic_cast<Feature&>(el).getMemberNamespace().count(m_el->getID())) {
+    if (dynamic_cast<Feature&>(el).getMemberNamespace().count(m_el->getID())) {
         if (dynamic_cast<Classifier*>(m_el)->getMembers().count(el.getID())) {
             dynamic_cast<Classifier*>(m_el)->getMembers().remove(dynamic_cast<Feature&>(el));
         }

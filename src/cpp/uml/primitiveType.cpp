@@ -59,7 +59,7 @@ void PrimitiveType::setPrimitiveTypeString(const string& primitiveString) {
 }
 
 bool PrimitiveType::isSubClassOf(ElementType eType) {
-    bool ret = Classifier::isSubClassOf(eType);
+    bool ret = DataType::isSubClassOf(eType);
 
     if (!ret) {
         ret = eType == ElementType::PRIMITIVE_TYPE;

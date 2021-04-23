@@ -25,9 +25,10 @@ void Property::setDefaultValue(ValueSpecification* val) {
         throw invalidValueException;
     }
 
-    if (type->isPrimitive()) {
+    // TODO maybe delete these checks don't know if relevant
+    if (type->isSubClassOf(ElementType::PRIMITIVE_TYPE)) {
         Type* valType = val->getType();
-        if (!(valType->isPrimitive())) {
+        if (!(valType->isSubClassOf(ElementType::PRIMITIVE_TYPE))) {
             throw invalidValueException;
         }
         if (((PrimitiveType*)val->getType())->getPrimitiveType() != ((PrimitiveType*) type)->getPrimitiveType()) {

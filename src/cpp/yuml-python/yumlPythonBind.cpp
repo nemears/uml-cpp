@@ -44,48 +44,6 @@ template <class ElementBase = Element> class ElementPy: public ElementBase {
         using ElementBase::ElementBase;
 };
 
-// Type Trampoline
-template <class TypeBase = Type> class TypePy : public ElementPy<TypeBase> {
-    public:
-        using ElementPy<TypeBase>::ElementPy;
-        bool isPrimitive() override {
-                PYBIND11_OVERRIDE_PURE(
-                bool,
-                TypeBase,
-                isPrimitive,
-
-            );
-        }
-};
-
-// Classifier Trampoline
-template <class ClassifierBase = Classifier> class ClassifierPy : public TypePy<ClassifierBase> {
-    public:
-        using TypePy<ClassifierBase>::TypePy;
-        bool isPrimitive() override {
-                PYBIND11_OVERRIDE(
-                bool,
-                ClassifierBase,
-                isPrimitive,
-
-            );
-        }
-};
-
-// PrimitiveType Trampoline
-template <class PrimitiveTypeBase = PrimitiveType> class PrimitiveTypePy : public ClassifierPy<PrimitiveTypeBase> {
-    public:
-        using ClassifierPy<PrimitiveTypeBase>::ClassifierPy;
-        bool isPrimitive() override {
-                PYBIND11_OVERRIDE(
-                bool,
-                PrimitiveTypeBase,
-                isPrimitive,
-
-            );
-        }
-};
-
 // class ModelParserPy {
 //     protected:
 //         ModelParser modelParser;
@@ -171,9 +129,8 @@ PYBIND11_MODULE(yuml_python, m) {
         .def(py::init<>());
 
     // Type TODO fix isPrimitive bind
-    py::class_<Type, NamedElement, TypePy<>>(m, "Type")
-        .def(py::init<>())
-        .def("isPrimitve", &Type::isPrimitive); // this funcion is not registering
+    py::class_<Type, NamedElement, ElementPy<Type>>(m, "Type")
+        .def(py::init<>());
 
     // TypedElement
     py::class_<TypedElement, NamedElement, ElementPy<TypedElement>>(m, "TypedElement")
@@ -261,19 +218,16 @@ PYBIND11_MODULE(yuml_python, m) {
         .def("getDefaultValue", &Property::getDefaultValue);
 
     // Classifier
-    py::class_<Classifier, Type, ClassifierPy<>> classifier (m, "Classifier");
+    py::class_<Classifier, Type, ElementPy<Classifier>> classifier (m, "Classifier");
     classifier.def(py::init<>())
         .def("addAttribute", [] (Classifier& me, Property& prop) { me.getAttributes().add(prop); })
-        .def("removeAttribute", [] (Classifier& me, Property& prop) {me.getAttributes().remove(prop); })
-        //.def_readonly("attributes", &Classifier::ownedAttributes)
-        .def("isPrimitive", &Classifier::isPrimitive);
+        .def("removeAttribute", [] (Classifier& me, Property& prop) {me.getAttributes().remove(prop); });
     
     // PrimitiveType
-    py::class_<PrimitiveType,  Classifier, PrimitiveTypePy<>> primitiveType (m, "PrimitiveType");
+    py::class_<PrimitiveType,  Classifier, ElementPy<PrimitiveType>> primitiveType (m, "PrimitiveType");
         primitiveType.def(py::init<>())
         .def("setPrimitiveType", &PrimitiveType::setPrimitiveTypeString)
-        .def("getPrimitiveType", &PrimitiveType::getPrimitiveTypeString)
-        .def("isPrimitive", &PrimitiveType::isPrimitive);
+        .def("getPrimitiveType", &PrimitiveType::getPrimitiveTypeString);
 
     // Parameter
     py::class_<Parameter, TypedElement, MultiplicityElement, ElementPy<Parameter>>(m, "Parameter")
@@ -291,27 +245,27 @@ PYBIND11_MODULE(yuml_python, m) {
         //.def_readonly("methods", &Operation::methods);
 
     // Class
-    py::class_<Class, Classifier, ClassifierPy<Class>>(m, "Class")
+    py::class_<Class, Classifier, ElementPy<Class>>(m, "Class")
         .def(py::init<>())
         .def("addOperation", [] (Class& me, Operation& op) { me.getOperations().add(op); })
         .def("removeOperation", [] (Class& me, Operation& op) { me.getOperations().remove(op); });
         // .def_readonly("operations", &Class::operations);
     
     // Behavior
-    py::class_<Behavior, Class, ClassifierPy<Behavior>> (m, "Behavior")
+    py::class_<Behavior, Class, ElementPy<Behavior>> (m, "Behavior")
         .def(py::init<>())
         //.def_readonly("parameters", &Behavior::parameters)
         .def("addParameter", [] (Behavior& me, Parameter& param) { me.getParameters().add(param); })
         .def("removeParameter", [] (Behavior& me, Parameter& param) { me.getParameters().remove(param); });
 
     // Opaque Behavior
-    py::class_<OpaqueBehavior, Behavior, ClassifierPy<OpaqueBehavior>>(m, "OpaqueBehavior")
+    py::class_<OpaqueBehavior, Behavior, ElementPy<OpaqueBehavior>>(m, "OpaqueBehavior")
         .def(py::init<>());
         // .def("setBody", &OpaqueBehavior::setSingletonBody)
         // .def("getBody", &OpaqueBehavior::getSingletonBody);
 
     // Activity
-    py::class_<Activity, Behavior, ClassifierPy<Activity>>(m, "Activity")
+    py::class_<Activity, Behavior, ElementPy<Activity>>(m, "Activity")
         .def(py::init<>())
         .def("addNode", [] (Activity& me, ActivityNode& node) { me.getNodes().add(node); })
         .def("removeNode", [] (Activity& me, ActivityNode& node) { me.getNodes().remove(node); })

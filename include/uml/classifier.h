@@ -75,7 +75,6 @@ namespace UML{
              **/
             Sequence<Classifier>& getGenerals();
             ElementType getElementType() override;
-            bool isPrimitive() override;
             bool isSubClassOf(ElementType eType) override;
     };
 

@@ -163,10 +163,6 @@ Sequence<Classifier>& Classifier::getGenerals() {
     return *m_generals;
 }
 
-bool Classifier::isPrimitive() {
-    return false;
-}
-
 ElementType Classifier::getElementType() {
     return ElementType::CLASSIFIER;
 }

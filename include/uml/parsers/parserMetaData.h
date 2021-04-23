@@ -34,7 +34,7 @@ namespace UML{
             public:
                 ParserMetaData();
                 Sequence<> elements;
-                map<boost::uuids::uuid, vector<AbstractPostProcessFunctor*>*> postProcessFlag;
+                std::map<boost::uuids::uuid, std::vector<AbstractPostProcessFunctor*>*> postProcessFlag;
         };
 
         void applyFunctor(ParserMetaData& data, boost::uuids::uuid relEl, AbstractPostProcessFunctor* functor);

@@ -9,7 +9,7 @@ namespace UML {
     class StructuralFeature : public TypedElement, public MultiplicityElement, public Feature {
         public:
             ElementType getElementType() override;
-            class InvalidValueException: public exception {
+            class InvalidValueException: public std::exception {
                 public:
                     virtual const char* what() const throw() {
                         return "tried to assign value that does not match structural features corresponded type";

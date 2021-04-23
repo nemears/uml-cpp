@@ -1,5 +1,6 @@
 #ifndef PARAMETERH
 #define PARAMETERH
+
 #include "typedElement.h"
 #include "multiplicityElement.h"
 #include "sequence.h"
@@ -20,7 +21,7 @@ namespace UML {
             ParameterDirectionKind m_direction;
             Operation* m_operation;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
-            void reindexName(string oldName, string newName) override;
+            void reindexName(std::string oldName, std::string newName) override;
         public:
             Operation* getOperation();
             void setOperation(Operation* operation);
@@ -31,9 +32,9 @@ namespace UML {
                 m_direction = ParameterDirectionKind::NONE;
                 m_operation = 0;
             }
-            string getDirectionString();
-            void setDirectionString(string& directionString);
-            class InvalidDirectionException : public exception {
+            std::string getDirectionString();
+            void setDirectionString(std::string& directionString);
+            class InvalidDirectionException : public std::exception {
                 public:
                     virtual const char* what() const throw() {
                         return "Invalid direction given, options are IN, INOUT, OUT or RETURN";

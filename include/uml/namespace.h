@@ -1,9 +1,9 @@
 #ifndef NAMESPACEH
 #define NAMESPACEH
+
 #include <iostream>
 #include "namedElement.h"
 #include "sequence.h"
-using namespace std;
 
 namespace UML{
     /**

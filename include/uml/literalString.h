@@ -1,5 +1,6 @@
 #ifndef LITERALSTRINGH
 #define LITERALSTRINGH
+
 #include "literalSpecification.h"
 #include "primitiveType.h"
 #include <string>

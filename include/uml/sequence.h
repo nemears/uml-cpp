@@ -1,5 +1,6 @@
 #ifndef SEQUENCE_H
 #define SEQUENCE_H
+
 #include "namedElement.h"
 
 namespace UML {
@@ -68,13 +69,13 @@ namespace UML {
         friend class Action;
         friend class Package;
         private:
-            map<boost::uuids::uuid, T*> m_data;
-            vector<boost::uuids::uuid> m_order;
-            map<string, T*> m_nameTranslation;
-            vector<T*> m_rep;
-            vector<AbstractSequenceFunctor*> addProcedures;
-            vector<AbstractSequenceFunctor*> addChecks;
-            vector<AbstractSequenceFunctor*> removeProcedures;
+            std::map<boost::uuids::uuid, T*> m_data;
+            std::vector<boost::uuids::uuid> m_order;
+            std::map<std::string, T*> m_nameTranslation;
+            std::vector<T*> m_rep;
+            std::vector<AbstractSequenceFunctor*> addProcedures;
+            std::vector<AbstractSequenceFunctor*> addChecks;
+            std::vector<AbstractSequenceFunctor*> removeProcedures;
             void reindex(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
 
                 // m_data
@@ -85,7 +86,7 @@ namespace UML {
                 // m_order
                 std::replace(m_order.begin(), m_order.end(), oldID, newID);
             };
-            void reindex(boost::uuids::uuid elID, string oldName, string newName) {
+            void reindex(boost::uuids::uuid elID, std::string oldName, std::string newName) {
 
                 // m_nameTranslation
                 T* temp = m_data[elID];
@@ -168,21 +169,21 @@ namespace UML {
             bool empty() { return m_order.empty(); };
             T* get(boost::uuids::uuid id) { return m_data[id]; };
             size_t count(boost::uuids::uuid id) { return m_data.count(id); };
-            T* get(string name) { return m_nameTranslation[name]; };
+            T* get(std::string name) { return m_nameTranslation[name]; };
             T* get(size_t index) { return m_data[m_order[index]]; };
             T* front() { return m_data[m_order.front()]; };
             T* back() { return m_data[m_order.back()]; }
-            typename vector<T*>::iterator begin() { return m_rep.begin(); };
-            typename vector<T*>::iterator end() { return m_rep.end(); };
+            typename std::vector<T*>::iterator begin() { return m_rep.begin(); };
+            typename std::vector<T*>::iterator end() { return m_rep.end(); };
     };
 
-    class ReadOnlySequenceException : public exception {
+    class ReadOnlySequenceException : public std::exception {
         friend class Element;
         private:
-            string msg;
+            std::string msg;
 
         public:
-            ReadOnlySequenceException(string elID, string nameOfSequence) : 
+            ReadOnlySequenceException(std::string elID, std::string nameOfSequence) : 
                 msg("Sequence " + nameOfSequence + " for element uuid: " + elID + " is read only!")
                 {}
             virtual const char* what() const throw() {

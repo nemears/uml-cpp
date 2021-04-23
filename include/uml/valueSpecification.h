@@ -9,7 +9,7 @@ class ValueSpecification : public TypedElement , public PackageableElement {
 
     protected:
         void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
-        void reindexName(string oldName, string newName) override;
+        void reindexName(std::string oldName, std::string newName) override;
 
     /**
      * perhaps return type void* function gets overiden but right now it is commented out

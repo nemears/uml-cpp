@@ -29,7 +29,7 @@ namespace UML {
             void setOwningInstance(InstanceSpecification* inst);
             void setDefiningFeature(StructuralFeature* definingFeature);
             ElementType getElementType() override;
-            class NullDefiningFeatureException : public exception {
+            class NullDefiningFeatureException : public std::exception {
                 public:
                     virtual const char* what() const throw() {
                         return "Tried to assign value to slot without setting definingFeature";

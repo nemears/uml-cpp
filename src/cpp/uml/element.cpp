@@ -3,6 +3,7 @@
 #include "uml/relationship.h"
 #include "uml/elementFunctors.h"
 
+using namespace std;
 using namespace UML;
 
 void SetOwnerFunctor::operator()(Element& el) const{
@@ -263,6 +264,9 @@ string Element::getElementTypeString() {
         }
         case ElementType::PROPERTY : {
             return "PROPERTY";
+        }
+        case ElementType::REDEFINABLE_ELEMENT : {
+            return "REDEFINABLE_ELEMENT";
         }
         case ElementType::RELATIONSHIP : {
             return "RELATIONSHIP";

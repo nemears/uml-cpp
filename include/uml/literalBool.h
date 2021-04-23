@@ -1,5 +1,6 @@
 #ifndef LITERALBOOLH
 #define LITERALBOOLH
+
 #include "literalSpecification.h"
 #include "primitiveType.h"
 

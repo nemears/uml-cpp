@@ -1,6 +1,7 @@
 #include "uml/relationship.h"
 #include "uml/directedRelationship.h"
 
+using namespace std;
 using namespace UML;
 
 void Relationship::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {

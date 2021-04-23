@@ -2,7 +2,6 @@
 #define TYPEDELEMENTH
 #include "namedElement.h"
 #include "type.h"
-using namespace std;
 
 namespace UML{
 class TypedElement : virtual public NamedElement {

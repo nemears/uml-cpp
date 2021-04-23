@@ -9,8 +9,6 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/lexical_cast.hpp>
 
-using namespace std;
-
 namespace UML {
 
     // Element Type enum to get the type of object on runtime
@@ -62,6 +60,7 @@ namespace UML {
         PIN,
         PRIMITIVE_TYPE,
         PROPERTY,
+        REDEFINABLE_ELEMENT,
         RELATIONSHIP,
         SLOT,
         STRUCTURAL_FEATURE,
@@ -71,8 +70,8 @@ namespace UML {
     };
 
     // Helper function to assess possible uuids
-    static bool isValidUUID4(string strn) {
-        return regex_match (strn, regex("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"));
+    static bool isValidUUID4(std::string strn) {
+        return std::regex_match (strn, std::regex("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"));
     }
 
     // Forward Declarations for Sequence
@@ -118,12 +117,12 @@ namespace UML {
              **/
             Sequence<Relationship>& getRelationships();
             boost::uuids::uuid getID() { return m_id; };
-            virtual void setID(string id);
+            virtual void setID(std::string id);
             void setID(boost::uuids::uuid id);
             virtual ElementType getElementType();
             virtual bool isSubClassOf(ElementType eType);
-            virtual string getElementTypeString();
-            virtual string getIDstring();
+            virtual std::string getElementTypeString();
+            virtual std::string getIDstring();
             Element* getOwner();
             /**
              * TODO delete, owner should be read_only
@@ -134,21 +133,21 @@ namespace UML {
 
     //Exceptions
 
-    class InvalidID_Exception: public exception {
+    class InvalidID_Exception: public std::exception {
         public:
         virtual const char* what() const throw() {
             return "String of id is not a valid UUID4";
         }
     };
     
-    class ElementDoesntExistException : public exception {
+    class ElementDoesntExistException : public std::exception {
         friend class Element;
         private:
-            string msg;
+            std::string msg;
 
         public:
             ElementDoesntExistException(const Element& el) : 
-                msg("Removed element that isn't in the Sequence\nuuid: " + boost::lexical_cast<string>(el.m_id))
+                msg("Removed element that isn't in the Sequence\nuuid: " + boost::lexical_cast<std::string>(el.m_id))
                 {}
             virtual const char* what() const throw() {
                 return msg.c_str();

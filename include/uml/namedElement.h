@@ -1,8 +1,8 @@
 #ifndef NAMEDELEMENTH
 #define NAMEDELEMENTH
+
 #include <string>
 #include "element.h"
-using namespace std;
 
 namespace UML{
 
@@ -15,17 +15,17 @@ namespace UML{
      **/
     class NamedElement : virtual public Element {
         protected:
-            string m_name;
+            std::string m_name;
             Namespace* m_namespace;
             Sequence<Namespace>* m_memberNamespace;
-            virtual void reindexName(string oldName, string newName);
+            virtual void reindexName(std::string oldName, std::string newName);
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
         public:
             NamedElement();
             ~NamedElement();
             NamedElement(const NamedElement& el);
-            virtual string getName();
-            virtual void setName(const string &name);
+            virtual std::string getName();
+            virtual void setName(const std::string &name);
             Namespace* getNamespace();
             void setNamespace(Namespace* nmspc);
             Sequence<Namespace>& getMemberNamespace();

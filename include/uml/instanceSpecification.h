@@ -1,5 +1,6 @@
 #ifndef INSTANCESPECIFICATIONH
 #define INSTANCESPECIFICATIONH
+
 #include "packageableElement.h"
 #include "slot.h"
 #include "classifier.h"

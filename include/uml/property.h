@@ -1,5 +1,6 @@
 #ifndef PROPERTYH
 #define PROPERTYH
+
 #include "structuralFeature.h"
 #include "valueSpecification.h"
 #include "multiplicityElement.h"

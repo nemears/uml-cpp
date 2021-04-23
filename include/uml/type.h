@@ -1,7 +1,6 @@
 #ifndef TYPEH
 #define TYPEH
 #include "packageableElement.h"
-using namespace std;
 
 namespace UML{
     class Type : virtual public PackageableElement {

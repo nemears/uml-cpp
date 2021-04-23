@@ -1,5 +1,6 @@
 #ifndef LITERALINTH
 #define LITERALINTH
+
 #include "literalSpecification.h"
 #include "primitiveType.h"
 

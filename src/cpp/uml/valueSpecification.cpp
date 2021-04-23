@@ -2,6 +2,7 @@
 #include "uml/slot.h"
 #include "uml/expression.h"
 
+using namespace std;
 using namespace UML;
 
 void ValueSpecification::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {

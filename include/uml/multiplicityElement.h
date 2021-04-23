@@ -24,7 +24,7 @@ namespace UML {
             void setUpper(const int up);
             ValueSpecification* getUpperValue();
             void setUpperValue(ValueSpecification* val);
-            class MultiplicityNotSpecifiedException: public exception {
+            class MultiplicityNotSpecifiedException: public std::exception {
                 public:
                     virtual const char* what() const throw() {
                         return "tried to access multiplicity but it was not specified yet";

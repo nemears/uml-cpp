@@ -1,6 +1,7 @@
 #include "uml/parsers/parserMetaData.h"
 #include <algorithm>
 
+using namespace std;
 using namespace UML;
 using namespace Parsers;
 

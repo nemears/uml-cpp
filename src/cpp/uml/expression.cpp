@@ -1,5 +1,6 @@
 #include "uml/expression.h"
 
+using namespace std;
 using namespace UML;
 
 void Expression::AddOperandFunctor::operator()(Element& el) const {

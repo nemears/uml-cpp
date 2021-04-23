@@ -1,6 +1,7 @@
 #include "uml/inputPin.h"
 #include "uml/sequence.h"
 
+using namespace std;
 using namespace UML;
 
 void InputPin::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {

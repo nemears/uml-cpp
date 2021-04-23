@@ -2,7 +2,6 @@
 #define CLASSH
 #include <list>
 #include "classifier.h"
-using namespace std;
 
 namespace UML{
 

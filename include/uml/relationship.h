@@ -34,11 +34,11 @@ namespace UML {
 
     //Exceptions
 
-    class DuplicateRelatedElementException: public exception {
+    class DuplicateRelatedElementException: public std::exception {
         private:
-            string msg;
+            std::string msg;
         public:
-            DuplicateRelatedElementException(string uuid) :
+            DuplicateRelatedElementException(std::string uuid) :
                 msg("Duplicate relationship (uuid: " + uuid + ") added to sequence specified as set!")
                 {};
             virtual const char* what() const throw() {

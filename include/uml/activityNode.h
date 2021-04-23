@@ -14,7 +14,7 @@ namespace UML {
             Sequence<ActivityEdge>* m_incoming;
             Sequence<ActivityEdge>* m_outgoing;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
-            void reindexName(string oldName, string newName) override;
+            void reindexName(std::string oldName, std::string newName) override;
             class AddIncomingFunctor : public AbstractSequenceFunctor {
                 public:
                     AddIncomingFunctor(Element* me) : AbstractSequenceFunctor(me) {};
@@ -49,11 +49,11 @@ namespace UML {
 
     // Errors
 
-    class DuplicateEdgeException: public exception {
+    class DuplicateEdgeException: public std::exception {
         private:
-            string msg;
+            std::string msg;
         public:
-            DuplicateEdgeException(string uuid) :
+            DuplicateEdgeException(std::string uuid) :
                 msg("Duplicate edge (uuid: " + uuid + ") added to sequence specified as set!")
                 {};
             virtual const char* what() const throw() {

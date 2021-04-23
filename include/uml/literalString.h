@@ -8,10 +8,10 @@
 namespace UML {
     class LiteralString : public LiteralSpecification {
         protected:
-            string value;
+            std::string value;
         public:
-            string getValue();
-            void setValue(string val);
+            std::string getValue();
+            void setValue(std::string val);
             LiteralString() {
                 PrimitiveType* stringPrimitive = new PrimitiveType;
                 stringPrimitive->setPrimitiveType(PrimitiveType::Primitive::STRING);

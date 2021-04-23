@@ -36,6 +36,7 @@
 #include "uml/expression.h"
 // #include "yuml-parsers/modelParser.h"
 
+using namespace std;
 using namespace UML;
 
 // Element Trampoline

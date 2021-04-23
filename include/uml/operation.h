@@ -12,7 +12,7 @@ namespace UML {
             Type* m_type;
             Class* m_class;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
-            void reindexName(string oldName, string newName) override;
+            void reindexName(std::string oldName, std::string newName) override;
         public:
             Operation();
             Type* getType();

@@ -1,6 +1,7 @@
 #include "uml/operation.h"
 #include "uml/class.h"
 
+using namespace std;
 using namespace UML;
 
 void Operation::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {

@@ -2,6 +2,7 @@
 #include "uml/activityNode.h"
 #include "uml/activity.h"
 
+using namespace std;
 using namespace UML;
 
 void ActivityEdge::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {

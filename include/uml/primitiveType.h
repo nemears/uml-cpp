@@ -10,8 +10,8 @@ class PrimitiveType : public DataType {
         void setPrimitiveType(Primitive primitive);
         Primitive getPrimitiveType();
         ElementType getElementType() override;
-        string getPrimitiveTypeString();
-        void setPrimitiveTypeString(const string& primitiveString);
+        std::string getPrimitiveTypeString();
+        void setPrimitiveTypeString(const std::string& primitiveString);
         bool isSubClassOf(ElementType eType) override;
     private:
         Primitive primitiveType;

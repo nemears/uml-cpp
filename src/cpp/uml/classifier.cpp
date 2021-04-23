@@ -2,6 +2,7 @@
 #include "uml/property.h"
 #include "uml/generalization.h"
 
+using namespace std;
 using namespace UML;
 
 Classifier::Classifier() {

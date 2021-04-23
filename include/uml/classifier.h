@@ -21,7 +21,7 @@ namespace UML{
             Sequence<Generalization>* m_generalizations;
             Sequence<Classifier>* m_generals;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
-            void reindexName(string oldName, string newName) override;
+            void reindexName(std::string oldName, std::string newName) override;
             class AddAttributeFunctor : public AbstractSequenceFunctor {
                 public:
                     AddAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
@@ -61,8 +61,8 @@ namespace UML{
             Classifier();
             ~Classifier();
             Classifier(const Classifier& clazz);
-            string getName() override;
-            void setName(const string& name) override;
+            std::string getName() override;
+            void setName(const std::string& name) override;
             Sequence<Feature>& getFeatures();
             Sequence<Property>& getAttributes();
             /**
@@ -80,11 +80,11 @@ namespace UML{
 
     //Exceptions
 
-    class InvalidGeneralizationException: public exception {
+    class InvalidGeneralizationException: public std::exception {
         private:
-            string msg;
+            std::string msg;
         public:
-            InvalidGeneralizationException(string uuid) :
+            InvalidGeneralizationException(std::string uuid) :
                 msg("Invalid Generalization (uuid: " + uuid + ") was added to generalization set, only the Specific classifier may hold generalizations!")
                 {};
             virtual const char* what() const throw() {

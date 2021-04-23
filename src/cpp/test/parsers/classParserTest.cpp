@@ -5,6 +5,7 @@
 #include "uml/operation.h"
 #include "uml/opaqueBehavior.h"
 
+using namespace std;
 using namespace UML;
 
 class ClassParserTest : public ::testing::Test {

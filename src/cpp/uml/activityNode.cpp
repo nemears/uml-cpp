@@ -1,6 +1,7 @@
 #include "uml/activityNode.h"
 #include "uml/activity.h"
 
+using namespace std;
 using namespace UML;
 
 ActivityNode::ActivityNode() {

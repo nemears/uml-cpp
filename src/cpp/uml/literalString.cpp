@@ -1,5 +1,6 @@
 #include "uml/literalString.h"
 
+using namespace std;
 using namespace UML;
 
 string LiteralString::getValue() {

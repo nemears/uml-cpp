@@ -2,6 +2,7 @@
 #include "uml/primitiveType.h"
 #include "uml/classifier.h"
 
+using namespace std;
 using namespace UML;
 
 void Property::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {

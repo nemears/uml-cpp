@@ -1,6 +1,7 @@
 #include "uml/parameter.h"
 #include "uml/operation.h"
 
+using namespace std;
 using namespace UML;
 
 ElementType Parameter::getElementType() {

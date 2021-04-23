@@ -1,5 +1,6 @@
 #include "uml/primitiveType.h"
 
+using namespace std;
 using namespace UML;
 
 void PrimitiveType::setPrimitiveType(Primitive primitive) {

@@ -32,12 +32,12 @@ namespace UML {
                 void operator()(Element& el) const override;
         };
 
-        class UmlParserException : public exception {
+        class UmlParserException : public std::exception {
             private:
-            string m_msg;
+            std::string m_msg;
 
             public:
-                UmlParserException(string msg) : 
+                UmlParserException(std::string msg) : 
                     m_msg(msg)
                     {}
                 virtual const char* what() const throw() {

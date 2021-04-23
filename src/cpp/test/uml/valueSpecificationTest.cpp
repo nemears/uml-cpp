@@ -9,6 +9,7 @@
 #include "uml/slot.h"
 #include "uml/expression.h"
 
+using namespace std;
 using namespace UML;
 
 class ValueSpecificationTest : public ::testing::Test {

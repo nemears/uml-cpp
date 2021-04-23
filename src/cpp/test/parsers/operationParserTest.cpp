@@ -3,6 +3,7 @@
 #include "test/yumlParsersTest.h"
 #include "uml/operation.h"
 
+using namespace std;
 using namespace UML;
 
 class OperationParserTest : public ::testing::Test {

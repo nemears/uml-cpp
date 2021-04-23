@@ -5,6 +5,7 @@
 #include "uml/class.h"
 #include "uml/package.h"
 
+using namespace std;
 using namespace UML;
 
 class PropertyParserTest : public ::testing::Test {

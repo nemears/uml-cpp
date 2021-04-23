@@ -4,6 +4,7 @@
 #include "uml/package.h"
 #include "uml/activity.h"
 
+using namespace std;
 using namespace UML;
 
 class PackageParserTest : public ::testing::Test {

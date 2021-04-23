@@ -3,6 +3,7 @@
 #include "test/yumlParsersTest.h"
 #include "uml/parameter.h"
 
+using namespace std;
 using namespace UML;
 
 class ParameterParserTest : public ::testing::Test {

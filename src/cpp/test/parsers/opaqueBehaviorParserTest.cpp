@@ -3,6 +3,7 @@
 #include "test/yumlParsersTest.h"
 #include "uml/opaqueBehavior.h"
 
+using namespace std;
 using namespace UML;
 
 class OpaqueBehaviorParserTest : public ::testing::Test {

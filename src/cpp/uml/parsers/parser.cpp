@@ -1,5 +1,7 @@
 #include "uml/parsers/parser.h"
 
+using namespace std;
+
 namespace UML {
 namespace Parsers {
 

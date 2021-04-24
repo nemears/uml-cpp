@@ -176,6 +176,10 @@ bool Classifier::isSubClassOf(ElementType eType) {
     }
 
     if (!ret) {
+        ret = RedefinableElement::isSubClassOf(eType);
+    }
+
+    if (!ret) {
         ret = eType == ElementType::CLASSIFIER;
     }
 

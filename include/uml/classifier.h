@@ -14,7 +14,7 @@ namespace UML{
     /**
      * A Classifier represents a classification of instances according to their Features
      **/
-    class Classifier: public Namespace, public Type {
+    class Classifier: public Namespace, public Type , public RedefinableElement {
         protected:
             Sequence<Feature>* m_features;
             Sequence<Property>* m_attributes;

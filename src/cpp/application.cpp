@@ -2,6 +2,7 @@
 #include "uml/element.h"
 #include "iostream"
 
+using namespace std;
 using namespace UML;
 
 int main(int argc, char** argv) {

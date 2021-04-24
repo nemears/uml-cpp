@@ -10,5 +10,4 @@
 // #include <map>
 // #include <boost/uuid/uuid.hpp>
 //#include "cpp-parsers/cppClassParser.h"
-using namespace std;
 #endif

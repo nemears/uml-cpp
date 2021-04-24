@@ -40,6 +40,7 @@ namespace UML {
     class Activity;
     class Action;
     class Package;
+    class Feature;
     /**
      * Sequence Class, Holds collections of uml elements
      **/
@@ -68,6 +69,7 @@ namespace UML {
         friend class Activity;
         friend class Action;
         friend class Package;
+        friend class Feature;
         private:
             std::map<boost::uuids::uuid, T*> m_data;
             std::vector<boost::uuids::uuid> m_order;

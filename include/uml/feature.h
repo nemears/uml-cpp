@@ -1,13 +1,13 @@
 #ifndef FEATURE_H
 #define FEATURE_H
 
-#include "namedElement.h"
+#include "redefinableElement.h"
 
 namespace UML {
 
     class Classifier;
 
-    class Feature : virtual public NamedElement { // TODO redefineable element
+    class Feature : virtual public RedefinableElement {
         protected:
             Classifier* m_featuringClassifier;
             bool m_static;

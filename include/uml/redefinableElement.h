@@ -1,10 +1,13 @@
 #ifndef REDEFINABLE_ELEMENT_H
 #define REDEFINABLE_ELEMENT_H
 
-#include "classifier.h"
+#include "sequence.h"
 
 namespace UML {
-    class RedefinableElement : public NamedElement {
+
+    class Classifier;
+
+    class RedefinableElement : virtual public NamedElement {
         protected:
             Sequence<RedefinableElement>* m_redefinedElement;
             Sequence<Classifier>* m_redefinitionContext;

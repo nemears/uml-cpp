@@ -39,7 +39,7 @@ ElementType Feature::getElementType() {
 }
 
 bool Feature::isSubClassOf(ElementType eType) {
-    bool ret = NamedElement::isSubClassOf(eType);
+    bool ret = RedefinableElement::isSubClassOf(eType);
 
     if (!ret) {
         ret = eType == ElementType::FEATURE;

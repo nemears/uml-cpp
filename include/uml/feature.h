@@ -11,6 +11,8 @@ namespace UML {
         protected:
             Classifier* m_featuringClassifier;
             bool m_static;
+            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
+            void reindexName(std::string oldName, std::string newName) override;
         public:
             Feature();
             Feature(const Feature& feature);

@@ -1,7 +1,24 @@
 #include "uml/feature.h"
 #include "uml/classifier.h"
 
+using namespace std;
 using namespace UML;
+
+void Feature::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+    if (m_featuringClassifier) {
+        m_featuringClassifier->getFeatures().reindex(oldID, newID);
+    }
+
+    NamedElement::reindexID(oldID, newID);
+}
+
+void Feature::reindexName(string oldName, string newName) {
+    if (m_featuringClassifier) {
+        m_featuringClassifier->getFeatures().reindex(m_id, oldName, newName);
+    }
+    
+    NamedElement::reindexName(oldName, newName);
+}
 
 Feature::Feature() {
     m_featuringClassifier = 0;

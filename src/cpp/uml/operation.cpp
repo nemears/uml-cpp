@@ -9,14 +9,20 @@ void Operation::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
     if (m_class) {
         m_class->getOperations().reindex(oldID, newID);
     }
-    Element::reindexID(oldID, newID);
+    if (m_dataType) {
+        m_dataType->getOwnedOperation().reindex(oldID, newID);
+    }
+    Feature::reindexID(oldID, newID);
 }
 
 void Operation::reindexName(string oldName, string newName) {
     if (m_class) {
         m_class->getOperations().reindex(m_id, oldName, newName);
     }
-    NamedElement::reindexName(oldName, newName);
+    if (m_dataType) {
+        m_dataType->getOwnedOperation().reindex(m_id, oldName, newName);
+    }
+    Feature::reindexName(oldName, newName);
 }
 
 Operation::Operation() {

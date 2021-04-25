@@ -10,14 +10,24 @@ void Property::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
     if (m_classifier) {
         m_classifier->getAttributes().reindex(oldID, newID);
     }
-    NamedElement::reindexID(oldID, newID);
+
+    if (m_dataType) {
+        m_dataType->getOwnedAttribute().reindex(oldID, newID);
+    }
+
+    Feature::reindexID(oldID, newID);
 }
 
 void Property::reindexName(string oldName, string newName) {
     if (m_classifier) {
         m_classifier->getAttributes().reindex(m_id, oldName, newName);
     }
-    NamedElement::reindexName(oldName, newName);
+
+    if (m_dataType) {
+        m_dataType->getOwnedAttribute().reindex(m_id, oldName, newName);
+    }
+
+    Feature::reindexName(oldName, newName);
 }
 
 void Property::setDefaultValue(ValueSpecification* val) {

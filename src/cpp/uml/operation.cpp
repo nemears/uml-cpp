@@ -22,6 +22,7 @@ void Operation::reindexName(string oldName, string newName) {
 Operation::Operation() {
     m_type = 0;
     m_class = 0;
+    m_dataType = 0;
 }
 
 Type* Operation::getType() {
@@ -58,6 +59,11 @@ DataType* Operation::getDataType() {
 }
 
 void Operation::setDataType(DataType* dataType) {
+    if (m_dataType) {
+        if (m_dataType->getOwnedOperation().count(m_id)) {
+            m_dataType->getOwnedOperation().remove(*this);
+        }
+    }
     m_dataType = dataType;
     if (m_dataType) {
         if (!m_dataType->getOwnedOperation().count(m_id)) {

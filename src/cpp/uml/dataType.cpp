@@ -45,12 +45,27 @@ void DataType::AddOwnedOperationFunctor::operator()(Element& el) const {
     }
 }
 
+void DataType::RemoveOwnedOperationFunctor::operator()(Element& el) const {
+    if (dynamic_cast<DataType*>(m_el)->getFeatures().count(el.getID())) {
+        dynamic_cast<DataType*>(m_el)->getFeatures().remove(dynamic_cast<Operation&>(el));
+    }
+
+    if (dynamic_cast<DataType*>(m_el)->getOwnedMembers().count(el.getID())) {
+        dynamic_cast<DataType*>(m_el)->getOwnedMembers().remove(dynamic_cast<Operation&>(el));
+    }
+
+    if (dynamic_cast<Operation&>(el).getDataType() == m_el) {
+        dynamic_cast<Operation&>(el).setDataType(0);
+    }
+}
+
 DataType::DataType() {
     m_ownedAttribute = new Sequence<Property>;
     m_ownedAttribute->addProcedures.push_back(new AddOwnedAttributeFunctor(this));
     m_ownedAttribute->removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
     m_ownedOperation = new Sequence<Operation>;
     m_ownedOperation->addProcedures.push_back(new AddOwnedOperationFunctor(this));
+    m_ownedOperation->removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
 }
 
 DataType::~DataType() {
@@ -67,6 +82,8 @@ DataType::DataType(const DataType& el) {
     m_ownedOperation = new Sequence<Operation>(*el.m_ownedOperation);
     m_ownedOperation->addProcedures.clear();
     m_ownedOperation->addProcedures.push_back(new AddOwnedOperationFunctor(this));
+    m_ownedOperation->removeProcedures.clear();
+    m_ownedOperation->removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
 }
 
 Sequence<Property>& DataType::getOwnedAttribute() {

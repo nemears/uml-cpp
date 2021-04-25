@@ -1,5 +1,6 @@
 #include "uml/operation.h"
 #include "uml/class.h"
+#include "uml/dataType.h"
 
 using namespace std;
 using namespace UML;
@@ -48,6 +49,19 @@ void Operation::setClass(Class* clazz) {
         }
         if (m_featuringClassifier != clazz) {
             setFeaturingClassifier(clazz);
+        }
+    }
+}
+
+DataType* Operation::getDataType() {
+    return m_dataType;
+}
+
+void Operation::setDataType(DataType* dataType) {
+    m_dataType = dataType;
+    if (m_dataType) {
+        if (!m_dataType->getOwnedOperation().count(m_id)) {
+            m_dataType->getOwnedOperation().add(*this);
         }
     }
 }

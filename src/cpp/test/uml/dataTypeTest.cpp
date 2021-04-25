@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "uml/dataType.h"
+#include "uml/operation.h"
 
 using namespace UML;
 
@@ -181,4 +182,44 @@ TEST_F(DataTypeTest, OverrideDataTypeW_OtherTest) {
     ASSERT_TRUE(p2.getMemberNamespace().front() == &d2);
     ASSERT_TRUE(p2.getNamespace() == &d2);
     ASSERT_TRUE(p2.getOwner() == &d2);
+}
+
+TEST_F(DataTypeTest, addOwnedOperationTest) {
+    DataType d;
+    Operation o;
+    ASSERT_NO_THROW(d.getOwnedOperation().add(o));
+    ASSERT_TRUE(d.getOwnedOperation().size() == 1);
+    ASSERT_TRUE(d.getOwnedOperation().front() == &o);
+    ASSERT_TRUE(d.getMembers().size() == 1);
+    ASSERT_TRUE(d.getMembers().front() == &o);
+    ASSERT_TRUE(d.getOwnedMembers().size() == 1);
+    ASSERT_TRUE(d.getOwnedMembers().front() == &o);
+    ASSERT_TRUE(d.getOwnedElements().size() == 1);
+
+    ASSERT_TRUE(o.getDataType() == &d);
+    ASSERT_TRUE(o.getFeaturingClassifier() == &d);
+    ASSERT_TRUE(o.getNamespace() == &d);
+    ASSERT_TRUE(o.getMemberNamespace().size() == 1);
+    ASSERT_TRUE(o.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(o.getOwner() == &d);
+}
+
+TEST_F(DataTypeTest, OperationSetDataTypeTest) {
+    DataType d;
+    Operation o;
+    ASSERT_NO_THROW(o.setDataType(&d));
+    ASSERT_TRUE(d.getOwnedOperation().size() == 1);
+    ASSERT_TRUE(d.getOwnedOperation().front() == &o);
+    ASSERT_TRUE(d.getMembers().size() == 1);
+    ASSERT_TRUE(d.getMembers().front() == &o);
+    ASSERT_TRUE(d.getOwnedMembers().size() == 1);
+    ASSERT_TRUE(d.getOwnedMembers().front() == &o);
+    ASSERT_TRUE(d.getOwnedElements().size() == 1);
+
+    ASSERT_TRUE(o.getDataType() == &d);
+    ASSERT_TRUE(o.getFeaturingClassifier() == &d);
+    ASSERT_TRUE(o.getNamespace() == &d);
+    ASSERT_TRUE(o.getMemberNamespace().size() == 1);
+    ASSERT_TRUE(o.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(o.getOwner() == &d);
 }

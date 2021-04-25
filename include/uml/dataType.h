@@ -18,6 +18,11 @@ namespace UML {
                     RemoveOwnedAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class AddOwnedOperationFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddOwnedOperationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             DataType();
             ~DataType();

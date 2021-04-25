@@ -83,6 +83,11 @@ DataType* Property::getDataType() {
 }
 
 void Property::setDataType(DataType* dataType) {
+    if (m_dataType) {
+        if (m_dataType->getOwnedAttribute().count(m_id)) {
+            m_dataType->getOwnedAttribute().remove(*this);
+        }
+    }
     m_dataType = dataType;
     if (m_dataType) {
         if (!m_dataType->getOwnedAttribute().count(m_id)) {

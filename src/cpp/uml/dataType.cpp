@@ -2,8 +2,23 @@
 
 using namespace UML;
 
+void DataType::AddOwnedAttributeFunctor::operator()(Element& el) const {
+    if (!dynamic_cast<DataType*>(m_el)->getAttributes().count(el.getID())) {
+        dynamic_cast<DataType*>(m_el)->getAttributes().add(dynamic_cast<Property&>(el));
+    }
+
+    if (!dynamic_cast<DataType*>(m_el)->getOwnedMembers().count(el.getID())) {
+        dynamic_cast<DataType*>(m_el)->getOwnedMembers().add(dynamic_cast<Property&>(el));
+    }
+
+    if (dynamic_cast<Property&>(el).getDataType() != m_el) {
+        dynamic_cast<Property&>(el).setDataType(dynamic_cast<DataType*>(m_el));
+    }
+}
+
 DataType::DataType() {
     m_ownedAttribute = new Sequence<Property>;
+    m_ownedAttribute->addProcedures.push_back(new AddOwnedAttributeFunctor(this));
     m_ownedOperation = new Sequence<Operation>;
 }
 
@@ -14,6 +29,8 @@ DataType::~DataType() {
 
 DataType::DataType(const DataType& el) {
     m_ownedAttribute = new Sequence<Property>(*el.m_ownedAttribute);
+    m_ownedAttribute->addProcedures.clear();
+    m_ownedAttribute->addProcedures.push_back(new AddOwnedAttributeFunctor(this));
     m_ownedOperation = new Sequence<Operation>(*el.m_ownedOperation);
 }
 

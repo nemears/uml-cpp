@@ -1,6 +1,7 @@
 #include "uml/property.h"
 #include "uml/primitiveType.h"
 #include "uml/classifier.h"
+#include "uml/dataType.h"
 
 using namespace std;
 using namespace UML;
@@ -42,9 +43,17 @@ void Property::setDefaultValue(ValueSpecification* val) {
     defaultValue = val;
 }
 
+Property::Property() {
+    defaultValue = NULL;
+    m_classifier = NULL;
+    m_dataType = 0;
+}
+
+// TODO remove?
 Property::Property(const Property& prop) : StructuralFeature(prop), NamedElement(prop), Element(prop) {
     defaultValue = prop.defaultValue;
     m_classifier = prop.m_classifier;
+    m_dataType = prop.m_dataType;
 }
 
 ValueSpecification* Property::getDefaultValue() {
@@ -65,6 +74,19 @@ void Property::setClassifier(Classifier* classifier) {
     if (m_classifier) {
         if (!m_classifier->getAttributes().count(m_id)) {
             m_classifier->getAttributes().add(*this);
+        }
+    }
+}
+
+DataType* Property::getDataType() {
+    return m_dataType;
+}
+
+void Property::setDataType(DataType* dataType) {
+    m_dataType = dataType;
+    if (m_dataType) {
+        if (!m_dataType->getOwnedAttribute().count(m_id)) {
+            m_dataType->getOwnedAttribute().add(*this);
         }
     }
 }

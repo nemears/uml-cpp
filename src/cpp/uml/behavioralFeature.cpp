@@ -7,10 +7,6 @@ void BehavioralFeature::AddMethodFunctor::operator()(Element& el) const {
     if (!dynamic_cast<Behavior&>(el).getSpecification()) {
         dynamic_cast<Behavior&>(el).setSpecification(dynamic_cast<BehavioralFeature*>(m_el));
     }
-
-    // if (!dynamic_cast<BehavioralFeature*>(m_el)->getMembers().count(el.getID())) {
-    //     dynamic_cast<BehavioralFeature*>(m_el)->getMembers().add(dynamic_cast<Behavior&>(el));
-    // }
 }
 
 void BehavioralFeature::AddParameterFunctor::operator()(Element& el) const {

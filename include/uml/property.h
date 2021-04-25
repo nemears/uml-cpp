@@ -8,11 +8,13 @@
 namespace UML{
 
     class Classifier;
+    class DataType;
 
     class Property: public StructuralFeature {
         protected:
             ValueSpecification * defaultValue;
             Classifier* m_classifier;
+            DataType* m_dataType;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
             void reindexName(std::string oldName, std::string newName) override;
         public: 
@@ -20,11 +22,10 @@ namespace UML{
             ValueSpecification* getDefaultValue();
             Classifier* getClassifier();
             void setClassifier(Classifier* classifier);
+            DataType* getDataType();
+            void setDataType(DataType* dataType);
             ElementType getElementType() override;
-            Property() {
-                defaultValue = NULL;
-                m_classifier = NULL;
-            }
+            Property();
             Property(const Property& prop);
             bool isSubClassOf(ElementType eType) override;
     };

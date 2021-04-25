@@ -38,12 +38,12 @@ TEST_F(OperationTest, AddMethodFunctorTest) {
     ASSERT_TRUE(o.getMethods().size() == 1);
     ASSERT_TRUE(o.getMethods().front() == &m);
     ASSERT_TRUE(m.getSpecification() == & o);
-    ASSERT_TRUE(o.getMembers().size() == 1);
-    ASSERT_TRUE(o.getMembers().front() == &m);
-    ASSERT_TRUE(m.getNamespace() == &o);
-    ASSERT_TRUE(o.getOwnedElements().size() == 1);
-    ASSERT_TRUE(o.getOwnedElements().front() == &m);
-    ASSERT_TRUE(m.getOwner() == &o);
+    // ASSERT_TRUE(o.getMembers().size() == 1);
+    // ASSERT_TRUE(o.getMembers().front() == &m);
+    // ASSERT_TRUE(m.getNamespace() == &o);
+    // ASSERT_TRUE(o.getOwnedElements().size() == 1);
+    // ASSERT_TRUE(o.getOwnedElements().front() == &m);
+    // ASSERT_TRUE(m.getOwner() == &o);
 }
 
 TEST_F(OperationTest, SetSpecificationTest) {
@@ -53,12 +53,12 @@ TEST_F(OperationTest, SetSpecificationTest) {
     ASSERT_TRUE(o.getMethods().size() == 1);
     ASSERT_TRUE(o.getMethods().front() == &m);
     ASSERT_TRUE(m.getSpecification() == & o);
-    ASSERT_TRUE(o.getMembers().size() == 1);
-    ASSERT_TRUE(o.getMembers().front() == &m);
-    ASSERT_TRUE(m.getNamespace() == &o);
-    ASSERT_TRUE(o.getOwnedElements().size() == 1);
-    ASSERT_TRUE(o.getOwnedElements().front() == &m);
-    ASSERT_TRUE(m.getOwner() == &o);
+    // ASSERT_TRUE(o.getMembers().size() == 1);
+    // ASSERT_TRUE(o.getMembers().front() == &m);
+    // ASSERT_TRUE(m.getNamespace() == &o);
+    // ASSERT_TRUE(o.getOwnedElements().size() == 1);
+    // ASSERT_TRUE(o.getOwnedElements().front() == &m);
+    // ASSERT_TRUE(m.getOwner() == &o);
 }
 
 TEST_F(OperationTest, AddParameterFunctorForAbstractOperationTest) {

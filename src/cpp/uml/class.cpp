@@ -8,8 +8,8 @@ void Class::AddOperationFunctor::operator()(Element& el) const {
         dynamic_cast<Operation&>(el).setClass(dynamic_cast<Class*>(m_el));
     }
 
-    if (el.getOwner() != m_el) {
-        el.setOwner(m_el);
+    if (dynamic_cast<Operation&>(el).getNamespace() != m_el) {
+        dynamic_cast<Operation&>(el).setNamespace(dynamic_cast<Class*>(m_el));
     }
 }
 

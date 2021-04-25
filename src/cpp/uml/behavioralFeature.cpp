@@ -8,9 +8,9 @@ void BehavioralFeature::AddMethodFunctor::operator()(Element& el) const {
         dynamic_cast<Behavior&>(el).setSpecification(dynamic_cast<BehavioralFeature*>(m_el));
     }
 
-    if (!dynamic_cast<BehavioralFeature*>(m_el)->getMembers().count(el.getID())) {
-        dynamic_cast<BehavioralFeature*>(m_el)->getMembers().add(dynamic_cast<Behavior&>(el));
-    }
+    // if (!dynamic_cast<BehavioralFeature*>(m_el)->getMembers().count(el.getID())) {
+    //     dynamic_cast<BehavioralFeature*>(m_el)->getMembers().add(dynamic_cast<Behavior&>(el));
+    // }
 }
 
 void BehavioralFeature::AddParameterFunctor::operator()(Element& el) const {
@@ -20,8 +20,8 @@ void BehavioralFeature::AddParameterFunctor::operator()(Element& el) const {
         }
     }
 
-    if (!dynamic_cast<BehavioralFeature*>(m_el)->getMembers().count(el.getID())) {
-        dynamic_cast<BehavioralFeature*>(m_el)->getMembers().add(dynamic_cast<Parameter&>(el));
+    if (!dynamic_cast<BehavioralFeature*>(m_el)->getOwnedMembers().count(el.getID())) {
+        dynamic_cast<BehavioralFeature*>(m_el)->getOwnedMembers().add(dynamic_cast<Parameter&>(el));
     }
 
     // TODO behavior must have same parameters as it's specification, but they are not the same parameters

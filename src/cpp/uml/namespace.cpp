@@ -3,7 +3,9 @@
 using namespace UML;
 
 void Namespace::AddMemberFunctor::operator()(Element& el) const {
-    dynamic_cast<NamedElement&>(el).getMemberNamespace().add(*dynamic_cast<Namespace*>(m_el));
+    if (!dynamic_cast<NamedElement&>(el).getMemberNamespace().count(m_el->getID())) {
+        dynamic_cast<NamedElement&>(el).getMemberNamespace().add(*dynamic_cast<Namespace*>(m_el));
+    }
 }
 
 void Namespace::RemoveMemberFunctor::operator()(Element& el) const {

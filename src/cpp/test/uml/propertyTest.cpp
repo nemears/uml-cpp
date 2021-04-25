@@ -114,8 +114,8 @@ TEST_F(PropertyTest, copyPropertyTest) {
   ASSERT_TRUE(p.getName().compare(p2.getName()) == 0);
   ASSERT_TRUE(p2.getType() == &t);
   ASSERT_TRUE(p2.getClassifier() == &c);
-  ASSERT_TRUE(p2.getNamespace() == &c);
-  ASSERT_TRUE(p2.getOwner() == &c);
+  ASSERT_TRUE(p2.getMemberNamespace().size() == 1);
+  ASSERT_TRUE(p2.getMemberNamespace().front() == &c);
   ASSERT_TRUE(p2.getFeaturingClassifier() == &c);
   ASSERT_TRUE(p2.isStatic());
 }

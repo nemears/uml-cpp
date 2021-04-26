@@ -201,6 +201,8 @@ TEST_F(DataTypeTest, addOwnedOperationTest) {
     ASSERT_TRUE(o.getNamespace() == &d);
     ASSERT_TRUE(o.getMemberNamespace().size() == 1);
     ASSERT_TRUE(o.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(o.getRedefinitionContext().size() == 1);
+    ASSERT_TRUE(o.getRedefinitionContext().front() == &d);
     ASSERT_TRUE(o.getOwner() == &d);
 }
 
@@ -221,6 +223,8 @@ TEST_F(DataTypeTest, OperationSetDataTypeTest) {
     ASSERT_TRUE(o.getNamespace() == &d);
     ASSERT_TRUE(o.getMemberNamespace().size() == 1);
     ASSERT_TRUE(o.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(o.getRedefinitionContext().size() == 1);
+    ASSERT_TRUE(o.getRedefinitionContext().front() == &d);
     ASSERT_TRUE(o.getOwner() == &d);
 }
 
@@ -245,12 +249,15 @@ TEST_F(DataTypeTest, RemoveOwnedOperationFunctorTest) {
     ASSERT_TRUE(o.getNamespace() == &d);
     ASSERT_TRUE(o.getMemberNamespace().size() == 1);
     ASSERT_TRUE(o.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(o.getRedefinitionContext().size() == 1);
+    ASSERT_TRUE(o.getRedefinitionContext().front() == &d);
     ASSERT_TRUE(o.getOwner() == &d);
 
     ASSERT_TRUE(o2.getDataType() == 0);
     ASSERT_TRUE(o2.getFeaturingClassifier() == 0);
     ASSERT_TRUE(o2.getNamespace() == 0);
     ASSERT_TRUE(o2.getMemberNamespace().size() == 0);
+    ASSERT_TRUE(o2.getRedefinitionContext().size() == 0);
     ASSERT_TRUE(o2.getOwner() == 0);
 }
 
@@ -269,6 +276,7 @@ TEST_F(DataTypeTest, overwriteOperationDataTypeW_NullTest) {
     ASSERT_TRUE(o.getFeaturingClassifier() == 0);
     ASSERT_TRUE(o.getNamespace() == 0);
     ASSERT_TRUE(o.getMemberNamespace().size() == 0);
+    ASSERT_TRUE(o.getRedefinitionContext().size() == 0);
     ASSERT_TRUE(o.getOwner() == 0);
 }
 
@@ -300,6 +308,8 @@ TEST_F(DataTypeTest, overwriteOperationDataTypeW_OtherOperationTest) {
     ASSERT_TRUE(o.getNamespace() == &d2);
     ASSERT_TRUE(o.getMemberNamespace().size() == 1);
     ASSERT_TRUE(o.getMemberNamespace().front() == &d2);
+    ASSERT_TRUE(o.getRedefinitionContext().size() == 1);
+    ASSERT_TRUE(o.getRedefinitionContext().front() == &d2);
     ASSERT_TRUE(o.getOwner() == &d2);
 }
 

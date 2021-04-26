@@ -43,6 +43,10 @@ void DataType::AddOwnedOperationFunctor::operator()(Element& el) const {
     if (dynamic_cast<Operation&>(el).getDataType() != m_el) {
         dynamic_cast<Operation&>(el).setDataType(dynamic_cast<DataType*>(m_el));
     }
+
+    if (!dynamic_cast<Operation&>(el).getRedefinitionContext().count(m_el->getID())) {
+        dynamic_cast<Operation&>(el).getRedefinitionContext().add(*dynamic_cast<DataType*>(m_el));
+    }
 }
 
 void DataType::RemoveOwnedOperationFunctor::operator()(Element& el) const {
@@ -56,6 +60,10 @@ void DataType::RemoveOwnedOperationFunctor::operator()(Element& el) const {
 
     if (dynamic_cast<Operation&>(el).getDataType() == m_el) {
         dynamic_cast<Operation&>(el).setDataType(0);
+    }
+
+    if (dynamic_cast<Operation&>(el).getRedefinitionContext().count(m_el->getID())) {
+        dynamic_cast<Operation&>(el).getRedefinitionContext().remove(*dynamic_cast<DataType*>(m_el));
     }
 }
 

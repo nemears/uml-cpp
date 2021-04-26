@@ -20,13 +20,15 @@ void BehavioralFeature::AddParameterFunctor::operator()(Element& el) const {
         dynamic_cast<BehavioralFeature*>(m_el)->getOwnedMembers().add(dynamic_cast<Parameter&>(el));
     }
 
+    // I think we shouldn't enforce parameters being the same OMG UML 2.5.1 spec pg 289 bottom of page
+
     // TODO behavior must have same parameters as it's specification, but they are not the same parameters
     // TODO think about whether to be different just in memory or have different ids but same everything else
-    for (auto const& method : dynamic_cast<BehavioralFeature*>(m_el)->getMethods()) {
-        if (!method->getParameters().count(el.getID())) {
-            method->getParameters().add(dynamic_cast<Parameter&>(el));
-        }
-    }
+    // for (auto const& method : dynamic_cast<BehavioralFeature*>(m_el)->getMethods()) {
+    //     if (!method->getParameters().count(el.getID())) {
+    //         method->getParameters().add(dynamic_cast<Parameter&>(el));
+    //     }
+    // }
 }
 
 BehavioralFeature::BehavioralFeature() {

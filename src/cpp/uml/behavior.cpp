@@ -60,9 +60,18 @@ BehavioralFeature* Behavior::getSpecification() {
 }
 
 void Behavior::setSpecification(BehavioralFeature* specification) {
+    if (m_specification) {
+        if (m_specification != specification) {
+            if (m_specification->getMethods().count(m_id)) {
+                m_specification->getMethods().remove(*this);
+            }
+        }
+    }
     m_specification = specification;
-    if (!m_specification->getMethods().count(m_id)) {
-        m_specification->getMethods().add(*this);
+    if (m_specification) {
+        if (!m_specification->getMethods().count(m_id)) {
+            m_specification->getMethods().add(*this);
+        }
     }
 }
 

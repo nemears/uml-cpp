@@ -9,6 +9,12 @@ void BehavioralFeature::AddMethodFunctor::operator()(Element& el) const {
     }
 }
 
+void BehavioralFeature::RemoveMethodFunctor::operator()(Element& el) const {
+    if (dynamic_cast<Behavior&>(el).getSpecification() == m_el) {
+        dynamic_cast<Behavior&>(el).setSpecification(0);
+    }
+}
+
 void BehavioralFeature::AddParameterFunctor::operator()(Element& el) const {
     if (m_el->isSubClassOf(ElementType::OPERATION)) {
         if (dynamic_cast<Parameter&>(el).getOperation() != m_el) {
@@ -62,6 +68,7 @@ void BehavioralFeature::RemoveParameterFunctor::operator()(Element& el) const {
 BehavioralFeature::BehavioralFeature() {
     m_methods = new Sequence<Behavior>;
     m_methods->addProcedures.push_back(new AddMethodFunctor(this));
+    m_methods->removeProcedures.push_back(new RemoveMethodFunctor(this));
     m_ownedParameters = new Sequence<Parameter>;
     m_ownedParameters->addProcedures.push_back(new AddParameterFunctor(this));
     m_ownedParameters->addChecks.push_back(new CheckParameterFunctor(this));

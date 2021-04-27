@@ -267,5 +267,36 @@ TEST_F(OperationTest, reindexParameterDirectionTest) {
     ASSERT_TRUE(p2.getMemberNamespace().size() == 1);
     ASSERT_TRUE(p2.getMemberNamespace().front() == &o);
     ASSERT_TRUE(p2.getOwner() == &o);
+}
 
+TEST_F(OperationTest, RemoveMethodFunctorTest) {
+    Operation o;
+    OpaqueBehavior m;
+    o.getMethods().add(m);
+    ASSERT_NO_THROW(o.getMethods().remove(m));
+    ASSERT_TRUE(o.getMethods().size() == 0);
+
+    ASSERT_TRUE(m.getSpecification() == 0);
+}
+
+TEST_F(OperationTest, SetNullSpecificationTest) {
+    Operation o;
+    OpaqueBehavior m;
+    o.getMethods().add(m);
+    ASSERT_NO_THROW(m.setSpecification(0));
+    ASSERT_TRUE(o.getMethods().size() == 0);
+
+    ASSERT_TRUE(m.getSpecification() == 0);
+}
+
+TEST_F(OperationTest, OverrideSpecificationTest) {
+    Operation o;
+    Operation o2;
+    OpaqueBehavior m;
+    m.setSpecification(&o);
+    ASSERT_NO_THROW(m.setSpecification(&o2));
+    ASSERT_TRUE(o.getMethods().size() == 0);
+    ASSERT_TRUE(o2.getMethods().size() == 1);
+    ASSERT_TRUE(o2.getMethods().front() == &m);
+    ASSERT_TRUE(m.getSpecification() == &o2);
 }

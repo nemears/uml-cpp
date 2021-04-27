@@ -31,11 +31,28 @@ void BehavioralFeature::AddParameterFunctor::operator()(Element& el) const {
     // }
 }
 
+void BehavioralFeature::CheckParameterFunctor::operator()(Element& el) const {
+    ParameterDirectionKind direction = dynamic_cast<Parameter&>(el).getDirection();
+    if (direction == ParameterDirectionKind::RETURN || direction == ParameterDirectionKind::OUT || direction == ParameterDirectionKind::INOUT) {
+        if (dynamic_cast<BehavioralFeature*>(m_el)->m_returnSpecified) {
+            if (m_el->isSubClassOf(ElementType::OPERATION)) {
+                if (dynamic_cast<Parameter&>(el).getOperation() == m_el) {
+                    dynamic_cast<Parameter&>(el).setOperation(0);
+                }
+            }
+            throw ReturnParameterException(m_el->getElementTypeString() + " " + m_el->getIDstring());
+        } else {
+            dynamic_cast<BehavioralFeature*>(m_el)->m_returnSpecified = true;
+        }
+    }
+}
+
 BehavioralFeature::BehavioralFeature() {
     m_methods = new Sequence<Behavior>;
     m_methods->addProcedures.push_back(new AddMethodFunctor(this));
     m_ownedParameters = new Sequence<Parameter>;
     m_ownedParameters->addProcedures.push_back(new AddParameterFunctor(this));
+    m_ownedParameters->addChecks.push_back(new CheckParameterFunctor(this));
 }
 
 BehavioralFeature::~BehavioralFeature() {

@@ -11,6 +11,7 @@ namespace UML {
         protected:
             Sequence<Behavior>* m_methods;
             Sequence<Parameter>* m_ownedParameters;
+            bool m_returnSpecified = false;
             class AddMethodFunctor : public AbstractSequenceFunctor {
                 public:
                     AddMethodFunctor(Element* me) : AbstractSequenceFunctor(me) {};
@@ -21,6 +22,11 @@ namespace UML {
                     AddParameterFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class CheckParameterFunctor : public AbstractSequenceFunctor {
+                public:
+                    CheckParameterFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             BehavioralFeature();
             ~BehavioralFeature();
@@ -29,6 +35,17 @@ namespace UML {
             bool isAbstract();
             ElementType getElementType() override;
             bool isSubClassOf(ElementType eType) override;
+    };
+
+    class ReturnParameterException : public std::exception {
+        private:
+            std::string m_msg;
+        public:
+            ReturnParameterException(const std::string elID) : m_msg(elID + " return parameter alreadu specified") {};
+            virtual const char* what() const throw() {
+                return m_msg.c_str();
+            };
+
     };
 }
 

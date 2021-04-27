@@ -47,12 +47,25 @@ void BehavioralFeature::CheckParameterFunctor::operator()(Element& el) const {
     }
 }
 
+void BehavioralFeature::RemoveParameterFunctor::operator()(Element& el) const {
+    if (m_el->isSubClassOf(ElementType::OPERATION)) {
+        if (dynamic_cast<Parameter&>(el).getOperation() == m_el) {
+            dynamic_cast<Parameter&>(el).setOperation(0);
+        }
+    }
+
+    if (dynamic_cast<BehavioralFeature*>(m_el)->getMembers().count(el.getID())) {
+        dynamic_cast<BehavioralFeature*>(m_el)->getMembers().remove(dynamic_cast<Parameter&>(el));
+    }
+}
+
 BehavioralFeature::BehavioralFeature() {
     m_methods = new Sequence<Behavior>;
     m_methods->addProcedures.push_back(new AddMethodFunctor(this));
     m_ownedParameters = new Sequence<Parameter>;
     m_ownedParameters->addProcedures.push_back(new AddParameterFunctor(this));
     m_ownedParameters->addChecks.push_back(new CheckParameterFunctor(this));
+    m_ownedParameters->removeProcedures.push_back(new RemoveParameterFunctor(this));
 }
 
 BehavioralFeature::~BehavioralFeature() {

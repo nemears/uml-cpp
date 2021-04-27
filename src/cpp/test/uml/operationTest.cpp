@@ -172,3 +172,63 @@ TEST_F(OperationTest, setOperationReturnParameterExceptionTest) {
     ASSERT_TRUE(p2.getMemberNamespace().size() == 0);
     ASSERT_TRUE(p2.getOwner() == 0);
 }
+
+TEST_F(OperationTest, removeOwnedParameterFunctorTest) {
+    Operation o;
+    Parameter p;
+    o.getOwnedParameters().add(p);
+    ASSERT_NO_THROW(o.getOwnedParameters().remove(p));
+    ASSERT_TRUE(o.getOwnedParameters().size() == 0);
+    ASSERT_TRUE(o.getOwnedMembers().size() == 0);
+    ASSERT_TRUE(o.getMembers().size() == 0);
+    ASSERT_TRUE(o.getOwnedElements().size() == 0);
+    
+    ASSERT_TRUE(p.getOperation() == 0);
+    ASSERT_TRUE(p.getNamespace() == 0);
+    ASSERT_TRUE(p.getMemberNamespace().size() == 0);
+    ASSERT_TRUE(p.getOwner() == 0);
+}
+
+TEST_F(OperationTest, removeOwnedParameterW_NullOperationTest) {
+    Operation o;
+    Parameter p;
+    o.getOwnedParameters().add(p);
+    ASSERT_NO_THROW(p.setOperation(0));
+    ASSERT_TRUE(o.getOwnedParameters().size() == 0);
+    ASSERT_TRUE(o.getOwnedMembers().size() == 0);
+    ASSERT_TRUE(o.getMembers().size() == 0);
+    ASSERT_TRUE(o.getOwnedElements().size() == 0);
+    
+    ASSERT_TRUE(p.getOperation() == 0);
+    ASSERT_TRUE(p.getNamespace() == 0);
+    ASSERT_TRUE(p.getMemberNamespace().size() == 0);
+    ASSERT_TRUE(p.getOwner() == 0);
+}
+
+TEST_F(OperationTest, overrideParameterOperationTest) {
+    Operation o;
+    Parameter p;
+    Operation o2;
+    o.getOwnedParameters().add(p);
+    ASSERT_NO_THROW(p.setOperation(&o2));
+
+    ASSERT_TRUE(o.getOwnedParameters().size() == 0);
+    ASSERT_TRUE(o.getOwnedMembers().size() == 0);
+    ASSERT_TRUE(o.getMembers().size() == 0);
+    ASSERT_TRUE(o.getOwnedElements().size() == 0);
+
+    ASSERT_TRUE(o2.getOwnedParameters().size() == 1);
+    ASSERT_TRUE(o2.getOwnedParameters().front() == &p);
+    ASSERT_TRUE(o2.getOwnedMembers().size() == 1);
+    ASSERT_TRUE(o2.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(o2.getMembers().size() == 1);
+    ASSERT_TRUE(o2.getMembers().front() == &p);
+    ASSERT_TRUE(o2.getOwnedElements().size() == 1);
+    ASSERT_TRUE(o2.getOwnedElements().front() == &p);
+
+    ASSERT_TRUE(p.getOperation() == &o2);
+    ASSERT_TRUE(p.getNamespace() == &o2);
+    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
+    ASSERT_TRUE(p.getMemberNamespace().front() == &o2);
+    ASSERT_TRUE(p.getOwner() == &o2);
+}

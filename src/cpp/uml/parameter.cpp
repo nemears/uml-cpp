@@ -63,6 +63,14 @@ ParameterDirectionKind Parameter::getDirection() {
 }
 
 void Parameter::setDirection(ParameterDirectionKind direction) {
+    if (direction == ParameterDirectionKind::RETURN || direction == ParameterDirectionKind::OUT || direction == ParameterDirectionKind::INOUT) {
+        if (m_operation) {
+            if (m_operation->m_returnSpecified) {
+                throw ReturnParameterException(m_operation->getElementTypeString() + " " + m_operation->getIDstring());
+            }
+            m_operation->m_returnSpecified = true;
+        }
+    }
     m_direction = direction;
 }
 

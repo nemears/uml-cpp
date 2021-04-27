@@ -9,6 +9,7 @@ namespace UML {
     class DataType;
 
     class Operation : public BehavioralFeature {
+        friend class Parameter;
         protected:
             Type* m_type;
             Class* m_class;

@@ -46,7 +46,7 @@ namespace UML {
         private:
             std::string m_msg;
         public:
-            ReturnParameterException(const std::string elID) : m_msg(elID + " return parameter alreadu specified") {};
+            ReturnParameterException(const std::string elID) : m_msg(elID + " return parameter already specified") {};
             virtual const char* what() const throw() {
                 return m_msg.c_str();
             };

@@ -232,3 +232,40 @@ TEST_F(OperationTest, overrideParameterOperationTest) {
     ASSERT_TRUE(p.getMemberNamespace().front() == &o2);
     ASSERT_TRUE(p.getOwner() == &o2);
 }
+
+TEST_F(OperationTest, reindexParameterDirectionTest) {
+    Operation o;
+    Parameter p;
+    Parameter p2;
+    o.getOwnedParameters().add(p);
+    o.getOwnedParameters().add(p2);
+    ASSERT_NO_THROW(p.setDirection(ParameterDirectionKind::RETURN));
+    ASSERT_THROW(p2.setDirection(ParameterDirectionKind::RETURN), ReturnParameterException);
+    ASSERT_TRUE(o.getOwnedParameters().size() == 2);
+    ASSERT_TRUE(o.getOwnedParameters().front() == &p);
+    ASSERT_TRUE(o.getOwnedParameters().back() == &p2);
+    ASSERT_TRUE(o.getOwnedMembers().size() == 2);
+    ASSERT_TRUE(o.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(o.getOwnedMembers().back() == &p2);
+    ASSERT_TRUE(o.getMembers().size() == 2);
+    ASSERT_TRUE(o.getMembers().front() == &p);
+    ASSERT_TRUE(o.getMembers().back() == &p2);
+    ASSERT_TRUE(o.getOwnedElements().size() == 2);
+    ASSERT_TRUE(o.getOwnedElements().front() == &p);
+    ASSERT_TRUE(o.getOwnedElements().back() == &p2);
+
+    ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::RETURN);
+    ASSERT_TRUE(p.getOperation() == &o);
+    ASSERT_TRUE(p.getNamespace() == &o);
+    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
+    ASSERT_TRUE(p.getMemberNamespace().front() == &o);
+    ASSERT_TRUE(p.getOwner() == &o);
+    
+    ASSERT_TRUE(p2.getDirection() == ParameterDirectionKind::NONE);
+    ASSERT_TRUE(p2.getOperation() == &o);
+    ASSERT_TRUE(p2.getNamespace() == &o);
+    ASSERT_TRUE(p2.getMemberNamespace().size() == 1);
+    ASSERT_TRUE(p2.getMemberNamespace().front() == &o);
+    ASSERT_TRUE(p2.getOwner() == &o);
+
+}

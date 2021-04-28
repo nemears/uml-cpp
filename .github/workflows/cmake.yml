@@ -25,7 +25,7 @@ jobs:
       run: sudo apt-get update && sudo apt-get install -yq libboost1.71-dev
 
     - name: clang
-      run: sudo apt-get install -yq clang
+      run: sudo apt-get install -yq libclang-dev
 
     - name: llvm
       run: sudo apt-get install -yq llvm-10-dev

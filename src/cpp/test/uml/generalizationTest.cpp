@@ -22,12 +22,15 @@ TEST_F(GeneralizationTest, basicSetSpecificAndGeneralTest) {
     ASSERT_TRUE(r.getRelatedElements().size() == 2);
     ASSERT_TRUE(r.getRelatedElements().count(s.getID()) == 1);
     ASSERT_TRUE(r.getRelatedElements().count(g.getID()) == 1);
+    ASSERT_TRUE(r.getOwner() == &s);
     ASSERT_TRUE(s.getRelationships().size() == 1);
     ASSERT_TRUE(s.getRelationships().front() == &r);
     ASSERT_TRUE(g.getRelationships().size() == 1);
     ASSERT_TRUE(g.getRelationships().front() == &r);
     ASSERT_TRUE(s.getGeneralizations().size() == 1);
     ASSERT_TRUE(s.getGeneralizations().front() == &r);
+    ASSERT_TRUE(s.getOwnedElements().size() == 1);
+    ASSERT_TRUE(s.getOwnedElements().front() == &r);
     ASSERT_TRUE(g.getGeneralizations().size() == 0);
     ASSERT_TRUE(s.getGenerals().size() == 1);
     ASSERT_TRUE(s.getGenerals().front() == &g);
@@ -50,12 +53,15 @@ TEST_F(GeneralizationTest, addGeneralFunctorTest) {
     ASSERT_TRUE(r->getRelatedElements().size() == 2);
     ASSERT_TRUE(r->getRelatedElements().count(s.getID()) == 1);
     ASSERT_TRUE(r->getRelatedElements().count(g.getID()) == 1);
+    ASSERT_TRUE(r->getOwner() == &s);
     ASSERT_TRUE(s.getRelationships().size() == 1);
     ASSERT_TRUE(s.getRelationships().front() == r);
     ASSERT_TRUE(g.getRelationships().size() == 1);
     ASSERT_TRUE(g.getRelationships().front() == r);
     ASSERT_TRUE(s.getGeneralizations().size() == 1);
     ASSERT_TRUE(s.getGeneralizations().front() == r);
+    ASSERT_TRUE(s.getOwnedElements().size() == 1);
+    ASSERT_TRUE(s.getOwnedElements().front() == r);
 }
 
 TEST_F(GeneralizationTest, AddGeneralizationFunctorTest) {

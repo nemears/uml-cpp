@@ -101,6 +101,9 @@ void Classifier::AddGeneralizationFunctor::operator()(Element& el) const {
     } else {
         dynamic_cast<Generalization&>(el).setSpecific(dynamic_cast<Classifier*>(m_el));
     }
+    if (!m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().add(el);
+    }
 }
 
 void Classifier::AddGeneralFunctor::operator()(Element& el) const {

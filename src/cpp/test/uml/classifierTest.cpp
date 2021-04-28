@@ -90,6 +90,7 @@ TEST_F(ClassifierTest, removeAttributeFunctorTest) {
   ASSERT_TRUE(!p.getClassifier());
   ASSERT_TRUE(!p.getFeaturingClassifier());
   ASSERT_TRUE(!p.getNamespace());
+  ASSERT_TRUE(p.getMemberNamespace().size() == 0);
   ASSERT_TRUE(!p.getOwner());
 }
 

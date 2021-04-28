@@ -1,7 +1,7 @@
 #ifndef CLASSH
 #define CLASSH
 #include <list>
-#include "classifier.h"
+#include "structuredClassifier.h"
 
 namespace UML{
 
@@ -14,7 +14,7 @@ namespace UML{
     /**
      * Definition of class here
      **/
-    class Class : public Classifier {
+    class Class : public StructuredClassifier {
         protected:
             Sequence<Operation>* m_operations;
             class AddOperationFunctor : public AbstractSequenceFunctor {

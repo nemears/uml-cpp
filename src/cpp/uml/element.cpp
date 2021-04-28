@@ -277,6 +277,9 @@ string Element::getElementTypeString() {
         case ElementType::STRUCTURAL_FEATURE : {
             return "STRUCTURAL_FEATURE";
         }
+        case ElementType::STRUCTURED_CLASSIFIER : {
+            return "STRUCTURED_CLASSIFIER";
+        }
         case ElementType::TYPE : {
             return "TYPE";
         }

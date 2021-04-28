@@ -42,7 +42,7 @@ ElementType Class::getElementType() {
 }
 
 bool Class::isSubClassOf(ElementType eType) {
-    bool ret = Classifier::isSubClassOf(eType);
+    bool ret = StructuredClassifier::isSubClassOf(eType);
 
     if (!ret) {
         ret = eType == ElementType::CLASS;

@@ -64,6 +64,7 @@ namespace UML {
         RELATIONSHIP,
         SLOT,
         STRUCTURAL_FEATURE,
+        STRUCTURED_CLASSIFIER,
         TYPE,
         TYPED_ELEMENT,
         VALUE_SPECIFICATION

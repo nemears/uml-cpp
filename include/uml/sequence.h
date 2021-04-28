@@ -42,6 +42,7 @@ namespace UML {
     class Package;
     class Feature;
     class DataType;
+    class StructuredClassifier;
     /**
      * Sequence Class, Holds collections of uml elements
      **/
@@ -72,6 +73,7 @@ namespace UML {
         friend class Package;
         friend class Feature;
         friend class DataType;
+        friend class StructuredClassifier;
         private:
             std::map<boost::uuids::uuid, T*> m_data;
             std::vector<boost::uuids::uuid> m_order;

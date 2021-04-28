@@ -9,10 +9,12 @@ namespace UML{
 
     class Classifier;
     class DataType;
+    class StructuredClassifier;
 
     class Property: public StructuralFeature {
         protected:
             ValueSpecification * defaultValue;
+            StructuredClassifier* m_structuredClassifier;
             Classifier* m_classifier;
             DataType* m_dataType;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
@@ -22,6 +24,8 @@ namespace UML{
             ValueSpecification* getDefaultValue();
             Classifier* getClassifier();
             void setClassifier(Classifier* classifier);
+            StructuredClassifier* getStructuredClassifier();
+            void setStructuredClassifier(StructuredClassifier* classifier);
             DataType* getDataType();
             void setDataType(DataType* dataType);
             ElementType getElementType() override;

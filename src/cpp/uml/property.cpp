@@ -2,6 +2,7 @@
 #include "uml/primitiveType.h"
 #include "uml/classifier.h"
 #include "uml/dataType.h"
+#include "uml/structuredClassifier.h"
 
 using namespace std;
 using namespace UML;
@@ -57,6 +58,7 @@ Property::Property() {
     defaultValue = NULL;
     m_classifier = NULL;
     m_dataType = 0;
+    m_structuredClassifier = 0;
 }
 
 // TODO remove?
@@ -84,6 +86,26 @@ void Property::setClassifier(Classifier* classifier) {
     if (m_classifier) {
         if (!m_classifier->getAttributes().count(m_id)) {
             m_classifier->getAttributes().add(*this);
+        }
+    }
+}
+
+StructuredClassifier* Property::getStructuredClassifier() {
+    return m_structuredClassifier;
+}
+
+void Property::setStructuredClassifier(StructuredClassifier* classifier) {
+    if (m_structuredClassifier) {
+        if (m_structuredClassifier != classifier) {
+            if (m_structuredClassifier->getOwnedAttributes().count(m_id)) {
+                m_structuredClassifier->getOwnedAttributes().remove(*this);
+            }
+        }
+    }
+    m_structuredClassifier = classifier;
+    if (m_structuredClassifier) {
+        if (!m_structuredClassifier->getOwnedAttributes().count(m_id)) {
+            m_structuredClassifier->getOwnedAttributes().add(*this);
         }
     }
 }

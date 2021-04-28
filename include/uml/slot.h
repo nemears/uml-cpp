@@ -20,6 +20,11 @@ namespace UML {
                     AddValueFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class RemoveValueFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveValueFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Slot();
             ~Slot();

@@ -8,6 +8,7 @@ namespace UML {
 class ValueSpecification : public TypedElement , public PackageableElement {
 
     protected:
+        Slot* m_owningSlot;
         void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
         void reindexName(std::string oldName, std::string newName) override;
 
@@ -18,6 +19,9 @@ class ValueSpecification : public TypedElement , public PackageableElement {
 
     //virtual void* getValue() = 0;
     public:
+        ValueSpecification();
+        Slot* getOwningSlot();
+        void setOwningSlot(Slot* slot);
         ElementType getElementType() override;
         bool isSubClassOf(ElementType eType) override;
 };

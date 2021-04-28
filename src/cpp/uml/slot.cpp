@@ -12,8 +12,22 @@ void Slot::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
 }
 
 void Slot::AddValueFunctor::operator()(Element& el) const {
-    if (!el.getOwner()) {
+    if (dynamic_cast<ValueSpecification&>(el).getOwningSlot() != m_el) {
+        dynamic_cast<ValueSpecification&>(el).setOwningSlot(dynamic_cast<Slot*>(m_el));
+    }
+    
+    if (el.getOwner() != m_el) {
         el.setOwner(m_el);
+    }
+}
+
+void Slot::RemoveValueFunctor::operator()(Element& el) const {
+    if (dynamic_cast<ValueSpecification&>(el).getOwningSlot() == m_el) {
+        dynamic_cast<ValueSpecification&>(el).setOwningSlot(0);
+    }
+
+    if (dynamic_cast<ValueSpecification&>(el).getOwner() == m_el) {
+        dynamic_cast<ValueSpecification&>(el).setOwner(0);
     }
 }
 
@@ -21,6 +35,7 @@ Slot::Slot() {
     m_definingFeature = 0;
     m_values = new Sequence<ValueSpecification>;
     m_values->addProcedures.push_back(new AddValueFunctor(this));
+    m_values->removeProcedures.push_back(new RemoveValueFunctor(this));
     m_owningInstance = NULL;
 }
 

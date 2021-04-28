@@ -29,6 +29,30 @@ void ValueSpecification::reindexName(string oldName, string newName) {
     NamedElement::reindexName(oldName, newName);
 }
 
+ValueSpecification::ValueSpecification() {
+    m_owningSlot = 0;
+}
+
+Slot* ValueSpecification::getOwningSlot() {
+    return m_owningSlot;
+}
+
+void ValueSpecification::setOwningSlot(Slot* slot) {
+    if (m_owningSlot) {
+        if (m_owningSlot != slot) {
+            if (m_owningSlot->getValues().count(m_id)) {
+                m_owningSlot->getValues().remove(*this);
+            }
+        }
+    }
+    m_owningSlot = slot;
+    if (m_owningSlot) {
+        if (!m_owningSlot->getValues().count(m_id)) {
+            m_owningSlot->getValues().add(*this);
+        }
+    }
+}
+
 ElementType ValueSpecification::getElementType() {
     return ElementType::VALUE_SPECIFICATION;
 }

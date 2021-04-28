@@ -24,7 +24,7 @@ jobs:
     - name: boost
       run: sudo apt-get update && sudo apt-get install -yq libboost1.71-dev
 
-    -name: clang
+    - name: clang
       run: sudo apt-get install -yq clang
 
     - name: Configure CMake

@@ -130,6 +130,8 @@ TEST_F(ClassTest, addOwnedOperationTest) {
   ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
   ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
   ASSERT_TRUE(c.getOwnedAttributes().front() == &p);
+  ASSERT_TRUE(c.getRole().size() == 1);
+  ASSERT_TRUE(c.getRole().front() == &p);
   ASSERT_TRUE(c.getOwnedMembers().size() == 1);
   ASSERT_TRUE(c.getOwnedMembers().front() == &p);
   ASSERT_TRUE(c.getFeatures().size() == 1);
@@ -156,6 +158,8 @@ TEST_F(ClassTest, setStructuredClassifierTest) {
   ASSERT_NO_THROW(p.setStructuredClassifier(&c));
   ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
   ASSERT_TRUE(c.getOwnedAttributes().front() == &p);
+  ASSERT_TRUE(c.getRole().size() == 1);
+  ASSERT_TRUE(c.getRole().front() == &p);
   ASSERT_TRUE(c.getOwnedMembers().size() == 1);
   ASSERT_TRUE(c.getOwnedMembers().front() == &p);
   ASSERT_TRUE(c.getFeatures().size() == 1);
@@ -183,6 +187,7 @@ TEST_F(ClassTest, removeOwnedAttributeFunctorTest) {
   ASSERT_NO_THROW(c.getOwnedAttributes().remove(p));
   ASSERT_TRUE(c.getOwnedAttributes().size() == 0);
   ASSERT_TRUE(c.getAttributes().size() == 0);
+  ASSERT_TRUE(c.getRole().size() == 0);
   ASSERT_TRUE(c.getFeatures().size() == 0);
   ASSERT_TRUE(c.getOwnedMembers().size() == 0);
   ASSERT_TRUE(c.getMembers().size() == 0);
@@ -203,6 +208,7 @@ TEST_F(ClassTest, setFeaturingClassifierNullTest) {
   ASSERT_NO_THROW(p.setStructuredClassifier(0));
   ASSERT_TRUE(c.getOwnedAttributes().size() == 0);
   ASSERT_TRUE(c.getAttributes().size() == 0);
+  ASSERT_TRUE(c.getRole().size() == 0);
   ASSERT_TRUE(c.getFeatures().size() == 0);
   ASSERT_TRUE(c.getOwnedMembers().size() == 0);
   ASSERT_TRUE(c.getMembers().size() == 0);
@@ -214,4 +220,27 @@ TEST_F(ClassTest, setFeaturingClassifierNullTest) {
   ASSERT_TRUE(p.getNamespace() == 0);
   ASSERT_TRUE(p.getMemberNamespace().size() == 0);
   ASSERT_TRUE(p.getOwner() == 0);
+}
+
+TEST_F(ClassTest, addRoleFunctorTest) {
+  StructuredClassifier c;
+  ConnectableElement r;
+  ASSERT_NO_THROW(c.getRole().add(r));
+  ASSERT_TRUE(c.getRole().size() == 1);
+  ASSERT_TRUE(c.getRole().front() == &r);
+  ASSERT_TRUE(c.getMembers().size() == 1);
+  ASSERT_TRUE(c.getMembers().front() == &r);
+
+  ASSERT_TRUE(r.getMemberNamespace().size() == 1);
+  ASSERT_TRUE(r.getMemberNamespace().front() == &c);
+}
+
+TEST_F(ClassTest, removeRoleFunctorTest) {
+  StructuredClassifier c;
+  ConnectableElement r;
+  c.getRole().add(r);
+  ASSERT_NO_THROW(c.getRole().remove(r));
+  ASSERT_TRUE(c.getRole().size() == 0);
+  ASSERT_TRUE(c.getMembers().size() == 0);
+  ASSERT_TRUE(r.getMemberNamespace().size() == 0);
 }

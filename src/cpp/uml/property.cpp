@@ -136,6 +136,10 @@ bool Property::isSubClassOf(ElementType eType) {
     bool ret = StructuralFeature::isSubClassOf(eType);
 
     if (!ret) {
+        ret = ConnectableElement::isSubClassOf(eType);
+    }
+
+    if (!ret) {
         ret = eType == ElementType::PROPERTY;
     }
 

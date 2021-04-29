@@ -62,7 +62,7 @@ Property::Property() {
 }
 
 // TODO remove?
-Property::Property(const Property& prop) : StructuralFeature(prop), NamedElement(prop), Element(prop) {
+Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement(prop), NamedElement(prop), Element(prop) {
     defaultValue = prop.defaultValue;
     m_classifier = prop.m_classifier;
     m_dataType = prop.m_dataType;

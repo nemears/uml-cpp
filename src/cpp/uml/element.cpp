@@ -151,6 +151,9 @@ string Element::getElementTypeString() {
         case ElementType::CLASSIFIER : {
             return "CLASSIFIER";
         }
+        case ElementType::CONNECTABLE_ELEMENT : {
+            return "CONNECTABLE_ELEMENT";
+        }
         case ElementType::CONTROL_FLOW : {
             return "CONTROL_FLOW";
         }

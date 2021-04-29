@@ -6,8 +6,10 @@
 #include "feature.h"
 
 namespace UML {
-    class StructuralFeature : public TypedElement, public MultiplicityElement, public Feature {
+    class StructuralFeature : virtual public TypedElement, public MultiplicityElement, public Feature {
         public:
+            StructuralFeature(){};
+            StructuralFeature(const StructuralFeature& feature) : TypedElement(feature), MultiplicityElement(feature), Feature(feature) {};
             ElementType getElementType() override;
             class InvalidValueException: public std::exception {
                 public:
@@ -16,6 +18,9 @@ namespace UML {
                     }
             } invalidValueException;
             bool isSubClassOf(ElementType eType) override;
+            StructuralFeature& operator=(StructuralFeature&&) {
+                return *this;
+            };
     };
 }
 

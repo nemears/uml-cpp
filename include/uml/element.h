@@ -22,6 +22,7 @@ namespace UML {
         CALL_BEHAVIOR_ACTION,
         CLASS,
         CLASSIFIER,
+        CONNECTABLE_ELEMENT,
         CONTROL_FLOW,
         CREATE_OBJECT_ACTION,
         DATA_TYPE,

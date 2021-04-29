@@ -3,7 +3,7 @@
 
 #include "structuralFeature.h"
 #include "valueSpecification.h"
-#include "multiplicityElement.h"
+#include "connectableElement.h"
 
 namespace UML{
 
@@ -11,7 +11,7 @@ namespace UML{
     class DataType;
     class StructuredClassifier;
 
-    class Property: public StructuralFeature {
+    class Property: public StructuralFeature, public ConnectableElement {
         protected:
             ValueSpecification * defaultValue;
             StructuredClassifier* m_structuredClassifier;

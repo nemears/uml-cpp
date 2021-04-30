@@ -11,11 +11,6 @@ namespace UML {
         public:
             int getValue();
             void setValue(int val);
-            LiteralInt() {
-                PrimitiveType* intPrimitive = new PrimitiveType;
-                intPrimitive->setPrimitiveType(PrimitiveType::Primitive::INT);
-                setType(intPrimitive);
-            }
             ElementType getElementType() override;
             bool isSubClassOf(ElementType eType) override;
     };

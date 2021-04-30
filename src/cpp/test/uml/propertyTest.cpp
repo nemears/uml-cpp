@@ -30,26 +30,25 @@ class PropertyTest : public ::testing::Test {
 TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
     Property p;
     PrimitiveType stringP;
-    stringP.setPrimitiveType(PrimitiveType::Primitive::STRING);
     p.setType(&stringP);
     LiteralString ls;
     ls.setValue("test");
     ASSERT_NO_THROW(p.setDefaultValue(&ls));
 }
 
-TEST_F(PropertyTest, setDefaultValueOfImproperTypeTestString) {
-    Property p;
-    PrimitiveType stringP;
+// TEST_F(PropertyTest, setDefaultValueOfImproperTypeTestString) {
+//     Property p;
+//     PrimitiveType stringP;
 
-    // assign it improper type if expecting string
-    stringP.setPrimitiveType(PrimitiveType::Primitive::INT);
+//     // assign it improper type if expecting string
+//     stringP.setPrimitiveType(PrimitiveType::Primitive::INT);
 
-    p.setType(&stringP);
+//     p.setType(&stringP);
     
-    LiteralString ls;
-    ls.setValue("test");
-    EXPECT_THROW(p.setDefaultValue(&ls), Property::InvalidValueException);
-}
+//     LiteralString ls;
+//     ls.setValue("test");
+//     EXPECT_THROW(p.setDefaultValue(&ls), Property::InvalidValueException);
+// }
 
 TEST_F(PropertyTest, reindexID_forClassiferTest) {
   Class c;

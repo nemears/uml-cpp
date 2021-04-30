@@ -32,25 +32,6 @@ void Property::reindexName(string oldName, string newName) {
 }
 
 void Property::setDefaultValue(ValueSpecification* val) {
-
-    // TODO add checks to see if defaultValue corresponds with type
-    if (type == NULL) {
-        throw invalidValueException;
-    }
-
-    // TODO maybe delete these checks don't know if relevant
-    if (type->isSubClassOf(ElementType::PRIMITIVE_TYPE)) {
-        Type* valType = val->getType();
-        if (!(valType->isSubClassOf(ElementType::PRIMITIVE_TYPE))) {
-            throw invalidValueException;
-        }
-        if (((PrimitiveType*)val->getType())->getPrimitiveType() != ((PrimitiveType*) type)->getPrimitiveType()) {
-            throw invalidValueException;
-        }
-    }
-
-    // TODO check that val type is same as property type if not primitive
-
     defaultValue = val;
 }
 

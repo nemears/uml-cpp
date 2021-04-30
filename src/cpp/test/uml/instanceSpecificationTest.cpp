@@ -22,7 +22,6 @@ TEST_F(InstanceSpecificationTest, setStringValueSlots) {
     Class c;
     Property stringP;
     PrimitiveType stringPrim;
-    stringPrim.setPrimitiveType(PrimitiveType::Primitive::STRING);
     stringP.setType(&stringPrim);
     c.getAttributes().add(stringP);
     LiteralString ls;

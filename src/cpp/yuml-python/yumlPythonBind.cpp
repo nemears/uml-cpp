@@ -226,9 +226,7 @@ PYBIND11_MODULE(yuml_python, m) {
     
     // PrimitiveType
     py::class_<PrimitiveType,  Classifier, ElementPy<PrimitiveType>> primitiveType (m, "PrimitiveType");
-        primitiveType.def(py::init<>())
-        .def("setPrimitiveType", &PrimitiveType::setPrimitiveTypeString)
-        .def("getPrimitiveType", &PrimitiveType::getPrimitiveTypeString);
+        primitiveType.def(py::init<>());
 
     // Parameter
     py::class_<Parameter, TypedElement, MultiplicityElement, ElementPy<Parameter>>(m, "Parameter")

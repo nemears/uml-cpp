@@ -11,11 +11,6 @@ namespace UML {
         public:
             double getValue();
             void setValue(double val);
-            LiteralReal() {
-                PrimitiveType* realPrimitive = new PrimitiveType;
-                realPrimitive->setPrimitiveType(PrimitiveType::Primitive::REAL);
-                setType(realPrimitive);
-            }
             ElementType getElementType() override;
             bool isSubClassOf(ElementType eType) override;
     };

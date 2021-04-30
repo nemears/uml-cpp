@@ -19,6 +19,7 @@ namespace UML{
             Classifier* m_classifier;
             DataType* m_dataType;
             Association* m_association;
+            Association* m_owningAssociation;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
             void reindexName(std::string oldName, std::string newName) override;
         public: 
@@ -32,6 +33,8 @@ namespace UML{
             void setDataType(DataType* dataType);
             Association* getAssociation();
             void setAssociation(Association* association);
+            Association* getOwningAssociation();
+            void setOwningAssociation(Association* association);
             ElementType getElementType() const override;
             Property();
             Property(const Property& prop);

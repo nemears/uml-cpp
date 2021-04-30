@@ -22,6 +22,16 @@ namespace UML {
                     RemoveMemberEndFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class AddOwnedEndFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddOwnedEndFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
+            class RemoveOwnedEndFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveOwnedEndFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Association();
             ~Association();
@@ -29,7 +39,7 @@ namespace UML {
             Sequence<Property>& getOwnedEnds();
             Sequence<Property>& getNavigableOwnedEnds();
             ElementType getElementType() const override;
-            bool isSubClassOf(ElementType eType);
+            bool isSubClassOf(ElementType eType) override;
     };
 }
 

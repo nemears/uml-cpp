@@ -31,11 +31,49 @@ void Association::RemoveMemberEndFunctor::operator()(Element& el) const {
     }
 }
 
+void Association::AddOwnedEndFunctor::operator()(Element& el) const {
+    if (dynamic_cast<Property&>(el).getOwningAssociation() != m_el) {
+        dynamic_cast<Property&>(el).setOwningAssociation(dynamic_cast<Association*>(m_el));
+    }
+
+    if (!dynamic_cast<Association*>(m_el)->getMemberEnds().count(el.getID())) {
+        dynamic_cast<Association*>(m_el)->getMemberEnds().add(dynamic_cast<Property&>(el));
+    }
+
+    if (!dynamic_cast<Association*>(m_el)->getFeatures().count(el.getID())) {
+        dynamic_cast<Association*>(m_el)->getFeatures().add(dynamic_cast<Property&>(el));
+    }
+
+    if (!dynamic_cast<Association*>(m_el)->getOwnedMembers().count(el.getID())) {
+        dynamic_cast<Association*>(m_el)->getOwnedMembers().add(dynamic_cast<Property&>(el));
+    }
+}
+
+void Association::RemoveOwnedEndFunctor::operator()(Element& el) const {
+    if (dynamic_cast<Property&>(el).getOwningAssociation() == m_el) {
+        dynamic_cast<Property&>(el).setOwningAssociation(0);
+    }
+
+    if (dynamic_cast<Association*>(m_el)->getMemberEnds().count(el.getID())) {
+        dynamic_cast<Association*>(m_el)->getMemberEnds().remove(dynamic_cast<Property&>(el));
+    }
+
+    if (dynamic_cast<Association*>(m_el)->getFeatures().count(el.getID())) {
+        dynamic_cast<Association*>(m_el)->getFeatures().remove(dynamic_cast<Property&>(el));
+    }
+
+    if (dynamic_cast<Association*>(m_el)->getOwnedMembers().count(el.getID())) {
+        dynamic_cast<Association*>(m_el)->getOwnedMembers().remove(dynamic_cast<Property&>(el));
+    }
+}
+
 Association::Association() {
     m_memberEnds = new Sequence<Property>;
     m_memberEnds->addProcedures.push_back(new AddMemberEndFunctor(this));
     m_memberEnds->removeProcedures.push_back(new RemoveMemberEndFunctor(this));
     m_ownedEnds = new Sequence<Property>;
+    m_ownedEnds->addProcedures.push_back(new AddOwnedEndFunctor(this));
+    m_ownedEnds->removeProcedures.push_back(new RemoveOwnedEndFunctor(this));
     m_navigableOwnedEnds = new Sequence<Property>;
 }
 

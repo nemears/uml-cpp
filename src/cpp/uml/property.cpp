@@ -42,6 +42,7 @@ Property::Property() {
     m_dataType = 0;
     m_structuredClassifier = 0;
     m_association = 0;
+    m_owningAssociation = 0;
 }
 
 // TODO remove?
@@ -51,6 +52,7 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     m_dataType = prop.m_dataType;
     m_structuredClassifier = prop.m_structuredClassifier;
     m_association = prop.m_association;
+    m_owningAssociation = prop.m_owningAssociation;
 }
 
 ValueSpecification* Property::getDefaultValue() {
@@ -129,6 +131,28 @@ void Property::setAssociation(Association* association) {
     if (m_association) {
         if (!m_association->getMemberEnds().count(m_id)) {
             m_association->getMemberEnds().add(*this);
+        }
+    }
+}
+
+Association* Property::getOwningAssociation() {
+    return m_owningAssociation;
+}
+
+void Property::setOwningAssociation(Association* association) {
+    if (m_owningAssociation) {
+        if (m_owningAssociation != association) {
+            if (m_owningAssociation->getOwnedEnds().count(m_id)) {
+                m_owningAssociation->getOwnedEnds().remove(*this);
+            }
+        }
+    }
+
+    m_owningAssociation = association;
+
+    if (m_owningAssociation) {
+        if (!m_owningAssociation->getOwnedEnds().count(m_id)) {
+            m_owningAssociation->getOwnedEnds().add(*this);
         }
     }
 }

@@ -4,7 +4,7 @@
 #include "sequence.h"
 
 namespace UML {
-    class Relationship : public Element {
+    class Relationship : virtual public Element {
         protected:
             Sequence<>* m_relatedElements;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;

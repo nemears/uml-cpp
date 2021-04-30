@@ -43,6 +43,7 @@ namespace UML {
     class Feature;
     class DataType;
     class StructuredClassifier;
+    class Association;
     /**
      * Sequence Class, Holds collections of uml elements
      **/
@@ -74,6 +75,7 @@ namespace UML {
         friend class Feature;
         friend class DataType;
         friend class StructuredClassifier;
+        friend class Association;
         private:
             std::map<boost::uuids::uuid, T*> m_data;
             std::vector<boost::uuids::uuid> m_order;

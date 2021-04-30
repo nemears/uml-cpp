@@ -3,6 +3,7 @@
 #include "uml/classifier.h"
 #include "uml/dataType.h"
 #include "uml/structuredClassifier.h"
+#include "uml/association.h"
 
 using namespace std;
 using namespace UML;
@@ -36,10 +37,11 @@ void Property::setDefaultValue(ValueSpecification* val) {
 }
 
 Property::Property() {
-    defaultValue = NULL;
-    m_classifier = NULL;
+    defaultValue = 0;
+    m_classifier = 0;
     m_dataType = 0;
     m_structuredClassifier = 0;
+    m_association = 0;
 }
 
 // TODO remove?
@@ -47,6 +49,8 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     defaultValue = prop.defaultValue;
     m_classifier = prop.m_classifier;
     m_dataType = prop.m_dataType;
+    m_structuredClassifier = prop.m_structuredClassifier;
+    m_association = prop.m_association;
 }
 
 ValueSpecification* Property::getDefaultValue() {
@@ -105,6 +109,19 @@ void Property::setDataType(DataType* dataType) {
     if (m_dataType) {
         if (!m_dataType->getOwnedAttribute().count(m_id)) {
             m_dataType->getOwnedAttribute().add(*this);
+        }
+    }
+}
+
+Association* Property::getAssociation() {
+    return m_association;
+}
+
+void Property::setAssociation(Association* association) {
+    m_association = association;
+    if (m_association) {
+        if (!m_association->getMemberEnds().count(m_id)) {
+            m_association->getMemberEnds().add(*this);
         }
     }
 }

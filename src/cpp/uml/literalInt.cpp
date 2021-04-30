@@ -10,7 +10,7 @@ void LiteralInt::setValue(int val) {
     value = val;
 }
 
-ElementType LiteralInt::getElementType() {
+ElementType LiteralInt::getElementType() const {
     return ElementType::LITERAL_INT;
 }
 

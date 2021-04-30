@@ -31,7 +31,7 @@ void Expression::setSymbol(string sym) {
     m_symbol = sym;
 }
 
-ElementType Expression::getElementType() {
+ElementType Expression::getElementType() const {
     return ElementType::EXPRESSION;
 }
 

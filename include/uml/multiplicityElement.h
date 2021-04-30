@@ -31,7 +31,7 @@ namespace UML {
                     }
             } multiplicityNotSpecifiedException;
             bool multiplicitySpecified();
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

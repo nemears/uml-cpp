@@ -11,7 +11,7 @@ namespace UML {
         public:
             Behavior* getBehavior();
             void setBehavior(Behavior* bhv);
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             CallBehaviorAction() {
                 behavior = NULL;
             };

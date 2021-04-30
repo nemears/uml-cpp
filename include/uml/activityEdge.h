@@ -34,7 +34,7 @@ namespace UML {
                 m_target = 0;
                 m_guard = 0;
             }
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

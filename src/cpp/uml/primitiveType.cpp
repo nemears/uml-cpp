@@ -2,7 +2,7 @@
 
 using namespace UML;
 
-ElementType PrimitiveType::getElementType() {
+ElementType PrimitiveType::getElementType() const {
     return ElementType::PRIMITIVE_TYPE;
 }
 

@@ -10,7 +10,7 @@ namespace UML {
         protected:
             ValueSpecification* upperBound;
         public:
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             ValueSpecification* getUpperBound();
             void setUpperBound(ValueSpecification* upperBound);
             ObjectNode() {

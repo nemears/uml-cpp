@@ -43,7 +43,7 @@ namespace UML {
             Sequence<Behavior>& getMethods();
             Sequence<Parameter>& getOwnedParameters();
             bool isAbstract();
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 

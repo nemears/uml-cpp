@@ -10,7 +10,7 @@ void ObjectNode::setUpperBound(ValueSpecification* upperBound) {
     this->upperBound = upperBound;
 }
 
-ElementType ObjectNode::getElementType() {
+ElementType ObjectNode::getElementType() const {
     return ElementType::OBJECT_NODE;
 }
 

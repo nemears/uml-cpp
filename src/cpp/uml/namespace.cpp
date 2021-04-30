@@ -75,7 +75,7 @@ Sequence<NamedElement>& Namespace::getOwnedMembers() {
     return *m_ownedMembers;
 }
 
-ElementType Namespace::getElementType() {
+ElementType Namespace::getElementType() const {
     return ElementType::NAMESPACE;
 }
 

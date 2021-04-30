@@ -27,7 +27,7 @@ namespace UML {
             Sequence<Parameter>& getParameters();
             BehavioralFeature* getSpecification();
             void setSpecification(BehavioralFeature* specification);
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

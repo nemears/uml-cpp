@@ -88,7 +88,7 @@ void ActivityEdge::setGuard(ValueSpecification* guard) {
     m_guard = guard;
 }
 
-ElementType ActivityEdge::getElementType() {
+ElementType ActivityEdge::getElementType() const {
     return ElementType::ACTIVITY_EDGE;
 }
 

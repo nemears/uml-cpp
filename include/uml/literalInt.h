@@ -11,7 +11,7 @@ namespace UML {
         public:
             int getValue();
             void setValue(int val);
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

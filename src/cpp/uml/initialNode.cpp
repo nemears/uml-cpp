@@ -2,7 +2,7 @@
 
 using namespace UML;
 
-ElementType InitialNode::getElementType() {
+ElementType InitialNode::getElementType() const {
     return ElementType::INITIAL_NODE;
 }
 

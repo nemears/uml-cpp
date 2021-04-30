@@ -10,7 +10,7 @@ void LiteralReal::setValue(double val) {
     value = val;
 }
 
-ElementType LiteralReal::getElementType() {
+ElementType LiteralReal::getElementType() const {
     return ElementType::LITERAL_REAL;
 }
 

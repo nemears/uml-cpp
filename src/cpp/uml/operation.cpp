@@ -78,7 +78,7 @@ void Operation::setDataType(DataType* dataType) {
     }
 }
 
-ElementType Operation::getElementType(){
+ElementType Operation::getElementType() const {
     return ElementType::OPERATION;
 }
 

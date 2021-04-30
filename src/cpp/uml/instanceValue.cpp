@@ -10,7 +10,7 @@ void InstanceValue::setInstance(InstanceSpecification* inst) {
     instance = inst;
 }
 
-ElementType InstanceValue::getElementType() {
+ElementType InstanceValue::getElementType() const {
     return ElementType::INSTANCE_VALUE;
 }
 

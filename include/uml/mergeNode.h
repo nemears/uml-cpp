@@ -6,7 +6,7 @@
 namespace UML {
     class MergeNode : public ActivityNode {
         public:
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

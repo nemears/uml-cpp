@@ -15,7 +15,7 @@ class TypedElement : virtual public NamedElement {
             type = 0;
         };
         TypedElement(const TypedElement& el);
-        ElementType getElementType() override;
+        ElementType getElementType() const override;
         TypedElement& operator=(TypedElement&&) {
             return *this;
         };

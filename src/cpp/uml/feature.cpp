@@ -51,7 +51,7 @@ void Feature::setStatic(bool isStatic) {
     m_static = isStatic;
 }
 
-ElementType Feature::getElementType() {
+ElementType Feature::getElementType() const {
     return ElementType::FEATURE;
 }
 

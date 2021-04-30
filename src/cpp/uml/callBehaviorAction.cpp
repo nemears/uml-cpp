@@ -2,7 +2,7 @@
 
 using namespace UML;
 
-ElementType CallBehaviorAction::getElementType() {
+ElementType CallBehaviorAction::getElementType() const {
     return ElementType::CALL_BEHAVIOR_ACTION;
 }
 

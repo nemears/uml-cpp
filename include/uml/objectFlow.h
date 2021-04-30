@@ -6,7 +6,7 @@
 namespace UML {
     class ObjectFlow : public ActivityEdge {
         public:
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

@@ -2,7 +2,7 @@
 
 using namespace UML;
 
-ElementType ForkNode::getElementType() {
+ElementType ForkNode::getElementType() const {
     return ElementType::FORK_NODE;
 }
 

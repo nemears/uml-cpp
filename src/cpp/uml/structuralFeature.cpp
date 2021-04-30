@@ -2,7 +2,7 @@
 
 using namespace UML;
 
-ElementType StructuralFeature::getElementType() {
+ElementType StructuralFeature::getElementType() const {
     return ElementType::STRUCTURAL_FEATURE;
 }
 

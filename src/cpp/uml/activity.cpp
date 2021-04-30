@@ -45,7 +45,7 @@ Sequence<ActivityEdge>& Activity::getEdges() {
     return *m_edges;
 }
 
-ElementType Activity::getElementType() {
+ElementType Activity::getElementType() const {
     return ElementType::ACTIVITY;
 }
 

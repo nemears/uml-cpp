@@ -18,7 +18,7 @@ namespace UML {
             Sequence<ValueSpecification>& getOperands();
             std::string getSymbol();
             void setSymbol(std::string sym);
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             Expression();
             ~Expression();
             bool isSubClassOf(ElementType eType) override;

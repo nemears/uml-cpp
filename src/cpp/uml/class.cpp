@@ -37,7 +37,7 @@ Sequence<Operation>& Class::getOperations() {
     return *m_operations;
 }
 
-ElementType Class::getElementType() {
+ElementType Class::getElementType() const {
     return ElementType::CLASS;
 }
 

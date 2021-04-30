@@ -21,9 +21,20 @@ void Association::AddMemberEndFunctor::operator()(Element& el) const {
     }
 }
 
+void Association::RemoveMemberEndFunctor::operator()(Element& el) const {
+    if (dynamic_cast<Property&>(el).getAssociation() == m_el) {
+        dynamic_cast<Property&>(el).setAssociation(0);
+    }
+
+    if (dynamic_cast<Association*>(m_el)->getMembers().count(el.getID())) {
+        dynamic_cast<Association*>(m_el)->getMembers().remove(dynamic_cast<Property&>(el));
+    }
+}
+
 Association::Association() {
     m_memberEnds = new Sequence<Property>;
     m_memberEnds->addProcedures.push_back(new AddMemberEndFunctor(this));
+    m_memberEnds->removeProcedures.push_back(new RemoveMemberEndFunctor(this));
     m_ownedEnds = new Sequence<Property>;
     m_navigableOwnedEnds = new Sequence<Property>;
 }
@@ -46,7 +57,7 @@ Sequence<Property>& Association::getNavigableOwnedEnds() {
     return *m_navigableOwnedEnds;
 }
 
-ElementType Association::getElementType() {
+ElementType Association::getElementType() const {
     return ElementType::ASSOCIATION;
 }
 

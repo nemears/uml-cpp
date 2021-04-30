@@ -23,7 +23,7 @@ namespace UML {
             ~Package();
             Package(const Package& pckg);
             Sequence<PackageableElement>& getPackagedElements();
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

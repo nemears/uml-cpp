@@ -2,7 +2,7 @@
 
 using namespace UML;
 
-ElementType Pin::getElementType() {
+ElementType Pin::getElementType() const {
     return ElementType::PIN;
 }
 

@@ -24,7 +24,7 @@ namespace UML {
             ~Activity();
             Sequence<ActivityNode>& getNodes();
             Sequence<ActivityEdge>& getEdges();
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

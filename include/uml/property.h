@@ -32,7 +32,7 @@ namespace UML{
             void setDataType(DataType* dataType);
             Association* getAssociation();
             void setAssociation(Association* association);
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             Property();
             Property(const Property& prop);
             bool isSubClassOf(ElementType eType) override;

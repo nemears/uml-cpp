@@ -31,7 +31,7 @@ void PackageableElement::setOwningPackage(Package* package) {
     }
 }
 
-ElementType PackageableElement::getElementType() {
+ElementType PackageableElement::getElementType() const {
     return ElementType::PACKAGEABLE_ELEMENT;
 }
 

@@ -75,7 +75,7 @@ void MultiplicityElement::setUpperValue(ValueSpecification* val) {
     }
 }
 
-ElementType MultiplicityElement::getElementType() {
+ElementType MultiplicityElement::getElementType() const {
     return ElementType::MULTIPLICITY_ELEMENT;
 }
 

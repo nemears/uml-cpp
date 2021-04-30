@@ -2,11 +2,7 @@
 
 using namespace UML;
 
-// bool Type::isPrimitive() {
-//     return false;
-// }
-
-ElementType Type::getElementType() {
+ElementType Type::getElementType() const {
     return ElementType::TYPE;
 }
 

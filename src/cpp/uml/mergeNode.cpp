@@ -2,7 +2,7 @@
 
 using namespace UML;
 
-ElementType MergeNode::getElementType() {
+ElementType MergeNode::getElementType() const {
     return ElementType::MERGE_NODE;
 }
 

@@ -53,7 +53,7 @@ void ValueSpecification::setOwningSlot(Slot* slot) {
     }
 }
 
-ElementType ValueSpecification::getElementType() {
+ElementType ValueSpecification::getElementType() const {
     return ElementType::VALUE_SPECIFICATION;
 }
 

@@ -22,7 +22,7 @@ class ValueSpecification : public TypedElement , public PackageableElement {
         ValueSpecification();
         Slot* getOwningSlot();
         void setOwningSlot(Slot* slot);
-        ElementType getElementType() override;
+        ElementType getElementType() const override;
         bool isSubClassOf(ElementType eType) override;
 };
 }

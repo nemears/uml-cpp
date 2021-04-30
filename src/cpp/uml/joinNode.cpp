@@ -2,7 +2,7 @@
 
 using namespace UML;
 
-ElementType JoinNode::getElementType() {
+ElementType JoinNode::getElementType() const {
     return ElementType::JOIN_NODE;
 }
 

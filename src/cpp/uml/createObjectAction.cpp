@@ -10,7 +10,7 @@ void CreateObjectAction::setClassifier(Classifier* classifier) {
     this->classifier = classifier;
 }
 
-ElementType CreateObjectAction::getElementType() {
+ElementType CreateObjectAction::getElementType() const {
     return ElementType::CREATE_OBJECT_ACTION;
 }
 

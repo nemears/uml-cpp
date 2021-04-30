@@ -17,13 +17,18 @@ namespace UML {
                     AddMemberEndFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class RemoveMemberEndFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveMemberEndFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Association();
             ~Association();
             Sequence<Property>& getMemberEnds();
             Sequence<Property>& getOwnedEnds();
             Sequence<Property>& getNavigableOwnedEnds();
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType);
     };
 }

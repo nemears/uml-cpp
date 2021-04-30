@@ -2,7 +2,7 @@
 
 using namespace UML;
 
-ElementType LiteralSpecification::getElementType() {
+ElementType LiteralSpecification::getElementType() const {
     return ElementType::LITERAL_SPECIFICATION;
 }
 

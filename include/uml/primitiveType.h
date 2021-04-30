@@ -6,7 +6,7 @@
 namespace UML{
     class PrimitiveType : public DataType {
         public:
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

@@ -6,7 +6,7 @@
 namespace UML {
     class LiteralSpecification : public ValueSpecification {
         public:
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

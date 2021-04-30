@@ -11,7 +11,7 @@ void LiteralString::setValue(string val) {
     value = val;
 }
 
-ElementType LiteralString::getElementType() {
+ElementType LiteralString::getElementType() const {
     return ElementType::LITERAL_STRING;
 }
 

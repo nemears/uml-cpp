@@ -2,7 +2,7 @@
 
 using namespace UML;
 
-ElementType ConnectableElement::getElementType() {
+ElementType ConnectableElement::getElementType() const {
     return ElementType::CONNECTABLE_ELEMENT;
 }
 

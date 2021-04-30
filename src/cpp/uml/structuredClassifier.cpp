@@ -72,7 +72,7 @@ Sequence<ConnectableElement>& StructuredClassifier::getRole() {
     return *m_role;
 }
 
-ElementType StructuredClassifier::getElementType() {
+ElementType StructuredClassifier::getElementType() const {
     return ElementType::STRUCTURED_CLASSIFIER;
 }
 

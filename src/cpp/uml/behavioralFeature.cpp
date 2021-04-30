@@ -92,7 +92,7 @@ bool BehavioralFeature::isAbstract() {
     return m_methods->size() > 0;
 }
 
-ElementType BehavioralFeature::getElementType() {
+ElementType BehavioralFeature::getElementType() const {
     return ElementType::BEHAVIORAL_FEATURE;
 }
 

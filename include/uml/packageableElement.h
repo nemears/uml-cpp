@@ -15,7 +15,7 @@ namespace UML {
             PackageableElement(const PackageableElement& el);
             Package* getOwningPackage();
             void setOwningPackage(Package* package);
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
             PackageableElement& operator=(PackageableElement&&) {
                 return *this;

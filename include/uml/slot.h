@@ -33,7 +33,7 @@ namespace UML {
             InstanceSpecification* getOwningInstance();
             void setOwningInstance(InstanceSpecification* inst);
             void setDefiningFeature(StructuralFeature* definingFeature);
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             class NullDefiningFeatureException : public std::exception {
                 public:
                     virtual const char* what() const throw() {

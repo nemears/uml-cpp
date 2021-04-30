@@ -75,7 +75,7 @@ void Behavior::setSpecification(BehavioralFeature* specification) {
     }
 }
 
-ElementType Behavior::getElementType() {
+ElementType Behavior::getElementType() const {
     return ElementType::BEHAVIOR;
 }
 

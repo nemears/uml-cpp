@@ -2,7 +2,7 @@
 
 using namespace UML;
 
-ElementType Model::getElementType() {
+ElementType Model::getElementType() const {
     return ElementType::MODEL;
 }
 

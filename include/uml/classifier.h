@@ -74,7 +74,7 @@ namespace UML{
              * this returns all classifiers this classifier inherits from
              **/
             Sequence<Classifier>& getGenerals();
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 

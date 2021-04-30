@@ -11,7 +11,7 @@ namespace UML {
         public:
             ObjectFlow* getDecisionInputFlow();
             void setDecisionInputFlow(ObjectFlow* inputFlow);
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             DecisionNode() {
                 decisionInputFlow = 0;
             };

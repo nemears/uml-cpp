@@ -122,9 +122,9 @@ namespace UML {
             boost::uuids::uuid getID() { return m_id; };
             virtual void setID(std::string id);
             void setID(boost::uuids::uuid id);
-            virtual ElementType getElementType();
+            virtual ElementType getElementType() const;
             virtual bool isSubClassOf(ElementType eType);
-            virtual std::string getElementTypeString();
+            virtual std::string getElementTypeString() const;
             virtual std::string getIDstring();
             Element* getOwner();
             /**
@@ -150,7 +150,7 @@ namespace UML {
 
         public:
             ElementDoesntExistException(const Element& el) : 
-                msg("Removed element that isn't in the Sequence\nuuid: " + boost::lexical_cast<std::string>(el.m_id))
+                msg("Removed " + el.getElementTypeString() + " that isn't in the Sequence\nuuid: " + boost::lexical_cast<std::string>(el.m_id))
                 {}
             virtual const char* what() const throw() {
                 return msg.c_str();

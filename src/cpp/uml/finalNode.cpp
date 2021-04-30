@@ -2,7 +2,7 @@
 
 using namespace UML;
 
-ElementType FinalNode::getElementType() {
+ElementType FinalNode::getElementType() const {
     return ElementType::FINAL_NODE;
 }
 

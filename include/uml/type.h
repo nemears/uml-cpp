@@ -5,7 +5,7 @@
 namespace UML{
     class Type : virtual public PackageableElement {
         public:
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             Type& operator=(Type&&) {
                 return *this;
             };

@@ -28,7 +28,7 @@ Sequence<OutputPin>& Action::getOutputs() {
     return *m_outputs;
 }
 
-ElementType Action::getElementType() {
+ElementType Action::getElementType() const {
     return ElementType::ACTION;
 }
 

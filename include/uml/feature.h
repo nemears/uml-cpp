@@ -20,7 +20,7 @@ namespace UML {
             void setFeaturingClassifier(Classifier* clazz);
             bool isStatic();
             void setStatic(bool isStatic);
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
             Feature& operator=(Feature&&) {
                 return *this;

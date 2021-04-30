@@ -11,7 +11,7 @@ namespace UML {
         public:
             Parameter* getParameter();
             void setParameter(Parameter* parameter);
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             ParameterNode() {
                 parameter = NULL;
             }

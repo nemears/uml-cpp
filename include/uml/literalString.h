@@ -12,7 +12,7 @@ namespace UML {
         public:
             std::string getValue();
             void setValue(std::string val);
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

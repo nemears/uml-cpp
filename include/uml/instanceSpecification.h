@@ -26,7 +26,7 @@ namespace UML{
             Sequence<Slot>& getSlots();
             InstanceSpecification();
             ~InstanceSpecification();
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

@@ -118,6 +118,13 @@ Association* Property::getAssociation() {
 }
 
 void Property::setAssociation(Association* association) {
+    if (m_association) {
+        if (m_association != association) {
+            if (m_association->getMemberEnds().count(m_id)) {
+                m_association->getMemberEnds().remove(*this);
+            }
+        }
+    }
     m_association = association;
     if (m_association) {
         if (!m_association->getMemberEnds().count(m_id)) {
@@ -126,7 +133,7 @@ void Property::setAssociation(Association* association) {
     }
 }
 
-ElementType Property::getElementType() {
+ElementType Property::getElementType() const {
     return ElementType::PROPERTY;
 }
 

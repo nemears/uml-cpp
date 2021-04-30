@@ -12,7 +12,7 @@ namespace UML {
             OpaqueBehavior();
             ~OpaqueBehavior();
             Sequence<LiteralString>& getBodies();
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

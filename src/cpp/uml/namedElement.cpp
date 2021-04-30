@@ -104,7 +104,7 @@ Sequence<Namespace>& NamedElement::getMemberNamespace() {
     return *m_memberNamespace;
 }
 
-ElementType NamedElement::getElementType() {
+ElementType NamedElement::getElementType() const {
     return ElementType::NAMED_ELEMENT;
 }
 

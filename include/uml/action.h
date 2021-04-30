@@ -21,7 +21,7 @@ namespace UML {
             ~Action();
             Sequence<InputPin>& getInputs();
             Sequence<OutputPin>& getOutputs();
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

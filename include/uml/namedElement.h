@@ -29,7 +29,7 @@ namespace UML{
             Namespace* getNamespace();
             void setNamespace(Namespace* nmspc);
             Sequence<Namespace>& getMemberNamespace();
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

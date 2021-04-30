@@ -10,7 +10,7 @@ void ParameterNode::setParameter(Parameter* parameter) {
     this->parameter = parameter;
 }
 
-ElementType ParameterNode::getElementType() {
+ElementType ParameterNode::getElementType() const {
     return ElementType::PARAMETER_NODE;
 }
 

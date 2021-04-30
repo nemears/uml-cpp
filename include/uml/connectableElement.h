@@ -8,7 +8,7 @@ namespace UML {
         protected:
 
         public:
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
             ConnectableElement& operator=(ConnectableElement&&) {
                 return *this;

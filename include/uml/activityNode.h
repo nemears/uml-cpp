@@ -40,7 +40,7 @@ namespace UML {
             ~ActivityNode();
             Sequence<ActivityEdge>& getIncoming();
             Sequence<ActivityEdge>& getOutgoing();
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             Activity* getActivity();
             void setActivity(Activity* activity);
             virtual bool isObjectNode();

@@ -49,7 +49,7 @@ Sequence<Slot>& InstanceSpecification::getSlots() {
     return *m_slots;
 }
 
-ElementType InstanceSpecification::getElementType() {
+ElementType InstanceSpecification::getElementType() const {
     return ElementType::INSTANCE_SPECIFICATION;
 }
 

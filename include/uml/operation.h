@@ -24,7 +24,7 @@ namespace UML {
             void setClass(Class* clazz);
             DataType* getDataType();
             void setDataType(DataType* dataType);
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

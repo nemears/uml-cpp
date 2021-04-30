@@ -2,7 +2,7 @@
 
 using namespace UML;
 
-ElementType ObjectFlow::getElementType() {
+ElementType ObjectFlow::getElementType() const {
     return ElementType::OBJECT_FLOW;
 }
 

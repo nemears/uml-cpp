@@ -10,7 +10,7 @@ void DecisionNode::setDecisionInputFlow(ObjectFlow* inputFlow) {
     this->decisionInputFlow = inputFlow;
 }
 
-ElementType DecisionNode::getElementType() {
+ElementType DecisionNode::getElementType() const {
     return ElementType::DECISION_NODE;
 }
 

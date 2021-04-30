@@ -34,7 +34,7 @@ namespace UML {
             DataType(const DataType& data);
             Sequence<Property>& getOwnedAttribute();
             Sequence<Operation>& getOwnedOperation();
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

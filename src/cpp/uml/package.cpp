@@ -44,7 +44,7 @@ Sequence<PackageableElement>& Package::getPackagedElements() {
     return *m_packagedElements;
 }
 
-ElementType Package::getElementType() {
+ElementType Package::getElementType() const {
     return ElementType::PACKAGE;
 }
 

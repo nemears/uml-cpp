@@ -27,7 +27,7 @@ namespace UML {
             ~DirectedRelationship();
             Sequence<>& getTargets();
             Sequence<>& getSources();
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

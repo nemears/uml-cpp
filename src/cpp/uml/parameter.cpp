@@ -4,7 +4,7 @@
 using namespace std;
 using namespace UML;
 
-ElementType Parameter::getElementType() {
+ElementType Parameter::getElementType() const {
     return ElementType::PARAMETER;
 }
 

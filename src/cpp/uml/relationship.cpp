@@ -55,7 +55,7 @@ Sequence<>& Relationship::getRelatedElements() {
     return *m_relatedElements;
 }
 
-ElementType Relationship::getElementType() {
+ElementType Relationship::getElementType() const {
     return ElementType::RELATIONSHIP;
 }
 

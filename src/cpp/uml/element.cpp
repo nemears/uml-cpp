@@ -114,7 +114,7 @@ Sequence<Relationship>& Element::getRelationships() {
     return *m_relationships;
 }
 
-ElementType Element::getElementType() {
+ElementType Element::getElementType() const {
     return ElementType::ELEMENT;
 }
 
@@ -122,7 +122,7 @@ bool Element::isSubClassOf(ElementType eType) {
     return eType == ElementType::ELEMENT;
 }
 
-string Element::getElementTypeString() {
+string Element::getElementTypeString() const {
     switch(getElementType()) {
         case ElementType::ACTION : {
             return "ACTION";

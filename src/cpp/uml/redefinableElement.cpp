@@ -25,7 +25,7 @@ Sequence<Classifier>& RedefinableElement::getRedefinitionContext() {
     return *m_redefinitionContext;
 }
 
-ElementType RedefinableElement::getElementType() {
+ElementType RedefinableElement::getElementType() const {
     return ElementType::REDEFINABLE_ELEMENT;
 }
 

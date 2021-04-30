@@ -55,7 +55,7 @@ void Generalization::setSpecific(Classifier* specific) {
     }
 }
 
-ElementType Generalization::getElementType() {
+ElementType Generalization::getElementType() const {
     return ElementType::GENERALIZATION;
 }
 

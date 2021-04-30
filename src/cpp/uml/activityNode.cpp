@@ -67,7 +67,7 @@ Sequence<ActivityEdge>& ActivityNode::getOutgoing() {
     return *m_outgoing;
 }
 
-ElementType ActivityNode::getElementType() {
+ElementType ActivityNode::getElementType() const {
     return ElementType::ACTIVITY_NODE;
 }
 

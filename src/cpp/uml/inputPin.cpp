@@ -24,7 +24,7 @@ void InputPin::reindexName(string oldName, string newName) {
     ActivityNode::reindexName(oldName, newName);
 }
 
-ElementType InputPin::getElementType() {
+ElementType InputPin::getElementType() const {
     return ElementType::INPUT_PIN;
 }
 

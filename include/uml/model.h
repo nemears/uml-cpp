@@ -6,7 +6,7 @@
 namespace UML{
 class Model : public Package{
     public:
-        ElementType getElementType() override;
+        ElementType getElementType() const override;
         bool isSubClassOf(ElementType eType) override;
 };
 }

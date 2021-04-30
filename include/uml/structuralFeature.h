@@ -10,7 +10,7 @@ namespace UML {
         public:
             StructuralFeature(){};
             StructuralFeature(const StructuralFeature& feature) : TypedElement(feature), MultiplicityElement(feature), Feature(feature) {};
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             class InvalidValueException: public std::exception {
                 public:
                     virtual const char* what() const throw() {

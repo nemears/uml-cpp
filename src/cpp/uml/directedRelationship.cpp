@@ -37,7 +37,7 @@ Sequence<>& DirectedRelationship::getSources() {
     return *m_sources;
 }
 
-ElementType DirectedRelationship::getElementType() {
+ElementType DirectedRelationship::getElementType() const {
     return ElementType::DIRECTED_RELATIONSHIP;
 }
 

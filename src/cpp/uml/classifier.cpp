@@ -167,7 +167,7 @@ Sequence<Classifier>& Classifier::getGenerals() {
     return *m_generals;
 }
 
-ElementType Classifier::getElementType() {
+ElementType Classifier::getElementType() const {
     return ElementType::CLASSIFIER;
 }
 

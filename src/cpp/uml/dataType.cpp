@@ -102,7 +102,7 @@ Sequence<Operation>& DataType::getOwnedOperation() {
     return *m_ownedOperation;
 }
 
-ElementType DataType::getElementType() {
+ElementType DataType::getElementType() const {
     return ElementType::DATA_TYPE;
 }
 

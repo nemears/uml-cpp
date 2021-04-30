@@ -15,7 +15,7 @@ namespace UML {
             void setGeneral(Classifier* general);
             Classifier* getSpecific();
             void setSpecific(Classifier* specific);
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

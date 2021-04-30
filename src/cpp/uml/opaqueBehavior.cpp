@@ -14,7 +14,7 @@ Sequence<LiteralString>& OpaqueBehavior::getBodies() {
     return *m_bodies;
 }
 
-ElementType OpaqueBehavior::getElementType() {
+ElementType OpaqueBehavior::getElementType() const {
     return ElementType::OPAQUE_BEHAVIOR;
 }
 

@@ -10,7 +10,7 @@ void LiteralBool::setValue(bool val) {
     value = val;
 }
 
-ElementType LiteralBool::getElementType() {
+ElementType LiteralBool::getElementType() const {
     return ElementType::LITERAL_BOOL;
 }
 

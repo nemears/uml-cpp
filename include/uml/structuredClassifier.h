@@ -34,7 +34,7 @@ namespace UML {
             ~StructuredClassifier();
             Sequence<Property>& getOwnedAttributes();
             Sequence<ConnectableElement>& getRole();
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

@@ -68,7 +68,7 @@ void Slot::setOwningInstance(InstanceSpecification* inst) {
     }
 }
 
-ElementType Slot::getElementType() {
+ElementType Slot::getElementType() const {
     return ElementType::SLOT;
 }
 

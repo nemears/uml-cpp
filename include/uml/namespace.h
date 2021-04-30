@@ -39,7 +39,7 @@ namespace UML{
             Namespace(const Namespace& nmspc);
             Sequence<NamedElement>& getMembers();
             Sequence<NamedElement>& getOwnedMembers();
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };
 }

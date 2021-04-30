@@ -14,7 +14,7 @@ void TypedElement::setType(Type* type) {
     this->type = type;
 }
 
-ElementType TypedElement::getElementType() {
+ElementType TypedElement::getElementType() const {
     return ElementType::TYPED_ELEMENT;
 }
 

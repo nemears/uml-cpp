@@ -25,7 +25,7 @@ namespace UML {
         public:
             Operation* getOperation();
             void setOperation(Operation* operation);
-            ElementType getElementType() override;
+            ElementType getElementType() const override;
             ParameterDirectionKind getDirection();
             void setDirection(ParameterDirectionKind direction);
             Parameter() {

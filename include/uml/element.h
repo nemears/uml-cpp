@@ -17,6 +17,7 @@ namespace UML {
         ACTIVITY,
         ACTIVITY_EDGE,
         ACTIVITY_NODE,
+        ASSOCIATION,
         BEHAVIOR,
         BEHAVIORAL_FEATURE,
         CALL_BEHAVIOR_ACTION,

@@ -136,6 +136,9 @@ string Element::getElementTypeString() {
         case ElementType::ACTIVITY_NODE : {
             return "ACTIVITY_NODE";
         }
+        case ElementType::ASSOCIATION : {
+            return "ASSOCIATION";
+        }
         case ElementType::BEHAVIOR : {
             return "BEHAVIOR";
         }

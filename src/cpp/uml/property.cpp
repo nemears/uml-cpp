@@ -142,8 +142,13 @@ Association* Property::getOwningAssociation() {
 void Property::setOwningAssociation(Association* association) {
     if (m_owningAssociation) {
         if (m_owningAssociation != association) {
-            if (m_owningAssociation->getOwnedEnds().count(m_id)) {
-                m_owningAssociation->getOwnedEnds().remove(*this);
+            if (m_owningAssociation->getNavigableOwnedEnds().count(m_id)) {
+                m_owningAssociation->getNavigableOwnedEnds().remove(*this);
+            }
+            if (m_owningAssociation) {
+                if (m_owningAssociation->getOwnedEnds().count(m_id)) {
+                    m_owningAssociation->getOwnedEnds().remove(*this);
+                }
             }
         }
     }

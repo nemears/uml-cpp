@@ -6,45 +6,38 @@ using namespace std;
 using namespace UML;
 
 Classifier::Classifier() {
-    m_attributes = new Sequence<Property>;
-    m_attributes->addProcedures.push_back(new AddAttributeFunctor(this));
-    m_attributes->removeProcedures.push_back(new RemoveAttributeFunctor(this));
-    m_generalizations = new Sequence<Generalization>;
-    m_generalizations->addProcedures.push_back(new AddGeneralizationFunctor(this));
-    m_generalizations->addChecks.push_back(new CheckGeneralizationFunctor(this));
-    m_generals = new Sequence<Classifier>;
-    m_generals->addProcedures.push_back(new AddGeneralFunctor(this));
-    m_features = new Sequence<Feature>;
-    m_features->addProcedures.push_back(new AddFeatureFunctor(this));
-    m_features->removeProcedures.push_back(new RemoveFeatureFunctor(this));
+    m_attributes.addProcedures.push_back(new AddAttributeFunctor(this));
+    m_attributes.removeProcedures.push_back(new RemoveAttributeFunctor(this));
+    m_generalizations.addProcedures.push_back(new AddGeneralizationFunctor(this));
+    m_generalizations.addChecks.push_back(new CheckGeneralizationFunctor(this));
+    m_generals.addProcedures.push_back(new AddGeneralFunctor(this));
+    m_features.addProcedures.push_back(new AddFeatureFunctor(this));
+    m_features.removeProcedures.push_back(new RemoveFeatureFunctor(this));
 }
 
 Classifier::~Classifier() {
-    delete m_attributes;
-    delete m_generalizations;
-    delete m_generals;
-    delete m_features;
+
 }
 
 Classifier::Classifier(const Classifier& clazz) : Namespace(clazz), NamedElement(clazz), PackageableElement(clazz), Element(clazz) {
-    m_attributes = new Sequence<Property>(*clazz.m_attributes);
-    m_attributes->addProcedures.clear();
-    m_attributes->addProcedures.push_back(new AddAttributeFunctor(this));
-    m_attributes->removeProcedures.clear();
-    m_attributes->removeProcedures.push_back(new RemoveAttributeFunctor(this));
-    m_generalizations = new Sequence<Generalization>(*clazz.m_generalizations);
-    m_generalizations->addProcedures.clear();
-    m_generalizations->addProcedures.push_back(new AddGeneralizationFunctor(this));
-    m_generalizations->addChecks.clear();
-    m_generalizations->addChecks.push_back(new CheckGeneralizationFunctor(this));
-    m_generals = new Sequence<Classifier>(*clazz.m_generals);
-    m_generals->addProcedures.clear();
-    m_generals->addProcedures.push_back(new AddGeneralFunctor(this));
-    m_features = new Sequence<Feature>(*clazz.m_features);
-    m_features->addProcedures.clear();
-    m_features->addProcedures.push_back(new AddFeatureFunctor(this));
-    m_features->removeProcedures.clear();
-    m_features->removeProcedures.push_back(new RemoveFeatureFunctor(this));
+    m_attributes = clazz.m_attributes;
+    m_attributes.addProcedures.clear();
+    m_attributes.addProcedures.push_back(new AddAttributeFunctor(this));
+    m_attributes.removeProcedures.clear();
+    m_attributes.removeProcedures.push_back(new RemoveAttributeFunctor(this));
+    m_generalizations = clazz.m_generalizations;
+    m_generalizations.addProcedures.clear();
+    m_generalizations.addProcedures.push_back(new AddGeneralizationFunctor(this));
+    m_generalizations.addChecks.clear();
+    m_generalizations.addChecks.push_back(new CheckGeneralizationFunctor(this));
+    m_generals = clazz.m_generals;
+    m_generals.addProcedures.clear();
+    m_generals.addProcedures.push_back(new AddGeneralFunctor(this));
+    m_features = clazz.m_features;
+    m_features.addProcedures.clear();
+    m_features.addProcedures.push_back(new AddFeatureFunctor(this));
+    m_features.removeProcedures.clear();
+    m_features.removeProcedures.push_back(new RemoveFeatureFunctor(this));
 }
 
 void Classifier::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
@@ -152,19 +145,19 @@ void Classifier::setName(const string& name) {
 }
 
 Sequence<Feature>& Classifier::getFeatures() {
-    return *m_features;
+    return m_features;
 }
 
 Sequence<Property>& Classifier::getAttributes() {
-    return *m_attributes;
+    return m_attributes;
 }
 
 Sequence<Generalization>& Classifier::getGeneralizations() {
-    return *m_generalizations;
+    return m_generalizations;
 }
 
 Sequence<Classifier>& Classifier::getGenerals() {
-    return *m_generals;
+    return m_generals;
 }
 
 ElementType Classifier::getElementType() const {

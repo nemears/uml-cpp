@@ -6,8 +6,8 @@
 namespace UML {
     class DirectedRelationship : public Relationship {
         protected:
-            Sequence<>* m_targets;
-            Sequence<>* m_sources;
+            Sequence<> m_targets;
+            Sequence<> m_sources;
             // below is commented out because should be obsolete with function pointer add and remove functionality on sequence?
             //void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
 

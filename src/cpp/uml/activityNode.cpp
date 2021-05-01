@@ -6,17 +6,14 @@ using namespace UML;
 
 ActivityNode::ActivityNode() {
     m_activity = 0;
-    m_incoming = new Sequence<ActivityEdge>;
-    m_incoming->addProcedures.push_back(new AddIncomingFunctor(this));
-    m_incoming->addChecks.push_back(new CheckIncomingFunctor(this));
-    m_outgoing = new Sequence<ActivityEdge>;
-    m_outgoing->addProcedures.push_back(new AddOutgoingFunctor(this));
-    m_outgoing->addChecks.push_back(new CheckOutgoingFunctor(this));
+    m_incoming.addProcedures.push_back(new AddIncomingFunctor(this));
+    m_incoming.addChecks.push_back(new CheckIncomingFunctor(this));
+    m_outgoing.addProcedures.push_back(new AddOutgoingFunctor(this));
+    m_outgoing.addChecks.push_back(new CheckOutgoingFunctor(this));
 }
 
 ActivityNode::~ActivityNode() {
-    delete m_incoming;
-    delete m_outgoing;
+    
 }
 
 void ActivityNode::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
@@ -60,11 +57,11 @@ void ActivityNode::CheckOutgoingFunctor::operator()(Element& el) const {
 }
 
 Sequence<ActivityEdge>& ActivityNode::getIncoming() {
-    return *m_incoming;
+    return m_incoming;
 }
 
 Sequence<ActivityEdge>& ActivityNode::getOutgoing() {
-    return *m_outgoing;
+    return m_outgoing;
 }
 
 ElementType ActivityNode::getElementType() const {

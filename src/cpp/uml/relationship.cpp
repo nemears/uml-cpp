@@ -5,7 +5,7 @@ using namespace std;
 using namespace UML;
 
 void Relationship::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
-    for (auto const& relEl : *m_relatedElements) {
+    for (auto const& relEl : m_relatedElements) {
         relEl->getRelationships().reindex(oldID, newID);
     }
 
@@ -41,18 +41,17 @@ void Relationship::RemoveRelatedElementsFunctor::operator()(Element& el) const {
 }
 
 Relationship::Relationship() {
-    m_relatedElements = new Sequence<>;
-    m_relatedElements->addProcedures.push_back(new AddRelationshipFunctor(this));
-    m_relatedElements->addChecks.push_back(new CheckRelatedElementsFunctor(this));
-    m_relatedElements->removeProcedures.push_back(new RemoveRelatedElementsFunctor(this));
+    m_relatedElements.addProcedures.push_back(new AddRelationshipFunctor(this));
+    m_relatedElements.addChecks.push_back(new CheckRelatedElementsFunctor(this));
+    m_relatedElements.removeProcedures.push_back(new RemoveRelatedElementsFunctor(this));
 }
 
 Relationship::~Relationship() {
-    delete m_relatedElements;
+
 }
 
 Sequence<>& Relationship::getRelatedElements() {
-    return *m_relatedElements;
+    return m_relatedElements;
 }
 
 ElementType Relationship::getElementType() const {

@@ -9,8 +9,8 @@ namespace UML {
 
     class RedefinableElement : virtual public NamedElement {
         protected:
-            Sequence<RedefinableElement>* m_redefinedElement;
-            Sequence<Classifier>* m_redefinitionContext;
+            Sequence<RedefinableElement> m_redefinedElement;
+            Sequence<Classifier> m_redefinitionContext;
         public:
             RedefinableElement();
             ~RedefinableElement();

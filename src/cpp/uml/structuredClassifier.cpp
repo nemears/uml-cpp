@@ -60,31 +60,26 @@ void StructuredClassifier::RemoveRoleFunctor::operator()(Element& el) const {
 }
 
 StructuredClassifier::StructuredClassifier() {
-    m_ownedAttributes = new Sequence<Property>;
-    m_ownedAttributes->addProcedures.push_back(new AddOwnedAttributeFunctor(this));
-    m_ownedAttributes->removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
-    m_role = new Sequence<ConnectableElement>;
-    m_role->addProcedures.push_back(new AddRoleFunctor(this));
-    m_role->removeProcedures.push_back(new RemoveRoleFunctor(this));
-    m_parts = new Sequence<Property>;
+    m_ownedAttributes.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
+    m_ownedAttributes.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
+    m_role.addProcedures.push_back(new AddRoleFunctor(this));
+    m_role.removeProcedures.push_back(new RemoveRoleFunctor(this));
 }
 
 StructuredClassifier::~StructuredClassifier() {
-    delete m_ownedAttributes;
-    delete m_role;
-    delete m_parts;
+    
 }
 
 Sequence<Property>& StructuredClassifier::getOwnedAttributes() {
-    return *m_ownedAttributes;
+    return m_ownedAttributes;
 }
 
 Sequence<ConnectableElement>& StructuredClassifier::getRole() {
-    return *m_role;
+    return m_role;
 }
 
 Sequence<Property>& StructuredClassifier::getParts() {
-    return *m_parts;
+    return m_parts;
 }
 
 ElementType StructuredClassifier::getElementType() const {

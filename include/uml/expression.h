@@ -8,7 +8,7 @@ namespace UML {
     class Expression : public ValueSpecification {
         protected:
             std::string m_symbol;
-            Sequence<ValueSpecification>* m_operands;
+            Sequence<ValueSpecification> m_operands;
             class AddOperandFunctor : public AbstractSequenceFunctor {
                 public:
                     AddOperandFunctor(Element* me) : AbstractSequenceFunctor(me) {};

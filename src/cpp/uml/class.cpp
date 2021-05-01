@@ -24,17 +24,16 @@ void Class::RemoveOperationFunctor::operator()(Element& el) const {
 }
 
 Class::Class() {
-    m_operations = new Sequence<Operation>;
-    m_operations->addProcedures.push_back(new AddOperationFunctor(this));
-    m_operations->removeProcedures.push_back(new RemoveOperationFunctor(this));
+    m_operations.addProcedures.push_back(new AddOperationFunctor(this));
+    m_operations.removeProcedures.push_back(new RemoveOperationFunctor(this));
 }
 
 Class::~Class() {
-    delete m_operations;
+    
 }
 
 Sequence<Operation>& Class::getOperations() {
-    return *m_operations;
+    return m_operations;
 }
 
 ElementType Class::getElementType() const {

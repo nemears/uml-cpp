@@ -9,8 +9,8 @@
 namespace UML {
     class Action : public ActivityNode {
         protected:
-            Sequence<InputPin>* m_inputs;
-            Sequence<OutputPin>* m_outputs;
+            Sequence<InputPin> m_inputs;
+            Sequence<OutputPin> m_outputs;
             class AddPinFunctor : public AbstractSequenceFunctor {
                 public:
                     AddPinFunctor(Element* me) : AbstractSequenceFunctor(me) {};

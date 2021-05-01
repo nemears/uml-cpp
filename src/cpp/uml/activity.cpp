@@ -26,23 +26,20 @@ void Activity::AddEdgeFunctor::operator()(Element& el) const {
 }
 
 Activity::Activity() {
-    m_nodes = new Sequence<ActivityNode>;
-    m_nodes->addProcedures.push_back(new AddNodeFunctor(this));
-    m_edges = new Sequence<ActivityEdge>;
-    m_edges->addProcedures.push_back(new AddEdgeFunctor(this));
+    m_nodes.addProcedures.push_back(new AddNodeFunctor(this));
+    m_edges.addProcedures.push_back(new AddEdgeFunctor(this));
 }
 
 Activity::~Activity() {
-    delete m_nodes;
-    delete m_edges;
+    
 }
 
 Sequence<ActivityNode>& Activity::getNodes() {
-    return *m_nodes;
+    return m_nodes;
 }
 
 Sequence<ActivityEdge>& Activity::getEdges() {
-    return *m_edges;
+    return m_edges;
 }
 
 ElementType Activity::getElementType() const {

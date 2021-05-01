@@ -9,8 +9,8 @@
 namespace UML {
     class BehavioralFeature : public Feature , public Namespace {
         protected:
-            Sequence<Behavior>* m_methods;
-            Sequence<Parameter>* m_ownedParameters;
+            Sequence<Behavior> m_methods;
+            Sequence<Parameter> m_ownedParameters;
             bool m_returnSpecified = false;
             class AddMethodFunctor : public AbstractSequenceFunctor {
                 public:

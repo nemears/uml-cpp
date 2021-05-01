@@ -7,10 +7,10 @@
 namespace UML {
     class Association : public Classifier, public Relationship {
         protected:
-            Sequence<Property>* m_memberEnds;
-            Sequence<Property>* m_ownedEnds;
-            Sequence<Property>* m_navigableOwnedEnds;
-            Sequence<Type>* m_endType;
+            Sequence<Property> m_memberEnds;
+            Sequence<Property> m_ownedEnds;
+            Sequence<Property> m_navigableOwnedEnds;
+            Sequence<Type> m_endType;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             class AddMemberEndFunctor : public AbstractSequenceFunctor {

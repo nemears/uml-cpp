@@ -68,38 +68,35 @@ void DataType::RemoveOwnedOperationFunctor::operator()(Element& el) const {
 }
 
 DataType::DataType() {
-    m_ownedAttribute = new Sequence<Property>;
-    m_ownedAttribute->addProcedures.push_back(new AddOwnedAttributeFunctor(this));
-    m_ownedAttribute->removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
-    m_ownedOperation = new Sequence<Operation>;
-    m_ownedOperation->addProcedures.push_back(new AddOwnedOperationFunctor(this));
-    m_ownedOperation->removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
+    m_ownedAttribute.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
+    m_ownedAttribute.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
+    m_ownedOperation.addProcedures.push_back(new AddOwnedOperationFunctor(this));
+    m_ownedOperation.removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
 }
 
 DataType::~DataType() {
-    delete m_ownedAttribute;
-    delete m_ownedOperation;
+    
 }
 
 DataType::DataType(const DataType& el) {
-    m_ownedAttribute = new Sequence<Property>(*el.m_ownedAttribute);
-    m_ownedAttribute->addProcedures.clear();
-    m_ownedAttribute->addProcedures.push_back(new AddOwnedAttributeFunctor(this));
-    m_ownedAttribute->removeProcedures.clear();
-    m_ownedAttribute->removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
-    m_ownedOperation = new Sequence<Operation>(*el.m_ownedOperation);
-    m_ownedOperation->addProcedures.clear();
-    m_ownedOperation->addProcedures.push_back(new AddOwnedOperationFunctor(this));
-    m_ownedOperation->removeProcedures.clear();
-    m_ownedOperation->removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
+    m_ownedAttribute = el.m_ownedAttribute;
+    m_ownedAttribute.addProcedures.clear();
+    m_ownedAttribute.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
+    m_ownedAttribute.removeProcedures.clear();
+    m_ownedAttribute.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
+    m_ownedOperation = el.m_ownedOperation;
+    m_ownedOperation.addProcedures.clear();
+    m_ownedOperation.addProcedures.push_back(new AddOwnedOperationFunctor(this));
+    m_ownedOperation.removeProcedures.clear();
+    m_ownedOperation.removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
 }
 
 Sequence<Property>& DataType::getOwnedAttribute() {
-    return *m_ownedAttribute;
+    return m_ownedAttribute;
 }
 
 Sequence<Operation>& DataType::getOwnedOperation() {
-    return *m_ownedOperation;
+    return m_ownedOperation;
 }
 
 ElementType DataType::getElementType() const {

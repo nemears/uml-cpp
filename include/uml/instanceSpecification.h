@@ -9,7 +9,7 @@ namespace UML{
     class InstanceSpecification : public PackageableElement {
         protected:
             Classifier* m_classifier;
-            Sequence<Slot>* m_slots;
+            Sequence<Slot> m_slots;
             class AddSlotFunctor : public AbstractSequenceFunctor {
                 public:
                     AddSlotFunctor(Element* me) : AbstractSequenceFunctor(me) {};

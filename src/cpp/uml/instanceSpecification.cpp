@@ -28,13 +28,12 @@ void InstanceSpecification::RemoveSlotFunctor::operator()(Element& el) const {
 
 InstanceSpecification::InstanceSpecification() {
     m_classifier = NULL;
-    m_slots = new Sequence<Slot>;
-    m_slots->addProcedures.push_back(new AddSlotFunctor(this));
-    m_slots->removeProcedures.push_back(new RemoveSlotFunctor(this));
+    m_slots.addProcedures.push_back(new AddSlotFunctor(this));
+    m_slots.removeProcedures.push_back(new RemoveSlotFunctor(this));
 }
 
 InstanceSpecification::~InstanceSpecification() {
-    delete m_slots;
+    
 }
 
 Classifier* InstanceSpecification::getClassifier() {
@@ -46,7 +45,7 @@ void InstanceSpecification::setClassifier(Classifier* classifier) {
 }
 
 Sequence<Slot>& InstanceSpecification::getSlots() {
-    return *m_slots;
+    return m_slots;
 }
 
 ElementType InstanceSpecification::getElementType() const {

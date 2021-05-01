@@ -11,8 +11,8 @@ namespace UML {
     class ActivityNode : virtual public NamedElement {
         protected:
             Activity* m_activity;
-            Sequence<ActivityEdge>* m_incoming;
-            Sequence<ActivityEdge>* m_outgoing;
+            Sequence<ActivityEdge> m_incoming;
+            Sequence<ActivityEdge> m_outgoing;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             class AddIncomingFunctor : public AbstractSequenceFunctor {

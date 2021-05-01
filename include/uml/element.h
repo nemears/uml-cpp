@@ -96,6 +96,7 @@ namespace UML {
         friend class ElementDoesntExistException;
         protected:
             Element* m_owner;
+            // Sequences need to be pointers in element, still encapsulated but slightly different internal syntax
             Sequence<Element>* m_ownedElements;
             Sequence<Relationship>* m_relationships;
             boost::uuids::uuid m_id;

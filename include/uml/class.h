@@ -16,7 +16,7 @@ namespace UML{
      **/
     class Class : public StructuredClassifier {
         protected:
-            Sequence<Operation>* m_operations;
+            Sequence<Operation> m_operations;
             class AddOperationFunctor : public AbstractSequenceFunctor {
                 public:
                     AddOperationFunctor(Element* me) : AbstractSequenceFunctor(me) {};

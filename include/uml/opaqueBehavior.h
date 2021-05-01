@@ -7,7 +7,7 @@
 namespace UML {
     class OpaqueBehavior : public Behavior {
         protected:
-            Sequence<LiteralString>* m_bodies;
+            Sequence<LiteralString> m_bodies;
         public:
             OpaqueBehavior();
             ~OpaqueBehavior();

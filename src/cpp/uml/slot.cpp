@@ -33,18 +33,17 @@ void Slot::RemoveValueFunctor::operator()(Element& el) const {
 
 Slot::Slot() {
     m_definingFeature = 0;
-    m_values = new Sequence<ValueSpecification>;
-    m_values->addProcedures.push_back(new AddValueFunctor(this));
-    m_values->removeProcedures.push_back(new RemoveValueFunctor(this));
+    m_values.addProcedures.push_back(new AddValueFunctor(this));
+    m_values.removeProcedures.push_back(new RemoveValueFunctor(this));
     m_owningInstance = NULL;
 }
 
 Slot::~Slot() {
-    delete m_values;
+    
 }
 
 Sequence<ValueSpecification>& Slot::getValues() {
-    return *m_values;
+    return m_values;
 }
 
 StructuralFeature* Slot::getDefiningFeature() {

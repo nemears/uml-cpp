@@ -11,8 +11,8 @@ namespace UML{
      **/
     class Namespace : virtual public NamedElement {
         protected:
-            Sequence<NamedElement>* m_members;
-            Sequence<NamedElement>* m_ownedMembers;
+            Sequence<NamedElement> m_members;
+            Sequence<NamedElement> m_ownedMembers;
             class AddMemberFunctor : public AbstractSequenceFunctor {
                 public:
                     AddMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};

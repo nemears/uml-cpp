@@ -41,18 +41,17 @@ void Behavior::RemoveParameterFunctor::operator()(Element& el) const {
 }
 
 Behavior::Behavior() {
-    m_parameters = new Sequence<Parameter>();
-    m_parameters->addProcedures.push_back(new AddParameterFunctor(this));
-    m_parameters->removeProcedures.push_back(new RemoveParameterFunctor(this));
+    m_parameters.addProcedures.push_back(new AddParameterFunctor(this));
+    m_parameters.removeProcedures.push_back(new RemoveParameterFunctor(this));
     m_specification = 0;
 }
 
 Behavior::~Behavior() {
-    delete m_parameters;
+    
 }
 
 Sequence<Parameter>& Behavior::getParameters() {
-    return *m_parameters;
+    return m_parameters;
 }
 
 BehavioralFeature* Behavior::getSpecification() {

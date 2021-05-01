@@ -6,7 +6,7 @@
 namespace UML {
     class Relationship : virtual public Element {
         protected:
-            Sequence<>* m_relatedElements;
+            Sequence<> m_relatedElements;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
 
             class AddRelationshipFunctor : public AbstractSequenceFunctor {

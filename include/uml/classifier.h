@@ -7,7 +7,7 @@
 #include "namespace.h"
 #include "feature.h"
 
-namespace UML{
+namespace UML {
 
     class Generalization;
 
@@ -16,10 +16,10 @@ namespace UML{
      **/
     class Classifier: public Namespace, public Type , public RedefinableElement {
         protected:
-            Sequence<Feature>* m_features;
-            Sequence<Property>* m_attributes;
-            Sequence<Generalization>* m_generalizations;
-            Sequence<Classifier>* m_generals;
+            Sequence<Feature> m_features;
+            Sequence<Property> m_attributes;
+            Sequence<Generalization> m_generalizations;
+            Sequence<Classifier> m_generals;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             class AddAttributeFunctor : public AbstractSequenceFunctor {

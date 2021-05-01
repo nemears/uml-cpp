@@ -11,16 +11,15 @@ void Expression::AddOperandFunctor::operator()(Element& el) const {
 
 Expression::Expression() {
     m_symbol = "";
-    m_operands = new Sequence<ValueSpecification>;
-    m_operands->addProcedures.push_back(new AddOperandFunctor(this));
+    m_operands.addProcedures.push_back(new AddOperandFunctor(this));
 }
 
 Expression::~Expression() {
-    delete m_operands;
+    
 }
 
 Sequence<ValueSpecification>& Expression::getOperands() {
-    return *m_operands;
+    return m_operands;
 }
 
 string Expression::getSymbol() {

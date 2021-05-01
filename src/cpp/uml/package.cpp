@@ -23,25 +23,24 @@ void Package::RemovePackagedElementFunctor::operator()(Element& el) const {
 }
 
 Package::Package() {
-    m_packagedElements = new Sequence<PackageableElement>();
-    m_packagedElements->addProcedures.push_back(new AddPackagedElementFunctor(this));
-    m_packagedElements->removeProcedures.push_back(new RemovePackagedElementFunctor(this));
+    m_packagedElements.addProcedures.push_back(new AddPackagedElementFunctor(this));
+    m_packagedElements.removeProcedures.push_back(new RemovePackagedElementFunctor(this));
 }
 
 Package::~Package() {
-    delete m_packagedElements;
+    
 }
 
 Package::Package(const Package& pckg) : Namespace(pckg), PackageableElement(pckg), NamedElement(pckg), Element(pckg) {
-    m_packagedElements = new Sequence<PackageableElement>(*pckg.m_packagedElements);
-    m_packagedElements->addProcedures.clear();
-    m_packagedElements->addProcedures.push_back(new AddPackagedElementFunctor(this));
-    m_packagedElements->removeProcedures.clear();
-    m_packagedElements->removeProcedures.push_back(new RemovePackagedElementFunctor(this));
+    m_packagedElements = pckg.m_packagedElements;
+    m_packagedElements.addProcedures.clear();
+    m_packagedElements.addProcedures.push_back(new AddPackagedElementFunctor(this));
+    m_packagedElements.removeProcedures.clear();
+    m_packagedElements.removeProcedures.push_back(new RemovePackagedElementFunctor(this));
 }
 
 Sequence<PackageableElement>& Package::getPackagedElements() {
-    return *m_packagedElements;
+    return m_packagedElements;
 }
 
 ElementType Package::getElementType() const {

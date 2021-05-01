@@ -6,8 +6,8 @@
 namespace UML {
     class DataType : public Classifier {
         protected:
-            Sequence<Property>* m_ownedAttribute;
-            Sequence<Operation>* m_ownedOperation;
+            Sequence<Property> m_ownedAttribute;
+            Sequence<Operation> m_ownedOperation;
             class AddOwnedAttributeFunctor : public AbstractSequenceFunctor {
                 public:
                     AddOwnedAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};

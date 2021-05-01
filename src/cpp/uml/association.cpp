@@ -92,39 +92,32 @@ void Association::RemoveNavigableOwnedEndFunctor::operator()(Element& el) const 
 }
 
 Association::Association() {
-    m_memberEnds = new Sequence<Property>;
-    m_memberEnds->addProcedures.push_back(new AddMemberEndFunctor(this));
-    m_memberEnds->removeProcedures.push_back(new RemoveMemberEndFunctor(this));
-    m_ownedEnds = new Sequence<Property>;
-    m_ownedEnds->addProcedures.push_back(new AddOwnedEndFunctor(this));
-    m_ownedEnds->removeProcedures.push_back(new RemoveOwnedEndFunctor(this));
-    m_navigableOwnedEnds = new Sequence<Property>;
-    m_navigableOwnedEnds->addProcedures.push_back(new AddNavigableOwnedEndFunctor(this));
-    m_navigableOwnedEnds->removeProcedures.push_back(new RemoveNavigableOwnedEndFunctor(this));
-    m_endType = new Sequence<Type>;
+    m_memberEnds.addProcedures.push_back(new AddMemberEndFunctor(this));
+    m_memberEnds.removeProcedures.push_back(new RemoveMemberEndFunctor(this));
+    m_ownedEnds.addProcedures.push_back(new AddOwnedEndFunctor(this));
+    m_ownedEnds.removeProcedures.push_back(new RemoveOwnedEndFunctor(this));
+    m_navigableOwnedEnds.addProcedures.push_back(new AddNavigableOwnedEndFunctor(this));
+    m_navigableOwnedEnds.removeProcedures.push_back(new RemoveNavigableOwnedEndFunctor(this));
 }
 
 Association::~Association() {
-    delete m_memberEnds;
-    delete m_ownedEnds;
-    delete m_navigableOwnedEnds;
-    delete m_endType;
+    // nothing
 }
 
 Sequence<Property>& Association::getMemberEnds() {
-    return *m_memberEnds;
+    return m_memberEnds;
 }
 
 Sequence<Property>& Association::getOwnedEnds() {
-    return *m_ownedEnds;
+    return m_ownedEnds;
 }
 
 Sequence<Property>& Association::getNavigableOwnedEnds() {
-    return *m_navigableOwnedEnds;
+    return m_navigableOwnedEnds;
 }
 
 Sequence<Type>& Association::getEndType() {
-    return *m_endType;
+    return m_endType;
 }
 
 ElementType Association::getElementType() const {

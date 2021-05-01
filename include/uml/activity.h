@@ -7,8 +7,8 @@
 namespace UML {
     class Activity : public Behavior {
         protected:
-            Sequence<ActivityNode>* m_nodes;
-            Sequence<ActivityEdge>* m_edges;
+            Sequence<ActivityNode> m_nodes;
+            Sequence<ActivityEdge> m_edges;
             class AddNodeFunctor : public AbstractSequenceFunctor {
                 public:
                     AddNodeFunctor(Element* me) : AbstractSequenceFunctor(me) {};

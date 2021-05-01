@@ -9,23 +9,20 @@ void Action::AddPinFunctor::operator()(Element& el) const {
 }
 
 Action::Action() {
-    m_inputs = new Sequence<InputPin>;
-    m_inputs->addProcedures.push_back(new AddPinFunctor(this));
-    m_outputs = new Sequence<OutputPin>;
-    m_outputs->addProcedures.push_back(new AddPinFunctor(this));
+    m_inputs.addProcedures.push_back(new AddPinFunctor(this));
+    m_outputs.addProcedures.push_back(new AddPinFunctor(this));
 }
 
 Action::~Action() {
-    delete m_inputs;
-    delete m_outputs;
+    
 }
 
 Sequence<InputPin>& Action::getInputs() {
-    return * m_inputs;
+    return m_inputs;
 }
 
 Sequence<OutputPin>& Action::getOutputs() {
-    return *m_outputs;
+    return m_outputs;
 }
 
 ElementType Action::getElementType() const {

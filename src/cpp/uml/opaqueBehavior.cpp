@@ -3,15 +3,14 @@
 namespace UML {
 
 OpaqueBehavior::OpaqueBehavior() {
-    m_bodies = new Sequence<LiteralString>();
 }
 
 OpaqueBehavior::~OpaqueBehavior() {
-    delete m_bodies;
+    
 }
 
 Sequence<LiteralString>& OpaqueBehavior::getBodies() {
-    return *m_bodies;
+    return m_bodies;
 }
 
 ElementType OpaqueBehavior::getElementType() const {

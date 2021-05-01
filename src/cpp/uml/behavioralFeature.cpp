@@ -66,30 +66,27 @@ void BehavioralFeature::RemoveParameterFunctor::operator()(Element& el) const {
 }
 
 BehavioralFeature::BehavioralFeature() {
-    m_methods = new Sequence<Behavior>;
-    m_methods->addProcedures.push_back(new AddMethodFunctor(this));
-    m_methods->removeProcedures.push_back(new RemoveMethodFunctor(this));
-    m_ownedParameters = new Sequence<Parameter>;
-    m_ownedParameters->addProcedures.push_back(new AddParameterFunctor(this));
-    m_ownedParameters->addChecks.push_back(new CheckParameterFunctor(this));
-    m_ownedParameters->removeProcedures.push_back(new RemoveParameterFunctor(this));
+    m_methods.addProcedures.push_back(new AddMethodFunctor(this));
+    m_methods.removeProcedures.push_back(new RemoveMethodFunctor(this));
+    m_ownedParameters.addProcedures.push_back(new AddParameterFunctor(this));
+    m_ownedParameters.addChecks.push_back(new CheckParameterFunctor(this));
+    m_ownedParameters.removeProcedures.push_back(new RemoveParameterFunctor(this));
 }
 
 BehavioralFeature::~BehavioralFeature() {
-    delete m_methods;
-    delete m_ownedParameters;
+
 }
 
 Sequence<Behavior>& BehavioralFeature::getMethods() {
-    return *m_methods;
+    return m_methods;
 }
 
 Sequence<Parameter>& BehavioralFeature::getOwnedParameters() {
-    return *m_ownedParameters;
+    return m_ownedParameters;
 }
 
 bool BehavioralFeature::isAbstract() {
-    return m_methods->size() > 0;
+    return m_methods.size() > 0;
 }
 
 ElementType BehavioralFeature::getElementType() const {

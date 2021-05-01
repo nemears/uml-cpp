@@ -41,38 +41,35 @@ void Namespace::RemoveOwnedMemberFunctor::operator()(Element& el) const {
 }
 
 Namespace::Namespace() {
-    m_members = new Sequence<NamedElement>;
-    m_members->addProcedures.push_back(new AddMemberFunctor(this));
-    m_members->removeProcedures.push_back(new RemoveMemberFunctor(this));
-    m_ownedMembers = new Sequence<NamedElement>;
-    m_ownedMembers->addProcedures.push_back(new AddOwnedMemberFunctor(this));
-    m_ownedMembers->removeProcedures.push_back(new RemoveOwnedMemberFunctor(this));
+    m_members.addProcedures.push_back(new AddMemberFunctor(this));
+    m_members.removeProcedures.push_back(new RemoveMemberFunctor(this));
+    m_ownedMembers.addProcedures.push_back(new AddOwnedMemberFunctor(this));
+    m_ownedMembers.removeProcedures.push_back(new RemoveOwnedMemberFunctor(this));
 }
 
 Namespace::~Namespace() {
-    delete m_members;
-    delete m_ownedMembers;
+    
 }
 
 Namespace::Namespace(const Namespace& nmspc) : NamedElement(nmspc), Element(nmspc) {
-    m_members = new Sequence<NamedElement>(*nmspc.m_members);
-    m_members->addProcedures.clear();
-    m_members->addProcedures.push_back(new AddMemberFunctor(this));
-    m_members->removeProcedures.clear();
-    m_members->removeProcedures.push_back(new RemoveMemberFunctor(this));
-    m_ownedMembers = new Sequence<NamedElement>(*nmspc.m_ownedMembers);
-    m_ownedMembers->addProcedures.clear();
-    m_ownedMembers->addProcedures.push_back(new AddOwnedMemberFunctor(this));
-    m_ownedMembers->removeProcedures.clear();
-    m_ownedMembers->removeProcedures.push_back(new RemoveOwnedMemberFunctor(this));
+    m_members = nmspc.m_members;
+    m_members.addProcedures.clear();
+    m_members.addProcedures.push_back(new AddMemberFunctor(this));
+    m_members.removeProcedures.clear();
+    m_members.removeProcedures.push_back(new RemoveMemberFunctor(this));
+    m_ownedMembers = nmspc.m_ownedMembers;
+    m_ownedMembers.addProcedures.clear();
+    m_ownedMembers.addProcedures.push_back(new AddOwnedMemberFunctor(this));
+    m_ownedMembers.removeProcedures.clear();
+    m_ownedMembers.removeProcedures.push_back(new RemoveOwnedMemberFunctor(this));
 }
 
 Sequence<NamedElement>& Namespace::getMembers() {
-    return *m_members;
+    return m_members;
 }
 
 Sequence<NamedElement>& Namespace::getOwnedMembers() {
-    return *m_ownedMembers;
+    return m_ownedMembers;
 }
 
 ElementType Namespace::getElementType() const {

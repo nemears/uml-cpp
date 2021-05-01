@@ -9,7 +9,7 @@ namespace UML {
 
     class Behavior : public Class {
         protected:
-            Sequence<Parameter>* m_parameters;
+            Sequence<Parameter> m_parameters;
             BehavioralFeature* m_specification;
             class AddParameterFunctor : public AbstractSequenceFunctor {
                 public:

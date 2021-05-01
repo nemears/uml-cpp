@@ -12,7 +12,7 @@ namespace UML {
     class Slot : public Element {
         protected:
             StructuralFeature* m_definingFeature;
-            Sequence<ValueSpecification>* m_values;
+            Sequence<ValueSpecification> m_values;
             InstanceSpecification* m_owningInstance;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
             class AddValueFunctor : public AbstractSequenceFunctor {

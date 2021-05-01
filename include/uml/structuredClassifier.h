@@ -7,9 +7,9 @@
 namespace UML {
     class StructuredClassifier : public Classifier {
         protected:
-            Sequence<Property>* m_ownedAttributes;
-            Sequence<ConnectableElement>* m_role;
-            Sequence<Property>* m_parts;
+            Sequence<Property> m_ownedAttributes;
+            Sequence<ConnectableElement> m_role;
+            Sequence<Property> m_parts;
             class AddOwnedAttributeFunctor : public AbstractSequenceFunctor {
                 public:
                     AddOwnedAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};

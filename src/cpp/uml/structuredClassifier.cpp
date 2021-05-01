@@ -18,6 +18,11 @@ void StructuredClassifier::AddOwnedAttributeFunctor::operator()(Element& el) con
     if (!dynamic_cast<StructuredClassifier*>(m_el)->getOwnedMembers().count(el.getID())) {
         dynamic_cast<StructuredClassifier*>(m_el)->getOwnedMembers().add(dynamic_cast<Property&>(el));
     }
+
+    // Determine if part and assign
+    if (dynamic_cast<Property&>(el).isComposite()) {
+        dynamic_cast<StructuredClassifier*>(m_el)->getParts().add(dynamic_cast<Property&>(el));
+    }
 }
 
 void StructuredClassifier::RemoveOwnedAttributeFunctor::operator()(Element& el) const {
@@ -35,6 +40,10 @@ void StructuredClassifier::RemoveOwnedAttributeFunctor::operator()(Element& el) 
 
     if (dynamic_cast<StructuredClassifier*>(m_el)->getOwnedMembers().count(el.getID())) {
         dynamic_cast<StructuredClassifier*>(m_el)->getOwnedMembers().remove(dynamic_cast<Property&>(el));
+    }
+
+    if (dynamic_cast<StructuredClassifier*>(m_el)->getParts().count(el.getID())) {
+        dynamic_cast<StructuredClassifier*>(m_el)->getParts().remove(dynamic_cast<Property&>(el));
     }
 }
 

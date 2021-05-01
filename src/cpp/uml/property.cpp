@@ -68,7 +68,21 @@ bool Property::isComposite() {
 }
 
 void Property::setComposite(bool composite) {
+    if (!composite && m_composite) {
+        if (m_structuredClassifier) {
+            if (m_structuredClassifier->getParts().count(m_id)) {
+                m_structuredClassifier->getParts().remove(*this);
+            }
+        }
+    }
     m_composite = composite;
+    if (m_composite) {
+        if (m_structuredClassifier) {
+            if (!m_structuredClassifier->getParts().count(m_id)) {
+                m_structuredClassifier->getParts().add(*this);
+            }
+        }
+    }
 }
 
 void Property::setAggregation(AggregationKind aggregation) {

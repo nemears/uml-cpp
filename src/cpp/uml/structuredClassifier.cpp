@@ -57,11 +57,13 @@ StructuredClassifier::StructuredClassifier() {
     m_role = new Sequence<ConnectableElement>;
     m_role->addProcedures.push_back(new AddRoleFunctor(this));
     m_role->removeProcedures.push_back(new RemoveRoleFunctor(this));
+    m_parts = new Sequence<Property>;
 }
 
 StructuredClassifier::~StructuredClassifier() {
     delete m_ownedAttributes;
     delete m_role;
+    delete m_parts;
 }
 
 Sequence<Property>& StructuredClassifier::getOwnedAttributes() {
@@ -70,6 +72,10 @@ Sequence<Property>& StructuredClassifier::getOwnedAttributes() {
 
 Sequence<ConnectableElement>& StructuredClassifier::getRole() {
     return *m_role;
+}
+
+Sequence<Property>& StructuredClassifier::getParts() {
+    return *m_parts;
 }
 
 ElementType StructuredClassifier::getElementType() const {

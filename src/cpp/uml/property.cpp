@@ -38,6 +38,7 @@ void Property::setDefaultValue(ValueSpecification* val) {
 
 Property::Property() {
     m_aggregation = AggregationKind::NONE;
+    m_composite = false;
     defaultValue = 0;
     m_classifier = 0;
     m_dataType = 0;
@@ -48,6 +49,8 @@ Property::Property() {
 
 // TODO remove?
 Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement(prop), NamedElement(prop), Element(prop) {
+    m_aggregation = prop.m_aggregation;
+    m_composite = prop.m_composite;
     defaultValue = prop.defaultValue;
     m_classifier = prop.m_classifier;
     m_dataType = prop.m_dataType;
@@ -58,6 +61,14 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
 
 AggregationKind Property::getAggregation() {
     return m_aggregation;
+}
+
+bool Property::isComposite() {
+    return m_composite;
+}
+
+void Property::setComposite(bool composite) {
+    m_composite = composite;
 }
 
 void Property::setAggregation(AggregationKind aggregation) {

@@ -9,6 +9,7 @@ namespace UML {
         protected:
             Sequence<Property>* m_ownedAttributes;
             Sequence<ConnectableElement>* m_role;
+            Sequence<Property>* m_parts;
             class AddOwnedAttributeFunctor : public AbstractSequenceFunctor {
                 public:
                     AddOwnedAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
@@ -34,6 +35,7 @@ namespace UML {
             ~StructuredClassifier();
             Sequence<Property>& getOwnedAttributes();
             Sequence<ConnectableElement>& getRole();
+            Sequence<Property>& getParts();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };

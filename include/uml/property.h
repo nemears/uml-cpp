@@ -21,6 +21,7 @@ namespace UML{
     class Property: public StructuralFeature, public ConnectableElement {
         protected:
             AggregationKind m_aggregation;
+            bool m_composite;
             ValueSpecification* defaultValue;
             StructuredClassifier* m_structuredClassifier;
             Classifier* m_classifier;
@@ -30,7 +31,11 @@ namespace UML{
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
             void reindexName(std::string oldName, std::string newName) override;
         public: 
+            Property();
+            Property(const Property& prop);
             AggregationKind getAggregation();
+            bool isComposite();
+            void setComposite(bool composite);
             void setAggregation(AggregationKind aggregation);
             void setDefaultValue(ValueSpecification* val);
             ValueSpecification* getDefaultValue();
@@ -46,8 +51,6 @@ namespace UML{
             void setOwningAssociation(Association* association);
             void setType(Type* type) override;
             ElementType getElementType() const override;
-            Property();
-            Property(const Property& prop);
             bool isSubClassOf(ElementType eType) override;
     };
 }

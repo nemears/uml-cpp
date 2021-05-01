@@ -10,6 +10,7 @@ namespace UML {
             Sequence<Property>* m_memberEnds;
             Sequence<Property>* m_ownedEnds;
             Sequence<Property>* m_navigableOwnedEnds;
+            Sequence<Type>* m_endType;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             class AddMemberEndFunctor : public AbstractSequenceFunctor {
@@ -43,11 +44,23 @@ namespace UML {
                     void operator()(Element& el) const override;
             };
         public:
+            /**
+             * TODO Think about constructor Association(Property& end1, Property& end2) {
+             *      // sequence stuff
+             *      m_memberEnd->add(end1);
+             *      m_memberEnd->add(end2);
+             * }
+             * The reason is because an association NEEDS 2 ends atleast
+             **/
             Association();
             ~Association();
             Sequence<Property>& getMemberEnds();
             Sequence<Property>& getOwnedEnds();
             Sequence<Property>& getNavigableOwnedEnds();
+            /**
+             * endType is derived from the types of the member ends.
+             **/
+            Sequence<Type>& getEndType();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };

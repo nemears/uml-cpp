@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "uml/association.h"
-#include "umlTestUtil.h"
+#include "uml/class.h"
 
 using namespace UML;
 
@@ -10,12 +10,16 @@ class AssociationTest : public ::testing::Test {
 
 TEST_F(AssociationTest, addMemberEndFunctorTest) {
     Property p;
+    Class c;
     Association a;
+    p.setType(&c);
     ASSERT_NO_THROW(a.getMemberEnds().add(p));
     ASSERT_TRUE(a.getMemberEnds().size() == 1);
     ASSERT_TRUE(a.getMemberEnds().front() == &p);
     ASSERT_TRUE(a.getMembers().size() == 1);
     ASSERT_TRUE(a.getMembers().front() == &p);
+    ASSERT_TRUE(a.getEndType().size() == 1);
+    ASSERT_TRUE(a.getEndType().front() == &c);
 
     ASSERT_TRUE(p.getAssociation() == &a);
     ASSERT_TRUE(p.getMemberNamespace().size() == 1);
@@ -299,4 +303,23 @@ TEST_F(AssociationTest, navigableOwnedEndOverwriteOwningAssociationTest) {
     ASSERT_TRUE(p.getMemberNamespace().size() == 1);
     ASSERT_TRUE(p.getMemberNamespace().front() == &a2);
     ASSERT_TRUE(p.getOwner() == &a2);
+}
+
+TEST_F(AssociationTest, reindexTypeTest) {
+    Property p;
+    Class c;
+    Association a;
+    a.getMemberEnds().add(p);
+    ASSERT_NO_THROW(p.setType(&c));
+
+    ASSERT_TRUE(a.getMemberEnds().size() == 1);
+    ASSERT_TRUE(a.getMemberEnds().front() == &p);
+    ASSERT_TRUE(a.getMembers().size() == 1);
+    ASSERT_TRUE(a.getMembers().front() == &p);
+    ASSERT_TRUE(a.getEndType().size() == 1);
+    ASSERT_TRUE(a.getEndType().front() == &c);
+
+    ASSERT_TRUE(p.getAssociation() == &a);
+    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
+    ASSERT_TRUE(p.getMemberNamespace().front() == &a);
 }

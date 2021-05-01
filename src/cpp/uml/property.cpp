@@ -37,6 +37,7 @@ void Property::setDefaultValue(ValueSpecification* val) {
 }
 
 Property::Property() {
+    m_aggregation = AggregationKind::NONE;
     defaultValue = 0;
     m_classifier = 0;
     m_dataType = 0;
@@ -53,6 +54,14 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     m_structuredClassifier = prop.m_structuredClassifier;
     m_association = prop.m_association;
     m_owningAssociation = prop.m_owningAssociation;
+}
+
+AggregationKind Property::getAggregation() {
+    return m_aggregation;
+}
+
+void Property::setAggregation(AggregationKind aggregation) {
+    m_aggregation = aggregation;
 }
 
 ValueSpecification* Property::getDefaultValue() {
@@ -158,6 +167,26 @@ void Property::setOwningAssociation(Association* association) {
     if (m_owningAssociation) {
         if (!m_owningAssociation->getOwnedEnds().count(m_id)) {
             m_owningAssociation->getOwnedEnds().add(*this);
+        }
+    }
+}
+
+void Property::setType(Type* type) {
+    if (m_association) {
+        if (m_type) {
+            if (m_type != type) {
+                if (m_association->getEndType().count(type->getID())) {
+                    m_association->getEndType().remove(*type);
+                }
+            }
+        }
+    }
+    TypedElement::setType(type);
+    if (m_association) {
+        if (m_type) {
+            if (!m_association->getEndType().count(type->getID())) {
+                m_association->getEndType().add(*type);
+            }
         }
     }
 }

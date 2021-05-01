@@ -86,7 +86,17 @@ void Property::setComposite(bool composite) {
 }
 
 void Property::setAggregation(AggregationKind aggregation) {
+    if (aggregation != AggregationKind::COMPOSITE) {
+        if (isComposite()) {
+            setComposite(false);
+        }
+    }
     m_aggregation = aggregation;
+    if (m_aggregation == AggregationKind::COMPOSITE) {
+        if (!isComposite()) {
+            setComposite(true);
+        }
+    }
 }
 
 ValueSpecification* Property::getDefaultValue() {

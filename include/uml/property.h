@@ -30,12 +30,12 @@ namespace UML{
             Association* m_owningAssociation;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
             void reindexName(std::string oldName, std::string newName) override;
+            void setComposite(bool composite);
         public: 
             Property();
             Property(const Property& prop);
             AggregationKind getAggregation();
             bool isComposite();
-            void setComposite(bool composite);
             void setAggregation(AggregationKind aggregation);
             void setDefaultValue(ValueSpecification* val);
             ValueSpecification* getDefaultValue();

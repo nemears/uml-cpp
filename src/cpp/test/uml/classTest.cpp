@@ -248,7 +248,7 @@ TEST_F(ClassTest, removeRoleFunctorTest) {
 TEST_F(ClassTest, addCompositePropertyTest) {
   Class c;
   Property p;
-  p.setComposite(true);
+  p.setAggregation(AggregationKind::COMPOSITE);
   ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
   ASSERT_TRUE(c.getParts().size() == 1);
   ASSERT_TRUE(c.getParts().front() == &p);
@@ -281,7 +281,7 @@ TEST_F(ClassTest, backwardsAddCompositePropertyTest) {
   Class c;
   Property p;
   ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
-  ASSERT_NO_THROW(p.setComposite(true));
+  ASSERT_NO_THROW(p.setAggregation(AggregationKind::COMPOSITE));
   ASSERT_TRUE(c.getParts().size() == 1);
   ASSERT_TRUE(c.getParts().front() == &p);
   ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
@@ -312,9 +312,9 @@ TEST_F(ClassTest, backwardsAddCompositePropertyTest) {
 TEST_F(ClassTest, removePropertyFromParts) {
   Class c;
   Property p;
-  p.setComposite(true);
+  p.setAggregation(AggregationKind::COMPOSITE);
   c.getOwnedAttributes().add(p);
-  ASSERT_NO_THROW(p.setComposite(false));
+  ASSERT_NO_THROW(p.setAggregation(AggregationKind::NONE));
 
   ASSERT_TRUE(c.getParts().size() == 0);
   ASSERT_TRUE(c.getOwnedAttributes().size() == 1);

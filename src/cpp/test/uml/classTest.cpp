@@ -124,7 +124,7 @@ TEST_F(ClassTest, removeOperationFunctorTest) {
   ASSERT_TRUE(!o.getOwner());
 }
 
-TEST_F(ClassTest, addOwnedOperationTest) {
+TEST_F(ClassTest, addOwnedAttributeTest) {
   Class c;
   Property p;
   ASSERT_NO_THROW(c.getOwnedAttributes().add(p));

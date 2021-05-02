@@ -11,6 +11,7 @@ namespace UML{
     class DataType;
     class StructuredClassifier;
     class Association;
+    class Class;
 
     enum class AggregationKind {
         NONE,
@@ -26,6 +27,7 @@ namespace UML{
             StructuredClassifier* m_structuredClassifier;
             Classifier* m_classifier;
             DataType* m_dataType;
+            Class* m_class;
             Association* m_association;
             Association* m_owningAssociation;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
@@ -45,6 +47,8 @@ namespace UML{
             void setStructuredClassifier(StructuredClassifier* classifier);
             DataType* getDataType();
             void setDataType(DataType* dataType);
+            Class* getClass();
+            void setClass(Class* clazz);
             Association* getAssociation();
             void setAssociation(Association* association);
             Association* getOwningAssociation();

@@ -23,9 +23,23 @@ void Class::RemoveOperationFunctor::operator()(Element& el) const {
     }
 }
 
+void Class::ClassAddOwnedAttributeFunctor::operator()(Element& el) const {
+    if (dynamic_cast<Property&>(el).getClass() != m_el) {
+        dynamic_cast<Property&>(el).setClass(dynamic_cast<Class*>(m_el));
+    }
+}
+
+void Class::ClassRemoveOwnedAttributeFunctor::operator()(Element& el) const {
+    if (dynamic_cast<Property&>(el).getClass() == m_el) {
+        dynamic_cast<Property&>(el).setClass(0);
+    }
+}
+
 Class::Class() {
     m_operations.addProcedures.push_back(new AddOperationFunctor(this));
     m_operations.removeProcedures.push_back(new RemoveOperationFunctor(this));
+    m_ownedAttributes.addProcedures.push_back(new ClassAddOwnedAttributeFunctor(this));
+    m_ownedAttributes.removeProcedures.push_back(new ClassRemoveOwnedAttributeFunctor(this));
 }
 
 Class::~Class() {

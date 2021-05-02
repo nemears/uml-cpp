@@ -12,12 +12,6 @@ class ValueSpecification : public TypedElement , public PackageableElement {
         void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
         void reindexName(std::string oldName, std::string newName) override;
 
-    /**
-     * perhaps return type void* function gets overiden but right now it is commented out
-     * because it is too much time to implement and im lazy and dont see reason for it
-     */
-
-    //virtual void* getValue() = 0;
     public:
         ValueSpecification();
         Slot* getOwningSlot();

@@ -178,6 +178,9 @@ string Element::getElementTypeString() const {
         case ElementType::ENUMERATION : {
             return "ENUMERATION";
         }
+        case ElementType::ENUMERATION_LITERAL : {
+            return "ENUMERATION_LITERAL";
+        }
         case ElementType::EXPRESSION : {
             return "EXPRESSION";
         }

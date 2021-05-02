@@ -44,6 +44,7 @@ namespace UML {
     class DataType;
     class StructuredClassifier;
     class Association;
+    class Enumeration;
     /**
      * Sequence Class, Holds collections of uml elements
      **/
@@ -76,6 +77,7 @@ namespace UML {
         friend class DataType;
         friend class StructuredClassifier;
         friend class Association;
+        friend class Enumeration;
         private:
             std::map<boost::uuids::uuid, T*> m_data;
             std::vector<boost::uuids::uuid> m_order;

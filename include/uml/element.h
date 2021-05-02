@@ -31,6 +31,7 @@ namespace UML {
         DIRECTED_RELATIONSHIP,
         ELEMENT,
         ENUMERATION,
+        ENUMERATION_LITERAL,
         EXPRESSION,
         FEATURE,
         FINAL_NODE,

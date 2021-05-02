@@ -7,7 +7,7 @@ PackageableElement::PackageableElement() {
     m_owningPackage = 0;
 }
 
-PackageableElement::PackageableElement(const PackageableElement& el) {
+PackageableElement::PackageableElement(const PackageableElement& el) : NamedElement(el) {
     m_owningPackage = el.m_owningPackage;
 }
 

@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "uml/enumeration.h"
+#include "uml/package.h"
 
 using namespace UML;
 
@@ -75,4 +76,29 @@ TEST_F(EnumerationTest, setNullEnumeration) {
     ASSERT_TRUE(l.getNamespace() == 0);
     ASSERT_TRUE(l.getMemberNamespace().size() == 0);
     ASSERT_TRUE(l.getOwner() == 0);
+}
+
+TEST_F(EnumerationTest, copyEnumerationTest) {
+    Enumeration e;
+    EnumerationLiteral l;
+    Package p;
+    e.setName("test");
+    p.getPackagedElements().add(e);
+    e.getOwnedLiteral().add(l);
+    Enumeration e2 = e;
+    ASSERT_TRUE(e2.getName().compare("test") == 0);
+    ASSERT_TRUE(e2.getOwningPackage() == &p);
+    ASSERT_TRUE(e2.getNamespace() == &p);
+    ASSERT_TRUE(e2.getMemberNamespace().size() == 1);
+    ASSERT_TRUE(e2.getMemberNamespace().front() == &p);
+    ASSERT_TRUE(e2.getOwner() == &p);
+    ASSERT_TRUE(e2.getOwnedLiteral().size() == 1);
+    ASSERT_TRUE(e2.getOwnedLiteral().front() == &l);
+    ASSERT_TRUE(e2.getOwnedMembers().size() == 1);
+    ASSERT_TRUE(e2.getOwnedMembers().front() == &l);
+    ASSERT_TRUE(e2.getMembers().size() == 1);
+    ASSERT_TRUE(e2.getMembers().front() == &l);
+    ASSERT_TRUE(e2.getOwnedElements().size() == 1);
+    ASSERT_TRUE(e2.getOwnedElements().front() == &l);
+
 }

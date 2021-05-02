@@ -27,6 +27,15 @@ Enumeration::Enumeration() {
     m_ownedLiteral.removeProcedures.push_back(new RemoveOwnedLiteralFunctor(this));
 }
 
+Enumeration::Enumeration(const Enumeration& enumeration) : DataType(enumeration) , PackageableElement(enumeration), NamedElement(enumeration),
+                                                           Element(enumeration) {
+    m_ownedLiteral = enumeration.m_ownedLiteral;
+    m_ownedLiteral.addProcedures.clear();
+    m_ownedLiteral.addProcedures.push_back(new AddOwnedLiteralFunctor(this));
+    m_ownedLiteral.removeProcedures.clear();
+    m_ownedLiteral.removeProcedures.push_back(new RemoveOwnedLiteralFunctor(this));
+}
+
 Sequence<EnumerationLiteral>& Enumeration::getOwnedLiteral() {
     return m_ownedLiteral;
 }

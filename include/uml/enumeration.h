@@ -20,6 +20,7 @@ namespace UML {
             };
         public:
             Enumeration();
+            Enumeration(const Enumeration& enumeration);
             Sequence<EnumerationLiteral>& getOwnedLiteral();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;

@@ -32,6 +32,7 @@ namespace UML {
             };
         public:
             StructuredClassifier();
+            StructuredClassifier(const StructuredClassifier& clazz);
             ~StructuredClassifier();
             Sequence<Property>& getOwnedAttributes();
             Sequence<ConnectableElement>& getRole();

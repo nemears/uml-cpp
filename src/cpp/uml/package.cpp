@@ -31,7 +31,7 @@ Package::~Package() {
     
 }
 
-Package::Package(const Package& pckg) : Namespace(pckg), PackageableElement(pckg), NamedElement(pckg), Element(pckg) {
+Package::Package(const Package& pckg) : Namespace(pckg), PackageableElement(pckg) , NamedElement(pckg), Element(pckg) {
     m_packagedElements = pckg.m_packagedElements;
     m_packagedElements.addProcedures.clear();
     m_packagedElements.addProcedures.push_back(new AddPackagedElementFunctor(this));

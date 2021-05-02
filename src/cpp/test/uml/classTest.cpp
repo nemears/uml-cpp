@@ -5,6 +5,7 @@
 #include "uml/parameter.h"
 #include "uml/sequence.h"
 #include "uml/operation.h"
+#include "uml/package.h"
 
 using namespace UML;
 
@@ -340,4 +341,44 @@ TEST_F(ClassTest, removePropertyFromParts) {
   ASSERT_TRUE(p.getMemberNamespace().front() == &c);
   ASSERT_TRUE(p.getNamespace() == &c);
   ASSERT_TRUE(p.getOwner() == &c);
+}
+
+TEST_F(ClassTest, CopyClassTest) {
+  Class c;
+  Property p;
+  Operation o;
+  Package pk;
+  p.setAggregation(AggregationKind::COMPOSITE);
+  c.setName("class_test");
+  c.getOwnedAttributes().add(p);
+  c.getOperations().add(o);
+  pk.getPackagedElements().add(c);
+  Class c2 = c;
+  ASSERT_TRUE(c.getOwningPackage() == &pk);
+  ASSERT_TRUE(c.getNamespace() == &pk);
+  ASSERT_TRUE(c.getMemberNamespace().size() == 1);
+  ASSERT_TRUE(c.getMemberNamespace().front() == &pk);
+  ASSERT_TRUE(c.getOwner() == &pk);
+  ASSERT_TRUE(c.getParts().size() == 1);
+  ASSERT_TRUE(c.getParts().front() == &p);
+  ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
+  ASSERT_TRUE(c.getOwnedAttributes().front() == &p);
+  ASSERT_TRUE(c.getAttributes().size() == 1);
+  ASSERT_TRUE(c.getAttributes().front() == &p);
+  ASSERT_TRUE(c.getRole().size() == 1);
+  ASSERT_TRUE(c.getRole().front() == &p);
+  ASSERT_TRUE(c.getOperations().size() == 1);
+  ASSERT_TRUE(c.getOperations().front() == &o);
+  ASSERT_TRUE(c.getFeatures().size() == 2);
+  ASSERT_TRUE(c.getFeatures().front() == &p);
+  ASSERT_TRUE(c.getFeatures().back() == &o);
+  ASSERT_TRUE(c.getOwnedMembers().size() == 2);
+  ASSERT_TRUE(c.getOwnedMembers().front() == &p);
+  ASSERT_TRUE(c.getOwnedMembers().back() == &o);
+  ASSERT_TRUE(c.getMembers().size() == 2);
+  ASSERT_TRUE(c.getMembers().front() == &p);
+  ASSERT_TRUE(c.getMembers().back() == &o);
+  ASSERT_TRUE(c.getOwnedElements().size() == 2);
+  ASSERT_TRUE(c.getOwnedElements().front() == &p);
+  ASSERT_TRUE(c.getOwnedElements().back() == &o);
 }

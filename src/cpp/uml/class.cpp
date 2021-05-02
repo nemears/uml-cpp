@@ -46,6 +46,16 @@ Class::~Class() {
     
 }
 
+Class::Class(const Class& clazz) {
+    m_operations = clazz.m_operations;
+    m_operations.addProcedures.clear();
+    m_operations.addProcedures.push_back(new AddOperationFunctor(this));
+    m_operations.removeProcedures.clear();
+    m_operations.removeProcedures.push_back(new RemoveOperationFunctor(this));
+    m_ownedAttributes.addProcedures.push_back(new ClassAddOwnedAttributeFunctor(this));
+    m_ownedAttributes.removeProcedures.push_back(new ClassRemoveOwnedAttributeFunctor(this));
+}
+
 Sequence<Operation>& Class::getOperations() {
     return m_operations;
 }

@@ -40,6 +40,7 @@ namespace UML{
         public:
             Class();
             ~Class();
+            Class(const Class& clazz);
             Sequence<Operation>& getOperations();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;

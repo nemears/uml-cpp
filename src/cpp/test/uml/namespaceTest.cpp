@@ -35,26 +35,22 @@ TEST_F(NamespaceTest, reindexID_Test) {
     Namespace nmspc;
     NamedElement n;
     nmspc.setName("nmspc");
-    nmspc.getOwnedElements().add(n);
-    n.setOwner(&nmspc);
-    nmspc.getMembers().add(n);
     n.setNamespace(&nmspc);
-    n.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
+    ASSERT_NO_THROW(n.setID("190d1cb9-13dc-44e6-a064-126891ae0033"));
     ASSERT_TRUE(nmspc.getOwnedElements().get(n.getID()) != NULL);
     ASSERT_TRUE(nmspc.getMembers().get(n.getID()) != NULL);
+    ASSERT_TRUE(nmspc.getOwnedMembers().get(n.getID()) != 0);
 }
 
 TEST_F(NamespaceTest, reindexNameTest) {
     Namespace nmspc;
     NamedElement n;
     nmspc.setName("nmspc");
-    nmspc.getOwnedElements().add(n);
-    n.setOwner(&nmspc);
-    nmspc.getMembers().add(n);
     n.setNamespace(&nmspc);
-    n.setName("test");
+    ASSERT_NO_THROW(n.setName("test"));
     ASSERT_TRUE(nmspc.getOwnedElements().get("test") != NULL);
     ASSERT_TRUE(nmspc.getMembers().get("test") != NULL);
+    ASSERT_TRUE(nmspc.getOwnedMembers().get("test") != 0);
 }
 
 TEST_F(NamespaceTest, AddOwnedMemeberFunctorTest) {

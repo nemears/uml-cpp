@@ -4,6 +4,7 @@
 #include "uml/primitiveType.h"
 #include "uml/literalString.h"
 #include "uml/class.h"
+#include "uml/association.h"
 
 using namespace UML;
 
@@ -53,27 +54,57 @@ TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
 TEST_F(PropertyTest, reindexID_forClassiferTest) {
   Class c;
   Property p;
-  Element e;
-  c.getAttributes().add(p);
-  p.setClassifier(&c);
-  e.getOwnedElements().add(p);
-  p.setOwner(&e);
-  p.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
+  p.setAggregation(AggregationKind::COMPOSITE);
+  c.getOwnedAttributes().add(p);
+  ASSERT_NO_THROW(p.setID("190d1cb9-13dc-44e6-a064-126891ae0033"));
+  ASSERT_TRUE(c.getOwnedElements().get(p.getID()) != 0);
+  ASSERT_TRUE(c.getMembers().get(p.getID()) != 0);
+  ASSERT_TRUE(c.getOwnedMembers().get(p.getID()) != 0);
+  ASSERT_TRUE(c.getFeatures().get(p.getID()) != 0);
   ASSERT_TRUE(c.getAttributes().get(p.getID()) != NULL);
-  ASSERT_TRUE(e.getOwnedElements().get(p.getID()) != NULL);
+  ASSERT_TRUE(c.getOwnedAttributes().get(p.getID()) != 0);
+  ASSERT_TRUE(c.getRole().get(p.getID()) != 0);
+  ASSERT_TRUE(c.getParts().get(p.getID()) != 0);
+
+  Association a;
+  Property p2;
+  a.getNavigableOwnedEnds().add(p2);
+  ASSERT_NO_THROW(p2.setID("c0ab87cc-d00b-4afb-9558-538253b442b2"));
+  ASSERT_TRUE(a.getNavigableOwnedEnds().get(p2.getID()));
+  ASSERT_TRUE(a.getOwnedEnds().get(p2.getID()));
+  ASSERT_TRUE(a.getMemberEnds().get(p2.getID()));
+  ASSERT_TRUE(a.getFeatures().get(p2.getID()));
+  ASSERT_TRUE(a.getOwnedMembers().get(p2.getID()));
+  ASSERT_TRUE(a.getMembers().get(p2.getID()));
+  ASSERT_TRUE(a.getOwnedElements().get(p2.getID()));
 }
 
 TEST_F(PropertyTest, reindexNameForClassifierTest) {
   Class c;
   Property p;
-  Element e;
-  c.getAttributes().add(p);
-  p.setClassifier(&c);
-  e.getOwnedElements().add(p);
-  p.setOwner(&e);
-  p.setName("test");
+  p.setAggregation(AggregationKind::COMPOSITE);
+  c.getOwnedAttributes().add(p);
+  ASSERT_NO_THROW(p.setName("test"));
+  ASSERT_TRUE(c.getOwnedElements().get("test") != 0);
+  ASSERT_TRUE(c.getMembers().get("test") != 0);
+  ASSERT_TRUE(c.getOwnedMembers().get("test") != 0);
+  ASSERT_TRUE(c.getFeatures().get("test") != 0);
   ASSERT_TRUE(c.getAttributes().get("test") != NULL);
-  ASSERT_TRUE(e.getOwnedElements().get("test") != NULL);
+  ASSERT_TRUE(c.getOwnedAttributes().get("test") != 0);
+  ASSERT_TRUE(c.getRole().get("test") != 0);
+  ASSERT_TRUE(c.getParts().get("test") != 0);
+
+  Association a;
+  Property p2;
+  a.getNavigableOwnedEnds().add(p2);
+  ASSERT_NO_THROW(p2.setName("test"));
+  ASSERT_TRUE(a.getNavigableOwnedEnds().get("test"));
+  ASSERT_TRUE(a.getOwnedEnds().get("test"));
+  ASSERT_TRUE(a.getMemberEnds().get("test"));
+  ASSERT_TRUE(a.getFeatures().get("test"));
+  ASSERT_TRUE(a.getOwnedMembers().get("test"));
+  ASSERT_TRUE(a.getMembers().get("test"));
+  ASSERT_TRUE(a.getOwnedElements().get("test"));
 }
 
 TEST_F(PropertyTest, overwriteClassifierTest) {

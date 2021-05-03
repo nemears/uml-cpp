@@ -242,6 +242,21 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
     // TODO structural feature parser?
     parseMultiplicityElement(node, prop, data);
 
+    if (node["aggregation"]) {
+        if (node["aggregation"].IsScalar()) {
+            string aggregation = node["aggregation"].as<string>();
+            if (aggregation.compare("COMPOSITE") == 0) {
+                prop.setAggregation(AggregationKind::COMPOSITE);
+            } else if (aggregation.compare("SHARED") == 0) {
+                prop.setAggregation(AggregationKind::SHARED);
+            } else if (aggregation.compare("NONE") == 0) {
+                prop.setAggregation(AggregationKind::NONE);
+            }
+        } else {
+            throw UmlParserException("Improper YAML node type for bodies, must be scalar, line " + node["aggregation"].Mark().line);
+        }
+    }
+
     if (node["defaultValue"]) {
         // TODO
     }

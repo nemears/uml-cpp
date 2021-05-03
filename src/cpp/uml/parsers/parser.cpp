@@ -119,6 +119,7 @@ void parseNamespace(YAML::Node node, Namespace& nmspc, ParserMetaData& data) {
 void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
     parseNamespace(node, clazz, data);
 
+    // TODO attributes is read_only, specified later in ownedAttributes for DataType, and Structured Classifier etc.
     if (node["attributes"]) {
         if (node["attributes"].IsSequence()) {
             for (size_t i=0; i<node["attributes"].size(); i++) {
@@ -139,8 +140,31 @@ void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
     }
 }
 
-void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
+void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, ParserMetaData& data) {
     parseClassifier(node, clazz, data);
+
+    if (node["ownedAttributes"]) {
+        if (node["ownedAttributes"].IsSequence()) {
+            for (size_t i=0; i<node["ownedAttributes"].size(); i++) {
+                if (node["ownedAttributes"][i]["property"]) {
+                    if (node["ownedAttributes"][i]["property"].IsMap()) {
+                        Property* prop = new Property;
+                        parseProperty(node["ownedAttributes"][i]["property"], *prop, data);
+                        clazz.getOwnedAttributes().add(*prop);
+                    } else {
+                        throw UmlParserException("Improper YAML node type for property field, must be map, line " + 
+                                                 node["ownedAttributes"][i]["property"].Mark().line);
+                    }
+                }
+            }
+        } else {
+            throw UmlParserException("Improper YAML node type for ownedAttributes field, must be sequence, line " + node["ownedAttributes"].Mark().line);
+        }
+    }
+}
+
+void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
+    parseStructuredClassifier(node, clazz, data);
 
     if (node["operations"]) {
         if (node["operations"].IsSequence()) {
@@ -264,6 +288,8 @@ void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
             throw UmlParserException("Improper YAML node type for methods, must be sequence, line " + node["methods"].Mark().line);
         }
     }
+
+    // TODO Parameters
 }
 
 void parsePackageableElement(YAML::Node node, PackageableElement& el, ParserMetaData& data) {

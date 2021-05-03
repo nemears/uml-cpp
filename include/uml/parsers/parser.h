@@ -59,6 +59,7 @@ namespace UML {
         void parsePackageableElement(YAML::Node node, PackageableElement& el, ParserMetaData& data);
         void parseNamespace(YAML::Node node, Namespace& nmspc, ParserMetaData& data);
         void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
+        void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, ParserMetaData& data);
         void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data);
         void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data);
         void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& data);

@@ -41,3 +41,5 @@ TEST_F(InstanceSpecificationParserTest, backwardsClassifierTest) {
     InstanceSpecification i = *dynamic_cast<InstanceSpecification*>(pckg->getPackagedElements().front());
     ASSERT_TRUE(i.getClassifier() == c);
 }
+
+// TODO slot tests

@@ -487,6 +487,47 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
             throw UmlParserException("Invalid YAML node type for InstanceSpecification field classifier, line " + node["classifier"].Mark().line);
         }
     }
+
+    if (node["slots"]) {
+        if (node["slots"].IsSequence()) {
+            for (size_t i = 0; i < node["slots"].size(); i++) {
+                if (node["slots"][i]["slot"]) {
+                    if (node["slots"][i]["slot"].IsMap()) {
+                        Slot* slot = new Slot;
+                        parseSlot(node["slots"][i]["slot"], *slot, data);
+                        inst.getSlots().add(*slot);
+                    }
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid YAML node type for InstanceSpecification field slots, expected sequence, line " + node["slots"].Mark().line);
+        }
+    }
+}
+
+void SetDefiningFeatureFunctor::operator()(Element& el) const {
+    if (el.isSubClassOf(ElementType::STRUCTURAL_FEATURE)) {
+        dynamic_cast<Slot*>(m_el)->setDefiningFeature(&dynamic_cast<StructuralFeature&>(el));
+    } else {
+        throw UmlParserException(m_el->getElementTypeString() + " id: " + boost::lexical_cast<string>(m_el->getID()) + 
+                                 " assigned definingFeature is not a structuralFeature! line " + to_string(m_node.Mark().line));
+    }
+}
+
+void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
+    parseElement(node, slot, data);
+
+    if (node["definingFeature"]) {
+        if (node["definingFeature"].IsScalar()) {
+            string stringID = node["definingFeature"].as<string>();
+            if (isValidUUID4(stringID)) {
+                boost::uuids::uuid definingFeatureID = boost::lexical_cast<boost::uuids::uuid>(stringID);
+                applyFunctor(data, definingFeatureID, new SetDefiningFeatureFunctor(&slot, node["definingFeature"]));
+            }
+        } else {
+            throw UmlParserException("Invalid YAML node type for Slot field definingFeature, expected scalar, line " + node["definingFeature"].Mark().line);
+        }
+    }
 }
 
 }

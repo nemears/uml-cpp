@@ -18,6 +18,7 @@
 #include "uml/opaqueBehavior.h"
 #include "uml/operation.h"
 #include "uml/multiplicityElement.h"
+#include "uml/primitiveType.h"
 
 #include "uml/literalString.h"
 #include "uml/activity.h"
@@ -60,6 +61,7 @@ namespace UML {
         void parseNamespace(YAML::Node node, Namespace& nmspc, ParserMetaData& data);
         void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
         void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data);
+        void parsePrimitiveType(YAML::Node node, PrimitiveType& type, ParserMetaData& data);
         void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, ParserMetaData& data);
         void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data);
         void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data);

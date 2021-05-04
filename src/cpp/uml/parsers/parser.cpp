@@ -48,6 +48,13 @@ Element* parse(YAML::Node node) {
         return param;
     }
 
+    if (node["primitiveType"]) {
+        PrimitiveType* type = new PrimitiveType;
+        ParserMetaData data;
+        parsePrimitiveType(node["primitiveType"], *type, data);
+        return type;
+    }
+
     if (node["property"]) {
         Property* prop = new Property;
         ParserMetaData data;
@@ -187,6 +194,10 @@ void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
             throw UmlParserException("Improper YAML node type for dataType ownedOperation, must be sequence, line " + node["ownedOperation"].Mark().line);
         }
     }
+}
+
+void parsePrimitiveType(YAML::Node node, PrimitiveType& type, ParserMetaData& data) {
+    parseDataType(node, type, data);
 }
 
 void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, ParserMetaData& data) {
@@ -390,6 +401,10 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                         Package* package = new Package;
                         parsePackage(node["packagedElements"][i]["package"], *package, data);
                         package->setOwningPackage(&pckg);
+                    } else if (node["packagedElements"][i]["primitiveType"]) {
+                        PrimitiveType* type = new PrimitiveType;
+                        parsePrimitiveType(node["packagedElements"][i]["primitiveType"], *type, data);
+                        pckg.getPackagedElements().add(*type);
                     } else {
                         throw UmlParserException("Invalid identifier for packagedElements, line" + node["packagedElements"][i].Mark().line);
                     }

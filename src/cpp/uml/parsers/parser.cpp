@@ -20,6 +20,13 @@ Element* parse(YAML::Node node) {
         return dataType;
     }
 
+    if (node["instanceSpecification"]) {
+        InstanceSpecification* inst = new InstanceSpecification;
+        ParserMetaData data;
+        parseInstanceSpecification(node["instanceSpecification"], *inst, data);
+        return inst;
+    }
+
     if (node["opaqueBehavior"]) {
         OpaqueBehavior* bhv = new OpaqueBehavior;
         ParserMetaData data;
@@ -397,6 +404,10 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                         DataType* dataType = new DataType;
                         parseDataType(node["packagedElements"][i]["dataType"], *dataType, data);
                         pckg.getPackagedElements().add(*dataType);
+                    } else if (node["packagedElements"][i]["instanceSpecification"]) {
+                        InstanceSpecification* inst = new InstanceSpecification;
+                        parseInstanceSpecification(node["packagedElements"][i]["instanceSpecification"], *inst, data);
+                        pckg.getPackagedElements().add(*inst);
                     } else if (node["packagedElements"][i]["package"]) {
                         Package* package = new Package;
                         parsePackage(node["packagedElements"][i]["package"], *package, data);
@@ -449,6 +460,31 @@ void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMe
             }
         } else {
             throw UmlParserException("Invalid YAML node type for field upper, must be scalar or map, line " + node["upper"].Mark().line);
+        }
+    }
+}
+
+void SetClassifierFunctor::operator()(Element& el) const {
+    if (el.isSubClassOf(ElementType::CLASSIFIER)) {
+        dynamic_cast<InstanceSpecification*>(m_el)->setClassifier(&dynamic_cast<Classifier&>(el));
+    } else {
+        throw UmlParserException(m_el->getElementTypeString() + " id: " + boost::lexical_cast<string>(m_el->getID()) + 
+                                 " assigned classifier is not a classifer! line " + to_string(m_node.Mark().line));
+    }
+}
+
+void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data) {
+    parsePackageableElement(node, inst, data);
+
+    if (node["classifier"]) {
+        if (node["classifier"].IsScalar()) {
+            string classifierID = node["classifier"].as<string>();
+            if (isValidUUID4(classifierID)) {
+                boost::uuids::uuid id = boost::lexical_cast<boost::uuids::uuid>(classifierID);
+                applyFunctor(data, id, new SetClassifierFunctor(&inst, node["classifier"]));
+            }
+        } else {
+            throw UmlParserException("Invalid YAML node type for InstanceSpecification field classifier, line " + node["classifier"].Mark().line);
         }
     }
 }

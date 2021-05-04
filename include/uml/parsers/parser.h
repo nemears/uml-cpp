@@ -19,6 +19,7 @@
 #include "uml/operation.h"
 #include "uml/multiplicityElement.h"
 #include "uml/primitiveType.h"
+#include "uml/instanceSpecification.h"
 
 #include "uml/literalString.h"
 #include "uml/activity.h"
@@ -30,6 +31,12 @@ namespace UML {
         class SetTypeFunctor : public AbstractPostProcessFunctor {
             public:
                 SetTypeFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                void operator()(Element& el) const override;
+        };
+
+        class SetClassifierFunctor : public AbstractPostProcessFunctor {
+            public:
+                SetClassifierFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
                 void operator()(Element& el) const override;
         };
 
@@ -58,6 +65,7 @@ namespace UML {
         void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data);
         void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data);
         void parsePackageableElement(YAML::Node node, PackageableElement& el, ParserMetaData& data);
+        void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data);
         void parseNamespace(YAML::Node node, Namespace& nmspc, ParserMetaData& data);
         void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
         void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data);

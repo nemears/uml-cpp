@@ -78,7 +78,7 @@ DataType::~DataType() {
     
 }
 
-DataType::DataType(const DataType& el) : Classifier(el) {
+DataType::DataType(const DataType& el) : Classifier(el) , PackageableElement(el), NamedElement(el), Element(el){
     m_ownedAttribute = el.m_ownedAttribute;
     m_ownedAttribute.addProcedures.clear();
     m_ownedAttribute.addProcedures.push_back(new AddOwnedAttributeFunctor(this));

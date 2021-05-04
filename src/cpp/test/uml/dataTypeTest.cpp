@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/dataType.h"
 #include "uml/operation.h"
+#include "uml/package.h"
 
 using namespace UML;
 
@@ -365,4 +366,42 @@ TEST_F(DataTypeTest, reindexOwnedOperationNameTest) {
     ASSERT_TRUE(d.getMembers().get("2") == &o);
     ASSERT_TRUE(d.getOwnedMembers().get("2") == &o);
     ASSERT_TRUE(d.getOwnedElements().get("2") == &o);
+}
+
+TEST_F(DataTypeTest, copyDataTypeTest) {
+    DataType d;
+    Operation o;
+    Property p;
+    Package pkg;
+    d.setName("test");
+    boost::uuids::uuid id = d.getID();
+    d.getOwnedOperation().add(o);
+    d.getOwnedAttribute().add(p);
+    d.setOwningPackage(&pkg);
+    DataType d2 = d;
+    ASSERT_TRUE(d2.getID() == id);
+    ASSERT_TRUE(d2.getName().compare("test") == 0);
+    ASSERT_TRUE(d2.getOwnedAttribute().size() == 1);
+    ASSERT_TRUE(d2.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(d2.getAttributes().size() == 1);
+    ASSERT_TRUE(d2.getAttributes().front() == &p);
+    ASSERT_TRUE(d2.getOwnedOperation().size() == 1);
+    ASSERT_TRUE(d2.getOwnedOperation().front() == &o);
+    ASSERT_TRUE(d2.getFeatures().size() == 2);
+    ASSERT_TRUE(d2.getFeatures().front() == &o);
+    ASSERT_TRUE(d2.getFeatures().back() == &p);
+    ASSERT_TRUE(d2.getOwnedMembers().size() == 2);
+    ASSERT_TRUE(d2.getOwnedMembers().front() == &o);
+    ASSERT_TRUE(d2.getOwnedMembers().back() == &p);
+    ASSERT_TRUE(d2.getMembers().size() == 2);
+    ASSERT_TRUE(d2.getMembers().front() == &o);
+    ASSERT_TRUE(d2.getMembers().back() == &p);
+    ASSERT_TRUE(d2.getOwnedElements().size() == 2);
+    ASSERT_TRUE(d2.getOwnedElements().front() == &o);
+    ASSERT_TRUE(d2.getOwnedElements().back() == &p);
+    ASSERT_TRUE(d2.getOwningPackage() == &pkg);
+    ASSERT_TRUE(d2.getNamespace() == &pkg);
+    ASSERT_TRUE(d2.getMemberNamespace().size() == 1);
+    ASSERT_TRUE(d2.getMemberNamespace().front() == &pkg);
+    ASSERT_TRUE(d2.getOwner() == &pkg);
 }

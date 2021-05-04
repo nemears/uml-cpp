@@ -13,6 +13,13 @@ Element* parse(YAML::Node node) {
         return clazz;
     }
 
+    if (node["dataType"]) {
+        DataType* dataType = new DataType;
+        ParserMetaData data;
+        parseDataType(node["dataType"], *dataType, data);
+        return dataType;
+    }
+
     if (node["opaqueBehavior"]) {
         OpaqueBehavior* bhv = new OpaqueBehavior;
         ParserMetaData data;
@@ -136,6 +143,48 @@ void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
             }
         } else {
             throw UmlParserException("Improper YAML node type for type field, must be scalar, line " + node["attributes"].Mark().line);
+        }
+    }
+}
+
+void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
+    parseClassifier(node, dataType, data);
+
+    if (node["ownedAttribute"]) {
+        if (node["ownedAttribute"].IsSequence()) {
+            for (size_t i = 0; i < node["ownedAttribute"].size(); i++) {
+                if (node["ownedAttribute"][i]["property"]) {
+                    if (node["ownedAttribute"][i]["property"].IsMap()) {
+                        Property* prop = new Property;
+                        parseProperty(node["ownedAttribute"][i]["property"], *prop, data);
+                        dataType.getOwnedAttribute().add(*prop);
+                    } else {
+                        throw UmlParserException("Improper YAML node type for property, must be map, line " + node["ownedAttribute"][i]["property"].Mark().line);
+                    }
+                }
+            }
+        } else {
+            throw UmlParserException("Improper YAML node type for dataType ownedAttribute, must be sequence, line " + node["ownedAttribute"].Mark().line);
+        }
+    }
+
+    if (node["ownedOperation"]) {
+        if (node["ownedOperation"].IsSequence()) {
+            for (size_t i = 0; i < node["ownedOperation"].size(); i++) {
+                if (node["ownedOperation"][i]["operation"]) {
+                    if (node["ownedOperation"][i]["operation"].IsMap()) {
+                        Operation* op = new Operation;
+                        parseOperation(node["ownedOperation"][i]["operation"], *op, data);
+                        dataType.getOwnedOperation().add(*op);
+                    } else {
+                        throw UmlParserException("Improper YAML node type for operation, must be map, line " + node["ownedOperation"][i]["operation"].Mark().line);
+                    }
+                } else {
+                    throw UmlParserException("Improper UML node type for ownedOperation sequence, line" + node["ownedOperation"][i].Mark().line);
+                }
+            }
+        } else {
+            throw UmlParserException("Improper YAML node type for dataType ownedOperation, must be sequence, line " + node["ownedOperation"].Mark().line);
         }
     }
 }
@@ -333,6 +382,10 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                         Class* clazz = new Class;
                         parseClass(node["packagedElements"][i]["class"], *clazz, data);
                         pckg.getPackagedElements().add(*clazz);
+                    } else if (node["packagedElements"][i]["dataType"]) {
+                        DataType* dataType = new DataType;
+                        parseDataType(node["packagedElements"][i]["dataType"], *dataType, data);
+                        pckg.getPackagedElements().add(*dataType);
                     } else if (node["packagedElements"][i]["package"]) {
                         Package* package = new Package;
                         parsePackage(node["packagedElements"][i]["package"], *package, data);

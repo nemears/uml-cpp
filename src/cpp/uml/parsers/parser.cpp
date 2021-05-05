@@ -544,6 +544,8 @@ void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
 }
 
 void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData& data) {
+    parseDataType(node, enumeration, data);
+
     if (node["ownedLiteral"]) {
         if (node["ownedLiteral"].IsSequence()) {
             for (size_t i = 0; i < node["ownedLiteral"].size(); i++) {

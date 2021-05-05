@@ -1,0 +1,8 @@
+---
+  enumeration:
+    ownedLiteral:
+      - enumerationLiteral:
+          name: one
+      - enumerationLiteral:
+          name: two
+...

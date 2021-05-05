@@ -20,6 +20,13 @@ Element* parse(YAML::Node node) {
         return dataType;
     }
 
+    if (node["enumeration"]) {
+        Enumeration* enumeration = new Enumeration;
+        ParserMetaData data;
+        parseEnumeration(node["enumeration"], *enumeration, data);
+        return enumeration;
+    }
+
     if (node["instanceSpecification"]) {
         InstanceSpecification* inst = new InstanceSpecification;
         ParserMetaData data;
@@ -404,6 +411,10 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                         DataType* dataType = new DataType;
                         parseDataType(node["packagedElements"][i]["dataType"], *dataType, data);
                         pckg.getPackagedElements().add(*dataType);
+                    } else if (node["packagedElements"][i]["enumeration"]) {
+                        Enumeration* enumeration = new Enumeration;
+                        parseEnumeration(node["packagedElements"][i]["enumeration"], *enumeration, data);
+                        pckg.getPackagedElements().add(*enumeration);
                     } else if (node["packagedElements"][i]["instanceSpecification"]) {
                         InstanceSpecification* inst = new InstanceSpecification;
                         parseInstanceSpecification(node["packagedElements"][i]["instanceSpecification"], *inst, data);
@@ -474,7 +485,7 @@ void SetClassifierFunctor::operator()(Element& el) const {
 }
 
 void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data) {
-    parsePackageableElement(node, inst, data);
+    parseNamedElement(node, inst, data);
 
     if (node["classifier"]) {
         if (node["classifier"].IsScalar()) {
@@ -528,6 +539,34 @@ void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
             throw UmlParserException("Invalid YAML node type for Slot field definingFeature, expected scalar, line " + node["definingFeature"].Mark().line);
         }
     }
+
+    // TODO values
+}
+
+void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData& data) {
+    if (node["ownedLiteral"]) {
+        if (node["ownedLiteral"].IsSequence()) {
+            for (size_t i = 0; i < node["ownedLiteral"].size(); i++) {
+                if (node["ownedLiteral"][i]["enumerationLiteral"]) {
+                    if (node["ownedLiteral"][i]["enumerationLiteral"].IsMap()) {
+                        EnumerationLiteral* literal = new EnumerationLiteral;
+                        parseEnumerationLiteral(node["ownedLiteral"][i]["enumerationLiteral"], *literal, data);
+                        enumeration.getOwnedLiteral().add(*literal);
+                    } else {
+                        throw UmlParserException("Invalid YAML node type enumerationLiteral definition, should be map, line " + node["ownedLiteral"][i]["enumerationLiteral"].Mark().line);
+                    }
+                } else {
+                    throw UmlParserException("Invalid UML type in enumeration ownedLiteral list, must be literal, line " + node["ownedLiteral"].Mark().line);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid YAML node type for Enumeration field ownedLiteral, expected sequence, line " + node["ownedLiteral"].Mark().line);
+        }
+    }
+}
+
+void parseEnumerationLiteral(YAML::Node node, EnumerationLiteral& literal, ParserMetaData& data) {
+    parseInstanceSpecification(node, literal, data);
 }
 
 }

@@ -20,6 +20,8 @@
 #include "uml/multiplicityElement.h"
 #include "uml/primitiveType.h"
 #include "uml/instanceSpecification.h"
+#include "uml/enumeration.h"
+#include "uml/enumerationLiteral.h"
 
 #include "uml/literalString.h"
 #include "uml/activity.h"
@@ -77,6 +79,8 @@ namespace UML {
         void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
         void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data);
         void parsePrimitiveType(YAML::Node node, PrimitiveType& type, ParserMetaData& data);
+        void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData& data);
+        void parseEnumerationLiteral(YAML::Node node, EnumerationLiteral& literal, ParserMetaData& data);
         void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, ParserMetaData& data);
         void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data);
         void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data);

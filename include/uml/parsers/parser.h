@@ -22,6 +22,7 @@
 #include "uml/instanceSpecification.h"
 #include "uml/enumeration.h"
 #include "uml/enumerationLiteral.h"
+#include "uml/instanceValue.h"
 
 #include "uml/literalString.h"
 #include "uml/activity.h"
@@ -45,6 +46,12 @@ namespace UML {
         class SetDefiningFeatureFunctor : public AbstractPostProcessFunctor {
             public:
                 SetDefiningFeatureFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                void operator()(Element& el) const override;
+        };
+
+        class SetInstanceFunctor : public AbstractPostProcessFunctor {
+            public:
+                SetInstanceFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
                 void operator()(Element& el) const override;
         };
 
@@ -87,6 +94,7 @@ namespace UML {
         void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& data);
         void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data);
         void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data);
+        void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data);
     }
 }
 

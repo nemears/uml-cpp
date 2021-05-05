@@ -81,3 +81,33 @@ TEST_F(InstanceSpecificationParserTest, backwardsSlotTest) {
     ASSERT_TRUE(s->getDefiningFeature() == p);
     ASSERT_TRUE(s->getOwningInstance() == pckg->getPackagedElements().front());
 }
+
+TEST_F(InstanceSpecificationParserTest, instanceValueSlot) {
+    Element* el;
+    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "instanceSpecificationTests/instanceSlot.yml")));
+    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
+    Package* pckg = dynamic_cast<Package*>(el);
+    ASSERT_TRUE(pckg->getPackagedElements().size() == 4);
+    ASSERT_TRUE(pckg->getPackagedElements().get(0)->getElementType() == ElementType::CLASS);
+    Class* c1 = dynamic_cast<Class*>(pckg->getPackagedElements().get(0));
+    ASSERT_TRUE(c1->getName().compare("clazz1") == 0);
+    ASSERT_TRUE(pckg->getPackagedElements().get(1)->getElementType() == ElementType::CLASS);
+    Class* c2 = dynamic_cast<Class*>(pckg->getPackagedElements().get(1));
+    ASSERT_TRUE(c2->getName().compare("clazz2") == 0);
+    ASSERT_TRUE(c2->getOwnedAttributes().size() == 1);
+    Property* p = c2->getOwnedAttributes().front();
+    ASSERT_TRUE(p->getType() == c1);
+    ASSERT_TRUE(pckg->getPackagedElements().get(2)->getElementType() == ElementType::INSTANCE_SPECIFICATION);
+    InstanceSpecification* i1 = dynamic_cast<InstanceSpecification*>(pckg->getPackagedElements().get(2));
+    ASSERT_TRUE(i1->getClassifier() == c1);
+    ASSERT_TRUE(pckg->getPackagedElements().get(3)->getElementType() == ElementType::INSTANCE_SPECIFICATION);
+    InstanceSpecification* i2 = dynamic_cast<InstanceSpecification*>(pckg->getPackagedElements().get(3));
+    ASSERT_TRUE(i2->getClassifier() == c2);
+    ASSERT_TRUE(i2->getSlots().size() == 1);
+    Slot* s = i2->getSlots().front();
+    ASSERT_TRUE(s->getDefiningFeature() == p);
+    ASSERT_TRUE(s->getValues().size() == 1);
+    ASSERT_TRUE(s->getValues().front()->getElementType() == ElementType::INSTANCE_VALUE);
+    InstanceValue* v = dynamic_cast<InstanceValue*>(s->getValues().front());
+    ASSERT_TRUE(v->getInstance() == i1);
+}

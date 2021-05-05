@@ -34,6 +34,13 @@ Element* parse(YAML::Node node) {
         return inst;
     }
 
+    if (node["instanceValue"]) {
+        InstanceValue* instVal = new InstanceValue;
+        ParserMetaData data;
+        parseInstanceValue(node["instanceValue"], *instVal, data);
+        return instVal;
+    }
+
     if (node["opaqueBehavior"]) {
         OpaqueBehavior* bhv = new OpaqueBehavior;
         ParserMetaData data;
@@ -419,6 +426,10 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                         InstanceSpecification* inst = new InstanceSpecification;
                         parseInstanceSpecification(node["packagedElements"][i]["instanceSpecification"], *inst, data);
                         pckg.getPackagedElements().add(*inst);
+                    } else if (node["packagedElements"][i]["instanceValue"]) {
+                        InstanceValue* instVal = new InstanceValue;
+                        parseInstanceValue(node["packagedElements"][i]["instanceValue"], *instVal, data);
+                        pckg.getPackagedElements().add(*instVal);
                     } else if (node["packagedElements"][i]["package"]) {
                         Package* package = new Package;
                         parsePackage(node["packagedElements"][i]["package"], *package, data);
@@ -541,6 +552,25 @@ void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
     }
 
     // TODO values
+    if (node["values"]) {
+        if (node["values"].IsSequence()) {
+            for (size_t i = 0; i < node["values"].size(); i++) {
+                if (node["values"][i]["instanceValue"]) {
+                    if (node["values"][i]["instanceValue"].IsMap()) {
+                        InstanceValue* instVal = new InstanceValue;
+                        parseInstanceValue(node["values"][i]["instanceValue"], *instVal, data);
+                        slot.getValues().add(*instVal);
+                    } else {
+                        UmlParserException("InstanceValue must be map Node type! line, " + node["values"][i]["instanceValue"].Mark().line);
+                    }
+                } else {
+                    throw UmlParserException("unknown value type for slot, line " + node["values"][i].Mark().line);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid YAML node type for Slot field values, expected Sequence, line " + node["values"].Mark().line);
+        }
+    }
 }
 
 void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData& data) {
@@ -569,6 +599,33 @@ void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData&
 
 void parseEnumerationLiteral(YAML::Node node, EnumerationLiteral& literal, ParserMetaData& data) {
     parseInstanceSpecification(node, literal, data);
+}
+
+void SetInstanceFunctor::operator()(Element& el) const {
+    if (el.isSubClassOf(ElementType::INSTANCE_SPECIFICATION)) {
+        dynamic_cast<InstanceValue*>(m_el)->setInstance(&dynamic_cast<InstanceSpecification&>(el));
+    } else {
+        throw UmlParserException(m_el->getElementTypeString() + " id: " + boost::lexical_cast<string>(m_el->getID()) + 
+                                 " assigned instance is not an instanceSpecification! line " + to_string(m_node.Mark().line));
+    }
+}
+
+void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data) {
+    parseTypedElement(node, val, data);
+
+    if (node["instance"]) {
+        if (node["instance"].IsScalar()) {
+            string instID = node["instance"].as<string>();
+            if (isValidUUID4(instID)) {
+                boost::uuids::uuid id = boost::lexical_cast<boost::uuids::uuid>(instID);
+                applyFunctor(data, id, new SetInstanceFunctor(&val, node["instance"]));
+            } else {
+                throw UmlParserException("Scalar YAML node for InstanceValue field instance is not a valid uuid4, line " + node["instance"].Mark().line);
+            }
+        } else {
+            throw UmlParserException("Invalid YAML node type for InstanceValue field instance, expect scalar, line " + node["instance"].Mark().line);
+        }
+    }
 }
 
 }

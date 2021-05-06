@@ -7,11 +7,19 @@ void DirectedRelationship::AddRelatedElementFunctor::operator()(Element& el) con
     if (!dynamic_cast<DirectedRelationship*>(m_el)->getRelatedElements().count(el.getID())) {
         dynamic_cast<DirectedRelationship*>(m_el)->getRelatedElements().add(el);
     }
+
+    if (!el.getDirectedRelationships().count(m_el->getID())) {
+        el.getDirectedRelationships().add(*dynamic_cast<DirectedRelationship*>(m_el));
+    }
 }
 
 void DirectedRelationship::RemoveRelatedElementFunctor::operator()(Element& el) const {
     if (dynamic_cast<DirectedRelationship*>(m_el)->getRelatedElements().count(el.getID())) {
         dynamic_cast<DirectedRelationship*>(m_el)->getRelatedElements().remove(el);
+    }
+    
+    if (el.getDirectedRelationships().count(m_el->getID())) {
+        el.getDirectedRelationships().remove(*dynamic_cast<DirectedRelationship*>(m_el));
     }
 }
 

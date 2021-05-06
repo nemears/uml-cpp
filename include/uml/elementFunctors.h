@@ -28,6 +28,18 @@ namespace UML {
             ReadOnlyOwnedElementsFunctor(Element* me) : AbstractSequenceFunctor(me) {};
             void operator()(Element& el) const override;
     };
+
+    class AddDirectedRelationshipFunctor : public AbstractSequenceFunctor {
+        public:
+            AddDirectedRelationshipFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+            void operator()(Element& el) const override;
+    };
+
+    class RemoveDirectedRelationshipFunctor : public AbstractSequenceFunctor {
+        public:
+            RemoveDirectedRelationshipFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+            void operator()(Element& el) const override;
+    };
 }
 
 #endif

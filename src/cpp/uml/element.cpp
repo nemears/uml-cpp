@@ -2,6 +2,7 @@
 #include "uml/sequence.h"
 #include "uml/relationship.h"
 #include "uml/elementFunctors.h"
+#include "uml/directedRelationship.h"
 
 using namespace std;
 using namespace UML;
@@ -28,6 +29,18 @@ void ReadOnlyOwnedElementsFunctor::operator()(Element& el) const {
     throw ReadOnlySequenceException(m_el->getIDstring(), "ownedElements");
 }
 
+void AddDirectedRelationshipFunctor::operator()(Element& el) const {
+    if (!m_el->getRelationships().count(el.getID())) {
+        m_el->getRelationships().add(dynamic_cast<DirectedRelationship&>(el));
+    }
+}
+
+void RemoveDirectedRelationshipFunctor::operator()(Element& el) const {
+    if (m_el->getRelationships().count(el.getID())) {
+        m_el->getRelationships().remove(dynamic_cast<DirectedRelationship&>(el));
+    }
+}
+
 // Constructor
 Element::Element() {
     m_id = boost::uuids::random_generator()();
@@ -38,12 +51,16 @@ Element::Element() {
     m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
     m_relationships = new Sequence<Relationship>;
     m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
+    m_directedRelationships = new Sequence<DirectedRelationship>;
+    m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));
+    m_directedRelationships->removeProcedures.push_back(new RemoveDirectedRelationshipFunctor(this));
 }
 
 // Destructor
 Element::~Element() {
     delete m_ownedElements;
     delete m_relationships;
+    delete m_directedRelationships;
 }
 
 Element::Element(const Element& el) {
@@ -51,12 +68,17 @@ Element::Element(const Element& el) {
     m_owner = el.m_owner;
     m_ownedElements = new Sequence<>(*el.m_ownedElements);
     m_relationships = new Sequence<Relationship>(*el.m_relationships);
+    m_directedRelationships = new Sequence<DirectedRelationship>(*el.m_directedRelationships);
     m_ownedElements->addProcedures.clear();
     m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
     m_ownedElements->removeProcedures.clear();
     m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
     m_relationships->removeProcedures.clear();
     m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
+    m_directedRelationships->addProcedures.clear();
+    m_directedRelationships->removeProcedures.clear();
+    m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));
+    m_directedRelationships->removeProcedures.push_back(new RemoveDirectedRelationshipFunctor(this));
 }
 
 void Element::setID(string id) {
@@ -112,6 +134,10 @@ Sequence<>& Element::getOwnedElements() {
 
 Sequence<Relationship>& Element::getRelationships() {
     return *m_relationships;
+}
+
+Sequence<DirectedRelationship>& Element::getDirectedRelationships() {
+    return *m_directedRelationships;
 }
 
 ElementType Element::getElementType() const {

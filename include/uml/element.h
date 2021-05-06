@@ -88,6 +88,8 @@ namespace UML {
 
     class Relationship;
 
+    class DirectedRelationship;
+
     /**
      * Element is the base class of all UML classes
      * It has three main attributes
@@ -102,6 +104,7 @@ namespace UML {
             // Sequences need to be pointers in element, still encapsulated but slightly different internal syntax
             Sequence<Element>* m_ownedElements;
             Sequence<Relationship>* m_relationships;
+            Sequence<DirectedRelationship>* m_directedRelationships;
             boost::uuids::uuid m_id;
             virtual void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID);
         public:
@@ -123,6 +126,7 @@ namespace UML {
              * read_only (TODO implement)
              **/
             Sequence<Relationship>& getRelationships();
+            Sequence<DirectedRelationship>& getDirectedRelationships();
             boost::uuids::uuid getID() { return m_id; };
             virtual void setID(std::string id);
             void setID(boost::uuids::uuid id);

@@ -76,3 +76,27 @@ TEST_F(PackageTest, copyPackageTest) {
     ASSERT_TRUE(p2.getPackagedElements().front() == &c);
     ASSERT_TRUE(p2.getOwningPackage() == &s);
 }
+
+TEST_F(PackageTest, packageMergeTest) {
+    Package p;
+    PackageMerge m;
+    Package mp;
+    ASSERT_NO_THROW(m.setMergedPackage(&mp));
+    ASSERT_NO_THROW(p.getPackageMerge().add(m));
+    ASSERT_TRUE(p.getPackageMerge().size() == 1);
+    ASSERT_TRUE(p.getPackageMerge().front() == &m);
+    ASSERT_TRUE(p.getDirectedRelationships().size() == 1);
+    ASSERT_TRUE(p.getDirectedRelationships().front() == &m);
+    ASSERT_TRUE(p.getRelationships().size() == 1);
+    ASSERT_TRUE(p.getRelationships().front() == &m);
+    ASSERT_TRUE(p.getOwnedElements().size() == 1);
+    ASSERT_TRUE(p.getOwnedElements().front() == &m);
+
+    ASSERT_TRUE(m.getMergedPackage() == &mp);
+    ASSERT_TRUE(m.getReceivingPackage() == &p);
+    ASSERT_TRUE(m.getSources().size() == 1);
+    ASSERT_TRUE(m.getSources().front() == &p);
+    ASSERT_TRUE(m.getTargets().size() == 1);
+    ASSERT_TRUE(m.getTargets().front() == &mp);
+    ASSERT_TRUE(m.getTargets().front() == &mp);
+}

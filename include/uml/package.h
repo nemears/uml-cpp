@@ -3,11 +3,13 @@
 
 #include "packageableElement.h"
 #include "namespace.h"
+#include "packageMerge.h"
 
 namespace UML {
     class Package : public PackageableElement, public Namespace {
         protected:
             Sequence<PackageableElement> m_packagedElements;
+            Sequence<PackageMerge> m_packageMerge;
             class AddPackagedElementFunctor : public AbstractSequenceFunctor {
                 public:
                     AddPackagedElementFunctor(Element* me) : AbstractSequenceFunctor(me) {};
@@ -18,11 +20,22 @@ namespace UML {
                     RemovePackagedElementFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class AddPackageMergeFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddPackageMergeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
+            class RemovePackageMergeFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemovePackageMergeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Package();
             ~Package();
             Package(const Package& pckg);
             Sequence<PackageableElement>& getPackagedElements();
+            Sequence<PackageMerge>& getPackageMerge();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };

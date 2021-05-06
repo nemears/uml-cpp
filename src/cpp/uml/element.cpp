@@ -262,6 +262,9 @@ string Element::getElementTypeString() const {
         case ElementType::PACKAGEABLE_ELEMENT : {
             return "PACKAGEABLE_ELEMENT";
         }
+        case ElementType::PACKAGE_MERGE : {
+            return "PACKAGE_MERGE";
+        }
         case ElementType::PARAMETER : {
             return "PARAMETER";
         }

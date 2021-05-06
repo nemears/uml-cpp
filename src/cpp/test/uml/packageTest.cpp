@@ -100,3 +100,17 @@ TEST_F(PackageTest, packageMergeTest) {
     ASSERT_TRUE(m.getTargets().front() == &mp);
     ASSERT_TRUE(m.getTargets().front() == &mp);
 }
+
+TEST_F(PackageTest, removePackageMergeTest) {
+    Package p;
+    PackageMerge m;
+    p.getPackageMerge().add(m);
+    ASSERT_NO_THROW(p.getPackageMerge().remove(m));
+    ASSERT_TRUE(p.getPackageMerge().size() == 0);
+    ASSERT_TRUE(p.getDirectedRelationships().size() == 0);
+    ASSERT_TRUE(p.getOwnedElements().size() == 0);
+    ASSERT_TRUE(p.getRelationships().size() == 0);
+    ASSERT_TRUE(m.getReceivingPackage() == 0);
+    ASSERT_TRUE(m.getSources().size() == 0);
+    ASSERT_TRUE(m.getRelatedElements().size() == 0);
+}

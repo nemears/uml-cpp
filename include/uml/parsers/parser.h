@@ -79,6 +79,7 @@ namespace UML {
          * To do this the function will have to read the first node and determine type to assign proper parent parser.
          **/
         Element* parse(YAML::Node node);
+        Element* parse(std::string path);
         void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
         void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data);
         void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data);

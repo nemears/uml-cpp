@@ -117,3 +117,15 @@ TEST_F(PackageParserTest, basicPackageMerge) {
     ASSERT_TRUE(m->getMergedPackage() == pckg1);
     ASSERT_TRUE(m->getReceivingPackage() == pckg2);
 }
+
+TEST_F(PackageParserTest, externalMergedPackageTest) {
+    Element* el;
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "packageParserTests/mergedPackage.yml"));
+    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
+    Package* pckg = dynamic_cast<Package*>(el);
+    ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
+    PackageMerge* m = pckg->getPackageMerge().front();
+    ASSERT_TRUE(m->getMergedPackage() != 0);
+    Package* p2 = m->getMergedPackage();
+    ASSERT_TRUE(p2->getPackagedElements().size() == 2);
+}

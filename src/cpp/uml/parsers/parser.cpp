@@ -5,6 +5,80 @@ using namespace std;
 namespace UML {
 namespace Parsers {
 
+Element* parse(string path) {
+    YAML::Node node = YAML::LoadFile(path);
+    ParserMetaData data;
+    data.m_path = path;
+
+    if (node["class"]) {
+        Class* clazz = new Class;
+        parseClass(node["class"], *clazz, data);
+        return clazz;
+    }
+
+    if (node["dataType"]) {
+        DataType* dataType = new DataType;
+        parseDataType(node["dataType"], *dataType, data);
+        return dataType;
+    }
+
+    if (node["enumeration"]) {
+        Enumeration* enumeration = new Enumeration;
+        parseEnumeration(node["enumeration"], *enumeration, data);
+        return enumeration;
+    }
+
+    if (node["instanceSpecification"]) {
+        InstanceSpecification* inst = new InstanceSpecification;
+        parseInstanceSpecification(node["instanceSpecification"], *inst, data);
+        return inst;
+    }
+
+    if (node["instanceValue"]) {
+        InstanceValue* instVal = new InstanceValue;
+        parseInstanceValue(node["instanceValue"], *instVal, data);
+        return instVal;
+    }
+
+    if (node["opaqueBehavior"]) {
+        OpaqueBehavior* bhv = new OpaqueBehavior;
+        parseOpaqueBehavior(node["opaqueBehavior"], *bhv, data);
+        return bhv;
+    }
+
+    if (node["operation"]) {
+        Operation* op = new Operation;
+        parseOperation(node["operation"], *op, data);
+        return op;
+    }
+
+    if (node["package"]) {
+        Package* pckg = new Package;
+        UML::Parsers::parsePackage(node["package"], *pckg, data);
+        return pckg;
+    }
+
+    if (node["parameter"]) {
+        Parameter* param = new Parameter;
+        parseParameter(node["parameter"], *param, data);
+        return param;
+    }
+
+    if (node["primitiveType"]) {
+        PrimitiveType* type = new PrimitiveType;
+        parsePrimitiveType(node["primitiveType"], *type, data);
+        return type;
+    }
+
+    if (node["property"]) {
+        Property* prop = new Property;
+        parseProperty(node["property"], *prop, data);
+        return prop;
+    }
+
+    return 0;
+}
+
 Element* parse(YAML::Node node) {
     if (node["class"]) {
         Class* clazz = new Class;
@@ -672,7 +746,17 @@ void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& dat
                 boost::uuids::uuid pckgID = boost::lexical_cast<boost::uuids::uuid>(pckgString);
                 applyFunctor(data, pckgID, new SetMergedPackageFunctor(&merge, node["mergedPackage"]));
             } else {
-                // TODO check path for external items
+                string temp = data.m_path.parent_path() / pckgString;
+                if (filesystem::exists(data.m_path.parent_path() / pckgString)) {
+                    Element* mergedPackage = parse(data.m_path.parent_path() / pckgString);
+                    if (mergedPackage->isSubClassOf(ElementType::PACKAGE)) {
+                        merge.setMergedPackage(dynamic_cast<Package*>(mergedPackage));
+                    } else {
+                        throw UmlParserException("mergedPackage is not a package, line " + to_string(node["mergedPackage"].Mark().line));
+                    }
+                } else {
+                    throw UmlParserException("Could not parse external mergedPackage, line " + to_string(node["mergedPackage"].Mark().line));
+                }
             }
         } else {
             throw UmlParserException("Invalid YAML node type for PackageMerge field mergedPackage, expected scalar, line " + node["mergedPackage"].Mark().line);

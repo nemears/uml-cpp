@@ -1,0 +1,6 @@
+---
+  package:
+    packageMerge:
+      - packageMerge:
+          mergedPackage: 3packages.yml
+...

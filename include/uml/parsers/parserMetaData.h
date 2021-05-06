@@ -4,6 +4,7 @@
 #include "yaml-cpp/yaml.h"
 #include "uml/sequence.h"
 #include <map>
+#include <filesystem>
 
 namespace UML{
     namespace Parsers {
@@ -32,6 +33,7 @@ namespace UML{
                         void operator()(Element& el) const override;
                 };
             public:
+                std::filesystem::path m_path;
                 ParserMetaData();
                 Sequence<> elements;
                 std::map<boost::uuids::uuid, std::vector<AbstractPostProcessFunctor*>*> postProcessFlag;

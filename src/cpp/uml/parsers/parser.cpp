@@ -402,6 +402,26 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
 
     parsePackageableElement(node, pckg, data);
 
+    if (node["packageMerge"]) {
+        if (node["packageMerge"].IsSequence()) {
+            for (size_t i = 0; i < node["packageMerge"][i]["packageMerge"].size(); i++) {
+                if (node["packageMerge"][i]["packageMerge"]) {
+                    if (node["packageMerge"][i]["packageMerge"].IsMap()) {
+                        PackageMerge* merge = new PackageMerge;
+                        parsePackageMerge(node["packageMerge"][i]["packageMerge"], *merge, data);
+                        pckg.getPackageMerge().add(*merge);
+                    } else {
+                        throw UmlParserException("Invalid YAML Node type for packageMerge definition with in Package, line " + node["packageMerge"][i]["packageMerge"].Mark().line);
+                    }
+                } else {
+                    throw UmlParserException("Invalid identifier in Package packageMerge list, line " + to_string(node["packageMerge"][i]["packageMerge"].Mark().line));
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid YAML Node type for Package field packageMerge, line " + node["packageMerge"].Mark().line);
+        }
+    }
+
     if (node["packagedElements"]) {
         if (node["packagedElements"].IsSequence()) {
             for (size_t i=0; i<node["packagedElements"].size(); i++) {
@@ -624,6 +644,38 @@ void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& dat
             }
         } else {
             throw UmlParserException("Invalid YAML node type for InstanceValue field instance, expect scalar, line " + node["instance"].Mark().line);
+        }
+    }
+}
+
+void SetMergedPackageFunctor::operator()(Element& el) const {
+    if (el.isSubClassOf(ElementType::PACKAGE)) {
+        dynamic_cast<PackageMerge*>(m_el)->setMergedPackage(&dynamic_cast<Package&>(el));
+    } else {
+        throw UmlParserException(m_el->getElementTypeString() + " id: " + boost::lexical_cast<string>(m_el->getID()) + 
+                                        " assigned mergedPackage that is not a Package! line " + to_string(m_node.Mark().line));
+    }
+}
+
+void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data) {
+    parseElement(node, merge, data);
+
+    if (node["receivingPackage"]) {
+        // This won't be called cause it is always defined from within receiving Package body
+        throw UmlParserException("TODO");
+    }
+
+    if (node["mergedPackage"]) {
+        if (node["mergedPackage"].IsScalar()) {
+            string pckgString = node["mergedPackage"].as<string>();
+            if (isValidUUID4(pckgString)) {
+                boost::uuids::uuid pckgID = boost::lexical_cast<boost::uuids::uuid>(pckgString);
+                applyFunctor(data, pckgID, new SetMergedPackageFunctor(&merge, node["mergedPackage"]));
+            } else {
+                // TODO check path for external items
+            }
+        } else {
+            throw UmlParserException("Invalid YAML node type for PackageMerge field mergedPackage, expected scalar, line " + node["mergedPackage"].Mark().line);
         }
     }
 }

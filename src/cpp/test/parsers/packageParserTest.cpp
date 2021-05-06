@@ -101,3 +101,19 @@ TEST_F(PackageParserTest, properExceptions) {
     ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/improperPackagedElement.yml")), Parsers::UmlParserException);
     ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/invalidPackagedElements.yml")), Parsers::UmlParserException);
 }
+
+TEST_F(PackageParserTest, basicPackageMerge) {
+    Element* el;
+    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "packageParserTests/basicPackageMerge.yml")));
+    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
+    Package* bPckg = dynamic_cast<Package*>(el);
+    ASSERT_TRUE(bPckg->getPackagedElements().size() == 2);
+    ASSERT_TRUE(bPckg->getPackagedElements().front()->getElementType() == ElementType::PACKAGE);
+    Package* pckg1 = dynamic_cast<Package*>(bPckg->getPackagedElements().front());
+    ASSERT_TRUE(bPckg->getPackagedElements().back()->getElementType() == ElementType::PACKAGE);
+    Package* pckg2 = dynamic_cast<Package*>(bPckg->getPackagedElements().back());
+    ASSERT_TRUE(pckg2->getPackageMerge().size() == 1);
+    PackageMerge* m = pckg2->getPackageMerge().front();
+    ASSERT_TRUE(m->getMergedPackage() == pckg1);
+    ASSERT_TRUE(m->getReceivingPackage() == pckg2);
+}

@@ -55,6 +55,12 @@ namespace UML {
                 void operator()(Element& el) const override;
         };
 
+        class SetMergedPackageFunctor : public AbstractPostProcessFunctor {
+            public:
+                SetMergedPackageFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                void operator()(Element& el) const override;
+        };
+
         class UmlParserException : public std::exception {
             private:
             std::string m_msg;
@@ -95,6 +101,7 @@ namespace UML {
         void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data);
         void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data);
         void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data);
+        void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);
     }
 }
 

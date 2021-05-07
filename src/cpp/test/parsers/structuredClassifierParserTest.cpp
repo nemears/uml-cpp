@@ -16,7 +16,7 @@ class StructuredClassifierParserTest : public ::testing::Test {
 
 TEST_F(StructuredClassifierParserTest, parseOwnedAttributeTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "structuredClassifierTests/ownedAttributeTest.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "structuredClassifierTests/ownedAttributeTest.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class c = *dynamic_cast<Class*>(el);
     ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
@@ -37,7 +37,7 @@ TEST_F(StructuredClassifierParserTest, parseOwnedAttributeTest) {
 
 TEST_F(StructuredClassifierParserTest, partTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "structuredClassifierTests/partTest.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "structuredClassifierTests/partTest.yml"));
     Class c = *dynamic_cast<Class*>(el);
     ASSERT_TRUE(c.getParts().size() == 1);
     ASSERT_TRUE(c.getOwnedAttributes().size() == 1);

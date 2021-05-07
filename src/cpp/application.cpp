@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
             //ModelParser pp = ModelParser::createNewParser();
             Element* el;
             try {
-                el = UML::Parsers::parse(node);
+                el = UML::Parsers::parse(fileName);
             } catch (exception& e) {
                 cerr << "[FATAL ERROR] " << e.what() << endl;
             }

@@ -16,7 +16,7 @@ class PrimitiveTypeParserTest : public ::testing::Test {
 
 TEST_F(PrimitiveTypeParserTest, basicPrimitiveTypeTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "primitiveTypeTests/basicPrimitiveType.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "primitiveTypeTests/basicPrimitiveType.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PRIMITIVE_TYPE);
     DataType d = *dynamic_cast<DataType*>(el);
     ASSERT_TRUE(d.getName().compare("int") == 0);

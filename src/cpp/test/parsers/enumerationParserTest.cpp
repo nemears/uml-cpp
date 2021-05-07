@@ -16,7 +16,7 @@ class EnumerationParserTest : public ::testing::Test {
 
 TEST_F(EnumerationParserTest, basicEnumerationTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "enumerationTests/basicEnumeration.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "enumerationTests/basicEnumeration.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::ENUMERATION);
     Enumeration* e = dynamic_cast<Enumeration*>(el);
     ASSERT_TRUE(e->getOwnedLiteral().size() == 2);

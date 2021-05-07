@@ -78,8 +78,8 @@ namespace UML {
          * The idea behind this function is to have one way to parse any uml config file no matter the parent type.
          * To do this the function will have to read the first node and determine type to assign proper parent parser.
          **/
-        Element* parse(YAML::Node node);
         Element* parse(std::string path);
+        Element* parse(ParserMetaData& data);
         void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
         void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data);
         void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data);

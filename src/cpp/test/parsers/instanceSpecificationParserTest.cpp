@@ -18,7 +18,7 @@ class InstanceSpecificationParserTest : public ::testing::Test {
 
 TEST_F(InstanceSpecificationParserTest, forwardClassifierTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "instanceSpecificationTests/forwardClassifier.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "instanceSpecificationTests/forwardClassifier.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -31,7 +31,7 @@ TEST_F(InstanceSpecificationParserTest, forwardClassifierTest) {
 
 TEST_F(InstanceSpecificationParserTest, backwardsClassifierTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "instanceSpecificationTests/backwardsClassifier.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "instanceSpecificationTests/backwardsClassifier.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -46,7 +46,7 @@ TEST_F(InstanceSpecificationParserTest, backwardsClassifierTest) {
 
 TEST_F(InstanceSpecificationParserTest, basicSlotTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "instanceSpecificationTests/basicSlot.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "instanceSpecificationTests/basicSlot.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -65,7 +65,7 @@ TEST_F(InstanceSpecificationParserTest, basicSlotTest) {
 
 TEST_F(InstanceSpecificationParserTest, backwardsSlotTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "instanceSpecificationTests/backwardsSlot.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "instanceSpecificationTests/backwardsSlot.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -84,7 +84,7 @@ TEST_F(InstanceSpecificationParserTest, backwardsSlotTest) {
 
 TEST_F(InstanceSpecificationParserTest, instanceValueSlot) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "instanceSpecificationTests/instanceSlot.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "instanceSpecificationTests/instanceSlot.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 4);

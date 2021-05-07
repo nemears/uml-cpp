@@ -18,7 +18,7 @@ class ClassParserTest : public ::testing::Test {
 
 TEST_F(ClassParserTest, parseID_andName) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "classTests/class_w_id_and_name.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "classTests/class_w_id_and_name.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
     ASSERT_TRUE(clazz->getID() == boost::lexical_cast<boost::uuids::uuid>("54e8f139-9581-48a4-8021-32ff00606c93"));
@@ -27,7 +27,7 @@ TEST_F(ClassParserTest, parseID_andName) {
 
 TEST_F(ClassParserTest, parseBasicProperty) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "classTests/classWithAttributes.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "classTests/classWithAttributes.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
     ASSERT_TRUE(clazz->getAttributes().size() == 2);
@@ -47,7 +47,7 @@ TEST_F(ClassParserTest, parseBasicProperty) {
 
 TEST_F(ClassParserTest, parseOperation) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "classTests/operation.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "classTests/operation.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
     ASSERT_TRUE(clazz->getOperations().size() == 1);
@@ -63,6 +63,6 @@ TEST_F(ClassParserTest, parseOperation) {
 
 TEST_F(ClassParserTest, properErrors) {
     Element* el;
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "classTests/improperOperationIdentifier.yml")), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "classTests/operationsNotSequence.yml")), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "classTests/improperOperationIdentifier.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "classTests/operationsNotSequence.yml"), Parsers::UmlParserException);
 }

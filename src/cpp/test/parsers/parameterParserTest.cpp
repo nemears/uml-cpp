@@ -16,6 +16,6 @@ class ParameterParserTest : public ::testing::Test {
 
 TEST_F(ParameterParserTest, properExceptions) {
     Element* el;
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "parameterTests/invalidDirection.yml")), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "parameterTests/invalidDirection2.yml")), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "parameterTests/invalidDirection.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "parameterTests/invalidDirection2.yml"), Parsers::UmlParserException);
 }

@@ -16,7 +16,7 @@ class OpaqueBehaviorParserTest : public ::testing::Test {
 
 TEST_F(OpaqueBehaviorParserTest, parseMultipleSimpleBodies) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "opaqueBehaviorTests/multipleSimpleBodies.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "opaqueBehaviorTests/multipleSimpleBodies.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::OPAQUE_BEHAVIOR);
     OpaqueBehavior* bhv = dynamic_cast<OpaqueBehavior*>(el);
     ASSERT_TRUE(bhv->getName().compare("test") == 0);
@@ -29,7 +29,7 @@ TEST_F(OpaqueBehaviorParserTest, parseMultipleSimpleBodies) {
 
 TEST_F(OpaqueBehaviorParserTest, parseParameter) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "opaqueBehaviorTests/param.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "opaqueBehaviorTests/param.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::OPAQUE_BEHAVIOR);
     OpaqueBehavior* bhv = dynamic_cast<OpaqueBehavior*>(el);
     ASSERT_TRUE(bhv->getParameters().size() == 1);
@@ -40,8 +40,8 @@ TEST_F(OpaqueBehaviorParserTest, parseParameter) {
 
 TEST_F(OpaqueBehaviorParserTest, properParameters) {
     Element* el;
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "opaqueBehaviorTests/improperParameters.yml")), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "opaqueBehaviorTests/bodyNotLiteralString.yml")), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "opaqueBehaviorTests/bodiesEntryIsSequence.yml")), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "opaqueBehaviorTests/bodiesNotSequence.yml")), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "opaqueBehaviorTests/improperParameters.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "opaqueBehaviorTests/bodyNotLiteralString.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "opaqueBehaviorTests/bodiesEntryIsSequence.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "opaqueBehaviorTests/bodiesNotSequence.yml"), Parsers::UmlParserException);
 }

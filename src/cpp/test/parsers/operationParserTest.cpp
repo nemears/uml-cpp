@@ -16,6 +16,6 @@ class OperationParserTest : public ::testing::Test {
 
 TEST_F(OperationParserTest, properExceptions) {
     Element* el;
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "operationTests/invalidBehavior.yml")), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "operationTests/invalidMethodList.yml")), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "operationTests/invalidBehavior.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "operationTests/invalidMethodList.yml"), Parsers::UmlParserException);
 }

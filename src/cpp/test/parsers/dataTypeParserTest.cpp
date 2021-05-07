@@ -16,7 +16,7 @@ class DataTypeParserTest : public ::testing::Test {
 
 TEST_F(DataTypeParserTest, basicDataTypeTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "dataTypeTests/basicDataType.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "dataTypeTests/basicDataType.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::DATA_TYPE);
     DataType d = *dynamic_cast<DataType*>(el);
     ASSERT_TRUE(d.getName().compare("int") == 0);

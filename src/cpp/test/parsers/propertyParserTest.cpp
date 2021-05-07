@@ -18,7 +18,7 @@ class PropertyParserTest : public ::testing::Test {
 
 TEST_F(PropertyParserTest, forwardTypeTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/forwardType.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "propertyTests/forwardType.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -33,7 +33,7 @@ TEST_F(PropertyParserTest, forwardTypeTest) {
 
 TEST_F(PropertyParserTest, backwardsTypeTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/backwardTypeTest.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "propertyTests/backwardTypeTest.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -48,7 +48,7 @@ TEST_F(PropertyParserTest, backwardsTypeTest) {
 
 TEST_F(PropertyParserTest, multiplicityTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/multiplicityTest.yml")));
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "propertyTests/multiplicityTest.yml"));
     ASSERT_TRUE(el);
     ASSERT_TRUE(el->getElementType() == ElementType::PROPERTY);
     Property* prop = dynamic_cast<Property*>(el);
@@ -65,11 +65,11 @@ TEST_F(PropertyParserTest, multiplicityTest) {
 
 TEST_F(PropertyParserTest, improperTypeTest) {
     Element* el;
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/improperType.yml")), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/improperType2.yml")), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/improperType3.yml")), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/propertyNotMap.yml")), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/attributesNotSequence.yml")), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/invalidLower.yml")), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(YAML::LoadFile(ymlPath + "propertyTests/invalidUpper.yml")), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "propertyTests/improperType.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "propertyTests/improperType2.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "propertyTests/improperType3.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "propertyTests/propertyNotMap.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "propertyTests/attributesNotSequence.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "propertyTests/invalidLower.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = Parsers::parse(ymlPath + "propertyTests/invalidUpper.yml"), Parsers::UmlParserException);
 }

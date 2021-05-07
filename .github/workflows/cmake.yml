@@ -33,7 +33,7 @@ jobs:
     - name: llvm
       run: sudo apt-get install -yq llvm-10-dev
 
-    - update:
+    - name: update
       run: sudo apt-get update
 
     - name: Configure CMake

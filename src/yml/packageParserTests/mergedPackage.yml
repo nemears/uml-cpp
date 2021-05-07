@@ -3,4 +3,12 @@
     packageMerge:
       - packageMerge:
           mergedPackage: 3packages.yml
+      - packageMerge:
+          mergedPackage: ../uml/primitiveTypes.yml
+    packagedElements:
+      - class:
+          ownedAttributes:
+            - property:
+                # of type bool
+                type: b211590a-3582-4bd2-895c-053411c0aea9
 ...

@@ -123,9 +123,19 @@ TEST_F(PackageParserTest, externalMergedPackageTest) {
     ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "packageParserTests/mergedPackage.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
-    ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
+    ASSERT_TRUE(pckg->getPackageMerge().size() == 2);
     PackageMerge* m = pckg->getPackageMerge().front();
+    PackageMerge* m2 = pckg->getPackageMerge().back();
     ASSERT_TRUE(m->getMergedPackage() != 0);
     Package* p2 = m->getMergedPackage();
     ASSERT_TRUE(p2->getPackagedElements().size() == 2);
+    ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
+    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    Class* c = dynamic_cast<Class*>(pckg->getPackagedElements().front());
+    ASSERT_TRUE(c->getOwnedAttributes().size() == 1);
+    Property* p = c->getOwnedAttributes().front();
+    Package* primPack = m2->getMergedPackage();
+    ASSERT_TRUE(primPack->getPackagedElements().front()->getElementType() == ElementType::PRIMITIVE_TYPE);
+    PrimitiveType* b = dynamic_cast<PrimitiveType*>(primPack->getPackagedElements().front());
+    ASSERT_TRUE(p->getType() == b);
 }

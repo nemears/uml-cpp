@@ -1,0 +1,22 @@
+---
+  # This package holds the UML standard Primitive Types.
+  # The user does not have to include these into their model
+  # they can define their own Primitive Types if wanted.
+  package:
+    id: fde982da-dd28-4455-91e0-d158c729290b
+    name: Primtivie_Types
+    packagedElements:
+      - primitiveType:
+          id: b211590a-3582-4bd2-895c-053411c0aea9
+          name: bool
+          # TODO operations and value?
+      - primitiveType:
+          id: e4d5eb84-80c8-4338-949e-70de8f837355
+          name: int
+      - primitiveType:
+          id: ef78395c-9f14-4df3-9af9-17584139f9d8
+          name: real
+      - primitiveType:
+          id: fb007cdd-f716-4e28-b149-ebd2ada4a478
+          name: string
+...

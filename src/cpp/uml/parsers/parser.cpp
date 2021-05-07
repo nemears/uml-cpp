@@ -91,10 +91,10 @@ void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
             if (isValidUUID4(id)) {
                 el.setID(boost::lexical_cast<boost::uuids::uuid>(id));
             } else {
-                throw UmlParserException("Value for id is not a valid UUID4, line " + node["id"].Mark().line);
+                throw UmlParserException("Value for id is not a valid UUID4, " + data.m_path.string() + " line " + to_string(node["id"].Mark().line));
             }
         } else {
-            throw UmlParserException("Improper YAML node type for id field, must be scalar, line " + node["id"].Mark().line);
+            throw UmlParserException("Improper YAML node type for id field, must be scalar, " + data.m_path.string() + " line " + to_string(node["id"].Mark().line));
         }
     }
 
@@ -110,7 +110,7 @@ void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) 
         if (node["name"].IsScalar()) {
             el.setName(node["name"].as<string>());
         } else {
-            throw UmlParserException("Improper YAML node type for name field, must be scalar, line " + node["name"].Mark().line);
+            throw UmlParserException("Improper YAML node type for name field, must be scalar, " + data.m_path.string() + " line " + to_string(node["name"].Mark().line));
         }
     }
 }
@@ -135,10 +135,10 @@ void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data) 
                 boost::uuids::uuid typeID = boost::lexical_cast<boost::uuids::uuid>(typeIDstring);
                 applyFunctor(data, typeID, new SetTypeFunctor(&el, node["type"]));
             } else {
-                throw UmlParserException("ID for " + el.getElementTypeString() + " type field is invalid, line " + to_string(node["type"].Mark().line));
+                throw UmlParserException("ID for " + el.getElementTypeString() + " type field is invalid, " + data.m_path.string() + " line " + to_string(node["type"].Mark().line));
             }
         } else {
-            throw UmlParserException("Improper YAML node type for type field, must be scalar, line " + node["type"].Mark().line);
+            throw UmlParserException("Improper YAML node type for type field, must be scalar, " + data.m_path.string() + " line " + to_string(node["type"].Mark().line));
         }
     }
 }
@@ -162,13 +162,13 @@ void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
                         parseProperty(node["attributes"][i]["property"], *prop, data);
                         clazz.getAttributes().add(*prop);
                     } else {
-                        throw UmlParserException("Improper YAML node type for property field, must be map, line " + 
-                                                 node["attributes"][i]["property"].Mark().line);
+                        throw UmlParserException("Improper YAML node type for property field, must be map, " + data.m_path.string() + " line " + 
+                                                 to_string(node["attributes"][i]["property"].Mark().line));
                     }
                 }
             }
         } else {
-            throw UmlParserException("Improper YAML node type for type field, must be scalar, line " + node["attributes"].Mark().line);
+            throw UmlParserException("Improper YAML node type for type field, must be scalar, " + data.m_path.string() + " line " + to_string(node["attributes"].Mark().line));
         }
     }
 }
@@ -185,12 +185,12 @@ void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
                         parseProperty(node["ownedAttribute"][i]["property"], *prop, data);
                         dataType.getOwnedAttribute().add(*prop);
                     } else {
-                        throw UmlParserException("Improper YAML node type for property, must be map, line " + node["ownedAttribute"][i]["property"].Mark().line);
+                        throw UmlParserException("Improper YAML node type for property, must be map, " + data.m_path.string() + " line " + to_string(node["ownedAttribute"][i]["property"].Mark().line));
                     }
                 }
             }
         } else {
-            throw UmlParserException("Improper YAML node type for dataType ownedAttribute, must be sequence, line " + node["ownedAttribute"].Mark().line);
+            throw UmlParserException("Improper YAML node type for dataType ownedAttribute, must be sequence, " + data.m_path.string() + " line " + to_string(node["ownedAttribute"].Mark().line));
         }
     }
 
@@ -203,14 +203,14 @@ void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
                         parseOperation(node["ownedOperation"][i]["operation"], *op, data);
                         dataType.getOwnedOperation().add(*op);
                     } else {
-                        throw UmlParserException("Improper YAML node type for operation, must be map, line " + node["ownedOperation"][i]["operation"].Mark().line);
+                        throw UmlParserException("Improper YAML node type for operation, must be map, " + data.m_path.string() + " line " + to_string(node["ownedOperation"][i]["operation"].Mark().line));
                     }
                 } else {
-                    throw UmlParserException("Improper UML node type for ownedOperation sequence, line" + node["ownedOperation"][i].Mark().line);
+                    throw UmlParserException("Improper UML node type for ownedOperation sequence, " + data.m_path.string() + " line " + to_string(node["ownedOperation"][i].Mark().line));
                 }
             }
         } else {
-            throw UmlParserException("Improper YAML node type for dataType ownedOperation, must be sequence, line " + node["ownedOperation"].Mark().line);
+            throw UmlParserException("Improper YAML node type for dataType ownedOperation, must be sequence, " + data.m_path.string() + " line " + to_string(node["ownedOperation"].Mark().line));
         }
     }
 }
@@ -231,13 +231,13 @@ void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, Par
                         parseProperty(node["ownedAttributes"][i]["property"], *prop, data);
                         clazz.getOwnedAttributes().add(*prop);
                     } else {
-                        throw UmlParserException("Improper YAML node type for property field, must be map, line " + 
-                                                 node["ownedAttributes"][i]["property"].Mark().line);
+                        throw UmlParserException("Improper YAML node type for property field, must be map, " + data.m_path.string() + " line " + 
+                                                 to_string(node["ownedAttributes"][i]["property"].Mark().line));
                     }
                 }
             }
         } else {
-            throw UmlParserException("Improper YAML node type for ownedAttributes field, must be sequence, line " + node["ownedAttributes"].Mark().line);
+            throw UmlParserException("Improper YAML node type for ownedAttributes field, must be sequence, " + data.m_path.string() + " line " + to_string(node["ownedAttributes"].Mark().line));
         }
     }
 }
@@ -253,11 +253,11 @@ void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
                     parseOperation(node["operations"][i]["operation"], *op, data);
                     clazz.getOperations().add(*op);
                 } else {
-                    throw UmlParserException("Could not identify operation to parse, line " + to_string(node["operations"][i].Mark().line));
+                    throw UmlParserException("Could not identify operation to parse, " + data.m_path.string() + " line " + to_string(node["operations"][i].Mark().line));
                 }
             }
         } else {
-            throw UmlParserException("Improper YAML node type for operations field, must be scalar, line " + node["attributes"].Mark().line);
+            throw UmlParserException("Improper YAML node type for operations field, must be scalar, " + data.m_path.string() + " line " + to_string(node["attributes"].Mark().line));
         }
     }
 }
@@ -279,7 +279,7 @@ void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data) {
                 }
             }
         } else {
-            throw UmlParserException("Improper YAML node type for parameters field, must be scalar, line " + node["parameters"].Mark().line);
+            throw UmlParserException("Improper YAML node type for parameters field, must be scalar, " + data.m_path.string() + " line " + to_string(node["parameters"].Mark().line));
         }
     }
 }
@@ -307,11 +307,11 @@ void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& d
                         bhv.getBodies().add(*bodyUML);
                     }
                 } else {
-                    throw UmlParserException("Improper YAML node type for bodies sequence, must be scalar or map, line " + node["bodies"][i].Mark().line);
+                    throw UmlParserException("Improper YAML node type for bodies sequence, must be scalar or map, " + data.m_path.string() + " line " + to_string(node["bodies"][i].Mark().line));
                 }
             }
         } else {
-            throw UmlParserException("Improper YAML node type for bodies, must be sequence, line " + node["bodies"].Mark().line);
+            throw UmlParserException("Improper YAML node type for bodies, must be sequence, " + data.m_path.string() + " line " + to_string(node["bodies"].Mark().line));
         }
     }
 }
@@ -332,7 +332,7 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
                 prop.setAggregation(AggregationKind::NONE);
             }
         } else {
-            throw UmlParserException("Improper YAML node type for bodies, must be scalar, line " + node["aggregation"].Mark().line);
+            throw UmlParserException("Improper YAML node type for bodies, must be scalar, " + data.m_path.string() + " line " + to_string(node["aggregation"].Mark().line));
         }
     }
 
@@ -356,10 +356,10 @@ void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data) {
             } else if (node["direction"].as<string>().compare("RETURN") == 0) {
                 el.setDirection(ParameterDirectionKind::RETURN);
             } else {
-                throw UmlParserException("Invalid direction provided for Parameter, line" + node["direction"].Mark().line);
+                throw UmlParserException("Invalid direction provided for Parameter, " + data.m_path.string() + " line " + to_string(node["direction"].Mark().line));
             }
         } else {
-            throw UmlParserException("Improper YAML node type for direction, must be scalar, line " + node["direction"].Mark().line);
+            throw UmlParserException("Improper YAML node type for direction, must be scalar, " + data.m_path.string() + " line " + to_string(node["direction"].Mark().line));
         }
     }
 }
@@ -375,11 +375,11 @@ void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
                     parseOpaqueBehavior(node["methods"][i]["opaqueBehavior"], *bhv, data);
                     op.getMethods().add(*bhv);
                 } else {
-                    throw UmlParserException("Invalid behavior type for operation methods, line " + node["methods"][i].Mark().line);
+                    throw UmlParserException("Invalid behavior type for operation methods, " + data.m_path.string() + " line " + to_string(node["methods"][i].Mark().line));
                 } 
             }
         } else {
-            throw UmlParserException("Improper YAML node type for methods, must be sequence, line " + node["methods"].Mark().line);
+            throw UmlParserException("Improper YAML node type for methods, must be sequence, " + data.m_path.string() + " line " + to_string(node["methods"].Mark().line));
         }
     }
 
@@ -402,21 +402,21 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
 
     if (node["packageMerge"]) {
         if (node["packageMerge"].IsSequence()) {
-            for (size_t i = 0; i < node["packageMerge"][i]["packageMerge"].size(); i++) {
+            for (size_t i = 0; i < node["packageMerge"].size(); i++) {
                 if (node["packageMerge"][i]["packageMerge"]) {
                     if (node["packageMerge"][i]["packageMerge"].IsMap()) {
                         PackageMerge* merge = new PackageMerge;
                         parsePackageMerge(node["packageMerge"][i]["packageMerge"], *merge, data);
                         pckg.getPackageMerge().add(*merge);
                     } else {
-                        throw UmlParserException("Invalid YAML Node type for packageMerge definition with in Package, line " + node["packageMerge"][i]["packageMerge"].Mark().line);
+                        throw UmlParserException("Invalid YAML Node type for packageMerge definition with in Package, " + data.m_path.string() + " line " + to_string(node["packageMerge"][i]["packageMerge"].Mark().line));
                     }
                 } else {
-                    throw UmlParserException("Invalid identifier in Package packageMerge list, line " + to_string(node["packageMerge"][i]["packageMerge"].Mark().line));
+                    throw UmlParserException("Invalid identifier in Package packageMerge list, " + data.m_path.string() + " line " + to_string(node["packageMerge"][i]["packageMerge"].Mark().line));
                 }
             }
         } else {
-            throw UmlParserException("Invalid YAML Node type for Package field packageMerge, line " + node["packageMerge"].Mark().line);
+            throw UmlParserException("Invalid YAML Node type for Package field packageMerge, " + data.m_path.string() + " line " + to_string(node["packageMerge"].Mark().line));
         }
     }
 
@@ -457,15 +457,15 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                         parsePrimitiveType(node["packagedElements"][i]["primitiveType"], *type, data);
                         pckg.getPackagedElements().add(*type);
                     } else {
-                        throw UmlParserException("Invalid identifier for packagedElements, line" + node["packagedElements"][i].Mark().line);
+                        throw UmlParserException("Invalid identifier for packagedElements, " + data.m_path.string() + " line " + to_string(node["packagedElements"][i].Mark().line));
                     }
                 } else {
-                    throw UmlParserException("Invalid YAML node type for field packagedElements sequence, must be map, line " 
-                                             + node["packagedElements"][i].Mark().line);
+                    throw UmlParserException("Invalid YAML node type for field packagedElements sequence, must be map, " + data.m_path.string() + " line " 
+                                             + to_string(node["packagedElements"][i].Mark().line));
                 }
             }
         } else {
-            throw UmlParserException("Invalid YAML node type for field packagedElements, must be sequence, line " + node["packagedElements"].Mark().line);
+            throw UmlParserException("Invalid YAML node type for field packagedElements, must be sequence, " + data.m_path.string() + " line " + to_string(node["packagedElements"].Mark().line));
         }
     }
 }
@@ -483,7 +483,7 @@ void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMe
                 // TODO parse and evaluate expression
             }
         } else {
-            throw UmlParserException("Invalid YAML node type for field lower, must be scalar or map, line " + node["lower"].Mark().line);
+            throw UmlParserException("Invalid YAML node type for field lower, must be scalar or map, " + data.m_path.string() + " line " + to_string(node["lower"].Mark().line));
         }
     }
 
@@ -499,7 +499,7 @@ void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMe
                 // TODO parse and evaluate expression
             }
         } else {
-            throw UmlParserException("Invalid YAML node type for field upper, must be scalar or map, line " + node["upper"].Mark().line);
+            throw UmlParserException("Invalid YAML node type for field upper, must be scalar or map, " + data.m_path.string() + " line " + to_string(node["upper"].Mark().line));
         }
     }
 }
@@ -524,7 +524,7 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
                 applyFunctor(data, id, new SetClassifierFunctor(&inst, node["classifier"]));
             }
         } else {
-            throw UmlParserException("Invalid YAML node type for InstanceSpecification field classifier, line " + node["classifier"].Mark().line);
+            throw UmlParserException("Invalid YAML node type for InstanceSpecification field classifier," + data.m_path.string() + " line " + to_string(node["classifier"].Mark().line));
         }
     }
 
@@ -540,7 +540,7 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
                 }
             }
         } else {
-            throw UmlParserException("Invalid YAML node type for InstanceSpecification field slots, expected sequence, line " + node["slots"].Mark().line);
+            throw UmlParserException("Invalid YAML node type for InstanceSpecification field slots, expected sequence, " + data.m_path.string() + " line " + to_string(node["slots"].Mark().line));
         }
     }
 }
@@ -565,7 +565,7 @@ void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
                 applyFunctor(data, definingFeatureID, new SetDefiningFeatureFunctor(&slot, node["definingFeature"]));
             }
         } else {
-            throw UmlParserException("Invalid YAML node type for Slot field definingFeature, expected scalar, line " + node["definingFeature"].Mark().line);
+            throw UmlParserException("Invalid YAML node type for Slot field definingFeature, expected scalar, " + data.m_path.string() + " line " + to_string(node["definingFeature"].Mark().line));
         }
     }
 
@@ -579,14 +579,14 @@ void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
                         parseInstanceValue(node["values"][i]["instanceValue"], *instVal, data);
                         slot.getValues().add(*instVal);
                     } else {
-                        UmlParserException("InstanceValue must be map Node type! line, " + node["values"][i]["instanceValue"].Mark().line);
+                        UmlParserException("InstanceValue must be map Node type! " + data.m_path.string() + " line " + to_string(node["values"][i]["instanceValue"].Mark().line));
                     }
                 } else {
-                    throw UmlParserException("unknown value type for slot, line " + node["values"][i].Mark().line);
+                    throw UmlParserException("unknown value type for slot, " + data.m_path.string() + " line " + to_string(node["values"][i].Mark().line));
                 }
             }
         } else {
-            throw UmlParserException("Invalid YAML node type for Slot field values, expected Sequence, line " + node["values"].Mark().line);
+            throw UmlParserException("Invalid YAML node type for Slot field values, expected Sequence, " + data.m_path.string() + " line " + to_string(node["values"].Mark().line));
         }
     }
 }
@@ -603,14 +603,14 @@ void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData&
                         parseEnumerationLiteral(node["ownedLiteral"][i]["enumerationLiteral"], *literal, data);
                         enumeration.getOwnedLiteral().add(*literal);
                     } else {
-                        throw UmlParserException("Invalid YAML node type enumerationLiteral definition, should be map, line " + node["ownedLiteral"][i]["enumerationLiteral"].Mark().line);
+                        throw UmlParserException("Invalid YAML node type enumerationLiteral definition, should be map, " + data.m_path.string() + " line " + to_string(node["ownedLiteral"][i]["enumerationLiteral"].Mark().line));
                     }
                 } else {
-                    throw UmlParserException("Invalid UML type in enumeration ownedLiteral list, must be literal, line " + node["ownedLiteral"].Mark().line);
+                    throw UmlParserException("Invalid UML type in enumeration ownedLiteral list, must be literal," + data.m_path.string() + " line " + to_string(node["ownedLiteral"].Mark().line));
                 }
             }
         } else {
-            throw UmlParserException("Invalid YAML node type for Enumeration field ownedLiteral, expected sequence, line " + node["ownedLiteral"].Mark().line);
+            throw UmlParserException("Invalid YAML node type for Enumeration field ownedLiteral, expected sequence, " + data.m_path.string() + " line " + to_string(node["ownedLiteral"].Mark().line));
         }
     }
 }
@@ -638,10 +638,10 @@ void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& dat
                 boost::uuids::uuid id = boost::lexical_cast<boost::uuids::uuid>(instID);
                 applyFunctor(data, id, new SetInstanceFunctor(&val, node["instance"]));
             } else {
-                throw UmlParserException("Scalar YAML node for InstanceValue field instance is not a valid uuid4, line " + node["instance"].Mark().line);
+                throw UmlParserException("Scalar YAML node for InstanceValue field instance is not a valid uuid4, " + data.m_path.string() + " line " + to_string(node["instance"].Mark().line));
             }
         } else {
-            throw UmlParserException("Invalid YAML node type for InstanceValue field instance, expect scalar, line " + node["instance"].Mark().line);
+            throw UmlParserException("Invalid YAML node type for InstanceValue field instance, expect scalar, " + data.m_path.string() + " line " + to_string(node["instance"].Mark().line));
         }
     }
 }
@@ -678,14 +678,14 @@ void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& dat
                     if (mergedPackage->isSubClassOf(ElementType::PACKAGE)) {
                         merge.setMergedPackage(dynamic_cast<Package*>(mergedPackage));
                     } else {
-                        throw UmlParserException("mergedPackage is not a package, line " + to_string(node["mergedPackage"].Mark().line));
+                        throw UmlParserException("mergedPackage is not a package, " + data.m_path.string() + " line " + to_string(node["mergedPackage"].Mark().line));
                     }
                 } else {
-                    throw UmlParserException("Could not parse external mergedPackage, line " + to_string(node["mergedPackage"].Mark().line));
+                    throw UmlParserException("Could not parse external mergedPackage, " + data.m_path.string() + " line " + to_string(node["mergedPackage"].Mark().line));
                 }
             }
         } else {
-            throw UmlParserException("Invalid YAML node type for PackageMerge field mergedPackage, expected scalar, line " + node["mergedPackage"].Mark().line);
+            throw UmlParserException("Invalid YAML node type for PackageMerge field mergedPackage, expected scalar, " + data.m_path.string() + " line " + to_string(node["mergedPackage"].Mark().line));
         }
     }
 }

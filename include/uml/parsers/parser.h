@@ -23,6 +23,7 @@
 #include "uml/enumeration.h"
 #include "uml/enumerationLiteral.h"
 #include "uml/instanceValue.h"
+#include "uml/literalBool.h"
 
 #include "uml/literalString.h"
 #include "uml/activity.h"
@@ -103,6 +104,7 @@ namespace UML {
         void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data);
         void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data);
         void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);
+        void parseLiteralBool(YAML::Node node, LiteralBool& lb, ParserMetaData& data);
     }
 }
 

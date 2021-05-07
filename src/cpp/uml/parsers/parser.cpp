@@ -45,6 +45,12 @@ Element* parse(ParserMetaData& data) {
         return instVal;
     }
 
+    if (node["literalBool"]) {
+        LiteralBool* lb = new LiteralBool;
+        parseLiteralBool(node["literalBool"], *lb, data);
+        return lb;
+    }
+
     if (node["opaqueBehavior"]) {
         OpaqueBehavior* bhv = new OpaqueBehavior;
         parseOpaqueBehavior(node["opaqueBehavior"], *bhv, data);
@@ -337,7 +343,19 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
     }
 
     if (node["defaultValue"]) {
-        // TODO
+        if (node["defaultValue"].IsMap()) {
+            if (node["defaultValue"]["literalBool"]) {
+                if (node["defaultValue"]["literalBool"].IsMap()) {
+                    LiteralBool* lb = new LiteralBool;
+                    parseLiteralBool(node["defaultValue"]["literalBool"], *lb, data);
+                    prop.setDefaultValue(lb);
+                } else {
+                    throw UmlParserException("Improper YAML node type for Properties defaultValue field, " + data.m_path.string() + " line " + to_string(node["defaultValue"]["literalBool"].Mark().line));
+                }
+            } else {
+                throw UmlParserException("Unknown Value Specification for default value field, " + data.m_path.string() + " line " + to_string(node["defaultValue"].Mark().line));
+            }
+        }
     }
 }
 
@@ -448,6 +466,10 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                         InstanceValue* instVal = new InstanceValue;
                         parseInstanceValue(node["packagedElements"][i]["instanceValue"], *instVal, data);
                         pckg.getPackagedElements().add(*instVal);
+                    } else if (node["packagedElements"][i]["literalBool"]) {
+                        LiteralBool* lb = new LiteralBool;
+                        parseLiteralBool(node["packagedElements"][i]["literalBool"], *lb, data);
+                        pckg.getPackagedElements().add(*lb);
                     } else if (node["packagedElements"][i]["package"]) {
                         Package* package = new Package;
                         parsePackage(node["packagedElements"][i]["package"], *package, data);
@@ -686,6 +708,19 @@ void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& dat
             }
         } else {
             throw UmlParserException("Invalid YAML node type for PackageMerge field mergedPackage, expected scalar, " + data.m_path.string() + " line " + to_string(node["mergedPackage"].Mark().line));
+        }
+    }
+}
+
+void parseLiteralBool(YAML::Node node, LiteralBool& lb, ParserMetaData& data) {
+    parseTypedElement(node, lb, data);
+
+    if (node["value"]) {
+        if (node["value"].IsScalar()) {
+            bool val = node["value"].as<bool>();
+            lb.setValue(val);
+        } else {
+            throw UmlParserException("Invalid YAML node type for LiteralBool field value, expected scalar, " + data.m_path.string() + " line " + to_string(node["literalBool"].Mark().line));
         }
     }
 }

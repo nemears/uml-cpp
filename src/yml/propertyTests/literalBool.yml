@@ -1,0 +1,14 @@
+---
+  package:
+    packageMerge:
+      - packageMerge:
+          mergedPackage: ../uml/primitiveTypes.yml
+    packagedElements:
+      - class:
+          ownedAttributes:
+            - property:
+                type: b211590a-3582-4bd2-895c-053411c0aea9
+                defaultValue:
+                  literalBool:
+                    value: true
+...

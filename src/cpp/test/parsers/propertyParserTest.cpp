@@ -73,3 +73,22 @@ TEST_F(PropertyParserTest, improperTypeTest) {
     ASSERT_THROW(el = Parsers::parse(ymlPath + "propertyTests/invalidLower.yml"), Parsers::UmlParserException);
     ASSERT_THROW(el = Parsers::parse(ymlPath + "propertyTests/invalidUpper.yml"), Parsers::UmlParserException);
 }
+
+TEST_F(PropertyParserTest, literalBoolDefaultValueTest) {
+    Element* el;
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "propertyTests/literalBool.yml"));
+    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
+    Package* pckg = dynamic_cast<Package*>(el);
+    ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
+    PrimitiveType* b = dynamic_cast<PrimitiveType*>(pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().front());
+    ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
+    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    Class* c = dynamic_cast<Class*>(pckg->getPackagedElements().front());
+    ASSERT_TRUE(c->getOwnedAttributes().size() == 1);
+    Property* p = c->getOwnedAttributes().front();
+    ASSERT_TRUE(p->getType() == b);
+    ASSERT_TRUE(p->getDefaultValue() != 0);
+    ASSERT_TRUE(p->getDefaultValue()->getElementType() == ElementType::LITERAL_BOOL);
+    LiteralBool* lb = dynamic_cast<LiteralBool*>(p->getDefaultValue());
+    ASSERT_TRUE(lb->getValue());
+}

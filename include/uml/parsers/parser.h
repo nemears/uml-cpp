@@ -24,7 +24,7 @@
 #include "uml/enumerationLiteral.h"
 #include "uml/instanceValue.h"
 #include "uml/literalBool.h"
-
+#include "uml/literalReal.h"
 #include "uml/literalString.h"
 #include "uml/activity.h"
 #include "uml/literalInt.h"
@@ -105,6 +105,9 @@ namespace UML {
         void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data);
         void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);
         void parseLiteralBool(YAML::Node node, LiteralBool& lb, ParserMetaData& data);
+        void parseLiteralInt(YAML::Node node, LiteralInt& li, ParserMetaData& data);
+        void parseLiteralReal(YAML::Node node, LiteralReal& lr, ParserMetaData& data);
+        void parseLiteralString(YAML::Node node, LiteralString& ls, ParserMetaData& data);
     }
 }
 

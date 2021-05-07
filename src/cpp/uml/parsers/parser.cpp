@@ -51,6 +51,24 @@ Element* parse(ParserMetaData& data) {
         return lb;
     }
 
+    if (node["literalInt"]) {
+        LiteralInt* li = new LiteralInt;
+        parseLiteralInt(node["literalInt"], *li, data);
+        return li;
+    }
+
+    if (node["literalReal"]) {
+        LiteralReal* lr = new LiteralReal;
+        parseLiteralReal(node["literalReal"], *lr, data);
+        return lr;
+    }
+
+    if (node["literalString"]) {
+        LiteralString* ls = new LiteralString;
+        parseLiteralString(node["literalString"], *ls, data);
+        return ls;
+    }
+
     if (node["opaqueBehavior"]) {
         OpaqueBehavior* bhv = new OpaqueBehavior;
         parseOpaqueBehavior(node["opaqueBehavior"], *bhv, data);
@@ -352,6 +370,38 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
                 } else {
                     throw UmlParserException("Improper YAML node type for Properties defaultValue field, " + data.m_path.string() + " line " + to_string(node["defaultValue"]["literalBool"].Mark().line));
                 }
+            } else if (node["defaultValue"]["literalInt"]) {
+                if (node["defaultValue"]["literalInt"].IsMap()) {
+                    LiteralInt* li = new LiteralInt;
+                    parseLiteralInt(node["defaultValue"]["literalInt"], *li, data);
+                    prop.setDefaultValue(li);
+                } else {
+                    throw UmlParserException("Improper YAML node type for Properties defaultValue field, " + data.m_path.string() + " line " + to_string(node["defaultValue"]["literalInt"].Mark().line));
+                }
+            } if (node["defaultValue"]["literalReal"]) {
+                if (node["defaultValue"]["literalReal"].IsMap()) {
+                    LiteralReal* lr = new LiteralReal;
+                    parseLiteralReal(node["defaultValue"]["literalReal"], *lr, data);
+                    prop.setDefaultValue(lr);
+                } else {
+                    throw UmlParserException("Improper YAML node type for Properties defaultValue field, " + data.m_path.string() + " line " + to_string(node["defaultValue"]["literalReal"].Mark().line));
+                }
+            } else if (node["defaultValue"]["literalString"]) {
+                if (node["defaultValue"]["literalString"].IsMap()) {
+                    LiteralString* ls = new LiteralString;
+                    parseLiteralString(node["defaultValue"]["literalString"], *ls, data);
+                    prop.setDefaultValue(ls);
+                } else {
+                    throw UmlParserException("Improper YAML node type for Properties defaultValue field, " + data.m_path.string() + " line " + to_string(node["defaultValue"]["literalString"].Mark().line));
+                }
+            } else if (node["defaultValue"]["instanceValue"]) {
+                if (node["defaultValue"]["instanceValue"].IsMap()) {
+                    InstanceValue* iv = new InstanceValue;
+                    parseInstanceValue(node["defaultValue"]["instanceValue"], *iv, data);
+                    prop.setDefaultValue(iv);
+                } else {
+                    throw UmlParserException("Improper YAML node type for Properties defaultValue field, " + data.m_path.string() + " line " + to_string(node["defaultValue"]["instanceValue"].Mark().line));
+                }
             } else {
                 throw UmlParserException("Unknown Value Specification for default value field, " + data.m_path.string() + " line " + to_string(node["defaultValue"].Mark().line));
             }
@@ -470,6 +520,18 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                         LiteralBool* lb = new LiteralBool;
                         parseLiteralBool(node["packagedElements"][i]["literalBool"], *lb, data);
                         pckg.getPackagedElements().add(*lb);
+                    } else if (node["packagedElements"][i]["literalInt"]) {
+                        LiteralInt* li = new LiteralInt;
+                        parseLiteralInt(node["packagedElements"][i]["literalInt"], *li, data);
+                        pckg.getPackagedElements().add(*li);
+                    } else if (node["packagedElements"][i]["literalReal"]) {
+                        LiteralReal* lr = new LiteralReal;
+                        parseLiteralReal(node["packagedElements"][i]["literalReal"], *lr, data);
+                        pckg.getPackagedElements().add(*lr);
+                    } else if (node["packagedElements"][i]["literalString"]) {
+                        LiteralString* ls = new LiteralString;
+                        parseLiteralString(node["packagedElements"][i]["literalString"], *ls, data);
+                        pckg.getPackagedElements().add(*ls);
                     } else if (node["packagedElements"][i]["package"]) {
                         Package* package = new Package;
                         parsePackage(node["packagedElements"][i]["package"], *package, data);
@@ -720,7 +782,46 @@ void parseLiteralBool(YAML::Node node, LiteralBool& lb, ParserMetaData& data) {
             bool val = node["value"].as<bool>();
             lb.setValue(val);
         } else {
-            throw UmlParserException("Invalid YAML node type for LiteralBool field value, expected scalar, " + data.m_path.string() + " line " + to_string(node["literalBool"].Mark().line));
+            throw UmlParserException("Invalid YAML node type for LiteralBool field value, expected scalar, " + data.m_path.string() + " line " + to_string(node["value"].Mark().line));
+        }
+    }
+}
+
+void parseLiteralInt(YAML::Node node, LiteralInt& li, ParserMetaData& data) {
+    parseTypedElement(node, li, data);
+
+    if (node["value"]) {
+        if (node["value"].IsScalar()) {
+            int val = node["value"].as<int>();
+            li.setValue(val);
+        } else {
+            throw UmlParserException("Invalid YAML node type for LiteralInt field value, expected scalar, " + data.m_path.string() + " line " + to_string(node["value"].Mark().line));
+        }
+    }
+}
+
+void parseLiteralReal(YAML::Node node, LiteralReal& lr, ParserMetaData& data) {
+    parseTypedElement(node, lr, data);
+
+    if (node["value"]) {
+        if (node["value"].IsScalar()) {
+            double val = node["value"].as<double>();
+            lr.setValue(val);
+        } else {
+            throw UmlParserException("Invalid YAML node type for LiteralReal field value, expected scalar, " + data.m_path.string() + " line " + to_string(node["value"].Mark().line));
+        }
+    }
+}
+
+void parseLiteralString(YAML::Node node, LiteralString& ls, ParserMetaData& data) {
+    parseTypedElement(node, ls, data);
+
+    if (node["value"]) {
+        if (node["value"].IsScalar()) {
+            string val = node["value"].as<string>();
+            ls.setValue(val);
+        } else {
+            throw UmlParserException("Invalid YAML node type for LiteralString field value, expected scalar, " + data.m_path.string() + " line " + to_string(node["value"].Mark().line));
         }
     }
 }

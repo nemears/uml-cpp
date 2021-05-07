@@ -1,26 +1,37 @@
 ---
-  model :
-    children :
+  package :
+    packageMerge:
+      - packageMerge:
+          mergedPackage: ../uml/primitiveTypes.yml
+    packagedElements :
       - class :
-          attributes :
+          ownedAttributes :
             - property :
                 name : "testString"
                 id : "16c345b4-5ae2-41ca-a0e7-a9c386ac941d"
-                type : STRING
-                defaultValue: "testValue"
+                type : fb007cdd-f716-4e28-b149-ebd2ada4a478
+                defaultValue: 
+                  literalString:
+                    value: "testValue"
             - property :
                 name : "testInt"
                 id : "7d18ee42-82c6-4f52-8ec4-fab67a75ff35"
-                type : INT
-                defaultValue: -444
+                type : e4d5eb84-80c8-4338-949e-70de8f837355
+                defaultValue: 
+                  literalInt:
+                    value: -444
             - property :
                 name : "testReal"
                 id : "c0ab87cc-d00b-4afb-9558-538253b442b2"
-                type : REAL
-                defaultValue: 555.888
+                type : ef78395c-9f14-4df3-9af9-17584139f9d8
+                defaultValue: 
+                  literalReal:
+                    value: 555.888
             - property :
                 name : "testBool"
                 id : "190d1cb9-13dc-44e6-a064-126891ae0033"
-                type : BOOL
-                defaultValue: false
+                type : b211590a-3582-4bd2-895c-053411c0aea9
+                defaultValue: 
+                  literalBool:
+                    value: false
 ...

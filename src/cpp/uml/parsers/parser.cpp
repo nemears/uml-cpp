@@ -378,7 +378,7 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
                 } else {
                     throw UmlParserException("Improper YAML node type for Properties defaultValue field, " + data.m_path.string() + " line " + to_string(node["defaultValue"]["literalInt"].Mark().line));
                 }
-            } if (node["defaultValue"]["literalReal"]) {
+            } else if (node["defaultValue"]["literalReal"]) {
                 if (node["defaultValue"]["literalReal"].IsMap()) {
                     LiteralReal* lr = new LiteralReal;
                     parseLiteralReal(node["defaultValue"]["literalReal"], *lr, data);

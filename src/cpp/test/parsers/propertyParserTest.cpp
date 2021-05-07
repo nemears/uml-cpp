@@ -92,3 +92,14 @@ TEST_F(PropertyParserTest, literalBoolDefaultValueTest) {
     LiteralBool* lb = dynamic_cast<LiteralBool*>(p->getDefaultValue());
     ASSERT_TRUE(lb->getValue());
 }
+
+TEST_F(PropertyParserTest, literalsTest) {
+    Element* el;
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "propertyTests/defaultValue.yml"));
+    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
+    Package* pckg = dynamic_cast<Package*>(el);
+    ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
+    PrimitiveType* b = dynamic_cast<PrimitiveType*>(pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().front());
+
+    // TODO
+}

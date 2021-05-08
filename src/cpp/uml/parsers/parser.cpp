@@ -852,7 +852,7 @@ void parseExpression(YAML::Node node, Expression& exp, ParserMetaData& data) {
     parseTypedElement(node, exp, data);
 
     if (node["symbol"]) {
-        if (node["symbol"].IsMap()) {
+        if (node["symbol"].IsScalar()) {
             exp.setSymbol(node["symbol"].as<string>());
         } else {
             throw UmlParserException("Invalid YAML node type for Expression field symbol, must be scalar, " + data.m_path.string() + " line " + to_string(node["symbol"].Mark().line));

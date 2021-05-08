@@ -1,0 +1,29 @@
+---
+  package:
+    packageMerge:
+      - packageMerge:
+          mergedPackage: ../uml/primitiveTypes.yml
+    packagedElements:
+      - expression:
+          id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+          name: packagedExpression
+          type: b211590a-3582-4bd2-895c-053411c0aea9
+          symbol: ==
+          operands:
+            - literalInt:
+                name: a
+                value: 1
+            - literalInt:
+                name: b
+                value: 2
+      - class:
+          ownedAttributes:
+            - property:
+                type: e4d5eb84-80c8-4338-949e-70de8f837355
+                defaultValue:
+                  expression:
+                    symbol: ++
+                    operands:
+                      - literalInt:
+                          value: 1
+...

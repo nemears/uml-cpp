@@ -100,6 +100,40 @@ TEST_F(PropertyParserTest, literalsTest) {
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
     PrimitiveType* b = dynamic_cast<PrimitiveType*>(pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().front());
-
-    // TODO
+    PrimitiveType* i = dynamic_cast<PrimitiveType*>(pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get(1));
+    PrimitiveType* r = dynamic_cast<PrimitiveType*>(pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get(2));
+    PrimitiveType* s = dynamic_cast<PrimitiveType*>(pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get(3));
+    
+    ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
+    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    Class* c = dynamic_cast<Class*>(pckg->getPackagedElements().front());
+    ASSERT_TRUE(c->getOwnedAttributes().size() == 4);
+    Property* stringProp = c->getOwnedAttributes().get(0);
+    ASSERT_TRUE(stringProp->getType() != 0);
+    ASSERT_TRUE(stringProp->getType() == s);
+    ASSERT_TRUE(stringProp->getDefaultValue() != 0);
+    ASSERT_TRUE(stringProp->getDefaultValue()->getElementType() == ElementType::LITERAL_STRING);
+    LiteralString* ls = dynamic_cast<LiteralString*>(stringProp->getDefaultValue());
+    ASSERT_TRUE(ls->getValue().compare("testValue") == 0);
+    Property* intProp = c->getOwnedAttributes().get(1);
+    ASSERT_TRUE(intProp->getType() != 0);
+    ASSERT_TRUE(intProp->getType() == i);
+    ASSERT_TRUE(intProp->getDefaultValue() != 0);
+    ASSERT_TRUE(intProp->getDefaultValue()->getElementType() == ElementType::LITERAL_INT);
+    LiteralInt* li =  dynamic_cast<LiteralInt*>(intProp->getDefaultValue());
+    ASSERT_TRUE(li->getValue() == -444);
+    Property* realProp = c->getOwnedAttributes().get(2);
+    ASSERT_TRUE(realProp->getType() != 0);
+    ASSERT_TRUE(realProp->getType() == r);
+    ASSERT_TRUE(realProp->getDefaultValue() != 0);
+    ASSERT_TRUE(realProp->getDefaultValue()->getElementType() == ElementType::LITERAL_REAL);
+    LiteralReal* lr = dynamic_cast<LiteralReal*>(realProp->getDefaultValue());
+    ASSERT_TRUE(lr->getValue() == 555.888);
+    Property* boolProp = c->getOwnedAttributes().get(3);
+    ASSERT_TRUE(boolProp->getType() != 0);
+    ASSERT_TRUE(boolProp->getType() == b);
+    ASSERT_TRUE(boolProp->getDefaultValue() != 0);
+    ASSERT_TRUE(boolProp->getDefaultValue()->getElementType() == ElementType::LITERAL_BOOL);
+    LiteralBool* lb = dynamic_cast<LiteralBool*>(boolProp->getDefaultValue());
+    ASSERT_TRUE(lb->getValue() == false);
 }

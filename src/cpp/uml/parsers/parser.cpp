@@ -173,38 +173,8 @@ void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data) 
     }
 }
 
-void parseNamespace(YAML::Node node, Namespace& nmspc, ParserMetaData& data) {
-    parseNamedElement(node, nmspc, data);
-
-    // probably don't need this function
-}
-
-void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
-    parseNamespace(node, clazz, data);
-
-    // TODO attributes is read_only, specified later in ownedAttributes for DataType, and Structured Classifier etc.
-    if (node["attributes"]) {
-        if (node["attributes"].IsSequence()) {
-            for (size_t i=0; i<node["attributes"].size(); i++) {
-                if (node["attributes"][i]["property"]) {
-                    if (node["attributes"][i]["property"].IsMap()) {
-                        Property* prop = new Property;
-                        parseProperty(node["attributes"][i]["property"], *prop, data);
-                        clazz.getAttributes().add(*prop);
-                    } else {
-                        throw UmlParserException("Improper YAML node type for property field, must be map, " + data.m_path.string() + " line " + 
-                                                 to_string(node["attributes"][i]["property"].Mark().line));
-                    }
-                }
-            }
-        } else {
-            throw UmlParserException("Improper YAML node type for type field, must be scalar, " + data.m_path.string() + " line " + to_string(node["attributes"].Mark().line));
-        }
-    }
-}
-
 void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
-    parseClassifier(node, dataType, data);
+    parseNamedElement(node, dataType, data);
 
     if (node["ownedAttribute"]) {
         if (node["ownedAttribute"].IsSequence()) {
@@ -250,7 +220,7 @@ void parsePrimitiveType(YAML::Node node, PrimitiveType& type, ParserMetaData& da
 }
 
 void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, ParserMetaData& data) {
-    parseClassifier(node, clazz, data);
+    parseNamedElement(node, clazz, data);
 
     if (node["ownedAttributes"]) {
         if (node["ownedAttributes"].IsSequence()) {
@@ -488,16 +458,9 @@ void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
     }
 }
 
-void parsePackageableElement(YAML::Node node, PackageableElement& el, ParserMetaData& data) {
-
-    // probably don't need this function
-}
-
 void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
 
-    parseNamespace(node, pckg, data);
-
-    parsePackageableElement(node, pckg, data);
+    parseNamedElement(node, pckg, data);
 
     if (node["packageMerge"]) {
         if (node["packageMerge"].IsSequence()) {

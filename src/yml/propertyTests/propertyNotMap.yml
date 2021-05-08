@@ -1,5 +1,5 @@
 ---
   class:
-    attributes:
+    ownedAttributes:
       - property: haha xd
 ...

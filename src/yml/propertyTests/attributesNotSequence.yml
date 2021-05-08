@@ -1,6 +1,6 @@
 ---
   class:
-    attributes:
+    ownedAttributes:
       property:
         name: hahaha XD!
 ...

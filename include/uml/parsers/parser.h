@@ -88,11 +88,8 @@ namespace UML {
         void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data);
         void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data);
         void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data);
-        void parsePackageableElement(YAML::Node node, PackageableElement& el, ParserMetaData& data);
         void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data);
         void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data);
-        void parseNamespace(YAML::Node node, Namespace& nmspc, ParserMetaData& data);
-        void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
         void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data);
         void parsePrimitiveType(YAML::Node node, PrimitiveType& type, ParserMetaData& data);
         void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData& data);

@@ -28,6 +28,7 @@
 #include "uml/literalString.h"
 #include "uml/activity.h"
 #include "uml/literalInt.h"
+#include "uml/expression.h"
 
 namespace UML {
     namespace Parsers {
@@ -108,6 +109,7 @@ namespace UML {
         void parseLiteralInt(YAML::Node node, LiteralInt& li, ParserMetaData& data);
         void parseLiteralReal(YAML::Node node, LiteralReal& lr, ParserMetaData& data);
         void parseLiteralString(YAML::Node node, LiteralString& ls, ParserMetaData& data);
+        void parseExpression(YAML::Node node, Expression& exp, ParserMetaData& data);
     }
 }
 

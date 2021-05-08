@@ -33,6 +33,12 @@ Element* parse(ParserMetaData& data) {
         return enumeration;
     }
 
+    if (node["expression"]) {
+        Expression* exp = new Expression;
+        parseExpression(node["expression"], *exp, data); 
+        return exp;
+    }
+
     if (node["instanceSpecification"]) {
         InstanceSpecification* inst = new InstanceSpecification;
         parseInstanceSpecification(node["instanceSpecification"], *inst, data);
@@ -362,7 +368,15 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
 
     if (node["defaultValue"]) {
         if (node["defaultValue"].IsMap()) {
-            if (node["defaultValue"]["literalBool"]) {
+            if (node["defaultValue"]["expression"]) {
+                if (node["defaultValue"]["expression"].IsMap()) {
+                    Expression* newExp = new Expression;
+                    parseExpression(node["defaultValue"]["expression"], *newExp, data);
+                    prop.setDefaultValue(newExp);
+                } else {
+                    throw UmlParserException("Invalid YAML node type for expression definition, must be map, " + data.m_path.string() + " line " + to_string(node["defaultValue"]["expression"].Mark().line));
+                }
+            } else if (node["defaultValue"]["literalBool"]) {
                 if (node["defaultValue"]["literalBool"].IsMap()) {
                     LiteralBool* lb = new LiteralBool;
                     parseLiteralBool(node["defaultValue"]["literalBool"], *lb, data);
@@ -508,7 +522,15 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                         Enumeration* enumeration = new Enumeration;
                         parseEnumeration(node["packagedElements"][i]["enumeration"], *enumeration, data);
                         pckg.getPackagedElements().add(*enumeration);
-                    } else if (node["packagedElements"][i]["instanceSpecification"]) {
+                    } else if (node["packagedElements"][i]["expression"]) {
+                        if (node["packagedElements"][i]["expression"].IsMap()) {
+                            Expression* newExp = new Expression;
+                            parseExpression(node["packagedElements"][i]["expression"], *newExp, data);
+                            pckg.getPackagedElements().add(*newExp);
+                        } else {
+                            throw UmlParserException("Invalid YAML node type for expression definition, must be map, " + data.m_path.string() + " line " + to_string(node["operands"][i]["expression"].Mark().line));
+                        }
+                    }else if (node["packagedElements"][i]["instanceSpecification"]) {
                         InstanceSpecification* inst = new InstanceSpecification;
                         parseInstanceSpecification(node["packagedElements"][i]["instanceSpecification"], *inst, data);
                         pckg.getPackagedElements().add(*inst);
@@ -822,6 +844,78 @@ void parseLiteralString(YAML::Node node, LiteralString& ls, ParserMetaData& data
             ls.setValue(val);
         } else {
             throw UmlParserException("Invalid YAML node type for LiteralString field value, expected scalar, " + data.m_path.string() + " line " + to_string(node["value"].Mark().line));
+        }
+    }
+}
+
+void parseExpression(YAML::Node node, Expression& exp, ParserMetaData& data) {
+    parseTypedElement(node, exp, data);
+
+    if (node["symbol"]) {
+        if (node["symbol"].IsMap()) {
+            exp.setSymbol(node["symbol"].as<string>());
+        } else {
+            throw UmlParserException("Invalid YAML node type for Expression field symbol, must be scalar, " + data.m_path.string() + " line " + to_string(node["symbol"].Mark().line));
+        }
+    }
+
+    if (node["operands"]) {
+        if (node["operands"].IsSequence()) {
+            for (size_t i = 0; i < node["operands"].size(); i++) {
+                if (node["operands"][i]["expression"]) {
+                    if (node["operands"][i]["expression"].IsMap()) {
+                        Expression* newExp = new Expression;
+                        parseExpression(node["operands"][i]["expression"], *newExp, data);
+                        exp.getOperands().add(*newExp);
+                    } else {
+                        throw UmlParserException("Invalid YAML node type for expression definition, must be map, " + data.m_path.string() + " line " + to_string(node["operands"][i]["expression"].Mark().line));
+                    }
+                } else if (node["operands"][i]["literalBool"]) {
+                    if (node["operands"][i]["literalBool"].IsMap()) {
+                        LiteralBool* lb = new LiteralBool;
+                        parseLiteralBool(node["operands"][i]["literalBool"], *lb, data);
+                        exp.getOperands().add(*lb);
+                    } else {
+                        throw UmlParserException("Improper YAML node type for Expression operands field, " + data.m_path.string() + " line " + to_string(node["operands"][i]["literalBool"].Mark().line));
+                    }
+                } else if (node["operands"][i]["literalInt"]) {
+                    if (node["operands"][i]["literalInt"].IsMap()) {
+                        LiteralInt* li = new LiteralInt;
+                        parseLiteralInt(node["operands"][i]["literalInt"], *li, data);
+                        exp.getOperands().add(*li);
+                    } else {
+                        throw UmlParserException("Improper YAML node type for Expression operands field, " + data.m_path.string() + " line " + to_string(node["operands"][i]["literalInt"].Mark().line));
+                    }
+                } else if (node["operands"][i]["literalReal"]) {
+                    if (node["operands"][i]["literalReal"].IsMap()) {
+                        LiteralReal* lr = new LiteralReal;
+                        parseLiteralReal(node["operands"][i]["literalReal"], *lr, data);
+                        exp.getOperands().add(*lr);
+                    } else {
+                        throw UmlParserException("Improper YAML node type for Expression operands field, " + data.m_path.string() + " line " + to_string(node["operands"][i]["literalReal"].Mark().line));
+                    }
+                } else if (node["operands"][i]["literalString"]) {
+                    if (node["operands"][i]["literalString"].IsMap()) {
+                        LiteralString* ls = new LiteralString;
+                        parseLiteralString(node["operands"][i]["literalString"], *ls, data);
+                        exp.getOperands().add(*ls);
+                    } else {
+                        throw UmlParserException("Improper YAML node type for Expression operands field, " + data.m_path.string() + " line " + to_string(node["operands"][i]["literalString"].Mark().line));
+                    }
+                } else if (node["operands"][i]["instanceValue"]) {
+                    if (node["operands"][i]["instanceValue"].IsMap()) {
+                        InstanceValue* iv = new InstanceValue;
+                        parseInstanceValue(node["operands"][i]["instanceValue"], *iv, data);
+                        exp.getOperands().add(*iv);
+                    } else {
+                        throw UmlParserException("Improper YAML node type for Expression operands field, " + data.m_path.string() + " line " + to_string(node["operands"][i]["instanceValue"].Mark().line));
+                    }
+                } else {
+                    throw UmlParserException("Unknown Value Specification for operand value field, " + data.m_path.string() + " line " + to_string(node["operands"][i].Mark().line));
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid YAML node type for Expression field operands, must be sequence, " + data.m_path.string() + " line " + to_string(node["operands"].Mark().line));
         }
     }
 }

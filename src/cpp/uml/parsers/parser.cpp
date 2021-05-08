@@ -449,6 +449,7 @@ void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data) {
 void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
     parseNamedElement(node, op, data);
 
+    // TODO: maybe move all this to new function parseBehavioralFeature once the other ones are implemented
     if (node["methods"]) {
         if (node["methods"].IsSequence()) {
             for (size_t i=0; i<node["methods"].size(); i++) {
@@ -465,13 +466,29 @@ void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
         }
     }
 
-    // TODO Parameters
+    if (node["ownedParameters"]) {
+        // So how i'm currently interpreting UML, these parameters are owned by the operation, but are the same as the methods
+        // TODO: Have a validator that checks that but don't think it is deal of parser to make sure that parameters are correct
+        // TODO: maybe log a warning or something
+        if (node["ownedParameters"].IsSequence()) {
+            for (size_t i = 0; i < node["ownedParameters"].size(); i++) {
+                if (node["ownedParameters"][i]["parameter"]) {
+                    if (node["ownedParameters"][i]["parameter"].IsMap()) {
+                        Parameter* p = new Parameter;
+                        parseParameter(node["ownedParameters"][i]["parameter"], *p, data);
+                        op.getOwnedParameters().add(*p);
+                    } else {
+                        throw UmlParserException("Improper YAML Node type for parameter definition, must be map, " + data.m_path.string() + to_string(node["ownedParameters"][i]["parameter"].Mark().line));
+                    }
+                }
+            }
+        } else {
+            throw UmlParserException("Improper YAML node type for ownedParameters field, must be a sequence, " + data.m_path.string() + to_string(node["ownedParameters"].Mark().line));
+        }
+    }
 }
 
 void parsePackageableElement(YAML::Node node, PackageableElement& el, ParserMetaData& data) {
-    // if (node["owningPackage"]) {
-    //     // TODO validate
-    // }
 
     // probably don't need this function
 }

@@ -29,6 +29,7 @@
 #include "uml/activity.h"
 #include "uml/literalInt.h"
 #include "uml/expression.h"
+#include "uml/generalization.h"
 
 namespace UML {
     namespace Parsers {
@@ -63,6 +64,12 @@ namespace UML {
                 void operator()(Element& el) const override;
         };
 
+        class SetGeneralFunctor : public AbstractPostProcessFunctor {
+            public:
+                SetGeneralFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                void operator()(Element& el) const override;
+        };
+
         class UmlParserException : public std::exception {
             private:
             std::string m_msg;
@@ -88,6 +95,8 @@ namespace UML {
         void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data);
         void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data);
         void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data);
+        void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
+        void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data);
         void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data);
         void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data);
         void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data);

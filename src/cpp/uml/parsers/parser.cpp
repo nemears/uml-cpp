@@ -173,8 +173,54 @@ void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data) 
     }
 }
 
+void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
+    parseNamedElement(node, clazz, data);
+
+    if (node["generalizations"]) {
+        if (node["generalizations"].IsSequence()) {
+            for (size_t i = 0; i < node["generalizations"].size(); i++) {
+                if (node["generalizations"][i]["generalization"]) {
+                    if (node["generalizations"][i]["generalization"].IsMap()) {
+                        Generalization* gen = new Generalization;
+                        parseGeneralization(node["generalizations"][i]["generalization"], *gen, data);
+                        clazz.getGeneralizations().add(*gen);
+                    } else {
+                        throw UmlParserException("Improper YAML node type for Generalization definition, " + data.m_path.string() + to_string(node["generalizations"][i]["generalization"].Mark().line));
+                    }
+                }
+            }
+        } else {
+            throw UmlParserException("Improper YAML node type for Classifier field generalizations, must be sequence " + data.m_path.string() + to_string(node["generalizations"].Mark().line));
+        }
+    }
+}
+
+void SetGeneralFunctor::operator()(Element& el) const {
+    if (el.isSubClassOf(ElementType::CLASSIFIER)) {
+        dynamic_cast<Generalization*>(m_el)->setGeneral(&dynamic_cast<Classifier&>(el));
+    }
+}
+
+void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data) {
+    if (node["specific"]) {
+        // TODO error? should be specified in specific
+    }
+
+    if (node["general"]) {
+        if (node["general"].IsScalar()) {
+            string generalString = node["general"].as<string>();
+            if (isValidUUID4(generalString)) {
+                boost::uuids::uuid generalID = boost::lexical_cast<boost::uuids::uuid>(generalString);
+                applyFunctor(data, generalID, new SetGeneralFunctor(&general, node["general"]));
+            }
+        } else {
+            // TODO throw error or can it be defined here?
+        }
+    }
+}
+
 void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
-    parseNamedElement(node, dataType, data);
+    parseClassifier(node, dataType, data);
 
     if (node["ownedAttribute"]) {
         if (node["ownedAttribute"].IsSequence()) {
@@ -220,7 +266,7 @@ void parsePrimitiveType(YAML::Node node, PrimitiveType& type, ParserMetaData& da
 }
 
 void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, ParserMetaData& data) {
-    parseNamedElement(node, clazz, data);
+    parseClassifier(node, clazz, data);
 
     if (node["ownedAttributes"]) {
         if (node["ownedAttributes"].IsSequence()) {
@@ -318,7 +364,6 @@ void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& d
 
 void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
     parseTypedElement(node, prop, data);
-    // TODO structural feature parser?
     parseMultiplicityElement(node, prop, data);
 
     if (node["aggregation"]) {

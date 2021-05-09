@@ -83,6 +83,10 @@ void Classifier::AddGeneralizationFunctor::operator()(Element& el) const {
         m_el->getRelationships().add(dynamic_cast<Relationship&>(el));
     }
 
+    if (dynamic_cast<Generalization&>(el).getSpecific() != m_el) {
+        dynamic_cast<Generalization&>(el).setSpecific(dynamic_cast<Classifier*>(m_el));
+    }
+
     if (dynamic_cast<Generalization&>(el).getSpecific()) {
         if (dynamic_cast<Generalization&>(el).getSpecific() == m_el) {
             if (dynamic_cast<Generalization&>(el).getGeneral()) {
@@ -91,9 +95,8 @@ void Classifier::AddGeneralizationFunctor::operator()(Element& el) const {
                 }
             }
         }
-    } else {
-        dynamic_cast<Generalization&>(el).setSpecific(dynamic_cast<Classifier*>(m_el));
     }
+    
     if (!m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().add(el);
     }

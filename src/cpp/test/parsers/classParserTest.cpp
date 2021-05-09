@@ -66,3 +66,23 @@ TEST_F(ClassParserTest, properErrors) {
     ASSERT_THROW(el = Parsers::parse(ymlPath + "classTests/improperOperationIdentifier.yml"), Parsers::UmlParserException);
     ASSERT_THROW(el = Parsers::parse(ymlPath + "classTests/operationsNotSequence.yml"), Parsers::UmlParserException);
 }
+
+TEST_F(ClassParserTest, basicGeneralizationTest) {
+    Element* el;
+    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "classTests/basicGeneralization.yml"));
+    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
+    Package* pckg = dynamic_cast<Package*>(el);
+    ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
+    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    Class* general = dynamic_cast<Class*>(pckg->getPackagedElements().front());
+    ASSERT_TRUE(general->getName().compare("general") == 0);
+    ASSERT_TRUE(pckg->getPackagedElements().back()->getElementType() == ElementType::CLASS);
+    Class* specific = dynamic_cast<Class*>(pckg->getPackagedElements().back());
+    ASSERT_TRUE(specific->getName().compare("specific") == 0);
+    ASSERT_TRUE(specific->getGeneralizations().size() == 1);
+    ASSERT_TRUE(specific->getGenerals().size() == 1);
+    ASSERT_TRUE(specific->getGenerals().front() == general);
+    Generalization* g = specific->getGeneralizations().front();
+    ASSERT_TRUE(g->getGeneral() == general);
+    ASSERT_TRUE(g->getSpecific() == specific);
+}

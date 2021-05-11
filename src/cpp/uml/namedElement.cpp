@@ -104,6 +104,14 @@ Sequence<Namespace>& NamedElement::getMemberNamespace() {
     return *m_memberNamespace;
 }
 
+VisibilityKind NamedElement::getVisibility() {
+    return m_visibility;
+}
+
+void NamedElement::setVisibility(VisibilityKind visibility) {
+    m_visibility = visibility;
+}
+
 ElementType NamedElement::getElementType() const {
     return ElementType::NAMED_ELEMENT;
 }

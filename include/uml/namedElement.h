@@ -10,6 +10,13 @@ namespace UML{
     class Namespace;
     class AbstractSequenceFunctor;
 
+    enum class VisibilityKind {
+        PUBLIC,
+        PROTECTED,
+        PRIVATE,
+        PACKAGE
+    };
+
     /**
      * A NamedElement is an Element in a model that may have a name
      **/
@@ -18,6 +25,8 @@ namespace UML{
             std::string m_name;
             Namespace* m_namespace;
             Sequence<Namespace>* m_memberNamespace;
+            // visibility defaults to public, don't think there is a none value
+            VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             virtual void reindexName(std::string oldName, std::string newName);
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
         public:
@@ -29,6 +38,8 @@ namespace UML{
             Namespace* getNamespace();
             void setNamespace(Namespace* nmspc);
             Sequence<Namespace>& getMemberNamespace();
+            VisibilityKind getVisibility();
+            void setVisibility(VisibilityKind visibility);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };

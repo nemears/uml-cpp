@@ -87,3 +87,10 @@ TEST_F(NamedElementTest, copyNamedElementTest) {
     ASSERT_TRUE(n2.getOwnedElements().front() == &c);
     ASSERT_TRUE(c.getOwner() == &n);
 }
+
+TEST_F(NamedElementTest, visibilityTest) {
+    NamedElement n;
+    ASSERT_TRUE(n.getVisibility() == VisibilityKind::PUBLIC);
+    ASSERT_NO_THROW(n.setVisibility(VisibilityKind::PRIVATE));
+    ASSERT_TRUE(n.getVisibility() == VisibilityKind::PRIVATE);
+}

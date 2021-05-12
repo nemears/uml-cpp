@@ -99,6 +99,7 @@ TEST_F(GeneralizationTest, resetGeneralTest) {
     r.setGeneral(&g);
     r.setSpecific(&s);
     r.setGeneral(&g2);
+    ASSERT_TRUE(g.getDirectedRelationships().size() == 0);
     ASSERT_TRUE(g.getRelationships().size() == 0);
     ASSERT_TRUE(g.getGeneralizations().size() == 0);
     ASSERT_TRUE(s.getGenerals().size() == 1);
@@ -108,6 +109,8 @@ TEST_F(GeneralizationTest, resetGeneralTest) {
     ASSERT_TRUE(g2.getGeneralizations().size() == 0);
     ASSERT_TRUE(g2.getRelationships().size() == 1);
     ASSERT_TRUE(g2.getRelationships().front() == &r);
+    ASSERT_TRUE(g2.getDirectedRelationships().size() == 1);
+    ASSERT_TRUE(g2.getDirectedRelationships().front() == &r);
     ASSERT_TRUE(r.getRelatedElements().size() == 2);
     ASSERT_TRUE(r.getRelatedElements().front() == &s);
     ASSERT_TRUE(r.getRelatedElements().back() == &g2);

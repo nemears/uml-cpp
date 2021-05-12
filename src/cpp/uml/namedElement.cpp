@@ -2,6 +2,7 @@
 #include "uml/sequence.h"
 #include "uml/namespace.h"
 #include "uml/namedElementFunctors.h"
+#include "uml/classifier.h"
 
 using namespace UML;
 using namespace std;
@@ -109,7 +110,29 @@ VisibilityKind NamedElement::getVisibility() {
 }
 
 void NamedElement::setVisibility(VisibilityKind visibility) {
+    if (m_visibility != visibility) {
+        if (visibility == VisibilityKind::PRIVATE) {
+            for (auto const& nmspc: getMemberNamespace()) {
+                if (nmspc->isSubClassOf(ElementType::CLASSIFIER)) {
+                    if (dynamic_cast<Classifier*>(nmspc)->getInheritedMembers().count(m_id)) {
+                        dynamic_cast<Classifier*>(nmspc)->getInheritedMembers().remove(*this);
+                    }
+                }
+            }
+        }
+    }
     m_visibility = visibility;
+    if (m_visibility != visibility) {
+        if (m_visibility != VisibilityKind::PRIVATE) {
+            for (auto const& nmspc: getMemberNamespace()) {
+                if (nmspc->isSubClassOf(ElementType::CLASSIFIER)) {
+                    if (!dynamic_cast<Classifier*>(nmspc)->getInheritedMembers().count(m_id)) {
+                        dynamic_cast<Classifier*>(nmspc)->getInheritedMembers().add(*this);
+                    }
+                }
+            }
+        }
+    }
 }
 
 ElementType NamedElement::getElementType() const {

@@ -183,7 +183,7 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   Class s6;
   Property p6;
   s6.getGenerals().add(g6);
-  s6.getOwnedAttributes().add(p6);
+  g6.getOwnedAttributes().add(p6);
   ASSERT_TRUE(s6.getInheritedMembers().size() == 1);
   ASSERT_TRUE(s6.getMembers().size() == 1);
 }

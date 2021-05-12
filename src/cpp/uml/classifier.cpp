@@ -17,6 +17,8 @@ Classifier::Classifier() {
     m_features.removeProcedures.push_back(new RemoveFeatureFunctor(this));
     m_inheritedMembers.addProcedures.push_back(new AddInheritedMemberFunctor(this));
     m_inheritedMembers.removeProcedures.push_back(new RemoveInheritedMemberFunctor(this));
+    m_members.addProcedures.push_back(new ClassifierAddMemberFunctor(this));
+    m_members.removeProcedures.push_back(new ClassifierRemoveMemberFunctor(this));
 }
 
 Classifier::~Classifier() {
@@ -51,6 +53,8 @@ Classifier::Classifier(const Classifier& clazz) : Namespace(clazz), PackageableE
     m_inheritedMembers.addProcedures.push_back(new AddInheritedMemberFunctor(this));
     m_inheritedMembers.removeProcedures.clear();
     m_inheritedMembers.removeProcedures.push_back(new RemoveInheritedMemberFunctor(this));
+    m_members.addProcedures.push_back(new ClassifierAddMemberFunctor(this));
+    m_members.removeProcedures.push_back(new ClassifierRemoveMemberFunctor(this));
 }
 
 void Classifier::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
@@ -193,6 +197,34 @@ void Classifier::AddInheritedMemberFunctor::operator()(Element& el) const {
 void Classifier::RemoveInheritedMemberFunctor::operator()(Element& el) const {
     if (dynamic_cast<Classifier*>(m_el)->getMembers().count(el.getID())) {
         dynamic_cast<Classifier*>(m_el)->getMembers().remove(dynamic_cast<NamedElement&>(el));
+    }
+}
+
+void Classifier::ClassifierAddMemberFunctor::operator()(Element& el) const {
+    for (auto const& relationship : dynamic_cast<Classifier*>(m_el)->getRelationships()) {
+        if (relationship->isSubClassOf(ElementType::GENERALIZATION)) {
+            if (dynamic_cast<Generalization*>(relationship)->getGeneral() == m_el) {
+                if (dynamic_cast<Generalization*>(relationship)->getSpecific()) {
+                    if (!dynamic_cast<Generalization*>(relationship)->getSpecific()->getInheritedMembers().count(el.getID())) {
+                        dynamic_cast<Generalization*>(relationship)->getSpecific()->getInheritedMembers().add(dynamic_cast<NamedElement&>(el));
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Classifier::ClassifierRemoveMemberFunctor::operator()(Element& el) const {
+    for (auto const& relationship : dynamic_cast<Classifier*>(m_el)->getRelationships()) {
+        if (relationship->isSubClassOf(ElementType::GENERALIZATION)) {
+            if (dynamic_cast<Generalization*>(relationship)->getGeneral() == m_el) {
+                if (dynamic_cast<Generalization*>(relationship)->getSpecific()) {
+                    if (dynamic_cast<Generalization*>(relationship)->getSpecific()->getInheritedMembers().count(el.getID())) {
+                        dynamic_cast<Generalization*>(relationship)->getSpecific()->getInheritedMembers().remove(dynamic_cast<NamedElement&>(el));
+                    }
+                }
+            }
+        }
     }
 }
 

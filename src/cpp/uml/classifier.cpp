@@ -9,8 +9,10 @@ Classifier::Classifier() {
     m_attributes.addProcedures.push_back(new AddAttributeFunctor(this));
     m_attributes.removeProcedures.push_back(new RemoveAttributeFunctor(this));
     m_generalizations.addProcedures.push_back(new AddGeneralizationFunctor(this));
+    m_generalizations.removeProcedures.push_back(new RemoveGeneralizationFunctor(this));
     m_generalizations.addChecks.push_back(new CheckGeneralizationFunctor(this));
     m_generals.addProcedures.push_back(new AddGeneralFunctor(this));
+    m_generals.removeProcedures.push_back(new RemoveGeneralFunctor(this));
     m_features.addProcedures.push_back(new AddFeatureFunctor(this));
     m_features.removeProcedures.push_back(new RemoveFeatureFunctor(this));
 }
@@ -30,14 +32,19 @@ Classifier::Classifier(const Classifier& clazz) : Namespace(clazz), PackageableE
     m_generalizations.addProcedures.push_back(new AddGeneralizationFunctor(this));
     m_generalizations.addChecks.clear();
     m_generalizations.addChecks.push_back(new CheckGeneralizationFunctor(this));
+    m_generalizations.removeProcedures.clear();
+    m_generalizations.removeProcedures.push_back(new RemoveGeneralizationFunctor(this));
     m_generals = clazz.m_generals;
     m_generals.addProcedures.clear();
     m_generals.addProcedures.push_back(new AddGeneralFunctor(this));
+    m_generals.removeProcedures.clear();
+    m_generals.removeProcedures.push_back(new RemoveGeneralFunctor(this));
     m_features = clazz.m_features;
     m_features.addProcedures.clear();
     m_features.addProcedures.push_back(new AddFeatureFunctor(this));
     m_features.removeProcedures.clear();
     m_features.removeProcedures.push_back(new RemoveFeatureFunctor(this));
+    m_inheritedMembers = clazz.m_inheritedMembers;
 }
 
 void Classifier::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
@@ -79,8 +86,8 @@ void Classifier::CheckGeneralizationFunctor::operator()(Element& el) const {
 }
 
 void Classifier::AddGeneralizationFunctor::operator()(Element& el) const {
-    if (!m_el->getRelationships().count(el.getID())) {
-        m_el->getRelationships().add(dynamic_cast<Relationship&>(el));
+    if (!m_el->getDirectedRelationships().count(el.getID())) {
+        m_el->getDirectedRelationships().add(dynamic_cast<DirectedRelationship&>(el));
     }
 
     if (dynamic_cast<Generalization&>(el).getSpecific() != m_el) {
@@ -102,6 +109,30 @@ void Classifier::AddGeneralizationFunctor::operator()(Element& el) const {
     }
 }
 
+void Classifier::RemoveGeneralizationFunctor::operator()(Element& el) const {
+    if (m_el->getDirectedRelationships().count(el.getID())) {
+        m_el->getDirectedRelationships().remove(dynamic_cast<DirectedRelationship&>(el));
+    }
+
+    if (dynamic_cast<Generalization&>(el).getSpecific() == m_el) {
+        dynamic_cast<Generalization&>(el).setSpecific(0);
+    }
+
+    if (dynamic_cast<Generalization&>(el).getSpecific()) {
+        if (dynamic_cast<Generalization&>(el).getSpecific() == m_el) {
+            if (dynamic_cast<Generalization&>(el).getGeneral()) {
+                if (dynamic_cast<Classifier*>(m_el)->getGenerals().count(dynamic_cast<Generalization&>(el).getGeneral()->getID())) {
+                    dynamic_cast<Classifier*>(m_el)->getGenerals().remove(*dynamic_cast<Generalization&>(el).getGeneral());
+                }
+            }
+        }
+    }
+    
+    if (m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().remove(el);
+    }
+}
+
 void Classifier::AddGeneralFunctor::operator()(Element& el) const {
     bool foundGeneralization = false;
     for (auto const& general : dynamic_cast<Classifier*>(m_el)->getGeneralizations()) {
@@ -114,6 +145,14 @@ void Classifier::AddGeneralFunctor::operator()(Element& el) const {
         Generalization* newGen = new Generalization;
         newGen->setGeneral(&dynamic_cast<Classifier&>(el));
         newGen->setSpecific(dynamic_cast<Classifier*>(m_el));
+    }
+}
+
+void Classifier::RemoveGeneralFunctor::operator()(Element& el) const {
+    for (auto const& general : dynamic_cast<Classifier*>(m_el)->getGeneralizations()) {
+        if (general->getGeneral() == &dynamic_cast<Classifier&>(el)) {
+            general->setGeneral(0);
+        }
     }
 }
 
@@ -161,6 +200,10 @@ Sequence<Generalization>& Classifier::getGeneralizations() {
 
 Sequence<Classifier>& Classifier::getGenerals() {
     return m_generals;
+}
+
+Sequence<NamedElement>& Classifier::getInheritedMembers() {
+    return m_inheritedMembers;
 }
 
 ElementType Classifier::getElementType() const {

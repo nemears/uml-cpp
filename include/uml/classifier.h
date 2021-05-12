@@ -20,6 +20,7 @@ namespace UML {
             Sequence<Property> m_attributes;
             Sequence<Generalization> m_generalizations;
             Sequence<Classifier> m_generals;
+            Sequence<NamedElement> m_inheritedMembers;
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             class AddAttributeFunctor : public AbstractSequenceFunctor {
@@ -42,9 +43,19 @@ namespace UML {
                     AddGeneralizationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class RemoveGeneralizationFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveGeneralizationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
             class AddGeneralFunctor : public AbstractSequenceFunctor {
                 public:
                     AddGeneralFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
+            class RemoveGeneralFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveGeneralFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
             class AddFeatureFunctor : public AbstractSequenceFunctor {
@@ -74,6 +85,7 @@ namespace UML {
              * this returns all classifiers this classifier inherits from
              **/
             Sequence<Classifier>& getGenerals();
+            Sequence<NamedElement>& getInheritedMembers();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };

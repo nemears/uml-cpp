@@ -1,6 +1,8 @@
 #include "gtest/gtest.h"
 #include "uml/classifier.h"
 #include "uml/package.h"
+#include "uml/class.h"
+#include "uml/generalization.h"
 
 using namespace UML;
 
@@ -114,4 +116,40 @@ TEST_F(ClassifierTest, copyClassifierTest) {
   ASSERT_TRUE(c2.getMembers().size() == 1);
   ASSERT_TRUE(c2.getMembers().front() == &p);
   ASSERT_TRUE(c2.getOwningPackage() == &d);
+}
+
+TEST_F(ClassifierTest, inheritedMembersTest) {
+  Class g1;
+  Class s1;
+  Property p1;
+  g1.getOwnedAttributes().add(p1);
+  Generalization gen1;
+  gen1.setGeneral(&g1);
+  s1.getGeneralizations().add(gen1);
+  ASSERT_TRUE(s1.getInheritedMembers().size() == 1);
+  ASSERT_TRUE(s1.getInheritedMembers().front() == &p1);
+  ASSERT_NO_THROW(s1.getGeneralizations().remove(gen1));
+  ASSERT_TRUE(s1.getInheritedMembers().size() == 0);
+
+  Class g2;
+  Class s2;
+  Property p2;
+  g2.getOwnedAttributes().add(p2);
+  s2.getGenerals().add(g2);
+  ASSERT_TRUE(s2.getInheritedMembers().size() == 1);
+  ASSERT_TRUE(s2.getInheritedMembers().front() == &p2);
+  ASSERT_NO_THROW(s2.getGenerals().remove(g2));
+  ASSERT_TRUE(s2.getInheritedMembers().size() == 0);
+
+  Class g3;
+  Class s3;
+  Property p3;
+  g3.getOwnedAttributes().add(p3);
+  Generalization gen3;
+  s3.getGeneralizations().add(gen3);
+  gen3.setGeneral(&g3);
+  ASSERT_TRUE(s3.getInheritedMembers().size() == 1);
+  ASSERT_TRUE(s3.getInheritedMembers().front() == &p3);
+  ASSERT_NO_THROW(s3.getGeneralizations().remove(gen3));
+  ASSERT_TRUE(s3.getInheritedMembers().size() == 0);
 }

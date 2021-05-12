@@ -17,18 +17,30 @@ void Generalization::setGeneral(Classifier* general) {
             m_general->getRelationships().remove(*this);
         }
         if (m_specific) {
+            for (auto const& member: m_general->getMembers()) {
+                if (m_specific->getInheritedMembers().count(member->getID())) {
+                    m_specific->getInheritedMembers().remove(*member);
+                }
+            }
             if (m_specific->getGenerals().count(m_general->getID())) {
                 m_specific->getGenerals().remove(*m_general);
             }
         }
     }
     m_general = general;
-    if (!getTargets().count(m_general->getID())) {
-        getTargets().add(*m_general);
-    }
-    if (m_specific) {
-        if (!m_specific->getGenerals().count(m_general->getID())) {
-            m_specific->getGenerals().add(*m_general);
+    if (m_general) {
+        if (!getTargets().count(m_general->getID())) {
+            getTargets().add(*m_general);
+        }
+        if (m_specific) {
+            if (!m_specific->getGenerals().count(m_general->getID())) {
+                m_specific->getGenerals().add(*m_general);
+            }
+            for (auto const& member: m_general->getMembers()) {
+                if (!m_specific->getInheritedMembers().count(member->getID())) {
+                    m_specific->getInheritedMembers().add(*member);
+                }
+            }
         }
     }
 }
@@ -45,13 +57,29 @@ void Generalization::setSpecific(Classifier* specific) {
         if (m_specific->getGeneralizations().count(m_id)) {
             m_specific->getGeneralizations().remove(*this);
         }
+        if (m_general) {
+            for (auto const& member: m_general->getMembers()) {
+                if (m_specific->getInheritedMembers().count(member->getID())) {
+                    m_specific->getInheritedMembers().remove(*member);
+                }
+            }
+        }
     }
     m_specific = specific;
-    if (!getSources().count(m_specific->getID())) {
-        getSources().add(*m_specific);
-    }
-    if (!m_specific->getGeneralizations().count(m_id)) {
-        m_specific->getGeneralizations().add(*this);
+    if (m_specific) {
+        if (!getSources().count(m_specific->getID())) {
+            getSources().add(*m_specific);
+        }
+        if (!m_specific->getGeneralizations().count(m_id)) {
+            m_specific->getGeneralizations().add(*this);
+        }
+        if (m_general) {
+            for (auto const& member: m_general->getMembers()) {
+                if (!m_specific->getInheritedMembers().count(member->getID())) {
+                    m_specific->getInheritedMembers().add(*member);
+                }
+            }
+        }
     }
 }
 

@@ -68,6 +68,16 @@ namespace UML {
                     RemoveFeatureFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class AddInheritedMemberFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddInheritedMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
+            class RemoveInheritedMemberFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveInheritedMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Classifier();
             ~Classifier();

@@ -37,7 +37,7 @@ void Generalization::setGeneral(Classifier* general) {
                 m_specific->getGenerals().add(*m_general);
             }
             for (auto const& member: m_general->getMembers()) {
-                if (!m_specific->getInheritedMembers().count(member->getID())) {
+                if (!m_specific->getInheritedMembers().count(member->getID()) && member->getVisibility() != VisibilityKind::PRIVATE) {
                     m_specific->getInheritedMembers().add(*member);
                 }
             }
@@ -75,7 +75,7 @@ void Generalization::setSpecific(Classifier* specific) {
         }
         if (m_general) {
             for (auto const& member: m_general->getMembers()) {
-                if (!m_specific->getInheritedMembers().count(member->getID())) {
+                if (!m_specific->getInheritedMembers().count(member->getID()) && member->getVisibility() != VisibilityKind::PRIVATE) {
                     m_specific->getInheritedMembers().add(*member);
                 }
             }

@@ -15,6 +15,8 @@ Classifier::Classifier() {
     m_generals.removeProcedures.push_back(new RemoveGeneralFunctor(this));
     m_features.addProcedures.push_back(new AddFeatureFunctor(this));
     m_features.removeProcedures.push_back(new RemoveFeatureFunctor(this));
+    m_inheritedMembers.addProcedures.push_back(new AddInheritedMemberFunctor(this));
+    m_inheritedMembers.removeProcedures.push_back(new RemoveInheritedMemberFunctor(this));
 }
 
 Classifier::~Classifier() {
@@ -45,6 +47,10 @@ Classifier::Classifier(const Classifier& clazz) : Namespace(clazz), PackageableE
     m_features.removeProcedures.clear();
     m_features.removeProcedures.push_back(new RemoveFeatureFunctor(this));
     m_inheritedMembers = clazz.m_inheritedMembers;
+    m_inheritedMembers.addProcedures.clear();
+    m_inheritedMembers.addProcedures.push_back(new AddInheritedMemberFunctor(this));
+    m_inheritedMembers.removeProcedures.clear();
+    m_inheritedMembers.removeProcedures.push_back(new RemoveInheritedMemberFunctor(this));
 }
 
 void Classifier::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
@@ -175,6 +181,18 @@ void Classifier::RemoveFeatureFunctor::operator()(Element& el) const {
         if (dynamic_cast<Classifier*>(m_el)->getMembers().count(el.getID())) {
             dynamic_cast<Classifier*>(m_el)->getMembers().remove(dynamic_cast<Feature&>(el));
         }
+    }
+}
+
+void Classifier::AddInheritedMemberFunctor::operator()(Element& el) const {
+    if (!dynamic_cast<Classifier*>(m_el)->getMembers().count(el.getID())) {
+        dynamic_cast<Classifier*>(m_el)->getMembers().add(dynamic_cast<NamedElement&>(el));
+    }
+}
+
+void Classifier::RemoveInheritedMemberFunctor::operator()(Element& el) const {
+    if (dynamic_cast<Classifier*>(m_el)->getMembers().count(el.getID())) {
+        dynamic_cast<Classifier*>(m_el)->getMembers().remove(dynamic_cast<NamedElement&>(el));
     }
 }
 

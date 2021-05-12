@@ -128,8 +128,11 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   s1.getGeneralizations().add(gen1);
   ASSERT_TRUE(s1.getInheritedMembers().size() == 1);
   ASSERT_TRUE(s1.getInheritedMembers().front() == &p1);
+  ASSERT_TRUE(s1.getMembers().size() == 1);
+  ASSERT_TRUE(s1.getMembers().front() == &p1);
   ASSERT_NO_THROW(s1.getGeneralizations().remove(gen1));
   ASSERT_TRUE(s1.getInheritedMembers().size() == 0);
+  ASSERT_TRUE(s1.getMembers().size() == 0);
 
   Class g2;
   Class s2;
@@ -138,8 +141,11 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   s2.getGenerals().add(g2);
   ASSERT_TRUE(s2.getInheritedMembers().size() == 1);
   ASSERT_TRUE(s2.getInheritedMembers().front() == &p2);
+  ASSERT_TRUE(s2.getMembers().size() == 1);
+  ASSERT_TRUE(s2.getMembers().front() == &p2);
   ASSERT_NO_THROW(s2.getGenerals().remove(g2));
   ASSERT_TRUE(s2.getInheritedMembers().size() == 0);
+  ASSERT_TRUE(s2.getMembers().size() == 0);
 
   Class g3;
   Class s3;
@@ -150,6 +156,34 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   gen3.setGeneral(&g3);
   ASSERT_TRUE(s3.getInheritedMembers().size() == 1);
   ASSERT_TRUE(s3.getInheritedMembers().front() == &p3);
+  ASSERT_TRUE(s3.getMembers().size() == 1);
+  ASSERT_TRUE(s3.getMembers().front() == &p3);
   ASSERT_NO_THROW(s3.getGeneralizations().remove(gen3));
   ASSERT_TRUE(s3.getInheritedMembers().size() == 0);
+  ASSERT_TRUE(s3.getMembers().size() == 0);
+
+  Class g4;
+  Class s4;
+  Property p4;
+  g4.getOwnedAttributes().add(p4);
+  p4.setVisibility(VisibilityKind::PRIVATE);
+  s4.getGenerals().add(g4);
+  ASSERT_TRUE(s4.getInheritedMembers().size() == 0);
+
+  Class g5;
+  Class s5;
+  Property p5;
+  g5.getOwnedAttributes().add(p5);
+  s5.getGenerals().add(g5);
+  p5.setVisibility(VisibilityKind::PRIVATE);
+  ASSERT_TRUE(s5.getInheritedMembers().size() == 0);
+  ASSERT_TRUE(s5.getMembers().size() == 0);
+
+  Class g6;
+  Class s6;
+  Property p6;
+  s6.getGenerals().add(g6);
+  s6.getOwnedAttributes().add(p6);
+  ASSERT_TRUE(s6.getInheritedMembers().size() == 1);
+  ASSERT_TRUE(s6.getMembers().size() == 1);
 }

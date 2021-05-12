@@ -143,6 +143,21 @@ void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) 
             throw UmlParserException("Improper YAML node type for name field, must be scalar, " + data.m_path.string() + " line " + to_string(node["name"].Mark().line));
         }
     }
+
+    if (node["visibility"]) {
+        if (node["visibility"].IsScalar()) {
+            string visibilityString = node["visibility"].as<string>();
+            if (visibilityString.compare("PRIVATE") == 0) {
+                el.setVisibility(VisibilityKind::PRIVATE);
+            } else if (visibilityString.compare("PROTECTED") == 0) {
+                el.setVisibility(VisibilityKind::PROTECTED);
+            } else if (visibilityString.compare("PACKAGE") == 0) {
+                el.setVisibility(VisibilityKind::PACKAGE);
+            }
+        } else {
+            throw UmlParserException("Improper YAML node type for NamedElement field visibility, must be a scalar, " + data.m_path.string() + " line " + to_string(node["visibility"].Mark().line));
+        }
+    }
 }
 
 void SetTypeFunctor::operator()(Element& el) const {

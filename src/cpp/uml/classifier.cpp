@@ -201,12 +201,14 @@ void Classifier::RemoveInheritedMemberFunctor::operator()(Element& el) const {
 }
 
 void Classifier::ClassifierAddMemberFunctor::operator()(Element& el) const {
-    for (auto const& relationship : dynamic_cast<Classifier*>(m_el)->getRelationships()) {
-        if (relationship->isSubClassOf(ElementType::GENERALIZATION)) {
-            if (dynamic_cast<Generalization*>(relationship)->getGeneral() == m_el) {
-                if (dynamic_cast<Generalization*>(relationship)->getSpecific()) {
-                    if (!dynamic_cast<Generalization*>(relationship)->getSpecific()->getInheritedMembers().count(el.getID())) {
-                        dynamic_cast<Generalization*>(relationship)->getSpecific()->getInheritedMembers().add(dynamic_cast<NamedElement&>(el));
+    if (dynamic_cast<NamedElement&>(el).getVisibility() != VisibilityKind::PRIVATE) {
+        for (auto const& relationship : dynamic_cast<Classifier*>(m_el)->getRelationships()) {
+            if (relationship->isSubClassOf(ElementType::GENERALIZATION)) {
+                if (dynamic_cast<Generalization*>(relationship)->getGeneral() == m_el) {
+                    if (dynamic_cast<Generalization*>(relationship)->getSpecific()) {
+                        if (!dynamic_cast<Generalization*>(relationship)->getSpecific()->getInheritedMembers().count(el.getID())) {
+                            dynamic_cast<Generalization*>(relationship)->getSpecific()->getInheritedMembers().add(dynamic_cast<NamedElement&>(el));
+                        }
                     }
                 }
             }
@@ -215,12 +217,14 @@ void Classifier::ClassifierAddMemberFunctor::operator()(Element& el) const {
 }
 
 void Classifier::ClassifierRemoveMemberFunctor::operator()(Element& el) const {
-    for (auto const& relationship : dynamic_cast<Classifier*>(m_el)->getRelationships()) {
-        if (relationship->isSubClassOf(ElementType::GENERALIZATION)) {
-            if (dynamic_cast<Generalization*>(relationship)->getGeneral() == m_el) {
-                if (dynamic_cast<Generalization*>(relationship)->getSpecific()) {
-                    if (dynamic_cast<Generalization*>(relationship)->getSpecific()->getInheritedMembers().count(el.getID())) {
-                        dynamic_cast<Generalization*>(relationship)->getSpecific()->getInheritedMembers().remove(dynamic_cast<NamedElement&>(el));
+    if (dynamic_cast<NamedElement&>(el).getVisibility() != VisibilityKind::PRIVATE) {
+        for (auto const& relationship : dynamic_cast<Classifier*>(m_el)->getRelationships()) {
+            if (relationship->isSubClassOf(ElementType::GENERALIZATION)) {
+                if (dynamic_cast<Generalization*>(relationship)->getGeneral() == m_el) {
+                    if (dynamic_cast<Generalization*>(relationship)->getSpecific()) {
+                        if (dynamic_cast<Generalization*>(relationship)->getSpecific()->getInheritedMembers().count(el.getID())) {
+                            dynamic_cast<Generalization*>(relationship)->getSpecific()->getInheritedMembers().remove(dynamic_cast<NamedElement&>(el));
+                        }
                     }
                 }
             }

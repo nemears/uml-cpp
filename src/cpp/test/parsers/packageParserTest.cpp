@@ -139,3 +139,17 @@ TEST_F(PackageParserTest, externalMergedPackageTest) {
     PrimitiveType* b = dynamic_cast<PrimitiveType*>(primPack->getPackagedElements().front());
     ASSERT_TRUE(p->getType() == b);
 }
+
+TEST_F(PackageParserTest, emitVerySimplePackageTest) {
+    Package p;
+    p.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+    p.setName("package");
+    p.setVisibility(VisibilityKind::PACKAGE);
+    string expectedEmit = R""""(package:
+  id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+  name: package
+  visibility: PACKAGE)"""";
+    string generatedEmit = Parsers::emit(p);
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

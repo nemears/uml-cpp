@@ -111,3 +111,18 @@ TEST_F(InstanceSpecificationParserTest, instanceValueSlot) {
     InstanceValue* v = dynamic_cast<InstanceValue*>(s->getValues().front());
     ASSERT_TRUE(v->getInstance() == i1);
 }
+
+TEST_F(InstanceSpecificationParserTest, simpleInstanceEmitTest) {
+    InstanceSpecification inst;
+    inst.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+    inst.setName("simple");
+    inst.setVisibility(VisibilityKind::PROTECTED);
+    string expectedEmit = R""""(instanceSpecification:
+  id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+  name: simple
+  visibility: PROTECTED)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(inst));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

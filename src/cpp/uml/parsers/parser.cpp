@@ -114,6 +114,25 @@ Element* parse(ParserMetaData& data) {
     return 0;
 }
 
+string emit(Element& el) {
+    YAML::Emitter emitter;
+
+    switch(el.getElementType()) {
+        case ElementType::INSTANCE_SPECIFICATION : {
+            emitInstanceSpecification(emitter, dynamic_cast<InstanceSpecification&>(el));
+            return emitter.c_str();
+        }
+        case ElementType::PACKAGE : {
+            emitPackage(emitter, dynamic_cast<Package&>(el));
+            return emitter.c_str();
+        }
+        default: {
+            throw UmlParserException("Error emitting element, element type " + el.getElementTypeString() + " is abstract and cannot be emit");
+            return "";
+        }
+    }
+}
+
 void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
     if (node["id"]) {
         if (node["id"].IsScalar()) {
@@ -130,6 +149,10 @@ void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
 
     // apply post processing here via functor
     data.elements.add(el);
+}
+
+void emitElement(YAML::Emitter& emitter, Element& el) {
+    emitter << YAML::Key << "id" << YAML::Value << el.getIDstring();
 }
 
 void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) {
@@ -160,6 +183,29 @@ void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) 
     }
 }
 
+void emitNamedElement(YAML::Emitter& emitter, NamedElement& el) {
+    emitElement(emitter, el);
+    if (!el.getName().empty()) {
+        emitter << YAML::Key << "name" << YAML::Value << el.getName();
+    }
+    string visibility = "PUBLIC";
+    switch(el.getVisibility()) {
+        case VisibilityKind::PACKAGE : {
+            visibility = "PACKAGE";
+            break;
+        }
+        case VisibilityKind::PRIVATE : {
+            visibility = "PRIVATE";
+            break;
+        }
+        case VisibilityKind::PROTECTED : {
+            visibility = "PROTECTED";
+            break;
+        }
+    }
+    emitter << YAML::Key << "visibility" << YAML::Value << visibility;
+}
+
 void SetTypeFunctor::operator()(Element& el) const {
     if (el.isSubClassOf(ElementType::TYPE)) {
         dynamic_cast<TypedElement*>(m_el)->setType(&dynamic_cast<Type&>(el));
@@ -188,6 +234,14 @@ void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data) 
     }
 }
 
+void emitTypedElement(YAML::Emitter& emitter, TypedElement& el) {
+    emitNamedElement(emitter, el);
+
+    if (el.getType()) {
+        emitter << YAML::Key << "type" << YAML::Value << el.getType()->getIDstring();
+    }
+}
+
 void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
     parseNamedElement(node, clazz, data);
 
@@ -207,6 +261,18 @@ void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
         } else {
             throw UmlParserException("Improper YAML node type for Classifier field generalizations, must be sequence " + data.m_path.string() + to_string(node["generalizations"].Mark().line));
         }
+    }
+}
+
+void emitClassifier(YAML::Emitter& emitter, Classifier& clazz) {
+    emitNamedElement(emitter, clazz);
+    
+    if (!clazz.getGeneralizations().empty()) {
+        emitter << YAML::Key << "generalizations" << YAML::Value << YAML::BeginSeq;
+        for (auto const& generalization: clazz.getGeneralizations()) {
+            emitGeneralization(emitter, *generalization);
+        }
+        emitter << YAML::EndSeq;
     }
 }
 
@@ -231,6 +297,20 @@ void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaDat
         } else {
             // TODO throw error or can it be defined here?
         }
+    }
+}
+
+void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization) {
+    if (generalization.getElementType() == ElementType::GENERALIZATION) {
+        emitter << YAML::BeginMap << YAML::Key << "generalization" << YAML::Value << YAML::BeginMap;
+    }
+
+    if (generalization.getGeneral()) {
+        emitter << YAML::Key << "general" << YAML::Value << generalization.getGeneral()->getIDstring();
+    }
+
+    if (generalization.getElementType() == ElementType::GENERALIZATION) {
+        emitter << YAML::EndMap << YAML::EndMap;
     }
 }
 
@@ -616,6 +696,26 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
     }
 }
 
+void emitPackage(YAML::Emitter& emitter, Package& pckg) {
+    if (pckg.getElementType() == ElementType::PACKAGE) {
+        emitter << YAML::BeginMap << YAML::Key << "package" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitNamedElement(emitter, pckg);
+
+    for (auto const& pckgMerge : pckg.getPackageMerge()) {
+        // TODO
+    }
+
+    for (auto const& el : pckg.getPackagedElements()) {
+        // TODO
+    }
+
+    if (pckg.getElementType() == ElementType::PACKAGE) {
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
+}
+
 void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data) {
     if (node["lower"]) {
         if (node["lower"].IsScalar()) {
@@ -688,6 +788,29 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
         } else {
             throw UmlParserException("Invalid YAML node type for InstanceSpecification field slots, expected sequence, " + data.m_path.string() + " line " + to_string(node["slots"].Mark().line));
         }
+    }
+}
+
+void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& inst) {
+    if (inst.getElementType() == ElementType::INSTANCE_SPECIFICATION) {
+        emitter << YAML::BeginMap << YAML::Key << "instanceSpecification" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitNamedElement(emitter, inst);
+
+    if (inst.getClassifier()) {
+        emitter << YAML::Key << "classifier" << YAML::Value << inst.getClassifier()->getIDstring();
+    }
+
+    if (!inst.getSlots().empty()) {
+        emitter << YAML::Key << "slots" << YAML::Value << YAML::BeginSeq;
+        for (auto const& slot : inst.getSlots()) {
+            // TODO
+        }
+    }
+
+    if (inst.getElementType() == ElementType::INSTANCE_SPECIFICATION) {
+        emitter << YAML::EndMap << YAML::EndMap;
     }
 }
 

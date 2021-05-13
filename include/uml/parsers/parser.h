@@ -89,15 +89,24 @@ namespace UML {
          **/
         Element* parse(std::string path);
         Element* parse(ParserMetaData& data);
+        std::string emit(Element& el);
         void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
+        void emitElement(YAML::Emitter& emitter, Element& el);
         void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data);
+        void emitNamedElement(YAML::Emitter& emitter, NamedElement& el);
         void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data);
+        void emitTypedElement(YAML::Emitter& emitter, TypedElement& el);
         void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data);
+        //void emitProperty(YAML::Emitter& emitter, Property& prop);
         void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data);
         void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data);
+        void emitPackage(YAML::Emitter& emitter, Package& pckg);
         void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
+        void emitClassifier(YAML::Emitter& emitter, Classifier& clazz);
         void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data);
+        void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization);
         void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data);
+        void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& inst);
         void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data);
         void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data);
         void parsePrimitiveType(YAML::Node node, PrimitiveType& type, ParserMetaData& data);

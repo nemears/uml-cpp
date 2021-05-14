@@ -108,6 +108,7 @@ namespace UML {
         void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data);
         void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& inst);
         void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data);
+        void emitSlot(YAML::Emitter& emitter, Slot& slot);
         void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data);
         void parsePrimitiveType(YAML::Node node, PrimitiveType& type, ParserMetaData& data);
         void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData& data);

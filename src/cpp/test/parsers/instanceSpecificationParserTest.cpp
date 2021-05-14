@@ -126,3 +126,24 @@ TEST_F(InstanceSpecificationParserTest, simpleInstanceEmitTest) {
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(InstanceSpecificationParserTest, simpleSlotTest) {
+    InstanceSpecification inst;
+    inst.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+    inst.setName("slot");
+    inst.setVisibility(VisibilityKind::PROTECTED);
+    Slot s;
+    s.setID("b211590a-3582-4bd2-895c-053411c0aea9");
+    inst.getSlots().add(s);
+    string expectedEmit = R""""(instanceSpecification:
+  id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+  name: slot
+  visibility: PROTECTED
+  slots:
+    - slot:
+        id: b211590a-3582-4bd2-895c-053411c0aea9)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(inst));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

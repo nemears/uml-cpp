@@ -805,7 +805,7 @@ void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& in
     if (!inst.getSlots().empty()) {
         emitter << YAML::Key << "slots" << YAML::Value << YAML::BeginSeq;
         for (auto const& slot : inst.getSlots()) {
-            // TODO
+            emitSlot(emitter, *slot);
         }
     }
 
@@ -897,6 +897,30 @@ void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
         } else {
             throw UmlParserException("Invalid YAML node type for Slot field values, expected Sequence, " + data.m_path.string() + " line " + to_string(node["values"].Mark().line));
         }
+    }
+}
+
+void emitSlot(YAML::Emitter& emitter, Slot& slot) {
+    if (slot.getElementType() == ElementType::SLOT) {
+        emitter << YAML::BeginMap << YAML::Key << "slot" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitElement(emitter, slot);
+
+    if (slot.getDefiningFeature()) {
+        emitter << YAML::Key << "definingFeature" << YAML::Value << slot.getDefiningFeature()->getIDstring();
+    }
+
+    if (!slot.getValues().empty()) {
+        emitter << YAML::Key << "values" << YAML::Value << YAML::BeginSeq;
+        for (auto const& val : slot.getValues()) {
+            // TODO
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (slot.getElementType() == ElementType::SLOT) {
+        emitter << YAML::EndMap << YAML::EndMap;
     }
 }
 

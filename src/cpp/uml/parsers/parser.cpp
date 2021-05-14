@@ -188,22 +188,24 @@ void emitNamedElement(YAML::Emitter& emitter, NamedElement& el) {
     if (!el.getName().empty()) {
         emitter << YAML::Key << "name" << YAML::Value << el.getName();
     }
-    string visibility = "PUBLIC";
-    switch(el.getVisibility()) {
-        case VisibilityKind::PACKAGE : {
-            visibility = "PACKAGE";
-            break;
+    if (el.getVisibility() != VisibilityKind::PUBLIC) {
+        string visibility = "";
+        switch(el.getVisibility()) {
+            case VisibilityKind::PACKAGE : {
+                visibility = "PACKAGE";
+                break;
+            }
+            case VisibilityKind::PRIVATE : {
+                visibility = "PRIVATE";
+                break;
+            }
+            case VisibilityKind::PROTECTED : {
+                visibility = "PROTECTED";
+                break;
+            }
         }
-        case VisibilityKind::PRIVATE : {
-            visibility = "PRIVATE";
-            break;
-        }
-        case VisibilityKind::PROTECTED : {
-            visibility = "PROTECTED";
-            break;
-        }
+        emitter << YAML::Key << "visibility" << YAML::Value << visibility;
     }
-    emitter << YAML::Key << "visibility" << YAML::Value << visibility;
 }
 
 void SetTypeFunctor::operator()(Element& el) const {
@@ -305,6 +307,8 @@ void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization) 
         emitter << YAML::BeginMap << YAML::Key << "generalization" << YAML::Value << YAML::BeginMap;
     }
 
+    emitElement(emitter, generalization);
+
     if (generalization.getGeneral()) {
         emitter << YAML::Key << "general" << YAML::Value << generalization.getGeneral()->getIDstring();
     }
@@ -366,7 +370,7 @@ void emitDataType(YAML::Emitter& emitter, DataType& dataType) {
     if (!dataType.getOwnedAttribute().empty()) {
         emitter << YAML::Key << "ownedAttribute" << YAML::Value << YAML::BeginSeq;
         for (auto const& attribute: dataType.getOwnedAttribute()) {
-            // TODO
+            emitProperty(emitter, *attribute);
         }
         emitter << YAML::EndSeq;
     }
@@ -561,6 +565,37 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
     }
 }
 
+void emitProperty(YAML::Emitter& emitter, Property& prop) {
+    if (prop.getElementType() == ElementType::PROPERTY) {
+        emitter << YAML::BeginMap << YAML::Key << "property" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitTypedElement(emitter, prop);
+
+    if (prop.getAggregation() != AggregationKind::NONE) {
+        string aggregationString;
+        switch(prop.getAggregation()) {
+            case AggregationKind::COMPOSITE : {
+                aggregationString = "COMPOSITE";
+                break;
+            }
+            case AggregationKind::SHARED : {
+                aggregationString = "SHARED";
+                break;
+            }
+        }
+        emitter << YAML::Key << "aggregation" << YAML::Value << aggregationString;
+    }
+
+    if (prop.getDefaultValue()) {
+        // TODO
+    }
+
+    if (prop.getElementType() == ElementType::PROPERTY) {
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
+} 
+
 void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data) {
     parseTypedElement(node, el, data);
     parseMultiplicityElement(node, el, data);
@@ -735,8 +770,21 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg) {
         // TODO
     }
 
-    for (auto const& el : pckg.getPackagedElements()) {
-        // TODO
+    if (!pckg.getPackagedElements().empty()) {
+        emitter << YAML::Key << "packagedElements" << YAML::Value << YAML::BeginSeq;
+        for (auto const& el : pckg.getPackagedElements()) {
+            switch (el->getElementType()) {
+                case ElementType::DATA_TYPE : {
+                    emitDataType(emitter, dynamic_cast<DataType&>(*el));
+                    break;
+                }
+                case ElementType::PACKAGE : {
+                    emitPackage(emitter, dynamic_cast<Package&>(*el));
+                    break;
+                }
+            }
+        }
+        emitter << YAML::EndSeq;
     }
 
     if (pckg.getElementType() == ElementType::PACKAGE) {

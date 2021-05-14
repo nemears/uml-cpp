@@ -97,7 +97,7 @@ namespace UML {
         void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data);
         void emitTypedElement(YAML::Emitter& emitter, TypedElement& el);
         void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data);
-        //void emitProperty(YAML::Emitter& emitter, Property& prop);
+        void emitProperty(YAML::Emitter& emitter, Property& prop);
         void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data);
         void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data);
         void emitPackage(YAML::Emitter& emitter, Package& pckg);

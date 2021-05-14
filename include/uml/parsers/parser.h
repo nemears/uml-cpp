@@ -110,6 +110,7 @@ namespace UML {
         void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data);
         void emitSlot(YAML::Emitter& emitter, Slot& slot);
         void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data);
+        void emitDataType(YAML::Emitter& emitter, DataType& dataType);
         void parsePrimitiveType(YAML::Node node, PrimitiveType& type, ParserMetaData& data);
         void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData& data);
         void parseEnumerationLiteral(YAML::Node node, EnumerationLiteral& literal, ParserMetaData& data);

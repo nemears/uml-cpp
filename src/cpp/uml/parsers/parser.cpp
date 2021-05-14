@@ -356,6 +356,34 @@ void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
     }
 }
 
+void emitDataType(YAML::Emitter& emitter, DataType& dataType) {
+    if (dataType.getElementType() == ElementType::DATA_TYPE) {
+        emitter << YAML::BeginMap << YAML::Key << "dataType" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitClassifier(emitter, dataType);
+    
+    if (!dataType.getOwnedAttribute().empty()) {
+        emitter << YAML::Key << "ownedAttribute" << YAML::Value << YAML::BeginSeq;
+        for (auto const& attribute: dataType.getOwnedAttribute()) {
+            // TODO
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (!dataType.getOwnedOperation().empty()) {
+        emitter << YAML::Key << "ownedOperation" << YAML::Value << YAML::BeginSeq;
+        for (auto const& operation : dataType.getOwnedOperation()) {
+            // TODO
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (dataType.getElementType() == ElementType::DATA_TYPE) {
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
+}
+
 void parsePrimitiveType(YAML::Node node, PrimitiveType& type, ParserMetaData& data) {
     parseDataType(node, type, data);
 }

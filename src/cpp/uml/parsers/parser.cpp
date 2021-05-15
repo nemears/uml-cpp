@@ -117,34 +117,40 @@ Element* parse(ParserMetaData& data) {
 string emit(Element& el) {
     YAML::Emitter emitter;
 
+    emit(emitter, el);
+
+    return emitter.c_str();
+}
+
+void emit(YAML::Emitter& emitter, Element& el) {
     switch(el.getElementType()) {
         case ElementType::CLASS : {
             emitClass(emitter, dynamic_cast<Class&>(el));
-            return emitter.c_str();
+            break;
         }
         case ElementType::DATA_TYPE : {
             emitDataType(emitter, dynamic_cast<DataType&>(el));
-            return emitter.c_str();
+            break;
         }
         case ElementType::ENUMERATION : {
             emitEnumeration(emitter, dynamic_cast<Enumeration&>(el));
-            return emitter.c_str();
+            break;
         }
         case ElementType::INSTANCE_SPECIFICATION : {
             emitInstanceSpecification(emitter, dynamic_cast<InstanceSpecification&>(el));
-            return emitter.c_str();
+            break;
         }
         case ElementType::PACKAGE : {
             emitPackage(emitter, dynamic_cast<Package&>(el));
-            return emitter.c_str();
+            break;
         }
         case ElementType::PRIMITIVE_TYPE : {
             emitPrimitiveType(emitter, dynamic_cast<PrimitiveType&>(el));
-            return emitter.c_str();
+            break;
         }
         default: {
             throw UmlParserException("Error emitting element, element type " + el.getElementTypeString() + " is abstract and cannot be emit");
-            return "";
+            break;
         }
     }
 }
@@ -862,32 +868,7 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg) {
     if (!pckg.getPackagedElements().empty()) {
         emitter << YAML::Key << "packagedElements" << YAML::Value << YAML::BeginSeq;
         for (auto const& el : pckg.getPackagedElements()) {
-            switch (el->getElementType()) {
-                case ElementType::CLASS : {
-                    emitClass(emitter, dynamic_cast<Class&>(*el));
-                    break;
-                }
-                case ElementType::DATA_TYPE : {
-                    emitDataType(emitter, dynamic_cast<DataType&>(*el));
-                    break;
-                }
-                case ElementType::ENUMERATION : {
-                    emitEnumeration(emitter, dynamic_cast<Enumeration&>(*el));
-                    break;
-                }
-                case ElementType::INSTANCE_SPECIFICATION : {
-                    emitInstanceSpecification(emitter, dynamic_cast<InstanceSpecification&>(*el));
-                    break;
-                }
-                case ElementType::PACKAGE : {
-                    emitPackage(emitter, dynamic_cast<Package&>(*el));
-                    break;
-                }
-                case ElementType::PRIMITIVE_TYPE : {
-                    emitPrimitiveType(emitter, dynamic_cast<PrimitiveType&>(*el));
-                    break;
-                }
-            }
+            emit(emitter, *el);
         }
         emitter << YAML::EndSeq;
     }
@@ -1095,7 +1076,7 @@ void emitSlot(YAML::Emitter& emitter, Slot& slot) {
     if (!slot.getValues().empty()) {
         emitter << YAML::Key << "values" << YAML::Value << YAML::BeginSeq;
         for (auto const& val : slot.getValues()) {
-            // TODO
+            emit(emitter, *val);
         }
         emitter << YAML::EndSeq;
     }

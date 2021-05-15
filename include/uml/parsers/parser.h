@@ -90,6 +90,7 @@ namespace UML {
         Element* parse(std::string path);
         Element* parse(ParserMetaData& data);
         std::string emit(Element& el);
+        void emit(YAML::Emitter& emitter, Element& el);
         void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
         void emitElement(YAML::Emitter& emitter, Element& el);
         void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data);

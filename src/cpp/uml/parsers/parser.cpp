@@ -122,6 +122,10 @@ string emit(Element& el) {
             emitDataType(emitter, dynamic_cast<DataType&>(el));
             return emitter.c_str();
         }
+        case ElementType::ENUMERATION : {
+            emitEnumeration(emitter, dynamic_cast<Enumeration&>(el));
+            return emitter.c_str();
+        }
         case ElementType::INSTANCE_SPECIFICATION : {
             emitInstanceSpecification(emitter, dynamic_cast<InstanceSpecification&>(el));
             return emitter.c_str();
@@ -798,6 +802,10 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg) {
                     emitDataType(emitter, dynamic_cast<DataType&>(*el));
                     break;
                 }
+                case ElementType::ENUMERATION : {
+                    emitEnumeration(emitter, dynamic_cast<Enumeration&>(*el));
+                    break;
+                }
                 case ElementType::INSTANCE_SPECIFICATION : {
                     emitInstanceSpecification(emitter, dynamic_cast<InstanceSpecification&>(*el));
                     break;
@@ -1052,8 +1060,40 @@ void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData&
     }
 }
 
+void emitEnumeration(YAML::Emitter& emitter, Enumeration& enumeration) {
+    if (enumeration.getElementType() == ElementType::ENUMERATION) {
+        emitter << YAML::BeginMap << YAML::Key << "enumeration" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitDataType(emitter, enumeration);
+
+    if (!enumeration.getOwnedLiteral().empty()) {
+        emitter << YAML::Key << "ownedLiteral" << YAML::BeginSeq;
+        for (auto const& literal : enumeration.getOwnedLiteral()) {
+            emitEnumerationLiteral(emitter, *literal);
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (enumeration.getElementType() == ElementType::ENUMERATION) {
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
+}
+
 void parseEnumerationLiteral(YAML::Node node, EnumerationLiteral& literal, ParserMetaData& data) {
     parseInstanceSpecification(node, literal, data);
+}
+
+void emitEnumerationLiteral(YAML::Emitter& emitter, EnumerationLiteral& literal) {
+    if (literal.getElementType() == ElementType::ENUMERATION_LITERAL) {
+        emitter << YAML::BeginMap << YAML::Key << "enumerationLiteral" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitInstanceSpecification(emitter, literal);
+
+    if (literal.getElementType() == ElementType::ENUMERATION_LITERAL) {
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
 }
 
 void SetInstanceFunctor::operator()(Element& el) const {

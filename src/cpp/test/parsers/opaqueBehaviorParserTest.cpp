@@ -45,3 +45,36 @@ TEST_F(OpaqueBehaviorParserTest, properParameters) {
     ASSERT_THROW(el = Parsers::parse(ymlPath + "opaqueBehaviorTests/bodiesEntryIsSequence.yml"), Parsers::UmlParserException);
     ASSERT_THROW(el = Parsers::parse(ymlPath + "opaqueBehaviorTests/bodiesNotSequence.yml"), Parsers::UmlParserException);
 }
+
+TEST_F(OpaqueBehaviorParserTest, emitBasicOpaqueBehavior) {
+    OpaqueBehavior b;
+    Property p;
+    Operation o;
+    b.setID("b278ca8a-9d1d-45d1-970f-403bc60998b3");
+    b.setName("Opaque");
+    p.setID("9c744c8c-ed4e-4c71-9c97-5d3e6115bc24");
+    p.setName("prop");
+    p.setVisibility(VisibilityKind::PRIVATE);
+    o.setID("d2a0bcbd-a1aa-4953-9d95-b10a9a322fe3");
+    o.setName("op");
+    o.setVisibility(VisibilityKind::PROTECTED);
+    b.getOwnedAttributes().add(p);
+    b.getOperations().add(o);
+    string expectedEmit = R""""(opaqueBehavior:
+  id: b278ca8a-9d1d-45d1-970f-403bc60998b3
+  name: Opaque
+  ownedAttributes:
+    - property:
+        id: 9c744c8c-ed4e-4c71-9c97-5d3e6115bc24
+        name: prop
+        visibility: PRIVATE
+  operations:
+    - operation:
+        id: d2a0bcbd-a1aa-4953-9d95-b10a9a322fe3
+        name: op
+        visibility: PROTECTED)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(b));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

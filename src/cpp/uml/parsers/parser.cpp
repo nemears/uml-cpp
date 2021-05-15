@@ -140,6 +140,10 @@ void emit(YAML::Emitter& emitter, Element& el) {
             emitInstanceSpecification(emitter, dynamic_cast<InstanceSpecification&>(el));
             break;
         }
+        case ElementType::OPAQUE_BEHAVIOR : {
+            emitOpaqueBehavior(emitter, dynamic_cast<OpaqueBehavior&>(el));
+            break;
+        }
         case ElementType::PACKAGE : {
             emitPackage(emitter, dynamic_cast<Package&>(el));
             break;
@@ -524,6 +528,18 @@ void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data) {
     }
 }
 
+void emitBehavior(YAML::Emitter& emitter, Behavior& bhv) {
+    emitClass(emitter, bhv);
+
+    if (!bhv.getParameters().empty()) {
+        emitter << YAML::Key << "parameters" << YAML::Value << YAML::BeginSeq;
+        for (auto const& param : bhv.getParameters()) {
+            // TODO
+        }
+        emitter << YAML::EndSeq;
+    }
+}
+
 void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& data) {
     parseBehavior(node, bhv, data);
 
@@ -553,6 +569,26 @@ void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& d
         } else {
             throw UmlParserException("Improper YAML node type for bodies, must be sequence, " + data.m_path.string() + " line " + to_string(node["bodies"].Mark().line));
         }
+    }
+}
+
+void emitOpaqueBehavior(YAML::Emitter& emitter, OpaqueBehavior& bhv) {
+    if (bhv.getElementType() == ElementType::OPAQUE_BEHAVIOR) {
+        emitter << YAML::BeginMap << YAML::Key << "opaqueBehavior" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitBehavior(emitter, bhv);
+
+    if (!bhv.getBodies().empty()) {
+        emitter << YAML::Key << "bodies" << YAML::Value << YAML::BeginSeq;
+        for (auto const& body : bhv.getBodies()) {
+            emit(emitter, *body);
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (bhv.getElementType() == ElementType::OPAQUE_BEHAVIOR) {
+        emitter << YAML::EndMap << YAML::EndMap;
     }
 }
 

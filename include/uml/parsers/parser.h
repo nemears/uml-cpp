@@ -132,12 +132,19 @@ namespace UML {
         void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data);
         void emitMultiplicityElement(YAML::Emitter& emitter, MultiplicityElement& el);
         void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data);
+        void emitInstanceValue(YAML::Emitter& emitter, InstanceValue& val);
         void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);
+        void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge);
         void parseLiteralBool(YAML::Node node, LiteralBool& lb, ParserMetaData& data);
+        void emitLiteralBool(YAML::Emitter& emitter, LiteralBool& lb);
         void parseLiteralInt(YAML::Node node, LiteralInt& li, ParserMetaData& data);
+        void emitLiteralInt(YAML::Emitter& emitter, LiteralInt& li);
         void parseLiteralReal(YAML::Node node, LiteralReal& lr, ParserMetaData& data);
+        void emitLiteralReal(YAML::Emitter& emitter, LiteralReal& lr);
         void parseLiteralString(YAML::Node node, LiteralString& ls, ParserMetaData& data);
+        void emitLiteralString(YAML::Emitter& emitter, LiteralString& lr);
         void parseExpression(YAML::Node node, Expression& exp, ParserMetaData& data);
+        void emitExpression(YAML::Emitter& emitter, Expression& exp);
     }
 }
 

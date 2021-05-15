@@ -136,8 +136,28 @@ void emit(YAML::Emitter& emitter, Element& el) {
             emitEnumeration(emitter, dynamic_cast<Enumeration&>(el));
             break;
         }
+        case ElementType::EXPRESSION : {
+            emitExpression(emitter, dynamic_cast<Expression&>(el));
+            break;
+        }
         case ElementType::INSTANCE_SPECIFICATION : {
             emitInstanceSpecification(emitter, dynamic_cast<InstanceSpecification&>(el));
+            break;
+        }
+        case ElementType::LITERAL_BOOL : {
+            emitLiteralBool(emitter, dynamic_cast<LiteralBool&>(el));
+            break;
+        }
+        case ElementType::LITERAL_INT : {
+            emitLiteralInt(emitter, dynamic_cast<LiteralInt&>(el));
+            break;
+        }
+        case ElementType::LITERAL_REAL : {
+            emitLiteralReal(emitter, dynamic_cast<LiteralReal&>(el));
+            break;
+        }
+        case ElementType::LITERAL_STRING : {
+            emitLiteralString(emitter, dynamic_cast<LiteralString&>(el));
             break;
         }
         case ElementType::OPAQUE_BEHAVIOR : {
@@ -987,10 +1007,12 @@ void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMe
 
 void emitMultiplicityElement(YAML::Emitter& emitter, MultiplicityElement& el) {
     if (el.getLowerValue()) {
+        emitter << YAML::Key << "lower" << YAML::Value;
         emit(emitter, *el.getLowerValue());
     }
 
     if (el.getUpperValue()) {
+        emitter << YAML::Key << "upper" << YAML::Value;
         emit(emitter, *el.getUpperValue());
     }
 }
@@ -1256,6 +1278,22 @@ void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& dat
     }
 }
 
+void emitInstanceValue(YAML::Emitter& emitter, InstanceValue& val) {
+    if (val.getElementType() == ElementType::INSTANCE_VALUE) {
+        emitter << YAML::BeginMap << YAML::Key << "instanceValue" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitTypedElement(emitter, val);
+
+    if (val.getInstance()) {
+        emitter << YAML::Key << "instance" << YAML::Value << val.getInstance()->getIDstring();
+    }
+
+    if (val.getElementType() == ElementType::INSTANCE_VALUE) {
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
+}
+
 void SetMergedPackageFunctor::operator()(Element& el) const {
     if (el.isSubClassOf(ElementType::PACKAGE)) {
         dynamic_cast<PackageMerge*>(m_el)->setMergedPackage(&dynamic_cast<Package&>(el));
@@ -1300,6 +1338,22 @@ void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& dat
     }
 }
 
+void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge) {
+    if (merge.getElementType() == ElementType::PACKAGE_MERGE) {
+        emitter << YAML::BeginMap << YAML::Key << "package" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitElement(emitter, merge);
+
+    if (merge.getMergedPackage()) {
+        // TODO
+    }
+
+    if (merge.getElementType() == ElementType::PACKAGE_MERGE) {
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
+}
+
 void parseLiteralBool(YAML::Node node, LiteralBool& lb, ParserMetaData& data) {
     parseTypedElement(node, lb, data);
 
@@ -1310,6 +1364,20 @@ void parseLiteralBool(YAML::Node node, LiteralBool& lb, ParserMetaData& data) {
         } else {
             throw UmlParserException("Invalid YAML node type for LiteralBool field value, expected scalar, " + data.m_path.string() + " line " + to_string(node["value"].Mark().line));
         }
+    }
+}
+
+void emitLiteralBool(YAML::Emitter& emitter, LiteralBool& lb) {
+    if (lb.getElementType() == ElementType::LITERAL_BOOL) {
+        emitter << YAML::BeginMap << YAML::Key << "literalBool" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitTypedElement(emitter, lb);
+
+    emitter << YAML::Key << "value" << YAML::Value << lb.getValue();
+
+    if (lb.getElementType() == ElementType::LITERAL_BOOL) {
+        emitter << YAML::EndMap << YAML::EndMap;
     }
 }
 
@@ -1326,6 +1394,20 @@ void parseLiteralInt(YAML::Node node, LiteralInt& li, ParserMetaData& data) {
     }
 }
 
+void emitLiteralInt(YAML::Emitter& emitter, LiteralInt& li) {
+    if (li.getElementType() == ElementType::LITERAL_INT) {
+        emitter << YAML::BeginMap << YAML::Key << "literalInt" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitTypedElement(emitter, li);
+
+    emitter << YAML::Key << "value" << YAML::Value << li.getValue();
+
+    if (li.getElementType() == ElementType::LITERAL_INT) {
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
+}
+
 void parseLiteralReal(YAML::Node node, LiteralReal& lr, ParserMetaData& data) {
     parseTypedElement(node, lr, data);
 
@@ -1339,6 +1421,20 @@ void parseLiteralReal(YAML::Node node, LiteralReal& lr, ParserMetaData& data) {
     }
 }
 
+void emitLiteralReal(YAML::Emitter& emitter, LiteralReal& lr) {
+    if (lr.getElementType() == ElementType::LITERAL_REAL) {
+        emitter << YAML::BeginMap << YAML::Key << "literalReal" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitTypedElement(emitter, lr);
+
+    emitter << YAML::Key << "value" << YAML::Value << lr.getValue();
+
+    if (lr.getElementType() == ElementType::LITERAL_REAL) {
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
+}
+
 void parseLiteralString(YAML::Node node, LiteralString& ls, ParserMetaData& data) {
     parseTypedElement(node, ls, data);
 
@@ -1349,6 +1445,22 @@ void parseLiteralString(YAML::Node node, LiteralString& ls, ParserMetaData& data
         } else {
             throw UmlParserException("Invalid YAML node type for LiteralString field value, expected scalar, " + data.m_path.string() + " line " + to_string(node["value"].Mark().line));
         }
+    }
+}
+
+void emitLiteralString(YAML::Emitter& emitter, LiteralString& ls) {
+    if (ls.getElementType() == ElementType::LITERAL_STRING) {
+        emitter << YAML::BeginMap << YAML::Key << "literalString" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitTypedElement(emitter, ls);
+
+    if (!ls.getValue().empty()) {
+        emitter << YAML::Key << "value" << YAML::Value << ls.getValue();
+    }
+
+    if (ls.getElementType() == ElementType::LITERAL_STRING) {
+        emitter << YAML::EndMap << YAML::EndMap;
     }
 }
 
@@ -1421,6 +1533,30 @@ void parseExpression(YAML::Node node, Expression& exp, ParserMetaData& data) {
         } else {
             throw UmlParserException("Invalid YAML node type for Expression field operands, must be sequence, " + data.m_path.string() + " line " + to_string(node["operands"].Mark().line));
         }
+    }
+}
+
+void emitExpression(YAML::Emitter& emitter, Expression& exp) {
+    if (exp.getElementType() == ElementType::EXPRESSION) {
+        emitter << YAML::BeginMap << YAML::Key << "expression" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitTypedElement(emitter, exp);
+
+    if (!exp.getSymbol().empty()) {
+        emitter << YAML::Key << "symbol" << YAML::Value << exp.getSymbol();
+    }
+
+    if (!exp.getOperands().empty()) {
+        emitter << YAML::Key << "operands" << YAML::Value << YAML::BeginSeq;
+        for (auto const& operand : exp.getOperands()) {
+            emit(emitter, *operand);
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (exp.getElementType() == ElementType::EXPRESSION) {
+        emitter << YAML::EndMap << YAML::EndMap;
     }
 }
 

@@ -118,12 +118,20 @@ string emit(Element& el) {
     YAML::Emitter emitter;
 
     switch(el.getElementType()) {
+        case ElementType::DATA_TYPE : {
+            emitDataType(emitter, dynamic_cast<DataType&>(el));
+            return emitter.c_str();
+        }
         case ElementType::INSTANCE_SPECIFICATION : {
             emitInstanceSpecification(emitter, dynamic_cast<InstanceSpecification&>(el));
             return emitter.c_str();
         }
         case ElementType::PACKAGE : {
             emitPackage(emitter, dynamic_cast<Package&>(el));
+            return emitter.c_str();
+        }
+        case ElementType::PRIMITIVE_TYPE : {
+            emitPrimitiveType(emitter, dynamic_cast<PrimitiveType&>(el));
             return emitter.c_str();
         }
         default: {
@@ -390,6 +398,18 @@ void emitDataType(YAML::Emitter& emitter, DataType& dataType) {
 
 void parsePrimitiveType(YAML::Node node, PrimitiveType& type, ParserMetaData& data) {
     parseDataType(node, type, data);
+}
+
+void emitPrimitiveType(YAML::Emitter& emitter, PrimitiveType& type) {
+    if (type.getElementType() == ElementType::PRIMITIVE_TYPE) {
+        emitter << YAML::BeginMap << YAML::Key << "primitiveType" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitDataType(emitter, type);
+
+    if (type.getElementType() == ElementType::PRIMITIVE_TYPE) {
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
 }
 
 void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, ParserMetaData& data) {
@@ -778,8 +798,16 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg) {
                     emitDataType(emitter, dynamic_cast<DataType&>(*el));
                     break;
                 }
+                case ElementType::INSTANCE_SPECIFICATION : {
+                    emitInstanceSpecification(emitter, dynamic_cast<InstanceSpecification&>(*el));
+                    break;
+                }
                 case ElementType::PACKAGE : {
                     emitPackage(emitter, dynamic_cast<Package&>(*el));
+                    break;
+                }
+                case ElementType::PRIMITIVE_TYPE : {
+                    emitPrimitiveType(emitter, dynamic_cast<PrimitiveType&>(*el));
                     break;
                 }
             }

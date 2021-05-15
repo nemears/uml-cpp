@@ -99,6 +99,7 @@ namespace UML {
         void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data);
         void emitProperty(YAML::Emitter& emitter, Property& prop);
         void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data);
+
         void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data);
         void emitPackage(YAML::Emitter& emitter, Package& pckg);
         void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
@@ -112,6 +113,7 @@ namespace UML {
         void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data);
         void emitDataType(YAML::Emitter& emitter, DataType& dataType);
         void parsePrimitiveType(YAML::Node node, PrimitiveType& type, ParserMetaData& data);
+        void emitPrimitiveType(YAML::Emitter& emitter, PrimitiveType& type);
         void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData& data);
         void parseEnumerationLiteral(YAML::Node node, EnumerationLiteral& literal, ParserMetaData& data);
         void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, ParserMetaData& data);

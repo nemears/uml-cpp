@@ -118,3 +118,26 @@ TEST_F(ClassParserTest, inheritedMembersTest) {
     ASSERT_TRUE(privateGeneral->getOwnedAttributes().front()->getVisibility() == VisibilityKind::PRIVATE);
     ASSERT_TRUE(privateSpecific->getInheritedMembers().size() == 0);
 }
+
+TEST_F(ClassParserTest, emitClassWAttribute) {
+    Class c;
+    Property p;
+    c.setID("b278ca8a-9d1d-45d1-970f-403bc60998b3");
+    c.setName("Class");
+    p.setID("9c744c8c-ed4e-4c71-9c97-5d3e6115bc24");
+    p.setName("prop");
+    p.setVisibility(VisibilityKind::PRIVATE);
+    c.getOwnedAttributes().add(p);
+    string expectedEmit = R""""(class:
+  id: b278ca8a-9d1d-45d1-970f-403bc60998b3
+  name: Class
+  ownedAttributes:
+    - property:
+        id: 9c744c8c-ed4e-4c71-9c97-5d3e6115bc24
+        name: prop
+        visibility: PRIVATE)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(c));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

@@ -118,6 +118,10 @@ string emit(Element& el) {
     YAML::Emitter emitter;
 
     switch(el.getElementType()) {
+        case ElementType::CLASS : {
+            emitClass(emitter, dynamic_cast<Class&>(el));
+            return emitter.c_str();
+        }
         case ElementType::DATA_TYPE : {
             emitDataType(emitter, dynamic_cast<DataType&>(el));
             return emitter.c_str();
@@ -439,6 +443,19 @@ void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, Par
     }
 }
 
+void emitStructuredClassifier(YAML::Emitter& emitter, StructuredClassifier& clazz) {
+
+    emitClassifier(emitter, clazz);
+
+    if (!clazz.getOwnedAttributes().empty()) {
+        emitter << YAML::Key << "ownedAttributes" << YAML::Value << YAML::BeginSeq;
+        for (auto const& attribute : clazz.getOwnedAttributes()) {
+            emitProperty(emitter, *attribute);
+        }
+        emitter << YAML::EndSeq;
+    }
+}
+
 void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
     parseStructuredClassifier(node, clazz, data);
 
@@ -456,6 +473,26 @@ void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
         } else {
             throw UmlParserException("Improper YAML node type for operations field, must be scalar, " + data.m_path.string() + " line " + to_string(node["attributes"].Mark().line));
         }
+    }
+}
+
+void emitClass(YAML::Emitter& emitter, Class& clazz) {
+    if (clazz.getElementType() == ElementType::CLASS) {
+        emitter << YAML::BeginMap << YAML::Key << "class" << YAML::BeginMap;
+    }
+
+    emitStructuredClassifier(emitter, clazz);
+
+    if (!clazz.getOperations().empty()) {
+        emitter << YAML::Key << "operations" << YAML::Value << YAML::BeginSeq;
+        for (auto const& operation : clazz.getOperations()) {
+            // TODO
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (clazz.getElementType() == ElementType::CLASS) {
+        emitter << YAML::EndMap << YAML::EndMap;
     }
 }
 
@@ -798,6 +835,10 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg) {
         emitter << YAML::Key << "packagedElements" << YAML::Value << YAML::BeginSeq;
         for (auto const& el : pckg.getPackagedElements()) {
             switch (el->getElementType()) {
+                case ElementType::CLASS : {
+                    emitClass(emitter, dynamic_cast<Class&>(*el));
+                    break;
+                }
                 case ElementType::DATA_TYPE : {
                     emitDataType(emitter, dynamic_cast<DataType&>(*el));
                     break;

@@ -119,8 +119,11 @@ namespace UML {
         void parseEnumerationLiteral(YAML::Node node, EnumerationLiteral& literal, ParserMetaData& data);
         void emitEnumerationLiteral(YAML::Emitter& emitter, EnumerationLiteral& literal);
         void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, ParserMetaData& data);
+        void emitStructuredClassifier(YAML::Emitter& emitter, StructuredClassifier& clazz);
         void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data);
+
         void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data);
+        void emitClass(YAML::Emitter& emitter, Class& clazz);
         void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& data);
         void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data);
         void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data);

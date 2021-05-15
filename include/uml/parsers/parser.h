@@ -125,7 +125,9 @@ namespace UML {
         void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data);
         void emitClass(YAML::Emitter& emitter, Class& clazz);
         void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& data);
+
         void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data);
+        void emitOperation(YAML::Emitter& emitter, Operation& op);
         void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data);
         void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data);
         void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);

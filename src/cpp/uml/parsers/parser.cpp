@@ -394,7 +394,7 @@ void emitDataType(YAML::Emitter& emitter, DataType& dataType) {
     if (!dataType.getOwnedOperation().empty()) {
         emitter << YAML::Key << "ownedOperation" << YAML::Value << YAML::BeginSeq;
         for (auto const& operation : dataType.getOwnedOperation()) {
-            // TODO
+            emitOperation(emitter, *operation);
         }
         emitter << YAML::EndSeq;
     }
@@ -486,7 +486,7 @@ void emitClass(YAML::Emitter& emitter, Class& clazz) {
     if (!clazz.getOperations().empty()) {
         emitter << YAML::Key << "operations" << YAML::Value << YAML::BeginSeq;
         for (auto const& operation : clazz.getOperations()) {
-            // TODO
+            emitOperation(emitter, *operation);
         }
         emitter << YAML::EndSeq;
     }
@@ -719,6 +719,34 @@ void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
         } else {
             throw UmlParserException("Improper YAML node type for ownedParameters field, must be a sequence, " + data.m_path.string() + to_string(node["ownedParameters"].Mark().line));
         }
+    }
+}
+
+void emitOperation(YAML::Emitter& emitter, Operation& op) {
+    if (op.getElementType() == ElementType::OPERATION) {
+        emitter << YAML::BeginMap << YAML::Key << "operation" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitNamedElement(emitter, op);
+
+    if (!op.getMethods().empty()) {
+        emitter << YAML::Key << "methods" << YAML::Value << YAML::BeginSeq;
+        for (auto const& method : op.getMethods()) {
+            // TODO
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (!op.getOwnedParameters().empty()) {
+        emitter << YAML::Key << "ownedParameters" << YAML::Value << YAML::BeginSeq;
+        for (auto const& parameter : op.getOwnedParameters()) {
+            // TODO
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (op.getElementType() == ElementType::OPERATION) {
+        emitter << YAML::EndMap << YAML::EndMap;
     }
 }
 

@@ -534,7 +534,7 @@ void emitBehavior(YAML::Emitter& emitter, Behavior& bhv) {
     if (!bhv.getParameters().empty()) {
         emitter << YAML::Key << "parameters" << YAML::Value << YAML::BeginSeq;
         for (auto const& param : bhv.getParameters()) {
-            // TODO
+            emitParameter(emitter, *param);
         }
         emitter << YAML::EndSeq;
     }
@@ -722,6 +722,41 @@ void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data) {
     }
 }
 
+void emitParameter(YAML::Emitter& emitter, Parameter& el) {
+    if (el.getElementType() == ElementType::PARAMETER) {
+        emitter << YAML::BeginMap << YAML::Key << "parameter" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitTypedElement(emitter, el);
+
+    if (el.getDirection() != ParameterDirectionKind::NONE) {
+        string direction;
+        switch(el.getDirection()) {
+            case ParameterDirectionKind::IN : {
+                direction = "IN";
+                break;
+            }
+            case ParameterDirectionKind::INOUT : {
+                direction = "INOUT";
+                break;
+            }
+            case ParameterDirectionKind::OUT : {
+                direction = "OUT";
+                break;
+            }
+            case ParameterDirectionKind::RETURN : {
+                direction = "RETURN";
+                break;
+            }
+        }
+        emitter << YAML::Key << "direction" << YAML::Value << direction;
+    }
+
+    if (el.getElementType() == ElementType::PARAMETER) {
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
+}
+
 void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
     parseNamedElement(node, op, data);
 
@@ -774,7 +809,7 @@ void emitOperation(YAML::Emitter& emitter, Operation& op) {
     if (!op.getMethods().empty()) {
         emitter << YAML::Key << "methods" << YAML::Value << YAML::BeginSeq;
         for (auto const& method : op.getMethods()) {
-            // TODO
+            emit(emitter, *method);
         }
         emitter << YAML::EndSeq;
     }
@@ -782,7 +817,7 @@ void emitOperation(YAML::Emitter& emitter, Operation& op) {
     if (!op.getOwnedParameters().empty()) {
         emitter << YAML::Key << "ownedParameters" << YAML::Value << YAML::BeginSeq;
         for (auto const& parameter : op.getOwnedParameters()) {
-            // TODO
+            emitParameter(emitter, *parameter);
         }
         emitter << YAML::EndSeq;
     }

@@ -100,7 +100,7 @@ namespace UML {
         void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data);
         void emitProperty(YAML::Emitter& emitter, Property& prop);
         void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data);
-
+        void emitParameter(YAML::Emitter& emitter, Parameter& el);
         void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data);
         void emitPackage(YAML::Emitter& emitter, Package& pckg);
         void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);

@@ -3,6 +3,11 @@
 
 using namespace UML;
 
+MultiplicityElement::MultiplicityElement() {
+    m_lowVal = 0;
+    m_upVal = 0;
+}
+
 int MultiplicityElement::getLower() {
     if (lowSpecified) {
         return lower;

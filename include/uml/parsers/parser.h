@@ -130,6 +130,7 @@ namespace UML {
         void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data);
         void emitOperation(YAML::Emitter& emitter, Operation& op);
         void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data);
+        void emitMultiplicityElement(YAML::Emitter& emitter, MultiplicityElement& el);
         void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data);
         void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);
         void parseLiteralBool(YAML::Node node, LiteralBool& lb, ParserMetaData& data);

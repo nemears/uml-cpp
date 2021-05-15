@@ -674,6 +674,7 @@ void emitProperty(YAML::Emitter& emitter, Property& prop) {
     }
 
     emitTypedElement(emitter, prop);
+    emitMultiplicityElement(emitter, prop);
 
     if (prop.getAggregation() != AggregationKind::NONE) {
         string aggregationString;
@@ -728,6 +729,7 @@ void emitParameter(YAML::Emitter& emitter, Parameter& el) {
     }
 
     emitTypedElement(emitter, el);
+    emitMultiplicityElement(emitter, el);
 
     if (el.getDirection() != ParameterDirectionKind::NONE) {
         string direction;
@@ -980,6 +982,16 @@ void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMe
         } else {
             throw UmlParserException("Invalid YAML node type for field upper, must be scalar or map, " + data.m_path.string() + " line " + to_string(node["upper"].Mark().line));
         }
+    }
+}
+
+void emitMultiplicityElement(YAML::Emitter& emitter, MultiplicityElement& el) {
+    if (el.getLowerValue()) {
+        emit(emitter, *el.getLowerValue());
+    }
+
+    if (el.getUpperValue()) {
+        emit(emitter, *el.getUpperValue());
     }
 }
 

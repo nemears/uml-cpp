@@ -16,6 +16,7 @@ namespace UML {
             bool lowSpecified = false;
             bool upSpecified = false;
         public:
+            MultiplicityElement();
             int getLower();
             void setLower(const int low);
             ValueSpecification* getLowerValue();

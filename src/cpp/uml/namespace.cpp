@@ -40,7 +40,7 @@ void Namespace::RemoveOwnedMemberFunctor::operator()(Element& el) const {
     }
 }
 
-Namespace::Namespace() {
+Namespace::Namespace() : NamedElement() {
     m_members.addProcedures.push_back(new AddMemberFunctor(this));
     m_members.removeProcedures.push_back(new RemoveMemberFunctor(this));
     m_ownedMembers.addProcedures.push_back(new AddOwnedMemberFunctor(this));

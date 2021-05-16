@@ -40,6 +40,18 @@ namespace UML {
             RemoveDirectedRelationshipFunctor(Element* me) : AbstractSequenceFunctor(me) {};
             void operator()(Element& el) const override;
     };
+
+    class AddOwnedCommentFunctor : public AbstractSequenceFunctor {
+        public:
+            AddOwnedCommentFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+            void operator()(Element& el) const override;
+    };
+
+    class RemoveOwnedCommentFunctor : public AbstractSequenceFunctor {
+        public:
+            RemoveOwnedCommentFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+            void operator()(Element& el) const override;
+    };
 }
 
 #endif

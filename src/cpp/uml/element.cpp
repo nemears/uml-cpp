@@ -42,6 +42,26 @@ void RemoveDirectedRelationshipFunctor::operator()(Element& el) const {
     }
 }
 
+void AddOwnedCommentFunctor::operator()(Element& el) const {
+    if (!m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().add(dynamic_cast<Comment&>(el));
+    }
+
+    if (dynamic_cast<Comment&>(el).getOwningElement() != m_el) {
+        dynamic_cast<Comment&>(el).setOwningElement(m_el);
+    }
+}
+
+void RemoveOwnedCommentFunctor::operator()(Element& el) const {
+    if (m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().remove(el);
+    }
+
+    if (dynamic_cast<Comment&>(el).getOwningElement() ==  m_el) {
+        dynamic_cast<Comment&>(el).setOwningElement(0);
+    }
+}
+
 // Constructor
 Element::Element() {
     m_id = boost::uuids::random_generator()();
@@ -56,6 +76,8 @@ Element::Element() {
     m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));
     m_directedRelationships->removeProcedures.push_back(new RemoveDirectedRelationshipFunctor(this));
     m_ownedComments = new Sequence<Comment>;
+    // m_ownedComments->addProcedures.push_back(new AddOwnedCommentFunctor(this));
+    // m_ownedComments->removeProcedures.push_back(new RemoveOwnedCommentFunctor(this));
 }
 
 // Destructor
@@ -83,6 +105,8 @@ Element::Element(const Element& el) {
     m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));
     m_directedRelationships->removeProcedures.push_back(new RemoveDirectedRelationshipFunctor(this));
     m_ownedComments = new Sequence<Comment>(*el.m_ownedComments);
+    m_ownedComments->addProcedures.push_back(new AddOwnedCommentFunctor(this));
+    m_ownedComments->removeProcedures.push_back(new RemoveOwnedCommentFunctor(this));
 }
 
 void Element::setID(string id) {

@@ -25,7 +25,7 @@ namespace UML{
             void setClassifier(Classifier* classifier);
             Sequence<Slot>& getSlots();
             InstanceSpecification();
-            ~InstanceSpecification();
+            virtual ~InstanceSpecification();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };

@@ -13,7 +13,7 @@ namespace UML {
             Sequence<Classifier> m_redefinitionContext;
         public:
             RedefinableElement();
-            ~RedefinableElement();
+            virtual ~RedefinableElement();
             RedefinableElement(const RedefinableElement& el);
             Sequence<RedefinableElement>& getRedefinedElements();
             Sequence<Classifier>& getRedefinitionContext();

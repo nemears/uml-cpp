@@ -26,7 +26,7 @@ namespace UML {
             };
         public:
             Relationship();
-            ~Relationship();
+            virtual ~Relationship();
             Sequence<>& getRelatedElements();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;

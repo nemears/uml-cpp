@@ -4,5 +4,5 @@
 
 class CppClassParser {
     public:
-        bool parse(string file);
+        bool parse(std::string file);
 };

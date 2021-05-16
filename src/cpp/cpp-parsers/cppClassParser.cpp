@@ -1,5 +1,7 @@
 #include "cpp-parsers/cppClassParser.h"
 
+using namespace std;
+
 ostream& operator<<(ostream& stream, const CXString& str)
 {
   stream << clang_getCString(str);

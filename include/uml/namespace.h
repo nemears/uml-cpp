@@ -35,7 +35,7 @@ namespace UML{
             };
         public:
             Namespace();
-            ~Namespace();
+            virtual ~Namespace();
             Namespace(const Namespace& nmspc);
             Sequence<NamedElement>& getMembers();
             Sequence<NamedElement>& getOwnedMembers();

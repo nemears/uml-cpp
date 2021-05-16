@@ -109,7 +109,7 @@ namespace UML {
             virtual void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID);
         public:
             Element();
-            ~Element();
+            virtual ~Element();
             // Think about making the api non copyable, copying messes with the pointer vals
             // Maybe move to copy function
             // WARNING copying element dereferences it from model, elements it points to won't point to it

@@ -32,7 +32,7 @@ namespace UML {
             };
         public:
             Package();
-            ~Package();
+            virtual ~Package();
             Package(const Package& pckg);
             Sequence<PackageableElement>& getPackagedElements();
             Sequence<PackageMerge>& getPackageMerge();

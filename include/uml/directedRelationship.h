@@ -24,7 +24,7 @@ namespace UML {
             };
         public:
             DirectedRelationship();
-            ~DirectedRelationship();
+            virtual ~DirectedRelationship();
             Sequence<>& getTargets();
             Sequence<>& getSources();
             ElementType getElementType() const override;

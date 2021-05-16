@@ -31,7 +31,7 @@ namespace UML{
             void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
         public:
             NamedElement();
-            ~NamedElement();
+            virtual ~NamedElement();
             NamedElement(const NamedElement& el);
             virtual std::string getName();
             virtual void setName(const std::string &name);

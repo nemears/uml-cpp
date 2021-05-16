@@ -39,7 +39,7 @@ namespace UML{
             };
         public:
             Class();
-            ~Class();
+            virtual ~Class();
             Class(const Class& clazz);
             Sequence<Operation>& getOperations();
             ElementType getElementType() const override;

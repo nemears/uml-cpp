@@ -90,7 +90,7 @@ namespace UML {
             };
         public:
             Classifier();
-            ~Classifier();
+            virtual ~Classifier();
             Classifier(const Classifier& clazz);
             std::string getName() override;
             void setName(const std::string& name) override;

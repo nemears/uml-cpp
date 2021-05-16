@@ -19,6 +19,7 @@ INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 # llvm clang dependency
 find_package(Clang REQUIRED)
 include_directories(${LLVM_INCLUDE_DIRS})
+link_directories(${LLVM_LIBRARY_DIR})
 add_definitions(${LLVM_DEFINITIONS})
 add_definitions(${CLANG_DEFINITIONS})
 

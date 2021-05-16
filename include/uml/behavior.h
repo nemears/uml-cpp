@@ -23,7 +23,7 @@ namespace UML {
             };
         public:
             Behavior();
-            ~Behavior();
+            virtual ~Behavior();
             Sequence<Parameter>& getParameters();
             BehavioralFeature* getSpecification();
             void setSpecification(BehavioralFeature* specification);

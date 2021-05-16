@@ -23,6 +23,7 @@ namespace UML {
         CALL_BEHAVIOR_ACTION,
         CLASS,
         CLASSIFIER,
+        COMMENT,
         CONNECTABLE_ELEMENT,
         CONTROL_FLOW,
         CREATE_OBJECT_ACTION,
@@ -90,6 +91,8 @@ namespace UML {
 
     class DirectedRelationship;
 
+    class Comment;
+
     /**
      * Element is the base class of all UML classes
      * It has three main attributes
@@ -105,6 +108,7 @@ namespace UML {
             Sequence<Element>* m_ownedElements;
             Sequence<Relationship>* m_relationships;
             Sequence<DirectedRelationship>* m_directedRelationships;
+            Sequence<Comment>* m_ownedComments;
             boost::uuids::uuid m_id;
             virtual void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID);
         public:
@@ -127,6 +131,7 @@ namespace UML {
              **/
             Sequence<Relationship>& getRelationships();
             Sequence<DirectedRelationship>& getDirectedRelationships();
+            Sequence<Comment>& getOwnedComments();
             boost::uuids::uuid getID() { return m_id; };
             virtual void setID(std::string id);
             void setID(boost::uuids::uuid id);

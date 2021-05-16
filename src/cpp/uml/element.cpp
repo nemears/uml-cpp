@@ -3,6 +3,7 @@
 #include "uml/relationship.h"
 #include "uml/elementFunctors.h"
 #include "uml/directedRelationship.h"
+#include "uml/comment.h"
 
 using namespace std;
 using namespace UML;
@@ -54,6 +55,7 @@ Element::Element() {
     m_directedRelationships = new Sequence<DirectedRelationship>;
     m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));
     m_directedRelationships->removeProcedures.push_back(new RemoveDirectedRelationshipFunctor(this));
+    m_ownedComments = new Sequence<Comment>;
 }
 
 // Destructor
@@ -61,6 +63,7 @@ Element::~Element() {
     delete m_ownedElements;
     delete m_relationships;
     delete m_directedRelationships;
+    delete m_ownedComments;
 }
 
 Element::Element(const Element& el) {
@@ -79,6 +82,7 @@ Element::Element(const Element& el) {
     m_directedRelationships->removeProcedures.clear();
     m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));
     m_directedRelationships->removeProcedures.push_back(new RemoveDirectedRelationshipFunctor(this));
+    m_ownedComments = new Sequence<Comment>(*el.m_ownedComments);
 }
 
 void Element::setID(string id) {
@@ -140,6 +144,10 @@ Sequence<DirectedRelationship>& Element::getDirectedRelationships() {
     return *m_directedRelationships;
 }
 
+Sequence<Comment>& Element::getOwnedComments() {
+    return *m_ownedComments;
+}
+
 ElementType Element::getElementType() const {
     return ElementType::ELEMENT;
 }
@@ -179,6 +187,9 @@ string Element::getElementTypeString() const {
         }
         case ElementType::CLASSIFIER : {
             return "CLASSIFIER";
+        }
+        case ElementType::COMMENT : {
+            return "COMMENT";
         }
         case ElementType::CONNECTABLE_ELEMENT : {
             return "CONNECTABLE_ELEMENT";

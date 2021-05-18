@@ -3,6 +3,7 @@
 #include "uml/namedElement.h"
 #include "uml/sequence.h"
 #include "uml/relationship.h"
+#include "uml/package.h"
 
 using namespace UML;
 
@@ -179,3 +180,13 @@ TEST_F(ElementTest, CopyTest) {
   ASSERT_TRUE(e2.getID() == e1.getID());
   ASSERT_TRUE(e2.getOwner() == &p1);
 }
+
+// TEST_F(ElementTest, fullCopyTest) {
+//   Package p;
+//   Package c;
+//   p.getPackagedElements().add(c);
+//   Package p2 = p;
+//   ASSERT_TRUE(p2.getPackagedElements().size() == 1);
+//   ASSERT_TRUE(p2.getPackagedElements().front()->getID() == c.getID());
+//   ASSERT_TRUE(p2.getPackagedElements().front() != &c);
+// }

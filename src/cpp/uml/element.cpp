@@ -76,8 +76,8 @@ Element::Element() {
     m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));
     m_directedRelationships->removeProcedures.push_back(new RemoveDirectedRelationshipFunctor(this));
     m_ownedComments = new Sequence<Comment>;
-    // m_ownedComments->addProcedures.push_back(new AddOwnedCommentFunctor(this));
-    // m_ownedComments->removeProcedures.push_back(new RemoveOwnedCommentFunctor(this));
+    m_ownedComments->addProcedures.push_back(new AddOwnedCommentFunctor(this));
+    m_ownedComments->removeProcedures.push_back(new RemoveOwnedCommentFunctor(this));
 }
 
 // Destructor
@@ -105,7 +105,9 @@ Element::Element(const Element& el) {
     m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));
     m_directedRelationships->removeProcedures.push_back(new RemoveDirectedRelationshipFunctor(this));
     m_ownedComments = new Sequence<Comment>(*el.m_ownedComments);
+    m_ownedComments->addProcedures.clear();
     m_ownedComments->addProcedures.push_back(new AddOwnedCommentFunctor(this));
+    m_ownedComments->removeProcedures.clear();
     m_ownedComments->removeProcedures.push_back(new RemoveOwnedCommentFunctor(this));
 }
 

@@ -14,6 +14,12 @@ void SetOwnerFunctor::operator()(Element& el) const{
     }
 }
 
+void AddRelationshipFunctor::operator()(Element& el) const {
+    if (!dynamic_cast<Relationship&>(el).getRelatedElements().count(m_el->getID())) {
+        dynamic_cast<Relationship&>(el).getRelatedElements().add(*m_el);
+    }
+}
+
 void RemoveRelationshipFunctor::operator()(Element& el) const {
     if (dynamic_cast<Relationship&>(el).getRelatedElements().count(m_el->getID())) {
         dynamic_cast<Relationship&>(el).getRelatedElements().remove(*m_el);
@@ -71,6 +77,7 @@ Element::Element() {
     //m_ownedElements->addChecks.push_back(new ReadOnlyOwnedElementsFunctor(this));
     m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
     m_relationships = new Sequence<Relationship>;
+    m_relationships->addProcedures.push_back(new AddRelationshipFunctor(this));
     m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
     m_directedRelationships = new Sequence<DirectedRelationship>;
     m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));
@@ -98,6 +105,8 @@ Element::Element(const Element& el) {
     m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
     m_ownedElements->removeProcedures.clear();
     m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
+    m_relationships->addProcedures.clear();
+    m_relationships->addProcedures.push_back(new AddRelationshipFunctor(this));
     m_relationships->removeProcedures.clear();
     m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
     m_directedRelationships->addProcedures.clear();

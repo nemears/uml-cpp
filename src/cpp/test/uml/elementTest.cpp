@@ -181,6 +181,14 @@ TEST_F(ElementTest, CopyTest) {
   ASSERT_TRUE(e2.getOwner() == &p1);
 }
 
+TEST_F(ElementTest, doINeedAnAddRelationshipFunctorTest) { // answer is yes
+  Element e;
+  Relationship r;
+  e.getRelationships().add(r);
+  ASSERT_TRUE(r.getRelatedElements().size() == 1);
+  ASSERT_TRUE(r.getRelatedElements().front() == &e);
+}
+
 // TEST_F(ElementTest, fullCopyTest) {
 //   Package p;
 //   Package c;

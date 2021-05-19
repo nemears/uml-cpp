@@ -17,6 +17,12 @@ namespace UML {
             void operator()(Element& el) const override;
     };
 
+    class AddRelationshipFunctor : public AbstractSequenceFunctor {
+        public:
+            AddRelationshipFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+            void operator()(Element& el) const override;
+    };
+
     class RemoveRelationshipFunctor : public AbstractSequenceFunctor {
         public:
             RemoveRelationshipFunctor(Element* me) : AbstractSequenceFunctor(me) {};

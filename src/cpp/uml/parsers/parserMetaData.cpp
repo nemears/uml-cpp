@@ -14,6 +14,7 @@ void ParserMetaData::ElementsFunctor::operator()(Element& el) const {
         for (auto const& func: *(data->postProcessFlag[el.getID()])) {
             delete func;
         }
+        delete data->postProcessFlag[el.getID()];
     }
     data->postProcessFlag.erase(el.getID());
 }

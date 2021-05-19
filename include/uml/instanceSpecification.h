@@ -21,11 +21,12 @@ namespace UML{
                     void operator()(Element& el) const override;
             };
         public:
+            InstanceSpecification();
+            InstanceSpecification(const InstanceSpecification& inst);
+            virtual ~InstanceSpecification();
             Classifier* getClassifier();
             void setClassifier(Classifier* classifier);
             Sequence<Slot>& getSlots();
-            InstanceSpecification();
-            virtual ~InstanceSpecification();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
     };

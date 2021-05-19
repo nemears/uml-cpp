@@ -2,10 +2,11 @@
 #include <algorithm>
 
 using namespace std;
-using namespace UML;
-using namespace Parsers;
 
-void UML::Parsers::ParserMetaData::ElementsFunctor::operator()(Element& el) const {
+namespace UML {
+namespace Parsers {
+
+void ParserMetaData::ElementsFunctor::operator()(Element& el) const {
     if (data->postProcessFlag.count(el.getID())) {
         for (auto const& func: *(data->postProcessFlag[el.getID()])) {
             (*func)(el);
@@ -17,11 +18,11 @@ void UML::Parsers::ParserMetaData::ElementsFunctor::operator()(Element& el) cons
     data->postProcessFlag.erase(el.getID());
 }
 
-UML::Parsers::ParserMetaData::ParserMetaData() {
+ParserMetaData::ParserMetaData() {
     elements.addProcedures.push_back(new ElementsFunctor(0, this));
 }
 
-void UML::Parsers::applyFunctor(ParserMetaData& data, boost::uuids::uuid relEl, AbstractPostProcessFunctor* functor) {
+void applyFunctor(ParserMetaData& data, boost::uuids::uuid relEl, AbstractPostProcessFunctor* functor) {
     if (data.elements.count(relEl)) {
         (*functor)(*data.elements.get(relEl));
     } else {
@@ -30,4 +31,7 @@ void UML::Parsers::applyFunctor(ParserMetaData& data, boost::uuids::uuid relEl, 
         }
         data.postProcessFlag[relEl]->push_back(functor);
     }
+}
+
+}
 }

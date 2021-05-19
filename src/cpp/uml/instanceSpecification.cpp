@@ -32,6 +32,15 @@ InstanceSpecification::InstanceSpecification() {
     m_slots.removeProcedures.push_back(new RemoveSlotFunctor(this));
 }
 
+InstanceSpecification::InstanceSpecification(const InstanceSpecification& inst) {
+    m_classifier = inst.m_classifier;
+    m_slots = inst.m_slots;
+    m_slots.addProcedures.clear();
+    m_slots.addProcedures.push_back(new AddSlotFunctor(this));
+    m_slots.removeProcedures.clear();
+    m_slots.removeProcedures.push_back(new RemoveSlotFunctor(this));
+}
+
 InstanceSpecification::~InstanceSpecification() {
     
 }

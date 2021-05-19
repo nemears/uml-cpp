@@ -34,42 +34,6 @@
 namespace UML {
     namespace Parsers {
 
-        class SetTypeFunctor : public AbstractPostProcessFunctor {
-            public:
-                SetTypeFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                void operator()(Element& el) const override;
-        };
-
-        class SetClassifierFunctor : public AbstractPostProcessFunctor {
-            public:
-                SetClassifierFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                void operator()(Element& el) const override;
-        };
-
-        class SetDefiningFeatureFunctor : public AbstractPostProcessFunctor {
-            public:
-                SetDefiningFeatureFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                void operator()(Element& el) const override;
-        };
-
-        class SetInstanceFunctor : public AbstractPostProcessFunctor {
-            public:
-                SetInstanceFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                void operator()(Element& el) const override;
-        };
-
-        class SetMergedPackageFunctor : public AbstractPostProcessFunctor {
-            public:
-                SetMergedPackageFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                void operator()(Element& el) const override;
-        };
-
-        class SetGeneralFunctor : public AbstractPostProcessFunctor {
-            public:
-                SetGeneralFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                void operator()(Element& el) const override;
-        };
-
         class UmlParserException : public std::exception {
             private:
             std::string m_msg;
@@ -88,63 +52,104 @@ namespace UML {
          * To do this the function will have to read the first node and determine type to assign proper parent parser.
          **/
         Element* parse(std::string path);
-        Element* parse(ParserMetaData& data);
         std::string emit(Element& el);
-        void emit(YAML::Emitter& emitter, Element& el);
-        void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
-        void emitElement(YAML::Emitter& emitter, Element& el);
-        void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data);
-        void emitNamedElement(YAML::Emitter& emitter, NamedElement& el);
-        void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data);
-        void emitTypedElement(YAML::Emitter& emitter, TypedElement& el);
-        void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data);
-        void emitProperty(YAML::Emitter& emitter, Property& prop);
-        void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data);
-        void emitParameter(YAML::Emitter& emitter, Parameter& el);
-        void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data);
-        void emitPackage(YAML::Emitter& emitter, Package& pckg);
-        void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
-        void emitClassifier(YAML::Emitter& emitter, Classifier& clazz);
-        void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data);
-        void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization);
-        void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data);
-        void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& inst);
-        void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data);
-        void emitSlot(YAML::Emitter& emitter, Slot& slot);
-        void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data);
-        void emitDataType(YAML::Emitter& emitter, DataType& dataType);
-        void parsePrimitiveType(YAML::Node node, PrimitiveType& type, ParserMetaData& data);
-        void emitPrimitiveType(YAML::Emitter& emitter, PrimitiveType& type);
-        void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData& data);
-        void emitEnumeration(YAML::Emitter& emitter, Enumeration& enumeration);
-        void parseEnumerationLiteral(YAML::Node node, EnumerationLiteral& literal, ParserMetaData& data);
-        void emitEnumerationLiteral(YAML::Emitter& emitter, EnumerationLiteral& literal);
-        void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, ParserMetaData& data);
-        void emitStructuredClassifier(YAML::Emitter& emitter, StructuredClassifier& clazz);
-        void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data);
-        void emitBehavior(YAML::Emitter& emitter, Behavior& bhv);
-        void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data);
-        void emitClass(YAML::Emitter& emitter, Class& clazz);
-        void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& data);
-        void emitOpaqueBehavior(YAML::Emitter& emitter, OpaqueBehavior& bhv);
-        void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data);
-        void emitOperation(YAML::Emitter& emitter, Operation& op);
-        void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data);
-        void emitMultiplicityElement(YAML::Emitter& emitter, MultiplicityElement& el);
-        void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data);
-        void emitInstanceValue(YAML::Emitter& emitter, InstanceValue& val);
-        void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);
-        void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge);
-        void parseLiteralBool(YAML::Node node, LiteralBool& lb, ParserMetaData& data);
-        void emitLiteralBool(YAML::Emitter& emitter, LiteralBool& lb);
-        void parseLiteralInt(YAML::Node node, LiteralInt& li, ParserMetaData& data);
-        void emitLiteralInt(YAML::Emitter& emitter, LiteralInt& li);
-        void parseLiteralReal(YAML::Node node, LiteralReal& lr, ParserMetaData& data);
-        void emitLiteralReal(YAML::Emitter& emitter, LiteralReal& lr);
-        void parseLiteralString(YAML::Node node, LiteralString& ls, ParserMetaData& data);
-        void emitLiteralString(YAML::Emitter& emitter, LiteralString& lr);
-        void parseExpression(YAML::Node node, Expression& exp, ParserMetaData& data);
-        void emitExpression(YAML::Emitter& emitter, Expression& exp);
+
+        // anonymous functions
+        namespace {
+
+            class SetTypeFunctor : public AbstractPostProcessFunctor {
+                public:
+                    SetTypeFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
+
+            class SetClassifierFunctor : public AbstractPostProcessFunctor {
+                public:
+                    SetClassifierFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
+
+            class SetDefiningFeatureFunctor : public AbstractPostProcessFunctor {
+                public:
+                    SetDefiningFeatureFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
+
+            class SetInstanceFunctor : public AbstractPostProcessFunctor {
+                public:
+                    SetInstanceFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
+
+            class SetMergedPackageFunctor : public AbstractPostProcessFunctor {
+                public:
+                    SetMergedPackageFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
+
+            class SetGeneralFunctor : public AbstractPostProcessFunctor {
+                public:
+                    SetGeneralFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
+
+            Element* parse(ParserMetaData& data);
+            void emit(YAML::Emitter& emitter, Element& el);
+            void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
+            void emitElement(YAML::Emitter& emitter, Element& el);
+            void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data);
+            void emitNamedElement(YAML::Emitter& emitter, NamedElement& el);
+            void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data);
+            void emitTypedElement(YAML::Emitter& emitter, TypedElement& el);
+            void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data);
+            void emitProperty(YAML::Emitter& emitter, Property& prop);
+            void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data);
+            void emitParameter(YAML::Emitter& emitter, Parameter& el);
+            void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data);
+            void emitPackage(YAML::Emitter& emitter, Package& pckg);
+            void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
+            void emitClassifier(YAML::Emitter& emitter, Classifier& clazz);
+            void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data);
+            void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization);
+            void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data);
+            void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& inst);
+            void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data);
+            void emitSlot(YAML::Emitter& emitter, Slot& slot);
+            void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data);
+            void emitDataType(YAML::Emitter& emitter, DataType& dataType);
+            void parsePrimitiveType(YAML::Node node, PrimitiveType& type, ParserMetaData& data);
+            void emitPrimitiveType(YAML::Emitter& emitter, PrimitiveType& type);
+            void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData& data);
+            void emitEnumeration(YAML::Emitter& emitter, Enumeration& enumeration);
+            void parseEnumerationLiteral(YAML::Node node, EnumerationLiteral& literal, ParserMetaData& data);
+            void emitEnumerationLiteral(YAML::Emitter& emitter, EnumerationLiteral& literal);
+            void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, ParserMetaData& data);
+            void emitStructuredClassifier(YAML::Emitter& emitter, StructuredClassifier& clazz);
+            void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data);
+            void emitBehavior(YAML::Emitter& emitter, Behavior& bhv);
+            void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data);
+            void emitClass(YAML::Emitter& emitter, Class& clazz);
+            void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& data);
+            void emitOpaqueBehavior(YAML::Emitter& emitter, OpaqueBehavior& bhv);
+            void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data);
+            void emitOperation(YAML::Emitter& emitter, Operation& op);
+            void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data);
+            void emitMultiplicityElement(YAML::Emitter& emitter, MultiplicityElement& el);
+            void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data);
+            void emitInstanceValue(YAML::Emitter& emitter, InstanceValue& val);
+            void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);
+            void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge);
+            void parseLiteralBool(YAML::Node node, LiteralBool& lb, ParserMetaData& data);
+            void emitLiteralBool(YAML::Emitter& emitter, LiteralBool& lb);
+            void parseLiteralInt(YAML::Node node, LiteralInt& li, ParserMetaData& data);
+            void emitLiteralInt(YAML::Emitter& emitter, LiteralInt& li);
+            void parseLiteralReal(YAML::Node node, LiteralReal& lr, ParserMetaData& data);
+            void emitLiteralReal(YAML::Emitter& emitter, LiteralReal& lr);
+            void parseLiteralString(YAML::Node node, LiteralString& ls, ParserMetaData& data);
+            void emitLiteralString(YAML::Emitter& emitter, LiteralString& lr);
+            void parseExpression(YAML::Node node, Expression& exp, ParserMetaData& data);
+            void emitExpression(YAML::Emitter& emitter, Expression& exp);
+        }
     }
 }
 

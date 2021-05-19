@@ -12,6 +12,15 @@ Element* parse(string path) {
     return parse(data);
 }
 
+string emit(Element& el) {
+    YAML::Emitter emitter;
+
+    emit(emitter, el);
+
+    return emitter.c_str();
+}
+
+namespace {
 Element* parse(ParserMetaData& data) {
     YAML::Node node = YAML::LoadFile(data.m_path);
 
@@ -112,14 +121,6 @@ Element* parse(ParserMetaData& data) {
     }
 
     return 0;
-}
-
-string emit(Element& el) {
-    YAML::Emitter emitter;
-
-    emit(emitter, el);
-
-    return emitter.c_str();
 }
 
 void emit(YAML::Emitter& emitter, Element& el) {
@@ -1558,6 +1559,7 @@ void emitExpression(YAML::Emitter& emitter, Expression& exp) {
     if (exp.getElementType() == ElementType::EXPRESSION) {
         emitter << YAML::EndMap << YAML::EndMap;
     }
+}
 }
 
 }

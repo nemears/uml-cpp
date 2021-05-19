@@ -51,4 +51,5 @@ TEST_F(ExpressionParserTest, expressionTest) {
     ASSERT_TRUE(e2->getOperands().front()->getElementType() == ElementType::LITERAL_INT);
     LiteralInt* pi = dynamic_cast<LiteralInt*>(e2->getOperands().front());
     ASSERT_TRUE(pi->getValue() == 1);
+    Parsers::deleteParsedElement(el);
 }

@@ -38,6 +38,7 @@ TEST_F(PrimitiveTypeParserTest, basicPrimitiveTypeTest) {
     ASSERT_TRUE(d.getOwnedElements().size() == 2);
     ASSERT_TRUE(d.getOwnedElements().front() == p);
     ASSERT_TRUE(d.getOwnedElements().back() == o);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PrimitiveTypeParserTest, emitPrimWGeneralAndAttribute) {

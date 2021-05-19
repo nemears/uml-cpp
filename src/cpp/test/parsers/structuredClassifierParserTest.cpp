@@ -33,6 +33,7 @@ TEST_F(StructuredClassifierParserTest, parseOwnedAttributeTest) {
     ASSERT_TRUE(c.getMembers().front() == p);
 
     ASSERT_TRUE(p->getName().compare("test") == 0);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(StructuredClassifierParserTest, partTest) {
@@ -55,4 +56,5 @@ TEST_F(StructuredClassifierParserTest, partTest) {
     ASSERT_TRUE(c.getMembers().front() == p);
 
     ASSERT_TRUE(p->getAggregation() == AggregationKind::COMPOSITE);
+    Parsers::deleteParsedElement(el);
 }

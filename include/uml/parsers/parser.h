@@ -54,6 +54,11 @@ namespace UML {
         Element* parse(std::string path);
         std::string emit(Element& el);
 
+        /**
+         * This function deletes the element passed in and all of its owned element
+         **/
+        void deleteParsedElement(Element* el);
+
         // anonymous functions
         namespace {
 

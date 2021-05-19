@@ -41,4 +41,5 @@ TEST_F(OperationParserTest, basicParamTest) {
     ASSERT_TRUE(p->getName().compare("testInt") == 0);
     ASSERT_TRUE(p->getType() == i);
     ASSERT_TRUE(p->getDirection() == ParameterDirectionKind::IN);
+    Parsers::deleteParsedElement(el);
 }

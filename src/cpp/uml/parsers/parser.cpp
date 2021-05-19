@@ -20,6 +20,18 @@ string emit(Element& el) {
     return emitter.c_str();
 }
 
+void deleteParsedElement(Element* el) {
+    for (auto const& ownedElement : el->getOwnedElements()) {
+        // if (ownedElement->getElementType() == ElementType::PACKAGE_MERGE) {
+        //     if (dynamic_cast<PackageMerge*>(ownedElement)->getMergedPackage()) {
+        //         deleteParsedElement(dynamic_cast<PackageMerge*>(ownedElement)->getMergedPackage());
+        //     }
+        // }
+        deleteParsedElement(ownedElement);
+    }
+    delete el;
+}
+
 namespace {
 Element* parse(ParserMetaData& data) {
     YAML::Node node = YAML::LoadFile(data.m_path);

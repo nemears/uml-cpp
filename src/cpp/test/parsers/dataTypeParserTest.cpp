@@ -38,6 +38,7 @@ TEST_F(DataTypeParserTest, basicDataTypeTest) {
     ASSERT_TRUE(d.getOwnedElements().size() == 2);
     ASSERT_TRUE(d.getOwnedElements().front() == p);
     ASSERT_TRUE(d.getOwnedElements().back() == o);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(DataTypeParserTest, emitDataTypeW_GeneralAndAttribute) {

@@ -29,6 +29,7 @@ TEST_F(PropertyParserTest, forwardTypeTest) {
     ASSERT_TRUE(clazz2->getAttributes().size() == 1);
     Property* prop = clazz2->getAttributes().front();
     ASSERT_TRUE(prop->getType() == clazz1);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PropertyParserTest, backwardsTypeTest) {
@@ -44,6 +45,7 @@ TEST_F(PropertyParserTest, backwardsTypeTest) {
     ASSERT_TRUE(clazz1->getAttributes().size() == 1);
     Property* prop = clazz1->getAttributes().front();
     ASSERT_TRUE(prop->getType() == clazz2);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PropertyParserTest, multiplicityTest) {
@@ -61,6 +63,7 @@ TEST_F(PropertyParserTest, multiplicityTest) {
     ASSERT_TRUE(prop->getUpper() == 1);
     ASSERT_TRUE(prop->getUpperValue()->getElementType() == ElementType::LITERAL_INT);
     ASSERT_TRUE(prop->getUpper() == dynamic_cast<LiteralInt*>(prop->getUpperValue())->getValue());
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PropertyParserTest, improperTypeTest) {
@@ -91,6 +94,7 @@ TEST_F(PropertyParserTest, literalBoolDefaultValueTest) {
     ASSERT_TRUE(p->getDefaultValue()->getElementType() == ElementType::LITERAL_BOOL);
     LiteralBool* lb = dynamic_cast<LiteralBool*>(p->getDefaultValue());
     ASSERT_TRUE(lb->getValue());
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PropertyParserTest, literalsTest) {
@@ -136,4 +140,5 @@ TEST_F(PropertyParserTest, literalsTest) {
     ASSERT_TRUE(boolProp->getDefaultValue()->getElementType() == ElementType::LITERAL_BOOL);
     LiteralBool* lb = dynamic_cast<LiteralBool*>(boolProp->getDefaultValue());
     ASSERT_TRUE(lb->getValue() == false);
+    Parsers::deleteParsedElement(el);
 }

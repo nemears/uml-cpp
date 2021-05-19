@@ -23,6 +23,7 @@ TEST_F(ClassParserTest, parseID_andName) {
     Class* clazz = dynamic_cast<Class*>(el);
     ASSERT_TRUE(clazz->getID() == boost::lexical_cast<boost::uuids::uuid>("54e8f139-9581-48a4-8021-32ff00606c93"));
     ASSERT_TRUE(clazz->getName().compare("test") == 0);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(ClassParserTest, parseBasicProperty) {
@@ -43,6 +44,7 @@ TEST_F(ClassParserTest, parseBasicProperty) {
     // ASSERT_TRUE(prop2->getOwner() == clazz);
     ASSERT_TRUE(clazz->getMembers().back() == prop2);
     // ASSERT_TRUE(clazz->getOwnedElements().back() == prop2);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(ClassParserTest, parseOperation) {
@@ -59,6 +61,7 @@ TEST_F(ClassParserTest, parseOperation) {
     ASSERT_TRUE(bhv->getBodies().size() == 1);
     ASSERT_TRUE(bhv->getBodies().front()->getValue().compare("return true") == 0);
     ASSERT_TRUE(bhv->getParameters().size() == 1);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(ClassParserTest, properErrors) {
@@ -85,6 +88,7 @@ TEST_F(ClassParserTest, basicGeneralizationTest) {
     Generalization* g = specific->getGeneralizations().front();
     ASSERT_TRUE(g->getGeneral() == general);
     ASSERT_TRUE(g->getSpecific() == specific);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(ClassParserTest, inheritedMembersTest) {
@@ -117,6 +121,7 @@ TEST_F(ClassParserTest, inheritedMembersTest) {
     ASSERT_TRUE(privateGeneral->getOwnedAttributes().size() == 1);
     ASSERT_TRUE(privateGeneral->getOwnedAttributes().front()->getVisibility() == VisibilityKind::PRIVATE);
     ASSERT_TRUE(privateSpecific->getInheritedMembers().size() == 0);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(ClassParserTest, emitClassWAttribute) {

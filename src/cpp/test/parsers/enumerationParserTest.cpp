@@ -45,6 +45,7 @@ TEST_F(EnumerationParserTest, basicEnumerationTest) {
     ASSERT_TRUE(l2->getMemberNamespace().size() == 1);
     ASSERT_TRUE(l2->getMemberNamespace().front() == e);
     ASSERT_TRUE(l2->getOwner() == e);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(EnumerationParserTest, emitEnumerationWLiterals) {

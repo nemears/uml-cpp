@@ -25,6 +25,7 @@ TEST_F(OpaqueBehaviorParserTest, parseMultipleSimpleBodies) {
     ASSERT_TRUE(bhv->getBodies().get(0)->getValue().compare("one") == 0);
     ASSERT_TRUE(bhv->getBodies().get(1)->getValue().compare("1") == 0);
     ASSERT_TRUE(bhv->getBodies().get(2)->getValue().compare("true") == 0);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(OpaqueBehaviorParserTest, parseParameter) {
@@ -36,6 +37,7 @@ TEST_F(OpaqueBehaviorParserTest, parseParameter) {
     Parameter* param = bhv->getParameters().front();
     ASSERT_TRUE(param->getName().compare("test") == 0);
     ASSERT_TRUE(param->getDirection() == ParameterDirectionKind::IN);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(OpaqueBehaviorParserTest, properParameters) {

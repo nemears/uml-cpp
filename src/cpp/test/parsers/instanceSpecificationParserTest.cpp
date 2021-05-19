@@ -27,6 +27,7 @@ TEST_F(InstanceSpecificationParserTest, forwardClassifierTest) {
     ASSERT_TRUE(pckg->getPackagedElements().back()->getElementType() == ElementType::INSTANCE_SPECIFICATION);
     InstanceSpecification i = *dynamic_cast<InstanceSpecification*>(pckg->getPackagedElements().back());
     ASSERT_TRUE(i.getClassifier() == c);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(InstanceSpecificationParserTest, backwardsClassifierTest) {
@@ -40,6 +41,7 @@ TEST_F(InstanceSpecificationParserTest, backwardsClassifierTest) {
     Class* c = dynamic_cast<Class*>(pckg->getPackagedElements().back());
     InstanceSpecification i = *dynamic_cast<InstanceSpecification*>(pckg->getPackagedElements().front());
     ASSERT_TRUE(i.getClassifier() == c);
+    Parsers::deleteParsedElement(el);
 }
 
 // TODO slot tests
@@ -61,6 +63,7 @@ TEST_F(InstanceSpecificationParserTest, basicSlotTest) {
     Property* p = c->getOwnedAttributes().front();
     ASSERT_TRUE(s->getDefiningFeature() == p);
     ASSERT_TRUE(s->getOwningInstance() == pckg->getPackagedElements().back());
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(InstanceSpecificationParserTest, backwardsSlotTest) {
@@ -80,6 +83,7 @@ TEST_F(InstanceSpecificationParserTest, backwardsSlotTest) {
     Property* p = c->getOwnedAttributes().front();
     ASSERT_TRUE(s->getDefiningFeature() == p);
     ASSERT_TRUE(s->getOwningInstance() == pckg->getPackagedElements().front());
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(InstanceSpecificationParserTest, instanceValueSlot) {
@@ -110,6 +114,7 @@ TEST_F(InstanceSpecificationParserTest, instanceValueSlot) {
     ASSERT_TRUE(s->getValues().front()->getElementType() == ElementType::INSTANCE_VALUE);
     InstanceValue* v = dynamic_cast<InstanceValue*>(s->getValues().front());
     ASSERT_TRUE(v->getInstance() == i1);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(InstanceSpecificationParserTest, simpleInstanceEmitTest) {

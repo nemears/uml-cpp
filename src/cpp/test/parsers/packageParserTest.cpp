@@ -31,6 +31,7 @@ TEST_F(PackageParserTest, parsePackageWithActivityTest) {
     ASSERT_TRUE(act->getOwningPackage() == pckg);
     ASSERT_TRUE(act->getNamespace() == pckg);
     ASSERT_TRUE(act->getOwner() == pckg);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PackageParserTest, parse3PackagesTest) {
@@ -68,6 +69,7 @@ TEST_F(PackageParserTest, parse3PackagesTest) {
     ASSERT_TRUE(act2->getOwningPackage() == pckg3);
     ASSERT_TRUE(act2->getNamespace() == pckg3);
     ASSERT_TRUE(act2->getOwner() == pckg3);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PackageParserTest, NamedElementFeaturesTest) {
@@ -76,6 +78,7 @@ TEST_F(PackageParserTest, NamedElementFeaturesTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getName().compare("test") == 0);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PackageParserTest, ElementFeaturesTest) {
@@ -83,6 +86,7 @@ TEST_F(PackageParserTest, ElementFeaturesTest) {
     ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "packageParserTests/packagewID.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     ASSERT_TRUE(el->getID() == boost::lexical_cast<boost::uuids::uuid>("54e8f139-9581-48a4-8021-32ff00606c93"));
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PackageParserTest, ElementParserExceptionTest) {
@@ -116,6 +120,7 @@ TEST_F(PackageParserTest, basicPackageMerge) {
     PackageMerge* m = pckg2->getPackageMerge().front();
     ASSERT_TRUE(m->getMergedPackage() == pckg1);
     ASSERT_TRUE(m->getReceivingPackage() == pckg2);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PackageParserTest, externalMergedPackageTest) {
@@ -138,6 +143,7 @@ TEST_F(PackageParserTest, externalMergedPackageTest) {
     ASSERT_TRUE(primPack->getPackagedElements().front()->getElementType() == ElementType::PRIMITIVE_TYPE);
     PrimitiveType* b = dynamic_cast<PrimitiveType*>(primPack->getPackagedElements().front());
     ASSERT_TRUE(p->getType() == b);
+    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PackageParserTest, emitVerySimplePackageTest) {

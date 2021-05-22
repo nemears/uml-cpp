@@ -10,7 +10,7 @@ void Activity::AddNodeFunctor::operator()(Element& el) const {
     // if owner not already specified make it the activity (don't overwrite pins ownership)
     if (!el.getOwner()) {
         if (!m_el->getOwnedElements().count(el.getID())) {
-            m_el->getOwnedElements().add(dynamic_cast<ActivityNode&>(el));
+            m_el->getOwnedElements().internalAdd(dynamic_cast<ActivityNode&>(el));
         }
     }
 }
@@ -21,7 +21,7 @@ void Activity::AddEdgeFunctor::operator()(Element& el) const {
     }
 
     if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().add(dynamic_cast<ActivityEdge&>(el));
+        m_el->getOwnedElements().internalAdd(dynamic_cast<ActivityEdge&>(el));
     }
 }
 

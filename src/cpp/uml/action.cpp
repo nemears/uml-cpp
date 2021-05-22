@@ -4,7 +4,7 @@ using namespace UML;
 
 void Action::AddPinFunctor::operator()(Element& el) const {
     if (el.getOwner() != m_el) {
-        m_el->getOwnedElements().add(el);
+        m_el->getOwnedElements().internalAdd(el);
     }
 }
 

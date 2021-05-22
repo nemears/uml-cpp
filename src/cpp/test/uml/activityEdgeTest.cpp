@@ -43,8 +43,6 @@ TEST_F(ActivityEdgeTest, reindexID_Test) {
     a.getEdges().add(e);
     n.setActivity(&a);
     e.setActivity(&a);
-    n.setOwner(&a);
-    e.setOwner(&a);
     n.setNamespace(&a);
     e.setNamespace(&a);
     a.getMembers().add(n);
@@ -69,8 +67,6 @@ TEST_F(ActivityEdgeTest, reindexNameTest) {
     a.getEdges().add(e);
     n.setActivity(&a);
     e.setActivity(&a);
-    n.setOwner(&a);
-    e.setOwner(&a);
     n.setNamespace(&a);
     e.setNamespace(&a);
     a.getMembers().add(n);

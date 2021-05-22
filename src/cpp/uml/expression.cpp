@@ -5,7 +5,7 @@ using namespace UML;
 
 void Expression::AddOperandFunctor::operator()(Element& el) const {
     if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().add(el);
+        m_el->getOwnedElements().internalAdd(el);
     }
 }
 

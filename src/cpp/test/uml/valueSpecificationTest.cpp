@@ -12,25 +12,7 @@
 using namespace std;
 using namespace UML;
 
-class ValueSpecificationTest : public ::testing::Test {
-    public:
-
-  ValueSpecificationTest() {
-
-  }
-
-  ~ValueSpecificationTest() override {
-
-  }
-
-  void SetUp() override {
-     
-  }
-
-  void TearDown() override {
-    // nothing right now
-  }
-};
+class ValueSpecificationTest : public ::testing::Test {};
 
 TEST_F(ValueSpecificationTest, LiteralStringTest) {
     string val = "test";
@@ -84,8 +66,6 @@ TEST_F(ValueSpecificationTest, reindexID_forSlotTest) {
     LiteralBool v;
     Slot s;
     s.getValues().add(v);
-    v.setOwner(&s);
-    s.getOwnedElements().add(v);
     v.setID("eb092018-0bef-4ad6-b80f-05fa124f98c3");
     ASSERT_TRUE(s.getValues().get(v.getID()));
     ASSERT_TRUE(s.getOwnedElements().get(v.getID()));
@@ -95,8 +75,6 @@ TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
     LiteralInt v;
     Slot s;
     s.getValues().add(v);
-    v.setOwner(&s);
-    s.getOwnedElements().add(v);
     v.setName("test");
     ASSERT_TRUE(s.getValues().get("test"));
     ASSERT_TRUE(s.getOwnedElements().get("test"));
@@ -105,8 +83,6 @@ TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
 TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
     Expression e;
     LiteralBool b;
-    b.setOwner(&e);
-    e.getOwnedElements().add(b);
     e.getOperands().add(b);
     e.setSymbol("==");
     b.setID("eb092018-0bef-4ad6-b80f-05fa124f98c3");
@@ -117,8 +93,6 @@ TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
 TEST_F(ValueSpecificationTest, reindexNameExpressionTest) {
     Expression e;
     LiteralBool b;
-    b.setOwner(&e);
-    e.getOwnedElements().add(b);
     e.getOperands().add(b);
     e.setSymbol("==");
     b.setName("test");

@@ -2,34 +2,16 @@
 #include "uml/namedElement.h"
 #include "uml/sequence.h"
 #include "uml/namespace.h"
+#include "uml/package.h"
 
 using namespace UML;
 
-class NamedElementTest : public ::testing::Test {
-    public:
-
-        NamedElement namedEl;
-        NamedElement* namedElPtr;
-
-    protected:
-
-        NamedElementTest() {
-            namedElPtr = new NamedElement;
-        }
-
-        ~NamedElementTest() override {
-            delete namedElPtr;
-        }
-
-        void SetUp() override {
-            namedEl.setName("test");
-            namedElPtr->setName("ptrTest");
-        }
-};
+class NamedElementTest : public ::testing::Test {};
 
 TEST_F(NamedElementTest, SetNameTest) {
+    Package namedEl;
+    namedEl.setName("test");
     EXPECT_EQ(namedEl.getName(), "test");
-    EXPECT_EQ(namedElPtr->getName(), "ptrTest");
 }
 
 TEST_F(NamedElementTest, GetNullNameTest) {
@@ -39,10 +21,10 @@ TEST_F(NamedElementTest, GetNullNameTest) {
 }
 
 TEST_F(NamedElementTest, reIndexNameTest) {
-  Element e1;
-  NamedElement e2;
-  e1.getOwnedElements().add(e2);
-  e2.setOwner(&e1);
+  Package e1;
+  Package e2;
+  e1.getPackagedElements().add(e2);
+  e2.setOwningPackage(&e1);
   e2.setName("test");
   ASSERT_TRUE(e1.getOwnedElements().get("test") != NULL);
 }
@@ -72,12 +54,12 @@ TEST_F(NamedElementTest, overwriteNamespaceByOwnedMemebersAddTest) {
 }
 
 TEST_F(NamedElementTest, copyNamedElementTest) {
-    NamedElement n;
+    Package n;
     n.setName("test");
-    Namespace p;
-    Element c;
+    Package p;
+    Package c;
     n.setNamespace(&p);
-    n.getOwnedElements().add(c);
+    n.getPackagedElements().add(c);
     NamedElement n2 = n;
     ASSERT_TRUE(n2.getName().compare("test") == 0);
     ASSERT_TRUE(n2.getID() == n.getID());

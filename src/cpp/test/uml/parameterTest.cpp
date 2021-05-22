@@ -40,8 +40,6 @@ TEST_F(ParameterTest, reindexID_ownerTest) {
     Activity a;
     Parameter p;
     a.getParameters().add(p);
-    p.setOwner(&a);
-    a.getOwnedElements().add(p);
     p.setNamespace(&a);
     a.getMembers().add(p);
     p.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
@@ -50,6 +48,7 @@ TEST_F(ParameterTest, reindexID_ownerTest) {
     ASSERT_TRUE(a.getOwnedElements().get(p.getID()));
 }
 
+// TODO rethink this test
 TEST_F(ParameterTest, reindexID_operationTest) {
     Activity a1;
     Activity a2;
@@ -60,12 +59,6 @@ TEST_F(ParameterTest, reindexID_operationTest) {
     a1.getParameters().add(p1);
     a1.getParameters().add(p2);
     a2.getParameters().add(p1);
-    a1.setOwner(&o);
-    a2.setOwner(&o);
-    p1.setOwner(&o);
-    p2.setOwner(&o);
-    p1.setOperation(&o);
-    p2.setOperation(&o);
     o.getMethods().add(a1);
     o.getMethods().add(a2);
     c.getOperations().add(o);
@@ -82,10 +75,6 @@ TEST_F(ParameterTest, reindexNameOwnerTest) {
     Activity a;
     Parameter p;
     a.getParameters().add(p);
-    p.setOwner(&a);
-    a.getOwnedElements().add(p);
-    p.setNamespace(&a);
-    a.getMembers().add(p);
     p.setName("test");
     ASSERT_TRUE(a.getParameters().get("test"));
     ASSERT_TRUE(a.getMembers().get("test"));
@@ -102,20 +91,8 @@ TEST_F(ParameterTest, reindexNameOperationTest) {
     a1.getParameters().add(p1);
     a1.getParameters().add(p2);
     a2.getParameters().add(p1);
-    a1.setOwner(&o);
-    a2.setOwner(&o);
-    p1.setOwner(&o);
-    p2.setOwner(&o);
-    o.getOwnedElements().add(a1);
-    o.getOwnedElements().add(a2);
-    o.getOwnedElements().add(p1);
-    o.getOwnedElements().add(p2);
-    p1.setOperation(&o);
-    p2.setOperation(&o);
     a1.setSpecification(&o);
     a2.setSpecification(&o);
-    o.getMethods().add(a1);
-    o.getMethods().add(a2);
     c.getOperations().add(o);
     p1.setName("test1");
     p2.setName("test2");

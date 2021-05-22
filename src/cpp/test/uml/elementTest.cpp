@@ -7,58 +7,27 @@
 
 using namespace UML;
 
-class ElementTest : public ::testing::Test {
-    public:
-    Element* el1;
-    Element* el2;
-    Element* el3;
-    boost::uuids::uuid uuid;
-
-    protected:
-  // You can remove any or all of the following functions if their bodies would
-  // be empty.
-
-  ElementTest() {
-     el1 = new Element;
-     el2 = new Element;
-     el3 = new Element;
-  }
-
-  ~ElementTest() override {
-     delete el1;
-     delete el2;
-     delete el3;
-  }
-
-  void SetUp() override {
-    // Override uuid on Element (not reccomended use of lib)
-     uuid = boost::uuids::random_generator()();
-     el1->setID(boost::lexical_cast<std::string>(uuid));
-
-     // add element to owned element list
-     el2->getOwnedElements().add(*el3);
-  }
-
-  void TearDown() override {
-    // nothing right now
-  }
-
-  // Class members declared here can be used by all tests in the test suite
-  // for Element
-};
+class ElementTest : public ::testing::Test {};
 
 TEST_F(ElementTest, OverrideID_Test) {
-    EXPECT_EQ(el1->getID(), uuid);
+  Package el1;
+  el1.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+  boost::uuids::uuid uuid = boost::lexical_cast<boost::uuids::uuid>("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+  EXPECT_EQ(el1.getID(), uuid);
 }
 
 TEST_F(ElementTest, GetOwnedElementsTest) {
-  EXPECT_FALSE(el2->getOwnedElements().empty());
-  EXPECT_EQ(el2->getOwnedElements().get(0), el3);
+  Package el2;
+  Package el3;
+  el2.getPackagedElements().add(el3);
+  EXPECT_FALSE(el2.getOwnedElements().empty());
+  EXPECT_EQ(el2.getOwnedElements().get(0), &el3);
 }
 
 TEST_F(ElementTest, InvalidID_Test) {
-  EXPECT_THROW(el3->setID("not a uuid4"), InvalidID_Exception);
-  EXPECT_NO_THROW(el3->setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
+  Package el3;
+  EXPECT_THROW(el3.setID("not a uuid4"), InvalidID_Exception);
+  EXPECT_NO_THROW(el3.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
 }
 
 TEST_F(ElementTest, getNullOwnerTest) {
@@ -67,43 +36,43 @@ TEST_F(ElementTest, getNullOwnerTest) {
 }
 
 TEST_F(ElementTest, setAndGetOwnerTest) {
-  Element e;
-  Element c;
-  c.setOwner(&e);
+  Package e;
+  Package c;
+  c.setOwningPackage(&e);
   ASSERT_TRUE(c.getOwner() == &e);
   ASSERT_TRUE(c.getOwner()->getID() == e.getID());
 }
 
 TEST_F(ElementTest, getOwnedElementsBasicTest) {
-  Element e;
-  Element c;
-  ASSERT_NO_THROW(e.getOwnedElements().add(c));
+  Package e;
+  Package c;
+  ASSERT_NO_THROW(e.getPackagedElements().add(c));
   ASSERT_TRUE(e.getOwnedElements().get(c.getID()));
 }
 
 TEST_F(ElementTest, getOwnedElementByNameTest) {
-  Element e;
-  NamedElement n;
+  Package e;
+  Package n;
   n.setName("name");
-  Element b;
-  ASSERT_NO_THROW(e.getOwnedElements().add(b));
-  ASSERT_NO_THROW(e.getOwnedElements().add(n));
+  Package b;
+  ASSERT_NO_THROW(e.getPackagedElements().add(b));
+  ASSERT_NO_THROW(e.getPackagedElements().add(n));
   ASSERT_TRUE(e.getOwnedElements().get("name") == &n);
   ASSERT_TRUE(e.getOwnedElements().get(n.getID()) == &n);
   ASSERT_TRUE(e.getOwnedElements().get(b.getID()) == &b);
 }
 
 TEST_F(ElementTest, reIndexID_Test) {
-  Element e1;
-  Element e2;
-  e1.getOwnedElements().add(e2);
+  Package e1;
+  Package e2;
+  e1.getPackagedElements().add(e2);
   e2.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
   ASSERT_TRUE(e1.getOwnedElements().get(e2.getID()) != NULL);
 }
 
 TEST_F(ElementTest, basicRelationshipTest) {
-  Element e;
-  Element a;
+  Package e;
+  Package a;
   Relationship r;
   r.getRelatedElements().add(e);
   r.getRelatedElements().add(a);
@@ -129,27 +98,27 @@ TEST_F(ElementTest, reindexRelationshipID_test) {
 }
 
 TEST_F(ElementTest, setOwnerFunctorTest) {
-  Element e;
-  Element c;
-  e.getOwnedElements().add(c);
+  Package e;
+  Package c;
+  e.getPackagedElements().add(c);
   ASSERT_TRUE(c.getOwner() == &e);
   ASSERT_TRUE(e.getOwnedElements().size() == 1);
 }
 
 TEST_F(ElementTest, setOwnerTest) {
-  Element e;
-  Element c;
-  c.setOwner(&e);
+  Package e;
+  Package c;
+  c.setOwningPackage(&e);
   ASSERT_TRUE(e.getOwnedElements().count(c.getID()));
   ASSERT_TRUE(e.getOwnedElements().size() == 1);
 }
 
 TEST_F(ElementTest, overwriteOwnerTest) {
-  Element p1;
-  Element p2;
-  Element c;
-  p1.getOwnedElements().add(c);
-  c.setOwner(&p2);
+  Package p1;
+  Package p2;
+  Package c;
+  p1.getPackagedElements().add(c);
+  c.setOwningPackage(&p2);
   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
   ASSERT_TRUE(p2.getOwnedElements().front() == &c);
   ASSERT_TRUE(c.getOwner() == &p2);
@@ -157,11 +126,11 @@ TEST_F(ElementTest, overwriteOwnerTest) {
 }
 
 TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
-  Element p1;
-  Element p2;
-  Element c;
-  p1.getOwnedElements().add(c);
-  p2.getOwnedElements().add(c);
+  Package p1;
+  Package p2;
+  Package c;
+  p1.getPackagedElements().add(c);
+  p2.getPackagedElements().add(c);
   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
   ASSERT_TRUE(p2.getOwnedElements().front() == &c);
   ASSERT_TRUE(c.getOwner() == &p2);
@@ -169,11 +138,11 @@ TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
 }
 
 TEST_F(ElementTest, CopyTest) {
-  Element e1;
-  Element c1;
-  Element p1;
-  e1.setOwner(&p1);
-  e1.getOwnedElements().add(c1);
+  Package e1;
+  Package c1;
+  Package p1;
+  e1.setOwningPackage(&p1);
+  e1.getPackagedElements().add(c1);
   Element e2 = e1;
   ASSERT_TRUE(e2.getOwnedElements().size() == 1);
   ASSERT_TRUE(e2.getOwnedElements().front() == &c1);

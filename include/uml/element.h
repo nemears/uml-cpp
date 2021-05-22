@@ -81,17 +81,14 @@ namespace UML {
         return std::regex_match (strn, std::regex("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"));
     }
 
-    // Forward Declarations for Sequence
     template <class T> class Sequence;
-
-    // Forward Declaration for errors
     class ElementDoesntExistException;
-
     class Relationship;
-
     class DirectedRelationship;
-
     class Comment;
+    class SetOwnerFunctor;
+    class RemoveOwnerFunctor;
+    class Slot;
 
     /**
      * Element is the base class of all UML classes
@@ -102,6 +99,9 @@ namespace UML {
      **/
     class Element {
         friend class ElementDoesntExistException;
+        friend class SetOwnerFunctor;
+        friend class RemoveOwnerFunctor;
+        friend class Slot;
         protected:
             Element* m_owner;
             // Sequences need to be pointers in element, still encapsulated but slightly different internal syntax
@@ -111,6 +111,7 @@ namespace UML {
             Sequence<Comment>* m_ownedComments;
             boost::uuids::uuid m_id;
             virtual void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID);
+            void setOwner(Element* owner);
         public:
             Element();
             virtual ~Element();
@@ -140,11 +141,6 @@ namespace UML {
             virtual std::string getElementTypeString() const;
             virtual std::string getIDstring();
             Element* getOwner();
-            /**
-             * TODO delete, owner should be read_only
-             * opposite is owned elements
-             **/
-            void setOwner(Element* owner);
     };
 
     //Exceptions

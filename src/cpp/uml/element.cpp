@@ -50,7 +50,7 @@ void RemoveDirectedRelationshipFunctor::operator()(Element& el) const {
 
 void AddOwnedCommentFunctor::operator()(Element& el) const {
     if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().add(dynamic_cast<Comment&>(el));
+        m_el->getOwnedElements().internalAdd(dynamic_cast<Comment&>(el));
     }
 
     if (dynamic_cast<Comment&>(el).getOwningElement() != m_el) {
@@ -74,7 +74,7 @@ Element::Element() {
     m_owner = NULL;
     m_ownedElements = new Sequence<Element>;
     m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
-    //m_ownedElements->addChecks.push_back(new ReadOnlyOwnedElementsFunctor(this));
+    m_ownedElements->addChecks.push_back(new ReadOnlyOwnedElementsFunctor(this));
     m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
     m_relationships = new Sequence<Relationship>;
     m_relationships->addProcedures.push_back(new AddRelationshipFunctor(this));
@@ -103,6 +103,8 @@ Element::Element(const Element& el) {
     m_directedRelationships = new Sequence<DirectedRelationship>(*el.m_directedRelationships);
     m_ownedElements->addProcedures.clear();
     m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
+    m_ownedElements->addChecks.clear();
+    m_ownedElements->addChecks.push_back(new ReadOnlyOwnedElementsFunctor(this));
     m_ownedElements->removeProcedures.clear();
     m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
     m_relationships->addProcedures.clear();
@@ -162,7 +164,7 @@ void Element::setOwner(Element* owner) {
     // add this to owner's owned elements if not already added and not null
     if (m_owner) {
         if (!m_owner->getOwnedElements().count(getID())) {
-            m_owner->getOwnedElements().add(*this);
+            m_owner->getOwnedElements().internalAdd(*this);
         }
     }
 }

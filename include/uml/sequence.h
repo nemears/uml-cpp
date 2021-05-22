@@ -45,6 +45,7 @@ namespace UML {
     class StructuredClassifier;
     class Association;
     class Enumeration;
+    class AddOwnedCommentFunctor;
     /**
      * Sequence Class, Holds collections of uml elements
      **/
@@ -78,6 +79,8 @@ namespace UML {
         friend class StructuredClassifier;
         friend class Association;
         friend class Enumeration;
+        friend class Comment;
+        friend class AddOwnedCommentFunctor;
         private:
             std::map<boost::uuids::uuid, T*> m_data;
             std::vector<boost::uuids::uuid> m_order;

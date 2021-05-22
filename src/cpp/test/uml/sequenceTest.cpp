@@ -2,6 +2,7 @@
 #include "uml/element.h"
 #include "uml/namedElement.h"
 #include "uml/sequence.h"
+#include "uml/package.h"
 
 using namespace UML;
 
@@ -82,10 +83,10 @@ TEST_F(SequenceTest, useAutoForLoop2) {
 }
 
 TEST_F(SequenceTest, getNonexistentElementByID_Test) {
-    Element e;
-    Element a;
-    e.getOwnedElements().add(a);
-    Element b;
+    Package e;
+    Package a;
+    e.getPackagedElements().add(a);
+    Package b;
     ASSERT_FALSE(e.getOwnedElements().get(b.getID()));
     ASSERT_TRUE(e.getOwnedElements().get(a.getID()));
 }

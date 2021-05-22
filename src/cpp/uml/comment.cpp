@@ -31,7 +31,7 @@ void Comment::setOwningElement(Element* el) {
     m_owningElement = el;
     if (m_owningElement) {
         if (!m_owningElement->getOwnedComments().count(m_id)) {
-            m_owningElement->getOwnedComments().add(*this);
+            m_owningElement->getOwnedComments().internalAdd(*this);
         }
     }
 }

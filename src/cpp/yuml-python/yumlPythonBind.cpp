@@ -76,8 +76,8 @@ PYBIND11_MODULE(yuml_python, m) {
         //.def_readonly("ownedElements", [] (Element& me) { me.getOwnedElements().copyToVector(); })
         .def("addOwnedElement", [](Element& me, Element& el) { me.getOwnedElements().add(el); })
         .def("removeOwnedElement", [](Element& me, Element& el) { me.getOwnedElements().remove(el); })
-        .def("getOwner", &Element::getOwner)
-        .def("setOwner", &Element::setOwner);
+        .def("getOwner", &Element::getOwner);
+        //.def("setOwner", &Element::setOwner);
 
     // InvalidID_Exception
     static py::exception<InvalidID_Exception>excID(m, "InvalidID_Exception");

@@ -10,7 +10,6 @@ class OutputPinTest : public ::testing::Test {
 TEST_F(OutputPinTest, reindexIDTest) {
     Action a;
     OutputPin i;
-    i.setOwner(&a);
     a.getOutputs().add(i);
     a.getOwnedElements().add(i);
     i.setID("eb092018-0bef-4ad6-b80f-05fa124f98c3");
@@ -21,7 +20,6 @@ TEST_F(OutputPinTest, reindexIDTest) {
 TEST_F(OutputPinTest, reindexNameTest) {
     Action a;
     OutputPin i;
-    i.setOwner(&a);
     a.getOutputs().add(i);
     a.getOwnedElements().add(i);
     i.setName("test");

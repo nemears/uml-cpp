@@ -7,9 +7,7 @@
 
 using namespace UML;
 
-class InstanceSpecificationTest : public ::testing::Test {
-    
-};
+class InstanceSpecificationTest : public ::testing::Test {};
 
 TEST_F(InstanceSpecificationTest, setClassifierAsClass) {
     Class c;
@@ -66,8 +64,6 @@ TEST_F(InstanceSpecificationTest, reindexSlotID_Test) {
     Slot s;
     i.getSlots().add(s);
     s.setOwningInstance(&i);
-    i.getOwnedElements().add(s);
-    s.setOwner(&i);
     s.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
     ASSERT_TRUE(i.getSlots().get(s.getID()) != NULL);
     ASSERT_TRUE(i.getOwnedElements().get(s.getID()) != NULL);

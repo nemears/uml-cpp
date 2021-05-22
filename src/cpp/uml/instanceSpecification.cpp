@@ -22,7 +22,7 @@ void InstanceSpecification::RemoveSlotFunctor::operator()(Element& el) const {
     }
 
     if (dynamic_cast<InstanceSpecification*>(m_el)->getOwnedElements().count(el.getID())) {
-        dynamic_cast<InstanceSpecification*>(m_el)->getOwnedElements().remove(el);
+        dynamic_cast<InstanceSpecification*>(m_el)->getOwnedElements().internalRemove(el);
     }
 }
 

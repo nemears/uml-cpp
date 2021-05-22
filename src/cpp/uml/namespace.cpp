@@ -14,7 +14,7 @@ void Namespace::RemoveMemberFunctor::operator()(Element& el) const {
     }
 
     if (dynamic_cast<Namespace*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<Namespace*>(m_el)->getOwnedMembers().remove(dynamic_cast<NamedElement&>(el));
+        dynamic_cast<Namespace*>(m_el)->getOwnedMembers().internalRemove(dynamic_cast<NamedElement&>(el));
     }
 }
 
@@ -36,7 +36,7 @@ void Namespace::RemoveOwnedMemberFunctor::operator()(Element& el) const {
     }
 
     if (m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().remove(el);
+        m_el->getOwnedElements().internalRemove(el);
     }
 }
 

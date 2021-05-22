@@ -60,7 +60,7 @@ void AddOwnedCommentFunctor::operator()(Element& el) const {
 
 void RemoveOwnedCommentFunctor::operator()(Element& el) const {
     if (m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().remove(el);
+        m_el->getOwnedElements().internalRemove(el);
     }
 
     if (dynamic_cast<Comment&>(el).getOwningElement() ==  m_el) {
@@ -76,6 +76,7 @@ Element::Element() {
     m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
     m_ownedElements->addChecks.push_back(new ReadOnlyOwnedElementsFunctor(this));
     m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
+    m_ownedElements->removeChecks.push_back(new ReadOnlyOwnedElementsFunctor(this));
     m_relationships = new Sequence<Relationship>;
     m_relationships->addProcedures.push_back(new AddRelationshipFunctor(this));
     m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
@@ -107,6 +108,8 @@ Element::Element(const Element& el) {
     m_ownedElements->addChecks.push_back(new ReadOnlyOwnedElementsFunctor(this));
     m_ownedElements->removeProcedures.clear();
     m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
+    m_ownedElements->removeChecks.clear();
+    m_ownedElements->removeChecks.push_back(new ReadOnlyOwnedElementsFunctor(this));
     m_relationships->addProcedures.clear();
     m_relationships->addProcedures.push_back(new AddRelationshipFunctor(this));
     m_relationships->removeProcedures.clear();
@@ -154,7 +157,7 @@ void Element::setOwner(Element* owner) {
     // if owner was already set we need to get rid of previous relationship
     if (m_owner) {
         if (m_owner->getOwnedElements().count(m_id)) {
-            m_owner->getOwnedElements().remove(*this);
+            m_owner->getOwnedElements().internalRemove(*this);
         }
     }
 

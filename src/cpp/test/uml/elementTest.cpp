@@ -167,3 +167,12 @@ TEST_F(ElementTest, doINeedAnAddRelationshipFunctorTest) { // answer is yes
 //   ASSERT_TRUE(p2.getPackagedElements().front()->getID() == c.getID());
 //   ASSERT_TRUE(p2.getPackagedElements().front() != &c);
 // }
+
+TEST_F(ElementTest, readOnlySequenceTest) {
+  Package p;
+  Package c1;
+  Package c2;
+  ASSERT_NO_THROW(p.getPackagedElements().add(c1));
+  ASSERT_THROW(p.getOwnedElements().add(c2), ReadOnlySequenceException);
+  ASSERT_THROW(p.getOwnedElements().remove(c1), ReadOnlySequenceException);
+}

@@ -46,6 +46,7 @@ namespace UML {
     class Association;
     class Enumeration;
     class AddOwnedCommentFunctor;
+    class RemoveOwnedCommentFunctor;
     /**
      * Sequence Class, Holds collections of uml elements
      **/
@@ -81,6 +82,7 @@ namespace UML {
         friend class Enumeration;
         friend class Comment;
         friend class AddOwnedCommentFunctor;
+        friend class RemoveOwnedCommentFunctor;
         private:
             std::map<boost::uuids::uuid, T*> m_data;
             std::vector<boost::uuids::uuid> m_order;
@@ -89,6 +91,7 @@ namespace UML {
             std::vector<AbstractSequenceFunctor*> addProcedures;
             std::vector<AbstractSequenceFunctor*> addChecks;
             std::vector<AbstractSequenceFunctor*> removeProcedures;
+            std::vector<AbstractSequenceFunctor*> removeChecks;
             void reindex(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
 
                 // m_data
@@ -130,32 +133,9 @@ namespace UML {
                     (*fun)(el);
                 }
             }
-        public:
 
-            // destructor
-            ~Sequence<T>() {
-                for (auto const& addProc: addProcedures) {
-                    delete addProc;
-                }
-
-                for (auto const& addCheck: addChecks) {
-                    delete addCheck;
-                }
-
-                for (auto const& remProc: removeProcedures) {
-                    delete remProc;
-                }
-            }
-
-            // Methods
-            void add(T& el) {
-                for (auto const& fun : addChecks) {
-                    (*fun)(el);
-                }
-
-                internalAdd(el);
-            };
-            void remove(T& el) {
+            // remove without checks
+            void internalRemove(T& el) {
                 if (m_data.count(el.getID())) {
 
                     // erase element in uuid map
@@ -177,6 +157,42 @@ namespace UML {
                 } else {
                     throw ElementDoesntExistException(el);
                 }
+            }
+        public:
+
+            // destructor
+            ~Sequence<T>() {
+                for (auto const& addProc: addProcedures) {
+                    delete addProc;
+                }
+
+                for (auto const& addCheck: addChecks) {
+                    delete addCheck;
+                }
+
+                for (auto const& remProc: removeProcedures) {
+                    delete remProc;
+                }
+
+                for (auto const& remCheck: removeChecks) {
+                    delete remCheck;
+                }
+            }
+
+            // Methods
+            void add(T& el) {
+                for (auto const& fun : addChecks) {
+                    (*fun)(el);
+                }
+
+                internalAdd(el);
+            };
+            void remove(T& el) {
+                for (auto const& fun : removeChecks) {
+                    (*fun)(el);
+                }
+
+                internalRemove(el);
             };
             size_t size() { return m_order.size(); };
             bool empty() { return m_order.empty(); };

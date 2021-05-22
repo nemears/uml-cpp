@@ -139,7 +139,7 @@ void Classifier::RemoveGeneralizationFunctor::operator()(Element& el) const {
     }
     
     if (m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().remove(el);
+        m_el->getOwnedElements().internalRemove(el);
     }
 }
 

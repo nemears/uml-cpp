@@ -15,7 +15,7 @@ void Relationship::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID)
 void Relationship::AddRelationshipFunctor::operator()(Element& el) const {
     // add to related elements if not duplicate
     if (!el.getRelationships().count(m_el->getID())) {
-        el.getRelationships().add(*dynamic_cast<Relationship*>(m_el));
+        el.getRelationships().internalAdd(*dynamic_cast<Relationship*>(m_el));
     }
 }
 
@@ -28,7 +28,7 @@ void Relationship::CheckRelatedElementsFunctor::operator()(Element& el) const {
 
 void Relationship::RemoveRelatedElementsFunctor::operator()(Element& el) const {
     if (el.getRelationships().count(m_el->getID())) {
-        el.getRelationships().remove(*dynamic_cast<Relationship*>(m_el));
+        el.getRelationships().internalRemove(*dynamic_cast<Relationship*>(m_el));
     }
     if (m_el->isSubClassOf(ElementType::DIRECTED_RELATIONSHIP)) {
         if (dynamic_cast<DirectedRelationship*>(m_el)->getTargets().count(el.getID())) {

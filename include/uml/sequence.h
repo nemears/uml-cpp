@@ -47,6 +47,9 @@ namespace UML {
     class Enumeration;
     class AddOwnedCommentFunctor;
     class RemoveOwnedCommentFunctor;
+    class AddDirectedRelationshipFunctor;
+    class RemoveDirectedRelationshipFunctor;
+    class Generalization;
     /**
      * Sequence Class, Holds collections of uml elements
      **/
@@ -83,6 +86,9 @@ namespace UML {
         friend class Comment;
         friend class AddOwnedCommentFunctor;
         friend class RemoveOwnedCommentFunctor;
+        friend class AddDirectedRelationshipFunctor;
+        friend class RemoveDirectedRelationshipFunctor;
+        friend class Generalization;
         private:
             std::map<boost::uuids::uuid, T*> m_data;
             std::vector<boost::uuids::uuid> m_order;

@@ -151,9 +151,9 @@ TEST_F(ElementTest, CopyTest) {
 }
 
 TEST_F(ElementTest, doINeedAnAddRelationshipFunctorTest) { // answer is yes
-  Element e;
-  Relationship r;
-  e.getRelationships().add(r);
+  Package e;
+  PackageMerge r;
+  e.getPackageMerge().add(r);
   ASSERT_TRUE(r.getRelatedElements().size() == 1);
   ASSERT_TRUE(r.getRelatedElements().front() == &e);
 }

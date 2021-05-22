@@ -14,7 +14,7 @@ Classifier* Generalization::getGeneral() {
 void Generalization::setGeneral(Classifier* general) {
     if (m_general) {
         if (m_general->getRelationships().count(m_id)) {
-            m_general->getRelationships().remove(*this);
+            m_general->getRelationships().internalRemove(*this);
         }
         if (m_specific) {
             for (auto const& member: m_general->getMembers()) {
@@ -52,7 +52,7 @@ Classifier* Generalization::getSpecific() {
 void Generalization::setSpecific(Classifier* specific) {
     if (m_specific) {
         if (m_specific->getRelationships().count(m_id)) {
-            m_specific->getRelationships().remove(*this);
+            m_specific->getRelationships().internalRemove(*this);
         }
         if (m_specific->getGeneralizations().count(m_id)) {
             m_specific->getGeneralizations().remove(*this);

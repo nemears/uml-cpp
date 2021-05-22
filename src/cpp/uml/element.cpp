@@ -38,13 +38,13 @@ void ReadOnlySequenceFunctor::operator()(Element& el) const {
 
 void AddDirectedRelationshipFunctor::operator()(Element& el) const {
     if (!m_el->getRelationships().count(el.getID())) {
-        m_el->getRelationships().add(dynamic_cast<DirectedRelationship&>(el));
+        m_el->getRelationships().internalAdd(dynamic_cast<DirectedRelationship&>(el));
     }
 }
 
 void RemoveDirectedRelationshipFunctor::operator()(Element& el) const {
     if (m_el->getRelationships().count(el.getID())) {
-        m_el->getRelationships().remove(dynamic_cast<DirectedRelationship&>(el));
+        m_el->getRelationships().internalRemove(dynamic_cast<DirectedRelationship&>(el));
     }
 }
 
@@ -79,7 +79,9 @@ Element::Element() {
     m_ownedElements->removeChecks.push_back(new ReadOnlySequenceFunctor(this, "ownedElements"));
     m_relationships = new Sequence<Relationship>;
     m_relationships->addProcedures.push_back(new AddRelationshipFunctor(this));
+    m_relationships->addChecks.push_back(new ReadOnlySequenceFunctor(this, "relationships"));
     m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
+    m_relationships->removeChecks.push_back(new ReadOnlySequenceFunctor(this, "relationships"));
     m_directedRelationships = new Sequence<DirectedRelationship>;
     m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));
     m_directedRelationships->removeProcedures.push_back(new RemoveDirectedRelationshipFunctor(this));
@@ -112,8 +114,12 @@ Element::Element(const Element& el) {
     m_ownedElements->removeChecks.push_back(new ReadOnlySequenceFunctor(this, "ownedElements"));
     m_relationships->addProcedures.clear();
     m_relationships->addProcedures.push_back(new AddRelationshipFunctor(this));
+    m_relationships->addChecks.clear();
+    m_relationships->addChecks.push_back(new ReadOnlySequenceFunctor(this, "relationships"));
     m_relationships->removeProcedures.clear();
     m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
+    m_relationships->removeChecks.clear();
+    m_relationships->removeChecks.push_back(new ReadOnlySequenceFunctor(this, "relationships"));
     m_directedRelationships->addProcedures.clear();
     m_directedRelationships->removeProcedures.clear();
     m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));

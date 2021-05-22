@@ -32,8 +32,8 @@ void RemoveOwnerFunctor::operator()(Element& el) const {
     }
 }
 
-void ReadOnlyOwnedElementsFunctor::operator()(Element& el) const {
-    throw ReadOnlySequenceException(m_el->getIDstring(), "ownedElements");
+void ReadOnlySequenceFunctor::operator()(Element& el) const {
+    throw ReadOnlySequenceException(m_el->getIDstring(), m_name);
 }
 
 void AddDirectedRelationshipFunctor::operator()(Element& el) const {
@@ -74,9 +74,9 @@ Element::Element() {
     m_owner = NULL;
     m_ownedElements = new Sequence<Element>;
     m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
-    m_ownedElements->addChecks.push_back(new ReadOnlyOwnedElementsFunctor(this));
+    m_ownedElements->addChecks.push_back(new ReadOnlySequenceFunctor(this, "ownedElements"));
     m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
-    m_ownedElements->removeChecks.push_back(new ReadOnlyOwnedElementsFunctor(this));
+    m_ownedElements->removeChecks.push_back(new ReadOnlySequenceFunctor(this, "ownedElements"));
     m_relationships = new Sequence<Relationship>;
     m_relationships->addProcedures.push_back(new AddRelationshipFunctor(this));
     m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
@@ -105,11 +105,11 @@ Element::Element(const Element& el) {
     m_ownedElements->addProcedures.clear();
     m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
     m_ownedElements->addChecks.clear();
-    m_ownedElements->addChecks.push_back(new ReadOnlyOwnedElementsFunctor(this));
+    m_ownedElements->addChecks.push_back(new ReadOnlySequenceFunctor(this, "ownedElements"));
     m_ownedElements->removeProcedures.clear();
     m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
     m_ownedElements->removeChecks.clear();
-    m_ownedElements->removeChecks.push_back(new ReadOnlyOwnedElementsFunctor(this));
+    m_ownedElements->removeChecks.push_back(new ReadOnlySequenceFunctor(this, "ownedElements"));
     m_relationships->addProcedures.clear();
     m_relationships->addProcedures.push_back(new AddRelationshipFunctor(this));
     m_relationships->removeProcedures.clear();

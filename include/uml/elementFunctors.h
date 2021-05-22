@@ -29,9 +29,13 @@ namespace UML {
             void operator()(Element& el) const override;
     };
 
-    class ReadOnlyOwnedElementsFunctor : public AbstractSequenceFunctor {
+    class ReadOnlySequenceFunctor : public AbstractSequenceFunctor {
+        private:
+            std::string m_name;
         public:
-            ReadOnlyOwnedElementsFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+            ReadOnlySequenceFunctor(Element* me, std::string sequenceName) : AbstractSequenceFunctor(me) {
+                m_name = sequenceName;
+            };
             void operator()(Element& el) const override;
     };
 

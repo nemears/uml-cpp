@@ -176,3 +176,14 @@ TEST_F(ElementTest, readOnlySequenceTest) {
   ASSERT_THROW(p.getOwnedElements().add(c2), ReadOnlySequenceException);
   ASSERT_THROW(p.getOwnedElements().remove(c1), ReadOnlySequenceException);
 }
+
+TEST_F(ElementTest, readOnlyRelationships) {
+  Package p;
+  Package m;
+  PackageMerge r;
+  p.getPackageMerge().add(r);
+  r.setMergedPackage(&m);
+  PackageMerge r2;
+  ASSERT_THROW(p.getRelationships().add(r2), ReadOnlySequenceException);
+  ASSERT_THROW(p.getRelationships().remove(r), ReadOnlySequenceException);
+}

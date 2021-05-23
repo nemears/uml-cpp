@@ -73,9 +73,9 @@ TEST_F(ElementTest, reIndexID_Test) {
 TEST_F(ElementTest, basicRelationshipTest) {
   Package e;
   Package a;
-  Relationship r;
-  r.getRelatedElements().add(e);
-  r.getRelatedElements().add(a);
+  PackageMerge r;
+  e.getPackageMerge().add(r);
+  r.setMergedPackage(&a);
   ASSERT_TRUE(r.getRelatedElements().size() == 2);
   ASSERT_TRUE(r.getRelatedElements().front() == &e);
   ASSERT_TRUE(r.getRelatedElements().back() == &a);
@@ -86,11 +86,11 @@ TEST_F(ElementTest, basicRelationshipTest) {
 }
 
 TEST_F(ElementTest, reindexRelationshipID_test) {
-  Element e;
-  Element a;
-  Relationship r;
-  r.getRelatedElements().add(e);
-  r.getRelatedElements().add(a);
+  Package e;
+  Package a;
+  PackageMerge r;
+  e.getPackageMerge().add(r);
+  r.setMergedPackage(&a);
   r.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
   e.setID("eb092018-0bef-4ad6-b80f-05fa124f98c3");
   ASSERT_TRUE(r.getRelatedElements().get(e.getID()));
@@ -186,4 +186,15 @@ TEST_F(ElementTest, readOnlyRelationships) {
   PackageMerge r2;
   ASSERT_THROW(p.getRelationships().add(r2), ReadOnlySequenceException);
   ASSERT_THROW(p.getRelationships().remove(r), ReadOnlySequenceException);
+}
+
+TEST_F(ElementTest, readOnlyRelatedElementsTest) {
+  Package p;
+  Package m;
+  PackageMerge r;
+  Package h;
+  p.getPackageMerge().add(r);
+  r.setMergedPackage(&m);
+  ASSERT_THROW(r.getRelatedElements().remove(p), ReadOnlySequenceException);
+  ASSERT_THROW(r.getRelatedElements().add(h), ReadOnlySequenceException);
 }

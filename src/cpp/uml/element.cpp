@@ -16,13 +16,13 @@ void SetOwnerFunctor::operator()(Element& el) const{
 
 void AddRelationshipFunctor::operator()(Element& el) const {
     if (!dynamic_cast<Relationship&>(el).getRelatedElements().count(m_el->getID())) {
-        dynamic_cast<Relationship&>(el).getRelatedElements().add(*m_el);
+        dynamic_cast<Relationship&>(el).getRelatedElements().internalAdd(*m_el);
     }
 }
 
 void RemoveRelationshipFunctor::operator()(Element& el) const {
     if (dynamic_cast<Relationship&>(el).getRelatedElements().count(m_el->getID())) {
-        dynamic_cast<Relationship&>(el).getRelatedElements().remove(*m_el);
+        dynamic_cast<Relationship&>(el).getRelatedElements().internalRemove(*m_el);
     }
 }
 

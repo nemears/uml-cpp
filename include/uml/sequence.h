@@ -50,6 +50,8 @@ namespace UML {
     class AddDirectedRelationshipFunctor;
     class RemoveDirectedRelationshipFunctor;
     class Generalization;
+    class AddRelationshipFunctor;
+    class RemoveRelationshipFunctor;
     /**
      * Sequence Class, Holds collections of uml elements
      **/
@@ -89,6 +91,8 @@ namespace UML {
         friend class AddDirectedRelationshipFunctor;
         friend class RemoveDirectedRelationshipFunctor;
         friend class Generalization;
+        friend class AddRelationshipFunctor;
+        friend class RemoveRelationshipFunctor;
         private:
             std::map<boost::uuids::uuid, T*> m_data;
             std::vector<boost::uuids::uuid> m_order;

@@ -5,7 +5,7 @@ using namespace UML;
 void DirectedRelationship::AddRelatedElementFunctor::operator()(Element& el) const {
     // add to related elements if not duplicate
     if (!dynamic_cast<DirectedRelationship*>(m_el)->getRelatedElements().count(el.getID())) {
-        dynamic_cast<DirectedRelationship*>(m_el)->getRelatedElements().add(el);
+        dynamic_cast<DirectedRelationship*>(m_el)->getRelatedElements().internalAdd(el);
     }
 
     if (!el.getDirectedRelationships().count(m_el->getID())) {
@@ -15,7 +15,7 @@ void DirectedRelationship::AddRelatedElementFunctor::operator()(Element& el) con
 
 void DirectedRelationship::RemoveRelatedElementFunctor::operator()(Element& el) const {
     if (dynamic_cast<DirectedRelationship*>(m_el)->getRelatedElements().count(el.getID())) {
-        dynamic_cast<DirectedRelationship*>(m_el)->getRelatedElements().remove(el);
+        dynamic_cast<DirectedRelationship*>(m_el)->getRelatedElements().internalRemove(el);
     }
     
     if (el.getDirectedRelationships().count(m_el->getID())) {

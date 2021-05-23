@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "uml/directedRelationship.h"
+#include "uml/package.h"
 
 using namespace UML;
 
@@ -50,13 +51,13 @@ TEST_F(DirectedRelationshipTest, duplicateRelationshipExceptionTest) {
 }
 
 TEST_F(DirectedRelationshipTest, removeRelationshipFunctorTest) {
-    DirectedRelationship dr;
-    Element a;
-    Element b;
-    dr.getTargets().add(a);
-    dr.getSources().add(b);
-    dr.getTargets().remove(a);
-    dr.getRelatedElements().remove(b);
+    PackageMerge dr;
+    Package a;
+    Package b;
+    a.getPackageMerge().add(dr);
+    dr.setMergedPackage(&b);
+    dr.setMergedPackage(0);
+    a.getPackageMerge().remove(dr);
     ASSERT_FALSE(dr.getTargets().count(a.getID()));
     ASSERT_FALSE(dr.getRelatedElements().count(a.getID()));
     ASSERT_FALSE(a.getRelationships().count(dr.getID()));

@@ -1,5 +1,6 @@
 #include "uml/relationship.h"
 #include "uml/directedRelationship.h"
+#include "uml/elementFunctors.h"
 
 using namespace std;
 using namespace UML;
@@ -43,7 +44,9 @@ void Relationship::RemoveRelatedElementsFunctor::operator()(Element& el) const {
 Relationship::Relationship() {
     m_relatedElements.addProcedures.push_back(new AddRelationshipFunctor(this));
     m_relatedElements.addChecks.push_back(new CheckRelatedElementsFunctor(this));
+    m_relatedElements.addChecks.push_back(new ReadOnlySequenceFunctor(this, "relatedElements"));
     m_relatedElements.removeProcedures.push_back(new RemoveRelatedElementsFunctor(this));
+    m_relatedElements.removeChecks.push_back(new ReadOnlySequenceFunctor(this, "relatedElements"));
 }
 
 Relationship::~Relationship() {

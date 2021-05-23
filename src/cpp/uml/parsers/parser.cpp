@@ -21,6 +21,20 @@ string emit(Element& el) {
     return emitter.c_str();
 }
 
+Model* parseModel(string path) {
+    ParserMetaData data;
+    data.m_path = path;
+    YAML::Node node = YAML::LoadFile(data.m_path);
+    if (node["model"]) {
+        Model* m = new Model;
+        parsePackage(node["model"], *m, data);
+        return m;
+    } else {
+        throw UmlParserException("base node in " + path + " is not a model!");
+        return 0;
+    }
+}
+
 void deleteParsedElement(Element* el) {
     for (auto const& ownedElement : el->getOwnedElements()) {
         // if (ownedElement->getElementType() == ElementType::PACKAGE_MERGE) {

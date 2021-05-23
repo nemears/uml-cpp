@@ -15,8 +15,21 @@ class ModelParserTest : public ::testing::Test {
 };
 
 TEST_F(ModelParserTest, parsedAndCreatedElementTest) {
-    Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "modelTests/modelW_Packages.yml"));
-    ASSERT_TRUE(el->getElementType() == ElementType::MODEL);
-    Parsers::deleteParsedElement(el);
+    
+    // Parse
+    Model* m;
+    ASSERT_NO_THROW(m = Parsers::parseModel(ymlPath + "modelTests/modelW_Packages.yml"));
+
+    // Validate
+    ASSERT_TRUE(m->getPackagedElements().size() == 1);
+    ASSERT_TRUE(m->getPackagedElements().front()->getElementType() == ElementType::PACKAGE);
+    Package* parsedPckg = dynamic_cast<Package*>(m->getPackagedElements().front());
+
+    // Add some elements
+    Class c;
+    Property p;
+    c.getOwnedAttributes().add(p);
+    parsedPckg->getPackagedElements().add(c);
+
+    Parsers::deleteParsedElement(m);
 }

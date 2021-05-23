@@ -30,6 +30,7 @@
 #include "uml/literalInt.h"
 #include "uml/expression.h"
 #include "uml/generalization.h"
+#include "uml/model.h"
 
 namespace UML {
     namespace Parsers {
@@ -53,6 +54,12 @@ namespace UML {
          **/
         Element* parse(std::string path);
         std::string emit(Element& el);
+
+        /**
+         * This is experimental, thinking about wrapping all parsing into Models. This function will just parse yaml files
+         * with base nodes of model nothing else. This is to simplify memory management
+         **/
+        Model* parseModel(std::string path);
 
         /**
          * This function deletes the element passed in and all of its owned element

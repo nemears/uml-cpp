@@ -1,4 +1,5 @@
 #include "uml/parsers/parser.h"
+#include "uml/model.h"
 
 using namespace std;
 
@@ -94,6 +95,12 @@ Element* parse(ParserMetaData& data) {
         LiteralString* ls = new LiteralString;
         parseLiteralString(node["literalString"], *ls, data);
         return ls;
+    }
+
+    if (node["model"]) {
+        Model* model = new Model;
+        parsePackage(node["model"], *model, data);
+        return model;
     }
 
     if (node["opaqueBehavior"]) {

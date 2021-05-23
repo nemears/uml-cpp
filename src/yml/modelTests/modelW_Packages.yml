@@ -1,0 +1,6 @@
+---
+model:
+  packagedElements:
+    - package:
+        name: blank package
+...

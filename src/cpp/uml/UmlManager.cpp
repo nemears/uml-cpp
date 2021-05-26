@@ -476,6 +476,17 @@ std::string ID::string() {
     return ret;
 }
 
+uint8_t* ID::getBytes() {
+    return m_data;
+}
+
+void ID::setBytes(uint8_t* bytes) {
+    for (size_t i = 0; i < 21; i++) {
+        m_data[i] = *bytes;
+        bytes++;
+    }
+}
+
 ID ID::randomID() {
     ID id;
     for (size_t i = 0; i < 21; i++) {

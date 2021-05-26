@@ -14,6 +14,8 @@ namespace UML {
         public:
             ID();
             std::string string();
+            uint8_t* getBytes();
+            void setBytes(uint8_t* bytes);
             friend bool operator==(const ID& lhs, const ID& rhs) {
                 for (size_t i = 0; i < 21; i++) {
                     if (lhs.m_data[i] != rhs.m_data[i]) {
@@ -29,6 +31,8 @@ namespace UML {
                         return true;
                     }
                 }
+
+                return false;
             };
             static ID randomID();
             static ID fromString(std::string id);

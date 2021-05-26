@@ -24,4 +24,11 @@ TEST_F(ID_Test, idTest) {
     ASSERT_EQ(rid, ID::fromString(rid.string()));
     ID rid2 = rid;
     ASSERT_EQ(rid, rid2);
+    uint8_t* ridBytes = rid.getBytes();
+    ID rid3;
+    rid3.setBytes(ridBytes);
+    ID ampersandID;
+    uint8_t ampersands[21] = {255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255};
+    ampersandID.setBytes(ampersands);
+    ASSERT_EQ("&&&&&&&&&&&&&&&&&&&&&&&&&&&&", ampersandID.string());
 }

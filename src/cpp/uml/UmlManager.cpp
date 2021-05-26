@@ -1,4 +1,6 @@
 #include "uml/UmlManager.h"
+#include <stdlib.h>
+#include <time.h>
 
 using namespace UML;
 
@@ -455,27 +457,6 @@ char ID::base64(bool in[6]) {
     return '?';
 }
 
-bool getBit(uint8_t num, size_t i) {
-    if (i == 0) {
-        return num << 7;
-    } else if (i == 1) {
-        return (num << 6) >> 1;
-    } else if (i == 2) {
-        return (num << 5) >> 2;
-    } else if (i == 3) {
-        return (num << 4) >> 3;
-    } else if (i == 4) {
-        return (num << 3) >> 4;
-    } else if (i == 5) {
-        return (num << 2) >> 5;
-    } else if (i == 6) {
-        return (num << 1) >> 6;
-    } else if (i == 7) {
-        return num >> 7;
-    }
-    // TODO throw exception
-}
-
 std::string ID::string() {
     std::string ret = "";
     size_t bitIndex = 0;
@@ -483,7 +464,7 @@ std::string ID::string() {
     for (size_t i = 0; i < 28; i++) {
         bool uint6[6];
         for (size_t j = 0; j < 6; j++) {
-            uint6[j] = getBit(m_data[dataIndex], bitIndex);
+            uint6[j] = (m_data[dataIndex] >> (bitIndex % 8)) & 1;
             bitIndex++;
             if (bitIndex > 7) {
                 bitIndex = 0;
@@ -493,4 +474,13 @@ std::string ID::string() {
         ret += base64(uint6);
     }
     return ret;
+}
+
+ID ID::randomID() {
+    ID id;
+    for (size_t i = 0; i < 21; i++) {
+        id.m_data[i] = rand() % 256;
+    }
+
+    return id;
 }

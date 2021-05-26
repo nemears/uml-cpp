@@ -2,7 +2,6 @@
 #define UML_MANAGER_H
 
 #include <map>
-#include <boost/uuid/uuid.hpp>
 
 namespace UML {
 
@@ -15,11 +14,12 @@ namespace UML {
         public:
             ID();
             std::string string();
+            static ID randomID();
     };
 
     class UmlManager {
         public:
-            std::map<boost::uuids::uuid, Element> m_elements;
+            std::map<ID, Element> m_elements;
     };
 }
 

@@ -6,5 +6,5 @@ add_library(Uml namespace.cpp model.cpp element.cpp namedElement.cpp class.cpp c
                 joinNode.cpp forkNode.cpp mergeNode.cpp parameterNode.cpp callBehaviorAction.cpp expression.cpp createObjectAction.cpp
                 relationship.cpp directedRelationship.cpp generalization.cpp packageableElement.cpp package.cpp literalSpecification.cpp
                 feature.cpp behavioralFeature.cpp dataType.cpp redefinableElement.cpp structuredClassifier.cpp connectableElement.cpp
-                association.cpp enumeration.cpp enumerationLiteral.cpp packageMerge.cpp comment.cpp)
+                association.cpp enumeration.cpp enumerationLiteral.cpp packageMerge.cpp comment.cpp UmlManager.cpp)
 add_subdirectory(parsers)

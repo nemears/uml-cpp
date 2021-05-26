@@ -8,6 +8,7 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/lexical_cast.hpp>
+#include "UmlManager.h"
 
 namespace UML {
 
@@ -103,12 +104,18 @@ namespace UML {
         friend class RemoveOwnerFunctor;
         friend class Slot;
         protected:
+            UmlManager* m_manager;
+            boost::uuids::uuid m_ownerID;
             Element* m_owner;
             // Sequences need to be pointers in element, still encapsulated but slightly different internal syntax
             Sequence<Element>* m_ownedElements;
+            std::vector<boost::uuids::uuid> m_ownedElementsID;
             Sequence<Relationship>* m_relationships;
+            std::vector<boost::uuids::uuid> m_relationshipsID;
             Sequence<DirectedRelationship>* m_directedRelationships;
+            std::vector<boost::uuids::uuid> m_directedRelationshipsID;
             Sequence<Comment>* m_ownedComments;
+            std::vector<boost::uuids::uuid> m_ownedCommentsID;
             boost::uuids::uuid m_id;
             virtual void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID);
             void setOwner(Element* owner);

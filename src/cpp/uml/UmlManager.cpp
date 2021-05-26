@@ -484,3 +484,474 @@ ID ID::randomID() {
 
     return id;
 }
+
+ID ID::fromString(std::string id) {
+    ID ret;
+    bool boolArr[168];
+    size_t i = 0;
+    for (auto const& c : id) {
+        if (c == 'A') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 0;
+        } else if (c == 'B') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 1;
+        } else if (c == 'C') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 0;
+        } else if (c == 'D') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 1;
+        } else if (c == 'E') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 0;
+        } else if (c == 'F') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 1;
+        } else if (c == 'G') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 0;
+        } else if (c == 'H') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 1;
+        } else if (c == 'I') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 0;
+        } else if (c == 'J') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 1;
+        } else if (c == 'K') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 0;
+        } else if (c == 'L') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 1;
+        } else if (c == 'M') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 0;
+        } else if (c == 'N') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 1;
+        } else if (c == 'O') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 0;
+        } else if (c == 'P') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 1;
+        } else if (c == 'Q') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 0;
+        } else if (c == 'R') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 1;
+        } else if (c == 'S') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 0;
+        } else if (c == 'T') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 1;
+        } else if (c == 'U') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 0;
+        } else if (c == 'V') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 1;
+        } else if (c == 'W') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 0;
+        } else if (c == 'X') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 1;
+        } else if (c == 'Y') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 0;
+        } else if (c == 'Z') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 1;
+        } else if (c == 'a') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 0;
+        } else if (c == 'b') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 1;
+        } else if (c == 'c') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 0;
+        } else if (c == 'd') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 1;
+        } else if (c == 'e') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 0;
+        } else if (c == 'f') {
+            boolArr[i] = 0;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 1;
+        } else if (c == 'g') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 0;
+        } else if (c == 'h') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 1;
+        } else if (c == 'i') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 0;
+        } else if (c == 'j') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 1;
+        } else if (c == 'k') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 0;
+        } else if (c == 'l') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 1;
+        } else if (c == 'm') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 0;
+        } else if (c == 'n') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 1;
+        } else if (c == 'o') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 0;
+        } else if (c == 'p') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 1;
+        } else if (c == 'q') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 0;
+        } else if (c == 'r') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 1;
+        } else if (c == 's') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 0;
+        } else if (c == 't') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 1;
+        } else if (c == 'u') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 0;
+        } else if (c == 'v') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 0;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 1;
+        } else if (c == 'w') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 0;
+        } else if (c == 'x') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 1;
+        } else if (c == 'y') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 0;
+        } else if (c == 'z') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 1;
+        } else if (c == '0') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 0;
+        } else if (c == '1') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 1;
+        } else if (c == '2') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 0;
+        } else if (c == '3') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 0;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 1;
+        } else if (c == '4') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 0;
+        } else if (c == '5') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 1;
+        } else if (c == '6') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 0;
+        } else if (c == '7') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 0;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 1;
+        } else if (c == '8') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 0;
+        } else if (c == '9') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 0;
+            boolArr[i+5] = 1;
+        } else if (c == '_') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 0;
+        } else if (c == '&') {
+            boolArr[i] = 1;
+            boolArr[i+1] = 1;
+            boolArr[i+2] = 1;
+            boolArr[i+3] = 1;
+            boolArr[i+4] = 1;
+            boolArr[i+5] = 1;
+        }
+
+        i+=6;
+    }
+
+    for (size_t i = 0; i < 21; i++) {
+        uint8_t data = 0;
+        for (size_t j = 0; j < 8; j++) {
+            if (boolArr[8*i +j]) {
+                data |= 1 << j;
+            }
+        }
+        ret.m_data[i] = data;
+    }
+
+    return ret;
+}

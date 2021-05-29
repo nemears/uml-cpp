@@ -22,39 +22,24 @@ namespace UML {
      **/
     class UmlManager {
         private:
-            class AbstractFactory {};
-            template <class T = Element> class Factory : public AbstractFactory {
-                private:
-                    std::vector<T*> m_created;
-                    virtual ~Factory() {
-                        for (auto const& el : m_created) {
-                            delete el;
-                        }
-                    };
-                public:
-                    T& create() {
-                        T* ret = new T;
-                        m_created.push_back(ret);
-                        return *ret;
-                    };
-            };
             Parsers::ParserMetaData m_parserData;
-            std::unordered_map<ID, Element*> m_elements;
+            std::unordered_map<ID, Element*> m_loaded;
+            std::vector<ID> m_elements;
             std::unordered_map<ID, DiscData> m_disc;
-            std::unordered_map<ElementType, AbstractFactory*> m_factories;
         public:
-            UmlManager();
             ~UmlManager();
-            void aquire(ID id);
-            void release(ID id);
             template <class T = Element> T& get(ID id) {
-                return *dynamic_cast<T*>(m_elements[id]);
+                if (!m_loaded.count(id)) {
+                    // TODO load
+                }
+                return *dynamic_cast<T*>(m_loaded[id]);
             };
             template <class T = Element> T& create() {
-                T& ret = static_cast<Factory<T>*>(m_factories[T::elementType()])->create();
-                ret.m_manager = this;
-                m_elements[ret.getID2()] = &ret;
-                return ret;
+                T* ret = new T;
+                ret->m_manager = this;
+                m_elements.push_back(ret->getID2());
+                m_loaded[ret->getID2()] = ret;
+                return *ret;
             };
     };
 }

@@ -1,4 +1,5 @@
 #include "uml/element.h"
+#include "uml/umlManager.h"
 #include "uml/sequence.h"
 #include "uml/relationship.h"
 #include "uml/elementFunctors.h"
@@ -70,6 +71,12 @@ void RemoveOwnedCommentFunctor::operator()(Element& el) const {
 
 // Constructor
 Element::Element() {
+    m_manager = 0;
+    m_id2 = ID::randomID();
+    m_ownerPtr = 0;
+
+
+    // old
     m_id = boost::uuids::random_generator()();
     m_owner = NULL;
     m_ownedElements = new Sequence<Element>;
@@ -404,5 +411,13 @@ ID Element::getID2() {
 }
 
 Element* Element::getOwner2() {
-    return 0;
+    if (!m_ownerPtr) {
+        m_ownerPtr = &m_manager->get<Element>(m_ownerID);
+    }
+
+    return m_ownerPtr;
+}
+
+void Element::setOwner2(Element* owner) {
+    m_ownerID = owner->getID2();
 }

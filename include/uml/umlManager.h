@@ -47,8 +47,14 @@ namespace UML {
             ~UmlManager();
             void aquire(ID id);
             void release(ID id);
+            template <class T = Element> T& get(ID id) {
+                return *dynamic_cast<T*>(m_elements[id]);
+            };
             template <class T = Element> T& create() {
-                return static_cast<Factory<T>*>(m_factories[T::elementType()])->create();
+                T& ret = static_cast<Factory<T>*>(m_factories[T::elementType()])->create();
+                ret.m_manager = this;
+                m_elements[ret.getID2()] = &ret;
+                return ret;
             };
     };
 }

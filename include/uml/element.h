@@ -106,15 +106,15 @@ namespace UML {
         friend class SetOwnerFunctor;
         friend class RemoveOwnerFunctor;
         friend class Slot;
+        friend class UmlManager;
         protected:
             // new id implementation
-            std::shared_ptr<UmlManager> m_manager;
+            UmlManager* m_manager;
             ID m_id2;
 
             // owner
             ID m_ownerID;
             Element* m_ownerPtr;
-            bool m_ownerFlag;
             
             // ownedElements
 
@@ -138,7 +138,7 @@ namespace UML {
             // new implementation
             ID getID2();
             Element* getOwner2();
-            void setOwner2(Element& el);
+            void setOwner2(Element* el);
             static ElementType elementType() {
                 return ElementType::ELEMENT;
             };

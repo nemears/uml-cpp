@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "uml/element.h"
+#include "uml/umlManager.h"
 #include "uml/namedElement.h"
 #include "uml/sequence.h"
 #include "uml/relationship.h"
@@ -197,4 +198,12 @@ TEST_F(ElementTest, readOnlyRelatedElementsTest) {
   r.setMergedPackage(&m);
   ASSERT_THROW(r.getRelatedElements().remove(p), ReadOnlySequenceException);
   ASSERT_THROW(r.getRelatedElements().add(h), ReadOnlySequenceException);
+}
+
+TEST_F(ElementTest, setAndGetOwnerTest2) {
+  UmlManager m;
+  Element& owner = m.create<Element>();
+  Element& ownee = m.create<Element>();
+  ownee.setOwner2(&owner);
+  ASSERT_TRUE(ownee.getOwner2() == &owner);
 }

@@ -84,6 +84,8 @@ namespace UML {
     }
 
     template <class T> class Sequence;
+    //template <class T> class Sequence2;
+    //template <class T> struct SequenceIterator;
     class ElementDoesntExistException;
     class Relationship;
     class DirectedRelationship;

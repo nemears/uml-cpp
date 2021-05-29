@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include "id.h"
 #include "element.h"
-#include "parsers/parserMetaData.h"
+//#include "parsers/parser.h"
 
 namespace UML {
 
@@ -15,6 +15,8 @@ namespace UML {
         bool m_sequence;
     };
 
+    template <class T = Element> class Sequence2;
+
     /**
      * UmlManager is the object that handles all of the instantiation and deletion of UML objects
      * from a model. It follows object pool semantics to be able to hold information about large
@@ -22,7 +24,7 @@ namespace UML {
      **/
     class UmlManager {
         private:
-            Parsers::ParserMetaData m_parserData;
+            //Parsers::ParserMetaData m_parserData;
             std::unordered_map<ID, Element*> m_loaded;
             std::vector<ID> m_elements;
             std::unordered_map<ID, DiscData> m_disc;
@@ -40,6 +42,17 @@ namespace UML {
                 m_elements.push_back(ret->getID2());
                 m_loaded[ret->getID2()] = ret;
                 return *ret;
+            };
+            
+            /**
+             * This function doesn't deal with memory, just sets the m_manager so the Sequence Value
+             * can communicate to the manager for allocation.
+             * WARN: Sequences should always be values
+             **/
+            template <class T = Element> Sequence2<T> createSequence() {
+                Sequence2<T> ret;
+                ret.m_manager = this;
+                return ret;
             };
     };
 }

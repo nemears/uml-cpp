@@ -2,6 +2,7 @@
 #define SEQUENCE_H
 
 #include "namedElement.h"
+#include "umlManager.h"
 
 namespace UML {
 
@@ -230,15 +231,19 @@ namespace UML {
             }
     };
 
+    template <class T = Element> struct SequenceIterator;
+
     // new sequence implementation
     template <class T> class Sequence2 {
+        friend class SequenceIterator<T>;
+        friend class UmlManager;
         private:
             // Manager
-            std::shared_ptr<UmlManager> m_manager;
+            UmlManager* m_manager;
 
             // Data
             std::vector<ID> m_order;
-            std::vector<T*> m_rep;
+            std::unordered_map<ID, T*> m_rep;
 
             // Functors
             std::vector<AbstractSequenceFunctor*> addProcedures;
@@ -251,7 +256,7 @@ namespace UML {
                 m_order.push_back(el.getID2());
 
                 // set element to null until it is accessed
-                m_rep.push_back(0);
+                m_rep[el.getID2()] = 0;
 
                 // apply procedures
                 for (auto const& fun : addProcedures) {
@@ -260,9 +265,8 @@ namespace UML {
             };
 
             void internalRemove(T& el) {
-                // get pos from erase, el not necessarily guaranteed to be set within m_rep
-                size_t pos = m_order.erase(std::remove(m_order.begin(), m_order.end(), el.getID()), m_order.end()) - m_order.begin();
-                m_rep.erase(pos);
+                m_order.erase(std::remove(m_order.begin(), m_order.end(), el.getID2()), m_order.end()) - m_order.begin();
+                m_rep.erase(el.getID2());
 
                 // apply procedures
                 for (auto const& fun : removeProcedures) {
@@ -270,6 +274,8 @@ namespace UML {
                 }
             };
         public:
+            // Mutators
+
             void add(T& el) {
                 for (auto const& fun : addChecks) {
                     (*fun)(el);
@@ -284,6 +290,66 @@ namespace UML {
 
                 internalRemove(el);
             };
+
+            // Accessors
+
+            size_t size() { return m_order.size(); };
+            bool empty() { return m_order.empty(); };
+            T* get(ID id) { return m_rep[id]; };
+            T* get(size_t index) { return m_rep[m_order.at(index)]; };
+            T* front() { return m_rep[m_order.front()]; };
+            T* back() { return m_rep[m_order.back()]; }
+
+            SequenceIterator<T> begin() { return SequenceIterator(this, m_order.begin()); };
+            SequenceIterator<T> end() { return SequenceIterator(this, m_order.end()); };
+
+            // /**
+            //  * iterators for the sequence
+            //  * TODO: overload ++ operator to load in elements not in memory
+            //  **/
+            // typename std::vector<T*>::iterator begin() { return m_rep.begin(); };
+            // typename std::vector<T*>::iterator end() { return m_rep.end(); };
+    };
+
+    template <class T> struct SequenceIterator {
+        private:
+            T* m_ptr;
+            Sequence2<T>* m_sequence;
+            std::vector<ID>::iterator m_orderIt;
+        
+        public:
+            SequenceIterator<T>(Sequence2<T>* sequence, std::vector<ID>::iterator orderIt) {
+                m_sequence = sequence;
+                m_orderIt = orderIt;
+                m_ptr = sequence->m_rep[*m_orderIt];
+                if (!m_ptr) {
+                    m_ptr = &m_sequence->m_manager->template get<T>(*m_orderIt);
+                }
+            };
+            T& operator*() { return *m_ptr; };
+            T* operator->() {return m_ptr; };
+
+            SequenceIterator operator++() {
+                ++m_orderIt;
+                m_ptr = m_sequence->m_rep[*m_orderIt];
+                if (!m_ptr) {
+                    m_ptr = &m_sequence->m_manager->template get<T>(*m_orderIt);
+                }
+                return *this;
+            };
+
+            SequenceIterator operator++(int) {
+                ++m_orderIt;
+                m_ptr = m_sequence.m_rep[*m_orderIt];
+                if (!m_ptr) {
+                    m_ptr = m_sequence->m_manager->template get<T>(*m_orderIt);
+                }
+                SequenceIterator ret = *this;
+                return ret;
+            };
+
+            friend bool operator== (const SequenceIterator& a, const SequenceIterator& b) { return a.m_ptr == b.m_ptr; };
+            friend bool operator!= (const SequenceIterator& a, const SequenceIterator& b) { return a.m_ptr != b.m_ptr; };
     };
 }
 

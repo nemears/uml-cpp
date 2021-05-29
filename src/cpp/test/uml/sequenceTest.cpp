@@ -90,3 +90,17 @@ TEST_F(SequenceTest, getNonexistentElementByID_Test) {
     ASSERT_FALSE(e.getOwnedElements().get(b.getID()));
     ASSERT_TRUE(e.getOwnedElements().get(a.getID()));
 }
+
+TEST_F(SequenceTest, newSequenceTest) {
+    UmlManager m;
+    Sequence2<Package> s = m.createSequence<Package>();
+    for (size_t i = 0; i < 100; i++) {
+        s.add(m.create<Package>());
+    }
+    ASSERT_EQ(s.size(), 100);
+    size_t i = 0;
+    for (auto const& package: s) {
+        i++;
+    }
+    ASSERT_EQ(i, 100);
+}

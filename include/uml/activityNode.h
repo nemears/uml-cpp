@@ -45,6 +45,9 @@ namespace UML {
             void setActivity(Activity* activity);
             virtual bool isObjectNode();
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::ACTIVITY_NODE;
+            };
     };
 
     // Errors

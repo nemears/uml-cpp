@@ -29,6 +29,9 @@ namespace UML{
             Sequence<Slot>& getSlots();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::INSTANCE_SPECIFICATION;
+            };
     };
 }
 

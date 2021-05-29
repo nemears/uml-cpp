@@ -18,6 +18,9 @@ namespace UML {
             };
             bool isObjectNode() override;
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::OBJECT_NODE;
+            };
     };
 }
 

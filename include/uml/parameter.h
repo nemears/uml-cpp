@@ -41,6 +41,9 @@ namespace UML {
                     }
             }invalidDirectionException;
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::PARAMETER;
+            };
     };
 }
 #endif

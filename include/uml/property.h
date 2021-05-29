@@ -56,6 +56,9 @@ namespace UML{
             void setType(Type* type) override;
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::PROPERTY;
+            };
     };
 }
 #endif

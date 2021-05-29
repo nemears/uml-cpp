@@ -14,6 +14,9 @@ namespace UML {
             Sequence<LiteralString>& getBodies();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::OPAQUE_BEHAVIOR;
+            };
     };
 }
 

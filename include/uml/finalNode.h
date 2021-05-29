@@ -7,6 +7,9 @@ namespace UML {
     class FinalNode : public ActivityNode {
         ElementType getElementType() const override;
         bool isSubClassOf(ElementType eType) override;
+        static ElementType elementType() {
+            return ElementType::FINAL_NODE;
+        };
     };
 }
 

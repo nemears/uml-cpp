@@ -108,6 +108,9 @@ namespace UML {
             Sequence<NamedElement>& getInheritedMembers();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::CLASSIFIER;
+            };
     };
 
     //Exceptions

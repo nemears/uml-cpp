@@ -16,6 +16,9 @@ namespace UML {
                 decisionInputFlow = 0;
             };
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::DECISION_NODE;
+            };
     };
 }
 

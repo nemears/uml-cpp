@@ -25,6 +25,9 @@ namespace UML {
             Feature& operator=(Feature&&) {
                 return *this;
             };
+            static ElementType elementType() {
+                return ElementType::FEATURE;
+            };
     };
 }
 

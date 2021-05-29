@@ -66,6 +66,10 @@ namespace UML {
          **/
         void deleteParsedElement(Element* el);
 
+        Element* parse(ParserMetaData& data);
+        Element* parseNode(YAML::Node node, ParserMetaData& data);
+        void emit(YAML::Emitter& emitter, Element& el);
+
         // anonymous functions
         namespace {
 
@@ -104,9 +108,6 @@ namespace UML {
                     SetGeneralFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
                     void operator()(Element& el) const override;
             };
-
-            Element* parse(ParserMetaData& data);
-            void emit(YAML::Emitter& emitter, Element& el);
             void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
             void emitElement(YAML::Emitter& emitter, Element& el);
             void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data);

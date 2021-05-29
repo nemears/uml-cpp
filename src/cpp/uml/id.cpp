@@ -1,4 +1,4 @@
-#include "uml/UmlManager.h"
+#include "uml/id.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -10,7 +10,7 @@ ID::ID() {
     }
 }
 
-char ID::base64(bool in[6]) {
+char ID::base64(bool in[6]) const {
     // 1xxxxx
     if (in[0]) {
         // 11xxxx
@@ -457,7 +457,7 @@ char ID::base64(bool in[6]) {
     return '?';
 }
 
-std::string ID::string() {
+std::string ID::string() const {
     std::string ret = "";
     size_t bitIndex = 0;
     size_t dataIndex = 0;

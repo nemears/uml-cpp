@@ -10,6 +10,9 @@ namespace UML{
                 return *this;
             };
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::TYPE;
+            };
     };
 }
 

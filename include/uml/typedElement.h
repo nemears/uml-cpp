@@ -20,6 +20,9 @@ class TypedElement : virtual public NamedElement {
             return *this;
         };
         bool isSubClassOf(ElementType eType) override;
+        static ElementType elementType() {
+            return ElementType::TYPED_ELEMENT;
+        };
 };
 }
 

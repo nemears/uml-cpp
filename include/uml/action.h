@@ -23,6 +23,9 @@ namespace UML {
             Sequence<OutputPin>& getOutputs();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::ACTION;
+            };
     };
 }
 

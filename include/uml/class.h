@@ -44,6 +44,9 @@ namespace UML{
             Sequence<Operation>& getOperations();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::CLASS;
+            };
     };
 }
 

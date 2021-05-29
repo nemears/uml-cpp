@@ -13,6 +13,9 @@ namespace UML {
             ConnectableElement& operator=(ConnectableElement&&) {
                 return *this;
             };
+            static ElementType elementType() {
+                return ElementType::CONNECTABLE_ELEMENT;
+            };
     };
 }
 

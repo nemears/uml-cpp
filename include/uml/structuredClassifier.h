@@ -39,6 +39,9 @@ namespace UML {
             Sequence<Property>& getParts();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::STRUCTURED_CLASSIFIER;
+            };
     };
 }
 

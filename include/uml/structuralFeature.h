@@ -21,6 +21,9 @@ namespace UML {
             StructuralFeature& operator=(StructuralFeature&&) {
                 return *this;
             };
+            static ElementType elementType() {
+                return ElementType::STRUCTURAL_FEATURE;
+            };
     };
 }
 

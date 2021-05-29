@@ -18,6 +18,9 @@ namespace UML {
             void setOwningSlot(Slot* slot);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::VALUE_SPECIFICATION;
+            };
     };
 }
 #endif

@@ -16,6 +16,9 @@ namespace UML {
                 parameter = NULL;
             }
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::PARAMETER_NODE;
+            };
     };
 }
 

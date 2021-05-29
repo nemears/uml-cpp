@@ -14,6 +14,9 @@ namespace UML {
             void setValue(std::string val);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::LITERAL_STRING;
+            };
     };
 }
 

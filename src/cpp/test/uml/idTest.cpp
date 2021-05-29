@@ -31,4 +31,6 @@ TEST_F(ID_Test, idTest) {
     uint8_t ampersands[21] = {255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255};
     ampersandID.setBytes(ampersands);
     ASSERT_EQ("&&&&&&&&&&&&&&&&&&&&&&&&&&&&", ampersandID.string());
+    hash<ID> idHash;
+    cout << "hashing rid: " << idHash(rid) << endl;
 }

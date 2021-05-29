@@ -41,6 +41,9 @@ namespace UML{
             Sequence<NamedElement>& getOwnedMembers();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::NAMESPACE;
+            };
     };
 }
 #endif

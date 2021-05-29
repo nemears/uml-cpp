@@ -229,6 +229,62 @@ namespace UML {
                 return msg.c_str();
             }
     };
+
+    // new sequence implementation
+    template <class T> class Sequence2 {
+        private:
+            // Manager
+            std::shared_ptr<UmlManager> m_manager;
+
+            // Data
+            std::vector<ID> m_order;
+            std::vector<T*> m_rep;
+
+            // Functors
+            std::vector<AbstractSequenceFunctor*> addProcedures;
+            std::vector<AbstractSequenceFunctor*> addChecks;
+            std::vector<AbstractSequenceFunctor*> removeProcedures;
+            std::vector<AbstractSequenceFunctor*> removeChecks;
+
+            // internal functions
+            void internalAdd(T& el) {
+                m_order.push_back(el.getID2());
+
+                // set element to null until it is accessed
+                m_rep.push_back(0);
+
+                // apply procedures
+                for (auto const& fun : addProcedures) {
+                    (*fun)(el);
+                }
+            };
+
+            void internalRemove(T& el) {
+                // get pos from erase, el not necessarily guaranteed to be set within m_rep
+                size_t pos = m_order.erase(std::remove(m_order.begin(), m_order.end(), el.getID()), m_order.end()) - m_order.begin();
+                m_rep.erase(pos);
+
+                // apply procedures
+                for (auto const& fun : removeProcedures) {
+                    (*fun)(el);
+                }
+            };
+        public:
+            void add(T& el) {
+                for (auto const& fun : addChecks) {
+                    (*fun)(el);
+                }
+
+                internalAdd(el);
+            };
+            void remove(T& el) {
+                for (auto const& fun : removeChecks) {
+                    (*fun)(el);
+                }
+
+                internalRemove(el);
+            };
+    };
 }
 
 #endif

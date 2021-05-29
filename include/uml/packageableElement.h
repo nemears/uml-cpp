@@ -20,6 +20,9 @@ namespace UML {
             PackageableElement& operator=(PackageableElement&&) {
                 return *this;
             };
+            static ElementType elementType() {
+                return ElementType::PACKAGEABLE_ELEMENT;
+            };
     };
 }
 

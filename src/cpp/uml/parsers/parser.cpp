@@ -47,10 +47,12 @@ void deleteParsedElement(Element* el) {
     delete el;
 }
 
-namespace {
 Element* parse(ParserMetaData& data) {
     YAML::Node node = YAML::LoadFile(data.m_path);
+    return parseNode(node, data);
+}
 
+Element* parseNode(YAML::Node node, ParserMetaData& data) {
     if (node["class"]) {
         Class* clazz = new Class;
         parseClass(node["class"], *clazz, data);
@@ -212,6 +214,8 @@ void emit(YAML::Emitter& emitter, Element& el) {
         }
     }
 }
+
+namespace{
 
 void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
     if (node["id"]) {

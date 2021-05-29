@@ -45,6 +45,9 @@ namespace UML {
             bool isAbstract();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::BEHAVIORAL_FEATURE;
+            };
     };
 
     class ReturnParameterException : public std::exception {

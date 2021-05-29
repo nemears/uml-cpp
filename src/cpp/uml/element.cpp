@@ -396,3 +396,13 @@ string Element::getElementTypeString() const {
 string Element::getIDstring() {
     return boost::lexical_cast<string>(m_id);
 }
+
+// new implementation
+
+ID Element::getID2() {
+    return m_id2;
+}
+
+Element* Element::getOwner2() {
+    return 0;
+}

@@ -22,6 +22,9 @@ namespace UML {
             Expression();
             ~Expression();
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::EXPRESSION;
+            };
     };
 }
 #endif

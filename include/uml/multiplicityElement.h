@@ -34,6 +34,9 @@ namespace UML {
             bool multiplicitySpecified();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::MULTIPLICITY_ELEMENT;
+            };
     };
 }
 

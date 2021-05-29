@@ -4,11 +4,12 @@
 #include <list>
 #include <regex>
 #include <exception>
+#include <memory>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/lexical_cast.hpp>
-#include "UmlManager.h"
+#include "id.h"
 
 namespace UML {
 
@@ -90,6 +91,8 @@ namespace UML {
     class SetOwnerFunctor;
     class RemoveOwnerFunctor;
     class Slot;
+    class UmlManager;
+    class ID;
 
     /**
      * Element is the base class of all UML classes
@@ -104,24 +107,45 @@ namespace UML {
         friend class RemoveOwnerFunctor;
         friend class Slot;
         protected:
-            UmlManager* m_manager;
-            boost::uuids::uuid m_ownerID;
+            // new id implementation
+            std::shared_ptr<UmlManager> m_manager;
+            ID m_id2;
+
+            // owner
+            ID m_ownerID;
+            Element* m_ownerPtr;
+            bool m_ownerFlag;
+            
+            // ownedElements
+
+
+
+            //----------------------------------------------------------------------------------------------------
+            // old id implementation
             Element* m_owner;
             // Sequences need to be pointers in element, still encapsulated but slightly different internal syntax
             Sequence<Element>* m_ownedElements;
-            std::vector<boost::uuids::uuid> m_ownedElementsID;
             Sequence<Relationship>* m_relationships;
-            std::vector<boost::uuids::uuid> m_relationshipsID;
             Sequence<DirectedRelationship>* m_directedRelationships;
-            std::vector<boost::uuids::uuid> m_directedRelationshipsID;
             Sequence<Comment>* m_ownedComments;
-            std::vector<boost::uuids::uuid> m_ownedCommentsID;
             boost::uuids::uuid m_id;
             virtual void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID);
             void setOwner(Element* owner);
         public:
             Element();
             virtual ~Element();
+
+            // new implementation
+            ID getID2();
+            Element* getOwner2();
+            void setOwner2(Element& el);
+            static ElementType elementType() {
+                return ElementType::ELEMENT;
+            };
+
+
+            //----------------------------------------------------------------------------------------------------
+            // old implementation
             // Think about making the api non copyable, copying messes with the pointer vals
             // Maybe move to copy function
             // WARNING copying element dereferences it from model, elements it points to won't point to it

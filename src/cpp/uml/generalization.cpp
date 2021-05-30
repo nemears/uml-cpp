@@ -17,9 +17,9 @@ void Generalization::setGeneral(Classifier* general) {
             m_general->getRelationships().internalRemove(*this);
         }
         if (m_specific) {
-            for (auto const& member: m_general->getMembers()) {
-                if (m_specific->getInheritedMembers().count(member->getID())) {
-                    m_specific->getInheritedMembers().remove(*member);
+            for (auto& member: m_general->getMembers()) {
+                if (m_specific->getInheritedMembers().count(member.getID())) {
+                    m_specific->getInheritedMembers().remove(member);
                 }
             }
             if (m_specific->getGenerals().count(m_general->getID())) {
@@ -36,9 +36,9 @@ void Generalization::setGeneral(Classifier* general) {
             if (!m_specific->getGenerals().count(m_general->getID())) {
                 m_specific->getGenerals().add(*m_general);
             }
-            for (auto const& member: m_general->getMembers()) {
-                if (!m_specific->getInheritedMembers().count(member->getID()) && member->getVisibility() != VisibilityKind::PRIVATE) {
-                    m_specific->getInheritedMembers().add(*member);
+            for (auto& member: m_general->getMembers()) {
+                if (!m_specific->getInheritedMembers().count(member.getID()) && member.getVisibility() != VisibilityKind::PRIVATE) {
+                    m_specific->getInheritedMembers().add(member);
                 }
             }
         }
@@ -58,9 +58,9 @@ void Generalization::setSpecific(Classifier* specific) {
             m_specific->getGeneralizations().remove(*this);
         }
         if (m_general) {
-            for (auto const& member: m_general->getMembers()) {
-                if (m_specific->getInheritedMembers().count(member->getID())) {
-                    m_specific->getInheritedMembers().remove(*member);
+            for (auto& member: m_general->getMembers()) {
+                if (m_specific->getInheritedMembers().count(member.getID())) {
+                    m_specific->getInheritedMembers().remove(member);
                 }
             }
         }
@@ -74,9 +74,9 @@ void Generalization::setSpecific(Classifier* specific) {
             m_specific->getGeneralizations().add(*this);
         }
         if (m_general) {
-            for (auto const& member: m_general->getMembers()) {
-                if (!m_specific->getInheritedMembers().count(member->getID()) && member->getVisibility() != VisibilityKind::PRIVATE) {
-                    m_specific->getInheritedMembers().add(*member);
+            for (auto& member: m_general->getMembers()) {
+                if (!m_specific->getInheritedMembers().count(member.getID()) && member.getVisibility() != VisibilityKind::PRIVATE) {
+                    m_specific->getInheritedMembers().add(member);
                 }
             }
         }

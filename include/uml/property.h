@@ -30,8 +30,8 @@ namespace UML{
             Class* m_class;
             Association* m_association;
             Association* m_owningAssociation;
-            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
-            void reindexName(std::string oldName, std::string newName) override;
+            void reindexID(ID oldID, ID newID) override;
+            // void reindexName(std::string oldName, std::string newName) override;
             void setComposite(bool composite);
         public: 
             Property();

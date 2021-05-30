@@ -5,7 +5,7 @@
 using namespace std;
 using namespace UML;
 
-void Operation::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+void Operation::reindexID(ID oldID, ID newID) {
     if (m_class) {
         m_class->getOperations().reindex(oldID, newID);
     }
@@ -15,15 +15,15 @@ void Operation::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
     Feature::reindexID(oldID, newID);
 }
 
-void Operation::reindexName(string oldName, string newName) {
-    if (m_class) {
-        m_class->getOperations().reindex(m_id, oldName, newName);
-    }
-    if (m_dataType) {
-        m_dataType->getOwnedOperation().reindex(m_id, oldName, newName);
-    }
-    Feature::reindexName(oldName, newName);
-}
+// void Operation::reindexName(string oldName, string newName) {
+//     if (m_class) {
+//         m_class->getOperations().reindex(m_id, oldName, newName);
+//     }
+//     if (m_dataType) {
+//         m_dataType->getOwnedOperation().reindex(m_id, oldName, newName);
+//     }
+//     Feature::reindexName(oldName, newName);
+// }
 
 Operation::Operation() {
     m_type = 0;

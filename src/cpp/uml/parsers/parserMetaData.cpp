@@ -23,7 +23,7 @@ ParserMetaData::ParserMetaData() {
     elements.addProcedures.push_back(new ElementsFunctor(0, this));
 }
 
-void applyFunctor(ParserMetaData& data, boost::uuids::uuid relEl, AbstractPostProcessFunctor* functor) {
+void applyFunctor(ParserMetaData& data, ID relEl, AbstractPostProcessFunctor* functor) {
     if (data.elements.count(relEl)) {
         (*functor)(*data.elements.get(relEl));
     } else {

@@ -4,25 +4,25 @@
 using namespace std;
 using namespace UML;
 
-void OutputPin::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
-    if (m_owner) {
-        if(m_owner->isSubClassOf(ElementType::ACTION)) {
-            dynamic_cast<Action*>(m_owner)->getOutputs().reindex(oldID, newID);
+void OutputPin::reindexID(ID oldID, ID newID) {
+    if (!m_ownerID.isNull()) {
+        if(getOwner()->isSubClassOf(ElementType::ACTION)) {
+            dynamic_cast<Action*>(getOwner())->getOutputs().reindex(oldID, newID);
         }
     }
 
     ActivityNode::reindexID(oldID, newID);
 }
 
-void OutputPin::reindexName(string oldName, string newName) {
-    if (m_owner) {
-        if (m_owner->isSubClassOf(ElementType::ACTION)) {
-            dynamic_cast<Action*>(m_owner)->getOutputs().reindex(m_id, oldName, newName);
-        }
-    }
+// void OutputPin::reindexName(string oldName, string newName) {
+//     if (!m_ownerID.isNull()) {
+//         if (getOwner()->isSubClassOf(ElementType::ACTION)) {
+//             dynamic_cast<Action*>(getOwner())->getOutputs().reindex(m_id, oldName, newName);
+//         }
+//     }
 
-    ActivityNode::reindexName(oldName, newName);
-}
+//     ActivityNode::reindexName(oldName, newName);
+// }
 
 ElementType OutputPin::getElementType() const {
     return ElementType::OUTPUT_PIN;

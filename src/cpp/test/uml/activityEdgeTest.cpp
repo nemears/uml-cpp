@@ -49,21 +49,21 @@ TEST_F(ActivityEdgeTest, reindexID_Test) {
     ASSERT_TRUE(a.getOwnedElements().get(e.getID()));
 }
 
-TEST_F(ActivityEdgeTest, reindexNameTest) {
-    Activity a;
-    ActivityEdge e;
-    ActivityNode n;
-    e.setSource(&n);
-    e.setTarget(&n);
-    a.getNodes().add(n);
-    a.getEdges().add(e);
-    e.setName("test");
-    ASSERT_TRUE(n.getIncoming().get("test"));
-    ASSERT_TRUE(n.getOutgoing().get("test"));
-    ASSERT_TRUE(a.getEdges().get("test"));
-    //ASSERT_TRUE(a.getMembers().get("test"));
-    ASSERT_TRUE(a.getOwnedElements().get("test"));
-}
+// TEST_F(ActivityEdgeTest, reindexNameTest) {
+//     Activity a;
+//     ActivityEdge e;
+//     ActivityNode n;
+//     e.setSource(&n);
+//     e.setTarget(&n);
+//     a.getNodes().add(n);
+//     a.getEdges().add(e);
+//     e.setName("test");
+//     ASSERT_TRUE(n.getIncoming().get("test"));
+//     ASSERT_TRUE(n.getOutgoing().get("test"));
+//     ASSERT_TRUE(a.getEdges().get("test"));
+//     //ASSERT_TRUE(a.getMembers().get("test"));
+//     ASSERT_TRUE(a.getOwnedElements().get("test"));
+// }
 
 TEST_F(ActivityEdgeTest, overwriteIncomingTest) {
   ActivityNode p1;

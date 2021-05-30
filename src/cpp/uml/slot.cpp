@@ -3,7 +3,7 @@
 
 using namespace UML;
 
-void Slot::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+void Slot::reindexID(ID oldID, ID newID) {
     if (m_owningInstance) {
         m_owningInstance->getSlots().reindex(oldID, newID);
     }

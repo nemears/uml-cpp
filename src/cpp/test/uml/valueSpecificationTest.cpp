@@ -71,14 +71,14 @@ TEST_F(ValueSpecificationTest, reindexID_forSlotTest) {
     ASSERT_TRUE(s.getOwnedElements().get(v.getID()));
 }
 
-TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
-    LiteralInt v;
-    Slot s;
-    s.getValues().add(v);
-    v.setName("test");
-    ASSERT_TRUE(s.getValues().get("test"));
-    ASSERT_TRUE(s.getOwnedElements().get("test"));
-}
+// TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
+//     LiteralInt v;
+//     Slot s;
+//     s.getValues().add(v);
+//     v.setName("test");
+//     ASSERT_TRUE(s.getValues().get("test"));
+//     ASSERT_TRUE(s.getOwnedElements().get("test"));
+// }
 
 TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
     Expression e;
@@ -90,12 +90,12 @@ TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
     ASSERT_TRUE(e.getOwnedElements().get(b.getID()));
 }
 
-TEST_F(ValueSpecificationTest, reindexNameExpressionTest) {
-    Expression e;
-    LiteralBool b;
-    e.getOperands().add(b);
-    e.setSymbol("==");
-    b.setName("test");
-    ASSERT_TRUE(e.getOperands().get("test"));
-    ASSERT_TRUE(e.getOwnedElements().get("test"));
-}
+// TEST_F(ValueSpecificationTest, reindexNameExpressionTest) {
+//     Expression e;
+//     LiteralBool b;
+//     e.getOperands().add(b);
+//     e.setSymbol("==");
+//     b.setName("test");
+//     ASSERT_TRUE(e.getOperands().get("test"));
+//     ASSERT_TRUE(e.getOwnedElements().get("test"));
+// }

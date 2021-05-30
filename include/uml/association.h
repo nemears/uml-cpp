@@ -11,8 +11,8 @@ namespace UML {
             Sequence<Property> m_ownedEnds;
             Sequence<Property> m_navigableOwnedEnds;
             Sequence<Type> m_endType;
-            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
-            void reindexName(std::string oldName, std::string newName) override;
+            void reindexID(ID oldID, ID newID) override;
+            // void reindexName(std::string oldName, std::string newName) override;
             class AddMemberEndFunctor : public AbstractSequenceFunctor {
                 public:
                     AddMemberEndFunctor(Element* me) : AbstractSequenceFunctor(me) {};

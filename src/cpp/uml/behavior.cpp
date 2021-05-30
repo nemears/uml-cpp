@@ -21,9 +21,9 @@ void Behavior::RemoveParameterFunctor::operator()(Element& el) const {
             bool usedElsewhere = false;
 
             // note slow performance for removing
-            for (auto const& method : dynamic_cast<Operation*>(dynamic_cast<Parameter&>(el).getOperation())->getMethods()) {
-                if (method != m_el) {
-                    if (method->getParameters().count(el.getID())) {
+            for (auto& method : dynamic_cast<Operation*>(dynamic_cast<Parameter&>(el).getOperation())->getMethods()) {
+                if (method.getID() != m_el->getID()) {
+                    if (method.getParameters().count(el.getID())) {
                         usedElsewhere = true;
                     }
                 }

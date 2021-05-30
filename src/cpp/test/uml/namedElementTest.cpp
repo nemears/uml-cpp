@@ -20,14 +20,14 @@ TEST_F(NamedElementTest, GetNullNameTest) {
     EXPECT_TRUE(ne.getName().compare("") == 0);
 }
 
-TEST_F(NamedElementTest, reIndexNameTest) {
-  Package e1;
-  Package e2;
-  e1.getPackagedElements().add(e2);
-  e2.setOwningPackage(&e1);
-  e2.setName("test");
-  ASSERT_TRUE(e1.getOwnedElements().get("test") != NULL);
-}
+// TEST_F(NamedElementTest, reIndexNameTest) {
+//   Package e1;
+//   Package e2;
+//   e1.getPackagedElements().add(e2);
+//   e2.setOwningPackage(&e1);
+//   e2.setName("test");
+//   ASSERT_TRUE(e1.getOwnedElements().get("test") != NULL);
+// }
 
 TEST_F(NamedElementTest, overwriteNamespaceTest) {
   Namespace p1;

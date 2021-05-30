@@ -487,6 +487,15 @@ void ID::setBytes(uint8_t* bytes) {
     }
 }
 
+bool ID::isNull() {
+    for (size_t i = 0; i < 21; i++) {
+        if (m_data[i] != 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
 ID ID::randomID() {
     ID id;
     for (size_t i = 0; i < 21; i++) {

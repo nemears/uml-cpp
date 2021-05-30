@@ -53,10 +53,27 @@ namespace UML {
     class Generalization;
     class AddRelationshipFunctor;
     class RemoveRelationshipFunctor;
-    /**
-     * Sequence Class, Holds collections of uml elements
-     **/
+
+    class ReadOnlySequenceException : public std::exception {
+        friend class Element;
+        private:
+            std::string msg;
+
+        public:
+            ReadOnlySequenceException(std::string elID, std::string nameOfSequence) : 
+                msg("Sequence " + nameOfSequence + " for element uuid: " + elID + " is read only!")
+                {}
+            virtual const char* what() const throw() {
+                return msg.c_str();
+            }
+    };
+
+    template <class T = Element> struct SequenceIterator;
+
+    // new sequence implementation
     template <class T> class Sequence {
+        friend class SequenceIterator<T>;
+        friend class UmlManager;
         friend class Parsers::ParserMetaData;
         friend class Element;
         friend class NamedElement;
@@ -95,150 +112,6 @@ namespace UML {
         friend class AddRelationshipFunctor;
         friend class RemoveRelationshipFunctor;
         private:
-            std::map<boost::uuids::uuid, T*> m_data;
-            std::vector<boost::uuids::uuid> m_order;
-            std::map<std::string, T*> m_nameTranslation;
-            std::vector<T*> m_rep;
-            std::vector<AbstractSequenceFunctor*> addProcedures;
-            std::vector<AbstractSequenceFunctor*> addChecks;
-            std::vector<AbstractSequenceFunctor*> removeProcedures;
-            std::vector<AbstractSequenceFunctor*> removeChecks;
-            void reindex(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
-
-                // m_data
-                T* temp = m_data[oldID];
-                m_data.erase(oldID);
-                m_data[newID] = temp;
-
-                // m_order
-                std::replace(m_order.begin(), m_order.end(), oldID, newID);
-            };
-            void reindex(boost::uuids::uuid elID, std::string oldName, std::string newName) {
-
-                // m_nameTranslation
-                T* temp = m_data[elID];
-                if (m_nameTranslation[newName]) {
-                    // TODO error throw duplicate name exception
-                }
-                m_nameTranslation.erase(oldName);
-                m_nameTranslation[newName] = temp;
-            }
-
-            // add without checks
-            void internalAdd(T& el) {
-                if (!m_data.count(el.getID())) {
-                    m_data[el.getID()] = &el;
-                    m_order.push_back(el.getID());
-                    m_rep.push_back(&el);
-                    if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
-                        if (dynamic_cast<NamedElement*>(&el)->getName().length() > 0) {
-                            m_nameTranslation[dynamic_cast<NamedElement*>(&el)->getName()] = &el;
-                        }
-                    }
-                } else {
-                    m_order.push_back(el.getID());
-                    m_rep.push_back(&el);
-                }
-
-                for (auto const& fun : addProcedures) {
-                    (*fun)(el);
-                }
-            }
-
-            // remove without checks
-            void internalRemove(T& el) {
-                if (m_data.count(el.getID())) {
-
-                    // erase element in uuid map
-                    m_data.erase(el.getID());
-
-                    // erase element in name map
-                    if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
-                        if (!dynamic_cast<NamedElement*>(&el)->getName().empty()) {
-                            m_nameTranslation.erase(dynamic_cast<NamedElement*>(&el)->getName());
-                        }
-                    }
-
-                    // erase all uuids in order
-                    m_order.erase(std::remove(m_order.begin(), m_order.end(), el.getID()), m_order.end());
-                    m_rep.erase(std::remove(m_rep.begin(), m_rep.end(), &el), m_rep.end());
-                    for (auto const& fun : removeProcedures) {
-                        (*fun)(el);
-                    }
-                } else {
-                    throw ElementDoesntExistException(el);
-                }
-            }
-        public:
-
-            // destructor
-            ~Sequence<T>() {
-                for (auto const& addProc: addProcedures) {
-                    delete addProc;
-                }
-
-                for (auto const& addCheck: addChecks) {
-                    delete addCheck;
-                }
-
-                for (auto const& remProc: removeProcedures) {
-                    delete remProc;
-                }
-
-                for (auto const& remCheck: removeChecks) {
-                    delete remCheck;
-                }
-            }
-
-            // Methods
-            void add(T& el) {
-                for (auto const& fun : addChecks) {
-                    (*fun)(el);
-                }
-
-                internalAdd(el);
-            };
-            void remove(T& el) {
-                for (auto const& fun : removeChecks) {
-                    (*fun)(el);
-                }
-
-                internalRemove(el);
-            };
-            size_t size() { return m_order.size(); };
-            bool empty() { return m_order.empty(); };
-            T* get(boost::uuids::uuid id) { return m_data[id]; };
-            size_t count(boost::uuids::uuid id) { return m_data.count(id); };
-            T* get(std::string name) { return m_nameTranslation[name]; };
-            T* get(size_t index) { return m_data[m_order[index]]; };
-            T* front() { return m_data[m_order.front()]; };
-            T* back() { return m_data[m_order.back()]; }
-            typename std::vector<T*>::iterator begin() { return m_rep.begin(); };
-            typename std::vector<T*>::iterator end() { return m_rep.end(); };
-    };
-
-    class ReadOnlySequenceException : public std::exception {
-        friend class Element;
-        private:
-            std::string msg;
-
-        public:
-            ReadOnlySequenceException(std::string elID, std::string nameOfSequence) : 
-                msg("Sequence " + nameOfSequence + " for element uuid: " + elID + " is read only!")
-                {}
-            virtual const char* what() const throw() {
-                return msg.c_str();
-            }
-    };
-
-    template <class T = Element> struct SequenceIterator;
-
-    // new sequence implementation
-    template <class T> class Sequence2 {
-        friend class SequenceIterator<T>;
-        friend class UmlManager;
-        friend class Element;
-        private:
             // Manager
             UmlManager* m_manager;
 
@@ -252,12 +125,23 @@ namespace UML {
             std::vector<AbstractSequenceFunctor*> removeProcedures;
             std::vector<AbstractSequenceFunctor*> removeChecks;
 
+            void reindex(ID oldID, ID newID) {
+
+                // m_data
+                T* temp = m_rep[oldID];
+                m_rep.erase(oldID);
+                m_rep[newID] = temp;
+
+                // m_order
+                std::replace(m_order.begin(), m_order.end(), oldID, newID);
+            };
+
             // internal functions
             void internalAdd(T& el) {
-                m_order.push_back(el.getID2());
+                m_order.push_back(el.getID());
 
                 // set element to null until it is accessed
-                m_rep[el.getID2()] = 0;
+                m_rep[el.getID()] = 0;
 
                 // apply procedures
                 for (auto const& fun : addProcedures) {
@@ -266,8 +150,8 @@ namespace UML {
             };
 
             void internalRemove(T& el) {
-                m_order.erase(std::remove(m_order.begin(), m_order.end(), el.getID2()), m_order.end()) - m_order.begin();
-                m_rep.erase(el.getID2());
+                m_order.erase(std::remove(m_order.begin(), m_order.end(), el.getID()), m_order.end()) - m_order.begin();
+                m_rep.erase(el.getID());
 
                 // apply procedures
                 for (auto const& fun : removeProcedures) {
@@ -298,7 +182,7 @@ namespace UML {
             bool empty() { return m_order.empty(); };
             T* get(ID id) { 
                 if (!m_rep[id]) {
-                    m_rep[id] = &m_manager->get<T>();
+                    m_rep[id] = &m_manager->get<T>(id);
                 }
                 return m_rep[id];
             };
@@ -315,26 +199,20 @@ namespace UML {
                 }
                 return m_rep[m_order.back()];
             }
+            size_t count(ID id) { return m_rep.count(id); };
 
             SequenceIterator<T> begin() { return SequenceIterator(this, m_order.begin()); };
             SequenceIterator<T> end() { return SequenceIterator(this, m_order.end()); };
-
-            // /**
-            //  * iterators for the sequence
-            //  * TODO: overload ++ operator to load in elements not in memory
-            //  **/
-            // typename std::vector<T*>::iterator begin() { return m_rep.begin(); };
-            // typename std::vector<T*>::iterator end() { return m_rep.end(); };
     };
 
     template <class T> struct SequenceIterator {
         private:
             T* m_ptr;
-            Sequence2<T>* m_sequence;
+            Sequence<T>* m_sequence;
             std::vector<ID>::iterator m_orderIt;
         
         public:
-            SequenceIterator<T>(Sequence2<T>* sequence, std::vector<ID>::iterator orderIt) {
+            SequenceIterator<T>(Sequence<T>* sequence, std::vector<ID>::iterator orderIt) {
                 m_sequence = sequence;
                 m_orderIt = orderIt;
                 m_ptr = sequence->m_rep[*m_orderIt];
@@ -343,7 +221,7 @@ namespace UML {
                 }
             };
             T& operator*() { return *m_ptr; };
-            T* operator->() {return m_ptr; };
+            T* operator->() { return m_ptr; };
 
             SequenceIterator operator++() {
                 ++m_orderIt;

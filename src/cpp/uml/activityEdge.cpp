@@ -5,7 +5,7 @@
 using namespace std;
 using namespace UML;
 
-void ActivityEdge::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+void ActivityEdge::reindexID(ID oldID, ID newID) {
     if (m_target) {
         m_target->getIncoming().reindex(oldID, newID);
     }
@@ -21,21 +21,21 @@ void ActivityEdge::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID)
     NamedElement::reindexID(oldID, newID);
 }
 
-void ActivityEdge::reindexName(string oldName, string newName) {
-    if (m_target) {
-        m_target->getIncoming().reindex(m_id, oldName, newName);
-    }
+// void ActivityEdge::reindexName(string oldName, string newName) {
+//     if (m_target) {
+//         m_target->getIncoming().reindex(m_id, oldName, newName);
+//     }
 
-    if (m_source) {
-        m_source->getOutgoing().reindex(m_id, oldName, newName);
-    }
+//     if (m_source) {
+//         m_source->getOutgoing().reindex(m_id, oldName, newName);
+//     }
 
-    if (m_activity) {
-        m_activity->getEdges().reindex(m_id, oldName, newName);
-    }
+//     if (m_activity) {
+//         m_activity->getEdges().reindex(m_id, oldName, newName);
+//     }
 
-    NamedElement::reindexName(oldName, newName);
-}
+//     NamedElement::reindexName(oldName, newName);
+// }
 
 Activity* ActivityEdge::getActivity() {
     return m_activity;

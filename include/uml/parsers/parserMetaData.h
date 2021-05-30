@@ -3,7 +3,7 @@
 
 #include "yaml-cpp/yaml.h"
 #include "uml/sequence.h"
-#include <map>
+#include <unordered_map>
 #include <filesystem>
 
 namespace UML{
@@ -36,10 +36,10 @@ namespace UML{
                 std::filesystem::path m_path;
                 ParserMetaData();
                 Sequence<> elements;
-                std::map<boost::uuids::uuid, std::vector<AbstractPostProcessFunctor*>*> postProcessFlag;
+                std::unordered_map<ID, std::vector<AbstractPostProcessFunctor*>*> postProcessFlag;
         };
 
-        void applyFunctor(ParserMetaData& data, boost::uuids::uuid relEl, AbstractPostProcessFunctor* functor);
+        void applyFunctor(ParserMetaData& data, ID relEl, AbstractPostProcessFunctor* functor);
     }
 }
 

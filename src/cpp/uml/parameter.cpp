@@ -8,37 +8,37 @@ ElementType Parameter::getElementType() const {
     return ElementType::PARAMETER;
 }
 
-void Parameter::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
-    if (m_owner) {
-        if (m_owner->isSubClassOf(ElementType::BEHAVIOR)) {
-            dynamic_cast<Behavior*>(m_owner)->getParameters().reindex(oldID, newID);
+void Parameter::reindexID(ID oldID, ID newID) {
+    if (!m_ownerID.isNull()) {
+        if (getOwner()->isSubClassOf(ElementType::BEHAVIOR)) {
+            dynamic_cast<Behavior*>(getOwner())->getParameters().reindex(oldID, newID);
         }
     }
 
     if (m_operation) {
-        for (auto const& bhv : m_operation->getMethods()) {
-            bhv->getParameters().reindex(oldID, newID);
+        for (auto& bhv : m_operation->getMethods()) {
+            bhv.getParameters().reindex(oldID, newID);
         }
     }
 
     NamedElement::reindexID(oldID, newID);
 }
 
-void Parameter::reindexName(string oldName, string newName) {
-    if (m_owner) {
-        if (m_owner->isSubClassOf(ElementType::BEHAVIOR)) {
-            dynamic_cast<Behavior*>(m_owner)->getParameters().reindex(m_id, oldName, newName);
-        }
-    }
+// void Parameter::reindexName(string oldName, string newName) {
+//     if (m_owner) {
+//         if (m_owner->isSubClassOf(ElementType::BEHAVIOR)) {
+//             dynamic_cast<Behavior*>(m_owner)->getParameters().reindex(m_id, oldName, newName);
+//         }
+//     }
 
-    if (m_operation) {
-        for (auto const& bhv : m_operation->getMethods()) {
-            bhv->getParameters().reindex(m_id, oldName, newName);
-        }
-    }
+//     if (m_operation) {
+//         for (auto const& bhv : m_operation->getMethods()) {
+//             bhv->getParameters().reindex(m_id, oldName, newName);
+//         }
+//     }
 
-    NamedElement::reindexName(oldName, newName);
-}
+//     NamedElement::reindexName(oldName, newName);
+// }
 
 Operation* Parameter::getOperation() {
     return m_operation;
@@ -66,7 +66,7 @@ void Parameter::setDirection(ParameterDirectionKind direction) {
     if (direction == ParameterDirectionKind::RETURN || direction == ParameterDirectionKind::OUT || direction == ParameterDirectionKind::INOUT) {
         if (m_operation) {
             if (m_operation->m_returnSpecified) {
-                throw ReturnParameterException(m_operation->getElementTypeString() + " " + m_operation->getIDstring());
+                throw ReturnParameterException(m_operation->getElementTypeString() + " " + m_operation->getID().string());
             }
             m_operation->m_returnSpecified = true;
         }

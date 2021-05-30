@@ -20,8 +20,8 @@ namespace UML {
         protected:
             ParameterDirectionKind m_direction;
             Operation* m_operation;
-            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
-            void reindexName(std::string oldName, std::string newName) override;
+            void reindexID(ID oldID, ID newID) override;
+            // void reindexName(std::string oldName, std::string newName) override;
         public:
             Operation* getOperation();
             void setOperation(Operation* operation);

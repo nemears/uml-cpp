@@ -16,14 +16,14 @@ TEST_F(OutputPinTest, reindexIDTest) {
     ASSERT_TRUE(a.getOwnedElements().get(i.getID()));
 }
 
-TEST_F(OutputPinTest, reindexNameTest) {
-    Action a;
-    OutputPin i;
-    a.getOutputs().add(i);
-    i.setName("test");
-    ASSERT_TRUE(a.getOutputs().get("test"));
-    ASSERT_TRUE(a.getOwnedElements().get("test"));
-}
+// TEST_F(OutputPinTest, reindexNameTest) {
+//     Action a;
+//     OutputPin i;
+//     a.getOutputs().add(i);
+//     i.setName("test");
+//     ASSERT_TRUE(a.getOutputs().get("test"));
+//     ASSERT_TRUE(a.getOwnedElements().get("test"));
+// }
 
 TEST_F(OutputPinTest, AddPinFunctorTest) {
     Action a;

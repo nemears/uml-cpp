@@ -57,13 +57,13 @@ Classifier::Classifier(const Classifier& clazz) : Namespace(clazz), PackageableE
     m_members.removeProcedures.push_back(new ClassifierRemoveMemberFunctor(this));
 }
 
-void Classifier::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+void Classifier::reindexID(ID oldID, ID newID) {
     Namespace::reindexID(oldID, newID);
 }
 
-void Classifier::reindexName(string oldName, string newName) {
-    Namespace::reindexName(oldName, newName);
-}
+// void Classifier::reindexName(string oldName, string newName) {
+//     Namespace::reindexName(oldName, newName);
+// }
 
 void Classifier::AddAttributeFunctor::operator()(Element& el) const {
     if (dynamic_cast<Property&>(el).getClassifier() != m_el) {
@@ -90,7 +90,7 @@ void Classifier::RemoveAttributeFunctor::operator()(Element& el) const {
 void Classifier::CheckGeneralizationFunctor::operator()(Element& el) const {
     if (dynamic_cast<Generalization&>(el).getGeneral()) {
         if (dynamic_cast<Generalization&>(el).getGeneral() == m_el) {
-            throw InvalidGeneralizationException(el.getIDstring());
+            throw InvalidGeneralizationException(el.getID().string());
         }
     }
 }
@@ -145,8 +145,8 @@ void Classifier::RemoveGeneralizationFunctor::operator()(Element& el) const {
 
 void Classifier::AddGeneralFunctor::operator()(Element& el) const {
     bool foundGeneralization = false;
-    for (auto const& general : dynamic_cast<Classifier*>(m_el)->getGeneralizations()) {
-        if (general->getTargets().count(el.getID())) {
+    for (auto& general : dynamic_cast<Classifier*>(m_el)->getGeneralizations()) {
+        if (general.getTargets().count(el.getID())) {
             foundGeneralization = true;
         }
     }
@@ -159,9 +159,9 @@ void Classifier::AddGeneralFunctor::operator()(Element& el) const {
 }
 
 void Classifier::RemoveGeneralFunctor::operator()(Element& el) const {
-    for (auto const& general : dynamic_cast<Classifier*>(m_el)->getGeneralizations()) {
-        if (general->getGeneral() == &dynamic_cast<Classifier&>(el)) {
-            general->setGeneral(0);
+    for (auto& general : dynamic_cast<Classifier*>(m_el)->getGeneralizations()) {
+        if (general.getGeneral() == &dynamic_cast<Classifier&>(el)) {
+            general.setGeneral(0);
         }
     }
 }
@@ -202,12 +202,12 @@ void Classifier::RemoveInheritedMemberFunctor::operator()(Element& el) const {
 
 void Classifier::ClassifierAddMemberFunctor::operator()(Element& el) const {
     if (dynamic_cast<NamedElement&>(el).getVisibility() != VisibilityKind::PRIVATE) {
-        for (auto const& relationship : dynamic_cast<Classifier*>(m_el)->getRelationships()) {
-            if (relationship->isSubClassOf(ElementType::GENERALIZATION)) {
-                if (dynamic_cast<Generalization*>(relationship)->getGeneral() == m_el) {
-                    if (dynamic_cast<Generalization*>(relationship)->getSpecific()) {
-                        if (!dynamic_cast<Generalization*>(relationship)->getSpecific()->getInheritedMembers().count(el.getID())) {
-                            dynamic_cast<Generalization*>(relationship)->getSpecific()->getInheritedMembers().add(dynamic_cast<NamedElement&>(el));
+        for (auto& relationship : dynamic_cast<Classifier*>(m_el)->getRelationships()) {
+            if (relationship.isSubClassOf(ElementType::GENERALIZATION)) {
+                if (dynamic_cast<Generalization&>(relationship).getGeneral() == m_el) {
+                    if (dynamic_cast<Generalization&>(relationship).getSpecific()) {
+                        if (!dynamic_cast<Generalization&>(relationship).getSpecific()->getInheritedMembers().count(el.getID())) {
+                            dynamic_cast<Generalization&>(relationship).getSpecific()->getInheritedMembers().add(dynamic_cast<NamedElement&>(el));
                         }
                     }
                 }
@@ -218,12 +218,12 @@ void Classifier::ClassifierAddMemberFunctor::operator()(Element& el) const {
 
 void Classifier::ClassifierRemoveMemberFunctor::operator()(Element& el) const {
     if (dynamic_cast<NamedElement&>(el).getVisibility() != VisibilityKind::PRIVATE) {
-        for (auto const& relationship : dynamic_cast<Classifier*>(m_el)->getRelationships()) {
-            if (relationship->isSubClassOf(ElementType::GENERALIZATION)) {
-                if (dynamic_cast<Generalization*>(relationship)->getGeneral() == m_el) {
-                    if (dynamic_cast<Generalization*>(relationship)->getSpecific()) {
-                        if (dynamic_cast<Generalization*>(relationship)->getSpecific()->getInheritedMembers().count(el.getID())) {
-                            dynamic_cast<Generalization*>(relationship)->getSpecific()->getInheritedMembers().remove(dynamic_cast<NamedElement&>(el));
+        for (auto& relationship : dynamic_cast<Classifier*>(m_el)->getRelationships()) {
+            if (relationship.isSubClassOf(ElementType::GENERALIZATION)) {
+                if (dynamic_cast<Generalization&>(relationship).getGeneral() == m_el) {
+                    if (dynamic_cast<Generalization&>(relationship).getSpecific()) {
+                        if (dynamic_cast<Generalization&>(relationship).getSpecific()->getInheritedMembers().count(el.getID())) {
+                            dynamic_cast<Generalization&>(relationship).getSpecific()->getInheritedMembers().remove(dynamic_cast<NamedElement&>(el));
                         }
                     }
                 }

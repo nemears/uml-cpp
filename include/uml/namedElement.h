@@ -6,7 +6,7 @@
 
 namespace UML{
 
-    template <class T = Element> class Sequence;
+    template <class T> class Sequence;
     class Namespace;
     class AbstractSequenceFunctor;
 
@@ -27,8 +27,8 @@ namespace UML{
             Sequence<Namespace>* m_memberNamespace;
             // visibility defaults to public, don't think there is a none value
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
-            virtual void reindexName(std::string oldName, std::string newName);
-            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
+            // virtual void reindexName(std::string oldName, std::string newName);
+            void reindexID(ID oldID, ID newID) override;
         public:
             NamedElement();
             virtual ~NamedElement();

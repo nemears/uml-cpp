@@ -5,9 +5,9 @@
 using namespace std;
 using namespace UML;
 
-void Relationship::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
-    for (auto const& relEl : m_relatedElements) {
-        relEl->getRelationships().reindex(oldID, newID);
+void Relationship::reindexID(ID oldID, ID newID) {
+    for (auto& relEl : m_relatedElements) {
+        relEl.getRelationships().reindex(oldID, newID);
     }
 
     Element::reindexID(oldID, newID);
@@ -23,7 +23,7 @@ void Relationship::AddRelationshipFunctor::operator()(Element& el) const {
 void Relationship::CheckRelatedElementsFunctor::operator()(Element& el) const {
     // add to related elements if not duplicate
     if (dynamic_cast<Relationship*>(m_el)->getRelatedElements().count(el.getID())) {
-        throw DuplicateRelatedElementException(boost::lexical_cast<string>(m_el->getID())); 
+        throw DuplicateRelatedElementException(m_el->getID().string()); 
     }
 }
 

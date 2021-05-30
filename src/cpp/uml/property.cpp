@@ -9,7 +9,7 @@
 using namespace std;
 using namespace UML;
 
-void Property::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+void Property::reindexID(ID oldID, ID newID) {
     if (m_classifier) {
         m_classifier->getAttributes().reindex(oldID, newID);
     }
@@ -48,44 +48,44 @@ void Property::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
     Feature::reindexID(oldID, newID);
 }
 
-void Property::reindexName(string oldName, string newName) {
-    if (m_classifier) {
-        m_classifier->getAttributes().reindex(m_id, oldName, newName);
-    }
+// void Property::reindexName(string oldName, string newName) {
+//     if (m_classifier) {
+//         m_classifier->getAttributes().reindex(m_id, oldName, newName);
+//     }
 
-    if (m_dataType) {
-        m_dataType->getOwnedAttribute().reindex(m_id, oldName, newName);
-    }
+//     if (m_dataType) {
+//         m_dataType->getOwnedAttribute().reindex(m_id, oldName, newName);
+//     }
 
-    if (m_structuredClassifier) {
-        if (m_structuredClassifier->getOwnedAttributes().count(m_id)) {
-            m_structuredClassifier->getOwnedAttributes().reindex(m_id, oldName, newName);
-        }
-        if (m_structuredClassifier->getRole().count(m_id)) {
-            m_structuredClassifier->getRole().reindex(m_id, oldName, newName);
-        }
-        if (m_structuredClassifier->getParts().count(m_id)) {
-            m_structuredClassifier->getParts().reindex(m_id, oldName, newName);
-        }
-    }
+//     if (m_structuredClassifier) {
+//         if (m_structuredClassifier->getOwnedAttributes().count(m_id)) {
+//             m_structuredClassifier->getOwnedAttributes().reindex(m_id, oldName, newName);
+//         }
+//         if (m_structuredClassifier->getRole().count(m_id)) {
+//             m_structuredClassifier->getRole().reindex(m_id, oldName, newName);
+//         }
+//         if (m_structuredClassifier->getParts().count(m_id)) {
+//             m_structuredClassifier->getParts().reindex(m_id, oldName, newName);
+//         }
+//     }
 
-    if (m_association) {
-        if (m_association->getMemberEnds().count(m_id)) {
-            m_association->getMemberEnds().reindex(m_id, oldName, newName);
-        }
-    }
+//     if (m_association) {
+//         if (m_association->getMemberEnds().count(m_id)) {
+//             m_association->getMemberEnds().reindex(m_id, oldName, newName);
+//         }
+//     }
 
-    if (m_owningAssociation) {
-        if (m_owningAssociation->getOwnedEnds().count(m_id)) {
-            m_owningAssociation->getOwnedEnds().reindex(m_id, oldName, newName);
-        }
-        if (m_owningAssociation->getNavigableOwnedEnds().count(m_id)) {
-            m_owningAssociation->getNavigableOwnedEnds().reindex(m_id, oldName, newName);
-        }
-    }
+//     if (m_owningAssociation) {
+//         if (m_owningAssociation->getOwnedEnds().count(m_id)) {
+//             m_owningAssociation->getOwnedEnds().reindex(m_id, oldName, newName);
+//         }
+//         if (m_owningAssociation->getNavigableOwnedEnds().count(m_id)) {
+//             m_owningAssociation->getNavigableOwnedEnds().reindex(m_id, oldName, newName);
+//         }
+//     }
 
-    Feature::reindexName(oldName, newName);
-}
+//     Feature::reindexName(oldName, newName);
+// }
 
 void Property::setDefaultValue(ValueSpecification* val) {
     defaultValue = val;

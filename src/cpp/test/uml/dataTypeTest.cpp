@@ -318,7 +318,7 @@ TEST_F(DataTypeTest, reindexOwnedAttributeIDTest) {
     DataType d;
     Property p;
     d.getOwnedAttribute().add(p);
-    boost::uuids::uuid id = boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
+    ID id = ID::fromString("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
     p.setID(id);
     ASSERT_TRUE(d.getOwnedAttribute().get(id) == &p);
     ASSERT_TRUE(d.getAttributes().get(id) == &p);
@@ -328,25 +328,25 @@ TEST_F(DataTypeTest, reindexOwnedAttributeIDTest) {
     ASSERT_TRUE(d.getOwnedElements().get(id) == &p);
 }
 
-TEST_F(DataTypeTest, reindexOwnedAttributeNameTest) {
-    DataType d;
-    Property p;
-    p.setName("1");
-    d.getOwnedAttribute().add(p);
-    p.setName("2");
-    ASSERT_TRUE(d.getOwnedAttribute().get("2") == &p);
-    ASSERT_TRUE(d.getAttributes().get("2") == &p);
-    ASSERT_TRUE(d.getFeatures().get("2") == &p);
-    ASSERT_TRUE(d.getMembers().get("2") == &p);
-    ASSERT_TRUE(d.getOwnedMembers().get("2") == &p);
-    ASSERT_TRUE(d.getOwnedElements().get("2") == &p);
-}
+// TEST_F(DataTypeTest, reindexOwnedAttributeNameTest) {
+//     DataType d;
+//     Property p;
+//     p.setName("1");
+//     d.getOwnedAttribute().add(p);
+//     p.setName("2");
+//     ASSERT_TRUE(d.getOwnedAttribute().get("2") == &p);
+//     ASSERT_TRUE(d.getAttributes().get("2") == &p);
+//     ASSERT_TRUE(d.getFeatures().get("2") == &p);
+//     ASSERT_TRUE(d.getMembers().get("2") == &p);
+//     ASSERT_TRUE(d.getOwnedMembers().get("2") == &p);
+//     ASSERT_TRUE(d.getOwnedElements().get("2") == &p);
+// }
 
 TEST_F(DataTypeTest, reindexOwnedOperationIDTest) {
     DataType d;
     Operation o;
     d.getOwnedOperation().add(o);
-    boost::uuids::uuid id = boost::lexical_cast<boost::uuids::uuid>("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
+    ID id = ID::fromString("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
     o.setID(id);
     ASSERT_TRUE(d.getOwnedOperation().get(id) == &o);
     ASSERT_TRUE(d.getFeatures().get(id) == &o);
@@ -355,18 +355,18 @@ TEST_F(DataTypeTest, reindexOwnedOperationIDTest) {
     ASSERT_TRUE(d.getOwnedElements().get(id) == &o);
 }
 
-TEST_F(DataTypeTest, reindexOwnedOperationNameTest) {
-    DataType d;
-    Operation o;
-    o.setName("1");
-    d.getOwnedOperation().add(o);
-    o.setName("2");
-    ASSERT_TRUE(d.getOwnedOperation().get("2") == &o);
-    ASSERT_TRUE(d.getFeatures().get("2") == &o);
-    ASSERT_TRUE(d.getMembers().get("2") == &o);
-    ASSERT_TRUE(d.getOwnedMembers().get("2") == &o);
-    ASSERT_TRUE(d.getOwnedElements().get("2") == &o);
-}
+// TEST_F(DataTypeTest, reindexOwnedOperationNameTest) {
+//     DataType d;
+//     Operation o;
+//     o.setName("1");
+//     d.getOwnedOperation().add(o);
+//     o.setName("2");
+//     ASSERT_TRUE(d.getOwnedOperation().get("2") == &o);
+//     ASSERT_TRUE(d.getFeatures().get("2") == &o);
+//     ASSERT_TRUE(d.getMembers().get("2") == &o);
+//     ASSERT_TRUE(d.getOwnedMembers().get("2") == &o);
+//     ASSERT_TRUE(d.getOwnedElements().get("2") == &o);
+// }
 
 TEST_F(DataTypeTest, copyDataTypeTest) {
     DataType d;
@@ -374,7 +374,7 @@ TEST_F(DataTypeTest, copyDataTypeTest) {
     Property p;
     Package pkg;
     d.setName("test");
-    boost::uuids::uuid id = d.getID();
+    ID id = d.getID();
     d.getOwnedOperation().add(o);
     d.getOwnedAttribute().add(p);
     d.setOwningPackage(&pkg);

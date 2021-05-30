@@ -66,12 +66,12 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(yuml_python, m) {
 
-    m.def("isValidUUID4", isValidUUID4);
+    m.def("isValidUUID4", isValidID);
 
     // Element
     py::class_<Element, ElementPy<>>(m, "Element")
         .def(py::init<>())
-        .def("getID", &Element::getIDstring)
+        // .def("getID", &Element::getID().string())
         .def("setID", [](Element& me, string id) { me.setID(id); })
         //.def_readonly("ownedElements", [] (Element& me) { me.getOwnedElements().copyToVector(); })
         .def("addOwnedElement", [](Element& me, Element& el) { me.getOwnedElements().add(el); })

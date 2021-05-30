@@ -46,7 +46,7 @@ void BehavioralFeature::CheckParameterFunctor::operator()(Element& el) const {
                     dynamic_cast<Parameter&>(el).setOperation(0);
                 }
             }
-            throw ReturnParameterException(m_el->getElementTypeString() + " " + m_el->getIDstring());
+            throw ReturnParameterException(m_el->getElementTypeString() + " " + m_el->getID().string());
         } else {
             dynamic_cast<BehavioralFeature*>(m_el)->m_returnSpecified = true;
         }

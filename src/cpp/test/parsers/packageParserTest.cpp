@@ -85,7 +85,7 @@ TEST_F(PackageParserTest, ElementFeaturesTest) {
     Element* el;
     ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "packageParserTests/packagewID.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
-    ASSERT_TRUE(el->getID() == boost::lexical_cast<boost::uuids::uuid>("54e8f139-9581-48a4-8021-32ff00606c93"));
+    ASSERT_TRUE(el->getID() == ID::fromString("54e8f139-9581-48a4-8021-32ff00606c93"));
     Parsers::deleteParsedElement(el);
 }
 

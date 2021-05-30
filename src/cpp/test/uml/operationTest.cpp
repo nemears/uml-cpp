@@ -22,14 +22,14 @@ TEST_F(OperationTest, reIndexID_Test) {
     ASSERT_TRUE(c.getOwnedElements().get(o.getID()) != NULL);
 }
 
-TEST_F(OperationTest, reIndexNameTest) {
-    Class c;
-    Operation o;
-    o.setClass(&c);
-    o.setName("test");
-    ASSERT_TRUE(c.getOperations().get("test") != NULL);
-    ASSERT_TRUE(c.getOwnedElements().get("test") != NULL);
-}
+// TEST_F(OperationTest, reIndexNameTest) {
+//     Class c;
+//     Operation o;
+//     o.setClass(&c);
+//     o.setName("test");
+//     ASSERT_TRUE(c.getOperations().get("test") != NULL);
+//     ASSERT_TRUE(c.getOwnedElements().get("test") != NULL);
+// }
 
 TEST_F(OperationTest, AddMethodFunctorTest) {
     Operation o;

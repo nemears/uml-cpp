@@ -13,8 +13,8 @@ namespace UML {
             Activity* m_activity;
             Sequence<ActivityEdge> m_incoming;
             Sequence<ActivityEdge> m_outgoing;
-            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
-            void reindexName(std::string oldName, std::string newName) override;
+            void reindexID(ID oldID, ID newID) override;
+            // void reindexName(std::string oldName, std::string newName) override;
             class AddIncomingFunctor : public AbstractSequenceFunctor {
                 public:
                     AddIncomingFunctor(Element* me) : AbstractSequenceFunctor(me) {};

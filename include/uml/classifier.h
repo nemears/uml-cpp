@@ -21,8 +21,8 @@ namespace UML {
             Sequence<Generalization> m_generalizations;
             Sequence<Classifier> m_generals;
             Sequence<NamedElement> m_inheritedMembers;
-            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
-            void reindexName(std::string oldName, std::string newName) override;
+            void reindexID(ID oldID, ID newID) override;
+            //void reindexName(std::string oldName, std::string newName) override;
             class AddAttributeFunctor : public AbstractSequenceFunctor {
                 public:
                     AddAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};

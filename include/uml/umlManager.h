@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include "id.h"
 #include "element.h"
-//#include "parsers/parser.h"
 
 namespace UML {
 
@@ -15,7 +14,7 @@ namespace UML {
         bool m_sequence;
     };
 
-    template <class T = Element> class Sequence2;
+    template <class T = Element> class Sequence;
 
     /**
      * UmlManager is the object that handles all of the instantiation and deletion of UML objects
@@ -39,8 +38,8 @@ namespace UML {
             template <class T = Element> T& create() {
                 T* ret = new T;
                 ret->setManager(this);
-                m_elements.push_back(ret->getID2());
-                m_loaded[ret->getID2()] = ret;
+                m_elements.push_back(ret->getID());
+                m_loaded[ret->getID()] = ret;
                 return *ret;
             };
             
@@ -49,8 +48,8 @@ namespace UML {
              * can communicate to the manager for allocation.
              * WARN: Sequences should always be values
              **/
-            template <class T = Element> Sequence2<T> createSequence() {
-                Sequence2<T> ret;
+            template <class T = Element> Sequence<T> createSequence() {
+                Sequence<T> ret;
                 ret.m_manager = this;
                 return ret;
             };

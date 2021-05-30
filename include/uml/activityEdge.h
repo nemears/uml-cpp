@@ -17,8 +17,8 @@ namespace UML {
             ActivityNode* m_source;
             ActivityNode* m_target;
             ValueSpecification* m_guard;
-            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
-            void reindexName(std::string oldName, std::string newName) override;
+            void reindexID(ID oldID, ID newID) override;
+            // void reindexName(std::string oldName, std::string newName) override;
         public:
             Activity* getActivity();
             void setActivity(Activity* activity);

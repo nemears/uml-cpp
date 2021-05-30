@@ -41,31 +41,31 @@ NamedElement::NamedElement(const NamedElement& el) : Element(el) {
 }
 
 void NamedElement::setName(const string &name) {
-    reindexName(m_name, name);
+    //reindexName(m_name, name);
     m_name = name;
 }
 
-void NamedElement::reindexName(string oldName, string newName) {
-    if (m_owner) {
-        m_owner->getOwnedElements().reindex(m_id, oldName, newName);
-    }
+// void NamedElement::reindexName(string oldName, string newName) {
+//     if (m_owner) {
+//         m_owner->getOwnedElements().reindex(m_id, oldName, newName);
+//     }
 
-    if (m_namespace) {
-        m_namespace->getOwnedMembers().reindex(m_id, oldName, newName);
-    }
+//     if (m_namespace) {
+//         m_namespace->getOwnedMembers().reindex(m_id, oldName, newName);
+//     }
 
-    for (auto const& nmspc : *m_memberNamespace) {
-        nmspc->getMembers().reindex(m_id, oldName, newName);
-    }
-}
+//     for (auto const& nmspc : *m_memberNamespace) {
+//         nmspc->getMembers().reindex(m_id, oldName, newName);
+//     }
+// }
 
-void NamedElement::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+void NamedElement::reindexID(ID oldID, ID newID) {
     if (m_namespace) {
         m_namespace->getOwnedMembers().reindex(oldID, newID);
     }
 
-    for (auto const& nmspc : *m_memberNamespace) {
-        nmspc->getMembers().reindex(oldID, newID);
+    for (auto& nmspc : *m_memberNamespace) {
+        nmspc.getMembers().reindex(oldID, newID);
     }
 
     Element::reindexID(oldID, newID);
@@ -112,10 +112,10 @@ VisibilityKind NamedElement::getVisibility() {
 void NamedElement::setVisibility(VisibilityKind visibility) {
     if (m_visibility != visibility) {
         if (visibility == VisibilityKind::PRIVATE) {
-            for (auto const& nmspc: getMemberNamespace()) {
-                if (nmspc->isSubClassOf(ElementType::CLASSIFIER)) {
-                    if (dynamic_cast<Classifier*>(nmspc)->getInheritedMembers().count(m_id)) {
-                        dynamic_cast<Classifier*>(nmspc)->getInheritedMembers().remove(*this);
+            for (auto& nmspc: getMemberNamespace()) {
+                if (nmspc.isSubClassOf(ElementType::CLASSIFIER)) {
+                    if (dynamic_cast<Classifier&>(nmspc).getInheritedMembers().count(m_id)) {
+                        dynamic_cast<Classifier&>(nmspc).getInheritedMembers().remove(*this);
                     }
                 }
             }
@@ -124,10 +124,10 @@ void NamedElement::setVisibility(VisibilityKind visibility) {
     m_visibility = visibility;
     if (m_visibility != visibility) {
         if (m_visibility != VisibilityKind::PRIVATE) {
-            for (auto const& nmspc: getMemberNamespace()) {
-                if (nmspc->isSubClassOf(ElementType::CLASSIFIER)) {
-                    if (!dynamic_cast<Classifier*>(nmspc)->getInheritedMembers().count(m_id)) {
-                        dynamic_cast<Classifier*>(nmspc)->getInheritedMembers().add(*this);
+            for (auto& nmspc: getMemberNamespace()) {
+                if (nmspc.isSubClassOf(ElementType::CLASSIFIER)) {
+                    if (!dynamic_cast<Classifier&>(nmspc).getInheritedMembers().count(m_id)) {
+                        dynamic_cast<Classifier&>(nmspc).getInheritedMembers().add(*this);
                     }
                 }
             }

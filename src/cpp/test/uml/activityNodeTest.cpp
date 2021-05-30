@@ -18,14 +18,14 @@ TEST_F(ActivityNodeTest, reindexID_test) {
     ASSERT_TRUE(a.getNodes().get(n.getID()));
 }
 
-TEST_F(ActivityNodeTest, reindexNameTest) {
-    Activity a;
-    ActivityNode n;
-    a.getNodes().add(n);
-    n.setActivity(&a);
-    n.setName("test");
-    ASSERT_TRUE(a.getNodes().get("test"));
-}
+// TEST_F(ActivityNodeTest, reindexNameTest) {
+//     Activity a;
+//     ActivityNode n;
+//     a.getNodes().add(n);
+//     n.setActivity(&a);
+//     n.setName("test");
+//     ASSERT_TRUE(a.getNodes().get("test"));
+// }
 
 TEST_F(ActivityNodeTest, addIncomingFunctorTest) {
     ActivityNode n;

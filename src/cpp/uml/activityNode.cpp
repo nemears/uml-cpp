@@ -16,7 +16,7 @@ ActivityNode::~ActivityNode() {
     
 }
 
-void ActivityNode::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+void ActivityNode::reindexID(ID oldID, ID newID) {
     if (m_activity) {
         m_activity->getNodes().reindex(oldID, newID);
     }
@@ -24,13 +24,13 @@ void ActivityNode::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID)
     NamedElement::reindexID(oldID, newID);
 }
 
-void ActivityNode::reindexName(string oldName, string newName) {
-    if (m_activity) {
-        m_activity->getNodes().reindex(m_id, oldName, newName);
-    }
+// void ActivityNode::reindexName(string oldName, string newName) {
+//     if (m_activity) {
+//         m_activity->getNodes().reindex(m_id, oldName, newName);
+//     }
 
-    NamedElement::reindexName(oldName, newName);
-}
+//     NamedElement::reindexName(oldName, newName);
+// }
 
 void ActivityNode::AddIncomingFunctor::operator()(Element& el) const {
     if (dynamic_cast<ActivityEdge&>(el).getTarget() != m_el) {
@@ -46,13 +46,13 @@ void ActivityNode::AddOutgoingFunctor::operator()(Element& el) const {
 
 void ActivityNode::CheckIncomingFunctor::operator()(Element& el) const {
     if(dynamic_cast<ActivityNode*>(m_el)->getIncoming().count(el.getID())) {
-        throw DuplicateEdgeException(el.getIDstring());
+        throw DuplicateEdgeException(el.getID().string());
     }
 }
 
 void ActivityNode::CheckOutgoingFunctor::operator()(Element& el) const {
     if(dynamic_cast<ActivityNode*>(m_el)->getOutgoing().count(el.getID())) {
-        throw DuplicateEdgeException(el.getIDstring());
+        throw DuplicateEdgeException(el.getID().string());
     }
 }
 

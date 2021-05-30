@@ -14,7 +14,7 @@ namespace UML {
             StructuralFeature* m_definingFeature;
             Sequence<ValueSpecification> m_values;
             InstanceSpecification* m_owningInstance;
-            void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) override;
+            void reindexID(ID oldID, ID newID) override;
             class AddValueFunctor : public AbstractSequenceFunctor {
                 public:
                     AddValueFunctor(Element* me) : AbstractSequenceFunctor(me) {};

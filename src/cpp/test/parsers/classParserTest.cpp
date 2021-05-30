@@ -21,7 +21,7 @@ TEST_F(ClassParserTest, parseID_andName) {
     ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "classTests/class_w_id_and_name.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
-    ASSERT_TRUE(clazz->getID() == boost::lexical_cast<boost::uuids::uuid>("54e8f139-9581-48a4-8021-32ff00606c93"));
+    ASSERT_TRUE(clazz->getID() == ID::fromString("54e8f139-9581-48a4-8021-32ff00606c93"));
     ASSERT_TRUE(clazz->getName().compare("test") == 0);
     Parsers::deleteParsedElement(el);
 }

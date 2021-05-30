@@ -36,13 +36,13 @@ Model* parseModel(string path) {
 }
 
 void deleteParsedElement(Element* el) {
-    for (auto const& ownedElement : el->getOwnedElements()) {
+    for (auto& ownedElement : el->getOwnedElements()) {
         // if (ownedElement->getElementType() == ElementType::PACKAGE_MERGE) {
         //     if (dynamic_cast<PackageMerge*>(ownedElement)->getMergedPackage()) {
         //         deleteParsedElement(dynamic_cast<PackageMerge*>(ownedElement)->getMergedPackage());
         //     }
         // }
-        deleteParsedElement(ownedElement);
+        deleteParsedElement(&ownedElement);
     }
     delete el;
 }
@@ -221,8 +221,8 @@ void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
     if (node["id"]) {
         if (node["id"].IsScalar()) {
             string id = node["id"].as<string>();
-            if (isValidUUID4(id)) {
-                el.setID(boost::lexical_cast<boost::uuids::uuid>(id));
+            if (isValidID(id)) {
+                el.setID(ID::fromString(id));
             } else {
                 throw UmlParserException("Value for id is not a valid UUID4, " + data.m_path.string() + " line " + to_string(node["id"].Mark().line));
             }
@@ -236,7 +236,7 @@ void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
 }
 
 void emitElement(YAML::Emitter& emitter, Element& el) {
-    emitter << YAML::Key << "id" << YAML::Value << el.getIDstring();
+    emitter << YAML::Key << "id" << YAML::Value << el.getID().string();
 }
 
 void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) {
@@ -296,7 +296,7 @@ void SetTypeFunctor::operator()(Element& el) const {
     if (el.isSubClassOf(ElementType::TYPE)) {
         dynamic_cast<TypedElement*>(m_el)->setType(&dynamic_cast<Type&>(el));
     } else {
-        throw UmlParserException(m_el->getElementTypeString() + " id: " + boost::lexical_cast<string>(m_el->getID()) + 
+        throw UmlParserException(m_el->getElementTypeString() + " id: " + m_el->getID().string() + 
                                  " assigned type is not a typed Element! line " + to_string(m_node.Mark().line));
     }
 }
@@ -308,8 +308,8 @@ void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data) 
     if (node["type"]) {
         if (node["type"].IsScalar()) {
             string typeIDstring = node["type"].as<string>();
-            if (isValidUUID4(typeIDstring)) {
-                boost::uuids::uuid typeID = boost::lexical_cast<boost::uuids::uuid>(typeIDstring);
+            if (isValidID(typeIDstring)) {
+                ID typeID = ID::fromString(typeIDstring);
                 applyFunctor(data, typeID, new SetTypeFunctor(&el, node["type"]));
             } else {
                 throw UmlParserException("ID for " + el.getElementTypeString() + " type field is invalid, " + data.m_path.string() + " line " + to_string(node["type"].Mark().line));
@@ -324,7 +324,7 @@ void emitTypedElement(YAML::Emitter& emitter, TypedElement& el) {
     emitNamedElement(emitter, el);
 
     if (el.getType()) {
-        emitter << YAML::Key << "type" << YAML::Value << el.getType()->getIDstring();
+        emitter << YAML::Key << "type" << YAML::Value << el.getType()->getID().string();
     }
 }
 
@@ -355,8 +355,8 @@ void emitClassifier(YAML::Emitter& emitter, Classifier& clazz) {
     
     if (!clazz.getGeneralizations().empty()) {
         emitter << YAML::Key << "generalizations" << YAML::Value << YAML::BeginSeq;
-        for (auto const& generalization: clazz.getGeneralizations()) {
-            emitGeneralization(emitter, *generalization);
+        for (auto& generalization: clazz.getGeneralizations()) {
+            emitGeneralization(emitter, generalization);
         }
         emitter << YAML::EndSeq;
     }
@@ -376,8 +376,8 @@ void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaDat
     if (node["general"]) {
         if (node["general"].IsScalar()) {
             string generalString = node["general"].as<string>();
-            if (isValidUUID4(generalString)) {
-                boost::uuids::uuid generalID = boost::lexical_cast<boost::uuids::uuid>(generalString);
+            if (isValidID(generalString)) {
+                ID generalID = ID::fromString(generalString);
                 applyFunctor(data, generalID, new SetGeneralFunctor(&general, node["general"]));
             }
         } else {
@@ -394,7 +394,7 @@ void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization) 
     emitElement(emitter, generalization);
 
     if (generalization.getGeneral()) {
-        emitter << YAML::Key << "general" << YAML::Value << generalization.getGeneral()->getIDstring();
+        emitter << YAML::Key << "general" << YAML::Value << generalization.getGeneral()->getID().string();
     }
 
     if (generalization.getElementType() == ElementType::GENERALIZATION) {
@@ -453,16 +453,16 @@ void emitDataType(YAML::Emitter& emitter, DataType& dataType) {
     
     if (!dataType.getOwnedAttribute().empty()) {
         emitter << YAML::Key << "ownedAttribute" << YAML::Value << YAML::BeginSeq;
-        for (auto const& attribute: dataType.getOwnedAttribute()) {
-            emitProperty(emitter, *attribute);
+        for (auto& attribute: dataType.getOwnedAttribute()) {
+            emitProperty(emitter, attribute);
         }
         emitter << YAML::EndSeq;
     }
 
     if (!dataType.getOwnedOperation().empty()) {
         emitter << YAML::Key << "ownedOperation" << YAML::Value << YAML::BeginSeq;
-        for (auto const& operation : dataType.getOwnedOperation()) {
-            emitOperation(emitter, *operation);
+        for (auto& operation : dataType.getOwnedOperation()) {
+            emitOperation(emitter, operation);
         }
         emitter << YAML::EndSeq;
     }
@@ -517,8 +517,8 @@ void emitStructuredClassifier(YAML::Emitter& emitter, StructuredClassifier& claz
 
     if (!clazz.getOwnedAttributes().empty()) {
         emitter << YAML::Key << "ownedAttributes" << YAML::Value << YAML::BeginSeq;
-        for (auto const& attribute : clazz.getOwnedAttributes()) {
-            emitProperty(emitter, *attribute);
+        for (auto& attribute : clazz.getOwnedAttributes()) {
+            emitProperty(emitter, attribute);
         }
         emitter << YAML::EndSeq;
     }
@@ -553,8 +553,8 @@ void emitClass(YAML::Emitter& emitter, Class& clazz) {
 
     if (!clazz.getOperations().empty()) {
         emitter << YAML::Key << "operations" << YAML::Value << YAML::BeginSeq;
-        for (auto const& operation : clazz.getOperations()) {
-            emitOperation(emitter, *operation);
+        for (auto& operation : clazz.getOperations()) {
+            emitOperation(emitter, operation);
         }
         emitter << YAML::EndSeq;
     }
@@ -591,8 +591,8 @@ void emitBehavior(YAML::Emitter& emitter, Behavior& bhv) {
 
     if (!bhv.getParameters().empty()) {
         emitter << YAML::Key << "parameters" << YAML::Value << YAML::BeginSeq;
-        for (auto const& param : bhv.getParameters()) {
-            emitParameter(emitter, *param);
+        for (auto& param : bhv.getParameters()) {
+            emitParameter(emitter, param);
         }
         emitter << YAML::EndSeq;
     }
@@ -612,7 +612,7 @@ void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& d
                     }
                 } else if (node["bodies"][i].IsScalar()) {
                     string body = node["bodies"][i].as<string>();
-                    if (isValidUUID4(body)) {
+                    if (isValidID(body)) {
                         // TODO
                     } else {
                         // make literal string with value
@@ -639,8 +639,8 @@ void emitOpaqueBehavior(YAML::Emitter& emitter, OpaqueBehavior& bhv) {
 
     if (!bhv.getBodies().empty()) {
         emitter << YAML::Key << "bodies" << YAML::Value << YAML::BeginSeq;
-        for (auto const& body : bhv.getBodies()) {
-            emit(emitter, *body);
+        for (auto& body : bhv.getBodies()) {
+            emit(emitter, body);
         }
         emitter << YAML::EndSeq;
     }
@@ -868,16 +868,16 @@ void emitOperation(YAML::Emitter& emitter, Operation& op) {
 
     if (!op.getMethods().empty()) {
         emitter << YAML::Key << "methods" << YAML::Value << YAML::BeginSeq;
-        for (auto const& method : op.getMethods()) {
-            emit(emitter, *method);
+        for (auto& method : op.getMethods()) {
+            emit(emitter, method);
         }
         emitter << YAML::EndSeq;
     }
 
     if (!op.getOwnedParameters().empty()) {
         emitter << YAML::Key << "ownedParameters" << YAML::Value << YAML::BeginSeq;
-        for (auto const& parameter : op.getOwnedParameters()) {
-            emitParameter(emitter, *parameter);
+        for (auto& parameter : op.getOwnedParameters()) {
+            emitParameter(emitter, parameter);
         }
         emitter << YAML::EndSeq;
     }
@@ -998,8 +998,8 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg) {
 
     if (!pckg.getPackagedElements().empty()) {
         emitter << YAML::Key << "packagedElements" << YAML::Value << YAML::BeginSeq;
-        for (auto const& el : pckg.getPackagedElements()) {
-            emit(emitter, *el);
+        for (auto& el : pckg.getPackagedElements()) {
+            emit(emitter, el);
         }
         emitter << YAML::EndSeq;
     }
@@ -1059,7 +1059,7 @@ void SetClassifierFunctor::operator()(Element& el) const {
     if (el.isSubClassOf(ElementType::CLASSIFIER)) {
         dynamic_cast<InstanceSpecification*>(m_el)->setClassifier(&dynamic_cast<Classifier&>(el));
     } else {
-        throw UmlParserException(m_el->getElementTypeString() + " id: " + boost::lexical_cast<string>(m_el->getID()) + 
+        throw UmlParserException(m_el->getElementTypeString() + " id: " + m_el->getID().string() + 
                                  " assigned classifier is not a classifer! line " + to_string(m_node.Mark().line));
     }
 }
@@ -1070,8 +1070,8 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
     if (node["classifier"]) {
         if (node["classifier"].IsScalar()) {
             string classifierID = node["classifier"].as<string>();
-            if (isValidUUID4(classifierID)) {
-                boost::uuids::uuid id = boost::lexical_cast<boost::uuids::uuid>(classifierID);
+            if (isValidID(classifierID)) {
+                ID id = ID::fromString(classifierID);
                 applyFunctor(data, id, new SetClassifierFunctor(&inst, node["classifier"]));
             }
         } else {
@@ -1104,13 +1104,13 @@ void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& in
     emitNamedElement(emitter, inst);
 
     if (inst.getClassifier()) {
-        emitter << YAML::Key << "classifier" << YAML::Value << inst.getClassifier()->getIDstring();
+        emitter << YAML::Key << "classifier" << YAML::Value << inst.getClassifier()->getID().string();
     }
 
     if (!inst.getSlots().empty()) {
         emitter << YAML::Key << "slots" << YAML::Value << YAML::BeginSeq;
-        for (auto const& slot : inst.getSlots()) {
-            emitSlot(emitter, *slot);
+        for (auto& slot : inst.getSlots()) {
+            emitSlot(emitter, slot);
         }
     }
 
@@ -1123,7 +1123,7 @@ void SetDefiningFeatureFunctor::operator()(Element& el) const {
     if (el.isSubClassOf(ElementType::STRUCTURAL_FEATURE)) {
         dynamic_cast<Slot*>(m_el)->setDefiningFeature(&dynamic_cast<StructuralFeature&>(el));
     } else {
-        throw UmlParserException(m_el->getElementTypeString() + " id: " + boost::lexical_cast<string>(m_el->getID()) + 
+        throw UmlParserException(m_el->getElementTypeString() + " id: " + m_el->getID().string() + 
                                  " assigned definingFeature is not a structuralFeature! line " + to_string(m_node.Mark().line));
     }
 }
@@ -1134,8 +1134,8 @@ void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
     if (node["definingFeature"]) {
         if (node["definingFeature"].IsScalar()) {
             string stringID = node["definingFeature"].as<string>();
-            if (isValidUUID4(stringID)) {
-                boost::uuids::uuid definingFeatureID = boost::lexical_cast<boost::uuids::uuid>(stringID);
+            if (isValidID(stringID)) {
+                ID definingFeatureID = ID::fromString(stringID);
                 applyFunctor(data, definingFeatureID, new SetDefiningFeatureFunctor(&slot, node["definingFeature"]));
             }
         } else {
@@ -1213,13 +1213,13 @@ void emitSlot(YAML::Emitter& emitter, Slot& slot) {
     emitElement(emitter, slot);
 
     if (slot.getDefiningFeature()) {
-        emitter << YAML::Key << "definingFeature" << YAML::Value << slot.getDefiningFeature()->getIDstring();
+        emitter << YAML::Key << "definingFeature" << YAML::Value << slot.getDefiningFeature()->getID().string();
     }
 
     if (!slot.getValues().empty()) {
         emitter << YAML::Key << "values" << YAML::Value << YAML::BeginSeq;
-        for (auto const& val : slot.getValues()) {
-            emit(emitter, *val);
+        for (auto& val : slot.getValues()) {
+            emit(emitter, val);
         }
         emitter << YAML::EndSeq;
     }
@@ -1262,8 +1262,8 @@ void emitEnumeration(YAML::Emitter& emitter, Enumeration& enumeration) {
 
     if (!enumeration.getOwnedLiteral().empty()) {
         emitter << YAML::Key << "ownedLiteral" << YAML::BeginSeq;
-        for (auto const& literal : enumeration.getOwnedLiteral()) {
-            emitEnumerationLiteral(emitter, *literal);
+        for (auto& literal : enumeration.getOwnedLiteral()) {
+            emitEnumerationLiteral(emitter, literal);
         }
         emitter << YAML::EndSeq;
     }
@@ -1293,7 +1293,7 @@ void SetInstanceFunctor::operator()(Element& el) const {
     if (el.isSubClassOf(ElementType::INSTANCE_SPECIFICATION)) {
         dynamic_cast<InstanceValue*>(m_el)->setInstance(&dynamic_cast<InstanceSpecification&>(el));
     } else {
-        throw UmlParserException(m_el->getElementTypeString() + " id: " + boost::lexical_cast<string>(m_el->getID()) + 
+        throw UmlParserException(m_el->getElementTypeString() + " id: " + m_el->getID().string() + 
                                  " assigned instance is not an instanceSpecification! line " + to_string(m_node.Mark().line));
     }
 }
@@ -1304,8 +1304,8 @@ void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& dat
     if (node["instance"]) {
         if (node["instance"].IsScalar()) {
             string instID = node["instance"].as<string>();
-            if (isValidUUID4(instID)) {
-                boost::uuids::uuid id = boost::lexical_cast<boost::uuids::uuid>(instID);
+            if (isValidID(instID)) {
+                ID id = ID::fromString(instID);
                 applyFunctor(data, id, new SetInstanceFunctor(&val, node["instance"]));
             } else {
                 throw UmlParserException("Scalar YAML node for InstanceValue field instance is not a valid uuid4, " + data.m_path.string() + " line " + to_string(node["instance"].Mark().line));
@@ -1324,7 +1324,7 @@ void emitInstanceValue(YAML::Emitter& emitter, InstanceValue& val) {
     emitTypedElement(emitter, val);
 
     if (val.getInstance()) {
-        emitter << YAML::Key << "instance" << YAML::Value << val.getInstance()->getIDstring();
+        emitter << YAML::Key << "instance" << YAML::Value << val.getInstance()->getID().string();
     }
 
     if (val.getElementType() == ElementType::INSTANCE_VALUE) {
@@ -1336,7 +1336,7 @@ void SetMergedPackageFunctor::operator()(Element& el) const {
     if (el.isSubClassOf(ElementType::PACKAGE)) {
         dynamic_cast<PackageMerge*>(m_el)->setMergedPackage(&dynamic_cast<Package&>(el));
     } else {
-        throw UmlParserException(m_el->getElementTypeString() + " id: " + boost::lexical_cast<string>(m_el->getID()) + 
+        throw UmlParserException(m_el->getElementTypeString() + " id: " + m_el->getID().string() + 
                                         " assigned mergedPackage that is not a Package! line " + to_string(m_node.Mark().line));
     }
 }
@@ -1352,8 +1352,8 @@ void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& dat
     if (node["mergedPackage"]) {
         if (node["mergedPackage"].IsScalar()) {
             string pckgString = node["mergedPackage"].as<string>();
-            if (isValidUUID4(pckgString)) {
-                boost::uuids::uuid pckgID = boost::lexical_cast<boost::uuids::uuid>(pckgString);
+            if (isValidID(pckgString)) {
+                ID pckgID = ID::fromString(pckgString);
                 applyFunctor(data, pckgID, new SetMergedPackageFunctor(&merge, node["mergedPackage"]));
             } else {
                 if (filesystem::exists(data.m_path.parent_path() / pckgString)) {
@@ -1587,8 +1587,8 @@ void emitExpression(YAML::Emitter& emitter, Expression& exp) {
 
     if (!exp.getOperands().empty()) {
         emitter << YAML::Key << "operands" << YAML::Value << YAML::BeginSeq;
-        for (auto const& operand : exp.getOperands()) {
-            emit(emitter, *operand);
+        for (auto& operand : exp.getOperands()) {
+            emit(emitter, operand);
         }
         emitter << YAML::EndSeq;
     }

@@ -21,17 +21,17 @@ TEST_F(SequenceTest, addGetAndRemoveElementTest) {
     ASSERT_TRUE(seq.size() == 0);
 }
 
-TEST_F(SequenceTest, addGetAndRemoveElementByNameTest) {
-    Sequence<> seq;
-    Element e;
-    NamedElement n;
-    n.setName("test");
-    seq.add(e);
-    seq.add(n);
-    ASSERT_TRUE(seq.get("test") == &n);
-    ASSERT_TRUE(seq.get(n.getID()) == &n);
-    ASSERT_TRUE(seq.get(e.getID()) == &e);
-}
+// TEST_F(SequenceTest, addGetAndRemoveElementByNameTest) {
+//     Sequence<> seq;
+//     Element e;
+//     NamedElement n;
+//     n.setName("test");
+//     seq.add(e);
+//     seq.add(n);
+//     ASSERT_TRUE(seq.get("test") == &n);
+//     ASSERT_TRUE(seq.get(n.getID()) == &n);
+//     ASSERT_TRUE(seq.get(e.getID()) == &e);
+// }
 
 TEST_F(SequenceTest, addElementTwiceTest) {
     Sequence<> seq;
@@ -48,18 +48,18 @@ TEST_F(SequenceTest, addElementTwiceTest) {
     ASSERT_TRUE(seq.empty());
 }
 
-TEST_F(SequenceTest, addNamedElementTwiceTest) {
-    Sequence<> seq;
-    NamedElement n;
-    n.setName("name");
-    ASSERT_NO_THROW(seq.add(n));
-    ASSERT_NO_THROW(seq.add(n));
-    ASSERT_TRUE(seq.get("name") == &n);
-    ASSERT_TRUE(seq.get(n.getID()) == &n);
-    ASSERT_NO_THROW(seq.remove(n));
-    ASSERT_TRUE(seq.get("name") == NULL);
-    ASSERT_TRUE(seq.get(n.getID()) == NULL);
-}
+// TEST_F(SequenceTest, addNamedElementTwiceTest) {
+//     Sequence<> seq;
+//     NamedElement n;
+//     n.setName("name");
+//     ASSERT_NO_THROW(seq.add(n));
+//     ASSERT_NO_THROW(seq.add(n));
+//     ASSERT_TRUE(seq.get("name") == &n);
+//     ASSERT_TRUE(seq.get(n.getID()) == &n);
+//     ASSERT_NO_THROW(seq.remove(n));
+//     ASSERT_TRUE(seq.get("name") == NULL);
+//     ASSERT_TRUE(seq.get(n.getID()) == NULL);
+// }
 
 TEST_F(SequenceTest, removeElementThatWasntAddedTest) {
     Sequence<> seq;
@@ -77,8 +77,8 @@ TEST_F(SequenceTest, useAutoForLoop2) {
     seq.add(f);
     seq.add(b);
     seq.add(c);
-    for (auto const& e: seq) {
-        ASSERT_TRUE(e != NULL);
+    for (auto& e: seq) {
+        ASSERT_TRUE(!e.getID().isNull());
     }
 }
 
@@ -93,7 +93,7 @@ TEST_F(SequenceTest, getNonexistentElementByID_Test) {
 
 TEST_F(SequenceTest, newSequenceTest) {
     UmlManager m;
-    Sequence2<Package> s = m.createSequence<Package>();
+    Sequence<Package> s = m.createSequence<Package>();
     for (size_t i = 0; i < 100; i++) {
         s.add(m.create<Package>());
     }

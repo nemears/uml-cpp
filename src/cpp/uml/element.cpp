@@ -34,7 +34,7 @@ void RemoveOwnerFunctor::operator()(Element& el) const {
 }
 
 void ReadOnlySequenceFunctor::operator()(Element& el) const {
-    throw ReadOnlySequenceException(m_el->getIDstring(), m_name);
+    throw ReadOnlySequenceException(m_el->getID().string(), m_name);
 }
 
 void AddDirectedRelationshipFunctor::operator()(Element& el) const {
@@ -72,16 +72,10 @@ void RemoveOwnedCommentFunctor::operator()(Element& el) const {
 // Constructor
 Element::Element() {
     m_manager = 0;
-    m_id2 = ID::randomID();
+    m_id = ID::randomID();
     m_ownerPtr = 0;
-    m_ownedElements2 = new Sequence2<Element>;
-    m_ownedElements2->addProcedures.push_back(new SetOwnerFunctor(this));
-    m_ownedElements2->removeProcedures.push_back(new RemoveOwnerFunctor(this));
 
 
-    // old
-    m_id = boost::uuids::random_generator()();
-    m_owner = NULL;
     m_ownedElements = new Sequence<Element>;
     m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
     m_ownedElements->addChecks.push_back(new ReadOnlySequenceFunctor(this, "ownedElements"));
@@ -102,8 +96,6 @@ Element::Element() {
 
 // Destructor
 Element::~Element() {
-    delete m_ownedElements2;
-
     delete m_ownedElements;
     delete m_relationships;
     delete m_directedRelationships;
@@ -111,14 +103,7 @@ Element::~Element() {
 }
 
 Element::Element(const Element& el) {
-    m_ownedElements2 = new Sequence2<>(*el.m_ownedElements2);
-    m_ownedElements2->addProcedures.clear();
-    m_ownedElements2->removeProcedures.clear();
-    m_ownedElements2->addProcedures.push_back(new SetOwnerFunctor(this));
-    m_ownedElements2->removeProcedures.push_back(new RemoveOwnerFunctor(this));
-
     m_id = el.m_id;
-    m_owner = el.m_owner;
     m_ownedElements = new Sequence<>(*el.m_ownedElements);
     m_relationships = new Sequence<Relationship>(*el.m_relationships);
     m_directedRelationships = new Sequence<DirectedRelationship>(*el.m_directedRelationships);
@@ -150,55 +135,55 @@ Element::Element(const Element& el) {
 }
 
 void Element::setID(string id) {
-    if (UML::isValidUUID4(id)) {
-        setID(boost::lexical_cast<boost::uuids::uuid>(id));
+    if (UML::isValidID(id)) {
+        setID(ID::fromString(id));
     } else {
         throw InvalidID_Exception();
     }
 }
 
-void Element::setID(boost::uuids::uuid id) {
+void Element::setID(ID id) {
     reindexID(m_id, id);
     m_id = id;
 }
 
-void Element::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
-    if (m_owner) {
-        m_owner->m_ownedElements->reindex(oldID, newID);
+void Element::reindexID(ID oldID, ID newID) {
+    if (m_ownerPtr) {
+        m_ownerPtr->m_ownedElements->reindex(oldID, newID);
     }
 
-    for (auto const& relationship : *m_relationships) {
-        relationship->getRelatedElements().reindex(oldID, newID);
-    }
-}
-
-Element* Element::getOwner() {
-    return m_owner;
-}
-
-void Element::setOwner(Element* owner) {
-
-    // if owner was already set we need to get rid of previous relationship
-    if (m_owner) {
-        if (m_owner->getOwnedElements().count(m_id)) {
-            m_owner->getOwnedElements().internalRemove(*this);
-        }
-    }
-
-    // overwrite owner
-    m_owner = owner;
-
-    // add this to owner's owned elements if not already added and not null
-    if (m_owner) {
-        if (!m_owner->getOwnedElements().count(getID())) {
-            m_owner->getOwnedElements().internalAdd(*this);
-        }
+    for (auto& relationship : *m_relationships) {
+        relationship.getRelatedElements().reindex(oldID, newID);
     }
 }
 
-Sequence<>& Element::getOwnedElements() {
-    return *m_ownedElements;
-}
+// Element* Element::getOwner() {
+//     return m_owner;
+// }
+
+// void Element::setOwner(Element* owner) {
+
+//     // if owner was already set we need to get rid of previous relationship
+//     if (m_owner) {
+//         if (m_owner->getOwnedElements().count(m_id)) {
+//             m_owner->getOwnedElements().internalRemove(*this);
+//         }
+//     }
+
+//     // overwrite owner
+//     m_owner = owner;
+
+//     // add this to owner's owned elements if not already added and not null
+//     if (m_owner) {
+//         if (!m_owner->getOwnedElements().count(getID())) {
+//             m_owner->getOwnedElements().internalAdd(*this);
+//         }
+//     }
+// }
+
+// Sequence<>& Element::getOwnedElements() {
+//     return *m_ownedElements;
+// }
 
 Sequence<Relationship>& Element::getRelationships() {
     return *m_relationships;
@@ -411,22 +396,19 @@ string Element::getElementTypeString() const {
     }
 }
 
-string Element::getIDstring() {
-    return boost::lexical_cast<string>(m_id);
-}
-
-// new implementation
-
 void Element::setManager(UmlManager* manager) {
     m_manager = manager;
-    m_ownedElements2->m_manager = manager;
+    m_ownedElements->m_manager = manager;
+    m_ownedComments->m_manager = manager;
+    m_relationships->m_manager = manager;
+    m_directedRelationships->m_manager = manager;
 };
 
-ID Element::getID2() {
-    return m_id2;
+ID Element::getID() {
+    return m_id;
 }
 
-Element* Element::getOwner2() {
+Element* Element::getOwner() {
     if (!m_ownerPtr) {
         m_ownerPtr = &m_manager->get<Element>(m_ownerID);
     }
@@ -434,10 +416,10 @@ Element* Element::getOwner2() {
     return m_ownerPtr;
 }
 
-void Element::setOwner2(Element* owner) {
-    m_ownerID = owner->getID2();
+void Element::setOwner(Element* owner) {
+    m_ownerID = owner->getID();
 }
 
-Sequence2<Element>& Element::getOwnedElements2() {
-    return *m_ownedElements2;
+Sequence<Element>& Element::getOwnedElements() {
+    return *m_ownedElements;
 }

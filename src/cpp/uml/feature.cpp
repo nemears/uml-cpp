@@ -4,7 +4,7 @@
 using namespace std;
 using namespace UML;
 
-void Feature::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
+void Feature::reindexID(ID oldID, ID newID) {
     if (m_featuringClassifier) {
         m_featuringClassifier->getFeatures().reindex(oldID, newID);
     }
@@ -12,13 +12,13 @@ void Feature::reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID) {
     NamedElement::reindexID(oldID, newID);
 }
 
-void Feature::reindexName(string oldName, string newName) {
-    if (m_featuringClassifier) {
-        m_featuringClassifier->getFeatures().reindex(m_id, oldName, newName);
-    }
+// void Feature::reindexName(string oldName, string newName) {
+//     if (m_featuringClassifier) {
+//         m_featuringClassifier->getFeatures().reindex(m_id, oldName, newName);
+//     }
     
-    NamedElement::reindexName(oldName, newName);
-}
+//     NamedElement::reindexName(oldName, newName);
+// }
 
 Feature::Feature() {
     m_featuringClassifier = 0;

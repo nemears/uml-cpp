@@ -5,10 +5,6 @@
 #include <regex>
 #include <exception>
 #include <memory>
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_generators.hpp>
-#include <boost/uuid/uuid_io.hpp>
-#include <boost/lexical_cast.hpp>
 #include "id.h"
 
 namespace UML {
@@ -79,14 +75,11 @@ namespace UML {
     };
 
     // Helper function to assess possible uuids
-    static bool isValidUUID4(std::string strn) {
-        return std::regex_match (strn, std::regex("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"));
+    static bool isValidID(std::string strn) {
+        return std::regex_match (strn, std::regex("(?:[A-Za-z0-9_&]{28})"));
     }
 
     template <class T> class Sequence;
-    template <class T> class Sequence2;
-    //template <class T> class Sequence2;
-    //template <class T> struct SequenceIterator;
     class ElementDoesntExistException;
     class Relationship;
     class DirectedRelationship;
@@ -113,57 +106,43 @@ namespace UML {
         protected:
             // new id implementation
             UmlManager* m_manager;
-            ID m_id2;
+            ID m_id;
 
             // owner
             ID m_ownerID;
             Element* m_ownerPtr;
             
             // ownedElements
-            Sequence2<Element>* m_ownedElements2;
+            Sequence<Element>* m_ownedElements;
 
             virtual void setManager(UmlManager* manager);
-
-
-
-            //----------------------------------------------------------------------------------------------------
-            // old id implementation
-            Element* m_owner;
-            // Sequences need to be pointers in element, still encapsulated but slightly different internal syntax
-            Sequence<Element>* m_ownedElements;
             Sequence<Relationship>* m_relationships;
             Sequence<DirectedRelationship>* m_directedRelationships;
             Sequence<Comment>* m_ownedComments;
-            boost::uuids::uuid m_id;
-            virtual void reindexID(boost::uuids::uuid oldID, boost::uuids::uuid newID);
-            void setOwner(Element* owner);
+            virtual void reindexID(ID oldID, ID newID);
+            void setOwner(Element* el);
         public:
             Element();
             virtual ~Element();
 
             // new implementation
-            ID getID2();
-            Element* getOwner2();
-            void setOwner2(Element* el);
-            Sequence2<Element>& getOwnedElements2();
+            ID getID();
+            Element* getOwner();
+            Sequence<Element>& getOwnedElements();
 
             static ElementType elementType() {
                 return ElementType::ELEMENT;
             };
-
-
-            //----------------------------------------------------------------------------------------------------
-            // old implementation
             // Think about making the api non copyable, copying messes with the pointer vals
             // Maybe move to copy function
             // WARNING copying element dereferences it from model, elements it points to won't point to it
             Element(const Element& el);
-            /**
+            /**T = Element
              * Container for owned elements
              * opposite is getOwner
              * read_only (TODO implement)
              **/
-            Sequence<Element>& getOwnedElements();
+            // Sequence<Element>& getOwnedElements();
             /**
              * Container for relationships
              * opposite is relatedElements
@@ -172,14 +151,11 @@ namespace UML {
             Sequence<Relationship>& getRelationships();
             Sequence<DirectedRelationship>& getDirectedRelationships();
             Sequence<Comment>& getOwnedComments();
-            boost::uuids::uuid getID() { return m_id; };
             virtual void setID(std::string id);
-            void setID(boost::uuids::uuid id);
+            void setID(ID id);
             virtual ElementType getElementType() const;
             virtual bool isSubClassOf(ElementType eType);
             virtual std::string getElementTypeString() const;
-            virtual std::string getIDstring();
-            Element* getOwner();
     };
 
     //Exceptions
@@ -198,7 +174,7 @@ namespace UML {
 
         public:
             ElementDoesntExistException(const Element& el) : 
-                msg("Removed " + el.getElementTypeString() + " that isn't in the Sequence\nuuid: " + boost::lexical_cast<std::string>(el.m_id))
+                msg("Removed " + el.getElementTypeString() + " that isn't in the Sequence\nuuid: " + el.m_id.string())
                 {}
             virtual const char* what() const throw() {
                 return msg.c_str();

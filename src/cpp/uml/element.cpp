@@ -145,10 +145,16 @@ void Element::setID(string id) {
 void Element::setID(ID id) {
     reindexID(m_id, id);
     m_id = id;
+    if (m_manager) {
+        m_manager->reindex(m_id, id);
+    }
 }
 
 void Element::reindexID(ID oldID, ID newID) {
-    if (m_ownerPtr) {
+    if (!m_ownerID.isNull()) {
+        if (!m_ownerPtr) {
+            m_ownerPtr = &m_manager->get<Element>(m_ownerID);
+        }
         m_ownerPtr->m_ownedElements->reindex(oldID, newID);
     }
 
@@ -410,7 +416,9 @@ ID Element::getID() {
 
 Element* Element::getOwner() {
     if (!m_ownerPtr) {
-        m_ownerPtr = &m_manager->get<Element>(m_ownerID);
+        if (m_manager) {
+            m_ownerPtr = &m_manager->get<Element>(m_ownerID);
+        }
     }
 
     return m_ownerPtr;
@@ -418,6 +426,10 @@ Element* Element::getOwner() {
 
 void Element::setOwner(Element* owner) {
     m_ownerID = owner->getID();
+
+    if (!m_manager) {
+        m_ownerPtr = owner;
+    }
 }
 
 Sequence<Element>& Element::getOwnedElements() {

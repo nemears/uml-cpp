@@ -113,7 +113,7 @@ namespace UML {
         friend class RemoveRelationshipFunctor;
         private:
             // Manager
-            UmlManager* m_manager;
+            UmlManager* m_manager = 0;
 
             // Data
             std::vector<ID> m_order;
@@ -140,8 +140,13 @@ namespace UML {
             void internalAdd(T& el) {
                 m_order.push_back(el.getID());
 
-                // set element to null until it is accessed
-                m_rep[el.getID()] = 0;
+                if (m_manager) {
+                    // set element to null until it is accessed
+                    m_rep[el.getID()] = 0;
+                } else {
+                    // no manager, set it to element
+                    m_rep[el.getID()] = &el;
+                }
 
                 // apply procedures
                 for (auto const& fun : addProcedures) {

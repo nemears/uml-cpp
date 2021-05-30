@@ -17,6 +17,14 @@ TEST_F(ElementTest, OverrideID_Test) {
   EXPECT_EQ(el1.getID(), id);
 }
 
+TEST_F(ElementTest, GetOwnedElementsTest) {
+  Package el2;
+  Package el3;
+  el2.getPackagedElements().add(el3);
+  EXPECT_FALSE(el2.getOwnedElements().empty());
+  EXPECT_EQ(el2.getOwnedElements().get(0), &el3);
+}
+
 TEST_F(ElementTest, GetOwnedElementsTestW_Manager) {
   UmlManager m;
   Package& el2 = m.create<Package>();
@@ -29,7 +37,7 @@ TEST_F(ElementTest, GetOwnedElementsTestW_Manager) {
 TEST_F(ElementTest, InvalidID_Test) {
   Package el3;
   EXPECT_THROW(el3.setID("not a uuid4"), InvalidID_Exception);
-  EXPECT_NO_THROW(el3.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35"));
+  EXPECT_NO_THROW(el3.setID("7d18ee4282c64f528ec4fab67a75"));
 }
 
 TEST_F(ElementTest, getNullOwnerTest) {
@@ -64,11 +72,20 @@ TEST_F(ElementTest, getOwnedElementByNameTest) {
   ASSERT_TRUE(e.getOwnedElements().get(b.getID()) == &b);
 }
 
+TEST_F(ElementTest, reindexID_TestW_Manager) {
+  UmlManager m;
+  Package& e1 = m.create<Package>();
+  Package& e2 = m.create<Package>();
+  e1.getPackagedElements().add(e2);
+  e2.setID("190d1cb913dc44e6a064126891ae");
+  ASSERT_TRUE(e1.getOwnedElements().get(e2.getID()) != NULL);
+}
+
 TEST_F(ElementTest, reIndexID_Test) {
   Package e1;
   Package e2;
   e1.getPackagedElements().add(e2);
-  e2.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
+  e2.setID("190d1cb913dc44e6a064126891ae");
   ASSERT_TRUE(e1.getOwnedElements().get(e2.getID()) != NULL);
 }
 

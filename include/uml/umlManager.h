@@ -2,6 +2,7 @@
 #define UML_MANAGER_H
 
 #include <unordered_map>
+#include <unordered_set>
 #include "id.h"
 #include "element.h"
 
@@ -25,7 +26,7 @@ namespace UML {
         private:
             //Parsers::ParserMetaData m_parserData;
             std::unordered_map<ID, Element*> m_loaded;
-            std::vector<ID> m_elements;
+            std::unordered_set<ID> m_elements;
             std::unordered_map<ID, DiscData> m_disc;
         public:
             ~UmlManager();
@@ -38,10 +39,11 @@ namespace UML {
             template <class T = Element> T& create() {
                 T* ret = new T;
                 ret->setManager(this);
-                m_elements.push_back(ret->getID());
+                m_elements.insert(ret->getID());
                 m_loaded[ret->getID()] = ret;
                 return *ret;
             };
+            void reindex(ID oldID, ID newID);
             
             /**
              * This function doesn't deal with memory, just sets the m_manager so the Sequence Value

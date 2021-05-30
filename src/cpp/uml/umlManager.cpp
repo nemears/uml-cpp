@@ -22,3 +22,14 @@ UmlManager::~UmlManager() {
         delete e.second;
     }
 }
+
+void UmlManager::reindex(ID oldID, ID newID) {
+    m_elements.erase(oldID);
+    m_elements.insert(newID);
+    Element* el = m_loaded[oldID];
+    m_loaded.erase(oldID);
+    m_loaded[newID] = el;
+    DiscData disc = m_disc[oldID];
+    m_disc.erase(oldID);
+    m_disc[newID] = disc;
+}

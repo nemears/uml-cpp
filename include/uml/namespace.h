@@ -10,6 +10,7 @@ namespace UML{
      * A Namespace is an Element in a model that contains a set of NamedElements that can be identified by name
      **/
     class Namespace : virtual public NamedElement {
+        friend class UmlManager;
         protected:
             Sequence<NamedElement> m_members;
             Sequence<NamedElement> m_ownedMembers;
@@ -33,6 +34,7 @@ namespace UML{
                     RemoveOwnedMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            void setManager(UmlManager* manager) override;
         public:
             Namespace();
             virtual ~Namespace();

@@ -12,9 +12,9 @@ class ElementTest : public ::testing::Test {};
 
 TEST_F(ElementTest, OverrideID_Test) {
   Package el1;
-  el1.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
-  ID uuid = ID::fromString("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
-  EXPECT_EQ(el1.getID(), uuid);
+  el1.setID("7d18ee4282c64f528ec4fab67a75");
+  ID id = ID::fromString("7d18ee4282c64f528ec4fab67a75");
+  EXPECT_EQ(el1.getID(), id);
 }
 
 TEST_F(ElementTest, GetOwnedElementsTest) {

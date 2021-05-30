@@ -29,6 +29,7 @@ namespace UML{
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             // virtual void reindexName(std::string oldName, std::string newName);
             void reindexID(ID oldID, ID newID) override;
+            void setManager(UmlManager* manager) override;
         public:
             NamedElement();
             virtual ~NamedElement();

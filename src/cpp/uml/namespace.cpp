@@ -40,6 +40,12 @@ void Namespace::RemoveOwnedMemberFunctor::operator()(Element& el) const {
     }
 }
 
+void Namespace::setManager(UmlManager* manager) {
+    NamedElement::setManager(manager);
+    m_members.m_manager = manager;
+    m_ownedMembers.m_manager = manager;
+}
+
 Namespace::Namespace() : NamedElement() {
     m_members.addProcedures.push_back(new AddMemberFunctor(this));
     m_members.removeProcedures.push_back(new RemoveMemberFunctor(this));

@@ -51,6 +51,12 @@ void Package::RemovePackageMergeFunctor::operator()(Element& el) const {
     }
 }
 
+void Package::setManager(UmlManager* manager) {
+    Namespace::setManager(manager);
+    m_packagedElements.m_manager = manager;
+    m_packageMerge.m_manager = manager;
+}
+
 Package::Package() {
     m_packagedElements.addProcedures.push_back(new AddPackagedElementFunctor(this));
     m_packagedElements.removeProcedures.push_back(new RemovePackagedElementFunctor(this));

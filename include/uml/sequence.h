@@ -215,10 +215,12 @@ namespace UML {
             SequenceIterator<T>(Sequence<T>* sequence, std::vector<ID>::iterator orderIt) {
                 m_sequence = sequence;
                 m_orderIt = orderIt;
-                m_ptr = sequence->m_rep[*m_orderIt];
-                if (!m_ptr) {
-                    m_ptr = &m_sequence->m_manager->template get<T>(*m_orderIt);
+                if (m_orderIt != m_sequence->m_order.end()) {
+                    m_ptr = sequence->get(*m_orderIt);
                 }
+                // if (!m_ptr) {
+                //     m_ptr = &m_sequence->m_manager->template get<T>(*m_orderIt);
+                // }
             };
             T& operator*() { return *m_ptr; };
             T* operator->() { return m_ptr; };
@@ -242,8 +244,8 @@ namespace UML {
                 return ret;
             };
 
-            friend bool operator== (const SequenceIterator& a, const SequenceIterator& b) { return a.m_ptr == b.m_ptr; };
-            friend bool operator!= (const SequenceIterator& a, const SequenceIterator& b) { return a.m_ptr != b.m_ptr; };
+            friend bool operator== (const SequenceIterator& a, const SequenceIterator& b) { return a.m_orderIt == b.m_orderIt; };
+            friend bool operator!= (const SequenceIterator& a, const SequenceIterator& b) { return a.m_orderIt != b.m_orderIt; };
     };
 }
 

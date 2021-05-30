@@ -7,6 +7,7 @@
 
 namespace UML {
     class Package : public PackageableElement, public Namespace {
+        friend class UmlManager;
         protected:
             Sequence<PackageableElement> m_packagedElements;
             Sequence<PackageMerge> m_packageMerge;
@@ -30,6 +31,7 @@ namespace UML {
                     RemovePackageMergeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            void setManager(UmlManager* manager) override;
         public:
             Package();
             virtual ~Package();

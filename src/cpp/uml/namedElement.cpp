@@ -71,6 +71,11 @@ void NamedElement::reindexID(ID oldID, ID newID) {
     Element::reindexID(oldID, newID);
 }
 
+void NamedElement::setManager(UmlManager* manager) {
+    Element::setManager(manager);
+    m_memberNamespace->m_manager = manager;
+}
+
 string NamedElement::getName() {
     return m_name;
 }

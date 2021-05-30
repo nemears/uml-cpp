@@ -207,3 +207,13 @@ TEST_F(ElementTest, setAndGetOwnerTest2) {
   ownee.setOwner2(&owner);
   ASSERT_TRUE(ownee.getOwner2() == &owner);
 }
+
+TEST_F(ElementTest, addToOwnedElementsTest) {
+  UmlManager m;
+  Element& owner = m.create<Element>();
+  Element& ownee = m.create<Element>();
+  ASSERT_NO_THROW(owner.getOwnedElements2().add(ownee));
+  ASSERT_TRUE(owner.getOwnedElements2().size() == 1);
+  ASSERT_TRUE(owner.getOwnedElements2().front() == &ownee);
+  ASSERT_TRUE(ownee.getOwner() == &owner); // TODO change
+}

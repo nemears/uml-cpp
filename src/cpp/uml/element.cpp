@@ -74,6 +74,9 @@ Element::Element() {
     m_manager = 0;
     m_id2 = ID::randomID();
     m_ownerPtr = 0;
+    m_ownedElements2 = new Sequence2<Element>;
+    m_ownedElements2->addProcedures.push_back(new SetOwnerFunctor(this));
+    m_ownedElements2->removeProcedures.push_back(new RemoveOwnerFunctor(this));
 
 
     // old
@@ -99,6 +102,8 @@ Element::Element() {
 
 // Destructor
 Element::~Element() {
+    delete m_ownedElements2;
+
     delete m_ownedElements;
     delete m_relationships;
     delete m_directedRelationships;
@@ -106,6 +111,12 @@ Element::~Element() {
 }
 
 Element::Element(const Element& el) {
+    m_ownedElements2 = new Sequence2<>(*el.m_ownedElements2);
+    m_ownedElements2->addProcedures.clear();
+    m_ownedElements2->removeProcedures.clear();
+    m_ownedElements2->addProcedures.push_back(new SetOwnerFunctor(this));
+    m_ownedElements2->removeProcedures.push_back(new RemoveOwnerFunctor(this));
+
     m_id = el.m_id;
     m_owner = el.m_owner;
     m_ownedElements = new Sequence<>(*el.m_ownedElements);
@@ -406,6 +417,11 @@ string Element::getIDstring() {
 
 // new implementation
 
+void Element::setManager(UmlManager* manager) {
+    m_manager = manager;
+    m_ownedElements2->m_manager = manager;
+};
+
 ID Element::getID2() {
     return m_id2;
 }
@@ -420,4 +436,8 @@ Element* Element::getOwner2() {
 
 void Element::setOwner2(Element* owner) {
     m_ownerID = owner->getID2();
+}
+
+Sequence2<Element>& Element::getOwnedElements2() {
+    return *m_ownedElements2;
 }

@@ -38,7 +38,7 @@ namespace UML {
             };
             template <class T = Element> T& create() {
                 T* ret = new T;
-                ret->m_manager = this;
+                ret->setManager(this);
                 m_elements.push_back(ret->getID2());
                 m_loaded[ret->getID2()] = ret;
                 return *ret;

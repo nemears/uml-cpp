@@ -84,6 +84,7 @@ namespace UML {
     }
 
     template <class T> class Sequence;
+    template <class T> class Sequence2;
     //template <class T> class Sequence2;
     //template <class T> struct SequenceIterator;
     class ElementDoesntExistException;
@@ -119,6 +120,9 @@ namespace UML {
             Element* m_ownerPtr;
             
             // ownedElements
+            Sequence2<Element>* m_ownedElements2;
+
+            virtual void setManager(UmlManager* manager);
 
 
 
@@ -141,6 +145,8 @@ namespace UML {
             ID getID2();
             Element* getOwner2();
             void setOwner2(Element* el);
+            Sequence2<Element>& getOwnedElements2();
+
             static ElementType elementType() {
                 return ElementType::ELEMENT;
             };

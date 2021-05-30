@@ -237,6 +237,7 @@ namespace UML {
     template <class T> class Sequence2 {
         friend class SequenceIterator<T>;
         friend class UmlManager;
+        friend class Element;
         private:
             // Manager
             UmlManager* m_manager;
@@ -295,10 +296,25 @@ namespace UML {
 
             size_t size() { return m_order.size(); };
             bool empty() { return m_order.empty(); };
-            T* get(ID id) { return m_rep[id]; };
+            T* get(ID id) { 
+                if (!m_rep[id]) {
+                    m_rep[id] = &m_manager->get<T>();
+                }
+                return m_rep[id];
+            };
             T* get(size_t index) { return m_rep[m_order.at(index)]; };
-            T* front() { return m_rep[m_order.front()]; };
-            T* back() { return m_rep[m_order.back()]; }
+            T* front() { 
+                if (!m_rep[m_order.front()]) {
+                    m_rep[m_order.front()] = &m_manager->get<T>(m_order.front());
+                }
+                return m_rep[m_order.front()];
+            };
+            T* back() {
+                if (!m_rep[m_order.back()]) {
+                    m_rep[m_order.back()] = &m_manager->get<T>(m_order.back());
+                }
+                return m_rep[m_order.back()];
+            }
 
             SequenceIterator<T> begin() { return SequenceIterator(this, m_order.begin()); };
             SequenceIterator<T> end() { return SequenceIterator(this, m_order.end()); };

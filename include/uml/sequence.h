@@ -186,7 +186,12 @@ namespace UML {
                 }
                 return m_rep[id];
             };
-            T* get(size_t index) { return m_rep[m_order.at(index)]; };
+            T* get(size_t index) {
+                if (!m_rep[m_order.at(index)]) {
+                    m_rep[m_order.at(index)] = &m_manager->get<T>(m_order.at(index));
+                }
+                return m_rep[m_order.at(index)];
+            };
             T* front() { 
                 if (!m_rep[m_order.front()]) {
                     m_rep[m_order.front()] = &m_manager->get<T>(m_order.front());

@@ -174,11 +174,15 @@ namespace UML {
                 internalAdd(el);
             };
             void remove(T& el) {
-                for (auto const& fun : removeChecks) {
-                    (*fun)(el);
-                }
+                if (m_rep.count(el.getID())) {
+                    for (auto const& fun : removeChecks) {
+                        (*fun)(el);
+                    }
 
-                internalRemove(el);
+                    internalRemove(el);
+                } else {
+                    throw ElementDoesntExistException(el);
+                }
             };
 
             // Accessors
@@ -186,10 +190,13 @@ namespace UML {
             size_t size() { return m_order.size(); };
             bool empty() { return m_order.empty(); };
             T* get(ID id) { 
-                if (!m_rep[id]) {
-                    m_rep[id] = &m_manager->get<T>(id);
+                if (m_rep.count(id)) {
+                    if (!m_rep[id]) {
+                        m_rep[id] = &m_manager->get<T>(id);
+                    }
+                    return m_rep[id];
                 }
-                return m_rep[id];
+                return 0;
             };
             T* get(size_t index) {
                 if (!m_rep[m_order.at(index)]) {

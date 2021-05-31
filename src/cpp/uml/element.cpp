@@ -144,10 +144,10 @@ void Element::setID(string id) {
 
 void Element::setID(ID id) {
     reindexID(m_id, id);
-    m_id = id;
     if (m_manager) {
         m_manager->reindex(m_id, id);
     }
+    m_id = id;
 }
 
 void Element::reindexID(ID oldID, ID newID) {

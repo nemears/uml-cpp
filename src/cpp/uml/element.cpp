@@ -107,6 +107,11 @@ Element::Element(const Element& el) {
     m_manager = el.m_manager;
 
     m_ownerID = el.m_ownerID;
+    if (m_manager) {
+        m_ownerPtr = 0;
+    } else {
+        m_ownerPtr = el.m_ownerPtr;
+    }
 
     m_ownedElements = new Sequence<>(*el.m_ownedElements);
     m_relationships = new Sequence<Relationship>(*el.m_relationships);

@@ -39,6 +39,16 @@ namespace UML {
             static ID randomID();
             static ID fromString(std::string id);
     };
+
+    class InvalidUmlID_Exception : public std::exception {
+        private:
+            std::string m_msg;
+        public:
+            InvalidUmlID_Exception(std::string msg) : m_msg(msg) {};
+            virtual const char* what() const throw() {
+                return m_msg.c_str();
+            };
+    };
 }
 
 // hash operator injection

@@ -235,9 +235,6 @@ namespace UML {
                 if (m_orderIt != m_sequence->m_order.end()) {
                     m_ptr = sequence->get(*m_orderIt);
                 }
-                // if (!m_ptr) {
-                //     m_ptr = &m_sequence->m_manager->template get<T>(*m_orderIt);
-                // }
             };
             T& operator*() { return *m_ptr; };
             T* operator->() { return m_ptr; };

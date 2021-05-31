@@ -511,6 +511,9 @@ ID ID::nullID() {
 }
 
 ID ID::fromString(std::string id) {
+    if (id.size() != 28) {
+        throw InvalidUmlID_Exception("id is not proper length, must be 28 characters");
+    }
     ID ret;
     bool boolArr[168];
     size_t i = 0;
@@ -963,6 +966,8 @@ ID ID::fromString(std::string id) {
             boolArr[i+3] = 1;
             boolArr[i+4] = 1;
             boolArr[i+5] = 1;
+        } else {
+            throw InvalidUmlID_Exception(c + " is not a base64 character");
         }
 
         i+=6;

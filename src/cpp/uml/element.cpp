@@ -415,13 +415,15 @@ ID Element::getID() {
 }
 
 Element* Element::getOwner() {
-    if (!m_ownerPtr) {
-        if (m_manager) {
-            m_ownerPtr = &m_manager->get<Element>(m_ownerID);
+    if (!m_ownerID.isNull()) {
+        if (!m_ownerPtr) {
+            if (m_manager) {
+                m_ownerPtr = &m_manager->get<Element>(m_ownerID);
+            }
         }
+        return m_ownerPtr;
     }
-
-    return m_ownerPtr;
+    return 0;
 }
 
 void Element::setOwner(Element* owner) {

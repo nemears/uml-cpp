@@ -34,7 +34,7 @@ namespace UML {
                 if (!m_loaded.count(id)) {
                     // TODO load
                 }
-                return *dynamic_cast<T*>(m_loaded[id]);
+                return *dynamic_cast<T*>(m_loaded.at(id));
             };
             template <class T = Element> T& create() {
                 T* ret = new T;

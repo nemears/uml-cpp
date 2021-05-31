@@ -238,7 +238,7 @@ namespace UML {
             SequenceIterator operator++() {
                 ++m_orderIt;
                 m_ptr = m_sequence->m_rep[*m_orderIt];
-                if (!m_ptr) {
+                if (!m_ptr && m_orderIt != m_sequence->m_order.end()) {
                     m_ptr = &m_sequence->m_manager->template get<T>(*m_orderIt);
                 }
                 return *this;
@@ -247,7 +247,7 @@ namespace UML {
             SequenceIterator operator++(int) {
                 ++m_orderIt;
                 m_ptr = m_sequence.m_rep[*m_orderIt];
-                if (!m_ptr) {
+                if (!m_ptr && m_orderIt != m_sequence->m_order.end()) {
                     m_ptr = m_sequence->m_manager->template get<T>(*m_orderIt);
                 }
                 SequenceIterator ret = *this;

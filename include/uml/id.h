@@ -35,6 +35,7 @@ namespace UML {
 
                 return false;
             };
+            static ID nullID();
             static ID randomID();
             static ID fromString(std::string id);
     };

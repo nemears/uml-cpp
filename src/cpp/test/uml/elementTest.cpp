@@ -89,6 +89,22 @@ TEST_F(ElementTest, reIndexID_Test) {
   ASSERT_TRUE(e1.getOwnedElements().get(e2.getID()) != NULL);
 }
 
+TEST_F(ElementTest, basicRelationshipTestW_Manager) {
+  UmlManager m;
+  Package& e = m.create<Package>();
+  Package& a = m.create<Package>();
+  PackageMerge& r = m.create<PackageMerge>();
+  e.getPackageMerge().add(r);
+  r.setMergedPackage(&a);
+  ASSERT_TRUE(r.getRelatedElements().size() == 2);
+  ASSERT_TRUE(r.getRelatedElements().front() == &e);
+  ASSERT_TRUE(r.getRelatedElements().back() == &a);
+  ASSERT_TRUE(e.getRelationships().size() == 1);
+  ASSERT_TRUE(e.getRelationships().front() == &r);
+  ASSERT_TRUE(a.getRelationships().size() == 1);
+  ASSERT_TRUE(a.getRelationships().front() == &r);
+}
+
 TEST_F(ElementTest, basicRelationshipTest) {
   Package e;
   Package a;
@@ -110,8 +126,8 @@ TEST_F(ElementTest, reindexRelationshipID_test) {
   PackageMerge r;
   e.getPackageMerge().add(r);
   r.setMergedPackage(&a);
-  r.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
-  e.setID("eb092018-0bef-4ad6-b80f-05fa124f98c3");
+  r.setID("190d1cb913dc44e6a064126891ae");
+  e.setID("7d18ee4282c64f528ec4fab67a75");
   ASSERT_TRUE(r.getRelatedElements().get(e.getID()));
   ASSERT_TRUE(e.getRelationships().get(r.getID()));
 }
@@ -132,12 +148,38 @@ TEST_F(ElementTest, setOwnerTest) {
   ASSERT_TRUE(e.getOwnedElements().size() == 1);
 }
 
+TEST_F(ElementTest, overwriteOwnerTestW_Manager) {
+  UmlManager m;
+  Package& p1 = m.create<Package>();
+  Package& p2 = m.create<Package>();
+  Package& c = m.create<Package>();
+  p1.getPackagedElements().add(c);
+  c.setOwningPackage(&p2);
+  ASSERT_TRUE(p2.getOwnedElements().size() == 1);
+  ASSERT_TRUE(p2.getOwnedElements().front() == &c);
+  ASSERT_TRUE(c.getOwner() == &p2);
+  ASSERT_TRUE(p1.getOwnedElements().size() == 0);
+}
+
 TEST_F(ElementTest, overwriteOwnerTest) {
   Package p1;
   Package p2;
   Package c;
   p1.getPackagedElements().add(c);
   c.setOwningPackage(&p2);
+  ASSERT_TRUE(p2.getOwnedElements().size() == 1);
+  ASSERT_TRUE(p2.getOwnedElements().front() == &c);
+  ASSERT_TRUE(c.getOwner() == &p2);
+  ASSERT_TRUE(p1.getOwnedElements().size() == 0);
+}
+
+TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTestW_Manager) {
+  UmlManager m;
+  Package& p1 = m.create<Package>();
+  Package& p2 = m.create<Package>();
+  Package& c = m.create<Package>();
+  p1.getPackagedElements().add(c);
+  p2.getPackagedElements().add(c);
   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
   ASSERT_TRUE(p2.getOwnedElements().front() == &c);
   ASSERT_TRUE(c.getOwner() == &p2);
@@ -154,6 +196,24 @@ TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
   ASSERT_TRUE(p2.getOwnedElements().front() == &c);
   ASSERT_TRUE(c.getOwner() == &p2);
   ASSERT_TRUE(p1.getOwnedElements().size() == 0);
+}
+
+TEST_F(ElementTest, CopyTestW_Manager) {
+  UmlManager m;
+  Package& e1 = m.create<Package>();
+  Package& p1 = m.create<Package>();
+  Package& c1 = m.create<Package>();
+  e1.setOwningPackage(&p1);
+  e1.getPackagedElements().add(c1);
+
+  // copying like this should dereference the element
+  // from manager but keep link to manager to access model
+  // TODO: clone method for deep model copy
+  Element e2 = e1;
+  ASSERT_TRUE(e2.getOwnedElements().size() == 1);
+  ASSERT_TRUE(e2.getOwnedElements().front() == &c1);
+  ASSERT_TRUE(e2.getID() == e1.getID());
+  ASSERT_TRUE(e2.getOwner() == &p1);
 }
 
 TEST_F(ElementTest, CopyTest) {

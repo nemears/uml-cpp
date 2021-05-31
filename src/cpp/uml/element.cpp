@@ -104,6 +104,10 @@ Element::~Element() {
 
 Element::Element(const Element& el) {
     m_id = el.m_id;
+    m_manager = el.m_manager;
+
+    m_ownerID = el.m_ownerID;
+
     m_ownedElements = new Sequence<>(*el.m_ownedElements);
     m_relationships = new Sequence<Relationship>(*el.m_relationships);
     m_directedRelationships = new Sequence<DirectedRelationship>(*el.m_directedRelationships);
@@ -427,10 +431,16 @@ Element* Element::getOwner() {
 }
 
 void Element::setOwner(Element* owner) {
-    m_ownerID = owner->getID();
+    if (owner) {
+        m_ownerID = owner->getID();
+    } else  {
+        m_ownerID = ID::nullID();
+    }
 
     if (!m_manager) {
         m_ownerPtr = owner;
+    } else {
+        m_ownerPtr = 0;
     }
 }
 

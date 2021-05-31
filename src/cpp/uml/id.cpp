@@ -505,6 +505,11 @@ ID ID::randomID() {
     return id;
 }
 
+ID ID::nullID() {
+    ID ret;
+    return ret;
+}
+
 ID ID::fromString(std::string id) {
     ID ret;
     bool boolArr[168];

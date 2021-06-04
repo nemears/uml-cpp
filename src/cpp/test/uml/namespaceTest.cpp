@@ -36,7 +36,7 @@ TEST_F(NamespaceTest, reindexID_Test) {
     NamedElement n;
     nmspc.setName("nmspc");
     n.setNamespace(&nmspc);
-    ASSERT_NO_THROW(n.setID("190d1cb9-13dc-44e6-a064-126891ae0033"));
+    ASSERT_NO_THROW(n.setID("190d1cb9_13dc_44e6_a064_1268"));
     ASSERT_TRUE(nmspc.getOwnedElements().get(n.getID()) != NULL);
     ASSERT_TRUE(nmspc.getMembers().get(n.getID()) != NULL);
     ASSERT_TRUE(nmspc.getOwnedMembers().get(n.getID()) != 0);

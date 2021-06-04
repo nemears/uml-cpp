@@ -66,7 +66,7 @@ TEST_F(ValueSpecificationTest, reindexID_forSlotTest) {
     LiteralBool v;
     Slot s;
     s.getValues().add(v);
-    v.setID("eb092018-0bef-4ad6-b80f-05fa124f98c3");
+    v.setID("eb092018_0bef_4ad6_b80f_05fa");
     ASSERT_TRUE(s.getValues().get(v.getID()));
     ASSERT_TRUE(s.getOwnedElements().get(v.getID()));
 }
@@ -85,7 +85,7 @@ TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
     LiteralBool b;
     e.getOperands().add(b);
     e.setSymbol("==");
-    b.setID("eb092018-0bef-4ad6-b80f-05fa124f98c3");
+    b.setID("eb092018_0bef_4ad6_b80f_05fa");
     ASSERT_TRUE(e.getOperands().get(b.getID()));
     ASSERT_TRUE(e.getOwnedElements().get(b.getID()));
 }

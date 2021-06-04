@@ -436,8 +436,23 @@ Element* Element::getOwner() {
 }
 
 void Element::setOwner(Element* owner) {
+    if (!m_ownerID.isNull()) {
+        if (!m_ownerPtr) {
+            *m_ownerPtr = m_manager->get<>(m_ownerID);
+        }
+        m_ownedElements->internalRemove(*m_ownerPtr);
+        m_ownerID = ID::nullID();
+        m_ownerPtr = 0;
+    }
+
     if (owner) {
         m_ownerID = owner->getID();
+        // if (!m_ownedElements->count(owner->getID())) {
+        //     m_ownedElements->internalAdd(*owner);
+        // }
+        if (!owner->getOwnedElements().count(m_id)) {
+            owner->getOwnedElements().add(*this);
+        }
     } else  {
         m_ownerID = ID::nullID();
     }

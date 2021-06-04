@@ -17,7 +17,7 @@ TEST_F(OperationTest, reIndexID_Test) {
     Class c;
     Operation o;
     o.setClass(&c);
-    o.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
+    o.setID("c3rcWoyTgxLfFl5jf2Ms6CMa_sWe");
     ASSERT_TRUE(c.getOperations().get(o.getID()) != NULL);
     ASSERT_TRUE(c.getOwnedElements().get(o.getID()) != NULL);
 }

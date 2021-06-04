@@ -42,7 +42,7 @@ TEST_F(ParameterTest, reindexID_ownerTest) {
     a.getParameters().add(p);
     p.setNamespace(&a);
     a.getMembers().add(p);
-    p.setID("190d1cb9-13dc-44e6-a064-126891ae0033");
+    p.setID("190d1cb9_13dc_44e6_a064_1268");
     ASSERT_TRUE(a.getParameters().get(p.getID()));
     ASSERT_TRUE(a.getMembers().get(p.getID()));
     ASSERT_TRUE(a.getOwnedElements().get(p.getID()));

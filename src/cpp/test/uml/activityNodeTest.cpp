@@ -14,7 +14,7 @@ TEST_F(ActivityNodeTest, reindexID_test) {
     ActivityNode n;
     a.getNodes().add(n);
     n.setActivity(&a);
-    n.setID("05f66d05-4b6a-46a1-874e-90649c8e4049");
+    n.setID("c3rcWoyTgxLfFl5jf2Ms6CMa_sWe");
     ASSERT_TRUE(a.getNodes().get(n.getID()));
 }
 

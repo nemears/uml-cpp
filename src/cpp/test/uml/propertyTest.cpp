@@ -56,7 +56,7 @@ TEST_F(PropertyTest, reindexID_forClassiferTest) {
   Property p;
   p.setAggregation(AggregationKind::COMPOSITE);
   c.getOwnedAttributes().add(p);
-  ASSERT_NO_THROW(p.setID("190d1cb9-13dc-44e6-a064-126891ae0033"));
+  ASSERT_NO_THROW(p.setID("190d1cb9_13dc_44e6_a064_1268"));
   ASSERT_TRUE(c.getOwnedElements().get(p.getID()) != 0);
   ASSERT_TRUE(c.getMembers().get(p.getID()) != 0);
   ASSERT_TRUE(c.getOwnedMembers().get(p.getID()) != 0);
@@ -69,7 +69,7 @@ TEST_F(PropertyTest, reindexID_forClassiferTest) {
   Association a;
   Property p2;
   a.getNavigableOwnedEnds().add(p2);
-  ASSERT_NO_THROW(p2.setID("c0ab87cc-d00b-4afb-9558-538253b442b2"));
+  ASSERT_NO_THROW(p2.setID("c0ab87cc_d00b_4afb_9558_5382"));
   ASSERT_TRUE(a.getNavigableOwnedEnds().get(p2.getID()));
   ASSERT_TRUE(a.getOwnedEnds().get(p2.getID()));
   ASSERT_TRUE(a.getMemberEnds().get(p2.getID()));

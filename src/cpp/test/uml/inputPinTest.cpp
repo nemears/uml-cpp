@@ -11,7 +11,7 @@ TEST_F(InputPinTest, reindexIDTest) {
     Action a;
     InputPin i;
     a.getInputs().add(i);
-    i.setID("eb092018-0bef-4ad6-b80f-05fa124f98c3");
+    i.setID("c3rcWoyTgxLfFl5jf2Ms6CMa_sWe");
     ASSERT_TRUE(a.getInputs().get(i.getID()));
     ASSERT_TRUE(a.getOwnedElements().get(i.getID()));
 }

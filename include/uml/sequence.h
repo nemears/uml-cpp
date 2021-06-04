@@ -239,6 +239,7 @@ namespace UML {
             T& operator*() { return *m_ptr; };
             T* operator->() { return m_ptr; };
 
+            // TODO: throw exception if iterator is increased and sequence size has increased, or do complicated handling 
             SequenceIterator operator++() {
                 ++m_orderIt;
                 if (m_orderIt != m_sequence->m_order.end()) {

@@ -117,12 +117,16 @@ VisibilityKind NamedElement::getVisibility() {
 void NamedElement::setVisibility(VisibilityKind visibility) {
     if (m_visibility != visibility) {
         if (visibility == VisibilityKind::PRIVATE) {
+            vector<Classifier*> removeFromMe;
             for (auto& nmspc: getMemberNamespace()) {
                 if (nmspc.isSubClassOf(ElementType::CLASSIFIER)) {
                     if (dynamic_cast<Classifier&>(nmspc).getInheritedMembers().count(m_id)) {
-                        dynamic_cast<Classifier&>(nmspc).getInheritedMembers().remove(*this);
+                        removeFromMe.push_back(dynamic_cast<Classifier*>(&nmspc));
                     }
                 }
+            }
+            for (auto& clazz: removeFromMe) {
+                clazz->getInheritedMembers().remove(*this);
             }
         }
     }

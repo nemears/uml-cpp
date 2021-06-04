@@ -11,7 +11,7 @@ TEST_F(OutputPinTest, reindexIDTest) {
     Action a;
     OutputPin i;
     a.getOutputs().add(i);
-    i.setID("eb092018-0bef-4ad6-b80f-05fa124f98c3");
+    i.setID("eb0920180bef4ad6b80f05fadsac");
     ASSERT_TRUE(a.getOutputs().get(i.getID()));
     ASSERT_TRUE(a.getOwnedElements().get(i.getID()));
 }

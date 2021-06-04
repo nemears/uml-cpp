@@ -441,7 +441,9 @@ void Element::setOwner(Element* owner) {
         if (!m_ownerPtr) {
             *m_ownerPtr = m_manager->get<>(m_ownerID);
         }
-        m_ownedElements->internalRemove(*m_ownerPtr);
+        if (m_ownerPtr->getOwnedElements().count(m_id)) {
+            m_ownerPtr->getOwnedElements().internalRemove(*this);
+        }
         m_ownerID = ID::nullID();
         m_ownerPtr = 0;
     }

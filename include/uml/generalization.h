@@ -7,8 +7,10 @@
 namespace UML {
     class Generalization : public DirectedRelationship {
         protected:
-            Classifier* m_general;
-            Classifier* m_specific;
+            ID m_generalID;
+            ID m_specificID;
+            Classifier* m_generalPtr;
+            Classifier* m_specificPtr;
         public:
             Generalization();
             Classifier* getGeneral();

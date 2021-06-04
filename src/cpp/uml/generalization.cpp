@@ -3,42 +3,67 @@
 using namespace UML;
 
 Generalization::Generalization() {
-    m_general = 0;
-    m_specific = 0;
+    m_generalPtr = 0;
+    m_specificPtr = 0;
 }
 
 Classifier* Generalization::getGeneral() {
-    return m_general;
+    if (!m_generalID.isNull()) {
+        if (!m_generalPtr) {
+            m_generalPtr = &m_manager->get<Classifier>(m_generalID);
+        }
+        return m_generalPtr;
+    }
+    return 0;
 }
 
 void Generalization::setGeneral(Classifier* general) {
-    if (m_general) {
-        if (m_general->getRelationships().count(m_id)) {
-            m_general->getRelationships().internalRemove(*this);
+    if (!m_generalID.isNull()) {
+        if (!m_generalPtr) {
+            m_generalPtr = &m_manager->get<Classifier>(m_generalID);
         }
-        if (m_specific) {
-            for (auto& member: m_general->getMembers()) {
-                if (m_specific->getInheritedMembers().count(member.getID())) {
-                    m_specific->getInheritedMembers().remove(member);
+        if (m_generalPtr->getRelationships().count(m_id)) {
+            m_generalPtr->getRelationships().internalRemove(*this);
+        }
+        if (!m_specificID.isNull()) {
+            if(!m_specificPtr) {
+                m_specificPtr = &m_manager->get<Classifier>(m_specificID);
+            }
+            for (auto& member : m_generalPtr->getMembers()) {
+                if (m_specificPtr->getInheritedMembers().count(member.getID())) {
+                    m_specificPtr->getInheritedMembers().remove(member);
                 }
             }
-            if (m_specific->getGenerals().count(m_general->getID())) {
-                m_specific->getGenerals().remove(*m_general);
+            if (m_specificPtr->getGenerals().count(m_generalPtr->getID())) {
+                m_specificPtr->getGenerals().remove(*m_generalPtr);
             }
         }
+        m_generalID = ID::nullID();
+        m_generalPtr = 0;
     }
-    m_general = general;
-    if (m_general) {
-        if (!getTargets().count(m_general->getID())) {
-            getTargets().add(*m_general);
+
+    if (general) {
+        m_generalID = general->getID();
+    }
+
+    if (!m_manager) {
+        m_generalPtr = general;
+    }
+
+    if (general) {
+        if (!getTargets().count(general->getID())) {
+            getTargets().add(*general);
         }
-        if (m_specific) {
-            if (!m_specific->getGenerals().count(m_general->getID())) {
-                m_specific->getGenerals().add(*m_general);
+        if (!m_specificID.isNull()) {
+            if (!m_specificPtr) {
+                m_specificPtr = &m_manager->get<Classifier>(m_specificID);
             }
-            for (auto& member: m_general->getMembers()) {
-                if (!m_specific->getInheritedMembers().count(member.getID()) && member.getVisibility() != VisibilityKind::PRIVATE) {
-                    m_specific->getInheritedMembers().add(member);
+            if (!m_specificPtr->getGenerals().count(m_generalID)) {
+                m_specificPtr->getGenerals().add(*general);
+            }
+            for (auto& member : general->getMembers()) {
+                if (!m_specificPtr->getInheritedMembers().count(member.getID()) && member.getVisibility() != VisibilityKind::PRIVATE) {
+                    m_specificPtr->getInheritedMembers().add(member);
                 }
             }
         }
@@ -46,37 +71,62 @@ void Generalization::setGeneral(Classifier* general) {
 }
 
 Classifier* Generalization::getSpecific() {
-    return m_specific;
+    if (!m_specificID.isNull()) {
+        if (!m_specificPtr) {
+            m_specificPtr = &m_manager->get<Classifier>(m_specificID);
+        }
+        return m_specificPtr;
+    }
+    return 0;
 }
 
 void Generalization::setSpecific(Classifier* specific) {
-    if (m_specific) {
-        if (m_specific->getRelationships().count(m_id)) {
-            m_specific->getRelationships().internalRemove(*this);
+    if (!m_specificID.isNull()) {
+        if (!m_specificPtr) {
+            m_specificPtr = &m_manager->get<Classifier>(m_specificID);
         }
-        if (m_specific->getGeneralizations().count(m_id)) {
-            m_specific->getGeneralizations().remove(*this);
+        if (m_specificPtr->getRelationships().count(m_id)) {
+            m_specificPtr->getRelationships().internalRemove(*this);
         }
-        if (m_general) {
-            for (auto& member: m_general->getMembers()) {
-                if (m_specific->getInheritedMembers().count(member.getID())) {
-                    m_specific->getInheritedMembers().remove(member);
+        if (m_specificPtr->getGeneralizations().count(m_id)) {
+            m_specificPtr->getGeneralizations().remove(*this);
+        }
+        if (!m_generalID.isNull()) {
+            if (!m_generalPtr) {
+                m_generalPtr = &m_manager->get<Classifier>(m_generalID);
+            }
+            for (auto& member: m_generalPtr->getMembers()) {
+                if (m_specificPtr->getInheritedMembers().count(member.getID())) {
+                    m_specificPtr->getInheritedMembers().remove(member);
                 }
             }
         }
+        m_specificPtr = 0;
+        m_specificID = ID::nullID();
     }
-    m_specific = specific;
-    if (m_specific) {
-        if (!getSources().count(m_specific->getID())) {
-            getSources().add(*m_specific);
+
+    if (specific) {
+        m_specificID = specific->getID();
+    }
+
+    if (!m_manager) {
+        m_specificPtr = specific;
+    }
+
+    if (specific) {
+        if (!getSources().count(specific->getID())) {
+            getSources().add(*specific);
         }
-        if (!m_specific->getGeneralizations().count(m_id)) {
-            m_specific->getGeneralizations().add(*this);
+        if (!specific->getGeneralizations().count(m_id)) {
+            specific->getGeneralizations().add(*this);
         }
-        if (m_general) {
-            for (auto& member: m_general->getMembers()) {
-                if (!m_specific->getInheritedMembers().count(member.getID()) && member.getVisibility() != VisibilityKind::PRIVATE) {
-                    m_specific->getInheritedMembers().add(member);
+        if (!m_generalID.isNull()) {
+            if (!m_generalPtr) {
+                m_generalPtr = &m_manager->get<Classifier>(m_generalID);
+            }
+            for (auto& member: m_generalPtr->getMembers()) {
+                if (!specific->getInheritedMembers().count(member.getID()) && member.getVisibility() != VisibilityKind::PRIVATE) {
+                    specific->getInheritedMembers().add(member);
                 }
             }
         }

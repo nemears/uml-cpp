@@ -23,7 +23,8 @@ namespace UML{
     class NamedElement : virtual public Element {
         protected:
             std::string m_name;
-            Namespace* m_namespace;
+            ID m_namespaceID;
+            Namespace* m_namespacePtr;
             Sequence<Namespace>* m_memberNamespace;
             // visibility defaults to public, don't think there is a none value
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;

@@ -20,7 +20,7 @@ void RemoveMemberNamespaceFunctor::operator()(Element& el) const {
 }
 
 NamedElement::NamedElement() {
-    m_namespace = 0;
+    m_namespacePtr = 0;
     m_memberNamespace = new Sequence<Namespace>;
     m_memberNamespace->addProcedures.push_back(new AddMemberNamespaceFunctor(this));
     m_memberNamespace->removeProcedures.push_back(new RemoveMemberNamespaceFunctor(this));
@@ -31,7 +31,8 @@ NamedElement::~NamedElement() {
 }
 
 NamedElement::NamedElement(const NamedElement& el) : Element(el) {
-    m_namespace = el.m_namespace;
+    m_namespaceID = el.m_namespaceID;
+    m_namespacePtr = el.m_namespacePtr;
     m_name = el.m_name;
     m_memberNamespace = new Sequence<Namespace>(*el.m_memberNamespace);
     m_memberNamespace->addProcedures.clear();
@@ -60,8 +61,11 @@ void NamedElement::setName(const string &name) {
 // }
 
 void NamedElement::reindexID(ID oldID, ID newID) {
-    if (m_namespace) {
-        m_namespace->getOwnedMembers().reindex(oldID, newID);
+    if (!m_namespaceID.isNull()) {
+        if (!m_namespacePtr) {
+            m_namespacePtr = &m_manager->get<Namespace>(m_namespaceID);
+        }
+        m_namespacePtr->getOwnedMembers().reindex(oldID, newID);
     }
 
     for (auto& nmspc : *m_memberNamespace) {
@@ -81,27 +85,40 @@ string NamedElement::getName() {
 }
 
 Namespace* NamedElement::getNamespace() {
-    return m_namespace;
+    if (!m_namespaceID.isNull()) {
+        if (!m_namespacePtr) {
+            m_namespacePtr = &m_manager->get<Namespace>(m_namespaceID);
+        }
+        return m_namespacePtr;
+    }
+    return 0;
 }
 
 void NamedElement::setNamespace(Namespace* nmspc) {
-
-    // if in another namespace remove it
-    if (m_namespace) {
-        if (m_namespace != nmspc) {
-            if (m_namespace->getOwnedMembers().count(m_id)) {
-                m_namespace->getOwnedMembers().remove(*this);
-            }
+    if (!m_namespaceID.isNull()) {
+        if (!m_namespacePtr) {
+            m_namespacePtr = &m_manager->get<Namespace>(m_namespaceID);
         }
+        if (m_namespacePtr->getMembers().count(m_id)) {
+            m_namespacePtr->getMembers().internalRemove(*this);
+        }
+        m_namespacePtr = 0;
+        m_namespaceID = ID::nullID();
     }
 
-    // overwrite namespace
-    m_namespace = nmspc;
+    if (nmspc) {
+        m_namespaceID = nmspc->getID();
+    } else {
+        m_namespaceID = ID::nullID();
+    }
 
-    // add to owned members of namespace
-    if (m_namespace) {
-        if (!m_namespace->getOwnedMembers().count(m_id)) {
-            m_namespace->getOwnedMembers().add(*this);
+    if (!m_manager) {
+        m_namespacePtr = nmspc;
+    }
+
+    if (nmspc) {
+        if (!nmspc->getOwnedMembers().count(m_id)) {
+            nmspc->getOwnedMembers().add(*this);
         }
     }
 }

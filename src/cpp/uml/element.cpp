@@ -451,8 +451,6 @@ void Element::setOwner(Element* owner) {
     // set owner id
     if (owner) {
         m_ownerID = owner->getID();
-    } else  {
-        m_ownerID = ID::nullID();
     }
 
     // set owner ptr

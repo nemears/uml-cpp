@@ -27,13 +27,14 @@ void InstanceSpecification::RemoveSlotFunctor::operator()(Element& el) const {
 }
 
 InstanceSpecification::InstanceSpecification() {
-    m_classifier = NULL;
+    m_classifierPtr = 0;
     m_slots.addProcedures.push_back(new AddSlotFunctor(this));
     m_slots.removeProcedures.push_back(new RemoveSlotFunctor(this));
 }
 
 InstanceSpecification::InstanceSpecification(const InstanceSpecification& inst) {
-    m_classifier = inst.m_classifier;
+    m_classifierID = inst.m_classifierID;
+    m_classifierPtr = inst.m_classifierPtr;
     m_slots = inst.m_slots;
     m_slots.addProcedures.clear();
     m_slots.addProcedures.push_back(new AddSlotFunctor(this));
@@ -46,11 +47,31 @@ InstanceSpecification::~InstanceSpecification() {
 }
 
 Classifier* InstanceSpecification::getClassifier() {
-    return m_classifier;
+    if (!m_classifierID.isNull()) {
+        if (!m_classifierPtr) {
+            m_classifierPtr = &m_manager->get<Classifier>(m_classifierID);
+        }
+        return m_classifierPtr;
+    }
+    return 0;
 }
 
 void InstanceSpecification::setClassifier(Classifier* classifier) {
-    m_classifier = classifier;
+    if (!m_classifierID.isNull()) {
+        // if (!m_classifierPtr) {
+        //     m_classifierPtr = &m_manager->get<Classifier>(m_classifierID);
+        // }
+        m_classifierID = ID::nullID();
+        m_classifierPtr = 0;
+    }
+
+    if (classifier) {
+        m_classifierID = classifier->getID();
+    }
+    
+    if (!m_manager) {
+        m_classifierPtr = classifier;
+    }
 }
 
 Sequence<Slot>& InstanceSpecification::getSlots() {

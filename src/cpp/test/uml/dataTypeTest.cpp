@@ -318,7 +318,7 @@ TEST_F(DataTypeTest, reindexOwnedAttributeIDTest) {
     DataType d;
     Property p;
     d.getOwnedAttribute().add(p);
-    ID id = ID::fromString("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
+    ID id = ID::fromString("16c345b4_5ae2_41ca_a0e7_a9c3");
     p.setID(id);
     ASSERT_TRUE(d.getOwnedAttribute().get(id) == &p);
     ASSERT_TRUE(d.getAttributes().get(id) == &p);
@@ -346,7 +346,7 @@ TEST_F(DataTypeTest, reindexOwnedOperationIDTest) {
     DataType d;
     Operation o;
     d.getOwnedOperation().add(o);
-    ID id = ID::fromString("16c345b4-5ae2-41ca-a0e7-a9c386ac941d");
+    ID id = ID::fromString("16c345b4_5ae2_41ca_a0e7_a9c3");
     o.setID(id);
     ASSERT_TRUE(d.getOwnedOperation().get(id) == &o);
     ASSERT_TRUE(d.getFeatures().get(id) == &o);

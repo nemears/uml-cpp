@@ -15,12 +15,14 @@ namespace UML {
      * A Classifier represents a classification of instances according to their Features
      **/
     class Classifier: public Namespace, public Type , public RedefinableElement {
+        friend class UmlManager;
         protected:
             Sequence<Feature> m_features;
             Sequence<Property> m_attributes;
             Sequence<Generalization> m_generalizations;
             Sequence<Classifier> m_generals;
             Sequence<NamedElement> m_inheritedMembers;
+            void setManager(UmlManager* manager) override;
             void reindexID(ID oldID, ID newID) override;
             //void reindexName(std::string oldName, std::string newName) override;
             class AddAttributeFunctor : public AbstractSequenceFunctor {

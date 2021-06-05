@@ -6,14 +6,12 @@
 namespace UML{
 class TypedElement : virtual public NamedElement {
     protected:
-        Type* m_type;
-
+        Type* m_typePtr;
+        ID m_typeID;
     public:
         Type* getType();
         virtual void setType(Type* type);
-        TypedElement() {
-            m_type = 0;
-        };
+        TypedElement();
         TypedElement(const TypedElement& el);
         ElementType getElementType() const override;
         TypedElement& operator=(TypedElement&&) {

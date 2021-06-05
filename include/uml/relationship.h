@@ -24,6 +24,7 @@ namespace UML {
                     RemoveRelatedElementsFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            void setManager(UmlManager* manager) override;
         public:
             Relationship();
             virtual ~Relationship();

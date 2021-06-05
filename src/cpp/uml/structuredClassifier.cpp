@@ -59,6 +59,13 @@ void StructuredClassifier::RemoveRoleFunctor::operator()(Element& el) const {
     }
 }
 
+void StructuredClassifier::setManager(UmlManager* manager) {
+    Classifier::setManager(manager);
+    m_ownedAttributes.m_manager = manager;
+    m_role.m_manager = manager;
+    m_parts.m_manager = manager;
+}
+
 StructuredClassifier::StructuredClassifier() {
     m_ownedAttributes.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
     m_ownedAttributes.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));

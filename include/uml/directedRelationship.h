@@ -5,6 +5,7 @@
 
 namespace UML {
     class DirectedRelationship : public Relationship {
+        friend class UmlManager;
         protected:
             Sequence<> m_targets;
             Sequence<> m_sources;
@@ -22,6 +23,7 @@ namespace UML {
                     RemoveRelatedElementFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            void setManager(UmlManager* manager) override;
         public:
             DirectedRelationship();
             virtual ~DirectedRelationship();

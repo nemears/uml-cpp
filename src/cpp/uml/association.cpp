@@ -91,6 +91,15 @@ void Association::RemoveNavigableOwnedEndFunctor::operator()(Element& el) const 
     }
 }
 
+void Association::setManager(UmlManager* manager) {
+    Classifier::setManager(manager);
+    m_relatedElements.m_manager = manager;
+    m_memberEnds.m_manager = manager;
+    m_ownedEnds.m_manager = manager;
+    m_navigableOwnedEnds.m_manager = manager;
+    m_endType.m_manager = manager;
+}
+
 Association::Association() {
     m_memberEnds.addProcedures.push_back(new AddMemberEndFunctor(this));
     m_memberEnds.removeProcedures.push_back(new RemoveMemberEndFunctor(this));

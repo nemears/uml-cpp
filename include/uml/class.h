@@ -15,6 +15,7 @@ namespace UML{
      * Definition of class here
      **/
     class Class : public StructuredClassifier {
+        friend class UmlManager;
         protected:
             Sequence<Operation> m_operations;
             class AddOperationFunctor : public AbstractSequenceFunctor {
@@ -37,6 +38,7 @@ namespace UML{
                     ClassRemoveOwnedAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            void setManager(UmlManager* manager) override;
         public:
             Class();
             virtual ~Class();

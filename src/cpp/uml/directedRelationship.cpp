@@ -23,6 +23,12 @@ void DirectedRelationship::RemoveRelatedElementFunctor::operator()(Element& el) 
     }
 }
 
+void DirectedRelationship::setManager(UmlManager* manager) {
+    Relationship::setManager(manager);
+    m_sources.m_manager = manager;
+    m_targets.m_manager = manager;
+}
+
 DirectedRelationship::DirectedRelationship() {
     m_targets.addProcedures.push_back(new AddRelatedElementFunctor(this));
     m_targets.removeProcedures.push_back(new RemoveRelatedElementFunctor(this));

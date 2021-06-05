@@ -30,6 +30,7 @@ namespace UML {
                     RemoveRoleFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            void setManager(UmlManager* manager) override;
         public:
             StructuredClassifier();
             StructuredClassifier(const StructuredClassifier& clazz);

@@ -13,6 +13,11 @@ void Relationship::reindexID(ID oldID, ID newID) {
     Element::reindexID(oldID, newID);
 }
 
+void Relationship::setManager(UmlManager* manager) {
+    Element::setManager(manager);
+    m_relatedElements.m_manager = manager;
+}
+
 void Relationship::AddRelationshipFunctor::operator()(Element& el) const {
     // add to related elements if not duplicate
     if (!el.getRelationships().count(m_el->getID())) {

@@ -35,6 +35,11 @@ void Class::ClassRemoveOwnedAttributeFunctor::operator()(Element& el) const {
     }
 }
 
+void Class::setManager(UmlManager* manager) {
+    StructuredClassifier::setManager(manager);
+    m_operations.m_manager = manager;
+}
+
 Class::Class() {
     m_operations.addProcedures.push_back(new AddOperationFunctor(this));
     m_operations.removeProcedures.push_back(new RemoveOperationFunctor(this));

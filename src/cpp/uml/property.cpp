@@ -427,8 +427,11 @@ void Property::setOwningAssociation(Association* association) {
 
 void Property::setType(Type* type) {
     if (m_association) {
-        if (m_type) {
-            if (m_type != type) {
+        if (!m_typeID.isNull()) {
+            if (!m_typePtr) {
+                m_typePtr = &m_manager->get<Type>(m_typeID);
+            }
+            if (m_typePtr != type) {
                 if (m_association->getEndType().count(type->getID())) {
                     m_association->getEndType().remove(*type);
                 }
@@ -437,7 +440,7 @@ void Property::setType(Type* type) {
     }
     TypedElement::setType(type);
     if (m_association) {
-        if (m_type) {
+        if (!m_typeID.isNull()) {
             if (!m_association->getEndType().count(type->getID())) {
                 m_association->getEndType().add(*type);
             }

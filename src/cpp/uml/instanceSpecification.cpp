@@ -26,6 +26,11 @@ void InstanceSpecification::RemoveSlotFunctor::operator()(Element& el) const {
     }
 }
 
+void InstanceSpecification::setManager(UmlManager* manager) {
+    PackageableElement::setManager(manager);
+    m_slots.m_manager = manager;
+}
+
 InstanceSpecification::InstanceSpecification() {
     m_classifierPtr = 0;
     m_slots.addProcedures.push_back(new AddSlotFunctor(this));

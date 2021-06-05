@@ -21,6 +21,7 @@ namespace UML{
                     RemoveSlotFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            void setManager(UmlManager* manager) override;
         public:
             InstanceSpecification();
             InstanceSpecification(const InstanceSpecification& inst);

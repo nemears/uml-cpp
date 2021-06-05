@@ -9,7 +9,8 @@ namespace UML {
 
     class PackageableElement : virtual public NamedElement {
         protected:
-            Package* m_owningPackage;
+            ID m_owningPackageID;
+            Package* m_owningPackagePtr;
         public:
             PackageableElement();
             PackageableElement(const PackageableElement& el);

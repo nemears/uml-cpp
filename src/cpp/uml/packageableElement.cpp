@@ -4,29 +4,47 @@
 using namespace UML;
 
 PackageableElement::PackageableElement() {
-    m_owningPackage = 0;
+    m_owningPackagePtr = 0;
 }
 
 PackageableElement::PackageableElement(const PackageableElement& el) : NamedElement(el) {
-    m_owningPackage = el.m_owningPackage;
+    m_owningPackageID = el.m_owningPackageID;
+    m_owningPackagePtr = el.m_owningPackagePtr;
 }
 
 Package* PackageableElement::getOwningPackage() {
-    return m_owningPackage;
+    if (!m_owningPackageID.isNull()) {
+        if (!m_owningPackagePtr) {
+            m_owningPackagePtr = &m_manager->get<Package>(m_owningPackageID);
+        }
+        return m_owningPackagePtr;
+    }
+    return 0;
 }
 
 void PackageableElement::setOwningPackage(Package* package) {
-    if (m_owningPackage) {
-        if (m_owningPackage->getPackagedElements().count(m_id)) {
-            m_owningPackage->getPackagedElements().remove(*this);
+    if (!m_owningPackageID.isNull()) {
+        if (!m_owningPackagePtr) {
+            m_owningPackagePtr = &m_manager->get<Package>(m_owningPackageID);
         }
+        if (m_owningPackagePtr->getPackagedElements().count(m_id)) {
+            m_owningPackagePtr->getPackagedElements().remove(*this);
+        }
+        m_owningPackageID = ID::nullID();
+        m_owningPackagePtr = 0;
     }
-    
-    m_owningPackage = package;
 
-    if (m_owningPackage) {
-        if (!m_owningPackage->getPackagedElements().count(m_id)) {
-            m_owningPackage->getPackagedElements().add(*this);
+    if (package) {
+        m_owningPackageID = package->getID();
+    }
+
+    if (!m_manager) {
+        m_owningPackagePtr = package;
+    }
+
+    if (package) {
+        if (!package->getPackagedElements().count(m_id)) {
+            package->getPackagedElements().add(*this);
         }
     }
 }

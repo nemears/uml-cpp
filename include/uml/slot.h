@@ -10,11 +10,15 @@ namespace UML {
     class InstanceSpecification;
 
     class Slot : public Element {
+        friend class UmlManager;
         protected:
-            StructuralFeature* m_definingFeature;
+            ID m_definingFeatureID;
+            StructuralFeature* m_definingFeaturePtr;
             Sequence<ValueSpecification> m_values;
-            InstanceSpecification* m_owningInstance;
+            ID m_owningInstanceID;
+            InstanceSpecification* m_owningInstancePtr;
             void reindexID(ID oldID, ID newID) override;
+            void setManager(UmlManager* manager) override;
             class AddValueFunctor : public AbstractSequenceFunctor {
                 public:
                     AddValueFunctor(Element* me) : AbstractSequenceFunctor(me) {};

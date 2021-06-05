@@ -7,6 +7,7 @@
 
 namespace UML{
     class InstanceSpecification : public PackageableElement {
+        friend class UmlManager;
         protected:
             ID m_classifierID;
             Classifier* m_classifierPtr;

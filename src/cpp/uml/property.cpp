@@ -18,15 +18,18 @@ void Property::reindexID(ID oldID, ID newID) {
         m_dataType->getOwnedAttribute().reindex(oldID, newID);
     }
 
-    if (m_structuredClassifier) {
-        if (m_structuredClassifier->getOwnedAttributes().count(oldID)) {
-            m_structuredClassifier->getOwnedAttributes().reindex(oldID, newID);
+    if (!m_structuredClassifierID.isNull()) {
+        if (!m_structuredClassifierPtr) {
+            m_structuredClassifierPtr = &m_manager->get<StructuredClassifier>(m_structuredClassifierID);
         }
-        if (m_structuredClassifier->getRole().count(oldID)) {
-            m_structuredClassifier->getRole().reindex(oldID, newID);
+        if (m_structuredClassifierPtr->getOwnedAttributes().count(oldID)) {
+            m_structuredClassifierPtr->getOwnedAttributes().reindex(oldID, newID);
         }
-        if (m_structuredClassifier->getParts().count(oldID)) {
-            m_structuredClassifier->getParts().reindex(oldID, newID);
+        if (m_structuredClassifierPtr->getRole().count(oldID)) {
+            m_structuredClassifierPtr->getRole().reindex(oldID, newID);
+        }
+        if (m_structuredClassifierPtr->getParts().count(oldID)) {
+            m_structuredClassifierPtr->getParts().reindex(oldID, newID);
         }
     }
 
@@ -93,7 +96,7 @@ Property::Property() {
     m_defaultValuePtr = 0;
     m_classifier = 0;
     m_dataType = 0;
-    m_structuredClassifier = 0;
+    m_structuredClassifierPtr = 0;
     m_class = 0;
     m_association = 0;
     m_owningAssociation = 0;
@@ -108,7 +111,7 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     m_classifier = prop.m_classifier;
     m_dataType = prop.m_dataType;
     m_class = prop.m_class;
-    m_structuredClassifier = prop.m_structuredClassifier;
+    m_structuredClassifierPtr = prop.m_structuredClassifierPtr;
     m_association = prop.m_association;
     m_owningAssociation = prop.m_owningAssociation;
 }
@@ -123,17 +126,23 @@ bool Property::isComposite() {
 
 void Property::setComposite(bool composite) {
     if (!composite && m_composite) {
-        if (m_structuredClassifier) {
-            if (m_structuredClassifier->getParts().count(m_id)) {
-                m_structuredClassifier->getParts().remove(*this);
+        if (!m_structuredClassifierID.isNull()) {
+            if (!m_structuredClassifierPtr) {
+                m_structuredClassifierPtr = &m_manager->get<StructuredClassifier>(m_structuredClassifierID);
+            }
+            if (m_structuredClassifierPtr->getParts().count(m_id)) {
+                m_structuredClassifierPtr->getParts().remove(*this);
             }
         }
     }
     m_composite = composite;
     if (m_composite) {
-        if (m_structuredClassifier) {
-            if (!m_structuredClassifier->getParts().count(m_id)) {
-                m_structuredClassifier->getParts().add(*this);
+        if (!m_structuredClassifierID.isNull()) {
+            if (!m_structuredClassifierPtr) {
+                m_structuredClassifierPtr = &m_manager->get<StructuredClassifier>(m_structuredClassifierID);
+            }
+            if (!m_structuredClassifierPtr->getParts().count(m_id)) {
+                m_structuredClassifierPtr->getParts().add(*this);
             }
         }
     }
@@ -211,23 +220,54 @@ void Property::setClassifier(Classifier* classifier) {
 }
 
 StructuredClassifier* Property::getStructuredClassifier() {
-    return m_structuredClassifier;
+    if (!m_structuredClassifierID.isNull()) {
+        if (!m_structuredClassifierPtr) {
+            m_structuredClassifierPtr = &m_manager->get<StructuredClassifier>(m_structuredClassifierID);
+        }
+        return m_structuredClassifierPtr;
+    }
+    return 0;
 }
 
 void Property::setStructuredClassifier(StructuredClassifier* classifier) {
-    if (m_structuredClassifier) {
-        if (m_structuredClassifier != classifier) {
-            if (m_structuredClassifier->getOwnedAttributes().count(m_id)) {
-                m_structuredClassifier->getOwnedAttributes().remove(*this);
-            }
+    if (!m_structuredClassifierID.isNull()) {
+        if (!m_structuredClassifierPtr) {
+            m_structuredClassifierPtr = &m_manager->get<StructuredClassifier>(m_structuredClassifierID);
+        }
+        if (m_structuredClassifierPtr->getOwnedAttributes().count(m_id)) {
+            m_structuredClassifierPtr->getOwnedAttributes().remove(*this);
+        }
+        m_structuredClassifierPtr = 0;
+        m_structuredClassifierID = ID::nullID();
+    }
+
+    if (classifier) {
+        m_structuredClassifierID = classifier->getID();
+    }
+
+    if (!m_manager) {
+        m_structuredClassifierPtr = classifier;
+    }
+
+    if (classifier) {
+        if (!classifier->getOwnedAttributes().count(m_id)) {
+            classifier->getOwnedAttributes().add(*this);
         }
     }
-    m_structuredClassifier = classifier;
-    if (m_structuredClassifier) {
-        if (!m_structuredClassifier->getOwnedAttributes().count(m_id)) {
-            m_structuredClassifier->getOwnedAttributes().add(*this);
-        }
-    }
+
+    // if (m_structuredClassifier) {
+    //     if (m_structuredClassifier != classifier) {
+    //         if (m_structuredClassifier->getOwnedAttributes().count(m_id)) {
+    //             m_structuredClassifier->getOwnedAttributes().remove(*this);
+    //         }
+    //     }
+    // }
+    // m_structuredClassifier = classifier;
+    // if (m_structuredClassifier) {
+    //     if (!m_structuredClassifier->getOwnedAttributes().count(m_id)) {
+    //         m_structuredClassifier->getOwnedAttributes().add(*this);
+    //     }
+    // }
 }
 
 DataType* Property::getDataType() {

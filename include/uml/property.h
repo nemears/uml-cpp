@@ -25,7 +25,8 @@ namespace UML{
             bool m_composite;
             ID m_defaultValueID;
             ValueSpecification* m_defaultValuePtr;
-            StructuredClassifier* m_structuredClassifier;
+            ID m_structuredClassifierID;
+            StructuredClassifier* m_structuredClassifierPtr;
             Classifier* m_classifier;
             DataType* m_dataType;
             Class* m_class;

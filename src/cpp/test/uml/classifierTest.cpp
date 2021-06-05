@@ -66,6 +66,23 @@ TEST_F(ClassifierTest, addAttributeFunctorTest) {
   ASSERT_TRUE(p.getMemberNamespace().front() == &c);
 }
 
+TEST_F(ClassifierTest, addAttributeFunctorTestW_Manager) {
+  UmlManager m;
+  Classifier& c = m.create<Class>();
+  Property& p = m.create<Property>();
+  c.getAttributes().add(p);
+  ASSERT_TRUE(c.getAttributes().size() == 1);
+  ASSERT_TRUE(c.getAttributes().front() == &p);
+  ASSERT_TRUE(p.getClassifier() == &c);
+  ASSERT_TRUE(c.getFeatures().size() == 1);
+  ASSERT_TRUE(c.getFeatures().front() == &p);
+  ASSERT_TRUE(p.getFeaturingClassifier() == &c);
+  ASSERT_TRUE(c.getMembers().count(p.getID()));
+  ASSERT_TRUE(p.getMemberNamespace().count(c.getID()) == 1);
+  ASSERT_TRUE(p.getMemberNamespace().size() == 1);
+  ASSERT_TRUE(p.getMemberNamespace().front() == &c);
+}
+
 TEST_F(ClassifierTest, setClassifierTest) {
   Property p;
   Classifier c;
@@ -80,9 +97,41 @@ TEST_F(ClassifierTest, setClassifierTest) {
   ASSERT_TRUE(p.getMemberNamespace().count(c.getID()));
 }
 
+TEST_F(ClassifierTest, setClassifierTestW_Mananger) {
+  UmlManager m;
+  Property& p = m.create<Property>();
+  Classifier& c = m.create<Class>();
+  p.setClassifier(&c);
+  ASSERT_TRUE(c.getAttributes().size() == 1);
+  ASSERT_TRUE(c.getAttributes().front() == &p);
+  ASSERT_TRUE(p.getClassifier() == &c);
+  ASSERT_TRUE(c.getFeatures().size() == 1);
+  ASSERT_TRUE(c.getFeatures().front() == &p);
+  ASSERT_TRUE(p.getFeaturingClassifier() == &c);
+  ASSERT_TRUE(c.getMembers().count(p.getID()));
+  ASSERT_TRUE(p.getMemberNamespace().count(c.getID()));
+}
+
 TEST_F(ClassifierTest, removeAttributeFunctorTest) {
   Property p;
   Classifier c;
+  c.getAttributes().add(p);
+  ASSERT_NO_THROW(c.getAttributes().remove(p));
+  ASSERT_TRUE(c.getAttributes().size() == 0);
+  ASSERT_TRUE(c.getFeatures().size() == 0);
+  ASSERT_TRUE(c.getMembers().size() == 0);
+  ASSERT_TRUE(c.getOwnedElements().size() == 0);
+  ASSERT_TRUE(!p.getClassifier());
+  ASSERT_TRUE(!p.getFeaturingClassifier());
+  ASSERT_TRUE(!p.getNamespace());
+  ASSERT_TRUE(p.getMemberNamespace().size() == 0);
+  ASSERT_TRUE(!p.getOwner());
+}
+
+TEST_F(ClassifierTest, removeAttributeFunctorTestW_Manager) {
+  UmlManager m;
+  Property& p = m.create<Property>();
+  Classifier& c = m.create<Class>();
   c.getAttributes().add(p);
   ASSERT_NO_THROW(c.getAttributes().remove(p));
   ASSERT_TRUE(c.getAttributes().size() == 0);

@@ -27,7 +27,8 @@ namespace UML{
             ValueSpecification* m_defaultValuePtr;
             ID m_structuredClassifierID;
             StructuredClassifier* m_structuredClassifierPtr;
-            Classifier* m_classifier;
+            ID m_classifierID;
+            Classifier* m_classifierPtr;
             DataType* m_dataType;
             Class* m_class;
             Association* m_association;

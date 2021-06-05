@@ -10,8 +10,11 @@ using namespace std;
 using namespace UML;
 
 void Property::reindexID(ID oldID, ID newID) {
-    if (m_classifier) {
-        m_classifier->getAttributes().reindex(oldID, newID);
+    if (!m_classifierID.isNull()) {
+        if (!m_classifierPtr) {
+            m_classifierPtr = &m_manager->get<Classifier>(m_classifierID);
+        }
+        m_classifierPtr->getAttributes().reindex(oldID, newID);
     }
 
     if (m_dataType) {
@@ -94,7 +97,7 @@ Property::Property() {
     m_aggregation = AggregationKind::NONE;
     m_composite = false;
     m_defaultValuePtr = 0;
-    m_classifier = 0;
+    m_classifierPtr = 0;
     m_dataType = 0;
     m_structuredClassifierPtr = 0;
     m_class = 0;
@@ -108,7 +111,8 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     m_composite = prop.m_composite;
     m_defaultValueID = prop.m_defaultValueID;
     m_defaultValuePtr = prop.m_defaultValuePtr;
-    m_classifier = prop.m_classifier;
+    m_classifierID = prop.m_classifierID;
+    m_classifierPtr = prop.m_classifierPtr;
     m_dataType = prop.m_dataType;
     m_class = prop.m_class;
     m_structuredClassifierPtr = prop.m_structuredClassifierPtr;
@@ -202,21 +206,52 @@ void Property::setDefaultValue(ValueSpecification* val) {
 }
 
 Classifier* Property::getClassifier() {
-    return m_classifier;
+    if (!m_classifierID.isNull()) {
+        if (!m_classifierPtr) {
+            m_classifierPtr = &m_manager->get<Classifier>(m_classifierID);
+        }
+        return m_classifierPtr;
+    }
+    return 0;
 }
 
 void Property::setClassifier(Classifier* classifier) {
-    if (m_classifier) {
-        if (m_classifier->getAttributes().count(m_id)) {
-            m_classifier->getAttributes().remove(*this);
+    if (!m_classifierID.isNull()) {
+        if (!m_classifierPtr) {
+            m_classifierPtr = &m_manager->get<Classifier>(m_classifierID);
+        }
+        if (m_classifierPtr->getAttributes().count(m_id)) {
+            m_classifierPtr->getAttributes().remove(*this);
+        }
+        m_classifierPtr = 0;
+        m_classifierID = ID::nullID();
+    }
+
+    if (classifier) {
+        m_classifierID = classifier->getID();
+    }
+
+    if (!m_manager) {
+        m_classifierPtr = classifier;
+    }
+
+    if (classifier) {
+        if (!classifier->getAttributes().count(m_id)) {
+            classifier->getAttributes().add(*this);
         }
     }
-    m_classifier = classifier;
-    if (m_classifier) {
-        if (!m_classifier->getAttributes().count(m_id)) {
-            m_classifier->getAttributes().add(*this);
-        }
-    }
+
+    // if (m_classifier) {
+    //     if (m_classifier->getAttributes().count(m_id)) {
+    //         m_classifier->getAttributes().remove(*this);
+    //     }
+    // }
+    // m_classifier = classifier;
+    // if (m_classifier) {
+    //     if (!m_classifier->getAttributes().count(m_id)) {
+    //         m_classifier->getAttributes().add(*this);
+    //     }
+    // }
 }
 
 StructuredClassifier* Property::getStructuredClassifier() {

@@ -33,9 +33,63 @@ TEST_F(DataTypeTest, addOwnedAttributeTest) {
     ASSERT_TRUE(p.getOwner() == &d);
 }
 
+TEST_F(DataTypeTest, addOwnedAttributeTestW_Manager) {
+    UmlManager m;
+    DataType& d = m.create<DataType>();
+    Property& p = m.create<Property>();
+    d.getOwnedAttribute().add(p);
+    ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
+    ASSERT_TRUE(d.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(d.getAttributes().size() == 1);
+    ASSERT_TRUE(d.getAttributes().front() == &p);
+    ASSERT_TRUE(d.getMembers().size() == 1);
+    ASSERT_TRUE(d.getMembers().front() == &p);
+    ASSERT_TRUE(d.getOwnedMembers().size() == 1);
+    ASSERT_TRUE(d.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(d.getFeatures().size() == 1);
+    ASSERT_TRUE(d.getFeatures().front() == &p);
+    ASSERT_TRUE(d.getOwnedElements().size() == 1);
+    ASSERT_TRUE(d.getOwnedElements().front() == &p);
+
+    ASSERT_TRUE(p.getDataType() == &d);
+    ASSERT_TRUE(p.getClassifier() == &d);
+    ASSERT_TRUE(p.getFeaturingClassifier() == &d);
+    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
+    ASSERT_TRUE(p.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(p.getNamespace() == &d);
+    ASSERT_TRUE(p.getOwner() == &d);
+}
+
 TEST_F(DataTypeTest, setDataTypeTest) {
     DataType d;
     Property p;
+    p.setDataType(&d);
+    ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
+    ASSERT_TRUE(d.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(d.getAttributes().size() == 1);
+    ASSERT_TRUE(d.getAttributes().front() == &p);
+    ASSERT_TRUE(d.getMembers().size() == 1);
+    ASSERT_TRUE(d.getMembers().front() == &p);
+    ASSERT_TRUE(d.getOwnedMembers().size() == 1);
+    ASSERT_TRUE(d.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(d.getFeatures().size() == 1);
+    ASSERT_TRUE(d.getFeatures().front() == &p);
+    ASSERT_TRUE(d.getOwnedElements().size() == 1);
+    ASSERT_TRUE(d.getOwnedElements().front() == &p);
+
+    ASSERT_TRUE(p.getDataType() == &d);
+    ASSERT_TRUE(p.getClassifier() == &d);
+    ASSERT_TRUE(p.getFeaturingClassifier() == &d);
+    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
+    ASSERT_TRUE(p.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(p.getNamespace() == &d);
+    ASSERT_TRUE(p.getOwner() == &d);
+}
+
+TEST_F(DataTypeTest, setDataTypeTestW_Manager) {
+    UmlManager m;
+    DataType& d = m.create<DataType>();
+    Property& p = m.create<Property>();
     p.setDataType(&d);
     ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
     ASSERT_TRUE(d.getOwnedAttribute().front() == &p);
@@ -63,6 +117,44 @@ TEST_F(DataTypeTest, removeOwnedAttributeFunctorTest) {
     DataType d;
     Property p;
     Property p2;
+    d.getOwnedAttribute().add(p);
+    d.getOwnedAttribute().add(p2);
+    ASSERT_NO_THROW(d.getOwnedAttribute().remove(p2));
+    
+    ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
+    ASSERT_TRUE(d.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(d.getAttributes().size() == 1);
+    ASSERT_TRUE(d.getAttributes().front() == &p);
+    ASSERT_TRUE(d.getMembers().size() == 1);
+    ASSERT_TRUE(d.getMembers().front() == &p);
+    ASSERT_TRUE(d.getOwnedMembers().size() == 1);
+    ASSERT_TRUE(d.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(d.getFeatures().size() == 1);
+    ASSERT_TRUE(d.getFeatures().front() == &p);
+    ASSERT_TRUE(d.getOwnedElements().size() == 1);
+    ASSERT_TRUE(d.getOwnedElements().front() == &p);
+
+    ASSERT_TRUE(p.getDataType() == &d);
+    ASSERT_TRUE(p.getClassifier() == &d);
+    ASSERT_TRUE(p.getFeaturingClassifier() == &d);
+    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
+    ASSERT_TRUE(p.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(p.getNamespace() == &d);
+    ASSERT_TRUE(p.getOwner() == &d);
+
+    ASSERT_TRUE(p2.getDataType() == 0);
+    ASSERT_TRUE(p2.getClassifier() == 0);
+    ASSERT_TRUE(p2.getFeaturingClassifier() == 0);
+    ASSERT_TRUE(p2.getMemberNamespace().size() == 0);
+    ASSERT_TRUE(p2.getNamespace() == 0);
+    ASSERT_TRUE(p2.getOwner() == 0);
+}
+
+TEST_F(DataTypeTest, removeOwnedAttributeFunctorTestW_Manager) {
+    UmlManager m;
+    DataType& d = m.create<DataType>();
+    Property& p = m.create<Property>();
+    Property& p2 = m.create<Property>();
     d.getOwnedAttribute().add(p);
     d.getOwnedAttribute().add(p2);
     ASSERT_NO_THROW(d.getOwnedAttribute().remove(p2));
@@ -133,11 +225,102 @@ TEST_F(DataTypeTest, OverridePropertyDataTypeW_NullTest) {
     ASSERT_TRUE(p2.getOwner() == 0);
 }
 
+TEST_F(DataTypeTest, OverridePropertyDataTypeW_NullTestW_Manager) {
+    UmlManager m;
+    DataType& d = m.create<DataType>();
+    Property& p = m.create<Property>();
+    Property& p2 = m.create<Property>();
+    d.getOwnedAttribute().add(p);
+    d.getOwnedAttribute().add(p2);
+    ASSERT_NO_THROW(p2.setDataType(0));
+    
+    ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
+    ASSERT_TRUE(d.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(d.getAttributes().size() == 1);
+    ASSERT_TRUE(d.getAttributes().front() == &p);
+    ASSERT_TRUE(d.getMembers().size() == 1);
+    ASSERT_TRUE(d.getMembers().front() == &p);
+    ASSERT_TRUE(d.getOwnedMembers().size() == 1);
+    ASSERT_TRUE(d.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(d.getFeatures().size() == 1);
+    ASSERT_TRUE(d.getFeatures().front() == &p);
+    ASSERT_TRUE(d.getOwnedElements().size() == 1);
+    ASSERT_TRUE(d.getOwnedElements().front() == &p);
+
+    ASSERT_TRUE(p.getDataType() == &d);
+    ASSERT_TRUE(p.getClassifier() == &d);
+    ASSERT_TRUE(p.getFeaturingClassifier() == &d);
+    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
+    ASSERT_TRUE(p.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(p.getNamespace() == &d);
+    ASSERT_TRUE(p.getOwner() == &d);
+
+    ASSERT_TRUE(p2.getDataType() == 0);
+    ASSERT_TRUE(p2.getClassifier() == 0);
+    ASSERT_TRUE(p2.getFeaturingClassifier() == 0);
+    ASSERT_TRUE(p2.getMemberNamespace().size() == 0);
+    ASSERT_TRUE(p2.getNamespace() == 0);
+    ASSERT_TRUE(p2.getOwner() == 0);
+}
+
 TEST_F(DataTypeTest, OverridePropertyDataTypeW_OtherTest) {
     DataType d;
     Property p;
     Property p2;
     DataType d2;
+    d.getOwnedAttribute().add(p);
+    d.getOwnedAttribute().add(p2);
+    ASSERT_NO_THROW(p2.setDataType(&d2));
+    
+    ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
+    ASSERT_TRUE(d.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(d.getAttributes().size() == 1);
+    ASSERT_TRUE(d.getAttributes().front() == &p);
+    ASSERT_TRUE(d.getMembers().size() == 1);
+    ASSERT_TRUE(d.getMembers().front() == &p);
+    ASSERT_TRUE(d.getOwnedMembers().size() == 1);
+    ASSERT_TRUE(d.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(d.getFeatures().size() == 1);
+    ASSERT_TRUE(d.getFeatures().front() == &p);
+    ASSERT_TRUE(d.getOwnedElements().size() == 1);
+    ASSERT_TRUE(d.getOwnedElements().front() == &p);
+
+    ASSERT_TRUE(p.getDataType() == &d);
+    ASSERT_TRUE(p.getClassifier() == &d);
+    ASSERT_TRUE(p.getFeaturingClassifier() == &d);
+    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
+    ASSERT_TRUE(p.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(p.getNamespace() == &d);
+    ASSERT_TRUE(p.getOwner() == &d);
+
+    ASSERT_TRUE(d2.getOwnedAttribute().size() == 1);
+    ASSERT_TRUE(d2.getOwnedAttribute().front() == &p2);
+    ASSERT_TRUE(d2.getAttributes().size() == 1);
+    ASSERT_TRUE(d2.getAttributes().front() == &p2);
+    ASSERT_TRUE(d2.getMembers().size() == 1);
+    ASSERT_TRUE(d2.getMembers().front() == &p2);
+    ASSERT_TRUE(d2.getOwnedMembers().size() == 1);
+    ASSERT_TRUE(d2.getOwnedMembers().front() == &p2);
+    ASSERT_TRUE(d2.getFeatures().size() == 1);
+    ASSERT_TRUE(d2.getFeatures().front() == &p2);
+    ASSERT_TRUE(d2.getOwnedElements().size() == 1);
+    ASSERT_TRUE(d2.getOwnedElements().front() == &p2);
+
+    ASSERT_TRUE(p2.getDataType() == &d2);
+    ASSERT_TRUE(p2.getClassifier() == &d2);
+    ASSERT_TRUE(p2.getFeaturingClassifier() == &d2);
+    ASSERT_TRUE(p2.getMemberNamespace().size() == 1);
+    ASSERT_TRUE(p2.getMemberNamespace().front() == &d2);
+    ASSERT_TRUE(p2.getNamespace() == &d2);
+    ASSERT_TRUE(p2.getOwner() == &d2);
+}
+
+TEST_F(DataTypeTest, OverridePropertyDataTypeW_OtherTestW_Manager) {
+    UmlManager m;
+    DataType& d = m.create<DataType>();
+    Property& p = m.create<Property>();
+    Property& p2 = m.create<Property>();
+    DataType& d2 = m.create<DataType>();
     d.getOwnedAttribute().add(p);
     d.getOwnedAttribute().add(p2);
     ASSERT_NO_THROW(p2.setDataType(&d2));
@@ -328,6 +511,21 @@ TEST_F(DataTypeTest, reindexOwnedAttributeIDTest) {
     ASSERT_TRUE(d.getOwnedElements().get(id) == &p);
 }
 
+TEST_F(DataTypeTest, reindexOwnedAttributeIDTestW_Manager) {
+    UmlManager m;
+    DataType& d = m.create<DataType>();
+    Property& p = m.create<Property>();
+    d.getOwnedAttribute().add(p);
+    ID id = ID::fromString("16c345b4_5ae2_41ca_a0e7_a9c3");
+    p.setID(id);
+    ASSERT_TRUE(d.getOwnedAttribute().get(id) == &p);
+    ASSERT_TRUE(d.getAttributes().get(id) == &p);
+    ASSERT_TRUE(d.getFeatures().get(id) == &p);
+    ASSERT_TRUE(d.getMembers().get(id) == &p);
+    ASSERT_TRUE(d.getOwnedMembers().get(id) == &p);
+    ASSERT_TRUE(d.getOwnedElements().get(id) == &p);
+}
+
 // TEST_F(DataTypeTest, reindexOwnedAttributeNameTest) {
 //     DataType d;
 //     Property p;
@@ -373,6 +571,45 @@ TEST_F(DataTypeTest, copyDataTypeTest) {
     Operation o;
     Property p;
     Package pkg;
+    d.setName("test");
+    ID id = d.getID();
+    d.getOwnedOperation().add(o);
+    d.getOwnedAttribute().add(p);
+    d.setOwningPackage(&pkg);
+    DataType d2 = d;
+    ASSERT_TRUE(d2.getID() == id);
+    ASSERT_TRUE(d2.getName().compare("test") == 0);
+    ASSERT_TRUE(d2.getOwnedAttribute().size() == 1);
+    ASSERT_TRUE(d2.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(d2.getAttributes().size() == 1);
+    ASSERT_TRUE(d2.getAttributes().front() == &p);
+    ASSERT_TRUE(d2.getOwnedOperation().size() == 1);
+    ASSERT_TRUE(d2.getOwnedOperation().front() == &o);
+    ASSERT_TRUE(d2.getFeatures().size() == 2);
+    ASSERT_TRUE(d2.getFeatures().front() == &o);
+    ASSERT_TRUE(d2.getFeatures().back() == &p);
+    ASSERT_TRUE(d2.getOwnedMembers().size() == 2);
+    ASSERT_TRUE(d2.getOwnedMembers().front() == &o);
+    ASSERT_TRUE(d2.getOwnedMembers().back() == &p);
+    ASSERT_TRUE(d2.getMembers().size() == 2);
+    ASSERT_TRUE(d2.getMembers().front() == &o);
+    ASSERT_TRUE(d2.getMembers().back() == &p);
+    ASSERT_TRUE(d2.getOwnedElements().size() == 2);
+    ASSERT_TRUE(d2.getOwnedElements().front() == &o);
+    ASSERT_TRUE(d2.getOwnedElements().back() == &p);
+    ASSERT_TRUE(d2.getOwningPackage() == &pkg);
+    ASSERT_TRUE(d2.getNamespace() == &pkg);
+    ASSERT_TRUE(d2.getMemberNamespace().size() == 1);
+    ASSERT_TRUE(d2.getMemberNamespace().front() == &pkg);
+    ASSERT_TRUE(d2.getOwner() == &pkg);
+}
+
+TEST_F(DataTypeTest, copyDataTypeTestW_Manager) {
+    UmlManager m;
+    DataType& d = m.create<DataType>();
+    Operation& o = m.create<Operation>();
+    Property& p = m.create<Property>();
+    Package& pkg = m.create<Package>();
     d.setName("test");
     ID id = d.getID();
     d.getOwnedOperation().add(o);

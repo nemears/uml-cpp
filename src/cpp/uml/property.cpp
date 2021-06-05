@@ -17,8 +17,11 @@ void Property::reindexID(ID oldID, ID newID) {
         m_classifierPtr->getAttributes().reindex(oldID, newID);
     }
 
-    if (m_dataType) {
-        m_dataType->getOwnedAttribute().reindex(oldID, newID);
+    if (!m_dataTypeID.isNull()) {
+        if (!m_dataTypePtr) {
+            m_dataTypePtr = &m_manager->get<DataType>(m_dataTypeID);
+        }
+        m_dataTypePtr->getOwnedAttribute().reindex(oldID, newID);
     }
 
     if (!m_structuredClassifierID.isNull()) {
@@ -98,7 +101,7 @@ Property::Property() {
     m_composite = false;
     m_defaultValuePtr = 0;
     m_classifierPtr = 0;
-    m_dataType = 0;
+    m_dataTypePtr = 0;
     m_structuredClassifierPtr = 0;
     m_class = 0;
     m_association = 0;
@@ -113,7 +116,8 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     m_defaultValuePtr = prop.m_defaultValuePtr;
     m_classifierID = prop.m_classifierID;
     m_classifierPtr = prop.m_classifierPtr;
-    m_dataType = prop.m_dataType;
+    m_dataTypeID = prop.m_dataTypeID;
+    m_dataTypePtr = prop.m_dataTypePtr;
     m_class = prop.m_class;
     m_structuredClassifierPtr = prop.m_structuredClassifierPtr;
     m_association = prop.m_association;
@@ -306,21 +310,52 @@ void Property::setStructuredClassifier(StructuredClassifier* classifier) {
 }
 
 DataType* Property::getDataType() {
-    return m_dataType;
+    if (!m_dataTypeID.isNull()) {
+        if (!m_dataTypePtr) {
+            m_dataTypePtr = &m_manager->get<DataType>(m_dataTypeID);
+        }
+        return m_dataTypePtr;
+    }
+    return 0;
 }
 
 void Property::setDataType(DataType* dataType) {
-    if (m_dataType) {
-        if (m_dataType->getOwnedAttribute().count(m_id)) {
-            m_dataType->getOwnedAttribute().remove(*this);
+    if (!m_dataTypeID.isNull()) {
+        if (!m_dataTypePtr) {
+            m_dataTypePtr = &m_manager->get<DataType>(m_dataTypeID);
+        }
+        if (m_dataTypePtr->getOwnedAttribute().count(m_id)) {
+            m_dataTypePtr->getOwnedAttribute().remove(*this);
+        }
+        m_dataTypePtr = 0;
+        m_dataTypeID = ID::nullID();
+    }
+
+    if (dataType) {
+        m_dataTypeID = dataType->getID();
+    }
+
+    if (!m_manager) {
+        m_dataTypePtr = dataType;
+    }
+
+    if (dataType) {
+        if (!dataType->getOwnedAttribute().count(m_id)) {
+            dataType->getOwnedAttribute().add(*this);
         }
     }
-    m_dataType = dataType;
-    if (m_dataType) {
-        if (!m_dataType->getOwnedAttribute().count(m_id)) {
-            m_dataType->getOwnedAttribute().add(*this);
-        }
-    }
+
+    // if (m_dataType) {
+    //     if (m_dataType->getOwnedAttribute().count(m_id)) {
+    //         m_dataType->getOwnedAttribute().remove(*this);
+    //     }
+    // }
+    // m_dataType = dataType;
+    // if (m_dataType) {
+    //     if (!m_dataType->getOwnedAttribute().count(m_id)) {
+    //         m_dataType->getOwnedAttribute().add(*this);
+    //     }
+    // }
 }
 
 Class* Property::getClass() {

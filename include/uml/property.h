@@ -29,7 +29,8 @@ namespace UML{
             StructuredClassifier* m_structuredClassifierPtr;
             ID m_classifierID;
             Classifier* m_classifierPtr;
-            DataType* m_dataType;
+            ID m_dataTypeID;
+            DataType* m_dataTypePtr;
             Class* m_class;
             Association* m_association;
             Association* m_owningAssociation;

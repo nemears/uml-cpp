@@ -9,6 +9,7 @@ namespace UML{
     template <class T> class Sequence;
     class Namespace;
     class AbstractSequenceFunctor;
+    class UmlManager;
 
     enum class VisibilityKind {
         PUBLIC,
@@ -21,6 +22,7 @@ namespace UML{
      * A NamedElement is an Element in a model that may have a name
      **/
     class NamedElement : virtual public Element {
+        friend class UmlManager;
         protected:
             std::string m_name;
             ID m_namespaceID;

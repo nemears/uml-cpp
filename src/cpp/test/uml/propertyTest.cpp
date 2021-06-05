@@ -8,25 +8,7 @@
 
 using namespace UML;
 
-class PropertyTest : public ::testing::Test {
-    public:
-
-  PropertyTest() {
-
-  }
-
-  ~PropertyTest() override {
-
-  }
-
-  void SetUp() override {
-     
-  }
-
-  void TearDown() override {
-    // nothing right now
-  }
-};
+class PropertyTest : public ::testing::Test {};
 
 TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
     Property p;
@@ -35,6 +17,22 @@ TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
     LiteralString ls;
     ls.setValue("test");
     ASSERT_NO_THROW(p.setDefaultValue(&ls));
+    ASSERT_TRUE(p.getDefaultValue() == &ls);
+    ASSERT_TRUE(p.getOwnedElements().size() == 1);
+    ASSERT_TRUE(p.getOwnedElements().front() == &ls);
+}
+
+TEST_F(PropertyTest, setDefaultValueOfProperTypeTestStringW_Manager) {
+  UmlManager m;
+    Property& p = m.create<Property>();
+    PrimitiveType& stringP = m.create<PrimitiveType>();
+    p.setType(&stringP);
+    LiteralString& ls = m.create<LiteralString>();
+    ls.setValue("test");
+    ASSERT_NO_THROW(p.setDefaultValue(&ls));
+    ASSERT_TRUE(p.getDefaultValue() == &ls);
+    ASSERT_TRUE(p.getOwnedElements().size() == 1);
+    ASSERT_TRUE(p.getOwnedElements().front() == &ls);
 }
 
 // TEST_F(PropertyTest, setDefaultValueOfImproperTypeTestString) {

@@ -87,14 +87,10 @@ void Property::reindexID(ID oldID, ID newID) {
 //     Feature::reindexName(oldName, newName);
 // }
 
-void Property::setDefaultValue(ValueSpecification* val) {
-    defaultValue = val;
-}
-
 Property::Property() {
     m_aggregation = AggregationKind::NONE;
     m_composite = false;
-    defaultValue = 0;
+    m_defaultValuePtr = 0;
     m_classifier = 0;
     m_dataType = 0;
     m_structuredClassifier = 0;
@@ -107,7 +103,8 @@ Property::Property() {
 Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement(prop), NamedElement(prop), Element(prop) {
     m_aggregation = prop.m_aggregation;
     m_composite = prop.m_composite;
-    defaultValue = prop.defaultValue;
+    m_defaultValueID = prop.m_defaultValueID;
+    m_defaultValuePtr = prop.m_defaultValuePtr;
     m_classifier = prop.m_classifier;
     m_dataType = prop.m_dataType;
     m_class = prop.m_class;
@@ -157,7 +154,42 @@ void Property::setAggregation(AggregationKind aggregation) {
 }
 
 ValueSpecification* Property::getDefaultValue() {
-    return defaultValue;
+    if (!m_defaultValueID.isNull()) {
+        if (!m_defaultValuePtr) {
+            m_defaultValuePtr = &m_manager->get<ValueSpecification>(m_defaultValueID);
+        }
+        return m_defaultValuePtr;
+    }
+    return 0;
+}
+
+void Property::setDefaultValue(ValueSpecification* val) {
+    if (!m_defaultValueID.isNull()) {
+        if (m_ownedElements->count(m_defaultValueID)) {
+            if (!m_defaultValuePtr) {
+                m_defaultValuePtr = &m_manager->get<ValueSpecification>(m_defaultValueID);
+            }
+            m_ownedElements->internalRemove(*m_defaultValuePtr);
+        }
+        if (m_defaultValueID != val->getID()) {
+            m_defaultValueID = ID::nullID();
+            m_defaultValuePtr = 0;
+        }
+    }
+    
+    if (val) {
+        m_defaultValueID = val->getID();
+    }
+
+    if (!m_manager) {
+        m_defaultValuePtr = val;
+    }
+
+    if (val) {
+        if (!m_ownedElements->count(m_defaultValueID)) {
+            m_ownedElements->internalAdd(*val);
+        }
+    }
 }
 
 Classifier* Property::getClassifier() {

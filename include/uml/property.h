@@ -23,7 +23,8 @@ namespace UML{
         protected:
             AggregationKind m_aggregation;
             bool m_composite;
-            ValueSpecification* defaultValue;
+            ID m_defaultValueID;
+            ValueSpecification* m_defaultValuePtr;
             StructuredClassifier* m_structuredClassifier;
             Classifier* m_classifier;
             DataType* m_dataType;

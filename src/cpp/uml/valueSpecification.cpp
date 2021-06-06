@@ -30,25 +30,44 @@ void ValueSpecification::reindexID(ID oldID, ID newID) {
 // }
 
 ValueSpecification::ValueSpecification() {
-    m_owningSlot = 0;
+    m_owningSlotPtr = 0;
 }
 
 Slot* ValueSpecification::getOwningSlot() {
-    return m_owningSlot;
+    if (!m_owningSlotID.isNull()) {
+        if (!m_owningSlotPtr) {
+            m_owningSlotPtr = &m_manager->get<Slot>(m_owningSlotID);
+        }
+        return m_owningSlotPtr;
+    }
+    return 0;
 }
 
 void ValueSpecification::setOwningSlot(Slot* slot) {
-    if (m_owningSlot) {
-        if (m_owningSlot != slot) {
-            if (m_owningSlot->getValues().count(m_id)) {
-                m_owningSlot->getValues().remove(*this);
-            }
+    if (!m_owningSlotID.isNull()) {
+        if (!m_owningSlotPtr) {
+            m_owningSlotPtr = &m_manager->get<Slot>(m_owningSlotID);
         }
+
+        if (m_owningSlotPtr->getValues().count(m_id)) {
+            m_owningSlotPtr->getValues().remove(*this);
+        }
+
+        m_owningSlotPtr = 0;
+        m_owningSlotID = ID::nullID();
     }
-    m_owningSlot = slot;
-    if (m_owningSlot) {
-        if (!m_owningSlot->getValues().count(m_id)) {
-            m_owningSlot->getValues().add(*this);
+
+    if (slot) {
+        m_owningSlotID = slot->getID();
+    }
+
+    if (!m_manager) {
+        m_owningSlotPtr = slot;
+    }
+
+    if (slot) {
+        if (!slot->getValues().count(m_id)) {
+            slot->getValues().add(*this);
         }
     }
 }

@@ -39,9 +39,12 @@ void Property::reindexID(ID oldID, ID newID) {
         }
     }
 
-    if (m_association) {
-        if (m_association->getMemberEnds().count(oldID)) {
-            m_association->getMemberEnds().reindex(oldID, newID);
+    if (!m_associationID.isNull()) {
+        if (!m_associationPtr) {
+            m_associationPtr = &m_manager->get<Association>(m_associationID);
+        }
+        if (m_associationPtr->getMemberEnds().count(oldID)) {
+            m_associationPtr->getMemberEnds().reindex(oldID, newID);
         }
     }
 
@@ -104,7 +107,7 @@ Property::Property() {
     m_dataTypePtr = 0;
     m_structuredClassifierPtr = 0;
     m_classPtr = 0;
-    m_association = 0;
+    m_associationPtr = 0;
     m_owningAssociation = 0;
 }
 
@@ -121,7 +124,8 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     m_classPtr = prop.m_classPtr;
     m_classID = prop.m_classID;
     m_structuredClassifierPtr = prop.m_structuredClassifierPtr;
-    m_association = prop.m_association;
+    m_associationID = prop.m_associationID;
+    m_associationPtr = prop.m_associationPtr;
     m_owningAssociation = prop.m_owningAssociation;
 }
 
@@ -371,23 +375,54 @@ void Property::setClass(Class* clazz) {
 }
 
 Association* Property::getAssociation() {
-    return m_association;
+    if (!m_associationID.isNull()) {
+        if (!m_associationPtr) {
+            m_associationPtr = &m_manager->get<Association>(m_associationID);
+        }
+        return m_associationPtr;
+    }
+    return 0;
 }
 
 void Property::setAssociation(Association* association) {
-    if (m_association) {
-        if (m_association != association) {
-            if (m_association->getMemberEnds().count(m_id)) {
-                m_association->getMemberEnds().remove(*this);
-            }
+    if (!m_associationID.isNull()) {
+        if (!m_associationPtr) {
+            m_associationPtr = &m_manager->get<Association>(m_associationID);
+        }
+        if (m_associationPtr->getMemberEnds().count(m_id)) {
+            m_associationPtr->getMemberEnds().remove(*this);
+        }
+        m_associationPtr = 0;
+        m_associationID = ID::nullID();
+    }
+
+    if (association) {
+        m_associationID = association->getID();
+    }
+
+    if (!m_manager) {
+        m_associationPtr = association;
+    }
+
+    if (association) {
+        if (!association->getMemberEnds().count(m_id)) {
+            association->getMemberEnds().add(*this);
         }
     }
-    m_association = association;
-    if (m_association) {
-        if (!m_association->getMemberEnds().count(m_id)) {
-            m_association->getMemberEnds().add(*this);
-        }
-    }
+
+    // if (m_association) {
+    //     if (m_association != association) {
+    //         if (m_association->getMemberEnds().count(m_id)) {
+    //             m_association->getMemberEnds().remove(*this);
+    //         }
+    //     }
+    // }
+    // m_association = association;
+    // if (m_association) {
+    //     if (!m_association->getMemberEnds().count(m_id)) {
+    //         m_association->getMemberEnds().add(*this);TypedElement
+    //     }
+    // }
 }
 
 Association* Property::getOwningAssociation() {
@@ -418,23 +453,29 @@ void Property::setOwningAssociation(Association* association) {
 }
 
 void Property::setType(Type* type) {
-    if (m_association) {
+    if (!m_associationID.isNull()) {
+        if (!m_associationPtr) {
+            m_associationPtr = &m_manager->get<Association>(m_associationID);
+        }
         if (!m_typeID.isNull()) {
             if (!m_typePtr) {
                 m_typePtr = &m_manager->get<Type>(m_typeID);
             }
             if (m_typePtr != type) {
-                if (m_association->getEndType().count(type->getID())) {
-                    m_association->getEndType().remove(*type);
+                if (m_associationPtr->getEndType().count(type->getID())) {
+                    m_associationPtr->getEndType().remove(*type);
                 }
             }
         }
     }
     TypedElement::setType(type);
-    if (m_association) {
+    if (!m_associationID.isNull()) {
+        if (!m_associationPtr) {
+            m_associationPtr = &m_manager->get<Association>(m_associationID);
+        }
         if (!m_typeID.isNull()) {
-            if (!m_association->getEndType().count(type->getID())) {
-                m_association->getEndType().add(*type);
+            if (!m_associationPtr->getEndType().count(type->getID())) {
+                m_associationPtr->getEndType().add(*type);
             }
         }
     }

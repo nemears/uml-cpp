@@ -33,7 +33,8 @@ namespace UML{
             DataType* m_dataTypePtr;
             ID m_classID;
             Class* m_classPtr;
-            Association* m_association;
+            ID m_associationID;
+            Association* m_associationPtr;
             Association* m_owningAssociation;
             void reindexID(ID oldID, ID newID) override;
             // void reindexName(std::string oldName, std::string newName) override;

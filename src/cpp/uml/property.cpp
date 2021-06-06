@@ -59,7 +59,7 @@ void Property::reindexID(ID oldID, ID newID) {
 
 // void Property::reindexName(string oldName, string newName) {
 //     if (m_classifier) {
-//         m_classifier->getAttributes().reindex(m_id, oldName, newName);
+//      and    m_classifier->getAttributes().reindex(m_id, oldName, newName);
 //     }
 
 //     if (m_dataType) {
@@ -103,7 +103,7 @@ Property::Property() {
     m_classifierPtr = 0;
     m_dataTypePtr = 0;
     m_structuredClassifierPtr = 0;
-    m_class = 0;
+    m_classPtr = 0;
     m_association = 0;
     m_owningAssociation = 0;
 }
@@ -118,7 +118,8 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     m_classifierPtr = prop.m_classifierPtr;
     m_dataTypeID = prop.m_dataTypeID;
     m_dataTypePtr = prop.m_dataTypePtr;
-    m_class = prop.m_class;
+    m_classPtr = prop.m_classPtr;
+    m_classID = prop.m_classID;
     m_structuredClassifierPtr = prop.m_structuredClassifierPtr;
     m_association = prop.m_association;
     m_owningAssociation = prop.m_owningAssociation;
@@ -293,20 +294,6 @@ void Property::setStructuredClassifier(StructuredClassifier* classifier) {
             classifier->getOwnedAttributes().add(*this);
         }
     }
-
-    // if (m_structuredClassifier) {
-    //     if (m_structuredClassifier != classifier) {
-    //         if (m_structuredClassifier->getOwnedAttributes().count(m_id)) {
-    //             m_structuredClassifier->getOwnedAttributes().remove(*this);
-    //         }
-    //     }
-    // }
-    // m_structuredClassifier = classifier;
-    // if (m_structuredClassifier) {
-    //     if (!m_structuredClassifier->getOwnedAttributes().count(m_id)) {
-    //         m_structuredClassifier->getOwnedAttributes().add(*this);
-    //     }
-    // }
 }
 
 DataType* Property::getDataType() {
@@ -344,36 +331,41 @@ void Property::setDataType(DataType* dataType) {
             dataType->getOwnedAttribute().add(*this);
         }
     }
-
-    // if (m_dataType) {
-    //     if (m_dataType->getOwnedAttribute().count(m_id)) {
-    //         m_dataType->getOwnedAttribute().remove(*this);
-    //     }
-    // }
-    // m_dataType = dataType;
-    // if (m_dataType) {
-    //     if (!m_dataType->getOwnedAttribute().count(m_id)) {
-    //         m_dataType->getOwnedAttribute().add(*this);
-    //     }
-    // }
 }
 
 Class* Property::getClass() {
-    return m_class;
+    if (!m_classID.isNull()) {
+        if (!m_classPtr) {
+            m_classPtr = &m_manager->get<Class>(m_classID);
+        }
+        return m_classPtr;
+    }
+    return 0;
 }
 
 void Property::setClass(Class* clazz) {
-    if (m_class) {
-        if (m_class != clazz) {
-            if (m_class->getOwnedAttributes().count(m_id)) {
-                m_class->getOwnedAttributes().remove(*this);
-            }
+    if (!m_classID.isNull()) {
+        if (!m_classPtr) {
+            m_classPtr = &m_manager->get<Class>(m_classID);
         }
+        if (m_classPtr->getOwnedAttributes().count(m_id)) {
+            m_classPtr->getOwnedAttributes().remove(*this);
+        }
+        m_classPtr = 0;
+        m_classID = ID::nullID();
     }
-    m_class = clazz;
-    if (m_class) {
-        if (!m_class->getOwnedAttributes().count(m_id)) {
-            m_class->getOwnedAttributes().add(*this);
+
+    if (clazz) {
+        m_classID = clazz->getID();
+    }
+
+    if (!m_manager) {
+        m_classPtr = clazz;
+    }
+
+    if (clazz) {
+        if (!clazz->getOwnedAttributes().count(m_id)) {
+            clazz->getOwnedAttributes().add(*this);
         }
     }
 }

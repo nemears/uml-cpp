@@ -31,7 +31,8 @@ namespace UML{
             Classifier* m_classifierPtr;
             ID m_dataTypeID;
             DataType* m_dataTypePtr;
-            Class* m_class;
+            ID m_classID;
+            Class* m_classPtr;
             Association* m_association;
             Association* m_owningAssociation;
             void reindexID(ID oldID, ID newID) override;

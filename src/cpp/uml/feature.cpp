@@ -5,8 +5,11 @@ using namespace std;
 using namespace UML;
 
 void Feature::reindexID(ID oldID, ID newID) {
-    if (m_featuringClassifier) {
-        m_featuringClassifier->getFeatures().reindex(oldID, newID);
+    if (!m_featuringClassifierID.isNull()) {
+        if (!m_featuringClassifierPtr) {
+            m_featuringClassifierPtr = &m_manager->get<Classifier>(m_featuringClassifierID);
+        }
+        m_featuringClassifierPtr->getFeatures().reindex(oldID, newID);
     }
 
     NamedElement::reindexID(oldID, newID);
@@ -21,26 +24,58 @@ void Feature::reindexID(ID oldID, ID newID) {
 // }
 
 Feature::Feature() {
-    m_featuringClassifier = 0;
+    m_featuringClassifierPtr = 0;
     m_static = false;
 }
 
 Feature::Feature(const Feature& feature) {
-    m_featuringClassifier = feature.m_featuringClassifier;
+    m_featuringClassifierID = feature.m_featuringClassifierID;
+    m_featuringClassifierPtr = feature.m_featuringClassifierPtr;
     m_static = feature.m_static;
 }
 
 Classifier* Feature::getFeaturingClassifier() {
-    return m_featuringClassifier;
+    if (!m_featuringClassifierID.isNull()) {
+        if (!m_featuringClassifierPtr) {
+            m_featuringClassifierPtr = &m_manager->get<Classifier>(m_featuringClassifierID);
+        }
+        return m_featuringClassifierPtr;
+    }
+    return 0;
 }
 
 void Feature::setFeaturingClassifier(Classifier* clazz) {
-    m_featuringClassifier = clazz;
-    if (m_featuringClassifier) {
-        if (!m_featuringClassifier->getFeatures().count(m_id)) {
-            m_featuringClassifier->getFeatures().add(*this);
+    if (!m_featuringClassifierID.isNull()) {
+        if (!m_featuringClassifierPtr) {
+            m_featuringClassifierPtr = &m_manager->get<Classifier>(m_featuringClassifierID);
+        }
+        if (m_featuringClassifierPtr->getFeatures().count(m_id)) {
+            m_featuringClassifierPtr->getFeatures().remove(*this);
+        }
+        m_featuringClassifierPtr = 0;
+        m_featuringClassifierID = ID::nullID();
+    }
+
+    if (clazz) {
+        m_featuringClassifierID = clazz->getID();
+    }
+
+    if (!m_manager) {
+        m_featuringClassifierPtr = clazz;
+    }
+
+    if (clazz) {
+        if (!clazz->getFeatures().count(m_id)) {
+            clazz->getFeatures().add(*this);
         }
     }
+
+    // m_featuringClassifier = clazz;
+    // if (m_featuringClassifier) {
+    //     if (!m_featuringClassifier->getFeatures().count(m_id)) {
+    //         m_featuringClassifier->getFeatures().add(*this);
+    //     }
+    // }
 }
 
 bool Feature::isStatic() {

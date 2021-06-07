@@ -9,7 +9,8 @@ namespace UML {
 
     class Feature : virtual public RedefinableElement {
         protected:
-            Classifier* m_featuringClassifier;
+            ID m_featuringClassifierID;
+            Classifier* m_featuringClassifierPtr;
             bool m_static;
             void reindexID(ID oldID, ID newID) override;
             // void reindexName(std::string oldName, std::string newName) override;

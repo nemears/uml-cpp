@@ -54,7 +54,7 @@ void Operation::setClass(Class* clazz) {
         if (!m_class->getOperations().count(m_id)) {
             m_class->getOperations().add(*this);
         }
-        if (m_featuringClassifier != clazz) {
+        if (m_featuringClassifierID != clazz->getID()) {
             setFeaturingClassifier(clazz);
         }
     }

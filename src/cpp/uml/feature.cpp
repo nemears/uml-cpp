@@ -69,13 +69,6 @@ void Feature::setFeaturingClassifier(Classifier* clazz) {
             clazz->getFeatures().add(*this);
         }
     }
-
-    // m_featuringClassifier = clazz;
-    // if (m_featuringClassifier) {
-    //     if (!m_featuringClassifier->getFeatures().count(m_id)) {
-    //         m_featuringClassifier->getFeatures().add(*this);
-    //     }
-    // }
 }
 
 bool Feature::isStatic() {

@@ -15,8 +15,11 @@ void Parameter::reindexID(ID oldID, ID newID) {
         }
     }
 
-    if (m_operation) {
-        for (auto& bhv : m_operation->getMethods()) {
+    if (!m_operationID.isNull()) {
+        if (!m_operationPtr) {
+            m_operationPtr = &m_manager->get<Operation>(m_operationID);
+        }
+        for (auto& bhv : m_operationPtr->getMethods()) {
             bhv.getParameters().reindex(oldID, newID);
         }
     }
@@ -41,19 +44,37 @@ void Parameter::reindexID(ID oldID, ID newID) {
 // }
 
 Operation* Parameter::getOperation() {
-    return m_operation;
+    if (!m_operationID.isNull()) {
+        if (!m_operationPtr) {
+            m_operationPtr = &m_manager->get<Operation>(m_operationID);
+        }
+        return m_operationPtr;
+    }
+    return 0;
 }
 
 void Parameter::setOperation(Operation* operation) {
-    if (m_operation) {
-        if (m_operation->getOwnedParameters().count(m_id)) {
-            m_operation->getOwnedParameters().remove(*this);
+    if (!m_operationID.isNull()) {
+        if (!m_operationPtr) {
+            m_operationPtr = &m_manager->get<Operation>(m_operationID);
         }
+        if (m_operationPtr->getOwnedParameters().count(m_id)) {
+            m_operationPtr->getOwnedParameters().remove(*this);
+        }
+        m_operationPtr = 0;
+        m_operationID = ID::nullID();
     }
-    m_operation = operation;
-    if (m_operation) {
-        if (!m_operation->getOwnedParameters().count(m_id)) {
-            m_operation->getOwnedParameters().add(*this);
+
+    if (operation) {
+        m_operationID = operation->getID();
+    }
+
+    if (!m_manager) {
+        m_operationPtr = operation;
+    }
+    if (operation) {
+        if (!operation->getOwnedParameters().count(m_id)) {
+            operation->getOwnedParameters().add(*this);
         }
     }
 }
@@ -64,11 +85,14 @@ ParameterDirectionKind Parameter::getDirection() {
 
 void Parameter::setDirection(ParameterDirectionKind direction) {
     if (direction == ParameterDirectionKind::RETURN || direction == ParameterDirectionKind::OUT || direction == ParameterDirectionKind::INOUT) {
-        if (m_operation) {
-            if (m_operation->m_returnSpecified) {
-                throw ReturnParameterException(m_operation->getElementTypeString() + " " + m_operation->getID().string());
+        if (!m_operationID.isNull()) {
+            if (!m_operationPtr) {
+                m_operationPtr = &m_manager->get<Operation>(m_operationID);
             }
-            m_operation->m_returnSpecified = true;
+            if (m_operationPtr->m_returnSpecified) {
+                throw ReturnParameterException(m_operationPtr->getElementTypeString() + " " + m_operationPtr->getID().string());
+            }
+            m_operationPtr->m_returnSpecified = true;
         }
     }
     m_direction = direction;

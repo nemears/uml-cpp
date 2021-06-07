@@ -19,7 +19,8 @@ namespace UML {
     class Parameter : public TypedElement , public MultiplicityElement {
         protected:
             ParameterDirectionKind m_direction;
-            Operation* m_operation;
+            ID m_operationID;
+            Operation* m_operationPtr;
             void reindexID(ID oldID, ID newID) override;
             // void reindexName(std::string oldName, std::string newName) override;
         public:
@@ -30,7 +31,7 @@ namespace UML {
             void setDirection(ParameterDirectionKind direction);
             Parameter() {
                 m_direction = ParameterDirectionKind::NONE;
-                m_operation = 0;
+                m_operationPtr = 0;
             }
             std::string getDirectionString();
             void setDirectionString(std::string& directionString);

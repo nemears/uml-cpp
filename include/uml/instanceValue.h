@@ -6,6 +6,9 @@
 
 namespace UML {
     class InstanceValue : public ValueSpecification {
+        protected:
+            ID m_instanceID;
+            InstanceSpecification* m_instancePtr;
         public:
             InstanceSpecification* getInstance();
             void setInstance(InstanceSpecification* inst);
@@ -14,8 +17,6 @@ namespace UML {
             static ElementType elementType() {
                 return ElementType::INSTANCE_VALUE;
             };
-        protected:
-            InstanceSpecification* instance;
     };
 }
 

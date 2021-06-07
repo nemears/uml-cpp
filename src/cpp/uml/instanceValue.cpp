@@ -3,11 +3,27 @@
 using namespace UML;
 
 InstanceSpecification*  InstanceValue::getInstance() {
-    return instance;
+    if (!m_instanceID.isNull()) {
+        if (!m_instancePtr) {
+            m_instancePtr = &m_manager->get<InstanceSpecification>(m_instanceID);
+        }
+        return m_instancePtr;
+    }
+    return 0;
 }
 
 void InstanceValue::setInstance(InstanceSpecification* inst) {
-    instance = inst;
+    if (inst) {
+        m_instanceID = inst->getID();
+    } else {
+        m_instanceID = ID::nullID();
+    }
+
+    if (!m_manager) {
+        m_instancePtr = inst;
+    } else {
+        m_instancePtr = 0;
+    }
 }
 
 ElementType InstanceValue::getElementType() const {

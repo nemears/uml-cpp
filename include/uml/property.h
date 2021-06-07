@@ -35,7 +35,8 @@ namespace UML{
             Class* m_classPtr;
             ID m_associationID;
             Association* m_associationPtr;
-            Association* m_owningAssociation;
+            ID m_owningAssociationID;
+            Association* m_owningAssociationPtr;
             void reindexID(ID oldID, ID newID) override;
             // void reindexName(std::string oldName, std::string newName) override;
             void setComposite(bool composite);

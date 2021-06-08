@@ -11,9 +11,12 @@ namespace UML {
     class Operation : public BehavioralFeature {
         friend class Parameter;
         protected:
-            Type* m_type;
-            Class* m_class;
-            DataType* m_dataType;
+            ID m_typeID;
+            Type* m_typePtr;
+            ID m_classID;
+            Class* m_classPtr;
+            ID m_dataTypeID;
+            DataType* m_dataTypePtr;
             void reindexID(ID oldID, ID newID) override;
             // void reindexName(std::string oldName, std::string newName) override;
         public:

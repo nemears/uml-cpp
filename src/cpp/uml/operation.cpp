@@ -6,11 +6,17 @@ using namespace std;
 using namespace UML;
 
 void Operation::reindexID(ID oldID, ID newID) {
-    if (m_class) {
-        m_class->getOperations().reindex(oldID, newID);
+    if (!m_classID.isNull()) {
+        if (!m_classPtr) {
+            m_classPtr = &m_manager->get<Class>(m_classID);
+        }
+        m_classPtr->getOperations().reindex(oldID, newID);
     }
-    if (m_dataType) {
-        m_dataType->getOwnedOperation().reindex(oldID, newID);
+    if (!m_dataTypeID.isNull()) {
+        if (!m_dataTypePtr) {
+            m_dataTypePtr = &m_manager->get<DataType>(m_dataTypeID);
+        }
+        m_dataTypePtr->getOwnedOperation().reindex(oldID, newID);
     }
     Feature::reindexID(oldID, newID);
 }
@@ -26,33 +32,63 @@ void Operation::reindexID(ID oldID, ID newID) {
 // }
 
 Operation::Operation() {
-    m_type = 0;
-    m_class = 0;
-    m_dataType = 0;
+    m_typePtr = 0;
+    m_classPtr = 0;
+    m_dataTypePtr = 0;
 }
 
 Type* Operation::getType() {
-    return m_type;
+    if (!m_typeID.isNull()) {
+        if (!m_typePtr) {
+            m_typePtr = &m_manager->get<Type>(m_typeID);
+        }
+        return m_typePtr;
+    }
+    return 0;
 }
 
 void Operation::setType(Type* type) {
-    m_type = type;
+    if (type) {
+        m_typeID = type->getID();
+    }
+    if (!m_manager) {
+        m_typePtr = type;
+    }
 }
 
 Class* Operation::getClass() {
-    return m_class;
+    if (!m_classID.isNull()) {
+        if (!m_classPtr) {
+            m_classPtr = &m_manager->get<Class>(m_classID);
+        }
+        return m_classPtr;
+    }
+    return 0;
 }
 
 void Operation::setClass(Class* clazz) {
-    if (m_class) {
-        if(m_class->getOperations().count(m_id)) {
-            m_class->getOperations().remove(*this);
+    if (!m_classID.isNull()) {
+        if (!m_classPtr) {
+            m_classPtr = &m_manager->get<Class>(m_classID);
         }
+        if (m_classPtr->getOperations().count(m_id)) {
+            m_classPtr->getOperations().remove(*this);
+        }
+        m_classPtr = 0;
+        m_classID = ID::nullID();
     }
-    m_class = clazz;
-    if (m_class) {
-        if (!m_class->getOperations().count(m_id)) {
-            m_class->getOperations().add(*this);
+
+    if (clazz) {
+        m_classID = clazz->getID();
+    }
+
+    if (!m_manager) {
+        m_classPtr = clazz;
+    }
+
+    if (clazz) {
+        if (!clazz->getOperations().count(m_id)) {
+            clazz->getOperations().add(*this);
         }
         if (m_featuringClassifierID != clazz->getID()) {
             setFeaturingClassifier(clazz);
@@ -61,19 +97,38 @@ void Operation::setClass(Class* clazz) {
 }
 
 DataType* Operation::getDataType() {
-    return m_dataType;
+    if (!m_dataTypeID.isNull()) {
+        if (!m_dataTypePtr) {
+            m_dataTypePtr = &m_manager->get<DataType>(m_dataTypeID);
+        }
+        return m_dataTypePtr;
+    }
+    return 0;
 }
 
 void Operation::setDataType(DataType* dataType) {
-    if (m_dataType) {
-        if (m_dataType->getOwnedOperation().count(m_id)) {
-            m_dataType->getOwnedOperation().remove(*this);
+    if (!m_dataTypeID.isNull()) {
+        if (!m_dataTypePtr) {
+            m_dataTypePtr = &m_manager->get<DataType>(m_dataTypeID);
         }
+        if (m_dataTypePtr->getOwnedOperation().count(m_id)) {
+            m_dataTypePtr->getOwnedOperation().remove(*this);
+        }
+        m_dataTypeID = ID::nullID();
+        m_dataTypePtr = 0;
     }
-    m_dataType = dataType;
-    if (m_dataType) {
-        if (!m_dataType->getOwnedOperation().count(m_id)) {
-            m_dataType->getOwnedOperation().add(*this);
+
+    if (dataType) {
+        m_dataTypeID = dataType->getID();
+    }
+
+    if (!m_manager) {
+        m_dataTypePtr = dataType;
+    }
+
+    if (dataType) {
+        if (!dataType->getOwnedOperation().count(m_id)) {
+            dataType->getOwnedOperation().add(*this);
         }
     }
 }

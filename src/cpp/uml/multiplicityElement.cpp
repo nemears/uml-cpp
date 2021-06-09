@@ -4,8 +4,8 @@
 using namespace UML;
 
 MultiplicityElement::MultiplicityElement() {
-    m_lowVal = 0;
-    m_upVal = 0;
+    m_lowValPtr = 0;
+    m_upValPtr = 0;
 }
 
 int MultiplicityElement::getLower() {
@@ -49,7 +49,13 @@ bool MultiplicityElement::multiplicitySpecified() {
 }
 
 ValueSpecification* MultiplicityElement::getLowerValue() {
-    return m_lowVal;
+    if (!m_lowValID.isNull()) {
+        if (!m_lowValPtr) {
+            m_lowValPtr = &m_manager->get<ValueSpecification>(m_lowValID);
+        }
+        return m_lowValPtr;
+    }
+    return 0;
 }
 
 void MultiplicityElement::setLowerValue(ValueSpecification* val) {
@@ -57,26 +63,48 @@ void MultiplicityElement::setLowerValue(ValueSpecification* val) {
     if (val->isSubClassOf(ElementType::LITERAL_INT)) {
         if (dynamic_cast<LiteralInt*>(val)->getValue() >= 0) {
             setLower(dynamic_cast<LiteralInt*>(val)->getValue());
-            m_lowVal = val;
-            return;
         }
     } else if (val->isSubClassOf(ElementType::EXPRESSION)) {
         // TODO evaluate expression
+    }
+
+    if (val) {
+        m_lowValID = val->getID();
+    } else {
+        m_lowValID = ID::nullID();
+    }
+
+    if (!m_manager) {
+        m_lowValPtr = val;
     }
     // TODO error
 }
 
 ValueSpecification* MultiplicityElement::getUpperValue() {
-    return m_upVal;
+    if (!m_upValID.isNull()) {
+        if (!m_upValPtr) {
+            m_upValPtr = &m_manager->get<ValueSpecification>(m_upValID);
+        }
+        return m_upValPtr;
+    }
+    return 0;
 }
 
 void MultiplicityElement::setUpperValue(ValueSpecification* val) {
     if (val->isSubClassOf(ElementType::LITERAL_INT)) {
         if (dynamic_cast<LiteralInt*>(val)->getValue() >= 0) {
             setUpper(dynamic_cast<LiteralInt*>(val)->getValue());
-            m_upVal = val;
-            return;
         }
+    }
+
+    if (val) {
+        m_upValID = val->getID();
+    } else {
+        m_upValID = ID::nullID();
+    }
+
+    if (!m_manager) {
+        m_upValPtr = val;
     }
 }
 

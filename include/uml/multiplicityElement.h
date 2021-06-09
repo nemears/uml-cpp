@@ -9,8 +9,10 @@ namespace UML {
         protected:
             int lower;
             int upper;
-            ValueSpecification* m_lowVal;
-            ValueSpecification* m_upVal;
+            ID m_lowValID;
+            ValueSpecification* m_lowValPtr;
+            ID m_upValID;
+            ValueSpecification* m_upValPtr;
         private:
             bool multiplicityIsSpecified = false;
             bool lowSpecified = false;

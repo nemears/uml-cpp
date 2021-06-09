@@ -4,25 +4,42 @@
 using namespace UML;
 
 EnumerationLiteral::EnumerationLiteral() {
-    m_enumeration = 0;
+    m_enumerationPtr = 0;
 }
 
 Enumeration* EnumerationLiteral::getEnumeration() {
-    return m_enumeration;
+    if (!m_enumerationID.isNull()) {
+        if (!m_enumerationPtr) {
+            m_enumerationPtr = &m_manager->get<Enumeration>(m_enumerationID);
+        }
+        return m_enumerationPtr;
+    }
+    return 0;
 }
 
 void EnumerationLiteral::setEnumeration(Enumeration* enumeration) {
-    if (m_enumeration) {
-        if (m_enumeration != enumeration) {
-            if (m_enumeration->getOwnedLiteral().count(m_id)) {
-                m_enumeration->getOwnedLiteral().remove(*this);
-            }
+    if (!m_enumerationID.isNull()) {
+        if (!m_enumerationPtr) {
+            m_enumerationPtr = &m_manager->get<Enumeration>(m_enumerationID);
         }
+        if (m_enumerationPtr->getOwnedLiteral().count(m_id)) {
+            m_enumerationPtr->getOwnedLiteral().remove(*this);
+        }
+        m_enumerationID = ID::nullID();
+        m_enumerationPtr = 0;
     }
-    m_enumeration = enumeration;
-    if (m_enumeration) {
-        if (!m_enumeration->getOwnedLiteral().count(m_id)) {
-            m_enumeration->getOwnedLiteral().add(*this);
+
+    if (enumeration) {
+        m_enumerationID = enumeration->getID();
+    }
+
+    if (!m_manager) {
+        m_enumerationPtr = enumeration;
+    }
+
+    if (enumeration) {
+        if (!enumeration->getOwnedLiteral().count(m_id)) {
+            enumeration->getOwnedLiteral().add(*this);
         }
     }
 }

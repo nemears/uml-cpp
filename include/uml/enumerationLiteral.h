@@ -9,7 +9,8 @@ namespace UML {
 
     class EnumerationLiteral : public InstanceSpecification {
         protected:
-            Enumeration* m_enumeration;
+            ID m_enumerationID;
+            Enumeration* m_enumerationPtr;
         public:
             EnumerationLiteral();
             Enumeration* getEnumeration();

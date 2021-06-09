@@ -7,7 +7,8 @@ namespace UML {
     class Comment : public Element {
         private:
             std::string m_body;
-            Element* m_owningElement;
+            ID m_owningElementID;
+            Element* m_owningElementPtr;
         public:
             Comment();
             std::string getBody();

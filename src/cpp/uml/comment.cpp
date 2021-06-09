@@ -5,7 +5,7 @@ using namespace std;
 using namespace UML;
 
 Comment::Comment() {
-    m_owningElement = 0;
+    m_owningElementPtr = 0;
 }
 
 string Comment::getBody() {
@@ -17,21 +17,40 @@ void Comment::setBody(string body) {
 }
 
 Element* Comment::getOwningElement() {
-    return m_owningElement;
+    if (!m_owningElementID.isNull()) {
+        if (!m_owningElementPtr) {
+            m_owningElementPtr = &m_manager->get<>(m_owningElementID);
+        }
+        return m_owningElementPtr;
+    }
+    return 0;
 }
 
 void Comment::setOwningElement(Element* el) {
-    if (m_owningElement) {
-        if (m_owningElement != el) {
-            if (m_owningElement->getOwnedComments().count(m_id)) {
-                m_owningElement->getOwnedComments().remove(*this);
-            }
+    if (!m_owningElementID.isNull()) {
+        if (!m_owningElementPtr) {
+            m_owningElementPtr = &m_manager->get<>(m_owningElementID);
         }
+
+        if (m_owningElementPtr->getOwnedComments().count(m_id)) {
+            m_owningElementPtr->getOwnedComments().remove(*this);
+        }
+
+        m_owningElementPtr = 0;
+        m_owningElementID = ID::nullID();
     }
-    m_owningElement = el;
-    if (m_owningElement) {
-        if (!m_owningElement->getOwnedComments().count(m_id)) {
-            m_owningElement->getOwnedComments().internalAdd(*this);
+
+    if (el) {
+        m_owningElementID = el->getID();
+    }
+
+    if (!m_manager) {
+        m_owningElementPtr = el;
+    }
+
+    if (el) {
+        if (!el->getOwnedComments().count(m_id)) {
+            el->getOwnedComments().add(*this);
         }
     }
 }

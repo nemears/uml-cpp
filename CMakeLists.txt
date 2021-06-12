@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(yuml VERSION 0.1.0)
+project(uml-cpp VERSION 0.1.0)
 include(CTest)
 enable_testing()
 
@@ -34,10 +34,10 @@ add_subdirectory(libs/pybind11)
 add_subdirectory(src)
 
 # wrapper application
-add_executable(yuml src/cpp/application.cpp)
+add_executable(uml-cpp src/cpp/application.cpp)
 
 # Link them all
-target_link_libraries(yuml PUBLIC Parsers Uml Logger gtest yaml-cpp)
+target_link_libraries(uml-cpp PUBLIC Parsers Uml Logger gtest yaml-cpp)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

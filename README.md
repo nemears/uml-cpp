@@ -1,4 +1,4 @@
-# yuml
+# uml-cpp
 Lightweight UML based MBSE application built on yaml syntax UML config files    
 currently two directories hold two different code bases:    
   * yuml-parsers: parse yaml config files for uml representation    

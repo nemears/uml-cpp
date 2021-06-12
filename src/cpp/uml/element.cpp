@@ -437,7 +437,7 @@ Element* Element::getOwner() {
 
 void Element::setOwner(Element* owner) {
     // remove old owner
-    if (!m_ownerID.isNull()) {
+    if (!isSameOrNull(m_ownerID, owner)) {
         if (!m_ownerPtr) {
             *m_ownerPtr = m_manager->get<>(m_ownerID);
         }
@@ -460,7 +460,7 @@ void Element::setOwner(Element* owner) {
         m_ownerPtr = 0;
     }
 
-    // add to owner owned elements
+    // add to owner owned elements 
     if (owner) {
         if (!owner->getOwnedElements().count(m_id)) {
             owner->getOwnedElements().internalAdd(*this);
@@ -470,4 +470,15 @@ void Element::setOwner(Element* owner) {
 
 Sequence<Element>& Element::getOwnedElements() {
     return *m_ownedElements;
+}
+
+bool Element::isSameOrNull(ID id, Element* el) {
+    if (id.isNull()) {
+        return true;
+    } else {
+        if (el) {
+            return id == el->getID();
+        }
+        return false;
+    }
 }

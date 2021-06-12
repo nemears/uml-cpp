@@ -121,6 +121,7 @@ namespace UML {
             Sequence<Comment>* m_ownedComments;
             virtual void reindexID(ID oldID, ID newID);
             void setOwner(Element* el);
+            static bool isSameOrNull(ID id, Element* el);
         public:
             Element();
             virtual ~Element();

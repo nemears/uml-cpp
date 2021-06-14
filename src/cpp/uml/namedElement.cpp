@@ -95,7 +95,7 @@ Namespace* NamedElement::getNamespace() {
 }
 
 void NamedElement::setNamespace(Namespace* nmspc) {
-    if (!m_namespaceID.isNull()) {
+    if (!isSameOrNull(m_namespaceID, nmspc)) {
         if (!m_namespacePtr) {
             m_namespacePtr = &m_manager->get<Namespace>(m_namespaceID);
         }

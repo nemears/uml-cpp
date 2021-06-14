@@ -295,3 +295,16 @@ TEST_F(ElementTest, readOnlyRelatedElementsTest) {
 //   ASSERT_TRUE(owner.getOwnedElements2().front() == &ownee);
 //   ASSERT_TRUE(ownee.getOwner() == &owner); // TODO change
 // }
+
+TEST_F(ElementTest, isSameOrNullTest) {
+  UmlManager m;
+  Package& e = m.create<Package>();
+  Package& c1 = m.create<Package>();
+  Package& c2 = m.create<Package>();
+
+  e.getPackagedElements().add(c1);
+  e.getPackagedElements().add(c2);
+  ASSERT_NO_THROW(c1.setOwningPackage(&e));
+  ASSERT_TRUE(e.getOwnedElements().front() == &c1);
+  ASSERT_TRUE(e.getOwnedElements().back() == &c2);
+}

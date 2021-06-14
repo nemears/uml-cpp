@@ -278,7 +278,7 @@ StructuredClassifier* Property::getStructuredClassifier() {
 }
 
 void Property::setStructuredClassifier(StructuredClassifier* classifier) {
-    if (!m_structuredClassifierID.isNull()) {
+    if (!isSameOrNull(m_structuredClassifierID, classifier)) {
         if (!m_structuredClassifierPtr) {
             m_structuredClassifierPtr = &m_manager->get<StructuredClassifier>(m_structuredClassifierID);
         }
@@ -315,7 +315,7 @@ DataType* Property::getDataType() {
 }
 
 void Property::setDataType(DataType* dataType) {
-    if (!m_dataTypeID.isNull()) {
+    if (!isSameOrNull(m_dataTypeID, dataType)) {
         if (!m_dataTypePtr) {
             m_dataTypePtr = &m_manager->get<DataType>(m_dataTypeID);
         }
@@ -352,7 +352,7 @@ Class* Property::getClass() {
 }
 
 void Property::setClass(Class* clazz) {
-    if (!m_classID.isNull()) {
+    if (!isSameOrNull(m_classID, clazz)) {
         if (!m_classPtr) {
             m_classPtr = &m_manager->get<Class>(m_classID);
         }
@@ -389,7 +389,7 @@ Association* Property::getAssociation() {
 }
 
 void Property::setAssociation(Association* association) {
-    if (!m_associationID.isNull()) {
+    if (!isSameOrNull(m_associationID, association)) {
         if (!m_associationPtr) {
             m_associationPtr = &m_manager->get<Association>(m_associationID);
         }
@@ -426,7 +426,7 @@ Association* Property::getOwningAssociation() {
 }
 
 void Property::setOwningAssociation(Association* association) {
-    if (!m_owningAssociationID.isNull()) {
+    if (!isSameOrNull(m_owningAssociationID, association)) {
         if (!m_owningAssociationPtr) {
             m_owningAssociationPtr = &m_manager->get<Association>(m_owningAssociationID);
         }

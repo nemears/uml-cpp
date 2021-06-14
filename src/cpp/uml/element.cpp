@@ -472,6 +472,10 @@ Sequence<Element>& Element::getOwnedElements() {
     return *m_ownedElements;
 }
 
+/**
+ * This func compares an id and an element without loading 
+ * the element that corresponds to the id from the manager
+ **/
 bool Element::isSameOrNull(ID id, Element* el) {
     if (id.isNull()) {
         return true;

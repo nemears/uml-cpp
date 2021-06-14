@@ -54,7 +54,7 @@ Operation* Parameter::getOperation() {
 }
 
 void Parameter::setOperation(Operation* operation) {
-    if (!m_operationID.isNull()) {
+    if (!isSameOrNull(m_operationID, operation)) {
         if (!m_operationPtr) {
             m_operationPtr = &m_manager->get<Operation>(m_operationID);
         }

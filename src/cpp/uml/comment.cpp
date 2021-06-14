@@ -27,7 +27,7 @@ Element* Comment::getOwningElement() {
 }
 
 void Comment::setOwningElement(Element* el) {
-    if (!m_owningElementID.isNull()) {
+    if (!isSameOrNull(m_owningElementID, el)) {
         if (!m_owningElementPtr) {
             m_owningElementPtr = &m_manager->get<>(m_owningElementID);
         }

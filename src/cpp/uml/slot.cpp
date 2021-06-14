@@ -85,7 +85,7 @@ InstanceSpecification* Slot::getOwningInstance() {
 }
 
 void Slot::setOwningInstance(InstanceSpecification* inst) {
-    if (!m_owningInstanceID.isNull()) {
+    if (!isSameOrNull(m_owningInstanceID, inst)) {
         if (!m_owningInstancePtr) {
             m_owningInstancePtr = &m_manager->get<InstanceSpecification>(m_owningInstanceID);
         }

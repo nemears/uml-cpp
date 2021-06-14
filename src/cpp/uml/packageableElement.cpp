@@ -23,7 +23,7 @@ Package* PackageableElement::getOwningPackage() {
 }
 
 void PackageableElement::setOwningPackage(Package* package) {
-    if (!m_owningPackageID.isNull()) {
+    if (!isSameOrNull(m_owningPackageID, package)) {
         if (!m_owningPackagePtr) {
             m_owningPackagePtr = &m_manager->get<Package>(m_owningPackageID);
         }

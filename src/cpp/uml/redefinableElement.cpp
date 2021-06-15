@@ -2,6 +2,11 @@
 
 using namespace UML;
 
+void RedefinableElement::setManager(UmlManager* manager) {
+    m_redefinedElement.m_manager = manager;
+    m_redefinitionContext.m_manager = manager;
+}
+
 RedefinableElement::RedefinableElement() {
 }
 

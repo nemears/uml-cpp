@@ -102,6 +102,11 @@ void Property::reindexID(ID oldID, ID newID) {
 //     Feature::reindexName(oldName, newName);
 // }
 
+void Property::setManager(UmlManager* manager) {
+    NamedElement::setManager(manager);
+    RedefinableElement::setManager(manager);
+}
+
 Property::Property() {
     m_aggregation = AggregationKind::NONE;
     m_composite = false;

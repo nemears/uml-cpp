@@ -65,6 +65,11 @@ void BehavioralFeature::RemoveParameterFunctor::operator()(Element& el) const {
     }
 }
 
+void BehavioralFeature::setManager(UmlManager* manager) {
+    Namespace::setManager(manager);
+    RedefinableElement::setManager(manager);
+}
+
 BehavioralFeature::BehavioralFeature() {
     m_methods.addProcedures.push_back(new AddMethodFunctor(this));
     m_methods.removeProcedures.push_back(new RemoveMethodFunctor(this));

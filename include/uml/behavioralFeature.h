@@ -8,10 +8,12 @@
 
 namespace UML {
     class BehavioralFeature : public Feature , public Namespace {
+        friend class UmlManager;
         protected:
             Sequence<Behavior> m_methods;
             Sequence<Parameter> m_ownedParameters;
             bool m_returnSpecified = false;
+            void setManager(UmlManager* manager) override;
             class AddMethodFunctor : public AbstractSequenceFunctor {
                 public:
                     AddMethodFunctor(Element* me) : AbstractSequenceFunctor(me) {};

@@ -93,19 +93,6 @@ void PackageMerge::setMergedPackage(Package* merge) {
             m_targets.add(*merge);
         }
     }
-
-
-    // if (m_mergedPackage) {
-    //     if (m_targets.count(m_mergedPackage->getID())) {
-    //         m_targets.remove(*m_mergedPackage);
-    //     }
-    // }
-    // m_mergedPackage = merge;
-    // if (m_mergedPackage) {
-    //     if (!m_targets.count(m_mergedPackage->getID())) {
-    //         m_targets.add(*m_mergedPackage);
-    //     }
-    // }
 }
 
 ElementType PackageMerge::getElementType() const {

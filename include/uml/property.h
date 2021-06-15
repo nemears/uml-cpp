@@ -20,6 +20,7 @@ namespace UML{
     };
 
     class Property: public StructuralFeature, public ConnectableElement {
+        friend class UmlManager;
         protected:
             AggregationKind m_aggregation;
             bool m_composite;
@@ -40,6 +41,7 @@ namespace UML{
             void reindexID(ID oldID, ID newID) override;
             // void reindexName(std::string oldName, std::string newName) override;
             void setComposite(bool composite);
+            void setManager(UmlManager* manager) override;
         public: 
             Property();
             Property(const Property& prop);

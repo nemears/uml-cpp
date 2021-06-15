@@ -234,6 +234,7 @@ void Classifier::ClassifierRemoveMemberFunctor::operator()(Element& el) const {
 
 void Classifier::setManager(UmlManager* manager) {
     Namespace::setManager(manager);
+    RedefinableElement::setManager(manager); // not polymorphic
     m_attributes.m_manager = manager;
     m_inheritedMembers.m_manager = manager;
     m_generalizations.m_manager = manager;

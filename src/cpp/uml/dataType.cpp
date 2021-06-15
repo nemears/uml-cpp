@@ -3,6 +3,12 @@
 
 using namespace UML;
 
+void DataType::setManager(UmlManager* manager) {
+    Classifier::setManager(manager);
+    m_ownedAttribute.m_manager = manager;
+    m_ownedOperation.m_manager = manager;
+}
+
 void DataType::AddOwnedAttributeFunctor::operator()(Element& el) const {
     if (!dynamic_cast<DataType*>(m_el)->getAttributes().count(el.getID())) {
         dynamic_cast<DataType*>(m_el)->getAttributes().add(dynamic_cast<Property&>(el));

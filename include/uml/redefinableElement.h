@@ -8,9 +8,11 @@ namespace UML {
     class Classifier;
 
     class RedefinableElement : virtual public NamedElement {
+        friend class UmlManager;
         protected:
             Sequence<RedefinableElement> m_redefinedElement;
             Sequence<Classifier> m_redefinitionContext;
+            void setManager(UmlManager* manager) override; // not polymorphic
         public:
             RedefinableElement();
             virtual ~RedefinableElement();

@@ -53,6 +53,7 @@ namespace UML {
     class Generalization;
     class AddRelationshipFunctor;
     class RemoveRelationshipFunctor;
+    class RedefinableElement;
 
     class ReadOnlySequenceException : public std::exception {
         friend class Element;
@@ -111,6 +112,7 @@ namespace UML {
         friend class Generalization;
         friend class AddRelationshipFunctor;
         friend class RemoveRelationshipFunctor;
+        friend class RedefinableElement;
         private:
             // Manager
             UmlManager* m_manager = 0;

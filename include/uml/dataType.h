@@ -5,9 +5,11 @@
 
 namespace UML {
     class DataType : public Classifier {
+        friend class UmlManager;
         protected:
             Sequence<Property> m_ownedAttribute;
             Sequence<Operation> m_ownedOperation;
+            void setManager(UmlManager* manager) override;
             class AddOwnedAttributeFunctor : public AbstractSequenceFunctor {
                 public:
                     AddOwnedAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};

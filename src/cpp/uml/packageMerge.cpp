@@ -4,35 +4,55 @@
 using namespace UML;
 
 PackageMerge::PackageMerge() {
-    m_receivingPackage = 0;
+    m_receivingPackagePtr = 0;
     m_mergedPackage = 0;
 }
 
 PackageMerge::PackageMerge(const PackageMerge& merge) {
-    m_receivingPackage = merge.m_receivingPackage;
+    m_receivingPackageID = merge.m_receivingPackageID;
+    m_receivingPackagePtr = merge.m_receivingPackagePtr;
     m_mergedPackage = merge.m_mergedPackage;
 }
 
 Package* PackageMerge::getReceivingPackage() {
-    return m_receivingPackage;
+    if (!m_receivingPackageID.isNull()) {
+        if (!m_receivingPackagePtr) {
+            m_receivingPackagePtr = &m_manager->get<Package>(m_receivingPackageID);
+        }
+        return m_receivingPackagePtr;
+    }
+    return 0;
 }
 
 void PackageMerge::setReceivingPackage(Package* receiving) {
-    if (m_receivingPackage) {
-        if (m_receivingPackage->getPackageMerge().count(m_id)) {
-            m_receivingPackage->getPackageMerge().remove(*this);
+    if (!isSameOrNull(m_receivingPackageID, receiving)) {
+        if (!m_receivingPackagePtr) {
+            m_receivingPackagePtr = &m_manager->get<Package>(m_receivingPackageID);
         }
-        if (m_sources.count(m_receivingPackage->getID())) {
-            m_sources.remove(*m_receivingPackage);
+        if (m_receivingPackagePtr->getPackageMerge().count(m_id)) {
+            m_receivingPackagePtr->getPackageMerge().remove(*this);
         }
+        if (m_sources.count(m_receivingPackagePtr->getID())) {
+            m_sources.remove(*m_receivingPackagePtr);
+        }
+        m_receivingPackagePtr = 0;
+        m_receivingPackageID = ID::nullID();
     }
-    m_receivingPackage = receiving;
-    if (m_receivingPackage) {
-        if (!m_receivingPackage->getPackageMerge().count(m_id)) {
-            m_receivingPackage->getPackageMerge().add(*this);
+
+    if (receiving) {
+        m_receivingPackageID = receiving->getID();
+    }
+
+    if (!m_manager) {
+        m_receivingPackagePtr = receiving;
+    }
+
+    if (receiving) {
+        if (!receiving->getPackageMerge().count(m_id)) {
+            receiving->getPackageMerge().add(*this);
         }
-        if (!m_sources.count(m_receivingPackage->getID())) {
-            m_sources.add(*m_receivingPackage);
+        if (!m_sources.count(receiving->getID())) {
+            m_sources.add(*receiving);
         }
     }
 }

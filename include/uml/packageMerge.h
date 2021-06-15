@@ -9,7 +9,8 @@ namespace UML {
 
     class PackageMerge : public DirectedRelationship {
         protected:
-            Package* m_receivingPackage;
+            ID m_receivingPackageID;
+            Package* m_receivingPackagePtr;
             Package* m_mergedPackage;
         public:
             PackageMerge();

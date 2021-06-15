@@ -11,7 +11,8 @@ namespace UML {
         protected:
             ID m_receivingPackageID;
             Package* m_receivingPackagePtr;
-            Package* m_mergedPackage;
+            ID m_mergedPackageID;
+            Package* m_mergedPackagePtr;
         public:
             PackageMerge();
             PackageMerge(const PackageMerge& merge);

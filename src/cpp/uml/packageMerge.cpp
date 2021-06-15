@@ -5,13 +5,14 @@ using namespace UML;
 
 PackageMerge::PackageMerge() {
     m_receivingPackagePtr = 0;
-    m_mergedPackage = 0;
+    m_mergedPackagePtr = 0;
 }
 
 PackageMerge::PackageMerge(const PackageMerge& merge) {
     m_receivingPackageID = merge.m_receivingPackageID;
     m_receivingPackagePtr = merge.m_receivingPackagePtr;
-    m_mergedPackage = merge.m_mergedPackage;
+    m_mergedPackageID = merge.m_mergedPackageID;
+    m_mergedPackagePtr = merge.m_mergedPackagePtr;
 }
 
 Package* PackageMerge::getReceivingPackage() {
@@ -58,21 +59,53 @@ void PackageMerge::setReceivingPackage(Package* receiving) {
 }
 
 Package* PackageMerge::getMergedPackage() {
-    return m_mergedPackage;
+    if (!m_mergedPackageID.isNull()) {
+        if (!m_mergedPackagePtr) {
+            m_mergedPackagePtr = &m_manager->get<Package>(m_mergedPackageID);
+        }
+        return m_mergedPackagePtr;
+    }
+    return 0;
 }
 
 void PackageMerge::setMergedPackage(Package* merge) {
-    if (m_mergedPackage) {
-        if (m_targets.count(m_mergedPackage->getID())) {
-            m_targets.remove(*m_mergedPackage);
+    if (!m_mergedPackageID.isNull()) {
+        if (!m_mergedPackagePtr) {
+            m_mergedPackagePtr = &m_manager->get<Package>(m_mergedPackageID);
+        }
+        if (m_targets.count(m_mergedPackageID)) {
+            m_targets.remove(*m_mergedPackagePtr);
+        }
+        m_mergedPackagePtr = 0;
+        m_mergedPackageID = ID::nullID();
+    }
+
+    if (merge) {
+        m_mergedPackageID = merge->getID();
+    }
+
+    if (!m_manager) {
+        m_mergedPackagePtr = merge;
+    }
+
+    if (merge) {
+        if (!m_targets.count(m_mergedPackageID)) {
+            m_targets.add(*merge);
         }
     }
-    m_mergedPackage = merge;
-    if (m_mergedPackage) {
-        if (!m_targets.count(m_mergedPackage->getID())) {
-            m_targets.add(*m_mergedPackage);
-        }
-    }
+
+
+    // if (m_mergedPackage) {
+    //     if (m_targets.count(m_mergedPackage->getID())) {
+    //         m_targets.remove(*m_mergedPackage);
+    //     }
+    // }
+    // m_mergedPackage = merge;
+    // if (m_mergedPackage) {
+    //     if (!m_targets.count(m_mergedPackage->getID())) {
+    //         m_targets.add(*m_mergedPackage);
+    //     }
+    // }
 }
 
 ElementType PackageMerge::getElementType() const {

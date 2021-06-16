@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include <unordered_set>
+#include <filesystem>
 #include "id.h"
 #include "element.h"
 
@@ -16,6 +17,7 @@ namespace UML {
     };
 
     template <class T = Element> class Sequence;
+    class Model;
 
     /**
      * UmlManager is the object that handles all of the instantiation and deletion of UML objects
@@ -28,6 +30,8 @@ namespace UML {
             std::unordered_map<ID, Element*> m_loaded;
             std::unordered_set<ID> m_elements;
             std::unordered_map<ID, DiscData> m_disc;
+            std::filesystem::path m_path;
+            Model* m_model;
         public:
             ~UmlManager();
             template <class T = Element> T& get(ID id) {
@@ -55,6 +59,13 @@ namespace UML {
                 ret.m_manager = this;
                 return ret;
             };
+
+            void save();
+            void save(std::string path, Model& model);
+            void open();
+            void open(std::string path);
+
+            Model* getModel();
     };
 }
 

@@ -57,7 +57,7 @@ void UmlManager::open() {
         // todo thow error
         return;
     }
-    m_model = Parsers::parseModel(m_path);
+    m_model = Parsers::parseModel(this);
 }
 
 void UmlManager::open(string path) {

@@ -7,6 +7,9 @@
 #include <filesystem>
 
 namespace UML{
+
+    class UmlManager;
+
     namespace Parsers {
 
         class AbstractPostProcessFunctor {
@@ -37,6 +40,8 @@ namespace UML{
                 ParserMetaData();
                 Sequence<> elements;
                 std::unordered_map<ID, std::vector<AbstractPostProcessFunctor*>*> postProcessFlag;
+                UmlManager* m_manager;
+                void setManager(UmlManager* manager);
         };
 
         void applyFunctor(ParserMetaData& data, ID relEl, AbstractPostProcessFunctor* functor);

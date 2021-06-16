@@ -61,6 +61,8 @@ namespace UML {
          **/
         Model* parseModel(std::string path);
 
+        Model* parseModel(UmlManager* manager);
+
         /**
          * This function deletes the element passed in and all of its owned element
          **/

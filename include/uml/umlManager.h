@@ -8,6 +8,9 @@
 #include "element.h"
 
 namespace UML {
+    namespace Parsers {
+        class ParserMetaData;
+    }
 
     struct DiscData {
         std::string m_path;
@@ -25,6 +28,7 @@ namespace UML {
      * models without taking up too much memory
      **/
     class UmlManager {
+        friend class Parsers::ParserMetaData;
         private:
             //Parsers::ParserMetaData m_parserData;
             std::unordered_map<ID, Element*> m_loaded;

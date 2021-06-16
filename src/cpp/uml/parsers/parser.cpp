@@ -1,5 +1,6 @@
 #include "uml/parsers/parser.h"
 #include "uml/model.h"
+#include "uml/umlManager.h"
 
 using namespace std;
 
@@ -21,6 +22,7 @@ string emit(Element& el) {
     return emitter.c_str();
 }
 
+// TODO delete
 Model* parseModel(string path) {
     ParserMetaData data;
     data.m_path = path;
@@ -31,6 +33,21 @@ Model* parseModel(string path) {
         return m;
     } else {
         throw UmlParserException("base node in " + path + " is not a model!");
+        return 0;
+    }
+}
+
+Model* parseModel(UmlManager* manager) {
+    ParserMetaData data;
+    data.setManager(manager);
+    YAML::Node node = YAML::LoadFile(data.m_path);
+    if (node["model"]) {
+        Model& m = manager->create<Model>();
+        parsePackage(node["model"], m, data);
+        // todo set manager model
+        return &m;
+    } else {
+        throw UmlParserException("base node in " + data.m_path.string() + " is not a model!");
         return 0;
     }
 }

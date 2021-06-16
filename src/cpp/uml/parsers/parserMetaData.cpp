@@ -1,5 +1,6 @@
 #include "uml/parsers/parserMetaData.h"
 #include <algorithm>
+#include "uml/umlManager.h"
 
 using namespace std;
 
@@ -32,6 +33,11 @@ void applyFunctor(ParserMetaData& data, ID relEl, AbstractPostProcessFunctor* fu
         }
         data.postProcessFlag[relEl]->push_back(functor);
     }
+}
+
+void ParserMetaData::setManager(UmlManager* manager) {
+    m_manager = manager;
+    m_path = manager->m_path;
 }
 
 }

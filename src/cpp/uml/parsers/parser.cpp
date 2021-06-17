@@ -213,6 +213,10 @@ void emit(YAML::Emitter& emitter, Element& el) {
             emitLiteralString(emitter, dynamic_cast<LiteralString&>(el));
             break;
         }
+        case ElementType::MODEL : {
+            emitModel(emitter, dynamic_cast<Model&>(el));
+            break;
+        }
         case ElementType::OPAQUE_BEHAVIOR : {
             emitOpaqueBehavior(emitter, dynamic_cast<OpaqueBehavior&>(el));
             break;
@@ -233,6 +237,18 @@ void emit(YAML::Emitter& emitter, Element& el) {
 }
 
 namespace{
+
+void emitModel(YAML::Emitter& emitter, Model& model) {
+    if (model.getElementType() == ElementType::MODEL) {
+        emitter << YAML::BeginMap << YAML::Key << "model" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitPackage(emitter, model);
+
+    if (model.getElementType() == ElementType::MODEL) {
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
+}
 
 void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
     if (node["id"]) {

@@ -28,4 +28,18 @@ TEST_F(UmlManagerTest, openAndSaveTest) {
     ASSERT_EQ(m.getModel()->getID(), ID::fromString("GAfdua&ubXfsR1EgdB3HeVglkaor"));
     ASSERT_EQ(m.getModel()->getName(), "test");
     ASSERT_EQ(m.getModel(), &m.get<Model>(m.getModel()->getID()));
+
+    Package& p = m.create<Package>();
+    m.getModel()->getPackagedElements().add(p);
+    m.save();
+    m.open();
+
+    ASSERT_EQ(m.getModel()->getID(), ID::fromString("GAfdua&ubXfsR1EgdB3HeVglkaor"));
+    ASSERT_EQ(m.getModel()->getName(), "test");
+    ASSERT_EQ(m.getModel(), &m.get<Model>(m.getModel()->getID()));
+    ASSERT_TRUE(m.getModel()->getPackagedElements().size() == 1);
+    ASSERT_EQ(m.getModel()->getPackagedElements().front()->getID(), p.getID());
+
+    m.getModel()->getPackagedElements().remove(p);
+    m.save();
 }

@@ -166,6 +166,26 @@ namespace UML {
                 }
             };
         public:
+            // Destructor
+
+            ~Sequence<T>() {
+                for (auto const& fun : addChecks) {
+                    delete fun;
+                }
+
+                for (auto const& fun : removeChecks) {
+                    delete fun;
+                }
+
+                for (auto const& fun : addProcedures) {
+                    delete fun;
+                }
+
+                for (auto const& fun : removeProcedures) {
+                    delete fun;
+                }
+            }
+
             // Mutators
 
             void add(T& el) {

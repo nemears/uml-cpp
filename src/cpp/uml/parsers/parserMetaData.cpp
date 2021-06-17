@@ -24,6 +24,14 @@ ParserMetaData::ParserMetaData() {
     elements.addProcedures.push_back(new ElementsFunctor(0, this));
 }
 
+ParserMetaData::ParserMetaData(UmlManager* manager) {
+    m_manager = manager;
+    if (!manager->m_path.empty()) {
+        m_path = m_manager->m_path;
+    }
+    elements.addProcedures.push_back(new ElementsFunctor(0, this));
+}
+
 void applyFunctor(ParserMetaData& data, ID relEl, AbstractPostProcessFunctor* functor) {
     if (data.elements.count(relEl)) {
         (*functor)(*data.elements.get(relEl));

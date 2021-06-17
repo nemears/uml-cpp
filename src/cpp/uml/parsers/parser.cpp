@@ -52,6 +52,19 @@ Model* parseModel(UmlManager* manager) {
     }
 }
 
+Model* parseModel(ParserMetaData& data) {
+    YAML::Node node = YAML::LoadFile(data.m_path);
+    if (node["model"]) {
+        Model& m = data.m_manager->create<Model>();
+        parsePackage(node["model"], m, data);
+        // todo set manager model
+        return &m;
+    } else {
+        throw UmlParserException("base node in " + data.m_path.string() + " is not a model!");
+        return 0;
+    }
+}
+
 void deleteParsedElement(Element* el) {
     for (auto& ownedElement : el->getOwnedElements()) {
         // if (ownedElement->getElementType() == ElementType::PACKAGE_MERGE) {
@@ -71,105 +84,105 @@ Element* parse(ParserMetaData& data) {
 
 Element* parseNode(YAML::Node node, ParserMetaData& data) {
     if (node["class"]) {
-        Class* clazz = new Class;
-        parseClass(node["class"], *clazz, data);
-        return clazz;
+        Class& clazz = data.m_manager->create<Class>();
+        parseClass(node["class"], clazz, data);
+        return &clazz;
     }
 
     if (node["dataType"]) {
-        DataType* dataType = new DataType;
-        parseDataType(node["dataType"], *dataType, data);
-        return dataType;
+        DataType& dataType = data.m_manager->create<DataType>();
+        parseDataType(node["dataType"], dataType, data);
+        return &dataType;
     }
 
     if (node["enumeration"]) {
-        Enumeration* enumeration = new Enumeration;
-        parseEnumeration(node["enumeration"], *enumeration, data);
-        return enumeration;
+        Enumeration& enumeration = data.m_manager->create<Enumeration>();
+        parseEnumeration(node["enumeration"], enumeration, data);
+        return &enumeration;
     }
 
     if (node["expression"]) {
-        Expression* exp = new Expression;
-        parseExpression(node["expression"], *exp, data); 
-        return exp;
+        Expression& exp = data.m_manager->create<Expression>();
+        parseExpression(node["expression"], exp, data); 
+        return &exp;
     }
 
     if (node["instanceSpecification"]) {
-        InstanceSpecification* inst = new InstanceSpecification;
-        parseInstanceSpecification(node["instanceSpecification"], *inst, data);
-        return inst;
+        InstanceSpecification& inst = data.m_manager->create<InstanceSpecification>();
+        parseInstanceSpecification(node["instanceSpecification"], inst, data);
+        return &inst;
     }
 
     if (node["instanceValue"]) {
-        InstanceValue* instVal = new InstanceValue;
-        parseInstanceValue(node["instanceValue"], *instVal, data);
-        return instVal;
+        InstanceValue& instVal = data.m_manager->create<InstanceValue>();
+        parseInstanceValue(node["instanceValue"], instVal, data);
+        return &instVal;
     }
 
     if (node["literalBool"]) {
-        LiteralBool* lb = new LiteralBool;
-        parseLiteralBool(node["literalBool"], *lb, data);
-        return lb;
+        LiteralBool& lb = data.m_manager->create<LiteralBool>();
+        parseLiteralBool(node["literalBool"], lb, data);
+        return &lb;
     }
 
     if (node["literalInt"]) {
-        LiteralInt* li = new LiteralInt;
-        parseLiteralInt(node["literalInt"], *li, data);
-        return li;
+        LiteralInt& li = data.m_manager->create<LiteralInt>();
+        parseLiteralInt(node["literalInt"], li, data);
+        return &li;
     }
 
     if (node["literalReal"]) {
-        LiteralReal* lr = new LiteralReal;
-        parseLiteralReal(node["literalReal"], *lr, data);
-        return lr;
+        LiteralReal& lr = data.m_manager->create<LiteralReal>();
+        parseLiteralReal(node["literalReal"], lr, data);
+        return &lr;
     }
 
     if (node["literalString"]) {
-        LiteralString* ls = new LiteralString;
-        parseLiteralString(node["literalString"], *ls, data);
-        return ls;
+        LiteralString& ls = data.m_manager->create<LiteralString>();
+        parseLiteralString(node["literalString"], ls, data);
+        return &ls;
     }
 
     if (node["model"]) {
-        Model* model = new Model;
-        parsePackage(node["model"], *model, data);
-        return model;
+        Model& model = data.m_manager->create<Model>();
+        parsePackage(node["model"], model, data);
+        return &model;
     }
 
     if (node["opaqueBehavior"]) {
-        OpaqueBehavior* bhv = new OpaqueBehavior;
-        parseOpaqueBehavior(node["opaqueBehavior"], *bhv, data);
-        return bhv;
+        OpaqueBehavior& bhv = data.m_manager->create<OpaqueBehavior>();
+        parseOpaqueBehavior(node["opaqueBehavior"], bhv, data);
+        return &bhv;
     }
 
     if (node["operation"]) {
-        Operation* op = new Operation;
-        parseOperation(node["operation"], *op, data);
-        return op;
+        Operation& op = data.m_manager->create<Operation>();
+        parseOperation(node["operation"], op, data);
+        return &op;
     }
 
     if (node["package"]) {
-        Package* pckg = new Package;
-        UML::Parsers::parsePackage(node["package"], *pckg, data);
-        return pckg;
+        Package& pckg = data.m_manager->create<Package>();
+        UML::Parsers::parsePackage(node["package"], pckg, data);
+        return &pckg;
     }
 
     if (node["parameter"]) {
-        Parameter* param = new Parameter;
-        parseParameter(node["parameter"], *param, data);
-        return param;
+        Parameter& param = data.m_manager->create<Parameter>();
+        parseParameter(node["parameter"], param, data);
+        return &param;
     }
 
     if (node["primitiveType"]) {
-        PrimitiveType* type = new PrimitiveType;
-        parsePrimitiveType(node["primitiveType"], *type, data);
-        return type;
+        PrimitiveType& type = data.m_manager->create<PrimitiveType>();
+        parsePrimitiveType(node["primitiveType"], type, data);
+        return &type;
     }
 
     if (node["property"]) {
-        Property* prop = new Property;
-        parseProperty(node["property"], *prop, data);
-        return prop;
+        Property& prop = data.m_manager->create<Property>();
+        parseProperty(node["property"], prop, data);
+        return &prop;
     }
 
     return 0;
@@ -369,9 +382,9 @@ void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
             for (size_t i = 0; i < node["generalizations"].size(); i++) {
                 if (node["generalizations"][i]["generalization"]) {
                     if (node["generalizations"][i]["generalization"].IsMap()) {
-                        Generalization* gen = new Generalization;
-                        parseGeneralization(node["generalizations"][i]["generalization"], *gen, data);
-                        clazz.getGeneralizations().add(*gen);
+                        Generalization& gen = data.m_manager->create<Generalization>();
+                        parseGeneralization(node["generalizations"][i]["generalization"], gen, data);
+                        clazz.getGeneralizations().add(gen);
                     } else {
                         throw UmlParserException("Improper YAML node type for Generalization definition, " + data.m_path.string() + to_string(node["generalizations"][i]["generalization"].Mark().line));
                     }
@@ -443,9 +456,9 @@ void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
             for (size_t i = 0; i < node["ownedAttribute"].size(); i++) {
                 if (node["ownedAttribute"][i]["property"]) {
                     if (node["ownedAttribute"][i]["property"].IsMap()) {
-                        Property* prop = new Property;
-                        parseProperty(node["ownedAttribute"][i]["property"], *prop, data);
-                        dataType.getOwnedAttribute().add(*prop);
+                        Property& prop = data.m_manager->create<Property>();
+                        parseProperty(node["ownedAttribute"][i]["property"], prop, data);
+                        dataType.getOwnedAttribute().add(prop);
                     } else {
                         throw UmlParserException("Improper YAML node type for property, must be map, " + data.m_path.string() + " line " + to_string(node["ownedAttribute"][i]["property"].Mark().line));
                     }
@@ -461,9 +474,9 @@ void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
             for (size_t i = 0; i < node["ownedOperation"].size(); i++) {
                 if (node["ownedOperation"][i]["operation"]) {
                     if (node["ownedOperation"][i]["operation"].IsMap()) {
-                        Operation* op = new Operation;
-                        parseOperation(node["ownedOperation"][i]["operation"], *op, data);
-                        dataType.getOwnedOperation().add(*op);
+                        Operation& op = data.m_manager->create<Operation>();
+                        parseOperation(node["ownedOperation"][i]["operation"], op, data);
+                        dataType.getOwnedOperation().add(op);
                     } else {
                         throw UmlParserException("Improper YAML node type for operation, must be map, " + data.m_path.string() + " line " + to_string(node["ownedOperation"][i]["operation"].Mark().line));
                     }
@@ -529,9 +542,9 @@ void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, Par
             for (size_t i=0; i<node["ownedAttributes"].size(); i++) {
                 if (node["ownedAttributes"][i]["property"]) {
                     if (node["ownedAttributes"][i]["property"].IsMap()) {
-                        Property* prop = new Property;
-                        parseProperty(node["ownedAttributes"][i]["property"], *prop, data);
-                        clazz.getOwnedAttributes().add(*prop);
+                        Property& prop = data.m_manager->create<Property>();
+                        parseProperty(node["ownedAttributes"][i]["property"], prop, data);
+                        clazz.getOwnedAttributes().add(prop);
                     } else {
                         throw UmlParserException("Improper YAML node type for property field, must be map, " + data.m_path.string() + " line " + 
                                                  to_string(node["ownedAttributes"][i]["property"].Mark().line));
@@ -564,9 +577,9 @@ void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
         if (node["operations"].IsSequence()) {
             for (size_t i=0; i<node["operations"].size(); i++) {
                 if (node["operations"][i]["operation"]) {
-                    Operation * op = new Operation;
-                    parseOperation(node["operations"][i]["operation"], *op, data);
-                    clazz.getOperations().add(*op);
+                    Operation& op = data.m_manager->create<Operation>();
+                    parseOperation(node["operations"][i]["operation"], op, data);
+                    clazz.getOperations().add(op);
                 } else {
                     throw UmlParserException("Could not identify operation to parse, " + data.m_path.string() + " line " + to_string(node["operations"][i].Mark().line));
                 }
@@ -605,9 +618,9 @@ void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data) {
             for (size_t i=0; i<node["parameters"].size(); i++) {
                 if (node["parameters"][i].IsMap()) {
                     if (node["parameters"][i]["parameter"]) {
-                        Parameter* param = new Parameter();
-                        parseParameter(node["parameters"][i]["parameter"], *param, data);
-                        bhv.getParameters().add(*param);
+                        Parameter& param = data.m_manager->create<Parameter>();
+                        parseParameter(node["parameters"][i]["parameter"], param, data);
+                        bhv.getParameters().add(param);
                     }
                 } else {
                     // error? or is scalar allowed parameters shared(?)
@@ -649,9 +662,9 @@ void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& d
                         // TODO
                     } else {
                         // make literal string with value
-                        LiteralString* bodyUML = new LiteralString;
-                        bodyUML->setValue(body);
-                        bhv.getBodies().add(*bodyUML);
+                        LiteralString& bodyUML = data.m_manager->create<LiteralString>();
+                        bodyUML.setValue(body);
+                        bhv.getBodies().add(bodyUML);
                     }
                 } else {
                     throw UmlParserException("Improper YAML node type for bodies sequence, must be scalar or map, " + data.m_path.string() + " line " + to_string(node["bodies"][i].Mark().line));
@@ -706,49 +719,49 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
         if (node["defaultValue"].IsMap()) {
             if (node["defaultValue"]["expression"]) {
                 if (node["defaultValue"]["expression"].IsMap()) {
-                    Expression* newExp = new Expression;
-                    parseExpression(node["defaultValue"]["expression"], *newExp, data);
-                    prop.setDefaultValue(newExp);
+                    Expression& newExp = data.m_manager->create<Expression>();
+                    parseExpression(node["defaultValue"]["expression"], newExp, data);
+                    prop.setDefaultValue(&newExp);
                 } else {
                     throw UmlParserException("Invalid YAML node type for expression definition, must be map, " + data.m_path.string() + " line " + to_string(node["defaultValue"]["expression"].Mark().line));
                 }
             } else if (node["defaultValue"]["literalBool"]) {
                 if (node["defaultValue"]["literalBool"].IsMap()) {
-                    LiteralBool* lb = new LiteralBool;
-                    parseLiteralBool(node["defaultValue"]["literalBool"], *lb, data);
-                    prop.setDefaultValue(lb);
+                    LiteralBool& lb = data.m_manager->create<LiteralBool>();
+                    parseLiteralBool(node["defaultValue"]["literalBool"], lb, data);
+                    prop.setDefaultValue(&lb);
                 } else {
                     throw UmlParserException("Improper YAML node type for Properties defaultValue field, " + data.m_path.string() + " line " + to_string(node["defaultValue"]["literalBool"].Mark().line));
                 }
             } else if (node["defaultValue"]["literalInt"]) {
                 if (node["defaultValue"]["literalInt"].IsMap()) {
-                    LiteralInt* li = new LiteralInt;
-                    parseLiteralInt(node["defaultValue"]["literalInt"], *li, data);
-                    prop.setDefaultValue(li);
+                    LiteralInt& li = data.m_manager->create<LiteralInt>();
+                    parseLiteralInt(node["defaultValue"]["literalInt"], li, data);
+                    prop.setDefaultValue(&li);
                 } else {
                     throw UmlParserException("Improper YAML node type for Properties defaultValue field, " + data.m_path.string() + " line " + to_string(node["defaultValue"]["literalInt"].Mark().line));
                 }
             } else if (node["defaultValue"]["literalReal"]) {
                 if (node["defaultValue"]["literalReal"].IsMap()) {
-                    LiteralReal* lr = new LiteralReal;
-                    parseLiteralReal(node["defaultValue"]["literalReal"], *lr, data);
-                    prop.setDefaultValue(lr);
+                    LiteralReal& lr = data.m_manager->create<LiteralReal>();
+                    parseLiteralReal(node["defaultValue"]["literalReal"], lr, data);
+                    prop.setDefaultValue(&lr);
                 } else {
                     throw UmlParserException("Improper YAML node type for Properties defaultValue field, " + data.m_path.string() + " line " + to_string(node["defaultValue"]["literalReal"].Mark().line));
                 }
             } else if (node["defaultValue"]["literalString"]) {
                 if (node["defaultValue"]["literalString"].IsMap()) {
-                    LiteralString* ls = new LiteralString;
-                    parseLiteralString(node["defaultValue"]["literalString"], *ls, data);
-                    prop.setDefaultValue(ls);
+                    LiteralString& ls = data.m_manager->create<LiteralString>();
+                    parseLiteralString(node["defaultValue"]["literalString"], ls, data);
+                    prop.setDefaultValue(&ls);
                 } else {
                     throw UmlParserException("Improper YAML node type for Properties defaultValue field, " + data.m_path.string() + " line " + to_string(node["defaultValue"]["literalString"].Mark().line));
                 }
             } else if (node["defaultValue"]["instanceValue"]) {
                 if (node["defaultValue"]["instanceValue"].IsMap()) {
-                    InstanceValue* iv = new InstanceValue;
-                    parseInstanceValue(node["defaultValue"]["instanceValue"], *iv, data);
-                    prop.setDefaultValue(iv);
+                    InstanceValue& iv = data.m_manager->create<InstanceValue>();
+                    parseInstanceValue(node["defaultValue"]["instanceValue"], iv, data);
+                    prop.setDefaultValue(&iv);
                 } else {
                     throw UmlParserException("Improper YAML node type for Properties defaultValue field, " + data.m_path.string() + " line " + to_string(node["defaultValue"]["instanceValue"].Mark().line));
                 }
@@ -858,9 +871,9 @@ void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
         if (node["methods"].IsSequence()) {
             for (size_t i=0; i<node["methods"].size(); i++) {
                 if (node["methods"][i]["opaqueBehavior"]) {
-                    OpaqueBehavior* bhv = new OpaqueBehavior;
-                    parseOpaqueBehavior(node["methods"][i]["opaqueBehavior"], *bhv, data);
-                    op.getMethods().add(*bhv);
+                    OpaqueBehavior& bhv = data.m_manager->create<OpaqueBehavior>();
+                    parseOpaqueBehavior(node["methods"][i]["opaqueBehavior"], bhv, data);
+                    op.getMethods().add(bhv);
                 } else {
                     throw UmlParserException("Invalid behavior type for operation methods, " + data.m_path.string() + " line " + to_string(node["methods"][i].Mark().line));
                 } 
@@ -878,9 +891,9 @@ void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
             for (size_t i = 0; i < node["ownedParameters"].size(); i++) {
                 if (node["ownedParameters"][i]["parameter"]) {
                     if (node["ownedParameters"][i]["parameter"].IsMap()) {
-                        Parameter* p = new Parameter;
-                        parseParameter(node["ownedParameters"][i]["parameter"], *p, data);
-                        op.getOwnedParameters().add(*p);
+                        Parameter& p = data.m_manager->create<Parameter>();
+                        parseParameter(node["ownedParameters"][i]["parameter"], p, data);
+                        op.getOwnedParameters().add(p);
                     } else {
                         throw UmlParserException("Improper YAML Node type for parameter definition, must be map, " + data.m_path.string() + to_string(node["ownedParameters"][i]["parameter"].Mark().line));
                     }
@@ -929,9 +942,9 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
             for (size_t i = 0; i < node["packageMerge"].size(); i++) {
                 if (node["packageMerge"][i]["packageMerge"]) {
                     if (node["packageMerge"][i]["packageMerge"].IsMap()) {
-                        PackageMerge* merge = new PackageMerge;
-                        parsePackageMerge(node["packageMerge"][i]["packageMerge"], *merge, data);
-                        pckg.getPackageMerge().add(*merge);
+                        PackageMerge& merge = data.m_manager->create<PackageMerge>();
+                        parsePackageMerge(node["packageMerge"][i]["packageMerge"], merge, data);
+                        pckg.getPackageMerge().add(merge);
                     } else {
                         throw UmlParserException("Invalid YAML Node type for packageMerge definition with in Package, " + data.m_path.string() + " line " + to_string(node["packageMerge"][i]["packageMerge"].Mark().line));
                     }
@@ -949,61 +962,61 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
             for (size_t i=0; i<node["packagedElements"].size(); i++) {
                 if (node["packagedElements"][i].IsMap()) {
                     if (node["packagedElements"][i]["activity"]) {
-                        Activity* activity = new Activity;
+                        Activity& activity = data.m_manager->create<Activity>();
                         // TODO parse activity
-                        activity->setOwningPackage(&pckg);
+                        activity.setOwningPackage(&pckg);
                     } else if (node["packagedElements"][i]["class"]) {
-                        Class* clazz = new Class;
-                        parseClass(node["packagedElements"][i]["class"], *clazz, data);
-                        pckg.getPackagedElements().add(*clazz);
+                        Class& clazz = data.m_manager->create<Class>();
+                        parseClass(node["packagedElements"][i]["class"], clazz, data);
+                        pckg.getPackagedElements().add(clazz);
                     } else if (node["packagedElements"][i]["dataType"]) {
-                        DataType* dataType = new DataType;
-                        parseDataType(node["packagedElements"][i]["dataType"], *dataType, data);
-                        pckg.getPackagedElements().add(*dataType);
+                        DataType& dataType = data.m_manager->create<DataType>();
+                        parseDataType(node["packagedElements"][i]["dataType"], dataType, data);
+                        pckg.getPackagedElements().add(dataType);
                     } else if (node["packagedElements"][i]["enumeration"]) {
-                        Enumeration* enumeration = new Enumeration;
-                        parseEnumeration(node["packagedElements"][i]["enumeration"], *enumeration, data);
-                        pckg.getPackagedElements().add(*enumeration);
+                        Enumeration& enumeration = data.m_manager->create<Enumeration>();
+                        parseEnumeration(node["packagedElements"][i]["enumeration"], enumeration, data);
+                        pckg.getPackagedElements().add(enumeration);
                     } else if (node["packagedElements"][i]["expression"]) {
                         if (node["packagedElements"][i]["expression"].IsMap()) {
-                            Expression* newExp = new Expression;
-                            parseExpression(node["packagedElements"][i]["expression"], *newExp, data);
-                            pckg.getPackagedElements().add(*newExp);
+                            Expression& newExp = data.m_manager->create<Expression>();
+                            parseExpression(node["packagedElements"][i]["expression"], newExp, data);
+                            pckg.getPackagedElements().add(newExp);
                         } else {
                             throw UmlParserException("Invalid YAML node type for expression definition, must be map, " + data.m_path.string() + " line " + to_string(node["operands"][i]["expression"].Mark().line));
                         }
                     }else if (node["packagedElements"][i]["instanceSpecification"]) {
-                        InstanceSpecification* inst = new InstanceSpecification;
-                        parseInstanceSpecification(node["packagedElements"][i]["instanceSpecification"], *inst, data);
-                        pckg.getPackagedElements().add(*inst);
+                        InstanceSpecification& inst = data.m_manager->create<InstanceSpecification>();
+                        parseInstanceSpecification(node["packagedElements"][i]["instanceSpecification"], inst, data);
+                        pckg.getPackagedElements().add(inst);
                     } else if (node["packagedElements"][i]["instanceValue"]) {
-                        InstanceValue* instVal = new InstanceValue;
-                        parseInstanceValue(node["packagedElements"][i]["instanceValue"], *instVal, data);
-                        pckg.getPackagedElements().add(*instVal);
+                        InstanceValue& instVal = data.m_manager->create<InstanceValue>();
+                        parseInstanceValue(node["packagedElements"][i]["instanceValue"], instVal, data);
+                        pckg.getPackagedElements().add(instVal);
                     } else if (node["packagedElements"][i]["literalBool"]) {
-                        LiteralBool* lb = new LiteralBool;
-                        parseLiteralBool(node["packagedElements"][i]["literalBool"], *lb, data);
-                        pckg.getPackagedElements().add(*lb);
+                        LiteralBool& lb = data.m_manager->create<LiteralBool>();
+                        parseLiteralBool(node["packagedElements"][i]["literalBool"], lb, data);
+                        pckg.getPackagedElements().add(lb);
                     } else if (node["packagedElements"][i]["literalInt"]) {
-                        LiteralInt* li = new LiteralInt;
-                        parseLiteralInt(node["packagedElements"][i]["literalInt"], *li, data);
-                        pckg.getPackagedElements().add(*li);
+                        LiteralInt& li = data.m_manager->create<LiteralInt>();
+                        parseLiteralInt(node["packagedElements"][i]["literalInt"], li, data);
+                        pckg.getPackagedElements().add(li);
                     } else if (node["packagedElements"][i]["literalReal"]) {
-                        LiteralReal* lr = new LiteralReal;
-                        parseLiteralReal(node["packagedElements"][i]["literalReal"], *lr, data);
-                        pckg.getPackagedElements().add(*lr);
+                        LiteralReal& lr = data.m_manager->create<LiteralReal>();
+                        parseLiteralReal(node["packagedElements"][i]["literalReal"], lr, data);
+                        pckg.getPackagedElements().add(lr);
                     } else if (node["packagedElements"][i]["literalString"]) {
-                        LiteralString* ls = new LiteralString;
-                        parseLiteralString(node["packagedElements"][i]["literalString"], *ls, data);
-                        pckg.getPackagedElements().add(*ls);
+                        LiteralString& ls = data.m_manager->create<LiteralString>();
+                        parseLiteralString(node["packagedElements"][i]["literalString"], ls, data);
+                        pckg.getPackagedElements().add(ls);
                     } else if (node["packagedElements"][i]["package"]) {
-                        Package* package = new Package;
-                        parsePackage(node["packagedElements"][i]["package"], *package, data);
-                        package->setOwningPackage(&pckg);
+                        Package& package = data.m_manager->create<Package>();
+                        parsePackage(node["packagedElements"][i]["package"], package, data);
+                        package.setOwningPackage(&pckg);
                     } else if (node["packagedElements"][i]["primitiveType"]) {
-                        PrimitiveType* type = new PrimitiveType;
-                        parsePrimitiveType(node["packagedElements"][i]["primitiveType"], *type, data);
-                        pckg.getPackagedElements().add(*type);
+                        PrimitiveType& type = data.m_manager->create<PrimitiveType>();
+                        parsePrimitiveType(node["packagedElements"][i]["primitiveType"], type, data);
+                        pckg.getPackagedElements().add(type);
                     } else {
                         throw UmlParserException("Invalid identifier for packagedElements, " + data.m_path.string() + " line " + to_string(node["packagedElements"][i].Mark().line));
                     }
@@ -1045,9 +1058,9 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg) {
 void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data) {
     if (node["lower"]) {
         if (node["lower"].IsScalar()) {
-            LiteralInt* lower = new LiteralInt;
-            lower->setValue(node["lower"].as<int>());
-            el.setLowerValue(lower);
+            LiteralInt& lower = data.m_manager->create<LiteralInt>();
+            lower.setValue(node["lower"].as<int>());
+            el.setLowerValue(&lower);
         } else if (node["lower"].IsMap()) {
             if (node["lower"]["literalInt"]) {
                 // TODO parse literal int
@@ -1061,9 +1074,9 @@ void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMe
 
     if (node["upper"]) {
         if (node["upper"].IsScalar()) {
-            LiteralInt* upper = new LiteralInt;
-            upper->setValue(node["upper"].as<int>());
-            el.setUpperValue(upper);
+            LiteralInt& upper = data.m_manager->create<LiteralInt>();
+            upper.setValue(node["upper"].as<int>());
+            el.setUpperValue(&upper);
         } else if (node["upper"].IsMap()) {
             if (node["upper"]["literalInt"]) {
                 // TODO parse literal int
@@ -1117,9 +1130,9 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
             for (size_t i = 0; i < node["slots"].size(); i++) {
                 if (node["slots"][i]["slot"]) {
                     if (node["slots"][i]["slot"].IsMap()) {
-                        Slot* slot = new Slot;
-                        parseSlot(node["slots"][i]["slot"], *slot, data);
-                        inst.getSlots().add(*slot);
+                        Slot& slot = data.m_manager->create<Slot>();
+                        parseSlot(node["slots"][i]["slot"], slot, data);
+                        inst.getSlots().add(slot);
                     }
                 }
             }
@@ -1182,49 +1195,49 @@ void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
             for (size_t i = 0; i < node["values"].size(); i++) {
                 if (node["values"][i]["expression"]) {
                     if (node["values"][i]["expression"].IsMap()) {
-                        Expression* newExp = new Expression;
-                        parseExpression(node["values"][i]["expression"], *newExp, data);
-                        slot.getValues().add(*newExp);
+                        Expression& newExp = data.m_manager->create<Expression>();
+                        parseExpression(node["values"][i]["expression"], newExp, data);
+                        slot.getValues().add(newExp);
                     } else {
                         throw UmlParserException("Invalid YAML node type for expression definition, must be map, " + data.m_path.string() + " line " + to_string(node["values"][i]["expression"].Mark().line));
                     }
                 } else if (node["values"][i]["literalBool"]) {
                     if (node["values"][i]["literalBool"].IsMap()) {
-                        LiteralBool* lb = new LiteralBool;
-                        parseLiteralBool(node["values"][i]["literalBool"], *lb, data);
-                        slot.getValues().add(*lb);
+                        LiteralBool& lb = data.m_manager->create<LiteralBool>();
+                        parseLiteralBool(node["values"][i]["literalBool"], lb, data);
+                        slot.getValues().add(lb);
                     } else {
                         throw UmlParserException("Improper YAML node type for Expression values field, " + data.m_path.string() + " line " + to_string(node["values"][i]["literalBool"].Mark().line));
                     }
                 } else if (node["values"][i]["literalInt"]) {
                     if (node["values"][i]["literalInt"].IsMap()) {
-                        LiteralInt* li = new LiteralInt;
-                        parseLiteralInt(node["values"][i]["literalInt"], *li, data);
-                        slot.getValues().add(*li);
+                        LiteralInt& li = data.m_manager->create<LiteralInt>();
+                        parseLiteralInt(node["values"][i]["literalInt"], li, data);
+                        slot.getValues().add(li);
                     } else {
                         throw UmlParserException("Improper YAML node type for Expression values field, " + data.m_path.string() + " line " + to_string(node["values"][i]["literalInt"].Mark().line));
                     }
                 } else if (node["values"][i]["literalReal"]) {
                     if (node["values"][i]["literalReal"].IsMap()) {
-                        LiteralReal* lr = new LiteralReal;
-                        parseLiteralReal(node["values"][i]["literalReal"], *lr, data);
-                        slot.getValues().add(*lr);
+                        LiteralReal& lr = data.m_manager->create<LiteralReal>();
+                        parseLiteralReal(node["values"][i]["literalReal"], lr, data);
+                        slot.getValues().add(lr);
                     } else {
                         throw UmlParserException("Improper YAML node type for Expression values field, " + data.m_path.string() + " line " + to_string(node["values"][i]["literalReal"].Mark().line));
                     }
                 } else if (node["values"][i]["literalString"]) {
                     if (node["values"][i]["literalString"].IsMap()) {
-                        LiteralString* ls = new LiteralString;
-                        parseLiteralString(node["values"][i]["literalString"], *ls, data);
-                        slot.getValues().add(*ls);
+                        LiteralString& ls = data.m_manager->create<LiteralString>();
+                        parseLiteralString(node["values"][i]["literalString"], ls, data);
+                        slot.getValues().add(ls);
                     } else {
                         throw UmlParserException("Improper YAML node type for Expression values field, " + data.m_path.string() + " line " + to_string(node["values"][i]["literalString"].Mark().line));
                     }
                 } else if (node["values"][i]["instanceValue"]) {
                     if (node["values"][i]["instanceValue"].IsMap()) {
-                        InstanceValue* instVal = new InstanceValue;
-                        parseInstanceValue(node["values"][i]["instanceValue"], *instVal, data);
-                        slot.getValues().add(*instVal);
+                        InstanceValue& instVal = data.m_manager->create<InstanceValue>();
+                        parseInstanceValue(node["values"][i]["instanceValue"], instVal, data);
+                        slot.getValues().add(instVal);
                     } else {
                         UmlParserException("InstanceValue must be map Node type! " + data.m_path.string() + " line " + to_string(node["values"][i]["instanceValue"].Mark().line));
                     }
@@ -1270,9 +1283,9 @@ void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData&
             for (size_t i = 0; i < node["ownedLiteral"].size(); i++) {
                 if (node["ownedLiteral"][i]["enumerationLiteral"]) {
                     if (node["ownedLiteral"][i]["enumerationLiteral"].IsMap()) {
-                        EnumerationLiteral* literal = new EnumerationLiteral;
-                        parseEnumerationLiteral(node["ownedLiteral"][i]["enumerationLiteral"], *literal, data);
-                        enumeration.getOwnedLiteral().add(*literal);
+                        EnumerationLiteral& literal = data.m_manager->create<EnumerationLiteral>();
+                        parseEnumerationLiteral(node["ownedLiteral"][i]["enumerationLiteral"], literal, data);
+                        enumeration.getOwnedLiteral().add(literal);
                     } else {
                         throw UmlParserException("Invalid YAML node type enumerationLiteral definition, should be map, " + data.m_path.string() + " line " + to_string(node["ownedLiteral"][i]["enumerationLiteral"].Mark().line));
                     }
@@ -1551,49 +1564,49 @@ void parseExpression(YAML::Node node, Expression& exp, ParserMetaData& data) {
             for (size_t i = 0; i < node["operands"].size(); i++) {
                 if (node["operands"][i]["expression"]) {
                     if (node["operands"][i]["expression"].IsMap()) {
-                        Expression* newExp = new Expression;
-                        parseExpression(node["operands"][i]["expression"], *newExp, data);
-                        exp.getOperands().add(*newExp);
+                        Expression& newExp = data.m_manager->create<Expression>();
+                        parseExpression(node["operands"][i]["expression"], newExp, data);
+                        exp.getOperands().add(newExp);
                     } else {
                         throw UmlParserException("Invalid YAML node type for expression definition, must be map, " + data.m_path.string() + " line " + to_string(node["operands"][i]["expression"].Mark().line));
                     }
                 } else if (node["operands"][i]["literalBool"]) {
                     if (node["operands"][i]["literalBool"].IsMap()) {
-                        LiteralBool* lb = new LiteralBool;
-                        parseLiteralBool(node["operands"][i]["literalBool"], *lb, data);
-                        exp.getOperands().add(*lb);
+                        LiteralBool& lb = data.m_manager->create<LiteralBool>();
+                        parseLiteralBool(node["operands"][i]["literalBool"], lb, data);
+                        exp.getOperands().add(lb);
                     } else {
                         throw UmlParserException("Improper YAML node type for Expression operands field, " + data.m_path.string() + " line " + to_string(node["operands"][i]["literalBool"].Mark().line));
                     }
                 } else if (node["operands"][i]["literalInt"]) {
                     if (node["operands"][i]["literalInt"].IsMap()) {
-                        LiteralInt* li = new LiteralInt;
-                        parseLiteralInt(node["operands"][i]["literalInt"], *li, data);
-                        exp.getOperands().add(*li);
+                        LiteralInt& li = data.m_manager->create<LiteralInt>();
+                        parseLiteralInt(node["operands"][i]["literalInt"], li, data);
+                        exp.getOperands().add(li);
                     } else {
                         throw UmlParserException("Improper YAML node type for Expression operands field, " + data.m_path.string() + " line " + to_string(node["operands"][i]["literalInt"].Mark().line));
                     }
                 } else if (node["operands"][i]["literalReal"]) {
                     if (node["operands"][i]["literalReal"].IsMap()) {
-                        LiteralReal* lr = new LiteralReal;
-                        parseLiteralReal(node["operands"][i]["literalReal"], *lr, data);
-                        exp.getOperands().add(*lr);
+                        LiteralReal& lr = data.m_manager->create<LiteralReal>();
+                        parseLiteralReal(node["operands"][i]["literalReal"], lr, data);
+                        exp.getOperands().add(lr);
                     } else {
                         throw UmlParserException("Improper YAML node type for Expression operands field, " + data.m_path.string() + " line " + to_string(node["operands"][i]["literalReal"].Mark().line));
                     }
                 } else if (node["operands"][i]["literalString"]) {
                     if (node["operands"][i]["literalString"].IsMap()) {
-                        LiteralString* ls = new LiteralString;
-                        parseLiteralString(node["operands"][i]["literalString"], *ls, data);
-                        exp.getOperands().add(*ls);
+                        LiteralString& ls = data.m_manager->create<LiteralString>();
+                        parseLiteralString(node["operands"][i]["literalString"], ls, data);
+                        exp.getOperands().add(ls);
                     } else {
                         throw UmlParserException("Improper YAML node type for Expression operands field, " + data.m_path.string() + " line " + to_string(node["operands"][i]["literalString"].Mark().line));
                     }
                 } else if (node["operands"][i]["instanceValue"]) {
                     if (node["operands"][i]["instanceValue"].IsMap()) {
-                        InstanceValue* iv = new InstanceValue;
-                        parseInstanceValue(node["operands"][i]["instanceValue"], *iv, data);
-                        exp.getOperands().add(*iv);
+                        InstanceValue& iv = data.m_manager->create<InstanceValue>();
+                        parseInstanceValue(node["operands"][i]["instanceValue"], iv, data);
+                        exp.getOperands().add(iv);
                     } else {
                         throw UmlParserException("Improper YAML node type for Expression operands field, " + data.m_path.string() + " line " + to_string(node["operands"][i]["instanceValue"].Mark().line));
                     }

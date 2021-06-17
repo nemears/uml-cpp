@@ -63,6 +63,8 @@ namespace UML {
 
         Model* parseModel(UmlManager* manager);
 
+        Model* parseModel(ParserMetaData& data);
+
         /**
          * This function deletes the element passed in and all of its owned element
          **/

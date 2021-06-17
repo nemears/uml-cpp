@@ -146,11 +146,12 @@ TEST_F(ClassifierTest, removeAttributeFunctorTestW_Manager) {
 }
 
 TEST_F(ClassifierTest, copyClassifierTest) {
-  Classifier c;
+  UmlManager m;
+  Classifier& c = m.create<Class>();
   c.setName("test");
-  Package d;
-  Property p;
-  Classifier b;
+  Package& d = m.create<Package>();
+  Property& p = m.create<Property>();
+  Classifier& b = m.create<Class>();
   c.getAttributes().add(p);
   c.getGenerals().add(b);
   d.getPackagedElements().add(c);
@@ -168,11 +169,12 @@ TEST_F(ClassifierTest, copyClassifierTest) {
 }
 
 TEST_F(ClassifierTest, inheritedMembersTest) {
-  Class g1;
-  Class s1;
-  Property p1;
+  UmlManager m;
+  Class& g1 = m.create<Class>();
+  Class& s1 = m.create<Class>();
+  Property& p1 = m.create<Property>();
   g1.getOwnedAttributes().add(p1);
-  Generalization gen1;
+  Generalization& gen1 = m.create<Generalization>();
   gen1.setGeneral(&g1);
   s1.getGeneralizations().add(gen1);
   ASSERT_TRUE(s1.getInheritedMembers().size() == 1);
@@ -183,9 +185,9 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   ASSERT_TRUE(s1.getInheritedMembers().size() == 0);
   ASSERT_TRUE(s1.getMembers().size() == 0);
 
-  Class g2;
-  Class s2;
-  Property p2;
+  Class& g2 = m.create<Class>();
+  Class& s2 = m.create<Class>();
+  Property& p2 = m.create<Property>();
   g2.getOwnedAttributes().add(p2);
   s2.getGenerals().add(g2);
   ASSERT_TRUE(s2.getInheritedMembers().size() == 1);
@@ -196,11 +198,11 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   ASSERT_TRUE(s2.getInheritedMembers().size() == 0);
   ASSERT_TRUE(s2.getMembers().size() == 0);
 
-  Class g3;
-  Class s3;
-  Property p3;
+  Class& g3 = m.create<Class>();
+  Class& s3 = m.create<Class>();
+  Property& p3 = m.create<Property>();
   g3.getOwnedAttributes().add(p3);
-  Generalization gen3;
+  Generalization& gen3 = m.create<Generalization>();
   s3.getGeneralizations().add(gen3);
   gen3.setGeneral(&g3);
   ASSERT_TRUE(s3.getInheritedMembers().size() == 1);
@@ -211,26 +213,26 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   ASSERT_TRUE(s3.getInheritedMembers().size() == 0);
   ASSERT_TRUE(s3.getMembers().size() == 0);
 
-  Class g4;
-  Class s4;
-  Property p4;
+  Class& g4 = m.create<Class>();
+  Class& s4 = m.create<Class>();
+  Property& p4 = m.create<Property>();
   g4.getOwnedAttributes().add(p4);
   p4.setVisibility(VisibilityKind::PRIVATE);
   s4.getGenerals().add(g4);
   ASSERT_TRUE(s4.getInheritedMembers().size() == 0);
 
-  Class g5;
-  Class s5;
-  Property p5;
+  Class& g5 = m.create<Class>();
+  Class& s5 = m.create<Class>();
+  Property& p5 = m.create<Property>();
   g5.getOwnedAttributes().add(p5);
   s5.getGenerals().add(g5);
   p5.setVisibility(VisibilityKind::PRIVATE);
   ASSERT_TRUE(s5.getInheritedMembers().size() == 0);
   ASSERT_TRUE(s5.getMembers().size() == 0);
 
-  Class g6;
-  Class s6;
-  Property p6;
+  Class& g6 = m.create<Class>();
+  Class& s6 = m.create<Class>();
+  Property& p6 = m.create<Property>();
   s6.getGenerals().add(g6);
   g6.getOwnedAttributes().add(p6);
   ASSERT_TRUE(s6.getInheritedMembers().size() == 1);

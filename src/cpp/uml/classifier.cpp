@@ -152,9 +152,12 @@ void Classifier::AddGeneralFunctor::operator()(Element& el) const {
     }
 
     if (!foundGeneralization) {
-        Generalization* newGen = new Generalization;
-        newGen->setGeneral(&dynamic_cast<Classifier&>(el));
-        newGen->setSpecific(dynamic_cast<Classifier*>(m_el));
+        if (!dynamic_cast<Classifier*>(m_el)->m_manager) {
+            throw NoManagerException();
+        }
+        Generalization& newGen = dynamic_cast<Classifier*>(m_el)->m_manager->create<Generalization>();
+        newGen.setGeneral(&dynamic_cast<Classifier&>(el));
+        newGen.setSpecific(dynamic_cast<Classifier*>(m_el));
     }
 }
 

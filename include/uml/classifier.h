@@ -128,5 +128,17 @@ namespace UML {
                 return msg.c_str();
             };
     };
+
+    class NoManagerException : public std::exception {
+        private:
+            std::string m_msg;
+        public:
+            NoManagerException() :
+                m_msg("Cannot add general without Manager, because it creates Generalization that can't be tracked!")
+                {};
+            virtual const char* what() const throw() {
+                return m_msg.c_str();
+            };
+    };
 }
 #endif

@@ -89,7 +89,6 @@ namespace UML {
     class Slot;
     class UmlManager;
     class ID;
-
     /**
      * Element is the base class of all UML classes
      * It has three main attributes

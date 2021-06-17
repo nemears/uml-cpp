@@ -20,6 +20,12 @@ class ParameterTest : public ::testing::Test {
             pGetSetDirection->setDirection(ParameterDirectionKind::IN);
         }
 
+        ~ParameterTest() {
+            delete pSetDirection;
+            delete pGetSetDirection;
+            delete pGetNullDirection;
+        }
+
 
 };
 

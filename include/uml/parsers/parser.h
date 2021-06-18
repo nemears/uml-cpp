@@ -50,7 +50,10 @@ namespace UML {
 
         std::string emit(Element& el);
 
-        Model* parseModel(std::string path);
+        class ManagerFriendFunctor {
+            public:
+                void operator()(UmlManager* manager, Model* model) const;
+        };
 
         Model* parseModel(UmlManager* manager);
 

@@ -10,6 +10,7 @@
 namespace UML {
     namespace Parsers {
         class ParserMetaData;
+        class ManagerFriendFunctor;
     }
 
     struct DiscData {
@@ -29,6 +30,7 @@ namespace UML {
      **/
     class UmlManager {
         friend class Parsers::ParserMetaData;
+        friend class Parsers::ManagerFriendFunctor;
         private:
             //Parsers::ParserMetaData m_parserData;
             std::unordered_map<ID, Element*> m_loaded;

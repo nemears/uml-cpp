@@ -37,12 +37,10 @@ namespace UML{
                 };
             public:
                 std::filesystem::path m_path;
-                ParserMetaData();
                 ParserMetaData(UmlManager* manager);
                 Sequence<> elements;
                 std::unordered_map<ID, std::vector<AbstractPostProcessFunctor*>*> postProcessFlag;
                 UmlManager* m_manager;
-                void setManager(UmlManager* manager);
         };
 
         void applyFunctor(ParserMetaData& data, ID relEl, AbstractPostProcessFunctor* functor);

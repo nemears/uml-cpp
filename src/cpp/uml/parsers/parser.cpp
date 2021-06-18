@@ -7,13 +7,6 @@ using namespace std;
 namespace UML {
 namespace Parsers {
 
-// Element* parse(string path) {
-//     ParserMetaData data;
-//     data.m_path = path;
-
-//     return parse(data);
-// }
-
 string emit(Element& el) {
     YAML::Emitter emitter;
 
@@ -22,29 +15,18 @@ string emit(Element& el) {
     return emitter.c_str();
 }
 
-// TODO delete
-Model* parseModel(string path) {
-    ParserMetaData data;
-    data.m_path = path;
-    YAML::Node node = YAML::LoadFile(data.m_path);
-    if (node["model"]) {
-        Model* m = new Model;
-        parsePackage(node["model"], *m, data);
-        return m;
-    } else {
-        throw UmlParserException("base node in " + path + " is not a model!");
-        return 0;
-    }
+void ManagerFriendFunctor::operator()(UmlManager* manager, Model* model) const {
+    manager->m_model = model;
 }
 
 Model* parseModel(UmlManager* manager) {
-    ParserMetaData data;
-    data.setManager(manager);
+    ParserMetaData data(manager);
     YAML::Node node = YAML::LoadFile(data.m_path);
     if (node["model"]) {
         Model& m = manager->create<Model>();
         parsePackage(node["model"], m, data);
-        // todo set manager model
+        ManagerFriendFunctor setModel;
+        setModel(manager, &m);
         return &m;
     } else {
         throw UmlParserException("base node in " + data.m_path.string() + " is not a model!");

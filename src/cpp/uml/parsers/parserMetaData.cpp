@@ -20,10 +20,6 @@ void ParserMetaData::ElementsFunctor::operator()(Element& el) const {
     data->postProcessFlag.erase(el.getID());
 }
 
-ParserMetaData::ParserMetaData() {
-    elements.addProcedures.push_back(new ElementsFunctor(0, this));
-}
-
 ParserMetaData::ParserMetaData(UmlManager* manager) {
     m_manager = manager;
     if (!manager->m_path.empty()) {
@@ -41,11 +37,6 @@ void applyFunctor(ParserMetaData& data, ID relEl, AbstractPostProcessFunctor* fu
         }
         data.postProcessFlag[relEl]->push_back(functor);
     }
-}
-
-void ParserMetaData::setManager(UmlManager* manager) {
-    m_manager = manager;
-    m_path = manager->m_path;
 }
 
 }

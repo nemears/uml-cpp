@@ -64,6 +64,12 @@ Model* parseModel(ParserMetaData& data) {
     }
 }
 
+UmlManager* parse2(string path) {
+    UmlManager* ret = new UmlManager;
+    ret->parse(path);
+    return ret;
+}
+
 void deleteParsedElement(Element* el) {
     for (auto& ownedElement : el->getOwnedElements()) {
         // if (ownedElement->getElementType() == ElementType::PACKAGE_MERGE) {

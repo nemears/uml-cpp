@@ -65,6 +65,9 @@ namespace UML {
 
         Model* parseModel(ParserMetaData& data);
 
+        // TODO rename
+        UmlManager* parse2(std::string path);
+
         /**
          * This function deletes the element passed in and all of its owned element
          **/

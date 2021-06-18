@@ -32,7 +32,6 @@ TEST_F(PackageParserTest, parsePackageWithActivityTest) {
     ASSERT_TRUE(act->getOwningPackage() == pckg);
     ASSERT_TRUE(act->getNamespace() == pckg);
     ASSERT_TRUE(act->getOwner() == pckg);
-    //Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PackageParserTest, parse3PackagesTest) {
@@ -71,16 +70,16 @@ TEST_F(PackageParserTest, parse3PackagesTest) {
     ASSERT_TRUE(act2->getOwningPackage() == pckg3);
     ASSERT_TRUE(act2->getNamespace() == pckg3);
     ASSERT_TRUE(act2->getOwner() == pckg3);
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PackageParserTest, NamedElementFeaturesTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "packageParserTests/packageWithName.yml"));
+    UmlManager* m;
+    ASSERT_NO_THROW(m = Parsers::parse2(ymlPath + "packageParserTests/packageWithName.yml"));
+    el = & m->get<>(ID::fromString("8q2Rht9aAZlY0EnMGtEKlw5Odr_u"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getName().compare("test") == 0);
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PackageParserTest, ElementFeaturesTest) {

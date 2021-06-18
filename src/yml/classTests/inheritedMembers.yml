@@ -2,7 +2,7 @@
   package:
     packagedElements:
       - class:
-          id: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+          id: B&VGFkRlQAPppBnQy5BQPtWhSrYV
           name: general
           ownedAttributes:
             - property:
@@ -11,9 +11,9 @@
           name: specific
           generalizations:
             - generalization:
-                general: 16c345b4-5ae2-41ca-a0e7-a9c386ac941d
+                general: B&VGFkRlQAPppBnQy5BQPtWhSrYV
       - class:
-          id: c0ab87cc-d00b-4afb-9558-538253b442b2
+          id: "&FgUHSqnpwRczACXqRbQ3NbTywkm"
           name: private
           ownedAttributes:
             - property:
@@ -21,5 +21,5 @@
       - class:
           generalizations:
             - generalization:
-                general: c0ab87cc-d00b-4afb-9558-538253b442b2
+                general: "&FgUHSqnpwRczACXqRbQ3NbTywkm"
 ...

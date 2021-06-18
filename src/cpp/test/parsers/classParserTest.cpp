@@ -22,7 +22,7 @@ TEST_F(ClassParserTest, parseID_andName) {
     ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/class_w_id_and_name.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
-    ASSERT_TRUE(clazz->getID() == ID::fromString("54e8f139-9581-48a4-8021-32ff00606c93"));
+    ASSERT_TRUE(clazz->getID() == ID::fromString("g8WBwHt6sgOqvS9ZlgKv9XTmHZ&C"));
     ASSERT_TRUE(clazz->getName().compare("test") == 0);
 }
 
@@ -128,18 +128,18 @@ TEST_F(ClassParserTest, inheritedMembersTest) {
 TEST_F(ClassParserTest, emitClassWAttribute) {
     Class c;
     Property p;
-    c.setID("b278ca8a-9d1d-45d1-970f-403bc60998b3");
+    c.setID("hWVMp5upOkVsWnkrfl0I6O5bQsbO");
     c.setName("Class");
-    p.setID("9c744c8c-ed4e-4c71-9c97-5d3e6115bc24");
+    p.setID("61255etITfg0LgPLZaU1PEByTjo3");
     p.setName("prop");
     p.setVisibility(VisibilityKind::PRIVATE);
     c.getOwnedAttributes().add(p);
     string expectedEmit = R""""(class:
-  id: b278ca8a-9d1d-45d1-970f-403bc60998b3
+  id: hWVMp5upOkVsWnkrfl0I6O5bQsbO
   name: Class
   ownedAttributes:
     - property:
-        id: 9c744c8c-ed4e-4c71-9c97-5d3e6115bc24
+        id: 61255etITfg0LgPLZaU1PEByTjo3
         name: prop
         visibility: PRIVATE)"""";
     string generatedEmit;
@@ -152,27 +152,27 @@ TEST_F(ClassParserTest, emitClassWAttributeNOperation) {
     Class c;
     Property p;
     Operation o;
-    c.setID("b278ca8a-9d1d-45d1-970f-403bc60998b3");
+    c.setID("b0XPjtodVDLoVu2YCMwBWYqglsoX");
     c.setName("Class");
-    p.setID("9c744c8c-ed4e-4c71-9c97-5d3e6115bc24");
+    p.setID("kfuX2BvkrRFhMX4UAfchHJgL8sER");
     p.setName("prop");
     p.setVisibility(VisibilityKind::PRIVATE);
-    o.setID("d2a0bcbd-a1aa-4953-9d95-b10a9a322fe3");
+    o.setID("ESKTcd5FmF2q4O&WI_Oiu5FrXHeN");
     o.setName("op");
     o.setVisibility(VisibilityKind::PROTECTED);
     c.getOwnedAttributes().add(p);
     c.getOperations().add(o);
     string expectedEmit = R""""(class:
-  id: b278ca8a-9d1d-45d1-970f-403bc60998b3
+  id: b0XPjtodVDLoVu2YCMwBWYqglsoX
   name: Class
   ownedAttributes:
     - property:
-        id: 9c744c8c-ed4e-4c71-9c97-5d3e6115bc24
+        id: kfuX2BvkrRFhMX4UAfchHJgL8sER
         name: prop
         visibility: PRIVATE
   operations:
     - operation:
-        id: d2a0bcbd-a1aa-4953-9d95-b10a9a322fe3
+        id: ESKTcd5FmF2q4O&WI_Oiu5FrXHeN
         name: op
         visibility: PROTECTED)"""";
     string generatedEmit;
@@ -187,40 +187,40 @@ TEST_F(ClassParserTest, emitFilledInOperation) {
     OpaqueBehavior b;
     Parameter p;
     Parameter p2;
-    c.setID("b278ca8a-9d1d-45d1-970f-403bc60998b3");
+    c.setID("6cCDjqUmkrXZ46z7CcNaTDso4SfQ");
     c.setName("Class");
-    o.setID("d2a0bcbd-a1aa-4953-9d95-b10a9a322fe3");
+    o.setID("Y3WV0c_Wa_zfOTb6zo9BAiIqRhn7");
     o.setName("op");
     o.setVisibility(VisibilityKind::PROTECTED);
-    b.setID("9c744c8c-ed4e-4c71-9c97-5d3e6115bc24");
+    b.setID("&_DLItAl_5ASwPNvNVqXaIwEiLOx");
     b.setName("opaque");
-    p.setID("893245c3-a589-4816-ab7f-a52ab2b98b32");
+    p.setID("s2q_fjRnyV_Gst&gAQ4JTr3crFNU");
     p.setName("pee");
-    p2.setID("8823326b-4882-460c-a4b2-3a1052ef6eb3");
+    p2.setID("C7lT8BaQxmMi7cnZLIjjWCVD3k_9");
     p2.setName("opaquePee");
     o.getOwnedParameters().add(p);
     b.getParameters().add(p2);
     o.getMethods().add(b);
     c.getOperations().add(o);
     string expectedEmit = R""""(class:
-  id: b278ca8a-9d1d-45d1-970f-403bc60998b3
+  id: 6cCDjqUmkrXZ46z7CcNaTDso4SfQ
   name: Class
   operations:
     - operation:
-        id: d2a0bcbd-a1aa-4953-9d95-b10a9a322fe3
+        id: Y3WV0c_Wa_zfOTb6zo9BAiIqRhn7
         name: op
         visibility: PROTECTED
         methods:
           - opaqueBehavior:
-              id: 9c744c8c-ed4e-4c71-9c97-5d3e6115bc24
+              id: "&_DLItAl_5ASwPNvNVqXaIwEiLOx"
               name: opaque
               parameters:
                 - parameter:
-                    id: 8823326b-4882-460c-a4b2-3a1052ef6eb3
+                    id: C7lT8BaQxmMi7cnZLIjjWCVD3k_9
                     name: opaquePee
         ownedParameters:
           - parameter:
-              id: 893245c3-a589-4816-ab7f-a52ab2b98b32
+              id: s2q_fjRnyV_Gst&gAQ4JTr3crFNU
               name: pee)"""";
     string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(c));

@@ -263,7 +263,7 @@ void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
             if (isValidID(id)) {
                 el.setID(ID::fromString(id));
             } else {
-                throw UmlParserException("Value for id is not a valid UUID4, " + data.m_path.string() + " line " + to_string(node["id"].Mark().line));
+                throw UmlParserException("Value for id is not a valid ID, must be base64 url safe encoded 28 character string, " + data.m_path.string() + " line " + to_string(node["id"].Mark().line));
             }
         } else {
             throw UmlParserException("Improper YAML node type for id field, must be scalar, " + data.m_path.string() + " line " + to_string(node["id"].Mark().line));

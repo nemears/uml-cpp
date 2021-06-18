@@ -84,32 +84,36 @@ TEST_F(PackageParserTest, NamedElementFeaturesTest) {
 
 TEST_F(PackageParserTest, ElementFeaturesTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "packageParserTests/packagewID.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "packageParserTests/packagewID.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
-    ASSERT_TRUE(el->getID() == ID::fromString("54e8f139-9581-48a4-8021-32ff00606c93"));
-    Parsers::deleteParsedElement(el);
+    ASSERT_TRUE(el->getID() == ID::fromString("Hmq5HbrypUzqPYovV8oo3wnFE6Jl"));
 }
 
 TEST_F(PackageParserTest, ElementParserExceptionTest) {
     Element* el;
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "packageParserTests/improperID.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "packageParserTests/otherImproperID.yml"), Parsers::UmlParserException);
+    UmlManager m;
+    ASSERT_THROW(el = m.parse(ymlPath + "packageParserTests/improperID.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "packageParserTests/otherImproperID.yml"), Parsers::UmlParserException);
 }
 
 TEST_F(PackageParserTest, NamedElementParserExceptionTest) {
+    UmlManager m;
     Element* el;
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "packageParserTests/improperName.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "packageParserTests/improperName.yml"), Parsers::UmlParserException);
 }
 
 TEST_F(PackageParserTest, properExceptions) {
     Element* el;
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "packageParserTests/improperPackagedElement.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "packageParserTests/invalidPackagedElements.yml"), Parsers::UmlParserException);
+    UmlManager m;
+    ASSERT_THROW(el = m.parse(ymlPath + "packageParserTests/improperPackagedElement.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "packageParserTests/invalidPackagedElements.yml"), Parsers::UmlParserException);
 }
 
 TEST_F(PackageParserTest, basicPackageMerge) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "packageParserTests/basicPackageMerge.yml"));
+    UmlManager m2;
+    ASSERT_NO_THROW(el = m2.parse(ymlPath + "packageParserTests/basicPackageMerge.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* bPckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(bPckg->getPackagedElements().size() == 2);
@@ -121,12 +125,12 @@ TEST_F(PackageParserTest, basicPackageMerge) {
     PackageMerge* m = pckg2->getPackageMerge().front();
     ASSERT_TRUE(m->getMergedPackage() == pckg1);
     ASSERT_TRUE(m->getReceivingPackage() == pckg2);
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PackageParserTest, externalMergedPackageTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "packageParserTests/mergedPackage.yml"));
+    UmlManager mm;
+    ASSERT_NO_THROW(el = mm.parse(ymlPath + "packageParserTests/mergedPackage.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackageMerge().size() == 2);
@@ -144,16 +148,15 @@ TEST_F(PackageParserTest, externalMergedPackageTest) {
     ASSERT_TRUE(primPack->getPackagedElements().front()->getElementType() == ElementType::PRIMITIVE_TYPE);
     PrimitiveType* b = dynamic_cast<PrimitiveType*>(primPack->getPackagedElements().front());
     ASSERT_TRUE(p->getType() == b);
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PackageParserTest, emitVerySimplePackageTest) {
     Package p;
-    p.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+    p.setID("_SljVdCSVuBAkmgXqFcopy8&D9oN");
     p.setName("package");
     p.setVisibility(VisibilityKind::PACKAGE);
     string expectedEmit = R""""(package:
-  id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+  id: _SljVdCSVuBAkmgXqFcopy8&D9oN
   name: package
   visibility: PACKAGE)"""";
     string generatedEmit = Parsers::emit(p);

@@ -18,17 +18,18 @@ class ClassParserTest : public ::testing::Test {
 
 TEST_F(ClassParserTest, parseID_andName) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "classTests/class_w_id_and_name.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/class_w_id_and_name.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
     ASSERT_TRUE(clazz->getID() == ID::fromString("54e8f139-9581-48a4-8021-32ff00606c93"));
     ASSERT_TRUE(clazz->getName().compare("test") == 0);
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(ClassParserTest, parseBasicProperty) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "classTests/classWithAttributes.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/classWithAttributes.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
     ASSERT_TRUE(clazz->getAttributes().size() == 2);
@@ -44,7 +45,6 @@ TEST_F(ClassParserTest, parseBasicProperty) {
     // ASSERT_TRUE(prop2->getOwner() == clazz);
     ASSERT_TRUE(clazz->getMembers().back() == prop2);
     // ASSERT_TRUE(clazz->getOwnedElements().back() == prop2);
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(ClassParserTest, parseOperation) {

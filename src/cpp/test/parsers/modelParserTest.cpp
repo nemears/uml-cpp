@@ -30,6 +30,4 @@ TEST_F(ModelParserTest, parsedAndCreatedElementTest) {
     Property p;
     c.getOwnedAttributes().add(p);
     parsedPckg->getPackagedElements().add(c);
-
-    Parsers::deleteParsedElement(m);
 }

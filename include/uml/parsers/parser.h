@@ -48,33 +48,20 @@ namespace UML {
                 }
         };
 
-        /**
-         * The idea behind this function is to have one way to parse any uml config file no matter the parent type.
-         * To do this the function will have to read the first node and determine type to assign proper parent parser.
-         **/
-        Element* parse(std::string path);
         std::string emit(Element& el);
 
-        /**
-         * This is experimental, thinking about wrapping all parsing into Models. This function will just parse yaml files
-         * with base nodes of model nothing else. This is to simplify memory management
-         **/
         Model* parseModel(std::string path);
 
         Model* parseModel(UmlManager* manager);
 
         Model* parseModel(ParserMetaData& data);
 
-        // TODO rename
-        UmlManager* parse2(std::string path);
-
-        /**
-         * This function deletes the element passed in and all of its owned element
-         **/
-        void deleteParsedElement(Element* el);
+        UmlManager* parse(std::string path);
 
         Element* parse(ParserMetaData& data);
+
         Element* parseNode(YAML::Node node, ParserMetaData& data);
+        
         void emit(YAML::Emitter& emitter, Element& el);
 
         // anonymous functions

@@ -49,7 +49,8 @@ TEST_F(ClassParserTest, parseBasicProperty) {
 
 TEST_F(ClassParserTest, parseOperation) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "classTests/operation.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/operation.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
     ASSERT_TRUE(clazz->getOperations().size() == 1);
@@ -61,18 +62,19 @@ TEST_F(ClassParserTest, parseOperation) {
     ASSERT_TRUE(bhv->getBodies().size() == 1);
     ASSERT_TRUE(bhv->getBodies().front()->getValue().compare("return true") == 0);
     ASSERT_TRUE(bhv->getParameters().size() == 1);
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(ClassParserTest, properErrors) {
     Element* el;
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "classTests/improperOperationIdentifier.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "classTests/operationsNotSequence.yml"), Parsers::UmlParserException);
+    UmlManager m;
+    ASSERT_THROW(el = m.parse(ymlPath + "classTests/improperOperationIdentifier.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "classTests/operationsNotSequence.yml"), Parsers::UmlParserException);
 }
 
 TEST_F(ClassParserTest, basicGeneralizationTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "classTests/basicGeneralization.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/basicGeneralization.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -88,12 +90,12 @@ TEST_F(ClassParserTest, basicGeneralizationTest) {
     Generalization* g = specific->getGeneralizations().front();
     ASSERT_TRUE(g->getGeneral() == general);
     ASSERT_TRUE(g->getSpecific() == specific);
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(ClassParserTest, inheritedMembersTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "classTests/inheritedMembers.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/inheritedMembers.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 4);
@@ -121,7 +123,6 @@ TEST_F(ClassParserTest, inheritedMembersTest) {
     ASSERT_TRUE(privateGeneral->getOwnedAttributes().size() == 1);
     ASSERT_TRUE(privateGeneral->getOwnedAttributes().front()->getVisibility() == VisibilityKind::PRIVATE);
     ASSERT_TRUE(privateSpecific->getInheritedMembers().size() == 0);
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(ClassParserTest, emitClassWAttribute) {

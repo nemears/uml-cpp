@@ -16,13 +16,15 @@ class OperationParserTest : public ::testing::Test {
 
 TEST_F(OperationParserTest, properExceptions) {
     Element* el;
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "operationTests/invalidBehavior.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "operationTests/invalidMethodList.yml"), Parsers::UmlParserException);
+    UmlManager m;
+    ASSERT_THROW(el = m.parse(ymlPath + "operationTests/invalidBehavior.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "operationTests/invalidMethodList.yml"), Parsers::UmlParserException);
 }
 
 TEST_F(OperationParserTest, basicParamTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "operationTests/basicParameter.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "operationTests/basicParameter.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
@@ -41,5 +43,4 @@ TEST_F(OperationParserTest, basicParamTest) {
     ASSERT_TRUE(p->getName().compare("testInt") == 0);
     ASSERT_TRUE(p->getType() == i);
     ASSERT_TRUE(p->getDirection() == ParameterDirectionKind::IN);
-    Parsers::deleteParsedElement(el);
 }

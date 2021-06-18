@@ -17,7 +17,8 @@ class ExpressionParserTest : public ::testing::Test {
 
 TEST_F(ExpressionParserTest, expressionTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "expressionTests/expression.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "expressionTests/expression.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
@@ -51,5 +52,4 @@ TEST_F(ExpressionParserTest, expressionTest) {
     ASSERT_TRUE(e2->getOperands().front()->getElementType() == ElementType::LITERAL_INT);
     LiteralInt* pi = dynamic_cast<LiteralInt*>(e2->getOperands().front());
     ASSERT_TRUE(pi->getValue() == 1);
-    Parsers::deleteParsedElement(el);
 }

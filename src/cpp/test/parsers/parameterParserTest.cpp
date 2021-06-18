@@ -16,8 +16,9 @@ class ParameterParserTest : public ::testing::Test {
 
 TEST_F(ParameterParserTest, properExceptions) {
     Element* el;
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "parameterTests/invalidDirection.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "parameterTests/invalidDirection2.yml"), Parsers::UmlParserException);
+    UmlManager m;
+    ASSERT_THROW(el = m.parse(ymlPath + "parameterTests/invalidDirection.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "parameterTests/invalidDirection2.yml"), Parsers::UmlParserException);
 }
 
 TEST_F(ParameterParserTest, emitParameterWMultiplicityTest) {

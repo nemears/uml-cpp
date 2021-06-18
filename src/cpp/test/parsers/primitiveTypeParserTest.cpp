@@ -16,7 +16,8 @@ class PrimitiveTypeParserTest : public ::testing::Test {
 
 TEST_F(PrimitiveTypeParserTest, basicPrimitiveTypeTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "primitiveTypeTests/basicPrimitiveType.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "primitiveTypeTests/basicPrimitiveType.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PRIMITIVE_TYPE);
     DataType d = *dynamic_cast<DataType*>(el);
     ASSERT_TRUE(d.getName().compare("int") == 0);
@@ -38,7 +39,6 @@ TEST_F(PrimitiveTypeParserTest, basicPrimitiveTypeTest) {
     ASSERT_TRUE(d.getOwnedElements().size() == 2);
     ASSERT_TRUE(d.getOwnedElements().front() == p);
     ASSERT_TRUE(d.getOwnedElements().back() == o);
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PrimitiveTypeParserTest, emitPrimWGeneralAndAttribute) {

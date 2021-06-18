@@ -18,7 +18,8 @@ class InstanceSpecificationParserTest : public ::testing::Test {
 
 TEST_F(InstanceSpecificationParserTest, forwardClassifierTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "instanceSpecificationTests/forwardClassifier.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/forwardClassifier.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -27,12 +28,12 @@ TEST_F(InstanceSpecificationParserTest, forwardClassifierTest) {
     ASSERT_TRUE(pckg->getPackagedElements().back()->getElementType() == ElementType::INSTANCE_SPECIFICATION);
     InstanceSpecification i = *dynamic_cast<InstanceSpecification*>(pckg->getPackagedElements().back());
     ASSERT_TRUE(i.getClassifier() == c);
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(InstanceSpecificationParserTest, backwardsClassifierTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "instanceSpecificationTests/backwardsClassifier.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/backwardsClassifier.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -41,14 +42,14 @@ TEST_F(InstanceSpecificationParserTest, backwardsClassifierTest) {
     Class* c = dynamic_cast<Class*>(pckg->getPackagedElements().back());
     InstanceSpecification i = *dynamic_cast<InstanceSpecification*>(pckg->getPackagedElements().front());
     ASSERT_TRUE(i.getClassifier() == c);
-    Parsers::deleteParsedElement(el);
 }
 
 // TODO slot tests
 
 TEST_F(InstanceSpecificationParserTest, basicSlotTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "instanceSpecificationTests/basicSlot.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/basicSlot.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -63,12 +64,12 @@ TEST_F(InstanceSpecificationParserTest, basicSlotTest) {
     Property* p = c->getOwnedAttributes().front();
     ASSERT_TRUE(s->getDefiningFeature() == p);
     ASSERT_TRUE(s->getOwningInstance() == pckg->getPackagedElements().back());
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(InstanceSpecificationParserTest, backwardsSlotTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "instanceSpecificationTests/backwardsSlot.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/backwardsSlot.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -83,12 +84,12 @@ TEST_F(InstanceSpecificationParserTest, backwardsSlotTest) {
     Property* p = c->getOwnedAttributes().front();
     ASSERT_TRUE(s->getDefiningFeature() == p);
     ASSERT_TRUE(s->getOwningInstance() == pckg->getPackagedElements().front());
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(InstanceSpecificationParserTest, instanceValueSlot) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "instanceSpecificationTests/instanceSlot.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/instanceSlot.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 4);
@@ -114,7 +115,6 @@ TEST_F(InstanceSpecificationParserTest, instanceValueSlot) {
     ASSERT_TRUE(s->getValues().front()->getElementType() == ElementType::INSTANCE_VALUE);
     InstanceValue* v = dynamic_cast<InstanceValue*>(s->getValues().front());
     ASSERT_TRUE(v->getInstance() == i1);
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(InstanceSpecificationParserTest, simpleInstanceEmitTest) {

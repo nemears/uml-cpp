@@ -20,8 +20,9 @@ int main(int argc, char** argv) {
             cout << "parsing file " << fileName << "\n";
             //ModelParser pp = ModelParser::createNewParser();
             Element* el;
+            UmlManager m;
             try {
-                el = UML::Parsers::parse(fileName);
+                el = m.parse(fileName);
             } catch (exception& e) {
                 cerr << "[FATAL ERROR] " << e.what() << endl;
             }
@@ -33,6 +34,7 @@ int main(int argc, char** argv) {
             // } catch (exception& e) {
             //     cerr << "[FATAL ERROR] " << e.what() << endl;
             // }
+            cout << UML::Parsers::emit(*el) << endl; 
 
             return 0;
         }

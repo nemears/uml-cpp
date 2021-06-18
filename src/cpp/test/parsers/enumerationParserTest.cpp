@@ -16,7 +16,8 @@ class EnumerationParserTest : public ::testing::Test {
 
 TEST_F(EnumerationParserTest, basicEnumerationTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "enumerationTests/basicEnumeration.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "enumerationTests/basicEnumeration.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::ENUMERATION);
     Enumeration* e = dynamic_cast<Enumeration*>(el);
     ASSERT_TRUE(e->getOwnedLiteral().size() == 2);
@@ -45,7 +46,6 @@ TEST_F(EnumerationParserTest, basicEnumerationTest) {
     ASSERT_TRUE(l2->getMemberNamespace().size() == 1);
     ASSERT_TRUE(l2->getMemberNamespace().front() == e);
     ASSERT_TRUE(l2->getOwner() == e);
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(EnumerationParserTest, emitEnumerationWLiterals) {

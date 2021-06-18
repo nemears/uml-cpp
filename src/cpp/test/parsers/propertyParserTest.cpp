@@ -18,7 +18,8 @@ class PropertyParserTest : public ::testing::Test {
 
 TEST_F(PropertyParserTest, forwardTypeTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "propertyTests/forwardType.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "propertyTests/forwardType.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -29,12 +30,12 @@ TEST_F(PropertyParserTest, forwardTypeTest) {
     ASSERT_TRUE(clazz2->getAttributes().size() == 1);
     Property* prop = clazz2->getAttributes().front();
     ASSERT_TRUE(prop->getType() == clazz1);
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PropertyParserTest, backwardsTypeTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "propertyTests/backwardTypeTest.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "propertyTests/backwardTypeTest.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -45,12 +46,12 @@ TEST_F(PropertyParserTest, backwardsTypeTest) {
     ASSERT_TRUE(clazz1->getAttributes().size() == 1);
     Property* prop = clazz1->getAttributes().front();
     ASSERT_TRUE(prop->getType() == clazz2);
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PropertyParserTest, multiplicityTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "propertyTests/multiplicityTest.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "propertyTests/multiplicityTest.yml"));
     ASSERT_TRUE(el);
     ASSERT_TRUE(el->getElementType() == ElementType::PROPERTY);
     Property* prop = dynamic_cast<Property*>(el);
@@ -63,23 +64,24 @@ TEST_F(PropertyParserTest, multiplicityTest) {
     ASSERT_TRUE(prop->getUpper() == 1);
     ASSERT_TRUE(prop->getUpperValue()->getElementType() == ElementType::LITERAL_INT);
     ASSERT_TRUE(prop->getUpper() == dynamic_cast<LiteralInt*>(prop->getUpperValue())->getValue());
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PropertyParserTest, improperTypeTest) {
     Element* el;
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "propertyTests/improperType.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "propertyTests/improperType2.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "propertyTests/improperType3.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "propertyTests/propertyNotMap.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "propertyTests/attributesNotSequence.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "propertyTests/invalidLower.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(el = Parsers::parse(ymlPath + "propertyTests/invalidUpper.yml"), Parsers::UmlParserException);
+    UmlManager m;
+    ASSERT_THROW(el = m.parse(ymlPath + "propertyTests/improperType.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "propertyTests/improperType2.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "propertyTests/improperType3.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "propertyTests/propertyNotMap.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "propertyTests/attributesNotSequence.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "propertyTests/invalidLower.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "propertyTests/invalidUpper.yml"), Parsers::UmlParserException);
 }
 
 TEST_F(PropertyParserTest, literalBoolDefaultValueTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "propertyTests/literalBool.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "propertyTests/literalBool.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
@@ -94,12 +96,12 @@ TEST_F(PropertyParserTest, literalBoolDefaultValueTest) {
     ASSERT_TRUE(p->getDefaultValue()->getElementType() == ElementType::LITERAL_BOOL);
     LiteralBool* lb = dynamic_cast<LiteralBool*>(p->getDefaultValue());
     ASSERT_TRUE(lb->getValue());
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PropertyParserTest, literalsTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "propertyTests/defaultValue.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "propertyTests/defaultValue.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
@@ -140,5 +142,4 @@ TEST_F(PropertyParserTest, literalsTest) {
     ASSERT_TRUE(boolProp->getDefaultValue()->getElementType() == ElementType::LITERAL_BOOL);
     LiteralBool* lb = dynamic_cast<LiteralBool*>(boolProp->getDefaultValue());
     ASSERT_TRUE(lb->getValue() == false);
-    Parsers::deleteParsedElement(el);
 }

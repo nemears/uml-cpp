@@ -7,12 +7,12 @@ using namespace std;
 namespace UML {
 namespace Parsers {
 
-Element* parse(string path) {
-    ParserMetaData data;
-    data.m_path = path;
+// Element* parse(string path) {
+//     ParserMetaData data;
+//     data.m_path = path;
 
-    return parse(data);
-}
+//     return parse(data);
+// }
 
 string emit(Element& el) {
     YAML::Emitter emitter;
@@ -64,22 +64,10 @@ Model* parseModel(ParserMetaData& data) {
     }
 }
 
-UmlManager* parse2(string path) {
+UmlManager* parse(string path) {
     UmlManager* ret = new UmlManager;
     ret->parse(path);
     return ret;
-}
-
-void deleteParsedElement(Element* el) {
-    for (auto& ownedElement : el->getOwnedElements()) {
-        // if (ownedElement->getElementType() == ElementType::PACKAGE_MERGE) {
-        //     if (dynamic_cast<PackageMerge*>(ownedElement)->getMergedPackage()) {
-        //         deleteParsedElement(dynamic_cast<PackageMerge*>(ownedElement)->getMergedPackage());
-        //     }
-        // }
-        deleteParsedElement(&ownedElement);
-    }
-    delete el;
 }
 
 Element* parse(ParserMetaData& data) {

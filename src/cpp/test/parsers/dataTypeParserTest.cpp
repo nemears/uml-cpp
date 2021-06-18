@@ -16,7 +16,8 @@ class DataTypeParserTest : public ::testing::Test {
 
 TEST_F(DataTypeParserTest, basicDataTypeTest) {
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "dataTypeTests/basicDataType.yml"));
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "dataTypeTests/basicDataType.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::DATA_TYPE);
     DataType d = *dynamic_cast<DataType*>(el);
     ASSERT_TRUE(d.getName().compare("int") == 0);
@@ -38,7 +39,6 @@ TEST_F(DataTypeParserTest, basicDataTypeTest) {
     ASSERT_TRUE(d.getOwnedElements().size() == 2);
     ASSERT_TRUE(d.getOwnedElements().front() == p);
     ASSERT_TRUE(d.getOwnedElements().back() == o);
-    Parsers::deleteParsedElement(el);
 }
 
 TEST_F(DataTypeParserTest, emitDataTypeW_GeneralAndAttribute) {

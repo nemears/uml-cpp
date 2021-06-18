@@ -75,7 +75,7 @@ TEST_F(PackageParserTest, parse3PackagesTest) {
 TEST_F(PackageParserTest, NamedElementFeaturesTest) {
     Element* el;
     UmlManager* m;
-    ASSERT_NO_THROW(m = Parsers::parse2(ymlPath + "packageParserTests/packageWithName.yml"));
+    ASSERT_NO_THROW(m = Parsers::parse(ymlPath + "packageParserTests/packageWithName.yml"));
     el = & m->get<>(ID::fromString("8q2Rht9aAZlY0EnMGtEKlw5Odr_u"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);

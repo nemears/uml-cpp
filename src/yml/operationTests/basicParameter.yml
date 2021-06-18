@@ -10,6 +10,6 @@
                 ownedParameters:
                   - parameter:
                       name: testInt
-                      type: e4d5eb84-80c8-4338-949e-70de8f837355
+                      type: int_r9nNbBukx47IomXrT2raqtc4
                       direction: IN
 ...

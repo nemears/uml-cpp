@@ -16,7 +16,7 @@ namespace UML {
             std::string string() const;
             uint8_t* getBytes();
             void setBytes(uint8_t* bytes);
-            bool isNull();
+            bool isNull() const;
             friend bool operator==(const ID& lhs, const ID& rhs) {
                 for (size_t i = 0; i < 21; i++) {
                     if (lhs.m_data[i] != rhs.m_data[i]) {

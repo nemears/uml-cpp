@@ -487,7 +487,7 @@ void ID::setBytes(uint8_t* bytes) {
     }
 }
 
-bool ID::isNull() {
+bool ID::isNull() const {
     for (size_t i = 0; i < 21; i++) {
         if (m_data[i] != 0) {
             return false;

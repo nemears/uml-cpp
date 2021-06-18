@@ -48,18 +48,18 @@ TEST_F(DataTypeParserTest, emitDataTypeW_GeneralAndAttribute) {
     Generalization gen;
     DataType s;
     Property p;
-    pckg.setID("b278ca8a-9d1d-45d1-970f-403bc60998b3");
+    pckg.setID("zN&UM2AHrXX07rAiNxTmmMwLYI1O");
     pckg.setName("owningPackage");
-    t.setID("9c744c8c-ed4e-4c71-9c97-5d3e6115bc24");
+    t.setID("mGbq9i_gGHuMFYg0y3tMzcmHx1B3");
     t.setName("type");
-    g.setID("d2a0bcbd-a1aa-4953-9d95-b10a9a322fe3");
+    g.setID("FqaulNq6bCe_8J5M0Ff2oCCaQD05");
     g.setName("general");
-    s.setID("208d68d3-9fe3-4e70-ad48-a01b55e7dc04");
+    s.setID("FZeUbleSO7P_Zqwn2&r8HKnEbSU5");
     s.setName("specific");
-    gen.setID("ce8f718d-9de4-446d-9fa5-d6480396aced");
+    gen.setID("k&CQ7BNYYbkhtw_g7NaNY8wUHXYs");
     gen.setGeneral(&g);
     s.getGeneralizations().add(gen);
-    p.setID("7d51c6b6-8f53-4fcb-a85a-13f39b978e03");
+    p.setID("m8K65o0wEqtIznmEPmuXaTph2JJu");
     p.setName("generalProp");
     p.setType(&t);
     g.getOwnedAttribute().add(p);
@@ -67,27 +67,27 @@ TEST_F(DataTypeParserTest, emitDataTypeW_GeneralAndAttribute) {
     pckg.getPackagedElements().add(g);
     pckg.getPackagedElements().add(s);
     string expectedEmit = R""""(package:
-  id: b278ca8a-9d1d-45d1-970f-403bc60998b3
+  id: zN&UM2AHrXX07rAiNxTmmMwLYI1O
   name: owningPackage
   packagedElements:
     - dataType:
-        id: 9c744c8c-ed4e-4c71-9c97-5d3e6115bc24
+        id: mGbq9i_gGHuMFYg0y3tMzcmHx1B3
         name: type
     - dataType:
-        id: d2a0bcbd-a1aa-4953-9d95-b10a9a322fe3
+        id: FqaulNq6bCe_8J5M0Ff2oCCaQD05
         name: general
         ownedAttribute:
           - property:
-              id: 7d51c6b6-8f53-4fcb-a85a-13f39b978e03
+              id: m8K65o0wEqtIznmEPmuXaTph2JJu
               name: generalProp
-              type: 9c744c8c-ed4e-4c71-9c97-5d3e6115bc24
+              type: mGbq9i_gGHuMFYg0y3tMzcmHx1B3
     - dataType:
-        id: 208d68d3-9fe3-4e70-ad48-a01b55e7dc04
+        id: FZeUbleSO7P_Zqwn2&r8HKnEbSU5
         name: specific
         generalizations:
           - generalization:
-              id: ce8f718d-9de4-446d-9fa5-d6480396aced
-              general: d2a0bcbd-a1aa-4953-9d95-b10a9a322fe3)"""";
+              id: k&CQ7BNYYbkhtw_g7NaNY8wUHXYs
+              general: FqaulNq6bCe_8J5M0Ff2oCCaQD05)"""";
     string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
     cout << generatedEmit << '\n';

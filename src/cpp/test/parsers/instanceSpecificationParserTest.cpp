@@ -26,8 +26,8 @@ TEST_F(InstanceSpecificationParserTest, forwardClassifierTest) {
     ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
     Class* c = dynamic_cast<Class*>(pckg->getPackagedElements().front());
     ASSERT_TRUE(pckg->getPackagedElements().back()->getElementType() == ElementType::INSTANCE_SPECIFICATION);
-    InstanceSpecification i = *dynamic_cast<InstanceSpecification*>(pckg->getPackagedElements().back());
-    ASSERT_TRUE(i.getClassifier() == c);
+    InstanceSpecification* i = dynamic_cast<InstanceSpecification*>(pckg->getPackagedElements().back());
+    ASSERT_TRUE(i->getClassifier() == c);
 }
 
 TEST_F(InstanceSpecificationParserTest, backwardsClassifierTest) {
@@ -40,11 +40,9 @@ TEST_F(InstanceSpecificationParserTest, backwardsClassifierTest) {
     ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::INSTANCE_SPECIFICATION);
     ASSERT_TRUE(pckg->getPackagedElements().back()->getElementType() == ElementType::CLASS);
     Class* c = dynamic_cast<Class*>(pckg->getPackagedElements().back());
-    InstanceSpecification i = *dynamic_cast<InstanceSpecification*>(pckg->getPackagedElements().front());
-    ASSERT_TRUE(i.getClassifier() == c);
+    InstanceSpecification* i = dynamic_cast<InstanceSpecification*>(pckg->getPackagedElements().front());
+    ASSERT_TRUE(i->getClassifier() == c);
 }
-
-// TODO slot tests
 
 TEST_F(InstanceSpecificationParserTest, basicSlotTest) {
     Element* el;

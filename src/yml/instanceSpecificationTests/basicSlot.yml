@@ -2,14 +2,14 @@
   package:
     packagedElements:
       - class:
-          id: d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
+          id: efp5gW8d2yV5b9bKtY&OmBHJpUYw
           ownedAttributes:
             - property:
-                id: 190d1cb9-13dc-44e6-a064-126891ae0033
+                id: 6Mpm2vfQypGQmOQW7RV69iFAsF52
                 name: test  
       - instanceSpecification:
-          classifier: d9ab2f06-4c2c-4330-9e1b-7eaee423a66a
+          classifier: efp5gW8d2yV5b9bKtY&OmBHJpUYw
           slots:
             - slot:
-                definingFeature: 190d1cb9-13dc-44e6-a064-126891ae0033
+                definingFeature: 6Mpm2vfQypGQmOQW7RV69iFAsF52
 ...

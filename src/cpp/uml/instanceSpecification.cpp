@@ -39,7 +39,11 @@ InstanceSpecification::InstanceSpecification() {
 
 InstanceSpecification::InstanceSpecification(const InstanceSpecification& inst) {
     m_classifierID = inst.m_classifierID;
-    m_classifierPtr = inst.m_classifierPtr;
+    if (inst.m_manager && !inst.m_classifierID.isNull()) {
+        m_classifierPtr = &inst.m_manager->get<Classifier>(inst.m_classifierID);
+    } else {
+        m_classifierPtr = inst.m_classifierPtr;
+    }
     m_slots = inst.m_slots;
     m_slots.addProcedures.clear();
     m_slots.addProcedures.push_back(new AddSlotFunctor(this));

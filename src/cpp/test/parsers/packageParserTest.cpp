@@ -16,8 +16,9 @@ class PackageParserTest : public ::testing::Test {
 };
 
 TEST_F(PackageParserTest, parsePackageWithActivityTest) {
+    UmlManager m;
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "packageParserTests/packageWithActivity.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "packageParserTests/packageWithActivity.yml"));
     ASSERT_TRUE(el);
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
@@ -31,12 +32,13 @@ TEST_F(PackageParserTest, parsePackageWithActivityTest) {
     ASSERT_TRUE(act->getOwningPackage() == pckg);
     ASSERT_TRUE(act->getNamespace() == pckg);
     ASSERT_TRUE(act->getOwner() == pckg);
-    Parsers::deleteParsedElement(el);
+    //Parsers::deleteParsedElement(el);
 }
 
 TEST_F(PackageParserTest, parse3PackagesTest) {
+    UmlManager m;
     Element* el;
-    ASSERT_NO_THROW(el = Parsers::parse(ymlPath + "packageParserTests/3packages.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "packageParserTests/3packages.yml"));
     ASSERT_TRUE(el);
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg1 = dynamic_cast<Package*>(el);

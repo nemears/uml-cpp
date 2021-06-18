@@ -57,7 +57,6 @@ Model* parseModel(ParserMetaData& data) {
     if (node["model"]) {
         Model& m = data.m_manager->create<Model>();
         parsePackage(node["model"], m, data);
-        // todo set manager model
         return &m;
     } else {
         throw UmlParserException("base node in " + data.m_path.string() + " is not a model!");

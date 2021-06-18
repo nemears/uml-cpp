@@ -69,6 +69,8 @@ namespace UML {
             void open();
             void open(std::string path);
 
+            Element* parse(std::string path);
+
             Model* getModel();
     };
 }

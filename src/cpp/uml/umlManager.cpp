@@ -66,6 +66,12 @@ void UmlManager::open(string path) {
     open();
 }
 
+Element* UmlManager::parse(string path) {
+    m_path = path;
+    Parsers::ParserMetaData data(this);
+    return Parsers::parse(data);
+}
+
 Model* UmlManager::getModel() {
     return m_model;
 }

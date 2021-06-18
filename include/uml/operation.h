@@ -2,13 +2,14 @@
 #define OPERATIONH
 
 #include "behavioralFeature.h"
+#include "templateableElement.h"
 
 namespace UML {
 
     class Class;
     class DataType;
 
-    class Operation : public BehavioralFeature {
+    class Operation : public BehavioralFeature , public TemplateableElement {
         friend class Parameter;
         protected:
             ID m_typeID;

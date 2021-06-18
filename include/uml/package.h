@@ -4,9 +4,10 @@
 #include "packageableElement.h"
 #include "namespace.h"
 #include "packageMerge.h"
+#include "templateableElement.h"
 
 namespace UML {
-    class Package : public PackageableElement, public Namespace {
+    class Package : public PackageableElement, public Namespace, public TemplateableElement {
         friend class UmlManager;
         protected:
             Sequence<PackageableElement> m_packagedElements;

@@ -396,6 +396,9 @@ string Element::getElementTypeString() const {
         case ElementType::STRUCTURED_CLASSIFIER : {
             return "STRUCTURED_CLASSIFIER";
         }
+        case ElementType::TEMPLATEABLE_ELEMENT : {
+            return "TEMPLATEABLE_ELEMENT";
+        }
         case ElementType::TYPE : {
             return "TYPE";
         }

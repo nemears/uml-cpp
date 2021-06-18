@@ -6,6 +6,7 @@
 #include "sequence.h"
 #include "namespace.h"
 #include "feature.h"
+#include "templateableElement.h"
 
 namespace UML {
 
@@ -14,7 +15,7 @@ namespace UML {
     /**
      * A Classifier represents a classification of instances according to their Features
      **/
-    class Classifier: public Namespace, public Type , public RedefinableElement {
+    class Classifier: public Namespace, public Type , public RedefinableElement, public TemplateableElement {
         friend class UmlManager;
         protected:
             Sequence<Feature> m_features;

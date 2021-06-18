@@ -69,6 +69,7 @@ namespace UML {
         SLOT,
         STRUCTURAL_FEATURE,
         STRUCTURED_CLASSIFIER,
+        TEMPLATEABLE_ELEMENT,
         TYPE,
         TYPED_ELEMENT,
         VALUE_SPECIFICATION

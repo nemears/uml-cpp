@@ -25,7 +25,7 @@ jobs:
       uses: textbook/git-checkout-submodule-action@master
 
     - name: clang
-      run: sudo apt-get update && sudo apt-get install -yq libclang-10-dev
+      run: sudo apt-get update && sudo apt-get install -yq libclang-11-dev
 
     # - name: llvm
     #   run: sudo apt-get install -yq llvm-10-dev

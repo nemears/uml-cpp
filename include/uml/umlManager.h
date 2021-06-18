@@ -66,10 +66,28 @@ namespace UML {
                 ret.m_manager = this;
                 return ret;
             };
-
+            
+            /**
+             * Saves the manager's model to the manager's path as a uml configuration file
+             * WARN: if the model is saved, pointers to elements in model will have to be reaccessed 
+             * from the manager if the model is open'd again because they have been deleted
+             **/
             void save();
+            /**
+             * Saves the specified model to the specified path as a uml configuration file
+             * WARN: if the model is saved, pointers to elements in model will have to be reaccessed 
+             * from the manager if the model is open'd again because they have been deleted
+             **/
             void save(std::string path, Model& model);
+            /**
+             * Loads the file specified in the manager's path into memory referenceable by the manager
+             * WARN: if the manager already has members in the path, it will dereference them when they are reloaded
+             **/
             void open();
+            /**
+             * Loads the file specified by the path parameter into memory referenceable by the manager
+             * WARN: if the manager already has members in the path, it will dereference them when they are reloaded
+             **/
             void open(std::string path);
 
             Element* parse(std::string path);

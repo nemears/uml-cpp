@@ -80,6 +80,7 @@ TEST_F(PackageParserTest, NamedElementFeaturesTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getName().compare("test") == 0);
+    delete m;
 }
 
 TEST_F(PackageParserTest, ElementFeaturesTest) {

@@ -31,6 +31,7 @@ ParserMetaData::ParserMetaData(UmlManager* manager) {
 void applyFunctor(ParserMetaData& data, ID relEl, AbstractPostProcessFunctor* functor) {
     if (data.elements.count(relEl)) {
         (*functor)(*data.elements.get(relEl));
+        delete functor;
     } else {
         if (!data.postProcessFlag.count(relEl)) {
             data.postProcessFlag[relEl] = new vector<AbstractPostProcessFunctor*>;

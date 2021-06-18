@@ -1,9 +1,6 @@
 #include "uml/umlManager.h"
 #include <fstream>
 #include "uml/parsers/parser.h"
-//#include <ofstream>
-
-// all of these need to be added to parser eventually
 #include "uml/callBehaviorAction.h"
 #include "uml/controlFlow.h"
 #include "uml/createObjectAction.h"
@@ -57,8 +54,7 @@ void UmlManager::open() {
         // todo thow error
         return;
     }
-    Parsers::ParserMetaData data(this);
-    m_model = Parsers::parseModel(data);
+    m_model = Parsers::parseModel(this);
 }
 
 void UmlManager::open(string path) {

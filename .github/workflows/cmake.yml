@@ -24,11 +24,8 @@ jobs:
     - name: Checkout submodules
       uses: textbook/git-checkout-submodule-action@master
 
-    - name: boost
-      run: sudo apt-get update && sudo apt-get install -yq libboost1.71-dev
-
     - name: clang
-      run: sudo apt-get install -yq libclang-10-dev
+      run: sudo apt-get update && sudo apt-get install -yq libclang-10-dev
 
     - name: llvm
       run: sudo apt-get install -yq llvm-10-dev

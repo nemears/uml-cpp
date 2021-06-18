@@ -7,7 +7,7 @@
       - class:
           ownedAttributes:
             - property:
-                type: b211590a-3582-4bd2-895c-053411c0aea9
+                type: bool_bzkcabSy3CiFd&HmJOtnVRK
                 defaultValue:
                   literalBool:
                     value: true

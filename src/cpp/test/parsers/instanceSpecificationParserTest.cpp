@@ -117,11 +117,11 @@ TEST_F(InstanceSpecificationParserTest, instanceValueSlot) {
 
 TEST_F(InstanceSpecificationParserTest, simpleInstanceEmitTest) {
     InstanceSpecification inst;
-    inst.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+    inst.setID("3XvQFHIrqSmU7WAXA7fVzkw1v2U3");
     inst.setName("simple");
     inst.setVisibility(VisibilityKind::PROTECTED);
     string expectedEmit = R""""(instanceSpecification:
-  id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+  id: 3XvQFHIrqSmU7WAXA7fVzkw1v2U3
   name: simple
   visibility: PROTECTED)"""";
     string generatedEmit;
@@ -132,19 +132,19 @@ TEST_F(InstanceSpecificationParserTest, simpleInstanceEmitTest) {
 
 TEST_F(InstanceSpecificationParserTest, simpleSlotTest) {
     InstanceSpecification inst;
-    inst.setID("7d18ee42-82c6-4f52-8ec4-fab67a75ff35");
+    inst.setID("yaogA9yjaFoD_RdGQzRrwe1826Aj");
     inst.setName("slot");
     inst.setVisibility(VisibilityKind::PROTECTED);
     Slot s;
-    s.setID("b211590a-3582-4bd2-895c-053411c0aea9");
+    s.setID("w6arMVW4Plw0aLOBWLE9_8Xo_UL&");
     inst.getSlots().add(s);
     string expectedEmit = R""""(instanceSpecification:
-  id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+  id: yaogA9yjaFoD_RdGQzRrwe1826Aj
   name: slot
   visibility: PROTECTED
   slots:
     - slot:
-        id: b211590a-3582-4bd2-895c-053411c0aea9)"""";
+        id: w6arMVW4Plw0aLOBWLE9_8Xo_UL&)"""";
     string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(inst));
     cout << generatedEmit << '\n';

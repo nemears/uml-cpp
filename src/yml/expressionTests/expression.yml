@@ -5,9 +5,9 @@
           mergedPackage: ../uml/primitiveTypes.yml
     packagedElements:
       - expression:
-          id: 7d18ee42-82c6-4f52-8ec4-fab67a75ff35
+          id: hvfrdhQ6M6undbb5bWGKlMESCn_l
           name: packagedExpression
-          type: b211590a-3582-4bd2-895c-053411c0aea9
+          type: bool_bzkcabSy3CiFd&HmJOtnVRK
           symbol: ==
           operands:
             - literalInt:
@@ -19,7 +19,7 @@
       - class:
           ownedAttributes:
             - property:
-                type: e4d5eb84-80c8-4338-949e-70de8f837355
+                type: int_r9nNbBukx47IomXrT2raqtc4
                 defaultValue:
                   expression:
                     symbol: ++

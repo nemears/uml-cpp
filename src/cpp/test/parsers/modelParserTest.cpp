@@ -18,7 +18,10 @@ TEST_F(ModelParserTest, parsedAndCreatedElementTest) {
     
     // Parse
     Model* m;
-    ASSERT_NO_THROW(m = Parsers::parseModel(ymlPath + "modelTests/modelW_Packages.yml"));
+    UmlManager mm;
+    ASSERT_NO_THROW(mm.open(ymlPath + "modelTests/modelW_Packages.yml"));
+
+    m = mm.getModel();
 
     // Validate
     ASSERT_TRUE(m->getPackagedElements().size() == 1);

@@ -38,6 +38,7 @@ namespace UML {
             std::unordered_map<ID, DiscData> m_disc;
             std::filesystem::path m_path;
             Model* m_model;
+            void clear();
         public:
             ~UmlManager();
             template <class T = Element> T& get(ID id) {

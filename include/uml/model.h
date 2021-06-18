@@ -4,13 +4,13 @@
 #include "package.h"
 
 namespace UML{
-class Model : public Package{
-    public:
-        ElementType getElementType() const override;
-        bool isSubClassOf(ElementType eType) override;
-        static ElementType elementType() {
-            return ElementType::MODEL;
-        };
-};
+    class Model : public Package {
+        public:
+            ElementType getElementType() const override;
+            bool isSubClassOf(ElementType eType) override;
+            static ElementType elementType() {
+                return ElementType::MODEL;
+            };
+    };
 }
 #endif

@@ -15,21 +15,39 @@
 using namespace std;
 using namespace UML;
 
-UmlManager::~UmlManager() {
+void UmlManager::clear() {
     for (auto& e : m_loaded) {
         delete e.second;
     }
 }
 
+UmlManager::~UmlManager() {
+    clear();
+}
+
 void UmlManager::reindex(ID oldID, ID newID) {
-    m_elements.erase(oldID);
-    m_elements.insert(newID);
-    Element* el = m_loaded[oldID];
-    m_loaded.erase(oldID);
-    m_loaded[newID] = el;
-    DiscData disc = m_disc[oldID];
-    m_disc.erase(oldID);
-    m_disc[newID] = disc;
+    if (m_elements.count(newID)) {
+        // Element with this ID already exists, overwrite it with new one
+        // This logic should only be called when it is loading from disk
+        // and will overwrite the existing element in memory with one from disk
+        // during a UmlManager::save() invoke
+
+        delete m_loaded[newID];
+        m_loaded[newID] = m_loaded[oldID];
+        m_elements.erase(oldID);
+        m_loaded.erase(oldID);
+        m_disc.erase(oldID);
+    } else  {
+        // reindex
+        m_elements.erase(oldID);
+        m_elements.insert(newID);
+        Element* el = m_loaded[oldID];
+        m_loaded.erase(oldID);
+        m_loaded[newID] = el;
+        DiscData disc = m_disc[oldID];
+        m_disc.erase(oldID);
+        m_disc[newID] = disc;
+    }
 }
 
 void UmlManager::save() {
@@ -54,6 +72,7 @@ void UmlManager::open() {
         // todo thow error
         return;
     }
+    //clear();
     m_model = Parsers::parseModel(this);
 }
 

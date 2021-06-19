@@ -4,8 +4,30 @@
 
 using namespace UML;
 
+void TemplateSignature::AddOwnedParameterFunctor::operator()(Element& el) const {
+    if (!dynamic_cast<TemplateSignature*>(m_el)->getOwnedElements().count(el.getID())) {
+        dynamic_cast<TemplateSignature*>(m_el)->getOwnedElements().internalAdd(el);
+    }
+
+    if (dynamic_cast<TemplateParameter&>(el).getSignature() != dynamic_cast<TemplateSignature*>(m_el)) {
+        dynamic_cast<TemplateParameter&>(el).setSignature(dynamic_cast<TemplateSignature*>(m_el));
+    }
+}
+
+void TemplateSignature::RemoveOwnedParameterFunctor::operator()(Element& el) const {
+    if (m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalRemove(el);
+    }
+
+    if (dynamic_cast<TemplateParameter&>(el).getSignature() == m_el) {
+        dynamic_cast<TemplateParameter&>(el).setSignature(0);
+    }
+}
+
 TemplateSignature::TemplateSignature() {
     m_templatePtr = 0;
+    m_ownedParameter.addProcedures.push_back(new AddOwnedParameterFunctor(this));
+    m_ownedParameter.removeProcedures.push_back(new RemoveOwnedParameterFunctor(this));
 }
 
 TemplateSignature::~TemplateSignature() {

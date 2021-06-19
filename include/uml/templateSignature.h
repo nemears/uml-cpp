@@ -14,6 +14,17 @@ namespace UML {
             ID m_templateID;
             TemplateableElement* m_templatePtr;
             Sequence<TemplateParameter> m_ownedParameter;
+
+            class AddOwnedParameterFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddOwnedParameterFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
+            class RemoveOwnedParameterFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveOwnedParameterFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             TemplateSignature();
             virtual ~TemplateSignature();

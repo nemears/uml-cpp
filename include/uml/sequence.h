@@ -55,6 +55,7 @@ namespace UML {
     class RemoveRelationshipFunctor;
     class RedefinableElement;
     class TemplateableElement;
+    class TemplateSignature;
 
     class ReadOnlySequenceException : public std::exception {
         friend class Element;
@@ -115,6 +116,7 @@ namespace UML {
         friend class RemoveRelationshipFunctor;
         friend class RedefinableElement;
         friend class TemplateableElement;
+        friend class TemplateSignature;
         private:
             // Manager
             UmlManager* m_manager = 0;

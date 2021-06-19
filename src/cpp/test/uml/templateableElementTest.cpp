@@ -59,3 +59,39 @@ TEST_F(TemplateableElementTest, overrideTemplateTest) {
     ASSERT_EQ(c2.getOwnedElements().front()->getID(), t.getID());
     ASSERT_EQ(t.getOwner()->getID(), c2.getID());
 }
+
+TEST_F(TemplateableElementTest, addTemplateParameterTest) {
+    UmlManager m;
+    Class& c = m.create<Class>();
+    TemplateSignature& s = m.create<TemplateSignature>();
+    TemplateParameter& p = m.create<TemplateParameter>();
+    c.setOwnedTemplateSignature(&s);
+    ASSERT_NO_THROW(s.getOwnedParameter().add(p));
+    ASSERT_EQ(s.getOwnedParameter().size(), 1);
+    ASSERT_EQ(s.getOwnedParameter().front()->getID(), p.getID());
+    ASSERT_EQ(p.getSignature()->getID(), s.getID());
+    ASSERT_EQ(s.getOwnedElements().size(), 1);
+    ASSERT_EQ(s.getOwnedElements().front()->getID(), p.getID());
+    ASSERT_EQ(p.getOwner()->getID(), s.getID());
+}
+
+TEST_F(TemplateableElementTest, overrideSignatureTest) {
+    UmlManager m;
+    Class& c1 = m.create<Class>();
+    Class& c2 = m.create<Class>();
+    TemplateSignature& s1 = m.create<TemplateSignature>();
+    TemplateSignature& s2 = m.create<TemplateSignature>();
+    TemplateParameter& p = m.create<TemplateParameter>();
+    c1.setOwnedTemplateSignature(&s1);
+    c2.setOwnedTemplateSignature(&s2);
+    s1.getOwnedParameter().add(p);
+    ASSERT_NO_THROW(p.setSignature(&s2));
+    ASSERT_TRUE(p.getSignature() == &s2);
+    ASSERT_EQ(s2.getOwnedParameter().size(), 1);
+    ASSERT_EQ(s2.getOwnedParameter().front()->getID(), p.getID());
+    ASSERT_EQ(s1.getOwnedParameter().size(), 0);
+    ASSERT_EQ(p.getOwner()->getID(), s2.getID());
+    ASSERT_EQ(s2.getOwnedElements().size(), 1);
+    ASSERT_EQ(s2.getOwnedElements().front()->getID(), p.getID());
+    ASSERT_EQ(s1.getOwnedElements().size(), 0);
+}

@@ -399,6 +399,9 @@ string Element::getElementTypeString() const {
         case ElementType::TEMPLATEABLE_ELEMENT : {
             return "TEMPLATEABLE_ELEMENT";
         }
+        case ElementType::TEMPLATE_PARAMETER : {
+            return "TEMPLATE_PARAMETER";
+        }
         case ElementType::TEMPLATE_SIGNATURE : {
             return "TEMPLATE_SIGNATURE";
         }

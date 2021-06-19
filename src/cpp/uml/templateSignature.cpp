@@ -53,6 +53,10 @@ void TemplateSignature::setTemplate(TemplateableElement* temp) {
     }
 }
 
+Sequence<TemplateParameter>& TemplateSignature::getOwnedParameter() {
+    return m_ownedParameter;
+}
+
 ElementType TemplateSignature::getElementType() const {
     return ElementType::TEMPLATE_SIGNATURE;
 }

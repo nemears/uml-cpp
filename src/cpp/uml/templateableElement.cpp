@@ -1,7 +1,12 @@
 #include "uml/templateableElement.h"
 #include "uml/umlManager.h"
+#include "uml/sequence.h"
 
 using namespace UML;
+
+TemplateableElement::TemplateableElement() {
+    m_ownedTemplateSignaturePtr = 0;
+}
 
 TemplateableElement::~TemplateableElement() {
 
@@ -18,11 +23,19 @@ TemplateSignature* TemplateableElement::getOwnedTemplateSignature() {
 }
 
 void TemplateableElement::setOwnedTemplateSignature(TemplateSignature* signature) {
-    if (!isSameOrNull(m_ownedTemplateSignatureID, signature)) {
+    if (!m_ownedTemplateSignatureID.isNull()) {
         if (!m_ownedTemplateSignaturePtr) {
             m_ownedTemplateSignaturePtr = &m_manager->get<TemplateSignature>(m_ownedTemplateSignatureID);
         }
-        // TODO add to TemplateSignature template field
+        
+        if (m_ownedTemplateSignaturePtr->getTemplate() == this) {
+            m_ownedTemplateSignaturePtr->setTemplate(0);
+        }
+
+        if (m_ownedElements->count(m_ownedTemplateSignatureID)) {
+            m_ownedElements->internalRemove(*m_ownedTemplateSignaturePtr);
+        }
+
         m_ownedTemplateSignatureID = ID::nullID();
         m_ownedTemplateSignaturePtr = 0;
     }
@@ -36,7 +49,13 @@ void TemplateableElement::setOwnedTemplateSignature(TemplateSignature* signature
     }
 
     if (signature) {
-        // todo
+       if (!m_ownedElements->count(signature->getID())) {
+           m_ownedElements->internalAdd(*signature);
+       }
+
+       if (signature->getTemplate() != this) {
+           signature->setTemplate(this);
+       }
     }
 }
 

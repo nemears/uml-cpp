@@ -183,3 +183,44 @@ TEST_F(TemplateableElementTest, overrideDefaultTest) {
     ASSERT_TRUE(p.getDefault() != 0);
     ASSERT_EQ(p.getDefault()->getID(), t2.getID());
 }
+
+TEST_F(TemplateableElementTest, setOwnedDefaultTest) {
+    UmlManager m;
+    Class& c = m.create<Class>();
+    TemplateSignature& s = m.create<TemplateSignature>();
+    TemplateParameter& p = m.create<TemplateParameter>();
+    PrimitiveType& t = m.create<PrimitiveType>();
+    c.setOwnedTemplateSignature(&s);
+    s.getOwnedParameter().add(p);
+    p.setOwnedDefault(&t);
+    ASSERT_TRUE(p.getOwnedDefault() != 0);
+    ASSERT_EQ(p.getOwnedDefault()->getID(), t.getID());
+    ASSERT_TRUE(p.getDefault() != 0);
+    ASSERT_EQ(p.getDefault()->getID(), t.getID());
+    ASSERT_EQ(p.getOwnedElements().size(), 1);
+    ASSERT_EQ(p.getOwnedElements().front()->getID(), t.getID());
+    ASSERT_TRUE(t.getOwner() != 0);
+    ASSERT_EQ(t.getOwner()->getID(), p.getID());
+}
+
+TEST_F(TemplateableElementTest, overrideOwnedDefaultTest) {
+    UmlManager m;
+    Class& c = m.create<Class>();
+    TemplateSignature& s = m.create<TemplateSignature>();
+    TemplateParameter& p = m.create<TemplateParameter>();
+    PrimitiveType& t1 = m.create<PrimitiveType>();
+    PrimitiveType& t2 = m.create<PrimitiveType>();
+    c.setOwnedTemplateSignature(&s);
+    s.getOwnedParameter().add(p);
+    p.setOwnedDefault(&t1);
+    p.setOwnedDefault(&t2);
+    ASSERT_TRUE(p.getOwnedDefault() != 0);
+    ASSERT_EQ(p.getOwnedDefault()->getID(), t2.getID());
+    ASSERT_TRUE(p.getDefault() != 0);
+    ASSERT_EQ(p.getDefault()->getID(), t2.getID());
+    ASSERT_EQ(p.getOwnedElements().size(), 1);
+    ASSERT_EQ(p.getOwnedElements().front()->getID(), t2.getID());
+    ASSERT_TRUE(t2.getOwner() != 0);
+    ASSERT_EQ(t2.getOwner()->getID(), p.getID());
+    ASSERT_TRUE(t1.getOwner() == 0);
+}

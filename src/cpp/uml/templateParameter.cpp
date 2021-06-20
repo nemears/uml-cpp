@@ -157,6 +157,54 @@ void TemplateParameter::setDefault(ParameterableElement* el) {
     }
 }
 
+ParameterableElement* TemplateParameter::getOwnedDefault() {
+    if (!m_ownedDefaultID.isNull()) {
+        if (!m_ownedDefaultPtr) {
+            m_ownedDefaultPtr = &m_manager->get<ParameterableElement>(m_ownedDefaultID);
+        }
+
+        return m_ownedDefaultPtr;
+    }
+    return 0;
+}
+
+void TemplateParameter::setOwnedDefault(ParameterableElement* el) {
+    if (!isSameOrNull(m_ownedDefaultID, el)) {
+        if (!m_ownedDefaultPtr) {
+            m_ownedDefaultPtr = &m_manager->get<ParameterableElement>(m_ownedDefaultID);
+        }
+
+        if (m_defaultID == m_ownedDefaultID) {
+            setDefault(0);
+        }
+
+        if (m_ownedElements->count(m_ownedDefaultID)) {
+            m_ownedElements->internalRemove(*m_ownedDefaultPtr);
+        }
+
+        m_ownedDefaultID = ID::nullID();
+        m_ownedDefaultPtr = 0;
+    }
+
+    if (el) {
+        m_ownedDefaultID = el->getID();
+    }
+
+    if (!m_manager) {
+        m_ownedDefaultPtr = el;
+    }
+
+    if (el) {
+        if (m_defaultID != el->getID()) {
+            setDefault(el);
+        }
+
+        if (!m_ownedElements->count(el->getID())) {
+            m_ownedElements->internalAdd(*el);
+        }
+    }
+}
+
 ElementType TemplateParameter::getElementType() const {
     return ElementType::TEMPLATE_PARAMETER;
 }

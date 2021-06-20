@@ -9,7 +9,7 @@ namespace UML {
     class Class;
     class DataType;
 
-    class Operation : public BehavioralFeature , public TemplateableElement {
+    class Operation : public BehavioralFeature , public TemplateableElement, public ParameterableElement {
         friend class Parameter;
         protected:
             ID m_typeID;

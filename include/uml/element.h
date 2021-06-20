@@ -60,6 +60,7 @@ namespace UML {
         PACKAGEABLE_ELEMENT,
         PACKAGE_MERGE,
         PARAMETER,
+        PARAMETERABLE_ELEMENT,
         PARAMETER_NODE,
         PIN,
         PRIMITIVE_TYPE,

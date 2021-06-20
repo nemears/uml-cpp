@@ -2,12 +2,13 @@
 #define PACKAGEABLE_ELEMENT_H
 
 #include "namedElement.h"
+#include "parameterableElement.h"
 
 namespace UML {
 
     class Package;
 
-    class PackageableElement : virtual public NamedElement {
+    class PackageableElement : virtual public NamedElement , virtual public ParameterableElement {
         protected:
             ID m_owningPackageID;
             Package* m_owningPackagePtr;

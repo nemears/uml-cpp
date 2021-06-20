@@ -369,6 +369,9 @@ string Element::getElementTypeString() const {
         case ElementType::PARAMETER : {
             return "PARAMETER";
         }
+        case ElementType::PARAMETERABLE_ELEMENT : {
+            return "PARAMETERABLE_ELEMENT";
+        }
         case ElementType::PARAMETER_NODE : {
             return "PARAMETER_NODE";
         }

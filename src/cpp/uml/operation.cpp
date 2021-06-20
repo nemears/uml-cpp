@@ -158,6 +158,10 @@ bool Operation::isSubClassOf(ElementType eType) const {
     }
 
     if (!ret) {
+        ret = ParameterableElement::isSubClassOf(eType);
+    }
+
+    if (!ret) {
         ret = eType == ElementType::OPERATION;
     }
 

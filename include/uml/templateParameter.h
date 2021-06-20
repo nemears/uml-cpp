@@ -14,14 +14,18 @@ namespace UML {
             TemplateSignature* m_signaturePtr;
             ID m_ownedParameteredElementID;
             ParameterableElement* m_ownedParameteredElementPtr;
+            ID m_parameteredElementID;
+            ParameterableElement* m_parameteredElementPtr;
         public:
             TemplateParameter();
             TemplateParameter(const TemplateParameter& el);
             virtual ~TemplateParameter();
             TemplateSignature* getSignature();
             void setSignature(TemplateSignature* signature);
-            ParameterableElement* getOwnedParameterableElement();
-            void setOwnedParameterableElement(ParameterableElement* el);
+            ParameterableElement* getOwnedParameteredElement();
+            void setOwnedParameteredElement(ParameterableElement* el);
+            ParameterableElement* getParameteredElement();
+            void setParameteredElement(ParameterableElement* el);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

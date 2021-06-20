@@ -6,11 +6,13 @@ using namespace UML;
 TemplateParameter::TemplateParameter() {
     m_signaturePtr = 0;
     m_ownedParameteredElementPtr = 0;
+    m_parameteredElementPtr = 0;
 }
 
 TemplateParameter::TemplateParameter(const TemplateParameter& el) {
     m_signatureID = el.m_signatureID;
     m_ownedParameteredElementID = el.m_ownedParameteredElementID;
+    m_parameteredElementID = el.m_parameteredElementID;
 }
 
 TemplateParameter::~TemplateParameter() {
@@ -56,7 +58,7 @@ void TemplateParameter::setSignature(TemplateSignature* signature) {
     }
 }
 
-ParameterableElement* TemplateParameter::getOwnedParameterableElement() {
+ParameterableElement* TemplateParameter::getOwnedParameteredElement() {
     if (!m_ownedParameteredElementID.isNull()) {
         if (!m_ownedParameteredElementPtr) {
             m_ownedParameteredElementPtr = &m_manager->get<ParameterableElement>(m_ownedParameteredElementID);
@@ -66,10 +68,14 @@ ParameterableElement* TemplateParameter::getOwnedParameterableElement() {
     return 0;
 }
 
-void TemplateParameter::setOwnedParameterableElement(ParameterableElement* el) {
+void TemplateParameter::setOwnedParameteredElement(ParameterableElement* el) {
     if (!isSameOrNull(m_ownedParameteredElementID, el)) {
         if (!m_ownedParameteredElementPtr) {
             m_ownedParameteredElementPtr = &m_manager->get<ParameterableElement>(m_ownedParameteredElementID);
+        }
+
+        if (m_parameteredElementID != el->getID()) {
+            setParameteredElement(el);
         }
 
         if (m_ownedElements->count(m_ownedParameteredElementID)) {
@@ -89,9 +95,38 @@ void TemplateParameter::setOwnedParameterableElement(ParameterableElement* el) {
     }
 
     if (el) {
+        if (m_parameteredElementID != el->getID()) {
+            setParameteredElement(el);
+        }
+
         if (!m_ownedElements->count(el->getID())) {
             m_ownedElements->internalAdd(*el);
         }
+    }
+}
+
+ParameterableElement* TemplateParameter::getParameteredElement() {
+    if (!m_parameteredElementID.isNull()) {
+        if (!m_parameteredElementPtr) {
+            m_parameteredElementPtr = &m_manager->get<ParameterableElement>(m_parameteredElementID);
+        }
+        return m_parameteredElementPtr;
+    }
+    return 0;
+}
+
+void TemplateParameter::setParameteredElement(ParameterableElement* el) {
+    if (!isSameOrNull(m_parameteredElementID, el)) {
+        m_parameteredElementPtr = 0;
+        m_parameteredElementID = ID::nullID();
+    }
+
+    if (el) {
+        m_parameteredElementID = el->getID();
+    }
+
+    if (!m_manager) {
+        m_parameteredElementPtr = el;
     }
 }
 

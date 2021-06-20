@@ -127,8 +127,10 @@ TEST_F(TemplateableElementTest, setOwnedParameteredElementTest) {
     PrimitiveType& t = m.create<PrimitiveType>();
     c.setOwnedTemplateSignature(&s);
     s.getOwnedParameter().add(p);
-    ASSERT_NO_THROW(p.setOwnedParameterableElement(&t));
-    ASSERT_EQ(p.getOwnedParameterableElement()->getID(), t.getID());
+    ASSERT_NO_THROW(p.setOwnedParameteredElement(&t));
+    ASSERT_EQ(p.getOwnedParameteredElement()->getID(), t.getID());
+    ASSERT_TRUE(p.getParameteredElement() != 0);
+    ASSERT_EQ(p.getParameteredElement()->getID(), t.getID());
     ASSERT_EQ(p.getOwnedElements().size(), 1);
     ASSERT_EQ(p.getOwnedElements().front()->getID(), t.getID());
     ASSERT_EQ(t.getOwner()->getID(), p.getID());
@@ -143,9 +145,11 @@ TEST_F(TemplateableElementTest, overrideOwnedParameteredElementTest) {
     PrimitiveType& t2 = m.create<PrimitiveType>();
     c.setOwnedTemplateSignature(&s);
     s.getOwnedParameter().add(p);
-    p.setOwnedParameterableElement(&t1);
-    p.setOwnedParameterableElement(&t2);
-    ASSERT_EQ(p.getOwnedParameterableElement()->getID(), t2.getID());
+    p.setOwnedParameteredElement(&t1);
+    p.setOwnedParameteredElement(&t2);
+    ASSERT_EQ(p.getOwnedParameteredElement()->getID(), t2.getID());
+    ASSERT_TRUE(p.getParameteredElement() != 0);
+    ASSERT_EQ(p.getParameteredElement()->getID(), t2.getID());
     ASSERT_EQ(p.getOwnedElements().size(), 1);
     ASSERT_EQ(p.getOwnedElements().front()->getID(), t2.getID());
     ASSERT_EQ(t2.getOwner()->getID(), p.getID());

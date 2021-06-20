@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "uml/class.h"
+#include "uml/operation.h"
 
 using namespace UML;
 
@@ -94,4 +95,25 @@ TEST_F(TemplateableElementTest, overrideSignatureTest) {
     ASSERT_EQ(s2.getOwnedElements().size(), 1);
     ASSERT_EQ(s2.getOwnedElements().front()->getID(), p.getID());
     ASSERT_EQ(s1.getOwnedElements().size(), 0);
+}
+
+TEST_F(TemplateableElementTest, copyTemplateableTest) {
+    UmlManager m;
+    Class&c = m.create<Class>();
+    TemplateSignature& s = m.create<TemplateSignature>();
+    TemplateParameter& p = m.create<TemplateParameter>();
+    c.setOwnedTemplateSignature(&s);
+    s.getOwnedParameter().add(p);
+    Class c2 = c;
+    ASSERT_EQ(c2.getID(), c.getID());
+    ASSERT_EQ(c2.getOwnedTemplateSignature()->getID(), c.getOwnedTemplateSignature()->getID());
+
+    Operation&o = m.create<Operation>();
+    TemplateSignature& s1 = m.create<TemplateSignature>();
+    TemplateParameter& p1 = m.create<TemplateParameter>();
+    o.setOwnedTemplateSignature(&s1);
+    s1.getOwnedParameter().add(p1);
+    Operation o2 = o;
+    ASSERT_EQ(o2.getID(), o.getID());
+    ASSERT_EQ(o2.getOwnedTemplateSignature()->getID(), o.getOwnedTemplateSignature()->getID());
 }

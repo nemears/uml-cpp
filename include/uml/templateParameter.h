@@ -13,6 +13,7 @@ namespace UML {
             TemplateSignature* m_signaturePtr;
         public:
             TemplateParameter();
+            TemplateParameter(const TemplateParameter& el);
             virtual ~TemplateParameter();
             TemplateSignature* getSignature();
             void setSignature(TemplateSignature* signature);

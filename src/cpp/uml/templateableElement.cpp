@@ -8,6 +8,11 @@ TemplateableElement::TemplateableElement() {
     m_ownedTemplateSignaturePtr = 0;
 }
 
+TemplateableElement::TemplateableElement(const TemplateableElement& el){
+    m_ownedTemplateSignatureID = el.m_ownedTemplateSignatureID;
+    m_ownedTemplateSignaturePtr = 0;
+}
+
 TemplateableElement::~TemplateableElement() {
 
 }

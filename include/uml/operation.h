@@ -22,6 +22,8 @@ namespace UML {
             // void reindexName(std::string oldName, std::string newName) override;
         public:
             Operation();
+            Operation(const Operation& op);
+            virtual ~Operation();
             Type* getType();
             void setType(Type* type);
             Class* getClass();

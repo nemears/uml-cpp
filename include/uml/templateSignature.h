@@ -27,6 +27,7 @@ namespace UML {
             };
         public:
             TemplateSignature();
+            TemplateSignature(const TemplateSignature& el);
             virtual ~TemplateSignature();
             TemplateableElement* getTemplate();
             void setTemplate(TemplateableElement* temp);

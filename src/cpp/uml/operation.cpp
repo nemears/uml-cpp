@@ -37,6 +37,19 @@ Operation::Operation() {
     m_dataTypePtr = 0;
 }
 
+Operation::Operation(const Operation& op) : BehavioralFeature(op), TemplateableElement(op), NamedElement(op), Element(op) {
+    m_typeID = op.m_typeID;
+    m_typePtr = op.m_typePtr;
+    m_classID = op.m_classID;
+    m_classPtr = op.m_classPtr;
+    m_dataTypeID = op.m_dataTypeID;
+    m_dataTypePtr = op.m_dataTypePtr;
+}
+
+Operation::~Operation() {
+
+}
+
 Type* Operation::getType() {
     if (!m_typeID.isNull()) {
         if (!m_typePtr) {

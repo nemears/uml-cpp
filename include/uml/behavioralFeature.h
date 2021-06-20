@@ -41,6 +41,7 @@ namespace UML {
             };
         public:
             BehavioralFeature();
+            BehavioralFeature(const BehavioralFeature& el);
             ~BehavioralFeature();
             Sequence<Behavior>& getMethods();
             Sequence<Parameter>& getOwnedParameters();

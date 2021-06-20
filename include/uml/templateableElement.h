@@ -11,6 +11,7 @@ namespace UML {
             TemplateSignature* m_ownedTemplateSignaturePtr;
         public:
             TemplateableElement();
+            TemplateableElement(const TemplateableElement& el);
             virtual ~TemplateableElement();
             TemplateSignature* getOwnedTemplateSignature();
             void setOwnedTemplateSignature(TemplateSignature* signature);

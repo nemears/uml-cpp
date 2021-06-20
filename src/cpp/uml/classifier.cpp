@@ -25,7 +25,12 @@ Classifier::~Classifier() {
 
 }
 
-Classifier::Classifier(const Classifier& clazz) : Namespace(clazz), PackageableElement(clazz), NamedElement(clazz), Element(clazz) {
+Classifier::Classifier(const Classifier& clazz) : 
+Namespace(clazz), 
+PackageableElement(clazz), 
+NamedElement(clazz), 
+TemplateableElement(clazz), 
+Element(clazz) {
     m_attributes = clazz.m_attributes;
     m_attributes.addProcedures.clear();
     m_attributes.addProcedures.push_back(new AddAttributeFunctor(this));

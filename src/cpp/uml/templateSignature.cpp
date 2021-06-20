@@ -30,6 +30,15 @@ TemplateSignature::TemplateSignature() {
     m_ownedParameter.removeProcedures.push_back(new RemoveOwnedParameterFunctor(this));
 }
 
+TemplateSignature::TemplateSignature(const TemplateSignature& el) {
+    m_templateID = el.m_templateID;
+    m_ownedParameter = el.m_ownedParameter;
+    m_ownedParameter.addProcedures.clear();
+    m_ownedParameter.removeProcedures.clear();
+    m_ownedParameter.addProcedures.push_back(new AddOwnedParameterFunctor(this));
+    m_ownedParameter.removeProcedures.push_back(new RemoveOwnedParameterFunctor(this));
+}
+
 TemplateSignature::~TemplateSignature() {
 
 }

@@ -7,6 +7,10 @@ TemplateParameter::TemplateParameter() {
     m_signaturePtr = 0;
 }
 
+TemplateParameter::TemplateParameter(const TemplateParameter& el) {
+    m_signatureID = el.m_signatureID;
+}
+
 TemplateParameter::~TemplateParameter() {
 
 }

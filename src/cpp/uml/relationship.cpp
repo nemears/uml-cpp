@@ -66,7 +66,7 @@ ElementType Relationship::getElementType() const {
     return ElementType::RELATIONSHIP;
 }
 
-bool Relationship::isSubClassOf(ElementType eType) {
+bool Relationship::isSubClassOf(ElementType eType) const {
     bool ret = Element::isSubClassOf(eType);
 
     if (!ret) {

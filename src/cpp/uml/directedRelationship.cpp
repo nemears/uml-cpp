@@ -52,7 +52,7 @@ ElementType DirectedRelationship::getElementType() const {
     return ElementType::DIRECTED_RELATIONSHIP;
 }
 
-bool DirectedRelationship::isSubClassOf(ElementType eType) {
+bool DirectedRelationship::isSubClassOf(ElementType eType) const {
     bool ret = Relationship::isSubClassOf(eType);
 
     if (!ret) {

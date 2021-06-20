@@ -18,7 +18,7 @@ bool ObjectNode::isObjectNode() {
     return true;
 }
 
-bool ObjectNode::isSubClassOf(ElementType eType) {
+bool ObjectNode::isSubClassOf(ElementType eType) const {
     bool ret = ActivityNode::isSubClassOf(eType);
 
     if (!ret) {

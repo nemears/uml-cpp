@@ -83,7 +83,7 @@ bool ActivityNode::isObjectNode() {
     return false;
 }
 
-bool ActivityNode::isSubClassOf(ElementType eType) {
+bool ActivityNode::isSubClassOf(ElementType eType) const {
     bool ret = NamedElement::isSubClassOf(eType);
 
     if (!ret) {

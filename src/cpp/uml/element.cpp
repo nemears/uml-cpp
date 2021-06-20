@@ -216,7 +216,7 @@ ElementType Element::getElementType() const {
     return ElementType::ELEMENT;
 }
 
-bool Element::isSubClassOf(ElementType eType) {
+bool Element::isSubClassOf(ElementType eType) const {
     return eType == ElementType::ELEMENT;
 }
 

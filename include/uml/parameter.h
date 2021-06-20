@@ -41,7 +41,7 @@ namespace UML {
                         return "Invalid direction given, options are IN, INOUT, OUT or RETURN";
                     }
             }invalidDirectionException;
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PARAMETER;
             };

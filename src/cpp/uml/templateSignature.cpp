@@ -24,6 +24,11 @@ void TemplateSignature::RemoveOwnedParameterFunctor::operator()(Element& el) con
     }
 }
 
+void TemplateSignature::setManager(UmlManager* manager) {
+    Element::setManager(manager);
+    m_ownedParameter.m_manager = manager;
+}
+
 TemplateSignature::TemplateSignature() {
     m_templatePtr = 0;
     m_ownedParameter.addProcedures.push_back(new AddOwnedParameterFunctor(this));
@@ -92,7 +97,7 @@ ElementType TemplateSignature::getElementType() const {
     return ElementType::TEMPLATE_SIGNATURE;
 }
 
-bool TemplateSignature::isSubClassOf(ElementType eType) {
+bool TemplateSignature::isSubClassOf(ElementType eType) const {
     bool ret = Element::isSubClassOf(eType);
 
     if (!ret) {

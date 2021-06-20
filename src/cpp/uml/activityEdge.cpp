@@ -92,7 +92,7 @@ ElementType ActivityEdge::getElementType() const {
     return ElementType::ACTIVITY_EDGE;
 }
 
-bool ActivityEdge::isSubClassOf(ElementType eType) {
+bool ActivityEdge::isSubClassOf(ElementType eType) const {
     bool ret = NamedElement::isSubClassOf(eType);
 
     if (!ret) {

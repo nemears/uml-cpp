@@ -150,8 +150,12 @@ ElementType Operation::getElementType() const {
     return ElementType::OPERATION;
 }
 
-bool Operation::isSubClassOf(ElementType eType) {
+bool Operation::isSubClassOf(ElementType eType) const {
     bool ret = BehavioralFeature::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = TemplateableElement::isSubClassOf(eType);
+    }
 
     if (!ret) {
         ret = eType == ElementType::OPERATION;

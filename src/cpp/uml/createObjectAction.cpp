@@ -14,7 +14,7 @@ ElementType CreateObjectAction::getElementType() const {
     return ElementType::CREATE_OBJECT_ACTION;
 }
 
-bool CreateObjectAction::isSubClassOf(ElementType eType) {
+bool CreateObjectAction::isSubClassOf(ElementType eType) const {
     bool ret = Action::isSubClassOf(eType);
 
     if (!ret) {

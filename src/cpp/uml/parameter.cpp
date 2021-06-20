@@ -130,7 +130,7 @@ void Parameter::setDirectionString(string& directionString) {
     }
 }
 
-bool Parameter::isSubClassOf(ElementType eType) {
+bool Parameter::isSubClassOf(ElementType eType) const {
     bool ret = TypedElement::isSubClassOf(eType);
 
     if (!ret) {

@@ -6,7 +6,7 @@ ElementType ForkNode::getElementType() const {
     return ElementType::FORK_NODE;
 }
 
-bool ForkNode::isSubClassOf(ElementType eType) {
+bool ForkNode::isSubClassOf(ElementType eType) const {
     bool ret = ActivityNode::isSubClassOf(eType);
 
     if (!ret) {

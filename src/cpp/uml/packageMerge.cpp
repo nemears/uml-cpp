@@ -99,7 +99,7 @@ ElementType PackageMerge::getElementType() const {
     return ElementType::PACKAGE_MERGE;
 }
 
-bool PackageMerge::isSubClassOf(ElementType eType) {
+bool PackageMerge::isSubClassOf(ElementType eType) const {
     bool ret = DirectedRelationship::isSubClassOf(eType);
 
     if (!ret) {

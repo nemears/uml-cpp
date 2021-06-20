@@ -30,7 +30,7 @@ ElementType InstanceValue::getElementType() const {
     return ElementType::INSTANCE_VALUE;
 }
 
-bool InstanceValue::isSubClassOf(ElementType eType) {
+bool InstanceValue::isSubClassOf(ElementType eType) const {
     bool ret = ValueSpecification::isSubClassOf(eType);
 
     if (!ret) {

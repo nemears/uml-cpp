@@ -6,7 +6,7 @@ ElementType PrimitiveType::getElementType() const {
     return ElementType::PRIMITIVE_TYPE;
 }
 
-bool PrimitiveType::isSubClassOf(ElementType eType) {
+bool PrimitiveType::isSubClassOf(ElementType eType) const {
     bool ret = DataType::isSubClassOf(eType);
 
     if (!ret) {

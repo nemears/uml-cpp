@@ -78,7 +78,7 @@ ElementType Behavior::getElementType() const {
     return ElementType::BEHAVIOR;
 }
 
-bool Behavior::isSubClassOf(ElementType eType) {
+bool Behavior::isSubClassOf(ElementType eType) const {
     bool ret = Class::isSubClassOf(eType);
 
     if (!ret) {

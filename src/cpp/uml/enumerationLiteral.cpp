@@ -48,7 +48,7 @@ ElementType EnumerationLiteral::getElementType() const {
     return ElementType::ENUMERATION_LITERAL;
 }
 
-bool EnumerationLiteral::isSubClassOf(ElementType eType) {
+bool EnumerationLiteral::isSubClassOf(ElementType eType) const {
     bool ret = InstanceSpecification::isSubClassOf(eType);
 
     if (!ret) {

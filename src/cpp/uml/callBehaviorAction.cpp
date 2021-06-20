@@ -14,7 +14,7 @@ void CallBehaviorAction::setBehavior(Behavior* bhv) {
     behavior = bhv;
 }
 
-bool CallBehaviorAction::isSubClassOf(ElementType eType) {
+bool CallBehaviorAction::isSubClassOf(ElementType eType) const {
     bool ret = Action::isSubClassOf(eType);
 
     if (!ret) {

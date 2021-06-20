@@ -498,7 +498,7 @@ ElementType Property::getElementType() const {
     return ElementType::PROPERTY;
 }
 
-bool Property::isSubClassOf(ElementType eType) {
+bool Property::isSubClassOf(ElementType eType) const {
     bool ret = StructuralFeature::isSubClassOf(eType);
 
     if (!ret) {

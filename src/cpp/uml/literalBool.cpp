@@ -14,7 +14,7 @@ ElementType LiteralBool::getElementType() const {
     return ElementType::LITERAL_BOOL;
 }
 
-bool LiteralBool::isSubClassOf(ElementType eType) {
+bool LiteralBool::isSubClassOf(ElementType eType) const {
     bool ret = LiteralSpecification::isSubClassOf(eType);
 
     if (!ret) {

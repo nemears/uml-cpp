@@ -93,11 +93,15 @@ ElementType Package::getElementType() const {
     return ElementType::PACKAGE;
 }
 
-bool Package::isSubClassOf(ElementType eType) {
+bool Package::isSubClassOf(ElementType eType) const {
     bool ret = PackageableElement::isSubClassOf(eType);
 
     if (!ret) {
         ret = Namespace::isSubClassOf(eType);
+    }
+
+    if (!ret) {
+        ret = TemplateableElement::isSubClassOf(eType);
     }
 
     if (!ret) {

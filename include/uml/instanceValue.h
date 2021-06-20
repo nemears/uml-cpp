@@ -13,7 +13,7 @@ namespace UML {
             InstanceSpecification* getInstance();
             void setInstance(InstanceSpecification* inst);
             ElementType getElementType() const override;
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::INSTANCE_VALUE;
             };

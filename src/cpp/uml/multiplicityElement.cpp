@@ -112,7 +112,7 @@ ElementType MultiplicityElement::getElementType() const {
     return ElementType::MULTIPLICITY_ELEMENT;
 }
 
-bool MultiplicityElement::isSubClassOf(ElementType eType) {
+bool MultiplicityElement::isSubClassOf(ElementType eType) const {
     bool ret = Element::isSubClassOf(eType);
 
     if (!ret) {

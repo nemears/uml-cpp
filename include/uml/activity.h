@@ -25,7 +25,7 @@ namespace UML {
             Sequence<ActivityNode>& getNodes();
             Sequence<ActivityEdge>& getEdges();
             ElementType getElementType() const override;
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ACTIVITY;
             };

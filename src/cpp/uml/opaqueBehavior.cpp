@@ -17,7 +17,7 @@ ElementType OpaqueBehavior::getElementType() const {
     return ElementType::OPAQUE_BEHAVIOR;
 }
 
-bool OpaqueBehavior::isSubClassOf(ElementType eType) {
+bool OpaqueBehavior::isSubClassOf(ElementType eType) const {
     bool ret = Behavior::isSubClassOf(eType);
 
     if (!ret) {

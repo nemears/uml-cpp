@@ -76,7 +76,7 @@ ElementType ValueSpecification::getElementType() const {
     return ElementType::VALUE_SPECIFICATION;
 }
 
-bool ValueSpecification::isSubClassOf(ElementType eType) {
+bool ValueSpecification::isSubClassOf(ElementType eType) const {
     bool ret = TypedElement::isSubClassOf(eType);
 
     if (!ret) {

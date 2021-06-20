@@ -133,7 +133,7 @@ ElementType Association::getElementType() const {
     return ElementType::ASSOCIATION;
 }
 
-bool Association::isSubClassOf(ElementType eType) {
+bool Association::isSubClassOf(ElementType eType) const {
     bool ret = Relationship::isSubClassOf(eType);
 
     if (!ret) {

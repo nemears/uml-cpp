@@ -6,7 +6,7 @@ ElementType Pin::getElementType() const {
     return ElementType::PIN;
 }
 
-bool Pin::isSubClassOf(ElementType eType) {
+bool Pin::isSubClassOf(ElementType eType) const {
     bool ret = ObjectNode::isSubClassOf(eType);
 
     if (!ret) {

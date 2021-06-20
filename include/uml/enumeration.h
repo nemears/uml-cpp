@@ -23,7 +23,7 @@ namespace UML {
             Enumeration(const Enumeration& enumeration);
             Sequence<EnumerationLiteral>& getOwnedLiteral();
             ElementType getElementType() const override;
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ENUMERATION;
             };

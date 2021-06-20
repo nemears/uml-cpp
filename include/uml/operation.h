@@ -31,7 +31,7 @@ namespace UML {
             DataType* getDataType();
             void setDataType(DataType* dataType);
             ElementType getElementType() const override;
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::OPERATION;
             };

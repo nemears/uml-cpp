@@ -6,7 +6,7 @@ ElementType LiteralSpecification::getElementType() const {
     return ElementType::LITERAL_SPECIFICATION;
 }
 
-bool LiteralSpecification::isSubClassOf(ElementType eType) {
+bool LiteralSpecification::isSubClassOf(ElementType eType) const {
     bool ret = ValueSpecification::isSubClassOf(eType);
 
     if (!ret) {

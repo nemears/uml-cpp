@@ -44,7 +44,7 @@ namespace UML {
                         return "Tried to assign value to slot without setting definingFeature";
                     }
             } nullDefiningFeatureException;
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::SLOT;
             };

@@ -34,7 +34,7 @@ ElementType Expression::getElementType() const {
     return ElementType::EXPRESSION;
 }
 
-bool Expression::isSubClassOf(ElementType eType) {
+bool Expression::isSubClassOf(ElementType eType) const {
     bool ret = ValueSpecification::isSubClassOf(eType);
 
     if (!ret) {

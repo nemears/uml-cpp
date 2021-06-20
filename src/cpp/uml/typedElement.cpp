@@ -36,7 +36,7 @@ ElementType TypedElement::getElementType() const {
     return ElementType::TYPED_ELEMENT;
 }
 
-bool TypedElement::isSubClassOf(ElementType eType) {
+bool TypedElement::isSubClassOf(ElementType eType) const {
     bool ret = NamedElement::isSubClassOf(eType);
 
     if (!ret) {

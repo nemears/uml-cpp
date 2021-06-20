@@ -91,7 +91,7 @@ ElementType InstanceSpecification::getElementType() const {
     return ElementType::INSTANCE_SPECIFICATION;
 }
 
-bool InstanceSpecification::isSubClassOf(ElementType eType) {
+bool InstanceSpecification::isSubClassOf(ElementType eType) const {
     bool ret = PackageableElement::isSubClassOf(eType);
 
     if (!ret) {

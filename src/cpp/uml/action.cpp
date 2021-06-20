@@ -29,7 +29,7 @@ ElementType Action::getElementType() const {
     return ElementType::ACTION;
 }
 
-bool Action::isSubClassOf(ElementType eType) {
+bool Action::isSubClassOf(ElementType eType) const {
     bool ret = ActivityNode::isSubClassOf(eType);
 
     if (!ret) {

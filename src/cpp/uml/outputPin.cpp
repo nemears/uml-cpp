@@ -28,7 +28,7 @@ ElementType OutputPin::getElementType() const {
     return ElementType::OUTPUT_PIN;
 }
 
-bool OutputPin::isSubClassOf(ElementType eType) {
+bool OutputPin::isSubClassOf(ElementType eType) const {
     bool ret = Pin::isSubClassOf(eType);
 
     if (!ret) {

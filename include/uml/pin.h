@@ -8,7 +8,7 @@ namespace UML {
     class Pin : public ObjectNode , public MultiplicityElement {
         public:
             ElementType getElementType() const override;
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PIN;
             };

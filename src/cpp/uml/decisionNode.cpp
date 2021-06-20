@@ -14,7 +14,7 @@ ElementType DecisionNode::getElementType() const {
     return ElementType::DECISION_NODE;
 }
 
-bool DecisionNode::isSubClassOf(ElementType eType) {
+bool DecisionNode::isSubClassOf(ElementType eType) const {
     bool ret = ActivityNode::isSubClassOf(eType);
 
     if (!ret) {

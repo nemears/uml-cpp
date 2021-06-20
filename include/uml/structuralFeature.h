@@ -17,7 +17,7 @@ namespace UML {
                         return "tried to assign value that does not match structural features corresponded type";
                     }
             } invalidValueException;
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             StructuralFeature& operator=(StructuralFeature&&) {
                 return *this;
             };

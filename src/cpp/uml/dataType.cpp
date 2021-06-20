@@ -109,7 +109,7 @@ ElementType DataType::getElementType() const {
     return ElementType::DATA_TYPE;
 }
 
-bool DataType::isSubClassOf(ElementType eType) {
+bool DataType::isSubClassOf(ElementType eType) const {
     bool ret = Classifier::isSubClassOf(eType);
 
     if (!ret) {

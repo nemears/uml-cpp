@@ -115,7 +115,7 @@ ElementType Slot::getElementType() const {
     return ElementType::SLOT;
 }
 
-bool Slot::isSubClassOf(ElementType eType) {
+bool Slot::isSubClassOf(ElementType eType) const {
     bool ret = Element::isSubClassOf(eType);
 
     if(!ret) {

@@ -137,7 +137,7 @@ ElementType Generalization::getElementType() const {
     return ElementType::GENERALIZATION;
 }
 
-bool Generalization::isSubClassOf(ElementType eType) {
+bool Generalization::isSubClassOf(ElementType eType) const {
     bool ret = DirectedRelationship::isSubClassOf(eType);
 
     if (!ret) {

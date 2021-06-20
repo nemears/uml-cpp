@@ -6,7 +6,7 @@ ElementType ObjectFlow::getElementType() const {
     return ElementType::OBJECT_FLOW;
 }
 
-bool ObjectFlow::isSubClassOf(ElementType eType) {
+bool ObjectFlow::isSubClassOf(ElementType eType) const {
     bool ret = ActivityEdge::isSubClassOf(eType);
 
     if (!ret) {

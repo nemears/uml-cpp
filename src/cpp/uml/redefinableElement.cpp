@@ -31,7 +31,7 @@ ElementType RedefinableElement::getElementType() const {
     return ElementType::REDEFINABLE_ELEMENT;
 }
 
-bool RedefinableElement::isSubClassOf(ElementType eType) {
+bool RedefinableElement::isSubClassOf(ElementType eType) const {
     bool ret = NamedElement::isSubClassOf(eType);
 
     if (!ret) {

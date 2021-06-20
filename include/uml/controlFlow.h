@@ -7,7 +7,7 @@ namespace UML {
     class ControlFlow : public ActivityEdge {
         public:
             ElementType getElementType() const override;
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CONTROL_FLOW;
             };

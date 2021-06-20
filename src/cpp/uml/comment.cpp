@@ -59,7 +59,7 @@ ElementType Comment::getElementType() const {
     return ElementType::COMMENT;
 }
 
-bool Comment::isSubClassOf(ElementType eType) {
+bool Comment::isSubClassOf(ElementType eType) const {
     bool ret = Element::isSubClassOf(eType);
 
     if (!ret) {

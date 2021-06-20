@@ -157,7 +157,7 @@ namespace UML {
             virtual void setID(std::string id);
             void setID(ID id);
             virtual ElementType getElementType() const;
-            virtual bool isSubClassOf(ElementType eType);
+            virtual bool isSubClassOf(ElementType eType) const;
             virtual std::string getElementTypeString() const;
     };
 

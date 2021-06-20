@@ -68,7 +68,7 @@ ElementType TemplateableElement::getElementType() const {
     return ElementType::TEMPLATEABLE_ELEMENT;
 }
 
-bool TemplateableElement::isSubClassOf(ElementType eType) {
+bool TemplateableElement::isSubClassOf(ElementType eType) const {
     bool ret = Element::isSubClassOf(eType);
 
     if (!ret) {

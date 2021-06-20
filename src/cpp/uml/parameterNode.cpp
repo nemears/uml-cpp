@@ -14,7 +14,7 @@ ElementType ParameterNode::getElementType() const {
     return ElementType::PARAMETER_NODE;
 }
 
-bool ParameterNode::isSubClassOf(ElementType eType) {
+bool ParameterNode::isSubClassOf(ElementType eType) const {
     bool ret = ObjectNode::isSubClassOf(eType);
 
     if(!ret) {

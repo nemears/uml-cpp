@@ -6,7 +6,7 @@ ElementType Type::getElementType() const {
     return ElementType::TYPE;
 }
 
-bool Type::isSubClassOf(ElementType eType) {
+bool Type::isSubClassOf(ElementType eType) const {
     bool ret = PackageableElement::isSubClassOf(eType);
 
     if (!ret) {

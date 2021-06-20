@@ -282,7 +282,7 @@ ElementType Classifier::getElementType() const {
     return ElementType::CLASSIFIER;
 }
 
-bool Classifier::isSubClassOf(ElementType eType) {
+bool Classifier::isSubClassOf(ElementType eType) const {
     bool ret = Namespace::isSubClassOf(eType);
 
     if (!ret) {
@@ -291,6 +291,10 @@ bool Classifier::isSubClassOf(ElementType eType) {
 
     if (!ret) {
         ret = RedefinableElement::isSubClassOf(eType);
+    }
+
+    if (!ret) {
+        ret = TemplateableElement::isSubClassOf(eType);
     }
 
     if (!ret) {

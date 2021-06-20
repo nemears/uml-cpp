@@ -6,7 +6,7 @@ ElementType Model::getElementType() const {
     return ElementType::MODEL;
 }
 
-bool Model::isSubClassOf(ElementType eType) {
+bool Model::isSubClassOf(ElementType eType) const {
     bool ret = Package::isSubClassOf(eType);
 
     if (!ret) {

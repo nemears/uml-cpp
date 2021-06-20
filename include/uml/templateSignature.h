@@ -10,6 +10,7 @@ namespace UML {
     class TemplateableElement;
 
     class TemplateSignature : public Element {
+        friend class UmlManager;
         private:
             ID m_templateID;
             TemplateableElement* m_templatePtr;
@@ -25,6 +26,7 @@ namespace UML {
                     RemoveOwnedParameterFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            void setManager(UmlManager* manager) override;
         public:
             TemplateSignature();
             TemplateSignature(const TemplateSignature& el);
@@ -33,7 +35,7 @@ namespace UML {
             void setTemplate(TemplateableElement* temp);
             Sequence<TemplateParameter>& getOwnedParameter();
             ElementType getElementType() const override;
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::TEMPLATE_SIGNATURE;
             };

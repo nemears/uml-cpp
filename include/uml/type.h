@@ -9,7 +9,7 @@ namespace UML{
             Type& operator=(Type&&) {
                 return *this;
             };
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::TYPE;
             };

@@ -6,7 +6,7 @@ ElementType StructuralFeature::getElementType() const {
     return ElementType::STRUCTURAL_FEATURE;
 }
 
-bool StructuralFeature::isSubClassOf(ElementType eType) {
+bool StructuralFeature::isSubClassOf(ElementType eType) const {
     bool ret = TypedElement::isSubClassOf(eType);
     
     if (!ret) {

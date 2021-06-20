@@ -17,7 +17,7 @@ class TypedElement : virtual public NamedElement {
         TypedElement& operator=(TypedElement&&) {
             return *this;
         };
-        bool isSubClassOf(ElementType eType) override;
+        bool isSubClassOf(ElementType eType) const override;
         static ElementType elementType() {
             return ElementType::TYPED_ELEMENT;
         };

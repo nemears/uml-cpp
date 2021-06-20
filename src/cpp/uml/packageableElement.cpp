@@ -53,7 +53,7 @@ ElementType PackageableElement::getElementType() const {
     return ElementType::PACKAGEABLE_ELEMENT;
 }
 
-bool PackageableElement::isSubClassOf(ElementType eType) {
+bool PackageableElement::isSubClassOf(ElementType eType) const {
     bool ret = NamedElement::isSubClassOf(eType);
 
     if (!ret) {

@@ -14,7 +14,7 @@ ElementType LiteralInt::getElementType() const {
     return ElementType::LITERAL_INT;
 }
 
-bool LiteralInt::isSubClassOf(ElementType eType) {
+bool LiteralInt::isSubClassOf(ElementType eType) const {
     bool ret = LiteralSpecification::isSubClassOf(eType);
 
     if (!ret) {

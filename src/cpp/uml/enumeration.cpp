@@ -44,7 +44,7 @@ ElementType Enumeration::getElementType() const {
     return ElementType::ENUMERATION;
 }
 
-bool Enumeration::isSubClassOf(ElementType eType) {
+bool Enumeration::isSubClassOf(ElementType eType) const {
     bool ret = DataType::isSubClassOf(eType);
 
     if (!ret) {

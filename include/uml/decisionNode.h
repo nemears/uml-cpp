@@ -15,7 +15,7 @@ namespace UML {
             DecisionNode() {
                 decisionInputFlow = 0;
             };
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::DECISION_NODE;
             };

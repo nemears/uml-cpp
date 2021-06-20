@@ -45,7 +45,7 @@ namespace UML{
             Class(const Class& clazz);
             Sequence<Operation>& getOperations();
             ElementType getElementType() const override;
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CLASS;
             };

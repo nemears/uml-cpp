@@ -6,7 +6,7 @@ ElementType InitialNode::getElementType() const {
     return ElementType::INITIAL_NODE;
 }
 
-bool InitialNode::isSubClassOf(ElementType eType) {
+bool InitialNode::isSubClassOf(ElementType eType) const {
     bool ret = ActivityNode::isSubClassOf(eType);
 
     if (!ret) {

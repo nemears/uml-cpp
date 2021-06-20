@@ -21,7 +21,7 @@ namespace UML {
             Package* getMergedPackage();
             void setMergedPackage(Package* merge);
             ElementType getElementType() const override;
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PACKAGE_MERGE;
             };

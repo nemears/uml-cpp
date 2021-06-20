@@ -15,7 +15,7 @@ namespace UML {
             ParameterNode() {
                 parameter = NULL;
             }
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PARAMETER_NODE;
             };

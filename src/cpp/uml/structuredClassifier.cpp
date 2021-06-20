@@ -107,7 +107,7 @@ ElementType StructuredClassifier::getElementType() const {
     return ElementType::STRUCTURED_CLASSIFIER;
 }
 
-bool StructuredClassifier::isSubClassOf(ElementType eType) {
+bool StructuredClassifier::isSubClassOf(ElementType eType) const {
     bool ret = Classifier::isSubClassOf(eType);
 
     if (!ret) {

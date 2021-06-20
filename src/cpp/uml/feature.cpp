@@ -83,7 +83,7 @@ ElementType Feature::getElementType() const {
     return ElementType::FEATURE;
 }
 
-bool Feature::isSubClassOf(ElementType eType) {
+bool Feature::isSubClassOf(ElementType eType) const {
     bool ret = RedefinableElement::isSubClassOf(eType);
 
     if (!ret) {

@@ -35,7 +35,7 @@ namespace UML {
                 m_guard = 0;
             }
             ElementType getElementType() const override;
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ACTIVITY_EDGE;
             };

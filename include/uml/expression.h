@@ -21,7 +21,7 @@ namespace UML {
             ElementType getElementType() const override;
             Expression();
             ~Expression();
-            bool isSubClassOf(ElementType eType) override;
+            bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::EXPRESSION;
             };

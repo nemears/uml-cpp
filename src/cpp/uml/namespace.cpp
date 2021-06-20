@@ -82,7 +82,7 @@ ElementType Namespace::getElementType() const {
     return ElementType::NAMESPACE;
 }
 
-bool Namespace::isSubClassOf(ElementType eType) {
+bool Namespace::isSubClassOf(ElementType eType) const {
     bool ret = NamedElement::isSubClassOf(eType);
 
     if (!ret) {

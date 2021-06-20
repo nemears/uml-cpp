@@ -113,7 +113,7 @@ ElementType BehavioralFeature::getElementType() const {
     return ElementType::BEHAVIORAL_FEATURE;
 }
 
-bool BehavioralFeature::isSubClassOf(ElementType eType) {
+bool BehavioralFeature::isSubClassOf(ElementType eType) const {
     bool ret = Feature::isSubClassOf(eType);
 
     if (!ret) {

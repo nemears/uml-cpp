@@ -402,6 +402,9 @@ string Element::getElementTypeString() const {
         case ElementType::TEMPLATEABLE_ELEMENT : {
             return "TEMPLATEABLE_ELEMENT";
         }
+        case ElementType::TEMPLATE_BINDING : {
+            return "TEMPLATE_BINDING";
+        }
         case ElementType::TEMPLATE_PARAMETER : {
             return "TEMPLATE_PARAMETER";
         }

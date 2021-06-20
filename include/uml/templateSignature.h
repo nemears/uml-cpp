@@ -15,6 +15,7 @@ namespace UML {
             ID m_templateID;
             TemplateableElement* m_templatePtr;
             Sequence<TemplateParameter> m_ownedParameter;
+            Sequence<TemplateParameter> m_parameter;
 
             class AddOwnedParameterFunctor : public AbstractSequenceFunctor {
                 public:
@@ -34,6 +35,7 @@ namespace UML {
             TemplateableElement* getTemplate();
             void setTemplate(TemplateableElement* temp);
             Sequence<TemplateParameter>& getOwnedParameter();
+            Sequence<TemplateParameter>& getParameter();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

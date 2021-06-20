@@ -12,6 +12,10 @@ void TemplateSignature::AddOwnedParameterFunctor::operator()(Element& el) const 
     if (dynamic_cast<TemplateParameter&>(el).getSignature() != dynamic_cast<TemplateSignature*>(m_el)) {
         dynamic_cast<TemplateParameter&>(el).setSignature(dynamic_cast<TemplateSignature*>(m_el));
     }
+
+    if (!dynamic_cast<TemplateSignature*>(m_el)->getParameter().count(el.getID())) {
+        dynamic_cast<TemplateSignature*>(m_el)->getParameter().add(dynamic_cast<TemplateParameter&>(el));
+    }
 }
 
 void TemplateSignature::RemoveOwnedParameterFunctor::operator()(Element& el) const {
@@ -21,6 +25,10 @@ void TemplateSignature::RemoveOwnedParameterFunctor::operator()(Element& el) con
 
     if (dynamic_cast<TemplateParameter&>(el).getSignature() == m_el) {
         dynamic_cast<TemplateParameter&>(el).setSignature(0);
+    }
+
+    if (dynamic_cast<TemplateSignature*>(m_el)->getParameter().count(el.getID())) {
+        dynamic_cast<TemplateSignature*>(m_el)->getParameter().remove(dynamic_cast<TemplateParameter&>(el));
     }
 }
 
@@ -91,6 +99,10 @@ void TemplateSignature::setTemplate(TemplateableElement* temp) {
 
 Sequence<TemplateParameter>& TemplateSignature::getOwnedParameter() {
     return m_ownedParameter;
+}
+
+Sequence<TemplateParameter>& TemplateSignature::getParameter() {
+    return m_parameter;
 }
 
 ElementType TemplateSignature::getElementType() const {

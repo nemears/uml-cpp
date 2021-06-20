@@ -71,6 +71,8 @@ TEST_F(TemplateableElementTest, addTemplateParameterTest) {
     ASSERT_NO_THROW(s.getOwnedParameter().add(p));
     ASSERT_EQ(s.getOwnedParameter().size(), 1);
     ASSERT_EQ(s.getOwnedParameter().front()->getID(), p.getID());
+    ASSERT_EQ(s.getParameter().size(), 1);
+    ASSERT_EQ(s.getParameter().front()->getID(), p.getID());
     ASSERT_EQ(p.getSignature()->getID(), s.getID());
     ASSERT_EQ(s.getOwnedElements().size(), 1);
     ASSERT_EQ(s.getOwnedElements().front()->getID(), p.getID());
@@ -91,7 +93,10 @@ TEST_F(TemplateableElementTest, overrideSignatureTest) {
     ASSERT_TRUE(p.getSignature() == &s2);
     ASSERT_EQ(s2.getOwnedParameter().size(), 1);
     ASSERT_EQ(s2.getOwnedParameter().front()->getID(), p.getID());
+    ASSERT_EQ(s2.getParameter().size(), 1);
+    ASSERT_EQ(s2.getParameter().front()->getID(), p.getID());
     ASSERT_EQ(s1.getOwnedParameter().size(), 0);
+    ASSERT_EQ(s1.getParameter().size(), 0);
     ASSERT_EQ(p.getOwner()->getID(), s2.getID());
     ASSERT_EQ(s2.getOwnedElements().size(), 1);
     ASSERT_EQ(s2.getOwnedElements().front()->getID(), p.getID());

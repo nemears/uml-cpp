@@ -7,12 +7,14 @@ TemplateParameter::TemplateParameter() {
     m_signaturePtr = 0;
     m_ownedParameteredElementPtr = 0;
     m_parameteredElementPtr = 0;
+    m_defaultPtr = 0;
 }
 
 TemplateParameter::TemplateParameter(const TemplateParameter& el) {
     m_signatureID = el.m_signatureID;
     m_ownedParameteredElementID = el.m_ownedParameteredElementID;
     m_parameteredElementID = el.m_parameteredElementID;
+    m_defaultID = el.m_defaultID;
 }
 
 TemplateParameter::~TemplateParameter() {
@@ -127,6 +129,31 @@ void TemplateParameter::setParameteredElement(ParameterableElement* el) {
 
     if (!m_manager) {
         m_parameteredElementPtr = el;
+    }
+}
+
+ParameterableElement* TemplateParameter::getDefault() {
+    if (!m_defaultID.isNull()) {
+        if (!m_defaultPtr) {
+            m_defaultPtr = &m_manager->get<ParameterableElement>(m_defaultID);
+        }
+        return m_defaultPtr;
+    }
+    return 0;
+}
+
+void TemplateParameter::setDefault(ParameterableElement* el) {
+    if (!isSameOrNull(m_defaultID, el)) {
+        m_defaultID = ID::nullID();
+        m_defaultPtr = 0;
+    }
+
+    if (el) {
+        m_defaultID = el->getID();
+    }
+
+    if (!m_manager) {
+        m_defaultPtr = el;
     }
 }
 

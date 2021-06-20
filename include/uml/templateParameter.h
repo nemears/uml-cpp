@@ -16,6 +16,8 @@ namespace UML {
             ParameterableElement* m_ownedParameteredElementPtr;
             ID m_parameteredElementID;
             ParameterableElement* m_parameteredElementPtr;
+            ID m_defaultID;
+            ParameterableElement* m_defaultPtr;
         public:
             TemplateParameter();
             TemplateParameter(const TemplateParameter& el);
@@ -26,6 +28,8 @@ namespace UML {
             void setOwnedParameteredElement(ParameterableElement* el);
             ParameterableElement* getParameteredElement();
             void setParameteredElement(ParameterableElement* el);
+            ParameterableElement* getDefault();
+            void setDefault(ParameterableElement* el);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

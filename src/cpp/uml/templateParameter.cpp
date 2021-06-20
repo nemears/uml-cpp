@@ -5,10 +5,12 @@ using namespace UML;
 
 TemplateParameter::TemplateParameter() {
     m_signaturePtr = 0;
+    m_ownedParameteredElementPtr = 0;
 }
 
 TemplateParameter::TemplateParameter(const TemplateParameter& el) {
     m_signatureID = el.m_signatureID;
+    m_ownedParameteredElementID = el.m_ownedParameteredElementID;
 }
 
 TemplateParameter::~TemplateParameter() {
@@ -50,6 +52,45 @@ void TemplateParameter::setSignature(TemplateSignature* signature) {
     if (signature) {
         if (!signature->getOwnedParameter().count(m_id)) {
             signature->getOwnedParameter().add(*this);
+        }
+    }
+}
+
+ParameterableElement* TemplateParameter::getOwnedParameterableElement() {
+    if (!m_ownedParameteredElementID.isNull()) {
+        if (!m_ownedParameteredElementPtr) {
+            m_ownedParameteredElementPtr = &m_manager->get<ParameterableElement>(m_ownedParameteredElementID);
+        }
+        return m_ownedParameteredElementPtr;
+    }
+    return 0;
+}
+
+void TemplateParameter::setOwnedParameterableElement(ParameterableElement* el) {
+    if (!isSameOrNull(m_ownedParameteredElementID, el)) {
+        if (!m_ownedParameteredElementPtr) {
+            m_ownedParameteredElementPtr = &m_manager->get<ParameterableElement>(m_ownedParameteredElementID);
+        }
+
+        if (m_ownedElements->count(m_ownedParameteredElementID)) {
+            m_ownedElements->internalRemove(*m_ownedParameteredElementPtr);
+        }
+
+        m_ownedParameteredElementID = ID::nullID();
+        m_ownedParameteredElementPtr = 0;
+    }
+
+    if (el) {
+        m_ownedParameteredElementID = el->getID();
+    }
+
+    if (!m_manager) {
+        m_ownedParameteredElementPtr = el;
+    }
+
+    if (el) {
+        if (!m_ownedElements->count(el->getID())) {
+            m_ownedElements->internalAdd(*el);
         }
     }
 }

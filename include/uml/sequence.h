@@ -56,6 +56,7 @@ namespace UML {
     class RedefinableElement;
     class TemplateableElement;
     class TemplateSignature;
+    class TemplateParameter;
 
     class ReadOnlySequenceException : public std::exception {
         friend class Element;
@@ -117,6 +118,7 @@ namespace UML {
         friend class RedefinableElement;
         friend class TemplateableElement;
         friend class TemplateSignature;
+        friend class TemplateParameter;
         private:
             // Manager
             UmlManager* m_manager = 0;

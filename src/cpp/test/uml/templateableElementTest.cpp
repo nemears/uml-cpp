@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/class.h"
 #include "uml/operation.h"
+#include "uml/primitiveType.h"
 
 using namespace UML;
 
@@ -116,4 +117,37 @@ TEST_F(TemplateableElementTest, copyTemplateableTest) {
     Operation o2 = o;
     ASSERT_EQ(o2.getID(), o.getID());
     ASSERT_EQ(o2.getOwnedTemplateSignature()->getID(), o.getOwnedTemplateSignature()->getID());
+}
+
+TEST_F(TemplateableElementTest, setOwnedParameteredElementTest) {
+    UmlManager m;
+    Class& c = m.create<Class>();
+    TemplateSignature& s = m.create<TemplateSignature>();
+    TemplateParameter& p = m.create<TemplateParameter>();
+    PrimitiveType& t = m.create<PrimitiveType>();
+    c.setOwnedTemplateSignature(&s);
+    s.getOwnedParameter().add(p);
+    ASSERT_NO_THROW(p.setOwnedParameterableElement(&t));
+    ASSERT_EQ(p.getOwnedParameterableElement()->getID(), t.getID());
+    ASSERT_EQ(p.getOwnedElements().size(), 1);
+    ASSERT_EQ(p.getOwnedElements().front()->getID(), t.getID());
+    ASSERT_EQ(t.getOwner()->getID(), p.getID());
+}
+
+TEST_F(TemplateableElementTest, overrideOwnedParameteredElementTest) {
+    UmlManager m;
+    Class& c = m.create<Class>();
+    TemplateSignature& s = m.create<TemplateSignature>();
+    TemplateParameter& p = m.create<TemplateParameter>();
+    PrimitiveType& t1 = m.create<PrimitiveType>();
+    PrimitiveType& t2 = m.create<PrimitiveType>();
+    c.setOwnedTemplateSignature(&s);
+    s.getOwnedParameter().add(p);
+    p.setOwnedParameterableElement(&t1);
+    p.setOwnedParameterableElement(&t2);
+    ASSERT_EQ(p.getOwnedParameterableElement()->getID(), t2.getID());
+    ASSERT_EQ(p.getOwnedElements().size(), 1);
+    ASSERT_EQ(p.getOwnedElements().front()->getID(), t2.getID());
+    ASSERT_EQ(t2.getOwner()->getID(), p.getID());
+    ASSERT_TRUE(t1.getOwner() == 0);
 }

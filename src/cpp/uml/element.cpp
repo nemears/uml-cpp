@@ -408,6 +408,9 @@ string Element::getElementTypeString() const {
         case ElementType::TEMPLATE_PARAMETER : {
             return "TEMPLATE_PARAMETER";
         }
+        case ElementType::TEMPLATE_PARAMETER_SUBSTITUTION : {
+            return "TEMPLATE_PARAMETER_SUBSTITUTION";
+        }
         case ElementType::TEMPLATE_SIGNATURE : {
             return "TEMPLATE_SIGNATURE";
         }

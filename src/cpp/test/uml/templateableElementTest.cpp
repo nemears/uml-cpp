@@ -2,6 +2,7 @@
 #include "uml/class.h"
 #include "uml/operation.h"
 #include "uml/primitiveType.h"
+#include "uml/templateBinding.h"
 
 using namespace UML;
 
@@ -228,4 +229,72 @@ TEST_F(TemplateableElementTest, overrideOwnedDefaultTest) {
     ASSERT_TRUE(t2.getOwner() != 0);
     ASSERT_EQ(t2.getOwner()->getID(), p.getID());
     ASSERT_TRUE(t1.getOwner() == 0);
+}
+
+TEST_F(TemplateableElementTest, basicTemplateBindTest) {
+    UmlManager m;
+    Class& c = m.create<Class>();
+    TemplateSignature& s = m.create<TemplateSignature>();
+    TemplateBinding& b = m.create<TemplateBinding>();
+    b.setBoundElement(&c);
+    b.setSignature(&s);
+    ASSERT_TRUE(b.getBoundElement() != 0);
+    ASSERT_EQ(b.getBoundElement()->getID(), c.getID());
+    ASSERT_TRUE(c.getTemplateBinding() != 0);
+    ASSERT_EQ(c.getTemplateBinding()->getID(), b.getID());
+    ASSERT_EQ(b.getSources().size(), 1);
+    ASSERT_EQ(b.getSources().front()->getID(), c.getID());
+    ASSERT_EQ(c.getDirectedRelationships().size(), 1);
+    ASSERT_EQ(c.getDirectedRelationships().front()->getID(), b.getID());
+    ASSERT_EQ(c.getRelationships().size(), 1);
+    ASSERT_EQ(c.getRelationships().front()->getID(), b.getID());
+    ASSERT_EQ(c.getOwnedElements().size(), 1);
+    ASSERT_EQ(c.getOwnedElements().front()->getID(), b.getID());
+    ASSERT_TRUE(b.getSignature() != 0);
+    ASSERT_EQ(b.getSignature()->getID(), s.getID());
+    ASSERT_EQ(b.getTargets().size(), 1);
+    ASSERT_EQ(b.getTargets().front()->getID(), s.getID());
+    ASSERT_EQ(b.getRelatedElements().size(), 2);
+    ASSERT_EQ(b.getRelatedElements().front()->getID(), c.getID());
+    ASSERT_EQ(b.getRelatedElements().back()->getID(), s.getID());
+}
+
+TEST_F(TemplateableElementTest, overrideBoundElementTest) {
+    UmlManager m;
+    Class& c1 = m.create<Class>();
+    Class& c2 = m.create<Class>();
+    TemplateSignature& s = m.create<TemplateSignature>();
+    TemplateBinding& b = m.create<TemplateBinding>();
+    b.setBoundElement(&c1);
+    b.setSignature(&s);
+    b.setBoundElement(&c2);
+    ASSERT_TRUE(b.getBoundElement() != 0);
+    ASSERT_EQ(b.getBoundElement()->getID(), c2.getID());
+    ASSERT_EQ(b.getSources().size(), 1);
+    ASSERT_EQ(b.getSources().front()->getID(), c2.getID());
+    ASSERT_EQ(b.getRelatedElements().size(), 2);
+    ASSERT_EQ(b.getRelatedElements().back()->getID(), c2.getID());
+    ASSERT_TRUE(b.getOwner() != 0);
+    ASSERT_EQ(b.getOwner()->getID(), c2.getID());
+    ASSERT_TRUE(c2.getTemplateBinding() != 0);
+    ASSERT_EQ(c2.getTemplateBinding()->getID(), b.getID());
+    ASSERT_EQ(c2.getOwnedElements().size(), 1);
+    ASSERT_EQ(c2.getOwnedElements().front()->getID(), b.getID());
+    ASSERT_TRUE(c1.getTemplateBinding() == 0);
+    ASSERT_EQ(c1.getOwnedElements().size(), 0);
+}
+
+TEST_F(TemplateableElementTest, overrideSignatureForBindingTest) {
+    UmlManager m;
+    Class& c = m.create<Class>();
+    TemplateSignature& s1 = m.create<TemplateSignature>();
+    TemplateSignature& s2 = m.create<TemplateSignature>();
+    TemplateBinding& b = m.create<TemplateBinding>();
+    b.setBoundElement(&c);
+    b.setSignature(&s1);
+    b.setSignature(&s2);
+    ASSERT_TRUE(b.getSignature() != 0);
+    ASSERT_EQ(b.getSignature()->getID(), s2.getID());
+    ASSERT_EQ(b.getTargets().size(), 1);
+    ASSERT_EQ(b.getTargets().front()->getID(), s2.getID());
 }

@@ -8,6 +8,7 @@ TemplateParameter::TemplateParameter() {
     m_ownedParameteredElementPtr = 0;
     m_parameteredElementPtr = 0;
     m_defaultPtr = 0;
+    m_ownedDefaultPtr = 0;
 }
 
 TemplateParameter::TemplateParameter(const TemplateParameter& el) {
@@ -15,6 +16,7 @@ TemplateParameter::TemplateParameter(const TemplateParameter& el) {
     m_ownedParameteredElementID = el.m_ownedParameteredElementID;
     m_parameteredElementID = el.m_parameteredElementID;
     m_defaultID = el.m_defaultID;
+    m_ownedDefaultID = el.m_ownedDefaultID;
 }
 
 TemplateParameter::~TemplateParameter() {

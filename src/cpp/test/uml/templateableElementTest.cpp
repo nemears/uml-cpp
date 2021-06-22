@@ -399,3 +399,29 @@ TEST_F(TemplateableElementTest, nullActualTest) {
     ASSERT_TRUE(s.getActual() != 0);
     ASSERT_EQ(s.getActual()->getID(), t2.getID());
 }
+
+TEST_F(TemplateableElementTest, setOwnedActualTestAndOverride) {
+    UmlManager m;
+    TemplateParameterSubstitution& s = m.create<TemplateParameterSubstitution>();
+    PrimitiveType& a1 = m.create<PrimitiveType>();
+    PrimitiveType& a2 = m.create<PrimitiveType>();
+    s.setOwnedActual(&a1);
+    ASSERT_TRUE(s.getActual() != 0);
+    ASSERT_TRUE(s.getOwnedActual() != 0);
+    ASSERT_EQ(s.getActual()->getID(), a1.getID());
+    ASSERT_EQ(s.getOwnedActual()->getID(), a1.getID());
+    ASSERT_EQ(s.getOwnedElements().size(), 1);
+    ASSERT_EQ(s.getOwnedElements().front()->getID(), a1.getID());
+    ASSERT_TRUE(a1.getOwner() != 0);
+    ASSERT_EQ(a1.getOwner()->getID(), s.getID());
+    s.setOwnedActual(&a2);
+    ASSERT_TRUE(s.getActual() != 0);
+    ASSERT_TRUE(s.getOwnedActual() != 0);
+    ASSERT_EQ(s.getActual()->getID(), a2.getID());
+    ASSERT_EQ(s.getOwnedActual()->getID(), a2.getID());
+    ASSERT_EQ(s.getOwnedElements().size(), 1);
+    ASSERT_EQ(s.getOwnedElements().front()->getID(), a2.getID());
+    ASSERT_TRUE(a2.getOwner() != 0);
+    ASSERT_EQ(a2.getOwner()->getID(), s.getID());
+    ASSERT_TRUE(a1.getOwner() == 0);
+}

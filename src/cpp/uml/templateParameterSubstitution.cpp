@@ -7,6 +7,8 @@ using namespace UML;
 TemplateParameterSubstitution::TemplateParameterSubstitution() {
     m_formalPtr = 0;
     m_templateBindingPtr = 0;
+    m_actualPtr = 0;
+    m_ownedActualPtr = 0;
 }
 
 TemplateParameterSubstitution::TemplateParameterSubstitution(const TemplateParameterSubstitution& temp) {
@@ -104,6 +106,50 @@ void TemplateParameterSubstitution::setActual(ParameterableElement* actual) {
         m_actualPtr = actual;
     } else {
         m_actualPtr = 0;
+    }
+}
+
+ParameterableElement* TemplateParameterSubstitution::getOwnedActual() {
+    if (!m_ownedActualID.isNull()) {
+        if (!m_ownedActualPtr) {
+            m_ownedActualPtr = &m_manager->get<ParameterableElement>(m_ownedActualID);
+        }
+        return m_ownedActualPtr;
+    }
+    return 0;
+}
+
+void TemplateParameterSubstitution::setOwnedActual(ParameterableElement* actual) {
+    if (!isSameOrNull(m_ownedActualID, actual)) {
+        if (!m_ownedActualPtr) {
+            m_ownedActualPtr = &m_manager->get<ParameterableElement>(m_ownedActualID);
+        }
+
+        if (m_ownedElements->count(m_ownedActualID)) {
+            m_ownedElements->internalRemove(*m_ownedActualPtr);
+        }
+
+        setActual(0);
+
+        m_ownedActualID = ID::nullID();
+        m_ownedActualPtr = 0;
+    }
+
+    if (actual) {
+        m_ownedActualID = actual->getID();
+    }
+
+    if (!m_manager) {
+        m_ownedActualPtr = actual;
+    }
+
+    if (actual) {
+        if (!m_ownedElements->count(actual->getID())) {
+            m_ownedElements->internalAdd(*actual);
+        }
+        if (m_actualID != actual->getID()) {
+            setActual(actual);
+        }
     }
 }
 

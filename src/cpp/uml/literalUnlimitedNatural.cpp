@@ -2,6 +2,11 @@
 
 using namespace UML;
 
+LiteralUnlimitedNatural::LiteralUnlimitedNatural() {
+    m_val = 0;
+    m_infinite = false;
+}
+
 bool LiteralUnlimitedNatural::isInfinite() {
     return m_infinite;
 }

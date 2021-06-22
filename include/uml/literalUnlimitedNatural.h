@@ -11,7 +11,8 @@ namespace UML {
         public:
             /** 
              *  NOTE: this will always be initialized to 0
-             **/    
+             **/   
+            LiteralUnlimitedNatural(); 
             bool isInfinite();
             unsigned long getNumberValue();
             void setNumberValue(unsigned long val);

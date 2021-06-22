@@ -1,0 +1,12 @@
+---
+  package:
+    packagedElements:
+      - literalUnlimitedNatural:
+          name: infinity
+          value: "*"
+      - literalUnlimitedNatural:
+          name: number
+          value: 9
+      - literalNull:
+          name: nullLiteral
+...

@@ -31,6 +31,7 @@
 #include "uml/expression.h"
 #include "uml/generalization.h"
 #include "uml/model.h"
+#include "uml/literalUnlimitedNatural.h"
 
 namespace UML {
     namespace Parsers {
@@ -158,6 +159,8 @@ namespace UML {
             void emitLiteralReal(YAML::Emitter& emitter, LiteralReal& lr);
             void parseLiteralString(YAML::Node node, LiteralString& ls, ParserMetaData& data);
             void emitLiteralString(YAML::Emitter& emitter, LiteralString& lr);
+            void parseLiteralUnlimitedNatural(YAML::Node node, LiteralUnlimitedNatural& ln, ParserMetaData& data);
+            void emitLiteralUnlimitedNatural(YAML::Emitter& emitter, LiteralUnlimitedNatural& ln);
             void parseExpression(YAML::Node node, Expression& exp, ParserMetaData& data);
             void emitExpression(YAML::Emitter& emitter, Expression& exp);
         }

@@ -2,6 +2,23 @@
 
 using namespace UML;
 
+bool LiteralUnlimitedNatural::isInfinite() {
+    return m_infinite;
+}
+
+unsigned long LiteralUnlimitedNatural::getNumberValue() {
+    return m_val;
+}
+
+void LiteralUnlimitedNatural::setNumberValue(unsigned long val) {
+    m_val = val;
+}
+
+void LiteralUnlimitedNatural::setInfinite() {
+    m_val = 0;
+    m_infinite = true;
+}
+
 ElementType LiteralUnlimitedNatural::getElementType() const {
     return ElementType::LITERAL_UNLIMITED_NATURAL;
 }

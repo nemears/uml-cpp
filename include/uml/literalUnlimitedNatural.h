@@ -6,7 +6,16 @@
 namespace UML {
     class LiteralUnlimitedNatural : public LiteralSpecification {
         private:
+            unsigned long m_val;
+            bool m_infinite;
         public:
+            /** 
+             *  NOTE: this will always be initialized to 0
+             **/    
+            bool isInfinite();
+            unsigned long getNumberValue();
+            void setNumberValue(unsigned long val);
+            void setInfinite();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

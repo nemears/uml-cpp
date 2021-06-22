@@ -8,6 +8,7 @@
 #include "uml/literalBool.h"
 #include "uml/slot.h"
 #include "uml/expression.h"
+#include "uml/literalUnlimitedNatural.h"
 
 using namespace std;
 using namespace UML;
@@ -99,3 +100,16 @@ TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
 //     ASSERT_TRUE(e.getOperands().get("test"));
 //     ASSERT_TRUE(e.getOwnedElements().get("test"));
 // }
+
+TEST_F(ValueSpecificationTest, LiteralUnlimitedNaturalTest) {
+    UmlManager m;
+    LiteralUnlimitedNatural& n = m.create<LiteralUnlimitedNatural>();
+    ASSERT_EQ(n.getNumberValue(), 0);
+    ASSERT_EQ(n.isInfinite(), false);
+    n.setNumberValue(6);
+    ASSERT_EQ(n.getNumberValue(), 6);
+    ASSERT_EQ(n.isInfinite(), false);
+    n.setInfinite();
+    ASSERT_EQ(n.getNumberValue(), 0);
+    ASSERT_EQ(n.isInfinite(), true);
+}

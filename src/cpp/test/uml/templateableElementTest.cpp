@@ -373,3 +373,29 @@ TEST_F(TemplateableElementTest, overrideParameterSubstitutionTest) {
     ASSERT_TRUE(b.getParameterSubstitution() != 0);
     ASSERT_EQ(b.getParameterSubstitution()->getID(), ps2.getID());
 }
+
+TEST_F(TemplateableElementTest, setActualTest) {
+    UmlManager m;
+    TemplateParameterSubstitution& s = m.create<TemplateParameterSubstitution>();
+    PrimitiveType& t = m.create<PrimitiveType>();
+    s.setActual(&t);
+    ASSERT_TRUE(s.getActual() != 0);
+    ASSERT_EQ(s.getActual()->getID(), t.getID());
+}
+
+TEST_F(TemplateableElementTest, nullActualTest) {
+    UmlManager m;
+    TemplateParameterSubstitution& s = m.create<TemplateParameterSubstitution>();
+    PrimitiveType& t = m.create<PrimitiveType>();
+    ASSERT_TRUE(s.getActual() == 0);
+    s.setActual(&t);
+    ASSERT_TRUE(s.getActual() != 0);
+    ASSERT_EQ(s.getActual()->getID(), t.getID());
+    s.setActual(0);
+    ASSERT_TRUE(s.getActual() == 0);
+    PrimitiveType& t2 = m.create<PrimitiveType>();
+    s.setActual(&t);
+    s.setActual(&t2);
+    ASSERT_TRUE(s.getActual() != 0);
+    ASSERT_EQ(s.getActual()->getID(), t2.getID());
+}

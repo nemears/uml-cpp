@@ -14,6 +14,8 @@ namespace UML {
             TemplateParameter* m_formalPtr;
             ID m_templateBindingID;
             TemplateBinding* m_templateBindingPtr;
+            ID m_actualID;
+            ParameterableElement* m_actualPtr;
         public:
             TemplateParameterSubstitution();
             TemplateParameterSubstitution(const TemplateParameterSubstitution& sub);
@@ -22,6 +24,8 @@ namespace UML {
             void setFormal(TemplateParameter* formal);
             TemplateBinding* getTemplateBinding();
             void setTemplateBinding(TemplateBinding* binding);
+            ParameterableElement* getActual();
+            void setActual(ParameterableElement* actual);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

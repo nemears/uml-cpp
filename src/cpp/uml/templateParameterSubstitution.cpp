@@ -83,6 +83,30 @@ void TemplateParameterSubstitution::setTemplateBinding(TemplateBinding* bind) {
     }
 }
 
+ParameterableElement* TemplateParameterSubstitution::getActual() {
+    if (!m_actualID.isNull()) {
+        if (!m_actualPtr) {
+            m_actualPtr = &m_manager->get<ParameterableElement>(m_actualID);
+        }
+        return m_actualPtr;
+    }
+    return 0;
+}
+
+void TemplateParameterSubstitution::setActual(ParameterableElement* actual) {
+    if (actual) {
+        m_actualID = actual->getID();
+    } else {
+        m_actualID = ID::nullID();
+    }
+
+    if (!m_manager) {
+        m_actualPtr = actual;
+    } else {
+        m_actualPtr = 0;
+    }
+}
+
 ElementType TemplateParameterSubstitution::getElementType() const {
     return ElementType::TEMPLATE_PARAMETER_SUBSTITUTION;
 }

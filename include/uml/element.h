@@ -47,6 +47,7 @@ namespace UML {
         LITERAL_REAL,
         LITERAL_SPECIFICATION,
         LITERAL_STRING,
+        LITERAL_UNLIMITED_NATURAL,
         MERGE_NODE,
         MODEL,
         MULTIPLICITY_ELEMENT,

@@ -330,6 +330,9 @@ string Element::getElementTypeString() const {
         case ElementType::LITERAL_STRING : {
             return "LITERAL_STRING";
         }
+        case ElementType::LITERAL_UNLIMITED_NATURAL : {
+            return "LITERAL_UNLIMITED_NATURAL";
+        }
         case ElementType::MERGE_NODE : {
             return "MERGE_NODE";
         }

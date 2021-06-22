@@ -318,6 +318,9 @@ string Element::getElementTypeString() const {
         case ElementType::LITERAL_INT : {
             return "LITERAL_INT";
         }
+        case ElementType::LITERAL_NULL : {
+            return "LITERAL_NULL";
+        }
         case ElementType::LITERAL_REAL : {
             return "LITERAL_REAL";
         }

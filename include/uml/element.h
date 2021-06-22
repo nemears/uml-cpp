@@ -43,6 +43,7 @@ namespace UML {
         JOIN_NODE,
         LITERAL_BOOL,
         LITERAL_INT,
+        LITERAL_NULL,
         LITERAL_REAL,
         LITERAL_SPECIFICATION,
         LITERAL_STRING,

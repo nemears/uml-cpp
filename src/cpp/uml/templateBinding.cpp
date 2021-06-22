@@ -5,11 +5,13 @@ using namespace UML;
 TemplateBinding::TemplateBinding() {
     m_boundElementPtr = 0;
     m_signaturePtr = 0;
+    m_parameterSubstitutionPtr = 0;
 }
 
 TemplateBinding::TemplateBinding(const TemplateBinding& bind) {
     m_boundElementID = bind.m_boundElementID;
     m_signatureID = bind.m_signatureID;
+    m_parameterSubstitutionID = bind.m_parameterSubstitutionID;
 }
 
 TemplateBinding::~TemplateBinding() {
@@ -100,6 +102,45 @@ void TemplateBinding::setSignature(TemplateSignature* signature) {
     if (signature) {
         if (!m_targets.count(signature->getID())) {
             m_targets.add(*signature);
+        }
+    }
+}
+
+TemplateParameterSubstitution* TemplateBinding::getParameterSubstitution() {
+    if (!m_parameterSubstitutionID.isNull()) {
+        if (!m_parameterSubstitutionPtr) {
+            m_parameterSubstitutionPtr = &m_manager->get<TemplateParameterSubstitution>(m_parameterSubstitutionID);
+        }
+        return m_parameterSubstitutionPtr;
+    }
+    return 0;
+}
+
+void TemplateBinding::setParameterSubstitution(TemplateParameterSubstitution* sub) {
+    if (!isSameOrNull(m_parameterSubstitutionID, sub)) {
+        if (!m_parameterSubstitutionPtr) {
+            m_parameterSubstitutionPtr = &m_manager->get<TemplateParameterSubstitution>(m_parameterSubstitutionID);
+        }
+
+        if (m_parameterSubstitutionPtr->getTemplateBinding() == this) {
+            m_parameterSubstitutionPtr->setTemplateBinding(0);
+        }
+
+        m_parameterSubstitutionPtr = 0;
+        m_parameterSubstitutionID = ID::nullID();
+    }
+
+    if (sub) {
+        m_parameterSubstitutionID = sub->getID();
+    }
+
+    if (!m_manager) {
+        m_parameterSubstitutionPtr = sub;
+    }
+
+    if (sub) {
+        if (sub->getTemplateBinding() != this) {
+            sub->setTemplateBinding(this);
         }
     }
 }

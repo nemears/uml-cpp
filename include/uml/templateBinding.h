@@ -3,6 +3,7 @@
 
 #include "directedRelationship.h"
 #include "templateableElement.h"
+#include "templateParameterSubstitution.h"
 
 namespace UML {
     class TemplateBinding : public DirectedRelationship {
@@ -11,6 +12,8 @@ namespace UML {
             TemplateableElement* m_boundElementPtr;
             ID m_signatureID;
             TemplateSignature* m_signaturePtr;
+            ID m_parameterSubstitutionID;
+            TemplateParameterSubstitution* m_parameterSubstitutionPtr;
         public:
             TemplateBinding();
             TemplateBinding(const TemplateBinding& bind);
@@ -19,6 +22,8 @@ namespace UML {
             void setBoundElement(TemplateableElement* el);
             TemplateSignature* getSignature();
             void setSignature(TemplateSignature* signature);
+            TemplateParameterSubstitution* getParameterSubstitution();
+            void setParameterSubstitution(TemplateParameterSubstitution* sub);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

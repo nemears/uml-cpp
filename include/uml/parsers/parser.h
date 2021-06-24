@@ -163,6 +163,8 @@ namespace UML {
             void emitLiteralUnlimitedNatural(YAML::Emitter& emitter, LiteralUnlimitedNatural& ln);
             void parseExpression(YAML::Node node, Expression& exp, ParserMetaData& data);
             void emitExpression(YAML::Emitter& emitter, Expression& exp);
+            void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data);
+            void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, ParserMetaData& data);
         }
     }
 }

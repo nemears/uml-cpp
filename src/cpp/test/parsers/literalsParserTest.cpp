@@ -42,15 +42,18 @@ TEST_F(LiteralsParserTest, testEmitLiteralUnlimitedNatural) {
     LiteralUnlimitedNatural& l1 = m.create<LiteralUnlimitedNatural>();
     LiteralUnlimitedNatural& l2 = m.create<LiteralUnlimitedNatural>();
     LiteralUnlimitedNatural& l3 = m.create<LiteralUnlimitedNatural>();
+    LiteralNull& ln = m.create<LiteralNull>();
     p.setID("e_ob7tgbN16Plhj_sTAOVD5ijLrL");
     l1.setID("7bYUY3yFUBrfPmzKKrV2NJmXuECA");
     l2.setID("puJaUTZsLPdGJkJSJtdX51MIA2ch");
     l3.setID("8&K_0aLhvQDM12ZeYg9nPiSrexHo");
+    ln.setID("4gA4RgL9vKTRYd61D99y1d_Yggj6");
     l2.setInfinite();
     l3.setNumberValue(8889728897389425);
     p.getPackagedElements().add(l1);
     p.getPackagedElements().add(l2);
     p.getPackagedElements().add(l3);
+    p.getPackagedElements().add(ln);
 
     string expectedEmit = R""""(package:
   id: e_ob7tgbN16Plhj_sTAOVD5ijLrL
@@ -63,7 +66,9 @@ TEST_F(LiteralsParserTest, testEmitLiteralUnlimitedNatural) {
         value: "*"
     - literalUnlimitedNatural:
         id: 8&K_0aLhvQDM12ZeYg9nPiSrexHo
-        value: 8889728897389425)"""";
+        value: 8889728897389425
+    - literalNull:
+        id: 4gA4RgL9vKTRYd61D99y1d_Yggj6)"""";
     string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(p));
     cout << generatedEmit << '\n';

@@ -374,6 +374,7 @@ void emitTypedElement(YAML::Emitter& emitter, TypedElement& el) {
 
 void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
     parseNamedElement(node, clazz, data);
+    parseTemplateableElement(node, clazz, data);
 
     if (node["generalizations"]) {
         if (node["generalizations"].IsSequence()) {
@@ -879,6 +880,7 @@ void emitParameter(YAML::Emitter& emitter, Parameter& el) {
 
 void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
     parseNamedElement(node, op, data);
+    parseTemplateableElement(node, op, data);
 
     // TODO: maybe move all this to new function parseBehavioralFeature once the other ones are implemented
     if (node["methods"]) {
@@ -950,6 +952,7 @@ void emitOperation(YAML::Emitter& emitter, Operation& op) {
 void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
 
     parseNamedElement(node, pckg, data);
+    parseTemplateableElement(node, pckg, data); 
 
     if (node["packageMerge"]) {
         if (node["packageMerge"].IsSequence()) {
@@ -1716,6 +1719,31 @@ void emitExpression(YAML::Emitter& emitter, Expression& exp) {
         emitter << YAML::EndMap << YAML::EndMap;
     }
 }
+
+void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data) {
+    if (node["templateSignature"]) {
+        if (node["templateSignature"].IsMap()) {
+            TemplateSignature& signature = data.m_manager->create<TemplateSignature>();
+            parseTemplateSignature(node["templateSignature"], signature, data);
+            el.setOwnedTemplateSignature(&signature);
+        } else {
+            throw UmlParserException("Invalid node type fore templateSignature, must be map " + data.m_path.string() + " line " + to_string(node["templateSignature"].Mark().line));
+        }
+    }
+}
+
+void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, ParserMetaData& data) {
+    parseElement(node, signature, data);
+
+    if (node["ownedParameters"]) {
+        // TODO
+    }
+
+    if (node["parameters"]) {
+        // TODO
+    }
+}
+
 }
 
 }

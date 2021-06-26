@@ -1736,11 +1736,33 @@ void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, Parse
     parseElement(node, signature, data);
 
     if (node["ownedParameters"]) {
-        // TODO
+        if (node["ownedParameters"].IsSequence()) {
+            for (size_t i = 0; i < node["ownedParameters"].size(); i++) {
+                if (node["ownedParameters"][i]["templateParameter"]) {
+                    if (node["ownedParameters"][i]["templateParameter"].IsMap()) {
+                        TemplateParameter& parameter = data.m_manager->create<TemplateParameter>();
+                        parseTemplateParameter(node["ownedParameters"][i]["templateParameter"], parameter, data);
+                        signature.getOwnedParameter().add(parameter);
+                    }
+                }
+            }
+        }
     }
 
     if (node["parameters"]) {
         // TODO
+    }
+}
+
+void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data) {
+    parseElement(node, parameter, data);
+
+    if (node["ownedParameteredElement"]) {
+
+    }
+
+    if (node["parameteredElement"]) {
+
     }
 }
 

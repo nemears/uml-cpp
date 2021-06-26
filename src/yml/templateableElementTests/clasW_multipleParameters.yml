@@ -1,0 +1,17 @@
+---
+  class:
+    templateSignature:
+      ownedParameters:
+        - templateParameter:
+            ownedParameteredElement:
+              primitiveType:
+                name: long
+        - templateParameter:
+            ownedParameteredElement:
+              instanceSpecification:
+                name: test
+        - templateParameter:
+            ownedParameteredElement:
+              literalInt:
+                value: 1
+...

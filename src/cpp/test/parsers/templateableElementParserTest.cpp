@@ -37,3 +37,28 @@ TEST_F(TemplateableElementParserTest, singleEmptyTemplateParameterTest) {
     TemplateParameter* p = s->getOwnedParameter().front();
     ASSERT_EQ(p->getID(), ID::fromString("t9FFOy3xNADeUDNvWJOc&7USIfsf"));
 }
+
+TEST_F(TemplateableElementParserTest, multipleParametersTest) {
+    UmlManager m;
+    Element* el;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "templateableElementTests/clasW_multipleParameters.yml"));
+    ASSERT_EQ(el->getElementType(), ElementType::CLASS);
+    Class* c = dynamic_cast<Class*>(el);
+    ASSERT_TRUE(c->getOwnedTemplateSignature() != 0);
+    TemplateSignature* s = c->getOwnedTemplateSignature();
+    ASSERT_EQ(s->getOwnedParameter().size(), 3);
+    TemplateParameter* p1 = s->getOwnedParameter().front();
+    ASSERT_TRUE(p1->getOwnedParameteredElement() != 0);
+    ASSERT_EQ(p1->getOwnedParameteredElement()->getElementType(), ElementType::PRIMITIVE_TYPE);
+    PrimitiveType* p = dynamic_cast<PrimitiveType*>(p1->getOwnedParameteredElement());
+    ASSERT_EQ(p->getName(), "long");
+    TemplateParameter* p2 = s->getOwnedParameter().get(1);
+    ASSERT_EQ(p2->getOwnedParameteredElement()->getElementType(), ElementType::INSTANCE_SPECIFICATION);
+    InstanceSpecification* i = dynamic_cast<InstanceSpecification*>(p2->getOwnedParameteredElement());
+    ASSERT_EQ(i->getName(), "test");
+    TemplateParameter* p3 = s->getOwnedParameter().back();
+    ASSERT_TRUE(p3->getOwnedParameteredElement() != 0);
+    ASSERT_EQ(p3->getOwnedParameteredElement()->getElementType(), ElementType::LITERAL_INT);
+    LiteralInt* li = dynamic_cast<LiteralInt*>(p3->getOwnedParameteredElement());
+    ASSERT_EQ(li->getValue(), 1);
+}

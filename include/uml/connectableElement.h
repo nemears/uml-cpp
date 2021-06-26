@@ -2,9 +2,10 @@
 #define CONNECTABLE_ELEMENT_H
 
 #include "typedElement.h"
+#include "parameterableElement.h"
 
 namespace UML {
-    class ConnectableElement : virtual public TypedElement {
+    class ConnectableElement : virtual public TypedElement, virtual public ParameterableElement {
         protected:
 
         public:

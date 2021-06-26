@@ -1,9 +1,9 @@
 #ifndef PARAMETERH
 #define PARAMETERH
 
-#include "typedElement.h"
 #include "multiplicityElement.h"
 #include "sequence.h"
+#include "connectableElement.h"
 
 namespace UML {
 
@@ -16,7 +16,7 @@ namespace UML {
         RETURN,
         NONE};
 
-    class Parameter : public TypedElement , public MultiplicityElement {
+    class Parameter : public ConnectableElement , public MultiplicityElement {
         protected:
             ParameterDirectionKind m_direction;
             ID m_operationID;
@@ -24,15 +24,17 @@ namespace UML {
             void reindexID(ID oldID, ID newID) override;
             // void reindexName(std::string oldName, std::string newName) override;
         public:
+            Parameter();
+            Parameter(const Parameter& parameter);
+            virtual ~Parameter();
+            Parameter& operator=(Parameter&&) {
+                return *this;
+            };
             Operation* getOperation();
             void setOperation(Operation* operation);
             ElementType getElementType() const override;
             ParameterDirectionKind getDirection();
             void setDirection(ParameterDirectionKind direction);
-            Parameter() {
-                m_direction = ParameterDirectionKind::NONE;
-                m_operationPtr = 0;
-            }
             std::string getDirectionString();
             void setDirectionString(std::string& directionString);
             class InvalidDirectionException : public std::exception {

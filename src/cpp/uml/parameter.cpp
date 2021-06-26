@@ -43,6 +43,23 @@ void Parameter::reindexID(ID oldID, ID newID) {
 //     NamedElement::reindexName(oldName, newName);
 // }
 
+Parameter::Parameter() {
+    m_direction = ParameterDirectionKind::NONE;
+    m_operationPtr = 0;
+}
+
+Parameter::Parameter(const Parameter& param) : TypedElement(param) , NamedElement(param), Element(param) {
+    m_direction = param.m_direction;
+    m_operationID = param.m_operationID;
+    if (!param.m_manager) {
+        m_operationPtr = param.m_operationPtr;
+    }
+}
+
+Parameter::~Parameter() {
+
+}
+
 Operation* Parameter::getOperation() {
     if (!m_operationID.isNull()) {
         if (!m_operationPtr) {

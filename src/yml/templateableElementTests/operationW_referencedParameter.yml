@@ -1,0 +1,14 @@
+---
+  class:
+    name: two_templates
+    operations:
+      - operation:
+          templateSignature:
+            ownedParameters:
+              - templateParameter:
+                  id: fGtHlUWITxbIKyNFeKCXI4d_3EAc
+      - operation:
+          templateSignature:
+            parameters:
+              - fGtHlUWITxbIKyNFeKCXI4d_3EAc
+...

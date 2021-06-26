@@ -1732,6 +1732,14 @@ void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMe
     }
 }
 
+void AddTemplateParmeterFunctor::operator()(Element& el) const {
+    if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER)) {
+        dynamic_cast<TemplateSignature*>(m_el)->getParameter().add(dynamic_cast<TemplateParameter&>(el));
+    } else {
+        throw UmlParserException("Tried to add parameter to signature that wasn't a parameter! ");
+    }
+}
+
 void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, ParserMetaData& data) {
     parseElement(node, signature, data);
 
@@ -1754,7 +1762,17 @@ void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, Parse
     }
 
     if (node["parameters"]) {
-        // TODO
+        if (node["parameters"].IsSequence()) {
+            for (size_t i = 0; i < node["parameters"].size(); i++) {
+                if (node["parameters"][i].IsScalar()) {
+                    if (isValidID(node["parameters"][i].as<string>())) {
+                        applyFunctor(data, ID::fromString(node["parameters"][i].as<string>()), new AddTemplateParmeterFunctor(&signature, node["parameters"]));
+                    }
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid node type for template signature parameters, should be a sequence, " + data.m_path.string() + to_string(node["parameters"].Mark().line));
+        }
     }
 }
 

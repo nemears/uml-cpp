@@ -106,6 +106,12 @@ namespace UML {
                     SetGeneralFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
                     void operator()(Element& el) const override;
             };
+
+            class AddTemplateParmeterFunctor : public AbstractPostProcessFunctor {
+                public:
+                    AddTemplateParmeterFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            }; 
             void emitModel(YAML::Emitter& emitter, Model& model);
             void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
             void emitElement(YAML::Emitter& emitter, Element& el);
@@ -165,7 +171,7 @@ namespace UML {
             void emitExpression(YAML::Emitter& emitter, Expression& exp);
             void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data);
             void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, ParserMetaData& data);
-            void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data); // TODO
+            void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data);
         }
     }
 }

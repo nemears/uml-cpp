@@ -62,3 +62,23 @@ TEST_F(TemplateableElementParserTest, multipleParametersTest) {
     LiteralInt* li = dynamic_cast<LiteralInt*>(p3->getOwnedParameteredElement());
     ASSERT_EQ(li->getValue(), 1);
 }
+
+TEST_F(TemplateableElementParserTest, referencedParameterTest) {
+    UmlManager m;
+    Element* el;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "templateableElementTests/operationW_referencedParameter.yml"));
+    ASSERT_EQ(el->getElementType() , ElementType::CLASS);
+    Class& c = dynamic_cast<Class&>(*el);
+    ASSERT_EQ(c.getOperations().size(), 2);
+    Operation& o1 = *c.getOperations().front();
+    ASSERT_TRUE(o1.getOwnedTemplateSignature() != 0);
+    TemplateSignature& s1 = *o1.getOwnedTemplateSignature();
+    ASSERT_EQ(s1.getOwnedParameter().size(), 1);
+    TemplateParameter& p = *s1.getOwnedParameter().front();
+    ASSERT_EQ(p.getID(), ID::fromString("fGtHlUWITxbIKyNFeKCXI4d_3EAc"));
+    Operation& o2 = *c.getOperations().back();
+    ASSERT_TRUE(o2.getOwnedTemplateSignature() != 0);
+    TemplateSignature& s2 = *o2.getOwnedTemplateSignature();
+    ASSERT_EQ(s2.getParameter().size(), 1);
+    ASSERT_EQ(s2.getParameter().front()->getID(), p.getID());
+}

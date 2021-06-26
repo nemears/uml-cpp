@@ -111,7 +111,13 @@ namespace UML {
                 public:
                     AddTemplateParmeterFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
                     void operator()(Element& el) const override;
-            }; 
+            };
+
+            class SetParameteredElementFunctor : public AbstractPostProcessFunctor {
+                public:
+                    SetParameteredElementFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
             void emitModel(YAML::Emitter& emitter, Model& model);
             void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
             void emitElement(YAML::Emitter& emitter, Element& el);

@@ -10,6 +10,10 @@ bool ConnectableElement::isSubClassOf(ElementType eType) const {
     bool ret = TypedElement::isSubClassOf(eType);
 
     if (!ret) {
+        ret = ParameterableElement::isSubClassOf(eType);
+    }
+
+    if (!ret) {
         ret = eType == ElementType::CONNECTABLE_ELEMENT;
     }
 

@@ -1,0 +1,12 @@
+---
+  class:
+    ownedAttributes:
+      - property:
+          id: B2dyPF44MATTZ02XsQwgcbeBsq&d
+    operations:
+      - operation:
+          templateSignature:
+            ownedParameters:
+              - templateParameter:
+                  parameteredElement: B2dyPF44MATTZ02XsQwgcbeBsq&d
+...

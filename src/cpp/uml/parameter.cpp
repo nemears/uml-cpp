@@ -148,7 +148,7 @@ void Parameter::setDirectionString(string& directionString) {
 }
 
 bool Parameter::isSubClassOf(ElementType eType) const {
-    bool ret = TypedElement::isSubClassOf(eType);
+    bool ret = ConnectableElement::isSubClassOf(eType);
 
     if (!ret) {
         ret = MultiplicityElement::isSubClassOf(eType);

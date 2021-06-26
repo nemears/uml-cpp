@@ -1776,6 +1776,14 @@ void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, Parse
     }
 }
 
+void SetParameteredElementFunctor::operator()(Element& el) const {
+    if (el.isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
+        dynamic_cast<TemplateParameter*>(m_el)->setParameteredElement(dynamic_cast<ParameterableElement*>(&el));
+    } else {
+        throw UmlParserException("Tried to assign non-parameterable element to TemplateParameter parameteredElement!");
+    }
+}
+
 void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data) {
     parseElement(node, parameter, data);
 
@@ -1932,7 +1940,11 @@ void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, Parse
     }
 
     if (node["parameteredElement"]) {
-        // TODO
+        if (node["parameteredElement"].IsScalar()) {
+            if (isValidID(node["parameteredElement"].as<string>())) {
+                applyFunctor(data, ID::fromString(node["parameteredElement"].as<string>()), new SetParameteredElementFunctor(&parameter, node["parameteredElement"]));
+            }
+        }
     }
 }
 

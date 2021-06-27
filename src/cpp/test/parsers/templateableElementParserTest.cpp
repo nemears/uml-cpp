@@ -101,3 +101,22 @@ TEST_F(TemplateableElementParserTest, referenceParameteredElementTest) {
     ASSERT_TRUE(p.getParameteredElement() != 0);
     ASSERT_EQ(p.getParameteredElement()->getID(), prop.getID());
 }
+
+TEST_F(TemplateableElementParserTest, basicTemplateBindingTest) {
+    UmlManager m;
+    Element* el;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "templateableElementTests/templateBinding.yml"));
+    ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
+    Package& pckg = dynamic_cast<Package&>(*el);
+    ASSERT_EQ(pckg.getPackagedElements().size(), 2);
+    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::CLASS);
+    Class& c1 = dynamic_cast<Class&>(*pckg.getPackagedElements().front());
+    ASSERT_TRUE(c1.getOwnedTemplateSignature() != 0);
+    TemplateSignature& s = *c1.getOwnedTemplateSignature();
+    ASSERT_EQ(pckg.getPackagedElements().back()->getElementType(), ElementType::CLASS);
+    Class& c2 = dynamic_cast<Class&>(*pckg.getPackagedElements().back());
+    ASSERT_TRUE(c2.getTemplateBinding() != 0);
+    TemplateBinding& b = *c2.getTemplateBinding();
+    ASSERT_TRUE(b.getSignature() != 0);
+    ASSERT_EQ(b.getSignature()->getID(), s.getID());
+}

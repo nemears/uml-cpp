@@ -1,0 +1,10 @@
+---
+  package:
+    packagedElements:
+      - class:
+          templateSignature:
+            id: LZNsKPxKJ7fB3775xyVUNLKn9SZ4
+      - class:
+          templateBinding:
+            signature: LZNsKPxKJ7fB3775xyVUNLKn9SZ4
+...

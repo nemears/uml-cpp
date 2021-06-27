@@ -1730,6 +1730,16 @@ void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMe
             throw UmlParserException("Invalid node type fore templateSignature, must be map " + data.m_path.string() + " line " + to_string(node["templateSignature"].Mark().line));
         }
     }
+
+    if (node["templateBinding"]) {
+        if (node["templateBinding"].IsMap()) {
+            TemplateBinding& binding = data.m_manager->create<TemplateBinding>();
+            parseTemplateBinding(node["templateBinding"], binding, data);
+            el.setTemplateBinding(&binding);
+        } else {
+            throw UmlParserException("Invalid YAML node for templateBinding definition, " + data.m_path.string() + " line " + to_string(node["templateBinding"].Mark().line));
+        }
+    }
 }
 
 void AddTemplateParmeterFunctor::operator()(Element& el) const {
@@ -1948,6 +1958,30 @@ void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, Parse
             }
         } else {
             throw UmlParserException("Invalid YAML node type for parameteredElement, must be scalar " + data.m_path.string() + " line " + to_string(node["parameteredElement"].Mark().line));
+        }
+    }
+}
+
+void SetSignatureFunctor::operator()(Element& el) const {
+    if (el.isSubClassOf(ElementType::TEMPLATE_SIGNATURE)) {
+        dynamic_cast<TemplateBinding*>(m_el)->setSignature(dynamic_cast<TemplateSignature*>(&el));
+    } else {
+        throw UmlParserException("Tried to set binding signature to not signature, line " + to_string(m_node.Mark().line));
+    }
+}
+
+void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaData& data) {
+    parseElement(node, binding, data);
+
+    if (node["signature"]) {
+        if (node["signature"].IsScalar()) {
+            if (isValidID(node["signature"].as<string>())) {
+                applyFunctor(data, ID::fromString(node["signature"].as<string>()), new SetSignatureFunctor(&binding, node["signature"]));
+            } else {
+                throw UmlParserException("TemplateBinding signature not a valid id, must be base64 url safe 28 character string " + data.m_path.string() + " line " + to_string(node["signature"].Mark().line));
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for templateBinding signature, must be scaler, " + data.m_path.string() + " line " + to_string(node["signature"].Mark().line));
         }
     }
 }

@@ -1943,7 +1943,11 @@ void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, Parse
         if (node["parameteredElement"].IsScalar()) {
             if (isValidID(node["parameteredElement"].as<string>())) {
                 applyFunctor(data, ID::fromString(node["parameteredElement"].as<string>()), new SetParameteredElementFunctor(&parameter, node["parameteredElement"]));
+            } else {
+                throw UmlParserException("Invalid id for parametered element, must be base64 url safe 28 character string! " + data.m_path.string());
             }
+        } else {
+            throw UmlParserException("Invalid YAML node type for parameteredElement, must be scalar " + data.m_path.string() + " line " + to_string(node["parameteredElement"].Mark().line));
         }
     }
 }

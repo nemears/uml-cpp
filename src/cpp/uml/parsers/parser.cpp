@@ -1984,6 +1984,39 @@ void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaD
             throw UmlParserException("Invalid yaml node type for templateBinding signature, must be scaler, " + data.m_path.string() + " line " + to_string(node["signature"].Mark().line));
         }
     }
+
+    if (node["parameterSubstitution"]) {
+        if (node["parameterSubstitution"].IsMap()) {
+            TemplateParameterSubstitution& sub = data.m_manager->create<TemplateParameterSubstitution>();
+            parseTemplateParameterSubstitution(node["parameterSubstitution"], sub, data);
+            binding.setParameterSubstitution(&sub);
+        } else {
+            throw UmlParserException("Invalid YAML node type, must be map, " + data.m_path.string() + " line " + to_string(node["parameterSubstitution"].Mark().line));
+        }
+    }
+}
+
+void SetFormalFunctor::operator()(Element& el) const {
+    if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER)) {
+        dynamic_cast<TemplateParameterSubstitution*>(m_el)->setFormal(dynamic_cast<TemplateParameter*>(&el));
+    } else {
+        throw UmlParserException("TemplateParameterSubstitution formal must be a templateParameter " + to_string(m_node.Mark().line));
+    }
+};
+
+void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data) {
+    parseElement(node, sub, data);
+
+    if (node["formal"]) {
+        if (node["formal"].IsScalar()) {
+            if (isValidID(node["formal"].as<string>())) {
+                applyFunctor(data, ID::fromString(node["formal"].as<string>()), new SetFormalFunctor(&sub, node["formal"]));
+            }
+        } else {
+            throw UmlParserException("Invalid YAML node type, must be scalar for formal, " + data.m_path.string() + " line " + to_string(node["formal"].Mark().line));
+        }
+    }
+    // TODO
 }
 
 }

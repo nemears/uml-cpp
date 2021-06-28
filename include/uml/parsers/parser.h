@@ -125,6 +125,12 @@ namespace UML {
                     SetSignatureFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
                     void operator()(Element& el) const override;
             };
+
+            class SetFormalFunctor : public AbstractPostProcessFunctor {
+                public:
+                    SetFormalFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
             void emitModel(YAML::Emitter& emitter, Model& model);
             void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
             void emitElement(YAML::Emitter& emitter, Element& el);
@@ -186,6 +192,7 @@ namespace UML {
             void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, ParserMetaData& data);
             void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data);
             void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaData& data);
+            void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data);
         }
     }
 }

@@ -65,8 +65,8 @@ void TemplateParameterSubstitution::setTemplateBinding(TemplateBinding* bind) {
         m_templateBindingID = ID::nullID();
         m_templateBindingPtr = 0;
 
-        if (temp->getParameterSubstitution() == this) {
-            temp->setParameterSubstitution(0);
+        if (temp->getParameterSubstitution().count(m_id)) {
+            temp->getParameterSubstitution().remove(*this);
         }
     }
 
@@ -79,8 +79,8 @@ void TemplateParameterSubstitution::setTemplateBinding(TemplateBinding* bind) {
     }
 
     if (bind) {
-        if (bind->getParameterSubstitution() != this) {
-            bind->setParameterSubstitution(0);
+        if (!bind->getParameterSubstitution().count(m_id)) {
+            bind->getParameterSubstitution().add(*this);
         }
     }
 }

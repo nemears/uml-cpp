@@ -7,23 +7,34 @@
 
 namespace UML {
     class TemplateBinding : public DirectedRelationship {
+        friend class UmlManager;
         private:
             ID m_boundElementID;
             TemplateableElement* m_boundElementPtr;
             ID m_signatureID;
             TemplateSignature* m_signaturePtr;
-            ID m_parameterSubstitutionID;
-            TemplateParameterSubstitution* m_parameterSubstitutionPtr;
+            Sequence<TemplateParameterSubstitution> m_parameterSubstitution;
+
+            class AddParameterSubstitutionFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddParameterSubstitutionFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
+            class RemoveParameterSubstitutionFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveParameterSubstitutionFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
+            void setManager(UmlManager* manager) override;
         public:
             TemplateBinding();
             TemplateBinding(const TemplateBinding& bind);
             ~TemplateBinding();
-            TemplateableElement* getBoundElement();
+            TemplateableElement* getBoundElement(); 
             void setBoundElement(TemplateableElement* el);
             TemplateSignature* getSignature();
             void setSignature(TemplateSignature* signature);
-            TemplateParameterSubstitution* getParameterSubstitution();
-            void setParameterSubstitution(TemplateParameterSubstitution* sub);
+            Sequence<TemplateParameterSubstitution>& getParameterSubstitution();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

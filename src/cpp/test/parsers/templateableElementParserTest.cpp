@@ -140,8 +140,8 @@ TEST_F(TemplateableElementParserTest, parameterSubstitutionW_formalTest) {
     TemplateBinding& b = *c2.getTemplateBinding();
     ASSERT_TRUE(b.getSignature() != 0);
     ASSERT_EQ(b.getSignature()->getID(), s.getID());
-    ASSERT_TRUE(b.getParameterSubstitution() != 0);
-    TemplateParameterSubstitution& ps = *b.getParameterSubstitution();
+    ASSERT_EQ(b.getParameterSubstitution().size(), 1);
+    TemplateParameterSubstitution& ps = *b.getParameterSubstitution().front();
     ASSERT_TRUE(ps.getFormal() != 0);
     ASSERT_EQ(ps.getFormal()->getID(), t.getID());
 }

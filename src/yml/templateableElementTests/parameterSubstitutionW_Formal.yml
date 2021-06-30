@@ -11,5 +11,6 @@
           templateBinding:
             signature: t9DEpJVxrlACAQsPLxoHMRPPpDUq
             parameterSubstitution:
-              formal: Yw0uEQ8ZDsgZx4bogVkuxvBL9CGR
+              - templateParameterSubstitution:
+                  formal: Yw0uEQ8ZDsgZx4bogVkuxvBL9CGR
 ...

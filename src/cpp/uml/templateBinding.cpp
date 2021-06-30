@@ -2,16 +2,45 @@
 
 using namespace UML;
 
+void TemplateBinding::AddParameterSubstitutionFunctor::operator()(Element& el) const {
+    if(dynamic_cast<TemplateParameterSubstitution&>(el).getTemplateBinding() != m_el) {
+        dynamic_cast<TemplateParameterSubstitution&>(el).setTemplateBinding(dynamic_cast<TemplateBinding*>(m_el));
+    }
+
+    if (!m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalAdd(el);
+    }
+}
+
+void TemplateBinding::RemoveParameterSubstitutionFunctor::operator()(Element& el) const {
+    if(dynamic_cast<TemplateParameterSubstitution&>(el).getTemplateBinding() == m_el) {
+        dynamic_cast<TemplateParameterSubstitution&>(el).setTemplateBinding(0);
+    }
+
+    if (m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalRemove(el);
+    }
+}
+
+void TemplateBinding::setManager(UmlManager* manager) {
+    DirectedRelationship::setManager(manager);
+    m_parameterSubstitution.m_manager = manager;
+}
+
 TemplateBinding::TemplateBinding() {
     m_boundElementPtr = 0;
     m_signaturePtr = 0;
-    m_parameterSubstitutionPtr = 0;
+    m_parameterSubstitution.addProcedures.push_back(new AddParameterSubstitutionFunctor(this));
+    m_parameterSubstitution.removeProcedures.push_back(new RemoveParameterSubstitutionFunctor(this));
 }
 
 TemplateBinding::TemplateBinding(const TemplateBinding& bind) {
     m_boundElementID = bind.m_boundElementID;
     m_signatureID = bind.m_signatureID;
-    m_parameterSubstitutionID = bind.m_parameterSubstitutionID;
+    m_parameterSubstitution.addProcedures.clear();
+    m_parameterSubstitution.addProcedures.push_back(new AddParameterSubstitutionFunctor(this));
+    m_parameterSubstitution.removeProcedures.clear();
+    m_parameterSubstitution.removeProcedures.push_back(new RemoveParameterSubstitutionFunctor(this));
 }
 
 TemplateBinding::~TemplateBinding() {
@@ -106,44 +135,38 @@ void TemplateBinding::setSignature(TemplateSignature* signature) {
     }
 }
 
-TemplateParameterSubstitution* TemplateBinding::getParameterSubstitution() {
-    if (!m_parameterSubstitutionID.isNull()) {
-        if (!m_parameterSubstitutionPtr) {
-            m_parameterSubstitutionPtr = &m_manager->get<TemplateParameterSubstitution>(m_parameterSubstitutionID);
-        }
-        return m_parameterSubstitutionPtr;
-    }
-    return 0;
+Sequence<TemplateParameterSubstitution>& TemplateBinding::getParameterSubstitution() {
+    return m_parameterSubstitution;
 }
 
-void TemplateBinding::setParameterSubstitution(TemplateParameterSubstitution* sub) {
-    if (!isSameOrNull(m_parameterSubstitutionID, sub)) {
-        if (!m_parameterSubstitutionPtr) {
-            m_parameterSubstitutionPtr = &m_manager->get<TemplateParameterSubstitution>(m_parameterSubstitutionID);
-        }
+// void TemplateBinding::setParameterSubstitution(TemplateParameterSubstitution* sub) {
+//     if (!isSameOrNull(m_parameterSubstitutionID, sub)) {
+//         if (!m_parameterSubstitutionPtr) {
+//             m_parameterSubstitutionPtr = &m_manager->get<TemplateParameterSubstitution>(m_parameterSubstitutionID);
+//         }
 
-        if (m_parameterSubstitutionPtr->getTemplateBinding() == this) {
-            m_parameterSubstitutionPtr->setTemplateBinding(0);
-        }
+//         if (m_parameterSubstitutionPtr->getTemplateBinding() == this) {
+//             m_parameterSubstitutionPtr->setTemplateBinding(0);
+//         }
 
-        m_parameterSubstitutionPtr = 0;
-        m_parameterSubstitutionID = ID::nullID();
-    }
+//         m_parameterSubstitutionPtr = 0;
+//         m_parameterSubstitutionID = ID::nullID();
+//     }
 
-    if (sub) {
-        m_parameterSubstitutionID = sub->getID();
-    }
+//     if (sub) {
+//         m_parameterSubstitutionID = sub->getID();
+//     }
 
-    if (!m_manager) {
-        m_parameterSubstitutionPtr = sub;
-    }
+//     if (!m_manager) {
+//         m_parameterSubstitutionPtr = sub;
+//     }
 
-    if (sub) {
-        if (sub->getTemplateBinding() != this) {
-            sub->setTemplateBinding(this);
-        }
-    }
-}
+//     if (sub) {
+//         if (sub->getTemplateBinding() != this) {
+//             sub->setTemplateBinding(this);
+//         }
+//     }
+// }
 
 ElementType TemplateBinding::getElementType() const {
     return ElementType::TEMPLATE_BINDING;

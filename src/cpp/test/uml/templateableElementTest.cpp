@@ -314,15 +314,15 @@ TEST_F(TemplateableElementTest, setFormalParameterTest) {
     s.getOwnedParameter().add(p);
     b.setBoundElement(&bc);
     b.setSignature(&s);
-    b.setParameterSubstitution(&ps);
+    b.getParameterSubstitution().add(ps);
     pp.setOwnedParameteredElement(&t);
     ps.setFormal(&pp);
     ASSERT_TRUE(ps.getFormal() != 0);
     ASSERT_EQ(ps.getFormal()->getID(), pp.getID());
     ASSERT_TRUE(ps.getTemplateBinding() != 0);
     ASSERT_EQ(ps.getTemplateBinding()->getID(), b.getID());
-    ASSERT_TRUE(b.getParameterSubstitution() != 0);
-    ASSERT_EQ(b.getParameterSubstitution()->getID(), ps.getID());
+    ASSERT_EQ(b.getParameterSubstitution().size(), 1);
+    ASSERT_EQ(b.getParameterSubstitution().front()->getID(), ps.getID());
 }
 
 TEST_F(TemplateableElementTest, overrideFormalTest) {
@@ -340,7 +340,7 @@ TEST_F(TemplateableElementTest, overrideFormalTest) {
     s.getOwnedParameter().add(p);
     b.setBoundElement(&bc);
     b.setSignature(&s);
-    b.setParameterSubstitution(&ps);
+    b.getParameterSubstitution().add(ps);
     pp.setOwnedParameteredElement(&t);
     ps.setFormal(&pp);
     ps.setFormal(&pp2);
@@ -348,31 +348,31 @@ TEST_F(TemplateableElementTest, overrideFormalTest) {
     ASSERT_EQ(ps.getFormal()->getID(), pp2.getID());
     ASSERT_TRUE(ps.getTemplateBinding() != 0);
     ASSERT_EQ(ps.getTemplateBinding()->getID(), b.getID());
-    ASSERT_TRUE(b.getParameterSubstitution() != 0);
-    ASSERT_EQ(b.getParameterSubstitution()->getID(), ps.getID());
+    ASSERT_EQ(b.getParameterSubstitution().size(), 1);
+    ASSERT_EQ(b.getParameterSubstitution().front()->getID(), ps.getID());
 }
 
-TEST_F(TemplateableElementTest, overrideParameterSubstitutionTest) {
-    UmlManager m;
-    Class& c = m.create<Class>();
-    TemplateSignature& s = m.create<TemplateSignature>();
-    TemplateBinding& b = m.create<TemplateBinding>();
-    Class& bc = m.create<Class>();
-    TemplateParameter& p = m.create<TemplateParameter>();
-    TemplateParameterSubstitution& ps = m.create<TemplateParameterSubstitution>();
-    TemplateParameterSubstitution& ps2 = m.create<TemplateParameterSubstitution>();
-    c.setOwnedTemplateSignature(&s);
-    s.getOwnedParameter().add(p);
-    b.setBoundElement(&bc);
-    b.setSignature(&s);
-    b.setParameterSubstitution(&ps);
-    b.setParameterSubstitution(&ps2);
-    ASSERT_TRUE(ps.getTemplateBinding() == 0);
-    ASSERT_TRUE(ps2.getTemplateBinding() != 0);
-    ASSERT_EQ(ps2.getTemplateBinding()->getID(), b.getID());
-    ASSERT_TRUE(b.getParameterSubstitution() != 0);
-    ASSERT_EQ(b.getParameterSubstitution()->getID(), ps2.getID());
-}
+// TEST_F(TemplateableElementTest, overrideParameterSubstitutionTest) {
+//     UmlManager m;
+//     Class& c = m.create<Class>();
+//     TemplateSignature& s = m.create<TemplateSignature>();
+//     TemplateBinding& b = m.create<TemplateBinding>();
+//     Class& bc = m.create<Class>();
+//     TemplateParameter& p = m.create<TemplateParameter>();
+//     TemplateParameterSubstitution& ps = m.create<TemplateParameterSubstitution>();
+//     TemplateParameterSubstitution& ps2 = m.create<TemplateParameterSubstitution>();
+//     c.setOwnedTemplateSignature(&s);
+//     s.getOwnedParameter().add(p);
+//     b.setBoundElement(&bc);
+//     b.setSignature(&s);
+//     b.setParameterSubstitution(&ps);
+//     b.setParameterSubstitution(&ps2);
+//     ASSERT_TRUE(ps.getTemplateBinding() == 0);
+//     ASSERT_TRUE(ps2.getTemplateBinding() != 0);
+//     ASSERT_EQ(ps2.getTemplateBinding()->getID(), b.getID());
+//     ASSERT_TRUE(b.getParameterSubstitution() != 0);
+//     ASSERT_EQ(b.getParameterSubstitution()->getID(), ps2.getID());
+// }
 
 TEST_F(TemplateableElementTest, setActualTest) {
     UmlManager m;

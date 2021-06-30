@@ -1986,12 +1986,22 @@ void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaD
     }
 
     if (node["parameterSubstitution"]) {
-        if (node["parameterSubstitution"].IsMap()) {
-            TemplateParameterSubstitution& sub = data.m_manager->create<TemplateParameterSubstitution>();
-            parseTemplateParameterSubstitution(node["parameterSubstitution"], sub, data);
-            binding.setParameterSubstitution(&sub);
+        if (node["parameterSubstitution"].IsSequence()) {
+            for (size_t i = 0; i < node["parameterSubstitution"].size(); i++) {
+                if (node["parameterSubstitution"][i]["templateParameterSubstitution"]) {
+                    if (node["parameterSubstitution"][i]["templateParameterSubstitution"].IsMap()) {
+                        TemplateParameterSubstitution& sub = data.m_manager->create<TemplateParameterSubstitution>();
+                        parseTemplateParameterSubstitution(node["parameterSubstitution"][i]["templateParameterSubstitution"], sub, data);
+                        binding.getParameterSubstitution().add(sub);
+                    } else {
+                        throw UmlParserException("TODO");
+                    }
+                } else {
+                    throw UmlParserException("ERROR, templateParameterSubstitution must be defined within parameterSubstitution sequence, " + data.m_path.string() + " line " + to_string(node["signature"].Mark().line));
+                }
+            }
         } else {
-            throw UmlParserException("Invalid YAML node type, must be map, " + data.m_path.string() + " line " + to_string(node["parameterSubstitution"].Mark().line));
+            throw UmlParserException("Invalid YAML node type, must be sequence, " + data.m_path.string() + " line " + to_string(node["parameterSubstitution"].Mark().line));
         }
     }
 }
@@ -2016,7 +2026,14 @@ void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubsti
             throw UmlParserException("Invalid YAML node type, must be scalar for formal, " + data.m_path.string() + " line " + to_string(node["formal"].Mark().line));
         }
     }
-    // TODO
+    
+    if (node["ownedActual"]) {
+        // TODO
+    }
+
+    if (node["actual"]) {
+
+    }
 }
 
 }

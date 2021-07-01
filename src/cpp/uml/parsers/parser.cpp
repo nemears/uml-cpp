@@ -694,6 +694,79 @@ void emitOpaqueBehavior(YAML::Emitter& emitter, OpaqueBehavior& bhv) {
     }
 }
 
+ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserMetaData& data) {
+    if (node["expression"]) {
+        if (node["expression"].IsMap()) {
+            Expression& newExp = data.m_manager->create<Expression>();
+            parseExpression(node["expression"], newExp, data);
+            return newExp;
+        } else {
+            throw UmlParserException("Invalid YAML node type, ", data.m_path.string(), node["expression"]);
+        }
+    } else if (node["literalBool"]) {
+        if (node["literalBool"].IsMap()) {
+            LiteralBool& lb = data.m_manager->create<LiteralBool>();
+            parseLiteralBool(node["literalBool"], lb, data);
+            return lb;
+        } else {
+            throw UmlParserException("Improper YAML node type, ", data.m_path.string(), node["literalBool"]);
+        }
+    } else if (node["literalInt"]) {
+        if (node["literalInt"].IsMap()) {
+            LiteralInt& li = data.m_manager->create<LiteralInt>();
+            parseLiteralInt(node["literalInt"], li, data);
+            return li;
+        } else {
+            throw UmlParserException("Improper YAML node type, ", data.m_path.string(), node["literalInt"]);
+        }
+    } else if (node["literalNull"]) {
+        if (node["literalNull"].IsMap()) {
+            LiteralNull& ln = data.m_manager->create<LiteralNull>();
+            parseTypedElement(node["literalNull"], ln, data);
+            return ln;
+        } else {
+            throw UmlParserException("Improper YAML node type, ", data.m_path.string(), node["literalNull"]);
+        }
+    } else if (node["literalReal"]) {
+        if (node["literalReal"].IsMap()) {
+            LiteralReal& lr = data.m_manager->create<LiteralReal>();
+            parseLiteralReal(node["literalReal"], lr, data);
+            return lr;
+        } else {
+            throw UmlParserException("Improper YAML node type, ", data.m_path.string(), node["literalReal"]);
+        }
+    } else if (node["literalString"]) {
+        if (node["literalString"].IsMap()) {
+            LiteralString& ls = data.m_manager->create<LiteralString>();
+            parseLiteralString(node["literalString"], ls, data);
+            return ls;
+        } else {
+            throw UmlParserException("Improper YAML node type, ", data.m_path.string(), node["literalString"]);
+        }
+    } else if (node["literalUnlimtedNatural"]) {
+        if (node["literalUnlimitedNatural"]) {
+            LiteralUnlimitedNatural& ln = data.m_manager->create<LiteralUnlimitedNatural>();
+            parseLiteralUnlimitedNatural(node["literalUnlimitedNatural"], ln, data);
+            return ln;
+        } else {
+            throw UmlParserException("Improper YAML node type, ", data.m_path.string(), node["literalUnlimitedNatural"]);
+        }
+    } else if (node["instanceValue"]) {
+        if (node["instanceValue"].IsMap()) {
+            InstanceValue& iv = data.m_manager->create<InstanceValue>();
+            parseInstanceValue(node["instanceValue"], iv, data);
+            return iv;
+        } else {
+            throw UmlParserException("Improper YAML node type, ", data.m_path.string(), node["instanceValue"]);
+        }
+    } else {
+        throw UmlParserException("Unknown Value Specification, ", data.m_path.string(), node);
+    }
+    ValueSpecification& dumb = data.m_manager->create<ValueSpecification>();
+    dumb.setID(ID::nullID());
+    return dumb;
+}
+
 void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
     parseTypedElement(node, prop, data);
     parseMultiplicityElement(node, prop, data);
@@ -715,73 +788,9 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
 
     if (node["defaultValue"]) {
         if (node["defaultValue"].IsMap()) {
-            if (node["defaultValue"]["expression"]) {
-                if (node["defaultValue"]["expression"].IsMap()) {
-                    Expression& newExp = data.m_manager->create<Expression>();
-                    parseExpression(node["defaultValue"]["expression"], newExp, data);
-                    prop.setDefaultValue(&newExp);
-                } else {
-                    throw UmlParserException("Invalid YAML node type for expression definition, must be map, ", data.m_path.string(), node["defaultValue"]["expression"]);
-                }
-            } else if (node["defaultValue"]["literalBool"]) {
-                if (node["defaultValue"]["literalBool"].IsMap()) {
-                    LiteralBool& lb = data.m_manager->create<LiteralBool>();
-                    parseLiteralBool(node["defaultValue"]["literalBool"], lb, data);
-                    prop.setDefaultValue(&lb);
-                } else {
-                    throw UmlParserException("Improper YAML node type for Properties defaultValue field, ", data.m_path.string(), node["defaultValue"]["literalBool"]);
-                }
-            } else if (node["defaultValue"]["literalInt"]) {
-                if (node["defaultValue"]["literalInt"].IsMap()) {
-                    LiteralInt& li = data.m_manager->create<LiteralInt>();
-                    parseLiteralInt(node["defaultValue"]["literalInt"], li, data);
-                    prop.setDefaultValue(&li);
-                } else {
-                    throw UmlParserException("Improper YAML node type for Properties defaultValue field, ", data.m_path.string(), node["defaultValue"]["literalInt"]);
-                }
-            } else if (node["defaultValue"]["literalNull"]) {
-                if (node["defaultValue"]["literalNull"].IsMap()) {
-                    LiteralNull& ln = data.m_manager->create<LiteralNull>();
-                    parseTypedElement(node["defaultValue"]["literalNull"], ln, data);
-                    prop.setDefaultValue(&ln);
-                } else {
-                    throw UmlParserException("Improper YAML node type for Properties defaultValue field, ", data.m_path.string(), node["defaultValue"]["literalNull"]);
-                }
-            } else if (node["defaultValue"]["literalReal"]) {
-                if (node["defaultValue"]["literalReal"].IsMap()) {
-                    LiteralReal& lr = data.m_manager->create<LiteralReal>();
-                    parseLiteralReal(node["defaultValue"]["literalReal"], lr, data);
-                    prop.setDefaultValue(&lr);
-                } else {
-                    throw UmlParserException("Improper YAML node type for Properties defaultValue field, ", data.m_path.string(), node["defaultValue"]["literalReal"]);
-                }
-            } else if (node["defaultValue"]["literalString"]) {
-                if (node["defaultValue"]["literalString"].IsMap()) {
-                    LiteralString& ls = data.m_manager->create<LiteralString>();
-                    parseLiteralString(node["defaultValue"]["literalString"], ls, data);
-                    prop.setDefaultValue(&ls);
-                } else {
-                    throw UmlParserException("Improper YAML node type for Properties defaultValue field, ", data.m_path.string(), node["defaultValue"]["literalString"]);
-                }
-            } else if (node["defaultValue"]["literalUnlimtedNatural"]) {
-                if (node["defaultValue"]["literalUnlimitedNatural"]) {
-                    LiteralUnlimitedNatural& ln = data.m_manager->create<LiteralUnlimitedNatural>();
-                    parseLiteralUnlimitedNatural(node["defaultValue"]["literalUnlimitedNatural"], ln, data);
-                    prop.setDefaultValue(&ln);
-                } else {
-                    throw UmlParserException("Improper YAML node type for Properties defaultValue field, ", data.m_path.string(), node["defaultValue"]["literalUnlimitedNatural"]);
-                }
-            } else if (node["defaultValue"]["instanceValue"]) {
-                if (node["defaultValue"]["instanceValue"].IsMap()) {
-                    InstanceValue& iv = data.m_manager->create<InstanceValue>();
-                    parseInstanceValue(node["defaultValue"]["instanceValue"], iv, data);
-                    prop.setDefaultValue(&iv);
-                } else {
-                    throw UmlParserException("Improper YAML node type for Properties defaultValue field, ", data.m_path.string(), node["defaultValue"]["instanceValue"]);
-                }
-            } else {
-                throw UmlParserException("Unknown Value Specification for default value field, ", data.m_path.string(), node["defaultValue"]);
-            }
+            prop.setDefaultValue(&determineAndParseValueSpecification(node["defaultValue"], data));
+        } else {
+            throw UmlParserException("Invalid yaml node type, must be Map!", data.m_path.string(), node["defaultValue"]);
         }
     }
 }
@@ -1216,73 +1225,7 @@ void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
     if (node["values"]) {
         if (node["values"].IsSequence()) {
             for (size_t i = 0; i < node["values"].size(); i++) {
-                if (node["values"][i]["expression"]) {
-                    if (node["values"][i]["expression"].IsMap()) {
-                        Expression& newExp = data.m_manager->create<Expression>();
-                        parseExpression(node["values"][i]["expression"], newExp, data);
-                        slot.getValues().add(newExp);
-                    } else {
-                        throw UmlParserException("Invalid YAML node type for expression definition, must be map, ", data.m_path.string(), node["values"][i]["expression"]);
-                    }
-                } else if (node["values"][i]["literalBool"]) {
-                    if (node["values"][i]["literalBool"].IsMap()) {
-                        LiteralBool& lb = data.m_manager->create<LiteralBool>();
-                        parseLiteralBool(node["values"][i]["literalBool"], lb, data);
-                        slot.getValues().add(lb);
-                    } else {
-                        throw UmlParserException("Improper YAML node type for Expression values field, ", data.m_path.string(), node["values"][i]["literalBool"]);
-                    }
-                } else if (node["values"][i]["literalInt"]) {
-                    if (node["values"][i]["literalInt"].IsMap()) {
-                        LiteralInt& li = data.m_manager->create<LiteralInt>();
-                        parseLiteralInt(node["values"][i]["literalInt"], li, data);
-                        slot.getValues().add(li);
-                    } else {
-                        throw UmlParserException("Improper YAML node type for LiteralInt values field, ", data.m_path.string(), node["values"][i]["literalInt"]);
-                    }
-                } else if (node["values"][i]["literalReal"]) {
-                    if (node["values"][i]["literalReal"].IsMap()) {
-                        LiteralReal& lr = data.m_manager->create<LiteralReal>();
-                        parseLiteralReal(node["values"][i]["literalReal"], lr, data);
-                        slot.getValues().add(lr);
-                    } else {
-                        throw UmlParserException("Improper YAML node type for LiteralReal values field, ", data.m_path.string(), node["values"][i]["literalReal"]);
-                    }
-                } else if (node["values"][i]["literalString"]) {
-                    if (node["values"][i]["literalString"].IsMap()) {
-                        LiteralString& ls = data.m_manager->create<LiteralString>();
-                        parseLiteralString(node["values"][i]["literalString"], ls, data);
-                        slot.getValues().add(ls);
-                    } else {
-                        throw UmlParserException("Improper YAML node type for Expression values field, ", data.m_path.string(), node["values"][i]["literalString"]);
-                    }
-                } else if (node["values"][i]["literalNull"]) {
-                    if (node["values"][i]["literalNull"].IsMap()) {
-                        LiteralNull& ln = data.m_manager->create<LiteralNull>();
-                        parseTypedElement(node["values"][i]["literalNull"], ln, data);
-                        slot.getValues().add(ln);
-                    } else {
-                        throw UmlParserException("Improper YAML node type for LiteralNull values field, ", data.m_path.string(), node["values"][i]["literalNull"]);
-                    }
-                } else if (node["values"][i]["literalUnlimitedNatural"]) {
-                    if (node["values"][i]["literalUnlimitedNatural"].IsMap()) {
-                        LiteralUnlimitedNatural& ln = data.m_manager->create<LiteralUnlimitedNatural>();
-                        parseLiteralUnlimitedNatural(node["values"][i]["literalUnlimitedNatural"], ln, data);
-                        slot.getValues().add(ln);
-                    } else {
-                        throw UmlParserException("Improper YAML node type for LiteralUnlimitedNatural values field, ", data.m_path.string(), node["values"][i]["literalUnlimitedNatural"]);
-                    }
-                } else if (node["values"][i]["instanceValue"]) {
-                    if (node["values"][i]["instanceValue"].IsMap()) {
-                        InstanceValue& instVal = data.m_manager->create<InstanceValue>();
-                        parseInstanceValue(node["values"][i]["instanceValue"], instVal, data);
-                        slot.getValues().add(instVal);
-                    } else {
-                        UmlParserException("InstanceValue must be map Node type! ", data.m_path.string(), node["values"][i]["instanceValue"]);
-                    }
-                } else {
-                    throw UmlParserException("unknown value type for slot, ", data.m_path.string(), node["values"][i]);
-                }
+                slot.getValues().add(determineAndParseValueSpecification(node["values"][i], data));
             }
         } else {
             throw UmlParserException("Invalid YAML node type for Slot field values, expected Sequence, ", data.m_path.string(), node["values"]);

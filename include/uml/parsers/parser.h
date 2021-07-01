@@ -143,6 +143,7 @@ namespace UML {
             void emitNamedElement(YAML::Emitter& emitter, NamedElement& el);
             void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data);
             void emitTypedElement(YAML::Emitter& emitter, TypedElement& el);
+            ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserMetaData& data);
             void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data);
             void emitProperty(YAML::Emitter& emitter, Property& prop);
             void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data);

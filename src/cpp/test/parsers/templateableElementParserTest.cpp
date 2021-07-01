@@ -145,3 +145,25 @@ TEST_F(TemplateableElementParserTest, parameterSubstitutionW_formalTest) {
     ASSERT_TRUE(ps.getFormal() != 0);
     ASSERT_EQ(ps.getFormal()->getID(), t.getID());
 }
+
+TEST_F(TemplateableElementParserTest, parameterSubstitutionW_OwnedActualTest) {
+    UmlManager m;
+    Element* el;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "templateableElementTests/parameterSubstitutionW_OwnedActual.yml"));
+    ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
+    Package& pckg = dynamic_cast<Package&>(*el);
+    ASSERT_EQ(pckg.getPackagedElements().size(), 2);
+    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::CLASS);
+    Class& c1 = dynamic_cast<Class&>(*pckg.getPackagedElements().front());
+    ASSERT_TRUE(c1.getOwnedTemplateSignature() != 0);
+    TemplateSignature& s = *c1.getOwnedTemplateSignature();
+    ASSERT_EQ(pckg.getPackagedElements().back()->getElementType(), ElementType::CLASS);
+    Class& c2 = dynamic_cast<Class&>(*pckg.getPackagedElements().back());
+    ASSERT_TRUE(c2.getTemplateBinding() != 0);
+    TemplateBinding& b = *c2.getTemplateBinding();
+    ASSERT_EQ(b.getParameterSubstitution().size(), 1);
+    TemplateParameterSubstitution& p = *b.getParameterSubstitution().front();
+    ASSERT_TRUE(p.getOwnedActual() != 0);
+    ASSERT_EQ(p.getOwnedActual()->getElementType(), ElementType::PRIMITIVE_TYPE);
+    PrimitiveType& t = dynamic_cast<PrimitiveType&>(*p.getOwnedActual());
+}

@@ -1,0 +1,15 @@
+---
+  package:
+    packagedElements:
+      - class:
+          templateSignature:
+            id: BXOJoKsvBCVhMIwUbxRV5ibHYMDf
+      - class:
+          templateBinding:
+            signature: BXOJoKsvBCVhMIwUbxRV5ibHYMDf
+            parameterSubstitution:
+              - templateParameterSubstitution:
+                  ownedActual:
+                   primitiveType:
+                    name: test
+...

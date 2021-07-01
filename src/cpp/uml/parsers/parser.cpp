@@ -1792,159 +1792,173 @@ void SetParameteredElementFunctor::operator()(Element& el) const {
     }
 }
 
+ParameterableElement& determinAndParseParameterableElement(YAML::Node node, ParserMetaData& data) {
+    if (node["activity"]) {
+        // TODO
+    } else if (node["association"]) {
+        // TODO
+    } else if (node["class"]) {
+        if (node["class"].IsMap()) {
+            Class& clazz = data.m_manager->create<Class>();
+            parseClass(node["class"], clazz, data);
+            return clazz;
+        } else {
+            throw UmlParserException("class definition must be of node type Map! ", data.m_path.string(), node["class"]);
+        }
+    } else if (node["dataType"]) {
+        if (node["dataType"].IsMap()) {
+            DataType& dataType = data.m_manager->create<DataType>();
+            parseDataType(node["dataType"], dataType, data);
+            return dataType;
+        } else {
+            throw UmlParserException("dataType definition must be of node type Map! ", data.m_path.string(), node["dataType"]);
+        }
+    } else if (node["enumeration"]) {
+        if (node["enumeration"].IsMap()) {
+            Enumeration& enumeration = data.m_manager->create<Enumeration>();
+            parseEnumeration(node["enumeration"], enumeration, data);
+            return enumeration;
+        } else {
+            throw UmlParserException("enumeration definition must be of node type Map! ", data.m_path.string(), node["enumeration"]);
+        }
+    } else if (node["enumerationLiteral"]) {
+        if (node["enumerationLiteral"].IsMap()) {
+            EnumerationLiteral& literal = data.m_manager->create<EnumerationLiteral>();
+            parseEnumerationLiteral(node["enumerationLiteral"], literal, data);
+            return literal;
+        } else {
+            throw UmlParserException("enumerationLiteral definition must be of node type Map! ", data.m_path.string(), node["enumerationLiteral"]);
+        }
+    } else if (node["instanceSpecification"]) {
+        if (node["instanceSpecification"].IsMap()) {
+            InstanceSpecification& inst = data.m_manager->create<InstanceSpecification>();
+            parseInstanceSpecification(node["instanceSpecification"], inst, data);
+            return inst;
+        } else {
+            throw UmlParserException("instanceSpecification definition must be of node type Map! ", data.m_path.string(), node["instanceSpecification"]);
+        }
+    } else if (node["instanceValue"]) {
+        if (node["instanceValue"].IsMap()) {
+            InstanceValue& inst = data.m_manager->create<InstanceValue>();
+            parseInstanceValue(node["instanceValue"], inst, data);
+            return inst;
+        } else {
+            throw UmlParserException("instanceValue definition must be of node type Map! ", data.m_path.string(), node["instanceValue"]);
+        }
+    } else if (node["literalBool"]) {
+        if (node["literalBool"].IsMap()) {
+            LiteralBool& lb = data.m_manager->create<LiteralBool>();
+            parseLiteralBool(node["literalBool"], lb, data);
+            return lb;
+        } else {
+            throw UmlParserException("literalBool definition must be of node type Map! ", data.m_path.string(), node["literalBool"]);
+        }
+    } else if (node["literalInt"]) {
+        if (node["literalInt"].IsMap()) {
+            LiteralInt& li = data.m_manager->create<LiteralInt>();
+            parseLiteralInt(node["literalInt"], li, data);
+            return li;
+        } else {
+            throw UmlParserException("literalInt definition must be of node type Map! ", data.m_path.string(), node["literalInt"]);
+        }
+    } else if (node["literalNull"]) {
+        if (node["literalNull"].IsMap()) {
+            LiteralNull& ln = data.m_manager->create<LiteralNull>();
+            parseTypedElement(node["literalNull"], ln, data);
+            return ln;
+        } else {
+            throw UmlParserException("literalNull definition must be of node type Map! ", data.m_path.string(), node["literalNull"]);
+        }
+    } else if (node["literalString"]) {
+        if (node["literalString"].IsMap()) {
+            LiteralString& ls = data.m_manager->create<LiteralString>();
+            parseLiteralString(node["literalString"], ls, data);
+            return ls;
+        } else {
+            throw UmlParserException("literalString definition must be of node type Map! ", data.m_path.string(), node["literalString"]);
+        }
+    } else if (node["literalUnlimitedNatural"]) {
+        if (node["literalUnlimitedNatural"].IsMap()) {
+            LiteralUnlimitedNatural& lu = data.m_manager->create<LiteralUnlimitedNatural>();
+            parseLiteralUnlimitedNatural(node["literalUnlimitedNatural"], lu, data);
+            return lu;
+        } else {
+            throw UmlParserException("literalUnlimitedNatural definition must be of node type Map! ", data.m_path.string(), node["literalUnlimitedNatural"]);
+        }
+    } else if (node["model"]) {
+        if (node["model"].IsMap()) {
+            Model& m = data.m_manager->create<Model>();
+            parsePackage(node["model"], m, data);
+            return m;
+        } else {
+            throw UmlParserException("model definition must be of node type Map! ", data.m_path.string(), node["model"]);
+        }
+    } else if (node["opaqueBehavior"]) {
+        if (node["opaqueBehavior"].IsMap()) {
+            OpaqueBehavior& ob = data.m_manager->create<OpaqueBehavior>();
+            parseOpaqueBehavior(node["opaqueBehavior"], ob, data);
+            return ob;
+        } else {
+            throw UmlParserException("opaqueBehavior definition must be of node type Map! ", data.m_path.string(), node["opaqueBehavior"]);
+        }
+    } else if (node["operation"]) {
+        if (node["operation"].IsMap()) {
+            Operation& op = data.m_manager->create<Operation>();
+            parseOperation(node["operation"], op, data);
+            return op;
+        } else {
+            throw UmlParserException("operation definition must be of node type Map! ", data.m_path.string(), node["operation"]);
+        }
+    } else if (node["package"]) {
+        if (node["package"].IsMap()) {
+            Package& pckg = data.m_manager->create<Package>();
+            parsePackage(node["package"], pckg, data);
+            return pckg;
+        } else {
+            throw UmlParserException("package definition must be of node type Map! ", data.m_path.string(), node["package"]);
+        }
+    } else if (node["parameter"]) {
+        if (node["parameter"].IsMap()) {
+            Parameter& param = data.m_manager->create<Parameter>();
+            parseParameter(node["parameter"], param, data);
+            return param;
+        } else {
+            throw UmlParserException("parameter definition must be of node type Map! ", data.m_path.string(), node["parameter"]);
+        }
+    } else if (node["primitiveType"]) {
+        if (node["primitiveType"].IsMap()) {
+            PrimitiveType& prim = data.m_manager->create<PrimitiveType>();
+            parsePrimitiveType(node["primitiveType"], prim, data);
+            return prim;
+        } else {
+            throw UmlParserException("primitiveType definition must be of node type Map! ", data.m_path.string(), node["primitiveType"]);
+        }
+    } else if (node["property"]) {
+        if (node["property"].IsMap()) {
+            Property& prop = data.m_manager->create<Property>();
+            parseProperty(node["property"], prop, data);
+            return prop;
+        } else {
+            throw UmlParserException("property definition must be of node type Map! ", data.m_path.string(), node["property"]);
+        }
+    } else {
+        throw UmlParserException("not a parametered element! ", data.m_path.string(), node);
+    }
+
+    ParameterableElement& dumb = data.m_manager->create<ParameterableElement>();
+    dumb.setID(ID::nullID());
+    return dumb;
+}
+
 void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data) {
     parseElement(node, parameter, data);
 
     if (node["ownedParameteredElement"]) {
-        if (node["ownedParameteredElement"]["activity"]) {
-            // TODO
-        } else if (node["ownedParameteredElement"]["association"]) {
-            // TODO
-        } else if (node["ownedParameteredElement"]["class"]) {
-            if (node["ownedParameteredElement"]["class"].IsMap()) {
-                Class& clazz = data.m_manager->create<Class>();
-                parseClass(node["ownedParameteredElement"]["class"], clazz, data);
-                parameter.setOwnedParameteredElement(&clazz);
-            } else {
-                throw UmlParserException("class definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["class"]);
-            }
-        } else if (node["ownedParameteredElement"]["dataType"]) {
-            if (node["ownedParameteredElement"]["dataType"].IsMap()) {
-                DataType& dataType = data.m_manager->create<DataType>();
-                parseDataType(node["ownedParameteredElement"]["dataType"], dataType, data);
-                parameter.setOwnedParameteredElement(&dataType);
-            } else {
-                throw UmlParserException("dataType definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["dataType"]);
-            }
-        } else if (node["ownedParameteredElement"]["enumeration"]) {
-            if (node["ownedParameteredElement"]["enumeration"].IsMap()) {
-                Enumeration& enumeration = data.m_manager->create<Enumeration>();
-                parseEnumeration(node["ownedParameteredElement"]["enumeration"], enumeration, data);
-                parameter.setOwnedParameteredElement(&enumeration);
-            } else {
-                throw UmlParserException("enumeration definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["enumeration"]);
-            }
-        } else if (node["ownedParameteredElement"]["enumerationLiteral"]) {
-            if (node["ownedParameteredElement"]["enumerationLiteral"].IsMap()) {
-                EnumerationLiteral& literal = data.m_manager->create<EnumerationLiteral>();
-                parseEnumerationLiteral(node["ownedParameteredElement"]["enumerationLiteral"], literal, data);
-                parameter.setOwnedParameteredElement(&literal);
-            } else {
-                throw UmlParserException("enumerationLiteral definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["enumerationLiteral"]);
-            }
-        } else if (node["ownedParameteredElement"]["instanceSpecification"]) {
-            if (node["ownedParameteredElement"]["instanceSpecification"].IsMap()) {
-                InstanceSpecification& inst = data.m_manager->create<InstanceSpecification>();
-                parseInstanceSpecification(node["ownedParameteredElement"]["instanceSpecification"], inst, data);
-                parameter.setOwnedParameteredElement(&inst);
-            } else {
-                throw UmlParserException("instanceSpecification definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["instanceSpecification"]);
-            }
-        } else if (node["ownedParameteredElement"]["instanceValue"]) {
-            if (node["ownedParameteredElement"]["instanceValue"].IsMap()) {
-                InstanceValue& inst = data.m_manager->create<InstanceValue>();
-                parseInstanceValue(node["ownedParameteredElement"]["instanceValue"], inst, data);
-                parameter.setOwnedParameteredElement(&inst);
-            } else {
-                throw UmlParserException("instanceValue definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["instanceValue"]);
-            }
-        } else if (node["ownedParameteredElement"]["literalBool"]) {
-            if (node["ownedParameteredElement"]["literalBool"].IsMap()) {
-                LiteralBool& lb = data.m_manager->create<LiteralBool>();
-                parseLiteralBool(node["ownedParameteredElement"]["literalBool"], lb, data);
-                parameter.setOwnedParameteredElement(&lb);
-            } else {
-                throw UmlParserException("literalBool definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["literalBool"]);
-            }
-        } else if (node["ownedParameteredElement"]["literalInt"]) {
-            if (node["ownedParameteredElement"]["literalInt"].IsMap()) {
-                LiteralInt& li = data.m_manager->create<LiteralInt>();
-                parseLiteralInt(node["ownedParameteredElement"]["literalInt"], li, data);
-                parameter.setOwnedParameteredElement(&li);
-            } else {
-                throw UmlParserException("literalInt definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["literalInt"]);
-            }
-        } else if (node["ownedParameteredElement"]["literalNull"]) {
-            if (node["ownedParameteredElement"]["literalNull"].IsMap()) {
-                LiteralNull& ln = data.m_manager->create<LiteralNull>();
-                parseTypedElement(node["ownedParameteredElement"]["literalNull"], ln, data);
-                parameter.setOwnedParameteredElement(&ln);
-            } else {
-                throw UmlParserException("literalNull definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["literalNull"]);
-            }
-        } else if (node["ownedParameteredElement"]["literalString"]) {
-            if (node["ownedParameteredElement"]["literalString"].IsMap()) {
-                LiteralString& ls = data.m_manager->create<LiteralString>();
-                parseLiteralString(node["ownedParameteredElement"]["literalString"], ls, data);
-                parameter.setOwnedParameteredElement(&ls);
-            } else {
-                throw UmlParserException("literalString definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["literalString"]);
-            }
-        } else if (node["ownedParameteredElement"]["literalUnlimitedNatural"]) {
-            if (node["ownedParameteredElement"]["literalUnlimitedNatural"].IsMap()) {
-                LiteralUnlimitedNatural& lu = data.m_manager->create<LiteralUnlimitedNatural>();
-                parseLiteralUnlimitedNatural(node["ownedParameteredElement"]["literalUnlimitedNatural"], lu, data);
-                parameter.setOwnedParameteredElement(&lu);
-            } else {
-                throw UmlParserException("literalUnlimitedNatural definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["literalUnlimitedNatural"]);
-            }
-        } else if (node["ownedParameteredElement"]["model"]) {
-            if (node["ownedParameteredElement"]["model"].IsMap()) {
-                Model& m = data.m_manager->create<Model>();
-                parsePackage(node["ownedParameteredElement"]["model"], m, data);
-                parameter.setOwnedParameteredElement(&m);
-            } else {
-                throw UmlParserException("model definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["model"]);
-            }
-        } else if (node["ownedParameteredElement"]["opaqueBehavior"]) {
-            if (node["ownedParameteredElement"]["opaqueBehavior"].IsMap()) {
-                OpaqueBehavior& ob = data.m_manager->create<OpaqueBehavior>();
-                parseOpaqueBehavior(node["ownedParameteredElement"]["opaqueBehavior"], ob, data);
-                parameter.setOwnedParameteredElement(&ob);
-            } else {
-                throw UmlParserException("opaqueBehavior definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["opaqueBehavior"]);
-            }
-        } else if (node["ownedParameteredElement"]["operation"]) {
-            if (node["ownedParameteredElement"]["operation"].IsMap()) {
-                Operation& op = data.m_manager->create<Operation>();
-                parseOperation(node["ownedParameteredElement"]["operation"], op, data);
-                parameter.setOwnedParameteredElement(&op);
-            } else {
-                throw UmlParserException("operation definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["operation"]);
-            }
-        } else if (node["ownedParameteredElement"]["package"]) {
-            if (node["ownedParameteredElement"]["package"].IsMap()) {
-                Package& pckg = data.m_manager->create<Package>();
-                parsePackage(node["ownedParameteredElement"]["package"], pckg, data);
-                parameter.setOwnedParameteredElement(&pckg);
-            } else {
-                throw UmlParserException("package definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["package"]);
-            }
-        } else if (node["ownedParameteredElement"]["parameter"]) {
-            if (node["ownedParameteredElement"]["parameter"].IsMap()) {
-                Parameter& param = data.m_manager->create<Parameter>();
-                parseParameter(node["ownedParameteredElement"]["parameter"], param, data);
-                parameter.setOwnedParameteredElement(&param);
-            } else {
-                throw UmlParserException("parameter definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["parameter"]);
-            }
-        } else if (node["ownedParameteredElement"]["primitiveType"]) {
-            if (node["ownedParameteredElement"]["primitiveType"].IsMap()) {
-                PrimitiveType& prim = data.m_manager->create<PrimitiveType>();
-                parsePrimitiveType(node["ownedParameteredElement"]["primitiveType"], prim, data);
-                parameter.setOwnedParameteredElement(&prim);
-            } else {
-                throw UmlParserException("primitiveType definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["primitiveType"]);
-            }
-        } else if (node["ownedParameteredElement"]["property"]) {
-            if (node["ownedParameteredElement"]["property"].IsMap()) {
-                Property& prop = data.m_manager->create<Property>();
-                parseProperty(node["ownedParameteredElement"]["property"], prop, data);
-                parameter.setOwnedParameteredElement(&prop);
-            } else {
-                throw UmlParserException("property definition must be of node type Map! ", data.m_path.string(), node["ownedParameteredElement"]["property"]);
-            }
-        } 
+        if (node["ownedParameteredElement"].IsMap()) {
+            parameter.setOwnedParameteredElement(&determinAndParseParameterableElement(node["ownedParameteredElement"], data));
+        } else {
+            throw UmlParserException("Invalid yaml node type, must be map! ", data.m_path.string(), node["ownedParameteredElement"]);
+        }
     }
 
     if (node["parameteredElement"]) {
@@ -2026,7 +2040,11 @@ void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubsti
     }
     
     if (node["ownedActual"]) {
-        // TODO
+        if (node["ownedActual"].IsMap()) {
+            sub.setOwnedActual(&determinAndParseParameterableElement(node["ownedActual"], data));
+        } else {
+            throw UmlParserException("invalid yaml node type, must be map!", data.m_path.string(), node["ownedActual"]);
+        }
     }
 
     if (node["actual"]) {

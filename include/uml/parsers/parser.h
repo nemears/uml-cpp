@@ -195,6 +195,7 @@ namespace UML {
             void emitExpression(YAML::Emitter& emitter, Expression& exp);
             void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data);
             void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, ParserMetaData& data);
+            ParameterableElement& determinAndParseParameterableElement(YAML::Node node, ParserMetaData& data);
             void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data);
             void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaData& data);
             void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data);

@@ -1969,6 +1969,14 @@ void SetFormalFunctor::operator()(Element& el) const {
     }
 };
 
+void SetActualFunctor::operator()(Element& el) const {
+    if (el.isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
+        dynamic_cast<TemplateParameterSubstitution*>(m_el)->setActual(dynamic_cast<ParameterableElement*>(&el));
+    } else {
+        throw UmlParserException("TemplateParameterSubstitution actual must be a parameterableElement", "", m_node);
+    }
+}
+
 void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data) {
     parseElement(node, sub, data);
 
@@ -1976,6 +1984,8 @@ void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubsti
         if (node["formal"].IsScalar()) {
             if (isValidID(node["formal"].as<string>())) {
                 applyFunctor(data, ID::fromString(node["formal"].as<string>()), new SetFormalFunctor(&sub, node["formal"]));
+            } else {
+                throw UmlParserException("Invalid id, must be 28 character base64 urlsafe encoded string!", data.m_path.string(), node["actual"]);
             }
         } else {
             throw UmlParserException("Invalid YAML node type, must be scalar for formal, ", data.m_path.string(), node["formal"]);
@@ -1991,7 +2001,15 @@ void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubsti
     }
 
     if (node["actual"]) {
-        // TODO
+        if (node["actual"].IsScalar()) {
+            if (isValidID(node["actual"].as<string>())) {
+                applyFunctor(data, ID::fromString(node["actual"].as<string>()), new SetActualFunctor(&sub, node["actual"]));
+            } else {
+                throw UmlParserException("Invalid id, must be 28 character base64 urlsafe encoded string!", data.m_path.string(), node["actual"]);
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type, must be scalar!", data.m_path.string(), node["actual"]);
+        }
     }
 }
 

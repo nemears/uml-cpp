@@ -189,3 +189,92 @@ TEST_F(TemplateableElementParserTest, parameterSubstitutionW_Actual) {
     ASSERT_EQ(p.getActual()->getElementType(), ElementType::PRIMITIVE_TYPE);
     ASSERT_EQ(p.getActual()->getID(), ID::fromString("bool_bzkcabSy3CiFd&HmJOtnVRK"));
 }
+
+TEST_F(TemplateableElementParserTest, emitBigTemplateExampleTest) {
+    srand (time(NULL));
+    UmlManager m;
+    Package& pckg = m.create<Package>();
+    Class& c1 = m.create<Class>();
+    TemplateSignature& sig = m.create<TemplateSignature>();
+    TemplateParameter& p1 = m.create<TemplateParameter>();
+    TemplateParameter& p2 = m.create<TemplateParameter>();
+    PrimitiveType& d1 = m.create<PrimitiveType>();
+    PrimitiveType& d2 = m.create<PrimitiveType>();
+    Class& c2 = m.create<Class>();
+    TemplateBinding& b = m.create<TemplateBinding>();
+    TemplateParameterSubstitution& ps1 = m.create<TemplateParameterSubstitution>();
+    TemplateParameterSubstitution& ps2 = m.create<TemplateParameterSubstitution>();
+    PrimitiveType& st1 = m.create<PrimitiveType>();
+    PrimitiveType& st2 = m.create<PrimitiveType>();
+    pckg.setID("b4EasFCBjochdruOQfxBubQw3VlD");
+    c1.setID("NYok8HRGpv_rOfAmfrRB94uwOZrb");
+    c2.setID("fMWs7G1YTFU1VQEAgNcZqt4lp6dB");
+    sig.setID("nOh5namt9s4oOvimAXQpR8nJHfTF");
+    p1.setID("OLULeTlF1Rzf4U5IpNQVW1nYd29c");
+    p2.setID("Km4WF5rf3ohUeLTr99POiW7VMb_4");
+    d1.setID("GZaiGksTjm4GeM2GdJ5BXuajWnGU");
+    d2.setID("a2arTP9Z2LteDWsjTS0ziALCWlXU");
+    b.setID("e_ob7tgbN16Plhj_sTAOVD5ijLrL");
+    ps1.setID("7bYUY3yFUBrfPmzKKrV2NJmXuECA");
+    ps2.setID("puJaUTZsLPdGJkJSJtdX51MIA2ch");
+    st1.setID("8&K_0aLhvQDM12ZeYg9nPiSrexHo");
+    st2.setID("4gA4RgL9vKTRYd61D99y1d_Yggj6");
+    c1.setOwnedTemplateSignature(&sig);
+    sig.getOwnedParameter().add(p1);
+    sig.getOwnedParameter().add(p2);
+    p1.setOwnedDefault(&d1);
+    p2.setDefault(&d2);
+    c2.setTemplateBinding(&b);
+    b.setSignature(&sig);
+    b.getParameterSubstitution().add(ps1);
+    b.getParameterSubstitution().add(ps2);
+    ps1.setFormal(&p1);
+    ps2.setFormal(&p2);
+    ps1.setOwnedActual(&st1);
+    ps2.setActual(&st2);
+    pckg.getPackagedElements().add(d2);
+    pckg.getPackagedElements().add(st2);
+    pckg.getPackagedElements().add(c1);
+    pckg.getPackagedElements().add(c2);
+
+    string expectedEmit = R""""(package:
+  id: b4EasFCBjochdruOQfxBubQw3VlD
+  packagedElements:
+    - primitiveType:
+        id: a2arTP9Z2LteDWsjTS0ziALCWlXU
+    - primitiveType:
+        id: 4gA4RgL9vKTRYd61D99y1d_Yggj6
+    - class:
+        id: NYok8HRGpv_rOfAmfrRB94uwOZrb
+        templateSignature:
+          id: nOh5namt9s4oOvimAXQpR8nJHfTF
+          ownedParameters:
+            - templateParameter:
+                id: OLULeTlF1Rzf4U5IpNQVW1nYd29c
+                ownedDefault:
+                  primitiveType:
+                    id: GZaiGksTjm4GeM2GdJ5BXuajWnGU
+            - templateParameter:
+                id: Km4WF5rf3ohUeLTr99POiW7VMb_4
+                default: a2arTP9Z2LteDWsjTS0ziALCWlXU
+    - class:
+        id: fMWs7G1YTFU1VQEAgNcZqt4lp6dB
+        templateBinding:
+          id: e_ob7tgbN16Plhj_sTAOVD5ijLrL
+          signature: nOh5namt9s4oOvimAXQpR8nJHfTF
+          parameterSubstitution:
+            - templateParameterSubstitution:
+                id: 7bYUY3yFUBrfPmzKKrV2NJmXuECA
+                formal: OLULeTlF1Rzf4U5IpNQVW1nYd29c
+                ownedActual:
+                  primitiveType:
+                    id: 8&K_0aLhvQDM12ZeYg9nPiSrexHo
+            - templateParameterSubstitution:
+                id: puJaUTZsLPdGJkJSJtdX51MIA2ch
+                formal: Km4WF5rf3ohUeLTr99POiW7VMb_4
+                actual: 4gA4RgL9vKTRYd61D99y1d_Yggj6)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

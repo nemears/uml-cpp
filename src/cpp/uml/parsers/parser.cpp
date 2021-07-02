@@ -397,6 +397,7 @@ void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
 
 void emitClassifier(YAML::Emitter& emitter, Classifier& clazz) {
     emitNamedElement(emitter, clazz);
+    emitTemplateableElement(emitter, clazz);
     
     if (!clazz.getGeneralizations().empty()) {
         emitter << YAML::Key << "generalizations" << YAML::Value << YAML::BeginSeq;
@@ -935,6 +936,7 @@ void emitOperation(YAML::Emitter& emitter, Operation& op) {
     }
 
     emitNamedElement(emitter, op);
+    emitTemplateableElement(emitter, op);
 
     if (!op.getMethods().empty()) {
         emitter << YAML::Key << "methods" << YAML::Value << YAML::BeginSeq;
@@ -1069,6 +1071,7 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg) {
     }
 
     emitNamedElement(emitter, pckg);
+    emitTemplateableElement(emitter, pckg);
 
     for (auto const& pckgMerge : pckg.getPackageMerge()) {
         // TODO
@@ -1683,6 +1686,16 @@ void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMe
     }
 }
 
+void emitTemplateableElement(YAML::Emitter& emitter, TemplateableElement& el) {
+    if (el.getOwnedTemplateSignature() != 0) {
+        emitTemplateSignature(emitter, *el.getOwnedTemplateSignature());
+    }
+
+    if (el.getTemplateBinding() != 0) {
+        emitTemplateBinding(emitter, *el.getTemplateBinding());
+    }
+}
+
 void AddTemplateParmeterFunctor::operator()(Element& el) const {
     if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER)) {
         dynamic_cast<TemplateSignature*>(m_el)->getParameter().add(dynamic_cast<TemplateParameter&>(el));
@@ -1724,6 +1737,36 @@ void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, Parse
         } else {
             throw UmlParserException("Invalid node type for template signature parameters, should be a sequence, ", data.m_path.string(), node["parameters"]);
         }
+    }
+}
+
+void emitTemplateSignature(YAML::Emitter& emitter, TemplateSignature& signature) {
+    if (signature.getElementType() == ElementType::TEMPLATE_SIGNATURE) {
+        emitter << /*YAML::BeginMap <<*/ YAML::Key << "templateSignature" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitElement(emitter, signature);
+
+    if (!signature.getOwnedParameter().empty()) {
+        emitter << YAML::Key << "ownedParameters" << YAML::Value << YAML::BeginSeq;
+        for (auto& param: signature.getOwnedParameter()) {
+            emitTemplateParameter(emitter, param);
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (signature.getParameter().size() > signature.getOwnedParameter().size()) {
+        emitter << YAML::Key << "parameters" << YAML::Value << YAML::BeginSeq;
+        for (auto& param: signature.getParameter()) {
+            if (!signature.getOwnedParameter().count(param.getID())) {
+                emitter << param.getID().string();
+            }
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (signature.getElementType() == ElementType::TEMPLATE_SIGNATURE) {
+        emitter << YAML::EndMap ;//<< YAML::EndMap;
     }
 }
 
@@ -1896,6 +1939,18 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
 void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data) {
     parseElement(node, parameter, data);
 
+    if (node["default"]) {
+        if (node["default"].IsScalar()) {
+            if (isValidID(node["default"].as<string>())) {
+                // TODO
+            } else {
+                throw UmlParserException("Invalid id, must be 28 character base64 urlsafe encoded string!", data.m_path.string(), node["default"]);
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type, must be scalar!", data.m_path.string(), node["default"]);
+        }
+    }
+
     if (node["ownedParameteredElement"]) {
         if (node["ownedParameteredElement"].IsMap()) {
             parameter.setOwnedParameteredElement(&determinAndParseParameterableElement(node["ownedParameteredElement"], data));
@@ -1914,6 +1969,36 @@ void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, Parse
         } else {
             throw UmlParserException("Invalid YAML node type for parameteredElement, must be scalar ", data.m_path.string(), node["parameteredElement"]);
         }
+    }
+}
+
+void emitTemplateParameter(YAML::Emitter& emitter, TemplateParameter& parameter) {
+    if (parameter.getElementType() == ElementType::TEMPLATE_PARAMETER) {
+        emitter << YAML::BeginMap << YAML::Key << "templateParameter" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitElement(emitter, parameter);
+
+    if (parameter.getOwnedDefault()) {
+        emitter << YAML::Key << "ownedDefault" << YAML::Value;
+        emit(emitter, *parameter.getOwnedDefault());
+    }
+
+    if (parameter.getDefault() && !parameter.getOwnedDefault()) {
+        emitter << YAML::Key << "default" << YAML::Value << parameter.getDefault()->getID().string();
+    }
+
+    if (parameter.getOwnedParameteredElement() != 0) {
+        emitter << YAML::Key << "ownedParameteredElement" << YAML::Value;
+        emit(emitter, parameter);
+    }
+
+    if (parameter.getParameteredElement() != 0 && parameter.getOwnedParameteredElement() == 0) {
+        emitter << YAML::Key << "parameteredElement" << YAML::Value << parameter.getParameteredElement()->getID().string();
+    }
+
+    if (parameter.getElementType() == ElementType::TEMPLATE_PARAMETER) {
+        emitter << YAML::EndMap << YAML::EndMap;
     }
 }
 
@@ -1958,6 +2043,30 @@ void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaD
         } else {
             throw UmlParserException("Invalid YAML node type, must be sequence, ", data.m_path.string(), node["parameterSubstitution"]);
         }
+    }
+}
+
+void emitTemplateBinding(YAML::Emitter& emitter, TemplateBinding& binding) {
+    if (binding.getElementType() == ElementType::TEMPLATE_BINDING) {
+        emitter << /*YAML::BeginMap << */YAML::Key << "templateBinding" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitElement(emitter, binding);
+
+    if (binding.getSignature() != 0) {
+        emitter << YAML::Key << "signature" << YAML::Value << binding.getSignature()->getID().string();
+    }
+
+    if (!binding.getParameterSubstitution().empty()) {
+        emitter << YAML::Key << "parameterSubstitution" << YAML::BeginSeq;
+        for (auto& sub: binding.getParameterSubstitution()) {
+            emitTemplateParameterSubstitution(emitter, sub);
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (binding.getElementType() == ElementType::TEMPLATE_BINDING) {
+        emitter << YAML::EndMap;// << YAML::EndMap;
     }
 }
 
@@ -2010,6 +2119,31 @@ void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubsti
         } else {
             throw UmlParserException("Invalid yaml node type, must be scalar!", data.m_path.string(), node["actual"]);
         }
+    }
+}
+
+void emitTemplateParameterSubstitution(YAML::Emitter& emitter, TemplateParameterSubstitution& sub) {
+    if (sub.getElementType() == ElementType::TEMPLATE_PARAMETER_SUBSTITUTION) {
+        emitter << YAML::BeginMap << YAML::Key << "templateParameterSubstitution" << YAML::BeginMap;
+    }
+
+    emitElement(emitter, sub);
+
+    if (sub.getFormal() != 0) {
+        emitter << YAML::Key << "formal" << YAML::Value << sub.getFormal()->getID().string();
+    }
+
+    if (sub.getOwnedActual() != 0) {
+        emitter << YAML::Key << "ownedActual" << YAML::Value;
+        emit(emitter, *sub.getOwnedActual());
+    }
+
+    if (sub.getActual() != 0 && sub.getOwnedActual() == 0) {
+        emitter << YAML::Key << "actual" << YAML::Value << sub.getActual()->getID().string();
+    }
+
+    if (sub.getElementType() == ElementType::TEMPLATE_PARAMETER_SUBSTITUTION) {
+        emitter << YAML::EndMap << YAML::EndMap;
     }
 }
 

@@ -1,4 +1,5 @@
 #include "uml/parsers/parser.h"
+#include <fstream>
 #include "uml/model.h"
 #include "uml/umlManager.h"
 #include "uml/literalNull.h"
@@ -233,7 +234,79 @@ void emit(YAML::Emitter& emitter, Element& el) {
             break;
         }
         case ElementType::PACKAGE : {
-            emitPackage(emitter, dynamic_cast<Package&>(el));
+            EmitterMetaData deleteME;
+            emitPackage(emitter, dynamic_cast<Package&>(el), deleteME);
+            break;
+        }
+        case ElementType::PRIMITIVE_TYPE : {
+            emitPrimitiveType(emitter, dynamic_cast<PrimitiveType&>(el));
+            break;
+        }
+        default: {
+            throw UmlParserException("Error emitting element, element type " + el.getElementTypeString() + " is abstract and cannot be emit", "");
+            break;
+        }
+    }
+}
+
+void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
+    switch(el.getElementType()) {
+        case ElementType::CLASS : {
+            emitClass(emitter, dynamic_cast<Class&>(el));
+            break;
+        }
+        case ElementType::DATA_TYPE : {
+            emitDataType(emitter, dynamic_cast<DataType&>(el));
+            break;
+        }
+        case ElementType::ENUMERATION : {
+            emitEnumeration(emitter, dynamic_cast<Enumeration&>(el));
+            break;
+        }
+        case ElementType::EXPRESSION : {
+            emitExpression(emitter, dynamic_cast<Expression&>(el));
+            break;
+        }
+        case ElementType::INSTANCE_SPECIFICATION : {
+            emitInstanceSpecification(emitter, dynamic_cast<InstanceSpecification&>(el));
+            break;
+        }
+        case ElementType::LITERAL_BOOL : {
+            emitLiteralBool(emitter, dynamic_cast<LiteralBool&>(el));
+            break;
+        }
+        case ElementType::LITERAL_INT : {
+            emitLiteralInt(emitter, dynamic_cast<LiteralInt&>(el));
+            break;
+        }
+        case ElementType::LITERAL_NULL : {
+            emitter << YAML::BeginMap << YAML::Key << "literalNull" << YAML::Value << YAML::BeginMap;
+            emitTypedElement(emitter, dynamic_cast<TypedElement&>(el));
+            emitter << YAML::EndMap << YAML::EndMap;
+            break;
+        }
+        case ElementType::LITERAL_REAL : {
+            emitLiteralReal(emitter, dynamic_cast<LiteralReal&>(el));
+            break;
+        }
+        case ElementType::LITERAL_STRING : {
+            emitLiteralString(emitter, dynamic_cast<LiteralString&>(el));
+            break;
+        }
+        case ElementType::LITERAL_UNLIMITED_NATURAL : {
+            emitLiteralUnlimitedNatural(emitter, dynamic_cast<LiteralUnlimitedNatural&>(el));
+            break;
+        }
+        case ElementType::MODEL : {
+            emitModel(emitter, dynamic_cast<Model&>(el));
+            break;
+        }
+        case ElementType::OPAQUE_BEHAVIOR : {
+            emitOpaqueBehavior(emitter, dynamic_cast<OpaqueBehavior&>(el));
+            break;
+        }
+        case ElementType::PACKAGE : {
+            emitPackage(emitter, dynamic_cast<Package&>(el), data);
             break;
         }
         case ElementType::PRIMITIVE_TYPE : {
@@ -254,7 +327,8 @@ void emitModel(YAML::Emitter& emitter, Model& model) {
         emitter << YAML::BeginMap << YAML::Key << "model" << YAML::Value << YAML::BeginMap;
     }
 
-    emitPackage(emitter, model);
+    EmitterMetaData deleteME;
+    emitPackage(emitter, model, deleteME);
 
     if (model.getElementType() == ElementType::MODEL) {
         emitter << YAML::EndMap << YAML::EndMap;
@@ -1076,7 +1150,7 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
     }
 }
 
-void emitPackage(YAML::Emitter& emitter, Package& pckg) {
+void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
     if (pckg.getElementType() == ElementType::PACKAGE) {
         emitter << YAML::BeginMap << YAML::Key << "package" << YAML::Value << YAML::BeginMap;
     }
@@ -1090,9 +1164,32 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg) {
 
     if (!pckg.getPackagedElements().empty()) {
         emitter << YAML::Key << "packagedElements" << YAML::Value << YAML::BeginSeq;
-        for (auto& el : pckg.getPackagedElements()) {
-            emit(emitter, el);
+        switch (data.m_strategy) {
+            case EmitterStrategy::WHOLE : {
+                for (auto& el : pckg.getPackagedElements()) {
+                    emit(emitter, el);
+                }
+                break;
+            }
+            case EmitterStrategy::COMPOSITE : {
+                for (auto& el : pckg.getPackagedElements()) {
+                    YAML::Emitter newEmitter;
+                    filesystem::path cPath = data.m_path;
+                    string cFile = data.m_fileName;
+                    data.m_path = cPath / el.getID().string();
+                    data.m_fileName = el.getID().string() + ".yml";
+                    emit(newEmitter, el, data);
+                    ofstream file;
+                    file.open(data.m_path / el.getID().string() / (el.getID().string() + ".yml"));
+                    file << newEmitter.c_str();
+                    file.close();
+                    data.m_path = cPath;
+                    data.m_fileName = cFile;
+                }
+                break;
+            }
         }
+        
         emitter << YAML::EndSeq;
     }
 

@@ -37,6 +37,7 @@ namespace UML {
             std::unordered_set<ID> m_elements;
             std::unordered_map<ID, DiscData> m_disc;
             std::filesystem::path m_path;
+            std::filesystem::path m_mountBase;
             Model* m_model;
             void clear();
         public:
@@ -66,6 +67,9 @@ namespace UML {
                 ret.m_manager = this;
                 return ret;
             };
+
+            // Sets up composite directory of model for quick aquire and release
+            void mount(std::string path);
             
             /**
              * Saves the manager's model to the manager's path as a uml configuration file

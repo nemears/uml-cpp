@@ -50,6 +50,24 @@ void UmlManager::reindex(ID oldID, ID newID) {
     }
 }
 
+void UmlManager::mount(string path) {
+    m_mountBase = path;
+    if (m_model) {
+        YAML::Emitter emitter;
+        Parsers::EmitterMetaData data;
+        data.m_path = path;
+        data.m_fileName = m_model->getID().string() + ".yml";
+        data.m_strategy = Parsers::EmitterStrategy::COMPOSITE;
+        Parsers::emit(emitter, *m_model, data);
+        ofstream file;
+        file.open(data.m_path / data.m_fileName);
+        file << emitter.c_str();
+        file.close();
+    } else {
+        // TODO throw error
+    }
+}
+
 void UmlManager::save() {
     if (m_path.empty() || !m_model) {
         // TODO throw error

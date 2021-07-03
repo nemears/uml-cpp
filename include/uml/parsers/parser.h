@@ -4,6 +4,7 @@
 #include <exception>
 #include "yaml-cpp/yaml.h"
 #include "uml/parsers/parserMetaData.h"
+#include "uml/parsers/emitterMetaData.h"
 #include "uml/element.h"
 #include "uml/namedElement.h"
 #include "uml/typedElement.h"
@@ -73,6 +74,8 @@ namespace UML {
         Element* parseNode(YAML::Node node, ParserMetaData& data);
         
         void emit(YAML::Emitter& emitter, Element& el);
+
+        void emit (YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
 
         // anonymous functions
         namespace {
@@ -155,7 +158,7 @@ namespace UML {
             void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data);
             void emitParameter(YAML::Emitter& emitter, Parameter& el);
             void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data);
-            void emitPackage(YAML::Emitter& emitter, Package& pckg);
+            void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data);
             void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
             void emitClassifier(YAML::Emitter& emitter, Classifier& clazz);
             void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data);

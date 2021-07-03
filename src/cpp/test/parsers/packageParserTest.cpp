@@ -164,3 +164,14 @@ TEST_F(PackageParserTest, emitVerySimplePackageTest) {
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(PackageParserTest, parsePackagedElementInDifferentFileTest) {
+    UmlManager m;
+    Element* el;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "packageParserTests/subFolderTest.yml"));
+    ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
+    Package& pckg = dynamic_cast<Package&>(*el);
+    ASSERT_EQ(pckg.getPackagedElements().size(), 1);
+    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(pckg.getPackagedElements().front()->getID(), ID::fromString("4tcg0slbMiorhD6UUNfSGw6hHTV3"));
+}

@@ -1055,6 +1055,17 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                     } else {
                         throw UmlParserException("Invalid identifier for packagedElements, ", data.m_path.string(), node["packagedElements"][i]);
                     }
+                // seperate file
+                } else if (node["packagedElements"][i].IsScalar()) {
+                    if (filesystem::exists(data.m_path.parent_path() / node["packagedElements"][i].as<string>())) {
+                        filesystem::path cPath = data.m_path;
+                        data.m_path = cPath.parent_path() / node["packagedElements"][i].as<string>();
+                        Element* packagedEl = parse(data);
+                        data.m_path = cPath;
+                        pckg.getPackagedElements().add(dynamic_cast<PackageableElement&>(*packagedEl));
+                    } else {
+                        throw UmlParserException("Could not identify YAML node for packaged elements" , data.m_path.string(), node["packagedElements"][i]);
+                    }
                 } else {
                     throw UmlParserException("Invalid YAML node type for field packagedElements sequence, must be map, ", data.m_path.string(), node["packagedElements"][i]);
                 }

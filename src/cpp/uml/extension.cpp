@@ -44,6 +44,10 @@ void Extension::setOwnedEnd(ExtensionEnd* end) {
             m_ownedEndPtr = &m_manager->get<ExtensionEnd>(m_ownedEndID);
         }
 
+        if (m_ownedEndPtr->getExtension() == this) {
+            m_ownedEndPtr->setExtension(0);
+        }
+
         if (m_ownedEnds.count(m_ownedEndID)) {
             m_ownedEnds.remove(*m_ownedEndPtr);
         }
@@ -63,6 +67,9 @@ void Extension::setOwnedEnd(ExtensionEnd* end) {
     if (end) {
         if (!m_ownedEnds.count(end->getID())) {
             m_ownedEnds.add(*end);
+        }
+        if (end->getExtension() != this) {
+            end->setExtension(this);
         }
     }
 }

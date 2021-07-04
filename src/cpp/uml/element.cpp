@@ -402,6 +402,9 @@ string Element::getElementTypeString() const {
         case ElementType::SLOT : {
             return "SLOT";
         }
+        case ElementType::STEREOTYPE : {
+            return "STEREOTYPE";
+        }
         case ElementType::STRUCTURAL_FEATURE : {
             return "STRUCTURAL_FEATURE";
         }

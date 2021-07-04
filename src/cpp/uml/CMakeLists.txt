@@ -9,6 +9,6 @@ add_library(Uml namespace.cpp model.cpp element.cpp namedElement.cpp class.cpp c
                 association.cpp enumeration.cpp enumerationLiteral.cpp packageMerge.cpp comment.cpp id.cpp umlManager.cpp
                 templateableElement.cpp templateSignature.cpp templateParameter.cpp parameterableElement.cpp templateBinding.cpp
                 templateParameterSubstitution.cpp literalNull.cpp literalUnlimitedNatural.cpp profile.cpp stereotype.cpp
-                profileApplication.cpp extension.cpp)
+                profileApplication.cpp extension.cpp extensionEnd.cpp)
 add_subdirectory(parsers)
 target_link_libraries(Uml PUBLIC yaml-cpp Parsers)

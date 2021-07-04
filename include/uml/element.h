@@ -33,6 +33,7 @@ namespace UML {
         ENUMERATION_LITERAL,
         EXPRESSION,
         EXTENSION,
+        EXTENSION_END,
         FEATURE,
         FINAL_NODE,
         FORK_NODE,

@@ -235,6 +235,7 @@ void emit(YAML::Emitter& emitter, Element& el) {
         }
         case ElementType::PACKAGE : {
             EmitterMetaData deleteME;
+            deleteME.m_strategy = EmitterStrategy::WHOLE;
             emitPackage(emitter, dynamic_cast<Package&>(el), deleteME);
             break;
         }
@@ -328,6 +329,7 @@ void emitModel(YAML::Emitter& emitter, Model& model) {
     }
 
     EmitterMetaData deleteME;
+    deleteME.m_strategy = EmitterStrategy::WHOLE;
     emitPackage(emitter, model, deleteME);
 
     if (model.getElementType() == ElementType::MODEL) {

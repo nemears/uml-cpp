@@ -66,6 +66,7 @@ namespace UML {
         PARAMETER_NODE,
         PIN,
         PRIMITIVE_TYPE,
+        PROFILE,
         PROPERTY,
         REDEFINABLE_ELEMENT,
         RELATIONSHIP,
@@ -82,7 +83,7 @@ namespace UML {
         VALUE_SPECIFICATION
     };
 
-    // Helper function to assess possible uuids
+    // Helper function to assess possible ids
     static bool isValidID(std::string strn) {
         return std::regex_match (strn, std::regex("(?:[A-Za-z0-9_&]{28})"));
     }

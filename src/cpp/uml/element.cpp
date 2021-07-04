@@ -387,6 +387,9 @@ string Element::getElementTypeString() const {
         case ElementType::PRIMITIVE_TYPE : {
             return "PRIMITIVE_TYPE";
         }
+        case ElementType::PROFILE : {
+            return "PROFILE";
+        }
         case ElementType::PROPERTY : {
             return "PROPERTY";
         }

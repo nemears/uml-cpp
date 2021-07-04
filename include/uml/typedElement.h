@@ -9,7 +9,7 @@ class TypedElement : virtual public NamedElement {
         Type* m_typePtr;
         ID m_typeID;
     public:
-        Type* getType();
+        virtual Type* getType();
         virtual void setType(Type* type);
         TypedElement();
         TypedElement(const TypedElement& el);

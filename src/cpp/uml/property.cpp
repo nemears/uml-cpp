@@ -475,8 +475,8 @@ void Property::setType(Type* type) {
                 m_typePtr = &m_manager->get<Type>(m_typeID);
             }
             if (m_typePtr != type) {
-                if (m_associationPtr->getEndType().count(type->getID())) {
-                    m_associationPtr->getEndType().remove(*type);
+                if (m_associationPtr->getEndType().count(m_typePtr->getID())) {
+                    m_associationPtr->getEndType().remove(*m_typePtr);
                 }
             }
         }
@@ -486,7 +486,7 @@ void Property::setType(Type* type) {
         if (!m_associationPtr) {
             m_associationPtr = &m_manager->get<Association>(m_associationID);
         }
-        if (!m_typeID.isNull()) {
+        if (type) {
             if (!m_associationPtr->getEndType().count(type->getID())) {
                 m_associationPtr->getEndType().add(*type);
             }

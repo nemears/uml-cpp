@@ -5,12 +5,15 @@ using namespace UML;
 
 ExtensionEnd::ExtensionEnd() {
     m_extensionPtr = 0;
+    m_extensionTypePtr = 0;
 }
 
 ExtensionEnd::ExtensionEnd(const ExtensionEnd& end) {
     m_extensionID = end.m_extensionID;
-    if (!m_manager) {
+    m_extensionTypeID = end.m_extensionTypeID;
+    if (!end.m_manager) {
         m_extensionPtr = end.m_extensionPtr;
+        m_extensionTypePtr = end.m_extensionTypePtr;
     }
 }
 
@@ -63,6 +66,36 @@ void ExtensionEnd::setExtension(Extension* extension) {
         if (extension->getOwnedEnd() != this) {
             extension->setOwnedEnd(this);
         }
+    }
+}
+
+Stereotype* ExtensionEnd::getType() {
+    if (!m_extensionTypeID.isNull()) {
+        if (!m_extensionTypePtr) {
+            m_extensionTypePtr = &m_manager->get<Stereotype>(m_extensionTypeID);
+        }
+        return m_extensionTypePtr;
+    }
+    return 0;
+}
+
+void ExtensionEnd::setType(Stereotype* type) {
+    if (!m_extensionTypeID.isNull()) {
+        m_extensionTypeID = ID::nullID();
+        m_extensionTypePtr = 0;
+        Property::setType(0);
+    }
+
+    if (type) {
+        m_extensionTypeID = type->getID();
+    }
+
+    if (!m_manager) {
+        m_extensionTypePtr = type;
+    }
+
+    if (type) {
+        Property::setType(type);
     }
 }
 

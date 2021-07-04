@@ -51,10 +51,39 @@ void Package::RemovePackageMergeFunctor::operator()(Element& el) const {
     }
 }
 
+void Package::AddProfileApplicationFunctor::operator()(Element& el) const {
+    if (dynamic_cast<ProfileApplication&>(el).getApplyingPackage() != m_el) {
+        dynamic_cast<ProfileApplication&>(el).setApplyingPackage(dynamic_cast<Package*>(m_el));
+    }
+
+    if (!m_el->getDirectedRelationships().count(el.getID())) {
+        m_el->getDirectedRelationships().add(dynamic_cast<ProfileApplication&>(el));
+    }
+
+    if (!m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalAdd(el);
+    }
+}
+
+void Package::RemoveProfileApplicationFunctor::operator()(Element& el) const {
+    if (dynamic_cast<ProfileApplication&>(el).getApplyingPackage() == m_el) {
+        dynamic_cast<ProfileApplication&>(el).setApplyingPackage(0);
+    }
+
+    if (m_el->getDirectedRelationships().count(el.getID())) {
+        m_el->getDirectedRelationships().remove(dynamic_cast<ProfileApplication&>(el));
+    }
+
+    if (m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalRemove(el);
+    }
+}
+
 void Package::setManager(UmlManager* manager) {
     Namespace::setManager(manager);
     m_packagedElements.m_manager = manager;
     m_packageMerge.m_manager = manager;
+    m_profileApplications.m_manager = manager;
 }
 
 Package::Package() {
@@ -62,6 +91,8 @@ Package::Package() {
     m_packagedElements.removeProcedures.push_back(new RemovePackagedElementFunctor(this));
     m_packageMerge.addProcedures.push_back(new AddPackageMergeFunctor(this));
     m_packageMerge.removeProcedures.push_back(new RemovePackageMergeFunctor(this));
+    m_profileApplications.addProcedures.push_back(new AddProfileApplicationFunctor(this));
+    m_profileApplications.removeProcedures.push_back(new RemoveProfileApplicationFunctor(this));
 }
 
 Package::~Package() {
@@ -79,6 +110,10 @@ Package::Package(const Package& pckg) : Namespace(pckg), PackageableElement(pckg
     m_packageMerge.removeProcedures.clear();
     m_packageMerge.addProcedures.push_back(new AddPackageMergeFunctor(this));
     m_packageMerge.removeProcedures.push_back(new RemovePackageMergeFunctor(this));
+    m_profileApplications.addProcedures.clear();
+    m_profileApplications.removeProcedures.clear();
+    m_profileApplications.addProcedures.push_back(new AddProfileApplicationFunctor(this));
+    m_profileApplications.removeProcedures.push_back(new RemoveProfileApplicationFunctor(this));
 }
 
 Sequence<PackageableElement>& Package::getPackagedElements() {
@@ -87,6 +122,10 @@ Sequence<PackageableElement>& Package::getPackagedElements() {
 
 Sequence<PackageMerge>& Package::getPackageMerge() {
     return m_packageMerge;
+}
+
+Sequence<ProfileApplication>& Package::getProfileApplications() {
+    return m_profileApplications;
 }
 
 ElementType Package::getElementType() const {

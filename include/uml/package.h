@@ -5,6 +5,7 @@
 #include "namespace.h"
 #include "packageMerge.h"
 #include "templateableElement.h"
+#include "profileApplication.h"
 
 namespace UML {
     class Package : public PackageableElement, public Namespace, public TemplateableElement {
@@ -12,6 +13,7 @@ namespace UML {
         protected:
             Sequence<PackageableElement> m_packagedElements;
             Sequence<PackageMerge> m_packageMerge;
+            Sequence<ProfileApplication> m_profileApplications;
             class AddPackagedElementFunctor : public AbstractSequenceFunctor {
                 public:
                     AddPackagedElementFunctor(Element* me) : AbstractSequenceFunctor(me) {};
@@ -32,6 +34,16 @@ namespace UML {
                     RemovePackageMergeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class AddProfileApplicationFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddProfileApplicationFunctor(Element* me) : AbstractSequenceFunctor(me){};
+                    void operator()(Element& el) const override;
+            };
+            class RemoveProfileApplicationFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveProfileApplicationFunctor(Element* me) : AbstractSequenceFunctor(me){};
+                    void operator()(Element& el) const override;
+            };
             void setManager(UmlManager* manager) override;
         public:
             Package();
@@ -39,6 +51,7 @@ namespace UML {
             Package(const Package& pckg);
             Sequence<PackageableElement>& getPackagedElements();
             Sequence<PackageMerge>& getPackageMerge();
+            Sequence<ProfileApplication>& getProfileApplications();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

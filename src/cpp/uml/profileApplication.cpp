@@ -9,7 +9,12 @@ ProfileApplication::ProfileApplication() {
 }
 
 ProfileApplication::ProfileApplication(const ProfileApplication& profileApplication) {
-
+    m_appliedProfileID = profileApplication.m_appliedProfileID;
+    m_applyingPackageID = profileApplication.m_applyingPackageID;
+    if (!profileApplication.m_manager) {
+        m_applyingPackagePtr = profileApplication.m_applyingPackagePtr;
+        m_appliedProfilePtr = profileApplication.m_appliedProfilePtr;
+    }
 }
 
 ProfileApplication::~ProfileApplication() {
@@ -76,6 +81,10 @@ void ProfileApplication::setApplyingPackage(Package* pckg) {
             m_sources.remove(*m_applyingPackagePtr);
         }
 
+        if (m_applyingPackagePtr->getProfileApplications().count(m_id)) {
+            m_applyingPackagePtr->getProfileApplications().remove(*this);
+        }
+
         m_applyingPackagePtr = 0;
         m_applyingPackageID = ID::nullID();
     }
@@ -91,6 +100,10 @@ void ProfileApplication::setApplyingPackage(Package* pckg) {
     if (pckg) {
         if (!m_sources.count(pckg->getID())) {
             m_sources.add(*pckg);
+        }
+
+        if (!pckg->getProfileApplications().count(m_id)) {
+            pckg->getProfileApplications().add(*this);
         }
     }
 }

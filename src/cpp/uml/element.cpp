@@ -390,6 +390,9 @@ string Element::getElementTypeString() const {
         case ElementType::PROFILE : {
             return "PROFILE";
         }
+        case ElementType::PROFILE_APPLICATION : {
+            return "PROFILE_APPLICATION";
+        }
         case ElementType::PROPERTY : {
             return "PROPERTY";
         }

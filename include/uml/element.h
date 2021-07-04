@@ -67,6 +67,7 @@ namespace UML {
         PIN,
         PRIMITIVE_TYPE,
         PROFILE,
+        PROFILE_APPLICATION,
         PROPERTY,
         REDEFINABLE_ELEMENT,
         RELATIONSHIP,

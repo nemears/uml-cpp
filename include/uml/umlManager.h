@@ -15,9 +15,6 @@ namespace UML {
 
     struct DiscData {
         std::string m_path;
-        int m_lineBegin;
-        int m_lineEnd;
-        bool m_sequence;
     };
 
     template <class T = Element> class Sequence;
@@ -70,6 +67,11 @@ namespace UML {
 
             // Sets up composite directory of model for quick aquire and release
             void mount(std::string path);
+            // WARN: unfinished
+            // NOTE: I want to go away from key pair access, and efficiently traverse the model tree to find the id
+            // I think performance can be improved a lot by going in that direction 
+            void aquire(ID id);
+            void release(ID id);
             
             /**
              * Saves the manager's model to the manager's path as a uml configuration file

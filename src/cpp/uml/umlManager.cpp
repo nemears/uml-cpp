@@ -68,6 +68,17 @@ void UmlManager::mount(string path) {
     }
 }
 
+void UmlManager::aquire(ID id) {
+    // TODO get path
+    Parsers::ParserMetaData data(this);
+    data.m_path = m_disc[id].m_path;
+    m_loaded[id] = Parsers::parse(data);
+}
+
+void UmlManager::release(ID id) {
+    // Parsers::emit(m_loaded[id])
+}
+
 void UmlManager::save() {
     if (m_path.empty() || !m_model) {
         // TODO throw error

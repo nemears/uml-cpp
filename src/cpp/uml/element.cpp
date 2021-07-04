@@ -285,6 +285,9 @@ string Element::getElementTypeString() const {
         case ElementType::EXPRESSION : {
             return "EXPRESSION";
         }
+        case ElementType::EXTENSION : {
+            return "EXTENSION";
+        }
         case ElementType::FEATURE : {
             return "FEATURE";
         }

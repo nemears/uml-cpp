@@ -1,6 +1,8 @@
 #include "gtest/gtest.h"
 #include "uml/package.h"
 #include "uml/packageableElement.h"
+#include "uml/profile.h"
+#include "uml/stereotype.h"
 
 using namespace UML;
 
@@ -182,4 +184,25 @@ TEST_F(PackageTest, removePackageMergeTest) {
     ASSERT_TRUE(m.getReceivingPackage() == 0);
     ASSERT_TRUE(m.getSources().size() == 0);
     ASSERT_TRUE(m.getRelatedElements().size() == 0);
+}
+
+TEST_F(PackageTest, addOwnedStereotype) {
+    UmlManager m;
+    Profile& p = m.create<Profile>();
+    Stereotype& s = m.create<Stereotype>();
+    p.getOwnedStereotypes().add(s);
+    ASSERT_EQ(p.getOwnedStereotypes().size(), 1);
+    ASSERT_EQ(p.getOwnedStereotypes().front()->getID(), s.getID());
+    ASSERT_EQ(p.getPackagedElements().size(), 1);
+    ASSERT_EQ(p.getPackagedElements().front()->getID(), s.getID());
+}
+
+TEST_F(PackageTest, removeOwnedStereotype) {
+    UmlManager m;
+    Profile& p = m.create<Profile>();
+    Stereotype& s = m.create<Stereotype>();
+    p.getOwnedStereotypes().add(s);
+    p.getOwnedStereotypes().remove(s);
+    ASSERT_EQ(p.getOwnedStereotypes().size(), 0);
+    ASSERT_EQ(p.getPackagedElements().size(), 0);
 }

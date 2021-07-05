@@ -1,4 +1,5 @@
 #include "uml/package.h"
+#include "uml/stereotype.h"
 
 using namespace UML;
 
@@ -79,11 +80,24 @@ void Package::RemoveProfileApplicationFunctor::operator()(Element& el) const {
     }
 }
 
+void Package::AddOwnedStereotypeFunctor::operator()(Element& el) const {
+    if (!dynamic_cast<Package*>(m_el)->getPackagedElements().count(el.getID())) {
+        dynamic_cast<Package*>(m_el)->getPackagedElements().add(dynamic_cast<Stereotype&>(el));
+    }
+}
+
+void Package::RemoveOwnedStereotypeFunctor::operator()(Element& el) const {
+    if (dynamic_cast<Package*>(m_el)->getPackagedElements().count(el.getID())) {
+        dynamic_cast<Package*>(m_el)->getPackagedElements().remove(dynamic_cast<Stereotype&>(el));
+    }
+}
+
 void Package::setManager(UmlManager* manager) {
     Namespace::setManager(manager);
     m_packagedElements.m_manager = manager;
     m_packageMerge.m_manager = manager;
     m_profileApplications.m_manager = manager;
+    m_ownedStereotypes.m_manager = manager;
 }
 
 Package::Package() {
@@ -93,6 +107,8 @@ Package::Package() {
     m_packageMerge.removeProcedures.push_back(new RemovePackageMergeFunctor(this));
     m_profileApplications.addProcedures.push_back(new AddProfileApplicationFunctor(this));
     m_profileApplications.removeProcedures.push_back(new RemoveProfileApplicationFunctor(this));
+    m_ownedStereotypes.addProcedures.push_back(new AddOwnedStereotypeFunctor(this));
+    m_ownedStereotypes.removeProcedures.push_back(new RemoveOwnedStereotypeFunctor(this));
 }
 
 Package::~Package() {
@@ -114,6 +130,10 @@ Package::Package(const Package& pckg) : Namespace(pckg), PackageableElement(pckg
     m_profileApplications.removeProcedures.clear();
     m_profileApplications.addProcedures.push_back(new AddProfileApplicationFunctor(this));
     m_profileApplications.removeProcedures.push_back(new RemoveProfileApplicationFunctor(this));
+    m_ownedStereotypes.addProcedures.clear();
+    m_ownedStereotypes.removeProcedures.clear();
+    m_ownedStereotypes.addProcedures.push_back(new AddOwnedStereotypeFunctor(this));
+    m_ownedStereotypes.removeProcedures.push_back(new RemoveOwnedStereotypeFunctor(this));
 }
 
 Sequence<PackageableElement>& Package::getPackagedElements() {
@@ -126,6 +146,10 @@ Sequence<PackageMerge>& Package::getPackageMerge() {
 
 Sequence<ProfileApplication>& Package::getProfileApplications() {
     return m_profileApplications;
+}
+
+Sequence<Stereotype>& Package::getOwnedStereotypes() {
+    return m_ownedStereotypes;
 }
 
 ElementType Package::getElementType() const {

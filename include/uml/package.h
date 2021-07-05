@@ -8,12 +8,16 @@
 #include "profileApplication.h"
 
 namespace UML {
+
+    class Stereotype;
+
     class Package : public PackageableElement, public Namespace, public TemplateableElement {
         friend class UmlManager;
         protected:
             Sequence<PackageableElement> m_packagedElements;
             Sequence<PackageMerge> m_packageMerge;
             Sequence<ProfileApplication> m_profileApplications;
+            Sequence<Stereotype> m_ownedStereotypes;
             class AddPackagedElementFunctor : public AbstractSequenceFunctor {
                 public:
                     AddPackagedElementFunctor(Element* me) : AbstractSequenceFunctor(me) {};
@@ -44,6 +48,16 @@ namespace UML {
                     RemoveProfileApplicationFunctor(Element* me) : AbstractSequenceFunctor(me){};
                     void operator()(Element& el) const override;
             };
+            class AddOwnedStereotypeFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddOwnedStereotypeFunctor(Element* me) : AbstractSequenceFunctor(me){};
+                    void operator()(Element& el) const override;
+            };
+            class RemoveOwnedStereotypeFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveOwnedStereotypeFunctor(Element* me) : AbstractSequenceFunctor(me){};
+                    void operator()(Element& el) const override;
+            };
             void setManager(UmlManager* manager) override;
         public:
             Package();
@@ -52,6 +66,7 @@ namespace UML {
             Sequence<PackageableElement>& getPackagedElements();
             Sequence<PackageMerge>& getPackageMerge();
             Sequence<ProfileApplication>& getProfileApplications();
+            Sequence<Stereotype>& getOwnedStereotypes();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

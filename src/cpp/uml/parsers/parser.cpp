@@ -3,6 +3,7 @@
 #include "uml/model.h"
 #include "uml/umlManager.h"
 #include "uml/literalNull.h"
+#include "uml/stereotype.h"
 
 using namespace std;
 
@@ -1068,6 +1069,14 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                         Activity& activity = data.m_manager->create<Activity>();
                         // TODO parse activity
                         activity.setOwningPackage(&pckg);
+                    } else if (node["packagedElements"][i]["association"]) {
+                        if (node["packagedElements"][i]["association"].IsMap()) {
+                            Association& association = data.m_manager->create<Association>();
+                            parseAssociation(node["packagedElements"][i]["association"], association, data);
+                            pckg.getPackagedElements().add(association);
+                        } else {
+                            throw UmlParserException("Invalid yaml node type, must be a map!", data.m_path.string(), node["packagedElements"][i]["association"]);
+                        }
                     } else if (node["packagedElements"][i]["class"]) {
                         Class& clazz = data.m_manager->create<Class>();
                         parseClass(node["packagedElements"][i]["class"], clazz, data);
@@ -1148,6 +1157,23 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
             }
         } else {
             throw UmlParserException("Invalid YAML node type for field packagedElements, must be sequence, ", data.m_path.string(), node["packagedElements"]);
+        }
+    }
+
+    // TODO update
+    if (node["ownedStereotypes"]) {
+        if (node["ownedStereotypes"].IsSequence()) {
+            for (size_t i = 0; i < node["ownedStereotypes"].size(); i++) {
+                if (node["ownedStereotypes"][i]["stereotype"]) {
+                    Stereotype& s = data.m_manager->create<Stereotype>();
+                    parseClass(node["ownedStereotypes"][i]["stereotype"], s, data);
+                    pckg.getOwnedStereotypes().add(s);
+                } else {
+                    throw UmlParserException("Invalid uml element definition, must be stereotype!", data.m_path.string(), node["ownedStereotypes"][i]["stereotype"]);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for field ownedStereotypes, must be sequence, ", data.m_path.string(), node["ownedStereotypes"]);
         }
     }
 }
@@ -2255,6 +2281,70 @@ void emitTemplateParameterSubstitution(YAML::Emitter& emitter, TemplateParameter
     if (sub.getElementType() == ElementType::TEMPLATE_PARAMETER_SUBSTITUTION) {
         emitter << YAML::EndMap << YAML::EndMap;
     }
+}
+
+void AddMemberEndFunctor::operator()(Element& el) const {
+    if (el.isSubClassOf(ElementType::PROPERTY)) {
+        dynamic_cast<Association*>(m_el)->getMemberEnds().add(dynamic_cast<Property&>(el));
+    } else {
+        throw UmlParserException("Invalid element added to association member ends, must be a property!", "", m_node);
+    }
+}
+
+void parseAssociation(YAML::Node node, Association& association, ParserMetaData& data) {
+    parseClassifier(node, association, data);
+
+    if (node["navigableOwnedEnds"]) {
+        if (node["navigableOwnedEnds"].IsSequence()) {
+            for (size_t i = 0; i < node["navigableOwnedEnds"].size(); i++) {
+                if (node["navigableOwnedEnds"][i]["property"]) {
+                    if (node["navigableOwnedEnds"][i]["property"].IsMap()) {
+                        Property& property = data.m_manager->create<Property>();
+                        parseProperty(node["navigableOwnedEnds"][i]["property"], property, data);
+                        association.getNavigableOwnedEnds().add(property);
+                    } else {
+                        throw UmlParserException("Invalid yaml node type, must be map!", data.m_path.string(), node["navigableOwnedEnds"][i]["property"]);
+                    }
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type, must be sequence!", data.m_path.string(), node["navigableOwnedEnds"]);
+        }
+    }
+
+    if (node["ownedEnds"]) {
+        if (node["ownedEnds"].IsSequence()) {
+            for (size_t i = 0; i < node["ownedEnds"].size(); i++) {
+                if (node["ownedEnds"][i]["property"]) {
+                    if (node["ownedEnds"][i]["property"].IsMap()) {
+                        Property& property = data.m_manager->create<Property>();
+                        parseProperty(node["ownedEnds"][i]["property"], property, data);
+                        association.getOwnedEnds().add(property);
+                    } else {
+                        throw UmlParserException("Invalid yaml node type, must be map!", data.m_path.string(), node["navigableOwnedEnds"][i]["property"]);
+                    }
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type, must be sequence!", data.m_path.string(), node["navigableOwnedEnds"]);
+        }
+    }
+
+    if (node["memberEnds"]) {
+        if (node["memberEnds"].IsSequence()) {
+            for (size_t i = 0; i < node["memberEnds"].size(); i++) {
+                if (node["memberEnds"][i].IsScalar()) {
+                    if (isValidID(node["memberEnds"][i].as<string>())) {
+                        applyFunctor(data, ID::fromString(node["memberEnds"][i].as<string>()), new AddMemberEndFunctor(&association, node["memberEnds"][i]));
+                    }
+                } else {
+                    throw UmlParserException("Invalid yaml node type, must be scalar!", data.m_path.string(), node["memberEnds"][i]);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type, must be sequence!", data.m_path.string(), node["memberEnds"]);
+        }
+    } 
 }
 
 }

@@ -34,6 +34,7 @@
 #include "uml/model.h"
 #include "uml/literalUnlimitedNatural.h"
 #include "uml/templateBinding.h"
+#include "uml/association.h"
 
 namespace UML {
     namespace Parsers {
@@ -145,6 +146,12 @@ namespace UML {
                     SetActualFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
                     void operator()(Element& el) const override;
             };
+            
+            class AddMemberEndFunctor : public AbstractPostProcessFunctor {
+                public:
+                    AddMemberEndFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
             void emitModel(YAML::Emitter& emitter, Model& model);
             void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
             void emitElement(YAML::Emitter& emitter, Element& el);
@@ -214,6 +221,7 @@ namespace UML {
             void emitTemplateBinding(YAML::Emitter& emitter, TemplateBinding& binding);
             void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data);
             void emitTemplateParameterSubstitution(YAML::Emitter& emitter, TemplateParameterSubstitution& sub);
+            void parseAssociation(YAML::Node node, Association& association, ParserMetaData& data);
         }
     }
 }

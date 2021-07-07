@@ -1,0 +1,24 @@
+---
+  package:
+    packageMerge:
+      - packageMerge:
+          mergedPackage: ../uml/primitiveTypes.yml
+    packagedElements:
+      - class:
+          id: m7pAITPBHxM9c1_aPbfnMLUOC5Dc
+          name: type
+      - class:
+          id : J&Po&gVCdSwvJrBK5kl4V1Fn5RoH
+          name: hasAssociation
+          ownedAttributes:
+            - property:
+                id: KpMoyOIGjkm&tB8F_zGExQejc7T7
+                name: memberEnd
+                type: m7pAITPBHxM9c1_aPbfnMLUOC5Dc
+      - association:
+          navigableOwnedEnds:
+            - property:
+                type: real_aZG&w6yl61bXVWutgeyScN9
+          memberEnds:
+            - KpMoyOIGjkm&tB8F_zGExQejc7T7
+...

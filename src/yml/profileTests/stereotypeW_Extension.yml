@@ -1,0 +1,12 @@
+---
+  profile:
+    ownedStereotypes:
+      - stereotype:
+          id: cLvWpn5ofnVR_f2lob3ofVyLu0Fc
+    packagedElements:
+      - extension:
+          ownedEnd:
+            extensionEnd:
+              type: cLvWpn5ofnVR_f2lob3ofVyLu0Fc
+          metaClass: CLASS
+...

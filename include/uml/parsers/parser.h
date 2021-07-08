@@ -35,6 +35,7 @@
 #include "uml/literalUnlimitedNatural.h"
 #include "uml/templateBinding.h"
 #include "uml/association.h"
+#include "uml/extension.h"
 
 namespace UML {
     namespace Parsers {
@@ -222,6 +223,8 @@ namespace UML {
             void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data);
             void emitTemplateParameterSubstitution(YAML::Emitter& emitter, TemplateParameterSubstitution& sub);
             void parseAssociation(YAML::Node node, Association& association, ParserMetaData& data);
+            void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data);
+            ElementType elementTypeFromString(std::string eType);
         }
     }
 }

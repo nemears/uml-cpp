@@ -24,8 +24,8 @@ jobs:
     - name: Checkout submodules
       uses: textbook/git-checkout-submodule-action@master
 
-    # - name: clang
-    #   run: sudo apt-get update && sudo apt-get install clang-10 && sudo apt-get install libclang-10-dev && sudo apt-get install llvm-10
+    - name: clang
+      run: sudo apt-get install libclang-dev
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.

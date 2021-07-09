@@ -1,0 +1,17 @@
+---
+  profile:
+    id: XIf5yPHTzLz4NDkVLLwDamOWscKb
+    name: test
+    ownedStereotypes:
+      - stereotype:
+          id: mRZ5HQ17kO28gU&4BKB115zX0KYR
+          name: test
+    packagedElements:
+      - extension:
+          id: zt0tPz9zpWlJq3q8T3di0wwhYH1Q
+          metaClass: PACKAGE
+          ownedEnd:
+            extensionEnd:
+              id: 7PZ5NBMn36LnyR1F4q15qFos5fRJ
+              type: mRZ5HQ17kO28gU&4BKB115zX0KYR
+...

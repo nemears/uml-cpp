@@ -1,0 +1,6 @@
+---
+  package:
+    profileApplications:
+      - profileApplication:
+          appliedProfile: testProfile.yml
+,,,

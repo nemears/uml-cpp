@@ -48,3 +48,15 @@ TEST_F(ProfileParserTest, internalProfileapplication) {
     ProfileApplication& application = *applying.getProfileApplications().front();
     ASSERT_EQ(application.getAppliedProfile()->getID(), profile.getID());
 }
+
+TEST_F(ProfileParserTest, externalProfileApplicationTest) {
+    UmlManager m;
+    Element* el;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "profileTests/externalProfileApplication.yml"));
+    ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
+    Package& pckg = *dynamic_cast<Package*>(el);
+    ASSERT_EQ(pckg.getProfileApplications().size(), 1);
+    ProfileApplication& application = *pckg.getProfileApplications().front();
+    ASSERT_EQ(application.getAppliedProfile()->getID(), ID::fromString("XIf5yPHTzLz4NDkVLLwDamOWscKb"));
+    //lazy
+}

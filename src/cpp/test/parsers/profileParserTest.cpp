@@ -32,3 +32,19 @@ TEST_F(ProfileParserTest, stereotypeWithExtensionTest) {
     ASSERT_TRUE(end.getType() != 0);
     ASSERT_EQ(end.getType()->getID(), s.getID());
 }
+
+TEST_F(ProfileParserTest, internalProfileapplication) {
+    UmlManager m;
+    Element* el;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "profileTests/internalProfileApplication.yml"));
+    ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
+    Package& pckg = *dynamic_cast<Package*>(el);
+    ASSERT_EQ(pckg.getPackagedElements().size(), 2);
+    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::PACKAGE);
+    Package& applying = *dynamic_cast<Package*>(pckg.getPackagedElements().front());
+    ASSERT_EQ(applying.getProfileApplications().size(), 1);
+    ASSERT_EQ(pckg.getPackagedElements().back()->getElementType(), ElementType::PROFILE);
+    Profile& profile = *dynamic_cast<Profile*>(pckg.getPackagedElements().back());
+    ProfileApplication& application = *applying.getProfileApplications().front();
+    ASSERT_EQ(application.getAppliedProfile()->getID(), profile.getID());
+}

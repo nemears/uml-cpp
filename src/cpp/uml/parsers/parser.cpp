@@ -6,6 +6,7 @@
 #include "uml/stereotype.h"
 #include "uml/extensionEnd.h"
 #include "uml/profile.h"
+#include "uml/profileApplication.h"
 
 using namespace std;
 
@@ -1074,6 +1075,26 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
         }
     }
 
+    if (node["profileApplications"]) {
+        if (node["profileApplications"].IsSequence()) {
+            for (size_t i = 0; i < node["profileApplications"].size(); i++) {
+                if (node["profileApplications"][i]["profileApplication"]) {
+                    if (node["profileApplications"][i]["profileApplication"].IsMap()) {
+                        ProfileApplication& application = data.m_manager->create<ProfileApplication>();
+                        parseProfileApplication(node["profileApplications"][i]["profileApplication"], application, data);
+                        pckg.getProfileApplications().add(application);
+                    } else {
+                        throw UmlParserException("Invalid yaml node type, profileApplication must be a mao!", data.m_path.string(), node["profileApplications"][i]["profileApplication"]);
+                    }
+                } else {
+                    throw UmlParserException("Invalid profileApplication type!", data.m_path.string(), node["profileApplications"][i]);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalide yaml node type for profileApplications, must be a sequence!", data.m_path.string(), node["profileApplication"]);
+        }
+    }
+
     if (node["packagedElements"]) {
         if (node["packagedElements"].IsSequence()) {
             for (size_t i=0; i<node["packagedElements"].size(); i++) {
@@ -1158,6 +1179,12 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                         PrimitiveType& type = data.m_manager->create<PrimitiveType>();
                         parsePrimitiveType(node["packagedElements"][i]["primitiveType"], type, data);
                         pckg.getPackagedElements().add(type);
+                    } else if (node["packagedElements"][i]["profile"]) {
+                        if (node["packagedElements"][i]["profile"].IsMap()) {
+                            Profile& profile = data.m_manager->create<Profile>();
+                            parsePackage(node["packagedElements"][i]["profile"], profile, data);
+                            pckg.getPackagedElements().add(profile);
+                        }
                     } else {
                         throw UmlParserException("Invalid identifier for packagedElements, ", data.m_path.string(), node["packagedElements"][i]);
                     }
@@ -2547,6 +2574,41 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::VALUE_SPECIFICATION;
     } 
     throw UmlParserException("Could not identify entity type by keyword: " + eType + '!', "");
+}
+
+void SetAppliedProfileFunctor::operator()(Element& el) const {
+    if (el.isSubClassOf(ElementType::PROFILE)) {
+        dynamic_cast<ProfileApplication*>(m_el)->setAppliedProfile(&dynamic_cast<Profile&>(el));
+    } else {
+        throw UmlParserException("Tried to set applied profile to non profile", "", m_node);
+    }
+}
+
+void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data) {
+    parseElement(node, application, data);
+
+    if (node["appliedProfile"]) {
+        if (node["appliedProfile"].IsScalar()) {
+            string profileString = node["appliedProfile"].as<string>();
+            if (isValidID(profileString)) {
+                applyFunctor(data, ID::fromString(profileString), new SetAppliedProfileFunctor(&application, node["appliedProfile"]));
+            } else {
+                if (filesystem::exists(data.m_path.parent_path() / profileString)) {
+                    filesystem::path cPath = data.m_path;
+                    data.m_path = cPath.parent_path() / profileString;;
+                    Element* profile = parse(data);
+                    data.m_path = cPath;
+                    if (profile->isSubClassOf(ElementType::PROFILE)) {
+                        application.setAppliedProfile(dynamic_cast<Profile*>(profile));
+                    } else {
+                        throw UmlParserException("File for applied profile is not root element type profile", data.m_path.string(), node["appliedProfile"]);
+                    }
+                } else {
+                    throw UmlParserException("Could not identify applied profile!", data.m_path.string(), node["appliedProfile"]);
+                }
+            }
+        }
+    }
 }
 
 }

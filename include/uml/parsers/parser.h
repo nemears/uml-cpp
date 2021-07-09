@@ -153,6 +153,12 @@ namespace UML {
                     AddMemberEndFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
                     void operator()(Element& el) const override;
             };
+
+            class SetAppliedProfileFunctor : public AbstractPostProcessFunctor {
+                public:
+                    SetAppliedProfileFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
             void emitModel(YAML::Emitter& emitter, Model& model);
             void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
             void emitElement(YAML::Emitter& emitter, Element& el);
@@ -225,6 +231,7 @@ namespace UML {
             void parseAssociation(YAML::Node node, Association& association, ParserMetaData& data);
             void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data);
             ElementType elementTypeFromString(std::string eType);
+            void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data);
         }
     }
 }

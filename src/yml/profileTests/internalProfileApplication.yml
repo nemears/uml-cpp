@@ -1,0 +1,10 @@
+---
+  package:
+    packagedElements:
+      - package:
+          profileApplications:
+            - profileApplication:
+                appliedProfile: ZjvD1bCxVklVQI7SsmtE_kS3oIIc
+      - profile:
+          id: ZjvD1bCxVklVQI7SsmtE_kS3oIIc
+...

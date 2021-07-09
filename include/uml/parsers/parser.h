@@ -229,6 +229,7 @@ namespace UML {
             void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data);
             void emitTemplateParameterSubstitution(YAML::Emitter& emitter, TemplateParameterSubstitution& sub);
             void parseAssociation(YAML::Node node, Association& association, ParserMetaData& data);
+            void emitAssociation(YAML::Emitter& emitter, Association& association);
             void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data);
             ElementType elementTypeFromString(std::string eType);
             void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data);

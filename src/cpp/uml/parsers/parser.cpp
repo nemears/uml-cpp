@@ -189,6 +189,10 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
 
 void emit(YAML::Emitter& emitter, Element& el) {
     switch(el.getElementType()) {
+        case ElementType::ASSOCIATION : {
+            emitAssociation(emitter, dynamic_cast<Association&>(el));
+            break;
+        }
         case ElementType::CLASS : {
             emitClass(emitter, dynamic_cast<Class&>(el));
             break;
@@ -2393,6 +2397,46 @@ void parseAssociation(YAML::Node node, Association& association, ParserMetaData&
             throw UmlParserException("Invalid yaml node type, must be sequence!", data.m_path.string(), node["memberEnds"]);
         }
     } 
+}
+
+void emitAssociation(YAML::Emitter& emitter, Association& association) {
+    if (association.getElementType() == ElementType::ASSOCIATION) {
+        emitter << YAML::BeginMap << YAML::Key << "association" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitClassifier(emitter, association);
+
+    if (!association.getNavigableOwnedEnds().empty()) {
+        emitter << YAML::Key << "navigableOwnedEnds" << YAML::Value << YAML::BeginSeq;
+        for (auto& end : association.getNavigableOwnedEnds()) {
+            emitProperty(emitter, end); // todo go to emit, make polymorphic
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (!association.getOwnedEnds().size() > association.getNavigableOwnedEnds().size()) {
+        emitter << YAML::Key << "ownedEnds" << YAML::Value << YAML::BeginSeq;
+        for (auto& end : association.getOwnedEnds()) {
+            if (!association.getNavigableOwnedEnds().count(end.getID())) {
+                emitProperty(emitter, end);
+            }
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (association.getMemberEnds().size() > association.getOwnedEnds().size()) {
+        emitter << YAML::Key << "memberEnds" << YAML::Value << YAML::BeginSeq;
+        for (auto& end : association.getMemberEnds()) {
+            if (!association.getOwnedEnds().count(end.getID())) {
+                emitter << YAML::Value << end.getID().string();
+            }
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (association.getElementType() == ElementType::ASSOCIATION) {
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
 }
 
 void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data) {

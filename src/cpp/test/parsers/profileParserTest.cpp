@@ -152,3 +152,70 @@ TEST_F(ProfileParserTest, parseAppliedStereotypeTest) {
     Stereotype& stereotype = *profile.getOwnedStereotypes().front();
     ASSERT_EQ(stereotypeInst.getClassifier()->getID(), stereotype.getID());
 }
+
+TEST_F(ProfileParserTest, emitAppliedStereotypeTest) {
+    UmlManager m;
+    Package& root = m.create<Package>();
+    Package& applying = m.create<Package>();
+    ProfileApplication& application = m.create<ProfileApplication>();
+    Package& stereotypedEl = m.create<Package>();
+    InstanceSpecification& stereotypeInst = m.create<InstanceSpecification>();
+    Profile& profile = m.create<Profile>();
+    Stereotype& stereotype = m.create<Stereotype>();
+    Extension& extension = m.create<Extension>();
+    ExtensionEnd& end = m.create<ExtensionEnd>();
+    root.setID("jswJELYwKd_wleha5klF&GJFcU_0");
+    applying.setID("Lf963Dxo5MFIqi9ip7&Nj4l1f1yj");
+    application.setID("MUiSKR6gArugHOb1RqZtF5_uhflV");
+    profile.setID("I3QrZblFek6tdX&j70kCP8u4QNAh");
+    stereotypedEl.setID("wX&KNwgtwFYOQ0B4eIweaaRz&QC1");
+    stereotypeInst.setID("l3q&INpC6kqcdavsgIMSrSNNpGEt");
+    extension.setID("jjf&mHlwFSAjJXsBqng4IlxfYIJh");
+    end.setID("FK1SGxJ2lV&5RtbRhiGU9jR0zAsw");
+    stereotype.setID("x5r8XggyW2DI5c3RyAS8r_arWh79");
+    profile.getOwnedStereotypes().add(stereotype);
+    extension.setMetaClass(ElementType::PACKAGE);
+    end.setType(&stereotype);
+    extension.setOwnedEnd(&end);
+    profile.getPackagedElements().add(extension);
+    application.setAppliedProfile(&profile);
+    applying.getProfileApplications().add(application);
+    stereotypeInst.setClassifier(&stereotype);
+    stereotypedEl.getAppliedStereotypes().add(stereotypeInst);
+    applying.getPackagedElements().add(stereotypedEl);
+    root.getPackagedElements().add(applying);
+    root.getPackagedElements().add(profile);
+    string expectedEmit = R""""(package:
+  id: jswJELYwKd_wleha5klF&GJFcU_0
+  packagedElements:
+    - package:
+        id: Lf963Dxo5MFIqi9ip7&Nj4l1f1yj
+        profileApplications:
+          - profileApplication:
+              id: MUiSKR6gArugHOb1RqZtF5_uhflV
+              appliedProfile: I3QrZblFek6tdX&j70kCP8u4QNAh
+        packagedElements:
+          - package:
+              id: wX&KNwgtwFYOQ0B4eIweaaRz&QC1
+              appliedStereotypes:
+                - instanceSpecification:
+                    id: l3q&INpC6kqcdavsgIMSrSNNpGEt
+                    classifier: x5r8XggyW2DI5c3RyAS8r_arWh79
+    - profile:
+        id: I3QrZblFek6tdX&j70kCP8u4QNAh
+        packagedElements:
+          - extension:
+              id: jjf&mHlwFSAjJXsBqng4IlxfYIJh
+              metaClass: PACKAGE
+              ownedEnd:
+                extensionEnd:
+                  id: FK1SGxJ2lV&5RtbRhiGU9jR0zAsw
+                  type: x5r8XggyW2DI5c3RyAS8r_arWh79
+        ownedStereotypes:
+          - stereotype:
+              id: x5r8XggyW2DI5c3RyAS8r_arWh79)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(root));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

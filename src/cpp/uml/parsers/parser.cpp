@@ -366,6 +366,7 @@ void emitModel(YAML::Emitter& emitter, Model& model) {
 }
 
 void AddAppliedStereotypeFunctor::operator()(Element& el) const {
+    // will always be called after setClassifier functor
     if (el.isSubClassOf(ElementType::STEREOTYPE) && m_el->isSubClassOf(ElementType::INSTANCE_SPECIFICATION)) {
         m_stereotypedEl.getAppliedStereotypes().add(dynamic_cast<InstanceSpecification&>(*m_el));
     } else {
@@ -435,6 +436,14 @@ void emitElement(YAML::Emitter& emitter, Element& el) {
         for (auto& comment : el.getOwnedComments()) {
             emitComment(emitter, comment);
         }
+    }
+
+    if (!el.getAppliedStereotypes().empty()) {
+        emitter << YAML::Key << "appliedStereotypes" << YAML::Value << YAML::BeginSeq;
+        for (auto& stereotypeInst : el.getAppliedStereotypes()) {
+            emitInstanceSpecification(emitter, stereotypeInst);
+        }
+        emitter << YAML::EndSeq;
     }
 }
 

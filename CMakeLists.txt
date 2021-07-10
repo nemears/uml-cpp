@@ -12,6 +12,7 @@ SET(GCC_COMPILER_FLAGS "-fPIC")
 add_definitions(${GCC_COMPILER_FLAGS})
 
 # llvm clang dependency
+find_package(LLVM 10 REQUIRED)
 find_package(Clang REQUIRED)
 include_directories(${LLVM_INCLUDE_DIRS})
 link_directories(${LLVM_LIBRARY_DIR})

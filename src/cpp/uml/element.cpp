@@ -220,8 +220,8 @@ bool Element::isSubClassOf(ElementType eType) const {
     return eType == ElementType::ELEMENT;
 }
 
-string Element::getElementTypeString() const {
-    switch(getElementType()) {
+string Element::elementTypeToString(ElementType eType) {
+    switch(eType) {
         case ElementType::ACTION : {
             return "ACTION";
         }
@@ -445,6 +445,10 @@ string Element::getElementTypeString() const {
             return "NOT_SET";
         }
     }
+}
+
+string Element::getElementTypeString() const {
+    return elementTypeToString(getElementType());
 }
 
 void Element::setManager(UmlManager* manager) {

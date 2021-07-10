@@ -209,6 +209,10 @@ void emit(YAML::Emitter& emitter, Element& el) {
             emitExpression(emitter, dynamic_cast<Expression&>(el));
             break;
         }
+        case ElementType::EXTENSION : {
+            emitExtension(emitter, dynamic_cast<Extension&>(el));
+            break;
+        }
         case ElementType::INSTANCE_SPECIFICATION : {
             emitInstanceSpecification(emitter, dynamic_cast<InstanceSpecification&>(el));
             break;
@@ -255,6 +259,15 @@ void emit(YAML::Emitter& emitter, Element& el) {
         }
         case ElementType::PRIMITIVE_TYPE : {
             emitPrimitiveType(emitter, dynamic_cast<PrimitiveType&>(el));
+            break;
+        }
+        case ElementType::PROFILE : {
+            // TODO move to own function?
+            emitter << YAML::BeginMap << YAML::Key << "profile" << YAML::Value << YAML::BeginMap;
+            EmitterMetaData deleteME;
+            deleteME.m_strategy = EmitterStrategy::WHOLE;
+            emitPackage(emitter, dynamic_cast<Profile&>(el), deleteME);
+            emitter << YAML::EndMap << YAML::EndMap;
             break;
         }
         default: {
@@ -1247,7 +1260,9 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
         switch (data.m_strategy) {
             case EmitterStrategy::WHOLE : {
                 for (auto& el : pckg.getPackagedElements()) {
-                    emit(emitter, el);
+                    if (!el.isSubClassOf(ElementType::STEREOTYPE)) {
+                        emit(emitter, el);
+                    }
                 }
                 break;
             }
@@ -1270,6 +1285,17 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
             }
         }
         
+        emitter << YAML::EndSeq;
+    }
+
+    if (!pckg.getOwnedStereotypes().empty()) {
+        emitter << YAML::Key << "ownedStereotypes" << YAML::Value << YAML::BeginSeq;
+        for (auto& stereotype : pckg.getOwnedStereotypes()) {
+            // TODO move to own function?
+            emitter << YAML::BeginMap << YAML::Key << "stereotype" << YAML::Value << YAML::BeginMap;
+            emitClass(emitter, stereotype);
+            emitter << YAML::EndMap << YAML::EndMap;
+        }
         emitter << YAML::EndSeq;
     }
 
@@ -2618,6 +2644,26 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::VALUE_SPECIFICATION;
     } 
     throw UmlParserException("Could not identify entity type by keyword: " + eType + '!', "");
+}
+
+void emitExtension(YAML::Emitter& emitter, Extension& extension) {
+    if (extension.getElementType() == ElementType::EXTENSION) {
+        emitter << YAML::BeginMap << YAML::Key << "extension" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitClassifier(emitter, extension);
+
+    emitter << YAML::Key << "metaClass" << YAML::Value << Element::elementTypeToString(extension.getMetaClass());
+
+    if (extension.getOwnedEnd() != 0) {
+        emitter << YAML::Key << "ownedEnd" << YAML::Value << YAML::BeginMap << YAML::Key << "extensionEnd" << YAML::Value << YAML::BeginMap;
+        emitProperty(emitter, *extension.getOwnedEnd());
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
+
+    if (extension.getElementType() == ElementType::EXTENSION) {
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
 }
 
 void SetAppliedProfileFunctor::operator()(Element& el) const {

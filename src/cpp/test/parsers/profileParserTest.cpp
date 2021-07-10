@@ -60,3 +60,37 @@ TEST_F(ProfileParserTest, externalProfileApplicationTest) {
     ASSERT_EQ(application.getAppliedProfile()->getID(), ID::fromString("XIf5yPHTzLz4NDkVLLwDamOWscKb"));
     //lazy
 }
+
+TEST_F(ProfileParserTest, emitProfileTest) {
+    UmlManager m;
+    Profile& profile = m.create<Profile>();
+    Stereotype& stereotype = m.create<Stereotype>();
+    Extension& extension = m.create<Extension>();
+    ExtensionEnd& end = m.create<ExtensionEnd>();
+    profile.setID("83lphS&gucqvJwW&KSzVmTSMMG1z");
+    extension.setID("&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ");
+    end.setID("t&ZWitKKpMcvG9Dzwh23wSbP1hr5");
+    stereotype.setID("7PJxQhyjuuWylik9y2fgpNDXmMdv");
+    end.setType(&stereotype);
+    extension.setOwnedEnd(&end);
+    extension.setMetaClass(ElementType::OPERATION);
+    profile.getOwnedStereotypes().add(stereotype);
+    profile.getPackagedElements().add(extension);
+    string expectedEmit = R""""(profile:
+  id: 83lphS&gucqvJwW&KSzVmTSMMG1z
+  packagedElements:
+    - extension:
+        id: "&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ"
+        metaClass: OPERATION
+        ownedEnd:
+          extensionEnd:
+            id: t&ZWitKKpMcvG9Dzwh23wSbP1hr5
+            type: 7PJxQhyjuuWylik9y2fgpNDXmMdv
+  ownedStereotypes:
+    - stereotype:
+        id: 7PJxQhyjuuWylik9y2fgpNDXmMdv)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(profile));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

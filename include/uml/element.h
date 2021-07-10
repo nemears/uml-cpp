@@ -169,6 +169,7 @@ namespace UML {
             virtual ElementType getElementType() const;
             virtual bool isSubClassOf(ElementType eType) const;
             virtual std::string getElementTypeString() const;
+            static std::string elementTypeToString(ElementType eType);
     };
 
     //Exceptions

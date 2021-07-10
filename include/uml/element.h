@@ -100,8 +100,8 @@ namespace UML {
     class SetOwnerFunctor;
     class RemoveOwnerFunctor;
     class Slot;
+    class InstanceSpecification;
     class UmlManager;
-    class ID;
     /**
      * Element is the base class of all UML classes
      * It has three main attributes
@@ -131,6 +131,7 @@ namespace UML {
             Sequence<Relationship>* m_relationships;
             Sequence<DirectedRelationship>* m_directedRelationships;
             Sequence<Comment>* m_ownedComments;
+            Sequence<InstanceSpecification>* m_appliedStereotype;
             virtual void reindexID(ID oldID, ID newID);
             void setOwner(Element* el);
             static bool isSameOrNull(ID id, Element* el);
@@ -164,6 +165,13 @@ namespace UML {
             Sequence<Relationship>& getRelationships();
             Sequence<DirectedRelationship>& getDirectedRelationships();
             Sequence<Comment>& getOwnedComments();
+            /**
+             * TODO: I am keeping it simple for now, instance specification of stereotype to
+             *       hold tags and operations, but I think it would be cool to dynamically map
+             *       methods if we load the stereotype before runtime. Also would be cool to have
+             *       stereotype tags as keyword in yaml config for disk storage (not necessarily useful though?)
+             **/
+            Sequence<InstanceSpecification>& getAppliedStereotypes();
             virtual void setID(std::string id);
             void setID(ID id);
             virtual ElementType getElementType() const;

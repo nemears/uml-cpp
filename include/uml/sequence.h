@@ -59,6 +59,8 @@ namespace UML {
     class TemplateParameter;
     class TemplateParameterSubstitution;
     class TemplateBinding;
+    class AddAppliedStereotypeFunctor;
+    class RemoveAppliedStereotypeFunctor;
 
     class ReadOnlySequenceException : public std::exception {
         friend class Element;
@@ -123,6 +125,8 @@ namespace UML {
         friend class TemplateParameter;
         friend class TemplateParameterSubstitution;
         friend class TemplateBinding;
+        friend class AddAppliedStereotypeFunctor;
+        friend class RemoveAppliedStereotypeFunctor;
         private:
             // Manager
             UmlManager* m_manager = 0;

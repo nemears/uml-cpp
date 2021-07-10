@@ -5,6 +5,7 @@
 #include "uml/elementFunctors.h"
 #include "uml/directedRelationship.h"
 #include "uml/comment.h"
+#include "uml/instanceSpecification.h"
 
 using namespace std;
 using namespace UML;
@@ -69,6 +70,24 @@ void RemoveOwnedCommentFunctor::operator()(Element& el) const {
     }
 }
 
+void AddAppliedStereotypeFunctor::operator()(Element& el) const {
+    if (!m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalAdd(el);
+    }
+}
+
+void RemoveAppliedStereotypeFunctor::operator()(Element& el) const {
+    if (m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalRemove(el);
+    }
+}
+
+void CheckAppliedStereotypeFunctor::operator()(Element& el) const {
+    if (!dynamic_cast<InstanceSpecification&>(el).getClassifier()->isSubClassOf(ElementType::STEREOTYPE)) {
+        throw InvalidAppliedStereotypeException();
+    }
+}
+
 // Constructor
 Element::Element() {
     m_manager = 0;
@@ -92,6 +111,10 @@ Element::Element() {
     m_ownedComments = new Sequence<Comment>;
     m_ownedComments->addProcedures.push_back(new AddOwnedCommentFunctor(this));
     m_ownedComments->removeProcedures.push_back(new RemoveOwnedCommentFunctor(this));
+    m_appliedStereotype = new Sequence<InstanceSpecification>;
+    m_appliedStereotype->addProcedures.push_back(new AddAppliedStereotypeFunctor(this));
+    m_appliedStereotype->removeProcedures.push_back(new RemoveAppliedStereotypeFunctor(this));
+    m_appliedStereotype->addChecks.push_back(new CheckAppliedStereotypeFunctor(this));
 }
 
 // Destructor
@@ -100,6 +123,7 @@ Element::~Element() {
     delete m_relationships;
     delete m_directedRelationships;
     delete m_ownedComments;
+    delete m_appliedStereotype;
 }
 
 Element::Element(const Element& el) {
@@ -141,6 +165,13 @@ Element::Element(const Element& el) {
     m_ownedComments->addProcedures.push_back(new AddOwnedCommentFunctor(this));
     m_ownedComments->removeProcedures.clear();
     m_ownedComments->removeProcedures.push_back(new RemoveOwnedCommentFunctor(this));
+    m_appliedStereotype = new Sequence<InstanceSpecification>(*el.m_appliedStereotype);
+    m_appliedStereotype->addChecks.clear();
+    m_appliedStereotype->addProcedures.clear();
+    m_appliedStereotype->removeProcedures.clear();
+    m_appliedStereotype->addProcedures.push_back(new AddAppliedStereotypeFunctor(this));
+    m_appliedStereotype->removeProcedures.push_back(new RemoveAppliedStereotypeFunctor(this));
+    m_appliedStereotype->addChecks.push_back(new CheckAppliedStereotypeFunctor(this));
 }
 
 void Element::setID(string id) {
@@ -510,6 +541,10 @@ void Element::setOwner(Element* owner) {
 
 Sequence<Element>& Element::getOwnedElements() {
     return *m_ownedElements;
+}
+
+Sequence<InstanceSpecification>& Element::getAppliedStereotypes() {
+    return *m_appliedStereotype;
 }
 
 /**

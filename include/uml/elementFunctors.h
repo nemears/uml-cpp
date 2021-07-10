@@ -62,6 +62,31 @@ namespace UML {
             RemoveOwnedCommentFunctor(Element* me) : AbstractSequenceFunctor(me) {};
             void operator()(Element& el) const override;
     };
+
+    class AddAppliedStereotypeFunctor : public AbstractSequenceFunctor {
+        public:
+            AddAppliedStereotypeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+            void operator()(Element& el) const override;
+    };
+
+    class RemoveAppliedStereotypeFunctor : public AbstractSequenceFunctor {
+        public:
+            RemoveAppliedStereotypeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+            void operator()(Element& el) const override;
+    };
+
+    class CheckAppliedStereotypeFunctor : public AbstractSequenceFunctor {
+        public:
+            CheckAppliedStereotypeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+            void operator()(Element& el) const override;
+    };
+
+    class InvalidAppliedStereotypeException : public std::exception {
+        public:
+            virtual const char* what() const throw() {
+                return "tried to apply instance as stereotype that does not have a classifier set to a stereotype!";
+            };
+    };
 }
 
 #endif

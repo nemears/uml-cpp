@@ -5,6 +5,9 @@
 #include "uml/sequence.h"
 #include "uml/relationship.h"
 #include "uml/package.h"
+#include "uml/class.h"
+#include "uml/instanceSpecification.h"
+#include "uml/stereotype.h"
 
 using namespace UML;
 
@@ -307,4 +310,23 @@ TEST_F(ElementTest, isSameOrNullTest) {
   ASSERT_NO_THROW(c1.setOwningPackage(&e));
   ASSERT_TRUE(e.getOwnedElements().front() == &c1);
   ASSERT_TRUE(e.getOwnedElements().back() == &c2);
+}
+
+// TEST_F(ElementTest, checkAppliedStereotypeFunctorTest) {
+//   UmlManager m;
+//   Class& c = m.create<Class>();
+//   InstanceSpecification& s = m.create<InstanceSpecification>();
+//   ASSERT_THROW(c.getAppliedStereotypes().add(s), InvalidAppliedStereotypeException());
+// }
+
+TEST_F(ElementTest, AddAndRemoveAppliedStereotypetest) {
+  UmlManager m;
+  Class& c = m.create<Class>();
+  InstanceSpecification& i = m.create<InstanceSpecification>();
+  Stereotype& s = m.create<Stereotype>();
+  i.setClassifier(&s);
+  ASSERT_NO_THROW(c.getAppliedStereotypes().add(i));
+  ASSERT_EQ(c.getOwnedElements().size(), 1);
+  ASSERT_NO_THROW(c.getAppliedStereotypes().remove(i));
+  ASSERT_EQ(c.getOwnedElements().size(), 0);
 }

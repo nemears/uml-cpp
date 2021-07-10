@@ -83,8 +83,11 @@ void RemoveAppliedStereotypeFunctor::operator()(Element& el) const {
 }
 
 void CheckAppliedStereotypeFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<InstanceSpecification&>(el).getClassifier()->isSubClassOf(ElementType::STEREOTYPE)) {
-        throw InvalidAppliedStereotypeException();
+    if (dynamic_cast<InstanceSpecification&>(el).getClassifier() != 0) {
+        if (!dynamic_cast<InstanceSpecification&>(el).getClassifier()->isSubClassOf(ElementType::STEREOTYPE)) {
+            // TODO: check extension
+            throw InvalidAppliedStereotypeException();
+        }
     }
 }
 

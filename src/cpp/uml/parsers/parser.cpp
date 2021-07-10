@@ -1255,6 +1255,14 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
         // TODO
     }
 
+    if (!pckg.getProfileApplications().empty()) {
+        emitter << YAML::Key << "profileApplications" << YAML::Value << YAML::BeginSeq;
+        for (auto& application : pckg.getProfileApplications()) {
+            emitProfileApplication(emitter, application);
+        }
+        emitter << YAML::EndSeq;
+    }
+
     if (!pckg.getPackagedElements().empty()) {
         emitter << YAML::Key << "packagedElements" << YAML::Value << YAML::BeginSeq;
         switch (data.m_strategy) {
@@ -2698,6 +2706,22 @@ void parseProfileApplication(YAML::Node node, ProfileApplication& application, P
                 }
             }
         }
+    }
+}
+
+void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& application) {
+    if (application.getElementType() == ElementType::PROFILE_APPLICATION) {
+        emitter << YAML::BeginMap << YAML::Key << "profileApplication" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitElement(emitter, application);
+
+    if (application.getAppliedProfile() != 0) {
+        emitter << YAML::Key << "appliedProfile" << YAML::Value << application.getAppliedProfile()->getID().string();
+    }
+
+    if (application.getElementType() == ElementType::PROFILE_APPLICATION) {
+        emitter << YAML::EndMap << YAML::EndMap;
     }
 }
 

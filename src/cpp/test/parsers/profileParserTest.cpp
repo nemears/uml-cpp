@@ -94,3 +94,34 @@ TEST_F(ProfileParserTest, emitProfileTest) {
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(ProfileParserTest, emitProfileApplication) {
+    UmlManager m;
+    Package& root = m.create<Package>();
+    Package& applying = m.create<Package>();
+    Profile& profile = m.create<Profile>();
+    ProfileApplication& application  = m.create<ProfileApplication>();
+    root.setID("BW5iaVf_WdBebuIH3yi9beXpG5Yi");
+    applying.setID("BtO&7RDq4sOe2Cb3hl_bByknWtDU");
+    application.setID("QbTzWJmjUCFjrufpPQc9qyeQdK3R");
+    profile.setID("R12X_VJHWWUKmJS_F8JotXJZzsNB");
+    application.setAppliedProfile(&profile);
+    applying.getProfileApplications().add(application);
+    root.getPackagedElements().add(applying);
+    root.getPackagedElements().add(profile);
+    string expectedEmit = R""""(package:
+  id: BW5iaVf_WdBebuIH3yi9beXpG5Yi
+  packagedElements:
+    - package:
+        id: BtO&7RDq4sOe2Cb3hl_bByknWtDU
+        profileApplications:
+          - profileApplication:
+              id: QbTzWJmjUCFjrufpPQc9qyeQdK3R
+              appliedProfile: R12X_VJHWWUKmJS_F8JotXJZzsNB
+    - profile:
+        id: R12X_VJHWWUKmJS_F8JotXJZzsNB)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(root));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

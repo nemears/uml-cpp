@@ -234,6 +234,7 @@ namespace UML {
             void emitExtension(YAML::Emitter& emitter, Extension& extension);
             ElementType elementTypeFromString(std::string eType);
             void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data);
+            void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& application);
         }
     }
 }

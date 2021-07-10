@@ -7,6 +7,7 @@
 #include "uml/extensionEnd.h"
 #include "uml/profile.h"
 #include "uml/profileApplication.h"
+#include "uml/comment.h"
 
 using namespace std;
 
@@ -380,6 +381,26 @@ void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
 
     // apply post processing here via functor
     data.elements.add(el);
+
+    if (node["ownedComments"]) {
+        if (node["ownedComments"].IsSequence()) {
+            for (size_t i = 0; i < node["ownedComments"].size(); i++) {
+                if (node["ownedComments"][i]["comment"]) {
+                    if (node["ownedComments"][i]["comment"].IsMap()) {
+                        Comment& comment = data.m_manager->create<Comment>();
+                        parseComment(node["ownedComments"][i]["comment"], comment, data);
+                        el.getOwnedComments().add(comment);
+                    } else {
+                        throw UmlParserException("Invalid yaml node type for comment, must be map!", data.m_path.string(), node["ownedComments"][i]["comment"]);
+                    }
+                } else {
+                    throw UmlParserException("Invalid element type for ownedComment, must be a comment", data.m_path.string(), node["ownedComments"][i]);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for ownedComments, must be sequence!", data.m_path.string(), node["ownedComments"]);
+        }
+    }
 }
 
 void emitElement(YAML::Emitter& emitter, Element& el) {
@@ -2722,6 +2743,18 @@ void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& applicat
 
     if (application.getElementType() == ElementType::PROFILE_APPLICATION) {
         emitter << YAML::EndMap << YAML::EndMap;
+    }
+}
+
+void parseComment(YAML::Node node, Comment& comment, ParserMetaData& data) {
+    parseElement(node, comment, data);
+
+    if (node["body"]) {
+        if (node["body"].IsScalar()) {
+            comment.setBody(node["body"].as<string>());
+        } else {
+            throw UmlParserException("Invalid yaml node type for comment body, must be scalar!", data.m_path.string(), node["body"]);
+        }
     }
 }
 

@@ -1,0 +1,6 @@
+---
+  package:
+    ownedComments:
+      - comment:
+          body: i am a comment!
+...

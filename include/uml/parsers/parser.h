@@ -236,6 +236,7 @@ namespace UML {
             void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data);
             void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& application);
             void parseComment(YAML::Node node, Comment& comment, ParserMetaData& data);
+            void emitComment(YAML::Emitter& emitter, Comment& comment);
         }
     }
 }

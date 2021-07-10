@@ -405,6 +405,13 @@ void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
 
 void emitElement(YAML::Emitter& emitter, Element& el) {
     emitter << YAML::Key << "id" << YAML::Value << el.getID().string();
+
+    if (!el.getOwnedComments().empty()) {
+        emitter << YAML::Key << "ownedComments" << YAML::Value << YAML::BeginSeq;
+        for (auto& comment : el.getOwnedComments()) {
+            emitComment(emitter, comment);
+        }
+    }
 }
 
 void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) {
@@ -2755,6 +2762,22 @@ void parseComment(YAML::Node node, Comment& comment, ParserMetaData& data) {
         } else {
             throw UmlParserException("Invalid yaml node type for comment body, must be scalar!", data.m_path.string(), node["body"]);
         }
+    }
+}
+
+void emitComment(YAML::Emitter& emitter, Comment& comment) {
+    if (comment.getElementType() == ElementType::COMMENT) {
+        emitter << YAML::BeginMap << YAML::Key << "comment" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitElement(emitter, comment);
+
+    if (!comment.getBody().empty()) {
+        emitter << YAML::Key << "body" << YAML::Value << comment.getBody();
+    }
+
+    if (comment.getElementType() == ElementType::COMMENT) {
+        emitter << YAML::EndMap << YAML::EndMap;
     }
 }
 

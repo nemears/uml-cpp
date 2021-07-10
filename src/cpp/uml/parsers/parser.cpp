@@ -365,6 +365,14 @@ void emitModel(YAML::Emitter& emitter, Model& model) {
     }
 }
 
+void AddAppliedStereotypeFunctor::operator()(Element& el) const {
+    if (el.isSubClassOf(ElementType::STEREOTYPE) && m_el->isSubClassOf(ElementType::INSTANCE_SPECIFICATION)) {
+        m_stereotypedEl.getAppliedStereotypes().add(dynamic_cast<InstanceSpecification&>(*m_el));
+    } else {
+        throw UmlParserException("appliedStereotype instance classifier must be a stereotype!", "", m_node);
+    }
+}
+
 void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
     if (node["id"]) {
         if (node["id"].IsScalar()) {
@@ -399,6 +407,22 @@ void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
             }
         } else {
             throw UmlParserException("Invalid yaml node type for ownedComments, must be sequence!", data.m_path.string(), node["ownedComments"]);
+        }
+    }
+
+    if (node["appliedStereotypes"]) {
+        if (node["appliedStereotypes"].IsSequence()) {
+            for (size_t i = 0; i < node["appliedStereotypes"].size(); i++) {
+                if (node["appliedStereotypes"][i]["instanceSpecification"]) {
+                    InstanceSpecification& inst = data.m_manager->create<InstanceSpecification>();
+                    parseInstanceSpecification(node["appliedStereotypes"][i]["instanceSpecification"], inst, data);
+                    applyFunctor(data, ID::fromString(node["appliedStereotypes"][i]["instanceSpecification"]["classifier"].as<string>()), new AddAppliedStereotypeFunctor(&inst, node["appliedStereotypes"][i]["instanceSpecification"]["classifier"], el));
+                } else {
+                    throw UmlParserException("Invalid uml element type for applied stereotype, must be an instancespecification", data.m_path.string(), node["appliedStereotypes"][i]);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for appliedStereotypes, must be a sequence!", data.m_path.string(), node["appliedStereotypes"]);
         }
     }
 }

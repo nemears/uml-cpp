@@ -88,6 +88,8 @@ void CheckAppliedStereotypeFunctor::operator()(Element& el) const {
             // TODO: check extension
             throw InvalidAppliedStereotypeException();
         }
+    } else {
+        throw InvalidAppliedStereotypeException();
     }
 }
 

@@ -159,6 +159,14 @@ namespace UML {
                     SetAppliedProfileFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
                     void operator()(Element& el) const override;
             };
+
+            class AddAppliedStereotypeFunctor : public AbstractPostProcessFunctor {
+                protected:
+                    Element& m_stereotypedEl;
+                public:
+                    AddAppliedStereotypeFunctor(Element* el, YAML::Node node, Element& stereotypedEl) : m_stereotypedEl(stereotypedEl), AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
             void emitModel(YAML::Emitter& emitter, Model& model);
             void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
             void emitElement(YAML::Emitter& emitter, Element& el);

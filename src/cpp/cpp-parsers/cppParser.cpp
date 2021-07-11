@@ -22,10 +22,15 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
     switch (clang_getCursorKind(c)) {
         case CXCursor_Namespace : {
             Package& namespacePckg = data->manager.create<Package>();
+            namespacePckg.setName(clang_getCString(clang_getCursorSpelling(c)));
             // TODO apply cpp namespace stereotype?
             switch (data->owningElementType) {
                 case ElementType::PACKAGE : {
                     dynamic_cast<Package&>(data->owningElement).getPackagedElements().add(namespacePckg);
+                    break;
+                }
+                default : {
+                    cerr << "No execution mapped for cpp namespace with parent type " << data->owningElement.getElementTypeString();
                 }
             }
             CppParserMetaData namespaceData = {data->manager, namespacePckg, namespacePckg.getElementType()};
@@ -51,14 +56,15 @@ Package* parseHeader(string path, UmlManager& manager) {
     ret = &manager.create<Package>();
     // TODO apply <<file>> stereotype?
 
+    // get cursor
     CXCursor cursor = clang_getTranslationUnitCursor(unit);
-    // cout << clang_getCursorKind(cursor) << std::endl;
 
+    // set up client data
     Element* umlParent = ret;
     ElementType umlParentType = umlParent->getElementType();
-
     CppParserMetaData data = {manager, *umlParent, umlParentType};
 
+    // start going through the AST
     clang_visitChildren(cursor,*headerVisit, &data);
 
     clang_disposeTranslationUnit(unit);

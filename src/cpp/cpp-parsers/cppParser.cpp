@@ -1,6 +1,7 @@
 #include "cpp-parsers/cppParser.h"
 #include <clang-c/Index.h>
 #include "uml/class.h"
+#include "uml/operation.h"
 
 using namespace std;
 
@@ -11,12 +12,22 @@ struct CppParserMetaData {
     UmlManager& manager;
     Element& owningElement;
     ElementType owningElementType;
+    VisibilityKind visibilty;
 };
 
 void setOwnerHelper(Element& ownee, Element& owner) {
     switch (owner.getElementType()) {
         case ElementType::PACKAGE : {
             dynamic_cast<Package&>(owner).getPackagedElements().add(dynamic_cast<PackageableElement&>(ownee));
+            break;
+        }
+        case ElementType::CLASS : {
+            switch(ownee.getElementType()) {
+                case ElementType::OPERATION : {
+                    dynamic_cast<Class&>(owner).getOperations().add(dynamic_cast<Operation&>(ownee));
+                    break;
+                }
+            }
             break;
         }
         default : {
@@ -26,9 +37,42 @@ void setOwnerHelper(Element& ownee, Element& owner) {
     }
 }
 
-CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_data) {
-    cout << "Cpp class contains Cursor '" << clang_getCString(clang_getCursorSpelling(c)) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(c))) << endl;
-    return CXChildVisit_Recurse;
+CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_data) { 
+    CppParserMetaData& data = *static_cast<CppParserMetaData*>(client_data); 
+    switch (clang_getCursorKind(c)) {
+        case CXCursor_CXXAccessSpecifier : {
+            switch (clang_getCXXAccessSpecifier(c)) {
+                case CX_CXXPrivate : {
+                    data.visibilty = VisibilityKind::PRIVATE;
+                    break;
+                }
+                case CX_CXXProtected : {
+                    data.visibilty = VisibilityKind::PROTECTED;
+                    break;
+                }
+                case CX_CXXPublic : {
+                    data.visibilty = VisibilityKind::PUBLIC;
+                    break;
+                }
+                case CX_CXXInvalidAccessSpecifier :
+                default : {
+                    cerr << "Cpp class contains access specifier with unset mappings" << endl;
+                }
+            }
+            break;
+        }
+        case CXCursor_Constructor : {
+            Operation& constructor = data.manager.create<Operation>();
+            constructor.setName(clang_getCString(clang_getCursorSpelling(c)));
+            setOwnerHelper(constructor, data.owningElement);
+            break;
+        }
+        default : {
+            cerr << "Cpp class contains Cursor '" << clang_getCString(clang_getCursorSpelling(c)) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(c))) << "', but no mapping is set" << endl;
+            return CXChildVisit_Recurse;
+        }
+    }
+    return CXChildVisit_Continue;
 }
 
 CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData client_data) {
@@ -57,7 +101,8 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
             break;
         }
         default : {
-            cerr << "Cursor '" << clang_getCString(clang_getCursorSpelling(c)) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(c))) << " does not have parsing mapped to it yet!" << endl;
+            cerr << "Cursor '" << clang_getCString(clang_getCursorSpelling(c)) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(c))) << "' does not have parsing mapped to it yet!" << endl;
+            // TODO throw error
         }
     }
     return CXChildVisit_Continue;

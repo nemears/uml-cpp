@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "cpp-parsers/cppParser.h"
 #include "uml/class.h"
+#include "uml/operation.h"
 
 using namespace std;
 using namespace UML;
@@ -24,4 +25,7 @@ TEST_F(CppParserTest, parseBasicHeaderTest) {
     ASSERT_EQ(pckg->getPackagedElements().get(1)->getElementType(), ElementType::CLASS);
     Class& testClass = dynamic_cast<Class&>(*pckg->getPackagedElements().get(1));
     ASSERT_EQ(testClass.getName(), "test");
+    ASSERT_EQ(testClass.getOperations().size(), 1);
+    Operation& constructor = *testClass.getOperations().front();
+    ASSERT_EQ(constructor.getName(), "test");
 }

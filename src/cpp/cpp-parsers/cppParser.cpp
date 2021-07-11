@@ -1,5 +1,6 @@
 #include "cpp-parsers/cppParser.h"
 #include <clang-c/Index.h>
+#include "uml/class.h"
 
 using namespace std;
 
@@ -11,6 +12,24 @@ struct CppParserMetaData {
     Element& owningElement;
     ElementType owningElementType;
 };
+
+void setOwnerHelper(Element& ownee, Element& owner) {
+    switch (owner.getElementType()) {
+        case ElementType::PACKAGE : {
+            dynamic_cast<Package&>(owner).getPackagedElements().add(dynamic_cast<PackageableElement&>(ownee));
+            break;
+        }
+        default : {
+            cerr << "No execution mapped for cpp namespace with parent type " << owner.getElementTypeString();
+            // TODO throw error
+        }
+    }
+}
+
+CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_data) {
+    cout << "Cpp class contains Cursor '" << clang_getCString(clang_getCursorSpelling(c)) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(c))) << endl;
+    return CXChildVisit_Recurse;
+}
 
 CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData client_data) {
     cout << "Cpp namespace contains Cursor '" << clang_getCString(clang_getCursorSpelling(c)) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(c))) << endl;
@@ -24,17 +43,17 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
             Package& namespacePckg = data->manager.create<Package>();
             namespacePckg.setName(clang_getCString(clang_getCursorSpelling(c)));
             // TODO apply cpp namespace stereotype?
-            switch (data->owningElementType) {
-                case ElementType::PACKAGE : {
-                    dynamic_cast<Package&>(data->owningElement).getPackagedElements().add(namespacePckg);
-                    break;
-                }
-                default : {
-                    cerr << "No execution mapped for cpp namespace with parent type " << data->owningElement.getElementTypeString();
-                }
-            }
+            setOwnerHelper(namespacePckg, data->owningElement);
             CppParserMetaData namespaceData = {data->manager, namespacePckg, namespacePckg.getElementType()};
             clang_visitChildren(c, *namespaceVisit, &namespaceData);
+            break;
+        }
+        case CXCursor_ClassDecl : {
+            Class& cppClass = data->manager.create<Class>();
+            cppClass.setName(clang_getCString(clang_getCursorSpelling(c)));
+            setOwnerHelper(cppClass, data->owningElement);
+            CppParserMetaData classData = {data->manager, cppClass, cppClass.getElementType()};
+            clang_visitChildren(c, *classVisit, &classData);
             break;
         }
         default : {

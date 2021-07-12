@@ -32,6 +32,7 @@ string emit(Element& el) {
     UmlManager m;
     EmitterMetaData data;
     data.m_manager = &m;
+    data.m_strategy = EmitterStrategy::WHOLE;
     YAML::Emitter emitter;
     emit(emitter, el, data);
     return emitter.c_str();
@@ -199,6 +200,10 @@ Element* parseExternalAddToManager(ParserMetaData& data, string path) {
 
 void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     switch(el.getElementType()) {
+        case ElementType::ASSOCIATION : {
+            emitAssociation(emitter, dynamic_cast<Association&>(el), data);
+            break;
+        }
         case ElementType::CLASS : {
             emitClass(emitter, dynamic_cast<Class&>(el), data);
             break;
@@ -213,6 +218,10 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         }
         case ElementType::EXPRESSION : {
             emitExpression(emitter, dynamic_cast<Expression&>(el), data);
+            break;
+        }
+        case ElementType::EXTENSION : {
+            emitExtension(emitter, dynamic_cast<Extension&>(el), data);
             break;
         }
         case ElementType::INSTANCE_SPECIFICATION : {
@@ -259,6 +268,12 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         }
         case ElementType::PRIMITIVE_TYPE : {
             emitPrimitiveType(emitter, dynamic_cast<PrimitiveType&>(el), data);
+            break;
+        }
+        case ElementType::PROFILE : {
+            emitter << YAML::BeginMap << YAML::Key << "profile" << YAML::Value << YAML::BeginMap;
+            emitPackage(emitter, dynamic_cast<Profile&>(el), data);
+            emitter << YAML::EndMap << YAML::EndMap;
             break;
         }
         default: {
@@ -1245,9 +1260,9 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
                     if (!el.isSubClassOf(ElementType::STEREOTYPE)) {
                         filesystem::path newPath = data.m_manager->getPath(el.getID());
                         if (newPath.empty() || (newPath.parent_path().compare(data.m_path) == 0 && newPath.filename().compare(data.m_fileName))) {
-                            emitToFile(el, data, newPath.parent_path(), newPath.filename());
-                        } else {
                             emit(emitter, el, data);
+                        } else {
+                            emitToFile(el, data, newPath.parent_path(), newPath.filename());
                         }
                     }
                 }

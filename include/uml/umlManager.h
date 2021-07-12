@@ -10,7 +10,6 @@
 namespace UML {
     namespace Parsers {
         class ParserMetaData;
-        class ManagerFriendFunctor;
     }
 
     struct DiscData {
@@ -27,14 +26,13 @@ namespace UML {
      **/
     class UmlManager {
         friend class Parsers::ParserMetaData;
-        friend class Parsers::ManagerFriendFunctor;
         private:
             //Parsers::ParserMetaData m_parserData;
             std::unordered_map<ID, Element*> m_loaded;
             std::unordered_set<ID> m_elements;
             std::unordered_map<ID, DiscData> m_disc;
             std::filesystem::path m_path;
-            std::filesystem::path m_mountBase;
+            std::filesystem::path m_mountBase; // TODO finish
             Model* m_model;
             Element* m_root;
             void clear();
@@ -47,6 +45,7 @@ namespace UML {
                 }
                 return *dynamic_cast<T*>(m_loaded.at(id));
             };
+            size_t count(ID id);
             template <class T = Element> T& create() {
                 T* ret = new T;
                 ret->setManager(this);

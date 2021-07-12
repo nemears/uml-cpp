@@ -1,0 +1,15 @@
+---
+  profile:
+    id: CPP_4zpFq9s6YilFjqZAPguiluqk
+    name: C++ Profile
+    ownedStereotypes:
+      - stereotype:
+          id: Cpp_NAMESPACE_3FloKgLhiH2P0t
+          name: C++ Namespace
+    packagedElements:
+      - extension:
+          ownedEnd:
+            extensionEnd:
+              type: Cpp_NAMESPACE_3FloKgLhiH2P0t
+          metaClass: PACKAGE
+...

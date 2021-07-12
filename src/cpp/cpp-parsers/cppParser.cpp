@@ -2,6 +2,8 @@
 #include <clang-c/Index.h>
 #include "uml/class.h"
 #include "uml/operation.h"
+#include "uml/instanceSpecification.h"
+#include "uml/stereotype.h"
 
 using namespace std;
 
@@ -82,11 +84,17 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
 
 CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_data) {
     CppParserMetaData* data = static_cast<CppParserMetaData*>(client_data);
+    if (data->manager.count(ID::fromString("CPP_4zpFq9s6YilFjqZAPguiluqk")) == 0) {
+        // TODO throw error
+        cerr << "ERROR: Did not load C++ Profile before parsing header!" << endl;
+    }
     switch (clang_getCursorKind(c)) {
         case CXCursor_Namespace : {
             Package& namespacePckg = data->manager.create<Package>();
             namespacePckg.setName(clang_getCString(clang_getCursorSpelling(c)));
-            // TODO apply cpp namespace stereotype?
+            InstanceSpecification& stereotypeInst = data->manager.create<InstanceSpecification>();
+            stereotypeInst.setClassifier(&data->manager.get<Stereotype>(ID::fromString("Cpp_NAMESPACE_3FloKgLhiH2P0t")));
+            namespacePckg.getAppliedStereotypes().add(stereotypeInst);
             setOwnerHelper(namespacePckg, data->owningElement);
             CppParserMetaData namespaceData = {data->manager, namespacePckg, namespacePckg.getElementType()};
             clang_visitChildren(c, *namespaceVisit, &namespaceData);

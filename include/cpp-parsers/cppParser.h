@@ -3,7 +3,8 @@
 
 namespace UML {
     namespace CPP {
-        // TODO swith to Artifact not Package when implemented
+        // WARN: must load cppProfile.yml beforehand 
+        // TODO: swith to Artifact not Package when implemented
         Package* parseHeader(std::string path, UmlManager& manager);
     }
 }

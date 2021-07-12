@@ -1,39 +1,28 @@
 # uml-cpp
 Lightweight UML based MBSE application built on yaml syntax UML config files    
-currently two directories hold two different code bases:    
-  * yuml-parsers: parse yaml config files for uml representation    
-  * uml: cpp uml api
-
+This is a work in progress but has basic functionality working
 
 ## Currently Implemented
+The code currently has an application, but the application will parse a config
+file and print it out. Besides that the source can be used as c++ uml library
 
-### yaml parsing
-Currently Implemented    
-  * Element    
-    * id and child    
-  * NamedElement    
-    * name    
-  * Classifier    
-    * attributes list    
-  * Property    
-    * type (started default values)    
-  * Type    
-  * Class  
-    * operations  
-  * PrimitveType (not parsed)    
-    * created enum    
-  * ValueSpecification (not parsed)    
-  * Namespace    
-  * Model    
-  * Literals    
-  * Operations    
-  * OpaqueBehaviors
+### uml api
+Uml class definitions can be used to reference a model with the api. There is 
+also a class, UmlManager, supplied to control loading and saving from the config files
+with object pool semantics.
+
+### config files
+All of Uml implemented except for activites is mapped to config files, working on
+having more dynamic emits to break up files
+
+### cpp parsing
+Currently just playing around with clang AST and general mapping, want to round out 
+UmlManager with emits so that parsing is more practical to user
 
 
 ## TODO
 There is a lot to do right now this is just the next couple items I plan on looking into:  
-  * longterm:    
-    * Jenkins integration    
+  * longterm:      
     * front-end implementation (look into options, ask for opinions)    
       * possibilities : Qt, react js, python libs(short term)    
     * cpp parsers    
@@ -42,6 +31,8 @@ There is a lot to do right now this is just the next couple items I plan on look
       * [use pybind11](https://realpython.com/python-bindings-overview/) to port our uml code to python and [use ast](https://docs.python.org/3/library/ast.html#module-ast)  to parse python with it  
       * this will help in making a [front end](https://wiki.python.org/moin/WebFrameworks) quickly with some ptyhon library for MVP demo
     * further definition of uml    
+      * Need to finish activities, get into interactions and artifacts    
+    * runtime database implementation for UmlManager to query and further acheive object pool design
   * short-term:    
     * test test test    
     

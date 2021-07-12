@@ -30,6 +30,13 @@ void ManagerFriendFunctor::operator()(UmlManager* manager, ID elID, string path)
     manager->m_disc[elID].m_path = path;
 }
 
+std::string ManagerFriendFunctor::operator()(UmlManager* manager, ID elID) const {
+    if (manager->m_disc.count(elID)) {
+        return manager->m_disc[elID].m_path;
+    }
+    return "";
+}
+
 Model* parseModel(UmlManager* manager) {
     ParserMetaData data(manager);
     YAML::Node node = YAML::LoadFile(data.m_path);
@@ -192,6 +199,10 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
     return 0;
 }
 
+void emit(EmitterMetaData& data) {
+    // TODO
+}
+
 void emit(YAML::Emitter& emitter, Element& el) {
     switch(el.getElementType()) {
         case ElementType::ASSOCIATION : {
@@ -351,6 +362,23 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             break;
         }
     }
+}
+
+void emitToFile(Element& el, EmitterMetaData& data, string path, string fileName) {
+    YAML::Emitter newEmitter;
+    filesystem::path cPath = data.m_path;
+    string cFile = data.m_fileName;
+    data.m_path = path;
+    data.m_fileName = fileName;
+    newEmitter << YAML::BeginDoc;
+    emit(newEmitter, el, data);
+    newEmitter << YAML::EndDoc;
+    ofstream file;
+    file.open(data.m_path / el.getID().string() / (el.getID().string() + ".yml"));
+    file << newEmitter.c_str();
+    file.close();
+    data.m_path = cPath;
+    data.m_fileName = cFile;
 }
 
 namespace {
@@ -1335,7 +1363,7 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
     if (!pckg.getProfileApplications().empty()) {
         emitter << YAML::Key << "profileApplications" << YAML::Value << YAML::BeginSeq;
         for (auto& application : pckg.getProfileApplications()) {
-            emitProfileApplication(emitter, application);
+            emitProfileApplication(emitter, application, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -1346,7 +1374,13 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
             case EmitterStrategy::WHOLE : {
                 for (auto& el : pckg.getPackagedElements()) {
                     if (!el.isSubClassOf(ElementType::STEREOTYPE)) {
-                        emit(emitter, el);
+                        ManagerFriendFunctor getPath;
+                        filesystem::path newPath = getPath(data.m_manager, el.getID());
+                        if (newPath.empty() || (newPath.parent_path().compare(data.m_path) == 0 && newPath.filename().compare(data.m_fileName))) {
+                            emitToFile(el, data, newPath.parent_path(), newPath.filename());
+                        } else {
+                            emit(emitter, el);
+                        }
                     }
                 }
                 break;
@@ -2778,7 +2812,7 @@ void parseProfileApplication(YAML::Node node, ProfileApplication& application, P
     }
 }
 
-void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& application) {
+void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& application, EmitterMetaData& data) {
     if (application.getElementType() == ElementType::PROFILE_APPLICATION) {
         emitter << YAML::BeginMap << YAML::Key << "profileApplication" << YAML::Value << YAML::BeginMap;
     }
@@ -2786,7 +2820,13 @@ void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& applicat
     emitElement(emitter, application);
 
     if (application.getAppliedProfile() != 0) {
-        emitter << YAML::Key << "appliedProfile" << YAML::Value << application.getAppliedProfile()->getID().string();
+        ManagerFriendFunctor getPath;
+        filesystem::path path = getPath(data.m_manager, application.getAppliedProfile()->getID());
+        if (path.empty() || path == data.m_path / data.m_fileName) {
+            emitter << YAML::Key << "appliedProfile" << YAML::Value << application.getAppliedProfile()->getID().string();
+        } else {
+            emitToFile(*application.getAppliedProfile(), data, path.parent_path(), path.filename());
+        }
     }
 
     if (application.getElementType() == ElementType::PROFILE_APPLICATION) {

@@ -36,6 +36,7 @@ namespace UML {
             std::filesystem::path m_path;
             std::filesystem::path m_mountBase;
             Model* m_model;
+            Element* m_root;
             void clear();
         public:
             ~UmlManager();

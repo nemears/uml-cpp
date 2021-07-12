@@ -64,6 +64,7 @@ namespace UML {
             public:
                 void operator()(UmlManager* manager, Model* model) const; // sets model
                 void operator()(UmlManager* manager, ID elID, std::string path) const; // sets disk data
+                std::string operator()(UmlManager* manager, ID el) const; // get path
         };
 
         Model* parseModel(UmlManager* manager);
@@ -75,10 +76,14 @@ namespace UML {
         Element* parse(ParserMetaData& data);
 
         Element* parseNode(YAML::Node node, ParserMetaData& data);
+
+        void emit(EmitterMetaData& data);
         
         void emit(YAML::Emitter& emitter, Element& el);
 
         void emit (YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
+
+        void emitToFile(Element& el, EmitterMetaData& data, std::string path, std::string fileName);
 
         // anonymous functions
         namespace {
@@ -245,7 +250,7 @@ namespace UML {
             void emitExtension(YAML::Emitter& emitter, Extension& extension);
             ElementType elementTypeFromString(std::string eType);
             void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data);
-            void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& application);
+            void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& application, EmitterMetaData& data);
             void parseComment(YAML::Node node, Comment& comment, ParserMetaData& data);
             void emitComment(YAML::Emitter& emitter, Comment& comment);
         }

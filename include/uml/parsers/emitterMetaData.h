@@ -11,11 +11,12 @@ namespace UML {
             COMPOSITE
         };
 
-        class EmitterMetaData {
+        struct EmitterMetaData {
             public:
                 std::filesystem::path m_path;
                 EmitterStrategy m_strategy;
                 std::string m_fileName;
+                UmlManager* m_manager;
         };
     }
 }

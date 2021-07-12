@@ -121,10 +121,32 @@ Element* UmlManager::parse(string path) {
     return el;
 }
 
+void UmlManager::setModel(Model* model) {
+    m_model = model;
+    m_root = model;
+}
+
 Model* UmlManager::getModel() {
     return m_model;
 }
 
+void UmlManager::setRoot(Element* el) {
+    m_root = el;
+    if (m_root->isSubClassOf(ElementType::MODEL)) {
+        m_model = dynamic_cast<Model*>(el);
+    }
+}
+
 Element* UmlManager::getRoot() {
     return m_root;
+}
+
+string UmlManager::getPath(ID elID) {
+    if (m_disc.count(elID)) {
+        return m_disc[elID].m_path;
+    }
+    return "";
+}
+void UmlManager::setPath(ID elID, string path) {
+    m_disc[elID].m_path = path;
 }

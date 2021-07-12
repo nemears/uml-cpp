@@ -58,14 +58,6 @@ namespace UML {
                 }
         };
 
-        class ManagerFriendFunctor {
-            public:
-                void operator()(UmlManager* manager, Model* model) const; // sets model
-                void operator()(UmlManager* manager, Element* el) const; // sets manager root
-                void operator()(UmlManager* manager, ID elID, std::string path) const; // sets disk data
-                std::string operator()(UmlManager* manager, ID el) const; // get path
-        };
-
         UmlManager* parse(std::string path);
 
         Element* parse(ParserMetaData& data);

@@ -105,8 +105,12 @@ namespace UML {
              **/
             Element* parse(std::string path);
 
+            void setModel(Model* model);
+            void setRoot(Element* el);
             Model* getModel();
             Element* getRoot();
+            std::string getPath(ID elID);
+            void setPath(ID elID, std::string path);
     };
 }
 

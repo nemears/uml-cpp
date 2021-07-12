@@ -14,35 +14,18 @@ using namespace std;
 namespace UML {
 namespace Parsers {
 
-void ManagerFriendFunctor::operator()(UmlManager* manager, Model* model) const {
-    manager->m_model = model;
-    manager->m_root = model;
-}
-
-void ManagerFriendFunctor::operator()(UmlManager* manager, Element* el) const {
-    manager->m_root = el;
-}
-
-void ManagerFriendFunctor::operator()(UmlManager* manager, ID elID, string path) const {
-    manager->m_disc[elID].m_path = path;
-}
-
-std::string ManagerFriendFunctor::operator()(UmlManager* manager, ID elID) const {
-    if (manager->m_disc.count(elID)) {
-        return manager->m_disc[elID].m_path;
-    }
-    return "";
-}
-
 UmlManager* parse(string path) {
     UmlManager* ret = new UmlManager;
-    ret->parse(path);
+    Element* root = ret->parse(path);
+    ret->setRoot(root);
     return ret;
 }
 
 Element* parse(ParserMetaData& data) {
     YAML::Node node = YAML::LoadFile(data.m_path);
-    return parseNode(node, data);
+    Element* ret = parseNode(node, data);
+    data.m_manager->setRoot(ret);
+    return ret;
 }
 
 string emit(Element& el) {
@@ -205,8 +188,7 @@ Element* parseExternalAddToManager(ParserMetaData& data, string path) {
         filesystem::path cPath = data.m_path;
         data.m_path = cPath.parent_path() / path;;
         Element* ret = parse(data);
-        ManagerFriendFunctor setDisc;
-        setDisc(data.m_manager, ret->getID(), data.m_path);
+        data.m_manager->setPath(ret->getID(), data.m_path);
         data.m_path = cPath;
         return ret;
     } else {
@@ -1352,8 +1334,7 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
             case EmitterStrategy::WHOLE : {
                 for (auto& el : pckg.getPackagedElements()) {
                     if (!el.isSubClassOf(ElementType::STEREOTYPE)) {
-                        ManagerFriendFunctor getPath;
-                        filesystem::path newPath = getPath(data.m_manager, el.getID());
+                        filesystem::path newPath = data.m_manager->getPath(el.getID());
                         if (newPath.empty() || (newPath.parent_path().compare(data.m_path) == 0 && newPath.filename().compare(data.m_fileName))) {
                             emitToFile(el, data, newPath.parent_path(), newPath.filename());
                         } else {
@@ -2798,8 +2779,7 @@ void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& applicat
     emitElement(emitter, application);
 
     if (application.getAppliedProfile() != 0) {
-        ManagerFriendFunctor getPath;
-        filesystem::path path = getPath(data.m_manager, application.getAppliedProfile()->getID());
+        filesystem::path path = data.m_manager->getPath(application.getAppliedProfile()->getID());
         if (path.empty() || path == data.m_path / data.m_fileName) {
             emitter << YAML::Key << "appliedProfile" << YAML::Value << application.getAppliedProfile()->getID().string();
         } else {

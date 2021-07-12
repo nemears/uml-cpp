@@ -53,16 +53,16 @@ void UmlManager::reindex(ID oldID, ID newID) {
 void UmlManager::mount(string path) {
     m_mountBase = path;
     if (m_model) {
-        YAML::Emitter emitter;
-        Parsers::EmitterMetaData data;
-        data.m_path = path;
-        data.m_fileName = m_model->getID().string() + ".yml";
-        data.m_strategy = Parsers::EmitterStrategy::COMPOSITE;
-        Parsers::emit(emitter, *m_model, data);
-        ofstream file;
-        file.open(data.m_path / data.m_fileName);
-        file << emitter.c_str();
-        file.close();
+        // YAML::Emitter emitter;
+        // Parsers::EmitterMetaData data;
+        // data.m_path = path;
+        // data.m_fileName = m_model->getID().string() + ".yml";
+        // data.m_strategy = Parsers::EmitterStrategy::COMPOSITE;
+        // Parsers::emit(data);
+        // ofstream file;
+        // file.open(data.m_path / data.m_fileName);
+        // file << emitter.c_str();
+        // file.close();
     } else {
         // TODO throw error
     }
@@ -102,7 +102,11 @@ void UmlManager::open() {
         return;
     }
     //clear();
-    m_model = Parsers::parseModel(this);
+    Parsers::ParserMetaData data(this);
+    m_root = Parsers::parse(data);
+    if (m_root->isSubClassOf(ElementType::MODEL)) {
+        m_model = dynamic_cast<Model*>(m_root);
+    }
 }
 
 void UmlManager::open(string path) {
@@ -113,9 +117,14 @@ void UmlManager::open(string path) {
 Element* UmlManager::parse(string path) {
     m_path = path;
     Parsers::ParserMetaData data(this);
-    return Parsers::parse(data);
+    Element* el = Parsers::parse(data);
+    return el;
 }
 
 Model* UmlManager::getModel() {
     return m_model;
+}
+
+Element* UmlManager::getRoot() {
+    return m_root;
 }

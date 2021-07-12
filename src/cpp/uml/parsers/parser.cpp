@@ -14,16 +14,13 @@ using namespace std;
 namespace UML {
 namespace Parsers {
 
-string emit(Element& el) {
-    YAML::Emitter emitter;
-
-    emit(emitter, el);
-
-    return emitter.c_str();
-}
-
 void ManagerFriendFunctor::operator()(UmlManager* manager, Model* model) const {
     manager->m_model = model;
+    manager->m_root = model;
+}
+
+void ManagerFriendFunctor::operator()(UmlManager* manager, Element* el) const {
+    manager->m_root = el;
 }
 
 void ManagerFriendFunctor::operator()(UmlManager* manager, ID elID, string path) const {
@@ -37,33 +34,6 @@ std::string ManagerFriendFunctor::operator()(UmlManager* manager, ID elID) const
     return "";
 }
 
-Model* parseModel(UmlManager* manager) {
-    ParserMetaData data(manager);
-    YAML::Node node = YAML::LoadFile(data.m_path);
-    if (node["model"]) {
-        Model& m = manager->create<Model>();
-        parsePackage(node["model"], m, data);
-        ManagerFriendFunctor setModel;
-        setModel(manager, &m);
-        return &m;
-    } else {
-        throw UmlParserException("base node is not a model!" , data.m_path.string() , node);
-        return 0;
-    }
-}
-
-Model* parseModel(ParserMetaData& data) {
-    YAML::Node node = YAML::LoadFile(data.m_path);
-    if (node["model"]) {
-        Model& m = data.m_manager->create<Model>();
-        parsePackage(node["model"], m, data);
-        return &m;
-    } else {
-        throw UmlParserException("base node is not a model!" , data.m_path.string() , node);
-        return 0;
-    }
-}
-
 UmlManager* parse(string path) {
     UmlManager* ret = new UmlManager;
     ret->parse(path);
@@ -74,6 +44,37 @@ Element* parse(ParserMetaData& data) {
     YAML::Node node = YAML::LoadFile(data.m_path);
     return parseNode(node, data);
 }
+
+string emit(Element& el) {
+    YAML::Emitter emitter;
+
+    emit(emitter, el);
+
+    return emitter.c_str();
+}
+
+void emit(EmitterMetaData& data) {
+    // TODO
+}
+
+void emitToFile(Element& el, EmitterMetaData& data, string path, string fileName) {
+    YAML::Emitter newEmitter;
+    filesystem::path cPath = data.m_path;
+    string cFile = data.m_fileName;
+    data.m_path = path;
+    data.m_fileName = fileName;
+    newEmitter << YAML::BeginDoc;
+    emit(newEmitter, el, data);
+    newEmitter << YAML::EndDoc;
+    ofstream file;
+    file.open(data.m_path / el.getID().string() / (el.getID().string() + ".yml"));
+    file << newEmitter.c_str();
+    file.close();
+    data.m_path = cPath;
+    data.m_fileName = cFile;
+}
+
+namespace {
 
 Element* parseNode(YAML::Node node, ParserMetaData& data) {
     if (node["class"]) {
@@ -199,8 +200,18 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
     return 0;
 }
 
-void emit(EmitterMetaData& data) {
-    // TODO
+Element* parseExternalAddToManager(ParserMetaData& data, string path) {
+    if (filesystem::exists(data.m_path.parent_path() / path)) {
+        filesystem::path cPath = data.m_path;
+        data.m_path = cPath.parent_path() / path;;
+        Element* ret = parse(data);
+        ManagerFriendFunctor setDisc;
+        setDisc(data.m_manager, ret->getID(), data.m_path);
+        data.m_path = cPath;
+        return ret;
+    } else {
+        return 0;
+    }
 }
 
 void emit(YAML::Emitter& emitter, Element& el) {
@@ -361,39 +372,6 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             throw UmlParserException("Error emitting element, element type " + el.getElementTypeString() + " is abstract and cannot be emit", "");
             break;
         }
-    }
-}
-
-void emitToFile(Element& el, EmitterMetaData& data, string path, string fileName) {
-    YAML::Emitter newEmitter;
-    filesystem::path cPath = data.m_path;
-    string cFile = data.m_fileName;
-    data.m_path = path;
-    data.m_fileName = fileName;
-    newEmitter << YAML::BeginDoc;
-    emit(newEmitter, el, data);
-    newEmitter << YAML::EndDoc;
-    ofstream file;
-    file.open(data.m_path / el.getID().string() / (el.getID().string() + ".yml"));
-    file << newEmitter.c_str();
-    file.close();
-    data.m_path = cPath;
-    data.m_fileName = cFile;
-}
-
-namespace {
-
-Element* parseExternalAddToManager(ParserMetaData& data, string path) {
-    if (filesystem::exists(data.m_path.parent_path() / path)) {
-        filesystem::path cPath = data.m_path;
-        data.m_path = cPath.parent_path() / path;;
-        Element* ret = parse(data);
-        ManagerFriendFunctor setDisc;
-        setDisc(data.m_manager, ret->getID(), data.m_path);
-        data.m_path = cPath;
-        return ret;
-    } else {
-        return 0;
     }
 }
 

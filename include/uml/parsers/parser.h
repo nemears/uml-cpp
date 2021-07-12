@@ -58,37 +58,34 @@ namespace UML {
                 }
         };
 
-        std::string emit(Element& el);
-
         class ManagerFriendFunctor {
             public:
                 void operator()(UmlManager* manager, Model* model) const; // sets model
+                void operator()(UmlManager* manager, Element* el) const; // sets manager root
                 void operator()(UmlManager* manager, ID elID, std::string path) const; // sets disk data
                 std::string operator()(UmlManager* manager, ID el) const; // get path
         };
-
-        Model* parseModel(UmlManager* manager);
-
-        Model* parseModel(ParserMetaData& data);
 
         UmlManager* parse(std::string path);
 
         Element* parse(ParserMetaData& data);
 
-        Element* parseNode(YAML::Node node, ParserMetaData& data);
+        std::string emit(Element& el);
 
         void emit(EmitterMetaData& data);
-        
-        void emit(YAML::Emitter& emitter, Element& el);
-
-        void emit (YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
 
         void emitToFile(Element& el, EmitterMetaData& data, std::string path, std::string fileName);
 
         // anonymous functions
         namespace {
 
+            Element* parseNode(YAML::Node node, ParserMetaData& data);
+
             Element* parseExternalAddToManager();
+
+            void emit(YAML::Emitter& emitter, Element& el);
+
+            void emit (YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
 
             class SetTypeFunctor : public AbstractPostProcessFunctor {
                 public:

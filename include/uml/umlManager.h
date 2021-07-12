@@ -94,14 +94,19 @@ namespace UML {
              **/
             void open();
             /**
-             * Loads the file specified by the path parameter into memory referenceable by the manager
+             * Loads the file specified by the path parameter into memory referenceable by the manager and sets root
+             * to top level element
              * WARN: if the manager already has members in the path, it will dereference them when they are reloaded
              **/
             void open(std::string path);
 
+            /**
+             * Parses the file into memory, but does not set root
+             **/
             Element* parse(std::string path);
 
             Model* getModel();
+            Element* getRoot();
     };
 }
 

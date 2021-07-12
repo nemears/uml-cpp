@@ -1240,8 +1240,12 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
     emitNamedElement(emitter, pckg, data);
     emitTemplateableElement(emitter, pckg, data);
 
-    for (auto const& pckgMerge : pckg.getPackageMerge()) {
-        // TODO
+    if (!pckg.getPackageMerge().empty()) {
+        emitter << YAML::Key << "packageMerge" << YAML::Value << YAML::BeginSeq;
+        for (auto& pckgMerge : pckg.getPackageMerge()) {
+            emitPackageMerge(emitter, pckgMerge, data);
+        }
+        emitter << YAML::EndSeq;
     }
 
     if (!pckg.getProfileApplications().empty()) {
@@ -1621,13 +1625,21 @@ void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& dat
 
 void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge, EmitterMetaData& data) {
     if (merge.getElementType() == ElementType::PACKAGE_MERGE) {
-        emitter << YAML::BeginMap << YAML::Key << "package" << YAML::Value << YAML::BeginMap;
+        emitter << YAML::BeginMap << YAML::Key << "packageMerge" << YAML::Value << YAML::BeginMap;
     }
 
     emitElement(emitter, merge, data);
 
-    if (merge.getMergedPackage()) {
-        // TODO
+    if (merge.getMergedPackage() != 0) {
+        filesystem::path path = data.m_manager->getPath(merge.getMergedPackage()->getID());
+        if (path.empty() || path == data.m_path / data.m_fileName) {
+            emitter << YAML::Key << "mergedPackage" << YAML::Value << merge.getMergedPackage()->getID().string();
+        } else {
+            emitToFile(*merge.getMergedPackage(), data, path.parent_path(), path.filename());
+            if (data.m_path == path.parent_path()) {
+                emitter << YAML::Key << "mergedPackage" << YAML::Value << path.filename();
+            }
+        }
     }
 
     if (merge.getElementType() == ElementType::PACKAGE_MERGE) {
@@ -2708,9 +2720,8 @@ void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& applicat
             emitter << YAML::Key << "appliedProfile" << YAML::Value << application.getAppliedProfile()->getID().string();
         } else {
             emitToFile(*application.getAppliedProfile(), data, path.parent_path(), path.filename());
-            filesystem::path externalPath = data.m_manager->getPath(application.getAppliedProfile()->getID());
-            if (data.m_path == externalPath.parent_path()) {
-                emitter << YAML::Key << "appliedProfile" << YAML::Value << externalPath.filename();
+            if (data.m_path == path.parent_path()) {
+                emitter << YAML::Key << "appliedProfile" << YAML::Value << path.filename();
             }
         }
     }

@@ -175,3 +175,33 @@ TEST_F(PackageParserTest, parsePackagedElementInDifferentFileTest) {
     ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::CLASS);
     ASSERT_EQ(pckg.getPackagedElements().front()->getID(), ID::fromString("4tcg0slbMiorhD6UUNfSGw6hHTV3"));
 }
+
+TEST_F(PackageParserTest, emitMergedPackageTest) {
+    UmlManager m;
+    Package& pckg = m.create<Package>();
+    PackageMerge& merge = m.create<PackageMerge>();
+    Package& mergin = m.create<Package>();
+    Package& merged = m.create<Package>();
+    pckg.setID("la_AO7XKQcEsH1P2LHcSk4ELzoEV");
+    mergin.setID("SXE9QBb0rYOmBFbahGIQLhMxlYNq");
+    merge.setID("I7c2Z27FF1w&WX4NHKdfIkbNuhDA");
+    merged.setID("orUaM2sY9dz&YP83TqfGaHO5SBY4");
+    mergin.getPackageMerge().add(merge);
+    merge.setMergedPackage(&merged);
+    pckg.getPackagedElements().add(mergin);
+    pckg.getPackagedElements().add(merged);
+    string expectedEmit = R""""(package:
+  id: la_AO7XKQcEsH1P2LHcSk4ELzoEV
+  packagedElements:
+    - package:
+        id: SXE9QBb0rYOmBFbahGIQLhMxlYNq
+        packageMerge:
+          - packageMerge:
+              id: I7c2Z27FF1w&WX4NHKdfIkbNuhDA
+              mergedPackage: orUaM2sY9dz&YP83TqfGaHO5SBY4
+    - package:
+        id: orUaM2sY9dz&YP83TqfGaHO5SBY4)"""";
+    string generatedEmit = Parsers::emit(pckg);
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

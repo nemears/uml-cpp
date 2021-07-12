@@ -39,7 +39,7 @@ string emit(Element& el) {
 }
 
 void emit(EmitterMetaData& data) {
-    // TODO
+    emitToFile(*data.m_manager->getRoot(), data, data.m_path, data.m_fileName);
 }
 
 void emitToFile(Element& el, EmitterMetaData& data, string path, string fileName) {
@@ -52,7 +52,7 @@ void emitToFile(Element& el, EmitterMetaData& data, string path, string fileName
     emit(newEmitter, el, data);
     newEmitter << YAML::EndDoc;
     ofstream file;
-    file.open(data.m_path / el.getID().string() / (el.getID().string() + ".yml"));
+    file.open(path + '/' + fileName);
     file << newEmitter.c_str();
     file.close();
     data.m_path = cPath;
@@ -2708,6 +2708,10 @@ void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& applicat
             emitter << YAML::Key << "appliedProfile" << YAML::Value << application.getAppliedProfile()->getID().string();
         } else {
             emitToFile(*application.getAppliedProfile(), data, path.parent_path(), path.filename());
+            filesystem::path externalPath = data.m_manager->getPath(application.getAppliedProfile()->getID());
+            if (data.m_path == externalPath.parent_path()) {
+                emitter << YAML::Key << "appliedProfile" << YAML::Value << externalPath.filename();
+            }
         }
     }
 

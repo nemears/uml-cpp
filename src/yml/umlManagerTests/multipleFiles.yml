@@ -1,0 +1,15 @@
+---
+package:
+  id: oU6odnc6A&DAd7YKH5dr7DLdd14D
+  profileApplications:
+    - profileApplication:
+        id: BpOqdTsZ7m4l9z9oIFYgBlTIJhiB
+        appliedProfile: externalProfile.yml
+  packagedElements:
+    - class:
+        id: MKqoUQd43gZ2ySf2Oq3ruBDrW87m
+        appliedStereotypes:
+          - instanceSpecification:
+              id: d5z6cqhQCU2NRn1gHhLnacPioGrU
+              classifier: B3ofv69WSmwNXSeqbRxdHkLvMF4n
+...

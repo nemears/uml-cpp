@@ -39,6 +39,7 @@ namespace UML {
             Element* m_root;
             void clear();
         public:
+            UmlManager();
             ~UmlManager();
             template <class T = Element> T& get(ID id) {
                 if (!m_loaded.count(id)) {
@@ -87,7 +88,7 @@ namespace UML {
              * WARN: if the model is saved, pointers to elements in model will have to be reaccessed 
              * from the manager if the model is open'd again because they have been deleted
              **/
-            void save(std::string path, Model& model);
+            void save(std::string path);
             /**
              * Loads the file specified in the manager's path into memory referenceable by the manager
              * WARN: if the manager already has members in the path, it will dereference them when they are reloaded

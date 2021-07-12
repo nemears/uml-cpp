@@ -45,3 +45,15 @@ TEST_F(UmlManagerTest, openAndSaveTest) {
     m.getModel()->getPackagedElements().remove(p2);
     m.save();
 }
+
+TEST_F(UmlManagerTest, multipleFileTest) {
+    UmlManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "umlManagerTests/multipleFiles.yml"));
+    ASSERT_TRUE(m.getRoot() != 0);
+    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+    Package& pckg = dynamic_cast<Package&>(*m.getRoot());
+    ASSERT_EQ(pckg.getProfileApplications().size(), 1);
+    ProfileApplication& application = *pckg.getProfileApplications().front();
+    ASSERT_TRUE(application.getAppliedProfile() != 0);
+    m.save();
+}

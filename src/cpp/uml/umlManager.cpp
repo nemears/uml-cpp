@@ -21,6 +21,11 @@ void UmlManager::clear() {
     }
 }
 
+UmlManager::UmlManager() {
+    m_model = 0;
+    m_root = 0;
+}
+
 UmlManager::~UmlManager() {
     clear();
 }
@@ -80,19 +85,20 @@ void UmlManager::release(ID id) {
 }
 
 void UmlManager::save() {
-    if (m_path.empty() || !m_model) {
+    if (m_path.empty() || !m_root) {
         // TODO throw error
         return;
     }
-    ofstream file;
-    file.open(m_path);
-    file << Parsers::emit(*m_model);
-    file.close();
+    Parsers::EmitterMetaData data;
+    data.m_manager =  this;
+    data.m_strategy = Parsers::EmitterStrategy::WHOLE;
+    data.m_path = m_path.parent_path();
+    data.m_fileName = m_path.filename();
+    Parsers::emit(data);
 }
 
-void UmlManager::save(string path, Model& model) {
+void UmlManager::save(string path) {
     m_path = path;
-    m_model = &model;
     save();
 }
 

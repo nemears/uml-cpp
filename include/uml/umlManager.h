@@ -50,6 +50,8 @@ namespace UML {
                 ret->setManager(this);
                 m_elements.insert(ret->getID());
                 m_loaded[ret->getID()] = ret;
+                DiscData discData;
+                m_disc[ret->getID()] = discData;
                 return *ret;
             };
             void reindex(ID oldID, ID newID);

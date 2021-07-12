@@ -26,6 +26,10 @@ void ManagerFriendFunctor::operator()(UmlManager* manager, Model* model) const {
     manager->m_model = model;
 }
 
+void ManagerFriendFunctor::operator()(UmlManager* manager, ID elID, string path) const {
+    manager->m_disc[elID].m_path = path;
+}
+
 Model* parseModel(UmlManager* manager) {
     ParserMetaData data(manager);
     YAML::Node node = YAML::LoadFile(data.m_path);
@@ -349,7 +353,21 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     }
 }
 
-namespace{
+namespace {
+
+Element* parseExternalAddToManager(ParserMetaData& data, string path) {
+    if (filesystem::exists(data.m_path.parent_path() / path)) {
+        filesystem::path cPath = data.m_path;
+        data.m_path = cPath.parent_path() / path;;
+        Element* ret = parse(data);
+        ManagerFriendFunctor setDisc;
+        setDisc(data.m_manager, ret->getID(), data.m_path);
+        data.m_path = cPath;
+        return ret;
+    } else {
+        return 0;
+    }
+}
 
 void emitModel(YAML::Emitter& emitter, Model& model) {
     if (model.getElementType() == ElementType::MODEL) {
@@ -1268,14 +1286,12 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                     }
                 // seperate file
                 } else if (node["packagedElements"][i].IsScalar()) {
-                    if (filesystem::exists(data.m_path.parent_path() / node["packagedElements"][i].as<string>())) {
-                        filesystem::path cPath = data.m_path;
-                        data.m_path = cPath.parent_path() / node["packagedElements"][i].as<string>();
-                        Element* packagedEl = parse(data);
-                        data.m_path = cPath;
-                        pckg.getPackagedElements().add(dynamic_cast<PackageableElement&>(*packagedEl));
-                    } else {
+                    Element* packagedEl = parseExternalAddToManager(data, node["packagedElements"][i].as<string>());
+                    if (packagedEl == 0) {
                         throw UmlParserException("Could not identify YAML node for packaged elements" , data.m_path.string(), node["packagedElements"][i]);
+                    }
+                    if (packagedEl->isSubClassOf(ElementType::PACKAGEABLE_ELEMENT)) {
+                        pckg.getPackagedElements().add(dynamic_cast<PackageableElement&>(*packagedEl));
                     }
                 } else {
                     throw UmlParserException("Invalid YAML node type for field packagedElements sequence, must be map, ", data.m_path.string(), node["packagedElements"][i]);
@@ -1670,18 +1686,14 @@ void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& dat
                 ID pckgID = ID::fromString(pckgString);
                 applyFunctor(data, pckgID, new SetMergedPackageFunctor(&merge, node["mergedPackage"]));
             } else {
-                if (filesystem::exists(data.m_path.parent_path() / pckgString)) {
-                    filesystem::path cPath = data.m_path;
-                    data.m_path = cPath.parent_path() / pckgString;;
-                    Element* mergedPackage = parse(data);
-                    data.m_path = cPath;
-                    if (mergedPackage->isSubClassOf(ElementType::PACKAGE)) {
-                        merge.setMergedPackage(dynamic_cast<Package*>(mergedPackage));
-                    } else {
-                        throw UmlParserException("mergedPackage is not a package, ", data.m_path.string(), node["mergedPackage"]);
-                    }
+                Element* mergedPackage = parseExternalAddToManager(data, pckgString);
+                if (mergedPackage == 0) {
+                    throw UmlParserException("Could not parse external merged package!", data.m_path.string(), node["mergedPackage"]);
+                }
+                if (mergedPackage->isSubClassOf(ElementType::PACKAGE)) {
+                    merge.setMergedPackage(dynamic_cast<Package*>(mergedPackage));
                 } else {
-                    throw UmlParserException("Could not parse external mergedPackage, ", data.m_path.string(), node["mergedPackage"]);
+                    throw UmlParserException("mergedPackage is not a package, ", data.m_path.string(), node["mergedPackage"]);
                 }
             }
         } else {
@@ -2752,18 +2764,14 @@ void parseProfileApplication(YAML::Node node, ProfileApplication& application, P
             if (isValidID(profileString)) {
                 applyFunctor(data, ID::fromString(profileString), new SetAppliedProfileFunctor(&application, node["appliedProfile"]));
             } else {
-                if (filesystem::exists(data.m_path.parent_path() / profileString)) {
-                    filesystem::path cPath = data.m_path;
-                    data.m_path = cPath.parent_path() / profileString;;
-                    Element* profile = parse(data);
-                    data.m_path = cPath;
-                    if (profile->isSubClassOf(ElementType::PROFILE)) {
-                        application.setAppliedProfile(dynamic_cast<Profile*>(profile));
-                    } else {
-                        throw UmlParserException("File for applied profile is not root element type profile", data.m_path.string(), node["appliedProfile"]);
-                    }
+                Element* profile = parseExternalAddToManager(data, profileString);
+                if (profile == 0) {
+                    throw UmlParserException("Could not parse external profile!", data.m_path.string(), node["appliedProfile"]);
+                }
+                if (profile->isSubClassOf(ElementType::PROFILE)) {
+                    application.setAppliedProfile(dynamic_cast<Profile*>(profile));
                 } else {
-                    throw UmlParserException("Could not identify applied profile!", data.m_path.string(), node["appliedProfile"]);
+                    throw UmlParserException("File for applied profile is not root element type profile", data.m_path.string(), node["appliedProfile"]);
                 }
             }
         }

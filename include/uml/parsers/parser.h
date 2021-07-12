@@ -62,7 +62,8 @@ namespace UML {
 
         class ManagerFriendFunctor {
             public:
-                void operator()(UmlManager* manager, Model* model) const;
+                void operator()(UmlManager* manager, Model* model) const; // sets model
+                void operator()(UmlManager* manager, ID elID, std::string path) const; // sets disk data
         };
 
         Model* parseModel(UmlManager* manager);
@@ -81,6 +82,8 @@ namespace UML {
 
         // anonymous functions
         namespace {
+
+            Element* parseExternalAddToManager();
 
             class SetTypeFunctor : public AbstractPostProcessFunctor {
                 public:

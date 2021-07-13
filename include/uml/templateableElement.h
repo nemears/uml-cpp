@@ -2,11 +2,11 @@
 #define TEMPLATEABLE_ELEMENT_H
 
 #include "element.h"
-#include "templateSignature.h"
 
 namespace UML {
 
     class TemplateBinding;
+    class TemplateSignature;
 
     class TemplateableElement : virtual public Element {
         private:

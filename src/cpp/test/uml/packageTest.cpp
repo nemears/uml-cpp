@@ -3,6 +3,8 @@
 #include "uml/packageableElement.h"
 #include "uml/profile.h"
 #include "uml/stereotype.h"
+#include "uml/packageMerge.h"
+#include "uml/profileApplication.h"
 
 using namespace UML;
 

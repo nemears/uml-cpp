@@ -1,6 +1,8 @@
 #include "uml/templateParameterSubstitution.h"
 #include "uml/umlManager.h"
 #include "uml/templateBinding.h"
+#include "uml/templateParameter.h"
+#include "uml/parameterableElement.h"
 
 using namespace UML;
 

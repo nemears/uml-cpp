@@ -1,13 +1,12 @@
-#ifndef SLOTH
-#define SLOTH
-#include "element.h"
-#include "valueSpecification.h"
-#include "structuralFeature.h"
+#ifndef SLOT_H
+#define SLOT_H
+
 #include "sequence.h"
 
 namespace UML {
 
     class InstanceSpecification;
+    class StructuralFeature;
 
     class Slot : public Element {
         friend class UmlManager;

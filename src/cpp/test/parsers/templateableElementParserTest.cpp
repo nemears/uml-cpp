@@ -2,6 +2,10 @@
 #include "uml/parsers/parser.h"
 #include "test/yumlParsersTest.h"
 #include "uml/class.h"
+#include "uml/templateBinding.h"
+#include "uml/templateParameterSubstitution.h"
+#include "uml/templateSignature.h"
+#include "uml/templateParameter.h"
 
 using namespace std;
 using namespace UML;

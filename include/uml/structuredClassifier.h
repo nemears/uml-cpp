@@ -2,9 +2,11 @@
 #define STRUCTURED_CLASSIFIER_H
 
 #include "classifier.h"
-#include "connectableElement.h"
 
 namespace UML {
+
+    class ConnectableElement;
+
     class StructuredClassifier : public Classifier {
         protected:
             Sequence<Property> m_ownedAttributes;

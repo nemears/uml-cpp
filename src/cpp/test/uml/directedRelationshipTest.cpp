@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/directedRelationship.h"
 #include "uml/package.h"
+#include "uml/packageMerge.h"
 
 using namespace UML;
 

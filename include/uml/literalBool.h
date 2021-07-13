@@ -2,7 +2,6 @@
 #define LITERALBOOLH
 
 #include "literalSpecification.h"
-#include "primitiveType.h"
 
 namespace UML {
     class LiteralBool : public LiteralSpecification {

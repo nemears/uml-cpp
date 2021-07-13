@@ -1,5 +1,7 @@
 #include "uml/slot.h"
 #include "uml/instanceSpecification.h"
+#include "uml/structuralFeature.h"
+#include "uml/valueSpecification.h"
 
 using namespace UML;
 

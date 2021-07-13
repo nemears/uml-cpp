@@ -2,11 +2,12 @@
 #define TEMPLATE_PARAMETER_SUBSTITUTION_H
 
 #include "element.h"
-#include "templateParameter.h"
 
 namespace UML {
 
     class TemplateBinding;
+    class TemplateParameter;
+    class ParameterableElement;
 
     class TemplateParameterSubstitution : public Element {
         private:

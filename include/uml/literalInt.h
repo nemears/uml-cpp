@@ -2,7 +2,6 @@
 #define LITERALINTH
 
 #include "literalSpecification.h"
-#include "primitiveType.h"
 
 namespace UML {
     class LiteralInt : public LiteralSpecification {

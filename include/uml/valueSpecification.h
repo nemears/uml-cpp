@@ -1,5 +1,6 @@
-#ifndef VALUESPECIFICATIONH
-#define VALUESPECIFICATIONH
+#ifndef VALUE_SPECIFICATION_H
+#define VALUE_SPECIFICATION_H
+
 #include "typedElement.h"
 #include "sequence.h"
 #include "packageableElement.h"

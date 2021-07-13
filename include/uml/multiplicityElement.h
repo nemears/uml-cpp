@@ -2,9 +2,11 @@
 #define MULTIPLICITYELEMENT_H
 
 #include "element.h"
-#include "valueSpecification.h"
 
 namespace UML {
+
+    class ValueSpecification;
+
     class MultiplicityElement : virtual public Element {
         protected:
             int lower;

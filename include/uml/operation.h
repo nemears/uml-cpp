@@ -3,6 +3,7 @@
 
 #include "behavioralFeature.h"
 #include "templateableElement.h"
+#include "parameterableElement.h"
 
 namespace UML {
 

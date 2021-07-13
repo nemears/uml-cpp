@@ -1,4 +1,5 @@
 #include "uml/instanceValue.h"
+#include "uml/instanceSpecification.h"
 
 using namespace UML;
 

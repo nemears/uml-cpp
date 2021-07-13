@@ -6,6 +6,7 @@
 #include "uml/stereotype.h"
 #include "uml/literalInt.h"
 #include "uml/literalReal.h"
+#include "uml/primitiveType.h"
 
 using namespace std;
 

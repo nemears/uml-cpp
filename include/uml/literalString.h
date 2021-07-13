@@ -2,8 +2,6 @@
 #define LITERALSTRINGH
 
 #include "literalSpecification.h"
-#include "primitiveType.h"
-#include <string>
 
 namespace UML {
     class LiteralString : public LiteralSpecification {

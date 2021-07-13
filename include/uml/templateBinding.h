@@ -2,10 +2,12 @@
 #define TEMPLATE_BINDING_H
 
 #include "directedRelationship.h"
-#include "templateableElement.h"
-#include "templateParameterSubstitution.h"
 
 namespace UML {
+
+    class TemplateParameterSubstitution;
+    class TemplateableElement;
+
     class TemplateBinding : public DirectedRelationship {
         friend class UmlManager;
         private:

@@ -4,6 +4,7 @@
 #include "uml/property.h"
 #include "uml/class.h"
 #include "uml/package.h"
+#include "uml/packageMerge.h"
 
 using namespace std;
 using namespace UML;

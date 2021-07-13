@@ -2,11 +2,11 @@
 #define TEMPLATE_PARAMETER_H
 
 #include "element.h"
-#include "parameterableElement.h"
 
 namespace UML {
 
     class TemplateSignature;
+    class ParameterableElement;
 
     class TemplateParameter : public Element {
         private:

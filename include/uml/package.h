@@ -3,13 +3,13 @@
 
 #include "packageableElement.h"
 #include "namespace.h"
-#include "packageMerge.h"
 #include "templateableElement.h"
-#include "profileApplication.h"
 
 namespace UML {
 
     class Stereotype;
+    class ProfileApplication;
+    class PackageMerge;
 
     class Package : public PackageableElement, public Namespace, public TemplateableElement {
         friend class UmlManager;

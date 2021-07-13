@@ -1,4 +1,5 @@
 #include "uml/opaqueBehavior.h"
+#include "uml/literalString.h"
 
 namespace UML {
 

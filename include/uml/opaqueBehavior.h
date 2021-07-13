@@ -1,10 +1,12 @@
 #ifndef OPAQUEBEHAVIORH
 #define OPAQUEBEHAVIORH
 
-#include "literalString.h"
 #include "behavior.h"
 
 namespace UML {
+
+    class LiteralString;
+
     class OpaqueBehavior : public Behavior {
         protected:
             Sequence<LiteralString> m_bodies;

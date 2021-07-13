@@ -3,6 +3,7 @@
 #include "test/yumlParsersTest.h"
 #include "uml/profile.h"
 #include "uml/extensionEnd.h"
+#include "uml/profileApplication.h"
 
 using namespace std;
 using namespace UML;

@@ -9,6 +9,12 @@
 #include "uml/profileApplication.h"
 #include "uml/comment.h"
 #include "uml/slot.h"
+#include "uml/packageMerge.h"
+#include "uml/profileApplication.h"
+#include "uml/templateSignature.h"
+#include "uml/parameterableElement.h"
+#include "uml/templateParameter.h"
+#include "uml/templateParameterSubstitution.h"
 
 using namespace std;
 

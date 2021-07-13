@@ -2,6 +2,7 @@
 #include "uml/umlManager.h"
 #include "uml/sequence.h"
 #include "uml/templateBinding.h"
+#include "uml/templateSignature.h"
 
 using namespace UML;
 

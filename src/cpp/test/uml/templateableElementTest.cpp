@@ -4,6 +4,8 @@
 #include "uml/primitiveType.h"
 #include "uml/templateBinding.h"
 #include "uml/templateParameterSubstitution.h"
+#include "uml/templateSignature.h"
+#include "uml/templateParameter.h"
 
 using namespace UML;
 

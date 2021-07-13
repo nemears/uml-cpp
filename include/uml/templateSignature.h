@@ -2,12 +2,12 @@
 #define TEMPLATE_SIGNATURE_H
 
 #include "element.h"
-#include "templateParameter.h"
 #include "sequence.h"
 
 namespace UML {
 
     class TemplateableElement;
+    class TemplateParameter;
 
     class TemplateSignature : public Element {
         friend class UmlManager;

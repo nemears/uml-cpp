@@ -7,6 +7,7 @@
 #include "uml/operation.h"
 #include "uml/package.h"
 #include "uml/property.h"
+#include "uml/literalString.h"
 
 using namespace UML;
 

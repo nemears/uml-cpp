@@ -1,5 +1,6 @@
 #include "uml/templateParameter.h"
 #include "uml/templateSignature.h"
+#include "uml/parameterableElement.h"
 
 using namespace UML;
 

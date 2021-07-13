@@ -8,6 +8,7 @@
 #include "uml/class.h"
 #include "uml/instanceSpecification.h"
 #include "uml/stereotype.h"
+#include "uml/packageMerge.h"
 
 using namespace UML;
 

@@ -1,4 +1,7 @@
 #include "uml/templateBinding.h"
+#include "uml/templateParameterSubstitution.h"
+#include "uml/templateableElement.h"
+#include "uml/templateSignature.h"
 
 using namespace UML;
 

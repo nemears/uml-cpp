@@ -2,7 +2,6 @@
 #define LITERALREALH
 
 #include "literalSpecification.h"
-#include "primitiveType.h"
 
 namespace UML {
     class LiteralReal : public LiteralSpecification {

@@ -1,5 +1,7 @@
 #include "uml/package.h"
 #include "uml/stereotype.h"
+#include "uml/packageMerge.h"
+#include "uml/profileApplication.h"
 
 using namespace UML;
 

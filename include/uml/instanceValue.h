@@ -2,9 +2,11 @@
 #define INSTANCEVALUEH
 
 #include "valueSpecification.h"
-#include "instanceSpecification.h"
 
 namespace UML {
+
+    class InstanceSpecification;
+
     class InstanceValue : public ValueSpecification {
         protected:
             ID m_instanceID;

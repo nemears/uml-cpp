@@ -6,6 +6,7 @@
 #include "uml/directedRelationship.h"
 #include "uml/comment.h"
 #include "uml/instanceSpecification.h"
+#include "uml/classifier.h"
 
 using namespace std;
 using namespace UML;

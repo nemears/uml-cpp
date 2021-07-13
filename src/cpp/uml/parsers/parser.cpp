@@ -8,6 +8,7 @@
 #include "uml/profile.h"
 #include "uml/profileApplication.h"
 #include "uml/comment.h"
+#include "uml/slot.h"
 
 using namespace std;
 

@@ -1,4 +1,6 @@
 #include "uml/instanceSpecification.h"
+#include "uml/slot.h"
+#include "uml/classifier.h"
 
 using namespace UML;
 

@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/enumeration.h"
 #include "uml/package.h"
+#include "uml/enumerationLiteral.h"
 
 using namespace UML;
 

@@ -2,7 +2,6 @@
 #define EXPRESSION_H
 
 #include "valueSpecification.h"
-#include "sequence.h"
 
 namespace UML {
     class Expression : public ValueSpecification {

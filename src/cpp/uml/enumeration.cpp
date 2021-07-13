@@ -1,4 +1,5 @@
 #include "uml/enumeration.h"
+#include "uml/enumerationLiteral.h"
 
 using namespace UML;
 

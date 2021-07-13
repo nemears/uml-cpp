@@ -4,6 +4,7 @@
 #include "uml/instanceSpecification.h"
 #include "uml/package.h"
 #include "uml/class.h"
+#include "uml/slot.h"
 
 using namespace std;
 using namespace UML;

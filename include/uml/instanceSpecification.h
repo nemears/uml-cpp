@@ -2,10 +2,13 @@
 #define INSTANCESPECIFICATIONH
 
 #include "packageableElement.h"
-#include "slot.h"
-#include "classifier.h"
+#include "sequence.h"
 
 namespace UML{
+
+    class Slot;
+    class Classifier;
+
     class InstanceSpecification : public PackageableElement {
         friend class UmlManager;
         protected:

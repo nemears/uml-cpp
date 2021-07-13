@@ -5,6 +5,7 @@
 #include "uml/literalString.h"
 #include "uml/instanceValue.h"
 #include "uml/property.h"
+#include "uml/slot.h"
 
 using namespace UML;
 

@@ -2,9 +2,11 @@
 #define ENUMERATION_H
 
 #include "dataType.h"
-#include "enumerationLiteral.h"
 
 namespace UML {
+
+    class EnumerationLiteral;
+
     class Enumeration : public DataType {
         protected:
             Sequence<EnumerationLiteral> m_ownedLiteral;

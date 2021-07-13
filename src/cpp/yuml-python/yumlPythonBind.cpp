@@ -35,6 +35,7 @@
 #include "uml/createObjectAction.h"
 #include "uml/expression.h"
 #include "uml/property.h"
+#include "uml/slot.h"
 // #include "yuml-parsers/modelParser.h"
 
 using namespace std;

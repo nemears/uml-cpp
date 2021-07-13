@@ -1,5 +1,6 @@
 #include "uml/dataType.h"
 #include "uml/operation.h"
+#include "uml/property.h"
 
 using namespace UML;
 

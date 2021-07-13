@@ -2,15 +2,16 @@
 #define CLASSIFIERH
 
 #include "type.h"
-#include "property.h"
+#include "redefinableElement.h"
 #include "sequence.h"
 #include "namespace.h"
-#include "feature.h"
 #include "templateableElement.h"
 
 namespace UML {
 
     class Generalization;
+    class Property;
+    class Feature;
 
     /**
      * A Classifier represents a classification of instances according to their Features

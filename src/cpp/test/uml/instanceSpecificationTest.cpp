@@ -4,6 +4,7 @@
 #include "uml/primitiveType.h"
 #include "uml/literalString.h"
 #include "uml/instanceValue.h"
+#include "uml/property.h"
 
 using namespace UML;
 

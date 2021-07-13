@@ -6,6 +6,7 @@
 #include "uml/sequence.h"
 #include "uml/operation.h"
 #include "uml/package.h"
+#include "uml/property.h"
 
 using namespace UML;
 

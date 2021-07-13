@@ -1,4 +1,5 @@
 #include "uml/association.h"
+#include "uml/property.h"
 
 using namespace UML;
 

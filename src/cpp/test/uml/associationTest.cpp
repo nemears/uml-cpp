@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/association.h"
 #include "uml/class.h"
+#include "uml/property.h"
 
 using namespace UML;
 

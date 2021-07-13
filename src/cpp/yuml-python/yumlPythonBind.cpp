@@ -34,6 +34,7 @@
 #include "uml/callBehaviorAction.h"
 #include "uml/createObjectAction.h"
 #include "uml/expression.h"
+#include "uml/property.h"
 // #include "yuml-parsers/modelParser.h"
 
 using namespace std;

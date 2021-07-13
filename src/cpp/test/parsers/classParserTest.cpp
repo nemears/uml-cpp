@@ -4,6 +4,11 @@
 #include "uml/class.h"
 #include "uml/operation.h"
 #include "uml/opaqueBehavior.h"
+#include "uml/property.h"
+#include "uml/literalString.h"
+#include "uml/package.h"
+#include "uml/generalization.h"
+#include "uml/parameter.h"
 
 using namespace std;
 using namespace UML;

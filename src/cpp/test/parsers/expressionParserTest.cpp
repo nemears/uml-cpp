@@ -4,6 +4,10 @@
 #include "uml/expression.h"
 #include "uml/package.h"
 #include "uml/packageMerge.h"
+#include "uml/primitiveType.h"
+#include "uml/literalInt.h"
+#include "uml/class.h"
+#include "uml/property.h"
 
 using namespace std;
 using namespace UML;

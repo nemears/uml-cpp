@@ -6,6 +6,12 @@
 #include "uml/templateParameterSubstitution.h"
 #include "uml/templateSignature.h"
 #include "uml/templateParameter.h"
+#include "uml/primitiveType.h"
+#include "uml/instanceSpecification.h"
+#include "uml/literalInt.h"
+#include "uml/operation.h"
+#include "uml/property.h"
+#include "uml/package.h"
 
 using namespace std;
 using namespace UML;

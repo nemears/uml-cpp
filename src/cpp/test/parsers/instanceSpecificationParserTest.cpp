@@ -5,6 +5,8 @@
 #include "uml/package.h"
 #include "uml/class.h"
 #include "uml/slot.h"
+#include "uml/property.h"
+#include "uml/instanceValue.h"
 
 using namespace std;
 using namespace UML;

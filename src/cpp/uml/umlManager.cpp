@@ -11,6 +11,7 @@
 #include "uml/joinNode.h"
 #include "uml/mergeNode.h"
 #include "uml/parameterNode.h"
+#include "uml/model.h"
 
 using namespace std;
 using namespace UML;

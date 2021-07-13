@@ -2,6 +2,8 @@
 #include "uml/parsers/parser.h"
 #include "test/yumlParsersTest.h"
 #include "uml/parameter.h"
+#include "uml/opaqueBehavior.h"
+#include "uml/literalInt.h"
 
 using namespace std;
 using namespace UML;

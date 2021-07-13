@@ -3,6 +3,10 @@
 #include "test/yumlParsersTest.h"
 #include "uml/association.h"
 #include "uml/packageMerge.h"
+#include "uml/package.h"
+#include "uml/class.h"
+#include "uml/property.h"
+#include "uml/primitiveType.h"
 
 using namespace std;
 using namespace UML;

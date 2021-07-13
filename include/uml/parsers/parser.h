@@ -6,38 +6,25 @@
 #include "uml/parsers/parserMetaData.h"
 #include "uml/parsers/emitterMetaData.h"
 #include "uml/element.h"
-#include "uml/namedElement.h"
-#include "uml/typedElement.h"
-#include "uml/property.h"
-#include "uml/parameter.h"
-#include "uml/package.h"
-#include "uml/packageableElement.h"
-#include "uml/namespace.h"
-#include "uml/classifier.h"
-#include "uml/behavior.h"
-#include "uml/class.h"
-#include "uml/opaqueBehavior.h"
-#include "uml/operation.h"
-#include "uml/multiplicityElement.h"
-#include "uml/primitiveType.h"
-#include "uml/instanceSpecification.h"
-#include "uml/enumeration.h"
-#include "uml/enumerationLiteral.h"
-#include "uml/instanceValue.h"
-#include "uml/literalBool.h"
-#include "uml/literalReal.h"
-#include "uml/literalString.h"
-#include "uml/activity.h"
-#include "uml/literalInt.h"
-#include "uml/expression.h"
-#include "uml/generalization.h"
-#include "uml/model.h"
-#include "uml/literalUnlimitedNatural.h"
-#include "uml/templateBinding.h"
-#include "uml/association.h"
-#include "uml/extension.h"
 
 namespace UML {
+
+    class PrimitiveType;
+    class EnumerationLiteral;
+    class OpaqueBehavior;
+    class InstanceValue;
+    class LiteralBool;
+    class LiteralInt;
+    class LiteralReal;
+    class LiteralString;
+    class LiteralUnlimitedNatural;
+    class ParameterableElement;
+    class TypedElement;
+    class MultiplicityElement;
+    class PackageMerge;
+    class Extension;
+    class ProfileApplication;
+
     namespace Parsers {
 
         class UmlParserException : public std::exception {

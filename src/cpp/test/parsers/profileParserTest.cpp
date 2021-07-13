@@ -4,6 +4,8 @@
 #include "uml/profile.h"
 #include "uml/extensionEnd.h"
 #include "uml/profileApplication.h"
+#include "uml/extension.h"
+#include "uml/instanceSpecification.h"
 
 using namespace std;
 using namespace UML;

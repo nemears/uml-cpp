@@ -3,6 +3,7 @@
 #include "test/yumlParsersTest.h"
 #include "uml/literalUnlimitedNatural.h"
 #include "uml/literalNull.h"
+#include "uml/package.h"
 
 using namespace std;
 using namespace UML;

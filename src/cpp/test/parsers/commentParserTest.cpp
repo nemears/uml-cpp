@@ -2,6 +2,7 @@
 #include "uml/parsers/parser.h"
 #include "test/yumlParsersTest.h"
 #include "uml/comment.h"
+#include "uml/package.h"
 
 using namespace std;
 using namespace UML;

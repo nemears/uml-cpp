@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/behavior.h"
 #include "uml/operation.h"
+#include "uml/parameter.h"
 
 using namespace UML;
 

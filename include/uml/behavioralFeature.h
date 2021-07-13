@@ -3,8 +3,6 @@
 
 #include "feature.h"
 #include "namespace.h"
-#include "behavior.h"
-#include "parameter.h"
 
 namespace UML {
     class BehavioralFeature : public Feature , public Namespace {

@@ -8,6 +8,7 @@ namespace UML {
 
     class Class;
     class DataType;
+    class Type;
 
     class Operation : public BehavioralFeature , public TemplateableElement, public ParameterableElement {
         friend class Parameter;

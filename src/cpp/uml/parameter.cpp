@@ -1,5 +1,6 @@
 #include "uml/parameter.h"
 #include "uml/operation.h"
+#include "uml/behavior.h"
 
 using namespace std;
 using namespace UML;

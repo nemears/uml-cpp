@@ -1,7 +1,7 @@
 #ifndef BEHAVIORH
 #define BEHAVIORH
+
 #include "class.h"
-#include "parameter.h"
 
 namespace UML {
 

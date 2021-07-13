@@ -2,9 +2,11 @@
 #define GENERALIZATION_H
 
 #include "directedRelationship.h"
-#include "classifier.h"
 
 namespace UML {
+
+    class Classifier;
+
     class Generalization : public DirectedRelationship {
         protected:
             ID m_generalID;

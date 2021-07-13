@@ -1,4 +1,5 @@
 #include "uml/generalization.h"
+#include "uml/classifier.h"
 
 using namespace UML;
 

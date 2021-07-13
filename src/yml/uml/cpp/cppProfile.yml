@@ -2,6 +2,9 @@
   profile:
     id: CPP_4zpFq9s6YilFjqZAPguiluqk
     name: C++ Profile
+    packageMerge:
+      - packageMerge:
+          mergedPackage: ../primitiveTypes.yml
     ownedStereotypes:
       - stereotype:
           id: Cpp_NAMESPACE_3FloKgLhiH2P0t
@@ -12,4 +15,20 @@
             extensionEnd:
               type: Cpp_NAMESPACE_3FloKgLhiH2P0t
           metaClass: PACKAGE
+      - package:
+          id: C_Primitives_17ZQNymn6bZqCi3
+          name: C Primitives
+          packagedElements:
+            - primitiveType:
+                id: C_int_ZvgWKuxGtKtjRQPMNTXjic
+                name: C int
+                generalizations:
+                  - generalization:
+                      general: int_r9nNbBukx47IomXrT2raqtc4
+            - primitiveType:
+                id: C_char_bvN6xdQ&&LaR7MU_F_9uR
+                name: C char
+                generalizations:
+                  - generalization:
+                      general: int_r9nNbBukx47IomXrT2raqtc4
 ...

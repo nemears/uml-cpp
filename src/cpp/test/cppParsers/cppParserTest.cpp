@@ -3,6 +3,7 @@
 #include "uml/class.h"
 #include "uml/operation.h"
 #include "uml/instanceSpecification.h"
+#include "uml/literalInt.h"
 
 using namespace std;
 using namespace UML;
@@ -28,6 +29,15 @@ TEST_F(CppParserTest, parseBasicHeaderTest) {
     ASSERT_EQ(fooNamespace.getName(), "FOO");
     ASSERT_EQ(fooNamespace.getAppliedStereotypes().size(), 1);
     ASSERT_EQ(fooNamespace.getAppliedStereotypes().front()->getClassifier()->getName(), "C++ Namespace");
+    ASSERT_EQ(fooNamespace.getPackagedElements().size(), 2);
+    ASSERT_EQ(fooNamespace.getPackagedElements().front()->getName(), "c");
+    ASSERT_EQ(fooNamespace.getPackagedElements().front()->getElementType(), ElementType::LITERAL_INT);
+    LiteralInt& cChar = dynamic_cast<LiteralInt&>(*fooNamespace.getPackagedElements().front());
+    ASSERT_EQ(cChar.getType()->getID(), ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR"));
+    ASSERT_EQ(fooNamespace.getPackagedElements().get(1)->getElementType(), ElementType::LITERAL_INT);
+    LiteralInt& cInt = dynamic_cast<LiteralInt&>(*fooNamespace.getPackagedElements().get(1));
+    ASSERT_EQ(cInt.getName(), "i");
+    ASSERT_EQ(cInt.getType()->getID(), ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic"));
     ASSERT_EQ(pckg->getPackagedElements().get(1)->getElementType(), ElementType::CLASS);
     Class& testClass = dynamic_cast<Class&>(*pckg->getPackagedElements().get(1));
     ASSERT_EQ(testClass.getName(), "test");

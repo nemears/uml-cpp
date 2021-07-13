@@ -4,6 +4,7 @@
 #include "uml/operation.h"
 #include "uml/instanceSpecification.h"
 #include "uml/stereotype.h"
+#include "uml/literalInt.h"
 
 using namespace std;
 
@@ -78,7 +79,41 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
 }
 
 CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData client_data) {
-    cout << "Cpp namespace contains Cursor '" << clang_getCString(clang_getCursorSpelling(c)) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(c))) << endl;
+    CppParserMetaData* data = static_cast<CppParserMetaData*>(client_data);
+    switch (clang_getCursorKind(c)) {
+        case CXCursor_VarDecl : {
+            CXType type = clang_getCursorType(c);
+            switch (type.kind) {
+                case CXTypeKind::CXType_Char_S : {
+                    LiteralInt& cChar = data->manager.create<LiteralInt>();
+                    cChar.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    cChar.setType(&data->manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
+                    if (data->owningElement.getElementType() == ElementType::PACKAGE) {
+                        dynamic_cast<Package&>(data->owningElement).getPackagedElements().add(cChar);
+                    }
+                    break;
+                }
+                case CXTypeKind::CXType_Int : {
+                    LiteralInt& cInt = data->manager.create<LiteralInt>();
+                    cInt.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    cInt.setType(&data->manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
+                    if (data->owningElement.getElementType() == ElementType::PACKAGE) {
+                        dynamic_cast<Package&>(data->owningElement).getPackagedElements().add(cInt);
+                    }
+                    break;
+                }
+                default : {
+                    cerr << "Unahandled type for variable type " << clang_getCString(clang_getTypeSpelling(clang_getCursorType(c))) << endl;
+                    break;
+                }
+            }
+            break;
+        }
+        default : {
+            cerr << "Cpp namespace contains Cursor '" << clang_getCString(clang_getCursorSpelling(c)) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(c))) << ", but no mapping has been defined yet!" << endl;
+            break;
+        }
+    }
     return CXChildVisit_Recurse;
 }
 

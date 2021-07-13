@@ -1,6 +1,9 @@
 
 namespace FOO {
-    int i = 0;
+    char c;
+    int i;
+    float f;
+    double d;
 };
 
 class test {

@@ -330,3 +330,10 @@ TEST_F(ElementTest, AddAndRemoveAppliedStereotypetest) {
   ASSERT_NO_THROW(c.getAppliedStereotypes().remove(i));
   ASSERT_EQ(c.getOwnedElements().size(), 0);
 }
+
+TEST_F(ElementTest, asFuncTest) {
+  UmlManager m;
+  Classifier& classifier = m.create<Class>();
+  Class& clazz = classifier.as<Class>();
+  ASSERT_EQ(classifier.getID(), clazz.getID());
+}

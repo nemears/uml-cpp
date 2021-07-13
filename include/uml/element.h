@@ -174,6 +174,12 @@ namespace UML {
             Sequence<InstanceSpecification>& getAppliedStereotypes();
             virtual void setID(std::string id);
             void setID(ID id);
+            template <class T = Element> T& as() {
+                if (isSubClassOf(T::elementType())) {
+                    return dynamic_cast<T&>(*this);
+                }
+                // TODO throw error
+            }
             virtual ElementType getElementType() const;
             virtual bool isSubClassOf(ElementType eType) const;
             virtual std::string getElementTypeString() const;

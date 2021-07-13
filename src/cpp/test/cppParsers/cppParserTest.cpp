@@ -4,6 +4,7 @@
 #include "uml/operation.h"
 #include "uml/instanceSpecification.h"
 #include "uml/literalInt.h"
+#include "uml/literalReal.h"
 
 using namespace std;
 using namespace UML;
@@ -29,7 +30,7 @@ TEST_F(CppParserTest, parseBasicHeaderTest) {
     ASSERT_EQ(fooNamespace.getName(), "FOO");
     ASSERT_EQ(fooNamespace.getAppliedStereotypes().size(), 1);
     ASSERT_EQ(fooNamespace.getAppliedStereotypes().front()->getClassifier()->getName(), "C++ Namespace");
-    ASSERT_EQ(fooNamespace.getPackagedElements().size(), 2);
+    ASSERT_EQ(fooNamespace.getPackagedElements().size(), 4);
     ASSERT_EQ(fooNamespace.getPackagedElements().front()->getName(), "c");
     ASSERT_EQ(fooNamespace.getPackagedElements().front()->getElementType(), ElementType::LITERAL_INT);
     LiteralInt& cChar = dynamic_cast<LiteralInt&>(*fooNamespace.getPackagedElements().front());
@@ -38,6 +39,14 @@ TEST_F(CppParserTest, parseBasicHeaderTest) {
     LiteralInt& cInt = dynamic_cast<LiteralInt&>(*fooNamespace.getPackagedElements().get(1));
     ASSERT_EQ(cInt.getName(), "i");
     ASSERT_EQ(cInt.getType()->getID(), ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic"));
+    ASSERT_EQ(fooNamespace.getPackagedElements().get(2)->getElementType(), ElementType::LITERAL_REAL);
+    LiteralReal& cFloat = dynamic_cast<LiteralReal&>(*fooNamespace.getPackagedElements().get(2));
+    ASSERT_EQ(cFloat.getName(), "f");
+    ASSERT_EQ(cFloat.getType()->getID(), ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6"));
+    ASSERT_EQ(fooNamespace.getPackagedElements().get(3)->getElementType(), ElementType::LITERAL_REAL);
+    LiteralReal& cDouble = dynamic_cast<LiteralReal&>(*fooNamespace.getPackagedElements().get(3));
+    ASSERT_EQ(cDouble.getName(), "d");
+    ASSERT_EQ(cDouble.getType()->getID(), ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE"));
     ASSERT_EQ(pckg->getPackagedElements().get(1)->getElementType(), ElementType::CLASS);
     Class& testClass = dynamic_cast<Class&>(*pckg->getPackagedElements().get(1));
     ASSERT_EQ(testClass.getName(), "test");

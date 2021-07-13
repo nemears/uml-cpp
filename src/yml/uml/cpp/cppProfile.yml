@@ -31,4 +31,16 @@
                 generalizations:
                   - generalization:
                       general: int_r9nNbBukx47IomXrT2raqtc4
+            - primitiveType:
+                id: C_float_FRQyo8d1KEQQLOnnPPn6
+                name: C float
+                generalizations:
+                  - generalization:
+                      general: real_aZG&w6yl61bXVWutgeyScN9
+            - primitiveType:
+                id: C_double_HM2asoTiFmoWEK8ZuAE
+                name: C double
+                generalizations:
+                  - generalization:
+                      general: real_aZG&w6yl61bXVWutgeyScN9
 ...

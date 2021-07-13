@@ -5,6 +5,7 @@
 #include "uml/instanceSpecification.h"
 #include "uml/stereotype.h"
 #include "uml/literalInt.h"
+#include "uml/literalReal.h"
 
 using namespace std;
 
@@ -99,6 +100,24 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                     cInt.setType(&data->manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
                     if (data->owningElement.getElementType() == ElementType::PACKAGE) {
                         dynamic_cast<Package&>(data->owningElement).getPackagedElements().add(cInt);
+                    }
+                    break;
+                }
+                case CXTypeKind::CXType_Float : {
+                    LiteralReal& cFloat = data->manager.create<LiteralReal>();
+                    cFloat.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    cFloat.setType(&data->manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
+                    if (data->owningElementType == ElementType::PACKAGE) {
+                        dynamic_cast<Package&>(data->owningElement).getPackagedElements().add(cFloat);
+                    }
+                    break;
+                }
+                case CXTypeKind::CXType_Double : {
+                    LiteralReal& cDouble = data->manager.create<LiteralReal>();
+                    cDouble.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    cDouble.setType(&data->manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
+                    if (data->owningElementType == ElementType::PACKAGE) {
+                        dynamic_cast<Package&>(data->owningElement).getPackagedElements().add(cDouble);
                     }
                     break;
                 }

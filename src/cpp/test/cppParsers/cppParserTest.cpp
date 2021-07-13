@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "cpp-parsers/cppParser.h"
+#include "uml/cpp/cppParser.h"
 #include "uml/class.h"
 #include "uml/operation.h"
 #include "uml/instanceSpecification.h"

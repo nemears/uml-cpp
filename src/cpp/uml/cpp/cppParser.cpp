@@ -1,4 +1,4 @@
-#include "cpp-parsers/cppParser.h"
+#include "uml/cpp/cppParser.h"
 #include <clang-c/Index.h>
 #include "uml/class.h"
 #include "uml/operation.h"

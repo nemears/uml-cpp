@@ -1,5 +1,5 @@
 #include "uml/cpp/cppParser.h"
-#include <clang-c/Index.h>
+#include "uml/cpp/clang.h"
 #include "uml/class.h"
 #include "uml/operation.h"
 #include "uml/instanceSpecification.h"
@@ -7,18 +7,12 @@
 #include "uml/literalInt.h"
 #include "uml/literalReal.h"
 #include "uml/primitiveType.h"
+#include "uml/property.h"
 
 using namespace std;
 
 namespace UML {
 namespace CPP {
-
-struct CppParserMetaData {
-    UmlManager& manager;
-    Element& owningElement;
-    ElementType owningElementType;
-    VisibilityKind visibilty;
-};
 
 void setOwnerHelper(Element& ownee, Element& owner) {
     switch (owner.getElementType()) {
@@ -70,6 +64,79 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
             Operation& constructor = data.manager.create<Operation>();
             constructor.setName(clang_getCString(clang_getCursorSpelling(c)));
             setOwnerHelper(constructor, data.owningElement);
+            break;
+        }
+        case CXCursor_FieldDecl : {
+            CXType type = clang_getCursorType(c);
+            switch (type.kind) {
+                case CXTypeKind::CXType_Char_S : {
+                    Property& charProp = data.manager.create<Property>();
+                    charProp.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    charProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
+                    charProp.setVisibility(data.visibilty);
+                    switch (data.owningElementType) {
+                        case ElementType::CLASS : {
+                            data.owningElement.as<Class>().getOwnedAttributes().add(charProp);
+                            break;
+                        }
+                        default : {
+                            cerr << "unknown owner for field decl! element type: " << Element::elementTypeToString(data.owningElementType) << endl; 
+                        }
+                    }
+                    break;
+                }
+                case CXTypeKind::CXType_Int : {
+                    Property& intProp = data.manager.create<Property>();
+                    intProp.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    intProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
+                    intProp.setVisibility(data.visibilty);
+                    switch (data.owningElementType) {
+                        case ElementType::CLASS : {
+                            data.owningElement.as<Class>().getOwnedAttributes().add(intProp);
+                            break;
+                        }
+                        default : {
+                            cerr << "unknown owner for field decl! element type: " << Element::elementTypeToString(data.owningElementType) << endl; 
+                        }
+                    }
+                    break;
+                }
+                case CXTypeKind::CXType_Float : {
+                    Property& floatProp = data.manager.create<Property>();
+                    floatProp.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    floatProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
+                    floatProp.setVisibility(data.visibilty);
+                    switch (data.owningElementType) {
+                        case ElementType::CLASS : {
+                            data.owningElement.as<Class>().getOwnedAttributes().add(floatProp);
+                            break;
+                        }
+                        default : {
+                            cerr << "unknown owner for field decl! element type: " << Element::elementTypeToString(data.owningElementType) << endl; 
+                        }
+                    }
+                    break;
+                }
+                case CXTypeKind::CXType_Double : {
+                    Property& doubleProp = data.manager.create<Property>();
+                    doubleProp.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    doubleProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
+                    doubleProp.setVisibility(data.visibilty);
+                    switch (data.owningElementType) {
+                        case ElementType::CLASS : {
+                            data.owningElement.as<Class>().getOwnedAttributes().add(doubleProp);
+                            break;
+                        }
+                        default : {
+                            cerr << "unknown owner for field decl! element type: " << Element::elementTypeToString(data.owningElementType) << endl; 
+                        }
+                    }
+                    break;
+                }
+                default : {
+                    cerr << "unhandled type for class field (property)! cursor type: " << clang_getCString(clang_getTypeSpelling(clang_getCursorType(c))) << endl;
+                }
+            }
             break;
         }
         default : {

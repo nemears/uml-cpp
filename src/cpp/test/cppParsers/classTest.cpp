@@ -1,0 +1,43 @@
+#include "gtest/gtest.h"
+#include "uml/cpp/cppParser.h"
+#include "uml/class.h"
+#include "uml/property.h"
+
+using namespace std;
+using namespace UML;
+using namespace CPP;
+
+class CppClassTest : public ::testing::Test {
+    public:
+    const string profilePath = "../../../../../src/yml/uml/cpp/";
+    const string includePath = "../../../../../include/";
+    const string testPath = "../../../../../src/cpp/test/cppParsers/testHeaders/";
+};
+
+TEST_F(CppClassTest, attributesW_DifferentVisibilityTest) {
+    UmlManager m;
+    // add cpp profile to memory
+    m.parse(profilePath + "cppProfile.yml");
+    Package* pckg;
+    ASSERT_NO_THROW(pckg = parseHeader(testPath + "classTests/attributesW_DifferentVisibility.h", m));
+    ASSERT_EQ(pckg->getPackagedElements().size(), 1);
+    ASSERT_EQ(pckg->getPackagedElements().front()->getElementType(), ElementType::CLASS);
+    Class& clazz = pckg->getPackagedElements().front()->as<Class>();
+    ASSERT_EQ(clazz.getOwnedAttributes().size(), 4);
+    Property& i = *clazz.getOwnedAttributes().front();
+    ASSERT_EQ(i.getType()->getID(), ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic"));
+    ASSERT_EQ(i.getName(), "i");
+    ASSERT_EQ(i.getVisibility(), VisibilityKind::PRIVATE);
+    Property& d = *clazz.getOwnedAttributes().get(1);
+    ASSERT_EQ(d.getType()->getID(), ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE"));
+    ASSERT_EQ(d.getName(), "d");
+    ASSERT_EQ(d.getVisibility(), VisibilityKind::PROTECTED);
+    Property& c = *clazz.getOwnedAttributes().get(2);
+    ASSERT_EQ(c.getType()->getID(), ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR"));
+    ASSERT_EQ(c.getName(), "c");
+    ASSERT_EQ(c.getVisibility(), VisibilityKind::PUBLIC);
+    Property& f = *clazz.getOwnedAttributes().back();
+    ASSERT_EQ(f.getType()->getID(), ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6"));
+    ASSERT_EQ(f.getName(), "f");
+    ASSERT_EQ(f.getVisibility(), VisibilityKind::PRIVATE);
+}

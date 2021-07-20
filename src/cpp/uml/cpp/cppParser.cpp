@@ -299,6 +299,14 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
             }
             break;
         }
+        case CXCursor_ClassDecl : {
+            Class& cppClass = data->manager.create<Class>();
+            cppClass.setName(clang_getCString(clang_getCursorSpelling(c)));
+            setOwnerHelper(cppClass, data->owningElement);
+            CppParserMetaData classData = {data->manager, cppClass, cppClass.getElementType()};
+            clang_visitChildren(c, *classVisit, &classData);
+            break;
+        }
         default : {
             cerr << "Cpp namespace contains Cursor '" << clang_getCString(clang_getCursorSpelling(c)) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(c))) << ", but no mapping has been defined yet!" << endl;
             break;

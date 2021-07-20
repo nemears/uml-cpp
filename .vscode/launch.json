@@ -15,7 +15,7 @@
             // Resolved by CMake Tobols:
             "program": "${command:cmake.launchTargetPath}",
             "args": [
-                "../src/test/yml/controlFlowTests/actionToSelf.yml"
+                "../include/uml/element.h"
             ],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}\\build",

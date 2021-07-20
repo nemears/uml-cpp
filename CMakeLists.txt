@@ -38,7 +38,7 @@ add_subdirectory(src)
 add_executable(uml-cpp src/cpp/application.cpp)
 
 # Link them all
-target_link_libraries(uml-cpp PUBLIC Parsers Uml Logger gtest yaml-cpp)
+target_link_libraries(uml-cpp PUBLIC Parsers Uml cppParsers gtest yaml-cpp)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

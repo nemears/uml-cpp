@@ -1,6 +1,6 @@
 #include "application.h"
-#include "uml/element.h"
 #include "iostream"
+#include "uml/cpp/cppParser.h"
 
 using namespace std;
 using namespace UML;
@@ -15,14 +15,13 @@ int main(int argc, char** argv) {
             // TODO GUI
         }
         case 2: {
-            YAML::Node node = YAML::LoadFile(argv[1]);
             string fileName = argv[1];
             cout << "parsing file " << fileName << "\n";
-            //ModelParser pp = ModelParser::createNewParser();
-            Element* el;
+            Package* header;
             UmlManager m;
             try {
-                el = m.parse(fileName);
+                m.parse("../src/yml/uml/cpp/cppProfile.yml");
+                header = CPP::parseHeader(fileName, m);
             } catch (exception& e) {
                 cerr << "[FATAL ERROR] " << e.what() << endl;
             }
@@ -34,7 +33,7 @@ int main(int argc, char** argv) {
             // } catch (exception& e) {
             //     cerr << "[FATAL ERROR] " << e.what() << endl;
             // }
-            cout << UML::Parsers::emit(*el) << endl; 
+            cout << UML::Parsers::emit(*header) << endl; 
 
             return 0;
         }

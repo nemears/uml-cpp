@@ -8,6 +8,7 @@
 #include "uml/literalReal.h"
 #include "uml/primitiveType.h"
 #include "uml/property.h"
+#include "uml/parameter.h"
 
 using namespace std;
 
@@ -135,6 +136,108 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                 }
                 default : {
                     cerr << "unhandled type for class field (property)! cursor type: " << clang_getCString(clang_getTypeSpelling(clang_getCursorType(c))) << endl;
+                }
+            }
+            break;
+        }
+        case CXCursor_CXXMethod : {
+            Operation& method = data.manager.create<Operation>();
+            method.setName(clang_getCString(clang_getCursorSpelling(c)));
+            method.setVisibility(data.visibilty);
+            CXType type = clang_getCursorType(c);
+
+            // return parameter
+            CXType return_type = clang_getResultType(type);
+            switch (return_type.kind) {
+                case CXTypeKind::CXType_Void : {
+                    break;
+                }
+                default : {
+                    Parameter& returnParam = data.manager.create<Parameter>();
+                    returnParam.setName("return");
+                    returnParam.setDirection(ParameterDirectionKind::RETURN);
+                    switch (return_type.kind) {
+                        case CXTypeKind::CXType_Char_S : {
+                            returnParam.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
+                            break;
+                        }
+                        case CXTypeKind::CXType_Int : {
+                            returnParam.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
+                            break;
+                        }
+                        case CXTypeKind::CXType_Float : {
+                            returnParam.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
+                            break;
+                        }
+                        case CXTypeKind::CXType_Double : {
+                            returnParam.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
+                            break;
+                        }
+                        default : {
+                            cerr << "unhandled parameter for method " << method.getName() << " of type '" << clang_getCString(clang_getTypeSpelling(return_type)) << "'" <<endl;
+                            break;
+                        }
+                    }
+                    method.getOwnedParameters().add(returnParam);
+                    break;
+                }
+            }
+
+            // signature parameters           
+            switch (type.kind) {
+                case CXType_FunctionProto : {
+                    for (size_t i = 0; i < clang_Cursor_getNumArguments(c); i++) {
+                        CXCursor param_c = clang_Cursor_getArgument(c, i);
+                        switch (clang_getCursorKind(param_c)) {
+                            case CXCursor_ParmDecl : {
+                                Parameter& param = data.manager.create<Parameter>();
+                                param.setName(clang_getCString(clang_getCursorSpelling(param_c)));
+                                param.setDirection(ParameterDirectionKind::IN);
+                                CXType param_type = clang_getCursorType(param_c);
+                                switch (param_type.kind) {
+                                    case CXTypeKind::CXType_Char_S : {
+                                        param.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
+                                        break;
+                                    }
+                                    case CXTypeKind::CXType_Int : {
+                                        param.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
+                                        break;
+                                    }
+                                    case CXTypeKind::CXType_Float : {
+                                        param.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
+                                        break;
+                                    }
+                                    case CXTypeKind::CXType_Double : {
+                                        param.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
+                                        break;
+                                    }
+                                    default : {
+                                        cerr << "unhandled parameter for method " << method.getName() << " of type '" << clang_getCString(clang_getTypeSpelling(clang_getCursorType(param_c))) << "'" <<endl;
+                                        break;
+                                    }
+                                }
+                                method.getOwnedParameters().add(param);
+                                break;
+                            }
+                            default : {
+                                cerr << "method contains cursor '" << clang_getCString(clang_getCursorSpelling(param_c)) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(param_c))) << "', but no mapping is set" << endl;
+                            }
+                        }
+                    }
+                    break;
+                }
+                default : {
+                    cerr << "unhandled argument for method " << method.getName() << " , type " << clang_getCString(clang_getCursorSpelling(c)) << endl;
+                }
+            }
+            switch (data.owningElementType) {
+                case ElementType::CLASS : {
+                    data.owningElement.as<Class>().getOperations().add(method);
+                    break;
+                }
+                default : {
+                    cerr << "unhandled owning element " << Element::elementTypeToString(data.owningElementType) << endl;
+                    break; 
                 }
             }
             break;

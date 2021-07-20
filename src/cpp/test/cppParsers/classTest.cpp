@@ -2,6 +2,8 @@
 #include "uml/cpp/cppParser.h"
 #include "uml/class.h"
 #include "uml/property.h"
+#include "uml/operation.h"
+#include "uml/parameter.h"
 
 using namespace std;
 using namespace UML;
@@ -40,4 +42,33 @@ TEST_F(CppClassTest, attributesW_DifferentVisibilityTest) {
     ASSERT_EQ(f.getType()->getID(), ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6"));
     ASSERT_EQ(f.getName(), "f");
     ASSERT_EQ(f.getVisibility(), VisibilityKind::PRIVATE);
+}
+
+TEST_F(CppClassTest, classW_MethodsTest) {
+    UmlManager m;
+    // add cpp profile to memory
+    m.parse(profilePath + "cppProfile.yml");
+    Package* pckg;
+    ASSERT_NO_THROW(pckg = parseHeader(testPath + "classTests/someMethods.h", m));
+    ASSERT_EQ(pckg->getPackagedElements().size(), 1);
+    ASSERT_EQ(pckg->getPackagedElements().front()->getElementType(), ElementType::CLASS);
+    Class& clazz = pckg->getPackagedElements().front()->as<Class>();
+    ASSERT_EQ(clazz.getOperations().size(), 3);
+    Operation& foo = *clazz.getOperations().front();
+    ASSERT_EQ(foo.getVisibility(), VisibilityKind::PRIVATE);
+    ASSERT_EQ(foo.getOwnedParameters().size(), 0);
+    Operation& bar = *clazz.getOperations().get(1);
+    ASSERT_EQ(bar.getVisibility(), VisibilityKind::PROTECTED);
+    ASSERT_EQ(bar.getOwnedParameters().size(), 1);
+    Parameter& barRet = *bar.getOwnedParameters().front();
+    ASSERT_EQ(barRet.getName(), "return");
+    ASSERT_EQ(barRet.getDirection(), ParameterDirectionKind::RETURN);
+    ASSERT_EQ(barRet.getType()->getID(), ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic"));
+    Operation& tt = *clazz.getOperations().get(2);
+    ASSERT_EQ(tt.getVisibility(), VisibilityKind::PUBLIC);
+    ASSERT_EQ(tt.getOwnedParameters().size(), 1);
+    Parameter& ttArg = *tt.getOwnedParameters().front();
+    ASSERT_EQ(ttArg.getName(), "d");
+    ASSERT_EQ(ttArg.getDirection(), ParameterDirectionKind::IN);
+    ASSERT_EQ(ttArg.getType()->getID(), ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE"));
 }

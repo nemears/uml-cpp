@@ -6,7 +6,7 @@
 namespace UML {
     class LiteralInt : public LiteralSpecification {
         protected:
-            int value;
+            int value; // TODO change to long so we can hold any number?
         public:
             int getValue();
             void setValue(int val);

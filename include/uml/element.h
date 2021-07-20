@@ -92,6 +92,20 @@ namespace UML {
         return std::regex_match (strn, std::regex("(?:[A-Za-z0-9_&]{28})"));
     }
 
+    class InvalidElementCastException : public std::exception {
+        
+        private:
+            char m_msg[200];
+        
+        public:
+            InvalidElementCastException(const char* first, const char* second) {
+                sprintf(m_msg, "Cannot cast %s to %s", first, second);
+            };
+            virtual const char* what() const throw() {
+                return m_msg;
+            };
+    };
+
     template <class T> class Sequence;
     class ElementDoesntExistException;
     class Relationship;
@@ -174,16 +188,16 @@ namespace UML {
             Sequence<InstanceSpecification>& getAppliedStereotypes();
             virtual void setID(std::string id);
             void setID(ID id);
+            static std::string elementTypeToString(ElementType eType);
             template <class T = Element> T& as() {
                 if (isSubClassOf(T::elementType())) {
                     return dynamic_cast<T&>(*this);
                 }
-                // TODO throw error
+                throw InvalidElementCastException(getElementTypeString().c_str() , elementTypeToString(T::elementType()).c_str());
             }
             virtual ElementType getElementType() const;
             virtual bool isSubClassOf(ElementType eType) const;
             virtual std::string getElementTypeString() const;
-            static std::string elementTypeToString(ElementType eType);
     };
 
     //Exceptions

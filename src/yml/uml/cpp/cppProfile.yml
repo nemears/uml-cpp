@@ -20,6 +20,12 @@
           name: C Primitives
           packagedElements:
             - primitiveType:
+                id: C_bool_sWBeSxCp5A7Ns9OJ4tBdG
+                name: C Bool
+                generalizations:
+                  - generalization:
+                      general: bool_bzkcabSy3CiFd&HmJOtnVRK
+            - primitiveType:
                 id: C_int_ZvgWKuxGtKtjRQPMNTXjic
                 name: C int
                 generalizations:

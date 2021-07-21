@@ -9,6 +9,7 @@
 #include "uml/primitiveType.h"
 #include "uml/property.h"
 #include "uml/parameter.h"
+#include "uml/literalBool.h"
 
 using namespace std;
 
@@ -256,6 +257,15 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
         case CXCursor_VarDecl : {
             CXType type = clang_getCursorType(c);
             switch (type.kind) {
+                case CXTypeKind::CXType_Bool : {
+                    LiteralBool& cBool = data->manager.create<LiteralBool>();
+                    cBool.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    cBool.setType(&data->manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
+                    if (data->owningElement.getElementType() == ElementType::PACKAGE) {
+                        data->owningElement.as<Package>().getPackagedElements().add(cBool);
+                    }
+                    break;
+                }
                 case CXTypeKind::CXType_Char_S : {
                     LiteralInt& cChar = data->manager.create<LiteralInt>();
                     cChar.setName(clang_getCString(clang_getCursorSpelling(c)));
@@ -291,6 +301,12 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                         dynamic_cast<Package&>(data->owningElement).getPackagedElements().add(cDouble);
                     }
                     break;
+                }
+                case CXTypeKind::CXType_ConstantArray : {
+                    
+                }
+                case CXTypeKind::CXType_Void : {
+                    // TODO
                 }
                 default : {
                     cerr << "Unahandled type for variable type " << clang_getCString(clang_getTypeSpelling(clang_getCursorType(c))) << endl;

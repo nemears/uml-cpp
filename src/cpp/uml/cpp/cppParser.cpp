@@ -71,6 +71,22 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
         case CXCursor_FieldDecl : {
             CXType type = clang_getCursorType(c);
             switch (type.kind) {
+                case CXTypeKind::CXType_Bool : {
+                    Property& boolProp = data.manager.create<Property>();
+                    boolProp.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    boolProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
+                    boolProp.setVisibility(data.visibilty);
+                    switch (data.owningElementType) {
+                        case ElementType::CLASS : {
+                            data.owningElement.as<Class>().getOwnedAttributes().add(boolProp);
+                            break;
+                        }
+                        default : {
+                            cerr << "unknown owner for field decl! element type: " << Element::elementTypeToString(data.owningElementType) << endl; 
+                        }
+                    }
+                    break;
+                }
                 case CXTypeKind::CXType_Char_S : {
                     Property& charProp = data.manager.create<Property>();
                     charProp.setName(clang_getCString(clang_getCursorSpelling(c)));
@@ -135,8 +151,33 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     }
                     break;
                 }
+                case CXTypeKind::CXType_ConstantArray : {
+                    Property& arrayProp = data.manager.create<Property>();
+                    arrayProp.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    Element& owningElement = data.owningElement;
+                    CXType arrayType = clang_getElementType(type);
+                    switch (arrayType.kind) {
+                        case CXTypeKind::CXType_Bool : {
+                            arrayProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
+                            break;
+                        }
+                    }
+                    CppParserMetaData arrayData = {data.manager, arrayProp, ElementType::PROPERTY, VisibilityKind::PUBLIC};
+                    clang_visitChildren(c, &arrayVisit, &arrayData);
+                    switch (data.owningElementType) {
+                        case ElementType::CLASS : {
+                            data.owningElement.as<Class>().getOwnedAttributes().add(arrayProp);
+                            break;
+                        }
+                        default : {
+                            cerr << "unknown owner for field decl! element type: " << Element::elementTypeToString(data.owningElementType) << endl; 
+                        }
+                    }
+                    break;
+                }
                 default : {
                     cerr << "unhandled type for class field (property)! cursor type: " << clang_getCString(clang_getTypeSpelling(clang_getCursorType(c))) << endl;
+                    return CXChildVisit_Recurse;
                 }
             }
             break;
@@ -251,6 +292,26 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
     return CXChildVisit_Continue;
 }
 
+CXChildVisitResult arrayVisit(CXCursor c, CXCursor parent, CXClientData client_data) {
+    CppParserMetaData& data = *static_cast<CppParserMetaData*>(client_data);
+    switch (clang_getCursorKind(c)) {
+        case CXCursor_IntegerLiteral : {
+            data.owningElement.as<Property>().setLower(0);
+            CXEvalResult res = clang_Cursor_Evaluate(c);
+            cout << clang_EvalResult_getAsStr(res) << endl;
+            int value = clang_EvalResult_getAsInt(res);
+            clang_EvalResult_dispose(res);
+            data.owningElement.as<Property>().setUpper(value);
+            break;
+        }
+        default : {
+            cerr << "Cpp array contains Cursor '" << clang_getCString(clang_getCursorSpelling(c)) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(c))) << "', but no mapping is set" << endl;
+            return CXChildVisit_Recurse;
+        }
+    }
+    return CXChildVisit_Continue;
+}
+
 CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData client_data) {
     CppParserMetaData* data = static_cast<CppParserMetaData*>(client_data);
     switch (clang_getCursorKind(c)) {
@@ -303,7 +364,7 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                     break;
                 }
                 case CXTypeKind::CXType_ConstantArray : {
-                    
+
                 }
                 case CXTypeKind::CXType_Void : {
                     // TODO
@@ -353,6 +414,7 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
             Class& cppClass = data->manager.create<Class>();
             cppClass.setName(clang_getCString(clang_getCursorSpelling(c)));
             setOwnerHelper(cppClass, data->owningElement);
+            data->visibilty = VisibilityKind::PRIVATE; // access for class is default private (struct is default public)
             CppParserMetaData classData = {data->manager, cppClass, cppClass.getElementType()};
             clang_visitChildren(c, *classVisit, &classData);
             break;

@@ -17,6 +17,7 @@ namespace UML {
         CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_data);
         CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData client_data);
         CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_data);
+        CXChildVisitResult arrayVisit(CXCursor c, CXCursor parent, CXClientData client_data);
     }
 }
 

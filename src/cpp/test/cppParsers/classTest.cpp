@@ -72,3 +72,23 @@ TEST_F(CppClassTest, classW_MethodsTest) {
     ASSERT_EQ(ttArg.getDirection(), ParameterDirectionKind::IN);
     ASSERT_EQ(ttArg.getType()->getID(), ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE"));
 }
+
+TEST_F(CppClassTest, bunchOfTypesInClassTest) {
+    UmlManager m;
+    // add cpp profile to memory
+    m.parse(profilePath + "cppProfile.yml");
+    Package* pckg;
+    ASSERT_NO_THROW(pckg = parseHeader(testPath + "classTests/bunchOfTypes.h", m));
+    ASSERT_EQ(pckg->getPackagedElements().size(), 1);
+    ASSERT_EQ(pckg->getPackagedElements().front()->getElementType(), ElementType::CLASS);
+    Class& clazz = pckg->getPackagedElements().front()->as<Class>();
+    ASSERT_EQ(clazz.getOwnedAttributes().size(), 2);
+    Property& boolProp = *clazz.getOwnedAttributes().front();
+    ASSERT_EQ(boolProp.getName(), "b");
+    ASSERT_EQ(boolProp.getType()->getID(), ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG"));
+    Property& boolArray = *clazz.getOwnedAttributes().get(1);
+    ASSERT_EQ(boolArray.getName(), "b_array");
+    ASSERT_EQ(boolArray.getType()->getID(), ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG"));
+    ASSERT_EQ(boolArray.getLower(), 0);
+    ASSERT_EQ(boolArray.getUpper(), 10);
+}

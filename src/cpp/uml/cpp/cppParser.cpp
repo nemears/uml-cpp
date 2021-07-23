@@ -10,6 +10,7 @@
 #include "uml/property.h"
 #include "uml/parameter.h"
 #include "uml/literalBool.h"
+#include "uml/association.h"
 
 using namespace std;
 
@@ -64,7 +65,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
         }
         case CXCursor_Constructor : {
             Operation& constructor = data.manager.create<Operation>();
-            constructor.setName(clang_getCString(clang_getCursorSpelling(c)));
+            CXString constructorSpelling = clang_getCursorSpelling(c);
+            constructor.setName(clang_getCString(constructorSpelling));
+            clang_disposeString(constructorSpelling);
             setOwnerHelper(constructor, data.owningElement);
             break;
         }
@@ -73,7 +76,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
             switch (type.kind) {
                 case CXTypeKind::CXType_Bool : {
                     Property& boolProp = data.manager.create<Property>();
-                    boolProp.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    CXString propSpelling = clang_getCursorSpelling(c);
+                    boolProp.setName(clang_getCString(propSpelling));
+                    clang_disposeString(propSpelling);
                     boolProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
                     boolProp.setVisibility(data.visibilty);
                     switch (data.owningElementType) {
@@ -89,7 +94,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                 }
                 case CXTypeKind::CXType_Char_S : {
                     Property& charProp = data.manager.create<Property>();
-                    charProp.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    CXString propSpelling = clang_getCursorSpelling(c);
+                    charProp.setName(clang_getCString(propSpelling));
+                    clang_disposeString(propSpelling);
                     charProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
                     charProp.setVisibility(data.visibilty);
                     switch (data.owningElementType) {
@@ -105,7 +112,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                 }
                 case CXTypeKind::CXType_Int : {
                     Property& intProp = data.manager.create<Property>();
-                    intProp.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    CXString propSpelling = clang_getCursorSpelling(c);
+                    intProp.setName(clang_getCString(propSpelling));
+                    clang_disposeString(propSpelling);
                     intProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
                     intProp.setVisibility(data.visibilty);
                     switch (data.owningElementType) {
@@ -121,7 +130,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                 }
                 case CXTypeKind::CXType_Float : {
                     Property& floatProp = data.manager.create<Property>();
-                    floatProp.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    CXString propSpelling = clang_getCursorSpelling(c);
+                    floatProp.setName(clang_getCString(propSpelling));
+                    clang_disposeString(propSpelling);
                     floatProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
                     floatProp.setVisibility(data.visibilty);
                     switch (data.owningElementType) {
@@ -137,7 +148,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                 }
                 case CXTypeKind::CXType_Double : {
                     Property& doubleProp = data.manager.create<Property>();
-                    doubleProp.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    CXString propSpelling = clang_getCursorSpelling(c);
+                    doubleProp.setName(clang_getCString(propSpelling));
+                    clang_disposeString(propSpelling);
                     doubleProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
                     doubleProp.setVisibility(data.visibilty);
                     switch (data.owningElementType) {
@@ -153,7 +166,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                 }
                 case CXTypeKind::CXType_ConstantArray : {
                     Property& arrayProp = data.manager.create<Property>();
-                    arrayProp.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    CXString propSpelling = clang_getCursorSpelling(c);
+                    arrayProp.setName(clang_getCString(propSpelling));
+                    clang_disposeString(propSpelling);
                     CXType arrayType = clang_getElementType(type);
                     switch (arrayType.kind) {
                         case CXTypeKind::CXType_Bool : {
@@ -179,7 +194,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                 }
                 case CXTypeKind::CXType_Pointer : {
                     Property& ptrProp = data.manager.create<Property>();
-                    ptrProp.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    CXString propSpelling = clang_getCursorSpelling(c);
+                    ptrProp.setName(clang_getCString(propSpelling));
+                    clang_disposeString(propSpelling);
                     CXType ptrType = clang_getPointeeType(type);
                     switch (ptrType.kind) {
                         case CXTypeKind::CXType_Bool : {
@@ -199,11 +216,28 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             cerr << "unknown owner for field decl! element type: " << Element::elementTypeToString(data.owningElementType) << endl; 
                         }
                     }
-                    Association& ptrAssoc = data.manager.create<Association>();
+                    // Association& ptrAssoc = data.manager.create<Association>();
+                    // ptrAssoc.getMemberEnds().add(ptrProp);
+                    // Property& assocEnd = data.manager.create<Property>();
+                    // assocEnd.setType(&data.owningElement.as<Type>());
+                    // ptrAssoc.getNavigableOwnedEnds().add(assocEnd);
+                    // Element& findPackage = data.owningElement;
+                    // while (!findPackage.isSubClassOf(ElementType::PACKAGE) && findPackage.getOwner() != 0) {
+                    //     findPackage = *findPackage.getOwner();
+                    // }
+                    // if (findPackage.isSubClassOf(ElementType::PACKAGE)) {
+                    //     findPackage.as<Package>().getPackagedElements().add(ptrAssoc);
+                    // } else {
+                    //     // TODO error
+                    // }
                     break;
                 }
                 default : {
-                    cerr << "unhandled type for class field (property)! cursor type: " << clang_getCString(clang_getTypeSpelling(clang_getCursorType(c))) << endl;
+                    CXString spelling = clang_getCursorSpelling(c);
+                    CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
+                    cerr << "unhandled type for class field (property)! cursor type: " << clang_getCString(spelling) << " of kind " << clang_getCString(kindSpelling) << endl;
+                    clang_disposeString(spelling);
+                    clang_disposeString(kindSpelling);
                     return CXChildVisit_Recurse;
                 }
             }
@@ -211,7 +245,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
         }
         case CXCursor_CXXMethod : {
             Operation& method = data.manager.create<Operation>();
-            method.setName(clang_getCString(clang_getCursorSpelling(c)));
+            CXString methodSpelling = clang_getCursorSpelling(c);
+            method.setName(clang_getCString(methodSpelling));
+            clang_disposeString(methodSpelling);
             method.setVisibility(data.visibilty);
             CXType type = clang_getCursorType(c);
 
@@ -260,7 +296,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                         switch (clang_getCursorKind(param_c)) {
                             case CXCursor_ParmDecl : {
                                 Parameter& param = data.manager.create<Parameter>();
-                                param.setName(clang_getCString(clang_getCursorSpelling(param_c)));
+                                CXString paramSpelling = clang_getCursorSpelling(param_c);
+                                param.setName(clang_getCString(paramSpelling));
+                                clang_disposeString(paramSpelling);
                                 param.setDirection(ParameterDirectionKind::IN);
                                 CXType param_type = clang_getCursorType(param_c);
                                 switch (param_type.kind) {
@@ -289,14 +327,20 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                                 break;
                             }
                             default : {
-                                cerr << "method contains cursor '" << clang_getCString(clang_getCursorSpelling(param_c)) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(param_c))) << "', but no mapping is set" << endl;
+                                CXString spelling = clang_getCursorSpelling(param_c);
+                                CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(param_c));
+                                cerr << "method contains cursor '" << clang_getCString(spelling) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(param_c))) << "', but no mapping is set" << endl;
+                                clang_disposeString(spelling);
+                                clang_disposeString(kindSpelling);
                             }
                         }
                     }
                     break;
                 }
                 default : {
-                    cerr << "unhandled argument for method " << method.getName() << " , type " << clang_getCString(clang_getCursorSpelling(c)) << endl;
+                    CXString spelling = clang_getCursorSpelling(c);
+                    cerr << "unhandled argument for method " << method.getName() << " , type " << clang_getCString(spelling) << endl;
+                    clang_disposeString(spelling);
                 }
             }
             switch (data.owningElementType) {
@@ -312,7 +356,11 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
             break;
         }
         default : {
-            cerr << "Cpp class contains Cursor '" << clang_getCString(clang_getCursorSpelling(c)) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(c))) << "', but no mapping is set" << endl;
+            CXString spelling = clang_getCursorSpelling(c);
+            CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
+            cerr << "Cpp class contains Cursor '" << clang_getCString(spelling) << "' of kind '" << clang_getCString(kindSpelling) << "', but no mapping is set" << endl;
+            clang_disposeString(spelling);
+            clang_disposeString(kindSpelling);
             return CXChildVisit_Recurse;
         }
     }
@@ -338,7 +386,11 @@ CXChildVisitResult arrayVisit(CXCursor c, CXCursor parent, CXClientData client_d
             break;
         }
         default : {
-            cerr << "Cpp array contains Cursor '" << clang_getCString(clang_getCursorSpelling(c)) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(c))) << "', but no mapping is set" << endl;
+            CXString spelling = clang_getCursorSpelling(c);
+            CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
+            cerr << "Cpp array contains Cursor '" << clang_getCString(spelling) << "' of kind '" << clang_getCString(kindSpelling) << "', but no mapping is set" << endl;
+            clang_disposeString(spelling);
+            clang_disposeString(kindSpelling);
             return CXChildVisit_Recurse;
         }
     }
@@ -353,7 +405,9 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
             switch (type.kind) {
                 case CXTypeKind::CXType_Bool : {
                     LiteralBool& cBool = data->manager.create<LiteralBool>();
-                    cBool.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    CXString spelling = clang_getCursorSpelling(c);
+                    cBool.setName(clang_getCString(spelling));
+                    clang_disposeString(spelling);
                     cBool.setType(&data->manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
                     if (data->owningElement.getElementType() == ElementType::PACKAGE) {
                         data->owningElement.as<Package>().getPackagedElements().add(cBool);
@@ -362,7 +416,9 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                 }
                 case CXTypeKind::CXType_Char_S : {
                     LiteralInt& cChar = data->manager.create<LiteralInt>();
-                    cChar.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    CXString spelling = clang_getCursorSpelling(c);
+                    cChar.setName(clang_getCString(spelling));
+                    clang_disposeString(spelling);
                     cChar.setType(&data->manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
                     if (data->owningElement.getElementType() == ElementType::PACKAGE) {
                         dynamic_cast<Package&>(data->owningElement).getPackagedElements().add(cChar);
@@ -371,7 +427,9 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                 }
                 case CXTypeKind::CXType_Int : {
                     LiteralInt& cInt = data->manager.create<LiteralInt>();
-                    cInt.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    CXString spelling = clang_getCursorSpelling(c);
+                    cInt.setName(clang_getCString(spelling));
+                    clang_disposeString(spelling);
                     cInt.setType(&data->manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
                     if (data->owningElement.getElementType() == ElementType::PACKAGE) {
                         dynamic_cast<Package&>(data->owningElement).getPackagedElements().add(cInt);
@@ -380,7 +438,9 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                 }
                 case CXTypeKind::CXType_Float : {
                     LiteralReal& cFloat = data->manager.create<LiteralReal>();
-                    cFloat.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    CXString spelling = clang_getCursorSpelling(c);
+                    cFloat.setName(clang_getCString(spelling));
+                    clang_disposeString(spelling);
                     cFloat.setType(&data->manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
                     if (data->owningElementType == ElementType::PACKAGE) {
                         dynamic_cast<Package&>(data->owningElement).getPackagedElements().add(cFloat);
@@ -389,7 +449,9 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                 }
                 case CXTypeKind::CXType_Double : {
                     LiteralReal& cDouble = data->manager.create<LiteralReal>();
-                    cDouble.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    CXString spelling = clang_getCursorSpelling(c);
+                    cDouble.setName(clang_getCString(spelling));
+                    clang_disposeString(spelling);
                     cDouble.setType(&data->manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
                     if (data->owningElementType == ElementType::PACKAGE) {
                         dynamic_cast<Package&>(data->owningElement).getPackagedElements().add(cDouble);
@@ -403,7 +465,11 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                     // TODO
                 }
                 default : {
-                    cerr << "Unahandled type for variable type " << clang_getCString(clang_getTypeSpelling(clang_getCursorType(c))) << endl;
+                    CXString spelling = clang_getCursorSpelling(c);
+                    CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
+                    cerr << "Unahandled type for variable type " << clang_getCString(spelling) << " of kind " << clang_getCString(kindSpelling) << endl;
+                    clang_disposeString(spelling);
+                    clang_disposeString(kindSpelling);
                     break;
                 }
             }
@@ -411,7 +477,9 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
         }
         case CXCursor_ClassDecl : {
             Class& cppClass = data->manager.create<Class>();
-            cppClass.setName(clang_getCString(clang_getCursorSpelling(c)));
+            CXString spelling = clang_getCursorSpelling(c);
+            cppClass.setName(clang_getCString(spelling));
+            clang_disposeString(spelling);
             setOwnerHelper(cppClass, data->owningElement);
             CppParserMetaData classData = {data->manager, data->unit, cppClass, cppClass.getElementType()};
             clang_visitChildren(c, *classVisit, &classData);
@@ -434,7 +502,9 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
     switch (clang_getCursorKind(c)) {
         case CXCursor_Namespace : {
             Package& namespacePckg = data->manager.create<Package>();
-            namespacePckg.setName(clang_getCString(clang_getCursorSpelling(c)));
+            CXString spelling = clang_getCursorSpelling(c);
+            namespacePckg.setName(clang_getCString(spelling));
+            clang_disposeString(spelling);
             InstanceSpecification& stereotypeInst = data->manager.create<InstanceSpecification>();
             stereotypeInst.setClassifier(&data->manager.get<Stereotype>(ID::fromString("Cpp_NAMESPACE_3FloKgLhiH2P0t")));
             namespacePckg.getAppliedStereotypes().add(stereotypeInst);
@@ -445,7 +515,9 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
         }
         case CXCursor_ClassDecl : {
             Class& cppClass = data->manager.create<Class>();
-            cppClass.setName(clang_getCString(clang_getCursorSpelling(c)));
+            CXString spelling = clang_getCursorSpelling(c);
+            cppClass.setName(clang_getCString(spelling));
+            clang_disposeString(spelling);
             setOwnerHelper(cppClass, data->owningElement);
             data->visibilty = VisibilityKind::PRIVATE; // access for class is default private (struct is default public)
             CppParserMetaData classData = {data->manager, data->unit, cppClass, cppClass.getElementType()};
@@ -453,8 +525,12 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
             break;
         }
         default : {
-            cerr << "Cursor '" << clang_getCString(clang_getCursorSpelling(c)) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(c))) << "' does not have parsing mapped to it yet!" << endl;
-            // TODO throw error
+            CXString spelling = clang_getCursorSpelling(c);
+            CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
+            cerr << "Cursor '" << clang_getCString(spelling) << "' of kind '" << clang_getCString(kindSpelling) << "' does not have parsing mapped to it yet!" << endl;
+            clang_disposeString(spelling);
+            clang_disposeString(kindSpelling);
+            break;
         }
     }
     return CXChildVisit_Continue;

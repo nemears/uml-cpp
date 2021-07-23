@@ -162,7 +162,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                     }
-                    CppParserMetaData arrayData = {data.manager, arrayProp, ElementType::PROPERTY, VisibilityKind::PUBLIC};
+                    CppParserMetaData arrayData = {data.manager, data.unit, arrayProp, ElementType::PROPERTY, VisibilityKind::PUBLIC};
                     clang_visitChildren(c, &arrayVisit, &arrayData);
                     switch (data.owningElementType) {
                         case ElementType::CLASS : {
@@ -297,11 +297,17 @@ CXChildVisitResult arrayVisit(CXCursor c, CXCursor parent, CXClientData client_d
     switch (clang_getCursorKind(c)) {
         case CXCursor_IntegerLiteral : {
             data.owningElement.as<Property>().setLower(0);
-            CXEvalResult res = clang_Cursor_Evaluate(c);
-            cout << clang_EvalResult_getAsStr(res) << endl;
-            int value = clang_EvalResult_getAsInt(res);
-            clang_EvalResult_dispose(res);
-            data.owningElement.as<Property>().setUpper(value);
+            CXSourceRange range = clang_getCursorExtent(c);
+            CXToken *tokens = 0;
+            unsigned int nTokens = 0;
+            clang_tokenize(data.unit, range, &tokens, &nTokens);
+            for (unsigned int i = 0; i < nTokens; i++)
+            {
+                CXString spelling = clang_getTokenSpelling(data.unit, tokens[i]);
+                data.owningElement.as<Property>().setUpper(atoi((clang_getCString(spelling))));
+                clang_disposeString(spelling);
+            }
+            clang_disposeTokens(data.unit, tokens, nTokens);
             break;
         }
         default : {
@@ -380,7 +386,7 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
             Class& cppClass = data->manager.create<Class>();
             cppClass.setName(clang_getCString(clang_getCursorSpelling(c)));
             setOwnerHelper(cppClass, data->owningElement);
-            CppParserMetaData classData = {data->manager, cppClass, cppClass.getElementType()};
+            CppParserMetaData classData = {data->manager, data->unit, cppClass, cppClass.getElementType()};
             clang_visitChildren(c, *classVisit, &classData);
             break;
         }
@@ -406,7 +412,7 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
             stereotypeInst.setClassifier(&data->manager.get<Stereotype>(ID::fromString("Cpp_NAMESPACE_3FloKgLhiH2P0t")));
             namespacePckg.getAppliedStereotypes().add(stereotypeInst);
             setOwnerHelper(namespacePckg, data->owningElement);
-            CppParserMetaData namespaceData = {data->manager, namespacePckg, namespacePckg.getElementType()};
+            CppParserMetaData namespaceData = {data->manager, data->unit, namespacePckg, namespacePckg.getElementType()};
             clang_visitChildren(c, *namespaceVisit, &namespaceData);
             break;
         }
@@ -415,7 +421,7 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
             cppClass.setName(clang_getCString(clang_getCursorSpelling(c)));
             setOwnerHelper(cppClass, data->owningElement);
             data->visibilty = VisibilityKind::PRIVATE; // access for class is default private (struct is default public)
-            CppParserMetaData classData = {data->manager, cppClass, cppClass.getElementType()};
+            CppParserMetaData classData = {data->manager, data->unit, cppClass, cppClass.getElementType()};
             clang_visitChildren(c, *classVisit, &classData);
             break;
         }
@@ -445,7 +451,7 @@ Package* parseHeader(string path, UmlManager& manager) {
     // set up client data
     Element* umlParent = ret;
     ElementType umlParentType = umlParent->getElementType();
-    CppParserMetaData data = {manager, *umlParent, umlParentType};
+    CppParserMetaData data = {manager, unit, *umlParent, umlParentType};
 
     // start going through the AST
     clang_visitChildren(cursor,*headerVisit, &data);

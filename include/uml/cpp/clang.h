@@ -9,6 +9,7 @@ namespace UML {
 
         struct CppParserMetaData {
             UmlManager& manager;
+            CXTranslationUnit unit;
             Element& owningElement;
             ElementType owningElementType;
             VisibilityKind visibilty;

@@ -33,8 +33,7 @@ void setOwnerHelper(Element& ownee, Element& owner) {
             break;
         }
         default : {
-            cerr << "No execution mapped for cpp namespace with parent type " << owner.getElementTypeString();
-            // TODO throw error
+            throw UmlCppParserException("No execution mapped for cpp namespace with parent type " + owner.getElementTypeString());
         }
     }
 }
@@ -58,7 +57,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                 }
                 case CX_CXXInvalidAccessSpecifier :
                 default : {
-                    cerr << "Cpp class contains access specifier with unset mappings" << endl;
+                    throw UmlCppParserException("Cpp class contains access specifier with unset mappings");
                 }
             }
             break;
@@ -87,7 +86,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            cerr << "unknown owner for field decl! element type: " << Element::elementTypeToString(data.owningElementType) << endl; 
+                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType)); 
                         }
                     }
                     break;
@@ -105,7 +104,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            cerr << "unknown owner for field decl! element type: " << Element::elementTypeToString(data.owningElementType) << endl; 
+                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType)); 
                         }
                     }
                     break;
@@ -123,7 +122,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            cerr << "unknown owner for field decl! element type: " << Element::elementTypeToString(data.owningElementType) << endl; 
+                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType)); 
                         }
                     }
                     break;
@@ -141,7 +140,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            cerr << "unknown owner for field decl! element type: " << Element::elementTypeToString(data.owningElementType) << endl; 
+                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType));; 
                         }
                     }
                     break;
@@ -159,7 +158,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            cerr << "unknown owner for field decl! element type: " << Element::elementTypeToString(data.owningElementType) << endl; 
+                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType)); 
                         }
                     }
                     break;
@@ -176,7 +175,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            cerr << "unhandled array type!" << endl;
+                            throw UmlCppParserException("unhandled array type!");
                         }
                     }
                     CppParserMetaData arrayData = {data.manager, data.unit, arrayProp, ElementType::PROPERTY, VisibilityKind::PUBLIC};
@@ -187,7 +186,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            cerr << "unknown owner for field decl! element type: " << Element::elementTypeToString(data.owningElementType) << endl; 
+                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType)); 
                         }
                     }
                     break;
@@ -204,7 +203,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            cerr << "unhandled ptr type!" << endl;
+                            throw UmlCppParserException("unhandled ptr type!");
                         }
                     }
                     switch (data.owningElementType) {
@@ -213,7 +212,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            cerr << "unknown owner for field decl! element type: " << Element::elementTypeToString(data.owningElementType) << endl; 
+                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType)); 
                         }
                     }
                     // Association& ptrAssoc = data.manager.create<Association>();
@@ -235,7 +234,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                 default : {
                     CXString spelling = clang_getCursorSpelling(c);
                     CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
-                    cerr << "unhandled type for class field (property)! cursor type: " << clang_getCString(spelling) << " of kind " << clang_getCString(kindSpelling) << endl;
+                    throw UmlCppParserException("unhandled type for class field (property)! cursor type: " + string(clang_getCString(spelling)) + " of kind " + string(clang_getCString(kindSpelling)));
                     clang_disposeString(spelling);
                     clang_disposeString(kindSpelling);
                     return CXChildVisit_Recurse;
@@ -279,7 +278,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            cerr << "unhandled parameter for method " << method.getName() << " of type '" << clang_getCString(clang_getTypeSpelling(return_type)) << "'" <<endl;
+                            CXString spelling = clang_getTypeSpelling(return_type);
+                            throw UmlCppParserException("unhandled parameter for method " + method.getName() + " of type '" + string(clang_getCString(spelling)) + "'");
+                            clang_disposeString(spelling);
                             break;
                         }
                     }
@@ -319,7 +320,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                                         break;
                                     }
                                     default : {
-                                        cerr << "unhandled parameter for method " << method.getName() << " of type '" << clang_getCString(clang_getTypeSpelling(clang_getCursorType(param_c))) << "'" <<endl;
+                                        CXString spelling = clang_getTypeSpelling(clang_getCursorType(param_c));
+                                        throw UmlCppParserException("unhandled parameter for method " + method.getName() + " of type '" + string(clang_getCString(spelling)) + "'");
+                                        clang_disposeString(spelling);
                                         break;
                                     }
                                 }
@@ -329,7 +332,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             default : {
                                 CXString spelling = clang_getCursorSpelling(param_c);
                                 CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(param_c));
-                                cerr << "method contains cursor '" << clang_getCString(spelling) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(param_c))) << "', but no mapping is set" << endl;
+                                throw UmlCppParserException("method contains cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + "', but no mapping is set");
                                 clang_disposeString(spelling);
                                 clang_disposeString(kindSpelling);
                             }
@@ -339,7 +342,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                 }
                 default : {
                     CXString spelling = clang_getCursorSpelling(c);
-                    cerr << "unhandled argument for method " << method.getName() << " , type " << clang_getCString(spelling) << endl;
+                    throw UmlCppParserException("unhandled argument for method " + method.getName() + " , type " + string(clang_getCString(spelling)));
                     clang_disposeString(spelling);
                 }
             }
@@ -349,7 +352,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     break;
                 }
                 default : {
-                    cerr << "unhandled owning element " << Element::elementTypeToString(data.owningElementType) << endl;
+                    throw UmlCppParserException("unhandled owning element " + Element::elementTypeToString(data.owningElementType));
                     break; 
                 }
             }
@@ -358,7 +361,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
         default : {
             CXString spelling = clang_getCursorSpelling(c);
             CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
-            cerr << "Cpp class contains Cursor '" << clang_getCString(spelling) << "' of kind '" << clang_getCString(kindSpelling) << "', but no mapping is set" << endl;
+            throw UmlCppParserException("Cpp class contains Cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + "', but no mapping is set");
             clang_disposeString(spelling);
             clang_disposeString(kindSpelling);
             return CXChildVisit_Recurse;
@@ -388,7 +391,7 @@ CXChildVisitResult arrayVisit(CXCursor c, CXCursor parent, CXClientData client_d
         default : {
             CXString spelling = clang_getCursorSpelling(c);
             CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
-            cerr << "Cpp array contains Cursor '" << clang_getCString(spelling) << "' of kind '" << clang_getCString(kindSpelling) << "', but no mapping is set" << endl;
+            throw UmlCppParserException("Cpp array contains Cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + "', but no mapping is set");
             clang_disposeString(spelling);
             clang_disposeString(kindSpelling);
             return CXChildVisit_Recurse;
@@ -467,7 +470,7 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                 default : {
                     CXString spelling = clang_getCursorSpelling(c);
                     CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
-                    cerr << "Unahandled type for variable type " << clang_getCString(spelling) << " of kind " << clang_getCString(kindSpelling) << endl;
+                    throw UmlCppParserException("Unahandled type for variable type " + string(clang_getCString(spelling)) + " of kind " + string(clang_getCString(kindSpelling)));
                     clang_disposeString(spelling);
                     clang_disposeString(kindSpelling);
                     break;
@@ -486,7 +489,11 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
             break;
         }
         default : {
-            cerr << "Cpp namespace contains Cursor '" << clang_getCString(clang_getCursorSpelling(c)) << "' of kind '" << clang_getCString(clang_getCursorKindSpelling(clang_getCursorKind(c))) << ", but no mapping has been defined yet!" << endl;
+            CXString spelling = clang_getCursorSpelling(c);
+            CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
+            throw UmlCppParserException("Cpp namespace contains Cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + ", but no mapping has been defined yet!");
+            clang_disposeString(spelling);
+            clang_disposeString(kindSpelling);
             break;
         }
     }
@@ -497,7 +504,7 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
     CppParserMetaData* data = static_cast<CppParserMetaData*>(client_data);
     if (data->manager.count(ID::fromString("CPP_4zpFq9s6YilFjqZAPguiluqk")) == 0) {
         // TODO throw error
-        cerr << "ERROR: Did not load C++ Profile before parsing header!" << endl;
+        throw UmlCppParserException("ERROR: Did not load C++ Profile before parsing header!");
     }
     switch (clang_getCursorKind(c)) {
         case CXCursor_Namespace : {
@@ -527,7 +534,7 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
         default : {
             CXString spelling = clang_getCursorSpelling(c);
             CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
-            cerr << "Cursor '" << clang_getCString(spelling) << "' of kind '" << clang_getCString(kindSpelling) << "' does not have parsing mapped to it yet!" << endl;
+            throw UmlCppParserException("Cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + "' does not have parsing mapped to it yet!");
             clang_disposeString(spelling);
             clang_disposeString(kindSpelling);
             break;

@@ -30,18 +30,16 @@ namespace UML {
         class UmlParserException : public std::exception {
             private:
             std::string m_msg;
-            std::string m_path;
-            YAML::Node m_node;
 
             public:
-                UmlParserException(std::string msg, std::string path, YAML::Node node) : 
-                    m_msg(msg) , m_path(path), m_node(node)
-                    {}
+                UmlParserException(const std::string msg, const std::string path, YAML::Node node) : 
+                    m_msg(msg + " path " + path + " line number " + std::to_string(node.Mark().line))
+                    {};
                 UmlParserException(std::string msg, std::string path) :
-                    m_msg(msg), m_path(path) 
-                    {}
+                    m_msg(msg) 
+                    {};
                 virtual const char* what() const throw() {
-                    return (m_msg + " path " + m_path + " line number " + std::to_string(m_node.Mark().line)).c_str();
+                    return m_msg.c_str();
                 }
         };
 

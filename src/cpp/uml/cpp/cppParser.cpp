@@ -154,12 +154,14 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                 case CXTypeKind::CXType_ConstantArray : {
                     Property& arrayProp = data.manager.create<Property>();
                     arrayProp.setName(clang_getCString(clang_getCursorSpelling(c)));
-                    Element& owningElement = data.owningElement;
                     CXType arrayType = clang_getElementType(type);
                     switch (arrayType.kind) {
                         case CXTypeKind::CXType_Bool : {
                             arrayProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
                             break;
+                        }
+                        default : {
+                            cerr << "unhandled array type!" << endl;
                         }
                     }
                     CppParserMetaData arrayData = {data.manager, data.unit, arrayProp, ElementType::PROPERTY, VisibilityKind::PUBLIC};
@@ -173,6 +175,31 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             cerr << "unknown owner for field decl! element type: " << Element::elementTypeToString(data.owningElementType) << endl; 
                         }
                     }
+                    break;
+                }
+                case CXTypeKind::CXType_Pointer : {
+                    Property& ptrProp = data.manager.create<Property>();
+                    ptrProp.setName(clang_getCString(clang_getCursorSpelling(c)));
+                    CXType ptrType = clang_getPointeeType(type);
+                    switch (ptrType.kind) {
+                        case CXTypeKind::CXType_Bool : {
+                            ptrProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
+                            break;
+                        }
+                        default : {
+                            cerr << "unhandled ptr type!" << endl;
+                        }
+                    }
+                    switch (data.owningElementType) {
+                        case ElementType::CLASS : {
+                            data.owningElement.as<Class>().getOwnedAttributes().add(ptrProp);
+                            break;
+                        }
+                        default : {
+                            cerr << "unknown owner for field decl! element type: " << Element::elementTypeToString(data.owningElementType) << endl; 
+                        }
+                    }
+                    Association& ptrAssoc = data.manager.create<Association>();
                     break;
                 }
                 default : {

@@ -1,3 +1,5 @@
+#ifndef UML_CPP_CPP_PARSER_H
+#define UML_CPP_CPP_PARSER_H
 #include "uml/package.h"
 #include "uml/umlManager.h"
 
@@ -18,3 +20,5 @@ namespace UML {
         };
     }
 }
+
+#endif

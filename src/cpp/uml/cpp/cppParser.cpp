@@ -38,18 +38,6 @@ void setOwnerHelper(Element& ownee, Element& owner) {
     }
 }
 
-void addC_ClassAttribute(CXCursor c , CppParserMetaData& data, Property& prop) {
-    switch (data.owningElementType) {
-        case ElementType::CLASS : {
-            data.owningElement.as<Class>().getOwnedAttributes().add(prop);
-            break;
-        }
-        default : {
-            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
-        }
-    }
-}
-
 void addC_ClassAssociation(CXCursor c, CppParserMetaData& data, Association& assoc) {
     Element* el = &data.owningElement;
     while (!el->isSubClassOf(ElementType::PACKAGE) && el->getOwner() != 0) {
@@ -108,96 +96,74 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
         }
         case CXCursor_FieldDecl : {
             CXType type = clang_getCursorType(c);
+            Property& prop = data.manager.create<Property>();
+            CXString propSpelling = clang_getCursorSpelling(c);
+            prop.setName(clang_getCString(propSpelling));
+            clang_disposeString(propSpelling);
+            switch (data.owningElementType) {
+                case ElementType::CLASS : {
+                    data.owningElement.as<Class>().getOwnedAttributes().add(prop);
+                    break;
+                }
+                default : {
+                    throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
+                }
+            }
             switch (type.kind) {
                 case CXTypeKind::CXType_Bool : {
-                    Property& boolProp = data.manager.create<Property>();
-                    CXString propSpelling = clang_getCursorSpelling(c);
-                    boolProp.setName(clang_getCString(propSpelling));
-                    clang_disposeString(propSpelling);
-                    boolProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
-                    boolProp.setVisibility(data.visibilty);
-                    boolProp.setAggregation(AggregationKind::COMPOSITE);
-                    boolProp.setLower(1);
-                    boolProp.setUpper(1);
-                    addC_ClassAttribute(c, data, boolProp);
+                    prop.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
+                    prop.setVisibility(data.visibilty);
+                    prop.setAggregation(AggregationKind::COMPOSITE);
+                    prop.setLower(1);
+                    prop.setUpper(1);
                     break;
                 }
                 case CXTypeKind::CXType_Char_S : {
-                    Property& charProp = data.manager.create<Property>();
-                    CXString propSpelling = clang_getCursorSpelling(c);
-                    charProp.setName(clang_getCString(propSpelling));
-                    clang_disposeString(propSpelling);
-                    charProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
-                    charProp.setVisibility(data.visibilty);
-                    charProp.setAggregation(AggregationKind::COMPOSITE);
-                    charProp.setLower(1);
-                    charProp.setUpper(1);
-                    addC_ClassAttribute(c, data, charProp);
+                    prop.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
+                    prop.setVisibility(data.visibilty);
+                    prop.setAggregation(AggregationKind::COMPOSITE);
+                    prop.setLower(1);
+                    prop.setUpper(1);
                     break;
                 }
                 case CXTypeKind::CXType_Int : {
-                    Property& intProp = data.manager.create<Property>();
-                    CXString propSpelling = clang_getCursorSpelling(c);
-                    intProp.setName(clang_getCString(propSpelling));
-                    clang_disposeString(propSpelling);
-                    intProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
-                    intProp.setVisibility(data.visibilty);
-                    intProp.setAggregation(AggregationKind::COMPOSITE);
-                    intProp.setLower(1);
-                    intProp.setUpper(1);
-                    addC_ClassAttribute(c, data, intProp);
+                    prop.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
+                    prop.setVisibility(data.visibilty);
+                    prop.setAggregation(AggregationKind::COMPOSITE);
+                    prop.setLower(1);
+                    prop.setUpper(1);
                     break;
                 }
                 case CXTypeKind::CXType_Float : {
-                    Property& floatProp = data.manager.create<Property>();
-                    CXString propSpelling = clang_getCursorSpelling(c);
-                    floatProp.setName(clang_getCString(propSpelling));
-                    clang_disposeString(propSpelling);
-                    floatProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
-                    floatProp.setVisibility(data.visibilty);
-                    floatProp.setAggregation(AggregationKind::COMPOSITE);
-                    floatProp.setLower(1);
-                    floatProp.setUpper(1);
-                    addC_ClassAttribute(c, data, floatProp);
+                    prop.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
+                    prop.setVisibility(data.visibilty);
+                    prop.setAggregation(AggregationKind::COMPOSITE);
+                    prop.setLower(1);
+                    prop.setUpper(1);
                     break;
                 }
                 case CXTypeKind::CXType_Double : {
-                    Property& doubleProp = data.manager.create<Property>();
-                    CXString propSpelling = clang_getCursorSpelling(c);
-                    doubleProp.setName(clang_getCString(propSpelling));
-                    clang_disposeString(propSpelling);
-                    doubleProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
-                    doubleProp.setVisibility(data.visibilty);
-                    doubleProp.setAggregation(AggregationKind::COMPOSITE);
-                    doubleProp.setLower(1);
-                    doubleProp.setUpper(1);
-                    addC_ClassAttribute(c, data, doubleProp);
+                    prop.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
+                    prop.setVisibility(data.visibilty);
+                    prop.setAggregation(AggregationKind::COMPOSITE);
+                    prop.setLower(1);
+                    prop.setUpper(1);
                     break;
                 }
                 case CXTypeKind::CXType_ConstantArray : {
-                    Property& arrayProp = data.manager.create<Property>();
-                    CXString propSpelling = clang_getCursorSpelling(c);
-                    arrayProp.setName(clang_getCString(propSpelling));
-                    clang_disposeString(propSpelling);
                     CXType arrayType = clang_getElementType(type);
-                    arrayProp.setAggregation(AggregationKind::COMPOSITE);
-                    setC_PropType(arrayType, data, c, arrayProp);
-                    CppParserMetaData arrayData = {data.manager, data.unit, arrayProp, ElementType::PROPERTY, VisibilityKind::PUBLIC};
+                    prop.setAggregation(AggregationKind::COMPOSITE);
+                    setC_PropType(arrayType, data, c, prop);
+                    CppParserMetaData arrayData = {data.manager, data.unit, prop, ElementType::PROPERTY, VisibilityKind::PUBLIC};
                     clang_visitChildren(c, &arrayVisit, &arrayData);
-                    addC_ClassAttribute(c, data, arrayProp);
                     break;
                 }
                 case CXTypeKind::CXType_Pointer : {
-                    Property& ptrProp = data.manager.create<Property>();
-                    CXString propSpelling = clang_getCursorSpelling(c);
-                    ptrProp.setName(clang_getCString(propSpelling));
-                    clang_disposeString(propSpelling);
                     CXType ptrType = clang_getPointeeType(type);
                     // multiplicity unspecified without malloc or something
-                    setC_PropType(ptrType, data, c, ptrProp);
-                    addC_ClassAttribute(c, data, ptrProp);
+                    setC_PropType(ptrType, data, c, prop);
                     Association& ptrAssoc = data.manager.create<Association>();
-                    ptrAssoc.getMemberEnds().add(ptrProp);
+                    ptrAssoc.getMemberEnds().add(prop);
                     Property& assocEnd = data.manager.create<Property>();
                     assocEnd.setType(&data.owningElement.as<Type>());
                     ptrAssoc.getNavigableOwnedEnds().add(assocEnd);
@@ -205,19 +171,14 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     break;
                 }
                 case CXTypeKind::CXType_LValueReference : {
-                    Property& refProp = data.manager.create<Property>();
-                    CXString spelling = clang_getCursorSpelling(c);
-                    refProp.setName(clang_getCString(spelling));
-                    clang_disposeString(spelling);
                     CXType refType = clang_getPointeeType(type);
-                    setC_PropType(refType, data, c, refProp);
-                    addC_ClassAttribute(c, data, refProp);
-                    refProp.setLower(1);
-                    refProp.setUpper(1);
-                    refProp.setAggregation(AggregationKind::SHARED); // I think this is how we will specify reference vs value vs ptr
+                    setC_PropType(refType, data, c, prop);
+                    prop.setLower(1);
+                    prop.setUpper(1);
+                    prop.setAggregation(AggregationKind::SHARED); // I think this is how we will specify reference vs value vs ptr
 
                     Association& refAssoc = data.manager.create<Association>();
-                    refAssoc.getMemberEnds().add(refProp);
+                    refAssoc.getMemberEnds().add(prop);
                     Property& assocEnd = data.manager.create<Property>();
                     assocEnd.setType(&data.owningElement.as<Type>());
                     refAssoc.getNavigableOwnedEnds().add(assocEnd);

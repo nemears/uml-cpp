@@ -56,8 +56,26 @@ void setC_PropType(CXType type, CppParserMetaData& data, CXCursor c, Property& p
             prop.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
             break;
         }
+        case CXTypeKind::CXType_Char_S : {
+            prop.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
+            break;
+        }
+        case CXTypeKind::CXType_Int : {
+            prop.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
+            break;
+        }
+        case CXTypeKind::CXType_Float : {
+            prop.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
+            break;
+        }
+        case CXTypeKind::CXType_Double : {
+            prop.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
+            break;
+        }
         default : {
-            throw UmlCppParserException("unhandled array type," + fileNameAndLineNumber(c));
+            CXString spelling = clang_getTypeSpelling(type);
+            throw UmlCppParserException("unhandled property type, '" + string(clang_getCString(spelling)) + "' " + fileNameAndLineNumber(c));
+            clang_disposeString(spelling);
         }
     }
 }

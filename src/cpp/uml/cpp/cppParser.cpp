@@ -248,11 +248,54 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     } else {
                         throw UmlCppParserException("could not find package to put association for pointer in!" + fileNameAndLineNumber(c));
                     }
-                    
+
                     break;
                 }
                 case CXTypeKind::CXType_LValueReference : {
-                    // TODO
+                    Property& refProp = data.manager.create<Property>();
+                    CXString spelling = clang_getCursorSpelling(c);
+                    refProp.setName(clang_getCString(spelling));
+                    clang_disposeString(spelling);
+                    CXType refType = clang_getPointeeType(type);
+                    switch (refType.kind) {
+                        case CXTypeKind::CXType_Bool : {
+                            refProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
+                            break;
+                        }
+                        default : {
+                            throw UmlCppParserException("unhandled ptr type, line number: " + fileNameAndLineNumber(c));
+                        }
+                    }
+                    switch (data.owningElementType) {
+                        case ElementType::CLASS : {
+                            data.owningElement.as<Class>().getOwnedAttributes().add(refProp);
+                            break;
+                        }
+                        default : {
+                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
+                        }
+                    }
+                    refProp.setLower(1);
+                    refProp.setUpper(1);
+                    refProp.setAggregation(AggregationKind::SHARED); // I think this is how we will specify reference vs value vs ptr
+
+                    Association& ptrAssoc = data.manager.create<Association>();
+                    ptrAssoc.getMemberEnds().add(refProp);
+                    Property& assocEnd = data.manager.create<Property>();
+                    assocEnd.setType(&data.owningElement.as<Type>());
+                    ptrAssoc.getNavigableOwnedEnds().add(assocEnd);
+
+                    // find closest package
+                    Element* el = &data.owningElement;
+                    while (!el->isSubClassOf(ElementType::PACKAGE) && el->getOwner() != 0) {
+                        el = el->getOwner();
+                    }
+                    if (el->isSubClassOf(ElementType::PACKAGE)) {
+                        el->as<Package>().getPackagedElements().add(ptrAssoc);
+                    } else {
+                        throw UmlCppParserException("could not find package to put association for pointer in!" + fileNameAndLineNumber(c));
+                    }
+
                     break;
                 }
                 default : {

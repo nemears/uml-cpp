@@ -80,10 +80,10 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     m.parse(profilePath + "cppProfile.yml");
     Package* pckg;
     ASSERT_NO_THROW(pckg = parseHeader(testPath + "classTests/bunchOfTypes.h", m));
-    ASSERT_EQ(pckg->getPackagedElements().size(), 2);
+    ASSERT_EQ(pckg->getPackagedElements().size(), 3);
     ASSERT_EQ(pckg->getPackagedElements().front()->getElementType(), ElementType::CLASS);
     Class& clazz = pckg->getPackagedElements().front()->as<Class>();
-    ASSERT_EQ(clazz.getOwnedAttributes().size(), 3);
+    ASSERT_EQ(clazz.getOwnedAttributes().size(), 4);
     Property& boolProp = *clazz.getOwnedAttributes().front();
     ASSERT_EQ(boolProp.getName(), "b");
     ASSERT_EQ(boolProp.getType()->getID(), ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG"));
@@ -101,4 +101,13 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     Association& ptrAssoc = pckg->getPackagedElements().get(1)->as<Association>();
     ASSERT_EQ(ptrAssoc.getMemberEnds().front()->getID(), boolPtr.getID());
     ASSERT_EQ(ptrAssoc.getNavigableOwnedEnds().front()->getType()->getID(), clazz.getID());
+    Property& boolRef = *clazz.getOwnedAttributes().get(3);
+    ASSERT_EQ(boolRef.getName(), "b_ref");
+    ASSERT_EQ(boolRef.getType()->getID(), ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG"));
+    ASSERT_EQ(boolRef.getAggregation(), AggregationKind::SHARED);
+    ASSERT_EQ(boolRef.getLower(), 1);
+    ASSERT_EQ(boolRef.getUpper(), 1);
+    Association& refAssoc = pckg->getPackagedElements().get(2)->as<Association>();
+    ASSERT_EQ(refAssoc.getMemberEnds().front()->getID(), boolRef.getID());
+    ASSERT_EQ(refAssoc.getNavigableOwnedEnds().front()->getType()->getID(), clazz.getID());
 }

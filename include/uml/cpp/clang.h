@@ -19,6 +19,7 @@ namespace UML {
         CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData client_data);
         CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_data);
         CXChildVisitResult arrayVisit(CXCursor c, CXCursor parent, CXClientData client_data);
+        unsigned lineNumber(CXCursor c);
     }
 }
 

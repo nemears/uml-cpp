@@ -62,6 +62,18 @@ void addC_ClassAssociation(CXCursor c, CppParserMetaData& data, Association& ass
     }
 }
 
+void setC_PropType(CXType type, CppParserMetaData& data, CXCursor c, Property& prop) {
+    switch (type.kind) {
+        case CXTypeKind::CXType_Bool : {
+            prop.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
+            break;
+        }
+        default : {
+            throw UmlCppParserException("unhandled array type," + fileNameAndLineNumber(c));
+        }
+    }
+}
+
 CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_data) { 
     CppParserMetaData& data = *static_cast<CppParserMetaData*>(client_data); 
     switch (clang_getCursorKind(c)) {
@@ -169,15 +181,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     clang_disposeString(propSpelling);
                     CXType arrayType = clang_getElementType(type);
                     arrayProp.setAggregation(AggregationKind::COMPOSITE);
-                    switch (arrayType.kind) {
-                        case CXTypeKind::CXType_Bool : {
-                            arrayProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
-                            break;
-                        }
-                        default : {
-                            throw UmlCppParserException("unhandled array type," + fileNameAndLineNumber(c));
-                        }
-                    }
+                    setC_PropType(arrayType, data, c, arrayProp);
                     CppParserMetaData arrayData = {data.manager, data.unit, arrayProp, ElementType::PROPERTY, VisibilityKind::PUBLIC};
                     clang_visitChildren(c, &arrayVisit, &arrayData);
                     addC_ClassAttribute(c, data, arrayProp);
@@ -190,15 +194,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     clang_disposeString(propSpelling);
                     CXType ptrType = clang_getPointeeType(type);
                     // multiplicity unspecified without malloc or something
-                    switch (ptrType.kind) {
-                        case CXTypeKind::CXType_Bool : {
-                            ptrProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
-                            break;
-                        }
-                        default : {
-                            throw UmlCppParserException("unhandled ptr type, line number: " + fileNameAndLineNumber(c));
-                        }
-                    }
+                    setC_PropType(ptrType, data, c, ptrProp);
                     addC_ClassAttribute(c, data, ptrProp);
                     Association& ptrAssoc = data.manager.create<Association>();
                     ptrAssoc.getMemberEnds().add(ptrProp);
@@ -214,15 +210,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     refProp.setName(clang_getCString(spelling));
                     clang_disposeString(spelling);
                     CXType refType = clang_getPointeeType(type);
-                    switch (refType.kind) {
-                        case CXTypeKind::CXType_Bool : {
-                            refProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
-                            break;
-                        }
-                        default : {
-                            throw UmlCppParserException("unhandled ptr type, line number: " + fileNameAndLineNumber(c));
-                        }
-                    }
+                    setC_PropType(refType, data, c, refProp);
                     addC_ClassAttribute(c, data, refProp);
                     refProp.setLower(1);
                     refProp.setUpper(1);

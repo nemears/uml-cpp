@@ -50,6 +50,18 @@ void addC_ClassAttribute(CXCursor c , CppParserMetaData& data, Property& prop) {
     }
 }
 
+void addC_ClassAssociation(CXCursor c, CppParserMetaData& data, Association& assoc) {
+    Element* el = &data.owningElement;
+    while (!el->isSubClassOf(ElementType::PACKAGE) && el->getOwner() != 0) {
+        el = el->getOwner();
+    }
+    if (el->isSubClassOf(ElementType::PACKAGE)) {
+        el->as<Package>().getPackagedElements().add(assoc);
+    } else {
+        throw UmlCppParserException("could not find package to put association for pointer in!" + fileNameAndLineNumber(c));
+    }
+}
+
 CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_data) { 
     CppParserMetaData& data = *static_cast<CppParserMetaData*>(client_data); 
     switch (clang_getCursorKind(c)) {
@@ -193,18 +205,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     Property& assocEnd = data.manager.create<Property>();
                     assocEnd.setType(&data.owningElement.as<Type>());
                     ptrAssoc.getNavigableOwnedEnds().add(assocEnd);
-
-                    // find closest package
-                    Element* el = &data.owningElement;
-                    while (!el->isSubClassOf(ElementType::PACKAGE) && el->getOwner() != 0) {
-                        el = el->getOwner();
-                    }
-                    if (el->isSubClassOf(ElementType::PACKAGE)) {
-                        el->as<Package>().getPackagedElements().add(ptrAssoc);
-                    } else {
-                        throw UmlCppParserException("could not find package to put association for pointer in!" + fileNameAndLineNumber(c));
-                    }
-
+                    addC_ClassAssociation(c, data, ptrAssoc);
                     break;
                 }
                 case CXTypeKind::CXType_LValueReference : {
@@ -227,22 +228,12 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     refProp.setUpper(1);
                     refProp.setAggregation(AggregationKind::SHARED); // I think this is how we will specify reference vs value vs ptr
 
-                    Association& ptrAssoc = data.manager.create<Association>();
-                    ptrAssoc.getMemberEnds().add(refProp);
+                    Association& refAssoc = data.manager.create<Association>();
+                    refAssoc.getMemberEnds().add(refProp);
                     Property& assocEnd = data.manager.create<Property>();
                     assocEnd.setType(&data.owningElement.as<Type>());
-                    ptrAssoc.getNavigableOwnedEnds().add(assocEnd);
-
-                    // find closest package
-                    Element* el = &data.owningElement;
-                    while (!el->isSubClassOf(ElementType::PACKAGE) && el->getOwner() != 0) {
-                        el = el->getOwner();
-                    }
-                    if (el->isSubClassOf(ElementType::PACKAGE)) {
-                        el->as<Package>().getPackagedElements().add(ptrAssoc);
-                    } else {
-                        throw UmlCppParserException("could not find package to put association for pointer in!" + fileNameAndLineNumber(c));
-                    }
+                    refAssoc.getNavigableOwnedEnds().add(assocEnd);
+                    addC_ClassAssociation(c, data, refAssoc);
 
                     break;
                 }

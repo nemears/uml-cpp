@@ -80,6 +80,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     clang_disposeString(propSpelling);
                     boolProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
                     boolProp.setVisibility(data.visibilty);
+                    boolProp.setAggregation(AggregationKind::COMPOSITE);
+                    boolProp.setLower(1);
+                    boolProp.setUpper(1);
                     switch (data.owningElementType) {
                         case ElementType::CLASS : {
                             data.owningElement.as<Class>().getOwnedAttributes().add(boolProp);
@@ -98,6 +101,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     clang_disposeString(propSpelling);
                     charProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
                     charProp.setVisibility(data.visibilty);
+                    charProp.setAggregation(AggregationKind::COMPOSITE);
+                    charProp.setLower(1);
+                    charProp.setUpper(1);
                     switch (data.owningElementType) {
                         case ElementType::CLASS : {
                             data.owningElement.as<Class>().getOwnedAttributes().add(charProp);
@@ -116,6 +122,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     clang_disposeString(propSpelling);
                     intProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
                     intProp.setVisibility(data.visibilty);
+                    intProp.setAggregation(AggregationKind::COMPOSITE);
+                    intProp.setLower(1);
+                    intProp.setUpper(1);
                     switch (data.owningElementType) {
                         case ElementType::CLASS : {
                             data.owningElement.as<Class>().getOwnedAttributes().add(intProp);
@@ -134,6 +143,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     clang_disposeString(propSpelling);
                     floatProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
                     floatProp.setVisibility(data.visibilty);
+                    floatProp.setAggregation(AggregationKind::COMPOSITE);
+                    floatProp.setLower(1);
+                    floatProp.setUpper(1);
                     switch (data.owningElementType) {
                         case ElementType::CLASS : {
                             data.owningElement.as<Class>().getOwnedAttributes().add(floatProp);
@@ -152,6 +164,9 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     clang_disposeString(propSpelling);
                     doubleProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
                     doubleProp.setVisibility(data.visibilty);
+                    doubleProp.setAggregation(AggregationKind::COMPOSITE);
+                    doubleProp.setLower(1);
+                    doubleProp.setUpper(1);
                     switch (data.owningElementType) {
                         case ElementType::CLASS : {
                             data.owningElement.as<Class>().getOwnedAttributes().add(doubleProp);
@@ -169,6 +184,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     arrayProp.setName(clang_getCString(propSpelling));
                     clang_disposeString(propSpelling);
                     CXType arrayType = clang_getElementType(type);
+                    arrayProp.setAggregation(AggregationKind::COMPOSITE);
                     switch (arrayType.kind) {
                         case CXTypeKind::CXType_Bool : {
                             arrayProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
@@ -197,6 +213,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     ptrProp.setName(clang_getCString(propSpelling));
                     clang_disposeString(propSpelling);
                     CXType ptrType = clang_getPointeeType(type);
+                    // multiplicity unspecified without malloc or something
                     switch (ptrType.kind) {
                         case CXTypeKind::CXType_Bool : {
                             ptrProp.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
@@ -220,6 +237,8 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     Property& assocEnd = data.manager.create<Property>();
                     assocEnd.setType(&data.owningElement.as<Type>());
                     ptrAssoc.getNavigableOwnedEnds().add(assocEnd);
+
+                    // find closest package
                     Element* el = &data.owningElement;
                     while (!el->isSubClassOf(ElementType::PACKAGE) && el->getOwner() != 0) {
                         el = el->getOwner();
@@ -229,6 +248,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     } else {
                         throw UmlCppParserException("could not find package to put association for pointer in!" + fileNameAndLineNumber(c));
                     }
+                    
                     break;
                 }
                 case CXTypeKind::CXType_LValueReference : {

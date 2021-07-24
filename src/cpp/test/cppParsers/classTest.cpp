@@ -87,14 +87,17 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     Property& boolProp = *clazz.getOwnedAttributes().front();
     ASSERT_EQ(boolProp.getName(), "b");
     ASSERT_EQ(boolProp.getType()->getID(), ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG"));
+    ASSERT_EQ(boolProp.getAggregation(), AggregationKind::COMPOSITE);
     Property& boolArray = *clazz.getOwnedAttributes().get(1);
     ASSERT_EQ(boolArray.getName(), "b_array");
     ASSERT_EQ(boolArray.getType()->getID(), ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG"));
     ASSERT_EQ(boolArray.getLower(), 0);
     ASSERT_EQ(boolArray.getUpper(), 10);
+    ASSERT_EQ(boolArray.getAggregation(), AggregationKind::COMPOSITE);
     Property& boolPtr = *clazz.getOwnedAttributes().get(2);
     ASSERT_EQ(boolPtr.getName(), "b_ptr");
     ASSERT_EQ(boolPtr.getType()->getID(), ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG"));
+    ASSERT_EQ(boolPtr.getAggregation(), AggregationKind::NONE);
     Association& ptrAssoc = pckg->getPackagedElements().get(1)->as<Association>();
     ASSERT_EQ(ptrAssoc.getMemberEnds().front()->getID(), boolPtr.getID());
     ASSERT_EQ(ptrAssoc.getNavigableOwnedEnds().front()->getType()->getID(), clazz.getID());

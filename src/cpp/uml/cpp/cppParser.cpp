@@ -86,7 +86,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + ", line number: " + to_string(lineNumber(c))); 
+                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
                         }
                     }
                     break;
@@ -104,7 +104,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + ", line number: " + to_string(lineNumber(c))); 
+                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
                         }
                     }
                     break;
@@ -122,7 +122,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + ", line number: " + to_string(lineNumber(c))); 
+                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
                         }
                     }
                     break;
@@ -140,7 +140,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + ", line number: " + to_string(lineNumber(c)));
+                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c));
                         }
                     }
                     break;
@@ -158,7 +158,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType)+ ", line number: " + to_string(lineNumber(c))); 
+                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
                         }
                     }
                     break;
@@ -175,7 +175,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            throw UmlCppParserException("unhandled array type, line number: " + to_string(lineNumber(c)));
+                            throw UmlCppParserException("unhandled array type," + fileNameAndLineNumber(c));
                         }
                     }
                     CppParserMetaData arrayData = {data.manager, data.unit, arrayProp, ElementType::PROPERTY, VisibilityKind::PUBLIC};
@@ -186,7 +186,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + ", line number: " + to_string(lineNumber(c))); 
+                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
                         }
                     }
                     break;
@@ -203,7 +203,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            throw UmlCppParserException("unhandled ptr type, line number: " + to_string(lineNumber(c)));
+                            throw UmlCppParserException("unhandled ptr type, line number: " + fileNameAndLineNumber(c));
                         }
                     }
                     switch (data.owningElementType) {
@@ -212,7 +212,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             break;
                         }
                         default : {
-                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + ", line number: " + to_string(lineNumber(c))); 
+                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
                         }
                     }
                     // Association& ptrAssoc = data.manager.create<Association>();
@@ -234,7 +234,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                 default : {
                     CXString spelling = clang_getCursorSpelling(c);
                     CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
-                    throw UmlCppParserException("unhandled type for class field (property)! cursor type: " + string(clang_getCString(spelling)) + " of kind " + string(clang_getCString(kindSpelling)) + ", line number: " + to_string(lineNumber(c)));
+                    throw UmlCppParserException("unhandled type for class field (property)! cursor type: " + string(clang_getCString(spelling)) + " of kind " + string(clang_getCString(kindSpelling)) + fileNameAndLineNumber(c));
                     clang_disposeString(spelling);
                     clang_disposeString(kindSpelling);
                     return CXChildVisit_Recurse;
@@ -279,7 +279,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                         }
                         default : {
                             CXString spelling = clang_getTypeSpelling(return_type);
-                            throw UmlCppParserException("unhandled parameter for method " + method.getName() + " of type '" + string(clang_getCString(spelling)) + "'" + ", line number: " + to_string(lineNumber(c)));
+                            throw UmlCppParserException("unhandled parameter for method " + method.getName() + " of type '" + string(clang_getCString(spelling)) + "'" + fileNameAndLineNumber(c));
                             clang_disposeString(spelling);
                             break;
                         }
@@ -321,7 +321,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                                     }
                                     default : {
                                         CXString spelling = clang_getTypeSpelling(clang_getCursorType(param_c));
-                                        throw UmlCppParserException("unhandled parameter for method " + method.getName() + " of type '" + string(clang_getCString(spelling)) + "'" + ", line number: " + to_string(lineNumber(c)));
+                                        throw UmlCppParserException("unhandled parameter for method " + method.getName() + " of type '" + string(clang_getCString(spelling)) + "'" + fileNameAndLineNumber(c));
                                         clang_disposeString(spelling);
                                         break;
                                     }
@@ -332,7 +332,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             default : {
                                 CXString spelling = clang_getCursorSpelling(param_c);
                                 CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(param_c));
-                                throw UmlCppParserException("method contains cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + "', but no mapping is set" + ", line number: " + to_string(lineNumber(c)));
+                                throw UmlCppParserException("method contains cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + "', but no mapping is set" + fileNameAndLineNumber(c));
                                 clang_disposeString(spelling);
                                 clang_disposeString(kindSpelling);
                             }
@@ -342,7 +342,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                 }
                 default : {
                     CXString spelling = clang_getCursorSpelling(c);
-                    throw UmlCppParserException("unhandled argument for method " + method.getName() + " , type " + string(clang_getCString(spelling)) + ", line number: " + to_string(lineNumber(c)));
+                    throw UmlCppParserException("unhandled argument for method " + method.getName() + " , type " + string(clang_getCString(spelling)) + fileNameAndLineNumber(c));
                     clang_disposeString(spelling);
                 }
             }
@@ -352,7 +352,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     break;
                 }
                 default : {
-                    throw UmlCppParserException("unhandled owning element " + Element::elementTypeToString(data.owningElementType) + ", line number: " + to_string(lineNumber(c)));
+                    throw UmlCppParserException("unhandled owning element " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c));
                     break; 
                 }
             }
@@ -361,7 +361,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
         default : {
             CXString spelling = clang_getCursorSpelling(c);
             CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
-            throw UmlCppParserException("Cpp class contains Cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + "', but no mapping is set" + ", line number: " + to_string(lineNumber(c)));
+            throw UmlCppParserException("Cpp class contains Cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + "', but no mapping is set" + fileNameAndLineNumber(c));
             clang_disposeString(spelling);
             clang_disposeString(kindSpelling);
             return CXChildVisit_Recurse;
@@ -391,7 +391,7 @@ CXChildVisitResult arrayVisit(CXCursor c, CXCursor parent, CXClientData client_d
         default : {
             CXString spelling = clang_getCursorSpelling(c);
             CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
-            throw UmlCppParserException("Cpp array contains Cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + "', but no mapping is set" + ", line number: " + to_string(lineNumber(c)));
+            throw UmlCppParserException("Cpp array contains Cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + "', but no mapping is set" + fileNameAndLineNumber(c));
             clang_disposeString(spelling);
             clang_disposeString(kindSpelling);
             return CXChildVisit_Recurse;
@@ -470,7 +470,7 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                 default : {
                     CXString spelling = clang_getCursorSpelling(c);
                     CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
-                    throw UmlCppParserException("Unahandled type for variable type " + string(clang_getCString(spelling)) + " of kind " + string(clang_getCString(kindSpelling)) + ", line number: " + to_string(lineNumber(c)));
+                    throw UmlCppParserException("Unahandled type for variable type " + string(clang_getCString(spelling)) + " of kind " + string(clang_getCString(kindSpelling)) + fileNameAndLineNumber(c));
                     clang_disposeString(spelling);
                     clang_disposeString(kindSpelling);
                     break;
@@ -491,7 +491,7 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
         default : {
             CXString spelling = clang_getCursorSpelling(c);
             CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
-            throw UmlCppParserException("Cpp namespace contains Cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + ", but no mapping has been defined yet!" + ", line number: " + to_string(lineNumber(c)));
+            throw UmlCppParserException("Cpp namespace contains Cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + ", but no mapping has been defined yet!" + fileNameAndLineNumber(c));
             clang_disposeString(spelling);
             clang_disposeString(kindSpelling);
             break;
@@ -534,7 +534,7 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
         default : {
             CXString spelling = clang_getCursorSpelling(c);
             CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
-            throw UmlCppParserException("Cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + "' does not have parsing mapped to it yet!" + ", line number: " + to_string(lineNumber(c)));
+            throw UmlCppParserException("Cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + "' does not have parsing mapped to it yet!" + fileNameAndLineNumber(c));
             clang_disposeString(spelling);
             clang_disposeString(kindSpelling);
             break;
@@ -572,12 +572,16 @@ Package* parseHeader(string path, UmlManager& manager) {
     return ret;
 }
 
-unsigned lineNumber(CXCursor c) {
+std::string fileNameAndLineNumber(CXCursor c) {
     CXSourceRange range = clang_getCursorExtent(c);
     CXSourceLocation rangeStart = clang_getRangeStart(range);
-    unsigned ret;
-    clang_getFileLocation(rangeStart, 0, &ret, 0, 0);
-    return ret;
+    unsigned line;
+    CXFile file;
+    clang_getFileLocation(rangeStart, &file, &line, 0, 0);
+    CXString fileSpelling = clang_File_tryGetRealPathName(file);
+    string ret = " file, " + string(clang_getCString(fileSpelling)) + ", line number, " + to_string(line);
+    clang_disposeString(fileSpelling);
+    return ret; 
 }
 
 }

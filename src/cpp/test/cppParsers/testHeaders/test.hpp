@@ -4,7 +4,7 @@ namespace FOO {
     int i;
     float f;
     double d;
-};
+}
 
 class test {
     public:

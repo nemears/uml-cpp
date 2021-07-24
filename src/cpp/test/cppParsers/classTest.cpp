@@ -4,6 +4,7 @@
 #include "uml/property.h"
 #include "uml/operation.h"
 #include "uml/parameter.h"
+#include "uml/association.h"
 
 using namespace std;
 using namespace UML;
@@ -79,10 +80,10 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     m.parse(profilePath + "cppProfile.yml");
     Package* pckg;
     ASSERT_NO_THROW(pckg = parseHeader(testPath + "classTests/bunchOfTypes.h", m));
-    ASSERT_EQ(pckg->getPackagedElements().size(), 1);
+    ASSERT_EQ(pckg->getPackagedElements().size(), 2);
     ASSERT_EQ(pckg->getPackagedElements().front()->getElementType(), ElementType::CLASS);
     Class& clazz = pckg->getPackagedElements().front()->as<Class>();
-    ASSERT_EQ(clazz.getOwnedAttributes().size(), 2);
+    ASSERT_EQ(clazz.getOwnedAttributes().size(), 3);
     Property& boolProp = *clazz.getOwnedAttributes().front();
     ASSERT_EQ(boolProp.getName(), "b");
     ASSERT_EQ(boolProp.getType()->getID(), ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG"));
@@ -91,4 +92,10 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     ASSERT_EQ(boolArray.getType()->getID(), ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG"));
     ASSERT_EQ(boolArray.getLower(), 0);
     ASSERT_EQ(boolArray.getUpper(), 10);
+    Property& boolPtr = *clazz.getOwnedAttributes().get(2);
+    ASSERT_EQ(boolPtr.getName(), "b_ptr");
+    ASSERT_EQ(boolPtr.getType()->getID(), ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG"));
+    Association& ptrAssoc = pckg->getPackagedElements().get(1)->as<Association>();
+    ASSERT_EQ(ptrAssoc.getMemberEnds().front()->getID(), boolPtr.getID());
+    ASSERT_EQ(ptrAssoc.getNavigableOwnedEnds().front()->getType()->getID(), clazz.getID());
 }

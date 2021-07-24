@@ -215,26 +215,30 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
                         }
                     }
-                    // Association& ptrAssoc = data.manager.create<Association>();
-                    // ptrAssoc.getMemberEnds().add(ptrProp);
-                    // Property& assocEnd = data.manager.create<Property>();
-                    // assocEnd.setType(&data.owningElement.as<Type>());
-                    // ptrAssoc.getNavigableOwnedEnds().add(assocEnd);
-                    // Element& findPackage = data.owningElement;
-                    // while (!findPackage.isSubClassOf(ElementType::PACKAGE) && findPackage.getOwner() != 0) {
-                    //     findPackage = *findPackage.getOwner();
-                    // }
-                    // if (findPackage.isSubClassOf(ElementType::PACKAGE)) {
-                    //     findPackage.as<Package>().getPackagedElements().add(ptrAssoc);
-                    // } else {
-                    //     // TODO error
-                    // }
+                    Association& ptrAssoc = data.manager.create<Association>();
+                    ptrAssoc.getMemberEnds().add(ptrProp);
+                    Property& assocEnd = data.manager.create<Property>();
+                    assocEnd.setType(&data.owningElement.as<Type>());
+                    ptrAssoc.getNavigableOwnedEnds().add(assocEnd);
+                    Element* el = &data.owningElement;
+                    while (!el->isSubClassOf(ElementType::PACKAGE) && el->getOwner() != 0) {
+                        el = el->getOwner();
+                    }
+                    if (el->isSubClassOf(ElementType::PACKAGE)) {
+                        el->as<Package>().getPackagedElements().add(ptrAssoc);
+                    } else {
+                        throw UmlCppParserException("could not find package to put association for pointer in!" + fileNameAndLineNumber(c));
+                    }
+                    break;
+                }
+                case CXTypeKind::CXType_LValueReference : {
+                    // TODO
                     break;
                 }
                 default : {
                     CXString spelling = clang_getCursorSpelling(c);
                     CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
-                    throw UmlCppParserException("unhandled type for class field (property)! cursor type: " + string(clang_getCString(spelling)) + " of kind " + string(clang_getCString(kindSpelling)) + fileNameAndLineNumber(c));
+                    throw UmlCppParserException("unhandled type for class field (property)! name: " + string(clang_getCString(spelling)) + " of type " + string(clang_getCString(kindSpelling)) + fileNameAndLineNumber(c));
                     clang_disposeString(spelling);
                     clang_disposeString(kindSpelling);
                     return CXChildVisit_Recurse;

@@ -38,6 +38,18 @@ void setOwnerHelper(Element& ownee, Element& owner) {
     }
 }
 
+void addC_ClassAttribute(CXCursor c , CppParserMetaData& data, Property& prop) {
+    switch (data.owningElementType) {
+        case ElementType::CLASS : {
+            data.owningElement.as<Class>().getOwnedAttributes().add(prop);
+            break;
+        }
+        default : {
+            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
+        }
+    }
+}
+
 CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_data) { 
     CppParserMetaData& data = *static_cast<CppParserMetaData*>(client_data); 
     switch (clang_getCursorKind(c)) {
@@ -83,15 +95,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     boolProp.setAggregation(AggregationKind::COMPOSITE);
                     boolProp.setLower(1);
                     boolProp.setUpper(1);
-                    switch (data.owningElementType) {
-                        case ElementType::CLASS : {
-                            data.owningElement.as<Class>().getOwnedAttributes().add(boolProp);
-                            break;
-                        }
-                        default : {
-                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
-                        }
-                    }
+                    addC_ClassAttribute(c, data, boolProp);
                     break;
                 }
                 case CXTypeKind::CXType_Char_S : {
@@ -104,15 +108,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     charProp.setAggregation(AggregationKind::COMPOSITE);
                     charProp.setLower(1);
                     charProp.setUpper(1);
-                    switch (data.owningElementType) {
-                        case ElementType::CLASS : {
-                            data.owningElement.as<Class>().getOwnedAttributes().add(charProp);
-                            break;
-                        }
-                        default : {
-                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
-                        }
-                    }
+                    addC_ClassAttribute(c, data, charProp);
                     break;
                 }
                 case CXTypeKind::CXType_Int : {
@@ -125,15 +121,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     intProp.setAggregation(AggregationKind::COMPOSITE);
                     intProp.setLower(1);
                     intProp.setUpper(1);
-                    switch (data.owningElementType) {
-                        case ElementType::CLASS : {
-                            data.owningElement.as<Class>().getOwnedAttributes().add(intProp);
-                            break;
-                        }
-                        default : {
-                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
-                        }
-                    }
+                    addC_ClassAttribute(c, data, intProp);
                     break;
                 }
                 case CXTypeKind::CXType_Float : {
@@ -146,15 +134,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     floatProp.setAggregation(AggregationKind::COMPOSITE);
                     floatProp.setLower(1);
                     floatProp.setUpper(1);
-                    switch (data.owningElementType) {
-                        case ElementType::CLASS : {
-                            data.owningElement.as<Class>().getOwnedAttributes().add(floatProp);
-                            break;
-                        }
-                        default : {
-                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c));
-                        }
-                    }
+                    addC_ClassAttribute(c, data, floatProp);
                     break;
                 }
                 case CXTypeKind::CXType_Double : {
@@ -167,15 +147,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     doubleProp.setAggregation(AggregationKind::COMPOSITE);
                     doubleProp.setLower(1);
                     doubleProp.setUpper(1);
-                    switch (data.owningElementType) {
-                        case ElementType::CLASS : {
-                            data.owningElement.as<Class>().getOwnedAttributes().add(doubleProp);
-                            break;
-                        }
-                        default : {
-                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
-                        }
-                    }
+                    addC_ClassAttribute(c, data, doubleProp);
                     break;
                 }
                 case CXTypeKind::CXType_ConstantArray : {
@@ -196,15 +168,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     }
                     CppParserMetaData arrayData = {data.manager, data.unit, arrayProp, ElementType::PROPERTY, VisibilityKind::PUBLIC};
                     clang_visitChildren(c, &arrayVisit, &arrayData);
-                    switch (data.owningElementType) {
-                        case ElementType::CLASS : {
-                            data.owningElement.as<Class>().getOwnedAttributes().add(arrayProp);
-                            break;
-                        }
-                        default : {
-                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
-                        }
-                    }
+                    addC_ClassAttribute(c, data, arrayProp);
                     break;
                 }
                 case CXTypeKind::CXType_Pointer : {
@@ -223,15 +187,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             throw UmlCppParserException("unhandled ptr type, line number: " + fileNameAndLineNumber(c));
                         }
                     }
-                    switch (data.owningElementType) {
-                        case ElementType::CLASS : {
-                            data.owningElement.as<Class>().getOwnedAttributes().add(ptrProp);
-                            break;
-                        }
-                        default : {
-                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
-                        }
-                    }
+                    addC_ClassAttribute(c, data, ptrProp);
                     Association& ptrAssoc = data.manager.create<Association>();
                     ptrAssoc.getMemberEnds().add(ptrProp);
                     Property& assocEnd = data.manager.create<Property>();
@@ -266,15 +222,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                             throw UmlCppParserException("unhandled ptr type, line number: " + fileNameAndLineNumber(c));
                         }
                     }
-                    switch (data.owningElementType) {
-                        case ElementType::CLASS : {
-                            data.owningElement.as<Class>().getOwnedAttributes().add(refProp);
-                            break;
-                        }
-                        default : {
-                            throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
-                        }
-                    }
+                    addC_ClassAttribute(c, data, refProp);
                     refProp.setLower(1);
                     refProp.setUpper(1);
                     refProp.setAggregation(AggregationKind::SHARED); // I think this is how we will specify reference vs value vs ptr

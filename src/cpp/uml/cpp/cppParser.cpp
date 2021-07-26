@@ -204,12 +204,18 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
 
                     break;
                 }
+                case CXTypeKind::CXType_Record : {
+                    // TODO
+                    CXString recordString = clang_getTypeSpelling(type);
+                    cout << "RECORD TYPE: " << clang_getCString(recordString) << endl;
+                    clang_disposeString(recordString);
+                }
                 default : {
                     CXString spelling = clang_getCursorSpelling(c);
-                    CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
-                    throw UmlCppParserException("unhandled type for class field (property)! name: " + string(clang_getCString(spelling)) + " of type " + string(clang_getCString(kindSpelling)) + fileNameAndLineNumber(c));
+                    CXString typeSpelling = clang_getTypeSpelling(type);
+                    throw UmlCppParserException("unhandled type for class field (property)! name: " + string(clang_getCString(spelling)) + " of type " + string(clang_getCString(typeSpelling)) + fileNameAndLineNumber(c));
                     clang_disposeString(spelling);
-                    clang_disposeString(kindSpelling);
+                    clang_disposeString(typeSpelling);
                     return CXChildVisit_Recurse;
                 }
             }

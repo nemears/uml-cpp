@@ -225,3 +225,11 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     ASSERT_EQ(doubleRefAssoc.getMemberEnds().front()->getID(), doubleRef.getID());
     ASSERT_EQ(doubleRefAssoc.getNavigableOwnedEnds().front()->getType()->getID(), clazz.getID());
 }
+
+TEST_F(CppClassTest, predefinedTypeTest) {
+    UmlManager m;
+    // add cpp profile to memory
+    m.parse(profilePath + "cppProfile.yml");
+    Package* pckg;
+    ASSERT_NO_THROW(pckg = parseHeader(testPath + "classTests/predefinedType.h", m));
+}

@@ -27,7 +27,6 @@ namespace UML {
     class UmlManager {
         friend class Parsers::ParserMetaData;
         private:
-            //Parsers::ParserMetaData m_parserData;
             std::unordered_map<ID, Element*> m_loaded;
             std::unordered_set<ID> m_elements;
             std::unordered_map<ID, DiscData> m_disc;

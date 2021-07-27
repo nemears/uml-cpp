@@ -21,17 +21,28 @@ TEST_F(SequenceTest, addGetAndRemoveElementTest) {
     ASSERT_TRUE(seq.size() == 0);
 }
 
-// TEST_F(SequenceTest, addGetAndRemoveElementByNameTest) {
-//     Sequence<> seq;
-//     Element e;
-//     NamedElement n;
-//     n.setName("test");
-//     seq.add(e);
-//     seq.add(n);
-//     ASSERT_TRUE(seq.get("test") == &n);
-//     ASSERT_TRUE(seq.get(n.getID()) == &n);
-//     ASSERT_TRUE(seq.get(e.getID()) == &e);
-// }
+TEST_F(SequenceTest, addGetAndRemoveElementByNameTest) {
+    Sequence<> seq;
+    Element e;
+    NamedElement n;
+    n.setName("test");
+    seq.add(e);
+    seq.add(n);
+    ASSERT_TRUE(seq.get("test") == &n);
+    ASSERT_TRUE(seq.get(n.getID()) == &n);
+    ASSERT_TRUE(seq.get(e.getID()) == &e);
+}
+
+TEST_F(SequenceTest, setNameLaterTest) {
+    UmlManager m;
+    Package& o = m.create<Package>();
+    Package& p = m.create<Package>();
+    o.getPackagedElements().add(p);
+    ASSERT_TRUE(o.getOwnedElements().get("test") == 0);
+    p.setName("test");
+    ASSERT_TRUE(o.getOwnedElements().get("test") != 0);
+    ASSERT_EQ(o.getOwnedElements().get("test")->getID(), p.getID());
+}
 
 TEST_F(SequenceTest, addElementTwiceTest) {
     Sequence<> seq;

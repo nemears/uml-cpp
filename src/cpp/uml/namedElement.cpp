@@ -42,23 +42,23 @@ NamedElement::NamedElement(const NamedElement& el) : Element(el) {
 }
 
 void NamedElement::setName(const string &name) {
-    //reindexName(m_name, name);
+    reindexName(m_name, name);
     m_name = name;
 }
 
-// void NamedElement::reindexName(string oldName, string newName) {
-//     if (m_owner) {
-//         m_owner->getOwnedElements().reindex(m_id, oldName, newName);
-//     }
+void NamedElement::reindexName(string oldName, string newName) {
+    if (getOwner()) {
+        getOwner()->getOwnedElements().reindex(m_id, oldName, newName);
+    }
 
-//     if (m_namespace) {
-//         m_namespace->getOwnedMembers().reindex(m_id, oldName, newName);
-//     }
+    if (getNamespace()) {
+        getNamespace()->getOwnedMembers().reindex(m_id, oldName, newName);
+    }
 
-//     for (auto const& nmspc : *m_memberNamespace) {
-//         nmspc->getMembers().reindex(m_id, oldName, newName);
-//     }
-// }
+    for (auto & nmspc : *m_memberNamespace) {
+        nmspc.getMembers().reindex(m_id, oldName, newName);
+    }
+}
 
 void NamedElement::reindexID(ID oldID, ID newID) {
     if (!m_namespaceID.isNull()) {

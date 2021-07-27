@@ -134,6 +134,7 @@ namespace UML {
             // Data
             std::vector<ID> m_order;
             std::unordered_map<ID, T*> m_rep;
+            std::unordered_map<std::string, ID> m_names;
 
             // Functors
             std::vector<AbstractSequenceFunctor*> addProcedures;
@@ -145,12 +146,29 @@ namespace UML {
 
                 // m_data
                 T* temp = m_rep[oldID];
+                if (!temp) {
+                    temp = &m_manager->get<T>(oldID);
+                }
                 m_rep.erase(oldID);
                 m_rep[newID] = temp;
+
+                // m_names
+                if (temp->isSubClassOf(ElementType::NAMED_ELEMENT)) {
+                    if (!temp->template as<NamedElement>().getName().empty()) {
+                        m_names[temp->template as<NamedElement>().getName()] = newID;
+                    }
+                }
 
                 // m_order
                 std::replace(m_order.begin(), m_order.end(), oldID, newID);
             };
+
+            void reindex(ID id, std::string oldName, std::string newName) {
+                if (!oldName.empty()) {
+                    m_names.erase(oldName);
+                }
+                m_names[newName] = id;
+            }
 
             // internal functions
             void internalAdd(T& el) {
@@ -164,6 +182,12 @@ namespace UML {
                     m_rep[el.getID()] = &el;
                 }
 
+                if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
+                    if (el.template as<NamedElement>().getName().size() > 0) {
+                        m_names[el.template as<NamedElement>().getName()] = el.getID();
+                    }
+                }
+
                 // apply procedures
                 for (auto const& fun : addProcedures) {
                     (*fun)(el);
@@ -173,6 +197,9 @@ namespace UML {
             void internalRemove(T& el) {
                 m_order.erase(std::remove(m_order.begin(), m_order.end(), el.getID()), m_order.end()) - m_order.begin();
                 m_rep.erase(el.getID());
+                if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
+                    m_names.erase(el.template as<NamedElement>().getName());
+                }
 
                 // apply procedures
                 for (auto const& fun : removeProcedures) {
@@ -239,6 +266,15 @@ namespace UML {
                     m_rep[m_order.at(index)] = &m_manager->get<T>(m_order.at(index));
                 }
                 return m_rep[m_order.at(index)];
+            };
+            T* get(std::string name) {
+                if (m_names.count(name)) {
+                    if (!m_rep[m_names[name]]) {
+                        m_rep[m_names[name]] = &m_manager->get<T>(m_names[name]);
+                    }
+                    return m_rep[m_names[name]];
+                }
+                return 0;
             };
             T* front() { 
                 if (!m_rep[m_order.front()]) {

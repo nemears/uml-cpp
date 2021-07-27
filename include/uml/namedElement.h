@@ -30,7 +30,7 @@ namespace UML{
             Sequence<Namespace>* m_memberNamespace;
             // visibility defaults to public, don't think there is a none value
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
-            // virtual void reindexName(std::string oldName, std::string newName);
+            virtual void reindexName(std::string oldName, std::string newName);
             void reindexID(ID oldID, ID newID) override;
             void setManager(UmlManager* manager) override;
         public:

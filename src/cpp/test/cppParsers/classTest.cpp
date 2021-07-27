@@ -232,4 +232,16 @@ TEST_F(CppClassTest, predefinedTypeTest) {
     m.parse(profilePath + "cppProfile.yml");
     Package* pckg;
     ASSERT_NO_THROW(pckg = parseHeader(testPath + "classTests/predefinedType.h", m));
+    ASSERT_EQ(pckg->getPackagedElements().size(), 2);
+    ASSERT_EQ(pckg->getPackagedElements().front()->getElementType(), ElementType::CLASS);
+    Class& foo = pckg->getPackagedElements().front()->as<Class>();
+    ASSERT_EQ(foo.getName(), "FOO");
+    ASSERT_EQ(pckg->getPackagedElements().get(1)->getElementType(), ElementType::CLASS);
+    Class& bar = pckg->getPackagedElements().get(1)->as<Class>();
+    ASSERT_EQ(bar.getName(), "BAR");
+    ASSERT_EQ(bar.getOwnedAttributes().size(), 1);
+    Property& prop = *bar.getOwnedAttributes().front();
+    ASSERT_EQ(prop.getName(), "f");
+    ASSERT_TRUE(prop.getClass() != 0);
+    ASSERT_EQ(prop.getType()->getID(), foo.getID());
 }

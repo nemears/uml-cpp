@@ -50,6 +50,23 @@ void addC_ClassAssociation(CXCursor c, CppParserMetaData& data, Association& ass
     }
 }
 
+void setC_RecordType(CXType type, CppParserMetaData& data, CXCursor c, Property& prop) {
+    CXString recordString = clang_getTypeSpelling(type);
+    if (data.owningElement.getOwner()) {
+        if (data.owningElement.getOwner()->isSubClassOf(ElementType::NAMESPACE)) {
+            NamedElement& record = *data.owningElement.getOwner()->as<Namespace>().getMembers().get(clang_getCString(recordString));
+            if (record.isSubClassOf(ElementType::TYPE)) {
+                prop.setType(&record.as<Type>());
+            }
+        } else {
+            throw UmlCppParserException("could not find predefined type " + string(clang_getCString(recordString)) + fileNameAndLineNumber(c));
+        }
+    } else {
+        throw UmlCppParserException("could not find owner of class " + data.owningElement.as<NamedElement>().getName() + fileNameAndLineNumber(c));
+    }
+    clang_disposeString(recordString);
+}
+
 void setC_PropType(CXType type, CppParserMetaData& data, CXCursor c, Property& prop) {
     switch (type.kind) {
         case CXTypeKind::CXType_Bool : {
@@ -70,6 +87,10 @@ void setC_PropType(CXType type, CppParserMetaData& data, CXCursor c, Property& p
         }
         case CXTypeKind::CXType_Double : {
             prop.setType(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
+            break;
+        }
+        case CXTypeKind::CXType_Record : {
+            setC_RecordType(type, data, c, prop);
             break;
         }
         default : {
@@ -205,21 +226,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     break;
                 }
                 case CXTypeKind::CXType_Record : {
-                    // TODO
-                    CXString recordString = clang_getTypeSpelling(type);
-                    if (data.owningElement.getOwner()) {
-                        if (data.owningElement.getOwner()->isSubClassOf(ElementType::NAMESPACE)) {
-                            NamedElement& record = *data.owningElement.getOwner()->as<Namespace>().getMembers().get(clang_getCString(recordString));
-                            if (record.isSubClassOf(ElementType::TYPE)) {
-                                prop.setType(&record.as<Type>());
-                            }
-                        } else {
-                            throw UmlCppParserException("could not find predefined type " + string(clang_getCString(recordString)) + fileNameAndLineNumber(c));
-                        }
-                    } else {
-                        throw UmlCppParserException("could not find owner of class " + data.owningElement.as<NamedElement>().getName() + fileNameAndLineNumber(c));
-                    }
-                    clang_disposeString(recordString);
+                    setC_RecordType(type, data, c, prop);
                     break;
                 }
                 default : {

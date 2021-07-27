@@ -66,9 +66,9 @@ void Classifier::reindexID(ID oldID, ID newID) {
     Namespace::reindexID(oldID, newID);
 }
 
-// void Classifier::reindexName(string oldName, string newName) {
-//     Namespace::reindexName(oldName, newName);
-// }
+void Classifier::reindexName(string oldName, string newName) {
+    Namespace::reindexName(oldName, newName);
+}
 
 void Classifier::AddAttributeFunctor::operator()(Element& el) const {
     if (dynamic_cast<Property&>(el).getClassifier() != m_el) {

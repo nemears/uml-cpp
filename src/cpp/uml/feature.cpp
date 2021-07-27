@@ -15,13 +15,13 @@ void Feature::reindexID(ID oldID, ID newID) {
     NamedElement::reindexID(oldID, newID);
 }
 
-// void Feature::reindexName(string oldName, string newName) {
-//     if (m_featuringClassifier) {
-//         m_featuringClassifier->getFeatures().reindex(m_id, oldName, newName);
-//     }
+void Feature::reindexName(string oldName, string newName) {
+    if (getFeaturingClassifier()) {
+        getFeaturingClassifier()->getFeatures().reindex(m_id, oldName, newName);
+    }
     
-//     NamedElement::reindexName(oldName, newName);
-// }
+    NamedElement::reindexName(oldName, newName);
+}
 
 Feature::Feature() {
     m_featuringClassifierPtr = 0;

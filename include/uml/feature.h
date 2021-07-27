@@ -13,7 +13,7 @@ namespace UML {
             Classifier* m_featuringClassifierPtr;
             bool m_static;
             void reindexID(ID oldID, ID newID) override;
-            // void reindexName(std::string oldName, std::string newName) override;
+            void reindexName(std::string oldName, std::string newName) override;
         public:
             Feature();
             Feature(const Feature& feature);

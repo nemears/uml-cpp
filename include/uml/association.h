@@ -13,7 +13,7 @@ namespace UML {
             Sequence<Property> m_navigableOwnedEnds;
             Sequence<Type> m_endType;
             void reindexID(ID oldID, ID newID) override;
-            // void reindexName(std::string oldName, std::string newName) override;
+            void reindexName(std::string oldName, std::string newName) override;
             void setManager(UmlManager* manager) override;
             class AddMemberEndFunctor : public AbstractSequenceFunctor {
                 public:

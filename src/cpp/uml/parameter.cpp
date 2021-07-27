@@ -28,21 +28,21 @@ void Parameter::reindexID(ID oldID, ID newID) {
     NamedElement::reindexID(oldID, newID);
 }
 
-// void Parameter::reindexName(string oldName, string newName) {
-//     if (m_owner) {
-//         if (m_owner->isSubClassOf(ElementType::BEHAVIOR)) {
-//             dynamic_cast<Behavior*>(m_owner)->getParameters().reindex(m_id, oldName, newName);
-//         }
-//     }
+void Parameter::reindexName(string oldName, string newName) {
+    if (getOwner()) {
+        if (getOwner()->isSubClassOf(ElementType::BEHAVIOR)) {
+            dynamic_cast<Behavior*>(getOwner())->getParameters().reindex(m_id, oldName, newName);
+        }
+    }
 
-//     if (m_operation) {
-//         for (auto const& bhv : m_operation->getMethods()) {
-//             bhv->getParameters().reindex(m_id, oldName, newName);
-//         }
-//     }
+    if (getOperation()) {
+        for (auto& bhv : getOperation()->getMethods()) {
+            bhv.getParameters().reindex(m_id, oldName, newName);
+        }
+    }
 
-//     NamedElement::reindexName(oldName, newName);
-// }
+    NamedElement::reindexName(oldName, newName);
+}
 
 Parameter::Parameter() {
     m_direction = ParameterDirectionKind::NONE;

@@ -26,7 +26,7 @@ namespace UML {
             Sequence<NamedElement> m_inheritedMembers;
             void setManager(UmlManager* manager) override;
             void reindexID(ID oldID, ID newID) override;
-            //void reindexName(std::string oldName, std::string newName) override;
+            void reindexName(std::string oldName, std::string newName) override;
             class AddAttributeFunctor : public AbstractSequenceFunctor {
                 public:
                     AddAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};

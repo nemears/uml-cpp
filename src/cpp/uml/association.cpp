@@ -8,9 +8,9 @@ void Association::reindexID(ID oldID, ID newID) {
     Classifier::reindexID(oldID, newID);
 }
 
-// void Association::reindexName(std::string oldName, std::string newName) {
-//     Classifier::reindexName(oldName, newName);
-// }
+void Association::reindexName(std::string oldName, std::string newName) {
+    Classifier::reindexName(oldName, newName);
+}
 
 void Association::AddMemberEndFunctor::operator()(Element& el) const {
     if (dynamic_cast<Property&>(el).getAssociation() != m_el) {

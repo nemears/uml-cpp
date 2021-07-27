@@ -2563,6 +2563,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::DATA_TYPE;
     } else if (eType.compare("DECISION_NODE") == 0) {
         return ElementType::DECISION_NODE;
+    } else if (eType.compare("DEPENDENCY") == 0) {
+        return ElementType::DEPENDENCY;
     } else if (eType.compare("DIRECTED_RELATIONSHIP") == 0) {
         return ElementType::DIRECTED_RELATIONSHIP;
     } else if (eType.compare("ELEMENT") == 0) {

@@ -27,6 +27,7 @@ namespace UML {
         CREATE_OBJECT_ACTION,
         DATA_TYPE,
         DECISION_NODE,
+        DEPENDENCY,
         DIRECTED_RELATIONSHIP,
         ELEMENT,
         ENUMERATION,

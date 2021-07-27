@@ -307,6 +307,9 @@ string Element::elementTypeToString(ElementType eType) {
         case ElementType::DECISION_NODE : {
             return "DECISION_NODE";
         }
+        case ElementType::DEPENDENCY : {
+            return "DEPENDENCY";
+        }
         case ElementType::DIRECTED_RELATIONSHIP : {
             return "DIRECTED_RELATIONSHIP";
         }

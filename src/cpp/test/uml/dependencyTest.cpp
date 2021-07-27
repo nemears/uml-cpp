@@ -39,7 +39,7 @@ TEST_F(DependencyTest, removeClientAndSupplierTest) {
     ASSERT_EQ(dep.getTargets().size(), 1);
     ASSERT_EQ(dep.getTargets().front()->getID(), supplier.getID());
     dep.getClient().remove(client);
-    dep.getSupplier().remove(client);
+    dep.getSupplier().remove(supplier);
     ASSERT_EQ(dep.getClient().size(), 0);
     ASSERT_EQ(dep.getSources().size(), 0);
     ASSERT_EQ(dep.getSupplier().size(), 0);

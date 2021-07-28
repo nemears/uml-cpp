@@ -87,6 +87,7 @@ namespace UML {
         TEMPLATE_SIGNATURE,
         TYPE,
         TYPED_ELEMENT,
+        USAGE,
         VALUE_SPECIFICATION
     };
 

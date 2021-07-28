@@ -484,6 +484,9 @@ string Element::elementTypeToString(ElementType eType) {
         case ElementType::TYPED_ELEMENT : {
             return "TYPED_ELEMENT";
         }
+        case ElementType::USAGE : {
+            return "USAGE";
+        }
         case ElementType::VALUE_SPECIFICATION : {
             return "VALUE_SPECIFICATION";
         }

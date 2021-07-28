@@ -1,0 +1,23 @@
+---
+  package:
+    packagedElements:
+      - abstraction:
+          client:
+            - 3AlQZepi4lbsE_4C1rxiaIcW09_Z
+          supplier:
+            - 5MfGIWYTXAlxnDP4wk5uUZ0Hg0Ea
+      - realization:
+          client:
+            - 3AlQZepi4lbsE_4C1rxiaIcW09_Z
+          supplier:
+            - 5MfGIWYTXAlxnDP4wk5uUZ0Hg0Ea
+      - usage:
+          client:
+            - 3AlQZepi4lbsE_4C1rxiaIcW09_Z
+          supplier:
+            - 5MfGIWYTXAlxnDP4wk5uUZ0Hg0Ea
+      - package:
+          id: 3AlQZepi4lbsE_4C1rxiaIcW09_Z
+      - package:
+          id: 5MfGIWYTXAlxnDP4wk5uUZ0Hg0Ea
+...      

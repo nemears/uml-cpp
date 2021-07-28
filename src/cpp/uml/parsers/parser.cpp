@@ -36,6 +36,9 @@
 #include "uml/enumerationLiteral.h"
 #include "uml/templateBinding.h"
 #include "uml/dependency.h"
+#include "uml/abstraction.h"
+#include "uml/realization.h"
+#include "uml/usage.h"
 
 using namespace std;
 
@@ -1139,7 +1142,16 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
         if (node["packagedElements"].IsSequence()) {
             for (size_t i=0; i<node["packagedElements"].size(); i++) {
                 if (node["packagedElements"][i].IsMap()) {
-                    if (node["packagedElements"][i]["activity"]) {
+                    if (node["packagedElements"][i]["abstraction"]) {
+                        if (node["packagedElements"][i]["abstraction"].IsMap()) {
+                            Abstraction& abstraction = data.m_manager->create<Abstraction>();
+                            /** TODO: make own function and actually do opaqueExpressions**/
+                            parseDependency(node["packagedElements"][i]["abstraction"], abstraction, data);
+                            pckg.getPackagedElements().add(abstraction);
+                        } else {
+                            throw UmlParserException("Invalid yaml node type for abstraction definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["abstraction"]);
+                        }
+                    } else if (node["packagedElements"][i]["activity"]) {
                         Activity& activity = data.m_manager->create<Activity>();
                         // TODO parse activity
                         activity.setOwningPackage(&pckg);
@@ -1164,6 +1176,8 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                             Dependency& dependency = data.m_manager->create<Dependency>();
                             parseDependency(node["packagedElements"][i]["dependency"], dependency, data);
                             pckg.getPackagedElements().add(dependency);
+                        } else {
+                            throw UmlParserException("Invalid yaml node type for dependency definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["dependency"]);
                         }
                     } else if (node["packagedElements"][i]["enumeration"]) {
                         Enumeration& enumeration = data.m_manager->create<Enumeration>();
@@ -1230,6 +1244,25 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                             Profile& profile = data.m_manager->create<Profile>();
                             parsePackage(node["packagedElements"][i]["profile"], profile, data);
                             pckg.getPackagedElements().add(profile);
+                        } else {
+                            throw UmlParserException("Invalid yaml node type for profile definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["profile"]);
+                        }
+                    } else if (node["packagedElements"][i]["realization"]) {
+                        if (node["packagedElements"][i]["realization"].IsMap()) {
+                            Realization& realization = data.m_manager->create<Realization>();
+                            /** TODO: switch to parseAbstraction when implemented**/
+                            parseDependency(node["packagedElements"][i]["realization"], realization, data);
+                            pckg.getPackagedElements().add(realization);
+                        } else {
+                            throw UmlParserException("Invalid yaml node type for realization definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["realization"]);
+                        }
+                    } else if (node["packagedElements"][i]["usage"]) {
+                        if (node["packagedElements"][i]["usage"].IsMap()) {
+                            Usage& usage = data.m_manager->create<Usage>();
+                            parseDependency(node["packagedElements"][i]["usage"], usage, data);
+                            pckg.getPackagedElements().add(usage);
+                        } else {
+                            throw UmlParserException("Invalid yaml node type for usage definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["usage"]);
                         }
                     } else {
                         throw UmlParserException("Invalid identifier for packagedElements, ", data.m_path.string(), node["packagedElements"][i]);

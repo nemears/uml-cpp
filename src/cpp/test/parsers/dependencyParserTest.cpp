@@ -3,6 +3,8 @@
 #include "test/yumlParsersTest.h"
 #include "uml/dependency.h"
 #include "uml/package.h"
+#include "uml/realization.h"
+#include "uml/usage.h"
 
 using namespace std;
 using namespace UML;
@@ -64,4 +66,33 @@ TEST_F(DependencyParserTest, basicDependencyEmitTest) {
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
+}
+
+TEST_F(DependencyParserTest, parseAllTheSubclassesTest) {
+    Element* el;
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "dependencyTests/allSubClasses.yml"));
+    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
+    Package& pckg = el->as<Package>();
+    ASSERT_EQ(pckg.getPackagedElements().size(), 5);
+    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::ABSTRACTION);
+    Abstraction& abs = pckg.getPackagedElements().front()->as<Abstraction>();
+    ASSERT_EQ(abs.getClient().size(), 1);
+    ASSERT_EQ(abs.getClient().front()->getID(), pckg.getPackagedElements().get(3)->getID());
+    ASSERT_EQ(abs.getSupplier().size(), 1);
+    ASSERT_EQ(abs.getSupplier().front()->getID(), pckg.getPackagedElements().get(4)->getID());
+
+    ASSERT_EQ(pckg.getPackagedElements().get(1)->getElementType(), ElementType::REALIZATION);
+    Realization& real = pckg.getPackagedElements().get(1)->as<Realization>();
+    ASSERT_EQ(real.getClient().size(), 1);
+    ASSERT_EQ(real.getClient().front()->getID(), pckg.getPackagedElements().get(3)->getID());
+    ASSERT_EQ(real.getSupplier().size(), 1);
+    ASSERT_EQ(real.getSupplier().front()->getID(), pckg.getPackagedElements().get(4)->getID());
+
+    ASSERT_EQ(pckg.getPackagedElements().get(2)->getElementType(), ElementType::USAGE);
+    Usage& usage = pckg.getPackagedElements().get(2)->as<Usage>();
+    ASSERT_EQ(usage.getClient().size(), 1);
+    ASSERT_EQ(usage.getClient().front()->getID(), pckg.getPackagedElements().get(3)->getID());
+    ASSERT_EQ(usage.getSupplier().size(), 1);
+    ASSERT_EQ(usage.getSupplier().front()->getID(), pckg.getPackagedElements().get(4)->getID());
 }

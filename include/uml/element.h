@@ -29,6 +29,7 @@ namespace UML {
         DATA_TYPE,
         DECISION_NODE,
         DEPENDENCY,
+        DEPLOYMENT,
         DIRECTED_RELATIONSHIP,
         ELEMENT,
         ENUMERATION,

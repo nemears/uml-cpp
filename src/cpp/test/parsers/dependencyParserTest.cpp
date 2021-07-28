@@ -96,3 +96,65 @@ TEST_F(DependencyParserTest, parseAllTheSubclassesTest) {
     ASSERT_EQ(usage.getSupplier().size(), 1);
     ASSERT_EQ(usage.getSupplier().front()->getID(), pckg.getPackagedElements().get(4)->getID());
 }
+
+TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {
+    UmlManager m;
+    Package& pckg = m.create<Package>();
+    Abstraction& abstraction = m.create<Abstraction>();
+    Realization& realization = m.create<Realization>();
+    Usage& usage = m.create<Usage>();
+    Package& client = m.create<Package>();
+    Package& supplier = m.create<Package>();
+    pckg.setID("oT59r8w9_ZlGzo2NFpN&vJgH_4YJ");
+    abstraction.setID("tAps&UBn21dKnQ5z7qaAzKBZqR7S");
+    realization.setID("V5lXdO3DLF2UCpqipGloE976L6QN");
+    usage.setID("ouZEty1jCLeAk_tZzWBKblwwBdGm");
+    client.setID("zMVDkDbSoENGrPr&JLyOGzYo&_D0");
+    supplier.setID("uONNU0sKPVjLALJuw2pHcNqljgkg");
+    pckg.getPackagedElements().add(abstraction);
+    pckg.getPackagedElements().add(realization);
+    pckg.getPackagedElements().add(usage);
+    pckg.getPackagedElements().add(client);
+    pckg.getPackagedElements().add(supplier);
+    abstraction.setName("test");
+    abstraction.getClient().add(client);
+    abstraction.getSupplier().add(supplier);
+    realization.setName("r");
+    realization.getClient().add(client);
+    realization.getSupplier().add(supplier);
+    usage.setName("u");
+    usage.getClient().add(client);
+    usage.getSupplier().add(supplier);
+    string expectedEmit = R""""(package:
+  id: oT59r8w9_ZlGzo2NFpN&vJgH_4YJ
+  packagedElements:
+    - abstraction:
+        id: tAps&UBn21dKnQ5z7qaAzKBZqR7S
+        name: test
+        client:
+          - zMVDkDbSoENGrPr&JLyOGzYo&_D0
+        supplier:
+          - uONNU0sKPVjLALJuw2pHcNqljgkg
+    - realization:
+        id: V5lXdO3DLF2UCpqipGloE976L6QN
+        name: r
+        client:
+          - zMVDkDbSoENGrPr&JLyOGzYo&_D0
+        supplier:
+          - uONNU0sKPVjLALJuw2pHcNqljgkg
+    - usage:
+        id: ouZEty1jCLeAk_tZzWBKblwwBdGm
+        name: u
+        client:
+          - zMVDkDbSoENGrPr&JLyOGzYo&_D0
+        supplier:
+          - uONNU0sKPVjLALJuw2pHcNqljgkg
+    - package:
+        id: zMVDkDbSoENGrPr&JLyOGzYo&_D0
+    - package:
+        id: uONNU0sKPVjLALJuw2pHcNqljgkg)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

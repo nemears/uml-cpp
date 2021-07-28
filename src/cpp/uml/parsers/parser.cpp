@@ -231,6 +231,12 @@ Element* parseExternalAddToManager(ParserMetaData& data, string path) {
 
 void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     switch(el.getElementType()) {
+        case ElementType::ABSTRACTION : {
+            emitter << YAML::BeginMap << YAML::Key << "abstraction" << YAML::Value << YAML::BeginMap;
+            emitDependency(emitter, el.as<Abstraction>(), data);
+            emitter << YAML::EndMap << YAML::EndMap;
+            break;
+        }
         case ElementType::ASSOCIATION : {
             emitAssociation(emitter, dynamic_cast<Association&>(el), data);
             break;
@@ -308,6 +314,18 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         case ElementType::PROFILE : {
             emitter << YAML::BeginMap << YAML::Key << "profile" << YAML::Value << YAML::BeginMap;
             emitPackage(emitter, dynamic_cast<Profile&>(el), data);
+            emitter << YAML::EndMap << YAML::EndMap;
+            break;
+        }
+        case ElementType::REALIZATION : {
+            emitter << YAML::BeginMap << YAML::Key << "realization" << YAML::Value << YAML::BeginMap;
+            emitDependency(emitter, el.as<Realization>(), data);
+            emitter << YAML::EndMap << YAML::EndMap;
+            break;
+        }
+        case ElementType::USAGE : {
+            emitter << YAML::BeginMap << YAML::Key << "usage" << YAML::Value << YAML::BeginMap;
+            emitDependency(emitter, el.as<Usage>(), data);
             emitter << YAML::EndMap << YAML::EndMap;
             break;
         }

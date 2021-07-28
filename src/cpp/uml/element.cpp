@@ -313,6 +313,9 @@ string Element::elementTypeToString(ElementType eType) {
         case ElementType::DEPENDENCY : {
             return "DEPENDENCY";
         }
+        case ElementType::DEPLOYED_ARTIFACT : {
+            return "DEPLOYED_ARTIFACT";
+        }
         case ElementType::DEPLOYMENT : {
             return "DEPLOYMENT";
         }

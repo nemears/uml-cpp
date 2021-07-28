@@ -240,6 +240,10 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             emitDataType(emitter, dynamic_cast<DataType&>(el), data);
             break;
         }
+        case ElementType::DEPENDENCY : {
+            emitDependency(emitter, el.as<Dependency>(), data);
+            break;
+        }
         case ElementType::ENUMERATION : {
             emitEnumeration(emitter, dynamic_cast<Enumeration&>(el), data);
             break;
@@ -2844,6 +2848,34 @@ void parseDependency(YAML::Node node, Dependency& dependency, ParserMetaData& da
         } else {
             throw UmlParserException("Invalid yaml node type for dependency supplier, must be a sequence!", data.m_path.string(), node["supplier"]);
         }
+    }
+}
+
+void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaData& data) {
+    if (dependency.getElementType() == ElementType::DEPENDENCY) {
+        emitter << YAML::BeginMap << YAML::Key << "dependency" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitNamedElement(emitter, dependency, data);
+
+    if (!dependency.getClient().empty()) {
+        emitter << YAML::Key << "client" << YAML::Value << YAML::BeginSeq;
+        for (auto& client : dependency.getClient()) {
+            emitter << client.getID().string();
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (!dependency.getSupplier().empty()) {
+        emitter << YAML::Key << "supplier" << YAML::Value << YAML::BeginSeq;
+        for (auto& supplier : dependency.getSupplier()) {
+            emitter << supplier.getID().string();
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (dependency.getElementType() == ElementType::DEPENDENCY) {
+        emitter << YAML::EndMap << YAML::EndMap;
     }
 }
 

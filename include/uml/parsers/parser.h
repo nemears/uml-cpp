@@ -236,6 +236,7 @@ namespace UML {
             void parseComment(YAML::Node node, Comment& comment, ParserMetaData& data);
             void emitComment(YAML::Emitter& emitter, Comment& comment, EmitterMetaData& data);
             void parseDependency(YAML::Node node, Dependency& dependency, ParserMetaData& data);
+            void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaData& data);
         }
     }
 }

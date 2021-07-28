@@ -29,3 +29,39 @@ TEST_F(DependencyParserTest, basicDependencyTest) {
     ASSERT_EQ(dep.getSupplier().size(), 1);
     ASSERT_EQ(dep.getSupplier().front()->getID(), pckg.getPackagedElements().get(1)->getID());
 }
+
+TEST_F(DependencyParserTest, basicDependencyEmitTest) {
+    UmlManager m;
+    Package& pckg = m.create<Package>();
+    Dependency& dependency = m.create<Dependency>();
+    Package& client = m.create<Package>();
+    Package& supplier = m.create<Package>();
+    pckg.setID("oT59r8w9_ZlGzo2NFpN&vJgH_4YJ");
+    dependency.setID("tAps&UBn21dKnQ5z7qaAzKBZqR7S");
+    client.setID("zMVDkDbSoENGrPr&JLyOGzYo&_D0");
+    supplier.setID("uONNU0sKPVjLALJuw2pHcNqljgkg");
+    pckg.getPackagedElements().add(dependency);
+    pckg.getPackagedElements().add(client);
+    pckg.getPackagedElements().add(supplier);
+    dependency.setName("test");
+    dependency.getClient().add(client);
+    dependency.getSupplier().add(supplier);
+    string expectedEmit = R""""(package:
+  id: oT59r8w9_ZlGzo2NFpN&vJgH_4YJ
+  packagedElements:
+    - dependency:
+        id: tAps&UBn21dKnQ5z7qaAzKBZqR7S
+        name: test
+        client:
+          - zMVDkDbSoENGrPr&JLyOGzYo&_D0
+        supplier:
+          - uONNU0sKPVjLALJuw2pHcNqljgkg
+    - package:
+        id: zMVDkDbSoENGrPr&JLyOGzYo&_D0
+    - package:
+        id: uONNU0sKPVjLALJuw2pHcNqljgkg)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

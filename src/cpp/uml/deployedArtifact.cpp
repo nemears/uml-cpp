@@ -3,7 +3,7 @@
 using namespace UML;
 
 DeployedArtifact::DeployedArtifact() {
-
+    
 }
 
 DeployedArtifact::DeployedArtifact(const DeployedArtifact& deployedArtifact) {

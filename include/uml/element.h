@@ -11,6 +11,7 @@ namespace UML {
 
     // Element Type enum to get the type of object on runtime
     enum class ElementType {
+        ABSTRACTION,
         ACTION,
         ACTIVITY,
         ACTIVITY_EDGE,

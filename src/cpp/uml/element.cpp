@@ -259,6 +259,9 @@ bool Element::isSubClassOf(ElementType eType) const {
 
 string Element::elementTypeToString(ElementType eType) {
     switch(eType) {
+        case ElementType::ABSTRACTION : {
+            return "ABSTRACTION";
+        }
         case ElementType::ACTION : {
             return "ACTION";
         }

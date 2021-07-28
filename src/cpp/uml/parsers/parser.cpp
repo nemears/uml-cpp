@@ -35,6 +35,7 @@
 #include "uml/activity.h"
 #include "uml/enumerationLiteral.h"
 #include "uml/templateBinding.h"
+#include "uml/dependency.h"
 
 using namespace std;
 
@@ -1154,6 +1155,12 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                         DataType& dataType = data.m_manager->create<DataType>();
                         parseDataType(node["packagedElements"][i]["dataType"], dataType, data);
                         pckg.getPackagedElements().add(dataType);
+                    } else if (node["packagedElements"][i]["dependency"]) {
+                        if (node["packagedElements"][i]["dependency"].IsMap()) {
+                            Dependency& dependency = data.m_manager->create<Dependency>();
+                            parseDependency(node["packagedElements"][i]["dependency"], dependency, data);
+                            pckg.getPackagedElements().add(dependency);
+                        }
                     } else if (node["packagedElements"][i]["enumeration"]) {
                         Enumeration& enumeration = data.m_manager->create<Enumeration>();
                         parseEnumeration(node["packagedElements"][i]["enumeration"], enumeration, data);
@@ -2785,6 +2792,58 @@ void emitComment(YAML::Emitter& emitter, Comment& comment, EmitterMetaData& data
 
     if (comment.getElementType() == ElementType::COMMENT) {
         emitter << YAML::EndMap << YAML::EndMap;
+    }
+}
+
+void AddClientFunctor::operator()(Element& el) const {
+    if (!m_el->as<Dependency>().getClient().count(el.getID())) {
+        m_el->as<Dependency>().getClient().add(el.as<NamedElement>());
+    }
+}
+
+void AddSupplierFunctor::operator()(Element& el) const {
+    if (!m_el->as<Dependency>().getSupplier().count(el.getID())) {
+        m_el->as<Dependency>().getSupplier().add(el.as<NamedElement>());
+    }
+}
+
+void parseDependency(YAML::Node node, Dependency& dependency, ParserMetaData& data) {
+    parseNamedElement(node, dependency, data);
+
+    if (node["client"]) {
+        if (node["client"].IsSequence()) {
+            for (size_t i = 0; i < node["client"].size(); i++) {
+                if (node["client"][i].IsScalar()) {
+                    if (isValidID(node["client"][i].as<string>())) {
+                        applyFunctor(data, ID::fromString(node["client"][i].as<string>()), new AddClientFunctor(&dependency, node["client"][i]));
+                    } else {
+                        throw UmlParserException("Invalid ID, must be a base64 url safe 28 character string!", data.m_path.string(), node["client"][i]);
+                    }
+                } else {
+                    throw UmlParserException("Invalid yaml node type for dependency client entry, must be a scalar!", data.m_path.string(), node["client"][i]);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for dependency client, must be a sequence!", data.m_path.string(), node["client"]);
+        }
+    }
+
+    if (node["supplier"]) {
+        if (node["supplier"].IsSequence()) {
+            for (size_t i = 0; i < node["supplier"].size(); i++) {
+                if (node["supplier"][i].IsScalar()) {
+                    if (isValidID(node["supplier"][i].as<string>())) {
+                        applyFunctor(data, ID::fromString(node["supplier"][i].as<string>()), new AddSupplierFunctor(&dependency, node["supplier"][i]));
+                    } else {
+                        throw UmlParserException("Invalid ID, must be a base64 url safe 28 character string!", data.m_path.string(), node["supplier"][i]);
+                    }
+                } else {
+                    throw UmlParserException("Invalid yaml node type for dependency client entry, must be a scalar!", data.m_path.string(), node["supplier"][i]);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for dependency supplier, must be a sequence!", data.m_path.string(), node["supplier"]);
+        }
     }
 }
 

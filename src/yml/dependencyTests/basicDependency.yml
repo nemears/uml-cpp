@@ -1,0 +1,13 @@
+---
+  package:
+    packagedElements:
+      - dependency:
+          client:
+            - 2ktf9NejSgq72oOAGlRBzxyDEV33
+          supplier:
+            - Yf7WfzUB0ugvec5jGUWNeq_A3ArD
+      - package:
+          id: Yf7WfzUB0ugvec5jGUWNeq_A3ArD
+      - package:
+          id: 2ktf9NejSgq72oOAGlRBzxyDEV33
+...

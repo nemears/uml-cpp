@@ -147,6 +147,16 @@ namespace UML {
                     AddAppliedStereotypeFunctor(Element* el, YAML::Node node, Element& stereotypedEl) : m_stereotypedEl(stereotypedEl), AbstractPostProcessFunctor(el, node) {};
                     void operator()(Element& el) const override;
             };
+            class AddClientFunctor : public AbstractPostProcessFunctor {
+                public:
+                    AddClientFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
+            class AddSupplierFunctor : public AbstractPostProcessFunctor {
+                public:
+                    AddSupplierFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
             void emitModel(YAML::Emitter& emitter, Model& model, EmitterMetaData& data);
             void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
             void emitElement(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
@@ -225,6 +235,7 @@ namespace UML {
             void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& application, EmitterMetaData& data);
             void parseComment(YAML::Node node, Comment& comment, ParserMetaData& data);
             void emitComment(YAML::Emitter& emitter, Comment& comment, EmitterMetaData& data);
+            void parseDependency(YAML::Node node, Dependency& dependency, ParserMetaData& data);
         }
     }
 }

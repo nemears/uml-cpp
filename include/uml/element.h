@@ -73,6 +73,7 @@ namespace UML {
         PROFILE,
         PROFILE_APPLICATION,
         PROPERTY,
+        REALIZATION,
         REDEFINABLE_ELEMENT,
         RELATIONSHIP,
         SLOT,

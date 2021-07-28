@@ -442,6 +442,9 @@ string Element::elementTypeToString(ElementType eType) {
         case ElementType::PROPERTY : {
             return "PROPERTY";
         }
+        case ElementType::REALIZATION : {
+            return "REALIZATION";
+        }
         case ElementType::REDEFINABLE_ELEMENT : {
             return "REDEFINABLE_ELEMENT";
         }

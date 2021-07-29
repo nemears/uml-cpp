@@ -15,6 +15,7 @@ namespace UML {
         public:
             PackageableElement();
             PackageableElement(const PackageableElement& el);
+            virtual ~PackageableElement() {};
             Package* getOwningPackage();
             void setOwningPackage(Package* package);
             ElementType getElementType() const override;

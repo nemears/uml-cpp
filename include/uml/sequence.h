@@ -63,6 +63,7 @@ namespace UML {
     class RemoveAppliedStereotypeFunctor;
     class Dependency;
     class Deployment;
+    class DeploymentTarget;
 
     class ReadOnlySequenceException : public std::exception {
         friend class Element;
@@ -131,6 +132,7 @@ namespace UML {
         friend class RemoveAppliedStereotypeFunctor;
         friend class Dependency;
         friend class Deployment;
+        friend class DeploymentTarget;
         
         private:
             // Manager

@@ -6,11 +6,14 @@
 namespace UML {
 
     class DeployedArtifact;
+    class DeploymentTarget;
 
     class Deployment : public Dependency {
         friend class UmlManager;
         private:
             Sequence<DeployedArtifact> m_deployedArtifacts;
+            ID m_locationID;
+            DeploymentTarget* m_locationPtr;
             class AddDeployedArtifactFunctor : public AbstractSequenceFunctor {
                 public:
                     AddDeployedArtifactFunctor(Element* me) : AbstractSequenceFunctor(me) {};
@@ -27,6 +30,8 @@ namespace UML {
             Deployment(const Deployment& deployment);
             virtual ~Deployment();
             Sequence<DeployedArtifact>& getDeployedArtifact();
+            DeploymentTarget* getLocation();
+            void setLocation(DeploymentTarget* location);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

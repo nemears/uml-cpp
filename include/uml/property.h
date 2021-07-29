@@ -4,6 +4,7 @@
 #include "structuralFeature.h"
 #include "valueSpecification.h"
 #include "connectableElement.h"
+#include "deploymentTarget.h"
 
 namespace UML{
 
@@ -19,7 +20,7 @@ namespace UML{
         COMPOSITE
     };
 
-    class Property: public StructuralFeature, public ConnectableElement {
+    class Property: public StructuralFeature, public ConnectableElement , public DeploymentTarget {
         friend class UmlManager;
         protected:
             AggregationKind m_aggregation;

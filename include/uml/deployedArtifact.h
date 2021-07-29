@@ -4,7 +4,7 @@
 #include "namedElement.h"
 
 namespace UML {
-    class DeployedArtifact : public NamedElement {
+    class DeployedArtifact : virtual public NamedElement {
         public:
             DeployedArtifact();
             DeployedArtifact(const DeployedArtifact& deployedArtifact);

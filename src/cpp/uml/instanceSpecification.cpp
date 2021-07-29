@@ -97,6 +97,14 @@ bool InstanceSpecification::isSubClassOf(ElementType eType) const {
     bool ret = PackageableElement::isSubClassOf(eType);
 
     if (!ret) {
+        ret = DeploymentTarget::isSubClassOf(eType);
+    }
+
+    if (!ret) {
+        ret = DeployedArtifact::isSubClassOf(eType);
+    }
+
+    if (!ret) {
         ret = eType == ElementType::INSTANCE_SPECIFICATION;
     }
 

@@ -2,6 +2,8 @@
 #define INSTANCESPECIFICATIONH
 
 #include "packageableElement.h"
+#include "deployedArtifact.h"
+#include "deploymentTarget.h"
 #include "sequence.h"
 
 namespace UML{
@@ -9,7 +11,7 @@ namespace UML{
     class Slot;
     class Classifier;
 
-    class InstanceSpecification : public PackageableElement {
+    class InstanceSpecification : public PackageableElement , public DeployedArtifact, public DeploymentTarget {
         friend class UmlManager;
         protected:
             ID m_classifierID;

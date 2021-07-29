@@ -8,7 +8,7 @@ namespace UML {
 
     class Deployment;
 
-    class DeploymentTarget : public NamedElement {
+    class DeploymentTarget : virtual public NamedElement {
         friend class UmlManager;
         private:
             Sequence<Deployment> m_deployments;

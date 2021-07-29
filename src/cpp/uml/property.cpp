@@ -506,6 +506,10 @@ bool Property::isSubClassOf(ElementType eType) const {
     }
 
     if (!ret) {
+        ret = DeploymentTarget::isSubClassOf(eType);
+    }
+
+    if (!ret) {
         ret = eType == ElementType::PROPERTY;
     }
 

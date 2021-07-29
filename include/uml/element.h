@@ -31,6 +31,7 @@ namespace UML {
         DEPENDENCY,
         DEPLOYED_ARTIFACT,
         DEPLOYMENT,
+        DEPLOYMENT_TARGET,
         DIRECTED_RELATIONSHIP,
         ELEMENT,
         ENUMERATION,

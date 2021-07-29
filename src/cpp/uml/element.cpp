@@ -319,6 +319,9 @@ string Element::elementTypeToString(ElementType eType) {
         case ElementType::DEPLOYMENT : {
             return "DEPLOYMENT";
         }
+        case ElementType::DEPLOYMENT_TARGET : {
+            return "DEPLOYMENT_TARGET";
+        }
         case ElementType::DIRECTED_RELATIONSHIP : {
             return "DIRECTED_RELATIONSHIP";
         }

@@ -34,8 +34,8 @@ namespace UML {
             Artifact();
             Artifact(const Artifact& artifact);
             virtual ~Artifact();
-            Sequence<Property>& getOwnedAttribute();
-            Sequence<Operation>& getOwnedOperation();
+            Sequence<Property>& getOwnedAttributes();
+            Sequence<Operation>& getOwnedOperations();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

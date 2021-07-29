@@ -5,6 +5,7 @@
 #include "uml/structuredClassifier.h"
 #include "uml/class.h"
 #include "uml/association.h"
+#include "uml/artifact.h"
 
 using namespace std;
 using namespace UML;
@@ -461,6 +462,45 @@ void Property::setOwningAssociation(Association* association) {
     if (association) {
         if (!association->getOwnedEnds().count(m_id)) {
             association->getOwnedEnds().add(*this);
+        }
+    }
+}
+
+Artifact* Property::getArtifact() {
+    if (!m_artifactID.isNull()) {
+        if (!m_artifactPtr) {
+            m_artifactPtr = &m_manager->get<Artifact>(m_artifactID);
+        }
+        return m_artifactPtr;
+    }
+    return 0;
+}
+
+void Property::setArtifact(Artifact* artifact) {
+    if (!isSameOrNull(m_artifactID, artifact)) {
+        if (!m_artifactPtr) {
+            m_artifactPtr = &m_manager->get<Artifact>(m_artifactID);
+        }
+
+        if (m_artifactPtr->getOwnedAttributes().count(m_id)) {
+            m_artifactPtr->getOwnedAttributes().remove(*this);
+        }
+
+        m_artifactPtr = 0;
+        m_artifactID = ID::nullID();
+    }
+
+    if (artifact) {
+        m_artifactID = artifact->getID();
+    }
+
+    if (!m_manager) {
+        m_artifactPtr = artifact;
+    }
+
+    if (artifact) {
+        if (!artifact->getOwnedAttributes().count(m_id)) {
+            artifact->getOwnedAttributes().add(*this);
         }
     }
 }

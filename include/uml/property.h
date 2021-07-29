@@ -13,6 +13,7 @@ namespace UML{
     class StructuredClassifier;
     class Association;
     class Class;
+    class Artifact;
 
     enum class AggregationKind {
         NONE,
@@ -39,6 +40,8 @@ namespace UML{
             Association* m_associationPtr;
             ID m_owningAssociationID;
             Association* m_owningAssociationPtr;
+            ID m_artifactID;
+            Artifact* m_artifactPtr;
             void reindexID(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             void setComposite(bool composite);
@@ -63,6 +66,8 @@ namespace UML{
             void setAssociation(Association* association);
             Association* getOwningAssociation();
             void setOwningAssociation(Association* association);
+            Artifact* getArtifact();
+            void setArtifact(Artifact* artifact);
             void setType(Type* type) override;
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;

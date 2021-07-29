@@ -20,9 +20,9 @@ void Artifact::AddOwnedAttributeFunctor::operator()(Element& el) const {
         dynamic_cast<Artifact*>(m_el)->getOwnedMembers().add(dynamic_cast<Property&>(el));
     }
 
-    // if (dynamic_cast<Property&>(el).getDataType() != m_el) {
-    //     dynamic_cast<Property&>(el).setDataType(dynamic_cast<Artifact*>(m_el));
-    // }
+    if (dynamic_cast<Property&>(el).getArtifact() != m_el) {
+        dynamic_cast<Property&>(el).setArtifact(dynamic_cast<Artifact*>(m_el));
+    }
 }
 
 void Artifact::RemoveOwnedAttributeFunctor::operator()(Element& el) const {
@@ -34,9 +34,9 @@ void Artifact::RemoveOwnedAttributeFunctor::operator()(Element& el) const {
         dynamic_cast<Artifact*>(m_el)->getOwnedMembers().remove(dynamic_cast<Property&>(el));
     }
 
-    // if (dynamic_cast<Property&>(el).getDataType() == m_el) {
-    //     dynamic_cast<Property&>(el).setDataType(0);
-    // }
+    if (dynamic_cast<Property&>(el).getArtifact() == m_el) {
+        dynamic_cast<Property&>(el).setArtifact(0);
+    }
 }
 
 void Artifact::AddOwnedOperationFunctor::operator()(Element& el) const {
@@ -95,11 +95,11 @@ Artifact::Artifact(const Artifact& artifact) {
     m_ownedOperations.removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
 }
 
-Sequence<Property>& Artifact::getOwnedAttribute() {
+Sequence<Property>& Artifact::getOwnedAttributes() {
     return m_ownedAttributes;
 }
 
-Sequence<Operation>& Artifact::getOwnedOperation() {
+Sequence<Operation>& Artifact::getOwnedOperations() {
     return m_ownedOperations;
 }
 

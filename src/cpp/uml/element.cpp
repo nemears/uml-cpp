@@ -274,6 +274,9 @@ string Element::elementTypeToString(ElementType eType) {
         case ElementType::ACTIVITY_NODE : {
             return "ACTIVITY_NODE";
         }
+        case ElementType::ARTIFACT : {
+            return "ARTIFACT";
+        }
         case ElementType::ASSOCIATION : {
             return "ASSOCIATION";
         }

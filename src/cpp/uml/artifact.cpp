@@ -48,9 +48,9 @@ void Artifact::AddOwnedOperationFunctor::operator()(Element& el) const {
         dynamic_cast<Artifact*>(m_el)->getOwnedMembers().add(dynamic_cast<Operation&>(el));
     }
 
-    // if (dynamic_cast<Operation&>(el).getDataType() != m_el) {
-    //     dynamic_cast<Operation&>(el).setDataType(dynamic_cast<Artifact*>(m_el));
-    // }
+    if (dynamic_cast<Operation&>(el).getArtifact() != m_el) {
+        dynamic_cast<Operation&>(el).setArtifact(dynamic_cast<Artifact*>(m_el));
+    }
 
     if (!dynamic_cast<Operation&>(el).getRedefinitionContext().count(m_el->getID())) {
         dynamic_cast<Operation&>(el).getRedefinitionContext().add(*dynamic_cast<Artifact*>(m_el));
@@ -66,9 +66,9 @@ void Artifact::RemoveOwnedOperationFunctor::operator()(Element& el) const {
         dynamic_cast<Artifact*>(m_el)->getOwnedMembers().remove(dynamic_cast<Operation&>(el));
     }
 
-    // if (dynamic_cast<Operation&>(el).getDataType() == m_el) {
-    //     dynamic_cast<Operation&>(el).setDataType(0);
-    // }
+    if (dynamic_cast<Operation&>(el).getArtifact() == m_el) {
+        dynamic_cast<Operation&>(el).setArtifact(0);
+    }
 
     if (dynamic_cast<Operation&>(el).getRedefinitionContext().count(m_el->getID())) {
         dynamic_cast<Operation&>(el).getRedefinitionContext().remove(*dynamic_cast<Artifact*>(m_el));

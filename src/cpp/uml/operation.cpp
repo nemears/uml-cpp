@@ -1,6 +1,7 @@
 #include "uml/operation.h"
 #include "uml/class.h"
 #include "uml/dataType.h"
+#include "uml/artifact.h"
 
 using namespace std;
 using namespace UML;
@@ -35,6 +36,7 @@ Operation::Operation() {
     m_typePtr = 0;
     m_classPtr = 0;
     m_dataTypePtr = 0;
+    m_artifactPtr = 0;
 }
 
 Operation::Operation(const Operation& op) : BehavioralFeature(op), TemplateableElement(op), NamedElement(op), Element(op) {
@@ -44,6 +46,7 @@ Operation::Operation(const Operation& op) : BehavioralFeature(op), TemplateableE
     m_classPtr = op.m_classPtr;
     m_dataTypeID = op.m_dataTypeID;
     m_dataTypePtr = op.m_dataTypePtr;
+    m_artifactID = op.m_artifactID;
 }
 
 Operation::~Operation() {
@@ -142,6 +145,45 @@ void Operation::setDataType(DataType* dataType) {
     if (dataType) {
         if (!dataType->getOwnedOperation().count(m_id)) {
             dataType->getOwnedOperation().add(*this);
+        }
+    }
+}
+
+Artifact* Operation::getArtifact() {
+    if (!m_artifactID.isNull()) {
+        if (!m_artifactPtr) {
+            m_artifactPtr = &m_manager->get<Artifact>(m_artifactID);
+        }
+        return m_artifactPtr;
+    }
+    return 0;
+}
+
+void Operation::setArtifact(Artifact* artifact) {
+    if (!isSameOrNull(m_artifactID, artifact)) {
+        if (!m_artifactPtr) {
+            m_artifactPtr = &m_manager->get<Artifact>(m_artifactID);
+        }
+
+        if (m_artifactPtr->getOwnedOperations().count(m_id)) {
+            m_artifactPtr->getOwnedOperations().remove(*this);
+        }
+
+        m_artifactPtr = 0;
+        m_artifactID = ID::nullID();
+    }
+
+    if (artifact) {
+        m_artifactID = artifact->getID();
+    }
+
+    if (!m_manager) {
+        m_artifactPtr = artifact;
+    }
+
+    if (artifact) {
+        if (!artifact->getOwnedOperations().count(m_id)) {
+            artifact->getOwnedOperations().add(*this);
         }
     }
 }

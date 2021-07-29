@@ -10,6 +10,7 @@ namespace UML {
     class Class;
     class DataType;
     class Type;
+    class Artifact;
 
     class Operation : public BehavioralFeature , public TemplateableElement, public ParameterableElement {
         friend class Parameter;
@@ -20,6 +21,8 @@ namespace UML {
             Class* m_classPtr;
             ID m_dataTypeID;
             DataType* m_dataTypePtr;
+            ID m_artifactID;
+            Artifact* m_artifactPtr;
             void reindexID(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
         public:
@@ -32,6 +35,8 @@ namespace UML {
             void setClass(Class* clazz);
             DataType* getDataType();
             void setDataType(DataType* dataType);
+            Artifact* getArtifact();
+            void setArtifact(Artifact* artifact);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

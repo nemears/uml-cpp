@@ -118,6 +118,7 @@ Property::Property() {
     m_classPtr = 0;
     m_associationPtr = 0;
     m_owningAssociationPtr = 0;
+    m_artifactPtr = 0;
 }
 
 // TODO remove?
@@ -137,6 +138,8 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     m_associationPtr = prop.m_associationPtr;
     m_owningAssociationID = prop.m_owningAssociationID;
     m_owningAssociationPtr = prop.m_owningAssociationPtr;
+    m_artifactID = prop.m_artifactID;
+    m_artifactPtr = prop.m_artifactPtr;
 }
 
 AggregationKind Property::getAggregation() {

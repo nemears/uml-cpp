@@ -75,11 +75,32 @@ void Artifact::RemoveOwnedOperationFunctor::operator()(Element& el) const {
     }
 }
 
+void Artifact::CheckNestedArtifactFunctor::operator()(Element& el) const {
+    if (el.getID() == m_el->getID()) {
+        throw NestedArtifactException();
+    }
+}
+
+void Artifact::AddNestedArtifactFunctor::operator()(Element& el) const {
+    if (!m_el->as<Artifact>().getOwnedMembers().count(el.getID())) {
+        m_el->as<Artifact>().getOwnedMembers().add(el.as<Artifact>());
+    }
+}
+
+void Artifact::RemoveNestedArtifactFunctor::operator()(Element& el) const {
+    if (m_el->as<Artifact>().getOwnedMembers().count(el.getID())) {
+        m_el->as<Artifact>().getOwnedMembers().remove(el.as<Artifact>());
+    }
+}
+
 Artifact::Artifact() {
     m_ownedAttributes.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
     m_ownedAttributes.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
     m_ownedOperations.addProcedures.push_back(new AddOwnedOperationFunctor(this));
     m_ownedOperations.removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
+    m_nestedArtifacts.addProcedures.push_back(new AddNestedArtifactFunctor(this));
+    m_nestedArtifacts.removeProcedures.push_back(new RemoveNestedArtifactFunctor(this));
+    m_nestedArtifacts.addChecks.push_back(new CheckNestedArtifactFunctor(this));
 }
 
 Artifact::Artifact(const Artifact& artifact) {
@@ -93,6 +114,13 @@ Artifact::Artifact(const Artifact& artifact) {
     m_ownedOperations.addProcedures.push_back(new AddOwnedOperationFunctor(this));
     m_ownedOperations.removeProcedures.clear();
     m_ownedOperations.removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
+    m_nestedArtifacts = artifact.m_nestedArtifacts;
+    m_nestedArtifacts.addProcedures.clear();
+    m_nestedArtifacts.removeProcedures.clear();
+    m_nestedArtifacts.addProcedures.push_back(new AddNestedArtifactFunctor(this));
+    m_nestedArtifacts.removeProcedures.push_back(new RemoveNestedArtifactFunctor(this));
+    m_nestedArtifacts.addChecks.clear();
+    m_nestedArtifacts.addChecks.push_back(new CheckNestedArtifactFunctor(this));
 }
 
 Sequence<Property>& Artifact::getOwnedAttributes() {
@@ -101,6 +129,10 @@ Sequence<Property>& Artifact::getOwnedAttributes() {
 
 Sequence<Operation>& Artifact::getOwnedOperations() {
     return m_ownedOperations;
+}
+
+Sequence<Artifact>& Artifact::getNestedArtifacts() {
+    return m_nestedArtifacts;
 }
 
 Artifact::~Artifact() {

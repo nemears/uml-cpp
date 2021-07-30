@@ -85,3 +85,18 @@ TEST_F(DeploymentTest, setArtifactTest) {
     ASSERT_EQ(artifact.getOwnedOperations().size(), 0);
     ASSERT_TRUE(op.getArtifact() == 0);
 }
+
+TEST_F(DeploymentTest, nestedArtifactTest) {
+    UmlManager m;
+    Artifact& a1 = m.create<Artifact>();
+    Artifact& a2 = m.create<Artifact>();
+    a1.getNestedArtifacts().add(a2);
+    ASSERT_EQ(a1.getNestedArtifacts().size(), 1);
+    ASSERT_EQ(a1.getNestedArtifacts().front()->getID(), a2.getID());
+    ASSERT_EQ(a1.getOwnedMembers().size(), 1);
+    ASSERT_EQ(a1.getOwnedMembers().front()->getID(), a2.getID());
+    a1.getNestedArtifacts().remove(a2);
+    ASSERT_EQ(a1.getNestedArtifacts().size(), 0);
+    ASSERT_EQ(a1.getOwnedMembers().size(), 0);
+    ASSERT_THROW(a1.getNestedArtifacts().add(a1), NestedArtifactException);
+}

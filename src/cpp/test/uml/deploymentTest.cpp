@@ -2,6 +2,9 @@
 #include "uml/deployment.h"
 #include "uml/deploymentTarget.h"
 #include "uml/deployedArtifact.h"
+#include "uml/artifact.h"
+#include "uml/property.h"
+#include "uml/operation.h"
 
 using namespace UML;
 
@@ -31,4 +34,54 @@ TEST_F(DeploymentTest, basicDeploymentTest) {
     ASSERT_EQ(deployment.getDeployedArtifact().size(), 0);
     ASSERT_EQ(deployment.getSupplier().size(), 0);
     ASSERT_TRUE(deployment.getOwner() == 0);
+}
+
+TEST_F(DeploymentTest, artifactOperationAndAttributeTest) {
+    UmlManager m;
+    Artifact& artifact = m.create<Artifact>();
+    Property& prop = m.create<Property>();
+    Operation& op = m.create<Operation>();
+    artifact.getOwnedAttributes().add(prop);
+    artifact.getOwnedOperations().add(op);
+    ASSERT_EQ(artifact.getOwnedAttributes().size(), 1);
+    ASSERT_EQ(artifact.getAttributes().size(), 1);
+    ASSERT_TRUE(prop.getArtifact() != 0);
+    ASSERT_EQ(prop.getArtifact()->getID(), artifact.getID());
+    ASSERT_EQ(prop.getClassifier()->getID(), artifact.getID());
+    ASSERT_EQ(artifact.getOwnedOperations().size(), 1);
+    ASSERT_EQ(artifact.getOwnedOperations().size(), 1);
+    ASSERT_TRUE(op.getArtifact() != 0);
+    ASSERT_EQ(op.getArtifact()->getID(), artifact.getID());
+    artifact.getOwnedAttributes().remove(prop);
+    artifact.getOwnedOperations().remove(op);
+    ASSERT_EQ(artifact.getOwnedAttributes().size(), 0);
+    ASSERT_EQ(artifact.getAttributes().size(), 0);
+    ASSERT_TRUE(prop.getArtifact() == 0);
+    ASSERT_EQ(artifact.getOwnedOperations().size(), 0);
+    ASSERT_TRUE(op.getArtifact() == 0);
+}
+
+TEST_F(DeploymentTest, setArtifactTest) {
+    UmlManager m;
+    Artifact& artifact = m.create<Artifact>();
+    Property& prop = m.create<Property>();
+    Operation& op = m.create<Operation>();
+    prop.setArtifact(&artifact);
+    op.setArtifact(&artifact);
+    ASSERT_EQ(artifact.getOwnedAttributes().size(), 1);
+    ASSERT_EQ(artifact.getAttributes().size(), 1);
+    ASSERT_TRUE(prop.getArtifact() != 0);
+    ASSERT_EQ(prop.getArtifact()->getID(), artifact.getID());
+    ASSERT_EQ(prop.getClassifier()->getID(), artifact.getID());
+    ASSERT_EQ(artifact.getOwnedOperations().size(), 1);
+    ASSERT_EQ(artifact.getOwnedOperations().size(), 1);
+    ASSERT_TRUE(op.getArtifact() != 0);
+    ASSERT_EQ(op.getArtifact()->getID(), artifact.getID());
+    prop.setArtifact(0);
+    op.setArtifact(0);
+    ASSERT_EQ(artifact.getOwnedAttributes().size(), 0);
+    ASSERT_EQ(artifact.getAttributes().size(), 0);
+    ASSERT_TRUE(prop.getArtifact() == 0);
+    ASSERT_EQ(artifact.getOwnedOperations().size(), 0);
+    ASSERT_TRUE(op.getArtifact() == 0);
 }

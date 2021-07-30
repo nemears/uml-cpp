@@ -6,6 +6,7 @@
 
 namespace UML {
     class Artifact : public Classifier, public DeployedArtifact {
+        friend class UmlManager;
         protected:
             Sequence<Property> m_ownedAttributes;
             Sequence<Operation> m_ownedOperations;

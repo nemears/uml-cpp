@@ -525,22 +525,14 @@ ID Element::getID() {
 }
 
 Element* Element::getOwner() {
-    if (!m_ownerID.isNull()) {
-        if (!m_ownerPtr) {
-            if (m_manager) {
-                m_ownerPtr = &m_manager->get<Element>(m_ownerID);
-            }
-        }
-        return m_ownerPtr;
-    }
-    return 0;
+    return universalGet<>(m_ownerID, m_ownerPtr, m_manager);
 }
 
 void Element::setOwner(Element* owner) {
     // remove old owner
     if (!isSameOrNull(m_ownerID, owner)) {
         if (!m_ownerPtr) {
-            *m_ownerPtr = m_manager->get<>(m_ownerID);
+            m_ownerPtr = &m_manager->get<>(m_ownerID);
         }
         if (m_ownerPtr->getOwnedElements().count(m_id)) {
             m_ownerPtr->getOwnedElements().internalRemove(*this);

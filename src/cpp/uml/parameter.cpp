@@ -1,6 +1,7 @@
 #include "uml/parameter.h"
 #include "uml/operation.h"
 #include "uml/behavior.h"
+#include "uml/universalFunctions.h"
 
 using namespace std;
 using namespace UML;
@@ -62,13 +63,7 @@ Parameter::~Parameter() {
 }
 
 Operation* Parameter::getOperation() {
-    if (!m_operationID.isNull()) {
-        if (!m_operationPtr) {
-            m_operationPtr = &m_manager->get<Operation>(m_operationID);
-        }
-        return m_operationPtr;
-    }
-    return 0;
+    return universalGet<Operation>(m_operationID, m_operationPtr, m_manager);
 }
 
 void Parameter::setOperation(Operation* operation) {

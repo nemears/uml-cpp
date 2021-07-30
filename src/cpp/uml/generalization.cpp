@@ -1,5 +1,6 @@
 #include "uml/generalization.h"
 #include "uml/classifier.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -9,13 +10,7 @@ Generalization::Generalization() {
 }
 
 Classifier* Generalization::getGeneral() {
-    if (!m_generalID.isNull()) {
-        if (!m_generalPtr) {
-            m_generalPtr = &m_manager->get<Classifier>(m_generalID);
-        }
-        return m_generalPtr;
-    }
-    return 0;
+    return universalGet<Classifier>(m_generalID, m_generalPtr, m_manager);
 }
 
 void Generalization::setGeneral(Classifier* general) {
@@ -72,13 +67,7 @@ void Generalization::setGeneral(Classifier* general) {
 }
 
 Classifier* Generalization::getSpecific() {
-    if (!m_specificID.isNull()) {
-        if (!m_specificPtr) {
-            m_specificPtr = &m_manager->get<Classifier>(m_specificID);
-        }
-        return m_specificPtr;
-    }
-    return 0;
+    return universalGet<Classifier>(m_specificID, m_specificPtr, m_manager);
 }
 
 void Generalization::setSpecific(Classifier* specific) {

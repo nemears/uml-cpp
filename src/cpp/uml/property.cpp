@@ -6,6 +6,7 @@
 #include "uml/class.h"
 #include "uml/association.h"
 #include "uml/artifact.h"
+#include "uml/universalFunctions.h"
 
 using namespace std;
 using namespace UML;
@@ -189,13 +190,7 @@ void Property::setAggregation(AggregationKind aggregation) {
 }
 
 ValueSpecification* Property::getDefaultValue() {
-    if (!m_defaultValueID.isNull()) {
-        if (!m_defaultValuePtr) {
-            m_defaultValuePtr = &m_manager->get<ValueSpecification>(m_defaultValueID);
-        }
-        return m_defaultValuePtr;
-    }
-    return 0;
+    return universalGet<ValueSpecification>(m_defaultValueID, m_defaultValuePtr, m_manager);
 }
 
 void Property::setDefaultValue(ValueSpecification* val) {
@@ -228,13 +223,7 @@ void Property::setDefaultValue(ValueSpecification* val) {
 }
 
 Classifier* Property::getClassifier() {
-    if (!m_classifierID.isNull()) {
-        if (!m_classifierPtr) {
-            m_classifierPtr = &m_manager->get<Classifier>(m_classifierID);
-        }
-        return m_classifierPtr;
-    }
-    return 0;
+    return universalGet<Classifier>(m_classifierID, m_classifierPtr, m_manager);
 }
 
 void Property::setClassifier(Classifier* classifier) {
@@ -262,28 +251,10 @@ void Property::setClassifier(Classifier* classifier) {
             classifier->getAttributes().add(*this);
         }
     }
-
-    // if (m_classifier) {
-    //     if (m_classifier->getAttributes().count(m_id)) {
-    //         m_classifier->getAttributes().remove(*this);
-    //     }
-    // }
-    // m_classifier = classifier;
-    // if (m_classifier) {
-    //     if (!m_classifier->getAttributes().count(m_id)) {
-    //         m_classifier->getAttributes().add(*this);
-    //     }
-    // }
 }
 
 StructuredClassifier* Property::getStructuredClassifier() {
-    if (!m_structuredClassifierID.isNull()) {
-        if (!m_structuredClassifierPtr) {
-            m_structuredClassifierPtr = &m_manager->get<StructuredClassifier>(m_structuredClassifierID);
-        }
-        return m_structuredClassifierPtr;
-    }
-    return 0;
+    return universalGet<StructuredClassifier>(m_structuredClassifierID, m_structuredClassifierPtr, m_manager);
 }
 
 void Property::setStructuredClassifier(StructuredClassifier* classifier) {
@@ -314,13 +285,7 @@ void Property::setStructuredClassifier(StructuredClassifier* classifier) {
 }
 
 DataType* Property::getDataType() {
-    if (!m_dataTypeID.isNull()) {
-        if (!m_dataTypePtr) {
-            m_dataTypePtr = &m_manager->get<DataType>(m_dataTypeID);
-        }
-        return m_dataTypePtr;
-    }
-    return 0;
+    return universalGet<DataType>(m_dataTypeID, m_dataTypePtr, m_manager);
 }
 
 void Property::setDataType(DataType* dataType) {
@@ -351,13 +316,7 @@ void Property::setDataType(DataType* dataType) {
 }
 
 Class* Property::getClass() {
-    if (!m_classID.isNull()) {
-        if (!m_classPtr) {
-            m_classPtr = &m_manager->get<Class>(m_classID);
-        }
-        return m_classPtr;
-    }
-    return 0;
+    return universalGet<Class>(m_classID, m_classPtr, m_manager);
 }
 
 void Property::setClass(Class* clazz) {
@@ -388,13 +347,7 @@ void Property::setClass(Class* clazz) {
 }
 
 Association* Property::getAssociation() {
-    if (!m_associationID.isNull()) {
-        if (!m_associationPtr) {
-            m_associationPtr = &m_manager->get<Association>(m_associationID);
-        }
-        return m_associationPtr;
-    }
-    return 0;
+    return universalGet<Association>(m_associationID, m_associationPtr, m_manager);
 }
 
 void Property::setAssociation(Association* association) {
@@ -425,13 +378,7 @@ void Property::setAssociation(Association* association) {
 }
 
 Association* Property::getOwningAssociation() {
-    if (!m_owningAssociationID.isNull()) {
-        if (!m_owningAssociationPtr) {
-            m_owningAssociationPtr = &m_manager->get<Association>(m_owningAssociationID);
-        }
-        return m_owningAssociationPtr;
-    }
-    return 0;
+    return universalGet<Association>(m_owningAssociationID, m_owningAssociationPtr, m_manager);
 }
 
 void Property::setOwningAssociation(Association* association) {
@@ -470,13 +417,7 @@ void Property::setOwningAssociation(Association* association) {
 }
 
 Artifact* Property::getArtifact() {
-    if (!m_artifactID.isNull()) {
-        if (!m_artifactPtr) {
-            m_artifactPtr = &m_manager->get<Artifact>(m_artifactID);
-        }
-        return m_artifactPtr;
-    }
-    return 0;
+    return universalGet<Artifact>(m_artifactID, m_artifactPtr, m_manager);
 }
 
 void Property::setArtifact(Artifact* artifact) {

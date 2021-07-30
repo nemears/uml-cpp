@@ -1,6 +1,7 @@
 #include "uml/instanceSpecification.h"
 #include "uml/slot.h"
 #include "uml/classifier.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -58,13 +59,7 @@ InstanceSpecification::~InstanceSpecification() {
 }
 
 Classifier* InstanceSpecification::getClassifier() {
-    if (!m_classifierID.isNull()) {
-        if (!m_classifierPtr) {
-            m_classifierPtr = &m_manager->get<Classifier>(m_classifierID);
-        }
-        return m_classifierPtr;
-    }
-    return 0;
+    return universalGet<Classifier>(m_classifierID, m_classifierPtr, m_manager);
 }
 
 void InstanceSpecification::setClassifier(Classifier* classifier) {

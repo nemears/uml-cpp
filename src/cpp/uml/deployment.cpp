@@ -1,6 +1,7 @@
 #include "uml/deployment.h"
 #include "uml/deployedArtifact.h"
 #include "uml/deploymentTarget.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -47,13 +48,7 @@ Sequence<DeployedArtifact>& Deployment::getDeployedArtifact() {
 }
 
 DeploymentTarget* Deployment::getLocation() {
-    if (!m_locationID.isNull()) {
-        if (!m_locationPtr) {
-            m_locationPtr = &m_manager->get<DeploymentTarget>(m_locationID);
-        }
-        return m_locationPtr;
-    }
-    return 0;
+    return universalGet<DeploymentTarget>(m_locationID, m_locationPtr, m_manager);
 }
 
 void Deployment::setLocation(DeploymentTarget* location) {

@@ -1,5 +1,6 @@
 #include "uml/profileApplication.h"
 #include "uml/profile.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -22,14 +23,7 @@ ProfileApplication::~ProfileApplication() {
 }
 
 Profile* ProfileApplication::getAppliedProfile() {
-    if (!m_appliedProfileID.isNull()) {
-        if (!m_appliedProfilePtr) {
-            m_appliedProfilePtr = &m_manager->get<Profile>(m_appliedProfileID);
-        }
-        return m_appliedProfilePtr;
-    }
-
-    return 0;
+    return universalGet<Profile>(m_appliedProfileID, m_appliedProfilePtr, m_manager);
 }
 
 void ProfileApplication::setAppliedProfile(Profile* profile) {
@@ -62,13 +56,7 @@ void ProfileApplication::setAppliedProfile(Profile* profile) {
 }
 
 Package* ProfileApplication::getApplyingPackage() {
-    if (!m_applyingPackageID.isNull()) {
-        if (!m_applyingPackagePtr) {
-            m_applyingPackagePtr = &m_manager->get<Package>(m_applyingPackageID);
-        }
-        return m_applyingPackagePtr;
-    }
-    return 0;
+    return universalGet<Package>(m_applyingPackageID, m_applyingPackagePtr, m_manager);
 }
 
 void ProfileApplication::setApplyingPackage(Package* pckg) {

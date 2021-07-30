@@ -2,6 +2,7 @@
 #include "uml/templateParameterSubstitution.h"
 #include "uml/templateableElement.h"
 #include "uml/templateSignature.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -51,13 +52,7 @@ TemplateBinding::~TemplateBinding() {
 }
 
 TemplateableElement* TemplateBinding::getBoundElement() {
-    if (!m_boundElementID.isNull()) {
-        if (!m_boundElementPtr) {
-            m_boundElementPtr = &m_manager->get<TemplateableElement>(m_boundElementID);
-        }
-        return m_boundElementPtr;
-    }
-    return 0;
+    return universalGet<TemplateableElement>(m_boundElementID, m_boundElementPtr, m_manager);
 }
 
 void TemplateBinding::setBoundElement(TemplateableElement* el) {
@@ -100,13 +95,7 @@ void TemplateBinding::setBoundElement(TemplateableElement* el) {
 }
 
 TemplateSignature* TemplateBinding::getSignature() {
-    if (!m_signatureID.isNull()) {
-        if (!m_signaturePtr) {
-            m_signaturePtr = &m_manager->get<TemplateSignature>(m_signatureID);
-        }
-        return m_signaturePtr;
-    }
-    return 0;
+    return universalGet<TemplateSignature>(m_signatureID, m_signaturePtr, m_manager);
 }
 
 void TemplateBinding::setSignature(TemplateSignature* signature) {
@@ -141,35 +130,6 @@ void TemplateBinding::setSignature(TemplateSignature* signature) {
 Sequence<TemplateParameterSubstitution>& TemplateBinding::getParameterSubstitution() {
     return m_parameterSubstitution;
 }
-
-// void TemplateBinding::setParameterSubstitution(TemplateParameterSubstitution* sub) {
-//     if (!isSameOrNull(m_parameterSubstitutionID, sub)) {
-//         if (!m_parameterSubstitutionPtr) {
-//             m_parameterSubstitutionPtr = &m_manager->get<TemplateParameterSubstitution>(m_parameterSubstitutionID);
-//         }
-
-//         if (m_parameterSubstitutionPtr->getTemplateBinding() == this) {
-//             m_parameterSubstitutionPtr->setTemplateBinding(0);
-//         }
-
-//         m_parameterSubstitutionPtr = 0;
-//         m_parameterSubstitutionID = ID::nullID();
-//     }
-
-//     if (sub) {
-//         m_parameterSubstitutionID = sub->getID();
-//     }
-
-//     if (!m_manager) {
-//         m_parameterSubstitutionPtr = sub;
-//     }
-
-//     if (sub) {
-//         if (sub->getTemplateBinding() != this) {
-//             sub->setTemplateBinding(this);
-//         }
-//     }
-// }
 
 ElementType TemplateBinding::getElementType() const {
     return ElementType::TEMPLATE_BINDING;

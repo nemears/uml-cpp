@@ -2,6 +2,7 @@
 #include "uml/instanceSpecification.h"
 #include "uml/structuralFeature.h"
 #include "uml/valueSpecification.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -57,13 +58,7 @@ Sequence<ValueSpecification>& Slot::getValues() {
 }
 
 StructuralFeature* Slot::getDefiningFeature() {
-    if (!m_definingFeatureID.isNull()) {
-        if (!m_definingFeaturePtr) {
-            m_definingFeaturePtr = &m_manager->get<StructuralFeature>(m_definingFeatureID);
-        }
-        return m_definingFeaturePtr;
-    }
-    return 0;
+    return universalGet<StructuralFeature>(m_definingFeatureID, m_definingFeaturePtr, m_manager);
 }
 
 void Slot::setDefiningFeature(StructuralFeature* definingFeature) {
@@ -77,13 +72,7 @@ void Slot::setDefiningFeature(StructuralFeature* definingFeature) {
 }
 
 InstanceSpecification* Slot::getOwningInstance() {
-    if (!m_owningInstanceID.isNull()) {
-        if (!m_owningInstancePtr) {
-            m_owningInstancePtr = &m_manager->get<InstanceSpecification>(m_owningInstanceID);
-        }
-        return m_owningInstancePtr;
-    }
-    return 0;
+    return universalGet<InstanceSpecification>(m_owningInstanceID, m_owningInstancePtr, m_manager);
 }
 
 void Slot::setOwningInstance(InstanceSpecification* inst) {

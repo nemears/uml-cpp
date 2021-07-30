@@ -1,6 +1,7 @@
 #include "uml/multiplicityElement.h"
 #include "uml/literalInt.h"
 #include "uml/valueSpecification.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -50,13 +51,7 @@ bool MultiplicityElement::multiplicitySpecified() {
 }
 
 ValueSpecification* MultiplicityElement::getLowerValue() {
-    if (!m_lowValID.isNull()) {
-        if (!m_lowValPtr) {
-            m_lowValPtr = &m_manager->get<ValueSpecification>(m_lowValID);
-        }
-        return m_lowValPtr;
-    }
-    return 0;
+    return universalGet<ValueSpecification>(m_lowValID, m_lowValPtr, m_manager);
 }
 
 void MultiplicityElement::setLowerValue(ValueSpecification* val) {
@@ -82,13 +77,7 @@ void MultiplicityElement::setLowerValue(ValueSpecification* val) {
 }
 
 ValueSpecification* MultiplicityElement::getUpperValue() {
-    if (!m_upValID.isNull()) {
-        if (!m_upValPtr) {
-            m_upValPtr = &m_manager->get<ValueSpecification>(m_upValID);
-        }
-        return m_upValPtr;
-    }
-    return 0;
+    return universalGet<ValueSpecification>(m_upValID, m_upValPtr, m_manager);
 }
 
 void MultiplicityElement::setUpperValue(ValueSpecification* val) {

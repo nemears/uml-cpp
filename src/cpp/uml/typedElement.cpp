@@ -1,6 +1,7 @@
 #include "uml/typedElement.h"
 #include "uml/umlManager.h"
 #include "uml/type.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -14,13 +15,7 @@ TypedElement::TypedElement(const TypedElement& el) {
 }
 
 Type* TypedElement::getType() {
-    if (!m_typeID.isNull()) {
-        if (!m_typePtr) {
-            m_typePtr = &m_manager->get<Type>(m_typeID);
-        }
-        return m_typePtr;
-    }
-    return 0;
+    return universalGet<Type>(m_typeID, m_typePtr, m_manager);
 }
 
 void TypedElement::setType(Type* type) {

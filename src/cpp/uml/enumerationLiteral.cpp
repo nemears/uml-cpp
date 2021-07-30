@@ -1,5 +1,6 @@
 #include "uml/enumerationLiteral.h"
 #include "uml/enumeration.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -8,13 +9,7 @@ EnumerationLiteral::EnumerationLiteral() {
 }
 
 Enumeration* EnumerationLiteral::getEnumeration() {
-    if (!m_enumerationID.isNull()) {
-        if (!m_enumerationPtr) {
-            m_enumerationPtr = &m_manager->get<Enumeration>(m_enumerationID);
-        }
-        return m_enumerationPtr;
-    }
-    return 0;
+    return universalGet<Enumeration>(m_enumerationID, m_enumerationPtr, m_manager);
 }
 
 void EnumerationLiteral::setEnumeration(Enumeration* enumeration) {

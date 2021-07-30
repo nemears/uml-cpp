@@ -1,5 +1,6 @@
 #include "uml/extensionEnd.h"
 #include "uml/extension.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -22,13 +23,7 @@ ExtensionEnd::~ExtensionEnd() {
 }
 
 Extension* ExtensionEnd::getExtension() {
-    if (!m_extensionID.isNull()) {
-        if (!m_extensionPtr) {
-            m_extensionPtr = &m_manager->get<Extension>(m_extensionID);
-        }
-        return m_extensionPtr;
-    }
-    return 0;
+    return universalGet<Extension>(m_extensionID, m_extensionPtr, m_manager);
 }
 
 void ExtensionEnd::setExtension(Extension* extension) {
@@ -70,13 +65,7 @@ void ExtensionEnd::setExtension(Extension* extension) {
 }
 
 Stereotype* ExtensionEnd::getType() {
-    if (!m_extensionTypeID.isNull()) {
-        if (!m_extensionTypePtr) {
-            m_extensionTypePtr = &m_manager->get<Stereotype>(m_extensionTypeID);
-        }
-        return m_extensionTypePtr;
-    }
-    return 0;
+    return universalGet<Stereotype>(m_extensionTypeID, m_extensionTypePtr, m_manager);
 }
 
 void ExtensionEnd::setType(Stereotype* type) {

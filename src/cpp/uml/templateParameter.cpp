@@ -1,6 +1,7 @@
 #include "uml/templateParameter.h"
 #include "uml/templateSignature.h"
 #include "uml/parameterableElement.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -25,13 +26,7 @@ TemplateParameter::~TemplateParameter() {
 }
 
 TemplateSignature* TemplateParameter::getSignature() {
-    if (!m_signatureID.isNull()) {
-        if (!m_signaturePtr) {
-            m_signaturePtr = &m_manager->get<TemplateSignature>(m_signatureID);
-        }
-        return m_signaturePtr;
-    }
-    return 0;
+    return universalGet<TemplateSignature>(m_signatureID, m_signaturePtr, m_manager);
 }
 
 void TemplateParameter::setSignature(TemplateSignature* signature) {
@@ -64,13 +59,7 @@ void TemplateParameter::setSignature(TemplateSignature* signature) {
 }
 
 ParameterableElement* TemplateParameter::getOwnedParameteredElement() {
-    if (!m_ownedParameteredElementID.isNull()) {
-        if (!m_ownedParameteredElementPtr) {
-            m_ownedParameteredElementPtr = &m_manager->get<ParameterableElement>(m_ownedParameteredElementID);
-        }
-        return m_ownedParameteredElementPtr;
-    }
-    return 0;
+    return universalGet<ParameterableElement>(m_ownedParameteredElementID, m_ownedParameteredElementPtr, m_manager);
 }
 
 void TemplateParameter::setOwnedParameteredElement(ParameterableElement* el) {
@@ -111,13 +100,7 @@ void TemplateParameter::setOwnedParameteredElement(ParameterableElement* el) {
 }
 
 ParameterableElement* TemplateParameter::getParameteredElement() {
-    if (!m_parameteredElementID.isNull()) {
-        if (!m_parameteredElementPtr) {
-            m_parameteredElementPtr = &m_manager->get<ParameterableElement>(m_parameteredElementID);
-        }
-        return m_parameteredElementPtr;
-    }
-    return 0;
+    return universalGet<ParameterableElement>(m_parameteredElementID, m_parameteredElementPtr, m_manager);
 }
 
 void TemplateParameter::setParameteredElement(ParameterableElement* el) {
@@ -136,13 +119,7 @@ void TemplateParameter::setParameteredElement(ParameterableElement* el) {
 }
 
 ParameterableElement* TemplateParameter::getDefault() {
-    if (!m_defaultID.isNull()) {
-        if (!m_defaultPtr) {
-            m_defaultPtr = &m_manager->get<ParameterableElement>(m_defaultID);
-        }
-        return m_defaultPtr;
-    }
-    return 0;
+    return universalGet<ParameterableElement>(m_defaultID, m_defaultPtr, m_manager);
 }
 
 void TemplateParameter::setDefault(ParameterableElement* el) {
@@ -161,14 +138,7 @@ void TemplateParameter::setDefault(ParameterableElement* el) {
 }
 
 ParameterableElement* TemplateParameter::getOwnedDefault() {
-    if (!m_ownedDefaultID.isNull()) {
-        if (!m_ownedDefaultPtr) {
-            m_ownedDefaultPtr = &m_manager->get<ParameterableElement>(m_ownedDefaultID);
-        }
-
-        return m_ownedDefaultPtr;
-    }
-    return 0;
+    return universalGet<ParameterableElement>(m_ownedDefaultID, m_ownedDefaultPtr, m_manager);
 }
 
 void TemplateParameter::setOwnedDefault(ParameterableElement* el) {

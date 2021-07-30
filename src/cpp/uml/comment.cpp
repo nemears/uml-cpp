@@ -1,5 +1,6 @@
 #include "uml/comment.h"
 #include "uml/sequence.h"
+#include "uml/universalFunctions.h"
 
 using namespace std;
 using namespace UML;
@@ -17,13 +18,7 @@ void Comment::setBody(string body) {
 }
 
 Element* Comment::getOwningElement() {
-    if (!m_owningElementID.isNull()) {
-        if (!m_owningElementPtr) {
-            m_owningElementPtr = &m_manager->get<>(m_owningElementID);
-        }
-        return m_owningElementPtr;
-    }
-    return 0;
+    return universalGet<>(m_owningElementID, m_owningElementPtr, m_manager);
 }
 
 void Comment::setOwningElement(Element* el) {

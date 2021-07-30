@@ -1,5 +1,6 @@
 #include "uml/extension.h"
 #include "uml/extensionEnd.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -29,13 +30,7 @@ ElementType Extension::getMetaClass() {
 }
 
 ExtensionEnd* Extension::getOwnedEnd() {
-    if (!m_ownedEndID.isNull()) {
-        if (!m_ownedEndPtr) {
-            m_ownedEndPtr = &m_manager->get<ExtensionEnd>(m_ownedEndID);
-        }
-        return m_ownedEndPtr;
-    }
-    return 0;
+    return universalGet<ExtensionEnd>(m_ownedEndID, m_ownedEndPtr, m_manager);
 }
 
 void Extension::setOwnedEnd(ExtensionEnd* end) {

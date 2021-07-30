@@ -1,6 +1,7 @@
 #include "uml/valueSpecification.h"
 #include "uml/slot.h"
 #include "uml/expression.h"
+#include "uml/universalFunctions.h"
 
 using namespace std;
 using namespace UML;
@@ -34,13 +35,7 @@ ValueSpecification::ValueSpecification() {
 }
 
 Slot* ValueSpecification::getOwningSlot() {
-    if (!m_owningSlotID.isNull()) {
-        if (!m_owningSlotPtr) {
-            m_owningSlotPtr = &m_manager->get<Slot>(m_owningSlotID);
-        }
-        return m_owningSlotPtr;
-    }
-    return 0;
+    return universalGet<Slot>(m_owningSlotID, m_owningSlotPtr, m_manager);
 }
 
 void ValueSpecification::setOwningSlot(Slot* slot) {

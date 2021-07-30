@@ -88,18 +88,6 @@ namespace UML {
                 return "tried to apply instance as stereotype that does not have a classifier set to a stereotype!";
             };
     };
-
-    template <class T = Element> T* universalGet(ID theID, T* thePtr, UmlManager* theManager) {
-        if (!theID.isNull()) {
-            if (!thePtr) {
-                if (theManager) {
-                    thePtr = &theManager->get<T>(theID);
-                }
-            }
-            return thePtr;
-        }
-        return 0;
-    };
 }
 
 #endif

@@ -3,6 +3,7 @@
 #include "uml/namespace.h"
 #include "uml/namedElementFunctors.h"
 #include "uml/classifier.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 using namespace std;
@@ -85,13 +86,7 @@ string NamedElement::getName() {
 }
 
 Namespace* NamedElement::getNamespace() {
-    if (!m_namespaceID.isNull()) {
-        if (!m_namespacePtr) {
-            m_namespacePtr = &m_manager->get<Namespace>(m_namespaceID);
-        }
-        return m_namespacePtr;
-    }
-    return 0;
+    return universalGet<Namespace>(m_namespaceID, m_namespacePtr, m_manager);
 }
 
 void NamedElement::setNamespace(Namespace* nmspc) {

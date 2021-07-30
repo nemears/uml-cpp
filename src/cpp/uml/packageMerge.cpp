@@ -1,5 +1,6 @@
 #include "uml/packageMerge.h"
 #include "uml/package.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -16,13 +17,7 @@ PackageMerge::PackageMerge(const PackageMerge& merge) {
 }
 
 Package* PackageMerge::getReceivingPackage() {
-    if (!m_receivingPackageID.isNull()) {
-        if (!m_receivingPackagePtr) {
-            m_receivingPackagePtr = &m_manager->get<Package>(m_receivingPackageID);
-        }
-        return m_receivingPackagePtr;
-    }
-    return 0;
+    return universalGet<Package>(m_receivingPackageID, m_receivingPackagePtr, m_manager);
 }
 
 void PackageMerge::setReceivingPackage(Package* receiving) {
@@ -59,13 +54,7 @@ void PackageMerge::setReceivingPackage(Package* receiving) {
 }
 
 Package* PackageMerge::getMergedPackage() {
-    if (!m_mergedPackageID.isNull()) {
-        if (!m_mergedPackagePtr) {
-            m_mergedPackagePtr = &m_manager->get<Package>(m_mergedPackageID);
-        }
-        return m_mergedPackagePtr;
-    }
-    return 0;
+    return universalGet<Package>(m_mergedPackageID, m_mergedPackagePtr, m_manager);
 }
 
 void PackageMerge::setMergedPackage(Package* merge) {

@@ -2,6 +2,7 @@
 #include "uml/class.h"
 #include "uml/dataType.h"
 #include "uml/artifact.h"
+#include "uml/universalFunctions.h"
 
 using namespace std;
 using namespace UML;
@@ -54,13 +55,7 @@ Operation::~Operation() {
 }
 
 Type* Operation::getType() {
-    if (!m_typeID.isNull()) {
-        if (!m_typePtr) {
-            m_typePtr = &m_manager->get<Type>(m_typeID);
-        }
-        return m_typePtr;
-    }
-    return 0;
+    return universalGet<Type>(m_typeID, m_typePtr, m_manager);
 }
 
 void Operation::setType(Type* type) {
@@ -73,13 +68,7 @@ void Operation::setType(Type* type) {
 }
 
 Class* Operation::getClass() {
-    if (!m_classID.isNull()) {
-        if (!m_classPtr) {
-            m_classPtr = &m_manager->get<Class>(m_classID);
-        }
-        return m_classPtr;
-    }
-    return 0;
+    return universalGet<Class>(m_classID, m_classPtr, m_manager);
 }
 
 void Operation::setClass(Class* clazz) {
@@ -113,13 +102,7 @@ void Operation::setClass(Class* clazz) {
 }
 
 DataType* Operation::getDataType() {
-    if (!m_dataTypeID.isNull()) {
-        if (!m_dataTypePtr) {
-            m_dataTypePtr = &m_manager->get<DataType>(m_dataTypeID);
-        }
-        return m_dataTypePtr;
-    }
-    return 0;
+    return universalGet<DataType>(m_dataTypeID, m_dataTypePtr, m_manager);
 }
 
 void Operation::setDataType(DataType* dataType) {
@@ -150,13 +133,7 @@ void Operation::setDataType(DataType* dataType) {
 }
 
 Artifact* Operation::getArtifact() {
-    if (!m_artifactID.isNull()) {
-        if (!m_artifactPtr) {
-            m_artifactPtr = &m_manager->get<Artifact>(m_artifactID);
-        }
-        return m_artifactPtr;
-    }
-    return 0;
+    return universalGet<Artifact>(m_artifactID, m_artifactPtr, m_manager);
 }
 
 void Operation::setArtifact(Artifact* artifact) {

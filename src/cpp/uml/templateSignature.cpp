@@ -2,6 +2,7 @@
 #include "uml/templateableElement.h"
 #include "uml/umlManager.h"
 #include "uml/templateParameter.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -58,13 +59,7 @@ TemplateSignature::~TemplateSignature() {
 }
 
 TemplateableElement* TemplateSignature::getTemplate() {
-    if (!m_templateID.isNull()) {
-        if (!m_templatePtr) {
-            m_templatePtr = &m_manager->get<TemplateableElement>(m_templateID);
-        }
-        return m_templatePtr;
-    }
-    return 0;
+    return universalGet<TemplateableElement>(m_templateID, m_templatePtr, m_manager);
 }
 
 void TemplateSignature::setTemplate(TemplateableElement* temp) {

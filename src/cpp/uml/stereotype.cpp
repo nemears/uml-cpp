@@ -1,5 +1,6 @@
 #include "uml/stereotype.h"
 #include "uml/profile.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -19,14 +20,7 @@ Stereotype::~Stereotype() {
 }
 
 Profile* Stereotype::getProfile() {
-    if (!m_profileID.isNull()) {
-        if (!m_profilePtr) {
-            m_profilePtr = &m_manager->get<Profile>(m_profileID);
-        }
-        return m_profilePtr;
-    }
-
-    return 0;
+    return universalGet<Profile>(m_profileID, m_profilePtr, m_manager);
 }
 
 void Stereotype::setProfile(Profile* profile) {

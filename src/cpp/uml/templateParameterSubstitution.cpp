@@ -3,6 +3,7 @@
 #include "uml/templateBinding.h"
 #include "uml/templateParameter.h"
 #include "uml/parameterableElement.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -22,13 +23,7 @@ TemplateParameterSubstitution::~TemplateParameterSubstitution() {
 }
 
 TemplateParameter* TemplateParameterSubstitution::getFormal() {
-    if (!m_formalID.isNull()) {
-        if (!m_formalPtr) {
-            m_formalPtr = &m_manager->get<TemplateParameter>(m_formalID);
-        }
-        return m_formalPtr;
-    }
-    return 0;
+    return universalGet<TemplateParameter>(m_formalID, m_formalPtr, m_manager);
 }
 
 void TemplateParameterSubstitution::setFormal(TemplateParameter* formal) {
@@ -47,13 +42,7 @@ void TemplateParameterSubstitution::setFormal(TemplateParameter* formal) {
 }
 
 TemplateBinding* TemplateParameterSubstitution::getTemplateBinding() {
-    if (!m_templateBindingID.isNull()) {
-        if (!m_templateBindingPtr) {
-            m_templateBindingPtr = &m_manager->get<TemplateBinding>(m_templateBindingID);
-        }
-        return m_templateBindingPtr;
-    }
-    return 0;
+    return universalGet<TemplateBinding>(m_templateBindingID, m_templateBindingPtr, m_manager);
 }
 
 void TemplateParameterSubstitution::setTemplateBinding(TemplateBinding* bind) {
@@ -88,13 +77,7 @@ void TemplateParameterSubstitution::setTemplateBinding(TemplateBinding* bind) {
 }
 
 ParameterableElement* TemplateParameterSubstitution::getActual() {
-    if (!m_actualID.isNull()) {
-        if (!m_actualPtr) {
-            m_actualPtr = &m_manager->get<ParameterableElement>(m_actualID);
-        }
-        return m_actualPtr;
-    }
-    return 0;
+    return universalGet<ParameterableElement>(m_actualID, m_actualPtr, m_manager);
 }
 
 void TemplateParameterSubstitution::setActual(ParameterableElement* actual) {
@@ -112,13 +95,7 @@ void TemplateParameterSubstitution::setActual(ParameterableElement* actual) {
 }
 
 ParameterableElement* TemplateParameterSubstitution::getOwnedActual() {
-    if (!m_ownedActualID.isNull()) {
-        if (!m_ownedActualPtr) {
-            m_ownedActualPtr = &m_manager->get<ParameterableElement>(m_ownedActualID);
-        }
-        return m_ownedActualPtr;
-    }
-    return 0;
+    return universalGet<ParameterableElement>(m_ownedActualID, m_ownedActualPtr, m_manager);
 }
 
 void TemplateParameterSubstitution::setOwnedActual(ParameterableElement* actual) {

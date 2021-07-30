@@ -3,6 +3,7 @@
 #include "uml/sequence.h"
 #include "uml/templateBinding.h"
 #include "uml/templateSignature.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -23,13 +24,7 @@ TemplateableElement::~TemplateableElement() {
 }
 
 TemplateSignature* TemplateableElement::getOwnedTemplateSignature() {
-    if (!m_ownedTemplateSignatureID.isNull()) {
-        if (!m_ownedTemplateSignaturePtr) {
-            m_ownedTemplateSignaturePtr = &m_manager->get<TemplateSignature>(m_ownedTemplateSignatureID);
-        }
-        return m_ownedTemplateSignaturePtr;
-    }
-    return 0;
+    return universalGet<TemplateSignature>(m_ownedTemplateSignatureID, m_ownedTemplateSignaturePtr, m_manager);
 }
 
 void TemplateableElement::setOwnedTemplateSignature(TemplateSignature* signature) {
@@ -70,13 +65,7 @@ void TemplateableElement::setOwnedTemplateSignature(TemplateSignature* signature
 }
 
 TemplateBinding* TemplateableElement::getTemplateBinding() {
-    if (!m_templateBindingID.isNull()) {
-        if (!m_templateBindingPtr) {
-            m_templateBindingPtr = &m_manager->get<TemplateBinding>(m_templateBindingID);
-        }
-        return m_templateBindingPtr;
-    }
-    return 0;
+    return universalGet<TemplateBinding>(m_templateBindingID, m_templateBindingPtr, m_manager);
 }
 
 void TemplateableElement::setTemplateBinding(TemplateBinding* binding) {

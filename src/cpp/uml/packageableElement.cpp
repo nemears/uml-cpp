@@ -1,5 +1,6 @@
 #include "uml/packageableElement.h"
 #include "uml/package.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -13,13 +14,7 @@ PackageableElement::PackageableElement(const PackageableElement& el) : NamedElem
 }
 
 Package* PackageableElement::getOwningPackage() {
-    if (!m_owningPackageID.isNull()) {
-        if (!m_owningPackagePtr) {
-            m_owningPackagePtr = &m_manager->get<Package>(m_owningPackageID);
-        }
-        return m_owningPackagePtr;
-    }
-    return 0;
+    return universalGet<Package>(m_owningPackageID, m_owningPackagePtr, m_manager);
 }
 
 void PackageableElement::setOwningPackage(Package* package) {

@@ -1,16 +1,11 @@
 #include "uml/instanceValue.h"
 #include "uml/instanceSpecification.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
 InstanceSpecification*  InstanceValue::getInstance() {
-    if (!m_instanceID.isNull()) {
-        if (!m_instancePtr) {
-            m_instancePtr = &m_manager->get<InstanceSpecification>(m_instanceID);
-        }
-        return m_instancePtr;
-    }
-    return 0;
+    return universalGet<InstanceSpecification>(m_instanceID, m_instancePtr, m_manager);
 }
 
 void InstanceValue::setInstance(InstanceSpecification* inst) {

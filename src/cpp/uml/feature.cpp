@@ -1,5 +1,6 @@
 #include "uml/feature.h"
 #include "uml/classifier.h"
+#include "uml/universalFunctions.h"
 
 using namespace std;
 using namespace UML;
@@ -35,13 +36,7 @@ Feature::Feature(const Feature& feature) {
 }
 
 Classifier* Feature::getFeaturingClassifier() {
-    if (!m_featuringClassifierID.isNull()) {
-        if (!m_featuringClassifierPtr) {
-            m_featuringClassifierPtr = &m_manager->get<Classifier>(m_featuringClassifierID);
-        }
-        return m_featuringClassifierPtr;
-    }
-    return 0;
+    return universalGet<Classifier>(m_featuringClassifierID, m_featuringClassifierPtr, m_manager);
 }
 
 void Feature::setFeaturingClassifier(Classifier* clazz) {

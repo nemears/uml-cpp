@@ -7,6 +7,7 @@
 #include "uml/comment.h"
 #include "uml/instanceSpecification.h"
 #include "uml/classifier.h"
+#include "uml/universalFunctions.h"
 
 using namespace std;
 using namespace UML;

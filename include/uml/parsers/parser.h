@@ -157,6 +157,16 @@ namespace UML {
                     AddSupplierFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
                     void operator()(Element& el) const override;
             };
+            class SetLocationFunctor : public AbstractPostProcessFunctor {
+                public:
+                    SetLocationFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
+            class AddDeployedArtifactFunctor : public AbstractPostProcessFunctor {
+                public:
+                    AddDeployedArtifactFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
             void emitModel(YAML::Emitter& emitter, Model& model, EmitterMetaData& data);
             void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
             void emitElement(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
@@ -237,6 +247,8 @@ namespace UML {
             void emitComment(YAML::Emitter& emitter, Comment& comment, EmitterMetaData& data);
             void parseDependency(YAML::Node node, Dependency& dependency, ParserMetaData& data);
             void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaData& data);
+            void parseDeployment(YAML::Node node, Deployment& deployment, ParserMetaData& data);
+            void parseArtifact(YAML::Node node, Artifact& artifact, ParserMetaData& data);
         }
     }
 }

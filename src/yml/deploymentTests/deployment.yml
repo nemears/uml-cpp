@@ -1,0 +1,12 @@
+---
+  package:
+    packagedElements:
+      - deployment:
+          location: Jt6XmZTswJx65TX1YvUwImGDheZT
+          deployedArtifacts:
+            - 8WVnUgtn8Dm&IAAet1mFpLnbwSLh
+      - instanceSpecification:
+          id: Jt6XmZTswJx65TX1YvUwImGDheZT
+      - artifact:
+          id: 8WVnUgtn8Dm&IAAet1mFpLnbwSLh
+...

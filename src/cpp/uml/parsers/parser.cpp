@@ -39,6 +39,8 @@
 #include "uml/abstraction.h"
 #include "uml/realization.h"
 #include "uml/usage.h"
+#include "uml/deployment.h"
+#include "uml/artifact.h"
 
 using namespace std;
 
@@ -1173,6 +1175,14 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                         Activity& activity = data.m_manager->create<Activity>();
                         // TODO parse activity
                         activity.setOwningPackage(&pckg);
+                    } else if (node["packagedElements"][i]["artifact"]) {
+                        if (node["packagedElements"][i]["artifact"].IsMap()) {
+                            Artifact& artifact = data.m_manager->create<Artifact>();
+                            parseArtifact(node["packagedElements"][i]["artifact"], artifact, data);
+                            pckg.getPackagedElements().add(artifact);
+                        } else {
+                            throw UmlParserException("Invalid yaml node type for artifact definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["artifact"]);
+                        }
                     } else if (node["packagedElements"][i]["association"]) {
                         if (node["packagedElements"][i]["association"].IsMap()) {
                             Association& association = data.m_manager->create<Association>();
@@ -1196,6 +1206,14 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                             pckg.getPackagedElements().add(dependency);
                         } else {
                             throw UmlParserException("Invalid yaml node type for dependency definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["dependency"]);
+                        }
+                    } else if (node["packagedElements"][i]["deployment"]) {
+                        if (node["packagedElements"][i]["deployment"].IsMap()) {
+                            Deployment& deployment = data.m_manager->create<Deployment>();
+                            parseDeployment(node["packagedElements"][i]["deployment"], deployment, data);
+                            pckg.getPackagedElements().add(deployment);
+                        } else {
+                            throw UmlParserException("Invalid yaml node type for deployment definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["deployment"]);
                         }
                     } else if (node["packagedElements"][i]["enumeration"]) {
                         Enumeration& enumeration = data.m_manager->create<Enumeration>();
@@ -2928,6 +2946,45 @@ void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaD
     if (dependency.getElementType() == ElementType::DEPENDENCY) {
         emitter << YAML::EndMap << YAML::EndMap;
     }
+}
+
+void SetLocationFunctor::operator()(Element& el) const {
+    m_el->as<Deployment>().setLocation(&el.as<DeploymentTarget>());
+}
+
+void AddDeployedArtifactFunctor::operator()(Element& el) const {
+    m_el->as<Deployment>().getDeployedArtifact().add(el.as<DeployedArtifact>());
+}
+
+void parseDeployment(YAML::Node node, Deployment& deployment, ParserMetaData& data) {
+    
+    parseNamedElement(node, deployment, data);
+    
+    if (node["location"]) {
+        if (node["location"].IsScalar()) {
+            applyFunctor(data, ID::fromString(node["location"].as<string>()), new SetLocationFunctor(&deployment, node["location"]));
+        } else {
+            throw UmlParserException("Invalid yaml node type for deployment location field, must be a scalar!", data.m_path.string(), node["location"]);
+        }
+    }
+
+    if (node["deployedArtifacts"]) {
+        if (node["deployedArtifacts"].IsSequence()) {
+            for (size_t i = 0; i < node["deployedArtifacts"].size(); i++) {
+                if (node["deployedArtifacts"][i].IsScalar()) {
+                    applyFunctor(data, ID::fromString(node["deployedArtifacts"][i].as<string>()), new AddDeployedArtifactFunctor(&deployment, node["deployedArtifacts"][i]));
+                } else {
+                    throw UmlParserException("Invalid yaml node type for deployment deployedArtifacts reference, must be a scalar!", data.m_path.string(), node["deployedArtifacts"][i]);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for deployment deployedArtifacts field, must be a sequence!", data.m_path.string(), node["deployedArtifacts"]);
+        }
+    }
+}
+
+void parseArtifact(YAML::Node node, Artifact& artifact, ParserMetaData& data) {
+    parseClassifier(node, artifact, data);
 }
 
 }

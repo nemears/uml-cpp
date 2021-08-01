@@ -925,6 +925,7 @@ ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserM
 void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
     parseTypedElement(node, prop, data);
     parseMultiplicityElement(node, prop, data);
+    parseDeploymentTarget(node, prop, data);
 
     if (node["aggregation"]) {
         if (node["aggregation"].IsScalar()) {
@@ -1207,14 +1208,6 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                         } else {
                             throw UmlParserException("Invalid yaml node type for dependency definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["dependency"]);
                         }
-                    } else if (node["packagedElements"][i]["deployment"]) {
-                        if (node["packagedElements"][i]["deployment"].IsMap()) {
-                            Deployment& deployment = data.m_manager->create<Deployment>();
-                            parseDeployment(node["packagedElements"][i]["deployment"], deployment, data);
-                            pckg.getPackagedElements().add(deployment);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type for deployment definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["deployment"]);
-                        }
                     } else if (node["packagedElements"][i]["enumeration"]) {
                         Enumeration& enumeration = data.m_manager->create<Enumeration>();
                         parseEnumeration(node["packagedElements"][i]["enumeration"], enumeration, data);
@@ -1474,6 +1467,7 @@ void SetClassifierFunctor::operator()(Element& el) const {
 
 void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data) {
     parseNamedElement(node, inst, data);
+    parseDeploymentTarget(node, inst, data);
 
     if (node["classifier"]) {
         if (node["classifier"].IsScalar()) {
@@ -2948,10 +2942,6 @@ void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaD
     }
 }
 
-void SetLocationFunctor::operator()(Element& el) const {
-    m_el->as<Deployment>().setLocation(&el.as<DeploymentTarget>());
-}
-
 void AddDeployedArtifactFunctor::operator()(Element& el) const {
     m_el->as<Deployment>().getDeployedArtifact().add(el.as<DeployedArtifact>());
 }
@@ -2959,14 +2949,6 @@ void AddDeployedArtifactFunctor::operator()(Element& el) const {
 void parseDeployment(YAML::Node node, Deployment& deployment, ParserMetaData& data) {
     
     parseNamedElement(node, deployment, data);
-    
-    if (node["location"]) {
-        if (node["location"].IsScalar()) {
-            applyFunctor(data, ID::fromString(node["location"].as<string>()), new SetLocationFunctor(&deployment, node["location"]));
-        } else {
-            throw UmlParserException("Invalid yaml node type for deployment location field, must be a scalar!", data.m_path.string(), node["location"]);
-        }
-    }
 
     if (node["deployedArtifacts"]) {
         if (node["deployedArtifacts"].IsSequence()) {
@@ -2986,6 +2968,28 @@ void parseDeployment(YAML::Node node, Deployment& deployment, ParserMetaData& da
 void parseArtifact(YAML::Node node, Artifact& artifact, ParserMetaData& data) {
     parseClassifier(node, artifact, data);
 }
+
+ void parseDeploymentTarget(YAML::Node node, DeploymentTarget& target, ParserMetaData& data) {
+    if (node["deployments"]) {
+        if (node["deployments"].IsSequence()) {
+            for (size_t i = 0; i < node["deployments"].size(); i++) {
+                if (node["deployments"][i]["deployment"]) {
+                    if (node["deployments"][i]["deployment"].IsMap()) {
+                        Deployment& deployment = data.m_manager->create<Deployment>();
+                        parseDeployment(node["deployments"][i]["deployment"], deployment, data);
+                        target.getDeployments().add(deployment);
+                    } else {
+                        throw UmlParserException("Invalid yaml node type for deployment definition, must be a map!", data.m_path.string(), node["deployments"][i]["deployment"]);
+                    }
+                } else {
+                    throw UmlParserException("Must specify a deployment definition for deployment entry!", data.m_path.string(), node["deployments"]);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for deploymentTarget field deployments, must be a sequence!", data.m_path.string(), node["deployments"]);
+        }
+    }
+ }
 
 }
 

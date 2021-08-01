@@ -8,11 +8,7 @@ void DeploymentTarget::AddDeploymentFunctor::operator()(Element& el) const {
         m_el->as<DeploymentTarget>().getOwnedElements().internalAdd(el);
     }
 
-    if (el.as<Deployment>().getLocation()) {
-        if (el.as<Deployment>().getLocation()->getID() != m_el->getID()) {
-            el.as<Deployment>().setLocation(&m_el->as<DeploymentTarget>());
-        }
-    }
+    el.as<Deployment>().setLocation(&m_el->as<DeploymentTarget>());
 }
 
 void DeploymentTarget::RemoveDeploymentFunctor::operator()(Element& el) const {

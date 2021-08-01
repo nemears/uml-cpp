@@ -2614,7 +2614,9 @@ void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data)
 }
 
 ElementType elementTypeFromString(string eType) {
-    if (eType.compare("ACTION") == 0) {
+    if (eType.compare("ABSTRACTION") == 0) {
+        return ElementType::ABSTRACTION;
+    } else if (eType.compare("ACTION") == 0) {
         return ElementType::ACTION;
     } else if (eType.compare("ACTIVITY") == 0) {
         return ElementType::ACTIVITY;
@@ -2622,6 +2624,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::ACTIVITY_EDGE;
     } else if (eType.compare("ACTIVITY_NODE") == 0) {
         return ElementType::ACTIVITY_NODE;
+    } else if (eType.compare("ARTIFACT")) {
+        return ElementType::ARTIFACT;
     } else if (eType.compare("ASSOCIATION") == 0) {
         return ElementType::ASSOCIATION;
     } else if (eType.compare("BEHAVIOR") == 0) {
@@ -2648,6 +2652,12 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::DECISION_NODE;
     } else if (eType.compare("DEPENDENCY") == 0) {
         return ElementType::DEPENDENCY;
+    } else if (eType.compare("DEPLOYED_ARTIFACT")) {
+        return ElementType::DEPLOYED_ARTIFACT;
+    } else if (eType.compare("DEPLOYMENT")) {
+        return ElementType::DEPLOYMENT;
+    } else if (eType.compare("DEPLOYMENT_TARGET")) {
+        return ElementType::DEPLOYMENT_TARGET;
     } else if (eType.compare("DIRECTED_RELATIONSHIP") == 0) {
         return ElementType::DIRECTED_RELATIONSHIP;
     } else if (eType.compare("ELEMENT") == 0) {

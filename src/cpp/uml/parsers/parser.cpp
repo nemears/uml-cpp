@@ -260,6 +260,10 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             emitDependency(emitter, el.as<Dependency>(), data);
             break;
         }
+        case ElementType::DEPLOYMENT : {
+            emitDeployment(emitter, el.as<Deployment>(), data);
+            break;
+        }
         case ElementType::ENUMERATION : {
             emitEnumeration(emitter, dynamic_cast<Enumeration&>(el), data);
             break;
@@ -2967,6 +2971,26 @@ void parseDeployment(YAML::Node node, Deployment& deployment, ParserMetaData& da
         } else {
             throw UmlParserException("Invalid yaml node type for deployment deployedArtifacts field, must be a sequence!", data.m_path.string(), node["deployedArtifacts"]);
         }
+    }
+}
+
+void emitDeployment(YAML::Emitter& emitter, Deployment& deployment, EmitterMetaData& data) {
+    if (deployment.getElementType() == ElementType::DEPLOYMENT) {
+        emitter << YAML::BeginMap << YAML::Key << "deployment" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitNamedElement(emitter, deployment, data);
+
+    if (!deployment.getDeployedArtifact().empty()) {
+        emitter << YAML::Key << "deployedArtifacts" << YAML::Value << YAML::BeginSeq;
+        for (auto& artifact : deployment.getDeployedArtifact()) {
+            emitter << artifact.getID().string();
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (deployment.getElementType() == ElementType::DEPLOYMENT) {
+        emitter << YAML::EndMap << YAML::EndMap;
     }
 }
 

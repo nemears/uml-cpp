@@ -73,3 +73,20 @@ TEST_F(DeploymentParserTest, nestedArtifactTest) {
     Artifact& nest = *artifact.getNestedArtifacts().front();
     ASSERT_EQ(nest.getName(), "nest");
 }
+
+TEST_F(DeploymentParserTest, emitDeploymentTest) {
+    UmlManager m;
+    Deployment& d = m.create<Deployment>();
+    Artifact& a = m.create<Artifact>();
+    d.setID("RP9VhYnGYcgWOqXxLt4_Xb3RAAM8");
+    a.setID("bkwzmF3K0ddPG7CPwXVBZyyp8glc");
+    d.getDeployedArtifact().add(a);
+    string expectedEmit = R""""(deployment:
+  id: RP9VhYnGYcgWOqXxLt4_Xb3RAAM8
+  deployedArtifacts:
+    - bkwzmF3K0ddPG7CPwXVBZyyp8glc)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(d));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

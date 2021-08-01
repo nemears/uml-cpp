@@ -322,6 +322,10 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             emitPrimitiveType(emitter, dynamic_cast<PrimitiveType&>(el), data);
             break;
         }
+        case ElementType::PROPERTY : {
+            emitProperty(emitter, el.as<Property>(), data);
+            break;
+        }
         case ElementType::PROFILE : {
             emitter << YAML::BeginMap << YAML::Key << "profile" << YAML::Value << YAML::BeginMap;
             emitPackage(emitter, dynamic_cast<Profile&>(el), data);
@@ -967,6 +971,7 @@ void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data)
 
     emitTypedElement(emitter, prop, data);
     emitMultiplicityElement(emitter, prop, data);
+    emitDeploymentTarget(emitter, prop, data);
 
     if (prop.getAggregation() != AggregationKind::NONE) {
         string aggregationString;
@@ -1513,6 +1518,7 @@ void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& in
     }
 
     emitNamedElement(emitter, inst, data);
+    emitDeploymentTarget(emitter, inst, data);
 
     if (inst.getClassifier()) {
         emitter << YAML::Key << "classifier" << YAML::Value << inst.getClassifier()->getID().string();
@@ -2624,7 +2630,7 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::ACTIVITY_EDGE;
     } else if (eType.compare("ACTIVITY_NODE") == 0) {
         return ElementType::ACTIVITY_NODE;
-    } else if (eType.compare("ARTIFACT")) {
+    } else if (eType.compare("ARTIFACT") == 0) {
         return ElementType::ARTIFACT;
     } else if (eType.compare("ASSOCIATION") == 0) {
         return ElementType::ASSOCIATION;
@@ -3085,6 +3091,16 @@ void parseArtifact(YAML::Node node, Artifact& artifact, ParserMetaData& data) {
         } else {
             throw UmlParserException("Invalid yaml node type for deploymentTarget field deployments, must be a sequence!", data.m_path.string(), node["deployments"]);
         }
+    }
+ }
+
+ void emitDeploymentTarget(YAML::Emitter& emitter, DeploymentTarget& target, EmitterMetaData& data) {
+    if (!target.getDeployments().empty()) {
+        emitter << YAML::Key << "deployments" << YAML::Value << YAML::BeginSeq;
+        for (auto & deployment : target.getDeployments()) {
+            emitDeployment(emitter, deployment, data);
+        }
+        emitter << YAML::EndSeq;
     }
  }
 

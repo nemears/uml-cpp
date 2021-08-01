@@ -4,7 +4,7 @@ profile:
   packagedElements:
     - extension:
         id: dXVNTfA7Y84v4uSgjY0y5u9B6T&o
-        metaClass: ARTIFACT
+        metaClass: DEPLOYED_ARTIFACT
         ownedEnd:
           extensionEnd:
             id: iera5tJozUcDPwn2dcJ_0ZCP&goY

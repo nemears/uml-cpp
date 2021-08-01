@@ -90,3 +90,21 @@ TEST_F(DeploymentParserTest, emitDeploymentTest) {
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(DeploymentParserTest, emitDeploymentTargetTest) {
+    UmlManager m;
+    Deployment& d = m.create<Deployment>();
+    Property& prop = m.create<Property>();
+    d.setID("hZ6hYVt147nLvdm70bATtgmwlQqN");
+    prop.setID("0gLOuagM6UjFYi2401zvnoCpMn0M");
+    prop.getDeployments().add(d);
+    string expectedEmit = R""""(property:
+  id: 0gLOuagM6UjFYi2401zvnoCpMn0M
+  deployments:
+    - deployment:
+        id: hZ6hYVt147nLvdm70bATtgmwlQqN)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(prop));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+} 

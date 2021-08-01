@@ -2967,6 +2967,44 @@ void parseDeployment(YAML::Node node, Deployment& deployment, ParserMetaData& da
 
 void parseArtifact(YAML::Node node, Artifact& artifact, ParserMetaData& data) {
     parseClassifier(node, artifact, data);
+
+    if (node["ownedAttributes"]) {
+        if (node["ownedAttributes"].IsSequence()) {
+            for (size_t i = 0; i < node["ownedAttributes"].size(); i++) {
+                if (node["ownedAttributes"][i]["property"]) {
+                    if (node["ownedAttributes"][i]["property"].IsMap()) {
+                        Property& prop = data.m_manager->create<Property>();
+                        parseProperty(node["ownedAttributes"][i]["property"], prop, data);
+                        artifact.getOwnedAttributes().add(prop);
+                    } else {
+                        throw UmlParserException("Improper YAML node type for property, must be map, " , data.m_path.string() , node["ownedAttributes"][i]["property"]);
+                    }
+                }
+            }
+        } else {
+            throw UmlParserException("Improper YAML node type for dataType ownedAttribute, must be sequence, " ,data.m_path.string(), node["ownedAttributes"]);
+        }
+    }
+
+    if (node["ownedOperations"]) {
+        if (node["ownedOperations"].IsSequence()) {
+            for (size_t i = 0; i < node["ownedOperations"].size(); i++) {
+                if (node["ownedOperations"][i]["operation"]) {
+                    if (node["ownedOperations"][i]["operation"].IsMap()) {
+                        Operation& op = data.m_manager->create<Operation>();
+                        parseOperation(node["ownedOperations"][i]["operation"], op, data);
+                        artifact.getOwnedOperations().add(op);
+                    } else {
+                        throw UmlParserException("Improper YAML node type for operation, must be map, " , data.m_path.string() , node["ownedOperations"][i]["operation"]);
+                    }
+                } else {
+                    throw UmlParserException("Improper UML node type for ownedOperation sequence, " , data.m_path.string() , node["ownedOperations"][i]);
+                }
+            }
+        } else {
+            throw UmlParserException("Improper YAML node type for dataType ownedOperation, must be sequence, " , data.m_path.string() , node["ownedOperations"]);
+        }
+    }
 }
 
  void parseDeploymentTarget(YAML::Node node, DeploymentTarget& target, ParserMetaData& data) {

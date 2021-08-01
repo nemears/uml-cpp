@@ -244,6 +244,10 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             emitter << YAML::EndMap << YAML::EndMap;
             break;
         }
+        case ElementType::ARTIFACT : {
+            emitArtifact(emitter, el.as<Artifact>(), data);
+            break;
+        }
         case ElementType::ASSOCIATION : {
             emitAssociation(emitter, dynamic_cast<Association&>(el), data);
             break;
@@ -3072,7 +3076,43 @@ void parseArtifact(YAML::Node node, Artifact& artifact, ParserMetaData& data) {
     }
 }
 
- void parseDeploymentTarget(YAML::Node node, DeploymentTarget& target, ParserMetaData& data) {
+void emitArtifact(YAML::Emitter& emitter, Artifact& artifact, EmitterMetaData& data) {
+    if (artifact.getElementType() == ElementType::ARTIFACT) {
+        emitter << YAML::BeginMap << YAML::Key << "artifact" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitClassifier(emitter, artifact, data);
+
+    if (!artifact.getOwnedAttributes().empty()) {
+        emitter << YAML::Key << "ownedAttributes" << YAML::Value << YAML::BeginSeq;
+        for (auto& prop: artifact.getOwnedAttributes()) {
+            emitProperty(emitter, prop, data);
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (!artifact.getOwnedOperations().empty()) {
+        emitter << YAML::Key << "ownedOperations" << YAML::Value << YAML::BeginSeq;
+        for (auto& op: artifact.getOwnedOperations()) {
+            emitOperation(emitter, op, data);
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (!artifact.getNestedArtifacts().empty()) {
+        emitter << YAML::Key << "nestedArtifacts" << YAML::Value << YAML::BeginSeq;
+        for (auto& nest: artifact.getNestedArtifacts()) {
+            emitArtifact(emitter, nest, data);
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (artifact.getElementType() == ElementType::ARTIFACT) {
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
+}
+
+void parseDeploymentTarget(YAML::Node node, DeploymentTarget& target, ParserMetaData& data) {
     if (node["deployments"]) {
         if (node["deployments"].IsSequence()) {
             for (size_t i = 0; i < node["deployments"].size(); i++) {

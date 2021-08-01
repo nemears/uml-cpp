@@ -245,6 +245,7 @@ namespace UML {
             void parseDeployment(YAML::Node node, Deployment& deployment, ParserMetaData& data);
             void emitDeployment(YAML::Emitter& emitter, Deployment& deployment, EmitterMetaData& data);
             void parseArtifact(YAML::Node node, Artifact& artifact, ParserMetaData& data);
+            void emitArtifact(YAML::Emitter& emitter, Artifact& artifact, EmitterMetaData& data);
             void parseDeploymentTarget(YAML::Node node, DeploymentTarget& target, ParserMetaData& data);
             void emitDeploymentTarget(YAML::Emitter& emitter, DeploymentTarget& target, EmitterMetaData& data);
         }

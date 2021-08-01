@@ -62,3 +62,14 @@ TEST_F(DeploymentParserTest, basicArtifactTest) {
     Operation& op = *artifact.getOwnedOperations().front();
     ASSERT_EQ(op.getName(), "op");
 }
+
+TEST_F(DeploymentParserTest, nestedArtifactTest) {
+    Element* el;
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "deploymentTests/nestedArtifact.yml"));
+    ASSERT_TRUE(el->getElementType() == ElementType::ARTIFACT);
+    Artifact& artifact = el->as<Artifact>();
+    ASSERT_EQ(artifact.getNestedArtifacts().size(), 1);
+    Artifact& nest = *artifact.getNestedArtifacts().front();
+    ASSERT_EQ(nest.getName(), "nest");
+}

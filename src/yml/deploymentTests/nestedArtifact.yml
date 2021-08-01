@@ -1,0 +1,6 @@
+---
+  artifact:
+    nestedArtifacts:
+      - artifact:
+          name: nest
+...

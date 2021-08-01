@@ -95,6 +95,11 @@ void emitToFile(Element& el, EmitterMetaData& data, string path, string fileName
 namespace {
 
 Element* parseNode(YAML::Node node, ParserMetaData& data) {
+    if (node["artifact"]) {
+        Artifact& artifact = data.m_manager->create<Artifact>();
+        parseArtifact(node["artifact"], artifact, data);
+        return &artifact;
+    }
     if (node["class"]) {
         Class& clazz = data.m_manager->create<Class>();
         parseClass(node["class"], clazz, data);
@@ -3003,6 +3008,26 @@ void parseArtifact(YAML::Node node, Artifact& artifact, ParserMetaData& data) {
             }
         } else {
             throw UmlParserException("Improper YAML node type for dataType ownedOperation, must be sequence, " , data.m_path.string() , node["ownedOperations"]);
+        }
+    }
+
+    if (node["nestedArtifacts"]) {
+        if (node["nestedArtifacts"].IsSequence()) {
+            for (size_t i = 0; i < node["nestedArtifacts"].size(); i++) {
+                if (node["nestedArtifacts"][i]["artifact"]) {
+                    if (node["nestedArtifacts"][i]["artifact"].IsMap()) {
+                        Artifact& nestedArtifact = data.m_manager->create<Artifact>();
+                        parseArtifact(node["nestedArtifacts"][i]["artifact"], nestedArtifact, data);
+                        artifact.getNestedArtifacts().add(nestedArtifact);
+                    } else {
+                        throw UmlParserException("Improper yaml node type for artifact defintion, must be a map!", data.m_path.string(), node["nestedArtifacts"][i]["artifact"]);
+                    }
+                } else {
+                    throw UmlParserException("Improper uml type for artifact nestedArtifacts definition, must be an artifact!", data.m_path.string(), node["nestedArtifiacts"]);
+                }
+            }
+        } else {
+            throw UmlParserException("Improper yaml node type for artifacts nestedArtifacts field, must be a sequence!", data.m_path.string(), node["nestedArtifacts"]);
         }
     }
 }

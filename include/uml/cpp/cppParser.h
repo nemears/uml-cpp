@@ -1,12 +1,12 @@
 #ifndef UML_CPP_CPP_PARSER_H
 #define UML_CPP_CPP_PARSER_H
-#include "uml/package.h"
+
 #include "uml/umlManager.h"
+#include "uml/package.h"
 
 namespace UML {
     namespace CPP {
         // WARN: must load cppProfile.yml beforehand 
-        // TODO: swith to Artifact not Package when implemented
         Package* parseHeader(std::string path, UmlManager& manager);
 
         class UmlCppParserException : public std::exception {

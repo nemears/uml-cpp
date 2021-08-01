@@ -11,6 +11,7 @@
 #include "uml/parameter.h"
 #include "uml/literalBool.h"
 #include "uml/association.h"
+#include "uml/artifact.h"
 
 using namespace std;
 
@@ -542,7 +543,6 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
 }
 
 Package* parseHeader(string path, UmlManager& manager) {
-    Package* ret = 0;
     CXIndex index = clang_createIndex(0, 0);
     const char* const clangArgs[1] = {"-xc++"};
     CXTranslationUnit unit = clang_parseTranslationUnit(index, path.c_str(), clangArgs, 1, 0, 0, CXTranslationUnit_None);
@@ -550,14 +550,20 @@ Package* parseHeader(string path, UmlManager& manager) {
         return 0;
     }
 
-    ret = &manager.create<Package>();
-    // TODO apply <<file>> stereotype?
+    filesystem::path headerPath = path;
+
+    Package& containingPackage = manager.create<Package>();
+    containingPackage.setName(headerPath.filename());
+
+    Artifact& header = manager.create<Artifact>();
+    header.setName(headerPath.filename());
+    containingPackage.getPackagedElements().add(header);
 
     // get cursor
     CXCursor cursor = clang_getTranslationUnitCursor(unit);
 
     // set up client data
-    Element* umlParent = ret;
+    Element* umlParent = &containingPackage;
     ElementType umlParentType = umlParent->getElementType();
     CppParserMetaData data = {manager, unit, *umlParent, umlParentType};
 
@@ -567,7 +573,7 @@ Package* parseHeader(string path, UmlManager& manager) {
     clang_disposeTranslationUnit(unit);
     clang_disposeIndex(index);
 
-    return ret;
+    return &containingPackage;
 }
 
 std::string fileNameAndLineNumber(CXCursor c) {
@@ -579,7 +585,7 @@ std::string fileNameAndLineNumber(CXCursor c) {
     CXString fileSpelling = clang_File_tryGetRealPathName(file);
     string ret = " file, " + string(clang_getCString(fileSpelling)) + ", line number, " + to_string(line);
     clang_disposeString(fileSpelling);
-    return ret; 
+    return ret;
 }
 
 }

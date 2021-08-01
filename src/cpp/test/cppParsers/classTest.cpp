@@ -5,6 +5,7 @@
 #include "uml/operation.h"
 #include "uml/parameter.h"
 #include "uml/association.h"
+#include "uml/package.h"
 
 using namespace std;
 using namespace UML;
@@ -23,9 +24,9 @@ TEST_F(CppClassTest, attributesW_DifferentVisibilityTest) {
     m.parse(profilePath + "cppProfile.yml");
     Package* pckg;
     ASSERT_NO_THROW(pckg = parseHeader(testPath + "classTests/attributesW_DifferentVisibility.h", m));
-    ASSERT_EQ(pckg->getPackagedElements().size(), 1);
-    ASSERT_EQ(pckg->getPackagedElements().front()->getElementType(), ElementType::CLASS);
-    Class& clazz = pckg->getPackagedElements().front()->as<Class>();
+    ASSERT_EQ(pckg->getPackagedElements().size(), 2);
+    ASSERT_EQ(pckg->getPackagedElements().get(1)->getElementType(), ElementType::CLASS);
+    Class& clazz = pckg->getPackagedElements().get(1)->as<Class>();
     ASSERT_EQ(clazz.getOwnedAttributes().size(), 4);
     Property& i = *clazz.getOwnedAttributes().front();
     ASSERT_EQ(i.getType()->getID(), ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic"));
@@ -51,9 +52,9 @@ TEST_F(CppClassTest, classW_MethodsTest) {
     m.parse(profilePath + "cppProfile.yml");
     Package* pckg;
     ASSERT_NO_THROW(pckg = parseHeader(testPath + "classTests/someMethods.h", m));
-    ASSERT_EQ(pckg->getPackagedElements().size(), 1);
-    ASSERT_EQ(pckg->getPackagedElements().front()->getElementType(), ElementType::CLASS);
-    Class& clazz = pckg->getPackagedElements().front()->as<Class>();
+    ASSERT_EQ(pckg->getPackagedElements().size(), 2);
+    ASSERT_EQ(pckg->getPackagedElements().get(1)->getElementType(), ElementType::CLASS);
+    Class& clazz = pckg->getPackagedElements().get(1)->as<Class>();
     ASSERT_EQ(clazz.getOperations().size(), 3);
     Operation& foo = *clazz.getOperations().front();
     ASSERT_EQ(foo.getVisibility(), VisibilityKind::PRIVATE);
@@ -80,9 +81,9 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     m.parse(profilePath + "cppProfile.yml");
     Package* pckg;
     ASSERT_NO_THROW(pckg = parseHeader(testPath + "classTests/bunchOfTypes.h", m));
-    ASSERT_EQ(pckg->getPackagedElements().size(), 11);
-    ASSERT_EQ(pckg->getPackagedElements().front()->getElementType(), ElementType::CLASS);
-    Class& clazz = pckg->getPackagedElements().front()->as<Class>();
+    ASSERT_EQ(pckg->getPackagedElements().size(), 12);
+    ASSERT_EQ(pckg->getPackagedElements().get(1)->getElementType(), ElementType::CLASS);
+    Class& clazz = pckg->getPackagedElements().get(1)->as<Class>();
     ASSERT_EQ(clazz.getOwnedAttributes().size(), 20);
 
     // bool properties
@@ -100,7 +101,7 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     ASSERT_EQ(boolPtr.getName(), "b_ptr");
     ASSERT_EQ(boolPtr.getType()->getID(), ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG"));
     ASSERT_EQ(boolPtr.getAggregation(), AggregationKind::NONE);
-    Association& ptrAssoc = pckg->getPackagedElements().get(1)->as<Association>();
+    Association& ptrAssoc = pckg->getPackagedElements().get(2)->as<Association>();
     ASSERT_EQ(ptrAssoc.getMemberEnds().front()->getID(), boolPtr.getID());
     ASSERT_EQ(ptrAssoc.getNavigableOwnedEnds().front()->getType()->getID(), clazz.getID());
     Property& boolRef = *clazz.getOwnedAttributes().get(3);
@@ -109,7 +110,7 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     ASSERT_EQ(boolRef.getAggregation(), AggregationKind::SHARED);
     ASSERT_EQ(boolRef.getLower(), 1);
     ASSERT_EQ(boolRef.getUpper(), 1);
-    Association& refAssoc = pckg->getPackagedElements().get(2)->as<Association>();
+    Association& refAssoc = pckg->getPackagedElements().get(3)->as<Association>();
     ASSERT_EQ(refAssoc.getMemberEnds().front()->getID(), boolRef.getID());
     ASSERT_EQ(refAssoc.getNavigableOwnedEnds().front()->getType()->getID(), clazz.getID());
 
@@ -128,7 +129,7 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     ASSERT_EQ(charPtr.getName(), "c_ptr");
     ASSERT_EQ(charPtr.getType()->getID(), ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR"));
     ASSERT_EQ(charPtr.getAggregation(), AggregationKind::NONE);
-    Association& charPtrAssoc = pckg->getPackagedElements().get(3)->as<Association>();
+    Association& charPtrAssoc = pckg->getPackagedElements().get(4)->as<Association>();
     ASSERT_EQ(charPtrAssoc.getMemberEnds().front()->getID(), charPtr.getID());
     ASSERT_EQ(charPtrAssoc.getNavigableOwnedEnds().front()->getType()->getID(), clazz.getID());
     Property& charRef = *clazz.getOwnedAttributes().get(7);
@@ -137,7 +138,7 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     ASSERT_EQ(charRef.getAggregation(), AggregationKind::SHARED);
     ASSERT_EQ(charRef.getLower(), 1);
     ASSERT_EQ(charRef.getUpper(), 1);
-    Association& charRefAssoc = pckg->getPackagedElements().get(4)->as<Association>();
+    Association& charRefAssoc = pckg->getPackagedElements().get(5)->as<Association>();
     ASSERT_EQ(charRefAssoc.getMemberEnds().front()->getID(), charRef.getID());
     ASSERT_EQ(charRefAssoc.getNavigableOwnedEnds().front()->getType()->getID(), clazz.getID());
 
@@ -156,7 +157,7 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     ASSERT_EQ(intPtr.getName(), "i_ptr");
     ASSERT_EQ(intPtr.getType()->getID(), ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic"));
     ASSERT_EQ(intPtr.getAggregation(), AggregationKind::NONE);
-    Association& intPtrAssoc = pckg->getPackagedElements().get(5)->as<Association>();
+    Association& intPtrAssoc = pckg->getPackagedElements().get(6)->as<Association>();
     ASSERT_EQ(intPtrAssoc.getMemberEnds().front()->getID(), intPtr.getID());
     ASSERT_EQ(intPtrAssoc.getNavigableOwnedEnds().front()->getType()->getID(), clazz.getID());
     Property& intRef = *clazz.getOwnedAttributes().get(11);
@@ -165,7 +166,7 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     ASSERT_EQ(intRef.getAggregation(), AggregationKind::SHARED);
     ASSERT_EQ(intRef.getLower(), 1);
     ASSERT_EQ(intRef.getUpper(), 1);
-    Association& intRefAssoc = pckg->getPackagedElements().get(6)->as<Association>();
+    Association& intRefAssoc = pckg->getPackagedElements().get(7)->as<Association>();
     ASSERT_EQ(intRefAssoc.getMemberEnds().front()->getID(), intRef.getID());
     ASSERT_EQ(intRefAssoc.getNavigableOwnedEnds().front()->getType()->getID(), clazz.getID());
 
@@ -184,7 +185,7 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     ASSERT_EQ(floatPtr.getName(), "f_ptr");
     ASSERT_EQ(floatPtr.getType()->getID(), ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6"));
     ASSERT_EQ(floatPtr.getAggregation(), AggregationKind::NONE);
-    Association& floatPtrAssoc = pckg->getPackagedElements().get(7)->as<Association>();
+    Association& floatPtrAssoc = pckg->getPackagedElements().get(8)->as<Association>();
     ASSERT_EQ(floatPtrAssoc.getMemberEnds().front()->getID(), floatPtr.getID());
     ASSERT_EQ(floatPtrAssoc.getNavigableOwnedEnds().front()->getType()->getID(), clazz.getID());
     Property& floatRef = *clazz.getOwnedAttributes().get(15);
@@ -193,7 +194,7 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     ASSERT_EQ(floatRef.getAggregation(), AggregationKind::SHARED);
     ASSERT_EQ(floatRef.getLower(), 1);
     ASSERT_EQ(floatRef.getUpper(), 1);
-    Association& floatRefAssoc = pckg->getPackagedElements().get(8)->as<Association>();
+    Association& floatRefAssoc = pckg->getPackagedElements().get(9)->as<Association>();
     ASSERT_EQ(floatRefAssoc.getMemberEnds().front()->getID(), floatRef.getID());
     ASSERT_EQ(floatRefAssoc.getNavigableOwnedEnds().front()->getType()->getID(), clazz.getID());
 
@@ -212,7 +213,7 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     ASSERT_EQ(doublePtr.getName(), "d_ptr");
     ASSERT_EQ(doublePtr.getType()->getID(), ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE"));
     ASSERT_EQ(doublePtr.getAggregation(), AggregationKind::NONE);
-    Association& doublePtrAssoc = pckg->getPackagedElements().get(9)->as<Association>();
+    Association& doublePtrAssoc = pckg->getPackagedElements().get(10)->as<Association>();
     ASSERT_EQ(doublePtrAssoc.getMemberEnds().front()->getID(), doublePtr.getID());
     ASSERT_EQ(doublePtrAssoc.getNavigableOwnedEnds().front()->getType()->getID(), clazz.getID());
     Property& doubleRef = *clazz.getOwnedAttributes().get(19);
@@ -221,7 +222,7 @@ TEST_F(CppClassTest, bunchOfTypesInClassTest) {
     ASSERT_EQ(doubleRef.getAggregation(), AggregationKind::SHARED);
     ASSERT_EQ(doubleRef.getLower(), 1);
     ASSERT_EQ(doubleRef.getUpper(), 1);
-    Association& doubleRefAssoc = pckg->getPackagedElements().get(10)->as<Association>();
+    Association& doubleRefAssoc = pckg->getPackagedElements().get(11)->as<Association>();
     ASSERT_EQ(doubleRefAssoc.getMemberEnds().front()->getID(), doubleRef.getID());
     ASSERT_EQ(doubleRefAssoc.getNavigableOwnedEnds().front()->getType()->getID(), clazz.getID());
 }
@@ -232,12 +233,12 @@ TEST_F(CppClassTest, predefinedTypeTest) {
     m.parse(profilePath + "cppProfile.yml");
     Package* pckg;
     ASSERT_NO_THROW(pckg = parseHeader(testPath + "classTests/predefinedType.h", m));
-    ASSERT_EQ(pckg->getPackagedElements().size(), 4);
-    ASSERT_EQ(pckg->getPackagedElements().front()->getElementType(), ElementType::CLASS);
-    Class& foo = pckg->getPackagedElements().front()->as<Class>();
-    ASSERT_EQ(foo.getName(), "FOO");
+    ASSERT_EQ(pckg->getPackagedElements().size(), 5);
     ASSERT_EQ(pckg->getPackagedElements().get(1)->getElementType(), ElementType::CLASS);
-    Class& bar = pckg->getPackagedElements().get(1)->as<Class>();
+    Class& foo = pckg->getPackagedElements().get(1)->as<Class>();
+    ASSERT_EQ(foo.getName(), "FOO");
+    ASSERT_EQ(pckg->getPackagedElements().get(2)->getElementType(), ElementType::CLASS);
+    Class& bar = pckg->getPackagedElements().get(2)->as<Class>();
     ASSERT_EQ(bar.getName(), "BAR");
     ASSERT_EQ(bar.getOwnedAttributes().size(), 3);
     Property& prop = *bar.getOwnedAttributes().front();
@@ -248,9 +249,9 @@ TEST_F(CppClassTest, predefinedTypeTest) {
     ASSERT_EQ(ptrProp.getName(), "f_ptr");
     ASSERT_TRUE(ptrProp.getType() != 0);
     ASSERT_EQ(ptrProp.getType()->getID(), foo.getID());
-    ASSERT_EQ(pckg->getPackagedElements().get(2)->getElementType(), ElementType::ASSOCIATION);
+    ASSERT_EQ(pckg->getPackagedElements().get(3)->getElementType(), ElementType::ASSOCIATION);
     ASSERT_EQ(ptrProp.getAggregation(), AggregationKind::NONE);
-    Association& ptrAssoc = pckg->getPackagedElements().get(2)->as<Association>();
+    Association& ptrAssoc = pckg->getPackagedElements().get(3)->as<Association>();
     ASSERT_EQ(ptrAssoc.getNavigableOwnedEnds().size(), 1);
     Property& ptrEnd = *ptrAssoc.getNavigableOwnedEnds().front();
     ASSERT_TRUE(ptrEnd.getType() != 0);
@@ -262,8 +263,8 @@ TEST_F(CppClassTest, predefinedTypeTest) {
     ASSERT_TRUE(refProp.getType() != 0);
     ASSERT_EQ(refProp.getType()->getID(), foo.getID());
     ASSERT_EQ(refProp.getAggregation(), AggregationKind::SHARED);
-    ASSERT_EQ(pckg->getPackagedElements().get(3)->getElementType(), ElementType::ASSOCIATION);
-    Association& refAssoc = pckg->getPackagedElements().get(3)->as<Association>();
+    ASSERT_EQ(pckg->getPackagedElements().get(4)->getElementType(), ElementType::ASSOCIATION);
+    Association& refAssoc = pckg->getPackagedElements().get(4)->as<Association>();
     ASSERT_EQ(refAssoc.getNavigableOwnedEnds().size(), 1);
     Property& refEnd = *refAssoc.getNavigableOwnedEnds().front();
     ASSERT_TRUE(refEnd.getType() != 0);

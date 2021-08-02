@@ -2642,6 +2642,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::BEHAVIOR;
     } else if (eType.compare("BEHAVIORAL_FEATURE") == 0) {
         return ElementType::BEHAVIORAL_FEATURE;
+    } else if (eType.compare("BEHAVIORED_CLASSIFIER") == 0 ) {
+        return ElementType::BEHAVIORED_CLASSIFIER;
     } else if (eType.compare("CALL_BEHAVIOR_ACTION") == 0) {
         return ElementType::CALL_BEHAVIOR_ACTION;
     } else if (eType.compare("CLASS") == 0) {

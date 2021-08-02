@@ -287,6 +287,9 @@ string Element::elementTypeToString(ElementType eType) {
         case ElementType::BEHAVIORAL_FEATURE : {
             return "BEHAVIOR_FEATURE";
         }
+        case ElementType::BEHAVIORED_CLASSIFIER : {
+            return "BEHAVIORED_CLASSIFIER";
+        }
         case ElementType::CALL_BEHAVIOR_ACTION : {
             return "CALL_BEHAVIOR_ACTION";
         }

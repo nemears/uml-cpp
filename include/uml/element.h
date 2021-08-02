@@ -20,6 +20,7 @@ namespace UML {
         ASSOCIATION,
         BEHAVIOR,
         BEHAVIORAL_FEATURE,
+        BEHAVIORED_CLASSIFIER,
         CALL_BEHAVIOR_ACTION,
         CLASS,
         CLASSIFIER,

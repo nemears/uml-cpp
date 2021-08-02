@@ -2662,11 +2662,11 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::DECISION_NODE;
     } else if (eType.compare("DEPENDENCY") == 0) {
         return ElementType::DEPENDENCY;
-    } else if (eType.compare("DEPLOYED_ARTIFACT")) {
+    } else if (eType.compare("DEPLOYED_ARTIFACT") == 0) {
         return ElementType::DEPLOYED_ARTIFACT;
-    } else if (eType.compare("DEPLOYMENT")) {
+    } else if (eType.compare("DEPLOYMENT") == 0) {
         return ElementType::DEPLOYMENT;
-    } else if (eType.compare("DEPLOYMENT_TARGET")) {
+    } else if (eType.compare("DEPLOYMENT_TARGET") == 0) {
         return ElementType::DEPLOYMENT_TARGET;
     } else if (eType.compare("DIRECTED_RELATIONSHIP") == 0) {
         return ElementType::DIRECTED_RELATIONSHIP;
@@ -2756,6 +2756,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::PROFILE_APPLICATION;
     } else if (eType.compare("PROPERTY") == 0) {
         return ElementType::PROPERTY;
+    } else if (eType.compare("REALIZATION") == 0) {
+        return ElementType::REALIZATION;
     } else if (eType.compare("REDEFINABLE_ELEMENT") == 0) {
         return ElementType::REDEFINABLE_ELEMENT;
     } else if (eType.compare("RELATIONSHIP") == 0) {
@@ -2782,6 +2784,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::TYPE;
     } else if (eType.compare("TYPED_ELEMENT") == 0) {
         return ElementType::TYPED_ELEMENT;
+    } else if (eType.compare("USAGE") == 0) {
+        return ElementType::USAGE;
     } else if (eType.compare("VALUE_SPECIFICATION") == 0) {
         return ElementType::VALUE_SPECIFICATION;
     } 

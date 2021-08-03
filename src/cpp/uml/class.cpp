@@ -38,6 +38,7 @@ void Class::ClassRemoveOwnedAttributeFunctor::operator()(Element& el) const {
 
 void Class::setManager(UmlManager* manager) {
     StructuredClassifier::setManager(manager);
+    BehavioredClassifier::setManager(manager);
     m_operations.m_manager = manager;
 }
 

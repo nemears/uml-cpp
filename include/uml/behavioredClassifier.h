@@ -8,6 +8,7 @@ namespace UML {
     class Behavior;
 
     class BehavioredClassifier : virtual public Classifier {
+        protected:
             Sequence<Behavior> m_ownedBehaviors;
             ID m_classifierBehaviorID;
             Behavior* m_classifierBehaviorPtr;

@@ -45,7 +45,7 @@ void Behavior::RemoveParameterFunctor::operator()(Element& el) const {
 Behavior::Behavior() {
     m_parameters.addProcedures.push_back(new AddParameterFunctor(this));
     m_parameters.removeProcedures.push_back(new RemoveParameterFunctor(this));
-    m_specification = 0;
+    m_specificationPtr = 0;
     m_behavioredClassifierPtr = 0;
 }
 
@@ -58,21 +58,34 @@ Sequence<Parameter>& Behavior::getParameters() {
 }
 
 BehavioralFeature* Behavior::getSpecification() {
-    return m_specification;
+    return universalGet<BehavioralFeature>(m_specificationID, m_specificationPtr, m_manager);
 }
 
 void Behavior::setSpecification(BehavioralFeature* specification) {
-    if (m_specification) {
-        if (m_specification != specification) {
-            if (m_specification->getMethods().count(m_id)) {
-                m_specification->getMethods().remove(*this);
-            }
+    if (!isSameOrNull(m_specificationID, specification)) {
+        if (!m_specificationPtr) {
+            m_specificationPtr = &m_manager->get<BehavioralFeature>(m_specificationID);
         }
+
+        if (m_specificationPtr->getMethods().count(m_id)) {
+            m_specificationPtr->getMethods().remove(*this);
+        }
+
+        m_specificationPtr = 0;
+        m_specificationID = ID::nullID();
     }
-    m_specification = specification;
-    if (m_specification) {
-        if (!m_specification->getMethods().count(m_id)) {
-            m_specification->getMethods().add(*this);
+
+    if (specification) {
+        m_specificationID = specification->getID();
+    }
+
+    if (!m_manager) {
+        m_specificationPtr = specification;
+    }
+
+    if (specification) {
+        if (!specification->getMethods().count(m_id)) {
+            specification->getMethods().add(*this);
         }
     }
 }

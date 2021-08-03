@@ -10,7 +10,8 @@ namespace UML {
     class Behavior : public Class {
         protected:
             Sequence<Parameter> m_parameters;
-            BehavioralFeature* m_specification;
+            ID m_specificationID;
+            BehavioralFeature* m_specificationPtr;
             ID m_behavioredClassifierID;
             BehavioredClassifier* m_behavioredClassifierPtr;
             class AddParameterFunctor : public AbstractSequenceFunctor {

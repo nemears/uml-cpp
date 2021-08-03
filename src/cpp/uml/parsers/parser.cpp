@@ -767,6 +767,7 @@ void emitClass(YAML::Emitter& emitter, Class& clazz, EmitterMetaData& data) {
     }
 
     emitStructuredClassifier(emitter, clazz, data);
+    emitBehavioredClassifier(emitter, clazz, data);
 
     if (!clazz.getOperations().empty()) {
         emitter << YAML::Key << "operations" << YAML::Value << YAML::BeginSeq;
@@ -3184,6 +3185,20 @@ void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier
         } else {
             throw UmlParserException("Invalid yaml node type for classifierBehavior reference, must be a scalar!", data.m_path.string(), node["classifierBehavior"]);
         }
+    }
+}
+
+void emitBehavioredClassifier(YAML::Emitter& emitter, BehavioredClassifier& classifier, EmitterMetaData& data) {
+    if (!classifier.getOwnedBehaviors().empty()) {
+        emitter << YAML::Key << "ownedBehaviors" << YAML::Value << YAML::BeginSeq;
+        for (auto& bhv : classifier.getOwnedBehaviors()) {
+            emit(emitter, bhv, data);
+        }
+        emitter << YAML::EndSeq;
+    }
+
+    if (classifier.getClassifierBehavior() != 0) {
+        emitter << YAML::Key << "classifierBehavior" << YAML::Value << classifier.getClassifierBehavior()->getID().string();
     }
 }
 

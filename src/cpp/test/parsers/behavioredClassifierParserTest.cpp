@@ -27,3 +27,22 @@ TEST_F(BehavioredClassifierParserTest, simpleClassTest) {
     ASSERT_TRUE(clazz.getClassifierBehavior() != 0);
     ASSERT_EQ(clazz.getClassifierBehavior()->getID(), bhv.getID());
 }
+
+TEST_F(BehavioredClassifierParserTest, simpleClassEmitTest) {
+    UmlManager m;
+    Class& clazz = m.create<Class>();
+    OpaqueBehavior& bhv = m.create<OpaqueBehavior>();
+    clazz.setID("E0q8HmS9yU_Qk9ct2XLjnuJOXxwc");
+    bhv.setID("C1cleV_7fGQEgHdOfOYZ319RoCNu");
+    clazz.setClassifierBehavior(&bhv);
+    string expectedEmit = R""""(class:
+  id: E0q8HmS9yU_Qk9ct2XLjnuJOXxwc
+  ownedBehaviors:
+    - opaqueBehavior:
+        id: C1cleV_7fGQEgHdOfOYZ319RoCNu
+  classifierBehavior: C1cleV_7fGQEgHdOfOYZ319RoCNu)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(clazz));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

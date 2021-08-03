@@ -249,6 +249,7 @@ namespace UML {
             void parseDeploymentTarget(YAML::Node node, DeploymentTarget& target, ParserMetaData& data);
             void emitDeploymentTarget(YAML::Emitter& emitter, DeploymentTarget& target, EmitterMetaData& data);
             void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, ParserMetaData& data);
+            void emitBehavioredClassifier(YAML::Emitter& emitter, BehavioredClassifier& classifier, EmitterMetaData& data);
         }
     }
 }

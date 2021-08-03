@@ -742,6 +742,7 @@ void emitStructuredClassifier(YAML::Emitter& emitter, StructuredClassifier& claz
 
 void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
     parseStructuredClassifier(node, clazz, data);
+    parseBehavioredClassifier(node, clazz, data);
 
     if (node["operations"]) {
         if (node["operations"].IsSequence()) {
@@ -3140,7 +3141,7 @@ void parseDeploymentTarget(YAML::Node node, DeploymentTarget& target, ParserMeta
     }
  }
 
- void emitDeploymentTarget(YAML::Emitter& emitter, DeploymentTarget& target, EmitterMetaData& data) {
+void emitDeploymentTarget(YAML::Emitter& emitter, DeploymentTarget& target, EmitterMetaData& data) {
     if (!target.getDeployments().empty()) {
         emitter << YAML::Key << "deployments" << YAML::Value << YAML::BeginSeq;
         for (auto & deployment : target.getDeployments()) {
@@ -3148,7 +3149,43 @@ void parseDeploymentTarget(YAML::Node node, DeploymentTarget& target, ParserMeta
         }
         emitter << YAML::EndSeq;
     }
- }
+}
+
+void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, ParserMetaData& data) {
+    if (node["ownedBehaviors"]) {
+        if (node["ownedBehaviors"].IsSequence()) {
+            for (size_t i = 0; i < node["ownedBehaviors"].size(); i++) {
+                if (node["ownedBehaviors"][i].IsMap()) {
+                    if (node["ownedBehaviors"][i]["activity"]) {
+                        // TODO
+                    } else if (node["ownedBehaviors"][i]["opaqueBehavior"]) {
+                        if (node["ownedBehaviors"][i]["opaqueBehavior"].IsMap()) {
+                            OpaqueBehavior& opaqueBehavior = data.m_manager->create<OpaqueBehavior>();
+                            parseOpaqueBehavior(node["ownedBehaviors"][i]["opaqueBehavior"], opaqueBehavior, data);
+                            classifier.getOwnedBehaviors().add(opaqueBehavior);
+                        } else {
+                            throw UmlParserException("Invalid yaml node type for opaqueBehavior definition, must be a map!", data.m_path.string(), node["ownedBehaviors"][i]["opaqueBehavior"]);
+                        }
+                    } else {
+                        throw UmlParserException("unknown behavior identifier!", data.m_path.string(), node["ownedBehaviors"][i]);
+                    }
+                } else {
+                    throw UmlParserException("Invalid yaml node type for behavioredClassifier ownedBehavior defintion, must be a map!", data.m_path.string());
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for behavioredClassifier ownedBehaviors field, must be a sequence!", data.m_path.string(), node["ownedBehaviors"]);
+        }
+    }
+
+    if (node["classifierBehavior"]) {
+        if (node["classifierBehavior"].IsScalar()) {
+            classifier.setClassifierBehavior(classifier.getOwnedBehaviors().get(ID::fromString(node["classifiedBehavior"].as<string>())));
+        } else {
+            throw UmlParserException("Invalid yaml node type for classifierBehavior reference, must be a scalar!", data.m_path.string(), node["classifierBehavior"]);
+        }
+    }
+}
 
 }
 

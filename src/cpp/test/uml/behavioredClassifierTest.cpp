@@ -53,3 +53,39 @@ TEST_F(BehavioredClassifierTest, setandOverrideBehavioredClassifierTest) {
     ASSERT_TRUE(bhv.getNamespace() != 0);
     ASSERT_EQ(bhv.getNamespace()->getID(), c2.getID());
 }
+
+TEST_F(BehavioredClassifierTest, setAndRemoveClassifierBehaviorTest) {
+    UmlManager m;
+    Class& clazz = m.create<Class>();
+    OpaqueBehavior& bhv = m.create<OpaqueBehavior>();
+    clazz.setClassifierBehavior(&bhv);
+    ASSERT_TRUE(clazz.getClassifierBehavior() != 0);
+    ASSERT_EQ(clazz.getClassifierBehavior()->getID(), bhv.getID());
+    ASSERT_EQ(clazz.getOwnedBehaviors().size(), 1);
+    ASSERT_EQ(clazz.getOwnedBehaviors().front()->getID(), bhv.getID());
+    ASSERT_EQ(clazz.getOwnedMembers().size(), 1);
+    ASSERT_EQ(clazz.getOwnedMembers().front()->getID(), bhv.getID());
+    ASSERT_TRUE(bhv.getBehavioredClassifier() != 0);
+    ASSERT_EQ(bhv.getBehavioredClassifier()->getID(), clazz.getID());
+    ASSERT_TRUE(bhv.getNamespace() != 0);
+    ASSERT_EQ(bhv.getNamespace()->getID(), clazz.getID());
+    OpaqueBehavior& b2 = m.create<OpaqueBehavior>();
+    clazz.setClassifierBehavior(&b2);
+    ASSERT_TRUE(clazz.getClassifierBehavior() != 0);
+    ASSERT_EQ(clazz.getClassifierBehavior()->getID(), b2.getID());
+    ASSERT_EQ(clazz.getOwnedBehaviors().size(), 1);
+    ASSERT_EQ(clazz.getOwnedBehaviors().front()->getID(), b2.getID());
+    ASSERT_EQ(clazz.getOwnedMembers().size(), 1);
+    ASSERT_EQ(clazz.getOwnedMembers().front()->getID(), b2.getID());
+    ASSERT_TRUE(b2.getBehavioredClassifier() != 0);
+    ASSERT_EQ(b2.getBehavioredClassifier()->getID(), clazz.getID());
+    ASSERT_TRUE(b2.getNamespace() != 0);
+    ASSERT_EQ(b2.getNamespace()->getID(), clazz.getID());
+    ASSERT_TRUE(bhv.getBehavioredClassifier() == 0);
+    ASSERT_TRUE(bhv.getNamespace() == 0);
+    clazz.setClassifierBehavior(0);
+    ASSERT_EQ(clazz.getOwnedBehaviors().size(), 0);
+    ASSERT_EQ(clazz.getOwnedMembers().size(), 0);
+    ASSERT_TRUE(b2.getBehavioredClassifier() == 0);
+    ASSERT_TRUE(b2.getNamespace() == 0);
+}

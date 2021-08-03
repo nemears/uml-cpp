@@ -46,6 +46,7 @@ Behavior::Behavior() {
     m_parameters.addProcedures.push_back(new AddParameterFunctor(this));
     m_parameters.removeProcedures.push_back(new RemoveParameterFunctor(this));
     m_specification = 0;
+    m_behavioredClassifierPtr = 0;
 }
 
 Behavior::~Behavior() {

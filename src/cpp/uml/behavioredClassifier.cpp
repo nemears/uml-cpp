@@ -1,5 +1,6 @@
 #include "uml/behavioredClassifier.h"
 #include "uml/behavior.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -27,6 +28,7 @@ void BehavioredClassifier::setManager(UmlManager* manager) {
 BehavioredClassifier::BehavioredClassifier() {
     m_ownedBehaviors.addProcedures.push_back(new AddOwnedBehaviorFunctor(this));
     m_ownedBehaviors.removeProcedures.push_back(new RemoveOwnedBehaviorFunctor(this));
+    m_classifierBehaviorPtr = 0;
 }
 
 BehavioredClassifier::BehavioredClassifier(const BehavioredClassifier& classifier) {
@@ -43,6 +45,39 @@ BehavioredClassifier::~BehavioredClassifier() {
 
 Sequence<Behavior>& BehavioredClassifier::getOwnedBehaviors() {
     return m_ownedBehaviors;
+}
+
+Behavior* BehavioredClassifier::getClassifierBehavior() {
+    return universalGet<Behavior>(m_classifierBehaviorID, m_classifierBehaviorPtr, m_manager);
+}
+
+void BehavioredClassifier::setClassifierBehavior(Behavior* behavior) {
+    if (!isSameOrNull(m_classifierBehaviorID, behavior)) {
+        if (!m_classifierBehaviorPtr) {
+            m_classifierBehaviorPtr = &m_manager->get<Behavior>(m_classifierBehaviorID);
+        }
+
+        if (m_ownedBehaviors.count(m_classifierBehaviorID)) {
+            m_ownedBehaviors.remove(*m_classifierBehaviorPtr);
+        }
+
+        m_classifierBehaviorID = ID::nullID();
+        m_classifierBehaviorPtr = 0;
+    }
+
+    if (behavior) {
+        m_classifierBehaviorID = behavior->getID();
+    }
+
+    if (!m_manager) {
+        m_classifierBehaviorPtr = behavior;
+    }
+
+    if (behavior) {
+        if (!m_ownedBehaviors.count(behavior->getID())) {
+            m_ownedBehaviors.add(*behavior);
+        }
+    }
 }
 
 ElementType BehavioredClassifier::getElementType() const {

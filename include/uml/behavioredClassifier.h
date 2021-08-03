@@ -9,6 +9,8 @@ namespace UML {
 
     class BehavioredClassifier : virtual public Classifier {
             Sequence<Behavior> m_ownedBehaviors;
+            ID m_classifierBehaviorID;
+            Behavior* m_classifierBehaviorPtr;
             class AddOwnedBehaviorFunctor : public AbstractSequenceFunctor {
                 public:
                     AddOwnedBehaviorFunctor(Element* me) : AbstractSequenceFunctor(me) {};
@@ -25,6 +27,8 @@ namespace UML {
             BehavioredClassifier(const BehavioredClassifier& classifier);
             virtual ~BehavioredClassifier();
             Sequence<Behavior>& getOwnedBehaviors();
+            Behavior* getClassifierBehavior();
+            void setClassifierBehavior(Behavior* behavior);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

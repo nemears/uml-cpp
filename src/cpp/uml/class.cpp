@@ -79,6 +79,10 @@ bool Class::isSubClassOf(ElementType eType) const {
     bool ret = StructuredClassifier::isSubClassOf(eType);
 
     if (!ret) {
+        ret = BehavioredClassifier::isSubClassOf(eType);
+    }
+
+    if (!ret) {
         ret = eType == ElementType::CLASS;
     }
     

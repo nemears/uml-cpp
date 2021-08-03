@@ -8,6 +8,7 @@
 #include "uml/package.h"
 #include "uml/property.h"
 #include "uml/literalString.h"
+#include "uml/dataType.h"
 
 using namespace UML;
 
@@ -551,4 +552,21 @@ TEST_F(ClassTest, CopyClassTest) {
   ASSERT_TRUE(c2.getOwnedElements().size() == 2);
   ASSERT_TRUE(c2.getOwnedElements().front() == &p);
   ASSERT_TRUE(c2.getOwnedElements().back() == &o);
+}
+
+TEST_F(ClassTest, addAndRemoveNestedClassifierTest) {
+  UmlManager m;
+  Class& c = m.create<Class>();
+  DataType& d = m.create<DataType>();
+  c.getNestedClassifiers().add(d);
+  ASSERT_EQ(c.getNestedClassifiers().size(), 1);
+  ASSERT_EQ(c.getNestedClassifiers().front()->getID(), d.getID());
+  ASSERT_EQ(c.getOwnedMembers().size(), 1);
+  ASSERT_EQ(c.getOwnedMembers().front()->getID(), d.getID());
+  ASSERT_EQ(c.getRedefinedElements().size(), 1);
+  ASSERT_EQ(c.getRedefinedElements().front()->getID(), d.getID());
+  c.getNestedClassifiers().remove(d);
+  ASSERT_EQ(c.getNestedClassifiers().size(), 0);
+  ASSERT_EQ(c.getOwnedMembers().size(), 0);
+  ASSERT_EQ(c.getNestedClassifiers().size(), 0);
 }

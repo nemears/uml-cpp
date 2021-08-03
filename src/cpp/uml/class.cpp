@@ -36,10 +36,31 @@ void Class::ClassRemoveOwnedAttributeFunctor::operator()(Element& el) const {
     }
 }
 
+void Class::AddNestedClassifierFunctor::operator()(Element& el) const {
+    if (!m_el->as<Class>().getOwnedMembers().count(el.getID())) {
+        m_el->as<Class>().getOwnedMembers().add(el.as<Classifier>());
+    }
+
+    if (!m_el->as<Class>().getRedefinedElements().count(el.getID())) {
+        m_el->as<Class>().getRedefinedElements().add(el.as<Classifier>());
+    }
+}
+
+void Class::RemoveNestedClassifierFunctor::operator()(Element& el) const {
+    if (m_el->as<Class>().getOwnedMembers().count(el.getID())) {
+        m_el->as<Class>().getOwnedMembers().remove(el.as<Classifier>());
+    }
+
+    if (m_el->as<Class>().getRedefinedElements().count(el.getID())) {
+        m_el->as<Class>().getRedefinedElements().remove(el.as<Classifier>());
+    }
+}
+
 void Class::setManager(UmlManager* manager) {
     StructuredClassifier::setManager(manager);
     BehavioredClassifier::setManager(manager);
     m_operations.m_manager = manager;
+    m_nestedClassifiers.m_manager = manager;
 }
 
 Class::Class() {
@@ -47,6 +68,8 @@ Class::Class() {
     m_operations.removeProcedures.push_back(new RemoveOperationFunctor(this));
     m_ownedAttributes.addProcedures.push_back(new ClassAddOwnedAttributeFunctor(this));
     m_ownedAttributes.removeProcedures.push_back(new ClassRemoveOwnedAttributeFunctor(this));
+    m_nestedClassifiers.addProcedures.push_back(new AddNestedClassifierFunctor(this));
+    m_nestedClassifiers.removeProcedures.push_back(new RemoveNestedClassifierFunctor(this));
 }
 
 Class::~Class() {
@@ -66,10 +89,17 @@ Element(clazz) {
     m_operations.removeProcedures.push_back(new RemoveOperationFunctor(this));
     m_ownedAttributes.addProcedures.push_back(new ClassAddOwnedAttributeFunctor(this));
     m_ownedAttributes.removeProcedures.push_back(new ClassRemoveOwnedAttributeFunctor(this));
+    m_nestedClassifiers.addProcedures.clear();
+    m_nestedClassifiers.removeProcedures.clear();
+    m_nestedClassifiers.addProcedures.push_back(new AddNestedClassifierFunctor(this));
+    m_nestedClassifiers.removeProcedures.push_back(new RemoveNestedClassifierFunctor(this));
 }
 
 Sequence<Operation>& Class::getOperations() {
     return m_operations;
+}
+Sequence<Classifier>& Class::getNestedClassifiers() {
+    return m_nestedClassifiers;
 }
 
 ElementType Class::getElementType() const {

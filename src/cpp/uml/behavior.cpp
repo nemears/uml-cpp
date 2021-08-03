@@ -2,6 +2,7 @@
 #include "uml/behavioralFeature.h"
 #include "uml/operation.h"
 #include "uml/parameter.h"
+#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -71,6 +72,39 @@ void Behavior::setSpecification(BehavioralFeature* specification) {
     if (m_specification) {
         if (!m_specification->getMethods().count(m_id)) {
             m_specification->getMethods().add(*this);
+        }
+    }
+}
+
+BehavioredClassifier* Behavior::getBehavioredClassifier() {
+    return universalGet<BehavioredClassifier>(m_behavioredClassifierID, m_behavioredClassifierPtr, m_manager);
+}
+
+void Behavior::setBehavioredClassifier(BehavioredClassifier* classifier) {
+    if (!isSameOrNull(m_behavioredClassifierID, classifier)) {
+        if (!m_behavioredClassifierPtr) {
+            m_behavioredClassifierPtr = &m_manager->get<BehavioredClassifier>(m_behavioredClassifierID);
+        }
+
+        if (m_behavioredClassifierPtr->getOwnedBehaviors().count(m_id)) {
+            m_behavioredClassifierPtr->getOwnedBehaviors().remove(*this);
+        }
+
+        m_behavioredClassifierPtr = 0;
+        m_behavioredClassifierID = ID::nullID();
+    }
+
+    if (classifier) {
+        m_behavioredClassifierID = classifier->getID();
+    }
+
+    if (!m_manager) {
+        m_behavioredClassifierPtr = classifier;
+    }
+
+    if (classifier) {
+        if (!classifier->getOwnedBehaviors().count(m_id)) {
+            classifier->getOwnedBehaviors().add(*this);
         }
     }
 }

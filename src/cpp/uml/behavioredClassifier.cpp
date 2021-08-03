@@ -7,12 +7,16 @@ void BehavioredClassifier::AddOwnedBehaviorFunctor::operator()(Element& el) cons
     if (!m_el->as<BehavioredClassifier>().getOwnedMembers().count(el.getID())) {
         m_el->as<BehavioredClassifier>().getOwnedMembers().add(el.as<Behavior>());
     }
+
+    el.as<Behavior>().setBehavioredClassifier(&m_el->as<BehavioredClassifier>());
 }
 
 void BehavioredClassifier::RemoveOwnedBehaviorFunctor::operator()(Element& el) const {
     if (m_el->as<BehavioredClassifier>().getOwnedMembers().count(el.getID())) {
         m_el->as<BehavioredClassifier>().getOwnedMembers().remove(el.as<Behavior>());
     }
+
+    el.as<Behavior>().setBehavioredClassifier(0);
 }
 
 void BehavioredClassifier::setManager(UmlManager* manager) {

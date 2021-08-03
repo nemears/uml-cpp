@@ -11,6 +11,8 @@ namespace UML {
         protected:
             Sequence<Parameter> m_parameters;
             BehavioralFeature* m_specification;
+            ID m_behavioredClassifierID;
+            BehavioredClassifier* m_behavioredClassifierPtr;
             class AddParameterFunctor : public AbstractSequenceFunctor {
                 public:
                     AddParameterFunctor(Element* me) : AbstractSequenceFunctor(me) {};
@@ -27,6 +29,8 @@ namespace UML {
             Sequence<Parameter>& getParameters();
             BehavioralFeature* getSpecification();
             void setSpecification(BehavioralFeature* specification);
+            BehavioredClassifier* getBehavioredClassifier();
+            void setBehavioredClassifier(BehavioredClassifier* classifier);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

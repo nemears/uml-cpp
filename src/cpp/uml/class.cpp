@@ -52,7 +52,12 @@ Class::~Class() {
     
 }
 
-Class::Class(const Class& clazz) : StructuredClassifier(clazz) , PackageableElement(clazz), NamedElement(clazz), Element(clazz) {
+Class::Class(const Class& clazz) : StructuredClassifier(clazz) , 
+BehavioredClassifier(clazz) , 
+Classifier(clazz),
+PackageableElement(clazz), 
+NamedElement(clazz), 
+Element(clazz) {
     m_operations = clazz.m_operations;
     m_operations.addProcedures.clear();
     m_operations.addProcedures.push_back(new AddOperationFunctor(this));

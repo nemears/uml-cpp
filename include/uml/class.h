@@ -2,12 +2,13 @@
 #define CLASSH
 #include <list>
 #include "structuredClassifier.h"
+#include "behavioredClassifier.h"
 
 namespace UML{
 
     class Operation;
 
-    class Class : public StructuredClassifier {
+    class Class : public StructuredClassifier , public BehavioredClassifier {
         friend class UmlManager;
         protected:
             Sequence<Operation> m_operations;

@@ -65,6 +65,7 @@ namespace UML {
     class Deployment;
     class DeploymentTarget;
     class Artifact;
+    class BehavioredClassifier;
 
     class ReadOnlySequenceException : public std::exception {
         friend class Element;
@@ -135,6 +136,7 @@ namespace UML {
         friend class Deployment;
         friend class DeploymentTarget;
         friend class Artifact;
+        friend class BehavioredClassifier;
         
         private:
             // Manager

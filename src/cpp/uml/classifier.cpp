@@ -5,7 +5,7 @@
 using namespace std;
 using namespace UML;
 
-Classifier::Classifier() {
+Classifier::Classifier() : TemplateableElement() {
     m_attributes.addProcedures.push_back(new AddAttributeFunctor(this));
     m_attributes.removeProcedures.push_back(new RemoveAttributeFunctor(this));
     m_generalizations.addProcedures.push_back(new AddGeneralizationFunctor(this));

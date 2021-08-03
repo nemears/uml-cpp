@@ -7,7 +7,7 @@ namespace UML {
 
     class ConnectableElement;
 
-    class StructuredClassifier : public Classifier {
+    class StructuredClassifier : virtual public Classifier {
         protected:
             Sequence<Property> m_ownedAttributes;
             Sequence<ConnectableElement> m_role;

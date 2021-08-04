@@ -847,6 +847,14 @@ void emitClass(YAML::Emitter& emitter, Class& clazz, EmitterMetaData& data) {
         emitter << YAML::EndSeq;
     }
 
+    if (!clazz.getNestedClassifiers().empty()) {
+        emitter << YAML::Key << "nestedClassifiers" << YAML::Value << YAML::BeginSeq;
+        for (auto& classifier : clazz.getNestedClassifiers()) {
+            emit(emitter, classifier, data);
+        }
+        emitter << YAML::EndSeq;
+    }
+
     if (clazz.getElementType() == ElementType::CLASS) {
         emitter << YAML::EndMap << YAML::EndMap;
     }
@@ -2642,7 +2650,7 @@ void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMe
         emitter << YAML::EndSeq;
     }
 
-    if (!association.getOwnedEnds().size() > association.getNavigableOwnedEnds().size()) {
+    if (!association.getOwnedEnds().size() > association.getNavigableOwnedEnds().size() && !association.getOwnedEnds().empty()) {
         emitter << YAML::Key << "ownedEnds" << YAML::Value << YAML::BeginSeq;
         for (auto& end : association.getOwnedEnds()) {
             if (!association.getNavigableOwnedEnds().count(end.getID())) {

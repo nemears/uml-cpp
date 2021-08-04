@@ -11,7 +11,10 @@ int main(int argc, char** argv) {
     switch (argc)
     {
         case 1: {
-            cout << "Application running!\n";
+            cout << "Printing random IDs!" << endl;
+            for (char i = 0; i < 20; i++) {
+                cout << ID::randomID().string() << endl;
+            }
             // TODO GUI
         }
         case 2: {

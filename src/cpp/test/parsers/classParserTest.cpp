@@ -9,6 +9,10 @@
 #include "uml/package.h"
 #include "uml/generalization.h"
 #include "uml/parameter.h"
+#include "uml/association.h"
+#include "uml/artifact.h"
+#include "uml/primitiveType.h"
+#include "uml/enumeration.h"
 
 using namespace std;
 using namespace UML;
@@ -254,4 +258,52 @@ TEST_F(ClassParserTest, nestedClassifierParsingTest) {
     ASSERT_EQ(clazz.getNestedClassifiers().get(5)->getName(), "bb");
     ASSERT_EQ(clazz.getNestedClassifiers().get(6)->getElementType(), ElementType::PRIMITIVE_TYPE);
     ASSERT_EQ(clazz.getNestedClassifiers().get(6)->getName(), "pp");
+}
+
+TEST_F(ClassParserTest, nestedClassifierEmitTest) {
+    UmlManager m;
+    Class& clazz = m.create<Class>();
+    Artifact& artifact = m.create<Artifact>();
+    Association& association = m.create<Association>();
+    Class& nestedClazz = m.create<Class>();
+    DataType& dataType = m.create<DataType>();
+    Enumeration& enumeration = m.create<Enumeration>();
+    OpaqueBehavior& opaqueBehavior = m.create<OpaqueBehavior>();
+    PrimitiveType& primitiveType = m.create<PrimitiveType>();
+    clazz.setID("5mOWzor&UjeUs13VT9&HYj5DKh&Y");
+    artifact.setID("F_exblp0xsz5k1lmTLDtjBrFWqS6");
+    association.setID("oOgal3or1U2zY9ktKohwQS6ChLw7");
+    nestedClazz.setID("4Q6XfIWChz&mfIB_6Vc71mnxHDpU");
+    dataType.setID("Nw3c30z1PCo3GNs6QFh&wt9fVVzf");
+    enumeration.setID("lItnoDw_Ka4bfYaRnzrdFZnwqY3X");
+    opaqueBehavior.setID("j82g9_8Al4Vcp1PQ0wsS4ia9_MR4");
+    primitiveType.setID("FTjeJqMozlqjetKextwOJiSIeZA7");
+    clazz.getNestedClassifiers().add(artifact);
+    clazz.getNestedClassifiers().add(association);
+    clazz.getNestedClassifiers().add(nestedClazz);
+    clazz.getNestedClassifiers().add(dataType);
+    clazz.getNestedClassifiers().add(enumeration);
+    clazz.getNestedClassifiers().add(opaqueBehavior);
+    clazz.getNestedClassifiers().add(primitiveType);
+    string expectedEmit = R""""(class:
+  id: 5mOWzor&UjeUs13VT9&HYj5DKh&Y
+  nestedClassifiers:
+    - artifact:
+        id: F_exblp0xsz5k1lmTLDtjBrFWqS6
+    - association:
+        id: oOgal3or1U2zY9ktKohwQS6ChLw7
+    - class:
+        id: 4Q6XfIWChz&mfIB_6Vc71mnxHDpU
+    - dataType:
+        id: Nw3c30z1PCo3GNs6QFh&wt9fVVzf
+    - enumeration:
+        id: lItnoDw_Ka4bfYaRnzrdFZnwqY3X
+    - opaqueBehavior:
+        id: j82g9_8Al4Vcp1PQ0wsS4ia9_MR4
+    - primitiveType:
+        id: FTjeJqMozlqjetKextwOJiSIeZA7)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(clazz));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
 }

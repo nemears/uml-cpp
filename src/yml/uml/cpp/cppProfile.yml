@@ -12,6 +12,12 @@
       - stereotype:
           id: Cpp_CONST_ARRAY_Nw3c30z1PCo3
           name: C Constant Array
+          ownedAttributes:
+            - property:
+                name: size
+                type: int_r9nNbBukx47IomXrT2raqtc4
+                lower: 0
+                upper: 1
     packagedElements:
       - extension:
           ownedEnd:

@@ -401,72 +401,55 @@ CXChildVisitResult arrayVisit(CXCursor c, CXCursor parent, CXClientData client_d
 }
 
 CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData client_data) {
-    CppParserMetaData* data = static_cast<CppParserMetaData*>(client_data);
+    CppParserMetaData& data = *static_cast<CppParserMetaData*>(client_data);
     switch (clang_getCursorKind(c)) {
         case CXCursor_VarDecl : {
+            InstanceSpecification& variable = data.manager.create<InstanceSpecification>();
+            CXString spelling = clang_getCursorSpelling(c);
+            variable.setName(clang_getCString(spelling));
+            clang_disposeString(spelling);
+            variable.setOwningPackage(&data.owningElement.as<Package>());
             CXType type = clang_getCursorType(c);
-            // We are going to refactor to instanceSpecifications of the dataTypes with specifications of the
-            // values as the appropriate literal
             switch (type.kind) {
                 case CXTypeKind::CXType_Bool : {
-                    LiteralBool& cBool = data->manager.create<LiteralBool>();
-                    CXString spelling = clang_getCursorSpelling(c);
-                    cBool.setName(clang_getCString(spelling));
-                    clang_disposeString(spelling);
-                    cBool.setType(&data->manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
-                    if (data->owningElement.getElementType() == ElementType::PACKAGE) {
-                        data->owningElement.as<Package>().getPackagedElements().add(cBool);
-                    }
+                    LiteralBool& cBool = data.manager.create<LiteralBool>();
+                    variable.setSpecification(&cBool);
+                    variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
+                    /** TODO: set value **/
                     break;
                 }
                 case CXTypeKind::CXType_Char_S : {
-                    LiteralInt& cChar = data->manager.create<LiteralInt>();
-                    CXString spelling = clang_getCursorSpelling(c);
-                    cChar.setName(clang_getCString(spelling));
-                    clang_disposeString(spelling);
-                    cChar.setType(&data->manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
-                    if (data->owningElement.getElementType() == ElementType::PACKAGE) {
-                        dynamic_cast<Package&>(data->owningElement).getPackagedElements().add(cChar);
-                    }
+                    LiteralInt& cChar = data.manager.create<LiteralInt>();
+                    variable.setSpecification(&cChar);
+                    variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
+                    /** TODO: set value **/
                     break;
                 }
                 case CXTypeKind::CXType_Int : {
-                    LiteralInt& cInt = data->manager.create<LiteralInt>();
-                    CXString spelling = clang_getCursorSpelling(c);
-                    cInt.setName(clang_getCString(spelling));
-                    clang_disposeString(spelling);
-                    cInt.setType(&data->manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
-                    if (data->owningElement.getElementType() == ElementType::PACKAGE) {
-                        dynamic_cast<Package&>(data->owningElement).getPackagedElements().add(cInt);
-                    }
+                    LiteralInt& cInt = data.manager.create<LiteralInt>();
+                    variable.setSpecification(&cInt);
+                    variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
+                    /** TODO: set value **/
                     break;
                 }
                 case CXTypeKind::CXType_Float : {
-                    LiteralReal& cFloat = data->manager.create<LiteralReal>();
-                    CXString spelling = clang_getCursorSpelling(c);
-                    cFloat.setName(clang_getCString(spelling));
-                    clang_disposeString(spelling);
-                    cFloat.setType(&data->manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
-                    if (data->owningElementType == ElementType::PACKAGE) {
-                        dynamic_cast<Package&>(data->owningElement).getPackagedElements().add(cFloat);
-                    }
+                    LiteralReal& cFloat = data.manager.create<LiteralReal>();
+                    variable.setSpecification(&cFloat);
+                    variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
+                    /** TODO: set value **/
                     break;
                 }
                 case CXTypeKind::CXType_Double : {
-                    LiteralReal& cDouble = data->manager.create<LiteralReal>();
-                    CXString spelling = clang_getCursorSpelling(c);
-                    cDouble.setName(clang_getCString(spelling));
-                    clang_disposeString(spelling);
-                    cDouble.setType(&data->manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
-                    if (data->owningElementType == ElementType::PACKAGE) {
-                        dynamic_cast<Package&>(data->owningElement).getPackagedElements().add(cDouble);
-                    }
+                    LiteralReal& cDouble = data.manager.create<LiteralReal>();
+                    variable.setSpecification(&cDouble);
+                    variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
+                    /** TODO: set value **/
                     break;
                 }
                 case CXTypeKind::CXType_ConstantArray : {
                     CXType arrayType = clang_getElementType(type);
-                    DataType& dataType = data->manager.create<DataType>();
-                    CppParserMetaData arrayData = {data->manager, data->unit, dataType, dataType.getElementType(), VisibilityKind::PUBLIC};
+                    DataType& dataType = data.manager.create<DataType>();
+                    CppParserMetaData arrayData = {data.manager, data.unit, dataType, dataType.getElementType(), VisibilityKind::PUBLIC};
                     clang_visitChildren(c, &arrayVisit, &arrayData);
                     break;
                 }
@@ -485,12 +468,12 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
             break;
         }
         case CXCursor_ClassDecl : {
-            Class& cppClass = data->manager.create<Class>();
+            Class& cppClass = data.manager.create<Class>();
             CXString spelling = clang_getCursorSpelling(c);
             cppClass.setName(clang_getCString(spelling));
             clang_disposeString(spelling);
-            setOwnerHelper(cppClass, data->owningElement);
-            CppParserMetaData classData = {data->manager, data->unit, cppClass, cppClass.getElementType()};
+            setOwnerHelper(cppClass, data.owningElement);
+            CppParserMetaData classData = {data.manager, data.unit, cppClass, cppClass.getElementType()};
             clang_visitChildren(c, *classVisit, &classData);
             break;
         }

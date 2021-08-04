@@ -7,6 +7,7 @@
 #include "uml/slot.h"
 #include "uml/property.h"
 #include "uml/instanceValue.h"
+#include "uml/literalString.h"
 
 using namespace std;
 using namespace UML;
@@ -152,4 +153,15 @@ TEST_F(InstanceSpecificationParserTest, simpleSlotTest) {
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(inst));
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
+}
+
+TEST_F(InstanceSpecificationParserTest, parseSpecificationTest) {
+    Element* el;
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/specification.yml"));
+    ASSERT_EQ(el->getElementType(), ElementType::INSTANCE_SPECIFICATION);
+    InstanceSpecification& inst = el->as<InstanceSpecification>();
+    ASSERT_TRUE(inst.getSpecification() != 0);
+    ASSERT_EQ(inst.getSpecification()->getElementType(), ElementType::LITERAL_STRING);
+    ASSERT_EQ(inst.getSpecification()->as<LiteralString>().getValue(), "booga");
 }

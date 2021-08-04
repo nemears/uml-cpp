@@ -1,0 +1,6 @@
+---
+  instanceSpecification:
+    specification:
+      literalString:
+        value: booga
+...

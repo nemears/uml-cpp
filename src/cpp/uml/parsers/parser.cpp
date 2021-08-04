@@ -1594,6 +1594,14 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
             throw UmlParserException("Invalid YAML node type for InstanceSpecification field slots, expected sequence, ", data.m_path.string(), node["slots"]);
         }
     }
+
+    if (node["specification"]) {
+        if (node["specification"].IsMap()) {
+            inst.setSpecification(&determineAndParseValueSpecification(node["specification"], data));
+        } else {
+            throw UmlParserException("Invalid yaml node type for specification field, must be a map!", data.m_path.string(), node["specification"]);
+        }
+    }
 }
 
 void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& inst, EmitterMetaData& data) {

@@ -12,6 +12,7 @@
 #include "uml/literalBool.h"
 #include "uml/association.h"
 #include "uml/artifact.h"
+#include "uml/dataType.h"
 
 using namespace std;
 
@@ -404,6 +405,8 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
     switch (clang_getCursorKind(c)) {
         case CXCursor_VarDecl : {
             CXType type = clang_getCursorType(c);
+            // We are going to refactor to instanceSpecifications of the dataTypes with specifications of the
+            // values as the appropriate literal
             switch (type.kind) {
                 case CXTypeKind::CXType_Bool : {
                     LiteralBool& cBool = data->manager.create<LiteralBool>();
@@ -461,7 +464,11 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                     break;
                 }
                 case CXTypeKind::CXType_ConstantArray : {
-
+                    CXType arrayType = clang_getElementType(type);
+                    DataType& dataType = data->manager.create<DataType>();
+                    CppParserMetaData arrayData = {data->manager, data->unit, dataType, dataType.getElementType(), VisibilityKind::PUBLIC};
+                    clang_visitChildren(c, &arrayVisit, &arrayData);
+                    break;
                 }
                 case CXTypeKind::CXType_Void : {
                     // TODO

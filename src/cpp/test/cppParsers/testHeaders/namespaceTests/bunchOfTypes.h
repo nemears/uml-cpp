@@ -1,8 +1,8 @@
 namespace FOO {
     bool b;
-    bool b_array[10];
-    bool* b_ptr;
-    bool& b_ref;
+    // bool b_array[10];
+    // bool* b_ptr;
+    // bool& b_ref;
     // unsigned char u_c;
     // unsigned int u_i;
     // long int l_i;

@@ -9,12 +9,20 @@
       - stereotype:
           id: Cpp_NAMESPACE_3FloKgLhiH2P0t
           name: C++ Namespace
+      - stereotype:
+          id: Cpp_CONST_ARRAY_Nw3c30z1PCo3
+          name: C Constant Array
     packagedElements:
       - extension:
           ownedEnd:
             extensionEnd:
               type: Cpp_NAMESPACE_3FloKgLhiH2P0t
           metaClass: PACKAGE
+      - extension:
+          ownedEnd:
+            extensionEnd:
+              type: Cpp_CONST_ARRAY_Nw3c30z1PCo3
+          metaClass: DATA_TYPE
       - package:
           id: C_Primitives_17ZQNymn6bZqCi3
           name: C Primitives

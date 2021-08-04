@@ -756,7 +756,77 @@ void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
                 }
             }
         } else {
-            throw UmlParserException("Improper YAML node type for operations field, must be scalar, ", data.m_path.string(), node["attributes"]);
+            throw UmlParserException("Improper YAML node type for operations field, must be sequence, ", data.m_path.string(), node["attributes"]);
+        }
+    }
+
+    if (node["nestedClassifiers"]) {
+        if (node["nestedClassifiers"].IsSequence()) {
+            for (size_t i = 0; i < node["nestedClassifiers"].size(); i++) {
+                if (node["nestedClassifiers"][i]["activity"]) {
+                    // TODO
+                } else if (node["nestedClassifiers"][i]["artifact"]) { 
+                    if (node["nestedClassifiers"][i]["artifact"].IsMap()) {
+                        Artifact& artifact = data.m_manager->create<Artifact>();
+                        parseArtifact(node["nestedClassifiers"][i]["artifact"], artifact, data);
+                        clazz.getNestedClassifiers().add(artifact);
+                    } else {
+                        throw UmlParserException("Invalid yaml node type for enumeration artifact", data.m_path.string(), node["nestedClassifiers"][i]["artifact"]);
+                    }
+                } else if (node["nestedClassifiers"][i]["association"]) { // is this valid IG, seems weird
+                    if (node["nestedClassifiers"][i]["association"].IsMap()) {
+                        Association& association = data.m_manager->create<Association>();
+                        parseAssociation(node["nestedClassifiers"][i]["association"], association, data);
+                        clazz.getNestedClassifiers().add(association);
+                    } else {
+                        throw UmlParserException("Invalid yaml node type for association definition", data.m_path.string(), node["nestedClassifiers"][i]["association"]);
+                    }
+                } else if (node["nestedClassifiers"][i]["class"]) { 
+                    if (node["nestedClassifiers"][i]["class"].IsMap()) {
+                        Class& nestedClazz = data.m_manager->create<Class>();
+                        parseClass(node["nestedClassifiers"][i]["class"], nestedClazz, data);
+                        clazz.getNestedClassifiers().add(nestedClazz);
+                    } else {
+                        throw UmlParserException("Invalid yaml node type for class definition", data.m_path.string(), node["nestedClassifiers"][i]["class"]);
+                    }
+                } else if (node["nestedClassifiers"][i]["dataType"]) { 
+                    if (node["nestedClassifiers"][i]["dataType"].IsMap()) {
+                        DataType& dataType = data.m_manager->create<DataType>();
+                        parseDataType(node["nestedClassifiers"][i]["dataType"], dataType, data);
+                        clazz.getNestedClassifiers().add(dataType);
+                    } else {
+                        throw UmlParserException("Invalid yaml node type for dataType definition", data.m_path.string(), node["nestedClassifiers"][i]["dataType"]);
+                    }
+                } else if (node["nestedClassifiers"][i]["enumeration"]) { 
+                    if (node["nestedClassifiers"][i]["enumeration"].IsMap()) {
+                        Enumeration& enumeration = data.m_manager->create<Enumeration>();
+                        parseEnumeration(node["nestedClassifiers"][i]["enumeration"], enumeration, data);
+                        clazz.getNestedClassifiers().add(enumeration);
+                    } else {
+                        throw UmlParserException("Invalid yaml node type for enumeration definition", data.m_path.string(), node["nestedClassifiers"][i]["enumeration"]);
+                    }
+                } else if (node["nestedClassifiers"][i]["opaqueBehavior"]) { 
+                    if (node["nestedClassifiers"][i]["opaqueBehavior"].IsMap()) {
+                        OpaqueBehavior& opaqueBehavior = data.m_manager->create<OpaqueBehavior>();
+                        parseOpaqueBehavior(node["nestedClassifiers"][i]["opaqueBehavior"], opaqueBehavior, data);
+                        clazz.getNestedClassifiers().add(opaqueBehavior);
+                    } else {
+                        throw UmlParserException("Invalid yaml node type for opaqueBehavior definition", data.m_path.string(), node["nestedClassifiers"][i]["opaqueBehavior"]);
+                    }
+                } else if (node["nestedClassifiers"][i]["primitiveType"]) { 
+                    if (node["nestedClassifiers"][i]["primitiveType"].IsMap()) {
+                        PrimitiveType& primitiveType = data.m_manager->create<PrimitiveType>();
+                        parsePrimitiveType(node["nestedClassifiers"][i]["primitiveType"], primitiveType, data);
+                        clazz.getNestedClassifiers().add(primitiveType);
+                    } else {
+                        throw UmlParserException("Invalid yaml node type for primitiveType definition", data.m_path.string(), node["nestedClassifiers"][i]["primitiveType"]);
+                    }
+                } else {
+                    throw UmlParserException("invalid classifier definition for nestedClassifiers entry!", data.m_path.string(), node["nestedClassifiers"][i]);
+                }
+            }
+        } else {
+            throw UmlParserException("Improper YAML node type for nestedClassifiers field, must be a sequence!", data.m_path.string(), node["nestedClassifiers"]);
         }
     }
 }

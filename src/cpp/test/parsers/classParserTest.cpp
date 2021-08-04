@@ -232,3 +232,26 @@ TEST_F(ClassParserTest, emitFilledInOperation) {
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(ClassParserTest, nestedClassifierParsingTest) {
+    Element* el;
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/nestedClassifiers.yml"));
+    ASSERT_EQ(el->getElementType(), ElementType::CLASS);
+    Class& clazz = el->as<Class>();
+    ASSERT_EQ(clazz.getNestedClassifiers().size(), 7);
+    ASSERT_EQ(clazz.getNestedClassifiers().get(0)->getElementType(), ElementType::ASSOCIATION);
+    ASSERT_EQ(clazz.getNestedClassifiers().get(0)->getName(), "assoc");
+    ASSERT_EQ(clazz.getNestedClassifiers().get(1)->getElementType(), ElementType::ARTIFACT);
+    ASSERT_EQ(clazz.getNestedClassifiers().get(1)->getName(), "art");
+    ASSERT_EQ(clazz.getNestedClassifiers().get(2)->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(clazz.getNestedClassifiers().get(2)->getName(), "class");
+    ASSERT_EQ(clazz.getNestedClassifiers().get(3)->getElementType(), ElementType::DATA_TYPE);
+    ASSERT_EQ(clazz.getNestedClassifiers().get(3)->getName(), "bigD");
+    ASSERT_EQ(clazz.getNestedClassifiers().get(4)->getElementType(), ElementType::ENUMERATION);
+    ASSERT_EQ(clazz.getNestedClassifiers().get(4)->getName(), "e");
+    ASSERT_EQ(clazz.getNestedClassifiers().get(5)->getElementType(), ElementType::OPAQUE_BEHAVIOR);
+    ASSERT_EQ(clazz.getNestedClassifiers().get(5)->getName(), "bb");
+    ASSERT_EQ(clazz.getNestedClassifiers().get(6)->getElementType(), ElementType::PRIMITIVE_TYPE);
+    ASSERT_EQ(clazz.getNestedClassifiers().get(6)->getName(), "pp");
+}

@@ -2660,7 +2660,7 @@ void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMe
         emitter << YAML::EndSeq;
     }
 
-    if (association.getMemberEnds().size() > association.getOwnedEnds().size()) {
+    if (association.getMemberEnds().size() > association.getOwnedEnds().size() && !association.getMemberEnds().empty()) {
         emitter << YAML::Key << "memberEnds" << YAML::Value << YAML::BeginSeq;
         for (auto& end : association.getMemberEnds()) {
             if (!association.getOwnedEnds().count(end.getID())) {

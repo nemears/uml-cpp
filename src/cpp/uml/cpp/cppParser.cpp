@@ -468,10 +468,10 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                 }
                 default : {
                     CXString spelling = clang_getCursorSpelling(c);
-                    CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
-                    throw UmlCppParserException("Unahandled type for variable type " + string(clang_getCString(spelling)) + " of kind " + string(clang_getCString(kindSpelling)) + fileNameAndLineNumber(c));
+                    CXString typeSpelling = clang_getTypeKindSpelling(type.kind);
+                    throw UmlCppParserException("Unahandled type for variable " + string(clang_getCString(spelling)) + " of clang type " + string(clang_getCString(typeSpelling)) + fileNameAndLineNumber(c));
                     clang_disposeString(spelling);
-                    clang_disposeString(kindSpelling);
+                    clang_disposeString(typeSpelling);
                     break;
                 }
             }

@@ -1527,9 +1527,15 @@ void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMe
 
     if (node["upper"]) {
         if (node["upper"].IsScalar()) {
-            LiteralInt& upper = data.m_manager->create<LiteralInt>();
-            upper.setValue(node["upper"].as<int>());
-            el.setUpperValue(&upper);
+            if (node["upper"].as<string>().compare("*") == 0) {
+                LiteralUnlimitedNatural& upper = data.m_manager->create<LiteralUnlimitedNatural>();
+                upper.setInfinite();
+                el.setUpperValue(&upper);
+            } else {
+                LiteralInt& upper = data.m_manager->create<LiteralInt>();
+                upper.setValue(node["upper"].as<int>());
+                el.setUpperValue(&upper);
+            }
         } else if (node["upper"].IsMap()) {
             if (node["upper"]["literalInt"]) {
                 // TODO parse literal int

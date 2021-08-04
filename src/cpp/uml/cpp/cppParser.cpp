@@ -447,6 +447,8 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                     break;
                 }
                 case CXTypeKind::CXType_ConstantArray : {
+                    /** TODO: think about this, don't like current profile implementation with dataType stereotype don't think
+                     * that works **/
                     CXType arrayType = clang_getElementType(type);
                     DataType& dataType = data.manager.create<DataType>();
                     CppParserMetaData arrayData = {data.manager, data.unit, dataType, dataType.getElementType(), VisibilityKind::PUBLIC};

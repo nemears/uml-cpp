@@ -17,6 +17,8 @@ namespace UML{
             ID m_classifierID;
             Classifier* m_classifierPtr;
             Sequence<Slot> m_slots;
+            ID m_specificationID;
+            ValueSpecification* m_specificationPtr;
             class AddSlotFunctor : public AbstractSequenceFunctor {
                 public:
                     AddSlotFunctor(Element* me) : AbstractSequenceFunctor(me) {};
@@ -35,6 +37,8 @@ namespace UML{
             Classifier* getClassifier();
             void setClassifier(Classifier* classifier);
             Sequence<Slot>& getSlots();
+            ValueSpecification* getSpecification();
+            void setSpecification(ValueSpecification* specification);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

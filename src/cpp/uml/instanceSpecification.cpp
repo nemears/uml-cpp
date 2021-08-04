@@ -2,6 +2,7 @@
 #include "uml/slot.h"
 #include "uml/classifier.h"
 #include "uml/universalFunctions.h"
+#include "uml/valueSpecification.h"
 
 using namespace UML;
 
@@ -38,6 +39,7 @@ InstanceSpecification::InstanceSpecification() {
     m_classifierPtr = 0;
     m_slots.addProcedures.push_back(new AddSlotFunctor(this));
     m_slots.removeProcedures.push_back(new RemoveSlotFunctor(this));
+    m_specificationPtr = 0;
 }
 
 InstanceSpecification::InstanceSpecification(const InstanceSpecification& inst) {
@@ -46,6 +48,10 @@ InstanceSpecification::InstanceSpecification(const InstanceSpecification& inst) 
         m_classifierPtr = &inst.m_manager->get<Classifier>(inst.m_classifierID);
     } else {
         m_classifierPtr = inst.m_classifierPtr;
+    }
+    m_specificationID = inst.m_specificationID;
+    if (!m_manager) {
+        m_specificationPtr = inst.m_specificationPtr;
     }
     m_slots = inst.m_slots;
     m_slots.addProcedures.clear();
@@ -77,6 +83,39 @@ void InstanceSpecification::setClassifier(Classifier* classifier) {
     
     if (!m_manager) {
         m_classifierPtr = classifier;
+    }
+}
+
+ValueSpecification* InstanceSpecification::getSpecification() {
+    return universalGet<ValueSpecification>(m_specificationID, m_specificationPtr, m_manager);
+}
+
+void InstanceSpecification::setSpecification(ValueSpecification* specification) {
+    if (!isSameOrNull(m_specificationID, specification)) {
+        if (!m_specificationPtr) {
+            m_specificationPtr = &m_manager->get<ValueSpecification>(m_specificationID);
+        }
+
+        if (m_ownedElements->count(m_specificationID)) {
+            m_ownedElements->internalRemove(*m_specificationPtr);
+        }
+
+        m_specificationPtr = 0;
+        m_specificationID = ID::nullID();
+    }
+
+    if (specification) {
+        m_specificationID = specification->getID();
+    }
+
+    if (!m_manager) {
+        m_specificationPtr = specification;
+    }
+
+    if (specification) {
+        if (!m_ownedElements->count(specification->getID())) {
+            m_ownedElements->internalAdd(*specification);
+        }
     }
 }
 

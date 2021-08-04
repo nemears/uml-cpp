@@ -127,3 +127,20 @@ TEST_F(InstanceSpecificationTest, removeSlotFunctorTestW_Manager) {
     ASSERT_TRUE(!s.getOwningInstance());
     ASSERT_TRUE(!s.getOwner());
 }
+
+TEST_F(InstanceSpecificationTest, setAndRemoveSpecificationTest) {
+    UmlManager m;
+    InstanceSpecification& inst = m.create<InstanceSpecification>();
+    LiteralString& str = m.create<LiteralString>();
+    inst.setSpecification(&str);
+    ASSERT_TRUE(inst.getSpecification() != 0);
+    ASSERT_EQ(inst.getSpecification()->getID(), str.getID());
+    ASSERT_EQ(inst.getOwnedElements().size(), 1);
+    ASSERT_EQ(inst.getOwnedElements().front()->getID(), str.getID());
+    ASSERT_TRUE(str.getOwner() != 0);
+    ASSERT_EQ(str.getOwner()->getID(), inst.getID());
+    inst.setSpecification(0);
+    ASSERT_TRUE(inst.getSpecification() == 0);
+    ASSERT_EQ(inst.getOwnedElements().size(), 0);
+    ASSERT_TRUE(str.getOwner() == 0);    
+}

@@ -165,3 +165,23 @@ TEST_F(InstanceSpecificationParserTest, parseSpecificationTest) {
     ASSERT_EQ(inst.getSpecification()->getElementType(), ElementType::LITERAL_STRING);
     ASSERT_EQ(inst.getSpecification()->as<LiteralString>().getValue(), "booga");
 }
+
+TEST_F(InstanceSpecificationParserTest, emitSpecificationTest) {
+    UmlManager m;
+    InstanceSpecification& inst = m.create<InstanceSpecification>();
+    LiteralString& str = m.create<LiteralString>();
+    inst.setID("fsU5Fw&5REaNv4NCvC0d4qZnXg4C");
+    str.setID("nVzJ8mHx1yrRlct0ot34p7uBaVvC");
+    str.setValue("ooga");
+    inst.setSpecification(&str);
+    string expectedEmit = R""""(instanceSpecification:
+  id: fsU5Fw&5REaNv4NCvC0d4qZnXg4C
+  specification:
+    literalString:
+      id: nVzJ8mHx1yrRlct0ot34p7uBaVvC
+      value: ooga)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(inst));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

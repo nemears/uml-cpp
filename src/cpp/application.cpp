@@ -11,6 +11,7 @@ int main(int argc, char** argv) {
     switch (argc)
     {
         case 1: {
+            srand(time(0));
             cout << "Printing random IDs!" << endl;
             for (char i = 0; i < 20; i++) {
                 cout << ID::randomID().string() << endl;

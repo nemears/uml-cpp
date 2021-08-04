@@ -1623,6 +1623,11 @@ void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& in
         }
     }
 
+    if (inst.getSpecification()) {
+        emitter << YAML::Key << "specification" << YAML::Value;
+        emit(emitter, *inst.getSpecification(), data);
+    }
+
     if (inst.getElementType() == ElementType::INSTANCE_SPECIFICATION) {
         emitter << YAML::EndMap << YAML::EndMap;
     }

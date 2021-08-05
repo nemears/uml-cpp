@@ -522,7 +522,7 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                 }
                 case CXTypeKind::CXType_ConstantArray : {
                     InstanceSpecification& arrayStereotypeInst = data.manager.create<InstanceSpecification>();
-                    arrayStereotypeInst.setClassifier(&data.manager.get<Stereotype>(ID::fromString("Cpp_CONST_ARRAY_Nw3c30z1PCo3")));
+                    arrayStereotypeInst.setClassifier(&data.manager.get<Stereotype>(Profile::cppConstArrayID));
                     arrayStereotypeInst.setName(arrayStereotypeInst.getClassifier()->getName());
                     variable.getAppliedStereotypes().add(arrayStereotypeInst);
                     CXType arrayType = clang_getElementType(type);
@@ -534,7 +534,7 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                 }
                 case CXTypeKind::CXType_Pointer : {
                     InstanceSpecification& pointerStereotypeInst = data.manager.create<InstanceSpecification>();
-                    pointerStereotypeInst.setClassifier(&data.manager.get<Stereotype>(ID::fromString("Cpp_POINTER_fHXNFR8qvi_PlTVD")));
+                    pointerStereotypeInst.setClassifier(&data.manager.get<Stereotype>(Profile::cppPointerID));
                     pointerStereotypeInst.setName(pointerStereotypeInst.getClassifier()->getName());
                     variable.getAppliedStereotypes().add(pointerStereotypeInst);
                     setC_VariableType(clang_getPointeeType(type), variable, data, c);
@@ -543,7 +543,7 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                 }
                 case CXTypeKind::CXType_LValueReference : {
                     InstanceSpecification& referenceStereotypeInst = data.manager.create<InstanceSpecification>();
-                    referenceStereotypeInst.setClassifier(&data.manager.get<Stereotype>(ID::fromString("Cpp_REFERENCE_Cpp_POINTER_fH")));
+                    referenceStereotypeInst.setClassifier(&data.manager.get<Stereotype>(Profile::cppReferenceID));
                     referenceStereotypeInst.setName(referenceStereotypeInst.getClassifier()->getName());
                     variable.getAppliedStereotypes().add(referenceStereotypeInst);
                     setC_VariableType(clang_getPointeeType(type), variable, data, c);
@@ -599,7 +599,7 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
             namespacePckg.setName(clang_getCString(spelling));
             clang_disposeString(spelling);
             InstanceSpecification& stereotypeInst = data->manager.create<InstanceSpecification>();
-            stereotypeInst.setClassifier(&data->manager.get<Stereotype>(ID::fromString("Cpp_NAMESPACE_3FloKgLhiH2P0t")));
+            stereotypeInst.setClassifier(&data->manager.get<Stereotype>(Profile::cppNamespaceID));
             namespacePckg.getAppliedStereotypes().add(stereotypeInst);
             setOwnerHelper(namespacePckg, data->owningElement);
             CppParserMetaData namespaceData = {data->manager, data->unit, namespacePckg, namespacePckg.getElementType()};

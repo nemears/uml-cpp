@@ -378,8 +378,8 @@ CXChildVisitResult arrayVisit(CXCursor c, CXCursor parent, CXClientData client_d
             switch (clang_getCursorKind(c)) {
                 case CXCursor_IntegerLiteral : {
                     Slot& sizeSlot = data.manager.create<Slot>();
-                    data.owningElement.as<InstanceSpecification>().getSlots().add(sizeSlot);
-                    sizeSlot.setDefiningFeature(data.owningElement.as<InstanceSpecification>().getClassifier()->getAttributes().get("size"));
+                    data.owningElement.as<InstanceSpecification>().getAppliedStereotypes().get("C++ Array")->getSlots().add(sizeSlot);
+                    sizeSlot.setDefiningFeature(data.owningElement.getAppliedStereotypes().get("C++ Array")->getClassifier()->getAttributes().get("size"));
                     LiteralInt& sizeValue = data.manager.create<LiteralInt>();
                     CXSourceRange range = clang_getCursorExtent(c);
                     CXToken *tokens = 0;
@@ -488,8 +488,14 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                     break;
                 }
                 case CXTypeKind::CXType_ConstantArray : {
-                    variable.setClassifier(&data.manager.get<DataType>(ID::fromString("Cpp_CONST_ARRAY_Nw3c30z1PCo3")));
+                    InstanceSpecification& arrayStereotypeInst = data.manager.create<InstanceSpecification>();
+                    arrayStereotypeInst.setClassifier(&data.manager.get<Stereotype>(ID::fromString("Cpp_CONST_ARRAY_Nw3c30z1PCo3")));
+                    arrayStereotypeInst.setName(arrayStereotypeInst.getClassifier()->getName());
+                    variable.getAppliedStereotypes().add(arrayStereotypeInst);
                     CXType arrayType = clang_getElementType(type);
+                    switch (arrayType.kind) {
+                        /** TODO: set array type by variable.setClassifier()**/
+                    }
                     CppParserMetaData arrayData = {data.manager, data.unit, variable, variable.getElementType(), VisibilityKind::PUBLIC};
                     clang_visitChildren(c, &arrayVisit, &arrayData);
                     /** TODO: set value **/

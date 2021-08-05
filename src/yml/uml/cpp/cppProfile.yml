@@ -9,12 +9,26 @@
       - stereotype:
           id: Cpp_NAMESPACE_3FloKgLhiH2P0t
           name: C++ Namespace
+      - stereotype:
+          id: Cpp_CONST_ARRAY_Nw3c30z1PCo3
+          name: C++ Array
+          ownedAttributes:
+            - property:
+                name: size
+                type: C_int_ZvgWKuxGtKtjRQPMNTXjic
+                lower: 0
+                upper: 1
     packagedElements:
       - extension:
           ownedEnd:
             extensionEnd:
               type: Cpp_NAMESPACE_3FloKgLhiH2P0t
           metaClass: PACKAGE
+      - extension:
+          ownedEnd:
+            extensionEnd:
+              type: Cpp_CONST_ARRAY_Nw3c30z1PCo3
+            metaClass: INSTANCE_SPECIFICATION
       - package:
           id: C_Primitives_17ZQNymn6bZqCi3
           name: C Primitives
@@ -25,6 +39,10 @@
                 generalizations:
                   - generalization:
                       general: bool_bzkcabSy3CiFd&HmJOtnVRK
+                ownedAttribute:
+                  - property:
+                      name: value
+                      type: bool_bzkcabSy3CiFd&HmJOtnVRK
             - primitiveType:
                 id: C_int_ZvgWKuxGtKtjRQPMNTXjic
                 name: C int
@@ -49,17 +67,4 @@
                 generalizations:
                   - generalization:
                       general: real_aZG&w6yl61bXVWutgeyScN9
-            - dataType:
-                id: Cpp_CONST_ARRAY_Nw3c30z1PCo3
-                name: C array
-                ownedAttribute:
-                  - property:
-                      name: size
-                      type: int_r9nNbBukx47IomXrT2raqtc4
-                      lower: 0
-                      upper: 1
-                  - property:
-                      name: values
-                      lower: 0
-                      upper: "*"
 ...

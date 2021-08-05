@@ -6,6 +6,7 @@
 #include "uml/slot.h"
 #include "uml/structuralFeature.h"
 #include "uml/literalInt.h"
+#include "uml/property.h"
 
 using namespace std;
 using namespace UML;
@@ -39,11 +40,15 @@ TEST_F(CppNamespaceTest, bunchOfTypesTest) {
     ASSERT_EQ(FOO.getPackagedElements().get(1)->getElementType(), ElementType::INSTANCE_SPECIFICATION);
     InstanceSpecification& b_array = FOO.getPackagedElements().get(1)->as<InstanceSpecification>();
     ASSERT_EQ(b_array.getName(), "b_array");
-    ASSERT_EQ(b_array.getClassifier()->getID(), ID::fromString("Cpp_CONST_ARRAY_Nw3c30z1PCo3"));
-    ASSERT_EQ(b_array.getSlots().size(), 1);
-    Slot& sizeSlot= *b_array.getSlots().front();
-    ASSERT_EQ(sizeSlot.getDefiningFeature()->getName(), "size");
-    ASSERT_EQ(sizeSlot.getValues().size(), 1);
-    ASSERT_EQ(sizeSlot.getValues().front()->getElementType(), ElementType::LITERAL_INT);
-    ASSERT_EQ(sizeSlot.getValues().front()->as<LiteralInt>().getValue(), 10);
+    ASSERT_EQ(b_array.getAppliedStereotypes().size(), 1);
+    InstanceSpecification& b_arrayStereotype = *b_array.getAppliedStereotypes().front();
+    ASSERT_TRUE(b_arrayStereotype.getClassifier() != 0);
+    ASSERT_EQ(b_arrayStereotype.getClassifier()->getID(), ID::fromString("Cpp_CONST_ARRAY_Nw3c30z1PCo3"));
+    ASSERT_EQ(b_arrayStereotype.getSlots().size(), 1);
+    Slot& b_arraySizeSlot = *b_arrayStereotype.getSlots().front();
+    ASSERT_TRUE(b_arraySizeSlot.getDefiningFeature() != 0);
+    ASSERT_EQ(b_arraySizeSlot.getDefiningFeature()->getID(), b_arrayStereotype.getClassifier()->getAttributes().get("size")->getID());
+    ASSERT_EQ(b_arraySizeSlot.getValues().size(), 1);
+    ASSERT_EQ(b_arraySizeSlot.getValues().front()->getElementType(), ElementType::LITERAL_INT);
+    ASSERT_EQ(b_arraySizeSlot.getValues().front()->as<LiteralInt>().getValue(), 10);
 }

@@ -18,6 +18,9 @@
                 type: C_int_ZvgWKuxGtKtjRQPMNTXjic
                 lower: 0
                 upper: 1
+      - stereotype:
+          id: Cpp_POINTER_fHXNFR8qvi_PlTVD
+          name: C++ Pointer
     packagedElements:
       - extension:
           ownedEnd:
@@ -29,6 +32,11 @@
             extensionEnd:
               type: Cpp_CONST_ARRAY_Nw3c30z1PCo3
             metaClass: INSTANCE_SPECIFICATION
+      - extension:
+          ownedEnd:
+            extensionEnd:
+              type: Cpp_POINTER_fHXNFR8qvi_PlTVD
+          metaClass: INSTANCE_SPECIFICATION
       - package:
           id: C_Primitives_17ZQNymn6bZqCi3
           name: C Primitives

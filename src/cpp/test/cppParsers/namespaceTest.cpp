@@ -31,7 +31,7 @@ TEST_F(CppNamespaceTest, bunchOfTypesTest) {
     Package& FOO = pckg->getPackagedElements().get(1)->as<Package>();
     ASSERT_EQ(FOO.getAppliedStereotypes().size(), 1);
     ASSERT_EQ(FOO.getAppliedStereotypes().front()->getClassifier()->getID(), ID::fromString("Cpp_NAMESPACE_3FloKgLhiH2P0t"));
-    ASSERT_EQ(FOO.getPackagedElements().size(), 2);
+    ASSERT_EQ(FOO.getPackagedElements().size(), 3);
     ASSERT_EQ(FOO.getPackagedElements().front()->getElementType(), ElementType::INSTANCE_SPECIFICATION);
     InstanceSpecification& b = FOO.getPackagedElements().front()->as<InstanceSpecification>();
     ASSERT_EQ(b.getName(), "b");
@@ -53,4 +53,11 @@ TEST_F(CppNamespaceTest, bunchOfTypesTest) {
     ASSERT_EQ(b_arraySizeSlot.getValues().front()->as<LiteralInt>().getValue(), 10);
     ASSERT_TRUE(b_array.getClassifier() != 0);
     ASSERT_EQ(b_array.getClassifier()->getID(), ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG"));
+    ASSERT_EQ(FOO.getPackagedElements().get(2)->getElementType(), ElementType::INSTANCE_SPECIFICATION);
+    InstanceSpecification& b_ptr = FOO.getPackagedElements().get(2)->as<InstanceSpecification>();
+    ASSERT_TRUE(b_ptr.getClassifier() != 0);
+    ASSERT_EQ(b_ptr.getClassifier()->getID(), ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG"));
+    ASSERT_EQ(b_ptr.getAppliedStereotypes().size(), 1);
+    ASSERT_TRUE(b_ptr.getAppliedStereotypes().front()->getClassifier() != 0);
+    ASSERT_EQ(b_ptr.getAppliedStereotypes().front()->getClassifier()->getID(), ID::fromString("Cpp_POINTER_fHXNFR8qvi_PlTVD"));
 }

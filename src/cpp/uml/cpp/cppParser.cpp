@@ -13,6 +13,7 @@
 #include "uml/association.h"
 #include "uml/artifact.h"
 #include "uml/dataType.h"
+#include "uml/slot.h"
 
 using namespace std;
 
@@ -372,29 +373,69 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
 
 CXChildVisitResult arrayVisit(CXCursor c, CXCursor parent, CXClientData client_data) {
     CppParserMetaData& data = *static_cast<CppParserMetaData*>(client_data);
-    switch (clang_getCursorKind(c)) {
-        case CXCursor_IntegerLiteral : {
-            data.owningElement.as<Property>().setLower(0);
-            CXSourceRange range = clang_getCursorExtent(c);
-            CXToken *tokens = 0;
-            unsigned int nTokens = 0;
-            clang_tokenize(data.unit, range, &tokens, &nTokens);
-            for (unsigned int i = 0; i < nTokens; i++)
-            {
-                CXString spelling = clang_getTokenSpelling(data.unit, tokens[i]);
-                data.owningElement.as<Property>().setUpper(atoi((clang_getCString(spelling))));
-                clang_disposeString(spelling);
+    switch (data.owningElement.getElementType()) {
+        case ElementType::INSTANCE_SPECIFICATION : {
+            switch (clang_getCursorKind(c)) {
+                case CXCursor_IntegerLiteral : {
+                    Slot& sizeSlot = data.manager.create<Slot>();
+                    data.owningElement.as<InstanceSpecification>().getSlots().add(sizeSlot);
+                    sizeSlot.setDefiningFeature(data.owningElement.as<InstanceSpecification>().getClassifier()->getAttributes().get("size"));
+                    LiteralInt& sizeValue = data.manager.create<LiteralInt>();
+                    CXSourceRange range = clang_getCursorExtent(c);
+                    CXToken *tokens = 0;
+                    unsigned int nTokens = 0;
+                    clang_tokenize(data.unit, range, &tokens, &nTokens);
+                    for (unsigned int i = 0; i < nTokens; i++)
+                    {
+                        CXString spelling = clang_getTokenSpelling(data.unit, tokens[i]);
+                        sizeValue.setValue(atoi(clang_getCString(spelling)));
+                        sizeSlot.getValues().add(sizeValue);
+                        clang_disposeString(spelling);
+                    }
+                    clang_disposeTokens(data.unit, tokens, nTokens);
+                    break;
+                }
+                default : {
+                    CXString spelling = clang_getCursorSpelling(c);
+                    CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
+                    throw UmlCppParserException("Cpp array contains Cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + "', but no mapping is set" + fileNameAndLineNumber(c));
+                    clang_disposeString(spelling);
+                    clang_disposeString(kindSpelling);
+                    return CXChildVisit_Recurse;
+                }
             }
-            clang_disposeTokens(data.unit, tokens, nTokens);
+            break;
+        }
+        case ElementType::PROPERTY : {
+            switch (clang_getCursorKind(c)) {
+                case CXCursor_IntegerLiteral : {
+                    data.owningElement.as<Property>().setLower(0);
+                    CXSourceRange range = clang_getCursorExtent(c);
+                    CXToken *tokens = 0;
+                    unsigned int nTokens = 0;
+                    clang_tokenize(data.unit, range, &tokens, &nTokens);
+                    for (unsigned int i = 0; i < nTokens; i++)
+                    {
+                        CXString spelling = clang_getTokenSpelling(data.unit, tokens[i]);
+                        data.owningElement.as<Property>().setUpper(atoi((clang_getCString(spelling))));
+                        clang_disposeString(spelling);
+                    }
+                    clang_disposeTokens(data.unit, tokens, nTokens);
+                    break;
+                }
+                default : {
+                    CXString spelling = clang_getCursorSpelling(c);
+                    CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
+                    throw UmlCppParserException("Cpp array contains Cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + "', but no mapping is set" + fileNameAndLineNumber(c));
+                    clang_disposeString(spelling);
+                    clang_disposeString(kindSpelling);
+                    return CXChildVisit_Recurse;
+                }
+            }
             break;
         }
         default : {
-            CXString spelling = clang_getCursorSpelling(c);
-            CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));
-            throw UmlCppParserException("Cpp array contains Cursor '" + string(clang_getCString(spelling)) + "' of kind '" + string(clang_getCString(kindSpelling)) + "', but no mapping is set" + fileNameAndLineNumber(c));
-            clang_disposeString(spelling);
-            clang_disposeString(kindSpelling);
-            return CXChildVisit_Recurse;
+            /** TODO: throw error **/
         }
     }
     return CXChildVisit_Continue;
@@ -447,13 +488,12 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                     break;
                 }
                 case CXTypeKind::CXType_ConstantArray : {
-                    /** TODO: think about this, don't like current profile implementation with dataType stereotype don't think
-                     * that works **/
+                    variable.setClassifier(&data.manager.get<DataType>(ID::fromString("Cpp_CONST_ARRAY_Nw3c30z1PCo3")));
                     CXType arrayType = clang_getElementType(type);
-                    DataType& dataType = data.manager.create<DataType>();
-                    CppParserMetaData arrayData = {data.manager, data.unit, dataType, dataType.getElementType(), VisibilityKind::PUBLIC};
+                    CppParserMetaData arrayData = {data.manager, data.unit, variable, variable.getElementType(), VisibilityKind::PUBLIC};
                     clang_visitChildren(c, &arrayVisit, &arrayData);
-                    break;
+                    /** TODO: set value **/
+                    return CXChildVisit_Continue;
                 }
                 case CXTypeKind::CXType_Void : {
                     // TODO

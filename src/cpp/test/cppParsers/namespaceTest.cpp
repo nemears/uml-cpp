@@ -3,6 +3,9 @@
 #include "uml/package.h"
 #include "uml/instanceSpecification.h"
 #include "uml/classifier.h"
+#include "uml/slot.h"
+#include "uml/structuralFeature.h"
+#include "uml/literalInt.h"
 
 using namespace std;
 using namespace UML;
@@ -27,10 +30,20 @@ TEST_F(CppNamespaceTest, bunchOfTypesTest) {
     Package& FOO = pckg->getPackagedElements().get(1)->as<Package>();
     ASSERT_EQ(FOO.getAppliedStereotypes().size(), 1);
     ASSERT_EQ(FOO.getAppliedStereotypes().front()->getClassifier()->getID(), ID::fromString("Cpp_NAMESPACE_3FloKgLhiH2P0t"));
-    ASSERT_EQ(FOO.getPackagedElements().size(), 1);
+    ASSERT_EQ(FOO.getPackagedElements().size(), 2);
     ASSERT_EQ(FOO.getPackagedElements().front()->getElementType(), ElementType::INSTANCE_SPECIFICATION);
     InstanceSpecification& b = FOO.getPackagedElements().front()->as<InstanceSpecification>();
     ASSERT_EQ(b.getName(), "b");
     ASSERT_TRUE(b.getClassifier() != 0);
     ASSERT_EQ(b.getClassifier()->getID(), ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG"));
+    ASSERT_EQ(FOO.getPackagedElements().get(1)->getElementType(), ElementType::INSTANCE_SPECIFICATION);
+    InstanceSpecification& b_array = FOO.getPackagedElements().get(1)->as<InstanceSpecification>();
+    ASSERT_EQ(b_array.getName(), "b_array");
+    ASSERT_EQ(b_array.getClassifier()->getID(), ID::fromString("Cpp_CONST_ARRAY_Nw3c30z1PCo3"));
+    ASSERT_EQ(b_array.getSlots().size(), 1);
+    Slot& sizeSlot= *b_array.getSlots().front();
+    ASSERT_EQ(sizeSlot.getDefiningFeature()->getName(), "size");
+    ASSERT_EQ(sizeSlot.getValues().size(), 1);
+    ASSERT_EQ(sizeSlot.getValues().front()->getElementType(), ElementType::LITERAL_INT);
+    ASSERT_EQ(sizeSlot.getValues().front()->as<LiteralInt>().getValue(), 10);
 }

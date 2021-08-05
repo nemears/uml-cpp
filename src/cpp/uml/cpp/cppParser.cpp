@@ -533,10 +533,19 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                     return CXChildVisit_Continue;
                 }
                 case CXTypeKind::CXType_Pointer : {
-                    InstanceSpecification& arrayStereotypeInst = data.manager.create<InstanceSpecification>();
-                    arrayStereotypeInst.setClassifier(&data.manager.get<Stereotype>(ID::fromString("Cpp_POINTER_fHXNFR8qvi_PlTVD")));
-                    arrayStereotypeInst.setName(arrayStereotypeInst.getClassifier()->getName());
-                    variable.getAppliedStereotypes().add(arrayStereotypeInst);
+                    InstanceSpecification& pointerStereotypeInst = data.manager.create<InstanceSpecification>();
+                    pointerStereotypeInst.setClassifier(&data.manager.get<Stereotype>(ID::fromString("Cpp_POINTER_fHXNFR8qvi_PlTVD")));
+                    pointerStereotypeInst.setName(pointerStereotypeInst.getClassifier()->getName());
+                    variable.getAppliedStereotypes().add(pointerStereotypeInst);
+                    setC_VariableType(clang_getPointeeType(type), variable, data, c);
+                    /** TODO: set value **/
+                    return CXChildVisit_Continue;
+                }
+                case CXTypeKind::CXType_LValueReference : {
+                    InstanceSpecification& referenceStereotypeInst = data.manager.create<InstanceSpecification>();
+                    referenceStereotypeInst.setClassifier(&data.manager.get<Stereotype>(ID::fromString("Cpp_REFERENCE_Cpp_POINTER_fH")));
+                    referenceStereotypeInst.setName(referenceStereotypeInst.getClassifier()->getName());
+                    variable.getAppliedStereotypes().add(referenceStereotypeInst);
                     setC_VariableType(clang_getPointeeType(type), variable, data, c);
                     /** TODO: set value **/
                     return CXChildVisit_Continue;

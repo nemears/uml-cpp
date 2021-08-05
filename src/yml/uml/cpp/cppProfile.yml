@@ -21,6 +21,9 @@
       - stereotype:
           id: Cpp_POINTER_fHXNFR8qvi_PlTVD
           name: C++ Pointer
+      - stereotype:
+          id: Cpp_REFERENCE_Cpp_POINTER_fH
+          name: C++ Reference
     packagedElements:
       - extension:
           ownedEnd:
@@ -36,6 +39,11 @@
           ownedEnd:
             extensionEnd:
               type: Cpp_POINTER_fHXNFR8qvi_PlTVD
+          metaClass: INSTANCE_SPECIFICATION
+      - extension:
+          ownedEnd:
+            extensionEnd:
+              type: Cpp_REFERENCE_Cpp_POINTER_fH
           metaClass: INSTANCE_SPECIFICATION
       - package:
           id: C_Primitives_17ZQNymn6bZqCi3

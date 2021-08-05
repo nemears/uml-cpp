@@ -51,4 +51,6 @@ TEST_F(CppNamespaceTest, bunchOfTypesTest) {
     ASSERT_EQ(b_arraySizeSlot.getValues().size(), 1);
     ASSERT_EQ(b_arraySizeSlot.getValues().front()->getElementType(), ElementType::LITERAL_INT);
     ASSERT_EQ(b_arraySizeSlot.getValues().front()->as<LiteralInt>().getValue(), 10);
+    ASSERT_TRUE(b_array.getClassifier() != 0);
+    ASSERT_EQ(b_array.getClassifier()->getID(), ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG"));
 }

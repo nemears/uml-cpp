@@ -494,7 +494,34 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                     variable.getAppliedStereotypes().add(arrayStereotypeInst);
                     CXType arrayType = clang_getElementType(type);
                     switch (arrayType.kind) {
-                        /** TODO: set array type by variable.setClassifier()**/
+                        case CXTypeKind::CXType_Bool : {
+                            variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
+                            break;
+                        }
+                        case CXTypeKind::CXType_Char_S : {
+                            variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
+                            break;
+                        }
+                        case CXTypeKind::CXType_Int : {
+                            variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
+                            break;
+                        }
+                        case CXTypeKind::CXType_Float : {
+                            variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
+                            break;
+                        }
+                        case CXTypeKind::CXType_Double : {
+                            variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
+                            break;
+                        }
+                        default : {
+                            CXString spelling = clang_getCursorSpelling(c);
+                            CXString typeSpelling = clang_getTypeKindSpelling(arrayType.kind);
+                            throw UmlCppParserException("Cannot currently handle clang type " + string(clang_getCString(typeSpelling)) + " for array " + string(clang_getCString(spelling)) + " " + fileNameAndLineNumber(c));
+                            clang_disposeString(spelling);
+                            clang_disposeString(typeSpelling);
+                            break;
+                        }
                     }
                     CppParserMetaData arrayData = {data.manager, data.unit, variable, variable.getElementType(), VisibilityKind::PUBLIC};
                     clang_visitChildren(c, &arrayVisit, &arrayData);

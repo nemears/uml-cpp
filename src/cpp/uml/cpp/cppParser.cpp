@@ -142,13 +142,13 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
             CXString propSpelling = clang_getCursorSpelling(c);
             prop.setName(clang_getCString(propSpelling));
             clang_disposeString(propSpelling);
-            switch (data.owningElementType) {
+            switch (data.owningElement.getElementType()) {
                 case ElementType::CLASS : {
                     data.owningElement.as<Class>().getOwnedAttributes().add(prop);
                     break;
                 }
                 default : {
-                    throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c)); 
+                    throw UmlCppParserException("unknown owner for field decl! element type: " + Element::elementTypeToString(data.owningElement.getElementType()) + fileNameAndLineNumber(c)); 
                 }
             }
             switch (type.kind) {
@@ -196,7 +196,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     CXType arrayType = clang_getElementType(type);
                     prop.setAggregation(AggregationKind::COMPOSITE);
                     setC_PropType(arrayType, data, c, prop);
-                    CppParserMetaData arrayData = {data.manager, data.unit, prop, ElementType::PROPERTY, VisibilityKind::PUBLIC};
+                    CppParserMetaData arrayData = {data.manager, data.unit, prop, VisibilityKind::PUBLIC};
                     clang_visitChildren(c, &arrayVisit, &arrayData);
                     break;
                 }
@@ -347,13 +347,13 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     clang_disposeString(spelling);
                 }
             }
-            switch (data.owningElementType) {
+            switch (data.owningElement.getElementType()) {
                 case ElementType::CLASS : {
                     data.owningElement.as<Class>().getOperations().add(method);
                     break;
                 }
                 default : {
-                    throw UmlCppParserException("unhandled owning element " + Element::elementTypeToString(data.owningElementType) + fileNameAndLineNumber(c));
+                    throw UmlCppParserException("unhandled owning element " + Element::elementTypeToString(data.owningElement.getElementType()) + fileNameAndLineNumber(c));
                     break; 
                 }
             }
@@ -527,7 +527,7 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                     variable.getAppliedStereotypes().add(arrayStereotypeInst);
                     CXType arrayType = clang_getElementType(type);
                     setC_VariableType(arrayType, variable, data, c);
-                    CppParserMetaData arrayData = {data.manager, data.unit, variable, variable.getElementType(), VisibilityKind::PUBLIC};
+                    CppParserMetaData arrayData = {data.manager, data.unit, variable, VisibilityKind::PUBLIC};
                     clang_visitChildren(c, &arrayVisit, &arrayData);
                     /** TODO: set value **/
                     return CXChildVisit_Continue;
@@ -570,7 +570,7 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
             cppClass.setName(clang_getCString(spelling));
             clang_disposeString(spelling);
             setOwnerHelper(cppClass, data.owningElement);
-            CppParserMetaData classData = {data.manager, data.unit, cppClass, cppClass.getElementType()};
+            CppParserMetaData classData = {data.manager, data.unit, cppClass};
             clang_visitChildren(c, *classVisit, &classData);
             break;
         }
@@ -602,7 +602,7 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
             stereotypeInst.setClassifier(&data->manager.get<Stereotype>(Profile::cppNamespaceID));
             namespacePckg.getAppliedStereotypes().add(stereotypeInst);
             setOwnerHelper(namespacePckg, data->owningElement);
-            CppParserMetaData namespaceData = {data->manager, data->unit, namespacePckg, namespacePckg.getElementType()};
+            CppParserMetaData namespaceData = {data->manager, data->unit, namespacePckg};
             clang_visitChildren(c, *namespaceVisit, &namespaceData);
             break;
         }
@@ -613,7 +613,7 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
             clang_disposeString(spelling);
             setOwnerHelper(cppClass, data->owningElement);
             data->visibilty = VisibilityKind::PRIVATE; // access for class is default private (struct is default public)
-            CppParserMetaData classData = {data->manager, data->unit, cppClass, cppClass.getElementType()};
+            CppParserMetaData classData = {data->manager, data->unit, cppClass};
             clang_visitChildren(c, *classVisit, &classData);
             break;
         }
@@ -651,8 +651,7 @@ Package* parseHeader(string path, UmlManager& manager) {
 
     // set up client data
     Element* umlParent = &containingPackage;
-    ElementType umlParentType = umlParent->getElementType();
-    CppParserMetaData data = {manager, unit, *umlParent, umlParentType};
+    CppParserMetaData data = {manager, unit, *umlParent};
 
     // start going through the AST
     clang_visitChildren(cursor,*headerVisit, &data);

@@ -11,7 +11,6 @@ namespace UML {
             UmlManager& manager;
             CXTranslationUnit unit;
             Element& owningElement;
-            ElementType owningElementType;
             VisibilityKind visibilty;
         };
 

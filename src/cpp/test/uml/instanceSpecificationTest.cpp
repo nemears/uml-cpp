@@ -31,9 +31,9 @@ TEST_F(InstanceSpecificationTest, setStringValueSlots) {
     stringSlot.getValues().add(ls);
     InstanceSpecification i;
     i.getSlots().add(stringSlot);
-    ASSERT_TRUE(i.getSlots().front()->getID() == stringSlot.getID());
-    ASSERT_TRUE(i.getSlots().front()->getDefiningFeature()->getID() == stringP.getID());
-    ASSERT_TRUE(i.getSlots().front()->getValues().front()->getID() == ls.getID());
+    ASSERT_TRUE(i.getSlots().front().getID() == stringSlot.getID());
+    ASSERT_TRUE(i.getSlots().front().getDefiningFeature()->getID() == stringP.getID());
+    ASSERT_TRUE(i.getSlots().front().getValues().front().getID() == ls.getID());
 }
 
 TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
@@ -55,7 +55,7 @@ TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
     aSlot.setDefiningFeature(&bProp);
     aSlot.getValues().add(bVal);
     aInst.getSlots().add(aSlot);
-    ASSERT_TRUE(aInst.getSlots().front()->getDefiningFeature()->getID() == bProp.getID());
+    ASSERT_TRUE(aInst.getSlots().front().getDefiningFeature()->getID() == bProp.getID());
 }
 
 // TODO add throw for pushing slots that don't correspond structural feature
@@ -67,17 +67,17 @@ TEST_F(InstanceSpecificationTest, reindexSlotID_Test) {
     i.getSlots().add(s);
     s.setOwningInstance(&i);
     s.setID("190d1cb9_13dc_44e6_a064_1268");
-    ASSERT_TRUE(i.getSlots().get(s.getID()) != NULL);
-    ASSERT_TRUE(i.getOwnedElements().get(s.getID()) != NULL);
+    ASSERT_NO_THROW(i.getSlots().get(s.getID()));
+    ASSERT_NO_THROW(i.getOwnedElements().get(s.getID()));
 }
 
 TEST_F(InstanceSpecificationTest, addSlotFunctorTest) {
     InstanceSpecification i;
     Slot s;
     i.getSlots().add(s);
-    ASSERT_TRUE(i.getSlots().get(s.getID()) == &s);
+    ASSERT_TRUE(&i.getSlots().get(s.getID()) == &s);
     ASSERT_TRUE(i.getSlots().size() == 1);
-    ASSERT_TRUE(i.getOwnedElements().get(s.getID()) == &s);
+    ASSERT_TRUE(&i.getOwnedElements().get(s.getID()) == &s);
     ASSERT_TRUE(i.getOwnedElements().size() == 1);
     ASSERT_TRUE(s.getOwningInstance() == &i);
 }
@@ -86,9 +86,9 @@ TEST_F(InstanceSpecificationTest, SetOwningInstanceFunctionalityTest) {
     InstanceSpecification i;
     Slot s;
     s.setOwningInstance(&i);
-    ASSERT_TRUE(i.getSlots().get(s.getID()) == &s);
+    ASSERT_TRUE(&i.getSlots().get(s.getID()) == &s);
     ASSERT_TRUE(i.getSlots().size() == 1);
-    ASSERT_TRUE(i.getOwnedElements().get(s.getID()) == &s);
+    ASSERT_TRUE(&i.getOwnedElements().get(s.getID()) == &s);
     ASSERT_TRUE(i.getOwnedElements().size() == 1);
     ASSERT_TRUE(s.getOwningInstance() == &i);
 }
@@ -98,9 +98,9 @@ TEST_F(InstanceSpecificationTest, SetOwningInstanceFunctionalityTestW_Manager) {
     InstanceSpecification& i = m.create<InstanceSpecification>();
     Slot& s = m.create<Slot>();
     s.setOwningInstance(&i);
-    ASSERT_TRUE(i.getSlots().get(s.getID()) == &s);
+    ASSERT_TRUE(&i.getSlots().get(s.getID()) == &s);
     ASSERT_TRUE(i.getSlots().size() == 1);
-    ASSERT_TRUE(i.getOwnedElements().get(s.getID()) == &s);
+    ASSERT_TRUE(&i.getOwnedElements().get(s.getID()) == &s);
     ASSERT_TRUE(i.getOwnedElements().size() == 1);
     ASSERT_TRUE(s.getOwningInstance() == &i);
 }
@@ -136,7 +136,7 @@ TEST_F(InstanceSpecificationTest, setAndRemoveSpecificationTest) {
     ASSERT_TRUE(inst.getSpecification() != 0);
     ASSERT_EQ(inst.getSpecification()->getID(), str.getID());
     ASSERT_EQ(inst.getOwnedElements().size(), 1);
-    ASSERT_EQ(inst.getOwnedElements().front()->getID(), str.getID());
+    ASSERT_EQ(inst.getOwnedElements().front().getID(), str.getID());
     ASSERT_TRUE(str.getOwner() != 0);
     ASSERT_EQ(str.getOwner()->getID(), inst.getID());
     inst.setSpecification(0);

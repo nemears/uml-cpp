@@ -15,9 +15,9 @@ TEST_F(CommentTest, addOwnedCommentTest) {
     e.getOwnedComments().add(c);
     ASSERT_EQ(c.getBody(), "I am a pretty cool comment B)");
     ASSERT_TRUE(e.getOwnedComments().size() == 1);
-    ASSERT_TRUE(e.getOwnedComments().front() == &c);
+    ASSERT_TRUE(&e.getOwnedComments().front() == &c);
     ASSERT_TRUE(e.getOwnedElements().size() == 1);
-    ASSERT_TRUE(e.getOwnedElements().front() == &c);
+    ASSERT_TRUE(&e.getOwnedElements().front() == &c);
     ASSERT_TRUE(c.getOwningElement() == &e);
 }
 
@@ -37,7 +37,7 @@ TEST_F(CommentTest, overideOwningElement) {
     Comment c;
     c.setOwningElement(&e);
     ASSERT_TRUE(e.getOwnedComments().size() == 1);
-    ASSERT_TRUE(e.getOwnedComments().front() == &c);
+    ASSERT_TRUE(&e.getOwnedComments().front() == &c);
     ASSERT_TRUE(e.getOwnedElements().size() == 1);
-    ASSERT_TRUE(e.getOwnedElements().front() == &c);
+    ASSERT_TRUE(&e.getOwnedElements().front() == &c);
 }

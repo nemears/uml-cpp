@@ -44,7 +44,7 @@ TEST_F(TemplateableElementParserTest, singleEmptyTemplateParameterTest) {
     ASSERT_TRUE(c->getOwnedTemplateSignature() != 0);
     TemplateSignature* s = c->getOwnedTemplateSignature();
     ASSERT_EQ(s->getOwnedParameter().size(), 1);
-    TemplateParameter* p = s->getOwnedParameter().front();
+    TemplateParameter* p = &s->getOwnedParameter().front();
     ASSERT_EQ(p->getID(), ID::fromString("t9FFOy3xNADeUDNvWJOc&7USIfsf"));
 }
 
@@ -57,16 +57,16 @@ TEST_F(TemplateableElementParserTest, multipleParametersTest) {
     ASSERT_TRUE(c->getOwnedTemplateSignature() != 0);
     TemplateSignature* s = c->getOwnedTemplateSignature();
     ASSERT_EQ(s->getOwnedParameter().size(), 3);
-    TemplateParameter* p1 = s->getOwnedParameter().front();
+    TemplateParameter* p1 = &s->getOwnedParameter().front();
     ASSERT_TRUE(p1->getOwnedParameteredElement() != 0);
     ASSERT_EQ(p1->getOwnedParameteredElement()->getElementType(), ElementType::PRIMITIVE_TYPE);
     PrimitiveType* p = dynamic_cast<PrimitiveType*>(p1->getOwnedParameteredElement());
     ASSERT_EQ(p->getName(), "long");
-    TemplateParameter* p2 = s->getOwnedParameter().get(1);
+    TemplateParameter* p2 = &s->getOwnedParameter().get(1);
     ASSERT_EQ(p2->getOwnedParameteredElement()->getElementType(), ElementType::INSTANCE_SPECIFICATION);
     InstanceSpecification* i = dynamic_cast<InstanceSpecification*>(p2->getOwnedParameteredElement());
     ASSERT_EQ(i->getName(), "test");
-    TemplateParameter* p3 = s->getOwnedParameter().back();
+    TemplateParameter* p3 = &s->getOwnedParameter().back();
     ASSERT_TRUE(p3->getOwnedParameteredElement() != 0);
     ASSERT_EQ(p3->getOwnedParameteredElement()->getElementType(), ElementType::LITERAL_INT);
     LiteralInt* li = dynamic_cast<LiteralInt*>(p3->getOwnedParameteredElement());
@@ -80,17 +80,17 @@ TEST_F(TemplateableElementParserTest, referencedParameterTest) {
     ASSERT_EQ(el->getElementType() , ElementType::CLASS);
     Class& c = dynamic_cast<Class&>(*el);
     ASSERT_EQ(c.getOperations().size(), 2);
-    Operation& o1 = *c.getOperations().front();
+    Operation& o1 = c.getOperations().front();
     ASSERT_TRUE(o1.getOwnedTemplateSignature() != 0);
     TemplateSignature& s1 = *o1.getOwnedTemplateSignature();
     ASSERT_EQ(s1.getOwnedParameter().size(), 1);
-    TemplateParameter& p = *s1.getOwnedParameter().front();
+    TemplateParameter& p = s1.getOwnedParameter().front();
     ASSERT_EQ(p.getID(), ID::fromString("fGtHlUWITxbIKyNFeKCXI4d_3EAc"));
-    Operation& o2 = *c.getOperations().back();
+    Operation& o2 = c.getOperations().back();
     ASSERT_TRUE(o2.getOwnedTemplateSignature() != 0);
     TemplateSignature& s2 = *o2.getOwnedTemplateSignature();
     ASSERT_EQ(s2.getParameter().size(), 1);
-    ASSERT_EQ(s2.getParameter().front()->getID(), p.getID());
+    ASSERT_EQ(s2.getParameter().front().getID(), p.getID());
 }
 
 TEST_F(TemplateableElementParserTest, referenceParameteredElementTest) {
@@ -100,14 +100,14 @@ TEST_F(TemplateableElementParserTest, referenceParameteredElementTest) {
     ASSERT_EQ(el->getElementType(), ElementType::CLASS);
     Class& c = dynamic_cast<Class&>(*el);
     ASSERT_EQ(c.getOwnedAttributes().size(), 1);
-    Property& prop = *c.getOwnedAttributes().front();
+    Property& prop = c.getOwnedAttributes().front();
     ASSERT_EQ(prop.getID(), ID::fromString("B2dyPF44MATTZ02XsQwgcbeBsq&d"));
     ASSERT_EQ(c.getOperations().size(), 1);
-    Operation& op = *c.getOperations().front();
+    Operation& op = c.getOperations().front();
     ASSERT_TRUE(op.getOwnedTemplateSignature() != 0);
     TemplateSignature& s = *op.getOwnedTemplateSignature();
     ASSERT_EQ(s.getOwnedParameter().size(), 1);
-    TemplateParameter& p = *s.getOwnedParameter().front();
+    TemplateParameter& p = s.getOwnedParameter().front();
     ASSERT_TRUE(p.getParameteredElement() != 0);
     ASSERT_EQ(p.getParameteredElement()->getID(), prop.getID());
 }
@@ -119,12 +119,12 @@ TEST_F(TemplateableElementParserTest, basicTemplateBindingTest) {
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& pckg = dynamic_cast<Package&>(*el);
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::CLASS);
-    Class& c1 = dynamic_cast<Class&>(*pckg.getPackagedElements().front());
+    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
+    Class& c1 = dynamic_cast<Class&>(pckg.getPackagedElements().front());
     ASSERT_TRUE(c1.getOwnedTemplateSignature() != 0);
     TemplateSignature& s = *c1.getOwnedTemplateSignature();
-    ASSERT_EQ(pckg.getPackagedElements().back()->getElementType(), ElementType::CLASS);
-    Class& c2 = dynamic_cast<Class&>(*pckg.getPackagedElements().back());
+    ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::CLASS);
+    Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().back());
     ASSERT_TRUE(c2.getTemplateBinding() != 0);
     TemplateBinding& b = *c2.getTemplateBinding();
     ASSERT_TRUE(b.getSignature() != 0);
@@ -138,20 +138,20 @@ TEST_F(TemplateableElementParserTest, parameterSubstitutionW_formalTest) {
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& pckg = dynamic_cast<Package&>(*el);
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::CLASS);
-    Class& c1 = dynamic_cast<Class&>(*pckg.getPackagedElements().front());
+    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
+    Class& c1 = dynamic_cast<Class&>(pckg.getPackagedElements().front());
     ASSERT_TRUE(c1.getOwnedTemplateSignature() != 0);
     TemplateSignature& s = *c1.getOwnedTemplateSignature();
     ASSERT_EQ(s.getOwnedParameter().size(), 1);
-    TemplateParameter& t = *s.getOwnedParameter().front();
-    ASSERT_EQ(pckg.getPackagedElements().back()->getElementType(), ElementType::CLASS);
-    Class& c2 = dynamic_cast<Class&>(*pckg.getPackagedElements().back());
+    TemplateParameter& t = s.getOwnedParameter().front();
+    ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::CLASS);
+    Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().back());
     ASSERT_TRUE(c2.getTemplateBinding() != 0);
     TemplateBinding& b = *c2.getTemplateBinding();
     ASSERT_TRUE(b.getSignature() != 0);
     ASSERT_EQ(b.getSignature()->getID(), s.getID());
     ASSERT_EQ(b.getParameterSubstitution().size(), 1);
-    TemplateParameterSubstitution& ps = *b.getParameterSubstitution().front();
+    TemplateParameterSubstitution& ps = b.getParameterSubstitution().front();
     ASSERT_TRUE(ps.getFormal() != 0);
     ASSERT_EQ(ps.getFormal()->getID(), t.getID());
 }
@@ -163,16 +163,16 @@ TEST_F(TemplateableElementParserTest, parameterSubstitutionW_OwnedActualTest) {
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& pckg = dynamic_cast<Package&>(*el);
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::CLASS);
-    Class& c1 = dynamic_cast<Class&>(*pckg.getPackagedElements().front());
+    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
+    Class& c1 = dynamic_cast<Class&>(pckg.getPackagedElements().front());
     ASSERT_TRUE(c1.getOwnedTemplateSignature() != 0);
     TemplateSignature& s = *c1.getOwnedTemplateSignature();
-    ASSERT_EQ(pckg.getPackagedElements().back()->getElementType(), ElementType::CLASS);
-    Class& c2 = dynamic_cast<Class&>(*pckg.getPackagedElements().back());
+    ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::CLASS);
+    Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().back());
     ASSERT_TRUE(c2.getTemplateBinding() != 0);
     TemplateBinding& b = *c2.getTemplateBinding();
     ASSERT_EQ(b.getParameterSubstitution().size(), 1);
-    TemplateParameterSubstitution& p = *b.getParameterSubstitution().front();
+    TemplateParameterSubstitution& p = b.getParameterSubstitution().front();
     ASSERT_TRUE(p.getOwnedActual() != 0);
     ASSERT_EQ(p.getOwnedActual()->getElementType(), ElementType::PRIMITIVE_TYPE);
     PrimitiveType& t = dynamic_cast<PrimitiveType&>(*p.getOwnedActual());
@@ -185,16 +185,16 @@ TEST_F(TemplateableElementParserTest, parameterSubstitutionW_Actual) {
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& pckg = dynamic_cast<Package&>(*el);
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::CLASS);
-    Class& c1 = dynamic_cast<Class&>(*pckg.getPackagedElements().front());
+    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
+    Class& c1 = dynamic_cast<Class&>(pckg.getPackagedElements().front());
     ASSERT_TRUE(c1.getOwnedTemplateSignature() != 0);
     TemplateSignature& s = *c1.getOwnedTemplateSignature();
-    ASSERT_EQ(pckg.getPackagedElements().back()->getElementType(), ElementType::CLASS);
-    Class& c2 = dynamic_cast<Class&>(*pckg.getPackagedElements().back());
+    ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::CLASS);
+    Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().back());
     ASSERT_TRUE(c2.getTemplateBinding() != 0);
     TemplateBinding& b = *c2.getTemplateBinding();
     ASSERT_EQ(b.getParameterSubstitution().size(), 1);
-    TemplateParameterSubstitution& p = *b.getParameterSubstitution().front();
+    TemplateParameterSubstitution& p = b.getParameterSubstitution().front();
     ASSERT_TRUE(p.getActual() != 0);
     ASSERT_EQ(p.getActual()->getElementType(), ElementType::PRIMITIVE_TYPE);
     ASSERT_EQ(p.getActual()->getID(), ID::fromString("bool_bzkcabSy3CiFd&HmJOtnVRK"));

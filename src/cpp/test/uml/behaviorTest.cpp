@@ -16,9 +16,9 @@ TEST_F(BehaviorTest, addParameterFunctorTest) {
     b.setSpecification(&o);
     b.getParameters().add(p);
     ASSERT_TRUE(b.getParameters().size() == 1);
-    ASSERT_TRUE(b.getParameters().front() == &p);
+    ASSERT_TRUE(&b.getParameters().front() == &p);
     ASSERT_TRUE(b.getOwnedElements().size() == 1);
-    ASSERT_TRUE(b.getOwnedElements().front() == &p);
+    ASSERT_TRUE(&b.getOwnedElements().front() == &p);
     ASSERT_TRUE(b.getSpecification() == &o);
     ASSERT_TRUE(p.getOperation() == &o);
 }

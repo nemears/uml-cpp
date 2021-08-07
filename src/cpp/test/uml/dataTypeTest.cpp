@@ -13,23 +13,23 @@ TEST_F(DataTypeTest, addOwnedAttributeTest) {
     Property p;
     d.getOwnedAttribute().add(p);
     ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
-    ASSERT_TRUE(d.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(&d.getOwnedAttribute().front() == &p);
     ASSERT_TRUE(d.getAttributes().size() == 1);
-    ASSERT_TRUE(d.getAttributes().front() == &p);
+    ASSERT_TRUE(&d.getAttributes().front() == &p);
     ASSERT_TRUE(d.getMembers().size() == 1);
-    ASSERT_TRUE(d.getMembers().front() == &p);
+    ASSERT_TRUE(&d.getMembers().front() == &p);
     ASSERT_TRUE(d.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(d.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(&d.getOwnedMembers().front() == &p);
     ASSERT_TRUE(d.getFeatures().size() == 1);
-    ASSERT_TRUE(d.getFeatures().front() == &p);
+    ASSERT_TRUE(&d.getFeatures().front() == &p);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
-    ASSERT_TRUE(d.getOwnedElements().front() == &p);
+    ASSERT_TRUE(&d.getOwnedElements().front() == &p);
 
     ASSERT_TRUE(p.getDataType() == &d);
     ASSERT_TRUE(p.getClassifier() == &d);
     ASSERT_TRUE(p.getFeaturingClassifier() == &d);
     ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(p.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(&p.getMemberNamespace().front() == &d);
     ASSERT_TRUE(p.getNamespace() == &d);
     ASSERT_TRUE(p.getOwner() == &d);
 }
@@ -40,23 +40,23 @@ TEST_F(DataTypeTest, addOwnedAttributeTestW_Manager) {
     Property& p = m.create<Property>();
     d.getOwnedAttribute().add(p);
     ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
-    ASSERT_TRUE(d.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(&d.getOwnedAttribute().front() == &p);
     ASSERT_TRUE(d.getAttributes().size() == 1);
-    ASSERT_TRUE(d.getAttributes().front() == &p);
+    ASSERT_TRUE(&d.getAttributes().front() == &p);
     ASSERT_TRUE(d.getMembers().size() == 1);
-    ASSERT_TRUE(d.getMembers().front() == &p);
+    ASSERT_TRUE(&d.getMembers().front() == &p);
     ASSERT_TRUE(d.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(d.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(&d.getOwnedMembers().front() == &p);
     ASSERT_TRUE(d.getFeatures().size() == 1);
-    ASSERT_TRUE(d.getFeatures().front() == &p);
+    ASSERT_TRUE(&d.getFeatures().front() == &p);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
-    ASSERT_TRUE(d.getOwnedElements().front() == &p);
+    ASSERT_TRUE(&d.getOwnedElements().front() == &p);
 
     ASSERT_TRUE(p.getDataType() == &d);
     ASSERT_TRUE(p.getClassifier() == &d);
     ASSERT_TRUE(p.getFeaturingClassifier() == &d);
     ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(p.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(&p.getMemberNamespace().front() == &d);
     ASSERT_TRUE(p.getNamespace() == &d);
     ASSERT_TRUE(p.getOwner() == &d);
 }
@@ -66,23 +66,23 @@ TEST_F(DataTypeTest, setDataTypeTest) {
     Property p;
     p.setDataType(&d);
     ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
-    ASSERT_TRUE(d.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(&d.getOwnedAttribute().front() == &p);
     ASSERT_TRUE(d.getAttributes().size() == 1);
-    ASSERT_TRUE(d.getAttributes().front() == &p);
+    ASSERT_TRUE(&d.getAttributes().front() == &p);
     ASSERT_TRUE(d.getMembers().size() == 1);
-    ASSERT_TRUE(d.getMembers().front() == &p);
+    ASSERT_TRUE(&d.getMembers().front() == &p);
     ASSERT_TRUE(d.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(d.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(&d.getOwnedMembers().front() == &p);
     ASSERT_TRUE(d.getFeatures().size() == 1);
-    ASSERT_TRUE(d.getFeatures().front() == &p);
+    ASSERT_TRUE(&d.getFeatures().front() == &p);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
-    ASSERT_TRUE(d.getOwnedElements().front() == &p);
+    ASSERT_TRUE(&d.getOwnedElements().front() == &p);
 
     ASSERT_TRUE(p.getDataType() == &d);
     ASSERT_TRUE(p.getClassifier() == &d);
     ASSERT_TRUE(p.getFeaturingClassifier() == &d);
     ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(p.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(&p.getMemberNamespace().front() == &d);
     ASSERT_TRUE(p.getNamespace() == &d);
     ASSERT_TRUE(p.getOwner() == &d);
 }
@@ -93,23 +93,23 @@ TEST_F(DataTypeTest, setDataTypeTestW_Manager) {
     Property& p = m.create<Property>();
     p.setDataType(&d);
     ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
-    ASSERT_TRUE(d.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(&d.getOwnedAttribute().front() == &p);
     ASSERT_TRUE(d.getAttributes().size() == 1);
-    ASSERT_TRUE(d.getAttributes().front() == &p);
+    ASSERT_TRUE(&d.getAttributes().front() == &p);
     ASSERT_TRUE(d.getMembers().size() == 1);
-    ASSERT_TRUE(d.getMembers().front() == &p);
+    ASSERT_TRUE(&d.getMembers().front() == &p);
     ASSERT_TRUE(d.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(d.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(&d.getOwnedMembers().front() == &p);
     ASSERT_TRUE(d.getFeatures().size() == 1);
-    ASSERT_TRUE(d.getFeatures().front() == &p);
+    ASSERT_TRUE(&d.getFeatures().front() == &p);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
-    ASSERT_TRUE(d.getOwnedElements().front() == &p);
+    ASSERT_TRUE(&d.getOwnedElements().front() == &p);
 
     ASSERT_TRUE(p.getDataType() == &d);
     ASSERT_TRUE(p.getClassifier() == &d);
     ASSERT_TRUE(p.getFeaturingClassifier() == &d);
     ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(p.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(&p.getMemberNamespace().front() == &d);
     ASSERT_TRUE(p.getNamespace() == &d);
     ASSERT_TRUE(p.getOwner() == &d);
 }
@@ -123,23 +123,23 @@ TEST_F(DataTypeTest, removeOwnedAttributeFunctorTest) {
     ASSERT_NO_THROW(d.getOwnedAttribute().remove(p2));
     
     ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
-    ASSERT_TRUE(d.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(&d.getOwnedAttribute().front() == &p);
     ASSERT_TRUE(d.getAttributes().size() == 1);
-    ASSERT_TRUE(d.getAttributes().front() == &p);
+    ASSERT_TRUE(&d.getAttributes().front() == &p);
     ASSERT_TRUE(d.getMembers().size() == 1);
-    ASSERT_TRUE(d.getMembers().front() == &p);
+    ASSERT_TRUE(&d.getMembers().front() == &p);
     ASSERT_TRUE(d.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(d.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(&d.getOwnedMembers().front() == &p);
     ASSERT_TRUE(d.getFeatures().size() == 1);
-    ASSERT_TRUE(d.getFeatures().front() == &p);
+    ASSERT_TRUE(&d.getFeatures().front() == &p);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
-    ASSERT_TRUE(d.getOwnedElements().front() == &p);
+    ASSERT_TRUE(&d.getOwnedElements().front() == &p);
 
     ASSERT_TRUE(p.getDataType() == &d);
     ASSERT_TRUE(p.getClassifier() == &d);
     ASSERT_TRUE(p.getFeaturingClassifier() == &d);
     ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(p.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(&p.getMemberNamespace().front() == &d);
     ASSERT_TRUE(p.getNamespace() == &d);
     ASSERT_TRUE(p.getOwner() == &d);
 
@@ -161,23 +161,23 @@ TEST_F(DataTypeTest, removeOwnedAttributeFunctorTestW_Manager) {
     ASSERT_NO_THROW(d.getOwnedAttribute().remove(p2));
     
     ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
-    ASSERT_TRUE(d.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(&d.getOwnedAttribute().front() == &p);
     ASSERT_TRUE(d.getAttributes().size() == 1);
-    ASSERT_TRUE(d.getAttributes().front() == &p);
+    ASSERT_TRUE(&d.getAttributes().front() == &p);
     ASSERT_TRUE(d.getMembers().size() == 1);
-    ASSERT_TRUE(d.getMembers().front() == &p);
+    ASSERT_TRUE(&d.getMembers().front() == &p);
     ASSERT_TRUE(d.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(d.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(&d.getOwnedMembers().front() == &p);
     ASSERT_TRUE(d.getFeatures().size() == 1);
-    ASSERT_TRUE(d.getFeatures().front() == &p);
+    ASSERT_TRUE(&d.getFeatures().front() == &p);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
-    ASSERT_TRUE(d.getOwnedElements().front() == &p);
+    ASSERT_TRUE(&d.getOwnedElements().front() == &p);
 
     ASSERT_TRUE(p.getDataType() == &d);
     ASSERT_TRUE(p.getClassifier() == &d);
     ASSERT_TRUE(p.getFeaturingClassifier() == &d);
     ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(p.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(&p.getMemberNamespace().front() == &d);
     ASSERT_TRUE(p.getNamespace() == &d);
     ASSERT_TRUE(p.getOwner() == &d);
 
@@ -198,23 +198,23 @@ TEST_F(DataTypeTest, OverridePropertyDataTypeW_NullTest) {
     ASSERT_NO_THROW(p2.setDataType(0));
     
     ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
-    ASSERT_TRUE(d.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(&d.getOwnedAttribute().front() == &p);
     ASSERT_TRUE(d.getAttributes().size() == 1);
-    ASSERT_TRUE(d.getAttributes().front() == &p);
+    ASSERT_TRUE(&d.getAttributes().front() == &p);
     ASSERT_TRUE(d.getMembers().size() == 1);
-    ASSERT_TRUE(d.getMembers().front() == &p);
+    ASSERT_TRUE(&d.getMembers().front() == &p);
     ASSERT_TRUE(d.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(d.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(&d.getOwnedMembers().front() == &p);
     ASSERT_TRUE(d.getFeatures().size() == 1);
-    ASSERT_TRUE(d.getFeatures().front() == &p);
+    ASSERT_TRUE(&d.getFeatures().front() == &p);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
-    ASSERT_TRUE(d.getOwnedElements().front() == &p);
+    ASSERT_TRUE(&d.getOwnedElements().front() == &p);
 
     ASSERT_TRUE(p.getDataType() == &d);
     ASSERT_TRUE(p.getClassifier() == &d);
     ASSERT_TRUE(p.getFeaturingClassifier() == &d);
     ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(p.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(&p.getMemberNamespace().front() == &d);
     ASSERT_TRUE(p.getNamespace() == &d);
     ASSERT_TRUE(p.getOwner() == &d);
 
@@ -236,23 +236,23 @@ TEST_F(DataTypeTest, OverridePropertyDataTypeW_NullTestW_Manager) {
     ASSERT_NO_THROW(p2.setDataType(0));
     
     ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
-    ASSERT_TRUE(d.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(&d.getOwnedAttribute().front() == &p);
     ASSERT_TRUE(d.getAttributes().size() == 1);
-    ASSERT_TRUE(d.getAttributes().front() == &p);
+    ASSERT_TRUE(&d.getAttributes().front() == &p);
     ASSERT_TRUE(d.getMembers().size() == 1);
-    ASSERT_TRUE(d.getMembers().front() == &p);
+    ASSERT_TRUE(&d.getMembers().front() == &p);
     ASSERT_TRUE(d.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(d.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(&d.getOwnedMembers().front() == &p);
     ASSERT_TRUE(d.getFeatures().size() == 1);
-    ASSERT_TRUE(d.getFeatures().front() == &p);
+    ASSERT_TRUE(&d.getFeatures().front() == &p);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
-    ASSERT_TRUE(d.getOwnedElements().front() == &p);
+    ASSERT_TRUE(&d.getOwnedElements().front() == &p);
 
     ASSERT_TRUE(p.getDataType() == &d);
     ASSERT_TRUE(p.getClassifier() == &d);
     ASSERT_TRUE(p.getFeaturingClassifier() == &d);
     ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(p.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(&p.getMemberNamespace().front() == &d);
     ASSERT_TRUE(p.getNamespace() == &d);
     ASSERT_TRUE(p.getOwner() == &d);
 
@@ -274,44 +274,44 @@ TEST_F(DataTypeTest, OverridePropertyDataTypeW_OtherTest) {
     ASSERT_NO_THROW(p2.setDataType(&d2));
     
     ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
-    ASSERT_TRUE(d.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(&d.getOwnedAttribute().front() == &p);
     ASSERT_TRUE(d.getAttributes().size() == 1);
-    ASSERT_TRUE(d.getAttributes().front() == &p);
+    ASSERT_TRUE(&d.getAttributes().front() == &p);
     ASSERT_TRUE(d.getMembers().size() == 1);
-    ASSERT_TRUE(d.getMembers().front() == &p);
+    ASSERT_TRUE(&d.getMembers().front() == &p);
     ASSERT_TRUE(d.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(d.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(&d.getOwnedMembers().front() == &p);
     ASSERT_TRUE(d.getFeatures().size() == 1);
-    ASSERT_TRUE(d.getFeatures().front() == &p);
+    ASSERT_TRUE(&d.getFeatures().front() == &p);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
-    ASSERT_TRUE(d.getOwnedElements().front() == &p);
+    ASSERT_TRUE(&d.getOwnedElements().front() == &p);
 
     ASSERT_TRUE(p.getDataType() == &d);
     ASSERT_TRUE(p.getClassifier() == &d);
     ASSERT_TRUE(p.getFeaturingClassifier() == &d);
     ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(p.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(&p.getMemberNamespace().front() == &d);
     ASSERT_TRUE(p.getNamespace() == &d);
     ASSERT_TRUE(p.getOwner() == &d);
 
     ASSERT_TRUE(d2.getOwnedAttribute().size() == 1);
-    ASSERT_TRUE(d2.getOwnedAttribute().front() == &p2);
+    ASSERT_TRUE(&d2.getOwnedAttribute().front() == &p2);
     ASSERT_TRUE(d2.getAttributes().size() == 1);
-    ASSERT_TRUE(d2.getAttributes().front() == &p2);
+    ASSERT_TRUE(&d2.getAttributes().front() == &p2);
     ASSERT_TRUE(d2.getMembers().size() == 1);
-    ASSERT_TRUE(d2.getMembers().front() == &p2);
+    ASSERT_TRUE(&d2.getMembers().front() == &p2);
     ASSERT_TRUE(d2.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(d2.getOwnedMembers().front() == &p2);
+    ASSERT_TRUE(&d2.getOwnedMembers().front() == &p2);
     ASSERT_TRUE(d2.getFeatures().size() == 1);
-    ASSERT_TRUE(d2.getFeatures().front() == &p2);
+    ASSERT_TRUE(&d2.getFeatures().front() == &p2);
     ASSERT_TRUE(d2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(d2.getOwnedElements().front() == &p2);
+    ASSERT_TRUE(&d2.getOwnedElements().front() == &p2);
 
     ASSERT_TRUE(p2.getDataType() == &d2);
     ASSERT_TRUE(p2.getClassifier() == &d2);
     ASSERT_TRUE(p2.getFeaturingClassifier() == &d2);
     ASSERT_TRUE(p2.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(p2.getMemberNamespace().front() == &d2);
+    ASSERT_TRUE(&p2.getMemberNamespace().front() == &d2);
     ASSERT_TRUE(p2.getNamespace() == &d2);
     ASSERT_TRUE(p2.getOwner() == &d2);
 }
@@ -327,44 +327,44 @@ TEST_F(DataTypeTest, OverridePropertyDataTypeW_OtherTestW_Manager) {
     ASSERT_NO_THROW(p2.setDataType(&d2));
     
     ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
-    ASSERT_TRUE(d.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(&d.getOwnedAttribute().front() == &p);
     ASSERT_TRUE(d.getAttributes().size() == 1);
-    ASSERT_TRUE(d.getAttributes().front() == &p);
+    ASSERT_TRUE(&d.getAttributes().front() == &p);
     ASSERT_TRUE(d.getMembers().size() == 1);
-    ASSERT_TRUE(d.getMembers().front() == &p);
+    ASSERT_TRUE(&d.getMembers().front() == &p);
     ASSERT_TRUE(d.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(d.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(&d.getOwnedMembers().front() == &p);
     ASSERT_TRUE(d.getFeatures().size() == 1);
-    ASSERT_TRUE(d.getFeatures().front() == &p);
+    ASSERT_TRUE(&d.getFeatures().front() == &p);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
-    ASSERT_TRUE(d.getOwnedElements().front() == &p);
+    ASSERT_TRUE(&d.getOwnedElements().front() == &p);
 
     ASSERT_TRUE(p.getDataType() == &d);
     ASSERT_TRUE(p.getClassifier() == &d);
     ASSERT_TRUE(p.getFeaturingClassifier() == &d);
     ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(p.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(&p.getMemberNamespace().front() == &d);
     ASSERT_TRUE(p.getNamespace() == &d);
     ASSERT_TRUE(p.getOwner() == &d);
 
     ASSERT_TRUE(d2.getOwnedAttribute().size() == 1);
-    ASSERT_TRUE(d2.getOwnedAttribute().front() == &p2);
+    ASSERT_TRUE(&d2.getOwnedAttribute().front() == &p2);
     ASSERT_TRUE(d2.getAttributes().size() == 1);
-    ASSERT_TRUE(d2.getAttributes().front() == &p2);
+    ASSERT_TRUE(&d2.getAttributes().front() == &p2);
     ASSERT_TRUE(d2.getMembers().size() == 1);
-    ASSERT_TRUE(d2.getMembers().front() == &p2);
+    ASSERT_TRUE(&d2.getMembers().front() == &p2);
     ASSERT_TRUE(d2.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(d2.getOwnedMembers().front() == &p2);
+    ASSERT_TRUE(&d2.getOwnedMembers().front() == &p2);
     ASSERT_TRUE(d2.getFeatures().size() == 1);
-    ASSERT_TRUE(d2.getFeatures().front() == &p2);
+    ASSERT_TRUE(&d2.getFeatures().front() == &p2);
     ASSERT_TRUE(d2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(d2.getOwnedElements().front() == &p2);
+    ASSERT_TRUE(&d2.getOwnedElements().front() == &p2);
 
     ASSERT_TRUE(p2.getDataType() == &d2);
     ASSERT_TRUE(p2.getClassifier() == &d2);
     ASSERT_TRUE(p2.getFeaturingClassifier() == &d2);
     ASSERT_TRUE(p2.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(p2.getMemberNamespace().front() == &d2);
+    ASSERT_TRUE(&p2.getMemberNamespace().front() == &d2);
     ASSERT_TRUE(p2.getNamespace() == &d2);
     ASSERT_TRUE(p2.getOwner() == &d2);
 }
@@ -374,20 +374,20 @@ TEST_F(DataTypeTest, addOwnedOperationTest) {
     Operation o;
     ASSERT_NO_THROW(d.getOwnedOperation().add(o));
     ASSERT_TRUE(d.getOwnedOperation().size() == 1);
-    ASSERT_TRUE(d.getOwnedOperation().front() == &o);
+    ASSERT_TRUE(&d.getOwnedOperation().front() == &o);
     ASSERT_TRUE(d.getMembers().size() == 1);
-    ASSERT_TRUE(d.getMembers().front() == &o);
+    ASSERT_TRUE(&d.getMembers().front() == &o);
     ASSERT_TRUE(d.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(d.getOwnedMembers().front() == &o);
+    ASSERT_TRUE(&d.getOwnedMembers().front() == &o);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
 
     ASSERT_TRUE(o.getDataType() == &d);
     ASSERT_TRUE(o.getFeaturingClassifier() == &d);
     ASSERT_TRUE(o.getNamespace() == &d);
     ASSERT_TRUE(o.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(o.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(&o.getMemberNamespace().front() == &d);
     ASSERT_TRUE(o.getRedefinitionContext().size() == 1);
-    ASSERT_TRUE(o.getRedefinitionContext().front() == &d);
+    ASSERT_TRUE(&o.getRedefinitionContext().front() == &d);
     ASSERT_TRUE(o.getOwner() == &d);
 }
 
@@ -396,20 +396,20 @@ TEST_F(DataTypeTest, OperationSetDataTypeTest) {
     Operation o;
     ASSERT_NO_THROW(o.setDataType(&d));
     ASSERT_TRUE(d.getOwnedOperation().size() == 1);
-    ASSERT_TRUE(d.getOwnedOperation().front() == &o);
+    ASSERT_TRUE(&d.getOwnedOperation().front() == &o);
     ASSERT_TRUE(d.getMembers().size() == 1);
-    ASSERT_TRUE(d.getMembers().front() == &o);
+    ASSERT_TRUE(&d.getMembers().front() == &o);
     ASSERT_TRUE(d.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(d.getOwnedMembers().front() == &o);
+    ASSERT_TRUE(&d.getOwnedMembers().front() == &o);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
 
     ASSERT_TRUE(o.getDataType() == &d);
     ASSERT_TRUE(o.getFeaturingClassifier() == &d);
     ASSERT_TRUE(o.getNamespace() == &d);
     ASSERT_TRUE(o.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(o.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(&o.getMemberNamespace().front() == &d);
     ASSERT_TRUE(o.getRedefinitionContext().size() == 1);
-    ASSERT_TRUE(o.getRedefinitionContext().front() == &d);
+    ASSERT_TRUE(&o.getRedefinitionContext().front() == &d);
     ASSERT_TRUE(o.getOwner() == &d);
 }
 
@@ -422,20 +422,20 @@ TEST_F(DataTypeTest, RemoveOwnedOperationFunctorTest) {
     ASSERT_NO_THROW(d.getOwnedOperation().remove(o2));
 
     ASSERT_TRUE(d.getOwnedOperation().size() == 1);
-    ASSERT_TRUE(d.getOwnedOperation().front() == &o);
+    ASSERT_TRUE(&d.getOwnedOperation().front() == &o);
     ASSERT_TRUE(d.getMembers().size() == 1);
-    ASSERT_TRUE(d.getMembers().front() == &o);
+    ASSERT_TRUE(&d.getMembers().front() == &o);
     ASSERT_TRUE(d.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(d.getOwnedMembers().front() == &o);
+    ASSERT_TRUE(&d.getOwnedMembers().front() == &o);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
 
     ASSERT_TRUE(o.getDataType() == &d);
     ASSERT_TRUE(o.getFeaturingClassifier() == &d);
     ASSERT_TRUE(o.getNamespace() == &d);
     ASSERT_TRUE(o.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(o.getMemberNamespace().front() == &d);
+    ASSERT_TRUE(&o.getMemberNamespace().front() == &d);
     ASSERT_TRUE(o.getRedefinitionContext().size() == 1);
-    ASSERT_TRUE(o.getRedefinitionContext().front() == &d);
+    ASSERT_TRUE(&o.getRedefinitionContext().front() == &d);
     ASSERT_TRUE(o.getOwner() == &d);
 
     ASSERT_TRUE(o2.getDataType() == 0);
@@ -478,23 +478,23 @@ TEST_F(DataTypeTest, overwriteOperationDataTypeW_OtherOperationTest) {
     ASSERT_TRUE(d.getOwnedElements().size() == 0);
 
     ASSERT_TRUE(d2.getOwnedOperation().size() == 1);
-    ASSERT_TRUE(d2.getOwnedOperation().front() == &o);
+    ASSERT_TRUE(&d2.getOwnedOperation().front() == &o);
     ASSERT_TRUE(d2.getFeatures().size() == 1);
-    ASSERT_TRUE(d2.getFeatures().front() == &o);
+    ASSERT_TRUE(&d2.getFeatures().front() == &o);
     ASSERT_TRUE(d2.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(d2.getOwnedMembers().front() == &o);
+    ASSERT_TRUE(&d2.getOwnedMembers().front() == &o);
     ASSERT_TRUE(d2.getMembers().size() == 1);
-    ASSERT_TRUE(d2.getMembers().front() == &o);
+    ASSERT_TRUE(&d2.getMembers().front() == &o);
     ASSERT_TRUE(d2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(d2.getOwnedElements().front() == &o);
+    ASSERT_TRUE(&d2.getOwnedElements().front() == &o);
 
     ASSERT_TRUE(o.getDataType() == &d2);
     ASSERT_TRUE(o.getFeaturingClassifier() == &d2);
     ASSERT_TRUE(o.getNamespace() == &d2);
     ASSERT_TRUE(o.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(o.getMemberNamespace().front() == &d2);
+    ASSERT_TRUE(&o.getMemberNamespace().front() == &d2);
     ASSERT_TRUE(o.getRedefinitionContext().size() == 1);
-    ASSERT_TRUE(o.getRedefinitionContext().front() == &d2);
+    ASSERT_TRUE(&o.getRedefinitionContext().front() == &d2);
     ASSERT_TRUE(o.getOwner() == &d2);
 }
 
@@ -504,12 +504,12 @@ TEST_F(DataTypeTest, reindexOwnedAttributeIDTest) {
     d.getOwnedAttribute().add(p);
     ID id = ID::fromString("16c345b4_5ae2_41ca_a0e7_a9c3");
     p.setID(id);
-    ASSERT_TRUE(d.getOwnedAttribute().get(id) == &p);
-    ASSERT_TRUE(d.getAttributes().get(id) == &p);
-    ASSERT_TRUE(d.getFeatures().get(id) == &p);
-    ASSERT_TRUE(d.getMembers().get(id) == &p);
-    ASSERT_TRUE(d.getOwnedMembers().get(id) == &p);
-    ASSERT_TRUE(d.getOwnedElements().get(id) == &p);
+    ASSERT_TRUE(&d.getOwnedAttribute().get(id) == &p);
+    ASSERT_TRUE(&d.getAttributes().get(id) == &p);
+    ASSERT_TRUE(&d.getFeatures().get(id) == &p);
+    ASSERT_TRUE(&d.getMembers().get(id) == &p);
+    ASSERT_TRUE(&d.getOwnedMembers().get(id) == &p);
+    ASSERT_TRUE(&d.getOwnedElements().get(id) == &p);
 }
 
 TEST_F(DataTypeTest, reindexOwnedAttributeIDTestW_Manager) {
@@ -519,12 +519,12 @@ TEST_F(DataTypeTest, reindexOwnedAttributeIDTestW_Manager) {
     d.getOwnedAttribute().add(p);
     ID id = ID::fromString("16c345b4_5ae2_41ca_a0e7_a9c3");
     p.setID(id);
-    ASSERT_TRUE(d.getOwnedAttribute().get(id) == &p);
-    ASSERT_TRUE(d.getAttributes().get(id) == &p);
-    ASSERT_TRUE(d.getFeatures().get(id) == &p);
-    ASSERT_TRUE(d.getMembers().get(id) == &p);
-    ASSERT_TRUE(d.getOwnedMembers().get(id) == &p);
-    ASSERT_TRUE(d.getOwnedElements().get(id) == &p);
+    ASSERT_TRUE(&d.getOwnedAttribute().get(id) == &p);
+    ASSERT_TRUE(&d.getAttributes().get(id) == &p);
+    ASSERT_TRUE(&d.getFeatures().get(id) == &p);
+    ASSERT_TRUE(&d.getMembers().get(id) == &p);
+    ASSERT_TRUE(&d.getOwnedMembers().get(id) == &p);
+    ASSERT_TRUE(&d.getOwnedElements().get(id) == &p);
 }
 
 // TEST_F(DataTypeTest, reindexOwnedAttributeNameTest) {
@@ -547,11 +547,11 @@ TEST_F(DataTypeTest, reindexOwnedOperationIDTest) {
     d.getOwnedOperation().add(o);
     ID id = ID::fromString("16c345b4_5ae2_41ca_a0e7_a9c3");
     o.setID(id);
-    ASSERT_TRUE(d.getOwnedOperation().get(id) == &o);
-    ASSERT_TRUE(d.getFeatures().get(id) == &o);
-    ASSERT_TRUE(d.getMembers().get(id) == &o);
-    ASSERT_TRUE(d.getOwnedMembers().get(id) == &o);
-    ASSERT_TRUE(d.getOwnedElements().get(id) == &o);
+    ASSERT_TRUE(&d.getOwnedOperation().get(id) == &o);
+    ASSERT_TRUE(&d.getFeatures().get(id) == &o);
+    ASSERT_TRUE(&d.getMembers().get(id) == &o);
+    ASSERT_TRUE(&d.getOwnedMembers().get(id) == &o);
+    ASSERT_TRUE(&d.getOwnedElements().get(id) == &o);
 }
 
 // TEST_F(DataTypeTest, reindexOwnedOperationNameTest) {
@@ -581,27 +581,27 @@ TEST_F(DataTypeTest, copyDataTypeTest) {
     ASSERT_TRUE(d2.getID() == id);
     ASSERT_TRUE(d2.getName().compare("test") == 0);
     ASSERT_TRUE(d2.getOwnedAttribute().size() == 1);
-    ASSERT_TRUE(d2.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(&d2.getOwnedAttribute().front() == &p);
     ASSERT_TRUE(d2.getAttributes().size() == 1);
-    ASSERT_TRUE(d2.getAttributes().front() == &p);
+    ASSERT_TRUE(&d2.getAttributes().front() == &p);
     ASSERT_TRUE(d2.getOwnedOperation().size() == 1);
-    ASSERT_TRUE(d2.getOwnedOperation().front() == &o);
+    ASSERT_TRUE(&d2.getOwnedOperation().front() == &o);
     ASSERT_TRUE(d2.getFeatures().size() == 2);
-    ASSERT_TRUE(d2.getFeatures().front() == &o);
-    ASSERT_TRUE(d2.getFeatures().back() == &p);
+    ASSERT_TRUE(&d2.getFeatures().front() == &o);
+    ASSERT_TRUE(&d2.getFeatures().back() == &p);
     ASSERT_TRUE(d2.getOwnedMembers().size() == 2);
-    ASSERT_TRUE(d2.getOwnedMembers().front() == &o);
-    ASSERT_TRUE(d2.getOwnedMembers().back() == &p);
+    ASSERT_TRUE(&d2.getOwnedMembers().front() == &o);
+    ASSERT_TRUE(&d2.getOwnedMembers().back() == &p);
     ASSERT_TRUE(d2.getMembers().size() == 2);
-    ASSERT_TRUE(d2.getMembers().front() == &o);
-    ASSERT_TRUE(d2.getMembers().back() == &p);
+    ASSERT_TRUE(&d2.getMembers().front() == &o);
+    ASSERT_TRUE(&d2.getMembers().back() == &p);
     ASSERT_TRUE(d2.getOwnedElements().size() == 2);
-    ASSERT_TRUE(d2.getOwnedElements().front() == &o);
-    ASSERT_TRUE(d2.getOwnedElements().back() == &p);
+    ASSERT_TRUE(&d2.getOwnedElements().front() == &o);
+    ASSERT_TRUE(&d2.getOwnedElements().back() == &p);
     ASSERT_TRUE(d2.getOwningPackage() == &pkg);
     ASSERT_TRUE(d2.getNamespace() == &pkg);
     ASSERT_TRUE(d2.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(d2.getMemberNamespace().front() == &pkg);
+    ASSERT_TRUE(&d2.getMemberNamespace().front() == &pkg);
     ASSERT_TRUE(d2.getOwner() == &pkg);
 }
 
@@ -620,26 +620,26 @@ TEST_F(DataTypeTest, copyDataTypeTestW_Manager) {
     ASSERT_TRUE(d2.getID() == id);
     ASSERT_TRUE(d2.getName().compare("test") == 0);
     ASSERT_TRUE(d2.getOwnedAttribute().size() == 1);
-    ASSERT_TRUE(d2.getOwnedAttribute().front() == &p);
+    ASSERT_TRUE(&d2.getOwnedAttribute().front() == &p);
     ASSERT_TRUE(d2.getAttributes().size() == 1);
-    ASSERT_TRUE(d2.getAttributes().front() == &p);
+    ASSERT_TRUE(&d2.getAttributes().front() == &p);
     ASSERT_TRUE(d2.getOwnedOperation().size() == 1);
-    ASSERT_TRUE(d2.getOwnedOperation().front() == &o);
+    ASSERT_TRUE(&d2.getOwnedOperation().front() == &o);
     ASSERT_TRUE(d2.getFeatures().size() == 2);
-    ASSERT_TRUE(d2.getFeatures().front() == &o);
-    ASSERT_TRUE(d2.getFeatures().back() == &p);
+    ASSERT_TRUE(&d2.getFeatures().front() == &o);
+    ASSERT_TRUE(&d2.getFeatures().back() == &p);
     ASSERT_TRUE(d2.getOwnedMembers().size() == 2);
-    ASSERT_TRUE(d2.getOwnedMembers().front() == &o);
-    ASSERT_TRUE(d2.getOwnedMembers().back() == &p);
+    ASSERT_TRUE(&d2.getOwnedMembers().front() == &o);
+    ASSERT_TRUE(&d2.getOwnedMembers().back() == &p);
     ASSERT_TRUE(d2.getMembers().size() == 2);
-    ASSERT_TRUE(d2.getMembers().front() == &o);
-    ASSERT_TRUE(d2.getMembers().back() == &p);
+    ASSERT_TRUE(&d2.getMembers().front() == &o);
+    ASSERT_TRUE(&d2.getMembers().back() == &p);
     ASSERT_TRUE(d2.getOwnedElements().size() == 2);
-    ASSERT_TRUE(d2.getOwnedElements().front() == &o);
-    ASSERT_TRUE(d2.getOwnedElements().back() == &p);
+    ASSERT_TRUE(&d2.getOwnedElements().front() == &o);
+    ASSERT_TRUE(&d2.getOwnedElements().back() == &p);
     ASSERT_TRUE(d2.getOwningPackage() == &pkg);
     ASSERT_TRUE(d2.getNamespace() == &pkg);
     ASSERT_TRUE(d2.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(d2.getMemberNamespace().front() == &pkg);
+    ASSERT_TRUE(&d2.getMemberNamespace().front() == &pkg);
     ASSERT_TRUE(d2.getOwner() == &pkg);
 }

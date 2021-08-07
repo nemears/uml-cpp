@@ -14,9 +14,9 @@ TEST_F(ActivityTest, addNodeFunctorTest) {
     ActivityNode n;
     a.getNodes().add(n);
     ASSERT_TRUE(a.getNodes().size() == 1);
-    ASSERT_TRUE(a.getNodes().front() == &n);
+    ASSERT_TRUE(&a.getNodes().front() == &n);
     ASSERT_TRUE(a.getOwnedElements().size() == 1);
-    ASSERT_TRUE(a.getOwnedElements().front() == &n);
+    ASSERT_TRUE(&a.getOwnedElements().front() == &n);
     ASSERT_TRUE(n.getActivity() == &a);
     ASSERT_TRUE(n.getOwner() == &a);
 }
@@ -26,9 +26,9 @@ TEST_F(ActivityTest, setNodeActivityTest) {
     ActivityNode n;
     n.setActivity(&a);
     ASSERT_TRUE(a.getNodes().size() == 1);
-    ASSERT_TRUE(a.getNodes().front() == &n);
+    ASSERT_TRUE(&a.getNodes().front() == &n);
     ASSERT_TRUE(a.getOwnedElements().size() == 1);
-    ASSERT_TRUE(a.getOwnedElements().front() == &n);
+    ASSERT_TRUE(&a.getOwnedElements().front() == &n);
     ASSERT_TRUE(n.getActivity() == &a);
     ASSERT_TRUE(n.getOwner() == &a);
 }
@@ -38,9 +38,9 @@ TEST_F(ActivityTest, addEdgeFunctorTest) {
     ActivityEdge e;
     a.getEdges().add(e);
     ASSERT_TRUE(a.getEdges().size() == 1);
-    ASSERT_TRUE(a.getEdges().front() == &e);
+    ASSERT_TRUE(&a.getEdges().front() == &e);
     ASSERT_TRUE(a.getOwnedElements().size() == 1);
-    ASSERT_TRUE(a.getOwnedElements().front() == &e);
+    ASSERT_TRUE(&a.getOwnedElements().front() == &e);
     ASSERT_TRUE(e.getActivity() == &a);
     ASSERT_TRUE(e.getOwner() == &a);
 }
@@ -50,9 +50,9 @@ TEST_F(ActivityTest, setEdgeActivityTest) {
     ActivityEdge e;
     e.setActivity(&a);
     ASSERT_TRUE(a.getEdges().size() == 1);
-    ASSERT_TRUE(a.getEdges().front() == &e);
+    ASSERT_TRUE(&a.getEdges().front() == &e);
     ASSERT_TRUE(a.getOwnedElements().size() == 1);
-    ASSERT_TRUE(a.getOwnedElements().front() == &e);
+    ASSERT_TRUE(&a.getOwnedElements().front() == &e);
     ASSERT_TRUE(e.getActivity() == &a);
     ASSERT_TRUE(e.getOwner() == &a);
 }

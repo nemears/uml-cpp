@@ -22,9 +22,9 @@ TEST_F(DirectedRelationshipTest, sourceAndTargetTest) {
     dr.getSources().add(a);
     dr.getTargets().add(b);
     ASSERT_TRUE(dr.getSources().size() == 1);
-    ASSERT_TRUE(dr.getSources().front() == &a);
+    ASSERT_TRUE(&dr.getSources().front() == &a);
     ASSERT_TRUE(dr.getTargets().size() == 1);
-    ASSERT_TRUE(dr.getTargets().front() == &b);
+    ASSERT_TRUE(&dr.getTargets().front() == &b);
 }
 
 TEST_F(DirectedRelationshipTest, addTargetFunctorTest) {
@@ -34,12 +34,12 @@ TEST_F(DirectedRelationshipTest, addTargetFunctorTest) {
     dr.getTargets().add(a);
     dr.getSources().add(b);
     ASSERT_TRUE(dr.getRelatedElements().size() == 2);
-    ASSERT_TRUE(dr.getRelatedElements().front() == &a);
-    ASSERT_TRUE(dr.getRelatedElements().back() == &b);
+    ASSERT_TRUE(&dr.getRelatedElements().front() == &a);
+    ASSERT_TRUE(&dr.getRelatedElements().back() == &b);
     ASSERT_TRUE(a.getRelationships().size() == 1);
-    ASSERT_TRUE(a.getRelationships().front() == &dr);
+    ASSERT_TRUE(&a.getRelationships().front() == &dr);
     ASSERT_TRUE(b.getRelationships().size() == 1);
-    ASSERT_TRUE(b.getRelationships().front() == &dr);
+    ASSERT_TRUE(&b.getRelationships().front() == &dr);
 }
 
 TEST_F(DirectedRelationshipTest, duplicateRelationshipExceptionTest) {

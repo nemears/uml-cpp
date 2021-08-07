@@ -67,7 +67,7 @@ TEST_F(ExtensionTest, setEndTypeTest) {
     ASSERT_TRUE(end.getType() != 0);
     ASSERT_EQ(end.getType()->getID(), t.getID());
     ASSERT_EQ(ext.getEndType().size(), 1);
-    ASSERT_EQ(ext.getEndType().front()->getID(), t.getID());
+    ASSERT_EQ(ext.getEndType().front().getID(), t.getID());
 }
 
 TEST_F(ExtensionTest, setEndTypeNullTest) {

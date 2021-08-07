@@ -22,7 +22,7 @@ TEST_F(CommentParserTest, testBasicComment) {
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& pckg = *dynamic_cast<Package*>(el);
     ASSERT_EQ(pckg.getOwnedComments().size(), 1);
-    Comment& comment = *pckg.getOwnedComments().front();
+    Comment& comment = pckg.getOwnedComments().front();
     ASSERT_EQ(comment.getBody(), "i am a comment!");
 }
 

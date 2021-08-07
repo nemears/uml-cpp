@@ -27,9 +27,9 @@ TEST_F(OpaqueBehaviorParserTest, parseMultipleSimpleBodies) {
     ASSERT_TRUE(bhv->getName().compare("test") == 0);
     ASSERT_TRUE(bhv->getID() == ID::fromString("i0wopIpBjBHdekQ57DbWeHfWmQp3"));
     ASSERT_TRUE(bhv->getBodies().size() == 3);
-    ASSERT_TRUE(bhv->getBodies().get(0)->getValue().compare("one") == 0);
-    ASSERT_TRUE(bhv->getBodies().get(1)->getValue().compare("1") == 0);
-    ASSERT_TRUE(bhv->getBodies().get(2)->getValue().compare("true") == 0);
+    ASSERT_TRUE(bhv->getBodies().get(0).getValue().compare("one") == 0);
+    ASSERT_TRUE(bhv->getBodies().get(1).getValue().compare("1") == 0);
+    ASSERT_TRUE(bhv->getBodies().get(2).getValue().compare("true") == 0);
 }
 
 TEST_F(OpaqueBehaviorParserTest, parseParameter) {
@@ -39,7 +39,7 @@ TEST_F(OpaqueBehaviorParserTest, parseParameter) {
     ASSERT_TRUE(el->getElementType() == ElementType::OPAQUE_BEHAVIOR);
     OpaqueBehavior* bhv = dynamic_cast<OpaqueBehavior*>(el);
     ASSERT_TRUE(bhv->getParameters().size() == 1);
-    Parameter* param = bhv->getParameters().front();
+    Parameter* param = &bhv->getParameters().front();
     ASSERT_TRUE(param->getName().compare("test") == 0);
     ASSERT_TRUE(param->getDirection() == ParameterDirectionKind::IN);
 }

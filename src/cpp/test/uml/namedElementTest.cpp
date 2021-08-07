@@ -38,7 +38,7 @@ TEST_F(NamedElementTest, overwriteNamespaceTestW_Manager) {
   p1.getOwnedMembers().add(c);
   c.setNamespace(&p2);
   ASSERT_TRUE(p2.getOwnedMembers().size() == 1);
-  ASSERT_TRUE(p2.getOwnedMembers().front() == &c);
+  ASSERT_TRUE(&p2.getOwnedMembers().front() == &c);
   ASSERT_TRUE(c.getNamespace() == &p2);
   ASSERT_TRUE(p1.getOwnedMembers().size() == 0);
 }
@@ -50,7 +50,7 @@ TEST_F(NamedElementTest, overwriteNamespaceTest) {
   p1.getOwnedMembers().add(c);
   c.setNamespace(&p2);
   ASSERT_TRUE(p2.getOwnedMembers().size() == 1);
-  ASSERT_TRUE(p2.getOwnedMembers().front() == &c);
+  ASSERT_TRUE(&p2.getOwnedMembers().front() == &c);
   ASSERT_TRUE(c.getNamespace() == &p2);
   ASSERT_TRUE(p1.getOwnedMembers().size() == 0);
 }
@@ -63,7 +63,7 @@ TEST_F(NamedElementTest, overwriteNamespaceByOwnedMemebersAddTestW_Manager) {
   p1.getOwnedMembers().add(c);
   p2.getOwnedMembers().add(c);
   ASSERT_TRUE(p2.getOwnedMembers().size() == 1);
-  ASSERT_TRUE(p2.getOwnedMembers().front() == &c);
+  ASSERT_TRUE(&p2.getOwnedMembers().front() == &c);
   ASSERT_TRUE(c.getNamespace() == &p2);
   ASSERT_TRUE(p1.getOwnedMembers().size() == 0);
 }
@@ -75,7 +75,7 @@ TEST_F(NamedElementTest, overwriteNamespaceByOwnedMemebersAddTest) {
   p1.getOwnedMembers().add(c);
   p2.getOwnedMembers().add(c);
   ASSERT_TRUE(p2.getOwnedMembers().size() == 1);
-  ASSERT_TRUE(p2.getOwnedMembers().front() == &c);
+  ASSERT_TRUE(&p2.getOwnedMembers().front() == &c);
   ASSERT_TRUE(c.getNamespace() == &p2);
   ASSERT_TRUE(p1.getOwnedMembers().size() == 0);
 }
@@ -94,7 +94,7 @@ TEST_F(NamedElementTest, copyNamedElementTestW_Manager) {
     ASSERT_TRUE(n2.getOwner() == &p);
     ASSERT_TRUE(n2.getNamespace() == &p);
     ASSERT_TRUE(n2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(n2.getOwnedElements().front() == &c);
+    ASSERT_TRUE(&n2.getOwnedElements().front() == &c);
     ASSERT_TRUE(c.getOwner() == &n);
 }
 
@@ -111,7 +111,7 @@ TEST_F(NamedElementTest, copyNamedElementTest) {
     ASSERT_TRUE(n2.getOwner() == &p);
     ASSERT_TRUE(n2.getNamespace() == &p);
     ASSERT_TRUE(n2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(n2.getOwnedElements().front() == &c);
+    ASSERT_TRUE(&n2.getOwnedElements().front() == &c);
     ASSERT_TRUE(c.getOwner() == &n);
 }
 

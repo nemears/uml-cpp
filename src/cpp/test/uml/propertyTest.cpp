@@ -19,7 +19,7 @@ TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
     ASSERT_NO_THROW(p.setDefaultValue(&ls));
     ASSERT_TRUE(p.getDefaultValue() == &ls);
     ASSERT_TRUE(p.getOwnedElements().size() == 1);
-    ASSERT_TRUE(p.getOwnedElements().front() == &ls);
+    ASSERT_TRUE(&p.getOwnedElements().front() == &ls);
 }
 
 TEST_F(PropertyTest, setDefaultValueOfProperTypeTestStringW_Manager) {
@@ -32,7 +32,7 @@ TEST_F(PropertyTest, setDefaultValueOfProperTypeTestStringW_Manager) {
     ASSERT_NO_THROW(p.setDefaultValue(&ls));
     ASSERT_TRUE(p.getDefaultValue() == &ls);
     ASSERT_TRUE(p.getOwnedElements().size() == 1);
-    ASSERT_TRUE(p.getOwnedElements().front() == &ls);
+    ASSERT_TRUE(&p.getOwnedElements().front() == &ls);
 }
 
 // TEST_F(PropertyTest, setDefaultValueOfImproperTypeTestString) {
@@ -55,26 +55,26 @@ TEST_F(PropertyTest, reindexID_forClassiferTest) {
   p.setAggregation(AggregationKind::COMPOSITE);
   c.getOwnedAttributes().add(p);
   ASSERT_NO_THROW(p.setID("190d1cb9_13dc_44e6_a064_1268"));
-  ASSERT_TRUE(c.getOwnedElements().get(p.getID()) != 0);
-  ASSERT_TRUE(c.getMembers().get(p.getID()) != 0);
-  ASSERT_TRUE(c.getOwnedMembers().get(p.getID()) != 0);
-  ASSERT_TRUE(c.getFeatures().get(p.getID()) != 0);
-  ASSERT_TRUE(c.getAttributes().get(p.getID()) != NULL);
-  ASSERT_TRUE(c.getOwnedAttributes().get(p.getID()) != 0);
-  ASSERT_TRUE(c.getRole().get(p.getID()) != 0);
-  ASSERT_TRUE(c.getParts().get(p.getID()) != 0);
+  ASSERT_NO_THROW(c.getOwnedElements().get(p.getID()));
+  ASSERT_NO_THROW(c.getMembers().get(p.getID()));
+  ASSERT_NO_THROW(c.getOwnedMembers().get(p.getID()));
+  ASSERT_NO_THROW(c.getFeatures().get(p.getID()));
+  ASSERT_NO_THROW(c.getAttributes().get(p.getID()));
+  ASSERT_NO_THROW(c.getOwnedAttributes().get(p.getID()));
+  ASSERT_NO_THROW(c.getRole().get(p.getID()));
+  ASSERT_NO_THROW(c.getParts().get(p.getID()));
 
   Association a;
   Property p2;
   a.getNavigableOwnedEnds().add(p2);
   ASSERT_NO_THROW(p2.setID("c0ab87cc_d00b_4afb_9558_5382"));
-  ASSERT_TRUE(a.getNavigableOwnedEnds().get(p2.getID()));
-  ASSERT_TRUE(a.getOwnedEnds().get(p2.getID()));
-  ASSERT_TRUE(a.getMemberEnds().get(p2.getID()));
-  ASSERT_TRUE(a.getFeatures().get(p2.getID()));
-  ASSERT_TRUE(a.getOwnedMembers().get(p2.getID()));
-  ASSERT_TRUE(a.getMembers().get(p2.getID()));
-  ASSERT_TRUE(a.getOwnedElements().get(p2.getID()));
+  ASSERT_NO_THROW(a.getNavigableOwnedEnds().get(p2.getID()));
+  ASSERT_NO_THROW(a.getOwnedEnds().get(p2.getID()));
+  ASSERT_NO_THROW(a.getMemberEnds().get(p2.getID()));
+  ASSERT_NO_THROW(a.getFeatures().get(p2.getID()));
+  ASSERT_NO_THROW(a.getOwnedMembers().get(p2.getID()));
+  ASSERT_NO_THROW(a.getMembers().get(p2.getID()));
+  ASSERT_NO_THROW(a.getOwnedElements().get(p2.getID()));
 }
 
 // TEST_F(PropertyTest, reindexNameForClassifierTest) {
@@ -112,7 +112,7 @@ TEST_F(PropertyTest, overwriteClassifierTest) {
   p1.getAttributes().add(c);
   c.setClassifier(&p2);
   ASSERT_TRUE(p2.getAttributes().size() == 1);
-  ASSERT_TRUE(p2.getAttributes().front() == &c);
+  ASSERT_TRUE(&p2.getAttributes().front() == &c);
   ASSERT_TRUE(c.getClassifier() == &p2);
   ASSERT_TRUE(p1.getAttributes().size() == 0);
 }
@@ -124,7 +124,7 @@ TEST_F(PropertyTest, overwriteClassifierByAttributesAddTest) {
   p1.getAttributes().add(c);
   p2.getAttributes().add(c);
   ASSERT_TRUE(p2.getAttributes().size() == 1);
-  ASSERT_TRUE(p2.getAttributes().front() == &c);
+  ASSERT_TRUE(&p2.getAttributes().front() == &c);
   ASSERT_TRUE(c.getClassifier() == &p2);
   ASSERT_TRUE(p1.getAttributes().size() == 0);
 }
@@ -143,7 +143,7 @@ TEST_F(PropertyTest, copyPropertyTest) {
   ASSERT_TRUE(p2.getType() == &t);
   ASSERT_TRUE(p2.getClassifier() == &c);
   ASSERT_TRUE(p2.getMemberNamespace().size() == 1);
-  ASSERT_TRUE(p2.getMemberNamespace().front() == &c);
+  ASSERT_TRUE(&p2.getMemberNamespace().front() == &c);
   ASSERT_TRUE(p2.getFeaturingClassifier() == &c);
   ASSERT_TRUE(p2.isStatic());
 }

@@ -26,15 +26,15 @@ TEST_F(CppParserTest, parseBasicHeaderTest) {
     ASSERT_TRUE(pckg != 0);
     ASSERT_EQ(pckg->getName(), "test.hpp");
     EXPECT_EQ(pckg->getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg->getPackagedElements().front()->getElementType(), ElementType::ARTIFACT);
-    ASSERT_EQ(pckg->getPackagedElements().front()->getName(), "test.hpp");
-    ASSERT_EQ(pckg->getPackagedElements().get(1)->getElementType(), ElementType::PACKAGE);
-    Package& fooNamespace = dynamic_cast<Package&>(*pckg->getPackagedElements().get(1));
+    ASSERT_EQ(pckg->getPackagedElements().front().getElementType(), ElementType::ARTIFACT);
+    ASSERT_EQ(pckg->getPackagedElements().front().getName(), "test.hpp");
+    ASSERT_EQ(pckg->getPackagedElements().get(1).getElementType(), ElementType::PACKAGE);
+    Package& fooNamespace = dynamic_cast<Package&>(pckg->getPackagedElements().get(1));
     ASSERT_EQ(fooNamespace.getName(), "FOO");
     ASSERT_EQ(fooNamespace.getAppliedStereotypes().size(), 1);
-    ASSERT_EQ(fooNamespace.getAppliedStereotypes().front()->getClassifier()->getName(), "C++ Namespace");
+    ASSERT_EQ(fooNamespace.getAppliedStereotypes().front().getClassifier()->getName(), "C++ Namespace");
     ASSERT_EQ(fooNamespace.getPackagedElements().size(), 4);
-    ASSERT_EQ(fooNamespace.getPackagedElements().front()->getName(), "c");
+    ASSERT_EQ(fooNamespace.getPackagedElements().front().getName(), "c");
     // ASSERT_EQ(fooNamespace.getPackagedElements().front()->getElementType(), ElementType::LITERAL_INT);
     // LiteralInt& cChar = dynamic_cast<LiteralInt&>(*fooNamespace.getPackagedElements().front());
     // ASSERT_EQ(cChar.getType()->getID(), ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR"));
@@ -50,10 +50,10 @@ TEST_F(CppParserTest, parseBasicHeaderTest) {
     // LiteralReal& cDouble = dynamic_cast<LiteralReal&>(*fooNamespace.getPackagedElements().get(3));
     // ASSERT_EQ(cDouble.getName(), "d");
     // ASSERT_EQ(cDouble.getType()->getID(), ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE"));
-    ASSERT_EQ(pckg->getPackagedElements().get(2)->getElementType(), ElementType::CLASS);
-    Class& testClass = dynamic_cast<Class&>(*pckg->getPackagedElements().get(2));
+    ASSERT_EQ(pckg->getPackagedElements().get(2).getElementType(), ElementType::CLASS);
+    Class& testClass = dynamic_cast<Class&>(pckg->getPackagedElements().get(2));
     ASSERT_EQ(testClass.getName(), "test");
     ASSERT_EQ(testClass.getOperations().size(), 1);
-    Operation& constructor = *testClass.getOperations().front();
+    Operation& constructor = testClass.getOperations().front();
     ASSERT_EQ(constructor.getName(), "test");
 }

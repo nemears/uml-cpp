@@ -26,7 +26,7 @@ TEST_F(ElementTest, GetOwnedElementsTest) {
   Package el3;
   el2.getPackagedElements().add(el3);
   EXPECT_FALSE(el2.getOwnedElements().empty());
-  EXPECT_EQ(el2.getOwnedElements().get(0), &el3);
+  EXPECT_EQ(&el2.getOwnedElements().get(0), &el3);
 }
 
 TEST_F(ElementTest, GetOwnedElementsTestW_Manager) {
@@ -35,7 +35,7 @@ TEST_F(ElementTest, GetOwnedElementsTestW_Manager) {
   Package& el3 = m.create<Package>();
   el2.getPackagedElements().add(el3);
   EXPECT_FALSE(el2.getOwnedElements().empty());
-  EXPECT_EQ(el2.getOwnedElements().get(0), &el3);
+  EXPECT_EQ(&el2.getOwnedElements().get(0), &el3);
 }
 
 TEST_F(ElementTest, InvalidID_Test) {
@@ -61,7 +61,7 @@ TEST_F(ElementTest, getOwnedElementsBasicTest) {
   Package e;
   Package c;
   ASSERT_NO_THROW(e.getPackagedElements().add(c));
-  ASSERT_TRUE(e.getOwnedElements().get(c.getID()));
+  ASSERT_NO_THROW(e.getOwnedElements().get(c.getID()));
 }
 
 TEST_F(ElementTest, getOwnedElementByNameTest) {
@@ -72,8 +72,8 @@ TEST_F(ElementTest, getOwnedElementByNameTest) {
   ASSERT_NO_THROW(e.getPackagedElements().add(b));
   ASSERT_NO_THROW(e.getPackagedElements().add(n));
   // ASSERT_TRUE(e.getOwnedElements().get("name") == &n);
-  ASSERT_TRUE(e.getOwnedElements().get(n.getID()) == &n);
-  ASSERT_TRUE(e.getOwnedElements().get(b.getID()) == &b);
+  ASSERT_NO_THROW(&e.getOwnedElements().get(n.getID()) == &n);
+  ASSERT_NO_THROW(&e.getOwnedElements().get(b.getID()) == &b);
 }
 
 TEST_F(ElementTest, reindexID_TestW_Manager) {
@@ -82,7 +82,7 @@ TEST_F(ElementTest, reindexID_TestW_Manager) {
   Package& e2 = m.create<Package>();
   e1.getPackagedElements().add(e2);
   e2.setID("190d1cb913dc44e6a064126891ae");
-  ASSERT_TRUE(e1.getOwnedElements().get(e2.getID()) != NULL);
+  ASSERT_NO_THROW(e1.getOwnedElements().get(e2.getID()));
 }
 
 TEST_F(ElementTest, reIndexID_Test) {
@@ -90,7 +90,7 @@ TEST_F(ElementTest, reIndexID_Test) {
   Package e2;
   e1.getPackagedElements().add(e2);
   e2.setID("190d1cb913dc44e6a064126891ae");
-  ASSERT_TRUE(e1.getOwnedElements().get(e2.getID()) != NULL);
+  ASSERT_NO_THROW(e1.getOwnedElements().get(e2.getID()));
 }
 
 TEST_F(ElementTest, basicRelationshipTestW_Manager) {
@@ -101,12 +101,12 @@ TEST_F(ElementTest, basicRelationshipTestW_Manager) {
   e.getPackageMerge().add(r);
   r.setMergedPackage(&a);
   ASSERT_TRUE(r.getRelatedElements().size() == 2);
-  ASSERT_TRUE(r.getRelatedElements().front() == &e);
-  ASSERT_TRUE(r.getRelatedElements().back() == &a);
+  ASSERT_TRUE(&r.getRelatedElements().front() == &e);
+  ASSERT_TRUE(&r.getRelatedElements().back() == &a);
   ASSERT_TRUE(e.getRelationships().size() == 1);
-  ASSERT_TRUE(e.getRelationships().front() == &r);
+  ASSERT_TRUE(&e.getRelationships().front() == &r);
   ASSERT_TRUE(a.getRelationships().size() == 1);
-  ASSERT_TRUE(a.getRelationships().front() == &r);
+  ASSERT_TRUE(&a.getRelationships().front() == &r);
 }
 
 TEST_F(ElementTest, basicRelationshipTest) {
@@ -116,12 +116,12 @@ TEST_F(ElementTest, basicRelationshipTest) {
   e.getPackageMerge().add(r);
   r.setMergedPackage(&a);
   ASSERT_TRUE(r.getRelatedElements().size() == 2);
-  ASSERT_TRUE(r.getRelatedElements().front() == &e);
-  ASSERT_TRUE(r.getRelatedElements().back() == &a);
+  ASSERT_TRUE(&r.getRelatedElements().front() == &e);
+  ASSERT_TRUE(&r.getRelatedElements().back() == &a);
   ASSERT_TRUE(e.getRelationships().size() == 1);
-  ASSERT_TRUE(e.getRelationships().front() == &r);
+  ASSERT_TRUE(&e.getRelationships().front() == &r);
   ASSERT_TRUE(a.getRelationships().size() == 1);
-  ASSERT_TRUE(a.getRelationships().front() == &r);
+  ASSERT_TRUE(&a.getRelationships().front() == &r);
 }
 
 TEST_F(ElementTest, reindexRelationshipID_test) {
@@ -132,8 +132,8 @@ TEST_F(ElementTest, reindexRelationshipID_test) {
   r.setMergedPackage(&a);
   r.setID("190d1cb913dc44e6a064126891ae");
   e.setID("7d18ee4282c64f528ec4fab67a75");
-  ASSERT_TRUE(r.getRelatedElements().get(e.getID()));
-  ASSERT_TRUE(e.getRelationships().get(r.getID()));
+  ASSERT_NO_THROW(r.getRelatedElements().get(e.getID()));
+  ASSERT_NO_THROW(e.getRelationships().get(r.getID()));
 }
 
 TEST_F(ElementTest, setOwnerFunctorTest) {
@@ -160,7 +160,7 @@ TEST_F(ElementTest, overwriteOwnerTestW_Manager) {
   p1.getPackagedElements().add(c);
   c.setOwningPackage(&p2);
   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
-  ASSERT_TRUE(p2.getOwnedElements().front() == &c);
+  ASSERT_TRUE(&p2.getOwnedElements().front() == &c);
   ASSERT_TRUE(c.getOwner() == &p2);
   ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }
@@ -172,7 +172,7 @@ TEST_F(ElementTest, overwriteOwnerTest) {
   p1.getPackagedElements().add(c);
   c.setOwningPackage(&p2);
   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
-  ASSERT_TRUE(p2.getOwnedElements().front() == &c);
+  ASSERT_TRUE(&p2.getOwnedElements().front() == &c);
   ASSERT_TRUE(c.getOwner() == &p2);
   ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }
@@ -185,7 +185,7 @@ TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTestW_Manager) {
   p1.getPackagedElements().add(c);
   p2.getPackagedElements().add(c);
   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
-  ASSERT_TRUE(p2.getOwnedElements().front() == &c);
+  ASSERT_TRUE(&p2.getOwnedElements().front() == &c);
   ASSERT_TRUE(c.getOwner() == &p2);
   ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }
@@ -197,7 +197,7 @@ TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
   p1.getPackagedElements().add(c);
   p2.getPackagedElements().add(c);
   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
-  ASSERT_TRUE(p2.getOwnedElements().front() == &c);
+  ASSERT_TRUE(&p2.getOwnedElements().front() == &c);
   ASSERT_TRUE(c.getOwner() == &p2);
   ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }
@@ -215,7 +215,7 @@ TEST_F(ElementTest, CopyTestW_Manager) {
   // TODO: clone method for deep model copy
   Element e2 = e1;
   ASSERT_TRUE(e2.getOwnedElements().size() == 1);
-  ASSERT_TRUE(e2.getOwnedElements().front() == &c1);
+  ASSERT_TRUE(&e2.getOwnedElements().front() == &c1);
   ASSERT_TRUE(e2.getID() == e1.getID());
   ASSERT_TRUE(e2.getOwner() == &p1);
 }
@@ -228,7 +228,7 @@ TEST_F(ElementTest, CopyTest) {
   e1.getPackagedElements().add(c1);
   Element e2 = e1;
   ASSERT_TRUE(e2.getOwnedElements().size() == 1);
-  ASSERT_TRUE(e2.getOwnedElements().front() == &c1);
+  ASSERT_TRUE(&e2.getOwnedElements().front() == &c1);
   ASSERT_TRUE(e2.getID() == e1.getID());
   ASSERT_TRUE(e2.getOwner() == &p1);
 }
@@ -238,7 +238,7 @@ TEST_F(ElementTest, doINeedAnAddRelationshipFunctorTest) { // answer is yes
   PackageMerge r;
   e.getPackageMerge().add(r);
   ASSERT_TRUE(r.getRelatedElements().size() == 1);
-  ASSERT_TRUE(r.getRelatedElements().front() == &e);
+  ASSERT_TRUE(&r.getRelatedElements().front() == &e);
 }
 
 // TEST_F(ElementTest, fullCopyTest) {
@@ -309,8 +309,8 @@ TEST_F(ElementTest, isSameOrNullTest) {
   e.getPackagedElements().add(c1);
   e.getPackagedElements().add(c2);
   ASSERT_NO_THROW(c1.setOwningPackage(&e));
-  ASSERT_TRUE(e.getOwnedElements().front() == &c1);
-  ASSERT_TRUE(e.getOwnedElements().back() == &c2);
+  ASSERT_TRUE(&e.getOwnedElements().front() == &c1);
+  ASSERT_TRUE(&e.getOwnedElements().back() == &c2);
 }
 
 // TEST_F(ElementTest, checkAppliedStereotypeFunctorTest) {

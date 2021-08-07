@@ -68,8 +68,8 @@ TEST_F(ValueSpecificationTest, reindexID_forSlotTest) {
     Slot s;
     s.getValues().add(v);
     v.setID("eb092018_0bef_4ad6_b80f_05fa");
-    ASSERT_TRUE(s.getValues().get(v.getID()));
-    ASSERT_TRUE(s.getOwnedElements().get(v.getID()));
+    ASSERT_NO_THROW(s.getValues().get(v.getID()));
+    ASSERT_NO_THROW(s.getOwnedElements().get(v.getID()));
 }
 
 // TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
@@ -87,8 +87,8 @@ TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
     e.getOperands().add(b);
     e.setSymbol("==");
     b.setID("eb092018_0bef_4ad6_b80f_05fa");
-    ASSERT_TRUE(e.getOperands().get(b.getID()));
-    ASSERT_TRUE(e.getOwnedElements().get(b.getID()));
+    ASSERT_NO_THROW(e.getOperands().get(b.getID()));
+    ASSERT_NO_THROW(e.getOwnedElements().get(b.getID()));
 }
 
 // TEST_F(ValueSpecificationTest, reindexNameExpressionTest) {

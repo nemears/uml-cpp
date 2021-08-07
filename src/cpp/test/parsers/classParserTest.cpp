@@ -42,17 +42,17 @@ TEST_F(ClassParserTest, parseBasicProperty) {
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
     ASSERT_TRUE(clazz->getAttributes().size() == 2);
-    Property* prop1 = dynamic_cast<Property*>(clazz->getAttributes().front());
-    Property* prop2 = dynamic_cast<Property*>(clazz->getAttributes().back());
+    Property* prop1 = dynamic_cast<Property*>(&clazz->getAttributes().front());
+    Property* prop2 = dynamic_cast<Property*>(&clazz->getAttributes().back());
     ASSERT_TRUE(prop1->getClassifier() == clazz);
     // ASSERT_TRUE(prop1->getNamespace() == clazz);
     // ASSERT_TRUE(prop1->getOwner() == clazz);
-    ASSERT_TRUE(clazz->getMembers().front() == prop1);
+    ASSERT_TRUE(&clazz->getMembers().front() == prop1);
     // ASSERT_TRUE(clazz->getOwnedElements().front() == prop1);
     ASSERT_TRUE(prop2->getClassifier() == clazz);
     //ASSERT_TRUE(prop2->getNamespace() == clazz);
     // ASSERT_TRUE(prop2->getOwner() == clazz);
-    ASSERT_TRUE(clazz->getMembers().back() == prop2);
+    ASSERT_TRUE(&clazz->getMembers().back() == prop2);
     // ASSERT_TRUE(clazz->getOwnedElements().back() == prop2);
 }
 
@@ -63,13 +63,13 @@ TEST_F(ClassParserTest, parseOperation) {
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
     ASSERT_TRUE(clazz->getOperations().size() == 1);
-    Operation* op = clazz->getOperations().front();
+    Operation* op = &clazz->getOperations().front();
     ASSERT_TRUE(op->getName().compare("isValid") == 0);
     ASSERT_TRUE(op->getMethods().size() == 1);
-    OpaqueBehavior* bhv = dynamic_cast<OpaqueBehavior*>(op->getMethods().front());
+    OpaqueBehavior* bhv = dynamic_cast<OpaqueBehavior*>(&op->getMethods().front());
     ASSERT_TRUE(bhv->getName().compare("isValid") == 0);
     ASSERT_TRUE(bhv->getBodies().size() == 1);
-    ASSERT_TRUE(bhv->getBodies().front()->getValue().compare("return true") == 0);
+    ASSERT_TRUE(bhv->getBodies().front().getValue().compare("return true") == 0);
     ASSERT_TRUE(bhv->getParameters().size() == 1);
 }
 
@@ -87,16 +87,16 @@ TEST_F(ClassParserTest, basicGeneralizationTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
-    Class* general = dynamic_cast<Class*>(pckg->getPackagedElements().front());
+    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
+    Class* general = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
     ASSERT_TRUE(general->getName().compare("general") == 0);
-    ASSERT_TRUE(pckg->getPackagedElements().back()->getElementType() == ElementType::CLASS);
-    Class* specific = dynamic_cast<Class*>(pckg->getPackagedElements().back());
+    ASSERT_TRUE(pckg->getPackagedElements().back().getElementType() == ElementType::CLASS);
+    Class* specific = dynamic_cast<Class*>(&pckg->getPackagedElements().back());
     ASSERT_TRUE(specific->getName().compare("specific") == 0);
     ASSERT_TRUE(specific->getGeneralizations().size() == 1);
     ASSERT_TRUE(specific->getGenerals().size() == 1);
-    ASSERT_TRUE(specific->getGenerals().front() == general);
-    Generalization* g = specific->getGeneralizations().front();
+    ASSERT_TRUE(&specific->getGenerals().front() == general);
+    Generalization* g = &specific->getGeneralizations().front();
     ASSERT_TRUE(g->getGeneral() == general);
     ASSERT_TRUE(g->getSpecific() == specific);
 }
@@ -108,29 +108,29 @@ TEST_F(ClassParserTest, inheritedMembersTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 4);
-    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
-    Class* general = dynamic_cast<Class*>(pckg->getPackagedElements().front());
+    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
+    Class* general = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
     ASSERT_TRUE(general->getName().compare("general") == 0);
-    ASSERT_TRUE(pckg->getPackagedElements().get(1)->getElementType() == ElementType::CLASS);
-    Class* specific = dynamic_cast<Class*>(pckg->getPackagedElements().get(1));
+    ASSERT_TRUE(pckg->getPackagedElements().get(1).getElementType() == ElementType::CLASS);
+    Class* specific = dynamic_cast<Class*>(&pckg->getPackagedElements().get(1));
     ASSERT_TRUE(specific->getName().compare("specific") == 0);
     ASSERT_TRUE(specific->getGeneralizations().size() == 1);
     ASSERT_TRUE(specific->getGenerals().size() == 1);
-    ASSERT_TRUE(specific->getGenerals().front() == general);
-    Generalization* g = specific->getGeneralizations().front();
+    ASSERT_TRUE(&specific->getGenerals().front() == general);
+    Generalization* g = &specific->getGeneralizations().front();
     ASSERT_TRUE(g->getGeneral() == general);
     ASSERT_TRUE(g->getSpecific() == specific);
     ASSERT_TRUE(general->getOwnedAttributes().size() == 1);
-    Property* gProp = general->getOwnedAttributes().front();
+    Property* gProp = &general->getOwnedAttributes().front();
     ASSERT_TRUE(specific->getInheritedMembers().size() == 1);
-    ASSERT_TRUE(specific->getInheritedMembers().front() == gProp);
+    ASSERT_TRUE(&specific->getInheritedMembers().front() == gProp);
     
-    ASSERT_TRUE(pckg->getPackagedElements().get(2)->getElementType() == ElementType::CLASS);
-    Class* privateGeneral = dynamic_cast<Class*>(pckg->getPackagedElements().get(2));
-    ASSERT_TRUE(pckg->getPackagedElements().get(3)->getElementType() == ElementType::CLASS);
-    Class* privateSpecific = dynamic_cast<Class*>(pckg->getPackagedElements().get(3));
+    ASSERT_TRUE(pckg->getPackagedElements().get(2).getElementType() == ElementType::CLASS);
+    Class* privateGeneral = dynamic_cast<Class*>(&pckg->getPackagedElements().get(2));
+    ASSERT_TRUE(pckg->getPackagedElements().get(3).getElementType() == ElementType::CLASS);
+    Class* privateSpecific = dynamic_cast<Class*>(&pckg->getPackagedElements().get(3));
     ASSERT_TRUE(privateGeneral->getOwnedAttributes().size() == 1);
-    ASSERT_TRUE(privateGeneral->getOwnedAttributes().front()->getVisibility() == VisibilityKind::PRIVATE);
+    ASSERT_TRUE(privateGeneral->getOwnedAttributes().front().getVisibility() == VisibilityKind::PRIVATE);
     ASSERT_TRUE(privateSpecific->getInheritedMembers().size() == 0);
 }
 
@@ -244,20 +244,20 @@ TEST_F(ClassParserTest, nestedClassifierParsingTest) {
     ASSERT_EQ(el->getElementType(), ElementType::CLASS);
     Class& clazz = el->as<Class>();
     ASSERT_EQ(clazz.getNestedClassifiers().size(), 7);
-    ASSERT_EQ(clazz.getNestedClassifiers().get(0)->getElementType(), ElementType::ASSOCIATION);
-    ASSERT_EQ(clazz.getNestedClassifiers().get(0)->getName(), "assoc");
-    ASSERT_EQ(clazz.getNestedClassifiers().get(1)->getElementType(), ElementType::ARTIFACT);
-    ASSERT_EQ(clazz.getNestedClassifiers().get(1)->getName(), "art");
-    ASSERT_EQ(clazz.getNestedClassifiers().get(2)->getElementType(), ElementType::CLASS);
-    ASSERT_EQ(clazz.getNestedClassifiers().get(2)->getName(), "class");
-    ASSERT_EQ(clazz.getNestedClassifiers().get(3)->getElementType(), ElementType::DATA_TYPE);
-    ASSERT_EQ(clazz.getNestedClassifiers().get(3)->getName(), "bigD");
-    ASSERT_EQ(clazz.getNestedClassifiers().get(4)->getElementType(), ElementType::ENUMERATION);
-    ASSERT_EQ(clazz.getNestedClassifiers().get(4)->getName(), "e");
-    ASSERT_EQ(clazz.getNestedClassifiers().get(5)->getElementType(), ElementType::OPAQUE_BEHAVIOR);
-    ASSERT_EQ(clazz.getNestedClassifiers().get(5)->getName(), "bb");
-    ASSERT_EQ(clazz.getNestedClassifiers().get(6)->getElementType(), ElementType::PRIMITIVE_TYPE);
-    ASSERT_EQ(clazz.getNestedClassifiers().get(6)->getName(), "pp");
+    ASSERT_EQ(clazz.getNestedClassifiers().get(0).getElementType(), ElementType::ASSOCIATION);
+    ASSERT_EQ(clazz.getNestedClassifiers().get(0).getName(), "assoc");
+    ASSERT_EQ(clazz.getNestedClassifiers().get(1).getElementType(), ElementType::ARTIFACT);
+    ASSERT_EQ(clazz.getNestedClassifiers().get(1).getName(), "art");
+    ASSERT_EQ(clazz.getNestedClassifiers().get(2).getElementType(), ElementType::CLASS);
+    ASSERT_EQ(clazz.getNestedClassifiers().get(2).getName(), "class");
+    ASSERT_EQ(clazz.getNestedClassifiers().get(3).getElementType(), ElementType::DATA_TYPE);
+    ASSERT_EQ(clazz.getNestedClassifiers().get(3).getName(), "bigD");
+    ASSERT_EQ(clazz.getNestedClassifiers().get(4).getElementType(), ElementType::ENUMERATION);
+    ASSERT_EQ(clazz.getNestedClassifiers().get(4).getName(), "e");
+    ASSERT_EQ(clazz.getNestedClassifiers().get(5).getElementType(), ElementType::OPAQUE_BEHAVIOR);
+    ASSERT_EQ(clazz.getNestedClassifiers().get(5).getName(), "bb");
+    ASSERT_EQ(clazz.getNestedClassifiers().get(6).getElementType(), ElementType::PRIMITIVE_TYPE);
+    ASSERT_EQ(clazz.getNestedClassifiers().get(6).getName(), "pp");
 }
 
 TEST_F(ClassParserTest, nestedClassifierEmitTest) {

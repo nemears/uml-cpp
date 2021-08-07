@@ -27,8 +27,8 @@ TEST_F(ModelParserTest, parsedAndCreatedElementTest) {
 
     // Validate
     ASSERT_TRUE(m->getPackagedElements().size() == 1);
-    ASSERT_TRUE(m->getPackagedElements().front()->getElementType() == ElementType::PACKAGE);
-    Package* parsedPckg = dynamic_cast<Package*>(m->getPackagedElements().front());
+    ASSERT_TRUE(m->getPackagedElements().front().getElementType() == ElementType::PACKAGE);
+    Package* parsedPckg = dynamic_cast<Package*>(&m->getPackagedElements().front());
 
     // Add some elements
     Class c;

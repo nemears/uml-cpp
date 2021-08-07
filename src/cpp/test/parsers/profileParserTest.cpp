@@ -25,10 +25,10 @@ TEST_F(ProfileParserTest, stereotypeWithExtensionTest) {
     ASSERT_EQ(el->getElementType(), ElementType::PROFILE);
     Profile& profile = dynamic_cast<Profile&>(*el);
     ASSERT_EQ(profile.getOwnedStereotypes().size(), 1);
-    Stereotype& s = *profile.getOwnedStereotypes().front();
+    Stereotype& s = profile.getOwnedStereotypes().front();
     ASSERT_EQ(profile.getPackagedElements().size(), 2);
-    ASSERT_EQ(profile.getPackagedElements().front()->getElementType(), ElementType::EXTENSION);
-    Extension& ext = dynamic_cast<Extension&>(*profile.getPackagedElements().front());
+    ASSERT_EQ(profile.getPackagedElements().front().getElementType(), ElementType::EXTENSION);
+    Extension& ext = dynamic_cast<Extension&>(profile.getPackagedElements().front());
     ASSERT_EQ(ext.getMetaClass(), ElementType::CLASS);
     ASSERT_TRUE(ext.getOwnedEnd() != 0);
     ExtensionEnd& end = *ext.getOwnedEnd();
@@ -43,12 +43,12 @@ TEST_F(ProfileParserTest, internalProfileapplication) {
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& pckg = *dynamic_cast<Package*>(el);
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::PACKAGE);
-    Package& applying = *dynamic_cast<Package*>(pckg.getPackagedElements().front());
+    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::PACKAGE);
+    Package& applying = dynamic_cast<Package&>(pckg.getPackagedElements().front());
     ASSERT_EQ(applying.getProfileApplications().size(), 1);
-    ASSERT_EQ(pckg.getPackagedElements().back()->getElementType(), ElementType::PROFILE);
-    Profile& profile = *dynamic_cast<Profile*>(pckg.getPackagedElements().back());
-    ProfileApplication& application = *applying.getProfileApplications().front();
+    ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::PROFILE);
+    Profile& profile = dynamic_cast<Profile&>(pckg.getPackagedElements().back());
+    ProfileApplication& application = applying.getProfileApplications().front();
     ASSERT_EQ(application.getAppliedProfile()->getID(), profile.getID());
 }
 
@@ -59,7 +59,7 @@ TEST_F(ProfileParserTest, externalProfileApplicationTest) {
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& pckg = *dynamic_cast<Package*>(el);
     ASSERT_EQ(pckg.getProfileApplications().size(), 1);
-    ProfileApplication& application = *pckg.getProfileApplications().front();
+    ProfileApplication& application = pckg.getProfileApplications().front();
     ASSERT_EQ(application.getAppliedProfile()->getID(), ID::fromString("XIf5yPHTzLz4NDkVLLwDamOWscKb"));
     //lazy
 }
@@ -136,23 +136,23 @@ TEST_F(ProfileParserTest, parseAppliedStereotypeTest) {
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& root = *dynamic_cast<Package*>(el);
     ASSERT_EQ(root.getPackagedElements().size(), 2);
-    ASSERT_EQ(root.getPackagedElements().front()->getElementType(), ElementType::PACKAGE);
-    Package& applying = *dynamic_cast<Package*>(root.getPackagedElements().front());
+    ASSERT_EQ(root.getPackagedElements().front().getElementType(), ElementType::PACKAGE);
+    Package& applying = dynamic_cast<Package&>(root.getPackagedElements().front());
     ASSERT_EQ(applying.getProfileApplications().size(), 1);
-    ProfileApplication& application = *applying.getProfileApplications().front();
+    ProfileApplication& application = applying.getProfileApplications().front();
     ASSERT_TRUE(application.getAppliedProfile() != 0);
-    ASSERT_EQ(root.getPackagedElements().back()->getElementType(), ElementType::PROFILE);
-    Profile& profile = *dynamic_cast<Profile*>(root.getPackagedElements().back());
+    ASSERT_EQ(root.getPackagedElements().back().getElementType(), ElementType::PROFILE);
+    Profile& profile = dynamic_cast<Profile&>(root.getPackagedElements().back());
     ASSERT_EQ(application.getAppliedProfile()->getID(), profile.getID());
     ASSERT_EQ(applying.getPackagedElements().size(), 1);
-    ASSERT_EQ(applying.getPackagedElements().front()->getElementType(), ElementType::PACKAGE);
-    Package& typed = *dynamic_cast<Package*>(applying.getPackagedElements().front());
+    ASSERT_EQ(applying.getPackagedElements().front().getElementType(), ElementType::PACKAGE);
+    Package& typed = dynamic_cast<Package&>(applying.getPackagedElements().front());
     ASSERT_EQ(typed.getAppliedStereotypes().size(), 1);
-    InstanceSpecification& stereotypeInst = *typed.getAppliedStereotypes().front();
+    InstanceSpecification& stereotypeInst = typed.getAppliedStereotypes().front();
     ASSERT_TRUE(stereotypeInst.getClassifier() != 0);
     ASSERT_EQ(stereotypeInst.getClassifier()->getElementType(), ElementType::STEREOTYPE);
     ASSERT_EQ(profile.getOwnedStereotypes().size(), 1);
-    Stereotype& stereotype = *profile.getOwnedStereotypes().front();
+    Stereotype& stereotype = profile.getOwnedStereotypes().front();
     ASSERT_EQ(stereotypeInst.getClassifier()->getID(), stereotype.getID());
 }
 

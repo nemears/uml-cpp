@@ -33,18 +33,18 @@ TEST_F(OperationParserTest, basicParamTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
-    PrimitiveType* b = dynamic_cast<PrimitiveType*>(pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().front());
-    PrimitiveType* i = dynamic_cast<PrimitiveType*>(pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get(1));
-    PrimitiveType* r = dynamic_cast<PrimitiveType*>(pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get(2));
-    PrimitiveType* s = dynamic_cast<PrimitiveType*>(pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get(3));
+    PrimitiveType* b = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().front());
+    PrimitiveType* i = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(1));
+    PrimitiveType* r = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(2));
+    PrimitiveType* s = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(3));
 
     ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
-    Class* c = dynamic_cast<Class*>(pckg->getPackagedElements().front());
+    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
+    Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
     ASSERT_TRUE(c->getOperations().size() == 1);
-    Operation* o =c->getOperations().front();
+    Operation* o =&c->getOperations().front();
     ASSERT_TRUE(o->getOwnedParameters().size() == 1);
-    Parameter* p = o->getOwnedParameters().front();
+    Parameter* p = &o->getOwnedParameters().front();
     ASSERT_TRUE(p->getName().compare("testInt") == 0);
     ASSERT_TRUE(p->getType() == i);
     ASSERT_TRUE(p->getDirection() == ParameterDirectionKind::IN);

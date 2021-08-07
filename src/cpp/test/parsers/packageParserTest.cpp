@@ -26,12 +26,12 @@ TEST_F(PackageParserTest, parsePackageWithActivityTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::ACTIVITY);
-    Activity* act = dynamic_cast<Activity*>(pckg->getPackagedElements().front());
+    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::ACTIVITY);
+    Activity* act = &dynamic_cast<Activity&>(pckg->getPackagedElements().front());
     ASSERT_TRUE(pckg->getMembers().size() == 1);
-    ASSERT_TRUE(pckg->getMembers().front() == act);
+    ASSERT_TRUE(&pckg->getMembers().front() == act);
     ASSERT_TRUE(pckg->getOwnedElements().size() == 1);
-    ASSERT_TRUE(pckg->getOwnedElements().front() == act);
+    ASSERT_TRUE(&pckg->getOwnedElements().front() == act);
     ASSERT_TRUE(act->getOwningPackage() == pckg);
     ASSERT_TRUE(act->getNamespace() == pckg);
     ASSERT_TRUE(act->getOwner() == pckg);
@@ -45,31 +45,31 @@ TEST_F(PackageParserTest, parse3PackagesTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg1 = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg1->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg1->getPackagedElements().front()->getElementType() == ElementType::PACKAGE);
-    ASSERT_TRUE(pckg1->getPackagedElements().back()->getElementType() == ElementType::PACKAGE);
-    Package* pckg2 = dynamic_cast<Package*>(pckg1->getPackagedElements().front());
-    Package* pckg3 = dynamic_cast<Package*>(pckg1->getPackagedElements().back());
+    ASSERT_TRUE(pckg1->getPackagedElements().front().getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE(pckg1->getPackagedElements().back().getElementType() == ElementType::PACKAGE);
+    Package* pckg2 = dynamic_cast<Package*>(&pckg1->getPackagedElements().front());
+    Package* pckg3 = dynamic_cast<Package*>(&pckg1->getPackagedElements().back());
     ASSERT_TRUE(pckg2->getOwningPackage() == pckg1);
     ASSERT_TRUE(pckg3->getOwningPackage() == pckg1);
     ASSERT_TRUE(pckg1->getMembers().size() == 2);
-    ASSERT_TRUE(pckg1->getMembers().front() == pckg2);
-    ASSERT_TRUE(pckg1->getMembers().back() == pckg3);
+    ASSERT_TRUE(&pckg1->getMembers().front() == pckg2);
+    ASSERT_TRUE(&pckg1->getMembers().back() == pckg3);
     ASSERT_TRUE(pckg2->getNamespace() == pckg1);
     ASSERT_TRUE(pckg3->getNamespace() == pckg1);
     ASSERT_TRUE(pckg1->getOwnedElements().size() == 2);
-    ASSERT_TRUE(pckg1->getOwnedElements().front() == pckg2);
-    ASSERT_TRUE(pckg1->getOwnedElements().back() == pckg3);
+    ASSERT_TRUE(&pckg1->getOwnedElements().front() == pckg2);
+    ASSERT_TRUE(&pckg1->getOwnedElements().back() == pckg3);
     ASSERT_TRUE(pckg2->getOwner() == pckg1);
     ASSERT_TRUE(pckg3->getOwner() == pckg1);
     ASSERT_TRUE(pckg2->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg2->getPackagedElements().front()->getElementType() == ElementType::ACTIVITY);
-    Activity* act1 = dynamic_cast<Activity*>(pckg2->getPackagedElements().front());
+    ASSERT_TRUE(pckg2->getPackagedElements().front().getElementType() == ElementType::ACTIVITY);
+    Activity* act1 = dynamic_cast<Activity*>(&pckg2->getPackagedElements().front());
     ASSERT_TRUE(act1->getOwningPackage() == pckg2);
     ASSERT_TRUE(act1->getNamespace() == pckg2);
     ASSERT_TRUE(act1->getOwner() == pckg2);
     ASSERT_TRUE(pckg3->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg3->getPackagedElements().front()->getElementType() == ElementType::ACTIVITY);
-    Activity* act2 = dynamic_cast<Activity*>(pckg3->getPackagedElements().front());
+    ASSERT_TRUE(pckg3->getPackagedElements().front().getElementType() == ElementType::ACTIVITY);
+    Activity* act2 = dynamic_cast<Activity*>(&pckg3->getPackagedElements().front());
     ASSERT_TRUE(act2->getOwningPackage() == pckg3);
     ASSERT_TRUE(act2->getNamespace() == pckg3);
     ASSERT_TRUE(act2->getOwner() == pckg3);
@@ -121,12 +121,12 @@ TEST_F(PackageParserTest, basicPackageMerge) {
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* bPckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(bPckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(bPckg->getPackagedElements().front()->getElementType() == ElementType::PACKAGE);
-    Package* pckg1 = dynamic_cast<Package*>(bPckg->getPackagedElements().front());
-    ASSERT_TRUE(bPckg->getPackagedElements().back()->getElementType() == ElementType::PACKAGE);
-    Package* pckg2 = dynamic_cast<Package*>(bPckg->getPackagedElements().back());
+    ASSERT_TRUE(bPckg->getPackagedElements().front().getElementType() == ElementType::PACKAGE);
+    Package* pckg1 = dynamic_cast<Package*>(&bPckg->getPackagedElements().front());
+    ASSERT_TRUE(bPckg->getPackagedElements().back().getElementType() == ElementType::PACKAGE);
+    Package* pckg2 = dynamic_cast<Package*>(&bPckg->getPackagedElements().back());
     ASSERT_TRUE(pckg2->getPackageMerge().size() == 1);
-    PackageMerge* m = pckg2->getPackageMerge().front();
+    PackageMerge* m = &pckg2->getPackageMerge().front();
     ASSERT_TRUE(m->getMergedPackage() == pckg1);
     ASSERT_TRUE(m->getReceivingPackage() == pckg2);
 }
@@ -138,19 +138,19 @@ TEST_F(PackageParserTest, externalMergedPackageTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackageMerge().size() == 2);
-    PackageMerge* m = pckg->getPackageMerge().front();
-    PackageMerge* m2 = pckg->getPackageMerge().back();
+    PackageMerge* m = &pckg->getPackageMerge().front();
+    PackageMerge* m2 = &pckg->getPackageMerge().back();
     ASSERT_TRUE(m->getMergedPackage() != 0);
     Package* p2 = m->getMergedPackage();
     ASSERT_TRUE(p2->getPackagedElements().size() == 2);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
-    Class* c = dynamic_cast<Class*>(pckg->getPackagedElements().front());
+    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
+    Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
     ASSERT_TRUE(c->getOwnedAttributes().size() == 1);
-    Property* p = c->getOwnedAttributes().front();
+    Property* p = &c->getOwnedAttributes().front();
     Package* primPack = m2->getMergedPackage();
-    ASSERT_TRUE(primPack->getPackagedElements().front()->getElementType() == ElementType::PRIMITIVE_TYPE);
-    PrimitiveType* b = dynamic_cast<PrimitiveType*>(primPack->getPackagedElements().front());
+    ASSERT_TRUE(primPack->getPackagedElements().front().getElementType() == ElementType::PRIMITIVE_TYPE);
+    PrimitiveType* b = dynamic_cast<PrimitiveType*>(&primPack->getPackagedElements().front());
     ASSERT_TRUE(p->getType() == b);
 }
 
@@ -175,8 +175,8 @@ TEST_F(PackageParserTest, parsePackagedElementInDifferentFileTest) {
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& pckg = dynamic_cast<Package&>(*el);
     ASSERT_EQ(pckg.getPackagedElements().size(), 1);
-    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::CLASS);
-    ASSERT_EQ(pckg.getPackagedElements().front()->getID(), ID::fromString("4tcg0slbMiorhD6UUNfSGw6hHTV3"));
+    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
+    ASSERT_EQ(pckg.getPackagedElements().front().getID(), ID::fromString("4tcg0slbMiorhD6UUNfSGw6hHTV3"));
 }
 
 TEST_F(PackageParserTest, emitMergedPackageTest) {

@@ -17,24 +17,24 @@ TEST_F(GeneralizationTest, basicSetSpecificAndGeneralTest) {
     ASSERT_TRUE(r.getSpecific() == &s);
     ASSERT_TRUE(r.getGeneral() == &g);
     ASSERT_TRUE(r.getTargets().size() == 1);
-    ASSERT_TRUE(r.getTargets().front() == &g);
+    ASSERT_TRUE(&r.getTargets().front() == &g);
     ASSERT_TRUE(r.getSources().size() == 1);
-    ASSERT_TRUE(r.getSources().front() == &s);
+    ASSERT_TRUE(&r.getSources().front() == &s);
     ASSERT_TRUE(r.getRelatedElements().size() == 2);
     ASSERT_TRUE(r.getRelatedElements().count(s.getID()) == 1);
     ASSERT_TRUE(r.getRelatedElements().count(g.getID()) == 1);
     ASSERT_TRUE(r.getOwner() == &s);
     ASSERT_TRUE(s.getRelationships().size() == 1);
-    ASSERT_TRUE(s.getRelationships().front() == &r);
+    ASSERT_TRUE(&s.getRelationships().front() == &r);
     ASSERT_TRUE(g.getRelationships().size() == 1);
-    ASSERT_TRUE(g.getRelationships().front() == &r);
+    ASSERT_TRUE(&g.getRelationships().front() == &r);
     ASSERT_TRUE(s.getGeneralizations().size() == 1);
-    ASSERT_TRUE(s.getGeneralizations().front() == &r);
+    ASSERT_TRUE(&s.getGeneralizations().front() == &r);
     ASSERT_TRUE(s.getOwnedElements().size() == 1);
-    ASSERT_TRUE(s.getOwnedElements().front() == &r);
+    ASSERT_TRUE(&s.getOwnedElements().front() == &r);
     ASSERT_TRUE(g.getGeneralizations().size() == 0);
     ASSERT_TRUE(s.getGenerals().size() == 1);
-    ASSERT_TRUE(s.getGenerals().front() == &g);
+    ASSERT_TRUE(&s.getGenerals().front() == &g);
 }
 
 TEST_F(GeneralizationTest, addGeneralFunctorTest) {
@@ -43,27 +43,27 @@ TEST_F(GeneralizationTest, addGeneralFunctorTest) {
     Classifier& g = m.create<Classifier>();
     s.getGenerals().add(g);
     ASSERT_TRUE(s.getGenerals().size() == 1);
-    ASSERT_TRUE(s.getGenerals().front() == &g);
+    ASSERT_TRUE(&s.getGenerals().front() == &g);
     ASSERT_TRUE(s.getGeneralizations().size() == 1);
-    Generalization* r = s.getGeneralizations().front();
+    Generalization* r = &s.getGeneralizations().front();
     ASSERT_TRUE(r->getSpecific() == &s);
     ASSERT_TRUE(r->getGeneral() == &g);
     ASSERT_TRUE(r->getTargets().size() == 1);
-    ASSERT_TRUE(r->getTargets().front() == &g);
+    ASSERT_TRUE(&r->getTargets().front() == &g);
     ASSERT_TRUE(r->getSources().size() == 1);
-    ASSERT_TRUE(r->getSources().front() == &s);
+    ASSERT_TRUE(&r->getSources().front() == &s);
     ASSERT_TRUE(r->getRelatedElements().size() == 2);
     ASSERT_TRUE(r->getRelatedElements().count(s.getID()) == 1);
     ASSERT_TRUE(r->getRelatedElements().count(g.getID()) == 1);
     ASSERT_TRUE(r->getOwner() == &s);
     ASSERT_TRUE(s.getRelationships().size() == 1);
-    ASSERT_TRUE(s.getRelationships().front() == r);
+    ASSERT_TRUE(&s.getRelationships().front() == r);
     ASSERT_TRUE(g.getRelationships().size() == 1);
-    ASSERT_TRUE(g.getRelationships().front() == r);
+    ASSERT_TRUE(&g.getRelationships().front() == r);
     ASSERT_TRUE(s.getGeneralizations().size() == 1);
-    ASSERT_TRUE(s.getGeneralizations().front() == r);
+    ASSERT_TRUE(&s.getGeneralizations().front() == r);
     ASSERT_TRUE(s.getOwnedElements().size() == 1);
-    ASSERT_TRUE(s.getOwnedElements().front() == r);
+    ASSERT_TRUE(&s.getOwnedElements().front() == r);
 }
 
 TEST_F(GeneralizationTest, AddGeneralizationFunctorTest) {
@@ -106,21 +106,21 @@ TEST_F(GeneralizationTest, resetGeneralTest) {
     ASSERT_TRUE(g.getRelationships().size() == 0);
     ASSERT_TRUE(g.getGeneralizations().size() == 0);
     ASSERT_TRUE(s.getGenerals().size() == 1);
-    ASSERT_TRUE(s.getGenerals().front() == &g2);
+    ASSERT_TRUE(&s.getGenerals().front() == &g2);
     ASSERT_TRUE(s.getGeneralizations().size() == 1);
-    ASSERT_TRUE(s.getGeneralizations().front() == &r);
+    ASSERT_TRUE(&s.getGeneralizations().front() == &r);
     ASSERT_TRUE(g2.getGeneralizations().size() == 0);
     ASSERT_TRUE(g2.getRelationships().size() == 1);
-    ASSERT_TRUE(g2.getRelationships().front() == &r);
+    ASSERT_TRUE(&g2.getRelationships().front() == &r);
     ASSERT_TRUE(g2.getDirectedRelationships().size() == 1);
-    ASSERT_TRUE(g2.getDirectedRelationships().front() == &r);
+    ASSERT_TRUE(&g2.getDirectedRelationships().front() == &r);
     ASSERT_TRUE(r.getRelatedElements().size() == 2);
-    ASSERT_TRUE(r.getRelatedElements().front() == &s);
-    ASSERT_TRUE(r.getRelatedElements().back() == &g2);
+    ASSERT_TRUE(&r.getRelatedElements().front() == &s);
+    ASSERT_TRUE(&r.getRelatedElements().back() == &g2);
     ASSERT_TRUE(r.getTargets().size() == 1);
-    ASSERT_TRUE(r.getTargets().front() == &g2);
+    ASSERT_TRUE(&r.getTargets().front() == &g2);
     ASSERT_TRUE(r.getSources().size() == 1);
-    ASSERT_TRUE(r.getSources().front() == &s);
+    ASSERT_TRUE(&r.getSources().front() == &s);
 }
 
 TEST_F(GeneralizationTest, resetSpecificTest) {
@@ -134,19 +134,19 @@ TEST_F(GeneralizationTest, resetSpecificTest) {
     ASSERT_TRUE(s.getGeneralizations().size() == 0);
     ASSERT_TRUE(s.getRelationships().size() == 0);
     ASSERT_TRUE(g.getRelationships().size() == 1);
-    ASSERT_TRUE(g.getRelationships().front() == &r);
+    ASSERT_TRUE(&g.getRelationships().front() == &r);
     ASSERT_TRUE(g.getGeneralizations().size() == 0);
     ASSERT_TRUE(s2.getGeneralizations().size() == 1);
-    ASSERT_TRUE(s2.getGeneralizations().front() == &r);
+    ASSERT_TRUE(&s2.getGeneralizations().front() == &r);
     ASSERT_TRUE(s2.getRelationships().size() == 1);
-    ASSERT_TRUE(s2.getRelationships().front() == &r);
+    ASSERT_TRUE(&s2.getRelationships().front() == &r);
     ASSERT_TRUE(r.getRelatedElements().size() == 2);
-    ASSERT_TRUE(r.getRelatedElements().front() == &g);
-    ASSERT_TRUE(r.getRelatedElements().back() == &s2);
+    ASSERT_TRUE(&r.getRelatedElements().front() == &g);
+    ASSERT_TRUE(&r.getRelatedElements().back() == &s2);
     ASSERT_TRUE(r.getTargets().size() == 1);
-    ASSERT_TRUE(r.getTargets().front() == &g);
+    ASSERT_TRUE(&r.getTargets().front() == &g);
     ASSERT_TRUE(r.getSources().size() == 1);
-    ASSERT_TRUE(r.getSources().front() == &s2);
+    ASSERT_TRUE(&r.getSources().front() == &s2);
     ASSERT_TRUE(r.getGeneral() == &g);
     ASSERT_TRUE(r.getSpecific() == &s2);
 }
@@ -162,19 +162,19 @@ TEST_F(GeneralizationTest, backwardsResetGeneralTest) {
     ASSERT_TRUE(g.getRelationships().size() == 0);
     ASSERT_TRUE(g.getGeneralizations().size() == 0);
     ASSERT_TRUE(s.getGenerals().size() == 1);
-    ASSERT_TRUE(s.getGenerals().front() == &g2);
+    ASSERT_TRUE(&s.getGenerals().front() == &g2);
     ASSERT_TRUE(s.getGeneralizations().size() == 1);
-    ASSERT_TRUE(s.getGeneralizations().front() == &r);
+    ASSERT_TRUE(&s.getGeneralizations().front() == &r);
     ASSERT_TRUE(g2.getGeneralizations().size() == 0);
     ASSERT_TRUE(g2.getRelationships().size() == 1);
-    ASSERT_TRUE(g2.getRelationships().front() == &r);
+    ASSERT_TRUE(&g2.getRelationships().front() == &r);
     ASSERT_TRUE(r.getRelatedElements().size() == 2);
-    ASSERT_TRUE(r.getRelatedElements().front() == &s);
-    ASSERT_TRUE(r.getRelatedElements().back() == &g2);
+    ASSERT_TRUE(&r.getRelatedElements().front() == &s);
+    ASSERT_TRUE(&r.getRelatedElements().back() == &g2);
     ASSERT_TRUE(r.getTargets().size() == 1);
-    ASSERT_TRUE(r.getTargets().front() == &g2);
+    ASSERT_TRUE(&r.getTargets().front() == &g2);
     ASSERT_TRUE(r.getSources().size() == 1);
-    ASSERT_TRUE(r.getSources().front() == &s);
+    ASSERT_TRUE(&r.getSources().front() == &s);
 }
 
 TEST_F(GeneralizationTest, backwardsResetSpecificTest) {
@@ -188,19 +188,19 @@ TEST_F(GeneralizationTest, backwardsResetSpecificTest) {
     ASSERT_TRUE(s.getGeneralizations().size() == 0);
     ASSERT_TRUE(s.getRelationships().size() == 0);
     ASSERT_TRUE(g.getRelationships().size() == 1);
-    ASSERT_TRUE(g.getRelationships().front() == &r);
+    ASSERT_TRUE(&g.getRelationships().front() == &r);
     ASSERT_TRUE(g.getGeneralizations().size() == 0);
     ASSERT_TRUE(s2.getGeneralizations().size() == 1);
-    ASSERT_TRUE(s2.getGeneralizations().front() == &r);
+    ASSERT_TRUE(&s2.getGeneralizations().front() == &r);
     ASSERT_TRUE(s2.getRelationships().size() == 1);
-    ASSERT_TRUE(s2.getRelationships().front() == &r);
+    ASSERT_TRUE(&s2.getRelationships().front() == &r);
     ASSERT_TRUE(r.getRelatedElements().size() == 2);
-    ASSERT_TRUE(r.getRelatedElements().front() == &g);
-    ASSERT_TRUE(r.getRelatedElements().back() == &s2);
+    ASSERT_TRUE(&r.getRelatedElements().front() == &g);
+    ASSERT_TRUE(&r.getRelatedElements().back() == &s2);
     ASSERT_TRUE(r.getTargets().size() == 1);
-    ASSERT_TRUE(r.getTargets().front() == &g);
+    ASSERT_TRUE(&r.getTargets().front() == &g);
     ASSERT_TRUE(r.getSources().size() == 1);
-    ASSERT_TRUE(r.getSources().front() == &s2);
+    ASSERT_TRUE(&r.getSources().front() == &s2);
     ASSERT_TRUE(r.getGeneral() == &g);
     ASSERT_TRUE(r.getSpecific() == &s2);
 }
@@ -211,24 +211,24 @@ TEST_F(GeneralizationTest, ResetSpecificByGeneralTest) {
     Classifier& s = m.create<Classifier>();
     Classifier& s2 = m.create<Classifier>();
     s.getGenerals().add(g);
-    Generalization* r = s.getGeneralizations().front();
+    Generalization* r = &s.getGeneralizations().front();
     r->setSpecific(&s2);
     ASSERT_TRUE(s.getGeneralizations().size() == 0);
     ASSERT_TRUE(s.getRelationships().size() == 0);
     ASSERT_TRUE(g.getRelationships().size() == 1);
-    ASSERT_TRUE(g.getRelationships().front() == r);
+    ASSERT_TRUE(&g.getRelationships().front() == r);
     ASSERT_TRUE(g.getGeneralizations().size() == 0);
     ASSERT_TRUE(s2.getGeneralizations().size() == 1);
-    ASSERT_TRUE(s2.getGeneralizations().front() == r);
+    ASSERT_TRUE(&s2.getGeneralizations().front() == r);
     ASSERT_TRUE(s2.getRelationships().size() == 1);
-    ASSERT_TRUE(s2.getRelationships().front() == r);
+    ASSERT_TRUE(&s2.getRelationships().front() == r);
     ASSERT_TRUE(r->getRelatedElements().size() == 2);
-    ASSERT_TRUE(r->getRelatedElements().front() == &g);
-    ASSERT_TRUE(r->getRelatedElements().back() == &s2);
+    ASSERT_TRUE(&r->getRelatedElements().front() == &g);
+    ASSERT_TRUE(&r->getRelatedElements().back() == &s2);
     ASSERT_TRUE(r->getTargets().size() == 1);
-    ASSERT_TRUE(r->getTargets().front() == &g);
+    ASSERT_TRUE(&r->getTargets().front() == &g);
     ASSERT_TRUE(r->getSources().size() == 1);
-    ASSERT_TRUE(r->getSources().front() == &s2);
+    ASSERT_TRUE(&r->getSources().front() == &s2);
     ASSERT_TRUE(r->getGeneral() == &g);
     ASSERT_TRUE(r->getSpecific() == &s2);
 }

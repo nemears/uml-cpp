@@ -15,7 +15,7 @@ TEST_F(ActivityNodeTest, reindexID_test) {
     a.getNodes().add(n);
     n.setActivity(&a);
     n.setID("c3rcWoyTgxLfFl5jf2Ms6CMa_sWe");
-    ASSERT_TRUE(a.getNodes().get(n.getID()));
+    ASSERT_NO_THROW(a.getNodes().get(n.getID()));
 }
 
 // TEST_F(ActivityNodeTest, reindexNameTest) {
@@ -32,7 +32,7 @@ TEST_F(ActivityNodeTest, addIncomingFunctorTest) {
     ActivityEdge e;
     n.getIncoming().add(e);
     ASSERT_TRUE(n.getIncoming().size() == 1);
-    ASSERT_TRUE(n.getIncoming().front() == &e);
+    ASSERT_TRUE(&n.getIncoming().front() == &e);
     ASSERT_TRUE(e.getTarget() == &n);
 }
 
@@ -41,7 +41,7 @@ TEST_F(ActivityNodeTest, setTargetTest) {
     ActivityEdge e;
     e.setTarget(&n);
     ASSERT_TRUE(n.getIncoming().size() == 1);
-    ASSERT_TRUE(n.getIncoming().front() == &e);
+    ASSERT_TRUE(&n.getIncoming().front() == &e);
     ASSERT_TRUE(e.getTarget() == &n);
 }
 
@@ -50,7 +50,7 @@ TEST_F(ActivityNodeTest, addOutgoingFunctorTest) {
     ActivityEdge e;
     n.getOutgoing().add(e);
     ASSERT_TRUE(n.getOutgoing().size() == 1);
-    ASSERT_TRUE(n.getOutgoing().front() == &e);
+    ASSERT_TRUE(&n.getOutgoing().front() == &e);
     ASSERT_TRUE(e.getSource() == &n);
 }
 
@@ -59,7 +59,7 @@ TEST_F(ActivityNodeTest, setSourceTest) {
     ActivityEdge e;
     e.setSource(&n);
     ASSERT_TRUE(n.getOutgoing().size() == 1);
-    ASSERT_TRUE(n.getOutgoing().front() == &e);
+    ASSERT_TRUE(&n.getOutgoing().front() == &e);
     ASSERT_TRUE(e.getSource() == &n);
 }
 

@@ -81,6 +81,16 @@ namespace UML {
             }
     };
 
+    class ID_doesNotExistException : public std::exception {
+        private:
+            std::string m_msg;
+        public:
+            ID_doesNotExistException(ID id) : m_msg(id.string() + " was not found within the sequence!"){};
+            virtual const char* what() const throw() {
+                return m_msg.c_str();
+            }
+    };
+
     template <class T = Element> struct SequenceIterator;
 
     // new sequence implementation
@@ -263,42 +273,42 @@ namespace UML {
 
             size_t size() { return m_order.size(); };
             bool empty() { return m_order.empty(); };
-            T* get(ID id) { 
+            T& get(ID id) { 
                 if (m_rep.count(id)) {
                     if (!m_rep[id]) {
                         m_rep[id] = &m_manager->get<T>(id);
                     }
-                    return m_rep[id];
+                    return *m_rep[id];
                 }
-                return 0;
+                throw ID_doesNotExistException(id);
             };
-            T* get(size_t index) {
+            T& get(size_t index) {
                 if (!m_rep[m_order.at(index)]) {
                     m_rep[m_order.at(index)] = &m_manager->get<T>(m_order.at(index));
                 }
-                return m_rep[m_order.at(index)];
+                return *m_rep[m_order.at(index)];
             };
-            T* get(std::string name) {
+            T& get(std::string name) {
                 if (m_names.count(name)) {
                     if (!m_rep[m_names[name]]) {
                         m_rep[m_names[name]] = &m_manager->get<T>(m_names[name]);
                     }
-                    return m_rep[m_names[name]];
+                    return *m_rep[m_names[name]];
                 }
-                return 0;
+                throw ID_doesNotExistException(m_names[name]);
             };
-            T* front() { 
+            T& front() { 
                 if (!m_rep[m_order.front()]) {
                     m_rep[m_order.front()] = &m_manager->get<T>(m_order.front());
                 }
-                return m_rep[m_order.front()];
+                return *m_rep[m_order.front()];
             };
-            T* back() {
+            T& back() {
                 if (!m_rep[m_order.back()]) {
                     m_rep[m_order.back()] = &m_manager->get<T>(m_order.back());
                 }
-                return m_rep[m_order.back()];
-            }
+                return *m_rep[m_order.back()];
+            };
             size_t count(ID id) { return m_rep.count(id); };
 
             SequenceIterator<T> begin() { return SequenceIterator(this, m_order.begin()); };
@@ -316,7 +326,7 @@ namespace UML {
                 m_sequence = sequence;
                 m_orderIt = orderIt;
                 if (m_orderIt != m_sequence->m_order.end()) {
-                    m_ptr = sequence->get(*m_orderIt);
+                    m_ptr = &sequence->get(*m_orderIt);
                 }
             };
             T& operator*() { return *m_ptr; };

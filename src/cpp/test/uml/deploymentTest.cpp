@@ -20,13 +20,13 @@ TEST_F(DeploymentTest, basicDeploymentTest) {
     ASSERT_TRUE(deployment.getLocation() != 0);
     ASSERT_EQ(deployment.getLocation()->getID(), location.getID());
     ASSERT_EQ(deployment.getClient().size(), 1);
-    ASSERT_EQ(deployment.getClient().front()->getID(), location.getID());
+    ASSERT_EQ(deployment.getClient().front().getID(), location.getID());
     ASSERT_TRUE(deployment.getOwner() != 0);
     ASSERT_EQ(deployment.getOwner()->getID(), location.getID());
     ASSERT_EQ(deployment.getDeployedArtifact().size(), 1);
-    ASSERT_EQ(deployment.getDeployedArtifact().front()->getID(), artifact.getID());
+    ASSERT_EQ(deployment.getDeployedArtifact().front().getID(), artifact.getID());
     ASSERT_EQ(deployment.getSupplier().size(), 1);
-    ASSERT_EQ(deployment.getSupplier().front()->getID(), artifact.getID());
+    ASSERT_EQ(deployment.getSupplier().front().getID(), artifact.getID());
     deployment.setLocation(0);
     deployment.getDeployedArtifact().remove(artifact);
     ASSERT_TRUE(deployment.getLocation() == 0);
@@ -92,9 +92,9 @@ TEST_F(DeploymentTest, nestedArtifactTest) {
     Artifact& a2 = m.create<Artifact>();
     a1.getNestedArtifacts().add(a2);
     ASSERT_EQ(a1.getNestedArtifacts().size(), 1);
-    ASSERT_EQ(a1.getNestedArtifacts().front()->getID(), a2.getID());
+    ASSERT_EQ(a1.getNestedArtifacts().front().getID(), a2.getID());
     ASSERT_EQ(a1.getOwnedMembers().size(), 1);
-    ASSERT_EQ(a1.getOwnedMembers().front()->getID(), a2.getID());
+    ASSERT_EQ(a1.getOwnedMembers().front().getID(), a2.getID());
     a1.getNestedArtifacts().remove(a2);
     ASSERT_EQ(a1.getNestedArtifacts().size(), 0);
     ASSERT_EQ(a1.getOwnedMembers().size(), 0);

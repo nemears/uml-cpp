@@ -17,12 +17,12 @@ TEST_F(PackageTest, addPackagedElementTest) {
     PackageableElement e;
     ASSERT_NO_THROW(p.getPackagedElements().add(e));
     ASSERT_TRUE(p.getPackagedElements().size() == 1);
-    ASSERT_TRUE(p.getPackagedElements().front() == &e);
+    ASSERT_TRUE(&p.getPackagedElements().front() == &e);
     ASSERT_TRUE(e.getOwningPackage() == &p);
     ASSERT_TRUE(p.getMembers().size() == 1);
-    ASSERT_TRUE(p.getMembers().front() == &e);
+    ASSERT_TRUE(&p.getMembers().front() == &e);
     ASSERT_TRUE(p.getOwnedElements().size() == 1);
-    ASSERT_TRUE(p.getOwnedElements().front() == &e);
+    ASSERT_TRUE(&p.getOwnedElements().front() == &e);
     ASSERT_TRUE(e.getNamespace() == &p);
     ASSERT_TRUE(e.getOwner() == &p);
 }
@@ -33,12 +33,12 @@ TEST_F(PackageTest, addPackagedElementTestW_Manager) {
     PackageableElement& e = m.create<Package>();
     ASSERT_NO_THROW(p.getPackagedElements().add(e));
     ASSERT_TRUE(p.getPackagedElements().size() == 1);
-    ASSERT_TRUE(p.getPackagedElements().front() == &e);
+    ASSERT_TRUE(&p.getPackagedElements().front() == &e);
     ASSERT_TRUE(e.getOwningPackage() == &p);
     ASSERT_TRUE(p.getMembers().size() == 1);
-    ASSERT_TRUE(p.getMembers().front() == &e);
+    ASSERT_TRUE(&p.getMembers().front() == &e);
     ASSERT_TRUE(p.getOwnedElements().size() == 1);
-    ASSERT_TRUE(p.getOwnedElements().front() == &e);
+    ASSERT_TRUE(&p.getOwnedElements().front() == &e);
     ASSERT_TRUE(e.getNamespace() == &p);
     ASSERT_TRUE(e.getOwner() == &p);
 }
@@ -48,12 +48,12 @@ TEST_F(PackageTest, setOwningPackageTest) {
     PackageableElement e;
     ASSERT_NO_THROW(e.setOwningPackage(&p));
     ASSERT_TRUE(p.getPackagedElements().size() == 1);
-    ASSERT_TRUE(p.getPackagedElements().front() == &e);
+    ASSERT_TRUE(&p.getPackagedElements().front() == &e);
     ASSERT_TRUE(e.getOwningPackage() == &p);
     ASSERT_TRUE(p.getMembers().size() == 1);
-    ASSERT_TRUE(p.getMembers().front() == &e);
+    ASSERT_TRUE(&p.getMembers().front() == &e);
     ASSERT_TRUE(p.getOwnedElements().size() == 1);
-    ASSERT_TRUE(p.getOwnedElements().front() == &e);
+    ASSERT_TRUE(&p.getOwnedElements().front() == &e);
     ASSERT_TRUE(e.getNamespace() == &p);
     ASSERT_TRUE(e.getOwner() == &p);
 }
@@ -64,12 +64,12 @@ TEST_F(PackageTest, setOwningPackageTestW_Manager) {
     PackageableElement& e = m.create<Package>();
     ASSERT_NO_THROW(e.setOwningPackage(&p));
     ASSERT_TRUE(p.getPackagedElements().size() == 1);
-    ASSERT_TRUE(p.getPackagedElements().front() == &e);
+    ASSERT_TRUE(&p.getPackagedElements().front() == &e);
     ASSERT_TRUE(e.getOwningPackage() == &p);
     ASSERT_TRUE(p.getMembers().size() == 1);
-    ASSERT_TRUE(p.getMembers().front() == &e);
+    ASSERT_TRUE(&p.getMembers().front() == &e);
     ASSERT_TRUE(p.getOwnedElements().size() == 1);
-    ASSERT_TRUE(p.getOwnedElements().front() == &e);
+    ASSERT_TRUE(&p.getOwnedElements().front() == &e);
     ASSERT_TRUE(e.getNamespace() == &p);
     ASSERT_TRUE(e.getOwner() == &p);
 }
@@ -81,12 +81,12 @@ TEST_F(PackageTest, overwriteOwningPackageTest) {
     p1.getPackagedElements().add(e);
     ASSERT_NO_THROW(e.setOwningPackage(&p2));
     ASSERT_TRUE(p2.getPackagedElements().size() == 1);
-    ASSERT_TRUE(p2.getPackagedElements().front() == &e);
+    ASSERT_TRUE(&p2.getPackagedElements().front() == &e);
     ASSERT_TRUE(e.getOwningPackage() == &p2);
     ASSERT_TRUE(p2.getMembers().size() == 1);
-    ASSERT_TRUE(p2.getMembers().front() == &e);
+    ASSERT_TRUE(&p2.getMembers().front() == &e);
     ASSERT_TRUE(p2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(p2.getOwnedElements().front() == &e);
+    ASSERT_TRUE(&p2.getOwnedElements().front() == &e);
     ASSERT_TRUE(e.getNamespace() == &p2);
     ASSERT_TRUE(e.getOwner() == &p2);
     ASSERT_TRUE(p1.getPackagedElements().size() == 0);
@@ -102,12 +102,12 @@ TEST_F(PackageTest, overwriteOwningPackageTestW_Manager) {
     p1.getPackagedElements().add(e);
     ASSERT_NO_THROW(e.setOwningPackage(&p2));
     ASSERT_TRUE(p2.getPackagedElements().size() == 1);
-    ASSERT_TRUE(p2.getPackagedElements().front() == &e);
+    ASSERT_TRUE(&p2.getPackagedElements().front() == &e);
     ASSERT_TRUE(e.getOwningPackage() == &p2);
     ASSERT_TRUE(p2.getMembers().size() == 1);
-    ASSERT_TRUE(p2.getMembers().front() == &e);
+    ASSERT_TRUE(&p2.getMembers().front() == &e);
     ASSERT_TRUE(p2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(p2.getOwnedElements().front() == &e);
+    ASSERT_TRUE(&p2.getOwnedElements().front() == &e);
     ASSERT_TRUE(e.getNamespace() == &p2);
     ASSERT_TRUE(e.getOwner() == &p2);
     ASSERT_TRUE(p1.getPackagedElements().size() == 0);
@@ -130,7 +130,7 @@ TEST_F(PackageTest, copyPackageTest) {
     ASSERT_TRUE(p2.getID() == p.getID());
     ASSERT_TRUE(p2.getName().compare("test") == 0);
     ASSERT_TRUE(p2.getPackagedElements().size() == 1);
-    ASSERT_TRUE(p2.getPackagedElements().front() == &c);
+    ASSERT_TRUE(&p2.getPackagedElements().front() == &c);
     ASSERT_TRUE(p2.getOwningPackage() == &s);
 }
 
@@ -146,7 +146,7 @@ TEST_F(PackageTest, copyPackageTestW_Manager) {
     ASSERT_TRUE(p2.getID() == p.getID());
     ASSERT_TRUE(p2.getName().compare("test") == 0);
     ASSERT_TRUE(p2.getPackagedElements().size() == 1);
-    ASSERT_TRUE(p2.getPackagedElements().front() == &c);
+    ASSERT_TRUE(&p2.getPackagedElements().front() == &c);
     ASSERT_TRUE(p2.getOwningPackage() == &s);
 }
 
@@ -157,21 +157,21 @@ TEST_F(PackageTest, packageMergeTest) {
     ASSERT_NO_THROW(m.setMergedPackage(&mp));
     ASSERT_NO_THROW(p.getPackageMerge().add(m));
     ASSERT_TRUE(p.getPackageMerge().size() == 1);
-    ASSERT_TRUE(p.getPackageMerge().front() == &m);
+    ASSERT_TRUE(&p.getPackageMerge().front() == &m);
     ASSERT_TRUE(p.getDirectedRelationships().size() == 1);
-    ASSERT_TRUE(p.getDirectedRelationships().front() == &m);
+    ASSERT_TRUE(&p.getDirectedRelationships().front() == &m);
     ASSERT_TRUE(p.getRelationships().size() == 1);
-    ASSERT_TRUE(p.getRelationships().front() == &m);
+    ASSERT_TRUE(&p.getRelationships().front() == &m);
     ASSERT_TRUE(p.getOwnedElements().size() == 1);
-    ASSERT_TRUE(p.getOwnedElements().front() == &m);
+    ASSERT_TRUE(&p.getOwnedElements().front() == &m);
 
     ASSERT_TRUE(m.getMergedPackage() == &mp);
     ASSERT_TRUE(m.getReceivingPackage() == &p);
     ASSERT_TRUE(m.getSources().size() == 1);
-    ASSERT_TRUE(m.getSources().front() == &p);
+    ASSERT_TRUE(&m.getSources().front() == &p);
     ASSERT_TRUE(m.getTargets().size() == 1);
-    ASSERT_TRUE(m.getTargets().front() == &mp);
-    ASSERT_TRUE(m.getTargets().front() == &mp);
+    ASSERT_TRUE(&m.getTargets().front() == &mp);
+    ASSERT_TRUE(&m.getTargets().front() == &mp);
 }
 
 TEST_F(PackageTest, removePackageMergeTest) {
@@ -194,9 +194,9 @@ TEST_F(PackageTest, addOwnedStereotype) {
     Stereotype& s = m.create<Stereotype>();
     p.getOwnedStereotypes().add(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 1);
-    ASSERT_EQ(p.getOwnedStereotypes().front()->getID(), s.getID());
+    ASSERT_EQ(p.getOwnedStereotypes().front().getID(), s.getID());
     ASSERT_EQ(p.getPackagedElements().size(), 1);
-    ASSERT_EQ(p.getPackagedElements().front()->getID(), s.getID());
+    ASSERT_EQ(p.getPackagedElements().front().getID(), s.getID());
 }
 
 TEST_F(PackageTest, removeOwnedStereotype) {

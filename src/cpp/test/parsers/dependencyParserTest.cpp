@@ -24,12 +24,12 @@ TEST_F(DependencyParserTest, basicDependencyTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package& pckg = el->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::DEPENDENCY);
-    Dependency& dep = pckg.getPackagedElements().front()->as<Dependency>();
+    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::DEPENDENCY);
+    Dependency& dep = pckg.getPackagedElements().front().as<Dependency>();
     ASSERT_EQ(dep.getClient().size(), 1);
-    ASSERT_EQ(dep.getClient().front()->getID(), pckg.getPackagedElements().back()->getID());
+    ASSERT_EQ(dep.getClient().front().getID(), pckg.getPackagedElements().back().getID());
     ASSERT_EQ(dep.getSupplier().size(), 1);
-    ASSERT_EQ(dep.getSupplier().front()->getID(), pckg.getPackagedElements().get(1)->getID());
+    ASSERT_EQ(dep.getSupplier().front().getID(), pckg.getPackagedElements().get(1).getID());
 }
 
 TEST_F(DependencyParserTest, basicDependencyEmitTest) {
@@ -75,26 +75,26 @@ TEST_F(DependencyParserTest, parseAllTheSubclassesTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package& pckg = el->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 5);
-    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::ABSTRACTION);
-    Abstraction& abs = pckg.getPackagedElements().front()->as<Abstraction>();
+    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::ABSTRACTION);
+    Abstraction& abs = pckg.getPackagedElements().front().as<Abstraction>();
     ASSERT_EQ(abs.getClient().size(), 1);
-    ASSERT_EQ(abs.getClient().front()->getID(), pckg.getPackagedElements().get(3)->getID());
+    ASSERT_EQ(abs.getClient().front().getID(), pckg.getPackagedElements().get(3).getID());
     ASSERT_EQ(abs.getSupplier().size(), 1);
-    ASSERT_EQ(abs.getSupplier().front()->getID(), pckg.getPackagedElements().get(4)->getID());
+    ASSERT_EQ(abs.getSupplier().front().getID(), pckg.getPackagedElements().get(4).getID());
 
-    ASSERT_EQ(pckg.getPackagedElements().get(1)->getElementType(), ElementType::REALIZATION);
-    Realization& real = pckg.getPackagedElements().get(1)->as<Realization>();
+    ASSERT_EQ(pckg.getPackagedElements().get(1).getElementType(), ElementType::REALIZATION);
+    Realization& real = pckg.getPackagedElements().get(1).as<Realization>();
     ASSERT_EQ(real.getClient().size(), 1);
-    ASSERT_EQ(real.getClient().front()->getID(), pckg.getPackagedElements().get(3)->getID());
+    ASSERT_EQ(real.getClient().front().getID(), pckg.getPackagedElements().get(3).getID());
     ASSERT_EQ(real.getSupplier().size(), 1);
-    ASSERT_EQ(real.getSupplier().front()->getID(), pckg.getPackagedElements().get(4)->getID());
+    ASSERT_EQ(real.getSupplier().front().getID(), pckg.getPackagedElements().get(4).getID());
 
-    ASSERT_EQ(pckg.getPackagedElements().get(2)->getElementType(), ElementType::USAGE);
-    Usage& usage = pckg.getPackagedElements().get(2)->as<Usage>();
+    ASSERT_EQ(pckg.getPackagedElements().get(2).getElementType(), ElementType::USAGE);
+    Usage& usage = pckg.getPackagedElements().get(2).as<Usage>();
     ASSERT_EQ(usage.getClient().size(), 1);
-    ASSERT_EQ(usage.getClient().front()->getID(), pckg.getPackagedElements().get(3)->getID());
+    ASSERT_EQ(usage.getClient().front().getID(), pckg.getPackagedElements().get(3).getID());
     ASSERT_EQ(usage.getSupplier().size(), 1);
-    ASSERT_EQ(usage.getSupplier().front()->getID(), pckg.getPackagedElements().get(4)->getID());
+    ASSERT_EQ(usage.getSupplier().front().getID(), pckg.getPackagedElements().get(4).getID());
 }
 
 TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {

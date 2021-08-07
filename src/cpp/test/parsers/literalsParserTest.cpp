@@ -23,17 +23,17 @@ TEST_F(LiteralsParserTest, testParsingSomeLiterals) {
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_EQ(pckg->getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg->getPackagedElements().front()->getElementType(), ElementType::LITERAL_UNLIMITED_NATURAL);
-    LiteralUnlimitedNatural* n1 = dynamic_cast<LiteralUnlimitedNatural*>(pckg->getPackagedElements().front());
+    ASSERT_EQ(pckg->getPackagedElements().front().getElementType(), ElementType::LITERAL_UNLIMITED_NATURAL);
+    LiteralUnlimitedNatural* n1 = dynamic_cast<LiteralUnlimitedNatural*>(&pckg->getPackagedElements().front());
     ASSERT_EQ(n1->getName(), "infinity");
     ASSERT_EQ(n1->isInfinite(), true);
-    ASSERT_EQ(pckg->getPackagedElements().get(1)->getElementType(), ElementType::LITERAL_UNLIMITED_NATURAL);
-    LiteralUnlimitedNatural* n2 = dynamic_cast<LiteralUnlimitedNatural*>(pckg->getPackagedElements().get(1));
+    ASSERT_EQ(pckg->getPackagedElements().get(1).getElementType(), ElementType::LITERAL_UNLIMITED_NATURAL);
+    LiteralUnlimitedNatural* n2 = dynamic_cast<LiteralUnlimitedNatural*>(&pckg->getPackagedElements().get(1));
     ASSERT_EQ(n2->getName(), "number");
     ASSERT_EQ(n2->isInfinite(), false);
     ASSERT_EQ(n2->getNumberValue(), 9);
-    ASSERT_EQ(pckg->getPackagedElements().back()->getElementType(), ElementType::LITERAL_NULL);
-    LiteralNull* n3 = dynamic_cast<LiteralNull*>(pckg->getPackagedElements().back());
+    ASSERT_EQ(pckg->getPackagedElements().back().getElementType(), ElementType::LITERAL_NULL);
+    LiteralNull* n3 = dynamic_cast<LiteralNull*>(&pckg->getPackagedElements().back());
     ASSERT_EQ(n3->getName(), "nullLiteral");
 }
 

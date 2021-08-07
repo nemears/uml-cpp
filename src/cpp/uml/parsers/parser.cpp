@@ -3278,7 +3278,7 @@ void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier
 
     if (node["classifierBehavior"]) {
         if (node["classifierBehavior"].IsScalar()) {
-            classifier.setClassifierBehavior(classifier.getOwnedBehaviors().get(ID::fromString(node["classifierBehavior"].as<string>())));
+            classifier.setClassifierBehavior(&classifier.getOwnedBehaviors().get(ID::fromString(node["classifierBehavior"].as<string>())));
         } else {
             throw UmlParserException("Invalid yaml node type for classifierBehavior reference, must be a scalar!", data.m_path.string(), node["classifierBehavior"]);
         }

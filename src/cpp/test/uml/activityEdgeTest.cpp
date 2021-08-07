@@ -42,11 +42,11 @@ TEST_F(ActivityEdgeTest, reindexID_Test) {
     a.getNodes().add(n);
     a.getEdges().add(e);
     e.setID("c3rcWoyTgxLfFl5jf2Ms6CMa_sWe");
-    ASSERT_TRUE(n.getIncoming().get(e.getID()));
-    ASSERT_TRUE(n.getOutgoing().get(e.getID()));
-    ASSERT_TRUE(a.getEdges().get(e.getID()));
+    ASSERT_NO_THROW(n.getIncoming().get(e.getID()));
+    ASSERT_NO_THROW(n.getOutgoing().get(e.getID()));
+    ASSERT_NO_THROW(a.getEdges().get(e.getID()));
     //ASSERT_TRUE(a.getMembers().get(e.getID()));
-    ASSERT_TRUE(a.getOwnedElements().get(e.getID()));
+    ASSERT_NO_THROW(a.getOwnedElements().get(e.getID()));
 }
 
 // TEST_F(ActivityEdgeTest, reindexNameTest) {
@@ -72,7 +72,7 @@ TEST_F(ActivityEdgeTest, overwriteIncomingTest) {
   p1.getIncoming().add(c);
   c.setTarget(&p2);
   ASSERT_TRUE(p2.getIncoming().size() == 1);
-  ASSERT_TRUE(p2.getIncoming().front() == &c);
+  ASSERT_TRUE(&p2.getIncoming().front() == &c);
   ASSERT_TRUE(c.getTarget() == &p2);
   ASSERT_TRUE(p1.getIncoming().size() == 0);
 }
@@ -84,7 +84,7 @@ TEST_F(ActivityEdgeTest, overwriteIncomingByIncomingAddTest) {
   p1.getIncoming().add(c);
   p2.getIncoming().add(c);
   ASSERT_TRUE(p2.getIncoming().size() == 1);
-  ASSERT_TRUE(p2.getIncoming().front() == &c);
+  ASSERT_TRUE(&p2.getIncoming().front() == &c);
   ASSERT_TRUE(c.getTarget() == &p2);
   ASSERT_TRUE(p1.getIncoming().size() == 0);
 }
@@ -96,7 +96,7 @@ TEST_F(ActivityEdgeTest, overwriteOutgoingTest) {
   p1.getOutgoing().add(c);
   c.setSource(&p2);
   ASSERT_TRUE(p2.getOutgoing().size() == 1);
-  ASSERT_TRUE(p2.getOutgoing().front() == &c);
+  ASSERT_TRUE(&p2.getOutgoing().front() == &c);
   ASSERT_TRUE(c.getSource() == &p2);
   ASSERT_TRUE(p1.getOutgoing().size() == 0);
 }
@@ -108,7 +108,7 @@ TEST_F(ActivityEdgeTest, overwriteOutgoingByOutgoingAddTest) {
   p1.getOutgoing().add(c);
   p2.getOutgoing().add(c);
   ASSERT_TRUE(p2.getOutgoing().size() == 1);
-  ASSERT_TRUE(p2.getOutgoing().front() == &c);
+  ASSERT_TRUE(&p2.getOutgoing().front() == &c);
   ASSERT_TRUE(c.getSource() == &p2);
   ASSERT_TRUE(p1.getOutgoing().size() == 0);
 }

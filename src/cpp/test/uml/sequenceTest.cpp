@@ -15,7 +15,7 @@ TEST_F(SequenceTest, addGetAndRemoveElementTest) {
     ASSERT_TRUE(seq.size() == 0);
     Element e;
     ASSERT_NO_THROW(seq.add(e));
-    ASSERT_TRUE(seq.get(e.getID()) == &e);
+    ASSERT_TRUE(&seq.get(e.getID()) == &e);
     ASSERT_TRUE(seq.size() == 1);
     seq.remove(e);
     ASSERT_TRUE(seq.size() == 0);
@@ -28,9 +28,9 @@ TEST_F(SequenceTest, addGetAndRemoveElementByNameTest) {
     n.setName("test");
     seq.add(e);
     seq.add(n);
-    ASSERT_TRUE(seq.get("test") == &n);
-    ASSERT_TRUE(seq.get(n.getID()) == &n);
-    ASSERT_TRUE(seq.get(e.getID()) == &e);
+    ASSERT_TRUE(&seq.get("test") == &n);
+    ASSERT_TRUE(&seq.get(n.getID()) == &n);
+    ASSERT_TRUE(&seq.get(e.getID()) == &e);
 }
 
 TEST_F(SequenceTest, setNameLaterTest) {
@@ -38,10 +38,10 @@ TEST_F(SequenceTest, setNameLaterTest) {
     Package& o = m.create<Package>();
     Package& p = m.create<Package>();
     o.getPackagedElements().add(p);
-    ASSERT_TRUE(o.getOwnedElements().get("test") == 0);
+    ASSERT_THROW(o.getOwnedElements().get("test"), ID_doesNotExistException);
     p.setName("test");
-    ASSERT_TRUE(o.getOwnedElements().get("test") != 0);
-    ASSERT_EQ(o.getOwnedElements().get("test")->getID(), p.getID());
+    ASSERT_NO_THROW(o.getOwnedElements().get("test"));
+    ASSERT_EQ(o.getOwnedElements().get("test").getID(), p.getID());
 }
 
 TEST_F(SequenceTest, addElementTwiceTest) {
@@ -49,12 +49,12 @@ TEST_F(SequenceTest, addElementTwiceTest) {
     Element e;
     ASSERT_NO_THROW(seq.add(e));
     ASSERT_NO_THROW(seq.add(e));
-    ASSERT_TRUE(seq.get(e.getID()) == &e);
+    ASSERT_TRUE(&seq.get(e.getID()) == &e);
     ASSERT_TRUE(seq.size() == 2);
-    ASSERT_TRUE(seq.get(0) == &e);
-    ASSERT_TRUE(seq.get(1) == &e);
+    ASSERT_TRUE(&seq.get(0) == &e);
+    ASSERT_TRUE(&seq.get(1) == &e);
     ASSERT_NO_THROW(seq.remove(e));
-    ASSERT_TRUE(seq.get(e.getID()) == NULL);
+    ASSERT_THROW(seq.get(e.getID()), ID_doesNotExistException);
     ASSERT_TRUE(seq.size() == 0);
     ASSERT_TRUE(seq.empty());
 }
@@ -98,8 +98,8 @@ TEST_F(SequenceTest, getNonexistentElementByID_Test) {
     Package a;
     e.getPackagedElements().add(a);
     Package b;
-    ASSERT_FALSE(e.getOwnedElements().get(b.getID()));
-    ASSERT_TRUE(e.getOwnedElements().get(a.getID()));
+    ASSERT_THROW(e.getOwnedElements().get(b.getID()), ID_doesNotExistException);
+    ASSERT_NO_THROW(e.getOwnedElements().get(a.getID()));
 }
 
 TEST_F(SequenceTest, newSequenceTest) {

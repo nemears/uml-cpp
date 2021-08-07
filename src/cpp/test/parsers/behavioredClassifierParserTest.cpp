@@ -22,8 +22,8 @@ TEST_F(BehavioredClassifierParserTest, simpleClassTest) {
     ASSERT_EQ(el->getElementType(), ElementType::CLASS);
     Class& clazz = el->as<Class>();
     ASSERT_EQ(clazz.getOwnedBehaviors().size(), 1);
-    ASSERT_EQ(clazz.getOwnedBehaviors().front()->getElementType(), ElementType::OPAQUE_BEHAVIOR);
-    OpaqueBehavior& bhv = clazz.getOwnedBehaviors().front()->as<OpaqueBehavior>();
+    ASSERT_EQ(clazz.getOwnedBehaviors().front().getElementType(), ElementType::OPAQUE_BEHAVIOR);
+    OpaqueBehavior& bhv = clazz.getOwnedBehaviors().front().as<OpaqueBehavior>();
     ASSERT_TRUE(clazz.getClassifierBehavior() != 0);
     ASSERT_EQ(clazz.getClassifierBehavior()->getID(), bhv.getID());
 }

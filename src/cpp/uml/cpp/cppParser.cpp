@@ -57,7 +57,7 @@ void setC_RecordType(CXType type, CppParserMetaData& data, CXCursor c, Property&
     CXString recordString = clang_getTypeSpelling(type);
     if (data.owningElement.getOwner()) {
         if (data.owningElement.getOwner()->isSubClassOf(ElementType::NAMESPACE)) {
-            NamedElement& record = *data.owningElement.getOwner()->as<Namespace>().getMembers().get(clang_getCString(recordString));
+            NamedElement& record = data.owningElement.getOwner()->as<Namespace>().getMembers().get(clang_getCString(recordString));
             if (record.isSubClassOf(ElementType::TYPE)) {
                 prop.setType(&record.as<Type>());
             }
@@ -378,8 +378,8 @@ CXChildVisitResult arrayVisit(CXCursor c, CXCursor parent, CXClientData client_d
             switch (clang_getCursorKind(c)) {
                 case CXCursor_IntegerLiteral : {
                     Slot& sizeSlot = data.manager.create<Slot>();
-                    data.owningElement.as<InstanceSpecification>().getAppliedStereotypes().get("C++ Array")->getSlots().add(sizeSlot);
-                    sizeSlot.setDefiningFeature(data.owningElement.getAppliedStereotypes().get("C++ Array")->getClassifier()->getAttributes().get("size"));
+                    data.owningElement.as<InstanceSpecification>().getAppliedStereotypes().get("C++ Array").getSlots().add(sizeSlot);
+                    sizeSlot.setDefiningFeature(&data.owningElement.getAppliedStereotypes().get("C++ Array").getClassifier()->getAttributes().get("size"));
                     LiteralInt& sizeValue = data.manager.create<LiteralInt>();
                     CXSourceRange range = clang_getCursorExtent(c);
                     CXToken *tokens = 0;
@@ -509,7 +509,7 @@ void c_evalPrimitiveInst(CXCursor c, LiteralSpecification& val) {
 CXChildVisitResult primitiveVisit(CXCursor c, CXCursor parent, CXClientData client_data) {
     CppParserMetaData& data = *static_cast<CppParserMetaData*>(client_data);
     Slot& valSlot = data.manager.create<Slot>();
-    valSlot.setDefiningFeature(data.owningElement.as<InstanceSpecification>().getClassifier()->getAttributes().get("value"));
+    valSlot.setDefiningFeature(&data.owningElement.as<InstanceSpecification>().getClassifier()->getAttributes().get("value"));
     valSlot.setOwningInstance(&data.owningElement.as<InstanceSpecification>());
     switch (clang_getCursorKind(c)) {
         case CXCursor_CXXBoolLiteralExpr : {

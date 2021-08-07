@@ -22,17 +22,17 @@ TEST_F(StructuredClassifierParserTest, parseOwnedAttributeTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class c = *dynamic_cast<Class*>(el);
     ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
-    Property* p = c.getOwnedAttributes().front();
+    Property* p = &c.getOwnedAttributes().front();
     ASSERT_TRUE(c.getAttributes().size() == 1);
-    ASSERT_TRUE(c.getAttributes().front() == p);
+    ASSERT_TRUE(&c.getAttributes().front() == p);
     ASSERT_TRUE(c.getRole().size() == 1);
-    ASSERT_TRUE(c.getRole().front() == p);
+    ASSERT_TRUE(&c.getRole().front() == p);
     ASSERT_TRUE(c.getFeatures().size() == 1);
-    ASSERT_TRUE(c.getFeatures().front() == p);
+    ASSERT_TRUE(&c.getFeatures().front() == p);
     ASSERT_TRUE(c.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(c.getOwnedMembers().front() == p);
+    ASSERT_TRUE(&c.getOwnedMembers().front() == p);
     ASSERT_TRUE(c.getMembers().size() == 1);
-    ASSERT_TRUE(c.getMembers().front() == p);
+    ASSERT_TRUE(&c.getMembers().front() == p);
 
     ASSERT_TRUE(p->getName().compare("test") == 0);
 }
@@ -44,18 +44,18 @@ TEST_F(StructuredClassifierParserTest, partTest) {
     Class c = *dynamic_cast<Class*>(el);
     ASSERT_TRUE(c.getParts().size() == 1);
     ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
-    Property* p = c.getOwnedAttributes().front();
-    ASSERT_TRUE(c.getParts().front() == p);
+    Property* p = &c.getOwnedAttributes().front();
+    ASSERT_TRUE(&c.getParts().front() == p);
     ASSERT_TRUE(c.getAttributes().size() == 1);
-    ASSERT_TRUE(c.getAttributes().front() == p);
+    ASSERT_TRUE(&c.getAttributes().front() == p);
     ASSERT_TRUE(c.getRole().size() == 1);
-    ASSERT_TRUE(c.getRole().front() == p);
+    ASSERT_TRUE(&c.getRole().front() == p);
     ASSERT_TRUE(c.getFeatures().size() == 1);
-    ASSERT_TRUE(c.getFeatures().front() == p);
+    ASSERT_TRUE(&c.getFeatures().front() == p);
     ASSERT_TRUE(c.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(c.getOwnedMembers().front() == p);
+    ASSERT_TRUE(&c.getOwnedMembers().front() == p);
     ASSERT_TRUE(c.getMembers().size() == 1);
-    ASSERT_TRUE(c.getMembers().front() == p);
+    ASSERT_TRUE(&c.getMembers().front() == p);
 
     ASSERT_TRUE(p->getAggregation() == AggregationKind::COMPOSITE);
 }

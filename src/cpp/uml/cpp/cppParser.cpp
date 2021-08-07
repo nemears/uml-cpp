@@ -564,40 +564,30 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
             CXType type = clang_getCursorType(c);
             switch (type.kind) {
                 case CXTypeKind::CXType_Bool : {
-                    LiteralBool& cBool = data.manager.create<LiteralBool>();
-                    variable.setSpecification(&cBool);
                     variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
                     CppParserMetaData boolInstData = {data.manager, data.unit, variable};
                     clang_visitChildren(c, &primitiveVisit, &boolInstData);
                     return CXChildVisit_Continue;
                 }
                 case CXTypeKind::CXType_Char_S : {
-                    LiteralInt& cChar = data.manager.create<LiteralInt>();
-                    variable.setSpecification(&cChar);
                     variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
                     CppParserMetaData charInstData = {data.manager, data.unit, variable};
                     clang_visitChildren(c, &primitiveVisit, &charInstData);
                     return CXChildVisit_Continue;
                 }
                 case CXTypeKind::CXType_Int : {
-                    LiteralInt& cInt = data.manager.create<LiteralInt>();
-                    variable.setSpecification(&cInt);
                     variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
                     CppParserMetaData intInstData = {data.manager, data.unit, variable};
                     clang_visitChildren(c, &primitiveVisit, &intInstData);
                     return CXChildVisit_Continue;
                 }
                 case CXTypeKind::CXType_Float : {
-                    LiteralReal& cFloat = data.manager.create<LiteralReal>();
-                    variable.setSpecification(&cFloat);
                     variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
                     CppParserMetaData floatInstData = {data.manager, data.unit, variable};
                     clang_visitChildren(c, &primitiveVisit, &floatInstData);
                     return CXChildVisit_Continue;
                 }
                 case CXTypeKind::CXType_Double : {
-                    LiteralReal& cDouble = data.manager.create<LiteralReal>();
-                    variable.setSpecification(&cDouble);
                     variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
                     CppParserMetaData doubleInstData = {data.manager, data.unit, variable};
                     clang_visitChildren(c, &primitiveVisit, &doubleInstData);

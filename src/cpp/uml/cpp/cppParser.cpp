@@ -490,6 +490,15 @@ void c_evalPrimitiveInst(CXCursor c, LiteralSpecification& val) {
             }
             break;
         }
+        case CXEvalResultKind::CXEval_Float : {
+            switch (val.getElementType()) {
+                case ElementType::LITERAL_REAL : {
+                    val.as<LiteralReal>().setValue(clang_EvalResult_getAsDouble(evalResult));
+                    break;
+                }
+            }
+            break;
+        }
         default : {
             throw UmlCppParserException("Could not evaluate literal boolean!" + fileNameAndLineNumber(c));
         }
@@ -519,6 +528,18 @@ CXChildVisitResult primitiveVisit(CXCursor c, CXCursor parent, CXClientData clie
             LiteralInt& intVal = data.manager.create<LiteralInt>();
             valSlot.getValues().add(intVal);
             c_evalPrimitiveInst(c, intVal);
+            break;
+        }
+        case CXCursor_UnexposedExpr : {
+            LiteralReal& realVal = data.manager.create<LiteralReal>();
+            valSlot.getValues().add(realVal);
+            c_evalPrimitiveInst(c, realVal);
+            break;
+        }
+        case CXCursor_FloatingLiteral : {
+            LiteralReal& realVal = data.manager.create<LiteralReal>();
+            valSlot.getValues().add(realVal);
+            c_evalPrimitiveInst(c, realVal);
             break;
         }
         default : {
@@ -562,21 +583,24 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                     LiteralInt& cInt = data.manager.create<LiteralInt>();
                     variable.setSpecification(&cInt);
                     variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
-                    /** TODO: set value **/
+                    CppParserMetaData intInstData = {data.manager, data.unit, variable};
+                    clang_visitChildren(c, &primitiveVisit, &intInstData);
                     return CXChildVisit_Continue;
                 }
                 case CXTypeKind::CXType_Float : {
                     LiteralReal& cFloat = data.manager.create<LiteralReal>();
                     variable.setSpecification(&cFloat);
                     variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
-                    /** TODO: set value **/
+                    CppParserMetaData floatInstData = {data.manager, data.unit, variable};
+                    clang_visitChildren(c, &primitiveVisit, &floatInstData);
                     return CXChildVisit_Continue;
                 }
                 case CXTypeKind::CXType_Double : {
                     LiteralReal& cDouble = data.manager.create<LiteralReal>();
                     variable.setSpecification(&cDouble);
                     variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
-                    /** TODO: set value **/
+                    CppParserMetaData doubleInstData = {data.manager, data.unit, variable};
+                    clang_visitChildren(c, &primitiveVisit, &doubleInstData);
                     return CXChildVisit_Continue;
                 }
                 case CXTypeKind::CXType_ConstantArray : {

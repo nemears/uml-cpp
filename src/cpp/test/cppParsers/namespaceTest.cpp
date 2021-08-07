@@ -8,6 +8,7 @@
 #include "uml/literalInt.h"
 #include "uml/property.h"
 #include "uml/literalBool.h"
+#include "uml/literalReal.h"
 
 using namespace std;
 using namespace UML;
@@ -100,7 +101,13 @@ TEST_F(CppNamespaceTest, defaultValueTest) {
     ASSERT_EQ(b.getSlots().front()->getValues().front()->getElementType(), ElementType::LITERAL_BOOL);
     ASSERT_EQ(b.getSlots().front()->getValues().front()->as<LiteralBool>().getValue(), false);
 
-    // TODO int
+    ASSERT_EQ(FOO.getPackagedElements().get(1)->getElementType(), ElementType::INSTANCE_SPECIFICATION);
+    InstanceSpecification& i = FOO.getPackagedElements().get(1)->as<InstanceSpecification>();
+    ASSERT_EQ(i.getSlots().size(), 1);
+    ASSERT_TRUE(i.getSlots().front()->getDefiningFeature() != 0);
+    ASSERT_EQ(i.getSlots().front()->getValues().size(), 1);
+    ASSERT_EQ(i.getSlots().front()->getValues().front()->getElementType(), ElementType::LITERAL_INT);
+    ASSERT_EQ(i.getSlots().front()->getValues().front()->as<LiteralInt>().getValue(), 420);
 
     ASSERT_EQ(FOO.getPackagedElements().get(2)->getElementType(), ElementType::INSTANCE_SPECIFICATION);
     InstanceSpecification& c = FOO.getPackagedElements().get(2)->as<InstanceSpecification>();
@@ -109,4 +116,22 @@ TEST_F(CppNamespaceTest, defaultValueTest) {
     ASSERT_EQ(c.getSlots().front()->getValues().size(), 1);
     ASSERT_EQ(c.getSlots().front()->getValues().front()->getElementType(), ElementType::LITERAL_INT);
     ASSERT_EQ(c.getSlots().front()->getValues().front()->as<LiteralInt>().getValue(), 'x');
+
+    ASSERT_EQ(FOO.getPackagedElements().get(3)->getElementType(), ElementType::INSTANCE_SPECIFICATION);
+    InstanceSpecification& f = FOO.getPackagedElements().get(3)->as<InstanceSpecification>();
+    ASSERT_EQ(f.getSlots().size(), 1);
+    ASSERT_TRUE(f.getSlots().front()->getDefiningFeature() != 0);
+    ASSERT_EQ(f.getSlots().front()->getValues().size(), 1);
+    ASSERT_EQ(f.getSlots().front()->getValues().front()->getElementType(), ElementType::LITERAL_REAL);
+    ASSERT_EQ((float) f.getSlots().front()->getValues().front()->as<LiteralReal>().getValue(), (float) 3.14159); 
+    /** NOTE: so this cast to float is necessary cause double goes a lil long and comparison is weird, shouldnt
+     * affect roundtripping i think**/
+
+    ASSERT_EQ(FOO.getPackagedElements().get(4)->getElementType(), ElementType::INSTANCE_SPECIFICATION);
+    InstanceSpecification& d = FOO.getPackagedElements().get(4)->as<InstanceSpecification>();
+    ASSERT_EQ(d.getSlots().size(), 1);
+    ASSERT_TRUE(d.getSlots().front()->getDefiningFeature() != 0);
+    ASSERT_EQ(d.getSlots().front()->getValues().size(), 1);
+    ASSERT_EQ(d.getSlots().front()->getValues().front()->getElementType(), ElementType::LITERAL_REAL);
+    ASSERT_EQ(d.getSlots().front()->getValues().front()->as<LiteralReal>().getValue(), 2.7);
 }

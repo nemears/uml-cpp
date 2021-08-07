@@ -474,6 +474,33 @@ void setC_VariableType(CXType type, InstanceSpecification& variable, CppParserMe
     }
 }
 
+CXChildVisitResult boolInstVist(CXCursor c, CXCursor parent, CXClientData client_data) {
+    CppParserMetaData& data = *static_cast<CppParserMetaData*>(client_data);
+    switch (clang_getCursorKind(c)) {
+        case CXCursor_CXXBoolLiteralExpr : {
+            LiteralBool& boolVal = data.manager.create<LiteralBool>();
+            Slot& valSlot = data.manager.create<Slot>();
+            valSlot.setDefiningFeature(data.owningElement.as<InstanceSpecification>().getClassifier()->getAttributes().get("value"));
+            valSlot.getValues().add(boolVal);
+            valSlot.setOwningInstance(&data.owningElement.as<InstanceSpecification>());
+            CXEvalResult evalResult = clang_Cursor_Evaluate(c);
+            switch (clang_EvalResult_getKind(evalResult)) {
+                case CXEvalResultKind::CXEval_Int : {
+                    boolVal.setValue(clang_EvalResult_getAsInt(evalResult));
+                    break;
+                }
+                default : {
+                    throw UmlCppParserException("Could not evaluate literal boolean!" + fileNameAndLineNumber(c));
+                }
+            }
+            clang_EvalResult_dispose(evalResult);
+            break;
+        }
+    }
+
+    return CXChildVisit_Continue;
+}
+
 CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData client_data) {
     CppParserMetaData& data = *static_cast<CppParserMetaData*>(client_data);
     switch (clang_getCursorKind(c)) {
@@ -489,8 +516,9 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                     LiteralBool& cBool = data.manager.create<LiteralBool>();
                     variable.setSpecification(&cBool);
                     variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
-                    /** TODO: set value **/
-                    break;
+                    CppParserMetaData boolInstData = {data.manager, data.unit, variable};
+                    clang_visitChildren(c, &boolInstVist, &boolInstData);
+                    return CXChildVisit_Continue;
                 }
                 case CXTypeKind::CXType_Char_S : {
                     LiteralInt& cChar = data.manager.create<LiteralInt>();

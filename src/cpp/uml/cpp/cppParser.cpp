@@ -474,27 +474,57 @@ void setC_VariableType(CXType type, InstanceSpecification& variable, CppParserMe
     }
 }
 
-CXChildVisitResult boolInstVist(CXCursor c, CXCursor parent, CXClientData client_data) {
+void c_evalPrimitiveInst(CXCursor c, LiteralSpecification& val) {
+    CXEvalResult evalResult = clang_Cursor_Evaluate(c);
+    switch (clang_EvalResult_getKind(evalResult)) {
+        case CXEvalResultKind::CXEval_Int : {
+            switch (val.getElementType()) {
+                case ElementType::LITERAL_BOOL : {
+                    val.as<LiteralBool>().setValue(clang_EvalResult_getAsInt(evalResult));
+                    break;
+                }
+                case ElementType::LITERAL_INT : {
+                    val.as<LiteralInt>().setValue(clang_EvalResult_getAsInt(evalResult));
+                    break;
+                }
+            }
+            break;
+        }
+        default : {
+            throw UmlCppParserException("Could not evaluate literal boolean!" + fileNameAndLineNumber(c));
+        }
+    }
+    clang_EvalResult_dispose(evalResult);
+}
+
+CXChildVisitResult primitiveVisit(CXCursor c, CXCursor parent, CXClientData client_data) {
     CppParserMetaData& data = *static_cast<CppParserMetaData*>(client_data);
+    Slot& valSlot = data.manager.create<Slot>();
+    valSlot.setDefiningFeature(data.owningElement.as<InstanceSpecification>().getClassifier()->getAttributes().get("value"));
+    valSlot.setOwningInstance(&data.owningElement.as<InstanceSpecification>());
     switch (clang_getCursorKind(c)) {
         case CXCursor_CXXBoolLiteralExpr : {
             LiteralBool& boolVal = data.manager.create<LiteralBool>();
-            Slot& valSlot = data.manager.create<Slot>();
-            valSlot.setDefiningFeature(data.owningElement.as<InstanceSpecification>().getClassifier()->getAttributes().get("value"));
             valSlot.getValues().add(boolVal);
-            valSlot.setOwningInstance(&data.owningElement.as<InstanceSpecification>());
-            CXEvalResult evalResult = clang_Cursor_Evaluate(c);
-            switch (clang_EvalResult_getKind(evalResult)) {
-                case CXEvalResultKind::CXEval_Int : {
-                    boolVal.setValue(clang_EvalResult_getAsInt(evalResult));
-                    break;
-                }
-                default : {
-                    throw UmlCppParserException("Could not evaluate literal boolean!" + fileNameAndLineNumber(c));
-                }
-            }
-            clang_EvalResult_dispose(evalResult);
+            c_evalPrimitiveInst(c, boolVal);
             break;
+        }
+        case CXCursor_CharacterLiteral : {
+            LiteralInt& charVal = data.manager.create<LiteralInt>();
+            valSlot.getValues().add(charVal);
+            c_evalPrimitiveInst(c, charVal);
+            break;
+        }
+        case CXCursor_IntegerLiteral : {
+            LiteralInt& intVal = data.manager.create<LiteralInt>();
+            valSlot.getValues().add(intVal);
+            c_evalPrimitiveInst(c, intVal);
+            break;
+        }
+        default : {
+            CXString spelling = clang_getCursorKindSpelling(c.kind);
+            throw UmlCppParserException("No mapping for character value for cursor " + string(clang_getCString(spelling)) + " " + fileNameAndLineNumber(c));
+            clang_disposeString(spelling);
         }
     }
 
@@ -517,36 +547,37 @@ CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData clie
                     variable.setSpecification(&cBool);
                     variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
                     CppParserMetaData boolInstData = {data.manager, data.unit, variable};
-                    clang_visitChildren(c, &boolInstVist, &boolInstData);
+                    clang_visitChildren(c, &primitiveVisit, &boolInstData);
                     return CXChildVisit_Continue;
                 }
                 case CXTypeKind::CXType_Char_S : {
                     LiteralInt& cChar = data.manager.create<LiteralInt>();
                     variable.setSpecification(&cChar);
                     variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
-                    /** TODO: set value **/
-                    break;
+                    CppParserMetaData charInstData = {data.manager, data.unit, variable};
+                    clang_visitChildren(c, &primitiveVisit, &charInstData);
+                    return CXChildVisit_Continue;
                 }
                 case CXTypeKind::CXType_Int : {
                     LiteralInt& cInt = data.manager.create<LiteralInt>();
                     variable.setSpecification(&cInt);
                     variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
                     /** TODO: set value **/
-                    break;
+                    return CXChildVisit_Continue;
                 }
                 case CXTypeKind::CXType_Float : {
                     LiteralReal& cFloat = data.manager.create<LiteralReal>();
                     variable.setSpecification(&cFloat);
                     variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
                     /** TODO: set value **/
-                    break;
+                    return CXChildVisit_Continue;
                 }
                 case CXTypeKind::CXType_Double : {
                     LiteralReal& cDouble = data.manager.create<LiteralReal>();
                     variable.setSpecification(&cDouble);
                     variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
                     /** TODO: set value **/
-                    break;
+                    return CXChildVisit_Continue;
                 }
                 case CXTypeKind::CXType_ConstantArray : {
                     InstanceSpecification& arrayStereotypeInst = data.manager.create<InstanceSpecification>();

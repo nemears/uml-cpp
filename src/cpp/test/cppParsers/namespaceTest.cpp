@@ -91,7 +91,7 @@ TEST_F(CppNamespaceTest, defaultValueTest) {
     Package& FOO = pckg->getPackagedElements().get(1)->as<Package>();
     ASSERT_EQ(FOO.getAppliedStereotypes().size(), 1);
     ASSERT_EQ(FOO.getAppliedStereotypes().front()->getClassifier()->getID(), Profile::cppNamespaceID);
-    ASSERT_EQ(FOO.getPackagedElements().size(), 1);
+    ASSERT_EQ(FOO.getPackagedElements().size(), 5);
     ASSERT_EQ(FOO.getPackagedElements().front()->getElementType(), ElementType::INSTANCE_SPECIFICATION);
     InstanceSpecification& b = FOO.getPackagedElements().front()->as<InstanceSpecification>();
     ASSERT_EQ(b.getSlots().size(), 1);
@@ -99,4 +99,14 @@ TEST_F(CppNamespaceTest, defaultValueTest) {
     ASSERT_EQ(b.getSlots().front()->getValues().size(), 1);
     ASSERT_EQ(b.getSlots().front()->getValues().front()->getElementType(), ElementType::LITERAL_BOOL);
     ASSERT_EQ(b.getSlots().front()->getValues().front()->as<LiteralBool>().getValue(), false);
+
+    // TODO int
+
+    ASSERT_EQ(FOO.getPackagedElements().get(2)->getElementType(), ElementType::INSTANCE_SPECIFICATION);
+    InstanceSpecification& c = FOO.getPackagedElements().get(2)->as<InstanceSpecification>();
+    ASSERT_EQ(c.getSlots().size(), 1);
+    ASSERT_TRUE(c.getSlots().front()->getDefiningFeature() != 0);
+    ASSERT_EQ(c.getSlots().front()->getValues().size(), 1);
+    ASSERT_EQ(c.getSlots().front()->getValues().front()->getElementType(), ElementType::LITERAL_INT);
+    ASSERT_EQ(c.getSlots().front()->getValues().front()->as<LiteralInt>().getValue(), 'x');
 }

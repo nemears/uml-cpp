@@ -65,22 +65,38 @@
                 generalizations:
                   - generalization:
                       general: int_r9nNbBukx47IomXrT2raqtc4
+                ownedAttribute:
+                  - property:
+                      name: value
+                      type: int_r9nNbBukx47IomXrT2raqtc4
             - primitiveType:
                 id: C_char_bvN6xdQ&&LaR7MU_F_9uR
                 name: C char
                 generalizations:
                   - generalization:
                       general: int_r9nNbBukx47IomXrT2raqtc4
+                ownedAttribute:
+                  - property:
+                      name: value
+                      type: int_r9nNbBukx47IomXrT2raqtc4
             - primitiveType:
                 id: C_float_FRQyo8d1KEQQLOnnPPn6
                 name: C float
                 generalizations:
                   - generalization:
                       general: real_aZG&w6yl61bXVWutgeyScN9
+                ownedAttribute:
+                  - property:
+                      name: value
+                      type: real_aZG&w6yl61bXVWutgeyScN9
             - primitiveType:
                 id: C_double_HM2asoTiFmoWEK8ZuAE
                 name: C double
                 generalizations:
                   - generalization:
                       general: real_aZG&w6yl61bXVWutgeyScN9
+                ownedAttribute:
+                  - property:
+                      name: value
+                      type: real_aZG&w6yl61bXVWutgeyScN9
 ...

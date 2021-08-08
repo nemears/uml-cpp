@@ -9,6 +9,7 @@
 #include "uml/property.h"
 #include "uml/literalBool.h"
 #include "uml/literalReal.h"
+#include "testUtils.h"
 
 using namespace std;
 using namespace UML;

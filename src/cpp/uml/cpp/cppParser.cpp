@@ -690,6 +690,9 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
             clang_visitChildren(c, *classVisit, &classData);
             break;
         }
+        case CXCursor_VarDecl : {
+            
+        }
         default : {
             CXString spelling = clang_getCursorSpelling(c);
             CXString kindSpelling = clang_getCursorKindSpelling(clang_getCursorKind(c));

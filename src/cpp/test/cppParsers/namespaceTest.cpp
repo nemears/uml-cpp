@@ -10,6 +10,7 @@
 #include "uml/literalBool.h"
 #include "uml/literalReal.h"
 #include "testUtils.h"
+#include "uml/class.h"
 
 using namespace std;
 using namespace UML;
@@ -135,4 +136,24 @@ TEST_F(CppNamespaceTest, defaultValueTest) {
     ASSERT_EQ(d.getSlots().front().getValues().size(), 1);
     ASSERT_EQ(d.getSlots().front().getValues().front().getElementType(), ElementType::LITERAL_REAL);
     ASSERT_EQ(d.getSlots().front().getValues().front().as<LiteralReal>().getValue(), 2.7);
+}
+
+TEST_F(CppNamespaceTest, predefinedTypeTest) {
+    UmlManager m;
+    // add cpp profile to memory
+    m.parse(profilePath + "cppProfile.yml");
+    Package* pckg;
+    ASSERT_NO_THROW(pckg = parseHeader(testPath + "namespaceTests/predefinedType.h", m));
+    ASSERT_EQ(pckg->getPackagedElements().size(), 2);
+    ASSERT_EQ(pckg->getPackagedElements().front().getElementType(), ElementType::ARTIFACT);
+    ASSERT_EQ(pckg->getPackagedElements().get(1).getElementType(), ElementType::PACKAGE);
+    Package& FOO = pckg->getPackagedElements().get(1).as<Package>();
+    ASSERT_EQ(FOO.getPackagedElements().size(), 2);
+    ASSERT_EQ(FOO.getPackagedElements().front().getElementType(), ElementType::CLASS);
+    Class& BAR = FOO.getPackagedElements().front().as<Class>();
+    ASSERT_EQ(BAR.getName(), "BAR");
+    ASSERT_EQ(FOO.getPackagedElements().get(1).getElementType(), ElementType::INSTANCE_SPECIFICATION);
+    InstanceSpecification& inst = FOO.getPackagedElements().get(1).as<InstanceSpecification>();
+    ASSERT_EQ(inst.getName(), "b");
+    ASSERT_EQ(inst.getClassifier()->getID(), BAR.getID());
 }

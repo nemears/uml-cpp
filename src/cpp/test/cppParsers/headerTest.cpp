@@ -28,7 +28,6 @@ TEST_F(CppHeaderTest, bunchOfTypesTest) {
     m.parse(profilePath + "cppProfile.yml");
     Package* pckg;
     ASSERT_NO_THROW(pckg = parseHeader(testPath + "headerTests/globalVars.h", m));
-    ASSERT_NO_THROW(pckg = parseHeader(testPath + "namespaceTests/bunchOfTypes.h", m));
     ASSERT_EQ(pckg->getPackagedElements().size(), 21);
     ASSERT_EQ(pckg->getPackagedElements().front().getElementType(), ElementType::ARTIFACT);
 

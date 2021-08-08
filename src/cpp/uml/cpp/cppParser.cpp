@@ -552,90 +552,94 @@ CXChildVisitResult primitiveVisit(CXCursor c, CXCursor parent, CXClientData clie
     return CXChildVisit_Continue;
 }
 
+void parseNonClassVariable(CXCursor c, CppParserMetaData& data) {
+    InstanceSpecification& variable = data.manager.create<InstanceSpecification>();
+    CXString spelling = clang_getCursorSpelling(c);
+    variable.setName(clang_getCString(spelling));
+    clang_disposeString(spelling);
+    variable.setOwningPackage(&data.owningElement.as<Package>());
+    CXType type = clang_getCursorType(c);
+    switch (type.kind) {
+        case CXTypeKind::CXType_Bool : {
+            variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
+            CppParserMetaData boolInstData = {data.manager, data.unit, variable};
+            clang_visitChildren(c, &primitiveVisit, &boolInstData);
+            break;
+        }
+        case CXTypeKind::CXType_Char_S : {
+            variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
+            CppParserMetaData charInstData = {data.manager, data.unit, variable};
+            clang_visitChildren(c, &primitiveVisit, &charInstData);
+            break;
+        }
+        case CXTypeKind::CXType_Int : {
+            variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
+            CppParserMetaData intInstData = {data.manager, data.unit, variable};
+            clang_visitChildren(c, &primitiveVisit, &intInstData);
+            break;
+        }
+        case CXTypeKind::CXType_Float : {
+            variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
+            CppParserMetaData floatInstData = {data.manager, data.unit, variable};
+            clang_visitChildren(c, &primitiveVisit, &floatInstData);
+            break;
+        }
+        case CXTypeKind::CXType_Double : {
+            variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
+            CppParserMetaData doubleInstData = {data.manager, data.unit, variable};
+            clang_visitChildren(c, &primitiveVisit, &doubleInstData);
+            break;
+        }
+        case CXTypeKind::CXType_ConstantArray : {
+            InstanceSpecification& arrayStereotypeInst = data.manager.create<InstanceSpecification>();
+            arrayStereotypeInst.setClassifier(&data.manager.get<Stereotype>(Profile::cppConstArrayID));
+            arrayStereotypeInst.setName(arrayStereotypeInst.getClassifier()->getName());
+            variable.getAppliedStereotypes().add(arrayStereotypeInst);
+            CXType arrayType = clang_getElementType(type);
+            setC_VariableType(arrayType, variable, data, c);
+            CppParserMetaData arrayData = {data.manager, data.unit, variable, VisibilityKind::PUBLIC};
+            clang_visitChildren(c, &arrayVisit, &arrayData);
+            /** TODO: set value **/
+            break;
+        }
+        case CXTypeKind::CXType_Pointer : {
+            InstanceSpecification& pointerStereotypeInst = data.manager.create<InstanceSpecification>();
+            pointerStereotypeInst.setClassifier(&data.manager.get<Stereotype>(Profile::cppPointerID));
+            pointerStereotypeInst.setName(pointerStereotypeInst.getClassifier()->getName());
+            variable.getAppliedStereotypes().add(pointerStereotypeInst);
+            setC_VariableType(clang_getPointeeType(type), variable, data, c);
+            /** TODO: set value **/
+            break;
+        }
+        case CXTypeKind::CXType_LValueReference : {
+            InstanceSpecification& referenceStereotypeInst = data.manager.create<InstanceSpecification>();
+            referenceStereotypeInst.setClassifier(&data.manager.get<Stereotype>(Profile::cppReferenceID));
+            referenceStereotypeInst.setName(referenceStereotypeInst.getClassifier()->getName());
+            variable.getAppliedStereotypes().add(referenceStereotypeInst);
+            setC_VariableType(clang_getPointeeType(type), variable, data, c);
+            /** TODO: set value **/
+            break;
+        }
+        case CXTypeKind::CXType_Void : {
+            // TODO
+        }
+        default : {
+            CXString spelling = clang_getCursorSpelling(c);
+            CXString typeSpelling = clang_getTypeKindSpelling(type.kind);
+            throw UmlCppParserException("Unahandled type for variable " + string(clang_getCString(spelling)) + " of clang type " + string(clang_getCString(typeSpelling)) + fileNameAndLineNumber(c));
+            clang_disposeString(spelling);
+            clang_disposeString(typeSpelling);
+            break;
+        }
+    }
+}
+
 CXChildVisitResult namespaceVisit(CXCursor c, CXCursor parent, CXClientData client_data) {
     CppParserMetaData& data = *static_cast<CppParserMetaData*>(client_data);
     switch (clang_getCursorKind(c)) {
         case CXCursor_VarDecl : {
-            InstanceSpecification& variable = data.manager.create<InstanceSpecification>();
-            CXString spelling = clang_getCursorSpelling(c);
-            variable.setName(clang_getCString(spelling));
-            clang_disposeString(spelling);
-            variable.setOwningPackage(&data.owningElement.as<Package>());
-            CXType type = clang_getCursorType(c);
-            switch (type.kind) {
-                case CXTypeKind::CXType_Bool : {
-                    variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_bool_sWBeSxCp5A7Ns9OJ4tBdG")));
-                    CppParserMetaData boolInstData = {data.manager, data.unit, variable};
-                    clang_visitChildren(c, &primitiveVisit, &boolInstData);
-                    return CXChildVisit_Continue;
-                }
-                case CXTypeKind::CXType_Char_S : {
-                    variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_char_bvN6xdQ&&LaR7MU_F_9uR")));
-                    CppParserMetaData charInstData = {data.manager, data.unit, variable};
-                    clang_visitChildren(c, &primitiveVisit, &charInstData);
-                    return CXChildVisit_Continue;
-                }
-                case CXTypeKind::CXType_Int : {
-                    variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_int_ZvgWKuxGtKtjRQPMNTXjic")));
-                    CppParserMetaData intInstData = {data.manager, data.unit, variable};
-                    clang_visitChildren(c, &primitiveVisit, &intInstData);
-                    return CXChildVisit_Continue;
-                }
-                case CXTypeKind::CXType_Float : {
-                    variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_float_FRQyo8d1KEQQLOnnPPn6")));
-                    CppParserMetaData floatInstData = {data.manager, data.unit, variable};
-                    clang_visitChildren(c, &primitiveVisit, &floatInstData);
-                    return CXChildVisit_Continue;
-                }
-                case CXTypeKind::CXType_Double : {
-                    variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
-                    CppParserMetaData doubleInstData = {data.manager, data.unit, variable};
-                    clang_visitChildren(c, &primitiveVisit, &doubleInstData);
-                    return CXChildVisit_Continue;
-                }
-                case CXTypeKind::CXType_ConstantArray : {
-                    InstanceSpecification& arrayStereotypeInst = data.manager.create<InstanceSpecification>();
-                    arrayStereotypeInst.setClassifier(&data.manager.get<Stereotype>(Profile::cppConstArrayID));
-                    arrayStereotypeInst.setName(arrayStereotypeInst.getClassifier()->getName());
-                    variable.getAppliedStereotypes().add(arrayStereotypeInst);
-                    CXType arrayType = clang_getElementType(type);
-                    setC_VariableType(arrayType, variable, data, c);
-                    CppParserMetaData arrayData = {data.manager, data.unit, variable, VisibilityKind::PUBLIC};
-                    clang_visitChildren(c, &arrayVisit, &arrayData);
-                    /** TODO: set value **/
-                    return CXChildVisit_Continue;
-                }
-                case CXTypeKind::CXType_Pointer : {
-                    InstanceSpecification& pointerStereotypeInst = data.manager.create<InstanceSpecification>();
-                    pointerStereotypeInst.setClassifier(&data.manager.get<Stereotype>(Profile::cppPointerID));
-                    pointerStereotypeInst.setName(pointerStereotypeInst.getClassifier()->getName());
-                    variable.getAppliedStereotypes().add(pointerStereotypeInst);
-                    setC_VariableType(clang_getPointeeType(type), variable, data, c);
-                    /** TODO: set value **/
-                    return CXChildVisit_Continue;
-                }
-                case CXTypeKind::CXType_LValueReference : {
-                    InstanceSpecification& referenceStereotypeInst = data.manager.create<InstanceSpecification>();
-                    referenceStereotypeInst.setClassifier(&data.manager.get<Stereotype>(Profile::cppReferenceID));
-                    referenceStereotypeInst.setName(referenceStereotypeInst.getClassifier()->getName());
-                    variable.getAppliedStereotypes().add(referenceStereotypeInst);
-                    setC_VariableType(clang_getPointeeType(type), variable, data, c);
-                    /** TODO: set value **/
-                    return CXChildVisit_Continue;
-                }
-                case CXTypeKind::CXType_Void : {
-                    // TODO
-                }
-                default : {
-                    CXString spelling = clang_getCursorSpelling(c);
-                    CXString typeSpelling = clang_getTypeKindSpelling(type.kind);
-                    throw UmlCppParserException("Unahandled type for variable " + string(clang_getCString(spelling)) + " of clang type " + string(clang_getCString(typeSpelling)) + fileNameAndLineNumber(c));
-                    clang_disposeString(spelling);
-                    clang_disposeString(typeSpelling);
-                    break;
-                }
-            }
-            break;
+            parseNonClassVariable(c, data);
+            return CXChildVisit_Continue;
         }
         case CXCursor_ClassDecl : {
             Class& cppClass = data.manager.create<Class>();
@@ -691,7 +695,8 @@ CXChildVisitResult headerVisit(CXCursor c, CXCursor parent, CXClientData client_
             break;
         }
         case CXCursor_VarDecl : {
-            
+            parseNonClassVariable(c, *data);
+            return CXChildVisit_Continue;
         }
         default : {
             CXString spelling = clang_getCursorSpelling(c);

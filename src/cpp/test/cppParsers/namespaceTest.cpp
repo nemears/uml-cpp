@@ -23,7 +23,7 @@ class CppNamespaceTest : public ::testing::Test {
 };
 
 void testVariablesOfType(size_t i, string c, Package& FOO, ID typeID, size_t arraySize) {
-    ASSERT_EQ(FOO.getPackagedElements().front().getElementType(), ElementType::INSTANCE_SPECIFICATION);
+    ASSERT_EQ(FOO.getPackagedElements().get(i).getElementType(), ElementType::INSTANCE_SPECIFICATION);
     InstanceSpecification& b = FOO.getPackagedElements().get(i).as<InstanceSpecification>();
     ASSERT_EQ(b.getName(), c);
     ASSERT_TRUE(b.getClassifier() != 0);

@@ -148,7 +148,7 @@ TEST_F(CppNamespaceTest, predefinedTypeTest) {
     ASSERT_EQ(pckg->getPackagedElements().front().getElementType(), ElementType::ARTIFACT);
     ASSERT_EQ(pckg->getPackagedElements().get(1).getElementType(), ElementType::PACKAGE);
     Package& FOO = pckg->getPackagedElements().get(1).as<Package>();
-    ASSERT_EQ(FOO.getPackagedElements().size(), 2);
+    ASSERT_EQ(FOO.getPackagedElements().size(), 4);
     ASSERT_EQ(FOO.getPackagedElements().front().getElementType(), ElementType::CLASS);
     Class& BAR = FOO.getPackagedElements().front().as<Class>();
     ASSERT_EQ(BAR.getName(), "BAR");
@@ -156,4 +156,16 @@ TEST_F(CppNamespaceTest, predefinedTypeTest) {
     InstanceSpecification& inst = FOO.getPackagedElements().get(1).as<InstanceSpecification>();
     ASSERT_EQ(inst.getName(), "b");
     ASSERT_EQ(inst.getClassifier()->getID(), BAR.getID());
+    ASSERT_EQ(FOO.getPackagedElements().get(2).getElementType(), ElementType::INSTANCE_SPECIFICATION);
+    InstanceSpecification& b_ptr = FOO.getPackagedElements().get(2).as<InstanceSpecification>();
+    ASSERT_EQ(b_ptr.getName(), "b_ptr");
+    ASSERT_EQ(b_ptr.getClassifier()->getID(), BAR.getID());
+    ASSERT_EQ(b_ptr.getAppliedStereotypes().size(), 1);
+    ASSERT_EQ(b_ptr.getAppliedStereotypes().front().getClassifier()->getID(), Profile::cppPointerID);
+    ASSERT_EQ(FOO.getPackagedElements().get(3).getElementType(), ElementType::INSTANCE_SPECIFICATION);
+    InstanceSpecification& b_ref = FOO.getPackagedElements().get(3).as<InstanceSpecification>();
+    ASSERT_EQ(b_ref.getName(), "b_ref");
+    ASSERT_EQ(b_ref.getClassifier()->getID(), BAR.getID());
+    ASSERT_EQ(b_ref.getAppliedStereotypes().size(), 1);
+    ASSERT_EQ(b_ref.getAppliedStereotypes().front().getClassifier()->getID(), Profile::cppReferenceID);
 }

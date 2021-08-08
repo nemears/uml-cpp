@@ -463,6 +463,13 @@ void setC_VariableType(CXType type, InstanceSpecification& variable, CppParserMe
             variable.setClassifier(&data.manager.get<PrimitiveType>(ID::fromString("C_double_HM2asoTiFmoWEK8ZuAE")));
             break;
         }
+        case CXTypeKind::CXType_Record : {
+            CXString recordTypeSpelling = clang_getTypeSpelling(type);
+            string recordName = string(clang_getCString(recordTypeSpelling));
+            variable.setClassifier(&data.owningElement.as<Package>().getPackagedElements().get(recordName.substr(recordName.find_last_of("::") + 1)).as<Classifier>());
+            clang_disposeString(recordTypeSpelling);
+            break;
+        }
         default : {
             CXString spelling = clang_getCursorSpelling(c);
             CXString typeSpelling = clang_getTypeKindSpelling(type.kind);

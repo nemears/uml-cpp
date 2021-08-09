@@ -5,7 +5,7 @@
 using namespace UML;
 
 Manifestation::Manifestation() {
-
+    m_utilizedElementPtr = 0;
 }
 
 Manifestation::Manifestation(const Manifestation& manifestation) {
@@ -35,7 +35,7 @@ void Manifestation::setUtilizedElement(PackageableElement* utilizedElement) {
     }
 
     if (utilizedElement) {
-        m_utilizedElementID == utilizedElement->getID();
+        m_utilizedElementID = utilizedElement->getID();
     }
 
     if (!m_manager) {

@@ -395,6 +395,9 @@ string Element::elementTypeToString(ElementType eType) {
         case ElementType::LITERAL_UNLIMITED_NATURAL : {
             return "LITERAL_UNLIMITED_NATURAL";
         }
+        case ElementType::MANIFESTATION : {
+            return "MANIFESTATION";
+        }
         case ElementType::MERGE_NODE : {
             return "MERGE_NODE";
         }

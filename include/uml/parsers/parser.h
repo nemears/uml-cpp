@@ -257,6 +257,7 @@ namespace UML {
             void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, ParserMetaData& data);
             void emitBehavioredClassifier(YAML::Emitter& emitter, BehavioredClassifier& classifier, EmitterMetaData& data);
             void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMetaData& data);
+            void emitManifestation(YAML::Emitter& emitter, Manifestation& Manifestation, EmitterMetaData& data);
         }
     }
 }

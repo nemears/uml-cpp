@@ -3233,6 +3233,14 @@ void emitArtifact(YAML::Emitter& emitter, Artifact& artifact, EmitterMetaData& d
         emitter << YAML::EndSeq;
     }
 
+    if (!artifact.getManifestations().empty()) {
+        emitter << YAML::Key << "manifestations" << YAML::Value << YAML::BeginSeq;
+        for (auto& manifestation : artifact.getManifestations()) {
+            emitManifestation(emitter, manifestation, data);
+        }
+        emitter << YAML::EndSeq;
+    }
+
     if (artifact.getElementType() == ElementType::ARTIFACT) {
         emitter << YAML::EndMap << YAML::EndMap;
     }
@@ -3331,6 +3339,22 @@ void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMet
         } else {
             throw UmlParserException("Invalid yaml node type for manifestation utilized element field, must be a scalar!", data.m_path.string(), node["utilizedElement"]);
         }
+    }
+}
+
+void emitManifestation(YAML::Emitter& emitter, Manifestation& manifestation, EmitterMetaData& data) {
+    if (manifestation.getElementType() == ElementType::MANIFESTATION) {
+        emitter << YAML::BeginMap << YAML::Key << "manifestation" << YAML::Value << YAML::BeginMap;
+    }
+
+    emitNamedElement(emitter, manifestation, data);
+
+    if (manifestation.getUtilizedElement() != 0) {
+        emitter << YAML::Key << "utilizedElement" << YAML::Value << manifestation.getUtilizedElement()->getID().string();
+    }
+
+    if (manifestation.getElementType() == ElementType::MANIFESTATION) {
+        emitter << YAML::EndMap << YAML::EndMap;
     }
 }
 

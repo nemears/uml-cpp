@@ -161,3 +161,34 @@ TEST_F(DeploymentParserTest, parseManifestationsTest) {
     ASSERT_TRUE(m1.getUtilizedElement() != 0);
     ASSERT_EQ(m1.getUtilizedElement()->getID(), pckg.getPackagedElements().back().getID());
 }
+
+TEST_F(DeploymentParserTest, emitManifestationTest) {
+    UmlManager m;
+    Package& pckg = m.create<Package>();
+    Manifestation& man = m.create<Manifestation>();
+    Class& c = m.create<Class>();
+    Artifact& a = m.create<Artifact>();
+    pckg.setID("O4FknRxSbpxEJlw6HhHP&Wpq0AjD");
+    man.setID("UfyRMRUyPnad&lJcpSBOD17VSHtn");
+    c.setID("9mp2RmgjnYQrPtXIoOw9is1UUEyu");
+    a.setID("Ihue7RPPRluLEpIUbTV8Xqb68ofQ");
+    pckg.getPackagedElements().add(c);
+    pckg.getPackagedElements().add(a);
+    a.getManifestations().add(man);
+    man.setUtilizedElement(&c);
+    string expectedEmit = R""""(package:
+  id: O4FknRxSbpxEJlw6HhHP&Wpq0AjD
+  packagedElements:
+    - class:
+        id: 9mp2RmgjnYQrPtXIoOw9is1UUEyu
+    - artifact:
+        id: Ihue7RPPRluLEpIUbTV8Xqb68ofQ
+        manifestations:
+          - manifestation:
+              id: UfyRMRUyPnad&lJcpSBOD17VSHtn
+              utilizedElement: 9mp2RmgjnYQrPtXIoOw9is1UUEyu)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

@@ -1,0 +1,14 @@
+---
+  package:
+    packagedElements:
+      - class:
+          id: pNMfBcFpCg0vhc06VYZFdkgu3ZPq
+      - artifact:
+          manifestations:
+            - manifestation:
+                utilizedElement: HPylwSjRzCyu&YVrkO1V_z0g0RGg
+            - manifestation:
+                utilizedElement: pNMfBcFpCg0vhc06VYZFdkgu3ZPq
+      - class:
+          id: HPylwSjRzCyu&YVrkO1V_z0g0RGg
+...

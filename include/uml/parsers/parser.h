@@ -24,6 +24,7 @@ namespace UML {
     class PackageMerge;
     class Extension;
     class ProfileApplication;
+    class Manifestation;
 
     namespace Parsers {
 
@@ -162,6 +163,11 @@ namespace UML {
                     AddDeployedArtifactFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
                     void operator()(Element& el) const override;
             };
+            class SetUtilizedElementFunctor : public AbstractPostProcessFunctor {
+                public:
+                    SetUtilizedElementFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
             void emitModel(YAML::Emitter& emitter, Model& model, EmitterMetaData& data);
             void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
             void emitElement(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
@@ -250,6 +256,7 @@ namespace UML {
             void emitDeploymentTarget(YAML::Emitter& emitter, DeploymentTarget& target, EmitterMetaData& data);
             void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, ParserMetaData& data);
             void emitBehavioredClassifier(YAML::Emitter& emitter, BehavioredClassifier& classifier, EmitterMetaData& data);
+            void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMetaData& data);
         }
     }
 }

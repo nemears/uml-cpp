@@ -7,6 +7,8 @@
 #include "uml/artifact.h"
 #include "uml/property.h"
 #include "uml/operation.h"
+#include "uml/manifestation.h"
+#include "uml/class.h"
 
 using namespace std;
 using namespace UML;
@@ -137,4 +139,25 @@ TEST_F(DeploymentParserTest, emitArtifactTest) {
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(a));
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
+}
+
+TEST_F(DeploymentParserTest, parseManifestationsTest) {
+    Element* el;
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "deploymentTests/manifestations.yml"));
+    ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
+    Package& pckg = el->as<Package>();
+    ASSERT_EQ(pckg.getPackagedElements().size(), 3);
+    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
+    Class& c1 = pckg.getPackagedElements().front().as<Class>();
+    ASSERT_EQ(pckg.getPackagedElements().get(1).getElementType(), ElementType::ARTIFACT);
+    Artifact& artifact = pckg.getPackagedElements().get(1).as<Artifact>();
+    ASSERT_EQ(artifact.getManifestations().size(), 2);
+    Manifestation& m1 = artifact.getManifestations().front();
+    Manifestation& m2 = artifact.getManifestations().back();
+    ASSERT_TRUE(m2.getUtilizedElement() != 0);
+    ASSERT_EQ(m2.getUtilizedElement()->getID(), c1.getID());
+    ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::CLASS);
+    ASSERT_TRUE(m1.getUtilizedElement() != 0);
+    ASSERT_EQ(m1.getUtilizedElement()->getID(), pckg.getPackagedElements().back().getID());
 }

@@ -41,6 +41,7 @@
 #include "uml/usage.h"
 #include "uml/deployment.h"
 #include "uml/artifact.h"
+#include "uml/manifestation.h"
 
 using namespace std;
 
@@ -3179,6 +3180,26 @@ void parseArtifact(YAML::Node node, Artifact& artifact, ParserMetaData& data) {
             throw UmlParserException("Improper yaml node type for artifacts nestedArtifacts field, must be a sequence!", data.m_path.string(), node["nestedArtifacts"]);
         }
     }
+
+    if (node["manifestations"]) {
+        if (node["manifestations"].IsSequence()) {
+            for (size_t i = 0; i < node["manifestations"].size(); i++) {
+                if (node["manifestations"][i]["manifestation"]) {
+                    if (node["manifestations"][i]["manifestation"].IsMap()) {
+                        Manifestation& manifestation = data.m_manager->create<Manifestation>();
+                        parseManifestation(node["manifestations"][i]["manifestation"], manifestation, data);
+                        artifact.getManifestations().add(manifestation);
+                    } else {
+                        throw UmlParserException("Invalid yaml node type for manifestation defintion, must be a map!", data.m_path.string(), node["manifestations"][i]["manifestation"]);
+                    }
+                } else {
+                    throw UmlParserException("Invalid definition of manifestation, must specify manifestation in manifestations field!", data.m_path.string(), node["manifestations"][i]);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalide yaml node type for artifact manifestations field, must be a sequence!", data.m_path.string(), node["manifestations"]);
+        }
+    }
 }
 
 void emitArtifact(YAML::Emitter& emitter, Artifact& artifact, EmitterMetaData& data) {
@@ -3296,6 +3317,20 @@ void emitBehavioredClassifier(YAML::Emitter& emitter, BehavioredClassifier& clas
 
     if (classifier.getClassifierBehavior() != 0) {
         emitter << YAML::Key << "classifierBehavior" << YAML::Value << classifier.getClassifierBehavior()->getID().string();
+    }
+}
+
+void SetUtilizedElementFunctor::operator()(Element& el) const {
+    m_el->as<Manifestation>().setUtilizedElement(&el.as<PackageableElement>());
+}
+
+void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMetaData& data) {
+    if (node["utilizedElement"]) {
+        if (node["utilizedElement"].IsScalar()) {
+            applyFunctor(data, ID::fromString(node["utilizedElement"].as<string>()), new SetUtilizedElementFunctor(&manifestation, node["utilizedElement"]));
+        } else {
+            throw UmlParserException("Invalid yaml node type for manifestation utilized element field, must be a scalar!", data.m_path.string(), node["utilizedElement"]);
+        }
     }
 }
 

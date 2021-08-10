@@ -61,8 +61,8 @@ void Manifestation::setArtifact(Artifact* artifact) {
             m_artifactPtr = &m_manager->get<Artifact>(m_artifactID);
         }
 
-        if (m_supplier.count(m_artifactID)) {
-            m_supplier.remove(*m_artifactPtr);
+        if (m_client.count(m_artifactID)) {
+            m_client.remove(*m_artifactPtr);
         }
 
         if (m_artifactPtr->getManifestations().count(m_id)) {
@@ -82,8 +82,8 @@ void Manifestation::setArtifact(Artifact* artifact) {
     }
 
     if (artifact) {
-        if (!m_supplier.count(artifact->getID())) {
-            m_supplier.add(*artifact);
+        if (!m_client.count(artifact->getID())) {
+            m_client.add(*artifact);
         }
 
         if (!artifact->getManifestations().count(m_id)) {

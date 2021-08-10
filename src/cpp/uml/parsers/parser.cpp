@@ -356,6 +356,18 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     }
 }
 
+void emitElementDefenition(YAML::Emitter& emitter, ElementType eType, string yamlName, Element& el, EmitterMetaData& data) {
+    if (el.getElementType() == eType) {
+        emitter << YAML::BeginMap << YAML::Key << yamlName << YAML::Value << YAML::BeginMap;
+    }
+}
+
+void emitElementDefenitionEnd(YAML::Emitter& emitter, ElementType eType, Element& el) {
+    if (el.getElementType() == eType) {
+        emitter << YAML::EndMap << YAML::EndMap;
+    }
+}
+
 void emitModel(YAML::Emitter& emitter, Model& model, EmitterMetaData& data) {
     if (model.getElementType() == ElementType::MODEL) {
         emitter << YAML::BeginMap << YAML::Key << "model" << YAML::Value << YAML::BeginMap;
@@ -605,9 +617,7 @@ void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaDat
 }
 
 void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization, EmitterMetaData& data) {
-    if (generalization.getElementType() == ElementType::GENERALIZATION) {
-        emitter << YAML::BeginMap << YAML::Key << "generalization" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::GENERALIZATION, "generalization", generalization, data);
 
     emitElement(emitter, generalization, data);
 
@@ -615,9 +625,7 @@ void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization, 
         emitter << YAML::Key << "general" << YAML::Value << generalization.getGeneral()->getID().string();
     }
 
-    if (generalization.getElementType() == ElementType::GENERALIZATION) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::GENERALIZATION, generalization);
 }
 
 void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
@@ -663,9 +671,7 @@ void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
 }
 
 void emitDataType(YAML::Emitter& emitter, DataType& dataType, EmitterMetaData& data) {
-    if (dataType.getElementType() == ElementType::DATA_TYPE) {
-        emitter << YAML::BeginMap << YAML::Key << "dataType" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::DATA_TYPE, "dataType", dataType, data);
 
     emitClassifier(emitter, dataType, data);
     
@@ -685,9 +691,7 @@ void emitDataType(YAML::Emitter& emitter, DataType& dataType, EmitterMetaData& d
         emitter << YAML::EndSeq;
     }
 
-    if (dataType.getElementType() == ElementType::DATA_TYPE) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::DATA_TYPE, dataType);
 }
 
 void parsePrimitiveType(YAML::Node node, PrimitiveType& type, ParserMetaData& data) {
@@ -695,15 +699,11 @@ void parsePrimitiveType(YAML::Node node, PrimitiveType& type, ParserMetaData& da
 }
 
 void emitPrimitiveType(YAML::Emitter& emitter, PrimitiveType& type, EmitterMetaData& data) {
-    if (type.getElementType() == ElementType::PRIMITIVE_TYPE) {
-        emitter << YAML::BeginMap << YAML::Key << "primitiveType" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::PRIMITIVE_TYPE, "primitiveType", type, data);
 
     emitDataType(emitter, type, data);
 
-    if (type.getElementType() == ElementType::PRIMITIVE_TYPE) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::PRIMITIVE_TYPE, type);
 }
 
 void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, ParserMetaData& data) {
@@ -833,9 +833,7 @@ void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
 }
 
 void emitClass(YAML::Emitter& emitter, Class& clazz, EmitterMetaData& data) {
-    if (clazz.getElementType() == ElementType::CLASS) {
-        emitter << YAML::BeginMap << YAML::Key << "class" << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::CLASS, "class", clazz, data);
 
     emitStructuredClassifier(emitter, clazz, data);
     emitBehavioredClassifier(emitter, clazz, data);
@@ -856,9 +854,7 @@ void emitClass(YAML::Emitter& emitter, Class& clazz, EmitterMetaData& data) {
         emitter << YAML::EndSeq;
     }
 
-    if (clazz.getElementType() == ElementType::CLASS) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::CLASS, clazz);
 }
 
 void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data) {
@@ -928,9 +924,7 @@ void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& d
 }
 
 void emitOpaqueBehavior(YAML::Emitter& emitter, OpaqueBehavior& bhv, EmitterMetaData& data) {
-    if (bhv.getElementType() == ElementType::OPAQUE_BEHAVIOR) {
-        emitter << YAML::BeginMap << YAML::Key << "opaqueBehavior" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::OPAQUE_BEHAVIOR, "opaqueBehavior", bhv, data);
 
     emitBehavior(emitter, bhv, data);
 
@@ -942,9 +936,7 @@ void emitOpaqueBehavior(YAML::Emitter& emitter, OpaqueBehavior& bhv, EmitterMeta
         emitter << YAML::EndSeq;
     }
 
-    if (bhv.getElementType() == ElementType::OPAQUE_BEHAVIOR) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::OPAQUE_BEHAVIOR, bhv);
 }
 
 ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserMetaData& data) {
@@ -1050,9 +1042,7 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
 }
 
 void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data) {
-    if (prop.getElementType() == ElementType::PROPERTY) {
-        emitter << YAML::BeginMap << YAML::Key << "property" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::PROPERTY, "property", prop, data);
 
     emitTypedElement(emitter, prop, data);
     emitMultiplicityElement(emitter, prop, data);
@@ -1077,9 +1067,7 @@ void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data)
         // TODO
     }
 
-    if (prop.getElementType() == ElementType::PROPERTY) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::PROPERTY, prop);
 } 
 
 void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data) {
@@ -1106,9 +1094,7 @@ void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data) {
 }
 
 void emitParameter(YAML::Emitter& emitter, Parameter& el, EmitterMetaData& data) {
-    if (el.getElementType() == ElementType::PARAMETER) {
-        emitter << YAML::BeginMap << YAML::Key << "parameter" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::PARAMETER, "parameter", el, data);
 
     emitTypedElement(emitter, el, data);
     emitMultiplicityElement(emitter, el, data);
@@ -1136,9 +1122,7 @@ void emitParameter(YAML::Emitter& emitter, Parameter& el, EmitterMetaData& data)
         emitter << YAML::Key << "direction" << YAML::Value << direction;
     }
 
-    if (el.getElementType() == ElementType::PARAMETER) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::PARAMETER, el);
 }
 
 void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
@@ -1185,9 +1169,7 @@ void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
 }
 
 void emitOperation(YAML::Emitter& emitter, Operation& op, EmitterMetaData& data) {
-    if (op.getElementType() == ElementType::OPERATION) {
-        emitter << YAML::BeginMap << YAML::Key << "operation" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::OPERATION, "operation", op, data);
 
     emitNamedElement(emitter, op, data);
     emitTemplateableElement(emitter, op, data);
@@ -1208,9 +1190,7 @@ void emitOperation(YAML::Emitter& emitter, Operation& op, EmitterMetaData& data)
         emitter << YAML::EndSeq;
     }
 
-    if (op.getElementType() == ElementType::OPERATION) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::OPERATION, op);
 }
 
 void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
@@ -1432,9 +1412,7 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
 }
 
 void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
-    if (pckg.getElementType() == ElementType::PACKAGE) {
-        emitter << YAML::BeginMap << YAML::Key << "package" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::PACKAGE, "package", pckg, data);
 
     emitNamedElement(emitter, pckg, data);
     emitTemplateableElement(emitter, pckg, data);
@@ -1504,9 +1482,7 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
         emitter << YAML::EndSeq;
     }
 
-    if (pckg.getElementType() == ElementType::PACKAGE) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::PACKAGE, pckg);
 }
 
 void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data) {
@@ -1612,9 +1588,7 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
 }
 
 void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& inst, EmitterMetaData& data) {
-    if (inst.getElementType() == ElementType::INSTANCE_SPECIFICATION) {
-        emitter << YAML::BeginMap << YAML::Key << "instanceSpecification" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::INSTANCE_SPECIFICATION, "instanceSpecification", inst, data);
 
     emitNamedElement(emitter, inst, data);
     emitDeploymentTarget(emitter, inst, data);
@@ -1635,9 +1609,7 @@ void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& in
         emit(emitter, *inst.getSpecification(), data);
     }
 
-    if (inst.getElementType() == ElementType::INSTANCE_SPECIFICATION) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::INSTANCE_SPECIFICATION, inst);
 }
 
 void SetDefiningFeatureFunctor::operator()(Element& el) const {
@@ -1677,9 +1649,7 @@ void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
 }
 
 void emitSlot(YAML::Emitter& emitter, Slot& slot, EmitterMetaData& data) {
-    if (slot.getElementType() == ElementType::SLOT) {
-        emitter << YAML::BeginMap << YAML::Key << "slot" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::SLOT, "slot", slot, data);
 
     emitElement(emitter, slot, data);
 
@@ -1695,9 +1665,7 @@ void emitSlot(YAML::Emitter& emitter, Slot& slot, EmitterMetaData& data) {
         emitter << YAML::EndSeq;
     }
 
-    if (slot.getElementType() == ElementType::SLOT) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::SLOT, slot);
 }
 
 void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData& data) {
@@ -1725,9 +1693,7 @@ void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData&
 }
 
 void emitEnumeration(YAML::Emitter& emitter, Enumeration& enumeration, EmitterMetaData& data) {
-    if (enumeration.getElementType() == ElementType::ENUMERATION) {
-        emitter << YAML::BeginMap << YAML::Key << "enumeration" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::ENUMERATION, "enumeration", enumeration, data);
 
     emitDataType(emitter, enumeration, data);
 
@@ -1739,9 +1705,7 @@ void emitEnumeration(YAML::Emitter& emitter, Enumeration& enumeration, EmitterMe
         emitter << YAML::EndSeq;
     }
 
-    if (enumeration.getElementType() == ElementType::ENUMERATION) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::ENUMERATION, enumeration);
 }
 
 void parseEnumerationLiteral(YAML::Node node, EnumerationLiteral& literal, ParserMetaData& data) {
@@ -1749,9 +1713,7 @@ void parseEnumerationLiteral(YAML::Node node, EnumerationLiteral& literal, Parse
 }
 
 void emitEnumerationLiteral(YAML::Emitter& emitter, EnumerationLiteral& literal, EmitterMetaData& data) {
-    if (literal.getElementType() == ElementType::ENUMERATION_LITERAL) {
-        emitter << YAML::BeginMap << YAML::Key << "enumerationLiteral" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::ENUMERATION_LITERAL, "enumerationLiteral", literal, data);
 
     emitInstanceSpecification(emitter, literal, data);
 
@@ -1788,9 +1750,7 @@ void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& dat
 }
 
 void emitInstanceValue(YAML::Emitter& emitter, InstanceValue& val, EmitterMetaData& data) {
-    if (val.getElementType() == ElementType::INSTANCE_VALUE) {
-        emitter << YAML::BeginMap << YAML::Key << "instanceValue" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::INSTANCE_VALUE, "instanceValue", val, data);
 
     emitTypedElement(emitter, val, data);
 
@@ -1798,9 +1758,7 @@ void emitInstanceValue(YAML::Emitter& emitter, InstanceValue& val, EmitterMetaDa
         emitter << YAML::Key << "instance" << YAML::Value << val.getInstance()->getID().string();
     }
 
-    if (val.getElementType() == ElementType::INSTANCE_VALUE) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::INSTANCE_VALUE, val);
 }
 
 void SetMergedPackageFunctor::operator()(Element& el) const {
@@ -1844,9 +1802,7 @@ void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& dat
 }
 
 void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge, EmitterMetaData& data) {
-    if (merge.getElementType() == ElementType::PACKAGE_MERGE) {
-        emitter << YAML::BeginMap << YAML::Key << "packageMerge" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::PACKAGE_MERGE, "packageMerge", merge, data);
 
     emitElement(emitter, merge, data);
 
@@ -1862,9 +1818,7 @@ void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge, EmitterMetaDa
         }
     }
 
-    if (merge.getElementType() == ElementType::PACKAGE_MERGE) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::PACKAGE_MERGE, merge);
 }
 
 void parseLiteralBool(YAML::Node node, LiteralBool& lb, ParserMetaData& data) {
@@ -1881,17 +1835,13 @@ void parseLiteralBool(YAML::Node node, LiteralBool& lb, ParserMetaData& data) {
 }
 
 void emitLiteralBool(YAML::Emitter& emitter, LiteralBool& lb, EmitterMetaData& data) {
-    if (lb.getElementType() == ElementType::LITERAL_BOOL) {
-        emitter << YAML::BeginMap << YAML::Key << "literalBool" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::LITERAL_BOOL, "literalBool", lb, data);
 
     emitTypedElement(emitter, lb, data);
 
     emitter << YAML::Key << "value" << YAML::Value << lb.getValue();
 
-    if (lb.getElementType() == ElementType::LITERAL_BOOL) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::LITERAL_BOOL, lb);
 }
 
 void parseLiteralInt(YAML::Node node, LiteralInt& li, ParserMetaData& data) {
@@ -1908,17 +1858,13 @@ void parseLiteralInt(YAML::Node node, LiteralInt& li, ParserMetaData& data) {
 }
 
 void emitLiteralInt(YAML::Emitter& emitter, LiteralInt& li, EmitterMetaData& data) {
-    if (li.getElementType() == ElementType::LITERAL_INT) {
-        emitter << YAML::BeginMap << YAML::Key << "literalInt" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::LITERAL_INT, "literalInt", li, data);
 
     emitTypedElement(emitter, li, data);
 
     emitter << YAML::Key << "value" << YAML::Value << li.getValue();
 
-    if (li.getElementType() == ElementType::LITERAL_INT) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::LITERAL_INT, li);
 }
 
 void parseLiteralReal(YAML::Node node, LiteralReal& lr, ParserMetaData& data) {
@@ -1935,17 +1881,13 @@ void parseLiteralReal(YAML::Node node, LiteralReal& lr, ParserMetaData& data) {
 }
 
 void emitLiteralReal(YAML::Emitter& emitter, LiteralReal& lr, EmitterMetaData& data) {
-    if (lr.getElementType() == ElementType::LITERAL_REAL) {
-        emitter << YAML::BeginMap << YAML::Key << "literalReal" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::LITERAL_REAL, "literalReal", lr, data);
 
     emitTypedElement(emitter, lr, data);
 
     emitter << YAML::Key << "value" << YAML::Value << lr.getValue();
 
-    if (lr.getElementType() == ElementType::LITERAL_REAL) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::LITERAL_REAL, lr);
 }
 
 void parseLiteralString(YAML::Node node, LiteralString& ls, ParserMetaData& data) {
@@ -1962,9 +1904,7 @@ void parseLiteralString(YAML::Node node, LiteralString& ls, ParserMetaData& data
 }
 
 void emitLiteralString(YAML::Emitter& emitter, LiteralString& ls, EmitterMetaData& data) {
-    if (ls.getElementType() == ElementType::LITERAL_STRING) {
-        emitter << YAML::BeginMap << YAML::Key << "literalString" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::LITERAL_STRING, "literalString", ls, data);
 
     emitTypedElement(emitter, ls, data);
 
@@ -1972,9 +1912,7 @@ void emitLiteralString(YAML::Emitter& emitter, LiteralString& ls, EmitterMetaDat
         emitter << YAML::Key << "value" << YAML::Value << ls.getValue();
     }
 
-    if (ls.getElementType() == ElementType::LITERAL_STRING) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::LITERAL_STRING, ls);
 }
 
 void parseLiteralUnlimitedNatural(YAML::Node node, LiteralUnlimitedNatural& ln, ParserMetaData& data) {
@@ -1995,9 +1933,7 @@ void parseLiteralUnlimitedNatural(YAML::Node node, LiteralUnlimitedNatural& ln, 
 }
 
 void emitLiteralUnlimitedNatural(YAML::Emitter& emitter, LiteralUnlimitedNatural& ln, EmitterMetaData& data) {
-    if (ln.getElementType() == ElementType::LITERAL_UNLIMITED_NATURAL) {
-        emitter << YAML::BeginMap << YAML::Key << "literalUnlimitedNatural" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::LITERAL_UNLIMITED_NATURAL, "literalUnlimitedNatural", ln, data);
 
     emitTypedElement(emitter, ln, data);
 
@@ -2007,9 +1943,7 @@ void emitLiteralUnlimitedNatural(YAML::Emitter& emitter, LiteralUnlimitedNatural
         emitter << YAML::Key << "value" << YAML::Value << ln.getNumberValue();
     }
 
-    if (ln.getElementType() == ElementType::LITERAL_UNLIMITED_NATURAL) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::LITERAL_UNLIMITED_NATURAL, ln);
 }
 
 void parseExpression(YAML::Node node, Expression& exp, ParserMetaData& data) {
@@ -2085,9 +2019,7 @@ void parseExpression(YAML::Node node, Expression& exp, ParserMetaData& data) {
 }
 
 void emitExpression(YAML::Emitter& emitter, Expression& exp, EmitterMetaData& data) {
-    if (exp.getElementType() == ElementType::EXPRESSION) {
-        emitter << YAML::BeginMap << YAML::Key << "expression" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::EXPRESSION, "expression", exp, data);
 
     emitTypedElement(emitter, exp, data);
 
@@ -2103,9 +2035,7 @@ void emitExpression(YAML::Emitter& emitter, Expression& exp, EmitterMetaData& da
         emitter << YAML::EndSeq;
     }
 
-    if (exp.getElementType() == ElementType::EXPRESSION) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::EXPRESSION, exp);
 }
 
 void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data) {
@@ -2185,6 +2115,9 @@ void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, Parse
 }
 
 void emitTemplateSignature(YAML::Emitter& emitter, TemplateSignature& signature, EmitterMetaData& data) {
+
+    // TODO change
+
     if (signature.getElementType() == ElementType::TEMPLATE_SIGNATURE) {
         emitter << /*YAML::BeginMap <<*/ YAML::Key << "templateSignature" << YAML::Value << YAML::BeginMap;
     }
@@ -2417,9 +2350,7 @@ void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, Parse
 }
 
 void emitTemplateParameter(YAML::Emitter& emitter, TemplateParameter& parameter, EmitterMetaData& data) {
-    if (parameter.getElementType() == ElementType::TEMPLATE_PARAMETER) {
-        emitter << YAML::BeginMap << YAML::Key << "templateParameter" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::TEMPLATE_PARAMETER, "templateParameter", parameter, data);
 
     emitElement(emitter, parameter, data);
 
@@ -2441,9 +2372,7 @@ void emitTemplateParameter(YAML::Emitter& emitter, TemplateParameter& parameter,
         emitter << YAML::Key << "parameteredElement" << YAML::Value << parameter.getParameteredElement()->getID().string();
     }
 
-    if (parameter.getElementType() == ElementType::TEMPLATE_PARAMETER) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::TEMPLATE_PARAMETER, parameter);
 }
 
 void SetSignatureFunctor::operator()(Element& el) const {
@@ -2491,6 +2420,7 @@ void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaD
 }
 
 void emitTemplateBinding(YAML::Emitter& emitter, TemplateBinding& binding, EmitterMetaData& data) {
+    // TODO change
     if (binding.getElementType() == ElementType::TEMPLATE_BINDING) {
         emitter << /*YAML::BeginMap << */YAML::Key << "templateBinding" << YAML::Value << YAML::BeginMap;
     }
@@ -2567,9 +2497,7 @@ void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubsti
 }
 
 void emitTemplateParameterSubstitution(YAML::Emitter& emitter, TemplateParameterSubstitution& sub, EmitterMetaData& data) {
-    if (sub.getElementType() == ElementType::TEMPLATE_PARAMETER_SUBSTITUTION) {
-        emitter << YAML::BeginMap << YAML::Key << "templateParameterSubstitution" << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::TEMPLATE_PARAMETER_SUBSTITUTION, "templateParameterSubstitution", sub, data);
 
     emitElement(emitter, sub, data);
 
@@ -2586,9 +2514,7 @@ void emitTemplateParameterSubstitution(YAML::Emitter& emitter, TemplateParameter
         emitter << YAML::Key << "actual" << YAML::Value << sub.getActual()->getID().string();
     }
 
-    if (sub.getElementType() == ElementType::TEMPLATE_PARAMETER_SUBSTITUTION) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::TEMPLATE_PARAMETER_SUBSTITUTION, sub);
 }
 
 void AddMemberEndFunctor::operator()(Element& el) const {
@@ -2656,9 +2582,7 @@ void parseAssociation(YAML::Node node, Association& association, ParserMetaData&
 }
 
 void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMetaData& data) {
-    if (association.getElementType() == ElementType::ASSOCIATION) {
-        emitter << YAML::BeginMap << YAML::Key << "association" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::ASSOCIATION, "association", association, data);
 
     emitClassifier(emitter, association, data);
 
@@ -2690,9 +2614,7 @@ void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMe
         emitter << YAML::EndSeq;
     }
 
-    if (association.getElementType() == ElementType::ASSOCIATION) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::ASSOCIATION, association);
 }
 
 void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data) {
@@ -2895,9 +2817,7 @@ ElementType elementTypeFromString(string eType) {
 }
 
 void emitExtension(YAML::Emitter& emitter, Extension& extension, EmitterMetaData& data) {
-    if (extension.getElementType() == ElementType::EXTENSION) {
-        emitter << YAML::BeginMap << YAML::Key << "extension" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::EXTENSION, "extension", extension, data);
 
     emitClassifier(emitter, extension, data);
 
@@ -2909,9 +2829,7 @@ void emitExtension(YAML::Emitter& emitter, Extension& extension, EmitterMetaData
         emitter << YAML::EndMap << YAML::EndMap;
     }
 
-    if (extension.getElementType() == ElementType::EXTENSION) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::EXTENSION, extension);
 }
 
 void SetAppliedProfileFunctor::operator()(Element& el) const {
@@ -2946,9 +2864,7 @@ void parseProfileApplication(YAML::Node node, ProfileApplication& application, P
 }
 
 void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& application, EmitterMetaData& data) {
-    if (application.getElementType() == ElementType::PROFILE_APPLICATION) {
-        emitter << YAML::BeginMap << YAML::Key << "profileApplication" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::PROFILE_APPLICATION, "profileApplication", application, data);
 
     emitElement(emitter, application, data);
 
@@ -2964,9 +2880,7 @@ void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& applicat
         }
     }
 
-    if (application.getElementType() == ElementType::PROFILE_APPLICATION) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::PROFILE_APPLICATION, application);
 }
 
 void parseComment(YAML::Node node, Comment& comment, ParserMetaData& data) {
@@ -2982,9 +2896,7 @@ void parseComment(YAML::Node node, Comment& comment, ParserMetaData& data) {
 }
 
 void emitComment(YAML::Emitter& emitter, Comment& comment, EmitterMetaData& data) {
-    if (comment.getElementType() == ElementType::COMMENT) {
-        emitter << YAML::BeginMap << YAML::Key << "comment" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::COMMENT, "comment", comment, data);
 
     emitElement(emitter, comment, data);
 
@@ -2992,9 +2904,7 @@ void emitComment(YAML::Emitter& emitter, Comment& comment, EmitterMetaData& data
         emitter << YAML::Key << "body" << YAML::Value << comment.getBody();
     }
 
-    if (comment.getElementType() == ElementType::COMMENT) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::COMMENT, comment);
 }
 
 void AddClientFunctor::operator()(Element& el) const {
@@ -3050,9 +2960,7 @@ void parseDependency(YAML::Node node, Dependency& dependency, ParserMetaData& da
 }
 
 void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaData& data) {
-    if (dependency.getElementType() == ElementType::DEPENDENCY) {
-        emitter << YAML::BeginMap << YAML::Key << "dependency" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::DEPENDENCY, "dependency", dependency, data);
 
     emitNamedElement(emitter, dependency, data);
 
@@ -3072,9 +2980,7 @@ void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaD
         emitter << YAML::EndSeq;
     }
 
-    if (dependency.getElementType() == ElementType::DEPENDENCY) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::DEPENDENCY, dependency);
 }
 
 void AddDeployedArtifactFunctor::operator()(Element& el) const {
@@ -3101,9 +3007,7 @@ void parseDeployment(YAML::Node node, Deployment& deployment, ParserMetaData& da
 }
 
 void emitDeployment(YAML::Emitter& emitter, Deployment& deployment, EmitterMetaData& data) {
-    if (deployment.getElementType() == ElementType::DEPLOYMENT) {
-        emitter << YAML::BeginMap << YAML::Key << "deployment" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::DEPLOYMENT, "deployment", deployment, data);
 
     emitNamedElement(emitter, deployment, data);
 
@@ -3115,9 +3019,7 @@ void emitDeployment(YAML::Emitter& emitter, Deployment& deployment, EmitterMetaD
         emitter << YAML::EndSeq;
     }
 
-    if (deployment.getElementType() == ElementType::DEPLOYMENT) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::DEPLOYMENT, deployment);
 }
 
 void parseArtifact(YAML::Node node, Artifact& artifact, ParserMetaData& data) {
@@ -3203,9 +3105,7 @@ void parseArtifact(YAML::Node node, Artifact& artifact, ParserMetaData& data) {
 }
 
 void emitArtifact(YAML::Emitter& emitter, Artifact& artifact, EmitterMetaData& data) {
-    if (artifact.getElementType() == ElementType::ARTIFACT) {
-        emitter << YAML::BeginMap << YAML::Key << "artifact" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::ARTIFACT, "artifact", artifact, data);
 
     emitClassifier(emitter, artifact, data);
 
@@ -3241,9 +3141,7 @@ void emitArtifact(YAML::Emitter& emitter, Artifact& artifact, EmitterMetaData& d
         emitter << YAML::EndSeq;
     }
 
-    if (artifact.getElementType() == ElementType::ARTIFACT) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::ARTIFACT, artifact);
 }
 
 void parseDeploymentTarget(YAML::Node node, DeploymentTarget& target, ParserMetaData& data) {
@@ -3343,9 +3241,7 @@ void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMet
 }
 
 void emitManifestation(YAML::Emitter& emitter, Manifestation& manifestation, EmitterMetaData& data) {
-    if (manifestation.getElementType() == ElementType::MANIFESTATION) {
-        emitter << YAML::BeginMap << YAML::Key << "manifestation" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::MANIFESTATION, "manifestation", manifestation, data);
 
     emitNamedElement(emitter, manifestation, data);
 
@@ -3353,9 +3249,7 @@ void emitManifestation(YAML::Emitter& emitter, Manifestation& manifestation, Emi
         emitter << YAML::Key << "utilizedElement" << YAML::Value << manifestation.getUtilizedElement()->getID().string();
     }
 
-    if (manifestation.getElementType() == ElementType::MANIFESTATION) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::MANIFESTATION, manifestation);
 }
 
 }

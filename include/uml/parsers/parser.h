@@ -63,6 +63,9 @@ namespace UML {
 
             void emit (YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
 
+            void emitElementDefenition(YAML::Emitter& emitter, ElementType eType, std::string yamlName, Element& el, EmitterMetaData& data);
+            void emitElementDefenitionEnd(YAML::Emitter& emitter, ElementType eType, Element& el);
+            
             class SetTypeFunctor : public AbstractPostProcessFunctor {
                 public:
                     SetTypeFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};

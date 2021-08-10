@@ -8,7 +8,8 @@ namespace UML {
 
         enum class EmitterStrategy {
             WHOLE,
-            COMPOSITE
+            COMPOSITE, 
+            INDIVIDUAL
         };
 
         struct EmitterMetaData {

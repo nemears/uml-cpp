@@ -238,119 +238,137 @@ Element* parseExternalAddToManager(ParserMetaData& data, string path) {
 }
 
 void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
-    switch(el.getElementType()) {
-        case ElementType::ABSTRACTION : {
-            emitter << YAML::BeginMap << YAML::Key << "abstraction" << YAML::Value << YAML::BeginMap;
-            emitDependency(emitter, el.as<Abstraction>(), data);
-            emitter << YAML::EndMap << YAML::EndMap;
+    switch (data.m_strategy) {
+        case EmitterStrategy::WHOLE : {
+            filesystem::path newPath = data.m_manager->getPath(el.getID());
+            if (newPath.empty() || (newPath.parent_path().compare(data.m_path) == 0 && newPath.filename().compare(data.m_fileName))) {
+                switch(el.getElementType()) {
+                    case ElementType::ABSTRACTION : {
+                        emitter << YAML::BeginMap << YAML::Key << "abstraction" << YAML::Value << YAML::BeginMap;
+                        emitDependency(emitter, el.as<Abstraction>(), data);
+                        emitter << YAML::EndMap << YAML::EndMap;
+                        break;
+                    }
+                    case ElementType::ARTIFACT : {
+                        emitArtifact(emitter, el.as<Artifact>(), data);
+                        break;
+                    }
+                    case ElementType::ASSOCIATION : {
+                        emitAssociation(emitter, dynamic_cast<Association&>(el), data);
+                        break;
+                    }
+                    case ElementType::CLASS : {
+                        emitClass(emitter, dynamic_cast<Class&>(el), data);
+                        break;
+                    }
+                    case ElementType::DATA_TYPE : {
+                        emitDataType(emitter, dynamic_cast<DataType&>(el), data);
+                        break;
+                    }
+                    case ElementType::DEPENDENCY : {
+                        emitDependency(emitter, el.as<Dependency>(), data);
+                        break;
+                    }
+                    case ElementType::DEPLOYMENT : {
+                        emitDeployment(emitter, el.as<Deployment>(), data);
+                        break;
+                    }
+                    case ElementType::ENUMERATION : {
+                        emitEnumeration(emitter, dynamic_cast<Enumeration&>(el), data);
+                        break;
+                    }
+                    case ElementType::EXPRESSION : {
+                        emitExpression(emitter, dynamic_cast<Expression&>(el), data);
+                        break;
+                    }
+                    case ElementType::EXTENSION : {
+                        emitExtension(emitter, dynamic_cast<Extension&>(el), data);
+                        break;
+                    }
+                    case ElementType::INSTANCE_SPECIFICATION : {
+                        emitInstanceSpecification(emitter, dynamic_cast<InstanceSpecification&>(el), data);
+                        break;
+                    }
+                    case ElementType::LITERAL_BOOL : {
+                        emitLiteralBool(emitter, dynamic_cast<LiteralBool&>(el), data);
+                        break;
+                    }
+                    case ElementType::LITERAL_INT : {
+                        emitLiteralInt(emitter, dynamic_cast<LiteralInt&>(el), data);
+                        break;
+                    }
+                    case ElementType::LITERAL_NULL : {
+                        emitter << YAML::BeginMap << YAML::Key << "literalNull" << YAML::Value << YAML::BeginMap;
+                        emitTypedElement(emitter, dynamic_cast<TypedElement&>(el), data);
+                        emitter << YAML::EndMap << YAML::EndMap;
+                        break;
+                    }
+                    case ElementType::LITERAL_REAL : {
+                        emitLiteralReal(emitter, dynamic_cast<LiteralReal&>(el), data);
+                        break;
+                    }
+                    case ElementType::LITERAL_STRING : {
+                        emitLiteralString(emitter, dynamic_cast<LiteralString&>(el), data);
+                        break;
+                    }
+                    case ElementType::LITERAL_UNLIMITED_NATURAL : {
+                        emitLiteralUnlimitedNatural(emitter, dynamic_cast<LiteralUnlimitedNatural&>(el), data);
+                        break;
+                    }
+                    case ElementType::MODEL : {
+                        emitModel(emitter, dynamic_cast<Model&>(el), data);
+                        break;
+                    }
+                    case ElementType::OPAQUE_BEHAVIOR : {
+                        emitOpaqueBehavior(emitter, dynamic_cast<OpaqueBehavior&>(el), data);
+                        break;
+                    }
+                    case ElementType::PACKAGE : {
+                        emitPackage(emitter, dynamic_cast<Package&>(el), data);
+                        break;
+                    }
+                    case ElementType::PRIMITIVE_TYPE : {
+                        emitPrimitiveType(emitter, dynamic_cast<PrimitiveType&>(el), data);
+                        break;
+                    }
+                    case ElementType::PROPERTY : {
+                        emitProperty(emitter, el.as<Property>(), data);
+                        break;
+                    }
+                    case ElementType::PROFILE : {
+                        emitter << YAML::BeginMap << YAML::Key << "profile" << YAML::Value << YAML::BeginMap;
+                        emitPackage(emitter, dynamic_cast<Profile&>(el), data);
+                        emitter << YAML::EndMap << YAML::EndMap;
+                        break;
+                    }
+                    case ElementType::REALIZATION : {
+                        emitter << YAML::BeginMap << YAML::Key << "realization" << YAML::Value << YAML::BeginMap;
+                        emitDependency(emitter, el.as<Realization>(), data);
+                        emitter << YAML::EndMap << YAML::EndMap;
+                        break;
+                    }
+                    case ElementType::USAGE : {
+                        emitter << YAML::BeginMap << YAML::Key << "usage" << YAML::Value << YAML::BeginMap;
+                        emitDependency(emitter, el.as<Usage>(), data);
+                        emitter << YAML::EndMap << YAML::EndMap;
+                        break;
+                    }
+                    default: {
+                        throw UmlParserException("Error emitting element, element type " + el.getElementTypeString() + " is abstract and cannot be emit", "");
+                        break;
+                    }
+                }
+            } else {
+                emitToFile(el, data, newPath.parent_path(), newPath.filename());
+            }
             break;
         }
-        case ElementType::ARTIFACT : {
-            emitArtifact(emitter, el.as<Artifact>(), data);
+        case EmitterStrategy::COMPOSITE : {
+            // TODO
             break;
         }
-        case ElementType::ASSOCIATION : {
-            emitAssociation(emitter, dynamic_cast<Association&>(el), data);
-            break;
-        }
-        case ElementType::CLASS : {
-            emitClass(emitter, dynamic_cast<Class&>(el), data);
-            break;
-        }
-        case ElementType::DATA_TYPE : {
-            emitDataType(emitter, dynamic_cast<DataType&>(el), data);
-            break;
-        }
-        case ElementType::DEPENDENCY : {
-            emitDependency(emitter, el.as<Dependency>(), data);
-            break;
-        }
-        case ElementType::DEPLOYMENT : {
-            emitDeployment(emitter, el.as<Deployment>(), data);
-            break;
-        }
-        case ElementType::ENUMERATION : {
-            emitEnumeration(emitter, dynamic_cast<Enumeration&>(el), data);
-            break;
-        }
-        case ElementType::EXPRESSION : {
-            emitExpression(emitter, dynamic_cast<Expression&>(el), data);
-            break;
-        }
-        case ElementType::EXTENSION : {
-            emitExtension(emitter, dynamic_cast<Extension&>(el), data);
-            break;
-        }
-        case ElementType::INSTANCE_SPECIFICATION : {
-            emitInstanceSpecification(emitter, dynamic_cast<InstanceSpecification&>(el), data);
-            break;
-        }
-        case ElementType::LITERAL_BOOL : {
-            emitLiteralBool(emitter, dynamic_cast<LiteralBool&>(el), data);
-            break;
-        }
-        case ElementType::LITERAL_INT : {
-            emitLiteralInt(emitter, dynamic_cast<LiteralInt&>(el), data);
-            break;
-        }
-        case ElementType::LITERAL_NULL : {
-            emitter << YAML::BeginMap << YAML::Key << "literalNull" << YAML::Value << YAML::BeginMap;
-            emitTypedElement(emitter, dynamic_cast<TypedElement&>(el), data);
-            emitter << YAML::EndMap << YAML::EndMap;
-            break;
-        }
-        case ElementType::LITERAL_REAL : {
-            emitLiteralReal(emitter, dynamic_cast<LiteralReal&>(el), data);
-            break;
-        }
-        case ElementType::LITERAL_STRING : {
-            emitLiteralString(emitter, dynamic_cast<LiteralString&>(el), data);
-            break;
-        }
-        case ElementType::LITERAL_UNLIMITED_NATURAL : {
-            emitLiteralUnlimitedNatural(emitter, dynamic_cast<LiteralUnlimitedNatural&>(el), data);
-            break;
-        }
-        case ElementType::MODEL : {
-            emitModel(emitter, dynamic_cast<Model&>(el), data);
-            break;
-        }
-        case ElementType::OPAQUE_BEHAVIOR : {
-            emitOpaqueBehavior(emitter, dynamic_cast<OpaqueBehavior&>(el), data);
-            break;
-        }
-        case ElementType::PACKAGE : {
-            emitPackage(emitter, dynamic_cast<Package&>(el), data);
-            break;
-        }
-        case ElementType::PRIMITIVE_TYPE : {
-            emitPrimitiveType(emitter, dynamic_cast<PrimitiveType&>(el), data);
-            break;
-        }
-        case ElementType::PROPERTY : {
-            emitProperty(emitter, el.as<Property>(), data);
-            break;
-        }
-        case ElementType::PROFILE : {
-            emitter << YAML::BeginMap << YAML::Key << "profile" << YAML::Value << YAML::BeginMap;
-            emitPackage(emitter, dynamic_cast<Profile&>(el), data);
-            emitter << YAML::EndMap << YAML::EndMap;
-            break;
-        }
-        case ElementType::REALIZATION : {
-            emitter << YAML::BeginMap << YAML::Key << "realization" << YAML::Value << YAML::BeginMap;
-            emitDependency(emitter, el.as<Realization>(), data);
-            emitter << YAML::EndMap << YAML::EndMap;
-            break;
-        }
-        case ElementType::USAGE : {
-            emitter << YAML::BeginMap << YAML::Key << "usage" << YAML::Value << YAML::BeginMap;
-            emitDependency(emitter, el.as<Usage>(), data);
-            emitter << YAML::EndMap << YAML::EndMap;
-            break;
-        }
-        default: {
-            throw UmlParserException("Error emitting element, element type " + el.getElementTypeString() + " is abstract and cannot be emit", "");
+        case EmitterStrategy::INDIVIDUAL : {
+            // TODO
             break;
         }
     }
@@ -1435,39 +1453,11 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
 
     if (!pckg.getPackagedElements().empty()) {
         emitter << YAML::Key << "packagedElements" << YAML::Value << YAML::BeginSeq;
-        switch (data.m_strategy) {
-            case EmitterStrategy::WHOLE : {
-                for (auto& el : pckg.getPackagedElements()) {
-                    if (!el.isSubClassOf(ElementType::STEREOTYPE)) {
-                        filesystem::path newPath = data.m_manager->getPath(el.getID());
-                        if (newPath.empty() || (newPath.parent_path().compare(data.m_path) == 0 && newPath.filename().compare(data.m_fileName))) {
-                            emit(emitter, el, data);
-                        } else {
-                            emitToFile(el, data, newPath.parent_path(), newPath.filename());
-                        }
-                    }
-                }
-                break;
-            }
-            case EmitterStrategy::COMPOSITE : {
-                for (auto& el : pckg.getPackagedElements()) {
-                    YAML::Emitter newEmitter;
-                    filesystem::path cPath = data.m_path;
-                    string cFile = data.m_fileName;
-                    data.m_path = cPath / el.getID().string();
-                    data.m_fileName = el.getID().string() + ".yml";
-                    emit(newEmitter, el, data);
-                    ofstream file;
-                    file.open(data.m_path / el.getID().string() / (el.getID().string() + ".yml"));
-                    file << newEmitter.c_str();
-                    file.close();
-                    data.m_path = cPath;
-                    data.m_fileName = cFile;
-                }
-                break;
+        for (auto& el : pckg.getPackagedElements()) {
+            if (!el.isSubClassOf(ElementType::STEREOTYPE)) {
+                emit(emitter, el, data);
             }
         }
-        
         emitter << YAML::EndSeq;
     }
 
@@ -2873,7 +2863,7 @@ void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& applicat
         if (path.empty() || path == data.m_path / data.m_fileName) {
             emitter << YAML::Key << "appliedProfile" << YAML::Value << application.getAppliedProfile()->getID().string();
         } else {
-            emitToFile(*application.getAppliedProfile(), data, path.parent_path(), path.filename());
+            //emit(emitter, *application.getAppliedProfile(), data);
             if (data.m_path == path.parent_path()) {
                 emitter << YAML::Key << "appliedProfile" << YAML::Value << path.filename();
             }

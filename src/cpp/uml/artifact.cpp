@@ -1,6 +1,7 @@
 #include "uml/artifact.h"
 #include "uml/property.h"
 #include "uml/operation.h"
+#include "uml/manifestation.h"
 
 using namespace UML;
 
@@ -93,6 +94,22 @@ void Artifact::RemoveNestedArtifactFunctor::operator()(Element& el) const {
     }
 }
 
+void Artifact::AddManifestationFunctor::operator()(Element& el) const {
+    if (!m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalAdd(el);
+    }
+
+    el.as<Manifestation>().setArtifact(&m_el->as<Artifact>()); 
+}
+
+void Artifact::RemoveManifestationFunctor::operator()(Element& el) const {
+    if (m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalRemove(el);
+    }
+
+    el.as<Manifestation>().setArtifact(0); 
+}
+
 Artifact::Artifact() {
     m_ownedAttributes.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
     m_ownedAttributes.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
@@ -101,6 +118,8 @@ Artifact::Artifact() {
     m_nestedArtifacts.addProcedures.push_back(new AddNestedArtifactFunctor(this));
     m_nestedArtifacts.removeProcedures.push_back(new RemoveNestedArtifactFunctor(this));
     m_nestedArtifacts.addChecks.push_back(new CheckNestedArtifactFunctor(this));
+    m_manifestations.addProcedures.push_back(new AddManifestationFunctor(this));
+    m_manifestations.removeProcedures.push_back(new RemoveManifestationFunctor(this));
 }
 
 Artifact::Artifact(const Artifact& artifact) {
@@ -121,6 +140,11 @@ Artifact::Artifact(const Artifact& artifact) {
     m_nestedArtifacts.removeProcedures.push_back(new RemoveNestedArtifactFunctor(this));
     m_nestedArtifacts.addChecks.clear();
     m_nestedArtifacts.addChecks.push_back(new CheckNestedArtifactFunctor(this));
+    m_manifestations = artifact.m_manifestations;
+    m_manifestations.addProcedures.clear();
+    m_manifestations.removeProcedures.clear();
+    m_manifestations.addProcedures.push_back(new AddManifestationFunctor(this));
+    m_manifestations.removeProcedures.push_back(new RemoveManifestationFunctor(this));
 }
 
 Sequence<Property>& Artifact::getOwnedAttributes() {
@@ -133,6 +157,10 @@ Sequence<Operation>& Artifact::getOwnedOperations() {
 
 Sequence<Artifact>& Artifact::getNestedArtifacts() {
     return m_nestedArtifacts;
+}
+
+Sequence<Manifestation>& Artifact::getManifestations() {
+    return m_manifestations;
 }
 
 Artifact::~Artifact() {

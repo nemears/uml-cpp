@@ -5,12 +5,16 @@
 #include "deployedArtifact.h"
 
 namespace UML {
+
+    class Manifestation;
+
     class Artifact : public Classifier, public DeployedArtifact {
         friend class UmlManager;
         protected:
             Sequence<Artifact> m_nestedArtifacts;
             Sequence<Property> m_ownedAttributes;
             Sequence<Operation> m_ownedOperations;
+            Sequence<Manifestation> m_manifestations;
             void setManager(UmlManager* manager) override;
             class AddOwnedAttributeFunctor : public AbstractSequenceFunctor {
                 public:
@@ -47,6 +51,16 @@ namespace UML {
                     RemoveNestedArtifactFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            class AddManifestationFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddManifestationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
+            class RemoveManifestationFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveManifestationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
         public:
             Artifact();
             Artifact(const Artifact& artifact);
@@ -54,6 +68,7 @@ namespace UML {
             Sequence<Property>& getOwnedAttributes();
             Sequence<Operation>& getOwnedOperations();
             Sequence<Artifact>& getNestedArtifacts();
+            Sequence<Manifestation>& getManifestations();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

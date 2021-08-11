@@ -5,6 +5,7 @@
 #include "test/yumlParsersTest.h"
 #include "uml/model.h"
 #include "uml/profileApplication.h"
+#include "uml/parsers/parser.h"
 
 using namespace std;
 using namespace UML;
@@ -60,9 +61,20 @@ TEST_F(UmlManagerTest, multipleFileTest) {
 }
 
 TEST_F(UmlManagerTest, simpleMountTest) {
-    UmlManager m;
-    Package& p = m.create<Package>();
+    UmlManager* m = new UmlManager;
+    Package& p = m->create<Package>();
     p.setName("mountedRoot");
-    m.setRoot(&p);
-    ASSERT_NO_THROW(m.mount("."));
+    m->setRoot(&p);
+    ASSERT_NO_THROW(m->mount(ymlPath + "umlManagerTests"));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount"));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount" / p.getID().string()));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount" / p.getID().string() / (p.getID().string() + ".yml")));
+    UmlManager* m2 = Parsers::parse(filesystem::path(filesystem::path(ymlPath + "umlManagerTests") / "mount" / p.getID().string() / (p.getID().string() + ".yml")));
+    ASSERT_EQ(m2->getRoot()->getElementType(), ElementType::PACKAGE);
+    Package& p2 = m2->getRoot()->as<Package>();
+    ASSERT_EQ(p2.getID(), p.getID());
+    ASSERT_EQ(p2.getName(), p.getName());
+    delete m2;
+    delete m;
+    ASSERT_FALSE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount"));
 }

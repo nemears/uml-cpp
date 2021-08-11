@@ -30,6 +30,9 @@ UmlManager::UmlManager() {
 
 UmlManager::~UmlManager() {
     clear();
+    if (!m_mountBase.empty()) {
+        filesystem::remove_all(m_mountBase / "mount");
+    }
 }
 
 size_t UmlManager::count(ID id) {
@@ -64,7 +67,11 @@ void UmlManager::reindex(ID oldID, ID newID) {
 void UmlManager::mount(string path) {
     m_mountBase = path;
     if (m_root) {
-        Parsers::EmitterMetaData data = {path, Parsers::EmitterStrategy::COMPOSITE, m_mountBase.filename(), this};
+        filesystem::create_directories(path / filesystem::path("mount") / m_root->getID().string());
+        m_disc[m_root->getID()].m_mountPath = path / filesystem::path("mount") / m_root->getID().string() / (m_root->getID().string() + ".yml");
+        Parsers::EmitterMetaData data = {path / filesystem::path("mount") / m_root->getID().string(), 
+                                         Parsers::EmitterStrategy::COMPOSITE, 
+                                         m_root->getID().string() + ".yml", this};
         Parsers::emit(data);
     } else {
         // TODO throw error

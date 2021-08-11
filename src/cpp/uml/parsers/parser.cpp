@@ -240,17 +240,21 @@ Element* parseExternalAddToManager(ParserMetaData& data, string path) {
 void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     filesystem::path newPath;
     switch (data.m_strategy) {
-        case EmitterStrategy::WHOLE : {\
+        case EmitterStrategy::WHOLE : {
             newPath = data.getPath(el.getID());
             break;
         }
         case EmitterStrategy::COMPOSITE : 
         case EmitterStrategy::INDIVIDUAL : {
             newPath = data.getMountPath(el.getID());
+            if (newPath.empty()) {
+                YAML::Node node;
+                throw UmlParserException("Invalid path for mount!", "", node);
+            }
             break;
         }
     }
-    if (newPath.empty() || (newPath.parent_path().compare(data.m_path) == 0 && newPath.filename().compare(data.m_fileName))) {
+    if (newPath.empty() || (newPath.parent_path().compare(data.m_path) == 0 && newPath.filename().compare(data.m_fileName) == 0)) {
         determineTypeAndEmit(emitter, el, data);
     } else {
         emitToFile(el, data, newPath.parent_path(), newPath.filename());

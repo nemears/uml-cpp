@@ -78,3 +78,27 @@ TEST_F(UmlManagerTest, simpleMountTest) {
     delete m;
     ASSERT_FALSE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount"));
 }
+
+TEST_F(UmlManagerTest, multiLayerMountTest) {
+    UmlManager* m = new UmlManager;
+    Package& p = m->create<Package>();
+    Package& c = m->create<Package>();
+    p.setName("mountedRoot");
+    m->setRoot(&p);
+    p.getPackagedElements().add(c);
+    c.setName("child");
+    ASSERT_NO_THROW(m->mount(ymlPath + "umlManagerTests"));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount"));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount" / p.getID().string()));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount" / p.getID().string() / (p.getID().string() + ".yml")));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount" / p.getID().string() / c.getID().string()));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount" / p.getID().string() / c.getID().string() / (c.getID().string() + ".yml")));
+    UmlManager* m2 = Parsers::parse(filesystem::path(filesystem::path(ymlPath + "umlManagerTests") / "mount" / p.getID().string() / (p.getID().string() + ".yml")));
+    ASSERT_EQ(m2->getRoot()->getElementType(), ElementType::PACKAGE);
+    Package& p2 = m2->getRoot()->as<Package>();
+    ASSERT_EQ(p2.getID(), p.getID());
+    ASSERT_EQ(p2.getName(), p.getName());
+    ASSERT_EQ(p2.getPackagedElements().size(), p.getPackagedElements().size());
+    ASSERT_EQ(p2.getPackagedElements().front().getID(), c.getID());
+    delete m;
+}

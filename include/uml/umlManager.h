@@ -38,6 +38,7 @@ namespace UML {
             Model* m_model;
             Element* m_root;
             void clear();
+            void setElementAndChildrenMount(std::filesystem::path parentPath, Element& el);
         public:
             UmlManager();
             ~UmlManager();

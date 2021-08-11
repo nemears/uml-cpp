@@ -64,11 +64,19 @@ void UmlManager::reindex(ID oldID, ID newID) {
     }
 }
 
+void UmlManager::setElementAndChildrenMount(filesystem::path parentPath, Element& el) {
+    filesystem::create_directories(parentPath / el.getID().string());
+    m_disc[el.getID()].m_mountPath = parentPath / el.getID().string() / (el.getID().string() + ".yml");
+    for (auto& child : el.getOwnedElements()) {
+        setElementAndChildrenMount(parentPath / el.getID().string(), child);
+    }
+}
+
 void UmlManager::mount(string path) {
     m_mountBase = path;
     if (m_root) {
         filesystem::create_directories(path / filesystem::path("mount") / m_root->getID().string());
-        m_disc[m_root->getID()].m_mountPath = path / filesystem::path("mount") / m_root->getID().string() / (m_root->getID().string() + ".yml");
+        setElementAndChildrenMount(path / filesystem::path("mount"), *m_root);
         Parsers::EmitterMetaData data = {path / filesystem::path("mount") / m_root->getID().string(), 
                                          Parsers::EmitterStrategy::COMPOSITE, 
                                          m_root->getID().string() + ".yml", this};

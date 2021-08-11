@@ -257,6 +257,7 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     if (newPath.empty() || (newPath.parent_path().compare(data.m_path) == 0 && newPath.filename().compare(data.m_fileName) == 0)) {
         determineTypeAndEmit(emitter, el, data);
     } else {
+        emitter << YAML::Value << newPath.string().substr(newPath.string().substr(0, newPath.string().find_last_of("/")).find_last_of("/") + 1);
         emitToFile(el, data, newPath.parent_path(), newPath.filename());
     }
 }

@@ -58,3 +58,11 @@ TEST_F(UmlManagerTest, multipleFileTest) {
     ASSERT_TRUE(application.getAppliedProfile() != 0);
     m.save();
 }
+
+TEST_F(UmlManagerTest, simpleMountTest) {
+    UmlManager m;
+    Package& p = m.create<Package>();
+    p.setName("mountedRoot");
+    m.setRoot(&p);
+    ASSERT_NO_THROW(m.mount("."));
+}

@@ -52,6 +52,7 @@ namespace UML {
 
         void emit(EmitterMetaData& data);
 
+        // sets up yaml emitter for emitting to a new file and emits
         void emitToFile(Element& el, EmitterMetaData& data, std::string path, std::string fileName);
 
         // anonymous functions
@@ -61,7 +62,8 @@ namespace UML {
 
             Element* parseExternalAddToManager();
 
-            void emit (YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
+            void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
+            void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
             void emitElementDefenition(YAML::Emitter& emitter, ElementType eType, std::string yamlName, Element& el, EmitterMetaData& data);
             void emitElementDefenitionEnd(YAML::Emitter& emitter, ElementType eType, Element& el);
 

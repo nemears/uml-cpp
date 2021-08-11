@@ -2,8 +2,12 @@
 #define EMITTER_META_DATA_H
 
 #include <filesystem>
+#include "uml/id.h"
 
 namespace UML {
+
+    class UmlManager;
+
     namespace Parsers {
 
         enum class EmitterStrategy {
@@ -18,6 +22,8 @@ namespace UML {
                 EmitterStrategy m_strategy;
                 std::string m_fileName;
                 UmlManager* m_manager;
+                std::filesystem::path getMountPath(ID id);
+                std::filesystem::path getPath(ID id);
         };
     }
 }

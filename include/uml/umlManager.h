@@ -10,10 +10,12 @@
 namespace UML {
     namespace Parsers {
         class ParserMetaData;
+        struct EmitterMetaData;
     }
 
     struct DiscData {
         std::string m_path;
+        std::string m_mountPath;
     };
 
     template <class T = Element> class Sequence;
@@ -26,6 +28,7 @@ namespace UML {
      **/
     class UmlManager {
         friend class Parsers::ParserMetaData;
+        friend struct Parsers::EmitterMetaData;
         private:
             std::unordered_map<ID, Element*> m_loaded;
             std::unordered_set<ID> m_elements;
@@ -108,7 +111,6 @@ namespace UML {
             void setRoot(Element* el);
             Model* getModel();
             Element* getRoot();
-            std::string getPath(ID elID);
             void setPath(ID elID, std::string path);
     };
 }

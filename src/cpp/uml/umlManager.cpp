@@ -1,6 +1,7 @@
 #include "uml/umlManager.h"
 #include <fstream>
 #include "uml/parsers/parser.h"
+#include "uml/parsers/emitterMetaData.h"
 #include "uml/callBehaviorAction.h"
 #include "uml/controlFlow.h"
 #include "uml/createObjectAction.h"
@@ -62,17 +63,9 @@ void UmlManager::reindex(ID oldID, ID newID) {
 
 void UmlManager::mount(string path) {
     m_mountBase = path;
-    if (m_model) {
-        // YAML::Emitter emitter;
-        // Parsers::EmitterMetaData data;
-        // data.m_path = path;
-        // data.m_fileName = m_model->getID().string() + ".yml";
-        // data.m_strategy = Parsers::EmitterStrategy::COMPOSITE;
-        // Parsers::emit(data);
-        // ofstream file;
-        // file.open(data.m_path / data.m_fileName);
-        // file << emitter.c_str();
-        // file.close();
+    if (m_root) {
+        Parsers::EmitterMetaData data = {path, Parsers::EmitterStrategy::COMPOSITE, m_mountBase.filename(), this};
+        Parsers::emit(data);
     } else {
         // TODO throw error
     }
@@ -152,12 +145,6 @@ Element* UmlManager::getRoot() {
     return m_root;
 }
 
-string UmlManager::getPath(ID elID) {
-    if (m_disc.count(elID)) {
-        return m_disc[elID].m_path;
-    }
-    return "";
-}
 void UmlManager::setPath(ID elID, string path) {
     m_disc[elID].m_path = path;
 }

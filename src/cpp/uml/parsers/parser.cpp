@@ -238,9 +238,9 @@ Element* parseExternalAddToManager(ParserMetaData& data, string path) {
 }
 
 void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
+    filesystem::path newPath = data.m_manager->getPath(el.getID());
     switch (data.m_strategy) {
         case EmitterStrategy::WHOLE : {
-            filesystem::path newPath = data.m_manager->getPath(el.getID());
             if (newPath.empty() || (newPath.parent_path().compare(data.m_path) == 0 && newPath.filename().compare(data.m_fileName))) {
                 switch(el.getElementType()) {
                     case ElementType::ABSTRACTION : {
@@ -363,12 +363,9 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             }
             break;
         }
-        case EmitterStrategy::COMPOSITE : {
-            // TODO
-            break;
-        }
+        case EmitterStrategy::COMPOSITE : 
         case EmitterStrategy::INDIVIDUAL : {
-            // TODO
+            emitToFile(el, data, newPath.parent_path(), newPath.filename());
             break;
         }
     }

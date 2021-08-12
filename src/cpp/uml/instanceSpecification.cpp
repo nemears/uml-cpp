@@ -69,24 +69,7 @@ Classifier* InstanceSpecification::getClassifier() {
 }
 
 void InstanceSpecification::setClassifier(Classifier* classifier) {
-    if (!isSameOrNull(m_classifierID, classifier)) {
-        if (m_manager) {
-            m_manager->removeReference(m_id, m_classifierID);
-        }
-        m_classifierID = ID::nullID();
-        m_classifierPtr = 0;
-    }
-
-    if (classifier) {
-        m_classifierID = classifier->getID();
-        if (m_manager) {
-            m_manager->setReference(m_id, m_classifierID, m_classifierPtr);
-        }
-    }
-    
-    if (!m_manager) {
-        m_classifierPtr = classifier;
-    }
+    universalSet(m_classifierID, classifier, m_classifierPtr);
 }
 
 ValueSpecification* InstanceSpecification::getSpecification() {

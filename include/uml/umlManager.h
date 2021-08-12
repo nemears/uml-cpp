@@ -26,6 +26,7 @@ namespace UML {
     class UmlManager {
         friend class Parsers::ParserMetaData;
         friend struct Parsers::EmitterMetaData;
+        friend class Element;
         friend class InstanceSpecification;
         protected:
             struct DiscData {

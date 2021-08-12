@@ -12,8 +12,9 @@ using namespace UML;
 class InstanceSpecificationTest : public ::testing::Test {};
 
 TEST_F(InstanceSpecificationTest, setClassifierAsClass) {
-    Class c;
-    InstanceSpecification i;
+    UmlManager m; // This won't work without manager
+    Class& c = m.create<Class>();
+    InstanceSpecification& i = m.create<InstanceSpecification>();
     ASSERT_NO_THROW(i.setClassifier(&c));
     EXPECT_TRUE(i.getClassifier()->getID() == c.getID());
 }

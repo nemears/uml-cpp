@@ -590,3 +590,24 @@ bool Element::isSameOrNull(ID id, Element* el) {
         return false;
     }
 }
+
+void Element::universalSet(ID& theID, Element* thePtr, Element* oldPtr){
+    if (!isSameOrNull(theID, thePtr)) {
+        if (m_manager) {
+            m_manager->removeReference(m_id, theID);
+        }
+        theID = ID::nullID();
+        oldPtr = 0;
+    }
+
+    if (thePtr) {
+        theID = thePtr->getID();
+        if (m_manager) {
+            m_manager->setReference(m_id, theID, thePtr);
+        }
+    }
+    
+    if (!m_manager) {
+        oldPtr = thePtr;
+    }
+}

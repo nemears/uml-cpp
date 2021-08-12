@@ -159,6 +159,7 @@ namespace UML {
             virtual void reindexID(ID oldID, ID newID);
             void setOwner(Element* el);
             static bool isSameOrNull(ID id, Element* el);
+            void universalSet(ID& theID, Element* thePtr, Element* oldPtr);
         public:
             Element();
             virtual ~Element();

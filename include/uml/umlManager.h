@@ -13,10 +13,7 @@ namespace UML {
         struct EmitterMetaData;
     }
 
-    struct DiscData {
-        std::string m_path;
-        std::string m_mountPath;
-    };
+    class InstanceSpecification;
 
     template <class T = Element> class Sequence;
     class Model;
@@ -29,12 +26,21 @@ namespace UML {
     class UmlManager {
         friend class Parsers::ParserMetaData;
         friend struct Parsers::EmitterMetaData;
+        friend class InstanceSpecification;
+        protected:
+            struct DiscData {
+                std::string m_path;
+                std::string m_mountPath;
+                std::unordered_map<ID, Element*> m_references;
+            };
+            void setReference(ID referencing, ID referenced, Element* ptr);
+            void removeReference(ID referencing, ID referenced);
         private:
             std::unordered_map<ID, Element*> m_loaded;
             std::unordered_set<ID> m_elements;
             std::unordered_map<ID, DiscData> m_disc;
             std::filesystem::path m_path;
-            std::filesystem::path m_mountBase; // TODO finish
+            std::filesystem::path m_mountBase;
             Model* m_model;
             Element* m_root;
             void clear();

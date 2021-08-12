@@ -6,6 +6,7 @@
 #include "uml/model.h"
 #include "uml/profileApplication.h"
 #include "uml/parsers/parser.h"
+#include "uml/instanceSpecification.h"
 
 using namespace std;
 using namespace UML;
@@ -117,4 +118,20 @@ TEST_F(UmlManagerTest, releaseTest) {
     ASSERT_EQ(m2->getRoot()->getElementType(), ElementType::PACKAGE);
     Package& p2 = m2->getRoot()->as<Package>();
     ASSERT_EQ(p.getName(), "name");
+}
+
+TEST_F(UmlManagerTest, releaseTestW_RefInOther) {
+    UmlManager m;
+    Package& p = m.create<Package>();
+    Class& c = m.create<Class>();
+    InstanceSpecification& i = m.create<InstanceSpecification>();
+    i.setClassifier(&c);
+    p.getPackagedElements().add(c);
+    p.getPackagedElements().add(i);
+    m.setRoot(&p);
+    ASSERT_NO_THROW(m.mount(ymlPath + "umlManagerTests"));
+    ASSERT_TRUE(i.getClassifier() != 0);
+    ASSERT_EQ(i.getClassifier()->getID(), c.getID());
+    ASSERT_NO_THROW(m.release(c.getID()));
+    ASSERT_TRUE(i.getClassifier() != 0);
 }

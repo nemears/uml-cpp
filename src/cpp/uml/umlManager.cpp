@@ -17,6 +17,14 @@
 using namespace std;
 using namespace UML;
 
+void UmlManager::setReference(ID referencing, ID referenced, Element* ptr) {
+    m_disc[referenced].m_references[referencing] = ptr;
+}
+
+void UmlManager::removeReference(ID referencing, ID referenced) {
+    m_disc[referenced].m_references.erase(referencing);
+}
+
 void UmlManager::clear() {
     for (auto& e : m_loaded) {
         delete e.second;
@@ -101,9 +109,12 @@ void UmlManager::release(ID id) {
         Parsers::EmitterMetaData data = {filesystem::path(m_disc[id].m_mountPath).parent_path(),
                                          Parsers::EmitterStrategy::INDIVIDUAL,
                                          filesystem::path(m_disc[id].m_mountPath).filename(), this};
-        Parsers::emit(data);
+        Parsers::emitToFile(*m_loaded[id], data, data.m_path, data.m_fileName);
         delete m_loaded[id];
         m_loaded.erase(id);
+        for (auto& e : m_disc[id].m_references) {
+            e.second = 0;
+        }
     } else {
         // TODO throw error
     }

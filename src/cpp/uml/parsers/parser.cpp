@@ -244,8 +244,12 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             newPath = data.getPath(el.getID());
             break;
         }
-        case EmitterStrategy::COMPOSITE : 
         case EmitterStrategy::INDIVIDUAL : {
+            if (data.m_path != data.getMountPath(el.getID()).parent_path()) {
+                return;
+            }
+        }
+        case EmitterStrategy::COMPOSITE : {
             newPath = data.getMountPath(el.getID());
             if (newPath.empty()) {
                 YAML::Node node;

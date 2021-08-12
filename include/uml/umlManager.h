@@ -44,7 +44,7 @@ namespace UML {
             ~UmlManager();
             template <class T = Element> T& get(ID id) {
                 if (!m_loaded.count(id)) {
-                    // TODO load
+                    aquire(id);
                 }
                 return *dynamic_cast<T*>(m_loaded.at(id));
             };

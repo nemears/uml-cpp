@@ -102,3 +102,19 @@ TEST_F(UmlManagerTest, multiLayerMountTest) {
     ASSERT_EQ(p2.getPackagedElements().front().getID(), c.getID());
     delete m;
 }
+
+TEST_F(UmlManagerTest, releaseTest) {
+    UmlManager m;
+    Package& p = m.create<Package>();
+    Package& c = m.create<Package>();
+    p.getPackagedElements().add(c);
+    m.setRoot(&p);
+    ASSERT_NO_THROW(m.mount(ymlPath + "umlManagerTests"));
+    p.setName("name");
+    ID pid = p.getID();
+    ASSERT_NO_THROW(m.release(p.getID()));
+    UmlManager* m2 = Parsers::parse(filesystem::path(ymlPath + "umlManagerTests") / "mount" / pid.string() / (pid.string() + ".yml"));
+    ASSERT_EQ(m2->getRoot()->getElementType(), ElementType::PACKAGE);
+    Package& p2 = m2->getRoot()->as<Package>();
+    ASSERT_EQ(p.getName(), "name");
+}

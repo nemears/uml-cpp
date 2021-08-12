@@ -87,14 +87,26 @@ void UmlManager::mount(string path) {
 }
 
 void UmlManager::aquire(ID id) {
-    // TODO get path
-    Parsers::ParserMetaData data(this);
-    data.m_path = m_disc[id].m_path;
-    m_loaded[id] = Parsers::parse(data);
+    if (!m_mountBase.empty()) {
+        Parsers::ParserMetaData data(this);
+        data.m_path = m_disc[id].m_mountPath;
+        m_loaded[id] = Parsers::parse(data);
+    } else {
+        // TODO throw error
+    }
 }
 
 void UmlManager::release(ID id) {
-    // Parsers::emit(m_loaded[id])
+    if (!m_mountBase.empty()) {
+        Parsers::EmitterMetaData data = {filesystem::path(m_disc[id].m_mountPath).parent_path(),
+                                         Parsers::EmitterStrategy::INDIVIDUAL,
+                                         filesystem::path(m_disc[id].m_mountPath).filename(), this};
+        Parsers::emit(data);
+        delete m_loaded[id];
+        m_loaded.erase(id);
+    } else {
+        // TODO throw error
+    }
 }
 
 void UmlManager::save() {

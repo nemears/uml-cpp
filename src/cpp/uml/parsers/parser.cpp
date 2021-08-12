@@ -282,6 +282,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitClass(emitter, dynamic_cast<Class&>(el), data);
             break;
         }
+        case ElementType::COMMENT : {
+            emitComment(emitter, el.as<Comment>(), data);
+            break;
+        }
         case ElementType::DATA_TYPE : {
             emitDataType(emitter, dynamic_cast<DataType&>(el), data);
             break;
@@ -298,12 +302,20 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitEnumeration(emitter, dynamic_cast<Enumeration&>(el), data);
             break;
         }
+        case ElementType::ENUMERATION_LITERAL : {
+            emitEnumerationLiteral(emitter, el.as<EnumerationLiteral>(), data);
+            break;
+        }
         case ElementType::EXPRESSION : {
             emitExpression(emitter, dynamic_cast<Expression&>(el), data);
             break;
         }
         case ElementType::EXTENSION : {
             emitExtension(emitter, dynamic_cast<Extension&>(el), data);
+            break;
+        }
+        case ElementType::GENERALIZATION : {
+            emitGeneralization(emitter, el.as<Generalization>(), data);
             break;
         }
         case ElementType::INSTANCE_SPECIFICATION : {
@@ -336,6 +348,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitLiteralUnlimitedNatural(emitter, dynamic_cast<LiteralUnlimitedNatural&>(el), data);
             break;
         }
+        case ElementType::MANIFESTATION : {
+            emitManifestation(emitter, el.as<Manifestation>(), data);
+            break;
+        }
         case ElementType::MODEL : {
             emitModel(emitter, dynamic_cast<Model&>(el), data);
             break;
@@ -344,8 +360,20 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitOpaqueBehavior(emitter, dynamic_cast<OpaqueBehavior&>(el), data);
             break;
         }
+        case ElementType::OPERATION : {
+            emitOperation(emitter, el.as<Operation>(), data);
+            break;
+        }
         case ElementType::PACKAGE : {
             emitPackage(emitter, dynamic_cast<Package&>(el), data);
+            break;
+        }
+        case ElementType::PACKAGE_MERGE : {
+            emitPackageMerge(emitter, el.as<PackageMerge>(), data);
+            break;
+        }
+        case ElementType::PARAMETER : {
+            emitParameter(emitter, el.as<Parameter>(), data);
             break;
         }
         case ElementType::PRIMITIVE_TYPE : {
@@ -362,10 +390,40 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitter << YAML::EndMap << YAML::EndMap;
             break;
         }
+        case ElementType::PROFILE_APPLICATION : {
+            emitProfileApplication(emitter, el.as<ProfileApplication>(), data);
+            break;
+        }
         case ElementType::REALIZATION : {
             emitter << YAML::BeginMap << YAML::Key << "realization" << YAML::Value << YAML::BeginMap;
             emitDependency(emitter, el.as<Realization>(), data);
             emitter << YAML::EndMap << YAML::EndMap;
+            break;
+        }
+        case ElementType::SLOT : {
+            emitSlot(emitter, el.as<Slot>(), data);
+            break;
+        }
+        case ElementType::STEREOTYPE : {
+            emitter << YAML::BeginMap << YAML::Key << "stereotype" << YAML::Value << YAML::BeginMap;
+            emitClass(emitter, el.as<Stereotype>(), data);
+            emitter << YAML::EndMap << YAML::EndMap;
+            break;
+        }
+        case ElementType::TEMPLATE_BINDING : {
+            emitTemplateBinding(emitter, el.as<TemplateBinding>(), data);
+            break;
+        }
+        case ElementType::TEMPLATE_PARAMETER : {
+            emitTemplateParameter(emitter, el.as<TemplateParameter>(), data);
+            break;
+        }
+        case ElementType::TEMPLATE_PARAMETER_SUBSTITUTION : {
+            emitTemplateParameterSubstitution(emitter, el.as<TemplateParameterSubstitution>(), data);
+            break;
+        }
+        case ElementType::TEMPLATE_SIGNATURE : {
+            emitTemplateSignature(emitter, el.as<TemplateSignature>(), data);
             break;
         }
         case ElementType::USAGE : {
@@ -474,14 +532,14 @@ void emitElement(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     if (!el.getOwnedComments().empty()) {
         emitter << YAML::Key << "ownedComments" << YAML::Value << YAML::BeginSeq;
         for (auto& comment : el.getOwnedComments()) {
-            emitComment(emitter, comment, data);
+            emit(emitter, comment, data);
         }
     }
 
     if (!el.getAppliedStereotypes().empty()) {
         emitter << YAML::Key << "appliedStereotypes" << YAML::Value << YAML::BeginSeq;
         for (auto& stereotypeInst : el.getAppliedStereotypes()) {
-            emitInstanceSpecification(emitter, stereotypeInst, data);
+            emit(emitter, stereotypeInst, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -611,7 +669,7 @@ void emitClassifier(YAML::Emitter& emitter, Classifier& clazz, EmitterMetaData& 
     if (!clazz.getGeneralizations().empty()) {
         emitter << YAML::Key << "generalizations" << YAML::Value << YAML::BeginSeq;
         for (auto& generalization: clazz.getGeneralizations()) {
-            emitGeneralization(emitter, generalization, data);
+            emit(emitter, generalization, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -703,7 +761,7 @@ void emitDataType(YAML::Emitter& emitter, DataType& dataType, EmitterMetaData& d
     if (!dataType.getOwnedAttribute().empty()) {
         emitter << YAML::Key << "ownedAttribute" << YAML::Value << YAML::BeginSeq;
         for (auto& attribute: dataType.getOwnedAttribute()) {
-            emitProperty(emitter, attribute, data);
+            emit(emitter, attribute, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -711,7 +769,7 @@ void emitDataType(YAML::Emitter& emitter, DataType& dataType, EmitterMetaData& d
     if (!dataType.getOwnedOperation().empty()) {
         emitter << YAML::Key << "ownedOperation" << YAML::Value << YAML::BeginSeq;
         for (auto& operation : dataType.getOwnedOperation()) {
-            emitOperation(emitter, operation, data);
+            emit(emitter, operation, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -760,7 +818,7 @@ void emitStructuredClassifier(YAML::Emitter& emitter, StructuredClassifier& claz
     if (!clazz.getOwnedAttributes().empty()) {
         emitter << YAML::Key << "ownedAttributes" << YAML::Value << YAML::BeginSeq;
         for (auto& attribute : clazz.getOwnedAttributes()) {
-            emitProperty(emitter, attribute, data);
+            emit(emitter, attribute, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -866,7 +924,7 @@ void emitClass(YAML::Emitter& emitter, Class& clazz, EmitterMetaData& data) {
     if (!clazz.getOperations().empty()) {
         emitter << YAML::Key << "operations" << YAML::Value << YAML::BeginSeq;
         for (auto& operation : clazz.getOperations()) {
-            emitOperation(emitter, operation, data);
+            emit(emitter, operation, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -910,7 +968,7 @@ void emitBehavior(YAML::Emitter& emitter, Behavior& bhv, EmitterMetaData& data) 
     if (!bhv.getParameters().empty()) {
         emitter << YAML::Key << "parameters" << YAML::Value << YAML::BeginSeq;
         for (auto& param : bhv.getParameters()) {
-            emitParameter(emitter, param, data);
+            emit(emitter, param, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -1210,7 +1268,7 @@ void emitOperation(YAML::Emitter& emitter, Operation& op, EmitterMetaData& data)
     if (!op.getOwnedParameters().empty()) {
         emitter << YAML::Key << "ownedParameters" << YAML::Value << YAML::BeginSeq;
         for (auto& parameter : op.getOwnedParameters()) {
-            emitParameter(emitter, parameter, data);
+            emit(emitter, parameter, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -1445,7 +1503,7 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
     if (!pckg.getPackageMerge().empty()) {
         emitter << YAML::Key << "packageMerge" << YAML::Value << YAML::BeginSeq;
         for (auto& pckgMerge : pckg.getPackageMerge()) {
-            emitPackageMerge(emitter, pckgMerge, data);
+            emit(emitter, pckgMerge, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -1453,7 +1511,7 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
     if (!pckg.getProfileApplications().empty()) {
         emitter << YAML::Key << "profileApplications" << YAML::Value << YAML::BeginSeq;
         for (auto& application : pckg.getProfileApplications()) {
-            emitProfileApplication(emitter, application, data);
+            emit(emitter, application, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -1471,10 +1529,7 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
     if (!pckg.getOwnedStereotypes().empty()) {
         emitter << YAML::Key << "ownedStereotypes" << YAML::Value << YAML::BeginSeq;
         for (auto& stereotype : pckg.getOwnedStereotypes()) {
-            // TODO move to own function?
-            emitter << YAML::BeginMap << YAML::Key << "stereotype" << YAML::Value << YAML::BeginMap;
-            emitClass(emitter, stereotype, data);
-            emitter << YAML::EndMap << YAML::EndMap;
+            emit(emitter, stereotype, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -1597,7 +1652,7 @@ void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& in
     if (!inst.getSlots().empty()) {
         emitter << YAML::Key << "slots" << YAML::Value << YAML::BeginSeq;
         for (auto& slot : inst.getSlots()) {
-            emitSlot(emitter, slot, data);
+            emit(emitter, slot, data);
         }
     }
 
@@ -1697,7 +1752,7 @@ void emitEnumeration(YAML::Emitter& emitter, Enumeration& enumeration, EmitterMe
     if (!enumeration.getOwnedLiteral().empty()) {
         emitter << YAML::Key << "ownedLiteral" << YAML::BeginSeq;
         for (auto& literal : enumeration.getOwnedLiteral()) {
-            emitEnumerationLiteral(emitter, literal, data);
+            emit(emitter, literal, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -2059,11 +2114,11 @@ void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMe
 
 void emitTemplateableElement(YAML::Emitter& emitter, TemplateableElement& el, EmitterMetaData& data) {
     if (el.getOwnedTemplateSignature() != 0) {
-        emitTemplateSignature(emitter, *el.getOwnedTemplateSignature(), data);
+        emit(emitter, *el.getOwnedTemplateSignature(), data);
     }
 
     if (el.getTemplateBinding() != 0) {
-        emitTemplateBinding(emitter, *el.getTemplateBinding(), data);
+        emit(emitter, *el.getTemplateBinding(), data);
     }
 }
 
@@ -2124,7 +2179,7 @@ void emitTemplateSignature(YAML::Emitter& emitter, TemplateSignature& signature,
     if (!signature.getOwnedParameter().empty()) {
         emitter << YAML::Key << "ownedParameters" << YAML::Value << YAML::BeginSeq;
         for (auto& param: signature.getOwnedParameter()) {
-            emitTemplateParameter(emitter, param, data);
+            emit(emitter, param, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -2431,7 +2486,7 @@ void emitTemplateBinding(YAML::Emitter& emitter, TemplateBinding& binding, Emitt
     if (!binding.getParameterSubstitution().empty()) {
         emitter << YAML::Key << "parameterSubstitution" << YAML::BeginSeq;
         for (auto& sub: binding.getParameterSubstitution()) {
-            emitTemplateParameterSubstitution(emitter, sub, data);
+            emit(emitter, sub, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -2586,7 +2641,7 @@ void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMe
     if (!association.getNavigableOwnedEnds().empty()) {
         emitter << YAML::Key << "navigableOwnedEnds" << YAML::Value << YAML::BeginSeq;
         for (auto& end : association.getNavigableOwnedEnds()) {
-            emitProperty(emitter, end, data); // todo go to emit, make polymorphic
+            emit(emitter, end, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -2595,7 +2650,7 @@ void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMe
         emitter << YAML::Key << "ownedEnds" << YAML::Value << YAML::BeginSeq;
         for (auto& end : association.getOwnedEnds()) {
             if (!association.getNavigableOwnedEnds().count(end.getID())) {
-                emitProperty(emitter, end, data);
+                emit(emitter, end, data);
             }
         }
         emitter << YAML::EndSeq;
@@ -3109,7 +3164,7 @@ void emitArtifact(YAML::Emitter& emitter, Artifact& artifact, EmitterMetaData& d
     if (!artifact.getOwnedAttributes().empty()) {
         emitter << YAML::Key << "ownedAttributes" << YAML::Value << YAML::BeginSeq;
         for (auto& prop: artifact.getOwnedAttributes()) {
-            emitProperty(emitter, prop, data);
+            emit(emitter, prop, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -3117,7 +3172,7 @@ void emitArtifact(YAML::Emitter& emitter, Artifact& artifact, EmitterMetaData& d
     if (!artifact.getOwnedOperations().empty()) {
         emitter << YAML::Key << "ownedOperations" << YAML::Value << YAML::BeginSeq;
         for (auto& op: artifact.getOwnedOperations()) {
-            emitOperation(emitter, op, data);
+            emit(emitter, op, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -3125,7 +3180,7 @@ void emitArtifact(YAML::Emitter& emitter, Artifact& artifact, EmitterMetaData& d
     if (!artifact.getNestedArtifacts().empty()) {
         emitter << YAML::Key << "nestedArtifacts" << YAML::Value << YAML::BeginSeq;
         for (auto& nest: artifact.getNestedArtifacts()) {
-            emitArtifact(emitter, nest, data);
+            emit(emitter, nest, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -3133,7 +3188,7 @@ void emitArtifact(YAML::Emitter& emitter, Artifact& artifact, EmitterMetaData& d
     if (!artifact.getManifestations().empty()) {
         emitter << YAML::Key << "manifestations" << YAML::Value << YAML::BeginSeq;
         for (auto& manifestation : artifact.getManifestations()) {
-            emitManifestation(emitter, manifestation, data);
+            emit(emitter, manifestation, data);
         }
         emitter << YAML::EndSeq;
     }
@@ -3167,7 +3222,7 @@ void emitDeploymentTarget(YAML::Emitter& emitter, DeploymentTarget& target, Emit
     if (!target.getDeployments().empty()) {
         emitter << YAML::Key << "deployments" << YAML::Value << YAML::BeginSeq;
         for (auto & deployment : target.getDeployments()) {
-            emitDeployment(emitter, deployment, data);
+            emit(emitter, deployment, data);
         }
         emitter << YAML::EndSeq;
     }

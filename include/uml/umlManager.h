@@ -30,6 +30,7 @@ namespace UML {
         friend class InstanceSpecification;
         protected:
             struct DiscData {
+                Element* m_managerElementMemory;
                 std::string m_path;
                 std::string m_mountPath;
                 std::unordered_map<ID, Element*> m_references;
@@ -37,7 +38,6 @@ namespace UML {
             void setReference(ID referencing, ID referenced, Element* ptr);
             void removeReference(ID referencing, ID referenced);
         private:
-            std::unordered_map<ID, Element*> m_loaded;
             std::unordered_set<ID> m_elements;
             std::unordered_map<ID, DiscData> m_disc;
             std::filesystem::path m_path;
@@ -50,18 +50,17 @@ namespace UML {
             UmlManager();
             ~UmlManager();
             template <class T = Element> T& get(ID id) {
-                if (!m_loaded.count(id)) {
+                if (!m_disc[id].m_managerElementMemory) {
                     aquire(id);
                 }
-                return *dynamic_cast<T*>(m_loaded.at(id));
+                return *dynamic_cast<T*>(m_disc[id].m_managerElementMemory);
             };
             size_t count(ID id);
             template <class T = Element> T& create() {
                 T* ret = new T;
                 ret->setManager(this);
                 m_elements.insert(ret->getID());
-                m_loaded[ret->getID()] = ret;
-                DiscData discData;
+                DiscData discData = {ret};
                 m_disc[ret->getID()] = discData;
                 return *ret;
             };

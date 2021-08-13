@@ -26,9 +26,13 @@ void UmlManager::removeReference(ID referencing, ID referenced) {
 }
 
 void UmlManager::clear() {
-    for (auto& e : m_loaded) {
-        delete e.second;
+    for (auto& e : m_disc) {
+        if (e.second.m_managerElementMemory) {
+            delete e.second.m_managerElementMemory;
+        }
     }
+    m_disc.clear();
+    m_elements.clear();
 }
 
 UmlManager::UmlManager() {
@@ -54,18 +58,14 @@ void UmlManager::reindex(ID oldID, ID newID) {
         // and will overwrite the existing element in memory with one from disk
         // during a UmlManager::save() invoke
 
-        delete m_loaded[newID];
-        m_loaded[newID] = m_loaded[oldID];
+        delete m_disc[newID].m_managerElementMemory;
+        m_disc[newID].m_managerElementMemory = m_disc[oldID].m_managerElementMemory;
         m_elements.erase(oldID);
-        m_loaded.erase(oldID);
         m_disc.erase(oldID);
     } else  {
         // reindex
         m_elements.erase(oldID);
         m_elements.insert(newID);
-        Element* el = m_loaded[oldID];
-        m_loaded.erase(oldID);
-        m_loaded[newID] = el;
         DiscData disc = m_disc[oldID];
         m_disc.erase(oldID);
         m_disc[newID] = disc;
@@ -98,7 +98,7 @@ void UmlManager::aquire(ID id) {
     if (!m_mountBase.empty()) {
         Parsers::ParserMetaData data(this);
         data.m_path = m_disc[id].m_mountPath;
-        m_loaded[id] = Parsers::parse(data);
+        m_disc[id].m_managerElementMemory = Parsers::parse(data);
     } else {
         // TODO throw error
     }
@@ -109,12 +109,14 @@ void UmlManager::release(ID id) {
         Parsers::EmitterMetaData data = {filesystem::path(m_disc[id].m_mountPath).parent_path(),
                                          Parsers::EmitterStrategy::INDIVIDUAL,
                                          filesystem::path(m_disc[id].m_mountPath).filename(), this};
-        Parsers::emitToFile(*m_loaded[id], data, data.m_path, data.m_fileName);
-        delete m_loaded[id];
-        m_loaded.erase(id);
+        Parsers::emitToFile(*m_disc[id].m_managerElementMemory, data, data.m_path, data.m_fileName);
+        if (m_disc[id].m_managerElementMemory) {
+            delete m_disc[id].m_managerElementMemory;
+        }
         for (auto& e : m_disc[id].m_references) {
             e.second = 0;
         }
+        m_disc[id].m_managerElementMemory = 0;
     } else {
         // TODO throw error
     }
@@ -143,7 +145,7 @@ void UmlManager::open() {
         // todo thow error
         return;
     }
-    //clear();
+    clear();
     Parsers::ParserMetaData data(this);
     m_root = Parsers::parse(data);
     if (m_root->isSubClassOf(ElementType::MODEL)) {

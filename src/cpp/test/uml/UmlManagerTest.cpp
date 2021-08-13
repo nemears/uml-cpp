@@ -134,4 +134,10 @@ TEST_F(UmlManagerTest, releaseTestW_RefInOther) {
     ASSERT_EQ(i.getClassifier()->getID(), c.getID());
     ASSERT_NO_THROW(m.release(c.getID()));
     ASSERT_TRUE(i.getClassifier() != 0);
+    //c = i.getClassifier()->as<Class>();
+    i.getOwner();
+    c.getOwner();
+    ASSERT_NO_THROW(m.release(p.getID()));
+    ASSERT_TRUE(c.getOwner() != 0);
+    ASSERT_TRUE(i.getOwner() != 0);
 }

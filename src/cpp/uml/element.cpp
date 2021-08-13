@@ -535,61 +535,42 @@ Element* Element::getOwner() {
     return universalGet<>(m_ownerID, m_ownerPtr, m_manager);
 }
 
-void Element::SetOwnerNewProcedure::operator()() const {
-    if (m_them) {
-        if (!m_them->getOwnedElements().count(m_me->getID())) {
-            m_them->getOwnedElements().internalAdd(*m_me);
-        }
-    }
-}
-
-void Element::SetOwnerOldProcedure::operator()() const {
-    if (m_them) {
-        if (m_them->getOwnedElements().count(m_me->getID())) {
-            m_them->getOwnedElements().internalRemove(*m_me);
-        }
-    }
-}
-
 void Element::setOwner(Element* owner) {
-    vector<AbstractSetterFunctor*> newProcs = {new SetOwnerNewProcedure(this, owner)};
-    vector<AbstractSetterFunctor*> oldProcs = {new SetOwnerOldProcedure(this, owner)};
-    universalSet(m_ownerID, owner, Element::m_ownerPtr, newProcs, oldProcs);
+    if (!isSameOrNull(m_ownerID, owner)) {
+        if (m_manager) {
+            m_manager->removeReference(m_id, m_ownerID);
+        }
+        if (!m_ownerPtr) {
+            m_ownerPtr = &m_manager->get<>(m_ownerID);
+        }
+        if (m_ownerPtr->getOwnedElements().count(m_id)) {
+            m_ownerPtr->getOwnedElements().internalRemove(*this);
+        }
+        m_ownerID = ID::nullID();
+        m_ownerPtr = 0;
+    }
+
+    // set owner id
+    if (owner) {
+        m_ownerID = owner->getID();
+    }
+
+    // set owner ptr
     if (!m_manager) {
         m_ownerPtr = owner;
     } else {
         m_ownerPtr = 0;
     }
-    // remove old owner
-    // if (!isSameOrNull(m_ownerID, owner)) {
-    //     if (!m_ownerPtr) {
-    //         m_ownerPtr = &m_manager->get<>(m_ownerID);
-    //     }
-    //     if (m_ownerPtr->getOwnedElements().count(m_id)) {
-    //         m_ownerPtr->getOwnedElements().internalRemove(*this);
-    //     }
-    //     m_ownerID = ID::nullID();
-    //     m_ownerPtr = 0;
-    // }
 
-    // // set owner id
-    // if (owner) {
-    //     m_ownerID = owner->getID();
-    // }
-
-    // // set owner ptr
-    // if (!m_manager) {
-    //     m_ownerPtr = owner;
-    // } else {
-    //     m_ownerPtr = 0;
-    // }
-
-    // // add to owner owned elements 
-    // if (owner) {
-    //     if (!owner->getOwnedElements().count(m_id)) {
-    //         owner->getOwnedElements().internalAdd(*this);
-    //     }
-    // }
+    // add to owner owned elements 
+    if (owner) {
+        if (m_manager) {
+            m_manager->setReference(m_id, m_ownerID, m_ownerPtr);
+        }
+        if (!owner->getOwnedElements().count(m_id)) {
+            owner->getOwnedElements().internalAdd(*this);
+        }
+    }
 }
 
 Sequence<Element>& Element::getOwnedElements() {
@@ -612,51 +593,5 @@ bool Element::isSameOrNull(ID id, Element* el) {
             return id == el->getID();
         }
         return false;
-    }
-}
-
-void Element::universalSet(ID& theID, Element* thePtr, Element* oldPtr, std::vector<AbstractSetterFunctor*> newElProcedures, std::vector<AbstractSetterFunctor*> oldElProcedures){
-    if (!isSameOrNull(theID, thePtr)) {
-        if (m_manager) {
-            m_manager->removeReference(m_id, theID);
-        }
-
-        if (!oldElProcedures.empty()) {
-            if (!oldPtr) {
-                oldPtr = &m_manager->get<>(theID);
-            }
-
-            for (AbstractSetterFunctor* proc : oldElProcedures) {
-                (*proc)();
-            }
-
-            for (AbstractSetterFunctor* proc : oldElProcedures) {
-                delete proc;
-            }
-        }
-
-        theID = ID::nullID();
-        oldPtr = 0;
-    }
-
-    if (thePtr) {
-        theID = thePtr->getID();
-        if (m_manager) {
-            m_manager->setReference(m_id, theID, thePtr);
-        }
-    }
-    
-    if (!m_manager) {
-        oldPtr = thePtr;
-    }
-
-    if (thePtr) {
-        for (auto& proc : newElProcedures) {
-            (*proc)();
-        }
-
-        for (AbstractSetterFunctor* proc : newElProcedures) {
-            delete proc;
-        }
     }
 }

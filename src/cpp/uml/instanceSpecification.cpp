@@ -69,9 +69,27 @@ Classifier* InstanceSpecification::getClassifier() {
 }
 
 void InstanceSpecification::setClassifier(Classifier* classifier) {
-    std::vector<AbstractSetterFunctor*> newProc;
-    std::vector<AbstractSetterFunctor*> oldProc;
-    universalSet(m_classifierID, classifier, m_classifierPtr, newProc, oldProc);
+    if (!m_classifierID.isNull()) {
+        if (m_manager) {
+            m_manager->removeReference(m_id, m_classifierID);
+        }
+        m_classifierID = ID::nullID();
+        m_classifierPtr = 0;
+    }
+
+    if (classifier) {
+        m_classifierID = classifier->getID();
+    }
+    
+    if (!m_manager) {
+        m_classifierPtr = classifier;
+    }
+
+    if (classifier) {
+        if (m_manager) {
+            m_manager->setReference(m_id, m_classifierID, m_classifierPtr);
+        }
+    }
 }
 
 ValueSpecification* InstanceSpecification::getSpecification() {

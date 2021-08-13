@@ -159,25 +159,6 @@ namespace UML {
             virtual void reindexID(ID oldID, ID newID);
             void setOwner(Element* el);
             static bool isSameOrNull(ID id, Element* el);
-            class AbstractSetterFunctor {
-                protected:
-                    Element* m_me;
-                    Element* m_them;
-                public:
-                    AbstractSetterFunctor(Element* me, Element* them) : m_me(me), m_them(them) {};
-                    virtual void operator()() const = 0;
-            };
-            void universalSet(ID& theID, Element* thePtr, Element* oldPtr, std::vector<AbstractSetterFunctor*> newElProcedures, std::vector<AbstractSetterFunctor*> oldElProcedures);
-            class SetOwnerNewProcedure : public AbstractSetterFunctor {
-                public:
-                    SetOwnerNewProcedure(Element* me, Element* them) : AbstractSetterFunctor(me, them) {};
-                    void operator()() const override;
-            };
-            class SetOwnerOldProcedure : public AbstractSetterFunctor {
-                public:
-                    SetOwnerOldProcedure(Element* me, Element* them) : AbstractSetterFunctor(me, them) {};
-                    void operator()() const override;
-            };
         public:
             Element();
             virtual ~Element();

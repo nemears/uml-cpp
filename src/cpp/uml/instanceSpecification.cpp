@@ -69,7 +69,9 @@ Classifier* InstanceSpecification::getClassifier() {
 }
 
 void InstanceSpecification::setClassifier(Classifier* classifier) {
-    universalSet(m_classifierID, classifier, m_classifierPtr);
+    std::vector<AbstractSetterFunctor*> newProc;
+    std::vector<AbstractSetterFunctor*> oldProc;
+    universalSet(m_classifierID, classifier, m_classifierPtr, newProc, oldProc);
 }
 
 ValueSpecification* InstanceSpecification::getSpecification() {

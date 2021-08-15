@@ -303,3 +303,11 @@ bool Classifier::isSubClassOf(ElementType eType) const {
 
     return ret;
 }
+
+void Classifier::restoreReleased(ID id, Element* released) {
+    Namespace::restoreReleased(id, released);
+}
+
+void Classifier::referencingReleased(ID id) {
+    Namespace::referencingReleased(id);
+}

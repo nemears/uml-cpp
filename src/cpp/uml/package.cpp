@@ -175,3 +175,11 @@ bool Package::isSubClassOf(ElementType eType) const {
 
     return ret;
 }
+
+void Package::restoreReleased(ID id, Element* released) {
+    Namespace::restoreReleased(id, released);
+}
+
+void Package::referencingReleased(ID id) {
+    Namespace::referencingReleased(id);
+}

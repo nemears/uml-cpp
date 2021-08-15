@@ -1477,9 +1477,14 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                             pckg.getPackagedElements().add(dynamic_cast<PackageableElement&>(*packagedEl));
                         }
                     } else {
-                        /** TODO: get from manager 
-                         *      think that swipping files to  (id: path) instead of just path may fix it, cause don't have ids rn
-                         **/
+                        string path = node["packagedElements"][i].as<string>();
+                        string idStr = path.substr(0, path.find_last_of("/"));
+                        if (isValidID(idStr)) {
+                            PackageableElement& packagedEl =  data.m_manager->get<PackageableElement>(ID::fromString(idStr));
+                            pckg.getPackagedElements().add(packagedEl);
+                        } else {
+                            throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node["packagedElements"][i]);
+                        }
                     }
                 } else {
                     throw UmlParserException("Invalid YAML node type for field packagedElements sequence, must be map, ", data.m_path.string(), node["packagedElements"][i]);

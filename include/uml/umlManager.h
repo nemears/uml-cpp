@@ -14,6 +14,7 @@ namespace UML {
     }
 
     class InstanceSpecification;
+    class PackageableElement;
 
     template <class T = Element> class Sequence;
     class Model;
@@ -28,6 +29,7 @@ namespace UML {
         friend struct Parsers::EmitterMetaData;
         friend class Element;
         friend class InstanceSpecification;
+        friend class PackageableElement;
         template<typename> friend class Sequence;
         protected:
             struct DiscData {
@@ -35,6 +37,7 @@ namespace UML {
                 std::string m_path;
                 std::string m_mountPath;
                 std::unordered_map<ID, Element*> m_references;
+                std::unordered_map<ID, size_t> m_referenceCount;
             };
             void setReference(ID referencing, ID referenced, Element* ptr);
             void removeReference(ID referencing, ID referenced);

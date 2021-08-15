@@ -224,6 +224,14 @@ namespace UML {
                 }
             };
 
+            void elementReleased(ID id) {
+                if (m_rep.count(id)) {
+                    m_rep[id] = 0;
+                } else {
+                    /** TODO: throw error **/
+                }
+            }
+
             void internalRemove(T& el) {
                 m_order.erase(std::remove(m_order.begin(), m_order.end(), el.getID()), m_order.end()) - m_order.begin();
                 m_rep.erase(el.getID());

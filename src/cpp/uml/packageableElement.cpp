@@ -19,6 +19,9 @@ Package* PackageableElement::getOwningPackage() {
 
 void PackageableElement::setOwningPackage(Package* package) {
     if (!isSameOrNull(m_owningPackageID, package)) {
+        if (m_manager) {
+            m_manager->removeReference(m_id, m_owningPackageID);
+        }
         if (!m_owningPackagePtr) {
             m_owningPackagePtr = &m_manager->get<Package>(m_owningPackageID);
         }
@@ -38,6 +41,9 @@ void PackageableElement::setOwningPackage(Package* package) {
     }
 
     if (package) {
+        if (m_manager) {
+            m_manager->setReference(m_id, m_owningPackageID, this);
+        }
         if (!package->getPackagedElements().count(m_id)) {
             package->getPackagedElements().add(*this);
         }
@@ -60,4 +66,14 @@ bool PackageableElement::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
+}
+
+void PackageableElement::restoreReleased(ID id, Element* released) {
+    if (m_owningPackageID == id) {
+        released->as<Package>().getPackagedElements().add(*this);
+    }
+}
+
+void PackageableElement::referencingReleased(ID id) {
+
 }

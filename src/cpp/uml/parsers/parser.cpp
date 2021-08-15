@@ -58,7 +58,7 @@ UmlManager* parse(string path) {
 Element* parse(ParserMetaData& data) {
     YAML::Node node = YAML::LoadFile(data.m_path);
     Element* ret = parseNode(node, data);
-    if (data.m_manager->getRoot()) {
+    if (!data.m_manager->getRoot()) {
         data.m_manager->setRoot(ret);
     }
     return ret;
@@ -248,6 +248,8 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         }
         case EmitterStrategy::INDIVIDUAL : {
             if (data.m_path != data.getMountPath(el.getID()).parent_path()) {
+                newPath = data.getMountPath(el.getID());
+                emitter << YAML::Value << newPath.string().substr(newPath.string().substr(0, newPath.string().find_last_of("/")).find_last_of("/") + 1);
                 return;
             }
         }
@@ -1466,12 +1468,18 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                     }
                 // seperate file
                 } else if (node["packagedElements"][i].IsScalar()) {
-                    Element* packagedEl = parseExternalAddToManager(data, node["packagedElements"][i].as<string>());
-                    if (packagedEl == 0) {
-                        throw UmlParserException("Could not identify YAML node for packaged elements" , data.m_path.string(), node["packagedElements"][i]);
-                    }
-                    if (packagedEl->isSubClassOf(ElementType::PACKAGEABLE_ELEMENT)) {
-                        pckg.getPackagedElements().add(dynamic_cast<PackageableElement&>(*packagedEl));
+                    if (data.m_strategy == ParserStrategy::WHOLE) {
+                        Element* packagedEl = parseExternalAddToManager(data, node["packagedElements"][i].as<string>());
+                        if (packagedEl == 0) {
+                            throw UmlParserException("Could not identify YAML node for packaged elements" , data.m_path.string(), node["packagedElements"][i]);
+                        }
+                        if (packagedEl->isSubClassOf(ElementType::PACKAGEABLE_ELEMENT)) {
+                            pckg.getPackagedElements().add(dynamic_cast<PackageableElement&>(*packagedEl));
+                        }
+                    } else {
+                        /** TODO: get from manager 
+                         *      think that swipping files to  (id: path) instead of just path may fix it, cause don't have ids rn
+                         **/
                     }
                 } else {
                     throw UmlParserException("Invalid YAML node type for field packagedElements sequence, must be map, ", data.m_path.string(), node["packagedElements"][i]);

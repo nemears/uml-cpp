@@ -18,11 +18,21 @@ using namespace std;
 using namespace UML;
 
 void UmlManager::setReference(ID referencing, ID referenced, Element* ptr) {
-    m_disc[referenced].m_references[referencing] = ptr;
+    if (m_disc[referenced].m_references.count(referencing)) {
+        m_disc[referenced].m_referenceCount[referencing]++;
+    } else {
+        m_disc[referenced].m_references[referencing] = ptr;
+        m_disc[referenced].m_referenceCount[referencing] = 1;
+    }
 }
 
 void UmlManager::removeReference(ID referencing, ID referenced) {
-    m_disc[referenced].m_references.erase(referencing);
+    if (m_disc[referenced].m_referenceCount[referencing] > 1) {
+        m_disc[referenced].m_referenceCount[referencing]--;
+    } else {
+        m_disc[referenced].m_references.erase(referencing);
+        m_disc[referenced].m_referenceCount.erase(referencing);
+    }
 }
 
 void UmlManager::clear() {
@@ -56,7 +66,7 @@ void UmlManager::reindex(ID oldID, ID newID) {
         // Element with this ID already exists, overwrite it with new one
         // This logic should only be called when it is loading from disk
         // and will overwrite the existing element in memory with one from disk
-        // during a UmlManager::save() invoke
+        // during a UmlManager::open() or UmlManager::aquire(id) invoke
 
         delete m_disc[newID].m_managerElementMemory;
         m_disc[newID].m_managerElementMemory = m_disc[oldID].m_managerElementMemory;
@@ -98,6 +108,7 @@ void UmlManager::aquire(ID id) {
     if (!m_mountBase.empty()) {
         Parsers::ParserMetaData data(this);
         data.m_path = m_disc[id].m_mountPath;
+        data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
         m_disc[id].m_managerElementMemory = Parsers::parse(data);
         for (auto& ref : m_disc[id].m_references) {
             if (ref.second) {

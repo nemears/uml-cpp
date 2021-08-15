@@ -12,6 +12,11 @@ namespace UML{
 
     namespace Parsers {
 
+        enum class ParserStrategy {
+            WHOLE,
+            INDIVIDUAL
+        };
+
         class AbstractPostProcessFunctor {
             protected:
                 Element* m_el;
@@ -41,6 +46,7 @@ namespace UML{
                 Sequence<> elements;
                 std::unordered_map<ID, std::vector<AbstractPostProcessFunctor*>*> postProcessFlag;
                 UmlManager* m_manager;
+                ParserStrategy m_strategy = ParserStrategy::WHOLE;
         };
 
         void applyFunctor(ParserMetaData& data, ID relEl, AbstractPostProcessFunctor* functor);

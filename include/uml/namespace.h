@@ -12,8 +12,8 @@ namespace UML{
     class Namespace : virtual public NamedElement {
         friend class UmlManager;
         protected:
-            Sequence<NamedElement> m_members;
-            Sequence<NamedElement> m_ownedMembers;
+            Sequence<NamedElement> m_members = Sequence<NamedElement>(this);
+            Sequence<NamedElement> m_ownedMembers = Sequence<NamedElement>(this);
             class AddMemberFunctor : public AbstractSequenceFunctor {
                 public:
                     AddMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
@@ -35,6 +35,8 @@ namespace UML{
                     void operator()(Element& el) const override;
             };
             void setManager(UmlManager* manager) override;
+            void restoreReleased(ID id, Element* released) override;
+            void referencingReleased(ID id) override;
         public:
             Namespace();
             virtual ~Namespace();

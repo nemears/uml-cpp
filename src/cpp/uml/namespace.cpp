@@ -91,3 +91,13 @@ bool Namespace::isSubClassOf(ElementType eType) const {
 
     return ret;
 }
+
+void Namespace::restoreReleased(ID id, Element* released) {
+    Element::restoreReleased(id, released);
+    /** TODO: Maybe we don't have to do anything? **/
+}
+
+void Namespace::referencingReleased(ID id) {
+    m_ownedMembers.elementReleased(id);
+    m_members.elementReleased(id);
+}

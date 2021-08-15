@@ -142,4 +142,8 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
     ASSERT_NO_THROW(m.release(p.getID()));
     ASSERT_TRUE(c2->getOwner() != 0);
     ASSERT_TRUE(i.getOwner() != 0);
+    Package* p2 = &i.getOwner()->as<Package>();
+    ASSERT_EQ(p2->getPackagedElements().size(), 2);
+    ASSERT_EQ(p2->getPackagedElements().front().getID(), c2->getID());
+    ASSERT_EQ(&p2->getPackagedElements().front(), c2); // compare memory
 }

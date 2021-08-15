@@ -606,4 +606,6 @@ void Element::referencingReleased(ID id) {
     if (m_ownerID == id) {
         m_ownerPtr = 0;
     }
+
+    m_ownedElements->elementReleased(id);
 }

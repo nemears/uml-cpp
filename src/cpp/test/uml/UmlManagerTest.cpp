@@ -102,6 +102,7 @@ TEST_F(UmlManagerTest, multiLayerMountTest) {
     ASSERT_EQ(p2.getPackagedElements().size(), p.getPackagedElements().size());
     ASSERT_EQ(p2.getPackagedElements().front().getID(), c.getID());
     delete m;
+    delete m2;
 }
 
 TEST_F(UmlManagerTest, releaseTest) {
@@ -117,10 +118,11 @@ TEST_F(UmlManagerTest, releaseTest) {
     UmlManager* m2 = Parsers::parse(filesystem::path(ymlPath + "umlManagerTests") / "mount" / pid.string() / (pid.string() + ".yml"));
     ASSERT_EQ(m2->getRoot()->getElementType(), ElementType::PACKAGE);
     Package& p2 = m2->getRoot()->as<Package>();
-    ASSERT_EQ(p.getName(), "name");
+    ASSERT_EQ(p2.getName(), "name");
+    delete m2;
 }
 
-TEST_F(UmlManagerTest, releaseTestW_RefInOther) {
+TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
     UmlManager m;
     Package& p = m.create<Package>();
     Class& c = m.create<Class>();
@@ -134,10 +136,10 @@ TEST_F(UmlManagerTest, releaseTestW_RefInOther) {
     ASSERT_EQ(i.getClassifier()->getID(), c.getID());
     ASSERT_NO_THROW(m.release(c.getID()));
     ASSERT_TRUE(i.getClassifier() != 0);
-    //c = i.getClassifier()->as<Class>();
-    i.getOwner();
-    c.getOwner();
+    Class* c2 = &i.getClassifier()->as<Class>();
+    ASSERT_TRUE(i.getOwner() != 0);
+    ASSERT_TRUE(c2->getOwner() != 0);
     ASSERT_NO_THROW(m.release(p.getID()));
-    ASSERT_TRUE(c.getOwner() != 0);
+    ASSERT_TRUE(c2->getOwner() != 0);
     ASSERT_TRUE(i.getOwner() != 0);
 }

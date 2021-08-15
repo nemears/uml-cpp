@@ -152,6 +152,9 @@ namespace UML {
             // Manager
             UmlManager* m_manager = 0;
 
+            // element that owns this sequence
+            Element* m_el = 0;
+
             // Data
             std::vector<ID> m_order;
             std::unordered_map<ID, T*> m_rep;
@@ -209,6 +212,12 @@ namespace UML {
                     }
                 }
 
+                if (m_manager) {
+                    if (m_el) {
+                        m_manager->setReference(m_el->getID(), el.getID(), m_el);
+                    }
+                }
+
                 // apply procedures
                 for (auto const& fun : addProcedures) {
                     (*fun)(el);
@@ -222,14 +231,24 @@ namespace UML {
                     m_names.erase(el.template as<NamedElement>().getName());
                 }
 
+                if (m_manager) {
+                    if (m_el) {
+                        m_manager->removeReference(m_el->getID(), el.getID());
+                    }
+                }
+
                 // apply procedures
                 for (auto const& fun : removeProcedures) {
                     (*fun)(el);
                 }
             };
         public:
+            // Constructor
+            Sequence<T>() {};
+            Sequence<T>(Element* el) {
+                m_el = el;
+            };
             // Destructor
-
             ~Sequence<T>() {
                 for (auto const& fun : addChecks) {
                     delete fun;

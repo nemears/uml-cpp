@@ -159,6 +159,8 @@ namespace UML {
             virtual void reindexID(ID oldID, ID newID);
             void setOwner(Element* el);
             static bool isSameOrNull(ID id, Element* el);
+            virtual void restoreReleased(ID id, Element* released);
+            virtual void referencingReleased(ID id);
         public:
             Element();
             virtual ~Element();

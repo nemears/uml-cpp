@@ -99,6 +99,11 @@ void UmlManager::aquire(ID id) {
         Parsers::ParserMetaData data(this);
         data.m_path = m_disc[id].m_mountPath;
         m_disc[id].m_managerElementMemory = Parsers::parse(data);
+        for (auto& ref : m_disc[id].m_references) {
+            if (ref.second) {
+                ref.second->restoreReleased(id, m_disc[id].m_managerElementMemory);
+            }
+        }
     } else {
         // TODO throw error
     }
@@ -114,7 +119,7 @@ void UmlManager::release(ID id) {
             delete m_disc[id].m_managerElementMemory;
         }
         for (auto& e : m_disc[id].m_references) {
-            e.second = 0;
+            e.second->referencingReleased(id);
         }
         m_disc[id].m_managerElementMemory = 0;
     } else {

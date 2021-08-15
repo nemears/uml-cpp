@@ -28,6 +28,7 @@ namespace UML {
         friend struct Parsers::EmitterMetaData;
         friend class Element;
         friend class InstanceSpecification;
+        template<typename> friend class Sequence;
         protected:
             struct DiscData {
                 Element* m_managerElementMemory;

@@ -58,7 +58,9 @@ UmlManager* parse(string path) {
 Element* parse(ParserMetaData& data) {
     YAML::Node node = YAML::LoadFile(data.m_path);
     Element* ret = parseNode(node, data);
-    data.m_manager->setRoot(ret);
+    if (data.m_manager->getRoot()) {
+        data.m_manager->setRoot(ret);
+    }
     return ret;
 }
 

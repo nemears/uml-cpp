@@ -87,7 +87,7 @@ void InstanceSpecification::setClassifier(Classifier* classifier) {
 
     if (classifier) {
         if (m_manager) {
-            m_manager->setReference(m_id, m_classifierID, m_classifierPtr);
+            m_manager->setReference(m_id, m_classifierID, this);
         }
     }
 }
@@ -149,4 +149,15 @@ bool InstanceSpecification::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
+}
+
+void InstanceSpecification::restoreReleased(ID id, Element* released) {
+    Element::restoreReleased(id, released);
+}
+
+void InstanceSpecification::referencingReleased(ID id) {
+    Element::referencingReleased(id);
+    if (m_classifierID == id) {
+        m_classifierPtr = 0;
+    }
 }

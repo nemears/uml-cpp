@@ -102,7 +102,7 @@ Element::Element() {
     m_ownerPtr = 0;
 
 
-    m_ownedElements = new Sequence<Element>;
+    m_ownedElements = new Sequence<Element>(this);
     m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
     m_ownedElements->addChecks.push_back(new ReadOnlySequenceFunctor(this, "ownedElements"));
     m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
@@ -565,7 +565,7 @@ void Element::setOwner(Element* owner) {
     // add to owner owned elements 
     if (owner) {
         if (m_manager) {
-            m_manager->setReference(m_id, m_ownerID, m_ownerPtr);
+            m_manager->setReference(m_id, m_ownerID, this);
         }
         if (!owner->getOwnedElements().count(m_id)) {
             owner->getOwnedElements().internalAdd(*this);
@@ -593,5 +593,17 @@ bool Element::isSameOrNull(ID id, Element* el) {
             return id == el->getID();
         }
         return false;
+    }
+}
+
+void Element::restoreReleased(ID id, Element* el) {
+    if (m_ownedElements->count(id)) {
+        el->setOwner(this);
+    }
+}
+
+void Element::referencingReleased(ID id) {
+    if (m_ownerID == id) {
+        m_ownerPtr = 0;
     }
 }

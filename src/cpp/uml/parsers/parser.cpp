@@ -97,6 +97,26 @@ void emitToFile(Element& el, EmitterMetaData& data, string path, string fileName
 
 namespace {
 
+template <class T =Element> T& parseScalar(YAML::Node node, ParserMetaData& data) {
+    if (data.m_strategy == ParserStrategy::WHOLE) {
+        Element* packagedEl = parseExternalAddToManager(data, node.as<std::string>());
+        if (packagedEl == 0) {
+            throw UmlParserException("Could not identify YAML node for packaged elements" , data.m_path.string(), node);
+        }
+        if (packagedEl->isSubClassOf(ElementType::PACKAGEABLE_ELEMENT)) {
+            return dynamic_cast<T&>(*packagedEl);
+        }
+    } else {
+        std::string path = node.as<std::string>();
+        std::string idStr = path.substr(0, path.find_last_of("/"));
+        if (isValidID(idStr)) {
+            return data.m_manager->get<T>(ID::fromString(idStr));
+        } else {
+            throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);
+        }
+    }
+}
+
 Element* parseNode(YAML::Node node, ParserMetaData& data) {
     if (node["artifact"]) {
         Artifact& artifact = data.m_manager->create<Artifact>();
@@ -803,14 +823,21 @@ void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, Par
     if (node["ownedAttributes"]) {
         if (node["ownedAttributes"].IsSequence()) {
             for (size_t i=0; i<node["ownedAttributes"].size(); i++) {
-                if (node["ownedAttributes"][i]["property"]) {
-                    if (node["ownedAttributes"][i]["property"].IsMap()) {
-                        Property& prop = data.m_manager->create<Property>();
-                        parseProperty(node["ownedAttributes"][i]["property"], prop, data);
-                        clazz.getOwnedAttributes().add(prop);
-                    } else {
-                        throw UmlParserException("Improper YAML node type for property field, must be map, " , data.m_path.string() , node["ownedAttributes"][i]["property"]);
+                if (node["ownedAttributes"][i].IsMap()) {
+                    if (node["ownedAttributes"][i]["property"]) {
+                        if (node["ownedAttributes"][i]["property"].IsMap()) {
+                            Property& prop = data.m_manager->create<Property>();
+                            parseProperty(node["ownedAttributes"][i]["property"], prop, data);
+                            clazz.getOwnedAttributes().add(prop);
+                        } else {
+                            throw UmlParserException("Improper YAML node type for property field, must be map, " , data.m_path.string() , node["ownedAttributes"][i]["property"]);
+                        }
                     }
+                } else if (node["ownedAttributes"][i].IsScalar()) {
+                    /** TODO: make function from package func **/
+                    clazz.getOwnedAttributes().add(parseScalar<Property>(node["ownedAttributes"][i], data));
+                } else {
+                    throw UmlParserException("invalid yaml node type for property definition, must be a map or scalar path!", data.m_path.string(), node["ownedAttributes"][i]);
                 }
             }
         } else {
@@ -839,12 +866,18 @@ void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
     if (node["operations"]) {
         if (node["operations"].IsSequence()) {
             for (size_t i=0; i<node["operations"].size(); i++) {
-                if (node["operations"][i]["operation"]) {
-                    Operation& op = data.m_manager->create<Operation>();
-                    parseOperation(node["operations"][i]["operation"], op, data);
-                    clazz.getOperations().add(op);
+                if (node["operations"][i].IsMap()) {
+                    if (node["operations"][i]["operation"]) {
+                        Operation& op = data.m_manager->create<Operation>();
+                        parseOperation(node["operations"][i]["operation"], op, data);
+                        clazz.getOperations().add(op);
+                    } else {
+                        throw UmlParserException("Could not identify operation to parse, ", data.m_path.string(), node["operations"][i]);
+                    }
+                } else if (node["operations"][i].IsScalar()) {
+                    clazz.getOperations().add(parseScalar<Operation>(node["operations"][i], data));
                 } else {
-                    throw UmlParserException("Could not identify operation to parse, ", data.m_path.string(), node["operations"][i]);
+                    throw UmlParserException("Invalid yaml node type for class operation definition, must be a map or a scalar!", data.m_path.string(), node["operations"][i]);
                 }
             }
         } else {
@@ -1468,24 +1501,7 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                     }
                 // seperate file
                 } else if (node["packagedElements"][i].IsScalar()) {
-                    if (data.m_strategy == ParserStrategy::WHOLE) {
-                        Element* packagedEl = parseExternalAddToManager(data, node["packagedElements"][i].as<string>());
-                        if (packagedEl == 0) {
-                            throw UmlParserException("Could not identify YAML node for packaged elements" , data.m_path.string(), node["packagedElements"][i]);
-                        }
-                        if (packagedEl->isSubClassOf(ElementType::PACKAGEABLE_ELEMENT)) {
-                            pckg.getPackagedElements().add(dynamic_cast<PackageableElement&>(*packagedEl));
-                        }
-                    } else {
-                        string path = node["packagedElements"][i].as<string>();
-                        string idStr = path.substr(0, path.find_last_of("/"));
-                        if (isValidID(idStr)) {
-                            PackageableElement& packagedEl =  data.m_manager->get<PackageableElement>(ID::fromString(idStr));
-                            pckg.getPackagedElements().add(packagedEl);
-                        } else {
-                            throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node["packagedElements"][i]);
-                        }
-                    }
+                    pckg.getPackagedElements().add(parseScalar<PackageableElement>(node["packagedElements"][i], data));
                 } else {
                     throw UmlParserException("Invalid YAML node type for field packagedElements sequence, must be map, ", data.m_path.string(), node["packagedElements"][i]);
                 }

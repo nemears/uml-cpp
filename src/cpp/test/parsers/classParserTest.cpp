@@ -307,3 +307,35 @@ TEST_F(ClassParserTest, nestedClassifierEmitTest) {
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(ClassParserTest, mountFullClassTest) {
+    UmlManager m;
+    Package& pckg = m.create<Package>();
+    Class& base = m.create<Class>();
+    Class& spec = m.create<Class>();
+    Property& prop = m.create<Property>();
+    Operation& op = m.create<Operation>();
+    Generalization& gen = m.create<Generalization>();
+    base.getOwnedAttributes().add(prop);
+    base.getOperations().add(op);
+    gen.setGeneral(&base);
+    gen.setSpecific(&spec);
+    pckg.getPackagedElements().add(base);
+    pckg.getPackagedElements().add(spec);
+    m.setRoot(&pckg);
+    string mountPath = ymlPath + "classTests";
+    ASSERT_NO_THROW(m.mount(mountPath));
+    string mountPath1 = mountPath + "/mount";
+    ASSERT_TRUE(filesystem::exists(mountPath1));
+    string pckgDirPath = mountPath1 + "/" + pckg.getID().string();
+    ASSERT_TRUE(filesystem::exists(pckgDirPath));
+    string pckgFilePPath = pckgDirPath + "/" + pckg.getID().string() + ".yml";
+    ASSERT_TRUE(filesystem::exists(pckgFilePPath));
+    string baseDirPath = pckgDirPath + "/" + pckg.getPackagedElements().front().getID().string();
+    ASSERT_TRUE(filesystem::exists(baseDirPath));
+    ASSERT_TRUE(filesystem::exists(baseDirPath + "/" + pckg.getPackagedElements().front().getID().string() + ".yml"));
+    // TODO finish
+
+    ASSERT_NO_THROW(m.release(base.getID()));
+    ASSERT_TRUE(prop.getClass() != 0);
+}

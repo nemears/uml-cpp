@@ -60,7 +60,7 @@ namespace UML {
 
             Element* parseNode(YAML::Node node, ParserMetaData& data);
 
-            Element* parseExternalAddToManager();
+            Element* parseExternalAddToManager(ParserMetaData& data, std::string path);
 
             void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
             void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);

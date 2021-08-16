@@ -37,6 +37,8 @@ namespace UML {
                     RemoveParameterFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
+            void restoreReleased(ID id, Element* released) override;
+            void referencingReleased(ID id) override;
         public:
             BehavioralFeature();
             BehavioralFeature(const BehavioralFeature& el);

@@ -94,17 +94,12 @@ bool Namespace::isSubClassOf(ElementType eType) const {
 
 void Namespace::restoreReleased(ID id, Element* released) {
     NamedElement::restoreReleased(id, released);
-    /** TODO: Maybe we don't have to do anything? **/
-    for (auto& member : m_ownedMembers) {
-        if (member.getID() == id) {
-            released->as<NamedElement>().setNamespace(this);
-        }
+    if (m_ownedMembers.count(id)) {
+        released->as<NamedElement>().setNamespace(this);
     }
-    for (auto& member : m_members) {
-        if (member.getID() == id) {
-            if (!released->as<NamedElement>().m_memberNamespace->count(m_id)) {
-                released->as<NamedElement>().m_memberNamespace->add(*this);
-            }
+    if (m_members.count(id)) {
+        if (!released->as<NamedElement>().m_memberNamespace->count(m_id)) {
+            released->as<NamedElement>().m_memberNamespace->add(*this);
         }
     }
 }

@@ -40,6 +40,7 @@ namespace UML {
                 std::string m_mountPath;
                 std::unordered_map<ID, Element*> m_references;
                 std::unordered_map<ID, size_t> m_referenceCount;
+                std::vector<ID> m_referenceOrder;
             };
             void setReference(ID referencing, ID referenced, Element* ptr);
             void removeReference(ID referencing, ID referenced);

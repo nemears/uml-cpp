@@ -23,6 +23,7 @@ void UmlManager::setReference(ID referencing, ID referenced, Element* ptr) {
     } else {
         m_disc[referenced].m_references[referencing] = ptr;
         m_disc[referenced].m_referenceCount[referencing] = 1;
+        m_disc[referenced].m_referenceOrder.push_back(referencing);
     }
 }
 
@@ -32,6 +33,10 @@ void UmlManager::removeReference(ID referencing, ID referenced) {
     } else {
         m_disc[referenced].m_references.erase(referencing);
         m_disc[referenced].m_referenceCount.erase(referencing);
+        m_disc[referenced].m_referenceOrder.erase(std::remove(
+            m_disc[referenced].m_referenceOrder.begin(), 
+            m_disc[referenced].m_referenceOrder.end(), 
+            referencing), m_disc[referenced].m_referenceOrder.end());
     }
 }
 
@@ -110,9 +115,9 @@ void UmlManager::aquire(ID id) {
         data.m_path = m_disc[id].m_mountPath;
         data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
         m_disc[id].m_managerElementMemory = Parsers::parse(data);
-        for (auto& ref : m_disc[id].m_references) {
-            if (ref.second) {
-                ref.second->restoreReleased(id, m_disc[id].m_managerElementMemory);
+        for (auto& refID : m_disc[id].m_referenceOrder) {
+            if (m_disc[id].m_references[refID]) {
+                m_disc[id].m_references[refID]->restoreReleased(id, m_disc[id].m_managerElementMemory);
             }
         }
     } else {

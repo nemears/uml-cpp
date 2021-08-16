@@ -139,11 +139,40 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
     Class* c2 = &i.getClassifier()->as<Class>();
     ASSERT_TRUE(i.getOwner() != 0);
     ASSERT_TRUE(c2->getOwner() != 0);
+    ASSERT_EQ(c2->getMemberNamespace().size(), 1);
+    ASSERT_EQ(&c2->getMemberNamespace().front(), &p);
+    ASSERT_EQ(c2->getNamespace(), &p);
+    ASSERT_EQ(c2->getOwningPackage(), &p);
+    ASSERT_EQ(&p.getOwnedElements().front(), c2);
+    ASSERT_EQ(&p.getMembers().front(), c2);
+    ASSERT_EQ(&p.getPackagedElements().front(), c2);
     ASSERT_NO_THROW(m.release(p.getID()));
     ASSERT_TRUE(c2->getOwner() != 0);
     ASSERT_TRUE(i.getOwner() != 0);
     Package* p2 = &i.getOwner()->as<Package>();
+    ASSERT_EQ(c2->getOwner(), p2);
+    ASSERT_TRUE(c2->getNamespace() != 0);
+    ASSERT_EQ(c2->getNamespace(), p2);
+    ASSERT_EQ(c2->getMemberNamespace().size(), 1);
+    ASSERT_EQ(&c2->getMemberNamespace().front(), p2);
+    ASSERT_TRUE(c2->getOwningPackage() != 0);
+    ASSERT_EQ(c2->getOwningPackage(), p2);
+
+    ASSERT_EQ(i.getOwner(), p2);
+    ASSERT_TRUE(i.getNamespace() != 0);
+    ASSERT_EQ(i.getNamespace(), p2);
+    ASSERT_EQ(i.getMemberNamespace().size(), 1);
+    ASSERT_EQ(&i.getMemberNamespace().front(), p2);
+    ASSERT_TRUE(i.getOwningPackage() != 0);
+    ASSERT_EQ(i.getOwningPackage(), p2);
+
     ASSERT_EQ(p2->getPackagedElements().size(), 2);
     ASSERT_EQ(p2->getPackagedElements().front().getID(), c2->getID());
     ASSERT_EQ(&p2->getPackagedElements().front(), c2); // compare memory
+    ASSERT_EQ(p2->getOwnedMembers().size(), 2);
+    ASSERT_EQ(&p2->getOwnedMembers().front(), c2);
+    ASSERT_EQ(p2->getMembers().size(), 2);
+    ASSERT_EQ(&p2->getMembers().front(), c2);
+    ASSERT_EQ(p2->getOwnedElements().size(), 2);
+    ASSERT_EQ(&p2->getOwnedElements().front(), c2);
 }

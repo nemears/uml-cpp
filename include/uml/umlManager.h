@@ -15,6 +15,7 @@ namespace UML {
 
     class InstanceSpecification;
     class PackageableElement;
+    class NamedElement;
 
     template <class T = Element> class Sequence;
     class Model;
@@ -30,6 +31,7 @@ namespace UML {
         friend class Element;
         friend class InstanceSpecification;
         friend class PackageableElement;
+        friend class NamedElement;
         template<typename> friend class Sequence;
         protected:
             struct DiscData {

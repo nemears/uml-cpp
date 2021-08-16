@@ -14,7 +14,7 @@ namespace UML {
     class Package : public PackageableElement, public Namespace, public TemplateableElement {
         friend class UmlManager;
         protected:
-            Sequence<PackageableElement> m_packagedElements;
+            Sequence<PackageableElement> m_packagedElements = Sequence<PackageableElement>(this);
             Sequence<PackageMerge> m_packageMerge;
             Sequence<ProfileApplication> m_profileApplications;
             Sequence<Stereotype> m_ownedStereotypes;

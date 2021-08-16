@@ -22,7 +22,7 @@ void RemoveMemberNamespaceFunctor::operator()(Element& el) const {
 
 NamedElement::NamedElement() {
     m_namespacePtr = 0;
-    m_memberNamespace = new Sequence<Namespace>;
+    m_memberNamespace = new Sequence<Namespace>(this);
     m_memberNamespace->addProcedures.push_back(new AddMemberNamespaceFunctor(this));
     m_memberNamespace->removeProcedures.push_back(new RemoveMemberNamespaceFunctor(this));
 }
@@ -91,6 +91,9 @@ Namespace* NamedElement::getNamespace() {
 
 void NamedElement::setNamespace(Namespace* nmspc) {
     if (!isSameOrNull(m_namespaceID, nmspc)) {
+        if (m_manager) {
+            m_manager->removeReference(m_id, m_namespaceID);
+        }
         if (!m_namespacePtr) {
             m_namespacePtr = &m_manager->get<Namespace>(m_namespaceID);
         }
@@ -112,6 +115,9 @@ void NamedElement::setNamespace(Namespace* nmspc) {
     }
 
     if (nmspc) {
+        if (m_manager) {
+            m_manager->setReference(m_id, m_namespaceID, this);
+        }
         if (!nmspc->getOwnedMembers().count(m_id)) {
             nmspc->getOwnedMembers().add(*this);
         }
@@ -168,4 +174,16 @@ bool NamedElement::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
+}
+
+void NamedElement::restoreReleased(ID id, Element* released) {
+    Element::restoreReleased(id, released);
+}
+
+void NamedElement::referencingReleased(ID id) {
+    Element::referencingReleased(id);
+    m_memberNamespace->elementReleased(id);
+    if (m_namespaceID == id) {
+        m_namespacePtr = 0;
+    }
 }

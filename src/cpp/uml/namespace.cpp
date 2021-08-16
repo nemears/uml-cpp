@@ -25,7 +25,7 @@ void Namespace::AddOwnedMemberFunctor::operator()(Element& el) const {
         dynamic_cast<Namespace*>(m_el)->getMembers().add(dynamic_cast<NamedElement&>(el));
     }
 
-    if (!el.getOwner()) {
+    if (!m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalAdd(el);
     }
 }
@@ -93,11 +93,24 @@ bool Namespace::isSubClassOf(ElementType eType) const {
 }
 
 void Namespace::restoreReleased(ID id, Element* released) {
-    Element::restoreReleased(id, released);
+    NamedElement::restoreReleased(id, released);
     /** TODO: Maybe we don't have to do anything? **/
+    for (auto& member : m_ownedMembers) {
+        if (member.getID() == id) {
+            released->as<NamedElement>().setNamespace(this);
+        }
+    }
+    for (auto& member : m_members) {
+        if (member.getID() == id) {
+            if (!released->as<NamedElement>().m_memberNamespace->count(m_id)) {
+                released->as<NamedElement>().m_memberNamespace->add(*this);
+            }
+        }
+    }
 }
 
 void Namespace::referencingReleased(ID id) {
+    NamedElement::referencingReleased(id);
     m_ownedMembers.elementReleased(id);
     m_members.elementReleased(id);
 }

@@ -23,6 +23,7 @@ namespace UML{
      **/
     class NamedElement : virtual public Element {
         friend class UmlManager;
+        friend class Namespace;
         protected:
             std::string m_name;
             ID m_namespaceID;
@@ -33,6 +34,8 @@ namespace UML{
             virtual void reindexName(std::string oldName, std::string newName);
             void reindexID(ID oldID, ID newID) override;
             void setManager(UmlManager* manager) override;
+            void restoreReleased(ID id, Element* released) override;
+            void referencingReleased(ID id) override;
         public:
             NamedElement();
             virtual ~NamedElement();

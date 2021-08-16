@@ -337,5 +337,27 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     // TODO finish
 
     ASSERT_NO_THROW(m.release(base.getID()));
+    ASSERT_TRUE(prop.getOwner() != 0);
+    Class& base2 = prop.getOwner()->as<Class>();
     ASSERT_TRUE(prop.getClass() != 0);
+    ASSERT_EQ(prop.getClass(), &base2);
+    ASSERT_TRUE(prop.getClassifier() != 0);
+    ASSERT_EQ(prop.getClassifier(), &base2);
+    ASSERT_TRUE(prop.getStructuredClassifier() != 0);
+    ASSERT_EQ(prop.getStructuredClassifier(), &base2);
+    ASSERT_TRUE(prop.getFeaturingClassifier() != 0);
+    ASSERT_EQ(prop.getFeaturingClassifier(), &base2);
+    ASSERT_TRUE(prop.getNamespace() != 0);
+    ASSERT_EQ(prop.getNamespace(), &base2);
+    ASSERT_EQ(prop.getMemberNamespace().size(), 2);
+    ASSERT_EQ(&prop.getMemberNamespace().front(), &base2);
+
+    ASSERT_EQ(base2.getOwnedAttributes().size(), 1);
+    ASSERT_EQ(&base2.getOwnedAttributes().front(), &prop);
+    ASSERT_EQ(base2.getAttributes().size(), 1);
+    ASSERT_EQ(&base2.getOwnedAttributes().front(), &prop);
+    ASSERT_EQ(base2.getFeatures().size(), 2);
+    ASSERT_EQ(&base2.getFeatures().front(), &prop);
+    ASSERT_EQ(base2.getRedefinedElements().size(), 2);
+    ASSERT_EQ(&base2.getRedefinedElements().front(), &prop);
 }

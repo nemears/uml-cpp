@@ -310,4 +310,9 @@ void Classifier::restoreReleased(ID id, Element* released) {
 
 void Classifier::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
+    m_attributes.elementReleased(id);
+    m_features.elementReleased(id);
+    m_generalizations.elementReleased(id);
+    m_generals.elementReleased(id);
+    m_inheritedMembers.elementReleased(id);
 }

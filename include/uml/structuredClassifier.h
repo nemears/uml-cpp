@@ -9,9 +9,9 @@ namespace UML {
 
     class StructuredClassifier : virtual public Classifier {
         protected:
-            Sequence<Property> m_ownedAttributes;
-            Sequence<ConnectableElement> m_role;
-            Sequence<Property> m_parts;
+            Sequence<Property> m_ownedAttributes = Sequence<Property>(this);
+            Sequence<ConnectableElement> m_role = Sequence<ConnectableElement>(this);
+            Sequence<Property> m_parts = Sequence<Property>(this);
             class AddOwnedAttributeFunctor : public AbstractSequenceFunctor {
                 public:
                     AddOwnedAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
@@ -33,6 +33,8 @@ namespace UML {
                     void operator()(Element& el) const override;
             };
             void setManager(UmlManager* manager) override;
+            void restoreReleased(ID id, Element* released) override;
+            void referencingReleased(ID id) override;
         public:
             StructuredClassifier();
             StructuredClassifier(const StructuredClassifier& clazz);

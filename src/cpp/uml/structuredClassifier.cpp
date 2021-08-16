@@ -117,3 +117,14 @@ bool StructuredClassifier::isSubClassOf(ElementType eType) const {
 
     return ret;
 }
+
+void StructuredClassifier::restoreReleased(ID id, Element* released) {
+    Classifier::restoreReleased(id, released);
+}
+
+void StructuredClassifier::referencingReleased(ID id) {
+    Classifier::referencingReleased(id);
+    m_ownedAttributes.elementReleased(id);
+    m_role.elementReleased(id);
+    m_parts.elementReleased(id);
+}

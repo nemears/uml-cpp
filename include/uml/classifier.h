@@ -19,11 +19,11 @@ namespace UML {
     class Classifier: public Namespace, public Type , public RedefinableElement, public TemplateableElement {
         friend class UmlManager;
         protected:
-            Sequence<Feature> m_features;
-            Sequence<Property> m_attributes;
-            Sequence<Generalization> m_generalizations;
-            Sequence<Classifier> m_generals;
-            Sequence<NamedElement> m_inheritedMembers;
+            Sequence<Feature> m_features = Sequence<Feature>(this);
+            Sequence<Property> m_attributes = Sequence<Property>(this);
+            Sequence<Generalization> m_generalizations = Sequence<Generalization>(this);
+            Sequence<Classifier> m_generals = Sequence<Classifier>(this);
+            Sequence<NamedElement> m_inheritedMembers = Sequence<NamedElement>(this);
             void setManager(UmlManager* manager) override;
             void reindexID(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;

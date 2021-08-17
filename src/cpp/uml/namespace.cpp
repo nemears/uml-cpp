@@ -19,24 +19,28 @@ void Namespace::RemoveMemberFunctor::operator()(Element& el) const {
 }
 
 void Namespace::AddOwnedMemberFunctor::operator()(Element& el) const {
-    dynamic_cast<NamedElement&>(el).setNamespace(dynamic_cast<Namespace*>(m_el));
+    if (!m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalAdd(el);
+    }
 
     if (!dynamic_cast<Namespace*>(m_el)->getMembers().count(el.getID())) {
         dynamic_cast<Namespace*>(m_el)->getMembers().add(dynamic_cast<NamedElement&>(el));
     }
 
-    if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalAdd(el);
-    }
+    dynamic_cast<NamedElement&>(el).setNamespace(dynamic_cast<Namespace*>(m_el));
 }
 
 void Namespace::RemoveOwnedMemberFunctor::operator()(Element& el) const {
-    if (dynamic_cast<NamedElement&>(el).getNamespace() == m_el) {
-        dynamic_cast<NamedElement&>(el).setNamespace(0);
-    }
-
     if (m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalRemove(el);
+    }
+
+    if (m_el->as<Namespace>().getMembers().count(el.getID())) {
+        m_el->as<Namespace>().getMembers().remove(el.as<NamedElement>());
+    }
+
+    if (dynamic_cast<NamedElement&>(el).getNamespace() == m_el) {
+        dynamic_cast<NamedElement&>(el).setNamespace(0);
     }
 }
 

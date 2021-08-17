@@ -4,12 +4,12 @@
 using namespace UML;
 
 void StructuredClassifier::AddOwnedAttributeFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Property&>(el).getStructuredClassifier() != m_el) {
-        dynamic_cast<Property&>(el).setStructuredClassifier(dynamic_cast<StructuredClassifier*>(m_el));
-    }
-
     if (!dynamic_cast<StructuredClassifier*>(m_el)->getAttributes().count(el.getID())) {
         dynamic_cast<StructuredClassifier*>(m_el)->getAttributes().add(dynamic_cast<Property&>(el));
+    }
+
+    if (dynamic_cast<Property&>(el).getStructuredClassifier() != m_el) {
+        dynamic_cast<Property&>(el).setStructuredClassifier(dynamic_cast<StructuredClassifier*>(m_el));
     }
 
     if (!dynamic_cast<StructuredClassifier*>(m_el)->getRole().count(el.getID())) {

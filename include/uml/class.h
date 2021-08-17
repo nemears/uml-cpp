@@ -11,8 +11,8 @@ namespace UML{
     class Class : public StructuredClassifier , public BehavioredClassifier {
         friend class UmlManager;
         protected:
-            Sequence<Operation> m_operations;
-            Sequence<Classifier> m_nestedClassifiers;
+            Sequence<Operation> m_operations = Sequence<Operation>(this);
+            Sequence<Classifier> m_nestedClassifiers = Sequence<Classifier>(this);
             class AddOperationFunctor : public AbstractSequenceFunctor {
                 public:
                     AddOperationFunctor(Element* me) : AbstractSequenceFunctor(me) {};

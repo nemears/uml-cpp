@@ -313,6 +313,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     Package& pckg = m.create<Package>();
     Class& base = m.create<Class>();
     Class& spec = m.create<Class>();
+    Class& nestSpec = m.create<Class>();
     Property& prop = m.create<Property>();
     Operation& op = m.create<Operation>();
     Generalization& gen = m.create<Generalization>();
@@ -320,6 +321,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     base.getOperations().add(op);
     gen.setGeneral(&base);
     gen.setSpecific(&spec);
+    spec.getNestedClassifiers().add(nestSpec);
     pckg.getPackagedElements().add(base);
     pckg.getPackagedElements().add(spec);
     m.setRoot(&pckg);
@@ -413,7 +415,8 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(spec2.getInheritedMembers().size(), 2);
     ASSERT_EQ(&spec2.getInheritedMembers().front(), &prop);
     ASSERT_EQ(&spec2.getInheritedMembers().get(1), &op);
-    ASSERT_EQ(spec2.getMembers().size(), 2);
-    ASSERT_EQ(&spec2.getMembers().front(), &prop);
-    ASSERT_EQ(&spec2.getMembers().get(1), &op);
+    ASSERT_EQ(spec2.getMembers().size(), 3);
+    ASSERT_EQ(&spec2.getMembers().front(), &nestSpec);
+    ASSERT_EQ(&spec2.getMembers().get(1), &prop);
+    ASSERT_EQ(&spec2.getMembers().get(2), &op);
 }

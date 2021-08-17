@@ -358,6 +358,19 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(&base2.getOwnedAttributes().front(), &prop);
     ASSERT_EQ(base2.getFeatures().size(), 2);
     ASSERT_EQ(&base2.getFeatures().front(), &prop);
-    ASSERT_EQ(base2.getRedefinedElements().size(), 2);
-    ASSERT_EQ(&base2.getRedefinedElements().front(), &prop);
+    ASSERT_EQ(base2.getOwnedMembers().size(), 2);
+    ASSERT_EQ(&base2.getOwnedMembers().front(), &prop);
+    ASSERT_EQ(base2.getMembers().size(), 2);
+    ASSERT_EQ(&base2.getMembers().front(), &prop);
+    ASSERT_EQ(base2.getOwnedElements().size(), 2);
+    ASSERT_EQ(&base2.getOwnedElements().front(), &prop);
+
+    ASSERT_TRUE(op.getClass() != 0);
+    ASSERT_EQ(op.getClass(), &base2);
+    ASSERT_TRUE(op.getFeaturingClassifier() != 0);
+    ASSERT_EQ(op.getFeaturingClassifier(), &base2);
+    ASSERT_TRUE(op.getNamespace() != 0);
+    ASSERT_EQ(op.getNamespace(), &base2);
+    ASSERT_EQ(op.getMemberNamespace().size(), 2);
+    ASSERT_EQ(&op.getMemberNamespace().front(), &base2);
 }

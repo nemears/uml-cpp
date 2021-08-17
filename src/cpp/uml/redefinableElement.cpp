@@ -40,3 +40,14 @@ bool RedefinableElement::isSubClassOf(ElementType eType) const {
 
     return ret;
 }
+
+void RedefinableElement::restoreReleased(ID id, Element* released) {
+    NamedElement::restoreReleased(id, released);
+    /** TODO: relook into redefinition implementation and implement this**/
+}
+
+void RedefinableElement::referencingReleased(ID id) {
+    NamedElement::referencingReleased(id);
+    m_redefinedElement.elementReleased(id);
+    m_redefinitionContext.elementReleased(id);
+}

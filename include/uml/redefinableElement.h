@@ -10,9 +10,11 @@ namespace UML {
     class RedefinableElement : virtual public NamedElement {
         friend class UmlManager;
         protected:
-            Sequence<RedefinableElement> m_redefinedElement;
-            Sequence<Classifier> m_redefinitionContext;
+            Sequence<RedefinableElement> m_redefinedElement = Sequence<RedefinableElement>(this);
+            Sequence<Classifier> m_redefinitionContext = Sequence<Classifier>(this);
             void setManager(UmlManager* manager) override; // not polymorphic
+            void restoreReleased(ID id, Element* released) override;
+            void referencingReleased(ID id) override;
         public:
             RedefinableElement();
             virtual ~RedefinableElement();

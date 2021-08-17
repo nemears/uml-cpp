@@ -5,6 +5,7 @@
 #include "uml/literalString.h"
 #include "uml/class.h"
 #include "uml/association.h"
+#include "uml/generalization.h"
 
 using namespace UML;
 
@@ -146,4 +147,26 @@ TEST_F(PropertyTest, copyPropertyTest) {
   ASSERT_TRUE(&p2.getMemberNamespace().front() == &c);
   ASSERT_TRUE(p2.getFeaturingClassifier() == &c);
   ASSERT_TRUE(p2.isStatic());
+}
+
+TEST_F(PropertyTest, redefinePropertyTest) {
+  UmlManager m;
+  Property& prop = m.create<Property>();
+  Property& redefined = m.create<Property>();
+  Class& b = m.create<Class>();
+  Class& s = m.create<Class>();
+  Generalization& gen = m.create<Generalization>();
+  s.getGeneralizations().add(gen);
+  gen.setGeneral(&b);
+  b.getOwnedAttributes().add(redefined);
+  s.getOwnedAttributes().add(prop);
+  ASSERT_NO_THROW(prop.getRedefinedProperties().add(redefined));
+  ASSERT_EQ(prop.getRedefinedProperties().size(), 1);
+  ASSERT_EQ(prop.getRedefinedProperties().front().getID(), redefined.getID());
+  ASSERT_EQ(prop.getRedefinitionContext().size(), 1);
+  ASSERT_EQ(prop.getRedefinitionContext().front().getID(), s.getID());
+  ASSERT_EQ(prop.getRedefinedElements().size(), 1);
+  ASSERT_EQ(prop.getRedefinedElements().front().getID(), redefined.getID());
+  Property& notRelated = m.create<Property>();
+  ASSERT_THROW(prop.getRedefinedProperties().add(notRelated), ImproperRedefinitionException);
 }

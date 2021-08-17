@@ -104,9 +104,61 @@ void Property::reindexName(string oldName, string newName) {
     Feature::reindexName(oldName, newName);
 }
 
+void Property::AddRedefinedPropertyFunctor::operator()(Element& el) const {
+    if (!m_el->as<Property>().m_redefinedElement.count(el.getID())) {
+        m_el->as<Property>().m_redefinedElement.add(el.as<RedefinableElement>());
+    }
+
+    if (!m_el->as<Property>().m_classifierID.isNull()) {
+        if (!m_el->as<Property>().m_redefinitionContext.count(m_el->as<Property>().m_classifierID)) {
+            m_el->as<Property>().m_redefinitionContext.add(*m_el->as<Property>().getClassifier());
+        }
+        
+    }
+}
+
+bool findProperty(Classifier& clazz, ID propID) {
+    for (auto& general : clazz.getGenerals()) {
+        if (!general.getAttributes().count(propID)) {
+            bool ret = findProperty(general, propID);
+            if (ret) {
+                return ret;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Property::CheckRedefinedPropertyFunctor::operator()(Element& el) const {
+    if (!m_el->as<Property>().m_classifierID.isNull()) {
+        if (!findProperty(*m_el->as<Property>().getClassifier(), el.getID())) {
+            throw ImproperRedefinitionException();
+        }
+    } else {
+        throw ImproperRedefinitionException();
+    }
+}
+
+void Property::RemoveRedefinedPropertyFunctor::operator()(Element& el) const {
+    if (m_el->as<Property>().m_redefinedElement.count(el.getID())) {
+        m_el->as<Property>().m_redefinedElement.remove(el.as<RedefinableElement>());
+    }
+
+    if (!m_el->as<Property>().m_classifierID.isNull()) {
+        if (m_el->as<Property>().m_redefinitionContext.count(m_el->as<Property>().m_classifierID) && m_el->as<Property>().m_redefinedProperties.empty()) {
+            m_el->as<Property>().m_redefinitionContext.add(*m_el->as<Property>().getClassifier());
+        }
+        
+    }
+}
+
 void Property::setManager(UmlManager* manager) {
     NamedElement::setManager(manager);
     RedefinableElement::setManager(manager);
+    m_redefinedProperties.m_manager = manager;
 }
 
 Property::Property() {
@@ -120,9 +172,11 @@ Property::Property() {
     m_associationPtr = 0;
     m_owningAssociationPtr = 0;
     m_artifactPtr = 0;
+    m_redefinedProperties.addProcedures.push_back(new AddRedefinedPropertyFunctor(this));
+    m_redefinedProperties.addChecks.push_back(new CheckRedefinedPropertyFunctor(this));
+    m_redefinedProperties.removeProcedures.push_back(new RemoveRedefinedPropertyFunctor(this));
 }
 
-// TODO remove?
 Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement(prop), NamedElement(prop), Element(prop) {
     m_aggregation = prop.m_aggregation;
     m_composite = prop.m_composite;
@@ -141,6 +195,13 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     m_owningAssociationPtr = prop.m_owningAssociationPtr;
     m_artifactID = prop.m_artifactID;
     m_artifactPtr = prop.m_artifactPtr;
+    m_redefinedProperties = prop.m_redefinedProperties;
+    m_redefinedProperties.addProcedures.clear();
+    m_redefinedProperties.addChecks.clear();
+    m_redefinedProperties.removeProcedures.clear();
+    m_redefinedProperties.addProcedures.push_back(new AddRedefinedPropertyFunctor(this));
+    m_redefinedProperties.addChecks.push_back(new CheckRedefinedPropertyFunctor(this));
+    m_redefinedProperties.removeProcedures.push_back(new RemoveRedefinedPropertyFunctor(this));
 }
 
 AggregationKind Property::getAggregation() {
@@ -447,6 +508,10 @@ void Property::setArtifact(Artifact* artifact) {
             artifact->getOwnedAttributes().add(*this);
         }
     }
+}
+
+Sequence<Property>& Property::getRedefinedProperties() {
+    return m_redefinedProperties;
 }
 
 void Property::setType(Type* type) {

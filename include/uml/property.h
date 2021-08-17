@@ -42,9 +42,25 @@ namespace UML{
             Association* m_owningAssociationPtr;
             ID m_artifactID;
             Artifact* m_artifactPtr;
+            Sequence<Property> m_redefinedProperties = Sequence<Property>(this);
             void reindexID(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             void setComposite(bool composite);
+            class AddRedefinedPropertyFunctor : public AbstractSequenceFunctor {
+                public:
+                    AddRedefinedPropertyFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
+            class CheckRedefinedPropertyFunctor : public AbstractSequenceFunctor {
+                public:
+                    CheckRedefinedPropertyFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
+            class RemoveRedefinedPropertyFunctor : public AbstractSequenceFunctor {
+                public:
+                    RemoveRedefinedPropertyFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    void operator()(Element& el) const override;
+            };
             void setManager(UmlManager* manager) override;
         public: 
             Property();
@@ -69,10 +85,18 @@ namespace UML{
             Artifact* getArtifact();
             void setArtifact(Artifact* artifact);
             void setType(Type* type) override;
+            Sequence<Property>& getRedefinedProperties();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PROPERTY;
+            };
+    };
+
+    class ImproperRedefinitionException : public std::exception {
+        public:
+            virtual const char* what() const throw() {
+                return "RedefinedProperty is not a member of a general classifier!";
             };
     };
 }

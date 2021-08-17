@@ -404,6 +404,12 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_TRUE(gen.getOwner() != 0);
     ASSERT_EQ(gen.getOwner(), &spec2);
 
+    ASSERT_TRUE(nestSpec.getNamespace() != 0);
+    ASSERT_EQ(nestSpec.getMemberNamespace().size(), 1);
+    ASSERT_EQ(&nestSpec.getMemberNamespace().front(), &spec2);
+    ASSERT_TRUE(nestSpec.getOwner() != 0);
+    ASSERT_EQ(nestSpec.getOwner(), &spec2);
+
     ASSERT_EQ(spec2.getGeneralizations().size(), 1);
     ASSERT_EQ(&spec2.getGeneralizations().front(), &gen);
     ASSERT_EQ(spec2.getDirectedRelationships().size(),1);
@@ -415,8 +421,15 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(spec2.getInheritedMembers().size(), 2);
     ASSERT_EQ(&spec2.getInheritedMembers().front(), &prop);
     ASSERT_EQ(&spec2.getInheritedMembers().get(1), &op);
+    ASSERT_EQ(spec2.getNestedClassifiers().size(), 1);
+    ASSERT_EQ(&spec2.getNestedClassifiers().front(), &nestSpec);
+    ASSERT_EQ(spec2.getOwnedMembers().size(), 1);
+    ASSERT_EQ(&spec2.getOwnedMembers().front(), &nestSpec);
     ASSERT_EQ(spec2.getMembers().size(), 3);
     ASSERT_EQ(&spec2.getMembers().front(), &nestSpec);
     ASSERT_EQ(&spec2.getMembers().get(1), &prop);
     ASSERT_EQ(&spec2.getMembers().get(2), &op);
+    ASSERT_EQ(spec2.getOwnedElements().size(), 2);
+    ASSERT_EQ(&spec2.getOwnedElements().front(), &gen);
+    ASSERT_EQ(&spec2.getOwnedElements().get(1), &nestSpec);
 }

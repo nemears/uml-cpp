@@ -10,6 +10,7 @@
 #include "uml/literalInt.h"
 #include "uml/literalString.h"
 #include "uml/literalReal.h"
+#include "uml/generalization.h"
 
 using namespace std;
 using namespace UML;
@@ -169,4 +170,50 @@ TEST_F(PropertyParserTest, parseRedefinedPropertyTest) {
     Property& prop = spec.getOwnedAttributes().front();
     ASSERT_EQ(prop.getRedefinedProperties().size(), 1);
     ASSERT_EQ(prop.getRedefinedProperties().front().getID(), redefined.getID());
+}
+
+TEST_F(PropertyParserTest, emitRedefinedPropertyTest) {
+    UmlManager m;
+    Package& pckg = m.create<Package>();
+    Property& prop = m.create<Property>();
+    Property& redefined = m.create<Property>();
+    Class& b = m.create<Class>();
+    Class& s = m.create<Class>();
+    Generalization& gen = m.create<Generalization>();
+    pckg.setID("RC5KnOAfUJQY6BnxohDHLqrMadYI");
+    prop.setID("sVhU3UWy392YuTfewtNoyaWLhAQw");
+    redefined.setID("9m50Dir0MgpEaLu8ghn7cSlZ5Yzh");
+    b.setID("yzUVzVw8sod2KyBH5LxX_OLI7HrV");
+    s.setID("Y8UtleiQO3UuN4GEqSzai0G8&GqC");
+    gen.setID("RL5_MDmj_CskU1njfiL74QSxP7Bw");
+    s.getGeneralizations().add(gen);
+    gen.setGeneral(&b);
+    b.getOwnedAttributes().add(redefined);
+    s.getOwnedAttributes().add(prop);
+    ASSERT_NO_THROW(prop.getRedefinedProperties().add(redefined));
+    pckg.getPackagedElements().add(b);
+    pckg.getPackagedElements().add(s);
+    string expectedEmit = R""""(package:
+  id: RC5KnOAfUJQY6BnxohDHLqrMadYI
+  packagedElements:
+    - class:
+        id: yzUVzVw8sod2KyBH5LxX_OLI7HrV
+        ownedAttributes:
+          - property:
+              id: 9m50Dir0MgpEaLu8ghn7cSlZ5Yzh
+    - class:
+        id: Y8UtleiQO3UuN4GEqSzai0G8&GqC
+        generalizations:
+          - generalization:
+              id: RL5_MDmj_CskU1njfiL74QSxP7Bw
+              general: yzUVzVw8sod2KyBH5LxX_OLI7HrV
+        ownedAttributes:
+          - property:
+              id: sVhU3UWy392YuTfewtNoyaWLhAQw
+              redefinedProperties:
+                - 9m50Dir0MgpEaLu8ghn7cSlZ5Yzh)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
 }

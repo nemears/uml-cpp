@@ -103,9 +103,7 @@ template <class T =Element> T& parseScalar(YAML::Node node, ParserMetaData& data
         if (packagedEl == 0) {
             throw UmlParserException("Could not identify YAML node for packaged elements" , data.m_path.string(), node);
         }
-        if (packagedEl->isSubClassOf(ElementType::PACKAGEABLE_ELEMENT)) {
-            return dynamic_cast<T&>(*packagedEl);
-        }
+        return dynamic_cast<T&>(*packagedEl);
     } else {
         std::string path = node.as<std::string>();
         std::string idStr = path.substr(0, path.find_last_of("/"));

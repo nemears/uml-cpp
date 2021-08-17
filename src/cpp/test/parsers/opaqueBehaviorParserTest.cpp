@@ -66,7 +66,7 @@ TEST_F(OpaqueBehaviorParserTest, emitBasicOpaqueBehavior) {
     o.setName("op");
     o.setVisibility(VisibilityKind::PROTECTED);
     b.getOwnedAttributes().add(p);
-    b.getOperations().add(o);
+    b.getOwnedOperations().add(o);
     string expectedEmit = R""""(opaqueBehavior:
   id: 0FTAvf5nrXsknnc60ziElK2TDb7D
   name: Opaque

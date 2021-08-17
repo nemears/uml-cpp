@@ -41,8 +41,8 @@ TEST_F(OperationParserTest, basicParamTest) {
     ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
     ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
     Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
-    ASSERT_TRUE(c->getOperations().size() == 1);
-    Operation* o =&c->getOperations().front();
+    ASSERT_TRUE(c->getOwnedOperations().size() == 1);
+    Operation* o =&c->getOwnedOperations().front();
     ASSERT_TRUE(o->getOwnedParameters().size() == 1);
     Parameter* p = &o->getOwnedParameters().front();
     ASSERT_TRUE(p->getName().compare("testInt") == 0);

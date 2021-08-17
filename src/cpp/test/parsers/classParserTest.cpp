@@ -62,8 +62,8 @@ TEST_F(ClassParserTest, parseOperation) {
     ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/operation.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
-    ASSERT_TRUE(clazz->getOperations().size() == 1);
-    Operation* op = &clazz->getOperations().front();
+    ASSERT_TRUE(clazz->getOwnedOperations().size() == 1);
+    Operation* op = &clazz->getOwnedOperations().front();
     ASSERT_TRUE(op->getName().compare("isValid") == 0);
     ASSERT_TRUE(op->getMethods().size() == 1);
     OpaqueBehavior* bhv = dynamic_cast<OpaqueBehavior*>(&op->getMethods().front());
@@ -170,7 +170,7 @@ TEST_F(ClassParserTest, emitClassWAttributeNOperation) {
     o.setName("op");
     o.setVisibility(VisibilityKind::PROTECTED);
     c.getOwnedAttributes().add(p);
-    c.getOperations().add(o);
+    c.getOwnedOperations().add(o);
     string expectedEmit = R""""(class:
   id: b0XPjtodVDLoVu2YCMwBWYqglsoX
   name: Class
@@ -210,7 +210,7 @@ TEST_F(ClassParserTest, emitFilledInOperation) {
     o.getOwnedParameters().add(p);
     b.getParameters().add(p2);
     o.getMethods().add(b);
-    c.getOperations().add(o);
+    c.getOwnedOperations().add(o);
     string expectedEmit = R""""(class:
   id: 6cCDjqUmkrXZ46z7CcNaTDso4SfQ
   name: Class
@@ -318,7 +318,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     Operation& op = m.create<Operation>();
     Generalization& gen = m.create<Generalization>();
     base.getOwnedAttributes().add(prop);
-    base.getOperations().add(op);
+    base.getOwnedOperations().add(op);
     gen.setGeneral(&base);
     gen.setSpecific(&spec);
     spec.getNestedClassifiers().add(nestSpec);
@@ -378,8 +378,8 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_TRUE(op.getOwner() != 0);
     ASSERT_EQ(op.getOwner(), &base2);
 
-    ASSERT_EQ(base2.getOperations().size(), 1);
-    ASSERT_EQ(&base2.getOperations().front(), &op);
+    ASSERT_EQ(base2.getOwnedOperations().size(), 1);
+    ASSERT_EQ(&base2.getOwnedOperations().front(), &op);
     ASSERT_EQ(&base2.getFeatures().get(1), &op);
     ASSERT_EQ(&base2.getOwnedMembers().get(1), &op);
     ASSERT_EQ(&base2.getMembers().get(1), &op);

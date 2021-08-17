@@ -19,7 +19,7 @@ TEST_F(OperationTest, reIndexID_Test) {
     Operation o;
     o.setClass(&c);
     o.setID("c3rcWoyTgxLfFl5jf2Ms6CMa_sWe");
-    ASSERT_NO_THROW(c.getOperations().get(o.getID()));
+    ASSERT_NO_THROW(c.getOwnedOperations().get(o.getID()));
     ASSERT_NO_THROW(c.getOwnedElements().get(o.getID()));
 }
 

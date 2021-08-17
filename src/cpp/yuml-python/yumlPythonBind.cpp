@@ -248,8 +248,8 @@ PYBIND11_MODULE(yuml_python, m) {
     // Class
     py::class_<Class, Classifier, ElementPy<Class>>(m, "Class")
         .def(py::init<>())
-        .def("addOperation", [] (Class& me, Operation& op) { me.getOperations().add(op); })
-        .def("removeOperation", [] (Class& me, Operation& op) { me.getOperations().remove(op); });
+        .def("addOperation", [] (Class& me, Operation& op) { me.getOwnedOperations().add(op); })
+        .def("removeOperation", [] (Class& me, Operation& op) { me.getOwnedOperations().remove(op); });
         // .def_readonly("operations", &Class::operations);
     
     // Behavior

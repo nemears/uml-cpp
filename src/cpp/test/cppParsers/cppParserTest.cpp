@@ -53,7 +53,7 @@ TEST_F(CppParserTest, parseBasicHeaderTest) {
     ASSERT_EQ(pckg->getPackagedElements().get(2).getElementType(), ElementType::CLASS);
     Class& testClass = dynamic_cast<Class&>(pckg->getPackagedElements().get(2));
     ASSERT_EQ(testClass.getName(), "test");
-    ASSERT_EQ(testClass.getOperations().size(), 1);
-    Operation& constructor = testClass.getOperations().front();
+    ASSERT_EQ(testClass.getOwnedOperations().size(), 1);
+    Operation& constructor = testClass.getOwnedOperations().front();
     ASSERT_EQ(constructor.getName(), "test");
 }

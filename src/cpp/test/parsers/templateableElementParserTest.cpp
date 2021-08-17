@@ -79,14 +79,14 @@ TEST_F(TemplateableElementParserTest, referencedParameterTest) {
     ASSERT_NO_THROW(el = m.parse(ymlPath + "templateableElementTests/operationW_referencedParameter.yml"));
     ASSERT_EQ(el->getElementType() , ElementType::CLASS);
     Class& c = dynamic_cast<Class&>(*el);
-    ASSERT_EQ(c.getOperations().size(), 2);
-    Operation& o1 = c.getOperations().front();
+    ASSERT_EQ(c.getOwnedOperations().size(), 2);
+    Operation& o1 = c.getOwnedOperations().front();
     ASSERT_TRUE(o1.getOwnedTemplateSignature() != 0);
     TemplateSignature& s1 = *o1.getOwnedTemplateSignature();
     ASSERT_EQ(s1.getOwnedParameter().size(), 1);
     TemplateParameter& p = s1.getOwnedParameter().front();
     ASSERT_EQ(p.getID(), ID::fromString("fGtHlUWITxbIKyNFeKCXI4d_3EAc"));
-    Operation& o2 = c.getOperations().back();
+    Operation& o2 = c.getOwnedOperations().back();
     ASSERT_TRUE(o2.getOwnedTemplateSignature() != 0);
     TemplateSignature& s2 = *o2.getOwnedTemplateSignature();
     ASSERT_EQ(s2.getParameter().size(), 1);
@@ -102,8 +102,8 @@ TEST_F(TemplateableElementParserTest, referenceParameteredElementTest) {
     ASSERT_EQ(c.getOwnedAttributes().size(), 1);
     Property& prop = c.getOwnedAttributes().front();
     ASSERT_EQ(prop.getID(), ID::fromString("B2dyPF44MATTZ02XsQwgcbeBsq&d"));
-    ASSERT_EQ(c.getOperations().size(), 1);
-    Operation& op = c.getOperations().front();
+    ASSERT_EQ(c.getOwnedOperations().size(), 1);
+    Operation& op = c.getOwnedOperations().front();
     ASSERT_TRUE(op.getOwnedTemplateSignature() != 0);
     TemplateSignature& s = *op.getOwnedTemplateSignature();
     ASSERT_EQ(s.getOwnedParameter().size(), 1);

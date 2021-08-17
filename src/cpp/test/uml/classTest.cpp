@@ -26,15 +26,15 @@ TEST_F(ClassTest, BasicOperationTest) {
     ASSERT_NO_THROW(val.setValue("return true"));
     ASSERT_NO_THROW(oB.getBodies().add(val));
     ASSERT_NO_THROW(o.getMethods().add(oB));
-    ASSERT_NO_THROW(c.getOperations().add(o));
+    ASSERT_NO_THROW(c.getOwnedOperations().add(o));
 }
 
 TEST_F(ClassTest, addOperationFunctorTest) {
     Class c;
     Operation o;
-    c.getOperations().add(o);
-    ASSERT_TRUE(c.getOperations().size() == 1);
-    ASSERT_TRUE(&c.getOperations().front() == &o);
+    c.getOwnedOperations().add(o);
+    ASSERT_TRUE(c.getOwnedOperations().size() == 1);
+    ASSERT_TRUE(&c.getOwnedOperations().front() == &o);
     ASSERT_TRUE(o.getClass() == &c);
     ASSERT_TRUE(c.getFeatures().size() == 1);
     ASSERT_TRUE(&c.getFeatures().front() == &o);
@@ -51,8 +51,8 @@ TEST_F(ClassTest, setClassTest) {
     Class c;
     Operation o;
     o.setClass(&c);
-    ASSERT_TRUE(c.getOperations().size() == 1);
-    ASSERT_TRUE(&c.getOperations().front() == &o);
+    ASSERT_TRUE(c.getOwnedOperations().size() == 1);
+    ASSERT_TRUE(&c.getOwnedOperations().front() == &o);
     ASSERT_TRUE(o.getClass() == &c);
     ASSERT_TRUE(c.getFeatures().size() == 1);
     ASSERT_TRUE(&c.getFeatures().front() == &o);
@@ -69,10 +69,10 @@ TEST_F(ClassTest, overwriteClassTest) {
   Class p1;
   Class p2;
   Operation c;
-  p1.getOperations().add(c);
+  p1.getOwnedOperations().add(c);
   c.setClass(&p2);
-  ASSERT_TRUE(p2.getOperations().size() == 1);
-  ASSERT_TRUE(&p2.getOperations().front() == &c);
+  ASSERT_TRUE(p2.getOwnedOperations().size() == 1);
+  ASSERT_TRUE(&p2.getOwnedOperations().front() == &c);
   ASSERT_TRUE(c.getClass() == &p2);
   ASSERT_TRUE(p2.getFeatures().size() == 1);
   ASSERT_TRUE(&p2.getFeatures().front() == &c);
@@ -83,7 +83,7 @@ TEST_F(ClassTest, overwriteClassTest) {
   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
   ASSERT_TRUE(&p2.getOwnedElements().front() == &c);
   ASSERT_TRUE(c.getOwner() == &p2);
-  ASSERT_TRUE(p1.getOperations().size() == 0);
+  ASSERT_TRUE(p1.getOwnedOperations().size() == 0);
   ASSERT_TRUE(p1.getFeatures().size() == 0);
   ASSERT_TRUE(p1.getMembers().size() == 0);
   ASSERT_TRUE(p1.getOwnedElements().size() == 0);
@@ -93,10 +93,10 @@ TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
   Class p1;
   Class p2;
   Operation c;
-  p1.getOperations().add(c);
-  p2.getOperations().add(c);
-  ASSERT_TRUE(p2.getOperations().size() == 1);
-  ASSERT_TRUE(&p2.getOperations().front() == &c);
+  p1.getOwnedOperations().add(c);
+  p2.getOwnedOperations().add(c);
+  ASSERT_TRUE(p2.getOwnedOperations().size() == 1);
+  ASSERT_TRUE(&p2.getOwnedOperations().front() == &c);
   ASSERT_TRUE(c.getClass() == &p2);
   ASSERT_TRUE(p2.getFeatures().size() == 1);
   ASSERT_TRUE(&p2.getFeatures().front() == &c);
@@ -107,7 +107,7 @@ TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
   ASSERT_TRUE(&p2.getOwnedElements().front() == &c);
   ASSERT_TRUE(c.getOwner() == &p2);
-  ASSERT_TRUE(p1.getOperations().size() == 0);
+  ASSERT_TRUE(p1.getOwnedOperations().size() == 0);
   ASSERT_TRUE(p1.getFeatures().size() == 0);
   ASSERT_TRUE(p1.getMembers().size() == 0);
   ASSERT_TRUE(p1.getOwnedElements().size() == 0);
@@ -116,9 +116,9 @@ TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
 TEST_F(ClassTest, removeOperationFunctorTest) {
   Class c;
   Operation o;
-  c.getOperations().add(o);
-  ASSERT_NO_THROW(c.getOperations().remove(o));
-  ASSERT_TRUE(c.getOperations().size() == 0);
+  c.getOwnedOperations().add(o);
+  ASSERT_NO_THROW(c.getOwnedOperations().remove(o));
+  ASSERT_TRUE(c.getOwnedOperations().size() == 0);
   ASSERT_TRUE(c.getFeatures().size() == 0);
   ASSERT_TRUE(c.getMembers().size() == 0);
   ASSERT_TRUE(c.getOwnedElements().size() == 0);
@@ -522,7 +522,7 @@ TEST_F(ClassTest, CopyClassTest) {
   p.setAggregation(AggregationKind::COMPOSITE);
   c.setName("class_test");
   c.getOwnedAttributes().add(p);
-  c.getOperations().add(o);
+  c.getOwnedOperations().add(o);
   pk.getPackagedElements().add(c);
   Class c2 = c;
   ASSERT_TRUE(c2.getOwningPackage() == &pk);
@@ -538,8 +538,8 @@ TEST_F(ClassTest, CopyClassTest) {
   ASSERT_TRUE(&c2.getAttributes().front() == &p);
   ASSERT_TRUE(c2.getRole().size() == 1);
   ASSERT_TRUE(&c2.getRole().front() == &p);
-  ASSERT_TRUE(c2.getOperations().size() == 1);
-  ASSERT_TRUE(&c2.getOperations().front() == &o);
+  ASSERT_TRUE(c2.getOwnedOperations().size() == 1);
+  ASSERT_TRUE(&c2.getOwnedOperations().front() == &o);
   ASSERT_TRUE(c2.getFeatures().size() == 2);
   ASSERT_TRUE(&c2.getFeatures().front() == &p);
   ASSERT_TRUE(&c2.getFeatures().back() == &o);

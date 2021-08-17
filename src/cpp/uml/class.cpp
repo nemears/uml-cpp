@@ -4,7 +4,7 @@
 
 using namespace UML;
 
-void Class::AddOperationFunctor::operator()(Element& el) const {
+void Class::AddOwnedOperationFunctor::operator()(Element& el) const {
     if (dynamic_cast<Operation&>(el).getClass() != m_el) {
         dynamic_cast<Operation&>(el).setClass(dynamic_cast<Class*>(m_el));
     }
@@ -14,7 +14,7 @@ void Class::AddOperationFunctor::operator()(Element& el) const {
     }
 }
 
-void Class::RemoveOperationFunctor::operator()(Element& el) const {
+void Class::RemoveOwnedOperationFunctor::operator()(Element& el) const {
     if (dynamic_cast<Operation&>(el).getClass() == m_el) {
         dynamic_cast<Operation&>(el).setClass(0);
     }
@@ -59,13 +59,13 @@ void Class::RemoveNestedClassifierFunctor::operator()(Element& el) const {
 void Class::setManager(UmlManager* manager) {
     StructuredClassifier::setManager(manager);
     BehavioredClassifier::setManager(manager);
-    m_operations.m_manager = manager;
+    m_ownedOperations.m_manager = manager;
     m_nestedClassifiers.m_manager = manager;
 }
 
 Class::Class() {
-    m_operations.addProcedures.push_back(new AddOperationFunctor(this));
-    m_operations.removeProcedures.push_back(new RemoveOperationFunctor(this));
+    m_ownedOperations.addProcedures.push_back(new AddOwnedOperationFunctor(this));
+    m_ownedOperations.removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
     m_ownedAttributes.addProcedures.push_back(new ClassAddOwnedAttributeFunctor(this));
     m_ownedAttributes.removeProcedures.push_back(new ClassRemoveOwnedAttributeFunctor(this));
     m_nestedClassifiers.addProcedures.push_back(new AddNestedClassifierFunctor(this));
@@ -82,11 +82,11 @@ Classifier(clazz),
 PackageableElement(clazz), 
 NamedElement(clazz), 
 Element(clazz) {
-    m_operations = clazz.m_operations;
-    m_operations.addProcedures.clear();
-    m_operations.addProcedures.push_back(new AddOperationFunctor(this));
-    m_operations.removeProcedures.clear();
-    m_operations.removeProcedures.push_back(new RemoveOperationFunctor(this));
+    m_ownedOperations = clazz.m_ownedOperations;
+    m_ownedOperations.addProcedures.clear();
+    m_ownedOperations.addProcedures.push_back(new AddOwnedOperationFunctor(this));
+    m_ownedOperations.removeProcedures.clear();
+    m_ownedOperations.removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
     m_ownedAttributes.addProcedures.push_back(new ClassAddOwnedAttributeFunctor(this));
     m_ownedAttributes.removeProcedures.push_back(new ClassRemoveOwnedAttributeFunctor(this));
     m_nestedClassifiers.addProcedures.clear();
@@ -95,8 +95,8 @@ Element(clazz) {
     m_nestedClassifiers.removeProcedures.push_back(new RemoveNestedClassifierFunctor(this));
 }
 
-Sequence<Operation>& Class::getOperations() {
-    return m_operations;
+Sequence<Operation>& Class::getOwnedOperations() {
+    return m_ownedOperations;
 }
 Sequence<Classifier>& Class::getNestedClassifiers() {
     return m_nestedClassifiers;

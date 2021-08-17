@@ -874,12 +874,12 @@ void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
                     if (node["operations"][i]["operation"]) {
                         Operation& op = data.m_manager->create<Operation>();
                         parseOperation(node["operations"][i]["operation"], op, data);
-                        clazz.getOperations().add(op);
+                        clazz.getOwnedOperations().add(op);
                     } else {
                         throw UmlParserException("Could not identify operation to parse, ", data.m_path.string(), node["operations"][i]);
                     }
                 } else if (node["operations"][i].IsScalar()) {
-                    clazz.getOperations().add(parseScalar<Operation>(node["operations"][i], data));
+                    clazz.getOwnedOperations().add(parseScalar<Operation>(node["operations"][i], data));
                 } else {
                     throw UmlParserException("Invalid yaml node type for class operation definition, must be a map or a scalar!", data.m_path.string(), node["operations"][i]);
                 }
@@ -970,9 +970,9 @@ void emitClass(YAML::Emitter& emitter, Class& clazz, EmitterMetaData& data) {
     emitStructuredClassifier(emitter, clazz, data);
     emitBehavioredClassifier(emitter, clazz, data);
 
-    if (!clazz.getOperations().empty()) {
+    if (!clazz.getOwnedOperations().empty()) {
         emitter << YAML::Key << "operations" << YAML::Value << YAML::BeginSeq;
-        for (auto& operation : clazz.getOperations()) {
+        for (auto& operation : clazz.getOwnedOperations()) {
             emit(emitter, operation, data);
         }
         emitter << YAML::EndSeq;

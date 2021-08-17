@@ -12,7 +12,7 @@ void Operation::reindexID(ID oldID, ID newID) {
         if (!m_classPtr) {
             m_classPtr = &m_manager->get<Class>(m_classID);
         }
-        m_classPtr->getOperations().reindex(oldID, newID);
+        m_classPtr->getOwnedOperations().reindex(oldID, newID);
     }
     if (!m_dataTypeID.isNull()) {
         if (!m_dataTypePtr) {
@@ -25,7 +25,7 @@ void Operation::reindexID(ID oldID, ID newID) {
 
 void Operation::reindexName(string oldName, string newName) {
     if (getClass()) {
-        getClass()->getOperations().reindex(m_id, oldName, newName);
+        getClass()->getOwnedOperations().reindex(m_id, oldName, newName);
     }
     if (getDataType()) {
         getDataType()->getOwnedOperation().reindex(m_id, oldName, newName);
@@ -76,8 +76,8 @@ void Operation::setClass(Class* clazz) {
         if (!m_classPtr) {
             m_classPtr = &m_manager->get<Class>(m_classID);
         }
-        if (m_classPtr->getOperations().count(m_id)) {
-            m_classPtr->getOperations().remove(*this);
+        if (m_classPtr->getOwnedOperations().count(m_id)) {
+            m_classPtr->getOwnedOperations().remove(*this);
         }
         m_classPtr = 0;
         m_classID = ID::nullID();
@@ -92,8 +92,8 @@ void Operation::setClass(Class* clazz) {
     }
 
     if (clazz) {
-        if (!clazz->getOperations().count(m_id)) {
-            clazz->getOperations().add(*this);
+        if (!clazz->getOwnedOperations().count(m_id)) {
+            clazz->getOwnedOperations().add(*this);
         }
         if (m_featuringClassifierID != clazz->getID()) {
             setFeaturingClassifier(clazz);

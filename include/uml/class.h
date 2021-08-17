@@ -11,16 +11,16 @@ namespace UML{
     class Class : public StructuredClassifier , public BehavioredClassifier {
         friend class UmlManager;
         protected:
-            Sequence<Operation> m_operations = Sequence<Operation>(this);
+            Sequence<Operation> m_ownedOperations = Sequence<Operation>(this);
             Sequence<Classifier> m_nestedClassifiers = Sequence<Classifier>(this);
-            class AddOperationFunctor : public AbstractSequenceFunctor {
+            class AddOwnedOperationFunctor : public AbstractSequenceFunctor {
                 public:
-                    AddOperationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    AddOwnedOperationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
-            class RemoveOperationFunctor : public AbstractSequenceFunctor {
+            class RemoveOwnedOperationFunctor : public AbstractSequenceFunctor {
                 public:
-                    RemoveOperationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    RemoveOwnedOperationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
             class ClassAddOwnedAttributeFunctor : public AbstractSequenceFunctor {
@@ -48,7 +48,7 @@ namespace UML{
             Class();
             virtual ~Class();
             Class(const Class& clazz);
-            Sequence<Operation>& getOperations();
+            Sequence<Operation>& getOwnedOperations();
             Sequence<Classifier>& getNestedClassifiers();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;

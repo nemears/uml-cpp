@@ -29,7 +29,7 @@ void setOwnerHelper(Element& ownee, Element& owner) {
         case ElementType::CLASS : {
             switch(ownee.getElementType()) {
                 case ElementType::OPERATION : {
-                    dynamic_cast<Class&>(owner).getOperations().add(dynamic_cast<Operation&>(ownee));
+                    dynamic_cast<Class&>(owner).getOwnedOperations().add(dynamic_cast<Operation&>(ownee));
                     break;
                 }
             }
@@ -349,7 +349,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
             }
             switch (data.owningElement.getElementType()) {
                 case ElementType::CLASS : {
-                    data.owningElement.as<Class>().getOperations().add(method);
+                    data.owningElement.as<Class>().getOwnedOperations().add(method);
                     break;
                 }
                 default : {

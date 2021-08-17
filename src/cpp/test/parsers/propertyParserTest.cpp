@@ -149,3 +149,24 @@ TEST_F(PropertyParserTest, literalsTest) {
     LiteralBool* lb = dynamic_cast<LiteralBool*>(boolProp->getDefaultValue());
     ASSERT_TRUE(lb->getValue() == false);
 }
+
+TEST_F(PropertyParserTest, parseRedefinedPropertyTest) {
+    Element* el;
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "propertyTests/redefinedProperty.yml"));
+    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
+    Package& pckg = el->as<Package>();
+    ASSERT_EQ(pckg.getPackagedElements().size(), 2);
+    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
+    Class& base = pckg.getPackagedElements().front().as<Class>();
+    ASSERT_EQ(base.getOwnedAttributes().size(), 1);
+    Property& redefined = base.getOwnedAttributes().front();
+    ASSERT_EQ(pckg.getPackagedElements().get(1).getElementType(), ElementType::CLASS);
+    Class& spec = pckg.getPackagedElements().get(1).as<Class>();
+    ASSERT_EQ(spec.getGenerals().size(), 1);
+    ASSERT_EQ(spec.getGenerals().front().getID(), base.getID());
+    ASSERT_EQ(spec.getOwnedAttributes().size(), 1);
+    Property& prop = spec.getOwnedAttributes().front();
+    ASSERT_EQ(prop.getRedefinedProperties().size(), 1);
+    ASSERT_EQ(prop.getRedefinedProperties().front().getID(), redefined.getID());
+}

@@ -1,0 +1,17 @@
+---
+  package:
+    packagedElements:
+      - class:
+          id: 2luT6NreEKbmUKCHLqO4tfqxx5pX
+          ownedAttributes:
+            - property:
+                id: v3L4WD&_5fsbiW&j9o4EXqquzKNk
+      - class:
+          ownedAttributes:
+            - property:
+                redefinedProperties:
+                  - v3L4WD&_5fsbiW&j9o4EXqquzKNk
+          generalizations:
+            - generalization:
+                general: 2luT6NreEKbmUKCHLqO4tfqxx5pX
+...

@@ -831,8 +831,8 @@ void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, Par
                     if (node["ownedAttributes"][i]["property"]) {
                         if (node["ownedAttributes"][i]["property"].IsMap()) {
                             Property& prop = data.m_manager->create<Property>();
+                            clazz.getOwnedAttributes().add(prop); // different order for redefinition
                             parseProperty(node["ownedAttributes"][i]["property"], prop, data);
-                            clazz.getOwnedAttributes().add(prop);
                         } else {
                             throw UmlParserException("Improper YAML node type for property field, must be map, " , data.m_path.string() , node["ownedAttributes"][i]["property"]);
                         }
@@ -1171,6 +1171,25 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
             throw UmlParserException("Invalid yaml node type, must be Map!", data.m_path.string(), node["defaultValue"]);
         }
     }
+
+    if (node["redefinedProperties"]) {
+        if (node["redefinedProperties"].IsSequence()) {
+            for (size_t i = 0; i < node["redefinedProperties"].size(); i++) {
+                if (node["redefinedProperties"][i].IsScalar()) {
+                    if (isValidID(node["redefinedProperties"][i].as<string>())) {
+                        ID redefinedID = ID::fromString(node["redefinedProperties"][i].as<string>());
+                        prop.getRedefinedProperties().add(data.m_manager->get<Property>(redefinedID));
+                    } else {
+                        throw UmlParserException("Invalid uml id for redefinedProperties reference, must be a 28 character base64 url safe string!", data.m_path.string(), node["redefinedProperties"][i]);
+                    }
+                } else {
+                    throw UmlParserException("Invalid yaml node type for redefinedProperties reference, must be a scalar!", data.m_path.string(), node["redefinedProperties"][i]);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for redefinedProperties specification, must be a sequence!", data.m_path.string(), node["redefinedProperties"]);
+        }
+    }
 }
 
 void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data) {
@@ -1197,6 +1216,14 @@ void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data)
 
     if (prop.getDefaultValue()) {
         // TODO
+    }
+
+    if (!prop.getRedefinedProperties().empty()) {
+        emitter << YAML::Key << "redefinedProperties" << YAML::Value << YAML::BeginSeq;
+        for (auto& redefined: prop.getRedefinedProperties()) {
+            emitter << YAML::Value << redefined.getID().string();
+        }
+        emitter << YAML::EndSeq;
     }
 
     emitElementDefenitionEnd(emitter, ElementType::PROPERTY, prop);

@@ -373,4 +373,13 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(op.getNamespace(), &base2);
     ASSERT_EQ(op.getMemberNamespace().size(), 2);
     ASSERT_EQ(&op.getMemberNamespace().front(), &base2);
+    ASSERT_TRUE(op.getOwner() != 0);
+    ASSERT_EQ(op.getOwner(), &base2);
+
+    ASSERT_EQ(base2.getOperations().size(), 1);
+    ASSERT_EQ(&base2.getOperations().front(), &op);
+    ASSERT_EQ(&base2.getFeatures().get(1), &op);
+    ASSERT_EQ(&base2.getOwnedMembers().get(1), &op);
+    ASSERT_EQ(&base2.getMembers().get(1), &op);
+    ASSERT_EQ(&base2.getOwnedElements().get(1), &op);
 }

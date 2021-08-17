@@ -382,4 +382,38 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(&base2.getOwnedMembers().get(1), &op);
     ASSERT_EQ(&base2.getMembers().get(1), &op);
     ASSERT_EQ(&base2.getOwnedElements().get(1), &op);
+
+    ASSERT_TRUE(gen.getGeneral() != 0);
+    ASSERT_EQ(gen.getGeneral(), &base2);
+    ASSERT_EQ(spec.getGenerals().size(), 1);
+    ASSERT_EQ(&spec.getGenerals().front(), &base2);
+
+    /** TODO: anything else to test with base class? **/
+    /** release specific **/
+    ASSERT_NO_THROW(m.release(spec.getID()));
+    Class& spec2 = pckg.getPackagedElements().get(1).as<Class>(); // load specific
+
+    ASSERT_TRUE(gen.getSpecific() != 0);
+    ASSERT_EQ(gen.getSpecific(), &spec2);
+    ASSERT_EQ(gen.getSources().size(), 1);
+    ASSERT_EQ(&gen.getSources().front(), &spec2);
+    ASSERT_EQ(gen.getRelatedElements().size(), 2);
+    ASSERT_EQ(&gen.getRelatedElements().back(), &spec2);
+    ASSERT_TRUE(gen.getOwner() != 0);
+    ASSERT_EQ(gen.getOwner(), &spec2);
+
+    ASSERT_EQ(spec2.getGeneralizations().size(), 1);
+    ASSERT_EQ(&spec2.getGeneralizations().front(), &gen);
+    ASSERT_EQ(spec2.getDirectedRelationships().size(),1);
+    ASSERT_EQ(&spec2.getDirectedRelationships().front(), &gen);
+    ASSERT_EQ(spec2.getRelationships().size(), 1);
+    ASSERT_EQ(&spec2.getRelationships().front(), &gen);
+    ASSERT_EQ(spec2.getGenerals().size(), 1);
+    ASSERT_EQ(&spec2.getGenerals().front(), &base2);
+    ASSERT_EQ(spec2.getInheritedMembers().size(), 2);
+    ASSERT_EQ(&spec2.getInheritedMembers().front(), &prop);
+    ASSERT_EQ(&spec2.getInheritedMembers().get(1), &op);
+    ASSERT_EQ(spec2.getMembers().size(), 2);
+    ASSERT_EQ(&spec2.getMembers().front(), &prop);
+    ASSERT_EQ(&spec2.getMembers().get(1), &op);
 }

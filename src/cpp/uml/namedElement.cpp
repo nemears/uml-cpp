@@ -186,6 +186,14 @@ void NamedElement::restoreReleased(ID id, Element* released) {
     if (m_memberNamespace->count(id)) {
         if (!released->as<Namespace>().getMembers().count(m_id)) {
             released->as<Namespace>().getMembers().add(*this);
+            /** TODO: rethink implementation, this might aquire a released element, but there may be no way around that**/
+            if (released->isSubClassOf(ElementType::CLASSIFIER) && m_visibility != VisibilityKind::PRIVATE) {
+                for (auto& general : released->as<Classifier>().getGenerals()) {
+                    if (general.getMembers().count(m_id)) {
+                        released->as<Classifier>().getInheritedMembers().add(*this);
+                    }
+                }
+            }
         }
     }
 }

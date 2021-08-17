@@ -674,14 +674,18 @@ void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
     if (node["generalizations"]) {
         if (node["generalizations"].IsSequence()) {
             for (size_t i = 0; i < node["generalizations"].size(); i++) {
-                if (node["generalizations"][i]["generalization"]) {
-                    if (node["generalizations"][i]["generalization"].IsMap()) {
-                        Generalization& gen = data.m_manager->create<Generalization>();
-                        parseGeneralization(node["generalizations"][i]["generalization"], gen, data);
-                        clazz.getGeneralizations().add(gen);
-                    } else {
-                        throw UmlParserException("Improper YAML node type for Generalization definition, " , data.m_path.string() , node["generalizations"][i]["generalization"]);
+                if (node["generalizations"][i].IsMap()) {
+                    if (node["generalizations"][i]["generalization"]) {
+                        if (node["generalizations"][i]["generalization"].IsMap()) {
+                            Generalization& gen = data.m_manager->create<Generalization>();
+                            parseGeneralization(node["generalizations"][i]["generalization"], gen, data);
+                            clazz.getGeneralizations().add(gen);
+                        } else {
+                            throw UmlParserException("Improper YAML node type for Generalization definition, " , data.m_path.string() , node["generalizations"][i]["generalization"]);
+                        }
                     }
+                } else if (node["generalizations"][i].IsScalar()) {
+                    clazz.getGeneralizations().add(parseScalar<Generalization>(node["generalizations"][i], data));
                 }
             }
         } else {

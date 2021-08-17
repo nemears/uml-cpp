@@ -179,7 +179,7 @@ TEST_F(ClassParserTest, emitClassWAttributeNOperation) {
         id: kfuX2BvkrRFhMX4UAfchHJgL8sER
         name: prop
         visibility: PRIVATE
-  operations:
+  ownedOperations:
     - operation:
         id: ESKTcd5FmF2q4O&WI_Oiu5FrXHeN
         name: op
@@ -214,7 +214,7 @@ TEST_F(ClassParserTest, emitFilledInOperation) {
     string expectedEmit = R""""(class:
   id: 6cCDjqUmkrXZ46z7CcNaTDso4SfQ
   name: Class
-  operations:
+  ownedOperations:
     - operation:
         id: Y3WV0c_Wa_zfOTb6zo9BAiIqRhn7
         name: op

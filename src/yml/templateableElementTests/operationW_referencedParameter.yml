@@ -1,7 +1,7 @@
 ---
   class:
     name: two_templates
-    operations:
+    ownedOperations:
       - operation:
           templateSignature:
             ownedParameters:

@@ -2,7 +2,7 @@
   class :
     name : "test"
     id : ngexGd&4bt_&42ZZzdNtFU6GBq&x
-    operations :
+    ownedOperations :
       - operation :
           name : isValid
           id : 26&4LRqmfXz7nt4ZiygBVglOzGeD

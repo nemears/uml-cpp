@@ -2,7 +2,7 @@
   model:
     children:
       class:
-        operations:
+        ownedOperations:
           operation:
             name: "wrong"
 ...

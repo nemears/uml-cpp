@@ -75,7 +75,7 @@ TEST_F(OpaqueBehaviorParserTest, emitBasicOpaqueBehavior) {
         id: YVV4HY0dc4OS0zPOc1HPLfyLmx39
         name: prop
         visibility: PRIVATE
-  operations:
+  ownedOperations:
     - operation:
         id: P73WqZXNrYSV0fEtHqKAJTv3RDTD
         name: op

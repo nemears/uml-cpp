@@ -5,7 +5,7 @@
           mergedPackage: ../uml/primitiveTypes.yml
     packagedElements:
       - class:
-          operations:
+          ownedOperations:
             - operation:
                 ownedParameters:
                   - parameter:

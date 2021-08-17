@@ -867,25 +867,25 @@ void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
     parseStructuredClassifier(node, clazz, data);
     parseBehavioredClassifier(node, clazz, data);
 
-    if (node["operations"]) {
-        if (node["operations"].IsSequence()) {
-            for (size_t i=0; i<node["operations"].size(); i++) {
-                if (node["operations"][i].IsMap()) {
-                    if (node["operations"][i]["operation"]) {
+    if (node["ownedOperations"]) {
+        if (node["ownedOperations"].IsSequence()) {
+            for (size_t i=0; i<node["ownedOperations"].size(); i++) {
+                if (node["ownedOperations"][i].IsMap()) {
+                    if (node["ownedOperations"][i]["operation"]) {
                         Operation& op = data.m_manager->create<Operation>();
-                        parseOperation(node["operations"][i]["operation"], op, data);
+                        parseOperation(node["ownedOperations"][i]["operation"], op, data);
                         clazz.getOwnedOperations().add(op);
                     } else {
-                        throw UmlParserException("Could not identify operation to parse, ", data.m_path.string(), node["operations"][i]);
+                        throw UmlParserException("Could not identify operation to parse, ", data.m_path.string(), node["ownedOperations"][i]);
                     }
-                } else if (node["operations"][i].IsScalar()) {
-                    clazz.getOwnedOperations().add(parseScalar<Operation>(node["operations"][i], data));
+                } else if (node["ownedOperations"][i].IsScalar()) {
+                    clazz.getOwnedOperations().add(parseScalar<Operation>(node["ownedOperations"][i], data));
                 } else {
-                    throw UmlParserException("Invalid yaml node type for class operation definition, must be a map or a scalar!", data.m_path.string(), node["operations"][i]);
+                    throw UmlParserException("Invalid yaml node type for class operation definition, must be a map or a scalar!", data.m_path.string(), node["ownedOperations"][i]);
                 }
             }
         } else {
-            throw UmlParserException("Improper YAML node type for operations field, must be sequence, ", data.m_path.string(), node["attributes"]);
+            throw UmlParserException("Improper YAML node type for operations field, must be sequence, ", data.m_path.string(), node["ownedOperations"]);
         }
     }
 
@@ -971,7 +971,7 @@ void emitClass(YAML::Emitter& emitter, Class& clazz, EmitterMetaData& data) {
     emitBehavioredClassifier(emitter, clazz, data);
 
     if (!clazz.getOwnedOperations().empty()) {
-        emitter << YAML::Key << "operations" << YAML::Value << YAML::BeginSeq;
+        emitter << YAML::Key << "ownedOperations" << YAML::Value << YAML::BeginSeq;
         for (auto& operation : clazz.getOwnedOperations()) {
             emit(emitter, operation, data);
         }

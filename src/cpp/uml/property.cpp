@@ -133,13 +133,13 @@ bool findProperty(Classifier& clazz, ID propID) {
 }
 
 void Property::CheckRedefinedPropertyFunctor::operator()(Element& el) const {
-    if (!m_el->as<Property>().m_classifierID.isNull()) {
-        if (!findProperty(*m_el->as<Property>().getClassifier(), el.getID())) {
-            throw ImproperRedefinitionException();
-        }
-    } else {
-        throw ImproperRedefinitionException();
-    }
+    // if (!m_el->as<Property>().m_classifierID.isNull()) {
+    //     if (!findProperty(*m_el->as<Property>().getClassifier(), el.getID())) {
+    //         throw ImproperRedefinitionException();
+    //     }
+    // } else {
+    //     throw ImproperRedefinitionException();
+    // }
 }
 
 void Property::RemoveRedefinedPropertyFunctor::operator()(Element& el) const {

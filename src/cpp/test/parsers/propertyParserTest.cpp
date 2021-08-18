@@ -217,3 +217,32 @@ TEST_F(PropertyParserTest, emitRedefinedPropertyTest) {
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(PropertyParserTest, mountPropertyTest) {
+    UmlManager m;
+    Package& pckg = m.create<Package>();
+    m.setRoot(&pckg);
+    m.parse(ymlPath + "uml/primitiveTypes.yml");
+    PackageMerge& merge = m.create<PackageMerge>();
+    merge.setMergedPackage(&m.get<Package>(ID::fromString("Primitive_Types_WZcyDDLemQ97")));
+    pckg.getPackageMerge().add(merge);
+    Property& prop = m.create<Property>();
+    Property& redefined = m.create<Property>();
+    Class& b = m.create<Class>();
+    Class& s = m.create<Class>();
+    Generalization& gen = m.create<Generalization>();
+    LiteralString& defaultValue = m.create<LiteralString>();
+    s.getGeneralizations().add(gen);
+    gen.setGeneral(&b);
+    b.getOwnedAttributes().add(redefined);
+    s.getOwnedAttributes().add(prop);
+    ASSERT_NO_THROW(prop.getRedefinedProperties().add(redefined));
+    redefined.setType(&m.get<Type>(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT")));
+    prop.setDefaultValue(&defaultValue);
+    pckg.getPackagedElements().add(b);
+    pckg.getPackagedElements().add(s);
+    ASSERT_NO_THROW(m.mount(ymlPath + "/propertyTests"));
+    // TODO explore tree (probably don't need to)
+    ASSERT_NO_THROW(m.release(prop.getID()));
+    Property& prop2 = s.getOwnedAttributes().front();
+}

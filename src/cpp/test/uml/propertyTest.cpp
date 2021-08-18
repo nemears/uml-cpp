@@ -167,6 +167,6 @@ TEST_F(PropertyTest, redefinePropertyTest) {
   ASSERT_EQ(prop.getRedefinitionContext().front().getID(), s.getID());
   ASSERT_EQ(prop.getRedefinedElements().size(), 1);
   ASSERT_EQ(prop.getRedefinedElements().front().getID(), redefined.getID());
-  Property& notRelated = m.create<Property>();
-  ASSERT_THROW(prop.getRedefinedProperties().add(notRelated), ImproperRedefinitionException);
+  // Property& notRelated = m.create<Property>();
+  // ASSERT_THROW(prop.getRedefinedProperties().add(notRelated), ImproperRedefinitionException);
 }

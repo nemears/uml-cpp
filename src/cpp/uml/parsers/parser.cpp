@@ -1165,8 +1165,10 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
     if (node["defaultValue"]) {
         if (node["defaultValue"].IsMap()) {
             prop.setDefaultValue(&determineAndParseValueSpecification(node["defaultValue"], data));
+        } else if (node["defaultValue"].IsScalar()) {
+            prop.setDefaultValue(&parseScalar<ValueSpecification>(node["defaultValue"], data));
         } else {
-            throw UmlParserException("Invalid yaml node type, must be Map!", data.m_path.string(), node["defaultValue"]);
+            throw UmlParserException("Invalid yaml node type for property default value entry, must be Map or scalar!", data.m_path.string(), node["defaultValue"]);
         }
     }
 
@@ -1213,7 +1215,8 @@ void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data)
     }
 
     if (prop.getDefaultValue()) {
-        // TODO
+        emitter << YAML::Key << "defaultValue" << YAML::Value;
+        emit(emitter, *prop.getDefaultValue(), data);
     }
 
     if (!prop.getRedefinedProperties().empty()) {

@@ -262,6 +262,10 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
     ASSERT_EQ(&prop2.getOwnedElements().front(), &defaultValue);
     ASSERT_EQ(prop2.getRedefinedProperties().size(), 1);
     ASSERT_EQ(&prop2.getRedefinedProperties().front(), &redefined);
+    ASSERT_EQ(prop2.getRedefinedElements().size(), 1);
+    ASSERT_EQ(&prop2.getRedefinedElements().front(), &redefined);
+    ASSERT_EQ(prop2.getRedefinitionContext().size(), 1);
+    ASSERT_EQ(&prop2.getRedefinitionContext().front(), &s);
 
     ASSERT_EQ(s.getAttributes().size(), 1);
     ASSERT_EQ(&s.getAttributes().front(), &prop2);
@@ -275,4 +279,12 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
     ASSERT_EQ(s.getOwnedElements().size(), 2);
     ASSERT_EQ(&s.getOwnedElements().front(), &gen);
     ASSERT_EQ(&s.getOwnedElements().back(), &prop2);
+
+    // Release the redefined prop
+    ASSERT_NO_THROW(m.release(redefined.getID()));
+    Property& redefined2 = b.getOwnedAttributes().front();
+    ASSERT_EQ(prop2.getRedefinedProperties().size(), 1);
+    ASSERT_EQ(&prop2.getRedefinedProperties().front(), &redefined2);
+    ASSERT_EQ(prop2.getRedefinedElements().size(), 1);
+    ASSERT_EQ(&prop2.getRedefinedElements().front(), &redefined2);
 }

@@ -295,6 +295,9 @@ void Property::setClassifier(Classifier* classifier) {
         if (m_classifierPtr->getAttributes().count(m_id)) {
             m_classifierPtr->getAttributes().remove(*this);
         }
+        if (m_redefinitionContext.count(m_classifierID)) {
+            m_redefinitionContext.remove(*m_classifierPtr);
+        }
         m_classifierPtr = 0;
         m_classifierID = ID::nullID();
     }
@@ -310,6 +313,9 @@ void Property::setClassifier(Classifier* classifier) {
     if (classifier) {
         if (!classifier->getAttributes().count(m_id)) {
             classifier->getAttributes().add(*this);
+        }
+        if (!m_redefinitionContext.count(classifier->getID())) {
+            m_redefinitionContext.add(*classifier);
         }
     }
 }

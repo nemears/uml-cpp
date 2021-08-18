@@ -287,4 +287,6 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
     ASSERT_EQ(&prop2.getRedefinedProperties().front(), &redefined2);
     ASSERT_EQ(prop2.getRedefinedElements().size(), 1);
     ASSERT_EQ(&prop2.getRedefinedElements().front(), &redefined2);
+    ASSERT_TRUE(redefined2.getType() != 0);
+    ASSERT_EQ(redefined2.getType(), &m.get<Type>(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT")));
 }

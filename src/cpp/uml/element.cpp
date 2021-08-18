@@ -566,6 +566,11 @@ void Element::setOwner(Element* owner) {
     if (owner) {
         if (m_manager) {
             m_manager->setReference(m_id, m_ownerID, this);
+            // if the owner is mounted we need to mount
+            if (!m_manager->m_graph[m_ownerID].m_mountPath.empty()) {
+                m_manager->setElementAndChildrenMount(filesystem::path(m_manager->m_graph[m_ownerID].m_mountPath).parent_path(), 
+                                                      *m_manager->m_graph[m_id].m_managerElementMemory);
+            }
         }
         if (!owner->getOwnedElements().count(m_id)) {
             owner->getOwnedElements().internalAdd(*this);

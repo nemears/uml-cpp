@@ -176,3 +176,13 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
     ASSERT_EQ(p2->getOwnedElements().size(), 2);
     ASSERT_EQ(&p2->getOwnedElements().front(), c2);
 }
+
+TEST_F(UmlManagerTest, addToManagerAfterMountedTest) {
+    UmlManager m;
+    Package& pckg = m.create<Package>();
+    m.setRoot(&pckg);
+    m.mount(ymlPath + "umlManagerTests");
+    Package& child = m.create<Package>();   
+    pckg.getPackagedElements().add(child);
+    ASSERT_NO_THROW(m.release(child.getID()));
+}

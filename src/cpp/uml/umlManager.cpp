@@ -18,35 +18,35 @@ using namespace std;
 using namespace UML;
 
 void UmlManager::setReference(ID referencing, ID referenced, Element* ptr) {
-    if (m_disc[referenced].m_references.count(referencing)) {
-        m_disc[referenced].m_referenceCount[referencing]++;
+    if (m_graph[referenced].m_references.count(referencing)) {
+        m_graph[referenced].m_referenceCount[referencing]++;
     } else {
-        m_disc[referenced].m_references[referencing] = &m_disc[referencing];
-        m_disc[referenced].m_referenceCount[referencing] = 1;
-        m_disc[referenced].m_referenceOrder.push_back(referencing);
+        m_graph[referenced].m_references[referencing] = &m_graph[referencing];
+        m_graph[referenced].m_referenceCount[referencing] = 1;
+        m_graph[referenced].m_referenceOrder.push_back(referencing);
     }
 }
 
 void UmlManager::removeReference(ID referencing, ID referenced) {
-    if (m_disc[referenced].m_referenceCount[referencing] > 1) {
-        m_disc[referenced].m_referenceCount[referencing]--;
+    if (m_graph[referenced].m_referenceCount[referencing] > 1) {
+        m_graph[referenced].m_referenceCount[referencing]--;
     } else {
-        m_disc[referenced].m_references.erase(referencing);
-        m_disc[referenced].m_referenceCount.erase(referencing);
-        m_disc[referenced].m_referenceOrder.erase(std::remove(
-            m_disc[referenced].m_referenceOrder.begin(), 
-            m_disc[referenced].m_referenceOrder.end(), 
-            referencing), m_disc[referenced].m_referenceOrder.end());
+        m_graph[referenced].m_references.erase(referencing);
+        m_graph[referenced].m_referenceCount.erase(referencing);
+        m_graph[referenced].m_referenceOrder.erase(std::remove(
+            m_graph[referenced].m_referenceOrder.begin(), 
+            m_graph[referenced].m_referenceOrder.end(), 
+            referencing), m_graph[referenced].m_referenceOrder.end());
     }
 }
 
 void UmlManager::clear() {
-    for (auto& e : m_disc) {
+    for (auto& e : m_graph) {
         if (e.second.m_managerElementMemory) {
             delete e.second.m_managerElementMemory;
         }
     }
-    m_disc.clear();
+    m_graph.clear();
     m_elements.clear();
 }
 
@@ -73,23 +73,23 @@ void UmlManager::reindex(ID oldID, ID newID) {
         // and will overwrite the existing element in memory with one from disk
         // during a UmlManager::open() or UmlManager::aquire(id) invoke
 
-        delete m_disc[newID].m_managerElementMemory;
-        m_disc[newID].m_managerElementMemory = m_disc[oldID].m_managerElementMemory;
+        delete m_graph[newID].m_managerElementMemory;
+        m_graph[newID].m_managerElementMemory = m_graph[oldID].m_managerElementMemory;
         m_elements.erase(oldID);
-        m_disc.erase(oldID);
+        m_graph.erase(oldID);
     } else  {
         // reindex
         m_elements.erase(oldID);
         m_elements.insert(newID);
-        DiscData disc = m_disc[oldID];
-        m_disc.erase(oldID);
-        m_disc[newID] = disc;
+        ManagerNode disc = m_graph[oldID];
+        m_graph.erase(oldID);
+        m_graph[newID] = disc;
     }
 }
 
 void UmlManager::setElementAndChildrenMount(filesystem::path parentPath, Element& el) {
     filesystem::create_directories(parentPath / el.getID().string());
-    m_disc[el.getID()].m_mountPath = parentPath / el.getID().string() / (el.getID().string() + ".yml");
+    m_graph[el.getID()].m_mountPath = parentPath / el.getID().string() / (el.getID().string() + ".yml");
     for (auto& child : el.getOwnedElements()) {
         setElementAndChildrenMount(parentPath / el.getID().string(), child);
     }
@@ -112,12 +112,12 @@ void UmlManager::mount(string path) {
 void UmlManager::aquire(ID id) {
     if (!m_mountBase.empty()) {
         Parsers::ParserMetaData data(this);
-        data.m_path = m_disc[id].m_mountPath;
+        data.m_path = m_graph[id].m_mountPath;
         data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-        m_disc[id].m_managerElementMemory = Parsers::parse(data);
-        for (auto& refID : m_disc[id].m_referenceOrder) {
-            if (m_disc[id].m_references[refID]->m_managerElementMemory) {
-                m_disc[id].m_references[refID]->m_managerElementMemory->restoreReleased(id, m_disc[id].m_managerElementMemory);
+        m_graph[id].m_managerElementMemory = Parsers::parse(data);
+        for (auto& refID : m_graph[id].m_referenceOrder) {
+            if (m_graph[id].m_references[refID]->m_managerElementMemory) {
+                m_graph[id].m_references[refID]->m_managerElementMemory->restoreReleased(id, m_graph[id].m_managerElementMemory);
             }
         }
     } else {
@@ -127,19 +127,19 @@ void UmlManager::aquire(ID id) {
 
 void UmlManager::release(ID id) {
     if (!m_mountBase.empty()) {
-        Parsers::EmitterMetaData data = {filesystem::path(m_disc[id].m_mountPath).parent_path(),
+        Parsers::EmitterMetaData data = {filesystem::path(m_graph[id].m_mountPath).parent_path(),
                                          Parsers::EmitterStrategy::INDIVIDUAL,
-                                         filesystem::path(m_disc[id].m_mountPath).filename(), this};
-        Parsers::emitToFile(*m_disc[id].m_managerElementMemory, data, data.m_path, data.m_fileName);
-        if (m_disc[id].m_managerElementMemory) {
-            delete m_disc[id].m_managerElementMemory;
+                                         filesystem::path(m_graph[id].m_mountPath).filename(), this};
+        Parsers::emitToFile(*m_graph[id].m_managerElementMemory, data, data.m_path, data.m_fileName);
+        if (m_graph[id].m_managerElementMemory) {
+            delete m_graph[id].m_managerElementMemory;
         }
-        for (auto& e : m_disc[id].m_references) {
+        for (auto& e : m_graph[id].m_references) {
             if (e.second->m_managerElementMemory) {
                 e.second->m_managerElementMemory->referencingReleased(id);
             }
         }
-        m_disc[id].m_managerElementMemory = 0;
+        m_graph[id].m_managerElementMemory = 0;
     } else {
         // TODO throw error
     }
@@ -209,5 +209,5 @@ Element* UmlManager::getRoot() {
 }
 
 void UmlManager::setPath(ID elID, string path) {
-    m_disc[elID].m_path = path;
+    m_graph[elID].m_path = path;
 }

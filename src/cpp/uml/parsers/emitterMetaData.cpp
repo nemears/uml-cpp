@@ -5,11 +5,11 @@ namespace UML {
 namespace Parsers {
 
 std::filesystem::path EmitterMetaData::getMountPath(ID id) {
-    return m_manager->m_disc[id].m_mountPath;
+    return m_manager->m_graph[id].m_mountPath;
 }
 
 std::filesystem::path EmitterMetaData::getPath(ID id) {
-    return m_manager->m_disc[id].m_path;
+    return m_manager->m_graph[id].m_path;
 }
 
 }

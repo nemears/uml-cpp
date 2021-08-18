@@ -34,11 +34,11 @@ namespace UML {
         friend class NamedElement;
         template<typename> friend class Sequence;
         protected:
-            struct DiscData {
+            struct ManagerNode {
                 Element* m_managerElementMemory;
                 std::string m_path;
                 std::string m_mountPath;
-                std::unordered_map<ID, DiscData*> m_references;
+                std::unordered_map<ID, ManagerNode*> m_references;
                 std::unordered_map<ID, size_t> m_referenceCount;
                 std::vector<ID> m_referenceOrder;
             };
@@ -46,7 +46,7 @@ namespace UML {
             void removeReference(ID referencing, ID referenced);
         private:
             std::unordered_set<ID> m_elements;
-            std::unordered_map<ID, DiscData> m_disc;
+            std::unordered_map<ID, ManagerNode> m_graph;
             std::filesystem::path m_path;
             std::filesystem::path m_mountBase;
             Model* m_model;
@@ -57,18 +57,18 @@ namespace UML {
             UmlManager();
             ~UmlManager();
             template <class T = Element> T& get(ID id) {
-                if (!m_disc[id].m_managerElementMemory) {
+                if (!m_graph[id].m_managerElementMemory) {
                     aquire(id);
                 }
-                return *dynamic_cast<T*>(m_disc[id].m_managerElementMemory);
+                return *dynamic_cast<T*>(m_graph[id].m_managerElementMemory);
             };
             size_t count(ID id);
             template <class T = Element> T& create() {
                 T* ret = new T;
                 ret->setManager(this);
                 m_elements.insert(ret->getID());
-                DiscData discData = {ret};
-                m_disc[ret->getID()] = discData;
+                ManagerNode discData = {ret};
+                m_graph[ret->getID()] = discData;
                 return *ret;
             };
             void reindex(ID oldID, ID newID);

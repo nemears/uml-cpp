@@ -119,3 +119,19 @@ bool Class::isSubClassOf(ElementType eType) const {
     
     return ret;
 }
+
+void Class::restoreReleased(ID id, Element* released) {
+    StructuredClassifier::restoreReleased(id, released);
+    if (m_ownedAttributes.count(id)) {
+        released->as<Property>().setClass(this);
+    }
+    if (m_ownedOperations.count(id)) {
+        released->as<Operation>().setClass(this);
+    }
+}
+
+void Class::referencingReleased(ID id) {
+    StructuredClassifier::referencingReleased(id);
+    m_ownedOperations.elementReleased(id);
+    m_nestedClassifiers.elementReleased(id);
+}

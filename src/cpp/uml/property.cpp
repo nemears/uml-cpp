@@ -564,3 +564,33 @@ bool Property::isSubClassOf(ElementType eType) const {
 
     return ret;
 }
+
+void Property::restoreReleased(ID id, Element* released) {
+    Feature::restoreReleased(id, released);
+}
+
+void Property::referencingReleased(ID id) {
+    Feature::referencingReleased(id);
+    if (m_defaultValueID == id) {
+        m_defaultValuePtr = 0;
+    }
+    if (m_classifierID == id) {
+        m_classifierPtr = 0;
+    }
+    if (m_structuredClassifierID == id) {
+        m_structuredClassifierPtr = 0;
+    }
+    if (m_dataTypeID == id) {
+        m_dataTypePtr = 0;
+    }
+    if (m_classID == id) {
+        m_classPtr = 0;
+    }
+    if (m_artifactID == id) {
+        m_artifactPtr = 0;
+    }
+    if (m_associationID == id) {
+        m_associationPtr = 0;
+    }
+    m_redefinedProperties.elementReleased(id);
+}

@@ -245,4 +245,34 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
     // TODO explore tree (probably don't need to)
     ASSERT_NO_THROW(m.release(prop.getID()));
     Property& prop2 = s.getOwnedAttributes().front();
+    ASSERT_TRUE(prop2.getClass() != 0);
+    ASSERT_EQ(prop2.getClass(), &s);
+    ASSERT_TRUE(prop2.getStructuredClassifier() != 0);
+    ASSERT_EQ(prop2.getStructuredClassifier(), &s);
+    ASSERT_TRUE(prop2.getClassifier() != 0);
+    ASSERT_EQ(prop2.getMemberNamespace().size(), 1);
+    ASSERT_EQ(&prop2.getMemberNamespace().front(), &s);
+    ASSERT_TRUE(prop2.getNamespace() != 0);
+    ASSERT_EQ(prop2.getNamespace(), &s);
+    ASSERT_TRUE(prop2.getOwner());
+    ASSERT_EQ(prop2.getOwner(), &s);
+    ASSERT_TRUE(prop2.getDefaultValue() != 0);
+    ASSERT_EQ(&defaultValue, prop2.getDefaultValue());
+    ASSERT_EQ(prop2.getOwnedElements().size(), 1);
+    ASSERT_EQ(&prop2.getOwnedElements().front(), &defaultValue);
+    ASSERT_EQ(prop2.getRedefinedProperties().size(), 1);
+    ASSERT_EQ(&prop2.getRedefinedProperties().front(), &redefined);
+
+    ASSERT_EQ(s.getAttributes().size(), 1);
+    ASSERT_EQ(&s.getAttributes().front(), &prop2);
+    ASSERT_EQ(s.getFeatures().size(), 1);
+    ASSERT_EQ(&s.getFeatures().front(), &prop2);
+    ASSERT_EQ(s.getOwnedMembers().size(), 1);
+    ASSERT_EQ(&s.getOwnedMembers().front(), &prop2);
+    ASSERT_EQ(s.getMembers().size(), 2);
+    ASSERT_EQ(&s.getMembers().front(), &redefined);
+    ASSERT_EQ(&s.getMembers().back(), &prop2);
+    ASSERT_EQ(s.getOwnedElements().size(), 2);
+    ASSERT_EQ(&s.getOwnedElements().front(), &gen);
+    ASSERT_EQ(&s.getOwnedElements().back(), &prop2);
 }

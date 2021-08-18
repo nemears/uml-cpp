@@ -44,6 +44,8 @@ namespace UML{
                     void operator()(Element& el) const override;
             };
             void setManager(UmlManager* manager) override;
+            void restoreReleased(ID id, Element* released) override;
+            void referencingReleased(ID id) override;
         public:
             Class();
             virtual ~Class();

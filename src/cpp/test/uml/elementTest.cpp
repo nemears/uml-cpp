@@ -349,6 +349,8 @@ TEST_F(ElementTest, copyAndChangeTest) {
     ASSERT_EQ(package.getOwnedElements().size(), 1);
     ASSERT_EQ(package.getOwnedElements().front().getID(), ownedEl.getID());
     package.getPackagedElements().remove(ownedEl);
-    ASSERT_EQ(copy.getOwnedElements().size(), 1);
+    ASSERT_EQ(copy.getOwnedElements().size(), 0);
+    copy.getPackagedElements().add(m.create<Package>());
   }
+  ASSERT_EQ(package.getPackagedElements().size(), 1);
 }

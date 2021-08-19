@@ -13,6 +13,8 @@ void Package::AddPackagedElementFunctor::operator()(Element& el) const {
     if (!dynamic_cast<Namespace*>(m_el)->getOwnedMembers().count(el.getID())) {
         dynamic_cast<Namespace*>(m_el)->getOwnedMembers().add(dynamic_cast<NamedElement&>(el));
     }
+
+    m_el->as<Package>().getPackagedElements().updateCopiedSequenceAddedTo<Package>(el.as<PackageableElement>(), &Package::getPackagedElements);
 }
 
 void Package::RemovePackagedElementFunctor::operator()(Element& el) const {
@@ -23,6 +25,8 @@ void Package::RemovePackagedElementFunctor::operator()(Element& el) const {
     if (dynamic_cast<Package*>(m_el)->getMembers().count(el.getID())) {
         dynamic_cast<Package*>(m_el)->getMembers().remove(dynamic_cast<PackageableElement&>(el));
     }
+
+    m_el->as<Package>().getPackagedElements().updateCopiedSequenceRemovedFrom<Package>(el.as<PackageableElement>(), &Package::getPackagedElements);
 }
 
 void Package::AddPackageMergeFunctor::operator()(Element& el) const {
@@ -119,6 +123,7 @@ Package::~Package() {
 
 Package::Package(const Package& pckg) : Namespace(pckg), PackageableElement(pckg) , NamedElement(pckg), Element(pckg) {
     m_packagedElements = pckg.m_packagedElements;
+    m_packagedElements.m_el = this;
     m_packagedElements.addProcedures.clear();
     m_packagedElements.addProcedures.push_back(new AddPackagedElementFunctor(this));
     m_packagedElements.removeProcedures.clear();

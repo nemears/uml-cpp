@@ -6,6 +6,8 @@ void Namespace::AddMemberFunctor::operator()(Element& el) const {
     if (!dynamic_cast<NamedElement&>(el).getMemberNamespace().count(m_el->getID())) {
         dynamic_cast<NamedElement&>(el).getMemberNamespace().add(*dynamic_cast<Namespace*>(m_el));
     }
+
+    m_el->as<Namespace>().getMembers().updateCopiedSequenceAddedTo<Namespace>(el.as<NamedElement>(), &Namespace::getMembers);
 }
 
 void Namespace::RemoveMemberFunctor::operator()(Element& el) const {
@@ -16,6 +18,8 @@ void Namespace::RemoveMemberFunctor::operator()(Element& el) const {
     if (dynamic_cast<Namespace*>(m_el)->getOwnedMembers().count(el.getID())) {
         dynamic_cast<Namespace*>(m_el)->getOwnedMembers().internalRemove(dynamic_cast<NamedElement&>(el));
     }
+
+    m_el->as<Namespace>().getMembers().updateCopiedSequenceRemovedFrom<Namespace>(el.as<NamedElement>(), &Namespace::getMembers);
 }
 
 void Namespace::AddOwnedMemberFunctor::operator()(Element& el) const {
@@ -28,6 +32,8 @@ void Namespace::AddOwnedMemberFunctor::operator()(Element& el) const {
     }
 
     dynamic_cast<NamedElement&>(el).setNamespace(dynamic_cast<Namespace*>(m_el));
+
+    m_el->as<Namespace>().getOwnedMembers().updateCopiedSequenceAddedTo<Namespace>(el.as<NamedElement>(), &Namespace::getOwnedMembers);
 }
 
 void Namespace::RemoveOwnedMemberFunctor::operator()(Element& el) const {
@@ -42,6 +48,8 @@ void Namespace::RemoveOwnedMemberFunctor::operator()(Element& el) const {
     if (dynamic_cast<NamedElement&>(el).getNamespace() == m_el) {
         dynamic_cast<NamedElement&>(el).setNamespace(0);
     }
+
+    m_el->as<Namespace>().getOwnedMembers().updateCopiedSequenceRemovedFrom<Namespace>(el.as<NamedElement>(), &Namespace::getOwnedMembers);
 }
 
 void Namespace::setManager(UmlManager* manager) {
@@ -63,11 +71,13 @@ Namespace::~Namespace() {
 
 Namespace::Namespace(const Namespace& nmspc) : NamedElement(nmspc), Element(nmspc) {
     m_members = nmspc.m_members;
+    m_members.m_el = this;
     m_members.addProcedures.clear();
     m_members.addProcedures.push_back(new AddMemberFunctor(this));
     m_members.removeProcedures.clear();
     m_members.removeProcedures.push_back(new RemoveMemberFunctor(this));
     m_ownedMembers = nmspc.m_ownedMembers;
+    m_ownedMembers.m_el = this;
     m_ownedMembers.addProcedures.clear();
     m_ownedMembers.addProcedures.push_back(new AddOwnedMemberFunctor(this));
     m_ownedMembers.removeProcedures.clear();

@@ -21,6 +21,9 @@ namespace UML {
     template <class T = Element> class Sequence;
     class Model;
 
+    class SetOwnerFunctor;
+    class RemoveOwnerFunctor;
+
     /**
      * UmlManager is the object that handles all of the instantiation and deletion of UML objects
      * from a model. It follows object pool semantics to be able to hold information about large
@@ -34,6 +37,8 @@ namespace UML {
         friend class PackageableElement;
         friend class NamedElement;
         friend class TypedElement;
+        friend class SetOwnerFunctor;
+        friend class RemoveOwnerFunctor;
         template<typename> friend class Sequence;
         protected:
             struct ManagerNode {
@@ -43,6 +48,7 @@ namespace UML {
                 std::unordered_map<ID, ManagerNode*> m_references;
                 std::unordered_map<ID, size_t> m_referenceCount;
                 std::vector<ID> m_referenceOrder;
+                std::unordered_set<Element*> m_copies;
             };
             void setReference(ID referencing, ID referenced, Element* ptr);
             void removeReference(ID referencing, ID referenced);

@@ -16,6 +16,18 @@ void SetOwnerFunctor::operator()(Element& el) const{
     if (el.getOwner() != m_el) {
         el.setOwner(m_el);
     }
+    if (m_el->m_manager) {
+        if (m_el->m_manager->m_graph[m_el->getID()].m_managerElementMemory != m_el) {
+            if (!m_el->m_manager->m_graph[m_el->getID()].m_managerElementMemory->getOwnedElements().count(el.getID())) {
+                m_el->m_manager->m_graph[m_el->getID()].m_managerElementMemory->getOwnedElements().internalAdd(el);
+            }
+        }
+        for (auto& copy : m_el->m_manager->m_graph[m_el->getID()].m_copies) {
+            if (!copy->getOwnedElements().count(el.getID()) && copy != m_el) {
+                copy->getOwnedElements().internalAdd(el);
+            }
+        }
+    }
 }
 
 void AddRelationshipFunctor::operator()(Element& el) const {
@@ -33,6 +45,18 @@ void RemoveRelationshipFunctor::operator()(Element& el) const {
 void RemoveOwnerFunctor::operator()(Element& el) const {
     if (el.getOwner() == m_el) {
         el.setOwner(0);
+    }
+    if (m_el->m_manager) {
+        if (m_el->m_manager->m_graph[m_el->getID()].m_managerElementMemory != m_el) {
+            if (m_el->m_manager->m_graph[m_el->getID()].m_managerElementMemory->getOwnedElements().count(el.getID())) {
+                m_el->m_manager->m_graph[m_el->getID()].m_managerElementMemory->getOwnedElements().internalRemove(el);
+            }
+        }
+        for (auto& copy : m_el->m_manager->m_graph[m_el->getID()].m_copies) {
+            if (copy->getOwnedElements().count(el.getID())) {
+                copy->getOwnedElements().internalRemove(el);
+            }
+        }
     }
 }
 
@@ -131,6 +155,9 @@ Element::~Element() {
     delete m_directedRelationships;
     delete m_ownedComments;
     delete m_appliedStereotype;
+    if (m_manager) {
+        m_manager->m_graph[m_id].m_copies.erase(this);
+    }
 }
 
 Element::Element(const Element& el) {
@@ -139,6 +166,7 @@ Element::Element(const Element& el) {
 
     m_ownerID = el.m_ownerID;
     if (m_manager) {
+        m_manager->m_graph[m_id].m_copies.insert(this);
         m_ownerPtr = 0;
     } else {
         m_ownerPtr = el.m_ownerPtr;
@@ -209,34 +237,6 @@ void Element::reindexID(ID oldID, ID newID) {
         relationship.getRelatedElements().reindex(oldID, newID);
     }
 }
-
-// Element* Element::getOwner() {
-//     return m_owner;
-// }
-
-// void Element::setOwner(Element* owner) {
-
-//     // if owner was already set we need to get rid of previous relationship
-//     if (m_owner) {
-//         if (m_owner->getOwnedElements().count(m_id)) {
-//             m_owner->getOwnedElements().internalRemove(*this);
-//         }
-//     }
-
-//     // overwrite owner
-//     m_owner = owner;
-
-//     // add this to owner's owned elements if not already added and not null
-//     if (m_owner) {
-//         if (!m_owner->getOwnedElements().count(getID())) {
-//             m_owner->getOwnedElements().internalAdd(*this);
-//         }
-//     }
-// }
-
-// Sequence<>& Element::getOwnedElements() {
-//     return *m_ownedElements;
-// }
 
 Sequence<Relationship>& Element::getRelationships() {
     return *m_relationships;

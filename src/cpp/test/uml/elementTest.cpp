@@ -338,3 +338,17 @@ TEST_F(ElementTest, asFuncTest) {
   Class& clazz = classifier.as<Class>();
   ASSERT_EQ(classifier.getID(), clazz.getID());
 }
+
+TEST_F(ElementTest, copyAndChangeTest) {
+  UmlManager m;
+  Package& package = m.create<Package>();
+  Class& ownedEl = m.create<Class>();
+  {
+    Package copy = package;
+    copy.getPackagedElements().add(ownedEl);
+    ASSERT_EQ(package.getOwnedElements().size(), 1);
+    ASSERT_EQ(package.getOwnedElements().front().getID(), ownedEl.getID());
+    package.getPackagedElements().remove(ownedEl);
+    ASSERT_EQ(copy.getOwnedElements().size(), 1);
+  }
+}

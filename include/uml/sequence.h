@@ -147,6 +147,8 @@ namespace UML {
         friend class DeploymentTarget;
         friend class Artifact;
         friend class BehavioredClassifier;
+        friend class SetOwnerFunctor;
+        friend class RemoveOwnerFunctor;
         
         private:
             // Manager

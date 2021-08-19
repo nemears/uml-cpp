@@ -23,3 +23,13 @@ bool StructuralFeature::isSubClassOf(ElementType eType) const {
 
     return ret;
 }
+
+void StructuralFeature::restoreReleased(ID id, Element* el) {
+    Feature::restoreReleased(id, el);
+    TypedElement::referencingReleased(id);
+}
+
+void StructuralFeature::referencingReleased(ID id) {
+    Feature::referencingReleased(id);
+    TypedElement::referencingReleased(id);
+}

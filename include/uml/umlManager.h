@@ -16,6 +16,7 @@ namespace UML {
     class InstanceSpecification;
     class PackageableElement;
     class NamedElement;
+    class TypedElement;
 
     template <class T = Element> class Sequence;
     class Model;
@@ -32,6 +33,7 @@ namespace UML {
         friend class InstanceSpecification;
         friend class PackageableElement;
         friend class NamedElement;
+        friend class TypedElement;
         template<typename> friend class Sequence;
         protected:
             struct ManagerNode {

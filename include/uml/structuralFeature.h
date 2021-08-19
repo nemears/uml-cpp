@@ -7,6 +7,9 @@
 
 namespace UML {
     class StructuralFeature : virtual public TypedElement, public MultiplicityElement, public Feature {
+        protected:
+            void restoreReleased(ID id, Element* released) override;
+            void referencingReleased(ID id) override;
         public:
             StructuralFeature(){};
             StructuralFeature(const StructuralFeature& feature) : TypedElement(feature), MultiplicityElement(feature), Feature(feature) {};

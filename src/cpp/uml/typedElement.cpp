@@ -19,12 +19,24 @@ Type* TypedElement::getType() {
 }
 
 void TypedElement::setType(Type* type) {
+    if (!isSameOrNull(m_typeID, type)) {
+        if (m_manager) {
+            m_manager->removeReference(m_id, m_typeID);
+        }
+    }
+
     if (type) {
         m_typeID = type->getID();
     }
 
     if (!m_manager) {
         m_typePtr = type;
+    }
+
+    if (type) {
+        if (m_manager) {
+            m_manager->setReference(m_id, m_typeID, this);
+        }
     }
 }
 
@@ -40,4 +52,14 @@ bool TypedElement::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
+}
+
+void TypedElement::restoreReleased(ID id, Element* el) {
+    /** TODO: anything? **/
+}
+
+void TypedElement::referencingReleased(ID id) {
+    if (m_typeID == id) {
+        m_typePtr = 0;
+    }
 }

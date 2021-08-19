@@ -84,3 +84,13 @@ bool ValueSpecification::isSubClassOf(ElementType eType) const {
 
     return ret;
 }
+
+void ValueSpecification::restoreReleased(ID id, Element* el) {
+    PackageableElement::restoreReleased(id, el);
+    TypedElement::restoreReleased(id, el);
+}
+
+void ValueSpecification::referencingReleased(ID id) {
+    PackageableElement::referencingReleased(id);
+    TypedElement::referencingReleased(id);
+}

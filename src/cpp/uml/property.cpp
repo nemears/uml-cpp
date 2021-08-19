@@ -572,11 +572,11 @@ bool Property::isSubClassOf(ElementType eType) const {
 }
 
 void Property::restoreReleased(ID id, Element* released) {
-    Feature::restoreReleased(id, released);
+    StructuralFeature::restoreReleased(id, released);
 }
 
 void Property::referencingReleased(ID id) {
-    Feature::referencingReleased(id);
+    StructuralFeature::referencingReleased(id);
     if (m_defaultValueID == id) {
         m_defaultValuePtr = 0;
     }

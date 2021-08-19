@@ -11,6 +11,8 @@ namespace UML{
         protected:
             Type* m_typePtr;
             ID m_typeID;
+            void restoreReleased(ID id, Element* released) override;
+            void referencingReleased(ID id) override;
         public:
             virtual Type* getType();
             virtual void setType(Type* type);

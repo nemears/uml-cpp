@@ -342,6 +342,36 @@ namespace UML {
 
             SequenceIterator<T> begin() { return SequenceIterator(this, m_order.begin()); };
             SequenceIterator<T> end() { return SequenceIterator(this, m_order.end()); };
+
+        private:
+            template <class U = Element> void updateCopiedSequenceAddedTo(T& el, Sequence<T>& (U::*meth)()) {
+                if (m_manager) {
+                    if (m_manager->m_graph[m_el->getID()].m_managerElementMemory != m_el) {
+                        if (!(m_manager->m_graph[m_el->getID()].m_managerElementMemory->template as<U>().*meth)().count(el.getID())) {
+                            (m_manager->m_graph[m_el->getID()].m_managerElementMemory->template as<U>().*meth)().internalAdd(el.template as<T>());
+                        }
+                    }
+                    for (auto& copy : m_manager->m_graph[m_el->getID()].m_copies) {
+                        if (!(copy->template as<U>().*meth)().count(el.getID()) && copy != m_el) {
+                            (copy->template as<U>().*meth)().internalAdd(el.template as<T>());
+                        }
+                    }
+                }
+            };
+            template <class U = Element> void updateCopiedSequenceRemovedFrom(T& el, Sequence<T>& (U::*meth)()) {
+                if (m_manager) {
+                    if (m_manager->m_graph[m_el->getID()].m_managerElementMemory != m_el) {
+                        if ((m_manager->m_graph[m_el->getID()].m_managerElementMemory->template as<U>().*meth)().count(el.getID())) {
+                            (m_manager->m_graph[m_el->getID()].m_managerElementMemory->template as<U>().*meth)().internalRemove(el.template as<T>());
+                        }
+                    }
+                    for (auto& copy : m_manager->m_graph[m_el->getID()].m_copies) {
+                        if ((copy->template as<U>().*meth)().count(el.getID()) && copy != m_el) {
+                            (copy->template as<U>().*meth)().internalRemove(el.template as<T>());
+                        }
+                    }
+                }
+            };
     };
 
     template <class T> struct SequenceIterator {

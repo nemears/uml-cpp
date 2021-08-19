@@ -16,18 +16,7 @@ void SetOwnerFunctor::operator()(Element& el) const{
     if (el.getOwner() != m_el) {
         el.setOwner(m_el);
     }
-    if (m_el->m_manager) {
-        if (m_el->m_manager->m_graph[m_el->getID()].m_managerElementMemory != m_el) {
-            if (!m_el->m_manager->m_graph[m_el->getID()].m_managerElementMemory->getOwnedElements().count(el.getID())) {
-                m_el->m_manager->m_graph[m_el->getID()].m_managerElementMemory->getOwnedElements().internalAdd(el);
-            }
-        }
-        for (auto& copy : m_el->m_manager->m_graph[m_el->getID()].m_copies) {
-            if (!copy->getOwnedElements().count(el.getID()) && copy != m_el) {
-                copy->getOwnedElements().internalAdd(el);
-            }
-        }
-    }
+    m_el->getOwnedElements().updateCopiedSequenceAddedTo<>(el, &Element::getOwnedElements);
 }
 
 void AddRelationshipFunctor::operator()(Element& el) const {
@@ -46,18 +35,7 @@ void RemoveOwnerFunctor::operator()(Element& el) const {
     if (el.getOwner() == m_el) {
         el.setOwner(0);
     }
-    if (m_el->m_manager) {
-        if (m_el->m_manager->m_graph[m_el->getID()].m_managerElementMemory != m_el) {
-            if (m_el->m_manager->m_graph[m_el->getID()].m_managerElementMemory->getOwnedElements().count(el.getID())) {
-                m_el->m_manager->m_graph[m_el->getID()].m_managerElementMemory->getOwnedElements().internalRemove(el);
-            }
-        }
-        for (auto& copy : m_el->m_manager->m_graph[m_el->getID()].m_copies) {
-            if (copy->getOwnedElements().count(el.getID())) {
-                copy->getOwnedElements().internalRemove(el);
-            }
-        }
-    }
+    m_el->getOwnedElements().updateCopiedSequenceRemovedFrom<>(el, &Element::getOwnedElements);
 }
 
 void ReadOnlySequenceFunctor::operator()(Element& el) const {
@@ -173,6 +151,7 @@ Element::Element(const Element& el) {
     }
 
     m_ownedElements = new Sequence<>(*el.m_ownedElements);
+    m_ownedElements->m_el = this;
     m_relationships = new Sequence<Relationship>(*el.m_relationships);
     m_directedRelationships = new Sequence<DirectedRelationship>(*el.m_directedRelationships);
     m_ownedElements->addProcedures.clear();

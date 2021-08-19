@@ -348,8 +348,25 @@ TEST_F(ElementTest, copyAndChangeTest) {
     copy.getPackagedElements().add(ownedEl);
     ASSERT_EQ(package.getOwnedElements().size(), 1);
     ASSERT_EQ(package.getOwnedElements().front().getID(), ownedEl.getID());
+    ASSERT_EQ(package.getOwnedMembers().size(), 1);
+    ASSERT_EQ(package.getOwnedMembers().front().getID(), ownedEl.getID());
+    ASSERT_EQ(package.getMembers().size(), 1);
+    ASSERT_EQ(package.getMembers().front().getID(), ownedEl.getID());
+    ASSERT_EQ(package.getPackagedElements().size(), 1);
+    ASSERT_EQ(package.getPackagedElements().front().getID(), ownedEl.getID());
+    ASSERT_TRUE(ownedEl.getOwner() != 0);
+    ASSERT_EQ(ownedEl.getOwner()->getID(), package.getID());
+    ASSERT_TRUE(ownedEl.getNamespace() != 0);
+    ASSERT_EQ(ownedEl.getNamespace()->getID(), package.getID());
+    ASSERT_EQ(ownedEl.getMemberNamespace().size(), 1);
+    ASSERT_EQ(ownedEl.getMemberNamespace().front().getID(), package.getID());
+    ASSERT_TRUE(ownedEl.getOwningPackage() != 0);
+    ASSERT_EQ(ownedEl.getOwningPackage()->getID(), package.getID());
     package.getPackagedElements().remove(ownedEl);
     ASSERT_EQ(copy.getOwnedElements().size(), 0);
+    ASSERT_EQ(copy.getOwnedMembers().size(), 0);
+    ASSERT_EQ(copy.getMembers().size(), 0);
+    ASSERT_EQ(copy.getPackagedElements().size(), 0);
     copy.getPackagedElements().add(m.create<Package>());
   }
   ASSERT_EQ(package.getPackagedElements().size(), 1);

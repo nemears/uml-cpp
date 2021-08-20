@@ -121,7 +121,7 @@ void UmlManager::aquire(ID id) {
             }
         }
     } else {
-        // TODO throw error
+        throw ManagerNotMountedException();
     }
 }
 
@@ -141,7 +141,7 @@ void UmlManager::release(ID id) {
         }
         m_graph[id].m_managerElementMemory = 0;
     } else {
-        // TODO throw error
+        throw ManagerNotMountedException();
     }
 }
 

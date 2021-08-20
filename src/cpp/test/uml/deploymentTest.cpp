@@ -5,6 +5,7 @@
 #include "uml/artifact.h"
 #include "uml/property.h"
 #include "uml/operation.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
 
@@ -99,4 +100,12 @@ TEST_F(DeploymentTest, nestedArtifactTest) {
     ASSERT_EQ(a1.getNestedArtifacts().size(), 0);
     ASSERT_EQ(a1.getOwnedMembers().size(), 0);
     ASSERT_THROW(a1.getNestedArtifacts().add(a1), NestedArtifactException);
+}
+
+TEST_F(DeploymentTest, copyAndEditArtifactTest) {
+    UmlManager m;
+    Artifact& art = m.create<Artifact>();
+    Artifact copy = art;
+    copy.getOwnedAttributes().add(m.create<Property>());
+    ASSERT_COPY_CORRECTLY(art, copy, &Artifact::getOwnedAttributes, &Classifier::getAttributes, &Namespace::getMembers);
 }

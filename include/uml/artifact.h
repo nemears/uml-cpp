@@ -11,10 +11,10 @@ namespace UML {
     class Artifact : public Classifier, public DeployedArtifact {
         friend class UmlManager;
         protected:
-            Sequence<Artifact> m_nestedArtifacts;
-            Sequence<Property> m_ownedAttributes;
-            Sequence<Operation> m_ownedOperations;
-            Sequence<Manifestation> m_manifestations;
+            Sequence<Artifact> m_nestedArtifacts = Sequence<Artifact>(this);
+            Sequence<Property> m_ownedAttributes = Sequence<Property>(this);
+            Sequence<Operation> m_ownedOperations = Sequence<Operation>(this);
+            Sequence<Manifestation> m_manifestations =  Sequence<Manifestation>(this);
             void setManager(UmlManager* manager) override;
             class AddOwnedAttributeFunctor : public AbstractSequenceFunctor {
                 public:

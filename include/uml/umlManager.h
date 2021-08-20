@@ -135,6 +135,12 @@ namespace UML {
             Element* getRoot();
             void setPath(ID elID, std::string path);
     };
+
+    class ManagerNotMountedException : public std::exception {
+        const char* what() const throw() override {
+            return "Tried to aquire or release when manager has not been mounted yet!";
+        };
+    };
 }
 
 #endif

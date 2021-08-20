@@ -145,4 +145,43 @@ TEST_F(DeploymentTest, copyAndEditArtifactTest) {
                                      &Namespace::getOwnedMembers, 
                                      &Namespace::getMembers,
                                      &Element::getOwnedElements);
+    copy.getOwnedAttributes().remove(prop2);
+    copy.getOwnedOperations().remove(op2);
+    copy.getNestedArtifacts().remove(nest2);
+    copy.getManifestations().remove(man2);
+    ASSERT_COPY_CORRECTLY(art, copy, &Artifact::getOwnedAttributes,
+                                     &Artifact::getOwnedOperations,
+                                     &Artifact::getNestedArtifacts,
+                                     &Artifact::getManifestations,
+                                     &Classifier::getAttributes,
+                                     &Classifier::getFeatures, 
+                                     &Namespace::getOwnedMembers, 
+                                     &Namespace::getMembers,
+                                     &Element::getOwnedElements);
+    art.getOwnedAttributes().add(prop2);
+    art.getOwnedOperations().add(op2);
+    art.getNestedArtifacts().add(nest2);
+    art.getManifestations().add(man2);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_CORRECTLY(art, copy, &Artifact::getOwnedAttributes,
+                                     &Artifact::getOwnedOperations,
+                                     &Artifact::getNestedArtifacts,
+                                     &Artifact::getManifestations,
+                                     &Classifier::getAttributes,
+                                     &Classifier::getFeatures, 
+                                     &Namespace::getOwnedMembers, 
+                                     &Namespace::getMembers,
+                                     &Element::getOwnedElements));
+    art.getOwnedAttributes().remove(prop2);
+    art.getOwnedOperations().remove(op2);
+    art.getNestedArtifacts().remove(nest2);
+    art.getManifestations().remove(man2);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_CORRECTLY(art, copy, &Artifact::getOwnedAttributes,
+                                     &Artifact::getOwnedOperations,
+                                     &Artifact::getNestedArtifacts,
+                                     &Artifact::getManifestations,
+                                     &Classifier::getAttributes,
+                                     &Classifier::getFeatures, 
+                                     &Namespace::getOwnedMembers, 
+                                     &Namespace::getMembers,
+                                     &Element::getOwnedElements));                           
 }

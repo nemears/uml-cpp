@@ -40,7 +40,7 @@ Classifier* Feature::getFeaturingClassifier() {
 }
 
 void Feature::setFeaturingClassifier(Classifier* clazz) {
-    if (!m_featuringClassifierID.isNull()) {
+    if (!isSameOrNull(m_featuringClassifierID, clazz)) {
         if (!m_featuringClassifierPtr) {
             m_featuringClassifierPtr = &m_manager->get<Classifier>(m_featuringClassifierID);
         }

@@ -288,7 +288,7 @@ Classifier* Property::getClassifier() {
 }
 
 void Property::setClassifier(Classifier* classifier) {
-    if (!m_classifierID.isNull()) {
+    if (!isSameOrNull(m_classifierID, classifier)) {
         if (!m_classifierPtr) {
             m_classifierPtr = &m_manager->get<Classifier>(m_classifierID);
         }
@@ -314,8 +314,10 @@ void Property::setClassifier(Classifier* classifier) {
         if (!classifier->getAttributes().count(m_id)) {
             classifier->getAttributes().add(*this);
         }
-        if (!m_redefinitionContext.count(classifier->getID())) {
-            m_redefinitionContext.add(*classifier);
+        if (!m_redefinedProperties.empty()) {
+            if (!m_redefinitionContext.count(classifier->getID())) {
+                m_redefinitionContext.add(*classifier);
+            }
         }
     }
 }

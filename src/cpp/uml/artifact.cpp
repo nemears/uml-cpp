@@ -10,6 +10,8 @@ void Artifact::setManager(UmlManager* manager) {
     DeployedArtifact::setManager(manager);
     m_ownedAttributes.m_manager = manager;
     m_ownedOperations.m_manager = manager;
+    m_nestedArtifacts.m_manager = manager;
+    m_manifestations.m_manager = manager;
 }
 
 void Artifact::AddOwnedAttributeFunctor::operator()(Element& el) const {

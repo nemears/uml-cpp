@@ -6,6 +6,7 @@
 #include "uml/property.h"
 #include "uml/operation.h"
 #include "test/umlTestUtil.h"
+#include "uml/manifestation.h"
 
 using namespace UML;
 
@@ -104,11 +105,41 @@ TEST_F(DeploymentTest, nestedArtifactTest) {
 
 TEST_F(DeploymentTest, copyAndEditArtifactTest) {
     UmlManager m;
+    Deployment& deployment = m.create<Deployment>();
+    DeploymentTarget& location = m.create<DeploymentTarget>();
     Artifact& art = m.create<Artifact>();
-    Artifact copy = art;
     Property& prop = m.create<Property>();
-    copy.getOwnedAttributes().add(prop);
-    ASSERT_COPY_CORRECTLY(art, copy, &Artifact::getOwnedAttributes, 
+    Operation& op = m.create<Operation>();
+    Artifact& nest = m.create<Artifact>();
+    Manifestation& man = m.create<Manifestation>();
+    deployment.setLocation(&location);
+    deployment.getDeployedArtifact().add(art);
+    art.getOwnedAttributes().add(prop);
+    art.getOwnedOperations().add(op);
+    art.getNestedArtifacts().add(nest);
+    art.getManifestations().add(man);
+    Artifact copy = art; // copy
+    ASSERT_COPY_CORRECTLY(art, copy, &Artifact::getOwnedAttributes,
+                                     &Artifact::getOwnedOperations,
+                                     &Artifact::getNestedArtifacts,
+                                     &Artifact::getManifestations,
+                                     &Classifier::getAttributes,
+                                     &Classifier::getFeatures, 
+                                     &Namespace::getOwnedMembers, 
+                                     &Namespace::getMembers,
+                                     &Element::getOwnedElements);
+    Property& prop2 = m.create<Property>();
+    copy.getOwnedAttributes().add(prop2);
+    Operation& op2 = m.create<Operation>();
+    copy.getOwnedOperations().add(op2);
+    Artifact& nest2 = m.create<Artifact>();
+    copy.getNestedArtifacts().add(nest2);
+    Manifestation& man2 = m.create<Manifestation>();
+    copy.getManifestations().add(man2);
+    ASSERT_COPY_CORRECTLY(art, copy, &Artifact::getOwnedAttributes,
+                                     &Artifact::getOwnedOperations,
+                                     &Artifact::getNestedArtifacts,
+                                     &Artifact::getManifestations,
                                      &Classifier::getAttributes,
                                      &Classifier::getFeatures, 
                                      &Namespace::getOwnedMembers, 

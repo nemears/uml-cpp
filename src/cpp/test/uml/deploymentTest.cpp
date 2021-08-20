@@ -106,6 +106,12 @@ TEST_F(DeploymentTest, copyAndEditArtifactTest) {
     UmlManager m;
     Artifact& art = m.create<Artifact>();
     Artifact copy = art;
-    copy.getOwnedAttributes().add(m.create<Property>());
-    ASSERT_COPY_CORRECTLY(art, copy, &Artifact::getOwnedAttributes, &Classifier::getAttributes, &Namespace::getMembers);
+    Property& prop = m.create<Property>();
+    copy.getOwnedAttributes().add(prop);
+    ASSERT_COPY_CORRECTLY(art, copy, &Artifact::getOwnedAttributes, 
+                                     &Classifier::getAttributes,
+                                     &Classifier::getFeatures, 
+                                     &Namespace::getOwnedMembers, 
+                                     &Namespace::getMembers,
+                                     &Element::getOwnedElements);
 }

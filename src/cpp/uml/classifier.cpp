@@ -74,10 +74,16 @@ void Classifier::AddAttributeFunctor::operator()(Element& el) const {
     if (dynamic_cast<Property&>(el).getClassifier() != m_el) {
         dynamic_cast<Property&>(el).setClassifier(dynamic_cast<Classifier*>(m_el));
     }
+    
+    if (!m_el->as<Classifier>().getFeatures().count(el.getID())) {
+        m_el->as<Classifier>().getFeatures().add(el.as<Feature>());
+    }
 
     if (dynamic_cast<Property&>(el).getFeaturingClassifier() != m_el) {
         dynamic_cast<Property&>(el).setFeaturingClassifier(dynamic_cast<Classifier*>(m_el));
     }
+
+    m_el->as<Classifier>().getAttributes().updateCopiedSequenceAddedTo<Classifier>(el.as<Property>(), &Classifier::getAttributes);
 }
 
 void Classifier::RemoveAttributeFunctor::operator()(Element& el) const {
@@ -85,11 +91,17 @@ void Classifier::RemoveAttributeFunctor::operator()(Element& el) const {
         dynamic_cast<Property&>(el).setClassifier(0);
     }
 
+    if (m_el->as<Classifier>().getFeatures().count(el.getID())) {
+        m_el->as<Classifier>().getFeatures().remove(el.as<Feature>());
+    }
+
     if (dynamic_cast<Property&>(el).getFeaturingClassifier() == m_el) {
         if (dynamic_cast<Property&>(el).getFeaturingClassifier()->getFeatures().count(el.getID())) {
             dynamic_cast<Property&>(el).getFeaturingClassifier()->getFeatures().remove(dynamic_cast<Property&>(el));
         }
     }
+
+    m_el->as<Classifier>().getAttributes().updateCopiedSequenceRemovedFrom<Classifier>(el.as<Property>(), &Classifier::getAttributes);
 }
 
 void Classifier::CheckGeneralizationFunctor::operator()(Element& el) const {
@@ -186,6 +198,8 @@ void Classifier::AddFeatureFunctor::operator()(Element& el) const {
     if (!dynamic_cast<Classifier*>(m_el)->getMembers().count(el.getID())) {
         dynamic_cast<Classifier*>(m_el)->getMembers().add(el.as<NamedElement>());
     }
+
+    m_el->as<Classifier>().getFeatures().updateCopiedSequenceAddedTo<Classifier>(el.as<Feature>(), &Classifier::getFeatures);
 }
 
 void Classifier::RemoveFeatureFunctor::operator()(Element& el) const {
@@ -202,6 +216,8 @@ void Classifier::RemoveFeatureFunctor::operator()(Element& el) const {
     if (m_el->as<Classifier>().getMembers().count(el.getID())) {
         m_el->as<Classifier>().getMembers().add(el.as<NamedElement>());
     }
+
+    m_el->as<Classifier>().getFeatures().updateCopiedSequenceRemovedFrom<Classifier>(el.as<Feature>(), &Classifier::getFeatures);
 }
 
 void Classifier::AddInheritedMemberFunctor::operator()(Element& el) const {

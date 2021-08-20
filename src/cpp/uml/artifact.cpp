@@ -25,7 +25,7 @@ void Artifact::AddOwnedAttributeFunctor::operator()(Element& el) const {
         dynamic_cast<Property&>(el).setArtifact(dynamic_cast<Artifact*>(m_el));
     }
 
-    m_el->as<Artifact>().getAttributes().updateCopiedSequenceAddedTo<Artifact>(el.as<Property>(), &Artifact::getAttributes);
+    m_el->as<Artifact>().getOwnedAttributes().updateCopiedSequenceAddedTo<Artifact>(el.as<Property>(), &Artifact::getOwnedAttributes);
 }
 
 void Artifact::RemoveOwnedAttributeFunctor::operator()(Element& el) const {
@@ -41,7 +41,7 @@ void Artifact::RemoveOwnedAttributeFunctor::operator()(Element& el) const {
         dynamic_cast<Property&>(el).setArtifact(0);
     }
 
-    m_el->as<Artifact>().getAttributes().updateCopiedSequenceRemovedFrom<Artifact>(el.as<Property>(), &Artifact::getAttributes);
+    m_el->as<Artifact>().getOwnedAttributes().updateCopiedSequenceRemovedFrom<Artifact>(el.as<Property>(), &Artifact::getOwnedAttributes);
 }
 
 void Artifact::AddOwnedOperationFunctor::operator()(Element& el) const {
@@ -136,7 +136,11 @@ Artifact::Artifact() {
     m_manifestations.removeProcedures.push_back(new RemoveManifestationFunctor(this));
 }
 
-Artifact::Artifact(const Artifact& artifact) {
+Artifact::Artifact(const Artifact& artifact) : DeployedArtifact(artifact),
+Classifier(artifact),
+PackageableElement(artifact), 
+NamedElement(artifact),
+Element(artifact) {
     m_ownedAttributes = artifact.m_ownedAttributes;
     m_ownedAttributes.m_el = this;
     m_ownedAttributes.addProcedures.clear();

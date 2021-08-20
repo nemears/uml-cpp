@@ -9,6 +9,7 @@
 #include "uml/instanceSpecification.h"
 #include "uml/stereotype.h"
 #include "uml/packageMerge.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
 
@@ -346,6 +347,10 @@ TEST_F(ElementTest, copyAndChangeTest) {
   {
     Package copy = package;
     copy.getPackagedElements().add(ownedEl);
+    ASSERT_COPY_CORRECTLY(package, copy, &Element::getOwnedElements,
+                                         &Namespace::getMembers,
+                                         &Namespace::getOwnedMembers,
+                                         &Package::getPackagedElements);
     ASSERT_EQ(package.getOwnedElements().size(), 1);
     ASSERT_EQ(package.getOwnedElements().front().getID(), ownedEl.getID());
     ASSERT_EQ(package.getOwnedMembers().size(), 1);
@@ -368,6 +373,10 @@ TEST_F(ElementTest, copyAndChangeTest) {
     ASSERT_EQ(copy.getMembers().size(), 0);
     ASSERT_EQ(copy.getPackagedElements().size(), 0);
     copy.getPackagedElements().add(m.create<Package>());
+    ASSERT_COPY_CORRECTLY(package, copy, &Element::getOwnedElements,
+                                         &Namespace::getMembers,
+                                         &Namespace::getOwnedMembers,
+                                         &Package::getPackagedElements);
   }
   ASSERT_EQ(package.getPackagedElements().size(), 1);
 }

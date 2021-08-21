@@ -347,7 +347,7 @@ TEST_F(ElementTest, copyAndChangeTest) {
   {
     Package copy = package;
     copy.getPackagedElements().add(ownedEl);
-    ASSERT_COPY_CORRECTLY(package, copy, &Element::getOwnedElements,
+    ASSERT_COPY_SEQUENCE_CORRECTLY(package, copy, &Element::getOwnedElements,
                                          &Namespace::getMembers,
                                          &Namespace::getOwnedMembers,
                                          &Package::getPackagedElements);
@@ -373,7 +373,7 @@ TEST_F(ElementTest, copyAndChangeTest) {
     ASSERT_EQ(copy.getMembers().size(), 0);
     ASSERT_EQ(copy.getPackagedElements().size(), 0);
     copy.getPackagedElements().add(m.create<Package>());
-    ASSERT_COPY_CORRECTLY(package, copy, &Element::getOwnedElements,
+    ASSERT_COPY_SEQUENCE_CORRECTLY(package, copy, &Element::getOwnedElements,
                                          &Namespace::getMembers,
                                          &Namespace::getOwnedMembers,
                                          &Package::getPackagedElements);

@@ -122,6 +122,10 @@ void NamedElement::setNamespace(Namespace* nmspc) {
             nmspc->getOwnedMembers().add(*this);
         }
     }
+
+    if (m_manager) {
+        m_manager->updateCopiesSingleton<NamedElement>(this, m_namespaceID, &NamedElement::m_namespaceID);
+    }
 }
 
 Sequence<Namespace>& NamedElement::getMemberNamespace() {

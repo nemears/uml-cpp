@@ -48,6 +48,10 @@ void PackageableElement::setOwningPackage(Package* package) {
             package->getPackagedElements().add(*this);
         }
     }
+
+    if (m_manager) {
+        m_manager->updateCopiesSingleton<PackageableElement>(this, m_owningPackageID, &PackageableElement::m_owningPackageID);
+    }
 }
 
 ElementType PackageableElement::getElementType() const {
@@ -74,4 +78,7 @@ void PackageableElement::restoreReleased(ID id, Element* released) {
 
 void PackageableElement::referencingReleased(ID id) {
     Element::referencingReleased(id);
+    if (m_owningPackageID == id) {
+        m_owningPackagePtr = 0;
+    }
 }

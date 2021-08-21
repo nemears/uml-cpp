@@ -61,6 +61,20 @@ namespace UML {
             Element* m_root;
             void clear();
             void setElementAndChildrenMount(std::filesystem::path parentPath, Element& el);
+            template <class T = Element> void updateCopiesSingleton(T* me, ID id, ID T::*member) {
+                if (m_graph[me->getID()].m_managerElementMemory != me) {
+                    if ((m_graph[me->getID()].m_managerElementMemory->template as<T>().*member) != id) {
+                        (m_graph[me->getID()].m_managerElementMemory->template as<T>().*member) = id;
+                    }
+                }
+                for (auto& copy : m_graph[me->getID()].m_copies) {
+                    if (copy != me) {
+                        if ((copy->template as<T>().*member) != id) {
+                            (copy->template as<T>().*member) = id;
+                        }
+                    }
+                }
+            };
         public:
             UmlManager();
             ~UmlManager();

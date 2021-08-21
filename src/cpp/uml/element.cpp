@@ -555,6 +555,9 @@ void Element::setOwner(Element* owner) {
             owner->getOwnedElements().internalAdd(*this);
         }
     }
+    if (m_manager) {
+        m_manager->updateCopiesSingleton<>(this, m_ownerID, &Element::m_ownerID);
+    }
 }
 
 Sequence<Element>& Element::getOwnedElements() {

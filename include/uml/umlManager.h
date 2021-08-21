@@ -28,6 +28,27 @@ namespace UML {
      * UmlManager is the object that handles all of the instantiation and deletion of UML objects
      * from a model. It follows object pool semantics to be able to hold information about large
      * models without taking up too much memory
+     * 
+     * Important notes,
+     *  1) create<T>() is the proper way to instantiate any type of uml element into a model
+     *  2) After creating the manager make sure to tell it where to store it's swapped memory
+     *     with the mount(path) method and where to keep it's data persistently with save(path)
+     *  3) To keep memory use down but disc access only when we need to the api uses object pool
+     *     semantics for control of when memory needs to be used and this object controls it.
+     *     a) To enable an object pool state the manager must be mounted somewhere on the disc to
+     *        write the elements to a database, this can be done with UmlManager::mount(path)
+     *     b) Once mounted Elements that have been created or parsed in may be written to disc 
+     *        with the UmlManager::release(ID id) method, and brought back into memory with the
+     *        UmlManager::aquire(ID id) method.
+     *  4) Copying Elements is fine, they are automatically tracked upon copying, infact it is
+     *     encouraged to copy from the Manager just for the scope you need, e.g:
+     *          Package copiedJustForMyScope = manager.create<Package>();
+     *      instead of:
+     *          Package& referenceToManagerMemory = manager.create<Package>();
+     *      The main benefit is because a client using a manager can easily enforce not releasing
+     *      an element that has copies not yet deleted
+     *  5) The Manager can be used as a top level filter of all of the model elements through the
+     *         get<T>(ID id) function
      **/
     class UmlManager {
         friend class Parsers::ParserMetaData;

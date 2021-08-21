@@ -100,6 +100,7 @@ void CheckAppliedStereotypeFunctor::operator()(Element& el) const {
 // Constructor
 Element::Element() {
     m_manager = 0;
+    m_node = 0;
     m_id = ID::randomID();
     m_ownerPtr = 0;
 
@@ -141,6 +142,7 @@ Element::~Element() {
 Element::Element(const Element& el) {
     m_id = el.m_id;
     m_manager = el.m_manager;
+    m_node = el.m_node;
 
     m_ownerID = el.m_ownerID;
     if (m_manager) {
@@ -511,7 +513,11 @@ ID Element::getID() {
 }
 
 Element* Element::getOwner() {
-    return universalGet<>(m_ownerID, m_ownerPtr, m_manager);
+    if (m_manager) {
+        return m_manager->get<>(this, m_ownerID, &Element::m_ownerPtr);
+    } else {
+        return m_ownerPtr;
+    }
 }
 
 void Element::setOwner(Element* owner) {
@@ -553,6 +559,11 @@ void Element::setOwner(Element* owner) {
         }
         if (!owner->getOwnedElements().count(m_id)) {
             owner->getOwnedElements().internalAdd(*this);
+        }
+        if (m_node) {
+            if (!m_node->m_referencing.count(owner->getID())) {
+                m_node->m_referencing[owner->getID()] = owner->m_node;
+            }
         }
     }
     if (m_manager) {

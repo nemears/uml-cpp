@@ -50,6 +50,18 @@ namespace UML {
      *  5) The Manager can be used as a top level filter of all of the model elements through the
      *         get<T>(ID id) function
      **/
+
+    struct ManagerNode {
+        Element* m_managerElementMemory;
+        std::string m_path;
+        std::string m_mountPath;
+        std::unordered_map<ID, ManagerNode*> m_references;
+        std::unordered_map<ID, size_t> m_referenceCount;
+        std::vector<ID> m_referenceOrder;
+        std::unordered_map<ID, ManagerNode*> m_referencing;
+        std::unordered_set<Element*> m_copies;
+    };
+
     class UmlManager {
         friend class Parsers::ParserMetaData;
         friend struct Parsers::EmitterMetaData;
@@ -62,15 +74,6 @@ namespace UML {
         friend class RemoveOwnerFunctor;
         template<typename> friend class Sequence;
         protected:
-            struct ManagerNode {
-                Element* m_managerElementMemory;
-                std::string m_path;
-                std::string m_mountPath;
-                std::unordered_map<ID, ManagerNode*> m_references;
-                std::unordered_map<ID, size_t> m_referenceCount;
-                std::vector<ID> m_referenceOrder;
-                std::unordered_set<Element*> m_copies;
-            };
             void setReference(ID referencing, ID referenced, Element* ptr);
             void removeReference(ID referencing, ID referenced);
         private:
@@ -96,6 +99,28 @@ namespace UML {
                     }
                 }
             };
+            /** Using this get is faster than the get<T>(ID id) method (usually) because it will base it's
+             *  search on a particular element, only for internal api use where trying to set and return a ptr**/
+            template <class T = Element, class U = Element> T* get(U* me, ID theID, T* U::*thePtr) {
+                if (!theID.isNull()) {
+                    if (!(me->*thePtr)) {
+                        if (me->m_node) {
+                            if (!me->m_node->m_referencing.count(theID)) {
+                                me->m_node->m_referencing[theID] = &m_graph[theID]; // this will take the longest
+                                /** TODO: think about cleaning this with removal? will probably need a counter like referenced**/
+                            }
+                            if (!me->m_node->m_referencing[theID]->m_managerElementMemory) {
+                                aquire(theID); // this can also take a while
+                            }
+                            (me->*thePtr) = dynamic_cast<T*>(me->m_node->m_referencing[theID]->m_managerElementMemory);
+                        } else {
+                            /** TODO: throw error, bad state **/
+                        }
+                    }
+                    return (me->*thePtr);
+                }
+                return 0;
+            };
         public:
             UmlManager();
             ~UmlManager();
@@ -112,6 +137,7 @@ namespace UML {
                 m_elements.insert(ret->getID());
                 ManagerNode discData = {ret};
                 m_graph[ret->getID()] = discData;
+                ret->m_node = &m_graph[ret->getID()];
                 return *ret;
             };
             void reindex(ID oldID, ID newID);

@@ -345,13 +345,13 @@ namespace UML {
 
         private:
             template <class U = Element> void updateCopiedSequenceAddedTo(T& el, Sequence<T>& (U::*meth)()) {
-                if (m_manager) {
-                    if (m_manager->m_graph[m_el->getID()].m_managerElementMemory != m_el) {
-                        if (!(m_manager->m_graph[m_el->getID()].m_managerElementMemory->template as<U>().*meth)().count(el.getID())) {
-                            (m_manager->m_graph[m_el->getID()].m_managerElementMemory->template as<U>().*meth)().internalAdd(el.template as<T>());
+                if (m_manager && m_el) {
+                    if (m_el->m_node->m_managerElementMemory != m_el) {
+                        if (!(m_el->m_node->m_managerElementMemory->template as<U>().*meth)().count(el.getID())) {
+                            (m_el->m_node->m_managerElementMemory->template as<U>().*meth)().internalAdd(el.template as<T>());
                         }
                     }
-                    for (auto& copy : m_manager->m_graph[m_el->getID()].m_copies) {
+                    for (auto& copy : m_el->m_node->m_copies) {
                         if (!(copy->template as<U>().*meth)().count(el.getID()) && copy != m_el) {
                             (copy->template as<U>().*meth)().internalAdd(el.template as<T>());
                         }
@@ -359,13 +359,13 @@ namespace UML {
                 }
             };
             template <class U = Element> void updateCopiedSequenceRemovedFrom(T& el, Sequence<T>& (U::*meth)()) {
-                if (m_manager) {
-                    if (m_manager->m_graph[m_el->getID()].m_managerElementMemory != m_el) {
-                        if ((m_manager->m_graph[m_el->getID()].m_managerElementMemory->template as<U>().*meth)().count(el.getID())) {
-                            (m_manager->m_graph[m_el->getID()].m_managerElementMemory->template as<U>().*meth)().internalRemove(el.template as<T>());
+                if (m_manager && m_el) {
+                    if (m_el->m_node->m_managerElementMemory != m_el) {
+                        if ((m_el->m_node->m_managerElementMemory->template as<U>().*meth)().count(el.getID())) {
+                            (m_el->m_node->m_managerElementMemory->template as<U>().*meth)().internalRemove(el.template as<T>());
                         }
                     }
-                    for (auto& copy : m_manager->m_graph[m_el->getID()].m_copies) {
+                    for (auto& copy : m_el->m_node->m_copies) {
                         if ((copy->template as<U>().*meth)().count(el.getID()) && copy != m_el) {
                             (copy->template as<U>().*meth)().internalRemove(el.template as<T>());
                         }

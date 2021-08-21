@@ -126,6 +126,7 @@ namespace UML {
     class Slot;
     class InstanceSpecification;
     class UmlManager;
+    struct ManagerNode;
     /**
      * Element is the base class of all UML classes
      * It has three main attributes
@@ -139,9 +140,10 @@ namespace UML {
         friend class RemoveOwnerFunctor;
         friend class Slot;
         friend class UmlManager;
+        template<typename> friend class Sequence;
         protected:
-            // new id implementation
             UmlManager* m_manager;
+            ManagerNode* m_node;
             ID m_id;
 
             // owner

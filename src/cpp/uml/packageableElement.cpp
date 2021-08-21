@@ -50,7 +50,7 @@ void PackageableElement::setOwningPackage(Package* package) {
     }
 
     if (m_manager) {
-        m_manager->updateCopiesSingleton<PackageableElement>(this, m_owningPackageID, &PackageableElement::m_owningPackageID);
+        m_manager->updateCopiesSingleton<PackageableElement>(this, m_owningPackageID, &PackageableElement::m_owningPackageID, &PackageableElement::m_owningPackagePtr);
     }
 }
 

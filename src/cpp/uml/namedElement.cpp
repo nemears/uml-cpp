@@ -124,7 +124,7 @@ void NamedElement::setNamespace(Namespace* nmspc) {
     }
 
     if (m_manager) {
-        m_manager->updateCopiesSingleton<NamedElement>(this, m_namespaceID, &NamedElement::m_namespaceID);
+        m_manager->updateCopiesSingleton<NamedElement>(this, m_namespaceID, &NamedElement::m_namespaceID, &NamedElement::m_namespacePtr);
     }
 }
 

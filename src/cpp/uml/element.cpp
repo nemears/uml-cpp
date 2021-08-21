@@ -567,7 +567,7 @@ void Element::setOwner(Element* owner) {
         }
     }
     if (m_manager) {
-        m_manager->updateCopiesSingleton<>(this, m_ownerID, &Element::m_ownerID);
+        m_manager->updateCopiesSingleton<>(this, m_ownerID, &Element::m_ownerID, &Element::m_ownerPtr);
     }
 }
 

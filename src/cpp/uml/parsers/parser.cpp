@@ -2953,6 +2953,7 @@ void emitExtension(YAML::Emitter& emitter, Extension& extension, EmitterMetaData
     emitter << YAML::Key << "metaClass" << YAML::Value << Element::elementTypeToString(extension.getMetaClass());
 
     if (extension.getOwnedEnd() != 0) {
+        emitter << YAML::Key << "ownedEnd" << YAML::Value;
         emit(emitter, *extension.getOwnedEnd(), data);
     }
 

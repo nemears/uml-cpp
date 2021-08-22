@@ -13,6 +13,7 @@
 #include "uml/artifact.h"
 #include "uml/primitiveType.h"
 #include "uml/enumeration.h"
+#include "test/umlTestUtil.h"
 
 using namespace std;
 using namespace UML;
@@ -327,16 +328,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     m.setRoot(&pckg);
     string mountPath = ymlPath + "classTests";
     ASSERT_NO_THROW(m.mount(mountPath));
-    string mountPath1 = mountPath + "/mount";
-    ASSERT_TRUE(filesystem::exists(mountPath1));
-    string pckgDirPath = mountPath1 + "/" + pckg.getID().string();
-    ASSERT_TRUE(filesystem::exists(pckgDirPath));
-    string pckgFilePPath = pckgDirPath + "/" + pckg.getID().string() + ".yml";
-    ASSERT_TRUE(filesystem::exists(pckgFilePPath));
-    string baseDirPath = pckgDirPath + "/" + pckg.getPackagedElements().front().getID().string();
-    ASSERT_TRUE(filesystem::exists(baseDirPath));
-    ASSERT_TRUE(filesystem::exists(baseDirPath + "/" + pckg.getPackagedElements().front().getID().string() + ".yml"));
-    // TODO finish
+    ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_MOUNT(pckg, ymlPath + "classTests"));
 
     ASSERT_NO_THROW(m.release(base.getID()));
     ASSERT_TRUE(prop.getOwner() != 0);

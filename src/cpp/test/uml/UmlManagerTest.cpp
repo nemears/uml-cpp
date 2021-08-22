@@ -7,6 +7,7 @@
 #include "uml/profileApplication.h"
 #include "uml/parsers/parser.h"
 #include "uml/instanceSpecification.h"
+#include "test/umlTestUtil.h"
 
 using namespace std;
 using namespace UML;
@@ -67,9 +68,7 @@ TEST_F(UmlManagerTest, simpleMountTest) {
     p.setName("mountedRoot");
     m->setRoot(&p);
     ASSERT_NO_THROW(m->mount(ymlPath + "umlManagerTests"));
-    ASSERT_TRUE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount"));
-    ASSERT_TRUE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount" / p.getID().string()));
-    ASSERT_TRUE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount" / p.getID().string() / (p.getID().string() + ".yml")));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_MOUNT(p, ymlPath + "umlManagerTests"));
     UmlManager* m2 = Parsers::parse(filesystem::path(filesystem::path(ymlPath + "umlManagerTests") / "mount" / p.getID().string() / (p.getID().string() + ".yml")));
     ASSERT_EQ(m2->getRoot()->getElementType(), ElementType::PACKAGE);
     Package& p2 = m2->getRoot()->as<Package>();
@@ -89,11 +88,7 @@ TEST_F(UmlManagerTest, multiLayerMountTest) {
     p.getPackagedElements().add(c);
     c.setName("child");
     ASSERT_NO_THROW(m->mount(ymlPath + "umlManagerTests"));
-    ASSERT_TRUE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount"));
-    ASSERT_TRUE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount" / p.getID().string()));
-    ASSERT_TRUE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount" / p.getID().string() / (p.getID().string() + ".yml")));
-    ASSERT_TRUE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount" / p.getID().string() / c.getID().string()));
-    ASSERT_TRUE(filesystem::exists(filesystem::path(ymlPath + "umlManagerTests") / "mount" / p.getID().string() / c.getID().string() / (c.getID().string() + ".yml")));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_MOUNT(p, ymlPath + "umlManagerTests"));
     UmlManager* m2 = Parsers::parse(filesystem::path(filesystem::path(ymlPath + "umlManagerTests") / "mount" / p.getID().string() / (p.getID().string() + ".yml")));
     ASSERT_EQ(m2->getRoot()->getElementType(), ElementType::PACKAGE);
     Package& p2 = m2->getRoot()->as<Package>();

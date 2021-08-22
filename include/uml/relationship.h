@@ -6,7 +6,7 @@
 namespace UML {
     class Relationship : virtual public Element {
         protected:
-            Sequence<> m_relatedElements;
+            Sequence<> m_relatedElements = Sequence<>(this);
             void reindexID(ID oldID, ID newID) override;
 
             class AddRelationshipFunctor : public AbstractSequenceFunctor {
@@ -27,6 +27,7 @@ namespace UML {
             void setManager(UmlManager* manager) override;
         public:
             Relationship();
+            Relationship(const Relationship& relationship);
             virtual ~Relationship();
             Sequence<>& getRelatedElements();
             ElementType getElementType() const override;

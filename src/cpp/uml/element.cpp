@@ -118,12 +118,12 @@ Element::Element() {
     m_ownedElements->addChecks.push_back(new ReadOnlySequenceFunctor(this, "ownedElements"));
     m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
     m_ownedElements->removeChecks.push_back(new ReadOnlySequenceFunctor(this, "ownedElements"));
-    m_relationships = new Sequence<Relationship>;
+    m_relationships = new Sequence<Relationship>(this);
     m_relationships->addProcedures.push_back(new AddRelationshipFunctor(this));
     m_relationships->addChecks.push_back(new ReadOnlySequenceFunctor(this, "relationships"));
     m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
     m_relationships->removeChecks.push_back(new ReadOnlySequenceFunctor(this, "relationships"));
-    m_directedRelationships = new Sequence<DirectedRelationship>;
+    m_directedRelationships = new Sequence<DirectedRelationship>(this);
     m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));
     m_directedRelationships->removeProcedures.push_back(new RemoveDirectedRelationshipFunctor(this));
     m_ownedComments = new Sequence<Comment>(this);

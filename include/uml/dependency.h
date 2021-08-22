@@ -8,8 +8,8 @@ namespace UML {
     class Dependency : public DirectedRelationship, public PackageableElement {
         friend class UmlManager;
         protected:
-            Sequence<NamedElement> m_client;
-            Sequence<NamedElement> m_supplier;
+            Sequence<NamedElement> m_client = Sequence<NamedElement>(this);
+            Sequence<NamedElement> m_supplier = Sequence<NamedElement>(this);
             class AddClientFunctor : public AbstractSequenceFunctor {
                 public:
                     AddClientFunctor(Element* me) : AbstractSequenceFunctor(me) {};

@@ -6,24 +6,28 @@ void Dependency::AddClientFunctor::operator()(Element& el) const {
     if (!m_el->as<Dependency>().getSources().count(el.getID())) {
         m_el->as<Dependency>().getSources().add(el.as<NamedElement>());
     }
+    m_el->as<Dependency>().getSupplier().updateCopiedSequenceAddedTo<Dependency>(el.as<NamedElement>(), &Dependency::getSupplier);
 }
 
 void Dependency::RemoveClientFunctor::operator()(Element& el) const {
     if (m_el->as<Dependency>().getSources().count(el.getID())) {
         m_el->as<Dependency>().getSources().remove(el.as<NamedElement>());
     }
+    m_el->as<Dependency>().getSupplier().updateCopiedSequenceRemovedFrom<Dependency>(el.as<NamedElement>(), &Dependency::getSupplier);
 }
 
 void Dependency::AddSupplierFunctor::operator()(Element& el) const {
     if (!m_el->as<Dependency>().getTargets().count(el.getID())) {
         m_el->as<Dependency>().getTargets().add(el.as<NamedElement>());
     }
+    m_el->as<Dependency>().getClient().updateCopiedSequenceAddedTo<Dependency>(el.as<NamedElement>(), &Dependency::getClient);
 }
 
 void Dependency::RemoveSupplierFunctor::operator()(Element& el) const {
     if (m_el->as<Dependency>().getTargets().count(el.getID())) {
         m_el->as<Dependency>().getTargets().remove(el.as<NamedElement>());
     }
+    m_el->as<Dependency>().getClient().updateCopiedSequenceRemovedFrom<Dependency>(el.as<NamedElement>(), &Dependency::getClient);
 }
 
 void Dependency::setManager(UmlManager* manager) {
@@ -46,6 +50,8 @@ Dependency::Dependency() {
 }
 
 Dependency::Dependency(const Dependency& dependency) {
+    m_client.m_el = this;
+    m_supplier.m_el = this;
     m_client.addProcedures.clear();
     m_supplier.addProcedures.clear();
     m_client.addProcedures.push_back(new AddClientFunctor(this));

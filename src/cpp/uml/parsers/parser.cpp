@@ -340,6 +340,12 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitExtension(emitter, dynamic_cast<Extension&>(el), data);
             break;
         }
+        case ElementType::EXTENSION_END : {
+            emitter << YAML::BeginMap << YAML::Key << "extensionEnd" << YAML::Value << YAML::BeginMap;
+            emitProperty(emitter, el.as<ExtensionEnd>(), data);
+            emitter << YAML::EndMap << YAML::EndMap;
+            break;
+        }
         case ElementType::GENERALIZATION : {
             emitGeneralization(emitter, el.as<Generalization>(), data);
             break;
@@ -2947,9 +2953,7 @@ void emitExtension(YAML::Emitter& emitter, Extension& extension, EmitterMetaData
     emitter << YAML::Key << "metaClass" << YAML::Value << Element::elementTypeToString(extension.getMetaClass());
 
     if (extension.getOwnedEnd() != 0) {
-        emitter << YAML::Key << "ownedEnd" << YAML::Value << YAML::BeginMap << YAML::Key << "extensionEnd" << YAML::Value << YAML::BeginMap;
-        emitProperty(emitter, *extension.getOwnedEnd(), data);
-        emitter << YAML::EndMap << YAML::EndMap;
+        emit(emitter, *extension.getOwnedEnd(), data);
     }
 
     emitElementDefenitionEnd(emitter, ElementType::EXTENSION, extension);

@@ -18,13 +18,20 @@ void Comment::setBody(string body) {
 }
 
 Element* Comment::getOwningElement() {
-    return universalGet<>(m_owningElementID, m_owningElementPtr, m_manager);
+    if (m_manager) {
+        return m_manager->get<>(this, m_owningElementID, &Comment::m_owningElementPtr);
+    } else {
+        return m_owningElementPtr;
+    }
 }
 
 void Comment::setOwningElement(Element* el) {
     if (!isSameOrNull(m_owningElementID, el)) {
+        if (m_manager) {
+            m_manager->removeReference(m_id, m_owningElementID);
+        }
         if (!m_owningElementPtr) {
-            m_owningElementPtr = &m_manager->get<>(m_owningElementID);
+            m_owningElementPtr = m_manager->get<>(this, m_owningElementID, &Comment::m_owningElementPtr);
         }
 
         if (m_owningElementPtr->getOwnedComments().count(m_id)) {
@@ -44,9 +51,15 @@ void Comment::setOwningElement(Element* el) {
     }
 
     if (el) {
+        if (m_manager) {
+            m_manager->setReference(m_id, m_owningElementID, this);
+        }
         if (!el->getOwnedComments().count(m_id)) {
             el->getOwnedComments().add(*this);
         }
+    }
+    if (m_manager) {
+        m_manager->updateCopiesSingleton<Comment>(this, m_ownerID, &Comment::m_owningElementID, &Comment::m_owningElementPtr);
     }
 }
 

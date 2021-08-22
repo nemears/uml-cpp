@@ -72,6 +72,7 @@ namespace UML {
         friend class TypedElement;
         friend class SetOwnerFunctor;
         friend class RemoveOwnerFunctor;
+        friend class Comment;
         template<typename> friend class Sequence;
         protected:
             void setReference(ID referencing, ID referenced, Element* ptr);

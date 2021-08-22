@@ -23,12 +23,14 @@ void AddRelationshipFunctor::operator()(Element& el) const {
     if (!dynamic_cast<Relationship&>(el).getRelatedElements().count(m_el->getID())) {
         dynamic_cast<Relationship&>(el).getRelatedElements().internalAdd(*m_el);
     }
+    m_el->getRelationships().updateCopiedSequenceAddedTo<>(el.as<Relationship>(), &Element::getRelationships);
 }
 
 void RemoveRelationshipFunctor::operator()(Element& el) const {
     if (dynamic_cast<Relationship&>(el).getRelatedElements().count(m_el->getID())) {
         dynamic_cast<Relationship&>(el).getRelatedElements().internalRemove(*m_el);
     }
+    m_el->getRelationships().updateCopiedSequenceRemovedFrom<>(el.as<Relationship>(), &Element::getRelationships);
 }
 
 void RemoveOwnerFunctor::operator()(Element& el) const {
@@ -46,12 +48,14 @@ void AddDirectedRelationshipFunctor::operator()(Element& el) const {
     if (!m_el->getRelationships().count(el.getID())) {
         m_el->getRelationships().internalAdd(dynamic_cast<DirectedRelationship&>(el));
     }
+    m_el->getDirectedRelationships().updateCopiedSequenceAddedTo<>(el.as<DirectedRelationship>(), &Element::getDirectedRelationships);
 }
 
 void RemoveDirectedRelationshipFunctor::operator()(Element& el) const {
     if (m_el->getRelationships().count(el.getID())) {
         m_el->getRelationships().internalRemove(dynamic_cast<DirectedRelationship&>(el));
     }
+    m_el->getDirectedRelationships().updateCopiedSequenceRemovedFrom<>(el.as<DirectedRelationship>(), &Element::getDirectedRelationships);
 }
 
 void AddOwnedCommentFunctor::operator()(Element& el) const {
@@ -62,6 +66,7 @@ void AddOwnedCommentFunctor::operator()(Element& el) const {
     if (dynamic_cast<Comment&>(el).getOwningElement() != m_el) {
         dynamic_cast<Comment&>(el).setOwningElement(m_el);
     }
+    m_el->getOwnedComments().updateCopiedSequenceAddedTo<>(el.as<Comment>(), &Element::getOwnedComments);
 }
 
 void RemoveOwnedCommentFunctor::operator()(Element& el) const {
@@ -72,18 +77,21 @@ void RemoveOwnedCommentFunctor::operator()(Element& el) const {
     if (dynamic_cast<Comment&>(el).getOwningElement() ==  m_el) {
         dynamic_cast<Comment&>(el).setOwningElement(0);
     }
+    m_el->getOwnedComments().updateCopiedSequenceRemovedFrom<>(el.as<Comment>(), &Element::getOwnedComments);
 }
 
 void AddAppliedStereotypeFunctor::operator()(Element& el) const {
     if (!m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalAdd(el);
     }
+    m_el->getAppliedStereotypes().updateCopiedSequenceAddedTo<>(el.as<InstanceSpecification>(), &Element::getAppliedStereotypes);
 }
 
 void RemoveAppliedStereotypeFunctor::operator()(Element& el) const {
     if (m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalRemove(el);
     }
+    m_el->getAppliedStereotypes().updateCopiedSequenceRemovedFrom<>(el.as<InstanceSpecification>(), &Element::getAppliedStereotypes);
 }
 
 void CheckAppliedStereotypeFunctor::operator()(Element& el) const {
@@ -118,10 +126,10 @@ Element::Element() {
     m_directedRelationships = new Sequence<DirectedRelationship>;
     m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));
     m_directedRelationships->removeProcedures.push_back(new RemoveDirectedRelationshipFunctor(this));
-    m_ownedComments = new Sequence<Comment>;
+    m_ownedComments = new Sequence<Comment>(this);
     m_ownedComments->addProcedures.push_back(new AddOwnedCommentFunctor(this));
     m_ownedComments->removeProcedures.push_back(new RemoveOwnedCommentFunctor(this));
-    m_appliedStereotype = new Sequence<InstanceSpecification>;
+    m_appliedStereotype = new Sequence<InstanceSpecification>(this);
     m_appliedStereotype->addProcedures.push_back(new AddAppliedStereotypeFunctor(this));
     m_appliedStereotype->removeProcedures.push_back(new RemoveAppliedStereotypeFunctor(this));
     m_appliedStereotype->addChecks.push_back(new CheckAppliedStereotypeFunctor(this));
@@ -155,7 +163,9 @@ Element::Element(const Element& el) {
     m_ownedElements = new Sequence<>(*el.m_ownedElements);
     m_ownedElements->m_el = this;
     m_relationships = new Sequence<Relationship>(*el.m_relationships);
+    m_relationships->m_el = this;
     m_directedRelationships = new Sequence<DirectedRelationship>(*el.m_directedRelationships);
+    m_directedRelationships->m_el = this;
     m_ownedElements->addProcedures.clear();
     m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
     m_ownedElements->addChecks.clear();
@@ -177,11 +187,13 @@ Element::Element(const Element& el) {
     m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));
     m_directedRelationships->removeProcedures.push_back(new RemoveDirectedRelationshipFunctor(this));
     m_ownedComments = new Sequence<Comment>(*el.m_ownedComments);
+    m_ownedComments->m_el = this;
     m_ownedComments->addProcedures.clear();
     m_ownedComments->addProcedures.push_back(new AddOwnedCommentFunctor(this));
     m_ownedComments->removeProcedures.clear();
     m_ownedComments->removeProcedures.push_back(new RemoveOwnedCommentFunctor(this));
     m_appliedStereotype = new Sequence<InstanceSpecification>(*el.m_appliedStereotype);
+    m_appliedStereotype->m_el = this;
     m_appliedStereotype->addChecks.clear();
     m_appliedStereotype->addProcedures.clear();
     m_appliedStereotype->removeProcedures.clear();
@@ -506,6 +518,7 @@ void Element::setManager(UmlManager* manager) {
     m_ownedComments->m_manager = manager;
     m_relationships->m_manager = manager;
     m_directedRelationships->m_manager = manager;
+    m_appliedStereotype->m_manager = manager;
 };
 
 ID Element::getID() {
@@ -526,7 +539,7 @@ void Element::setOwner(Element* owner) {
             m_manager->removeReference(m_id, m_ownerID);
         }
         if (!m_ownerPtr) {
-            m_ownerPtr = &m_manager->get<>(m_ownerID);
+            m_ownerPtr = m_manager->get<>(this, m_ownerID, &Element::m_ownerPtr);
         }
         if (m_ownerPtr->getOwnedElements().count(m_id)) {
             m_ownerPtr->getOwnedElements().internalRemove(*this);

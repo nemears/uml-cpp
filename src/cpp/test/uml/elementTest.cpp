@@ -10,6 +10,13 @@
 #include "uml/stereotype.h"
 #include "uml/packageMerge.h"
 #include "test/umlTestUtil.h"
+#include "uml/dependency.h"
+#include "uml/extension.h"
+#include "uml/extensionEnd.h"
+#include "uml/stereotype.h"
+#include "uml/comment.h"
+#include "uml/dependency.h"
+#include "test/yumlParsersTest.h"
 
 using namespace UML;
 
@@ -379,4 +386,53 @@ TEST_F(ElementTest, copyAndChangeTest) {
                                          &Package::getPackagedElements);
   }
   ASSERT_EQ(package.getPackagedElements().size(), 1);
+}
+
+TEST_F(ElementTest, FullElementCopyTest) {
+  UmlManager m;
+  Package& p1 = m.create<Package>();
+  Package& p2 = m.create<Package>();
+  Package& root = m.create<Package>();
+  Package& child = m.create<Package>();
+  Stereotype& stereotype = m.create<Stereotype>();
+  Extension& extension = m.create<Extension>();
+  ExtensionEnd& end = m.create<ExtensionEnd>();
+  InstanceSpecification& stereotypeInst = m.create<InstanceSpecification>();
+  Comment& comment = m.create<Comment>();
+  Dependency& dependency = m.create<Dependency>();
+  
+  m.setRoot(&root);
+  root.getPackagedElements().add(p1);
+  root.getPackagedElements().add(p2);
+  p1.getPackagedElements().add(child);
+  end.setExtension(&extension);
+  extension.setMetaClass(ElementType::PACKAGE);
+  end.setType(&stereotype);
+  stereotypeInst.setClassifier(&stereotype);
+  p1.getAppliedStereotypes().add(stereotypeInst);
+  p1.getOwnedComments().add(comment);
+  root.getOwnedStereotypes().add(stereotype);
+  root.getPackagedElements().add(extension);
+  dependency.getClient().add(p1);
+  dependency.getSupplier().add(p2);
+  root.getPackagedElements().add(dependency);
+
+  Package copy = p1;
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments, &Element::getDirectedRelationships, &Element::getRelationships));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
+  ASSERT_NO_THROW(m.mount(std::string(YML_FILES_PATH) + "elementTests"));
+  copy.getPackagedElements().remove(child);
+  copy.getAppliedStereotypes().remove(stereotypeInst);
+  copy.getOwnedComments().remove(comment);
+  dependency.getClient().remove(copy);
+  root.getPackagedElements().remove(copy);
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments, &Element::getDirectedRelationships, &Element::getRelationships));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
+  p1.getPackagedElements().add(child);
+  p1.getAppliedStereotypes().add(stereotypeInst);
+  p1.getOwnedComments().add(comment);
+  dependency.getClient().add(p1);
+  root.getPackagedElements().add(p1);
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments, &Element::getDirectedRelationships, &Element::getRelationships));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
 }

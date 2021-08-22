@@ -106,7 +106,7 @@ template <class T =Element> T& parseScalar(YAML::Node node, ParserMetaData& data
         return dynamic_cast<T&>(*packagedEl);
     } else {
         std::string path = node.as<std::string>();
-        std::string idStr = path.substr(0, path.find_last_of("/"));
+        std::string idStr = path.substr(path.find_last_of("/") + 1, path.find_last_of("/") + 29);
         if (isValidID(idStr)) {
             return data.m_manager->get<T>(ID::fromString(idStr));
         } else {
@@ -267,7 +267,7 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         case EmitterStrategy::INDIVIDUAL : {
             if (data.m_path != data.getMountPath(el.getID()).parent_path()) {
                 newPath = data.getMountPath(el.getID());
-                emitter << YAML::Value << newPath.string().substr(newPath.string().substr(0, newPath.string().find_last_of("/")).find_last_of("/") + 1);
+                emitter << YAML::Value << newPath.filename();
                 return;
             }
         }
@@ -283,7 +283,7 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     if (newPath.empty() || (newPath.parent_path().compare(data.m_path) == 0 && newPath.filename().compare(data.m_fileName) == 0)) {
         determineTypeAndEmit(emitter, el, data);
     } else {
-        emitter << YAML::Value << newPath.string().substr(newPath.string().substr(0, newPath.string().find_last_of("/")).find_last_of("/") + 1);
+        emitter << YAML::Value << newPath.filename();
         emitToFile(el, data, newPath.parent_path(), newPath.filename());
     }
 }

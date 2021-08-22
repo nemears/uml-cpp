@@ -10,10 +10,10 @@ namespace {
 template <class T = Element, class U = Element> void ASSERT_COPY_SEQUENCE_CORRECTLY(T& og, T& copy) {};
 template <class T = Element, class U = Element> void ASSERT_COPY_SINGLETON_CORRECTLY(T& og, T& copy) {};
 void ASSERT_PROPER_MOUNT_HELPER(Element& el, std::string parentPath) {
-    ASSERT_TRUE(std::filesystem::exists(parentPath + "/" + el.getID().string()));
-    ASSERT_TRUE(std::filesystem::exists(parentPath + "/" + el.getID().string() + "/" + el.getID().string() + ".yml"));
+    // ASSERT_TRUE(std::filesystem::exists(parentPath + "/" + el.getID().string()));
+    ASSERT_TRUE(std::filesystem::exists(parentPath + "/" + el.getID().string() + ".yml"));
     for (auto& child : el.getOwnedElements()) {
-        ASSERT_PROPER_MOUNT_HELPER(child, parentPath + "/" + el.getID().string());
+        ASSERT_PROPER_MOUNT_HELPER(child, parentPath);
     }
 };
 

@@ -127,6 +127,7 @@ namespace UML {
     class InstanceSpecification;
     class UmlManager;
     struct ManagerNode;
+    class AddOwnedCommentFunctor;
     /**
      * Element is the base class of all UML classes
      * It has three main attributes
@@ -140,6 +141,7 @@ namespace UML {
         friend class RemoveOwnerFunctor;
         friend class Slot;
         friend class UmlManager;
+        friend class AddOwnedCommentFunctor;
         template<typename> friend class Sequence;
         protected:
             UmlManager* m_manager;

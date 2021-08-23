@@ -4,7 +4,11 @@
 #include "uml/element.h"
 
 namespace UML {
+
+    class RemoveOwnedCommentFunctor;
+
     class Comment : public Element {
+        friend class RemoveOwnedCommentFunctor;
         private:
             std::string m_body;
             ID m_owningElementID;

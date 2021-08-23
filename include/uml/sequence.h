@@ -384,6 +384,16 @@ namespace UML {
                     (m_el->*sub)().internalRemove(el);
                 }
             };
+            void oppositeSequenceAdd(T& el, Sequence<U>& (T::*op)()) const {
+                if (!(el.*op)().count(m_el->getID())) {
+                    (el.*op)().internalAdd(*m_el);
+                }
+            };
+            void oppositeSequenceRemove(T& el, Sequence<U>& (T::*op)()) const {
+                if ((el.*op)().count(m_el->getID())) {
+                    (el.*op)().internalRemove(*m_el);
+                }
+            };
         public:
             TemplateAbstractSequenceFunctor(U* me) : m_el(me) {};
     };

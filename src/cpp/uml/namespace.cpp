@@ -3,20 +3,13 @@
 using namespace UML;
 
 void Namespace::AddMemberFunctor::operator()(NamedElement& el) const {
-    if (!el.getMemberNamespace().count(m_el->getID())) {
-        el.getMemberNamespace().add(*m_el);
-    }
-
+    oppositeSequenceAdd(el, &NamedElement::getMemberNamespace);
     m_el->getMembers().updateCopiedSequenceAddedTo<Namespace>(el, &Namespace::getMembers);
 }
 
 void Namespace::RemoveMemberFunctor::operator()(NamedElement& el) const {
-    if (el.getMemberNamespace().count(m_el->getID())) {
-        el.getMemberNamespace().remove(*m_el);
-    }
-
+    oppositeSequenceRemove(el, &NamedElement::getMemberNamespace);
     subsetsRemove<Namespace, NamedElement>(el, &Namespace::getOwnedMembers);
-
     m_el->getMembers().updateCopiedSequenceRemovedFrom<Namespace>(el, &Namespace::getMembers);
 }
 

@@ -12,15 +12,15 @@ namespace UML {
             Sequence<Behavior> m_ownedBehaviors;
             ID m_classifierBehaviorID;
             Behavior* m_classifierBehaviorPtr;
-            class AddOwnedBehaviorFunctor : public AbstractSequenceFunctor {
+            class AddOwnedBehaviorFunctor : public TemplateAbstractSequenceFunctor<Behavior,BehavioredClassifier> {
                 public:
-                    AddOwnedBehaviorFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddOwnedBehaviorFunctor(BehavioredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Behavior& el) const override;
             };
-            class RemoveOwnedBehaviorFunctor : public AbstractSequenceFunctor {
+            class RemoveOwnedBehaviorFunctor : public TemplateAbstractSequenceFunctor<Behavior,BehavioredClassifier> {
                 public:
-                    RemoveOwnedBehaviorFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveOwnedBehaviorFunctor(BehavioredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Behavior& el) const override;
             };
             void setManager(UmlManager* manager) override;
         public:

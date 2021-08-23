@@ -15,25 +15,25 @@ namespace UML {
             Sequence<ActivityEdge> m_outgoing;
             void reindexID(ID oldID, ID newID) override;
             // void reindexName(std::string oldName, std::string newName) override;
-            class AddIncomingFunctor : public AbstractSequenceFunctor {
+            class AddIncomingFunctor : public TemplateAbstractSequenceFunctor<ActivityEdge,ActivityNode> {
                 public:
-                    AddIncomingFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddIncomingFunctor(ActivityNode* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(ActivityEdge& el) const override;
             };
-            class AddOutgoingFunctor : public AbstractSequenceFunctor {
+            class AddOutgoingFunctor : public TemplateAbstractSequenceFunctor<ActivityEdge,ActivityNode> {
                 public:
-                    AddOutgoingFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddOutgoingFunctor(ActivityNode* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(ActivityEdge& el) const override;
             };
-            class CheckIncomingFunctor : public AbstractSequenceFunctor {
+            class CheckIncomingFunctor : public TemplateAbstractSequenceFunctor<ActivityEdge,ActivityNode> {
                 public:
-                    CheckIncomingFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    CheckIncomingFunctor(ActivityNode* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(ActivityEdge& el) const override;
             };
-            class CheckOutgoingFunctor : public AbstractSequenceFunctor {
+            class CheckOutgoingFunctor : public TemplateAbstractSequenceFunctor<ActivityEdge,ActivityNode> {
                 public:
-                    CheckOutgoingFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    CheckOutgoingFunctor(ActivityNode* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(ActivityEdge& el) const override;
             };
         public:
             ActivityNode();

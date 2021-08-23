@@ -14,25 +14,25 @@ namespace UML{
         protected:
             Sequence<NamedElement> m_members = Sequence<NamedElement>(this);
             Sequence<NamedElement> m_ownedMembers = Sequence<NamedElement>(this);
-            class AddMemberFunctor : public AbstractSequenceFunctor {
+            class AddMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Namespace> {
                 public:
-                    AddMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddMemberFunctor(Namespace* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(NamedElement& el) const override;
             };
-            class RemoveMemberFunctor : public AbstractSequenceFunctor {
+            class RemoveMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Namespace> {
                 public:
-                    RemoveMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveMemberFunctor(Namespace* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(NamedElement& el) const override;
             };
-            class AddOwnedMemberFunctor : public AbstractSequenceFunctor {
+            class AddOwnedMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Namespace> {
                 public:
-                    AddOwnedMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddOwnedMemberFunctor(Namespace* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(NamedElement& el) const override;
             };
-            class RemoveOwnedMemberFunctor : public AbstractSequenceFunctor {
+            class RemoveOwnedMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Namespace> {
                 public:
-                    RemoveOwnedMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveOwnedMemberFunctor(Namespace* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(NamedElement& el) const override;
             };
             void setManager(UmlManager* manager) override;
             void restoreReleased(ID id, Element* released) override;

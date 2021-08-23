@@ -10,25 +10,25 @@ namespace UML {
             Sequence<Property> m_ownedAttribute;
             Sequence<Operation> m_ownedOperation;
             void setManager(UmlManager* manager) override;
-            class AddOwnedAttributeFunctor : public AbstractSequenceFunctor {
+            class AddOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,DataType> {
                 public:
-                    AddOwnedAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddOwnedAttributeFunctor(DataType* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class RemoveOwnedAttributeFunctor : public AbstractSequenceFunctor {
+            class RemoveOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,DataType> {
                 public:
-                    RemoveOwnedAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveOwnedAttributeFunctor(DataType* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class AddOwnedOperationFunctor : public AbstractSequenceFunctor {
+            class AddOwnedOperationFunctor : public TemplateAbstractSequenceFunctor<Operation,DataType> {
                 public:
-                    AddOwnedOperationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddOwnedOperationFunctor(DataType* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Operation& el) const override;
             };
-            class RemoveOwnedOperationFunctor : public AbstractSequenceFunctor {
+            class RemoveOwnedOperationFunctor : public TemplateAbstractSequenceFunctor<Operation,DataType> {
                 public:
-                    RemoveOwnedOperationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveOwnedOperationFunctor(DataType* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Operation& el) const override;
             };
         public:
             DataType();

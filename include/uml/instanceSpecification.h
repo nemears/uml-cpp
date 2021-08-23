@@ -19,15 +19,15 @@ namespace UML{
             Sequence<Slot> m_slots;
             ID m_specificationID;
             ValueSpecification* m_specificationPtr;
-            class AddSlotFunctor : public AbstractSequenceFunctor {
+            class AddSlotFunctor : public TemplateAbstractSequenceFunctor<Slot,InstanceSpecification> {
                 public:
-                    AddSlotFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddSlotFunctor(InstanceSpecification* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Slot& el) const override;
             };
-            class RemoveSlotFunctor : public AbstractSequenceFunctor {
+            class RemoveSlotFunctor : public TemplateAbstractSequenceFunctor<Slot,InstanceSpecification> {
                 public:
-                    RemoveSlotFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveSlotFunctor(InstanceSpecification* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Slot& el) const override;
             };
             void setManager(UmlManager* manager) override;
             void restoreReleased(ID id, Element* released) override;

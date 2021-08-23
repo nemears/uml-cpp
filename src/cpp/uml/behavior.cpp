@@ -6,24 +6,24 @@
 
 using namespace UML;
 
-void Behavior::AddParameterFunctor::operator()(Element& el) const {
+void Behavior::AddParameterFunctor::operator()(Parameter& el) const {
     if (!m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalAdd(el);
     }
 
-    if (dynamic_cast<Behavior*>(m_el)->getSpecification()) {
-        dynamic_cast<Parameter&>(el).setOperation(dynamic_cast<Operation*>(dynamic_cast<Behavior*>(m_el)->getSpecification()));
+    if (m_el->getSpecification()) {
+        el.setOperation(dynamic_cast<Operation*>(m_el->getSpecification()));
     }
 }
 
-void Behavior::RemoveParameterFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Behavior*>(m_el)->getSpecification()) {
-        if (dynamic_cast<Parameter&>(el).getOperation() == dynamic_cast<Behavior*>(m_el)->getSpecification()) {
+void Behavior::RemoveParameterFunctor::operator()(Parameter& el) const {
+    if (m_el->getSpecification()) {
+        if (el.getOperation() == m_el->getSpecification()) {
 
             bool usedElsewhere = false;
 
             // note slow performance for removing
-            for (auto& method : dynamic_cast<Operation*>(dynamic_cast<Parameter&>(el).getOperation())->getMethods()) {
+            for (auto& method : dynamic_cast<Operation*>(el.getOperation())->getMethods()) {
                 if (method.getID() != m_el->getID()) {
                     if (method.getParameters().count(el.getID())) {
                         usedElsewhere = true;
@@ -32,7 +32,7 @@ void Behavior::RemoveParameterFunctor::operator()(Element& el) const {
             }
 
             if (!usedElsewhere) {
-                dynamic_cast<Parameter&>(el).setOperation(0);
+                el.setOperation(0);
             }
         }
     }

@@ -9,15 +9,15 @@ namespace UML {
         protected:
             Sequence<ActivityNode> m_nodes;
             Sequence<ActivityEdge> m_edges;
-            class AddNodeFunctor : public AbstractSequenceFunctor {
+            class AddNodeFunctor : public TemplateAbstractSequenceFunctor<ActivityNode,Activity> {
                 public:
-                    AddNodeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddNodeFunctor(Activity* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(ActivityNode& el) const override;
             };
-            class AddEdgeFunctor : public AbstractSequenceFunctor {
+            class AddEdgeFunctor : public TemplateAbstractSequenceFunctor<ActivityEdge,Activity> {
                 public:
-                    AddEdgeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddEdgeFunctor(Activity* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(ActivityEdge& el) const override;
             };
         public:
             Activity();

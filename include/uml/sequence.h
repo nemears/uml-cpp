@@ -10,14 +10,16 @@ namespace UML {
         class ParserMetaData;
     }
 
-    class AbstractSequenceFunctor {
-        protected:
-            Element* m_el;
+    template <class T = Element> class AbstractSequenceFunctor {
         public:
-            AbstractSequenceFunctor(Element* me) {
-                m_el = me;
-            };
-            virtual void operator()(Element& el) const = 0;
+            virtual void operator()(T& el) const = 0;
+    };
+
+    template <class T = Element, class U = Element> class TemplateAbstractSequenceFunctor : public AbstractSequenceFunctor<T> {
+        protected:
+            U* m_el;
+        public:
+            TemplateAbstractSequenceFunctor(U* me) : m_el(me) {};
     };
 
     class Property;
@@ -163,10 +165,10 @@ namespace UML {
             std::unordered_map<std::string, ID> m_names;
 
             // Functors
-            std::vector<AbstractSequenceFunctor*> addProcedures;
-            std::vector<AbstractSequenceFunctor*> addChecks;
-            std::vector<AbstractSequenceFunctor*> removeProcedures;
-            std::vector<AbstractSequenceFunctor*> removeChecks;
+            std::vector<AbstractSequenceFunctor<T>*> addProcedures;
+            std::vector<AbstractSequenceFunctor<T>*> addChecks;
+            std::vector<AbstractSequenceFunctor<T>*> removeProcedures;
+            std::vector<AbstractSequenceFunctor<T>*> removeChecks;
 
             void reindex(ID oldID, ID newID) {
 

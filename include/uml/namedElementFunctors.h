@@ -5,15 +5,15 @@
 #include  "namedElement.h"
 
 namespace UML {
-    class AddMemberNamespaceFunctor : public AbstractSequenceFunctor {
+    class AddMemberNamespaceFunctor : public TemplateAbstractSequenceFunctor<Namespace,NamedElement> {
         public:
-            AddMemberNamespaceFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-            void operator()(Element& el) const override;
+            AddMemberNamespaceFunctor(NamedElement* me) : TemplateAbstractSequenceFunctor(me) {};
+            void operator()(Namespace& el) const override;
     };
-    class RemoveMemberNamespaceFunctor : public AbstractSequenceFunctor {
+    class RemoveMemberNamespaceFunctor : public TemplateAbstractSequenceFunctor<Namespace,NamedElement> {
         public:
-            RemoveMemberNamespaceFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-            void operator()(Element& el) const override;
+            RemoveMemberNamespaceFunctor(NamedElement* me) : TemplateAbstractSequenceFunctor(me) {};
+            void operator()(Namespace& el) const override;
     };
 }
 

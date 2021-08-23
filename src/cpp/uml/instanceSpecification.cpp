@@ -6,13 +6,13 @@
 
 using namespace UML;
 
-void InstanceSpecification::AddSlotFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Slot&>(el).getOwningInstance()) {
-        if (dynamic_cast<Slot&>(el).getOwningInstance()->getID() != m_el->getID()) {
-            dynamic_cast<Slot&>(el).setOwningInstance(dynamic_cast<InstanceSpecification*>(m_el));
+void InstanceSpecification::AddSlotFunctor::operator()(Slot& el) const {
+    if (el.getOwningInstance()) {
+        if (el.getOwningInstance()->getID() != m_el->getID()) {
+            el.setOwningInstance(m_el);
         }
     } else {
-        dynamic_cast<Slot&>(el).setOwningInstance(dynamic_cast<InstanceSpecification*>(m_el));
+        el.setOwningInstance(m_el);
     }
 
     if (!m_el->getOwnedElements().count(el.getID())) {
@@ -20,13 +20,13 @@ void InstanceSpecification::AddSlotFunctor::operator()(Element& el) const {
     }
 }
 
-void InstanceSpecification::RemoveSlotFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Slot&>(el).getOwningInstance() == m_el) {
-        dynamic_cast<Slot&>(el).setOwningInstance(0);
+void InstanceSpecification::RemoveSlotFunctor::operator()(Slot& el) const {
+    if (el.getOwningInstance() == m_el) {
+        el.setOwningInstance(0);
     }
 
-    if (dynamic_cast<InstanceSpecification*>(m_el)->getOwnedElements().count(el.getID())) {
-        dynamic_cast<InstanceSpecification*>(m_el)->getOwnedElements().internalRemove(el);
+    if (m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalRemove(el);
     }
 }
 

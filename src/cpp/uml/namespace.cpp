@@ -2,54 +2,54 @@
 
 using namespace UML;
 
-void Namespace::AddMemberFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<NamedElement&>(el).getMemberNamespace().count(m_el->getID())) {
-        dynamic_cast<NamedElement&>(el).getMemberNamespace().add(*dynamic_cast<Namespace*>(m_el));
+void Namespace::AddMemberFunctor::operator()(NamedElement& el) const {
+    if (!el.getMemberNamespace().count(m_el->getID())) {
+        el.getMemberNamespace().add(*m_el);
     }
 
-    m_el->as<Namespace>().getMembers().updateCopiedSequenceAddedTo<Namespace>(el.as<NamedElement>(), &Namespace::getMembers);
+    m_el->getMembers().updateCopiedSequenceAddedTo<Namespace>(el, &Namespace::getMembers);
 }
 
-void Namespace::RemoveMemberFunctor::operator()(Element& el) const {
-    if (dynamic_cast<NamedElement&>(el).getMemberNamespace().count(m_el->getID())) {
-        dynamic_cast<NamedElement&>(el).getMemberNamespace().remove(*dynamic_cast<Namespace*>(m_el));
+void Namespace::RemoveMemberFunctor::operator()(NamedElement& el) const {
+    if (el.getMemberNamespace().count(m_el->getID())) {
+        el.getMemberNamespace().remove(*m_el);
     }
 
-    if (dynamic_cast<Namespace*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<Namespace*>(m_el)->getOwnedMembers().internalRemove(dynamic_cast<NamedElement&>(el));
+    if (m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().internalRemove(el);
     }
 
-    m_el->as<Namespace>().getMembers().updateCopiedSequenceRemovedFrom<Namespace>(el.as<NamedElement>(), &Namespace::getMembers);
+    m_el->getMembers().updateCopiedSequenceRemovedFrom<Namespace>(el, &Namespace::getMembers);
 }
 
-void Namespace::AddOwnedMemberFunctor::operator()(Element& el) const {
+void Namespace::AddOwnedMemberFunctor::operator()(NamedElement& el) const {
     if (!m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalAdd(el);
     }
 
-    if (!dynamic_cast<Namespace*>(m_el)->getMembers().count(el.getID())) {
-        dynamic_cast<Namespace*>(m_el)->getMembers().add(dynamic_cast<NamedElement&>(el));
+    if (!m_el->getMembers().count(el.getID())) {
+        m_el->getMembers().add(el);
     }
 
-    dynamic_cast<NamedElement&>(el).setNamespace(dynamic_cast<Namespace*>(m_el));
+    el.setNamespace(m_el);
 
-    m_el->as<Namespace>().getOwnedMembers().updateCopiedSequenceAddedTo<Namespace>(el.as<NamedElement>(), &Namespace::getOwnedMembers);
+    m_el->getOwnedMembers().updateCopiedSequenceAddedTo<Namespace>(el, &Namespace::getOwnedMembers);
 }
 
-void Namespace::RemoveOwnedMemberFunctor::operator()(Element& el) const {
+void Namespace::RemoveOwnedMemberFunctor::operator()(NamedElement& el) const {
     if (m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalRemove(el);
     }
 
-    if (m_el->as<Namespace>().getMembers().count(el.getID())) {
-        m_el->as<Namespace>().getMembers().remove(el.as<NamedElement>());
+    if (m_el->getMembers().count(el.getID())) {
+        m_el->getMembers().remove(el);
     }
 
-    if (dynamic_cast<NamedElement&>(el).getNamespace() == m_el) {
-        dynamic_cast<NamedElement&>(el).setNamespace(0);
+    if (el.getNamespace() == m_el) {
+        el.setNamespace(0);
     }
 
-    m_el->as<Namespace>().getOwnedMembers().updateCopiedSequenceRemovedFrom<Namespace>(el.as<NamedElement>(), &Namespace::getOwnedMembers);
+    m_el->getOwnedMembers().updateCopiedSequenceRemovedFrom<Namespace>(el, &Namespace::getOwnedMembers);
 }
 
 void Namespace::setManager(UmlManager* manager) {

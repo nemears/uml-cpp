@@ -3,23 +3,23 @@
 
 using namespace UML;
 
-void Enumeration::AddOwnedLiteralFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<Enumeration*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<Enumeration*>(m_el)->getOwnedMembers().add(dynamic_cast<EnumerationLiteral&>(el));
+void Enumeration::AddOwnedLiteralFunctor::operator()(EnumerationLiteral& el) const {
+    if (!m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().add(el);
     }
 
-    if (dynamic_cast<EnumerationLiteral&>(el).getEnumeration() != m_el) {
-        dynamic_cast<EnumerationLiteral&>(el).setEnumeration(dynamic_cast<Enumeration*>(m_el));
+    if (el.getEnumeration() != m_el) {
+        el.setEnumeration(m_el);
     }
 }
 
-void Enumeration::RemoveOwnedLiteralFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Enumeration*>(m_el)->getMembers().count(el.getID())) {
-        dynamic_cast<Enumeration*>(m_el)->getMembers().remove(dynamic_cast<EnumerationLiteral&>(el));
+void Enumeration::RemoveOwnedLiteralFunctor::operator()(EnumerationLiteral& el) const {
+    if (m_el->getMembers().count(el.getID())) {
+        m_el->getMembers().remove(el);
     }
 
-    if (dynamic_cast<EnumerationLiteral&>(el).getEnumeration() == m_el) {
-        dynamic_cast<EnumerationLiteral&>(el).setEnumeration(0);
+    if (el.getEnumeration() == m_el) {
+        el.setEnumeration(0);
     }
 }
 

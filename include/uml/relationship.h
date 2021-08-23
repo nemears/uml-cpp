@@ -9,19 +9,19 @@ namespace UML {
             Sequence<> m_relatedElements = Sequence<>(this);
             void reindexID(ID oldID, ID newID) override;
 
-            class AddRelationshipFunctor : public AbstractSequenceFunctor {
+            class AddRelationshipFunctor : public TemplateAbstractSequenceFunctor<Element,Relationship> {
                 public:
-                    AddRelationshipFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    AddRelationshipFunctor(Relationship* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
-            class CheckRelatedElementsFunctor : public AbstractSequenceFunctor {
+            class CheckRelatedElementsFunctor : public TemplateAbstractSequenceFunctor<Element,Relationship> {
                 public:
-                    CheckRelatedElementsFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    CheckRelatedElementsFunctor(Relationship* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
-            class RemoveRelatedElementsFunctor : public AbstractSequenceFunctor {
+            class RemoveRelatedElementsFunctor : public TemplateAbstractSequenceFunctor<Element,Relationship> {
                 public:
-                    RemoveRelatedElementsFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    RemoveRelatedElementsFunctor(Relationship* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
             void setManager(UmlManager* manager) override;

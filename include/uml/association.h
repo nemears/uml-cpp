@@ -15,35 +15,35 @@ namespace UML {
             void reindexID(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             void setManager(UmlManager* manager) override;
-            class AddMemberEndFunctor : public AbstractSequenceFunctor {
+            class AddMemberEndFunctor : public TemplateAbstractSequenceFunctor<Property,Association> {
                 public:
-                    AddMemberEndFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddMemberEndFunctor(Association* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class RemoveMemberEndFunctor : public AbstractSequenceFunctor {
+            class RemoveMemberEndFunctor : public TemplateAbstractSequenceFunctor<Property,Association> {
                 public:
-                    RemoveMemberEndFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveMemberEndFunctor(Association* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class AddOwnedEndFunctor : public AbstractSequenceFunctor {
+            class AddOwnedEndFunctor : public TemplateAbstractSequenceFunctor<Property,Association> {
                 public:
-                    AddOwnedEndFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddOwnedEndFunctor(Association* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class RemoveOwnedEndFunctor : public AbstractSequenceFunctor {
+            class RemoveOwnedEndFunctor : public TemplateAbstractSequenceFunctor<Property,Association> {
                 public:
-                    RemoveOwnedEndFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveOwnedEndFunctor(Association* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class AddNavigableOwnedEndFunctor : public AbstractSequenceFunctor {
+            class AddNavigableOwnedEndFunctor : public TemplateAbstractSequenceFunctor<Property,Association> {
                 public:
-                    AddNavigableOwnedEndFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddNavigableOwnedEndFunctor(Association* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class RemoveNavigableOwnedEndFunctor : public AbstractSequenceFunctor {
+            class RemoveNavigableOwnedEndFunctor : public TemplateAbstractSequenceFunctor<Property,Association> {
                 public:
-                    RemoveNavigableOwnedEndFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveNavigableOwnedEndFunctor(Association* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
         public:
             /**

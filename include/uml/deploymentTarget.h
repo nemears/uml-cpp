@@ -12,15 +12,15 @@ namespace UML {
         friend class UmlManager;
         private:
             Sequence<Deployment> m_deployments;
-            class AddDeploymentFunctor : public AbstractSequenceFunctor {
+            class AddDeploymentFunctor : public TemplateAbstractSequenceFunctor<Deployment,DeploymentTarget> {
                 public:
-                    AddDeploymentFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddDeploymentFunctor(DeploymentTarget* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Deployment& el) const override;
             };
-            class RemoveDeploymentFunctor : public AbstractSequenceFunctor {
+            class RemoveDeploymentFunctor : public TemplateAbstractSequenceFunctor<Deployment,DeploymentTarget> {
                 public:
-                    RemoveDeploymentFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveDeploymentFunctor(DeploymentTarget* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Deployment& el) const override;
             };
             void setManager(UmlManager* manager) override;
         public:

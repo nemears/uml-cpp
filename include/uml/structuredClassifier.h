@@ -12,25 +12,25 @@ namespace UML {
             Sequence<Property> m_ownedAttributes = Sequence<Property>(this);
             Sequence<ConnectableElement> m_role = Sequence<ConnectableElement>(this);
             Sequence<Property> m_parts = Sequence<Property>(this);
-            class AddOwnedAttributeFunctor : public AbstractSequenceFunctor {
+            class AddOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,StructuredClassifier> {
                 public:
-                    AddOwnedAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddOwnedAttributeFunctor(StructuredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class RemoveOwnedAttributeFunctor : public AbstractSequenceFunctor {
+            class RemoveOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,StructuredClassifier> {
                 public:
-                    RemoveOwnedAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveOwnedAttributeFunctor(StructuredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class AddRoleFunctor : public AbstractSequenceFunctor {
+            class AddRoleFunctor : public TemplateAbstractSequenceFunctor<ConnectableElement,StructuredClassifier> {
                 public:
-                    AddRoleFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddRoleFunctor(StructuredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(ConnectableElement& el) const override;
             };
-            class RemoveRoleFunctor : public AbstractSequenceFunctor {
+            class RemoveRoleFunctor : public TemplateAbstractSequenceFunctor<ConnectableElement,StructuredClassifier> {
                 public:
-                    RemoveRoleFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveRoleFunctor(StructuredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(ConnectableElement& el) const override;
             };
             void setManager(UmlManager* manager) override;
             void restoreReleased(ID id, Element* released) override;

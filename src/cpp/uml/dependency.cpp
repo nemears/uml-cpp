@@ -2,32 +2,32 @@
 
 using namespace UML;
 
-void Dependency::AddClientFunctor::operator()(Element& el) const {
-    if (!m_el->as<Dependency>().getSources().count(el.getID())) {
-        m_el->as<Dependency>().getSources().add(el.as<NamedElement>());
+void Dependency::AddClientFunctor::operator()(NamedElement& el) const {
+    if (!m_el->getSources().count(el.getID())) {
+        m_el->getSources().add(el);
     }
-    m_el->as<Dependency>().getSupplier().updateCopiedSequenceAddedTo<Dependency>(el.as<NamedElement>(), &Dependency::getSupplier);
+    m_el->getSupplier().updateCopiedSequenceAddedTo<Dependency>(el, &Dependency::getSupplier);
 }
 
-void Dependency::RemoveClientFunctor::operator()(Element& el) const {
-    if (m_el->as<Dependency>().getSources().count(el.getID())) {
-        m_el->as<Dependency>().getSources().remove(el.as<NamedElement>());
+void Dependency::RemoveClientFunctor::operator()(NamedElement& el) const {
+    if (m_el->getSources().count(el.getID())) {
+        m_el->getSources().remove(el);
     }
-    m_el->as<Dependency>().getSupplier().updateCopiedSequenceRemovedFrom<Dependency>(el.as<NamedElement>(), &Dependency::getSupplier);
+    m_el->getSupplier().updateCopiedSequenceRemovedFrom<Dependency>(el, &Dependency::getSupplier);
 }
 
-void Dependency::AddSupplierFunctor::operator()(Element& el) const {
-    if (!m_el->as<Dependency>().getTargets().count(el.getID())) {
-        m_el->as<Dependency>().getTargets().add(el.as<NamedElement>());
+void Dependency::AddSupplierFunctor::operator()(NamedElement& el) const {
+    if (!m_el->getTargets().count(el.getID())) {
+        m_el->getTargets().add(el);
     }
-    m_el->as<Dependency>().getClient().updateCopiedSequenceAddedTo<Dependency>(el.as<NamedElement>(), &Dependency::getClient);
+    m_el->getClient().updateCopiedSequenceAddedTo<Dependency>(el, &Dependency::getClient);
 }
 
-void Dependency::RemoveSupplierFunctor::operator()(Element& el) const {
-    if (m_el->as<Dependency>().getTargets().count(el.getID())) {
-        m_el->as<Dependency>().getTargets().remove(el.as<NamedElement>());
+void Dependency::RemoveSupplierFunctor::operator()(NamedElement& el) const {
+    if (m_el->getTargets().count(el.getID())) {
+        m_el->getTargets().remove(el);
     }
-    m_el->as<Dependency>().getClient().updateCopiedSequenceRemovedFrom<Dependency>(el.as<NamedElement>(), &Dependency::getClient);
+    m_el->getClient().updateCopiedSequenceRemovedFrom<Dependency>(el, &Dependency::getClient);
 }
 
 void Dependency::setManager(UmlManager* manager) {

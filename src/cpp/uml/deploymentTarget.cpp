@@ -3,22 +3,22 @@
 
 using namespace UML;
 
-void DeploymentTarget::AddDeploymentFunctor::operator()(Element& el) const {
-    if (!m_el->as<DeploymentTarget>().getOwnedElements().count(el.getID())) {
-        m_el->as<DeploymentTarget>().getOwnedElements().internalAdd(el);
+void DeploymentTarget::AddDeploymentFunctor::operator()(Deployment& el) const {
+    if (!m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalAdd(el);
     }
 
-    el.as<Deployment>().setLocation(&m_el->as<DeploymentTarget>());
+    el.setLocation(m_el);
 }
 
-void DeploymentTarget::RemoveDeploymentFunctor::operator()(Element& el) const {
-    if (m_el->as<DeploymentTarget>().getOwnedElements().count(el.getID())) {
-        m_el->as<DeploymentTarget>().getOwnedElements().internalRemove(el);
+void DeploymentTarget::RemoveDeploymentFunctor::operator()(Deployment& el) const {
+    if (m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalRemove(el);
     }
 
-    if (el.as<Deployment>().getLocation()) {
-        if (el.as<Deployment>().getLocation()->getID() == m_el->getID()) {
-            el.as<Deployment>().setLocation(0);
+    if (el.getLocation()) {
+        if (el.getLocation()->getID() == m_el->getID()) {
+            el.setLocation(0);
         }
     }
 }

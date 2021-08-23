@@ -3,7 +3,7 @@
 using namespace std;
 using namespace UML;
 
-void Expression::AddOperandFunctor::operator()(Element& el) const {
+void Expression::AddOperandFunctor::operator()(ValueSpecification& el) const {
     if (!m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalAdd(el);
     }

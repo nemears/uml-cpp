@@ -6,80 +6,82 @@
 #include "umlManager.h"
 
 namespace UML {
-    class SetOwnerFunctor : public AbstractSequenceFunctor {
+    class SetOwnerFunctor : public TemplateAbstractSequenceFunctor<Element,Element> {
         public:
-            SetOwnerFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+            SetOwnerFunctor(Element* me) : TemplateAbstractSequenceFunctor(me) {};
             void operator()(Element& el) const override;
     };
 
-    class RemoveOwnerFunctor : public AbstractSequenceFunctor {
+    class RemoveOwnerFunctor : public TemplateAbstractSequenceFunctor<Element,Element> {
         public:
-            RemoveOwnerFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+            RemoveOwnerFunctor(Element* me) : TemplateAbstractSequenceFunctor(me) {};
             void operator()(Element& el) const override;
     };
 
-    class AddRelationshipFunctor : public AbstractSequenceFunctor {
+    class AddRelationshipFunctor : public TemplateAbstractSequenceFunctor<Relationship,Element> {
         public:
-            AddRelationshipFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-            void operator()(Element& el) const override;
+            AddRelationshipFunctor(Element* me) : TemplateAbstractSequenceFunctor(me) {};
+            void operator()(Relationship& el) const override;
     };
 
-    class RemoveRelationshipFunctor : public AbstractSequenceFunctor {
+    class RemoveRelationshipFunctor : public TemplateAbstractSequenceFunctor<Relationship,Element> {
         public:
-            RemoveRelationshipFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-            void operator()(Element& el) const override;
+            RemoveRelationshipFunctor(Element* me) : TemplateAbstractSequenceFunctor(me) {};
+            void operator()(Relationship& el) const override;
     };
 
-    class ReadOnlySequenceFunctor : public AbstractSequenceFunctor {
+    template <class T = Element> class ReadOnlySequenceFunctor : public TemplateAbstractSequenceFunctor<T,Element> {
         private:
             std::string m_name;
         public:
-            ReadOnlySequenceFunctor(Element* me, std::string sequenceName) : AbstractSequenceFunctor(me) {
+            ReadOnlySequenceFunctor(Element* me, std::string sequenceName) : TemplateAbstractSequenceFunctor(me) {
                 m_name = sequenceName;
             };
-            void operator()(Element& el) const override;
+            void operator()(T& el) const override {
+                throw ReadOnlySequenceException(m_el->getID().string(), m_name);
+            };
     };
 
-    class AddDirectedRelationshipFunctor : public AbstractSequenceFunctor {
+    class AddDirectedRelationshipFunctor : public TemplateAbstractSequenceFunctor<DirectedRelationship,Element> {
         public:
-            AddDirectedRelationshipFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-            void operator()(Element& el) const override;
+            AddDirectedRelationshipFunctor(Element* me) : TemplateAbstractSequenceFunctor(me) {};
+            void operator()(DirectedRelationship& el) const override;
     };
 
-    class RemoveDirectedRelationshipFunctor : public AbstractSequenceFunctor {
+    class RemoveDirectedRelationshipFunctor : public TemplateAbstractSequenceFunctor<DirectedRelationship,Element> {
         public:
-            RemoveDirectedRelationshipFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-            void operator()(Element& el) const override;
+            RemoveDirectedRelationshipFunctor(Element* me) : TemplateAbstractSequenceFunctor(me) {};
+            void operator()(DirectedRelationship& el) const override;
     };
 
-    class AddOwnedCommentFunctor : public AbstractSequenceFunctor {
+    class AddOwnedCommentFunctor : public TemplateAbstractSequenceFunctor<Comment,Element> {
         public:
-            AddOwnedCommentFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-            void operator()(Element& el) const override;
+            AddOwnedCommentFunctor(Element* me) : TemplateAbstractSequenceFunctor(me) {};
+            void operator()(Comment& el) const override;
     };
 
-    class RemoveOwnedCommentFunctor : public AbstractSequenceFunctor {
+    class RemoveOwnedCommentFunctor : public TemplateAbstractSequenceFunctor<Comment,Element> {
         public:
-            RemoveOwnedCommentFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-            void operator()(Element& el) const override;
+            RemoveOwnedCommentFunctor(Element* me) : TemplateAbstractSequenceFunctor(me) {};
+            void operator()(Comment& el) const override;
     };
 
-    class AddAppliedStereotypeFunctor : public AbstractSequenceFunctor {
+    class AddAppliedStereotypeFunctor : public TemplateAbstractSequenceFunctor<InstanceSpecification,Element> {
         public:
-            AddAppliedStereotypeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-            void operator()(Element& el) const override;
+            AddAppliedStereotypeFunctor(Element* me) : TemplateAbstractSequenceFunctor(me) {};
+            void operator()(InstanceSpecification& el) const override;
     };
 
-    class RemoveAppliedStereotypeFunctor : public AbstractSequenceFunctor {
+    class RemoveAppliedStereotypeFunctor : public TemplateAbstractSequenceFunctor<InstanceSpecification,Element> {
         public:
-            RemoveAppliedStereotypeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-            void operator()(Element& el) const override;
+            RemoveAppliedStereotypeFunctor(Element* me) : TemplateAbstractSequenceFunctor(me) {};
+            void operator()(InstanceSpecification& el) const override;
     };
 
-    class CheckAppliedStereotypeFunctor : public AbstractSequenceFunctor {
+    class CheckAppliedStereotypeFunctor : public TemplateAbstractSequenceFunctor<InstanceSpecification,Element> {
         public:
-            CheckAppliedStereotypeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-            void operator()(Element& el) const override;
+            CheckAppliedStereotypeFunctor(Element* me) : TemplateAbstractSequenceFunctor(me) {};
+            void operator()(InstanceSpecification& el) const override;
     };
 
     class InvalidAppliedStereotypeException : public std::exception {

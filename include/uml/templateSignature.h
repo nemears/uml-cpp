@@ -17,15 +17,15 @@ namespace UML {
             Sequence<TemplateParameter> m_ownedParameter;
             Sequence<TemplateParameter> m_parameter;
 
-            class AddOwnedParameterFunctor : public AbstractSequenceFunctor {
+            class AddOwnedParameterFunctor : public TemplateAbstractSequenceFunctor<TemplateParameter,TemplateSignature> {
                 public:
-                    AddOwnedParameterFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddOwnedParameterFunctor(TemplateSignature* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(TemplateParameter& el) const override;
             };
-            class RemoveOwnedParameterFunctor : public AbstractSequenceFunctor {
+            class RemoveOwnedParameterFunctor : public TemplateAbstractSequenceFunctor<TemplateParameter,TemplateSignature> {
                 public:
-                    RemoveOwnedParameterFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveOwnedParameterFunctor(TemplateSignature* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(TemplateParameter& el) const override;
             };
             void setManager(UmlManager* manager) override;
         public:

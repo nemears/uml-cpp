@@ -17,15 +17,15 @@ namespace UML {
             TemplateSignature* m_signaturePtr;
             Sequence<TemplateParameterSubstitution> m_parameterSubstitution;
 
-            class AddParameterSubstitutionFunctor : public AbstractSequenceFunctor {
+            class AddParameterSubstitutionFunctor : public TemplateAbstractSequenceFunctor<TemplateParameterSubstitution,TemplateBinding> {
                 public:
-                    AddParameterSubstitutionFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddParameterSubstitutionFunctor(TemplateBinding* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(TemplateParameterSubstitution& el) const override;
             };
-            class RemoveParameterSubstitutionFunctor : public AbstractSequenceFunctor {
+            class RemoveParameterSubstitutionFunctor : public TemplateAbstractSequenceFunctor<TemplateParameterSubstitution,TemplateBinding> {
                 public:
-                    RemoveParameterSubstitutionFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveParameterSubstitutionFunctor(TemplateBinding* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(TemplateParameterSubstitution& el) const override;
             };
             void setManager(UmlManager* manager) override;
         public:

@@ -11,34 +11,34 @@ namespace UML {
             Sequence<> m_sources = Sequence<>(this);
 
             // functor triggered on getTargets().add(el) and getSources().add(el)
-            class AddRelatedElementFunctor : public AbstractSequenceFunctor {
+            class AddRelatedElementFunctor : public TemplateAbstractSequenceFunctor<Element,DirectedRelationship> {
                 public:
-                    AddRelatedElementFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    AddRelatedElementFunctor(DirectedRelationship* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
-            class RemoveRelatedElementFunctor : public AbstractSequenceFunctor {
+            class RemoveRelatedElementFunctor : public TemplateAbstractSequenceFunctor<Element,DirectedRelationship> {
                 public:
-                    RemoveRelatedElementFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    RemoveRelatedElementFunctor(DirectedRelationship* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
-            class AddSourcesFunctor : public AbstractSequenceFunctor {
+            class AddSourcesFunctor : public TemplateAbstractSequenceFunctor<Element,DirectedRelationship> {
                 public:
-                    AddSourcesFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    AddSourcesFunctor(DirectedRelationship* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
-            class RemoveSourcesFunctor : public AbstractSequenceFunctor {
+            class RemoveSourcesFunctor : public TemplateAbstractSequenceFunctor<Element,DirectedRelationship> {
                 public:
-                    RemoveSourcesFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    RemoveSourcesFunctor(DirectedRelationship* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
-            class AddTargetsFunctor : public AbstractSequenceFunctor {
+            class AddTargetsFunctor : public TemplateAbstractSequenceFunctor<Element,DirectedRelationship> {
                 public:
-                    AddTargetsFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    AddTargetsFunctor(DirectedRelationship* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
-            class RemoveTargetsFunctor : public AbstractSequenceFunctor {
+            class RemoveTargetsFunctor : public TemplateAbstractSequenceFunctor<Element,DirectedRelationship> {
                 public:
-                    RemoveTargetsFunctor(Element* me) : AbstractSequenceFunctor(me) {};
+                    RemoveTargetsFunctor(DirectedRelationship* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
             void setManager(UmlManager* manager) override;

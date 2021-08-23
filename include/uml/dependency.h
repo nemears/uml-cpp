@@ -10,25 +10,25 @@ namespace UML {
         protected:
             Sequence<NamedElement> m_client = Sequence<NamedElement>(this);
             Sequence<NamedElement> m_supplier = Sequence<NamedElement>(this);
-            class AddClientFunctor : public AbstractSequenceFunctor {
+            class AddClientFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Dependency> {
                 public:
-                    AddClientFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddClientFunctor(Dependency* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(NamedElement& el) const override;
             };
-            class RemoveClientFunctor : public AbstractSequenceFunctor {
+            class RemoveClientFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Dependency> {
                 public:
-                    RemoveClientFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveClientFunctor(Dependency* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(NamedElement& el) const override;
             };
-            class AddSupplierFunctor : public AbstractSequenceFunctor {
+            class AddSupplierFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Dependency> {
                 public:
-                    AddSupplierFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddSupplierFunctor(Dependency* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(NamedElement& el) const override;
             };
-            class RemoveSupplierFunctor : public AbstractSequenceFunctor {
+            class RemoveSupplierFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Dependency> {
                 public:
-                    RemoveSupplierFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveSupplierFunctor(Dependency* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(NamedElement& el) const override;
             };
             void setManager(UmlManager* manager) override;
             void reindexID(ID oldID, ID newID) override;

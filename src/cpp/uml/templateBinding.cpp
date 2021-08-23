@@ -6,9 +6,9 @@
 
 using namespace UML;
 
-void TemplateBinding::AddParameterSubstitutionFunctor::operator()(Element& el) const {
-    if(dynamic_cast<TemplateParameterSubstitution&>(el).getTemplateBinding() != m_el) {
-        dynamic_cast<TemplateParameterSubstitution&>(el).setTemplateBinding(dynamic_cast<TemplateBinding*>(m_el));
+void TemplateBinding::AddParameterSubstitutionFunctor::operator()(TemplateParameterSubstitution& el) const {
+    if(el.getTemplateBinding() != m_el) {
+        el.setTemplateBinding(m_el);
     }
 
     if (!m_el->getOwnedElements().count(el.getID())) {
@@ -16,9 +16,9 @@ void TemplateBinding::AddParameterSubstitutionFunctor::operator()(Element& el) c
     }
 }
 
-void TemplateBinding::RemoveParameterSubstitutionFunctor::operator()(Element& el) const {
-    if(dynamic_cast<TemplateParameterSubstitution&>(el).getTemplateBinding() == m_el) {
-        dynamic_cast<TemplateParameterSubstitution&>(el).setTemplateBinding(0);
+void TemplateBinding::RemoveParameterSubstitutionFunctor::operator()(TemplateParameterSubstitution& el) const {
+    if(el.getTemplateBinding() == m_el) {
+        el.setTemplateBinding(0);
     }
 
     if (m_el->getOwnedElements().count(el.getID())) {

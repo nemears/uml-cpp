@@ -12,30 +12,30 @@ namespace UML {
             Sequence<Parameter> m_ownedParameters;
             bool m_returnSpecified = false;
             void setManager(UmlManager* manager) override;
-            class AddMethodFunctor : public AbstractSequenceFunctor {
+            class AddMethodFunctor : public TemplateAbstractSequenceFunctor<Behavior,BehavioralFeature> {
                 public:
-                    AddMethodFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddMethodFunctor(BehavioralFeature* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Behavior& el) const override;
             };
-            class RemoveMethodFunctor : public AbstractSequenceFunctor {
+            class RemoveMethodFunctor : public TemplateAbstractSequenceFunctor<Behavior,BehavioralFeature> {
                 public:
-                    RemoveMethodFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveMethodFunctor(BehavioralFeature* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Behavior& el) const override;
             };
-            class AddParameterFunctor : public AbstractSequenceFunctor {
+            class AddParameterFunctor : public TemplateAbstractSequenceFunctor<Parameter,BehavioralFeature> {
                 public:
-                    AddParameterFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddParameterFunctor(BehavioralFeature* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Parameter& el) const override;
             };
-            class CheckParameterFunctor : public AbstractSequenceFunctor {
+            class CheckParameterFunctor : public TemplateAbstractSequenceFunctor<Parameter,BehavioralFeature> {
                 public:
-                    CheckParameterFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    CheckParameterFunctor(BehavioralFeature* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Parameter& el) const override;
             };
-            class RemoveParameterFunctor : public AbstractSequenceFunctor {
+            class RemoveParameterFunctor : public TemplateAbstractSequenceFunctor<Parameter,BehavioralFeature> {
                 public:
-                    RemoveParameterFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveParameterFunctor(BehavioralFeature* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Parameter& el) const override;
             };
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;

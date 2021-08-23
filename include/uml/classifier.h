@@ -27,70 +27,70 @@ namespace UML {
             void setManager(UmlManager* manager) override;
             void reindexID(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
-            class AddAttributeFunctor : public AbstractSequenceFunctor {
+            class AddAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Classifier> {
                 public:
-                    AddAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddAttributeFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class RemoveAttributeFunctor : public AbstractSequenceFunctor {
+            class RemoveAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Classifier> {
                 public:
-                    RemoveAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveAttributeFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class CheckGeneralizationFunctor : public AbstractSequenceFunctor {
+            class CheckGeneralizationFunctor : public TemplateAbstractSequenceFunctor<Generalization,Classifier> {
                 public:
-                    CheckGeneralizationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    CheckGeneralizationFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Generalization& el) const override;
             };
-            class AddGeneralizationFunctor : public AbstractSequenceFunctor {
+            class AddGeneralizationFunctor : public TemplateAbstractSequenceFunctor<Generalization,Classifier> {
                 public:
-                    AddGeneralizationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddGeneralizationFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Generalization& el) const override;
             };
-            class RemoveGeneralizationFunctor : public AbstractSequenceFunctor {
+            class RemoveGeneralizationFunctor : public TemplateAbstractSequenceFunctor<Generalization,Classifier> {
                 public:
-                    RemoveGeneralizationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveGeneralizationFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Generalization& el) const override;
             };
-            class AddGeneralFunctor : public AbstractSequenceFunctor {
+            class AddGeneralFunctor : public TemplateAbstractSequenceFunctor<Classifier,Classifier> {
                 public:
-                    AddGeneralFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddGeneralFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Classifier& el) const override;
             };
-            class RemoveGeneralFunctor : public AbstractSequenceFunctor {
+            class RemoveGeneralFunctor : public TemplateAbstractSequenceFunctor<Classifier,Classifier> {
                 public:
-                    RemoveGeneralFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveGeneralFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Classifier& el) const override;
             };
-            class AddFeatureFunctor : public AbstractSequenceFunctor {
+            class AddFeatureFunctor : public TemplateAbstractSequenceFunctor<Feature,Classifier> {
                 public:
-                    AddFeatureFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddFeatureFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Feature& el) const override;
             };
-            class RemoveFeatureFunctor : public AbstractSequenceFunctor {
+            class RemoveFeatureFunctor : public TemplateAbstractSequenceFunctor<Feature,Classifier> {
                 public:
-                    RemoveFeatureFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveFeatureFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Feature& el) const override;
             };
-            class AddInheritedMemberFunctor : public AbstractSequenceFunctor {
+            class AddInheritedMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Classifier> {
                 public:
-                    AddInheritedMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddInheritedMemberFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(NamedElement& el) const override;
             };
-            class RemoveInheritedMemberFunctor : public AbstractSequenceFunctor {
+            class RemoveInheritedMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Classifier> {
                 public:
-                    RemoveInheritedMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveInheritedMemberFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(NamedElement& el) const override;
             };
-            class ClassifierAddMemberFunctor : public AbstractSequenceFunctor {
+            class ClassifierAddMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Classifier> {
                 public:
-                    ClassifierAddMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    ClassifierAddMemberFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(NamedElement& el) const override;
             };
-            class ClassifierRemoveMemberFunctor : public AbstractSequenceFunctor {
+            class ClassifierRemoveMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Classifier> {
                 public:
-                    ClassifierRemoveMemberFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    ClassifierRemoveMemberFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(NamedElement& el) const override;
             };
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;

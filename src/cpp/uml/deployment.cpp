@@ -5,15 +5,15 @@
 
 using namespace UML;
 
-void Deployment::AddDeployedArtifactFunctor::operator()(Element& el) const {
-    if (!m_el->as<Deployment>().getSupplier().count(el.getID())) {
-        m_el->as<Deployment>().getSupplier().add(el.as<DeployedArtifact>());
+void Deployment::AddDeployedArtifactFunctor::operator()(DeployedArtifact& el) const {
+    if (!m_el->getSupplier().count(el.getID())) {
+        m_el->getSupplier().add(el);
     }
 }
 
-void Deployment::RemoveDeployedArtifactFunctor::operator()(Element& el) const {
-    if (m_el->as<Deployment>().getSupplier().count(el.getID())) {
-        m_el->as<Deployment>().getSupplier().remove(el.as<DeployedArtifact>());
+void Deployment::RemoveDeployedArtifactFunctor::operator()(DeployedArtifact& el) const {
+    if (m_el->getSupplier().count(el.getID())) {
+        m_el->getSupplier().remove(el);
     }
 }
 

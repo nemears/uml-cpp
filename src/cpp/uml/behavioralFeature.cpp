@@ -5,27 +5,27 @@
 
 using namespace UML;
 
-void BehavioralFeature::AddMethodFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<Behavior&>(el).getSpecification()) {
-        dynamic_cast<Behavior&>(el).setSpecification(dynamic_cast<BehavioralFeature*>(m_el));
+void BehavioralFeature::AddMethodFunctor::operator()(Behavior& el) const {
+    if (!el.getSpecification()) {
+        el.setSpecification(m_el);
     }
 }
 
-void BehavioralFeature::RemoveMethodFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Behavior&>(el).getSpecification() == m_el) {
-        dynamic_cast<Behavior&>(el).setSpecification(0);
+void BehavioralFeature::RemoveMethodFunctor::operator()(Behavior& el) const {
+    if (el.getSpecification() == m_el) {
+        el.setSpecification(0);
     }
 }
 
-void BehavioralFeature::AddParameterFunctor::operator()(Element& el) const {
+void BehavioralFeature::AddParameterFunctor::operator()(Parameter& el) const {
     if (m_el->isSubClassOf(ElementType::OPERATION)) {
-        if (dynamic_cast<Parameter&>(el).getOperation() != m_el) {
-            dynamic_cast<Parameter&>(el).setOperation(dynamic_cast<Operation*>(m_el));
+        if (el.getOperation() != m_el) {
+            el.setOperation(&m_el->as<Operation>());
         }
     }
 
-    if (!dynamic_cast<BehavioralFeature*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<BehavioralFeature*>(m_el)->getOwnedMembers().add(dynamic_cast<Parameter&>(el));
+    if (!m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().add(el);
     }
 
     // I think we shouldn't enforce parameters being the same OMG UML 2.5.1 spec pg 289 bottom of page
@@ -39,31 +39,31 @@ void BehavioralFeature::AddParameterFunctor::operator()(Element& el) const {
     // }
 }
 
-void BehavioralFeature::CheckParameterFunctor::operator()(Element& el) const {
-    ParameterDirectionKind direction = dynamic_cast<Parameter&>(el).getDirection();
+void BehavioralFeature::CheckParameterFunctor::operator()(Parameter& el) const {
+    ParameterDirectionKind direction = el.getDirection();
     if (direction == ParameterDirectionKind::RETURN || direction == ParameterDirectionKind::OUT || direction == ParameterDirectionKind::INOUT) {
-        if (dynamic_cast<BehavioralFeature*>(m_el)->m_returnSpecified) {
+        if (m_el->m_returnSpecified) {
             if (m_el->isSubClassOf(ElementType::OPERATION)) {
-                if (dynamic_cast<Parameter&>(el).getOperation() == m_el) {
-                    dynamic_cast<Parameter&>(el).setOperation(0);
+                if (el.getOperation() == m_el) {
+                    el.setOperation(0);
                 }
             }
             throw ReturnParameterException(m_el->getElementTypeString() + " " + m_el->getID().string());
         } else {
-            dynamic_cast<BehavioralFeature*>(m_el)->m_returnSpecified = true;
+            m_el->m_returnSpecified = true;
         }
     }
 }
 
-void BehavioralFeature::RemoveParameterFunctor::operator()(Element& el) const {
+void BehavioralFeature::RemoveParameterFunctor::operator()(Parameter& el) const {
     if (m_el->isSubClassOf(ElementType::OPERATION)) {
-        if (dynamic_cast<Parameter&>(el).getOperation() == m_el) {
-            dynamic_cast<Parameter&>(el).setOperation(0);
+        if (el.getOperation() == m_el) {
+            el.setOperation(0);
         }
     }
 
-    if (dynamic_cast<BehavioralFeature*>(m_el)->getMembers().count(el.getID())) {
-        dynamic_cast<BehavioralFeature*>(m_el)->getMembers().remove(dynamic_cast<Parameter&>(el));
+    if (m_el->getMembers().count(el.getID())) {
+        m_el->getMembers().remove(el);
     }
 }
 

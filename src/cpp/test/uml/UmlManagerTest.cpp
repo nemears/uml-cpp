@@ -188,10 +188,10 @@ TEST_F(UmlManagerTest, ManagerMountStressTest) {
     m.setRoot(&root);
     ASSERT_NO_THROW(m.mount(ymlPath + "umlManagerTests"));
     Package* pckg = &root;
-    for (size_t i = 0; i < 10000; i++) {
+    for (size_t i = 0; i < 1000; i++) {
         Package* child = &m.create<Package>();
         pckg->getPackagedElements().add(*child);
-        m.release(pckg->getID());
+        m.release(pckg->getID()); // release or segfault
         pckg = child;
     }
     ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_MOUNT(root, ymlPath + "umlManagerTests"));

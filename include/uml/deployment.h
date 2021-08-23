@@ -14,15 +14,15 @@ namespace UML {
             Sequence<DeployedArtifact> m_deployedArtifacts;
             ID m_locationID;
             DeploymentTarget* m_locationPtr;
-            class AddDeployedArtifactFunctor : public AbstractSequenceFunctor {
+            class AddDeployedArtifactFunctor : public TemplateAbstractSequenceFunctor<DeployedArtifact,Deployment> {
                 public:
-                    AddDeployedArtifactFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddDeployedArtifactFunctor(Deployment* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(DeployedArtifact& el) const override;
             };
-            class RemoveDeployedArtifactFunctor : public AbstractSequenceFunctor {
+            class RemoveDeployedArtifactFunctor : public TemplateAbstractSequenceFunctor<DeployedArtifact,Deployment> {
                 public:
-                    RemoveDeployedArtifactFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveDeployedArtifactFunctor(Deployment* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(DeployedArtifact& el) const override;
             };
             void setManager(UmlManager* manager) override;
         public:

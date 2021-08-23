@@ -46,20 +46,20 @@ namespace UML{
             void reindexID(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             void setComposite(bool composite);
-            class AddRedefinedPropertyFunctor : public AbstractSequenceFunctor {
+            class AddRedefinedPropertyFunctor : public TemplateAbstractSequenceFunctor<Property,Property> {
                 public:
-                    AddRedefinedPropertyFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddRedefinedPropertyFunctor(Property* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class CheckRedefinedPropertyFunctor : public AbstractSequenceFunctor {
+            class CheckRedefinedPropertyFunctor : public TemplateAbstractSequenceFunctor<Property,Property> {
                 public:
-                    CheckRedefinedPropertyFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    CheckRedefinedPropertyFunctor(Property* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class RemoveRedefinedPropertyFunctor : public AbstractSequenceFunctor {
+            class RemoveRedefinedPropertyFunctor : public TemplateAbstractSequenceFunctor<Property,Property> {
                 public:
-                    RemoveRedefinedPropertyFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveRedefinedPropertyFunctor(Property* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
             void setManager(UmlManager* manager) override;
             void restoreReleased(ID id, Element* released) override;

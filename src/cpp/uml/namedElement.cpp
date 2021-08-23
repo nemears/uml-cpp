@@ -8,15 +8,15 @@
 using namespace UML;
 using namespace std;
 
-void AddMemberNamespaceFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<Namespace&>(el).getMembers().count(m_el->getID())) {
-        dynamic_cast<Namespace&>(el).getMembers().add(*dynamic_cast<NamedElement*>(m_el));
+void AddMemberNamespaceFunctor::operator()(Namespace& el) const {
+    if (!el.getMembers().count(m_el->getID())) {
+        el.getMembers().add(*m_el);
     }
 }
 
-void RemoveMemberNamespaceFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Namespace&>(el).getMembers().count(m_el->getID())) {
-        dynamic_cast<Namespace&>(el).getMembers().remove(*dynamic_cast<NamedElement*>(m_el));
+void RemoveMemberNamespaceFunctor::operator()(Namespace& el) const {
+    if (el.getMembers().count(m_el->getID())) {
+        el.getMembers().remove(*m_el);
     }
 }
 

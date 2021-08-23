@@ -2,26 +2,26 @@
 
 using namespace UML;
 
-void Activity::AddNodeFunctor::operator()(Element& el) const {
-    if (dynamic_cast<ActivityNode&>(el).getActivity() != m_el) {
-        dynamic_cast<ActivityNode&>(el).setActivity(dynamic_cast<Activity*>(m_el));
+void Activity::AddNodeFunctor::operator()(ActivityNode& el) const {
+    if (el.getActivity() != m_el) {
+        el.setActivity(m_el);
     }
 
     // if owner not already specified make it the activity (don't overwrite pins ownership)
     if (!el.getOwner()) {
         if (!m_el->getOwnedElements().count(el.getID())) {
-            m_el->getOwnedElements().internalAdd(dynamic_cast<ActivityNode&>(el));
+            m_el->getOwnedElements().internalAdd(el);
         }
     }
 }
 
-void Activity::AddEdgeFunctor::operator()(Element& el) const {
-    if (dynamic_cast<ActivityEdge&>(el).getActivity() != m_el) {
-        dynamic_cast<ActivityEdge&>(el).setActivity(dynamic_cast<Activity*>(m_el));
+void Activity::AddEdgeFunctor::operator()(ActivityEdge& el) const {
+    if (el.getActivity() != m_el) {
+        el.setActivity(m_el);
     }
 
     if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalAdd(dynamic_cast<ActivityEdge&>(el));
+        m_el->getOwnedElements().internalAdd(el);
     }
 }
 

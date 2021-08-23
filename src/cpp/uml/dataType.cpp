@@ -10,67 +10,67 @@ void DataType::setManager(UmlManager* manager) {
     m_ownedOperation.m_manager = manager;
 }
 
-void DataType::AddOwnedAttributeFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<DataType*>(m_el)->getAttributes().count(el.getID())) {
-        dynamic_cast<DataType*>(m_el)->getAttributes().add(dynamic_cast<Property&>(el));
+void DataType::AddOwnedAttributeFunctor::operator()(Property& el) const {
+    if (!m_el->getAttributes().count(el.getID())) {
+        m_el->getAttributes().add(el);
     }
 
-    if (!dynamic_cast<DataType*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<DataType*>(m_el)->getOwnedMembers().add(dynamic_cast<Property&>(el));
+    if (!m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().add(el);
     }
 
-    if (dynamic_cast<Property&>(el).getDataType() != m_el) {
-        dynamic_cast<Property&>(el).setDataType(dynamic_cast<DataType*>(m_el));
-    }
-}
-
-void DataType::RemoveOwnedAttributeFunctor::operator()(Element& el) const {
-    if (dynamic_cast<DataType*>(m_el)->getAttributes().count(el.getID())) {
-        dynamic_cast<DataType*>(m_el)->getAttributes().remove(dynamic_cast<Property&>(el));
-    }
-
-    if (dynamic_cast<DataType*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<DataType*>(m_el)->getOwnedMembers().remove(dynamic_cast<Property&>(el));
-    }
-
-    if (dynamic_cast<Property&>(el).getDataType() == m_el) {
-        dynamic_cast<Property&>(el).setDataType(0);
+    if (el.getDataType() != m_el) {
+        el.setDataType(m_el);
     }
 }
 
-void DataType::AddOwnedOperationFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<DataType*>(m_el)->getFeatures().count(el.getID())) {
-        dynamic_cast<DataType*>(m_el)->getFeatures().add(dynamic_cast<Operation&>(el));
+void DataType::RemoveOwnedAttributeFunctor::operator()(Property& el) const {
+    if (m_el->getAttributes().count(el.getID())) {
+        m_el->getAttributes().remove(el);
     }
 
-    if (!dynamic_cast<DataType*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<DataType*>(m_el)->getOwnedMembers().add(dynamic_cast<Operation&>(el));
+    if (m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().remove(el);
     }
 
-    if (dynamic_cast<Operation&>(el).getDataType() != m_el) {
-        dynamic_cast<Operation&>(el).setDataType(dynamic_cast<DataType*>(m_el));
-    }
-
-    if (!dynamic_cast<Operation&>(el).getRedefinitionContext().count(m_el->getID())) {
-        dynamic_cast<Operation&>(el).getRedefinitionContext().add(*dynamic_cast<DataType*>(m_el));
+    if (el.getDataType() == m_el) {
+        el.setDataType(0);
     }
 }
 
-void DataType::RemoveOwnedOperationFunctor::operator()(Element& el) const {
-    if (dynamic_cast<DataType*>(m_el)->getFeatures().count(el.getID())) {
-        dynamic_cast<DataType*>(m_el)->getFeatures().remove(dynamic_cast<Operation&>(el));
+void DataType::AddOwnedOperationFunctor::operator()(Operation& el) const {
+    if (!m_el->getFeatures().count(el.getID())) {
+        m_el->getFeatures().add(el);
     }
 
-    if (dynamic_cast<DataType*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<DataType*>(m_el)->getOwnedMembers().remove(dynamic_cast<Operation&>(el));
+    if (!m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().add(el);
     }
 
-    if (dynamic_cast<Operation&>(el).getDataType() == m_el) {
-        dynamic_cast<Operation&>(el).setDataType(0);
+    if (el.getDataType() != m_el) {
+        el.setDataType(m_el);
     }
 
-    if (dynamic_cast<Operation&>(el).getRedefinitionContext().count(m_el->getID())) {
-        dynamic_cast<Operation&>(el).getRedefinitionContext().remove(*dynamic_cast<DataType*>(m_el));
+    if (!el.getRedefinitionContext().count(m_el->getID())) {
+        el.getRedefinitionContext().add(*m_el);
+    }
+}
+
+void DataType::RemoveOwnedOperationFunctor::operator()(Operation& el) const {
+    if (m_el->getFeatures().count(el.getID())) {
+        m_el->getFeatures().remove(el);
+    }
+
+    if (m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().remove(el);
+    }
+
+    if (el.getDataType() == m_el) {
+        el.setDataType(0);
+    }
+
+    if (el.getRedefinitionContext().count(m_el->getID())) {
+        el.getRedefinitionContext().remove(*m_el);
     }
 }
 

@@ -12,81 +12,81 @@ void Association::reindexName(std::string oldName, std::string newName) {
     Classifier::reindexName(oldName, newName);
 }
 
-void Association::AddMemberEndFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Property&>(el).getAssociation() != m_el) {
-        dynamic_cast<Property&>(el).setAssociation(dynamic_cast<Association*>(m_el));
+void Association::AddMemberEndFunctor::operator()(Property& el) const {
+    if (el.getAssociation() != m_el) {
+        el.setAssociation(m_el);
     }
 
-    if (!dynamic_cast<Association*>(m_el)->getMembers().count(el.getID())) {
-        dynamic_cast<Association*>(m_el)->getMembers().add(dynamic_cast<Property&>(el));
+    if (!m_el->getMembers().count(el.getID())) {
+        m_el->getMembers().add(el);
     }
 
-    if (dynamic_cast<Property&>(el).getType()) {
-        if (!dynamic_cast<Association*>(m_el)->getEndType().count(dynamic_cast<Property&>(el).getType()->getID())) {
-            dynamic_cast<Association*>(m_el)->getEndType().add(*dynamic_cast<Property&>(el).getType());
+    if (el.getType()) {
+        if (!m_el->getEndType().count(el.getType()->getID())) {
+            m_el->getEndType().add(*el.getType());
         }
     }
 }
 
-void Association::RemoveMemberEndFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Property&>(el).getAssociation() == m_el) {
-        dynamic_cast<Property&>(el).setAssociation(0);
+void Association::RemoveMemberEndFunctor::operator()(Property& el) const {
+    if (el.getAssociation() == m_el) {
+        el.setAssociation(0);
     }
 
-    if (dynamic_cast<Association*>(m_el)->getMembers().count(el.getID())) {
-        dynamic_cast<Association*>(m_el)->getMembers().remove(dynamic_cast<Property&>(el));
+    if (m_el->getMembers().count(el.getID())) {
+        m_el->getMembers().remove(el);
     }
 
-    if (dynamic_cast<Property&>(el).getType()) {
-        if (dynamic_cast<Association*>(m_el)->getEndType().count(dynamic_cast<Property&>(el).getType()->getID())) {
-            dynamic_cast<Association*>(m_el)->getEndType().remove(*dynamic_cast<Property&>(el).getType());
+    if (el.getType()) {
+        if (m_el->getEndType().count(el.getType()->getID())) {
+            m_el->getEndType().remove(*el.getType());
         }
     }
 }
 
-void Association::AddOwnedEndFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Property&>(el).getOwningAssociation() != m_el) {
-        dynamic_cast<Property&>(el).setOwningAssociation(dynamic_cast<Association*>(m_el));
+void Association::AddOwnedEndFunctor::operator()(Property& el) const {
+    if (el.getOwningAssociation() != m_el) {
+        el.setOwningAssociation(m_el);
     }
 
-    if (!dynamic_cast<Association*>(m_el)->getMemberEnds().count(el.getID())) {
-        dynamic_cast<Association*>(m_el)->getMemberEnds().add(dynamic_cast<Property&>(el));
+    if (!m_el->getMemberEnds().count(el.getID())) {
+        m_el->getMemberEnds().add(el);
     }
 
-    if (!dynamic_cast<Association*>(m_el)->getFeatures().count(el.getID())) {
-        dynamic_cast<Association*>(m_el)->getFeatures().add(dynamic_cast<Property&>(el));
+    if (!m_el->getFeatures().count(el.getID())) {
+        m_el->getFeatures().add(el);
     }
 
-    if (!dynamic_cast<Association*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<Association*>(m_el)->getOwnedMembers().add(dynamic_cast<Property&>(el));
-    }
-}
-
-void Association::RemoveOwnedEndFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Property&>(el).getOwningAssociation() == m_el) {
-        dynamic_cast<Property&>(el).setOwningAssociation(0);
-    }
-
-    if (dynamic_cast<Association*>(m_el)->getMemberEnds().count(el.getID())) {
-        dynamic_cast<Association*>(m_el)->getMemberEnds().remove(dynamic_cast<Property&>(el));
-    }
-
-    if (dynamic_cast<Association*>(m_el)->getFeatures().count(el.getID())) {
-        dynamic_cast<Association*>(m_el)->getFeatures().remove(dynamic_cast<Property&>(el));
-    }
-
-    if (dynamic_cast<Association*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<Association*>(m_el)->getOwnedMembers().remove(dynamic_cast<Property&>(el));
+    if (!m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().add(el);
     }
 }
 
-void Association::AddNavigableOwnedEndFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<Association*>(m_el)->getOwnedEnds().count(el.getID())) {
-        dynamic_cast<Association*>(m_el)->getOwnedEnds().add(dynamic_cast<Property&>(el));
+void Association::RemoveOwnedEndFunctor::operator()(Property& el) const {
+    if (el.getOwningAssociation() == m_el) {
+        el.setOwningAssociation(0);
+    }
+
+    if (m_el->getMemberEnds().count(el.getID())) {
+        m_el->getMemberEnds().remove(el);
+    }
+
+    if (m_el->getFeatures().count(el.getID())) {
+        m_el->getFeatures().remove(el);
+    }
+
+    if (m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().remove(el);
     }
 }
 
-void Association::RemoveNavigableOwnedEndFunctor::operator()(Element& el) const {
+void Association::AddNavigableOwnedEndFunctor::operator()(Property& el) const {
+    if (!m_el->getOwnedEnds().count(el.getID())) {
+        m_el->getOwnedEnds().add(el);
+    }
+}
+
+void Association::RemoveNavigableOwnedEndFunctor::operator()(Property& el) const {
     if (dynamic_cast<Association*>(m_el)->getOwnedEnds().count(el.getID())) {
         dynamic_cast<Association*>(m_el)->getOwnedEnds().remove(dynamic_cast<Property&>(el));
     }

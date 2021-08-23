@@ -10,15 +10,15 @@ namespace UML {
     class Enumeration : public DataType {
         protected:
             Sequence<EnumerationLiteral> m_ownedLiteral;
-            class AddOwnedLiteralFunctor : public AbstractSequenceFunctor {
+            class AddOwnedLiteralFunctor : public TemplateAbstractSequenceFunctor<EnumerationLiteral,Enumeration> {
                 public:
-                    AddOwnedLiteralFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddOwnedLiteralFunctor(Enumeration* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(EnumerationLiteral& el) const override;
             };
-            class RemoveOwnedLiteralFunctor : public AbstractSequenceFunctor {
+            class RemoveOwnedLiteralFunctor : public TemplateAbstractSequenceFunctor<EnumerationLiteral,Enumeration> {
                 public:
-                    RemoveOwnedLiteralFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveOwnedLiteralFunctor(Enumeration* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(EnumerationLiteral& el) const override;
             };
         public:
             Enumeration();

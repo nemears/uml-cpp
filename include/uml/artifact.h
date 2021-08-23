@@ -16,50 +16,50 @@ namespace UML {
             Sequence<Operation> m_ownedOperations = Sequence<Operation>(this);
             Sequence<Manifestation> m_manifestations =  Sequence<Manifestation>(this);
             void setManager(UmlManager* manager) override;
-            class AddOwnedAttributeFunctor : public AbstractSequenceFunctor {
+            class AddOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Artifact> {
                 public:
-                    AddOwnedAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddOwnedAttributeFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class RemoveOwnedAttributeFunctor : public AbstractSequenceFunctor {
+            class RemoveOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Artifact> {
                 public:
-                    RemoveOwnedAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveOwnedAttributeFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class AddOwnedOperationFunctor : public AbstractSequenceFunctor {
+            class AddOwnedOperationFunctor : public TemplateAbstractSequenceFunctor<Operation,Artifact> {
                 public:
-                    AddOwnedOperationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddOwnedOperationFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Operation& el) const override;
             };
-            class RemoveOwnedOperationFunctor : public AbstractSequenceFunctor {
+            class RemoveOwnedOperationFunctor : public TemplateAbstractSequenceFunctor<Operation,Artifact> {
                 public:
-                    RemoveOwnedOperationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveOwnedOperationFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Operation& el) const override;
             };
-            class CheckNestedArtifactFunctor : public AbstractSequenceFunctor {
+            class CheckNestedArtifactFunctor : public TemplateAbstractSequenceFunctor<Artifact,Artifact> {
                 public:
-                    CheckNestedArtifactFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    CheckNestedArtifactFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Artifact& el) const override;
             };
-            class AddNestedArtifactFunctor : public AbstractSequenceFunctor {
+            class AddNestedArtifactFunctor : public TemplateAbstractSequenceFunctor<Artifact,Artifact> {
                 public:
-                    AddNestedArtifactFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddNestedArtifactFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Artifact& el) const override;
             };
-            class RemoveNestedArtifactFunctor : public AbstractSequenceFunctor {
+            class RemoveNestedArtifactFunctor : public TemplateAbstractSequenceFunctor<Artifact,Artifact> {
                 public:
-                    RemoveNestedArtifactFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveNestedArtifactFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Artifact& el) const override;
             };
-            class AddManifestationFunctor : public AbstractSequenceFunctor {
+            class AddManifestationFunctor : public TemplateAbstractSequenceFunctor<Manifestation,Artifact> {
                 public:
-                    AddManifestationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddManifestationFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Manifestation& el) const override;
             };
-            class RemoveManifestationFunctor : public AbstractSequenceFunctor {
+            class RemoveManifestationFunctor : public TemplateAbstractSequenceFunctor<Manifestation,Artifact> {
                 public:
-                    RemoveManifestationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveManifestationFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Manifestation& el) const override;
             };
         public:
             Artifact();

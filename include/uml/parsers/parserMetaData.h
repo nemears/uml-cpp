@@ -31,11 +31,11 @@ namespace UML{
 
         class ParserMetaData {
             protected:
-                class ElementsFunctor : public AbstractSequenceFunctor {
+                class ElementsFunctor : public TemplateAbstractSequenceFunctor<Element,Element> {
                     private:
                         ParserMetaData* data;
                     public:
-                        ElementsFunctor(Element* me, ParserMetaData* data) : AbstractSequenceFunctor(me) {
+                        ElementsFunctor(Element* me, ParserMetaData* data) : TemplateAbstractSequenceFunctor(me) {
                             this->data = data;
                         };
                         void operator()(Element& el) const override;

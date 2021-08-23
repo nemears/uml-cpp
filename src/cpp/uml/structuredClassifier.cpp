@@ -3,60 +3,60 @@
 
 using namespace UML;
 
-void StructuredClassifier::AddOwnedAttributeFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<StructuredClassifier*>(m_el)->getAttributes().count(el.getID())) {
-        dynamic_cast<StructuredClassifier*>(m_el)->getAttributes().add(dynamic_cast<Property&>(el));
+void StructuredClassifier::AddOwnedAttributeFunctor::operator()(Property& el) const {
+    if (!m_el->getAttributes().count(el.getID())) {
+        m_el->getAttributes().add(el);
     }
 
-    if (dynamic_cast<Property&>(el).getStructuredClassifier() != m_el) {
-        dynamic_cast<Property&>(el).setStructuredClassifier(dynamic_cast<StructuredClassifier*>(m_el));
+    if (el.getStructuredClassifier() != m_el) {
+        el.setStructuredClassifier(m_el);
     }
 
-    if (!dynamic_cast<StructuredClassifier*>(m_el)->getRole().count(el.getID())) {
-        dynamic_cast<StructuredClassifier*>(m_el)->getRole().add(dynamic_cast<Property&>(el));
+    if (!m_el->getRole().count(el.getID())) {
+        m_el->getRole().add(el);
     }
 
-    if (!dynamic_cast<StructuredClassifier*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<StructuredClassifier*>(m_el)->getOwnedMembers().add(dynamic_cast<Property&>(el));
+    if (!m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().add(el);
     }
 
     // Determine if part and assign
-    if (dynamic_cast<Property&>(el).isComposite()) {
-        dynamic_cast<StructuredClassifier*>(m_el)->getParts().add(dynamic_cast<Property&>(el));
+    if (el.isComposite()) {
+        m_el->getParts().add(el);
     }
 }
 
-void StructuredClassifier::RemoveOwnedAttributeFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Property&>(el).getStructuredClassifier() == m_el) {
-        dynamic_cast<Property&>(el).setStructuredClassifier(0);
+void StructuredClassifier::RemoveOwnedAttributeFunctor::operator()(Property& el) const {
+    if (el.getStructuredClassifier() == m_el) {
+        el.setStructuredClassifier(0);
     }
 
-    if (dynamic_cast<StructuredClassifier*>(m_el)->getAttributes().count(el.getID())) {
-        dynamic_cast<StructuredClassifier*>(m_el)->getAttributes().remove(dynamic_cast<Property&>(el));
+    if (m_el->getAttributes().count(el.getID())) {
+        m_el->getAttributes().remove(el);
     }
 
-    if (dynamic_cast<StructuredClassifier*>(m_el)->getRole().count(el.getID())) {
-        dynamic_cast<StructuredClassifier*>(m_el)->getRole().remove(dynamic_cast<Property&>(el));
+    if (m_el->getRole().count(el.getID())) {
+        m_el->getRole().remove(el);
     }
 
-    if (dynamic_cast<StructuredClassifier*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<StructuredClassifier*>(m_el)->getOwnedMembers().remove(dynamic_cast<Property&>(el));
+    if (m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().remove(el);
     }
 
-    if (dynamic_cast<StructuredClassifier*>(m_el)->getParts().count(el.getID())) {
-        dynamic_cast<StructuredClassifier*>(m_el)->getParts().remove(dynamic_cast<Property&>(el));
-    }
-}
-
-void StructuredClassifier::AddRoleFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<StructuredClassifier*>(m_el)->getMembers().count(el.getID())) {
-        dynamic_cast<StructuredClassifier*>(m_el)->getMembers().add(dynamic_cast<ConnectableElement&>(el));
+    if (m_el->getParts().count(el.getID())) {
+        m_el->getParts().remove(el);
     }
 }
 
-void StructuredClassifier::RemoveRoleFunctor::operator()(Element& el) const {
-    if (dynamic_cast<StructuredClassifier*>(m_el)->getMembers().count(el.getID())) {
-        dynamic_cast<StructuredClassifier*>(m_el)->getMembers().remove(dynamic_cast<ConnectableElement&>(el));
+void StructuredClassifier::AddRoleFunctor::operator()(ConnectableElement& el) const {
+    if (!m_el->getMembers().count(el.getID())) {
+        m_el->getMembers().add(el);
+    }
+}
+
+void StructuredClassifier::RemoveRoleFunctor::operator()(ConnectableElement& el) const {
+    if (m_el->getMembers().count(el.getID())) {
+        m_el->getMembers().remove(el);
     }
 }
 

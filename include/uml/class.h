@@ -13,35 +13,35 @@ namespace UML{
         protected:
             Sequence<Operation> m_ownedOperations = Sequence<Operation>(this);
             Sequence<Classifier> m_nestedClassifiers = Sequence<Classifier>(this);
-            class AddOwnedOperationFunctor : public AbstractSequenceFunctor {
+            class AddOwnedOperationFunctor : public TemplateAbstractSequenceFunctor<Operation,Class> {
                 public:
-                    AddOwnedOperationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddOwnedOperationFunctor(Class* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Operation& el) const override;
             };
-            class RemoveOwnedOperationFunctor : public AbstractSequenceFunctor {
+            class RemoveOwnedOperationFunctor : public TemplateAbstractSequenceFunctor<Operation,Class> {
                 public:
-                    RemoveOwnedOperationFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveOwnedOperationFunctor(Class* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Operation& el) const override;
             };
-            class ClassAddOwnedAttributeFunctor : public AbstractSequenceFunctor {
+            class ClassAddOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Class> {
                 public:
-                    ClassAddOwnedAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    ClassAddOwnedAttributeFunctor(Class* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class ClassRemoveOwnedAttributeFunctor : public AbstractSequenceFunctor {
+            class ClassRemoveOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Class> {
                 public:
-                    ClassRemoveOwnedAttributeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    ClassRemoveOwnedAttributeFunctor(Class* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
             };
-            class AddNestedClassifierFunctor : public AbstractSequenceFunctor {
+            class AddNestedClassifierFunctor : public TemplateAbstractSequenceFunctor<Classifier,Class> {
                 public:
-                    AddNestedClassifierFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddNestedClassifierFunctor(Class* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Classifier& el) const override;
             };
-            class RemoveNestedClassifierFunctor : public AbstractSequenceFunctor {
+            class RemoveNestedClassifierFunctor : public TemplateAbstractSequenceFunctor<Classifier,Class> {
                 public:
-                    RemoveNestedClassifierFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveNestedClassifierFunctor(Class* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Classifier& el) const override;
             };
             void setManager(UmlManager* manager) override;
             void restoreReleased(ID id, Element* released) override;

@@ -18,15 +18,15 @@ namespace UML {
             InstanceSpecification* m_owningInstancePtr;
             void reindexID(ID oldID, ID newID) override;
             void setManager(UmlManager* manager) override;
-            class AddValueFunctor : public AbstractSequenceFunctor {
+            class AddValueFunctor : public TemplateAbstractSequenceFunctor<ValueSpecification,Slot> {
                 public:
-                    AddValueFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddValueFunctor(Slot* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(ValueSpecification& el) const override;
             };
-            class RemoveValueFunctor : public AbstractSequenceFunctor {
+            class RemoveValueFunctor : public TemplateAbstractSequenceFunctor<ValueSpecification,Slot> {
                 public:
-                    RemoveValueFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveValueFunctor(Slot* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(ValueSpecification& el) const override;
             };
         public:
             Slot();

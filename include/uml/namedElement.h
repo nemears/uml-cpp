@@ -8,7 +8,7 @@ namespace UML{
 
     template <class T> class Sequence;
     class Namespace;
-    class AbstractSequenceFunctor;
+    template <class T> class AbstractSequenceFunctor;
     class UmlManager;
 
     enum class VisibilityKind {

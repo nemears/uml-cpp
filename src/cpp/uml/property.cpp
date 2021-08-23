@@ -104,14 +104,14 @@ void Property::reindexName(string oldName, string newName) {
     Feature::reindexName(oldName, newName);
 }
 
-void Property::AddRedefinedPropertyFunctor::operator()(Element& el) const {
-    if (!m_el->as<Property>().m_redefinedElement.count(el.getID())) {
-        m_el->as<Property>().m_redefinedElement.add(el.as<RedefinableElement>());
+void Property::AddRedefinedPropertyFunctor::operator()(Property& el) const {
+    if (!m_el->m_redefinedElement.count(el.getID())) {
+        m_el->m_redefinedElement.add(el);
     }
 
-    if (!m_el->as<Property>().m_classifierID.isNull()) {
-        if (!m_el->as<Property>().m_redefinitionContext.count(m_el->as<Property>().m_classifierID)) {
-            m_el->as<Property>().m_redefinitionContext.add(*m_el->as<Property>().getClassifier());
+    if (!m_el->m_classifierID.isNull()) {
+        if (!m_el->m_redefinitionContext.count(m_el->m_classifierID)) {
+            m_el->m_redefinitionContext.add(*m_el->getClassifier());
         }
         
     }
@@ -132,7 +132,7 @@ bool findProperty(Classifier& clazz, ID propID) {
     return false;
 }
 
-void Property::CheckRedefinedPropertyFunctor::operator()(Element& el) const {
+void Property::CheckRedefinedPropertyFunctor::operator()(Property& el) const {
     // if (!m_el->as<Property>().m_classifierID.isNull()) {
     //     if (!findProperty(*m_el->as<Property>().getClassifier(), el.getID())) {
     //         throw ImproperRedefinitionException();
@@ -142,14 +142,14 @@ void Property::CheckRedefinedPropertyFunctor::operator()(Element& el) const {
     // }
 }
 
-void Property::RemoveRedefinedPropertyFunctor::operator()(Element& el) const {
-    if (m_el->as<Property>().m_redefinedElement.count(el.getID())) {
-        m_el->as<Property>().m_redefinedElement.remove(el.as<RedefinableElement>());
+void Property::RemoveRedefinedPropertyFunctor::operator()(Property& el) const {
+    if (m_el->m_redefinedElement.count(el.getID())) {
+        m_el->m_redefinedElement.remove(el);
     }
 
-    if (!m_el->as<Property>().m_classifierID.isNull()) {
-        if (m_el->as<Property>().m_redefinitionContext.count(m_el->as<Property>().m_classifierID) && m_el->as<Property>().m_redefinedProperties.empty()) {
-            m_el->as<Property>().m_redefinitionContext.add(*m_el->as<Property>().getClassifier());
+    if (!m_el->m_classifierID.isNull()) {
+        if (m_el->m_redefinitionContext.count(m_el->m_classifierID) && m_el->m_redefinedProperties.empty()) {
+            m_el->m_redefinitionContext.add(*m_el->getClassifier());
         }
         
     }

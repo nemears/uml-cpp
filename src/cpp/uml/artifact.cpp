@@ -14,116 +14,116 @@ void Artifact::setManager(UmlManager* manager) {
     m_manifestations.m_manager = manager;
 }
 
-void Artifact::AddOwnedAttributeFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<Artifact*>(m_el)->getAttributes().count(el.getID())) {
-        dynamic_cast<Artifact*>(m_el)->getAttributes().add(dynamic_cast<Property&>(el));
+void Artifact::AddOwnedAttributeFunctor::operator()(Property& el) const {
+    if (!m_el->getAttributes().count(el.getID())) {
+        m_el->getAttributes().add(el);
     }
 
-    if (!dynamic_cast<Artifact*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<Artifact*>(m_el)->getOwnedMembers().add(dynamic_cast<Property&>(el));
+    if (!m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().add(el);
     }
 
-    if (dynamic_cast<Property&>(el).getArtifact() != m_el) {
-        dynamic_cast<Property&>(el).setArtifact(dynamic_cast<Artifact*>(m_el));
+    if (el.getArtifact() != m_el) {
+        el.setArtifact(m_el);
     }
 
-    m_el->as<Artifact>().getOwnedAttributes().updateCopiedSequenceAddedTo<Artifact>(el.as<Property>(), &Artifact::getOwnedAttributes);
+    m_el->getOwnedAttributes().updateCopiedSequenceAddedTo<Artifact>(el, &Artifact::getOwnedAttributes);
 }
 
-void Artifact::RemoveOwnedAttributeFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Artifact*>(m_el)->getAttributes().count(el.getID())) {
-        dynamic_cast<Artifact*>(m_el)->getAttributes().remove(dynamic_cast<Property&>(el));
+void Artifact::RemoveOwnedAttributeFunctor::operator()(Property& el) const {
+    if (m_el->getAttributes().count(el.getID())) {
+        m_el->getAttributes().remove(el);
     }
 
-    if (dynamic_cast<Artifact*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<Artifact*>(m_el)->getOwnedMembers().remove(dynamic_cast<Property&>(el));
+    if (m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().remove(el);
     }
 
-    if (dynamic_cast<Property&>(el).getArtifact() == m_el) {
-        dynamic_cast<Property&>(el).setArtifact(0);
+    if (el.getArtifact() == m_el) {
+        el.setArtifact(0);
     }
 
-    m_el->as<Artifact>().getOwnedAttributes().updateCopiedSequenceRemovedFrom<Artifact>(el.as<Property>(), &Artifact::getOwnedAttributes);
+    m_el->getOwnedAttributes().updateCopiedSequenceRemovedFrom<Artifact>(el, &Artifact::getOwnedAttributes);
 }
 
-void Artifact::AddOwnedOperationFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<Artifact*>(m_el)->getFeatures().count(el.getID())) {
-        dynamic_cast<Artifact*>(m_el)->getFeatures().add(dynamic_cast<Operation&>(el));
+void Artifact::AddOwnedOperationFunctor::operator()(Operation& el) const {
+    if (!m_el->getFeatures().count(el.getID())) {
+        m_el->getFeatures().add(el);
     }
 
-    if (!dynamic_cast<Artifact*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<Artifact*>(m_el)->getOwnedMembers().add(dynamic_cast<Operation&>(el));
+    if (!m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().add(el);
     }
 
-    if (dynamic_cast<Operation&>(el).getArtifact() != m_el) {
-        dynamic_cast<Operation&>(el).setArtifact(dynamic_cast<Artifact*>(m_el));
+    if (el.getArtifact() != m_el) {
+        el.setArtifact(m_el);
     }
 
-    if (!dynamic_cast<Operation&>(el).getRedefinitionContext().count(m_el->getID())) {
-        dynamic_cast<Operation&>(el).getRedefinitionContext().add(*dynamic_cast<Artifact*>(m_el));
+    if (!el.getRedefinitionContext().count(m_el->getID())) {
+        el.getRedefinitionContext().add(*m_el);
     }
 
-    m_el->as<Artifact>().getOwnedOperations().updateCopiedSequenceAddedTo<Artifact>(el.as<Operation>(), &Artifact::getOwnedOperations);
+    m_el->getOwnedOperations().updateCopiedSequenceAddedTo<Artifact>(el, &Artifact::getOwnedOperations);
 }
 
-void Artifact::RemoveOwnedOperationFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Artifact*>(m_el)->getFeatures().count(el.getID())) {
-        dynamic_cast<Artifact*>(m_el)->getFeatures().remove(dynamic_cast<Operation&>(el));
+void Artifact::RemoveOwnedOperationFunctor::operator()(Operation& el) const {
+    if (m_el->getFeatures().count(el.getID())) {
+        m_el->getFeatures().remove(el);
     }
 
-    if (dynamic_cast<Artifact*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<Artifact*>(m_el)->getOwnedMembers().remove(dynamic_cast<Operation&>(el));
+    if (m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().remove(el);
     }
 
-    if (dynamic_cast<Operation&>(el).getArtifact() == m_el) {
-        dynamic_cast<Operation&>(el).setArtifact(0);
+    if (el.getArtifact() == m_el) {
+        el.setArtifact(0);
     }
 
-    if (dynamic_cast<Operation&>(el).getRedefinitionContext().count(m_el->getID())) {
-        dynamic_cast<Operation&>(el).getRedefinitionContext().remove(*dynamic_cast<Artifact*>(m_el));
+    if (el.getRedefinitionContext().count(m_el->getID())) {
+        el.getRedefinitionContext().remove(*m_el);
     }
 
-    m_el->as<Artifact>().getOwnedOperations().updateCopiedSequenceRemovedFrom<Artifact>(el.as<Operation>(), &Artifact::getOwnedOperations);
+    m_el->getOwnedOperations().updateCopiedSequenceRemovedFrom<Artifact>(el, &Artifact::getOwnedOperations);
 }
 
-void Artifact::CheckNestedArtifactFunctor::operator()(Element& el) const {
+void Artifact::CheckNestedArtifactFunctor::operator()(Artifact& el) const {
     if (el.getID() == m_el->getID()) {
         throw NestedArtifactException();
     }
 }
 
-void Artifact::AddNestedArtifactFunctor::operator()(Element& el) const {
-    if (!m_el->as<Artifact>().getOwnedMembers().count(el.getID())) {
-        m_el->as<Artifact>().getOwnedMembers().add(el.as<Artifact>());
+void Artifact::AddNestedArtifactFunctor::operator()(Artifact& el) const {
+    if (!m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().add(el);
     }
 
-    m_el->as<Artifact>().getNestedArtifacts().updateCopiedSequenceAddedTo<Artifact>(el.as<Artifact>(), &Artifact::getNestedArtifacts);
+    m_el->getNestedArtifacts().updateCopiedSequenceAddedTo<Artifact>(el, &Artifact::getNestedArtifacts);
 }
 
-void Artifact::RemoveNestedArtifactFunctor::operator()(Element& el) const {
-    if (m_el->as<Artifact>().getOwnedMembers().count(el.getID())) {
-        m_el->as<Artifact>().getOwnedMembers().remove(el.as<Artifact>());
+void Artifact::RemoveNestedArtifactFunctor::operator()(Artifact& el) const {
+    if (m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().remove(el);
     }
 
-    m_el->as<Artifact>().getNestedArtifacts().updateCopiedSequenceRemovedFrom<Artifact>(el.as<Artifact>(), &Artifact::getNestedArtifacts);
+    m_el->getNestedArtifacts().updateCopiedSequenceRemovedFrom<Artifact>(el, &Artifact::getNestedArtifacts);
 }
 
-void Artifact::AddManifestationFunctor::operator()(Element& el) const {
+void Artifact::AddManifestationFunctor::operator()(Manifestation& el) const {
     if (!m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalAdd(el);
     }
 
-    el.as<Manifestation>().setArtifact(&m_el->as<Artifact>());
-    m_el->as<Artifact>().getManifestations().updateCopiedSequenceAddedTo<Artifact>(el.as<Manifestation>(), &Artifact::getManifestations);
+    el.setArtifact(m_el);
+    m_el->getManifestations().updateCopiedSequenceAddedTo<Artifact>(el, &Artifact::getManifestations);
 }
 
-void Artifact::RemoveManifestationFunctor::operator()(Element& el) const {
+void Artifact::RemoveManifestationFunctor::operator()(Manifestation& el) const {
     if (m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalRemove(el);
     }
 
-    el.as<Manifestation>().setArtifact(0); 
-    m_el->as<Artifact>().getManifestations().updateCopiedSequenceRemovedFrom<Artifact>(el.as<Manifestation>(), &Artifact::getManifestations);
+    el.setArtifact(0); 
+    m_el->getManifestations().updateCopiedSequenceRemovedFrom<Artifact>(el, &Artifact::getManifestations);
 }
 
 Artifact::Artifact() {

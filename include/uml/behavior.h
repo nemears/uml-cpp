@@ -14,15 +14,15 @@ namespace UML {
             BehavioralFeature* m_specificationPtr;
             ID m_behavioredClassifierID;
             BehavioredClassifier* m_behavioredClassifierPtr;
-            class AddParameterFunctor : public AbstractSequenceFunctor {
+            class AddParameterFunctor : public TemplateAbstractSequenceFunctor<Parameter,Behavior> {
                 public:
-                    AddParameterFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddParameterFunctor(Behavior* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Parameter& el) const override;
             };
-            class RemoveParameterFunctor : public AbstractSequenceFunctor {
+            class RemoveParameterFunctor : public TemplateAbstractSequenceFunctor<Parameter,Behavior> {
                 public:
-                    RemoveParameterFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemoveParameterFunctor(Behavior* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Parameter& el) const override;
             };
         public:
             Behavior();

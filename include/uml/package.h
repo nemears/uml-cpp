@@ -18,45 +18,45 @@ namespace UML {
             Sequence<PackageMerge> m_packageMerge;
             Sequence<ProfileApplication> m_profileApplications;
             Sequence<Stereotype> m_ownedStereotypes;
-            class AddPackagedElementFunctor : public AbstractSequenceFunctor {
+            class AddPackagedElementFunctor : public TemplateAbstractSequenceFunctor<PackageableElement,Package> {
                 public:
-                    AddPackagedElementFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddPackagedElementFunctor(Package* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(PackageableElement& el) const override;
             };
-            class RemovePackagedElementFunctor : public AbstractSequenceFunctor {
+            class RemovePackagedElementFunctor : public TemplateAbstractSequenceFunctor<PackageableElement,Package> {
                 public:
-                    RemovePackagedElementFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemovePackagedElementFunctor(Package* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(PackageableElement& el) const override;
             };
-            class AddPackageMergeFunctor : public AbstractSequenceFunctor {
+            class AddPackageMergeFunctor : public TemplateAbstractSequenceFunctor<PackageMerge,Package> {
                 public:
-                    AddPackageMergeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddPackageMergeFunctor(Package* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(PackageMerge& el) const override;
             };
-            class RemovePackageMergeFunctor : public AbstractSequenceFunctor {
+            class RemovePackageMergeFunctor : public TemplateAbstractSequenceFunctor<PackageMerge,Package> {
                 public:
-                    RemovePackageMergeFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    RemovePackageMergeFunctor(Package* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(PackageMerge& el) const override;
             };
-            class AddProfileApplicationFunctor : public AbstractSequenceFunctor {
+            class AddProfileApplicationFunctor : public TemplateAbstractSequenceFunctor<ProfileApplication,Package> {
                 public:
-                    AddProfileApplicationFunctor(Element* me) : AbstractSequenceFunctor(me){};
-                    void operator()(Element& el) const override;
+                    AddProfileApplicationFunctor(Package* me) : TemplateAbstractSequenceFunctor(me){};
+                    void operator()(ProfileApplication& el) const override;
             };
-            class RemoveProfileApplicationFunctor : public AbstractSequenceFunctor {
+            class RemoveProfileApplicationFunctor : public TemplateAbstractSequenceFunctor<ProfileApplication,Package> {
                 public:
-                    RemoveProfileApplicationFunctor(Element* me) : AbstractSequenceFunctor(me){};
-                    void operator()(Element& el) const override;
+                    RemoveProfileApplicationFunctor(Package* me) : TemplateAbstractSequenceFunctor(me){};
+                    void operator()(ProfileApplication& el) const override;
             };
-            class AddOwnedStereotypeFunctor : public AbstractSequenceFunctor {
+            class AddOwnedStereotypeFunctor : public TemplateAbstractSequenceFunctor<Stereotype,Package> {
                 public:
-                    AddOwnedStereotypeFunctor(Element* me) : AbstractSequenceFunctor(me){};
-                    void operator()(Element& el) const override;
+                    AddOwnedStereotypeFunctor(Package* me) : TemplateAbstractSequenceFunctor(me){};
+                    void operator()(Stereotype& el) const override;
             };
-            class RemoveOwnedStereotypeFunctor : public AbstractSequenceFunctor {
+            class RemoveOwnedStereotypeFunctor : public TemplateAbstractSequenceFunctor<Stereotype,Package> {
                 public:
-                    RemoveOwnedStereotypeFunctor(Element* me) : AbstractSequenceFunctor(me){};
-                    void operator()(Element& el) const override;
+                    RemoveOwnedStereotypeFunctor(Package* me) : TemplateAbstractSequenceFunctor(me){};
+                    void operator()(Stereotype& el) const override;
             };
             void setManager(UmlManager* manager) override;
             void restoreReleased(ID id, Element* released) override;

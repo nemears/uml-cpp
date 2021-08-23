@@ -5,66 +5,37 @@
 
 using namespace UML;
 
-void Package::AddPackagedElementFunctor::operator()(Element& el) const {
-    if (dynamic_cast<PackageableElement&>(el).getOwningPackage() != m_el) {
-        dynamic_cast<PackageableElement&>(el).setOwningPackage(dynamic_cast<Package*>(m_el));
+void Package::AddPackagedElementFunctor::operator()(PackageableElement& el) const {
+    if (el.getOwningPackage() != m_el) {
+        el.setOwningPackage(m_el);
     }
 
-    if (!dynamic_cast<Namespace*>(m_el)->getOwnedMembers().count(el.getID())) {
-        dynamic_cast<Namespace*>(m_el)->getOwnedMembers().add(dynamic_cast<NamedElement&>(el));
+    if (!m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().add(el);
     }
 
-    m_el->as<Package>().getPackagedElements().updateCopiedSequenceAddedTo<Package>(el.as<PackageableElement>(), &Package::getPackagedElements);
+    m_el->getPackagedElements().updateCopiedSequenceAddedTo<Package>(el, &Package::getPackagedElements);
 }
 
-void Package::RemovePackagedElementFunctor::operator()(Element& el) const {
-    if (dynamic_cast<PackageableElement&>(el).getOwningPackage() == m_el) {
-        dynamic_cast<PackageableElement&>(el).setOwningPackage(0);
+void Package::RemovePackagedElementFunctor::operator()(PackageableElement& el) const {
+    if (el.getOwningPackage() == m_el) {
+        el.setOwningPackage(0);
     }
 
-    if (dynamic_cast<Package*>(m_el)->getMembers().count(el.getID())) {
-        dynamic_cast<Package*>(m_el)->getMembers().remove(dynamic_cast<PackageableElement&>(el));
+    if (m_el->getMembers().count(el.getID())) {
+        m_el->getMembers().remove(el);
     }
 
-    m_el->as<Package>().getPackagedElements().updateCopiedSequenceRemovedFrom<Package>(el.as<PackageableElement>(), &Package::getPackagedElements);
+    m_el->getPackagedElements().updateCopiedSequenceRemovedFrom<Package>(el, &Package::getPackagedElements);
 }
 
-void Package::AddPackageMergeFunctor::operator()(Element& el) const {
-    if (dynamic_cast<PackageMerge&>(el).getReceivingPackage() != m_el) {
-        dynamic_cast<PackageMerge&>(el).setReceivingPackage(dynamic_cast<Package*>(m_el));
-    }
-
-    if (!dynamic_cast<Package*>(m_el)->getDirectedRelationships().count(el.getID())) {
-        dynamic_cast<Package*>(m_el)->getDirectedRelationships().add(dynamic_cast<PackageMerge&>(el));
-    }
-
-    if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalAdd(el);
-    }
-}
-
-void Package::RemovePackageMergeFunctor::operator()(Element& el) const {
-
-    if (dynamic_cast<PackageMerge&>(el).getReceivingPackage() == m_el) {
-        dynamic_cast<PackageMerge&>(el).setReceivingPackage(0);
-    }
-
-    if (dynamic_cast<Package*>(m_el)->getDirectedRelationships().count(el.getID())) {
-        dynamic_cast<Package*>(m_el)->getDirectedRelationships().remove(dynamic_cast<PackageMerge&>(el));
-    }
-
-    if (m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalRemove(el);
-    }
-}
-
-void Package::AddProfileApplicationFunctor::operator()(Element& el) const {
-    if (dynamic_cast<ProfileApplication&>(el).getApplyingPackage() != m_el) {
-        dynamic_cast<ProfileApplication&>(el).setApplyingPackage(dynamic_cast<Package*>(m_el));
+void Package::AddPackageMergeFunctor::operator()(PackageMerge& el) const {
+    if (el.getReceivingPackage() != m_el) {
+        el.setReceivingPackage(m_el);
     }
 
     if (!m_el->getDirectedRelationships().count(el.getID())) {
-        m_el->getDirectedRelationships().add(dynamic_cast<ProfileApplication&>(el));
+        m_el->getDirectedRelationships().add(el);
     }
 
     if (!m_el->getOwnedElements().count(el.getID())) {
@@ -72,13 +43,14 @@ void Package::AddProfileApplicationFunctor::operator()(Element& el) const {
     }
 }
 
-void Package::RemoveProfileApplicationFunctor::operator()(Element& el) const {
-    if (dynamic_cast<ProfileApplication&>(el).getApplyingPackage() == m_el) {
-        dynamic_cast<ProfileApplication&>(el).setApplyingPackage(0);
+void Package::RemovePackageMergeFunctor::operator()(PackageMerge& el) const {
+
+    if (el.getReceivingPackage() == m_el) {
+        el.setReceivingPackage(0);
     }
 
     if (m_el->getDirectedRelationships().count(el.getID())) {
-        m_el->getDirectedRelationships().remove(dynamic_cast<ProfileApplication&>(el));
+        m_el->getDirectedRelationships().remove(el);
     }
 
     if (m_el->getOwnedElements().count(el.getID())) {
@@ -86,15 +58,43 @@ void Package::RemoveProfileApplicationFunctor::operator()(Element& el) const {
     }
 }
 
-void Package::AddOwnedStereotypeFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<Package*>(m_el)->getPackagedElements().count(el.getID())) {
-        dynamic_cast<Package*>(m_el)->getPackagedElements().add(dynamic_cast<Stereotype&>(el));
+void Package::AddProfileApplicationFunctor::operator()(ProfileApplication& el) const {
+    if (el.getApplyingPackage() != m_el) {
+        el.setApplyingPackage(m_el);
+    }
+
+    if (!m_el->getDirectedRelationships().count(el.getID())) {
+        m_el->getDirectedRelationships().add(el);
+    }
+
+    if (!m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalAdd(el);
     }
 }
 
-void Package::RemoveOwnedStereotypeFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Package*>(m_el)->getPackagedElements().count(el.getID())) {
-        dynamic_cast<Package*>(m_el)->getPackagedElements().remove(dynamic_cast<Stereotype&>(el));
+void Package::RemoveProfileApplicationFunctor::operator()(ProfileApplication& el) const {
+    if (el.getApplyingPackage() == m_el) {
+        el.setApplyingPackage(0);
+    }
+
+    if (m_el->getDirectedRelationships().count(el.getID())) {
+        m_el->getDirectedRelationships().remove(el);
+    }
+
+    if (m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalRemove(el);
+    }
+}
+
+void Package::AddOwnedStereotypeFunctor::operator()(Stereotype& el) const {
+    if (!m_el->getPackagedElements().count(el.getID())) {
+        m_el->getPackagedElements().add(el);
+    }
+}
+
+void Package::RemoveOwnedStereotypeFunctor::operator()(Stereotype& el) const {
+    if (m_el->getPackagedElements().count(el.getID())) {
+        m_el->getPackagedElements().remove(el);
     }
 }
 

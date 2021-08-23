@@ -8,10 +8,10 @@ namespace UML {
         protected:
             std::string m_symbol;
             Sequence<ValueSpecification> m_operands;
-            class AddOperandFunctor : public AbstractSequenceFunctor {
+            class AddOperandFunctor : public TemplateAbstractSequenceFunctor<ValueSpecification,Expression> {
                 public:
-                    AddOperandFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddOperandFunctor(Expression* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(ValueSpecification& el) const override;
             };
         public:
             Sequence<ValueSpecification>& getOperands();

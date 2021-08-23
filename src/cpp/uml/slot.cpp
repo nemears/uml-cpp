@@ -22,9 +22,9 @@ void Slot::setManager(UmlManager* manager) {
     m_values.m_manager = manager;
 }
 
-void Slot::AddValueFunctor::operator()(Element& el) const {
-    if (dynamic_cast<ValueSpecification&>(el).getOwningSlot() != m_el) {
-        dynamic_cast<ValueSpecification&>(el).setOwningSlot(dynamic_cast<Slot*>(m_el));
+void Slot::AddValueFunctor::operator()(ValueSpecification& el) const {
+    if (el.getOwningSlot() != m_el) {
+        el.setOwningSlot(m_el);
     }
     
     if (el.getOwner() != m_el) {
@@ -32,13 +32,13 @@ void Slot::AddValueFunctor::operator()(Element& el) const {
     }
 }
 
-void Slot::RemoveValueFunctor::operator()(Element& el) const {
-    if (dynamic_cast<ValueSpecification&>(el).getOwningSlot() == m_el) {
-        dynamic_cast<ValueSpecification&>(el).setOwningSlot(0);
+void Slot::RemoveValueFunctor::operator()(ValueSpecification& el) const {
+    if (el.getOwningSlot() == m_el) {
+        el.setOwningSlot(0);
     }
 
-    if (dynamic_cast<ValueSpecification&>(el).getOwner() == m_el) {
-        dynamic_cast<ValueSpecification&>(el).setOwner(0);
+    if (el.getOwner() == m_el) {
+        el.setOwner(0);
     }
 }
 

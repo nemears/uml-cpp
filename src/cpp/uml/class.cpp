@@ -4,55 +4,55 @@
 
 using namespace UML;
 
-void Class::AddOwnedOperationFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Operation&>(el).getClass() != m_el) {
-        dynamic_cast<Operation&>(el).setClass(dynamic_cast<Class*>(m_el));
+void Class::AddOwnedOperationFunctor::operator()(Operation& el) const {
+    if (el.getClass() != m_el) {
+        el.setClass(m_el);
     }
 
-    if (dynamic_cast<Operation&>(el).getNamespace() != m_el) {
-        dynamic_cast<Operation&>(el).setNamespace(dynamic_cast<Class*>(m_el));
-    }
-}
-
-void Class::RemoveOwnedOperationFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Operation&>(el).getClass() == m_el) {
-        dynamic_cast<Operation&>(el).setClass(0);
-    }
-
-    if (dynamic_cast<Class*>(m_el)->getFeatures().count(el.getID())) {
-        dynamic_cast<Class*>(m_el)->getFeatures().remove(dynamic_cast<Operation&>(el));
+    if (el.getNamespace() != m_el) {
+        el.setNamespace(m_el);
     }
 }
 
-void Class::ClassAddOwnedAttributeFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Property&>(el).getClass() != m_el) {
-        dynamic_cast<Property&>(el).setClass(dynamic_cast<Class*>(m_el));
+void Class::RemoveOwnedOperationFunctor::operator()(Operation& el) const {
+    if (el.getClass() == m_el) {
+        el.setClass(0);
+    }
+
+    if (m_el->getFeatures().count(el.getID())) {
+        m_el->getFeatures().remove(el);
     }
 }
 
-void Class::ClassRemoveOwnedAttributeFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Property&>(el).getClass() == m_el) {
-        dynamic_cast<Property&>(el).setClass(0);
+void Class::ClassAddOwnedAttributeFunctor::operator()(Property& el) const {
+    if (el.getClass() != m_el) {
+        el.setClass(m_el);
     }
 }
 
-void Class::AddNestedClassifierFunctor::operator()(Element& el) const {
-    if (!m_el->as<Class>().getOwnedMembers().count(el.getID())) {
-        m_el->as<Class>().getOwnedMembers().add(el.as<Classifier>());
-    }
-
-    if (!m_el->as<Class>().getRedefinedElements().count(el.getID())) {
-        m_el->as<Class>().getRedefinedElements().add(el.as<Classifier>());
+void Class::ClassRemoveOwnedAttributeFunctor::operator()(Property& el) const {
+    if (el.getClass() == m_el) {
+        el.setClass(0);
     }
 }
 
-void Class::RemoveNestedClassifierFunctor::operator()(Element& el) const {
-    if (m_el->as<Class>().getOwnedMembers().count(el.getID())) {
-        m_el->as<Class>().getOwnedMembers().remove(el.as<Classifier>());
+void Class::AddNestedClassifierFunctor::operator()(Classifier& el) const {
+    if (!m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().add(el);
     }
 
-    if (m_el->as<Class>().getRedefinedElements().count(el.getID())) {
-        m_el->as<Class>().getRedefinedElements().remove(el.as<Classifier>());
+    if (!m_el->getRedefinedElements().count(el.getID())) {
+        m_el->getRedefinedElements().add(el);
+    }
+}
+
+void Class::RemoveNestedClassifierFunctor::operator()(Classifier& el) const {
+    if (m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().remove(el);
+    }
+
+    if (m_el->getRedefinedElements().count(el.getID())) {
+        m_el->getRedefinedElements().remove(el);
     }
 }
 

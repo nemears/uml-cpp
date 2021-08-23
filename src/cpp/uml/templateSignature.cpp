@@ -6,31 +6,31 @@
 
 using namespace UML;
 
-void TemplateSignature::AddOwnedParameterFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<TemplateSignature*>(m_el)->getOwnedElements().count(el.getID())) {
-        dynamic_cast<TemplateSignature*>(m_el)->getOwnedElements().internalAdd(el);
+void TemplateSignature::AddOwnedParameterFunctor::operator()(TemplateParameter& el) const {
+    if (!m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalAdd(el);
     }
 
-    if (dynamic_cast<TemplateParameter&>(el).getSignature() != dynamic_cast<TemplateSignature*>(m_el)) {
-        dynamic_cast<TemplateParameter&>(el).setSignature(dynamic_cast<TemplateSignature*>(m_el));
+    if (el.getSignature() != m_el) {
+        el.setSignature(m_el);
     }
 
-    if (!dynamic_cast<TemplateSignature*>(m_el)->getParameter().count(el.getID())) {
-        dynamic_cast<TemplateSignature*>(m_el)->getParameter().add(dynamic_cast<TemplateParameter&>(el));
+    if (!m_el->getParameter().count(el.getID())) {
+        m_el->getParameter().add(el);
     }
 }
 
-void TemplateSignature::RemoveOwnedParameterFunctor::operator()(Element& el) const {
+void TemplateSignature::RemoveOwnedParameterFunctor::operator()(TemplateParameter& el) const {
     if (m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalRemove(el);
     }
 
-    if (dynamic_cast<TemplateParameter&>(el).getSignature() == m_el) {
-        dynamic_cast<TemplateParameter&>(el).setSignature(0);
+    if (el.getSignature() == m_el) {
+        el.setSignature(0);
     }
 
-    if (dynamic_cast<TemplateSignature*>(m_el)->getParameter().count(el.getID())) {
-        dynamic_cast<TemplateSignature*>(m_el)->getParameter().remove(dynamic_cast<TemplateParameter&>(el));
+    if (m_el->getParameter().count(el.getID())) {
+        m_el->getParameter().remove(el);
     }
 }
 

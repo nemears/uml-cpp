@@ -19,18 +19,18 @@ void SetOwnerFunctor::operator()(Element& el) const{
     m_el->getOwnedElements().updateCopiedSequenceAddedTo<>(el, &Element::getOwnedElements);
 }
 
-void AddRelationshipFunctor::operator()(Element& el) const {
-    if (!dynamic_cast<Relationship&>(el).getRelatedElements().count(m_el->getID())) {
-        dynamic_cast<Relationship&>(el).getRelatedElements().internalAdd(*m_el);
+void AddRelationshipFunctor::operator()(Relationship& el) const {
+    if (!el.getRelatedElements().count(m_el->getID())) {
+        el.getRelatedElements().internalAdd(*m_el);
     }
-    m_el->getRelationships().updateCopiedSequenceAddedTo<>(el.as<Relationship>(), &Element::getRelationships);
+    m_el->getRelationships().updateCopiedSequenceAddedTo<>(el, &Element::getRelationships);
 }
 
-void RemoveRelationshipFunctor::operator()(Element& el) const {
-    if (dynamic_cast<Relationship&>(el).getRelatedElements().count(m_el->getID())) {
-        dynamic_cast<Relationship&>(el).getRelatedElements().internalRemove(*m_el);
+void RemoveRelationshipFunctor::operator()(Relationship& el) const {
+    if (el.getRelatedElements().count(m_el->getID())) {
+        el.getRelatedElements().internalRemove(*m_el);
     }
-    m_el->getRelationships().updateCopiedSequenceRemovedFrom<>(el.as<Relationship>(), &Element::getRelationships);
+    m_el->getRelationships().updateCopiedSequenceRemovedFrom<>(el, &Element::getRelationships);
 }
 
 void RemoveOwnerFunctor::operator()(Element& el) const {
@@ -40,63 +40,59 @@ void RemoveOwnerFunctor::operator()(Element& el) const {
     m_el->getOwnedElements().updateCopiedSequenceRemovedFrom<>(el, &Element::getOwnedElements);
 }
 
-void ReadOnlySequenceFunctor::operator()(Element& el) const {
-    throw ReadOnlySequenceException(m_el->getID().string(), m_name);
-}
-
-void AddDirectedRelationshipFunctor::operator()(Element& el) const {
+void AddDirectedRelationshipFunctor::operator()(DirectedRelationship& el) const {
     if (!m_el->getRelationships().count(el.getID())) {
-        m_el->getRelationships().internalAdd(dynamic_cast<DirectedRelationship&>(el));
+        m_el->getRelationships().internalAdd(el);
     }
-    m_el->getDirectedRelationships().updateCopiedSequenceAddedTo<>(el.as<DirectedRelationship>(), &Element::getDirectedRelationships);
+    m_el->getDirectedRelationships().updateCopiedSequenceAddedTo<>(el, &Element::getDirectedRelationships);
 }
 
-void RemoveDirectedRelationshipFunctor::operator()(Element& el) const {
+void RemoveDirectedRelationshipFunctor::operator()(DirectedRelationship& el) const {
     if (m_el->getRelationships().count(el.getID())) {
-        m_el->getRelationships().internalRemove(dynamic_cast<DirectedRelationship&>(el));
+        m_el->getRelationships().internalRemove(el);
     }
-    m_el->getDirectedRelationships().updateCopiedSequenceRemovedFrom<>(el.as<DirectedRelationship>(), &Element::getDirectedRelationships);
+    m_el->getDirectedRelationships().updateCopiedSequenceRemovedFrom<>(el, &Element::getDirectedRelationships);
 }
 
-void AddOwnedCommentFunctor::operator()(Element& el) const {
-    if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalAdd(dynamic_cast<Comment&>(el));
-    }
-
-    if (dynamic_cast<Comment&>(el).getOwningElement() != m_el) {
-        dynamic_cast<Comment&>(el).setOwningElement(m_el);
-    }
-    m_el->getOwnedComments().updateCopiedSequenceAddedTo<>(el.as<Comment>(), &Element::getOwnedComments);
-}
-
-void RemoveOwnedCommentFunctor::operator()(Element& el) const {
-    if (m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalRemove(el);
-    }
-
-    if (dynamic_cast<Comment&>(el).getOwningElement() ==  m_el) {
-        dynamic_cast<Comment&>(el).setOwningElement(0);
-    }
-    m_el->getOwnedComments().updateCopiedSequenceRemovedFrom<>(el.as<Comment>(), &Element::getOwnedComments);
-}
-
-void AddAppliedStereotypeFunctor::operator()(Element& el) const {
+void AddOwnedCommentFunctor::operator()(Comment& el) const {
     if (!m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalAdd(el);
     }
-    m_el->getAppliedStereotypes().updateCopiedSequenceAddedTo<>(el.as<InstanceSpecification>(), &Element::getAppliedStereotypes);
+
+    if (el.getOwningElement() != m_el) {
+        el.setOwningElement(m_el);
+    }
+    m_el->getOwnedComments().updateCopiedSequenceAddedTo<>(el, &Element::getOwnedComments);
 }
 
-void RemoveAppliedStereotypeFunctor::operator()(Element& el) const {
+void RemoveOwnedCommentFunctor::operator()(Comment& el) const {
     if (m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalRemove(el);
     }
-    m_el->getAppliedStereotypes().updateCopiedSequenceRemovedFrom<>(el.as<InstanceSpecification>(), &Element::getAppliedStereotypes);
+
+    if (el.getOwningElement() ==  m_el) {
+        el.setOwningElement(0);
+    }
+    m_el->getOwnedComments().updateCopiedSequenceRemovedFrom<>(el, &Element::getOwnedComments);
 }
 
-void CheckAppliedStereotypeFunctor::operator()(Element& el) const {
-    if (dynamic_cast<InstanceSpecification&>(el).getClassifier() != 0) {
-        if (!dynamic_cast<InstanceSpecification&>(el).getClassifier()->isSubClassOf(ElementType::STEREOTYPE)) {
+void AddAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {
+    if (!m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalAdd(el);
+    }
+    m_el->getAppliedStereotypes().updateCopiedSequenceAddedTo<>(el, &Element::getAppliedStereotypes);
+}
+
+void RemoveAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {
+    if (m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalRemove(el);
+    }
+    m_el->getAppliedStereotypes().updateCopiedSequenceRemovedFrom<>(el, &Element::getAppliedStereotypes);
+}
+
+void CheckAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {
+    if (el.getClassifier() != 0) {
+        if (!el.getClassifier()->isSubClassOf(ElementType::STEREOTYPE)) {
             // TODO: check extension
             throw InvalidAppliedStereotypeException();
         }
@@ -120,9 +116,9 @@ Element::Element() {
     m_ownedElements->removeChecks.push_back(new ReadOnlySequenceFunctor(this, "ownedElements"));
     m_relationships = new Sequence<Relationship>(this);
     m_relationships->addProcedures.push_back(new AddRelationshipFunctor(this));
-    m_relationships->addChecks.push_back(new ReadOnlySequenceFunctor(this, "relationships"));
+    m_relationships->addChecks.push_back(new ReadOnlySequenceFunctor<Relationship>(this, "relationships"));
     m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
-    m_relationships->removeChecks.push_back(new ReadOnlySequenceFunctor(this, "relationships"));
+    m_relationships->removeChecks.push_back(new ReadOnlySequenceFunctor<Relationship>(this, "relationships"));
     m_directedRelationships = new Sequence<DirectedRelationship>(this);
     m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));
     m_directedRelationships->removeProcedures.push_back(new RemoveDirectedRelationshipFunctor(this));
@@ -177,11 +173,11 @@ Element::Element(const Element& el) {
     m_relationships->addProcedures.clear();
     m_relationships->addProcedures.push_back(new AddRelationshipFunctor(this));
     m_relationships->addChecks.clear();
-    m_relationships->addChecks.push_back(new ReadOnlySequenceFunctor(this, "relationships"));
+    m_relationships->addChecks.push_back(new ReadOnlySequenceFunctor<Relationship>(this, "relationships"));
     m_relationships->removeProcedures.clear();
     m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
     m_relationships->removeChecks.clear();
-    m_relationships->removeChecks.push_back(new ReadOnlySequenceFunctor(this, "relationships"));
+    m_relationships->removeChecks.push_back(new ReadOnlySequenceFunctor<Relationship>(this, "relationships"));
     m_directedRelationships->addProcedures.clear();
     m_directedRelationships->removeProcedures.clear();
     m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));

@@ -32,26 +32,26 @@ void ActivityNode::reindexID(ID oldID, ID newID) {
 //     NamedElement::reindexName(oldName, newName);
 // }
 
-void ActivityNode::AddIncomingFunctor::operator()(Element& el) const {
-    if (dynamic_cast<ActivityEdge&>(el).getTarget() != m_el) {
-        dynamic_cast<ActivityEdge&>(el).setTarget(dynamic_cast<ActivityNode*>(m_el));
+void ActivityNode::AddIncomingFunctor::operator()(ActivityEdge& el) const {
+    if (el.getTarget() != m_el) {
+        el.setTarget(m_el);
     }
 }
 
-void ActivityNode::AddOutgoingFunctor::operator()(Element& el) const {
-    if (dynamic_cast<ActivityEdge&>(el).getSource() != m_el) {
-        dynamic_cast<ActivityEdge&>(el).setSource(dynamic_cast<ActivityNode*>(m_el));
+void ActivityNode::AddOutgoingFunctor::operator()(ActivityEdge& el) const {
+    if (el.getSource() != m_el) {
+        el.setSource(m_el);
     }
 }
 
-void ActivityNode::CheckIncomingFunctor::operator()(Element& el) const {
-    if(dynamic_cast<ActivityNode*>(m_el)->getIncoming().count(el.getID())) {
+void ActivityNode::CheckIncomingFunctor::operator()(ActivityEdge& el) const {
+    if(m_el->getIncoming().count(el.getID())) {
         throw DuplicateEdgeException(el.getID().string());
     }
 }
 
-void ActivityNode::CheckOutgoingFunctor::operator()(Element& el) const {
-    if(dynamic_cast<ActivityNode*>(m_el)->getOutgoing().count(el.getID())) {
+void ActivityNode::CheckOutgoingFunctor::operator()(ActivityEdge& el) const {
+    if(m_el->getOutgoing().count(el.getID())) {
         throw DuplicateEdgeException(el.getID().string());
     }
 }

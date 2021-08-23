@@ -34,11 +34,11 @@ namespace UML {
         private:
             std::string m_name;
         public:
-            ReadOnlySequenceFunctor(Element* me, std::string sequenceName) : TemplateAbstractSequenceFunctor(me) {
+            ReadOnlySequenceFunctor<T>(Element* me, std::string sequenceName) : TemplateAbstractSequenceFunctor<T>(me) {
                 m_name = sequenceName;
             };
             void operator()(T& el) const override {
-                throw ReadOnlySequenceException(m_el->getID().string(), m_name);
+                throw ReadOnlySequenceException(this->m_el->getID().string(), m_name);
             };
     };
 

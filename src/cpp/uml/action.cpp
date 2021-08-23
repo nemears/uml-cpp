@@ -2,15 +2,21 @@
 
 using namespace UML;
 
-void Action::AddPinFunctor::operator()(Element& el) const {
+void Action::AddInputFunctor::operator()(InputPin& el) const {
+    if (el.getOwner() != m_el) {
+        m_el->getOwnedElements().internalAdd(el);
+    }
+}
+
+void Action::AddOutputFunctor::operator()(OutputPin& el) const {
     if (el.getOwner() != m_el) {
         m_el->getOwnedElements().internalAdd(el);
     }
 }
 
 Action::Action() {
-    m_inputs.addProcedures.push_back(new AddPinFunctor(this));
-    m_outputs.addProcedures.push_back(new AddPinFunctor(this));
+    m_inputs.addProcedures.push_back(new AddInputFunctor(this));
+    m_outputs.addProcedures.push_back(new AddOutputFunctor(this));
 }
 
 Action::~Action() {

@@ -11,10 +11,15 @@ namespace UML {
         protected:
             Sequence<InputPin> m_inputs;
             Sequence<OutputPin> m_outputs;
-            class AddPinFunctor : public AbstractSequenceFunctor {
+            class AddInputFunctor : public TemplateAbstractSequenceFunctor<InputPin,Action> {
                 public:
-                    AddPinFunctor(Element* me) : AbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
+                    AddInputFunctor(Action* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(InputPin& el) const override;
+            };
+            class AddOutputFunctor : public TemplateAbstractSequenceFunctor<OutputPin,Action> {
+                public:
+                    AddOutputFunctor(Action* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(OutputPin& el) const override;
             };
         public:
             Action();

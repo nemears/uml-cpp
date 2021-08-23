@@ -16,20 +16,14 @@ void Namespace::RemoveMemberFunctor::operator()(NamedElement& el) const {
 void Namespace::AddOwnedMemberFunctor::operator()(NamedElement& el) const {
     subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
     subsetsAdd<Namespace, NamedElement>(el, &Namespace::getMembers);
-
-    el.setNamespace(m_el);
-
+    oppositeSingletonAdd(el, &NamedElement::setNamespace);
     m_el->getOwnedMembers().updateCopiedSequenceAddedTo<Namespace>(el, &Namespace::getOwnedMembers);
 }
 
 void Namespace::RemoveOwnedMemberFunctor::operator()(NamedElement& el) const {
     subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
     subsetsRemove<Namespace, NamedElement>(el, &Namespace::getMembers);
-
-    if (el.getNamespace() == m_el) {
-        el.setNamespace(0);
-    }
-
+    oppositeSingletonRemove(el, &NamedElement::m_namespaceID, &NamedElement::setNamespace);
     m_el->getOwnedMembers().updateCopiedSequenceRemovedFrom<Namespace>(el, &Namespace::getOwnedMembers);
 }
 

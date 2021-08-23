@@ -394,6 +394,14 @@ namespace UML {
                     (el.*op)().internalRemove(*m_el);
                 }
             };
+            void oppositeSingletonAdd(T& el, void (T::*op)(U*)) const {
+                (el.*op)(m_el);
+            };
+            void oppositeSingletonRemove(T& el, ID T::*id, void (T::*op)(U*)) const {
+                if (((el.*id) == m_el->getID())) {
+                    (el.*op)(0);
+                }
+            };
         public:
             TemplateAbstractSequenceFunctor(U* me) : m_el(me) {};
     };

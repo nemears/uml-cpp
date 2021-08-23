@@ -15,21 +15,14 @@ void Namespace::RemoveMemberFunctor::operator()(NamedElement& el) const {
         el.getMemberNamespace().remove(*m_el);
     }
 
-    if (m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().internalRemove(el);
-    }
+    subsetsRemove<Namespace, NamedElement>(el, &Namespace::getOwnedMembers);
 
     m_el->getMembers().updateCopiedSequenceRemovedFrom<Namespace>(el, &Namespace::getMembers);
 }
 
 void Namespace::AddOwnedMemberFunctor::operator()(NamedElement& el) const {
-    if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalAdd(el);
-    }
-
-    if (!m_el->getMembers().count(el.getID())) {
-        m_el->getMembers().add(el);
-    }
+    subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
+    subsetsAdd<Namespace, NamedElement>(el, &Namespace::getMembers);
 
     el.setNamespace(m_el);
 
@@ -37,13 +30,8 @@ void Namespace::AddOwnedMemberFunctor::operator()(NamedElement& el) const {
 }
 
 void Namespace::RemoveOwnedMemberFunctor::operator()(NamedElement& el) const {
-    if (m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalRemove(el);
-    }
-
-    if (m_el->getMembers().count(el.getID())) {
-        m_el->getMembers().remove(el);
-    }
+    subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
+    subsetsRemove<Namespace, NamedElement>(el, &Namespace::getMembers);
 
     if (el.getNamespace() == m_el) {
         el.setNamespace(0);

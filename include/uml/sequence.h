@@ -15,13 +15,6 @@ namespace UML {
             virtual void operator()(T& el) const = 0;
     };
 
-    template <class T = Element, class U = Element> class TemplateAbstractSequenceFunctor : public AbstractSequenceFunctor<T> {
-        protected:
-            U* m_el;
-        public:
-            TemplateAbstractSequenceFunctor(U* me) : m_el(me) {};
-    };
-
     class Property;
     class Slot;
     class BehavioralFeature;
@@ -68,6 +61,7 @@ namespace UML {
     class DeploymentTarget;
     class Artifact;
     class BehavioredClassifier;
+    template <class V, class U> class TemplateAbstractSequenceFunctor;
 
     class ReadOnlySequenceException : public std::exception {
         friend class Element;
@@ -151,6 +145,7 @@ namespace UML {
         friend class BehavioredClassifier;
         friend class SetOwnerFunctor;
         friend class RemoveOwnerFunctor;
+        template <class V, class U> friend class TemplateAbstractSequenceFunctor;
         
         private:
             // Manager
@@ -374,6 +369,23 @@ namespace UML {
                     }
                 }
             };
+    };
+
+    template <class T = Element, class U = Element> class TemplateAbstractSequenceFunctor : public AbstractSequenceFunctor<T> {
+        protected:
+            U* m_el;
+            template <class V = Element, class W = Element> void subsetsAdd(T& el, Sequence<W>& (V::*sub)()) const {
+                if (!(m_el->*sub)().count(el.getID())) {
+                    (m_el->*sub)().internalAdd(el);
+                }
+            };
+            template <class V = Element, class W = Element> void subsetsRemove(T& el, Sequence<W>& (V::*sub)()) const {
+                if ((m_el->*sub)().count(el.getID())) {
+                    (m_el->*sub)().internalRemove(el);
+                }
+            };
+        public:
+            TemplateAbstractSequenceFunctor(U* me) : m_el(me) {};
     };
 
     template <class T> struct SequenceIterator {

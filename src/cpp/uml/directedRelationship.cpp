@@ -24,19 +24,19 @@ void DirectedRelationship::RemoveRelatedElementFunctor::operator()(Element& el) 
 }
 
 void DirectedRelationship::AddSourcesFunctor::operator()(Element& el) const {
-    m_el->as<DirectedRelationship>().getSources().updateCopiedSequenceAddedTo<DirectedRelationship>(el, &DirectedRelationship::getSources);
+    updateCopiedSequenceAddedTo(el, &DirectedRelationship::getSources);
 }
 
 void DirectedRelationship::RemoveSourcesFunctor::operator()(Element& el) const {
-    m_el->as<DirectedRelationship>().getSources().updateCopiedSequenceRemovedFrom<DirectedRelationship>(el, &DirectedRelationship::getSources);
+    updateCopiedSequenceRemovedFrom(el, &DirectedRelationship::getSources);
 }
 
 void DirectedRelationship::AddTargetsFunctor::operator()(Element& el) const {
-    m_el->as<DirectedRelationship>().getTargets().updateCopiedSequenceAddedTo<DirectedRelationship>(el, &DirectedRelationship::getTargets);
+    updateCopiedSequenceAddedTo(el, &DirectedRelationship::getTargets);
 }
 
 void DirectedRelationship::RemoveTargetsFunctor::operator()(Element& el) const {
-    m_el->as<DirectedRelationship>().getTargets().updateCopiedSequenceRemovedFrom<DirectedRelationship>(el, &DirectedRelationship::getTargets);
+    updateCopiedSequenceRemovedFrom(el, &DirectedRelationship::getTargets);
 }
 
 void DirectedRelationship::setManager(UmlManager* manager) {

@@ -83,7 +83,7 @@ void Classifier::AddAttributeFunctor::operator()(Property& el) const {
         el.setFeaturingClassifier(m_el);
     }
 
-    m_el->as<Classifier>().getAttributes().updateCopiedSequenceAddedTo<Classifier>(el, &Classifier::getAttributes);
+    updateCopiedSequenceAddedTo(el, &Classifier::getAttributes);
 }
 
 void Classifier::RemoveAttributeFunctor::operator()(Property& el) const {
@@ -101,7 +101,7 @@ void Classifier::RemoveAttributeFunctor::operator()(Property& el) const {
         }
     }
 
-    m_el->as<Classifier>().getAttributes().updateCopiedSequenceRemovedFrom<Classifier>(el, &Classifier::getAttributes);
+    updateCopiedSequenceRemovedFrom(el, &Classifier::getAttributes);
 }
 
 void Classifier::CheckGeneralizationFunctor::operator()(Generalization& el) const {
@@ -199,7 +199,7 @@ void Classifier::AddFeatureFunctor::operator()(Feature& el) const {
         m_el->getMembers().add(el);
     }
 
-    m_el->as<Classifier>().getFeatures().updateCopiedSequenceAddedTo<Classifier>(el, &Classifier::getFeatures);
+    updateCopiedSequenceAddedTo(el, &Classifier::getFeatures);
 }
 
 void Classifier::RemoveFeatureFunctor::operator()(Feature& el) const {
@@ -217,7 +217,7 @@ void Classifier::RemoveFeatureFunctor::operator()(Feature& el) const {
         m_el->getMembers().add(el);
     }
 
-    m_el->as<Classifier>().getFeatures().updateCopiedSequenceRemovedFrom<Classifier>(el, &Classifier::getFeatures);
+    updateCopiedSequenceRemovedFrom(el, &Classifier::getFeatures);
 }
 
 void Classifier::AddInheritedMemberFunctor::operator()(NamedElement& el) const {

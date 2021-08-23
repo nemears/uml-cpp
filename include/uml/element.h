@@ -117,6 +117,7 @@ namespace UML {
     };
 
     template <class T> class Sequence;
+    template <class T, class U> class TemplateAbstractSequenceFunctor;
     class ElementDoesntExistException;
     class Relationship;
     class DirectedRelationship;
@@ -143,6 +144,7 @@ namespace UML {
         friend class UmlManager;
         friend class AddOwnedCommentFunctor;
         template<typename> friend class Sequence;
+        template <class T, class U> friend class TemplateAbstractSequenceFunctor;
         protected:
             UmlManager* m_manager;
             ManagerNode* m_node;

@@ -27,7 +27,7 @@ void Artifact::AddOwnedAttributeFunctor::operator()(Property& el) const {
         el.setArtifact(m_el);
     }
 
-    m_el->getOwnedAttributes().updateCopiedSequenceAddedTo<Artifact>(el, &Artifact::getOwnedAttributes);
+    updateCopiedSequenceAddedTo(el, &Artifact::getOwnedAttributes);
 }
 
 void Artifact::RemoveOwnedAttributeFunctor::operator()(Property& el) const {
@@ -43,7 +43,7 @@ void Artifact::RemoveOwnedAttributeFunctor::operator()(Property& el) const {
         el.setArtifact(0);
     }
 
-    m_el->getOwnedAttributes().updateCopiedSequenceRemovedFrom<Artifact>(el, &Artifact::getOwnedAttributes);
+    updateCopiedSequenceRemovedFrom(el, &Artifact::getOwnedAttributes);
 }
 
 void Artifact::AddOwnedOperationFunctor::operator()(Operation& el) const {
@@ -63,7 +63,7 @@ void Artifact::AddOwnedOperationFunctor::operator()(Operation& el) const {
         el.getRedefinitionContext().add(*m_el);
     }
 
-    m_el->getOwnedOperations().updateCopiedSequenceAddedTo<Artifact>(el, &Artifact::getOwnedOperations);
+    updateCopiedSequenceAddedTo(el, &Artifact::getOwnedOperations);
 }
 
 void Artifact::RemoveOwnedOperationFunctor::operator()(Operation& el) const {
@@ -83,7 +83,7 @@ void Artifact::RemoveOwnedOperationFunctor::operator()(Operation& el) const {
         el.getRedefinitionContext().remove(*m_el);
     }
 
-    m_el->getOwnedOperations().updateCopiedSequenceRemovedFrom<Artifact>(el, &Artifact::getOwnedOperations);
+    updateCopiedSequenceRemovedFrom(el, &Artifact::getOwnedOperations);
 }
 
 void Artifact::CheckNestedArtifactFunctor::operator()(Artifact& el) const {
@@ -97,7 +97,7 @@ void Artifact::AddNestedArtifactFunctor::operator()(Artifact& el) const {
         m_el->getOwnedMembers().add(el);
     }
 
-    m_el->getNestedArtifacts().updateCopiedSequenceAddedTo<Artifact>(el, &Artifact::getNestedArtifacts);
+    updateCopiedSequenceAddedTo(el, &Artifact::getNestedArtifacts);
 }
 
 void Artifact::RemoveNestedArtifactFunctor::operator()(Artifact& el) const {
@@ -105,7 +105,7 @@ void Artifact::RemoveNestedArtifactFunctor::operator()(Artifact& el) const {
         m_el->getOwnedMembers().remove(el);
     }
 
-    m_el->getNestedArtifacts().updateCopiedSequenceRemovedFrom<Artifact>(el, &Artifact::getNestedArtifacts);
+    updateCopiedSequenceRemovedFrom(el, &Artifact::getNestedArtifacts);
 }
 
 void Artifact::AddManifestationFunctor::operator()(Manifestation& el) const {
@@ -114,7 +114,7 @@ void Artifact::AddManifestationFunctor::operator()(Manifestation& el) const {
     }
 
     el.setArtifact(m_el);
-    m_el->getManifestations().updateCopiedSequenceAddedTo<Artifact>(el, &Artifact::getManifestations);
+    updateCopiedSequenceAddedTo(el, &Artifact::getManifestations);
 }
 
 void Artifact::RemoveManifestationFunctor::operator()(Manifestation& el) const {
@@ -123,7 +123,7 @@ void Artifact::RemoveManifestationFunctor::operator()(Manifestation& el) const {
     }
 
     el.setArtifact(0); 
-    m_el->getManifestations().updateCopiedSequenceRemovedFrom<Artifact>(el, &Artifact::getManifestations);
+    updateCopiedSequenceRemovedFrom(el, &Artifact::getManifestations);
 }
 
 Artifact::Artifact() {

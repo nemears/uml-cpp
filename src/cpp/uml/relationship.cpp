@@ -24,7 +24,7 @@ void Relationship::AddRelationshipFunctor::operator()(Element& el) const {
         el.getRelationships().internalAdd(*dynamic_cast<Relationship*>(m_el));
     }
 
-    m_el->as<Relationship>().getRelatedElements().updateCopiedSequenceAddedTo<Relationship>(el, &Relationship::getRelatedElements);
+    updateCopiedSequenceAddedTo(el, &Relationship::getRelatedElements);
 }
 
 void Relationship::CheckRelatedElementsFunctor::operator()(Element& el) const {
@@ -48,7 +48,7 @@ void Relationship::RemoveRelatedElementsFunctor::operator()(Element& el) const {
             dynamic_cast<DirectedRelationship*>(m_el)->getSources().remove(el);
         }
     }
-    m_el->as<Relationship>().getRelatedElements().updateCopiedSequenceRemovedFrom<Relationship>(el, &Relationship::getRelatedElements);
+    updateCopiedSequenceRemovedFrom(el, &Relationship::getRelatedElements);
 }
 
 Relationship::Relationship() {

@@ -14,7 +14,7 @@ void Package::AddPackagedElementFunctor::operator()(PackageableElement& el) cons
         m_el->getOwnedMembers().add(el);
     }
 
-    m_el->getPackagedElements().updateCopiedSequenceAddedTo<Package>(el, &Package::getPackagedElements);
+    updateCopiedSequenceAddedTo(el, &Package::getPackagedElements);
 }
 
 void Package::RemovePackagedElementFunctor::operator()(PackageableElement& el) const {
@@ -26,7 +26,7 @@ void Package::RemovePackagedElementFunctor::operator()(PackageableElement& el) c
         m_el->getMembers().remove(el);
     }
 
-    m_el->getPackagedElements().updateCopiedSequenceRemovedFrom<Package>(el, &Package::getPackagedElements);
+    updateCopiedSequenceRemovedFrom(el, &Package::getPackagedElements);
 }
 
 void Package::AddPackageMergeFunctor::operator()(PackageMerge& el) const {

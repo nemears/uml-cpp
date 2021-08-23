@@ -339,36 +339,6 @@ namespace UML {
 
             SequenceIterator<T> begin() { return SequenceIterator(this, m_order.begin()); };
             SequenceIterator<T> end() { return SequenceIterator(this, m_order.end()); };
-
-        private:
-            template <class U = Element> void updateCopiedSequenceAddedTo(T& el, Sequence<T>& (U::*meth)()) {
-                if (m_manager && m_el) {
-                    if (m_el->m_node->m_managerElementMemory != m_el) {
-                        if (!(m_el->m_node->m_managerElementMemory->template as<U>().*meth)().count(el.getID())) {
-                            (m_el->m_node->m_managerElementMemory->template as<U>().*meth)().internalAdd(el.template as<T>());
-                        }
-                    }
-                    for (auto& copy : m_el->m_node->m_copies) {
-                        if (!(copy->template as<U>().*meth)().count(el.getID()) && copy != m_el) {
-                            (copy->template as<U>().*meth)().internalAdd(el.template as<T>());
-                        }
-                    }
-                }
-            };
-            template <class U = Element> void updateCopiedSequenceRemovedFrom(T& el, Sequence<T>& (U::*meth)()) {
-                if (m_manager && m_el) {
-                    if (m_el->m_node->m_managerElementMemory != m_el) {
-                        if ((m_el->m_node->m_managerElementMemory->template as<U>().*meth)().count(el.getID())) {
-                            (m_el->m_node->m_managerElementMemory->template as<U>().*meth)().internalRemove(el.template as<T>());
-                        }
-                    }
-                    for (auto& copy : m_el->m_node->m_copies) {
-                        if ((copy->template as<U>().*meth)().count(el.getID()) && copy != m_el) {
-                            (copy->template as<U>().*meth)().internalRemove(el.template as<T>());
-                        }
-                    }
-                }
-            };
     };
 
     template <class T = Element, class U = Element> class TemplateAbstractSequenceFunctor : public AbstractSequenceFunctor<T> {
@@ -400,6 +370,36 @@ namespace UML {
             void oppositeSingletonRemove(T& el, ID T::*id, void (T::*op)(U*)) const {
                 if (((el.*id) == m_el->getID())) {
                     (el.*op)(0);
+                }
+            };
+            void updateCopiedSequenceAddedTo(T& el, Sequence<T>& (U::*meth)()) const {
+                if (!m_el->m_manager) {
+                    return;
+                }
+                if (m_el->m_node->m_managerElementMemory != m_el) {
+                    if (!(m_el->m_node->m_managerElementMemory->template as<U>().*meth)().count(el.getID())) {
+                        (m_el->m_node->m_managerElementMemory->template as<U>().*meth)().internalAdd(el.template as<T>());
+                    }
+                }
+                for (auto& copy : m_el->m_node->m_copies) {
+                    if (!(copy->template as<U>().*meth)().count(el.getID()) && copy != m_el) {
+                        (copy->template as<U>().*meth)().internalAdd(el.template as<T>());
+                    }
+                }
+            };
+            void updateCopiedSequenceRemovedFrom(T& el, Sequence<T>& (U::*meth)()) const {
+                if (!m_el->m_manager) {
+                    return;
+                }
+                if (m_el->m_node->m_managerElementMemory != m_el) {
+                    if ((m_el->m_node->m_managerElementMemory->template as<U>().*meth)().count(el.getID())) {
+                        (m_el->m_node->m_managerElementMemory->template as<U>().*meth)().internalRemove(el.template as<T>());
+                    }
+                }
+                for (auto& copy : m_el->m_node->m_copies) {
+                    if ((copy->template as<U>().*meth)().count(el.getID()) && copy != m_el) {
+                        (copy->template as<U>().*meth)().internalRemove(el.template as<T>());
+                    }
                 }
             };
         public:

@@ -4,27 +4,27 @@ using namespace UML;
 
 void Namespace::AddMemberFunctor::operator()(NamedElement& el) const {
     oppositeSequenceAdd(el, &NamedElement::getMemberNamespace);
-    m_el->getMembers().updateCopiedSequenceAddedTo<Namespace>(el, &Namespace::getMembers);
+    updateCopiedSequenceAddedTo(el, &Namespace::getMembers);
 }
 
 void Namespace::RemoveMemberFunctor::operator()(NamedElement& el) const {
     oppositeSequenceRemove(el, &NamedElement::getMemberNamespace);
     subsetsRemove<Namespace, NamedElement>(el, &Namespace::getOwnedMembers);
-    m_el->getMembers().updateCopiedSequenceRemovedFrom<Namespace>(el, &Namespace::getMembers);
+    updateCopiedSequenceRemovedFrom(el, &Namespace::getMembers);
 }
 
 void Namespace::AddOwnedMemberFunctor::operator()(NamedElement& el) const {
     subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
     subsetsAdd<Namespace, NamedElement>(el, &Namespace::getMembers);
     oppositeSingletonAdd(el, &NamedElement::setNamespace);
-    m_el->getOwnedMembers().updateCopiedSequenceAddedTo<Namespace>(el, &Namespace::getOwnedMembers);
+    updateCopiedSequenceAddedTo(el, &Namespace::getOwnedMembers);
 }
 
 void Namespace::RemoveOwnedMemberFunctor::operator()(NamedElement& el) const {
     subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
     subsetsRemove<Namespace, NamedElement>(el, &Namespace::getMembers);
     oppositeSingletonRemove(el, &NamedElement::m_namespaceID, &NamedElement::setNamespace);
-    m_el->getOwnedMembers().updateCopiedSequenceRemovedFrom<Namespace>(el, &Namespace::getOwnedMembers);
+    updateCopiedSequenceRemovedFrom(el, &Namespace::getOwnedMembers);
 }
 
 void Namespace::setManager(UmlManager* manager) {

@@ -14,54 +14,54 @@ using namespace UML;
 
 void SetOwnerFunctor::operator()(Element& el) const{
     oppositeSingletonAdd(el, &Element::setOwner);
-    m_el->getOwnedElements().updateCopiedSequenceAddedTo<>(el, &Element::getOwnedElements);
+    updateCopiedSequenceAddedTo(el, &Element::getOwnedElements);
 }
 
 void AddRelationshipFunctor::operator()(Relationship& el) const {
     oppositeSequenceAdd(el, &Relationship::getRelatedElements);
-    m_el->getRelationships().updateCopiedSequenceAddedTo<>(el, &Element::getRelationships);
+    updateCopiedSequenceAddedTo(el, &Element::getRelationships);
 }
 
 void RemoveRelationshipFunctor::operator()(Relationship& el) const {
     oppositeSequenceRemove(el, &Relationship::getRelatedElements);
-    m_el->getRelationships().updateCopiedSequenceRemovedFrom<>(el, &Element::getRelationships);
+    updateCopiedSequenceRemovedFrom(el, &Element::getRelationships);
 }
 
 void RemoveOwnerFunctor::operator()(Element& el) const {
     oppositeSingletonRemove(el, &Element::m_ownerID, &Element::setOwner);
-    m_el->getOwnedElements().updateCopiedSequenceRemovedFrom<>(el, &Element::getOwnedElements);
+    updateCopiedSequenceRemovedFrom(el, &Element::getOwnedElements);
 }
 
 void AddDirectedRelationshipFunctor::operator()(DirectedRelationship& el) const {
     subsetsAdd<Element, Relationship>(el, &Element::getRelationships);
-    m_el->getDirectedRelationships().updateCopiedSequenceAddedTo<>(el, &Element::getDirectedRelationships);
+    updateCopiedSequenceAddedTo(el, &Element::getDirectedRelationships);
 }
 
 void RemoveDirectedRelationshipFunctor::operator()(DirectedRelationship& el) const {
     subsetsRemove<Element, Relationship>(el, &Element::getRelationships);
-    m_el->getDirectedRelationships().updateCopiedSequenceRemovedFrom<>(el, &Element::getDirectedRelationships);
+    updateCopiedSequenceRemovedFrom(el, &Element::getDirectedRelationships);
 }
 
 void AddOwnedCommentFunctor::operator()(Comment& el) const {
     subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
     oppositeSingletonAdd(el, &Comment::setOwningElement);
-    m_el->getOwnedComments().updateCopiedSequenceAddedTo<>(el, &Element::getOwnedComments);
+    updateCopiedSequenceAddedTo(el, &Element::getOwnedComments);
 }
 
 void RemoveOwnedCommentFunctor::operator()(Comment& el) const {
     subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
     oppositeSingletonRemove(el, &Comment::m_owningElementID, &Comment::setOwningElement);
-    m_el->getOwnedComments().updateCopiedSequenceRemovedFrom<>(el, &Element::getOwnedComments);
+    updateCopiedSequenceRemovedFrom(el, &Element::getOwnedComments);
 }
 
 void AddAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {
     subsetsAdd<Element,Element>(el, &Element::getOwnedElements);
-    m_el->getAppliedStereotypes().updateCopiedSequenceAddedTo<>(el, &Element::getAppliedStereotypes);
+    updateCopiedSequenceAddedTo(el, &Element::getAppliedStereotypes);
 }
 
 void RemoveAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {
     subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
-    m_el->getAppliedStereotypes().updateCopiedSequenceRemovedFrom<>(el, &Element::getAppliedStereotypes);
+    updateCopiedSequenceRemovedFrom(el, &Element::getAppliedStereotypes);
 }
 
 void CheckAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {

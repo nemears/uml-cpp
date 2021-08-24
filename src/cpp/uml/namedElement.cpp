@@ -98,7 +98,7 @@ void NamedElement::setNamespace(Namespace* nmspc) {
             removeReference(m_namespaceID);
         }
         if (!m_namespacePtr) {
-            m_namespacePtr = &m_manager->get<Namespace>(m_namespaceID);
+            m_namespacePtr = m_manager->get<Namespace>(this, m_namespaceID, &NamedElement::m_namespacePtr);
         }
         if (m_namespacePtr->getMembers().count(m_id)) {
             m_namespacePtr->getMembers().internalRemove(*this);

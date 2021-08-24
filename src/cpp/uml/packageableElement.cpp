@@ -23,7 +23,7 @@ void PackageableElement::setOwningPackage(Package* package) {
             removeReference(m_owningPackageID);
         }
         if (!m_owningPackagePtr) {
-            m_owningPackagePtr = &m_manager->get<Package>(m_owningPackageID);
+            m_owningPackagePtr = m_manager->get<Package>(this, m_owningPackageID, &PackageableElement::m_owningPackagePtr);
         }
         if (m_owningPackagePtr->getPackagedElements().count(m_id)) {
             m_owningPackagePtr->getPackagedElements().remove(*this);

@@ -28,7 +28,7 @@ Element* Comment::getOwningElement() {
 void Comment::setOwningElement(Element* el) {
     if (!isSameOrNull(m_owningElementID, el)) {
         if (m_manager) {
-            m_manager->removeReference(m_id, m_owningElementID);
+            removeReference(m_owningElementID);
         }
         if (!m_owningElementPtr) {
             m_owningElementPtr = m_manager->get<>(this, m_owningElementID, &Comment::m_owningElementPtr);
@@ -52,7 +52,7 @@ void Comment::setOwningElement(Element* el) {
 
     if (el) {
         if (m_manager) {
-            m_manager->setReference(m_id, m_owningElementID, this);
+            setReference(el);
         }
         if (!el->getOwnedComments().count(m_id)) {
             el->getOwnedComments().add(*this);

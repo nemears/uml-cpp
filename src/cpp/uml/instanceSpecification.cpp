@@ -71,7 +71,7 @@ Classifier* InstanceSpecification::getClassifier() {
 void InstanceSpecification::setClassifier(Classifier* classifier) {
     if (!m_classifierID.isNull()) {
         if (m_manager) {
-            m_manager->removeReference(m_id, m_classifierID);
+            removeReference(m_classifierID);
         }
         m_classifierID = ID::nullID();
         m_classifierPtr = 0;
@@ -87,7 +87,7 @@ void InstanceSpecification::setClassifier(Classifier* classifier) {
 
     if (classifier) {
         if (m_manager) {
-            m_manager->setReference(m_id, m_classifierID, this);
+            setReference(classifier);
         }
     }
 }

@@ -21,7 +21,7 @@ Type* TypedElement::getType() {
 void TypedElement::setType(Type* type) {
     if (!isSameOrNull(m_typeID, type)) {
         if (m_manager) {
-            m_manager->removeReference(m_id, m_typeID);
+            removeReference(m_typeID);
         }
     }
 
@@ -35,7 +35,7 @@ void TypedElement::setType(Type* type) {
 
     if (type) {
         if (m_manager) {
-            m_manager->setReference(m_id, m_typeID, this);
+            setReference(type);
         }
     }
 }

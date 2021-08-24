@@ -17,29 +17,6 @@
 using namespace std;
 using namespace UML;
 
-void UmlManager::setReference(ID referencing, ID referenced, Element* ptr) {
-    if (m_graph[referenced].m_references.count(referencing)) {
-        m_graph[referenced].m_referenceCount[referencing]++;
-    } else {
-        m_graph[referenced].m_references[referencing] = &m_graph[referencing];
-        m_graph[referenced].m_referenceCount[referencing] = 1;
-        m_graph[referenced].m_referenceOrder.push_back(referencing);
-    }
-}
-
-void UmlManager::removeReference(ID referencing, ID referenced) {
-    if (m_graph[referenced].m_referenceCount[referencing] > 1) {
-        m_graph[referenced].m_referenceCount[referencing]--;
-    } else {
-        m_graph[referenced].m_references.erase(referencing);
-        m_graph[referenced].m_referenceCount.erase(referencing);
-        m_graph[referenced].m_referenceOrder.erase(std::remove(
-            m_graph[referenced].m_referenceOrder.begin(), 
-            m_graph[referenced].m_referenceOrder.end(), 
-            referencing), m_graph[referenced].m_referenceOrder.end());
-    }
-}
-
 void UmlManager::clear() {
     for (auto& e : m_graph) {
         if (e.second.m_managerElementMemory) {

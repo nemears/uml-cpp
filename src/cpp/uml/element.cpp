@@ -75,6 +75,29 @@ void CheckAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const 
     }
 }
 
+void Element::setReference(Element* referencing) {
+    if (m_node->m_references.count(referencing->getID())) {
+        m_node->m_referenceCount[referencing->getID()]++;
+    } else {
+        m_node->m_references[referencing->getID()] = referencing->m_node;
+        m_node->m_referenceCount[referencing->getID()] = 1;
+        m_node->m_referenceOrder.push_back(referencing->getID());
+    }
+}
+
+void Element::removeReference(ID referencing) {
+    if (m_node->m_referenceCount[referencing] > 1) {
+        m_node->m_referenceCount[referencing]--;
+    } else {
+        m_node->m_references.erase(referencing);
+        m_node->m_referenceCount.erase(referencing);
+        m_node->m_referenceOrder.erase(std::remove(
+            m_node->m_referenceOrder.begin(), 
+            m_node->m_referenceOrder.end(), 
+            referencing), m_node->m_referenceOrder.end());
+    }
+}
+
 // Constructor
 Element::Element() {
     m_manager = 0;
@@ -506,7 +529,7 @@ Element* Element::getOwner() {
 void Element::setOwner(Element* owner) {
     if (!isSameOrNull(m_ownerID, owner)) {
         if (m_manager) {
-            m_manager->removeReference(m_id, m_ownerID);
+            removeReference(m_ownerID);
         }
         if (!m_ownerPtr) {
             m_ownerPtr = m_manager->get<>(this, m_ownerID, &Element::m_ownerPtr);
@@ -533,7 +556,7 @@ void Element::setOwner(Element* owner) {
     // add to owner owned elements 
     if (owner) {
         if (m_manager) {
-            m_manager->setReference(m_id, m_ownerID, this);
+            setReference(owner);
             // if the owner is mounted we need to mount
             if (!m_manager->m_graph[m_ownerID].m_mountPath.empty()) {
                 m_manager->setElementAndChildrenMount(filesystem::path(m_manager->m_graph[m_ownerID].m_mountPath).parent_path(), 

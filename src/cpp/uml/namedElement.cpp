@@ -95,7 +95,7 @@ Namespace* NamedElement::getNamespace() {
 void NamedElement::setNamespace(Namespace* nmspc) {
     if (!isSameOrNull(m_namespaceID, nmspc)) {
         if (m_manager) {
-            m_manager->removeReference(m_id, m_namespaceID);
+            removeReference(m_namespaceID);
         }
         if (!m_namespacePtr) {
             m_namespacePtr = &m_manager->get<Namespace>(m_namespaceID);
@@ -119,7 +119,7 @@ void NamedElement::setNamespace(Namespace* nmspc) {
 
     if (nmspc) {
         if (m_manager) {
-            m_manager->setReference(m_id, m_namespaceID, this);
+            setReference(nmspc);
         }
         if (!nmspc->getOwnedMembers().count(m_id)) {
             nmspc->getOwnedMembers().add(*this);

@@ -20,7 +20,7 @@ Package* PackageableElement::getOwningPackage() {
 void PackageableElement::setOwningPackage(Package* package) {
     if (!isSameOrNull(m_owningPackageID, package)) {
         if (m_manager) {
-            m_manager->removeReference(m_id, m_owningPackageID);
+            removeReference(m_owningPackageID);
         }
         if (!m_owningPackagePtr) {
             m_owningPackagePtr = &m_manager->get<Package>(m_owningPackageID);
@@ -42,7 +42,7 @@ void PackageableElement::setOwningPackage(Package* package) {
 
     if (package) {
         if (m_manager) {
-            m_manager->setReference(m_id, m_owningPackageID, this);
+            setReference(package);
         }
         if (!package->getPackagedElements().count(m_id)) {
             package->getPackagedElements().add(*this);

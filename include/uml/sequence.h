@@ -213,7 +213,7 @@ namespace UML {
 
                 if (m_manager) {
                     if (m_el) {
-                        m_manager->setReference(m_el->getID(), el.getID(), m_el);
+                        m_el->setReference(&el);
                     }
                 }
 
@@ -240,7 +240,7 @@ namespace UML {
 
                 if (m_manager) {
                     if (m_el) {
-                        m_manager->removeReference(m_el->getID(), el.getID());
+                        m_el->removeReference(el.getID());
                     }
                 }
 

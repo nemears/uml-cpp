@@ -74,9 +74,6 @@ namespace UML {
         friend class RemoveOwnerFunctor;
         friend class Comment;
         template<typename> friend class Sequence;
-        protected:
-            void setReference(ID referencing, ID referenced, Element* ptr);
-            void removeReference(ID referencing, ID referenced);
         private:
             std::unordered_set<ID> m_elements;
             std::unordered_map<ID, ManagerNode> m_graph;

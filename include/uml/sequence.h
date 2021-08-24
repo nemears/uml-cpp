@@ -283,6 +283,12 @@ namespace UML {
 
                 internalAdd(el);
             };
+
+            template <class ... Ts> void add(T& el, Ts... els) {
+                add(el);
+                add(els...);
+            };
+
             void remove(T& el) {
                 if (m_rep.count(el.getID())) {
                     for (auto const& fun : removeChecks) {
@@ -293,6 +299,11 @@ namespace UML {
                 } else {
                     throw ElementDoesntExistException(el);
                 }
+            };
+
+            template <class ... Ts> void remove(T& el, Ts... els) {
+                remove(el);
+                remove(els...);
             };
 
             // Accessors

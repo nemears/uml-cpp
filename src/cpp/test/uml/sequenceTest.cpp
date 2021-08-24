@@ -115,3 +115,18 @@ TEST_F(SequenceTest, newSequenceTest) {
     }
     ASSERT_EQ(i, 100);
 }
+
+TEST_F(SequenceTest, variardicAddTest) {
+    UmlManager m;
+    Package& p = m.create<Package>();
+    Package& c1 = m.create<Package>();
+    Package& c2 = m.create<Package>();
+    Package& c3 = m.create<Package>();
+    ASSERT_NO_THROW(p.getPackagedElements().add(c1, c2, c3));
+    ASSERT_EQ(p.getPackagedElements().size(), 3);
+    ASSERT_EQ(p.getPackagedElements().front().getID(), c1.getID());
+    ASSERT_EQ(p.getPackagedElements().get(1).getID(), c2.getID());
+    ASSERT_EQ(p.getPackagedElements().back().getID(), c3.getID());
+    ASSERT_NO_THROW(p.getPackagedElements().remove(c1, c2, c3));
+    ASSERT_TRUE(p.getPackagedElements().empty());
+}

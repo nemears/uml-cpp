@@ -4,6 +4,7 @@
 #include "uml/namespace.h"
 #include "uml/package.h"
 #include "uml/umlManager.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
 
@@ -120,4 +121,30 @@ TEST_F(NamedElementTest, visibilityTest) {
     ASSERT_TRUE(n.getVisibility() == VisibilityKind::PUBLIC);
     ASSERT_NO_THROW(n.setVisibility(VisibilityKind::PRIVATE));
     ASSERT_TRUE(n.getVisibility() == VisibilityKind::PRIVATE);
+}
+
+TEST_F(NamedElementTest, copyAndEditTest) {
+  UmlManager m;
+  Package& p = m.create<Package>();
+  Package& c = m.create<Package>();
+  p.getPackagedElements().add(c);
+  c.setName("test");
+  c.setVisibility(VisibilityKind::PRIVATE);
+  Package copy = c;
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c, copy, &NamedElement::getMemberNamespace));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c, copy, &NamedElement::getNamespace));
+  ASSERT_EQ(c.getVisibility(), copy.getVisibility());
+  p.getPackagedElements().remove(copy);
+  c.setVisibility(VisibilityKind::PROTECTED);
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c, copy, &NamedElement::getMemberNamespace));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c, copy, &NamedElement::getNamespace));
+  ASSERT_EQ(c.getVisibility(), copy.getVisibility());
+  copy.setOwningPackage(&p);
+  copy.setVisibility(VisibilityKind::PUBLIC);
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c, copy, &NamedElement::getMemberNamespace));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c, copy, &NamedElement::getNamespace));
+  ASSERT_EQ(c.getVisibility(), copy.getVisibility());
+  p.setOwningPackage(0);
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c, copy, &NamedElement::getMemberNamespace));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c, copy, &NamedElement::getNamespace));
 }

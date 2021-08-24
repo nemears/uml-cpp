@@ -9,15 +9,13 @@ using namespace UML;
 using namespace std;
 
 void AddMemberNamespaceFunctor::operator()(Namespace& el) const {
-    if (!el.getMembers().count(m_el->getID())) {
-        el.getMembers().add(*m_el);
-    }
+    oppositeSequenceAdd(el, &Namespace::getMembers);
+    updateCopiedSequenceAddedTo(el, &NamedElement::getMemberNamespace);
 }
 
 void RemoveMemberNamespaceFunctor::operator()(Namespace& el) const {
-    if (el.getMembers().count(m_el->getID())) {
-        el.getMembers().remove(*m_el);
-    }
+    oppositeSequenceRemove(el, &Namespace::getMembers);
+    updateCopiedSequenceRemovedFrom(el, &NamedElement::getMemberNamespace);
 }
 
 NamedElement::NamedElement() {
@@ -35,6 +33,7 @@ NamedElement::NamedElement(const NamedElement& el) : Element(el) {
     m_namespaceID = el.m_namespaceID;
     m_namespacePtr = el.m_namespacePtr;
     m_name = el.m_name;
+    m_visibility = el.m_visibility;
     m_memberNamespace = new Sequence<Namespace>(*el.m_memberNamespace);
     m_memberNamespace->addProcedures.clear();
     m_memberNamespace->addProcedures.push_back(new AddMemberNamespaceFunctor(this));
@@ -86,7 +85,11 @@ string NamedElement::getName() {
 }
 
 Namespace* NamedElement::getNamespace() {
-    return universalGet<Namespace>(m_namespaceID, m_namespacePtr, m_manager);
+    if (m_manager) {
+        return m_manager->get<Namespace>(this, m_namespaceID, &NamedElement::m_namespacePtr);
+    } else {
+        return m_namespacePtr;
+    }
 }
 
 void NamedElement::setNamespace(Namespace* nmspc) {
@@ -161,6 +164,17 @@ void NamedElement::setVisibility(VisibilityKind visibility) {
                         dynamic_cast<Classifier&>(nmspc).getInheritedMembers().add(*this);
                     }
                 }
+            }
+        }
+    }
+
+    if (m_node) {
+        if (m_node->m_managerElementMemory != this) {
+            m_node->m_managerElementMemory->as<NamedElement>().m_visibility = m_visibility;
+        }
+        for (auto& copy : m_node->m_copies) {
+            if (copy != this) {
+                copy->as<NamedElement>().m_visibility = m_visibility;
             }
         }
     }

@@ -49,9 +49,14 @@ void UmlManager::reindex(ID oldID, ID newID) {
         // This logic should only be called when it is loading from disk
         // and will overwrite the existing element in memory with one from disk
         // during a UmlManager::open() or UmlManager::aquire(id) invoke
-
-        delete m_graph[newID].m_managerElementMemory;
-        m_graph[newID].m_managerElementMemory = m_graph[oldID].m_managerElementMemory;
+        
+        ManagerNode* m_node = &m_graph[newID];
+        delete m_node->m_managerElementMemory;
+        m_node->m_managerElementMemory = m_graph[oldID].m_managerElementMemory;
+        m_node->m_managerElementMemory->m_node = m_node;
+        for (auto& countPair : m_node->m_referenceCount) {
+            countPair.second = 0;
+        }
         m_elements.erase(oldID);
         m_graph.erase(oldID);
     } else  {

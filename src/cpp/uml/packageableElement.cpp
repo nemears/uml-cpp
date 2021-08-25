@@ -14,21 +14,25 @@ PackageableElement::PackageableElement(const PackageableElement& el) : NamedElem
 }
 
 Package* PackageableElement::getOwningPackage() {
-    return universalGet<Package>(m_owningPackageID, m_owningPackagePtr, m_manager);
+    if (m_manager) {
+        return m_manager->get<Package>(this, m_owningPackageID, &PackageableElement::m_owningPackagePtr);
+    } else {
+        return m_owningPackagePtr;
+    }
 }
 
 void PackageableElement::setOwningPackage(Package* package) {
     if (!isSameOrNull(m_owningPackageID, package)) {
-        if (m_manager) {
-            removeReference(m_owningPackageID);
-        }
         if (!m_owningPackagePtr) {
             m_owningPackagePtr = m_manager->get<Package>(this, m_owningPackageID, &PackageableElement::m_owningPackagePtr);
+        }
+        m_owningPackageID = ID::nullID();
+        if (m_manager) {
+            removeReference(m_owningPackageID);
         }
         if (m_owningPackagePtr->getPackagedElements().count(m_id)) {
             m_owningPackagePtr->getPackagedElements().remove(*this);
         }
-        m_owningPackageID = ID::nullID();
         m_owningPackagePtr = 0;
     }
 

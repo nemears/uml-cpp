@@ -346,6 +346,7 @@ void Classifier::restoreReleased(ID id, Element* released) {
 
 void Classifier::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
+    PackageableElement::referencingReleased(id);
     m_attributes.elementReleased(id);
     m_features.elementReleased(id);
     m_generalizations.elementReleased(id);

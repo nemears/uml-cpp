@@ -94,17 +94,17 @@ Namespace* NamedElement::getNamespace() {
 
 void NamedElement::setNamespace(Namespace* nmspc) {
     if (!isSameOrNull(m_namespaceID, nmspc)) {
-        if (m_manager) {
-            removeReference(m_namespaceID);
-        }
         if (!m_namespacePtr) {
             m_namespacePtr = m_manager->get<Namespace>(this, m_namespaceID, &NamedElement::m_namespacePtr);
+        }
+        m_namespaceID = ID::nullID();
+        if (m_manager) {
+            removeReference(m_namespaceID);
         }
         if (m_namespacePtr->getMembers().count(m_id)) {
             m_namespacePtr->getMembers().internalRemove(*this);
         }
         m_namespacePtr = 0;
-        m_namespaceID = ID::nullID();
     }
 
     if (nmspc) {

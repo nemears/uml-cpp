@@ -528,16 +528,16 @@ Element* Element::getOwner() {
 
 void Element::setOwner(Element* owner) {
     if (!isSameOrNull(m_ownerID, owner)) {
-        if (m_manager) {
-            removeReference(m_ownerID);
-        }
         if (!m_ownerPtr) {
             m_ownerPtr = m_manager->get<>(this, m_ownerID, &Element::m_ownerPtr);
+        }
+        m_ownerID = ID::nullID();
+        if (m_manager) {
+            removeReference(m_ownerID);
         }
         if (m_ownerPtr->getOwnedElements().count(m_id)) {
             m_ownerPtr->getOwnedElements().internalRemove(*this);
         }
-        m_ownerID = ID::nullID();
         m_ownerPtr = 0;
     }
 
@@ -566,11 +566,11 @@ void Element::setOwner(Element* owner) {
         if (!owner->getOwnedElements().count(m_id)) {
             owner->getOwnedElements().internalAdd(*this);
         }
-        if (m_node) {
-            if (!m_node->m_referencing.count(owner->getID())) {
-                m_node->m_referencing[owner->getID()] = owner->m_node;
-            }
-        }
+        // if (m_node) {
+        //     if (!m_node->m_referencing.count(owner->getID())) {
+        //         m_node->m_referencing[owner->getID()] = owner->m_node;
+        //     }
+        // }
     }
     if (m_manager) {
         m_manager->updateCopiesSingleton<>(this, m_ownerID, &Element::m_ownerID, &Element::m_ownerPtr);

@@ -24,6 +24,12 @@ namespace UML {
     class SetOwnerFunctor;
     class RemoveOwnerFunctor;
 
+    class ManagerStateException : public std::exception {
+        const char* what() const throw() override {
+            return "UmlManager bad state!";
+        };
+    };
+
     /**
      * UmlManager is the object that handles all of the instantiation and deletion of UML objects
      * from a model. It follows object pool semantics to be able to hold information about large
@@ -58,7 +64,6 @@ namespace UML {
         std::unordered_map<ID, ManagerNode*> m_references;
         std::unordered_map<ID, size_t> m_referenceCount;
         std::vector<ID> m_referenceOrder;
-        std::unordered_map<ID, ManagerNode*> m_referencing;
         std::unordered_set<Element*> m_copies;
     };
 
@@ -122,16 +127,16 @@ namespace UML {
                 if (!theID.isNull()) {
                     if (!(me->*thePtr)) {
                         if (me->m_node) {
-                            if (!me->m_node->m_referencing.count(theID)) {
-                                me->m_node->m_referencing[theID] = &m_graph[theID]; // this will take the longest
-                                /** TODO: think about cleaning this with removal? will probably need a counter like referenced**/
+                            if (me->m_node->m_references.count(theID)) {
+                                if (!me->m_node->m_references[theID]->m_managerElementMemory) {
+                                    aquire(theID);
+                                }
+                                (me->*thePtr) = dynamic_cast<T*>(me->m_node->m_references[theID]->m_managerElementMemory);
+                            } else {
+                                throw ManagerStateException();
                             }
-                            if (!me->m_node->m_referencing[theID]->m_managerElementMemory) {
-                                aquire(theID); // this can also take a while
-                            }
-                            (me->*thePtr) = dynamic_cast<T*>(me->m_node->m_referencing[theID]->m_managerElementMemory);
                         } else {
-                            /** TODO: throw error, bad state **/
+                            throw ManagerStateException();
                         }
                     }
                     return (me->*thePtr);

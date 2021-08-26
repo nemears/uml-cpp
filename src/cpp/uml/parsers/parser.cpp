@@ -1367,16 +1367,22 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
     if (node["packageMerge"]) {
         if (node["packageMerge"].IsSequence()) {
             for (size_t i = 0; i < node["packageMerge"].size(); i++) {
-                if (node["packageMerge"][i]["packageMerge"]) {
-                    if (node["packageMerge"][i]["packageMerge"].IsMap()) {
-                        PackageMerge& merge = data.m_manager->create<PackageMerge>();
-                        parsePackageMerge(node["packageMerge"][i]["packageMerge"], merge, data);
-                        pckg.getPackageMerge().add(merge);
+                if (node["packageMerge"][i].IsMap()) {
+                    if (node["packageMerge"][i]["packageMerge"]) {
+                        if (node["packageMerge"][i]["packageMerge"].IsMap()) {
+                            PackageMerge& merge = data.m_manager->create<PackageMerge>();
+                            parsePackageMerge(node["packageMerge"][i]["packageMerge"], merge, data);
+                            pckg.getPackageMerge().add(merge);
+                        } else {
+                            throw UmlParserException("Invalid yaml node type for packageMerge definition, must be a map!", data.m_path.string(), node["packageMerge"][i]["packageMerge"]);
+                        }
                     } else {
-                        throw UmlParserException("Invalid YAML Node type for packageMerge definition with in Package, ", data.m_path.string(), node["packageMerge"][i]["packageMerge"]);
+                        throw UmlParserException("Invalid identifier in Package packageMerge list, ", data.m_path.string(), node["packageMerge"][i]["packageMerge"]);
                     }
+                } else if (node["packageMerge"][i].IsScalar()) {
+                    pckg.getPackageMerge().add(parseScalar<PackageMerge>(node["packageMerge"][i], data));
                 } else {
-                    throw UmlParserException("Invalid identifier in Package packageMerge list, ", data.m_path.string(), node["packageMerge"][i]["packageMerge"]);
+                    throw UmlParserException("Invalid yaml node type for packageMerge reference, must be a scalar or map!", data.m_path.string(), node["packagedElements"][i]);
                 }
             }
         } else {
@@ -1387,16 +1393,20 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
     if (node["profileApplications"]) {
         if (node["profileApplications"].IsSequence()) {
             for (size_t i = 0; i < node["profileApplications"].size(); i++) {
-                if (node["profileApplications"][i]["profileApplication"]) {
-                    if (node["profileApplications"][i]["profileApplication"].IsMap()) {
-                        ProfileApplication& application = data.m_manager->create<ProfileApplication>();
-                        parseProfileApplication(node["profileApplications"][i]["profileApplication"], application, data);
-                        pckg.getProfileApplications().add(application);
+                if (node["profileApplications"][i].IsMap()) {
+                    if (node["profileApplications"][i]["profileApplication"]) {
+                        if (node["profileApplications"][i]["profileApplication"].IsMap()) {
+                            ProfileApplication& application = data.m_manager->create<ProfileApplication>();
+                            parseProfileApplication(node["profileApplications"][i]["profileApplication"], application, data);
+                            pckg.getProfileApplications().add(application);
+                        } else {
+                            throw UmlParserException("Invalid yaml node type, profileApplication must be a mao!", data.m_path.string(), node["profileApplications"][i]["profileApplication"]);
+                        }
                     } else {
-                        throw UmlParserException("Invalid yaml node type, profileApplication must be a mao!", data.m_path.string(), node["profileApplications"][i]["profileApplication"]);
+                        throw UmlParserException("Invalid profileApplication type!", data.m_path.string(), node["profileApplications"][i]);
                     }
-                } else {
-                    throw UmlParserException("Invalid profileApplication type!", data.m_path.string(), node["profileApplications"][i]);
+                } else if (node["profileApplications"][i].IsScalar()) {
+                    pckg.getProfileApplications().add(parseScalar<ProfileApplication>(node["profileApplications"][i], data));
                 }
             }
         } else {
@@ -1557,12 +1567,18 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
     if (node["ownedStereotypes"]) {
         if (node["ownedStereotypes"].IsSequence()) {
             for (size_t i = 0; i < node["ownedStereotypes"].size(); i++) {
-                if (node["ownedStereotypes"][i]["stereotype"]) {
-                    Stereotype& s = data.m_manager->create<Stereotype>();
-                    parseClass(node["ownedStereotypes"][i]["stereotype"], s, data);
-                    pckg.getOwnedStereotypes().add(s);
+                if (node["ownedStereotypes"][i].IsMap()) {
+                    if (node["ownedStereotypes"][i]["stereotype"]) {
+                        Stereotype& s = data.m_manager->create<Stereotype>();
+                        parseClass(node["ownedStereotypes"][i]["stereotype"], s, data);
+                        pckg.getOwnedStereotypes().add(s);
+                    } else {
+                        throw UmlParserException("Invalid uml element definition, must be stereotype!", data.m_path.string(), node["ownedStereotypes"][i]["stereotype"]);
+                    }
+                } else if (node["ownedStereotypes"][i].IsScalar()) {
+                    pckg.getOwnedStereotypes().add(parseScalar<Stereotype>(node["ownedStereotypes"][i], data));
                 } else {
-                    throw UmlParserException("Invalid uml element definition, must be stereotype!", data.m_path.string(), node["ownedStereotypes"][i]["stereotype"]);
+                    throw UmlParserException("Invalid yaml node type for ownedStereotypes element, must be map or scalar!", data.m_path.string(), node["ownedStereotypes"][i]);
                 }
             }
         } else {

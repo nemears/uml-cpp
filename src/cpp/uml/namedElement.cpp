@@ -35,6 +35,7 @@ NamedElement::NamedElement(const NamedElement& el) : Element(el) {
     m_name = el.m_name;
     m_visibility = el.m_visibility;
     m_memberNamespace = new Sequence<Namespace>(*el.m_memberNamespace);
+    m_memberNamespace->m_el = this;
     m_memberNamespace->addProcedures.clear();
     m_memberNamespace->addProcedures.push_back(new AddMemberNamespaceFunctor(this));
     m_memberNamespace->removeProcedures.clear();

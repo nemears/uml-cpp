@@ -9,11 +9,13 @@ PackageMerge::PackageMerge() {
     m_mergedPackagePtr = 0;
 }
 
-PackageMerge::PackageMerge(const PackageMerge& merge) {
+PackageMerge::PackageMerge(const PackageMerge& merge) : DirectedRelationship(merge), Element(merge) {
     m_receivingPackageID = merge.m_receivingPackageID;
-    m_receivingPackagePtr = merge.m_receivingPackagePtr;
     m_mergedPackageID = merge.m_mergedPackageID;
-    m_mergedPackagePtr = merge.m_mergedPackagePtr;
+    if (!m_manager) {
+        m_receivingPackagePtr = merge.m_receivingPackagePtr;
+        m_mergedPackagePtr = merge.m_mergedPackagePtr;
+    }
 }
 
 PackageMerge::~PackageMerge() {
@@ -60,6 +62,10 @@ void PackageMerge::setReceivingPackage(Package* receiving) {
         if (!m_sources.count(receiving->getID())) {
             m_sources.add(*receiving);
         }
+    }
+
+    if (m_manager) {
+        m_manager->updateCopiesSingleton<PackageMerge>(this, m_receivingPackageID, &PackageMerge::m_receivingPackageID, &PackageMerge::m_receivingPackagePtr);
     }
 }
 

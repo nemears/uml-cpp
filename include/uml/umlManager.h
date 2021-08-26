@@ -19,6 +19,7 @@ namespace UML {
     class TypedElement;
 
     template <class T = Element> class Sequence;
+    template <class T> class SequenceIterator;
     class Model;
 
     class SetOwnerFunctor;
@@ -80,6 +81,7 @@ namespace UML {
         friend class Comment;
         friend class PackageMerge;
         template<typename> friend class Sequence;
+        template <class T> friend class SequenceIterator;
         private:
             std::unordered_set<ID> m_elements;
             std::unordered_map<ID, ManagerNode> m_graph;

@@ -337,10 +337,10 @@ namespace UML {
                 if (m_names.count(name)) {
                     if (!m_rep[m_names[name]]) {
                         if (m_el) {
-                        m_rep[m_names[name]] = m_manager->get<T>(m_el, m_names[name]);
-                    } else {
-                        m_rep[m_names[name]] = &m_manager->get<T>(m_names[name]);
-                    }
+                            m_rep[m_names[name]] = m_manager->get<T>(m_el, m_names[name]);
+                        } else {
+                            m_rep[m_names[name]] = &m_manager->get<T>(m_names[name]);
+                        }
                     }
                     return *m_rep[m_names[name]];
                 }
@@ -348,13 +348,21 @@ namespace UML {
             };
             T& front() { 
                 if (!m_rep[m_order.front()]) {
-                    m_rep[m_order.front()] = &m_manager->get<T>(m_order.front());
+                    if (m_el) {
+                        m_rep[m_order.front()] = m_manager->get<T>(m_el, m_order.front());
+                    } else {
+                        m_rep[m_order.front()] = &m_manager->get<T>(m_order.front());
+                    }
                 }
                 return *m_rep[m_order.front()];
             };
             T& back() {
                 if (!m_rep[m_order.back()]) {
-                    m_rep[m_order.back()] = &m_manager->get<T>(m_order.back());
+                    if (m_el) {
+                        m_rep[m_order.back()] = m_manager->get<T>(m_el, m_order.back());
+                    } else {
+                        m_rep[m_order.back()] = &m_manager->get<T>(m_order.back());
+                    }
                 }
                 return *m_rep[m_order.back()];
             };
@@ -452,7 +460,11 @@ namespace UML {
                 if (m_orderIt != m_sequence->m_order.end()) {
                     m_ptr = m_sequence->m_rep.at(*m_orderIt);
                     if (!m_ptr) {
-                        m_ptr = &m_sequence->m_manager->template get<T>(*m_orderIt);
+                        if (m_sequence->m_el) {
+                            m_ptr = m_sequence->m_manager->template get<T>(m_sequence->m_el, *m_orderIt);
+                        } else {
+                            m_ptr = &m_sequence->m_manager->template get<T>(*m_orderIt);
+                        }
                     }
                 }
                 return *this;
@@ -463,7 +475,11 @@ namespace UML {
                 if (m_orderIt != m_sequence->m_order.end()) {
                     m_ptr = m_sequence->m_rep.at(*m_orderIt);
                     if (!m_ptr) {
-                        m_ptr = &m_sequence->m_manager->template get<T>(*m_orderIt);
+                        if (m_sequence->m_el) {
+                            m_ptr = m_sequence->m_manager->template get<T>(m_sequence->m_el, *m_orderIt);
+                        } else {
+                            m_ptr = &m_sequence->m_manager->template get<T>(*m_orderIt);
+                        }
                     }
                 }
                 SequenceIterator ret = *this;

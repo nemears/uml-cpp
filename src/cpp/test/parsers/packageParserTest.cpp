@@ -230,4 +230,8 @@ TEST_F(PackageParserTest, mountAndEditPackageTest) {
     m.setRoot(&root);
     m.mount(ymlPath + "packageParserTests");
     m.release(c1);
+    /** TODO: finish**/ 
+    Package& c2 = root.getPackagedElements().front().as<Package>();
+    ASSERT_TRUE(c2.getOwningPackage() != 0);
+    ASSERT_EQ(c2.getOwningPackage(), &root);
 }

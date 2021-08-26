@@ -15,9 +15,9 @@ namespace UML {
         friend class UmlManager;
         protected:
             Sequence<PackageableElement> m_packagedElements = Sequence<PackageableElement>(this);
-            Sequence<PackageMerge> m_packageMerge;
-            Sequence<ProfileApplication> m_profileApplications;
-            Sequence<Stereotype> m_ownedStereotypes;
+            Sequence<PackageMerge> m_packageMerge = Sequence<PackageMerge>(this);
+            Sequence<ProfileApplication> m_profileApplications = Sequence<ProfileApplication>(this);
+            Sequence<Stereotype> m_ownedStereotypes = Sequence<Stereotype>(this);
             class AddPackagedElementFunctor : public TemplateAbstractSequenceFunctor<PackageableElement,Package> {
                 public:
                     AddPackagedElementFunctor(Package* me) : TemplateAbstractSequenceFunctor(me) {};

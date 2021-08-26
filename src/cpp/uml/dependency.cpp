@@ -6,28 +6,28 @@ void Dependency::AddClientFunctor::operator()(NamedElement& el) const {
     if (!m_el->getSources().count(el.getID())) {
         m_el->getSources().add(el);
     }
-    updateCopiedSequenceAddedTo(el, &Dependency::getSupplier);
+    updateCopiedSequenceAddedTo(el, &Dependency::getClient);
 }
 
 void Dependency::RemoveClientFunctor::operator()(NamedElement& el) const {
     if (m_el->getSources().count(el.getID())) {
         m_el->getSources().remove(el);
     }
-    updateCopiedSequenceRemovedFrom(el, &Dependency::getSupplier);
+    updateCopiedSequenceRemovedFrom(el, &Dependency::getClient);
 }
 
 void Dependency::AddSupplierFunctor::operator()(NamedElement& el) const {
     if (!m_el->getTargets().count(el.getID())) {
         m_el->getTargets().add(el);
     }
-    updateCopiedSequenceAddedTo(el, &Dependency::getClient);
+    updateCopiedSequenceAddedTo(el, &Dependency::getSupplier);
 }
 
 void Dependency::RemoveSupplierFunctor::operator()(NamedElement& el) const {
     if (m_el->getTargets().count(el.getID())) {
         m_el->getTargets().remove(el);
     }
-    updateCopiedSequenceRemovedFrom(el, &Dependency::getClient);
+    updateCopiedSequenceRemovedFrom(el, &Dependency::getSupplier);
 }
 
 void Dependency::setManager(UmlManager* manager) {

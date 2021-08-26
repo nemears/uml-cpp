@@ -76,25 +76,29 @@ void CheckAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const 
 }
 
 void Element::setReference(Element* referencing) {
-    if (m_node->m_references.count(referencing->getID())) {
-        m_node->m_referenceCount[referencing->getID()]++;
-    } else {
-        m_node->m_references[referencing->getID()] = referencing->m_node;
-        m_node->m_referenceCount[referencing->getID()] = 1;
-        m_node->m_referenceOrder.push_back(referencing->getID());
+    if (this == m_node->m_managerElementMemory) {
+        if (m_node->m_references.count(referencing->getID())) {
+            m_node->m_referenceCount[referencing->getID()]++;
+        } else {
+            m_node->m_references[referencing->getID()] = referencing->m_node;
+            m_node->m_referenceCount[referencing->getID()] = 1;
+            m_node->m_referenceOrder.push_back(referencing->getID());
+        }
     }
 }
 
 void Element::removeReference(ID referencing) {
-    if (m_node->m_referenceCount[referencing] > 1) {
-        m_node->m_referenceCount[referencing]--;
-    } else {
-        m_node->m_references.erase(referencing);
-        m_node->m_referenceCount.erase(referencing);
-        m_node->m_referenceOrder.erase(std::remove(
-            m_node->m_referenceOrder.begin(), 
-            m_node->m_referenceOrder.end(), 
-            referencing), m_node->m_referenceOrder.end());
+    if (this == m_node->m_managerElementMemory) {
+        if (m_node->m_referenceCount[referencing] > 1) {
+            m_node->m_referenceCount[referencing]--;
+        } else {
+            m_node->m_references.erase(referencing);
+            m_node->m_referenceCount.erase(referencing);
+            m_node->m_referenceOrder.erase(std::remove(
+                m_node->m_referenceOrder.begin(), 
+                m_node->m_referenceOrder.end(), 
+                referencing), m_node->m_referenceOrder.end());
+        }
     }
 }
 
@@ -136,7 +140,9 @@ Element::~Element() {
     delete m_ownedComments;
     delete m_appliedStereotype;
     if (m_manager) {
-        m_manager->m_graph[m_id].m_copies.erase(this);
+        if (m_node->m_copies.count(this)) {
+            m_node->m_copies.erase(this);
+        }
     }
 }
 
@@ -531,10 +537,10 @@ void Element::setOwner(Element* owner) {
         if (!m_ownerPtr) {
             m_ownerPtr = m_manager->get<>(this, m_ownerID, &Element::m_ownerPtr);
         }
-        m_ownerID = ID::nullID();
         if (m_manager) {
             removeReference(m_ownerID);
         }
+        m_ownerID = ID::nullID();
         if (m_ownerPtr->getOwnedElements().count(m_id)) {
             m_ownerPtr->getOwnedElements().internalRemove(*this);
         }
@@ -566,11 +572,6 @@ void Element::setOwner(Element* owner) {
         if (!owner->getOwnedElements().count(m_id)) {
             owner->getOwnedElements().internalAdd(*this);
         }
-        // if (m_node) {
-        //     if (!m_node->m_referencing.count(owner->getID())) {
-        //         m_node->m_referencing[owner->getID()] = owner->m_node;
-        //     }
-        // }
     }
     if (m_manager) {
         m_manager->updateCopiesSingleton<>(this, m_ownerID, &Element::m_ownerID, &Element::m_ownerPtr);

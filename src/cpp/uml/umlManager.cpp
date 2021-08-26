@@ -70,7 +70,6 @@ void UmlManager::reindex(ID oldID, ID newID) {
 }
 
 void UmlManager::setElementAndChildrenMount(filesystem::path parentPath, Element& el) {
-    // filesystem::create_directories(parentPath / el.getID().string());
     m_graph[el.getID()].m_mountPath = parentPath / (el.getID().string() + ".yml");
     for (auto& child : el.getOwnedElements()) {
         setElementAndChildrenMount(parentPath, child);

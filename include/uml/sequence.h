@@ -284,7 +284,7 @@ namespace UML {
                 internalAdd(el);
             };
 
-            template <class ... Ts> void add(T& el, Ts... els) {
+            template <class ... Ts> void add(T& el, Ts&... els) {
                 add(el);
                 add(els...);
             };
@@ -301,7 +301,7 @@ namespace UML {
                 }
             };
 
-            template <class ... Ts> void remove(T& el, Ts... els) {
+            template <class ... Ts> void remove(T& el, Ts&... els) {
                 remove(el);
                 remove(els...);
             };

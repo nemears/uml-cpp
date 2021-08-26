@@ -9,6 +9,7 @@ namespace UML {
     class Package;
 
     class PackageableElement : virtual public NamedElement , virtual public ParameterableElement {
+        friend class Package;
         protected:
             ID m_owningPackageID;
             Package* m_owningPackagePtr;

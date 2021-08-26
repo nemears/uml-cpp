@@ -6,56 +6,29 @@
 using namespace UML;
 
 void Package::AddPackagedElementFunctor::operator()(PackageableElement& el) const {
-    if (el.getOwningPackage() != m_el) {
-        el.setOwningPackage(m_el);
-    }
-
-    if (!m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().add(el);
-    }
-
+    oppositeSingletonAdd(el, &PackageableElement::setOwningPackage);
+    subsetsAdd<Namespace, NamedElement>(el, &Namespace::getOwnedMembers);
     updateCopiedSequenceAddedTo(el, &Package::getPackagedElements);
 }
 
 void Package::RemovePackagedElementFunctor::operator()(PackageableElement& el) const {
-    if (el.getOwningPackage() == m_el) {
-        el.setOwningPackage(0);
-    }
-
-    if (m_el->getMembers().count(el.getID())) {
-        m_el->getMembers().remove(el);
-    }
-
+    oppositeSingletonRemove(el, &PackageableElement::m_owningPackageID, &PackageableElement::setOwningPackage);
+    subsetsRemove<Namespace, NamedElement>(el, &Namespace::getMembers);
     updateCopiedSequenceRemovedFrom(el, &Package::getPackagedElements);
 }
 
 void Package::AddPackageMergeFunctor::operator()(PackageMerge& el) const {
-    if (el.getReceivingPackage() != m_el) {
-        el.setReceivingPackage(m_el);
-    }
-
-    if (!m_el->getDirectedRelationships().count(el.getID())) {
-        m_el->getDirectedRelationships().add(el);
-    }
-
-    if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalAdd(el);
-    }
+    oppositeSingletonAdd(el, &PackageMerge::setReceivingPackage);
+    subsetsAdd<Element, DirectedRelationship>(el, &Element::getDirectedRelationships);
+    subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
+    updateCopiedSequenceAddedTo(el, &Package::getPackageMerge);
 }
 
 void Package::RemovePackageMergeFunctor::operator()(PackageMerge& el) const {
-
-    if (el.getReceivingPackage() == m_el) {
-        el.setReceivingPackage(0);
-    }
-
-    if (m_el->getDirectedRelationships().count(el.getID())) {
-        m_el->getDirectedRelationships().remove(el);
-    }
-
-    if (m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalRemove(el);
-    }
+    oppositeSingletonRemove(el, &PackageMerge::m_receivingPackageID, &PackageMerge::setReceivingPackage);
+    subsetsRemove<Element, DirectedRelationship>(el, &Element::getDirectedRelationships);
+    subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
+    updateCopiedSequenceRemovedFrom(el, &Package::getPackageMerge);
 }
 
 void Package::AddProfileApplicationFunctor::operator()(ProfileApplication& el) const {
@@ -70,6 +43,7 @@ void Package::AddProfileApplicationFunctor::operator()(ProfileApplication& el) c
     if (!m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalAdd(el);
     }
+    updateCopiedSequenceAddedTo(el, &Package::getProfileApplications);
 }
 
 void Package::RemoveProfileApplicationFunctor::operator()(ProfileApplication& el) const {
@@ -84,18 +58,21 @@ void Package::RemoveProfileApplicationFunctor::operator()(ProfileApplication& el
     if (m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalRemove(el);
     }
+    updateCopiedSequenceRemovedFrom(el, &Package::getProfileApplications);
 }
 
 void Package::AddOwnedStereotypeFunctor::operator()(Stereotype& el) const {
     if (!m_el->getPackagedElements().count(el.getID())) {
         m_el->getPackagedElements().add(el);
     }
+    updateCopiedSequenceAddedTo(el, &Package::getOwnedStereotypes);
 }
 
 void Package::RemoveOwnedStereotypeFunctor::operator()(Stereotype& el) const {
     if (m_el->getPackagedElements().count(el.getID())) {
         m_el->getPackagedElements().remove(el);
     }
+    updateCopiedSequenceRemovedFrom(el, &Package::getOwnedStereotypes);
 }
 
 void Package::setManager(UmlManager* manager) {

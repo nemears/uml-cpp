@@ -25,6 +25,10 @@ void PackageMerge::setReceivingPackage(Package* receiving) {
         if (!m_receivingPackagePtr) {
             m_receivingPackagePtr = &m_manager->get<Package>(m_receivingPackageID);
         }
+        if (m_manager) {
+            removeReference(m_receivingPackageID);
+        }
+        m_receivingPackageID = ID::nullID();
         if (m_receivingPackagePtr->getPackageMerge().count(m_id)) {
             m_receivingPackagePtr->getPackageMerge().remove(*this);
         }
@@ -32,7 +36,6 @@ void PackageMerge::setReceivingPackage(Package* receiving) {
             m_sources.remove(*m_receivingPackagePtr);
         }
         m_receivingPackagePtr = 0;
-        m_receivingPackageID = ID::nullID();
     }
 
     if (receiving) {

@@ -157,8 +157,8 @@ namespace UML {
                 T* ret = new T;
                 ret->setManager(this);
                 m_elements.insert(ret->getID());
-                ManagerNode discData = {ret};
-                m_graph[ret->getID()] = discData;
+                // ManagerNode discData = {ret};
+                m_graph[ret->getID()] = {ret};
                 ret->m_node = &m_graph[ret->getID()];
                 return *ret;
             };

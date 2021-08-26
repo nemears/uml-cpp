@@ -8,6 +8,7 @@ namespace UML {
     class Package;
 
     class PackageMerge : public DirectedRelationship {
+        friend class Package;
         protected:
             ID m_receivingPackageID;
             Package* m_receivingPackagePtr;

@@ -52,9 +52,10 @@ TEST_F(DirectedRelationshipTest, duplicateRelationshipExceptionTest) {
 }
 
 TEST_F(DirectedRelationshipTest, removeRelationshipFunctorTest) {
-    PackageMerge dr;
-    Package a;
-    Package b;
+    UmlManager m;
+    PackageMerge& dr = m.create<PackageMerge>();
+    Package& a = m.create<Package>();
+    Package& b = m.create<Package>(); 
     a.getPackageMerge().add(dr);
     dr.setMergedPackage(&b);
     dr.setMergedPackage(0);

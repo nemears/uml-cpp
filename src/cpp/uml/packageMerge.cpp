@@ -23,7 +23,11 @@ PackageMerge::~PackageMerge() {
 }
 
 Package* PackageMerge::getReceivingPackage() {
-    return universalGet<Package>(m_receivingPackageID, m_receivingPackagePtr, m_manager);
+    if (m_node) {
+        return m_manager->get<Package>(this, m_receivingPackageID, &PackageMerge::m_receivingPackagePtr);
+    } else {
+        return universalGet<Package>(m_receivingPackageID, m_receivingPackagePtr, m_manager);
+    }
 }
 
 void PackageMerge::setReceivingPackage(Package* receiving) {
@@ -70,19 +74,26 @@ void PackageMerge::setReceivingPackage(Package* receiving) {
 }
 
 Package* PackageMerge::getMergedPackage() {
-    return universalGet<Package>(m_mergedPackageID, m_mergedPackagePtr, m_manager);
+    if (m_node) {
+        return m_manager->get<Package>(this, m_mergedPackageID, &PackageMerge::m_mergedPackagePtr);
+    } else {
+        return universalGet<Package>(m_mergedPackageID, m_mergedPackagePtr, m_manager);
+    }
 }
 
 void PackageMerge::setMergedPackage(Package* merge) {
     if (!m_mergedPackageID.isNull()) {
         if (!m_mergedPackagePtr) {
-            m_mergedPackagePtr = &m_manager->get<Package>(m_mergedPackageID);
+            m_mergedPackagePtr = m_manager->get<Package>(this, m_mergedPackageID, &PackageMerge::m_mergedPackagePtr);
         }
-        if (m_targets.count(m_mergedPackageID)) {
+        if (m_manager) {
+            removeReference(m_mergedPackageID);
+        }
+        m_mergedPackageID = ID::nullID();
+        if (m_targets.count(m_mergedPackagePtr->getID())) {
             m_targets.remove(*m_mergedPackagePtr);
         }
         m_mergedPackagePtr = 0;
-        m_mergedPackageID = ID::nullID();
     }
 
     if (merge) {
@@ -94,9 +105,16 @@ void PackageMerge::setMergedPackage(Package* merge) {
     }
 
     if (merge) {
+        if (m_manager) {
+            setReference(merge);
+        }
         if (!m_targets.count(m_mergedPackageID)) {
             m_targets.add(*merge);
         }
+    }
+
+    if (m_manager) {
+        m_manager->updateCopiesSingleton<PackageMerge>(this, m_mergedPackageID, &PackageMerge::m_mergedPackageID, &PackageMerge::m_mergedPackagePtr);
     }
 }
 

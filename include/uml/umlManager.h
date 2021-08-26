@@ -198,7 +198,7 @@ namespace UML {
             // I think performance can be improved a lot by going in that direction 
             void aquire(ID id);
             void release(ID id);
-            
+            void release(Element& el);
             /**
              * Saves the manager's model to the manager's path as a uml configuration file
              * WARN: if the model is saved, pointers to elements in model will have to be reaccessed 

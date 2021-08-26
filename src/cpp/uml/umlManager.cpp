@@ -108,20 +108,26 @@ void UmlManager::aquire(ID id) {
 }
 
 void UmlManager::release(ID id) {
+    release(*m_graph[id].m_managerElementMemory);
+}
+
+void UmlManager::release(Element& el) {
     if (!m_mountBase.empty()) {
-        Parsers::EmitterMetaData data = {filesystem::path(m_graph[id].m_mountPath).parent_path(),
+        Parsers::EmitterMetaData data = {filesystem::path(el.m_node->m_mountPath).parent_path(),
                                          Parsers::EmitterStrategy::INDIVIDUAL,
-                                         filesystem::path(m_graph[id].m_mountPath).filename(), this};
-        Parsers::emitToFile(*m_graph[id].m_managerElementMemory, data, data.m_path, data.m_fileName);
-        if (m_graph[id].m_managerElementMemory) {
-            delete m_graph[id].m_managerElementMemory;
+                                         filesystem::path(el.m_node->m_mountPath).filename(), this};
+        Parsers::emitToFile(*el.m_node->m_managerElementMemory, data, data.m_path, data.m_fileName);
+        ManagerNode* node = el.m_node;
+        ID id = el.getID();
+        if (node->m_managerElementMemory) {
+            delete node->m_managerElementMemory;
         }
-        for (auto& e : m_graph[id].m_references) {
+        for (auto& e : node->m_references) {
             if (e.second->m_managerElementMemory) {
                 e.second->m_managerElementMemory->referencingReleased(id);
             }
         }
-        m_graph[id].m_managerElementMemory = 0;
+        node->m_managerElementMemory = 0;
     } else {
         throw ManagerNotMountedException();
     }

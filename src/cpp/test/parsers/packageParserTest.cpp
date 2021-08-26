@@ -6,6 +6,9 @@
 #include "uml/packageMerge.h"
 #include "uml/primitiveType.h"
 #include "uml/property.h"
+#include "uml/profile.h"
+#include "uml/profileApplication.h"
+#include "uml/stereotype.h"
 
 using namespace std;
 using namespace UML;
@@ -207,4 +210,24 @@ TEST_F(PackageParserTest, emitMergedPackageTest) {
     string generatedEmit = Parsers::emit(pckg);
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
+}
+
+TEST_F(PackageParserTest, mountAndEditPackageTest) {
+    UmlManager m;
+    Package& root = m.create<Package>();
+    Package& c1 = m.create<Package>();
+    Package& merged = m.create<Package>();
+    Profile& profile = m.create<Profile>();
+    PackageMerge& merge = m.create<PackageMerge>();
+    ProfileApplication& profileApplication = m.create<ProfileApplication>();
+    Stereotype& stereotype = m.create<Stereotype>();
+    c1.getOwnedStereotypes().add(stereotype);
+    merge.setMergedPackage(&merged);
+    c1.getPackageMerge().add(merge);
+    profileApplication.setAppliedProfile(&profile);
+    c1.getProfileApplications().add(profileApplication);
+    root.getPackagedElements().add(c1, merged, profile);
+    m.setRoot(&root);
+    m.mount(ymlPath + "packageParserTests");
+    m.release(c1);
 }

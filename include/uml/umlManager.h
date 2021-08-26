@@ -78,6 +78,7 @@ namespace UML {
         friend class SetOwnerFunctor;
         friend class RemoveOwnerFunctor;
         friend class Comment;
+        friend class PackageMerge;
         template<typename> friend class Sequence;
         private:
             std::unordered_set<ID> m_elements;
@@ -143,6 +144,21 @@ namespace UML {
                 }
                 return 0;
             };
+            template <class T = Element> T* get(Element* me, ID theID) {
+                if (!theID.isNull()) {
+                    if (me->m_node) {
+                        if (me->m_node->m_references.count(theID)) {
+                            if (!me->m_node->m_references[theID]->m_managerElementMemory) {
+                                aquire(theID);
+                            }
+                            return dynamic_cast<T*>(me->m_node->m_references[theID]->m_managerElementMemory);
+                        }
+                    } else {
+                        throw ManagerStateException();
+                    }
+                }
+                return 0;
+            }
         public:
             UmlManager();
             ~UmlManager();

@@ -16,6 +16,10 @@ PackageMerge::PackageMerge(const PackageMerge& merge) {
     m_mergedPackagePtr = merge.m_mergedPackagePtr;
 }
 
+PackageMerge::~PackageMerge() {
+
+}
+
 Package* PackageMerge::getReceivingPackage() {
     return universalGet<Package>(m_receivingPackageID, m_receivingPackagePtr, m_manager);
 }
@@ -23,7 +27,7 @@ Package* PackageMerge::getReceivingPackage() {
 void PackageMerge::setReceivingPackage(Package* receiving) {
     if (!isSameOrNull(m_receivingPackageID, receiving)) {
         if (!m_receivingPackagePtr) {
-            m_receivingPackagePtr = &m_manager->get<Package>(m_receivingPackageID);
+            m_receivingPackagePtr = m_manager->get<Package>(this, m_receivingPackageID, &PackageMerge::m_receivingPackagePtr);
         }
         if (m_manager) {
             removeReference(m_receivingPackageID);
@@ -47,6 +51,9 @@ void PackageMerge::setReceivingPackage(Package* receiving) {
     }
 
     if (receiving) {
+        if (m_manager) {
+            setReference(receiving);
+        }
         if (!receiving->getPackageMerge().count(m_id)) {
             receiving->getPackageMerge().add(*this);
         }

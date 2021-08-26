@@ -313,7 +313,11 @@ namespace UML {
             T& get(ID id) { 
                 if (m_rep.count(id)) {
                     if (!m_rep[id]) {
-                        m_rep[id] = &m_manager->get<T>(id);
+                        if (m_el) {
+                            m_rep[id] = m_manager->get<T>(m_el, id);
+                        } else {
+                            m_rep[id] = &m_manager->get<T>(id);
+                        }
                     }
                     return *m_rep[id];
                 }
@@ -321,14 +325,22 @@ namespace UML {
             };
             T& get(size_t index) {
                 if (!m_rep[m_order.at(index)]) {
-                    m_rep[m_order.at(index)] = &m_manager->get<T>(m_order.at(index));
+                    if (m_el) {
+                        m_rep[m_order.at(index)] = m_manager->get<T>(m_el, m_order.at(index));
+                    } else {
+                        m_rep[m_order.at(index)] = &m_manager->get<T>(m_order.at(index));
+                    }
                 }
                 return *m_rep[m_order.at(index)];
             };
             T& get(std::string name) {
                 if (m_names.count(name)) {
                     if (!m_rep[m_names[name]]) {
+                        if (m_el) {
+                        m_rep[m_names[name]] = m_manager->get<T>(m_el, m_names[name]);
+                    } else {
                         m_rep[m_names[name]] = &m_manager->get<T>(m_names[name]);
+                    }
                     }
                     return *m_rep[m_names[name]];
                 }

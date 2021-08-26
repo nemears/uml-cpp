@@ -5,6 +5,7 @@
 #include "uml/stereotype.h"
 #include "uml/packageMerge.h"
 #include "uml/profileApplication.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
 
@@ -207,4 +208,24 @@ TEST_F(PackageTest, removeOwnedStereotype) {
     p.getOwnedStereotypes().remove(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 0);
     ASSERT_EQ(p.getPackagedElements().size(), 0);
+}
+
+TEST_F(PackageTest, packageFullCopyAndEditTest) {
+    UmlManager m;
+    Package& root = m.create<Package>();
+    Package& c1 = m.create<Package>();
+    Package& merged = m.create<Package>();
+    Profile& profile = m.create<Profile>();
+    PackageMerge& merge = m.create<PackageMerge>();
+    ProfileApplication& profileApplication = m.create<ProfileApplication>();
+    Stereotype& stereotype = m.create<Stereotype>();
+    c1.getOwnedStereotypes().add(stereotype);
+    merge.setMergedPackage(&merged);
+    c1.getPackageMerge().add(merge);
+    profileApplication.setAppliedProfile(&profile);
+    c1.getProfileApplications().add(profileApplication);
+    root.getPackagedElements().add(c1, merged, profile);
+    Package& copy = c1;
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c1, copy, &Package::getPackagedElements, &Package::getPackageMerge, &Package::getProfileApplications, &Package::getOwnedStereotypes, &Namespace::getOwnedMembers, &Namespace::getMembers, &NamedElement::getMemberNamespace, &Element::getOwnedElements));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c1, copy, &NamedElement::getNamespace, &Element::getOwner));
 }

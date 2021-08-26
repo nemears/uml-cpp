@@ -106,14 +106,17 @@ Package::Package(const Package& pckg) : Namespace(pckg), PackageableElement(pckg
     m_packagedElements.removeProcedures.clear();
     m_packagedElements.removeProcedures.push_back(new RemovePackagedElementFunctor(this));
     m_packageMerge = pckg.m_packageMerge;
+    m_packageMerge.m_el = this;
     m_packageMerge.addProcedures.clear();
     m_packageMerge.removeProcedures.clear();
     m_packageMerge.addProcedures.push_back(new AddPackageMergeFunctor(this));
     m_packageMerge.removeProcedures.push_back(new RemovePackageMergeFunctor(this));
+    m_profileApplications.m_el = this;
     m_profileApplications.addProcedures.clear();
     m_profileApplications.removeProcedures.clear();
     m_profileApplications.addProcedures.push_back(new AddProfileApplicationFunctor(this));
     m_profileApplications.removeProcedures.push_back(new RemoveProfileApplicationFunctor(this));
+    m_ownedStereotypes.m_el = this;
     m_ownedStereotypes.addProcedures.clear();
     m_ownedStereotypes.removeProcedures.clear();
     m_ownedStereotypes.addProcedures.push_back(new AddOwnedStereotypeFunctor(this));

@@ -213,8 +213,14 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
 
     if (node["package"]) {
         Package& pckg = data.m_manager->create<Package>();
-        UML::Parsers::parsePackage(node["package"], pckg, data);
+        parsePackage(node["package"], pckg, data);
         return &pckg;
+    }
+
+    if (node["packageMerge"]) {
+        PackageMerge& packageMerge = data.m_manager->create<PackageMerge>();
+        parsePackageMerge(node["packageMerge"], packageMerge, data);
+        return &packageMerge;
     }
 
     if (node["parameter"]) {

@@ -166,9 +166,13 @@ void Package::restoreReleased(ID id, Element* released) {
     if (m_packagedElements.count(id)) {
         released->as<PackageableElement>().setOwningPackage(this);
     }
+    if (m_packageMerge.count(id)) {
+        released->as<PackageMerge>().setReceivingPackage(this);
+    }
 }
 
 void Package::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     m_packagedElements.elementReleased(id);
+    m_packageMerge.elementReleased(id);
 }

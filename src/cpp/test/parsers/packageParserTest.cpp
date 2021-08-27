@@ -230,8 +230,24 @@ TEST_F(PackageParserTest, mountAndEditPackageTest) {
     m.setRoot(&root);
     m.mount(ymlPath + "packageParserTests");
     m.release(c1);
-    /** TODO: finish**/ 
     Package& c2 = root.getPackagedElements().front().as<Package>();
     ASSERT_TRUE(c2.getOwningPackage() != 0);
     ASSERT_EQ(c2.getOwningPackage(), &root);
+    ASSERT_EQ(c2.getPackageMerge().size(), 1);
+    ASSERT_EQ(&c2.getPackageMerge().front(), &merge);
+    ASSERT_EQ(c2.getProfileApplications().size(), 1);
+    ASSERT_EQ(&c2.getProfileApplications().front(), &profileApplication);
+    ASSERT_EQ(c2.getPackagedElements().size(), 1);
+    ASSERT_EQ(&c2.getPackagedElements().front(), &stereotype);
+    ASSERT_EQ(c2.getOwnedStereotypes().size(), 1);
+    ASSERT_EQ(&c2.getOwnedStereotypes().front(), &stereotype);
+
+    m.release(merge);
+    ASSERT_EQ(c2.getPackageMerge().size(), 1);
+    PackageMerge& merge2 = c2.getPackageMerge().front();
+    ASSERT_TRUE(merge2.getReceivingPackage() != 0);
+    ASSERT_EQ(merge2.getReceivingPackage(), &c2);
+    ASSERT_TRUE(merge2.getMergedPackage() != 0);
+    ASSERT_EQ(merge2.getMergedPackage(), &c2);
+
 }

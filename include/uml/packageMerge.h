@@ -14,6 +14,8 @@ namespace UML {
             Package* m_receivingPackagePtr;
             ID m_mergedPackageID;
             Package* m_mergedPackagePtr;
+            void restoreReleased(ID id, Element* released) override;
+            void referencingReleased(ID id) override;
         public:
             PackageMerge();
             PackageMerge(const PackageMerge& merge);

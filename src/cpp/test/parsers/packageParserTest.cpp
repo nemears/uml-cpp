@@ -248,6 +248,13 @@ TEST_F(PackageParserTest, mountAndEditPackageTest) {
     ASSERT_TRUE(merge2.getReceivingPackage() != 0);
     ASSERT_EQ(merge2.getReceivingPackage(), &c2);
     ASSERT_TRUE(merge2.getMergedPackage() != 0);
-    ASSERT_EQ(merge2.getMergedPackage(), &c2);
+    ASSERT_EQ(merge2.getMergedPackage(), &merged);
 
+    m.release(profileApplication);
+    ASSERT_EQ(c2.getProfileApplications().size(), 1);
+    ProfileApplication& profileApplication2 = c2.getProfileApplications().front();
+    ASSERT_TRUE(profileApplication2.getApplyingPackage() != 0);
+    ASSERT_EQ(profileApplication2.getApplyingPackage(), &c2);
+    ASSERT_TRUE(profileApplication2.getAppliedProfile() != 0);
+    ASSERT_EQ(profileApplication2.getAppliedProfile(), &profile);
 }

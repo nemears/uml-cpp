@@ -131,3 +131,17 @@ bool PackageMerge::isSubClassOf(ElementType eType) const {
 
     return ret;
 }
+
+void PackageMerge::restoreReleased(ID id, Element* released) {
+    Element::restoreReleased(id, released);
+}
+
+void PackageMerge::referencingReleased(ID id) {
+    Element::referencingReleased(id);
+    if (m_mergedPackageID == id) {
+        m_mergedPackagePtr = 0;
+    }
+    if (m_receivingPackageID == id) {
+        m_receivingPackagePtr = 0;
+    }
+}

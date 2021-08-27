@@ -241,6 +241,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         return &profile;
     }
 
+    if (node["profileApplication"]) {
+        ProfileApplication& profileApplication = data.m_manager->create<ProfileApplication>();
+        parseProfileApplication(node["profileApplication"], profileApplication, data);
+        return &profileApplication;
+    }
+
     if (node["property"]) {
         Property& prop = data.m_manager->create<Property>();
         parseProperty(node["property"], prop, data);

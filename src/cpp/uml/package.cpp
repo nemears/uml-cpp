@@ -169,10 +169,15 @@ void Package::restoreReleased(ID id, Element* released) {
     if (m_packageMerge.count(id)) {
         released->as<PackageMerge>().setReceivingPackage(this);
     }
+    if (m_profileApplications.count(id)) {
+        released->as<ProfileApplication>().setApplyingPackage(this);
+    }
 }
 
 void Package::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     m_packagedElements.elementReleased(id);
     m_packageMerge.elementReleased(id);
+    m_profileApplications.elementReleased(id);
+    m_ownedStereotypes.elementReleased(id);
 }

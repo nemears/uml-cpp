@@ -212,6 +212,17 @@ TEST_F(PackageParserTest, emitMergedPackageTest) {
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
+void ASSERT_PROPER_DIRECTED_RELATIONSHIP_AQUIRE(DirectedRelationship& dr, Element& source, Element& target) {
+    ASSERT_EQ(dr.getSources().size(), 1);
+    ASSERT_EQ(&dr.getSources().front(), &source);
+    ASSERT_EQ(dr.getRelatedElements().count(source.getID()), 1);
+    ASSERT_EQ(&dr.getRelatedElements().get(source.getID()), &source);
+    ASSERT_EQ(dr.getTargets().size(), 1);
+    ASSERT_EQ(&dr.getTargets().front(), &target);
+    ASSERT_EQ(dr.getRelatedElements().count(target.getID()), 1);
+    ASSERT_EQ(&dr.getRelatedElements().get(target.getID()), &target);
+}
+
 TEST_F(PackageParserTest, mountAndEditPackageTest) {
     UmlManager m;
     Package& root = m.create<Package>();
@@ -249,6 +260,7 @@ TEST_F(PackageParserTest, mountAndEditPackageTest) {
     ASSERT_EQ(merge2.getReceivingPackage(), &c2);
     ASSERT_TRUE(merge2.getMergedPackage() != 0);
     ASSERT_EQ(merge2.getMergedPackage(), &merged);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_DIRECTED_RELATIONSHIP_AQUIRE(merge2, c2, merged));
 
     m.release(profileApplication);
     ASSERT_EQ(c2.getProfileApplications().size(), 1);
@@ -257,4 +269,5 @@ TEST_F(PackageParserTest, mountAndEditPackageTest) {
     ASSERT_EQ(profileApplication2.getApplyingPackage(), &c2);
     ASSERT_TRUE(profileApplication2.getAppliedProfile() != 0);
     ASSERT_EQ(profileApplication2.getAppliedProfile(), &profile);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_DIRECTED_RELATIONSHIP_AQUIRE(profileApplication2, c2, profile));
 }

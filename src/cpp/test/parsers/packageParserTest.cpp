@@ -270,4 +270,16 @@ TEST_F(PackageParserTest, mountAndEditPackageTest) {
     ASSERT_TRUE(profileApplication2.getAppliedProfile() != 0);
     ASSERT_EQ(profileApplication2.getAppliedProfile(), &profile);
     ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_DIRECTED_RELATIONSHIP_AQUIRE(profileApplication2, c2, profile));
+
+    m.release(stereotype);
+    ASSERT_EQ(c2.getOwnedStereotypes().size(), 1);
+    Stereotype& stereotype2 = c2.getOwnedStereotypes().front();
+    ASSERT_TRUE(stereotype2.getOwningPackage() != 0);
+    ASSERT_EQ(stereotype2.getOwningPackage(), &c2);
+    ASSERT_TRUE(stereotype2.getNamespace() != 0);
+    ASSERT_EQ(stereotype2.getNamespace(), &c2);
+    ASSERT_EQ(stereotype2.getMemberNamespace().size(), 1);
+    ASSERT_EQ(&stereotype2.getMemberNamespace().front(), &c2);
+    ASSERT_TRUE(stereotype2.getOwner() != 0);
+    ASSERT_EQ(stereotype2.getOwner(), &c2);
 }

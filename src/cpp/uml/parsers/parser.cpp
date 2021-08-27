@@ -253,6 +253,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         return &prop;
     }
 
+    if (node["stereotype"]) {
+        Stereotype& stereotype = data.m_manager->create<Stereotype>();
+        parseClass(node["stereotype"], stereotype, data);
+        return &stereotype;
+    }
+
     return 0;
 }
 

@@ -56,7 +56,7 @@ UmlManager* parse(string path) {
 }
 
 Element* parse(ParserMetaData& data) {
-    YAML::Node node = YAML::LoadFile(data.m_path);
+    YAML::Node node = YAML::LoadFile(data.m_path.string());
     Element* ret = parseNode(node, data);
     if (!data.m_manager->getRoot()) {
         data.m_manager->setRoot(ret);
@@ -75,7 +75,7 @@ string emit(Element& el) {
 }
 
 void emit(EmitterMetaData& data) {
-    emitToFile(*data.m_manager->getRoot(), data, data.m_path, data.m_fileName);
+    emitToFile(*data.m_manager->getRoot(), data, data.m_path.string(), data.m_fileName);
 }
 
 void emitToFile(Element& el, EmitterMetaData& data, string path, string fileName) {
@@ -267,7 +267,7 @@ Element* parseExternalAddToManager(ParserMetaData& data, string path) {
         filesystem::path cPath = data.m_path;
         data.m_path = cPath.parent_path() / path;;
         Element* ret = parse(data);
-        data.m_manager->setPath(ret->getID(), data.m_path);
+        data.m_manager->setPath(ret->getID(), data.m_path.string());
         data.m_path = cPath;
         return ret;
     } else {
@@ -285,7 +285,7 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         case EmitterStrategy::INDIVIDUAL : {
             if (data.m_path != data.getMountPath(el.getID()).parent_path()) {
                 newPath = data.getMountPath(el.getID());
-                emitter << YAML::Value << newPath.filename();
+                emitter << YAML::Value << newPath.filename().string();
                 return;
             }
         }
@@ -301,8 +301,8 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     if (newPath.empty() || (newPath.parent_path().compare(data.m_path) == 0 && newPath.filename().compare(data.m_fileName) == 0)) {
         determineTypeAndEmit(emitter, el, data);
     } else {
-        emitter << YAML::Value << newPath.filename();
-        emitToFile(el, data, newPath.parent_path(), newPath.filename());
+        emitter << YAML::Value << newPath.filename().string();
+        emitToFile(el, data, newPath.parent_path().string(), newPath.filename().string());
     }
 }
 
@@ -1974,9 +1974,9 @@ void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge, EmitterMetaDa
         if (path.empty() || path == data.m_path / data.m_fileName) {
             emitter << YAML::Key << "mergedPackage" << YAML::Value << merge.getMergedPackage()->getID().string();
         } else {
-            emitToFile(*merge.getMergedPackage(), data, path.parent_path(), path.filename());
+            emitToFile(*merge.getMergedPackage(), data, path.parent_path().string(), path.filename().string());
             if (data.m_path == path.parent_path()) {
-                emitter << YAML::Key << "mergedPackage" << YAML::Value << path.filename();
+                emitter << YAML::Key << "mergedPackage" << YAML::Value << path.filename().string();
             }
         }
     }
@@ -3037,7 +3037,7 @@ void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& applicat
         } else {
             //emit(emitter, *application.getAppliedProfile(), data);
             if (data.m_path == path.parent_path()) {
-                emitter << YAML::Key << "appliedProfile" << YAML::Value << path.filename();
+                emitter << YAML::Key << "appliedProfile" << YAML::Value << path.filename().string();
             }
         }
     }

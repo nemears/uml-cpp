@@ -69,7 +69,7 @@ TEST_F(UmlManagerTest, simpleMountTest) {
     m->setRoot(&p);
     ASSERT_NO_THROW(m->mount(ymlPath + "umlManagerTests"));
     ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_MOUNT(p, ymlPath + "umlManagerTests"));
-    UmlManager* m2 = Parsers::parse(filesystem::path(filesystem::path(ymlPath + "umlManagerTests") / "mount" / (p.getID().string() + ".yml")));
+    UmlManager* m2 = Parsers::parse((filesystem::path(filesystem::path(ymlPath + "umlManagerTests") / "mount" / (p.getID().string() + ".yml"))).string());
     ASSERT_EQ(m2->getRoot()->getElementType(), ElementType::PACKAGE);
     Package& p2 = m2->getRoot()->as<Package>();
     ASSERT_EQ(p2.getID(), p.getID());
@@ -89,7 +89,7 @@ TEST_F(UmlManagerTest, multiLayerMountTest) {
     c.setName("child");
     ASSERT_NO_THROW(m->mount(ymlPath + "umlManagerTests"));
     ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_MOUNT(p, ymlPath + "umlManagerTests"));
-    UmlManager* m2 = Parsers::parse(filesystem::path(filesystem::path(ymlPath + "umlManagerTests") / "mount" / (p.getID().string() + ".yml")));
+    UmlManager* m2 = Parsers::parse((filesystem::path(filesystem::path(ymlPath + "umlManagerTests") / "mount" / (p.getID().string() + ".yml"))).string());
     ASSERT_EQ(m2->getRoot()->getElementType(), ElementType::PACKAGE);
     Package& p2 = m2->getRoot()->as<Package>();
     ASSERT_EQ(p2.getID(), p.getID());
@@ -110,7 +110,7 @@ TEST_F(UmlManagerTest, releaseTest) {
     p.setName("name");
     ID pid = p.getID();
     ASSERT_NO_THROW(m.release(p.getID()));
-    UmlManager* m2 = Parsers::parse(filesystem::path(ymlPath + "umlManagerTests") / "mount" / (pid.string() + ".yml"));
+    UmlManager* m2 = Parsers::parse((filesystem::path(ymlPath + "umlManagerTests") / "mount" / (pid.string() + ".yml")).string());
     ASSERT_EQ(m2->getRoot()->getElementType(), ElementType::PACKAGE);
     Package& p2 = m2->getRoot()->as<Package>();
     ASSERT_EQ(p2.getName(), "name");

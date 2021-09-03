@@ -70,7 +70,7 @@ void UmlManager::reindex(ID oldID, ID newID) {
 }
 
 void UmlManager::setElementAndChildrenMount(filesystem::path parentPath, Element& el) {
-    m_graph[el.getID()].m_mountPath = parentPath / (el.getID().string() + ".yml");
+    m_graph[el.getID()].m_mountPath = (parentPath / (el.getID().string() + ".yml")).string();
     for (auto& child : el.getOwnedElements()) {
         setElementAndChildrenMount(parentPath, child);
     }
@@ -115,8 +115,8 @@ void UmlManager::release(Element& el) {
     if (!m_mountBase.empty()) {
         Parsers::EmitterMetaData data = {filesystem::path(el.m_node->m_mountPath).parent_path(),
                                          Parsers::EmitterStrategy::INDIVIDUAL,
-                                         filesystem::path(el.m_node->m_mountPath).filename(), this};
-        Parsers::emitToFile(*el.m_node->m_managerElementMemory, data, data.m_path, data.m_fileName);
+                                         filesystem::path(el.m_node->m_mountPath).filename().string(), this};
+        Parsers::emitToFile(*el.m_node->m_managerElementMemory, data, data.m_path.string(), data.m_fileName);
         ManagerNode* node = el.m_node;
         ID id = el.getID();
         if (node->m_managerElementMemory) {
@@ -142,7 +142,7 @@ void UmlManager::save() {
     data.m_manager =  this;
     data.m_strategy = Parsers::EmitterStrategy::WHOLE;
     data.m_path = m_path.parent_path();
-    data.m_fileName = m_path.filename();
+    data.m_fileName = m_path.filename().string();
     Parsers::emit(data);
 }
 

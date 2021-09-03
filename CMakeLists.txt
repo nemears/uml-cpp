@@ -8,8 +8,8 @@ set (CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 
-SET(GCC_COMPILER_FLAGS "-fPIC")
-add_definitions(${GCC_COMPILER_FLAGS})
+#SET(GCC_COMPILER_FLAGS "-fPIC")
+#add_definitions(${GCC_COMPILER_FLAGS})
 
 # llvm clang dependency
 find_package(LLVM 10 REQUIRED)
@@ -23,10 +23,14 @@ add_definitions(${CLANG_DEFINITIONS})
 include_directories(include)
 
 # Google Test dependency
+IF(WIN32)
+    set(gtest_force_shared_crt ON)
+ENDIF()
 add_subdirectory(libs/googletest)
 
 # yaml-cpp dependency
 add_subdirectory(libs/yaml-cpp)
+set(YAML_CPP_BUILD_TESTS OFF)
 
 # pybind11
 add_subdirectory(libs/pybind11)

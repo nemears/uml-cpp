@@ -8,8 +8,10 @@ set (CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 
-#SET(GCC_COMPILER_FLAGS "-fPIC")
-#add_definitions(${GCC_COMPILER_FLAGS})
+IF(UNIX)
+    SET(GCC_COMPILER_FLAGS "-fPIC")
+    add_definitions(${GCC_COMPILER_FLAGS})
+ENDIF()
 
 # llvm clang dependency
 find_package(LLVM 10 REQUIRED)

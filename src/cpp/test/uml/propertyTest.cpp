@@ -6,6 +6,10 @@
 #include "uml/class.h"
 #include "uml/association.h"
 #include "uml/generalization.h"
+#include <uml/instanceValue.h>
+#include <uml/instanceSpecification.h>
+#include <uml/package.h>
+#include <test/umlTestUtil.h>
 
 using namespace UML;
 
@@ -169,4 +173,41 @@ TEST_F(PropertyTest, redefinePropertyTest) {
   ASSERT_EQ(prop.getRedefinedElements().front().getID(), redefined.getID());
   // Property& notRelated = m.create<Property>();
   // ASSERT_THROW(prop.getRedefinedProperties().add(notRelated), ImproperRedefinitionException);
+}
+
+TEST_F(PropertyTest, copyAndEditTest) {
+    UmlManager m;
+    Class& gen = m.create<Class>();
+    Class& spec = m.create<Class>();
+    Property& og = m.create<Property>();
+    Property& red = m.create<Property>();
+    Generalization generalization = m.create<Generalization>();
+    Package& pckg = m.create<Package>();
+    Class& type = m.create<Class>();
+    InstanceSpecification& typeInst = m.create<InstanceSpecification>();
+    InstanceValue& val = m.create<InstanceValue>();
+    gen.getOwnedAttributes().add(og);
+    spec.getOwnedAttributes().add(red);
+    red.getRedefinedProperties().add(og);
+    red.setType(&type);
+    typeInst.setClassifier(&type);
+    val.setInstance(&typeInst);
+    red.setDefaultValue(&val);
+    og.setType(&type);
+    pckg.getPackagedElements().add(gen, spec, type, typeInst);
+    Property red2 = red;
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(red2, red, &Property::getDefaultValue, &TypedElement::getType, &Property::getClass, &Property::getClassifier,& Property::getStructuredClassifier, &Feature::getFeaturingClassifier, &NamedElement::getNamespace, &Element::getOwner));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(red2, red, &Property::getRedefinedProperties, &RedefinableElement::getRedefinedElements, &RedefinableElement::getRedefinitionContext, &NamedElement::getMemberNamespace));
+    red2.getRedefinedProperties().remove(og);
+    red2.setDefaultValue(0);
+    red2.setType(0);
+    spec.getOwnedAttributes().remove(red2);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(red2, red, &Property::getDefaultValue, &TypedElement::getType, &Property::getClass, &Property::getClassifier, &Property::getStructuredClassifier, &Feature::getFeaturingClassifier, &NamedElement::getNamespace, &Element::getOwner));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(red2, red, &Property::getRedefinedProperties, &RedefinableElement::getRedefinedElements, &RedefinableElement::getRedefinitionContext, &NamedElement::getMemberNamespace));
+    red2.setType(&type);
+    red2.setDefaultValue(&val);
+    spec.getOwnedAttributes().add(red2);
+    red2.getRedefinedProperties().add(og);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(red2, red, &Property::getDefaultValue, &TypedElement::getType, &Property::getClass, &Property::getClassifier, &Property::getStructuredClassifier, &Feature::getFeaturingClassifier, &NamedElement::getNamespace, &Element::getOwner));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(red2, red, &Property::getRedefinedProperties, &RedefinableElement::getRedefinedElements, &RedefinableElement::getRedefinitionContext, &NamedElement::getMemberNamespace));
 }

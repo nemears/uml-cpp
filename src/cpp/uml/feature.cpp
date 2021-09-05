@@ -44,6 +44,9 @@ void Feature::setFeaturingClassifier(Classifier* clazz) {
         if (!m_featuringClassifierPtr) {
             m_featuringClassifierPtr = &m_manager->get<Classifier>(m_featuringClassifierID);
         }
+        if (m_manager) {
+            removeReference(m_featuringClassifierID);
+        }
         if (m_featuringClassifierPtr->getFeatures().count(m_id)) {
             m_featuringClassifierPtr->getFeatures().remove(*this);
         }
@@ -60,9 +63,16 @@ void Feature::setFeaturingClassifier(Classifier* clazz) {
     }
 
     if (clazz) {
+        if (m_manager) {
+            setReference(clazz);
+        }
         if (!clazz->getFeatures().count(m_id)) {
             clazz->getFeatures().add(*this);
         }
+    }
+
+    if (m_manager) {
+        m_manager->updateCopiesSingleton<Feature>(this, m_featuringClassifierID, &Feature::m_featuringClassifierID, &Feature::m_featuringClassifierPtr);
     }
 }
 

@@ -17,6 +17,8 @@ namespace UML {
     class PackageableElement;
     class NamedElement;
     class TypedElement;
+    class Property;
+    class Feature;
 
     template <class T = Element> class Sequence;
     template <class T> class SequenceIterator;
@@ -80,6 +82,8 @@ namespace UML {
         friend class RemoveOwnerFunctor;
         friend class Comment;
         friend class PackageMerge;
+        friend class Property;
+        friend class Feature;
         template<typename> friend class Sequence;
         template <class T> friend class SequenceIterator;
         private:

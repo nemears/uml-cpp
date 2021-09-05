@@ -113,8 +113,9 @@ void Property::AddRedefinedPropertyFunctor::operator()(Property& el) const {
         if (!m_el->m_redefinitionContext.count(m_el->m_classifierID)) {
             m_el->m_redefinitionContext.add(*m_el->getClassifier());
         }
-        
     }
+
+    updateCopiedSequenceAddedTo(el, &Property::getRedefinedProperties);
 }
 
 bool findProperty(Classifier& clazz, ID propID) {
@@ -151,8 +152,8 @@ void Property::RemoveRedefinedPropertyFunctor::operator()(Property& el) const {
         if (m_el->m_redefinitionContext.count(m_el->m_classifierID) && m_el->m_redefinedProperties.empty()) {
             m_el->m_redefinitionContext.add(*m_el->getClassifier());
         }
-        
     }
+    updateCopiedSequenceRemovedFrom(el, &Property::getRedefinedProperties);
 }
 
 void Property::setManager(UmlManager* manager) {
@@ -177,7 +178,7 @@ Property::Property() {
     m_redefinedProperties.removeProcedures.push_back(new RemoveRedefinedPropertyFunctor(this));
 }
 
-Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement(prop), NamedElement(prop), Element(prop) {
+Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement(prop), RedefinableElement(prop), NamedElement(prop), Element(prop) {
     m_aggregation = prop.m_aggregation;
     m_composite = prop.m_composite;
     m_defaultValueID = prop.m_defaultValueID;
@@ -188,6 +189,7 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     m_dataTypePtr = prop.m_dataTypePtr;
     m_classPtr = prop.m_classPtr;
     m_classID = prop.m_classID;
+    m_structuredClassifierID = prop.m_structuredClassifierID;
     m_structuredClassifierPtr = prop.m_structuredClassifierPtr;
     m_associationID = prop.m_associationID;
     m_associationPtr = prop.m_associationPtr;
@@ -202,6 +204,7 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     m_redefinedProperties.addProcedures.push_back(new AddRedefinedPropertyFunctor(this));
     m_redefinedProperties.addChecks.push_back(new CheckRedefinedPropertyFunctor(this));
     m_redefinedProperties.removeProcedures.push_back(new RemoveRedefinedPropertyFunctor(this));
+    m_redefinedProperties.m_el = this;
 }
 
 AggregationKind Property::getAggregation() {
@@ -251,21 +254,25 @@ void Property::setAggregation(AggregationKind aggregation) {
 }
 
 ValueSpecification* Property::getDefaultValue() {
-    return universalGet<ValueSpecification>(m_defaultValueID, m_defaultValuePtr, m_manager);
+    if (m_manager) {
+        return m_manager->get<ValueSpecification>(this, m_defaultValueID, &Property::m_defaultValuePtr);
+    }
+    else {
+        return m_defaultValuePtr;
+    }
 }
 
 void Property::setDefaultValue(ValueSpecification* val) {
-    if (!m_defaultValueID.isNull()) {
-        if (m_ownedElements->count(m_defaultValueID)) {
-            if (!m_defaultValuePtr) {
-                m_defaultValuePtr = &m_manager->get<ValueSpecification>(m_defaultValueID);
-            }
-            m_ownedElements->internalRemove(*m_defaultValuePtr);
+    if (!isSameOrNull(m_defaultValueID, val)) {
+        if (!m_defaultValuePtr) {
+            m_defaultValuePtr = m_manager->get<ValueSpecification>(this, m_defaultValueID, &Property::m_defaultValuePtr);
         }
-        if (m_defaultValueID != val->getID()) {
-            m_defaultValueID = ID::nullID();
-            m_defaultValuePtr = 0;
+        if (m_manager) {
+            removeReference(m_defaultValueID);
         }
+        m_ownedElements->internalRemove(*m_defaultValuePtr);
+        m_defaultValueID = ID::nullID();
+        m_defaultValuePtr = 0;
     }
     
     if (val) {
@@ -277,20 +284,35 @@ void Property::setDefaultValue(ValueSpecification* val) {
     }
 
     if (val) {
+        if (m_manager) {
+            setReference(val);
+        }
         if (!m_ownedElements->count(m_defaultValueID)) {
             m_ownedElements->internalAdd(*val);
         }
     }
+
+    if (m_manager) {
+        m_manager->updateCopiesSingleton<Property>(this, m_defaultValueID, &Property::m_defaultValueID, &Property::m_defaultValuePtr);
+    }
 }
 
 Classifier* Property::getClassifier() {
-    return universalGet<Classifier>(m_classifierID, m_classifierPtr, m_manager);
+    if (m_manager) {
+        return m_manager->get<Classifier>(this, m_classifierID, &Property::m_classifierPtr);
+    }
+    else {
+        return m_classifierPtr;
+    }
 }
 
 void Property::setClassifier(Classifier* classifier) {
     if (!isSameOrNull(m_classifierID, classifier)) {
         if (!m_classifierPtr) {
-            m_classifierPtr = &m_manager->get<Classifier>(m_classifierID);
+            m_classifierPtr = m_manager->get<Classifier>(this, m_classifierID, &Property::m_classifierPtr);
+        }
+        if (m_manager) {
+            removeReference(m_classifierID);
         }
         if (m_classifierPtr->getAttributes().count(m_id)) {
             m_classifierPtr->getAttributes().remove(*this);
@@ -311,6 +333,9 @@ void Property::setClassifier(Classifier* classifier) {
     }
 
     if (classifier) {
+        if (m_manager) {
+            setReference(classifier);
+        }
         if (!classifier->getAttributes().count(m_id)) {
             classifier->getAttributes().add(*this);
         }
@@ -320,16 +345,28 @@ void Property::setClassifier(Classifier* classifier) {
             }
         }
     }
+
+    if (m_manager) {
+        m_manager->updateCopiesSingleton<Property>(this, m_classifierID, &Property::m_classifierID, &Property::m_classifierPtr);
+    }
 }
 
 StructuredClassifier* Property::getStructuredClassifier() {
-    return universalGet<StructuredClassifier>(m_structuredClassifierID, m_structuredClassifierPtr, m_manager);
+    if (m_manager) {
+        return m_manager->get<StructuredClassifier>(this, m_structuredClassifierID, &Property::m_structuredClassifierPtr);
+    }
+    else {
+        return m_structuredClassifierPtr;
+    }
 }
 
 void Property::setStructuredClassifier(StructuredClassifier* classifier) {
     if (!isSameOrNull(m_structuredClassifierID, classifier)) {
         if (!m_structuredClassifierPtr) {
-            m_structuredClassifierPtr = &m_manager->get<StructuredClassifier>(m_structuredClassifierID);
+            m_structuredClassifierPtr = m_manager->get<StructuredClassifier>(this, m_structuredClassifierID, &Property::m_structuredClassifierPtr);
+        }
+        if (m_manager) {
+            removeReference(m_structuredClassifierID);
         }
         if (m_structuredClassifierPtr->getOwnedAttributes().count(m_id)) {
             m_structuredClassifierPtr->getOwnedAttributes().remove(*this);
@@ -347,9 +384,16 @@ void Property::setStructuredClassifier(StructuredClassifier* classifier) {
     }
 
     if (classifier) {
+        if (m_manager) {
+            setReference(classifier);
+        }
         if (!classifier->getOwnedAttributes().count(m_id)) {
             classifier->getOwnedAttributes().add(*this);
         }
+    }
+
+    if (m_manager) {
+        m_manager->updateCopiesSingleton<Property>(this, m_structuredClassifierID, &Property::m_structuredClassifierID, &Property::m_structuredClassifierPtr);
     }
 }
 
@@ -385,13 +429,21 @@ void Property::setDataType(DataType* dataType) {
 }
 
 Class* Property::getClass() {
-    return universalGet<Class>(m_classID, m_classPtr, m_manager);
+    if (m_manager) {
+        return m_manager->get<Class>(this, m_classID, &Property::m_classPtr);
+    }
+    else {
+        return m_classPtr;
+    }
 }
 
 void Property::setClass(Class* clazz) {
     if (!isSameOrNull(m_classID, clazz)) {
         if (!m_classPtr) {
             m_classPtr = &m_manager->get<Class>(m_classID);
+        }
+        if (m_manager) {
+            removeReference(m_classID);
         }
         if (m_classPtr->getOwnedAttributes().count(m_id)) {
             m_classPtr->getOwnedAttributes().remove(*this);
@@ -409,9 +461,16 @@ void Property::setClass(Class* clazz) {
     }
 
     if (clazz) {
+        if (m_manager) {
+            setReference(clazz);
+        }
         if (!clazz->getOwnedAttributes().count(m_id)) {
             clazz->getOwnedAttributes().add(*this);
         }
+    }
+
+    if (m_manager) {
+        m_manager->updateCopiesSingleton<Property>(this, m_classID, &Property::m_classID, &Property::m_classPtr);
     }
 }
 

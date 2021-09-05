@@ -78,6 +78,7 @@ StructuredClassifier::StructuredClassifier(const StructuredClassifier& clazz) : 
     m_ownedAttributes = clazz.m_ownedAttributes;
     m_ownedAttributes.addProcedures.clear();
     m_ownedAttributes.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
+    m_ownedAttributes.m_el = this;
     m_ownedAttributes.removeProcedures.clear();
     m_ownedAttributes.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
     m_role = clazz.m_role;
@@ -85,7 +86,9 @@ StructuredClassifier::StructuredClassifier(const StructuredClassifier& clazz) : 
     m_role.addProcedures.push_back(new AddRoleFunctor(this));
     m_role.removeProcedures.clear();
     m_role.removeProcedures.push_back(new RemoveRoleFunctor(this));
+    m_role.m_el = this;
     m_parts = clazz.m_parts;
+    m_parts.m_el = this;
 }
 
 StructuredClassifier::~StructuredClassifier() {

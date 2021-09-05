@@ -18,11 +18,26 @@ void RemoveMemberNamespaceFunctor::operator()(Namespace& el) const {
     updateCopiedSequenceRemovedFrom(el, &NamedElement::getMemberNamespace);
 }
 
+void NamedElement::RemoveNamespaceProcedures::operator()(ID id, Namespace* el) const {
+    if (el->getMembers().count(m_me->getID())) {
+        el->getMembers().internalRemove(*m_me);
+    }
+}
+
+void NamedElement::AddNamespaceProcedures::operator()(ID id, Namespace* el) const {
+    if (!el->getOwnedMembers().count(m_me->getID())) {
+        el->getOwnedMembers().add(*m_me);
+    }
+}
+
 NamedElement::NamedElement() {
     m_namespacePtr = 0;
     m_memberNamespace = new Sequence<Namespace>(this);
     m_memberNamespace->addProcedures.push_back(new AddMemberNamespaceFunctor(this));
     m_memberNamespace->removeProcedures.push_back(new RemoveMemberNamespaceFunctor(this));
+    m_namespace.m_signature = &NamedElement::m_namespace;
+    m_namespace.m_removeProcedures.push_back(new RemoveNamespaceProcedures(this));
+    m_namespace.m_addProcedures.push_back(new AddNamespaceProcedures(this));
 }
 
 NamedElement::~NamedElement() {
@@ -40,6 +55,12 @@ NamedElement::NamedElement(const NamedElement& el) : Element(el) {
     m_memberNamespace->addProcedures.push_back(new AddMemberNamespaceFunctor(this));
     m_memberNamespace->removeProcedures.clear();
     m_memberNamespace->removeProcedures.push_back(new RemoveMemberNamespaceFunctor(this));
+    m_namespace = el.m_namespace;
+    m_namespace.m_me = this;
+    m_namespace.m_removeProcedures.clear();
+    m_namespace.m_addProcedures.clear();
+    m_namespace.m_removeProcedures.push_back(new RemoveNamespaceProcedures(this));
+    m_namespace.m_addProcedures.push_back(new AddNamespaceProcedures(this));
 }
 
 void NamedElement::setName(const string &name) {
@@ -62,11 +83,8 @@ void NamedElement::reindexName(string oldName, string newName) {
 }
 
 void NamedElement::reindexID(ID oldID, ID newID) {
-    if (!m_namespaceID.isNull()) {
-        if (!m_namespacePtr) {
-            m_namespacePtr = &m_manager->get<Namespace>(m_namespaceID);
-        }
-        m_namespacePtr->getOwnedMembers().reindex(oldID, newID);
+    if (m_namespace.has()) {
+        m_namespace.get()->getOwnedMembers().reindex(oldID, newID);
     }
 
     for (auto& nmspc : *m_memberNamespace) {
@@ -86,50 +104,11 @@ string NamedElement::getName() {
 }
 
 Namespace* NamedElement::getNamespace() {
-    if (m_manager) {
-        return m_manager->get<Namespace>(this, m_namespaceID, &NamedElement::m_namespacePtr);
-    } else {
-        return m_namespacePtr;
-    }
+    return m_namespace.get();
 }
 
 void NamedElement::setNamespace(Namespace* nmspc) {
-    if (!isSameOrNull(m_namespaceID, nmspc)) {
-        if (!m_namespacePtr) {
-            m_namespacePtr = m_manager->get<Namespace>(this, m_namespaceID, &NamedElement::m_namespacePtr);
-        }
-        if (m_manager) {
-            removeReference(m_namespaceID);
-        }
-        m_namespaceID = ID::nullID();
-        if (m_namespacePtr->getMembers().count(m_id)) {
-            m_namespacePtr->getMembers().internalRemove(*this);
-        }
-        m_namespacePtr = 0;
-    }
-
-    if (nmspc) {
-        m_namespaceID = nmspc->getID();
-    } else {
-        m_namespaceID = ID::nullID();
-    }
-
-    if (!m_manager) {
-        m_namespacePtr = nmspc;
-    }
-
-    if (nmspc) {
-        if (m_manager) {
-            setReference(nmspc);
-        }
-        if (!nmspc->getOwnedMembers().count(m_id)) {
-            nmspc->getOwnedMembers().add(*this);
-        }
-    }
-
-    if (m_manager) {
-        m_manager->updateCopiesSingleton<NamedElement>(this, m_namespaceID, &NamedElement::m_namespaceID, &NamedElement::m_namespacePtr);
-    }
+    m_namespace.set(nmspc);
 }
 
 Sequence<Namespace>& NamedElement::getMemberNamespace() {

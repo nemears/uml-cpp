@@ -3,6 +3,7 @@
 
 #include <string>
 #include "element.h"
+#include "singleton.h"
 
 namespace UML{
 
@@ -28,6 +29,17 @@ namespace UML{
             std::string m_name;
             ID m_namespaceID;
             Namespace* m_namespacePtr;
+            Singleton<Namespace, NamedElement> m_namespace = Singleton<Namespace, NamedElement>(this);
+            class RemoveNamespaceProcedures : public AbstractSingletonProcedure<Namespace, NamedElement> {
+                public:
+                    RemoveNamespaceProcedures(NamedElement* me) : AbstractSingletonProcedure<Namespace, NamedElement>(me) {};
+                    void operator()(ID id, Namespace* el) const override;
+            };
+            class AddNamespaceProcedures : public AbstractSingletonProcedure<Namespace, NamedElement> {
+                public:
+                    AddNamespaceProcedures(NamedElement* me) : AbstractSingletonProcedure<Namespace, NamedElement>(me) {};
+                    void operator()(ID id, Namespace* el) const override;
+            };
             Sequence<Namespace>* m_memberNamespace;
             // visibility defaults to public, don't think there is a none value
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;

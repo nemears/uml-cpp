@@ -403,6 +403,11 @@ namespace UML {
                     (el.*op)(0);
                 }
             };
+            void oppositeSingletonRemove(T& el, Singleton<U, T> T::* singleton) const {
+                if ((el.*singleton).m_id == m_el->getID()) {
+                    (el.*singleton).set(0);
+                }
+            };
             void updateCopiedSequenceAddedTo(T& el, Sequence<T>& (U::*meth)()) const {
                 if (!m_el->m_manager) {
                     return;

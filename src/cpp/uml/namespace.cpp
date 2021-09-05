@@ -23,7 +23,7 @@ void Namespace::AddOwnedMemberFunctor::operator()(NamedElement& el) const {
 void Namespace::RemoveOwnedMemberFunctor::operator()(NamedElement& el) const {
     subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
     subsetsRemove<Namespace, NamedElement>(el, &Namespace::getMembers);
-    oppositeSingletonRemove(el, &NamedElement::m_namespaceID, &NamedElement::setNamespace);
+    oppositeSingletonRemove(el, &NamedElement::m_namespace);
     updateCopiedSequenceRemovedFrom(el, &Namespace::getOwnedMembers);
 }
 

@@ -21,7 +21,8 @@ namespace UML {
     class Feature;
 
     template <class T = Element> class Sequence;
-    template <class T> class SequenceIterator;
+    template <class T> struct SequenceIterator;
+    template <class T, class U> class Singleton;
     class Model;
 
     class SetOwnerFunctor;
@@ -86,6 +87,7 @@ namespace UML {
         friend class Feature;
         template<typename> friend class Sequence;
         template <class T> friend class SequenceIterator;
+        template <class T, class U> friend class Singleton;
         private:
             std::unordered_set<ID> m_elements;
             std::unordered_map<ID, ManagerNode> m_graph;

@@ -265,7 +265,7 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
 Element* parseExternalAddToManager(ParserMetaData& data, string path) {
     if (filesystem::exists(data.m_path.parent_path() / path)) {
         filesystem::path cPath = data.m_path;
-        data.m_path = cPath.parent_path() / path;;
+        data.m_path = cPath.parent_path() / path;
         Element* ret = parse(data);
         data.m_manager->setPath(ret->getID(), data.m_path.string());
         data.m_path = cPath;

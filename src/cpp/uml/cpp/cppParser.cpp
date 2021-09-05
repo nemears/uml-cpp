@@ -735,10 +735,10 @@ Package* parseHeader(string path, UmlManager& manager) {
     filesystem::path headerPath = path;
 
     Package& containingPackage = manager.create<Package>();
-    containingPackage.setName(headerPath.filename());
+    containingPackage.setName(headerPath.filename().string());
 
     Artifact& header = manager.create<Artifact>();
-    header.setName(headerPath.filename());
+    header.setName(headerPath.filename().string());
     containingPackage.getPackagedElements().add(header);
 
     // get cursor

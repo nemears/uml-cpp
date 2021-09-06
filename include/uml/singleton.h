@@ -10,7 +10,7 @@ namespace UML {
 
     template <class T = Element> class SingletonProcedure {
         public:
-            virtual void operator()(ID id, T* el) const = 0;
+            virtual void operator()(T* el) const = 0;
     };
 
     template <class T = Element, class U = Element> class AbstractSingletonProcedure : public SingletonProcedure<T> {
@@ -84,7 +84,7 @@ namespace UML {
                         m_me->removeReference(m_id);
                     }
                     for (auto const& proc : m_removeProcedures) {
-                        (*proc)(m_id, m_ptr);
+                        (*proc)(m_ptr);
                     }
                     m_id = ID::nullID();
                     m_ptr = 0;
@@ -103,7 +103,7 @@ namespace UML {
                         m_me->setReference(val);
                     }
                     for (auto const& proc : m_addProcedures) {
-                        (*proc)(m_id, val);
+                        (*proc)(val);
                     }
                 }
 

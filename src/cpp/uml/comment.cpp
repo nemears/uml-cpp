@@ -5,13 +5,13 @@
 using namespace std;
 using namespace UML;
 
-void Comment::RemoveOwningElementProcedure::operator()(ID id, Element* el) const {
+void Comment::RemoveOwningElementProcedure::operator()(Element* el) const {
     if (el->getOwnedComments().count(m_me->getID())) {
         el->getOwnedComments().remove(*m_me);
     }
 }
 
-void Comment::AddOwningElementProcedure::operator()(ID id, Element* el) const {
+void Comment::AddOwningElementProcedure::operator()(Element* el) const {
     if (!el->getOwnedComments().count(m_me->getID())) {
         el->getOwnedComments().add(*m_me);
     }

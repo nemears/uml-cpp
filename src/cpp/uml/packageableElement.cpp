@@ -4,58 +4,38 @@
 
 using namespace UML;
 
+void PackageableElement::RemoveOwningPackageProcedure::operator()(Package* el) const {
+    if (el->getPackagedElements().count(m_me->getID())) {
+        el->getPackagedElements().remove(*m_me);
+    }
+}
+
+void PackageableElement::AddOwningPackageProcedure::operator()(Package* el) const {
+    if (!el->getPackagedElements().count(m_me->getID())) {
+        el->getPackagedElements().add(*m_me);
+    }
+}
+
 PackageableElement::PackageableElement() {
-    m_owningPackagePtr = 0;
+    m_owningPackage.m_signature = &PackageableElement::m_owningPackage;
+    m_owningPackage.m_removeProcedures.push_back(new RemoveOwningPackageProcedure(this));
+    m_owningPackage.m_addProcedures.push_back(new AddOwningPackageProcedure(this));
 }
 
 PackageableElement::PackageableElement(const PackageableElement& el) : NamedElement(el) {
-    m_owningPackageID = el.m_owningPackageID;
-    m_owningPackagePtr = el.m_owningPackagePtr;
+    m_owningPackage.m_me = this;
+    m_owningPackage.m_removeProcedures.clear();
+    m_owningPackage.m_addProcedures.clear();
+    m_owningPackage.m_removeProcedures.push_back(new RemoveOwningPackageProcedure(this));
+    m_owningPackage.m_addProcedures.push_back(new AddOwningPackageProcedure(this));
 }
 
 Package* PackageableElement::getOwningPackage() {
-    if (m_manager) {
-        return m_manager->get<Package>(this, m_owningPackageID, &PackageableElement::m_owningPackagePtr);
-    } else {
-        return m_owningPackagePtr;
-    }
+    return m_owningPackage.get();
 }
 
 void PackageableElement::setOwningPackage(Package* package) {
-    if (!isSameOrNull(m_owningPackageID, package)) {
-        if (!m_owningPackagePtr) {
-            m_owningPackagePtr = m_manager->get<Package>(this, m_owningPackageID, &PackageableElement::m_owningPackagePtr);
-        }
-        if (m_manager) {
-            removeReference(m_owningPackageID);
-        }
-        m_owningPackageID = ID::nullID();
-        if (m_owningPackagePtr->getPackagedElements().count(m_id)) {
-            m_owningPackagePtr->getPackagedElements().remove(*this);
-        }
-        m_owningPackagePtr = 0;
-    }
-
-    if (package) {
-        m_owningPackageID = package->getID();
-    }
-
-    if (!m_manager) {
-        m_owningPackagePtr = package;
-    }
-
-    if (package) {
-        if (m_manager) {
-            setReference(package);
-        }
-        if (!package->getPackagedElements().count(m_id)) {
-            package->getPackagedElements().add(*this);
-        }
-    }
-
-    if (m_manager) {
-        m_manager->updateCopiesSingleton<PackageableElement>(this, m_owningPackageID, &PackageableElement::m_owningPackageID, &PackageableElement::m_owningPackagePtr);
-    }
+    m_owningPackage.set(package);
 }
 
 ElementType PackageableElement::getElementType() const {
@@ -82,7 +62,7 @@ void PackageableElement::restoreReleased(ID id, Element* released) {
 
 void PackageableElement::referencingReleased(ID id) {
     Element::referencingReleased(id);
-    if (m_owningPackageID == id) {
-        m_owningPackagePtr = 0;
+    if (m_owningPackage.id() == id) {
+        m_owningPackage.release();
     }
 }

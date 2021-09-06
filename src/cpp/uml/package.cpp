@@ -12,7 +12,7 @@ void Package::AddPackagedElementFunctor::operator()(PackageableElement& el) cons
 }
 
 void Package::RemovePackagedElementFunctor::operator()(PackageableElement& el) const {
-    oppositeSingletonRemove(el, &PackageableElement::m_owningPackageID, &PackageableElement::setOwningPackage);
+    oppositeSingletonRemove(el, &PackageableElement::m_owningPackage);
     subsetsRemove<Namespace, NamedElement>(el, &Namespace::getMembers);
     updateCopiedSequenceRemovedFrom(el, &Package::getPackagedElements);
 }

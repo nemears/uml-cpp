@@ -31,12 +31,12 @@ namespace UML{
             class RemoveNamespaceProcedures : public AbstractSingletonProcedure<Namespace, NamedElement> {
                 public:
                     RemoveNamespaceProcedures(NamedElement* me) : AbstractSingletonProcedure<Namespace, NamedElement>(me) {};
-                    void operator()(ID id, Namespace* el) const override;
+                    void operator()(Namespace* el) const override;
             };
             class AddNamespaceProcedures : public AbstractSingletonProcedure<Namespace, NamedElement> {
                 public:
                     AddNamespaceProcedures(NamedElement* me) : AbstractSingletonProcedure<Namespace, NamedElement>(me) {};
-                    void operator()(ID id, Namespace* el) const override;
+                    void operator()(Namespace* el) const override;
             };
             Sequence<Namespace>* m_memberNamespace;
             // visibility defaults to public, don't think there is a none value

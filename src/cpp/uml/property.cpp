@@ -11,35 +11,35 @@
 using namespace std;
 using namespace UML;
 
-void Property::RemoveDefaultValueProcedure::operator()(ID id, ValueSpecification* el) const {
+void Property::RemoveDefaultValueProcedure::operator()(ValueSpecification* el) const {
     m_me->getOwnedElements().internalRemove(*el);
 }
 
-void Property::AddDefaultValueProcedure::operator()(ID id, ValueSpecification* el) const {
+void Property::AddDefaultValueProcedure::operator()(ValueSpecification* el) const {
     if (!m_me->getOwnedElements().count(el->getID())) {
         m_me->getOwnedElements().internalAdd(*el);
     }
 }
 
-void Property::RemoveStructuredClassifierProcedure::operator()(ID id, StructuredClassifier* el) const {
+void Property::RemoveStructuredClassifierProcedure::operator()(StructuredClassifier* el) const {
     if (el->getOwnedAttributes().count(m_me->getID())) {
         el->getOwnedAttributes().remove(*m_me);
     }
 }
 
-void Property::AddStructuredClassifierProcedure::operator()(ID id, StructuredClassifier* el) const {
+void Property::AddStructuredClassifierProcedure::operator()(StructuredClassifier* el) const {
     if (!el->getOwnedAttributes().count(m_me->getID())) {
         el->getOwnedAttributes().add(*m_me);
     }
 }
 
-void Property::RemoveClassifierProcedure::operator()(ID id, Classifier* el) const {
+void Property::RemoveClassifierProcedure::operator()(Classifier* el) const {
     if (el->getAttributes().count(m_me->getID())) {
         el->getAttributes().remove(*m_me);
     }
 }
 
-void Property::AddClassifierProcedure::operator()(ID id, Classifier* el) const {
+void Property::AddClassifierProcedure::operator()(Classifier* el) const {
     if (!el->getAttributes().count(m_me->getID())) {
         el->getAttributes().add(*m_me);
     }
@@ -50,61 +50,61 @@ void Property::AddClassifierProcedure::operator()(ID id, Classifier* el) const {
     }
 }
 
-void Property::RemoveDataTypeProcedure::operator()(ID id, DataType* el) const {
+void Property::RemoveDataTypeProcedure::operator()(DataType* el) const {
     if (el->getOwnedAttribute().count(m_me->getID())) {
         el->getOwnedAttribute().remove(*m_me);
     }
 }
 
-void Property::AddDataTypeProcedure::operator()(ID id, DataType* el) const {
+void Property::AddDataTypeProcedure::operator()(DataType* el) const {
     if (!el->getOwnedAttribute().count(m_me->getID())) {
         el->getOwnedAttribute().add(*m_me);
     }
 }
 
-void Property::RemoveClassProcedure::operator()(ID id, Class* el) const {
+void Property::RemoveClassProcedure::operator()(Class* el) const {
     if (el->getOwnedAttributes().count(m_me->getID())) {
         el->getOwnedAttributes().remove(*m_me);
     }
 }
 
-void Property::AddClassProcedure::operator()(ID id, Class* el) const {
+void Property::AddClassProcedure::operator()(Class* el) const {
     if (!el->getOwnedAttributes().count(m_me->getID())) {
         el->getOwnedAttributes().add(*m_me);
     }
 }
 
-void Property::RemoveAssociationProcedure::operator()(ID id, Association* el) const {
+void Property::RemoveAssociationProcedure::operator()(Association* el) const {
     if (el->getMemberEnds().count(m_me->getID())) {
         el->getMemberEnds().remove(*m_me);
     }
 }
 
-void Property::AddAssociationProcedure::operator()(ID id, Association* el) const {
+void Property::AddAssociationProcedure::operator()(Association* el) const {
     if (!el->getMemberEnds().count(m_me->getID())) {
         el->getMemberEnds().add(*m_me);
     }
 }
 
-void Property::RemoveOwningAssociationProcedure::operator()(ID id, Association* el) const {
+void Property::RemoveOwningAssociationProcedure::operator()(Association* el) const {
     if (el->getOwnedEnds().count(m_me->getID())) {
         el->getOwnedEnds().remove(*m_me);
     }
 }
 
-void Property::AddOwningAssociationProcedure::operator()(ID id, Association* el) const {
+void Property::AddOwningAssociationProcedure::operator()(Association* el) const {
     if (!el->getOwnedEnds().count(m_me->getID())) {
         el->getOwnedEnds().add(*m_me);
     }
 }
 
-void Property::RemoveArtifactProcedure::operator()(ID id, Artifact* el) const {
+void Property::RemoveArtifactProcedure::operator()(Artifact* el) const {
     if (el->getOwnedAttributes().count(m_me->getID())) {
         el->getOwnedAttributes().remove(*m_me);
     }
 }
 
-void Property::AddArtifactProcedure::operator()(ID id, Artifact* el) const {
+void Property::AddArtifactProcedure::operator()(Artifact* el) const {
     if (!el->getOwnedAttributes().count(m_me->getID())) {
         el->getOwnedAttributes().add(*m_me);
     }

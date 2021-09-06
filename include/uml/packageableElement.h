@@ -11,8 +11,17 @@ namespace UML {
     class PackageableElement : virtual public NamedElement , virtual public ParameterableElement {
         friend class Package;
         protected:
-            ID m_owningPackageID;
-            Package* m_owningPackagePtr;
+            Singleton<Package, PackageableElement> m_owningPackage = Singleton<Package, PackageableElement>(this);
+            class RemoveOwningPackageProcedure : public AbstractSingletonProcedure<Package, PackageableElement> {
+                public:
+                    RemoveOwningPackageProcedure(PackageableElement* me) : AbstractSingletonProcedure<Package, PackageableElement>(me) {};
+                    void operator()(Package* el) const override;
+            };
+            class AddOwningPackageProcedure : public AbstractSingletonProcedure<Package, PackageableElement> {
+                public:
+                    AddOwningPackageProcedure(PackageableElement* me) : AbstractSingletonProcedure<Package, PackageableElement>(me) {};
+                    void operator()(Package* el) const override;
+            };
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
         public:

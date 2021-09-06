@@ -18,13 +18,13 @@ void RemoveMemberNamespaceFunctor::operator()(Namespace& el) const {
     updateCopiedSequenceRemovedFrom(el, &NamedElement::getMemberNamespace);
 }
 
-void NamedElement::RemoveNamespaceProcedures::operator()(ID id, Namespace* el) const {
+void NamedElement::RemoveNamespaceProcedures::operator()(Namespace* el) const {
     if (el->getMembers().count(m_me->getID())) {
         el->getMembers().internalRemove(*m_me);
     }
 }
 
-void NamedElement::AddNamespaceProcedures::operator()(ID id, Namespace* el) const {
+void NamedElement::AddNamespaceProcedures::operator()(Namespace* el) const {
     if (!el->getOwnedMembers().count(m_me->getID())) {
         el->getOwnedMembers().add(*m_me);
     }

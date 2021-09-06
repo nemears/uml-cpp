@@ -16,12 +16,12 @@ namespace UML {
             class RemoveOwningElementProcedure : public AbstractSingletonProcedure<Element, Comment> {
                 public:
                     RemoveOwningElementProcedure(Comment* me) : AbstractSingletonProcedure<Element, Comment>(me) {};
-                    void operator()(ID id, Element* el) const override;
+                    void operator()(Element* el) const override;
             };
             class AddOwningElementProcedure : public AbstractSingletonProcedure<Element, Comment> {
             public:
                 AddOwningElementProcedure(Comment* me) : AbstractSingletonProcedure<Element, Comment>(me) {};
-                void operator()(ID id, Element* el) const override;
+                void operator()(Element* el) const override;
             };
         public:
             Comment();

@@ -111,15 +111,15 @@ void Property::AddArtifactProcedure::operator()(Artifact* el) const {
 }
 
 void Property::reindexID(ID oldID, ID newID) {
-    if (!m_classifier.has()) {
+    if (m_classifier.has()) {
         m_classifier.get()->getAttributes().reindex(oldID, newID);
     }
 
-    if (!m_dataType.has()) {
+    if (m_dataType.has()) {
         m_dataType.get()->getOwnedAttribute().reindex(oldID, newID);
     }
 
-    if (!m_structuredClassifier.has()) {
+    if (m_structuredClassifier.has()) {
         if (m_structuredClassifier.get()->getOwnedAttributes().count(oldID)) {
             m_structuredClassifier.get()->getOwnedAttributes().reindex(oldID, newID);
         }
@@ -131,13 +131,13 @@ void Property::reindexID(ID oldID, ID newID) {
         }
     }
 
-    if (!m_association.has()) {
+    if (m_association.has()) {
         if (m_association.get()->getMemberEnds().count(oldID)) {
             m_association.get()->getMemberEnds().reindex(oldID, newID);
         }
     }
 
-    if (!m_owningAssociation.has()) {
+    if (m_owningAssociation.has()) {
         if (m_owningAssociation.get()->getOwnedEnds().count(oldID)) {
             m_owningAssociation.get()->getOwnedEnds().reindex(oldID, newID);
         }
@@ -193,7 +193,7 @@ void Property::AddRedefinedPropertyFunctor::operator()(Property& el) const {
         m_el->m_redefinedElement.add(el);
     }
 
-    if (!m_el->m_classifier.has()) {
+    if (m_el->m_classifier.has()) {
         if (!m_el->m_redefinitionContext.count(m_el->m_classifier.id())) {
             m_el->m_redefinitionContext.add(*m_el->getClassifier());
         }
@@ -358,7 +358,7 @@ void Property::setComposite(bool composite) {
     }
     m_composite = composite;
     if (m_composite) {
-        if (!m_structuredClassifier.has()) {
+        if (m_structuredClassifier.has()) {
             if (!m_structuredClassifier.get()->getParts().count(m_id)) {
                 m_structuredClassifier.get()->getParts().add(*this);
             }
@@ -462,7 +462,7 @@ void Property::setType(Type* type) {
         }
     }
     TypedElement::setType(type);
-    if (!m_association.has()) {
+    if (m_association.has()) {
         if (type) {
             if (!m_association.get()->getEndType().count(type->getID())) {
                 m_association.get()->getEndType().add(*type);

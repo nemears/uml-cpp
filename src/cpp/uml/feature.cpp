@@ -18,7 +18,7 @@ void Feature::AddFeaturingClassifierProcedure::operator()(Classifier* el) const 
 }
 
 void Feature::reindexID(ID oldID, ID newID) {
-    if (!m_featuringClassifier.has()) {
+    if (m_featuringClassifier.has()) {
         m_featuringClassifier.get()->getFeatures().reindex(oldID, newID);
     }
 
@@ -41,9 +41,12 @@ Feature::Feature() {
 }
 
 Feature::Feature(const Feature& feature) {
+    m_featuringClassifier = feature.m_featuringClassifier;
     m_featuringClassifier.m_me = this;
     m_featuringClassifier.m_removeProcedures.clear();
     m_featuringClassifier.m_addProcedures.clear();
+    m_featuringClassifier.m_removeProcedures.push_back(new RemoveFeaturingClassifierProcedure(this));
+    m_featuringClassifier.m_addProcedures.push_back(new AddFeaturingClassifierProcedure(this));
     m_static = feature.m_static;
 }
 

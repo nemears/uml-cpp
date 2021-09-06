@@ -50,7 +50,7 @@ void AddOwnedCommentFunctor::operator()(Comment& el) const {
 
 void RemoveOwnedCommentFunctor::operator()(Comment& el) const {
     subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
-    oppositeSingletonRemove(el, &Comment::m_owningElementID, &Comment::setOwningElement);
+    oppositeSingletonRemove(el, &Comment::m_owningElement);
     updateCopiedSequenceRemovedFrom(el, &Element::getOwnedComments);
 }
 
@@ -535,7 +535,7 @@ Element* Element::getOwner() {
 void Element::setOwner(Element* owner) {
     if (!isSameOrNull(m_ownerID, owner)) {
         if (!m_ownerPtr) {
-            m_ownerPtr = m_manager->get<>(this, m_ownerID, &Element::m_ownerPtr);
+            m_ownerPtr = m_manager->get<>(this, m_ownerID);
         }
         if (m_manager) {
             removeReference(m_ownerID);
@@ -574,7 +574,22 @@ void Element::setOwner(Element* owner) {
         }
     }
     if (m_manager) {
-        m_manager->updateCopiesSingleton<>(this, m_ownerID, &Element::m_ownerID, &Element::m_ownerPtr);
+        if (m_node) {
+            if (m_node->m_managerElementMemory != this) {
+                if (m_node->m_managerElementMemory->m_ownerID != m_ownerID) {
+                    m_node->m_managerElementMemory->m_ownerID = m_ownerID;
+                    m_node->m_managerElementMemory->m_ownerPtr = 0;
+                }
+            }
+            for (auto& copy : m_node->m_copies) {
+                if (copy != this) {
+                    if (copy->m_ownerID != m_ownerID) {
+                        copy->m_ownerID = m_ownerID;
+                        copy->m_ownerPtr = 0;
+                    }
+                }
+            }
+        }
     }
 }
 

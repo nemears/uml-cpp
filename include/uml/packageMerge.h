@@ -10,10 +10,28 @@ namespace UML {
     class PackageMerge : public DirectedRelationship {
         friend class Package;
         protected:
-            ID m_receivingPackageID;
-            Package* m_receivingPackagePtr;
-            ID m_mergedPackageID;
-            Package* m_mergedPackagePtr;
+            Singleton<Package, PackageMerge> m_receivingPackage = Singleton<Package, PackageMerge>(this);
+            class RemoveReceivingPackageProcedure : public AbstractSingletonProcedure<Package, PackageMerge> {
+                public:
+                    RemoveReceivingPackageProcedure(PackageMerge* me) : AbstractSingletonProcedure<Package, PackageMerge>(me) {};
+                    void operator()(Package* el) const override;
+            };
+            class AddReceivingPackageProcedure : public AbstractSingletonProcedure<Package, PackageMerge> {
+                public:
+                    AddReceivingPackageProcedure(PackageMerge* me) : AbstractSingletonProcedure<Package, PackageMerge>(me) {};
+                    void operator()(Package* el) const override;
+            };
+            Singleton<Package, PackageMerge> m_mergedPackage = Singleton<Package, PackageMerge>(this);
+            class RemoveMergedPackageProcedure : public AbstractSingletonProcedure<Package, PackageMerge> {
+                public:
+                    RemoveMergedPackageProcedure(PackageMerge* me) : AbstractSingletonProcedure<Package, PackageMerge>(me) {};
+                    void operator()(Package* el) const override;
+            };
+            class AddMergedPackageProcedure : public AbstractSingletonProcedure<Package, PackageMerge> {
+                public:
+                    AddMergedPackageProcedure(PackageMerge* me) : AbstractSingletonProcedure<Package, PackageMerge>(me) {};
+                    void operator()(Package* el) const override;
+            };
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
         public:

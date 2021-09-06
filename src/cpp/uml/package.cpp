@@ -25,7 +25,7 @@ void Package::AddPackageMergeFunctor::operator()(PackageMerge& el) const {
 }
 
 void Package::RemovePackageMergeFunctor::operator()(PackageMerge& el) const {
-    oppositeSingletonRemove(el, &PackageMerge::m_receivingPackageID, &PackageMerge::setReceivingPackage);
+    oppositeSingletonRemove(el, &PackageMerge::m_receivingPackage);
     subsetsRemove<Element, DirectedRelationship>(el, &Element::getDirectedRelationships);
     subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
     updateCopiedSequenceRemovedFrom(el, &Package::getPackageMerge);

@@ -5,12 +5,21 @@
 using namespace std;
 using namespace UML;
 
+void Feature::RemoveFeaturingClassifierProcedure::operator()(Classifier* el) const {
+    if (el->getFeatures().count(m_me->getID())) {
+        el->getFeatures().remove(*m_me);
+    }
+}
+
+void Feature::AddFeaturingClassifierProcedure::operator()(Classifier* el) const {
+    if (!el->getFeatures().count(m_me->getID())) {
+        el->getFeatures().add(*m_me);
+    }
+}
+
 void Feature::reindexID(ID oldID, ID newID) {
-    if (!m_featuringClassifierID.isNull()) {
-        if (!m_featuringClassifierPtr) {
-            m_featuringClassifierPtr = &m_manager->get<Classifier>(m_featuringClassifierID);
-        }
-        m_featuringClassifierPtr->getFeatures().reindex(oldID, newID);
+    if (!m_featuringClassifier.has()) {
+        m_featuringClassifier.get()->getFeatures().reindex(oldID, newID);
     }
 
     NamedElement::reindexID(oldID, newID);
@@ -25,55 +34,25 @@ void Feature::reindexName(string oldName, string newName) {
 }
 
 Feature::Feature() {
-    m_featuringClassifierPtr = 0;
+    m_featuringClassifier.m_signature = &Feature::m_featuringClassifier;
+    m_featuringClassifier.m_removeProcedures.push_back(new RemoveFeaturingClassifierProcedure(this));
+    m_featuringClassifier.m_addProcedures.push_back(new AddFeaturingClassifierProcedure(this));
     m_static = false;
 }
 
 Feature::Feature(const Feature& feature) {
-    m_featuringClassifierID = feature.m_featuringClassifierID;
-    m_featuringClassifierPtr = feature.m_featuringClassifierPtr;
+    m_featuringClassifier.m_me = this;
+    m_featuringClassifier.m_removeProcedures.clear();
+    m_featuringClassifier.m_addProcedures.clear();
     m_static = feature.m_static;
 }
 
 Classifier* Feature::getFeaturingClassifier() {
-    return universalGet<Classifier>(m_featuringClassifierID, m_featuringClassifierPtr, m_manager);
+    return m_featuringClassifier.get();
 }
 
 void Feature::setFeaturingClassifier(Classifier* clazz) {
-    if (!isSameOrNull(m_featuringClassifierID, clazz)) {
-        if (!m_featuringClassifierPtr) {
-            m_featuringClassifierPtr = &m_manager->get<Classifier>(m_featuringClassifierID);
-        }
-        if (m_manager) {
-            removeReference(m_featuringClassifierID);
-        }
-        if (m_featuringClassifierPtr->getFeatures().count(m_id)) {
-            m_featuringClassifierPtr->getFeatures().remove(*this);
-        }
-        m_featuringClassifierPtr = 0;
-        m_featuringClassifierID = ID::nullID();
-    }
-
-    if (clazz) {
-        m_featuringClassifierID = clazz->getID();
-    }
-
-    if (!m_manager) {
-        m_featuringClassifierPtr = clazz;
-    }
-
-    if (clazz) {
-        if (m_manager) {
-            setReference(clazz);
-        }
-        if (!clazz->getFeatures().count(m_id)) {
-            clazz->getFeatures().add(*this);
-        }
-    }
-
-    if (m_manager) {
-        m_manager->updateCopiesSingleton<Feature>(this, m_featuringClassifierID, &Feature::m_featuringClassifierID, &Feature::m_featuringClassifierPtr);
-    }
+    m_featuringClassifier.set(clazz);
 }
 
 bool Feature::isStatic() {
@@ -100,7 +79,7 @@ bool Feature::isSubClassOf(ElementType eType) const {
 
 void Feature::restoreReleased(ID id, Element* released) {
     RedefinableElement::restoreReleased(id, released);
-    if (m_featuringClassifierID == id) {
+    if (m_featuringClassifier.id() == id) {
         if (!released->as<Classifier>().getFeatures().count(id)) {
             released->as<Classifier>().getFeatures().add(*this);
         }
@@ -109,7 +88,7 @@ void Feature::restoreReleased(ID id, Element* released) {
 
 void Feature::referencingReleased(ID id) {
     RedefinableElement::referencingReleased(id);
-    if (m_featuringClassifierID == id) {
-        m_featuringClassifierPtr = 0;
+    if (m_featuringClassifier.id() == id) {
+        m_featuringClassifier.release();
     }
 }

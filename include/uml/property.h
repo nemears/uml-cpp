@@ -37,8 +37,17 @@ namespace UML{
                     AddDefaultValueProcedure(Property* me) : AbstractSingletonProcedure<ValueSpecification, Property>(me) {};
                     void operator()(ID id, ValueSpecification* el) const override;
             };
-            ID m_structuredClassifierID;
-            StructuredClassifier* m_structuredClassifierPtr;
+            Singleton<StructuredClassifier, Property> m_structuredClassifier = Singleton<StructuredClassifier, Property>(this);
+            class RemoveStructuredClassifierProcedure : public AbstractSingletonProcedure<StructuredClassifier, Property> {
+                public:
+                    RemoveStructuredClassifierProcedure(Property* me) : AbstractSingletonProcedure<StructuredClassifier, Property>(me) {};
+                    void operator()(ID id, StructuredClassifier* el) const override;
+            };
+            class AddStructuredClassifierProcedure : public AbstractSingletonProcedure<StructuredClassifier, Property> {
+                public:
+                    AddStructuredClassifierProcedure(Property* me) : AbstractSingletonProcedure<StructuredClassifier, Property>(me) {};
+                    void operator()(ID id, StructuredClassifier* el) const override;
+            };
             ID m_classifierID;
             Classifier* m_classifierPtr;
             ID m_dataTypeID;

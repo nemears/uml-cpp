@@ -388,6 +388,20 @@ TEST_F(ElementTest, copyAndChangeTest) {
   ASSERT_EQ(package.getPackagedElements().size(), 1);
 }
 
+TEST_F(ElementTest, copySingletonCorrectly) {
+    UmlManager m;
+    Package& p = m.create<Package>();
+    Package& owner = m.create<Package>();
+    p.setOwningPackage(&owner);
+    Package copy = p;
+    ASSERT_TRUE(copy.getOwningPackage());
+    ASSERT_TRUE(copy.getNamespace());
+    Package& owner2 = m.create<Package>();
+    copy.setOwningPackage(&owner2);
+    ASSERT_TRUE(p.getOwningPackage() == &owner2);
+    ASSERT_TRUE(p.getNamespace() == &owner2);
+}
+
 TEST_F(ElementTest, FullElementCopyTest) {
   UmlManager m;
   Package& p1 = m.create<Package>();

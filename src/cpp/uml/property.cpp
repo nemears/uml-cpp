@@ -312,11 +312,13 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     m_structuredClassifier.m_removeProcedures.clear();
     m_structuredClassifier.m_removeProcedures.push_back(new RemoveStructuredClassifierProcedure(this));
     m_structuredClassifier.m_addProcedures.push_back(new AddStructuredClassifierProcedure(this));
+    m_association = prop.m_association;
     m_association.m_me = this;
     m_association.m_removeProcedures.clear();
     m_association.m_addProcedures.clear();
     m_association.m_removeProcedures.push_back(new RemoveAssociationProcedure(this));
     m_association.m_addProcedures.push_back(new AddAssociationProcedure(this));
+    m_owningAssociation = prop.m_owningAssociation;
     m_owningAssociation.m_me = this;
     m_owningAssociation.m_removeProcedures.clear();
     m_owningAssociation.m_addProcedures.clear();

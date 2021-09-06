@@ -25,6 +25,7 @@ namespace UML {
             };
         public:
             Comment();
+            Comment(const Comment& lhs);
             std::string getBody();
             void setBody(std::string body);
             Element* getOwningElement();

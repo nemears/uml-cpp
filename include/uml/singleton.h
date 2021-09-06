@@ -32,7 +32,7 @@ namespace UML {
         private:
             ID m_id;
             T* m_ptr;
-            bool isSameOrNull(ID id, Element* el) {
+            bool sameOrNotSet(ID id, Element* el) {
                 if (id.isNull()) {
                     return true;
                 } else {
@@ -67,6 +67,11 @@ namespace UML {
                 m_me = me;
                 m_ptr = 0;
             };
+            Singleton<T, U>(const Singleton<T, U>& lhs) {
+                m_id = lhs.m_id;
+                m_signature = lhs.m_signature;
+                m_me = 0;
+            };
             ~Singleton<T,U>() {
                 for (auto const& proc: m_removeProcedures) {
                     delete proc;
@@ -76,15 +81,15 @@ namespace UML {
                 };
             };
             void set(T* val) {
-                if (!isSameOrNull(m_id, val)) {
+                if (!sameOrNotSet(m_id, val)) {
                     if (!m_ptr) {
                         m_ptr = m_me->m_manager->get<T>(m_me, m_id);
                     }
-                    if (m_me->m_manager) {
-                        m_me->removeReference(m_id);
-                    }
                     for (auto const& proc : m_removeProcedures) {
                         (*proc)(m_ptr);
+                    }
+                    if (m_me->m_manager) {
+                        m_me->removeReference(m_id);
                     }
                     m_id = ID::nullID();
                     m_ptr = 0;

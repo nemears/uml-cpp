@@ -23,6 +23,15 @@ Comment::Comment() {
     m_owningElement.m_addProcedures.push_back(new AddOwningElementProcedure(this));
 }
 
+Comment::Comment(const Comment& lhs) : Element(lhs) {
+    m_owningElement = lhs.m_owningElement;
+    m_owningElement.m_me = this;
+    m_owningElement.m_addProcedures.clear();
+    m_owningElement.m_removeProcedures.clear();
+    m_owningElement.m_removeProcedures.push_back(new RemoveOwningElementProcedure(this));
+    m_owningElement.m_addProcedures.push_back(new AddOwningElementProcedure(this));
+}
+
 string Comment::getBody() {
     return m_body;
 }

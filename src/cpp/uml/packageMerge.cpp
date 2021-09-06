@@ -44,11 +44,13 @@ PackageMerge::PackageMerge() {
 }
 
 PackageMerge::PackageMerge(const PackageMerge& merge) : DirectedRelationship(merge), Element(merge) {
+    m_receivingPackage = merge.m_receivingPackage;
     m_receivingPackage.m_me = this;
     m_receivingPackage.m_removeProcedures.clear();
     m_receivingPackage.m_addProcedures.clear();
     m_receivingPackage.m_removeProcedures.push_back(new RemoveReceivingPackageProcedure(this));
     m_receivingPackage.m_addProcedures.push_back(new AddReceivingPackageProcedure(this));
+    m_mergedPackage = merge.m_mergedPackage;
     m_mergedPackage.m_me = this;
     m_mergedPackage.m_removeProcedures.clear();
     m_mergedPackage.m_addProcedures.clear();

@@ -23,6 +23,7 @@ PackageableElement::PackageableElement() {
 }
 
 PackageableElement::PackageableElement(const PackageableElement& el) : NamedElement(el) {
+    m_owningPackage = el.m_owningPackage;
     m_owningPackage.m_me = this;
     m_owningPackage.m_removeProcedures.clear();
     m_owningPackage.m_addProcedures.clear();

@@ -26,8 +26,17 @@ namespace UML{
         protected:
             AggregationKind m_aggregation;
             bool m_composite;
-            ID m_defaultValueID;
-            ValueSpecification* m_defaultValuePtr;
+            Singleton<ValueSpecification, Property> m_defaultValue = Singleton<ValueSpecification, Property>(this);
+            class RemoveDefaultValueProcedure : public AbstractSingletonProcedure<ValueSpecification, Property> {
+                public:
+                    RemoveDefaultValueProcedure(Property* me) : AbstractSingletonProcedure<ValueSpecification, Property>(me) {};
+                    void operator()(ID id, ValueSpecification* el) const override;
+            };
+            class AddDefaultValueProcedure : public AbstractSingletonProcedure<ValueSpecification, Property> {
+                public:
+                    AddDefaultValueProcedure(Property* me) : AbstractSingletonProcedure<ValueSpecification, Property>(me) {};
+                    void operator()(ID id, ValueSpecification* el) const override;
+            };
             ID m_structuredClassifierID;
             StructuredClassifier* m_structuredClassifierPtr;
             ID m_classifierID;

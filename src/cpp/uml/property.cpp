@@ -11,6 +11,16 @@
 using namespace std;
 using namespace UML;
 
+void Property::RemoveDefaultValueProcedure::operator()(ID id, ValueSpecification* el) const {
+    m_me->getOwnedElements().internalRemove(*el);
+}
+
+void Property::AddDefaultValueProcedure::operator()(ID id, ValueSpecification* el) const {
+    if (!m_me->getOwnedElements().count(el->getID())) {
+        m_me->getOwnedElements().internalAdd(*el);
+    }
+}
+
 void Property::reindexID(ID oldID, ID newID) {
     if (!m_classifierID.isNull()) {
         if (!m_classifierPtr) {
@@ -165,7 +175,9 @@ void Property::setManager(UmlManager* manager) {
 Property::Property() {
     m_aggregation = AggregationKind::NONE;
     m_composite = false;
-    m_defaultValuePtr = 0;
+    m_defaultValue.m_signature = &Property::m_defaultValue;
+    m_defaultValue.m_removeProcedures.push_back(new RemoveDefaultValueProcedure(this));
+    m_defaultValue.m_addProcedures.push_back(new AddDefaultValueProcedure(this));
     m_classifierPtr = 0;
     m_dataTypePtr = 0;
     m_structuredClassifierPtr = 0;
@@ -181,8 +193,12 @@ Property::Property() {
 Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement(prop), RedefinableElement(prop), NamedElement(prop), Element(prop) {
     m_aggregation = prop.m_aggregation;
     m_composite = prop.m_composite;
-    m_defaultValueID = prop.m_defaultValueID;
-    m_defaultValuePtr = prop.m_defaultValuePtr;
+    m_defaultValue = prop.m_defaultValue;
+    m_defaultValue.m_me = this;
+    m_defaultValue.m_removeProcedures.clear();
+    m_defaultValue.m_addProcedures.clear();
+    m_defaultValue.m_removeProcedures.push_back(new RemoveDefaultValueProcedure(this));
+    m_defaultValue.m_addProcedures.push_back(new AddDefaultValueProcedure(this));
     m_classifierID = prop.m_classifierID;
     m_classifierPtr = prop.m_classifierPtr;
     m_dataTypeID = prop.m_dataTypeID;
@@ -254,47 +270,11 @@ void Property::setAggregation(AggregationKind aggregation) {
 }
 
 ValueSpecification* Property::getDefaultValue() {
-    if (m_manager) {
-        return m_manager->get<ValueSpecification>(this, m_defaultValueID, &Property::m_defaultValuePtr);
-    }
-    else {
-        return m_defaultValuePtr;
-    }
+    return m_defaultValue.get();
 }
 
 void Property::setDefaultValue(ValueSpecification* val) {
-    if (!isSameOrNull(m_defaultValueID, val)) {
-        if (!m_defaultValuePtr) {
-            m_defaultValuePtr = m_manager->get<ValueSpecification>(this, m_defaultValueID, &Property::m_defaultValuePtr);
-        }
-        if (m_manager) {
-            removeReference(m_defaultValueID);
-        }
-        m_ownedElements->internalRemove(*m_defaultValuePtr);
-        m_defaultValueID = ID::nullID();
-        m_defaultValuePtr = 0;
-    }
-    
-    if (val) {
-        m_defaultValueID = val->getID();
-    }
-
-    if (!m_manager) {
-        m_defaultValuePtr = val;
-    }
-
-    if (val) {
-        if (m_manager) {
-            setReference(val);
-        }
-        if (!m_ownedElements->count(m_defaultValueID)) {
-            m_ownedElements->internalAdd(*val);
-        }
-    }
-
-    if (m_manager) {
-        m_manager->updateCopiesSingleton<Property>(this, m_defaultValueID, &Property::m_defaultValueID, &Property::m_defaultValuePtr);
-    }
+    m_defaultValue.set(val);
 }
 
 Classifier* Property::getClassifier() {
@@ -638,8 +618,8 @@ void Property::restoreReleased(ID id, Element* released) {
 
 void Property::referencingReleased(ID id) {
     StructuralFeature::referencingReleased(id);
-    if (m_defaultValueID == id) {
-        m_defaultValuePtr = 0;
+    if (m_defaultValue.id() == id) {
+        m_defaultValue.release();
     }
     if (m_classifierID == id) {
         m_classifierPtr = 0;

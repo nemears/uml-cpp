@@ -27,8 +27,6 @@ namespace UML{
         friend class Namespace;
         protected:
             std::string m_name;
-            ID m_namespaceID;
-            Namespace* m_namespacePtr;
             Singleton<Namespace, NamedElement> m_namespace = Singleton<Namespace, NamedElement>(this);
             class RemoveNamespaceProcedures : public AbstractSingletonProcedure<Namespace, NamedElement> {
                 public:

@@ -31,7 +31,6 @@ void NamedElement::AddNamespaceProcedures::operator()(ID id, Namespace* el) cons
 }
 
 NamedElement::NamedElement() {
-    m_namespacePtr = 0;
     m_memberNamespace = new Sequence<Namespace>(this);
     m_memberNamespace->addProcedures.push_back(new AddMemberNamespaceFunctor(this));
     m_memberNamespace->removeProcedures.push_back(new RemoveMemberNamespaceFunctor(this));
@@ -45,8 +44,6 @@ NamedElement::~NamedElement() {
 }
 
 NamedElement::NamedElement(const NamedElement& el) : Element(el) {
-    m_namespaceID = el.m_namespaceID;
-    m_namespacePtr = el.m_namespacePtr;
     m_name = el.m_name;
     m_visibility = el.m_visibility;
     m_memberNamespace = new Sequence<Namespace>(*el.m_memberNamespace);
@@ -176,7 +173,7 @@ bool NamedElement::isSubClassOf(ElementType eType) const {
 
 void NamedElement::restoreReleased(ID id, Element* released) {
     Element::restoreReleased(id, released);
-    if (m_namespaceID == id) {
+    if (m_namespace.id() == id) {
         if (!released->as<Namespace>().getOwnedMembers().count(m_id)) {
             released->as<Namespace>().getOwnedMembers().add(*this);
         }
@@ -199,7 +196,7 @@ void NamedElement::restoreReleased(ID id, Element* released) {
 void NamedElement::referencingReleased(ID id) {
     Element::referencingReleased(id);
     m_memberNamespace->elementReleased(id);
-    if (m_namespaceID == id) {
-        m_namespacePtr = 0;
+    if (m_namespace.id() == id) {
+        m_namespace.release();
     }
 }

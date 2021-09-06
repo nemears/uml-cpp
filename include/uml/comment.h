@@ -2,6 +2,7 @@
 #define COMMENT_H
 
 #include "uml/element.h"
+#include "singleton.h"
 
 namespace UML {
 

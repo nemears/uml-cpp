@@ -97,39 +97,6 @@ namespace UML {
             Element* m_root;
             void clear();
             void setElementAndChildrenMount(std::filesystem::path parentPath, Element& el);
-            template <class T = Element, class U = Element> void updateCopiesSingleton(T* me, ID id, ID T::*memberID, U* T::*memberPtr) {
-                if (me->m_node) {
-                    if (me->m_node->m_managerElementMemory != me) {
-                        if ((me->m_node->m_managerElementMemory->template as<T>().*memberID) != id) {
-                            (me->m_node->m_managerElementMemory->template as<T>().*memberID) = id;
-                            (me->m_node->m_managerElementMemory->template as<T>().*memberPtr) = 0;
-                        }
-                    }
-                    for (auto& copy : me->m_node->m_copies) {
-                        if (copy != me) {
-                            if ((copy->template as<T>().*memberID) != id) {
-                                (copy->template as<T>().*memberID) = id;
-                                (copy->template as<T>().*memberPtr) = 0;
-                            }
-                        }
-                    }
-                } else {
-                    if (m_graph[me->getID()].m_managerElementMemory != me) {
-                        if ((m_graph[me->getID()].m_managerElementMemory->template as<T>().*memberID) != id) {
-                            (m_graph[me->getID()].m_managerElementMemory->template as<T>().*memberID) = id;
-                            (m_graph[me->getID()].m_managerElementMemory->template as<T>().*memberPtr) = 0;
-                        }
-                    }
-                    for (auto& copy : m_graph[me->getID()].m_copies) {
-                        if (copy != me) {
-                            if ((copy->template as<T>().*memberID) != id) {
-                                (copy->template as<T>().*memberID) = id;
-                                (copy->template as<T>().*memberPtr) = 0;
-                            }
-                        }
-                    }
-                }
-            };
             /** Using this get is faster than the get<T>(ID id) method (usually) because it will base it's
              *  search on a particular element, only for internal api use where trying to set and return a ptr**/
             template <class T = Element, class U = Element> T* get(U* me, ID theID, T* U::*thePtr) {

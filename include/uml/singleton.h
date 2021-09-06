@@ -125,6 +125,14 @@ namespace UML {
             bool has() {
                 return !m_id.isNull();
             };
+
+            ID id() {
+                return m_id;
+            };
+
+            void release() {
+                m_ptr = 0;
+            };
     };
 }
 

@@ -90,6 +90,9 @@ void Property::RemoveOwningAssociationProcedure::operator()(Association* el) con
     if (el->getOwnedEnds().count(m_me->getID())) {
         el->getOwnedEnds().remove(*m_me);
     }
+    if (el->getNavigableOwnedEnds().count(m_me->getID())) {
+        el->getNavigableOwnedEnds().remove(*m_me);
+    }
 }
 
 void Property::AddOwningAssociationProcedure::operator()(Association* el) const {
@@ -350,7 +353,7 @@ bool Property::isComposite() {
 
 void Property::setComposite(bool composite) {
     if (!composite && m_composite) {
-        if (!m_structuredClassifier.has()) {
+        if (m_structuredClassifier.has()) {
             if (m_structuredClassifier.get()->getParts().count(m_id)) {
                 m_structuredClassifier.get()->getParts().remove(*this);
             }

@@ -48,18 +48,72 @@ namespace UML{
                     AddStructuredClassifierProcedure(Property* me) : AbstractSingletonProcedure<StructuredClassifier, Property>(me) {};
                     void operator()(ID id, StructuredClassifier* el) const override;
             };
-            ID m_classifierID;
-            Classifier* m_classifierPtr;
-            ID m_dataTypeID;
-            DataType* m_dataTypePtr;
-            ID m_classID;
-            Class* m_classPtr;
-            ID m_associationID;
-            Association* m_associationPtr;
-            ID m_owningAssociationID;
-            Association* m_owningAssociationPtr;
-            ID m_artifactID;
-            Artifact* m_artifactPtr;
+            Singleton<Classifier, Property> m_classifier = Singleton<Classifier, Property>(this);
+            class RemoveClassifierProcedure : public AbstractSingletonProcedure<Classifier, Property> {
+                public:
+                    RemoveClassifierProcedure(Property* me) : AbstractSingletonProcedure<Classifier, Property>(me) {};
+                    void operator()(ID id, Classifier* el) const override;
+            };
+            class AddClassifierProcedure : public AbstractSingletonProcedure<Classifier, Property> {
+                public:
+                    AddClassifierProcedure(Property* me) : AbstractSingletonProcedure<Classifier, Property>(me) {};
+                    void operator()(ID id, Classifier* el) const override;
+            };
+            Singleton<DataType, Property> m_dataType = Singleton<DataType, Property>(this);
+            class RemoveDataTypeProcedure : public AbstractSingletonProcedure<DataType, Property> {
+                public:
+                    RemoveDataTypeProcedure(Property* me) : AbstractSingletonProcedure<DataType, Property>(me) {};
+                    void operator()(ID id, DataType* el) const override;
+                };
+            class AddDataTypeProcedure : public AbstractSingletonProcedure<DataType, Property> {
+                public:
+                    AddDataTypeProcedure(Property* me) : AbstractSingletonProcedure<DataType, Property>(me) {};
+                    void operator()(ID id, DataType* el) const override;
+            };
+            Singleton<Class, Property> m_class = Singleton<Class, Property>(this);
+            class RemoveClassProcedure : public AbstractSingletonProcedure<Class, Property> {
+                public:
+                    RemoveClassProcedure(Property* me) : AbstractSingletonProcedure<Class, Property>(me) {};
+                    void operator()(ID id, Class* el) const override;
+            };
+            class AddClassProcedure : public AbstractSingletonProcedure<Class, Property> {
+                public:
+                    AddClassProcedure(Property* me) : AbstractSingletonProcedure<Class, Property>(me) {};
+                    void operator()(ID id, Class* el) const override;
+            };
+            Singleton<Association, Property> m_association = Singleton<Association, Property>(this);
+            class RemoveAssociationProcedure : public AbstractSingletonProcedure<Association, Property> {
+                public:
+                    RemoveAssociationProcedure(Property* me) : AbstractSingletonProcedure<Association, Property>(me) {};
+                    void operator()(ID id, Association* el) const override;
+            };
+            class AddAssociationProcedure : public AbstractSingletonProcedure<Association, Property> {
+                public:
+                    AddAssociationProcedure(Property* me) : AbstractSingletonProcedure<Association, Property>(me) {};
+                    void operator()(ID id, Association* el) const override;
+            };
+            Singleton<Association, Property> m_owningAssociation = Singleton<Association, Property>(this);
+            class RemoveOwningAssociationProcedure : public AbstractSingletonProcedure<Association, Property> {
+                public:
+                    RemoveOwningAssociationProcedure(Property* me) : AbstractSingletonProcedure<Association, Property>(me) {};
+                    void operator()(ID id, Association* el) const override;
+            };
+            class AddOwningAssociationProcedure : public AbstractSingletonProcedure<Association, Property> {
+                public:
+                    AddOwningAssociationProcedure(Property* me) : AbstractSingletonProcedure<Association, Property>(me) {};
+                    void operator()(ID id, Association* el) const override;
+            };
+            Singleton<Artifact, Property> m_artifact = Singleton<Artifact, Property>(this);
+            class RemoveArtifactProcedure : public AbstractSingletonProcedure<Artifact, Property> {
+                public:
+                    RemoveArtifactProcedure(Property* me) : AbstractSingletonProcedure<Artifact, Property>(me) {};
+                    void operator()(ID id, Artifact* el) const override;
+            };
+            class AddArtifactProcedure : public AbstractSingletonProcedure<Artifact, Property> {
+                public:
+                    AddArtifactProcedure(Property* me) : AbstractSingletonProcedure<Artifact, Property>(me) {};
+                    void operator()(ID id, Artifact* el) const override;
+            };
             Sequence<Property> m_redefinedProperties = Sequence<Property>(this);
             void reindexID(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;

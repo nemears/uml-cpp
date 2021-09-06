@@ -33,19 +33,90 @@ void Property::AddStructuredClassifierProcedure::operator()(ID id, StructuredCla
     }
 }
 
-void Property::reindexID(ID oldID, ID newID) {
-    if (!m_classifierID.isNull()) {
-        if (!m_classifierPtr) {
-            m_classifierPtr = &m_manager->get<Classifier>(m_classifierID);
+void Property::RemoveClassifierProcedure::operator()(ID id, Classifier* el) const {
+    if (el->getAttributes().count(m_me->getID())) {
+        el->getAttributes().remove(*m_me);
+    }
+}
+
+void Property::AddClassifierProcedure::operator()(ID id, Classifier* el) const {
+    if (!el->getAttributes().count(m_me->getID())) {
+        el->getAttributes().add(*m_me);
+    }
+    if (!m_me->getRedefinedProperties().empty()) {
+        if (!m_me->getRedefinitionContext().count(el->getID())) {
+            m_me->getRedefinitionContext().add(*el);
         }
-        m_classifierPtr->getAttributes().reindex(oldID, newID);
+    }
+}
+
+void Property::RemoveDataTypeProcedure::operator()(ID id, DataType* el) const {
+    if (el->getOwnedAttribute().count(m_me->getID())) {
+        el->getOwnedAttribute().remove(*m_me);
+    }
+}
+
+void Property::AddDataTypeProcedure::operator()(ID id, DataType* el) const {
+    if (!el->getOwnedAttribute().count(m_me->getID())) {
+        el->getOwnedAttribute().add(*m_me);
+    }
+}
+
+void Property::RemoveClassProcedure::operator()(ID id, Class* el) const {
+    if (el->getOwnedAttributes().count(m_me->getID())) {
+        el->getOwnedAttributes().remove(*m_me);
+    }
+}
+
+void Property::AddClassProcedure::operator()(ID id, Class* el) const {
+    if (!el->getOwnedAttributes().count(m_me->getID())) {
+        el->getOwnedAttributes().add(*m_me);
+    }
+}
+
+void Property::RemoveAssociationProcedure::operator()(ID id, Association* el) const {
+    if (el->getMemberEnds().count(m_me->getID())) {
+        el->getMemberEnds().remove(*m_me);
+    }
+}
+
+void Property::AddAssociationProcedure::operator()(ID id, Association* el) const {
+    if (!el->getMemberEnds().count(m_me->getID())) {
+        el->getMemberEnds().add(*m_me);
+    }
+}
+
+void Property::RemoveOwningAssociationProcedure::operator()(ID id, Association* el) const {
+    if (el->getOwnedEnds().count(m_me->getID())) {
+        el->getOwnedEnds().remove(*m_me);
+    }
+}
+
+void Property::AddOwningAssociationProcedure::operator()(ID id, Association* el) const {
+    if (!el->getOwnedEnds().count(m_me->getID())) {
+        el->getOwnedEnds().add(*m_me);
+    }
+}
+
+void Property::RemoveArtifactProcedure::operator()(ID id, Artifact* el) const {
+    if (el->getOwnedAttributes().count(m_me->getID())) {
+        el->getOwnedAttributes().remove(*m_me);
+    }
+}
+
+void Property::AddArtifactProcedure::operator()(ID id, Artifact* el) const {
+    if (!el->getOwnedAttributes().count(m_me->getID())) {
+        el->getOwnedAttributes().add(*m_me);
+    }
+}
+
+void Property::reindexID(ID oldID, ID newID) {
+    if (!m_classifier.has()) {
+        m_classifier.get()->getAttributes().reindex(oldID, newID);
     }
 
-    if (!m_dataTypeID.isNull()) {
-        if (!m_dataTypePtr) {
-            m_dataTypePtr = &m_manager->get<DataType>(m_dataTypeID);
-        }
-        m_dataTypePtr->getOwnedAttribute().reindex(oldID, newID);
+    if (!m_dataType.has()) {
+        m_dataType.get()->getOwnedAttribute().reindex(oldID, newID);
     }
 
     if (!m_structuredClassifier.has()) {
@@ -60,24 +131,18 @@ void Property::reindexID(ID oldID, ID newID) {
         }
     }
 
-    if (!m_associationID.isNull()) {
-        if (!m_associationPtr) {
-            m_associationPtr = &m_manager->get<Association>(m_associationID);
-        }
-        if (m_associationPtr->getMemberEnds().count(oldID)) {
-            m_associationPtr->getMemberEnds().reindex(oldID, newID);
+    if (!m_association.has()) {
+        if (m_association.get()->getMemberEnds().count(oldID)) {
+            m_association.get()->getMemberEnds().reindex(oldID, newID);
         }
     }
 
-    if (!m_owningAssociationID.isNull()) {
-        if (!m_owningAssociationPtr) {
-            m_owningAssociationPtr = &m_manager->get<Association>(m_owningAssociationID);
+    if (!m_owningAssociation.has()) {
+        if (m_owningAssociation.get()->getOwnedEnds().count(oldID)) {
+            m_owningAssociation.get()->getOwnedEnds().reindex(oldID, newID);
         }
-        if (m_owningAssociationPtr->getOwnedEnds().count(oldID)) {
-            m_owningAssociationPtr->getOwnedEnds().reindex(oldID, newID);
-        }
-        if (m_owningAssociationPtr->getNavigableOwnedEnds().count(oldID)) {
-            m_owningAssociationPtr->getNavigableOwnedEnds().reindex(oldID, newID);
+        if (m_owningAssociation.get()->getNavigableOwnedEnds().count(oldID)) {
+            m_owningAssociation.get()->getNavigableOwnedEnds().reindex(oldID, newID);
         }
     }
 
@@ -128,8 +193,8 @@ void Property::AddRedefinedPropertyFunctor::operator()(Property& el) const {
         m_el->m_redefinedElement.add(el);
     }
 
-    if (!m_el->m_classifierID.isNull()) {
-        if (!m_el->m_redefinitionContext.count(m_el->m_classifierID)) {
+    if (!m_el->m_classifier.has()) {
+        if (!m_el->m_redefinitionContext.count(m_el->m_classifier.id())) {
             m_el->m_redefinitionContext.add(*m_el->getClassifier());
         }
     }
@@ -167,8 +232,8 @@ void Property::RemoveRedefinedPropertyFunctor::operator()(Property& el) const {
         m_el->m_redefinedElement.remove(el);
     }
 
-    if (!m_el->m_classifierID.isNull()) {
-        if (m_el->m_redefinitionContext.count(m_el->m_classifierID) && m_el->m_redefinedProperties.empty()) {
+    if (!m_el->m_classifier.has()) {
+        if (m_el->m_redefinitionContext.count(m_el->m_classifier.id()) && m_el->m_redefinedProperties.empty()) {
             m_el->m_redefinitionContext.add(*m_el->getClassifier());
         }
     }
@@ -187,15 +252,27 @@ Property::Property() {
     m_defaultValue.m_signature = &Property::m_defaultValue;
     m_defaultValue.m_removeProcedures.push_back(new RemoveDefaultValueProcedure(this));
     m_defaultValue.m_addProcedures.push_back(new AddDefaultValueProcedure(this));
-    m_classifierPtr = 0;
-    m_dataTypePtr = 0;
+    m_classifier.m_signature = &Property::m_classifier;
+    m_classifier.m_removeProcedures.push_back(new RemoveClassifierProcedure(this));
+    m_classifier.m_addProcedures.push_back(new AddClassifierProcedure(this));
+    m_dataType.m_signature = &Property::m_dataType;
+    m_dataType.m_removeProcedures.push_back(new RemoveDataTypeProcedure(this));
+    m_dataType.m_addProcedures.push_back(new AddDataTypeProcedure(this));
     m_structuredClassifier.m_signature = &Property::m_structuredClassifier;
     m_structuredClassifier.m_removeProcedures.push_back(new RemoveStructuredClassifierProcedure(this));
     m_structuredClassifier.m_addProcedures.push_back(new AddStructuredClassifierProcedure(this));
-    m_classPtr = 0;
-    m_associationPtr = 0;
-    m_owningAssociationPtr = 0;
-    m_artifactPtr = 0;
+    m_class.m_signature = &Property::m_class;
+    m_class.m_removeProcedures.push_back(new RemoveClassProcedure(this));
+    m_class.m_addProcedures.push_back(new AddClassProcedure(this));
+    m_association.m_signature = &Property::m_association;
+    m_association.m_removeProcedures.push_back(new RemoveAssociationProcedure(this));
+    m_association.m_addProcedures.push_back(new AddAssociationProcedure(this));
+    m_owningAssociation.m_signature = &Property::m_owningAssociation;
+    m_owningAssociation.m_removeProcedures.push_back(new RemoveOwningAssociationProcedure(this));
+    m_owningAssociation.m_addProcedures.push_back(new AddOwningAssociationProcedure(this));
+    m_artifact.m_signature = &Property::m_artifact;
+    m_artifact.m_removeProcedures.push_back(new RemoveArtifactProcedure(this));
+    m_artifact.m_addProcedures.push_back(new AddArtifactProcedure(this));
     m_redefinedProperties.addProcedures.push_back(new AddRedefinedPropertyFunctor(this));
     m_redefinedProperties.addChecks.push_back(new CheckRedefinedPropertyFunctor(this));
     m_redefinedProperties.removeProcedures.push_back(new RemoveRedefinedPropertyFunctor(this));
@@ -210,12 +287,24 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     m_defaultValue.m_addProcedures.clear();
     m_defaultValue.m_removeProcedures.push_back(new RemoveDefaultValueProcedure(this));
     m_defaultValue.m_addProcedures.push_back(new AddDefaultValueProcedure(this));
-    m_classifierID = prop.m_classifierID;
-    m_classifierPtr = prop.m_classifierPtr;
-    m_dataTypeID = prop.m_dataTypeID;
-    m_dataTypePtr = prop.m_dataTypePtr;
-    m_classPtr = prop.m_classPtr;
-    m_classID = prop.m_classID;
+    m_classifier = prop.m_classifier;
+    m_classifier.m_me = this;
+    m_classifier.m_removeProcedures.clear();
+    m_classifier.m_addProcedures.clear();
+    m_classifier.m_removeProcedures.push_back(new RemoveClassifierProcedure(this));
+    m_classifier.m_addProcedures.push_back(new AddClassifierProcedure(this));
+    m_dataType = prop.m_dataType;
+    m_dataType.m_me = this;
+    m_dataType.m_removeProcedures.clear();
+    m_dataType.m_addProcedures.clear();
+    m_dataType.m_removeProcedures.push_back(new RemoveDataTypeProcedure(this));
+    m_dataType.m_addProcedures.push_back(new AddDataTypeProcedure(this));
+    m_class = prop.m_class;
+    m_class.m_me = this;
+    m_class.m_removeProcedures.clear();
+    m_class.m_addProcedures.clear();
+    m_class.m_removeProcedures.push_back(new RemoveClassProcedure(this));
+    m_class.m_addProcedures.push_back(new AddClassProcedure(this));
     m_structuredClassifier = prop.m_structuredClassifier;
     m_structuredClassifier.m_me = this;
     m_structuredClassifier.m_removeProcedures.clear();
@@ -223,12 +312,22 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     m_structuredClassifier.m_removeProcedures.clear();
     m_structuredClassifier.m_removeProcedures.push_back(new RemoveStructuredClassifierProcedure(this));
     m_structuredClassifier.m_addProcedures.push_back(new AddStructuredClassifierProcedure(this));
-    m_associationID = prop.m_associationID;
-    m_associationPtr = prop.m_associationPtr;
-    m_owningAssociationID = prop.m_owningAssociationID;
-    m_owningAssociationPtr = prop.m_owningAssociationPtr;
-    m_artifactID = prop.m_artifactID;
-    m_artifactPtr = prop.m_artifactPtr;
+    m_association.m_me = this;
+    m_association.m_removeProcedures.clear();
+    m_association.m_addProcedures.clear();
+    m_association.m_removeProcedures.push_back(new RemoveAssociationProcedure(this));
+    m_association.m_addProcedures.push_back(new AddAssociationProcedure(this));
+    m_owningAssociation.m_me = this;
+    m_owningAssociation.m_removeProcedures.clear();
+    m_owningAssociation.m_addProcedures.clear();
+    m_owningAssociation.m_removeProcedures.push_back(new RemoveOwningAssociationProcedure(this));
+    m_owningAssociation.m_addProcedures.push_back(new AddOwningAssociationProcedure(this));
+    m_artifact = prop.m_artifact;
+    m_artifact.m_me = this;
+    m_artifact.m_removeProcedures.clear();
+    m_artifact.m_addProcedures.clear();
+    m_artifact.m_removeProcedures.push_back(new RemoveArtifactProcedure(this));
+    m_artifact.m_addProcedures.push_back(new AddArtifactProcedure(this));
     m_redefinedProperties = prop.m_redefinedProperties;
     m_redefinedProperties.addProcedures.clear();
     m_redefinedProperties.addChecks.clear();
@@ -288,57 +387,11 @@ void Property::setDefaultValue(ValueSpecification* val) {
 }
 
 Classifier* Property::getClassifier() {
-    if (m_manager) {
-        return m_manager->get<Classifier>(this, m_classifierID, &Property::m_classifierPtr);
-    }
-    else {
-        return m_classifierPtr;
-    }
+    return m_classifier.get();
 }
 
 void Property::setClassifier(Classifier* classifier) {
-    if (!isSameOrNull(m_classifierID, classifier)) {
-        if (!m_classifierPtr) {
-            m_classifierPtr = m_manager->get<Classifier>(this, m_classifierID, &Property::m_classifierPtr);
-        }
-        if (m_manager) {
-            removeReference(m_classifierID);
-        }
-        if (m_classifierPtr->getAttributes().count(m_id)) {
-            m_classifierPtr->getAttributes().remove(*this);
-        }
-        if (m_redefinitionContext.count(m_classifierID)) {
-            m_redefinitionContext.remove(*m_classifierPtr);
-        }
-        m_classifierPtr = 0;
-        m_classifierID = ID::nullID();
-    }
-
-    if (classifier) {
-        m_classifierID = classifier->getID();
-    }
-
-    if (!m_manager) {
-        m_classifierPtr = classifier;
-    }
-
-    if (classifier) {
-        if (m_manager) {
-            setReference(classifier);
-        }
-        if (!classifier->getAttributes().count(m_id)) {
-            classifier->getAttributes().add(*this);
-        }
-        if (!m_redefinedProperties.empty()) {
-            if (!m_redefinitionContext.count(classifier->getID())) {
-                m_redefinitionContext.add(*classifier);
-            }
-        }
-    }
-
-    if (m_manager) {
-        m_manager->updateCopiesSingleton<Property>(this, m_classifierID, &Property::m_classifierID, &Property::m_classifierPtr);
-    }
+    m_classifier.set(classifier);
 }
 
 StructuredClassifier* Property::getStructuredClassifier() {
@@ -350,183 +403,43 @@ void Property::setStructuredClassifier(StructuredClassifier* classifier) {
 }
 
 DataType* Property::getDataType() {
-    return universalGet<DataType>(m_dataTypeID, m_dataTypePtr, m_manager);
+    return m_dataType.get();
 }
 
 void Property::setDataType(DataType* dataType) {
-    if (!isSameOrNull(m_dataTypeID, dataType)) {
-        if (!m_dataTypePtr) {
-            m_dataTypePtr = &m_manager->get<DataType>(m_dataTypeID);
-        }
-        if (m_dataTypePtr->getOwnedAttribute().count(m_id)) {
-            m_dataTypePtr->getOwnedAttribute().remove(*this);
-        }
-        m_dataTypePtr = 0;
-        m_dataTypeID = ID::nullID();
-    }
-
-    if (dataType) {
-        m_dataTypeID = dataType->getID();
-    }
-
-    if (!m_manager) {
-        m_dataTypePtr = dataType;
-    }
-
-    if (dataType) {
-        if (!dataType->getOwnedAttribute().count(m_id)) {
-            dataType->getOwnedAttribute().add(*this);
-        }
-    }
+    m_dataType.set(dataType);
 }
 
 Class* Property::getClass() {
-    if (m_manager) {
-        return m_manager->get<Class>(this, m_classID, &Property::m_classPtr);
-    }
-    else {
-        return m_classPtr;
-    }
+    return m_class.get();
 }
 
 void Property::setClass(Class* clazz) {
-    if (!isSameOrNull(m_classID, clazz)) {
-        if (!m_classPtr) {
-            m_classPtr = &m_manager->get<Class>(m_classID);
-        }
-        if (m_manager) {
-            removeReference(m_classID);
-        }
-        if (m_classPtr->getOwnedAttributes().count(m_id)) {
-            m_classPtr->getOwnedAttributes().remove(*this);
-        }
-        m_classPtr = 0;
-        m_classID = ID::nullID();
-    }
-
-    if (clazz) {
-        m_classID = clazz->getID();
-    }
-
-    if (!m_manager) {
-        m_classPtr = clazz;
-    }
-
-    if (clazz) {
-        if (m_manager) {
-            setReference(clazz);
-        }
-        if (!clazz->getOwnedAttributes().count(m_id)) {
-            clazz->getOwnedAttributes().add(*this);
-        }
-    }
-
-    if (m_manager) {
-        m_manager->updateCopiesSingleton<Property>(this, m_classID, &Property::m_classID, &Property::m_classPtr);
-    }
+    m_class.set(clazz);
 }
 
 Association* Property::getAssociation() {
-    return universalGet<Association>(m_associationID, m_associationPtr, m_manager);
+    return m_association.get();
 }
 
 void Property::setAssociation(Association* association) {
-    if (!isSameOrNull(m_associationID, association)) {
-        if (!m_associationPtr) {
-            m_associationPtr = &m_manager->get<Association>(m_associationID);
-        }
-        if (m_associationPtr->getMemberEnds().count(m_id)) {
-            m_associationPtr->getMemberEnds().remove(*this);
-        }
-        m_associationPtr = 0;
-        m_associationID = ID::nullID();
-    }
-
-    if (association) {
-        m_associationID = association->getID();
-    }
-
-    if (!m_manager) {
-        m_associationPtr = association;
-    }
-
-    if (association) {
-        if (!association->getMemberEnds().count(m_id)) {
-            association->getMemberEnds().add(*this);
-        }
-    }
+    m_association.set(association);
 }
 
 Association* Property::getOwningAssociation() {
-    return universalGet<Association>(m_owningAssociationID, m_owningAssociationPtr, m_manager);
+    return m_owningAssociation.get();
 }
 
 void Property::setOwningAssociation(Association* association) {
-    if (!isSameOrNull(m_owningAssociationID, association)) {
-        if (!m_owningAssociationPtr) {
-            m_owningAssociationPtr = &m_manager->get<Association>(m_owningAssociationID);
-        }
-        if (m_owningAssociationPtr->getNavigableOwnedEnds().count(m_id)) {
-            m_owningAssociationPtr->getNavigableOwnedEnds().remove(*this);
-        }
-        if (!m_owningAssociationID.isNull()) {
-            if (!m_owningAssociationPtr) {
-                m_owningAssociationPtr = &m_manager->get<Association>(m_owningAssociationID);
-            }
-            if (m_owningAssociationPtr->getOwnedEnds().count(m_id)) {
-                m_owningAssociationPtr->getOwnedEnds().remove(*this);
-            }
-        }
-        m_owningAssociationPtr = 0;
-        m_owningAssociationID = ID::nullID();
-    }
-
-    if (association) {
-        m_owningAssociationID = association->getID();
-    }
-
-    if (!m_manager) {
-        m_owningAssociationPtr = association;
-    }
-
-    if (association) {
-        if (!association->getOwnedEnds().count(m_id)) {
-            association->getOwnedEnds().add(*this);
-        }
-    }
+    m_owningAssociation.set(association);
 }
 
 Artifact* Property::getArtifact() {
-    return universalGet<Artifact>(m_artifactID, m_artifactPtr, m_manager);
+    return m_artifact.get();
 }
 
 void Property::setArtifact(Artifact* artifact) {
-    if (!isSameOrNull(m_artifactID, artifact)) {
-        if (!m_artifactPtr) {
-            m_artifactPtr = &m_manager->get<Artifact>(m_artifactID);
-        }
-
-        if (m_artifactPtr->getOwnedAttributes().count(m_id)) {
-            m_artifactPtr->getOwnedAttributes().remove(*this);
-        }
-
-        m_artifactPtr = 0;
-        m_artifactID = ID::nullID();
-    }
-
-    if (artifact) {
-        m_artifactID = artifact->getID();
-    }
-
-    if (!m_manager) {
-        m_artifactPtr = artifact;
-    }
-
-    if (artifact) {
-        if (!artifact->getOwnedAttributes().count(m_id)) {
-            artifact->getOwnedAttributes().add(*this);
-        }
-    }
+    m_artifact.set(artifact);
 }
 
 Sequence<Property>& Property::getRedefinedProperties() {
@@ -534,29 +447,23 @@ Sequence<Property>& Property::getRedefinedProperties() {
 }
 
 void Property::setType(Type* type) {
-    if (!m_associationID.isNull()) {
-        if (!m_associationPtr) {
-            m_associationPtr = &m_manager->get<Association>(m_associationID);
-        }
+    if (!m_association.has()) {
         if (!m_typeID.isNull()) {
             if (!m_typePtr) {
                 m_typePtr = &m_manager->get<Type>(m_typeID);
             }
             if (m_typePtr != type) {
-                if (m_associationPtr->getEndType().count(m_typePtr->getID())) {
-                    m_associationPtr->getEndType().remove(*m_typePtr);
+                if (m_association.get()->getEndType().count(m_typePtr->getID())) {
+                    m_association.get()->getEndType().remove(*m_typePtr);
                 }
             }
         }
     }
     TypedElement::setType(type);
-    if (!m_associationID.isNull()) {
-        if (!m_associationPtr) {
-            m_associationPtr = &m_manager->get<Association>(m_associationID);
-        }
+    if (!m_association.has()) {
         if (type) {
-            if (!m_associationPtr->getEndType().count(type->getID())) {
-                m_associationPtr->getEndType().add(*type);
+            if (!m_association.get()->getEndType().count(type->getID())) {
+                m_association.get()->getEndType().add(*type);
             }
         }
     }
@@ -593,23 +500,26 @@ void Property::referencingReleased(ID id) {
     if (m_defaultValue.id() == id) {
         m_defaultValue.release();
     }
-    if (m_classifierID == id) {
-        m_classifierPtr = 0;
+    if (m_classifier.id() == id) {
+        m_classifier.release();
     }
     if (m_structuredClassifier.id() == id) {
         m_structuredClassifier.release();
     }
-    if (m_dataTypeID == id) {
-        m_dataTypePtr = 0;
+    if (m_dataType.id() == id) {
+        m_dataType.release();
     }
-    if (m_classID == id) {
-        m_classPtr = 0;
+    if (m_class.id() == id) {
+        m_class.release();
     }
-    if (m_artifactID == id) {
-        m_artifactPtr = 0;
+    if (m_artifact.id() == id) {
+        m_artifact.release();
     }
-    if (m_associationID == id) {
-        m_associationPtr = 0;
+    if (m_association.id() == id) {
+        m_association.release();
+    }
+    if (m_owningAssociation.id() == id) {
+        m_owningAssociation.release();
     }
     m_redefinedProperties.elementReleased(id);
 }

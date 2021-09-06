@@ -5,8 +5,22 @@
 using namespace std;
 using namespace UML;
 
+void Comment::RemoveOwningElementProcedure::operator()(ID id, Element* el) const {
+    if (el->getOwnedComments().count(m_me->getID())) {
+        el->getOwnedComments().remove(*m_me);
+    }
+}
+
+void Comment::AddOwningElementProcedure::operator()(ID id, Element* el) const {
+    if (!el->getOwnedComments().count(m_me->getID())) {
+        el->getOwnedComments().add(*m_me);
+    }
+}
+
 Comment::Comment() {
-    m_owningElementPtr = 0;
+    m_owningElement.m_signature = &Comment::m_owningElement;
+    m_owningElement.m_removeProcedures.push_back(new RemoveOwningElementProcedure(this));
+    m_owningElement.m_addProcedures.push_back(new AddOwningElementProcedure(this));
 }
 
 string Comment::getBody() {
@@ -18,47 +32,11 @@ void Comment::setBody(string body) {
 }
 
 Element* Comment::getOwningElement() {
-    if (m_manager) {
-        return m_manager->get<>(this, m_owningElementID, &Comment::m_owningElementPtr);
-    } else {
-        return m_owningElementPtr;
-    }
+    return m_owningElement.get();
 }
 
 void Comment::setOwningElement(Element* el) {
-    if (!isSameOrNull(m_owningElementID, el)) {
-        if (!m_owningElementPtr) {
-            m_owningElementPtr = m_manager->get<>(this, m_owningElementID, &Comment::m_owningElementPtr);
-        }
-        if (m_manager) {
-            removeReference(m_owningElementID);
-        }
-        m_owningElementID = ID::nullID();
-        if (m_owningElementPtr->getOwnedComments().count(m_id)) {
-            m_owningElementPtr->getOwnedComments().remove(*this);
-        }
-        m_owningElementPtr = 0;
-    }
-
-    if (el) {
-        m_owningElementID = el->getID();
-    }
-
-    if (!m_manager) {
-        m_owningElementPtr = el;
-    }
-
-    if (el) {
-        if (m_manager) {
-            setReference(el);
-        }
-        if (!el->getOwnedComments().count(m_id)) {
-            el->getOwnedComments().add(*this);
-        }
-    }
-    if (m_manager) {
-        m_manager->updateCopiesSingleton<Comment>(this, m_ownerID, &Comment::m_owningElementID, &Comment::m_owningElementPtr);
-    }
+    m_owningElement.set(el);
 }
 
 ElementType Comment::getElementType() const {

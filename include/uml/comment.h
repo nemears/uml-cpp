@@ -12,8 +12,17 @@ namespace UML {
         friend class RemoveOwnedCommentFunctor;
         private:
             std::string m_body;
-            ID m_owningElementID;
-            Element* m_owningElementPtr;
+            Singleton<Element, Comment> m_owningElement = Singleton<Element, Comment>(this);
+            class RemoveOwningElementProcedure : public AbstractSingletonProcedure<Element, Comment> {
+                public:
+                    RemoveOwningElementProcedure(Comment* me) : AbstractSingletonProcedure<Element, Comment>(me) {};
+                    void operator()(ID id, Element* el) const override;
+            };
+            class AddOwningElementProcedure : public AbstractSingletonProcedure<Element, Comment> {
+            public:
+                AddOwningElementProcedure(Comment* me) : AbstractSingletonProcedure<Element, Comment>(me) {};
+                void operator()(ID id, Element* el) const override;
+            };
         public:
             Comment();
             std::string getBody();

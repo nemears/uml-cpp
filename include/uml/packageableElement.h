@@ -3,6 +3,7 @@
 
 #include "namedElement.h"
 #include "parameterableElement.h"
+#include "singleton.h"
 
 namespace UML {
 

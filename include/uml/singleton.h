@@ -6,7 +6,7 @@
 
 namespace UML {
 
-    template <class T, class U> class TemplateAbstractSequenceFunctor;
+    template <class V, class W> class TemplateAbstractSequenceFunctor;
 
     template <class T = Element> class SingletonProcedure {
         public:
@@ -24,7 +24,7 @@ namespace UML {
     template <class T = Element, class U = Element> class Singleton {
 
         friend class UmlManager;
-        template <class T, class U> friend class TemplateAbstractSequenceFunctor;
+        template <class V, class W> friend class TemplateAbstractSequenceFunctor;
 
         public:
             Singleton<T,U> U::*m_signature;
@@ -83,7 +83,7 @@ namespace UML {
             void set(T* val) {
                 if (!sameOrNotSet(m_id, val)) {
                     if (!m_ptr) {
-                        m_ptr = m_me->m_manager->get<T>(m_me, m_id);
+                        m_ptr = m_me->m_manager->template get<T>(m_me, m_id);
                     }
                     for (auto const& proc : m_removeProcedures) {
                         (*proc)(m_ptr);
@@ -122,7 +122,7 @@ namespace UML {
             T* get() {
                 if (!m_ptr) {
                     if (m_me->m_manager) {
-                        m_ptr = m_me->m_manager->get<T>(m_me, m_id);
+                        m_ptr = m_me->m_manager->template get<T>(m_me, m_id);
                     }
                 }
                 return m_ptr;

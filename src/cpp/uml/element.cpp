@@ -76,30 +76,26 @@ void CheckAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const 
 }
 
 void Element::setReference(Element* referencing) {
-   // if (this == m_node->m_managerElementMemory) {
-        if (m_node->m_references.count(referencing->getID())) {
-            m_node->m_referenceCount[referencing->getID()]++;
-        } else {
-            m_node->m_references[referencing->getID()] = referencing->m_node;
-            m_node->m_referenceCount[referencing->getID()] = 1;
-            m_node->m_referenceOrder.push_back(referencing->getID());
-        }
-    //}
+    if (m_node->m_references.count(referencing->getID())) {
+        m_node->m_referenceCount[referencing->getID()]++;
+    } else {
+        m_node->m_references[referencing->getID()] = referencing->m_node;
+        m_node->m_referenceCount[referencing->getID()] = 1;
+        m_node->m_referenceOrder.push_back(referencing->getID());
+    }
 }
 
 void Element::removeReference(ID referencing) {
-    //if (this == m_node->m_managerElementMemory) {
-        if (m_node->m_referenceCount[referencing] > 1) {
-            m_node->m_referenceCount[referencing]--;
-        } else {
-            m_node->m_references.erase(referencing);
-            m_node->m_referenceCount.erase(referencing);
-            m_node->m_referenceOrder.erase(std::remove(
-                m_node->m_referenceOrder.begin(), 
-                m_node->m_referenceOrder.end(), 
-                referencing), m_node->m_referenceOrder.end());
-        }
-    //}
+    if (m_node->m_referenceCount[referencing] > 1) {
+        m_node->m_referenceCount[referencing]--;
+    } else {
+        m_node->m_references.erase(referencing);
+        m_node->m_referenceCount.erase(referencing);
+        m_node->m_referenceOrder.erase(std::remove(
+            m_node->m_referenceOrder.begin(), 
+            m_node->m_referenceOrder.end(), 
+            referencing), m_node->m_referenceOrder.end());
+    }
 }
 
 // Constructor

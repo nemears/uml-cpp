@@ -114,6 +114,16 @@ namespace UML{
                     AddArtifactProcedure(Property* me) : AbstractSingletonProcedure<Artifact, Property>(me) {};
                     void operator()(Artifact* el) const override;
             };
+            class RemoveTypeProcedure : public AbstractSingletonProcedure<Type, Property> {
+                public:
+                    RemoveTypeProcedure(Property* me) : AbstractSingletonProcedure<Type, Property>(me) {};
+                    void operator()(Type* el) const override;
+            };
+            class AddTypeProcedure : public AbstractSingletonProcedure<Type, Property> {
+                public:
+                    AddTypeProcedure(Property* me) : AbstractSingletonProcedure<Type, Property>(me) {};
+                    void operator()(Type* el) const override;
+            };
             Sequence<Property> m_redefinedProperties = Sequence<Property>(this);
             void reindexID(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
@@ -177,12 +187,11 @@ namespace UML{
             bool hasOwningAssociation();
             void setOwningAssociation(Association* association);
             void setOwningAssociation(Association& association);
-            Artifact* getArtifact();
+            virtual Artifact* getArtifact();
             Artifact& getArtifactRef();
             bool hasArtifact();
             void setArtifact(Artifact* artifact);
             void setArtifact(Artifact& artifact);
-            void setType(Type* type) override;
             Sequence<Property>& getRedefinedProperties();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;

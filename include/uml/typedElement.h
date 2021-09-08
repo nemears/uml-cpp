@@ -9,13 +9,15 @@ namespace UML{
 
     class TypedElement : virtual public NamedElement {
         protected:
-            Type* m_typePtr;
-            ID m_typeID;
+            Singleton<Type, TypedElement> m_type = Singleton<Type, TypedElement>(this);
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
         public:
             virtual Type* getType();
+            Type& getTypeRef();
+            bool hasType();
             virtual void setType(Type* type);
+            void setType(Type& type);
             TypedElement();
             TypedElement(const TypedElement& el);
             ElementType getElementType() const override;

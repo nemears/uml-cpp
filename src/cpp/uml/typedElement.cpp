@@ -6,38 +6,34 @@
 using namespace UML;
 
 TypedElement::TypedElement() {
-    m_typePtr = 0;
+    m_type.m_signature = &TypedElement::m_type;
 }
 
 TypedElement::TypedElement(const TypedElement& el) {
-    m_typeID = el.m_typeID;
-    m_typePtr = el.m_typePtr;
+    m_type = el.m_type;
+    m_type.m_me = this;
+    m_type.m_removeProcedures.clear();
+    m_type.m_addProcedures.clear();
 }
 
 Type* TypedElement::getType() {
-    return universalGet<Type>(m_typeID, m_typePtr, m_manager);
+    return m_type.get();
+}
+
+Type& TypedElement::getTypeRef() {
+    return m_type.getRef();
+}
+
+bool TypedElement::hasType() {
+    return m_type.has();
 }
 
 void TypedElement::setType(Type* type) {
-    if (!isSameOrNull(m_typeID, type)) {
-        if (m_manager) {
-            removeReference(m_typeID);
-        }
-    }
+    m_type.set(type);
+}
 
-    if (type) {
-        m_typeID = type->getID();
-    }
-
-    if (!m_manager) {
-        m_typePtr = type;
-    }
-
-    if (type) {
-        if (m_manager) {
-            setReference(type);
-        }
-    }
+void TypedElement::setType(Type& type) {
+    m_type.set(type);
 }
 
 ElementType TypedElement::getElementType() const {
@@ -59,7 +55,7 @@ void TypedElement::restoreReleased(ID id, Element* el) {
 }
 
 void TypedElement::referencingReleased(ID id) {
-    if (m_typeID == id) {
-        m_typePtr = 0;
+    if (m_type.id() == id) {
+        m_type.release();
     }
 }

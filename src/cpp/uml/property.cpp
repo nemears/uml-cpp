@@ -113,6 +113,24 @@ void Property::AddArtifactProcedure::operator()(Artifact* el) const {
     }
 }
 
+void Property::RemoveTypeProcedure::operator()(Type* el) const {
+    if (m_me->m_association.has()) {
+        if (m_me->m_association.get()->getEndType().count(m_me->m_type.get()->getID())) {
+            m_me->m_association.get()->getEndType().remove(m_me->m_type.getRef());
+        }
+    }
+}
+
+void Property::AddTypeProcedure::operator()(Type* el) const {
+    if (m_me->m_association.has()) {
+        if (el) {
+            if (!m_me->m_association.get()->getEndType().count(el->getID())) {
+                m_me->m_association.get()->getEndType().add(*el);
+            }
+        }
+    }
+}
+
 void Property::reindexID(ID oldID, ID newID) {
     if (m_classifier.has()) {
         m_classifier.get()->getAttributes().reindex(oldID, newID);
@@ -279,6 +297,8 @@ Property::Property() {
     m_redefinedProperties.addProcedures.push_back(new AddRedefinedPropertyFunctor(this));
     m_redefinedProperties.addChecks.push_back(new CheckRedefinedPropertyFunctor(this));
     m_redefinedProperties.removeProcedures.push_back(new RemoveRedefinedPropertyFunctor(this));
+    m_type.m_addProcedures.push_back(new AddTypeProcedure(this));
+    m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));
 }
 
 Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement(prop), RedefinableElement(prop), NamedElement(prop), Element(prop) {
@@ -341,6 +361,8 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     m_redefinedProperties.addChecks.push_back(new CheckRedefinedPropertyFunctor(this));
     m_redefinedProperties.removeProcedures.push_back(new RemoveRedefinedPropertyFunctor(this));
     m_redefinedProperties.m_el = this;
+    m_type.m_addProcedures.push_back(new AddTypeProcedure(this));
+    m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));
 }
 
 AggregationKind Property::getAggregation() {
@@ -545,29 +567,6 @@ void Property::setArtifact(Artifact& artifact) {
 
 Sequence<Property>& Property::getRedefinedProperties() {
     return m_redefinedProperties;
-}
-
-void Property::setType(Type* type) {
-    if (m_association.has()) {
-        if (!m_typeID.isNull()) {
-            if (!m_typePtr) {
-                m_typePtr = &m_manager->get<Type>(m_typeID);
-            }
-            if (m_typePtr != type) {
-                if (m_association.get()->getEndType().count(m_typePtr->getID())) {
-                    m_association.get()->getEndType().remove(*m_typePtr);
-                }
-            }
-        }
-    }
-    TypedElement::setType(type);
-    if (m_association.has()) {
-        if (type) {
-            if (!m_association.get()->getEndType().count(type->getID())) {
-                m_association.get()->getEndType().add(*type);
-            }
-        }
-    }
 }
 
 ElementType Property::getElementType() const {

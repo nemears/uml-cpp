@@ -217,7 +217,7 @@ PYBIND11_MODULE(yuml_python, m) {
     // Property
     py::class_<Property, StructuralFeature, MultiplicityElement, ElementPy<Property>>(m, "Property")
         .def(py::init<>())
-        .def("setDefaultValue", &Property::setDefaultValue)
+        //.def("setDefaultValue", &Property::setDefaultValue)
         .def("getDefaultValue", &Property::getDefaultValue);
 
     // Classifier

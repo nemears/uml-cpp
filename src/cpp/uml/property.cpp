@@ -387,7 +387,19 @@ ValueSpecification* Property::getDefaultValue() {
     return m_defaultValue.get();
 }
 
+ValueSpecification& Property::getDefaultValueRef() {
+    return m_defaultValue.getRef();
+}
+
+bool Property::hasDefaultValue() {
+    return m_defaultValue.has();
+}
+
 void Property::setDefaultValue(ValueSpecification* val) {
+    m_defaultValue.set(val);
+}
+
+void Property::setDefaultValue(ValueSpecification& val) {
     m_defaultValue.set(val);
 }
 
@@ -395,7 +407,19 @@ Classifier* Property::getClassifier() {
     return m_classifier.get();
 }
 
+Classifier& Property::getClassifierRef() {
+    return m_classifier.getRef();
+}
+
+bool Property::hasClassifier() {
+    return m_classifier.has();
+}
+
 void Property::setClassifier(Classifier* classifier) {
+    m_classifier.set(classifier);
+}
+
+void Property::setClassifier(Classifier& classifier) {
     m_classifier.set(classifier);
 }
 
@@ -403,7 +427,19 @@ StructuredClassifier* Property::getStructuredClassifier() {
     return m_structuredClassifier.get();
 }
 
+StructuredClassifier& Property::getStructuredClassifierRef() {
+    return m_structuredClassifier.getRef();
+}
+
+bool Property::hasStructuredClassifier() {
+    return m_structuredClassifier.has();
+}
+
 void Property::setStructuredClassifier(StructuredClassifier* classifier) {
+    m_structuredClassifier.set(classifier);
+}
+
+void Property::setStructuredClassifier(StructuredClassifier& classifier) {
     m_structuredClassifier.set(classifier);
 }
 
@@ -411,7 +447,19 @@ DataType* Property::getDataType() {
     return m_dataType.get();
 }
 
+DataType& Property::getDataTypeRef() {
+    return m_dataType.getRef();
+}
+
+bool Property::hasDataType() {
+    return m_dataType.has();
+}
+
 void Property::setDataType(DataType* dataType) {
+    m_dataType.set(dataType);
+}
+
+void Property::setDataType(DataType& dataType) {
     m_dataType.set(dataType);
 }
 
@@ -419,7 +467,19 @@ Class* Property::getClass() {
     return m_class.get();
 }
 
+Class& Property::getClassRef() {
+    return m_class.getRef();
+}
+
+bool Property::hasClass() {
+    return m_class.has();
+}
+
 void Property::setClass(Class* clazz) {
+    m_class.set(clazz);
+}
+
+void Property::setClass(Class& clazz) {
     m_class.set(clazz);
 }
 
@@ -427,7 +487,19 @@ Association* Property::getAssociation() {
     return m_association.get();
 }
 
+Association& Property::getAssociationRef() {
+    return m_association.getRef();
+}
+
+bool Property::hasAssociation() {
+    return m_association.has();
+}
+
 void Property::setAssociation(Association* association) {
+    m_association.set(association);
+}
+
+void Property::setAssociation(Association& association) {
     m_association.set(association);
 }
 
@@ -435,7 +507,19 @@ Association* Property::getOwningAssociation() {
     return m_owningAssociation.get();
 }
 
+Association& Property::getOwningAssociationRef() {
+    return m_owningAssociation.getRef();
+}
+
+bool Property::hasOwningAssociation() {
+    return m_owningAssociation.has();
+}
+
 void Property::setOwningAssociation(Association* association) {
+    m_owningAssociation.set(association);
+}
+
+void Property::setOwningAssociation(Association& association) {
     m_owningAssociation.set(association);
 }
 
@@ -443,7 +527,19 @@ Artifact* Property::getArtifact() {
     return m_artifact.get();
 }
 
+Artifact& Property::getArtifactRef() {
+    return m_artifact.getRef();
+}
+
+bool Property::hasArtifact() {
+    return m_artifact.has();
+}
+
 void Property::setArtifact(Artifact* artifact) {
+    m_artifact.set(artifact);
+}
+
+void Property::setArtifact(Artifact& artifact) {
     m_artifact.set(artifact);
 }
 

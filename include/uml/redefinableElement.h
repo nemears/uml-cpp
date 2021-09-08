@@ -12,6 +12,26 @@ namespace UML {
         protected:
             Sequence<RedefinableElement> m_redefinedElement = Sequence<RedefinableElement>(this);
             Sequence<Classifier> m_redefinitionContext = Sequence<Classifier>(this);
+            class AddRedefinedElementFunctor : public TemplateAbstractSequenceFunctor<RedefinableElement, RedefinableElement> {
+                public:
+                    AddRedefinedElementFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(RedefinableElement& el) const override;
+            };
+            class RemoveRedefinedElementFunctor : public TemplateAbstractSequenceFunctor<RedefinableElement, RedefinableElement> {
+                public:
+                    RemoveRedefinedElementFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(RedefinableElement& el) const override;
+            };
+            class AddRedefinitionContextFunctor : public TemplateAbstractSequenceFunctor<Classifier, RedefinableElement> {
+                public:
+                    AddRedefinitionContextFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Classifier& el) const override;
+            };
+            class RemoveRedefinitionContextFunctor : public TemplateAbstractSequenceFunctor<Classifier, RedefinableElement> {
+                public:
+                    RemoveRedefinitionContextFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Classifier& el) const override;
+            };
             void setManager(UmlManager* manager) override; // not polymorphic
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;

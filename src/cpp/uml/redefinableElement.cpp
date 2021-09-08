@@ -1,6 +1,23 @@
 #include "uml/redefinableElement.h"
+#include "uml/classifier.h"
 
 using namespace UML;
+
+void RedefinableElement::AddRedefinedElementFunctor::operator()(RedefinableElement& el) const {
+    updateCopiedSequenceAddedTo(el, &RedefinableElement::getRedefinedElements);
+}
+
+void RedefinableElement::RemoveRedefinedElementFunctor::operator()(RedefinableElement& el) const {
+    updateCopiedSequenceRemovedFrom(el, &RedefinableElement::getRedefinedElements);
+}
+
+void RedefinableElement::AddRedefinitionContextFunctor::operator()(Classifier& el) const {
+    updateCopiedSequenceAddedTo(el, &RedefinableElement::getRedefinitionContext);
+}
+
+void RedefinableElement::RemoveRedefinitionContextFunctor::operator()(Classifier& el) const {
+    updateCopiedSequenceRemovedFrom(el, &RedefinableElement::getRedefinitionContext);
+}
 
 void RedefinableElement::setManager(UmlManager* manager) {
     m_redefinedElement.m_manager = manager;
@@ -8,6 +25,10 @@ void RedefinableElement::setManager(UmlManager* manager) {
 }
 
 RedefinableElement::RedefinableElement() {
+    m_redefinedElement.addProcedures.push_back(new AddRedefinedElementFunctor(this));
+    m_redefinedElement.removeProcedures.push_back(new RemoveRedefinedElementFunctor(this));
+    m_redefinitionContext.addProcedures.push_back(new AddRedefinitionContextFunctor(this));
+    m_redefinitionContext.removeProcedures.push_back(new RemoveRedefinitionContextFunctor(this));
 }
 
 RedefinableElement::~RedefinableElement() {
@@ -16,7 +37,17 @@ RedefinableElement::~RedefinableElement() {
 
 RedefinableElement::RedefinableElement(const RedefinableElement& el) {
     m_redefinedElement = el.m_redefinedElement;
+    m_redefinedElement.m_el = this;
+    m_redefinedElement.addProcedures.clear();
+    m_redefinedElement.removeProcedures.clear();
+    m_redefinedElement.addProcedures.push_back(new AddRedefinedElementFunctor(this));
+    m_redefinedElement.removeProcedures.push_back(new RemoveRedefinedElementFunctor(this));
     m_redefinitionContext = el.m_redefinitionContext;
+    m_redefinitionContext.m_el = this;
+    m_redefinitionContext.addProcedures.clear();
+    m_redefinitionContext.removeProcedures.clear();
+    m_redefinitionContext.addProcedures.push_back(new AddRedefinitionContextFunctor(this));
+    m_redefinitionContext.removeProcedures.push_back(new RemoveRedefinitionContextFunctor(this));
 }
 
 Sequence<RedefinableElement>& RedefinableElement::getRedefinedElements() {

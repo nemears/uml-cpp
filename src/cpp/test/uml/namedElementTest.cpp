@@ -158,8 +158,8 @@ TEST_F(NamedElementTest, singletonMethodsTest) {
     ASSERT_THROW(c.getNamespaceRef(), NullReferenceException);
     c.setOwningPackage(p);
     ASSERT_TRUE(c.hasNamespace());
-    ASSERT_EQ(c.getNamespace()->getID(), p.getID());
-    ASSERT_EQ(c.getNamespaceRef().getID(), p.getID());
+    ASSERT_EQ(*c.getNamespace(), p);
+    ASSERT_EQ(c.getNamespaceRef(), p);
     c.setOwningPackage(0);
     ASSERT_FALSE(c.hasNamespace());
     ASSERT_FALSE(c.getNamespace());

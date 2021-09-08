@@ -220,6 +220,13 @@ namespace UML {
             virtual ElementType getElementType() const;
             virtual bool isSubClassOf(ElementType eType) const;
             virtual std::string getElementTypeString() const;
+
+            friend bool operator==(const Element& lhs, const Element& rhs) {
+                return lhs.m_id == rhs.m_id;
+            };
+            friend bool operator!=(const Element& lhs, const Element& rhs) {
+                return lhs.m_id != rhs.m_id;
+            };
     };
 
     //Exceptions

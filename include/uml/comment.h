@@ -29,7 +29,10 @@ namespace UML {
             std::string getBody();
             void setBody(std::string body);
             Element* getOwningElement();
+            Element& getOwningElementRef();
+            bool hasOwningElement() const;
             void setOwningElement(Element* el);
+            void setOwningElement(Element& el);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

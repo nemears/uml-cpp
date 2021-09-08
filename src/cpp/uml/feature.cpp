@@ -1,6 +1,5 @@
 #include "uml/feature.h"
 #include "uml/classifier.h"
-#include "uml/universalFunctions.h"
 
 using namespace std;
 using namespace UML;

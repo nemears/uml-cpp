@@ -1,6 +1,5 @@
 #include "uml/comment.h"
 #include "uml/sequence.h"
-#include "uml/universalFunctions.h"
 
 using namespace std;
 using namespace UML;
@@ -44,7 +43,19 @@ Element* Comment::getOwningElement() {
     return m_owningElement.get();
 }
 
+Element& Comment::getOwningElementRef() {
+    return m_owningElement.getRef();
+}
+
+bool Comment::hasOwningElement() const {
+    return m_owningElement.has();
+}
+
 void Comment::setOwningElement(Element* el) {
+    m_owningElement.set(el);
+}
+
+void Comment::setOwningElement(Element& el) {
     m_owningElement.set(el);
 }
 

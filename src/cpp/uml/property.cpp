@@ -6,7 +6,6 @@
 #include "uml/class.h"
 #include "uml/association.h"
 #include "uml/artifact.h"
-#include "uml/universalFunctions.h"
 
 using namespace std;
 using namespace UML;

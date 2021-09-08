@@ -1,6 +1,5 @@
 #include "uml/packageableElement.h"
 #include "uml/package.h"
-#include "uml/universalFunctions.h"
 
 using namespace UML;
 

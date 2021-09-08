@@ -42,7 +42,7 @@ TEST_F(UmlManagerTest, openAndSaveTest) {
     EXPECT_EQ(m.getModel()->getID(), ID::fromString("GAfdua&ubXfsR1EgdB3HeVglkaor"));
     EXPECT_EQ(m.getModel()->getName(), "test");
     EXPECT_EQ(m.getModel(), &m.get<Model>(m.getModel()->getID()));
-    EXPECT_TRUE(m.getModel()->getPackagedElements().size() == 1);
+    EXPECT_EQ(m.getModel()->getPackagedElements().size(), 2);
     //ASSERT_EQ(m.getModel()->getPackagedElements().front()->getID(), p.getID());
 
     Package& p2 = m.get<Package>(pID);

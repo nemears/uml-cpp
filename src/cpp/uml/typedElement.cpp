@@ -24,7 +24,7 @@ Type& TypedElement::getTypeRef() {
     return m_type.getRef();
 }
 
-bool TypedElement::hasType() {
+bool TypedElement::hasType() const {
     return m_type.has();
 }
 

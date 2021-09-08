@@ -144,11 +144,11 @@ namespace UML {
                 }
                 return *ret;
             }
-            bool has() {
+            bool has() const {
                 return !m_id.isNull();
             };
 
-            ID id() {
+            ID id() const {
                 return m_id;
             };
 

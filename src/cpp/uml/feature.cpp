@@ -54,6 +54,14 @@ Classifier* Feature::getFeaturingClassifier() {
     return m_featuringClassifier.get();
 }
 
+Classifier& Feature::getFeaturingClassifierRef() {
+    return m_featuringClassifier.getRef();
+}
+
+bool Feature::hasFeaturingClassifier() const {
+    return m_featuringClassifier.has();
+}
+
 void Feature::setFeaturingClassifier(Classifier* clazz) {
     m_featuringClassifier.set(clazz);
 }

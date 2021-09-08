@@ -31,7 +31,7 @@ namespace UML {
             virtual ~PackageableElement() {};
             Package* getOwningPackage();
             Package& getOwningPackageRef();
-            bool hasOwningPackage();
+            bool hasOwningPackage() const;
             void setOwningPackage(Package& package);
             void setOwningPackage(Package* package);
             ElementType getElementType() const override;

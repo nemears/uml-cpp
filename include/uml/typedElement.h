@@ -15,7 +15,7 @@ namespace UML{
         public:
             virtual Type* getType();
             Type& getTypeRef();
-            bool hasType();
+            bool hasType() const;
             virtual void setType(Type* type);
             void setType(Type& type);
             TypedElement();

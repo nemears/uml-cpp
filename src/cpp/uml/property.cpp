@@ -413,7 +413,7 @@ ValueSpecification& Property::getDefaultValueRef() {
     return m_defaultValue.getRef();
 }
 
-bool Property::hasDefaultValue() {
+bool Property::hasDefaultValue() const {
     return m_defaultValue.has();
 }
 
@@ -433,7 +433,7 @@ Classifier& Property::getClassifierRef() {
     return m_classifier.getRef();
 }
 
-bool Property::hasClassifier() {
+bool Property::hasClassifier() const {
     return m_classifier.has();
 }
 
@@ -453,7 +453,7 @@ StructuredClassifier& Property::getStructuredClassifierRef() {
     return m_structuredClassifier.getRef();
 }
 
-bool Property::hasStructuredClassifier() {
+bool Property::hasStructuredClassifier() const {
     return m_structuredClassifier.has();
 }
 
@@ -473,7 +473,7 @@ DataType& Property::getDataTypeRef() {
     return m_dataType.getRef();
 }
 
-bool Property::hasDataType() {
+bool Property::hasDataType() const {
     return m_dataType.has();
 }
 
@@ -493,7 +493,7 @@ Class& Property::getClassRef() {
     return m_class.getRef();
 }
 
-bool Property::hasClass() {
+bool Property::hasClass() const {
     return m_class.has();
 }
 
@@ -513,7 +513,7 @@ Association& Property::getAssociationRef() {
     return m_association.getRef();
 }
 
-bool Property::hasAssociation() {
+bool Property::hasAssociation() const {
     return m_association.has();
 }
 
@@ -533,7 +533,7 @@ Association& Property::getOwningAssociationRef() {
     return m_owningAssociation.getRef();
 }
 
-bool Property::hasOwningAssociation() {
+bool Property::hasOwningAssociation() const {
     return m_owningAssociation.has();
 }
 
@@ -553,7 +553,7 @@ Artifact& Property::getArtifactRef() {
     return m_artifact.getRef();
 }
 
-bool Property::hasArtifact() {
+bool Property::hasArtifact() const {
     return m_artifact.has();
 }
 

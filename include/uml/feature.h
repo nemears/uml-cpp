@@ -29,7 +29,10 @@ namespace UML {
             Feature();
             Feature(const Feature& feature);
             Classifier* getFeaturingClassifier();
+            Classifier& getFeaturingClassifierRef();
+            bool hasFeaturingClassifier() const;
             void setFeaturingClassifier(Classifier* clazz);
+            void setFeaturingClassifier(Classifier& clazz);
             bool isStatic();
             void setStatic(bool isStatic);
             ElementType getElementType() const override;

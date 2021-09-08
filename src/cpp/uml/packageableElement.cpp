@@ -39,7 +39,7 @@ Package& PackageableElement::getOwningPackageRef() {
     return m_owningPackage.getRef();
 }
 
-bool PackageableElement::hasOwningPackage() {
+bool PackageableElement::hasOwningPackage() const {
     return m_owningPackage.has();
 }
 

@@ -108,7 +108,7 @@ Namespace& NamedElement::getNamespaceRef() {
     return m_namespace.getRef();
 }
 
-bool NamedElement::hasNamespace() {
+bool NamedElement::hasNamespace() const {
     return m_namespace.has();
 }
 

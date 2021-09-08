@@ -50,7 +50,7 @@ TEST_F(LiteralsParserTest, testEmitLiteralUnlimitedNatural) {
     l3.setID("8&K_0aLhvQDM12ZeYg9nPiSrexHo");
     ln.setID("4gA4RgL9vKTRYd61D99y1d_Yggj6");
     l2.setInfinite();
-    l3.setNumberValue(8889728897389425);
+    l3.setNumberValue(9999);
     p.getPackagedElements().add(l1);
     p.getPackagedElements().add(l2);
     p.getPackagedElements().add(l3);
@@ -67,7 +67,7 @@ TEST_F(LiteralsParserTest, testEmitLiteralUnlimitedNatural) {
         value: "*"
     - literalUnlimitedNatural:
         id: 8&K_0aLhvQDM12ZeYg9nPiSrexHo
-        value: 8889728897389425
+        value: 9999
     - literalNull:
         id: 4gA4RgL9vKTRYd61D99y1d_Yggj6)"""";
     string generatedEmit;

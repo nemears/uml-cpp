@@ -104,7 +104,19 @@ Namespace* NamedElement::getNamespace() {
     return m_namespace.get();
 }
 
+Namespace& NamedElement::getNamespaceRef() {
+    return m_namespace.getRef();
+}
+
+bool NamedElement::hasNamespace() {
+    return m_namespace.has();
+}
+
 void NamedElement::setNamespace(Namespace* nmspc) {
+    m_namespace.set(nmspc);
+}
+
+void NamedElement::setNamespace(Namespace& nmspc) {
     m_namespace.set(nmspc);
 }
 

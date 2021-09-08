@@ -148,3 +148,20 @@ TEST_F(NamedElementTest, copyAndEditTest) {
   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c, copy, &NamedElement::getMemberNamespace));
   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c, copy, &NamedElement::getNamespace));
 }
+
+TEST_F(NamedElementTest, singletonMethodsTest) {
+    UmlManager m;
+    Package p = m.create<Package>();
+    Package c = m.create<Package>();
+    ASSERT_FALSE(c.hasNamespace());
+    ASSERT_FALSE(c.getNamespace());
+    ASSERT_THROW(c.getNamespaceRef(), NullReferenceException);
+    c.setOwningPackage(p);
+    ASSERT_TRUE(c.hasNamespace());
+    ASSERT_EQ(c.getNamespace()->getID(), p.getID());
+    ASSERT_EQ(c.getNamespaceRef().getID(), p.getID());
+    c.setOwningPackage(0);
+    ASSERT_FALSE(c.hasNamespace());
+    ASSERT_FALSE(c.getNamespace());
+    ASSERT_THROW(c.getNamespaceRef(), NullReferenceException);
+}

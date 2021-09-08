@@ -21,6 +21,12 @@ namespace UML {
             };
     };
 
+    class NullReferenceException : public std::exception {
+        const char* what() const throw() override {
+            return "Tried to get a reference of a null Singleton! You can check if the singleton is set with the has\"Signature\"() method.\n";
+        };
+    };
+
     template <class T = Element, class U = Element> class Singleton {
 
         friend class UmlManager;
@@ -120,13 +126,24 @@ namespace UML {
                 set(&val);
             };
             T* get() {
-                if (!m_ptr) {
-                    if (m_me->m_manager) {
-                        m_ptr = m_me->m_manager->template get<T>(m_me, m_id);
+                if (has()) {
+                    if (!m_ptr) {
+                        if (m_me->m_manager) {
+                            m_ptr = m_me->m_manager->template get<T>(m_me, m_id);
+                        }
                     }
+                    return m_ptr;
                 }
-                return m_ptr;
+                return 0;
             };
+
+            T& getRef() {
+                T* ret = get();
+                if (!ret) {
+                    throw NullReferenceException();
+                }
+                return *ret;
+            }
             bool has() {
                 return !m_id.isNull();
             };

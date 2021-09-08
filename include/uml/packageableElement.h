@@ -30,6 +30,9 @@ namespace UML {
             PackageableElement(const PackageableElement& el);
             virtual ~PackageableElement() {};
             Package* getOwningPackage();
+            Package& getOwningPackageRef();
+            bool hasOwningPackage();
+            void setOwningPackage(Package& package);
             void setOwningPackage(Package* package);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;

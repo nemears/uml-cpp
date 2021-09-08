@@ -53,7 +53,10 @@ namespace UML{
             virtual std::string getName();
             virtual void setName(const std::string &name);
             Namespace* getNamespace();
+            Namespace& getNamespaceRef();
+            bool hasNamespace();
             void setNamespace(Namespace* nmspc);
+            void setNamespace(Namespace& nmspc);
             Sequence<Namespace>& getMemberNamespace();
             VisibilityKind getVisibility();
             void setVisibility(VisibilityKind visibility);

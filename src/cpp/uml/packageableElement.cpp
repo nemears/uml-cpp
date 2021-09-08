@@ -35,7 +35,19 @@ Package* PackageableElement::getOwningPackage() {
     return m_owningPackage.get();
 }
 
+Package& PackageableElement::getOwningPackageRef() {
+    return m_owningPackage.getRef();
+}
+
+bool PackageableElement::hasOwningPackage() {
+    return m_owningPackage.has();
+}
+
 void PackageableElement::setOwningPackage(Package* package) {
+    m_owningPackage.set(package);
+}
+
+void PackageableElement::setOwningPackage(Package& package) {
     m_owningPackage.set(package);
 }
 

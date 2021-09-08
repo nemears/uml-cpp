@@ -34,9 +34,6 @@ add_subdirectory(libs/googletest)
 add_subdirectory(libs/yaml-cpp)
 set(YAML_CPP_BUILD_TESTS OFF)
 
-# pybind11
-add_subdirectory(libs/pybind11)
-
 # src
 add_subdirectory(src)
 

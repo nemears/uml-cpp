@@ -99,26 +99,6 @@ namespace UML {
             void setElementAndChildrenMount(std::filesystem::path parentPath, Element& el);
             /** Using this get is faster than the get<T>(ID id) method (usually) because it will base it's
              *  search on a particular element, only for internal api use where trying to set and return a ptr**/
-            template <class T = Element, class U = Element> T* get(U* me, ID theID, T* U::*thePtr) {
-                if (!theID.isNull()) {
-                    if (!(me->*thePtr)) {
-                        if (me->m_node) {
-                            if (me->m_node->m_references.count(theID)) {
-                                if (!me->m_node->m_references[theID]->m_managerElementMemory) {
-                                    aquire(theID);
-                                }
-                                (me->*thePtr) = dynamic_cast<T*>(me->m_node->m_references[theID]->m_managerElementMemory);
-                            } else {
-                                throw ManagerStateException();
-                            }
-                        } else {
-                            throw ManagerStateException();
-                        }
-                    }
-                    return (me->*thePtr);
-                }
-                return 0;
-            };
             template <class T = Element> T* get(Element* me, ID theID) {
                 if (!theID.isNull()) {
                     if (me->m_node) {

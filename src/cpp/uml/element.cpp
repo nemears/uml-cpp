@@ -522,7 +522,7 @@ ID Element::getID() {
 
 Element* Element::getOwner() {
     if (m_manager) {
-        return m_manager->get<>(this, m_ownerID, &Element::m_ownerPtr);
+        return m_manager->get<>(this, m_ownerID);
     } else {
         return m_ownerPtr;
     }

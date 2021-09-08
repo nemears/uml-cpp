@@ -452,7 +452,7 @@ Sequence<Property>& Property::getRedefinedProperties() {
 }
 
 void Property::setType(Type* type) {
-    if (!m_association.has()) {
+    if (m_association.has()) {
         if (!m_typeID.isNull()) {
             if (!m_typePtr) {
                 m_typePtr = &m_manager->get<Type>(m_typeID);

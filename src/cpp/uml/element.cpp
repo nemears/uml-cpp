@@ -76,7 +76,7 @@ void CheckAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const 
 }
 
 void Element::setReference(Element* referencing) {
-    if (this == m_node->m_managerElementMemory) {
+   // if (this == m_node->m_managerElementMemory) {
         if (m_node->m_references.count(referencing->getID())) {
             m_node->m_referenceCount[referencing->getID()]++;
         } else {
@@ -84,11 +84,11 @@ void Element::setReference(Element* referencing) {
             m_node->m_referenceCount[referencing->getID()] = 1;
             m_node->m_referenceOrder.push_back(referencing->getID());
         }
-    }
+    //}
 }
 
 void Element::removeReference(ID referencing) {
-    if (this == m_node->m_managerElementMemory) {
+    //if (this == m_node->m_managerElementMemory) {
         if (m_node->m_referenceCount[referencing] > 1) {
             m_node->m_referenceCount[referencing]--;
         } else {
@@ -99,7 +99,7 @@ void Element::removeReference(ID referencing) {
                 m_node->m_referenceOrder.end(), 
                 referencing), m_node->m_referenceOrder.end());
         }
-    }
+    //}
 }
 
 // Constructor
@@ -537,12 +537,12 @@ void Element::setOwner(Element* owner) {
         if (!m_ownerPtr) {
             m_ownerPtr = m_manager->get<>(this, m_ownerID);
         }
-        if (m_manager) {
-            removeReference(m_ownerID);
-        }
         m_ownerID = ID::nullID();
         if (m_ownerPtr->getOwnedElements().count(m_id)) {
             m_ownerPtr->getOwnedElements().internalRemove(*this);
+        }
+        if (m_manager) {
+            removeReference(m_ownerID);
         }
         m_ownerPtr = 0;
     }

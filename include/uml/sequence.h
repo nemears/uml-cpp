@@ -414,12 +414,24 @@ namespace UML {
                 }
                 if (m_el->m_node->m_managerElementMemory != m_el) {
                     if (!(m_el->m_node->m_managerElementMemory->template as<U>().*meth)().count(el.getID())) {
-                        (m_el->m_node->m_managerElementMemory->template as<U>().*meth)().internalAdd(el.template as<T>());
+                        //(m_el->m_node->m_managerElementMemory->template as<U>().*meth)().internalAdd(el.template as<T>());
+                        Sequence<T>& copiedSequence = (m_el->m_node->m_managerElementMemory->template as<U>().*meth)();
+                        copiedSequence.m_order.push_back(el.getID());
+                        copiedSequence.m_rep[el.getID()] = 0;
+                        if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
+                            copiedSequence.m_names[el.template as<NamedElement>().getName()] = el.getID();
+                        }
                     }
                 }
                 for (auto& copy : m_el->m_node->m_copies) {
                     if (!(copy->template as<U>().*meth)().count(el.getID()) && copy != m_el) {
-                        (copy->template as<U>().*meth)().internalAdd(el.template as<T>());
+                        //(copy->template as<U>().*meth)().internalAdd(el.template as<T>());
+                        Sequence<T>& copiedSequence = (copy->template as<U>().*meth)();
+                        copiedSequence.m_order.push_back(el.getID());
+                        copiedSequence.m_rep[el.getID()] = 0;
+                        if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
+                            copiedSequence.m_names[el.template as<NamedElement>().getName()] = el.getID();
+                        }
                     }
                 }
             };
@@ -429,12 +441,24 @@ namespace UML {
                 }
                 if (m_el->m_node->m_managerElementMemory != m_el) {
                     if ((m_el->m_node->m_managerElementMemory->template as<U>().*meth)().count(el.getID())) {
-                        (m_el->m_node->m_managerElementMemory->template as<U>().*meth)().internalRemove(el.template as<T>());
+                        //(m_el->m_node->m_managerElementMemory->template as<U>().*meth)().internalRemove(el.template as<T>());
+                        Sequence<T>& copy = (m_el->m_node->m_managerElementMemory->template as<U>().*meth)();
+                        copy.m_order.erase(std::remove(copy.m_order.begin(), copy.m_order.end(), el.getID()), copy.m_order.end()) - copy.m_order.begin();
+                        copy.m_rep.erase(el.getID());
+                        if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
+                            copy.m_names.erase(el.template as<NamedElement>().getName());
+                        }
                     }
                 }
                 for (auto& copy : m_el->m_node->m_copies) {
                     if ((copy->template as<U>().*meth)().count(el.getID()) && copy != m_el) {
-                        (copy->template as<U>().*meth)().internalRemove(el.template as<T>());
+                        //(copy->template as<U>().*meth)().internalRemove(el.template as<T>());
+                        Sequence<T>& copiedSequence = (copy->template as<U>().*meth)();
+                        copiedSequence.m_order.erase(std::remove(copiedSequence.m_order.begin(), copiedSequence.m_order.end(), el.getID()), copiedSequence.m_order.end()) - copiedSequence.m_order.begin();
+                        copiedSequence.m_rep.erase(el.getID());
+                        if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
+                            copiedSequence.m_names.erase(el.template as<NamedElement>().getName());
+                        }
                     }
                 }
             };

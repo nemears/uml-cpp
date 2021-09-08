@@ -156,3 +156,9 @@ bool Parameter::isSubClassOf(ElementType eType) const {
 
     return ret;
 }
+
+void Parameter::referencingReleased(ID id) {
+    TypedElement::referencingReleased(id);
+    MultiplicityElement::referencingReleased(id);
+    /** TODO: operation release **/
+}

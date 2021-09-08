@@ -32,4 +32,5 @@ void StructuralFeature::restoreReleased(ID id, Element* el) {
 void StructuralFeature::referencingReleased(ID id) {
     Feature::referencingReleased(id);
     TypedElement::referencingReleased(id);
+    MultiplicityElement::referencingReleased(id);
 }

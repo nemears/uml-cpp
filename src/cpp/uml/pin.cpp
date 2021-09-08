@@ -19,3 +19,8 @@ bool Pin::isSubClassOf(ElementType eType) const {
 
     return ret;
 }
+
+void Pin::referencingReleased(ID id) {
+    TypedElement::referencingReleased(id);
+    MultiplicityElement::referencingReleased(id);
+}

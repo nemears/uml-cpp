@@ -6,6 +6,8 @@
 
 namespace UML {
     class Pin : public ObjectNode , public MultiplicityElement {
+        protected:
+            void referencingReleased(ID id) override;
         public:
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;

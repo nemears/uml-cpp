@@ -14,11 +14,19 @@ namespace UML{
     class InstanceSpecification : public PackageableElement , public DeployedArtifact, public DeploymentTarget {
         friend class UmlManager;
         protected:
-            ID m_classifierID;
-            Classifier* m_classifierPtr;
+            Singleton<Classifier, InstanceSpecification> m_classifier = Singleton<Classifier, InstanceSpecification>(this);
             Sequence<Slot> m_slots;
-            ID m_specificationID;
-            ValueSpecification* m_specificationPtr;
+            Singleton <ValueSpecification, InstanceSpecification> m_specification = Singleton<ValueSpecification, InstanceSpecification>(this);
+            class RemoveSpecificationProcedure : public AbstractSingletonProcedure<ValueSpecification, InstanceSpecification> {
+                public:
+                    RemoveSpecificationProcedure(InstanceSpecification* me) : AbstractSingletonProcedure<ValueSpecification, InstanceSpecification>(me) {};
+                    void operator()(ValueSpecification* el) const override;
+            };
+            class AddSpecificationProcedure : public AbstractSingletonProcedure<ValueSpecification, InstanceSpecification> {
+                public:
+                    AddSpecificationProcedure(InstanceSpecification* me) : AbstractSingletonProcedure<ValueSpecification, InstanceSpecification>(me) {};
+                    void operator()(ValueSpecification* el) const override;
+            };
             class AddSlotFunctor : public TemplateAbstractSequenceFunctor<Slot,InstanceSpecification> {
                 public:
                     AddSlotFunctor(InstanceSpecification* me) : TemplateAbstractSequenceFunctor(me) {};
@@ -37,10 +45,16 @@ namespace UML{
             InstanceSpecification(const InstanceSpecification& inst);
             virtual ~InstanceSpecification();
             Classifier* getClassifier();
+            Classifier& getClassifierRef();
+            bool hasClassifier() const;
             void setClassifier(Classifier* classifier);
+            void setClassifier(Classifier& classifier);
             Sequence<Slot>& getSlots();
             ValueSpecification* getSpecification();
+            ValueSpecification& getSpecificationRef();
+            bool hasSpecification() const;
             void setSpecification(ValueSpecification* specification);
+            void setSpecification(ValueSpecification& specification);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

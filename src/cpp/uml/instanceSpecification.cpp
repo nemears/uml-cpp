@@ -6,6 +6,18 @@
 
 using namespace UML;
 
+void InstanceSpecification::RemoveSpecificationProcedure::operator()(ValueSpecification* el) const {
+    if (m_me->getOwnedElements().count(el->getID())) {
+        m_me->getOwnedElements().internalRemove(*el);
+    }
+}
+
+void InstanceSpecification::AddSpecificationProcedure::operator()(ValueSpecification* el) const {
+    if (!m_me->getOwnedElements().count(el->getID())) {
+        m_me->getOwnedElements().internalAdd(*el);
+    }
+}
+
 void InstanceSpecification::AddSlotFunctor::operator()(Slot& el) const {
     if (el.getOwningInstance()) {
         if (el.getOwningInstance()->getID() != m_el->getID()) {
@@ -36,23 +48,25 @@ void InstanceSpecification::setManager(UmlManager* manager) {
 }
 
 InstanceSpecification::InstanceSpecification() {
-    m_classifierPtr = 0;
+    m_classifier.m_signature = &InstanceSpecification::m_classifier;
     m_slots.addProcedures.push_back(new AddSlotFunctor(this));
     m_slots.removeProcedures.push_back(new RemoveSlotFunctor(this));
-    m_specificationPtr = 0;
+    m_specification.m_signature = &InstanceSpecification::m_specification;
+    m_specification.m_removeProcedures.push_back(new RemoveSpecificationProcedure(this));
+    m_specification.m_addProcedures.push_back(new AddSpecificationProcedure(this));
 }
 
 InstanceSpecification::InstanceSpecification(const InstanceSpecification& inst) {
-    m_classifierID = inst.m_classifierID;
-    if (inst.m_manager && !inst.m_classifierID.isNull()) {
-        m_classifierPtr = &inst.m_manager->get<Classifier>(inst.m_classifierID);
-    } else {
-        m_classifierPtr = inst.m_classifierPtr;
-    }
-    m_specificationID = inst.m_specificationID;
-    if (!m_manager) {
-        m_specificationPtr = inst.m_specificationPtr;
-    }
+    m_classifier = inst.m_classifier;
+    m_classifier.m_me = this;
+    m_classifier.m_removeProcedures.clear();
+    m_classifier.m_addProcedures.clear();
+    m_specification = inst.m_specification;
+    m_specification.m_me = this;
+    m_specification.m_removeProcedures.clear();
+    m_specification.m_addProcedures.clear();
+    m_specification.m_removeProcedures.push_back(new RemoveSpecificationProcedure(this));
+    m_specification.m_addProcedures.push_back(new AddSpecificationProcedure(this));
     m_slots = inst.m_slots;
     m_slots.addProcedures.clear();
     m_slots.addProcedures.push_back(new AddSlotFunctor(this));
@@ -65,64 +79,42 @@ InstanceSpecification::~InstanceSpecification() {
 }
 
 Classifier* InstanceSpecification::getClassifier() {
-    return universalGet<Classifier>(m_classifierID, m_classifierPtr, m_manager);
+    return m_classifier.get();
+}
+Classifier& InstanceSpecification::getClassifierRef() {
+    return m_classifier.getRef();
+}
+
+bool InstanceSpecification::hasClassifier() const {
+    return m_classifier.has();
 }
 
 void InstanceSpecification::setClassifier(Classifier* classifier) {
-    if (!m_classifierID.isNull()) {
-        if (m_manager) {
-            removeReference(m_classifierID);
-        }
-        m_classifierID = ID::nullID();
-        m_classifierPtr = 0;
-    }
+    m_classifier.set(classifier);
+}
 
-    if (classifier) {
-        m_classifierID = classifier->getID();
-    }
-    
-    if (!m_manager) {
-        m_classifierPtr = classifier;
-    }
-
-    if (classifier) {
-        if (m_manager) {
-            setReference(classifier);
-        }
-    }
+void InstanceSpecification::setClassifier(Classifier& classifier) {
+    m_classifier.set(classifier);
 }
 
 ValueSpecification* InstanceSpecification::getSpecification() {
-    return universalGet<ValueSpecification>(m_specificationID, m_specificationPtr, m_manager);
+    return m_specification.get();
+}
+
+ValueSpecification& InstanceSpecification::getSpecificationRef() {
+    return m_specification.getRef();
+}
+
+bool InstanceSpecification::hasSpecification() const {
+    return m_specification.has();
 }
 
 void InstanceSpecification::setSpecification(ValueSpecification* specification) {
-    if (!isSameOrNull(m_specificationID, specification)) {
-        if (!m_specificationPtr) {
-            m_specificationPtr = &m_manager->get<ValueSpecification>(m_specificationID);
-        }
+    m_specification.set(specification);
+}
 
-        if (m_ownedElements->count(m_specificationID)) {
-            m_ownedElements->internalRemove(*m_specificationPtr);
-        }
-
-        m_specificationPtr = 0;
-        m_specificationID = ID::nullID();
-    }
-
-    if (specification) {
-        m_specificationID = specification->getID();
-    }
-
-    if (!m_manager) {
-        m_specificationPtr = specification;
-    }
-
-    if (specification) {
-        if (!m_ownedElements->count(specification->getID())) {
-            m_ownedElements->internalAdd(*specification);
-        }
-    }
+void InstanceSpecification::setSpecification(ValueSpecification& specification) {
+    m_specification.set(specification);
 }
 
 Sequence<Slot>& InstanceSpecification::getSlots() {
@@ -152,12 +144,15 @@ bool InstanceSpecification::isSubClassOf(ElementType eType) const {
 }
 
 void InstanceSpecification::restoreReleased(ID id, Element* released) {
-    Element::restoreReleased(id, released);
+    PackageableElement::restoreReleased(id, released);
 }
 
 void InstanceSpecification::referencingReleased(ID id) {
-    Element::referencingReleased(id);
-    if (m_classifierID == id) {
-        m_classifierPtr = 0;
+    PackageableElement::referencingReleased(id);
+    if (m_classifier.id() == id) {
+        m_classifier.release();
+    }
+    if (m_specification.id() == id) {
+        m_specification.release();
     }
 }

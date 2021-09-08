@@ -63,9 +63,22 @@ void UmlManager::reindex(ID oldID, ID newID) {
         // reindex
         m_elements.erase(oldID);
         m_elements.insert(newID);
-        ManagerNode disc = m_graph[oldID];
+        ManagerNode& discRef = m_graph[oldID];
+        m_graph[newID] = discRef;
+        ManagerNode* newDisc = &m_graph[newID];
+        newDisc->m_managerElementMemory = discRef.m_managerElementMemory;
+        for (auto& ref : newDisc->m_references) {
+            if (ref.second->m_references.count(oldID)) {
+                ref.second->m_references.erase(oldID);
+                ref.second->m_references[newID] = newDisc;
+                (*find(ref.second->m_referenceOrder.begin(), ref.second->m_referenceOrder.end(), oldID)) = newID;
+                size_t count = ref.second->m_referenceCount[oldID];
+                ref.second->m_referenceCount[newID] = count;
+                ref.second->m_referenceCount.erase(oldID);
+            }
+        }
+        newDisc->m_managerElementMemory->m_node = newDisc;
         m_graph.erase(oldID);
-        m_graph[newID] = disc;
     }
 }
 

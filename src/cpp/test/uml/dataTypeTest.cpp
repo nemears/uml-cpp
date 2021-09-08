@@ -525,6 +525,19 @@ TEST_F(DataTypeTest, reindexOwnedAttributeIDTestW_Manager) {
     ASSERT_TRUE(&d.getMembers().get(id) == &p);
     ASSERT_TRUE(&d.getOwnedMembers().get(id) == &p);
     ASSERT_TRUE(&d.getOwnedElements().get(id) == &p);
+
+    EXPECT_TRUE(p.getDataType());
+    EXPECT_EQ(p.getDataType(), &d);
+    EXPECT_TRUE(p.getClassifier());
+    EXPECT_EQ(p.getClassifier(), &d);
+    EXPECT_TRUE(p.getFeaturingClassifier());
+    EXPECT_EQ(p.getFeaturingClassifier(), &d);
+    EXPECT_TRUE(p.getNamespace());
+    EXPECT_EQ(p.getNamespace(), &d);
+    EXPECT_EQ(p.getMemberNamespace().size(), 1);
+    EXPECT_EQ(&p.getMemberNamespace().front(), &d);
+    EXPECT_TRUE(p.getOwner());
+    EXPECT_EQ(p.getOwner(), &d);
 }
 
 // TEST_F(DataTypeTest, reindexOwnedAttributeNameTest) {

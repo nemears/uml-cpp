@@ -1,6 +1,7 @@
 #include "uml/classifier.h"
 #include "uml/property.h"
 #include "uml/generalization.h"
+#include "uml/instanceSpecification.h"
 
 using namespace std;
 using namespace UML;
@@ -64,6 +65,20 @@ Element(clazz) {
 
 void Classifier::reindexID(ID oldID, ID newID) {
     Namespace::reindexID(oldID, newID);
+    if (m_node) {
+        for (auto& ref : m_node->m_references) {    
+            // TODO change to polymorphic?
+            if (ref.second->m_managerElementMemory->isSubClassOf(ElementType::INSTANCE_SPECIFICATION)) {
+                if (ref.second->m_managerElementMemory->as<InstanceSpecification>().hasClassifier()) {
+                    if (ref.second->m_managerElementMemory->as<InstanceSpecification>().getClassifierRef() == *this) {
+                        ref.second->m_managerElementMemory->as<InstanceSpecification>().m_classifier.m_id = newID;
+                        ref.second->m_managerElementMemory->as<InstanceSpecification>().m_classifier.m_ptr = 0;
+                        ref.second->m_managerElementMemory->as<InstanceSpecification>().m_classifier.updateCopies();
+                    }
+                }
+            }
+        }
+    }
 }
 
 void Classifier::reindexName(string oldName, string newName) {

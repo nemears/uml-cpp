@@ -12,12 +12,14 @@ namespace UML {
     class Generalization;
     class Property;
     class Feature;
+    class InstanceSpecification;
 
     /**
      * A Classifier represents a classification of instances according to their Features
      **/
     class Classifier: public Namespace, public Type , public RedefinableElement, public TemplateableElement {
         friend class UmlManager;
+        friend class InstanceSpecification;
         protected:
             Sequence<Feature> m_features = Sequence<Feature>(this);
             Sequence<Property> m_attributes = Sequence<Property>(this);

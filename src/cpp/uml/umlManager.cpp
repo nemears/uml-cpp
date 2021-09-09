@@ -78,6 +78,9 @@ void UmlManager::reindex(ID oldID, ID newID) {
             }
         }
         newDisc->m_managerElementMemory->m_node = newDisc;
+        for (auto& copy : newDisc->m_copies) {
+            copy->m_node = newDisc;
+        }
         m_graph.erase(oldID);
     }
 }

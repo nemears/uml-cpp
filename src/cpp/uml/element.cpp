@@ -211,6 +211,16 @@ void Element::setID(ID id) {
         m_manager->reindex(m_id, id);
     }
     m_id = id;
+    if (m_manager) {
+        for (auto& copy : m_node->m_copies) {
+            if (copy != this) {
+                copy->m_id = id;
+            }
+        }
+        if (m_node->m_managerElementMemory != this) {
+            m_node->m_managerElementMemory->m_id = id;
+        }
+    }
 }
 
 void Element::reindexID(ID oldID, ID newID) {

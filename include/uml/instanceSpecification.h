@@ -13,9 +13,20 @@ namespace UML{
 
     class InstanceSpecification : public PackageableElement , public DeployedArtifact, public DeploymentTarget {
         friend class UmlManager;
+        friend class Classifier;
         protected:
             Singleton<Classifier, InstanceSpecification> m_classifier = Singleton<Classifier, InstanceSpecification>(this);
-            Sequence<Slot> m_slots;
+            class RemoveClassifierProcedure : public AbstractSingletonProcedure<Classifier, InstanceSpecification> {
+                public:
+                    RemoveClassifierProcedure(InstanceSpecification* me) : AbstractSingletonProcedure<Classifier, InstanceSpecification>(me) {};
+                    void operator()(Classifier* el) const override;
+            };
+            class AddClassifierProcedure : public AbstractSingletonProcedure<Classifier, InstanceSpecification>{
+                public:
+                    AddClassifierProcedure(InstanceSpecification * me) : AbstractSingletonProcedure<Classifier, InstanceSpecification>(me) {};
+                    void operator()(Classifier* el) const override;
+            };
+            Sequence<Slot> m_slots = Sequence<Slot>(this);
             Singleton <ValueSpecification, InstanceSpecification> m_specification = Singleton<ValueSpecification, InstanceSpecification>(this);
             class RemoveSpecificationProcedure : public AbstractSingletonProcedure<ValueSpecification, InstanceSpecification> {
                 public:

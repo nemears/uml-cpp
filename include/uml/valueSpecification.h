@@ -7,7 +7,6 @@
 
 namespace UML {
     class ValueSpecification : public TypedElement , public PackageableElement {
-
         protected:
             ID m_owningSlotID;
             Slot* m_owningSlotPtr;

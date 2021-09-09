@@ -1,10 +1,21 @@
 #include "uml/instanceSpecification.h"
 #include "uml/slot.h"
 #include "uml/classifier.h"
-#include "uml/universalFunctions.h"
 #include "uml/valueSpecification.h"
 
 using namespace UML;
+
+void InstanceSpecification::RemoveClassifierProcedure::operator()(Classifier* el) const {
+    if (el->m_manager) {
+        el->removeReference(m_me->getID());
+    }
+}
+
+void InstanceSpecification::AddClassifierProcedure::operator()(Classifier* el) const {
+    if (el->m_manager) {
+        el->setReference(m_me);
+    }
+}
 
 void InstanceSpecification::RemoveSpecificationProcedure::operator()(ValueSpecification* el) const {
     if (m_me->getOwnedElements().count(el->getID())) {
@@ -49,6 +60,8 @@ void InstanceSpecification::setManager(UmlManager* manager) {
 
 InstanceSpecification::InstanceSpecification() {
     m_classifier.m_signature = &InstanceSpecification::m_classifier;
+    m_classifier.m_removeProcedures.push_back(new RemoveClassifierProcedure(this));
+    m_classifier.m_addProcedures.push_back(new AddClassifierProcedure(this));
     m_slots.addProcedures.push_back(new AddSlotFunctor(this));
     m_slots.removeProcedures.push_back(new RemoveSlotFunctor(this));
     m_specification.m_signature = &InstanceSpecification::m_specification;
@@ -61,6 +74,8 @@ InstanceSpecification::InstanceSpecification(const InstanceSpecification& inst) 
     m_classifier.m_me = this;
     m_classifier.m_removeProcedures.clear();
     m_classifier.m_addProcedures.clear();
+    m_classifier.m_removeProcedures.push_back(new RemoveClassifierProcedure(this));
+    m_classifier.m_addProcedures.push_back(new AddClassifierProcedure(this));
     m_specification = inst.m_specification;
     m_specification.m_me = this;
     m_specification.m_removeProcedures.clear();
@@ -68,6 +83,7 @@ InstanceSpecification::InstanceSpecification(const InstanceSpecification& inst) 
     m_specification.m_removeProcedures.push_back(new RemoveSpecificationProcedure(this));
     m_specification.m_addProcedures.push_back(new AddSpecificationProcedure(this));
     m_slots = inst.m_slots;
+    m_slots.m_el = this;
     m_slots.addProcedures.clear();
     m_slots.addProcedures.push_back(new AddSlotFunctor(this));
     m_slots.removeProcedures.clear();
@@ -145,6 +161,9 @@ bool InstanceSpecification::isSubClassOf(ElementType eType) const {
 
 void InstanceSpecification::restoreReleased(ID id, Element* released) {
     PackageableElement::restoreReleased(id, released);
+    if (m_classifier.id() == id) {
+        
+    }
 }
 
 void InstanceSpecification::referencingReleased(ID id) {

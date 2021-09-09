@@ -4,8 +4,22 @@
 
 using namespace UML;
 
+void TypedElement::RemoveTypeProcedure::operator()(Type* el) const {
+    if (el->m_node) {
+        el->removeReference(m_me->getID());
+    }
+}
+
+void TypedElement::AddTypeProcedure::operator()(Type* el) const {
+    if (el->m_node) {
+        el->setReference(m_me);
+    }
+}
+
 TypedElement::TypedElement() {
     m_type.m_signature = &TypedElement::m_type;
+    m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));
+    m_type.m_addProcedures.push_back(new AddTypeProcedure(this));
 }
 
 TypedElement::TypedElement(const TypedElement& el) {
@@ -13,6 +27,8 @@ TypedElement::TypedElement(const TypedElement& el) {
     m_type.m_me = this;
     m_type.m_removeProcedures.clear();
     m_type.m_addProcedures.clear();
+    m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));
+    m_type.m_addProcedures.push_back(new AddTypeProcedure(this));
 }
 
 Type* TypedElement::getType() {

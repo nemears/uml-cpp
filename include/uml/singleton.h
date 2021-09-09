@@ -7,6 +7,7 @@
 namespace UML {
 
     class Classifier;
+    class Type;
     template <class V, class W> class TemplateAbstractSequenceFunctor;
 
     template <class T = Element> class SingletonProcedure {
@@ -33,6 +34,7 @@ namespace UML {
         friend class UmlManager;
         template <class V, class W> friend class TemplateAbstractSequenceFunctor;
         friend class Classifier;
+        friend class Type;
 
         public:
             Singleton<T,U> U::*m_signature;

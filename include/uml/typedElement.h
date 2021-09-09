@@ -8,8 +8,21 @@ namespace UML{
     class Type;
 
     class TypedElement : virtual public NamedElement {
+
+        friend class Type;
+
         protected:
             Singleton<Type, TypedElement> m_type = Singleton<Type, TypedElement>(this);
+            class RemoveTypeProcedure : public AbstractSingletonProcedure<Type, TypedElement> {
+                public:
+                    RemoveTypeProcedure(TypedElement* me) : AbstractSingletonProcedure<Type, TypedElement>(me) {};
+                    void operator()(Type* el) const override;
+            };
+            class AddTypeProcedure : public AbstractSingletonProcedure<Type, TypedElement> {
+                public:
+                    AddTypeProcedure(TypedElement* me) : AbstractSingletonProcedure<Type, TypedElement>(me) {};
+                    void operator()(Type* el) const override;
+            };
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
         public:

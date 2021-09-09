@@ -65,6 +65,7 @@ Element(clazz) {
 
 void Classifier::reindexID(ID oldID, ID newID) {
     Namespace::reindexID(oldID, newID);
+    Type::reindexID(oldID, newID);
     if (m_node) {
         for (auto& ref : m_node->m_references) {    
             // TODO change to polymorphic?

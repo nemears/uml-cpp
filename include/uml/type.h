@@ -3,7 +3,15 @@
 #include "packageableElement.h"
 
 namespace UML{
+
+    class TypedElement;
+
     class Type : virtual public PackageableElement {
+
+        friend class TypedElement;
+        
+        protected:
+            void reindexID(ID oldID, ID newID) override;
         public:
             ElementType getElementType() const override;
             Type& operator=(Type&&) {

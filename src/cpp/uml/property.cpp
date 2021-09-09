@@ -353,6 +353,7 @@ Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement
     m_artifact.m_removeProcedures.push_back(new RemoveArtifactProcedure(this));
     m_artifact.m_addProcedures.push_back(new AddArtifactProcedure(this));
     m_redefinedProperties = prop.m_redefinedProperties;
+    m_redefinedProperties.m_el = this;
     m_redefinedProperties.addProcedures.clear();
     m_redefinedProperties.addChecks.clear();
     m_redefinedProperties.removeProcedures.clear();

@@ -241,7 +241,7 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
     prop.setDefaultValue(&defaultValue);
     pckg.getPackagedElements().add(b);
     pckg.getPackagedElements().add(s);
-    ASSERT_NO_THROW(m.mount(ymlPath + "/propertyTests"));
+    ASSERT_NO_THROW(m.mount(ymlPath + "propertyTests"));
     // TODO explore tree (probably don't need to)
     ASSERT_NO_THROW(m.release(prop.getID()));
     Property& prop2 = s.getOwnedAttributes().front();
@@ -289,4 +289,12 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
     ASSERT_EQ(&prop2.getRedefinedElements().front(), &redefined2);
     ASSERT_TRUE(redefined2.getType() != 0);
     ASSERT_EQ(redefined2.getType(), &m.get<Type>(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT")));
+    ASSERT_TRUE(redefined2.hasClass());
+    ASSERT_EQ(redefined2.getClassRef().getID(), b.getID());
+    ASSERT_TRUE(redefined2.hasStructuredClassifier());
+    ASSERT_EQ(redefined2.getStructuredClassifierRef().getID(), b.getID());
+    ASSERT_TRUE(redefined2.hasClassifier());
+    ASSERT_EQ(redefined2.getClassifierRef().getID(), b.getID());
+    ASSERT_TRUE(redefined2.hasFeaturingClassifier());
+    ASSERT_EQ(redefined2.getFeaturingClassifierRef().getID(), b.getID());
 }

@@ -92,7 +92,7 @@ namespace UML {
 
     // new sequence implementation
     template <class T> class Sequence {
-        friend class SequenceIterator<T>;
+        friend struct SequenceIterator<T>;
         friend class UmlManager;
         friend class Parsers::ParserMetaData;
         friend class Element;

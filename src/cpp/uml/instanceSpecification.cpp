@@ -56,7 +56,7 @@ InstanceSpecification::InstanceSpecification() {
     m_specification.m_addProcedures.push_back(new AddSpecificationProcedure(this));
 }
 
-InstanceSpecification::InstanceSpecification(const InstanceSpecification& inst) {
+InstanceSpecification::InstanceSpecification(const InstanceSpecification& inst) : PackageableElement(inst), DeploymentTarget(inst), DeployedArtifact(inst), ParameterableElement(inst), NamedElement(inst), Element(inst) {
     m_classifier = inst.m_classifier;
     m_classifier.m_me = this;
     m_classifier.m_removeProcedures.clear();

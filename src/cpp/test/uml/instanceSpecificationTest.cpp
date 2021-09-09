@@ -6,10 +6,15 @@
 #include "uml/instanceValue.h"
 #include "uml/property.h"
 #include "uml/slot.h"
+#include "uml/package.h"
+#include "test/yumlParsersTest.h"
 
 using namespace UML;
 
-class InstanceSpecificationTest : public ::testing::Test {};
+class InstanceSpecificationTest : public ::testing::Test {
+    public:
+        std::string ymlPath = YML_FILES_PATH;
+};
 
 TEST_F(InstanceSpecificationTest, setClassifierAsClass) {
     UmlManager m; // This won't work without manager
@@ -144,4 +149,24 @@ TEST_F(InstanceSpecificationTest, setAndRemoveSpecificationTest) {
     ASSERT_TRUE(inst.getSpecification() == 0);
     ASSERT_EQ(inst.getOwnedElements().size(), 0);
     ASSERT_TRUE(str.getOwner() == 0);    
+}
+
+TEST_F(InstanceSpecificationTest, reindexClassifierTest) {
+    UmlManager m;
+    Class c = m.create<Class>();
+    InstanceSpecification i = m.create<InstanceSpecification>();
+    Package root = m.create<Package>();
+    m.setRoot(&root);
+    root.getPackagedElements().add(c, i);
+    i.setClassifier(c);
+    m.mount(ymlPath + "instanceSpecificationTests");
+    ID id = ID::fromString("9nU_h2_riMLlgcg2FzNiGyvtbew3");
+    c.setID(id);
+    ASSERT_TRUE(i.hasClassifier());
+    ASSERT_TRUE(i.getClassifier());
+    ASSERT_EQ(c.getID(), i.getClassifier()->getID());
+    m.release(c);
+    ASSERT_TRUE(i.hasClassifier());
+    ASSERT_TRUE(i.getClassifier());
+    ASSERT_EQ(i.getClassifierRef().getID(), id);
 }

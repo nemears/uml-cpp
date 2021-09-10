@@ -218,7 +218,7 @@ void Property::AddRedefinedPropertyFunctor::operator()(Property& el) const {
             m_el->m_redefinitionContext.add(*m_el->getClassifier());
         }
     }
-
+    el.setReference(m_el);
     updateCopiedSequenceAddedTo(el, &Property::getRedefinedProperties);
 }
 
@@ -257,6 +257,7 @@ void Property::RemoveRedefinedPropertyFunctor::operator()(Property& el) const {
             m_el->m_redefinitionContext.add(*m_el->getClassifier());
         }
     }
+    el.removeReference(m_el->getID());
     updateCopiedSequenceRemovedFrom(el, &Property::getRedefinedProperties);
 }
 

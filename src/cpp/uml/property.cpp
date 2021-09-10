@@ -642,4 +642,9 @@ void Property::referencingReleased(ID id) {
         m_owningAssociation.release();
     }
     m_redefinedProperties.elementReleased(id);
+    if (m_node) {
+        for (auto& copy : m_node->m_copies) {
+            copy->as<Property>().m_redefinedProperties.m_rep[id] = 0;
+        }
+    }
 }

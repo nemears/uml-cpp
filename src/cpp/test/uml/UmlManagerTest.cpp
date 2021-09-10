@@ -185,6 +185,7 @@ TEST_F(UmlManagerTest, addToManagerAfterMountedTest) {
 TEST_F(UmlManagerTest, ManagerMountStressTest) {
     UmlManager m;
     Package& root = m.create<Package>();
+    ID rootID = root.getID();
     m.setRoot(&root);
     ASSERT_NO_THROW(m.mount(ymlPath + "umlManagerTests"));
     Package* pckg = &root;
@@ -194,5 +195,6 @@ TEST_F(UmlManagerTest, ManagerMountStressTest) {
         m.release(pckg->getID()); // release or segfault
         pckg = child;
     }
-    ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_MOUNT(root, ymlPath + "umlManagerTests"));
+    Package& root2 = m.get<Package>(rootID);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_MOUNT(root2, ymlPath + "umlManagerTests"));
 }

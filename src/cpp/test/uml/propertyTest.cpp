@@ -232,6 +232,7 @@ TEST_F(PropertyTest, reindexRedefinedPropertyTest) {
     ov.getRedefinedProperties().add(red);
     ID id = ID::fromString("cLvWpn5ofnVR_f2lob3ofVyLu0Fc");
     red.setID(id);
+    m.setRoot(&root);
     ASSERT_EQ(ov.getRedefinedProperties().size(), 1);
     ASSERT_EQ(ov.getRedefinedProperties().front().getID(), id);
     ASSERT_NO_THROW(ov.getRedefinedProperties().get(id));

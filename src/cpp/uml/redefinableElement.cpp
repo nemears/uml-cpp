@@ -4,10 +4,12 @@
 using namespace UML;
 
 void RedefinableElement::AddRedefinedElementFunctor::operator()(RedefinableElement& el) const {
+    el.setReference(m_el);
     updateCopiedSequenceAddedTo(el, &RedefinableElement::getRedefinedElements);
 }
 
 void RedefinableElement::RemoveRedefinedElementFunctor::operator()(RedefinableElement& el) const {
+    el.removeReference(m_el->getID());
     updateCopiedSequenceRemovedFrom(el, &RedefinableElement::getRedefinedElements);
 }
 
@@ -22,6 +24,23 @@ void RedefinableElement::RemoveRedefinitionContextFunctor::operator()(Classifier
 void RedefinableElement::setManager(UmlManager* manager) {
     m_redefinedElement.m_manager = manager;
     m_redefinitionContext.m_manager = manager;
+}
+
+void RedefinableElement::reindexID(ID oldID, ID newID) {
+    if (m_node) {
+        for (auto& id : m_node->m_referenceOrder) {
+            ManagerNode* refNode = m_node->m_references[id];
+            Element* ref = refNode->m_managerElementMemory;
+            if (ref->isSubClassOf(ElementType::REDEFINABLE_ELEMENT)) {
+                if (ref->as<RedefinableElement>().m_redefinedElement.count(oldID)) {
+                    ref->as<RedefinableElement>().m_redefinedElement.reindex(oldID, newID);
+                    for (auto& refCopy : refNode->m_copies) {
+                        refCopy->as<RedefinableElement>().m_redefinedElement.reindex(oldID, newID);
+                    }
+                }
+            }
+        }
+    }
 }
 
 RedefinableElement::RedefinableElement() {

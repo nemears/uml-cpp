@@ -10,10 +10,14 @@
 #include <uml/instanceSpecification.h>
 #include <uml/package.h>
 #include <test/umlTestUtil.h>
+#include "test/yumlParsersTest.h"
 
 using namespace UML;
 
-class PropertyTest : public ::testing::Test {};
+class PropertyTest : public ::testing::Test {
+    public:
+        std::string ymlPath = YML_FILES_PATH;
+};
 
 TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
     Property p;
@@ -210,4 +214,36 @@ TEST_F(PropertyTest, copyAndEditTest) {
     red2.getRedefinedProperties().add(og);
     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(red2, red, &Property::getDefaultValue, &TypedElement::getType, &Property::getClass, &Property::getClassifier, &Property::getStructuredClassifier, &Feature::getFeaturingClassifier, &NamedElement::getNamespace, &Element::getOwner));
     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(red2, red, &Property::getRedefinedProperties, &RedefinableElement::getRedefinedElements, &RedefinableElement::getRedefinitionContext, &NamedElement::getMemberNamespace));
+}
+
+TEST_F(PropertyTest, reindexRedefinedPropertyTest) {
+    UmlManager m;
+    Class b = m.create<Class>();
+    Class s = m.create<Class>();
+    Generalization g = m.create<Generalization>();
+    Property red = m.create<Property>();
+    Property ov = m.create<Property>(); // override
+    Package root = m.create<Package>();
+    s.getGeneralizations().add(g);
+    g.setGeneral(&b);
+    b.getOwnedAttributes().add(red);
+    s.getOwnedAttributes().add(ov);
+    root.getPackagedElements().add(b, s);
+    ov.getRedefinedProperties().add(red);
+    ID id = ID::fromString("cLvWpn5ofnVR_f2lob3ofVyLu0Fc");
+    red.setID(id);
+    ASSERT_EQ(ov.getRedefinedProperties().size(), 1);
+    ASSERT_EQ(ov.getRedefinedProperties().front().getID(), id);
+    ASSERT_NO_THROW(ov.getRedefinedProperties().get(id));
+    ASSERT_EQ(ov.getRedefinedElements().size(), 1);
+    ASSERT_EQ(ov.getRedefinedElements().front().getID(), id);
+    ASSERT_NO_THROW(ov.getRedefinedElements().get(id));
+    m.mount(ymlPath + "propertyTests");
+    m.release(red);
+    ASSERT_EQ(ov.getRedefinedProperties().size(), 1);
+    ASSERT_EQ(ov.getRedefinedProperties().front().getID(), id);
+    ASSERT_NO_THROW(ov.getRedefinedProperties().get(id));
+    ASSERT_EQ(ov.getRedefinedElements().size(), 1);
+    ASSERT_EQ(ov.getRedefinedElements().front().getID(), id);
+    ASSERT_NO_THROW(ov.getRedefinedElements().get(id));
 }

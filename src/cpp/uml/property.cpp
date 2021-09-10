@@ -166,6 +166,25 @@ void Property::reindexID(ID oldID, ID newID) {
         }
     }
 
+    if (m_node) {
+        for (auto& id : m_node->m_referenceOrder) {
+            ManagerNode* refNode = m_node->m_references[id];
+            Element* ref = refNode->m_managerElementMemory;
+            if (ref) {
+                if (ref->isSubClassOf(ElementType::PROPERTY)) {
+                    if (ref->as<Property>().m_redefinedProperties.count(oldID)) {
+                        ref->as<Property>().m_redefinedProperties.reindex(oldID, newID);
+                        for (auto& refCopy: refNode->m_copies) {
+                            refCopy->as<Property>().m_redefinedProperties.reindex(oldID, newID);
+                        }
+                    }
+                }
+            } else {
+                /** TODO: throw error **/
+            }
+        }
+    }
+
     Feature::reindexID(oldID, newID);
 }
 

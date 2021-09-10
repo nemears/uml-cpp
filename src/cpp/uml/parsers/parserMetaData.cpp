@@ -34,6 +34,7 @@ void applyFunctor(ParserMetaData& data, ID relEl, AbstractPostProcessFunctor* fu
         delete functor;
     } else if (data.m_manager->count(relEl)) {
         (*functor)(data.m_manager->get<>(relEl));
+        delete functor;
     } else {
         if (!data.postProcessFlag.count(relEl)) {
             data.postProcessFlag[relEl] = new vector<AbstractPostProcessFunctor*>;

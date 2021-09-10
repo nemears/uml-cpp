@@ -195,6 +195,6 @@ TEST_F(UmlManagerTest, ManagerMountStressTest) {
         m.release(pckg->getID()); // release or segfault
         pckg = child;
     }
-    Package& root2 = m.get<Package>(rootID);
+    Package& root2 = m.get<Package>(rootID); // try to only aquire root
     ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_MOUNT(root2, ymlPath + "umlManagerTests"));
 }

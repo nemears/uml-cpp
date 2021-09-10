@@ -20,7 +20,7 @@ namespace UML {
     class Property;
     class Feature;
 
-    template <class T = Element> class Sequence;
+    template <class T> class Sequence;
     template <class T> struct SequenceIterator;
     template <class T, class U> class Singleton;
     class Model;
@@ -126,6 +126,7 @@ namespace UML {
                 return *dynamic_cast<T*>(m_graph[id].m_managerElementMemory);
             };
             size_t count(ID id);
+            bool loaded(ID id);
             template <class T = Element> T& create() {
                 T* ret = new T;
                 ret->setManager(this);

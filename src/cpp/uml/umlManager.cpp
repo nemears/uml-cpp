@@ -43,6 +43,12 @@ size_t UmlManager::count(ID id) {
     return m_elements.count(id);
 }
 
+bool UmlManager::loaded(ID id) {
+    if (count(id)) {
+        return m_graph[id].m_managerElementMemory;
+    }
+}
+
 void UmlManager::reindex(ID oldID, ID newID) {
     if (m_elements.count(newID)) {
         // Element with this ID already exists, overwrite it with new one

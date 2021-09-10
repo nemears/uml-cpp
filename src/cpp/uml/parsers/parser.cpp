@@ -108,7 +108,12 @@ template <class T =Element> T& parseScalar(YAML::Node node, ParserMetaData& data
         std::string path = node.as<std::string>();
         std::string idStr = path.substr(path.find_last_of("/") + 1, path.find_last_of("/") + 29);
         if (isValidID(idStr)) {
-            return data.m_manager->get<T>(ID::fromString(idStr));
+            ID id = ID::fromString(idStr);
+            if (data.m_manager->loaded(id)) {
+                return data.m_manager->get<T>(id);
+            } else {
+                throw UmlParserException("TODO: fix: if it isn't loaded it will recursively call untill all of lower tree is loaded, aka bad.", data.m_path.string(), node);
+            }
         } else {
             throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);
         }

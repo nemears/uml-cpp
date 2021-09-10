@@ -91,7 +91,7 @@ namespace UML {
     template <class T = Element> struct SequenceIterator;
 
     // new sequence implementation
-    template <class T> class Sequence {
+    template <class T = Element> class Sequence {
         friend struct SequenceIterator<T>;
         friend class UmlManager;
         friend class Parsers::ParserMetaData;
@@ -193,7 +193,7 @@ namespace UML {
                     m_names.erase(oldName);
                 }
                 m_names[newName] = id;
-            }
+            };
 
             // internal functions
             void internalAdd(T& el) {

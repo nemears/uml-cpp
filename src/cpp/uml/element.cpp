@@ -633,5 +633,5 @@ void Element::referencingReleased(ID id) {
         m_ownerPtr = 0;
     }
 
-    m_ownedElements->elementReleased(id);
+    m_ownedElements->elementReleased(id, &Element::getOwnedElements);
 }

@@ -97,16 +97,6 @@ void RedefinableElement::restoreReleased(ID id, Element* released) {
 
 void RedefinableElement::referencingReleased(ID id) {
     NamedElement::referencingReleased(id);
-    m_redefinedElement.elementReleased(id);
-    m_redefinitionContext.elementReleased(id);
-    if (m_node) {
-        if (m_node->m_managerElementMemory != this) {
-            m_node->m_managerElementMemory->as<RedefinableElement>().m_redefinedElement.m_rep[id] = 0;
-        }
-        for (auto& copy : m_node->m_copies) {
-            if (copy != this) {
-                copy->as<RedefinableElement>().m_redefinedElement.m_rep[id] = 0;
-            }
-        }
-    }
+    m_redefinedElement.elementReleased(id, &RedefinableElement::getRedefinedElements);
+    m_redefinitionContext.elementReleased(id, &RedefinableElement::getRedefinitionContext);
 }

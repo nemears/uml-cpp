@@ -176,8 +176,8 @@ void Package::restoreReleased(ID id, Element* released) {
 
 void Package::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
-    m_packagedElements.elementReleased(id);
-    m_packageMerge.elementReleased(id);
-    m_profileApplications.elementReleased(id);
-    m_ownedStereotypes.elementReleased(id);
+    m_packagedElements.elementReleased(id, &Package::getPackagedElements);
+    m_packageMerge.elementReleased(id, &Package::getPackageMerge);
+    m_profileApplications.elementReleased(id, &Package::getProfileApplications);
+    m_ownedStereotypes.elementReleased(id, &Package::getOwnedStereotypes);
 }

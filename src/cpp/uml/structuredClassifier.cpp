@@ -130,7 +130,7 @@ void StructuredClassifier::restoreReleased(ID id, Element* released) {
 
 void StructuredClassifier::referencingReleased(ID id) {
     Classifier::referencingReleased(id);
-    m_ownedAttributes.elementReleased(id);
-    m_role.elementReleased(id);
-    m_parts.elementReleased(id);
+    m_ownedAttributes.elementReleased(id, &StructuredClassifier::getOwnedAttributes);
+    m_role.elementReleased(id, &StructuredClassifier::getRole);
+    m_parts.elementReleased(id, &StructuredClassifier::getParts);
 }

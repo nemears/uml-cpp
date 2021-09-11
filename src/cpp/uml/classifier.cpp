@@ -363,9 +363,9 @@ void Classifier::restoreReleased(ID id, Element* released) {
 void Classifier::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     PackageableElement::referencingReleased(id);
-    m_attributes.elementReleased(id);
-    m_features.elementReleased(id);
-    m_generalizations.elementReleased(id);
-    m_generals.elementReleased(id);
-    m_inheritedMembers.elementReleased(id);
+    m_attributes.elementReleased(id, &Classifier::getAttributes);
+    m_features.elementReleased(id, &Classifier::getFeatures);
+    m_generalizations.elementReleased(id, &Classifier::getGeneralizations);
+    m_generals.elementReleased(id, &Classifier::getGenerals);
+    m_inheritedMembers.elementReleased(id, &Classifier::getInheritedMembers);
 }

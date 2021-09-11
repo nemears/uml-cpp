@@ -72,8 +72,8 @@ void Activity::restoreReleased(ID id, Element* released) {
 
 void Activity::referencingReleased(ID id) {
     Behavior::referencingReleased(id);
-    m_nodes.elementReleased(id);
-    m_edges.elementReleased(id);
+    m_nodes.elementReleased(id, &Activity::getNodes);
+    m_edges.elementReleased(id, &Activity::getEdges);
 }
 
 Activity::Activity() {

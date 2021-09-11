@@ -225,14 +225,6 @@ namespace UML {
                 }
             };
 
-            void elementReleased(ID id) {
-                if (m_rep.count(id)) {
-                    m_rep[id] = 0;
-                } else {
-                    /** TODO: throw error **/
-                }
-            }
-
             template <class U = Element> void elementReleased(ID id, Sequence<T>& (U::*signature)()) {
                 if (m_el->m_node) {
                     if (m_rep.count(id)) {

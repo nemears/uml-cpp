@@ -95,6 +95,6 @@ void Namespace::restoreReleased(ID id, Element* released) {
 
 void Namespace::referencingReleased(ID id) {
     NamedElement::referencingReleased(id);
-    m_ownedMembers.elementReleased(id);
-    m_members.elementReleased(id);
+    m_ownedMembers.elementReleased(id, &Namespace::getOwnedMembers);
+    m_members.elementReleased(id, &Namespace::getMembers);
 }

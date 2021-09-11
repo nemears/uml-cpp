@@ -207,7 +207,7 @@ void NamedElement::restoreReleased(ID id, Element* released) {
 
 void NamedElement::referencingReleased(ID id) {
     Element::referencingReleased(id);
-    m_memberNamespace->elementReleased(id);
+    m_memberNamespace->elementReleased(id, &NamedElement::getMemberNamespace);
     if (m_namespace.id() == id) {
         m_namespace.release();
     }

@@ -132,6 +132,6 @@ void Class::restoreReleased(ID id, Element* released) {
 
 void Class::referencingReleased(ID id) {
     StructuredClassifier::referencingReleased(id);
-    m_ownedOperations.elementReleased(id);
-    m_nestedClassifiers.elementReleased(id);
+    m_ownedOperations.elementReleased(id, &Class::getOwnedOperations);
+    m_nestedClassifiers.elementReleased(id, &Class::getNestedClassifiers);
 }

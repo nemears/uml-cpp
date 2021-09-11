@@ -7,7 +7,6 @@
 
 namespace UML {
 
-    // forward declaration
     class ActivityNode;
     class Activity;
 
@@ -49,7 +48,17 @@ namespace UML {
                     AddTargetProcedure(ActivityEdge* me) : AbstractSingletonProcedure<ActivityNode, ActivityEdge>(me) {};
                     void operator()(ActivityNode* el) const override;
             };
-            ValueSpecification* m_guard;
+            Singleton<ValueSpecification, ActivityEdge> m_guard = Singleton<ValueSpecification, ActivityEdge>(this);
+            class RemoveGuardProcedure : public AbstractSingletonProcedure<ValueSpecification, ActivityEdge> {
+                public:
+                    RemoveGuardProcedure(ActivityEdge* me) : AbstractSingletonProcedure<ValueSpecification, ActivityEdge>(me) {};
+                    void operator()(ValueSpecification* el) const override;
+            };
+            class AddGuardProcedure : public AbstractSingletonProcedure<ValueSpecification, ActivityEdge> {
+                public:
+                    AddGuardProcedure(ActivityEdge* me) : AbstractSingletonProcedure<ValueSpecification, ActivityEdge>(me) {};
+                    void operator()(ValueSpecification* el) const override;
+            };
             void reindexID(ID oldID, ID newID) override;
             // void reindexName(std::string oldName, std::string newName) override;
             void restoreReleased(ID id, Element* released) override;
@@ -74,7 +83,10 @@ namespace UML {
             void setTarget(ActivityNode* target);
             void setTarget(ActivityNode& target);
             ValueSpecification* getGuard();
+            ValueSpecification& getGuardRef();
+            bool hasGuard() const;
             void setGuard(ValueSpecification* guard);
+            void setGuard(ValueSpecification& guard);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

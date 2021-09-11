@@ -41,6 +41,18 @@ void ActivityEdge::AddTargetProcedure::operator()(ActivityNode* el) const {
     }
 }
 
+void ActivityEdge::RemoveGuardProcedure::operator()(ValueSpecification* el) const {
+    if (m_me->getOwnedElements().count(el->getID())) {
+        m_me->getOwnedElements().internalRemove(*el);
+    }
+}
+
+void ActivityEdge::AddGuardProcedure::operator()(ValueSpecification* el) const {
+    if (!m_me->getOwnedElements().count(el->getID())) {
+        m_me->getOwnedElements().internalAdd(*el);
+    }
+}
+
 ActivityEdge::ActivityEdge() {
     m_activity.m_signature = &ActivityEdge::m_activity;
     m_activity.m_removeProcedures.push_back(new RemoveActivityProcedure(this));
@@ -51,7 +63,9 @@ ActivityEdge::ActivityEdge() {
     m_target.m_signature = &ActivityEdge::m_target;
     m_target.m_removeProcedures.push_back(new RemoveTargetProcedure(this));
     m_target.m_addProcedures.push_back(new AddTargetProcedure(this));
-    m_guard = 0;
+    m_guard.m_signature = &ActivityEdge::m_guard;
+    m_guard.m_removeProcedures.push_back(new RemoveGuardProcedure(this));
+    m_guard.m_addProcedures.push_back(new AddGuardProcedure(this));
 }
 
 ActivityEdge::ActivityEdge(const ActivityEdge& rhs) : RedefinableElement(rhs) , NamedElement(rhs), Element(rhs) {
@@ -73,6 +87,12 @@ ActivityEdge::ActivityEdge(const ActivityEdge& rhs) : RedefinableElement(rhs) , 
     m_target.m_addProcedures.clear();
     m_target.m_removeProcedures.push_back(new RemoveTargetProcedure(this));
     m_target.m_addProcedures.push_back(new AddTargetProcedure(this));
+    m_guard = rhs.m_guard;
+    m_guard.m_me = this;
+    m_guard.m_removeProcedures.clear();
+    m_guard.m_addProcedures.clear();
+    m_guard.m_removeProcedures.push_back(new RemoveGuardProcedure(this));
+    m_guard.m_addProcedures.push_back(new AddGuardProcedure(this));
 }
 
 ActivityEdge::~ActivityEdge() {
@@ -171,11 +191,23 @@ void ActivityEdge::setTarget(ActivityNode& target) {
 }
 
 ValueSpecification* ActivityEdge::getGuard() {
-    return m_guard;
+    return m_guard.get();
+}
+
+ValueSpecification& ActivityEdge::getGuardRef() {
+    return m_guard.getRef();
+}
+
+bool ActivityEdge::hasGuard() const {
+    return m_guard.has();
 }
 
 void ActivityEdge::setGuard(ValueSpecification* guard) {
-    m_guard = guard;
+    m_guard.set(guard);
+}
+
+void ActivityEdge::setGuard(ValueSpecification& guard) {
+    m_guard.set(guard);
 }
 
 ElementType ActivityEdge::getElementType() const {
@@ -206,5 +238,8 @@ void ActivityEdge::referencingReleased(ID id) {
     }
     if (m_target.id() == id) {
         m_target.release();
+    }
+    if (m_guard.id() == id) {
+        m_guard.release();
     }
 }

@@ -17,11 +17,25 @@ void ActivityEdge::AddActivityProcedure::operator()(Activity* el) const {
     }
 }
 
+void ActivityEdge::RemoveSourceProcedure::operator()(ActivityNode* el) const {
+    if (el->getOutgoing().count(m_me->getID())) {
+        el->getOutgoing().remove(*m_me);
+    }
+}
+
+void ActivityEdge::AddSourceProcedure::operator()(ActivityNode* el) const {
+    if (!el->getOutgoing().count(m_me->getID())) {
+        el->getOutgoing().add(*m_me);
+    }
+}
+
 ActivityEdge::ActivityEdge() {
     m_activity.m_signature = &ActivityEdge::m_activity;
     m_activity.m_removeProcedures.push_back(new RemoveActivityProcedure(this));
     m_activity.m_addProcedures.push_back(new AddActivityProcedure(this));
-    m_source = 0;
+    m_source.m_signature = &ActivityEdge::m_source;
+    m_source.m_removeProcedures.push_back(new RemoveSourceProcedure(this));
+    m_source.m_addProcedures.push_back(new AddSourceProcedure(this));
     m_target = 0;
     m_guard = 0;
 }
@@ -33,6 +47,12 @@ ActivityEdge::ActivityEdge(const ActivityEdge& rhs) : RedefinableElement(rhs) , 
     m_activity.m_removeProcedures.clear();
     m_activity.m_removeProcedures.push_back(new RemoveActivityProcedure(this));
     m_activity.m_addProcedures.push_back(new AddActivityProcedure(this));
+    m_source = rhs.m_source;
+    m_source.m_me = this;
+    m_source.m_removeProcedures.clear();
+    m_source.m_addProcedures.clear();
+    m_source.m_removeProcedures.push_back(new RemoveSourceProcedure(this));
+    m_source.m_addProcedures.push_back(new AddSourceProcedure(this));
 }
 
 ActivityEdge::~ActivityEdge() {
@@ -44,8 +64,8 @@ void ActivityEdge::reindexID(ID oldID, ID newID) {
         m_target->getIncoming().reindex(oldID, newID);
     }
 
-    if (m_source) {
-        m_source->getOutgoing().reindex(oldID, newID);
+    if (m_source.has()) {
+        m_source.getRef().getOutgoing().reindex(oldID, newID);
     }
     if (m_activity.has()) {
         m_activity.getRef().getEdges().reindex(oldID, newID);
@@ -91,19 +111,23 @@ void ActivityEdge::setActivity(Activity& activity) {
 }
 
 ActivityNode* ActivityEdge::getSource() {
-    return m_source;
+    return m_source.get();
+}
+
+ActivityNode& ActivityEdge::getSourceRef() {
+    return m_source.getRef();
+}
+
+bool ActivityEdge::hasSource() const {
+    return m_source.has();
 }
 
 void ActivityEdge::setSource(ActivityNode* source) {
-    if (m_source) {
-        if (dynamic_cast<ActivityNode*>(m_source)->getOutgoing().count(m_id)) {
-            dynamic_cast<ActivityNode*>(m_source)->getOutgoing().remove(*this);
-        }
-    }
-    m_source = source;
-    if (!m_source->getOutgoing().count(m_id)) {
-        m_source->getOutgoing().add(*this);
-    }
+    m_source.set(source);
+}
+
+void ActivityEdge::setSource(ActivityNode& source) {
+    m_source.set(source);
 }
 
 ActivityNode* ActivityEdge::getTarget() {
@@ -152,5 +176,8 @@ void ActivityEdge::restoreReleased(ID id, Element* released) {
 void ActivityEdge::referencingReleased(ID id) {
     if (m_activity.id() == id) {
         m_activity.release();
+    }
+    if (m_source.id() == id) {
+        m_source.release();
     }
 }

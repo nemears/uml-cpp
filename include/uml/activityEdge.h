@@ -27,7 +27,17 @@ namespace UML {
                     AddActivityProcedure(ActivityEdge* me) : AbstractSingletonProcedure<Activity, ActivityEdge>(me) {};
                     void operator()(Activity* el) const override;
              };
-            ActivityNode* m_source;
+            Singleton<ActivityNode, ActivityEdge> m_source = Singleton<ActivityNode, ActivityEdge>(this);
+            class RemoveSourceProcedure : public AbstractSingletonProcedure<ActivityNode, ActivityEdge> {
+                public:
+                    RemoveSourceProcedure(ActivityEdge* me) : AbstractSingletonProcedure<ActivityNode, ActivityEdge>(me) {};
+                    void operator()(ActivityNode* el) const override;
+            };
+            class AddSourceProcedure : public AbstractSingletonProcedure<ActivityNode, ActivityEdge> {
+                public:
+                    AddSourceProcedure(ActivityEdge* me) : AbstractSingletonProcedure<ActivityNode, ActivityEdge>(me) {};
+                    void operator()(ActivityNode* el) const override;
+            };
             ActivityNode* m_target;
             ValueSpecification* m_guard;
             void reindexID(ID oldID, ID newID) override;
@@ -44,7 +54,10 @@ namespace UML {
             void setActivity(Activity& activity);
             void setActivity(Activity* activity);
             ActivityNode* getSource();
+            ActivityNode& getSourceRef();
+            bool hasSource() const;
             void setSource(ActivityNode* source);
+            void setSource(ActivityNode& source);
             ActivityNode* getTarget();
             void setTarget(ActivityNode* target);
             ValueSpecification* getGuard();

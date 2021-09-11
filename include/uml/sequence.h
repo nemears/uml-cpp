@@ -369,6 +369,7 @@ namespace UML {
                 return *m_rep[m_order.back()];
             };
             size_t count(ID id) { return m_rep.count(id); };
+            size_t count(T& el) { return m_rep.count(el.getID()); }
 
             SequenceIterator<T> begin() { return SequenceIterator(this, m_order.begin()); };
             SequenceIterator<T> end() { return SequenceIterator(this, m_order.end()); };

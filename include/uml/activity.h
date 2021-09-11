@@ -1,17 +1,27 @@
 #ifndef ACTIVITY_H
 #define ACTIVITY_H
 #include "behavior.h"
-#include "activityNode.h"
-#include "activityEdge.h"
 
 namespace UML {
+
+    class ActivityNode;
+    class ActivityEdge;
+
     class Activity : public Behavior {
+
+        friend class UmlManager;
+
         protected:
-            Sequence<ActivityNode> m_nodes;
-            Sequence<ActivityEdge> m_edges;
+            Sequence<ActivityNode> m_nodes = Sequence<ActivityNode>(this);
+            Sequence<ActivityEdge> m_edges = Sequence<ActivityEdge>(this);
             class AddNodeFunctor : public TemplateAbstractSequenceFunctor<ActivityNode,Activity> {
                 public:
                     AddNodeFunctor(Activity* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(ActivityNode& el) const override;
+            };
+            class RemoveNodeFunctor : public TemplateAbstractSequenceFunctor<ActivityNode, Activity> {
+                public:
+                    RemoveNodeFunctor(Activity* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(ActivityNode& el) const override;
             };
             class AddEdgeFunctor : public TemplateAbstractSequenceFunctor<ActivityEdge,Activity> {
@@ -19,9 +29,19 @@ namespace UML {
                     AddEdgeFunctor(Activity* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(ActivityEdge& el) const override;
             };
+            class RemoveEdgeFunctor : public TemplateAbstractSequenceFunctor<ActivityEdge, Activity> {
+                public:
+                    RemoveEdgeFunctor(Activity* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(ActivityEdge& el) const override;
+            };
+            void setManager(UmlManager* manager) override;
+            void reindexID(ID oldID, ID newID) override;
+            void restoreReleased(ID id, Element* released) override;
+            void referencingReleased(ID id) override;
         public:
             Activity();
-            ~Activity();
+            Activity(const Activity& rhs);
+            virtual ~Activity();
             Sequence<ActivityNode>& getNodes();
             Sequence<ActivityEdge>& getEdges();
             ElementType getElementType() const override;

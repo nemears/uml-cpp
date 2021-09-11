@@ -29,6 +29,18 @@ void ActivityEdge::AddSourceProcedure::operator()(ActivityNode* el) const {
     }
 }
 
+void ActivityEdge::RemoveTargetProcedure::operator()(ActivityNode* el) const {
+    if (el->getIncoming().count(m_me->getID())) {
+        el->getIncoming().remove(*m_me);
+    }
+}
+
+void ActivityEdge::AddTargetProcedure::operator()(ActivityNode* el) const {
+    if (!el->getIncoming().count(m_me->getID())) {
+        el->getIncoming().add(*m_me);
+    }
+}
+
 ActivityEdge::ActivityEdge() {
     m_activity.m_signature = &ActivityEdge::m_activity;
     m_activity.m_removeProcedures.push_back(new RemoveActivityProcedure(this));
@@ -36,7 +48,9 @@ ActivityEdge::ActivityEdge() {
     m_source.m_signature = &ActivityEdge::m_source;
     m_source.m_removeProcedures.push_back(new RemoveSourceProcedure(this));
     m_source.m_addProcedures.push_back(new AddSourceProcedure(this));
-    m_target = 0;
+    m_target.m_signature = &ActivityEdge::m_target;
+    m_target.m_removeProcedures.push_back(new RemoveTargetProcedure(this));
+    m_target.m_addProcedures.push_back(new AddTargetProcedure(this));
     m_guard = 0;
 }
 
@@ -53,6 +67,12 @@ ActivityEdge::ActivityEdge(const ActivityEdge& rhs) : RedefinableElement(rhs) , 
     m_source.m_addProcedures.clear();
     m_source.m_removeProcedures.push_back(new RemoveSourceProcedure(this));
     m_source.m_addProcedures.push_back(new AddSourceProcedure(this));
+    m_target = rhs.m_target;
+    m_target.m_me = this;
+    m_target.m_removeProcedures.clear();
+    m_target.m_addProcedures.clear();
+    m_target.m_removeProcedures.push_back(new RemoveTargetProcedure(this));
+    m_target.m_addProcedures.push_back(new AddTargetProcedure(this));
 }
 
 ActivityEdge::~ActivityEdge() {
@@ -60,8 +80,8 @@ ActivityEdge::~ActivityEdge() {
 }
 
 void ActivityEdge::reindexID(ID oldID, ID newID) {
-    if (m_target) {
-        m_target->getIncoming().reindex(oldID, newID);
+    if (m_target.has()) {
+        m_target.getRef().getIncoming().reindex(oldID, newID);
     }
 
     if (m_source.has()) {
@@ -131,19 +151,23 @@ void ActivityEdge::setSource(ActivityNode& source) {
 }
 
 ActivityNode* ActivityEdge::getTarget() {
-    return m_target;
+    return m_target.get();
+}
+
+ActivityNode& ActivityEdge::getTargetRef() {
+    return m_target.getRef();
+}
+
+bool ActivityEdge::hasTarget() const {
+    return m_target.has();
 }
 
 void ActivityEdge::setTarget(ActivityNode* target) {
-    if (m_target) {
-        if (dynamic_cast<ActivityNode*>(m_target)->getIncoming().count(m_id)) {
-            dynamic_cast<ActivityNode*>(m_target)->getIncoming().remove(*this);
-        }
-    }
-    m_target = target;
-    if (!m_target->getIncoming().count(m_id)) {
-        m_target->getIncoming().add(*this);
-    }
+    m_target.set(target);
+}
+
+void ActivityEdge::setTarget(ActivityNode& target) {
+    m_target.set(target);
 }
 
 ValueSpecification* ActivityEdge::getGuard() {
@@ -179,5 +203,8 @@ void ActivityEdge::referencingReleased(ID id) {
     }
     if (m_source.id() == id) {
         m_source.release();
+    }
+    if (m_target.id() == id) {
+        m_target.release();
     }
 }

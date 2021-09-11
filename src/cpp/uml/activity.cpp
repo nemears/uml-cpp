@@ -83,7 +83,7 @@ Activity::Activity() {
     m_edges.removeProcedures.push_back(new RemoveEdgeFunctor(this));
 }
 
-Activity::Activity(const Activity& rhs) {
+Activity::Activity(const Activity& rhs) : Behavior(rhs), Classifier(rhs), PackageableElement(rhs), NamedElement(rhs), Element(rhs){
     m_nodes = rhs.m_nodes;
     m_nodes.m_el = this;
     m_nodes.removeProcedures.clear();

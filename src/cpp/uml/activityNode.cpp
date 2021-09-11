@@ -32,8 +32,8 @@ void ActivityNode::referencingReleased(ID id) {
     if (m_activity.id() == id) {
         m_activity.release();
     }
-    m_incoming.elementReleased(id);
-    m_outgoing.elementReleased(id);
+    m_incoming.elementReleased<ActivityNode>(id, &ActivityNode::getIncoming);
+    m_outgoing.elementReleased<ActivityNode>(id, &ActivityNode::getOutgoing);
 }
 
 ActivityNode::ActivityNode() {

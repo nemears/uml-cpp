@@ -10,35 +10,48 @@ class ActivityEdgeTest : public ::testing::Test {
 };
 
 TEST_F(ActivityEdgeTest, GetNullTargetTest) {
-    ActivityEdge a;
+    UmlManager m;
+    ActivityEdge a = m.create<ActivityEdge>();
     ASSERT_TRUE(a.getTarget() == NULL);
 }
 
 TEST_F(ActivityEdgeTest, GetNullSourceTest) {
-    ActivityEdge a;
+    UmlManager m;
+    ActivityEdge a = m.create<ActivityEdge>();
     ASSERT_TRUE(a.getSource() == NULL);
 }
 
 TEST_F(ActivityEdgeTest, SetRegularTargetTest) {
-    ActivityEdge e;
-    ActivityNode n;
-    e.setTarget(&n);
-    ASSERT_TRUE(e.getTarget()->getID() == n.getID());
+    UmlManager m;
+    ActivityEdge e = m.create<ActivityEdge>();
+    ActivityNode n = m.create<ActivityNode>();
+    e.setTarget(n);
+    ASSERT_TRUE(e.hasTarget());
+    ASSERT_TRUE(e.getTarget());
+    ASSERT_EQ(e.getTargetRef(), n);
+    ASSERT_EQ(n.getIncoming().size(), 1);
+    ASSERT_EQ(n.getIncoming().front(), e);
 }
 
 TEST_F(ActivityEdgeTest, SetRegularSourceTest) {
-    ActivityEdge e;
-    ActivityNode n;
+    UmlManager m;
+    ActivityEdge e = m.create<ActivityEdge>();
+    ActivityNode n = m.create<ActivityNode>();
     e.setSource(&n);
-    ASSERT_TRUE(e.getSource()->getID() == n.getID());
+    ASSERT_TRUE(e.hasSource());
+    ASSERT_TRUE(e.getSource());
+    ASSERT_EQ(e.getSourceRef(), n);
+    ASSERT_EQ(n.getOutgoing().size(), 1);
+    ASSERT_EQ(n.getOutgoing().front(), e);
 }
 
 TEST_F(ActivityEdgeTest, reindexID_Test) {
-    Activity a;
-    ActivityEdge e;
-    ActivityNode n;
-    e.setSource(&n);
-    e.setTarget(&n);
+    UmlManager m;
+    Activity a = m.create<Activity>();
+    ActivityEdge e = m.create<ActivityEdge>();
+    ActivityNode n = m.create<ActivityNode>();
+    e.setSource(n);
+    e.setTarget(n);
     a.getNodes().add(n);
     a.getEdges().add(e);
     e.setID("c3rcWoyTgxLfFl5jf2Ms6CMa_sWe");

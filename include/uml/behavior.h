@@ -26,6 +26,7 @@ namespace UML {
             };
         public:
             Behavior();
+            Behavior(const Behavior& rhs);
             virtual ~Behavior();
             Sequence<Parameter>& getParameters();
             BehavioralFeature* getSpecification();

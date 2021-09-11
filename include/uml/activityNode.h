@@ -9,6 +9,9 @@ namespace UML {
     class ActivityEdge;
 
     class ActivityNode : virtual public RedefinableElement {
+
+        friend class UmlManager;
+
         protected:
             Singleton<Activity, ActivityNode> m_activity = Singleton<Activity, ActivityNode>(this);
             class RemoveActivityProcedure : public AbstractSingletonProcedure<Activity, ActivityNode> {

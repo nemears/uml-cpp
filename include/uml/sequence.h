@@ -233,6 +233,17 @@ namespace UML {
                 }
             }
 
+            template <class U = Element> void elementReleased(ID id, Sequence<T>& (U::*signature)()) {
+                if (m_el->m_node) {
+                    if (m_rep.count(id)) {
+                        (m_el->m_node->m_managerElementMemory->as<U>().*signature)().m_rep[id] = 0;
+                    }
+                    for (auto& copy : m_el->m_node->m_copies) {
+                        (copy->as<U>().*signature)().m_rep[id] = 0;
+                    }
+                }
+            }
+
             void internalRemove(T& el) {
                 m_order.erase(std::remove(m_order.begin(), m_order.end(), el.getID()), m_order.end()) - m_order.begin();
                 m_rep.erase(el.getID());

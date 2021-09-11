@@ -49,6 +49,15 @@ Behavior::Behavior() {
     m_behavioredClassifierPtr = 0;
 }
 
+Behavior::Behavior(const Behavior& rhs) : Class(rhs), Classifier(rhs), PackageableElement(rhs), NamedElement(rhs), Element(rhs) {
+    m_parameters = rhs.m_parameters;
+    m_parameters.m_el = this;
+    m_parameters.addProcedures.clear();
+    m_parameters.removeProcedures.clear();
+    m_parameters.addProcedures.push_back(new AddParameterFunctor(this));
+    m_parameters.removeProcedures.push_back(new RemoveParameterFunctor(this));
+}
+
 Behavior::~Behavior() {
     
 }

@@ -643,8 +643,13 @@ void Property::referencingReleased(ID id) {
     }
     m_redefinedProperties.elementReleased(id);
     if (m_node) {
+        if (m_node->m_managerElementMemory != this) {
+            m_node->m_managerElementMemory->as<Property>().m_redefinedProperties.m_rep[id] = 0;
+        }
         for (auto& copy : m_node->m_copies) {
-            copy->as<Property>().m_redefinedProperties.m_rep[id] = 0;
+            if (copy != this) {
+                copy->as<Property>().m_redefinedProperties.m_rep[id] = 0;
+            }
         }
     }
 }

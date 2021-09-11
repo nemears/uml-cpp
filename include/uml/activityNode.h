@@ -1,18 +1,28 @@
 #ifndef ACTIVITYNODE_H
 #define ACTIVITYNODE_H
 
-#include "namedElement.h"
-#include "activityEdge.h"
+#include "redefinableElement.h"
 
 namespace UML {
 
     class Activity;
+    class ActivityEdge;
 
-    class ActivityNode : virtual public NamedElement {
+    class ActivityNode : virtual public RedefinableElement {
         protected:
-            Activity* m_activity;
-            Sequence<ActivityEdge> m_incoming;
-            Sequence<ActivityEdge> m_outgoing;
+            Singleton<Activity, ActivityNode> m_activity = Singleton<Activity, ActivityNode>(this);
+            class RemoveActivityProcedure : public AbstractSingletonProcedure<Activity, ActivityNode> {
+                public:
+                    RemoveActivityProcedure(ActivityNode* me) : AbstractSingletonProcedure<Activity, ActivityNode>(me) {};
+                    void operator()(Activity* el) const override;
+            };
+            class AddActivityProcedure : public AbstractSingletonProcedure<Activity, ActivityNode> {
+                public:
+                    AddActivityProcedure(ActivityNode* me) : AbstractSingletonProcedure<Activity, ActivityNode>(me) {};
+                    void operator()(Activity* el) const override;
+            };
+            Sequence<ActivityEdge> m_incoming = Sequence<ActivityEdge>(this);
+            Sequence<ActivityEdge> m_outgoing = Sequence<ActivityEdge>(this);
             void reindexID(ID oldID, ID newID) override;
             // void reindexName(std::string oldName, std::string newName) override;
             class AddIncomingFunctor : public TemplateAbstractSequenceFunctor<ActivityEdge,ActivityNode> {
@@ -20,9 +30,19 @@ namespace UML {
                     AddIncomingFunctor(ActivityNode* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(ActivityEdge& el) const override;
             };
+            class RemoveIncomingFunctor : public TemplateAbstractSequenceFunctor<ActivityEdge, ActivityNode> {
+                public:
+                    RemoveIncomingFunctor(ActivityNode* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(ActivityEdge& el) const override;
+            };
             class AddOutgoingFunctor : public TemplateAbstractSequenceFunctor<ActivityEdge,ActivityNode> {
                 public:
                     AddOutgoingFunctor(ActivityNode* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(ActivityEdge& el) const override;
+            };
+            class RemoveOutgoingFunctor : public TemplateAbstractSequenceFunctor<ActivityEdge, ActivityNode> {
+                public:
+                    RemoveOutgoingFunctor(ActivityNode* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(ActivityEdge& el) const override;
             };
             class CheckIncomingFunctor : public TemplateAbstractSequenceFunctor<ActivityEdge,ActivityNode> {
@@ -35,14 +55,21 @@ namespace UML {
                     CheckOutgoingFunctor(ActivityNode* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(ActivityEdge& el) const override;
             };
+            void setManager(UmlManager* manager) override;
+            void restoreReleased(ID id, Element* released) override;
+            void referencingReleased(ID id) override;
         public:
             ActivityNode();
-            ~ActivityNode();
+            ActivityNode(const ActivityNode& rhs);
+            virtual ~ActivityNode();
             Sequence<ActivityEdge>& getIncoming();
             Sequence<ActivityEdge>& getOutgoing();
             ElementType getElementType() const override;
             Activity* getActivity();
+            Activity& getActivityRef();
+            bool hasActivity() const;
             void setActivity(Activity* activity);
+            void setActivity(Activity& activity);
             virtual bool isObjectNode();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

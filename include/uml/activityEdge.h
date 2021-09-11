@@ -13,6 +13,7 @@ namespace UML {
     class ActivityEdge : public RedefinableElement {
 
         friend class Activity;
+        friend class ActivityNode;
 
         protected:
             Singleton<Activity, ActivityEdge> m_activity = Singleton<Activity, ActivityEdge>(this);

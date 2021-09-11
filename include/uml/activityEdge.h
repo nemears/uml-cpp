@@ -1,7 +1,7 @@
 #ifndef ACTIVITYEDGE_H
 #define ACTIVITYEDGE_H
 
-#include "namedElement.h"
+#include "redefinableElement.h"
 #include "valueSpecification.h"
 #include "sequence.h"
 
@@ -11,16 +11,37 @@ namespace UML {
     class ActivityNode;
     class Activity;
 
-    class ActivityEdge : public NamedElement {
+    class ActivityEdge : public RedefinableElement {
+
+        friend class Activity;
+
         protected:
-            Activity* m_activity;
+            Singleton<Activity, ActivityEdge> m_activity = Singleton<Activity, ActivityEdge>(this);
+            class RemoveActivityProcedure : public AbstractSingletonProcedure<Activity, ActivityEdge> {
+                public:
+                    RemoveActivityProcedure(ActivityEdge* me) : AbstractSingletonProcedure<Activity, ActivityEdge>(me) {};
+                    void operator()(Activity* el) const override;
+            };
+            class AddActivityProcedure : public AbstractSingletonProcedure<Activity, ActivityEdge> {
+                public:
+                    AddActivityProcedure(ActivityEdge* me) : AbstractSingletonProcedure<Activity, ActivityEdge>(me) {};
+                    void operator()(Activity* el) const override;
+             };
             ActivityNode* m_source;
             ActivityNode* m_target;
             ValueSpecification* m_guard;
             void reindexID(ID oldID, ID newID) override;
             // void reindexName(std::string oldName, std::string newName) override;
+            void restoreReleased(ID id, Element* released) override;
+            void referencingReleased(ID id) override;
         public:
+            ActivityEdge();
+            ActivityEdge(const ActivityEdge& rhs);
+            virtual ~ActivityEdge();
             Activity* getActivity();
+            Activity& getActivityRef();
+            bool hasActivity() const;
+            void setActivity(Activity& activity);
             void setActivity(Activity* activity);
             ActivityNode* getSource();
             void setSource(ActivityNode* source);
@@ -28,12 +49,6 @@ namespace UML {
             void setTarget(ActivityNode* target);
             ValueSpecification* getGuard();
             void setGuard(ValueSpecification* guard);
-            ActivityEdge() {
-                m_activity = 0;
-                m_source = 0;
-                m_target = 0;
-                m_guard = 0;
-            }
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

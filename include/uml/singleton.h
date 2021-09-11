@@ -169,6 +169,22 @@ namespace UML {
                     }
                 }
             };
+
+            void reindex(ID oldID, ID newID) {
+                if (m_id == oldID) {
+                    m_id = newID;
+                    if (m_me->m_node) {
+                        if (m_me->m_node->m_managerElementMemory != m_me) {
+                            (m_me->m_node->m_managerElementMemory->template as<U>().*m_signature).m_id = newID;
+                        }
+                        for (auto& copy : m_me->m_node->m_copies) {
+                            if (copy != m_me) {
+                                (copy->template as<U>().* m_signature).m_id = newID;
+                            }
+                        }
+                    }
+                }
+            };
     };
 }
 

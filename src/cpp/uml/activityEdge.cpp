@@ -5,6 +5,40 @@
 using namespace std;
 using namespace UML;
 
+void ActivityEdge::RemoveActivityProcedure::operator()(Activity* el) const {
+    if (el->getEdges().count(m_me->getID())) {
+        el->getEdges().remove(*m_me);
+    }
+}
+
+void ActivityEdge::AddActivityProcedure::operator()(Activity* el) const {
+    if (!el->getEdges().count(m_me->getID())) {
+        el->getEdges().add(*m_me);
+    }
+}
+
+ActivityEdge::ActivityEdge() {
+    m_activity.m_signature = &ActivityEdge::m_activity;
+    m_activity.m_removeProcedures.push_back(new RemoveActivityProcedure(this));
+    m_activity.m_addProcedures.push_back(new AddActivityProcedure(this));
+    m_source = 0;
+    m_target = 0;
+    m_guard = 0;
+}
+
+ActivityEdge::ActivityEdge(const ActivityEdge& rhs) : RedefinableElement(rhs) , NamedElement(rhs), Element(rhs) {
+    m_activity = rhs.m_activity;
+    m_activity.m_me = this;
+    m_activity.m_addProcedures.clear();
+    m_activity.m_removeProcedures.clear();
+    m_activity.m_removeProcedures.push_back(new RemoveActivityProcedure(this));
+    m_activity.m_addProcedures.push_back(new AddActivityProcedure(this));
+}
+
+ActivityEdge::~ActivityEdge() {
+
+}
+
 void ActivityEdge::reindexID(ID oldID, ID newID) {
     if (m_target) {
         m_target->getIncoming().reindex(oldID, newID);
@@ -13,11 +47,10 @@ void ActivityEdge::reindexID(ID oldID, ID newID) {
     if (m_source) {
         m_source->getOutgoing().reindex(oldID, newID);
     }
-
-    if (m_activity) {
-        m_activity->getEdges().reindex(oldID, newID);
+    if (m_activity.has()) {
+        m_activity.getRef().getEdges().reindex(oldID, newID);
     }
-
+    RedefinableElement::reindexID(oldID, newID);
     NamedElement::reindexID(oldID, newID);
 }
 
@@ -38,14 +71,23 @@ void ActivityEdge::reindexID(ID oldID, ID newID) {
 // }
 
 Activity* ActivityEdge::getActivity() {
-    return m_activity;
+    return m_activity.get();
+}
+
+Activity& ActivityEdge::getActivityRef() {
+    return m_activity.getRef();
+}
+
+bool ActivityEdge::hasActivity() const {
+    return m_activity.has();
 }
 
 void ActivityEdge::setActivity(Activity* activity) {
-    m_activity = activity;
-    if(!m_activity->getEdges().count(m_id)) {
-        m_activity->getEdges().add(*this);
-    }
+    m_activity.set(activity);
+}
+
+void ActivityEdge::setActivity(Activity& activity) {
+    m_activity.set(activity);
 }
 
 ActivityNode* ActivityEdge::getSource() {
@@ -93,11 +135,22 @@ ElementType ActivityEdge::getElementType() const {
 }
 
 bool ActivityEdge::isSubClassOf(ElementType eType) const {
-    bool ret = NamedElement::isSubClassOf(eType);
+    bool ret = RedefinableElement::isSubClassOf(eType);
 
     if (!ret) {
         ret = eType == ElementType::ACTIVITY_EDGE;
     }
 
     return ret;
+}
+
+void ActivityEdge::restoreReleased(ID id, Element* released) {
+    RedefinableElement::restoreReleased(id, released);
+    /** TODO: do anythin? **/
+}
+
+void ActivityEdge::referencingReleased(ID id) {
+    if (m_activity.id() == id) {
+        m_activity.release();
+    }
 }

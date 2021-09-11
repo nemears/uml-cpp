@@ -61,7 +61,7 @@ void Activity::reindexID(ID oldID, ID newID) {
         /** TODO: reindex singleton **/
     }
     for (auto& edge : m_edges) {
-        /** TODO: reindex singleton **/
+        edge.m_activity.reindex(oldID, newID);
     }
 }
 

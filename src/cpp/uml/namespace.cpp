@@ -33,7 +33,17 @@ void Namespace::setManager(UmlManager* manager) {
     m_ownedMembers.m_manager = manager;
 }
 
-Namespace::Namespace() : NamedElement() {
+void Namespace::referenceReindexed(ID oldID, ID newID) {
+    NamedElement::referenceReindexed(oldID, newID);
+    if (m_members.count(oldID)) {
+        m_members.reindex(oldID, newID, &Namespace::getMembers);
+    }
+    if (m_ownedMembers.count(oldID)) {
+        m_members.reindex(oldID, newID, &Namespace::getOwnedMembers);
+    }
+}
+
+Namespace::Namespace() {
     m_members.addProcedures.push_back(new AddMemberFunctor(this));
     m_members.removeProcedures.push_back(new RemoveMemberFunctor(this));
     m_ownedMembers.addProcedures.push_back(new AddOwnedMemberFunctor(this));

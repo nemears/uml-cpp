@@ -37,8 +37,8 @@ namespace UML{
             void setManager(UmlManager* manager) override;
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
-        public:
             Namespace();
+        public:
             virtual ~Namespace();
             Namespace(const Namespace& nmspc);
             Sequence<NamedElement>& getMembers();

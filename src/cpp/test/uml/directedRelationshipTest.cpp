@@ -16,9 +16,10 @@ TEST_F(DirectedRelationshipTest, isSubClassOfRelationshipTest) {
 }
 
 TEST_F(DirectedRelationshipTest, sourceAndTargetTest) {
-    DirectedRelationship dr;
-    Element a;
-    Element b;
+    UmlManager m;
+    PackageMerge dr = m.create<PackageMerge>();
+    Package a = m.create<Package>();
+    Package b = m.create<Package>();
     dr.getSources().add(a);
     dr.getTargets().add(b);
     ASSERT_TRUE(dr.getSources().size() == 1);
@@ -28,9 +29,10 @@ TEST_F(DirectedRelationshipTest, sourceAndTargetTest) {
 }
 
 TEST_F(DirectedRelationshipTest, addTargetFunctorTest) {
-    DirectedRelationship dr;
-    Element a;
-    Element b;
+    UmlManager m;
+    PackageMerge dr = m.create<PackageMerge>();
+    Package a = m.create<Package>();
+    Package b = m.create<Package>();
     dr.getTargets().add(a);
     dr.getSources().add(b);
     ASSERT_TRUE(dr.getRelatedElements().size() == 2);
@@ -43,9 +45,10 @@ TEST_F(DirectedRelationshipTest, addTargetFunctorTest) {
 }
 
 TEST_F(DirectedRelationshipTest, duplicateRelationshipExceptionTest) {
-    DirectedRelationship dr;
-    Element a;
-    Element b;
+    UmlManager m;
+    PackageMerge dr = m.create<PackageMerge>();
+    Package a = m.create<Package>();
+    Package b = m.create<Package>();
     dr.getTargets().add(a);
     dr.getSources().add(b);
     ASSERT_THROW(dr.getRelatedElements().add(a), DuplicateRelatedElementException);

@@ -3,6 +3,7 @@
 #include "uml/namedElement.h"
 #include "uml/sequence.h"
 #include "uml/package.h"
+#include "uml/slot.h"
 
 using namespace UML;
 
@@ -13,7 +14,7 @@ class SequenceTest : public ::testing::Test {
 TEST_F(SequenceTest, addGetAndRemoveElementTest) {
     Sequence<> seq;
     ASSERT_TRUE(seq.size() == 0);
-    Element e;
+    Package e;
     ASSERT_NO_THROW(seq.add(e));
     ASSERT_TRUE(&seq.get(e.getID()) == &e);
     ASSERT_TRUE(seq.size() == 1);
@@ -23,8 +24,8 @@ TEST_F(SequenceTest, addGetAndRemoveElementTest) {
 
 TEST_F(SequenceTest, addGetAndRemoveElementByNameTest) {
     Sequence<> seq;
-    Element e;
-    NamedElement n;
+    Slot e;
+    Package n;
     n.setName("test");
     seq.add(e);
     seq.add(n);
@@ -46,7 +47,7 @@ TEST_F(SequenceTest, setNameLaterTest) {
 
 TEST_F(SequenceTest, addElementTwiceTest) {
     Sequence<> seq;
-    Element e;
+    Package e;
     ASSERT_NO_THROW(seq.add(e));
     ASSERT_NO_THROW(seq.add(e));
     ASSERT_TRUE(&seq.get(e.getID()) == &e);
@@ -74,16 +75,16 @@ TEST_F(SequenceTest, addElementTwiceTest) {
 
 TEST_F(SequenceTest, removeElementThatWasntAddedTest) {
     Sequence<> seq;
-    Element e;
+    Package e;
     ASSERT_THROW(seq.remove(e), ElementDoesntExistException);
 }
 
 TEST_F(SequenceTest, useAutoForLoop2) {
     Sequence<> seq;
-    Element e;
-    NamedElement f;
-    Element b;
-    Element c;
+    Slot e;
+    Package f;
+    Slot b;
+    Slot c;
     seq.add(e);
     seq.add(f);
     seq.add(b);

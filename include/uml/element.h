@@ -172,8 +172,8 @@ namespace UML {
             void setReference(Element* referencing);
             void removeReference(ID referencing);
             virtual void referenceReindexed(ID oldID, ID newID);
-        public:
             Element();
+        public:
             Element(const Element& el);
             virtual ~Element();
             ID getID();
@@ -185,7 +185,7 @@ namespace UML {
             /**
              * TODO: I am keeping it simple for now, instance specification of stereotype to
              *       hold tags and operations, but I think it would be cool to dynamically map
-             *       methods if we load the stereotype before runtime. Also would be cool to have
+             *       methods if we load the stereotype bef ore runtime. Also would be cool to have
              *       stereotype tags as keyword in yaml config for disk storage (not necessarily useful though?)
              **/
             Sequence<InstanceSpecification>& getAppliedStereotypes();

@@ -103,13 +103,9 @@ void Element::referenceReindexed(ID oldID, ID newID) {
         m_ownedElements->reindex(oldID, newID, &Element::getOwnedElements);
     }
     if (m_ownerID == oldID) {
-        if (m_node) {
-            m_node->m_managerElementMemory->m_ownerID = newID;
-            for (auto& copy : m_node->m_copies) {
-                copy->m_ownerID = newID;
-            }
-        } else {
-            m_ownerID = newID;
+        m_node->m_managerElementMemory->m_ownerID = newID;
+        for (auto& copy : m_node->m_copies) {
+            copy->m_ownerID = newID;
         }
     }
     if (m_ownedComments->count(oldID)) {

@@ -53,8 +53,9 @@ TEST_F(ElementTest, InvalidID_Test) {
 }
 
 TEST_F(ElementTest, getNullOwnerTest) {
-  Element e;
-  ASSERT_TRUE(e.getOwner() == NULL);
+    UmlManager m;
+    Package e = m.create<Package>();
+    ASSERT_TRUE(e.getOwner() == NULL);
 }
 
 TEST_F(ElementTest, setAndGetOwnerTest) {
@@ -221,7 +222,7 @@ TEST_F(ElementTest, CopyTestW_Manager) {
   // copying like this should dereference the element
   // from manager but keep link to manager to access model
   // TODO: clone method for deep model copy
-  Element e2 = e1;
+  Package e2 = e1;
   ASSERT_TRUE(e2.getOwnedElements().size() == 1);
   ASSERT_TRUE(&e2.getOwnedElements().front() == &c1);
   ASSERT_TRUE(e2.getID() == e1.getID());
@@ -234,7 +235,7 @@ TEST_F(ElementTest, CopyTest) {
   Package p1;
   e1.setOwningPackage(&p1);
   e1.getPackagedElements().add(c1);
-  Element e2 = e1;
+  Package e2 = e1;
   ASSERT_TRUE(e2.getOwnedElements().size() == 1);
   ASSERT_TRUE(&e2.getOwnedElements().front() == &c1);
   ASSERT_TRUE(e2.getID() == e1.getID());

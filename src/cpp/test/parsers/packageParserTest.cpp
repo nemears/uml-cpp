@@ -158,7 +158,8 @@ TEST_F(PackageParserTest, externalMergedPackageTest) {
 }
 
 TEST_F(PackageParserTest, emitVerySimplePackageTest) {
-    Package p;
+    UmlManager m;
+    Package p = m.create<Package>();
     p.setID("_SljVdCSVuBAkmgXqFcopy8&D9oN");
     p.setName("package");
     p.setVisibility(VisibilityKind::PACKAGE);

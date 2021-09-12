@@ -228,7 +228,7 @@ TEST_F(ElementTest, readOnlyRelatedElementsTest) {
     Package p = mm.create<Package>();
     Package m = mm.create<Package>();
     PackageMerge r = mm.create<PackageMerge>();
-    Package h;
+    Package h = mm.create<Package>();
     p.getPackageMerge().add(r);
     r.setMergedPackage(&m);
     ASSERT_THROW(r.getRelatedElements().remove(p), ReadOnlySequenceException);

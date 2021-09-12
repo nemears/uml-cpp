@@ -12,9 +12,10 @@ class SequenceTest : public ::testing::Test {
 };
 
 TEST_F(SequenceTest, addGetAndRemoveElementTest) {
+    UmlManager m;
     Sequence<> seq;
     ASSERT_TRUE(seq.size() == 0);
-    Package e;
+    Package e = m.create<Package>();
     ASSERT_NO_THROW(seq.add(e));
     ASSERT_TRUE(&seq.get(e.getID()) == &e);
     ASSERT_TRUE(seq.size() == 1);
@@ -23,9 +24,10 @@ TEST_F(SequenceTest, addGetAndRemoveElementTest) {
 }
 
 TEST_F(SequenceTest, addGetAndRemoveElementByNameTest) {
+    UmlManager m;
     Sequence<> seq;
-    Slot e;
-    Package n;
+    Slot& e = m.create<Slot>();
+    Package n = m.create<Package>();
     n.setName("test");
     seq.add(e);
     seq.add(n);
@@ -46,8 +48,9 @@ TEST_F(SequenceTest, setNameLaterTest) {
 }
 
 TEST_F(SequenceTest, addElementTwiceTest) {
+    UmlManager m;
     Sequence<> seq;
-    Package e;
+    Package e = m.create<Package>();
     ASSERT_NO_THROW(seq.add(e));
     ASSERT_NO_THROW(seq.add(e));
     ASSERT_TRUE(&seq.get(e.getID()) == &e);
@@ -74,17 +77,19 @@ TEST_F(SequenceTest, addElementTwiceTest) {
 // }
 
 TEST_F(SequenceTest, removeElementThatWasntAddedTest) {
+    UmlManager m;
     Sequence<> seq;
-    Package e;
+    Package e = m.create<Package>();
     ASSERT_THROW(seq.remove(e), ElementDoesntExistException);
 }
 
 TEST_F(SequenceTest, useAutoForLoop2) {
+    UmlManager m;
     Sequence<> seq;
-    Slot e;
-    Package f;
-    Slot b;
-    Slot c;
+    Slot& e = m.create<Slot>();
+    Package& f = m.create<Package>();
+    Slot& b = m.create<Slot>();
+    Slot& c = m.create<Slot>();
     seq.add(e);
     seq.add(f);
     seq.add(b);
@@ -95,10 +100,11 @@ TEST_F(SequenceTest, useAutoForLoop2) {
 }
 
 TEST_F(SequenceTest, getNonexistentElementByID_Test) {
-    Package e;
-    Package a;
+    UmlManager m;
+    Package e = m.create<Package>();
+    Package a = m.create<Package>();
     e.getPackagedElements().add(a);
-    Package b;
+    Package b = m.create<Package>();
     ASSERT_THROW(e.getOwnedElements().get(b.getID()), ID_doesNotExistException);
     ASSERT_NO_THROW(e.getOwnedElements().get(a.getID()));
 }

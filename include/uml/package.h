@@ -61,8 +61,9 @@ namespace UML {
             void setManager(UmlManager* manager) override;
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
-        public:
+            void referenceReindexed(ID oldID, ID newID) override;
             Package();
+        public:
             virtual ~Package();
             Package(const Package& pckg);
             Sequence<PackageableElement>& getPackagedElements();

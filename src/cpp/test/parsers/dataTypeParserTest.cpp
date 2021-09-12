@@ -46,12 +46,13 @@ TEST_F(DataTypeParserTest, basicDataTypeTest) {
 }
 
 TEST_F(DataTypeParserTest, emitDataTypeW_GeneralAndAttribute) {
-    Package pckg;
-    DataType t;
-    DataType g;
-    Generalization gen;
-    DataType s;
-    Property p;
+    UmlManager m;
+    Package pckg = m.create<Package>();
+    DataType t = m.create<DataType>();
+    DataType g = m.create<DataType>();
+    Generalization gen = m.create<Generalization>();
+    DataType s = m.create<DataType>();
+    Property p = m.create<Property>();
     pckg.setID("zN&UM2AHrXX07rAiNxTmmMwLYI1O");
     pckg.setName("owningPackage");
     t.setID("mGbq9i_gGHuMFYg0y3tMzcmHx1B3");

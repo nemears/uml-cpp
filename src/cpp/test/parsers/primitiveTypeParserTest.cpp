@@ -47,12 +47,13 @@ TEST_F(PrimitiveTypeParserTest, basicPrimitiveTypeTest) {
 }
 
 TEST_F(PrimitiveTypeParserTest, emitPrimWGeneralAndAttribute) {
-    Package pckg;
-    PrimitiveType t;
-    PrimitiveType g;
-    Generalization gen;
-    PrimitiveType s;
-    Property p;
+    UmlManager m;
+    Package pckg = m.create<Package>();
+    PrimitiveType t = m.create<PrimitiveType>();
+    PrimitiveType g = m.create<PrimitiveType>();;
+    Generalization gen = m.create<Generalization>();
+    PrimitiveType s = m.create<PrimitiveType>();
+    Property p = m.create<Property>();
     pckg.setID("ScxedgF1Ej1JJubABfwVAK1X&_28");
     pckg.setName("owningPackage");
     t.setID("ufsWC1O42Rz36lNEixxF&gH6SKdj");

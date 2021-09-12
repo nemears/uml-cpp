@@ -83,6 +83,22 @@ void Package::setManager(UmlManager* manager) {
     m_ownedStereotypes.m_manager = manager;
 }
 
+void Package::referenceReindexed(ID oldID, ID newID) {
+    Namespace::referenceReindexed(oldID, newID);
+    if (m_packagedElements.count(oldID)) {
+        m_packagedElements.reindex(oldID, newID, &Package::getPackagedElements);
+    }
+    if (m_packageMerge.count(oldID)) {
+        m_packageMerge.reindex(oldID, newID, &Package::getPackageMerge);
+    }
+    if (m_profileApplications.count(oldID)) {
+        m_profileApplications.reindex(oldID, newID);
+    }
+    if (m_ownedStereotypes.count(oldID)) {
+        m_ownedStereotypes.reindex(oldID, newID);
+    }
+}
+
 Package::Package() {
     m_packagedElements.addProcedures.push_back(new AddPackagedElementFunctor(this));
     m_packagedElements.removeProcedures.push_back(new RemovePackagedElementFunctor(this));

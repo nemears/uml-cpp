@@ -9,8 +9,6 @@ namespace UML {
         protected:
             Sequence<> m_targets = Sequence<>(this);
             Sequence<> m_sources = Sequence<>(this);
-
-            // functor triggered on getTargets().add(el) and getSources().add(el)
             class AddRelatedElementFunctor : public TemplateAbstractSequenceFunctor<Element,DirectedRelationship> {
                 public:
                     AddRelatedElementFunctor(DirectedRelationship* me) : TemplateAbstractSequenceFunctor(me) {};
@@ -42,8 +40,8 @@ namespace UML {
                     void operator()(Element& el) const override;
             };
             void setManager(UmlManager* manager) override;
-        public:
             DirectedRelationship();
+        public:
             DirectedRelationship(const DirectedRelationship& relationship);
             virtual ~DirectedRelationship();
             Sequence<>& getTargets();

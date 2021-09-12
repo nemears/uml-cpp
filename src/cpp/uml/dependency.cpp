@@ -42,6 +42,11 @@ void Dependency::reindexID(ID oldID, ID newID) {
     // TODO
 }
 
+void Dependency::referenceReindexed(ID oldID, ID newID) {
+    NamedElement::referenceReindexed(oldID, newID);
+    Relationship::referenceReindexed(oldID, newID);
+}
+
 Dependency::Dependency() {
     m_client.addProcedures.push_back(new AddClientFunctor(this));
     m_client.removeProcedures.push_back(new RemoveClientFunctor(this));

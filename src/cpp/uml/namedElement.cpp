@@ -30,6 +30,16 @@ void NamedElement::AddNamespaceProcedures::operator()(Namespace* el) const {
     }
 }
 
+void NamedElement::referenceReindexed(ID oldID, ID newID) {
+    Element::referenceReindexed(oldID, newID);
+    if (m_namespace.id() == oldID) {
+        m_namespace.reindex(oldID, newID);
+    }
+    if (m_memberNamespace->count(oldID)) {
+        m_memberNamespace->reindex(oldID, newID);
+    }
+}
+
 NamedElement::NamedElement() {
     m_memberNamespace = new Sequence<Namespace>(this);
     m_memberNamespace->addProcedures.push_back(new AddMemberNamespaceFunctor(this));
@@ -80,7 +90,7 @@ void NamedElement::reindexName(string oldName, string newName) {
 }
 
 void NamedElement::reindexID(ID oldID, ID newID) {
-    if (m_namespace.has()) {
+    /**if (m_namespace.has()) {
         m_namespace.get()->getOwnedMembers().reindex(oldID, newID);
     }
 
@@ -88,7 +98,7 @@ void NamedElement::reindexID(ID oldID, ID newID) {
         nmspc.getMembers().reindex(oldID, newID);
     }
 
-    Element::reindexID(oldID, newID);
+    Element::reindexID(oldID, newID);**/
 }
 
 void NamedElement::setManager(UmlManager* manager) {

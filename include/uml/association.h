@@ -15,6 +15,7 @@ namespace UML {
             void reindexID(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             void setManager(UmlManager* manager) override;
+            void referenceReindexed(ID oldID, ID newID) override;
             class AddMemberEndFunctor : public TemplateAbstractSequenceFunctor<Property,Association> {
                 public:
                     AddMemberEndFunctor(Association* me) : TemplateAbstractSequenceFunctor(me) {};

@@ -9,12 +9,6 @@ class DirectedRelationshipTest : public ::testing::Test {
    
 };
 
-TEST_F(DirectedRelationshipTest, isSubClassOfRelationshipTest) {
-    DirectedRelationship dr;
-    ASSERT_TRUE(dr.isSubClassOf(ElementType::DIRECTED_RELATIONSHIP));
-    ASSERT_FALSE(dr.isSubClassOf(ElementType::NAMED_ELEMENT));
-}
-
 TEST_F(DirectedRelationshipTest, sourceAndTargetTest) {
     UmlManager m;
     PackageMerge dr = m.create<PackageMerge>();

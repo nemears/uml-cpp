@@ -26,8 +26,8 @@ namespace UML {
             };
             void setManager(UmlManager* manager) override;
             void referenceReindexed(ID oldID, ID newID) override;
-        public:
             Relationship();
+        public:
             Relationship(const Relationship& relationship);
             virtual ~Relationship();
             Sequence<>& getRelatedElements();

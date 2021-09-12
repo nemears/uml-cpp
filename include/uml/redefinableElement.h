@@ -36,8 +36,8 @@ namespace UML {
             void reindexID(ID oldID, ID newID) override;
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
-        public:
             RedefinableElement();
+        public:
             virtual ~RedefinableElement();
             RedefinableElement(const RedefinableElement& el);
             Sequence<RedefinableElement>& getRedefinedElements();

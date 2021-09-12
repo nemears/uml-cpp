@@ -101,6 +101,12 @@ void Association::setManager(UmlManager* manager) {
     m_endType.m_manager = manager;
 }
 
+void Association::referenceReindexed(ID oldID, ID newID) {
+    NamedElement::referenceReindexed(oldID, newID);
+    Relationship::referenceReindexed(oldID, newID);
+    /** TODO: finish**/
+}
+
 Association::Association() {
     m_memberEnds.addProcedures.push_back(new AddMemberEndFunctor(this));
     m_memberEnds.removeProcedures.push_back(new RemoveMemberEndFunctor(this));

@@ -115,46 +115,58 @@ TEST_F(PropertyTest, reindexID_forClassiferTest) {
 // }
 
 TEST_F(PropertyTest, overwriteClassifierTest) {
-  Classifier p1;
-  Classifier p2;
-  Property c;
-  p1.getAttributes().add(c);
-  c.setClassifier(&p2);
-  ASSERT_TRUE(p2.getAttributes().size() == 1);
-  ASSERT_TRUE(&p2.getAttributes().front() == &c);
-  ASSERT_TRUE(c.getClassifier() == &p2);
-  ASSERT_TRUE(p1.getAttributes().size() == 0);
+    UmlManager m;
+    Classifier p1 = m.create<Classifier>();
+    Classifier p2 = m.create<Classifier>();
+    Property c = m.create<Property>();
+    p1.getAttributes().add(c);
+    c.setClassifier(&p2);
+    ASSERT_EQ(p2.getAttributes().size(), 1);
+    ASSERT_EQ(p2.getAttributes().front(), c);
+    ASSERT_TRUE(c.hasClassifier());
+    ASSERT_TRUE(c.getClassifier());
+    ASSERT_EQ(c.getClassifierRef(), p2);
+    ASSERT_EQ(p1.getAttributes().size(), 0);
 }
 
 TEST_F(PropertyTest, overwriteClassifierByAttributesAddTest) {
-  Classifier p1;
-  Classifier p2;
-  Property c;
-  p1.getAttributes().add(c);
-  p2.getAttributes().add(c);
-  ASSERT_TRUE(p2.getAttributes().size() == 1);
-  ASSERT_TRUE(&p2.getAttributes().front() == &c);
-  ASSERT_TRUE(c.getClassifier() == &p2);
-  ASSERT_TRUE(p1.getAttributes().size() == 0);
+    UmlManager m;
+    Classifier p1 = m.create<Classifier>();
+    Classifier p2 = m.create<Classifier>();
+    Property c = m.create<Property>();
+    p1.getAttributes().add(c);
+    p2.getAttributes().add(c);
+    ASSERT_EQ(p2.getAttributes().size(), 1);
+    ASSERT_EQ(p2.getAttributes().front(), c);
+    ASSERT_TRUE(c.hasClassifier());
+    ASSERT_TRUE(c.getClassifier());
+    ASSERT_EQ(c.getClassifierRef(), p2);
+    ASSERT_EQ(p1.getAttributes().size(), 0);
 }
 
 TEST_F(PropertyTest, copyPropertyTest) {
-  Property p;
-  p.setName("test");
-  p.setStatic(true);
-  Classifier c;
-  c.getAttributes().add(p);
-  Classifier t;
-  p.setType(&t);
-  Property p2 = p;
-  ASSERT_TRUE(p2.getID() == p.getID());
-  ASSERT_TRUE(p.getName().compare(p2.getName()) == 0);
-  ASSERT_TRUE(p2.getType() == &t);
-  ASSERT_TRUE(p2.getClassifier() == &c);
-  ASSERT_TRUE(p2.getMemberNamespace().size() == 1);
-  ASSERT_TRUE(&p2.getMemberNamespace().front() == &c);
-  ASSERT_TRUE(p2.getFeaturingClassifier() == &c);
-  ASSERT_TRUE(p2.isStatic());
+    UmlManager m;
+    Property p = m.create<Property>();
+    p.setName("test");
+    p.setStatic(true);
+    Classifier c = m.create<Classifier>();
+    c.getAttributes().add(p);
+    Classifier t = m.create<Classifier>();
+    p.setType(t);
+    Property p2 = p;
+    ASSERT_EQ(p2, p);
+    ASSERT_EQ(p.getName(), p2.getName());
+    ASSERT_TRUE(p2.hasType());
+    ASSERT_TRUE(p2.getType());
+    ASSERT_EQ(p2.getTypeRef(), t);
+    ASSERT_TRUE(p2.hasClassifier());
+    ASSERT_TRUE(p2.getClassifier());
+    ASSERT_EQ(p2.getClassifierRef(), c);
+    ASSERT_EQ(p2.getMemberNamespace().size(), 1);
+    ASSERT_EQ(p2.getMemberNamespace().front(), c);
+    ASSERT_TRUE(p2.hasFeaturingClassifier());
+    ASSERT_EQ(p2.getFeaturingClassifierRef(), c);
+    ASSERT_TRUE(p2.isStatic());
 }
 
 TEST_F(PropertyTest, redefinePropertyTest) {

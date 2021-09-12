@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/generalization.h"
 #include "uml/classifier.h"
+#include "uml/class.h"
 
 using namespace UML;
 
@@ -9,12 +10,13 @@ class GeneralizationTest : public ::testing::Test {
 };
 
 TEST_F(GeneralizationTest, basicSetSpecificAndGeneralTest) {
-    Generalization r;
-    Classifier s;
-    Classifier g;
+    UmlManager m;
+    Generalization r = m.create<Generalization>();
+    Classifier s = m.create<Classifier>();
+    Classifier g = m.create<Classifier>();
     r.setSpecific(&s);
     r.setGeneral(&g);
-    ASSERT_TRUE(r.getSpecific() == &s);
+    ASSERT_EQ(*r.getSpecific(), s);
     ASSERT_TRUE(r.getGeneral() == &g);
     ASSERT_TRUE(r.getTargets().size() == 1);
     ASSERT_TRUE(&r.getTargets().front() == &g);
@@ -67,27 +69,30 @@ TEST_F(GeneralizationTest, addGeneralFunctorTest) {
 }
 
 TEST_F(GeneralizationTest, AddGeneralizationFunctorTest) {
-    Classifier s;
-    Classifier g;
-    Generalization r;
+    UmlManager m;
+    Classifier s = m.create<Classifier>();
+    Classifier g = m.create<Classifier>();
+    Generalization r = m.create<Generalization>();
     s.getGeneralizations().add(r);
     r.setGeneral(&g);
     ASSERT_TRUE(r.getSpecific() == &s);
 }
 
 TEST_F(GeneralizationTest, AddGeneralizationFunctorGeneralSetTest) {
-    Classifier s;
-    Classifier g;
-    Generalization r;
+    UmlManager m;
+    Class s = m.create<Class>();
+    Class g = m.create<Class>();
+    Generalization r = m.create<Generalization>();
     r.setGeneral(&g);
     s.getGeneralizations().add(r);
     ASSERT_TRUE(r.getSpecific() == &s);
 }
 
 TEST_F(GeneralizationTest, CheckGeneralizationFunctorTest) {
-    Generalization r;
-    Classifier g;
-    Classifier s;
+    UmlManager m;
+    Generalization r = m.create<Generalization>();
+    Class g = m.create<Class>();
+    Class s = m.create<Class>();
     r.setGeneral(&g);
     r.setSpecific(&s);
     ASSERT_THROW(g.getGeneralizations().add(r), InvalidGeneralizationException);
@@ -124,10 +129,11 @@ TEST_F(GeneralizationTest, resetGeneralTest) {
 }
 
 TEST_F(GeneralizationTest, resetSpecificTest) {
-    Generalization r;
-    Classifier g;
-    Classifier s;
-    Classifier s2;
+    UmlManager m;
+    Generalization r = m.create<Generalization>();
+    Class g = m.create<Class>();
+    Class s = m.create<Class>();
+    Class s2 = m.create<Class>();
     r.setGeneral(&g);
     r.setSpecific(&s);
     r.setSpecific(&s2);
@@ -152,10 +158,11 @@ TEST_F(GeneralizationTest, resetSpecificTest) {
 }
 
 TEST_F(GeneralizationTest, backwardsResetGeneralTest) {
-    Generalization r;
-    Classifier g;
-    Classifier s;
-    Classifier g2;
+    UmlManager m;
+    Generalization r = m.create<Generalization>();
+    Class g = m.create<Class>();
+    Class s = m.create<Class>();
+    Class g2 = m.create<Class>();
     r.setSpecific(&s);
     r.setGeneral(&g);
     r.setGeneral(&g2);
@@ -178,10 +185,11 @@ TEST_F(GeneralizationTest, backwardsResetGeneralTest) {
 }
 
 TEST_F(GeneralizationTest, backwardsResetSpecificTest) {
-    Generalization r;
-    Classifier g;
-    Classifier s;
-    Classifier s2;
+    UmlManager m;
+    Generalization r = m.create<Generalization>();
+    Class g = m.create<Class>();
+    Class s = m.create<Class>();
+    Class s2 = m.create<Class>();
     r.setSpecific(&s);
     r.setGeneral(&g);
     r.setSpecific(&s2);

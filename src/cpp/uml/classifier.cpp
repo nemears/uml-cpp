@@ -9,6 +9,18 @@ using namespace UML;
 void Classifier::referenceReindexed(ID oldID, ID newID) {
     Namespace::referenceReindexed(oldID, newID);
     PackageableElement::referenceReindexed(oldID, newID);
+    if (m_attributes.count(oldID)) {
+        m_attributes.reindex(oldID, newID);
+    }
+    if (m_generalizations.count(oldID)) {
+        m_generalizations.reindex(oldID, newID);
+    }
+    if (m_generals.count(oldID)) {
+        m_generals.reindex(oldID, newID);
+    }
+    if (m_inheritedMembers.count(oldID)) {
+        m_generals.reindex(oldID, newID);
+    }
 }
 
 Classifier::Classifier() {
@@ -69,7 +81,7 @@ Element(clazz) {
 }
 
 void Classifier::reindexID(ID oldID, ID newID) {
-    Namespace::reindexID(oldID, newID);
+    /**Namespace::reindexID(oldID, newID);
     Type::reindexID(oldID, newID);
     if (m_node) {
         for (auto& ref : m_node->m_references) {    
@@ -84,7 +96,7 @@ void Classifier::reindexID(ID oldID, ID newID) {
                 }
             }
         }
-    }
+    }**/
 }
 
 void Classifier::reindexName(string oldName, string newName) {

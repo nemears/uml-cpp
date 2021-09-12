@@ -51,8 +51,9 @@ namespace UML{
             void setManager(UmlManager* manager) override;
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
-        public:
+            void referenceReindexed(ID oldID, ID newID) override;
             InstanceSpecification();
+        public:
             InstanceSpecification(const InstanceSpecification& inst);
             virtual ~InstanceSpecification();
             Classifier* getClassifier();

@@ -58,6 +58,19 @@ void InstanceSpecification::setManager(UmlManager* manager) {
     m_slots.m_manager = manager;
 }
 
+void InstanceSpecification::referenceReindexed(ID oldID, ID newID) {
+    PackageableElement::referenceReindexed(oldID, newID);
+    if (m_classifier.id() == oldID) {
+        m_classifier.reindex(oldID, newID);
+    }
+    if (m_slots.count(oldID)) {
+        m_slots.reindex(oldID, newID);
+    }
+    if (m_specification.id() == oldID) {
+        m_specification.reindex(oldID, newID);
+    }
+}
+
 InstanceSpecification::InstanceSpecification() {
     m_classifier.m_signature = &InstanceSpecification::m_classifier;
     m_classifier.m_removeProcedures.push_back(new RemoveClassifierProcedure(this));

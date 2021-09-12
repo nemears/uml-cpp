@@ -97,8 +97,8 @@ namespace UML {
             };
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
-        public:
             Classifier();
+        public:
             virtual ~Classifier();
             Classifier(const Classifier& clazz);
             std::string getName() override;

@@ -110,9 +110,10 @@ TEST_F(ParameterTest, reindexID_ownerTest) {
 // }
 
 TEST_F(ParameterTest, copyParameterTest) {
-    Parameter p;
-    Classifier t;
-    Operation o;
+    UmlManager m;
+    Parameter p = m.create<Parameter>();
+    Classifier t = m.create<Classifier>();
+    Operation o = m.create<Operation>();
     p.setDirection(ParameterDirectionKind::IN);
     p.setType(&t);
     p.setOperation(&o);

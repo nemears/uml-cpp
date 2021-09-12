@@ -120,7 +120,8 @@ TEST_F(InstanceSpecificationParserTest, instanceValueSlot) {
 }
 
 TEST_F(InstanceSpecificationParserTest, simpleInstanceEmitTest) {
-    InstanceSpecification inst;
+    UmlManager m;
+    InstanceSpecification& inst = m.create<InstanceSpecification>();
     inst.setID("3XvQFHIrqSmU7WAXA7fVzkw1v2U3");
     inst.setName("simple");
     inst.setVisibility(VisibilityKind::PROTECTED);
@@ -135,11 +136,12 @@ TEST_F(InstanceSpecificationParserTest, simpleInstanceEmitTest) {
 }
 
 TEST_F(InstanceSpecificationParserTest, simpleSlotTest) {
-    InstanceSpecification inst;
+    UmlManager m;
+    InstanceSpecification inst = m.create<InstanceSpecification>();
     inst.setID("yaogA9yjaFoD_RdGQzRrwe1826Aj");
     inst.setName("slot");
     inst.setVisibility(VisibilityKind::PROTECTED);
-    Slot s;
+    Slot s = m.create<Slot>();
     s.setID("w6arMVW4Plw0aLOBWLE9_8Xo_UL&");
     inst.getSlots().add(s);
     string expectedEmit = R""""(instanceSpecification:

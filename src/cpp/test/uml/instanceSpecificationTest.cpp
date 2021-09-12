@@ -25,17 +25,18 @@ TEST_F(InstanceSpecificationTest, setClassifierAsClass) {
 }
 
 TEST_F(InstanceSpecificationTest, setStringValueSlots) {
-    Class c;
-    Property stringP;
-    PrimitiveType stringPrim;
+    UmlManager m;
+    Class c = m.create<Class>();
+    Property stringP = m.create<Property>();
+    PrimitiveType stringPrim = m.create<PrimitiveType>();
     stringP.setType(&stringPrim);
     c.getAttributes().add(stringP);
-    LiteralString ls;
+    LiteralString& ls = m.create<LiteralString>();
     ls.setValue("test");
-    Slot stringSlot;
+    Slot& stringSlot = m.create<Slot>();
     stringSlot.setDefiningFeature(&stringP);
     stringSlot.getValues().add(ls);
-    InstanceSpecification i;
+    InstanceSpecification i = m.create<InstanceSpecification>();
     i.getSlots().add(stringSlot);
     ASSERT_TRUE(i.getSlots().front().getID() == stringSlot.getID());
     ASSERT_TRUE(i.getSlots().front().getDefiningFeature()->getID() == stringP.getID());
@@ -43,21 +44,22 @@ TEST_F(InstanceSpecificationTest, setStringValueSlots) {
 }
 
 TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
-    Class c;
+    UmlManager m;
+    Class c = m.create<Class>();
     c.setName("typeA");
-    Class b;
+    Class b = m.create<Class>();
     b.setName("typeB");
-    Property bProp;
+    Property bProp = m.create<Property>();
     bProp.setName("b");
     bProp.setType(&b);
     c.getAttributes().add(bProp);
-    InstanceSpecification bInst;
+    InstanceSpecification bInst = m.create<InstanceSpecification>();
     bInst.setClassifier(&b);
-    InstanceSpecification aInst;
+    InstanceSpecification aInst = m.create<InstanceSpecification>();
     aInst.setClassifier(&c);
-    InstanceValue bVal;
+    InstanceValue& bVal = m.create<InstanceValue>();
     bVal.setInstance(&bInst);
-    Slot aSlot;
+    Slot&    aSlot = m.create<Slot>();
     aSlot.setDefiningFeature(&bProp);
     aSlot.getValues().add(bVal);
     aInst.getSlots().add(aSlot);
@@ -68,8 +70,9 @@ TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
 
 
 TEST_F(InstanceSpecificationTest, reindexSlotID_Test) {
-    InstanceSpecification i;
-    Slot s;
+    UmlManager m;
+    InstanceSpecification i = m.create<InstanceSpecification>();
+    Slot& s = m.create<Slot>();
     i.getSlots().add(s);
     s.setOwningInstance(&i);
     s.setID("190d1cb9_13dc_44e6_a064_1268");
@@ -78,8 +81,9 @@ TEST_F(InstanceSpecificationTest, reindexSlotID_Test) {
 }
 
 TEST_F(InstanceSpecificationTest, addSlotFunctorTest) {
-    InstanceSpecification i;
-    Slot s;
+    UmlManager m;
+    InstanceSpecification i = m.create<InstanceSpecification>();
+    Slot& s = m.create<Slot>();
     i.getSlots().add(s);
     ASSERT_TRUE(&i.getSlots().get(s.getID()) == &s);
     ASSERT_TRUE(i.getSlots().size() == 1);
@@ -89,8 +93,9 @@ TEST_F(InstanceSpecificationTest, addSlotFunctorTest) {
 }
 
 TEST_F(InstanceSpecificationTest, SetOwningInstanceFunctionalityTest) {
-    InstanceSpecification i;
-    Slot s;
+    UmlManager m;
+    InstanceSpecification i = m.create<InstanceSpecification>();
+    Slot& s = m.create<Slot>();
     s.setOwningInstance(&i);
     ASSERT_TRUE(&i.getSlots().get(s.getID()) == &s);
     ASSERT_TRUE(i.getSlots().size() == 1);
@@ -112,8 +117,9 @@ TEST_F(InstanceSpecificationTest, SetOwningInstanceFunctionalityTestW_Manager) {
 }
 
 TEST_F(InstanceSpecificationTest, removeSlotFunctorTest) {
-    InstanceSpecification i;
-    Slot s;
+    UmlManager m;
+    InstanceSpecification i = m.create<InstanceSpecification>();
+    Slot& s = m.create<Slot>();
     s.setOwningInstance(&i);
     ASSERT_NO_THROW(i.getSlots().remove(s));
     ASSERT_TRUE(i.getSlots().size() == 0);

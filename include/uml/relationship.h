@@ -25,6 +25,7 @@ namespace UML {
                     void operator()(Element& el) const override;
             };
             void setManager(UmlManager* manager) override;
+            void referenceReindexed(ID oldID, ID newID) override;
         public:
             Relationship();
             Relationship(const Relationship& relationship);

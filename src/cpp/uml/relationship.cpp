@@ -6,16 +6,23 @@ using namespace std;
 using namespace UML;
 
 void Relationship::reindexID(ID oldID, ID newID) {
-    for (auto& relEl : m_relatedElements) {
+    /**for (auto& relEl : m_relatedElements) {
         relEl.getRelationships().reindex(oldID, newID);
     }
 
-    Element::reindexID(oldID, newID);
+    Element::reindexID(oldID, newID);**/
 }
 
 void Relationship::setManager(UmlManager* manager) {
     Element::setManager(manager);
     m_relatedElements.m_manager = manager;
+}
+
+void Relationship::referenceReindexed(ID oldID, ID newID) {
+    Element::referenceReindexed(oldID, newID);
+    if (m_relatedElements.count(oldID)) {
+        m_relatedElements.reindex(oldID, newID, &Relationship::getRelatedElements);
+    }
 }
 
 void Relationship::AddRelationshipFunctor::operator()(Element& el) const {

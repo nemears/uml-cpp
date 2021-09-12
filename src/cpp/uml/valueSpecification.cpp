@@ -30,6 +30,10 @@ void ValueSpecification::reindexName(string oldName, string newName) {
     NamedElement::reindexName(oldName, newName);
 }
 
+void ValueSpecification::referenceReindexed(ID oldID, ID newID) {
+    PackageableElement::reindexID(oldID, newID);
+}
+
 ValueSpecification::ValueSpecification() {
     m_owningSlotPtr = 0;
 }

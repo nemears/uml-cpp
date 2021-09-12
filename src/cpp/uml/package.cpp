@@ -85,6 +85,7 @@ void Package::setManager(UmlManager* manager) {
 
 void Package::referenceReindexed(ID oldID, ID newID) {
     Namespace::referenceReindexed(oldID, newID);
+    PackageableElement::referenceReindexed(oldID, newID);
     if (m_packagedElements.count(oldID)) {
         m_packagedElements.reindex(oldID, newID, &Package::getPackagedElements);
     }

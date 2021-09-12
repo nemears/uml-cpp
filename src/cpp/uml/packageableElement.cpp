@@ -15,6 +15,13 @@ void PackageableElement::AddOwningPackageProcedure::operator()(Package* el) cons
     }
 }
 
+void PackageableElement::referenceReindexed(ID oldID, ID newID) {
+    NamedElement::referenceReindexed(oldID, newID);
+    if (m_owningPackage.id() == oldID) {
+        m_owningPackage.reindex(oldID, newID);
+    }
+}
+
 PackageableElement::PackageableElement() {
     m_owningPackage.m_signature = &PackageableElement::m_owningPackage;
     m_owningPackage.m_removeProcedures.push_back(new RemoveOwningPackageProcedure(this));

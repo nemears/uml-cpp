@@ -6,7 +6,12 @@
 using namespace std;
 using namespace UML;
 
-Classifier::Classifier() : TemplateableElement() {
+void Classifier::referenceReindexed(ID oldID, ID newID) {
+    Namespace::referenceReindexed(oldID, newID);
+    PackageableElement::referenceReindexed(oldID, newID);
+}
+
+Classifier::Classifier() {
     m_attributes.addProcedures.push_back(new AddAttributeFunctor(this));
     m_attributes.removeProcedures.push_back(new RemoveAttributeFunctor(this));
     m_generalizations.addProcedures.push_back(new AddGeneralizationFunctor(this));

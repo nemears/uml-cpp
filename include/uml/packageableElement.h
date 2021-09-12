@@ -25,8 +25,9 @@ namespace UML {
             };
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
-        public:
+            void referenceReindexed(ID oldID, ID newID) override;
             PackageableElement();
+        public:
             PackageableElement(const PackageableElement& el);
             virtual ~PackageableElement() {};
             Package* getOwningPackage();

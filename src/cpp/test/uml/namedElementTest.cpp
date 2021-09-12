@@ -11,13 +11,15 @@ using namespace UML;
 class NamedElementTest : public ::testing::Test {};
 
 TEST_F(NamedElementTest, SetNameTest) {
-    Package namedEl;
+    UmlManager m;
+    Package namedEl = m.create<Package>();
     namedEl.setName("test");
     EXPECT_EQ(namedEl.getName(), "test");
 }
 
 TEST_F(NamedElementTest, GetNullNameTest) {
-    NamedElement ne;
+    UmlManager m;
+    Package ne = m.create<Package>();
     ASSERT_NO_THROW(ne.getName());
     EXPECT_TRUE(ne.getName().compare("") == 0);
 }
@@ -31,122 +33,84 @@ TEST_F(NamedElementTest, GetNullNameTest) {
 //   ASSERT_TRUE(e1.getOwnedElements().get("test") != NULL);
 // }
 
-TEST_F(NamedElementTest, overwriteNamespaceTestW_Manager) {
-  UmlManager m;
-  Namespace& p1 = m.create<Package>();
-  Namespace& p2 = m.create<Package>();
-  NamedElement& c = m.create<Package>();
-  p1.getOwnedMembers().add(c);
-  c.setNamespace(&p2);
-  ASSERT_TRUE(p2.getOwnedMembers().size() == 1);
-  ASSERT_TRUE(&p2.getOwnedMembers().front() == &c);
-  ASSERT_TRUE(c.getNamespace() == &p2);
-  ASSERT_TRUE(p1.getOwnedMembers().size() == 0);
-}
-
 TEST_F(NamedElementTest, overwriteNamespaceTest) {
-  Namespace p1;
-  Namespace p2;
-  NamedElement c;
-  p1.getOwnedMembers().add(c);
-  c.setNamespace(&p2);
-  ASSERT_TRUE(p2.getOwnedMembers().size() == 1);
-  ASSERT_TRUE(&p2.getOwnedMembers().front() == &c);
-  ASSERT_TRUE(c.getNamespace() == &p2);
-  ASSERT_TRUE(p1.getOwnedMembers().size() == 0);
-}
-
-TEST_F(NamedElementTest, overwriteNamespaceByOwnedMemebersAddTestW_Manager) {
-  UmlManager m;
-  Namespace& p1 = m.create<Package>();
-  Namespace& p2 = m.create<Package>();
-  NamedElement& c = m.create<Package>();
-  p1.getOwnedMembers().add(c);
-  p2.getOwnedMembers().add(c);
-  ASSERT_TRUE(p2.getOwnedMembers().size() == 1);
-  ASSERT_TRUE(&p2.getOwnedMembers().front() == &c);
-  ASSERT_TRUE(c.getNamespace() == &p2);
-  ASSERT_TRUE(p1.getOwnedMembers().size() == 0);
+    UmlManager m;
+    Package p1 = m.create<Package>();
+    Package p2 = m.create<Package>();
+    Package c = m.create<Package>();
+    p1.getOwnedMembers().add(c);
+    c.setNamespace(p2);
+    ASSERT_EQ(p2.getOwnedMembers().size(), 1);
+    ASSERT_EQ(p2.getOwnedMembers().front(), c);
+    ASSERT_EQ(*c.getNamespace(), p2);
+    ASSERT_EQ(p1.getOwnedMembers().size(), 0);
 }
 
 TEST_F(NamedElementTest, overwriteNamespaceByOwnedMemebersAddTest) {
-  Namespace p1;
-  Namespace p2;
-  NamedElement c;
-  p1.getOwnedMembers().add(c);
-  p2.getOwnedMembers().add(c);
-  ASSERT_TRUE(p2.getOwnedMembers().size() == 1);
-  ASSERT_TRUE(&p2.getOwnedMembers().front() == &c);
-  ASSERT_TRUE(c.getNamespace() == &p2);
-  ASSERT_TRUE(p1.getOwnedMembers().size() == 0);
-}
-
-TEST_F(NamedElementTest, copyNamedElementTestW_Manager) {
-  UmlManager m;
-    Package& n = m.create<Package>();
-    n.setName("test");
-    Package& p = m.create<Package>();
-    Package& c = m.create<Package>();
-    n.setNamespace(&p);
-    n.getPackagedElements().add(c);
-    NamedElement n2 = n;
-    ASSERT_TRUE(n2.getName().compare("test") == 0);
-    ASSERT_TRUE(n2.getID() == n.getID());
-    ASSERT_TRUE(n2.getOwner() == &p);
-    ASSERT_TRUE(n2.getNamespace() == &p);
-    ASSERT_TRUE(n2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&n2.getOwnedElements().front() == &c);
-    ASSERT_TRUE(c.getOwner() == &n);
+    UmlManager m;
+    Package p1 = m.create<Package>();
+    Package p2 = m.create<Package>();
+    Package c = m.create<Package>();
+    p1.getOwnedMembers().add(c);
+    p2.getOwnedMembers().add(c);
+    ASSERT_EQ(p2.getOwnedMembers().size(), 1);
+    ASSERT_EQ(p2.getOwnedMembers().front(), c);
+    ASSERT_EQ(*c.getNamespace(), p2);
+    ASSERT_EQ(p1.getOwnedMembers().size(), 0);
 }
 
 TEST_F(NamedElementTest, copyNamedElementTest) {
-    Package n;
+    UmlManager m;
+    Package n = m.create<Package>();
     n.setName("test");
-    Package p;
-    Package c;
+    Package p = m.create<Package>();
+    Package c = m.create<Package>();
     n.setNamespace(&p);
     n.getPackagedElements().add(c);
-    NamedElement n2 = n;
+    Package n2 = n;
     ASSERT_TRUE(n2.getName().compare("test") == 0);
-    ASSERT_TRUE(n2.getID() == n.getID());
-    ASSERT_TRUE(n2.getOwner() == &p);
-    ASSERT_TRUE(n2.getNamespace() == &p);
-    ASSERT_TRUE(n2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&n2.getOwnedElements().front() == &c);
-    ASSERT_TRUE(c.getOwner() == &n);
+    ASSERT_EQ(n2, n);
+    ASSERT_EQ(*n2.getOwner(), p);
+    ASSERT_TRUE(n2.hasNamespace());
+    ASSERT_TRUE(n2.getNamespace());
+    ASSERT_EQ(n2.getNamespaceRef(), p);
+    ASSERT_EQ(n2.getOwnedElements().size(), 1);
+    ASSERT_EQ(n2.getOwnedElements().front(), c);
+    ASSERT_EQ(*c.getOwner(), n);
 }
 
 TEST_F(NamedElementTest, visibilityTest) {
-    NamedElement n;
+    UmlManager m;
+    Package n = m.create<Package>();
     ASSERT_TRUE(n.getVisibility() == VisibilityKind::PUBLIC);
     ASSERT_NO_THROW(n.setVisibility(VisibilityKind::PRIVATE));
     ASSERT_TRUE(n.getVisibility() == VisibilityKind::PRIVATE);
 }
 
 TEST_F(NamedElementTest, copyAndEditTest) {
-  UmlManager m;
-  Package& p = m.create<Package>();
-  Package& c = m.create<Package>();
-  p.getPackagedElements().add(c);
-  c.setName("test");
-  c.setVisibility(VisibilityKind::PRIVATE);
-  Package copy = c;
-  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c, copy, &NamedElement::getMemberNamespace));
-  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c, copy, &NamedElement::getNamespace));
-  ASSERT_EQ(c.getVisibility(), copy.getVisibility());
-  p.getPackagedElements().remove(copy);
-  c.setVisibility(VisibilityKind::PROTECTED);
-  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c, copy, &NamedElement::getMemberNamespace));
-  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c, copy, &NamedElement::getNamespace));
-  ASSERT_EQ(c.getVisibility(), copy.getVisibility());
-  copy.setOwningPackage(&p);
-  copy.setVisibility(VisibilityKind::PUBLIC);
-  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c, copy, &NamedElement::getMemberNamespace));
-  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c, copy, &NamedElement::getNamespace));
-  ASSERT_EQ(c.getVisibility(), copy.getVisibility());
-  p.setOwningPackage(0);
-  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c, copy, &NamedElement::getMemberNamespace));
-  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c, copy, &NamedElement::getNamespace));
+    UmlManager m;
+    Package& p = m.create<Package>();
+    Package& c = m.create<Package>();
+    p.getPackagedElements().add(c);
+    c.setName("test");
+    c.setVisibility(VisibilityKind::PRIVATE);
+    Package copy = c;
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c, copy, &NamedElement::getMemberNamespace));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c, copy, &NamedElement::getNamespace));
+    ASSERT_EQ(c.getVisibility(), copy.getVisibility());
+    p.getPackagedElements().remove(copy);
+    c.setVisibility(VisibilityKind::PROTECTED);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c, copy, &NamedElement::getMemberNamespace));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c, copy, &NamedElement::getNamespace));
+    ASSERT_EQ(c.getVisibility(), copy.getVisibility());
+    copy.setOwningPackage(&p);
+    copy.setVisibility(VisibilityKind::PUBLIC);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c, copy, &NamedElement::getMemberNamespace));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c, copy, &NamedElement::getNamespace));
+    ASSERT_EQ(c.getVisibility(), copy.getVisibility());
+    p.setOwningPackage(0);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c, copy, &NamedElement::getMemberNamespace));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c, copy, &NamedElement::getNamespace));
 }
 
 TEST_F(NamedElementTest, singletonMethodsTest) {

@@ -46,8 +46,8 @@ namespace UML{
             void setManager(UmlManager* manager) override;
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
-        public:
             NamedElement();
+        public:
             virtual ~NamedElement();
             NamedElement(const NamedElement& el);
             virtual std::string getName();

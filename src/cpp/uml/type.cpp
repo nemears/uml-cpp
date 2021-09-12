@@ -4,7 +4,7 @@
 using namespace UML;
 
 void Type::reindexID(ID oldID, ID newID) {
-    if (m_node) {
+    /**if (m_node) {
         for (auto& ref : m_node->m_references) {
             // TODO change to polymorphic?
             if (ref.second->m_managerElementMemory->isSubClassOf(ElementType::TYPED_ELEMENT)) {
@@ -17,7 +17,7 @@ void Type::reindexID(ID oldID, ID newID) {
                 }
             }
         }
-    }
+    }**/
 }
 
 ElementType Type::getElementType() const {

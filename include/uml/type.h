@@ -12,6 +12,7 @@ namespace UML{
         
         protected:
             void reindexID(ID oldID, ID newID) override;
+            Type() {};
         public:
             ElementType getElementType() const override;
             Type& operator=(Type&&) {

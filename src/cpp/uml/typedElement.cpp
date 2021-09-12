@@ -16,6 +16,23 @@ void TypedElement::AddTypeProcedure::operator()(Type* el) const {
     }
 }
 
+void TypedElement::restoreReleased(ID id, Element* el) {
+    /** TODO: anything? **/
+}
+
+void TypedElement::referencingReleased(ID id) {
+    if (m_type.id() == id) {
+        m_type.release();
+    }
+}
+
+void TypedElement::referenceReindexed(ID oldID, ID newID) {
+    NamedElement::referenceReindexed(oldID, newID);
+    if (m_type.id() == oldID) {
+        m_type.reindex(oldID, newID);
+    }
+}
+
 TypedElement::TypedElement() {
     m_type.m_signature = &TypedElement::m_type;
     m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));
@@ -29,6 +46,10 @@ TypedElement::TypedElement(const TypedElement& el) {
     m_type.m_addProcedures.clear();
     m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));
     m_type.m_addProcedures.push_back(new AddTypeProcedure(this));
+}
+
+TypedElement::~TypedElement() {
+    
 }
 
 Type* TypedElement::getType() {
@@ -63,14 +84,4 @@ bool TypedElement::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void TypedElement::restoreReleased(ID id, Element* el) {
-    /** TODO: anything? **/
-}
-
-void TypedElement::referencingReleased(ID id) {
-    if (m_type.id() == id) {
-        m_type.release();
-    }
 }

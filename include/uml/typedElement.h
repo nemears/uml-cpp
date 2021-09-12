@@ -25,14 +25,16 @@ namespace UML{
             };
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID) override;
+            TypedElement();
         public:
+            TypedElement(const TypedElement& el);
+            virtual ~TypedElement();
             virtual Type* getType();
             Type& getTypeRef();
             bool hasType() const;
             virtual void setType(Type* type);
             void setType(Type& type);
-            TypedElement();
-            TypedElement(const TypedElement& el);
             ElementType getElementType() const override;
             TypedElement& operator=(TypedElement&&) {
                 return *this;

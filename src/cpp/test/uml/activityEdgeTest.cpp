@@ -58,7 +58,6 @@ TEST_F(ActivityEdgeTest, reindexID_Test) {
     ASSERT_NO_THROW(n.getIncoming().get(e.getID()));
     ASSERT_NO_THROW(n.getOutgoing().get(e.getID()));
     ASSERT_NO_THROW(a.getEdges().get(e.getID()));
-    //ASSERT_TRUE(a.getMembers().get(e.getID()));
     ASSERT_NO_THROW(a.getOwnedElements().get(e.getID()));
 }
 
@@ -79,49 +78,61 @@ TEST_F(ActivityEdgeTest, reindexID_Test) {
 // }
 
 TEST_F(ActivityEdgeTest, overwriteIncomingTest) {
-  ActivityNode p1;
-  ActivityNode p2;
-  ActivityEdge c;
-  p1.getIncoming().add(c);
-  c.setTarget(&p2);
-  ASSERT_TRUE(p2.getIncoming().size() == 1);
-  ASSERT_TRUE(&p2.getIncoming().front() == &c);
-  ASSERT_TRUE(c.getTarget() == &p2);
-  ASSERT_TRUE(p1.getIncoming().size() == 0);
+    UmlManager m;
+    ActivityNode p1 = m.create<ActivityNode>();
+    ActivityNode p2 = m.create<ActivityNode>();
+    ActivityEdge c = m.create<ActivityEdge>();
+    p1.getIncoming().add(c);
+    c.setTarget(p2);
+    ASSERT_EQ(p2.getIncoming().size(), 1);
+    ASSERT_EQ(p2.getIncoming().front(), c);
+    ASSERT_TRUE(c.hasTarget());
+    ASSERT_TRUE(c.getTarget());
+    ASSERT_EQ(c.getTargetRef(), p2);
+    ASSERT_EQ(p1.getIncoming().size(), 0);
 }
 
 TEST_F(ActivityEdgeTest, overwriteIncomingByIncomingAddTest) {
-  ActivityNode p1;
-  ActivityNode p2;
-  ActivityEdge c;
-  p1.getIncoming().add(c);
-  p2.getIncoming().add(c);
-  ASSERT_TRUE(p2.getIncoming().size() == 1);
-  ASSERT_TRUE(&p2.getIncoming().front() == &c);
-  ASSERT_TRUE(c.getTarget() == &p2);
-  ASSERT_TRUE(p1.getIncoming().size() == 0);
+    UmlManager m;
+    ActivityNode p1 = m.create<ActivityNode>();
+    ActivityNode p2 = m.create<ActivityNode>();
+    ActivityEdge c = m.create<ActivityEdge>();
+    p1.getIncoming().add(c);
+    p2.getIncoming().add(c);
+    ASSERT_EQ(p2.getIncoming().size(), 1);
+    ASSERT_EQ(p2.getIncoming().front(), c);
+    ASSERT_TRUE(c.hasTarget());
+    ASSERT_TRUE(c.getTarget());
+    ASSERT_EQ(c.getTargetRef(), p2);
+    ASSERT_EQ(p1.getIncoming().size(), 0);
 }
 
 TEST_F(ActivityEdgeTest, overwriteOutgoingTest) {
-  ActivityNode p1;
-  ActivityNode p2;
-  ActivityEdge c;
-  p1.getOutgoing().add(c);
-  c.setSource(&p2);
-  ASSERT_TRUE(p2.getOutgoing().size() == 1);
-  ASSERT_TRUE(&p2.getOutgoing().front() == &c);
-  ASSERT_TRUE(c.getSource() == &p2);
-  ASSERT_TRUE(p1.getOutgoing().size() == 0);
+    UmlManager m;
+    ActivityNode p1 = m.create<ActivityNode>();
+    ActivityNode p2 = m.create<ActivityNode>();
+    ActivityEdge c = m.create<ActivityEdge>();
+    p1.getOutgoing().add(c);
+    c.setSource(p2);
+    ASSERT_EQ(p2.getOutgoing().size(), 1);
+    ASSERT_EQ(p2.getOutgoing().front(), c);
+    ASSERT_TRUE(c.hasSource());
+    ASSERT_TRUE(c.getSource());
+    ASSERT_EQ(c.getSourceRef(), p2);
+    ASSERT_EQ(p1.getOutgoing().size(), 0);
 }
 
 TEST_F(ActivityEdgeTest, overwriteOutgoingByOutgoingAddTest) {
-  ActivityNode p1;
-  ActivityNode p2;
-  ActivityEdge c;
-  p1.getOutgoing().add(c);
-  p2.getOutgoing().add(c);
-  ASSERT_TRUE(p2.getOutgoing().size() == 1);
-  ASSERT_TRUE(&p2.getOutgoing().front() == &c);
-  ASSERT_TRUE(c.getSource() == &p2);
-  ASSERT_TRUE(p1.getOutgoing().size() == 0);
+    UmlManager m;
+    ActivityNode p1 = m.create<ActivityNode>();
+    ActivityNode p2 = m.create<ActivityNode>();
+    ActivityEdge c = m.create<ActivityEdge>();
+    p1.getOutgoing().add(c);
+    p2.getOutgoing().add(c);
+    ASSERT_EQ(p2.getOutgoing().size(), 1);
+    ASSERT_EQ(p2.getOutgoing().front(), c);
+    ASSERT_TRUE(c.hasSource());
+    ASSERT_TRUE(c.getSource());
+    ASSERT_EQ(c.getSourceRef(), p2);
+    ASSERT_EQ(p1.getOutgoing().size(), 0);
 }

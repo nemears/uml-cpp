@@ -171,33 +171,14 @@ namespace UML {
             virtual void referencingReleased(ID id);
             void setReference(Element* referencing);
             void removeReference(ID referencing);
+            virtual void referenceReindexed(ID oldID, ID newID);
         public:
             Element();
+            Element(const Element& el);
             virtual ~Element();
-
-            // new implementation
             ID getID();
             Element* getOwner();
             Sequence<Element>& getOwnedElements();
-
-            static ElementType elementType() {
-                return ElementType::ELEMENT;
-            };
-            // Think about making the api non copyable, copying messes with the pointer vals
-            // Maybe move to copy function
-            // WARNING copying element dereferences it from model, elements it points to won't point to it
-            Element(const Element& el);
-            /**T = Element
-             * Container for owned elements
-             * opposite is getOwner
-             * read_only (TODO implement)
-             **/
-            // Sequence<Element>& getOwnedElements();
-            /**
-             * Container for relationships
-             * opposite is relatedElements
-             * read_only (TODO implement)
-             **/
             Sequence<Relationship>& getRelationships();
             Sequence<DirectedRelationship>& getDirectedRelationships();
             Sequence<Comment>& getOwnedComments();
@@ -211,6 +192,9 @@ namespace UML {
             virtual void setID(std::string id);
             void setID(ID id);
             static std::string elementTypeToString(ElementType eType);
+            static ElementType elementType() {
+                return ElementType::ELEMENT;
+            };
             template <class T = Element> T& as() {
                 if (isSubClassOf(T::elementType())) {
                     return dynamic_cast<T&>(*this);

@@ -98,6 +98,34 @@ void Element::removeReference(ID referencing) {
     }
 }
 
+void Element::referenceReindexed(ID oldID, ID newID) {
+    if (m_ownedElements->count(oldID)) {
+        m_ownedElements->reindex(oldID, newID, &Element::getOwnedElements);
+    }
+    if (m_ownerID == oldID) {
+        if (m_node) {
+            m_node->m_managerElementMemory->m_ownerID = newID;
+            for (auto& copy : m_node->m_copies) {
+                copy->m_ownerID = newID;
+            }
+        } else {
+            m_ownerID = newID;
+        }
+    }
+    if (m_ownedComments->count(oldID)) {
+        m_ownedComments->reindex(oldID, newID, &Element::getOwnedComments);
+    }
+    if (m_relationships->count(oldID)) {
+        m_relationships->reindex(oldID, newID, &Element::getRelationships);
+    }
+    if (m_directedRelationships->count(oldID)) {
+        m_directedRelationships->reindex(oldID, newID, &Element::getDirectedRelationships);
+    }
+    if (m_appliedStereotype->count(oldID)) {
+        m_appliedStereotype->reindex(oldID, newID, &Element::getAppliedStereotypes);
+    }
+}
+
 // Constructor
 Element::Element() {
     m_manager = 0;
@@ -224,7 +252,7 @@ void Element::setID(ID id) {
 }
 
 void Element::reindexID(ID oldID, ID newID) {
-    if (!m_ownerID.isNull()) {
+    /**if (!m_ownerID.isNull()) {
         if (!m_ownerPtr) {
             m_ownerPtr = &m_manager->get<Element>(m_ownerID);
         }
@@ -233,7 +261,7 @@ void Element::reindexID(ID oldID, ID newID) {
 
     for (auto& relationship : *m_relationships) {
         relationship.getRelatedElements().reindex(oldID, newID);
-    }
+    }**/
 }
 
 Sequence<Relationship>& Element::getRelationships() {

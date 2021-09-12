@@ -82,6 +82,10 @@ void UmlManager::reindex(ID oldID, ID newID) {
                 ref.second->m_referenceCount[newID] = count;
                 ref.second->m_referenceCount.erase(oldID);
             }
+            if (!ref.second->m_managerElementMemory) {
+                aquire(ref.first);
+            }
+            ref.second->m_managerElementMemory->referenceReindexed(oldID, newID);
         }
         newDisc->m_managerElementMemory->m_node = newDisc;
         for (auto& copy : newDisc->m_copies) {

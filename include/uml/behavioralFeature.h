@@ -8,10 +8,9 @@ namespace UML {
     class BehavioralFeature : public Feature , public Namespace {
         friend class UmlManager;
         protected:
-            Sequence<Behavior> m_methods;
-            Sequence<Parameter> m_ownedParameters;
+            Sequence<Behavior> m_methods = Sequence<Behavior>(this);
+            Sequence<Parameter> m_ownedParameters = Sequence<Parameter>(this);
             bool m_returnSpecified = false;
-            void setManager(UmlManager* manager) override;
             class AddMethodFunctor : public TemplateAbstractSequenceFunctor<Behavior,BehavioralFeature> {
                 public:
                     AddMethodFunctor(BehavioralFeature* me) : TemplateAbstractSequenceFunctor(me) {};
@@ -37,8 +36,10 @@ namespace UML {
                     RemoveParameterFunctor(BehavioralFeature* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Parameter& el) const override;
             };
+            void setManager(UmlManager* manager) override;
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID);
         public:
             BehavioralFeature();
             BehavioralFeature(const BehavioralFeature& el);

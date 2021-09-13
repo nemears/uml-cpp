@@ -15,6 +15,9 @@ void Classifier::referenceReindexed(ID oldID, ID newID) {
     if (m_generalizations.count(oldID)) {
         m_generalizations.reindex(oldID, newID, &Classifier::getGeneralizations);
     }
+    if (m_features.count(oldID)) {
+        m_features.reindex(oldID, newID, &Classifier::getFeatures);
+    }
     if (m_generals.count(oldID)) {
         m_generals.reindex(oldID, newID, &Classifier::getGenerals);
     }

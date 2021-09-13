@@ -10,8 +10,9 @@ namespace UML {
         protected:
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
-        public:
+            void referenceReindexed(ID oldID, ID newID);
             StructuralFeature(){};
+        public:
             StructuralFeature(const StructuralFeature& feature) : TypedElement(feature), MultiplicityElement(feature), Feature(feature) {};
             ElementType getElementType() const override;
             class InvalidValueException: public std::exception {

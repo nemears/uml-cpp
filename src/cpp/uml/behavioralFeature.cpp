@@ -9,12 +9,14 @@ void BehavioralFeature::AddMethodFunctor::operator()(Behavior& el) const {
     if (!el.getSpecification()) {
         el.setSpecification(m_el);
     }
+    updateCopiedSequenceAddedTo(el, &BehavioralFeature::getMethods);
 }
 
 void BehavioralFeature::RemoveMethodFunctor::operator()(Behavior& el) const {
     if (el.getSpecification() == m_el) {
         el.setSpecification(0);
     }
+    updateCopiedSequenceRemovedFrom(el, &BehavioralFeature::getMethods);
 }
 
 void BehavioralFeature::AddParameterFunctor::operator()(Parameter& el) const {
@@ -37,6 +39,7 @@ void BehavioralFeature::AddParameterFunctor::operator()(Parameter& el) const {
     //         method->getParameters().add(dynamic_cast<Parameter&>(el));
     //     }
     // }
+    updateCopiedSequenceAddedTo(el, &BehavioralFeature::getOwnedParameters);
 }
 
 void BehavioralFeature::CheckParameterFunctor::operator()(Parameter& el) const {
@@ -65,11 +68,23 @@ void BehavioralFeature::RemoveParameterFunctor::operator()(Parameter& el) const 
     if (m_el->getMembers().count(el.getID())) {
         m_el->getMembers().remove(el);
     }
+    updateCopiedSequenceRemovedFrom(el, &BehavioralFeature::getOwnedParameters);
 }
 
 void BehavioralFeature::setManager(UmlManager* manager) {
     Namespace::setManager(manager);
     RedefinableElement::setManager(manager);
+}
+
+void BehavioralFeature::referenceReindexed(ID oldID, ID newID) {
+    Feature::referenceReindexed(oldID, newID);
+    Namespace::referenceReindexed(oldID, newID);
+    if (m_methods.count(oldID)) {
+        m_methods.reindex(oldID, newID, &BehavioralFeature::getMethods);
+    }
+    if (m_ownedParameters.count(oldID)) {
+        m_ownedParameters.reindex(oldID, newID, &BehavioralFeature::getOwnedParameters);
+    }
 }
 
 BehavioralFeature::BehavioralFeature() {
@@ -137,4 +152,10 @@ void BehavioralFeature::restoreReleased(ID id, Element* released) {
 void BehavioralFeature::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     Feature::referencingReleased(id);
+    if (m_methods.count(id)) {
+        m_methods.elementReleased(id, &BehavioralFeature::getMethods);
+    }
+    if (m_ownedParameters.count(id)) {
+        m_ownedParameters.elementReleased(id, &BehavioralFeature::getOwnedParameters);
+    }
 }

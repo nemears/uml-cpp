@@ -2,6 +2,24 @@
 
 using namespace UML;
 
+void StructuralFeature::restoreReleased(ID id, Element* el) {
+    Feature::restoreReleased(id, el);
+    TypedElement::restoreReleased(id, el);
+    MultiplicityElement::restoreReleased(id, el);
+}
+
+void StructuralFeature::referencingReleased(ID id) {
+    Feature::referencingReleased(id);
+    TypedElement::referencingReleased(id);
+    MultiplicityElement::referencingReleased(id);
+}
+
+void StructuralFeature::referenceReindexed(ID oldID, ID newID) {
+    Feature::referenceReindexed(oldID, newID);
+    TypedElement::referenceReindexed(oldID, newID);
+    MultiplicityElement::referenceReindexed(oldID, newID);
+}
+
 ElementType StructuralFeature::getElementType() const {
     return ElementType::STRUCTURAL_FEATURE;
 }
@@ -22,15 +40,4 @@ bool StructuralFeature::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void StructuralFeature::restoreReleased(ID id, Element* el) {
-    Feature::restoreReleased(id, el);
-    TypedElement::referencingReleased(id);
-}
-
-void StructuralFeature::referencingReleased(ID id) {
-    Feature::referencingReleased(id);
-    TypedElement::referencingReleased(id);
-    MultiplicityElement::referencingReleased(id);
 }

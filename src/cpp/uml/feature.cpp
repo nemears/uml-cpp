@@ -17,11 +17,11 @@ void Feature::AddFeaturingClassifierProcedure::operator()(Classifier* el) const 
 }
 
 void Feature::reindexID(ID oldID, ID newID) {
-    if (m_featuringClassifier.has()) {
-        m_featuringClassifier.get()->getFeatures().reindex(oldID, newID);
-    }
-    RedefinableElement::reindexID(oldID, newID);
-    NamedElement::reindexID(oldID, newID);
+    // if (m_featuringClassifier.has()) {
+    //     m_featuringClassifier.get()->getFeatures().reindex(oldID, newID);
+    // }
+    // RedefinableElement::reindexID(oldID, newID);
+    // NamedElement::reindexID(oldID, newID);
 }
 
 void Feature::reindexName(string oldName, string newName) {
@@ -31,6 +31,13 @@ void Feature::reindexName(string oldName, string newName) {
     NamedElement::reindexName(oldName, newName);
 }
 
+void Feature::referenceReindexed(ID oldID, ID newID) {
+    RedefinableElement::referenceReindexed(oldID, newID);
+    if (m_featuringClassifier.id() == oldID) {
+        m_featuringClassifier.reindex(oldID, newID);
+    }
+}
+
 Feature::Feature() {
     m_featuringClassifier.m_signature = &Feature::m_featuringClassifier;
     m_featuringClassifier.m_removeProcedures.push_back(new RemoveFeaturingClassifierProcedure(this));
@@ -38,7 +45,7 @@ Feature::Feature() {
     m_static = false;
 }
 
-Feature::Feature(const Feature& feature) {
+Feature::Feature(const Feature& feature) : RedefinableElement(feature), NamedElement(feature), Element(feature) {
     m_featuringClassifier = feature.m_featuringClassifier;
     m_featuringClassifier.m_me = this;
     m_featuringClassifier.m_removeProcedures.clear();

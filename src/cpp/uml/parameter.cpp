@@ -53,9 +53,7 @@ Parameter::Parameter() {
 Parameter::Parameter(const Parameter& param) : TypedElement(param) , NamedElement(param), Element(param) {
     m_direction = param.m_direction;
     m_operationID = param.m_operationID;
-    if (!param.m_manager) {
-        m_operationPtr = param.m_operationPtr;
-    }
+    m_operationPtr = 0;
 }
 
 Parameter::~Parameter() {

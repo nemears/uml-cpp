@@ -138,8 +138,8 @@ void Classifier::RemoveAttributeFunctor::operator()(Property& el) const {
 }
 
 void Classifier::CheckGeneralizationFunctor::operator()(Generalization& el) const {
-    if (el.getGeneral()) {
-        if (el.getGeneral() == m_el) {
+    if (el.hasGeneral()) {
+        if (el.getGeneralRef() == *m_el) {
             throw InvalidGeneralizationException(el.getID().string());
         }
     }
@@ -167,6 +167,7 @@ void Classifier::AddGeneralizationFunctor::operator()(Generalization& el) const 
     if (!m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalAdd(el);
     }
+    updateCopiedSequenceAddedTo(el, &Classifier::getGeneralizations);
 }
 
 void Classifier::RemoveGeneralizationFunctor::operator()(Generalization& el) const {
@@ -191,6 +192,7 @@ void Classifier::RemoveGeneralizationFunctor::operator()(Generalization& el) con
     if (m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalRemove(el);
     }
+    updateCopiedSequenceRemovedFrom(el, &Classifier::getGeneralizations);
 }
 
 void Classifier::AddGeneralFunctor::operator()(Classifier& el) const {
@@ -209,6 +211,7 @@ void Classifier::AddGeneralFunctor::operator()(Classifier& el) const {
         newGen.setGeneral(&dynamic_cast<Classifier&>(el));
         newGen.setSpecific(dynamic_cast<Classifier*>(m_el));
     }
+    updateCopiedSequenceAddedTo(el, &Classifier::getGenerals);
 }
 
 void Classifier::RemoveGeneralFunctor::operator()(Classifier& el) const {
@@ -217,6 +220,7 @@ void Classifier::RemoveGeneralFunctor::operator()(Classifier& el) const {
             general.setGeneral(0);
         }
     }
+    updateCopiedSequenceRemovedFrom(el, &Classifier::getGenerals);
 }
 
 void Classifier::AddFeatureFunctor::operator()(Feature& el) const {
@@ -257,12 +261,14 @@ void Classifier::AddInheritedMemberFunctor::operator()(NamedElement& el) const {
     if (!m_el->getMembers().count(el.getID())) {
         m_el->getMembers().add(el);
     }
+    updateCopiedSequenceAddedTo(el, &Classifier::getInheritedMembers);
 }
 
 void Classifier::RemoveInheritedMemberFunctor::operator()(NamedElement& el) const {
     if (m_el->getMembers().count(el.getID())) {
         m_el->getMembers().remove(el);
     }
+    updateCopiedSequenceRemovedFrom(el, &Classifier::getInheritedMembers);
 }
 
 void Classifier::ClassifierAddMemberFunctor::operator()(NamedElement& el) const {

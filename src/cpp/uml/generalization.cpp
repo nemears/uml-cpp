@@ -1,126 +1,182 @@
 #include "uml/generalization.h"
 #include "uml/classifier.h"
-#include "uml/universalFunctions.h"
 
 using namespace UML;
 
+void Generalization::RemoveGeneralProcedure::operator()(Classifier* el) const {
+    if (m_me->getTargets().count(el->getID())) {
+        m_me->getTargets().remove(*el);
+    }
+    if (m_me->m_specific.has()) {
+        for (auto& member : el->getMembers()) {
+            if (m_me->m_specific.getRef().getInheritedMembers().count(member.getID())) {
+                m_me->m_specific.getRef().getInheritedMembers().remove(member);
+            }
+        }
+        if (m_me->m_specific.getRef().getGenerals().count(el->getID())) {
+            m_me->m_specific.getRef().getGenerals().remove(*el);
+        }
+    }
+}
+
+void Generalization::AddGeneralProcedure::operator()(Classifier* el) const {
+    if (!m_me->getTargets().count(el->getID())) {
+        m_me->getTargets().add(*el);
+    }
+    if (m_me->m_specific.has()) {
+        for (auto& member : el->getMembers()) {
+            if (!m_me->m_specific.getRef().getInheritedMembers().count(member.getID())) {
+                m_me->m_specific.getRef().getInheritedMembers().add(member);
+            }
+        }
+        if (!m_me->m_specific.getRef().getGenerals().count(el->getID())) {
+            m_me->m_specific.getRef().getGenerals().add(*el);
+        }
+    }
+}
+
+void Generalization::RemoveSpecificProcedure::operator()(Classifier* el) const {
+    if (m_me->getSources().count(el->getID())) {
+        m_me->getSources().remove(*el);
+    }
+    if (el->getGeneralizations().count(m_me->getID())) {
+        el->getGeneralizations().remove(*m_me);
+    }
+    /**if (m_me->getOwner()) {
+        if (*m_me->getOwner() == *el) {
+            m_me->setOwner(0);
+        }
+    }**/
+    if (m_me->m_general.has()) {
+        for (auto& member : m_me->m_general.getRef().getMembers()) {
+            if (el->getInheritedMembers().count(member.getID())) {
+                el->getInheritedMembers().remove(member);
+            }
+        }
+        if (el->getGenerals().count(m_me->m_specific.id())) {
+            el->getGenerals().remove(m_me->m_specific.getRef());
+        }
+    }
+}
+
+void Generalization::AddSpecificProcedure::operator()(Classifier* el) const {
+    if (!m_me->getSources().count(el->getID())) {
+        m_me->getSources().add(*el);
+    }
+    if (!el->getGeneralizations().count(m_me->getID())) {
+        el->getGeneralizations().add(*m_me);
+    }
+    /**bool setOwner = false;
+    if (m_me->getOwner()) {
+        setOwner = *m_me->getOwner() == *el;
+    }
+    if (!m_me->getOwner() || setOwner) {
+        m_me->setOwner(el);
+    }**/
+    if (m_me->m_general.has()) {
+        for (auto& member : m_me->m_general.getRef().getMembers()) {
+            if (member.getVisibility() != VisibilityKind::PRIVATE) {
+                if (!el->getInheritedMembers().count(member.getID())) {
+                    el->getInheritedMembers().add(member);
+                }
+            }
+        }
+        if (!el->getGenerals().count(m_me->m_general.id())) {
+            el->getGenerals().add(m_me->m_general.getRef());
+        }
+    }
+}
+
+void Generalization::referenceReindexed(ID oldID, ID newID) {
+    DirectedRelationship::referenceReindexed(oldID, newID);
+    if (m_general.id() == oldID) {
+        m_general.reindex(oldID, newID);
+    }
+    if (m_specific.id() == oldID) {
+        m_specific.reindex(oldID, newID);
+    }
+}
+
+void Generalization::restoreReleased(ID id, Element* released) {
+    DirectedRelationship::restoreReleased(id, released);
+}
+
+void Generalization::referencingReleased(ID id) {
+    DirectedRelationship::referencingReleased(id);
+    if (m_general.id() == id) {
+        m_general.release();
+    }
+    if (m_specific.id() == id) {
+        m_specific.release();
+    }
+}
+
 Generalization::Generalization() {
-    m_generalPtr = 0;
-    m_specificPtr = 0;
+    m_general.m_signature = &Generalization::m_general;
+    m_general.m_removeProcedures.push_back(new RemoveGeneralProcedure(this));
+    m_general.m_addProcedures.push_back(new AddGeneralProcedure(this));
+    m_specific.m_signature = &Generalization::m_specific;
+    m_specific.m_removeProcedures.push_back(new RemoveSpecificProcedure(this));
+    m_specific.m_addProcedures.push_back(new AddSpecificProcedure(this));
+}
+
+Generalization::Generalization(const Generalization& rhs) : DirectedRelationship(rhs), Element(rhs) {
+    m_general = rhs.m_general;
+    m_general.m_me = this;
+    m_general.m_removeProcedures.clear();
+    m_general.m_addProcedures.clear();
+    m_general.m_removeProcedures.push_back(new RemoveGeneralProcedure(this));
+    m_general.m_addProcedures.push_back(new AddGeneralProcedure(this));
+    m_specific = rhs.m_specific;
+    m_specific.m_me = this;
+    m_specific.m_addProcedures.clear();
+    m_specific.m_removeProcedures.clear();
+    m_specific.m_removeProcedures.push_back(new RemoveSpecificProcedure(this));
+    m_specific.m_addProcedures.push_back(new AddSpecificProcedure(this));
+}
+
+Generalization::~Generalization() {
+    
 }
 
 Classifier* Generalization::getGeneral() {
-    return universalGet<Classifier>(m_generalID, m_generalPtr, m_manager);
+    return m_general.get();
+}
+
+Classifier& Generalization::getGeneralRef() {
+    return m_general.getRef();
+}
+
+bool Generalization::hasGeneral() const {
+    return m_general.has();
 }
 
 void Generalization::setGeneral(Classifier* general) {
-    if (!m_generalID.isNull()) {
-        if (!m_generalPtr) {
-            m_generalPtr = &m_manager->get<Classifier>(m_generalID);
-        }
-        if (m_generalPtr->getRelationships().count(m_id)) {
-            m_generalPtr->getRelationships().internalRemove(*this);
-        }
-        if (!m_specificID.isNull()) {
-            if(!m_specificPtr) {
-                m_specificPtr = &m_manager->get<Classifier>(m_specificID);
-            }
-            for (auto& member : m_generalPtr->getMembers()) {
-                if (m_specificPtr->getInheritedMembers().count(member.getID())) {
-                    m_specificPtr->getInheritedMembers().remove(member);
-                }
-            }
-            if (m_specificPtr->getGenerals().count(m_generalPtr->getID())) {
-                m_specificPtr->getGenerals().remove(*m_generalPtr);
-            }
-        }
-        m_generalID = ID::nullID();
-        m_generalPtr = 0;
-    }
+    m_general.set(general);
+}
 
-    if (general) {
-        m_generalID = general->getID();
-    }
-
-    if (!m_manager) {
-        m_generalPtr = general;
-    }
-
-    if (general) {
-        if (!getTargets().count(general->getID())) {
-            getTargets().add(*general);
-        }
-        if (!m_specificID.isNull()) {
-            if (!m_specificPtr) {
-                m_specificPtr = &m_manager->get<Classifier>(m_specificID);
-            }
-            if (!m_specificPtr->getGenerals().count(m_generalID)) {
-                m_specificPtr->getGenerals().add(*general);
-            }
-            for (auto& member : general->getMembers()) {
-                if (!m_specificPtr->getInheritedMembers().count(member.getID()) && member.getVisibility() != VisibilityKind::PRIVATE) {
-                    m_specificPtr->getInheritedMembers().add(member);
-                }
-            }
-        }
-    }
+void Generalization::setGeneral(Classifier& general) {
+    m_general.set(general);
 }
 
 Classifier* Generalization::getSpecific() {
-    return universalGet<Classifier>(m_specificID, m_specificPtr, m_manager);
+    return m_specific.get();
+}
+
+Classifier& Generalization::getSpecificRef() {
+    return m_specific.getRef();
+}
+
+bool Generalization::hasSpecific() const {
+    return m_specific.has();
 }
 
 void Generalization::setSpecific(Classifier* specific) {
-    if (!m_specificID.isNull()) {
-        if (!m_specificPtr) {
-            m_specificPtr = &m_manager->get<Classifier>(m_specificID);
-        }
-        if (m_specificPtr->getRelationships().count(m_id)) {
-            m_specificPtr->getRelationships().internalRemove(*this);
-        }
-        if (m_specificPtr->getGeneralizations().count(m_id)) {
-            m_specificPtr->getGeneralizations().remove(*this);
-        }
-        if (!m_generalID.isNull()) {
-            if (!m_generalPtr) {
-                m_generalPtr = &m_manager->get<Classifier>(m_generalID);
-            }
-            for (auto& member: m_generalPtr->getMembers()) {
-                if (m_specificPtr->getInheritedMembers().count(member.getID())) {
-                    m_specificPtr->getInheritedMembers().remove(member);
-                }
-            }
-        }
-        m_specificPtr = 0;
-        m_specificID = ID::nullID();
-    }
+    m_specific.set(specific);
+}
 
-    if (specific) {
-        m_specificID = specific->getID();
-    }
-
-    if (!m_manager) {
-        m_specificPtr = specific;
-    }
-
-    if (specific) {
-        if (!getSources().count(specific->getID())) {
-            getSources().add(*specific);
-        }
-        if (!specific->getGeneralizations().count(m_id)) {
-            specific->getGeneralizations().add(*this);
-        }
-        if (!m_generalID.isNull()) {
-            if (!m_generalPtr) {
-                m_generalPtr = &m_manager->get<Classifier>(m_generalID);
-            }
-            for (auto& member: m_generalPtr->getMembers()) {
-                if (!specific->getInheritedMembers().count(member.getID()) && member.getVisibility() != VisibilityKind::PRIVATE) {
-                    specific->getInheritedMembers().add(member);
-                }
-            }
-        }
-    }
+void Generalization::setSpecific(Classifier& specific) {
+    m_specific.set(specific);
 }
 
 ElementType Generalization::getElementType() const {

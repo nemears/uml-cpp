@@ -81,9 +81,9 @@ TEST_F(EnumerationTest, setNullEnumeration) {
 
 TEST_F(EnumerationTest, copyEnumerationTest) {
     UmlManager m;
-    Enumeration e = m.create<Enumeration>();
-    EnumerationLiteral l = m.create<EnumerationLiteral>();
-    Package p = m.create<Package>();
+    Enumeration& e = m.create<Enumeration>();
+    EnumerationLiteral& l = m.create<EnumerationLiteral>();
+    Package& p = m.create<Package>();
     e.setName("test");
     p.getPackagedElements().add(e);
     e.getOwnedLiteral().add(l);

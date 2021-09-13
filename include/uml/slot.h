@@ -11,13 +11,34 @@ namespace UML {
     class Slot : public Element {
         friend class UmlManager;
         protected:
-            ID m_definingFeatureID;
-            StructuralFeature* m_definingFeaturePtr;
+            Singleton<StructuralFeature, Slot> m_definingFeature = Singleton<StructuralFeature, Slot>(this);
+            class RemoveDefiningFeatureProcedure : public AbstractSingletonProcedure<StructuralFeature, Slot> {
+                public:
+                    RemoveDefiningFeatureProcedure(Slot* me) : AbstractSingletonProcedure<StructuralFeature, Slot>(me) {};
+                    void operator()(StructuralFeature* el) const override;
+            };
+            class AddDefiningFeatureProcedure : public AbstractSingletonProcedure<StructuralFeature, Slot> {
+                public:
+                    AddDefiningFeatureProcedure(Slot* me) : AbstractSingletonProcedure<StructuralFeature, Slot>(me) {};
+                    void operator()(StructuralFeature* el) const override;
+            };
             Sequence<ValueSpecification> m_values;
-            ID m_owningInstanceID;
-            InstanceSpecification* m_owningInstancePtr;
+            Singleton<InstanceSpecification, Slot> m_owningInstance = Singleton<InstanceSpecification, Slot>(this);
+            class RemoveOwningInstanceProcedure : public AbstractSingletonProcedure<InstanceSpecification, Slot> {
+                public:
+                    RemoveOwningInstanceProcedure(Slot* me) : AbstractSingletonProcedure<InstanceSpecification, Slot>(me) {};
+                    void operator()(InstanceSpecification* el) const override;
+            };
+            class AddOwningInstanceProcedure : public AbstractSingletonProcedure<InstanceSpecification, Slot> {
+                public:
+                    AddOwningInstanceProcedure(Slot* me) : AbstractSingletonProcedure<InstanceSpecification, Slot>(me) {};
+                    void operator()(InstanceSpecification* el) const override;
+            };
             void reindexID(ID oldID, ID newID) override;
             void setManager(UmlManager* manager) override;
+            void restoreReleased(ID id, Element* released) override;
+            void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID) override;
             class AddValueFunctor : public TemplateAbstractSequenceFunctor<ValueSpecification,Slot> {
                 public:
                     AddValueFunctor(Slot* me) : TemplateAbstractSequenceFunctor(me) {};
@@ -28,14 +49,21 @@ namespace UML {
                     RemoveValueFunctor(Slot* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(ValueSpecification& el) const override;
             };
-        public:
             Slot();
-            ~Slot();
+        public:
+            Slot(const Slot& rhs);
+            virtual ~Slot();
             Sequence<ValueSpecification>& getValues();
             StructuralFeature* getDefiningFeature();
-            InstanceSpecification* getOwningInstance();
-            void setOwningInstance(InstanceSpecification* inst);
+            StructuralFeature& getDefiningFeatureRef();
+            bool hasDefiningFeature() const;
+            void setDefiningFeature(StructuralFeature& definingFeature);
             void setDefiningFeature(StructuralFeature* definingFeature);
+            InstanceSpecification* getOwningInstance();
+            InstanceSpecification& getOwningInstanceRef();
+            bool hasOwningInstance() const;
+            void setOwningInstance(InstanceSpecification& inst);
+            void setOwningInstance(InstanceSpecification* inst);
             ElementType getElementType() const override;
             class NullDefiningFeatureException : public std::exception {
                 public:

@@ -64,8 +64,9 @@ TEST_F(ValueSpecificationTest, LiteralBoolTest) {
 }
 
 TEST_F(ValueSpecificationTest, reindexID_forSlotTest) {
-    LiteralBool v;
-    Slot s;
+    UmlManager m;
+    LiteralBool& v = m.create<LiteralBool>();
+    Slot& s = m.create<Slot>();
     s.getValues().add(v);
     v.setID("eb092018_0bef_4ad6_b80f_05fa");
     ASSERT_NO_THROW(s.getValues().get(v.getID()));

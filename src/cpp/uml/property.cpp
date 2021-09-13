@@ -131,59 +131,59 @@ void Property::AddTypeProcedure::operator()(Type* el) const {
 }
 
 void Property::reindexID(ID oldID, ID newID) {
-    if (m_classifier.has()) {
-        m_classifier.get()->getAttributes().reindex(oldID, newID);
-    }
+    // if (m_classifier.has()) {
+    //     m_classifier.get()->getAttributes().reindex(oldID, newID);
+    // }
 
-    if (m_dataType.has()) {
-        m_dataType.get()->getOwnedAttribute().reindex(oldID, newID);
-    }
+    // if (m_dataType.has()) {
+    //     m_dataType.get()->getOwnedAttribute().reindex(oldID, newID);
+    // }
 
-    if (m_structuredClassifier.has()) {
-        if (m_structuredClassifier.get()->getOwnedAttributes().count(oldID)) {
-            m_structuredClassifier.get()->getOwnedAttributes().reindex(oldID, newID);
-        }
-        if (m_structuredClassifier.get()->getRole().count(oldID)) {
-            m_structuredClassifier.get()->getRole().reindex(oldID, newID);
-        }
-        if (m_structuredClassifier.get()->getParts().count(oldID)) {
-            m_structuredClassifier.get()->getParts().reindex(oldID, newID);
-        }
-    }
+    // if (m_structuredClassifier.has()) {
+    //     if (m_structuredClassifier.get()->getOwnedAttributes().count(oldID)) {
+    //         m_structuredClassifier.get()->getOwnedAttributes().reindex(oldID, newID);
+    //     }
+    //     if (m_structuredClassifier.get()->getRole().count(oldID)) {
+    //         m_structuredClassifier.get()->getRole().reindex(oldID, newID);
+    //     }
+    //     if (m_structuredClassifier.get()->getParts().count(oldID)) {
+    //         m_structuredClassifier.get()->getParts().reindex(oldID, newID);
+    //     }
+    // }
 
-    if (m_association.has()) {
-        if (m_association.get()->getMemberEnds().count(oldID)) {
-            m_association.get()->getMemberEnds().reindex(oldID, newID);
-        }
-    }
+    // if (m_association.has()) {
+    //     if (m_association.get()->getMemberEnds().count(oldID)) {
+    //         m_association.get()->getMemberEnds().reindex(oldID, newID);
+    //     }
+    // }
 
-    if (m_owningAssociation.has()) {
-        if (m_owningAssociation.get()->getOwnedEnds().count(oldID)) {
-            m_owningAssociation.get()->getOwnedEnds().reindex(oldID, newID);
-        }
-        if (m_owningAssociation.get()->getNavigableOwnedEnds().count(oldID)) {
-            m_owningAssociation.get()->getNavigableOwnedEnds().reindex(oldID, newID);
-        }
-    }
+    // if (m_owningAssociation.has()) {
+    //     if (m_owningAssociation.get()->getOwnedEnds().count(oldID)) {
+    //         m_owningAssociation.get()->getOwnedEnds().reindex(oldID, newID);
+    //     }
+    //     if (m_owningAssociation.get()->getNavigableOwnedEnds().count(oldID)) {
+    //         m_owningAssociation.get()->getNavigableOwnedEnds().reindex(oldID, newID);
+    //     }
+    // }
 
-    if (m_node) {
-        for (auto& id : m_node->m_referenceOrder) {
-            ManagerNode* refNode = m_node->m_references[id];
-            Element* ref = refNode->m_managerElementMemory;
-            if (ref) {
-                if (ref->isSubClassOf(ElementType::PROPERTY)) {
-                    if (ref->as<Property>().m_redefinedProperties.count(oldID)) {
-                        ref->as<Property>().m_redefinedProperties.reindex(oldID, newID);
-                        for (auto& refCopy: refNode->m_copies) {
-                            refCopy->as<Property>().m_redefinedProperties.reindex(oldID, newID);
-                        }
-                    }
-                }
-            } else {
-                /** TODO: throw error **/
-            }
-        }
-    }
+    // if (m_node) {
+    //     for (auto& id : m_node->m_referenceOrder) {
+    //         ManagerNode* refNode = m_node->m_references[id];
+    //         Element* ref = refNode->m_managerElementMemory;
+    //         if (ref) {
+    //             if (ref->isSubClassOf(ElementType::PROPERTY)) {
+    //                 if (ref->as<Property>().m_redefinedProperties.count(oldID)) {
+    //                     ref->as<Property>().m_redefinedProperties.reindex(oldID, newID);
+    //                     for (auto& refCopy: refNode->m_copies) {
+    //                         refCopy->as<Property>().m_redefinedProperties.reindex(oldID, newID);
+    //                     }
+    //                 }
+    //             }
+    //         } else {
+    //             /** TODO: throw error **/
+    //         }
+    //     }
+    // }
 
     Feature::reindexID(oldID, newID);
 }
@@ -284,6 +284,70 @@ void Property::setManager(UmlManager* manager) {
     NamedElement::setManager(manager);
     RedefinableElement::setManager(manager);
     m_redefinedProperties.m_manager = manager;
+}
+
+void Property::restoreReleased(ID id, Element* released) {
+    StructuralFeature::restoreReleased(id, released);
+}
+
+void Property::referencingReleased(ID id) {
+    StructuralFeature::referencingReleased(id);
+    if (m_defaultValue.id() == id) {
+        m_defaultValue.release();
+    }
+    if (m_classifier.id() == id) {
+        m_classifier.release();
+    }
+    if (m_structuredClassifier.id() == id) {
+        m_structuredClassifier.release();
+    }
+    if (m_dataType.id() == id) {
+        m_dataType.release();
+    }
+    if (m_class.id() == id) {
+        m_class.release();
+    }
+    if (m_artifact.id() == id) {
+        m_artifact.release();
+    }
+    if (m_association.id() == id) {
+        m_association.release();
+    }
+    if (m_owningAssociation.id() == id) {
+        m_owningAssociation.release();
+    }
+    m_redefinedProperties.elementReleased(id, &Property::getRedefinedProperties);
+}
+
+void Property::referenceReindexed(ID oldID, ID newID) {
+    StructuralFeature::referenceReindexed(oldID, newID);
+    if (m_defaultValue.id() == oldID) {
+        m_defaultValue.reindex(oldID, newID);
+    }
+    if (m_classifier.id() == oldID) {
+        m_classifier.reindex(oldID, newID);
+    }
+    if (m_structuredClassifier.id() == oldID) {
+        m_structuredClassifier.reindex(oldID, newID);
+    }
+    if (m_dataType.id() == oldID) {
+        m_dataType.reindex(oldID, newID);
+    }
+    if (m_class.id() == oldID) {
+        m_class.reindex(oldID, newID);
+    }
+    if (m_artifact.id() == oldID) {
+        m_artifact.reindex(oldID, newID);
+    }
+    if (m_association.id() == oldID) {
+        m_association.reindex(oldID, newID);
+    }
+    if (m_owningAssociation.id() == oldID) {
+        m_owningAssociation.reindex(oldID, newID);
+    }
+    if (m_redefinedProperties.count(oldID)) {
+        m_redefinedProperties.reindex(oldID, newID), &Property::getRedefinedProperties;
+    }
 }
 
 Property::Property() {
@@ -609,37 +673,4 @@ bool Property::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void Property::restoreReleased(ID id, Element* released) {
-    StructuralFeature::restoreReleased(id, released);
-}
-
-void Property::referencingReleased(ID id) {
-    StructuralFeature::referencingReleased(id);
-    if (m_defaultValue.id() == id) {
-        m_defaultValue.release();
-    }
-    if (m_classifier.id() == id) {
-        m_classifier.release();
-    }
-    if (m_structuredClassifier.id() == id) {
-        m_structuredClassifier.release();
-    }
-    if (m_dataType.id() == id) {
-        m_dataType.release();
-    }
-    if (m_class.id() == id) {
-        m_class.release();
-    }
-    if (m_artifact.id() == id) {
-        m_artifact.release();
-    }
-    if (m_association.id() == id) {
-        m_association.release();
-    }
-    if (m_owningAssociation.id() == id) {
-        m_owningAssociation.release();
-    }
-    m_redefinedProperties.elementReleased(id, &Property::getRedefinedProperties);
 }

@@ -22,6 +22,7 @@ void DataType::AddOwnedAttributeFunctor::operator()(Property& el) const {
     if (el.getDataType() != m_el) {
         el.setDataType(m_el);
     }
+    updateCopiedSequenceAddedTo(el, &DataType::getOwnedAttribute);
 }
 
 void DataType::RemoveOwnedAttributeFunctor::operator()(Property& el) const {
@@ -36,6 +37,7 @@ void DataType::RemoveOwnedAttributeFunctor::operator()(Property& el) const {
     if (el.getDataType() == m_el) {
         el.setDataType(0);
     }
+    updateCopiedSequenceRemovedFrom(el, &DataType::getOwnedAttribute);
 }
 
 void DataType::AddOwnedOperationFunctor::operator()(Operation& el) const {
@@ -54,6 +56,7 @@ void DataType::AddOwnedOperationFunctor::operator()(Operation& el) const {
     if (!el.getRedefinitionContext().count(m_el->getID())) {
         el.getRedefinitionContext().add(*m_el);
     }
+    updateCopiedSequenceAddedTo(el, &DataType::getOwnedOperation);
 }
 
 void DataType::RemoveOwnedOperationFunctor::operator()(Operation& el) const {
@@ -72,6 +75,30 @@ void DataType::RemoveOwnedOperationFunctor::operator()(Operation& el) const {
     if (el.getRedefinitionContext().count(m_el->getID())) {
         el.getRedefinitionContext().remove(*m_el);
     }
+    updateCopiedSequenceRemovedFrom(el, &DataType::getOwnedOperation);
+}
+
+void DataType::referenceReindexed(ID oldID, ID newID) {
+    Classifier::referenceReindexed(oldID, newID);
+    if (m_ownedAttribute.count(oldID)) {
+        m_ownedAttribute.reindex(oldID, newID, &DataType::getOwnedAttribute);
+    }
+    if (m_ownedOperation.count(oldID)) {
+        m_ownedOperation.reindex(oldID, newID, &DataType::getOwnedOperation);
+    }
+}
+
+void DataType::restoreReleased(ID id, Element* released) {
+    Classifier::restoreReleased(id, released);
+}
+
+void DataType::referencingReleased(ID id) {
+    if (m_ownedAttribute.count(id)) {
+        m_ownedAttribute.elementReleased(id, &DataType::getOwnedAttribute);
+    }
+    if (m_ownedOperation.count(id)) {
+        m_ownedOperation.elementReleased(id, &DataType::getOwnedOperation);
+    }
 }
 
 DataType::DataType() {
@@ -85,13 +112,15 @@ DataType::~DataType() {
     
 }
 
-DataType::DataType(const DataType& el) : Classifier(el) , PackageableElement(el), NamedElement(el), Element(el){
+DataType::DataType(const DataType& el) : Classifier(el), PackageableElement(el), NamedElement(el), Element(el){
     m_ownedAttribute = el.m_ownedAttribute;
+    m_ownedAttribute.m_el = this;
     m_ownedAttribute.addProcedures.clear();
     m_ownedAttribute.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
     m_ownedAttribute.removeProcedures.clear();
     m_ownedAttribute.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
     m_ownedOperation = el.m_ownedOperation;
+    m_ownedOperation.m_el = this;
     m_ownedOperation.addProcedures.clear();
     m_ownedOperation.addProcedures.push_back(new AddOwnedOperationFunctor(this));
     m_ownedOperation.removeProcedures.clear();

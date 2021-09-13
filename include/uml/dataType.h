@@ -7,9 +7,8 @@ namespace UML {
     class DataType : public Classifier {
         friend class UmlManager;
         protected:
-            Sequence<Property> m_ownedAttribute;
-            Sequence<Operation> m_ownedOperation;
-            void setManager(UmlManager* manager) override;
+            Sequence<Property> m_ownedAttribute = Sequence<Property>(this);
+            Sequence<Operation> m_ownedOperation = Sequence<Operation>(this);
             class AddOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,DataType> {
                 public:
                     AddOwnedAttributeFunctor(DataType* me) : TemplateAbstractSequenceFunctor(me) {};
@@ -30,8 +29,12 @@ namespace UML {
                     RemoveOwnedOperationFunctor(DataType* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Operation& el) const override;
             };
-        public:
+            void setManager(UmlManager* manager) override;
+            void restoreReleased(ID id, Element* released) override;
+            void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID) override;
             DataType();
+        public:
             ~DataType();
             DataType(const DataType& data);
             Sequence<Property>& getOwnedAttribute();

@@ -10,16 +10,16 @@ void Classifier::referenceReindexed(ID oldID, ID newID) {
     Namespace::referenceReindexed(oldID, newID);
     PackageableElement::referenceReindexed(oldID, newID);
     if (m_attributes.count(oldID)) {
-        m_attributes.reindex(oldID, newID);
+        m_attributes.reindex(oldID, newID, &Classifier::getAttributes);
     }
     if (m_generalizations.count(oldID)) {
-        m_generalizations.reindex(oldID, newID);
+        m_generalizations.reindex(oldID, newID, &Classifier::getGeneralizations);
     }
     if (m_generals.count(oldID)) {
-        m_generals.reindex(oldID, newID);
+        m_generals.reindex(oldID, newID, &Classifier::getGenerals);
     }
     if (m_inheritedMembers.count(oldID)) {
-        m_generals.reindex(oldID, newID);
+        m_inheritedMembers.reindex(oldID, newID, &Classifier::getInheritedMembers);
     }
 }
 

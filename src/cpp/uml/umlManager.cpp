@@ -46,6 +46,8 @@ size_t UmlManager::count(ID id) {
 bool UmlManager::loaded(ID id) {
     if (count(id)) {
         return m_graph[id].m_managerElementMemory;
+    } else {
+        return false;
     }
 }
 

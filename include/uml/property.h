@@ -146,6 +146,7 @@ namespace UML{
             void setManager(UmlManager* manager) override;
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID) override;
         public: 
             Property();
             Property(const Property& prop);

@@ -36,7 +36,7 @@ void NamedElement::referenceReindexed(ID oldID, ID newID) {
         m_namespace.reindex(oldID, newID);
     }
     if (m_memberNamespace->count(oldID)) {
-        m_memberNamespace->reindex(oldID, newID);
+        m_memberNamespace->reindex(oldID, newID, &NamedElement::getMemberNamespace);
     }
 }
 

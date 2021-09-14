@@ -74,6 +74,8 @@ void BehavioralFeature::RemoveParameterFunctor::operator()(Parameter& el) const 
 void BehavioralFeature::setManager(UmlManager* manager) {
     Namespace::setManager(manager);
     RedefinableElement::setManager(manager);
+    m_methods.m_manager = manager;
+    m_ownedParameters.m_manager = manager;
 }
 
 void BehavioralFeature::referenceReindexed(ID oldID, ID newID) {

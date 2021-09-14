@@ -6,7 +6,9 @@
 
 namespace UML {
     class BehavioralFeature : public Feature , public Namespace {
+
         friend class UmlManager;
+
         protected:
             Sequence<Behavior> m_methods = Sequence<Behavior>(this);
             Sequence<Parameter> m_ownedParameters = Sequence<Parameter>(this);
@@ -40,8 +42,8 @@ namespace UML {
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID);
-        public:
             BehavioralFeature();
+        public:
             BehavioralFeature(const BehavioralFeature& el);
             ~BehavioralFeature();
             Sequence<Behavior>& getMethods();

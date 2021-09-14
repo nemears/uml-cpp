@@ -79,6 +79,7 @@ void Slot::AddValueFunctor::operator()(ValueSpecification& el) const {
     if (el.getOwner() != m_el) {
         el.setOwner(m_el);
     }
+    updateCopiedSequenceAddedTo(el, &Slot::getValues);
 }
 
 void Slot::RemoveValueFunctor::operator()(ValueSpecification& el) const {
@@ -89,6 +90,7 @@ void Slot::RemoveValueFunctor::operator()(ValueSpecification& el) const {
     if (el.getOwner() == m_el) {
         el.setOwner(0);
     }
+    updateCopiedSequenceRemovedFrom(el, &Slot::getValues);
 }
 
 Slot::Slot() {

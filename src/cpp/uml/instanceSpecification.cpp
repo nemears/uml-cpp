@@ -41,6 +41,7 @@ void InstanceSpecification::AddSlotFunctor::operator()(Slot& el) const {
     if (!m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalAdd(el);
     }
+    updateCopiedSequenceAddedTo(el, &InstanceSpecification::getSlots);
 }
 
 void InstanceSpecification::RemoveSlotFunctor::operator()(Slot& el) const {
@@ -51,6 +52,7 @@ void InstanceSpecification::RemoveSlotFunctor::operator()(Slot& el) const {
     if (m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalRemove(el);
     }
+    updateCopiedSequenceRemovedFrom(el, &InstanceSpecification::getSlots);
 }
 
 void InstanceSpecification::setManager(UmlManager* manager) {
@@ -64,7 +66,7 @@ void InstanceSpecification::referenceReindexed(ID oldID, ID newID) {
         m_classifier.reindex(oldID, newID);
     }
     if (m_slots.count(oldID)) {
-        m_slots.reindex(oldID, newID);
+        m_slots.reindex(oldID, newID, &InstanceSpecification::getSlots);
     }
     if (m_specification.id() == oldID) {
         m_specification.reindex(oldID, newID);
@@ -186,5 +188,8 @@ void InstanceSpecification::referencingReleased(ID id) {
     }
     if (m_specification.id() == id) {
         m_specification.release();
+    }
+    if (m_slots.count(id)) {
+        m_slots.elementReleased(id, &InstanceSpecification::getSlots);
     }
 }

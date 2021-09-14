@@ -85,11 +85,12 @@ TEST_F(InstanceSpecificationTest, addSlotFunctorTest) {
     InstanceSpecification i = m.create<InstanceSpecification>();
     Slot& s = m.create<Slot>();
     i.getSlots().add(s);
-    ASSERT_TRUE(&i.getSlots().get(s.getID()) == &s);
-    ASSERT_TRUE(i.getSlots().size() == 1);
-    ASSERT_TRUE(&i.getOwnedElements().get(s.getID()) == &s);
-    ASSERT_TRUE(i.getOwnedElements().size() == 1);
-    ASSERT_TRUE(s.getOwningInstance() == &i);
+    ASSERT_EQ(i.getSlots().get(s.getID()), s);
+    ASSERT_EQ(i.getSlots().size(), 1);
+    ASSERT_EQ(i.getOwnedElements().get(s.getID()), s);
+    ASSERT_EQ(i.getOwnedElements().size(), 1);
+    ASSERT_TRUE(s.hasOwningInstance());
+    ASSERT_EQ(s.getOwningInstanceRef(), i);
 }
 
 TEST_F(InstanceSpecificationTest, SetOwningInstanceFunctionalityTest) {
@@ -97,11 +98,12 @@ TEST_F(InstanceSpecificationTest, SetOwningInstanceFunctionalityTest) {
     InstanceSpecification i = m.create<InstanceSpecification>();
     Slot& s = m.create<Slot>();
     s.setOwningInstance(&i);
-    ASSERT_TRUE(&i.getSlots().get(s.getID()) == &s);
-    ASSERT_TRUE(i.getSlots().size() == 1);
-    ASSERT_TRUE(&i.getOwnedElements().get(s.getID()) == &s);
-    ASSERT_TRUE(i.getOwnedElements().size() == 1);
-    ASSERT_TRUE(s.getOwningInstance() == &i);
+    ASSERT_EQ(i.getSlots().get(s.getID()), s);
+    ASSERT_EQ(i.getSlots().size(), 1);
+    ASSERT_EQ(i.getOwnedElements().get(s.getID()), s);
+    ASSERT_EQ(i.getOwnedElements().size(), 1);
+    ASSERT_TRUE(s.hasOwningInstance());
+    ASSERT_EQ(s.getOwningInstanceRef(), i);
 }
 
 TEST_F(InstanceSpecificationTest, SetOwningInstanceFunctionalityTestW_Manager) {
@@ -117,18 +119,6 @@ TEST_F(InstanceSpecificationTest, SetOwningInstanceFunctionalityTestW_Manager) {
 }
 
 TEST_F(InstanceSpecificationTest, removeSlotFunctorTest) {
-    UmlManager m;
-    InstanceSpecification i = m.create<InstanceSpecification>();
-    Slot& s = m.create<Slot>();
-    s.setOwningInstance(&i);
-    ASSERT_NO_THROW(i.getSlots().remove(s));
-    ASSERT_TRUE(i.getSlots().size() == 0);
-    ASSERT_TRUE(i.getOwnedElements().size() == 0);
-    ASSERT_TRUE(!s.getOwningInstance());
-    ASSERT_TRUE(!s.getOwner());
-}
-
-TEST_F(InstanceSpecificationTest, removeSlotFunctorTestW_Manager) {
     UmlManager m;
     InstanceSpecification& i = m.create<InstanceSpecification>();
     Slot& s = m.create<Slot>();

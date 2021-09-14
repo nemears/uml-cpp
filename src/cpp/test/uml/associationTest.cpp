@@ -2,6 +2,7 @@
 #include "uml/association.h"
 #include "uml/class.h"
 #include "uml/property.h"
+#include "uml/primitiveType.h"
 
 using namespace UML;
 
@@ -338,4 +339,16 @@ TEST_F(AssociationTest, reindexTypeTest) {
     ASSERT_TRUE(p.getAssociation() == &a);
     ASSERT_TRUE(p.getMemberNamespace().size() == 1);
     ASSERT_TRUE(&p.getMemberNamespace().front() == &a);
+}
+
+TEST_F(AssociationTest, reindexTypeIDTest) {
+    UmlManager m;
+    DataType t = m.create<DataType>();
+    Association a = m.create<Association>();
+    Property p = m.create<Property>();
+    a.getMemberEnds().add(p);
+    p.setType(t);
+    ID id = ID::fromString("owzDT1hXGJ8SkEjbqXMNqU&MxmEn");
+    t.setID(id);
+    ASSERT_NO_THROW(a.getEndType().get(id));
 }

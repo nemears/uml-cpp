@@ -4,6 +4,8 @@
 #include "uml/class.h"
 #include "uml/generalization.h"
 #include "uml/property.h"
+#include "uml/dataType.h"
+#include "uml/instanceSpecification.h"
 
 using namespace UML;
 
@@ -159,4 +161,35 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   g6.getOwnedAttributes().add(p6);
   ASSERT_TRUE(s6.getInheritedMembers().size() == 1);
   ASSERT_TRUE(s6.getMembers().size() == 1);
+}
+
+TEST_F(ClassifierTest, reindexClassifierID_test) {
+	UmlManager m;
+	DataType reindexed = m.create<DataType>();
+	DataType general = m.create<DataType>();
+	Generalization generalization = m.create<Generalization>();
+	Property attribute = m.create<Property>();
+	Package root = m.create<Package>();
+	InstanceSpecification instance = m.create<InstanceSpecification>();
+	reindexed.getGeneralizations().add(generalization);
+	generalization.setGeneral(general);
+	reindexed.getOwnedAttribute().add(attribute);
+	instance.setClassifier(reindexed);
+	root.getPackagedElements().add(reindexed, general, instance);
+	ID id = ID::fromString("YXA7t1zgj89FRZePjCmulq1h5s5s");
+	reindexed.setID(id);
+	ASSERT_NO_THROW(ASSERT_EQ(generalization.getSpecificRef(), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(generalization.getSources().get(id), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(*generalization.getOwner(), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(attribute.getDataTypeRef(), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(attribute.getClassifierRef(), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(attribute.getFeaturingClassifierRef(), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(attribute.getNamespaceRef(), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(attribute.getMemberNamespace().get(id), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(*attribute.getOwner(), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(root.getPackagedElements().get(id), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(root.getOwnedMembers().get(id), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(root.getMembers().get(id), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(root.getOwnedElements().get(id), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(instance.getClassifierRef(), reindexed));
 }

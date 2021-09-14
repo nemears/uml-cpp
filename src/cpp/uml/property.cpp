@@ -346,7 +346,7 @@ void Property::referenceReindexed(ID oldID, ID newID) {
         m_owningAssociation.reindex(oldID, newID);
     }
     if (m_redefinedProperties.count(oldID)) {
-        m_redefinedProperties.reindex(oldID, newID), &Property::getRedefinedProperties;
+        m_redefinedProperties.reindex(oldID, newID, &Property::getRedefinedProperties);
     }
 }
 

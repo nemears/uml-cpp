@@ -27,19 +27,39 @@ void RedefinableElement::setManager(UmlManager* manager) {
 }
 
 void RedefinableElement::reindexID(ID oldID, ID newID) {
-    if (m_node) {
-        for (auto& id : m_node->m_referenceOrder) {
-            ManagerNode* refNode = m_node->m_references[id];
-            Element* ref = refNode->m_managerElementMemory;
-            if (ref->isSubClassOf(ElementType::REDEFINABLE_ELEMENT)) {
-                if (ref->as<RedefinableElement>().m_redefinedElement.count(oldID)) {
-                    ref->as<RedefinableElement>().m_redefinedElement.reindex(oldID, newID);
-                    for (auto& refCopy : refNode->m_copies) {
-                        refCopy->as<RedefinableElement>().m_redefinedElement.reindex(oldID, newID);
-                    }
-                }
-            }
-        }
+    // if (m_node) {
+    //     for (auto& id : m_node->m_referenceOrder) {
+    //         ManagerNode* refNode = m_node->m_references[id];
+    //         Element* ref = refNode->m_managerElementMemory;
+    //         if (ref->isSubClassOf(ElementType::REDEFINABLE_ELEMENT)) {
+    //             if (ref->as<RedefinableElement>().m_redefinedElement.count(oldID)) {
+    //                 ref->as<RedefinableElement>().m_redefinedElement.reindex(oldID, newID);
+    //                 for (auto& refCopy : refNode->m_copies) {
+    //                     refCopy->as<RedefinableElement>().m_redefinedElement.reindex(oldID, newID);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+}
+
+void RedefinableElement::restoreReleased(ID id, Element* released) {
+    NamedElement::restoreReleased(id, released);
+}
+
+void RedefinableElement::referencingReleased(ID id) {
+    NamedElement::referencingReleased(id);
+    m_redefinedElement.elementReleased(id, &RedefinableElement::getRedefinedElements);
+    m_redefinitionContext.elementReleased(id, &RedefinableElement::getRedefinitionContext);
+}
+
+void RedefinableElement::referenceReindexed(ID oldID, ID newID) {
+    NamedElement::referenceReindexed(oldID, newID);
+    if (m_redefinedElement.count(oldID)) {
+        m_redefinedElement.reindex(oldID, newID, &RedefinableElement::getRedefinedElements);
+    }
+    if (m_redefinitionContext.count(oldID)) {
+        m_redefinitionContext.reindex(oldID, newID, &RedefinableElement::getRedefinitionContext);
     }
 }
 
@@ -89,14 +109,4 @@ bool RedefinableElement::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void RedefinableElement::restoreReleased(ID id, Element* released) {
-    NamedElement::restoreReleased(id, released);
-}
-
-void RedefinableElement::referencingReleased(ID id) {
-    NamedElement::referencingReleased(id);
-    m_redefinedElement.elementReleased(id, &RedefinableElement::getRedefinedElements);
-    m_redefinitionContext.elementReleased(id, &RedefinableElement::getRedefinitionContext);
 }

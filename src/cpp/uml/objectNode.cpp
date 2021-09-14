@@ -12,6 +12,11 @@ void ObjectNode::referencingReleased(ID id) {
     TypedElement::referencingReleased(id);
 }
 
+void ObjectNode::referenceReindexed(ID oldID, ID newID) {
+    ActivityNode::referenceReindexed(oldID, newID);
+    TypedElement::referenceReindexed(oldID, newID);
+}
+
 ValueSpecification* ObjectNode::getUpperBound() {
     return upperBound;
 }

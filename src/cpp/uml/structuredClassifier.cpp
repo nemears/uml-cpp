@@ -67,6 +67,19 @@ void StructuredClassifier::setManager(UmlManager* manager) {
     m_parts.m_manager = manager;
 }
 
+void StructuredClassifier::referenceReindexed(ID oldID, ID newID) {
+    Classifier::referenceReindexed(oldID, newID);
+    if (m_ownedAttributes.count(oldID)) {
+        m_ownedAttributes.reindex(oldID, newID, &StructuredClassifier::getOwnedAttributes);
+    }
+    if (m_role.count(oldID)) {
+        m_role.reindex(oldID, newID, &StructuredClassifier::getRole);
+    }
+    if (m_parts.count(oldID)) {
+        m_parts.reindex(oldID, newID, &StructuredClassifier::getParts);
+    }
+}
+
 StructuredClassifier::StructuredClassifier() {
     m_ownedAttributes.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
     m_ownedAttributes.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));

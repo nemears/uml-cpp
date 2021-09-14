@@ -35,8 +35,9 @@ namespace UML {
             void setManager(UmlManager* manager) override;
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
-        public:
+            void referenceReindexed(ID oldID, ID newID);
             StructuredClassifier();
+        public:
             StructuredClassifier(const StructuredClassifier& clazz);
             virtual ~StructuredClassifier();
             Sequence<Property>& getOwnedAttributes();

@@ -231,8 +231,9 @@ TEST_F(ClassTest, setFeaturingClassifierNullTest) {
 }
 
 TEST_F(ClassTest, addRoleFunctorTest) {
-  StructuredClassifier c;
-  ConnectableElement r;
+  UmlManager m;
+  Class &c = m.create<Class>();
+  Property& r = m.create<Property>();
   ASSERT_NO_THROW(c.getRole().add(r));
   ASSERT_TRUE(c.getRole().size() == 1);
   ASSERT_TRUE(&c.getRole().front() == &r);
@@ -244,8 +245,9 @@ TEST_F(ClassTest, addRoleFunctorTest) {
 }
 
 TEST_F(ClassTest, removeRoleFunctorTest) {
-  StructuredClassifier c;
-  ConnectableElement r;
+  UmlManager m;
+  Class &c = m.create<Class>();
+  Property& r = m.create<Property>();
   c.getRole().add(r);
   ASSERT_NO_THROW(c.getRole().remove(r));
   ASSERT_TRUE(c.getRole().size() == 0);

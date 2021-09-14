@@ -5,7 +5,9 @@
 
 namespace UML {
     class DirectedRelationship : public Relationship {
+
         friend class UmlManager;
+
         protected:
             Sequence<> m_targets = Sequence<>(this);
             Sequence<> m_sources = Sequence<>(this);
@@ -40,6 +42,8 @@ namespace UML {
                     void operator()(Element& el) const override;
             };
             void setManager(UmlManager* manager) override;
+            void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID) override;
             DirectedRelationship();
         public:
             DirectedRelationship(const DirectedRelationship& relationship);

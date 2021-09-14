@@ -45,6 +45,22 @@ void DirectedRelationship::setManager(UmlManager* manager) {
     m_targets.m_manager = manager;
 }
 
+void DirectedRelationship::referencingReleased(ID id) {
+    Relationship::referencingReleased(id);
+    m_sources.elementReleased(id, &DirectedRelationship::getSources);
+    m_targets.elementReleased(id, &DirectedRelationship::getTargets);
+}
+
+void DirectedRelationship::referenceReindexed(ID oldID, ID newID) {
+    Relationship::referenceReindexed(oldID, newID);
+    if (m_sources.count(oldID)) {
+        m_sources.reindex(oldID, newID, &DirectedRelationship::getSources);
+    }
+    if (m_targets.count(oldID)) {
+        m_targets.reindex(oldID, newID, &DirectedRelationship::getTargets);
+    }
+}
+
 DirectedRelationship::DirectedRelationship() {
     m_targets.addProcedures.push_back(new AddRelatedElementFunctor(this));
     m_targets.removeProcedures.push_back(new RemoveRelatedElementFunctor(this));
@@ -57,6 +73,8 @@ DirectedRelationship::DirectedRelationship() {
 }
 
 DirectedRelationship::DirectedRelationship(const DirectedRelationship& relationship) {
+    m_targets = relationship.m_targets;
+    m_sources = relationship.m_sources;
     m_targets.m_el = this;
     m_sources.m_el = this;
     m_targets.addProcedures.clear();

@@ -18,6 +18,11 @@ void Relationship::setManager(UmlManager* manager) {
     m_relatedElements.m_manager = manager;
 }
 
+void Relationship::referencingReleased(ID id) {
+    Element::referencingReleased(id);
+    m_relatedElements.elementReleased(id, &Relationship::getRelatedElements);
+}
+
 void Relationship::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
     if (m_relatedElements.count(oldID)) {
@@ -67,6 +72,7 @@ Relationship::Relationship() {
 }
 
 Relationship::Relationship(const Relationship& relationship) {
+    m_relatedElements = relationship.m_relatedElements;
     m_relatedElements.m_el = this;
     m_relatedElements.addProcedures.clear();
     m_relatedElements.removeProcedures.clear();

@@ -42,6 +42,11 @@ void Dependency::reindexID(ID oldID, ID newID) {
     // TODO
 }
 
+void Dependency::referencingReleased(ID id) {
+    DirectedRelationship::referencingReleased(id);
+    // TODO
+}
+
 void Dependency::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
     Relationship::referenceReindexed(oldID, newID);

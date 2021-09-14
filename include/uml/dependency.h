@@ -32,6 +32,7 @@ namespace UML {
             };
             void setManager(UmlManager* manager) override;
             void reindexID(ID oldID, ID newID) override;
+            void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
         public:
             Dependency();

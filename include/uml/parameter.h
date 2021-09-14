@@ -17,21 +17,37 @@ namespace UML {
         NONE};
 
     class Parameter : public ConnectableElement , public MultiplicityElement {
+
+        friend class UmlManager;
+
         protected:
             ParameterDirectionKind m_direction;
-            ID m_operationID;
-            Operation* m_operationPtr;
+            Singleton<Operation, Parameter> m_operation = Singleton<Operation, Parameter>(this);
+            class RemoveOperationProcedure : public AbstractSingletonProcedure<Operation, Parameter> {
+                public:
+                    RemoveOperationProcedure(Parameter* me) : AbstractSingletonProcedure<Operation, Parameter>(me) {};
+                    void operator()(Operation* el) const override;
+            };
+            class AddOperationProcedure : public AbstractSingletonProcedure<Operation, Parameter> {
+                public:
+                    AddOperationProcedure(Parameter* me) : AbstractSingletonProcedure<Operation, Parameter>(me) {};
+                    void operator()(Operation* el) const override;
+            };
             void reindexID(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             void referencingReleased(ID id) override;
-        public:
+            void referenceReindexed(ID oldID, ID newID) override;
             Parameter();
+        public:
             Parameter(const Parameter& parameter);
             virtual ~Parameter();
             Parameter& operator=(Parameter&&) {
                 return *this;
             };
             Operation* getOperation();
+            Operation& getOperationRef();
+            bool hasOperation() const;
+            void setOperation(Operation& operation);
             void setOperation(Operation* operation);
             ElementType getElementType() const override;
             ParameterDirectionKind getDirection();

@@ -5,46 +5,25 @@
 
 using namespace UML;
 
-class ParameterTest : public ::testing::Test {
-
-    public:
-        Parameter* pSetDirection;
-        Parameter* pGetSetDirection;
-        Parameter* pGetNullDirection;
-    
-    protected:
-        ParameterTest() {
-            pSetDirection = new Parameter;
-            pGetSetDirection = new Parameter;
-            pGetNullDirection= new Parameter;
-            pGetSetDirection->setDirection(ParameterDirectionKind::IN);
-        }
-
-        ~ParameterTest() {
-            delete pSetDirection;
-            delete pGetSetDirection;
-            delete pGetNullDirection;
-        }
-
-
-};
+class ParameterTest : public ::testing::Test {};
 
 TEST_F(ParameterTest, TestSetDirection) {
-    pSetDirection->setDirection(ParameterDirectionKind::IN);
-    ASSERT_TRUE(pSetDirection->getDirection() == ParameterDirectionKind::IN);
-}
-
-TEST_F(ParameterTest, TestGetSetDirection) {
-    ASSERT_TRUE(pGetSetDirection->getDirection() == ParameterDirectionKind::IN);
+    UmlManager m;
+    Parameter p = m.create<Parameter>();
+    p.setDirection(ParameterDirectionKind::IN);
+    ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::IN);
 }
 
 TEST_F(ParameterTest, TestGetNotSetDirection) {
-    ASSERT_TRUE(pGetNullDirection->getDirection() == ParameterDirectionKind::NONE);
+    UmlManager m;
+    Parameter p = m.create<Parameter>();
+    ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::NONE);
 }
 
 TEST_F(ParameterTest, reindexID_ownerTest) {
-    Activity a;
-    Parameter p;
+    UmlManager m;
+    Activity a = m.create<Activity>();
+    Parameter p = m.create<Parameter>();
     a.getParameters().add(p);
     p.setNamespace(&a);
     a.getMembers().add(p);

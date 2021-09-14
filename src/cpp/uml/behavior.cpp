@@ -7,13 +7,14 @@
 using namespace UML;
 
 void Behavior::AddParameterFunctor::operator()(Parameter& el) const {
-    if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalAdd(el);
+    if (!m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().internalAdd(el);
     }
 
     if (m_el->getSpecification()) {
         el.setOperation(dynamic_cast<Operation*>(m_el->getSpecification()));
     }
+    updateCopiedSequenceAddedTo(el, &Behavior::getParameters);
 }
 
 void Behavior::RemoveParameterFunctor::operator()(Parameter& el) const {
@@ -37,9 +38,10 @@ void Behavior::RemoveParameterFunctor::operator()(Parameter& el) const {
         }
     }
 
-    if (m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalRemove(el);
+    if (m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().internalRemove(el);
     }
+    updateCopiedSequenceRemovedFrom(el, &Behavior::getParameters);
 }
 
 Behavior::Behavior() {

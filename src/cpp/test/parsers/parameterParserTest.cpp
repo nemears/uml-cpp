@@ -24,8 +24,9 @@ TEST_F(ParameterParserTest, properExceptions) {
 }
 
 TEST_F(ParameterParserTest, emitParameterWMultiplicityTest) {
-    OpaqueBehavior b;
-    Parameter p;
+    UmlManager m;
+    OpaqueBehavior& b = m.create<OpaqueBehavior>();
+    Parameter& p = m.create<Parameter>();
     b.setID("SeJ_0hSPaIa4EYap3sXgRQm4LuSn");
     p.setID("QzBhVkqNSRAZMlkHU6cQ3d_Wm8FT");
     LiteralInt low;

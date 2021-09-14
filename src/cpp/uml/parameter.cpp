@@ -170,5 +170,7 @@ bool Parameter::isSubClassOf(ElementType eType) const {
 void Parameter::referencingReleased(ID id) {
     TypedElement::referencingReleased(id);
     MultiplicityElement::referencingReleased(id);
-    /** TODO: operation release **/
+    if (m_operation.id() == id) {
+        m_operation.release();
+    }
 }

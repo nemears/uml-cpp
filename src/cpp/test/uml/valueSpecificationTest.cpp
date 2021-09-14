@@ -87,8 +87,9 @@ TEST_F(ValueSpecificationTest, reindexID_forSlotTest) {
 // }
 
 TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
-    Expression e;
-    LiteralBool b;
+    UmlManager m;
+    Expression& e = m.create<Expression>();
+    LiteralBool& b = m.create<LiteralBool>();
     e.getOperands().add(b);
     e.setSymbol("==");
     b.setID("eb092018_0bef_4ad6_b80f_05fa");

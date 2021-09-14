@@ -42,7 +42,7 @@ void ValueSpecification::reindexName(string oldName, string newName) {
 }
 
 void ValueSpecification::referenceReindexed(ID oldID, ID newID) {
-    PackageableElement::reindexID(oldID, newID);
+    PackageableElement::referenceReindexed(oldID, newID);
     if (m_owningSlot.id() == oldID) {
         m_owningSlot.reindex(oldID, newID);
     }

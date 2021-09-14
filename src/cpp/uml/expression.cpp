@@ -7,11 +7,45 @@ void Expression::AddOperandFunctor::operator()(ValueSpecification& el) const {
     if (!m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalAdd(el);
     }
+    updateCopiedSequenceAddedTo(el, &Expression::getOperands);
+}
+
+void Expression::RemoveOperandFunctor::operator()(ValueSpecification& el) const {
+    if (m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().remove(el);
+    }
+    updateCopiedSequenceRemovedFrom(el, &Expression::getOperands);
+}
+
+void Expression::setManager(UmlManager* manager) {
+    ValueSpecification::setManager(manager);
+    m_operands.m_manager = manager;
+}
+
+void Expression::referencingReleased(ID id) {
+    ValueSpecification::referencingReleased(id);
+    m_operands.elementReleased(id, &Expression::getOperands);
+}
+
+void Expression::referenceReindexed(ID oldID, ID newID) {
+    ValueSpecification::referenceReindexed(oldID, newID);
+    if (m_operands.count(oldID)) {
+        m_operands.reindex(oldID, newID, &Expression::getOperands);
+    }
 }
 
 Expression::Expression() {
-    m_symbol = "";
     m_operands.addProcedures.push_back(new AddOperandFunctor(this));
+    m_operands.removeProcedures.push_back(new RemoveOperandFunctor(this));
+}
+
+Expression::Expression(const Expression& rhs) {
+    m_operands = rhs.m_operands;
+    m_operands.m_el = this;
+    m_operands.addProcedures.clear();
+    m_operands.removeProcedures.clear();
+    m_operands.addProcedures.push_back(new AddOperandFunctor(this));
+    m_operands.removeProcedures.push_back(new RemoveOperandFunctor(this));
 }
 
 Expression::~Expression() {

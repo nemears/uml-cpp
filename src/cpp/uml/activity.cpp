@@ -56,13 +56,13 @@ void Activity::setManager(UmlManager* manager) {
 }
 
 void Activity::reindexID(ID oldID, ID newID) {
-    Behavior::reindexID(oldID, newID);
+    /**Behavior::reindexID(oldID, newID);
     for (auto& node : m_nodes) {
         /** TODO: reindex singleton **/
-    }
+    /** }
     for (auto& edge : m_edges) {
         edge.m_activity.reindex(oldID, newID);
-    }
+    }**/
 }
 
 void Activity::restoreReleased(ID id, Element* released) {
@@ -74,6 +74,16 @@ void Activity::referencingReleased(ID id) {
     Behavior::referencingReleased(id);
     m_nodes.elementReleased(id, &Activity::getNodes);
     m_edges.elementReleased(id, &Activity::getEdges);
+}
+
+void Activity::referenceReindexed(ID oldID, ID newID) {
+    Behavior::referenceReindexed(oldID, newID);
+    if (m_nodes.count(oldID)) {
+        m_nodes.reindex(oldID, newID, &Activity::getNodes);
+    }
+    if (m_edges.count(oldID)) {
+        m_edges.reindex(oldID, newID, &Activity::getEdges);
+    }
 }
 
 Activity::Activity() {

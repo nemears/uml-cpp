@@ -9,8 +9,9 @@ class CommentTest : public ::testing::Test {
 };
 
 TEST_F(CommentTest, addOwnedCommentTest) {
-    Class e;
-    Comment c;
+    UmlManager m;
+    Class& e = m.create<Class>();
+    Comment& c = m.create<Comment>();
     c.setBody("I am a pretty cool comment B)");
     e.getOwnedComments().add(c);
     ASSERT_EQ(c.getBody(), "I am a pretty cool comment B)");
@@ -22,8 +23,9 @@ TEST_F(CommentTest, addOwnedCommentTest) {
 }
 
 TEST_F(CommentTest, removeOwnedCommentTest) {
-    Class e;
-    Comment c;
+    UmlManager m;
+    Class& e = m.create<Class>();
+    Comment& c = m.create<Comment>();
     c.setBody("p cool comment");
     e.getOwnedComments().add(c);
     ASSERT_NO_THROW(e.getOwnedComments().remove(c));
@@ -33,8 +35,9 @@ TEST_F(CommentTest, removeOwnedCommentTest) {
 }
 
 TEST_F(CommentTest, overideOwningElement) {
-    Class e;
-    Comment c;
+    UmlManager m;
+    Class& e = m.create<Class>();
+    Comment& c = m.create<Comment>();
     c.setOwningElement(&e);
     ASSERT_TRUE(e.getOwnedComments().size() == 1);
     ASSERT_TRUE(&e.getOwnedComments().front() == &c);

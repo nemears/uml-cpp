@@ -12,6 +12,7 @@ void Class::AddOwnedOperationFunctor::operator()(Operation& el) const {
     if (el.getNamespace() != m_el) {
         el.setNamespace(m_el);
     }
+    updateCopiedSequenceAddedTo(el, &Class::getOwnedOperations);
 }
 
 void Class::RemoveOwnedOperationFunctor::operator()(Operation& el) const {
@@ -22,6 +23,7 @@ void Class::RemoveOwnedOperationFunctor::operator()(Operation& el) const {
     if (m_el->getFeatures().count(el.getID())) {
         m_el->getFeatures().remove(el);
     }
+    updateCopiedSequenceRemovedFrom(el, &Class::getOwnedOperations);
 }
 
 void Class::ClassAddOwnedAttributeFunctor::operator()(Property& el) const {
@@ -44,6 +46,7 @@ void Class::AddNestedClassifierFunctor::operator()(Classifier& el) const {
     if (!m_el->getRedefinedElements().count(el.getID())) {
         m_el->getRedefinedElements().add(el);
     }
+    updateCopiedSequenceAddedTo(el, &Class::getNestedClassifiers);
 }
 
 void Class::RemoveNestedClassifierFunctor::operator()(Classifier& el) const {
@@ -54,6 +57,7 @@ void Class::RemoveNestedClassifierFunctor::operator()(Classifier& el) const {
     if (m_el->getRedefinedElements().count(el.getID())) {
         m_el->getRedefinedElements().remove(el);
     }
+    updateCopiedSequenceRemovedFrom(el, &Class::getNestedClassifiers);
 }
 
 void Class::setManager(UmlManager* manager) {
@@ -61,6 +65,33 @@ void Class::setManager(UmlManager* manager) {
     BehavioredClassifier::setManager(manager);
     m_ownedOperations.m_manager = manager;
     m_nestedClassifiers.m_manager = manager;
+}
+
+void Class::restoreReleased(ID id, Element* released) {
+    StructuredClassifier::restoreReleased(id, released);
+    if (m_ownedAttributes.count(id)) {
+        released->as<Property>().setClass(this);
+    }
+    if (m_ownedOperations.count(id)) {
+        released->as<Operation>().setClass(this);
+    }
+}
+
+void Class::referencingReleased(ID id) {
+    StructuredClassifier::referencingReleased(id);
+    m_ownedOperations.elementReleased(id, &Class::getOwnedOperations);
+    m_nestedClassifiers.elementReleased(id, &Class::getNestedClassifiers);
+}
+
+void Class::referenceReindexed(ID oldID, ID newID) {
+    StructuredClassifier::referenceReindexed(oldID, newID);
+    BehavioredClassifier::referenceReindexed(oldID, newID);
+    if (m_ownedOperations.count(oldID)) {
+        m_ownedOperations.reindex(oldID, newID, &Class::getOwnedOperations);
+    }
+    if (m_nestedClassifiers.count(oldID)) {
+        m_nestedClassifiers.reindex(oldID, newID, &Class::getNestedClassifiers);
+    }
 }
 
 Class::Class() {
@@ -83,12 +114,15 @@ PackageableElement(clazz),
 NamedElement(clazz), 
 Element(clazz) {
     m_ownedOperations = clazz.m_ownedOperations;
+    m_ownedOperations.m_el = this;
     m_ownedOperations.addProcedures.clear();
     m_ownedOperations.addProcedures.push_back(new AddOwnedOperationFunctor(this));
     m_ownedOperations.removeProcedures.clear();
     m_ownedOperations.removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
     m_ownedAttributes.addProcedures.push_back(new ClassAddOwnedAttributeFunctor(this));
     m_ownedAttributes.removeProcedures.push_back(new ClassRemoveOwnedAttributeFunctor(this));
+    m_nestedClassifiers = clazz.m_nestedClassifiers;
+    m_nestedClassifiers.m_el = this;
     m_nestedClassifiers.addProcedures.clear();
     m_nestedClassifiers.removeProcedures.clear();
     m_nestedClassifiers.addProcedures.push_back(new AddNestedClassifierFunctor(this));
@@ -118,20 +152,4 @@ bool Class::isSubClassOf(ElementType eType) const {
     }
     
     return ret;
-}
-
-void Class::restoreReleased(ID id, Element* released) {
-    StructuredClassifier::restoreReleased(id, released);
-    if (m_ownedAttributes.count(id)) {
-        released->as<Property>().setClass(this);
-    }
-    if (m_ownedOperations.count(id)) {
-        released->as<Operation>().setClass(this);
-    }
-}
-
-void Class::referencingReleased(ID id) {
-    StructuredClassifier::referencingReleased(id);
-    m_ownedOperations.elementReleased(id, &Class::getOwnedOperations);
-    m_nestedClassifiers.elementReleased(id, &Class::getNestedClassifiers);
 }

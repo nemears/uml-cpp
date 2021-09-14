@@ -6,11 +6,13 @@ namespace UML{
 
     class TypedElement;
     class Association;
+    class Operation;
 
     class Type : virtual public PackageableElement {
 
         friend class TypedElement;
         friend class Association;
+        friend class Operation;
         
         protected:
             void reindexID(ID oldID, ID newID) override;

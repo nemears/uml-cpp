@@ -27,9 +27,10 @@ TEST_F(BehaviorTest, addParameterFunctorTest) {
 }
 
 TEST_F(BehaviorTest, removeParameterFunctorTest) {
-    Behavior b;
-    Parameter p;
-    Operation o;
+    UmlManager m;
+    Behavior& b = m.create<Behavior>();
+    Parameter& p = m.create<Parameter>();
+    Operation& o = m.create<Operation>();
     b.setSpecification(&o);
     b.getParameters().add(p);
     b.getParameters().remove(p);

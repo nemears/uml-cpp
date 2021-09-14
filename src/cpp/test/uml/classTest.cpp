@@ -17,11 +17,12 @@ class ClassTest : public ::testing::Test {
 };
 
 TEST_F(ClassTest, BasicOperationTest) {
-    Class c;
-    Operation o;
-    OpaqueBehavior oB;
-    LiteralString val;
-    Parameter p;
+    UmlManager m;
+    Class& c = m.create<Class>();
+    Operation& o = m.create<Operation>();
+    OpaqueBehavior& oB = m.create<OpaqueBehavior>();
+    LiteralString& val = m.create<LiteralString>();
+    Parameter& p = m.create<Parameter>();
     ASSERT_NO_THROW(oB.getParameters().add(p));
     ASSERT_NO_THROW(val.setValue("return true"));
     ASSERT_NO_THROW(oB.getBodies().add(val));
@@ -30,8 +31,9 @@ TEST_F(ClassTest, BasicOperationTest) {
 }
 
 TEST_F(ClassTest, addOperationFunctorTest) {
-    Class c;
-    Operation o;
+    UmlManager m;
+    Class& c = m.create<Class>();
+    Operation& o = m.create<Operation>();
     c.getOwnedOperations().add(o);
     ASSERT_TRUE(c.getOwnedOperations().size() == 1);
     ASSERT_TRUE(&c.getOwnedOperations().front() == &o);
@@ -48,8 +50,9 @@ TEST_F(ClassTest, addOperationFunctorTest) {
 }
 
 TEST_F(ClassTest, setClassTest) {
-    Class c;
-    Operation o;
+    UmlManager m;
+    Class& c = m.create<Class>();
+    Operation& o = m.create<Operation>();
     o.setClass(&c);
     ASSERT_TRUE(c.getOwnedOperations().size() == 1);
     ASSERT_TRUE(&c.getOwnedOperations().front() == &o);
@@ -66,9 +69,10 @@ TEST_F(ClassTest, setClassTest) {
 }
 
 TEST_F(ClassTest, overwriteClassTest) {
-  Class p1;
-  Class p2;
-  Operation c;
+  UmlManager m;
+  Class& p1 = m.create<Class>();
+  Class& p2 = m.create<Class>();
+  Operation& c = m.create<Operation>();
   p1.getOwnedOperations().add(c);
   c.setClass(&p2);
   ASSERT_TRUE(p2.getOwnedOperations().size() == 1);
@@ -90,9 +94,10 @@ TEST_F(ClassTest, overwriteClassTest) {
 }
 
 TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
-  Class p1;
-  Class p2;
-  Operation c;
+  UmlManager m;
+  Class& p1 = m.create<Class>();
+  Class& p2 = m.create<Class>();
+  Operation& c = m.create<Operation>();
   p1.getOwnedOperations().add(c);
   p2.getOwnedOperations().add(c);
   ASSERT_TRUE(p2.getOwnedOperations().size() == 1);
@@ -114,8 +119,9 @@ TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
 }
 
 TEST_F(ClassTest, removeOperationFunctorTest) {
-  Class c;
-  Operation o;
+  UmlManager m;
+    Class& c = m.create<Class>();
+    Operation& o = m.create<Operation>();
   c.getOwnedOperations().add(o);
   ASSERT_NO_THROW(c.getOwnedOperations().remove(o));
   ASSERT_TRUE(c.getOwnedOperations().size() == 0);

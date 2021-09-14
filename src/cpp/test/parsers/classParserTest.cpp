@@ -194,11 +194,12 @@ TEST_F(ClassParserTest, emitClassWAttributeNOperation) {
 }
 
 TEST_F(ClassParserTest, emitFilledInOperation) {
-    Class c;
-    Operation o;
-    OpaqueBehavior b;
-    Parameter p;
-    Parameter p2;
+    UmlManager m;
+    Class& c = m.create<Class>();
+    Operation& o = m.create<Operation>();
+    OpaqueBehavior& b = m.create<OpaqueBehavior>();
+    Parameter& p = m.create<Parameter>();
+    Parameter& p2 = m.create<Parameter>();
     c.setID("6cCDjqUmkrXZ46z7CcNaTDso4SfQ");
     c.setName("Class");
     o.setID("Y3WV0c_Wa_zfOTb6zo9BAiIqRhn7");

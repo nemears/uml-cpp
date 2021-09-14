@@ -8,15 +8,17 @@ using namespace UML;
 class OperationTest : public ::testing::Test {};
 
 TEST_F(OperationTest, SetAndGetTypeTest) {
-    Class c;
-    Operation o;
+    UmlManager m;
+    Class& c = m.create<Class>();
+    Operation& o = m.create<Operation>();
     ASSERT_NO_THROW(o.setType(&c));
     ASSERT_TRUE(o.getType()->getID() == c.getID());
 }
 
 TEST_F(OperationTest, reIndexID_Test) {
-    Class c;
-    Operation o;
+    UmlManager m;
+    Class& c = m.create<Class>();
+    Operation& o = m.create<Operation>();
     o.setClass(&c);
     o.setID("c3rcWoyTgxLfFl5jf2Ms6CMa_sWe");
     ASSERT_NO_THROW(c.getOwnedOperations().get(o.getID()));
@@ -33,8 +35,9 @@ TEST_F(OperationTest, reIndexID_Test) {
 // }
 
 TEST_F(OperationTest, AddMethodFunctorTest) {
-    Operation o;
-    Behavior m;
+    UmlManager mm;
+    Operation& o = mm.create<Operation>();
+    OpaqueBehavior& m = mm.create<OpaqueBehavior>();
     o.getMethods().add(m);
     ASSERT_TRUE(o.getMethods().size() == 1);
     ASSERT_TRUE(&o.getMethods().front() == &m);
@@ -48,8 +51,9 @@ TEST_F(OperationTest, AddMethodFunctorTest) {
 }
 
 TEST_F(OperationTest, SetSpecificationTest) {
-    Operation o;
-    Behavior m;
+    UmlManager mm;
+    Operation& o = mm.create<Operation>();
+    OpaqueBehavior& m = mm.create<OpaqueBehavior>();
     m.setSpecification(&o);
     ASSERT_TRUE(o.getMethods().size() == 1);
     ASSERT_TRUE(&o.getMethods().front() == &m);
@@ -63,8 +67,9 @@ TEST_F(OperationTest, SetSpecificationTest) {
 }
 
 TEST_F(OperationTest, AddParameterFunctorForAbstractOperationTest) {
-    Operation o;
-    Parameter p;
+    UmlManager mm;
+    Operation& o = mm.create<Operation>();
+    Parameter& p = mm.create<Parameter>();
     o.getOwnedParameters().add(p);
     ASSERT_TRUE(o.getOwnedParameters().size() == 1);
     ASSERT_TRUE(&o.getOwnedParameters().front() == &p);
@@ -78,8 +83,9 @@ TEST_F(OperationTest, AddParameterFunctorForAbstractOperationTest) {
 }
 
 TEST_F(OperationTest, SetOperationAbstractOperationTest) {
-    Operation o;
-    Parameter p;
+    UmlManager mm;
+    Operation& o = mm.create<Operation>();
+    Parameter& p = mm.create<Parameter>();
     p.setOperation(&o);
     ASSERT_TRUE(o.getOwnedParameters().size() == 1);
     ASSERT_TRUE(&o.getOwnedParameters().front() == &p);
@@ -116,9 +122,10 @@ TEST_F(OperationTest, SetOperationAbstractOperationTest) {
 // }
 
 TEST_F(OperationTest, checkParameterFunctorTest) {
-    Operation o;
-    Parameter p;
-    Parameter p2;
+    UmlManager mm;
+    Operation& o = mm.create<Operation>();
+    Parameter& p = mm.create<Parameter>();
+    Parameter& p2 = mm.create<Parameter>();
     p.setDirection(ParameterDirectionKind::RETURN);
     p2.setDirection(ParameterDirectionKind::RETURN);
     ASSERT_NO_THROW(o.getOwnedParameters().add(p));
@@ -145,9 +152,10 @@ TEST_F(OperationTest, checkParameterFunctorTest) {
 }
 
 TEST_F(OperationTest, setOperationReturnParameterExceptionTest) {
-    Operation o;
-    Parameter p;
-    Parameter p2;
+    UmlManager mm;
+    Operation& o = mm.create<Operation>();
+    Parameter& p = mm.create<Parameter>();
+    Parameter& p2 = mm.create<Parameter>();
     p.setDirection(ParameterDirectionKind::RETURN);
     p2.setDirection(ParameterDirectionKind::RETURN);
     ASSERT_NO_THROW(p.setOperation(&o));
@@ -175,8 +183,9 @@ TEST_F(OperationTest, setOperationReturnParameterExceptionTest) {
 }
 
 TEST_F(OperationTest, removeOwnedParameterFunctorTest) {
-    Operation o;
-    Parameter p;
+    UmlManager mm;
+    Operation& o = mm.create<Operation>();
+    Parameter& p = mm.create<Parameter>();
     o.getOwnedParameters().add(p);
     ASSERT_NO_THROW(o.getOwnedParameters().remove(p));
     ASSERT_TRUE(o.getOwnedParameters().size() == 0);
@@ -191,8 +200,9 @@ TEST_F(OperationTest, removeOwnedParameterFunctorTest) {
 }
 
 TEST_F(OperationTest, removeOwnedParameterW_NullOperationTest) {
-    Operation o;
-    Parameter p;
+    UmlManager mm;
+    Operation& o = mm.create<Operation>();
+    Parameter& p = mm.create<Parameter>();
     o.getOwnedParameters().add(p);
     ASSERT_NO_THROW(p.setOperation(0));
     ASSERT_TRUE(o.getOwnedParameters().size() == 0);
@@ -207,9 +217,10 @@ TEST_F(OperationTest, removeOwnedParameterW_NullOperationTest) {
 }
 
 TEST_F(OperationTest, overrideParameterOperationTest) {
-    Operation o;
-    Parameter p;
-    Operation o2;
+    UmlManager mm;
+    Operation& o = mm.create<Operation>();
+    Parameter& p = mm.create<Parameter>();
+    Operation& o2 = mm.create<Operation>();
     o.getOwnedParameters().add(p);
     ASSERT_NO_THROW(p.setOperation(&o2));
 
@@ -235,9 +246,10 @@ TEST_F(OperationTest, overrideParameterOperationTest) {
 }
 
 TEST_F(OperationTest, reindexParameterDirectionTest) {
-    Operation o;
-    Parameter p;
-    Parameter p2;
+    UmlManager mm;
+    Operation& o = mm.create<Operation>();
+    Parameter& p = mm.create<Parameter>();
+    Parameter& p2 = mm.create<Parameter>();
     o.getOwnedParameters().add(p);
     o.getOwnedParameters().add(p2);
     ASSERT_NO_THROW(p.setDirection(ParameterDirectionKind::RETURN));
@@ -271,8 +283,9 @@ TEST_F(OperationTest, reindexParameterDirectionTest) {
 }
 
 TEST_F(OperationTest, RemoveMethodFunctorTest) {
-    Operation o;
-    OpaqueBehavior m;
+    UmlManager mm;
+    Operation& o = mm.create<Operation>();
+    OpaqueBehavior& m = mm.create<OpaqueBehavior>();
     o.getMethods().add(m);
     ASSERT_NO_THROW(o.getMethods().remove(m));
     ASSERT_TRUE(o.getMethods().size() == 0);
@@ -281,8 +294,9 @@ TEST_F(OperationTest, RemoveMethodFunctorTest) {
 }
 
 TEST_F(OperationTest, SetNullSpecificationTest) {
-    Operation o;
-    OpaqueBehavior m;
+    UmlManager mm;
+    Operation& o = mm.create<Operation>();
+    OpaqueBehavior& m = mm.create<OpaqueBehavior>();
     o.getMethods().add(m);
     ASSERT_NO_THROW(m.setSpecification(0));
     ASSERT_TRUE(o.getMethods().size() == 0);
@@ -291,9 +305,10 @@ TEST_F(OperationTest, SetNullSpecificationTest) {
 }
 
 TEST_F(OperationTest, OverrideSpecificationTest) {
-    Operation o;
-    Operation o2;
-    OpaqueBehavior m;
+    UmlManager mm;
+    Operation& o = mm.create<Operation>();
+    OpaqueBehavior& m = mm.create<OpaqueBehavior>();
+    Operation& o2 = mm.create<Operation>();
     m.setSpecification(&o);
     ASSERT_NO_THROW(m.setSpecification(&o2));
     ASSERT_TRUE(o.getMethods().size() == 0);

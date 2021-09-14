@@ -136,8 +136,9 @@ TEST_F(ClassParserTest, inheritedMembersTest) {
 }
 
 TEST_F(ClassParserTest, emitClassWAttribute) {
-    Class c;
-    Property p;
+    UmlManager m;
+    Class& c = m.create<Class>();
+    Property& p = m.create<Property>();
     c.setID("hWVMp5upOkVsWnkrfl0I6O5bQsbO");
     c.setName("Class");
     p.setID("61255etITfg0LgPLZaU1PEByTjo3");
@@ -159,9 +160,10 @@ TEST_F(ClassParserTest, emitClassWAttribute) {
 }
 
 TEST_F(ClassParserTest, emitClassWAttributeNOperation) {
-    Class c;
-    Property p;
-    Operation o;
+    UmlManager m;
+    Class& c = m.create<Class>();
+    Property& p = m.create<Property>();
+    Operation& o = m.create<Operation>();
     c.setID("b0XPjtodVDLoVu2YCMwBWYqglsoX");
     c.setName("Class");
     p.setID("kfuX2BvkrRFhMX4UAfchHJgL8sER");

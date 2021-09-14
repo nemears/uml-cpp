@@ -31,8 +31,8 @@ TEST_F(ModelParserTest, parsedAndCreatedElementTest) {
     Package* parsedPckg = dynamic_cast<Package*>(&m->getPackagedElements().front());
 
     // Add some elements
-    Class c;
-    Property p;
+    Class& c = mm.create<Class>();
+    Property& p = mm.create<Property>();
     c.getOwnedAttributes().add(p);
     parsedPckg->getPackagedElements().add(c);
 }

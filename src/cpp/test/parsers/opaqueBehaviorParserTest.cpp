@@ -54,9 +54,10 @@ TEST_F(OpaqueBehaviorParserTest, properParameters) {
 }
 
 TEST_F(OpaqueBehaviorParserTest, emitBasicOpaqueBehavior) {
-    OpaqueBehavior b;
-    Property p;
-    Operation o;
+    UmlManager m;
+    OpaqueBehavior& b = m.create<OpaqueBehavior>();
+    Property& p = m.create<Property>();
+    Operation& o = m.create<Operation>();
     b.setID("0FTAvf5nrXsknnc60ziElK2TDb7D");
     b.setName("Opaque");
     p.setID("YVV4HY0dc4OS0zPOc1HPLfyLmx39");

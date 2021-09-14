@@ -147,8 +147,8 @@ namespace UML{
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-        public: 
             Property();
+        public:
             Property(const Property& prop);
             AggregationKind getAggregation();
             bool isComposite();

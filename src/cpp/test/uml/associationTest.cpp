@@ -10,9 +10,10 @@ class AssociationTest : public ::testing::Test {
 };
 
 TEST_F(AssociationTest, addMemberEndFunctorTest) {
-    Property p;
-    Class c;
-    Association a;
+    UmlManager m;
+    Property& p = m.create<Property>();
+    Class& c = m.create<Class>();
+    Association& a = m.create<Association>();
     p.setType(&c);
     ASSERT_NO_THROW(a.getMemberEnds().add(p));
     ASSERT_TRUE(a.getMemberEnds().size() == 1);
@@ -28,8 +29,9 @@ TEST_F(AssociationTest, addMemberEndFunctorTest) {
 }
 
 TEST_F(AssociationTest, setAssociationTest) {
-    Property p;
-    Association a;
+    UmlManager m;
+    Property& p = m.create<Property>();
+    Association& a = m.create<Association>();
     ASSERT_NO_THROW(p.setAssociation(&a));
     ASSERT_TRUE(a.getMemberEnds().size() == 1);
     ASSERT_TRUE(&a.getMemberEnds().front() == &p);
@@ -42,8 +44,9 @@ TEST_F(AssociationTest, setAssociationTest) {
 }
 
 TEST_F(AssociationTest, removeMemberEndFunctor) {
-    Property p;
-    Association a;
+    UmlManager m;
+    Property& p = m.create<Property>();
+    Association& a = m.create<Association>();
     ASSERT_NO_THROW(p.setAssociation(&a));
     ASSERT_NO_THROW(a.getMemberEnds().remove(p));
     ASSERT_TRUE(a.getMemberEnds().size() == 0);
@@ -53,8 +56,9 @@ TEST_F(AssociationTest, removeMemberEndFunctor) {
 }
 
 TEST_F(AssociationTest, overwriteAssociationW_NullTest) {
-    Property p;
-    Association a;
+    UmlManager m;
+    Property& p = m.create<Property>();
+    Association& a = m.create<Association>();
     ASSERT_NO_THROW(a.getMemberEnds().add(p));
     ASSERT_NO_THROW(p.setAssociation(0));
     ASSERT_TRUE(a.getMemberEnds().size() == 0);
@@ -64,9 +68,10 @@ TEST_F(AssociationTest, overwriteAssociationW_NullTest) {
 }
 
 TEST_F(AssociationTest, overwriteAssociationW_OtherTest) {
-    Property p;
-    Association a;
-    Association a2;
+    UmlManager m;
+    Property& p = m.create<Property>();
+    Association& a = m.create<Association>();
+    Association& a2 = m.create<Association>();
     ASSERT_NO_THROW(a.getMemberEnds().add(p));
     ASSERT_NO_THROW(p.setAssociation(&a2));
     ASSERT_TRUE(a2.getMemberEnds().size() == 1);
@@ -83,8 +88,9 @@ TEST_F(AssociationTest, overwriteAssociationW_OtherTest) {
 }
 
 TEST_F(AssociationTest, addOwnedEndTest) {
-    Property p;
-    Association a;
+    UmlManager m;
+    Property& p = m.create<Property>();
+    Association& a = m.create<Association>();
     ASSERT_NO_THROW(a.getOwnedEnds().add(p));
     ASSERT_TRUE(a.getOwnedEnds().size() == 1);
     ASSERT_TRUE(&a.getOwnedEnds().front() == &p);
@@ -107,8 +113,9 @@ TEST_F(AssociationTest, addOwnedEndTest) {
 }
 
 TEST_F(AssociationTest, setOwningAssociationTest) {
-    Property p;
-    Association a;
+    UmlManager m;
+    Property& p = m.create<Property>();
+    Association& a = m.create<Association>();
     ASSERT_NO_THROW(p.setOwningAssociation(&a));
     ASSERT_TRUE(a.getOwnedEnds().size() == 1);
     ASSERT_TRUE(&a.getOwnedEnds().front() == &p);
@@ -131,8 +138,9 @@ TEST_F(AssociationTest, setOwningAssociationTest) {
 }
 
 TEST_F(AssociationTest, removeOwnedEndTest) {
-    Property p;
-    Association a;
+    UmlManager m;
+    Property& p = m.create<Property>();
+    Association& a = m.create<Association>();
     a.getOwnedEnds().add(p);
     ASSERT_NO_THROW(a.getOwnedEnds().remove(p));
     ASSERT_TRUE(a.getOwnedEnds().size() == 0);
@@ -151,8 +159,9 @@ TEST_F(AssociationTest, removeOwnedEndTest) {
 }
 
 TEST_F(AssociationTest, setOwningAssociationW_NullTest) {
-    Property p;
-    Association a;
+    UmlManager m;
+    Property& p = m.create<Property>();
+    Association& a = m.create<Association>();
     a.getOwnedEnds().add(p);
     ASSERT_NO_THROW(p.setOwningAssociation(0));
     ASSERT_TRUE(a.getOwnedEnds().size() == 0);
@@ -171,9 +180,10 @@ TEST_F(AssociationTest, setOwningAssociationW_NullTest) {
 }
 
 TEST_F(AssociationTest, overwriteOwningAssociationTest) {
-    Property p;
-    Association a;
-    Association a2;
+    UmlManager m;
+    Property& p = m.create<Property>();
+    Association& a = m.create<Association>();
+    Association& a2 = m.create<Association>();
     a.getOwnedEnds().add(p);
     ASSERT_NO_THROW(p.setOwningAssociation(&a2));
     ASSERT_TRUE(a.getOwnedEnds().size() == 0);
@@ -204,8 +214,9 @@ TEST_F(AssociationTest, overwriteOwningAssociationTest) {
 }
 
 TEST_F(AssociationTest, addNavigableOwnedEndTest) {
-    Property p;
-    Association a;
+    UmlManager m;
+    Property& p = m.create<Property>();
+    Association& a = m.create<Association>();
     ASSERT_NO_THROW(a.getNavigableOwnedEnds().add(p));
     ASSERT_TRUE(a.getNavigableOwnedEnds().size() == 1);
     ASSERT_TRUE(&a.getNavigableOwnedEnds().front() == &p);
@@ -230,8 +241,9 @@ TEST_F(AssociationTest, addNavigableOwnedEndTest) {
 }
 
 TEST_F(AssociationTest, removeNavigableOwnedEndTest) {
-    Property p;
-    Association a;
+    UmlManager m;
+    Property& p = m.create<Property>();
+    Association& a = m.create<Association>();
     a.getNavigableOwnedEnds().add(p);
     ASSERT_NO_THROW(a.getNavigableOwnedEnds().remove(p));
     ASSERT_TRUE(a.getNavigableOwnedEnds().size() == 0);
@@ -251,8 +263,9 @@ TEST_F(AssociationTest, removeNavigableOwnedEndTest) {
 }
 
 TEST_F(AssociationTest, navigableOwnedEndSetOwningAssociationW_NullTest) {
-    Property p;
-    Association a;
+    UmlManager m;
+    Property& p = m.create<Property>();
+    Association& a = m.create<Association>();
     a.getNavigableOwnedEnds().add(p);
     ASSERT_NO_THROW(p.setOwningAssociation(0));
     ASSERT_TRUE(a.getNavigableOwnedEnds().size() == 0);
@@ -272,9 +285,10 @@ TEST_F(AssociationTest, navigableOwnedEndSetOwningAssociationW_NullTest) {
 }
 
 TEST_F(AssociationTest, navigableOwnedEndOverwriteOwningAssociationTest) {
-    Property p;
-    Association a;
-    Association a2;
+    UmlManager m;
+    Property& p = m.create<Property>();
+    Association& a = m.create<Association>();
+    Association& a2 = m.create<Association>();
     a.getNavigableOwnedEnds().add(p);
     ASSERT_NO_THROW(p.setOwningAssociation(&a2));
     ASSERT_TRUE(a.getNavigableOwnedEnds().size() == 0);
@@ -307,9 +321,10 @@ TEST_F(AssociationTest, navigableOwnedEndOverwriteOwningAssociationTest) {
 }
 
 TEST_F(AssociationTest, reindexTypeTest) {
-    Property p;
-    Class c;
-    Association a;
+    UmlManager m;
+    Property& p = m.create<Property>();
+    Association& a = m.create<Association>();
+    Class& c = m.create<Class>();
     a.getMemberEnds().add(p);
     ASSERT_NO_THROW(p.setType(&c));
 

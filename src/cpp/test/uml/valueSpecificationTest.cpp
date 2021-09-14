@@ -16,48 +16,52 @@ using namespace UML;
 class ValueSpecificationTest : public ::testing::Test {};
 
 TEST_F(ValueSpecificationTest, LiteralStringTest) {
+    UmlManager m;
     string val = "test";
-    Property p;
-    PrimitiveType prim;
+    Property& p = m.create<Property>();
+    PrimitiveType& prim = m.create<PrimitiveType>();
     // prim.setPrimitiveType(PrimitiveType::Primitive::STRING);
     p.setType(&prim);
-    LiteralString ls;
+    LiteralString& ls = m.create<LiteralString>();
     ASSERT_NO_THROW(ls.setValue(val));
     EXPECT_EQ(ls.getValue(), val);
     EXPECT_EQ(ls.getValue(), "test");
 }
 
 TEST_F(ValueSpecificationTest, LiteralIntTest) {
+    UmlManager m;
     int val = -1;
-    Property p;
-    PrimitiveType prim;
+    Property& p = m.create<Property>();
+    PrimitiveType& prim = m.create<PrimitiveType>();
     // prim.setPrimitiveType(PrimitiveType::Primitive::INT);
     p.setType(&prim);
-    LiteralInt ls;
+    LiteralInt& ls = m.create<LiteralInt>();
     ASSERT_NO_THROW(ls.setValue(val));
     EXPECT_EQ(ls.getValue(), val);
     EXPECT_EQ(ls.getValue(), -1);
 }
 
 TEST_F(ValueSpecificationTest, LiteralRealTest) {
+    UmlManager m;
     double val = -3.14159;
-    Property p;
-    PrimitiveType prim;
+    Property& p = m.create<Property>();
+    PrimitiveType& prim = m.create<PrimitiveType>();
     // prim.setPrimitiveType(PrimitiveType::Primitive::REAL);
     p.setType(&prim);
-    LiteralReal ls;
+    LiteralReal& ls = m.create<LiteralReal>();
     ASSERT_NO_THROW(ls.setValue(val));
     EXPECT_EQ(ls.getValue(), val);
     EXPECT_EQ(ls.getValue(), -3.14159);
 }
 
 TEST_F(ValueSpecificationTest, LiteralBoolTest) {
+    UmlManager m;
     bool val = 0; // > 0 is true
-    Property p;
-    PrimitiveType prim;
+    Property& p = m.create<Property>();
+    PrimitiveType& prim = m.create<PrimitiveType>();
     // prim.setPrimitiveType(PrimitiveType::Primitive::BOOL);
     p.setType(&prim);
-    LiteralBool ls;
+    LiteralBool& ls = m.create<LiteralBool>();
     ASSERT_NO_THROW(ls.setValue(val));
     EXPECT_EQ(ls.getValue(), val);
     EXPECT_EQ(ls.getValue(), false);

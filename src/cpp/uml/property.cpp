@@ -185,7 +185,7 @@ void Property::reindexID(ID oldID, ID newID) {
     //     }
     // }
 
-    Feature::reindexID(oldID, newID);
+    // Feature::reindexID(oldID, newID);
 }
 
 void Property::reindexName(string oldName, string newName) {

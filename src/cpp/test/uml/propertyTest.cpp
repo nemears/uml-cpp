@@ -20,18 +20,6 @@ class PropertyTest : public ::testing::Test {
 };
 
 TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
-    Property p;
-    PrimitiveType stringP;
-    p.setType(&stringP);
-    LiteralString ls;
-    ls.setValue("test");
-    ASSERT_NO_THROW(p.setDefaultValue(&ls));
-    ASSERT_TRUE(p.getDefaultValue() == &ls);
-    ASSERT_TRUE(p.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&p.getOwnedElements().front() == &ls);
-}
-
-TEST_F(PropertyTest, setDefaultValueOfProperTypeTestStringW_Manager) {
   UmlManager m;
     Property& p = m.create<Property>();
     PrimitiveType& stringP = m.create<PrimitiveType>();
@@ -59,31 +47,32 @@ TEST_F(PropertyTest, setDefaultValueOfProperTypeTestStringW_Manager) {
 // }
 
 TEST_F(PropertyTest, reindexID_forClassiferTest) {
-  Class c;
-  Property p;
-  p.setAggregation(AggregationKind::COMPOSITE);
-  c.getOwnedAttributes().add(p);
-  ASSERT_NO_THROW(p.setID("190d1cb9_13dc_44e6_a064_1268"));
-  ASSERT_NO_THROW(c.getOwnedElements().get(p.getID()));
-  ASSERT_NO_THROW(c.getMembers().get(p.getID()));
-  ASSERT_NO_THROW(c.getOwnedMembers().get(p.getID()));
-  ASSERT_NO_THROW(c.getFeatures().get(p.getID()));
-  ASSERT_NO_THROW(c.getAttributes().get(p.getID()));
-  ASSERT_NO_THROW(c.getOwnedAttributes().get(p.getID()));
-  ASSERT_NO_THROW(c.getRole().get(p.getID()));
-  ASSERT_NO_THROW(c.getParts().get(p.getID()));
+    UmlManager m;
+    Class& c = m.create<Class>();
+    Property& p = m.create<Property>();
+    p.setAggregation(AggregationKind::COMPOSITE);
+    c.getOwnedAttributes().add(p);
+    ASSERT_NO_THROW(p.setID("190d1cb9_13dc_44e6_a064_1268"));
+    ASSERT_NO_THROW(c.getOwnedElements().get(p.getID()));
+    ASSERT_NO_THROW(c.getMembers().get(p.getID()));
+    ASSERT_NO_THROW(c.getOwnedMembers().get(p.getID()));
+    ASSERT_NO_THROW(c.getFeatures().get(p.getID()));
+    ASSERT_NO_THROW(c.getAttributes().get(p.getID()));
+    ASSERT_NO_THROW(c.getOwnedAttributes().get(p.getID()));
+    ASSERT_NO_THROW(c.getRole().get(p.getID()));
+    ASSERT_NO_THROW(c.getParts().get(p.getID()));
 
-  Association a;
-  Property p2;
-  a.getNavigableOwnedEnds().add(p2);
-  ASSERT_NO_THROW(p2.setID("c0ab87cc_d00b_4afb_9558_5382"));
-  ASSERT_NO_THROW(a.getNavigableOwnedEnds().get(p2.getID()));
-  ASSERT_NO_THROW(a.getOwnedEnds().get(p2.getID()));
-  ASSERT_NO_THROW(a.getMemberEnds().get(p2.getID()));
-  ASSERT_NO_THROW(a.getFeatures().get(p2.getID()));
-  ASSERT_NO_THROW(a.getOwnedMembers().get(p2.getID()));
-  ASSERT_NO_THROW(a.getMembers().get(p2.getID()));
-  ASSERT_NO_THROW(a.getOwnedElements().get(p2.getID()));
+    Association& a = m.create<Association>();
+    Property& p2 = m.create<Property>();
+    a.getNavigableOwnedEnds().add(p2);
+    ASSERT_NO_THROW(p2.setID("c0ab87cc_d00b_4afb_9558_5382"));
+    ASSERT_NO_THROW(a.getNavigableOwnedEnds().get(p2.getID()));
+    ASSERT_NO_THROW(a.getOwnedEnds().get(p2.getID()));
+    ASSERT_NO_THROW(a.getMemberEnds().get(p2.getID()));
+    ASSERT_NO_THROW(a.getFeatures().get(p2.getID()));
+    ASSERT_NO_THROW(a.getOwnedMembers().get(p2.getID()));
+    ASSERT_NO_THROW(a.getMembers().get(p2.getID()));
+    ASSERT_NO_THROW(a.getOwnedElements().get(p2.getID()));
 }
 
 // TEST_F(PropertyTest, reindexNameForClassifierTest) {

@@ -1,21 +1,32 @@
 #include "uml/valueSpecification.h"
 #include "uml/slot.h"
 #include "uml/expression.h"
-#include "uml/universalFunctions.h"
 
 using namespace std;
 using namespace UML;
 
-void ValueSpecification::reindexID(ID oldID, ID newID) {
-    if (!m_ownerID.isNull()) {
-        if (getOwner()->isSubClassOf(ElementType::SLOT)) {
-            dynamic_cast<Slot*>(getOwner())->getValues().reindex(oldID, newID);
-        } else if (getOwner()->isSubClassOf(ElementType::EXPRESSION)) {
-            dynamic_cast<Expression*>(getOwner())->getOperands().reindex(oldID, newID);
-        }
+void ValueSpecification::RemoveOwningSlotProcedure::operator()(Slot* el) const {
+    if (el->getValues().count(m_me->getID())) {
+        el->getValues().remove(*m_me);
     }
+}
 
-    NamedElement::reindexID(oldID, newID);
+void ValueSpecification::AddOwningSlotProcedure::operator()(Slot* el) const {
+    if (!el->getValues().count(m_me->getID())) {
+        el->getValues().add(*m_me);
+    }
+}
+
+void ValueSpecification::reindexID(ID oldID, ID newID) {
+    // if (!m_ownerID.isNull()) {
+    //     if (getOwner()->isSubClassOf(ElementType::SLOT)) {
+    //         dynamic_cast<Slot*>(getOwner())->getValues().reindex(oldID, newID);
+    //     } else if (getOwner()->isSubClassOf(ElementType::EXPRESSION)) {
+    //         dynamic_cast<Expression*>(getOwner())->getOperands().reindex(oldID, newID);
+    //     }
+    // }
+
+    // NamedElement::reindexID(oldID, newID);
 }
 
 void ValueSpecification::reindexName(string oldName, string newName) {
@@ -32,43 +43,44 @@ void ValueSpecification::reindexName(string oldName, string newName) {
 
 void ValueSpecification::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::reindexID(oldID, newID);
+    if (m_owningSlot.id() == oldID) {
+        m_owningSlot.reindex(oldID, newID);
+    }
 }
 
 ValueSpecification::ValueSpecification() {
-    m_owningSlotPtr = 0;
+    m_owningSlot.m_signature = &ValueSpecification::m_owningSlot;
+    m_owningSlot.m_removeProcedures.push_back(new RemoveOwningSlotProcedure(this));
+    m_owningSlot.m_addProcedures.push_back(new AddOwningSlotProcedure(this));
+}
+
+ValueSpecification::ValueSpecification(const ValueSpecification& rhs) {
+    m_owningSlot = rhs.m_owningSlot;
+    m_owningSlot.m_me = this;
+    m_owningSlot.m_removeProcedures.clear();
+    m_owningSlot.m_addProcedures.clear();
+    m_owningSlot.m_removeProcedures.push_back(new RemoveOwningSlotProcedure(this));
+    m_owningSlot.m_addProcedures.push_back(new AddOwningSlotProcedure(this));
 }
 
 Slot* ValueSpecification::getOwningSlot() {
-    return universalGet<Slot>(m_owningSlotID, m_owningSlotPtr, m_manager);
+    return m_owningSlot.get();
+}
+
+Slot& ValueSpecification::getOwningSlotRef() {
+    return m_owningSlot.getRef();
+}
+
+bool ValueSpecification::hasOwningSlot() const {
+    return m_owningSlot.has();
 }
 
 void ValueSpecification::setOwningSlot(Slot* slot) {
-    if (!m_owningSlotID.isNull()) {
-        if (!m_owningSlotPtr) {
-            m_owningSlotPtr = &m_manager->get<Slot>(m_owningSlotID);
-        }
+    m_owningSlot.set(slot);
+}
 
-        if (m_owningSlotPtr->getValues().count(m_id)) {
-            m_owningSlotPtr->getValues().remove(*this);
-        }
-
-        m_owningSlotPtr = 0;
-        m_owningSlotID = ID::nullID();
-    }
-
-    if (slot) {
-        m_owningSlotID = slot->getID();
-    }
-
-    if (!m_manager) {
-        m_owningSlotPtr = slot;
-    }
-
-    if (slot) {
-        if (!slot->getValues().count(m_id)) {
-            slot->getValues().add(*this);
-        }
-    }
+void ValueSpecification::setOwningSlot(Slot& slot) {
+    m_owningSlot.set(slot);
 }
 
 ElementType ValueSpecification::getElementType() const {
@@ -97,4 +109,7 @@ void ValueSpecification::restoreReleased(ID id, Element* el) {
 void ValueSpecification::referencingReleased(ID id) {
     PackageableElement::referencingReleased(id);
     TypedElement::referencingReleased(id);
+    if (m_owningSlot.id() == id) {
+        m_owningSlot.release();
+    }
 }

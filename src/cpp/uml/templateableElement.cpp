@@ -43,7 +43,7 @@ void TemplateableElement::RemoveTemplateBindingProcedure::operator()(TemplateBin
 
 void TemplateableElement::AddTemplateBindingProcedure::operator()(TemplateBinding* el) const {
     if (!m_me->m_ownedElements->count(el->getID())) {
-        m_me->m_ownedElements->internalRemove(*el);
+        m_me->m_ownedElements->internalAdd(*el);
     }
     if (el->hasBoundElement()) {
         if (el->getBoundElementRef() != *m_me) {

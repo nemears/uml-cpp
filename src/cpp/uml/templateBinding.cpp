@@ -17,7 +17,7 @@ void TemplateBinding::RemoveBoundElementProcedure::operator()(TemplateableElemen
 }
 
 void TemplateBinding::AddBoundElementProcedure::operator()(TemplateableElement* el) const {
-    if (m_me->getSources().count(el->getID())) {
+    if (!m_me->getSources().count(el->getID())) {
         m_me->getSources().add(*el);
     }
     if (el->hasTemplateBinding()) {

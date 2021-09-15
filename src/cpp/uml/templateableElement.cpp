@@ -3,20 +3,77 @@
 #include "uml/sequence.h"
 #include "uml/templateBinding.h"
 #include "uml/templateSignature.h"
-#include "uml/universalFunctions.h"
 
 using namespace UML;
 
+void TemplateableElement::RemoveOwnedTemplateSignatureProcedure::operator()(TemplateSignature* el) const {
+    el->setTemplate(0);
+    if (m_me->m_ownedElements->count(el->getID())) {
+        m_me->m_ownedElements->internalRemove(*el);
+    }
+}
+
+void TemplateableElement::AddOwnedTemplateSignatureProcedure::operator()(TemplateSignature* el) const {
+    el->setTemplate(m_me);
+    if (!m_me->m_ownedElements->count(el->getID())) {
+        m_me->m_ownedElements->internalAdd(*el);
+    }
+}
+
+void TemplateableElement::RemoveTemplateBindingProcedure::operator()(TemplateBinding* el) const {
+    if (m_me->m_ownedElements->count(el->getID())) {
+        m_me->m_ownedElements->internalRemove(*el);
+    }
+    el->setBoundElement(0);
+}
+
+void TemplateableElement::AddTemplateBindingProcedure::operator()(TemplateBinding* el) const {
+    if (!m_me->m_ownedElements->count(el->getID())) {
+        m_me->m_ownedElements->internalRemove(*el);
+    }
+    el->setBoundElement(m_me);
+}
+
+void TemplateableElement::referencingReleased(ID id) {
+    if (m_ownedTemplateSignature.id() == id) {
+        m_ownedTemplateSignature.release();
+    }
+    if (m_templateBinding.id() == id) {
+        m_templateBinding.release();
+    }
+}
+
+void TemplateableElement::referenceReindexed(ID oldID, ID newID) {
+    if (m_ownedTemplateSignature.id() == oldID) {
+        m_ownedTemplateSignature.reindex(oldID, newID);
+    }
+    if (m_templateBinding.id() == oldID) {
+        m_templateBinding.reindex(oldID, newID);
+    }
+}
+
 TemplateableElement::TemplateableElement() {
-    m_ownedTemplateSignaturePtr = 0;
-    m_templateBindingPtr = 0;
+    m_ownedTemplateSignature.m_signature = &TemplateableElement::m_ownedTemplateSignature;
+    m_ownedTemplateSignature.m_removeProcedures.push_back(new RemoveOwnedTemplateSignatureProcedure(this));
+    m_ownedTemplateSignature.m_addProcedures.push_back(new AddOwnedTemplateSignatureProcedure(this));
+    m_templateBinding.m_signature = &TemplateableElement::m_templateBinding;
+    m_templateBinding.m_removeProcedures.push_back(new RemoveTemplateBindingProcedure(this));
+    m_templateBinding.m_addProcedures.push_back(new AddTemplateBindingProcedure(this));
 }
 
 TemplateableElement::TemplateableElement(const TemplateableElement& el){
-    m_ownedTemplateSignatureID = el.m_ownedTemplateSignatureID;
-    m_ownedTemplateSignaturePtr = 0;
-    m_templateBindingID = el.m_templateBindingID;
-    m_templateBindingPtr = el.m_templateBindingPtr;
+    m_ownedTemplateSignature = el.m_ownedTemplateSignature;
+    m_ownedTemplateSignature.m_me = this;
+    m_ownedTemplateSignature.m_removeProcedures.clear();
+    m_ownedTemplateSignature.m_addProcedures.clear();
+    m_ownedTemplateSignature.m_removeProcedures.push_back(new RemoveOwnedTemplateSignatureProcedure(this));
+    m_ownedTemplateSignature.m_addProcedures.push_back(new AddOwnedTemplateSignatureProcedure(this));
+    m_templateBinding = el.m_templateBinding;
+    m_templateBinding.m_me = this;
+    m_templateBinding.m_removeProcedures.clear();
+    m_templateBinding.m_addProcedures.clear();
+    m_templateBinding.m_removeProcedures.push_back(new RemoveTemplateBindingProcedure(this));
+    m_templateBinding.m_addProcedures.push_back(new AddTemplateBindingProcedure(this));
 }
 
 TemplateableElement::~TemplateableElement() {
@@ -24,84 +81,43 @@ TemplateableElement::~TemplateableElement() {
 }
 
 TemplateSignature* TemplateableElement::getOwnedTemplateSignature() {
-    return universalGet<TemplateSignature>(m_ownedTemplateSignatureID, m_ownedTemplateSignaturePtr, m_manager);
+    return m_ownedTemplateSignature.get();
+}
+
+TemplateSignature& TemplateableElement::getOwnedTemplateSignatureRef() {
+    return m_ownedTemplateSignature.getRef();
+}
+
+bool TemplateableElement::hasOwnedTemplateSignature() const {
+    return m_ownedTemplateSignature.has();
 }
 
 void TemplateableElement::setOwnedTemplateSignature(TemplateSignature* signature) {
-    if (!m_ownedTemplateSignatureID.isNull()) {
-        if (!m_ownedTemplateSignaturePtr) {
-            m_ownedTemplateSignaturePtr = &m_manager->get<TemplateSignature>(m_ownedTemplateSignatureID);
-        }
-        
-        if (m_ownedTemplateSignaturePtr->getTemplate() == this) {
-            m_ownedTemplateSignaturePtr->setTemplate(0);
-        }
+    m_ownedTemplateSignature.set(signature);
+}
 
-        if (m_ownedElements->count(m_ownedTemplateSignatureID)) {
-            m_ownedElements->internalRemove(*m_ownedTemplateSignaturePtr);
-        }
-
-        m_ownedTemplateSignatureID = ID::nullID();
-        m_ownedTemplateSignaturePtr = 0;
-    }
-
-    if (signature) {
-        m_ownedTemplateSignatureID = signature->getID();
-    }
-
-    if (!m_manager) {
-        m_ownedTemplateSignaturePtr = signature;
-    }
-
-    if (signature) {
-       if (!m_ownedElements->count(signature->getID())) {
-           m_ownedElements->internalAdd(*signature);
-       }
-
-       if (signature->getTemplate() != this) {
-           signature->setTemplate(this);
-       }
-    }
+void TemplateableElement::setOwnedTemplateSignature(TemplateSignature& signature) {
+    m_ownedTemplateSignature.set(signature);
 }
 
 TemplateBinding* TemplateableElement::getTemplateBinding() {
-    return universalGet<TemplateBinding>(m_templateBindingID, m_templateBindingPtr, m_manager);
+    return m_templateBinding.get();
+}
+
+TemplateBinding& TemplateableElement::getTemplateBindingRef() {
+    return m_templateBinding.getRef();
+}
+
+bool TemplateableElement::hasTemplateBinding() const {
+    return m_templateBinding.has();
 }
 
 void TemplateableElement::setTemplateBinding(TemplateBinding* binding) {
-    if (!isSameOrNull(m_templateBindingID, binding)) {
-        if (!m_templateBindingPtr) {
-            m_templateBindingPtr = &m_manager->get<TemplateBinding>(m_templateBindingID);
-        }
-        if (m_ownedElements->count(m_templateBindingID)) {
-            m_ownedElements->internalRemove(*m_templateBindingPtr);
-        }
+    m_templateBinding.set(binding);
+}
 
-        if (m_templateBindingPtr->getBoundElement() == this) {
-            m_templateBindingPtr->setBoundElement(0);
-        }
-
-        m_templateBindingID = ID::nullID();
-        m_templateBindingPtr = 0;
-    }
-
-    if (binding) {
-        m_templateBindingID = binding->getID();
-    }
-
-    if (!m_manager) {
-        m_templateBindingPtr = binding;
-    }
-
-    if (binding) {
-        if (!m_ownedElements->count(binding->getID())) {
-            m_ownedElements->internalAdd(*binding);
-        }
-
-        if (binding->getBoundElement() != this) {
-            binding->setBoundElement(this);
-        }
-    }
+void TemplateableElement::setTemplateBinding(TemplateBinding& binding) {
+    m_templateBinding.set(binding);
 }
 
 ElementType TemplateableElement::getElementType() const {

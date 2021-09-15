@@ -6,15 +6,11 @@
 using namespace UML;
 
 void TemplateSignature::RemoveTemplateProcedure::operator()(TemplateableElement* el) const {
-    if (el->m_ownedTemplateSignatureID == m_me->getID()) {
-        el->setOwnedTemplateSignature(0);
-    }
+    el->setOwnedTemplateSignature(0);
 }
 
 void TemplateSignature::AddTemplateProcedure::operator()(TemplateableElement* el) const {
-    if (el->m_ownedTemplateSignatureID != m_me->getID()) {
-        el->setOwnedTemplateSignature(m_me);
-    }
+    el->setOwnedTemplateSignature(m_me);
 }
 
 void TemplateSignature::AddOwnedParameterFunctor::operator()(TemplateParameter& el) const {

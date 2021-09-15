@@ -2,9 +2,34 @@
 #include "uml/templateParameterSubstitution.h"
 #include "uml/templateableElement.h"
 #include "uml/templateSignature.h"
-#include "uml/universalFunctions.h"
 
 using namespace UML;
+
+void TemplateBinding::RemoveBoundElementProcedure::operator()(TemplateableElement* el) const {
+    if (m_me->getSources().count(el->getID())) {
+        m_me->getSources().remove(*el);
+    }
+    el->setTemplateBinding(0);
+}
+
+void TemplateBinding::AddBoundElementProcedure::operator()(TemplateableElement* el) const {
+    if (m_me->getSources().count(el->getID())) {
+        m_me->getSources().add(*el);
+    }
+    el->setTemplateBinding(*m_me);
+}
+
+void TemplateBinding::RemoveSignatureProcedure::operator()(TemplateSignature* el) const {
+    if (m_me->getTargets().count(el->getID())) {
+        m_me->getTargets().remove(*el);
+    }
+}
+
+void TemplateBinding::AddSignatureProcedure::operator()(TemplateSignature* el) const {
+    if (!m_me->getTargets().count(el->getID())) {
+        m_me->getTargets().add(*el);
+    }
+}
 
 void TemplateBinding::AddParameterSubstitutionFunctor::operator()(TemplateParameterSubstitution& el) const {
     if(el.getTemplateBinding() != m_el) {
@@ -14,6 +39,7 @@ void TemplateBinding::AddParameterSubstitutionFunctor::operator()(TemplateParame
     if (!m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalAdd(el);
     }
+    updateCopiedSequenceAddedTo(el, &TemplateBinding::getParameterSubstitution);
 }
 
 void TemplateBinding::RemoveParameterSubstitutionFunctor::operator()(TemplateParameterSubstitution& el) const {
@@ -24,6 +50,7 @@ void TemplateBinding::RemoveParameterSubstitutionFunctor::operator()(TemplatePar
     if (m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalRemove(el);
     }
+    updateCopiedSequenceRemovedFrom(el, &TemplateBinding::getParameterSubstitution);
 }
 
 void TemplateBinding::setManager(UmlManager* manager) {
@@ -31,16 +58,51 @@ void TemplateBinding::setManager(UmlManager* manager) {
     m_parameterSubstitution.m_manager = manager;
 }
 
+void TemplateBinding::referencingReleased(ID id) {
+    DirectedRelationship::referencingReleased(id);
+    if (m_boundElement.id() == id) {
+        m_boundElement.release();
+    }
+    if (m_signature.id() == id) {
+        m_signature.release();
+    }
+}
+
+void TemplateBinding::referenceReindexed(ID oldID, ID newID) {
+    DirectedRelationship::referenceReindexed(oldID, newID);
+    if (m_boundElement.id() == oldID) {
+        m_boundElement.reindex(oldID, newID);
+    }
+    if (m_boundElement.id() == oldID) {
+        m_boundElement.reindex(oldID, newID);
+    }
+}
+
 TemplateBinding::TemplateBinding() {
-    m_boundElementPtr = 0;
-    m_signaturePtr = 0;
+    m_boundElement.m_signature = &TemplateBinding::m_boundElement;
+    m_boundElement.m_removeProcedures.push_back(new RemoveBoundElementProcedure(this));
+    m_boundElement.m_addProcedures.push_back(new AddBoundElementProcedure(this));
+    m_signature.m_signature = &TemplateBinding::m_signature;
+    m_signature.m_removeProcedures.push_back(new RemoveSignatureProcedure(this));
+    m_signature.m_addProcedures.push_back(new AddSignatureProcedure(this));
     m_parameterSubstitution.addProcedures.push_back(new AddParameterSubstitutionFunctor(this));
     m_parameterSubstitution.removeProcedures.push_back(new RemoveParameterSubstitutionFunctor(this));
 }
 
 TemplateBinding::TemplateBinding(const TemplateBinding& bind) {
-    m_boundElementID = bind.m_boundElementID;
-    m_signatureID = bind.m_signatureID;
+    m_boundElement = bind.m_boundElement;
+    m_boundElement.m_me = this;
+    m_boundElement.m_removeProcedures.clear();
+    m_boundElement.m_addProcedures.clear();
+    m_signature.m_removeProcedures.push_back(new RemoveSignatureProcedure(this));
+    m_signature.m_addProcedures.push_back(new AddSignatureProcedure(this));
+    m_signature = bind.m_signature;
+    m_signature.m_me = this;
+    m_signature.m_removeProcedures.clear();
+    m_signature.m_addProcedures.clear();
+    m_signature.m_removeProcedures.push_back(new RemoveSignatureProcedure(this));
+    m_signature.m_addProcedures.push_back(new AddSignatureProcedure(this));
+    m_parameterSubstitution = bind.m_parameterSubstitution;
     m_parameterSubstitution.addProcedures.clear();
     m_parameterSubstitution.addProcedures.push_back(new AddParameterSubstitutionFunctor(this));
     m_parameterSubstitution.removeProcedures.clear();
@@ -52,79 +114,43 @@ TemplateBinding::~TemplateBinding() {
 }
 
 TemplateableElement* TemplateBinding::getBoundElement() {
-    return universalGet<TemplateableElement>(m_boundElementID, m_boundElementPtr, m_manager);
+    return m_boundElement.get();
+}
+
+TemplateableElement& TemplateBinding::getBoundElementRef() {
+    return m_boundElement.getRef();
+}
+
+bool TemplateBinding::hasBoundElement() const {
+    return m_boundElement.has();
 }
 
 void TemplateBinding::setBoundElement(TemplateableElement* el) {
-    if (!isSameOrNull(m_boundElementID, el)) {
-        if (!m_boundElementPtr) {
-            m_boundElementPtr = &m_manager->get<TemplateableElement>(m_boundElementID);
-        }
+    m_boundElement.set(el);
+}
 
-        TemplateableElement* temp = m_boundElementPtr;
-
-        if (m_sources.count(m_boundElementID)) {
-            m_sources.remove(*m_boundElementPtr);
-        }
-
-        m_boundElementID = ID::nullID();
-        m_boundElementPtr = 0;
-
-        if (temp->getTemplateBinding() == this) {
-            temp->setTemplateBinding(0);
-        }
-    }
-
-    if (el) {
-        m_boundElementID = el->getID();
-    }
-
-    if (!m_manager) {
-        m_boundElementPtr = 0;
-    }
-
-    if (el) {
-        if (el->getTemplateBinding() != this) {
-            el->setTemplateBinding(this);
-        }
-
-        if (!m_sources.count(el->getID())) {
-            m_sources.add(*el);
-        }
-    }
+void TemplateBinding::setBoundElement(TemplateableElement& el) {
+    m_boundElement.set(el);
 }
 
 TemplateSignature* TemplateBinding::getSignature() {
-    return universalGet<TemplateSignature>(m_signatureID, m_signaturePtr, m_manager);
+    return m_signature.get();
+}
+
+TemplateSignature& TemplateBinding::getSignatureRef() {
+    return m_signature.getRef();
+}
+
+bool TemplateBinding::hasSignature() const {
+    return m_signature.has();
 }
 
 void TemplateBinding::setSignature(TemplateSignature* signature) {
-    if (!isSameOrNull(m_signatureID, signature)) {
-        if (!m_signaturePtr) {
-            m_signaturePtr = &m_manager->get<TemplateSignature>(m_signatureID);
-        }
+    m_signature.set(signature);
+}
 
-        if (m_targets.count(m_signatureID)) {
-            m_targets.remove(*m_signaturePtr);
-        }
-
-        m_signatureID = ID::nullID();
-        m_signaturePtr = 0;
-    }
-
-    if (signature) {
-        m_signatureID = signature->getID();
-    }
-
-    if (!m_manager) {
-        m_signaturePtr = 0;
-    }
-
-    if (signature) {
-        if (!m_targets.count(signature->getID())) {
-            m_targets.add(*signature);
-        }
-    }
+void TemplateBinding::setSignature(TemplateSignature& signature) {
+    m_signature.set(signature);
 }
 
 Sequence<TemplateParameterSubstitution>& TemplateBinding::getParameterSubstitution() {

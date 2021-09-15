@@ -9,13 +9,33 @@ namespace UML {
     class TemplateableElement;
 
     class TemplateBinding : public DirectedRelationship {
+
         friend class UmlManager;
+
         private:
-            ID m_boundElementID;
-            TemplateableElement* m_boundElementPtr;
-            ID m_signatureID;
-            TemplateSignature* m_signaturePtr;
-            Sequence<TemplateParameterSubstitution> m_parameterSubstitution;
+            Singleton<TemplateableElement, TemplateBinding> m_boundElement = Singleton<TemplateableElement, TemplateBinding>(this);
+            class RemoveBoundElementProcedure : public AbstractSingletonProcedure<TemplateableElement, TemplateBinding> {
+                public:
+                    RemoveBoundElementProcedure(TemplateBinding* me) : AbstractSingletonProcedure<TemplateableElement, TemplateBinding>(me) {};
+                    void operator()(TemplateableElement* el) const override;
+            };
+            class AddBoundElementProcedure : public AbstractSingletonProcedure<TemplateableElement, TemplateBinding> {
+                public:
+                    AddBoundElementProcedure(TemplateBinding* me) : AbstractSingletonProcedure<TemplateableElement, TemplateBinding>(me) {};
+                    void operator()(TemplateableElement* el) const override;
+            };
+            Singleton<TemplateSignature, TemplateBinding> m_signature = Singleton<TemplateSignature, TemplateBinding>(this);
+            class RemoveSignatureProcedure : public AbstractSingletonProcedure<TemplateSignature, TemplateBinding> {
+                public:
+                    RemoveSignatureProcedure(TemplateBinding* me) : AbstractSingletonProcedure<TemplateSignature, TemplateBinding>(me) {};
+                    void operator()(TemplateSignature* el) const override;
+            };
+            class AddSignatureProcedure : public AbstractSingletonProcedure<TemplateSignature, TemplateBinding> {
+                public:
+                    AddSignatureProcedure(TemplateBinding* me) : AbstractSingletonProcedure<TemplateSignature, TemplateBinding>(me) {};
+                    void operator()(TemplateSignature* el) const override;
+            };
+            Sequence<TemplateParameterSubstitution> m_parameterSubstitution = Sequence<TemplateParameterSubstitution>(this);
 
             class AddParameterSubstitutionFunctor : public TemplateAbstractSequenceFunctor<TemplateParameterSubstitution,TemplateBinding> {
                 public:
@@ -28,13 +48,21 @@ namespace UML {
                     void operator()(TemplateParameterSubstitution& el) const override;
             };
             void setManager(UmlManager* manager) override;
-        public:
+            void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID) override;
             TemplateBinding();
+        public:
             TemplateBinding(const TemplateBinding& bind);
             ~TemplateBinding();
             TemplateableElement* getBoundElement(); 
+            TemplateableElement& getBoundElementRef();
+            bool hasBoundElement() const;
+            void setBoundElement(TemplateableElement& el);
             void setBoundElement(TemplateableElement* el);
             TemplateSignature* getSignature();
+            TemplateSignature& getSignatureRef();
+            bool hasSignature() const;
+            void setSignature(TemplateSignature& signature);
             void setSignature(TemplateSignature* signature);
             Sequence<TemplateParameterSubstitution>& getParameterSubstitution();
             ElementType getElementType() const override;

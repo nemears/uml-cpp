@@ -144,7 +144,7 @@ namespace UML {
              * WARN: Sequences should always be values
              **/
             template <class T = Element> Sequence<T> createSequence() {
-                Sequence<T> ret;
+                Sequence<T> ret(0);
                 ret.m_manager = this;
                 return ret;
             };

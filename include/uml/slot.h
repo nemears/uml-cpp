@@ -22,7 +22,7 @@ namespace UML {
                     AddDefiningFeatureProcedure(Slot* me) : AbstractSingletonProcedure<StructuralFeature, Slot>(me) {};
                     void operator()(StructuralFeature* el) const override;
             };
-            Sequence<ValueSpecification> m_values;
+            Sequence<ValueSpecification> m_values = Sequence<ValueSpecification>(this);
             Singleton<InstanceSpecification, Slot> m_owningInstance = Singleton<InstanceSpecification, Slot>(this);
             class RemoveOwningInstanceProcedure : public AbstractSingletonProcedure<InstanceSpecification, Slot> {
                 public:

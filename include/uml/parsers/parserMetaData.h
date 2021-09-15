@@ -43,7 +43,7 @@ namespace UML{
             public:
                 std::filesystem::path m_path;
                 ParserMetaData(UmlManager* manager);
-                Sequence<> elements;
+                Sequence<> elements = Sequence<>(0);
                 std::unordered_map<ID, std::vector<AbstractPostProcessFunctor*>*> postProcessFlag;
                 UmlManager* m_manager;
                 ParserStrategy m_strategy = ParserStrategy::WHOLE;

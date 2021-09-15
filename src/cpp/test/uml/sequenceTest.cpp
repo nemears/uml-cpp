@@ -13,7 +13,8 @@ class SequenceTest : public ::testing::Test {
 
 TEST_F(SequenceTest, addGetAndRemoveElementTest) {
     UmlManager m;
-    Sequence<>& seq = m.createSequence<>();
+    Package& p = m.create<Package>();
+    Sequence<PackageableElement>& seq = p.getPackagedElements();
     ASSERT_TRUE(seq.size() == 0);
     Package e = m.create<Package>();
     ASSERT_NO_THROW(seq.add(e));
@@ -25,8 +26,9 @@ TEST_F(SequenceTest, addGetAndRemoveElementTest) {
 
 TEST_F(SequenceTest, addGetAndRemoveElementByNameTest) {
     UmlManager m;
-    Sequence<>& seq = m.createSequence<>();
-    Slot& e = m.create<Slot>();
+    Package& p = m.create<Package>();
+    Sequence<PackageableElement>& seq = p.getPackagedElements();
+    Package& e = m.create<Package>();
     Package n = m.create<Package>();
     n.setName("test");
     seq.add(e);
@@ -49,7 +51,8 @@ TEST_F(SequenceTest, setNameLaterTest) {
 
 TEST_F(SequenceTest, addElementTwiceTest) {
     UmlManager m;
-    Sequence<>& seq = m.createSequence<>();
+    Package& p = m.create<Package>();
+    Sequence<PackageableElement>& seq = p.getPackagedElements();
     Package e = m.create<Package>();
     ASSERT_NO_THROW(seq.add(e));
     ASSERT_NO_THROW(seq.add(e));
@@ -78,18 +81,20 @@ TEST_F(SequenceTest, addElementTwiceTest) {
 
 TEST_F(SequenceTest, removeElementThatWasntAddedTest) {
     UmlManager m;
-    Sequence<>& seq = m.createSequence<>();
+    Package& p = m.create<Package>();
+    Sequence<PackageableElement>& seq = p.getPackagedElements();
     Package e = m.create<Package>();
     ASSERT_THROW(seq.remove(e), ElementDoesntExistException);
 }
 
 TEST_F(SequenceTest, useAutoForLoop2) {
     UmlManager m;
-    Sequence<>& seq = m.createSequence<>();
-    Slot& e = m.create<Slot>();
+    Package& p = m.create<Package>();
+    Sequence<PackageableElement>& seq = p.getPackagedElements();
+    Package& e = m.create<Package>();
     Package& f = m.create<Package>();
-    Slot& b = m.create<Slot>();
-    Slot& c = m.create<Slot>();
+    Package& b = m.create<Package>();
+    Package& c = m.create<Package>();
     seq.add(e);
     seq.add(f);
     seq.add(b);
@@ -111,7 +116,8 @@ TEST_F(SequenceTest, getNonexistentElementByID_Test) {
 
 TEST_F(SequenceTest, newSequenceTest) {
     UmlManager m;
-    Sequence<Package> s = m.createSequence<Package>();
+    Package& p = m.create<Package>();
+    Sequence<PackageableElement>& s = p.getPackagedElements();
     for (size_t i = 0; i < 100; i++) {
         s.add(m.create<Package>());
     }

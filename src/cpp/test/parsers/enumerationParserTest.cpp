@@ -50,9 +50,10 @@ TEST_F(EnumerationParserTest, basicEnumerationTest) {
 }
 
 TEST_F(EnumerationParserTest, emitEnumerationWLiterals) {
-    Enumeration e;
-    EnumerationLiteral l1;
-    EnumerationLiteral l2;
+    UmlManager m;
+    Enumeration& e = m.create<Enumeration>();
+    EnumerationLiteral& l1 = m.create<EnumerationLiteral>();
+    EnumerationLiteral& l2 = m.create<EnumerationLiteral>();
     e.setID("a6ds7Q7pgI80WPT5vd2LbJn4dN2g");
     e.setName("enum");
     l1.setID("ki59FSBz84bR3hyOjfeHEg9LLtCA");

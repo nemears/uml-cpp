@@ -8,8 +8,9 @@ class OutputPinTest : public ::testing::Test {
 };
 
 TEST_F(OutputPinTest, reindexIDTest) {
-    Action a;
-    OutputPin i;
+    UmlManager m;
+    Action& a = m.create<Action>();
+    OutputPin& i = m.create<OutputPin>();
     a.getOutputs().add(i);
     i.setID("eb0920180bef4ad6b80f05fadsac");
     ASSERT_NO_THROW(a.getOutputs().get(i.getID()));
@@ -26,8 +27,9 @@ TEST_F(OutputPinTest, reindexIDTest) {
 // }
 
 TEST_F(OutputPinTest, AddPinFunctorTest) {
-    Action a;
-    OutputPin i;
+    UmlManager m;
+    Action& a = m.create<Action>();
+    OutputPin& i = m.create<OutputPin>();
     a.getOutputs().add(i);
     ASSERT_TRUE(a.getOutputs().size() == 1);
     ASSERT_TRUE(&a.getOutputs().front() == &i);

@@ -8,6 +8,9 @@
 
 namespace UML {
     class Action : public ActivityNode {
+
+        friend class UmlManager;
+
         protected:
             Sequence<InputPin> m_inputs = Sequence<InputPin>(this);
             Sequence<OutputPin> m_outputs = Sequence<OutputPin>(this);

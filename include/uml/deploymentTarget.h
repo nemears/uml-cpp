@@ -12,7 +12,7 @@ namespace UML {
 
         friend class UmlManager;
 
-        private:
+        protected:
             Sequence<Deployment> m_deployments = Sequence<Deployment>(this);
             class AddDeploymentFunctor : public TemplateAbstractSequenceFunctor<Deployment,DeploymentTarget> {
                 public:

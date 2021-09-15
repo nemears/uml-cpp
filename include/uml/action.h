@@ -2,11 +2,12 @@
 #define ACTION_H
 
 #include "activityNode.h"
-#include "inputPin.h"
-#include "outputPin.h"
-#include "sequence.h"
 
 namespace UML {
+
+    class InputPin;
+    class OutputPin;
+
     class Action : public ActivityNode {
 
         friend class UmlManager;

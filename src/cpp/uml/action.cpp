@@ -1,4 +1,6 @@
 #include "uml/action.h"
+#include "uml/inputPin.h"
+#include "uml/outputPin.h"
 
 using namespace UML;
 

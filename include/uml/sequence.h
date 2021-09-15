@@ -62,6 +62,7 @@ namespace UML {
     class Artifact;
     class BehavioredClassifier;
     class MultiplicityElement;
+    class OpaqueBehavior;
     template <class V, class U> class TemplateAbstractSequenceFunctor;
 
     class ReadOnlySequenceException : public std::exception {
@@ -147,6 +148,7 @@ namespace UML {
         friend class MultiplicityElement;
         friend class SetOwnerFunctor;
         friend class RemoveOwnerFunctor;
+        friend class OpaqueBehavior;
         template <class V, class U> friend class TemplateAbstractSequenceFunctor;
         
         private:

@@ -178,6 +178,7 @@ namespace UML {
             virtual ~Element();
             ID getID();
             Element* getOwner();
+            bool hasOwner() const;
             Sequence<Element>& getOwnedElements();
             Sequence<Relationship>& getRelationships();
             Sequence<DirectedRelationship>& getDirectedRelationships();

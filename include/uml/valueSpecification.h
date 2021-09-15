@@ -6,9 +6,13 @@
 #include "packageableElement.h"
 
 namespace UML {
+
+    class OpaqueBehavior;
+
     class ValueSpecification : public TypedElement , public PackageableElement {
 
         friend class UmlManager;
+        friend class OpaqueBehavior;
 
         protected:
             Singleton<Slot, ValueSpecification> m_owningSlot = Singleton<Slot, ValueSpecification>(this);

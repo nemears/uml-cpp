@@ -3,7 +3,55 @@
 
 namespace UML {
 
+void OpaqueBehavior::AddBodyFunctor::operator()(LiteralString& el) const {
+    if (el.hasOwner()) {
+        if (*el.getOwner() != *m_el) {
+            el.setOwner(m_el);
+        }
+    } else {
+        el.setOwner(m_el);
+    }
+    updateCopiedSequenceAddedTo(el, &OpaqueBehavior::getBodies);
+}
+
+void OpaqueBehavior::RemoveBodyFunctor::operator()(LiteralString& el) const {
+    if (el.hasOwner()) {
+        if (*el.getOwner() == *m_el) {
+            el.setOwner(0);
+        }
+    }
+    updateCopiedSequenceRemovedFrom(el, &OpaqueBehavior::getBodies);
+}
+
+void OpaqueBehavior::setManager(UmlManager* manager) {
+    Behavior::setManager(manager);
+    m_bodies.m_manager = manager;
+}
+
+void OpaqueBehavior::referencingReleased(ID id) {
+    Behavior::referencingReleased(id);
+    m_bodies.elementReleased(id, &OpaqueBehavior::getBodies);
+}
+
+void OpaqueBehavior::referenceReindexed(ID oldID, ID newID) {
+    Behavior::referenceReindexed(oldID, newID);
+    if (m_bodies.count(oldID)) {
+        m_bodies.reindex(oldID, newID, &OpaqueBehavior::getBodies);
+    }
+}
+
 OpaqueBehavior::OpaqueBehavior() {
+    m_bodies.addProcedures.push_back(new AddBodyFunctor(this));
+    m_bodies.removeProcedures.push_back(new RemoveBodyFunctor(this));
+}
+
+OpaqueBehavior::OpaqueBehavior(const OpaqueBehavior& rhs) {
+    m_bodies = rhs.m_bodies;
+    m_bodies.m_el = this;
+    m_bodies.addProcedures.clear();
+    m_bodies.removeProcedures.clear();
+    m_bodies.addProcedures.push_back(new AddBodyFunctor(this));
+    m_bodies.removeProcedures.push_back(new RemoveBodyFunctor(this));
 }
 
 OpaqueBehavior::~OpaqueBehavior() {

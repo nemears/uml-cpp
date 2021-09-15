@@ -562,6 +562,10 @@ Element* Element::getOwner() {
     }
 }
 
+bool Element::hasOwner() const {
+    return !m_ownerID.isNull();
+}
+
 void Element::setOwner(Element* owner) {
     if (!isSameOrNull(m_ownerID, owner)) {
         if (!m_ownerPtr) {

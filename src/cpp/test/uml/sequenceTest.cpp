@@ -18,7 +18,7 @@ TEST_F(SequenceTest, addGetAndRemoveElementTest) {
     ASSERT_TRUE(seq.size() == 0);
     Package e = m.create<Package>();
     ASSERT_NO_THROW(seq.add(e));
-    ASSERT_TRUE(&seq.get(e.getID()) == &e);
+    ASSERT_TRUE(seq.get(e.getID()) == e);
     ASSERT_TRUE(seq.size() == 1);
     seq.remove(e);
     ASSERT_TRUE(seq.size() == 0);
@@ -33,9 +33,9 @@ TEST_F(SequenceTest, addGetAndRemoveElementByNameTest) {
     n.setName("test");
     seq.add(e);
     seq.add(n);
-    ASSERT_TRUE(&seq.get("test") == &n);
-    ASSERT_TRUE(&seq.get(n.getID()) == &n);
-    ASSERT_TRUE(&seq.get(e.getID()) == &e);
+    ASSERT_TRUE(seq.get("test") == n);
+    ASSERT_TRUE(seq.get(n.getID()) == n);
+    ASSERT_TRUE(seq.get(e.getID()) == e);
 }
 
 TEST_F(SequenceTest, setNameLaterTest) {
@@ -56,10 +56,10 @@ TEST_F(SequenceTest, addElementTwiceTest) {
     Package e = m.create<Package>();
     ASSERT_NO_THROW(seq.add(e));
     ASSERT_NO_THROW(seq.add(e));
-    ASSERT_TRUE(&seq.get(e.getID()) == &e);
+    ASSERT_TRUE(seq.get(e.getID()) == e);
     ASSERT_TRUE(seq.size() == 2);
-    ASSERT_TRUE(&seq.get(0) == &e);
-    ASSERT_TRUE(&seq.get(1) == &e);
+    ASSERT_TRUE(seq.get(0) == e);
+    ASSERT_TRUE(seq.get(1) == e);
     ASSERT_NO_THROW(seq.remove(e));
     ASSERT_THROW(seq.get(e.getID()), ID_doesNotExistException);
     ASSERT_TRUE(seq.size() == 0);

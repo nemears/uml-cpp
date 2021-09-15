@@ -9,6 +9,9 @@ namespace UML {
     class TemplateSignature;
 
     class TemplateableElement : virtual public Element {
+
+        friend class TemplateSignature;
+
         private:
             ID m_ownedTemplateSignatureID;
             TemplateSignature* m_ownedTemplateSignaturePtr;

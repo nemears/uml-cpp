@@ -1,9 +1,28 @@
 #include "uml/deployment.h"
 #include "uml/deployedArtifact.h"
 #include "uml/deploymentTarget.h"
-#include "uml/universalFunctions.h"
 
 using namespace UML;
+
+void Deployment::RemoveLocationProcedure::operator()(DeploymentTarget* el) const {
+    if (el->getDeployments().count(m_me->getID())) {
+        el->getDeployments().remove(*m_me);
+    }
+
+    if (m_me->m_client.count(el->getID())) {
+        m_me->m_client.remove(*el);
+    }
+}
+
+void Deployment::AddLocationProcedure::operator()(DeploymentTarget* el) const {
+    if (!m_me->m_client.count(el->getID())) {
+        m_me->m_client.add(*el);
+    }
+
+    if (!el->getDeployments().count(m_me->getID())) {
+        el->getDeployments().add(*m_me);
+    }
+}
 
 void Deployment::AddDeployedArtifactFunctor::operator()(DeployedArtifact& el) const {
     if (!m_el->getSupplier().count(el.getID())) {
@@ -18,13 +37,34 @@ void Deployment::RemoveDeployedArtifactFunctor::operator()(DeployedArtifact& el)
 }
 
 void Deployment::setManager(UmlManager* manager) {
+    Dependency::setManager(manager);
     m_deployedArtifacts.m_manager = manager;
+}
+
+void Deployment::referencingReleased(ID id) {
+    Dependency::referencingReleased(id);
+    if (m_location.id() == id) {
+        m_location.release();
+    }
+    m_deployedArtifacts.elementReleased(id, &Deployment::getDeployedArtifact);
+}
+
+void Deployment::referenceReindexed(ID oldID, ID newID) {
+    Dependency::referenceReindexed(oldID, newID);
+    if (m_location.id() == oldID) {
+        m_location.reindex(oldID, newID);
+    }
+    if (m_deployedArtifacts.count(oldID)) {
+        m_deployedArtifacts.reindex(oldID, newID, &Deployment::getDeployedArtifact);
+    }
 }
 
 Deployment::Deployment() {
     m_deployedArtifacts.addProcedures.push_back(new AddDeployedArtifactFunctor(this));
     m_deployedArtifacts.removeProcedures.push_back(new RemoveDeployedArtifactFunctor(this));
-    m_locationPtr = 0;
+    m_location.m_signature = &Deployment::m_location;
+    m_location.m_removeProcedures.push_back(new RemoveLocationProcedure(this));
+    m_location.m_addProcedures.push_back(new AddLocationProcedure(this));
 }
 
 Deployment::Deployment(const Deployment& deployment) {
@@ -33,10 +73,12 @@ Deployment::Deployment(const Deployment& deployment) {
     m_deployedArtifacts.removeProcedures.clear();
     m_deployedArtifacts.addProcedures.push_back(new AddDeployedArtifactFunctor(this));
     m_deployedArtifacts.removeProcedures.push_back(new RemoveDeployedArtifactFunctor(this));
-    m_locationID = deployment.m_locationID;
-    if (!m_manager) {
-        m_locationPtr = deployment.m_locationPtr;
-    }
+    m_location = deployment.m_location;
+    m_location.m_me = this;
+    m_location.m_removeProcedures.clear();
+    m_location.m_addProcedures.clear();
+    m_location.m_removeProcedures.push_back(new RemoveLocationProcedure(this));
+    m_location.m_addProcedures.push_back(new AddLocationProcedure(this));
 }
 
 Deployment::~Deployment() {
@@ -48,44 +90,23 @@ Sequence<DeployedArtifact>& Deployment::getDeployedArtifact() {
 }
 
 DeploymentTarget* Deployment::getLocation() {
-    return universalGet<DeploymentTarget>(m_locationID, m_locationPtr, m_manager);
+    return m_location.get();
+}
+
+DeploymentTarget& Deployment::getLocationRef() {
+    return m_location.getRef();
+}
+
+bool Deployment::hasLocation() const {
+    return m_location.has();
 }
 
 void Deployment::setLocation(DeploymentTarget* location) {
-    if (!isSameOrNull(m_locationID, location)) {
-        if (!m_locationPtr) {
-            m_locationPtr = &m_manager->get<DeploymentTarget>(m_locationID);
-        }
+    m_location.set(location);
+}
 
-        if (m_locationPtr->getDeployments().count(m_id)) {
-            m_locationPtr->getDeployments().remove(*this);
-        }
-
-        if (m_client.count(m_locationID)) {
-            m_client.remove(*m_locationPtr);
-        }
-
-        m_locationID = ID::nullID();
-        m_locationPtr = 0;
-    }
-
-    if (location) {
-        m_locationID = location->getID();
-    }
-
-    if (!m_manager) {
-        m_locationPtr = location;
-    }
-
-    if (location) {
-        if (!m_client.count(location->getID())) {
-            m_client.add(*location);
-        }
-
-        if (!location->getDeployments().count(m_id)) {
-            location->getDeployments().add(*this);
-        }
-    }
+void Deployment::setLocation(DeploymentTarget& location) {
+    m_location.set(location);
 }
 
 ElementType Deployment::getElementType() const {

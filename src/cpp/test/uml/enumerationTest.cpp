@@ -8,8 +8,9 @@ using namespace UML;
 class EnumerationTest : public ::testing::Test {};
 
 TEST_F(EnumerationTest, addOwnedLiteralTest) {
-    Enumeration e;
-    EnumerationLiteral l;
+    UmlManager m;
+    Enumeration& e = m.create<Enumeration>();
+    EnumerationLiteral& l = m.create<EnumerationLiteral>();
     ASSERT_NO_THROW(e.getOwnedLiteral().add(l));
     ASSERT_TRUE(e.getOwnedLiteral().size() == 1);
     ASSERT_TRUE(&e.getOwnedLiteral().front() == &l);
@@ -28,8 +29,9 @@ TEST_F(EnumerationTest, addOwnedLiteralTest) {
 }
 
 TEST_F(EnumerationTest, setEnumerationTest) {
-    Enumeration e;
-    EnumerationLiteral l;
+    UmlManager m;
+    Enumeration& e = m.create<Enumeration>();
+    EnumerationLiteral& l = m.create<EnumerationLiteral>();
     ASSERT_NO_THROW(l.setEnumeration(&e));
     ASSERT_TRUE(e.getOwnedLiteral().size() == 1);
     ASSERT_TRUE(&e.getOwnedLiteral().front() == &l);
@@ -48,8 +50,9 @@ TEST_F(EnumerationTest, setEnumerationTest) {
 }
 
 TEST_F(EnumerationTest, removeOwnedLiteralTest) {
-    Enumeration e;
-    EnumerationLiteral l;
+    UmlManager m;
+    Enumeration& e = m.create<Enumeration>();
+    EnumerationLiteral& l = m.create<EnumerationLiteral>();
     e.getOwnedLiteral().add(l);
     ASSERT_NO_THROW(e.getOwnedLiteral().remove(l));
     ASSERT_TRUE(e.getOwnedLiteral().size() == 0);
@@ -64,8 +67,9 @@ TEST_F(EnumerationTest, removeOwnedLiteralTest) {
 }
 
 TEST_F(EnumerationTest, setNullEnumeration) {
-    Enumeration e;
-    EnumerationLiteral l;
+    UmlManager m;
+    Enumeration& e = m.create<Enumeration>();
+    EnumerationLiteral& l = m.create<EnumerationLiteral>();
     e.getOwnedLiteral().add(l);
     ASSERT_NO_THROW(l.setEnumeration(0));
     ASSERT_TRUE(e.getOwnedLiteral().size() == 0);

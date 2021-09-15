@@ -8,8 +8,11 @@ namespace UML {
     class EnumerationLiteral;
 
     class Enumeration : public DataType {
+
+        friend class UmlManager;
+
         protected:
-            Sequence<EnumerationLiteral> m_ownedLiteral;
+            Sequence<EnumerationLiteral> m_ownedLiteral = Sequence<EnumerationLiteral>(this);
             class AddOwnedLiteralFunctor : public TemplateAbstractSequenceFunctor<EnumerationLiteral,Enumeration> {
                 public:
                     AddOwnedLiteralFunctor(Enumeration* me) : TemplateAbstractSequenceFunctor(me) {};
@@ -20,8 +23,11 @@ namespace UML {
                     RemoveOwnedLiteralFunctor(Enumeration* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(EnumerationLiteral& el) const override;
             };
-        public:
+            void setManager(UmlManager* manager) override;
+            void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID) override;
             Enumeration();
+        public:
             Enumeration(const Enumeration& enumeration);
             Sequence<EnumerationLiteral>& getOwnedLiteral();
             ElementType getElementType() const override;

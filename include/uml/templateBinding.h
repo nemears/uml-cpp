@@ -14,6 +14,7 @@ namespace UML {
 
         private:
             Singleton<TemplateableElement, TemplateBinding> m_boundElement = Singleton<TemplateableElement, TemplateBinding>(this);
+            bool m_setFlag = false;
             class RemoveBoundElementProcedure : public AbstractSingletonProcedure<TemplateableElement, TemplateBinding> {
                 public:
                     RemoveBoundElementProcedure(TemplateBinding* me) : AbstractSingletonProcedure<TemplateableElement, TemplateBinding>(me) {};

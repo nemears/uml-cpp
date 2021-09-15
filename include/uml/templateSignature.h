@@ -15,6 +15,7 @@ namespace UML {
 
         private:
             Singleton<TemplateableElement, TemplateSignature> m_template = Singleton<TemplateableElement, TemplateSignature>(this);
+            bool m_setFlag = false;
             class RemoveTemplateProcedure : public AbstractSingletonProcedure<TemplateableElement, TemplateSignature> {
                 public:
                     RemoveTemplateProcedure(TemplateSignature* me) : AbstractSingletonProcedure<TemplateableElement, TemplateSignature>(me) {};

@@ -7,14 +7,24 @@
 using namespace UML;
 
 void TemplateableElement::RemoveOwnedTemplateSignatureProcedure::operator()(TemplateSignature* el) const {
-    el->setTemplate(0);
+    if (el->hasTemplate() && !m_me->m_setFlag) {
+        m_me->m_setFlag = true;
+        el->setTemplate(0);
+        m_me->m_setFlag = false;
+    }
     if (m_me->m_ownedElements->count(el->getID())) {
         m_me->m_ownedElements->internalRemove(*el);
     }
 }
 
 void TemplateableElement::AddOwnedTemplateSignatureProcedure::operator()(TemplateSignature* el) const {
-    el->setTemplate(m_me);
+    if (el->hasTemplate()) {
+        if (el->getTemplateRef() != *m_me) {
+            el->setTemplate(m_me);
+        }
+    } else {
+        el->setTemplate(m_me);
+    }
     if (!m_me->m_ownedElements->count(el->getID())) {
         m_me->m_ownedElements->internalAdd(*el);
     }
@@ -24,14 +34,24 @@ void TemplateableElement::RemoveTemplateBindingProcedure::operator()(TemplateBin
     if (m_me->m_ownedElements->count(el->getID())) {
         m_me->m_ownedElements->internalRemove(*el);
     }
-    el->setBoundElement(0);
+    if (el->hasBoundElement() && !m_me->m_setFlag) {
+        m_me->m_setFlag = true;
+        el->setBoundElement(0);
+        m_me->m_setFlag = false;
+    }
 }
 
 void TemplateableElement::AddTemplateBindingProcedure::operator()(TemplateBinding* el) const {
     if (!m_me->m_ownedElements->count(el->getID())) {
         m_me->m_ownedElements->internalRemove(*el);
     }
-    el->setBoundElement(m_me);
+    if (el->hasBoundElement()) {
+        if (el->getBoundElementRef() != *m_me) {
+            el->setBoundElement(m_me);
+        }
+    } else {
+        el->setBoundElement(m_me);
+    }
 }
 
 void TemplateableElement::referencingReleased(ID id) {

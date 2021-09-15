@@ -9,14 +9,24 @@ void TemplateBinding::RemoveBoundElementProcedure::operator()(TemplateableElemen
     if (m_me->getSources().count(el->getID())) {
         m_me->getSources().remove(*el);
     }
-    el->setTemplateBinding(0);
+    if (el->hasTemplateBinding() && !m_me->m_setFlag) {
+        m_me->m_setFlag = true;
+        el->setTemplateBinding(0);
+        m_me->m_setFlag = false;
+    }
 }
 
 void TemplateBinding::AddBoundElementProcedure::operator()(TemplateableElement* el) const {
     if (m_me->getSources().count(el->getID())) {
         m_me->getSources().add(*el);
     }
-    el->setTemplateBinding(*m_me);
+    if (el->hasTemplateBinding()) {
+        if (el->getTemplateBindingRef() != *m_me) {
+            el->setTemplateBinding(m_me);
+        }
+    } else {
+        el->setTemplateBinding(m_me);
+    }
 }
 
 void TemplateBinding::RemoveSignatureProcedure::operator()(TemplateSignature* el) const {

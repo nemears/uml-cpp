@@ -6,11 +6,22 @@
 using namespace UML;
 
 void TemplateSignature::RemoveTemplateProcedure::operator()(TemplateableElement* el) const {
-    el->setOwnedTemplateSignature(0);
+    if (el->hasOwnedTemplateSignature() && !m_me->m_setFlag) {
+        m_me->m_setFlag = true;
+        el->setOwnedTemplateSignature(0);
+        m_me->m_setFlag = false;
+    }
 }
 
 void TemplateSignature::AddTemplateProcedure::operator()(TemplateableElement* el) const {
-    el->setOwnedTemplateSignature(m_me);
+    if (el->hasOwnedTemplateSignature()) {
+        if (el->getOwnedTemplateSignatureRef() != *m_me) {
+            el->setOwnedTemplateSignature(m_me);
+        }
+    } else {
+        el->setOwnedTemplateSignature(m_me);
+    }
+    
 }
 
 void TemplateSignature::AddOwnedParameterFunctor::operator()(TemplateParameter& el) const {

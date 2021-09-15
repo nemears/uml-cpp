@@ -15,7 +15,9 @@ namespace UML {
 
         protected:
             Singleton<TemplateSignature, TemplateableElement> m_ownedTemplateSignature = Singleton<TemplateSignature, TemplateableElement>(this);
+            bool m_setFlag = false;
             class RemoveOwnedTemplateSignatureProcedure : public AbstractSingletonProcedure<TemplateSignature, TemplateableElement> {
+                private:
                 public:
                     RemoveOwnedTemplateSignatureProcedure(TemplateableElement* me) : AbstractSingletonProcedure<TemplateSignature, TemplateableElement>(me) {};
                     void operator()(TemplateSignature* el) const override;

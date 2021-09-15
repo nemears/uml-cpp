@@ -272,7 +272,6 @@ namespace UML {
             };
         public:
             // Constructor
-            Sequence<T>() {};
             Sequence<T>(Element* el) {
                 m_el = el;
             };

@@ -9,9 +9,11 @@ namespace UML {
     class Deployment;
 
     class DeploymentTarget : virtual public NamedElement {
+
         friend class UmlManager;
+
         private:
-            Sequence<Deployment> m_deployments;
+            Sequence<Deployment> m_deployments = Sequence<Deployment>(this);
             class AddDeploymentFunctor : public TemplateAbstractSequenceFunctor<Deployment,DeploymentTarget> {
                 public:
                     AddDeploymentFunctor(DeploymentTarget* me) : TemplateAbstractSequenceFunctor(me) {};
@@ -23,8 +25,10 @@ namespace UML {
                     void operator()(Deployment& el) const override;
             };
             void setManager(UmlManager* manager) override;
-        public:
+            void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID) override;
             DeploymentTarget();
+        public:
             DeploymentTarget(const DeploymentTarget& deploymentTarget);
             virtual ~DeploymentTarget();
             Sequence<Deployment>& getDeployments();

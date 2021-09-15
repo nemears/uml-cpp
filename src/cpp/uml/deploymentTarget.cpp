@@ -9,6 +9,7 @@ void DeploymentTarget::AddDeploymentFunctor::operator()(Deployment& el) const {
     }
 
     el.setLocation(m_el);
+    updateCopiedSequenceAddedTo(el, &DeploymentTarget::getDeployments);
 }
 
 void DeploymentTarget::RemoveDeploymentFunctor::operator()(Deployment& el) const {
@@ -21,10 +22,24 @@ void DeploymentTarget::RemoveDeploymentFunctor::operator()(Deployment& el) const
             el.setLocation(0);
         }
     }
+    updateCopiedSequenceRemovedFrom(el, &DeploymentTarget::getDeployments);
 }
 
 void DeploymentTarget::setManager(UmlManager* manager) {
+    NamedElement::setManager(manager);
     m_deployments.m_manager = manager;
+}
+
+void DeploymentTarget::referencingReleased(ID id) {
+    NamedElement::referencingReleased(id);
+    m_deployments.elementReleased(id, &DeploymentTarget::getDeployments);
+}
+
+void DeploymentTarget::referenceReindexed(ID oldID, ID newID) {
+    NamedElement::referenceReindexed(oldID, newID);
+    if (m_deployments.count(oldID)) {
+        m_deployments.reindex(oldID, newID, &DeploymentTarget::getDeployments);
+    }
 }
 
 DeploymentTarget::DeploymentTarget() {
@@ -33,6 +48,8 @@ DeploymentTarget::DeploymentTarget() {
 }
 
 DeploymentTarget::DeploymentTarget(const DeploymentTarget& deploymentTarget) {
+    m_deployments = deploymentTarget.m_deployments;
+    m_deployments.m_el = this;
     m_deployments.addProcedures.clear();
     m_deployments.removeProcedures.clear();
     m_deployments.addProcedures.push_back(new AddDeploymentFunctor(this));

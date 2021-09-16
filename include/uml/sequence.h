@@ -311,6 +311,12 @@ namespace UML {
                 add(els...);
             };
 
+            // TODO make private
+            void addByID(ID id) {
+                m_order.push_back(id);
+                m_rep[id] = 0;
+            }
+
             void remove(T& el) {
                 if (m_rep.count(el.getID())) {
                     for (auto const& fun : removeChecks) {

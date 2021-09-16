@@ -97,6 +97,30 @@ void emitToFile(Element& el, EmitterMetaData& data, string path, string fileName
 
 namespace {
 
+template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
+    if (data.m_strategy == ParserStrategy::WHOLE) {
+        Element* packagedEl = parseExternalAddToManager(data, node.as<std::string>());
+        if (packagedEl == 0) {
+            throw UmlParserException("Could not identify YAML node for packaged elements", data.m_path.string(), node);
+        }
+        (el.*signature)().add(*dynamic_cast<T*>(packagedEl));
+    } else {
+        std::string path = node.as<std::string>();
+        std::string idStr = path.substr(path.find_last_of("/") + 1, path.find_last_of("/") + 29);
+        if (isValidID(idStr)) {
+            ID id = ID::fromString(idStr);
+            if (data.m_manager->loaded(id)) {
+                (el.*signature)().add(data.m_manager->get<T>(id));
+            } else {
+                (el.*signature)().addByID(id);
+             }
+        }
+        else {
+            throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);
+        }
+    }
+}
+
 template <class T =Element> T& parseScalar(YAML::Node node, ParserMetaData& data) {
     if (data.m_strategy == ParserStrategy::WHOLE) {
         Element* packagedEl = parseExternalAddToManager(data, node.as<std::string>());
@@ -1576,7 +1600,8 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                     }
                 // seperate file
                 } else if (node["packagedElements"][i].IsScalar()) {
-                    pckg.getPackagedElements().add(parseScalar<PackageableElement>(node["packagedElements"][i], data));
+                    parseAndAddToSequence<PackageableElement, Package>(node["packagedElements"][i], data, pckg, &Package::getPackagedElements);
+                    //pckg.getPackagedElements().add(parseScalar<PackageableElement>(node["packagedElements"][i], data));
                 } else {
                     throw UmlParserException("Invalid YAML node type for field packagedElements sequence, must be map, ", data.m_path.string(), node["packagedElements"][i]);
                 }

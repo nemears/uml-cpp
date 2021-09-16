@@ -17,9 +17,9 @@ TEST_F(DirectedRelationshipTest, sourceAndTargetTest) {
     dr.getSources().add(a);
     dr.getTargets().add(b);
     ASSERT_TRUE(dr.getSources().size() == 1);
-    ASSERT_TRUE(&dr.getSources().front() == &a);
+    ASSERT_TRUE(dr.getSources().front() == a);
     ASSERT_TRUE(dr.getTargets().size() == 1);
-    ASSERT_TRUE(&dr.getTargets().front() == &b);
+    ASSERT_TRUE(dr.getTargets().front() == b);
 }
 
 TEST_F(DirectedRelationshipTest, addTargetFunctorTest) {

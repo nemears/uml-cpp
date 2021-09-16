@@ -53,6 +53,11 @@ void ActivityEdge::AddGuardProcedure::operator()(ValueSpecification* el) const {
     }
 }
 
+void ActivityEdge::setManager(UmlManager* manager) {
+    RedefinableElement::setManager(manager);
+    NamedElement::setManager(manager);
+}
+
 ActivityEdge::ActivityEdge() {
     m_activity.m_signature = &ActivityEdge::m_activity;
     m_activity.m_removeProcedures.push_back(new RemoveActivityProcedure(this));
@@ -100,18 +105,18 @@ ActivityEdge::~ActivityEdge() {
 }
 
 void ActivityEdge::reindexID(ID oldID, ID newID) {
-    if (m_target.has()) {
-        m_target.getRef().getIncoming().reindex(oldID, newID);
-    }
+    // if (m_target.has()) {
+    //     m_target.getRef().getIncoming().reindex(oldID, newID);
+    // }
 
-    if (m_source.has()) {
-        m_source.getRef().getOutgoing().reindex(oldID, newID);
-    }
-    if (m_activity.has()) {
-        m_activity.getRef().getEdges().reindex(oldID, newID);
-    }
-    RedefinableElement::reindexID(oldID, newID);
-    NamedElement::reindexID(oldID, newID);
+    // if (m_source.has()) {
+    //     m_source.getRef().getOutgoing().reindex(oldID, newID);
+    // }
+    // if (m_activity.has()) {
+    //     m_activity.getRef().getEdges().reindex(oldID, newID);
+    // }
+    // RedefinableElement::reindexID(oldID, newID);
+    // NamedElement::reindexID(oldID, newID);
 }
 
 // void ActivityEdge::reindexName(string oldName, string newName) {

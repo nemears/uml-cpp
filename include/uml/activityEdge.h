@@ -16,6 +16,9 @@ namespace UML {
         friend class ActivityNode;
 
         protected:
+
+            friend class UmlManager;
+
             Singleton<Activity, ActivityEdge> m_activity = Singleton<Activity, ActivityEdge>(this);
             class RemoveActivityProcedure : public AbstractSingletonProcedure<Activity, ActivityEdge> {
                 public:
@@ -60,6 +63,7 @@ namespace UML {
                     AddGuardProcedure(ActivityEdge* me) : AbstractSingletonProcedure<ValueSpecification, ActivityEdge>(me) {};
                     void operator()(ValueSpecification* el) const override;
             };
+            void setManager(UmlManager* manager) override;
             void reindexID(ID oldID, ID newID) override;
             // void reindexName(std::string oldName, std::string newName) override;
             void restoreReleased(ID id, Element* released) override;

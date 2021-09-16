@@ -18,6 +18,8 @@ void ActivityNode::AddActivityProcedure::operator()(Activity* el) const {
 }
 
 void ActivityNode::setManager(UmlManager* manager) {
+    NamedElement::setManager(manager);
+    RedefinableElement::setManager(manager);
     m_outgoing.m_manager = manager;
     m_incoming.m_manager = manager;
 }
@@ -34,6 +36,19 @@ void ActivityNode::referencingReleased(ID id) {
     }
     m_incoming.elementReleased<ActivityNode>(id, &ActivityNode::getIncoming);
     m_outgoing.elementReleased<ActivityNode>(id, &ActivityNode::getOutgoing);
+}
+
+void ActivityNode::referenceReindexed(ID oldID, ID newID) {
+    RedefinableElement::referenceReindexed(oldID, newID);
+    if (m_activity.id() == oldID) {
+        m_activity.reindex(oldID, newID);
+    }
+    if (m_incoming.count(oldID)) {
+        m_incoming.reindex(oldID, newID, &ActivityNode::getIncoming);
+    }
+    if (m_outgoing.count(oldID)) {
+        m_outgoing.reindex(oldID, newID, &ActivityNode::getOutgoing);
+    }
 }
 
 ActivityNode::ActivityNode() {

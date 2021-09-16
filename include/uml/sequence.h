@@ -13,6 +13,7 @@ namespace UML {
     template <class T = Element> class AbstractSequenceFunctor {
         public:
             virtual void operator()(T& el) const = 0;
+            virtual void operator()(ID id) const {}; // TODO make abstract eventually to enforce
     };
 
     class Property;
@@ -311,10 +312,14 @@ namespace UML {
                 add(els...);
             };
 
-            // TODO make private
             void addByID(ID id) {
                 m_order.push_back(id);
                 m_rep[id] = 0;
+
+                for (auto& proc : addProcedures) {
+                    (*proc)(id);
+                }
+                // TODO update copies
             }
 
             void remove(T& el) {

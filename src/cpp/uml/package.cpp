@@ -11,6 +11,13 @@ void Package::AddPackagedElementFunctor::operator()(PackageableElement& el) cons
     updateCopiedSequenceAddedTo(el, &Package::getPackagedElements);
 }
 
+void Package::AddPackagedElementFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedMembers().count(id)) {
+        m_el->getOwnedMembers().addByID(id);
+    }
+    // TODO update copies
+}
+
 void Package::RemovePackagedElementFunctor::operator()(PackageableElement& el) const {
     oppositeSingletonRemove(el, &PackageableElement::m_owningPackage);
     subsetsRemove<Namespace, NamedElement>(el, &Namespace::getMembers);

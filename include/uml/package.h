@@ -22,6 +22,7 @@ namespace UML {
                 public:
                     AddPackagedElementFunctor(Package* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(PackageableElement& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemovePackagedElementFunctor : public TemplateAbstractSequenceFunctor<PackageableElement,Package> {
                 public:

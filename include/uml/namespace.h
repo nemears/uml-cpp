@@ -18,6 +18,7 @@ namespace UML{
                 public:
                     AddMemberFunctor(Namespace* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(NamedElement& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Namespace> {
                 public:
@@ -28,6 +29,7 @@ namespace UML{
                 public:
                     AddOwnedMemberFunctor(Namespace* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(NamedElement& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveOwnedMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Namespace> {
                 public:

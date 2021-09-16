@@ -183,13 +183,14 @@ TEST_F(UmlManagerTest, addToManagerAfterMountedTest) {
 }
 
 TEST_F(UmlManagerTest, ManagerMountStressTest) {
+    size_t numElements = 100;
     UmlManager m;
     Package& root = m.create<Package>();
     ID rootID = root.getID();
     m.setRoot(&root);
     ASSERT_NO_THROW(m.mount(ymlPath + "umlManagerTests"));
     Package* pckg = &root;
-    for (size_t i = 0; i < 100; i++) {
+    for (size_t i = 0; i < numElements; i++) {
         Package* child = &m.create<Package>();
         pckg->getPackagedElements().add(*child);
         m.release(pckg->getID()); // release or segfault
@@ -197,4 +198,16 @@ TEST_F(UmlManagerTest, ManagerMountStressTest) {
     }
     Package& root2 = m.get<Package>(rootID); // try to only aquire root
     ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_MOUNT(root2, ymlPath + "umlManagerTests"));
+    pckg = &root2;
+    for (size_t i = 0; i < numElements; i++) {
+        ASSERT_EQ(pckg->getPackagedElements().size(), 1) << "at index " << i;
+        ASSERT_EQ(pckg->getOwnedMembers().size(), 1) << "at index " << i;
+        ASSERT_EQ(pckg->getMembers().size(), 1) << "at index " << i;
+        ASSERT_EQ(pckg->getOwnedElements().size(), 1) << "at index " << i;
+        if (i > 0) {
+            ASSERT_TRUE(pckg->hasOwningPackage());
+            m.release(pckg->getOwningPackageRef());
+        }
+        pckg = &pckg->getPackagedElements().front().as<Package>();
+    }
 }

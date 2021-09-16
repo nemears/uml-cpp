@@ -29,8 +29,8 @@ TEST_F(ParameterParserTest, emitParameterWMultiplicityTest) {
     Parameter& p = m.create<Parameter>();
     b.setID("SeJ_0hSPaIa4EYap3sXgRQm4LuSn");
     p.setID("QzBhVkqNSRAZMlkHU6cQ3d_Wm8FT");
-    LiteralInt low;
-    LiteralInt high;
+    LiteralInt& low = m.create<LiteralInt>();
+    LiteralInt& high = m.create<LiteralInt>();
     low.setID("K2_2cpL966uyziy9e2pGb60cCR5X");
     low.setValue(0);
     high.setID("sGGXJFNinAvKyKVSgc&JAlMWsbw5");

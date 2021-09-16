@@ -21,7 +21,7 @@ TEST_F(ActivityTest, addNodeFunctorTest) {
     ASSERT_TRUE(n.hasActivity());
     ASSERT_TRUE(n.getActivity());
     ASSERT_EQ(n.getActivityRef(), a);
-    ASSERT_EQ(n.getOwner(), &a);
+    ASSERT_EQ(*n.getOwner(), a);
 }
 
 TEST_F(ActivityTest, setNodeActivityTest) {
@@ -36,7 +36,7 @@ TEST_F(ActivityTest, setNodeActivityTest) {
     ASSERT_TRUE(n.hasActivity());
     ASSERT_TRUE(n.getActivity());
     ASSERT_EQ(n.getActivityRef(), a);
-    ASSERT_EQ(n.getOwner(), &a);
+    ASSERT_EQ(*n.getOwner(), a);
 }
 
 TEST_F(ActivityTest, addEdgeFunctorTest) {
@@ -51,7 +51,7 @@ TEST_F(ActivityTest, addEdgeFunctorTest) {
     ASSERT_TRUE(e.hasActivity());
     ASSERT_TRUE(e.getActivity());
     ASSERT_EQ(e.getActivityRef(), a);
-    ASSERT_EQ(e.getOwner(), &a);
+    ASSERT_EQ(*e.getOwner(), a);
 }
 
 TEST_F(ActivityTest, setEdgeActivityTest) {
@@ -66,5 +66,5 @@ TEST_F(ActivityTest, setEdgeActivityTest) {
     ASSERT_TRUE(e.hasActivity());
     ASSERT_TRUE(e.getActivity());
     ASSERT_EQ(e.getActivityRef(), a);
-    ASSERT_EQ(e.getOwner(), &a);
+    ASSERT_EQ(*e.getOwner(), a);
 }

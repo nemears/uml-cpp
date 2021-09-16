@@ -7,7 +7,7 @@
 #include "uml/comment.h"
 #include "uml/instanceSpecification.h"
 #include "uml/classifier.h"
-#include "uml/universalFunctions.h"
+#include "uml/singleton.h"
 
 using namespace std;
 using namespace UML;
@@ -555,10 +555,22 @@ ID Element::getID() {
 }
 
 Element* Element::getOwner() {
-    if (m_manager) {
-        return m_manager->get<>(this, m_ownerID);
-    } else {
+    if (hasOwner()) {
+        if (!m_ownerPtr) {
+            if (m_manager) {
+                m_ownerPtr = m_manager->get<>(this, m_ownerID);
+            }
+        }
         return m_ownerPtr;
+    } 
+    return 0;
+}
+
+Element& Element::getOwnerRef() {
+    if (hasOwner()) {
+        return *getOwner();
+    } else {
+        throw NullReferenceException();
     }
 }
 

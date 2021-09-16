@@ -409,3 +409,16 @@ TEST_F(ElementTest, FullElementCopyTest) {
   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments, &Element::getDirectedRelationships, &Element::getRelationships));
   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
 }
+
+TEST_F(ElementTest, hasAndRefMethodTest) {
+  UmlManager m;
+  Package root = m.create<Package>();
+  Package child = m.create<Package>();
+  root.getPackagedElements().add(child);
+  ASSERT_FALSE(root.hasOwner());
+  ASSERT_FALSE(root.getOwner());
+  ASSERT_THROW(root.getOwnerRef(), NullReferenceException);
+  ASSERT_TRUE(child.hasOwner());
+  ASSERT_TRUE(child.getOwner());
+  ASSERT_EQ(child.getOwnerRef(), root);
+}

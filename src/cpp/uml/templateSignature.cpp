@@ -90,7 +90,7 @@ TemplateSignature::TemplateSignature() {
     m_ownedParameter.removeProcedures.push_back(new RemoveOwnedParameterFunctor(this));
 }
 
-TemplateSignature::TemplateSignature(const TemplateSignature& el) {
+TemplateSignature::TemplateSignature(const TemplateSignature& el) : Element(el) {
     m_template = el.m_template;
     m_template.m_me = this;
     m_template.m_removeProcedures.clear();

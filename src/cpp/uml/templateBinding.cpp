@@ -99,7 +99,7 @@ TemplateBinding::TemplateBinding() {
     m_parameterSubstitution.removeProcedures.push_back(new RemoveParameterSubstitutionFunctor(this));
 }
 
-TemplateBinding::TemplateBinding(const TemplateBinding& bind) {
+TemplateBinding::TemplateBinding(const TemplateBinding& bind) : DirectedRelationship(bind), Element(bind) {
     m_boundElement = bind.m_boundElement;
     m_boundElement.m_me = this;
     m_boundElement.m_removeProcedures.clear();

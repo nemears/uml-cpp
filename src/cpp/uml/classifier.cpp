@@ -9,6 +9,7 @@ using namespace UML;
 void Classifier::referenceReindexed(ID oldID, ID newID) {
     Namespace::referenceReindexed(oldID, newID);
     PackageableElement::referenceReindexed(oldID, newID);
+    TemplateableElement::referenceReindexed(oldID, newID);
     if (m_attributes.count(oldID)) {
         m_attributes.reindex(oldID, newID, &Classifier::getAttributes);
     }
@@ -309,6 +310,7 @@ void Classifier::ClassifierRemoveMemberFunctor::operator()(NamedElement& el) con
 void Classifier::setManager(UmlManager* manager) {
     Namespace::setManager(manager);
     RedefinableElement::setManager(manager); // not polymorphic
+    TemplateableElement::setManager(manager);
     m_attributes.m_manager = manager;
     m_inheritedMembers.m_manager = manager;
     m_generalizations.m_manager = manager;
@@ -372,6 +374,7 @@ bool Classifier::isSubClassOf(ElementType eType) const {
 
 void Classifier::restoreReleased(ID id, Element* released) {
     Namespace::restoreReleased(id, released);
+    PackageableElement::restoreReleased(id, released);
     if (m_attributes.count(id)) {
         released->as<Property>().setClassifier(this);
     }
@@ -389,6 +392,7 @@ void Classifier::restoreReleased(ID id, Element* released) {
 void Classifier::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     PackageableElement::referencingReleased(id);
+    TemplateableElement::referencingReleased(id);
     m_attributes.elementReleased(id, &Classifier::getAttributes);
     m_features.elementReleased(id, &Classifier::getFeatures);
     m_generalizations.elementReleased(id, &Classifier::getGeneralizations);

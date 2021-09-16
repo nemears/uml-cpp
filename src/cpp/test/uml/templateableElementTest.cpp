@@ -6,11 +6,14 @@
 #include "uml/templateParameterSubstitution.h"
 #include "uml/templateSignature.h"
 #include "uml/templateParameter.h"
+#include "uml/package.h"
+#include "test/yumlParsersTest.h"
 
 using namespace UML;
 
 class TemplateableElementTest : public ::testing::Test {
-   
+    public:
+    std::string ymlPath = YML_FILES_PATH;
 };
 
 TEST_F(TemplateableElementTest, setOwnedTemplateSignature) {
@@ -426,4 +429,24 @@ TEST_F(TemplateableElementTest, setOwnedActualTestAndOverride) {
     ASSERT_TRUE(a2.getOwner() != 0);
     ASSERT_EQ(a2.getOwner()->getID(), s.getID());
     ASSERT_TRUE(a1.getOwner() == 0);
+}
+
+TEST_F(TemplateableElementTest, reindexTemplateableElementsTest) {
+    UmlManager m;
+    Class templateClass = m.create<Class>();
+    TemplateSignature classSignature = m.create<TemplateSignature>();
+    TemplateBinding classBinding = m.create<TemplateBinding>();
+    Package root = m.create<Package>();
+    templateClass.setOwnedTemplateSignature(classSignature);
+    templateClass.setTemplateBinding(classBinding);
+    classBinding.setSignature(classSignature);
+    root.getPackagedElements().add(templateClass);
+    m.setRoot(&root);
+    m.mount(ymlPath + "templateableElementTests");
+    ID classID = ID::fromString("x6iYAE&S1H7jjIFXc0Um0zdAfOVl");
+    templateClass.setID(classID);
+    m.release(templateClass);
+    ASSERT_NO_THROW(ASSERT_EQ(classSignature.getTemplateRef().getID(), classID));
+    m.release(classID);
+    ASSERT_NO_THROW(ASSERT_EQ(classBinding.getBoundElementRef().getID(), classID));
 }

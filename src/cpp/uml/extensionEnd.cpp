@@ -1,21 +1,92 @@
 #include "uml/extensionEnd.h"
 #include "uml/extension.h"
-#include "uml/universalFunctions.h"
 
 using namespace UML;
 
+void ExtensionEnd::RemoveExtensionProcedure::operator()(Extension* el) const {
+    if (el->hasOwnedEnd()) {
+        el->setOwnedEnd(0);
+    }
+    if (m_me->hasOwningAssociation()) {
+        m_me->setOwningAssociation(0);
+    }
+}
+
+void ExtensionEnd::AddExtensionProcedure::operator()(Extension* el) const {
+    if (el->hasOwnedEnd()) {
+        if (el->getOwnedEndRef() != *m_me) {
+            el->setOwnedEnd(m_me);
+        }
+    } else {
+        el->setOwnedEnd(m_me);
+    }
+    if (m_me->hasOwningAssociation()) {
+        if (m_me->getOwningAssociationRef() != *el) {
+            m_me->setOwningAssociation(el);
+        }
+    } else {
+        m_me->setOwningAssociation(el);
+    }
+}
+
+void ExtensionEnd::RemoveExtensionTypeProcedure::operator()(Stereotype* el) const {
+    if (m_me->hasType()) {
+        m_me->setType(0);
+    }
+}
+
+void ExtensionEnd::AddExtensionTypeProcedure::operator()(Stereotype* el) const {
+    if (m_me->hasType()) {
+        if (m_me->getTypeRef() != *m_me) {
+            m_me->setType(el);
+        }
+    } else {
+        m_me->setType(el);
+    }
+}
+
+void ExtensionEnd::referencingReleased(ID id) {
+    Property::referencingReleased(id);
+    if (m_extension.id() == id) {
+        m_extension.release();
+    }
+    if (m_extensionType.id() == id) {
+        m_extensionType.release();
+    }
+}
+
+void ExtensionEnd::referenceReindexed(ID oldID, ID newID) {
+    Property::referenceReindexed(oldID, newID);
+    if (m_extension.id() == oldID) {
+        m_extension.reindex(oldID, newID);
+    }
+    if (m_extensionType.id() == oldID) {
+        m_extensionType.reindex(oldID, newID);
+    }
+}
+
 ExtensionEnd::ExtensionEnd() {
-    m_extensionPtr = 0;
-    m_extensionTypePtr = 0;
+    m_extension.m_signature = &ExtensionEnd::m_extension;
+    m_extension.m_removeProcedures.push_back(new RemoveExtensionProcedure(this));
+    m_extension.m_addProcedures.push_back(new AddExtensionProcedure(this));
+    m_extensionType.m_signature = &ExtensionEnd::m_extensionType;
+    m_extensionType.m_addProcedures.push_back(new AddExtensionTypeProcedure(this));
+    m_extensionType.m_removeProcedures.push_back(new RemoveExtensionTypeProcedure(this));
 }
 
 ExtensionEnd::ExtensionEnd(const ExtensionEnd& end) {
-    m_extensionID = end.m_extensionID;
-    m_extensionTypeID = end.m_extensionTypeID;
-    if (!end.m_manager) {
-        m_extensionPtr = end.m_extensionPtr;
-        m_extensionTypePtr = end.m_extensionTypePtr;
-    }
+    m_extension = end.m_extension;
+    m_extension.m_me = this;
+    m_extension.m_addProcedures.clear();
+    m_extension.m_removeProcedures.clear();
+    m_extension.m_removeProcedures.push_back(new RemoveExtensionProcedure(this));
+    m_extension.m_addProcedures.push_back(new AddExtensionProcedure(this));
+    m_extensionType = end.m_extensionType;
+    m_extensionType.m_me = this;
+    m_extensionType.m_addProcedures.clear();
+    m_extensionType.m_removeProcedures.clear();
+    m_extensionType.m_addProcedures.push_back(new AddExtensionTypeProcedure(this));
+    m_extensionType.m_removeProcedures.push_back(new RemoveExtensionTypeProcedure(this));
 }
 
 ExtensionEnd::~ExtensionEnd() {
@@ -23,69 +94,43 @@ ExtensionEnd::~ExtensionEnd() {
 }
 
 Extension* ExtensionEnd::getExtension() {
-    return universalGet<Extension>(m_extensionID, m_extensionPtr, m_manager);
+    return m_extension.get();
+}
+
+Extension& ExtensionEnd::getExtensionRef() {
+    return m_extension.getRef();
+}
+
+bool ExtensionEnd::hasExtension() const {
+    return m_extension.has();
 }
 
 void ExtensionEnd::setExtension(Extension* extension) {
-    if (!isSameOrNull(m_extensionID, extension)) {
-        if (!m_extensionPtr) {
-            m_extensionPtr = &m_manager->get<Extension>(m_extensionID);
-        }
+    m_extension.set(extension);
+}
 
-        Extension* temp = m_extensionPtr;
-
-        if (getOwningAssociation() == m_extensionPtr) {
-            setOwningAssociation(0);
-        }
-
-        m_extensionPtr = 0;
-        m_extensionID = ID::nullID();
-
-        if (temp->getOwnedEnd() == this) {
-            temp->setOwnedEnd(0);
-        }
-    }
-
-    if (extension) {
-        m_extensionID = extension->getID();
-    }
-
-    if (!m_manager) {
-        m_extensionPtr = extension;
-    }
-
-    if (extension) {
-        if (getOwningAssociation() != extension) {
-            setOwningAssociation(extension);
-        }
-        if (extension->getOwnedEnd() != this) {
-            extension->setOwnedEnd(this);
-        }
-    }
+void ExtensionEnd::setExtension(Extension& extension) {
+    m_extension.set(extension);
 }
 
 Stereotype* ExtensionEnd::getType() {
-    return universalGet<Stereotype>(m_extensionTypeID, m_extensionTypePtr, m_manager);
+    return m_extensionType.get();
+}
+
+Stereotype& ExtensionEnd::getTypeRef() {
+    return m_extensionType.getRef();
+}
+
+bool ExtensionEnd::hasType() const {
+    return m_extensionType.has();
 }
 
 void ExtensionEnd::setType(Stereotype* type) {
-    if (!m_extensionTypeID.isNull()) {
-        m_extensionTypeID = ID::nullID();
-        m_extensionTypePtr = 0;
-        Property::setType(0);
-    }
+    m_extensionType.set(type);
+}
 
-    if (type) {
-        m_extensionTypeID = type->getID();
-    }
-
-    if (!m_manager) {
-        m_extensionTypePtr = type;
-    }
-
-    if (type) {
-        Property::setType(type);
-    }
+void ExtensionEnd::setType(Stereotype& type) {
+    m_extensionType.set(type);
 }
 
 ElementType ExtensionEnd::getElementType() const {

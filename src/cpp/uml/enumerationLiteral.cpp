@@ -60,7 +60,7 @@ void EnumerationLiteral::setEnumeration(Enumeration* enumeration) {
     m_enumeration.set(enumeration);
 }
 
-void EnumerationLiteral::setEnumeration(Enumeration* enumeration) {
+void EnumerationLiteral::setEnumeration(Enumeration& enumeration) {
     m_enumeration.set(enumeration);
 }
 

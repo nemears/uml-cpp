@@ -3,7 +3,6 @@
 #include "uml/namespace.h"
 #include "uml/namedElementFunctors.h"
 #include "uml/classifier.h"
-#include "uml/universalFunctions.h"
 
 using namespace UML;
 using namespace std;

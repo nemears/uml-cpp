@@ -8,11 +8,30 @@ namespace UML {
     class InstanceSpecification;
 
     class InstanceValue : public ValueSpecification {
+
+        friend class UmlManager;
+
         protected:
-            ID m_instanceID;
-            InstanceSpecification* m_instancePtr;
+            Singleton<InstanceSpecification, InstanceValue> m_instance = Singleton<InstanceSpecification, InstanceValue>(this);
+            class RemoveInstanceProcedure : public AbstractSingletonProcedure<InstanceSpecification, InstanceValue> {
+                public:
+                    RemoveInstanceProcedure(InstanceValue* me) : AbstractSingletonProcedure<InstanceSpecification, InstanceValue>(me) {};
+                    void operator()(InstanceSpecification* el) const override;
+            };
+            class AddInstanceProcedure : public AbstractSingletonProcedure<InstanceSpecification, InstanceValue> {
+                public:
+                    AddInstanceProcedure(InstanceValue* me) : AbstractSingletonProcedure<InstanceSpecification, InstanceValue>(me) {};
+                    void operator()(InstanceSpecification* el) const override;
+            };
+            void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID) override;
+            InstanceValue();
         public:
+            InstanceValue(const InstanceValue& rhs);
             InstanceSpecification* getInstance();
+            InstanceSpecification& getInstanceRef();
+            bool hasInstance() const;
+            void setInstance(InstanceSpecification& inst);
             void setInstance(InstanceSpecification* inst);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;

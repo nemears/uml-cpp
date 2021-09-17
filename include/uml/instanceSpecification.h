@@ -10,10 +10,14 @@ namespace UML{
 
     class Slot;
     class Classifier;
+    class InstanceValue;
 
     class InstanceSpecification : public PackageableElement , public DeployedArtifact, public DeploymentTarget {
+
         friend class UmlManager;
         friend class Classifier;
+        friend class InstanceValue;
+
         protected:
             Singleton<Classifier, InstanceSpecification> m_classifier = Singleton<Classifier, InstanceSpecification>(this);
             class RemoveClassifierProcedure : public AbstractSingletonProcedure<Classifier, InstanceSpecification> {

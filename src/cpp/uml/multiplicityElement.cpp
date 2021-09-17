@@ -1,7 +1,6 @@
 #include "uml/multiplicityElement.h"
 #include "uml/literalInt.h"
 #include "uml/valueSpecification.h"
-#include "uml/universalFunctions.h"
 
 using namespace UML;
 

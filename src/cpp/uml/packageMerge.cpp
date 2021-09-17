@@ -1,6 +1,5 @@
 #include "uml/packageMerge.h"
 #include "uml/package.h"
-#include "uml/universalFunctions.h"
 
 using namespace UML;
 
@@ -31,6 +30,30 @@ void PackageMerge::RemoveMergedPackageProcedure::operator()(Package* el) const {
 void PackageMerge::AddMergedPackageProcedure::operator()(Package* el) const {
     if (!m_me->getTargets().count(el->getID())) {
         m_me->getTargets().add(*el);
+    }
+}
+
+void PackageMerge::restoreReleased(ID id, Element* released) {
+    Element::restoreReleased(id, released);
+}
+
+void PackageMerge::referencingReleased(ID id) {
+    Element::referencingReleased(id);
+    if (m_mergedPackage.id() == id) {
+        m_mergedPackage.release();
+    }
+    if (m_receivingPackage.id() == id) {
+        m_receivingPackage.release();
+    }
+}
+
+void PackageMerge::referenceReindexed(ID oldID, ID newID) {
+    Element::referenceReindexed(oldID, newID);
+    if (m_mergedPackage.id() == oldID) {
+        m_mergedPackage.reindex(oldID, newID);
+    }
+    if (m_receivingPackage.id() == oldID) {
+        m_receivingPackage.reindex(oldID, newID);
     }
 }
 
@@ -90,18 +113,4 @@ bool PackageMerge::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void PackageMerge::restoreReleased(ID id, Element* released) {
-    Element::restoreReleased(id, released);
-}
-
-void PackageMerge::referencingReleased(ID id) {
-    Element::referencingReleased(id);
-    if (m_mergedPackage.id() == id) {
-        m_mergedPackage.release();
-    }
-    if (m_receivingPackage.id() == id) {
-        m_receivingPackage.release();
-    }
 }

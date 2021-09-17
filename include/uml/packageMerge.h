@@ -8,7 +8,10 @@ namespace UML {
     class Package;
 
     class PackageMerge : public DirectedRelationship {
+
         friend class Package;
+        friend class UmlManager;
+
         protected:
             Singleton<Package, PackageMerge> m_receivingPackage = Singleton<Package, PackageMerge>(this);
             class RemoveReceivingPackageProcedure : public AbstractSingletonProcedure<Package, PackageMerge> {
@@ -34,8 +37,9 @@ namespace UML {
             };
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
-        public:
+            void referenceReindexed(ID oldID, ID newID) override;
             PackageMerge();
+        public:
             PackageMerge(const PackageMerge& merge);
             virtual ~PackageMerge();
             Package* getReceivingPackage();

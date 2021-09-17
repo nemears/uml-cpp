@@ -1,18 +1,43 @@
 #include "uml/stereotype.h"
 #include "uml/profile.h"
-#include "uml/universalFunctions.h"
 
 using namespace UML;
 
+void Stereotype::RemoveProfileProcedure::operator()(Profile* el) const {
+    el->removeReference(el->getID());
+}
+
+void Stereotype::AddProfileProcedure::operator()(Profile* el) const {
+    el->setReference(el);
+}
+
+void Stereotype::referencingReleased(ID id) {
+    Class::referencingReleased(id);
+    if (m_profile.id() == id) {
+        m_profile.release();
+    }
+}
+
+void Stereotype::referenceReindexed(ID oldID, ID newID) {
+    Class::referenceReindexed(oldID, newID);
+    if (m_profile.id() == oldID) {
+        m_profile.reindex(oldID, newID);
+    }
+}
+
 Stereotype::Stereotype() {
-    m_profilePtr = 0;
+    m_profile.m_signature = &Stereotype::m_profile;
+    m_profile.m_addProcedures.push_back(new AddProfileProcedure(this));
+    m_profile.m_removeProcedures.push_back(new RemoveProfileProcedure(this));
 }
 
 Stereotype::Stereotype(const Stereotype& stereotype) {
-    m_profileID = stereotype.m_profileID;
-    if (!stereotype.m_manager) {
-        m_profilePtr = stereotype.m_profilePtr;
-    }
+    m_profile.m_signature = &Stereotype::m_profile;
+    m_profile.m_me = this;
+    m_profile.m_addProcedures.clear();
+    m_profile.m_removeProcedures.clear();
+    m_profile.m_addProcedures.push_back(new AddProfileProcedure(this));
+    m_profile.m_removeProcedures.push_back(new RemoveProfileProcedure(this));
 }
 
 Stereotype::~Stereotype() {
@@ -20,22 +45,23 @@ Stereotype::~Stereotype() {
 }
 
 Profile* Stereotype::getProfile() {
-    return universalGet<Profile>(m_profileID, m_profilePtr, m_manager);
+    return m_profile.get();
+}
+
+Profile& Stereotype::getProfileRef() {
+    return m_profile.getRef();
+}
+
+bool Stereotype::hasProfile() const {
+    return m_profile.has();
 }
 
 void Stereotype::setProfile(Profile* profile) {
-    if (!m_profileID.isNull()) {
-        m_profileID = ID::nullID();
-        m_profilePtr = 0;
-    }
+    m_profile.set(profile);
+}
 
-    if (profile) {
-        m_profileID = profile->getID();
-    }
-
-    if (!m_manager) {
-        m_profilePtr = profile;
-    }
+void Stereotype::setProfile(Profile& profile) {
+    m_profile.set(profile);
 }
 
 ElementType Stereotype::getElementType() const {

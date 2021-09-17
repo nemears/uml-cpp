@@ -5,6 +5,9 @@
 
 namespace UML {
     class Profile : public Package {
+
+        friend class Stereotype;
+
         private:
         public:
             Profile();

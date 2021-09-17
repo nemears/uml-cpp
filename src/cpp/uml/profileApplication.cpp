@@ -1,21 +1,80 @@
 #include "uml/profileApplication.h"
 #include "uml/profile.h"
-#include "uml/universalFunctions.h"
 
 using namespace UML;
 
+void ProfileApplication::RemoveAppliedProfileProcedure::operator()(Profile* el) const {
+    if (m_me->getTargets().count(el->getID())) {
+        m_me->getTargets().remove(*el);
+    }
+}
+
+void ProfileApplication::AddAppliedProfileProcedure::operator()(Profile* el) const {
+    if (!m_me->getTargets().count(el->getID())) {
+        m_me->getTargets().add(*el);
+    }
+}
+
+void ProfileApplication::RemoveApplyingPackageProcedure::operator()(Package* el) const {
+    if (m_me->getSources().count(el->getID())) {
+        m_me->getSources().remove(*el);
+    }
+    if (el->getProfileApplications().count(m_me->getID())) {
+        el->getProfileApplications().remove(*m_me);
+    }
+}
+
+void ProfileApplication::AddApplyingPackageProcedure::operator()(Package* el) const {
+    if (!m_me->getTargets().count(el->getID())) {
+        m_me->getTargets().add(*el);
+    }
+    if (!el->getProfileApplications().count(m_me->getID())) {
+        el->getProfileApplications().add(*m_me);
+    }
+}
+
+void ProfileApplication::referencingReleased(ID id) {
+    DirectedRelationship::referencingReleased(id);
+    if (m_appliedProfile.id() == id) {
+        m_appliedProfile.release();
+    }
+    if (m_applyingPackage.id() == id) {
+        m_applyingPackage.release();
+    }
+}
+
+void ProfileApplication::referenceReindexed(ID oldID, ID newID) {
+    DirectedRelationship::referenceReindexed(oldID, newID);
+    if (m_appliedProfile.id() == oldID) {
+        m_appliedProfile.reindex(oldID, newID);
+    }
+    if (m_applyingPackage.id() == oldID) {
+        m_applyingPackage.reindex(oldID, newID);
+    }
+}
+
 ProfileApplication::ProfileApplication() {
-    m_appliedProfilePtr = 0;
-    m_applyingPackagePtr = 0;
+    m_appliedProfile.m_signature = &ProfileApplication::m_appliedProfile;
+    m_appliedProfile.m_addProcedures.push_back(new AddAppliedProfileProcedure(this));
+    m_appliedProfile.m_removeProcedures.push_back(new RemoveAppliedProfileProcedure(this));
+    m_applyingPackage.m_signature = &ProfileApplication::m_applyingPackage;
+    m_applyingPackage.m_addProcedures.push_back(new AddApplyingPackageProcedure(this));
+    m_applyingPackage.m_removeProcedures.push_back(new RemoveApplyingPackageProcedure(this));
 }
 
 ProfileApplication::ProfileApplication(const ProfileApplication& profileApplication) {
-    m_appliedProfileID = profileApplication.m_appliedProfileID;
-    m_applyingPackageID = profileApplication.m_applyingPackageID;
-    if (!profileApplication.m_manager) {
-        m_applyingPackagePtr = profileApplication.m_applyingPackagePtr;
-        m_appliedProfilePtr = profileApplication.m_appliedProfilePtr;
-    }
+    m_appliedProfile = profileApplication.m_appliedProfile;
+    m_appliedProfile.m_me = this;
+    m_appliedProfile.m_addProcedures.clear();
+    m_applyingPackage.m_removeProcedures.clear();
+    m_appliedProfile.m_addProcedures.push_back(new AddAppliedProfileProcedure(this));
+    m_appliedProfile.m_removeProcedures.push_back(new RemoveAppliedProfileProcedure(this));
+    m_applyingPackage = profileApplication.m_applyingPackage;
+    m_applyingPackage.m_me = this;
+    m_applyingPackage.m_addProcedures.clear();
+    m_applyingPackage.m_removeProcedures.clear();
+    m_applyingPackage.m_addProcedures.push_back(new AddApplyingPackageProcedure(this));
+    m_applyingPackage.m_removeProcedures.push_back(new RemoveApplyingPackageProcedure(this));
 }
 
 ProfileApplication::~ProfileApplication() {
@@ -23,77 +82,43 @@ ProfileApplication::~ProfileApplication() {
 }
 
 Profile* ProfileApplication::getAppliedProfile() {
-    return universalGet<Profile>(m_appliedProfileID, m_appliedProfilePtr, m_manager);
+    return m_appliedProfile.get();
+}
+
+Profile& ProfileApplication::getAppliedProfileRef() {
+    return m_appliedProfile.getRef();
+}
+
+bool ProfileApplication::hasAppliedProfile() const {
+    return m_appliedProfile.has();
 }
 
 void ProfileApplication::setAppliedProfile(Profile* profile) {
-    if (!isSameOrNull(m_appliedProfileID, profile)) {
-        if (!m_appliedProfilePtr) {
-            m_appliedProfilePtr = &m_manager->get<Profile>(m_appliedProfileID);
-        }
+    m_appliedProfile.set(profile);
+}
 
-        if (m_targets.count(m_appliedProfileID)) {
-            m_targets.remove(*m_appliedProfilePtr);
-        }
-
-        m_appliedProfilePtr = 0;
-        m_appliedProfileID = ID::nullID();
-    }
-
-    if (profile) {
-        m_appliedProfileID = profile->getID();
-    }
-
-    if (!m_manager) {
-        m_appliedProfilePtr = profile;
-    }
-
-    if (profile) {
-        if (!m_targets.count(profile->getID())) {
-            m_targets.add(*profile);
-        }
-    }
+void ProfileApplication::setAppliedProfile(Profile& profile) {
+    m_appliedProfile.set(profile);
 }
 
 Package* ProfileApplication::getApplyingPackage() {
-    return universalGet<Package>(m_applyingPackageID, m_applyingPackagePtr, m_manager);
+    return m_applyingPackage.get();
+}
+
+Package& ProfileApplication::getApplyingPackageRef() {
+    return m_applyingPackage.getRef();
+}
+
+bool ProfileApplication::hasApplyingPackage() const {
+    return m_applyingPackage.has();
 }
 
 void ProfileApplication::setApplyingPackage(Package* pckg) {
-    if (!isSameOrNull(m_applyingPackageID, pckg)) {
-        if (!m_applyingPackagePtr) {
-            m_applyingPackagePtr = &m_manager->get<Package>(m_applyingPackageID);
-        }
+    m_applyingPackage.set(pckg);
+}
 
-        if (m_sources.count(m_applyingPackageID)) {
-            m_sources.remove(*m_applyingPackagePtr);
-        }
-
-        if (m_applyingPackagePtr->getProfileApplications().count(m_id)) {
-            m_applyingPackagePtr->getProfileApplications().remove(*this);
-        }
-
-        m_applyingPackagePtr = 0;
-        m_applyingPackageID = ID::nullID();
-    }
-
-    if (pckg) {
-        m_applyingPackageID = pckg->getID();
-    }
-
-    if (!m_manager) {
-        m_applyingPackagePtr = pckg;
-    }
-
-    if (pckg) {
-        if (!m_sources.count(pckg->getID())) {
-            m_sources.add(*pckg);
-        }
-
-        if (!pckg->getProfileApplications().count(m_id)) {
-            pckg->getProfileApplications().add(*this);
-        }
-    }
+void ProfileApplication::setApplyingPackage(Package& pckg) {
+    m_applyingPackage.set(pckg);
 }
 
 ElementType ProfileApplication::getElementType() const {

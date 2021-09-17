@@ -4,7 +4,13 @@
 #include "element.h"
 
 namespace UML {
+
+    class TemplateParameter;
+
     class ParameterableElement : virtual public Element {
+
+        friend class TemplateParameter;
+
         private:
         public:
             ParameterableElement();

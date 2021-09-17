@@ -30,18 +30,18 @@ void ExtensionEnd::AddExtensionProcedure::operator()(Extension* el) const {
 }
 
 void ExtensionEnd::RemoveExtensionTypeProcedure::operator()(Stereotype* el) const {
-    if (m_me->hasType()) {
-        m_me->setType(0);
+    if (m_me->TypedElement::hasType()) {
+        m_me->TypedElement::setType(0);
     }
 }
 
 void ExtensionEnd::AddExtensionTypeProcedure::operator()(Stereotype* el) const {
-    if (m_me->hasType()) {
-        if (m_me->getTypeRef() != *m_me) {
-            m_me->setType(el);
+    if (m_me->TypedElement::hasType()) {
+        if (m_me->TypedElement::getTypeRef() != *m_me) {
+            m_me->TypedElement::setType(el);
         }
     } else {
-        m_me->setType(el);
+        m_me->TypedElement::setType(el);
     }
 }
 

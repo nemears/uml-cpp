@@ -1,17 +1,81 @@
 #include "uml/manifestation.h"
-#include "uml/universalFunctions.h"
 #include "uml/packageableElement.h"
 #include "uml/artifact.h"
 
 using namespace UML;
 
+void Manifestation::RemoveUtilizedElementProcedure::operator()(PackageableElement* el) const {
+    if (m_me->getSupplier().count(el->getID())) {
+        m_me->getSupplier().remove(*el);
+    }
+}
+
+void Manifestation::AddUtilizedElementProcedure::operator()(PackageableElement* el) const {
+    if (!m_me->getSupplier().count(el->getID())) {
+        m_me->getSupplier().add(*el);
+    }
+}
+
+void Manifestation::RemoveArtifactProcedure::operator()(Artifact* el) const {
+    if (m_me->getClient().count(el->getID())) {
+        m_me->getClient().remove(*el);
+    }
+    if (el->getManifestations().count(m_me->getID())) {
+        el->getManifestations().remove(*m_me);
+    }
+}
+
+void Manifestation::AddArtifactProcedure::operator()(Artifact* el) const {
+    if (!m_me->getClient().count(el->getID())) {
+        m_me->getClient().add(*el);
+    }
+    if (!el->getManifestations().count(m_me->getID())) {
+        el->getManifestations().add(*m_me);
+    }
+}
+
+void Manifestation::referencingReleased(ID id) {
+    Abstraction::referencingReleased(id);
+    if (m_utilizedElement.id() == id) {
+        m_utilizedElement.release();
+    }
+    if (m_artifact.id() == id) {
+        m_utilizedElement.release();
+    }
+}
+
+void Manifestation::referenceReindexed(ID oldID, ID newID) {
+    Abstraction::referenceReindexed(oldID, newID);
+    if (m_utilizedElement.id() == oldID) {
+        m_utilizedElement.reindex(oldID, newID);
+    }
+    if (m_artifact.id() == oldID) {
+        m_artifact.reindex(oldID, newID);
+    }
+}
+
 Manifestation::Manifestation() {
-    m_utilizedElementPtr = 0;
-    m_artifactPtr = 0;
+    m_utilizedElement.m_signature = &Manifestation::m_utilizedElement;
+    m_utilizedElement.m_addProcedures.push_back(new AddUtilizedElementProcedure(this));
+    m_utilizedElement.m_removeProcedures.push_back(new RemoveUtilizedElementProcedure(this));
+    m_artifact.m_signature = &Manifestation::m_artifact;
+    m_artifact.m_addProcedures.push_back(new AddArtifactProcedure(this));
+    m_artifact.m_removeProcedures.push_back(new RemoveArtifactProcedure(this));
 }
 
 Manifestation::Manifestation(const Manifestation& manifestation) {
-
+    m_utilizedElement = manifestation.m_utilizedElement;
+    m_utilizedElement.m_me = this;
+    m_utilizedElement.m_addProcedures.clear();
+    m_utilizedElement.m_removeProcedures.clear();
+    m_utilizedElement.m_addProcedures.push_back(new AddUtilizedElementProcedure(this));
+    m_utilizedElement.m_removeProcedures.push_back(new RemoveUtilizedElementProcedure(this));
+    m_artifact = manifestation.m_artifact;
+    m_artifact.m_me = this;
+    m_artifact.m_addProcedures.clear();
+    m_artifact.m_removeProcedures.clear();
+    m_artifact.m_addProcedures.push_back(new AddArtifactProcedure(this));
+    m_artifact.m_removeProcedures.push_back(new RemoveArtifactProcedure(this));
 }
 
 Manifestation::~Manifestation() {
@@ -19,77 +83,43 @@ Manifestation::~Manifestation() {
 }
 
 PackageableElement* Manifestation::getUtilizedElement() {
-    return universalGet<PackageableElement>(m_utilizedElementID, m_utilizedElementPtr, m_manager);
+    return m_utilizedElement.get();
+}
+
+PackageableElement& Manifestation::getUtilizedElementRef() {
+    return m_utilizedElement.getRef();
+}
+
+bool Manifestation::hasUtilizedElement() const {
+    return m_utilizedElement.has();
 }
 
 void Manifestation::setUtilizedElement(PackageableElement* utilizedElement) {
-    if (!isSameOrNull(m_utilizedElementID, utilizedElement)) {
-        if (!m_utilizedElementPtr) {
-            m_utilizedElementPtr = &m_manager->get<PackageableElement>(m_utilizedElementID);
-        }
+    m_utilizedElement.set(utilizedElement);
+}
 
-        if (m_supplier.count(m_utilizedElementID)) {
-            m_supplier.remove(*m_utilizedElementPtr);
-        }
-
-        m_utilizedElementID = ID::nullID();
-        m_utilizedElementPtr = 0;
-    }
-
-    if (utilizedElement) {
-        m_utilizedElementID = utilizedElement->getID();
-    }
-
-    if (!m_manager) {
-        m_utilizedElementPtr = utilizedElement;
-    }
-
-    if (utilizedElement) {
-        if (!m_supplier.count(utilizedElement->getID())) {
-            m_supplier.add(*utilizedElement);
-        }
-    }
+void Manifestation::setUtilizedElement(PackageableElement& utilizedElement) {
+    m_utilizedElement.set(utilizedElement);
 }
 
 Artifact* Manifestation::getArtifact() {
-    return universalGet<Artifact>(m_artifactID, m_artifactPtr, m_manager);
+    return m_artifact.get();
+}
+
+Artifact& Manifestation::getArtifactRef() {
+    return m_artifact.getRef();
+}
+
+bool Manifestation::hasArtifact() const {
+    return m_artifact.has();
 }
 
 void Manifestation::setArtifact(Artifact* artifact) {
-    if (!isSameOrNull(m_artifactID, artifact)) {
-        if (!m_artifactPtr) {
-            m_artifactPtr = &m_manager->get<Artifact>(m_artifactID);
-        }
+    m_artifact.set(artifact);
+}
 
-        if (m_client.count(m_artifactID)) {
-            m_client.remove(*m_artifactPtr);
-        }
-
-        if (m_artifactPtr->getManifestations().count(m_id)) {
-            m_artifactPtr->getManifestations().remove(*this);
-        }
-
-        m_artifactID = ID::nullID();
-        m_artifactPtr = 0;
-    }
-
-    if (artifact) {
-        m_artifactID = artifact->getID();
-    }
-
-    if (!m_manager) {
-        m_artifactPtr = artifact;
-    }
-
-    if (artifact) {
-        if (!m_client.count(artifact->getID())) {
-            m_client.add(*artifact);
-        }
-
-        if (!artifact->getManifestations().count(m_id)) {
-            artifact->getManifestations().add(*this);
-        }
-    }
+void Manifestation::setArtifact(Artifact& artifact) {
+    m_artifact.set(artifact);
 }
 
 ElementType Manifestation::getElementType() const {

@@ -218,7 +218,7 @@ TEST_F(ElementTest, readOnlyRelationships) {
     PackageMerge r = mm.create<PackageMerge>();
     p.getPackageMerge().add(r);
     r.setMergedPackage(&m);
-    PackageMerge r2;
+    PackageMerge r2 = mm.create<PackageMerge>();
     ASSERT_THROW(p.getRelationships().add(r2), ReadOnlySequenceException);
     ASSERT_THROW(p.getRelationships().remove(r), ReadOnlySequenceException);
 }

@@ -35,22 +35,22 @@ void TemplateParameterSubstitution::AddActualProcedure::operator()(Parameterable
 }
 
 void TemplateParameterSubstitution::RemoveOwnedActualProcedure::operator()(ParameterableElement* el) const {
-    if (m_me->hasOwnedActual()) {
-        m_me->setOwnedActual(0);
+    if (m_me->hasActual()) {
+        m_me->setActual(0);
     }
     if (m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalAdd(*el);
+        m_me->getOwnedElements().internalRemove(*el);
     }
 }
 
 void TemplateParameterSubstitution::AddOwnedActualProcedure::operator()(ParameterableElement* el) const {
-    if (m_me->hasOwnedActual()) {
-        if (m_me->getOwnedActualRef() != *el) {
-            m_me->setOwnedActual(el);
+    if (m_me->hasActual()) {
+        if (m_me->getActualRef() != *el) {
+            m_me->setActual(el);
         }
     }
     else {
-        m_me->setOwnedActual(el);
+        m_me->setActual(el);
     }
     if (!m_me->getOwnedElements().count(el->getID())) {
         m_me->getOwnedElements().internalAdd(*el);

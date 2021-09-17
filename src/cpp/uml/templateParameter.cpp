@@ -17,8 +17,10 @@ void TemplateParameter::AddSignatureProcedure::operator()(TemplateSignature* el)
 }
 
 void TemplateParameter::RemoveOwnedParameteredElementProcedure::operator()(ParameterableElement* el) const {
-    if (m_me->hasParameteredElement()) {
+    if (m_me->hasParameteredElement() && !m_me->m_setFlag) {
+        m_me->m_setFlag = true;
         m_me->setParameteredElement(0);
+        m_me->m_setFlag = false;
     }
     if (m_me->getOwnedElements().count(el->getID())) {
         m_me->getOwnedElements().internalRemove(*el);

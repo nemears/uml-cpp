@@ -18,6 +18,7 @@ namespace UML {
              **/
             ElementType m_metaClass;
             Singleton<ExtensionEnd, Extension> m_ownedEnd = Singleton<ExtensionEnd, Extension>(this);
+            bool m_setFlag = false;
             class RemoveOwnedEndProcedure : public AbstractSingletonProcedure<ExtensionEnd, Extension> {
                 public:
                     RemoveOwnedEndProcedure(Extension* me) : AbstractSingletonProcedure<ExtensionEnd, Extension>(me) {};

@@ -4,8 +4,10 @@
 using namespace UML;
 
 void Extension::RemoveOwnedEndProcedure::operator()(ExtensionEnd* el) const {
-    if (el->hasExtension()) {
+    if (el->hasExtension()&& !m_me->m_setFlag) {
+        m_me->m_setFlag = true;
         el->setExtension(0);
+        m_me->m_setFlag = false;
     }
     if (m_me->getOwnedEnds().count(el->getID())) {
         m_me->getOwnedEnds().remove(*el);

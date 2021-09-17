@@ -1,42 +1,67 @@
 #include "uml/enumerationLiteral.h"
 #include "uml/enumeration.h"
-#include "uml/universalFunctions.h"
 
 using namespace UML;
 
+void EnumerationLiteral::RemoveEnumerationProcedure::operator()(Enumeration* el) const {
+    if (el->getOwnedLiteral().count(m_me->getID())) {
+        el->getOwnedLiteral().remove(*m_me);
+    }
+}
+
+void EnumerationLiteral::AddEnumerationProcedure::operator()(Enumeration* el) const {
+    if (!el->getOwnedLiteral().count(m_me->getID())) {
+        el->getOwnedLiteral().add(*m_me);
+    }
+}
+
+void EnumerationLiteral::referencingReleased(ID id) {
+    InstanceSpecification::referencingReleased(id);
+    if (m_enumeration.id() == id) {
+        m_enumeration.release();
+    }
+}
+
+void EnumerationLiteral::referenceReindexed(ID oldID, ID newID) {
+    InstanceSpecification::referenceReindexed(oldID, newID);
+    if (m_enumeration.id() == oldID) {
+        m_enumeration.reindex(oldID, newID);
+    }
+}
+
 EnumerationLiteral::EnumerationLiteral() {
-    m_enumerationPtr = 0;
+    m_enumeration.m_signature = &EnumerationLiteral::m_enumeration;
+    m_enumeration.m_addProcedures.push_back(new AddEnumerationProcedure(this));
+    m_enumeration.m_removeProcedures.push_back(new RemoveEnumerationProcedure(this));
+}
+
+EnumerationLiteral::EnumerationLiteral(const EnumerationLiteral& rhs) {
+    m_enumeration = rhs.m_enumeration;
+    m_enumeration.m_me = this;
+    m_enumeration.m_removeProcedures.clear();
+    m_enumeration.m_addProcedures.clear();
+    m_enumeration.m_addProcedures.push_back(new AddEnumerationProcedure(this));
+    m_enumeration.m_removeProcedures.push_back(new RemoveEnumerationProcedure(this));
 }
 
 Enumeration* EnumerationLiteral::getEnumeration() {
-    return universalGet<Enumeration>(m_enumerationID, m_enumerationPtr, m_manager);
+    return m_enumeration.get();
+}
+
+Enumeration& EnumerationLiteral::getEnumerationRef() {
+    return m_enumeration.getRef();
+}
+
+bool EnumerationLiteral::hasEnumeration() const {
+    return m_enumeration.has();
 }
 
 void EnumerationLiteral::setEnumeration(Enumeration* enumeration) {
-    if (!m_enumerationID.isNull()) {
-        if (!m_enumerationPtr) {
-            m_enumerationPtr = &m_manager->get<Enumeration>(m_enumerationID);
-        }
-        if (m_enumerationPtr->getOwnedLiteral().count(m_id)) {
-            m_enumerationPtr->getOwnedLiteral().remove(*this);
-        }
-        m_enumerationID = ID::nullID();
-        m_enumerationPtr = 0;
-    }
+    m_enumeration.set(enumeration);
+}
 
-    if (enumeration) {
-        m_enumerationID = enumeration->getID();
-    }
-
-    if (!m_manager) {
-        m_enumerationPtr = enumeration;
-    }
-
-    if (enumeration) {
-        if (!enumeration->getOwnedLiteral().count(m_id)) {
-            enumeration->getOwnedLiteral().add(*this);
-        }
-    }
+void EnumerationLiteral::setEnumeration(Enumeration* enumeration) {
+    m_enumeration.set(enumeration);
 }
 
 ElementType EnumerationLiteral::getElementType() const {

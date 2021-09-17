@@ -25,8 +25,8 @@ void ProfileApplication::RemoveApplyingPackageProcedure::operator()(Package* el)
 }
 
 void ProfileApplication::AddApplyingPackageProcedure::operator()(Package* el) const {
-    if (!m_me->getTargets().count(el->getID())) {
-        m_me->getTargets().add(*el);
+    if (!m_me->getSources().count(el->getID())) {
+        m_me->getSources().add(*el);
     }
     if (!el->getProfileApplications().count(m_me->getID())) {
         el->getProfileApplications().add(*m_me);

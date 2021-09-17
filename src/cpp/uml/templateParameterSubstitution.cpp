@@ -3,19 +3,132 @@
 #include "uml/templateBinding.h"
 #include "uml/templateParameter.h"
 #include "uml/parameterableElement.h"
-#include "uml/universalFunctions.h"
 
 using namespace UML;
 
+void TemplateParameterSubstitution::RemoveFormalProcedure::operator()(TemplateParameter* el) const {
+    el->removeReference(m_me->getID());
+}
+
+void TemplateParameterSubstitution::AddFormalProcedure::operator()(TemplateParameter* el) const {
+    el->setReference(m_me);
+}
+
+void TemplateParameterSubstitution::RemoveTemplateBindingProcedure::operator()(TemplateBinding* el) const {
+    if (el->getParameterSubstitution().count(m_me->getID())) {
+        el->getParameterSubstitution().remove(*m_me);
+    }
+}
+
+void TemplateParameterSubstitution::AddTemplateBindingProcedure::operator()(TemplateBinding* el) const {
+    if (!el->getParameterSubstitution().count(m_me->getID())) {
+        el->getParameterSubstitution().add(*m_me);
+    }
+}
+
+void TemplateParameterSubstitution::RemoveActualProcedure::operator()(ParameterableElement* el) const {
+    el->removeReference(el->getID());
+}
+
+void TemplateParameterSubstitution::AddActualProcedure::operator()(ParameterableElement* el) const {
+    el->setReference(el);
+}
+
+void TemplateParameterSubstitution::RemoveOwnedActualProcedure::operator()(ParameterableElement* el) const {
+    if (m_me->hasOwnedActual()) {
+        m_me->setOwnedActual(0);
+    }
+    if (m_me->getOwnedElements().count(el->getID())) {
+        m_me->getOwnedElements().internalAdd(*el);
+    }
+}
+
+void TemplateParameterSubstitution::AddOwnedActualProcedure::operator()(ParameterableElement* el) const {
+    if (m_me->hasOwnedActual()) {
+        if (m_me->getOwnedActualRef() != *el) {
+            m_me->setOwnedActual(el);
+        }
+    }
+    else {
+        m_me->setOwnedActual(el);
+    }
+    if (!m_me->getOwnedElements().count(el->getID())) {
+        m_me->getOwnedElements().internalAdd(*el);
+    }
+}
+
+void TemplateParameterSubstitution::referencingReleased(ID id) {
+    Element::referencingReleased(id);
+    if (m_formal.id() == id) {
+        m_formal.release();
+    }
+    if (m_templateBinding.id() == id) {
+        m_templateBinding.release();
+    }
+    if (m_actual.id() == id) {
+        m_actual.release();
+    }
+    if (m_ownedActual.id() == id) {
+        m_ownedActual.release();
+    }
+}
+
+void TemplateParameterSubstitution::referenceReindexed(ID oldID, ID newID) {
+    Element::referenceReindexed(oldID, newID);
+    if (m_formal.id() == oldID) {
+        m_formal.reindex(oldID, newID);
+    }
+    if (m_templateBinding.id() == oldID) {
+        m_templateBinding.reindex(oldID, newID);
+    }
+    if (m_actual.id() == oldID) {
+        m_actual.reindex(oldID, newID);
+    }
+    if (m_ownedActual.id() == oldID) {
+        m_ownedActual.reindex(oldID, newID);
+    }
+}
+
 TemplateParameterSubstitution::TemplateParameterSubstitution() {
-    m_formalPtr = 0;
-    m_templateBindingPtr = 0;
-    m_actualPtr = 0;
-    m_ownedActualPtr = 0;
+    m_formal.m_signature = &TemplateParameterSubstitution::m_formal;
+    m_formal.m_addProcedures.push_back(new AddFormalProcedure(this));
+    m_formal.m_removeProcedures.push_back(new RemoveFormalProcedure(this));
+    m_templateBinding.m_signature = &TemplateParameterSubstitution::m_templateBinding;
+    m_templateBinding.m_addProcedures.push_back(new AddTemplateBindingProcedure(this));
+    m_templateBinding.m_removeProcedures.push_back(new RemoveTemplateBindingProcedure(this));
+    m_actual.m_signature = &TemplateParameterSubstitution::m_actual;
+    m_actual.m_addProcedures.push_back(new AddActualProcedure(this));
+    m_actual.m_removeProcedures.push_back(new RemoveActualProcedure(this));
+    m_ownedActual.m_signature = &TemplateParameterSubstitution::m_ownedActual;
+    m_ownedActual.m_addProcedures.push_back(new AddOwnedActualProcedure(this));
+    m_ownedActual.m_removeProcedures.push_back(new RemoveOwnedActualProcedure(this));
 }
 
 TemplateParameterSubstitution::TemplateParameterSubstitution(const TemplateParameterSubstitution& temp) {
-
+    m_formal = temp.m_formal;
+    m_formal.m_me = this;
+    m_formal.m_addProcedures.clear();
+    m_formal.m_removeProcedures.clear();
+    m_formal.m_addProcedures.push_back(new AddFormalProcedure(this));
+    m_formal.m_removeProcedures.push_back(new RemoveFormalProcedure(this));
+    m_templateBinding = temp.m_templateBinding;
+    m_templateBinding.m_me = this;
+    m_templateBinding.m_addProcedures.clear();
+    m_templateBinding.m_removeProcedures.clear();
+    m_templateBinding.m_addProcedures.push_back(new AddTemplateBindingProcedure(this));
+    m_templateBinding.m_removeProcedures.push_back(new RemoveTemplateBindingProcedure(this));
+    m_actual = temp.m_actual;
+    m_actual.m_me = this;
+    m_actual.m_addProcedures.clear();
+    m_actual.m_removeProcedures.clear();
+    m_actual.m_addProcedures.push_back(new AddActualProcedure(this));
+    m_actual.m_removeProcedures.push_back(new RemoveActualProcedure(this));
+    m_ownedActual = temp.m_ownedActual;
+    m_ownedActual.m_me = this;
+    m_ownedActual.m_removeProcedures.clear();
+    m_ownedActual.m_addProcedures.clear();
+    m_ownedActual.m_addProcedures.push_back(new AddOwnedActualProcedure(this));
+    m_ownedActual.m_removeProcedures.push_back(new RemoveOwnedActualProcedure(this));
 }
 
 TemplateParameterSubstitution::~TemplateParameterSubstitution() {
@@ -23,113 +136,75 @@ TemplateParameterSubstitution::~TemplateParameterSubstitution() {
 }
 
 TemplateParameter* TemplateParameterSubstitution::getFormal() {
-    return universalGet<TemplateParameter>(m_formalID, m_formalPtr, m_manager);
+    return m_formal.get();
+}
+
+TemplateParameter& TemplateParameterSubstitution::getFormalRef() {
+    return m_formal.getRef();
+}
+
+bool TemplateParameterSubstitution::hasFormal() const {
+    return m_formal.has();
 }
 
 void TemplateParameterSubstitution::setFormal(TemplateParameter* formal) {
-    if (!m_formalID.isNull()) {
-        m_formalID = ID::nullID();
-        m_formalPtr = 0;
-    }
+    m_formal.set(formal);
+}
 
-    if (formal) {
-        m_formalID = formal->getID();
-    }
-
-    if (!m_manager) {
-        m_formalPtr = formal;
-    }
+void TemplateParameterSubstitution::setFormal(TemplateParameter& formal) {
+    m_formal.set(formal);
 }
 
 TemplateBinding* TemplateParameterSubstitution::getTemplateBinding() {
-    return universalGet<TemplateBinding>(m_templateBindingID, m_templateBindingPtr, m_manager);
+    return m_templateBinding.get();
+}
+
+TemplateBinding& TemplateParameterSubstitution::getTemplateBindingRef() {
+    return m_templateBinding.getRef();
+}
+
+bool TemplateParameterSubstitution::hasTemplateBinding() const {
+    return m_templateBinding.has();
 }
 
 void TemplateParameterSubstitution::setTemplateBinding(TemplateBinding* bind) {
-    if (!isSameOrNull(m_templateBindingID, bind)) {
-        if (!m_templateBindingPtr) {
-            m_templateBindingPtr = &m_manager->get<TemplateBinding>(m_templateBindingID);
-        }
+    m_templateBinding.set(bind);
+}
 
-        TemplateBinding* temp = m_templateBindingPtr;
-
-        m_templateBindingID = ID::nullID();
-        m_templateBindingPtr = 0;
-
-        if (temp->getParameterSubstitution().count(m_id)) {
-            temp->getParameterSubstitution().remove(*this);
-        }
-    }
-
-    if (bind) {
-        m_templateBindingID = bind->getID();
-    }
-
-    if (!m_manager) {
-        m_templateBindingPtr = bind;
-    }
-
-    if (bind) {
-        if (!bind->getParameterSubstitution().count(m_id)) {
-            bind->getParameterSubstitution().add(*this);
-        }
-    }
+void TemplateParameterSubstitution::setTemplateBinding(TemplateBinding& bind) {
+    m_templateBinding.set(bind);
 }
 
 ParameterableElement* TemplateParameterSubstitution::getActual() {
-    return universalGet<ParameterableElement>(m_actualID, m_actualPtr, m_manager);
+    return m_actual.get();
+}
+
+ParameterableElement& TemplateParameterSubstitution::getActualRef() {
+    return m_actual.getRef();
+}
+
+bool TemplateParameterSubstitution::hasActual() const {
+    return m_actual.has();
 }
 
 void TemplateParameterSubstitution::setActual(ParameterableElement* actual) {
-    if (actual) {
-        m_actualID = actual->getID();
-    } else {
-        m_actualID = ID::nullID();
-    }
-
-    if (!m_manager) {
-        m_actualPtr = actual;
-    } else {
-        m_actualPtr = 0;
-    }
+    m_actual.set(actual);
 }
 
 ParameterableElement* TemplateParameterSubstitution::getOwnedActual() {
-    return universalGet<ParameterableElement>(m_ownedActualID, m_ownedActualPtr, m_manager);
+    return m_ownedActual.get();
+}
+
+ParameterableElement& TemplateParameterSubstitution::getOwnedActualRef() {
+    return m_ownedActual.getRef();
+}
+
+bool TemplateParameterSubstitution::hasOwnedActual() const {
+    return m_ownedActual.has();
 }
 
 void TemplateParameterSubstitution::setOwnedActual(ParameterableElement* actual) {
-    if (!isSameOrNull(m_ownedActualID, actual)) {
-        if (!m_ownedActualPtr) {
-            m_ownedActualPtr = &m_manager->get<ParameterableElement>(m_ownedActualID);
-        }
-
-        if (m_ownedElements->count(m_ownedActualID)) {
-            m_ownedElements->internalRemove(*m_ownedActualPtr);
-        }
-
-        setActual(0);
-
-        m_ownedActualID = ID::nullID();
-        m_ownedActualPtr = 0;
-    }
-
-    if (actual) {
-        m_ownedActualID = actual->getID();
-    }
-
-    if (!m_manager) {
-        m_ownedActualPtr = actual;
-    }
-
-    if (actual) {
-        if (!m_ownedElements->count(actual->getID())) {
-            m_ownedElements->internalAdd(*actual);
-        }
-        if (m_actualID != actual->getID()) {
-            setActual(actual);
-        }
-    }
+    m_ownedActual.set(actual);
 }
 
 ElementType TemplateParameterSubstitution::getElementType() const {

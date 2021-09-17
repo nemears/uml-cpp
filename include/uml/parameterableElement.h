@@ -6,10 +6,12 @@
 namespace UML {
 
     class TemplateParameter;
+    class TemplateParameterSubstitution;
 
     class ParameterableElement : virtual public Element {
 
         friend class TemplateParameter;
+        friend class TemplateParameterSubstitution;
 
         private:
         public:

@@ -8,10 +8,12 @@ namespace UML {
 
     class TemplateSignature;
     class ParameterableElement;
+    class TemplateParameterSubstitution;
 
     class TemplateParameter : public Element {
 
         friend class UmlManager;
+        friend class TemplateParameterSubstitution;
 
         private:
             Singleton<TemplateSignature, TemplateParameter> m_signature = Singleton<TemplateSignature, TemplateParameter>(this);

@@ -366,6 +366,9 @@ namespace UML {
                 }
                 return *m_rep[m_order.at(index)];
             };
+            ID getID(size_t index) const {
+                return m_order.at(index);
+            }
             T& get(std::string name) {
                 if (m_names.count(name)) {
                     if (!m_rep[m_names[name]]) {
@@ -377,8 +380,13 @@ namespace UML {
                     }
                     return *m_rep[m_names[name]];
                 }
-                throw ID_doesNotExistException(m_names[name]);
+                throw ID_doesNotExistException(m_names[name]); // TODO change
             };
+            ID getID(std::string name) const {
+                if (m_names.count(name)) {
+                    return m_names[name];
+                }
+            }
             T& front() { 
                 if (!m_rep[m_order.front()]) {
                     if (m_el) {
@@ -389,6 +397,9 @@ namespace UML {
                 }
                 return *m_rep[m_order.front()];
             };
+            ID frontID() const {
+                return m_order.front();
+            }
             T& back() {
                 if (!m_rep[m_order.back()]) {
                     if (m_el) {
@@ -399,6 +410,9 @@ namespace UML {
                 }
                 return *m_rep[m_order.back()];
             };
+            ID backID() const {
+                return m_order.back();
+            }
             size_t count(ID id) { return m_rep.count(id); };
             size_t count(T& el) { return m_rep.count(el.getID()); }
 

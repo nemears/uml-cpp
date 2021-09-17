@@ -127,6 +127,7 @@ void UmlManager::aquire(ID id) {
         m_graph[id].m_managerElementMemory = Parsers::parse(data);
         for (auto& refID : m_graph[id].m_referenceOrder) {
             if (m_graph[id].m_references[refID]->m_managerElementMemory) {
+                // TODO think restoreReleased, adds extra references?
                 m_graph[id].m_references[refID]->m_managerElementMemory->restoreReleased(id, m_graph[id].m_managerElementMemory);
             }
         }

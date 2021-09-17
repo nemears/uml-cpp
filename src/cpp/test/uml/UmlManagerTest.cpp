@@ -183,31 +183,39 @@ TEST_F(UmlManagerTest, addToManagerAfterMountedTest) {
 }
 
 TEST_F(UmlManagerTest, ManagerMountStressTest) {
-    size_t numElements = 100;
+    const size_t numElements = 5;
     UmlManager m;
     Package& root = m.create<Package>();
     ID rootID = root.getID();
     m.setRoot(&root);
     ASSERT_NO_THROW(m.mount(ymlPath + "umlManagerTests"));
+    ID ids[numElements];
     Package* pckg = &root;
     for (size_t i = 0; i < numElements; i++) {
         Package* child = &m.create<Package>();
         pckg->getPackagedElements().add(*child);
+        ids[i] = pckg->getID();
         m.release(pckg->getID()); // release or segfault
         pckg = child;
     }
+    m.release(*pckg);
+    for (size_t i = 0; i < numElements; i++) {
+        EXPECT_FALSE(m.loaded(ids[i])) << "at index" << i;
+    }
     Package& root2 = m.get<Package>(rootID); // try to only aquire root
-    ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_MOUNT(root2, ymlPath + "umlManagerTests"));
     pckg = &root2;
     for (size_t i = 0; i < numElements; i++) {
+        EXPECT_FALSE(m.loaded(pckg->getPackagedElements().frontID())) << "at index " << i;
         ASSERT_EQ(pckg->getPackagedElements().size(), 1) << "at index " << i;
         ASSERT_EQ(pckg->getOwnedMembers().size(), 1) << "at index " << i;
         ASSERT_EQ(pckg->getMembers().size(), 1) << "at index " << i;
         ASSERT_EQ(pckg->getOwnedElements().size(), 1) << "at index " << i;
         if (i > 0) {
             ASSERT_TRUE(pckg->hasOwningPackage());
-            m.release(pckg->getOwningPackageRef());
+            m.release(pckg->getOwningPackageRef()); // test fails becaues of this line, must aquire to emit, need to change parser again TODO!
         }
         pckg = &pckg->getPackagedElements().front().as<Package>();
     }
+    Package& root3 = m.get<Package>(rootID);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_MOUNT(root3, ymlPath + "umlManagerTests"));
 }

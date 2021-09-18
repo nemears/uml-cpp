@@ -207,13 +207,6 @@ namespace UML {
                 }
             }
 
-            void reindex(ID id, std::string oldName, std::string newName) {
-                if (!oldName.empty()) {
-                    m_names.erase(oldName);
-                }
-                m_names[newName] = id;
-            };
-
             // internal functions
             void internalAdd(T& el) {
                 m_order.push_back(el.getID());

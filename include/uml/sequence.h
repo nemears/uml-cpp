@@ -384,8 +384,9 @@ namespace UML {
             };
             ID getID(std::string name) const {
                 if (m_names.count(name)) {
-                    return m_names[name];
+                    return m_names.at(name);
                 }
+                throw ID_doesNotExistException(m_names.at(name)); // TODO change
             }
             T& front() { 
                 if (!m_rep[m_order.front()]) {

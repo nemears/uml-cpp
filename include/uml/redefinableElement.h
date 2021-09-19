@@ -33,7 +33,6 @@ namespace UML {
                     void operator()(Classifier& el) const override;
             };
             void setManager(UmlManager* manager) override; // not polymorphic
-            void reindexID(ID oldID, ID newID) override;
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;

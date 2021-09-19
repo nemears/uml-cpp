@@ -92,20 +92,6 @@ ActivityNode::~ActivityNode() {
     
 }
 
-void ActivityNode::reindexID(ID oldID, ID newID) {
-    // if (m_activity.has()) {
-    //     m_activity.getRef().getNodes().reindex(oldID, newID);
-    // }
-    // for (auto& incoming : m_incoming) {
-    //     incoming.m_target.reindex(oldID, newID);
-    // }
-    // for (auto& outgoing : m_outgoing) {
-    //     outgoing.m_source.reindex(oldID, newID);
-    // }
-    // RedefinableElement::reindexID(oldID, newID);
-    // NamedElement::reindexID(oldID, newID);
-}
-
 // void ActivityNode::reindexName(string oldName, string newName) {
 //     if (m_activity) {
 //         m_activity->getNodes().reindex(m_id, oldName, newName);

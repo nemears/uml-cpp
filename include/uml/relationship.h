@@ -7,7 +7,6 @@ namespace UML {
     class Relationship : virtual public Element {
         protected:
             Sequence<> m_relatedElements = Sequence<>(this);
-            void reindexID(ID oldID, ID newID) override;
 
             class AddRelationshipFunctor : public TemplateAbstractSequenceFunctor<Element,Relationship> {
                 public:

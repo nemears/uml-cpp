@@ -62,7 +62,6 @@ namespace UML {
                     AddArtifactProcedure(Operation* me) : AbstractSingletonProcedure<Artifact, Operation>(me) {};
                     void operator()(Artifact* el) const override;
             };
-            void reindexID(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;

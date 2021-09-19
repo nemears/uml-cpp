@@ -7,7 +7,6 @@
 namespace UML {
     class OutputPin : public Pin {
         protected:
-            void reindexID(ID oldID, ID newID) override;
             // void reindexName(std::string oldName, std::string newName) override;
         public:
             ElementType getElementType() const override;

@@ -26,23 +26,6 @@ void RedefinableElement::setManager(UmlManager* manager) {
     m_redefinitionContext.m_manager = manager;
 }
 
-void RedefinableElement::reindexID(ID oldID, ID newID) {
-    // if (m_node) {
-    //     for (auto& id : m_node->m_referenceOrder) {
-    //         ManagerNode* refNode = m_node->m_references[id];
-    //         Element* ref = refNode->m_managerElementMemory;
-    //         if (ref->isSubClassOf(ElementType::REDEFINABLE_ELEMENT)) {
-    //             if (ref->as<RedefinableElement>().m_redefinedElement.count(oldID)) {
-    //                 ref->as<RedefinableElement>().m_redefinedElement.reindex(oldID, newID);
-    //                 for (auto& refCopy : refNode->m_copies) {
-    //                     refCopy->as<RedefinableElement>().m_redefinedElement.reindex(oldID, newID);
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-}
-
 void RedefinableElement::restoreReleased(ID id, Element* released) {
     NamedElement::restoreReleased(id, released);
 }

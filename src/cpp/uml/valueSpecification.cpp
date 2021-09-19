@@ -17,18 +17,6 @@ void ValueSpecification::AddOwningSlotProcedure::operator()(Slot* el) const {
     }
 }
 
-void ValueSpecification::reindexID(ID oldID, ID newID) {
-    // if (!m_ownerID.isNull()) {
-    //     if (getOwner()->isSubClassOf(ElementType::SLOT)) {
-    //         dynamic_cast<Slot*>(getOwner())->getValues().reindex(oldID, newID);
-    //     } else if (getOwner()->isSubClassOf(ElementType::EXPRESSION)) {
-    //         dynamic_cast<Expression*>(getOwner())->getOperands().reindex(oldID, newID);
-    //     }
-    // }
-
-    // NamedElement::reindexID(oldID, newID);
-}
-
 void ValueSpecification::reindexName(string oldName, string newName) {
     if (getOwner()) {
         if (getOwner()->isSubClassOf(ElementType::SLOT)) {

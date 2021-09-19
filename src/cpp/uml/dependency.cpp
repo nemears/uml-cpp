@@ -37,11 +37,6 @@ void Dependency::setManager(UmlManager* manager) {
     // TODO
 }
 
-void Dependency::reindexID(ID oldID, ID newID) {
-    DirectedRelationship::reindexID(oldID, newID);
-    // TODO
-}
-
 void Dependency::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
     // TODO

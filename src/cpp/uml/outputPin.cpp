@@ -4,16 +4,6 @@
 using namespace std;
 using namespace UML;
 
-void OutputPin::reindexID(ID oldID, ID newID) {
-    if (!m_ownerID.isNull()) {
-        if(getOwner()->isSubClassOf(ElementType::ACTION)) {
-            dynamic_cast<Action*>(getOwner())->getOutputs().reindex(oldID, newID, &Action::getOutputs);
-        }
-    }
-
-    ActivityNode::reindexID(oldID, newID);
-}
-
 // void OutputPin::reindexName(string oldName, string newName) {
 //     if (!m_ownerID.isNull()) {
 //         if (getOwner()->isSubClassOf(ElementType::ACTION)) {

@@ -125,7 +125,6 @@ namespace UML{
                     void operator()(Type* el) const override;
             };
             Sequence<Property> m_redefinedProperties = Sequence<Property>(this);
-            void reindexID(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             void setComposite(bool composite);
             class AddRedefinedPropertyFunctor : public TemplateAbstractSequenceFunctor<Property,Property> {

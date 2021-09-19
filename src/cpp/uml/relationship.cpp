@@ -5,14 +5,6 @@
 using namespace std;
 using namespace UML;
 
-void Relationship::reindexID(ID oldID, ID newID) {
-    /**for (auto& relEl : m_relatedElements) {
-        relEl.getRelationships().reindex(oldID, newID);
-    }
-
-    Element::reindexID(oldID, newID);**/
-}
-
 void Relationship::setManager(UmlManager* manager) {
     Element::setManager(manager);
     m_relatedElements.m_manager = manager;

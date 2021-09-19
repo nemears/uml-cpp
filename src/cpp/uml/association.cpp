@@ -3,11 +3,6 @@
 
 using namespace UML;
 
-void Association::reindexID(ID oldID, ID newID) {
-    // Relationship::reindexID(oldID, newID);
-    // Classifier::reindexID(oldID, newID);
-}
-
 void Association::reindexName(std::string oldName, std::string newName) {
     Classifier::reindexName(oldName, newName);
 }

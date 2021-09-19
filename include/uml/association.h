@@ -12,7 +12,6 @@ namespace UML {
             Sequence<Property> m_ownedEnds = Sequence<Property>(this);
             Sequence<Property> m_navigableOwnedEnds = Sequence<Property>(this);
             Sequence<Type> m_endType = Sequence<Type>(this);
-            void reindexID(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             class AddMemberEndFunctor : public TemplateAbstractSequenceFunctor<Property,Association> {
                 public:

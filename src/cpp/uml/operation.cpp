@@ -68,22 +68,6 @@ void Operation::AddArtifactProcedure::operator()(Artifact* el) const {
     }
 }
 
-void Operation::reindexID(ID oldID, ID newID) {
-    // if (!m_classID.isNull()) {
-    //     if (!m_classPtr) {
-    //         m_classPtr = &m_manager->get<Class>(m_classID);
-    //     }
-    //     m_classPtr->getOwnedOperations().reindex(oldID, newID);
-    // }
-    // if (!m_dataTypeID.isNull()) {
-    //     if (!m_dataTypePtr) {
-    //         m_dataTypePtr = &m_manager->get<DataType>(m_dataTypeID);
-    //     }
-    //     m_dataTypePtr->getOwnedOperation().reindex(oldID, newID);
-    // }
-    // Feature::reindexID(oldID, newID);
-}
-
 void Operation::reindexName(string oldName, string newName) {
     if (getClass()) {
         getClass()->getOwnedOperations().reindex(m_id, oldName, newName);

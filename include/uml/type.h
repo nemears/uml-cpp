@@ -15,7 +15,6 @@ namespace UML{
         friend class Operation;
         
         protected:
-            void reindexID(ID oldID, ID newID) override;
             Type() {};
         public:
             ElementType getElementType() const override;

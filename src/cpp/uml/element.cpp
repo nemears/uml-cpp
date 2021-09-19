@@ -230,7 +230,6 @@ void Element::setID(string id) {
 }
 
 void Element::setID(ID id) {
-    reindexID(m_id, id);
     if (m_manager) {
         m_manager->reindex(m_id, id);
     }
@@ -245,19 +244,6 @@ void Element::setID(ID id) {
             m_node->m_managerElementMemory->m_id = id;
         }
     }
-}
-
-void Element::reindexID(ID oldID, ID newID) {
-    /**if (!m_ownerID.isNull()) {
-        if (!m_ownerPtr) {
-            m_ownerPtr = &m_manager->get<Element>(m_ownerID);
-        }
-        m_ownerPtr->m_ownedElements->reindex(oldID, newID);
-    }
-
-    for (auto& relationship : *m_relationships) {
-        relationship.getRelatedElements().reindex(oldID, newID);
-    }**/
 }
 
 Sequence<Relationship>& Element::getRelationships() {

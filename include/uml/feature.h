@@ -21,7 +21,6 @@ namespace UML {
                     void operator()(Classifier* el) const override;
             };
             bool m_static;
-            void reindexID(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;

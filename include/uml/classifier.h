@@ -27,7 +27,6 @@ namespace UML {
             Sequence<Classifier> m_generals = Sequence<Classifier>(this);
             Sequence<NamedElement> m_inheritedMembers = Sequence<NamedElement>(this);
             void setManager(UmlManager* manager) override;
-            void reindexID(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             void referenceReindexed(ID oldID, ID newID) override;
             class AddAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Classifier> {

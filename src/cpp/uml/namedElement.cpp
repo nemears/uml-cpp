@@ -96,18 +96,6 @@ void NamedElement::reindexName(string oldName, string newName) {
     }
 }
 
-void NamedElement::reindexID(ID oldID, ID newID) {
-    /**if (m_namespace.has()) {
-        m_namespace.get()->getOwnedMembers().reindex(oldID, newID);
-    }
-
-    for (auto& nmspc : *m_memberNamespace) {
-        nmspc.getMembers().reindex(oldID, newID);
-    }
-
-    Element::reindexID(oldID, newID);**/
-}
-
 void NamedElement::setManager(UmlManager* manager) {
     Element::setManager(manager);
     m_memberNamespace->m_manager = manager;

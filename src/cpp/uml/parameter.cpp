@@ -21,25 +21,6 @@ ElementType Parameter::getElementType() const {
     return ElementType::PARAMETER;
 }
 
-void Parameter::reindexID(ID oldID, ID newID) {
-    /**if (!m_ownerID.isNull()) {
-        if (getOwner()->isSubClassOf(ElementType::BEHAVIOR)) {
-            dynamic_cast<Behavior*>(getOwner())->getParameters().reindex(oldID, newID);
-        }
-    }
-
-    if (!m_operationID.isNull()) {
-        if (!m_operationPtr) {
-            m_operationPtr = &m_manager->get<Operation>(m_operationID);
-        }
-        for (auto& bhv : m_operationPtr->getMethods()) {
-            bhv.getParameters().reindex(oldID, newID);
-        }
-    }
-
-    NamedElement::reindexID(oldID, newID);**/
-}
-
 void Parameter::reindexName(string oldName, string newName) {
     if (getOwner()) {
         if (getOwner()->isSubClassOf(ElementType::BEHAVIOR)) {

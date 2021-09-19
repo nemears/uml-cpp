@@ -164,7 +164,6 @@ namespace UML {
             Sequence<DirectedRelationship>* m_directedRelationships;
             Sequence<Comment>* m_ownedComments;
             Sequence<InstanceSpecification>* m_appliedStereotype;
-            virtual void reindexID(ID oldID, ID newID);
             void setOwner(Element* el);
             static bool isSameOrNull(ID id, Element* el);
             virtual void restoreReleased(ID id, Element* released);

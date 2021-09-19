@@ -55,16 +55,6 @@ void Activity::setManager(UmlManager* manager) {
     m_edges.m_manager = manager;
 }
 
-void Activity::reindexID(ID oldID, ID newID) {
-    /**Behavior::reindexID(oldID, newID);
-    for (auto& node : m_nodes) {
-        /** TODO: reindex singleton **/
-    /** }
-    for (auto& edge : m_edges) {
-        edge.m_activity.reindex(oldID, newID);
-    }**/
-}
-
 void Activity::restoreReleased(ID id, Element* released) {
     Behavior::restoreReleased(id, released);
     /**TODO: restore nodes and edges **/

@@ -34,7 +34,6 @@ namespace UML {
                     AddOwningInstanceProcedure(Slot* me) : AbstractSingletonProcedure<InstanceSpecification, Slot>(me) {};
                     void operator()(InstanceSpecification* el) const override;
             };
-            void reindexID(ID oldID, ID newID) override;
             void setManager(UmlManager* manager) override;
             void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;

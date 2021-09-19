@@ -130,64 +130,6 @@ void Property::AddTypeProcedure::operator()(Type* el) const {
     }
 }
 
-void Property::reindexID(ID oldID, ID newID) {
-    // if (m_classifier.has()) {
-    //     m_classifier.get()->getAttributes().reindex(oldID, newID);
-    // }
-
-    // if (m_dataType.has()) {
-    //     m_dataType.get()->getOwnedAttribute().reindex(oldID, newID);
-    // }
-
-    // if (m_structuredClassifier.has()) {
-    //     if (m_structuredClassifier.get()->getOwnedAttributes().count(oldID)) {
-    //         m_structuredClassifier.get()->getOwnedAttributes().reindex(oldID, newID);
-    //     }
-    //     if (m_structuredClassifier.get()->getRole().count(oldID)) {
-    //         m_structuredClassifier.get()->getRole().reindex(oldID, newID);
-    //     }
-    //     if (m_structuredClassifier.get()->getParts().count(oldID)) {
-    //         m_structuredClassifier.get()->getParts().reindex(oldID, newID);
-    //     }
-    // }
-
-    // if (m_association.has()) {
-    //     if (m_association.get()->getMemberEnds().count(oldID)) {
-    //         m_association.get()->getMemberEnds().reindex(oldID, newID);
-    //     }
-    // }
-
-    // if (m_owningAssociation.has()) {
-    //     if (m_owningAssociation.get()->getOwnedEnds().count(oldID)) {
-    //         m_owningAssociation.get()->getOwnedEnds().reindex(oldID, newID);
-    //     }
-    //     if (m_owningAssociation.get()->getNavigableOwnedEnds().count(oldID)) {
-    //         m_owningAssociation.get()->getNavigableOwnedEnds().reindex(oldID, newID);
-    //     }
-    // }
-
-    // if (m_node) {
-    //     for (auto& id : m_node->m_referenceOrder) {
-    //         ManagerNode* refNode = m_node->m_references[id];
-    //         Element* ref = refNode->m_managerElementMemory;
-    //         if (ref) {
-    //             if (ref->isSubClassOf(ElementType::PROPERTY)) {
-    //                 if (ref->as<Property>().m_redefinedProperties.count(oldID)) {
-    //                     ref->as<Property>().m_redefinedProperties.reindex(oldID, newID);
-    //                     for (auto& refCopy: refNode->m_copies) {
-    //                         refCopy->as<Property>().m_redefinedProperties.reindex(oldID, newID);
-    //                     }
-    //                 }
-    //             }
-    //         } else {
-    //             /** TODO: throw error **/
-    //         }
-    //     }
-    // }
-
-    // Feature::reindexID(oldID, newID);
-}
-
 void Property::reindexName(string oldName, string newName) {
     if (getClassifier()) {
         getClassifier()->getAttributes().reindex(m_id, oldName, newName);

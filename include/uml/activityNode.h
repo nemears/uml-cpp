@@ -26,7 +26,6 @@ namespace UML {
             };
             Sequence<ActivityEdge> m_incoming = Sequence<ActivityEdge>(this);
             Sequence<ActivityEdge> m_outgoing = Sequence<ActivityEdge>(this);
-            void reindexID(ID oldID, ID newID) override;
             // void reindexName(std::string oldName, std::string newName) override;
             class AddIncomingFunctor : public TemplateAbstractSequenceFunctor<ActivityEdge,ActivityNode> {
                 public:

@@ -16,14 +16,6 @@ void Feature::AddFeaturingClassifierProcedure::operator()(Classifier* el) const 
     }
 }
 
-void Feature::reindexID(ID oldID, ID newID) {
-    // if (m_featuringClassifier.has()) {
-    //     m_featuringClassifier.get()->getFeatures().reindex(oldID, newID);
-    // }
-    // RedefinableElement::reindexID(oldID, newID);
-    // NamedElement::reindexID(oldID, newID);
-}
-
 void Feature::reindexName(string oldName, string newName) {
     if (getFeaturingClassifier()) {
         getFeaturingClassifier()->getFeatures().reindex(m_id, oldName, newName);

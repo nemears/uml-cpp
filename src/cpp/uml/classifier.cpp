@@ -6,112 +6,11 @@
 using namespace std;
 using namespace UML;
 
-void Classifier::referenceReindexed(ID oldID, ID newID) {
-    Namespace::referenceReindexed(oldID, newID);
-    PackageableElement::referenceReindexed(oldID, newID);
-    TemplateableElement::referenceReindexed(oldID, newID);
-    if (m_attributes.count(oldID)) {
-        m_attributes.reindex(oldID, newID, &Classifier::getAttributes);
-    }
-    if (m_generalizations.count(oldID)) {
-        m_generalizations.reindex(oldID, newID, &Classifier::getGeneralizations);
-    }
-    if (m_features.count(oldID)) {
-        m_features.reindex(oldID, newID, &Classifier::getFeatures);
-    }
-    if (m_generals.count(oldID)) {
-        m_generals.reindex(oldID, newID, &Classifier::getGenerals);
-    }
-    if (m_inheritedMembers.count(oldID)) {
-        m_inheritedMembers.reindex(oldID, newID, &Classifier::getInheritedMembers);
-    }
-}
-
-Classifier::Classifier() {
-    m_attributes.addProcedures.push_back(new AddAttributeFunctor(this));
-    m_attributes.removeProcedures.push_back(new RemoveAttributeFunctor(this));
-    m_generalizations.addProcedures.push_back(new AddGeneralizationFunctor(this));
-    m_generalizations.removeProcedures.push_back(new RemoveGeneralizationFunctor(this));
-    m_generalizations.addChecks.push_back(new CheckGeneralizationFunctor(this));
-    m_generals.addProcedures.push_back(new AddGeneralFunctor(this));
-    m_generals.removeProcedures.push_back(new RemoveGeneralFunctor(this));
-    m_features.addProcedures.push_back(new AddFeatureFunctor(this));
-    m_features.removeProcedures.push_back(new RemoveFeatureFunctor(this));
-    m_inheritedMembers.addProcedures.push_back(new AddInheritedMemberFunctor(this));
-    m_inheritedMembers.removeProcedures.push_back(new RemoveInheritedMemberFunctor(this));
-    m_members.addProcedures.push_back(new ClassifierAddMemberFunctor(this));
-    m_members.removeProcedures.push_back(new ClassifierRemoveMemberFunctor(this));
-}
-
-Classifier::~Classifier() {
-
-}
-
-Classifier::Classifier(const Classifier& clazz) : 
-Namespace(clazz), 
-PackageableElement(clazz), 
-NamedElement(clazz), 
-TemplateableElement(clazz), 
-Element(clazz) {
-    m_attributes = clazz.m_attributes;
-    m_attributes.addProcedures.clear();
-    m_attributes.addProcedures.push_back(new AddAttributeFunctor(this));
-    m_attributes.removeProcedures.clear();
-    m_attributes.removeProcedures.push_back(new RemoveAttributeFunctor(this));
-    m_generalizations = clazz.m_generalizations;
-    m_generalizations.addProcedures.clear();
-    m_generalizations.addProcedures.push_back(new AddGeneralizationFunctor(this));
-    m_generalizations.addChecks.clear();
-    m_generalizations.addChecks.push_back(new CheckGeneralizationFunctor(this));
-    m_generalizations.removeProcedures.clear();
-    m_generalizations.removeProcedures.push_back(new RemoveGeneralizationFunctor(this));
-    m_generals = clazz.m_generals;
-    m_generals.addProcedures.clear();
-    m_generals.addProcedures.push_back(new AddGeneralFunctor(this));
-    m_generals.removeProcedures.clear();
-    m_generals.removeProcedures.push_back(new RemoveGeneralFunctor(this));
-    m_features = clazz.m_features;
-    m_features.addProcedures.clear();
-    m_features.addProcedures.push_back(new AddFeatureFunctor(this));
-    m_features.removeProcedures.clear();
-    m_features.removeProcedures.push_back(new RemoveFeatureFunctor(this));
-    m_inheritedMembers = clazz.m_inheritedMembers;
-    m_inheritedMembers.addProcedures.clear();
-    m_inheritedMembers.addProcedures.push_back(new AddInheritedMemberFunctor(this));
-    m_inheritedMembers.removeProcedures.clear();
-    m_inheritedMembers.removeProcedures.push_back(new RemoveInheritedMemberFunctor(this));
-    m_members.addProcedures.push_back(new ClassifierAddMemberFunctor(this));
-    m_members.removeProcedures.push_back(new ClassifierRemoveMemberFunctor(this));
-}
-
-void Classifier::reindexID(ID oldID, ID newID) {
-    /**Namespace::reindexID(oldID, newID);
-    Type::reindexID(oldID, newID);
-    if (m_node) {
-        for (auto& ref : m_node->m_references) {    
-            // TODO change to polymorphic?
-            if (ref.second->m_managerElementMemory->isSubClassOf(ElementType::INSTANCE_SPECIFICATION)) {
-                if (ref.second->m_managerElementMemory->as<InstanceSpecification>().hasClassifier()) {
-                    if (ref.second->m_managerElementMemory->as<InstanceSpecification>().getClassifierRef() == *this) {
-                        ref.second->m_managerElementMemory->as<InstanceSpecification>().m_classifier.m_id = newID;
-                        ref.second->m_managerElementMemory->as<InstanceSpecification>().m_classifier.m_ptr = 0;
-                        ref.second->m_managerElementMemory->as<InstanceSpecification>().m_classifier.updateCopies();
-                    }
-                }
-            }
-        }
-    }**/
-}
-
-void Classifier::reindexName(string oldName, string newName) {
-    Namespace::reindexName(oldName, newName);
-}
-
 void Classifier::AddAttributeFunctor::operator()(Property& el) const {
     if (el.getClassifier() != m_el) {
         el.setClassifier(m_el);
     }
-    
+
     if (!m_el->getFeatures().count(el.getID())) {
         m_el->getFeatures().add(el);
     }
@@ -167,7 +66,7 @@ void Classifier::AddGeneralizationFunctor::operator()(Generalization& el) const 
             }
         }
     }
-    
+
     if (!m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalAdd(el);
     }
@@ -192,7 +91,7 @@ void Classifier::RemoveGeneralizationFunctor::operator()(Generalization& el) con
             }
         }
     }
-    
+
     if (m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalRemove(el);
     }
@@ -318,6 +217,116 @@ void Classifier::setManager(UmlManager* manager) {
     m_features.m_manager = manager;
 }
 
+void Classifier::restoreReleased(ID id, Element* released) {
+    Namespace::restoreReleased(id, released);
+    PackageableElement::restoreReleased(id, released);
+    if (m_attributes.count(id)) {
+        released->as<Property>().setClassifier(this);
+    }
+    if (m_features.count(id)) {
+        released->as<Feature>().setFeaturingClassifier(this);
+    }
+    if (m_generalizations.count(id)) {
+        released->as<Generalization>().setSpecific(this);
+    }
+    if (m_generals.count(id)) {
+        /** TODO: do we do anything here?**/
+    }
+}
+
+void Classifier::referencingReleased(ID id) {
+    Namespace::referencingReleased(id);
+    PackageableElement::referencingReleased(id);
+    TemplateableElement::referencingReleased(id);
+    m_attributes.elementReleased(id, &Classifier::getAttributes);
+    m_features.elementReleased(id, &Classifier::getFeatures);
+    m_generalizations.elementReleased(id, &Classifier::getGeneralizations);
+    m_generals.elementReleased(id, &Classifier::getGenerals);
+    m_inheritedMembers.elementReleased(id, &Classifier::getInheritedMembers);
+}
+
+void Classifier::referenceReindexed(ID oldID, ID newID) {
+    Namespace::referenceReindexed(oldID, newID);
+    PackageableElement::referenceReindexed(oldID, newID);
+    TemplateableElement::referenceReindexed(oldID, newID);
+    if (m_attributes.count(oldID)) {
+        m_attributes.reindex(oldID, newID, &Classifier::getAttributes);
+    }
+    if (m_generalizations.count(oldID)) {
+        m_generalizations.reindex(oldID, newID, &Classifier::getGeneralizations);
+    }
+    if (m_features.count(oldID)) {
+        m_features.reindex(oldID, newID, &Classifier::getFeatures);
+    }
+    if (m_generals.count(oldID)) {
+        m_generals.reindex(oldID, newID, &Classifier::getGenerals);
+    }
+    if (m_inheritedMembers.count(oldID)) {
+        m_inheritedMembers.reindex(oldID, newID, &Classifier::getInheritedMembers);
+    }
+}
+
+Classifier::Classifier() {
+    m_attributes.addProcedures.push_back(new AddAttributeFunctor(this));
+    m_attributes.removeProcedures.push_back(new RemoveAttributeFunctor(this));
+    m_generalizations.addProcedures.push_back(new AddGeneralizationFunctor(this));
+    m_generalizations.removeProcedures.push_back(new RemoveGeneralizationFunctor(this));
+    m_generalizations.addChecks.push_back(new CheckGeneralizationFunctor(this));
+    m_generals.addProcedures.push_back(new AddGeneralFunctor(this));
+    m_generals.removeProcedures.push_back(new RemoveGeneralFunctor(this));
+    m_features.addProcedures.push_back(new AddFeatureFunctor(this));
+    m_features.removeProcedures.push_back(new RemoveFeatureFunctor(this));
+    m_inheritedMembers.addProcedures.push_back(new AddInheritedMemberFunctor(this));
+    m_inheritedMembers.removeProcedures.push_back(new RemoveInheritedMemberFunctor(this));
+    m_members.addProcedures.push_back(new ClassifierAddMemberFunctor(this));
+    m_members.removeProcedures.push_back(new ClassifierRemoveMemberFunctor(this));
+}
+
+Classifier::~Classifier() {
+
+}
+
+Classifier::Classifier(const Classifier& clazz) : 
+Namespace(clazz), 
+PackageableElement(clazz), 
+NamedElement(clazz), 
+TemplateableElement(clazz), 
+Element(clazz) {
+    m_attributes = clazz.m_attributes;
+    m_attributes.addProcedures.clear();
+    m_attributes.addProcedures.push_back(new AddAttributeFunctor(this));
+    m_attributes.removeProcedures.clear();
+    m_attributes.removeProcedures.push_back(new RemoveAttributeFunctor(this));
+    m_generalizations = clazz.m_generalizations;
+    m_generalizations.addProcedures.clear();
+    m_generalizations.addProcedures.push_back(new AddGeneralizationFunctor(this));
+    m_generalizations.addChecks.clear();
+    m_generalizations.addChecks.push_back(new CheckGeneralizationFunctor(this));
+    m_generalizations.removeProcedures.clear();
+    m_generalizations.removeProcedures.push_back(new RemoveGeneralizationFunctor(this));
+    m_generals = clazz.m_generals;
+    m_generals.addProcedures.clear();
+    m_generals.addProcedures.push_back(new AddGeneralFunctor(this));
+    m_generals.removeProcedures.clear();
+    m_generals.removeProcedures.push_back(new RemoveGeneralFunctor(this));
+    m_features = clazz.m_features;
+    m_features.addProcedures.clear();
+    m_features.addProcedures.push_back(new AddFeatureFunctor(this));
+    m_features.removeProcedures.clear();
+    m_features.removeProcedures.push_back(new RemoveFeatureFunctor(this));
+    m_inheritedMembers = clazz.m_inheritedMembers;
+    m_inheritedMembers.addProcedures.clear();
+    m_inheritedMembers.addProcedures.push_back(new AddInheritedMemberFunctor(this));
+    m_inheritedMembers.removeProcedures.clear();
+    m_inheritedMembers.removeProcedures.push_back(new RemoveInheritedMemberFunctor(this));
+    m_members.addProcedures.push_back(new ClassifierAddMemberFunctor(this));
+    m_members.removeProcedures.push_back(new ClassifierRemoveMemberFunctor(this));
+}
+
+void Classifier::reindexName(string oldName, string newName) {
+    Namespace::reindexName(oldName, newName);
+}
+
 string Classifier::getName() {
     return Namespace::getName();
 }
@@ -370,32 +379,4 @@ bool Classifier::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void Classifier::restoreReleased(ID id, Element* released) {
-    Namespace::restoreReleased(id, released);
-    PackageableElement::restoreReleased(id, released);
-    if (m_attributes.count(id)) {
-        released->as<Property>().setClassifier(this);
-    }
-    if (m_features.count(id)) {
-        released->as<Feature>().setFeaturingClassifier(this);
-    }
-    if (m_generalizations.count(id)) {
-        released->as<Generalization>().setSpecific(this);
-    }
-    if (m_generals.count(id)) {
-        /** TODO: do we do anything here?**/
-    }
-}
-
-void Classifier::referencingReleased(ID id) {
-    Namespace::referencingReleased(id);
-    PackageableElement::referencingReleased(id);
-    TemplateableElement::referencingReleased(id);
-    m_attributes.elementReleased(id, &Classifier::getAttributes);
-    m_features.elementReleased(id, &Classifier::getFeatures);
-    m_generalizations.elementReleased(id, &Classifier::getGeneralizations);
-    m_generals.elementReleased(id, &Classifier::getGenerals);
-    m_inheritedMembers.elementReleased(id, &Classifier::getInheritedMembers);
 }

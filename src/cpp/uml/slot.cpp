@@ -25,17 +25,6 @@ void Slot::AddOwningInstanceProcedure::operator()(InstanceSpecification* el) con
     }
 }
 
-void Slot::reindexID(ID oldID, ID newID) {
-    /**if (!m_owningInstanceID.isNull()) {
-        if (!m_owningInstancePtr) {
-            m_owningInstancePtr = &m_manager->get<InstanceSpecification>(m_owningInstanceID);
-        }
-        m_owningInstancePtr->getSlots().reindex(oldID, newID);
-    }
-    
-    Element::reindexID(oldID, newID);**/
-}
-
 void Slot::restoreReleased(ID id, Element* released) {
     Element::restoreReleased(id, released);
 }

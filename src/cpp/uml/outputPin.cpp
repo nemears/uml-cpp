@@ -7,7 +7,7 @@ using namespace UML;
 void OutputPin::reindexID(ID oldID, ID newID) {
     if (!m_ownerID.isNull()) {
         if(getOwner()->isSubClassOf(ElementType::ACTION)) {
-            dynamic_cast<Action*>(getOwner())->getOutputs().reindex(oldID, newID);
+            dynamic_cast<Action*>(getOwner())->getOutputs().reindex(oldID, newID, &Action::getOutputs);
         }
     }
 

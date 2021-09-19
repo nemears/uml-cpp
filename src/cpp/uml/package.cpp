@@ -100,10 +100,10 @@ void Package::referenceReindexed(ID oldID, ID newID) {
         m_packageMerge.reindex(oldID, newID, &Package::getPackageMerge);
     }
     if (m_profileApplications.count(oldID)) {
-        m_profileApplications.reindex(oldID, newID);
+        m_profileApplications.reindex(oldID, newID, &Package::getProfileApplications);
     }
     if (m_ownedStereotypes.count(oldID)) {
-        m_ownedStereotypes.reindex(oldID, newID);
+        m_ownedStereotypes.reindex(oldID, newID, &Package::getOwnedStereotypes);
     }
 }
 

@@ -170,7 +170,7 @@ namespace UML {
             std::vector<AbstractSequenceFunctor<T>*> removeProcedures;
             std::vector<AbstractSequenceFunctor<T>*> removeChecks;
 
-            void reindex(ID oldID, ID newID) {
+            void internalReindex(ID oldID, ID newID) {
 
                 // m_data
                 T* temp = m_rep[oldID];
@@ -197,13 +197,13 @@ namespace UML {
                         if (!m_el->m_node->m_managerElementMemory) {
                             m_manager->aquire(oldID);
                         }
-                        (m_el->m_node->m_managerElementMemory->template as<U>().*signature)().reindex(oldID, newID);
+                        (m_el->m_node->m_managerElementMemory->template as<U>().*signature)().internalReindex(oldID, newID);
                         for (auto& copy : m_el->m_node->m_copies) {
-                            (copy->template as<U>().*signature)().reindex(oldID, newID);
+                            (copy->template as<U>().*signature)().internalReindex(oldID, newID);
                         }
                     }
                 } else {
-                    reindex(oldID, newID);
+                    internalReindex(oldID, newID);
                 }
             }
 

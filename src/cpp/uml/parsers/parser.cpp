@@ -145,150 +145,162 @@ template <class T =Element> T& parseScalar(YAML::Node node, ParserMetaData& data
 }
 
 Element* parseNode(YAML::Node node, ParserMetaData& data) {
+    Element* ret = 0;
     if (node["artifact"]) {
         Artifact& artifact = data.m_manager->create<Artifact>();
         parseArtifact(node["artifact"], artifact, data);
-        return &artifact;
+        ret = &artifact;
     }
     if (node["class"]) {
         Class& clazz = data.m_manager->create<Class>();
         parseClass(node["class"], clazz, data);
-        return &clazz;
+        ret = &clazz;
     }
 
     if (node["dataType"]) {
         DataType& dataType = data.m_manager->create<DataType>();
         parseDataType(node["dataType"], dataType, data);
-        return &dataType;
+        ret = &dataType;
     }
 
     if (node["enumeration"]) {
         Enumeration& enumeration = data.m_manager->create<Enumeration>();
         parseEnumeration(node["enumeration"], enumeration, data);
-        return &enumeration;
+        ret = &enumeration;
     }
 
     if (node["expression"]) {
         Expression& exp = data.m_manager->create<Expression>();
         parseExpression(node["expression"], exp, data); 
-        return &exp;
+        ret = &exp;
     }
 
     if (node["instanceSpecification"]) {
         InstanceSpecification& inst = data.m_manager->create<InstanceSpecification>();
         parseInstanceSpecification(node["instanceSpecification"], inst, data);
-        return &inst;
+        ret = &inst;
     }
 
     if (node["instanceValue"]) {
         InstanceValue& instVal = data.m_manager->create<InstanceValue>();
         parseInstanceValue(node["instanceValue"], instVal, data);
-        return &instVal;
+        ret = &instVal;
     }
 
     if (node["literalBool"]) {
         LiteralBool& lb = data.m_manager->create<LiteralBool>();
         parseLiteralBool(node["literalBool"], lb, data);
-        return &lb;
+        ret = &lb;
     }
 
     if (node["literalInt"]) {
         LiteralInt& li = data.m_manager->create<LiteralInt>();
         parseLiteralInt(node["literalInt"], li, data);
-        return &li;
+        ret = &li;
     }
 
     if (node["literalNull"]) {
         LiteralNull& ln = data.m_manager->create<LiteralNull>();
         parseTypedElement(node["literalNull"], ln, data);
-        return &ln;
+        ret = &ln;
     }
 
     if (node["literalReal"]) {
         LiteralReal& lr = data.m_manager->create<LiteralReal>();
         parseLiteralReal(node["literalReal"], lr, data);
-        return &lr;
+        ret = &lr;
     }
 
     if (node["literalString"]) {
         LiteralString& ls = data.m_manager->create<LiteralString>();
         parseLiteralString(node["literalString"], ls, data);
-        return &ls;
+        ret = &ls;
     }
 
     if (node["literalUnlimitedNatural"]) {
         LiteralUnlimitedNatural& ln = data.m_manager->create<LiteralUnlimitedNatural>();
         parseLiteralUnlimitedNatural(node["literalUnlimitedNatural"], ln, data);
-        return &ln;
+        ret = &ln;
     }
 
     if (node["model"]) {
         Model& model = data.m_manager->create<Model>();
         parsePackage(node["model"], model, data);
-        return &model;
+        ret = &model;
     }
 
     if (node["opaqueBehavior"]) {
         OpaqueBehavior& bhv = data.m_manager->create<OpaqueBehavior>();
         parseOpaqueBehavior(node["opaqueBehavior"], bhv, data);
-        return &bhv;
+        ret = &bhv;
     }
 
     if (node["operation"]) {
         Operation& op = data.m_manager->create<Operation>();
         parseOperation(node["operation"], op, data);
-        return &op;
+        ret = &op;
     }
 
     if (node["package"]) {
         Package& pckg = data.m_manager->create<Package>();
         parsePackage(node["package"], pckg, data);
-        return &pckg;
+        ret = &pckg;
     }
 
     if (node["packageMerge"]) {
         PackageMerge& packageMerge = data.m_manager->create<PackageMerge>();
         parsePackageMerge(node["packageMerge"], packageMerge, data);
-        return &packageMerge;
+        ret = &packageMerge;
     }
 
     if (node["parameter"]) {
         Parameter& param = data.m_manager->create<Parameter>();
         parseParameter(node["parameter"], param, data);
-        return &param;
+        ret = &param;
     }
 
     if (node["primitiveType"]) {
         PrimitiveType& type = data.m_manager->create<PrimitiveType>();
         parsePrimitiveType(node["primitiveType"], type, data);
-        return &type;
+        ret = &type;
     }
 
     if (node["profile"]) {
         Profile& profile = data.m_manager->create<Profile>();
         parsePackage(node["profile"], profile, data);
-        return &profile;
+        ret = &profile;
     }
 
     if (node["profileApplication"]) {
         ProfileApplication& profileApplication = data.m_manager->create<ProfileApplication>();
         parseProfileApplication(node["profileApplication"], profileApplication, data);
-        return &profileApplication;
+        ret = &profileApplication;
     }
 
     if (node["property"]) {
         Property& prop = data.m_manager->create<Property>();
         parseProperty(node["property"], prop, data);
-        return &prop;
+        ret = &prop;
     }
 
     if (node["stereotype"]) {
         Stereotype& stereotype = data.m_manager->create<Stereotype>();
         parseClass(node["stereotype"], stereotype, data);
-        return &stereotype;
+        ret = &stereotype;
     }
 
-    return 0;
+    if (ret && data.m_strategy == ParserStrategy::INDIVIDUAL) {
+        if (node["owningPackage"]) {
+            ID owningPackageID = ID::fromString(node["owningPackage"].as<string>());
+            if (data.m_manager->loaded(owningPackageID)) {
+                ret->as<PackageableElement>().setOwningPackage(data.m_manager->get<Package>(owningPackageID));
+            } else {
+                throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["owningPackage"]);
+            }
+        }
+    }
+
+    return ret;
 }
 
 Element* parseExternalAddToManager(ParserMetaData& data, string path) {
@@ -328,6 +340,7 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         }
     }
     if (newPath.empty() || (newPath.parent_path().compare(data.m_path) == 0 && newPath.filename().compare(data.m_fileName) == 0)) {
+        // TODO, emit owningPackage, class, etc...
         determineTypeAndEmit(emitter, el, data);
     } else {
         emitter << YAML::Value << newPath.filename().string();
@@ -336,6 +349,7 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
 }
 
 void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
+    emitter << YAML::BeginMap;
     switch(el.getElementType()) {
         case ElementType::ABSTRACTION : {
             emitter << YAML::BeginMap << YAML::Key << "abstraction" << YAML::Value << YAML::BeginMap;
@@ -444,7 +458,13 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             break;
         }
         case ElementType::PACKAGE : {
-            emitPackage(emitter, dynamic_cast<Package&>(el), data);
+            Package& pckg = el.as<Package>();
+            if (data.m_strategy != EmitterStrategy::WHOLE) {
+                if (pckg.hasOwningPackage()) {
+                    emitter << YAML::Key << "owningPackage" << pckg.getOwningPackageRef().getID().string();
+                }
+            }
+            emitPackage(emitter, pckg, data);
             break;
         }
         case ElementType::PACKAGE_MERGE : {
@@ -516,17 +536,18 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             break;
         }
     }
+    emitter << YAML::EndMap;
 }
 
 void emitElementDefenition(YAML::Emitter& emitter, ElementType eType, string yamlName, Element& el, EmitterMetaData& data) {
     if (el.getElementType() == eType) {
-        emitter << YAML::BeginMap << YAML::Key << yamlName << YAML::Value << YAML::BeginMap;
+        emitter << YAML::Key << yamlName << YAML::Value << YAML::BeginMap;
     }
 }
 
 void emitElementDefenitionEnd(YAML::Emitter& emitter, ElementType eType, Element& el) {
     if (el.getElementType() == eType) {
-        emitter << YAML::EndMap << YAML::EndMap;
+        emitter << YAML::EndMap;
     }
 }
 

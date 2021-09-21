@@ -42,8 +42,16 @@ namespace UML {
             PackageMerge(const PackageMerge& merge);
             virtual ~PackageMerge();
             Package* getReceivingPackage();
+            Package& getReceivingPackageRef();
+            ID getReceivingPackageID() const;
+            bool hasReceivingPackage() const;
+            void setReceivingPackage(Package& receive);
             void setReceivingPackage(Package* receive);
             Package* getMergedPackage();
+            Package& getMergedPackageRef();
+            ID getMergedPackageID() const;
+            bool hasMergedPackage() const;
+            void setMergedPackage(Package& merge);
             void setMergedPackage(Package* merge);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;

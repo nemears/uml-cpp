@@ -298,6 +298,14 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                 throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["owningPackage"]);
             }
         }
+        if (node["receivingPackage"]) {
+            ID receivingPackageID = ID::fromString(node["receivingPackage"].as<string>());
+            if (data.m_manager->loaded(receivingPackageID)) {
+                ret->as<PackageMerge>().setReceivingPackage(data.m_manager->get<Package>(receivingPackageID));
+            } else {
+                throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["receivingPackage"]);
+            }
+        }
     }
 
     return ret;
@@ -468,7 +476,13 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             break;
         }
         case ElementType::PACKAGE_MERGE : {
-            emitPackageMerge(emitter, el.as<PackageMerge>(), data);
+            PackageMerge& pckgMerge = el.as<PackageMerge>();
+            if (data.m_strategy != EmitterStrategy::WHOLE) {
+                if (pckgMerge.hasReceivingPackage()) {
+                    emitter << YAML::Key << "receivingPackage" << pckgMerge.getReceivingPackageID().string();
+                }
+            }
+            emitPackageMerge(emitter, pckgMerge, data);
             break;
         }
         case ElementType::PARAMETER : {

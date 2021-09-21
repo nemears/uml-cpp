@@ -85,7 +85,23 @@ Package* PackageMerge::getReceivingPackage() {
     return m_receivingPackage.get();
 }
 
+Package& PackageMerge::getReceivingPackageRef() {
+    return m_receivingPackage.getRef();
+}
+
+ID PackageMerge::getReceivingPackageID() const {
+    return m_receivingPackage.id();
+}
+
+bool PackageMerge::hasReceivingPackage() const {
+    return m_receivingPackage.has();
+}
+
 void PackageMerge::setReceivingPackage(Package* receiving) {
+    m_receivingPackage.set(receiving);
+}
+
+void PackageMerge::setReceivingPackage(Package& receiving) {
     m_receivingPackage.set(receiving);
 }
 
@@ -93,7 +109,23 @@ Package* PackageMerge::getMergedPackage() {
     return m_mergedPackage.get();
 }
 
+Package& PackageMerge::getMergedPackageRef() {
+    return m_mergedPackage.getRef();
+}
+
+ID PackageMerge::getMergedPackageID() const {
+    return m_mergedPackage.id();
+}
+
+bool PackageMerge::hasMergedPackage() const {
+    return m_mergedPackage.has();
+}
+
 void PackageMerge::setMergedPackage(Package* merge) {
+    m_mergedPackage.set(merge);
+}
+
+void PackageMerge::setMergedPackage(Package& merge) {
     m_mergedPackage.set(merge);
 }
 

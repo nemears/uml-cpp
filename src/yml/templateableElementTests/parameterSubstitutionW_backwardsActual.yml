@@ -6,8 +6,10 @@
     packagedElements:
       - class:
           templateSignature:
-            id: fwxRqHbsLGJ5FwcCaFBAGIP1Kp3x
+            templateSignature:
+              id: fwxRqHbsLGJ5FwcCaFBAGIP1Kp3x
       - class:
+          templateBinding:
             templateBinding:
               signature: fwxRqHbsLGJ5FwcCaFBAGIP1Kp3x
               parameterSubstitution:

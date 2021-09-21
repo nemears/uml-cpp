@@ -6,7 +6,8 @@
     ownedOperations:
       - operation:
           templateSignature:
-            ownedParameters:
-              - templateParameter:
-                  parameteredElement: B2dyPF44MATTZ02XsQwgcbeBsq&d
+            templateSignature:
+              ownedParameters:
+                - templateParameter:
+                    parameteredElement: B2dyPF44MATTZ02XsQwgcbeBsq&d
 ...

@@ -3,14 +3,16 @@
     packagedElements:
       - class:
           templateSignature:
-            id: t9DEpJVxrlACAQsPLxoHMRPPpDUq
-            ownedParameters:
-              - templateParameter:
-                  id: Yw0uEQ8ZDsgZx4bogVkuxvBL9CGR
+            templateSignature:
+              id: t9DEpJVxrlACAQsPLxoHMRPPpDUq
+              ownedParameters:
+                - templateParameter:
+                    id: Yw0uEQ8ZDsgZx4bogVkuxvBL9CGR
       - class:
           templateBinding:
-            signature: t9DEpJVxrlACAQsPLxoHMRPPpDUq
-            parameterSubstitution:
-              - templateParameterSubstitution:
-                  formal: Yw0uEQ8ZDsgZx4bogVkuxvBL9CGR
+            templateBinding:
+              signature: t9DEpJVxrlACAQsPLxoHMRPPpDUq
+              parameterSubstitution:
+                - templateParameterSubstitution:
+                    formal: Yw0uEQ8ZDsgZx4bogVkuxvBL9CGR
 ...

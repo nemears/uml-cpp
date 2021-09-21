@@ -352,9 +352,9 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
     emitter << YAML::BeginMap;
     switch(el.getElementType()) {
         case ElementType::ABSTRACTION : {
-            emitter << YAML::BeginMap << YAML::Key << "abstraction" << YAML::Value << YAML::BeginMap;
+            emitElementDefenition(emitter, ElementType::ABSTRACTION, "abstraction", el, data);
             emitDependency(emitter, el.as<Abstraction>(), data);
-            emitter << YAML::EndMap << YAML::EndMap;
+            emitElementDefenitionEnd(emitter, ElementType::ABSTRACTION, el);
             break;
         }
         case ElementType::ARTIFACT : {
@@ -402,9 +402,9 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             break;
         }
         case ElementType::EXTENSION_END : {
-            emitter << YAML::BeginMap << YAML::Key << "extensionEnd" << YAML::Value << YAML::BeginMap;
+            emitElementDefenition(emitter, ElementType::EXTENSION_END, "extensionEnd", el, data);
             emitProperty(emitter, el.as<ExtensionEnd>(), data);
-            emitter << YAML::EndMap << YAML::EndMap;
+            emitElementDefenitionEnd(emitter, ElementType::EXTENSION_END, el);
             break;
         }
         case ElementType::GENERALIZATION : {
@@ -424,9 +424,9 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             break;
         }
         case ElementType::LITERAL_NULL : {
-            emitter << YAML::BeginMap << YAML::Key << "literalNull" << YAML::Value << YAML::BeginMap;
+            emitElementDefenition(emitter, ElementType::LITERAL_NULL, "literalNull", el, data);
             emitTypedElement(emitter, dynamic_cast<TypedElement&>(el), data);
-            emitter << YAML::EndMap << YAML::EndMap;
+            emitElementDefenitionEnd(emitter, ElementType::LITERAL_NULL, el);
             break;
         }
         case ElementType::LITERAL_REAL : {
@@ -484,9 +484,9 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             break;
         }
         case ElementType::PROFILE : {
-            emitter << YAML::BeginMap << YAML::Key << "profile" << YAML::Value << YAML::BeginMap;
+            emitElementDefenition(emitter, ElementType::PROFILE, "profile", el, data);
             emitPackage(emitter, dynamic_cast<Profile&>(el), data);
-            emitter << YAML::EndMap << YAML::EndMap;
+            emitElementDefenitionEnd(emitter, ElementType::PROFILE, el);
             break;
         }
         case ElementType::PROFILE_APPLICATION : {
@@ -494,9 +494,9 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             break;
         }
         case ElementType::REALIZATION : {
-            emitter << YAML::BeginMap << YAML::Key << "realization" << YAML::Value << YAML::BeginMap;
+            emitElementDefenition(emitter, ElementType::REALIZATION, "realization", el, data);
             emitDependency(emitter, el.as<Realization>(), data);
-            emitter << YAML::EndMap << YAML::EndMap;
+            emitElementDefenitionEnd(emitter, ElementType::REALIZATION, el);
             break;
         }
         case ElementType::SLOT : {
@@ -504,9 +504,9 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             break;
         }
         case ElementType::STEREOTYPE : {
-            emitter << YAML::BeginMap << YAML::Key << "stereotype" << YAML::Value << YAML::BeginMap;
+            emitElementDefenition(emitter, ElementType::STEREOTYPE, "stereotype", el, data);
             emitClass(emitter, el.as<Stereotype>(), data);
-            emitter << YAML::EndMap << YAML::EndMap;
+            emitElementDefenitionEnd(emitter, ElementType::STEREOTYPE, el);
             break;
         }
         case ElementType::TEMPLATE_BINDING : {
@@ -526,9 +526,9 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             break;
         }
         case ElementType::USAGE : {
-            emitter << YAML::BeginMap << YAML::Key << "usage" << YAML::Value << YAML::BeginMap;
+            emitElementDefenition(emitter, ElementType::USAGE, "usage", el, data);
             emitDependency(emitter, el.as<Usage>(), data);
-            emitter << YAML::EndMap << YAML::EndMap;
+            emitElementDefenitionEnd(emitter, ElementType::USAGE, el);
             break;
         }
         default: {
@@ -1927,9 +1927,7 @@ void emitEnumerationLiteral(YAML::Emitter& emitter, EnumerationLiteral& literal,
 
     emitInstanceSpecification(emitter, literal, data);
 
-    if (literal.getElementType() == ElementType::ENUMERATION_LITERAL) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::ENUMERATION_LITERAL, literal);
 }
 
 void SetInstanceFunctor::operator()(Element& el) const {
@@ -2251,9 +2249,17 @@ void emitExpression(YAML::Emitter& emitter, Expression& exp, EmitterMetaData& da
 void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data) {
     if (node["templateSignature"]) {
         if (node["templateSignature"].IsMap()) {
-            TemplateSignature& signature = data.m_manager->create<TemplateSignature>();
-            parseTemplateSignature(node["templateSignature"], signature, data);
-            el.setOwnedTemplateSignature(&signature);
+            if (node["templateSignature"]["templateSignature"]) {
+                if (node["templateSignature"]["templateSignature"].IsMap()) {
+                    TemplateSignature& signature = data.m_manager->create<TemplateSignature>();
+                    parseTemplateSignature(node["templateSignature"]["templateSignature"], signature, data);
+                    el.setOwnedTemplateSignature(&signature);
+                } else {
+                    /** TODO work for mount**/
+                }
+            } else {
+                throw UmlParserException("Must specify templateSignature field before templateSignature definition", data.m_path.string(), node["templateSignature"]);
+            }
         } else {
             throw UmlParserException("Invalid node type fore templateSignature, must be map ", data.m_path.string(), node["templateSignature"]);
         }
@@ -2261,9 +2267,17 @@ void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMe
 
     if (node["templateBinding"]) {
         if (node["templateBinding"].IsMap()) {
-            TemplateBinding& binding = data.m_manager->create<TemplateBinding>();
-            parseTemplateBinding(node["templateBinding"], binding, data);
-            el.setTemplateBinding(&binding);
+            if (node["templateBinding"]["templateBinding"]) {
+                if (node["templateBinding"]["templateBinding"].IsMap()) {
+                    TemplateBinding& binding = data.m_manager->create<TemplateBinding>();
+                    parseTemplateBinding(node["templateBinding"]["templateBinding"], binding, data);
+                    el.setTemplateBinding(&binding);
+                } else {
+                    /** TODO: make mount ready **/
+                }
+            } else {
+                throw UmlParserException("Must specify templateBinding field before templateBinding definition", data.m_path.string(), node["templateBinding"]);
+            }
         } else {
             throw UmlParserException("Invalid YAML node for templateBinding definition, ", data.m_path.string(), node["templateBinding"]);
         }
@@ -2271,12 +2285,14 @@ void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMe
 }
 
 void emitTemplateableElement(YAML::Emitter& emitter, TemplateableElement& el, EmitterMetaData& data) {
-    if (el.getOwnedTemplateSignature() != 0) {
-        emit(emitter, *el.getOwnedTemplateSignature(), data);
+    if (el.hasOwnedTemplateSignature()) {
+        emitter << YAML::Key << "templateSignature" << YAML::Value;
+        emit(emitter, el.getOwnedTemplateSignatureRef(), data);
     }
 
-    if (el.getTemplateBinding() != 0) {
-        emit(emitter, *el.getTemplateBinding(), data);
+    if (el.hasTemplateBinding()) {
+        emitter << YAML::Key << "templateBinding" << YAML::Value;
+        emit(emitter, el.getTemplateBindingRef(), data);
     }
 }
 
@@ -2326,11 +2342,7 @@ void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, Parse
 
 void emitTemplateSignature(YAML::Emitter& emitter, TemplateSignature& signature, EmitterMetaData& data) {
 
-    // TODO change
-
-    if (signature.getElementType() == ElementType::TEMPLATE_SIGNATURE) {
-        emitter << /*YAML::BeginMap <<*/ YAML::Key << "templateSignature" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::TEMPLATE_SIGNATURE, "templateSignature", signature, data);
 
     emitElement(emitter, signature, data);
 
@@ -2352,9 +2364,7 @@ void emitTemplateSignature(YAML::Emitter& emitter, TemplateSignature& signature,
         emitter << YAML::EndSeq;
     }
 
-    if (signature.getElementType() == ElementType::TEMPLATE_SIGNATURE) {
-        emitter << YAML::EndMap ;//<< YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::TEMPLATE_SIGNATURE, signature);
 }
 
 void SetParameteredElementFunctor::operator()(Element& el) const {

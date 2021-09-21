@@ -4,11 +4,13 @@
     ownedOperations:
       - operation:
           templateSignature:
-            ownedParameters:
-              - templateParameter:
-                  id: fGtHlUWITxbIKyNFeKCXI4d_3EAc
+            templateSignature:
+              ownedParameters:
+                - templateParameter:
+                    id: fGtHlUWITxbIKyNFeKCXI4d_3EAc
       - operation:
           templateSignature:
-            parameters:
-              - fGtHlUWITxbIKyNFeKCXI4d_3EAc
+            templateSignature:
+              parameters:
+                - fGtHlUWITxbIKyNFeKCXI4d_3EAc
 ...

@@ -35,7 +35,6 @@ namespace UML {
                     void operator()(InstanceSpecification* el) const override;
             };
             void setManager(UmlManager* manager) override;
-            void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             class AddValueFunctor : public TemplateAbstractSequenceFunctor<ValueSpecification,Slot> {

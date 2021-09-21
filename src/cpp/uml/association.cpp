@@ -112,10 +112,6 @@ void Association::setManager(UmlManager* manager) {
     m_endType.m_manager = manager;
 }
 
-void Association::restoreReleased(ID id, Element* released) {
-    Classifier::restoreReleased(id, released);
-    Relationship::restoreReleased(id, released);
-}
 void Association::referencingReleased(ID id) {
     Classifier::referencingReleased(id);
     Relationship::referencingReleased(id);

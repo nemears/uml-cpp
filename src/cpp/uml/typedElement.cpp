@@ -16,10 +16,6 @@ void TypedElement::AddTypeProcedure::operator()(Type* el) const {
     }
 }
 
-void TypedElement::restoreReleased(ID id, Element* el) {
-    /** TODO: anything? **/
-}
-
 void TypedElement::referencingReleased(ID id) {
     if (m_type.id() == id) {
         m_type.release();

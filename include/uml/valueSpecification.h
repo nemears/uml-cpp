@@ -27,7 +27,6 @@ namespace UML {
                     void operator()(Slot* el) const override;
             };
             void reindexName(std::string oldName, std::string newName) override;
-            void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             ValueSpecification();

@@ -8,7 +8,6 @@
 namespace UML {
     class ObjectNode : public ActivityNode, public TypedElement {
         protected:
-            void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             ValueSpecification* upperBound;

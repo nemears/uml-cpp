@@ -53,7 +53,6 @@ namespace UML{
                     void operator()(Slot& el) const override;
             };
             void setManager(UmlManager* manager) override;
-            void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             InstanceSpecification();

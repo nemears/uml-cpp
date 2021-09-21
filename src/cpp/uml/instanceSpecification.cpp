@@ -174,13 +174,6 @@ bool InstanceSpecification::isSubClassOf(ElementType eType) const {
     return ret;
 }
 
-void InstanceSpecification::restoreReleased(ID id, Element* released) {
-    PackageableElement::restoreReleased(id, released);
-    if (m_classifier.id() == id) {
-        
-    }
-}
-
 void InstanceSpecification::referencingReleased(ID id) {
     PackageableElement::referencingReleased(id);
     if (m_classifier.id() == id) {

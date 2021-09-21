@@ -2,11 +2,6 @@
 
 using namespace UML;
 
-void ObjectNode::restoreReleased(ID id, Element* released) {
-    ActivityNode::restoreReleased(id, released);
-    TypedElement::restoreReleased(id, released);
-}
-
 void ObjectNode::referencingReleased(ID id) {
     ActivityNode::referencingReleased(id);
     TypedElement::referencingReleased(id);

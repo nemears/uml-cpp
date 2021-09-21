@@ -188,28 +188,6 @@ bool NamedElement::isSubClassOf(ElementType eType) const {
     return ret;
 }
 
-void NamedElement::restoreReleased(ID id, Element* released) {
-    Element::restoreReleased(id, released);
-    if (m_namespace.id() == id) {
-        if (!released->as<Namespace>().getOwnedMembers().count(m_id)) {
-            released->as<Namespace>().getOwnedMembers().add(*this);
-        }
-    }
-    if (m_memberNamespace->count(id)) {
-        if (!released->as<Namespace>().getMembers().count(m_id)) {
-            released->as<Namespace>().getMembers().add(*this);
-            /** TODO: rethink implementation, this might aquire a released element, but there may be no way around that**/
-            if (released->isSubClassOf(ElementType::CLASSIFIER) && m_visibility != VisibilityKind::PRIVATE) {
-                for (auto& general : released->as<Classifier>().getGenerals()) {
-                    if (general.getMembers().count(m_id)) {
-                        released->as<Classifier>().getInheritedMembers().add(*this);
-                    }
-                }
-            }
-        }
-    }
-}
-
 void NamedElement::referencingReleased(ID id) {
     Element::referencingReleased(id);
     m_memberNamespace->elementReleased(id, &NamedElement::getMemberNamespace);

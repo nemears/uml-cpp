@@ -35,7 +35,6 @@ namespace UML {
             };
             Singleton<Classifier, Generalization> m_specific = Singleton<Classifier, Generalization>(this);
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
             Generalization();
         public:

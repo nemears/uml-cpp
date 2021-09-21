@@ -23,7 +23,6 @@ namespace UML{
                     AddTypeProcedure(TypedElement* me) : AbstractSingletonProcedure<Type, TypedElement>(me) {};
                     void operator()(Type* el) const override;
             };
-            void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             TypedElement();

@@ -26,10 +26,6 @@ void RedefinableElement::setManager(UmlManager* manager) {
     m_redefinitionContext.m_manager = manager;
 }
 
-void RedefinableElement::restoreReleased(ID id, Element* released) {
-    NamedElement::restoreReleased(id, released);
-}
-
 void RedefinableElement::referencingReleased(ID id) {
     NamedElement::referencingReleased(id);
     m_redefinedElement.elementReleased(id, &RedefinableElement::getRedefinedElements);

@@ -105,18 +105,6 @@ bool Namespace::isSubClassOf(ElementType eType) const {
     return ret;
 }
 
-void Namespace::restoreReleased(ID id, Element* released) {
-    NamedElement::restoreReleased(id, released);
-    if (m_ownedMembers.count(id)) {
-        released->as<NamedElement>().setNamespace(this);
-    }
-    if (m_members.count(id)) {
-        if (!released->as<NamedElement>().m_memberNamespace->count(m_id)) {
-            released->as<NamedElement>().m_memberNamespace->add(*this);
-        }
-    }
-}
-
 void Namespace::referencingReleased(ID id) {
     NamedElement::referencingReleased(id);
     m_ownedMembers.elementReleased(id, &Namespace::getOwnedMembers);

@@ -2,12 +2,6 @@
 
 using namespace UML;
 
-void StructuralFeature::restoreReleased(ID id, Element* el) {
-    Feature::restoreReleased(id, el);
-    TypedElement::restoreReleased(id, el);
-    MultiplicityElement::restoreReleased(id, el);
-}
-
 void StructuralFeature::referencingReleased(ID id) {
     Feature::referencingReleased(id);
     TypedElement::referencingReleased(id);

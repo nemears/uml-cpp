@@ -25,10 +25,6 @@ void Slot::AddOwningInstanceProcedure::operator()(InstanceSpecification* el) con
     }
 }
 
-void Slot::restoreReleased(ID id, Element* released) {
-    Element::restoreReleased(id, released);
-}
-
 void Slot::referencingReleased(ID id) {
     Element::referencingReleased(id);
     if (m_definingFeature.id() == id) {

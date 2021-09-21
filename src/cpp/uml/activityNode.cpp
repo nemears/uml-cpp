@@ -24,11 +24,6 @@ void ActivityNode::setManager(UmlManager* manager) {
     m_incoming.m_manager = manager;
 }
 
-void ActivityNode::restoreReleased(ID id, Element* released) {
-    RedefinableElement::restoreReleased(id, released);
-    /** TODO: anythin? **/
-}
-
 void ActivityNode::referencingReleased(ID id) {
     RedefinableElement::referencingReleased(id);
     if (m_activity.id() == id) {

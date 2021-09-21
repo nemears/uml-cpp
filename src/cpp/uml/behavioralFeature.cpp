@@ -146,11 +146,6 @@ bool BehavioralFeature::isSubClassOf(ElementType eType) const {
     return ret;
 }
 
-void BehavioralFeature::restoreReleased(ID id, Element* released) {
-    Namespace::restoreReleased(id, released);
-    Feature::restoreReleased(id, released);
-}
-
 void BehavioralFeature::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     Feature::referencingReleased(id);

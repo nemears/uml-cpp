@@ -88,10 +88,6 @@ void DataType::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
-void DataType::restoreReleased(ID id, Element* released) {
-    Classifier::restoreReleased(id, released);
-}
-
 void DataType::referencingReleased(ID id) {
     if (m_ownedAttribute.count(id)) {
         m_ownedAttribute.elementReleased(id, &DataType::getOwnedAttribute);

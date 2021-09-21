@@ -67,17 +67,6 @@ void Class::setManager(UmlManager* manager) {
     m_nestedClassifiers.m_manager = manager;
 }
 
-void Class::restoreReleased(ID id, Element* released) {
-    StructuredClassifier::restoreReleased(id, released);
-    BehavioredClassifier::restoreReleased(id, released);
-    if (m_ownedAttributes.count(id)) {
-        released->as<Property>().setClass(this);
-    }
-    if (m_ownedOperations.count(id)) {
-        released->as<Operation>().setClass(this);
-    }
-}
-
 void Class::referencingReleased(ID id) {
     StructuredClassifier::referencingReleased(id);
     m_ownedOperations.elementReleased(id, &Class::getOwnedOperations);

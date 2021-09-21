@@ -217,23 +217,6 @@ void Classifier::setManager(UmlManager* manager) {
     m_features.m_manager = manager;
 }
 
-void Classifier::restoreReleased(ID id, Element* released) {
-    Namespace::restoreReleased(id, released);
-    PackageableElement::restoreReleased(id, released);
-    if (m_attributes.count(id)) {
-        released->as<Property>().setClassifier(this);
-    }
-    if (m_features.count(id)) {
-        released->as<Feature>().setFeaturingClassifier(this);
-    }
-    if (m_generalizations.count(id)) {
-        released->as<Generalization>().setSpecific(this);
-    }
-    if (m_generals.count(id)) {
-        /** TODO: do we do anything here?**/
-    }
-}
-
 void Classifier::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     PackageableElement::referencingReleased(id);

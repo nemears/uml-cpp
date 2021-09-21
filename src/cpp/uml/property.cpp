@@ -228,10 +228,6 @@ void Property::setManager(UmlManager* manager) {
     m_redefinedProperties.m_manager = manager;
 }
 
-void Property::restoreReleased(ID id, Element* released) {
-    StructuralFeature::restoreReleased(id, released);
-}
-
 void Property::referencingReleased(ID id) {
     StructuralFeature::referencingReleased(id);
     if (m_defaultValue.id() == id) {

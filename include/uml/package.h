@@ -60,7 +60,6 @@ namespace UML {
                     void operator()(Stereotype& el) const override;
             };
             void setManager(UmlManager* manager) override;
-            void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             Package();

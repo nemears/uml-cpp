@@ -85,15 +85,6 @@ bool Feature::isSubClassOf(ElementType eType) const {
     return ret;
 }
 
-void Feature::restoreReleased(ID id, Element* released) {
-    RedefinableElement::restoreReleased(id, released);
-    if (m_featuringClassifier.id() == id) {
-        if (!released->as<Classifier>().getFeatures().count(id)) {
-            released->as<Classifier>().getFeatures().add(*this);
-        }
-    }
-}
-
 void Feature::referencingReleased(ID id) {
     RedefinableElement::referencingReleased(id);
     if (m_featuringClassifier.id() == id) {

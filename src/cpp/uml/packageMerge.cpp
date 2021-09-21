@@ -33,10 +33,6 @@ void PackageMerge::AddMergedPackageProcedure::operator()(Package* el) const {
     }
 }
 
-void PackageMerge::restoreReleased(ID id, Element* released) {
-    DirectedRelationship::restoreReleased(id, released);
-}
-
 void PackageMerge::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
     if (m_mergedPackage.id() == id) {

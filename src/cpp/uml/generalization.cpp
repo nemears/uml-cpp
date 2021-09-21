@@ -97,10 +97,6 @@ void Generalization::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
-void Generalization::restoreReleased(ID id, Element* released) {
-    DirectedRelationship::restoreReleased(id, released);
-}
-
 void Generalization::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
     if (m_general.id() == id) {

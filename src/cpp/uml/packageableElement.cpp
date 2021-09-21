@@ -75,10 +75,6 @@ bool PackageableElement::isSubClassOf(ElementType eType) const {
     return ret;
 }
 
-void PackageableElement::restoreReleased(ID id, Element* released) {
-    Element::restoreReleased(id, released);
-}
-
 void PackageableElement::referencingReleased(ID id) {
     Element::referencingReleased(id);
     if (m_owningPackage.id() == id) {

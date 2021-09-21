@@ -8,7 +8,6 @@
 namespace UML {
     class StructuralFeature : virtual public TypedElement, public MultiplicityElement, public Feature {
         protected:
-            void restoreReleased(ID id, Element* released) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID);
             StructuralFeature(){};

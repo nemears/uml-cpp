@@ -214,11 +214,6 @@ bool ActivityEdge::isSubClassOf(ElementType eType) const {
     return ret;
 }
 
-void ActivityEdge::restoreReleased(ID id, Element* released) {
-    RedefinableElement::restoreReleased(id, released);
-    /** TODO: do anythin? **/
-}
-
 void ActivityEdge::referencingReleased(ID id) {
     if (m_activity.id() == id) {
         m_activity.release();

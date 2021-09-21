@@ -648,12 +648,6 @@ bool Element::isSameOrNull(ID id, Element* el) {
     }
 }
 
-void Element::restoreReleased(ID id, Element* el) {
-    if (m_ownedElements->count(id)) {
-        el->setOwner(this);
-    }
-}
-
 void Element::referencingReleased(ID id) {
     if (m_ownerID == id) {
         m_ownerPtr = 0;

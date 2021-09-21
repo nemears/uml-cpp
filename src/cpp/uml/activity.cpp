@@ -55,11 +55,6 @@ void Activity::setManager(UmlManager* manager) {
     m_edges.m_manager = manager;
 }
 
-void Activity::restoreReleased(ID id, Element* released) {
-    Behavior::restoreReleased(id, released);
-    /**TODO: restore nodes and edges **/
-}
-
 void Activity::referencingReleased(ID id) {
     Behavior::referencingReleased(id);
     m_nodes.elementReleased(id, &Activity::getNodes);

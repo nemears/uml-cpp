@@ -185,19 +185,6 @@ bool Package::isSubClassOf(ElementType eType) const {
     return ret;
 }
 
-void Package::restoreReleased(ID id, Element* released) {
-    Namespace::restoreReleased(id, released);
-    if (m_packagedElements.count(id)) {
-        released->as<PackageableElement>().setOwningPackage(this);
-    }
-    if (m_packageMerge.count(id)) {
-        released->as<PackageMerge>().setReceivingPackage(this);
-    }
-    if (m_profileApplications.count(id)) {
-        released->as<ProfileApplication>().setApplyingPackage(this);
-    }
-}
-
 void Package::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     m_packagedElements.elementReleased(id, &Package::getPackagedElements);

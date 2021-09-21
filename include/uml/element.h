@@ -166,7 +166,6 @@ namespace UML {
             Sequence<InstanceSpecification>* m_appliedStereotype;
             void setOwner(Element* el);
             static bool isSameOrNull(ID id, Element* el);
-            virtual void restoreReleased(ID id, Element* released);
             virtual void referencingReleased(ID id);
             void setReference(Element* referencing);
             void removeReference(ID referencing);

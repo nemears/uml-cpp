@@ -78,10 +78,6 @@ void Operation::reindexName(string oldName, string newName) {
     Feature::reindexName(oldName, newName);
 }
 
-void Operation::restoreReleased(ID id, Element* released) {
-    BehavioralFeature::restoreReleased(id, released);
-}
-
 void Operation::referencingReleased(ID id) {
     BehavioralFeature::referencingReleased(id);
     if (m_type.id() == id) {

@@ -42,11 +42,13 @@ namespace UML {
             virtual ~ProfileApplication();
             Profile* getAppliedProfile();
             Profile& getAppliedProfileRef();
+            ID getAppliedProfileID() const;
             bool hasAppliedProfile() const;
             void setAppliedProfile(Profile& profile);
             void setAppliedProfile(Profile* profile);
             Package* getApplyingPackage();
             Package& getApplyingPackageRef();
+            ID getApplyingPackageID() const;
             bool hasApplyingPackage() const;
             void setApplyingPackage(Package* pckg);
             void setApplyingPackage(Package& pckg);

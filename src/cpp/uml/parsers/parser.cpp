@@ -306,6 +306,14 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                 throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["receivingPackage"]);
             }
         }
+        if (node["applyingPackage"]) {
+            ID applyingPackageID = ID::fromString(node["applyingPackage"].as<string>());
+            if (data.m_manager->loaded(applyingPackageID)) {
+                ret->as<ProfileApplication>().setApplyingPackage(data.m_manager->get<Package>(applyingPackageID));
+            } else {
+                throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["applyingPackage"]);
+            }
+        }
     }
 
     return ret;
@@ -504,7 +512,13 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             break;
         }
         case ElementType::PROFILE_APPLICATION : {
-            emitProfileApplication(emitter, el.as<ProfileApplication>(), data);
+            ProfileApplication& profileApplication = el.as<ProfileApplication>();
+            if (data.m_strategy != EmitterStrategy::WHOLE) {
+                if (profileApplication.hasApplyingPackage()) {
+                    emitter << YAML::Key << "applyingPackage" << YAML::Value << profileApplication.getApplyingPackageID().string();
+                }
+            }
+            emitProfileApplication(emitter, profileApplication, data);
             break;
         }
         case ElementType::REALIZATION : {

@@ -89,6 +89,10 @@ Profile& ProfileApplication::getAppliedProfileRef() {
     return m_appliedProfile.getRef();
 }
 
+ID ProfileApplication::getAppliedProfileID() const {
+    return m_appliedProfile.id();
+}
+
 bool ProfileApplication::hasAppliedProfile() const {
     return m_appliedProfile.has();
 }
@@ -107,6 +111,10 @@ Package* ProfileApplication::getApplyingPackage() {
 
 Package& ProfileApplication::getApplyingPackageRef() {
     return m_applyingPackage.getRef();
+}
+
+ID ProfileApplication::getApplyingPackageID() const {
+    return m_applyingPackage.id();
 }
 
 bool ProfileApplication::hasApplyingPackage() const {

@@ -461,7 +461,7 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             Package& pckg = el.as<Package>();
             if (data.m_strategy != EmitterStrategy::WHOLE) {
                 if (pckg.hasOwningPackage()) {
-                    emitter << YAML::Key << "owningPackage" << pckg.getOwningPackageRef().getID().string();
+                    emitter << YAML::Key << "owningPackage" << pckg.getOwningPackageID().string();
                 }
             }
             emitPackage(emitter, pckg, data);
@@ -552,15 +552,11 @@ void emitElementDefenitionEnd(YAML::Emitter& emitter, ElementType eType, Element
 }
 
 void emitModel(YAML::Emitter& emitter, Model& model, EmitterMetaData& data) {
-    if (model.getElementType() == ElementType::MODEL) {
-        emitter << YAML::BeginMap << YAML::Key << "model" << YAML::Value << YAML::BeginMap;
-    }
+    emitElementDefenition(emitter, ElementType::MODEL, "model", model, data);
 
     emitPackage(emitter, model, data);
 
-    if (model.getElementType() == ElementType::MODEL) {
-        emitter << YAML::EndMap << YAML::EndMap;
-    }
+    emitElementDefenitionEnd(emitter, ElementType::MODEL, model);
 }
 
 void AddAppliedStereotypeFunctor::operator()(Element& el) const {

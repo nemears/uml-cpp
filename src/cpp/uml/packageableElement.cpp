@@ -45,6 +45,10 @@ Package& PackageableElement::getOwningPackageRef() {
     return m_owningPackage.getRef();
 }
 
+ID PackageableElement::getOwningPackageID() const {
+    return m_owningPackage.id();
+}
+
 bool PackageableElement::hasOwningPackage() const {
     return m_owningPackage.has();
 }

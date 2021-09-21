@@ -31,6 +31,7 @@ namespace UML {
             virtual ~PackageableElement() {};
             Package* getOwningPackage();
             Package& getOwningPackageRef();
+            ID getOwningPackageID() const;
             bool hasOwningPackage() const;
             void setOwningPackage(Package& package);
             void setOwningPackage(Package* package);

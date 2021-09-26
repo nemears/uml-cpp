@@ -119,12 +119,14 @@ void UmlManager::mount(string path) {
     }
 }
 
-void UmlManager::aquire(ID id) {
+Element* UmlManager::aquire(ID id) {
     if (!m_mountBase.empty()) {
         Parsers::ParserMetaData data(this);
-        data.m_path = m_graph[id].m_mountPath;
+        data.m_path = m_mountBase / "mount" / (id.string() + ".yml");//m_graph[id].m_mountPath;
         data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-        m_graph[id].m_managerElementMemory = Parsers::parse(data);
+        Element* ret = Parsers::parse(data);
+        m_graph[id].m_managerElementMemory = ret;
+        return ret;
     } else {
         throw ManagerNotMountedException();
     }
@@ -150,7 +152,7 @@ void UmlManager::release(Element& el) {
                 e.second->m_managerElementMemory->referencingReleased(id);
             }
         }
-        node->m_managerElementMemory = 0;
+        m_graph.erase(id);
     } else {
         throw ManagerNotMountedException();
     }

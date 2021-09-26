@@ -649,6 +649,9 @@ bool Element::isSameOrNull(ID id, Element* el) {
 }
 
 void Element::referencingReleased(ID id) {
+    if (m_node->m_references.count(id)) {
+        m_node->m_references[id] = 0;
+    }
     if (m_ownerID == id) {
         m_ownerPtr = 0;
     }

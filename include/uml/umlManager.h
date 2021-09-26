@@ -103,6 +103,10 @@ namespace UML {
                 if (!theID.isNull()) {
                     if (me->m_node) {
                         if (me->m_node->m_references.count(theID)) {
+                            if (!me->m_node->m_references[theID]) {
+                                Element* aquired = aquire(theID);
+                                me->m_node->m_references[theID] = aquired->m_node;
+                            }
                             if (!me->m_node->m_references[theID]->m_managerElementMemory) {
                                 aquire(theID);
                             }
@@ -111,7 +115,9 @@ namespace UML {
                             throw ManagerStateException();
                         }
                     } else {
-                        throw ManagerStateException();
+                        aquire(theID);
+                        return  dynamic_cast<T*>(me->m_node->m_references[theID]->m_managerElementMemory);
+                        //throw ManagerStateException();
                     }
                 }
                 return 0;
@@ -120,6 +126,9 @@ namespace UML {
             UmlManager();
             ~UmlManager();
             template <class T = Element> T& get(ID id) {
+                if (!m_graph.count(id)) {
+                    aquire(id);
+                }
                 if (!m_graph[id].m_managerElementMemory) {
                     aquire(id);
                 }
@@ -154,7 +163,7 @@ namespace UML {
             // WARN: unfinished
             // NOTE: I want to go away from key pair access, and efficiently traverse the model tree to find the id
             // I think performance can be improved a lot by going in that direction 
-            void aquire(ID id);
+            Element* aquire(ID id);
             void release(ID id);
             void release(Element& el);
             /**

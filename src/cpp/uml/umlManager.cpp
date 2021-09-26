@@ -94,21 +94,25 @@ void UmlManager::reindex(ID oldID, ID newID) {
             copy->m_node = newDisc;
         }
         m_graph.erase(oldID);
+        if (!m_mountBase.empty()) {
+            filesystem::remove(m_mountBase / "mount" / (oldID.string() + ".yml"));
+            /** Should we write to new file now?**/
+        }
     }
 }
 
-void UmlManager::setElementAndChildrenMount(filesystem::path parentPath, Element& el) {
-    m_graph[el.getID()].m_mountPath = (parentPath / (el.getID().string() + ".yml")).string();
-    for (auto& child : el.getOwnedElements()) {
-        setElementAndChildrenMount(parentPath, child);
-    }
+void UmlManager::addToMount(Element& el) {
+    Parsers::EmitterMetaData data = { m_mountBase / filesystem::path("mount"),
+                                         Parsers::EmitterStrategy::COMPOSITE,
+                                         el.getID().string() + ".yml",
+                                         this };
+    Parsers::emit(data);
 }
 
 void UmlManager::mount(string path) {
     m_mountBase = path;
     if (m_root) {
         filesystem::create_directories(path / filesystem::path("mount"));
-        setElementAndChildrenMount(path / filesystem::path("mount"), *m_root);
         Parsers::EmitterMetaData data = {path / filesystem::path("mount"), 
                                          Parsers::EmitterStrategy::COMPOSITE, 
                                          m_root->getID().string() + ".yml",
@@ -138,10 +142,10 @@ void UmlManager::release(ID id) {
 
 void UmlManager::release(Element& el) {
     if (!m_mountBase.empty()) {
-        Parsers::EmitterMetaData data = {filesystem::path(el.m_node->m_mountPath).parent_path(),
+        Parsers::EmitterMetaData data = {m_mountBase / "mount",
                                          Parsers::EmitterStrategy::INDIVIDUAL,
-                                         filesystem::path(el.m_node->m_mountPath).filename().string(), this};
-        Parsers::emitToFile(*el.m_node->m_managerElementMemory, data, data.m_path.string(), data.m_fileName);
+                                         el.getID().string() + ".yml", this};
+         Parsers::emitToFile(*el.m_node->m_managerElementMemory, data, data.m_path.string(), data.m_fileName);
         ManagerNode* node = el.m_node;
         ID id = el.getID();
         if (node->m_managerElementMemory) {
@@ -151,6 +155,11 @@ void UmlManager::release(Element& el) {
             if (e.second->m_managerElementMemory) {
                 e.second->m_managerElementMemory->referencingReleased(id);
             }
+        }
+        for (auto& copy : node->m_copies) {
+            // TODO show warning, bad practice to release without destroying all copies
+            // effecctively dereferences the copies from the manager
+            copy->setManager(0);
         }
         m_graph.erase(id);
     } else {

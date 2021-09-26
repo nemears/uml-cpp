@@ -64,7 +64,7 @@ namespace UML {
     struct ManagerNode {
         Element* m_managerElementMemory = 0;
         std::string m_path;
-        std::string m_mountPath;
+        //std::string m_mountPath;
         std::unordered_map<ID, ManagerNode*> m_references;
         std::unordered_map<ID, size_t> m_referenceCount;
         std::vector<ID> m_referenceOrder;
@@ -96,7 +96,6 @@ namespace UML {
             Model* m_model;
             Element* m_root;
             void clear();
-            void setElementAndChildrenMount(std::filesystem::path parentPath, Element& el);
             /** Using this get is faster than the get<T>(ID id) method (usually) because it will base it's
              *  search on a particular element, only for internal api use where trying to set and return a ptr**/
             template <class T = Element> T* get(Element* me, ID theID) {
@@ -122,6 +121,7 @@ namespace UML {
                 }
                 return 0;
             }
+            void addToMount(Element& el);
         public:
             UmlManager();
             ~UmlManager();

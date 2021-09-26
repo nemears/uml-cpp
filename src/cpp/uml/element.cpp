@@ -159,14 +159,17 @@ Element::~Element() {
     delete m_directedRelationships;
     delete m_ownedComments;
     delete m_appliedStereotype;
-    if (m_manager) {
-        if (m_node->m_copies.count(this)) {
-            m_node->m_copies.erase(this);
+    if (m_copiedElementFlag) {
+        if (m_manager) {
+            if (m_node->m_copies.count(this)) {
+                m_node->m_copies.erase(this);
+            }
         }
     }
 }
 
 Element::Element(const Element& el) {
+    m_copiedElementFlag = true;
     m_id = el.m_id;
     m_manager = el.m_manager;
     m_node = el.m_node;
@@ -596,9 +599,8 @@ void Element::setOwner(Element* owner) {
         if (m_manager) {
             setReference(owner);
             // if the owner is mounted we need to mount
-            if (!m_manager->m_graph[m_ownerID].m_mountPath.empty()) {
-                m_manager->setElementAndChildrenMount(filesystem::path(m_manager->m_graph[m_ownerID].m_mountPath).parent_path(), 
-                                                      *m_manager->m_graph[m_id].m_managerElementMemory);
+            if (!m_manager->m_mountBase.empty()) {
+                m_manager->addToMount(*this);
             }
         }
         if (!owner->getOwnedElements().count(m_id)) {

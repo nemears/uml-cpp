@@ -24,6 +24,8 @@ void StructuredClassifier::AddOwnedAttributeFunctor::operator()(Property& el) co
     if (el.isComposite()) {
         m_el->getParts().add(el);
     }
+
+    updateCopiedSequenceAddedTo(el, &StructuredClassifier::getOwnedAttributes);
 }
 
 void StructuredClassifier::RemoveOwnedAttributeFunctor::operator()(Property& el) const {
@@ -46,18 +48,29 @@ void StructuredClassifier::RemoveOwnedAttributeFunctor::operator()(Property& el)
     if (m_el->getParts().count(el.getID())) {
         m_el->getParts().remove(el);
     }
+    updateCopiedSequenceRemovedFrom(el, &StructuredClassifier::getOwnedAttributes);
 }
 
 void StructuredClassifier::AddRoleFunctor::operator()(ConnectableElement& el) const {
     if (!m_el->getMembers().count(el.getID())) {
         m_el->getMembers().add(el);
     }
+    updateCopiedSequenceAddedTo(el, &StructuredClassifier::getRole);
 }
 
 void StructuredClassifier::RemoveRoleFunctor::operator()(ConnectableElement& el) const {
     if (m_el->getMembers().count(el.getID())) {
         m_el->getMembers().remove(el);
     }
+    updateCopiedSequenceRemovedFrom(el, &StructuredClassifier::getRole);
+}
+
+void StructuredClassifier::AddPartFunctor::operator()(Property& el) const {
+    updateCopiedSequenceAddedTo(el, &StructuredClassifier::getParts);
+}
+
+void StructuredClassifier::RemovePartFunctor::operator()(Property& el) const {
+    updateCopiedSequenceRemovedFrom(el, &StructuredClassifier::getParts);
 }
 
 void StructuredClassifier::setManager(UmlManager* manager) {
@@ -85,6 +98,8 @@ StructuredClassifier::StructuredClassifier() {
     m_ownedAttributes.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
     m_role.addProcedures.push_back(new AddRoleFunctor(this));
     m_role.removeProcedures.push_back(new RemoveRoleFunctor(this));
+    m_parts.addProcedures.push_back(new AddPartFunctor(this));
+    m_parts.removeProcedures.push_back(new RemovePartFunctor(this));
 }
 
 StructuredClassifier::StructuredClassifier(const StructuredClassifier& clazz) : Classifier(clazz) {
@@ -102,6 +117,10 @@ StructuredClassifier::StructuredClassifier(const StructuredClassifier& clazz) : 
     m_role.m_el = this;
     m_parts = clazz.m_parts;
     m_parts.m_el = this;
+    m_parts.addProcedures.clear();
+    m_parts.removeProcedures.clear();
+    m_parts.addProcedures.push_back(new AddPartFunctor(this));
+    m_parts.removeProcedures.push_back(new RemovePartFunctor(this));
 }
 
 StructuredClassifier::~StructuredClassifier() {

@@ -32,6 +32,16 @@ namespace UML {
                     RemoveRoleFunctor(StructuredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(ConnectableElement& el) const override;
             };
+            class AddPartFunctor : public TemplateAbstractSequenceFunctor<Property, StructuredClassifier> {
+                public:
+                    AddPartFunctor(StructuredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
+            };
+            class RemovePartFunctor : public TemplateAbstractSequenceFunctor<Property, StructuredClassifier> {
+                public:
+                    RemovePartFunctor(StructuredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(Property& el) const override;
+            };
             void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID);

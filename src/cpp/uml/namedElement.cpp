@@ -21,6 +21,9 @@ void NamedElement::RemoveNamespaceProcedures::operator()(Namespace* el) const {
     if (el->getMembers().count(m_me->getID())) {
         el->getMembers().internalRemove(*m_me);
     }
+    if (m_me->getMemberNamespace().count(*el)) {
+        m_me->getMemberNamespace().remove(*el);
+    }
     if (m_me->getOwnerID() == el->getID()) {
         m_me->setOwner(0);
     }
@@ -29,6 +32,9 @@ void NamedElement::RemoveNamespaceProcedures::operator()(Namespace* el) const {
 void NamedElement::AddNamespaceProcedures::operator()(Namespace* el) const {
     if (!el->getOwnedMembers().count(m_me->getID())) {
         el->getOwnedMembers().add(*m_me);
+    }
+    if (!m_me->getMemberNamespace().count(*el)) {
+        m_me->getMemberNamespace().add(*el);
     }
     if (m_me->getOwnerID() != el->getID()) {
         m_me->setOwner(el);

@@ -139,6 +139,8 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
     ASSERT_EQ(c2->getNamespace(), &p);
     ASSERT_EQ(c2->getOwningPackage(), &p);
     ASSERT_EQ(&p.getOwnedElements().front(), c2);
+    ASSERT_EQ(p.getMembers().size(), 2);
+    ASSERT_EQ(p.getMembers().front(), *c2);
     ASSERT_EQ(&p.getMembers().front(), c2);
     ASSERT_EQ(&p.getPackagedElements().front(), c2);
     ASSERT_NO_THROW(m.release(p.getID()));

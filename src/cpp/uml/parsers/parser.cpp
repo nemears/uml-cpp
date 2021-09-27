@@ -340,19 +340,17 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             break;
         }
         case EmitterStrategy::INDIVIDUAL : {
-            if (data.m_path != data.getMountPath(el.getID()).parent_path()) {
-                newPath = data.getMountPath(el.getID());
-                emitter << YAML::Value << newPath.filename().string();
-                return;
-            }
+            newPath = data.m_path / (el.getID().string() + ".yml");
+            break;
         }
     }
     if (newPath.empty() || (newPath.parent_path().compare(data.m_path) == 0 && newPath.filename().compare(data.m_fileName) == 0)) {
-        // TODO, emit owningPackage, class, etc...
         determineTypeAndEmit(emitter, el, data);
     } else {
         emitter << YAML::Value << newPath.filename().string();
-        emitToFile(el, data, newPath.parent_path().string(), newPath.filename().string());
+        if (data.m_strategy == EmitterStrategy::WHOLE) {
+            emitToFile(el, data, newPath.parent_path().string(), newPath.filename().string());
+        }
     }
 }
 

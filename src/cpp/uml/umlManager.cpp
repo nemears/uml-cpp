@@ -108,7 +108,7 @@ void UmlManager::addToMount(Element& el) {
                                          el.getID().string() + ".yml",
                                          this };
         el.m_node->m_mountedFlag = true;
-        Parsers::emit(data);
+        Parsers::emitToFile(el, data, data.m_path.string(), data.m_fileName);
         for (auto& child : el.getOwnedElements()) {
             addToMount(child);
         }

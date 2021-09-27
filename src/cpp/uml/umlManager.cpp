@@ -102,22 +102,24 @@ void UmlManager::reindex(ID oldID, ID newID) {
 }
 
 void UmlManager::addToMount(Element& el) {
-    Parsers::EmitterMetaData data = { m_mountBase / filesystem::path("mount"),
-                                         Parsers::EmitterStrategy::COMPOSITE,
+    if (!el.m_node->m_mountedFlag) {
+        Parsers::EmitterMetaData data = { m_mountBase / filesystem::path("mount"),
+                                         Parsers::EmitterStrategy::INDIVIDUAL,
                                          el.getID().string() + ".yml",
                                          this };
-    Parsers::emit(data);
+        el.m_node->m_mountedFlag = true;
+        Parsers::emit(data);
+        for (auto& child : el.getOwnedElements()) {
+            addToMount(child);
+        }
+    }
 }
 
 void UmlManager::mount(string path) {
     m_mountBase = path;
     if (m_root) {
         filesystem::create_directories(path / filesystem::path("mount"));
-        Parsers::EmitterMetaData data = {path / filesystem::path("mount"), 
-                                         Parsers::EmitterStrategy::COMPOSITE, 
-                                         m_root->getID().string() + ".yml",
-                                         this};
-        Parsers::emit(data);
+        addToMount(*m_root);
     } else {
         // TODO throw error
     }

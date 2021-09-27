@@ -11,8 +11,7 @@ namespace UML {
     namespace Parsers {
 
         enum class EmitterStrategy {
-            WHOLE,
-            COMPOSITE, 
+            WHOLE, 
             INDIVIDUAL
         };
 

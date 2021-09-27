@@ -346,14 +346,6 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
                 return;
             }
         }
-        case EmitterStrategy::COMPOSITE : {
-            newPath = data.getMountPath(el.getID());
-            if (newPath.empty()) {
-                YAML::Node node;
-                throw UmlParserException("Invalid path for mount!", "", node);
-            }
-            break;
-        }
     }
     if (newPath.empty() || (newPath.parent_path().compare(data.m_path) == 0 && newPath.filename().compare(data.m_fileName) == 0)) {
         // TODO, emit owningPackage, class, etc...

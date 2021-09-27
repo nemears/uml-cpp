@@ -7,11 +7,17 @@ void PackageableElement::RemoveOwningPackageProcedure::operator()(Package* el) c
     if (el->getPackagedElements().count(m_me->getID())) {
         el->getPackagedElements().remove(*m_me);
     }
+    if (m_me->getNamespaceID() == el->getID()) {
+        m_me->setNamespace(0);
+    }
 }
 
 void PackageableElement::AddOwningPackageProcedure::operator()(Package* el) const {
     if (!el->getPackagedElements().count(m_me->getID())) {
         el->getPackagedElements().add(*m_me);
+    }
+    if (m_me->getNamespaceID() != el->getID()) {
+        m_me->setNamespace(el);
     }
 }
 

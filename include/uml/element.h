@@ -179,6 +179,7 @@ namespace UML {
             ID getID();
             Element* getOwner();
             Element& getOwnerRef();
+            ID getOwnerID() const;
             bool hasOwner() const;
             Sequence<Element>& getOwnedElements();
             Sequence<Relationship>& getRelationships();

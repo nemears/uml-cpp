@@ -382,7 +382,11 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             break;
         }
         case ElementType::CLASS : {
-            emitClass(emitter, dynamic_cast<Class&>(el), data);
+            Class& clazz = el.as<Class>();
+            if (clazz.hasOwningPackage()) {
+                emitter << YAML::Key << "owningPackage" << YAML::Value << clazz.getOwningPackageID().string();
+            }
+            emitClass(emitter, clazz, data);
             break;
         }
         case ElementType::COMMENT : {
@@ -428,7 +432,11 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             break;
         }
         case ElementType::INSTANCE_SPECIFICATION : {
-            emitInstanceSpecification(emitter, dynamic_cast<InstanceSpecification&>(el), data);
+            InstanceSpecification& inst = el.as<InstanceSpecification>();
+            if (inst.hasOwningPackage()) {
+                emitter << YAML::Key << "owningPackage" << YAML::Value << inst.getOwningPackageID().string();
+            }
+            emitInstanceSpecification(emitter, inst, data);
             break;
         }
         case ElementType::LITERAL_BOOL : {

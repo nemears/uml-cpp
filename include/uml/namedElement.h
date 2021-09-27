@@ -53,6 +53,7 @@ namespace UML{
             virtual void setName(const std::string &name);
             Namespace* getNamespace();
             Namespace& getNamespaceRef();
+            ID getNamespaceID() const;
             bool hasNamespace() const;
             void setNamespace(Namespace* nmspc);
             void setNamespace(Namespace& nmspc);

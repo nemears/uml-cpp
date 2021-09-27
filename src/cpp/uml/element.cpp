@@ -563,6 +563,10 @@ Element& Element::getOwnerRef() {
     }
 }
 
+ID Element::getOwnerID() const {
+    return m_ownerID;
+}
+
 bool Element::hasOwner() const {
     return !m_ownerID.isNull();
 }

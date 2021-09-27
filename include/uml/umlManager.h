@@ -64,7 +64,7 @@ namespace UML {
     struct ManagerNode {
         Element* m_managerElementMemory = 0;
         std::string m_path;
-        //std::string m_mountPath;
+        bool m_mountedFlag = false;
         std::unordered_map<ID, ManagerNode*> m_references;
         std::unordered_map<ID, size_t> m_referenceCount;
         std::vector<ID> m_referenceOrder;

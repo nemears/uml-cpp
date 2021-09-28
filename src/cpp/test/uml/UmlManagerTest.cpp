@@ -214,7 +214,7 @@ TEST_F(UmlManagerTest, ManagerMountStressTest) {
         ASSERT_EQ(pckg->getOwnedElements().size(), 1) << "at index " << i;
         if (i > 0) {
             ASSERT_TRUE(pckg->hasOwningPackage());
-            m.release(pckg->getOwningPackageRef()); // test fails becaues of this line, must aquire to emit, need to change parser again TODO!
+            m.release(pckg->getOwningPackageRef());
         }
         pckg = &pckg->getPackagedElements().front().as<Package>();
     }

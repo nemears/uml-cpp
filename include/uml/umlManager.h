@@ -116,7 +116,6 @@ namespace UML {
                     } else {
                         aquire(theID);
                         return  dynamic_cast<T*>(me->m_node->m_references[theID]->m_managerElementMemory);
-                        //throw ManagerStateException();
                     }
                 }
                 return 0;

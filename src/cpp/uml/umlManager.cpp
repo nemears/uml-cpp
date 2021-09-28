@@ -44,8 +44,8 @@ size_t UmlManager::count(ID id) {
 }
 
 bool UmlManager::loaded(ID id) {
-    if (count(id)) {
-        return m_graph[id].m_managerElementMemory;
+    if (m_graph.count(id)) {
+        return true;
     } else {
         return false;
     }
@@ -155,7 +155,7 @@ void UmlManager::release(Element& el) {
             delete node->m_managerElementMemory;
         }
         for (auto& e : node->m_references) {
-            if (e.second->m_managerElementMemory) {
+            if (e.second) {
                 e.second->m_managerElementMemory->referencingReleased(id);
             }
         }

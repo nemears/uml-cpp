@@ -128,10 +128,11 @@ void UmlManager::mount(string path) {
 Element* UmlManager::aquire(ID id) {
     if (!m_mountBase.empty()) {
         Parsers::ParserMetaData data(this);
-        data.m_path = m_mountBase / "mount" / (id.string() + ".yml");//m_graph[id].m_mountPath;
+        data.m_path = m_mountBase / "mount" / (id.string() + ".yml");
         data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
         Element* ret = Parsers::parse(data);
         m_graph[id].m_managerElementMemory = ret;
+        ret->restoreReferences();
         return ret;
     } else {
         throw ManagerNotMountedException();

@@ -55,7 +55,7 @@ void RemoveOwnedCommentFunctor::operator()(Comment& el) const {
 }
 
 void AddAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {
-    subsetsAdd<Element,Element>(el, &Element::getOwnedElements);
+    subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
     updateCopiedSequenceAddedTo(el, &Element::getAppliedStereotypes);
 }
 
@@ -70,7 +70,8 @@ void CheckAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const 
             // TODO: check extension
             throw InvalidAppliedStereotypeException();
         }
-    } else {
+    }
+    else {
         throw InvalidAppliedStereotypeException();
     }
 }
@@ -78,7 +79,8 @@ void CheckAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const 
 void Element::setReference(Element* referencing) {
     if (m_node->m_references.count(referencing->getID())) {
         m_node->m_referenceCount[referencing->getID()]++;
-    } else {
+    }
+    else {
         m_node->m_references[referencing->getID()] = referencing->m_node;
         m_node->m_referenceCount[referencing->getID()] = 1;
         m_node->m_referenceOrder.push_back(referencing->getID());
@@ -88,12 +90,13 @@ void Element::setReference(Element* referencing) {
 void Element::removeReference(ID referencing) {
     if (m_node->m_referenceCount[referencing] > 1) {
         m_node->m_referenceCount[referencing]--;
-    } else {
+    }
+    else {
         m_node->m_references.erase(referencing);
         m_node->m_referenceCount.erase(referencing);
         m_node->m_referenceOrder.erase(std::remove(
-            m_node->m_referenceOrder.begin(), 
-            m_node->m_referenceOrder.end(), 
+            m_node->m_referenceOrder.begin(),
+            m_node->m_referenceOrder.end(),
             referencing), m_node->m_referenceOrder.end());
     }
 }
@@ -119,6 +122,25 @@ void Element::referenceReindexed(ID oldID, ID newID) {
     }
     if (m_appliedStereotype->count(oldID)) {
         m_appliedStereotype->reindex(oldID, newID, &Element::getAppliedStereotypes);
+    }
+}
+
+void Element::restoreReferences() {
+    m_ownedElements->restoreReferences();
+    if (hasOwner()) {
+        if (m_manager->loaded(m_ownerID)) {
+            m_manager->get(this, m_ownerID)->restoreReference(this);
+        }
+    }
+    m_ownedComments->restoreReferences();
+    m_relationships->restoreReferences();
+    m_directedRelationships->restoreReferences();
+    m_appliedStereotype->restoreReferences();
+}
+
+void Element::restoreReference(Element* el) {
+    if (m_node->m_references.count(el->getID())) {
+        m_node->m_references[el->getID()] = el->m_node;
     }
 }
 
@@ -539,7 +561,7 @@ void Element::setManager(UmlManager* manager) {
     m_appliedStereotype->m_manager = manager;
 };
 
-ID Element::getID() {
+ID Element::getID() const {
     return m_id;
 }
 

@@ -172,11 +172,13 @@ namespace UML {
             void setReference(Element* referencing);
             void removeReference(ID referencing);
             virtual void referenceReindexed(ID oldID, ID newID);
+            virtual void restoreReferences();
+            void restoreReference(Element* el);
             Element();
         public:
             Element(const Element& el);
             virtual ~Element();
-            ID getID();
+            ID getID() const;
             Element* getOwner();
             Element& getOwnerRef();
             ID getOwnerID() const;

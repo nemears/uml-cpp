@@ -79,19 +79,27 @@ void CheckAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const 
 void Element::setReference(Element* referencing) {
     if (m_node->m_references.count(referencing->getID())) {
         m_node->m_referenceCount[referencing->getID()]++;
-    }
-    else {
+    } else {
         m_node->m_references[referencing->getID()] = referencing->m_node;
         m_node->m_referenceCount[referencing->getID()] = 1;
         m_node->m_referenceOrder.push_back(referencing->getID());
     }
 }
 
+void Element::setReference(ID id) {
+    if (m_node->m_references.count(id)) {
+        m_node->m_referenceCount[id]++;
+    } else {
+        m_node->m_references[id] = 0;
+        m_node->m_referenceCount[id] = 1;
+        m_node->m_referenceOrder.push_back(id);
+    }
+}
+
 void Element::removeReference(ID referencing) {
     if (m_node->m_referenceCount[referencing] > 1) {
         m_node->m_referenceCount[referencing]--;
-    }
-    else {
+    } else {
         m_node->m_references.erase(referencing);
         m_node->m_referenceCount.erase(referencing);
         m_node->m_referenceOrder.erase(std::remove(
@@ -104,23 +112,18 @@ void Element::removeReference(ID referencing) {
 void Element::referenceReindexed(ID oldID, ID newID) {
     if (m_ownedElements->count(oldID)) {
         m_ownedElements->reindex(oldID, newID, &Element::getOwnedElements);
-    }
-    if (m_ownerID == oldID) {
+    } if (m_ownerID == oldID) {
         m_node->m_managerElementMemory->m_ownerID = newID;
         for (auto& copy : m_node->m_copies) {
             copy->m_ownerID = newID;
         }
-    }
-    if (m_ownedComments->count(oldID)) {
+    } if (m_ownedComments->count(oldID)) {
         m_ownedComments->reindex(oldID, newID, &Element::getOwnedComments);
-    }
-    if (m_relationships->count(oldID)) {
+    } if (m_relationships->count(oldID)) {
         m_relationships->reindex(oldID, newID, &Element::getRelationships);
-    }
-    if (m_directedRelationships->count(oldID)) {
+    } if (m_directedRelationships->count(oldID)) {
         m_directedRelationships->reindex(oldID, newID, &Element::getDirectedRelationships);
-    }
-    if (m_appliedStereotype->count(oldID)) {
+    } if (m_appliedStereotype->count(oldID)) {
         m_appliedStereotype->reindex(oldID, newID, &Element::getAppliedStereotypes);
     }
 }
@@ -625,7 +628,7 @@ void Element::setOwner(Element* owner) {
         if (m_manager) {
             setReference(owner);
             // if the owner is mounted we need to mount
-            if (!m_manager->m_mountBase.empty()) {
+            if (!m_manager->m_mountBase.empty() && !m_manager->count(owner->getID())) {
                 m_manager->addToMount(*this);
             }
         }

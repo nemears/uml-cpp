@@ -34,6 +34,24 @@ namespace UML {
         };
     };
 
+    // template <class T = Element, class U = Element> class RestoreReleasedProcedure {
+    //     protected:
+    //         U* m_me;
+    //         Sequence<T> (U::*m_sequenceSignature)();
+    //         Singleton<T, U> U::*m_singletonSignnature;
+    //         bool m_sequenceFlag = true;
+    //     public:
+    //         RestoreReleasedProcedure(U* me, Sequence<T>(U::* sequenceSignature)()) : m_me(me), m_sequenceSignature(sequenceSignature) {};
+    //         RestoreReleasedProcedure(U* me, Singleton<T, U> U::* singletonSignnature) : m_me(me), m_singletonSignnature(singletonSignnature), m_sequenceFlag(false) {};
+    //         virtual void operator()() const {
+    //             if (m_sequenceFlag) {
+    //                 (m_me->*m_sequenceSignature)()
+    //             } else {
+    //                 (m_me->*m_singletonSignnature)
+    //             }
+    //         };
+    // };
+
     /**
      * UmlManager is the object that handles all of the instantiation and deletion of UML objects
      * from a model. It follows object pool semantics to be able to hold information about large
@@ -68,6 +86,7 @@ namespace UML {
         std::unordered_map<ID, ManagerNode*> m_references;
         std::unordered_map<ID, size_t> m_referenceCount;
         std::vector<ID> m_referenceOrder;
+        // std::unordered_map<ID, /**TODO procedure to restore references?**/> m_releasedReferenceProcedures; //?
         std::unordered_set<Element*> m_copies;
     };
 

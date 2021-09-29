@@ -171,6 +171,7 @@ namespace UML {
             virtual void referencingReleased(ID id);
             void setReference(Element* referencing);
             void removeReference(ID referencing);
+            void setReference(ID id);
             virtual void referenceReindexed(ID oldID, ID newID);
             virtual void restoreReferences();
             void restoreReference(Element* el);

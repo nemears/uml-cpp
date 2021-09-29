@@ -325,6 +325,8 @@ namespace UML {
                 m_order.push_back(id);
                 m_rep[id] = 0;
 
+                m_el->setReference(id);
+
                 for (auto& proc : addProcedures) {
                     (*proc)(id);
                 }

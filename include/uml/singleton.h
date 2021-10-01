@@ -185,6 +185,14 @@ namespace UML {
                     }
                 }
             };
+
+            void restoreReference() {
+                if (has()) {
+                    if (m_me->m_manager->loaded(m_id)) {
+                        m_me->m_manager->get(m_me, m_id)->restoreReference(m_me);
+                    }
+                }
+            };
     };
 }
 

@@ -126,8 +126,7 @@ void Package::referenceReindexed(ID oldID, ID newID) {
 }
 
 void Package::restoreReferences() {
-    /** TODO: change **/
-    Element::restoreReferences();
+    Namespace::restoreReferences();
     m_packagedElements.restoreReferences();
     m_packageMerge.restoreReferences();
     m_profileApplications.restoreReferences();

@@ -57,6 +57,12 @@ void Namespace::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void Namespace::restoreReferences() {
+    NamedElement::restoreReferences();
+    m_members.restoreReferences();
+    m_ownedMembers.restoreReferences();
+}
+
 Namespace::Namespace() {
     m_members.addProcedures.push_back(new AddMemberFunctor(this));
     m_members.removeProcedures.push_back(new RemoveMemberFunctor(this));

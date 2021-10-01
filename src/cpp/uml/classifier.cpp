@@ -271,8 +271,7 @@ void Classifier::referenceReindexed(ID oldID, ID newID) {
 }
 
 void Classifier::restoreReferences() {
-    /** TODO: change to proper inheritance**/
-    Element::restoreReferences();
+    Namespace::restoreReferences();
     m_attributes.restoreReferences();
     m_generalizations.restoreReferences();
     m_generals.restoreReferences();

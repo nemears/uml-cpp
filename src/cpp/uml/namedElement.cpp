@@ -51,6 +51,12 @@ void NamedElement::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void NamedElement::restoreReferences() {
+    Element::restoreReferences();
+    m_memberNamespace->restoreReferences();
+    m_namespace.restoreReference();
+}
+
 NamedElement::NamedElement() {
     m_memberNamespace = new Sequence<Namespace>(this);
     m_memberNamespace->addProcedures.push_back(new AddMemberNamespaceFunctor(this));

@@ -375,7 +375,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
 
     ASSERT_EQ(base2.getOwnedOperations().size(), 1);
     ASSERT_EQ(&base2.getOwnedOperations().front(), &op);
-    ASSERT_EQ(&base2.getFeatures().get(2), &op);
+    ASSERT_EQ(&base2.getFeatures().get(1), &op);
     ASSERT_EQ(&base2.getOwnedMembers().get(1), &op);
     ASSERT_EQ(&base2.getMembers().get(1), &op);
     ASSERT_EQ(&base2.getOwnedElements().get(1), &op);

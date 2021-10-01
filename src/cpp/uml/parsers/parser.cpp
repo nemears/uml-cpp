@@ -109,11 +109,7 @@ template <class T = Element, class U = Element> void parseAndAddToSequence(YAML:
         std::string idStr = path.substr(path.find_last_of("/") + 1, path.find_last_of("/") + 29);
         if (isValidID(idStr)) {
             ID id = ID::fromString(idStr);
-            if (data.m_manager->loaded(id)) {
-                (el.*signature)().add(data.m_manager->get<T>(id));
-            } else {
-                (el.*signature)().addByID(id);
-             }
+            (el.*signature)().addByID(id);
         }
         else {
             throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);

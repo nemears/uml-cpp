@@ -30,6 +30,9 @@ void Property::AddStructuredClassifierProcedure::operator()(StructuredClassifier
     if (!el->getOwnedAttributes().count(m_me->getID())) {
         el->getOwnedAttributes().add(*m_me);
     }
+    if (m_me->getClassifierID() != el->getID()) {
+        m_me->setClassifier(el);
+    }
 }
 
 void Property::RemoveClassifierProcedure::operator()(Classifier* el) const {
@@ -46,6 +49,9 @@ void Property::AddClassifierProcedure::operator()(Classifier* el) const {
         if (!m_me->getRedefinitionContext().count(el->getID())) {
             m_me->getRedefinitionContext().add(*el);
         }
+    }
+    if (m_me->getFeaturingClassifierID() != el->getID()) {
+        m_me->setFeaturingClassifier(el);
     }
 }
 
@@ -70,6 +76,9 @@ void Property::RemoveClassProcedure::operator()(Class* el) const {
 void Property::AddClassProcedure::operator()(Class* el) const {
     if (!el->getOwnedAttributes().count(m_me->getID())) {
         el->getOwnedAttributes().add(*m_me);
+    }
+    if (m_me->getStructuredClassifierID() != el->getID()) {
+        m_me->setStructuredClassifier(el);
     }
 }
 

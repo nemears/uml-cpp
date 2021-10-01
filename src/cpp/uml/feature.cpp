@@ -14,6 +14,9 @@ void Feature::AddFeaturingClassifierProcedure::operator()(Classifier* el) const 
     if (!el->getFeatures().count(m_me->getID())) {
         el->getFeatures().add(*m_me);
     }
+    if (m_me->getNamespaceID() != el->getID()) {
+        m_me->setNamespace(el);
+    }
 }
 
 void Feature::reindexName(string oldName, string newName) {
@@ -53,6 +56,10 @@ Classifier* Feature::getFeaturingClassifier() {
 
 Classifier& Feature::getFeaturingClassifierRef() {
     return m_featuringClassifier.getRef();
+}
+
+ID Feature::getFeaturingClassifierID() const {
+    return m_featuringClassifier.id();
 }
 
 bool Feature::hasFeaturingClassifier() const {

@@ -29,6 +29,7 @@ namespace UML {
             Feature(const Feature& feature);
             Classifier* getFeaturingClassifier();
             Classifier& getFeaturingClassifierRef();
+            ID getFeaturingClassifierID() const;
             bool hasFeaturingClassifier() const;
             void setFeaturingClassifier(Classifier* clazz);
             void setFeaturingClassifier(Classifier& clazz);

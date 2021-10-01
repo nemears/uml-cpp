@@ -504,9 +504,15 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             break;
         }
         case ElementType::PROFILE : {
-            emitElementDefenition(emitter, ElementType::PROFILE, "profile", el, data);
-            emitPackage(emitter, dynamic_cast<Profile&>(el), data);
-            emitElementDefenitionEnd(emitter, ElementType::PROFILE, el);
+            Profile& profile = el.as<Profile>();
+            if (data.m_strategy != EmitterStrategy::WHOLE) {
+                if (profile.hasOwningPackage()) {
+                    emitter << YAML::Key << "owningPackage" << profile.getOwningPackageID().string();
+                }
+            }
+            emitElementDefenition(emitter, ElementType::PROFILE, "profile", profile, data);
+            emitPackage(emitter, profile, data);
+            emitElementDefenitionEnd(emitter, ElementType::PROFILE, profile);
             break;
         }
         case ElementType::PROFILE_APPLICATION : {
@@ -530,8 +536,14 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             break;
         }
         case ElementType::STEREOTYPE : {
+            Stereotype& stereotype = el.as<Stereotype>();
+            if (data.m_strategy != EmitterStrategy::WHOLE) {
+                if (stereotype.hasOwningPackage()) {
+                    emitter << YAML::Key << "owningPackage" << stereotype.getOwningPackageID().string();
+                }
+            }
             emitElementDefenition(emitter, ElementType::STEREOTYPE, "stereotype", el, data);
-            emitClass(emitter, el.as<Stereotype>(), data);
+            emitClass(emitter, stereotype, data);
             emitElementDefenitionEnd(emitter, ElementType::STEREOTYPE, el);
             break;
         }
@@ -1470,7 +1482,8 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                         throw UmlParserException("Invalid identifier in Package packageMerge list, ", data.m_path.string(), node["packageMerge"][i]["packageMerge"]);
                     }
                 } else if (node["packageMerge"][i].IsScalar()) {
-                    pckg.getPackageMerge().add(parseScalar<PackageMerge>(node["packageMerge"][i], data));
+                    //pckg.getPackageMerge().add(parseScalar<PackageMerge>(node["packageMerge"][i], data));
+                    parseAndAddToSequence<PackageMerge, Package>(node["packageMerge"][i], data, pckg, &Package::getPackageMerge);
                 } else {
                     throw UmlParserException("Invalid yaml node type for packageMerge reference, must be a scalar or map!", data.m_path.string(), node["packagedElements"][i]);
                 }
@@ -1496,7 +1509,8 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                         throw UmlParserException("Invalid profileApplication type!", data.m_path.string(), node["profileApplications"][i]);
                     }
                 } else if (node["profileApplications"][i].IsScalar()) {
-                    pckg.getProfileApplications().add(parseScalar<ProfileApplication>(node["profileApplications"][i], data));
+                    parseAndAddToSequence<ProfileApplication, Package>(node["profileApplications"][i], data, pckg, &Package::getProfileApplications);
+                 //   pckg.getProfileApplications().add(parseScalar<ProfileApplication>(node["profileApplications"][i], data));
                 }
             }
         } else {
@@ -1644,7 +1658,6 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
                 // seperate file
                 } else if (node["packagedElements"][i].IsScalar()) {
                     parseAndAddToSequence<PackageableElement, Package>(node["packagedElements"][i], data, pckg, &Package::getPackagedElements);
-                    //pckg.getPackagedElements().add(parseScalar<PackageableElement>(node["packagedElements"][i], data));
                 } else {
                     throw UmlParserException("Invalid YAML node type for field packagedElements sequence, must be map, ", data.m_path.string(), node["packagedElements"][i]);
                 }
@@ -2298,8 +2311,10 @@ void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMe
                     TemplateBinding& binding = data.m_manager->create<TemplateBinding>();
                     parseTemplateBinding(node["templateBinding"]["templateBinding"], binding, data);
                     el.setTemplateBinding(&binding);
-                } else {
+                } else if (node["templateBinding"]["templateBinding"].IsScalar()) {
                     /** TODO: make mount ready **/
+                } else {
+                    // TODO error
                 }
             } else {
                 throw UmlParserException("Must specify templateBinding field before templateBinding definition", data.m_path.string(), node["templateBinding"]);

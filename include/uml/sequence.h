@@ -277,11 +277,14 @@ namespace UML {
             void restoreReferences() {
                 // TODO
                 for (size_t i = 0; i < size(); i++) {
-                    if (m_rep[m_order[i]]) {
+                    if (m_manager->loaded(m_order[i])) {
+                        if (!m_rep[m_order[i]]) {
+                            m_rep[m_order[i]] = &m_manager->get<T>(m_order[i]);
+                        }
                         m_rep[m_order[i]]->restoreReference(m_el);
                     }
                 }
-            }
+            };
         public:
             // Constructor
             Sequence<T>(Element* el) {

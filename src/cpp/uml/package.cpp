@@ -31,6 +31,15 @@ void Package::AddPackageMergeFunctor::operator()(PackageMerge& el) const {
     updateCopiedSequenceAddedTo(el, &Package::getPackageMerge);
 }
 
+void Package::AddPackageMergeFunctor::operator()(ID id) const {
+    if (m_el->getDirectedRelationships().count(id)) {
+        m_el->getDirectedRelationships().addByID(id);
+    }
+    if (m_el->getOwnedElements().count(id)) {
+        m_el->getOwnedElements().addByID(id);
+    }
+}
+
 void Package::RemovePackageMergeFunctor::operator()(PackageMerge& el) const {
     oppositeSingletonRemove(el, &PackageMerge::m_receivingPackage);
     subsetsRemove<Element, DirectedRelationship>(el, &Element::getDirectedRelationships);
@@ -105,6 +114,15 @@ void Package::referenceReindexed(ID oldID, ID newID) {
     if (m_ownedStereotypes.count(oldID)) {
         m_ownedStereotypes.reindex(oldID, newID, &Package::getOwnedStereotypes);
     }
+}
+
+void Package::restoreReferences() {
+    /** TODO: change **/
+    Element::restoreReferences();
+    m_packagedElements.restoreReferences();
+    m_packageMerge.restoreReferences();
+    m_profileApplications.restoreReferences();
+    m_ownedStereotypes.restoreReferences();
 }
 
 Package::Package() {

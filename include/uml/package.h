@@ -33,6 +33,7 @@ namespace UML {
                 public:
                     AddPackageMergeFunctor(Package* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(PackageMerge& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemovePackageMergeFunctor : public TemplateAbstractSequenceFunctor<PackageMerge,Package> {
                 public:
@@ -62,6 +63,7 @@ namespace UML {
             void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
             Package();
         public:
             virtual ~Package();

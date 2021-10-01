@@ -46,6 +46,7 @@ namespace UML {
                 public:
                     AddGeneralizationFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Generalization& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveGeneralizationFunctor : public TemplateAbstractSequenceFunctor<Generalization,Classifier> {
                 public:

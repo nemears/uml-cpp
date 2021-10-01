@@ -15,6 +15,15 @@ void Class::AddOwnedOperationFunctor::operator()(Operation& el) const {
     updateCopiedSequenceAddedTo(el, &Class::getOwnedOperations);
 }
 
+void Class::AddOwnedOperationFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedMembers().count(id)) {
+        m_el->getOwnedMembers().addByID(id);
+    }
+    if (!m_el->getFeatures().count(id)) {
+        m_el->getFeatures().addByID(id);
+    }
+}
+
 void Class::RemoveOwnedOperationFunctor::operator()(Operation& el) const {
     if (el.getClass() == m_el) {
         el.setClass(0);
@@ -47,6 +56,12 @@ void Class::AddNestedClassifierFunctor::operator()(Classifier& el) const {
         m_el->getRedefinedElements().add(el);
     }
     updateCopiedSequenceAddedTo(el, &Class::getNestedClassifiers);
+}
+
+void Class::AddNestedClassifierFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedMembers().count(id)) {
+        m_el->getOwnedMembers().addByID(id);
+    }
 }
 
 void Class::RemoveNestedClassifierFunctor::operator()(Classifier& el) const {

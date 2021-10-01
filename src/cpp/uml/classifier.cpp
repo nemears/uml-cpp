@@ -79,6 +79,15 @@ void Classifier::AddGeneralizationFunctor::operator()(Generalization& el) const 
     updateCopiedSequenceAddedTo(el, &Classifier::getGeneralizations);
 }
 
+void Classifier::AddGeneralizationFunctor::operator()(ID id) const {
+    if (!m_el->getDirectedRelationships().count(id)) {
+        m_el->getDirectedRelationships().addByID(id);
+    }
+    if (!m_el->getOwnedElements().count(id)) {
+        m_el->getOwnedElements().addByID(id);
+    }
+}
+
 void Classifier::RemoveGeneralizationFunctor::operator()(Generalization& el) const {
     if (m_el->getDirectedRelationships().count(el.getID())) {
         m_el->getDirectedRelationships().remove(el);

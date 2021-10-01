@@ -806,7 +806,7 @@ void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
                         }
                     }
                 } else if (node["generalizations"][i].IsScalar()) {
-                    clazz.getGeneralizations().add(parseScalar<Generalization>(node["generalizations"][i], data));
+                    parseAndAddToSequence<Generalization, Classifier>(node["generalizations"][i], data, clazz, &Classifier::getGeneralizations);
                 }
             }
         } else {
@@ -1075,7 +1075,7 @@ void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
                         throw UmlParserException("invalid classifier definition for nestedClassifiers entry!", data.m_path.string(), node["nestedClassifiers"][i]);
                     }
                 } else if (node["nestedClassifiers"][i].IsScalar()) {
-                    clazz.getNestedClassifiers().add(parseScalar<Classifier>(node["nestedClassifiers"][i], data));
+                    parseAndAddToSequence<Classifier, Class>(node["nestedClassifiers"][i], data, clazz, &Class::getNestedClassifiers);
                 }
             }
         } else {

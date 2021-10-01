@@ -17,6 +17,7 @@ namespace UML{
                 public:
                     AddOwnedOperationFunctor(Class* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Operation& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveOwnedOperationFunctor : public TemplateAbstractSequenceFunctor<Operation,Class> {
                 public:
@@ -37,6 +38,7 @@ namespace UML{
                 public:
                     AddNestedClassifierFunctor(Class* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Classifier& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveNestedClassifierFunctor : public TemplateAbstractSequenceFunctor<Classifier,Class> {
                 public:

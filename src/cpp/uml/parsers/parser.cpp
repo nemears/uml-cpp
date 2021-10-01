@@ -382,8 +382,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         }
         case ElementType::CLASS : {
             Class& clazz = el.as<Class>();
-            if (clazz.hasOwningPackage()) {
-                emitter << YAML::Key << "owningPackage" << YAML::Value << clazz.getOwningPackageID().string();
+            if (data.m_strategy == EmitterStrategy::INDIVIDUAL) {
+                if (clazz.hasOwningPackage()) {
+                    emitter << YAML::Key << "owningPackage" << YAML::Value << clazz.getOwningPackageID().string();
+                }
             }
             emitClass(emitter, clazz, data);
             break;

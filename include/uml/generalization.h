@@ -42,11 +42,13 @@ namespace UML {
             virtual ~Generalization();
             Classifier* getGeneral();
             Classifier& getGeneralRef();
+            ID getGeneralID() const;
             bool hasGeneral() const;
             void setGeneral(Classifier* general);
             void setGeneral(Classifier& general);
             Classifier* getSpecific();
             Classifier& getSpecificRef();
+            ID getSpecificID() const;
             bool hasSpecific() const;
             void setSpecific(Classifier& specific);
             void setSpecific(Classifier* specific);

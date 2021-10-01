@@ -274,6 +274,13 @@ void Classifier::restoreReferences() {
     Namespace::restoreReferences();
     m_attributes.restoreReferences();
     m_generalizations.restoreReferences();
+    for (auto& generalization : m_generalizations) {
+        if (generalization.hasGeneral()) {
+            if (!m_generals.count(generalization.getGeneralID())) {
+                m_generals.addByID(generalization.getGeneralID());
+            }
+        }
+    }
     m_generals.restoreReferences();
     m_features.restoreReferences();
     m_inheritedMembers.restoreReferences();

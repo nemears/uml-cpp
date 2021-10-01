@@ -143,6 +143,10 @@ Classifier& Generalization::getGeneralRef() {
     return m_general.getRef();
 }
 
+ID Generalization::getGeneralID() const {
+    return m_general.id();
+}
+
 bool Generalization::hasGeneral() const {
     return m_general.has();
 }
@@ -161,6 +165,10 @@ Classifier* Generalization::getSpecific() {
 
 Classifier& Generalization::getSpecificRef() {
     return m_specific.getRef();
+}
+
+ID Generalization::getSpecificID() const {
+    return m_specific.id();
 }
 
 bool Generalization::hasSpecific() const {

@@ -37,6 +37,12 @@ void AddDirectedRelationshipFunctor::operator()(DirectedRelationship& el) const 
     updateCopiedSequenceAddedTo(el, &Element::getDirectedRelationships);
 }
 
+void AddDirectedRelationshipFunctor::operator()(ID id) const {
+    if (!m_el->getRelationships().count(id)) {
+        m_el->getRelationships().addByID(id);
+    }
+}
+
 void RemoveDirectedRelationshipFunctor::operator()(DirectedRelationship& el) const {
     subsetsRemove<Element, Relationship>(el, &Element::getRelationships);
     updateCopiedSequenceRemovedFrom(el, &Element::getDirectedRelationships);

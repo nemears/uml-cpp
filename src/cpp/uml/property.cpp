@@ -435,6 +435,10 @@ ValueSpecification& Property::getDefaultValueRef() {
     return m_defaultValue.getRef();
 }
 
+ID Property::getDefaultValueID() const {
+    return m_defaultValue.id();
+}
+
 bool Property::hasDefaultValue() const {
     return m_defaultValue.has();
 }
@@ -453,6 +457,10 @@ Classifier* Property::getClassifier() {
 
 Classifier& Property::getClassifierRef() {
     return m_classifier.getRef();
+}
+
+ID Property::getClassifierID() const {
+    return m_classifier.id();
 }
 
 bool Property::hasClassifier() const {
@@ -475,6 +483,10 @@ StructuredClassifier& Property::getStructuredClassifierRef() {
     return m_structuredClassifier.getRef();
 }
 
+ID Property::getStructuredClassifierID() const {
+    return m_structuredClassifier.id();
+}
+
 bool Property::hasStructuredClassifier() const {
     return m_structuredClassifier.has();
 }
@@ -493,6 +505,10 @@ DataType* Property::getDataType() {
 
 DataType& Property::getDataTypeRef() {
     return m_dataType.getRef();
+}
+
+ID Property::getDataTypeID() const {
+    return m_dataType.id();
 }
 
 bool Property::hasDataType() const {
@@ -515,6 +531,10 @@ Class& Property::getClassRef() {
     return m_class.getRef();
 }
 
+ID Property::getClassID() const {
+    return m_class.id();
+}
+
 bool Property::hasClass() const {
     return m_class.has();
 }
@@ -533,6 +553,10 @@ Association* Property::getAssociation() {
 
 Association& Property::getAssociationRef() {
     return m_association.getRef();
+}
+
+ID Property::getAssociationID() const {
+    return m_association.id();
 }
 
 bool Property::hasAssociation() const {
@@ -555,6 +579,10 @@ Association& Property::getOwningAssociationRef() {
     return m_owningAssociation.getRef();
 }
 
+ID Property::getOwningAssociationID() const {
+    return m_owningAssociation.id();
+}
+
 bool Property::hasOwningAssociation() const {
     return m_owningAssociation.has();
 }
@@ -573,6 +601,10 @@ Artifact* Property::getArtifact() {
 
 Artifact& Property::getArtifactRef() {
     return m_artifact.getRef();
+}
+
+ID Property::getArtifactID() const {
+    return m_artifact.id();
 }
 
 bool Property::hasArtifact() const {

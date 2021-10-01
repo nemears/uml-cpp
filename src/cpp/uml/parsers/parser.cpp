@@ -147,10 +147,13 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         parseArtifact(node["artifact"], artifact, data);
         ret = &artifact;
     }
+
     if (node["class"]) {
-        Class& clazz = data.m_manager->create<Class>();
-        parseClass(node["class"], clazz, data);
-        ret = &clazz;
+        if (node["class"].IsMap()) {
+            Class& clazz = data.m_manager->create<Class>();
+            parseClass(node["class"], clazz, data);
+            ret = &clazz;
+        }
     }
 
     if (node["dataType"]) {
@@ -308,6 +311,16 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                 ret->as<ProfileApplication>().setApplyingPackage(data.m_manager->get<Package>(applyingPackageID));
             } else {
                 throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["applyingPackage"]);
+            }
+        }
+        if (node["class"]) {
+            if (node["class"].IsScalar()) {
+                ID owningClazzID = ID::fromString(node["class"].as<string>());
+                if (data.m_manager->loaded(owningClazzID)) {
+                    ret->as<Property>().setClass(data.m_manager->get<Class>(owningClazzID));
+                } else {
+                    throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["class"]);
+                }
             }
         }
     }
@@ -496,7 +509,13 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             break;
         }
         case ElementType::PROPERTY : {
-            emitProperty(emitter, el.as<Property>(), data);
+            Property& property = el.as<Property>();
+            if (data.m_strategy != EmitterStrategy::WHOLE) {
+                if (property.hasClass()) {
+                    emitter << YAML::Key << "class" << property.getClassID().string();
+                }
+            }
+            emitProperty(emitter, property, data);
             break;
         }
         case ElementType::PROFILE : {
@@ -940,8 +959,7 @@ void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, Par
                         }
                     }
                 } else if (node["ownedAttributes"][i].IsScalar()) {
-                    /** TODO: make function from package func **/
-                    clazz.getOwnedAttributes().add(parseScalar<Property>(node["ownedAttributes"][i], data));
+                    parseAndAddToSequence<Property, StructuredClassifier>(node["ownedAttributes"][i], data, clazz, &StructuredClassifier::getOwnedAttributes);
                 } else {
                     throw UmlParserException("invalid yaml node type for property definition, must be a map or scalar path!", data.m_path.string(), node["ownedAttributes"][i]);
                 }
@@ -981,7 +999,7 @@ void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
                         throw UmlParserException("Could not identify operation to parse, ", data.m_path.string(), node["ownedOperations"][i]);
                     }
                 } else if (node["ownedOperations"][i].IsScalar()) {
-                    clazz.getOwnedOperations().add(parseScalar<Operation>(node["ownedOperations"][i], data));
+                    parseAndAddToSequence<Operation, Class>(node["ownedOperations"][i], data, clazz, &Class::getOwnedOperations);
                 } else {
                     throw UmlParserException("Invalid yaml node type for class operation definition, must be a map or a scalar!", data.m_path.string(), node["ownedOperations"][i]);
                 }

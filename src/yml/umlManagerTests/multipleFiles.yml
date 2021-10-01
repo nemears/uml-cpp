@@ -6,8 +6,7 @@ package:
         id: BpOqdTsZ7m4l9z9oIFYgBlTIJhiB
         appliedProfile: externalProfile.yml
   packagedElements:
-    - owningPackage: oU6odnc6A&DAd7YKH5dr7DLdd14D
-      class:
+    - class:
         id: MKqoUQd43gZ2ySf2Oq3ruBDrW87m
         appliedStereotypes:
           - instanceSpecification:

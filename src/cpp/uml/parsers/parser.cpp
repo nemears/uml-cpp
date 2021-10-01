@@ -2316,7 +2316,8 @@ void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMe
                 throw UmlParserException("Must specify templateSignature field before templateSignature definition", data.m_path.string(), node["templateSignature"]);
             }
         } else {
-            throw UmlParserException("Invalid node type fore templateSignature, must be map ", data.m_path.string(), node["templateSignature"]);
+            el.setOwnedTemplateSignature(parseScalar<TemplateSignature>(node["templateSignature"], data));
+            //throw UmlParserException("Invalid node type fore templateSignature, must be map ", data.m_path.string(), node["templateSignature"]);
         }
     }
 
@@ -2336,7 +2337,8 @@ void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMe
                 throw UmlParserException("Must specify templateBinding field before templateBinding definition", data.m_path.string(), node["templateBinding"]);
             }
         } else {
-            throw UmlParserException("Invalid YAML node for templateBinding definition, ", data.m_path.string(), node["templateBinding"]);
+            el.setTemplateBinding(parseScalar<TemplateBinding>(node["templateBinding"], data));
+            //throw UmlParserException("Invalid YAML node for templateBinding definition, ", data.m_path.string(), node["templateBinding"]);
         }
     }
 }

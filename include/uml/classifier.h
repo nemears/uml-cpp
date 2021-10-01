@@ -20,6 +20,7 @@ namespace UML {
     class Classifier: public Namespace, public Type , public RedefinableElement, public TemplateableElement {
         friend class UmlManager;
         friend class InstanceSpecification;
+        friend class Generalization;
         protected:
             Sequence<Feature> m_features = Sequence<Feature>(this);
             Sequence<Property> m_attributes = Sequence<Property>(this);

@@ -17,6 +17,7 @@ void Generalization::RemoveGeneralProcedure::operator()(Classifier* el) const {
             m_me->m_specific.getRef().getGenerals().remove(*el);
         }
     }
+    el->removeReference(m_me->getID());
 }
 
 void Generalization::AddGeneralProcedure::operator()(Classifier* el) const {
@@ -33,6 +34,7 @@ void Generalization::AddGeneralProcedure::operator()(Classifier* el) const {
             m_me->m_specific.getRef().getGenerals().add(*el);
         }
     }
+    el->setReference(m_me);
 }
 
 void Generalization::RemoveSpecificProcedure::operator()(Classifier* el) const {

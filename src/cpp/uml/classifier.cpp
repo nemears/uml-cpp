@@ -129,6 +129,7 @@ void Classifier::AddGeneralFunctor::operator()(Classifier& el) const {
         newGen.setGeneral(&dynamic_cast<Classifier&>(el));
         newGen.setSpecific(dynamic_cast<Classifier*>(m_el));
     }
+    el.setReference(m_el);
     updateCopiedSequenceAddedTo(el, &Classifier::getGenerals);
 }
 
@@ -138,6 +139,7 @@ void Classifier::RemoveGeneralFunctor::operator()(Classifier& el) const {
             general.setGeneral(0);
         }
     }
+    el.removeReference(m_el->getID());
     updateCopiedSequenceRemovedFrom(el, &Classifier::getGenerals);
 }
 
@@ -282,6 +284,13 @@ void Classifier::restoreReferences() {
         }
     }
     m_generals.restoreReferences();
+    for (auto& general : m_generals) {
+        for (auto& member : general.getMembers()) {
+            if (member.getVisibility() != VisibilityKind::PRIVATE && m_inheritedMembers.count(member.getID())) {
+                m_inheritedMembers.addByID(member.getID());
+            }
+        }
+    }
     m_features.restoreReferences();
     m_inheritedMembers.restoreReferences();
 }

@@ -44,6 +44,7 @@ namespace UML {
                 public:
                     AddProfileApplicationFunctor(Package* me) : TemplateAbstractSequenceFunctor(me){};
                     void operator()(ProfileApplication& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveProfileApplicationFunctor : public TemplateAbstractSequenceFunctor<ProfileApplication,Package> {
                 public:

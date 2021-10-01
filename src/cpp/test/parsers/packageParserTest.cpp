@@ -265,6 +265,10 @@ TEST_F(PackageParserTest, mountAndEditPackageTest) {
     ASSERT_EQ(c2.getDirectedRelationships().get(profileApplication.getID()), profileApplication);
     ASSERT_TRUE(profileApplication.hasApplyingPackage());
     ASSERT_EQ(profileApplication.getApplyingPackageRef(), c2);
+    ASSERT_TRUE(profileApplication.hasOwner());
+    ASSERT_EQ(profileApplication.getOwnerRef(), c2);
+    ASSERT_EQ(profileApplication.getSources().size(), 1);
+    ASSERT_EQ(profileApplication.getSources().front(), c2);
     ASSERT_EQ(c2.getPackagedElements().size(), 1);
     ASSERT_EQ(&c2.getPackagedElements().front(), &stereotype);
     ASSERT_EQ(c2.getOwnedStereotypes().size(), 1);
@@ -277,6 +281,12 @@ TEST_F(PackageParserTest, mountAndEditPackageTest) {
     ASSERT_EQ(c2.getMembers().front(), stereotype);
     ASSERT_EQ(c2.getOwnedElements().size(), 3);
     ASSERT_EQ(c2.getOwnedElements().get(stereotype.getID()), stereotype);
+    ASSERT_TRUE(stereotype.hasNamespace());
+    ASSERT_EQ(stereotype.getNamespaceRef(), c2);
+    ASSERT_EQ(stereotype.getMemberNamespace().size(), 1);
+    ASSERT_EQ(stereotype.getMemberNamespace().front(), c2);
+    ASSERT_TRUE(stereotype.hasOwner());
+    ASSERT_EQ(stereotype.getOwnerRef(), c2);
 
     m.release(merge);
     ASSERT_EQ(c2.getPackageMerge().size(), 1);

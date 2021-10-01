@@ -62,6 +62,15 @@ void Package::AddProfileApplicationFunctor::operator()(ProfileApplication& el) c
     updateCopiedSequenceAddedTo(el, &Package::getProfileApplications);
 }
 
+void Package::AddProfileApplicationFunctor::operator()(ID id)  const {
+    if (!m_el->getDirectedRelationships().count(id)) {
+        m_el->getDirectedRelationships().addByID(id);
+    }
+    if (!m_el->getOwnedElements().count(id)) {
+        m_el->getOwnedElements().addByID(id);
+    }
+}
+
 void Package::RemoveProfileApplicationFunctor::operator()(ProfileApplication& el) const {
     if (el.getApplyingPackage() == m_el) {
         el.setApplyingPackage(0);

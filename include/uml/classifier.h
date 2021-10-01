@@ -30,6 +30,7 @@ namespace UML {
                 public:
                     AddAttributeFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Property& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Classifier> {
                 public:
@@ -65,6 +66,7 @@ namespace UML {
                 public:
                     AddFeatureFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Feature& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveFeatureFunctor : public TemplateAbstractSequenceFunctor<Feature,Classifier> {
                 public:
@@ -95,6 +97,7 @@ namespace UML {
             void reindexName(std::string oldName, std::string newName) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referencingReleased(ID id) override;
+            void restoreReferences() override;
             Classifier();
         public:
             virtual ~Classifier();

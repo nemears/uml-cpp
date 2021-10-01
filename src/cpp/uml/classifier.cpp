@@ -22,6 +22,12 @@ void Classifier::AddAttributeFunctor::operator()(Property& el) const {
     updateCopiedSequenceAddedTo(el, &Classifier::getAttributes);
 }
 
+void Classifier::AddAttributeFunctor::operator()(ID id) const {
+    if (!m_el->getFeatures().count(id)) {
+        m_el->getFeatures().addByID(id);
+    }
+}
+
 void Classifier::RemoveAttributeFunctor::operator()(Property& el) const {
     if (el.getClassifier() == m_el) {
         el.setClassifier(0);
@@ -142,6 +148,12 @@ void Classifier::AddFeatureFunctor::operator()(Feature& el) const {
     updateCopiedSequenceAddedTo(el, &Classifier::getFeatures);
 }
 
+void Classifier::AddFeatureFunctor::operator()(ID id) const {
+    if (!m_el->getMembers().count(id)) {
+        m_el->getMembers().addByID(id);
+    }
+}
+
 void Classifier::RemoveFeatureFunctor::operator()(Feature& el) const {
     if (el.getFeaturingClassifier() == m_el) {
         el.setFeaturingClassifier(0);
@@ -247,6 +259,16 @@ void Classifier::referenceReindexed(ID oldID, ID newID) {
     if (m_inheritedMembers.count(oldID)) {
         m_inheritedMembers.reindex(oldID, newID, &Classifier::getInheritedMembers);
     }
+}
+
+void Classifier::restoreReferences() {
+    /** TODO: change to proper inheritance**/
+    Element::restoreReferences();
+    m_attributes.restoreReferences();
+    m_generalizations.restoreReferences();
+    m_generals.restoreReferences();
+    m_features.restoreReferences();
+    m_inheritedMembers.restoreReferences();
 }
 
 Classifier::Classifier() {

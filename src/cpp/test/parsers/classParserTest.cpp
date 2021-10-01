@@ -350,9 +350,9 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(&prop.getMemberNamespace().front(), &base2);
 
     ASSERT_EQ(base2.getOwnedAttributes().size(), 1);
-    ASSERT_EQ(&base2.getOwnedAttributes().front(), &prop);
+    ASSERT_EQ(base2.getOwnedAttributes().front(), prop);
     ASSERT_EQ(base2.getAttributes().size(), 1);
-    ASSERT_EQ(&base2.getOwnedAttributes().front(), &prop);
+    ASSERT_EQ(&base2.getAttributes().front(), &prop);
     ASSERT_EQ(base2.getFeatures().size(), 3);
     ASSERT_EQ(&base2.getFeatures().front(), &prop);
     ASSERT_EQ(base2.getOwnedMembers().size(), 2);

@@ -46,6 +46,7 @@ namespace UML{
             void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
             Class();
         public:
             virtual ~Class();

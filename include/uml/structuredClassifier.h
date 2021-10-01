@@ -16,6 +16,7 @@ namespace UML {
                 public:
                     AddOwnedAttributeFunctor(StructuredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Property& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,StructuredClassifier> {
                 public:
@@ -26,6 +27,7 @@ namespace UML {
                 public:
                     AddRoleFunctor(StructuredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(ConnectableElement& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveRoleFunctor : public TemplateAbstractSequenceFunctor<ConnectableElement,StructuredClassifier> {
                 public:
@@ -45,6 +47,7 @@ namespace UML {
             void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID);
+            void restoreReferences() override;
             StructuredClassifier();
         public:
             StructuredClassifier(const StructuredClassifier& clazz);

@@ -28,6 +28,18 @@ void StructuredClassifier::AddOwnedAttributeFunctor::operator()(Property& el) co
     updateCopiedSequenceAddedTo(el, &StructuredClassifier::getOwnedAttributes);
 }
 
+void StructuredClassifier::AddOwnedAttributeFunctor::operator()(ID id) const {
+    if (!m_el->getAttributes().count(id)) {
+        m_el->getAttributes().addByID(id);
+    }
+    if (!m_el->getRole().count(id)) {
+        m_el->getRole().addByID(id);
+    }
+    if (!m_el->getOwnedMembers().count(id)) {
+        m_el->getOwnedMembers().addByID(id);
+    }
+}
+
 void StructuredClassifier::RemoveOwnedAttributeFunctor::operator()(Property& el) const {
     if (el.getStructuredClassifier() == m_el) {
         el.setStructuredClassifier(0);
@@ -56,6 +68,12 @@ void StructuredClassifier::AddRoleFunctor::operator()(ConnectableElement& el) co
         m_el->getMembers().add(el);
     }
     updateCopiedSequenceAddedTo(el, &StructuredClassifier::getRole);
+}
+
+void StructuredClassifier::AddRoleFunctor::operator()(ID id) const {
+    if (!m_el->getMembers().count(id)) {
+        m_el->getMembers().addByID(id);
+    }
 }
 
 void StructuredClassifier::RemoveRoleFunctor::operator()(ConnectableElement& el) const {
@@ -91,6 +109,13 @@ void StructuredClassifier::referenceReindexed(ID oldID, ID newID) {
     if (m_parts.count(oldID)) {
         m_parts.reindex(oldID, newID, &StructuredClassifier::getParts);
     }
+}
+
+void StructuredClassifier::restoreReferences() {
+    Classifier::restoreReferences();
+    m_ownedAttributes.restoreReferences();
+    m_role.restoreReferences();
+    m_parts.restoreReferences();
 }
 
 StructuredClassifier::StructuredClassifier() {

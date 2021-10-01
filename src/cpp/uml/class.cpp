@@ -84,6 +84,12 @@ void Class::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void Class::restoreReferences() {
+    StructuredClassifier::restoreReferences();
+    m_ownedOperations.restoreReferences();
+    m_nestedClassifiers.restoreReferences();
+}
+
 Class::Class() {
     m_ownedOperations.addProcedures.push_back(new AddOwnedOperationFunctor(this));
     m_ownedOperations.removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));

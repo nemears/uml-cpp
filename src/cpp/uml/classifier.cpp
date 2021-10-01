@@ -190,6 +190,12 @@ void Classifier::AddInheritedMemberFunctor::operator()(NamedElement& el) const {
     updateCopiedSequenceAddedTo(el, &Classifier::getInheritedMembers);
 }
 
+void Classifier::AddInheritedMemberFunctor::operator()(ID id) const {
+    if (!m_el->getMembers().count(id)) {
+        m_el->getMembers().addByID(id);
+    }
+}
+
 void Classifier::RemoveInheritedMemberFunctor::operator()(NamedElement& el) const {
     if (m_el->getMembers().count(el.getID())) {
         m_el->getMembers().remove(el);
@@ -286,7 +292,7 @@ void Classifier::restoreReferences() {
     m_generals.restoreReferences();
     for (auto& general : m_generals) {
         for (auto& member : general.getMembers()) {
-            if (member.getVisibility() != VisibilityKind::PRIVATE && m_inheritedMembers.count(member.getID())) {
+            if (member.getVisibility() != VisibilityKind::PRIVATE && !m_inheritedMembers.count(member.getID())) {
                 m_inheritedMembers.addByID(member.getID());
             }
         }

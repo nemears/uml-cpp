@@ -79,6 +79,7 @@ namespace UML {
                 public:
                     AddInheritedMemberFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(NamedElement& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveInheritedMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Classifier> {
                 public:

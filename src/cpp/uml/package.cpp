@@ -32,10 +32,10 @@ void Package::AddPackageMergeFunctor::operator()(PackageMerge& el) const {
 }
 
 void Package::AddPackageMergeFunctor::operator()(ID id) const {
-    if (m_el->getDirectedRelationships().count(id)) {
+    if (!m_el->getDirectedRelationships().count(id)) {
         m_el->getDirectedRelationships().addByID(id);
     }
-    if (m_el->getOwnedElements().count(id)) {
+    if (!m_el->getOwnedElements().count(id)) {
         m_el->getOwnedElements().addByID(id);
     }
 }

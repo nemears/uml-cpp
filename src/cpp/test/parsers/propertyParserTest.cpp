@@ -297,4 +297,11 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
     ASSERT_EQ(redefined2.getClassifierRef().getID(), b.getID());
     ASSERT_TRUE(redefined2.hasFeaturingClassifier());
     ASSERT_EQ(redefined2.getFeaturingClassifierRef().getID(), b.getID());
+
+    ID propID = prop2.getID();
+
+    m.release(prop2, defaultValue);
+    Property& prop3 = m.aquire(propID)->as<Property>();
+    ASSERT_TRUE(prop3.hasDefaultValue());
+    ASSERT_TRUE(prop3.getDefaultValueRef().isSubClassOf(ElementType::LITERAL_STRING));
 }

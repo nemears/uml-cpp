@@ -55,6 +55,10 @@ namespace UML {
         // sets up yaml emitter for emitting to a new file and emits
         void emitToFile(Element& el, EmitterMetaData& data, std::string path, std::string fileName);
 
+        namespace {
+            Element* parseExternalAddToManager(ParserMetaData& data, std::string path); 
+        }
+
         // Singleton parser functors (cannot be in anonymous namespace)
         template <class T = Element, class U = Element> class parseAndSetSingletonFunctor {
             protected:
@@ -92,8 +96,6 @@ namespace UML {
         namespace {
 
             Element* parseNode(YAML::Node node, ParserMetaData& data);
-
-            Element* parseExternalAddToManager(ParserMetaData& data, std::string path);
 
             void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
             void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);

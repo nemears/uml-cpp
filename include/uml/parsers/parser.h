@@ -55,6 +55,39 @@ namespace UML {
         // sets up yaml emitter for emitting to a new file and emits
         void emitToFile(Element& el, EmitterMetaData& data, std::string path, std::string fileName);
 
+        // Singleton parser functors (cannot be in anonymous namespace)
+        template <class T = Element, class U = Element> class parseAndSetSingletonFunctor {
+            protected:
+                Singleton<T, U> U::* m_signature;
+            public:
+                void operator()(YAML::Node node, ParserMetaData& data, U& el) {
+                    if (data.m_strategy == ParserStrategy::WHOLE) {
+                        Element* packagedEl = parseExternalAddToManager(data, node.as<std::string>());
+                        if (packagedEl == 0) {
+                            throw UmlParserException("Could not identify YAML node for packaged elements", data.m_path.string(), node);
+                        }
+                        (el.*m_signature).set(packagedEl->as<T>());
+                    }
+                    else {
+                        std::string path = node.as<std::string>();
+                        std::string idStr = path.substr(path.find_last_of("/") + 1, path.find_last_of("/") + 29);
+                        if (isValidID(idStr)) {
+                            ID id = ID::fromString(idStr);
+                            (el.*m_signature).m_id = id;
+                            // TODO may need similar operator()(ID id) in SingletonProcedures
+                        }
+                        else {
+                            throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);
+                        }
+                    }
+            };
+        };
+
+        class SetDefaultValue : public parseAndSetSingletonFunctor<ValueSpecification, Property> {
+            public:
+                SetDefaultValue();
+        };
+
         // anonymous functions
         namespace {
 

@@ -95,6 +95,10 @@ void emitToFile(Element& el, EmitterMetaData& data, string path, string fileName
     data.m_fileName = cFile;
 }
 
+SetDefaultValue::SetDefaultValue() {
+    m_signature = &Property::m_defaultValue;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -1290,7 +1294,8 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
         if (node["defaultValue"].IsMap()) {
             prop.setDefaultValue(&determineAndParseValueSpecification(node["defaultValue"], data));
         } else if (node["defaultValue"].IsScalar()) {
-            prop.setDefaultValue(&parseScalar<ValueSpecification>(node["defaultValue"], data));
+            SetDefaultValue setDefaultValue;
+            setDefaultValue(node["defaultValue"], data, prop);
         } else {
             throw UmlParserException("Invalid yaml node type for property default value entry, must be Map or scalar!", data.m_path.string(), node["defaultValue"]);
         }

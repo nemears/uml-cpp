@@ -14,6 +14,9 @@ namespace UML{
     class Association;
     class Class;
     class Artifact;
+    namespace Parsers {
+        class SetDefaultValue;
+    }
 
     enum class AggregationKind {
         NONE,
@@ -23,6 +26,7 @@ namespace UML{
 
     class Property: public StructuralFeature, public ConnectableElement , public DeploymentTarget {
         friend class UmlManager;
+        friend class Parsers::SetDefaultValue;
         protected:
             AggregationKind m_aggregation;
             bool m_composite;

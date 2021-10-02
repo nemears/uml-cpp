@@ -10,6 +10,10 @@ namespace UML {
     class Type;
     template <class V, class W> class TemplateAbstractSequenceFunctor;
 
+    namespace Parsers {
+        template <class V, class W> class parseAndSetSingletonFunctor;
+    }
+
     template <class T = Element> class SingletonProcedure {
         public:
             virtual void operator()(T* el) const = 0;
@@ -35,6 +39,7 @@ namespace UML {
         template <class V, class W> friend class TemplateAbstractSequenceFunctor;
         friend class Classifier;
         friend class Type;
+        template <class V, class W> friend class Parsers::parseAndSetSingletonFunctor;
 
         public:
             Singleton<T,U> U::*m_signature;

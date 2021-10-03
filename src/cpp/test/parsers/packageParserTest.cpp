@@ -319,5 +319,5 @@ TEST_F(PackageParserTest, mountAndEditPackageTest) {
     ASSERT_EQ(stereotype2.getOwner(), &c2);
 
     m.release(merge2, c2);
-    ASSERT_EQ(profileApplication2.getApplyingPackageRef().getProfileApplications().front(), merged);
+    ASSERT_EQ(profileApplication2.getApplyingPackageRef().getPackageMerge().front().getMergedPackageRef(), merged);
 }

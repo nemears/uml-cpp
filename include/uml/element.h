@@ -167,6 +167,7 @@ namespace UML {
             Sequence<Comment>* m_ownedComments;
             Sequence<InstanceSpecification>* m_appliedStereotype;
             void setOwner(Element* el);
+            void setOwnerByID(ID id);
             static bool isSameOrNull(ID id, Element* el);
             virtual void referencingReleased(ID id);
             void setReference(Element* referencing);

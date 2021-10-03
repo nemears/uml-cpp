@@ -15,6 +15,7 @@ namespace UML {
                 public:
                     AddRelatedElementFunctor(DirectedRelationship* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveRelatedElementFunctor : public TemplateAbstractSequenceFunctor<Element,DirectedRelationship> {
                 public:
@@ -44,6 +45,7 @@ namespace UML {
             void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
             DirectedRelationship();
         public:
             DirectedRelationship(const DirectedRelationship& relationship);

@@ -92,6 +92,15 @@ void Generalization::AddSpecificProcedure::operator()(Classifier* el) const {
     }
 }
 
+void Generalization::AddSpecificProcedure::operator()(ID id) const {
+    if (!m_me->getSources().count(id)) {
+        m_me->getSources().addByID(id);
+    }
+    if (m_me->getOwnerID() != id) {
+        m_me->setOwnerByID(id);
+    }
+}
+
 void Generalization::referenceReindexed(ID oldID, ID newID) {
     DirectedRelationship::referenceReindexed(oldID, newID);
     if (m_general.id() == oldID) {

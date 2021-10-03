@@ -7,9 +7,14 @@ namespace UML {
 
     class Classifier;
 
+    namespace Parsers {
+        class SetSpecific;
+    }
+
     class Generalization : public DirectedRelationship {
 
         friend class UmlManager;
+        friend class Parsers::SetSpecific;
 
         protected:
             Singleton<Classifier, Generalization> m_general = Singleton<Classifier, Generalization>(this);
@@ -32,6 +37,7 @@ namespace UML {
                 public:
                     AddSpecificProcedure(Generalization* me) : AbstractSingletonProcedure<Classifier, Generalization>(me) {};
                     void operator()(Classifier* el) const override;
+                    void operator()(ID id) const override;
             };
             Singleton<Classifier, Generalization> m_specific = Singleton<Classifier, Generalization>(this);
             void referenceReindexed(ID oldID, ID newID) override;

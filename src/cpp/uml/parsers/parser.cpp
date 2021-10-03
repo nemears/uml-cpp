@@ -97,6 +97,10 @@ SetDefaultValue::SetDefaultValue() {
     m_signature = &Property::m_defaultValue;
 }
 
+SetSpecific::SetSpecific() {
+    m_signature = &Generalization::m_specific;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -344,7 +348,9 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
             if (data.m_manager->loaded(specificID)) {
                 ret->as<Generalization>().setSpecific(data.m_manager->get<Classifier>(specificID));
             } else {
-                throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["specific"]);
+                SetSpecific setSpecific;
+                setSpecific(node["specific"], data ,ret->as<Generalization>());
+                //throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["specific"]);
             }
         }
     }

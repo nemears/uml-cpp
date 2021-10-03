@@ -4,10 +4,17 @@
 
 namespace UML {
     namespace Parsers {
+
         class SetDefaultValue : public parseAndSetSingletonFunctor<ValueSpecification, Property> {
             public:
                 SetDefaultValue();
         };
+
+        class SetSpecific : public parseAndSetSingletonFunctor<Classifier, Generalization> {
+            public:
+                SetSpecific();
+        };
+
     }
 }
 

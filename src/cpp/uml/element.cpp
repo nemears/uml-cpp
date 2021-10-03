@@ -662,6 +662,12 @@ void Element::setOwner(Element* owner) {
     }
 }
 
+void Element::setOwnerByID(ID id) {
+    m_ownerID = id;
+    m_ownerPtr = 0;
+    setReference(id);
+}
+
 Sequence<Element>& Element::getOwnedElements() {
     return *m_ownedElements;
 }

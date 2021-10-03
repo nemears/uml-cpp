@@ -13,6 +13,12 @@ void DirectedRelationship::AddRelatedElementFunctor::operator()(Element& el) con
     }
 }
 
+void DirectedRelationship::AddRelatedElementFunctor::operator()(ID id) const {
+    if (!m_el->getRelatedElements().count(id)) {
+        m_el->getRelatedElements().addByID(id);
+    }
+}
+
 void DirectedRelationship::RemoveRelatedElementFunctor::operator()(Element& el) const {
     if (dynamic_cast<DirectedRelationship*>(m_el)->getRelatedElements().count(el.getID())) {
         dynamic_cast<DirectedRelationship*>(m_el)->getRelatedElements().internalRemove(el);
@@ -59,6 +65,12 @@ void DirectedRelationship::referenceReindexed(ID oldID, ID newID) {
     if (m_targets.count(oldID)) {
         m_targets.reindex(oldID, newID, &DirectedRelationship::getTargets);
     }
+}
+
+void DirectedRelationship::restoreReferences() {
+    Relationship::restoreReferences();
+    m_sources.restoreReferences();
+    m_targets.restoreReferences();
 }
 
 DirectedRelationship::DirectedRelationship() {

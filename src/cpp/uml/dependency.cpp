@@ -47,6 +47,13 @@ void Dependency::referenceReindexed(ID oldID, ID newID) {
     Relationship::referenceReindexed(oldID, newID);
 }
 
+void Dependency::restoreReferences() {
+    PackageableElement::restoreReferences();
+    DirectedRelationship::restoreReferences();
+    m_client.restoreReferences();
+    m_supplier.restoreReferences();
+}
+
 Dependency::Dependency() {
     m_client.addProcedures.push_back(new AddClientFunctor(this));
     m_client.removeProcedures.push_back(new RemoveClientFunctor(this));

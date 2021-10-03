@@ -446,4 +446,23 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(gen2.getTargets().front(), base2);
     ASSERT_TRUE(gen2.getRelatedElements().count(base2.getID()));
     ASSERT_EQ(gen2.getRelatedElements().get(base2.getID()), base2);
+
+    ID genID = gen2.getID();
+    m.release(gen2, spec2);
+    Generalization& gen3 = m.aquire(genID)->as<Generalization>();
+    ASSERT_TRUE(gen3.hasSpecific());
+    Class& spec3 = gen3.getSpecificRef().as<Class>();
+    ASSERT_EQ(gen3.getSources().size(), 1);
+    ASSERT_EQ(gen3.getSources().front(), spec3);
+    ASSERT_EQ(gen3.getRelatedElements().size(), 2);
+    ASSERT_TRUE(gen3.getRelatedElements().count(spec3.getID()));
+    ASSERT_EQ(gen3.getRelatedElements().get(spec3.getID()), spec3);
+    ASSERT_TRUE(gen3.hasOwner());
+    ASSERT_EQ(gen3.getOwnerRef(), spec3);
+    ASSERT_TRUE(gen3.hasGeneral());
+    ASSERT_EQ(gen3.getGeneralRef(), base2);
+    ASSERT_EQ(gen3.getTargets().size(), 1);
+    ASSERT_EQ(gen3.getTargets().front(), base2);
+    ASSERT_TRUE(gen3.getRelatedElements().count(base2.getID()));
+    ASSERT_EQ(gen3.getRelatedElements().get(base2.getID()), base2);
 }

@@ -42,6 +42,7 @@
 #include "uml/deployment.h"
 #include "uml/artifact.h"
 #include "uml/manifestation.h"
+#include "uml/parsers/singletonFunctors.h"
 
 using namespace std;
 

@@ -62,9 +62,9 @@ namespace UML {
         // Singleton parser functors (cannot be in anonymous namespace)
         template <class T = Element, class U = Element> class parseAndSetSingletonFunctor {
             protected:
-                Singleton<T, U> U::* m_signature;
+                Singleton<T, U> U::* m_signature = 0;
             public:
-                void operator()(YAML::Node node, ParserMetaData& data, U& el) {
+                void operator()(YAML::Node node, ParserMetaData& data, U& el) const {
                     if (data.m_strategy == ParserStrategy::WHOLE) {
                         Element* packagedEl = parseExternalAddToManager(data, node.as<std::string>());
                         if (packagedEl == 0) {
@@ -85,11 +85,6 @@ namespace UML {
                         }
                     }
             };
-        };
-
-        class SetDefaultValue : public parseAndSetSingletonFunctor<ValueSpecification, Property> {
-            public:
-                SetDefaultValue();
         };
 
         // anonymous functions

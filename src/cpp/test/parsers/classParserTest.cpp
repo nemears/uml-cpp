@@ -407,7 +407,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
 
     ASSERT_EQ(spec2.getGeneralizations().size(), 1);
     ASSERT_EQ(&spec2.getGeneralizations().front(), &gen);
-    ASSERT_EQ(spec2.getDirectedRelationships().size(),1);
+    ASSERT_EQ(spec2.getDirectedRelationships().size(), 1);
     ASSERT_EQ(&spec2.getDirectedRelationships().front(), &gen);
     ASSERT_EQ(spec2.getRelationships().size(), 1);
     ASSERT_EQ(&spec2.getRelationships().front(), &gen);
@@ -427,4 +427,17 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(spec2.getOwnedElements().size(), 2);
     ASSERT_EQ(&spec2.getOwnedElements().front(), &gen);
     ASSERT_EQ(&spec2.getOwnedElements().get(1), &nestSpec);
+
+    m.release(gen);
+    ASSERT_EQ(spec2.getGeneralizations().size(), 1);
+    Generalization& gen2 = spec2.getGeneralizations().front();
+    ASSERT_TRUE(gen2.hasSpecific());
+    ASSERT_EQ(gen2.getSpecificRef(), spec2);
+    ASSERT_EQ(gen2.getSources().size(), 1);
+    ASSERT_EQ(gen2.getSources().front(), spec2);
+    ASSERT_EQ(gen2.getRelatedElements().size(), 2);
+    ASSERT_TRUE(gen2.getRelatedElements().count(spec2.getID()));
+    ASSERT_EQ(gen2.getRelatedElements().get(spec2.getID()), spec2);
+    ASSERT_TRUE(gen2.hasOwner());
+    ASSERT_EQ(gen2.getOwnerRef(), spec2);
 }

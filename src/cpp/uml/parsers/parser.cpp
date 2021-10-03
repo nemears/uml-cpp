@@ -176,6 +176,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &exp;
     }
 
+    if (node["generalization"]) {
+        Generalization& generalization = data.m_manager->create<Generalization>();
+        parseGeneralization(node["generalization"], generalization, data);
+        ret = &generalization;
+    }
+
     if (node["instanceSpecification"]) {
         InstanceSpecification& inst = data.m_manager->create<InstanceSpecification>();
         parseInstanceSpecification(node["instanceSpecification"], inst, data);
@@ -331,6 +337,14 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                 data.m_manager->get<Property>(owningPropertyID).setDefaultValue(ret->as<ValueSpecification>());
             } else {
                 throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["owningProperty"]);
+            }
+        }
+        if (node["specific"]) {
+            ID specificID = ID::fromString(node["specific"].as<string>());
+            if (data.m_manager->loaded(specificID)) {
+                ret->as<Generalization>().setSpecific(data.m_manager->get<Classifier>(specificID));
+            } else {
+                throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["specific"]);
             }
         }
     }
@@ -597,10 +611,16 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             if (el.hasOwner()) {
                 if (el.getOwnerRef().isSubClassOf(ElementType::PROPERTY)) {
                     if (el.getOwnerRef().as<Property>().getDefaultValueID() == el.getID()) {
-                        emitter << YAML::Key << "owningProperty" << YAML::Value << el.getOwnerRef().getID().string();
+                        emitter << YAML::Key << "owningProperty" << YAML::Value << el.getOwnerID().string();
                         return;
                     }
                 }
+            }
+        }
+        if (el.isSubClassOf(ElementType::GENERALIZATION)) {
+            if (el.as<Generalization>().hasSpecific()) {
+                emitter << YAML::Key << "specific" << YAML::Value << el.as<Generalization>().getSpecificID().string();
+                return;
             }
         }
     }

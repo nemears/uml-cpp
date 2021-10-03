@@ -350,9 +350,17 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
             } else {
                 SetSpecific setSpecific;
                 setSpecific(node["specific"], data ,ret->as<Generalization>());
-                //throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["specific"]);
             }
         }
+        if (node["nestingClass"]) {
+            ID nestingClassID = ID::fromString(node["nestingClass"].as<string>());
+            if (data.m_manager->loaded(nestingClassID)) {
+                ret->as<Classifier>().setNamespace(data.m_manager->get<Class>(nestingClassID));
+            } else {
+                throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["nestingClass"]);
+            }
+        }
+
     }
 
     return ret;
@@ -627,6 +635,16 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             if (el.as<Generalization>().hasSpecific()) {
                 emitter << YAML::Key << "specific" << YAML::Value << el.as<Generalization>().getSpecificID().string();
                 return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::CLASSIFIER)) {
+            if (el.hasOwner()) {
+                if (el.getOwnerRef().isSubClassOf(ElementType::CLASS)) {
+                    if (el.getOwnerRef().as<Class>().getNestedClassifiers().count(el.getID())) {
+                        emitter << YAML::Key << "nestingClass" << YAML::Value << el.getOwnerID().string();
+                        return;
+                    }
+                }
             }
         }
     }

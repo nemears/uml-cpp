@@ -465,4 +465,20 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(gen3.getTargets().front(), base2);
     ASSERT_TRUE(gen3.getRelatedElements().count(base2.getID()));
     ASSERT_EQ(gen3.getRelatedElements().get(base2.getID()), base2);
+
+    m.release(nestSpec);
+    Class& nestSpec2 = spec3.getNestedClassifiers().front().as<Class>();
+    ASSERT_TRUE(nestSpec2.hasNamespace());
+    ASSERT_EQ(nestSpec2.getNamespaceRef(), spec3);
+    ASSERT_EQ(nestSpec2.getMemberNamespace().size(), 1);
+    ASSERT_TRUE(nestSpec2.getMemberNamespace().count(spec3.getID()));
+    ASSERT_EQ(nestSpec2.getMemberNamespace().front(), spec3);
+    ASSERT_TRUE(nestSpec2.hasOwner());
+    ASSERT_EQ(nestSpec2.getOwnerRef(), spec3);
+    
+    ASSERT_EQ(spec3.getNestedClassifiers().size(), 1);
+    ASSERT_EQ(spec3.getNestedClassifiers().front(), nestSpec2);
+    ASSERT_TRUE(spec3.getOwnedMembers().count(nestSpec2.getID()));
+    ASSERT_TRUE(spec3.getMembers().count(nestSpec2.getID()));
+    ASSERT_TRUE(spec3.getOwnedElements().count(nestSpec2.getID()));
 }

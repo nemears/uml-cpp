@@ -210,6 +210,9 @@ Element* UmlManager::parse(string path) {
     m_path = path;
     Parsers::ParserMetaData data(this);
     Element* el = Parsers::parse(data);
+    if (!getRoot()) {
+       setRoot(el);
+    }
     return el;
 }
 

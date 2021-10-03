@@ -502,4 +502,44 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_TRUE(spec4.getOwnedMembers().count(nestSpec3.getID()));
     ASSERT_TRUE(spec4.getMembers().count(nestSpec3.getID()));
     ASSERT_TRUE(spec4.getOwnedElements().count(nestSpec3.getID()));
+
+    m.release(op);
+    ASSERT_EQ(base2.getOwnedOperations().size(), 1);
+    Operation& op2 = base2.getOwnedOperations().front();
+    ASSERT_TRUE(op2.hasClass());
+    ASSERT_EQ(op2.getClassRef(), base2);
+    ASSERT_TRUE(op2.hasFeaturingClassifier(), base2);
+    ASSERT_EQ(op2.getFeaturingClassifierRef(), base2);
+    ASSERT_TRUE(op2.hasNamespace());
+    ASSERT_EQ(op2.getNamespaceRef(), base2);
+    ASSERT_EQ(op2.getMemberNamespace().size(), 2);
+    ASSERT_TRUE(op2.getMemberNamespace().count(base2));
+    ASSERT_TRUE(op2.getMemberNamespace().count(spec4));
+    ASSERT_TRUE(op2.hasOwner());
+    ASSERT_EQ(op2.getOwnerRef(), base2);
+
+    ASSERT_TRUE(base2.getFeatures().count(op2.getID()));
+    ASSERT_TRUE(base2.getOwnedMembers().count(op2.getID()));
+    ASSERT_TRUE(base2.getMembers().count(op2.getID()));
+    ASSERT_TRUE(base2.getOwnedElements().count(op2.getID()));
+
+    ID opID = op2.getID();
+    m.release(base2, op);
+    Operation& op3 = m.aquire(opID)->as<Operation>();
+    ASSERT_TRUE(op3.hasClass());
+    Class& base3 = op3.getClassRef();
+    ASSERT_TRUE(op3.hasFeaturingClassifier(), base3);
+    ASSERT_EQ(op3.getFeaturingClassifierRef(), base3);
+    ASSERT_TRUE(op3.hasNamespace());
+    ASSERT_EQ(op3.getNamespaceRef(), base3);
+    ASSERT_EQ(op3.getMemberNamespace().size(), 2);
+    ASSERT_TRUE(op3.getMemberNamespace().count(base3));
+    ASSERT_TRUE(op3.getMemberNamespace().count(spec4));
+    ASSERT_TRUE(op3.hasOwner());
+    ASSERT_EQ(op3.getOwnerRef(), base3);
+
+    ASSERT_TRUE(base3.getFeatures().count(op3.getID()));
+    ASSERT_TRUE(base3.getOwnedMembers().count(op3.getID()));
+    ASSERT_TRUE(base3.getMembers().count(op3.getID()));
+    ASSERT_TRUE(base3.getOwnedElements().count(op3.getID()));
 }

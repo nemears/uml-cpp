@@ -481,4 +481,25 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_TRUE(spec3.getOwnedMembers().count(nestSpec2.getID()));
     ASSERT_TRUE(spec3.getMembers().count(nestSpec2.getID()));
     ASSERT_TRUE(spec3.getOwnedElements().count(nestSpec2.getID()));
+
+    ID nestSpecID = nestSpec2.getID();
+    ID specID = spec3.getID();
+    m.release(spec3, nestSpec2);
+    ASSERT_FALSE(m.loaded(specID));
+    Class& nestSpec3 = m.aquire(nestSpecID)->as<Class>();
+    ASSERT_TRUE(nestSpec3.hasNestingClass());
+    Class& spec4 = nestSpec3.getNestingClassRef();
+    ASSERT_TRUE(nestSpec3.hasNamespace());
+    ASSERT_EQ(nestSpec3.getNamespaceRef(), spec4);
+    ASSERT_EQ(nestSpec3.getMemberNamespace().size(), 1);
+    ASSERT_TRUE(nestSpec3.getMemberNamespace().count(spec4.getID()));
+    ASSERT_EQ(nestSpec3.getMemberNamespace().front(), spec4);
+    ASSERT_TRUE(nestSpec3.hasOwner());
+    ASSERT_EQ(nestSpec3.getOwnerRef(), spec4);
+
+    ASSERT_EQ(spec4.getNestedClassifiers().size(), 1);
+    ASSERT_EQ(spec4.getNestedClassifiers().front(), nestSpec3);
+    ASSERT_TRUE(spec4.getOwnedMembers().count(nestSpec3.getID()));
+    ASSERT_TRUE(spec4.getMembers().count(nestSpec3.getID()));
+    ASSERT_TRUE(spec4.getOwnedElements().count(nestSpec3.getID()));
 }

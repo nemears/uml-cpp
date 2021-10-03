@@ -101,6 +101,10 @@ SetSpecific::SetSpecific() {
     m_signature = &Generalization::m_specific;
 }
 
+SetNestingClass::SetNestingClass() {
+    m_signature = &Classifier::m_nestingClass;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -355,9 +359,10 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         if (node["nestingClass"]) {
             ID nestingClassID = ID::fromString(node["nestingClass"].as<string>());
             if (data.m_manager->loaded(nestingClassID)) {
-                ret->as<Classifier>().setNamespace(data.m_manager->get<Class>(nestingClassID));
+                ret->as<Classifier>().setNestingClass(data.m_manager->get<Class>(nestingClassID));
             } else {
-                throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["nestingClass"]);
+                SetNestingClass setNestingClass;
+                setNestingClass(node["nestingClass"], data, ret->as<Classifier>());
             }
         }
 
@@ -638,13 +643,9 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             }
         }
         if (el.isSubClassOf(ElementType::CLASSIFIER)) {
-            if (el.hasOwner()) {
-                if (el.getOwnerRef().isSubClassOf(ElementType::CLASS)) {
-                    if (el.getOwnerRef().as<Class>().getNestedClassifiers().count(el.getID())) {
-                        emitter << YAML::Key << "nestingClass" << YAML::Value << el.getOwnerID().string();
-                        return;
-                    }
-                }
+            if (el.as<Classifier>().hasNestingClass()) {
+                emitter << YAML::Key << "nestingClass" << YAML::Value << el.as<Classifier>().getNestingClassID().string();
+                return;
             }
         }
     }

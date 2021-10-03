@@ -13,6 +13,9 @@ namespace UML {
     class Property;
     class Feature;
     class InstanceSpecification;
+    namespace Parsers {
+        class SetNestingClass;
+    }
 
     /**
      * A Classifier represents a classification of instances according to their Features
@@ -21,6 +24,7 @@ namespace UML {
         friend class UmlManager;
         friend class InstanceSpecification;
         friend class Generalization;
+        friend class Parsers::SetNestingClass;
         protected:
             Sequence<Feature> m_features = Sequence<Feature>(this);
             Sequence<Property> m_attributes = Sequence<Property>(this);
@@ -96,6 +100,18 @@ namespace UML {
                     ClassifierRemoveMemberFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(NamedElement& el) const override;
             };
+            Singleton<Class, Classifier> m_nestingClass = Singleton<Class, Classifier>(this);
+            class RemoveNestingClassProcedure : public AbstractSingletonProcedure<Class, Classifier> {
+                public:
+                    RemoveNestingClassProcedure(Classifier* me) : AbstractSingletonProcedure<Class, Classifier>(me) {};
+                    void operator()(Class* el) const override;
+            };
+            class AddNestingClassProcedure : public AbstractSingletonProcedure<Class, Classifier> {
+                public:
+                    AddNestingClassProcedure(Classifier* me) : AbstractSingletonProcedure<Class, Classifier>(me) {};
+                    void operator()(Class* el) const override;
+                    void operator()(ID id) const override;
+            };
             void setManager(UmlManager* manager) override;
             void reindexName(std::string oldName, std::string newName) override;
             void referenceReindexed(ID oldID, ID newID) override;
@@ -119,6 +135,13 @@ namespace UML {
              **/
             Sequence<Classifier>& getGenerals();
             Sequence<NamedElement>& getInheritedMembers();
+            // TODO move NestingClass to protected
+            Class* getNestingClass();
+            Class& getNestingClassRef();
+            ID getNestingClassID() const;
+            bool hasNestingClass() const;
+            void setNestingClass(Class* clazz);
+            void setNestingClass(Class& clazz);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

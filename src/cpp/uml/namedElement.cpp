@@ -41,6 +41,15 @@ void NamedElement::AddNamespaceProcedures::operator()(Namespace* el) const {
     }
 }
 
+void NamedElement::AddNamespaceProcedures::operator()(ID id) const {
+    if (!m_me->getMemberNamespace().count(id)) {
+        m_me->getMemberNamespace().addByID(id);
+    }
+    if (m_me->getOwnerID() != id) {
+        m_me->setOwnerByID(id);
+    }
+}
+
 void NamedElement::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
     if (m_namespace.id() == oldID) {

@@ -2,6 +2,7 @@
 #include "uml/property.h"
 #include "uml/generalization.h"
 #include "uml/instanceSpecification.h"
+#include "uml/class.h"
 
 using namespace std;
 using namespace UML;
@@ -235,6 +236,27 @@ void Classifier::ClassifierRemoveMemberFunctor::operator()(NamedElement& el) con
     }
 }
 
+void Classifier::RemoveNestingClassProcedure::operator()(Class* el) const {
+    if (el->getNestedClassifiers().count(m_me->getID())) {
+        el->getNestedClassifiers().remove(*m_me);
+    }
+}
+
+void Classifier::AddNestingClassProcedure::operator()(Class* el) const {
+    if (!el->getNestedClassifiers().count(m_me->getID())) {
+        el->getNestedClassifiers().add(*m_me);
+    }
+    if (m_me->getNamespaceID() != el->getID()) {
+        m_me->setNamespace(el);
+    }
+}
+
+void Classifier::AddNestingClassProcedure::operator()(ID id) const {
+    if (m_me->getNamespaceID() != id) {
+        m_me->m_namespace.setByID(id);
+    }
+}
+
 void Classifier::setManager(UmlManager* manager) {
     Namespace::setManager(manager);
     RedefinableElement::setManager(manager); // not polymorphic
@@ -255,6 +277,9 @@ void Classifier::referencingReleased(ID id) {
     m_generalizations.elementReleased(id, &Classifier::getGeneralizations);
     m_generals.elementReleased(id, &Classifier::getGenerals);
     m_inheritedMembers.elementReleased(id, &Classifier::getInheritedMembers);
+    if (m_nestingClass.id() == id) {
+        m_nestingClass.release();
+    }
 }
 
 void Classifier::referenceReindexed(ID oldID, ID newID) {
@@ -275,6 +300,9 @@ void Classifier::referenceReindexed(ID oldID, ID newID) {
     }
     if (m_inheritedMembers.count(oldID)) {
         m_inheritedMembers.reindex(oldID, newID, &Classifier::getInheritedMembers);
+    }
+    if (m_nestingClass.id() == oldID) {
+        m_nestingClass.reindex(oldID, newID);
     }
 }
 
@@ -299,6 +327,7 @@ void Classifier::restoreReferences() {
     }
     m_features.restoreReferences();
     m_inheritedMembers.restoreReferences();
+    m_nestingClass.restoreReference();
 }
 
 Classifier::Classifier() {
@@ -315,6 +344,9 @@ Classifier::Classifier() {
     m_inheritedMembers.removeProcedures.push_back(new RemoveInheritedMemberFunctor(this));
     m_members.addProcedures.push_back(new ClassifierAddMemberFunctor(this));
     m_members.removeProcedures.push_back(new ClassifierRemoveMemberFunctor(this));
+    m_nestingClass.m_signature = &Classifier::m_nestingClass;
+    m_nestingClass.m_removeProcedures.push_back(new RemoveNestingClassProcedure(this));
+    m_nestingClass.m_addProcedures.push_back(new AddNestingClassProcedure(this));
 }
 
 Classifier::~Classifier() {
@@ -356,6 +388,12 @@ Element(clazz) {
     m_inheritedMembers.removeProcedures.push_back(new RemoveInheritedMemberFunctor(this));
     m_members.addProcedures.push_back(new ClassifierAddMemberFunctor(this));
     m_members.removeProcedures.push_back(new ClassifierRemoveMemberFunctor(this));
+    m_nestingClass = clazz.m_nestingClass;
+    m_nestingClass.m_me = this;
+    m_nestingClass.m_addProcedures.clear();
+    m_nestingClass.m_removeProcedures.clear();
+    m_nestingClass.m_removeProcedures.push_back(new RemoveNestingClassProcedure(this));
+    m_nestingClass.m_addProcedures.push_back(new AddNestingClassProcedure(this));
 }
 
 void Classifier::reindexName(string oldName, string newName) {
@@ -388,6 +426,30 @@ Sequence<Classifier>& Classifier::getGenerals() {
 
 Sequence<NamedElement>& Classifier::getInheritedMembers() {
     return m_inheritedMembers;
+}
+
+Class* Classifier::getNestingClass() {
+    return m_nestingClass.get();
+}
+
+Class& Classifier::getNestingClassRef() {
+    return m_nestingClass.getRef();
+}
+
+ID Classifier::getNestingClassID() const {
+    return m_nestingClass.id();
+}
+
+bool Classifier::hasNestingClass() const {
+    return m_nestingClass.has();
+}
+
+void Classifier::setNestingClass(Class* clazz) {
+    m_nestingClass.set(clazz);
+}
+
+void Classifier::setNestingClass(Class& clazz) {
+    m_nestingClass.set(clazz);
 }
 
 ElementType Classifier::getElementType() const {

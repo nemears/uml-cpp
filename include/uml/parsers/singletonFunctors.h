@@ -15,6 +15,11 @@ namespace UML {
                 SetSpecific();
         };
 
+        class SetNestingClass : public parseAndSetSingletonFunctor<Class, Classifier> {
+            public:
+                SetNestingClass();
+        };
+
     }
 }
 

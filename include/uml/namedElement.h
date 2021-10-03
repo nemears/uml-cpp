@@ -37,6 +37,7 @@ namespace UML{
                 public:
                     AddNamespaceProcedures(NamedElement* me) : AbstractSingletonProcedure<Namespace, NamedElement>(me) {};
                     void operator()(Namespace* el) const override;
+                    void operator()(ID id) const override;
             };
             Sequence<Namespace>* m_memberNamespace;
             // visibility defaults to public, don't think there is a none value

@@ -48,6 +48,10 @@ void Class::ClassRemoveOwnedAttributeFunctor::operator()(Property& el) const {
 }
 
 void Class::AddNestedClassifierFunctor::operator()(Classifier& el) const {
+    if (el.getNestingClassID() != m_el->getID()) {
+        el.setNestingClass(m_el);
+    }
+
     if (!m_el->getOwnedMembers().count(el.getID())) {
         m_el->getOwnedMembers().add(el);
     }
@@ -65,6 +69,10 @@ void Class::AddNestedClassifierFunctor::operator()(ID id) const {
 }
 
 void Class::RemoveNestedClassifierFunctor::operator()(Classifier& el) const {
+    if (el.getNestingClassID() == m_el->getID()) {
+        el.setNestingClass(0);
+    }
+
     if (m_el->getOwnedMembers().count(el.getID())) {
         m_el->getOwnedMembers().remove(el);
     }

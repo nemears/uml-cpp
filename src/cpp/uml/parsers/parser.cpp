@@ -325,6 +325,14 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                 }
             }
         }
+        if (node["owningProperty"]) {
+            ID owningPropertyID = ID::fromString(node["owningProperty"].as<string>());
+            if (data.m_manager->loaded(owningPropertyID)) {
+                data.m_manager->get<Property>(owningPropertyID).setDefaultValue(ret->as<ValueSpecification>());
+            } else {
+                throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["owningProperty"]);
+            }
+        }
     }
 
     return ret;
@@ -367,6 +375,7 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
 
 void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     emitter << YAML::BeginMap;
+    emitScope(emitter, el, data);
     switch(el.getElementType()) {
         case ElementType::ABSTRACTION : {
             emitElementDefenition(emitter, ElementType::ABSTRACTION, "abstraction", el, data);
@@ -384,11 +393,6 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         }
         case ElementType::CLASS : {
             Class& clazz = el.as<Class>();
-            if (data.m_strategy == EmitterStrategy::INDIVIDUAL) {
-                if (clazz.hasOwningPackage()) {
-                    emitter << YAML::Key << "owningPackage" << YAML::Value << clazz.getOwningPackageID().string();
-                }
-            }
             emitClass(emitter, clazz, data);
             break;
         }
@@ -436,9 +440,6 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         }
         case ElementType::INSTANCE_SPECIFICATION : {
             InstanceSpecification& inst = el.as<InstanceSpecification>();
-            if (inst.hasOwningPackage()) {
-                emitter << YAML::Key << "owningPackage" << YAML::Value << inst.getOwningPackageID().string();
-            }
             emitInstanceSpecification(emitter, inst, data);
             break;
         }
@@ -486,21 +487,11 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         }
         case ElementType::PACKAGE : {
             Package& pckg = el.as<Package>();
-            if (data.m_strategy != EmitterStrategy::WHOLE) {
-                if (pckg.hasOwningPackage()) {
-                    emitter << YAML::Key << "owningPackage" << pckg.getOwningPackageID().string();
-                }
-            }
             emitPackage(emitter, pckg, data);
             break;
         }
         case ElementType::PACKAGE_MERGE : {
             PackageMerge& pckgMerge = el.as<PackageMerge>();
-            if (data.m_strategy != EmitterStrategy::WHOLE) {
-                if (pckgMerge.hasReceivingPackage()) {
-                    emitter << YAML::Key << "receivingPackage" << pckgMerge.getReceivingPackageID().string();
-                }
-            }
             emitPackageMerge(emitter, pckgMerge, data);
             break;
         }
@@ -514,21 +505,11 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         }
         case ElementType::PROPERTY : {
             Property& property = el.as<Property>();
-            if (data.m_strategy != EmitterStrategy::WHOLE) {
-                if (property.hasClass()) {
-                    emitter << YAML::Key << "class" << property.getClassID().string();
-                }
-            }
             emitProperty(emitter, property, data);
             break;
         }
         case ElementType::PROFILE : {
             Profile& profile = el.as<Profile>();
-            if (data.m_strategy != EmitterStrategy::WHOLE) {
-                if (profile.hasOwningPackage()) {
-                    emitter << YAML::Key << "owningPackage" << profile.getOwningPackageID().string();
-                }
-            }
             emitElementDefenition(emitter, ElementType::PROFILE, "profile", profile, data);
             emitPackage(emitter, profile, data);
             emitElementDefenitionEnd(emitter, ElementType::PROFILE, profile);
@@ -536,11 +517,6 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         }
         case ElementType::PROFILE_APPLICATION : {
             ProfileApplication& profileApplication = el.as<ProfileApplication>();
-            if (data.m_strategy != EmitterStrategy::WHOLE) {
-                if (profileApplication.hasApplyingPackage()) {
-                    emitter << YAML::Key << "applyingPackage" << YAML::Value << profileApplication.getApplyingPackageID().string();
-                }
-            }
             emitProfileApplication(emitter, profileApplication, data);
             break;
         }
@@ -556,11 +532,6 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         }
         case ElementType::STEREOTYPE : {
             Stereotype& stereotype = el.as<Stereotype>();
-            if (data.m_strategy != EmitterStrategy::WHOLE) {
-                if (stereotype.hasOwningPackage()) {
-                    emitter << YAML::Key << "owningPackage" << stereotype.getOwningPackageID().string();
-                }
-            }
             emitElementDefenition(emitter, ElementType::STEREOTYPE, "stereotype", el, data);
             emitClass(emitter, stereotype, data);
             emitElementDefenitionEnd(emitter, ElementType::STEREOTYPE, el);
@@ -594,6 +565,45 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         }
     }
     emitter << YAML::EndMap;
+}
+
+void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
+    if (data.m_strategy == EmitterStrategy::INDIVIDUAL) {
+        if (el.isSubClassOf(ElementType::PACKAGEABLE_ELEMENT)) {
+            if (el.as<PackageableElement>().hasOwningPackage()) {
+                emitter << YAML::Key << "owningPackage" << el.as<PackageableElement>().getOwningPackageID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::PROFILE_APPLICATION)) {
+            if (el.as<ProfileApplication>().hasApplyingPackage()) {
+                emitter << YAML::Key << "applyingPackage" << YAML::Value << el.as<ProfileApplication>().getApplyingPackageID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::PACKAGE_MERGE)) {
+            if (el.as<PackageMerge>().hasReceivingPackage()) {
+                emitter << YAML::Key << "receivingPackage" << el.as<PackageMerge>().getReceivingPackageID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::PROPERTY)) {
+            if (el.as<Property>().hasClass()) {
+                emitter << YAML::Key << "class" << el.as<Property>().getClassID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::VALUE_SPECIFICATION)) {
+            if (el.hasOwner()) {
+                if (el.getOwnerRef().isSubClassOf(ElementType::PROPERTY)) {
+                    if (el.getOwnerRef().as<Property>().getDefaultValueID() == el.getID()) {
+                        emitter << YAML::Key << "owningProperty" << YAML::Value << el.getOwnerRef().getID().string();
+                        return;
+                    }
+                }
+            }
+        }
+    }
 }
 
 void emitElementDefenition(YAML::Emitter& emitter, ElementType eType, string yamlName, Element& el, EmitterMetaData& data) {

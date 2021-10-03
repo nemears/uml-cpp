@@ -83,7 +83,7 @@ namespace UML {
                             throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);
                         }
                     }
-            };
+                };
         };
 
         // anonymous functions
@@ -93,6 +93,7 @@ namespace UML {
 
             void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
             void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
+            void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
             void emitElementDefenition(YAML::Emitter& emitter, ElementType eType, std::string yamlName, Element& el, EmitterMetaData& data);
             void emitElementDefenitionEnd(YAML::Emitter& emitter, ElementType eType, Element& el);
 

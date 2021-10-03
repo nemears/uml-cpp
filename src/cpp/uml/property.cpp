@@ -18,6 +18,9 @@ void Property::AddDefaultValueProcedure::operator()(ValueSpecification* el) cons
     if (!m_me->getOwnedElements().count(el->getID())) {
         m_me->getOwnedElements().internalAdd(*el);
     }
+    if (el->getOwnerID() != m_me->getID()) {
+        el->setOwner(m_me);
+    }
 }
 
 void Property::AddDefaultValueProcedure::operator()(ID id) const {

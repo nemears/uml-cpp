@@ -8,11 +8,13 @@
 namespace UML {
 
     class OpaqueBehavior;
+    class Property;
 
     class ValueSpecification : public TypedElement , public PackageableElement {
 
         friend class UmlManager;
         friend class OpaqueBehavior;
+        friend class Property;
 
         protected:
             Singleton<Slot, ValueSpecification> m_owningSlot = Singleton<Slot, ValueSpecification>(this);

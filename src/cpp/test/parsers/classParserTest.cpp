@@ -440,4 +440,10 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(gen2.getRelatedElements().get(spec2.getID()), spec2);
     ASSERT_TRUE(gen2.hasOwner());
     ASSERT_EQ(gen2.getOwnerRef(), spec2);
+    ASSERT_TRUE(gen2.hasGeneral());
+    ASSERT_EQ(gen2.getGeneralRef(), base2);
+    ASSERT_EQ(gen2.getTargets().size(), 1);
+    ASSERT_EQ(gen2.getTargets().front(), base2);
+    ASSERT_TRUE(gen2.getRelatedElements().count(base2.getID()));
+    ASSERT_EQ(gen2.getRelatedElements().get(base2.getID()), base2);
 }

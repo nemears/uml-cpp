@@ -869,6 +869,7 @@ void SetGeneralFunctor::operator()(Element& el) const {
 }
 
 void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data) {
+    parseElement(node, general, data);
     if (node["specific"]) {
         // TODO error? should be specified in specific
     }

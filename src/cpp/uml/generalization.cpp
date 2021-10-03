@@ -68,6 +68,9 @@ void Generalization::AddSpecificProcedure::operator()(Classifier* el) const {
     if (!el->getGeneralizations().count(m_me->getID())) {
         el->getGeneralizations().add(*m_me);
     }
+    if (m_me->getOwnerID() != el->getID()) {
+        m_me->setOwner(el);
+    }
     /**bool setOwner = false;
     if (m_me->getOwner()) {
         setOwner = *m_me->getOwner() == *el;
@@ -107,6 +110,12 @@ void Generalization::referencingReleased(ID id) {
     if (m_specific.id() == id) {
         m_specific.release();
     }
+}
+
+void Generalization::restoreReferences() {
+    DirectedRelationship::restoreReferences();
+    m_general.restoreReference();
+    m_specific.restoreReference();
 }
 
 Generalization::Generalization() {

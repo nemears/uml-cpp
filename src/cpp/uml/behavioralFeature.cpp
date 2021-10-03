@@ -89,6 +89,12 @@ void BehavioralFeature::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void BehavioralFeature::restoreReferences() {
+    Namespace::restoreReferences();
+    Feature::restoreReferences();
+    // TODO
+}
+
 BehavioralFeature::BehavioralFeature() {
     m_methods.addProcedures.push_back(new AddMethodFunctor(this));
     m_methods.removeProcedures.push_back(new RemoveMethodFunctor(this));

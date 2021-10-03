@@ -35,6 +35,7 @@ namespace UML {
             void setManager(UmlManager* manager) override; // not polymorphic
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
             RedefinableElement();
         public:
             virtual ~RedefinableElement();

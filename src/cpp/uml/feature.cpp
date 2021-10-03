@@ -33,6 +33,11 @@ void Feature::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void Feature::restoreReferences() {
+    RedefinableElement::restoreReferences();
+    m_featuringClassifier.restoreReference();
+}
+
 Feature::Feature() {
     m_featuringClassifier.m_signature = &Feature::m_featuringClassifier;
     m_featuringClassifier.m_removeProcedures.push_back(new RemoveFeaturingClassifierProcedure(this));

@@ -300,10 +300,13 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
 
     ID propID = prop2.getID();
 
-    //m.release(prop2, defaultValue);
-    m.release(prop2);
-    m.release(defaultValue);
+    m.release(prop2, defaultValue);
     Property& prop3 = m.aquire(propID)->as<Property>();
     ASSERT_TRUE(prop3.hasDefaultValue());
     ASSERT_TRUE(prop3.getDefaultValueRef().isSubClassOf(ElementType::LITERAL_STRING));
+    ASSERT_EQ(prop3.getOwnedElements().size(), 1);
+    ASSERT_EQ(prop3.getOwnedElements().front(), prop3.getDefaultValueRef());
+    LiteralString& defaultValue2 = prop3.getDefaultValueRef().as<LiteralString>();
+    ASSERT_TRUE(defaultValue2.hasOwner());
+    ASSERT_EQ(defaultValue2.getOwnerRef(), prop3);
 }

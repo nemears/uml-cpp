@@ -14,6 +14,12 @@ void StructuralFeature::referenceReindexed(ID oldID, ID newID) {
     MultiplicityElement::referenceReindexed(oldID, newID);
 }
 
+void StructuralFeature::restoreReferences() {
+    TypedElement::restoreReferences();
+    MultiplicityElement::restoreReferences();
+    Feature::restoreReferences();
+}
+
 ElementType StructuralFeature::getElementType() const {
     return ElementType::STRUCTURAL_FEATURE;
 }

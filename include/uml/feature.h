@@ -23,7 +23,8 @@ namespace UML {
             bool m_static;
             void reindexName(std::string oldName, std::string newName) override;
             void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID);
+            void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
             Feature();
         public:
             Feature(const Feature& feature);

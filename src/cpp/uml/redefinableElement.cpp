@@ -42,6 +42,11 @@ void RedefinableElement::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void RedefinableElement::restoreReferences() {
+    m_redefinedElement.restoreReferences();
+    m_redefinitionContext.restoreReferences();
+}
+
 RedefinableElement::RedefinableElement() {
     m_redefinedElement.addProcedures.push_back(new AddRedefinedElementFunctor(this));
     m_redefinedElement.removeProcedures.push_back(new RemoveRedefinedElementFunctor(this));

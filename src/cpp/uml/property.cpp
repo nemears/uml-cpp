@@ -313,6 +313,7 @@ void Property::restoreReferences() {
     m_association.restoreReference();
     m_owningAssociation.restoreReference();
     m_artifact.restoreReference();
+    m_redefinedProperties.restoreReferences();
 }
 
 Property::Property() {

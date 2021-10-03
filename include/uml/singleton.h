@@ -17,6 +17,7 @@ namespace UML {
     template <class T = Element> class SingletonProcedure {
         public:
             virtual void operator()(T* el) const = 0;
+            virtual void operator()(ID id) const {};
     };
 
     template <class T = Element, class U = Element> class AbstractSingletonProcedure : public SingletonProcedure<T> {
@@ -131,9 +132,20 @@ namespace UML {
                     updateCopies();
                 }
             };
+
             void set(T& val) {
                 set(&val);
             };
+
+            void setByID(ID id) {
+                m_id = id;
+                m_ptr = 0;
+                m_me->setReference(id);
+                for (auto const& proc : m_addProcedures) {
+                    (*proc)(id);
+                }
+            };
+
             T* get() {
                 if (has()) {
                     if (!m_ptr) {

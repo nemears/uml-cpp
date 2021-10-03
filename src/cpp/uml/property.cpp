@@ -20,6 +20,12 @@ void Property::AddDefaultValueProcedure::operator()(ValueSpecification* el) cons
     }
 }
 
+void Property::AddDefaultValueProcedure::operator()(ID id) const {
+    if (!m_me->getOwnedElements().count(id)) {
+        m_me->getOwnedElements().addByID(id);
+    }
+}
+
 void Property::RemoveStructuredClassifierProcedure::operator()(StructuredClassifier* el) const {
     if (el->getOwnedAttributes().count(m_me->getID())) {
         el->getOwnedAttributes().remove(*m_me);
@@ -295,6 +301,18 @@ void Property::referenceReindexed(ID oldID, ID newID) {
     if (m_redefinedProperties.count(oldID)) {
         m_redefinedProperties.reindex(oldID, newID, &Property::getRedefinedProperties);
     }
+}
+
+void Property::restoreReferences() {
+    StructuralFeature::restoreReferences();
+    m_defaultValue.restoreReference();
+    m_classifier.restoreReference();
+    m_structuredClassifier.restoreReference();
+    m_dataType.restoreReference();
+    m_class.restoreReference();
+    m_association.restoreReference();
+    m_owningAssociation.restoreReference();
+    m_artifact.restoreReference();
 }
 
 Property::Property() {

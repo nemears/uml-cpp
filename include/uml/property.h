@@ -40,6 +40,7 @@ namespace UML{
                 public:
                     AddDefaultValueProcedure(Property* me) : AbstractSingletonProcedure<ValueSpecification, Property>(me) {};
                     void operator()(ValueSpecification* el) const override;
+                    void operator()(ID id) const override;
             };
             Singleton<StructuredClassifier, Property> m_structuredClassifier = Singleton<StructuredClassifier, Property>(this);
             class RemoveStructuredClassifierProcedure : public AbstractSingletonProcedure<StructuredClassifier, Property> {
@@ -149,6 +150,7 @@ namespace UML{
             void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
             Property();
         public:
             Property(const Property& prop);

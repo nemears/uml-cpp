@@ -300,7 +300,9 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
 
     ID propID = prop2.getID();
 
-    m.release(prop2, defaultValue);
+    //m.release(prop2, defaultValue);
+    m.release(prop2);
+    m.release(defaultValue);
     Property& prop3 = m.aquire(propID)->as<Property>();
     ASSERT_TRUE(prop3.hasDefaultValue());
     ASSERT_TRUE(prop3.getDefaultValueRef().isSubClassOf(ElementType::LITERAL_STRING));

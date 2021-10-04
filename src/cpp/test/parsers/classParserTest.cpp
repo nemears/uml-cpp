@@ -556,4 +556,48 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_TRUE(base3.getOwnedMembers().count(op3.getID()));
     ASSERT_TRUE(base3.getMembers().count(op3.getID()));
     ASSERT_TRUE(base3.getOwnedElements().count(op3.getID()));
+
+    ID propID = prop.getID();
+    m.release(prop);
+    ASSERT_TRUE(base3.getOwnedAttributes().count(propID));
+    Property& prop2 = base3.getOwnedAttributes().front();
+    ASSERT_TRUE(prop2.hasClass());
+    ASSERT_EQ(prop2.getClassRef(), base3);
+    ASSERT_TRUE(prop2.hasClassifier());
+    ASSERT_EQ(prop2.getClassifierRef(), base3);
+    ASSERT_TRUE(prop2.hasStructuredClassifier());
+    ASSERT_EQ(prop2.getStructuredClassifierRef(), base3);
+    ASSERT_TRUE(prop2.hasFeaturingClassifier());
+    ASSERT_EQ(prop2.getFeaturingClassifierRef(), base3);
+    ASSERT_TRUE(prop2.hasNamespace());
+    ASSERT_EQ(prop2.getNamespaceRef(), base3);
+    ASSERT_TRUE(prop2.hasOwner());
+    ASSERT_EQ(prop2.getOwnerRef(), base3);
+    ASSERT_EQ(base3.getOwnedAttributes().front(), prop2);
+    ASSERT_EQ(base3.getAttributes().front(), prop2);
+    ASSERT_EQ(base3.getFeatures().front(), prop2);
+    ASSERT_EQ(base3.getOwnedMembers().front(), prop2);
+    ASSERT_EQ(base3.getMembers().front(), prop2);
+    ASSERT_EQ(base3.getOwnedElements().front(), prop2);
+
+    m.release(base3, prop2);
+    Property& prop3 = m.aquire(propID)->as<Property>();
+    ASSERT_TRUE(prop3.hasClass());
+    Class& base4 = prop2.getClassRef();
+    ASSERT_TRUE(prop3.hasClassifier());
+    ASSERT_EQ(prop3.getClassifierRef(), base4);
+    ASSERT_TRUE(prop3.hasStructuredClassifier());
+    ASSERT_EQ(prop3.getStructuredClassifierRef(), base4);
+    ASSERT_TRUE(prop3.hasFeaturingClassifier());
+    ASSERT_EQ(prop3.getFeaturingClassifierRef(), base4);
+    ASSERT_TRUE(prop3.hasNamespace());
+    ASSERT_EQ(prop3.getNamespaceRef(), base4);
+    ASSERT_TRUE(prop3.hasOwner());
+    ASSERT_EQ(prop3.getOwnerRef(), base4);
+    ASSERT_EQ(base4.getOwnedAttributes().front(), prop3);
+    ASSERT_EQ(base4.getAttributes().front(), prop3);
+    ASSERT_EQ(base4.getFeatures().front(), prop3);
+    ASSERT_EQ(base4.getOwnedMembers().front(), prop3);
+    ASSERT_EQ(base4.getMembers().front(), prop3);
+    ASSERT_EQ(base4.getOwnedElements().front(), prop3);
 }

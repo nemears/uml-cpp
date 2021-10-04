@@ -20,6 +20,11 @@ namespace UML {
                 SetNestingClass();
         };
 
+        class OperationSetClass : public parseAndSetSingletonFunctor<Class, Operation> {
+            public:
+                OperationSetClass();
+        };
+
     }
 }
 

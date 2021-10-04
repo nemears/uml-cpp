@@ -32,6 +32,12 @@ void Operation::AddClassProcedure::operator()(Class* el) const {
     }
 }
 
+void Operation::AddClassProcedure::operator()(ID id) const {
+    if (m_me->getFeaturingClassifierID() != id) {
+        m_me->m_featuringClassifier.setByID(id);
+    }
+}
+
 void Operation::RemoveDataTypeProcedure::operator()(DataType* el) const {
     if (el->getOwnedOperation().count(m_me->getID())) {
         el->getOwnedOperation().remove(*m_me);

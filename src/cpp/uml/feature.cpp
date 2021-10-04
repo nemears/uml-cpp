@@ -19,6 +19,12 @@ void Feature::AddFeaturingClassifierProcedure::operator()(Classifier* el) const 
     }
 }
 
+void Feature::AddFeaturingClassifierProcedure::operator()(ID id) const {
+    if (m_me->getNamespaceID() != id) {
+        m_me->m_namespace.setByID(id);
+    }
+}
+
 void Feature::reindexName(string oldName, string newName) {
     if (getFeaturingClassifier()) {
         getFeaturingClassifier()->getFeatures().reindex(m_id, oldName, newName);

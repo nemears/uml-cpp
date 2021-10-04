@@ -19,6 +19,7 @@ namespace UML {
                 public:
                     AddFeaturingClassifierProcedure(Feature* me) : AbstractSingletonProcedure<Classifier, Feature>(me) {};
                     void operator()(Classifier* el) const override;
+                    void operator()(ID id) const override;
             };
             bool m_static;
             void reindexName(std::string oldName, std::string newName) override;

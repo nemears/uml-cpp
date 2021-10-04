@@ -105,6 +105,10 @@ SetNestingClass::SetNestingClass() {
     m_signature = &Classifier::m_nestingClass;
 }
 
+OperationSetClass::OperationSetClass() {
+    m_signature = &Operation::m_class;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -339,7 +343,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                         ret->as<Operation>().setClass(data.m_manager->get<Class>(owningClazzID));
                     }
                 } else {
-                    throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["class"]);
+                    if (ret->isSubClassOf(ElementType::PROPERTY)) {
+                        throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["class"]);
+                    } else if (ret->isSubClassOf(ElementType::OPERATION)) {
+                        OperationSetClass setClass;
+                        setClass(node["class"], data, ret->as<Operation>());
+                    }
                 }
             }
         }

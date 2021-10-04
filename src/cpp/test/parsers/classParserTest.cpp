@@ -508,7 +508,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     Operation& op2 = base2.getOwnedOperations().front();
     ASSERT_TRUE(op2.hasClass());
     ASSERT_EQ(op2.getClassRef(), base2);
-    ASSERT_TRUE(op2.hasFeaturingClassifier(), base2);
+    ASSERT_TRUE(op2.hasFeaturingClassifier());
     ASSERT_EQ(op2.getFeaturingClassifierRef(), base2);
     ASSERT_TRUE(op2.hasNamespace());
     ASSERT_EQ(op2.getNamespaceRef(), base2);
@@ -535,7 +535,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     Operation& op3 = m.aquire(opID)->as<Operation>();
     ASSERT_TRUE(op3.hasClass());
     Class& base3 = op3.getClassRef();
-    ASSERT_TRUE(op3.hasFeaturingClassifier(), base3);
+    ASSERT_TRUE(op3.hasFeaturingClassifier());
     ASSERT_EQ(op3.getFeaturingClassifierRef(), base3);
     ASSERT_TRUE(op3.hasNamespace());
     ASSERT_EQ(op3.getNamespaceRef(), base3);

@@ -25,6 +25,11 @@ namespace UML {
                 OperationSetClass();
         };
 
+        class PropertySetClass : public parseAndSetSingletonFunctor<Class, Property> {
+            public:
+                PropertySetClass();
+        };
+
     }
 }
 

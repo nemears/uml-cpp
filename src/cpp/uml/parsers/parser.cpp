@@ -109,6 +109,10 @@ OperationSetClass::OperationSetClass() {
     m_signature = &Operation::m_class;
 }
 
+PropertySetClass::PropertySetClass() {
+    m_signature = &Property::m_class;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -344,7 +348,8 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                     }
                 } else {
                     if (ret->isSubClassOf(ElementType::PROPERTY)) {
-                        throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["class"]);
+                        PropertySetClass setClass;
+                        setClass(node["class"], data, ret->as<Property>());
                     } else if (ret->isSubClassOf(ElementType::OPERATION)) {
                         OperationSetClass setClass;
                         setClass(node["class"], data, ret->as<Operation>());

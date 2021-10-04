@@ -16,6 +16,7 @@ namespace UML{
     class Artifact;
     namespace Parsers {
         class SetDefaultValue;
+        class PropertySetClass;
     }
 
     enum class AggregationKind {
@@ -27,6 +28,7 @@ namespace UML{
     class Property: public StructuralFeature, public ConnectableElement , public DeploymentTarget {
         friend class UmlManager;
         friend class Parsers::SetDefaultValue;
+        friend class Parsers::PropertySetClass;
         protected:
             AggregationKind m_aggregation;
             bool m_composite;
@@ -52,6 +54,7 @@ namespace UML{
                 public:
                     AddStructuredClassifierProcedure(Property* me) : AbstractSingletonProcedure<StructuredClassifier, Property>(me) {};
                     void operator()(StructuredClassifier* el) const override;
+                    void operator()(ID id) const override;
             };
             Singleton<Classifier, Property> m_classifier = Singleton<Classifier, Property>(this);
             class RemoveClassifierProcedure : public AbstractSingletonProcedure<Classifier, Property> {
@@ -63,6 +66,7 @@ namespace UML{
                 public:
                     AddClassifierProcedure(Property* me) : AbstractSingletonProcedure<Classifier, Property>(me) {};
                     void operator()(Classifier* el) const override;
+                    void operator()(ID id) const override;
             };
             Singleton<DataType, Property> m_dataType = Singleton<DataType, Property>(this);
             class RemoveDataTypeProcedure : public AbstractSingletonProcedure<DataType, Property> {
@@ -85,6 +89,7 @@ namespace UML{
                 public:
                     AddClassProcedure(Property* me) : AbstractSingletonProcedure<Class, Property>(me) {};
                     void operator()(Class* el) const override;
+                    void operator()(ID id) const override;
             };
             Singleton<Association, Property> m_association = Singleton<Association, Property>(this);
             class RemoveAssociationProcedure : public AbstractSingletonProcedure<Association, Property> {

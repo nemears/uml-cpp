@@ -44,6 +44,12 @@ void Property::AddStructuredClassifierProcedure::operator()(StructuredClassifier
     }
 }
 
+void Property::AddStructuredClassifierProcedure::operator()(ID id) const {
+    if (m_me->getClassifierID() != id) {
+        m_me->m_classifier.setByID(id);
+    }
+}
+
 void Property::RemoveClassifierProcedure::operator()(Classifier* el) const {
     if (el->getAttributes().count(m_me->getID())) {
         el->getAttributes().remove(*m_me);
@@ -61,6 +67,17 @@ void Property::AddClassifierProcedure::operator()(Classifier* el) const {
     }
     if (m_me->getFeaturingClassifierID() != el->getID()) {
         m_me->setFeaturingClassifier(el);
+    }
+}
+
+void Property::AddClassifierProcedure::operator()(ID id) const {
+    if (m_me->getFeaturingClassifierID() != id) {
+        m_me->m_featuringClassifier.setByID(id);
+    }
+    if (!m_me->getRedefinedProperties().empty()) {
+        if (!m_me->getRedefinitionContext().count(id)) {
+            m_me->getRedefinitionContext().addByID(id);
+        }
     }
 }
 
@@ -88,6 +105,12 @@ void Property::AddClassProcedure::operator()(Class* el) const {
     }
     if (m_me->getStructuredClassifierID() != el->getID()) {
         m_me->setStructuredClassifier(el);
+    }
+}
+
+void Property::AddClassProcedure::operator()(ID id) const {
+    if (m_me->getStructuredClassifierID() != id) {
+        m_me->m_structuredClassifier.setByID(id);
     }
 }
 

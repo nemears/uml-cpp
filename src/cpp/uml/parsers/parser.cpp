@@ -333,7 +333,11 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
             if (node["class"].IsScalar()) {
                 ID owningClazzID = ID::fromString(node["class"].as<string>());
                 if (data.m_manager->loaded(owningClazzID)) {
-                    ret->as<Property>().setClass(data.m_manager->get<Class>(owningClazzID));
+                    if (ret->isSubClassOf(ElementType::PROPERTY)) {
+                        ret->as<Property>().setClass(data.m_manager->get<Class>(owningClazzID));
+                    } else if (ret->isSubClassOf(ElementType::OPERATION)) {
+                        ret->as<Operation>().setClass(data.m_manager->get<Class>(owningClazzID));
+                    }
                 } else {
                     throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["class"]);
                 }
@@ -645,6 +649,12 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::CLASSIFIER)) {
             if (el.as<Classifier>().hasNestingClass()) {
                 emitter << YAML::Key << "nestingClass" << YAML::Value << el.as<Classifier>().getNestingClassID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::OPERATION)) {
+            if (el.as<Operation>().hasClass()) {
+                emitter << YAML::Key << "class" << YAML::Value << el.as<Operation>().getClassID().string();
                 return;
             }
         }

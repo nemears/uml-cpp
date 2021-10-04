@@ -184,6 +184,10 @@ Class& Operation::getClassRef() {
     return m_class.getRef();
 }
 
+ID Operation::getClassID() const {
+    return m_class.id();
+}
+
 bool Operation::hasClass() const {
     return m_class.has();
 }
@@ -204,6 +208,10 @@ DataType& Operation::getDataTypeRef() {
     return m_dataType.getRef();
 }
 
+ID Operation::getDataTypeID() const {
+    return m_dataType.id();
+}
+
 bool Operation::hasDataType() const {
     return m_dataType.has();
 }
@@ -222,6 +230,10 @@ Artifact* Operation::getArtifact() {
 
 Artifact& Operation::getArtifactRef() {
     return m_artifact.getRef();
+}
+
+ID Operation::getArtifactID() const {
+    return m_artifact.id();
 }
 
 bool Operation::hasArtifact() const {

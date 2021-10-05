@@ -531,7 +531,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_TRUE(base2.getOwnedElements().count(op2.getID()));
 
     ID opID = op2.getID();
-    m.release(base2, op);
+    m.release(base2, op2);
     Operation& op3 = m.aquire(opID)->as<Operation>();
     ASSERT_TRUE(op3.hasClass());
     Class& base3 = op3.getClassRef();
@@ -583,7 +583,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     m.release(base3, prop2);
     Property& prop3 = m.aquire(propID)->as<Property>();
     ASSERT_TRUE(prop3.hasClass());
-    Class& base4 = prop2.getClassRef();
+    Class& base4 = prop3.getClassRef();
     ASSERT_TRUE(prop3.hasClassifier());
     ASSERT_EQ(prop3.getClassifierRef(), base4);
     ASSERT_TRUE(prop3.hasStructuredClassifier());

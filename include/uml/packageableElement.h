@@ -28,9 +28,11 @@ namespace UML {
                 public:
                     AddOwningPackageProcedure(PackageableElement* me) : AbstractSingletonProcedure<Package, PackageableElement>(me) {};
                     void operator()(Package* el) const override;
+                    void operator()(ID id) const override;
             };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
             PackageableElement();
         public:
             PackageableElement(const PackageableElement& el);

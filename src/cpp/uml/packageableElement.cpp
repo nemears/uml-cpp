@@ -21,11 +21,29 @@ void PackageableElement::AddOwningPackageProcedure::operator()(Package* el) cons
     }
 }
 
+void PackageableElement::AddOwningPackageProcedure::operator()(ID id) const {
+    if (m_me->getNamespaceID() != id) {
+        m_me->m_namespace.setByID(id);
+    }
+}
+
 void PackageableElement::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
     if (m_owningPackage.id() == oldID) {
         m_owningPackage.reindex(oldID, newID);
     }
+}
+
+void PackageableElement::referencingReleased(ID id) {
+    Element::referencingReleased(id);
+    if (m_owningPackage.id() == id) {
+        m_owningPackage.release();
+    }
+}
+
+void PackageableElement::restoreReferences() {
+    NamedElement::restoreReferences();
+    m_owningPackage.restoreReference();
 }
 
 PackageableElement::PackageableElement() {
@@ -83,11 +101,4 @@ bool PackageableElement::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void PackageableElement::referencingReleased(ID id) {
-    Element::referencingReleased(id);
-    if (m_owningPackage.id() == id) {
-        m_owningPackage.release();
-    }
 }

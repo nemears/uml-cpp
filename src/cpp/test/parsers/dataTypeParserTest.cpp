@@ -135,7 +135,7 @@ TEST_F(DataTypeParserTest, mountAndEditDataType) {
     Package& root2 = baseType3.getOwningPackageRef();
     ASSERT_TRUE(baseType3.hasNamespace());
     ASSERT_EQ(baseType3.getNamespaceRef(), root2);
-    ASSERT_TRUE(baseType3.getMemberNamespace().count(baseTypeID));
+    ASSERT_TRUE(baseType3.getMemberNamespace().count(root2.getID()));
     ASSERT_TRUE(baseType3.hasOwner());
     ASSERT_EQ(baseType3.getOwnerRef(), root2);
 }

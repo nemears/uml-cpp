@@ -178,4 +178,40 @@ TEST_F(DataTypeParserTest, mountAndEditDataType) {
     ASSERT_TRUE(baseType4.getOwnedMembers().count(baseProp3.getID()));
     ASSERT_TRUE(baseType4.getMembers().count(baseProp3.getID()));
     ASSERT_TRUE(baseType4.getOwnedElements().count(baseProp3.getID()));
+
+    m.release(baseOp);
+    Operation& baseOp2 = baseType4.getOwnedOperation().front();
+    ASSERT_TRUE(baseOp2.hasDataType());
+    ASSERT_EQ(baseOp2.getDataTypeRef(), baseType4);
+    ASSERT_TRUE(baseOp2.hasFeaturingClassifier());
+    ASSERT_EQ(baseOp2.getFeaturingClassifierRef(), baseType4);
+    ASSERT_TRUE(baseOp2.hasNamespace());
+    ASSERT_EQ(baseOp2.getNamespaceRef(), baseType4);
+    ASSERT_TRUE(baseOp2.getMemberNamespace().count(baseType4));
+    ASSERT_TRUE(baseOp2.hasOwner());
+    ASSERT_EQ(baseOp2.getOwnerRef(), baseType4);
+    ASSERT_TRUE(baseType4.getOwnedOperation().count(baseOp2.getID()));
+    ASSERT_TRUE(baseType4.getFeatures().count(baseOp2.getID()));
+    ASSERT_TRUE(baseType4.getOwnedMembers().count(baseOp2.getID()));
+    ASSERT_TRUE(baseType4.getMembers().count(baseOp2.getID()));
+    ASSERT_TRUE(baseType4.getOwnedElements().count(baseOp2.getID()));
+
+    ID baseOpID = baseOp2.getID();
+    m.release(baseOp2, baseType3);
+    Operation& baseOp3 = m.aquire(baseOpID)->as<Operation>();
+    DataType& baseType5 = baseOp3.getDataTypeRef();
+    ASSERT_TRUE(baseOp3.hasDataType());
+    ASSERT_EQ(baseOp3.getDataTypeRef(), baseType5);
+    ASSERT_TRUE(baseOp3.hasFeaturingClassifier());
+    ASSERT_EQ(baseOp3.getFeaturingClassifierRef(), baseType5);
+    ASSERT_TRUE(baseOp3.hasNamespace());
+    ASSERT_EQ(baseOp3.getNamespaceRef(), baseType5);
+    ASSERT_TRUE(baseOp3.getMemberNamespace().count(baseType5));
+    ASSERT_TRUE(baseOp3.hasOwner());
+    ASSERT_EQ(baseOp3.getOwnerRef(), baseType5);
+    ASSERT_TRUE(baseType5.getOwnedOperation().count(baseOp3.getID()));
+    ASSERT_TRUE(baseType5.getFeatures().count(baseOp3.getID()));
+    ASSERT_TRUE(baseType5.getOwnedMembers().count(baseOp3.getID()));
+    ASSERT_TRUE(baseType5.getMembers().count(baseOp3.getID()));
+    ASSERT_TRUE(baseType5.getOwnedElements().count(baseOp3.getID()));
 }

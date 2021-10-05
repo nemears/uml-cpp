@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+ #include "gtest/gtest.h"
 #include "uml/parsers/parser.h"
 #include "test/yumlParsersTest.h"
 #include "uml/dataType.h"
@@ -97,4 +97,45 @@ TEST_F(DataTypeParserTest, emitDataTypeW_GeneralAndAttribute) {
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
+}
+
+TEST_F(DataTypeParserTest, mountAndEditDataType) {
+    UmlManager m;
+    DataType& baseType = m.create<DataType>();
+    DataType& specificType = m.create<DataType>();
+    Generalization& generalization = m.create<Generalization>();
+    Property& baseProp = m.create<Property>();
+    Operation& baseOp = m.create<Operation>();
+    Property& specProp = m.create<Property>();
+    Package& root = m.create<Package>();
+    generalization.setGeneral(baseType);
+    specificType.getGeneralizations().add(generalization);
+    baseType.getOwnedAttribute().add(baseProp);
+    baseType.getOwnedOperation().add(baseOp);
+    specificType.getOwnedAttribute().add(specProp);
+    specProp.getRedefinedProperties().add(baseProp);
+    root.getPackagedElements().add(baseType, specificType);
+    m.setRoot(&root);
+    m.mount(ymlPath + "packageParserTests");
+
+    m.release(baseType);
+    DataType& baseType2 = root.getPackagedElements().front().as<DataType>();
+    ASSERT_TRUE(baseType2.hasOwningPackage());
+    ASSERT_EQ(baseType2.getOwningPackageRef(), root);
+    ASSERT_TRUE(baseType2.hasNamespace());
+    ASSERT_EQ(baseType2.getNamespaceRef(), root);
+    ASSERT_TRUE(baseType2.getMemberNamespace().count(root.getID()));
+    ASSERT_TRUE(baseType2.hasNamespace());
+    ASSERT_EQ(baseType2.getNamespaceRef(), root);
+    
+    ID baseTypeID = baseType2.getID();
+    m.release(baseType2, root);
+    DataType& baseType3 = m.aquire(baseTypeID)->as<DataType>();
+    ASSERT_TRUE(baseType3.hasOwningPackage());
+    Package& root2 = baseType3.getOwningPackageRef();
+    ASSERT_TRUE(baseType3.hasNamespace());
+    ASSERT_EQ(baseType3.getNamespaceRef(), root2);
+    ASSERT_TRUE(baseType3.getMemberNamespace().count(baseTypeID));
+    ASSERT_TRUE(baseType3.hasOwner());
+    ASSERT_EQ(baseType3.getOwnerRef(), root2);
 }

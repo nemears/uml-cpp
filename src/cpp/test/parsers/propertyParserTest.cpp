@@ -298,6 +298,25 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
     ASSERT_TRUE(redefined2.hasFeaturingClassifier());
     ASSERT_EQ(redefined2.getFeaturingClassifierRef().getID(), b.getID());
 
+    ID redefinedID = redefined2.getID();
+    Type& stringType = redefined2.getTypeRef();
+    m.release(redefined2, stringType);
+    Property& redefined3 = m.aquire(redefinedID)->as<Property>();
+    ASSERT_EQ(prop2.getRedefinedProperties().size(), 1);
+    ASSERT_EQ(&prop2.getRedefinedProperties().front(), &redefined3);
+    ASSERT_EQ(prop2.getRedefinedElements().size(), 1);
+    ASSERT_EQ(&prop2.getRedefinedElements().front(), &redefined3);
+    ASSERT_TRUE(redefined3.getType() != 0);
+    ASSERT_EQ(redefined3.getType(), &m.get<Type>(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT")));
+    ASSERT_TRUE(redefined3.hasClass());
+    ASSERT_EQ(redefined3.getClassRef().getID(), b.getID());
+    ASSERT_TRUE(redefined3.hasStructuredClassifier());
+    ASSERT_EQ(redefined3.getStructuredClassifierRef().getID(), b.getID());
+    ASSERT_TRUE(redefined3.hasClassifier());
+    ASSERT_EQ(redefined3.getClassifierRef().getID(), b.getID());
+    ASSERT_TRUE(redefined3.hasFeaturingClassifier());
+    ASSERT_EQ(redefined3.getFeaturingClassifierRef().getID(), b.getID());
+
     ID propID = prop2.getID();
 
     m.release(prop2, defaultValue);

@@ -117,8 +117,12 @@ SetOwningPackage::SetOwningPackage() {
     m_signature = &PackageableElement::m_owningPackage;
 }
 
-SetDataType::SetDataType() {
+PropertySetDataType::PropertySetDataType() {
     m_signature = &Property::m_dataType;
+}
+
+OperationSetDataType::OperationSetDataType() {
+    m_signature = &Operation::m_dataType;
 }
 
 namespace {
@@ -372,10 +376,19 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
             if (node["dataType"].IsScalar()) {
                 ID dataTypeID = ID::fromString(node["dataType"].as<string>());
                 if (data.m_manager->loaded(dataTypeID)) {
-                    ret->as<Property>().setDataType(data.m_manager->get<DataType>(dataTypeID));
+                    if (ret->isSubClassOf(ElementType::PROPERTY)) {
+                        ret->as<Property>().setDataType(data.m_manager->get<DataType>(dataTypeID));
+                    } else if (ret->isSubClassOf(ElementType::OPERATION)) {
+                        ret->as<Operation>().setDataType(data.m_manager->get<DataType>(dataTypeID));
+                    }
                 } else {
-                    SetDataType setDataType;
-                    setDataType(node["dataType"], data, ret->as<Property>());
+                    if (ret->isSubClassOf(ElementType::PROPERTY)) {
+                        PropertySetDataType setDataType;
+                        setDataType(node["dataType"], data, ret->as<Property>());
+                    } else if (ret->isSubClassOf(ElementType::OPERATION)) {
+                        OperationSetDataType setDataType;
+                        setDataType(node["dataType"], data, ret->as<Operation>());
+                    }
                 }
             }
         }
@@ -695,6 +708,10 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::OPERATION)) {
             if (el.as<Operation>().hasClass()) {
                 emitter << YAML::Key << "class" << YAML::Value << el.as<Operation>().getClassID().string();
+                return;
+            }
+            if (el.as<Operation>().hasDataType()) {
+                emitter << YAML::Key << "dataType" << YAML::Value << el.as<Operation>().getDataTypeID().string();
                 return;
             }
         }

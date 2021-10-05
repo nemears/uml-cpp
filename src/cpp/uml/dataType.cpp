@@ -69,6 +69,15 @@ void DataType::AddOwnedOperationFunctor::operator()(Operation& el) const {
     updateCopiedSequenceAddedTo(el, &DataType::getOwnedOperation);
 }
 
+void DataType::AddOwnedOperationFunctor::operator()(ID id) const {
+    if (!m_el->getFeatures().count(id)) {
+        m_el->getFeatures().addByID(id);
+    }
+    if (!m_el->getOwnedMembers().count(id)) {
+        m_el->getOwnedMembers().addByID(id);
+    }
+}
+
 void DataType::RemoveOwnedOperationFunctor::operator()(Operation& el) const {
     if (m_el->getFeatures().count(el.getID())) {
         m_el->getFeatures().remove(el);

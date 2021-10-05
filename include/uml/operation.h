@@ -13,6 +13,7 @@ namespace UML {
     class Artifact;
     namespace Parsers {
         class OperationSetClass;
+        class OperationSetDataType;
     }
 
     class Operation : public BehavioralFeature , public TemplateableElement, public ParameterableElement {
@@ -20,6 +21,7 @@ namespace UML {
         friend class UmlManager;
         friend class Parameter;
         friend class Parsers::OperationSetClass;
+        friend class Parsers::OperationSetDataType;
 
         protected:
             Singleton<Type, Operation> m_type = Singleton<Type, Operation>(this);
@@ -55,6 +57,7 @@ namespace UML {
                 public:
                     AddDataTypeProcedure(Operation* me) : AbstractSingletonProcedure<DataType, Operation>(me) {};
                     void operator()(DataType* el) const override;
+                    void operator()(ID id) const override;
             };
             Singleton<Artifact, Operation> m_artifact = Singleton<Artifact, Operation>(this);
             class RemoveArtifactProcedure : public AbstractSingletonProcedure<Artifact, Operation> {

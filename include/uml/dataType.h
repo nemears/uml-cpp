@@ -24,6 +24,7 @@ namespace UML {
                 public:
                     AddOwnedOperationFunctor(DataType* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Operation& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveOwnedOperationFunctor : public TemplateAbstractSequenceFunctor<Operation,DataType> {
                 public:

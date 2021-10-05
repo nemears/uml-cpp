@@ -56,6 +56,12 @@ void Operation::AddDataTypeProcedure::operator()(DataType* el) const {
     }
 }
 
+void Operation::AddDataTypeProcedure::operator()(ID id) const {
+    if (m_me->m_featuringClassifier.id() != id) {
+        m_me->m_featuringClassifier.setByID(id);
+    }
+}
+
 void Operation::RemoveArtifactProcedure::operator()(Artifact* el) const {
     if (el->getOwnedOperations().count(m_me->getID())) {
         el->getOwnedOperations().remove(*m_me);

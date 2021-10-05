@@ -197,7 +197,7 @@ TEST_F(DataTypeParserTest, mountAndEditDataType) {
     ASSERT_TRUE(baseType4.getOwnedElements().count(baseOp2.getID()));
 
     ID baseOpID = baseOp2.getID();
-    m.release(baseOp2, baseType3);
+    m.release(baseOp2, baseType4);
     Operation& baseOp3 = m.aquire(baseOpID)->as<Operation>();
     DataType& baseType5 = baseOp3.getDataTypeRef();
     ASSERT_TRUE(baseOp3.hasDataType());

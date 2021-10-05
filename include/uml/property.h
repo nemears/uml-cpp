@@ -17,7 +17,7 @@ namespace UML{
     namespace Parsers {
         class SetDefaultValue;
         class PropertySetClass;
-        class SetDataType;
+        class PropertySetDataType;
     }
 
     enum class AggregationKind {
@@ -30,7 +30,7 @@ namespace UML{
         friend class UmlManager;
         friend class Parsers::SetDefaultValue;
         friend class Parsers::PropertySetClass;
-        friend class Parsers::SetDataType;
+        friend class Parsers::PropertySetDataType;
         protected:
             AggregationKind m_aggregation;
             bool m_composite;

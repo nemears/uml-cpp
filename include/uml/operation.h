@@ -73,6 +73,7 @@ namespace UML {
             void reindexName(std::string oldName, std::string newName) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
             Operation();
         public:
             Operation(const Operation& op);

@@ -54,6 +54,12 @@ void AddOwnedCommentFunctor::operator()(Comment& el) const {
     updateCopiedSequenceAddedTo(el, &Element::getOwnedComments);
 }
 
+void AddOwnedCommentFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedElements().count(id)) {
+        m_el->getOwnedElements().addByID(id);
+    }
+}
+
 void RemoveOwnedCommentFunctor::operator()(Comment& el) const {
     subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
     oppositeSingletonRemove(el, &Comment::m_owningElement);
@@ -700,4 +706,8 @@ void Element::referencingReleased(ID id) {
     }
 
     m_ownedElements->elementReleased(id, &Element::getOwnedElements);
+    m_relationships->elementReleased(id, &Element::getRelationships);
+    m_directedRelationships->elementReleased(id, &Element::getDirectedRelationships);
+    m_ownedComments->elementReleased(id, &Element::getOwnedComments);
+    m_appliedStereotype->elementReleased(id, &Element::getAppliedStereotypes);
 }

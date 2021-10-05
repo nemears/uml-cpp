@@ -45,6 +45,11 @@ namespace UML {
                 OperationSetDataType();
         };
 
+        class SetOwningElement : public parseAndSetSingletonFunctor<Element, Comment> {
+            public:
+                SetOwningElement();
+        };
+
     }
 }
 

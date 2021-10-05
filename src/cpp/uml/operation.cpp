@@ -122,6 +122,14 @@ void Operation::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void Operation::restoreReferences() {
+    BehavioralFeature::restoreReferences();
+    m_type.restoreReference();
+    m_class.restoreReference();
+    m_dataType.restoreReference();
+    m_artifact.restoreReference();
+}
+
 Operation::Operation() {
     m_type.m_signature = &Operation::m_type;
     m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));

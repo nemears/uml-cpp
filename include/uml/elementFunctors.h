@@ -59,6 +59,7 @@ namespace UML {
         public:
             AddOwnedCommentFunctor(Element* me) : TemplateAbstractSequenceFunctor(me) {};
             void operator()(Comment& el) const override;
+            void operator()(ID id) const override;
     };
 
     class RemoveOwnedCommentFunctor : public TemplateAbstractSequenceFunctor<Comment,Element> {

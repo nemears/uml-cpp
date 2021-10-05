@@ -125,6 +125,10 @@ OperationSetDataType::OperationSetDataType() {
     m_signature = &Operation::m_dataType;
 }
 
+SetOwningElement::SetOwningElement() {
+    m_signature = &Comment::m_owningElement;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -183,6 +187,14 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
             Class& clazz = data.m_manager->create<Class>();
             parseClass(node["class"], clazz, data);
             ret = &clazz;
+        }
+    }
+
+    if (node["comment"]) {
+        if (node["comment"].IsMap()) {
+            Comment& comment = data.m_manager->create<Comment>();
+            parseComment(node["comment"], comment, data);
+            ret = &comment;
         }
     }
 
@@ -416,6 +428,15 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
             } else {
                 SetNestingClass setNestingClass;
                 setNestingClass(node["nestingClass"], data, ret->as<Classifier>());
+            }
+        }
+        if (node["owningElement"]) {
+            ID owningElementID = ID::fromString(node["owningElement"].as<string>());
+            if (data.m_manager->loaded(owningElementID)) {
+                ret->as<Comment>().setOwningElement(data.m_manager->get<>(owningElementID));
+            } else {
+                SetOwningElement setOwningElement;
+                setOwningElement(node["owningElement"], data, ret->as<Comment>());
             }
         }
 
@@ -715,6 +736,11 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
                 return;
             }
         }
+        if (el.isSubClassOf(ElementType::COMMENT)) {
+            if (el.as<Comment>().hasOwningElement()) {
+                emitter << YAML::Key << "owningElement" << YAML::Value << el.as<Comment>().getOwningElementID().string();
+            }
+        }
     }
 }
 
@@ -767,16 +793,22 @@ void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
     if (node["ownedComments"]) {
         if (node["ownedComments"].IsSequence()) {
             for (size_t i = 0; i < node["ownedComments"].size(); i++) {
-                if (node["ownedComments"][i]["comment"]) {
-                    if (node["ownedComments"][i]["comment"].IsMap()) {
-                        Comment& comment = data.m_manager->create<Comment>();
-                        parseComment(node["ownedComments"][i]["comment"], comment, data);
-                        el.getOwnedComments().add(comment);
+                if (node["ownedComments"][i].IsMap()) {
+                    if (node["ownedComments"][i]["comment"]) {
+                        if (node["ownedComments"][i]["comment"].IsMap()) {
+                            Comment& comment = data.m_manager->create<Comment>();
+                            parseComment(node["ownedComments"][i]["comment"], comment, data);
+                            el.getOwnedComments().add(comment);
+                        } else {
+                            throw UmlParserException("Invalid yaml node type for comment, must be map!", data.m_path.string(), node["ownedComments"][i]["comment"]);
+                        }
                     } else {
-                        throw UmlParserException("Invalid yaml node type for comment, must be map!", data.m_path.string(), node["ownedComments"][i]["comment"]);
+                        throw UmlParserException("Invalid element type for ownedComment, must be a comment", data.m_path.string(), node["ownedComments"][i]);
                     }
+                } else if (node["ownedComments"][i].IsScalar()) {
+                    parseAndAddToSequence(node["ownedComments"][i], data, el, &Element::getOwnedComments);
                 } else {
-                    throw UmlParserException("Invalid element type for ownedComment, must be a comment", data.m_path.string(), node["ownedComments"][i]);
+                    throw UmlParserException("Invalid yaml node type for comment reference, must be map or scalar!", data.m_path.string(), node["ownedComments"]);
                 }
             }
         } else {

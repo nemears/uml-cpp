@@ -7,9 +7,13 @@
 namespace UML {
 
     class RemoveOwnedCommentFunctor;
+    namespace Parsers {
+        class SetOwningElement;
+    }
 
     class Comment : public Element {
         friend class RemoveOwnedCommentFunctor;
+        friend class Parsers::SetOwningElement;
         private:
             std::string m_body;
             Singleton<Element, Comment> m_owningElement = Singleton<Element, Comment>(this);
@@ -22,7 +26,11 @@ namespace UML {
             public:
                 AddOwningElementProcedure(Comment* me) : AbstractSingletonProcedure<Element, Comment>(me) {};
                 void operator()(Element* el) const override;
+                void operator()(ID id) const override;
             };
+            void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
         public:
             Comment();
             Comment(const Comment& lhs);
@@ -30,6 +38,7 @@ namespace UML {
             void setBody(std::string body);
             Element* getOwningElement();
             Element& getOwningElementRef();
+            ID getOwningElementID() const;
             bool hasOwningElement() const;
             void setOwningElement(Element* el);
             void setOwningElement(Element& el);

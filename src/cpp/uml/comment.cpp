@@ -14,6 +14,34 @@ void Comment::AddOwningElementProcedure::operator()(Element* el) const {
     if (!el->getOwnedComments().count(m_me->getID())) {
         el->getOwnedComments().add(*m_me);
     }
+    if (m_me->getOwnerID() != el->getID()) {
+        m_me->setOwner(el);
+    }
+}
+
+void Comment::AddOwningElementProcedure::operator()(ID id) const {
+    if (m_me->getOwnerID() != id) {
+        m_me->setOwnerByID(id);
+    }
+}
+
+void Comment::referenceReindexed(ID oldID, ID newID) {
+    Element::referenceReindexed(oldID, newID);
+    if (m_owningElement.id() == oldID) {
+        m_owningElement.reindex(oldID, newID);
+    }
+}
+
+void Comment::referencingReleased(ID id) {
+    Element::referencingReleased(id);
+    if (m_owningElement.id() == id) {
+        m_owningElement.release();
+    }
+}
+
+void Comment::restoreReferences() {
+    Element::restoreReferences();
+    m_owningElement.restoreReference();
 }
 
 Comment::Comment() {
@@ -45,6 +73,10 @@ Element* Comment::getOwningElement() {
 
 Element& Comment::getOwningElementRef() {
     return m_owningElement.getRef();
+}
+
+ID Comment::getOwningElementID() const {
+    return m_owningElement.id();
 }
 
 bool Comment::hasOwningElement() const {

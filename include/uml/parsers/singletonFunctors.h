@@ -30,6 +30,11 @@ namespace UML {
                 PropertySetClass();
         };
 
+        class SetOwningPackage : public parseAndSetSingletonFunctor<Package, PackageableElement> {
+            public:
+                SetOwningPackage();
+        };
+
     }
 }
 

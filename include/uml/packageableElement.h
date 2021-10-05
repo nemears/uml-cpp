@@ -8,9 +8,15 @@
 namespace UML {
 
     class Package;
+    namespace Parsers {
+        class SetOwningPackage;
+    }
 
     class PackageableElement : virtual public NamedElement , virtual public ParameterableElement {
+
         friend class Package;
+        friend class Parsers::SetOwningPackage;
+
         protected:
             Singleton<Package, PackageableElement> m_owningPackage = Singleton<Package, PackageableElement>(this);
             class RemoveOwningPackageProcedure : public AbstractSingletonProcedure<Package, PackageableElement> {

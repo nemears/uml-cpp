@@ -113,6 +113,10 @@ PropertySetClass::PropertySetClass() {
     m_signature = &Property::m_class;
 }
 
+SetOwningPackage::SetOwningPackage() {
+    m_signature = &PackageableElement::m_owningPackage;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -318,7 +322,8 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
             if (data.m_manager->loaded(owningPackageID)) {
                 ret->as<PackageableElement>().setOwningPackage(data.m_manager->get<Package>(owningPackageID));
             } else {
-                throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["owningPackage"]);
+                SetOwningPackage setOwningPackage;
+                setOwningPackage(node["owningPackage"], data, ret->as<PackageableElement>());
             }
         }
         if (node["receivingPackage"]) {
@@ -954,14 +959,20 @@ void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
     if (node["ownedAttribute"]) {
         if (node["ownedAttribute"].IsSequence()) {
             for (size_t i = 0; i < node["ownedAttribute"].size(); i++) {
-                if (node["ownedAttribute"][i]["property"]) {
-                    if (node["ownedAttribute"][i]["property"].IsMap()) {
-                        Property& prop = data.m_manager->create<Property>();
-                        parseProperty(node["ownedAttribute"][i]["property"], prop, data);
-                        dataType.getOwnedAttribute().add(prop);
-                    } else {
-                        throw UmlParserException("Improper YAML node type for property, must be map, " , data.m_path.string() , node["ownedAttribute"][i]["property"]);
+                if (node["ownedAttribute"][i].IsMap()) {
+                    if (node["ownedAttribute"][i]["property"]) {
+                        if (node["ownedAttribute"][i]["property"].IsMap()) {
+                            Property& prop = data.m_manager->create<Property>();
+                            parseProperty(node["ownedAttribute"][i]["property"], prop, data);
+                            dataType.getOwnedAttribute().add(prop);
+                        } else {
+                            throw UmlParserException("Improper YAML node type for property, must be map, ", data.m_path.string(), node["ownedAttribute"][i]["property"]);
+                        }
                     }
+                } else if (node["ownedAttribute"][i].IsScalar()) {
+                    parseAndAddToSequence(node["ownedAttribute"][i], data, dataType, &DataType::getOwnedAttribute);
+                } else {
+                    throw UmlParserException("Improper YAML node type for propert reference, must be a map or a scalar!", data.m_path.string(), node["ownedAttribute"][i]);
                 }
             }
         } else {
@@ -972,16 +983,22 @@ void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
     if (node["ownedOperation"]) {
         if (node["ownedOperation"].IsSequence()) {
             for (size_t i = 0; i < node["ownedOperation"].size(); i++) {
-                if (node["ownedOperation"][i]["operation"]) {
-                    if (node["ownedOperation"][i]["operation"].IsMap()) {
-                        Operation& op = data.m_manager->create<Operation>();
-                        parseOperation(node["ownedOperation"][i]["operation"], op, data);
-                        dataType.getOwnedOperation().add(op);
+                if (node["ownedOperation"][i].IsMap()) {
+                    if (node["ownedOperation"][i]["operation"]) {
+                        if (node["ownedOperation"][i]["operation"].IsMap()) {
+                            Operation& op = data.m_manager->create<Operation>();
+                            parseOperation(node["ownedOperation"][i]["operation"], op, data);
+                            dataType.getOwnedOperation().add(op);
+                        } else {
+                            throw UmlParserException("Improper YAML node type for operation, must be map, ", data.m_path.string(), node["ownedOperation"][i]["operation"]);
+                        }
                     } else {
-                        throw UmlParserException("Improper YAML node type for operation, must be map, " , data.m_path.string() , node["ownedOperation"][i]["operation"]);
+                        throw UmlParserException("Improper UML node type for ownedOperation sequence, ", data.m_path.string(), node["ownedOperation"][i]);
                     }
+                } else if (node["ownedOperation"][i].IsScalar()) {
+                    parseAndAddToSequence(node["ownedOperation"][i], data, dataType, &DataType::getOwnedOperation);
                 } else {
-                    throw UmlParserException("Improper UML node type for ownedOperation sequence, " , data.m_path.string() , node["ownedOperation"][i]);
+                    throw UmlParserException("Improper YAML node type for ownedOperation, must be a map or scalar!", data.m_path.string(), node["ownedOperation"][i]);
                 }
             }
         } else {

@@ -35,6 +35,11 @@ namespace UML {
                 SetOwningPackage();
         };
 
+        class SetDataType : public parseAndSetSingletonFunctor<DataType, Property> {
+            public:
+                SetDataType();
+        };
+
     }
 }
 

@@ -13,6 +13,7 @@ namespace UML {
                 public:
                     AddOwnedAttributeFunctor(DataType* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Property& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,DataType> {
                 public:

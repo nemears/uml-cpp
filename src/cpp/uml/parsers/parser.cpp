@@ -117,6 +117,10 @@ SetOwningPackage::SetOwningPackage() {
     m_signature = &PackageableElement::m_owningPackage;
 }
 
+SetDataType::SetDataType() {
+    m_signature = &Property::m_dataType;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -179,9 +183,11 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["dataType"]) {
-        DataType& dataType = data.m_manager->create<DataType>();
-        parseDataType(node["dataType"], dataType, data);
-        ret = &dataType;
+        if (node["dataType"].IsMap()) {
+            DataType& dataType = data.m_manager->create<DataType>();
+            parseDataType(node["dataType"], dataType, data);
+            ret = &dataType;
+        }
     }
 
     if (node["enumeration"]) {
@@ -359,6 +365,17 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                         OperationSetClass setClass;
                         setClass(node["class"], data, ret->as<Operation>());
                     }
+                }
+            }
+        }
+        if (node["dataType"]) {
+            if (node["dataType"].IsScalar()) {
+                ID dataTypeID = ID::fromString(node["dataType"].as<string>());
+                if (data.m_manager->loaded(dataTypeID)) {
+                    ret->as<Property>().setDataType(data.m_manager->get<DataType>(dataTypeID));
+                } else {
+                    SetDataType setDataType;
+                    setDataType(node["dataType"], data, ret->as<Property>());
                 }
             }
         }
@@ -646,6 +663,10 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::PROPERTY)) {
             if (el.as<Property>().hasClass()) {
                 emitter << YAML::Key << "class" << el.as<Property>().getClassID().string();
+                return;
+            }
+            if (el.as<Property>().hasDataType()) {
+                emitter << YAML::Key << "dataType" << YAML::Value << el.as<Property>().getDataTypeID().string();
                 return;
             }
         }

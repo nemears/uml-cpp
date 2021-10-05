@@ -25,6 +25,16 @@ void DataType::AddOwnedAttributeFunctor::operator()(Property& el) const {
     updateCopiedSequenceAddedTo(el, &DataType::getOwnedAttribute);
 }
 
+void DataType::AddOwnedAttributeFunctor::operator()(ID id) const {
+    if (!m_el->getAttributes().count(id)) {
+        m_el->getAttributes().addByID(id);
+    }
+    
+    if (!m_el->getOwnedMembers().count(id)) {
+        m_el->getOwnedMembers().addByID(id);
+    }
+}
+
 void DataType::RemoveOwnedAttributeFunctor::operator()(Property& el) const {
     if (m_el->getAttributes().count(el.getID())) {
         m_el->getAttributes().remove(el);

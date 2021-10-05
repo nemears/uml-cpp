@@ -91,6 +91,15 @@ void Property::AddDataTypeProcedure::operator()(DataType* el) const {
     if (!el->getOwnedAttribute().count(m_me->getID())) {
         el->getOwnedAttribute().add(*m_me);
     }
+    if (m_me->getClassifierID() != el->getID()) {
+        m_me->setClassifier(el);
+    }
+}
+
+void Property::AddDataTypeProcedure::operator()(ID id) const {
+    if (m_me->getClassifierID() != id) {
+        m_me->m_classifier.setByID(id);
+    }
 }
 
 void Property::RemoveClassProcedure::operator()(Class* el) const {

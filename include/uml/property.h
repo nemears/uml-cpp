@@ -17,6 +17,7 @@ namespace UML{
     namespace Parsers {
         class SetDefaultValue;
         class PropertySetClass;
+        class SetDataType;
     }
 
     enum class AggregationKind {
@@ -29,6 +30,7 @@ namespace UML{
         friend class UmlManager;
         friend class Parsers::SetDefaultValue;
         friend class Parsers::PropertySetClass;
+        friend class Parsers::SetDataType;
         protected:
             AggregationKind m_aggregation;
             bool m_composite;
@@ -78,6 +80,7 @@ namespace UML{
                 public:
                     AddDataTypeProcedure(Property* me) : AbstractSingletonProcedure<DataType, Property>(me) {};
                     void operator()(DataType* el) const override;
+                    void operator()(ID id) const override;
             };
             Singleton<Class, Property> m_class = Singleton<Class, Property>(this);
             class RemoveClassProcedure : public AbstractSingletonProcedure<Class, Property> {

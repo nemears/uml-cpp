@@ -116,7 +116,7 @@ TEST_F(DataTypeParserTest, mountAndEditDataType) {
     specProp.getRedefinedProperties().add(baseProp);
     root.getPackagedElements().add(baseType, specificType);
     m.setRoot(&root);
-    m.mount(ymlPath + "packageParserTests");
+    m.mount(ymlPath + "dataTypeTests");
 
     m.release(baseType);
     DataType& baseType2 = root.getPackagedElements().front().as<DataType>();
@@ -138,4 +138,44 @@ TEST_F(DataTypeParserTest, mountAndEditDataType) {
     ASSERT_TRUE(baseType3.getMemberNamespace().count(root2.getID()));
     ASSERT_TRUE(baseType3.hasOwner());
     ASSERT_EQ(baseType3.getOwnerRef(), root2);
+
+    m.release(baseProp);
+    Property& baseProp2 = baseType3.getOwnedAttribute().front();
+    ASSERT_TRUE(baseProp2.hasDataType());
+    ASSERT_EQ(baseProp2.getDataTypeRef(), baseType3);
+    ASSERT_TRUE(baseProp2.hasClassifier());
+    ASSERT_EQ(baseProp2.getClassifierRef(), baseType3);
+    ASSERT_TRUE(baseProp2.hasFeaturingClassifier());
+    ASSERT_EQ(baseProp2.getFeaturingClassifierRef(), baseType3);
+    ASSERT_TRUE(baseProp2.hasNamespace());
+    ASSERT_EQ(baseProp2.getNamespaceRef(), baseType3);
+    ASSERT_TRUE(baseProp2.getMemberNamespace().count(baseTypeID));
+    ASSERT_TRUE(baseProp2.hasOwner());
+    ASSERT_EQ(baseProp2.getOwnerRef(), baseType3);
+    ASSERT_TRUE(baseType3.getOwnedAttribute().count(baseProp2.getID()));
+    ASSERT_TRUE(baseType3.getAttributes().count(baseProp2.getID()));
+    ASSERT_TRUE(baseType3.getFeatures().count(baseProp2.getID()));
+    ASSERT_TRUE(baseType3.getOwnedMembers().count(baseProp2.getID()));
+    ASSERT_TRUE(baseType3.getMembers().count(baseProp2.getID()));
+    ASSERT_TRUE(baseType3.getOwnedElements().count(baseProp2.getID()));
+    
+    ID basePropID = baseProp2.getID();
+    m.release(baseProp2, baseType3);
+    Property& baseProp3 = m.aquire(basePropID)->as<Property>();
+    DataType& baseType4 = baseProp3.getDataTypeRef();
+    ASSERT_TRUE(baseProp3.hasClassifier());
+    ASSERT_EQ(baseProp3.getClassifierRef(), baseType4);
+    ASSERT_TRUE(baseProp3.hasFeaturingClassifier());
+    ASSERT_EQ(baseProp3.getFeaturingClassifierRef(), baseType4);
+    ASSERT_TRUE(baseProp3.hasNamespace());
+    ASSERT_EQ(baseProp3.getNamespaceRef(), baseType4);
+    ASSERT_TRUE(baseProp3.getMemberNamespace().count(baseTypeID));
+    ASSERT_TRUE(baseProp3.hasOwner());
+    ASSERT_EQ(baseProp3.getOwnerRef(), baseType4);
+    ASSERT_TRUE(baseType4.getOwnedAttribute().count(baseProp3.getID()));
+    ASSERT_TRUE(baseType4.getAttributes().count(baseProp3.getID()));
+    ASSERT_TRUE(baseType4.getFeatures().count(baseProp3.getID()));
+    ASSERT_TRUE(baseType4.getOwnedMembers().count(baseProp3.getID()));
+    ASSERT_TRUE(baseType4.getMembers().count(baseProp3.getID()));
+    ASSERT_TRUE(baseType4.getOwnedElements().count(baseProp3.getID()));
 }

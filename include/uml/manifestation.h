@@ -4,11 +4,17 @@
 #include "abstraction.h"
 
 namespace UML {
+
+    namespace Parsers {
+        class ManifestationSetArtifact;
+    }
+
     class Manifestation : public Abstraction {
 
         friend class UmlManager;
+        friend class Parsers::ManifestationSetArtifact;
 
-        private:
+        protected:
             Singleton<PackageableElement, Manifestation> m_utilizedElement = Singleton<PackageableElement, Manifestation>(this);
             class RemoveUtilizedElementProcedure : public AbstractSingletonProcedure<PackageableElement, Manifestation> {
                 public:
@@ -44,6 +50,7 @@ namespace UML {
             void setUtilizedElement(PackageableElement* utilizedElement);
             Artifact* getArtifact();
             Artifact& getArtifactRef();
+            ID getArtifactID() const;
             bool hasArtifact() const;
             void setArtifact(Artifact& artifact);
             void setArtifact(Artifact* artifact);

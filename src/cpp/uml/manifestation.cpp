@@ -32,6 +32,9 @@ void Manifestation::AddArtifactProcedure::operator()(Artifact* el) const {
     if (!el->getManifestations().count(m_me->getID())) {
         el->getManifestations().add(*m_me);
     }
+    if (m_me->getOwnerID() != el->getID()) {
+        m_me->setOwner(el);
+    }
 }
 
 void Manifestation::referencingReleased(ID id) {
@@ -108,6 +111,10 @@ Artifact* Manifestation::getArtifact() {
 
 Artifact& Manifestation::getArtifactRef() {
     return m_artifact.getRef();
+}
+
+ID Manifestation::getArtifactID() const {
+    return m_artifact.id();
 }
 
 bool Manifestation::hasArtifact() const {

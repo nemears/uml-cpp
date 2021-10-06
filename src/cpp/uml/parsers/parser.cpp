@@ -141,6 +141,10 @@ ArtifactSetArtifact::ArtifactSetArtifact() {
     m_signature = &Artifact::m_artifact;
 }
 
+ManifestationSetArtifact::ManifestationSetArtifact() {
+    m_signature = &Manifestation::m_artifact;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -286,6 +290,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &ln;
     }
 
+    if (node["manifestation"]) {
+        Manifestation& manifestation = data.m_manager->create<Manifestation>();
+        parseManifestation(node["manifestation"], manifestation, data);
+        ret = &manifestation;
+    }
+
     if (node["model"]) {
         Model& model = data.m_manager->create<Model>();
         parsePackage(node["model"], model, data);
@@ -427,6 +437,8 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                         ret->as<Property>().setArtifact(data.m_manager->get<Artifact>(artifactID));
                     } else if (ret->isSubClassOf(ElementType::OPERATION)) {
                         ret->as<Operation>().setArtifact(data.m_manager->get<Artifact>(artifactID));
+                    } else if (ret->isSubClassOf(ElementType::MANIFESTATION)) {
+                        ret->as<Manifestation>().setArtifact(data.m_manager->get<Artifact>(artifactID));
                     }
                 } else {
                     if (ret->isSubClassOf(ElementType::PROPERTY)) {
@@ -435,6 +447,9 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                     } else if (ret->isSubClassOf(ElementType::OPERATION)) {
                         OperationSetArtifact setArtifact;
                         setArtifact(node["artifact"], data, ret->as<Operation>());
+                    } else if (ret->isSubClassOf(ElementType::MANIFESTATION)) {
+                        ManifestationSetArtifact setArtifact;
+                        setArtifact(node["artifact"], data, ret->as<Manifestation>());
                     }
                 }
             }
@@ -800,6 +815,11 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             if (el.as<Artifact>().hasArtifact()) {
                 emitter << YAML::Key << "owningArtifact" << YAML::Value << el.as<Artifact>().getArtifactID().string();
                 return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::MANIFESTATION)) {
+            if (el.as<Manifestation>().hasArtifact()) {
+                emitter << YAML::Key << "artifact" << YAML::Value << el.as<Manifestation>().getArtifactID().string();
             }
         }
     }
@@ -3756,6 +3776,7 @@ void SetUtilizedElementFunctor::operator()(Element& el) const {
 }
 
 void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMetaData& data) {
+    parseNamedElement(node, manifestation, data);
     if (node["utilizedElement"]) {
         if (node["utilizedElement"].IsScalar()) {
             applyFunctor(data, ID::fromString(node["utilizedElement"].as<string>()), new SetUtilizedElementFunctor(&manifestation, node["utilizedElement"]));

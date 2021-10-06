@@ -65,6 +65,10 @@ namespace UML {
                 ArtifactSetArtifact();
         };
 
+        class ManifestationSetArtifact : public parseAndSetSingletonFunctor<Artifact, Manifestation> {
+            public:
+                ManifestationSetArtifact();
+        };
     }
 }
 

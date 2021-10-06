@@ -131,8 +131,12 @@ Element* UmlManager::aquire(ID id) {
         data.m_path = m_mountBase / "mount" / (id.string() + ".yml");
         data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
         Element* ret = Parsers::parse(data);
-        m_graph[id].m_managerElementMemory = ret;
-        ret->restoreReferences();
+        if (ret) {
+            m_graph[id].m_managerElementMemory = ret;
+            ret->restoreReferences();
+        } else {
+            throw ManagerStateException();
+        }
         return ret;
     } else {
         throw ManagerNotMountedException();

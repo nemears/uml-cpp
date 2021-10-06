@@ -137,6 +137,10 @@ OperationSetArtifact::OperationSetArtifact() {
     m_signature = &Operation::m_artifact;
 }
 
+ArtifactSetArtifact::ArtifactSetArtifact() {
+    m_signature = &Artifact::m_artifact;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -433,6 +437,16 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                         setArtifact(node["artifact"], data, ret->as<Operation>());
                     }
                 }
+            }
+        }
+
+        if (node["owningArtifact"]) {
+            ID artifactID = ID::fromString(node["owningArtifact"].as<string>());
+            if (data.m_manager->loaded(artifactID)) {
+                ret->as<Artifact>().setArtifact(data.m_manager->get<Artifact>(artifactID));
+            } else {
+                ArtifactSetArtifact setArtifact;
+                setArtifact(node["owningArtifact"], data, ret->as<Artifact>());
             }
         }
 
@@ -779,6 +793,13 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::COMMENT)) {
             if (el.as<Comment>().hasOwningElement()) {
                 emitter << YAML::Key << "owningElement" << YAML::Value << el.as<Comment>().getOwningElementID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::ARTIFACT)) {
+            if (el.as<Artifact>().hasArtifact()) {
+                emitter << YAML::Key << "owningArtifact" << YAML::Value << el.as<Artifact>().getArtifactID().string();
+                return;
             }
         }
     }

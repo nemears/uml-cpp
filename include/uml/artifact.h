@@ -7,9 +7,13 @@
 namespace UML {
 
     class Manifestation;
+    namespace Parsers {
+        class ArtifactSetArtifact;
+    }
 
     class Artifact : public Classifier, public DeployedArtifact {
         friend class UmlManager;
+        friend class Parsers::ArtifactSetArtifact;
         protected:
             Sequence<Artifact> m_nestedArtifacts = Sequence<Artifact>(this);
             Sequence<Property> m_ownedAttributes = Sequence<Property>(this);

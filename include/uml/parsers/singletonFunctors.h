@@ -60,6 +60,11 @@ namespace UML {
                 OperationSetArtifact();
         };
 
+        class ArtifactSetArtifact : public parseAndSetSingletonFunctor<Artifact, Artifact> {
+            public:
+                ArtifactSetArtifact();
+        };
+
     }
 }
 

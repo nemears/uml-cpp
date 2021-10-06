@@ -160,6 +160,15 @@ void Property::AddArtifactProcedure::operator()(Artifact* el) const {
     if (!el->getOwnedAttributes().count(m_me->getID())) {
         el->getOwnedAttributes().add(*m_me);
     }
+    if (m_me->getClassifierID() != el->getID()) {
+        m_me->setClassifier(el);
+    }
+}
+
+void Property::AddArtifactProcedure::operator()(ID id) const {
+    if (m_me->getClassifierID() != id) {
+        m_me->m_classifier.setByID(id);
+    }
 }
 
 void Property::RemoveTypeProcedure::operator()(Type* el) const {

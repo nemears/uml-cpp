@@ -15,11 +15,11 @@ namespace UML {
             Sequence<Property> m_ownedAttributes = Sequence<Property>(this);
             Sequence<Operation> m_ownedOperations = Sequence<Operation>(this);
             Sequence<Manifestation> m_manifestations =  Sequence<Manifestation>(this);
-            void setManager(UmlManager* manager) override;
             class AddOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Artifact> {
                 public:
                     AddOwnedAttributeFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Property& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Artifact> {
                 public:
@@ -30,6 +30,7 @@ namespace UML {
                 public:
                     AddOwnedOperationFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Operation& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveOwnedOperationFunctor : public TemplateAbstractSequenceFunctor<Operation,Artifact> {
                 public:
@@ -61,8 +62,12 @@ namespace UML {
                     RemoveManifestationFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Manifestation& el) const override;
             };
-        public:
+            void setManager(UmlManager* manager) override;
+            void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
             Artifact();
+        public:
             Artifact(const Artifact& artifact);
             virtual ~Artifact();
             Sequence<Property>& getOwnedAttributes();

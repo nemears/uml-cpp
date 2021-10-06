@@ -50,6 +50,16 @@ namespace UML {
                 SetOwningElement();
         };
 
+        class PropertySetArtifact : public parseAndSetSingletonFunctor<Artifact, Property> {
+            public:
+                PropertySetArtifact();
+        };
+
+        class OperationSetArtifact : public parseAndSetSingletonFunctor<Artifact, Operation> {
+            public:
+                OperationSetArtifact();
+        };
+
     }
 }
 

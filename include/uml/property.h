@@ -18,6 +18,7 @@ namespace UML{
         class SetDefaultValue;
         class PropertySetClass;
         class PropertySetDataType;
+        class PropertySetArtifact;
     }
 
     enum class AggregationKind {
@@ -31,6 +32,7 @@ namespace UML{
         friend class Parsers::SetDefaultValue;
         friend class Parsers::PropertySetClass;
         friend class Parsers::PropertySetDataType;
+        friend class Parsers::PropertySetArtifact;
         protected:
             AggregationKind m_aggregation;
             bool m_composite;
@@ -126,6 +128,7 @@ namespace UML{
                 public:
                     AddArtifactProcedure(Property* me) : AbstractSingletonProcedure<Artifact, Property>(me) {};
                     void operator()(Artifact* el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveTypeProcedure : public AbstractSingletonProcedure<Type, Property> {
                 public:

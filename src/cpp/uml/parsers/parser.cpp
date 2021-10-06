@@ -129,6 +129,14 @@ SetOwningElement::SetOwningElement() {
     m_signature = &Comment::m_owningElement;
 }
 
+PropertySetArtifact::PropertySetArtifact() {
+    m_signature = &Property::m_artifact;
+}
+
+OperationSetArtifact::OperationSetArtifact() {
+    m_signature = &Operation::m_artifact;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -177,9 +185,11 @@ template <class T =Element> T& parseScalar(YAML::Node node, ParserMetaData& data
 Element* parseNode(YAML::Node node, ParserMetaData& data) {
     Element* ret = 0;
     if (node["artifact"]) {
-        Artifact& artifact = data.m_manager->create<Artifact>();
-        parseArtifact(node["artifact"], artifact, data);
-        ret = &artifact;
+        if (node["artifact"].IsMap()) {
+            Artifact& artifact = data.m_manager->create<Artifact>();
+            parseArtifact(node["artifact"], artifact, data);
+            ret = &artifact;
+        }
     }
 
     if (node["class"]) {
@@ -404,6 +414,28 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                 }
             }
         }
+
+        if (node["artifact"]) {
+            if (node["artifact"].IsScalar()) {
+                ID artifactID = ID::fromString(node["artifact"].as<string>());
+                if (data.m_manager->loaded(artifactID)) {
+                    if (ret->isSubClassOf(ElementType::PROPERTY)) {
+                        ret->as<Property>().setArtifact(data.m_manager->get<Artifact>(artifactID));
+                    } else if (ret->isSubClassOf(ElementType::OPERATION)) {
+                        ret->as<Operation>().setArtifact(data.m_manager->get<Artifact>(artifactID));
+                    }
+                } else {
+                    if (ret->isSubClassOf(ElementType::PROPERTY)) {
+                        PropertySetArtifact setArtifact;
+                        setArtifact(node["artifact"], data, ret->as<Property>());
+                    } else if (ret->isSubClassOf(ElementType::OPERATION)) {
+                        OperationSetArtifact setArtifact;
+                        setArtifact(node["artifact"], data, ret->as<Operation>());
+                    }
+                }
+            }
+        }
+
         if (node["owningProperty"]) {
             ID owningPropertyID = ID::fromString(node["owningProperty"].as<string>());
             if (data.m_manager->loaded(owningPropertyID)) {
@@ -702,6 +734,10 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             if (el.as<Property>().hasDataType()) {
                 emitter << YAML::Key << "dataType" << YAML::Value << el.as<Property>().getDataTypeID().string();
                 return;
+            }   
+            if (el.as<Property>().hasArtifact()) {
+                emitter << YAML::Key << "artifact" << YAML::Value << el.as<Property>().getArtifactID().string();
+                return;
             }
         }
         if (el.isSubClassOf(ElementType::VALUE_SPECIFICATION)) {
@@ -733,6 +769,10 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             }
             if (el.as<Operation>().hasDataType()) {
                 emitter << YAML::Key << "dataType" << YAML::Value << el.as<Operation>().getDataTypeID().string();
+                return;
+            }
+            if (el.as<Operation>().hasArtifact()) {
+                emitter << YAML::Key << "artifact" << YAML::Value << el.as<Operation>().getArtifactID().string();
                 return;
             }
         }
@@ -3476,14 +3516,18 @@ void parseArtifact(YAML::Node node, Artifact& artifact, ParserMetaData& data) {
     if (node["ownedAttributes"]) {
         if (node["ownedAttributes"].IsSequence()) {
             for (size_t i = 0; i < node["ownedAttributes"].size(); i++) {
-                if (node["ownedAttributes"][i]["property"]) {
-                    if (node["ownedAttributes"][i]["property"].IsMap()) {
-                        Property& prop = data.m_manager->create<Property>();
-                        parseProperty(node["ownedAttributes"][i]["property"], prop, data);
-                        artifact.getOwnedAttributes().add(prop);
-                    } else {
-                        throw UmlParserException("Improper YAML node type for property, must be map, " , data.m_path.string() , node["ownedAttributes"][i]["property"]);
+                if (node["ownedAttributes"][i].IsMap()) {
+                    if (node["ownedAttributes"][i]["property"]) {
+                        if (node["ownedAttributes"][i]["property"].IsMap()) {
+                            Property& prop = data.m_manager->create<Property>();
+                            parseProperty(node["ownedAttributes"][i]["property"], prop, data);
+                            artifact.getOwnedAttributes().add(prop);
+                        } else {
+                            throw UmlParserException("Improper YAML node type for property, must be map, ", data.m_path.string(), node["ownedAttributes"][i]["property"]);
+                        }
                     }
+                } else if (node["ownedAttributes"][i].IsScalar()) {
+                    parseAndAddToSequence(node["ownedAttributes"][i], data, artifact, &Artifact::getOwnedAttributes);
                 }
             }
         } else {
@@ -3494,16 +3538,20 @@ void parseArtifact(YAML::Node node, Artifact& artifact, ParserMetaData& data) {
     if (node["ownedOperations"]) {
         if (node["ownedOperations"].IsSequence()) {
             for (size_t i = 0; i < node["ownedOperations"].size(); i++) {
-                if (node["ownedOperations"][i]["operation"]) {
-                    if (node["ownedOperations"][i]["operation"].IsMap()) {
-                        Operation& op = data.m_manager->create<Operation>();
-                        parseOperation(node["ownedOperations"][i]["operation"], op, data);
-                        artifact.getOwnedOperations().add(op);
+                if (node["ownedAttributes"][i].IsMap()) {
+                    if (node["ownedOperations"][i]["operation"]) {
+                        if (node["ownedOperations"][i]["operation"].IsMap()) {
+                            Operation& op = data.m_manager->create<Operation>();
+                            parseOperation(node["ownedOperations"][i]["operation"], op, data);
+                            artifact.getOwnedOperations().add(op);
+                        } else {
+                            throw UmlParserException("Improper YAML node type for operation, must be map, ", data.m_path.string(), node["ownedOperations"][i]["operation"]);
+                        }
                     } else {
-                        throw UmlParserException("Improper YAML node type for operation, must be map, " , data.m_path.string() , node["ownedOperations"][i]["operation"]);
+                        throw UmlParserException("Improper UML node type for ownedOperation sequence, ", data.m_path.string(), node["ownedOperations"][i]);
                     }
-                } else {
-                    throw UmlParserException("Improper UML node type for ownedOperation sequence, " , data.m_path.string() , node["ownedOperations"][i]);
+                } else if (node["ownedAttributes"][i].IsScalar()) {
+                    parseAndAddToSequence(node["ownedOperations"][i], data, artifact, &Artifact::getOwnedOperations);
                 }
             }
         } else {

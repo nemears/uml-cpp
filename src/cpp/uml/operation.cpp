@@ -80,6 +80,12 @@ void Operation::AddArtifactProcedure::operator()(Artifact* el) const {
     }
 }
 
+void Operation::AddArtifactProcedure::operator()(ID id) const {
+    if (m_me->getFeaturingClassifierID() != id) {
+        m_me->m_featuringClassifier.setByID(id);
+    }
+}
+
 void Operation::reindexName(string oldName, string newName) {
     if (getClass()) {
         getClass()->getOwnedOperations().reindex(m_id, oldName, newName);

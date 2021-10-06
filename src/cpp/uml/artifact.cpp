@@ -5,15 +5,6 @@
 
 using namespace UML;
 
-void Artifact::setManager(UmlManager* manager) {
-    Classifier::setManager(manager);
-    DeployedArtifact::setManager(manager);
-    m_ownedAttributes.m_manager = manager;
-    m_ownedOperations.m_manager = manager;
-    m_nestedArtifacts.m_manager = manager;
-    m_manifestations.m_manager = manager;
-}
-
 void Artifact::AddOwnedAttributeFunctor::operator()(Property& el) const {
     if (!m_el->getAttributes().count(el.getID())) {
         m_el->getAttributes().add(el);
@@ -28,6 +19,15 @@ void Artifact::AddOwnedAttributeFunctor::operator()(Property& el) const {
     }
 
     updateCopiedSequenceAddedTo(el, &Artifact::getOwnedAttributes);
+}
+
+void Artifact::AddOwnedAttributeFunctor::operator()(ID id) const {
+    if (!m_el->getAttributes().count(id)) {
+        m_el->getAttributes().addByID(id);
+    }
+    if (!m_el->getOwnedMembers().count(id)) {
+        m_el->getOwnedMembers().addByID(id);
+    }
 }
 
 void Artifact::RemoveOwnedAttributeFunctor::operator()(Property& el) const {
@@ -64,6 +64,15 @@ void Artifact::AddOwnedOperationFunctor::operator()(Operation& el) const {
     }
 
     updateCopiedSequenceAddedTo(el, &Artifact::getOwnedOperations);
+}
+
+void Artifact::AddOwnedOperationFunctor::operator()(ID id) const {
+    if (!m_el->getFeatures().count(id)) {
+        m_el->getFeatures().addByID(id);
+    }
+    if (!m_el->getOwnedMembers().count(id)) {
+        m_el->getOwnedMembers().addByID(id);
+    }
 }
 
 void Artifact::RemoveOwnedOperationFunctor::operator()(Operation& el) const {
@@ -124,6 +133,58 @@ void Artifact::RemoveManifestationFunctor::operator()(Manifestation& el) const {
 
     el.setArtifact(0); 
     updateCopiedSequenceRemovedFrom(el, &Artifact::getManifestations);
+}
+
+void Artifact::setManager(UmlManager* manager) {
+    Classifier::setManager(manager);
+    DeployedArtifact::setManager(manager);
+    m_ownedAttributes.m_manager = manager;
+    m_ownedOperations.m_manager = manager;
+    m_nestedArtifacts.m_manager = manager;
+    m_manifestations.m_manager = manager;
+}
+
+void Artifact::referenceReindexed(ID oldID, ID newID) {
+    Classifier::referenceReindexed(oldID, newID);
+    DeployedArtifact::referenceReindexed(oldID, newID);
+    if (m_ownedAttributes.count(oldID)) {
+        m_ownedAttributes.reindex(oldID, newID, &Artifact::getOwnedAttributes);
+    }
+    if (m_ownedOperations.count(oldID)) {
+        m_ownedOperations.reindex(oldID, newID, &Artifact::getOwnedOperations);
+    }
+    if (m_nestedArtifacts.count(oldID)) {
+        m_nestedArtifacts.reindex(oldID, newID, &Artifact::getNestedArtifacts);
+    }
+    if (m_manifestations.count(oldID)) {
+        m_manifestations.reindex(oldID, newID, &Artifact::getManifestations);
+    }
+}
+
+void Artifact::referencingReleased(ID id) {
+    Classifier::referencingReleased(id);
+    DeployedArtifact::referencingReleased(id);
+    if (m_ownedAttributes.count(id)) {
+        m_ownedAttributes.elementReleased(id, &Artifact::getOwnedAttributes);
+    }
+    if (m_ownedOperations.count(id)) {
+        m_ownedOperations.elementReleased(id, &Artifact::getOwnedOperations);
+    }
+    if (m_nestedArtifacts.count(id)) {
+        m_nestedArtifacts.elementReleased(id, &Artifact::getNestedArtifacts);
+    }
+    if (m_manifestations.count(id)) {
+        m_manifestations.elementReleased(id, &Artifact::getManifestations);
+    }
+}
+
+void Artifact::restoreReferences() {
+    Classifier::restoreReferences();
+    DeployedArtifact::restoreReferences();
+    m_ownedAttributes.restoreReferences();
+    m_ownedOperations.restoreReferences();
+    m_nestedArtifacts.restoreReferences();
+    m_manifestations.restoreReferences();
 }
 
 Artifact::Artifact() {

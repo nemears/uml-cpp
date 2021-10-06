@@ -199,8 +199,14 @@ TEST_F(DeploymentParserTest, mountAndEditArtifactTest) {
     Artifact& artifact = m.create<Artifact>();
     Property& prop = m.create<Property>();
     Operation& op = m.create<Operation>();
+    Artifact& nest = m.create<Artifact>();
+    Manifestation& manifestation = m.create<Manifestation>();
+    Package& utilizedElement = m.create<Package>();
     artifact.getOwnedAttributes().add(prop);
     artifact.getOwnedOperations().add(op);
+    artifact.getNestedArtifacts().add(nest);
+    manifestation.setUtilizedElement(utilizedElement);
+    artifact.getManifestations().add(manifestation);
     root.getPackagedElements().add(artifact);
     m.setRoot(&root);
     m.mount(ymlPath + "deploymentTests");
@@ -309,4 +315,29 @@ TEST_F(DeploymentParserTest, mountAndEditArtifactTest) {
     ASSERT_TRUE(artifact5.getOwnedMembers().count(oid));
     ASSERT_TRUE(artifact5.getMembers().count(oid));
     ASSERT_TRUE(artifact5.getOwnedElements().count(oid));
+
+    ID nid = nest.getID();
+    m.release(nest);
+    Artifact& nest2 = artifact5.getNestedArtifacts().front();
+    ASSERT_TRUE(nest2.hasNamespace());
+    ASSERT_EQ(nest2.getNamespaceRef(), artifact5);
+    ASSERT_TRUE(nest2.getMemberNamespace().count(aID));
+    ASSERT_TRUE(nest2.hasOwner());
+    ASSERT_EQ(nest2.getOwnerRef(), artifact5);
+    ASSERT_TRUE(artifact5.getNestedArtifacts().count(nid));
+    ASSERT_TRUE(artifact5.getOwnedMembers().count(nid));
+    ASSERT_TRUE(artifact5.getMembers().count(nid));
+    ASSERT_TRUE(artifact5.getOwnedElements().count(nid));
+
+    m.release(artifact5, nest2);
+    Artifact& nest3 = m.aquire(nid)->as<Artifact>();
+    ASSERT_TRUE(nest3.hasNamespace());
+    Artifact& artifact6 = nest3.getNamespaceRef().as<Artifact>();
+    ASSERT_TRUE(nest3.getMemberNamespace().count(aID));
+    ASSERT_TRUE(nest3.hasOwner());
+    ASSERT_EQ(nest3.getOwnerRef(), artifact6);
+    ASSERT_TRUE(artifact6.getNestedArtifacts().count(nid));
+    ASSERT_TRUE(artifact6.getOwnedMembers().count(nid));
+    ASSERT_TRUE(artifact6.getMembers().count(nid));
+    ASSERT_TRUE(artifact6.getOwnedElements().count(nid));
 }

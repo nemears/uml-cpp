@@ -136,13 +136,30 @@ void Artifact::AddManifestationFunctor::operator()(Manifestation& el) const {
         m_el->getOwnedElements().internalAdd(el);
     }
 
+    if (!m_el->getDirectedRelationships().count(el.getID())) {
+        m_el->getDirectedRelationships().add(el);
+    }
+
     el.setArtifact(m_el);
     updateCopiedSequenceAddedTo(el, &Artifact::getManifestations);
+}
+
+void Artifact::AddManifestationFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedElements().count(id)) {
+        m_el->getOwnedElements().addByID(id);
+    }
+    if (!m_el->getDirectedRelationships().count(id)) {
+        m_el->getDirectedRelationships().addByID(id);
+    }
 }
 
 void Artifact::RemoveManifestationFunctor::operator()(Manifestation& el) const {
     if (m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalRemove(el);
+    }
+
+    if (m_el->getDirectedRelationships().count(el.getID())) {
+        m_el->getDirectedRelationships().remove(el);
     }
 
     el.setArtifact(0); 

@@ -36,9 +36,11 @@ namespace UML {
                 public:
                     AddArtifactProcedure(Manifestation* me) : AbstractSingletonProcedure<Artifact, Manifestation>(me) {};
                     void operator()(Artifact* el) const override;
+                    void operator()(ID id) const override;
             };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
             Manifestation();
         public:
             Manifestation(const Manifestation& manifestation);

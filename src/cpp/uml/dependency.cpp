@@ -9,6 +9,12 @@ void Dependency::AddClientFunctor::operator()(NamedElement& el) const {
     updateCopiedSequenceAddedTo(el, &Dependency::getClient);
 }
 
+void Dependency::AddClientFunctor::operator()(ID id) const {
+    if (!m_el->getSources().count(id)) {
+        m_el->getSources().addByID(id);
+    }
+}
+
 void Dependency::RemoveClientFunctor::operator()(NamedElement& el) const {
     if (m_el->getSources().count(el.getID())) {
         m_el->getSources().remove(el);
@@ -21,6 +27,12 @@ void Dependency::AddSupplierFunctor::operator()(NamedElement& el) const {
         m_el->getTargets().add(el);
     }
     updateCopiedSequenceAddedTo(el, &Dependency::getSupplier);
+}
+
+void Dependency::AddSupplierFunctor::operator()(ID id) const {
+    if (!m_el->getTargets().count(id)) {
+        m_el->getTargets().addByID(id);
+    }
 }
 
 void Dependency::RemoveSupplierFunctor::operator()(NamedElement& el) const {
@@ -39,12 +51,19 @@ void Dependency::setManager(UmlManager* manager) {
 
 void Dependency::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
-    // TODO
+    if (m_client.count(id)) {
+        m_client.elementReleased(id, &Dependency::getClient);
+    }
+    if (m_supplier.count(id)) {
+        m_supplier.elementReleased(id, &Dependency::getSupplier);
+    }
 }
 
 void Dependency::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
     Relationship::referenceReindexed(oldID, newID);
+    m_client.reindex(oldID, newID, &Dependency::getClient);
+    m_supplier.reindex(oldID, newID, &Dependency::getSupplier);
 }
 
 void Dependency::restoreReferences() {

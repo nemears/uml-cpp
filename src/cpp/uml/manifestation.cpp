@@ -37,6 +37,16 @@ void Manifestation::AddArtifactProcedure::operator()(Artifact* el) const {
     }
 }
 
+void Manifestation::AddArtifactProcedure::operator()(ID id) const {
+    if (!m_me->getClient().count(id)) {
+        m_me->getClient().addByID(id);
+    }
+
+    if (m_me->getOwnerID() != id) {
+        m_me->setOwnerByID(id);
+    }
+}
+
 void Manifestation::referencingReleased(ID id) {
     Abstraction::referencingReleased(id);
     if (m_utilizedElement.id() == id) {
@@ -55,6 +65,12 @@ void Manifestation::referenceReindexed(ID oldID, ID newID) {
     if (m_artifact.id() == oldID) {
         m_artifact.reindex(oldID, newID);
     }
+}
+
+void Manifestation::restoreReferences() {
+    Abstraction::restoreReferences();
+    m_utilizedElement.restoreReference();
+    m_artifact.restoreReference();
 }
 
 Manifestation::Manifestation() {

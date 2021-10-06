@@ -61,6 +61,7 @@ namespace UML {
                 public:
                     AddManifestationFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Manifestation& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveManifestationFunctor : public TemplateAbstractSequenceFunctor<Manifestation,Artifact> {
                 public:

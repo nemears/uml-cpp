@@ -3562,16 +3562,20 @@ void parseArtifact(YAML::Node node, Artifact& artifact, ParserMetaData& data) {
     if (node["nestedArtifacts"]) {
         if (node["nestedArtifacts"].IsSequence()) {
             for (size_t i = 0; i < node["nestedArtifacts"].size(); i++) {
-                if (node["nestedArtifacts"][i]["artifact"]) {
-                    if (node["nestedArtifacts"][i]["artifact"].IsMap()) {
-                        Artifact& nestedArtifact = data.m_manager->create<Artifact>();
-                        parseArtifact(node["nestedArtifacts"][i]["artifact"], nestedArtifact, data);
-                        artifact.getNestedArtifacts().add(nestedArtifact);
+                if (node["nestedArtifacts"][i].IsMap()) {
+                    if (node["nestedArtifacts"][i]["artifact"]) {
+                        if (node["nestedArtifacts"][i]["artifact"].IsMap()) {
+                            Artifact& nestedArtifact = data.m_manager->create<Artifact>();
+                            parseArtifact(node["nestedArtifacts"][i]["artifact"], nestedArtifact, data);
+                            artifact.getNestedArtifacts().add(nestedArtifact);
+                        } else {
+                            throw UmlParserException("Improper yaml node type for artifact defintion, must be a map!", data.m_path.string(), node["nestedArtifacts"][i]["artifact"]);
+                        }
                     } else {
-                        throw UmlParserException("Improper yaml node type for artifact defintion, must be a map!", data.m_path.string(), node["nestedArtifacts"][i]["artifact"]);
+                        throw UmlParserException("Improper uml type for artifact nestedArtifacts definition, must be an artifact!", data.m_path.string(), node["nestedArtifiacts"]);
                     }
-                } else {
-                    throw UmlParserException("Improper uml type for artifact nestedArtifacts definition, must be an artifact!", data.m_path.string(), node["nestedArtifiacts"]);
+                } else if (node["nestedArtifacts"][i].IsScalar()) {
+                    parseAndAddToSequence(node["nestedArtifacts"][i], data, artifact, &Artifact::getNestedArtifacts);
                 }
             }
         } else {
@@ -3582,16 +3586,20 @@ void parseArtifact(YAML::Node node, Artifact& artifact, ParserMetaData& data) {
     if (node["manifestations"]) {
         if (node["manifestations"].IsSequence()) {
             for (size_t i = 0; i < node["manifestations"].size(); i++) {
-                if (node["manifestations"][i]["manifestation"]) {
-                    if (node["manifestations"][i]["manifestation"].IsMap()) {
-                        Manifestation& manifestation = data.m_manager->create<Manifestation>();
-                        parseManifestation(node["manifestations"][i]["manifestation"], manifestation, data);
-                        artifact.getManifestations().add(manifestation);
+                if (node["manifestations"][i].IsMap()) {
+                    if (node["manifestations"][i]["manifestation"]) {
+                        if (node["manifestations"][i]["manifestation"].IsMap()) {
+                            Manifestation& manifestation = data.m_manager->create<Manifestation>();
+                            parseManifestation(node["manifestations"][i]["manifestation"], manifestation, data);
+                            artifact.getManifestations().add(manifestation);
+                        } else {
+                            throw UmlParserException("Invalid yaml node type for manifestation defintion, must be a map!", data.m_path.string(), node["manifestations"][i]["manifestation"]);
+                        }
                     } else {
-                        throw UmlParserException("Invalid yaml node type for manifestation defintion, must be a map!", data.m_path.string(), node["manifestations"][i]["manifestation"]);
+                        throw UmlParserException("Invalid definition of manifestation, must specify manifestation in manifestations field!", data.m_path.string(), node["manifestations"][i]);
                     }
-                } else {
-                    throw UmlParserException("Invalid definition of manifestation, must specify manifestation in manifestations field!", data.m_path.string(), node["manifestations"][i]);
+                } else if (node["manifestations"][i].IsScalar()) {
+                    parseAndAddToSequence(node["manifestations"][i], data, artifact, &Artifact::getManifestations);
                 }
             }
         } else {

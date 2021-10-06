@@ -340,4 +340,47 @@ TEST_F(DeploymentParserTest, mountAndEditArtifactTest) {
     ASSERT_TRUE(artifact6.getOwnedMembers().count(nid));
     ASSERT_TRUE(artifact6.getMembers().count(nid));
     ASSERT_TRUE(artifact6.getOwnedElements().count(nid));
+
+    ID mid = manifestation.getID();
+    ID uid = utilizedElement.getID();
+    m.release(manifestation);
+    Manifestation& manifestation2 = artifact6.getManifestations().front();
+    ASSERT_TRUE(manifestation2.hasArtifact());
+    ASSERT_EQ(manifestation2.getArtifactRef(), artifact6);
+    ASSERT_TRUE(manifestation2.getClient().count(aID));
+    ASSERT_TRUE(manifestation2.getSources().count(aID));
+    ASSERT_TRUE(manifestation2.getRelatedElements().count(aID));
+    ASSERT_TRUE(manifestation2.hasOwner());
+    ASSERT_EQ(manifestation2.getOwnerRef(), artifact6);
+    ASSERT_TRUE(manifestation2.hasUtilizedElement());
+    ASSERT_EQ(manifestation2.getUtilizedElementRef(), utilizedElement);
+    ASSERT_TRUE(manifestation2.getSupplier().count(uid));
+    ASSERT_TRUE(manifestation2.getTargets().count(uid));
+    ASSERT_TRUE(manifestation2.getRelatedElements().count(uid));
+    ASSERT_TRUE(artifact6.getManifestations().count(mid));
+    ASSERT_TRUE(artifact6.getDirectedRelationships().count(mid));
+    ASSERT_TRUE(artifact6.getRelationships().count(mid));
+    ASSERT_TRUE(artifact6.getOwnedElements().count(mid));
+
+    m.release(artifact6, manifestation2, utilizedElement);
+    Manifestation& manifestation3 = m.aquire(mid)->as<Manifestation>();
+    ASSERT_TRUE(manifestation3.hasUtilizedElement());
+    Package& utilizedElement2 = manifestation3.getUtilizedElementRef().as<Package>();
+    ASSERT_TRUE(manifestation3.hasArtifact());
+    Artifact& artifact7 = manifestation3.getArtifactRef();
+    ASSERT_EQ(manifestation3.getArtifactRef(), artifact7);
+    ASSERT_TRUE(manifestation3.getClient().count(aID));
+    ASSERT_TRUE(manifestation3.getSources().count(aID));
+    ASSERT_TRUE(manifestation3.getRelatedElements().count(aID));
+    ASSERT_TRUE(manifestation3.hasOwner());
+    ASSERT_EQ(manifestation3.getOwnerRef(), artifact7);
+    ASSERT_TRUE(manifestation3.hasUtilizedElement());
+    ASSERT_EQ(manifestation3.getUtilizedElementRef(), utilizedElement2);
+    ASSERT_TRUE(manifestation3.getSupplier().count(uid));
+    ASSERT_TRUE(manifestation3.getTargets().count(uid));
+    ASSERT_TRUE(manifestation3.getRelatedElements().count(uid));
+    ASSERT_TRUE(artifact7.getManifestations().count(mid));
+    ASSERT_TRUE(artifact7.getDirectedRelationships().count(mid));
+    ASSERT_TRUE(artifact7.getRelationships().count(mid));
+    ASSERT_TRUE(artifact7.getOwnedElements().count(mid));
 }

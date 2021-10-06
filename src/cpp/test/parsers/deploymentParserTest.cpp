@@ -231,8 +231,8 @@ TEST_F(DeploymentParserTest, mountAndEditArtifactTest) {
     ASSERT_TRUE(artifact3.hasOwningPackage());
     Package& root2 = artifact3.getOwningPackageRef();
     ASSERT_TRUE(artifact3.hasNamespace());
-    ASSERT_EQ(artifact3.getNamespaceRef(), root);
-    ASSERT_TRUE(artifact3.getMemberNamespace().count(root.getID()));
+    ASSERT_EQ(artifact3.getNamespaceRef(), root2);
+    ASSERT_TRUE(artifact3.getMemberNamespace().count(root2.getID()));
     ASSERT_TRUE(artifact3.hasOwner());
     ASSERT_EQ(artifact3.getOwnerRef(), root2);
     ASSERT_TRUE(root2.getPackagedElements().count(artifact3.getID()));

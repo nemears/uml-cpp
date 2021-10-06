@@ -46,6 +46,7 @@ namespace UML {
                 public:
                     AddNestedArtifactFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Artifact& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveNestedArtifactFunctor : public TemplateAbstractSequenceFunctor<Artifact,Artifact> {
                 public:
@@ -62,6 +63,18 @@ namespace UML {
                     RemoveManifestationFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Manifestation& el) const override;
             };
+            Singleton<Artifact, Artifact> m_artifact = Singleton<Artifact, Artifact>(this);
+            class RemoveArtifactProcedure : public AbstractSingletonProcedure<Artifact, Artifact> {
+                public:
+                    RemoveArtifactProcedure(Artifact* me) : AbstractSingletonProcedure(me) {};
+                    void operator()(Artifact* el) const override;
+            };
+            class AddArtifactProcedure : public AbstractSingletonProcedure<Artifact, Artifact> {
+                public:
+                    AddArtifactProcedure(Artifact* me) : AbstractSingletonProcedure(me) {};
+                    void operator()(Artifact* el) const override;
+                    void operator()(ID id) const override;
+            };
             void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
@@ -74,6 +87,12 @@ namespace UML {
             Sequence<Operation>& getOwnedOperations();
             Sequence<Artifact>& getNestedArtifacts();
             Sequence<Manifestation>& getManifestations();
+            Artifact* getArtifact();
+            Artifact& getArtifactRef();
+            ID getArtifactID() const;
+            bool hasArtifact() const;
+            void setArtifact(Artifact* artifact);
+            void setArtifact(Artifact& artifact);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

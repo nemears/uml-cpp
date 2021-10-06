@@ -106,12 +106,26 @@ void Artifact::AddNestedArtifactFunctor::operator()(Artifact& el) const {
         m_el->getOwnedMembers().add(el);
     }
 
+    if (el.getArtifactID() != m_el->getID()) {
+        el.setArtifact(m_el);
+    }
+
     updateCopiedSequenceAddedTo(el, &Artifact::getNestedArtifacts);
+}
+
+void Artifact::AddNestedArtifactFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedMembers().count(id)) {
+        m_el->getOwnedMembers().addByID(id);
+    }
 }
 
 void Artifact::RemoveNestedArtifactFunctor::operator()(Artifact& el) const {
     if (m_el->getOwnedMembers().count(el.getID())) {
         m_el->getOwnedMembers().remove(el);
+    }
+
+    if (el.getArtifactID() == m_el->getID()) {
+        el.setArtifact(m_el);
     }
 
     updateCopiedSequenceRemovedFrom(el, &Artifact::getNestedArtifacts);
@@ -133,6 +147,30 @@ void Artifact::RemoveManifestationFunctor::operator()(Manifestation& el) const {
 
     el.setArtifact(0); 
     updateCopiedSequenceRemovedFrom(el, &Artifact::getManifestations);
+}
+
+void Artifact::AddArtifactProcedure::operator()(Artifact* el) const {
+    if (!el->getNestedArtifacts().count(m_me->getID())) {
+        el->getNestedArtifacts().add(*m_me);
+    }
+    if (m_me->getNamespaceID() != el->getID()) {
+        m_me->setNamespace(el);
+    }
+}
+
+void Artifact::AddArtifactProcedure::operator()(ID id) const {
+    if (m_me->getNamespaceID() != id) {
+        m_me->m_namespace.setByID(id);
+    }
+}
+
+void Artifact::RemoveArtifactProcedure::operator()(Artifact* el) const {
+    if (el->getNestedArtifacts().count(m_me->getID())) {
+        el->getNestedArtifacts().remove(*m_me);
+    }
+    if (m_me->getNamespaceID() == el->getID()) {
+        m_me->setNamespace(0);
+    }
 }
 
 void Artifact::setManager(UmlManager* manager) {
@@ -159,6 +197,9 @@ void Artifact::referenceReindexed(ID oldID, ID newID) {
     if (m_manifestations.count(oldID)) {
         m_manifestations.reindex(oldID, newID, &Artifact::getManifestations);
     }
+    if (m_artifact.id() == oldID) {
+        m_artifact.reindex(oldID, newID);
+    }
 }
 
 void Artifact::referencingReleased(ID id) {
@@ -176,6 +217,9 @@ void Artifact::referencingReleased(ID id) {
     if (m_manifestations.count(id)) {
         m_manifestations.elementReleased(id, &Artifact::getManifestations);
     }
+    if (m_artifact.id() == id) {
+        m_artifact.release();
+    }
 }
 
 void Artifact::restoreReferences() {
@@ -185,6 +229,7 @@ void Artifact::restoreReferences() {
     m_ownedOperations.restoreReferences();
     m_nestedArtifacts.restoreReferences();
     m_manifestations.restoreReferences();
+    m_artifact.restoreReference();
 }
 
 Artifact::Artifact() {
@@ -197,6 +242,9 @@ Artifact::Artifact() {
     m_nestedArtifacts.addChecks.push_back(new CheckNestedArtifactFunctor(this));
     m_manifestations.addProcedures.push_back(new AddManifestationFunctor(this));
     m_manifestations.removeProcedures.push_back(new RemoveManifestationFunctor(this));
+    m_artifact.m_signature = &Artifact::m_artifact;
+    m_artifact.m_removeProcedures.push_back(new RemoveArtifactProcedure(this));
+    m_artifact.m_addProcedures.push_back(new AddArtifactProcedure(this));
 }
 
 Artifact::Artifact(const Artifact& artifact) : DeployedArtifact(artifact),
@@ -230,6 +278,12 @@ Element(artifact) {
     m_manifestations.removeProcedures.clear();
     m_manifestations.addProcedures.push_back(new AddManifestationFunctor(this));
     m_manifestations.removeProcedures.push_back(new RemoveManifestationFunctor(this));
+    m_artifact = artifact.m_artifact;
+    m_artifact.m_me = this;
+    m_artifact.m_addProcedures.clear();
+    m_artifact.m_removeProcedures.clear();
+    m_artifact.m_removeProcedures.push_back(new RemoveArtifactProcedure(this));
+    m_artifact.m_addProcedures.push_back(new AddArtifactProcedure(this));
 }
 
 Sequence<Property>& Artifact::getOwnedAttributes() {
@@ -246,6 +300,30 @@ Sequence<Artifact>& Artifact::getNestedArtifacts() {
 
 Sequence<Manifestation>& Artifact::getManifestations() {
     return m_manifestations;
+}
+
+Artifact* Artifact::getArtifact() {
+    return m_artifact.get();
+}
+
+Artifact& Artifact::getArtifactRef() {
+    return m_artifact.getRef();
+}
+
+ID Artifact::getArtifactID() const {
+    return m_artifact.id();
+}
+
+bool Artifact::hasArtifact() const {
+    return m_artifact.has();
+}
+
+void Artifact::setArtifact(Artifact* artifact) {
+    m_artifact.set(artifact);
+}
+
+void Artifact::setArtifact(Artifact& artifact) {
+    m_artifact.set(artifact);
 }
 
 Artifact::~Artifact() {

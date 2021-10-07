@@ -360,6 +360,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &prop;
     }
 
+    if (node["slot"]) {
+        Slot& slot = data.m_manager->create<Slot>();
+        parseSlot(node["slot"], slot, data);
+        ret = &slot;
+    }
+
     if (node["stereotype"]) {
         Stereotype& stereotype = data.m_manager->create<Stereotype>();
         parseClass(node["stereotype"], stereotype, data);
@@ -2176,7 +2182,11 @@ void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
     if (node["values"]) {
         if (node["values"].IsSequence()) {
             for (size_t i = 0; i < node["values"].size(); i++) {
-                slot.getValues().add(determineAndParseValueSpecification(node["values"][i], data));
+                if (node["values"][i].IsMap()) {
+                    slot.getValues().add(determineAndParseValueSpecification(node["values"][i], data));
+                } else if (node["values"][i].IsScalar()) {
+                    parseAndAddToSequence(node["values"][i], data, slot, &Slot::getValues);
+                }
             }
         } else {
             throw UmlParserException("Invalid YAML node type for Slot field values, expected Sequence, ", data.m_path.string(), node["values"]);

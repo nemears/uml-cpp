@@ -46,6 +46,7 @@ namespace UML{
                 public:
                     AddSlotFunctor(InstanceSpecification* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Slot& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveSlotFunctor : public TemplateAbstractSequenceFunctor<Slot,InstanceSpecification> {
                 public:

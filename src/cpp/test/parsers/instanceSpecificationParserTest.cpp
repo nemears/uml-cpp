@@ -199,11 +199,14 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     Slot& slot = m.create<Slot>();
     PrimitiveType& type = m.create<PrimitiveType>();
     InstanceSpecification& typeInst = m.create<InstanceSpecification>();
+    LiteralString& typeSpecification = m.create<LiteralString>();
     InstanceValue& slotVal = m.create<InstanceValue>();
     attribute.setType(type);
     classifier.getOwnedAttributes().add(attribute);
     slot.setDefiningFeature(attribute);
     typeInst.setClassifier(type);
+    typeSpecification.setValue("test");
+    typeInst.setSpecification(typeSpecification);
     slotVal.setInstance(typeInst);
     slot.getValues().add(slotVal);
     inst.setClassifier(classifier);
@@ -216,4 +219,15 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     m.release(inst);
     InstanceSpecification& inst2 = slot.getOwningInstanceRef();
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(inst2, root));
+    ASSERT_EQ(inst2.getSlots().size(), 1);
+    ASSERT_EQ(inst2.getSlots().front(), slot);
+    ASSERT_EQ(inst2.getOwnedElements().size(), 1);
+    ASSERT_EQ(inst2.getOwnedElements().front(), slot);
+    ASSERT_TRUE(inst2.hasClassifier());
+    ASSERT_EQ(inst2.getClassifierRef(), classifier);
+
+    m.release(classifier);
+    ASSERT_TRUE(inst2.hasClassifier());
+    Class& classifier2 = inst2.getClassifierRef().as<Class>();
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(classifier2, root));
 }

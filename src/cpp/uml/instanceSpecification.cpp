@@ -44,6 +44,12 @@ void InstanceSpecification::AddSlotFunctor::operator()(Slot& el) const {
     updateCopiedSequenceAddedTo(el, &InstanceSpecification::getSlots);
 }
 
+void InstanceSpecification::AddSlotFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedElements().count(id)) {
+        m_el->getOwnedElements().addByID(id);
+    }
+}
+
 void InstanceSpecification::RemoveSlotFunctor::operator()(Slot& el) const {
     if (el.getOwningInstance() == m_el) {
         el.setOwningInstance(0);

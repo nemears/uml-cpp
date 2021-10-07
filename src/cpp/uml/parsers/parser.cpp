@@ -611,6 +611,11 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitInstanceSpecification(emitter, inst, data);
             break;
         }
+        case ElementType::INSTANCE_VALUE: {
+            InstanceValue& instanceValue = el.as<InstanceValue>();
+            emitInstanceValue(emitter, instanceValue, data);
+            break;
+        }
         case ElementType::LITERAL_BOOL : {
             emitLiteralBool(emitter, dynamic_cast<LiteralBool&>(el), data);
             break;
@@ -2081,12 +2086,18 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
     if (node["slots"]) {
         if (node["slots"].IsSequence()) {
             for (size_t i = 0; i < node["slots"].size(); i++) {
-                if (node["slots"][i]["slot"]) {
-                    if (node["slots"][i]["slot"].IsMap()) {
-                        Slot& slot = data.m_manager->create<Slot>();
-                        parseSlot(node["slots"][i]["slot"], slot, data);
-                        inst.getSlots().add(slot);
+                if (node["slots"][i].IsMap()) {
+                    if (node["slots"][i]["slot"]) {
+                        if (node["slots"][i]["slot"].IsMap()) {
+                            Slot& slot = data.m_manager->create<Slot>();
+                            parseSlot(node["slots"][i]["slot"], slot, data);
+                            inst.getSlots().add(slot);
+                        }
                     }
+                } else if (node["slots"][i].IsScalar()) {
+                    parseAndAddToSequence(node["slots"][i], data, inst, &InstanceSpecification::getSlots);
+                } else {
+                    throw UmlParserException("Invalid yaml node type for slot reference, must be a map or scalar!", data.m_path.string(), node["slots"][i]);
                 }
             }
         } else {

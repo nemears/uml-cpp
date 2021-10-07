@@ -50,6 +50,13 @@ namespace UML{
         };
 
         void applyFunctor(ParserMetaData& data, ID relEl, AbstractPostProcessFunctor* functor);
+        template <class T = Element, class U = Element> void applyFunctor(ParserMetaData& data, ID relEl, AbstractPostProcessFunctor* functor, parseAndSetSingletonFunctor<T,U>& idFunctor) {
+            if (data.m_strategy == ParserStrategy::WHOLE) {
+                applyFunctor(data, relEl, functor);
+            } else {
+
+            }
+        }
     }
 }
 

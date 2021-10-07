@@ -69,6 +69,11 @@ namespace UML {
             public:
                 ManifestationSetArtifact();
         };
+
+        class InstanceSpecificationSetClassifier : public parseAndSetSingletonFunctor<Classifier, InstanceSpecification> {
+            public:
+                InstanceSpecificationSetClassifier();
+        };
     }
 }
 

@@ -79,6 +79,13 @@ void InstanceSpecification::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void InstanceSpecification::restoreReferences() {
+    PackageableElement::restoreReferences();
+    m_classifier.restoreReference();
+    m_specification.restoreReference();
+    m_slots.restoreReferences();
+}
+
 InstanceSpecification::InstanceSpecification() {
     m_classifier.m_signature = &InstanceSpecification::m_classifier;
     m_classifier.m_removeProcedures.push_back(new RemoveClassifierProcedure(this));

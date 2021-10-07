@@ -11,12 +11,16 @@ namespace UML{
     class Slot;
     class Classifier;
     class InstanceValue;
+    namespace Parsers {
+        class InstanceSpecificationSetClassifier;
+    }
 
     class InstanceSpecification : public PackageableElement , public DeployedArtifact, public DeploymentTarget {
 
         friend class UmlManager;
         friend class Classifier;
         friend class InstanceValue;
+        friend class Parsers::InstanceSpecificationSetClassifier;
 
         protected:
             Singleton<Classifier, InstanceSpecification> m_classifier = Singleton<Classifier, InstanceSpecification>(this);
@@ -56,6 +60,7 @@ namespace UML{
             void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
             InstanceSpecification();
         public:
             InstanceSpecification(const InstanceSpecification& inst);

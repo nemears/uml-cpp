@@ -145,6 +145,10 @@ ManifestationSetArtifact::ManifestationSetArtifact() {
     m_signature = &Manifestation::m_artifact;
 }
 
+InstanceSpecificationSetClassifier::InstanceSpecificationSetClassifier() {
+    m_signature = &InstanceSpecification::m_classifier;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -2075,8 +2079,13 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
         if (node["classifier"].IsScalar()) {
             string classifierID = node["classifier"].as<string>();
             if (isValidID(classifierID)) {
-                ID id = ID::fromString(classifierID);
-                applyFunctor(data, id, new SetClassifierFunctor(&inst, node["classifier"]));
+                if (data.m_strategy == ParserStrategy::WHOLE) {
+                    ID id = ID::fromString(classifierID);
+                    applyFunctor(data, id, new SetClassifierFunctor(&inst, node["classifier"]));
+                } else {
+                    InstanceSpecificationSetClassifier setClassifier;
+                    setClassifier(node["classifier"], data, inst);
+                }
             }
         } else {
             throw UmlParserException("Invalid YAML node type for InstanceSpecification field classifier,", data.m_path.string(), node["classifier"]);

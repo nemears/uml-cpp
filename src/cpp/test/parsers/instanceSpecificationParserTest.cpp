@@ -190,6 +190,13 @@ TEST_F(InstanceSpecificationParserTest, emitSpecificationTest) {
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
+void ASSERT_RESTORE_SLOT_CORRECTLY(InstanceSpecification& inst, Slot& slot, size_t i) {
+    ASSERT_EQ(inst.getSlots().size(), 1);
+    ASSERT_EQ(inst.getSlots().get(i), slot);
+    ASSERT_EQ(inst.getOwnedElements().size(), 1);
+    ASSERT_EQ(inst.getOwnedElements().get(i), slot);
+}
+
 TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     UmlManager m;
     Package& root = m.create<Package>();
@@ -219,10 +226,7 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     m.release(inst);
     InstanceSpecification& inst2 = slot.getOwningInstanceRef();
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(inst2, root));
-    ASSERT_EQ(inst2.getSlots().size(), 1);
-    ASSERT_EQ(inst2.getSlots().front(), slot);
-    ASSERT_EQ(inst2.getOwnedElements().size(), 1);
-    ASSERT_EQ(inst2.getOwnedElements().front(), slot);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_SLOT_CORRECTLY(inst2, slot, 0));
     ASSERT_TRUE(inst2.hasClassifier());
     ASSERT_EQ(inst2.getClassifierRef(), classifier);
 
@@ -230,4 +234,14 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     ASSERT_TRUE(inst2.hasClassifier());
     Class& classifier2 = inst2.getClassifierRef().as<Class>();
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(classifier2, root));
+
+    ID classifierID = classifier2.getID();
+    m.release(inst2, classifier2);
+    InstanceSpecification inst3 = m.aquire(instID)->as<InstanceSpecification>();
+    ASSERT_TRUE(inst3.hasClassifier());
+    ASSERT_FALSE(m.loaded(classifierID));
+    Class& classifier3 = m.aquire(classifierID)->as<Class>();
+    ASSERT_EQ(inst3.getClassifierRef(), classifier3);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(inst3, root));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_SLOT_CORRECTLY(inst3, slot, 0));
 }

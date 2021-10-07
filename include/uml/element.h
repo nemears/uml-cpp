@@ -127,6 +127,7 @@ namespace UML {
     class RemoveOwnerFunctor;
     class Slot;
     class InstanceSpecification;
+    class Property;
     class UmlManager;
     struct ManagerNode;
     class AddOwnedCommentFunctor;
@@ -142,6 +143,7 @@ namespace UML {
         friend class SetOwnerFunctor;
         friend class RemoveOwnerFunctor;
         friend class Slot;
+        friend class Property;
         friend class UmlManager;
         friend class AddOwnedCommentFunctor;
         template<typename> friend class Sequence;
@@ -175,7 +177,7 @@ namespace UML {
             void setReference(ID id);
             virtual void referenceReindexed(ID oldID, ID newID);
             virtual void restoreReferences();
-            void restoreReference(Element* el);
+            virtual void restoreReference(Element* el);
             Element();
         public:
             Element(const Element& el);

@@ -360,6 +360,13 @@ void Property::restoreReferences() {
     m_redefinedProperties.restoreReferences();
 }
 
+void Property::restoreReference(Element* el) {
+    StructuralFeature::restoreReference(el);
+    if (m_redefinedProperties.count(el->getID())) {
+        el->setReference(this);
+    }
+}
+
 Property::Property() {
     m_aggregation = AggregationKind::NONE;
     m_composite = false;

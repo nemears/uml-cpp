@@ -29,6 +29,7 @@ namespace UML{
 
     class Property: public StructuralFeature, public ConnectableElement , public DeploymentTarget {
         friend class UmlManager;
+        template <class T> friend class Sequence;
         friend class Parsers::SetDefaultValue;
         friend class Parsers::PropertySetClass;
         friend class Parsers::PropertySetDataType;
@@ -162,6 +163,7 @@ namespace UML{
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
+            void restoreReference(Element* el) override;
             Property();
         public:
             Property(const Property& prop);

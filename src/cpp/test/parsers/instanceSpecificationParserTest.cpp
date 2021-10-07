@@ -8,6 +8,8 @@
 #include "uml/property.h"
 #include "uml/instanceValue.h"
 #include "uml/literalString.h"
+#include "uml/primitiveType.h"
+#include "test/umlTestUtil.h"
 
 using namespace std;
 using namespace UML;
@@ -186,4 +188,32 @@ TEST_F(InstanceSpecificationParserTest, emitSpecificationTest) {
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(inst));
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
+}
+
+TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
+    UmlManager m;
+    Package& root = m.create<Package>();
+    Class& classifier = m.create<Class>();
+    Property& attribute = m.create<Property>();
+    InstanceSpecification& inst = m.create<InstanceSpecification>();
+    Slot& slot = m.create<Slot>();
+    PrimitiveType& type = m.create<PrimitiveType>();
+    InstanceSpecification& typeInst = m.create<InstanceSpecification>();
+    InstanceValue& slotVal = m.create<InstanceValue>();
+    attribute.setType(type);
+    classifier.getOwnedAttributes().add(attribute);
+    slot.setDefiningFeature(attribute);
+    typeInst.setClassifier(type);
+    slotVal.setInstance(typeInst);
+    slot.getValues().add(slotVal);
+    inst.setClassifier(classifier);
+    inst.getSlots().add(slot);
+    root.getPackagedElements().add(classifier, inst, type, typeInst);
+    m.setRoot(&root);
+    m.mount(ymlPath + "instanceSpecificationTests");
+
+    ID instID = inst.getID();
+    m.release(inst);
+    InstanceSpecification& inst2 = slot.getOwningInstanceRef();
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(inst2, root));
 }

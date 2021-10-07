@@ -3,6 +3,7 @@
 
 #include "uml/umlManager.h"
 #include "uml/sequence.h"
+#include "uml/package.h"
 
 namespace UML {
 namespace {
@@ -54,6 +55,20 @@ inline void ASSERT_PROPER_MOUNT(Element& root, std::string mountPath) {
     std::string mountPath1 = mountPath + "/mount";
     ASSERT_TRUE(std::filesystem::exists(mountPath1));
     ASSERT_PROPER_MOUNT_HELPER(root, mountPath1);
+}
+
+inline void ASSERT_RESTORED_OWNING_PACKAGE(PackageableElement& el, Package& pckg) {
+    ASSERT_TRUE(el.hasOwningPackage());
+    ASSERT_EQ(el.getOwningPackageRef(), pckg);
+    ASSERT_TRUE(el.hasNamespace());
+    ASSERT_EQ(el.getNamespaceRef(), pckg);
+    ASSERT_TRUE(el.getMemberNamespace().count(pckg.getID()));
+    ASSERT_TRUE(el.hasOwner());
+    ASSERT_EQ(el.getOwnerRef(), pckg);
+    ASSERT_TRUE(pckg.getPackagedElements().count(el.getID()));
+    ASSERT_TRUE(pckg.getOwnedMembers().count(el.getID()));
+    ASSERT_TRUE(pckg.getMembers().count(el.getID()));
+    ASSERT_TRUE(pckg.getOwnedElements().count(el.getID()));
 }
 
 }

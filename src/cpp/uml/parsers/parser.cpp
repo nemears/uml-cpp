@@ -149,6 +149,10 @@ InstanceSpecificationSetClassifier::InstanceSpecificationSetClassifier() {
     m_signature = &InstanceSpecification::m_classifier;
 }
 
+SetOwningInstance::SetOwningInstance() {
+    m_signature = &Slot::m_owningInstance;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -510,6 +514,15 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                 setOwningElement(node["owningElement"], data, ret->as<Comment>());
             }
         }
+        if (node["owningInstance"]) {
+            ID owningInstanceID = ID::fromString(node["owningInstance"].as<string>());
+            if (data.m_manager->loaded(owningInstanceID)) {
+                ret->as<Slot>().setOwningInstance(data.m_manager->get<InstanceSpecification>(owningInstanceID));
+            } else {
+                SetOwningInstance setOwningInstance;
+                setOwningInstance(node["owningInstance"], data, ret->as<Slot>());
+            }
+        }
 
     }
 
@@ -835,6 +848,13 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::MANIFESTATION)) {
             if (el.as<Manifestation>().hasArtifact()) {
                 emitter << YAML::Key << "artifact" << YAML::Value << el.as<Manifestation>().getArtifactID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::SLOT)) {
+            if (el.as<Slot>().hasOwningInstance()) {
+                emitter << YAML::Key << "owningInstance" << YAML::Value << el.as<Slot>().getOwningInstanceID().string();
+                return;
             }
         }
     }

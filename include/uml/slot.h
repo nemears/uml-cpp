@@ -7,9 +7,13 @@ namespace UML {
 
     class InstanceSpecification;
     class StructuralFeature;
+    namespace Parsers {
+        class SetOwningInstance;
+    }
 
     class Slot : public Element {
         friend class UmlManager;
+        friend class Parsers::SetOwningInstance;
         protected:
             Singleton<StructuralFeature, Slot> m_definingFeature = Singleton<StructuralFeature, Slot>(this);
             class RemoveDefiningFeatureProcedure : public AbstractSingletonProcedure<StructuralFeature, Slot> {
@@ -33,6 +37,7 @@ namespace UML {
                 public:
                     AddOwningInstanceProcedure(Slot* me) : AbstractSingletonProcedure<InstanceSpecification, Slot>(me) {};
                     void operator()(InstanceSpecification* el) const override;
+                    void operator()(ID id) const override;
             };
             void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
@@ -54,11 +59,13 @@ namespace UML {
             Sequence<ValueSpecification>& getValues();
             StructuralFeature* getDefiningFeature();
             StructuralFeature& getDefiningFeatureRef();
+            ID getDefiningFeatureID() const;
             bool hasDefiningFeature() const;
             void setDefiningFeature(StructuralFeature& definingFeature);
             void setDefiningFeature(StructuralFeature* definingFeature);
             InstanceSpecification* getOwningInstance();
             InstanceSpecification& getOwningInstanceRef();
+            ID getOwningInstanceID() const;
             bool hasOwningInstance() const;
             void setOwningInstance(InstanceSpecification& inst);
             void setOwningInstance(InstanceSpecification* inst);

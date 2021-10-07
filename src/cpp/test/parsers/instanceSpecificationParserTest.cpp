@@ -256,4 +256,15 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_SLOT_CORRECTLY(inst3, slot2, 0));
     ASSERT_TRUE(slot2.hasDefiningFeature());
     ASSERT_EQ(slot2.getDefiningFeatureRef(), attribute);
+
+    m.release(slot2, inst3);
+    Slot& slot3 = m.aquire(slotID)->as<Slot>();
+    ASSERT_TRUE(slot3.hasOwningInstance());
+    InstanceSpecification& inst4 = m.aquire(instID)->as<InstanceSpecification>();
+    ASSERT_EQ(slot3.getOwningInstanceRef(), inst4);
+    ASSERT_TRUE(slot3.hasOwner());
+    ASSERT_EQ(slot3.getOwnerRef(), inst4);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_SLOT_CORRECTLY(inst4, slot3, 0));
+    ASSERT_TRUE(slot3.hasDefiningFeature());
+    ASSERT_EQ(slot3.getDefiningFeatureRef(), attribute);
 }

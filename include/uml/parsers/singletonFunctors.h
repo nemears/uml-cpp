@@ -74,6 +74,11 @@ namespace UML {
             public:
                 InstanceSpecificationSetClassifier();
         };
+
+        class SetOwningInstance : public parseAndSetSingletonFunctor<InstanceSpecification, Slot> {
+            public:
+                SetOwningInstance();
+        };
     }
 }
 

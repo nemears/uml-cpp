@@ -23,6 +23,42 @@ void Slot::AddOwningInstanceProcedure::operator()(InstanceSpecification* el) con
     if (!el->getSlots().count(m_me->getID())) {
         el->getSlots().add(*m_me);
     }
+    if (m_me->getOwnerID() != el->getID()) {
+        m_me->setOwner(el);
+    }
+}
+
+void Slot::AddOwningInstanceProcedure::operator()(ID id) const {
+    if (m_me->getOwnerID() != id) {
+        m_me->setOwnerByID(id);
+    }
+}
+
+void Slot::AddValueFunctor::operator()(ValueSpecification& el) const {
+    if (el.getOwningSlot() != m_el) {
+        el.setOwningSlot(m_el);
+    }
+    
+    if (el.getOwner() != m_el) {
+        el.setOwner(m_el);
+    }
+    updateCopiedSequenceAddedTo(el, &Slot::getValues);
+}
+
+void Slot::RemoveValueFunctor::operator()(ValueSpecification& el) const {
+    if (el.getOwningSlot() == m_el) {
+        el.setOwningSlot(0);
+    }
+
+    if (el.getOwner() == m_el) {
+        el.setOwner(0);
+    }
+    updateCopiedSequenceRemovedFrom(el, &Slot::getValues);
+}
+
+void Slot::setManager(UmlManager* manager) {
+    Element::setManager(manager);
+    m_values.m_manager = manager;
 }
 
 void Slot::referencingReleased(ID id) {
@@ -49,33 +85,6 @@ void Slot::referenceReindexed(ID oldID, ID newID) {
     if (m_owningInstance.id() == oldID) {
         m_owningInstance.reindex(oldID, newID);
     }
-}
-
-void Slot::setManager(UmlManager* manager) {
-    Element::setManager(manager);
-    m_values.m_manager = manager;
-}
-
-void Slot::AddValueFunctor::operator()(ValueSpecification& el) const {
-    if (el.getOwningSlot() != m_el) {
-        el.setOwningSlot(m_el);
-    }
-    
-    if (el.getOwner() != m_el) {
-        el.setOwner(m_el);
-    }
-    updateCopiedSequenceAddedTo(el, &Slot::getValues);
-}
-
-void Slot::RemoveValueFunctor::operator()(ValueSpecification& el) const {
-    if (el.getOwningSlot() == m_el) {
-        el.setOwningSlot(0);
-    }
-
-    if (el.getOwner() == m_el) {
-        el.setOwner(0);
-    }
-    updateCopiedSequenceRemovedFrom(el, &Slot::getValues);
 }
 
 Slot::Slot() {
@@ -126,6 +135,10 @@ StructuralFeature& Slot::getDefiningFeatureRef() {
     return m_definingFeature.getRef();
 }
 
+ID Slot::getDefiningFeatureID() const {
+    return m_definingFeature.id();
+}
+
 bool Slot::hasDefiningFeature() const {
     return m_definingFeature.has();
 }
@@ -144,6 +157,10 @@ InstanceSpecification* Slot::getOwningInstance() {
 
 InstanceSpecification& Slot::getOwningInstanceRef() {
     return m_owningInstance.getRef();
+}
+
+ID Slot::getOwningInstanceID() const {
+    return m_owningInstance.id();
 }
 
 bool Slot::hasOwningInstance() const {

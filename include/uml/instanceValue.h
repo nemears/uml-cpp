@@ -6,10 +6,14 @@
 namespace UML {
 
     class InstanceSpecification;
+    namespace Parsers {
+        class SetInstance;
+    }
 
     class InstanceValue : public ValueSpecification {
 
         friend class UmlManager;
+        friend class Parsers::SetInstance;
 
         protected:
             Singleton<InstanceSpecification, InstanceValue> m_instance = Singleton<InstanceSpecification, InstanceValue>(this);

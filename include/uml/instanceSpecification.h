@@ -13,6 +13,7 @@ namespace UML{
     class InstanceValue;
     namespace Parsers {
         class InstanceSpecificationSetClassifier;
+        class SetSpecification;
     }
 
     class InstanceSpecification : public PackageableElement , public DeployedArtifact, public DeploymentTarget {
@@ -21,6 +22,7 @@ namespace UML{
         friend class Classifier;
         friend class InstanceValue;
         friend class Parsers::InstanceSpecificationSetClassifier;
+        friend class Parsers::SetSpecification;
 
         protected:
             Singleton<Classifier, InstanceSpecification> m_classifier = Singleton<Classifier, InstanceSpecification>(this);
@@ -45,6 +47,7 @@ namespace UML{
                 public:
                     AddSpecificationProcedure(InstanceSpecification* me) : AbstractSingletonProcedure<ValueSpecification, InstanceSpecification>(me) {};
                     void operator()(ValueSpecification* el) const override;
+                    void operator()(ID id) const override;
             };
             class AddSlotFunctor : public TemplateAbstractSequenceFunctor<Slot,InstanceSpecification> {
                 public:

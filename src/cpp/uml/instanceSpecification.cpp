@@ -29,6 +29,12 @@ void InstanceSpecification::AddSpecificationProcedure::operator()(ValueSpecifica
     }
 }
 
+void InstanceSpecification::AddSpecificationProcedure::operator()(ID id) const {
+    if (!m_me->getOwnedElements().count(id)) {
+        m_me->getOwnedElements().addByID(id);
+    }
+}
+
 void InstanceSpecification::AddSlotFunctor::operator()(Slot& el) const {
     if (el.getOwningInstance()) {
         if (el.getOwningInstance()->getID() != m_el->getID()) {

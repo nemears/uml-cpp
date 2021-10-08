@@ -89,6 +89,16 @@ namespace UML {
             public:
                 SetOwningSlot();
         };
+
+        class SetSpecification : public parseAndSetSingletonFunctor<ValueSpecification, InstanceSpecification> {
+            public:
+                SetSpecification();
+        };
+
+        class SetInstance : public parseAndSetSingletonFunctor<InstanceSpecification, InstanceValue> {
+            public:
+                SetInstance();
+        };
     }
 }
 

@@ -161,6 +161,14 @@ SetOwningSlot::SetOwningSlot() {
     m_signature = &ValueSpecification::m_owningSlot;
 }
 
+SetSpecification::SetSpecification() {
+    m_signature = &InstanceSpecification::m_specification;
+}
+
+SetInstance::SetInstance() {
+    m_signature = &InstanceValue::m_instance;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -2164,8 +2172,11 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
     if (node["specification"]) {
         if (node["specification"].IsMap()) {
             inst.setSpecification(&determineAndParseValueSpecification(node["specification"], data));
+        } else if (node["specification"].IsScalar()) {
+            SetSpecification setSpecification;
+            setSpecification(node["specification"], data, inst);
         } else {
-            throw UmlParserException("Invalid yaml node type for specification field, must be a map!", data.m_path.string(), node["specification"]);
+            throw UmlParserException("Invalid yaml node type for specification field, must be a map or scalar!", data.m_path.string(), node["specification"]);
         }
     }
 }
@@ -2339,12 +2350,18 @@ void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& dat
 
     if (node["instance"]) {
         if (node["instance"].IsScalar()) {
-            string instID = node["instance"].as<string>();
-            if (isValidID(instID)) {
-                ID id = ID::fromString(instID);
-                applyFunctor(data, id, new SetInstanceFunctor(&val, node["instance"]));
+            if (data.m_strategy == ParserStrategy::WHOLE) {
+                string instID = node["instance"].as<string>();
+                if (isValidID(instID)) {
+                    ID id = ID::fromString(instID);
+                    applyFunctor(data, id, new SetInstanceFunctor(&val, node["instance"]));
+                }
+                else {
+                    throw UmlParserException("Scalar YAML node for InstanceValue field instance is not a valid id, must be base64 url safe 28 character string, ", data.m_path.string(), node["instance"]);
+                }
             } else {
-                throw UmlParserException("Scalar YAML node for InstanceValue field instance is not a valid id, must be base64 url safe 28 character string, ", data.m_path.string(), node["instance"]);
+                SetInstance setInstance;
+                setInstance(node["instance"], data, val);
             }
         } else {
             throw UmlParserException("Invalid YAML node type for InstanceValue field instance, expect scalar, ", data.m_path.string(), node["instance"]);

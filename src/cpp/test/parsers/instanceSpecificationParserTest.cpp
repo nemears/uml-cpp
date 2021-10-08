@@ -305,4 +305,19 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     ASSERT_EQ(slotVal2.getOwningSlotRef(), slot6);
     ASSERT_TRUE(slotVal2.hasOwner());
     ASSERT_EQ(slotVal2.getOwnerRef(), slot6);
+    ASSERT_TRUE(slotVal2.hasInstance());
+    ASSERT_EQ(slotVal2.getInstanceRef(), typeInst);
+
+    ID typeInstID = typeInst.getID();
+    m.release(slotVal2, typeInst);
+    InstanceValue& slotVal3 = m.aquire(valID)->as<InstanceValue>();
+    ASSERT_FALSE(m.loaded(typeInstID));
+    InstanceSpecification& typeInst2 = m.aquire(typeInstID)->as<InstanceSpecification>();
+    ASSERT_TRUE(slotVal3.hasInstance());
+    ASSERT_EQ(slotVal3.getInstanceRef(), typeInst2);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(typeInst2, root));
+    ASSERT_TRUE(typeInst2.hasSpecification());
+    ASSERT_EQ(typeInst2.getSpecificationRef(), typeSpecification);
+    ASSERT_EQ(typeInst2.getOwnedElements().size(), 1);
+    ASSERT_EQ(typeInst2.getOwnedElements().front(), typeSpecification);
 }

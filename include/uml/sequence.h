@@ -433,6 +433,10 @@ namespace UML {
 
             SequenceIterator<T> begin() { return SequenceIterator(this, m_order.begin()); };
             SequenceIterator<T> end() { return SequenceIterator(this, m_order.end()); };
+
+            std::vector<ID> ids() const {
+                return m_order;
+            }
     };
 
     template <class T = Element, class U = Element> class TemplateAbstractSequenceFunctor : public AbstractSequenceFunctor<T> {

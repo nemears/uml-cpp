@@ -87,6 +87,13 @@ void Slot::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void Slot::restoreReferences() {
+    Element::restoreReferences();
+    m_definingFeature.restoreReference();
+    m_values.restoreReferences();
+    m_owningInstance.restoreReference();
+}
+
 Slot::Slot() {
     m_definingFeature.m_signature = &Slot::m_definingFeature;
     m_definingFeature.m_addProcedures.push_back(new AddDefiningFeatureProcedure(this));

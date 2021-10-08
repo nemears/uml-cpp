@@ -79,6 +79,19 @@ void InstanceSpecification::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void InstanceSpecification::referencingReleased(ID id) {
+    PackageableElement::referencingReleased(id);
+    if (m_classifier.id() == id) {
+        m_classifier.release();
+    }
+    if (m_specification.id() == id) {
+        m_specification.release();
+    }
+    if (m_slots.count(id)) {
+        m_slots.elementReleased(id, &InstanceSpecification::getSlots);
+    }
+}
+
 void InstanceSpecification::restoreReferences() {
     PackageableElement::restoreReferences();
     m_classifier.restoreReference();
@@ -185,17 +198,4 @@ bool InstanceSpecification::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void InstanceSpecification::referencingReleased(ID id) {
-    PackageableElement::referencingReleased(id);
-    if (m_classifier.id() == id) {
-        m_classifier.release();
-    }
-    if (m_specification.id() == id) {
-        m_specification.release();
-    }
-    if (m_slots.count(id)) {
-        m_slots.elementReleased(id, &InstanceSpecification::getSlots);
-    }
 }

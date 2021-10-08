@@ -2161,9 +2161,16 @@ void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& in
 
     if (!inst.getSlots().empty()) {
         emitter << YAML::Key << "slots" << YAML::Value << YAML::BeginSeq;
-        for (auto& slot : inst.getSlots()) {
-            emit(emitter, slot, data);
+        if (data.m_strategy == EmitterStrategy::WHOLE) {
+            for (auto& slot : inst.getSlots()) {
+                emit(emitter, slot, data);
+            }
+        } else {
+            for (const ID id : inst.getSlots().ids()) {
+                emitter << YAML::Value << id.string() + ".yml";
+            }
         }
+        emitter << YAML::EndSeq;
     }
 
     if (inst.getSpecification()) {

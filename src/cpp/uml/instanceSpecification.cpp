@@ -148,6 +148,10 @@ Classifier& InstanceSpecification::getClassifierRef() {
     return m_classifier.getRef();
 }
 
+ID InstanceSpecification::getClassifierID() const {
+    return m_classifier.id();
+}
+
 bool InstanceSpecification::hasClassifier() const {
     return m_classifier.has();
 }
@@ -166,6 +170,10 @@ ValueSpecification* InstanceSpecification::getSpecification() {
 
 ValueSpecification& InstanceSpecification::getSpecificationRef() {
     return m_specification.getRef();
+}
+
+ID InstanceSpecification::getSpecificationID() const {
+    return m_specification.id();
 }
 
 bool InstanceSpecification::hasSpecification() const {

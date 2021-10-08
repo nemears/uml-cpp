@@ -70,12 +70,14 @@ namespace UML{
             virtual ~InstanceSpecification();
             Classifier* getClassifier();
             Classifier& getClassifierRef();
+            ID getClassifierID() const;
             bool hasClassifier() const;
             void setClassifier(Classifier* classifier);
             void setClassifier(Classifier& classifier);
             Sequence<Slot>& getSlots();
             ValueSpecification* getSpecification();
             ValueSpecification& getSpecificationRef();
+            ID getSpecificationID() const;
             bool hasSpecification() const;
             void setSpecification(ValueSpecification* specification);
             void setSpecification(ValueSpecification& specification);

@@ -33,6 +33,18 @@ namespace UML {
                     void operator()(Slot* el) const override;
                     void operator()(ID id) const override;
             };
+            Singleton<InstanceSpecification, ValueSpecification> m_owningInstanceSpec = Singleton<InstanceSpecification, ValueSpecification>(this);
+            class RemoveOwningInstanceSpecProcedure : public AbstractSingletonProcedure<InstanceSpecification, ValueSpecification> {
+                public:
+                    RemoveOwningInstanceSpecProcedure(ValueSpecification* me) : AbstractSingletonProcedure<InstanceSpecification, ValueSpecification>(me) {};
+                    void operator()(InstanceSpecification* el) const override;
+            };
+            class AddOwningInstanceSpecProcedure : public AbstractSingletonProcedure<InstanceSpecification, ValueSpecification> {
+                public:
+                    AddOwningInstanceSpecProcedure(ValueSpecification* me) : AbstractSingletonProcedure<InstanceSpecification, ValueSpecification>(me) {};
+                    void operator()(InstanceSpecification* el) const override;
+                    void operator()(ID id) const override;
+            };
             void reindexName(std::string oldName, std::string newName) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
@@ -45,6 +57,13 @@ namespace UML {
             bool hasOwningSlot() const;
             void setOwningSlot(Slot* slot);
             void setOwningSlot(Slot& slot);
+            // TODO move to protected
+            InstanceSpecification* getOwningInstanceSpec();
+            InstanceSpecification& getOwningInstanceSpecRef();
+            ID getOwningInstanceSpecID() const;
+            bool hasOwningInstanceSpec() const;
+            void setOwningInstanceSpec(InstanceSpecification* instanceSpec);
+            void setOwningInstanceSpec(InstanceSpecification& instanceSpec);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

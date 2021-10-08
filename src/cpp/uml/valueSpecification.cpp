@@ -1,6 +1,7 @@
 #include "uml/valueSpecification.h"
 #include "uml/slot.h"
 #include "uml/expression.h"
+#include "uml/instanceSpecification.h"
 
 using namespace std;
 using namespace UML;
@@ -26,6 +27,30 @@ void ValueSpecification::AddOwningSlotProcedure::operator()(ID id) const {
     }
 }
 
+void ValueSpecification::RemoveOwningInstanceSpecProcedure::operator()(InstanceSpecification* el) const {
+    if (el->getSpecificationID() == m_me->getID()) {
+        el->setSpecification(0);
+    }
+    if (m_me->getOwnerID() == el->getID()) {
+        m_me->setOwner(0);
+    }
+}
+
+void ValueSpecification::AddOwningInstanceSpecProcedure::operator()(InstanceSpecification* el) const {
+    if (el->getSpecificationID() != m_me->getID()) {
+        el->setSpecification(m_me);
+    }
+    if (m_me->getOwnerID() != el->getID()) {
+        m_me->setOwner(el);
+    }
+}
+
+void ValueSpecification::AddOwningInstanceSpecProcedure::operator()(ID id) const {
+    if (m_me->getOwnerID() != id) {
+        m_me->setOwnerByID(id);
+    }
+}
+
 void ValueSpecification::reindexName(string oldName, string newName) {
     if (getOwner()) {
         if (getOwner()->isSubClassOf(ElementType::SLOT)) {
@@ -43,12 +68,18 @@ void ValueSpecification::referenceReindexed(ID oldID, ID newID) {
     if (m_owningSlot.id() == oldID) {
         m_owningSlot.reindex(oldID, newID);
     }
+    if (m_owningInstanceSpec.id() == oldID) {
+        m_owningInstanceSpec.reindex(oldID, newID);
+    }
 }
 
 ValueSpecification::ValueSpecification() {
     m_owningSlot.m_signature = &ValueSpecification::m_owningSlot;
     m_owningSlot.m_removeProcedures.push_back(new RemoveOwningSlotProcedure(this));
     m_owningSlot.m_addProcedures.push_back(new AddOwningSlotProcedure(this));
+    m_owningInstanceSpec.m_signature = &ValueSpecification::m_owningInstanceSpec;
+    m_owningInstanceSpec.m_removeProcedures.push_back(new RemoveOwningInstanceSpecProcedure(this));
+    m_owningInstanceSpec.m_addProcedures.push_back(new AddOwningInstanceSpecProcedure(this));
 }
 
 ValueSpecification::ValueSpecification(const ValueSpecification& rhs) {
@@ -58,6 +89,12 @@ ValueSpecification::ValueSpecification(const ValueSpecification& rhs) {
     m_owningSlot.m_addProcedures.clear();
     m_owningSlot.m_removeProcedures.push_back(new RemoveOwningSlotProcedure(this));
     m_owningSlot.m_addProcedures.push_back(new AddOwningSlotProcedure(this));
+    m_owningInstanceSpec = rhs.m_owningInstanceSpec;
+    m_owningInstanceSpec.m_me = this;
+    m_owningInstanceSpec.m_removeProcedures.clear();
+    m_owningInstanceSpec.m_addProcedures.clear();
+    m_owningInstanceSpec.m_removeProcedures.push_back(new RemoveOwningInstanceSpecProcedure(this));
+    m_owningInstanceSpec.m_addProcedures.push_back(new AddOwningInstanceSpecProcedure(this));
 }
 
 Slot* ValueSpecification::getOwningSlot() {
@@ -82,6 +119,30 @@ void ValueSpecification::setOwningSlot(Slot* slot) {
 
 void ValueSpecification::setOwningSlot(Slot& slot) {
     m_owningSlot.set(slot);
+}
+
+InstanceSpecification* ValueSpecification::getOwningInstanceSpec() {
+    return m_owningInstanceSpec.get();
+}
+
+InstanceSpecification& ValueSpecification::getOwningInstanceSpecRef() {
+    return m_owningInstanceSpec.getRef();
+}
+
+ID ValueSpecification::getOwningInstanceSpecID() const {
+    return m_owningInstanceSpec.id();
+}
+
+bool ValueSpecification::hasOwningInstanceSpec() const {
+    return m_owningInstanceSpec.has();
+}
+
+void ValueSpecification::setOwningInstanceSpec(InstanceSpecification* instanceSpec) {
+    m_owningInstanceSpec.set(instanceSpec);
+}
+
+void ValueSpecification::setOwningInstanceSpec(InstanceSpecification& instanceSpec) {
+    m_owningInstanceSpec.set(instanceSpec);
 }
 
 ElementType ValueSpecification::getElementType() const {

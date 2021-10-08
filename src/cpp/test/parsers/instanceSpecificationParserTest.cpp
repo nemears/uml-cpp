@@ -328,6 +328,8 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     InstanceSpecification& typeInst3 = m.aquire(typeInstID)->as<InstanceSpecification>();
     ASSERT_FALSE(m.loaded(specID));
     LiteralString& typeSpecification2 = m.aquire(specID)->as<LiteralString>();
+    ASSERT_TRUE(typeSpecification2.hasOwningInstanceSpec());
+    ASSERT_EQ(typeSpecification2.getOwningInstanceSpecRef(), typeInst3);
     ASSERT_TRUE(typeSpecification2.hasOwner());
     ASSERT_EQ(typeSpecification2.getOwnerRef(), typeInst3);
     ASSERT_TRUE(typeInst3.hasSpecification());

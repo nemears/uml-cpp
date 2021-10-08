@@ -99,6 +99,11 @@ namespace UML {
             public:
                 SetInstance();
         };
+
+        class SetOwningInstanceSpec : public parseAndSetSingletonFunctor<InstanceSpecification, ValueSpecification> {
+            public:
+                SetOwningInstanceSpec();
+        };
     }
 }
 

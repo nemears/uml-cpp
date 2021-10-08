@@ -11,6 +11,7 @@ namespace UML {
     class Property;
     namespace Parsers {
         class SetOwningSlot;
+        class SetOwningInstanceSpec;
     }
 
     class ValueSpecification : public TypedElement , public PackageableElement {
@@ -19,6 +20,7 @@ namespace UML {
         friend class OpaqueBehavior;
         friend class Property;
         friend class Parsers::SetOwningSlot;
+        friend class Parsers::SetOwningInstanceSpec;
 
         protected:
             Singleton<Slot, ValueSpecification> m_owningSlot = Singleton<Slot, ValueSpecification>(this);

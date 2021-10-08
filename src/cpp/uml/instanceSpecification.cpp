@@ -21,11 +21,17 @@ void InstanceSpecification::RemoveSpecificationProcedure::operator()(ValueSpecif
     if (m_me->getOwnedElements().count(el->getID())) {
         m_me->getOwnedElements().internalRemove(*el);
     }
+    if (el->getOwningInstanceSpecID() == m_me->getID()) {
+        el->setOwningInstanceSpec(0);
+    }
 }
 
 void InstanceSpecification::AddSpecificationProcedure::operator()(ValueSpecification* el) const {
     if (!m_me->getOwnedElements().count(el->getID())) {
         m_me->getOwnedElements().internalAdd(*el);
+    }
+    if (el->getOwningInstanceSpecID() != m_me->getID()) {
+        el->setOwningInstanceSpec(m_me);
     }
 }
 

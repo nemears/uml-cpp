@@ -38,11 +38,21 @@ void Slot::AddValueFunctor::operator()(ValueSpecification& el) const {
     if (el.getOwningSlot() != m_el) {
         el.setOwningSlot(m_el);
     }
+
+    if (!m_el->getOwnedElements().count(el.getID())) {
+        m_el->getOwnedElements().internalAdd(el);
+    }
     
     if (el.getOwner() != m_el) {
         el.setOwner(m_el);
     }
     updateCopiedSequenceAddedTo(el, &Slot::getValues);
+}
+
+void Slot::AddValueFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedElements().count(id)) {
+        m_el->getOwnedElements().addByID(id);
+    }
 }
 
 void Slot::RemoveValueFunctor::operator()(ValueSpecification& el) const {

@@ -9,11 +9,13 @@ namespace UML {
     class StructuralFeature;
     namespace Parsers {
         class SetOwningInstance;
+        class SetDefiningFeature;
     }
 
     class Slot : public Element {
         friend class UmlManager;
         friend class Parsers::SetOwningInstance;
+        friend class Parsers::SetDefiningFeature;
         protected:
             Singleton<StructuralFeature, Slot> m_definingFeature = Singleton<StructuralFeature, Slot>(this);
             class RemoveDefiningFeatureProcedure : public AbstractSingletonProcedure<StructuralFeature, Slot> {
@@ -47,6 +49,7 @@ namespace UML {
                 public:
                     AddValueFunctor(Slot* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(ValueSpecification& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveValueFunctor : public TemplateAbstractSequenceFunctor<ValueSpecification,Slot> {
                 public:

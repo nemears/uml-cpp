@@ -79,6 +79,11 @@ namespace UML {
             public:
                 SetOwningInstance();
         };
+
+        class SetDefiningFeature : public parseAndSetSingletonFunctor<StructuralFeature, Slot> {
+            public:
+                SetDefiningFeature();
+        };
     }
 }
 

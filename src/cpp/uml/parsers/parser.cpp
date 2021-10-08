@@ -153,6 +153,10 @@ SetOwningInstance::SetOwningInstance() {
     m_signature = &Slot::m_owningInstance;
 }
 
+SetDefiningFeature::SetDefiningFeature() {
+    m_signature = &Slot::m_definingFeature;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -2195,10 +2199,15 @@ void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
 
     if (node["definingFeature"]) {
         if (node["definingFeature"].IsScalar()) {
-            string stringID = node["definingFeature"].as<string>();
-            if (isValidID(stringID)) {
-                ID definingFeatureID = ID::fromString(stringID);
-                applyFunctor(data, definingFeatureID, new SetDefiningFeatureFunctor(&slot, node["definingFeature"]));
+            if (data.m_strategy == ParserStrategy::WHOLE) {
+                string stringID = node["definingFeature"].as<string>();
+                if (isValidID(stringID)) {
+                    ID definingFeatureID = ID::fromString(stringID);
+                    applyFunctor(data, definingFeatureID, new SetDefiningFeatureFunctor(&slot, node["definingFeature"]));
+                }
+            } else {
+                SetDefiningFeature setDefiningFeature;
+                setDefiningFeature(node["definingFeature"], data, slot);
             }
         } else {
             throw UmlParserException("Invalid YAML node type for Slot field definingFeature, expected scalar, ", data.m_path.string(), node["definingFeature"]);
@@ -2232,8 +2241,14 @@ void emitSlot(YAML::Emitter& emitter, Slot& slot, EmitterMetaData& data) {
 
     if (!slot.getValues().empty()) {
         emitter << YAML::Key << "values" << YAML::Value << YAML::BeginSeq;
-        for (auto& val : slot.getValues()) {
-            emit(emitter, val, data);
+        if (data.m_strategy == EmitterStrategy::WHOLE) {
+            for (auto& val : slot.getValues()) {
+                emit(emitter, val, data);
+            }
+        } else {
+            for (const ID id : slot.getValues().ids()) {
+                emitter << YAML::Value << id.string() + ".yml";
+            }
         }
         emitter << YAML::EndSeq;
     }

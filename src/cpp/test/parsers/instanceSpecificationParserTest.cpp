@@ -267,6 +267,10 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_SLOT_CORRECTLY(inst4, slot3, 0));
     ASSERT_TRUE(slot3.hasDefiningFeature());
     ASSERT_EQ(slot3.getDefiningFeatureRef(), attribute);
+    ASSERT_EQ(slot3.getValues().size(), 1);
+    ASSERT_EQ(slot3.getValues().front(), slotVal);
+    ASSERT_EQ(slot3.getOwnedElements().size(), 1);
+    ASSERT_EQ(slot3.getOwnedElements().front(), slotVal);
 
     m.release(slot3, inst4);
     InstanceSpecification& inst5 = m.aquire(instID)->as<InstanceSpecification>();
@@ -277,4 +281,28 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_SLOT_CORRECTLY(inst5, slot4, 0));
     ASSERT_TRUE(slot4.hasDefiningFeature());
     ASSERT_EQ(slot4.getDefiningFeatureRef(), attribute);
+    ASSERT_EQ(slot4.getOwnedElements().size(), 1);
+    ASSERT_EQ(slot4.getOwnedElements().front(), slotVal);
+
+    ID propID = attribute.getID();
+    m.release(slot4, attribute);
+    Slot& slot5 = m.aquire(slotID)->as<Slot>();
+    ASSERT_FALSE(m.loaded(propID));
+    Property attribute2 = m.aquire(propID)->as<Property>();
+    ASSERT_TRUE(slot5.hasDefiningFeature());
+    ASSERT_EQ(slot5.getDefiningFeatureRef(), attribute2);
+    ASSERT_EQ(slot5.getOwnedElements().size(), 1);
+    ASSERT_EQ(slot5.getOwnedElements().front(), slotVal);
+
+    ID valID = slotVal.getID();
+    m.release(slotVal, slot5);
+    Slot& slot6 = m.aquire(slotID)->as<Slot>();
+    ASSERT_FALSE(m.loaded(valID));
+    InstanceValue& slotVal2 = m.aquire(valID)->as<InstanceValue>();
+    ASSERT_EQ(slot6.getOwnedElements().size(), 1);
+    ASSERT_EQ(slot6.getOwnedElements().front(), slotVal2);
+    ASSERT_TRUE(slotVal2.hasOwningSlot());
+    ASSERT_EQ(slotVal2.getOwningSlotRef(), slot6);
+    ASSERT_TRUE(slotVal2.hasOwner());
+    ASSERT_EQ(slotVal2.getOwnerRef(), slot6);
 }

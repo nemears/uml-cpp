@@ -21,8 +21,10 @@ void InstanceSpecification::RemoveSpecificationProcedure::operator()(ValueSpecif
     if (m_me->getOwnedElements().count(el->getID())) {
         m_me->getOwnedElements().internalRemove(*el);
     }
-    if (el->getOwningInstanceSpecID() == m_me->getID()) {
+    if (el->getOwningInstanceSpecID() == m_me->getID() && !m_me->m_setFlag) {
+        m_me->m_setFlag = true;
         el->setOwningInstanceSpec(0);
+        m_me->m_setFlag = false;
     }
 }
 

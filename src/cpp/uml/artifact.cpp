@@ -125,7 +125,7 @@ void Artifact::RemoveNestedArtifactFunctor::operator()(Artifact& el) const {
     }
 
     if (el.getArtifactID() == m_el->getID()) {
-        el.setArtifact(m_el);
+        el.setArtifact(0);
     }
 
     updateCopiedSequenceRemovedFrom(el, &Artifact::getNestedArtifacts);

@@ -25,6 +25,7 @@ namespace UML{
         friend class Parsers::SetSpecification;
 
         protected:
+            bool m_setFlag = false;
             Singleton<Classifier, InstanceSpecification> m_classifier = Singleton<Classifier, InstanceSpecification>(this);
             class RemoveClassifierProcedure : public AbstractSingletonProcedure<Classifier, InstanceSpecification> {
                 public:

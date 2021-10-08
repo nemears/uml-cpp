@@ -316,8 +316,25 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     ASSERT_TRUE(slotVal3.hasInstance());
     ASSERT_EQ(slotVal3.getInstanceRef(), typeInst2);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(typeInst2, root));
+    ASSERT_TRUE(typeInst2.hasClassifier());
+    ASSERT_EQ(typeInst2.getClassifierRef(), type);
     ASSERT_TRUE(typeInst2.hasSpecification());
     ASSERT_EQ(typeInst2.getSpecificationRef(), typeSpecification);
     ASSERT_EQ(typeInst2.getOwnedElements().size(), 1);
     ASSERT_EQ(typeInst2.getOwnedElements().front(), typeSpecification);
+
+    ID specID = typeSpecification.getID();
+    m.release(typeInst2, typeSpecification);
+    InstanceSpecification& typeInst3 = m.aquire(typeInstID)->as<InstanceSpecification>();
+    ASSERT_FALSE(m.loaded(specID));
+    LiteralString& typeSpecification2 = m.aquire(specID)->as<LiteralString>();
+    ASSERT_TRUE(typeSpecification2.hasOwner());
+    ASSERT_EQ(typeSpecification2.getOwnerRef(), typeInst3);
+    ASSERT_TRUE(typeInst3.hasSpecification());
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(typeInst3, root));
+    ASSERT_TRUE(typeInst3.hasClassifier());
+    ASSERT_EQ(typeInst3.getClassifierRef(), type);
+    ASSERT_EQ(typeInst3.getSpecificationRef(), typeSpecification2);
+    ASSERT_EQ(typeInst3.getOwnedElements().size(), 1);
+    ASSERT_EQ(typeInst3.getOwnedElements().front(), typeSpecification2);
 }

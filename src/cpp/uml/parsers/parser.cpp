@@ -157,6 +157,10 @@ SetDefiningFeature::SetDefiningFeature() {
     m_signature = &Slot::m_definingFeature;
 }
 
+SetOwningSlot::SetOwningSlot() {
+    m_signature = &ValueSpecification::m_owningSlot;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -527,6 +531,15 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                 setOwningInstance(node["owningInstance"], data, ret->as<Slot>());
             }
         }
+        if (node["owningSlot"]) {
+            ID owningSlotID = ID::fromString(node["owningSlot"].as<string>());
+            if (data.m_manager->loaded(owningSlotID)) {
+                ret->as<ValueSpecification>().setOwningSlot(data.m_manager->get<Slot>(owningSlotID));
+            } else {
+                SetOwningSlot setOwningSlot;
+                setOwningSlot(node["owningSlot"], data, ret->as<ValueSpecification>());
+            }
+        }
 
     }
 
@@ -808,6 +821,10 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
                         emitter << YAML::Key << "owningProperty" << YAML::Value << el.getOwnerID().string();
                         return;
                     }
+                }
+                if (el.as<ValueSpecification>().hasOwningSlot()) {
+                    emitter << YAML::Key << "owningSlot" << YAML::Value << el.as<ValueSpecification>().getOwningSlotID().string();
+                    return;
                 }
             }
         }

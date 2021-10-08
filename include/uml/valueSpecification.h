@@ -9,12 +9,16 @@ namespace UML {
 
     class OpaqueBehavior;
     class Property;
+    namespace Parsers {
+        class SetOwningSlot;
+    }
 
     class ValueSpecification : public TypedElement , public PackageableElement {
 
         friend class UmlManager;
         friend class OpaqueBehavior;
         friend class Property;
+        friend class Parsers::SetOwningSlot;
 
         protected:
             Singleton<Slot, ValueSpecification> m_owningSlot = Singleton<Slot, ValueSpecification>(this);
@@ -27,6 +31,7 @@ namespace UML {
                 public:
                     AddOwningSlotProcedure(ValueSpecification* me) : AbstractSingletonProcedure<Slot, ValueSpecification>(me) {};
                     void operator()(Slot* el) const override;
+                    void operator()(ID id) const override;
             };
             void reindexName(std::string oldName, std::string newName) override;
             void referencingReleased(ID id) override;
@@ -36,6 +41,7 @@ namespace UML {
             ValueSpecification(const ValueSpecification& rhs);
             Slot* getOwningSlot();
             Slot& getOwningSlotRef();
+            ID getOwningSlotID() const;
             bool hasOwningSlot() const;
             void setOwningSlot(Slot* slot);
             void setOwningSlot(Slot& slot);

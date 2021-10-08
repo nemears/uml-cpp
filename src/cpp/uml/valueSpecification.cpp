@@ -15,6 +15,15 @@ void ValueSpecification::AddOwningSlotProcedure::operator()(Slot* el) const {
     if (!el->getValues().count(m_me->getID())) {
         el->getValues().add(*m_me);
     }
+    if (m_me->getOwnerID() != el->getID()) {
+        m_me->setOwner(el);
+    }
+}
+
+void ValueSpecification::AddOwningSlotProcedure::operator()(ID id) const {
+    if (m_me->getOwnerID() != id) {
+        m_me->setOwnerByID(id);
+    }
 }
 
 void ValueSpecification::reindexName(string oldName, string newName) {
@@ -57,6 +66,10 @@ Slot* ValueSpecification::getOwningSlot() {
 
 Slot& ValueSpecification::getOwningSlotRef() {
     return m_owningSlot.getRef();
+}
+
+ID ValueSpecification::getOwningSlotID() const {
+    return m_owningSlot.id();
 }
 
 bool ValueSpecification::hasOwningSlot() const {

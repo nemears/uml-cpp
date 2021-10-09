@@ -8,6 +8,7 @@
 #include "uml/parameter.h"
 #include "uml/primitiveType.h"
 #include "uml/opaqueBehavior.h"
+#include "test/umlTestUtil.h"
 
 using namespace std;
 using namespace UML;
@@ -92,4 +93,10 @@ TEST_F(OperationParserTest, mountAndEditOperationTest) {
     ASSERT_EQ(op2.getOwnedElements().size(), 1);
     ASSERT_EQ(op2.getOwnedElements().front(), param);
 
+    ID paramID = param.getID();
+    m.release(param);
+    Parameter& param2 = m.aquire(paramID)->as<Parameter>();
+    ASSERT_TRUE(param2.hasOperation());
+    ASSERT_EQ(param2.getOperationRef(), op2);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(param2, op2));
 }

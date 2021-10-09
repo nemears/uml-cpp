@@ -57,18 +57,22 @@ inline void ASSERT_PROPER_MOUNT(Element& root, std::string mountPath) {
     ASSERT_PROPER_MOUNT_HELPER(root, mountPath1);
 }
 
+inline void ASSERT_RESTORED_NAMESPACE(NamedElement& el, Namespace& nmspc) {
+    ASSERT_TRUE(el.hasNamespace());
+    ASSERT_EQ(el.getNamespaceRef(), nmspc);
+    ASSERT_TRUE(el.getMemberNamespace().count(nmspc.getID()));
+    ASSERT_TRUE(el.hasOwner());
+    ASSERT_EQ(el.getOwnerRef(), nmspc);
+    ASSERT_TRUE(nmspc.getOwnedMembers().count(el.getID()));
+    ASSERT_TRUE(nmspc.getMembers().count(el.getID()));
+    ASSERT_TRUE(nmspc.getOwnedElements().count(el.getID()));
+}
+
 inline void ASSERT_RESTORED_OWNING_PACKAGE(PackageableElement& el, Package& pckg) {
     ASSERT_TRUE(el.hasOwningPackage());
     ASSERT_EQ(el.getOwningPackageRef(), pckg);
-    ASSERT_TRUE(el.hasNamespace());
-    ASSERT_EQ(el.getNamespaceRef(), pckg);
-    ASSERT_TRUE(el.getMemberNamespace().count(pckg.getID()));
-    ASSERT_TRUE(el.hasOwner());
-    ASSERT_EQ(el.getOwnerRef(), pckg);
     ASSERT_TRUE(pckg.getPackagedElements().count(el.getID()));
-    ASSERT_TRUE(pckg.getOwnedMembers().count(el.getID()));
-    ASSERT_TRUE(pckg.getMembers().count(el.getID()));
-    ASSERT_TRUE(pckg.getOwnedElements().count(el.getID()));
+    ASSERT_RESTORED_NAMESPACE(el, pckg);
 }
 
 }

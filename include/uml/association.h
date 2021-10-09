@@ -56,6 +56,7 @@ namespace UML {
             void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
             /**
              * TODO Think about constructor Association(Property& end1, Property& end2) {
              *      // sequence stuff

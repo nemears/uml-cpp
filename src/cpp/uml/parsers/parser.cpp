@@ -224,6 +224,13 @@ template <class T =Element> T& parseScalar(YAML::Node node, ParserMetaData& data
 
 Element* parseNode(YAML::Node node, ParserMetaData& data) {
     Element* ret = 0;
+
+    if (node["association"]) {
+        Association& association = data.m_manager->create<Association>();
+        parseAssociation(node["association"], association, data);
+        ret = &association;
+    }
+
     if (node["artifact"]) {
         if (node["artifact"].IsMap()) {
             Artifact& artifact = data.m_manager->create<Artifact>();
@@ -3201,14 +3208,20 @@ void parseAssociation(YAML::Node node, Association& association, ParserMetaData&
     if (node["navigableOwnedEnds"]) {
         if (node["navigableOwnedEnds"].IsSequence()) {
             for (size_t i = 0; i < node["navigableOwnedEnds"].size(); i++) {
-                if (node["navigableOwnedEnds"][i]["property"]) {
-                    if (node["navigableOwnedEnds"][i]["property"].IsMap()) {
-                        Property& property = data.m_manager->create<Property>();
-                        parseProperty(node["navigableOwnedEnds"][i]["property"], property, data);
-                        association.getNavigableOwnedEnds().add(property);
-                    } else {
-                        throw UmlParserException("Invalid yaml node type, must be map!", data.m_path.string(), node["navigableOwnedEnds"][i]["property"]);
+                if (node["navigableOwnedEnds"][i].IsMap()) {
+                    if (node["navigableOwnedEnds"][i]["property"]) {
+                        if (node["navigableOwnedEnds"][i]["property"].IsMap()) {
+                            Property& property = data.m_manager->create<Property>();
+                            parseProperty(node["navigableOwnedEnds"][i]["property"], property, data);
+                            association.getNavigableOwnedEnds().add(property);
+                        } else {
+                            throw UmlParserException("Invalid yaml node type, must be map!", data.m_path.string(), node["navigableOwnedEnds"][i]["property"]);
+                        }
                     }
+                } else if (node["navigableOwnedEnds"][i].IsScalar()) {
+                    parseAndAddToSequence(node["navigableOwnedEnds"][i], data, association, &Association::getNavigableOwnedEnds);
+                } else {
+                    throw UmlParserException("Invalid yaml node type for navigable ownedEnds entry, must be a map or a scalar!", data.m_path.string(), node["navigableOwnedEnds"][i]);
                 }
             }
         } else {
@@ -3219,14 +3232,20 @@ void parseAssociation(YAML::Node node, Association& association, ParserMetaData&
     if (node["ownedEnds"]) {
         if (node["ownedEnds"].IsSequence()) {
             for (size_t i = 0; i < node["ownedEnds"].size(); i++) {
-                if (node["ownedEnds"][i]["property"]) {
-                    if (node["ownedEnds"][i]["property"].IsMap()) {
-                        Property& property = data.m_manager->create<Property>();
-                        parseProperty(node["ownedEnds"][i]["property"], property, data);
-                        association.getOwnedEnds().add(property);
-                    } else {
-                        throw UmlParserException("Invalid yaml node type, must be map!", data.m_path.string(), node["navigableOwnedEnds"][i]["property"]);
+                if (node["ownedEnds"][i].IsMap()) {
+                    if (node["ownedEnds"][i]["property"]) {
+                        if (node["ownedEnds"][i]["property"].IsMap()) {
+                            Property& property = data.m_manager->create<Property>();
+                            parseProperty(node["ownedEnds"][i]["property"], property, data);
+                            association.getOwnedEnds().add(property);
+                        } else {
+                            throw UmlParserException("Invalid yaml node type, must be map!", data.m_path.string(), node["navigableOwnedEnds"][i]["property"]);
+                        }
                     }
+                } else if (node["ownedEnds"][i].IsScalar()) {
+                    parseAndAddToSequence(node["ownedEnds"][i], data, association, &Association::getOwnedEnds);
+                } else {
+                    throw UmlParserException("Invalid yaml node type for ownedEnds entry, must be a map or a scalar!", data.m_path.string(), node["ownedEnds"][i]);
                 }
             }
         } else {
@@ -3238,8 +3257,18 @@ void parseAssociation(YAML::Node node, Association& association, ParserMetaData&
         if (node["memberEnds"].IsSequence()) {
             for (size_t i = 0; i < node["memberEnds"].size(); i++) {
                 if (node["memberEnds"][i].IsScalar()) {
-                    if (isValidID(node["memberEnds"][i].as<string>())) {
-                        applyFunctor(data, ID::fromString(node["memberEnds"][i].as<string>()), new AddMemberEndFunctor(&association, node["memberEnds"][i]));
+                    if (data.m_strategy == ParserStrategy::WHOLE) {
+                        if (isValidID(node["memberEnds"][i].as<string>())) {
+                            applyFunctor(data, ID::fromString(node["memberEnds"][i].as<string>()), new AddMemberEndFunctor(&association, node["memberEnds"][i]));
+                        } else {
+                            throw UmlParserException("Invalid ID for member end entry, must be a 28 character url safe 64bit encoded string!", data.m_path.string(), node["memberEnds"][i]);
+                        }
+                    } else {
+                        if (data.m_manager->loaded(ID::fromString(node["memberEnds"][i].as<string>()))) {
+                            association.getMemberEnds().add(data.m_manager->get<Property>(ID::fromString(node["memberEnds"][i].as<string>())));
+                        } else {
+                            association.getMemberEnds().addByID(ID::fromString(node["memberEnds"][i].as<string>()));
+                        }
                     }
                 } else {
                     throw UmlParserException("Invalid yaml node type, must be scalar!", data.m_path.string(), node["memberEnds"][i]);
@@ -3258,17 +3287,31 @@ void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMe
 
     if (!association.getNavigableOwnedEnds().empty()) {
         emitter << YAML::Key << "navigableOwnedEnds" << YAML::Value << YAML::BeginSeq;
-        for (auto& end : association.getNavigableOwnedEnds()) {
-            emit(emitter, end, data);
+        if (data.m_strategy == EmitterStrategy::WHOLE) {
+            for (auto& end : association.getNavigableOwnedEnds()) {
+                emit(emitter, end, data);
+            }
+        } else {
+            for (const ID id : association.getNavigableOwnedEnds().ids()) {
+                emitter << YAML::Value << id.string() + ".yml";
+            }
         }
         emitter << YAML::EndSeq;
     }
 
     if (!association.getOwnedEnds().size() > association.getNavigableOwnedEnds().size() && !association.getOwnedEnds().empty()) {
         emitter << YAML::Key << "ownedEnds" << YAML::Value << YAML::BeginSeq;
-        for (auto& end : association.getOwnedEnds()) {
-            if (!association.getNavigableOwnedEnds().count(end.getID())) {
-                emit(emitter, end, data);
+        if (data.m_strategy == EmitterStrategy::WHOLE) {
+            for (auto& end : association.getOwnedEnds()) {
+                if (!association.getNavigableOwnedEnds().count(end.getID())) {
+                    emit(emitter, end, data);
+                }
+            }
+        } else {
+            for (const ID id : association.getOwnedEnds().ids()) {
+                if (!association.getNavigableOwnedEnds().count(id)) {
+                    emitter << YAML::Value << id.string() + ".yml";
+                }
             }
         }
         emitter << YAML::EndSeq;
@@ -3276,9 +3319,9 @@ void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMe
 
     if (association.getMemberEnds().size() > association.getOwnedEnds().size() && !association.getMemberEnds().empty()) {
         emitter << YAML::Key << "memberEnds" << YAML::Value << YAML::BeginSeq;
-        for (auto& end : association.getMemberEnds()) {
-            if (!association.getOwnedEnds().count(end.getID())) {
-                emitter << YAML::Value << end.getID().string();
+        for (const ID id : association.getMemberEnds().ids()) {
+            if (!association.getOwnedEnds().count(id)) {
+                emitter << YAML::Value << id.string();
             }
         }
         emitter << YAML::EndSeq;

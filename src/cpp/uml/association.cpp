@@ -146,6 +146,15 @@ void Association::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void Association::restoreReferences() {
+    Classifier::restoreReferences();
+    Relationship::restoreReferences();
+    m_memberEnds.restoreReferences();
+    m_ownedEnds.restoreReferences();
+    m_navigableOwnedEnds.restoreReferences();
+    m_endType.restoreReferences();
+}
+
 Association::Association() {
     m_memberEnds.addProcedures.push_back(new AddMemberEndFunctor(this));
     m_memberEnds.removeProcedures.push_back(new RemoveMemberEndFunctor(this));

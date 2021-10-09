@@ -128,6 +128,7 @@ namespace UML {
     class Slot;
     class InstanceSpecification;
     class Property;
+    class Association;
     class UmlManager;
     struct ManagerNode;
     class AddOwnedCommentFunctor;
@@ -144,6 +145,7 @@ namespace UML {
         friend class RemoveOwnerFunctor;
         friend class Slot;
         friend class Property;
+        friend class Association;
         friend class UmlManager;
         friend class AddOwnedCommentFunctor;
         template<typename> friend class Sequence;

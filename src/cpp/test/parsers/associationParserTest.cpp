@@ -196,11 +196,11 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_EQ(association2.getOwnedEnds().size(), 1);
     ASSERT_EQ(association2.getOwnedEnds().front(), aProp3);
     ASSERT_EQ(association2.getMemberEnds().size(), 2);
-    ASSERT_EQ(association2.getMemberEnds().back(), aProp3);
+    ASSERT_EQ(association2.getMemberEnds().front(), aProp3);
     ASSERT_EQ(association2.getOwnedMembers().size(), 1);
     ASSERT_EQ(association2.getOwnedMembers().front(), aProp3);
     ASSERT_EQ(association2.getMembers().size(), 2);
-    ASSERT_EQ(association2.getMembers().back(), aProp3);
+    ASSERT_EQ(association2.getMembers().front(), aProp3);
     ASSERT_EQ(association2.getOwnedElements().size(), 1);
     ASSERT_EQ(association2.getOwnedElements().front(), aProp3);
     ASSERT_EQ(association2.getEndType().size(), 2);
@@ -214,10 +214,25 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_EQ(cProp2.getAssociationRef(), association2);
     ASSERT_TRUE(cProp2.getMemberNamespace().count(association2.getID()));
     ASSERT_EQ(association2.getMemberEnds().size(), 2);
-    ASSERT_EQ(association2.getMemberEnds().front(), cProp2);
+    ASSERT_EQ(association2.getMemberEnds().back(), cProp2);
     ASSERT_EQ(association2.getMembers().size(), 2);
-    ASSERT_EQ(association2.getMembers().front(), cProp2);
+    ASSERT_EQ(association2.getMembers().back(), cProp2);
     ASSERT_EQ(association2.getEndType().size(), 2);
     ASSERT_EQ(association2.getEndType().front(), type);
     ASSERT_EQ(association2.getEndType().back(), clazz);
+
+    m.release(association2, cProp2);
+    Association& association3 = m.aquire(associationID)->as<Association>();
+    ASSERT_FALSE(m.loaded(cPropID));
+    Property& cProp3 = m.aquire(cPropID)->as<Property>();
+    ASSERT_TRUE(cProp3.hasAssociation());
+    ASSERT_EQ(cProp3.getAssociationRef(), association3);
+    ASSERT_TRUE(cProp3.getMemberNamespace().count(association3.getID()));
+    ASSERT_EQ(association3.getMemberEnds().size(), 2);
+    ASSERT_EQ(association3.getMemberEnds().back(), cProp3);
+    ASSERT_EQ(association3.getMembers().size(), 2);
+    ASSERT_EQ(association3.getMembers().back(), cProp3);
+    ASSERT_EQ(association3.getEndType().size(), 2);
+    ASSERT_EQ(association3.getEndType().back(), type);
+    ASSERT_EQ(association3.getEndType().front(), clazz);
 }

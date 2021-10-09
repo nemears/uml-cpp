@@ -24,6 +24,12 @@ void Association::AddMemberEndFunctor::operator()(Property& el) const {
     updateCopiedSequenceAddedTo(el, &Association::getMemberEnds);
 }
 
+void Association::AddMemberEndFunctor::operator()(ID id) const {
+    if (!m_el->getMembers().count(id)) {
+        m_el->getMembers().addByID(id);
+    }
+}
+
 void Association::RemoveMemberEndFunctor::operator()(Property& el) const {
     if (el.getAssociation() == m_el) {
         el.setAssociation(0);
@@ -60,6 +66,20 @@ void Association::AddOwnedEndFunctor::operator()(Property& el) const {
     updateCopiedSequenceAddedTo(el, &Association::getOwnedEnds);
 }
 
+void Association::AddOwnedEndFunctor::operator()(ID id) const {
+    if (!m_el->getMemberEnds().count(id)) {
+        m_el->getMemberEnds().addByID(id);
+    }
+
+    if (!m_el->getFeatures().count(id)) {
+        m_el->getFeatures().addByID(id);
+    }
+
+    if (!m_el->getOwnedMembers().count(id)) {
+        m_el->getOwnedMembers().addByID(id);
+    }
+}
+
 void Association::RemoveOwnedEndFunctor::operator()(Property& el) const {
     if (el.getOwningAssociation() == m_el) {
         el.setOwningAssociation(0);
@@ -84,6 +104,12 @@ void Association::AddNavigableOwnedEndFunctor::operator()(Property& el) const {
         m_el->getOwnedEnds().add(el);
     }
     updateCopiedSequenceAddedTo(el, &Association::getNavigableOwnedEnds);
+}
+
+void Association::AddNavigableOwnedEndFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedEnds().count(id)) {
+        m_el->getOwnedEnds().addByID(id);
+    }
 }
 
 void Association::RemoveNavigableOwnedEndFunctor::operator()(Property& el) const {
@@ -153,6 +179,13 @@ void Association::restoreReferences() {
     m_ownedEnds.restoreReferences();
     m_navigableOwnedEnds.restoreReferences();
     m_endType.restoreReferences();
+}
+
+void Association::restoreReference(Element* el) {
+    Element::restoreReference(el);
+    if (m_endType.count(el->getID())) {
+        el->setReference(this);
+    }
 }
 
 Association::Association() {

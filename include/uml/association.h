@@ -17,6 +17,7 @@ namespace UML {
                 public:
                     AddMemberEndFunctor(Association* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Property& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveMemberEndFunctor : public TemplateAbstractSequenceFunctor<Property,Association> {
                 public:
@@ -27,6 +28,7 @@ namespace UML {
                 public:
                     AddOwnedEndFunctor(Association* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Property& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveOwnedEndFunctor : public TemplateAbstractSequenceFunctor<Property,Association> {
                 public:
@@ -37,6 +39,7 @@ namespace UML {
                 public:
                     AddNavigableOwnedEndFunctor(Association* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Property& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveNavigableOwnedEndFunctor : public TemplateAbstractSequenceFunctor<Property,Association> {
                 public:
@@ -57,6 +60,7 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
+            void restoreReference(Element* el) override;
             /**
              * TODO Think about constructor Association(Property& end1, Property& end2) {
              *      // sequence stuff

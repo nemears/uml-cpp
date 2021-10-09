@@ -389,6 +389,15 @@ void Property::restoreReference(Element* el) {
     if (m_redefinedProperties.count(el->getID())) {
         el->setReference(this);
     }
+    if (m_association.id() == el->getID()) {
+        if (!m_association.getRef().getEndType().count(m_type.id())) {
+            if (m_manager->loaded(m_type.id())) {
+                m_association.getRef().getEndType().add(m_type.getRef());
+            } else {
+                m_association.getRef().getEndType().addByID(m_type.id());
+            }
+        }
+    }
 }
 
 Property::Property() {

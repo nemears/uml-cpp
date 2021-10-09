@@ -8,12 +8,14 @@ namespace UML {
     class BehavioralFeature;
     namespace Parsers {
         class BehaviorSetSpecification;
+        class SetBehavioredClassifier;
     }
 
     class Behavior : public Class {
 
         friend class UmlManager;
         friend class Parsers::BehaviorSetSpecification;
+        friend class Parsers::SetBehavioredClassifier;
 
         protected:
             Sequence<Parameter> m_parameters = Sequence<Parameter>(this);
@@ -38,6 +40,7 @@ namespace UML {
                 public:
                     AddBehavioredClassifierProcedure(Behavior* me) : AbstractSingletonProcedure<BehavioredClassifier, Behavior>(me) {};
                     void operator()(BehavioredClassifier* el) const override;
+                    void operator()(ID id) const override;
             };
             class AddParameterFunctor : public TemplateAbstractSequenceFunctor<Parameter,Behavior> {
                 public:

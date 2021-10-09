@@ -27,6 +27,15 @@ void Behavior::AddBehavioredClassifierProcedure::operator()(BehavioredClassifier
     if (!el->getOwnedBehaviors().count(m_me->getID())) {
         el->getOwnedBehaviors().add(*m_me);
     }
+    if (m_me->getNamespaceID() != el->getID()) {
+        m_me->setNamespace(el);
+    }
+}
+
+void Behavior::AddBehavioredClassifierProcedure::operator()(ID id) const {
+    if (m_me->getNamespaceID() != id) {
+        m_me->m_namespace.setByID(id);
+    }
 }
 
 void Behavior::AddParameterFunctor::operator()(Parameter& el) const {

@@ -118,4 +118,19 @@ TEST_F(OperationParserTest, mountAndEditOperationTest) {
     OpaqueBehavior& bhv2 = m.aquire(bhvID)->as<OpaqueBehavior>();
     ASSERT_TRUE(bhv2.hasSpecification());
     ASSERT_EQ(bhv2.getSpecificationRef(), op3);
+    ASSERT_TRUE(bhv2.hasBehavioredClassifier());
+    ASSERT_EQ(bhv2.getBehavioredClassifierRef(), clazz);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(bhv2, clazz));
+
+    m.release(bhv2, op3);
+    ASSERT_FALSE(m.loaded(bhvID));
+    ASSERT_FALSE(m.loaded(opID));
+    OpaqueBehavior& bhv3 = m.aquire(bhvID)->as<OpaqueBehavior>();
+    ASSERT_FALSE(m.loaded(opID));
+    Operation& op4 = m.aquire(opID)->as<Operation>();
+    ASSERT_TRUE(bhv3.hasSpecification());
+    ASSERT_EQ(bhv3.getSpecificationRef(), op4);
+    ASSERT_TRUE(bhv3.hasBehavioredClassifier());
+    ASSERT_EQ(bhv3.getBehavioredClassifierRef(), clazz);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(bhv3, clazz));
 }

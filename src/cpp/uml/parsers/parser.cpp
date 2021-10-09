@@ -193,6 +193,10 @@ BehaviorSetSpecification::BehaviorSetSpecification() {
     m_signature = &Behavior::m_specification;
 }
 
+SetBehavioredClassifier::SetBehavioredClassifier() {
+    m_signature = &Behavior::m_behavioredClassifier;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -546,6 +550,10 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                 parseSingleton(node["operation"], data, ret->as<Parameter>(), &Parameter::setOperation, setOperation);
             }
         }
+        if (node["behavioredClassifier"]) {
+            SetBehavioredClassifier setBehavioredClassifier;
+            parseSingleton(node["behavioredClassifier"], data, ret->as<Behavior>(), &Behavior::setBehavioredClassifier, setBehavioredClassifier);
+        }
 
     }
 
@@ -895,6 +903,12 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::PARAMETER)) {
             if (el.as<Parameter>().hasOperation()) {
                 emitter << YAML::Key << "operation" << YAML::Value << el.as<Parameter>().getOperationID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::BEHAVIOR)) {
+            if (el.as<Behavior>().hasBehavioredClassifier()) {
+                emitter << YAML::Key << "behavioredClassifier" << YAML::Value << el.as<Behavior>().getBehavioredClassifierID().string();
                 return;
             }
         }

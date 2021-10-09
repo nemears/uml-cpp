@@ -1466,7 +1466,7 @@ void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data) {
                     if (node["parameters"][i]["parameter"]) {
                         Parameter& param = data.m_manager->create<Parameter>();
                         parseParameter(node["parameters"][i]["parameter"], param, data);
-                        bhv.getParameters().add(param);
+                        bhv.getOwnedParameters().add(param);
                     }
                 } else {
                     // error? or is scalar allowed parameters shared(?)
@@ -1490,9 +1490,9 @@ void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data) {
 void emitBehavior(YAML::Emitter& emitter, Behavior& bhv, EmitterMetaData& data) {
     emitClass(emitter, bhv, data);
 
-    if (!bhv.getParameters().empty()) {
+    if (!bhv.getOwnedParameters().empty()) {
         emitter << YAML::Key << "parameters" << YAML::Value << YAML::BeginSeq;
-        for (auto& param : bhv.getParameters()) {
+        for (auto& param : bhv.getOwnedParameters()) {
             emit(emitter, param, data);
         }
         emitter << YAML::EndSeq;

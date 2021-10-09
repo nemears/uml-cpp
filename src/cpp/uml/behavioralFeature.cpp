@@ -35,8 +35,8 @@ void BehavioralFeature::AddParameterFunctor::operator()(Parameter& el) const {
     // TODO behavior must have same parameters as it's specification, but they are not the same parameters
     // TODO think about whether to be different just in memory or have different ids but same everything else
     // for (auto const& method : dynamic_cast<BehavioralFeature*>(m_el)->getMethods()) {
-    //     if (!method->getParameters().count(el.getID())) {
-    //         method->getParameters().add(dynamic_cast<Parameter&>(el));
+    //     if (!method->getOwnedParameters().count(el.getID())) {
+    //         method->getOwnedParameters().add(dynamic_cast<Parameter&>(el));
     //     }
     // }
     updateCopiedSequenceAddedTo(el, &BehavioralFeature::getOwnedParameters);

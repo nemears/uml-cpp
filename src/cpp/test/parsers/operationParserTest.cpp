@@ -60,7 +60,7 @@ TEST_F(OperationParserTest, mountAndEditOperationTest) {
     Parameter& param = m.create<Parameter>();
     Parameter& bhvParam = m.create<Parameter>();
     op.getOwnedParameters().add(param);
-    bhv.getParameters().add(bhvParam);
+    bhv.getOwnedParameters().add(bhvParam);
     op.getMethods().add(bhv);
     clazz.getOwnedBehaviors().add(bhv);
     clazz.getOwnedOperations().add(op);
@@ -133,4 +133,9 @@ TEST_F(OperationParserTest, mountAndEditOperationTest) {
     ASSERT_TRUE(bhv3.hasBehavioredClassifier());
     ASSERT_EQ(bhv3.getBehavioredClassifierRef(), clazz);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(bhv3, clazz));
+
+    ID bhvParamID = bhvParam.getID();
+    m.release(bhvParam);
+    Parameter& bhvParam2 = m.aquire(bhvParamID)->as<Parameter>();
+    
 }

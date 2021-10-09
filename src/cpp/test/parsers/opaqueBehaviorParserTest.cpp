@@ -38,8 +38,8 @@ TEST_F(OpaqueBehaviorParserTest, parseParameter) {
     ASSERT_NO_THROW(el = m.parse(ymlPath + "opaqueBehaviorTests/param.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::OPAQUE_BEHAVIOR);
     OpaqueBehavior* bhv = dynamic_cast<OpaqueBehavior*>(el);
-    ASSERT_TRUE(bhv->getParameters().size() == 1);
-    Parameter* param = &bhv->getParameters().front();
+    ASSERT_TRUE(bhv->getOwnedParameters().size() == 1);
+    Parameter* param = &bhv->getOwnedParameters().front();
     ASSERT_TRUE(param->getName().compare("test") == 0);
     ASSERT_TRUE(param->getDirection() == ParameterDirectionKind::IN);
 }

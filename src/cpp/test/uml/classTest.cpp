@@ -23,7 +23,7 @@ TEST_F(ClassTest, BasicOperationTest) {
     OpaqueBehavior& oB = m.create<OpaqueBehavior>();
     LiteralString& val = m.create<LiteralString>();
     Parameter& p = m.create<Parameter>();
-    ASSERT_NO_THROW(oB.getParameters().add(p));
+    ASSERT_NO_THROW(oB.getOwnedParameters().add(p));
     ASSERT_NO_THROW(val.setValue("return true"));
     ASSERT_NO_THROW(oB.getBodies().add(val));
     ASSERT_NO_THROW(o.getMethods().add(oB));

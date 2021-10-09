@@ -18,7 +18,7 @@ namespace UML {
         friend class Parsers::SetBehavioredClassifier;
 
         protected:
-            Sequence<Parameter> m_parameters = Sequence<Parameter>(this);
+            Sequence<Parameter> m_ownedParameters = Sequence<Parameter>(this);
             Singleton<BehavioralFeature, Behavior> m_specification = Singleton<BehavioralFeature, Behavior>(this);
             class RemoveSpecificationProcedure : public AbstractSingletonProcedure<BehavioralFeature, Behavior> {
                 public:
@@ -42,14 +42,14 @@ namespace UML {
                     void operator()(BehavioredClassifier* el) const override;
                     void operator()(ID id) const override;
             };
-            class AddParameterFunctor : public TemplateAbstractSequenceFunctor<Parameter,Behavior> {
+            class AddOwnedParameterFunctor : public TemplateAbstractSequenceFunctor<Parameter,Behavior> {
                 public:
-                    AddParameterFunctor(Behavior* me) : TemplateAbstractSequenceFunctor(me) {};
+                    AddOwnedParameterFunctor(Behavior* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Parameter& el) const override;
             };
-            class RemoveParameterFunctor : public TemplateAbstractSequenceFunctor<Parameter,Behavior> {
+            class RemoveOwnedParameterFunctor : public TemplateAbstractSequenceFunctor<Parameter,Behavior> {
                 public:
-                    RemoveParameterFunctor(Behavior* me) : TemplateAbstractSequenceFunctor(me) {};
+                    RemoveOwnedParameterFunctor(Behavior* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Parameter& el) const override;
             };
             void setManager(UmlManager* manager) override;
@@ -59,7 +59,7 @@ namespace UML {
         public:
             Behavior(const Behavior& rhs);
             virtual ~Behavior();
-            Sequence<Parameter>& getParameters();
+            Sequence<Parameter>& getOwnedParameters();
             BehavioralFeature* getSpecification();
             BehavioralFeature& getSpecificationRef();
             ID getSpecificationID() const;

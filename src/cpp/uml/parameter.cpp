@@ -26,6 +26,30 @@ void Parameter::AddOperationProcedure::operator()(ID id) const {
     }
 }
 
+void Parameter::RemoveBehaviorProcedure::operator()(Behavior* el) const {
+    if (el->getOwnedParameters().count(el->getID())) {
+        el->getOwnedParameters().remove(*m_me);
+    }
+    if (m_me->getNamespaceID() == el->getID()) {
+        m_me->setNamespace(0);
+    }
+}
+
+void Parameter::AddBehaviorProcedure::operator()(Behavior* el) const {
+    if (!el->getOwnedParameters().count(el->getID())) {
+        el->getOwnedParameters().add(*m_me);
+    }
+    if (m_me->getNamespaceID() != el->getID()) {
+        m_me->setNamespace(el);
+    }
+}
+
+void Parameter::AddBehaviorProcedure::operator()(ID id) const {
+    if (m_me->getNamespaceID() != id) {
+        m_me->m_namespace.setByID(id);
+    }
+}
+
 ElementType Parameter::getElementType() const {
     return ElementType::PARAMETER;
 }
@@ -33,13 +57,13 @@ ElementType Parameter::getElementType() const {
 void Parameter::reindexName(string oldName, string newName) {
     if (getOwner()) {
         if (getOwner()->isSubClassOf(ElementType::BEHAVIOR)) {
-            dynamic_cast<Behavior*>(getOwner())->getParameters().reindex(m_id, oldName, newName);
+            dynamic_cast<Behavior*>(getOwner())->getOwnedParameters().reindex(m_id, oldName, newName);
         }
     }
 
     if (getOperation()) {
         for (auto& bhv : getOperation()->getMethods()) {
-            bhv.getParameters().reindex(m_id, oldName, newName);
+            bhv.getOwnedParameters().reindex(m_id, oldName, newName);
         }
     }
 
@@ -52,6 +76,20 @@ void Parameter::referenceReindexed(ID oldID, ID newID) {
     if (m_operation.id() == oldID) {
         m_operation.reindex(oldID, newID);
     }
+    if (m_behavior.id() == oldID) {
+        m_behavior.reindex(oldID, newID);
+    }
+}
+
+void Parameter::referencingReleased(ID id) {
+    TypedElement::referencingReleased(id);
+    MultiplicityElement::referencingReleased(id);
+    if (m_operation.id() == id) {
+        m_operation.release();
+    }
+    if (m_behavior.id() == id) {
+        m_behavior.release();
+    }
 }
 
 Parameter::Parameter() {
@@ -59,6 +97,9 @@ Parameter::Parameter() {
     m_operation.m_signature = &Parameter::m_operation;
     m_operation.m_removeProcedures.push_back(new RemoveOperationProcedure(this));
     m_operation.m_addProcedures.push_back(new AddOperationProcedure(this));
+    m_behavior.m_signature = &Parameter::m_behavior;
+    m_behavior.m_addProcedures.push_back(new AddBehaviorProcedure(this));
+    m_behavior.m_removeProcedures.push_back(new RemoveBehaviorProcedure(this));
 }
 
 Parameter::Parameter(const Parameter& param) : TypedElement(param) , NamedElement(param), Element(param) {
@@ -69,6 +110,12 @@ Parameter::Parameter(const Parameter& param) : TypedElement(param) , NamedElemen
     m_operation.m_addProcedures.clear();
     m_operation.m_removeProcedures.push_back(new RemoveOperationProcedure(this));
     m_operation.m_addProcedures.push_back(new AddOperationProcedure(this));
+    m_behavior = param.m_behavior;
+    m_behavior.m_me = this;
+    m_behavior.m_removeProcedures.clear();
+    m_behavior.m_addProcedures.clear();
+    m_behavior.m_addProcedures.push_back(new AddBehaviorProcedure(this));
+    m_behavior.m_removeProcedures.push_back(new RemoveBehaviorProcedure(this));
 }
 
 Parameter::~Parameter() {
@@ -97,6 +144,30 @@ void Parameter::setOperation(Operation* operation) {
 
 void Parameter::setOperation(Operation& operation) {
     m_operation.set(operation);
+}
+
+Behavior* Parameter::getBehavior() {
+    return m_behavior.get();
+}
+
+Behavior& Parameter::getBehaviorRef() {
+    return m_behavior.getRef();
+}
+
+ID Parameter::getBehaviorID() const {
+    return m_behavior.id();
+}
+
+bool Parameter::hasBehavior() const {
+    return m_behavior.has();
+}
+
+void Parameter::setBehavior(Behavior* behavior) {
+    m_behavior.set(behavior);
+}
+
+void Parameter::setBehavior(Behavior& behavior) {
+    m_behavior.set(behavior);
 }
 
 ParameterDirectionKind Parameter::getDirection() {
@@ -159,12 +230,4 @@ bool Parameter::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void Parameter::referencingReleased(ID id) {
-    TypedElement::referencingReleased(id);
-    MultiplicityElement::referencingReleased(id);
-    if (m_operation.id() == id) {
-        m_operation.release();
-    }
 }

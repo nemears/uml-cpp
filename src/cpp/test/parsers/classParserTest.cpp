@@ -71,7 +71,7 @@ TEST_F(ClassParserTest, parseOperation) {
     ASSERT_TRUE(bhv->getName().compare("isValid") == 0);
     ASSERT_TRUE(bhv->getBodies().size() == 1);
     ASSERT_TRUE(bhv->getBodies().front().getValue().compare("return true") == 0);
-    ASSERT_TRUE(bhv->getParameters().size() == 1);
+    ASSERT_TRUE(bhv->getOwnedParameters().size() == 1);
 }
 
 TEST_F(ClassParserTest, properErrors) {
@@ -212,7 +212,7 @@ TEST_F(ClassParserTest, emitFilledInOperation) {
     p2.setID("C7lT8BaQxmMi7cnZLIjjWCVD3k_9");
     p2.setName("opaquePee");
     o.getOwnedParameters().add(p);
-    b.getParameters().add(p2);
+    b.getOwnedParameters().add(p2);
     c.getOwnedBehaviors().add(b);
     o.getMethods().add(b);
     c.getOwnedOperations().add(o);

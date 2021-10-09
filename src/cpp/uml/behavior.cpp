@@ -38,53 +38,36 @@ void Behavior::AddBehavioredClassifierProcedure::operator()(ID id) const {
     }
 }
 
-void Behavior::AddParameterFunctor::operator()(Parameter& el) const {
+void Behavior::AddOwnedParameterFunctor::operator()(Parameter& el) const {
     if (!m_el->getOwnedMembers().count(el.getID())) {
         m_el->getOwnedMembers().internalAdd(el);
     }
 
-    if (m_el->getSpecification()) {
-        el.setOperation(dynamic_cast<Operation*>(m_el->getSpecification()));
+    if (el.getBehaviorID() != m_el->getID()) {
+        el.setBehavior(m_el);
     }
-    updateCopiedSequenceAddedTo(el, &Behavior::getParameters);
+    updateCopiedSequenceAddedTo(el, &Behavior::getOwnedParameters);
 }
 
-void Behavior::RemoveParameterFunctor::operator()(Parameter& el) const {
-    if (m_el->getSpecification()) {
-        if (el.getOperation() == m_el->getSpecification()) {
-
-            bool usedElsewhere = false;
-
-            // note slow performance for removing
-            for (auto& method : dynamic_cast<Operation*>(el.getOperation())->getMethods()) {
-                if (method.getID() != m_el->getID()) {
-                    if (method.getParameters().count(el.getID())) {
-                        usedElsewhere = true;
-                    }
-                }
-            }
-
-            if (!usedElsewhere) {
-                el.setOperation(0);
-            }
-        }
-    }
-
+void Behavior::RemoveOwnedParameterFunctor::operator()(Parameter& el) const {
     if (m_el->getOwnedMembers().count(el.getID())) {
         m_el->getOwnedMembers().internalRemove(el);
     }
-    updateCopiedSequenceRemovedFrom(el, &Behavior::getParameters);
+    if (el.getBehaviorID() == m_el->getID()) {
+        el.setBehavior(0);
+    }
+    updateCopiedSequenceRemovedFrom(el, &Behavior::getOwnedParameters);
 }
 
 void Behavior::setManager(UmlManager* manager) {
     Class::setManager(manager);
-    m_parameters.m_manager = manager;
+    m_ownedParameters.m_manager = manager;
 }
 
 void Behavior::referencingReleased(ID id) {
     Class::referencingReleased(id);
-    if (m_parameters.count(id)) {
-        m_parameters.elementReleased(id, &Behavior::getParameters);
+    if (m_ownedParameters.count(id)) {
+        m_ownedParameters.elementReleased(id, &Behavior::getOwnedParameters);
     }
     if (m_specification.id() == id) {
         m_specification.release();
@@ -96,8 +79,8 @@ void Behavior::referencingReleased(ID id) {
 
 void Behavior::referenceReindexed(ID oldID, ID newID) {
     Class::referenceReindexed(oldID, newID);
-    if (m_parameters.count(oldID)) {
-        m_parameters.reindex(oldID, newID, &Behavior::getParameters);
+    if (m_ownedParameters.count(oldID)) {
+        m_ownedParameters.reindex(oldID, newID, &Behavior::getOwnedParameters);
     }
     if (m_specification.id() == oldID) {
         m_specification.reindex(oldID, newID);
@@ -108,8 +91,8 @@ void Behavior::referenceReindexed(ID oldID, ID newID) {
 }
 
 Behavior::Behavior() {
-    m_parameters.addProcedures.push_back(new AddParameterFunctor(this));
-    m_parameters.removeProcedures.push_back(new RemoveParameterFunctor(this));
+    m_ownedParameters.addProcedures.push_back(new AddOwnedParameterFunctor(this));
+    m_ownedParameters.removeProcedures.push_back(new RemoveOwnedParameterFunctor(this));
     m_specification.m_signature = &Behavior::m_specification;
     m_specification.m_removeProcedures.push_back(new RemoveSpecificationProcedure(this));
     m_specification.m_addProcedures.push_back(new AddSpecificationProcedure(this));
@@ -119,12 +102,12 @@ Behavior::Behavior() {
 }
 
 Behavior::Behavior(const Behavior& rhs) : Class(rhs), Classifier(rhs), PackageableElement(rhs), NamedElement(rhs), Element(rhs) {
-    m_parameters = rhs.m_parameters;
-    m_parameters.m_el = this;
-    m_parameters.addProcedures.clear();
-    m_parameters.removeProcedures.clear();
-    m_parameters.addProcedures.push_back(new AddParameterFunctor(this));
-    m_parameters.removeProcedures.push_back(new RemoveParameterFunctor(this));
+    m_ownedParameters = rhs.m_ownedParameters;
+    m_ownedParameters.m_el = this;
+    m_ownedParameters.addProcedures.clear();
+    m_ownedParameters.removeProcedures.clear();
+    m_ownedParameters.addProcedures.push_back(new AddOwnedParameterFunctor(this));
+    m_ownedParameters.removeProcedures.push_back(new RemoveOwnedParameterFunctor(this));
     m_specification = rhs.m_specification;
     m_specification.m_me = this;
     m_specification.m_removeProcedures.clear();
@@ -143,8 +126,8 @@ Behavior::~Behavior() {
     
 }
 
-Sequence<Parameter>& Behavior::getParameters() {
-    return m_parameters;
+Sequence<Parameter>& Behavior::getOwnedParameters() {
+    return m_ownedParameters;
 }
 
 BehavioralFeature* Behavior::getSpecification() {

@@ -37,7 +37,7 @@ TEST_F(ParameterParserTest, emitParameterWMultiplicityTest) {
     high.setValue(5);
     p.setLowerValue(&low);
     p.setUpperValue(&high);
-    b.getParameters().add(p);
+    b.getOwnedParameters().add(p);
     string expectedEmit = R""""(opaqueBehavior:
   id: SeJ_0hSPaIa4EYap3sXgRQm4LuSn
   parameters:

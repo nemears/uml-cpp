@@ -118,7 +118,7 @@ TEST_F(OperationTest, SetOperationAbstractOperationTest) {
 //     ASSERT_TRUE(b.getSpecification() == &o);
 //     ASSERT_TRUE(o.getMethods().size() == 1);
 //     ASSERT_TRUE(o.getMethods().front() == &b);
-//     ASSERT_TRUE(b.getParameters().size() == 1);
+//     ASSERT_TRUE(b.getOwnedParameters().size() == 1);
 // }
 
 TEST_F(OperationTest, checkParameterFunctorTest) {

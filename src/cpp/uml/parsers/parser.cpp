@@ -177,6 +177,10 @@ SetOwningAssociation::SetOwningAssociation() {
     m_signature = &Property::m_owningAssociation;
 }
 
+SetAssociation::SetAssociation() {
+    m_signature = &Property::m_association;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -1670,6 +1674,15 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
             throw UmlParserException("Invalid yaml node type for redefinedProperties specification, must be a sequence!", data.m_path.string(), node["redefinedProperties"]);
         }
     }
+
+    if (node["association"]) {
+        if (node["association"].IsScalar()) {
+            SetAssociation setAssociation;
+            setAssociation(node["association"], data, prop);
+        } else {
+            throw UmlParserException("Invalid yaml node type for association field, must be a scalar!", data.m_path.string(), node["redefinedProperties"]);
+        }
+    }
 }
 
 void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data) {
@@ -1705,6 +1718,10 @@ void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data)
             emitter << YAML::Value << redefined.getID().string();
         }
         emitter << YAML::EndSeq;
+    }
+
+    if (prop.hasAssociation()) {
+        emitter << YAML::Key << "association" << YAML::Value << prop.getAssociationID().string();
     }
 
     emitElementDefenitionEnd(emitter, ElementType::PROPERTY, prop);

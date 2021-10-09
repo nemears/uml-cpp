@@ -20,6 +20,7 @@ namespace UML{
         class PropertySetDataType;
         class PropertySetArtifact;
         class SetOwningAssociation;
+        class SetAssociation;
     }
 
     enum class AggregationKind {
@@ -37,6 +38,7 @@ namespace UML{
         friend class Parsers::PropertySetDataType;
         friend class Parsers::PropertySetArtifact;
         friend class Parsers::SetOwningAssociation;
+        friend class Parsers::SetAssociation;
 
         protected:
             AggregationKind m_aggregation;

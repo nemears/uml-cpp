@@ -109,6 +109,11 @@ namespace UML {
             public:
                 SetOwningAssociation();
         };
+
+        class SetAssociation : public parseAndSetSingletonFunctor<Association, Property> {
+            public:
+                SetAssociation();
+        };
     }
 }
 

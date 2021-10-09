@@ -108,6 +108,7 @@ TEST_F(AssociationParserTest, emitAssociationTest) {
           - property:
               id: FqaulNq6bCe_8J5M0Ff2oCCaQD05
               type: m8K65o0wEqtIznmEPmuXaTph2JJu
+              association: FZeUbleSO7P_Zqwn2&r8HKnEbSU5
     - primitiveType:
         id: m8K65o0wEqtIznmEPmuXaTph2JJu
     - association:
@@ -116,6 +117,7 @@ TEST_F(AssociationParserTest, emitAssociationTest) {
           - property:
               id: k&CQ7BNYYbkhtw_g7NaNY8wUHXYs
               type: mGbq9i_gGHuMFYg0y3tMzcmHx1B3
+              association: FZeUbleSO7P_Zqwn2&r8HKnEbSU5
         memberEnds:
           - FqaulNq6bCe_8J5M0Ff2oCCaQD05)"""";
     string generatedEmit;
@@ -156,6 +158,8 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_TRUE(aProp2.getMemberNamespace().count(association.getID()));
     ASSERT_TRUE(aProp2.hasOwner());
     ASSERT_EQ(aProp2.getOwnerRef(), association);
+    ASSERT_TRUE(aProp2.hasType());
+    ASSERT_EQ(aProp2.getTypeRef(), clazz);
     ASSERT_EQ(association.getNavigableOwnedEnds().size(), 1);
     ASSERT_EQ(association.getNavigableOwnedEnds().front(), aProp2);
     ASSERT_EQ(association.getOwnedEnds().size(), 1);
@@ -169,7 +173,7 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_EQ(association.getOwnedElements().size(), 1);
     ASSERT_EQ(association.getOwnedElements().front(), aProp2);
     ASSERT_EQ(association.getEndType().size(), 2);
-    ASSERT_EQ(association.getEndType().front(), type);
+    ASSERT_EQ(association.getEndType().back(), clazz);
 
     ID associationID = association.getID();
     m.release(aProp2, association);
@@ -199,6 +203,20 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_EQ(association2.getMembers().back(), aProp3);
     ASSERT_EQ(association2.getOwnedElements().size(), 1);
     ASSERT_EQ(association2.getOwnedElements().front(), aProp3);
+    ASSERT_EQ(association2.getEndType().size(), 2);
+    ASSERT_EQ(association2.getEndType().front(), type);
+    ASSERT_EQ(association2.getEndType().back(), clazz);
+
+    ID cPropID = cProp.getID();
+    m.release(cProp);
+    Property& cProp2 = m.aquire(cPropID)->as<Property>();
+    ASSERT_TRUE(cProp2.hasAssociation());
+    ASSERT_EQ(cProp2.getAssociationRef(), association2);
+    ASSERT_TRUE(cProp2.getMemberNamespace().count(association2.getID()));
+    ASSERT_EQ(association2.getMemberEnds().size(), 2);
+    ASSERT_EQ(association2.getMemberEnds().front(), cProp2);
+    ASSERT_EQ(association2.getMembers().size(), 2);
+    ASSERT_EQ(association2.getMembers().front(), cProp2);
     ASSERT_EQ(association2.getEndType().size(), 2);
     ASSERT_EQ(association2.getEndType().front(), type);
     ASSERT_EQ(association2.getEndType().back(), clazz);

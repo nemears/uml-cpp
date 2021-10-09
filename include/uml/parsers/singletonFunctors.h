@@ -134,6 +134,11 @@ namespace UML {
             public:
                 SetBehavioredClassifier();
         };
+
+        class SetBehavior : public parseAndSetSingletonFunctor<Behavior, Parameter> {
+            public:
+                SetBehavior();
+        };
     }
 }
 

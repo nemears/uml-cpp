@@ -10,6 +10,7 @@ namespace UML {
     class Operation;
     namespace Parsers {
         class SetOperation;
+        class SetBehavior;
     }
 
     enum class ParameterDirectionKind {
@@ -23,6 +24,7 @@ namespace UML {
 
         friend class UmlManager;
         friend class Parsers::SetOperation;
+        friend class Parsers::SetBehavior;
 
         protected:
             ParameterDirectionKind m_direction;

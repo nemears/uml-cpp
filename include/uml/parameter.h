@@ -36,6 +36,7 @@ namespace UML {
                 public:
                     AddOperationProcedure(Parameter* me) : AbstractSingletonProcedure<Operation, Parameter>(me) {};
                     void operator()(Operation* el) const override;
+                    void operator()(ID id) const override;
             };
             void reindexName(std::string oldName, std::string newName) override;
             void referencingReleased(ID id) override;

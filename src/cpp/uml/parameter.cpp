@@ -15,6 +15,15 @@ void Parameter::AddOperationProcedure::operator()(Operation* el) const {
     if (!el->getOwnedParameters().count(m_me->getID())) {
         el->getOwnedParameters().add(*m_me);
     }
+    if (m_me->getNamespaceID() != el->getID()) {
+        m_me->setNamespace(el);
+    }
+}
+
+void Parameter::AddOperationProcedure::operator()(ID id) const {
+    if (m_me->getNamespaceID() != id) {
+        m_me->m_namespace.setByID(id);
+    }
 }
 
 ElementType Parameter::getElementType() const {

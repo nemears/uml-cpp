@@ -1819,8 +1819,14 @@ void emitOperation(YAML::Emitter& emitter, Operation& op, EmitterMetaData& data)
 
     if (!op.getOwnedParameters().empty()) {
         emitter << YAML::Key << "ownedParameters" << YAML::Value << YAML::BeginSeq;
-        for (auto& parameter : op.getOwnedParameters()) {
-            emit(emitter, parameter, data);
+        if (data.m_strategy == EmitterStrategy::WHOLE) {
+            for (auto& parameter : op.getOwnedParameters()) {
+                emit(emitter, parameter, data);
+            }
+        } else {
+            for (const ID id : op.getOwnedParameters().ids()) {
+                emitter << YAML::Value << id.string() + ".yml";
+            }
         }
         emitter << YAML::EndSeq;
     }

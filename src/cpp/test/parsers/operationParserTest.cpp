@@ -99,4 +99,17 @@ TEST_F(OperationParserTest, mountAndEditOperationTest) {
     ASSERT_TRUE(param2.hasOperation());
     ASSERT_EQ(param2.getOperationRef(), op2);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(param2, op2));
+
+    m.release(param2, op2);
+    ASSERT_FALSE(m.loaded(paramID));
+    ASSERT_FALSE(m.loaded(opID));
+    Operation& op3 = m.aquire(opID)->as<Operation>();
+    ASSERT_FALSE(m.loaded(paramID));
+    Parameter& param3 = m.aquire(paramID)->as<Parameter>();
+    ASSERT_TRUE(param2.hasOperation());
+    ASSERT_EQ(param2.getOperationRef(), op2);
+    ASSERT_EQ(op2.getOwnedParameters().size(), 1);
+    ASSERT_TRUE(op2.getOwnedParameters().count(paramID));
+    ASSERT_EQ(op2.getOwnedParameters().front(), param3);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(param2, op2));
 }

@@ -6,10 +6,14 @@
 namespace UML {
 
     class BehavioralFeature;
+    namespace Parsers {
+        class BehaviorSetSpecification;
+    }
 
     class Behavior : public Class {
 
         friend class UmlManager;
+        friend class Parsers::BehaviorSetSpecification;
 
         protected:
             Sequence<Parameter> m_parameters = Sequence<Parameter>(this);
@@ -55,11 +59,13 @@ namespace UML {
             Sequence<Parameter>& getParameters();
             BehavioralFeature* getSpecification();
             BehavioralFeature& getSpecificationRef();
+            ID getSpecificationID() const;
             bool hasSpecification() const;
             void setSpecification(BehavioralFeature& specification);
             void setSpecification(BehavioralFeature* specification);
             BehavioredClassifier* getBehavioredClassifier();
             BehavioredClassifier& getBehavioredClassifierRef();
+            ID getBehavioredClassifierID() const;
             bool hasBehavioredClassifier() const;
             void setBehavioredClassifier(BehavioredClassifier& classifier);
             void setBehavioredClassifier(BehavioredClassifier* classifier);

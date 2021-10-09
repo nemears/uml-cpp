@@ -107,9 +107,15 @@ TEST_F(OperationParserTest, mountAndEditOperationTest) {
     ASSERT_FALSE(m.loaded(paramID));
     Parameter& param3 = m.aquire(paramID)->as<Parameter>();
     ASSERT_TRUE(param2.hasOperation());
-    ASSERT_EQ(param2.getOperationRef(), op2);
-    ASSERT_EQ(op2.getOwnedParameters().size(), 1);
-    ASSERT_TRUE(op2.getOwnedParameters().count(paramID));
-    ASSERT_EQ(op2.getOwnedParameters().front(), param3);
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(param2, op2));
+    ASSERT_EQ(param2.getOperationRef(), op3);
+    ASSERT_EQ(op3.getOwnedParameters().size(), 1);
+    ASSERT_TRUE(op3.getOwnedParameters().count(paramID));
+    ASSERT_EQ(op3.getOwnedParameters().front(), param3);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(param2, op3));
+
+    ID bhvID = bhv.getID();
+    m.release(bhv);
+    OpaqueBehavior& bhv2 = m.aquire(bhvID)->as<OpaqueBehavior>();
+    ASSERT_TRUE(bhv2.hasSpecification());
+    ASSERT_EQ(bhv2.getSpecificationRef(), op3);
 }

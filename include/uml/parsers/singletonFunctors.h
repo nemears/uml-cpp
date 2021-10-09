@@ -124,6 +124,11 @@ namespace UML {
             public:
                 SetOperation();
         };
+
+        class BehaviorSetSpecification : public parseAndSetSingletonFunctor<BehavioralFeature, Behavior> {
+            public:
+                BehaviorSetSpecification();
+        };
     }
 }
 

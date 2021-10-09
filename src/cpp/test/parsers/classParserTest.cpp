@@ -227,6 +227,7 @@ TEST_F(ClassParserTest, emitFilledInOperation) {
           - parameter:
               id: C7lT8BaQxmMi7cnZLIjjWCVD3k_9
               name: opaquePee
+        specification: Y3WV0c_Wa_zfOTb6zo9BAiIqRhn7
   ownedOperations:
     - operation:
         id: Y3WV0c_Wa_zfOTb6zo9BAiIqRhn7

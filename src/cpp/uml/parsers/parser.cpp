@@ -189,6 +189,10 @@ SetOperation::SetOperation() {
     m_signature = &Parameter::m_operation;
 }
 
+BehaviorSetSpecification::BehaviorSetSpecification() {
+    m_signature = &Behavior::m_specification;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -239,7 +243,7 @@ template <class T =Element> T& parseScalar(YAML::Node node, ParserMetaData& data
 }
 
 // Helper function for parsing scope in parseNode
-template <class T = Element, class U = Element> void parseScope(YAML::Node node, ParserMetaData& data, U& el, void (U::*setter)(T&), parseAndSetSingletonFunctor<T, U>& func) {
+template <class T = Element, class U = Element> void parseSingleton(YAML::Node node, ParserMetaData& data, U& el, void (U::*setter)(T&), parseAndSetSingletonFunctor<T, U>& func) {
     ID id = ID::fromString(node.as<string>());
     if (data.m_manager->loaded(id)) {
         (el.*setter)(data.m_manager->get<T>(id));
@@ -439,7 +443,7 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
     if (ret && data.m_strategy == ParserStrategy::INDIVIDUAL) {
         if (node["owningPackage"]) {
             SetOwningPackage setOwningPackage;
-            parseScope(node["owningPackage"], data, ret->as<PackageableElement>(), &PackageableElement::setOwningPackage, setOwningPackage);
+            parseSingleton(node["owningPackage"], data, ret->as<PackageableElement>(), &PackageableElement::setOwningPackage, setOwningPackage);
         }
         if (node["receivingPackage"]) {
             ID receivingPackageID = ID::fromString(node["receivingPackage"].as<string>());
@@ -461,10 +465,10 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
             if (node["class"].IsScalar()) {
                 if (ret->isSubClassOf(ElementType::PROPERTY)) {
                     PropertySetClass setClass;
-                    parseScope(node["class"], data, ret->as<Property>(), &Property::setClass, setClass);
+                    parseSingleton(node["class"], data, ret->as<Property>(), &Property::setClass, setClass);
                 } else if (ret->isSubClassOf(ElementType::OPERATION)) {
                     OperationSetClass setClass;
-                    parseScope(node["class"], data, ret->as<Operation>(), &Operation::setClass, setClass);
+                    parseSingleton(node["class"], data, ret->as<Operation>(), &Operation::setClass, setClass);
                 }
             }
         }
@@ -472,10 +476,10 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
             if (node["dataType"].IsScalar()) {
                 if (ret->isSubClassOf(ElementType::PROPERTY)) {
                     PropertySetDataType setDataType;
-                    parseScope(node["dataType"], data, ret->as<Property>(), &Property::setDataType, setDataType);
+                    parseSingleton(node["dataType"], data, ret->as<Property>(), &Property::setDataType, setDataType);
                 } else if (ret->isSubClassOf(ElementType::OPERATION)) {
                     OperationSetDataType setDataType;
-                    parseScope(node["dataType"], data, ret->as<Operation>(), &Operation::setDataType, setDataType);
+                    parseSingleton(node["dataType"], data, ret->as<Operation>(), &Operation::setDataType, setDataType);
                 }
             }
         }
@@ -484,20 +488,20 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
             if (node["artifact"].IsScalar()) {
                 if (ret->isSubClassOf(ElementType::PROPERTY)) {
                     PropertySetArtifact setArtifact;
-                    parseScope(node["artifact"], data, ret->as<Property>(), &Property::setArtifact, setArtifact);
+                    parseSingleton(node["artifact"], data, ret->as<Property>(), &Property::setArtifact, setArtifact);
                 } else if (ret->isSubClassOf(ElementType::OPERATION)) {
                     OperationSetArtifact setArtifact;
-                    parseScope(node["artifact"], data, ret->as<Operation>(), &Operation::setArtifact, setArtifact);
+                    parseSingleton(node["artifact"], data, ret->as<Operation>(), &Operation::setArtifact, setArtifact);
                 } else if (ret->isSubClassOf(ElementType::MANIFESTATION)) {
                     ManifestationSetArtifact setArtifact;
-                    parseScope(node["artifact"], data, ret->as<Manifestation>(), &Manifestation::setArtifact, setArtifact);
+                    parseSingleton(node["artifact"], data, ret->as<Manifestation>(), &Manifestation::setArtifact, setArtifact);
                 }
             }
         }
 
         if (node["owningArtifact"]) {
             ArtifactSetArtifact setArtifact;
-            parseScope(node["owningArtifact"], data, ret->as<Artifact>(), &Artifact::setArtifact, setArtifact);
+            parseSingleton(node["owningArtifact"], data, ret->as<Artifact>(), &Artifact::setArtifact, setArtifact);
         }
 
         if (node["owningProperty"]) {
@@ -510,36 +514,36 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         }
         if (node["specific"]) {
             SetSpecific setSpecific;
-            parseScope(node["specific"], data, ret->as<Generalization>(), &Generalization::setSpecific, setSpecific);
+            parseSingleton(node["specific"], data, ret->as<Generalization>(), &Generalization::setSpecific, setSpecific);
         }
         if (node["nestingClass"]) {
             SetNestingClass setNestingClass;
-            parseScope(node["nestingClass"], data, ret->as<Classifier>(), &Classifier::setNestingClass, setNestingClass);
+            parseSingleton(node["nestingClass"], data, ret->as<Classifier>(), &Classifier::setNestingClass, setNestingClass);
         }
         if (node["owningElement"]) {
             SetOwningElement setOwningElement;
-            parseScope(node["owningElement"], data, ret->as<Comment>(), &Comment::setOwningElement, setOwningElement);
+            parseSingleton(node["owningElement"], data, ret->as<Comment>(), &Comment::setOwningElement, setOwningElement);
         }
         if (node["owningInstance"]) {
             SetOwningInstance setOwningInstance;
-            parseScope(node["owningInstance"], data, ret->as<Slot>(), &Slot::setOwningInstance, setOwningInstance);
+            parseSingleton(node["owningInstance"], data, ret->as<Slot>(), &Slot::setOwningInstance, setOwningInstance);
         }
         if (node["owningSlot"]) {
             SetOwningSlot setOwningSlot;
-            parseScope(node["owningSlot"], data, ret->as<ValueSpecification>(), &ValueSpecification::setOwningSlot, setOwningSlot);
+            parseSingleton(node["owningSlot"], data, ret->as<ValueSpecification>(), &ValueSpecification::setOwningSlot, setOwningSlot);
         }
         if (node["owningInstanceSpec"]) {
             SetOwningInstanceSpec setOwningInstanceSpec;
-            parseScope(node["owningInstanceSpec"], data, ret->as<ValueSpecification>(), &ValueSpecification::setOwningInstanceSpec, setOwningInstanceSpec);
+            parseSingleton(node["owningInstanceSpec"], data, ret->as<ValueSpecification>(), &ValueSpecification::setOwningInstanceSpec, setOwningInstanceSpec);
         }
         if (node["owningAssociation"]) {
             SetOwningAssociation setOwningAssociation;
-            parseScope(node["owningAssociation"], data, ret->as<Property>(), &Property::setOwningAssociation, setOwningAssociation);
+            parseSingleton(node["owningAssociation"], data, ret->as<Property>(), &Property::setOwningAssociation, setOwningAssociation);
         }
         if (node["operation"]) {
             if (node["operation"].IsScalar()) {
                 SetOperation setOperation;
-                parseScope(node["operation"], data, ret->as<Parameter>(), &Parameter::setOperation, setOperation);
+                parseSingleton(node["operation"], data, ret->as<Parameter>(), &Parameter::setOperation, setOperation);
             }
         }
 
@@ -1458,6 +1462,15 @@ void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data) {
             throw UmlParserException("Improper YAML node type for parameters field, must be scalar,", data.m_path.string(), node["parameters"]);
         }
     }
+
+    if (node["specification"]) {
+        if (node["specification"].IsScalar()) {
+            BehaviorSetSpecification setSpecification;
+            parseSingleton(node["specification"], data, bhv, &Behavior::setSpecification, setSpecification);
+        } else {
+            throw UmlParserException("Invalid yaml node type for behavior specification field, must be scalar!", data.m_path.string(), node["specification"]);
+        }
+    }
 }
 
 void emitBehavior(YAML::Emitter& emitter, Behavior& bhv, EmitterMetaData& data) {
@@ -1469,6 +1482,10 @@ void emitBehavior(YAML::Emitter& emitter, Behavior& bhv, EmitterMetaData& data) 
             emit(emitter, param, data);
         }
         emitter << YAML::EndSeq;
+    }
+
+    if (bhv.hasSpecification()) {
+        emitter << YAML::Key << "specification" << YAML::Value << bhv.getSpecificationID().string();
     }
 }
 

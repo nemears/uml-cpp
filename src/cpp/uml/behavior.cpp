@@ -146,6 +146,10 @@ BehavioralFeature& Behavior::getSpecificationRef() {
     return m_specification.getRef();
 }
 
+ID Behavior::getSpecificationID() const {
+    return m_specification.id();
+}
+
 bool Behavior::hasSpecification() const {
     return m_specification.has();
 }
@@ -164,6 +168,10 @@ BehavioredClassifier* Behavior::getBehavioredClassifier() {
 
 BehavioredClassifier& Behavior::getBehavioredClassifierRef() {
     return m_behavioredClassifier.getRef();
+}
+
+ID Behavior::getBehavioredClassifierID() const {
+    return m_behavioredClassifier.id();
 }
 
 bool Behavior::hasBehavioredClassifier() const {

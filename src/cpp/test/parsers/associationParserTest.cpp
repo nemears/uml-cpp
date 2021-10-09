@@ -168,6 +168,8 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_EQ(association.getMembers().back(), aProp2);
     ASSERT_EQ(association.getOwnedElements().size(), 1);
     ASSERT_EQ(association.getOwnedElements().front(), aProp2);
+    ASSERT_EQ(association.getEndType().size(), 2);
+    ASSERT_EQ(association.getEndType().front(), type);
 
     ID associationID = association.getID();
     m.release(aProp2, association);
@@ -197,4 +199,7 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_EQ(association2.getMembers().back(), aProp3);
     ASSERT_EQ(association2.getOwnedElements().size(), 1);
     ASSERT_EQ(association2.getOwnedElements().front(), aProp3);
+    ASSERT_EQ(association2.getEndType().size(), 2);
+    ASSERT_EQ(association2.getEndType().front(), type);
+    ASSERT_EQ(association2.getEndType().back(), clazz);
 }

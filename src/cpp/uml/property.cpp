@@ -133,7 +133,7 @@ void Property::AddAssociationProcedure::operator()(Association* el) const {
     if (!el->getMemberEnds().count(m_me->getID())) {
         el->getMemberEnds().add(*m_me);
     }
-    if (m_me->getMemberNamespace().count(el->getID())) {
+    if (!m_me->getMemberNamespace().count(el->getID())) {
         m_me->getMemberNamespace().add(*el);
     }
 }

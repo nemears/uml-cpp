@@ -33,15 +33,15 @@ TEST_F(AssociationTest, setAssociationTest) {
     UmlManager m;
     Property& p = m.create<Property>();
     Association& a = m.create<Association>();
-    ASSERT_NO_THROW(p.setAssociation(&a));
+    p.setAssociation(a);
     ASSERT_TRUE(a.getMemberEnds().size() == 1);
     ASSERT_TRUE(&a.getMemberEnds().front() == &p);
     ASSERT_TRUE(a.getMembers().size() == 1);
     ASSERT_TRUE(&a.getMembers().front() == &p);
 
     ASSERT_TRUE(p.getAssociation() == &a);
-    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(&p.getMemberNamespace().front() == &a);
+    ASSERT_EQ(p.getMemberNamespace().size(), 1);
+    ASSERT_EQ(&p.getMemberNamespace().front(), &a);
 }
 
 TEST_F(AssociationTest, removeMemberEndFunctor) {

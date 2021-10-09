@@ -7,6 +7,7 @@
 #include "uml/class.h"
 #include "uml/parameter.h"
 #include "uml/primitiveType.h"
+#include "uml/opaqueBehavior.h"
 
 using namespace std;
 using namespace UML;
@@ -48,4 +49,47 @@ TEST_F(OperationParserTest, basicParamTest) {
     ASSERT_TRUE(p->getName().compare("testInt") == 0);
     ASSERT_TRUE(p->getType() == i);
     ASSERT_TRUE(p->getDirection() == ParameterDirectionKind::IN);
+}
+
+TEST_F(OperationParserTest, mountAndEditOperationTest) {
+    UmlManager m;
+    Class& clazz = m.create<Class>();
+    OpaqueBehavior& bhv = m.create<OpaqueBehavior>();
+    Operation& op = m.create<Operation>();
+    Parameter& param = m.create<Parameter>();
+    Parameter& bhvParam = m.create<Parameter>();
+    op.getOwnedParameters().add(param);
+    bhv.getParameters().add(bhvParam);
+    op.getMethods().add(bhv);
+    clazz.getOwnedBehaviors().add(bhv);
+    clazz.getOwnedOperations().add(op);
+    m.setRoot(&clazz);
+    m.mount(ymlPath + "operationTests");
+
+    ID opID = op.getID();
+    ID clazzID = clazz.getID();
+    m.release(op);
+    Operation& op2 = m.aquire(opID)->as<Operation>();
+    ASSERT_TRUE(op2.hasClass());
+    ASSERT_EQ(op2.getClassRef(), clazz);
+    ASSERT_TRUE(op2.hasFeaturingClassifier());
+    ASSERT_EQ(op2.getFeaturingClassifierRef(), clazz);
+    ASSERT_TRUE(op2.hasNamespace());
+    ASSERT_EQ(op2.getNamespaceRef(), clazz);
+    ASSERT_TRUE(op2.getMemberNamespace().count(clazzID));
+    ASSERT_TRUE(op2.hasOwner());
+    ASSERT_EQ(op2.getOwnerRef(), clazz);
+    ASSERT_EQ(op2.getMethods().size(), 1);
+    ASSERT_EQ(op2.getMethods().front(), bhv);
+    ASSERT_TRUE(bhv.hasSpecification());
+    ASSERT_EQ(bhv.getSpecificationRef(), op2);
+    ASSERT_EQ(op2.getOwnedParameters().size(), 1);
+    ASSERT_EQ(op2.getOwnedParameters().front(), param);
+    ASSERT_EQ(op2.getOwnedMembers().size(), 1);
+    ASSERT_EQ(op2.getOwnedMembers().front(), param);
+    ASSERT_EQ(op2.getMembers().size(), 1);
+    ASSERT_EQ(op2.getMembers().front(), param);
+    ASSERT_EQ(op2.getOwnedElements().size(), 1);
+    ASSERT_EQ(op2.getOwnedElements().front(), param);
+
 }

@@ -1796,7 +1796,7 @@ void emitOperation(YAML::Emitter& emitter, Operation& op, EmitterMetaData& data)
         }
         emitter << YAML::EndSeq;
     }
-    emitSequence(emitter, "ownedParameters", data, static_cast<BehavioralFeature>(op), &BehavioralFeature::getOwnedParameters);
+    emitSequence(emitter, "ownedParameters", data, static_cast<BehavioralFeature&>(op), &BehavioralFeature::getOwnedParameters);
     emitElementDefenitionEnd(emitter, ElementType::OPERATION, op);
 }
 

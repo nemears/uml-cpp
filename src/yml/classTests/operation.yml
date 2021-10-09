@@ -7,15 +7,17 @@
           name : isValid
           id : 26&4LRqmfXz7nt4ZiygBVglOzGeD
           methods :
-            - opaqueBehavior :
-                id : mEaEOlbgEXAE_peo&rm2JzrVI6tk
-                name : isValid
-                bodies : 
-                  - "return true"
-                parameters :
-                  - parameter :
-                      name : "debug"
-                 #     type : BOOL
-                      id : Sc8u1tx8VV5S5108MWGxk&zmbRWr
-                      direction: IN
+            - mEaEOlbgEXAE_peo&rm2JzrVI6tk
+    ownedBehaviors:
+      - opaqueBehavior :
+          id : mEaEOlbgEXAE_peo&rm2JzrVI6tk
+          name : isValid
+          bodies : 
+            - "return true"
+          parameters :
+            - parameter :
+                name : "debug"
+            #     type : BOOL
+                id : Sc8u1tx8VV5S5108MWGxk&zmbRWr
+                direction: IN
 ...

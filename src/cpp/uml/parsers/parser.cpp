@@ -1803,13 +1803,24 @@ void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
     if (node["methods"]) {
         if (node["methods"].IsSequence()) {
             for (size_t i=0; i<node["methods"].size(); i++) {
-                if (node["methods"][i]["opaqueBehavior"]) {
+                if (node["methods"][i].IsScalar()) {
+                    ID methodID = ID::fromString(node["methods"][i].as<string>());
+                    if (data.m_manager->loaded(methodID)) {
+                        op.getMethods().add(data.m_manager->get<Behavior>(methodID));
+                    } else {
+                        op.getMethods().addByID(methodID);
+                    }
+                } else {
+                    throw UmlParserException("Invalid yaml node type for operation method entry, must be a scalar!", data.m_path.string(), node["methods"][i]);
+                }
+                // TODO move, cannot be map
+                /**if (node["methods"][i]["opaqueBehavior"]) {
                     OpaqueBehavior& bhv = data.m_manager->create<OpaqueBehavior>();
                     parseOpaqueBehavior(node["methods"][i]["opaqueBehavior"], bhv, data);
                     op.getMethods().add(bhv);
                 } else {
                     throw UmlParserException("Invalid behavior type for operation methods, ", data.m_path.string(), node["methods"][i]);
-                } 
+                } **/
             }
         } else {
             throw UmlParserException("Improper YAML node type for methods, must be sequence, ", data.m_path.string(), node["methods"]);
@@ -1846,8 +1857,9 @@ void emitOperation(YAML::Emitter& emitter, Operation& op, EmitterMetaData& data)
 
     if (!op.getMethods().empty()) {
         emitter << YAML::Key << "methods" << YAML::Value << YAML::BeginSeq;
-        for (auto& method : op.getMethods()) {
-            emit(emitter, method, data);
+        for (const ID id : op.getMethods().ids()) {
+            emitter << YAML::Value << id.string();
+            //emit(emitter, method, data);
         }
         emitter << YAML::EndSeq;
     }

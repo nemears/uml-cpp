@@ -213,24 +213,27 @@ TEST_F(ClassParserTest, emitFilledInOperation) {
     p2.setName("opaquePee");
     o.getOwnedParameters().add(p);
     b.getParameters().add(p2);
+    c.getOwnedBehaviors().add(b);
     o.getMethods().add(b);
     c.getOwnedOperations().add(o);
     string expectedEmit = R""""(class:
   id: 6cCDjqUmkrXZ46z7CcNaTDso4SfQ
   name: Class
+  ownedBehaviors:
+    - opaqueBehavior:
+        id: "&_DLItAl_5ASwPNvNVqXaIwEiLOx"
+        name: opaque
+        parameters:
+          - parameter:
+              id: C7lT8BaQxmMi7cnZLIjjWCVD3k_9
+              name: opaquePee
   ownedOperations:
     - operation:
         id: Y3WV0c_Wa_zfOTb6zo9BAiIqRhn7
         name: op
         visibility: PROTECTED
         methods:
-          - opaqueBehavior:
-              id: "&_DLItAl_5ASwPNvNVqXaIwEiLOx"
-              name: opaque
-              parameters:
-                - parameter:
-                    id: C7lT8BaQxmMi7cnZLIjjWCVD3k_9
-                    name: opaquePee
+          - "&_DLItAl_5ASwPNvNVqXaIwEiLOx"
         ownedParameters:
           - parameter:
               id: s2q_fjRnyV_Gst&gAQ4JTr3crFNU

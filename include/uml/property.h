@@ -111,6 +111,7 @@ namespace UML{
                 public:
                     AddAssociationProcedure(Property* me) : AbstractSingletonProcedure<Association, Property>(me) {};
                     void operator()(Association* el) const override;
+                    void operator()(ID id) const override;
             };
             Singleton<Association, Property> m_owningAssociation = Singleton<Association, Property>(this);
             class RemoveOwningAssociationProcedure : public AbstractSingletonProcedure<Association, Property> {
@@ -122,6 +123,7 @@ namespace UML{
                 public:
                     AddOwningAssociationProcedure(Property* me) : AbstractSingletonProcedure<Association, Property>(me) {};
                     void operator()(Association* el) const override;
+                    void operator()(ID id) const override;
             };
             Singleton<Artifact, Property> m_artifact = Singleton<Artifact, Property>(this);
             class RemoveArtifactProcedure : public AbstractSingletonProcedure<Artifact, Property> {

@@ -133,6 +133,15 @@ void Property::AddAssociationProcedure::operator()(Association* el) const {
     if (!el->getMemberEnds().count(m_me->getID())) {
         el->getMemberEnds().add(*m_me);
     }
+    if (m_me->getMemberNamespace().count(el->getID())) {
+        m_me->getMemberNamespace().add(*el);
+    }
+}
+
+void Property::AddAssociationProcedure::operator()(ID id) const {
+    if (m_me->getMemberNamespace().count(id)) {
+        m_me->getMemberNamespace().addByID(id);
+    }
 }
 
 void Property::RemoveOwningAssociationProcedure::operator()(Association* el) const {
@@ -147,6 +156,21 @@ void Property::RemoveOwningAssociationProcedure::operator()(Association* el) con
 void Property::AddOwningAssociationProcedure::operator()(Association* el) const {
     if (!el->getOwnedEnds().count(m_me->getID())) {
         el->getOwnedEnds().add(*m_me);
+    }
+    if (m_me->getAssociationID() != el->getID()) {
+        m_me->m_association.set(el);
+    }
+    if (m_me->getFeaturingClassifierID() != el->getID()) {
+        m_me->m_featuringClassifier.set(el);
+    }
+}
+
+void Property::AddOwningAssociationProcedure::operator()(ID id) const {
+    if (m_me->getAssociationID() != id) {
+        m_me->m_association.setByID(id);
+    }
+    if (m_me->getFeaturingClassifierID() != id) {
+        m_me->m_featuringClassifier.setByID(id);
     }
 }
 

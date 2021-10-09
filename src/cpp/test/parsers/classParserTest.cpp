@@ -63,15 +63,15 @@ TEST_F(ClassParserTest, parseOperation) {
     ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/operation.yml"));
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
-    ASSERT_TRUE(clazz->getOwnedOperations().size() == 1);
+    ASSERT_EQ(clazz->getOwnedOperations().size(), 1);
     Operation* op = &clazz->getOwnedOperations().front();
     ASSERT_TRUE(op->getName().compare("isValid") == 0);
-    ASSERT_TRUE(op->getMethods().size() == 1);
+    ASSERT_EQ(op->getMethods().size(), 1);
     OpaqueBehavior* bhv = dynamic_cast<OpaqueBehavior*>(&op->getMethods().front());
     ASSERT_TRUE(bhv->getName().compare("isValid") == 0);
-    ASSERT_TRUE(bhv->getBodies().size() == 1);
+    ASSERT_EQ(bhv->getBodies().size(), 1);
     ASSERT_TRUE(bhv->getBodies().front().getValue().compare("return true") == 0);
-    ASSERT_TRUE(bhv->getOwnedParameters().size() == 1);
+    ASSERT_EQ(bhv->getOwnedParameters().size(), 1);
 }
 
 TEST_F(ClassParserTest, properErrors) {

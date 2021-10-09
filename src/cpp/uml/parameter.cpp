@@ -36,7 +36,7 @@ void Parameter::RemoveBehaviorProcedure::operator()(Behavior* el) const {
 }
 
 void Parameter::AddBehaviorProcedure::operator()(Behavior* el) const {
-    if (!el->getOwnedParameters().count(el->getID())) {
+    if (!el->getOwnedParameters().count(m_me->getID())) {
         el->getOwnedParameters().add(*m_me);
     }
     if (m_me->getNamespaceID() != el->getID()) {

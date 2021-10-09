@@ -137,5 +137,17 @@ TEST_F(OperationParserTest, mountAndEditOperationTest) {
     ID bhvParamID = bhvParam.getID();
     m.release(bhvParam);
     Parameter& bhvParam2 = m.aquire(bhvParamID)->as<Parameter>();
-    
+    ASSERT_TRUE(bhvParam2.hasBehavior());
+    ASSERT_EQ(bhvParam2.getBehaviorRef(), bhv3);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(bhvParam2, bhv3));
+
+    m.release(bhvParam2, bhv3);
+    ASSERT_FALSE(m.loaded(bhvID));
+    ASSERT_FALSE(m.loaded(bhvParamID));
+    Behavior& bhv4 = m.aquire(bhvID)->as<Behavior>();
+    ASSERT_FALSE(m.loaded(bhvParamID));
+    Parameter& bhvParam3 = m.aquire(bhvParamID)->as<Parameter>();
+    ASSERT_TRUE(bhvParam3.hasBehavior());
+    ASSERT_EQ(bhvParam3.getBehaviorRef(), bhv4);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(bhvParam3, bhv4));
 }

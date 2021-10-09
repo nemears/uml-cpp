@@ -178,6 +178,17 @@ void Association::restoreReferences() {
     m_memberEnds.restoreReferences();
     m_ownedEnds.restoreReferences();
     m_navigableOwnedEnds.restoreReferences();
+    for (auto& end : m_memberEnds) {
+        if (end.hasType()) {
+            if (!m_endType.count(end.getTypeID())) {
+                if (m_manager->loaded(end.getTypeID())) {
+                    m_endType.add(end.getTypeRef());
+                } else {
+                    m_endType.addByID(end.getTypeID());
+                }
+            }
+        }
+    }
     m_endType.restoreReferences();
 }
 

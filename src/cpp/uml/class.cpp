@@ -8,9 +8,11 @@ void Class::AddOwnedOperationFunctor::operator()(Operation& el) const {
     if (el.getClass() != m_el) {
         el.setClass(m_el);
     }
-
-    if (el.getNamespace() != m_el) {
-        el.setNamespace(m_el);
+    if (!m_el->getFeatures().count(el.getID())) {
+        m_el->getFeatures().add(el);
+    }
+    if (!m_el->getOwnedMembers().count(el.getID())) {
+        m_el->getOwnedMembers().add(el);
     }
     updateCopiedSequenceAddedTo(el, &Class::getOwnedOperations);
 }

@@ -114,6 +114,11 @@ namespace UML {
             public:
                 SetAssociation();
         };
+
+        class SetType : public parseAndSetSingletonFunctor<Type, TypedElement> {
+            public:
+                SetType();
+        };
     }
 }
 

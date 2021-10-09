@@ -10,6 +10,7 @@ namespace UML {
         protected:
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override {}; // TODO
             ValueSpecification* upperBound;
         public:
             ElementType getElementType() const override;

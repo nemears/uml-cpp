@@ -29,6 +29,11 @@ void TypedElement::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void TypedElement::restoreReferences() {
+    NamedElement::restoreReferences();
+    m_type.restoreReference();
+}
+
 TypedElement::TypedElement() {
     m_type.m_signature = &TypedElement::m_type;
     m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));
@@ -54,6 +59,10 @@ Type* TypedElement::getType() {
 
 Type& TypedElement::getTypeRef() {
     return m_type.getRef();
+}
+
+ID TypedElement::getTypeID() const {
+    return m_type.id();
 }
 
 bool TypedElement::hasType() const {

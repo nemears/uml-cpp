@@ -178,8 +178,8 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ID associationID = association.getID();
     m.release(aProp2, association);
     Association& association2 = m.aquire(associationID)->as<Association>();
-    ASSERT_FALSE(m.loaded(aPropID));
-    Property& aProp3 = m.aquire(aPropID)->as<Property>();
+    ASSERT_TRUE(m.loaded(aPropID));
+    Property& aProp3 = m.get<Property>(aPropID);
     ASSERT_TRUE(aProp3.hasOwningAssociation());
     ASSERT_EQ(aProp3.getOwningAssociationRef(), association2);
     ASSERT_TRUE(aProp3.hasAssociation());
@@ -223,8 +223,8 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
 
     m.release(association2, cProp2);
     Association& association3 = m.aquire(associationID)->as<Association>();
-    ASSERT_FALSE(m.loaded(cPropID));
-    Property& cProp3 = m.aquire(cPropID)->as<Property>();
+    ASSERT_TRUE(m.loaded(cPropID));
+    Property& cProp3 = m.get<Property>(cPropID);
     ASSERT_TRUE(cProp3.hasAssociation());
     ASSERT_EQ(cProp3.getAssociationRef(), association3);
     ASSERT_TRUE(cProp3.getMemberNamespace().count(association3.getID()));
@@ -235,4 +235,15 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_EQ(association3.getEndType().size(), 2);
     ASSERT_EQ(association3.getEndType().back(), type);
     ASSERT_EQ(association3.getEndType().front(), clazz);
+
+    ID clazzID = clazz.getID();
+    m.release(association3, clazz, aProp3);
+    Association& association4 = m.aquire(associationID)->as<Association>();
+    ASSERT_EQ(association4.getEndType().size(), 2);
+    ASSERT_TRUE(m.loaded(aPropID));
+    ASSERT_FALSE(m.loaded(clazzID));
+    Property& aProp4 = association4.getNavigableOwnedEnds().front();
+    ASSERT_TRUE(aProp4.hasType());
+    Class& clazz2 = m.aquire(clazzID)->as<Class>();
+    ASSERT_EQ(aProp4.getTypeRef(), clazz2);
 }

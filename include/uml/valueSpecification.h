@@ -50,6 +50,7 @@ namespace UML {
             void reindexName(std::string oldName, std::string newName) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
             ValueSpecification();
         public:
             ValueSpecification(const ValueSpecification& rhs);

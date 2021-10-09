@@ -73,6 +73,13 @@ void ValueSpecification::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void ValueSpecification::restoreReferences() {
+    TypedElement::restoreReferences();
+    PackageableElement::restoreReferences();
+    m_owningSlot.restoreReference();
+    m_owningInstanceSpec.restoreReference();
+}
+
 ValueSpecification::ValueSpecification() {
     m_owningSlot.m_signature = &ValueSpecification::m_owningSlot;
     m_owningSlot.m_removeProcedures.push_back(new RemoveOwningSlotProcedure(this));

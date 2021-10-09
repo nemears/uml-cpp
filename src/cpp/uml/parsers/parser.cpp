@@ -181,6 +181,10 @@ SetAssociation::SetAssociation() {
     m_signature = &Property::m_association;
 }
 
+SetType::SetType() {
+    m_signature = &TypedElement::m_type;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -195,7 +199,11 @@ template <class T = Element, class U = Element> void parseAndAddToSequence(YAML:
         std::string idStr = path.substr(path.find_last_of("/") + 1, path.find_last_of("/") + 29);
         if (isValidID(idStr)) {
             ID id = ID::fromString(idStr);
-            (el.*signature)().addByID(id);
+            if (data.m_manager->loaded(id)) {
+                (el.*signature)().add(data.m_manager->get<T>(id)); // Too slow? makes it easier
+            } else {
+                (el.*signature)().addByID(id);
+            }
         }
         else {
             throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);
@@ -1115,12 +1123,17 @@ void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data) 
 
     if (node["type"]) {
         if (node["type"].IsScalar()) {
-            string typeIDstring = node["type"].as<string>();
-            if (isValidID(typeIDstring)) {
-                ID typeID = ID::fromString(typeIDstring);
-                applyFunctor(data, typeID, new SetTypeFunctor(&el, node["type"]));
+            if (data.m_strategy == ParserStrategy::WHOLE) {
+                string typeIDstring = node["type"].as<string>();
+                if (isValidID(typeIDstring)) {
+                    ID typeID = ID::fromString(typeIDstring);
+                    applyFunctor(data, typeID, new SetTypeFunctor(&el, node["type"]));
+                } else {
+                    throw UmlParserException("ID for " + el.getElementTypeString() + " type field is invalid, ", data.m_path.string(), node["type"]);
+                }
             } else {
-                throw UmlParserException("ID for " + el.getElementTypeString() + " type field is invalid, " , data.m_path.string() , node["type"]);
+                SetType setType;
+                setType(node["type"], data, el);
             }
         } else {
             throw UmlParserException("Improper YAML node type for type field, must be scalar, " , data.m_path.string() , node["type"]);
@@ -1131,8 +1144,8 @@ void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data) 
 void emitTypedElement(YAML::Emitter& emitter, TypedElement& el, EmitterMetaData& data) {
     emitNamedElement(emitter, el, data);
 
-    if (el.getType()) {
-        emitter << YAML::Key << "type" << YAML::Value << el.getType()->getID().string();
+    if (el.hasType()) {
+        emitter << YAML::Key << "type" << YAML::Value << el.getTypeID().string();
     }
 }
 

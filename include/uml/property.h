@@ -19,6 +19,7 @@ namespace UML{
         class PropertySetClass;
         class PropertySetDataType;
         class PropertySetArtifact;
+        class SetOwningAssociation;
     }
 
     enum class AggregationKind {
@@ -28,12 +29,15 @@ namespace UML{
     };
 
     class Property: public StructuralFeature, public ConnectableElement , public DeploymentTarget {
+
         friend class UmlManager;
         template <class T> friend class Sequence;
         friend class Parsers::SetDefaultValue;
         friend class Parsers::PropertySetClass;
         friend class Parsers::PropertySetDataType;
         friend class Parsers::PropertySetArtifact;
+        friend class Parsers::SetOwningAssociation;
+
         protected:
             AggregationKind m_aggregation;
             bool m_composite;

@@ -173,6 +173,10 @@ SetOwningInstanceSpec::SetOwningInstanceSpec() {
     m_signature = &ValueSpecification::m_owningInstanceSpec;
 }
 
+SetOwningAssociation::SetOwningAssociation() {
+    m_signature = &Property::m_owningAssociation;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -561,6 +565,15 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                 setOwningInstanceSpec(node["owningInstanceSpec"], data, ret->as<ValueSpecification>());
             }
         }
+        if (node["owningAssociation"]) {
+            ID owningAssociationID = ID::fromString(node["owningAssociation"].as<string>());
+            if (data.m_manager->loaded(owningAssociationID)) {
+                ret->as<Property>().setOwningAssociation(data.m_manager->get<Association>(owningAssociationID));
+            } else {
+                SetOwningAssociation setOwningAssociation;
+                setOwningAssociation(node["owninngAssociation"], data, ret->as<Property>());
+            }
+        }
 
     }
 
@@ -832,6 +845,10 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             }   
             if (el.as<Property>().hasArtifact()) {
                 emitter << YAML::Key << "artifact" << YAML::Value << el.as<Property>().getArtifactID().string();
+                return;
+            }
+            if (el.as<Property>().hasOwningAssociation()) {
+                emitter << YAML::Key << "owningAssociation" << YAML::Value << el.as<Property>().getOwningAssociationID().string();
                 return;
             }
         }

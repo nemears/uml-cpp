@@ -123,3 +123,37 @@ TEST_F(AssociationParserTest, emitAssociationTest) {
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(AssociationParserTest, mountAndEditAssociation) {
+    UmlManager m;
+    Package& root = m.create<Package>();
+    Class& clazz = m.create<Class>();
+    Class& type = m.create<Class>();
+    Property cProp = m.create<Property>();
+    Property aProp = m.create<Property>();
+    Association& association = m.create<Association>();
+    cProp.setAggregation(AggregationKind::COMPOSITE);
+    cProp.setType(type);
+    association.getMemberEnds().add(cProp);
+    aProp.setType(clazz);
+    association.getNavigableOwnedEnds().add(aProp);
+    clazz.getOwnedAttributes().add(cProp);
+    root.getPackagedElements().add(clazz, type, association);
+    m.setRoot(&root);
+    m.mount(ymlPath + "associationTests");
+
+    ID aPropID = aProp.getID();
+    m.release(aProp);
+    Property& aProp2 = m.aquire(aPropID)->as<Property>();
+    ASSERT_TRUE(aProp2.hasOwningAssociation());
+    ASSERT_EQ(aProp2.getOwningAssociationRef(), association);
+    ASSERT_TRUE(aProp2.hasAssociation());
+    ASSERT_EQ(aProp2.getAssociationRef(), association);
+    ASSERT_TRUE(aProp2.hasFeaturingClassifier());
+    ASSERT_EQ(aProp2.getFeaturingClassifierRef(), association);
+    ASSERT_TRUE(aProp2.hasNamespace());
+    ASSERT_EQ(aProp2.getNamespaceRef(), association);
+    ASSERT_TRUE(aProp2.getMemberNamespace().count(association.getID()));
+    ASSERT_TRUE(aProp2.hasOwner());
+    ASSERT_EQ(aProp2.getOwnerRef(), association);
+}

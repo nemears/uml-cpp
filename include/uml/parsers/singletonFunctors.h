@@ -104,6 +104,11 @@ namespace UML {
             public:
                 SetOwningInstanceSpec();
         };
+
+        class SetOwningAssociation : public parseAndSetSingletonFunctor<Association, Property> {
+            public:
+                SetOwningAssociation();
+        };
     }
 }
 

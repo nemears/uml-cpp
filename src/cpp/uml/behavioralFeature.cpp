@@ -21,7 +21,7 @@ void BehavioralFeature::RemoveMethodFunctor::operator()(Behavior& el) const {
 
 void BehavioralFeature::AddParameterFunctor::operator()(Parameter& el) const {
     if (m_el->isSubClassOf(ElementType::OPERATION)) {
-        if (el.getOperation() != m_el) {
+        if (el.getOperationID() != m_el->getID()) {
             el.setOperation(&m_el->as<Operation>());
         }
     }

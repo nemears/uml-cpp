@@ -74,6 +74,10 @@ Operation& Parameter::getOperationRef() {
     return m_operation.getRef();
 }
 
+ID Parameter::getOperationID() const {
+    return m_operation.id();
+}
+
 bool Parameter::hasOperation() const {
     return m_operation.has();
 }

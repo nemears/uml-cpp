@@ -1813,14 +1813,6 @@ void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
                 } else {
                     throw UmlParserException("Invalid yaml node type for operation method entry, must be a scalar!", data.m_path.string(), node["methods"][i]);
                 }
-                // TODO move, cannot be map
-                /**if (node["methods"][i]["opaqueBehavior"]) {
-                    OpaqueBehavior& bhv = data.m_manager->create<OpaqueBehavior>();
-                    parseOpaqueBehavior(node["methods"][i]["opaqueBehavior"], bhv, data);
-                    op.getMethods().add(bhv);
-                } else {
-                    throw UmlParserException("Invalid behavior type for operation methods, ", data.m_path.string(), node["methods"][i]);
-                } **/
             }
         } else {
             throw UmlParserException("Improper YAML node type for methods, must be sequence, ", data.m_path.string(), node["methods"]);
@@ -1833,18 +1825,24 @@ void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
         // TODO: maybe log a warning or something
         if (node["ownedParameters"].IsSequence()) {
             for (size_t i = 0; i < node["ownedParameters"].size(); i++) {
-                if (node["ownedParameters"][i]["parameter"]) {
-                    if (node["ownedParameters"][i]["parameter"].IsMap()) {
-                        Parameter& p = data.m_manager->create<Parameter>();
-                        parseParameter(node["ownedParameters"][i]["parameter"], p, data);
-                        op.getOwnedParameters().add(p);
-                    } else {
-                        throw UmlParserException("Improper YAML Node type for parameter definition, must be map, ", data.m_path.string(), node["ownedParameters"][i]["parameter"]);
+                if (node["ownedParameters"][i].IsMap()) {
+                    if (node["ownedParameters"][i]["parameter"]) {
+                        if (node["ownedParameters"][i]["parameter"].IsMap()) {
+                            Parameter& p = data.m_manager->create<Parameter>();
+                            parseParameter(node["ownedParameters"][i]["parameter"], p, data);
+                            op.getOwnedParameters().add(p);
+                        } else {
+                            throw UmlParserException("Improper yaml node type for parameter definition, must be map!", data.m_path.string(), node["ownedParameters"][i]["parameter"]);
+                        }
                     }
+                } else if (node["ownedParameters"][i].IsScalar()) {
+                    parseAndAddToSequence(node["ownedParameters"][i], data, static_cast<BehavioralFeature&>(op), &BehavioralFeature::getOwnedParameters);
+                } else {
+                    throw UmlParserException("Improper yaml node type for parameter field, must be a map or a scalar!", data.m_path.string(), node["ownedParameters"][i]);
                 }
             }
         } else {
-            throw UmlParserException("Improper YAML node type for ownedParameters field, must be a sequence, ", data.m_path.string(), node["ownedParameters"]);
+            throw UmlParserException("Improper yaml node type for ownedParameters field, must be a sequence!", data.m_path.string(), node["ownedParameters"]);
         }
     }
 }

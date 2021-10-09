@@ -45,6 +45,7 @@ namespace UML {
             };
             Operation* getOperation();
             Operation& getOperationRef();
+            ID getOperationID() const;
             bool hasOperation() const;
             void setOperation(Operation& operation);
             void setOperation(Operation* operation);

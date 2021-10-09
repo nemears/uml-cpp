@@ -185,6 +185,10 @@ SetType::SetType() {
     m_signature = &TypedElement::m_type;
 }
 
+SetOperation::SetOperation() {
+    m_signature = &Parameter::m_operation;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -231,6 +235,17 @@ template <class T =Element> T& parseScalar(YAML::Node node, ParserMetaData& data
         } else {
             throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);
         }
+    }
+}
+
+// Helper function for parsing scope in parseNode
+template <class T = Element, class U = Element> void parseScope(YAML::Node node, ParserMetaData& data, U& el, void (U::*setter)(T&), parseAndSetSingletonFunctor<T, U>& func) {
+    ID id = ID::fromString(node.as<string>());
+    if (data.m_manager->loaded(id)) {
+        (el.*setter)(data.m_manager->get<T>(id));
+    }
+    else {
+        func(node, data, el);
     }
 }
 
@@ -360,9 +375,11 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["operation"]) {
-        Operation& op = data.m_manager->create<Operation>();
-        parseOperation(node["operation"], op, data);
-        ret = &op;
+        if (node["operation"].IsMap()) {
+            Operation& op = data.m_manager->create<Operation>();
+            parseOperation(node["operation"], op, data);
+            ret = &op;
+        }
     }
 
     if (node["package"]) {
@@ -421,13 +438,8 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
 
     if (ret && data.m_strategy == ParserStrategy::INDIVIDUAL) {
         if (node["owningPackage"]) {
-            ID owningPackageID = ID::fromString(node["owningPackage"].as<string>());
-            if (data.m_manager->loaded(owningPackageID)) {
-                ret->as<PackageableElement>().setOwningPackage(data.m_manager->get<Package>(owningPackageID));
-            } else {
-                SetOwningPackage setOwningPackage;
-                setOwningPackage(node["owningPackage"], data, ret->as<PackageableElement>());
-            }
+            SetOwningPackage setOwningPackage;
+            parseScope(node["owningPackage"], data, ret->as<PackageableElement>(), &PackageableElement::setOwningPackage, setOwningPackage);
         }
         if (node["receivingPackage"]) {
             ID receivingPackageID = ID::fromString(node["receivingPackage"].as<string>());
@@ -447,79 +459,45 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         }
         if (node["class"]) {
             if (node["class"].IsScalar()) {
-                ID owningClazzID = ID::fromString(node["class"].as<string>());
-                if (data.m_manager->loaded(owningClazzID)) {
-                    if (ret->isSubClassOf(ElementType::PROPERTY)) {
-                        ret->as<Property>().setClass(data.m_manager->get<Class>(owningClazzID));
-                    } else if (ret->isSubClassOf(ElementType::OPERATION)) {
-                        ret->as<Operation>().setClass(data.m_manager->get<Class>(owningClazzID));
-                    }
-                } else {
-                    if (ret->isSubClassOf(ElementType::PROPERTY)) {
-                        PropertySetClass setClass;
-                        setClass(node["class"], data, ret->as<Property>());
-                    } else if (ret->isSubClassOf(ElementType::OPERATION)) {
-                        OperationSetClass setClass;
-                        setClass(node["class"], data, ret->as<Operation>());
-                    }
+                if (ret->isSubClassOf(ElementType::PROPERTY)) {
+                    PropertySetClass setClass;
+                    parseScope(node["class"], data, ret->as<Property>(), &Property::setClass, setClass);
+                } else if (ret->isSubClassOf(ElementType::OPERATION)) {
+                    OperationSetClass setClass;
+                    parseScope(node["class"], data, ret->as<Operation>(), &Operation::setClass, setClass);
                 }
             }
         }
         if (node["dataType"]) {
             if (node["dataType"].IsScalar()) {
-                ID dataTypeID = ID::fromString(node["dataType"].as<string>());
-                if (data.m_manager->loaded(dataTypeID)) {
-                    if (ret->isSubClassOf(ElementType::PROPERTY)) {
-                        ret->as<Property>().setDataType(data.m_manager->get<DataType>(dataTypeID));
-                    } else if (ret->isSubClassOf(ElementType::OPERATION)) {
-                        ret->as<Operation>().setDataType(data.m_manager->get<DataType>(dataTypeID));
-                    }
-                } else {
-                    if (ret->isSubClassOf(ElementType::PROPERTY)) {
-                        PropertySetDataType setDataType;
-                        setDataType(node["dataType"], data, ret->as<Property>());
-                    } else if (ret->isSubClassOf(ElementType::OPERATION)) {
-                        OperationSetDataType setDataType;
-                        setDataType(node["dataType"], data, ret->as<Operation>());
-                    }
+                if (ret->isSubClassOf(ElementType::PROPERTY)) {
+                    PropertySetDataType setDataType;
+                    parseScope(node["dataType"], data, ret->as<Property>(), &Property::setDataType, setDataType);
+                } else if (ret->isSubClassOf(ElementType::OPERATION)) {
+                    OperationSetDataType setDataType;
+                    parseScope(node["dataType"], data, ret->as<Operation>(), &Operation::setDataType, setDataType);
                 }
             }
         }
 
         if (node["artifact"]) {
             if (node["artifact"].IsScalar()) {
-                ID artifactID = ID::fromString(node["artifact"].as<string>());
-                if (data.m_manager->loaded(artifactID)) {
-                    if (ret->isSubClassOf(ElementType::PROPERTY)) {
-                        ret->as<Property>().setArtifact(data.m_manager->get<Artifact>(artifactID));
-                    } else if (ret->isSubClassOf(ElementType::OPERATION)) {
-                        ret->as<Operation>().setArtifact(data.m_manager->get<Artifact>(artifactID));
-                    } else if (ret->isSubClassOf(ElementType::MANIFESTATION)) {
-                        ret->as<Manifestation>().setArtifact(data.m_manager->get<Artifact>(artifactID));
-                    }
-                } else {
-                    if (ret->isSubClassOf(ElementType::PROPERTY)) {
-                        PropertySetArtifact setArtifact;
-                        setArtifact(node["artifact"], data, ret->as<Property>());
-                    } else if (ret->isSubClassOf(ElementType::OPERATION)) {
-                        OperationSetArtifact setArtifact;
-                        setArtifact(node["artifact"], data, ret->as<Operation>());
-                    } else if (ret->isSubClassOf(ElementType::MANIFESTATION)) {
-                        ManifestationSetArtifact setArtifact;
-                        setArtifact(node["artifact"], data, ret->as<Manifestation>());
-                    }
+                if (ret->isSubClassOf(ElementType::PROPERTY)) {
+                    PropertySetArtifact setArtifact;
+                    parseScope(node["artifact"], data, ret->as<Property>(), &Property::setArtifact, setArtifact);
+                } else if (ret->isSubClassOf(ElementType::OPERATION)) {
+                    OperationSetArtifact setArtifact;
+                    parseScope(node["artifact"], data, ret->as<Operation>(), &Operation::setArtifact, setArtifact);
+                } else if (ret->isSubClassOf(ElementType::MANIFESTATION)) {
+                    ManifestationSetArtifact setArtifact;
+                    parseScope(node["artifact"], data, ret->as<Manifestation>(), &Manifestation::setArtifact, setArtifact);
                 }
             }
         }
 
         if (node["owningArtifact"]) {
-            ID artifactID = ID::fromString(node["owningArtifact"].as<string>());
-            if (data.m_manager->loaded(artifactID)) {
-                ret->as<Artifact>().setArtifact(data.m_manager->get<Artifact>(artifactID));
-            } else {
-                ArtifactSetArtifact setArtifact;
-                setArtifact(node["owningArtifact"], data, ret->as<Artifact>());
-            }
+            ArtifactSetArtifact setArtifact;
+            parseScope(node["owningArtifact"], data, ret->as<Artifact>(), &Artifact::setArtifact, setArtifact);
         }
 
         if (node["owningProperty"]) {
@@ -531,66 +509,37 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
             }
         }
         if (node["specific"]) {
-            ID specificID = ID::fromString(node["specific"].as<string>());
-            if (data.m_manager->loaded(specificID)) {
-                ret->as<Generalization>().setSpecific(data.m_manager->get<Classifier>(specificID));
-            } else {
-                SetSpecific setSpecific;
-                setSpecific(node["specific"], data ,ret->as<Generalization>());
-            }
+            SetSpecific setSpecific;
+            parseScope(node["specific"], data, ret->as<Generalization>(), &Generalization::setSpecific, setSpecific);
         }
         if (node["nestingClass"]) {
-            ID nestingClassID = ID::fromString(node["nestingClass"].as<string>());
-            if (data.m_manager->loaded(nestingClassID)) {
-                ret->as<Classifier>().setNestingClass(data.m_manager->get<Class>(nestingClassID));
-            } else {
-                SetNestingClass setNestingClass;
-                setNestingClass(node["nestingClass"], data, ret->as<Classifier>());
-            }
+            SetNestingClass setNestingClass;
+            parseScope(node["nestingClass"], data, ret->as<Classifier>(), &Classifier::setNestingClass, setNestingClass);
         }
         if (node["owningElement"]) {
-            ID owningElementID = ID::fromString(node["owningElement"].as<string>());
-            if (data.m_manager->loaded(owningElementID)) {
-                ret->as<Comment>().setOwningElement(data.m_manager->get<>(owningElementID));
-            } else {
-                SetOwningElement setOwningElement;
-                setOwningElement(node["owningElement"], data, ret->as<Comment>());
-            }
+            SetOwningElement setOwningElement;
+            parseScope(node["owningElement"], data, ret->as<Comment>(), &Comment::setOwningElement, setOwningElement);
         }
         if (node["owningInstance"]) {
-            ID owningInstanceID = ID::fromString(node["owningInstance"].as<string>());
-            if (data.m_manager->loaded(owningInstanceID)) {
-                ret->as<Slot>().setOwningInstance(data.m_manager->get<InstanceSpecification>(owningInstanceID));
-            } else {
-                SetOwningInstance setOwningInstance;
-                setOwningInstance(node["owningInstance"], data, ret->as<Slot>());
-            }
+            SetOwningInstance setOwningInstance;
+            parseScope(node["owningInstance"], data, ret->as<Slot>(), &Slot::setOwningInstance, setOwningInstance);
         }
         if (node["owningSlot"]) {
-            ID owningSlotID = ID::fromString(node["owningSlot"].as<string>());
-            if (data.m_manager->loaded(owningSlotID)) {
-                ret->as<ValueSpecification>().setOwningSlot(data.m_manager->get<Slot>(owningSlotID));
-            } else {
-                SetOwningSlot setOwningSlot;
-                setOwningSlot(node["owningSlot"], data, ret->as<ValueSpecification>());
-            }
+            SetOwningSlot setOwningSlot;
+            parseScope(node["owningSlot"], data, ret->as<ValueSpecification>(), &ValueSpecification::setOwningSlot, setOwningSlot);
         }
         if (node["owningInstanceSpec"]) {
-            ID owningInstanceSpecID = ID::fromString(node["owningInstanceSpec"].as<string>());
-            if (data.m_manager->loaded(owningInstanceSpecID)) {
-                ret->as<ValueSpecification>().setOwningInstanceSpec(data.m_manager->get<InstanceSpecification>(owningInstanceSpecID));
-            } else {
-                SetOwningInstanceSpec setOwningInstanceSpec;
-                setOwningInstanceSpec(node["owningInstanceSpec"], data, ret->as<ValueSpecification>());
-            }
+            SetOwningInstanceSpec setOwningInstanceSpec;
+            parseScope(node["owningInstanceSpec"], data, ret->as<ValueSpecification>(), &ValueSpecification::setOwningInstanceSpec, setOwningInstanceSpec);
         }
         if (node["owningAssociation"]) {
-            ID owningAssociationID = ID::fromString(node["owningAssociation"].as<string>());
-            if (data.m_manager->loaded(owningAssociationID)) {
-                ret->as<Property>().setOwningAssociation(data.m_manager->get<Association>(owningAssociationID));
-            } else {
-                SetOwningAssociation setOwningAssociation;
-                setOwningAssociation(node["owninngAssociation"], data, ret->as<Property>());
+            SetOwningAssociation setOwningAssociation;
+            parseScope(node["owningAssociation"], data, ret->as<Property>(), &Property::setOwningAssociation, setOwningAssociation);
+        }
+        if (node["operation"]) {
+            if (node["operation"].IsScalar()) {
+                SetOperation setOperation;
+                parseScope(node["operation"], data, ret->as<Parameter>(), &Parameter::setOperation, setOperation);
             }
         }
 
@@ -936,6 +885,12 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::SLOT)) {
             if (el.as<Slot>().hasOwningInstance()) {
                 emitter << YAML::Key << "owningInstance" << YAML::Value << el.as<Slot>().getOwningInstanceID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::PARAMETER)) {
+            if (el.as<Parameter>().hasOperation()) {
+                emitter << YAML::Key << "operation" << YAML::Value << el.as<Parameter>().getOperationID().string();
                 return;
             }
         }

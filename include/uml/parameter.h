@@ -8,6 +8,9 @@
 namespace UML {
 
     class Operation;
+    namespace Parsers {
+        class SetOperation;
+    }
 
     enum class ParameterDirectionKind {
         IN, 
@@ -19,6 +22,7 @@ namespace UML {
     class Parameter : public ConnectableElement , public MultiplicityElement {
 
         friend class UmlManager;
+        friend class Parsers::SetOperation;
 
         protected:
             ParameterDirectionKind m_direction;

@@ -119,6 +119,11 @@ namespace UML {
             public:
                 SetType();
         };
+
+        class SetOperation : public parseAndSetSingletonFunctor<Operation, Parameter> {
+            public:
+                SetOperation();
+        };
     }
 }
 

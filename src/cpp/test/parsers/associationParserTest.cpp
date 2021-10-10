@@ -7,6 +7,7 @@
 #include "uml/class.h"
 #include "uml/property.h"
 #include "uml/primitiveType.h"
+#include "test/umlTestUtil.h"
 
 using namespace std;
 using namespace UML;
@@ -131,8 +132,8 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     Package& root = m.create<Package>();
     Class& clazz = m.create<Class>();
     Class& type = m.create<Class>();
-    Property cProp = m.create<Property>();
-    Property aProp = m.create<Property>();
+    Property& cProp = m.create<Property>();
+    Property& aProp = m.create<Property>();
     Association& association = m.create<Association>();
     cProp.setAggregation(AggregationKind::COMPOSITE);
     cProp.setType(type);
@@ -210,6 +211,7 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ID cPropID = cProp.getID();
     m.release(cProp);
     Property& cProp2 = m.aquire(cPropID)->as<Property>();
+    ASSERT_TRUE(cProp2.isComposite());
     ASSERT_TRUE(cProp2.hasAssociation());
     ASSERT_EQ(cProp2.getAssociationRef(), association2);
     ASSERT_TRUE(cProp2.getMemberNamespace().count(association2.getID()));
@@ -220,11 +222,21 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_EQ(association2.getEndType().size(), 2);
     ASSERT_EQ(association2.getEndType().front(), type);
     ASSERT_EQ(association2.getEndType().back(), clazz);
+    ASSERT_EQ(clazz.getParts().size(), 1);
+    ASSERT_EQ(clazz.getParts().front(), cProp2);
+    ASSERT_EQ(clazz.getOwnedAttributes().size(), 1);
+    ASSERT_EQ(clazz.getOwnedAttributes().front(), cProp2);
+    ASSERT_EQ(clazz.getAttributes().size(), 1);
+    ASSERT_EQ(clazz.getAttributes().front(), cProp2);
+    ASSERT_EQ(clazz.getFeatures().size(), 1);
+    ASSERT_EQ(clazz.getFeatures().front(), cProp2);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(cProp2, clazz));
 
     m.release(association2, cProp2);
     Association& association3 = m.aquire(associationID)->as<Association>();
     ASSERT_TRUE(m.loaded(cPropID));
     Property& cProp3 = m.get<Property>(cPropID);
+    ASSERT_TRUE(cProp3.isComposite());
     ASSERT_TRUE(cProp3.hasAssociation());
     ASSERT_EQ(cProp3.getAssociationRef(), association3);
     ASSERT_TRUE(cProp3.getMemberNamespace().count(association3.getID()));
@@ -237,7 +249,7 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_EQ(association3.getEndType().front(), clazz);
 
     ID clazzID = clazz.getID();
-    m.release(association3, clazz, aProp3);
+    m.release(association3, clazz, aProp3, cProp3);
     Association& association4 = m.aquire(associationID)->as<Association>();
     ASSERT_EQ(association4.getEndType().size(), 2);
     ASSERT_TRUE(m.loaded(aPropID));
@@ -246,4 +258,28 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_TRUE(aProp4.hasType());
     Class& clazz2 = m.aquire(clazzID)->as<Class>();
     ASSERT_EQ(aProp4.getTypeRef(), clazz2);
+    Property& cProp4 = m.get<Property>(cPropID);
+    ASSERT_EQ(clazz2.getParts().size(), 1);
+    ASSERT_EQ(clazz2.getParts().front(), cProp4);
+    ASSERT_EQ(clazz2.getOwnedAttributes().size(), 1);
+    ASSERT_EQ(clazz2.getOwnedAttributes().front(), cProp4);
+    ASSERT_EQ(clazz2.getAttributes().size(), 1);
+    ASSERT_EQ(clazz2.getAttributes().front(), cProp4);
+    ASSERT_EQ(clazz2.getFeatures().size(), 1);
+    ASSERT_EQ(clazz2.getFeatures().front(), cProp4);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(cProp4, clazz2));
+
+    m.release(clazz2, cProp4);
+    Class& clazz3 = m.aquire(clazzID)->as<Class>();
+    ASSERT_TRUE(m.loaded(cPropID));
+    Property& cProp5 = m.get<Property>(cPropID);
+    ASSERT_EQ(clazz3.getParts().size(), 1);
+    ASSERT_EQ(clazz3.getParts().front(), cProp5);
+    ASSERT_EQ(clazz3.getOwnedAttributes().size(), 1);
+    ASSERT_EQ(clazz3.getOwnedAttributes().front(), cProp5);
+    ASSERT_EQ(clazz3.getAttributes().size(), 1);
+    ASSERT_EQ(clazz3.getAttributes().front(), cProp5);
+    ASSERT_EQ(clazz3.getFeatures().size(), 1);
+    ASSERT_EQ(clazz3.getFeatures().front(), cProp5);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(cProp5, clazz3));
 }

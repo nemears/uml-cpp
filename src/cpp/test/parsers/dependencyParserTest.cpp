@@ -5,6 +5,7 @@
 #include "uml/package.h"
 #include "uml/realization.h"
 #include "uml/usage.h"
+#include "test/umlTestUtil.h"
 
 using namespace std;
 using namespace UML;
@@ -157,4 +158,45 @@ TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
+}
+
+void ASSERT_RESTORE_DEPENDENCY(Dependency& dependency, NamedElement& client, NamedElement& supplier) {
+    ASSERT_EQ(dependency.getClient().size(), 1);
+    ASSERT_EQ(dependency.getClient().front(), client);
+    ASSERT_EQ(dependency.getSources().size(), 1);
+    ASSERT_EQ(dependency.getSources().front(), client);
+    ASSERT_TRUE(dependency.getRelatedElements().count(client.getID()));
+    ASSERT_EQ(dependency.getSupplier().size(), 1);
+    ASSERT_EQ(dependency.getSupplier().front(), supplier);
+    ASSERT_EQ(dependency.getTargets().size(), 1);
+    ASSERT_EQ(dependency.getTargets().front(), supplier);
+    ASSERT_TRUE(dependency.getRelatedElements().count(supplier.getID()));
+    ASSERT_EQ(client.getDirectedRelationships().size(), 1);
+    ASSERT_EQ(client.getDirectedRelationships().front(), dependency);
+    ASSERT_EQ(client.getRelationships().size(), 1);
+    ASSERT_EQ(client.getRelationships().front(), dependency);
+    ASSERT_EQ(supplier.getDirectedRelationships().size(), 1);
+    ASSERT_EQ(supplier.getDirectedRelationships().front(), dependency);
+    ASSERT_EQ(supplier.getRelationships().size(), 1);
+    ASSERT_EQ(supplier.getRelationships().front(), dependency);
+}
+
+TEST_F(DependencyParserTest, mountAndEditDependencyTest) {
+    UmlManager m;
+    Package& root = m.create<Package>();
+    Package& supplier = m.create<Package>();
+    Package& client = m.create<Package>();
+    Dependency& dependency = m.create<Dependency>();
+    dependency.getClient().add(client);
+    dependency.getSupplier().add(supplier);
+    root.getPackagedElements().add(dependency, client, supplier);
+    m.setRoot(&root);
+    m.mount(ymlPath + "dependencyTests");
+    
+    ID dependencyID = dependency.getID();
+    m.release(dependency);
+    ASSERT_FALSE(m.loaded(dependencyID));
+    Dependency& dependency2 = m.aquire(dependencyID)->as<Dependency>();
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency2, client, supplier));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency2, root));
 }

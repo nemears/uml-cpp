@@ -199,4 +199,14 @@ TEST_F(DependencyParserTest, mountAndEditDependencyTest) {
     Dependency& dependency2 = m.aquire(dependencyID)->as<Dependency>();
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency2, client, supplier));
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency2, root));
+
+    ID clientID = client.getID();
+    m.release(client, dependency2);
+    ASSERT_FALSE(m.loaded(dependencyID));
+    ASSERT_FALSE(m.loaded(clientID));
+    Dependency& dependency3 = m.aquire(dependencyID)->as<Dependency>();
+    ASSERT_FALSE(m.loaded(clientID));
+    Package& client2 = m.aquire(clientID)->as<Package>();
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency3, client2, supplier));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency3, root));
 }

@@ -3515,7 +3515,16 @@ void parseDependency(YAML::Node node, Dependency& dependency, ParserMetaData& da
             for (size_t i = 0; i < node["client"].size(); i++) {
                 if (node["client"][i].IsScalar()) {
                     if (isValidID(node["client"][i].as<string>())) {
-                        applyFunctor(data, ID::fromString(node["client"][i].as<string>()), new AddClientFunctor(&dependency, node["client"][i]));
+                        ID clientID = ID::fromString(node["client"][i].as<string>());
+                        if (data.m_strategy == ParserStrategy::WHOLE) {
+                            applyFunctor(data, clientID, new AddClientFunctor(&dependency, node["client"][i]));
+                        } else {
+                            if (data.m_manager->loaded(clientID)) {
+                                dependency.getClient().add(data.m_manager->get<NamedElement>(clientID));
+                            } else {
+                                dependency.getClient().addByID(clientID);
+                            }
+                        }
                     } else {
                         throw UmlParserException("Invalid ID, must be a base64 url safe 28 character string!", data.m_path.string(), node["client"][i]);
                     }
@@ -3533,7 +3542,16 @@ void parseDependency(YAML::Node node, Dependency& dependency, ParserMetaData& da
             for (size_t i = 0; i < node["supplier"].size(); i++) {
                 if (node["supplier"][i].IsScalar()) {
                     if (isValidID(node["supplier"][i].as<string>())) {
-                        applyFunctor(data, ID::fromString(node["supplier"][i].as<string>()), new AddSupplierFunctor(&dependency, node["supplier"][i]));
+                        ID supplierID = ID::fromString(node["supplier"][i].as<string>());
+                        if (data.m_strategy == ParserStrategy::WHOLE) {
+                            applyFunctor(data, supplierID, new AddSupplierFunctor(&dependency, node["supplier"][i]));
+                        } else {
+                            if (data.m_manager->loaded(supplierID)) {
+                                dependency.getSupplier().add(data.m_manager->get<NamedElement>(supplierID));
+                            } else {
+                                dependency.getSupplier().addByID(supplierID);
+                            }
+                        }
                     } else {
                         throw UmlParserException("Invalid ID, must be a base64 url safe 28 character string!", data.m_path.string(), node["supplier"][i]);
                     }
@@ -3554,16 +3572,16 @@ void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaD
 
     if (!dependency.getClient().empty()) {
         emitter << YAML::Key << "client" << YAML::Value << YAML::BeginSeq;
-        for (auto& client : dependency.getClient()) {
-            emitter << client.getID().string();
+        for (const ID id : dependency.getClient().ids()) {
+            emitter << id.string();
         }
         emitter << YAML::EndSeq;
     }
 
     if (!dependency.getSupplier().empty()) {
         emitter << YAML::Key << "supplier" << YAML::Value << YAML::BeginSeq;
-        for (auto& supplier : dependency.getSupplier()) {
-            emitter << supplier.getID().string();
+        for (const ID id : dependency.getSupplier().ids()) {
+            emitter << id.string();
         }
         emitter << YAML::EndSeq;
     }

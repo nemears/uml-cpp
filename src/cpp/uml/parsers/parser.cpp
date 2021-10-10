@@ -302,6 +302,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         }
     }
 
+    if (node["dependency"]) {
+        Dependency& dependency = data.m_manager->create<Dependency>();
+        parseDependency(node["dependency"], dependency, data);
+        ret = &dependency;
+    }
+
     if (node["enumeration"]) {
         Enumeration& enumeration = data.m_manager->create<Enumeration>();
         parseEnumeration(node["enumeration"], enumeration, data);

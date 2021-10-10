@@ -43,14 +43,15 @@ void Dependency::RemoveSupplierFunctor::operator()(NamedElement& el) const {
 }
 
 void Dependency::setManager(UmlManager* manager) {
+    DirectedRelationship::setManager(manager);
+    PackageableElement::setManager(manager);
     m_client.m_manager = manager;
     m_supplier.m_manager = manager;
-    DirectedRelationship::setManager(manager);
-    // TODO
 }
 
 void Dependency::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
+    PackageableElement::referencingReleased(id);
     if (m_client.count(id)) {
         m_client.elementReleased(id, &Dependency::getClient);
     }
@@ -60,7 +61,7 @@ void Dependency::referencingReleased(ID id) {
 }
 
 void Dependency::referenceReindexed(ID oldID, ID newID) {
-    NamedElement::referenceReindexed(oldID, newID);
+    PackageableElement::referenceReindexed(oldID, newID);
     Relationship::referenceReindexed(oldID, newID);
     m_client.reindex(oldID, newID, &Dependency::getClient);
     m_supplier.reindex(oldID, newID, &Dependency::getSupplier);

@@ -60,6 +60,12 @@ void AddClientDependencyFunctor::operator()(Dependency& el) const {
     }
 }
 
+void AddClientDependencyFunctor::operator()(ID id) const {
+    if (!m_el->getDirectedRelationships().count(id)) {
+        m_el->getDirectedRelationships().addByID(id);
+    }
+}
+
 void RemoveClientDependencyFunctor::operator()(Dependency& el) const {
     if (el.getClient().count(m_el->getID())) {
         el.getClient().remove(*m_el);
@@ -67,6 +73,12 @@ void RemoveClientDependencyFunctor::operator()(Dependency& el) const {
     if (m_el->getDirectedRelationships().count(el.getID())) {
         m_el->getDirectedRelationships().remove(el);
     }
+}
+
+void NamedElement::setManager(UmlManager* manager) {
+    Element::setManager(manager);
+    m_memberNamespace->m_manager = manager;
+    m_clientDependencies->m_manager = manager;
 }
 
 void NamedElement::referenceReindexed(ID oldID, ID newID) {
@@ -163,11 +175,6 @@ void NamedElement::reindexName(string oldName, string newName) {
     for (auto & nmspc : *m_memberNamespace) {
         nmspc.getMembers().reindex(m_id, oldName, newName);
     }
-}
-
-void NamedElement::setManager(UmlManager* manager) {
-    Element::setManager(manager);
-    m_memberNamespace->m_manager = manager;
 }
 
 string NamedElement::getName() {

@@ -19,6 +19,7 @@ namespace UML {
         public:
             AddClientDependencyFunctor(NamedElement* me) : TemplateAbstractSequenceFunctor(me) {};
             void operator()(Dependency& el) const override;
+            void operator()(ID id) const override;
     };
     class RemoveClientDependencyFunctor : public TemplateAbstractSequenceFunctor<Dependency, NamedElement> {
         public:

@@ -6,6 +6,9 @@ void Dependency::AddClientFunctor::operator()(NamedElement& el) const {
     if (!m_el->getSources().count(el.getID())) {
         m_el->getSources().add(el);
     }
+    if (!el.getClientDependencies().count(m_el->getID())) {
+        el.getClientDependencies().add(*m_el);
+    }
     updateCopiedSequenceAddedTo(el, &Dependency::getClient);
 }
 
@@ -18,6 +21,9 @@ void Dependency::AddClientFunctor::operator()(ID id) const {
 void Dependency::RemoveClientFunctor::operator()(NamedElement& el) const {
     if (m_el->getSources().count(el.getID())) {
         m_el->getSources().remove(el);
+    }
+    if (el.getClientDependencies().count(m_el->getID())) {
+        el.getClientDependencies().remove(*m_el);
     }
     updateCopiedSequenceRemovedFrom(el, &Dependency::getClient);
 }

@@ -3,6 +3,7 @@
 #include "uml/namespace.h"
 #include "uml/namedElementFunctors.h"
 #include "uml/classifier.h"
+#include "uml/dependency.h"
 
 using namespace UML;
 using namespace std;
@@ -50,6 +51,24 @@ void NamedElement::AddNamespaceProcedures::operator()(ID id) const {
     }
 }
 
+void AddClientDependencyFunctor::operator()(Dependency& el) const {
+    if (!el.getClient().count(m_el->getID())) {
+        el.getClient().add(*m_el);
+    }
+    if (!m_el->getDirectedRelationships().count(el.getID())) {
+        m_el->getDirectedRelationships().add(el);
+    }
+}
+
+void RemoveClientDependencyFunctor::operator()(Dependency& el) const {
+    if (el.getClient().count(m_el->getID())) {
+        el.getClient().remove(*m_el);
+    }
+    if (m_el->getDirectedRelationships().count(el.getID())) {
+        m_el->getDirectedRelationships().remove(el);
+    }
+}
+
 void NamedElement::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
     if (m_namespace.id() == oldID) {
@@ -58,12 +77,25 @@ void NamedElement::referenceReindexed(ID oldID, ID newID) {
     if (m_memberNamespace->count(oldID)) {
         m_memberNamespace->reindex(oldID, newID, &NamedElement::getMemberNamespace);
     }
+    if (m_clientDependencies->count(oldID)) {
+        m_clientDependencies->reindex(oldID, newID, &NamedElement::getClientDependencies);
+    }
+}
+
+void NamedElement::referencingReleased(ID id) {
+    Element::referencingReleased(id);
+    m_memberNamespace->elementReleased(id, &NamedElement::getMemberNamespace);
+    if (m_namespace.id() == id) {
+        m_namespace.release();
+    }
+    m_clientDependencies->elementReleased(id, &NamedElement::getClientDependencies);
 }
 
 void NamedElement::restoreReferences() {
     Element::restoreReferences();
     m_memberNamespace->restoreReferences();
     m_namespace.restoreReference();
+    m_clientDependencies->restoreReferences();
 }
 
 NamedElement::NamedElement() {
@@ -73,10 +105,14 @@ NamedElement::NamedElement() {
     m_namespace.m_signature = &NamedElement::m_namespace;
     m_namespace.m_removeProcedures.push_back(new RemoveNamespaceProcedures(this));
     m_namespace.m_addProcedures.push_back(new AddNamespaceProcedures(this));
+    m_clientDependencies = new Sequence<Dependency>(this);
+    m_clientDependencies->addProcedures.push_back(new AddClientDependencyFunctor(this));
+    m_clientDependencies->removeProcedures.push_back(new RemoveClientDependencyFunctor(this));
 }
 
 NamedElement::~NamedElement() {
     delete m_memberNamespace;
+    delete m_clientDependencies;
 }
 
 NamedElement::NamedElement(const NamedElement& el) : Element(el) {
@@ -94,6 +130,12 @@ NamedElement::NamedElement(const NamedElement& el) : Element(el) {
     m_namespace.m_addProcedures.clear();
     m_namespace.m_removeProcedures.push_back(new RemoveNamespaceProcedures(this));
     m_namespace.m_addProcedures.push_back(new AddNamespaceProcedures(this));
+    m_clientDependencies = new Sequence<Dependency>(*el.m_clientDependencies);
+    m_clientDependencies->m_el = this;
+    m_clientDependencies->addProcedures.clear();
+    m_clientDependencies->removeProcedures.clear();
+    m_clientDependencies->addProcedures.push_back(new AddClientDependencyFunctor(this));
+    m_clientDependencies->removeProcedures.push_back(new RemoveClientDependencyFunctor(this));
 }
 
 void NamedElement::setName(const string &name) {
@@ -160,6 +202,10 @@ Sequence<Namespace>& NamedElement::getMemberNamespace() {
     return *m_memberNamespace;
 }
 
+Sequence<Dependency>& NamedElement::getClientDependencies() {
+    return *m_clientDependencies;
+}
+
 VisibilityKind NamedElement::getVisibility() {
     return m_visibility;
 }
@@ -217,12 +263,4 @@ bool NamedElement::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void NamedElement::referencingReleased(ID id) {
-    Element::referencingReleased(id);
-    m_memberNamespace->elementReleased(id, &NamedElement::getMemberNamespace);
-    if (m_namespace.id() == id) {
-        m_namespace.release();
-    }
 }

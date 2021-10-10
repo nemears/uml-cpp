@@ -11,6 +11,7 @@ namespace UML{
     class Namespace;
     template <class T> class AbstractSequenceFunctor;
     class UmlManager;
+    class Dependency;
 
     enum class VisibilityKind {
         PUBLIC,
@@ -40,6 +41,7 @@ namespace UML{
                     void operator()(ID id) const override;
             };
             Sequence<Namespace>* m_memberNamespace;
+            Sequence<Dependency>* m_clientDependencies;
             // visibility defaults to public, don't think there is a none value
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             virtual void reindexName(std::string oldName, std::string newName);
@@ -60,6 +62,7 @@ namespace UML{
             void setNamespace(Namespace* nmspc);
             void setNamespace(Namespace& nmspc);
             Sequence<Namespace>& getMemberNamespace();
+            Sequence<Dependency>& getClientDependencies();
             VisibilityKind getVisibility();
             void setVisibility(VisibilityKind visibility);
             ElementType getElementType() const override;

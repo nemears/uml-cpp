@@ -15,6 +15,16 @@ namespace UML {
             RemoveMemberNamespaceFunctor(NamedElement* me) : TemplateAbstractSequenceFunctor(me) {};
             void operator()(Namespace& el) const override;
     };
+    class AddClientDependencyFunctor : public TemplateAbstractSequenceFunctor<Dependency, NamedElement> {
+        public:
+            AddClientDependencyFunctor(NamedElement* me) : TemplateAbstractSequenceFunctor(me) {};
+            void operator()(Dependency& el) const override;
+    };
+    class RemoveClientDependencyFunctor : public TemplateAbstractSequenceFunctor<Dependency, NamedElement> {
+        public:
+            RemoveClientDependencyFunctor(NamedElement* me) : TemplateAbstractSequenceFunctor(me) {};
+            void operator()(Dependency& el) const override;
+    };
 }
 
 #endif

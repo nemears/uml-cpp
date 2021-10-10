@@ -1044,6 +1044,10 @@ void emitElement(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     emitSequence(emitter, "appliedStereotypes", data, el, &Element::getAppliedStereotypes);
 }
 
+void AddClientDepencyFunctor::operator()(Element& el) const {
+    m_el->as<NamedElement>().getClientDependencies().add(el.as<Dependency>());
+}
+
 void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) {
 
     parseElement(node, el, data);
@@ -1070,6 +1074,26 @@ void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) 
             throw UmlParserException("Improper YAML node type for NamedElement field visibility, must be a scalar, " , data.m_path.string() , node["visibility"]);
         }
     }
+
+    if (node["clientDependencies"]) {
+        if (node["clientDependencies"].IsSequence()) {
+            for (size_t i = 0; i < node["clientDependencies"].size(); i++) {
+                if (node["clientDependencies"][i].IsScalar()) {
+                    ID clientDependencyID = ID::fromString(node["clientDependencies"][i].as<string>());
+                    if (data.m_strategy == ParserStrategy::WHOLE) {
+                        applyFunctor(data, clientDependencyID, new AddClientDepencyFunctor(&el, node["clientDependencies"][i]));
+                    }
+                    else {
+                        el.getClientDependencies().addByID(clientDependencyID);
+                    }
+                } else {
+                    throw UmlParserException("Invalid yaml node type for NamedElement clientDependencies entry, must be a scalar!", data.m_path.string(), node["clientDependencies"][i]);
+                }
+            }
+        } else {
+            throw UmlParserException("Improper yaml node type for NamedElement field clientDependencies, must be a sequence!", data.m_path.string(), node["clientDependencies"]);
+        }
+    }
 }
 
 void emitNamedElement(YAML::Emitter& emitter, NamedElement& el, EmitterMetaData& data) {
@@ -1094,6 +1118,40 @@ void emitNamedElement(YAML::Emitter& emitter, NamedElement& el, EmitterMetaData&
             }
         }
         emitter << YAML::Key << "visibility" << YAML::Value << visibility;
+    }
+    if (!el.getClientDependencies().empty()) {
+        bool emitClientDependenciesFlag = true;
+        bool elIsDeploymentTargetFlag = false;
+        bool elIsArtifactFlag = false;
+        if (el.isSubClassOf(ElementType::DEPLOYMENT_TARGET)) {
+            elIsDeploymentTargetFlag = true;
+            if (el.as<DeploymentTarget>().getDeployments().size() == el.getClientDependencies().size()) {
+                emitClientDependenciesFlag = false;
+            }
+        }
+        if (el.isSubClassOf(ElementType::ARTIFACT)) {
+            elIsArtifactFlag = true;
+            if (el.as<Artifact>().getManifestations().size() == el.getClientDependencies().size()) {
+                emitClientDependenciesFlag = false;
+            }
+        }
+        if (emitClientDependenciesFlag) {
+            emitter << YAML::Key << "clientDependencies" << YAML::Value << YAML::BeginSeq;
+            for (const ID id : el.getClientDependencies().ids()) {
+                if (elIsDeploymentTargetFlag) {
+                    if (el.as<DeploymentTarget>().getDeployments().count(id)) {
+                        continue;
+                    }
+                }
+                if (elIsArtifactFlag) {
+                    if (el.as<Artifact>().getManifestations().count(id)) {
+                        continue;
+                    }
+                }
+                emitter << YAML::Value << id.string();
+            }
+            emitter << YAML::EndSeq;
+        }
     }
 }
 

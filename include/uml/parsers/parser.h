@@ -202,6 +202,11 @@ namespace UML {
                     SetUtilizedElementFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
                     void operator()(Element& el) const override;
             };
+            class AddClientDepencyFunctor : public AbstractPostProcessFunctor {
+                public:
+                    AddClientDepencyFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
             void emitModel(YAML::Emitter& emitter, Model& model, EmitterMetaData& data);
             void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
             void emitElement(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);

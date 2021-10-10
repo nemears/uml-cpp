@@ -61,6 +61,8 @@ TEST_F(DependencyParserTest, basicDependencyEmitTest) {
           - uONNU0sKPVjLALJuw2pHcNqljgkg
     - package:
         id: zMVDkDbSoENGrPr&JLyOGzYo&_D0
+        clientDependencies:
+          - tAps&UBn21dKnQ5z7qaAzKBZqR7S
     - package:
         id: uONNU0sKPVjLALJuw2pHcNqljgkg)"""";
     string generatedEmit;
@@ -152,6 +154,10 @@ TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {
           - uONNU0sKPVjLALJuw2pHcNqljgkg
     - package:
         id: zMVDkDbSoENGrPr&JLyOGzYo&_D0
+        clientDependencies:
+          - tAps&UBn21dKnQ5z7qaAzKBZqR7S
+          - V5lXdO3DLF2UCpqipGloE976L6QN
+          - ouZEty1jCLeAk_tZzWBKblwwBdGm
     - package:
         id: uONNU0sKPVjLALJuw2pHcNqljgkg)"""";
     string generatedEmit;

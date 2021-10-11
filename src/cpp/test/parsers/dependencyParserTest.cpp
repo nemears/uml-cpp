@@ -215,4 +215,22 @@ TEST_F(DependencyParserTest, mountAndEditDependencyTest) {
     Package& client2 = m.aquire(clientID)->as<Package>();
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency3, client2, supplier));
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency3, root));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(client2, root));
+
+    m.release(dependency3, client2);
+    ASSERT_FALSE(m.loaded(dependencyID));
+    ASSERT_FALSE(m.loaded(clientID));
+    Package& client3= m.aquire(clientID)->as<Package>();
+    ASSERT_FALSE(m.loaded(dependencyID));
+    Dependency& dependency4 = m.aquire(dependencyID)->as<Dependency>();
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency4, client3, supplier));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency4, root));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(client3, root));
+
+    ID supplierID = supplier.getID();
+    m.release(supplier);
+    ASSERT_FALSE(m.loaded(supplierID));
+    Package& supplier2 = m.aquire(supplierID)->as<Package>();
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency4, client3, supplier2));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(supplier2, root));
 }

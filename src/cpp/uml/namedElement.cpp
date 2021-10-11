@@ -75,10 +75,32 @@ void RemoveClientDependencyFunctor::operator()(Dependency& el) const {
     }
 }
 
+void AddSupplierDependencyFunctor::operator()(Dependency& el) const {
+    if (!el.getSupplier().count(m_el->getID())) {
+        el.getSupplier().add(*m_el);
+    }
+    if (!m_el->getDirectedRelationships().count(el.getID())) {
+        m_el->getDirectedRelationships().add(el);
+    }
+}
+
+void AddSupplierDependencyFunctor::operator()(ID id) const {
+    if (!m_el->getDirectedRelationships().count(id)) {
+        m_el->getDirectedRelationships().addByID(id);
+    }
+}
+
+void RemoveSupplierDependencyFunctor::operator()(Dependency& el) const {
+    if (el.getSupplier().count(m_el->getID())) {
+        el.getSupplier().remove(*m_el);
+    }
+}
+
 void NamedElement::setManager(UmlManager* manager) {
     Element::setManager(manager);
     m_memberNamespace->m_manager = manager;
     m_clientDependencies->m_manager = manager;
+    m_supplierDependencies->m_manager = manager;
 }
 
 void NamedElement::referenceReindexed(ID oldID, ID newID) {
@@ -92,6 +114,9 @@ void NamedElement::referenceReindexed(ID oldID, ID newID) {
     if (m_clientDependencies->count(oldID)) {
         m_clientDependencies->reindex(oldID, newID, &NamedElement::getClientDependencies);
     }
+    if (m_supplierDependencies->count(oldID)) {
+        m_supplierDependencies->reindex(oldID, newID, &NamedElement::getSupplierDependencies);
+    }
 }
 
 void NamedElement::referencingReleased(ID id) {
@@ -101,6 +126,7 @@ void NamedElement::referencingReleased(ID id) {
         m_namespace.release();
     }
     m_clientDependencies->elementReleased(id, &NamedElement::getClientDependencies);
+    m_supplierDependencies->elementReleased(id, &NamedElement::getSupplierDependencies);
 }
 
 void NamedElement::restoreReferences() {
@@ -108,6 +134,7 @@ void NamedElement::restoreReferences() {
     m_memberNamespace->restoreReferences();
     m_namespace.restoreReference();
     m_clientDependencies->restoreReferences();
+    m_supplierDependencies->restoreReferences();
 }
 
 NamedElement::NamedElement() {
@@ -120,11 +147,15 @@ NamedElement::NamedElement() {
     m_clientDependencies = new Sequence<Dependency>(this);
     m_clientDependencies->addProcedures.push_back(new AddClientDependencyFunctor(this));
     m_clientDependencies->removeProcedures.push_back(new RemoveClientDependencyFunctor(this));
+    m_supplierDependencies = new Sequence<Dependency>(this);
+    m_supplierDependencies->addProcedures.push_back(new AddSupplierDependencyFunctor(this));
+    m_supplierDependencies->removeProcedures.push_back(new RemoveSupplierDependencyFunctor(this));
 }
 
 NamedElement::~NamedElement() {
     delete m_memberNamespace;
     delete m_clientDependencies;
+    delete m_supplierDependencies;
 }
 
 NamedElement::NamedElement(const NamedElement& el) : Element(el) {
@@ -148,6 +179,12 @@ NamedElement::NamedElement(const NamedElement& el) : Element(el) {
     m_clientDependencies->removeProcedures.clear();
     m_clientDependencies->addProcedures.push_back(new AddClientDependencyFunctor(this));
     m_clientDependencies->removeProcedures.push_back(new RemoveClientDependencyFunctor(this));
+    m_supplierDependencies = new Sequence<Dependency>(*el.m_supplierDependencies);
+    m_supplierDependencies->m_el = this;
+    m_supplierDependencies->addProcedures.clear();
+    m_supplierDependencies->removeProcedures.clear();
+    m_supplierDependencies->addProcedures.push_back(new AddSupplierDependencyFunctor(this));
+    m_supplierDependencies->removeProcedures.push_back(new RemoveSupplierDependencyFunctor(this));
 }
 
 void NamedElement::setName(const string &name) {
@@ -211,6 +248,10 @@ Sequence<Namespace>& NamedElement::getMemberNamespace() {
 
 Sequence<Dependency>& NamedElement::getClientDependencies() {
     return *m_clientDependencies;
+}
+
+Sequence<Dependency>& NamedElement::getSupplierDependencies() {
+    return *m_supplierDependencies;
 }
 
 VisibilityKind NamedElement::getVisibility() {

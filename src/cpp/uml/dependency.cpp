@@ -32,6 +32,9 @@ void Dependency::AddSupplierFunctor::operator()(NamedElement& el) const {
     if (!m_el->getTargets().count(el.getID())) {
         m_el->getTargets().add(el);
     }
+    if (!el.getSupplierDependencies().count(m_el->getID())) {
+        el.getSupplierDependencies().add(*m_el);
+    }
     updateCopiedSequenceAddedTo(el, &Dependency::getSupplier);
 }
 
@@ -44,6 +47,9 @@ void Dependency::AddSupplierFunctor::operator()(ID id) const {
 void Dependency::RemoveSupplierFunctor::operator()(NamedElement& el) const {
     if (m_el->getTargets().count(el.getID())) {
         m_el->getTargets().remove(el);
+    }
+    if (el.getSupplierDependencies().count(m_el->getID())) {
+        el.getSupplierDependencies().remove(*m_el);
     }
     updateCopiedSequenceRemovedFrom(el, &Dependency::getSupplier);
 }

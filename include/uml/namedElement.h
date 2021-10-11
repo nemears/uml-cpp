@@ -42,6 +42,7 @@ namespace UML{
             };
             Sequence<Namespace>* m_memberNamespace;
             Sequence<Dependency>* m_clientDependencies;
+            Sequence<Dependency>* m_supplierDependencies;
             // visibility defaults to public, don't think there is a none value
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             virtual void reindexName(std::string oldName, std::string newName);
@@ -63,6 +64,7 @@ namespace UML{
             void setNamespace(Namespace& nmspc);
             Sequence<Namespace>& getMemberNamespace();
             Sequence<Dependency>& getClientDependencies();
+            Sequence<Dependency>& getSupplierDependencies();
             VisibilityKind getVisibility();
             void setVisibility(VisibilityKind visibility);
             ElementType getElementType() const override;

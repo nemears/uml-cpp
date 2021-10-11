@@ -7,11 +7,23 @@ void EnumerationLiteral::RemoveEnumerationProcedure::operator()(Enumeration* el)
     if (el->getOwnedLiterals().count(m_me->getID())) {
         el->getOwnedLiterals().remove(*m_me);
     }
+    if (m_me->getNamespaceID() == el->getID()) {
+        m_me->setNamespace(0);
+    }
 }
 
 void EnumerationLiteral::AddEnumerationProcedure::operator()(Enumeration* el) const {
     if (!el->getOwnedLiterals().count(m_me->getID())) {
         el->getOwnedLiterals().add(*m_me);
+    }
+    if (m_me->getNamespaceID() != el->getID()) {
+        m_me->setNamespace(el);
+    }
+}
+
+void EnumerationLiteral::AddEnumerationProcedure::operator()(ID id) const {
+    if (m_me->getNamespaceID() != id) {
+        m_me->m_namespace.setByID(id);
     }
 }
 
@@ -27,6 +39,11 @@ void EnumerationLiteral::referenceReindexed(ID oldID, ID newID) {
     if (m_enumeration.id() == oldID) {
         m_enumeration.reindex(oldID, newID);
     }
+}
+
+void EnumerationLiteral::restoreReferences() {
+    InstanceSpecification::restoreReferences();
+    m_enumeration.restoreReference();
 }
 
 EnumerationLiteral::EnumerationLiteral() {
@@ -50,6 +67,10 @@ Enumeration* EnumerationLiteral::getEnumeration() {
 
 Enumeration& EnumerationLiteral::getEnumerationRef() {
     return m_enumeration.getRef();
+}
+
+ID EnumerationLiteral::getEnumerationID() const {
+    return m_enumeration.id();
 }
 
 bool EnumerationLiteral::hasEnumeration() const {

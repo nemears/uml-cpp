@@ -17,6 +17,7 @@ namespace UML {
                 public:
                     AddOwnedLiteralFunctor(Enumeration* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(EnumerationLiteral& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveOwnedLiteralFunctor : public TemplateAbstractSequenceFunctor<EnumerationLiteral,Enumeration> {
                 public:
@@ -26,6 +27,7 @@ namespace UML {
             void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
             Enumeration();
         public:
             Enumeration(const Enumeration& enumeration);

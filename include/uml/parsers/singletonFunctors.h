@@ -139,6 +139,11 @@ namespace UML {
             public:
                 SetBehavior();
         };
+
+        class SetEnumeration : public parseAndSetSingletonFunctor<Enumeration, EnumerationLiteral> {
+            public:
+                SetEnumeration();
+        };
     }
 }
 

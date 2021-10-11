@@ -201,6 +201,10 @@ SetBehavior::SetBehavior() {
     m_signature = &Parameter::m_behavior;
 }
 
+SetEnumeration::SetEnumeration() {
+    m_signature = &EnumerationLiteral::m_enumeration;
+}
+
 namespace {
 
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
@@ -309,9 +313,11 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["enumeration"]) {
-        Enumeration& enumeration = data.m_manager->create<Enumeration>();
-        parseEnumeration(node["enumeration"], enumeration, data);
-        ret = &enumeration;
+        if (node["enumeration"].IsMap()) {
+            Enumeration& enumeration = data.m_manager->create<Enumeration>();
+            parseEnumeration(node["enumeration"], enumeration, data);
+            ret = &enumeration;
+        }
     }
 
     if (node["enumerationLiteral"]) {
@@ -573,6 +579,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         if (node["behavior"]) {
             SetBehavior setBehavior;
             parseSingleton(node["behavior"], data, ret->as<Parameter>(), &Parameter::setBehavior, setBehavior);
+        }
+        if (node["enumeration"]) {
+            if (node["enumeration"].IsScalar()) {
+                SetEnumeration setEnumeration;
+                parseSingleton(node["enumeration"], data, ret->as<EnumerationLiteral>(), &EnumerationLiteral::setEnumeration, setEnumeration);
+            }
         }
     }
 
@@ -932,6 +944,11 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             if (el.as<Behavior>().hasBehavioredClassifier()) {
                 emitter << YAML::Key << "behavioredClassifier" << YAML::Value << el.as<Behavior>().getBehavioredClassifierID().string();
                 return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::ENUMERATION_LITERAL)) {
+            if (el.as<EnumerationLiteral>().hasEnumeration()) {
+                emitter << YAML::Key << "enumeration" << YAML::Value << el.as<EnumerationLiteral>().getEnumerationID().string();
             }
         }
     }

@@ -104,9 +104,14 @@ TEST_F(EnumerationParserTest, mountEnumerationTest) {
     Enumeration& enumeration3 = m.aquire(enumerationID)->as<Enumeration>();
     ASSERT_FALSE(m.loaded(enumerationLiteralID));
     ASSERT_EQ(enumeration3.getOwnedLiterals().size(), 1);
+    ASSERT_TRUE(enumeration3.getOwnedMembers().size(), 1);
     EnumerationLiteral& enumerationLiteral2 = m.aquire(enumerationLiteralID)->as<EnumerationLiteral>();
     ASSERT_EQ(enumeration3.getOwnedLiterals().front(), enumerationLiteral2);
     ASSERT_TRUE(enumerationLiteral2.hasEnumeration());
     ASSERT_EQ(enumerationLiteral2.getEnumerationRef(), enumeration3);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(enumerationLiteral2, enumeration3));
+
+    m.release(enumerationLiteral2, enumeration3);
+    ASSERT_FALSE(m.loaded(enumerationID));
+    ASSERT_FALSE(m.loaded(enumerationLiteralID));
 }

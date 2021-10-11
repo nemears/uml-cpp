@@ -14,6 +14,12 @@ void Enumeration::AddOwnedLiteralFunctor::operator()(EnumerationLiteral& el) con
     updateCopiedSequenceAddedTo(el, &Enumeration::getOwnedLiterals);
 }
 
+void Enumeration::AddOwnedLiteralFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedMembers().count(id)) {
+        m_el->getOwnedMembers().addByID(id);
+    }
+}
+
 void Enumeration::RemoveOwnedLiteralFunctor::operator()(EnumerationLiteral& el) const {
     if (m_el->getMembers().count(el.getID())) {
         m_el->getMembers().remove(el);
@@ -40,6 +46,11 @@ void Enumeration::referenceReindexed(ID oldID, ID newID) {
     if (m_ownedLiterals.count(oldID)) {
         m_ownedLiterals.reindex(oldID, newID, &Enumeration::getOwnedLiterals);
     }
+}
+
+void Enumeration::restoreReferences() {
+    DataType::restoreReferences();
+    m_ownedLiterals.restoreReferences();
 }
 
 Enumeration::Enumeration() {

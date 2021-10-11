@@ -314,6 +314,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &enumeration;
     }
 
+    if (node["enumerationLiteral"]) {
+        EnumerationLiteral& enumerationLiteral = data.m_manager->create<EnumerationLiteral>();
+        parseEnumerationLiteral(node["enumerationLiteral"], enumerationLiteral, data);
+        ret = &enumerationLiteral;
+    }
+
     if (node["expression"]) {
         Expression& exp = data.m_manager->create<Expression>();
         parseExpression(node["expression"], exp, data); 
@@ -2353,16 +2359,22 @@ void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData&
     if (node["ownedLiteral"]) {
         if (node["ownedLiteral"].IsSequence()) {
             for (size_t i = 0; i < node["ownedLiteral"].size(); i++) {
-                if (node["ownedLiteral"][i]["enumerationLiteral"]) {
-                    if (node["ownedLiteral"][i]["enumerationLiteral"].IsMap()) {
-                        EnumerationLiteral& literal = data.m_manager->create<EnumerationLiteral>();
-                        parseEnumerationLiteral(node["ownedLiteral"][i]["enumerationLiteral"], literal, data);
-                        enumeration.getOwnedLiterals().add(literal);
+                if (node["ownedLiteral"][i].IsMap()) {
+                    if (node["ownedLiteral"][i]["enumerationLiteral"]) {
+                        if (node["ownedLiteral"][i]["enumerationLiteral"].IsMap()) {
+                            EnumerationLiteral& literal = data.m_manager->create<EnumerationLiteral>();
+                            parseEnumerationLiteral(node["ownedLiteral"][i]["enumerationLiteral"], literal, data);
+                            enumeration.getOwnedLiterals().add(literal);
+                        } else {
+                            throw UmlParserException("Invalid YAML node type enumerationLiteral definition, should be map, ", data.m_path.string(), node["ownedLiteral"][i]["enumerationLiteral"]);
+                        }
                     } else {
-                        throw UmlParserException("Invalid YAML node type enumerationLiteral definition, should be map, ", data.m_path.string(), node["ownedLiteral"][i]["enumerationLiteral"]);
+                        throw UmlParserException("Invalid UML type in enumeration ownedLiteral list, must be literal,", data.m_path.string(), node["ownedLiteral"]);
                     }
+                } else if (node["ownedLiteral"][i].IsScalar()) {
+                    parseAndAddToSequence(node["ownedLiteral"][i], data, enumeration, &Enumeration::getOwnedLiterals);
                 } else {
-                    throw UmlParserException("Invalid UML type in enumeration ownedLiteral list, must be literal,", data.m_path.string(), node["ownedLiteral"]);
+                    throw UmlParserException("Invalid yaml node type for ownedLiteral entry, must be a scalar or a map!", data.m_path.string(), node["ownedLiteral"][i]);
                 }
             }
         } else {

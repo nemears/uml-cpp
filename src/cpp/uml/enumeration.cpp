@@ -11,7 +11,7 @@ void Enumeration::AddOwnedLiteralFunctor::operator()(EnumerationLiteral& el) con
     if (el.getEnumeration() != m_el) {
         el.setEnumeration(m_el);
     }
-    updateCopiedSequenceAddedTo(el, &Enumeration::getOwnedLiteral);
+    updateCopiedSequenceAddedTo(el, &Enumeration::getOwnedLiterals);
 }
 
 void Enumeration::RemoveOwnedLiteralFunctor::operator()(EnumerationLiteral& el) const {
@@ -22,43 +22,43 @@ void Enumeration::RemoveOwnedLiteralFunctor::operator()(EnumerationLiteral& el) 
     if (el.getEnumeration() == m_el) {
         el.setEnumeration(0);
     }
-    updateCopiedSequenceRemovedFrom(el, &Enumeration::getOwnedLiteral);
+    updateCopiedSequenceRemovedFrom(el, &Enumeration::getOwnedLiterals);
 }
 
 void Enumeration::setManager(UmlManager* manager) {
     DataType::setManager(manager);
-    m_ownedLiteral.m_manager = manager;
+    m_ownedLiterals.m_manager = manager;
 }
 
 void Enumeration::referencingReleased(ID id) {
     DataType::referencingReleased(id);
-    m_ownedLiteral.elementReleased(id, &Enumeration::getOwnedLiteral);
+    m_ownedLiterals.elementReleased(id, &Enumeration::getOwnedLiterals);
 }
 
 void Enumeration::referenceReindexed(ID oldID, ID newID) {
     DataType::referenceReindexed(oldID, newID);
-    if (m_ownedLiteral.count(oldID)) {
-        m_ownedLiteral.reindex(oldID, newID, &Enumeration::getOwnedLiteral);
+    if (m_ownedLiterals.count(oldID)) {
+        m_ownedLiterals.reindex(oldID, newID, &Enumeration::getOwnedLiterals);
     }
 }
 
 Enumeration::Enumeration() {
-    m_ownedLiteral.addProcedures.push_back(new AddOwnedLiteralFunctor(this));
-    m_ownedLiteral.removeProcedures.push_back(new RemoveOwnedLiteralFunctor(this));
+    m_ownedLiterals.addProcedures.push_back(new AddOwnedLiteralFunctor(this));
+    m_ownedLiterals.removeProcedures.push_back(new RemoveOwnedLiteralFunctor(this));
 }
 
 Enumeration::Enumeration(const Enumeration& enumeration) : DataType(enumeration) , PackageableElement(enumeration), NamedElement(enumeration),
                                                            Element(enumeration) {
-    m_ownedLiteral = enumeration.m_ownedLiteral;
-    m_ownedLiteral.m_el = this;
-    m_ownedLiteral.addProcedures.clear();
-    m_ownedLiteral.addProcedures.push_back(new AddOwnedLiteralFunctor(this));
-    m_ownedLiteral.removeProcedures.clear();
-    m_ownedLiteral.removeProcedures.push_back(new RemoveOwnedLiteralFunctor(this));
+    m_ownedLiterals = enumeration.m_ownedLiterals;
+    m_ownedLiterals.m_el = this;
+    m_ownedLiterals.addProcedures.clear();
+    m_ownedLiterals.addProcedures.push_back(new AddOwnedLiteralFunctor(this));
+    m_ownedLiterals.removeProcedures.clear();
+    m_ownedLiterals.removeProcedures.push_back(new RemoveOwnedLiteralFunctor(this));
 }
 
-Sequence<EnumerationLiteral>& Enumeration::getOwnedLiteral() {
-    return m_ownedLiteral;
+Sequence<EnumerationLiteral>& Enumeration::getOwnedLiterals() {
+    return m_ownedLiterals;
 }
 
 ElementType Enumeration::getElementType() const {

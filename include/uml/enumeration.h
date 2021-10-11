@@ -12,7 +12,7 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            Sequence<EnumerationLiteral> m_ownedLiteral = Sequence<EnumerationLiteral>(this);
+            Sequence<EnumerationLiteral> m_ownedLiterals = Sequence<EnumerationLiteral>(this);
             class AddOwnedLiteralFunctor : public TemplateAbstractSequenceFunctor<EnumerationLiteral,Enumeration> {
                 public:
                     AddOwnedLiteralFunctor(Enumeration* me) : TemplateAbstractSequenceFunctor(me) {};
@@ -29,7 +29,7 @@ namespace UML {
             Enumeration();
         public:
             Enumeration(const Enumeration& enumeration);
-            Sequence<EnumerationLiteral>& getOwnedLiteral();
+            Sequence<EnumerationLiteral>& getOwnedLiterals();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

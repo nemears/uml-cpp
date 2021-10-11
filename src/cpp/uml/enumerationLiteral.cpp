@@ -4,14 +4,14 @@
 using namespace UML;
 
 void EnumerationLiteral::RemoveEnumerationProcedure::operator()(Enumeration* el) const {
-    if (el->getOwnedLiteral().count(m_me->getID())) {
-        el->getOwnedLiteral().remove(*m_me);
+    if (el->getOwnedLiterals().count(m_me->getID())) {
+        el->getOwnedLiterals().remove(*m_me);
     }
 }
 
 void EnumerationLiteral::AddEnumerationProcedure::operator()(Enumeration* el) const {
-    if (!el->getOwnedLiteral().count(m_me->getID())) {
-        el->getOwnedLiteral().add(*m_me);
+    if (!el->getOwnedLiterals().count(m_me->getID())) {
+        el->getOwnedLiterals().add(*m_me);
     }
 }
 

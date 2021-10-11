@@ -1048,6 +1048,10 @@ void AddClientDepencyFunctor::operator()(Element& el) const {
     m_el->as<NamedElement>().getClientDependencies().add(el.as<Dependency>());
 }
 
+void AddSupplierDependencyFunctor::operator()(Element& el) const {
+    m_el->as<NamedElement>().getSupplierDependencies().add(el.as<Dependency>());
+}
+
 void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) {
 
     parseElement(node, el, data);
@@ -1082,9 +1086,12 @@ void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) 
                     ID clientDependencyID = ID::fromString(node["clientDependencies"][i].as<string>());
                     if (data.m_strategy == ParserStrategy::WHOLE) {
                         applyFunctor(data, clientDependencyID, new AddClientDepencyFunctor(&el, node["clientDependencies"][i]));
-                    }
-                    else {
-                        el.getClientDependencies().addByID(clientDependencyID);
+                    } else {
+                        if (data.m_manager->loaded(clientDependencyID)) {
+                            el.getClientDependencies().add(data.m_manager->get<Dependency>(clientDependencyID));
+                        } else {
+                            el.getClientDependencies().addByID(clientDependencyID);
+                        }
                     }
                 } else {
                     throw UmlParserException("Invalid yaml node type for NamedElement clientDependencies entry, must be a scalar!", data.m_path.string(), node["clientDependencies"][i]);
@@ -1092,6 +1099,29 @@ void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) 
             }
         } else {
             throw UmlParserException("Improper yaml node type for NamedElement field clientDependencies, must be a sequence!", data.m_path.string(), node["clientDependencies"]);
+        }
+    }
+
+    if (node["supplierDependencies"]) {
+        if (node["supplierDependencies"].IsSequence()) {
+            for (size_t i = 0; i < node["supplierDependencies"].size(); i++) {
+                if (node["supplierDependencies"][i].IsScalar()) {
+                    ID supplierDependencyID = ID::fromString(node["supplierDependencies"][i].as<string>());
+                    if (data.m_strategy == ParserStrategy::WHOLE) {
+                        applyFunctor(data, supplierDependencyID, new AddSupplierDependencyFunctor(&el, node["supplierDependencies"][i]));
+                    } else {
+                        if (data.m_manager->loaded(supplierDependencyID)) {
+                            el.getSupplierDependencies().add(data.m_manager->get<Dependency>(supplierDependencyID));
+                        } else {
+                            el.getSupplierDependencies().addByID(supplierDependencyID);
+                        }
+                    }
+                } else {
+                    throw UmlParserException("Invalid yaml node type for NamedElement supplierDependencies entry, must be a scalar!", data.m_path.string(), node["supplierDependencies"][i]);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for NamedElement supplierDependencies, must be a sequence!", data.m_path.string(), node["supplierDependencies"]);
         }
     }
 }
@@ -1152,6 +1182,14 @@ void emitNamedElement(YAML::Emitter& emitter, NamedElement& el, EmitterMetaData&
             }
             emitter << YAML::EndSeq;
         }
+    }
+
+    if (!el.getSupplierDependencies().empty()) {
+        emitter << YAML::Key << "supplierDependencies" << YAML::Value << YAML::BeginSeq;
+        for (const ID id : el.getSupplierDependencies().ids()) {
+            emitter << YAML::Value << id.string();
+        }
+        emitter << YAML::EndSeq;
     }
 }
 

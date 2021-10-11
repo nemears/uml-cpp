@@ -181,6 +181,8 @@ TEST_F(DeploymentParserTest, emitManifestationTest) {
   packagedElements:
     - class:
         id: 9mp2RmgjnYQrPtXIoOw9is1UUEyu
+        supplierDependencies:
+          - UfyRMRUyPnad&lJcpSBOD17VSHtn
     - artifact:
         id: Ihue7RPPRluLEpIUbTV8Xqb68ofQ
         manifestations:

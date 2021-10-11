@@ -64,7 +64,9 @@ TEST_F(DependencyParserTest, basicDependencyEmitTest) {
         clientDependencies:
           - tAps&UBn21dKnQ5z7qaAzKBZqR7S
     - package:
-        id: uONNU0sKPVjLALJuw2pHcNqljgkg)"""";
+        id: uONNU0sKPVjLALJuw2pHcNqljgkg
+        supplierDependencies:
+          - tAps&UBn21dKnQ5z7qaAzKBZqR7S)"""";
     string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
     cout << generatedEmit << '\n';
@@ -159,7 +161,11 @@ TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {
           - V5lXdO3DLF2UCpqipGloE976L6QN
           - ouZEty1jCLeAk_tZzWBKblwwBdGm
     - package:
-        id: uONNU0sKPVjLALJuw2pHcNqljgkg)"""";
+        id: uONNU0sKPVjLALJuw2pHcNqljgkg
+        supplierDependencies:
+          - tAps&UBn21dKnQ5z7qaAzKBZqR7S
+          - V5lXdO3DLF2UCpqipGloE976L6QN
+          - ouZEty1jCLeAk_tZzWBKblwwBdGm)"""";
     string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
     cout << generatedEmit << '\n';
@@ -233,4 +239,24 @@ TEST_F(DependencyParserTest, mountAndEditDependencyTest) {
     Package& supplier2 = m.aquire(supplierID)->as<Package>();
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency4, client3, supplier2));
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(supplier2, root));
+
+    m.release(supplier2, dependency4);
+    ASSERT_FALSE(m.loaded(dependencyID));
+    ASSERT_FALSE(m.loaded(supplierID));
+    Dependency& dependency5 = m.aquire(dependencyID)->as<Dependency>();
+    ASSERT_FALSE(m.loaded(supplierID));
+    Package& supplier3 = m.aquire(supplierID)->as<Package>();
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency5, client3, supplier3));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(supplier3, root));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency5, root));
+
+    m.release(dependency5, supplier2);
+    ASSERT_FALSE(m.loaded(dependencyID));
+    ASSERT_FALSE(m.loaded(supplierID));
+    Package& supplier4 = m.aquire(supplierID)->as<Package>();
+    ASSERT_FALSE(m.loaded(dependencyID));
+    Dependency& dependency6 = m.aquire(dependencyID)->as<Dependency>();
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency6, client3, supplier4));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(supplier4, root));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency6, root));
 }

@@ -106,12 +106,12 @@ TEST_F(OperationParserTest, mountAndEditOperationTest) {
     Operation& op3 = m.aquire(opID)->as<Operation>();
     ASSERT_FALSE(m.loaded(paramID));
     Parameter& param3 = m.aquire(paramID)->as<Parameter>();
-    ASSERT_TRUE(param2.hasOperation());
-    ASSERT_EQ(param2.getOperationRef(), op3);
+    ASSERT_TRUE(param3.hasOperation());
+    ASSERT_EQ(param3.getOperationRef(), op3);
     ASSERT_EQ(op3.getOwnedParameters().size(), 1);
     ASSERT_TRUE(op3.getOwnedParameters().count(paramID));
     ASSERT_EQ(op3.getOwnedParameters().front(), param3);
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(param2, op3));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(param3, op3));
 
     ID bhvID = bhv.getID();
     m.release(bhv);

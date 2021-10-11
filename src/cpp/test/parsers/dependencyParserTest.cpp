@@ -250,7 +250,7 @@ TEST_F(DependencyParserTest, mountAndEditDependencyTest) {
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(supplier3, root));
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency5, root));
 
-    m.release(dependency5, supplier2);
+    m.release(dependency5, supplier3);
     ASSERT_FALSE(m.loaded(dependencyID));
     ASSERT_FALSE(m.loaded(supplierID));
     Package& supplier4 = m.aquire(supplierID)->as<Package>();

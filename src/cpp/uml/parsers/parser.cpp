@@ -269,6 +269,16 @@ template <class T = Element, class U = Element> void parseSequenceDefinitions(YA
     }
 }
 
+template <class T = Element> T& determineAndParse(YAML::Node node, ParserMetaData& data, string key, void (*parser)(YAML::Node, T&, ParserMetaData&)) {
+    if (node[key].IsMap()) {
+        T& ret = data.m_manager->create<T>();
+        parser(node[key], ret, data);
+        return ret;
+    } else {
+        throw UmlParserException("Invalid yaml node type for " + key + " definition, it must be a map!", data.m_path.string(), node[key]);
+    }
+}
+
 // TODO delete?
 template <class T =Element> T& parseScalar(YAML::Node node, ParserMetaData& data) {
     if (data.m_strategy == ParserStrategy::WHOLE) {
@@ -1038,12 +1048,13 @@ void AddAppliedStereotypeFunctor::operator()(Element& el) const {
     }
 }
 
-Comment& determineAndParseComment(YAML::Node node, ParserMetaData& data) {
+Comment& determineAndParseOwnedComment(YAML::Node node, ParserMetaData& data) {
     if (node["comment"]) {
         Comment& comment = data.m_manager->create<Comment>();
         parseComment(node["comment"], comment, data);
         return comment;
-    } else {
+    }
+    else {
         throw UmlParserException("Invalid uml definition for comment!", data.m_path.string(), node);
     }
 }
@@ -1065,8 +1076,9 @@ void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
     // apply post processing here via functor
     data.elements.add(el);
 
-    parseSequenceDefinitions(node, data, "ownedComments", el, &Element::getOwnedComments, determineAndParseComment);
+    parseSequenceDefinitions(node, data, "ownedComments", el, &Element::getOwnedComments, determineAndParseOwnedComment);
 
+    // special handling with functor
     if (node["appliedStereotypes"]) {
         if (node["appliedStereotypes"].IsSequence()) {
             for (size_t i = 0; i < node["appliedStereotypes"].size(); i++) {
@@ -1287,37 +1299,25 @@ void emitTypedElement(YAML::Emitter& emitter, TypedElement& el, EmitterMetaData&
     }
 }
 
+Generalization& determineAndParseGeneralization(YAML::Node node, ParserMetaData& data) {
+    if (node["generalization"]) {
+        Generalization& gen = data.m_manager->create<Generalization>();
+        parseGeneralization(node["generalization"], gen, data);
+        return gen;
+    } else {
+        throw UmlParserException("Invalid uml type for generalizations entry!", data.m_path.string(), node);
+    }
+}
+
 void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
     parseNamedElement(node, clazz, data);
     parseTemplateableElement(node, clazz, data);
-
-    if (node["generalizations"]) {
-        if (node["generalizations"].IsSequence()) {
-            for (size_t i = 0; i < node["generalizations"].size(); i++) {
-                if (node["generalizations"][i].IsMap()) {
-                    if (node["generalizations"][i]["generalization"]) {
-                        if (node["generalizations"][i]["generalization"].IsMap()) {
-                            Generalization& gen = data.m_manager->create<Generalization>();
-                            parseGeneralization(node["generalizations"][i]["generalization"], gen, data);
-                            clazz.getGeneralizations().add(gen);
-                        } else {
-                            throw UmlParserException("Improper YAML node type for Generalization definition, " , data.m_path.string() , node["generalizations"][i]["generalization"]);
-                        }
-                    }
-                } else if (node["generalizations"][i].IsScalar()) {
-                    parseAndAddToSequence<Generalization, Classifier>(node["generalizations"][i], data, clazz, &Classifier::getGeneralizations);
-                }
-            }
-        } else {
-            throw UmlParserException("Improper YAML node type for Classifier field generalizations, must be sequence " , data.m_path.string() ,node["generalizations"]);
-        }
-    }
+    parseSequenceDefinitions(node, data, "generalizations", clazz, &Classifier::getGeneralizations, determineAndParseGeneralization);
 }
 
 void emitClassifier(YAML::Emitter& emitter, Classifier& clazz, EmitterMetaData& data) {
     emitNamedElement(emitter, clazz, data);
     emitTemplateableElement(emitter, clazz, data);
-    
     emitSequence(emitter, "generalizations", data, clazz, &Classifier::getGeneralizations);
 }
 
@@ -1341,7 +1341,7 @@ void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaDat
                 applyFunctor(data, generalID, new SetGeneralFunctor(&general, node["general"]));
             }
         } else {
-            // TODO throw error or can it be defined here?
+            throw UmlParserException("Cannot define general within generalization, generalization may own no elements!", data.m_path.string());
         }
     }
 }
@@ -1358,58 +1358,34 @@ void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization, 
     emitElementDefenitionEnd(emitter, ElementType::GENERALIZATION, generalization);
 }
 
+Property& determineAndParseOwnedAttribute(YAML::Node node, ParserMetaData& data) {
+    if (node["property"]) {
+        if (node["property"].IsMap()) {
+            Property& prop = data.m_manager->create<Property>();
+            parseProperty(node["property"], prop, data);
+            return prop;
+        } else {
+            throw UmlParserException("Invalid yaml node type for property definition, must be a map!", data.m_path.string(), node["property"]);
+        }
+    } else {
+        throw UmlParserException("Invalid uml definition for ownedAttribute, may be a property only!", data.m_path.string(), node);
+    }
+}
+
+Operation& determineAndParseOwnedOperation(YAML::Node node, ParserMetaData& data) {
+    if (node["operation"]) {
+        Operation& op = data.m_manager->create<Operation>();
+        parseOperation(node["operation"], op, data);
+        return op;
+    } else {
+        throw UmlParserException("Invalid uml definition for ownedOperation, may be an operation only!", data.m_path.string(), node);
+    }
+}
+
 void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
     parseClassifier(node, dataType, data);
-
-    if (node["ownedAttribute"]) {
-        if (node["ownedAttribute"].IsSequence()) {
-            for (size_t i = 0; i < node["ownedAttribute"].size(); i++) {
-                if (node["ownedAttribute"][i].IsMap()) {
-                    if (node["ownedAttribute"][i]["property"]) {
-                        if (node["ownedAttribute"][i]["property"].IsMap()) {
-                            Property& prop = data.m_manager->create<Property>();
-                            parseProperty(node["ownedAttribute"][i]["property"], prop, data);
-                            dataType.getOwnedAttribute().add(prop);
-                        } else {
-                            throw UmlParserException("Improper YAML node type for property, must be map, ", data.m_path.string(), node["ownedAttribute"][i]["property"]);
-                        }
-                    }
-                } else if (node["ownedAttribute"][i].IsScalar()) {
-                    parseAndAddToSequence(node["ownedAttribute"][i], data, dataType, &DataType::getOwnedAttribute);
-                } else {
-                    throw UmlParserException("Improper YAML node type for propert reference, must be a map or a scalar!", data.m_path.string(), node["ownedAttribute"][i]);
-                }
-            }
-        } else {
-            throw UmlParserException("Improper YAML node type for dataType ownedAttribute, must be sequence, " ,data.m_path.string(), node["ownedAttribute"]);
-        }
-    }
-
-    if (node["ownedOperation"]) {
-        if (node["ownedOperation"].IsSequence()) {
-            for (size_t i = 0; i < node["ownedOperation"].size(); i++) {
-                if (node["ownedOperation"][i].IsMap()) {
-                    if (node["ownedOperation"][i]["operation"]) {
-                        if (node["ownedOperation"][i]["operation"].IsMap()) {
-                            Operation& op = data.m_manager->create<Operation>();
-                            parseOperation(node["ownedOperation"][i]["operation"], op, data);
-                            dataType.getOwnedOperation().add(op);
-                        } else {
-                            throw UmlParserException("Improper YAML node type for operation, must be map, ", data.m_path.string(), node["ownedOperation"][i]["operation"]);
-                        }
-                    } else {
-                        throw UmlParserException("Improper UML node type for ownedOperation sequence, ", data.m_path.string(), node["ownedOperation"][i]);
-                    }
-                } else if (node["ownedOperation"][i].IsScalar()) {
-                    parseAndAddToSequence(node["ownedOperation"][i], data, dataType, &DataType::getOwnedOperation);
-                } else {
-                    throw UmlParserException("Improper YAML node type for ownedOperation, must be a map or scalar!", data.m_path.string(), node["ownedOperation"][i]);
-                }
-            }
-        } else {
-            throw UmlParserException("Improper YAML node type for dataType ownedOperation, must be sequence, " , data.m_path.string() , node["ownedOperation"]);
-        }
-    }
+    parseSequenceDefinitions(node, data, "ownedAttribute", dataType, &DataType::getOwnedAttribute, determineAndParseOwnedAttribute);
+    parseSequenceDefinitions(node, data, "ownedOperation", dataType, &DataType::getOwnedOperation, determineAndParseOwnedOperation);
 }
 
 void emitDataType(YAML::Emitter& emitter, DataType& dataType, EmitterMetaData& data) {
@@ -1432,30 +1408,7 @@ void emitPrimitiveType(YAML::Emitter& emitter, PrimitiveType& type, EmitterMetaD
 
 void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, ParserMetaData& data) {
     parseClassifier(node, clazz, data);
-
-    if (node["ownedAttributes"]) {
-        if (node["ownedAttributes"].IsSequence()) {
-            for (size_t i=0; i<node["ownedAttributes"].size(); i++) {
-                if (node["ownedAttributes"][i].IsMap()) {
-                    if (node["ownedAttributes"][i]["property"]) {
-                        if (node["ownedAttributes"][i]["property"].IsMap()) {
-                            Property& prop = data.m_manager->create<Property>();
-                            clazz.getOwnedAttributes().add(prop); // different order for redefinition
-                            parseProperty(node["ownedAttributes"][i]["property"], prop, data);
-                        } else {
-                            throw UmlParserException("Improper YAML node type for property field, must be map, " , data.m_path.string() , node["ownedAttributes"][i]["property"]);
-                        }
-                    }
-                } else if (node["ownedAttributes"][i].IsScalar()) {
-                    parseAndAddToSequence<Property, StructuredClassifier>(node["ownedAttributes"][i], data, clazz, &StructuredClassifier::getOwnedAttributes);
-                } else {
-                    throw UmlParserException("invalid yaml node type for property definition, must be a map or scalar path!", data.m_path.string(), node["ownedAttributes"][i]);
-                }
-            }
-        } else {
-            throw UmlParserException("Improper YAML node type for ownedAttributes field, must be sequence, " , data.m_path.string(), node["ownedAttributes"]);
-        }
-    }
+    parseSequenceDefinitions(node, data, "ownedAttributes", clazz, &StructuredClassifier::getOwnedAttributes, determineAndParseOwnedAttribute);
 }
 
 void emitStructuredClassifier(YAML::Emitter& emitter, StructuredClassifier& clazz, EmitterMetaData& data) {
@@ -1463,105 +1416,83 @@ void emitStructuredClassifier(YAML::Emitter& emitter, StructuredClassifier& claz
     emitSequence(emitter, "ownedAttributes", data, clazz, &StructuredClassifier::getOwnedAttributes);
 }
 
+Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
+    if (node["activity"]) {
+        // TODO
+    } else if (node["artifact"]) {
+        if (node["artifact"].IsMap()) {
+            Artifact& artifact = data.m_manager->create<Artifact>();
+            parseArtifact(node["artifact"], artifact, data);
+            return artifact;
+        }  else {
+            throw UmlParserException("Invalid yaml node type for enumeration artifact", data.m_path.string(), node["artifact"]);
+        }
+    } else if (node["association"]) { // is this valid IG, seems weird
+        if (node["association"].IsMap()) {
+            Association& association = data.m_manager->create<Association>();
+            parseAssociation(node["association"], association, data);
+            return association;
+        } else {
+            throw UmlParserException("Invalid yaml node type for association definition", data.m_path.string(), node["association"]);
+        }
+    } else if (node["class"]) {
+        if (node["class"].IsMap()) {
+            Class& nestedClazz = data.m_manager->create<Class>();
+            parseClass(node["class"], nestedClazz, data);
+            return nestedClazz;
+        } else {
+            throw UmlParserException("Invalid yaml node type for class definition", data.m_path.string(), node["class"]);
+        }
+    } else if (node["dataType"]) {
+        if (node["dataType"].IsMap()) {
+            DataType& dataType = data.m_manager->create<DataType>();
+            parseDataType(node["dataType"], dataType, data);
+            return dataType;
+        }  else {
+            throw UmlParserException("Invalid yaml node type for dataType definition", data.m_path.string(), node["dataType"]);
+        }
+    } else if (node["enumeration"]) {
+        if (node["enumeration"].IsMap()) {
+            Enumeration& enumeration = data.m_manager->create<Enumeration>();
+            parseEnumeration(node["enumeration"], enumeration, data);
+            return enumeration;
+        } else {
+            throw UmlParserException("Invalid yaml node type for enumeration definition", data.m_path.string(), node["enumeration"]);
+        }
+    } else if (node["extension"]) {
+        if (node["extension"].IsMap()) {
+            Extension& extension = data.m_manager->create<Extension>();
+            parseExtension(node["extension"], extension, data);
+            return extension;
+        } else {
+            throw UmlParserException("Invalide yaml node type for extension definition, must be a map!", data.m_path.string(), node["extension"]);
+        }
+    } else if (node["opaqueBehavior"]) {
+        if (node["opaqueBehavior"].IsMap()) {
+            OpaqueBehavior& opaqueBehavior = data.m_manager->create<OpaqueBehavior>();
+            parseOpaqueBehavior(node["opaqueBehavior"], opaqueBehavior, data);
+            return opaqueBehavior;
+        } else {
+            throw UmlParserException("Invalid yaml node type for opaqueBehavior definition", data.m_path.string(), node["opaqueBehavior"]);
+        }
+    } else if (node["primitiveType"]) {
+        if (node["primitiveType"].IsMap()) {
+            PrimitiveType& primitiveType = data.m_manager->create<PrimitiveType>();
+            parsePrimitiveType(node["primitiveType"], primitiveType, data);
+            return primitiveType;
+        } else {
+            throw UmlParserException("Invalid yaml node type for primitiveType definition", data.m_path.string(), node["primitiveType"]);
+        }
+    } else {
+        throw UmlParserException("invalid classifier definition for entry!", data.m_path.string(), node);
+    }
+}
+
 void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
     parseStructuredClassifier(node, clazz, data);
     parseBehavioredClassifier(node, clazz, data);
-
-    if (node["ownedOperations"]) {
-        if (node["ownedOperations"].IsSequence()) {
-            for (size_t i=0; i<node["ownedOperations"].size(); i++) {
-                if (node["ownedOperations"][i].IsMap()) {
-                    if (node["ownedOperations"][i]["operation"]) {
-                        Operation& op = data.m_manager->create<Operation>();
-                        parseOperation(node["ownedOperations"][i]["operation"], op, data);
-                        clazz.getOwnedOperations().add(op);
-                    } else {
-                        throw UmlParserException("Could not identify operation to parse, ", data.m_path.string(), node["ownedOperations"][i]);
-                    }
-                } else if (node["ownedOperations"][i].IsScalar()) {
-                    parseAndAddToSequence<Operation, Class>(node["ownedOperations"][i], data, clazz, &Class::getOwnedOperations);
-                } else {
-                    throw UmlParserException("Invalid yaml node type for class operation definition, must be a map or a scalar!", data.m_path.string(), node["ownedOperations"][i]);
-                }
-            }
-        } else {
-            throw UmlParserException("Improper YAML node type for operations field, must be sequence, ", data.m_path.string(), node["ownedOperations"]);
-        }
-    }
-
-    if (node["nestedClassifiers"]) {
-        if (node["nestedClassifiers"].IsSequence()) {
-            for (size_t i = 0; i < node["nestedClassifiers"].size(); i++) {
-                if (node["nestedClassifiers"][i].IsMap()) {
-                    if (node["nestedClassifiers"][i]["activity"]) {
-                        // TODO
-                    } else if (node["nestedClassifiers"][i]["artifact"]) { 
-                        if (node["nestedClassifiers"][i]["artifact"].IsMap()) {
-                            Artifact& artifact = data.m_manager->create<Artifact>();
-                            parseArtifact(node["nestedClassifiers"][i]["artifact"], artifact, data);
-                            clazz.getNestedClassifiers().add(artifact);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type for enumeration artifact", data.m_path.string(), node["nestedClassifiers"][i]["artifact"]);
-                        }
-                    } else if (node["nestedClassifiers"][i]["association"]) { // is this valid IG, seems weird
-                        if (node["nestedClassifiers"][i]["association"].IsMap()) {
-                            Association& association = data.m_manager->create<Association>();
-                            parseAssociation(node["nestedClassifiers"][i]["association"], association, data);
-                            clazz.getNestedClassifiers().add(association);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type for association definition", data.m_path.string(), node["nestedClassifiers"][i]["association"]);
-                        }
-                    } else if (node["nestedClassifiers"][i]["class"]) { 
-                        if (node["nestedClassifiers"][i]["class"].IsMap()) {
-                            Class& nestedClazz = data.m_manager->create<Class>();
-                            parseClass(node["nestedClassifiers"][i]["class"], nestedClazz, data);
-                            clazz.getNestedClassifiers().add(nestedClazz);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type for class definition", data.m_path.string(), node["nestedClassifiers"][i]["class"]);
-                        }
-                    } else if (node["nestedClassifiers"][i]["dataType"]) { 
-                        if (node["nestedClassifiers"][i]["dataType"].IsMap()) {
-                            DataType& dataType = data.m_manager->create<DataType>();
-                            parseDataType(node["nestedClassifiers"][i]["dataType"], dataType, data);
-                            clazz.getNestedClassifiers().add(dataType);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type for dataType definition", data.m_path.string(), node["nestedClassifiers"][i]["dataType"]);
-                        }
-                    } else if (node["nestedClassifiers"][i]["enumeration"]) { 
-                        if (node["nestedClassifiers"][i]["enumeration"].IsMap()) {
-                            Enumeration& enumeration = data.m_manager->create<Enumeration>();
-                            parseEnumeration(node["nestedClassifiers"][i]["enumeration"], enumeration, data);
-                            clazz.getNestedClassifiers().add(enumeration);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type for enumeration definition", data.m_path.string(), node["nestedClassifiers"][i]["enumeration"]);
-                        }
-                    } else if (node["nestedClassifiers"][i]["opaqueBehavior"]) { 
-                        if (node["nestedClassifiers"][i]["opaqueBehavior"].IsMap()) {
-                            OpaqueBehavior& opaqueBehavior = data.m_manager->create<OpaqueBehavior>();
-                            parseOpaqueBehavior(node["nestedClassifiers"][i]["opaqueBehavior"], opaqueBehavior, data);
-                            clazz.getNestedClassifiers().add(opaqueBehavior);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type for opaqueBehavior definition", data.m_path.string(), node["nestedClassifiers"][i]["opaqueBehavior"]);
-                        }
-                    } else if (node["nestedClassifiers"][i]["primitiveType"]) { 
-                        if (node["nestedClassifiers"][i]["primitiveType"].IsMap()) {
-                            PrimitiveType& primitiveType = data.m_manager->create<PrimitiveType>();
-                            parsePrimitiveType(node["nestedClassifiers"][i]["primitiveType"], primitiveType, data);
-                            clazz.getNestedClassifiers().add(primitiveType);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type for primitiveType definition", data.m_path.string(), node["nestedClassifiers"][i]["primitiveType"]);
-                        }
-                    } else {
-                        throw UmlParserException("invalid classifier definition for nestedClassifiers entry!", data.m_path.string(), node["nestedClassifiers"][i]);
-                    }
-                } else if (node["nestedClassifiers"][i].IsScalar()) {
-                    parseAndAddToSequence<Classifier, Class>(node["nestedClassifiers"][i], data, clazz, &Class::getNestedClassifiers);
-                }
-            }
-        } else {
-            throw UmlParserException("Improper YAML node type for nestedClassifiers field, must be a sequence!", data.m_path.string(), node["nestedClassifiers"]);
-        }
-    }
+    parseSequenceDefinitions(node, data, "ownedOperations", clazz, &Class::getOwnedOperations, determineAndParseOwnedOperation);
+    parseSequenceDefinitions(node, data, "nestedClassifiers", clazz, &Class::getNestedClassifiers, determineAndParseClassifier);
 }
 
 void emitClass(YAML::Emitter& emitter, Class& clazz, EmitterMetaData& data) {
@@ -1573,29 +1504,23 @@ void emitClass(YAML::Emitter& emitter, Class& clazz, EmitterMetaData& data) {
     emitElementDefenitionEnd(emitter, ElementType::CLASS, clazz);
 }
 
+Parameter& determineAndParseParameter(YAML::Node node, ParserMetaData& data) {
+    if (node["parameter"]) {
+        if (node["parameter"].IsMap()) {
+            Parameter& param = data.m_manager->create<Parameter>();
+            parseParameter(node["parameter"], param, data);
+            return param;
+        } else {
+            throw UmlParserException("Invalid yaml node type for parameter definition, must be a map!", data.m_path.string(), node["parameter"]);
+        }
+    } else {
+        throw UmlParserException("Invalid uml element for parameter, can only be a parameter!", data.m_path.string(), node);
+    }
+}
+
 void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data) {
     parseClass(node, bhv, data);
-
-    if (node["parameters"]) {
-        if (node["parameters"].IsSequence()) {
-            for (size_t i=0; i<node["parameters"].size(); i++) {
-                if (node["parameters"][i].IsMap()) {
-                    if (node["parameters"][i]["parameter"]) {
-                        Parameter& param = data.m_manager->create<Parameter>();
-                        parseParameter(node["parameters"][i]["parameter"], param, data);
-                        bhv.getOwnedParameters().add(param);
-                    }
-                } else if (node["parameters"][i].IsScalar()) {
-                    parseAndAddToSequence(node["parameters"][i], data, bhv, &Behavior::getOwnedParameters);
-                } else {
-                    throw UmlParserException("Invalid yaml node type for parameters definition, must be a map or scalar!", data.m_path.string(), node["parameters"][i]);
-                }
-            }
-        } else {
-            throw UmlParserException("Improper YAML node type for parameters field, must be scalar,", data.m_path.string(), node["parameters"]);
-        }
-    }
-
+    parseSequenceDefinitions(node, data, "parameters", bhv, &Behavior::getOwnedParameters, determineAndParseParameter);
     if (node["specification"]) {
         if (node["specification"].IsScalar()) {
             BehaviorSetSpecification setSpecification;
@@ -1617,6 +1542,7 @@ void emitBehavior(YAML::Emitter& emitter, Behavior& bhv, EmitterMetaData& data) 
 void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& data) {
     parseBehavior(node, bhv, data);
 
+    // keep special handling for now
     if (node["bodies"]) {
         if (node["bodies"].IsSequence()) {
             for (size_t i=0; i<node["bodies"].size(); i++) {
@@ -1907,32 +1833,7 @@ void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
         }
     }
 
-    if (node["ownedParameters"]) {
-        // So how i'm currently interpreting UML, these parameters are owned by the operation, but are the same as the methods
-        // TODO: Have a validator that checks that but don't think it is deal of parser to make sure that parameters are correct
-        // TODO: maybe log a warning or something
-        if (node["ownedParameters"].IsSequence()) {
-            for (size_t i = 0; i < node["ownedParameters"].size(); i++) {
-                if (node["ownedParameters"][i].IsMap()) {
-                    if (node["ownedParameters"][i]["parameter"]) {
-                        if (node["ownedParameters"][i]["parameter"].IsMap()) {
-                            Parameter& p = data.m_manager->create<Parameter>();
-                            parseParameter(node["ownedParameters"][i]["parameter"], p, data);
-                            op.getOwnedParameters().add(p);
-                        } else {
-                            throw UmlParserException("Improper yaml node type for parameter definition, must be map!", data.m_path.string(), node["ownedParameters"][i]["parameter"]);
-                        }
-                    }
-                } else if (node["ownedParameters"][i].IsScalar()) {
-                    parseAndAddToSequence(node["ownedParameters"][i], data, static_cast<BehavioralFeature&>(op), &BehavioralFeature::getOwnedParameters);
-                } else {
-                    throw UmlParserException("Improper yaml node type for parameter field, must be a map or a scalar!", data.m_path.string(), node["ownedParameters"][i]);
-                }
-            }
-        } else {
-            throw UmlParserException("Improper yaml node type for ownedParameters field, must be a sequence!", data.m_path.string(), node["ownedParameters"]);
-        }
-    }
+    parseSequenceDefinitions(node, data, "ownedParameters", static_cast<BehavioralFeature&>(op), &BehavioralFeature::getOwnedParameters, determineAndParseParameter);
 }
 
 void emitOperation(YAML::Emitter& emitter, Operation& op, EmitterMetaData& data) {
@@ -1950,212 +1851,131 @@ void emitOperation(YAML::Emitter& emitter, Operation& op, EmitterMetaData& data)
     emitElementDefenitionEnd(emitter, ElementType::OPERATION, op);
 }
 
+PackageMerge& determineAndParsePackageMerge(YAML::Node node, ParserMetaData& data) {
+    if (node["packageMerge"]) {
+        if (node["packageMerge"].IsMap()) {
+            PackageMerge& merge = data.m_manager->create<PackageMerge>();
+            parsePackageMerge(node["packageMerge"], merge, data);
+            return merge;
+        } else {
+            throw UmlParserException("Invalid yaml node type for packageMerge definition, can only be a map!", data.m_path.string(), node["packageMerge"]);
+        }
+    } else {
+        throw UmlParserException("Invalid uml element for packageMerge definition, it can only be a packageMerge!", data.m_path.string(), node);
+    }
+}
+
+ProfileApplication& determineAndParseProfileApplication(YAML::Node node, ParserMetaData& data) {
+    if (node["profileApplication"]) {
+        if (node["profileApplication"].IsMap()) {
+            ProfileApplication& profileApplication = data.m_manager->create<ProfileApplication>();
+            parseProfileApplication(node["profileApplication"], profileApplication, data);
+            return profileApplication;
+        }
+        else {
+            throw UmlParserException("Invalid yaml node type for profileApplication definition, must be a map!", data.m_path.string(), node["profileApplication"]);
+        }
+    } else {
+        throw UmlParserException("Invalid uml element for profileApplication definition, can only be a profileApplication!", data.m_path.string(), node);
+    }
+}
+
+PackageableElement& determineAndParsePackageableElement(YAML::Node node, ParserMetaData& data) {
+    if (node["abstraction"]) {
+        if (node["abstraction"].IsMap()) {
+            Abstraction& abstraction = data.m_manager->create<Abstraction>();
+            /** TODO: make own function and actually do opaqueExpressions**/
+            parseDependency(node["abstraction"], abstraction, data);
+            return abstraction;
+        } else {
+            throw UmlParserException("Invalid yaml node type for abstraction definition, must be a map!", data.m_path.string(), node["abstraction"]);
+        }
+    } else if (node["activity"]) {
+        return data.m_manager->create<Activity>(); // TODO;
+    } else if (node["artifact"]) {
+        return determineAndParse(node, data, "artifact", parseArtifact);
+    } else if (node["association"]) {
+        return determineAndParse(node, data, "association", parseAssociation);
+    } else if (node["class"]) {
+        return determineAndParse(node, data, "class", parseClass);
+    }  else if (node["dataType"]) {
+        return determineAndParse(node, data, "dataType", parseDataType);
+    } else if (node["deployment"]) {
+        return determineAndParse(node, data, "deployment", parseDeployment);
+    } else if (node["dependency"]) {
+        return determineAndParse(node, data, "dependency", parseDependency);
+    } else if (node["enumeration"]) {
+        return determineAndParse(node, data, "enumeration", parseEnumeration);
+    } else if (node["enumerationLiteral"]) {
+        return determineAndParse(node, data, "enumerationLiteral", parseEnumerationLiteral);
+    } else if (node["expression"]) {
+        return determineAndParse(node, data, "expression", parseExpression);
+    } else if (node["extension"]) {
+        return determineAndParse(node, data, "extension", parseExtension);
+    } else if (node["instanceSpecification"]) {
+        return determineAndParse(node, data, "instanceSpecification", parseInstanceSpecification);
+    } else if (node["instanceValue"]) {
+        return determineAndParse(node, data, "instanceValue", parseInstanceValue);
+    } else if (node["literalBool"]) {
+        return determineAndParse(node, data, "literalBool", parseLiteralBool);
+    } else if (node["literalInt"]) {
+        return determineAndParse(node, data, "literalInt", parseLiteralInt);
+    } else if (node["literalNull"]) {
+        // special handling
+        LiteralNull& ln = data.m_manager->create<LiteralNull>();
+        parseTypedElement(node["literalNull"], ln, data);
+        return ln;
+    } else if (node["literalReal"]) {
+        return determineAndParse(node, data, "literalReal", parseLiteralReal);
+    } else if (node["literalString"]) {
+        return determineAndParse(node, data, "literalString", parseLiteralString);
+    } else if (node["literalUnlimitedNatural"]) {
+        return determineAndParse(node, data, "literalUnlimitedNatural", parseLiteralUnlimitedNatural);
+    } else if (node["manifestation"]) {
+        return determineAndParse(node, data, "manifestation", parseManifestation);
+    } else if (node["opaqueBehavior"]) {
+        return determineAndParse(node, data, "opaqueBehavior", parseOpaqueBehavior);
+    } else if (node["package"]) {
+        return determineAndParse(node, data, "package", parsePackage);
+    } else if (node["primitiveType"]) {
+        return determineAndParse(node, data, "primitiveType", parsePrimitiveType);
+    } else if (node["profile"]) {
+        if (node["profile"].IsMap()) {
+            Profile& profile = data.m_manager->create<Profile>();
+            parsePackage(node["profile"], profile, data);
+            return profile;
+        } else {
+            throw UmlParserException("Invalid yaml node type for profile definition, must be a map!", data.m_path.string(), node["profile"]);
+        }
+    } else if (node["realization"]) {
+        if (node["realization"].IsMap()) {
+            Realization& realization = data.m_manager->create<Realization>();
+            /** TODO: switch to parseAbstraction when implemented**/
+            parseDependency(node["realization"], realization, data);
+            return realization;
+        } else {
+            throw UmlParserException("Invalid yaml node type for realization definition, must be a map!", data.m_path.string(), node["realization"]);
+        }
+    } else if (node["usage"]) {
+        if (node["usage"].IsMap()) {
+            Usage& usage = data.m_manager->create<Usage>();
+            parseDependency(node["usage"], usage, data);
+            return usage;
+        } else {
+            throw UmlParserException("Invalid yaml node type for usage definition, must be a map!", data.m_path.string(), node["usage"]);
+        }
+    } else {
+        throw UmlParserException("Invalid identifier for packagedElements, ", data.m_path.string(), node);
+    }
+}
+
 void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
 
     parseNamedElement(node, pckg, data);
     parseTemplateableElement(node, pckg, data); 
-
-    if (node["packageMerge"]) {
-        if (node["packageMerge"].IsSequence()) {
-            for (size_t i = 0; i < node["packageMerge"].size(); i++) {
-                if (node["packageMerge"][i].IsMap()) {
-                    if (node["packageMerge"][i]["packageMerge"]) {
-                        if (node["packageMerge"][i]["packageMerge"].IsMap()) {
-                            PackageMerge& merge = data.m_manager->create<PackageMerge>();
-                            parsePackageMerge(node["packageMerge"][i]["packageMerge"], merge, data);
-                            pckg.getPackageMerge().add(merge);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type for packageMerge definition, must be a map!", data.m_path.string(), node["packageMerge"][i]["packageMerge"]);
-                        }
-                    } else {
-                        throw UmlParserException("Invalid identifier in Package packageMerge list, ", data.m_path.string(), node["packageMerge"][i]["packageMerge"]);
-                    }
-                } else if (node["packageMerge"][i].IsScalar()) {
-                    //pckg.getPackageMerge().add(parseScalar<PackageMerge>(node["packageMerge"][i], data));
-                    parseAndAddToSequence<PackageMerge, Package>(node["packageMerge"][i], data, pckg, &Package::getPackageMerge);
-                } else {
-                    throw UmlParserException("Invalid yaml node type for packageMerge reference, must be a scalar or map!", data.m_path.string(), node["packagedElements"][i]);
-                }
-            }
-        } else {
-            throw UmlParserException("Invalid YAML Node type for Package field packageMerge, ", data.m_path.string(), node["packageMerge"]);
-        }
-    }
-
-    if (node["profileApplications"]) {
-        if (node["profileApplications"].IsSequence()) {
-            for (size_t i = 0; i < node["profileApplications"].size(); i++) {
-                if (node["profileApplications"][i].IsMap()) {
-                    if (node["profileApplications"][i]["profileApplication"]) {
-                        if (node["profileApplications"][i]["profileApplication"].IsMap()) {
-                            ProfileApplication& application = data.m_manager->create<ProfileApplication>();
-                            parseProfileApplication(node["profileApplications"][i]["profileApplication"], application, data);
-                            pckg.getProfileApplications().add(application);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type, profileApplication must be a mao!", data.m_path.string(), node["profileApplications"][i]["profileApplication"]);
-                        }
-                    } else {
-                        throw UmlParserException("Invalid profileApplication type!", data.m_path.string(), node["profileApplications"][i]);
-                    }
-                } else if (node["profileApplications"][i].IsScalar()) {
-                    parseAndAddToSequence<ProfileApplication, Package>(node["profileApplications"][i], data, pckg, &Package::getProfileApplications);
-                 //   pckg.getProfileApplications().add(parseScalar<ProfileApplication>(node["profileApplications"][i], data));
-                }
-            }
-        } else {
-            throw UmlParserException("Invalide yaml node type for profileApplications, must be a sequence!", data.m_path.string(), node["profileApplication"]);
-        }
-    }
-
-    if (node["packagedElements"]) {
-        if (node["packagedElements"].IsSequence()) {
-            for (size_t i=0; i<node["packagedElements"].size(); i++) {
-                if (node["packagedElements"][i].IsMap()) {
-                    if (node["packagedElements"][i]["abstraction"]) {
-                        if (node["packagedElements"][i]["abstraction"].IsMap()) {
-                            Abstraction& abstraction = data.m_manager->create<Abstraction>();
-                            /** TODO: make own function and actually do opaqueExpressions**/
-                            parseDependency(node["packagedElements"][i]["abstraction"], abstraction, data);
-                            pckg.getPackagedElements().add(abstraction);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type for abstraction definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["abstraction"]);
-                        }
-                    } else if (node["packagedElements"][i]["activity"]) {
-                        Activity& activity = data.m_manager->create<Activity>();
-                        // TODO parse activity
-                        activity.setOwningPackage(&pckg);
-                    } else if (node["packagedElements"][i]["artifact"]) {
-                        if (node["packagedElements"][i]["artifact"].IsMap()) {
-                            Artifact& artifact = data.m_manager->create<Artifact>();
-                            parseArtifact(node["packagedElements"][i]["artifact"], artifact, data);
-                            pckg.getPackagedElements().add(artifact);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type for artifact definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["artifact"]);
-                        }
-                    } else if (node["packagedElements"][i]["association"]) {
-                        if (node["packagedElements"][i]["association"].IsMap()) {
-                            Association& association = data.m_manager->create<Association>();
-                            parseAssociation(node["packagedElements"][i]["association"], association, data);
-                            pckg.getPackagedElements().add(association);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type, must be a map!", data.m_path.string(), node["packagedElements"][i]["association"]);
-                        }
-                    } else if (node["packagedElements"][i]["class"]) {
-                        Class& clazz = data.m_manager->create<Class>();
-                        parseClass(node["packagedElements"][i]["class"], clazz, data);
-                        pckg.getPackagedElements().add(clazz);
-                    } else if (node["packagedElements"][i]["dataType"]) {
-                        DataType& dataType = data.m_manager->create<DataType>();
-                        parseDataType(node["packagedElements"][i]["dataType"], dataType, data);
-                        pckg.getPackagedElements().add(dataType);
-                    } else if (node["packagedElements"][i]["dependency"]) {
-                        if (node["packagedElements"][i]["dependency"].IsMap()) {
-                            Dependency& dependency = data.m_manager->create<Dependency>();
-                            parseDependency(node["packagedElements"][i]["dependency"], dependency, data);
-                            pckg.getPackagedElements().add(dependency);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type for dependency definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["dependency"]);
-                        }
-                    } else if (node["packagedElements"][i]["enumeration"]) {
-                        Enumeration& enumeration = data.m_manager->create<Enumeration>();
-                        parseEnumeration(node["packagedElements"][i]["enumeration"], enumeration, data);
-                        pckg.getPackagedElements().add(enumeration);
-                    } else if (node["packagedElements"][i]["expression"]) {
-                        if (node["packagedElements"][i]["expression"].IsMap()) {
-                            Expression& newExp = data.m_manager->create<Expression>();
-                            parseExpression(node["packagedElements"][i]["expression"], newExp, data);
-                            pckg.getPackagedElements().add(newExp);
-                        } else {
-                            throw UmlParserException("Invalid YAML node type for expression definition, must be map, ", data.m_path.string(), node["operands"][i]["expression"]);
-                        }
-                    } else if (node["packagedElements"][i]["extension"]) {
-                        if (node["packagedElements"][i]["extension"].IsMap()) {
-                            Extension& extension = data.m_manager->create<Extension>();
-                            parseExtension(node["packagedElements"][i]["extension"], extension, data);
-                            pckg.getPackagedElements().add(extension);
-                        } else {
-                            throw UmlParserException("Invalide yaml node type for extension definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["extension"]);
-                        }
-                    } else if (node["packagedElements"][i]["instanceSpecification"]) {
-                        InstanceSpecification& inst = data.m_manager->create<InstanceSpecification>();
-                        parseInstanceSpecification(node["packagedElements"][i]["instanceSpecification"], inst, data);
-                        pckg.getPackagedElements().add(inst);
-                    } else if (node["packagedElements"][i]["instanceValue"]) {
-                        InstanceValue& instVal = data.m_manager->create<InstanceValue>();
-                        parseInstanceValue(node["packagedElements"][i]["instanceValue"], instVal, data);
-                        pckg.getPackagedElements().add(instVal);
-                    } else if (node["packagedElements"][i]["literalBool"]) {
-                        LiteralBool& lb = data.m_manager->create<LiteralBool>();
-                        parseLiteralBool(node["packagedElements"][i]["literalBool"], lb, data);
-                        pckg.getPackagedElements().add(lb);
-                    } else if (node["packagedElements"][i]["literalInt"]) {
-                        LiteralInt& li = data.m_manager->create<LiteralInt>();
-                        parseLiteralInt(node["packagedElements"][i]["literalInt"], li, data);
-                        pckg.getPackagedElements().add(li);
-                    } else if (node["packagedElements"][i]["literalNull"]) {
-                        LiteralNull& ln = data.m_manager->create<LiteralNull>();
-                        parseTypedElement(node["packagedElements"][i]["literalNull"], ln, data);
-                        pckg.getPackagedElements().add(ln); 
-                    } else if (node["packagedElements"][i]["literalReal"]) {
-                        LiteralReal& lr = data.m_manager->create<LiteralReal>();
-                        parseLiteralReal(node["packagedElements"][i]["literalReal"], lr, data);
-                        pckg.getPackagedElements().add(lr);
-                    } else if (node["packagedElements"][i]["literalString"]) {
-                        LiteralString& ls = data.m_manager->create<LiteralString>();
-                        parseLiteralString(node["packagedElements"][i]["literalString"], ls, data);
-                        pckg.getPackagedElements().add(ls);
-                    } else if (node["packagedElements"][i]["literalUnlimitedNatural"]) {
-                        LiteralUnlimitedNatural& ln = data.m_manager->create<LiteralUnlimitedNatural>();
-                        parseLiteralUnlimitedNatural(node["packagedElements"][i]["literalUnlimitedNatural"], ln, data);
-                        pckg.getPackagedElements().add(ln);
-                    } else if (node["packagedElements"][i]["package"]) {
-                        Package& package = data.m_manager->create<Package>();
-                        parsePackage(node["packagedElements"][i]["package"], package, data);
-                        package.setOwningPackage(&pckg);
-                    } else if (node["packagedElements"][i]["primitiveType"]) {
-                        PrimitiveType& type = data.m_manager->create<PrimitiveType>();
-                        parsePrimitiveType(node["packagedElements"][i]["primitiveType"], type, data);
-                        pckg.getPackagedElements().add(type);
-                    } else if (node["packagedElements"][i]["profile"]) {
-                        if (node["packagedElements"][i]["profile"].IsMap()) {
-                            Profile& profile = data.m_manager->create<Profile>();
-                            parsePackage(node["packagedElements"][i]["profile"], profile, data);
-                            pckg.getPackagedElements().add(profile);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type for profile definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["profile"]);
-                        }
-                    } else if (node["packagedElements"][i]["realization"]) {
-                        if (node["packagedElements"][i]["realization"].IsMap()) {
-                            Realization& realization = data.m_manager->create<Realization>();
-                            /** TODO: switch to parseAbstraction when implemented**/
-                            parseDependency(node["packagedElements"][i]["realization"], realization, data);
-                            pckg.getPackagedElements().add(realization);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type for realization definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["realization"]);
-                        }
-                    } else if (node["packagedElements"][i]["usage"]) {
-                        if (node["packagedElements"][i]["usage"].IsMap()) {
-                            Usage& usage = data.m_manager->create<Usage>();
-                            parseDependency(node["packagedElements"][i]["usage"], usage, data);
-                            pckg.getPackagedElements().add(usage);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type for usage definition, must be a map!", data.m_path.string(), node["packagedElements"][i]["usage"]);
-                        }
-                    } else {
-                        throw UmlParserException("Invalid identifier for packagedElements, ", data.m_path.string(), node["packagedElements"][i]);
-                    }
-                // seperate file
-                } else if (node["packagedElements"][i].IsScalar()) {
-                    parseAndAddToSequence<PackageableElement, Package>(node["packagedElements"][i], data, pckg, &Package::getPackagedElements);
-                } else {
-                    throw UmlParserException("Invalid YAML node type for field packagedElements sequence, must be map, ", data.m_path.string(), node["packagedElements"][i]);
-                }
-            }
-        } else {
-            throw UmlParserException("Invalid YAML node type for field packagedElements, must be sequence, ", data.m_path.string(), node["packagedElements"]);
-        }
-    }
-
+    parseSequenceDefinitions(node, data, "packageMerge", pckg, &Package::getPackageMerge, determineAndParsePackageMerge);
+    parseSequenceDefinitions(node, data, "profileApplications", pckg, &Package::getProfileApplications, determineAndParseProfileApplication);
+    parseSequenceDefinitions(node, data, "packagedElements", pckg, &Package::getPackagedElements, determineAndParsePackageableElement);
     // TODO update
     if (node["ownedStereotypes"]) {
         if (node["ownedStereotypes"].IsSequence()) {

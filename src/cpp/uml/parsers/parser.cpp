@@ -207,6 +207,15 @@ SetEnumeration::SetEnumeration() {
 
 namespace {
 
+/**
+ * This function is used to parse an element definition contained within a seperate 
+ * file, and then add that element to the designated sequence. This should only be 
+ * called with sequences that subset  Element::getOwnedElements
+ * @param node, the node containing the element defenition file
+ * @param data, the data for this parsing session
+ * @param el, the element that owns the element being parsed
+ * @param signature, the signature of the sequence to add the parsed element to
+ **/
 template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
     if (data.m_strategy == ParserStrategy::WHOLE) {
         Element* packagedEl = parseExternalAddToManager(data, node.as<std::string>());
@@ -224,13 +233,43 @@ template <class T = Element, class U = Element> void parseAndAddToSequence(YAML:
             } else {
                 (el.*signature)().addByID(id);
             }
-        }
-        else {
+        } else {
             throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);
         }
     }
 }
 
+/**
+ * This function is used to parse a sequence that subsets Element::getOwnedElements
+ * @param node, the node of the element who's sequence we're parsing
+ * @param data, the data for this parsing session
+ * @param key, the key for the sequence to index the node
+ * @param owner, the element that owns all elements in the sequence being parsed
+ * @param sequenceSignature, the signature of the sequence we are adding to
+ * @param parserSignature, the signature of the function we are using to parse it's children in WHOLE parser strategy mode
+ **/
+template <class T = Element, class U = Element> void parseSequenceDefinitions(YAML::Node node, ParserMetaData& data, string key, U& owner, Sequence<T>& (U::*sequenceSignature)(), T& (*parserSignature)(YAML::Node, ParserMetaData&)) {
+    if (node[key]) {
+        if (node[key].IsSequence()) {
+            for (size_t i = 0; i < node[key].size(); i++) {
+                if (node[key][i].IsMap()) {
+                    (owner.*sequenceSignature)().add((*parserSignature)(node[key][i], data));
+                }
+                else if (node[key][i].IsScalar()) {
+                    parseAndAddToSequence(node[key][i], data, owner, sequenceSignature);
+                }
+                else {
+                    throw UmlParserException("Invalid yaml node type for " + key + " entry, must be a scalar or map!", data.m_path.string(), node[key][i]);
+                }
+            }
+        }
+        else {
+            throw UmlParserException("Invalid YAML node type for field " + key + ", must be sequence, ", data.m_path.string(), node[key]);
+        }
+    }
+}
+
+// TODO delete?
 template <class T =Element> T& parseScalar(YAML::Node node, ParserMetaData& data) {
     if (data.m_strategy == ParserStrategy::WHOLE) {
         Element* packagedEl = parseExternalAddToManager(data, node.as<std::string>());
@@ -999,6 +1038,16 @@ void AddAppliedStereotypeFunctor::operator()(Element& el) const {
     }
 }
 
+Comment& determineAndParseComment(YAML::Node node, ParserMetaData& data) {
+    if (node["comment"]) {
+        Comment& comment = data.m_manager->create<Comment>();
+        parseComment(node["comment"], comment, data);
+        return comment;
+    } else {
+        throw UmlParserException("Invalid uml definition for comment!", data.m_path.string(), node);
+    }
+}
+
 void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
     if (node["id"]) {
         if (node["id"].IsScalar()) {
@@ -1016,31 +1065,7 @@ void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
     // apply post processing here via functor
     data.elements.add(el);
 
-    if (node["ownedComments"]) {
-        if (node["ownedComments"].IsSequence()) {
-            for (size_t i = 0; i < node["ownedComments"].size(); i++) {
-                if (node["ownedComments"][i].IsMap()) {
-                    if (node["ownedComments"][i]["comment"]) {
-                        if (node["ownedComments"][i]["comment"].IsMap()) {
-                            Comment& comment = data.m_manager->create<Comment>();
-                            parseComment(node["ownedComments"][i]["comment"], comment, data);
-                            el.getOwnedComments().add(comment);
-                        } else {
-                            throw UmlParserException("Invalid yaml node type for comment, must be map!", data.m_path.string(), node["ownedComments"][i]["comment"]);
-                        }
-                    } else {
-                        throw UmlParserException("Invalid element type for ownedComment, must be a comment", data.m_path.string(), node["ownedComments"][i]);
-                    }
-                } else if (node["ownedComments"][i].IsScalar()) {
-                    parseAndAddToSequence(node["ownedComments"][i], data, el, &Element::getOwnedComments);
-                } else {
-                    throw UmlParserException("Invalid yaml node type for comment reference, must be map or scalar!", data.m_path.string(), node["ownedComments"]);
-                }
-            }
-        } else {
-            throw UmlParserException("Invalid yaml node type for ownedComments, must be sequence!", data.m_path.string(), node["ownedComments"]);
-        }
-    }
+    parseSequenceDefinitions(node, data, "ownedComments", el, &Element::getOwnedComments, determineAndParseComment);
 
     if (node["appliedStereotypes"]) {
         if (node["appliedStereotypes"].IsSequence()) {
@@ -2345,19 +2370,7 @@ void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
     }
 
     // TODO values
-    if (node["values"]) {
-        if (node["values"].IsSequence()) {
-            for (size_t i = 0; i < node["values"].size(); i++) {
-                if (node["values"][i].IsMap()) {
-                    slot.getValues().add(determineAndParseValueSpecification(node["values"][i], data));
-                } else if (node["values"][i].IsScalar()) {
-                    parseAndAddToSequence(node["values"][i], data, slot, &Slot::getValues);
-                }
-            }
-        } else {
-            throw UmlParserException("Invalid YAML node type for Slot field values, expected Sequence, ", data.m_path.string(), node["values"]);
-        }
-    }
+    parseSequenceDefinitions(node, data, "values", slot, &Slot::getValues, &determineAndParseValueSpecification);
 }
 
 void emitSlot(YAML::Emitter& emitter, Slot& slot, EmitterMetaData& data) {
@@ -2654,66 +2667,7 @@ void parseExpression(YAML::Node node, Expression& exp, ParserMetaData& data) {
             throw UmlParserException("Invalid YAML node type for Expression field symbol, must be scalar, ", data.m_path.string(), node["symbol"]);
         }
     }
-
-    if (node["operands"]) {
-        if (node["operands"].IsSequence()) {
-            for (size_t i = 0; i < node["operands"].size(); i++) {
-                if (node["operands"][i]["expression"]) {
-                    if (node["operands"][i]["expression"].IsMap()) {
-                        Expression& newExp = data.m_manager->create<Expression>();
-                        parseExpression(node["operands"][i]["expression"], newExp, data);
-                        exp.getOperands().add(newExp);
-                    } else {
-                        throw UmlParserException("Invalid YAML node type for expression definition, must be map, ", data.m_path.string(), node["operands"][i]["expression"]);
-                    }
-                } else if (node["operands"][i]["literalBool"]) {
-                    if (node["operands"][i]["literalBool"].IsMap()) {
-                        LiteralBool& lb = data.m_manager->create<LiteralBool>();
-                        parseLiteralBool(node["operands"][i]["literalBool"], lb, data);
-                        exp.getOperands().add(lb);
-                    } else {
-                        throw UmlParserException("Improper YAML node type for Expression operands field, ", data.m_path.string(), node["operands"][i]["literalBool"]);
-                    }
-                } else if (node["operands"][i]["literalInt"]) {
-                    if (node["operands"][i]["literalInt"].IsMap()) {
-                        LiteralInt& li = data.m_manager->create<LiteralInt>();
-                        parseLiteralInt(node["operands"][i]["literalInt"], li, data);
-                        exp.getOperands().add(li);
-                    } else {
-                        throw UmlParserException("Improper YAML node type for Expression operands field, ", data.m_path.string(), node["operands"][i]["literalInt"]);
-                    }
-                } else if (node["operands"][i]["literalReal"]) {
-                    if (node["operands"][i]["literalReal"].IsMap()) {
-                        LiteralReal& lr = data.m_manager->create<LiteralReal>();
-                        parseLiteralReal(node["operands"][i]["literalReal"], lr, data);
-                        exp.getOperands().add(lr);
-                    } else {
-                        throw UmlParserException("Improper YAML node type for Expression operands field, ", data.m_path.string(), node["operands"][i]["literalReal"]);
-                    }
-                } else if (node["operands"][i]["literalString"]) {
-                    if (node["operands"][i]["literalString"].IsMap()) {
-                        LiteralString& ls = data.m_manager->create<LiteralString>();
-                        parseLiteralString(node["operands"][i]["literalString"], ls, data);
-                        exp.getOperands().add(ls);
-                    } else {
-                        throw UmlParserException("Improper YAML node type for Expression operands field, ", data.m_path.string(), node["operands"][i]["literalString"]);
-                    }
-                } else if (node["operands"][i]["instanceValue"]) {
-                    if (node["operands"][i]["instanceValue"].IsMap()) {
-                        InstanceValue& iv = data.m_manager->create<InstanceValue>();
-                        parseInstanceValue(node["operands"][i]["instanceValue"], iv, data);
-                        exp.getOperands().add(iv);
-                    } else {
-                        throw UmlParserException("Improper YAML node type for Expression operands field, ", data.m_path.string(), node["operands"][i]["instanceValue"]);
-                    }
-                } else {
-                    throw UmlParserException("Unknown Value Specification for operand value field, ", data.m_path.string(), node["operands"][i]);
-                }
-            }
-        } else {
-            throw UmlParserException("Invalid YAML node type for Expression field operands, must be sequence, ", data.m_path.string(), node["operands"]);
-        }
-    }
+    parseSequenceDefinitions(node, data, "operands", exp, &Expression::getOperands, &determineAndParseValueSpecification);
 }
 
 void emitExpression(YAML::Emitter& emitter, Expression& exp, EmitterMetaData& data) {

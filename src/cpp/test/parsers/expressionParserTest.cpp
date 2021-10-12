@@ -8,6 +8,7 @@
 #include "uml/literalInt.h"
 #include "uml/class.h"
 #include "uml/property.h"
+#include "uml/literalReal.h"
 
 using namespace std;
 using namespace UML;
@@ -57,4 +58,30 @@ TEST_F(ExpressionParserTest, expressionTest) {
     ASSERT_TRUE(e2->getOperands().front().getElementType() == ElementType::LITERAL_INT);
     LiteralInt* pi = dynamic_cast<LiteralInt*>(&e2->getOperands().front());
     ASSERT_TRUE(pi->getValue() == 1);
+}
+
+TEST_F(ExpressionParserTest, mountExpressionTest) {
+    UmlManager m;
+    Expression& expression = m.create<Expression>();
+    LiteralReal& first = m.create<LiteralReal>();
+    LiteralInt& last = m.create<LiteralInt>();
+    expression.setSymbol("+");
+    expression.getOperands().add(first, last);
+    m.setRoot(&expression);
+    m.mount(ymlPath + "expressionTests");
+
+    ID expressionID = expression.getID();
+    ID firstID = first.getID();
+    ID lastID = last.getID();
+    m.release(expression);
+    ASSERT_FALSE(m.loaded(expressionID));
+    Expression& expression2 = m.aquire(expressionID)->as<Expression>();
+    ASSERT_EQ(expression2.getOperands().size(), 2);
+    ASSERT_EQ(expression2.getOperands().front(), first);
+    ASSERT_EQ(expression2.getOperands().back(), last);
+    ASSERT_EQ(expression2.getOwnedElements().size(), 2);
+    ASSERT_EQ(expression2.getOwnedElements().front(), first);
+    ASSERT_EQ(expression2.getOwnedElements().back(), last);
+    ASSERT_TRUE(first.hasOwner());
+    ASSERT_TRUE(last.hasOwner());
 }

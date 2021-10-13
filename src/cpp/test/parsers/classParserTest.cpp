@@ -391,7 +391,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
 
     /** TODO: anything else to test with base class? **/
     /** release specific **/
-    ASSERT_NO_THROW(m.release(spec.getID()));
+    ASSERT_NO_THROW(m.release(spec));
     Class& spec2 = pckg.getPackagedElements().get(1).as<Class>(); // load specific
 
     ASSERT_TRUE(gen.getSpecific() != 0);
@@ -604,4 +604,21 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(base4.getOwnedMembers().front(), prop3);
     ASSERT_EQ(base4.getMembers().front(), prop3);
     ASSERT_EQ(base4.getOwnedElements().front(), prop3);
+
+    // testing inherited members
+    ID baseID = base4.getID();
+    m.release(spec4, gen3, base4);
+    ASSERT_FALSE(m.loaded(specID));
+    ASSERT_FALSE(m.loaded(genID));
+    ASSERT_FALSE(m.loaded(baseID));
+    Class& spec5 = m.aquire(specID)->as<Class>();
+    ASSERT_TRUE(m.loaded(genID));
+    ASSERT_TRUE(m.loaded(baseID));
+    ASSERT_EQ(spec5.getInheritedMembers().size(), 2);
+    ASSERT_EQ(spec5.getInheritedMembers().front(), prop3);
+    ASSERT_EQ(spec5.getInheritedMembers().get(1), op3);
+    ASSERT_EQ(spec5.getMembers().size(), 3);
+    ASSERT_EQ(spec5.getMembers().front(), nestSpec3);
+    ASSERT_EQ(spec5.getMembers().get(1), prop3);
+    ASSERT_EQ(spec5.getMembers().get(2), op3);
 }

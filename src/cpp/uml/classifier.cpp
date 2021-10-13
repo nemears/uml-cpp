@@ -311,6 +311,7 @@ void Classifier::restoreReferences() {
     PackageableElement::restoreReferences();
     m_attributes.restoreReferences();
     m_generalizations.restoreReferences();
+    // need to load generalizations
     for (auto& generalization : m_generalizations) {
         if (generalization.hasGeneral()) {
             if (!m_generals.count(generalization.getGeneralID())) {
@@ -319,6 +320,7 @@ void Classifier::restoreReferences() {
         }
     }
     m_generals.restoreReferences();
+    // need to load generals
     for (auto& general : m_generals) {
         for (auto& member : general.getMembers()) {
             if (member.getVisibility() != VisibilityKind::PRIVATE && !m_inheritedMembers.count(member.getID())) {

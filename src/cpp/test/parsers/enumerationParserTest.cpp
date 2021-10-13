@@ -104,7 +104,7 @@ TEST_F(EnumerationParserTest, mountEnumerationTest) {
     Enumeration& enumeration3 = m.aquire(enumerationID)->as<Enumeration>();
     ASSERT_FALSE(m.loaded(enumerationLiteralID));
     ASSERT_EQ(enumeration3.getOwnedLiterals().size(), 1);
-    ASSERT_TRUE(enumeration3.getOwnedMembers().size(), 1);
+    ASSERT_EQ(enumeration3.getOwnedMembers().size(), 1);
     EnumerationLiteral& enumerationLiteral2 = m.aquire(enumerationLiteralID)->as<EnumerationLiteral>();
     ASSERT_EQ(enumeration3.getOwnedLiterals().front(), enumerationLiteral2);
     ASSERT_TRUE(enumerationLiteral2.hasEnumeration());

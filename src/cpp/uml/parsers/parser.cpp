@@ -205,6 +205,10 @@ SetEnumeration::SetEnumeration() {
     m_signature = &EnumerationLiteral::m_enumeration;
 }
 
+SetExpression::SetExpression() {
+    m_signature = &ValueSpecification::m_expression;
+}
+
 namespace {
 
 /**
@@ -376,9 +380,11 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["expression"]) {
-        Expression& exp = data.m_manager->create<Expression>();
-        parseExpression(node["expression"], exp, data); 
-        ret = &exp;
+        if (node["expression"].IsMap()) {
+            Expression& exp = data.m_manager->create<Expression>();
+            parseExpression(node["expression"], exp, data);
+            ret = &exp;
+        }
     }
 
     if (node["generalization"]) {
@@ -633,6 +639,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
             if (node["enumeration"].IsScalar()) {
                 SetEnumeration setEnumeration;
                 parseSingleton(node["enumeration"], data, ret->as<EnumerationLiteral>(), &EnumerationLiteral::setEnumeration, setEnumeration);
+            }
+        }
+        if (node["expression"]) {
+            if (node["expression"].IsScalar()) {
+                SetExpression setExpression;
+                parseSingleton(node["expression"], data, ret->as<ValueSpecification>(), &ValueSpecification::setExpression, setExpression);
             }
         }
     }
@@ -926,6 +938,10 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
                 }
                 if (el.as<ValueSpecification>().hasOwningInstanceSpec()) {
                     emitter << YAML::Key << "owningInstanceSpec" << YAML::Value << el.as<ValueSpecification>().getOwningInstanceSpecID().string();
+                    return;
+                }
+                if (el.as<ValueSpecification>().hasExpression()) {
+                    emitter << YAML::Key << "expression" << YAML::Value << el.as<ValueSpecification>().getExpressionID().string();
                     return;
                 }
             }

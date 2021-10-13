@@ -51,6 +51,30 @@ void ValueSpecification::AddOwningInstanceSpecProcedure::operator()(ID id) const
     }
 }
 
+void ValueSpecification::RemoveExpressionProcedure::operator()(Expression* el) const {
+    if (el->getOperands().count(m_me->getID())) {
+        el->getOperands().remove(*m_me);
+    }
+    if (m_me->getExpressionID() == el->getID()) {
+        m_me->setExpression(0);
+    }
+}
+
+void ValueSpecification::AddExpressionProcedure::operator()(Expression* el) const {
+    if (!el->getOperands().count(m_me->getID())) {
+        el->getOperands().add(*m_me);
+    }
+    if (m_me->getOwnerID() != el->getID()) {
+        m_me->setOwner(el);
+    }
+}
+
+void ValueSpecification::AddExpressionProcedure::operator()(ID id) const {
+    if (m_me->getOwnerID() != id) {
+        m_me->setOwnerByID(id);
+    }
+}
+
 void ValueSpecification::reindexName(string oldName, string newName) {
     if (getOwner()) {
         if (getOwner()->isSubClassOf(ElementType::SLOT)) {
@@ -71,6 +95,9 @@ void ValueSpecification::referenceReindexed(ID oldID, ID newID) {
     if (m_owningInstanceSpec.id() == oldID) {
         m_owningInstanceSpec.reindex(oldID, newID);
     }
+    if (m_expression.id() == oldID) {
+        m_expression.reindex(oldID, newID);
+    }
 }
 
 void ValueSpecification::restoreReferences() {
@@ -78,6 +105,7 @@ void ValueSpecification::restoreReferences() {
     PackageableElement::restoreReferences();
     m_owningSlot.restoreReference();
     m_owningInstanceSpec.restoreReference();
+    m_expression.restoreReference();
 }
 
 ValueSpecification::ValueSpecification() {
@@ -87,6 +115,9 @@ ValueSpecification::ValueSpecification() {
     m_owningInstanceSpec.m_signature = &ValueSpecification::m_owningInstanceSpec;
     m_owningInstanceSpec.m_removeProcedures.push_back(new RemoveOwningInstanceSpecProcedure(this));
     m_owningInstanceSpec.m_addProcedures.push_back(new AddOwningInstanceSpecProcedure(this));
+    m_expression.m_signature = &ValueSpecification::m_expression;
+    m_expression.m_addProcedures.push_back(new AddExpressionProcedure(this));
+    m_expression.m_removeProcedures.push_back(new RemoveExpressionProcedure(this));
 }
 
 ValueSpecification::ValueSpecification(const ValueSpecification& rhs) {
@@ -102,6 +133,12 @@ ValueSpecification::ValueSpecification(const ValueSpecification& rhs) {
     m_owningInstanceSpec.m_addProcedures.clear();
     m_owningInstanceSpec.m_removeProcedures.push_back(new RemoveOwningInstanceSpecProcedure(this));
     m_owningInstanceSpec.m_addProcedures.push_back(new AddOwningInstanceSpecProcedure(this));
+    m_expression = rhs.m_expression;
+    m_expression.m_me = this;
+    m_expression.m_addProcedures.clear();
+    m_expression.m_removeProcedures.clear();
+    m_expression.m_addProcedures.push_back(new AddExpressionProcedure(this));
+    m_expression.m_removeProcedures.push_back(new RemoveExpressionProcedure(this));
 }
 
 Slot* ValueSpecification::getOwningSlot() {
@@ -150,6 +187,30 @@ void ValueSpecification::setOwningInstanceSpec(InstanceSpecification* instanceSp
 
 void ValueSpecification::setOwningInstanceSpec(InstanceSpecification& instanceSpec) {
     m_owningInstanceSpec.set(instanceSpec);
+}
+
+Expression* ValueSpecification::getExpression() {
+    return m_expression.get();
+}
+
+Expression& ValueSpecification::getExpressionRef() {
+    return m_expression.getRef();
+}
+
+ID ValueSpecification::getExpressionID() const {
+    return m_expression.id();
+}
+
+bool ValueSpecification::hasExpression() const {
+    return m_expression.has();
+}
+
+void ValueSpecification::setExpression(Expression* expression) {
+    m_expression.set(expression);
+}
+
+void ValueSpecification::setExpression(Expression& expression) {
+    m_expression.set(expression);
 }
 
 ElementType ValueSpecification::getElementType() const {

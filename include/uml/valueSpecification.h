@@ -9,9 +9,11 @@ namespace UML {
 
     class OpaqueBehavior;
     class Property;
+    class Expression;
     namespace Parsers {
         class SetOwningSlot;
         class SetOwningInstanceSpec;
+        class SetExpression;
     }
 
     class ValueSpecification : public TypedElement , public PackageableElement {
@@ -21,6 +23,7 @@ namespace UML {
         friend class Property;
         friend class Parsers::SetOwningSlot;
         friend class Parsers::SetOwningInstanceSpec;
+        friend class Parsers::SetExpression;
 
         protected:
             Singleton<Slot, ValueSpecification> m_owningSlot = Singleton<Slot, ValueSpecification>(this);
@@ -47,6 +50,18 @@ namespace UML {
                     void operator()(InstanceSpecification* el) const override;
                     void operator()(ID id) const override;
             };
+            Singleton<Expression, ValueSpecification> m_expression = Singleton<Expression, ValueSpecification>(this);
+            class RemoveExpressionProcedure : public AbstractSingletonProcedure<Expression, ValueSpecification> {
+                public:
+                    RemoveExpressionProcedure(ValueSpecification* me) : AbstractSingletonProcedure<Expression, ValueSpecification>(me) {};
+                    void operator()(Expression* el) const override;
+            };
+            class AddExpressionProcedure : public AbstractSingletonProcedure<Expression, ValueSpecification> {
+                public:
+                    AddExpressionProcedure(ValueSpecification* me) : AbstractSingletonProcedure<Expression, ValueSpecification>(me) {};
+                    void operator()(Expression* el) const override;
+                    void operator()(ID id) const override;
+            };
             void reindexName(std::string oldName, std::string newName) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
@@ -67,6 +82,12 @@ namespace UML {
             bool hasOwningInstanceSpec() const;
             void setOwningInstanceSpec(InstanceSpecification* instanceSpec);
             void setOwningInstanceSpec(InstanceSpecification& instanceSpec);
+            Expression* getExpression();
+            Expression& getExpressionRef();
+            ID getExpressionID() const;
+            bool hasExpression() const;
+            void setExpression(Expression* expression);
+            void setExpression(Expression& expression);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

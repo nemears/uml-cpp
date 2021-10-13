@@ -84,4 +84,31 @@ TEST_F(ExpressionParserTest, mountExpressionTest) {
     ASSERT_EQ(expression2.getOwnedElements().back(), last);
     ASSERT_TRUE(first.hasOwner());
     ASSERT_TRUE(last.hasOwner());
+
+    m.release(first);
+    ASSERT_FALSE(m.loaded(firstID));
+    ASSERT_EQ(expression2.getOperands().frontID(), firstID);
+    LiteralReal& first2 = m.aquire(firstID)->as<LiteralReal>();
+    ASSERT_EQ(expression2.getOperands().size(), 2);
+    ASSERT_EQ(expression2.getOperands().front(), first2);
+    ASSERT_EQ(expression2.getOperands().back(), last);
+    ASSERT_EQ(expression2.getOwnedElements().size(), 2);
+    ASSERT_EQ(expression2.getOwnedElements().front(), first2);
+    ASSERT_EQ(expression2.getOwnedElements().back(), last);
+    ASSERT_TRUE(first2.hasOwner());
+    ASSERT_TRUE(last.hasOwner());
+
+    m.release(first2, expression2);
+    ASSERT_FALSE(m.loaded(firstID));
+    ASSERT_FALSE(m.loaded(expressionID));
+    LiteralReal& first3 = m.aquire(firstID)->as<LiteralReal>();
+    Expression& expression3 = m.aquire(expressionID)->as<Expression>();
+    ASSERT_EQ(expression3.getOperands().size(), 2);
+    ASSERT_EQ(expression3.getOperands().front(), first3);
+    ASSERT_EQ(expression3.getOperands().back(), last);
+    ASSERT_EQ(expression3.getOwnedElements().size(), 2);
+    ASSERT_EQ(expression3.getOwnedElements().front(), first3);
+    ASSERT_EQ(expression3.getOwnedElements().back(), last);
+    ASSERT_TRUE(first3.hasOwner());
+    ASSERT_TRUE(last.hasOwner());
 }

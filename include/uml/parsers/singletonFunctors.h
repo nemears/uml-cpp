@@ -144,6 +144,11 @@ namespace UML {
             public:
                 SetEnumeration();
         };
+
+        class SetExpression : public parseAndSetSingletonFunctor<Expression, ValueSpecification> {
+            public:
+                SetExpression();
+        };
     }
 }
 

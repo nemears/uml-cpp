@@ -137,6 +137,8 @@ namespace UML {
             ~UmlManager();
             /**
               * get<T>(id) is used to get an element from the manager through just it's 
+              * @param id, the id of the element you wish to get from the manager
+              * @return the element you wish to get from the manager
              **/
             template <class T = Element> T& get(ID id) {
                 if (m_elements.count(id)) {
@@ -177,9 +179,12 @@ namespace UML {
 
             // Sets up composite directory of model for quick aquire and release
             void mount(std::string path);
-            // WARN: unfinished
-            // NOTE: I want to go away from key pair access, and efficiently traverse the model tree to find the id
-            // I think performance can be improved a lot by going in that direction 
+            /**
+             * aquire(id) will aquire an element from disc if it is not already loaded
+             * and return a pointer to the element if it was succesfully aquired
+             * @param id, the id of the element you wish to aquire
+             * @return a pointer to the element you wish to aquire, will never be null
+             **/
             Element* aquire(ID id);
             void release(ID id);
             void release(Element& el);

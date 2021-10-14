@@ -2,6 +2,33 @@
 Lightweight UML based MBSE application built on yaml syntax UML config files    
 This is a work in progress but has basic functionality working
 
+## Building
+uml-cpp is built with cmake  and has a couple of dependencies. 
+
+### llvm
+
+Before building you will need to have [lib-clang/llvm](https://llvm.org/) installed and findable by cmake, to do this you must 
+
+#### On Windows:
+
+The only way to obtain llvm on windows currently is to [build from source](https://github.com/llvm/llvm-project/) or there may be a way to use [some other method](https://llvm.org/builds/)
+
+#### On Debian
+`apt-get install libclang-10-dev` should be all you need.
+
+#### On Mac
+Have not built yet on mac, should be possible.
+
+### Running cmake
+
+ When ready to generate build files run the following commands in a terminal in the repository's top level directory, make sure to replace `<generator type>` with your preffered method of compiling e.g: `Unix makefiles`, `Visual Studio 16`, `Ninja`, `Xcode` etc.
+```
+mkdir build
+cd build
+cmake -G <generator type> ..
+cmake --build build --config Release
+```
+You can also choose to build from within your IDE or with whatever generator type make system you specified.
 ## Currently Implemented
 The code currently has an application, but the application will parse a config
 file and print it out. Besides that the source can be used as c++ uml library
@@ -12,32 +39,20 @@ also a class, UmlManager, supplied to control loading and saving from the config
 with object pool semantics.
 
 ### config files
-All of Uml implemented except for activites is mapped to config files, working on
-having more dynamic emits to break up files
+Most of Uml implemented is mapped to config files, These can be stored persistently on disc or used to exchange model information between applications.
 
 ### cpp parsing
 Currently just playing around with clang AST and general mapping, want to round out 
 UmlManager with emits so that parsing is more practical to user
 
-### python parsing
-Ditching for now, not sure if PyBind11 is way to go, will hold off until PyBind11 is
-more mature and cpp parsing is mostly complete
-
 ## TODO
 There is a lot to do right now this is just the next couple items I plan on looking into:  
-  * longterm:      
-    * front-end implementation (look into options, ask for opinions)    
-      * possibilities : Qt, react js, python libs(short term)    
+  * longterm:
     * cpp parsers    
       * [use clang](https://shaharmike.com/cpp/libclang/?fbclid=IwAR1Y9PBig4Hd6bxmNERySpGAk2V09iCThrWuZ3Vb31LFAMG33pa1_kGVQZo), [1](https://clang.llvm.org/get_started.html), [index_header](https://clang.llvm.org/doxygen/Index_8h_source.html#l01562)    
-    * python parsers  
-      * [use pybind11](https://realpython.com/python-bindings-overview/) to port our uml code to python and [use ast](https://docs.python.org/3/library/ast.html#module-ast)  to parse python with it  
-      * this will help in making a [front end](https://wiki.python.org/moin/WebFrameworks) quickly with some ptyhon library for MVP demo    
-    * VSCode extension to realtime graph code as user codes (longterm goal)   
+    * VSCode extension to realtime graph code as user codes
     * PC App that allows diagramming and realtime code binding (longterm goal)
     * further definition of uml    
-      * Need to finish activities, get into interactions and artifacts    
-    * runtime database implementation for UmlManager to query and further acheive object pool design
-  * short-term:    
-    * test test test    
+      * Need to finish activities, get into interactions, and others  
+    * Restful uml-server that can handle requests for data from model (can be used for frontend)
     

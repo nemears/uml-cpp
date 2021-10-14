@@ -21,10 +21,12 @@ namespace UML {
      * A Classifier represents a classification of instances according to their Features
      **/
     class Classifier: public Namespace, public Type , public RedefinableElement, public TemplateableElement {
+        
         friend class UmlManager;
         friend class InstanceSpecification;
         friend class Generalization;
         friend class Parsers::SetNestingClass;
+
         protected:
             Sequence<Feature> m_features = Sequence<Feature>(this);
             Sequence<Property> m_attributes = Sequence<Property>(this);
@@ -117,6 +119,7 @@ namespace UML {
             void referenceReindexed(ID oldID, ID newID) override;
             void referencingReleased(ID id) override;
             void restoreReferences() override;
+            void referenceErased(ID id) override;
             Classifier();
         public:
             virtual ~Classifier();

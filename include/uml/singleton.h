@@ -210,6 +210,13 @@ namespace UML {
                     }
                 }
             };
+
+            void elementErased(ID id) {
+                if (m_id == id) {
+                    m_id = ID::nullID();
+                    m_ptr = 0;
+                }
+            }
     };
 }
 

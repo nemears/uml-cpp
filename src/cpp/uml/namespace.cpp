@@ -63,6 +63,12 @@ void Namespace::restoreReferences() {
     m_ownedMembers.restoreReferences();
 }
 
+void Namespace::referenceErased(ID id) {
+    NamedElement::referenceErased(id);
+    m_members.elementErased(id);
+    m_ownedMembers.elementErased(id);
+}
+
 Namespace::Namespace() {
     m_members.addProcedures.push_back(new AddMemberFunctor(this));
     m_members.removeProcedures.push_back(new RemoveMemberFunctor(this));

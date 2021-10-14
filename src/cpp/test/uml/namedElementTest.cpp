@@ -5,10 +5,17 @@
 #include "uml/package.h"
 #include "uml/umlManager.h"
 #include "test/umlTestUtil.h"
+#include "test/yumlParsersTest.h"
 
 using namespace UML;
 
-class NamedElementTest : public ::testing::Test {};
+class NamedElementTest : public ::testing::Test {
+public:
+    std::string ymlPath;
+    void SetUp() override {
+        ymlPath = YML_FILES_PATH;
+    };
+};
 
 TEST_F(NamedElementTest, SetNameTest) {
     UmlManager m;
@@ -128,4 +135,20 @@ TEST_F(NamedElementTest, singletonMethodsTest) {
     ASSERT_FALSE(c.hasNamespace());
     ASSERT_FALSE(c.getNamespace());
     ASSERT_THROW(c.getNamespaceRef(), NullReferenceException);
+}
+
+TEST_F(NamedElementTest, eraseNamepaceTest) {
+    UmlManager m;
+    Package& package = m.create<Package>();
+    Package& nmspc = m.create<Package>();
+    nmspc.getPackagedElements().add(package);
+    m.setRoot(nmspc);
+    m.mount(ymlPath + "namedElementTests");
+    ID nmspcID = nmspc.getID();
+    m.erase(nmspc);
+    ASSERT_FALSE(std::filesystem::exists((ymlPath + "namedElementTests/" + nmspcID.string() + ".yml")));
+    ASSERT_FALSE(m.loaded(nmspcID));
+    ASSERT_FALSE(package.hasNamespace());
+    ASSERT_TRUE(package.getMemberNamespace().empty());
+    ASSERT_FALSE(package.hasOwner());
 }

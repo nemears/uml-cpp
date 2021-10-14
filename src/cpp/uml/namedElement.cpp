@@ -137,6 +137,14 @@ void NamedElement::restoreReferences() {
     m_supplierDependencies->restoreReferences();
 }
 
+void NamedElement::referenceErased(ID id) {
+    Element::referenceErased(id);
+    m_memberNamespace->elementErased(id);
+    m_namespace.elementErased(id);
+    m_clientDependencies->elementErased(id);
+    m_supplierDependencies->elementErased(id);
+}
+
 NamedElement::NamedElement() {
     m_memberNamespace = new Sequence<Namespace>(this);
     m_memberNamespace->addProcedures.push_back(new AddMemberNamespaceFunctor(this));

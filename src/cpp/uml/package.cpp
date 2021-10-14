@@ -102,6 +102,7 @@ void Package::RemoveOwnedStereotypeFunctor::operator()(Stereotype& el) const {
 
 void Package::setManager(UmlManager* manager) {
     Namespace::setManager(manager);
+    TemplateableElement::setManager(manager);
     m_packagedElements.m_manager = manager;
     m_packageMerge.m_manager = manager;
     m_profileApplications.m_manager = manager;
@@ -111,6 +112,7 @@ void Package::setManager(UmlManager* manager) {
 void Package::referenceReindexed(ID oldID, ID newID) {
     Namespace::referenceReindexed(oldID, newID);
     PackageableElement::referenceReindexed(oldID, newID);
+    TemplateableElement::referenceReindexed(oldID, newID);
     if (m_packagedElements.count(oldID)) {
         m_packagedElements.reindex(oldID, newID, &Package::getPackagedElements);
     }
@@ -127,10 +129,22 @@ void Package::referenceReindexed(ID oldID, ID newID) {
 
 void Package::restoreReferences() {
     Namespace::restoreReferences();
+    PackageableElement::restoreReferences();
+    TemplateableElement::restoreReferences();
     m_packagedElements.restoreReferences();
     m_packageMerge.restoreReferences();
     m_profileApplications.restoreReferences();
     m_ownedStereotypes.restoreReferences();
+}
+
+void Package::referenceErased(ID id) {
+    Namespace::referenceErased(id);
+    PackageableElement::referenceErased(id);
+    TemplateableElement::referenceErased(id);
+    m_packagedElements.elementErased(id);
+    m_packageMerge.elementErased(id);
+    m_profileApplications.elementErased(id);
+    m_ownedStereotypes.elementErased(id);
 }
 
 Package::Package() {

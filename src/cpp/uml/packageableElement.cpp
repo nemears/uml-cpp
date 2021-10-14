@@ -46,6 +46,11 @@ void PackageableElement::restoreReferences() {
     m_owningPackage.restoreReference();
 }
 
+void PackageableElement::referenceErased(ID id) {
+    NamedElement::referenceErased(id);
+    m_owningPackage.elementErased(id);
+}
+
 PackageableElement::PackageableElement() {
     m_owningPackage.m_signature = &PackageableElement::m_owningPackage;
     m_owningPackage.m_removeProcedures.push_back(new RemoveOwningPackageProcedure(this));

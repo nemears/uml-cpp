@@ -188,3 +188,15 @@ TEST_F(PackageTest, packageFullCopyAndEditTest) {
     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c1, copy, &Package::getPackagedElements, &Package::getPackageMerge, &Package::getProfileApplications, &Package::getOwnedStereotypes, &Namespace::getOwnedMembers, &Namespace::getMembers, &NamedElement::getMemberNamespace, &Element::getOwnedElements));
     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c1, copy, &NamedElement::getNamespace, &Element::getOwner));
 }
+
+TEST_F(PackageTest, erasePackagedElementTest) {
+    UmlManager m;
+    Package& parent = m.create<Package>();
+    Package& child = m.create<Package>();
+    parent.getPackagedElements().add(child);
+    m.erase(child);
+    ASSERT_TRUE(parent.getPackagedElements().empty());
+    ASSERT_TRUE(parent.getOwnedMembers().empty());
+    ASSERT_TRUE(parent.getMembers().empty());
+    ASSERT_TRUE(parent.getOwnedElements().empty());
+}

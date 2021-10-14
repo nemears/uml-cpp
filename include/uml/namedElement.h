@@ -24,8 +24,10 @@ namespace UML{
      * A NamedElement is an Element in a model that may have a name
      **/
     class NamedElement : virtual public Element {
+
         friend class UmlManager;
         friend class Namespace;
+
         protected:
             std::string m_name;
             Singleton<Namespace, NamedElement> m_namespace = Singleton<Namespace, NamedElement>(this);
@@ -50,6 +52,7 @@ namespace UML{
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
+            void referenceErased(ID id) override;
             NamedElement();
         public:
             virtual ~NamedElement();

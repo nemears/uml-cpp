@@ -333,6 +333,19 @@ void Classifier::restoreReferences() {
     m_nestingClass.restoreReference();
 }
 
+void Classifier::referenceErased(ID id) {
+    Namespace::referenceErased(id);
+    Type::referenceErased(id);
+    RedefinableElement::referenceErased(id);
+    TemplateableElement::referenceErased(id);
+    m_attributes.elementErased(id);
+    m_features.elementErased(id);
+    m_generalizations.elementErased(id);
+    m_generals.elementErased(id);
+    m_inheritedMembers.elementErased(id);
+    m_nestingClass.elementErased(id);
+}
+
 Classifier::Classifier() {
     m_attributes.addProcedures.push_back(new AddAttributeFunctor(this));
     m_attributes.removeProcedures.push_back(new RemoveAttributeFunctor(this));

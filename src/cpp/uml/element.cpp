@@ -159,6 +159,18 @@ void Element::restoreReference(Element* el) {
     }
 }
 
+void Element::referenceErased(ID id) {
+    m_ownedElements->elementErased(id);
+    m_ownedComments->elementErased(id);
+    m_relationships->elementErased(id);
+    m_directedRelationships->elementErased(id);
+    m_appliedStereotype->elementErased(id);
+    if (m_ownerID == id) {
+        m_ownerID = ID::nullID();
+        m_ownerPtr = 0;
+    }
+}
+
 // Constructor
 Element::Element() {
     m_manager = 0;

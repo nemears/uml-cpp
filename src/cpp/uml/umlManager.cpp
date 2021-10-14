@@ -13,6 +13,7 @@
 #include "uml/mergeNode.h"
 #include "uml/parameterNode.h"
 #include "uml/model.h"
+#include <algorithm>
 
 using namespace std;
 using namespace UML;
@@ -176,6 +177,37 @@ void UmlManager::release(Element& el) {
     } else {
         throw ManagerNotMountedException();
     }
+}
+
+void UmlManager::eraseNode(ManagerNode* node, ID id) {
+    if (node->m_managerElementMemory) {
+        delete node->m_managerElementMemory;
+    }
+    for (size_t i = 0; i < node->m_referenceOrder.size(); i++) {
+        if (!node->m_references[node->m_referenceOrder[i]]->m_managerElementMemory) {
+            aquire(node->m_referenceOrder[i]);
+        }
+        node->m_references[node->m_referenceOrder[i]]->m_managerElementMemory->referenceErased(id);
+    }
+    if (node->m_copies.size() > 0) {
+        // TODO warning
+        for (auto& copy : node->m_copies) {
+            copy->m_node = 0;
+        }
+    }
+    m_graph.erase(id);
+    m_elements.erase(std::find(m_elements.begin(), m_elements.end(), id));
+    if (!m_mountBase.empty()) {
+        filesystem::remove_all(m_mountBase / (id.string() + ".yml"));
+    }
+}
+
+void UmlManager::erase(ID id) {
+    eraseNode(&m_graph[id], id);
+}
+
+void UmlManager::erase(Element& el) {
+    eraseNode(el.m_node, el.getID());
 }
 
 void UmlManager::save() {

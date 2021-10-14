@@ -180,6 +180,7 @@ namespace UML {
             virtual void referenceReindexed(ID oldID, ID newID);
             virtual void restoreReferences();
             virtual void restoreReference(Element* el);
+            virtual void referenceErased(ID id);
             Element();
         public:
             Element(const Element& el);

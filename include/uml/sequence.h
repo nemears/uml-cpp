@@ -336,6 +336,19 @@ namespace UML {
                 // TODO update copies
             }
 
+            void elementErased(ID id) {
+                if (std::find(m_order.begin(), m_order.end(), id) != m_order.end()) {
+                    m_order.erase(std::remove(m_order.begin(), m_order.end(), id), m_order.end()) - m_order.begin();
+                    m_rep.erase(id);
+                    for (auto& nameEntry : m_names) {
+                        if (nameEntry.second == id) {
+                            m_names.erase(nameEntry.first);
+                            break;
+                        }
+                    }
+                }
+            }
+
             void remove(T& el) {
                 if (m_rep.count(el.getID())) {
                     for (auto const& fun : removeChecks) {

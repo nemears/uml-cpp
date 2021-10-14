@@ -132,6 +132,7 @@ namespace UML {
                 return 0;
             }
             void addToMount(Element& el);
+            void eraseNode(ManagerNode* node, ID id);
         public:
             UmlManager();
             ~UmlManager();
@@ -165,7 +166,6 @@ namespace UML {
                 return *ret;
             };
             void reindex(ID oldID, ID newID);
-            void erase(Element& el);
             /**
              * This function doesn't deal with memory, just sets the m_manager so the Sequence Value
              * can communicate to the manager for allocation.
@@ -187,11 +187,26 @@ namespace UML {
              **/
             Element* aquire(ID id);
             void release(ID id);
+            /**
+             * release(el) will effectively delete the element object and write it's contents
+             * to a file so that it can be aquired later if needed. Caveat: make sure all references
+             * to this element are being used because this function does delete the pointer to the
+             * element's memory.
+             * @param el, the element being released from memory
+             **/
             void release(Element& el);
             template <class ... Elements> void release(Element& el, Elements&... els) {
                 release(el);
                 release(els...);
             };
+            void erase(ID id);
+            /**
+             * erase(el) effectively deletes the element object from memory, as well as removes all
+             * references to this element from within the manager. This function is used to dispose 
+             * of an element completely and not keep track of it in persistent/mounted storage
+             * @param el, the element to erase
+             **/
+            void erase(Element& el);
             /**
              * Saves the manager's model to the manager's path as a uml configuration file
              * WARN: if the model is saved, pointers to elements in model will have to be reaccessed 

@@ -153,9 +153,6 @@ namespace UML {
         template <class V, class U> friend class TemplateAbstractSequenceFunctor;
         
         private:
-            // Manager
-            UmlManager* m_manager = 0;
-
             // element that owns this sequence
             Element* m_el = 0;
 
@@ -175,7 +172,7 @@ namespace UML {
                 // m_data
                 T* temp = m_rep[oldID];
                 if (!temp) {
-                    temp = &m_manager->get<T>(newID);
+                    temp = &m_el->m_manager->get<T>(newID);
                 }
                 m_rep.erase(oldID);
                 m_rep[newID] = temp;
@@ -196,7 +193,7 @@ namespace UML {
                     if (m_el) {
                         if (m_el->m_node) {
                             if (!m_el->m_node->m_managerElementMemory) {
-                                m_manager->aquire(oldID);
+                                m_el->m_manager->aquire(oldID);
                             }
                             (m_el->m_node->m_managerElementMemory->template as<U>().*signature)().internalReindex(oldID, newID);
                             for (auto& copy : m_el->m_node->m_copies) {
@@ -220,7 +217,7 @@ namespace UML {
             void internalAdd(T& el) {
                 m_order.push_back(el.getID());
 
-                if (m_manager) {
+                if (m_el->m_manager) {
                     // set element to null until it is accessed
                     m_rep[el.getID()] = 0;
                 } else {
@@ -234,10 +231,8 @@ namespace UML {
                     }
                 }
 
-                if (m_manager) {
-                    if (m_el) {
-                        m_el->setReference(&el);
-                    }
+                if (m_el->m_manager) {
+                    m_el->setReference(&el);
                 }
 
                 // apply procedures
@@ -266,10 +261,8 @@ namespace UML {
                     m_names.erase(el.template as<NamedElement>().getName());
                 }
 
-                if (m_manager) {
-                    if (m_el) {
-                        m_el->removeReference(el.getID());
-                    }
+                if (m_el->m_manager) {
+                    m_el->removeReference(el.getID());
                 }
 
                 // apply procedures
@@ -281,9 +274,9 @@ namespace UML {
             void restoreReferences() {
                 // TODO
                 for (size_t i = 0; i < size(); i++) {
-                    if (m_manager->loaded(m_order[i])) {
+                    if (m_el->m_manager->loaded(m_order[i])) {
                         if (!m_rep[m_order[i]]) {
-                            m_rep[m_order[i]] = &m_manager->get<T>(m_order[i]);
+                            m_rep[m_order[i]] = &m_el->m_manager->get<T>(m_order[i]);
                         }
                         m_rep[m_order[i]]->restoreReference(m_el);
                     }
@@ -378,9 +371,9 @@ namespace UML {
                 if (m_rep.count(id)) {
                     if (!m_rep[id]) {
                         if (m_el) {
-                            m_rep[id] = m_manager->get<T>(m_el, id);
+                            m_rep[id] = m_el->m_manager->get<T>(m_el, id);
                         } else {
-                            m_rep[id] = &m_manager->get<T>(id);
+                            m_rep[id] = &m_el->m_manager->get<T>(id);
                         }
                     }
                     return *m_rep[id];
@@ -390,9 +383,9 @@ namespace UML {
             T& get(size_t index) {
                 if (!m_rep[m_order.at(index)]) {
                     if (m_el) {
-                        m_rep[m_order.at(index)] = m_manager->get<T>(m_el, m_order.at(index));
+                        m_rep[m_order.at(index)] = m_el->m_manager->get<T>(m_el, m_order.at(index));
                     } else {
-                        m_rep[m_order.at(index)] = &m_manager->get<T>(m_order.at(index));
+                        m_rep[m_order.at(index)] = &m_el->m_manager->get<T>(m_order.at(index));
                     }
                 }
                 return *m_rep[m_order.at(index)];
@@ -404,9 +397,9 @@ namespace UML {
                 if (m_names.count(name)) {
                     if (!m_rep[m_names[name]]) {
                         if (m_el) {
-                            m_rep[m_names[name]] = m_manager->get<T>(m_el, m_names[name]);
+                            m_rep[m_names[name]] = m_el->m_manager->get<T>(m_el, m_names[name]);
                         } else {
-                            m_rep[m_names[name]] = &m_manager->get<T>(m_names[name]);
+                            m_rep[m_names[name]] = &m_el->m_manager->get<T>(m_names[name]);
                         }
                     }
                     return *m_rep[m_names[name]];
@@ -422,9 +415,9 @@ namespace UML {
             T& front() { 
                 if (!m_rep[m_order.front()]) {
                     if (m_el) {
-                        m_rep[m_order.front()] = m_manager->get<T>(m_el, m_order.front());
+                        m_rep[m_order.front()] = m_el->m_manager->get<T>(m_el, m_order.front());
                     } else {
-                        m_rep[m_order.front()] = &m_manager->get<T>(m_order.front());
+                        m_rep[m_order.front()] = &m_el->m_manager->get<T>(m_order.front());
                     }
                 }
                 return *m_rep[m_order.front()];
@@ -435,9 +428,9 @@ namespace UML {
             T& back() {
                 if (!m_rep[m_order.back()]) {
                     if (m_el) {
-                        m_rep[m_order.back()] = m_manager->get<T>(m_el, m_order.back());
+                        m_rep[m_order.back()] = m_el->m_manager->get<T>(m_el, m_order.back());
                     } else {
-                        m_rep[m_order.back()] = &m_manager->get<T>(m_order.back());
+                        m_rep[m_order.back()] = &m_el->m_manager->get<T>(m_order.back());
                     }
                 }
                 return *m_rep[m_order.back()];
@@ -570,9 +563,9 @@ namespace UML {
                     m_ptr = m_sequence->m_rep.at(*m_orderIt);
                     if (!m_ptr) {
                         if (m_sequence->m_el) {
-                            m_ptr = m_sequence->m_manager->template get<T>(m_sequence->m_el, *m_orderIt);
+                            m_ptr = m_sequence->m_el->m_manager->template get<T>(m_sequence->m_el, *m_orderIt);
                         } else {
-                            m_ptr = &m_sequence->m_manager->template get<T>(*m_orderIt);
+                            m_ptr = &m_sequence->m_el->m_manager->template get<T>(*m_orderIt);
                         }
                     }
                 }

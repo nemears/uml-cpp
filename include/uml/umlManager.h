@@ -34,6 +34,16 @@ namespace UML {
         };
     };
 
+    class UnknownID_Exception : public std::exception {
+        private:
+            std::string m_msg;
+            const char* what() const throw() override {
+                return m_msg.c_str();
+            };
+        public:
+            UnknownID_Exception(ID id) : m_msg("unknown ID given when trying to get an element from the manager, ID: "  + id.string()) {};
+    };
+
     /**
      * UmlManager is the object that handles all of the instantiation and deletion of UML objects
      * from a model. It follows object pool semantics to be able to hold information about large
@@ -125,14 +135,22 @@ namespace UML {
         public:
             UmlManager();
             ~UmlManager();
+            /**
+              * get<T>(id) is used to get an element from the manager through just it's 
+             **/
             template <class T = Element> T& get(ID id) {
-                if (!m_graph.count(id)) {
-                    aquire(id);
+                if (m_elements.count(id)) {
+                    if (!m_graph.count(id)) {
+                        aquire(id);
+                    }
+                    if (!m_graph[id].m_managerElementMemory) {
+                        aquire(id);
+                    }
+
+                    return *dynamic_cast<T*>(m_graph[id].m_managerElementMemory);
+                } else {
+                    throw UnknownID_Exception(id);
                 }
-                if (!m_graph[id].m_managerElementMemory) {
-                    aquire(id);
-                }
-                return *dynamic_cast<T*>(m_graph[id].m_managerElementMemory);
             };
             size_t count(ID id);
             bool loaded(ID id);
@@ -140,13 +158,12 @@ namespace UML {
                 T* ret = new T;
                 ret->setManager(this);
                 m_elements.insert(ret->getID());
-                // ManagerNode discData = {ret};
                 m_graph[ret->getID()] = {ret};
                 ret->m_node = &m_graph[ret->getID()];
                 return *ret;
             };
             void reindex(ID oldID, ID newID);
-            
+            void erase(Element& el);
             /**
              * This function doesn't deal with memory, just sets the m_manager so the Sequence Value
              * can communicate to the manager for allocation.

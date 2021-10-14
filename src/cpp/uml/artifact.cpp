@@ -249,6 +249,15 @@ void Artifact::restoreReferences() {
     m_artifact.restoreReference();
 }
 
+void Artifact::referenceErased(ID id) {
+    Classifier::referenceErased(id);
+    m_ownedAttributes.elementErased(id);
+    m_ownedOperations.elementErased(id);
+    m_nestedArtifacts.elementErased(id);
+    m_manifestations.elementErased(id);
+    m_artifact.elementErased(id);
+}
+
 Artifact::Artifact() {
     m_ownedAttributes.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
     m_ownedAttributes.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));

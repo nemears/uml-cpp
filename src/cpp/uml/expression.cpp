@@ -46,6 +46,11 @@ void Expression::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void Expression::referenceErased(ID id) {
+    ValueSpecification::referenceErased(id);
+    m_operands.elementErased(id);
+}
+
 Expression::Expression() {
     m_operands.addProcedures.push_back(new AddOperandFunctor(this));
     m_operands.removeProcedures.push_back(new RemoveOperandFunctor(this));

@@ -72,6 +72,16 @@ void TemplateableElement::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void TemplateableElement::restoreReferences() {
+    m_ownedTemplateSignature.restoreReference();
+    m_templateBinding.restoreReference();
+}
+
+void TemplateableElement::referenceErased(ID id) {
+    m_ownedTemplateSignature.elementErased(id);
+    m_templateBinding.elementErased(id);
+}
+
 TemplateableElement::TemplateableElement() {
     m_ownedTemplateSignature.m_signature = &TemplateableElement::m_ownedTemplateSignature;
     m_ownedTemplateSignature.m_removeProcedures.push_back(new RemoveOwnedTemplateSignatureProcedure(this));

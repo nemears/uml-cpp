@@ -11,6 +11,7 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
+            void referenceErased(ID id) override;
             StructuralFeature(){};
         public:
             StructuralFeature(const StructuralFeature& feature) : TypedElement(feature), MultiplicityElement(feature), Feature(feature) {};

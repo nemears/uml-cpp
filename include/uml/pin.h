@@ -8,6 +8,9 @@ namespace UML {
     class Pin : public ObjectNode , public MultiplicityElement {
         protected:
             void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override {}; // TODO
+            void referenceErased(ID id) override {}; // TODO
         public:
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;

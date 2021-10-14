@@ -40,6 +40,11 @@ void OpaqueBehavior::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void OpaqueBehavior::referenceErased(ID id) {
+    Behavior::referenceErased(id);
+    m_bodies.elementErased(id);
+}
+
 OpaqueBehavior::OpaqueBehavior() {
     m_bodies.addProcedures.push_back(new AddBodyFunctor(this));
     m_bodies.removeProcedures.push_back(new RemoveBodyFunctor(this));

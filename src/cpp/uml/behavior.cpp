@@ -90,6 +90,20 @@ void Behavior::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void Behavior::restoreReferences() {
+    Class::restoreReferences();
+    m_ownedParameters.restoreReferences();
+    m_specification.restoreReference();
+    m_behavioredClassifier.restoreReference();
+}
+
+void Behavior::referenceErased(ID id) {
+    Class::referenceErased(id);
+    m_ownedParameters.elementErased(id);
+    m_specification.elementErased(id);
+    m_behavioredClassifier.elementErased(id);
+}
+
 Behavior::Behavior() {
     m_ownedParameters.addProcedures.push_back(new AddOwnedParameterFunctor(this));
     m_ownedParameters.removeProcedures.push_back(new RemoveOwnedParameterFunctor(this));

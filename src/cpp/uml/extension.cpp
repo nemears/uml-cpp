@@ -42,6 +42,11 @@ void Extension::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void Extension::referenceErased(ID id) {
+    Association::referenceErased(id);
+    m_ownedEnd.elementErased(id);
+}
+
 Extension::Extension() {
     m_metaClass = ElementType::ELEMENT;
     m_ownedEnd.m_signature = &Extension::m_ownedEnd;

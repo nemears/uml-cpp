@@ -94,6 +94,7 @@ void Class::setManager(UmlManager* manager) {
 
 void Class::referencingReleased(ID id) {
     StructuredClassifier::referencingReleased(id);
+    BehavioredClassifier::referencingReleased(id);
     m_ownedOperations.elementReleased(id, &Class::getOwnedOperations);
     m_nestedClassifiers.elementReleased(id, &Class::getNestedClassifiers);
 }
@@ -111,8 +112,16 @@ void Class::referenceReindexed(ID oldID, ID newID) {
 
 void Class::restoreReferences() {
     StructuredClassifier::restoreReferences();
+    BehavioredClassifier::restoreReferences();
     m_ownedOperations.restoreReferences();
     m_nestedClassifiers.restoreReferences();
+}
+
+void Class::referenceErased(ID id) {
+    StructuredClassifier::referenceErased(id);
+    BehavioredClassifier::referenceErased(id);
+    m_ownedOperations.elementErased(id);
+    m_nestedClassifiers.elementErased(id);
 }
 
 Class::Class() {

@@ -136,6 +136,14 @@ void Operation::restoreReferences() {
     m_artifact.restoreReference();
 }
 
+void Operation::referenceErased(ID id) {
+    BehavioralFeature::referenceErased(id);
+    m_type.elementErased(id);
+    m_class.elementErased(id);
+    m_dataType.elementErased(id);
+    m_artifact.elementErased(id);
+}
+
 Operation::Operation() {
     m_type.m_signature = &Operation::m_type;
     m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));

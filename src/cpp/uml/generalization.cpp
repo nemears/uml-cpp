@@ -127,6 +127,12 @@ void Generalization::restoreReferences() {
     m_specific.restoreReference();
 }
 
+void Generalization::referenceErased(ID id) {
+    DirectedRelationship::referenceErased(id);
+    m_general.elementErased(id);
+    m_specific.elementErased(id);
+}
+
 Generalization::Generalization() {
     m_general.m_signature = &Generalization::m_general;
     m_general.m_removeProcedures.push_back(new RemoveGeneralProcedure(this));

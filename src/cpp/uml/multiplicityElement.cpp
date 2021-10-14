@@ -58,6 +58,35 @@ void MultiplicityElement::AddUpperValueProcedures::operator()(ValueSpecification
     }
 }
 
+void MultiplicityElement::referencingReleased(ID id) {
+    if (m_lowVal.id() == id) {
+        m_lowVal.release();
+    }
+
+    if (m_upVal.id() == id) {
+        m_upVal.release();
+    }
+}
+
+void MultiplicityElement::referenceReindexed(ID oldID, ID newID) {
+    if (m_lowVal.id() == oldID) {
+        m_lowVal.reindex(oldID, newID);
+    }
+    if (m_upVal.id() == oldID) {
+        m_lowVal.reindex(oldID, newID);
+    }
+}
+
+void MultiplicityElement::restoreReferences() {
+    m_lowVal.restoreReference();
+    m_upVal.restoreReference();
+}
+
+void MultiplicityElement::referenceErased(ID id) {
+    m_lowVal.elementErased(id);
+    m_upVal.elementErased(id);
+}
+
 MultiplicityElement::MultiplicityElement() {
     m_lowVal.m_signature = &MultiplicityElement::m_lowVal;
     m_lowVal.m_removeProcedures.push_back(new RemoveLowerValueProcedures(this));
@@ -179,14 +208,4 @@ bool MultiplicityElement::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void MultiplicityElement::referencingReleased(ID id) {
-    if (m_lowVal.id() == id) {
-        m_lowVal.release();
-    }
-
-    if (m_upVal.id() == id) {
-        m_upVal.release();
-    }
 }

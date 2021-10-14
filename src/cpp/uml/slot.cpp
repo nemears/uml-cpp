@@ -104,6 +104,13 @@ void Slot::restoreReferences() {
     m_owningInstance.restoreReference();
 }
 
+void Slot::referenceErased(ID id) {
+    Element::referenceErased(id);
+    m_definingFeature.elementErased(id);
+    m_values.elementErased(id);
+    m_owningInstance.elementErased(id);
+}
+
 Slot::Slot() {
     m_definingFeature.m_signature = &Slot::m_definingFeature;
     m_definingFeature.m_addProcedures.push_back(new AddDefiningFeatureProcedure(this));

@@ -36,8 +36,9 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
-        public:
+            void referenceErased(ID id) override;
             Dependency();
+        public:
             Dependency(const Dependency& dependency);
             virtual ~Dependency();
             Sequence<NamedElement>& getClient();

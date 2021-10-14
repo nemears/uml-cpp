@@ -12,8 +12,11 @@ namespace UML {
     }
 
     class Comment : public Element {
+
+        friend class UmlManager;
         friend class RemoveOwnedCommentFunctor;
         friend class Parsers::SetOwningElement;
+
         private:
             std::string m_body;
             Singleton<Element, Comment> m_owningElement = Singleton<Element, Comment>(this);
@@ -31,8 +34,9 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
-        public:
+            void referenceErased(ID id) override;
             Comment();
+        public:
             Comment(const Comment& lhs);
             std::string getBody();
             void setBody(std::string body);

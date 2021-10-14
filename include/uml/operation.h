@@ -77,6 +77,7 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
+            void referenceErased(ID id) override;
             Operation();
         public:
             Operation(const Operation& op);

@@ -108,6 +108,14 @@ void ValueSpecification::restoreReferences() {
     m_expression.restoreReference();
 }
 
+void ValueSpecification::referenceErased(ID id) {
+    TypedElement::referenceErased(id);
+    PackageableElement::referenceErased(id);
+    m_owningSlot.elementErased(id);
+    m_owningInstanceSpec.elementErased(id);
+    m_expression.elementErased(id);
+}
+
 ValueSpecification::ValueSpecification() {
     m_owningSlot.m_signature = &ValueSpecification::m_owningSlot;
     m_owningSlot.m_removeProcedures.push_back(new RemoveOwningSlotProcedure(this));

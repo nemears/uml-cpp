@@ -45,6 +45,7 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
+            void referenceErased(ID id) override;
             class AddValueFunctor : public TemplateAbstractSequenceFunctor<ValueSpecification,Slot> {
                 public:
                     AddValueFunctor(Slot* me) : TemplateAbstractSequenceFunctor(me) {};

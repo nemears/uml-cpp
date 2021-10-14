@@ -199,6 +199,14 @@ void Association::restoreReference(Element* el) {
     }
 }
 
+void Association::referenceErased(ID id) {
+    Classifier::referenceErased(id);
+    Relationship::referenceErased(id);
+    m_memberEnds.elementErased(id);
+    m_ownedEnds.elementErased(id);
+    m_navigableOwnedEnds.elementErased(id);
+}
+
 Association::Association() {
     m_memberEnds.addProcedures.push_back(new AddMemberEndFunctor(this));
     m_memberEnds.removeProcedures.push_back(new RemoveMemberEndFunctor(this));

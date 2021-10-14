@@ -83,9 +83,21 @@ void TemplateBinding::referenceReindexed(ID oldID, ID newID) {
     if (m_boundElement.id() == oldID) {
         m_boundElement.reindex(oldID, newID);
     }
-    if (m_boundElement.id() == oldID) {
-        m_boundElement.reindex(oldID, newID);
+    if (m_signature.id() == oldID) {
+        m_signature.reindex(oldID, newID);
     }
+}
+
+void TemplateBinding::restoreReferences() {
+    DirectedRelationship::restoreReferences();
+    m_boundElement.restoreReference();
+    m_signature.restoreReference();
+}
+
+void TemplateBinding::referenceErased(ID id) {
+    DirectedRelationship::referenceErased(id);
+    m_boundElement.elementErased(id);
+    m_signature.elementErased(id);
 }
 
 TemplateBinding::TemplateBinding() {

@@ -77,11 +77,13 @@ void InstanceSpecification::RemoveSlotFunctor::operator()(Slot& el) const {
 
 void InstanceSpecification::setManager(UmlManager* manager) {
     PackageableElement::setManager(manager);
+    DeployedArtifact::setManager(manager);
     m_slots.m_manager = manager;
 }
 
 void InstanceSpecification::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
+    DeployedArtifact::referenceReindexed(oldID, newID);
     if (m_classifier.id() == oldID) {
         m_classifier.reindex(oldID, newID);
     }
@@ -95,6 +97,7 @@ void InstanceSpecification::referenceReindexed(ID oldID, ID newID) {
 
 void InstanceSpecification::referencingReleased(ID id) {
     PackageableElement::referencingReleased(id);
+    DeployedArtifact::referencingReleased(id);
     if (m_classifier.id() == id) {
         m_classifier.release();
     }
@@ -111,6 +114,13 @@ void InstanceSpecification::restoreReferences() {
     m_classifier.restoreReference();
     m_specification.restoreReference();
     m_slots.restoreReferences();
+}
+
+void InstanceSpecification::referenceErased(ID id) {
+    PackageableElement::referenceErased(id);
+    m_classifier.elementErased(id);
+    m_specification.elementErased(id);
+    m_slots.elementErased(id);
 }
 
 InstanceSpecification::InstanceSpecification() {

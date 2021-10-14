@@ -5,8 +5,12 @@
 
 namespace UML {
     class DeployedArtifact : virtual public NamedElement {
-        public:
+
+        friend class UmlManager;
+
+        protected:
             DeployedArtifact();
+        public:
             DeployedArtifact(const DeployedArtifact& deployedArtifact);
             virtual ~DeployedArtifact();
             ElementType getElementType() const override;

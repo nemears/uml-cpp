@@ -59,6 +59,12 @@ void Deployment::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void Deployment::referenceErased(ID id) {
+    Dependency::referenceErased(id);
+    m_location.elementErased(id);
+    m_deployedArtifacts.elementErased(id);
+}
+
 Deployment::Deployment() {
     m_deployedArtifacts.addProcedures.push_back(new AddDeployedArtifactFunctor(this));
     m_deployedArtifacts.removeProcedures.push_back(new RemoveDeployedArtifactFunctor(this));

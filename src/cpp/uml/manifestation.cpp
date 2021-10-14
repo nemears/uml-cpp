@@ -73,6 +73,12 @@ void Manifestation::restoreReferences() {
     m_artifact.restoreReference();
 }
 
+void Manifestation::referenceErased(ID id) {
+    Abstraction::referenceErased(id);
+    m_utilizedElement.elementErased(id);
+    m_artifact.elementErased(id);
+}
+
 Manifestation::Manifestation() {
     m_utilizedElement.m_signature = &Manifestation::m_utilizedElement;
     m_utilizedElement.m_addProcedures.push_back(new AddUtilizedElementProcedure(this));

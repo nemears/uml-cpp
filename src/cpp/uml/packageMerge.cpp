@@ -53,6 +53,18 @@ void PackageMerge::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void PackageMerge::restoreReferences() {
+    DirectedRelationship::restoreReferences();
+    m_mergedPackage.restoreReference();
+    m_receivingPackage.restoreReference();
+}
+
+void PackageMerge::referenceErased(ID id) {
+    DirectedRelationship::referenceErased(id);
+    m_mergedPackage.elementErased(id);
+    m_receivingPackage.elementErased(id);
+}
+
 PackageMerge::PackageMerge() {
     m_receivingPackage.m_signature = &PackageMerge::m_receivingPackage;
     m_receivingPackage.m_removeProcedures.push_back(new RemoveReceivingPackageProcedure(this));

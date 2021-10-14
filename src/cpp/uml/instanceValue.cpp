@@ -25,6 +25,11 @@ void InstanceValue::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void InstanceValue::referenceErased(ID id) {
+    ValueSpecification::referenceErased(id);
+    m_instance.elementErased(id);
+}
+
 InstanceValue::InstanceValue() {
     m_instance.m_signature = &InstanceValue::m_instance;
     m_instance.m_addProcedures.push_back(new AddInstanceProcedure(this));

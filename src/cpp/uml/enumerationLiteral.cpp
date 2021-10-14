@@ -46,6 +46,11 @@ void EnumerationLiteral::restoreReferences() {
     m_enumeration.restoreReference();
 }
 
+void EnumerationLiteral::referenceErased(ID id) {
+    InstanceSpecification::referenceErased(id);
+    m_enumeration.elementErased(id);
+}
+
 EnumerationLiteral::EnumerationLiteral() {
     m_enumeration.m_signature = &EnumerationLiteral::m_enumeration;
     m_enumeration.m_addProcedures.push_back(new AddEnumerationProcedure(this));

@@ -25,6 +25,16 @@ void Stereotype::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void Stereotype::restoreReferences() {
+    Class::restoreReferences();
+    m_profile.restoreReference();
+}
+
+void Stereotype::referenceErased(ID id) {
+    Class::referenceErased(id);
+    m_profile.elementErased(id);
+}
+
 Stereotype::Stereotype() {
     m_profile.m_signature = &Stereotype::m_profile;
     m_profile.m_addProcedures.push_back(new AddProfileProcedure(this));

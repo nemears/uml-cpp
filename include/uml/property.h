@@ -172,6 +172,7 @@ namespace UML{
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void restoreReference(Element* el) override;
+            void referenceErased(ID id) override;
             Property();
         public:
             Property(const Property& prop);

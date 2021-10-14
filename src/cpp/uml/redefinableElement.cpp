@@ -27,13 +27,11 @@ void RedefinableElement::setManager(UmlManager* manager) {
 }
 
 void RedefinableElement::referencingReleased(ID id) {
-    NamedElement::referencingReleased(id);
     m_redefinedElement.elementReleased(id, &RedefinableElement::getRedefinedElements);
     m_redefinitionContext.elementReleased(id, &RedefinableElement::getRedefinitionContext);
 }
 
 void RedefinableElement::referenceReindexed(ID oldID, ID newID) {
-    NamedElement::referenceReindexed(oldID, newID);
     if (m_redefinedElement.count(oldID)) {
         m_redefinedElement.reindex(oldID, newID, &RedefinableElement::getRedefinedElements);
     }
@@ -45,6 +43,11 @@ void RedefinableElement::referenceReindexed(ID oldID, ID newID) {
 void RedefinableElement::restoreReferences() {
     m_redefinedElement.restoreReferences();
     m_redefinitionContext.restoreReferences();
+}
+
+void RedefinableElement::referenceErased(ID id) {
+    m_redefinedElement.elementErased(id);
+    m_redefinitionContext.elementErased(id);
 }
 
 RedefinableElement::RedefinableElement() {

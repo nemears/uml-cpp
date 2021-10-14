@@ -5,23 +5,6 @@
 using namespace std;
 using namespace UML;
 
-void Relationship::setManager(UmlManager* manager) {
-    Element::setManager(manager);
-    m_relatedElements.m_manager = manager;
-}
-
-void Relationship::referencingReleased(ID id) {
-    Element::referencingReleased(id);
-    m_relatedElements.elementReleased(id, &Relationship::getRelatedElements);
-}
-
-void Relationship::referenceReindexed(ID oldID, ID newID) {
-    Element::referenceReindexed(oldID, newID);
-    if (m_relatedElements.count(oldID)) {
-        m_relatedElements.reindex(oldID, newID, &Relationship::getRelatedElements);
-    }
-}
-
 void Relationship::AddRelationshipFunctor::operator()(Element& el) const {
     // add to related elements if not duplicate
     if (!el.getRelationships().count(m_el->getID())) {
@@ -53,6 +36,33 @@ void Relationship::RemoveRelatedElementsFunctor::operator()(Element& el) const {
         }
     }
     updateCopiedSequenceRemovedFrom(el, &Relationship::getRelatedElements);
+}
+
+void Relationship::setManager(UmlManager* manager) {
+    Element::setManager(manager);
+    m_relatedElements.m_manager = manager;
+}
+
+void Relationship::referencingReleased(ID id) {
+    Element::referencingReleased(id);
+    m_relatedElements.elementReleased(id, &Relationship::getRelatedElements);
+}
+
+void Relationship::referenceReindexed(ID oldID, ID newID) {
+    Element::referenceReindexed(oldID, newID);
+    if (m_relatedElements.count(oldID)) {
+        m_relatedElements.reindex(oldID, newID, &Relationship::getRelatedElements);
+    }
+}
+
+void Relationship::restoreReferences() {
+    Element::restoreReferences();
+    m_relatedElements.restoreReferences();
+}
+
+void Relationship::referenceErased(ID id) {
+    Element::referenceErased(id);
+    m_relatedElements.elementErased(id);
 }
 
 Relationship::Relationship() {

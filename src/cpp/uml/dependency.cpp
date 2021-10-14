@@ -86,6 +86,13 @@ void Dependency::restoreReferences() {
     m_supplier.restoreReferences();
 }
 
+void Dependency::referenceErased(ID id) {
+    PackageableElement::referenceErased(id);
+    DirectedRelationship::referenceErased(id);
+    m_client.elementErased(id);
+    m_supplier.elementErased(id);
+}
+
 Dependency::Dependency() {
     m_client.addProcedures.push_back(new AddClientFunctor(this));
     m_client.removeProcedures.push_back(new RemoveClientFunctor(this));

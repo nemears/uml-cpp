@@ -6,7 +6,9 @@
 
 namespace UML {
     class Association : public Classifier, public Relationship {
+
         friend class UmlManager;
+
         protected:
             Sequence<Property> m_memberEnds = Sequence<Property>(this);
             Sequence<Property> m_ownedEnds = Sequence<Property>(this);
@@ -61,14 +63,7 @@ namespace UML {
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void restoreReference(Element* el) override;
-            /**
-             * TODO Think about constructor Association(Property& end1, Property& end2) {
-             *      // sequence stuff
-             *      m_memberEnd->add(end1);
-             *      m_memberEnd->add(end2);
-             * }
-             * The reason is because an association NEEDS 2 ends atleast
-             **/
+            void referenceErased(ID id) override;
             Association();
         public:
             Association(const Association& rhs);

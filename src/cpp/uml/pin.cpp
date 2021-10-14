@@ -2,6 +2,11 @@
 
 using namespace UML;
 
+void Pin::referenceReindexed(ID oldID, ID newID) {
+    ObjectNode::referenceReindexed(oldID, newID);
+    MultiplicityElement::referenceReindexed(oldID, newID);
+}
+
 ElementType Pin::getElementType() const {
     return ElementType::PIN;
 }

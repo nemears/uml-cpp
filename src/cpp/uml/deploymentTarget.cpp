@@ -42,6 +42,11 @@ void DeploymentTarget::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void DeploymentTarget::referenceErased(ID id) {
+    NamedElement::referenceErased(id);
+    m_deployments.elementErased(id);
+}
+
 DeploymentTarget::DeploymentTarget() {
     m_deployments.addProcedures.push_back(new AddDeploymentFunctor(this));
     m_deployments.removeProcedures.push_back(new RemoveDeploymentFunctor(this));

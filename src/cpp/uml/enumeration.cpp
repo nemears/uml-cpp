@@ -53,6 +53,11 @@ void Enumeration::restoreReferences() {
     m_ownedLiterals.restoreReferences();
 }
 
+void Enumeration::referenceErased(ID id) {
+    DataType::referenceErased(id);
+    m_ownedLiterals.elementErased(id);
+}
+
 Enumeration::Enumeration() {
     m_ownedLiterals.addProcedures.push_back(new AddOwnedLiteralFunctor(this));
     m_ownedLiterals.removeProcedures.push_back(new RemoveOwnedLiteralFunctor(this));

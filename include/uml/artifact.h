@@ -12,8 +12,10 @@ namespace UML {
     }
 
     class Artifact : public Classifier, public DeployedArtifact {
+
         friend class UmlManager;
         friend class Parsers::ArtifactSetArtifact;
+
         protected:
             Sequence<Artifact> m_nestedArtifacts = Sequence<Artifact>(this);
             Sequence<Property> m_ownedAttributes = Sequence<Property>(this);
@@ -84,6 +86,7 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
+            void referenceErased(ID id) override;
             Artifact();
         public:
             Artifact(const Artifact& artifact);

@@ -89,6 +89,22 @@ void TemplateParameterSubstitution::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void TemplateParameterSubstitution::restoreReferences() {
+    Element::restoreReferences();
+    m_formal.restoreReference();
+    m_templateBinding.restoreReference();
+    m_actual.restoreReference();
+    m_ownedActual.restoreReference();
+}
+
+void TemplateParameterSubstitution::referenceErased(ID id) {
+    Element::referenceErased(id);
+    m_formal.elementErased(id);
+    m_templateBinding.elementErased(id);
+    m_actual.elementErased(id);
+    m_ownedActual.elementErased(id);
+}
+
 TemplateParameterSubstitution::TemplateParameterSubstitution() {
     m_formal.m_signature = &TemplateParameterSubstitution::m_formal;
     m_formal.m_addProcedures.push_back(new AddFormalProcedure(this));

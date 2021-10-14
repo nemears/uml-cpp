@@ -82,6 +82,20 @@ void TemplateSignature::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void TemplateSignature::restoreReferences() {
+    Element::restoreReferences();
+    m_template.restoreReference();
+    m_ownedParameter.restoreReferences();
+    m_parameter.restoreReferences();
+}
+
+void TemplateSignature::referenceErased(ID id) {
+    Element::referenceErased(id);
+    m_template.elementErased(id);
+    m_ownedParameter.elementErased(id);
+    m_parameter.elementErased(id);
+}
+
 TemplateSignature::TemplateSignature() {
     m_template.m_signature = &TemplateSignature::m_template;
     m_template.m_removeProcedures.push_back(new RemoveTemplateProcedure(this));

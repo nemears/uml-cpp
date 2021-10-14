@@ -34,14 +34,30 @@ void Feature::reindexName(string oldName, string newName) {
 
 void Feature::referenceReindexed(ID oldID, ID newID) {
     RedefinableElement::referenceReindexed(oldID, newID);
+    NamedElement::referenceReindexed(oldID, newID);
     if (m_featuringClassifier.id() == oldID) {
         m_featuringClassifier.reindex(oldID, newID);
     }
 }
 
+void Feature::referencingReleased(ID id) {
+    RedefinableElement::referencingReleased(id);
+    NamedElement::referencingReleased(id);
+    if (m_featuringClassifier.id() == id) {
+        m_featuringClassifier.release();
+    }
+}
+
 void Feature::restoreReferences() {
     RedefinableElement::restoreReferences();
+    NamedElement::restoreReferences();
     m_featuringClassifier.restoreReference();
+}
+
+void Feature::referenceErased(ID id) {
+    RedefinableElement::referenceErased(id);
+    NamedElement::referenceErased(id);
+    m_featuringClassifier.elementErased(id);
 }
 
 Feature::Feature() {
@@ -101,11 +117,4 @@ bool Feature::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void Feature::referencingReleased(ID id) {
-    RedefinableElement::referencingReleased(id);
-    if (m_featuringClassifier.id() == id) {
-        m_featuringClassifier.release();
-    }
 }

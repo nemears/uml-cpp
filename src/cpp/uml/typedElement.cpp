@@ -34,6 +34,11 @@ void TypedElement::restoreReferences() {
     m_type.restoreReference();
 }
 
+void TypedElement::referenceErased(ID id) {
+    NamedElement::referenceErased(id);
+    m_type.elementErased(id);
+}
+
 TypedElement::TypedElement() {
     m_type.m_signature = &TypedElement::m_type;
     m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));

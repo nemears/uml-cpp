@@ -70,6 +70,11 @@ void BehavioredClassifier::restoreReferences() {
     m_classifierBehavior.restoreReference();
 }
 
+void BehavioredClassifier::referenceErased(ID id) {
+    m_ownedBehaviors.elementErased(id);
+    m_classifierBehavior.elementErased(id);
+}
+
 BehavioredClassifier::BehavioredClassifier() {
     m_ownedBehaviors.addProcedures.push_back(new AddOwnedBehaviorFunctor(this));
     m_ownedBehaviors.removeProcedures.push_back(new RemoveOwnedBehaviorFunctor(this));

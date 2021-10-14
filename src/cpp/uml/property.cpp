@@ -391,6 +391,20 @@ void Property::restoreReference(Element* el) {
     }
 }
 
+void Property::referenceErased(ID id) {
+    StructuralFeature::referenceErased(id);
+    DeploymentTarget::referenceErased(id);
+    m_defaultValue.elementErased(id);
+    m_classifier.elementErased(id);
+    m_structuredClassifier.elementErased(id);
+    m_dataType.elementErased(id);
+    m_class.elementErased(id);
+    m_association.elementErased(id);
+    m_owningAssociation.elementErased(id);
+    m_artifact.elementErased(id);
+    m_redefinedProperties.elementErased(id);
+}
+
 Property::Property() {
     m_aggregation = AggregationKind::NONE;
     m_composite = false;

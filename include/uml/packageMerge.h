@@ -37,6 +37,8 @@ namespace UML {
             };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
+            void referenceErased(ID id) override;
             PackageMerge();
         public:
             PackageMerge(const PackageMerge& merge);

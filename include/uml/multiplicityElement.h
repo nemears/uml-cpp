@@ -35,12 +35,15 @@ namespace UML {
                     void operator()(ValueSpecification* el) const override;
             };
             void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
+            void referenceErased(ID id) override;
+            MultiplicityElement();
         private:
             bool m_multiplicityIsSpecified = false;
             bool m_lowSpecified = false;
             bool m_upSpecified = false;
         public:
-            MultiplicityElement();
             MultiplicityElement(const MultiplicityElement& rhs);
             int getLower();
             void setLower(const int low);

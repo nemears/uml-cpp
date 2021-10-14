@@ -53,6 +53,18 @@ void ProfileApplication::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void ProfileApplication::restoreReferences() {
+    DirectedRelationship::restoreReferences();
+    m_appliedProfile.restoreReference();
+    m_applyingPackage.restoreReference();
+}
+
+void ProfileApplication::referenceErased(ID id) {
+    DirectedRelationship::referenceErased(id);
+    m_appliedProfile.elementErased(id);
+    m_applyingPackage.elementErased(id);
+}
+
 ProfileApplication::ProfileApplication() {
     m_appliedProfile.m_signature = &ProfileApplication::m_appliedProfile;
     m_appliedProfile.m_addProcedures.push_back(new AddAppliedProfileProcedure(this));

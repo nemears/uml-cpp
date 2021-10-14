@@ -20,6 +20,12 @@ void StructuralFeature::restoreReferences() {
     Feature::restoreReferences();
 }
 
+void StructuralFeature::referenceErased(ID id) {
+    TypedElement::referenceErased(id);
+    MultiplicityElement::referenceErased(id);
+    Feature::referenceErased(id);
+}
+
 ElementType StructuralFeature::getElementType() const {
     return ElementType::STRUCTURAL_FEATURE;
 }

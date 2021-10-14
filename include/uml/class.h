@@ -9,7 +9,9 @@ namespace UML{
     class Operation;
 
     class Class : public StructuredClassifier , public BehavioredClassifier {
+
         friend class UmlManager;
+
         protected:
             Sequence<Operation> m_ownedOperations = Sequence<Operation>(this);
             Sequence<Classifier> m_nestedClassifiers = Sequence<Classifier>(this);
@@ -49,6 +51,7 @@ namespace UML{
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
+            void referenceErased(ID id) override;
             Class();
         public:
             virtual ~Class();

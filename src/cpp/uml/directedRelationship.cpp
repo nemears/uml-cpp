@@ -73,6 +73,12 @@ void DirectedRelationship::restoreReferences() {
     m_targets.restoreReferences();
 }
 
+void DirectedRelationship::referenceErased(ID id) {
+    Relationship::referenceErased(id);
+    m_sources.elementErased(id);
+    m_targets.elementErased(id);
+}
+
 DirectedRelationship::DirectedRelationship() {
     m_targets.addProcedures.push_back(new AddRelatedElementFunctor(this));
     m_targets.removeProcedures.push_back(new RemoveRelatedElementFunctor(this));

@@ -26,6 +26,7 @@ void ActivityNode::setManager(UmlManager* manager) {
 
 void ActivityNode::referencingReleased(ID id) {
     RedefinableElement::referencingReleased(id);
+    NamedElement::referencingReleased(id);
     if (m_activity.id() == id) {
         m_activity.release();
     }
@@ -35,6 +36,7 @@ void ActivityNode::referencingReleased(ID id) {
 
 void ActivityNode::referenceReindexed(ID oldID, ID newID) {
     RedefinableElement::referenceReindexed(oldID, newID);
+    NamedElement::referenceReindexed(oldID, newID);
     if (m_activity.id() == oldID) {
         m_activity.reindex(oldID, newID);
     }

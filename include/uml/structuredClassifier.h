@@ -48,6 +48,7 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID);
             void restoreReferences() override;
+            void referenceErased(ID id) override;
             StructuredClassifier();
         public:
             StructuredClassifier(const StructuredClassifier& clazz);

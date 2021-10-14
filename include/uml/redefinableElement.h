@@ -8,7 +8,6 @@ namespace UML {
     class Classifier;
 
     class RedefinableElement : virtual public NamedElement {
-        friend class UmlManager;
         protected:
             Sequence<RedefinableElement> m_redefinedElement = Sequence<RedefinableElement>(this);
             Sequence<Classifier> m_redefinitionContext = Sequence<Classifier>(this);
@@ -36,6 +35,7 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
+            void referenceErased(ID id) override;
             RedefinableElement();
         public:
             virtual ~RedefinableElement();

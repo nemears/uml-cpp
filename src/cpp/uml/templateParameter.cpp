@@ -116,6 +116,24 @@ void TemplateParameter::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
+void TemplateParameter::restoreReferences() {
+    Element::restoreReferences();
+    m_signature.restoreReference();
+    m_ownedParameteredElement.restoreReference();
+    m_parameteredElement.restoreReference();
+    m_default.restoreReference();
+    m_ownedDefault.restoreReference();
+}
+
+void TemplateParameter::referenceErased(ID id) {
+    Element::referenceErased(id);
+    m_signature.elementErased(id);
+    m_ownedParameteredElement.elementErased(id);
+    m_parameteredElement.elementErased(id);
+    m_default.elementErased(id);
+    m_ownedDefault.elementErased(id);
+}
+
 TemplateParameter::TemplateParameter() {
     m_signature.m_signature = &TemplateParameter::m_signature;
     m_signature.m_addProcedures.push_back(new AddSignatureProcedure(this));

@@ -4,12 +4,6 @@
 
 using namespace UML;
 
-void DataType::setManager(UmlManager* manager) {
-    Classifier::setManager(manager);
-    m_ownedAttribute.m_manager = manager;
-    m_ownedOperation.m_manager = manager;
-}
-
 void DataType::AddOwnedAttributeFunctor::operator()(Property& el) const {
     if (!m_el->getAttributes().count(el.getID())) {
         m_el->getAttributes().add(el);
@@ -97,6 +91,12 @@ void DataType::RemoveOwnedOperationFunctor::operator()(Operation& el) const {
     updateCopiedSequenceRemovedFrom(el, &DataType::getOwnedOperation);
 }
 
+void DataType::setManager(UmlManager* manager) {
+    Classifier::setManager(manager);
+    m_ownedAttribute.m_manager = manager;
+    m_ownedOperation.m_manager = manager;
+}
+
 void DataType::referenceReindexed(ID oldID, ID newID) {
     Classifier::referenceReindexed(oldID, newID);
     if (m_ownedAttribute.count(oldID)) {
@@ -115,6 +115,12 @@ void DataType::referencingReleased(ID id) {
     if (m_ownedOperation.count(id)) {
         m_ownedOperation.elementReleased(id, &DataType::getOwnedOperation);
     }
+}
+
+void DataType::referenceErased(ID id) {
+    Classifier::referenceErased(id);
+    m_ownedAttribute.elementErased(id);
+    m_ownedOperation.elementErased(id);
 }
 
 DataType::DataType() {

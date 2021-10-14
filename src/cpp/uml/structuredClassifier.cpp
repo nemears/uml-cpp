@@ -126,6 +126,13 @@ void StructuredClassifier::restoreReferences() {
     }
 }
 
+void StructuredClassifier::referenceErased(ID id) {
+    Classifier::referenceErased(id);
+    m_ownedAttributes.elementErased(id);
+    m_role.elementErased(id);
+    m_parts.elementErased(id);
+}
+
 StructuredClassifier::StructuredClassifier() {
     m_ownedAttributes.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
     m_ownedAttributes.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));

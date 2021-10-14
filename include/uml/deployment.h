@@ -38,6 +38,7 @@ namespace UML {
             void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void referenceErased(ID id) override;
             Deployment();
         public:
             Deployment(const Deployment& deployment);

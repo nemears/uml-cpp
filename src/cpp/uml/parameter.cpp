@@ -92,6 +92,20 @@ void Parameter::referencingReleased(ID id) {
     }
 }
 
+void Parameter::restoreReferences() {
+    TypedElement::restoreReferences();
+    MultiplicityElement::restoreReferences();
+    m_operation.restoreReference();
+    m_behavior.restoreReference();
+}
+
+void Parameter::referenceErased(ID id) {
+    TypedElement::referenceErased(id);
+    MultiplicityElement::referenceErased(id);
+    m_operation.elementErased(id);
+    m_behavior.elementErased(id);
+}
+
 Parameter::Parameter() {
     m_direction = ParameterDirectionKind::NONE;
     m_operation.m_signature = &Parameter::m_operation;

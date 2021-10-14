@@ -44,6 +44,11 @@ void Comment::restoreReferences() {
     m_owningElement.restoreReference();
 }
 
+void Comment::referenceErased(ID id) {
+    Element::referenceErased(id);
+    m_owningElement.elementErased(id);
+}
+
 Comment::Comment() {
     m_owningElement.m_signature = &Comment::m_owningElement;
     m_owningElement.m_removeProcedures.push_back(new RemoveOwningElementProcedure(this));

@@ -5,6 +5,32 @@
 namespace UML {
     namespace Parsers {
 
+        template <class T = Element, class U = Element> class parseAndSetSingletonFunctor {
+            protected:
+                Singleton<T, U> U::* m_signature = 0;
+            public:
+                void operator()(YAML::Node node, ParserMetaData& data, U& el) const {
+                    if (data.m_strategy == ParserStrategy::WHOLE) {
+                        Element* packagedEl = parseExternalAddToManager(data, node.as<std::string>());
+                        if (packagedEl == 0) {
+                            throw UmlParserException("Could not identify YAML node for packaged elements", data.m_path.string(), node);
+                        }
+                        (el.*m_signature).set(packagedEl->as<T>());
+                    }
+                    else {
+                        std::string path = node.as<std::string>();
+                        std::string idStr = path.substr(path.find_last_of("/") + 1, path.find_last_of("/") + 29);
+                        if (isValidID(idStr)) {
+                            ID id = ID::fromString(idStr);
+                            (el.*m_signature).setByID(id);
+                        }
+                        else {
+                            throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);
+                        }
+                    }
+                };
+        };
+
         class SetDefaultValue : public parseAndSetSingletonFunctor<ValueSpecification, Property> {
             public:
                 SetDefaultValue();

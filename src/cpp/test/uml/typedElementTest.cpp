@@ -22,7 +22,7 @@ TEST_F(TypedElementTest, GetTypeTest) {
 TEST_F(TypedElementTest, GetTypeReturnsNullTest) {
 	UmlManager m;
 	Property t = m.create<Property>();
-  ASSERT_TRUE(t.getType() == NULL);
+    ASSERT_TRUE(t.getType() == NULL);
 }
 
 TEST_F(TypedElementTest, reindexTypeTest) {

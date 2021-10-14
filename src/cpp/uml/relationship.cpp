@@ -50,9 +50,7 @@ void Relationship::referencingReleased(ID id) {
 
 void Relationship::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    if (m_relatedElements.count(oldID)) {
-        m_relatedElements.reindex(oldID, newID, &Relationship::getRelatedElements);
-    }
+    m_relatedElements.reindex(oldID, newID, &Relationship::getRelatedElements);
 }
 
 void Relationship::restoreReferences() {

@@ -35,17 +35,13 @@ void Feature::reindexName(string oldName, string newName) {
 void Feature::referenceReindexed(ID oldID, ID newID) {
     RedefinableElement::referenceReindexed(oldID, newID);
     NamedElement::referenceReindexed(oldID, newID);
-    if (m_featuringClassifier.id() == oldID) {
-        m_featuringClassifier.reindex(oldID, newID);
-    }
+    m_featuringClassifier.reindex(oldID, newID);
 }
 
 void Feature::referencingReleased(ID id) {
     RedefinableElement::referencingReleased(id);
     NamedElement::referencingReleased(id);
-    if (m_featuringClassifier.id() == id) {
-        m_featuringClassifier.release();
-    }
+    m_featuringClassifier.release();
 }
 
 void Feature::restoreReferences() {

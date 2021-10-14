@@ -84,29 +84,17 @@ void InstanceSpecification::setManager(UmlManager* manager) {
 void InstanceSpecification::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
     DeployedArtifact::referenceReindexed(oldID, newID);
-    if (m_classifier.id() == oldID) {
-        m_classifier.reindex(oldID, newID);
-    }
-    if (m_slots.count(oldID)) {
-        m_slots.reindex(oldID, newID, &InstanceSpecification::getSlots);
-    }
-    if (m_specification.id() == oldID) {
-        m_specification.reindex(oldID, newID);
-    }
+    m_classifier.reindex(oldID, newID);
+    m_slots.reindex(oldID, newID, &InstanceSpecification::getSlots);
+    m_specification.reindex(oldID, newID);
 }
 
 void InstanceSpecification::referencingReleased(ID id) {
     PackageableElement::referencingReleased(id);
     DeployedArtifact::referencingReleased(id);
-    if (m_classifier.id() == id) {
-        m_classifier.release();
-    }
-    if (m_specification.id() == id) {
-        m_specification.release();
-    }
-    if (m_slots.count(id)) {
-        m_slots.elementReleased(id, &InstanceSpecification::getSlots);
-    }
+    m_classifier.release(id);
+    m_specification.release(id);
+    m_slots.elementReleased(id, &InstanceSpecification::getSlots);
 }
 
 void InstanceSpecification::restoreReferences() {

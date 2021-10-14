@@ -313,62 +313,28 @@ void Property::setManager(UmlManager* manager) {
 
 void Property::referencingReleased(ID id) {
     StructuralFeature::referencingReleased(id);
-    if (m_defaultValue.id() == id) {
-        m_defaultValue.release();
-    }
-    if (m_classifier.id() == id) {
-        m_classifier.release();
-    }
-    if (m_structuredClassifier.id() == id) {
-        m_structuredClassifier.release();
-    }
-    if (m_dataType.id() == id) {
-        m_dataType.release();
-    }
-    if (m_class.id() == id) {
-        m_class.release();
-    }
-    if (m_artifact.id() == id) {
-        m_artifact.release();
-    }
-    if (m_association.id() == id) {
-        m_association.release();
-    }
-    if (m_owningAssociation.id() == id) {
-        m_owningAssociation.release();
-    }
+    m_defaultValue.release(id);
+    m_classifier.release(id);
+    m_structuredClassifier.release(id);
+    m_dataType.release(id);
+    m_class.release(id);
+    m_artifact.release(id);
+    m_association.release(id);
+    m_owningAssociation.release(id);
     m_redefinedProperties.elementReleased(id, &Property::getRedefinedProperties);
 }
 
 void Property::referenceReindexed(ID oldID, ID newID) {
     StructuralFeature::referenceReindexed(oldID, newID);
-    if (m_defaultValue.id() == oldID) {
-        m_defaultValue.reindex(oldID, newID);
-    }
-    if (m_classifier.id() == oldID) {
-        m_classifier.reindex(oldID, newID);
-    }
-    if (m_structuredClassifier.id() == oldID) {
-        m_structuredClassifier.reindex(oldID, newID);
-    }
-    if (m_dataType.id() == oldID) {
-        m_dataType.reindex(oldID, newID);
-    }
-    if (m_class.id() == oldID) {
-        m_class.reindex(oldID, newID);
-    }
-    if (m_artifact.id() == oldID) {
-        m_artifact.reindex(oldID, newID);
-    }
-    if (m_association.id() == oldID) {
-        m_association.reindex(oldID, newID);
-    }
-    if (m_owningAssociation.id() == oldID) {
-        m_owningAssociation.reindex(oldID, newID);
-    }
-    if (m_redefinedProperties.count(oldID)) {
-        m_redefinedProperties.reindex(oldID, newID, &Property::getRedefinedProperties);
-    }
+    m_defaultValue.reindex(oldID, newID);
+    m_classifier.reindex(oldID, newID);
+    m_structuredClassifier.reindex(oldID, newID);
+    m_dataType.reindex(oldID, newID);
+    m_class.reindex(oldID, newID);
+    m_artifact.reindex(oldID, newID);
+    m_association.reindex(oldID, newID);
+    m_owningAssociation.reindex(oldID, newID);
+    m_redefinedProperties.reindex(oldID, newID, &Property::getRedefinedProperties);
 }
 
 void Property::restoreReferences() {

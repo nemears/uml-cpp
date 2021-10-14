@@ -73,28 +73,16 @@ void Slot::setManager(UmlManager* manager) {
 
 void Slot::referencingReleased(ID id) {
     Element::referencingReleased(id);
-    if (m_definingFeature.id() == id) {
-        m_definingFeature.release();
-    }
-    if (m_values.count(id)) {
-        m_values.elementReleased(id, &Slot::getValues);
-    }
-    if (m_owningInstance.id() == id) {
-        m_owningInstance.release();
-    }
+    m_definingFeature.release(id);
+    m_values.elementReleased(id, &Slot::getValues);
+    m_owningInstance.release(id);
 }
 
 void Slot::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    if (m_definingFeature.id() == oldID) {
-        m_definingFeature.reindex(oldID, newID);
-    }
-    if (m_values.count(oldID)) {
-        m_values.reindex(oldID, newID, &Slot::getValues);
-    }
-    if (m_owningInstance.id() == oldID) {
-        m_owningInstance.reindex(oldID, newID);
-    }
+    m_definingFeature.reindex(oldID, newID);
+    m_values.reindex(oldID, newID, &Slot::getValues);
+    m_owningInstance.reindex(oldID, newID);
 }
 
 void Slot::restoreReferences() {

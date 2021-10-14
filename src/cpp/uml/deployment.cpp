@@ -43,20 +43,14 @@ void Deployment::setManager(UmlManager* manager) {
 
 void Deployment::referencingReleased(ID id) {
     Dependency::referencingReleased(id);
-    if (m_location.id() == id) {
-        m_location.release();
-    }
+    m_location.release(id);
     m_deployedArtifacts.elementReleased(id, &Deployment::getDeployedArtifact);
 }
 
 void Deployment::referenceReindexed(ID oldID, ID newID) {
     Dependency::referenceReindexed(oldID, newID);
-    if (m_location.id() == oldID) {
-        m_location.reindex(oldID, newID);
-    }
-    if (m_deployedArtifacts.count(oldID)) {
-        m_deployedArtifacts.reindex(oldID, newID, &Deployment::getDeployedArtifact);
-    }
+    m_location.reindex(oldID, newID);
+    m_deployedArtifacts.reindex(oldID, newID, &Deployment::getDeployedArtifact);
 }
 
 void Deployment::referenceErased(ID id) {

@@ -55,21 +55,13 @@ void TemplateableElement::AddTemplateBindingProcedure::operator()(TemplateBindin
 }
 
 void TemplateableElement::referencingReleased(ID id) {
-    if (m_ownedTemplateSignature.id() == id) {
-        m_ownedTemplateSignature.release();
-    }
-    if (m_templateBinding.id() == id) {
-        m_templateBinding.release();
-    }
+    m_ownedTemplateSignature.release();
+    m_templateBinding.release();
 }
 
 void TemplateableElement::referenceReindexed(ID oldID, ID newID) {
-    if (m_ownedTemplateSignature.id() == oldID) {
-        m_ownedTemplateSignature.reindex(oldID, newID);
-    }
-    if (m_templateBinding.id() == oldID) {
-        m_templateBinding.reindex(oldID, newID);
-    }
+    m_ownedTemplateSignature.reindex(oldID, newID);
+    m_templateBinding.reindex(oldID, newID);
 }
 
 void TemplateableElement::restoreReferences() {

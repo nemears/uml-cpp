@@ -29,16 +29,12 @@ void PackageableElement::AddOwningPackageProcedure::operator()(ID id) const {
 
 void PackageableElement::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
-    if (m_owningPackage.id() == oldID) {
-        m_owningPackage.reindex(oldID, newID);
-    }
+    m_owningPackage.reindex(oldID, newID);
 }
 
 void PackageableElement::referencingReleased(ID id) {
     Element::referencingReleased(id);
-    if (m_owningPackage.id() == id) {
-        m_owningPackage.release();
-    }
+    m_owningPackage.release(id);
 }
 
 void PackageableElement::restoreReferences() {

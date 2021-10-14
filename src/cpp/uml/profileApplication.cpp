@@ -35,22 +35,14 @@ void ProfileApplication::AddApplyingPackageProcedure::operator()(Package* el) co
 
 void ProfileApplication::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
-    if (m_appliedProfile.id() == id) {
-        m_appliedProfile.release();
-    }
-    if (m_applyingPackage.id() == id) {
-        m_applyingPackage.release();
-    }
+    m_appliedProfile.release(id);
+    m_applyingPackage.release(id);
 }
 
 void ProfileApplication::referenceReindexed(ID oldID, ID newID) {
     DirectedRelationship::referenceReindexed(oldID, newID);
-    if (m_appliedProfile.id() == oldID) {
-        m_appliedProfile.reindex(oldID, newID);
-    }
-    if (m_applyingPackage.id() == oldID) {
-        m_applyingPackage.reindex(oldID, newID);
-    }
+    m_appliedProfile.reindex(oldID, newID);
+    m_applyingPackage.reindex(oldID, newID);
 }
 
 void ProfileApplication::restoreReferences() {

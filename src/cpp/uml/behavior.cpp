@@ -66,28 +66,16 @@ void Behavior::setManager(UmlManager* manager) {
 
 void Behavior::referencingReleased(ID id) {
     Class::referencingReleased(id);
-    if (m_ownedParameters.count(id)) {
-        m_ownedParameters.elementReleased(id, &Behavior::getOwnedParameters);
-    }
-    if (m_specification.id() == id) {
-        m_specification.release();
-    }
-    if (m_behavioredClassifier.id() == id) {
-        m_behavioredClassifier.release();
-    }
+    m_ownedParameters.elementReleased(id, &Behavior::getOwnedParameters);
+    m_specification.release(id);
+    m_behavioredClassifier.release(id);
 }
 
 void Behavior::referenceReindexed(ID oldID, ID newID) {
     Class::referenceReindexed(oldID, newID);
-    if (m_ownedParameters.count(oldID)) {
-        m_ownedParameters.reindex(oldID, newID, &Behavior::getOwnedParameters);
-    }
-    if (m_specification.id() == oldID) {
-        m_specification.reindex(oldID, newID);
-    }
-    if (m_behavioredClassifier.id() == oldID) {
-        m_behavioredClassifier.reindex(oldID, newID);
-    }
+    m_ownedParameters.reindex(oldID, newID, &Behavior::getOwnedParameters);
+    m_specification.reindex(oldID, newID);
+    m_behavioredClassifier.reindex(oldID, newID);
 }
 
 void Behavior::restoreReferences() {

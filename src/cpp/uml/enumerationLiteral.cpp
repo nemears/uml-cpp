@@ -29,16 +29,12 @@ void EnumerationLiteral::AddEnumerationProcedure::operator()(ID id) const {
 
 void EnumerationLiteral::referencingReleased(ID id) {
     InstanceSpecification::referencingReleased(id);
-    if (m_enumeration.id() == id) {
-        m_enumeration.release();
-    }
+    m_enumeration.release(id);
 }
 
 void EnumerationLiteral::referenceReindexed(ID oldID, ID newID) {
     InstanceSpecification::referenceReindexed(oldID, newID);
-    if (m_enumeration.id() == oldID) {
-        m_enumeration.reindex(oldID, newID);
-    }
+    m_enumeration.reindex(oldID, newID);
 }
 
 void EnumerationLiteral::restoreReferences() {

@@ -122,22 +122,32 @@ void Element::removeReference(ID referencing) {
 }
 
 void Element::referenceReindexed(ID oldID, ID newID) {
-    if (m_ownedElements->count(oldID)) {
-        m_ownedElements->reindex(oldID, newID, &Element::getOwnedElements);
-    } if (m_ownerID == oldID) {
+    m_ownedElements->reindex(oldID, newID, &Element::getOwnedElements);
+    if (m_ownerID == oldID) {
         m_node->m_managerElementMemory->m_ownerID = newID;
         for (auto& copy : m_node->m_copies) {
             copy->m_ownerID = newID;
         }
-    } if (m_ownedComments->count(oldID)) {
-        m_ownedComments->reindex(oldID, newID, &Element::getOwnedComments);
-    } if (m_relationships->count(oldID)) {
-        m_relationships->reindex(oldID, newID, &Element::getRelationships);
-    } if (m_directedRelationships->count(oldID)) {
-        m_directedRelationships->reindex(oldID, newID, &Element::getDirectedRelationships);
-    } if (m_appliedStereotype->count(oldID)) {
-        m_appliedStereotype->reindex(oldID, newID, &Element::getAppliedStereotypes);
     }
+    m_ownedComments->reindex(oldID, newID, &Element::getOwnedComments);
+    m_relationships->reindex(oldID, newID, &Element::getRelationships);
+    m_directedRelationships->reindex(oldID, newID, &Element::getDirectedRelationships);
+    m_appliedStereotype->reindex(oldID, newID, &Element::getAppliedStereotypes);
+}
+
+void Element::referencingReleased(ID id) {
+    if (m_node->m_references.count(id)) {
+        m_node->m_references[id] = 0;
+    }
+    if (m_ownerID == id) {
+        m_ownerPtr = 0;
+    }
+
+    m_ownedElements->elementReleased(id, &Element::getOwnedElements);
+    m_relationships->elementReleased(id, &Element::getRelationships);
+    m_directedRelationships->elementReleased(id, &Element::getDirectedRelationships);
+    m_ownedComments->elementReleased(id, &Element::getOwnedComments);
+    m_appliedStereotype->elementReleased(id, &Element::getAppliedStereotypes);
 }
 
 void Element::restoreReferences() {
@@ -707,19 +717,4 @@ bool Element::isSameOrNull(ID id, Element* el) {
         }
         return false;
     }
-}
-
-void Element::referencingReleased(ID id) {
-    if (m_node->m_references.count(id)) {
-        m_node->m_references[id] = 0;
-    }
-    if (m_ownerID == id) {
-        m_ownerPtr = 0;
-    }
-
-    m_ownedElements->elementReleased(id, &Element::getOwnedElements);
-    m_relationships->elementReleased(id, &Element::getRelationships);
-    m_directedRelationships->elementReleased(id, &Element::getDirectedRelationships);
-    m_ownedComments->elementReleased(id, &Element::getOwnedComments);
-    m_appliedStereotype->elementReleased(id, &Element::getAppliedStereotypes);
 }

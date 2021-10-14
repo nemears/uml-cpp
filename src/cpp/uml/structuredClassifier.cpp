@@ -98,17 +98,18 @@ void StructuredClassifier::setManager(UmlManager* manager) {
     m_parts.m_manager = manager;
 }
 
+void StructuredClassifier::referencingReleased(ID id) {
+    Classifier::referencingReleased(id);
+    m_ownedAttributes.elementReleased(id, &StructuredClassifier::getOwnedAttributes);
+    m_role.elementReleased(id, &StructuredClassifier::getRole);
+    m_parts.elementReleased(id, &StructuredClassifier::getParts);
+}
+
 void StructuredClassifier::referenceReindexed(ID oldID, ID newID) {
     Classifier::referenceReindexed(oldID, newID);
-    if (m_ownedAttributes.count(oldID)) {
-        m_ownedAttributes.reindex(oldID, newID, &StructuredClassifier::getOwnedAttributes);
-    }
-    if (m_role.count(oldID)) {
-        m_role.reindex(oldID, newID, &StructuredClassifier::getRole);
-    }
-    if (m_parts.count(oldID)) {
-        m_parts.reindex(oldID, newID, &StructuredClassifier::getParts);
-    }
+    m_ownedAttributes.reindex(oldID, newID, &StructuredClassifier::getOwnedAttributes);
+    m_role.reindex(oldID, newID, &StructuredClassifier::getRole);
+    m_parts.reindex(oldID, newID, &StructuredClassifier::getParts);
 }
 
 void StructuredClassifier::restoreReferences() {
@@ -191,11 +192,4 @@ bool StructuredClassifier::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void StructuredClassifier::referencingReleased(ID id) {
-    Classifier::referencingReleased(id);
-    m_ownedAttributes.elementReleased(id, &StructuredClassifier::getOwnedAttributes);
-    m_role.elementReleased(id, &StructuredClassifier::getRole);
-    m_parts.elementReleased(id, &StructuredClassifier::getParts);
 }

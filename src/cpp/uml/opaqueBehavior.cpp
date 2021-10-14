@@ -35,9 +35,7 @@ void OpaqueBehavior::referencingReleased(ID id) {
 
 void OpaqueBehavior::referenceReindexed(ID oldID, ID newID) {
     Behavior::referenceReindexed(oldID, newID);
-    if (m_bodies.count(oldID)) {
-        m_bodies.reindex(oldID, newID, &OpaqueBehavior::getBodies);
-    }
+    m_bodies.reindex(oldID, newID, &OpaqueBehavior::getBodies);
 }
 
 void OpaqueBehavior::referenceErased(ID id) {

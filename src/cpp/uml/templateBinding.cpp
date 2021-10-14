@@ -70,22 +70,14 @@ void TemplateBinding::setManager(UmlManager* manager) {
 
 void TemplateBinding::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
-    if (m_boundElement.id() == id) {
-        m_boundElement.release();
-    }
-    if (m_signature.id() == id) {
-        m_signature.release();
-    }
+    m_boundElement.release(id);
+    m_signature.release(id);
 }
 
 void TemplateBinding::referenceReindexed(ID oldID, ID newID) {
     DirectedRelationship::referenceReindexed(oldID, newID);
-    if (m_boundElement.id() == oldID) {
-        m_boundElement.reindex(oldID, newID);
-    }
-    if (m_signature.id() == oldID) {
-        m_signature.reindex(oldID, newID);
-    }
+    m_boundElement.reindex(oldID, newID);
+    m_signature.reindex(oldID, newID);
 }
 
 void TemplateBinding::restoreReferences() {

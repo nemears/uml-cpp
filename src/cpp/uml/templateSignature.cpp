@@ -62,24 +62,16 @@ void TemplateSignature::setManager(UmlManager* manager) {
 
 void TemplateSignature::referencingReleased(ID id) {
     Element::referencingReleased(id);
-    if (m_template.id() == id) {
-        m_template.release();
-    }
+    m_template.release(id);
     m_ownedParameter.elementReleased(id, &TemplateSignature::getOwnedParameter);
     m_parameter.elementReleased(id, &TemplateSignature::getParameter);
 }
 
 void TemplateSignature::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    if (m_template.id() == oldID) {
-        m_template.reindex(oldID, newID);
-    }
-    if (m_ownedParameter.count(oldID)) {
-        m_ownedParameter.reindex(oldID, newID, &TemplateSignature::getOwnedParameter);
-    }
-    if (m_parameter.count(oldID)) {
-        m_parameter.reindex(oldID, newID, &TemplateSignature::getParameter);
-    }
+    m_template.reindex(oldID, newID);
+    m_ownedParameter.reindex(oldID, newID, &TemplateSignature::getOwnedParameter);
+    m_parameter.reindex(oldID, newID, &TemplateSignature::getParameter);
 }
 
 void TemplateSignature::restoreReferences() {

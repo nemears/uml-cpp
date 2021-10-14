@@ -73,23 +73,15 @@ void Parameter::reindexName(string oldName, string newName) {
 void Parameter::referenceReindexed(ID oldID, ID newID) {
     TypedElement::referenceReindexed(oldID, newID);
     MultiplicityElement::referenceReindexed(oldID, newID);
-    if (m_operation.id() == oldID) {
-        m_operation.reindex(oldID, newID);
-    }
-    if (m_behavior.id() == oldID) {
-        m_behavior.reindex(oldID, newID);
-    }
+    m_operation.reindex(oldID, newID);
+    m_behavior.reindex(oldID, newID);
 }
 
 void Parameter::referencingReleased(ID id) {
     TypedElement::referencingReleased(id);
     MultiplicityElement::referencingReleased(id);
-    if (m_operation.id() == id) {
-        m_operation.release();
-    }
-    if (m_behavior.id() == id) {
-        m_behavior.release();
-    }
+    m_operation.release(id);
+    m_behavior.release(id);
 }
 
 void Parameter::restoreReferences() {

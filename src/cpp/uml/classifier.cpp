@@ -277,33 +277,19 @@ void Classifier::referencingReleased(ID id) {
     m_generalizations.elementReleased(id, &Classifier::getGeneralizations);
     m_generals.elementReleased(id, &Classifier::getGenerals);
     m_inheritedMembers.elementReleased(id, &Classifier::getInheritedMembers);
-    if (m_nestingClass.id() == id) {
-        m_nestingClass.release();
-    }
+    m_nestingClass.release(id);
 }
 
 void Classifier::referenceReindexed(ID oldID, ID newID) {
     Namespace::referenceReindexed(oldID, newID);
     PackageableElement::referenceReindexed(oldID, newID);
     TemplateableElement::referenceReindexed(oldID, newID);
-    if (m_attributes.count(oldID)) {
-        m_attributes.reindex(oldID, newID, &Classifier::getAttributes);
-    }
-    if (m_generalizations.count(oldID)) {
-        m_generalizations.reindex(oldID, newID, &Classifier::getGeneralizations);
-    }
-    if (m_features.count(oldID)) {
-        m_features.reindex(oldID, newID, &Classifier::getFeatures);
-    }
-    if (m_generals.count(oldID)) {
-        m_generals.reindex(oldID, newID, &Classifier::getGenerals);
-    }
-    if (m_inheritedMembers.count(oldID)) {
-        m_inheritedMembers.reindex(oldID, newID, &Classifier::getInheritedMembers);
-    }
-    if (m_nestingClass.id() == oldID) {
-        m_nestingClass.reindex(oldID, newID);
-    }
+    m_attributes.reindex(oldID, newID, &Classifier::getAttributes);
+    m_generalizations.reindex(oldID, newID, &Classifier::getGeneralizations);
+    m_features.reindex(oldID, newID, &Classifier::getFeatures);
+    m_generals.reindex(oldID, newID, &Classifier::getGenerals);
+    m_inheritedMembers.reindex(oldID, newID, &Classifier::getInheritedMembers);
+    m_nestingClass.reindex(oldID, newID);
 }
 
 void Classifier::restoreReferences() {

@@ -41,9 +41,7 @@ void Expression::referencingReleased(ID id) {
 
 void Expression::referenceReindexed(ID oldID, ID newID) {
     ValueSpecification::referenceReindexed(oldID, newID);
-    if (m_operands.count(oldID)) {
-        m_operands.reindex(oldID, newID, &Expression::getOperands);
-    }
+    m_operands.reindex(oldID, newID, &Expression::getOperands);
 }
 
 void Expression::referenceErased(ID id) {

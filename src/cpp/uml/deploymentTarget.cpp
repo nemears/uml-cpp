@@ -37,9 +37,7 @@ void DeploymentTarget::referencingReleased(ID id) {
 
 void DeploymentTarget::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
-    if (m_deployments.count(oldID)) {
-        m_deployments.reindex(oldID, newID, &DeploymentTarget::getDeployments);
-    }
+    m_deployments.reindex(oldID, newID, &DeploymentTarget::getDeployments);
 }
 
 void DeploymentTarget::referenceErased(ID id) {

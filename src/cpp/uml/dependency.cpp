@@ -64,12 +64,8 @@ void Dependency::setManager(UmlManager* manager) {
 void Dependency::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
     PackageableElement::referencingReleased(id);
-    if (m_client.count(id)) {
-        m_client.elementReleased(id, &Dependency::getClient);
-    }
-    if (m_supplier.count(id)) {
-        m_supplier.elementReleased(id, &Dependency::getSupplier);
-    }
+    m_client.elementReleased(id, &Dependency::getClient);
+    m_supplier.elementReleased(id, &Dependency::getSupplier);
 }
 
 void Dependency::referenceReindexed(ID oldID, ID newID) {

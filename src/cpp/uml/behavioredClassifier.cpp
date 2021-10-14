@@ -51,18 +51,12 @@ void BehavioredClassifier::setManager(UmlManager* manager) {
 
 void BehavioredClassifier::referencingReleased(ID id) {
     m_ownedBehaviors.elementReleased(id, &BehavioredClassifier::getOwnedBehaviors);
-    if (m_classifierBehavior.id() == id) {
-        m_classifierBehavior.release();
-    }
+    m_classifierBehavior.release(id);
 }
 
 void BehavioredClassifier::referenceReindexed(ID oldID, ID newID) {
-    if (m_ownedBehaviors.count(oldID)) {
-        m_ownedBehaviors.reindex(oldID, newID, &BehavioredClassifier::getOwnedBehaviors);
-    }
-    if (m_classifierBehavior.id() == oldID) {
-        m_classifierBehavior.reindex(oldID, newID);
-    }
+    m_ownedBehaviors.reindex(oldID, newID, &BehavioredClassifier::getOwnedBehaviors);
+    m_classifierBehavior.reindex(oldID, newID);
 }
 
 void BehavioredClassifier::restoreReferences() {

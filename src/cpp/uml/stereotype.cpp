@@ -13,16 +13,12 @@ void Stereotype::AddProfileProcedure::operator()(Profile* el) const {
 
 void Stereotype::referencingReleased(ID id) {
     Class::referencingReleased(id);
-    if (m_profile.id() == id) {
-        m_profile.release();
-    }
+    m_profile.release(id);
 }
 
 void Stereotype::referenceReindexed(ID oldID, ID newID) {
     Class::referenceReindexed(oldID, newID);
-    if (m_profile.id() == oldID) {
-        m_profile.reindex(oldID, newID);
-    }
+    m_profile.reindex(oldID, newID);
 }
 
 void Stereotype::restoreReferences() {

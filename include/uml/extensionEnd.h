@@ -37,6 +37,8 @@ namespace UML {
             };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
+            void referenceErased(ID id) override;
             ExtensionEnd();
         public:
             ExtensionEnd(const ExtensionEnd& end);

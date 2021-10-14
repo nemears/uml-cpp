@@ -59,12 +59,8 @@ void DirectedRelationship::referencingReleased(ID id) {
 
 void DirectedRelationship::referenceReindexed(ID oldID, ID newID) {
     Relationship::referenceReindexed(oldID, newID);
-    if (m_sources.count(oldID)) {
-        m_sources.reindex(oldID, newID, &DirectedRelationship::getSources);
-    }
-    if (m_targets.count(oldID)) {
-        m_targets.reindex(oldID, newID, &DirectedRelationship::getTargets);
-    }
+    m_sources.reindex(oldID, newID, &DirectedRelationship::getSources);
+    m_targets.reindex(oldID, newID, &DirectedRelationship::getTargets);
 }
 
 void DirectedRelationship::restoreReferences() {

@@ -30,16 +30,17 @@ void Extension::AddOwnedEndProcedure::operator()(ExtensionEnd* el) const {
 
 void Extension::referencingReleased(ID id) {
     Association::referencingReleased(id);
-    if (m_ownedEnd.id() == id) {
-        m_ownedEnd.release();
-    }
+    m_ownedEnd.release(id);
 }
 
 void Extension::referenceReindexed(ID oldID, ID newID) {
     Association::referenceReindexed(oldID, newID);
-    if (m_ownedEnd.id() == oldID) {
-        m_ownedEnd.reindex(oldID, newID);
-    }
+    m_ownedEnd.reindex(oldID, newID);
+}
+
+void Extension::restoreReferences() {
+    Association::restoreReferences();
+    m_ownedEnd.restoreReference();
 }
 
 void Extension::referenceErased(ID id) {

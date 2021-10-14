@@ -102,12 +102,8 @@ void Class::referencingReleased(ID id) {
 void Class::referenceReindexed(ID oldID, ID newID) {
     StructuredClassifier::referenceReindexed(oldID, newID);
     BehavioredClassifier::referenceReindexed(oldID, newID);
-    if (m_ownedOperations.count(oldID)) {
-        m_ownedOperations.reindex(oldID, newID, &Class::getOwnedOperations);
-    }
-    if (m_nestedClassifiers.count(oldID)) {
-        m_nestedClassifiers.reindex(oldID, newID, &Class::getNestedClassifiers);
-    }
+    m_ownedOperations.reindex(oldID, newID, &Class::getOwnedOperations);
+    m_nestedClassifiers.reindex(oldID, newID, &Class::getNestedClassifiers);
 }
 
 void Class::restoreReferences() {

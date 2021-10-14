@@ -17,16 +17,13 @@ void TypedElement::AddTypeProcedure::operator()(Type* el) const {
 }
 
 void TypedElement::referencingReleased(ID id) {
-    if (m_type.id() == id) {
-        m_type.release();
-    }
+    NamedElement::referencingReleased(id);
+    m_type.release();
 }
 
 void TypedElement::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
-    if (m_type.id() == oldID) {
-        m_type.reindex(oldID, newID);
-    }
+    m_type.reindex(oldID, newID);
 }
 
 void TypedElement::restoreReferences() {

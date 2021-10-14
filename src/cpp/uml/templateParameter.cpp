@@ -80,40 +80,20 @@ void TemplateParameter::AddOwnedDefaultProcedure::operator()(ParameterableElemen
 
 void TemplateParameter::referencingReleased(ID id) {
     Element::referencingReleased(id);
-    if (m_signature.id() == id) {
-        m_signature.release();
-    }
-    if (m_ownedParameteredElement.id() == id) {
-        m_ownedParameteredElement.release();
-    }
-    if (m_parameteredElement.id() == id) {
-        m_parameteredElement.release();
-    }
-    if (m_default.id() == id) {
-        m_default.release();
-    }
-    if (m_ownedDefault.id() == id) {
-        m_ownedDefault.release();
-    }
+    m_signature.release(id);
+    m_ownedParameteredElement.release(id);
+    m_parameteredElement.release(id);
+    m_default.release(id);
+    m_ownedDefault.release(id);
 }
 
 void TemplateParameter::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    if (m_signature.id() == oldID) {
-        m_signature.reindex(oldID, newID);
-    }
-    if (m_ownedParameteredElement.id() == oldID) {
-        m_ownedParameteredElement.reindex(oldID, newID);
-    }
-    if (m_parameteredElement.id() == oldID) {
-        m_parameteredElement.reindex(oldID, newID);
-    }
-    if (m_default.id() == oldID) {
-        m_default.reindex(oldID, newID);
-    }
-    if (m_ownedDefault.id() == oldID) {
-        m_ownedDefault.reindex(oldID, newID);
-    }
+    m_signature.reindex(oldID, newID);
+    m_ownedParameteredElement.reindex(oldID, newID);
+    m_parameteredElement.reindex(oldID, newID);
+    m_default.reindex(oldID, newID);
+    m_ownedDefault.reindex(oldID, newID);
 }
 
 void TemplateParameter::restoreReferences() {

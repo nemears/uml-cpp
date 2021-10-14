@@ -113,18 +113,18 @@ void Package::referenceReindexed(ID oldID, ID newID) {
     Namespace::referenceReindexed(oldID, newID);
     PackageableElement::referenceReindexed(oldID, newID);
     TemplateableElement::referenceReindexed(oldID, newID);
-    if (m_packagedElements.count(oldID)) {
-        m_packagedElements.reindex(oldID, newID, &Package::getPackagedElements);
-    }
-    if (m_packageMerge.count(oldID)) {
-        m_packageMerge.reindex(oldID, newID, &Package::getPackageMerge);
-    }
-    if (m_profileApplications.count(oldID)) {
-        m_profileApplications.reindex(oldID, newID, &Package::getProfileApplications);
-    }
-    if (m_ownedStereotypes.count(oldID)) {
-        m_ownedStereotypes.reindex(oldID, newID, &Package::getOwnedStereotypes);
-    }
+    m_packagedElements.reindex(oldID, newID, &Package::getPackagedElements);
+    m_packageMerge.reindex(oldID, newID, &Package::getPackageMerge);
+    m_profileApplications.reindex(oldID, newID, &Package::getProfileApplications);
+    m_ownedStereotypes.reindex(oldID, newID, &Package::getOwnedStereotypes);
+}
+
+void Package::referencingReleased(ID id) {
+    Namespace::referencingReleased(id);
+    m_packagedElements.elementReleased(id, &Package::getPackagedElements);
+    m_packageMerge.elementReleased(id, &Package::getPackageMerge);
+    m_profileApplications.elementReleased(id, &Package::getProfileApplications);
+    m_ownedStereotypes.elementReleased(id, &Package::getOwnedStereotypes);
 }
 
 void Package::restoreReferences() {
@@ -223,12 +223,4 @@ bool Package::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void Package::referencingReleased(ID id) {
-    Namespace::referencingReleased(id);
-    m_packagedElements.elementReleased(id, &Package::getPackagedElements);
-    m_packageMerge.elementReleased(id, &Package::getPackageMerge);
-    m_profileApplications.elementReleased(id, &Package::getProfileApplications);
-    m_ownedStereotypes.elementReleased(id, &Package::getOwnedStereotypes);
 }

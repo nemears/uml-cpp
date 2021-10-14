@@ -47,22 +47,26 @@ void ExtensionEnd::AddExtensionTypeProcedure::operator()(Stereotype* el) const {
 
 void ExtensionEnd::referencingReleased(ID id) {
     Property::referencingReleased(id);
-    if (m_extension.id() == id) {
-        m_extension.release();
-    }
-    if (m_extensionType.id() == id) {
-        m_extensionType.release();
-    }
+    m_extension.release(id);
+    m_extensionType.release(id);
 }
 
 void ExtensionEnd::referenceReindexed(ID oldID, ID newID) {
     Property::referenceReindexed(oldID, newID);
-    if (m_extension.id() == oldID) {
-        m_extension.reindex(oldID, newID);
-    }
-    if (m_extensionType.id() == oldID) {
-        m_extensionType.reindex(oldID, newID);
-    }
+    m_extension.reindex(oldID, newID);
+    m_extensionType.reindex(oldID, newID);
+}
+
+void ExtensionEnd::restoreReferences() {
+    Property::restoreReferences();
+    m_extension.restoreReference();
+    m_extensionType.restoreReference();
+}
+
+void ExtensionEnd::referenceErased(ID id) {
+    Property::referenceErased(id);
+    m_extension.elementErased(id);
+    m_extensionType.elementErased(id);
 }
 
 ExtensionEnd::ExtensionEnd() {

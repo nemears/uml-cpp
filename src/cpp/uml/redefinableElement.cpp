@@ -32,12 +32,8 @@ void RedefinableElement::referencingReleased(ID id) {
 }
 
 void RedefinableElement::referenceReindexed(ID oldID, ID newID) {
-    if (m_redefinedElement.count(oldID)) {
-        m_redefinedElement.reindex(oldID, newID, &RedefinableElement::getRedefinedElements);
-    }
-    if (m_redefinitionContext.count(oldID)) {
-        m_redefinitionContext.reindex(oldID, newID, &RedefinableElement::getRedefinitionContext);
-    }
+    m_redefinedElement.reindex(oldID, newID, &RedefinableElement::getRedefinedElements);
+    m_redefinitionContext.reindex(oldID, newID, &RedefinableElement::getRedefinitionContext);
 }
 
 void RedefinableElement::restoreReferences() {

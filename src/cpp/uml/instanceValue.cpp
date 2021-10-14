@@ -13,16 +13,17 @@ void InstanceValue::AddInstanceProcedure::operator()(InstanceSpecification* el) 
 
 void InstanceValue::referencingReleased(ID id) {
     ValueSpecification::referencingReleased(id);
-    if (m_instance.id() == id) {
-        m_instance.release();
-    }
+    m_instance.release(id);
 }
 
 void InstanceValue::referenceReindexed(ID oldID, ID newID) {
     ValueSpecification::referenceReindexed(oldID, newID);
-    if (m_instance.id() == oldID) {
-        m_instance.reindex(oldID, newID);
-    }
+    m_instance.reindex(oldID, newID);
+}
+
+void InstanceValue::restoreReferences() {
+    ValueSpecification::restoreReferences();
+    m_instance.restoreReference();
 }
 
 void InstanceValue::referenceErased(ID id) {

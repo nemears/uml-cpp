@@ -98,34 +98,18 @@ void Operation::reindexName(string oldName, string newName) {
 
 void Operation::referencingReleased(ID id) {
     BehavioralFeature::referencingReleased(id);
-    if (m_type.id() == id) {
-        m_type.release();
-    }
-    if (m_class.id() == id) {
-        m_class.release();
-    }
-    if (m_dataType.id() == id) {
-        m_dataType.release();
-    }
-    if (m_artifact.id() == id) {
-        m_artifact.release();
-    }
+    m_type.release(id);
+    m_class.release(id);
+    m_dataType.release(id);
+    m_artifact.release(id);
 }
 
 void Operation::referenceReindexed(ID oldID, ID newID) {
     BehavioralFeature::referenceReindexed(oldID, newID);
-    if (m_type.id() == oldID) {
-        m_type.reindex(oldID, newID);
-    }
-    if (m_class.id() == oldID) {
-        m_class.reindex(oldID, newID);
-    }
-    if (m_dataType.id() == oldID) {
-        m_dataType.release();
-    }
-    if (m_artifact.id() == oldID) {
-        m_artifact.release();
-    }
+    m_type.reindex(oldID, newID);
+    m_class.reindex(oldID, newID);
+    m_dataType.reindex(oldID, newID);
+    m_artifact.reindex(oldID, newID);
 }
 
 void Operation::restoreReferences() {

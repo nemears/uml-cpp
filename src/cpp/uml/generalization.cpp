@@ -103,22 +103,14 @@ void Generalization::AddSpecificProcedure::operator()(ID id) const {
 
 void Generalization::referenceReindexed(ID oldID, ID newID) {
     DirectedRelationship::referenceReindexed(oldID, newID);
-    if (m_general.id() == oldID) {
-        m_general.reindex(oldID, newID);
-    }
-    if (m_specific.id() == oldID) {
-        m_specific.reindex(oldID, newID);
-    }
+    m_general.reindex(oldID, newID);
+    m_specific.reindex(oldID, newID);
 }
 
 void Generalization::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
-    if (m_general.id() == id) {
-        m_general.release();
-    }
-    if (m_specific.id() == id) {
-        m_specific.release();
-    }
+    m_general.release(id);
+    m_specific.release(id);
 }
 
 void Generalization::restoreReferences() {

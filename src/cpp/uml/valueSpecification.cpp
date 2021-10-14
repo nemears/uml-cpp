@@ -87,17 +87,19 @@ void ValueSpecification::reindexName(string oldName, string newName) {
     NamedElement::reindexName(oldName, newName);
 }
 
+void ValueSpecification::referencingReleased(ID id) {
+    PackageableElement::referencingReleased(id);
+    TypedElement::referencingReleased(id);
+    m_owningSlot.release(id);
+    m_owningInstanceSpec.release(id);
+    m_expression.release(id);
+}
+
 void ValueSpecification::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
-    if (m_owningSlot.id() == oldID) {
-        m_owningSlot.reindex(oldID, newID);
-    }
-    if (m_owningInstanceSpec.id() == oldID) {
-        m_owningInstanceSpec.reindex(oldID, newID);
-    }
-    if (m_expression.id() == oldID) {
-        m_expression.reindex(oldID, newID);
-    }
+    m_owningSlot.reindex(oldID, newID);
+    m_owningInstanceSpec.reindex(oldID, newID);
+    m_expression.reindex(oldID, newID);
 }
 
 void ValueSpecification::restoreReferences() {
@@ -237,12 +239,4 @@ bool ValueSpecification::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void ValueSpecification::referencingReleased(ID id) {
-    PackageableElement::referencingReleased(id);
-    TypedElement::referencingReleased(id);
-    if (m_owningSlot.id() == id) {
-        m_owningSlot.release();
-    }
 }

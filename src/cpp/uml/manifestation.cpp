@@ -49,22 +49,14 @@ void Manifestation::AddArtifactProcedure::operator()(ID id) const {
 
 void Manifestation::referencingReleased(ID id) {
     Abstraction::referencingReleased(id);
-    if (m_utilizedElement.id() == id) {
-        m_utilizedElement.release();
-    }
-    if (m_artifact.id() == id) {
-        m_utilizedElement.release();
-    }
+    m_utilizedElement.release(id);
+    m_utilizedElement.release(id);
 }
 
 void Manifestation::referenceReindexed(ID oldID, ID newID) {
     Abstraction::referenceReindexed(oldID, newID);
-    if (m_utilizedElement.id() == oldID) {
-        m_utilizedElement.reindex(oldID, newID);
-    }
-    if (m_artifact.id() == oldID) {
-        m_artifact.reindex(oldID, newID);
-    }
+    m_utilizedElement.reindex(oldID, newID);
+    m_artifact.reindex(oldID, newID);
 }
 
 void Manifestation::restoreReferences() {

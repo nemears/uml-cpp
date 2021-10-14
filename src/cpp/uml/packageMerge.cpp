@@ -35,22 +35,14 @@ void PackageMerge::AddMergedPackageProcedure::operator()(Package* el) const {
 
 void PackageMerge::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
-    if (m_mergedPackage.id() == id) {
-        m_mergedPackage.release();
-    }
-    if (m_receivingPackage.id() == id) {
-        m_receivingPackage.release();
-    }
+    m_mergedPackage.release(id);
+    m_receivingPackage.release(id);
 }
 
 void PackageMerge::referenceReindexed(ID oldID, ID newID) {
     DirectedRelationship::referenceReindexed(oldID, newID);
-    if (m_mergedPackage.id() == oldID) {
-        m_mergedPackage.reindex(oldID, newID);
-    }
-    if (m_receivingPackage.id() == oldID) {
-        m_receivingPackage.reindex(oldID, newID);
-    }
+    m_mergedPackage.reindex(oldID, newID);
+    m_receivingPackage.reindex(oldID, newID);
 }
 
 void PackageMerge::restoreReferences() {

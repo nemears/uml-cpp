@@ -78,15 +78,18 @@ void BehavioralFeature::setManager(UmlManager* manager) {
     m_ownedParameters.m_manager = manager;
 }
 
+void BehavioralFeature::referencingReleased(ID id) {
+    Namespace::referencingReleased(id);
+    Feature::referencingReleased(id);
+    m_methods.elementReleased(id, &BehavioralFeature::getMethods);
+    m_ownedParameters.elementReleased(id, &BehavioralFeature::getOwnedParameters);
+}
+
 void BehavioralFeature::referenceReindexed(ID oldID, ID newID) {
     Feature::referenceReindexed(oldID, newID);
     Namespace::referenceReindexed(oldID, newID);
-    if (m_methods.count(oldID)) {
-        m_methods.reindex(oldID, newID, &BehavioralFeature::getMethods);
-    }
-    if (m_ownedParameters.count(oldID)) {
-        m_ownedParameters.reindex(oldID, newID, &BehavioralFeature::getOwnedParameters);
-    }
+    m_methods.reindex(oldID, newID, &BehavioralFeature::getMethods);
+    m_ownedParameters.reindex(oldID, newID, &BehavioralFeature::getOwnedParameters);
 }
 
 void BehavioralFeature::restoreReferences() {
@@ -158,15 +161,4 @@ bool BehavioralFeature::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void BehavioralFeature::referencingReleased(ID id) {
-    Namespace::referencingReleased(id);
-    Feature::referencingReleased(id);
-    if (m_methods.count(id)) {
-        m_methods.elementReleased(id, &BehavioralFeature::getMethods);
-    }
-    if (m_ownedParameters.count(id)) {
-        m_ownedParameters.elementReleased(id, &BehavioralFeature::getOwnedParameters);
-    }
 }

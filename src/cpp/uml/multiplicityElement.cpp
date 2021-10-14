@@ -59,22 +59,13 @@ void MultiplicityElement::AddUpperValueProcedures::operator()(ValueSpecification
 }
 
 void MultiplicityElement::referencingReleased(ID id) {
-    if (m_lowVal.id() == id) {
-        m_lowVal.release();
-    }
-
-    if (m_upVal.id() == id) {
-        m_upVal.release();
-    }
+    m_lowVal.release(id);
+    m_upVal.release(id);
 }
 
 void MultiplicityElement::referenceReindexed(ID oldID, ID newID) {
-    if (m_lowVal.id() == oldID) {
-        m_lowVal.reindex(oldID, newID);
-    }
-    if (m_upVal.id() == oldID) {
-        m_lowVal.reindex(oldID, newID);
-    }
+    m_lowVal.reindex(oldID, newID);
+    m_lowVal.reindex(oldID, newID);
 }
 
 void MultiplicityElement::restoreReferences() {

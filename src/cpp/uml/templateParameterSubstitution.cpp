@@ -59,34 +59,18 @@ void TemplateParameterSubstitution::AddOwnedActualProcedure::operator()(Paramete
 
 void TemplateParameterSubstitution::referencingReleased(ID id) {
     Element::referencingReleased(id);
-    if (m_formal.id() == id) {
-        m_formal.release();
-    }
-    if (m_templateBinding.id() == id) {
-        m_templateBinding.release();
-    }
-    if (m_actual.id() == id) {
-        m_actual.release();
-    }
-    if (m_ownedActual.id() == id) {
-        m_ownedActual.release();
-    }
+    m_formal.release(id);
+    m_templateBinding.release(id);
+    m_actual.release(id);
+    m_ownedActual.release(id);
 }
 
 void TemplateParameterSubstitution::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    if (m_formal.id() == oldID) {
-        m_formal.reindex(oldID, newID);
-    }
-    if (m_templateBinding.id() == oldID) {
-        m_templateBinding.reindex(oldID, newID);
-    }
-    if (m_actual.id() == oldID) {
-        m_actual.reindex(oldID, newID);
-    }
-    if (m_ownedActual.id() == oldID) {
-        m_ownedActual.reindex(oldID, newID);
-    }
+    m_formal.reindex(oldID, newID);
+    m_templateBinding.reindex(oldID, newID);
+    m_actual.reindex(oldID, newID);
+    m_ownedActual.reindex(oldID, newID);
 }
 
 void TemplateParameterSubstitution::restoreReferences() {

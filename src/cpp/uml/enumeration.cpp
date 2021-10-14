@@ -43,9 +43,7 @@ void Enumeration::referencingReleased(ID id) {
 
 void Enumeration::referenceReindexed(ID oldID, ID newID) {
     DataType::referenceReindexed(oldID, newID);
-    if (m_ownedLiterals.count(oldID)) {
-        m_ownedLiterals.reindex(oldID, newID, &Enumeration::getOwnedLiterals);
-    }
+    m_ownedLiterals.reindex(oldID, newID, &Enumeration::getOwnedLiterals);
 }
 
 void Enumeration::restoreReferences() {

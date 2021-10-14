@@ -49,12 +49,8 @@ void Namespace::setManager(UmlManager* manager) {
 
 void Namespace::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
-    if (m_members.count(oldID)) {
-        m_members.reindex(oldID, newID, &Namespace::getMembers);
-    }
-    if (m_ownedMembers.count(oldID)) {
-        m_ownedMembers.reindex(oldID, newID, &Namespace::getOwnedMembers);
-    }
+    m_members.reindex(oldID, newID, &Namespace::getMembers);
+    m_ownedMembers.reindex(oldID, newID, &Namespace::getOwnedMembers);
 }
 
 void Namespace::restoreReferences() {

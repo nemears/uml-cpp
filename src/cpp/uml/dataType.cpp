@@ -99,22 +99,14 @@ void DataType::setManager(UmlManager* manager) {
 
 void DataType::referenceReindexed(ID oldID, ID newID) {
     Classifier::referenceReindexed(oldID, newID);
-    if (m_ownedAttribute.count(oldID)) {
-        m_ownedAttribute.reindex(oldID, newID, &DataType::getOwnedAttribute);
-    }
-    if (m_ownedOperation.count(oldID)) {
-        m_ownedOperation.reindex(oldID, newID, &DataType::getOwnedOperation);
-    }
+    m_ownedAttribute.reindex(oldID, newID, &DataType::getOwnedAttribute);
+    m_ownedOperation.reindex(oldID, newID, &DataType::getOwnedOperation);
 }
 
 void DataType::referencingReleased(ID id) {
     Classifier::referencingReleased(id);
-    if (m_ownedAttribute.count(id)) {
-        m_ownedAttribute.elementReleased(id, &DataType::getOwnedAttribute);
-    }
-    if (m_ownedOperation.count(id)) {
-        m_ownedOperation.elementReleased(id, &DataType::getOwnedOperation);
-    }
+    m_ownedAttribute.elementReleased(id, &DataType::getOwnedAttribute);
+    m_ownedOperation.elementReleased(id, &DataType::getOwnedOperation);
 }
 
 void DataType::referenceErased(ID id) {

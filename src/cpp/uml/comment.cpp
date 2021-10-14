@@ -27,16 +27,12 @@ void Comment::AddOwningElementProcedure::operator()(ID id) const {
 
 void Comment::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    if (m_owningElement.id() == oldID) {
-        m_owningElement.reindex(oldID, newID);
-    }
+    m_owningElement.reindex(oldID, newID);
 }
 
 void Comment::referencingReleased(ID id) {
     Element::referencingReleased(id);
-    if (m_owningElement.id() == id) {
-        m_owningElement.release();
-    }
+    m_owningElement.release(id);
 }
 
 void Comment::restoreReferences() {

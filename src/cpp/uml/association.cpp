@@ -141,35 +141,19 @@ void Association::setManager(UmlManager* manager) {
 void Association::referencingReleased(ID id) {
     Classifier::referencingReleased(id);
     Relationship::referencingReleased(id);
-    if (m_memberEnds.count(id)) {
-        m_memberEnds.elementReleased(id, &Association::getMemberEnds);
-    }
-    if (m_ownedEnds.count(id)) {
-        m_ownedEnds.elementReleased(id, &Association::getOwnedEnds);
-    }
-    if (m_navigableOwnedEnds.count(id)) {
-        m_navigableOwnedEnds.elementReleased(id, &Association::getNavigableOwnedEnds);
-    }
-    if (m_endType.count(id)) {
-        m_endType.elementReleased(id, &Association::getEndType);
-    }
+    m_memberEnds.elementReleased(id, &Association::getMemberEnds);
+    m_ownedEnds.elementReleased(id, &Association::getOwnedEnds);
+    m_navigableOwnedEnds.elementReleased(id, &Association::getNavigableOwnedEnds);
+    m_endType.elementReleased(id, &Association::getEndType);
 }
 
 void Association::referenceReindexed(ID oldID, ID newID) {
     Classifier::referenceReindexed(oldID, newID);
     Relationship::referenceReindexed(oldID, newID);
-    if (m_memberEnds.count(oldID)) {
-        m_memberEnds.reindex(oldID, newID, &Association::getMemberEnds);
-    }
-    if (m_ownedEnds.count(oldID)) {
-        m_ownedEnds.reindex(oldID, newID, &Association::getOwnedEnds);
-    }
-    if (m_navigableOwnedEnds.count(oldID)) {
-        m_navigableOwnedEnds.reindex(oldID, newID, &Association::getNavigableOwnedEnds);
-    }
-    if (m_endType.count(oldID)) {
-        m_endType.reindex(oldID, newID, &Association::getEndType);
-    }
+    m_memberEnds.reindex(oldID, newID, &Association::getMemberEnds);
+    m_ownedEnds.reindex(oldID, newID, &Association::getOwnedEnds);
+    m_navigableOwnedEnds.reindex(oldID, newID, &Association::getNavigableOwnedEnds);
+    m_endType.reindex(oldID, newID, &Association::getEndType);
 }
 
 void Association::restoreReferences() {

@@ -202,41 +202,21 @@ void Artifact::setManager(UmlManager* manager) {
 void Artifact::referenceReindexed(ID oldID, ID newID) {
     Classifier::referenceReindexed(oldID, newID);
     DeployedArtifact::referenceReindexed(oldID, newID);
-    if (m_ownedAttributes.count(oldID)) {
-        m_ownedAttributes.reindex(oldID, newID, &Artifact::getOwnedAttributes);
-    }
-    if (m_ownedOperations.count(oldID)) {
-        m_ownedOperations.reindex(oldID, newID, &Artifact::getOwnedOperations);
-    }
-    if (m_nestedArtifacts.count(oldID)) {
-        m_nestedArtifacts.reindex(oldID, newID, &Artifact::getNestedArtifacts);
-    }
-    if (m_manifestations.count(oldID)) {
-        m_manifestations.reindex(oldID, newID, &Artifact::getManifestations);
-    }
-    if (m_artifact.id() == oldID) {
-        m_artifact.reindex(oldID, newID);
-    }
+    m_ownedAttributes.reindex(oldID, newID, &Artifact::getOwnedAttributes);
+    m_ownedOperations.reindex(oldID, newID, &Artifact::getOwnedOperations);
+    m_nestedArtifacts.reindex(oldID, newID, &Artifact::getNestedArtifacts);
+    m_manifestations.reindex(oldID, newID, &Artifact::getManifestations);
+    m_artifact.reindex(oldID, newID);
 }
 
 void Artifact::referencingReleased(ID id) {
     Classifier::referencingReleased(id);
     DeployedArtifact::referencingReleased(id);
-    if (m_ownedAttributes.count(id)) {
-        m_ownedAttributes.elementReleased(id, &Artifact::getOwnedAttributes);
-    }
-    if (m_ownedOperations.count(id)) {
-        m_ownedOperations.elementReleased(id, &Artifact::getOwnedOperations);
-    }
-    if (m_nestedArtifacts.count(id)) {
-        m_nestedArtifacts.elementReleased(id, &Artifact::getNestedArtifacts);
-    }
-    if (m_manifestations.count(id)) {
-        m_manifestations.elementReleased(id, &Artifact::getManifestations);
-    }
-    if (m_artifact.id() == id) {
-        m_artifact.release();
-    }
+    m_ownedAttributes.elementReleased(id, &Artifact::getOwnedAttributes);
+    m_ownedOperations.elementReleased(id, &Artifact::getOwnedOperations);
+    m_nestedArtifacts.elementReleased(id, &Artifact::getNestedArtifacts);
+    m_manifestations.elementReleased(id, &Artifact::getManifestations);
+    m_artifact.release(id);
 }
 
 void Artifact::restoreReferences() {

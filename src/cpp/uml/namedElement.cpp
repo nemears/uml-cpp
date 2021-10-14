@@ -105,26 +105,16 @@ void NamedElement::setManager(UmlManager* manager) {
 
 void NamedElement::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    if (m_namespace.id() == oldID) {
-        m_namespace.reindex(oldID, newID);
-    }
-    if (m_memberNamespace->count(oldID)) {
-        m_memberNamespace->reindex(oldID, newID, &NamedElement::getMemberNamespace);
-    }
-    if (m_clientDependencies->count(oldID)) {
-        m_clientDependencies->reindex(oldID, newID, &NamedElement::getClientDependencies);
-    }
-    if (m_supplierDependencies->count(oldID)) {
-        m_supplierDependencies->reindex(oldID, newID, &NamedElement::getSupplierDependencies);
-    }
+    m_namespace.reindex(oldID, newID);
+    m_memberNamespace->reindex(oldID, newID, &NamedElement::getMemberNamespace);
+    m_clientDependencies->reindex(oldID, newID, &NamedElement::getClientDependencies);
+    m_supplierDependencies->reindex(oldID, newID, &NamedElement::getSupplierDependencies);
 }
 
 void NamedElement::referencingReleased(ID id) {
     Element::referencingReleased(id);
     m_memberNamespace->elementReleased(id, &NamedElement::getMemberNamespace);
-    if (m_namespace.id() == id) {
-        m_namespace.release();
-    }
+    m_namespace.release(id);
     m_clientDependencies->elementReleased(id, &NamedElement::getClientDependencies);
     m_supplierDependencies->elementReleased(id, &NamedElement::getSupplierDependencies);
 }

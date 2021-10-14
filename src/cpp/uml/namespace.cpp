@@ -53,7 +53,7 @@ void Namespace::referenceReindexed(ID oldID, ID newID) {
         m_members.reindex(oldID, newID, &Namespace::getMembers);
     }
     if (m_ownedMembers.count(oldID)) {
-        m_members.reindex(oldID, newID, &Namespace::getOwnedMembers);
+        m_ownedMembers.reindex(oldID, newID, &Namespace::getOwnedMembers);
     }
 }
 

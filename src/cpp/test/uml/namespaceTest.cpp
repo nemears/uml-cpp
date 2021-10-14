@@ -23,7 +23,7 @@ TEST_F(NamespaceTest, reindexID_Test) {
     Package n = m.create<Package>();
     nmspc.setName("nmspc");
     n.setNamespace(&nmspc);
-    ASSERT_NO_THROW(n.setID("190d1cb9_13dc_44e6_a064_1268"));
+    n.setID("190d1cb9_13dc_44e6_a064_1268");
     ASSERT_EQ(nmspc.getOwnedElements().get(n.getID()), n);
     ASSERT_EQ(nmspc.getMembers().get(n.getID()), n);
     ASSERT_EQ(nmspc.getOwnedMembers().get(n.getID()), n);

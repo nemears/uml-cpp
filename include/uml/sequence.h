@@ -192,18 +192,20 @@ namespace UML {
             };
 
             template <class U = Element> void reindex(ID oldID, ID newID, Sequence<T>& (U::* signature)()) {
-                if (m_el) {
-                    if (m_el->m_node) {
-                        if (!m_el->m_node->m_managerElementMemory) {
-                            m_manager->aquire(oldID);
+                if (m_rep.count(oldID)) {
+                    if (m_el) {
+                        if (m_el->m_node) {
+                            if (!m_el->m_node->m_managerElementMemory) {
+                                m_manager->aquire(oldID);
+                            }
+                            (m_el->m_node->m_managerElementMemory->template as<U>().*signature)().internalReindex(oldID, newID);
+                            for (auto& copy : m_el->m_node->m_copies) {
+                                (copy->template as<U>().*signature)().internalReindex(oldID, newID);
+                            }
                         }
-                        (m_el->m_node->m_managerElementMemory->template as<U>().*signature)().internalReindex(oldID, newID);
-                        for (auto& copy : m_el->m_node->m_copies) {
-                            (copy->template as<U>().*signature)().internalReindex(oldID, newID);
-                        }
+                    } else {
+                        internalReindex(oldID, newID);
                     }
-                } else {
-                    internalReindex(oldID, newID);
                 }
             }
 
@@ -245,12 +247,14 @@ namespace UML {
             };
 
             template <class U = Element> void elementReleased(ID id, Sequence<T>& (U::*signature)()) {
-                if (m_el->m_node) {
-                    if (m_rep.count(id)) {
-                        (m_el->m_node->m_managerElementMemory->as<U>().*signature)().m_rep[id] = 0;
-                    }
-                    for (auto& copy : m_el->m_node->m_copies) {
-                        (copy->as<U>().*signature)().m_rep[id] = 0;
+                if (m_rep.count(id)) {
+                    if (m_el->m_node) {
+                        if (m_rep.count(id)) {
+                            (m_el->m_node->m_managerElementMemory->as<U>().*signature)().m_rep[id] = 0;
+                        }
+                        for (auto& copy : m_el->m_node->m_copies) {
+                            (copy->as<U>().*signature)().m_rep[id] = 0;
+                        }
                     }
                 }
             }

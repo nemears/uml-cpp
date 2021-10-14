@@ -187,6 +187,12 @@ namespace UML {
                 }
             };
 
+            void release(ID id) {
+                if (m_id == id) {
+                    release();
+                }
+            };
+
             void reindex(ID oldID, ID newID) {
                 if (m_id == oldID) {
                     m_id = newID;

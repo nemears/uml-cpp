@@ -238,6 +238,7 @@ namespace UML {
 
             void setModel(Model* model);
             void setRoot(Element* el);
+            void setRoot(Element& el);
             Model* getModel();
             Element* getRoot();
             void setPath(ID elID, std::string path);

@@ -272,6 +272,10 @@ void UmlManager::setRoot(Element* el) {
     }
 }
 
+void UmlManager::setRoot(Element& el) {
+    setRoot(&el);
+}
+
 Element* UmlManager::getRoot() {
     return m_root;
 }

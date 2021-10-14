@@ -175,7 +175,7 @@ namespace UML {
                 // m_data
                 T* temp = m_rep[oldID];
                 if (!temp) {
-                    temp = &m_manager->get<T>(oldID);
+                    temp = &m_manager->get<T>(newID);
                 }
                 m_rep.erase(oldID);
                 m_rep[newID] = temp;

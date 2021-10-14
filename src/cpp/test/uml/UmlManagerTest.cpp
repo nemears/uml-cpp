@@ -221,3 +221,17 @@ TEST_F(UmlManagerTest, ManagerMountStressTest) {
     Package& root3 = m.get<Package>(rootID);
     ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_MOUNT(root3, ymlPath + "umlManagerTests"));
 }
+
+TEST_F(UmlManagerTest, basicEraseFunctionalityTest) {
+    UmlManager m;
+    Package& package = m.create<Package>();
+    Package& child = m.create<Package>();
+    package.getPackagedElements().add(child);
+    m.setRoot(package);
+    m.mount(ymlPath + "umlManagerTests");
+    ID childID = child.getID();
+    m.erase(child);
+    ASSERT_FALSE(filesystem::exists((ymlPath + "umlManagerTests/" + childID.string() + ".yml")));
+    ASSERT_TRUE(package.getOwnedElements().empty());
+    ASSERT_FALSE(m.loaded(childID));
+}

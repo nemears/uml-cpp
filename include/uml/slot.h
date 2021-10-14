@@ -41,7 +41,6 @@ namespace UML {
                     void operator()(InstanceSpecification* el) const override;
                     void operator()(ID id) const override;
             };
-            void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;

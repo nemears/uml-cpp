@@ -31,11 +31,6 @@ void Enumeration::RemoveOwnedLiteralFunctor::operator()(EnumerationLiteral& el) 
     updateCopiedSequenceRemovedFrom(el, &Enumeration::getOwnedLiterals);
 }
 
-void Enumeration::setManager(UmlManager* manager) {
-    DataType::setManager(manager);
-    m_ownedLiterals.m_manager = manager;
-}
-
 void Enumeration::referencingReleased(ID id) {
     DataType::referencingReleased(id);
     m_ownedLiterals.elementReleased(id, &Enumeration::getOwnedLiterals);

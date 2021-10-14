@@ -57,7 +57,6 @@ namespace UML {
                     CheckOutgoingFunctor(ActivityNode* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(ActivityEdge& el) const override;
             };
-            void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
         public:

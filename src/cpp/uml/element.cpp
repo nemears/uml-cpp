@@ -589,15 +589,6 @@ string Element::getElementTypeString() const {
     return elementTypeToString(getElementType());
 }
 
-void Element::setManager(UmlManager* manager) {
-    m_manager = manager;
-    m_ownedElements->m_manager = manager;
-    m_ownedComments->m_manager = manager;
-    m_relationships->m_manager = manager;
-    m_directedRelationships->m_manager = manager;
-    m_appliedStereotype->m_manager = manager;
-};
-
 ID Element::getID() const {
     return m_id;
 }

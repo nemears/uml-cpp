@@ -61,7 +61,6 @@ namespace UML {
                     RemoveOwnedStereotypeFunctor(Package* me) : TemplateAbstractSequenceFunctor(me){};
                     void operator()(Stereotype& el) const override;
             };
-            void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;

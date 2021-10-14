@@ -53,11 +53,6 @@ void ActivityEdge::AddGuardProcedure::operator()(ValueSpecification* el) const {
     }
 }
 
-void ActivityEdge::setManager(UmlManager* manager) {
-    RedefinableElement::setManager(manager);
-    NamedElement::setManager(manager);
-}
-
 ActivityEdge::ActivityEdge() {
     m_activity.m_signature = &ActivityEdge::m_activity;
     m_activity.m_removeProcedures.push_back(new RemoveActivityProcedure(this));

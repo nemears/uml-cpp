@@ -91,13 +91,6 @@ void StructuredClassifier::RemovePartFunctor::operator()(Property& el) const {
     updateCopiedSequenceRemovedFrom(el, &StructuredClassifier::getParts);
 }
 
-void StructuredClassifier::setManager(UmlManager* manager) {
-    Classifier::setManager(manager);
-    m_ownedAttributes.m_manager = manager;
-    m_role.m_manager = manager;
-    m_parts.m_manager = manager;
-}
-
 void StructuredClassifier::referencingReleased(ID id) {
     Classifier::referencingReleased(id);
     m_ownedAttributes.elementReleased(id, &StructuredClassifier::getOwnedAttributes);

@@ -44,7 +44,6 @@ namespace UML {
                     RemovePartFunctor(StructuredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Property& el) const override;
             };
-            void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID);
             void restoreReferences() override;

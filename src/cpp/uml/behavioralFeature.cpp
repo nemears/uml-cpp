@@ -71,13 +71,6 @@ void BehavioralFeature::RemoveParameterFunctor::operator()(Parameter& el) const 
     updateCopiedSequenceRemovedFrom(el, &BehavioralFeature::getOwnedParameters);
 }
 
-void BehavioralFeature::setManager(UmlManager* manager) {
-    Namespace::setManager(manager);
-    RedefinableElement::setManager(manager);
-    m_methods.m_manager = manager;
-    m_ownedParameters.m_manager = manager;
-}
-
 void BehavioralFeature::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     Feature::referencingReleased(id);

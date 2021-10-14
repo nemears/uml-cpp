@@ -96,13 +96,6 @@ void RemoveSupplierDependencyFunctor::operator()(Dependency& el) const {
     }
 }
 
-void NamedElement::setManager(UmlManager* manager) {
-    Element::setManager(manager);
-    m_memberNamespace->m_manager = manager;
-    m_clientDependencies->m_manager = manager;
-    m_supplierDependencies->m_manager = manager;
-}
-
 void NamedElement::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
     m_namespace.reindex(oldID, newID);

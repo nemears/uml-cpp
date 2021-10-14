@@ -100,15 +100,6 @@ void Package::RemoveOwnedStereotypeFunctor::operator()(Stereotype& el) const {
     updateCopiedSequenceRemovedFrom(el, &Package::getOwnedStereotypes);
 }
 
-void Package::setManager(UmlManager* manager) {
-    Namespace::setManager(manager);
-    TemplateableElement::setManager(manager);
-    m_packagedElements.m_manager = manager;
-    m_packageMerge.m_manager = manager;
-    m_profileApplications.m_manager = manager;
-    m_ownedStereotypes.m_manager = manager;
-}
-
 void Package::referenceReindexed(ID oldID, ID newID) {
     Namespace::referenceReindexed(oldID, newID);
     PackageableElement::referenceReindexed(oldID, newID);

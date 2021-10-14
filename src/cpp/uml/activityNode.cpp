@@ -17,13 +17,6 @@ void ActivityNode::AddActivityProcedure::operator()(Activity* el) const {
     }
 }
 
-void ActivityNode::setManager(UmlManager* manager) {
-    NamedElement::setManager(manager);
-    RedefinableElement::setManager(manager);
-    m_outgoing.m_manager = manager;
-    m_incoming.m_manager = manager;
-}
-
 void ActivityNode::referencingReleased(ID id) {
     RedefinableElement::referencingReleased(id);
     NamedElement::referencingReleased(id);

@@ -38,7 +38,6 @@ namespace UML {
                     RemoveParameterFunctor(BehavioralFeature* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Parameter& el) const override;
             };
-            void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;

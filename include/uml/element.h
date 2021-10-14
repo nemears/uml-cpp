@@ -119,6 +119,7 @@ namespace UML {
     template <class T> class Sequence;
     template <class T, class U> class TemplateAbstractSequenceFunctor;
     template <class T, class U> class Singleton;
+    template <class T> struct SequenceIterator;
     class ElementDoesntExistException;
     class Relationship;
     class DirectedRelationship;
@@ -151,6 +152,8 @@ namespace UML {
         template<typename> friend class Sequence;
         template <class T, class U> friend class TemplateAbstractSequenceFunctor;
         template <class T, class U> friend class Singleton;
+        template <class T> friend class Sequence;
+        template <class T> friend struct SequenceIterator;
         private:
             bool m_copiedElementFlag = false;
         protected:
@@ -164,8 +167,6 @@ namespace UML {
             
             // ownedElements
             Sequence<Element>* m_ownedElements;
-
-            virtual void setManager(UmlManager* manager);
             Sequence<Relationship>* m_relationships;
             Sequence<DirectedRelationship>* m_directedRelationships;
             Sequence<Comment>* m_ownedComments;

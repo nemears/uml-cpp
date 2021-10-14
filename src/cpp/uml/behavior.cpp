@@ -59,11 +59,6 @@ void Behavior::RemoveOwnedParameterFunctor::operator()(Parameter& el) const {
     updateCopiedSequenceRemovedFrom(el, &Behavior::getOwnedParameters);
 }
 
-void Behavior::setManager(UmlManager* manager) {
-    Class::setManager(manager);
-    m_ownedParameters.m_manager = manager;
-}
-
 void Behavior::referencingReleased(ID id) {
     Class::referencingReleased(id);
     m_ownedParameters.elementReleased(id, &Behavior::getOwnedParameters);

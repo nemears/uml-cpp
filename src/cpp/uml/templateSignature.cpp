@@ -54,12 +54,6 @@ void TemplateSignature::RemoveOwnedParameterFunctor::operator()(TemplateParamete
     updateCopiedSequenceRemovedFrom(el, &TemplateSignature::getOwnedParameter);
 }
 
-void TemplateSignature::setManager(UmlManager* manager) {
-    Element::setManager(manager);
-    m_ownedParameter.m_manager = manager;
-    m_parameter.m_manager = manager;
-}
-
 void TemplateSignature::referencingReleased(ID id) {
     Element::referencingReleased(id);
     m_template.release(id);

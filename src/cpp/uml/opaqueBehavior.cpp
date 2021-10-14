@@ -23,11 +23,6 @@ void OpaqueBehavior::RemoveBodyFunctor::operator()(LiteralString& el) const {
     updateCopiedSequenceRemovedFrom(el, &OpaqueBehavior::getBodies);
 }
 
-void OpaqueBehavior::setManager(UmlManager* manager) {
-    Behavior::setManager(manager);
-    m_bodies.m_manager = manager;
-}
-
 void OpaqueBehavior::referencingReleased(ID id) {
     Behavior::referencingReleased(id);
     m_bodies.elementReleased(id, &OpaqueBehavior::getBodies);

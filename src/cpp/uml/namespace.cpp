@@ -41,12 +41,6 @@ void Namespace::RemoveOwnedMemberFunctor::operator()(NamedElement& el) const {
     updateCopiedSequenceRemovedFrom(el, &Namespace::getOwnedMembers);
 }
 
-void Namespace::setManager(UmlManager* manager) {
-    NamedElement::setManager(manager);
-    m_members.m_manager = manager;
-    m_ownedMembers.m_manager = manager;
-}
-
 void Namespace::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
     m_members.reindex(oldID, newID, &Namespace::getMembers);

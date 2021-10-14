@@ -85,13 +85,6 @@ void Class::RemoveNestedClassifierFunctor::operator()(Classifier& el) const {
     updateCopiedSequenceRemovedFrom(el, &Class::getNestedClassifiers);
 }
 
-void Class::setManager(UmlManager* manager) {
-    StructuredClassifier::setManager(manager);
-    BehavioredClassifier::setManager(manager);
-    m_ownedOperations.m_manager = manager;
-    m_nestedClassifiers.m_manager = manager;
-}
-
 void Class::referencingReleased(ID id) {
     StructuredClassifier::referencingReleased(id);
     BehavioredClassifier::referencingReleased(id);

@@ -32,12 +32,6 @@ void Action::RemoveOutputFunctor::operator()(OutputPin& el) const {
     updateCopiedSequenceRemovedFrom(el, &Action::getOutputs);
 }
 
-void Action::setManager(UmlManager* manager) {
-    ActivityNode::setManager(manager);
-    m_inputs.m_manager = manager;
-    m_outputs.m_manager = manager;
-}
-
 void Action::referencingReleased(ID id) {
     ActivityNode::referencingReleased(id);
     m_inputs.elementReleased(id, &Action::getInputs);

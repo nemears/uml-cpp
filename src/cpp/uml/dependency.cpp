@@ -54,13 +54,6 @@ void Dependency::RemoveSupplierFunctor::operator()(NamedElement& el) const {
     updateCopiedSequenceRemovedFrom(el, &Dependency::getSupplier);
 }
 
-void Dependency::setManager(UmlManager* manager) {
-    DirectedRelationship::setManager(manager);
-    PackageableElement::setManager(manager);
-    m_client.m_manager = manager;
-    m_supplier.m_manager = manager;
-}
-
 void Dependency::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
     PackageableElement::referencingReleased(id);

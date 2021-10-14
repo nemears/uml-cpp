@@ -129,15 +129,6 @@ void Association::RemoveEndTypeFunctor::operator()(Type& el) const {
     updateCopiedSequenceRemovedFrom(el, &Association::getEndType);
 }
 
-void Association::setManager(UmlManager* manager) {
-    Classifier::setManager(manager);
-    m_relatedElements.m_manager = manager;
-    m_memberEnds.m_manager = manager;
-    m_ownedEnds.m_manager = manager;
-    m_navigableOwnedEnds.m_manager = manager;
-    m_endType.m_manager = manager;
-}
-
 void Association::referencingReleased(ID id) {
     Classifier::referencingReleased(id);
     Relationship::referencingReleased(id);

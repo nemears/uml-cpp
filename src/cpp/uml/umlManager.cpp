@@ -171,7 +171,8 @@ void UmlManager::release(Element& el) {
         for (auto& copy : node->m_copies) {
             // TODO show warning, bad practice to release without destroying all copies
             // effecctively dereferences the copies from the manager
-            copy->setManager(0);
+            copy->m_node = 0;
+            copy->m_manager = 0;
         }
         m_graph.erase(id);
     } else {

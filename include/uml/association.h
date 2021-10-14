@@ -58,7 +58,6 @@ namespace UML {
                     RemoveEndTypeFunctor(Association* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Type& el) const override;
             };
-            void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;

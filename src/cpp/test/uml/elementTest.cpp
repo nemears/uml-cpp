@@ -188,7 +188,7 @@ TEST_F(ElementTest, doINeedAnAddRelationshipFunctorTest) { // answer is yes
     PackageMerge r = m.create<PackageMerge>();
     e.getPackageMerge().add(r);
     ASSERT_TRUE(r.getRelatedElements().size() == 1);
-    ASSERT_TRUE(&r.getRelatedElements().front() == &e);
+    ASSERT_EQ(r.getRelatedElements().front(), e);
 }
 
 // TEST_F(ElementTest, fullCopyTest) {

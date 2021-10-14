@@ -63,11 +63,6 @@ void TemplateBinding::RemoveParameterSubstitutionFunctor::operator()(TemplatePar
     updateCopiedSequenceRemovedFrom(el, &TemplateBinding::getParameterSubstitution);
 }
 
-void TemplateBinding::setManager(UmlManager* manager) {
-    DirectedRelationship::setManager(manager);
-    m_parameterSubstitution.m_manager = manager;
-}
-
 void TemplateBinding::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
     m_boundElement.release(id);

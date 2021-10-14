@@ -25,11 +25,6 @@ void DeploymentTarget::RemoveDeploymentFunctor::operator()(Deployment& el) const
     updateCopiedSequenceRemovedFrom(el, &DeploymentTarget::getDeployments);
 }
 
-void DeploymentTarget::setManager(UmlManager* manager) {
-    NamedElement::setManager(manager);
-    m_deployments.m_manager = manager;
-}
-
 void DeploymentTarget::referencingReleased(ID id) {
     NamedElement::referencingReleased(id);
     m_deployments.elementReleased(id, &DeploymentTarget::getDeployments);

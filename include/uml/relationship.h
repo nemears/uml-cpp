@@ -7,7 +7,6 @@ namespace UML {
     class Relationship : virtual public Element {
         protected:
             Sequence<> m_relatedElements = Sequence<>(this);
-
             class AddRelationshipFunctor : public TemplateAbstractSequenceFunctor<Element,Relationship> {
                 public:
                     AddRelationshipFunctor(Relationship* me) : TemplateAbstractSequenceFunctor(me) {};
@@ -23,7 +22,6 @@ namespace UML {
                     RemoveRelatedElementsFunctor(Relationship* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Element& el) const override;
             };
-            void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;

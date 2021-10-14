@@ -31,7 +31,6 @@ namespace UML {
                     RemoveRedefinitionContextFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Classifier& el) const override;
             };
-            void setManager(UmlManager* manager) override; // not polymorphic
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;

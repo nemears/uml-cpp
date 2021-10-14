@@ -190,15 +190,6 @@ void Artifact::RemoveArtifactProcedure::operator()(Artifact* el) const {
     }
 }
 
-void Artifact::setManager(UmlManager* manager) {
-    Classifier::setManager(manager);
-    DeployedArtifact::setManager(manager);
-    m_ownedAttributes.m_manager = manager;
-    m_ownedOperations.m_manager = manager;
-    m_nestedArtifacts.m_manager = manager;
-    m_manifestations.m_manager = manager;
-}
-
 void Artifact::referenceReindexed(ID oldID, ID newID) {
     Classifier::referenceReindexed(oldID, newID);
     DeployedArtifact::referenceReindexed(oldID, newID);

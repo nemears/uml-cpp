@@ -305,12 +305,6 @@ void Property::RemoveRedefinedPropertyFunctor::operator()(Property& el) const {
     updateCopiedSequenceRemovedFrom(el, &Property::getRedefinedProperties);
 }
 
-void Property::setManager(UmlManager* manager) {
-    NamedElement::setManager(manager);
-    RedefinableElement::setManager(manager);
-    m_redefinedProperties.m_manager = manager;
-}
-
 void Property::referencingReleased(ID id) {
     StructuralFeature::referencingReleased(id);
     m_defaultValue.release(id);

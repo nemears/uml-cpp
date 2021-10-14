@@ -91,12 +91,6 @@ void DataType::RemoveOwnedOperationFunctor::operator()(Operation& el) const {
     updateCopiedSequenceRemovedFrom(el, &DataType::getOwnedOperation);
 }
 
-void DataType::setManager(UmlManager* manager) {
-    Classifier::setManager(manager);
-    m_ownedAttribute.m_manager = manager;
-    m_ownedOperation.m_manager = manager;
-}
-
 void DataType::referenceReindexed(ID oldID, ID newID) {
     Classifier::referenceReindexed(oldID, newID);
     m_ownedAttribute.reindex(oldID, newID, &DataType::getOwnedAttribute);

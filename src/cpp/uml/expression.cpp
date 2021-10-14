@@ -29,11 +29,6 @@ void Expression::RemoveOperandFunctor::operator()(ValueSpecification& el) const 
     updateCopiedSequenceRemovedFrom(el, &Expression::getOperands);
 }
 
-void Expression::setManager(UmlManager* manager) {
-    ValueSpecification::setManager(manager);
-    m_operands.m_manager = manager;
-}
-
 void Expression::referencingReleased(ID id) {
     ValueSpecification::referencingReleased(id);
     m_operands.elementReleased(id, &Expression::getOperands);

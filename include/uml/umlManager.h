@@ -159,7 +159,7 @@ namespace UML {
             bool loaded(ID id);
             template <class T = Element> T& create() {
                 T* ret = new T;
-                ret->setManager(this);
+                ret->m_manager = this;
                 m_elements.insert(ret->getID());
                 m_graph[ret->getID()] = {ret};
                 ret->m_node = &m_graph[ret->getID()];

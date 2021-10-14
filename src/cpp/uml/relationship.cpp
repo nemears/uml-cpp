@@ -38,11 +38,6 @@ void Relationship::RemoveRelatedElementsFunctor::operator()(Element& el) const {
     updateCopiedSequenceRemovedFrom(el, &Relationship::getRelatedElements);
 }
 
-void Relationship::setManager(UmlManager* manager) {
-    Element::setManager(manager);
-    m_relatedElements.m_manager = manager;
-}
-
 void Relationship::referencingReleased(ID id) {
     Element::referencingReleased(id);
     m_relatedElements.elementReleased(id, &Relationship::getRelatedElements);

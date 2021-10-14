@@ -49,12 +49,6 @@ void Activity::RemoveEdgeFunctor::operator()(ActivityEdge& el) const {
     updateCopiedSequenceRemovedFrom(el, &Activity::getEdges);
 }
 
-void Activity::setManager(UmlManager* manager) {
-    Behavior::setManager(manager);
-    m_nodes.m_manager = manager;
-    m_edges.m_manager = manager;
-}
-
 void Activity::referencingReleased(ID id) {
     Behavior::referencingReleased(id);
     m_nodes.elementReleased(id, &Activity::getNodes);

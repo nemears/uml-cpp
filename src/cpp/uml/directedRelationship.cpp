@@ -45,12 +45,6 @@ void DirectedRelationship::RemoveTargetsFunctor::operator()(Element& el) const {
     updateCopiedSequenceRemovedFrom(el, &DirectedRelationship::getTargets);
 }
 
-void DirectedRelationship::setManager(UmlManager* manager) {
-    Relationship::setManager(manager);
-    m_sources.m_manager = manager;
-    m_targets.m_manager = manager;
-}
-
 void DirectedRelationship::referencingReleased(ID id) {
     Relationship::referencingReleased(id);
     m_sources.elementReleased(id, &DirectedRelationship::getSources);

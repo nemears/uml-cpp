@@ -35,7 +35,6 @@ namespace UML {
                     RemoveOutputFunctor(Action* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(OutputPin& el) const override;
             };
-            void setManager(UmlManager* manager);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             Action();

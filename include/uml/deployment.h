@@ -35,7 +35,6 @@ namespace UML {
                     RemoveDeployedArtifactFunctor(Deployment* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(DeployedArtifact& el) const override;
             };
-            void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;

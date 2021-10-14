@@ -35,7 +35,7 @@ namespace UML {
             void referenceErased(ID id) override;
             Extension();
         public:
-            Extension(const Extension& extension);
+            Extension(const Extension& rhs);
             virtual ~Extension();
             void setMetaClass(ElementType metaClass);
             ElementType getMetaClass();

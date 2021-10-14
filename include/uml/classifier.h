@@ -114,7 +114,6 @@ namespace UML {
                     void operator()(Class* el) const override;
                     void operator()(ID id) const override;
             };
-            void setManager(UmlManager* manager) override;
             void reindexName(std::string oldName, std::string newName) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referencingReleased(ID id) override;

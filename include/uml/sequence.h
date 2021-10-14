@@ -217,9 +217,14 @@ namespace UML {
             void internalAdd(T& el) {
                 m_order.push_back(el.getID());
 
-                if (m_el->m_manager) {
-                    // set element to null until it is accessed
-                    m_rep[el.getID()] = 0;
+                if (m_el) {
+                    if (m_el->m_manager) {
+                        // set element to null until it is accessed
+                        m_rep[el.getID()] = 0;
+                    } else {
+                        // no manager, set it to element
+                        m_rep[el.getID()] = &el;
+                    }
                 } else {
                     // no manager, set it to element
                     m_rep[el.getID()] = &el;
@@ -231,8 +236,10 @@ namespace UML {
                     }
                 }
 
-                if (m_el->m_manager) {
-                    m_el->setReference(&el);
+                if (m_el) {
+                    if (m_el->m_manager) {
+                        m_el->setReference(&el);
+                    }
                 }
 
                 // apply procedures

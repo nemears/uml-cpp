@@ -257,17 +257,6 @@ void Classifier::AddNestingClassProcedure::operator()(ID id) const {
     }
 }
 
-void Classifier::setManager(UmlManager* manager) {
-    Namespace::setManager(manager);
-    RedefinableElement::setManager(manager); // not polymorphic
-    TemplateableElement::setManager(manager);
-    m_attributes.m_manager = manager;
-    m_inheritedMembers.m_manager = manager;
-    m_generalizations.m_manager = manager;
-    m_generals.m_manager = manager;
-    m_features.m_manager = manager;
-}
-
 void Classifier::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     PackageableElement::referencingReleased(id);

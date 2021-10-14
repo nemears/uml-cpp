@@ -66,11 +66,6 @@ void Slot::RemoveValueFunctor::operator()(ValueSpecification& el) const {
     updateCopiedSequenceRemovedFrom(el, &Slot::getValues);
 }
 
-void Slot::setManager(UmlManager* manager) {
-    Element::setManager(manager);
-    m_values.m_manager = manager;
-}
-
 void Slot::referencingReleased(ID id) {
     Element::referencingReleased(id);
     m_definingFeature.release(id);

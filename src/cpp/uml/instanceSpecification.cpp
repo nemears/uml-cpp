@@ -75,12 +75,6 @@ void InstanceSpecification::RemoveSlotFunctor::operator()(Slot& el) const {
     updateCopiedSequenceRemovedFrom(el, &InstanceSpecification::getSlots);
 }
 
-void InstanceSpecification::setManager(UmlManager* manager) {
-    PackageableElement::setManager(manager);
-    DeployedArtifact::setManager(manager);
-    m_slots.m_manager = manager;
-}
-
 void InstanceSpecification::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
     DeployedArtifact::referenceReindexed(oldID, newID);

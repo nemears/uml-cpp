@@ -63,7 +63,6 @@ namespace UML {
                     AddGuardProcedure(ActivityEdge* me) : AbstractSingletonProcedure<ValueSpecification, ActivityEdge>(me) {};
                     void operator()(ValueSpecification* el) const override;
             };
-            void setManager(UmlManager* manager) override;
             // void reindexName(std::string oldName, std::string newName) override;
             void referencingReleased(ID id) override;
         public:

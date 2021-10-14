@@ -21,11 +21,6 @@ void RedefinableElement::RemoveRedefinitionContextFunctor::operator()(Classifier
     updateCopiedSequenceRemovedFrom(el, &RedefinableElement::getRedefinitionContext);
 }
 
-void RedefinableElement::setManager(UmlManager* manager) {
-    m_redefinedElement.m_manager = manager;
-    m_redefinitionContext.m_manager = manager;
-}
-
 void RedefinableElement::referencingReleased(ID id) {
     m_redefinedElement.elementReleased(id, &RedefinableElement::getRedefinedElements);
     m_redefinitionContext.elementReleased(id, &RedefinableElement::getRedefinitionContext);

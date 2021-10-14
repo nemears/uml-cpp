@@ -45,10 +45,6 @@ void BehavioredClassifier::RemoveOwnedBehaviorFunctor::operator()(Behavior& el) 
     updateCopiedSequenceRemovedFrom(el, &BehavioredClassifier::getOwnedBehaviors);
 }
 
-void BehavioredClassifier::setManager(UmlManager* manager) {
-    m_ownedBehaviors.m_manager = manager;
-}
-
 void BehavioredClassifier::referencingReleased(ID id) {
     m_ownedBehaviors.elementReleased(id, &BehavioredClassifier::getOwnedBehaviors);
     m_classifierBehavior.release(id);

@@ -61,7 +61,6 @@ namespace UML{
                     RemoveSlotFunctor(InstanceSpecification* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Slot& el) const override;
             };
-            void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;

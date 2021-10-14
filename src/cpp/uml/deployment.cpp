@@ -36,11 +36,6 @@ void Deployment::RemoveDeployedArtifactFunctor::operator()(DeployedArtifact& el)
     }
 }
 
-void Deployment::setManager(UmlManager* manager) {
-    Dependency::setManager(manager);
-    m_deployedArtifacts.m_manager = manager;
-}
-
 void Deployment::referencingReleased(ID id) {
     Dependency::referencingReleased(id);
     m_location.release(id);

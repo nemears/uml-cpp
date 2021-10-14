@@ -22,7 +22,6 @@ namespace UML {
                     RemoveOperandFunctor(Expression* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(ValueSpecification& el) const override;
             };
-            void setManager(UmlManager* manager) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;

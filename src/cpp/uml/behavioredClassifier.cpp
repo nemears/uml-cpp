@@ -15,6 +15,12 @@ void BehavioredClassifier::AddClassifierBehaviorProcedure::operator()(Behavior* 
     }
 }
 
+void BehavioredClassifier::AddClassifierBehaviorProcedure::operator()(ID id) const {
+    if (!m_me->getOwnedBehaviors().count(id)) {
+        m_me->getOwnedBehaviors().addByID(id);
+    }
+}
+
 void BehavioredClassifier::AddOwnedBehaviorFunctor::operator()(Behavior& el) const {
     if (!m_el->getOwnedMembers().count(el.getID())) {
         m_el->getOwnedMembers().add(el);
@@ -22,6 +28,12 @@ void BehavioredClassifier::AddOwnedBehaviorFunctor::operator()(Behavior& el) con
 
     el.setBehavioredClassifier(m_el);
     updateCopiedSequenceAddedTo(el, &BehavioredClassifier::getOwnedBehaviors);
+}
+
+void BehavioredClassifier::AddOwnedBehaviorFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedMembers().count(id)) {
+        m_el->getOwnedMembers().addByID(id);
+    }
 }
 
 void BehavioredClassifier::RemoveOwnedBehaviorFunctor::operator()(Behavior& el) const {
@@ -34,12 +46,10 @@ void BehavioredClassifier::RemoveOwnedBehaviorFunctor::operator()(Behavior& el) 
 }
 
 void BehavioredClassifier::setManager(UmlManager* manager) {
-    Classifier::setManager(manager);
     m_ownedBehaviors.m_manager = manager;
 }
 
 void BehavioredClassifier::referencingReleased(ID id) {
-    Classifier::referencingReleased(id);
     m_ownedBehaviors.elementReleased(id, &BehavioredClassifier::getOwnedBehaviors);
     if (m_classifierBehavior.id() == id) {
         m_classifierBehavior.release();
@@ -47,13 +57,17 @@ void BehavioredClassifier::referencingReleased(ID id) {
 }
 
 void BehavioredClassifier::referenceReindexed(ID oldID, ID newID) {
-    Classifier::referenceReindexed(oldID, newID);
     if (m_ownedBehaviors.count(oldID)) {
         m_ownedBehaviors.reindex(oldID, newID, &BehavioredClassifier::getOwnedBehaviors);
     }
     if (m_classifierBehavior.id() == oldID) {
         m_classifierBehavior.reindex(oldID, newID);
     }
+}
+
+void BehavioredClassifier::restoreReferences() {
+    m_ownedBehaviors.restoreReferences();
+    m_classifierBehavior.restoreReference();
 }
 
 BehavioredClassifier::BehavioredClassifier() {
@@ -93,6 +107,10 @@ Behavior* BehavioredClassifier::getClassifierBehavior() {
 
 Behavior& BehavioredClassifier::getClassifierBehaviorRef() {
     return m_classifierBehavior.getRef();
+}
+
+ID BehavioredClassifier::getClassifierBehaviorID() const {
+    return m_classifierBehavior.id();
 }
 
 bool BehavioredClassifier::hasClassifierBehavior() const {

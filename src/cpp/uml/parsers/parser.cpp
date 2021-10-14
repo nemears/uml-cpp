@@ -209,6 +209,10 @@ SetExpression::SetExpression() {
     m_signature = &ValueSpecification::m_expression;
 }
 
+SetClassifierBehavior::SetClassifierBehavior() {
+    m_signature = &BehavioredClassifier::m_classifierBehavior;
+}
+
 namespace {
 
 /**
@@ -3500,7 +3504,8 @@ void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier
     
     if (node["classifierBehavior"]) {
         if (node["classifierBehavior"].IsScalar()) {
-            classifier.setClassifierBehavior(&classifier.getOwnedBehaviors().get(ID::fromString(node["classifierBehavior"].as<string>())));
+            SetClassifierBehavior setClassifierBehavior;
+            parseSingleton(node["classifierBehavior"], data, classifier, &BehavioredClassifier::setClassifierBehavior, setClassifierBehavior);
         } else {
             throw UmlParserException("Invalid yaml node type for classifierBehavior reference, must be a scalar!", data.m_path.string(), node["classifierBehavior"]);
         }
@@ -3509,9 +3514,8 @@ void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier
 
 void emitBehavioredClassifier(YAML::Emitter& emitter, BehavioredClassifier& classifier, EmitterMetaData& data) {
     emitSequence(emitter, "ownedBehaviors", data, classifier, &BehavioredClassifier::getOwnedBehaviors);
-
-    if (classifier.getClassifierBehavior() != 0) {
-        emitter << YAML::Key << "classifierBehavior" << YAML::Value << classifier.getClassifierBehavior()->getID().string();
+    if (classifier.hasClassifierBehavior()) {
+        emitter << YAML::Key << "classifierBehavior" << YAML::Value << classifier.getClassifierBehaviorID().string();
     }
 }
 

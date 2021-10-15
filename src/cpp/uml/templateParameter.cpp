@@ -175,6 +175,10 @@ TemplateSignature& TemplateParameter::getSignatureRef() {
     return m_signature.getRef();
 }
 
+ID TemplateParameter::getSignatureID() const {
+    return m_signature.id();
+}
+
 bool TemplateParameter::hasSignature() const {
     return m_signature.has();
 }
@@ -193,6 +197,10 @@ ParameterableElement* TemplateParameter::getOwnedParameteredElement() {
 
 ParameterableElement& TemplateParameter::getOwnedParameteredElementRef() {
     return m_ownedParameteredElement.getRef();
+}
+
+ID TemplateParameter::getOwnedParameteredElementID() const {
+    return m_ownedParameteredElement.id();
 }
 
 bool TemplateParameter::hasOwnedParameteredElement() const {
@@ -215,6 +223,10 @@ ParameterableElement& TemplateParameter::getParameteredElementRef() {
     return m_parameteredElement.getRef();
 }
 
+ID TemplateParameter::getParameteredElementID() const {
+    return m_parameteredElement.id();
+}
+
 bool TemplateParameter::hasParameteredElement() const {
     return m_parameteredElement.has();
 }
@@ -235,6 +247,10 @@ ParameterableElement& TemplateParameter::getDefaultRef() {
     return m_default.getRef();
 }
 
+ID TemplateParameter::getDefaultID() const {
+    return m_default.id();
+}
+
 bool TemplateParameter::hasDefault() const {
     return m_default.has();
 }
@@ -253,6 +269,10 @@ ParameterableElement* TemplateParameter::getOwnedDefault() {
 
 ParameterableElement& TemplateParameter::getOwnedDefaultRef() {
     return m_ownedDefault.getRef();
+}
+
+ID TemplateParameter::getOwnedDefaultID() const {
+    return m_ownedDefault.id();
 }
 
 bool TemplateParameter::hasOwnedDefault() const {

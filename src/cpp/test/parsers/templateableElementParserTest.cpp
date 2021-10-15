@@ -296,10 +296,9 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     Class& clazz = m.create<Class>();
     TemplateSignature& signature = m.create<TemplateSignature>();
     TemplateParameter& ownedParameter = m.create<TemplateParameter>();
-    TemplateParameter& parameter = m.create<TemplateParameter>();
     signature.getOwnedParameter().add(ownedParameter);
-    signature.getParameter().add(parameter);
     clazz.setOwnedTemplateSignature(signature);
+
     // TODO more
 
     m.setRoot(clazz);
@@ -336,6 +335,10 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(signature2.getTemplateRef(), clazz3);
     ASSERT_TRUE(signature2.hasOwner());
     ASSERT_EQ(signature2.getOwnerRef(), clazz3);
+    ASSERT_EQ(signature2.getOwnedParameter().size(), 1);
+    ASSERT_EQ(signature2.getOwnedParameter().front(), ownedParameter);
+    ASSERT_EQ(signature2.getOwnedElements().size(), 1);
+    ASSERT_EQ(signature2.getOwnedElements().front(), ownedParameter);
 
     m.release(signature2, clazz3);
     ASSERT_FALSE(m.loaded(clazzID));
@@ -354,4 +357,40 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(signature3.getTemplateRef(), clazz4);
     ASSERT_TRUE(signature3.hasOwner());
     ASSERT_EQ(signature3.getOwnerRef(), clazz4);
+    ASSERT_EQ(signature3.getOwnedParameter().size(), 1);
+    ASSERT_EQ(signature3.getOwnedParameter().front(), ownedParameter);
+    ASSERT_EQ(signature3.getOwnedElements().size(), 1);
+    ASSERT_EQ(signature3.getOwnedElements().front(), ownedParameter);
+
+    ID ownedParameterID = ownedParameter.getID();
+    m.release(ownedParameter, signature3);
+    ASSERT_FALSE(m.loaded(signatureID));
+    ASSERT_FALSE(m.loaded(ownedParameterID));
+    TemplateParameter& ownedParameter2 = m.aquire(ownedParameterID)->as<TemplateParameter>();
+    ASSERT_TRUE(ownedParameter2.hasSignature());
+    ASSERT_EQ(ownedParameter2.getSignatureID(), signatureID);
+    ASSERT_TRUE(ownedParameter2.hasOwner());
+    ASSERT_EQ(ownedParameter2.getOwnerID(), signatureID);
+    TemplateSignature& signature4 = m.aquire(signatureID)->as<TemplateSignature>();
+    ASSERT_EQ(signature4.getOwnerRef(), clazz4);
+    ASSERT_EQ(signature4.getOwnedParameter().size(), 1);
+    ASSERT_EQ(signature4.getOwnedParameter().front(), ownedParameter2);
+    ASSERT_EQ(signature4.getOwnedElements().size(), 1);
+    ASSERT_EQ(signature4.getOwnedElements().front(), ownedParameter2);
+    ASSERT_EQ(ownedParameter2.getOwnerRef(), signature4);
+    ASSERT_EQ(ownedParameter2.getSignatureRef(), signature);
+
+    m.release(ownedParameter2, signature4);
+    ASSERT_FALSE(m.loaded(signatureID));
+    ASSERT_FALSE(m.loaded(ownedParameterID));
+    TemplateSignature& signature5 = m.aquire(signatureID)->as<TemplateSignature>();
+    ASSERT_EQ(signature5.getOwnedParameter().size(), 1);
+    ASSERT_EQ(signature5.getOwnedParameter().frontID(), ownedParameterID);
+    ASSERT_EQ(signature5.getOwnedElements().size(), 1);
+    ASSERT_EQ(signature5.getOwnedElements().frontID(), ownedParameterID);
+    TemplateParameter& ownedParameter3 = m.aquire(ownedParameterID)->as<TemplateParameter>();
+    ASSERT_TRUE(ownedParameter3.hasSignature());
+    ASSERT_EQ(ownedParameter3.getSignatureRef(), signature5);
+    ASSERT_TRUE(ownedParameter3.hasOwner());
+    ASSERT_EQ(ownedParameter3.getOwnerRef(), signature5);
 }

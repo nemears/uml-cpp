@@ -49,6 +49,7 @@ namespace UML {
             virtual ~TemplateSignature();
             TemplateableElement* getTemplate();
             TemplateableElement& getTemplateRef();
+            ID getTemplateID() const;
             bool hasTemplate() const;
             void setTemplate(TemplateableElement& temp);
             void setTemplate(TemplateableElement* temp);

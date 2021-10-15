@@ -290,3 +290,50 @@ TEST_F(TemplateableElementParserTest, emitBigTemplateExampleTest) {
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
+    UmlManager m;
+    Class& clazz = m.create<Class>();
+    TemplateSignature& signature = m.create<TemplateSignature>();
+    TemplateParameter& ownedParameter = m.create<TemplateParameter>();
+    TemplateParameter& parameter = m.create<TemplateParameter>();
+    signature.getOwnedParameter().add(ownedParameter);
+    signature.getParameter().add(parameter);
+    clazz.setOwnedTemplateSignature(signature);
+    // TODO more
+
+    m.setRoot(clazz);
+    m.mount(ymlPath + "templateableElementTests");
+
+    ID clazzID = clazz.getID();
+    m.release(clazz);
+    ASSERT_FALSE(m.loaded(clazzID));
+    Class& clazz2 = m.aquire(clazzID)->as<Class>();
+    ASSERT_TRUE(clazz2.hasOwnedTemplateSignature());
+    ASSERT_EQ(clazz2.getOwnedTemplateSignatureRef(), signature);
+    ASSERT_EQ(clazz2.getOwnedElements().size(), 1);
+    ASSERT_EQ(clazz2.getOwnedElements().front(), signature);
+    ASSERT_TRUE(signature.hasTemplate());
+    ASSERT_EQ(signature.getTemplateRef(), clazz2);
+    ASSERT_TRUE(signature.hasOwner());
+    ASSERT_EQ(signature.getOwnerRef(), clazz2);
+
+    ID signatureID = signature.getID();
+    m.release(signature, clazz2);
+    ASSERT_FALSE(m.loaded(clazzID));
+    ASSERT_FALSE(m.loaded(signatureID));
+    TemplateSignature& signature2 = m.aquire(signatureID)->as<TemplateSignature>();
+    ASSERT_TRUE(signature2.hasTemplate());
+    ASSERT_EQ(signature2.getTemplateID(), clazzID);
+    ASSERT_TRUE(signature2.hasOwner());
+    ASSERT_EQ(signature2.getOwnerID(), clazzID);
+    Class& clazz3 = m.aquire(clazzID)->as<Class>();
+    ASSERT_TRUE(clazz3.hasOwnedTemplateSignature());
+    ASSERT_EQ(clazz3.getOwnedTemplateSignatureRef(), signature2);
+    ASSERT_EQ(clazz3.getOwnedElements().size(), 1);
+    ASSERT_EQ(clazz3.getOwnedElements().front(), signature2);
+    ASSERT_TRUE(signature2.hasTemplate());
+    ASSERT_EQ(signature2.getTemplateRef(), clazz3);
+    ASSERT_TRUE(signature2.hasOwner());
+    ASSERT_EQ(signature2.getOwnerRef(), clazz3);
+}

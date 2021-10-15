@@ -116,6 +116,10 @@ TemplateableElement& TemplateSignature::getTemplateRef() {
     return m_template.getRef();
 }
 
+ID TemplateSignature::getTemplateID() const {
+    return m_template.id();
+}
+
 bool TemplateSignature::hasTemplate() const {
     return m_template.has();
 }

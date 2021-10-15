@@ -8,10 +8,14 @@ namespace UML {
 
     class TemplateableElement;
     class TemplateParameter;
+    namespace Parsers {
+        class SetTemplate;
+    }
 
     class TemplateSignature : public Element {
 
         friend class UmlManager;
+        friend class Parsers::SetTemplate;
 
         private:
             Singleton<TemplateableElement, TemplateSignature> m_template = Singleton<TemplateableElement, TemplateSignature>(this);
@@ -25,6 +29,7 @@ namespace UML {
                 public:
                     AddTemplateProcedure(TemplateSignature* me) : AbstractSingletonProcedure<TemplateableElement, TemplateSignature>(me) {};
                     void operator()(TemplateableElement* el) const override;
+                    void operator()(ID id) const override;
             };
             Sequence<TemplateParameter> m_ownedParameter =  Sequence<TemplateParameter>(this);
             Sequence<TemplateParameter> m_parameter = Sequence<TemplateParameter>(this);

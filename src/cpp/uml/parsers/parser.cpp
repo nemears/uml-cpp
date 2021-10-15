@@ -213,6 +213,14 @@ SetClassifierBehavior::SetClassifierBehavior() {
     m_signature = &BehavioredClassifier::m_classifierBehavior;
 }
 
+SetTemplate::SetTemplate() {
+    m_signature = &TemplateSignature::m_template;
+}
+
+SetOwnedTemplateSignature::SetOwnedTemplateSignature() {
+    m_signature = &TemplateableElement::m_ownedTemplateSignature;
+}
+
 namespace {
 
 /**
@@ -313,7 +321,12 @@ template <class T =Element> T& parseScalar(YAML::Node node, ParserMetaData& data
 
 // Helper function for parsing scope in parseNode
 template <class T = Element, class U = Element> void parseSingleton(YAML::Node node, ParserMetaData& data, U& el, void (U::*setter)(T&), parseAndSetSingletonFunctor<T, U>& func) {
-    ID id = ID::fromString(node.as<string>());
+    ID id;
+    if (node.as<string>().length() == 28) {
+        id = ID::fromString(node.as<string>());
+    } else {
+        id = ID::fromString(node.as<string>().substr(0, 28));
+    }
     if (data.m_manager->loaded(id)) {
         (el.*setter)(data.m_manager->get<T>(id));
     }
@@ -525,6 +538,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &stereotype;
     }
 
+    if (node["templateSignature"]) {
+        TemplateSignature& templateSignature = data.m_manager->create<TemplateSignature>();
+        parseTemplateSignature(node["templateSignature"], templateSignature, data);
+        ret = &templateSignature;
+    }
+
     if (ret && data.m_strategy == ParserStrategy::INDIVIDUAL) {
         if (node["owningPackage"]) {
             SetOwningPackage setOwningPackage;
@@ -650,6 +669,10 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                 SetExpression setExpression;
                 parseSingleton(node["expression"], data, ret->as<ValueSpecification>(), &ValueSpecification::setExpression, setExpression);
             }
+        }
+        if (node["template"]) {
+            SetTemplate setTemplate;
+            parseSingleton(node["template"], data, ret->as<TemplateSignature>(), &TemplateSignature::setTemplate, setTemplate);
         }
     }
 
@@ -1018,6 +1041,13 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::ENUMERATION_LITERAL)) {
             if (el.as<EnumerationLiteral>().hasEnumeration()) {
                 emitter << YAML::Key << "enumeration" << YAML::Value << el.as<EnumerationLiteral>().getEnumerationID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::TEMPLATE_SIGNATURE)) {
+            if (el.as<TemplateSignature>().hasTemplate()) {
+                emitter << YAML::Key << "template" << YAML::Value << el.as<TemplateSignature>().getTemplateID().string();
+                return;
             }
         }
     }
@@ -2492,14 +2522,16 @@ void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMe
                     parseTemplateSignature(node["templateSignature"]["templateSignature"], signature, data);
                     el.setOwnedTemplateSignature(&signature);
                 } else {
-                    /** TODO work for mount**/
+                    throw UmlParserException("Invalid uml element identifier for templateSignature field, may only be a templateSignature!", data.m_path.string(), node["templateSignature"]);
                 }
             } else {
                 throw UmlParserException("Must specify templateSignature field before templateSignature definition", data.m_path.string(), node["templateSignature"]);
             }
+        } else if (node["templateSignature"].IsScalar()) {
+            SetOwnedTemplateSignature setOwnedTemplateSignature;
+            parseSingleton(node["templateSignature"], data, el, &TemplateableElement::setOwnedTemplateSignature, setOwnedTemplateSignature);
         } else {
-            el.setOwnedTemplateSignature(parseScalar<TemplateSignature>(node["templateSignature"], data));
-            //throw UmlParserException("Invalid node type fore templateSignature, must be map ", data.m_path.string(), node["templateSignature"]);
+            throw UmlParserException("Invalid yaml node type for template signature field, may only be map or scalar!", data.m_path.string(), node["templateSignature"]);
         }
     }
 
@@ -2528,7 +2560,11 @@ void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMe
 void emitTemplateableElement(YAML::Emitter& emitter, TemplateableElement& el, EmitterMetaData& data) {
     if (el.hasOwnedTemplateSignature()) {
         emitter << YAML::Key << "templateSignature" << YAML::Value;
-        emit(emitter, el.getOwnedTemplateSignatureRef(), data);
+        if (data.m_strategy == EmitterStrategy::WHOLE) {
+            emit(emitter, el.getOwnedTemplateSignatureRef(), data);
+        } else {
+            emitter << el.getOwnedTemplateSignatureID().string() + ".yml";
+        }
     }
 
     if (el.hasTemplateBinding()) {

@@ -180,6 +180,16 @@ namespace UML {
             public:
                 SetClassifierBehavior();
         };
+
+        class SetTemplate : public parseAndSetSingletonFunctor<TemplateableElement, TemplateSignature> {
+            public:
+                SetTemplate();
+        };
+
+        class SetOwnedTemplateSignature : public parseAndSetSingletonFunctor<TemplateSignature, TemplateableElement> {
+            public:
+                SetOwnedTemplateSignature();
+        };
     }
 }
 

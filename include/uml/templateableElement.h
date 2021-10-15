@@ -8,10 +8,14 @@ namespace UML {
 
     class TemplateBinding;
     class TemplateSignature;
+    namespace Parsers {
+        class SetOwnedTemplateSignature;
+    }
 
     class TemplateableElement : virtual public Element {
 
         friend class TemplateSignature;
+        friend class Parsers::SetOwnedTemplateSignature;
 
         protected:
             Singleton<TemplateSignature, TemplateableElement> m_ownedTemplateSignature = Singleton<TemplateSignature, TemplateableElement>(this);
@@ -26,6 +30,7 @@ namespace UML {
                 public:
                     AddOwnedTemplateSignatureProcedure(TemplateableElement* me) : AbstractSingletonProcedure<TemplateSignature, TemplateableElement>(me) {};
                     void operator()(TemplateSignature* el) const override;
+                    void operator()(ID id) const override;
             };
             Singleton<TemplateBinding, TemplateableElement> m_templateBinding = Singleton<TemplateBinding, TemplateableElement>(this);
             class RemoveTemplateBindingProcedure : public AbstractSingletonProcedure<TemplateBinding, TemplateableElement> {
@@ -48,11 +53,13 @@ namespace UML {
             virtual ~TemplateableElement();
             TemplateSignature* getOwnedTemplateSignature();
             TemplateSignature& getOwnedTemplateSignatureRef();
+            ID getOwnedTemplateSignatureID() const;
             bool hasOwnedTemplateSignature() const;
             void setOwnedTemplateSignature(TemplateSignature& signature);
             void setOwnedTemplateSignature(TemplateSignature* signature);
             TemplateBinding* getTemplateBinding();
             TemplateBinding& getTemplateBindingRef();
+            ID getTemplateBindingID() const;
             bool hasTemplateBinding() const;
             void setTemplateBinding(TemplateBinding& binding);
             void setTemplateBinding(TemplateBinding* binding);

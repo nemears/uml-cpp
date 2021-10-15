@@ -21,7 +21,15 @@ void TemplateSignature::AddTemplateProcedure::operator()(TemplateableElement* el
     } else {
         el->setOwnedTemplateSignature(m_me);
     }
-    
+    if (m_me->getOwnerID() != el->getID()) {
+        m_me->setOwner(el);
+    }
+}
+
+void TemplateSignature::AddTemplateProcedure::operator()(ID id) const {
+    if (m_me->getOwnerID() != id) {
+        m_me->setOwnerByID(id);
+    }
 }
 
 void TemplateSignature::AddOwnedParameterFunctor::operator()(TemplateParameter& el) const {

@@ -336,4 +336,22 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(signature2.getTemplateRef(), clazz3);
     ASSERT_TRUE(signature2.hasOwner());
     ASSERT_EQ(signature2.getOwnerRef(), clazz3);
+
+    m.release(signature2, clazz3);
+    ASSERT_FALSE(m.loaded(clazzID));
+    ASSERT_FALSE(m.loaded(signatureID));
+    Class& clazz4 = m.aquire(clazzID)->as<Class>();
+    ASSERT_TRUE(clazz4.hasOwnedTemplateSignature());
+    ASSERT_EQ(clazz4.getOwnedTemplateSignatureID(), signatureID);
+    ASSERT_TRUE(clazz4.getOwnedElements().count(signatureID));
+    ASSERT_EQ(clazz4.getOwnedElements().frontID(), signatureID);
+    TemplateSignature& signature3 = m.aquire(signatureID)->as<TemplateSignature>();
+    ASSERT_TRUE(clazz4.hasOwnedTemplateSignature());
+    ASSERT_EQ(clazz4.getOwnedTemplateSignatureRef(), signature3);
+    ASSERT_EQ(clazz4.getOwnedElements().size(), 1);
+    ASSERT_EQ(clazz4.getOwnedElements().front(), signature3);
+    ASSERT_TRUE(signature3.hasTemplate());
+    ASSERT_EQ(signature3.getTemplateRef(), clazz4);
+    ASSERT_TRUE(signature3.hasOwner());
+    ASSERT_EQ(signature3.getOwnerRef(), clazz4);
 }

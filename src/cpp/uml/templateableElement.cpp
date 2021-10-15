@@ -30,6 +30,12 @@ void TemplateableElement::AddOwnedTemplateSignatureProcedure::operator()(Templat
     }
 }
 
+void TemplateableElement::AddOwnedTemplateSignatureProcedure::operator()(ID id) const {
+    if (!m_me->m_ownedElements->count(id)) {
+        m_me->m_ownedElements->addByID(id);
+    }
+}
+
 void TemplateableElement::RemoveTemplateBindingProcedure::operator()(TemplateBinding* el) const {
     if (m_me->m_ownedElements->count(el->getID())) {
         m_me->m_ownedElements->internalRemove(*el);
@@ -110,6 +116,10 @@ TemplateSignature& TemplateableElement::getOwnedTemplateSignatureRef() {
     return m_ownedTemplateSignature.getRef();
 }
 
+ID TemplateableElement::getOwnedTemplateSignatureID() const {
+    return m_ownedTemplateSignature.id();
+}
+
 bool TemplateableElement::hasOwnedTemplateSignature() const {
     return m_ownedTemplateSignature.has();
 }
@@ -128,6 +138,10 @@ TemplateBinding* TemplateableElement::getTemplateBinding() {
 
 TemplateBinding& TemplateableElement::getTemplateBindingRef() {
     return m_templateBinding.getRef();
+}
+
+ID TemplateableElement::getTemplateBindingID() const {
+    return m_templateBinding.id();
 }
 
 bool TemplateableElement::hasTemplateBinding() const {

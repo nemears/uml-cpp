@@ -225,6 +225,14 @@ SetSignature::SetSignature() {
     m_signature = &TemplateParameter::m_signature;
 }
 
+SetOwnedParameteredElement::SetOwnedParameteredElement() {
+    m_signature = &TemplateParameter::m_ownedParameteredElement;
+}
+
+SetOwningTemplateParameter::SetOwningTemplateParameter() {
+    m_signature = &ParameterableElement::m_owningTemplateParameter;
+}
+
 namespace {
 
 /**
@@ -688,6 +696,10 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
             SetSignature setSignature;
             parseSingleton(node["signature"], data, ret->as<TemplateParameter>(), &TemplateParameter::setSignature, setSignature);
         }
+        if (node["owningTemplateParameter"]) {
+            SetOwningTemplateParameter setOwningTemplateParameter;
+            parseSingleton(node["owningTemplateParameter"], data, ret->as<ParameterableElement>(), &ParameterableElement::setOwningTemplateParameter, setOwningTemplateParameter);
+        }
     }
 
     return ret;
@@ -1067,6 +1079,12 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER)) {
             if (el.as<TemplateParameter>().hasSignature()) {
                 emitter << YAML::Key << "signature" << YAML::Value << el.as<TemplateParameter>().getSignatureID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
+            if (el.as<ParameterableElement>().hasOwningTemplateParameter()) {
+                emitter << YAML::Key << "owningTemplateParameter" << YAML::Value << el.as<ParameterableElement>().getOwningTemplateParameterID().string();
                 return;
             }
         }
@@ -2831,8 +2849,11 @@ void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, Parse
     if (node["ownedParameteredElement"]) {
         if (node["ownedParameteredElement"].IsMap()) {
             parameter.setOwnedParameteredElement(&determinAndParseParameterableElement(node["ownedParameteredElement"], data));
+        } else if (node["ownedParameteredElement"].IsScalar()) {
+            SetOwnedParameteredElement setOwnedParameteredElement;
+            parseSingleton(node["ownedParameteredElement"], data, parameter, &TemplateParameter::setOwnedParameteredElement, setOwnedParameteredElement);
         } else {
-            throw UmlParserException("Invalid yaml node type, must be map! ", data.m_path.string(), node["ownedParameteredElement"]);
+            throw UmlParserException("Invalid yaml node type, must be map or scalar! ", data.m_path.string(), node["ownedParameteredElement"]);
         }
     }
 
@@ -2863,12 +2884,16 @@ void emitTemplateParameter(YAML::Emitter& emitter, TemplateParameter& parameter,
         emitter << YAML::Key << "default" << YAML::Value << parameter.getDefault()->getID().string();
     }
 
-    if (parameter.getOwnedParameteredElement() != 0) {
+    if (parameter.hasOwnedParameteredElement() != 0) {
         emitter << YAML::Key << "ownedParameteredElement" << YAML::Value;
-        emit(emitter, parameter, data);
+        if (data.m_strategy == EmitterStrategy::WHOLE) {
+            emit(emitter, parameter, data);
+        } else {
+            emitter << parameter.getOwnedParameteredElementID().string() + ".yml";
+        }
     }
 
-    if (parameter.getParameteredElement() != 0 && parameter.getOwnedParameteredElement() == 0) {
+    if (parameter.hasParameteredElement() && !parameter.hasOwnedParameteredElement()) {
         emitter << YAML::Key << "parameteredElement" << YAML::Value << parameter.getParameteredElement()->getID().string();
     }
 

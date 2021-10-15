@@ -8,12 +8,16 @@ namespace UML {
 
     class TemplateParameter;
     class TemplateParameterSubstitution;
+    namespace Parsers {
+        class SetOwningTemplateParameter;
+    }
 
     class ParameterableElement : virtual public Element {
 
         friend class TemplateParameter;
         friend class TemplateParameterSubstitution;
         friend class UmlManager;
+        friend class Parsers::SetOwningTemplateParameter;
 
         protected:
             Singleton<TemplateParameter, ParameterableElement> m_owningTemplateParameter = Singleton<TemplateParameter, ParameterableElement>(this);

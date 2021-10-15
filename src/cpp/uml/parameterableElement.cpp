@@ -17,7 +17,7 @@ void ParameterableElement::AddOwningTemplateParameterProcedure::operator()(Templ
         el->setOwnedParameteredElement(m_me);
     }
     if (m_me->getOwnerID() != el->getID()) {
-        m_me->setOwner(m_me);
+        m_me->setOwner(el);
     }
 }
 

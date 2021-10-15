@@ -195,6 +195,16 @@ namespace UML {
             public:
                 SetSignature();
         };
+
+        class SetOwnedParameteredElement : public parseAndSetSingletonFunctor<ParameterableElement, TemplateParameter> {
+            public:
+                SetOwnedParameteredElement();
+        };
+
+        class SetOwningTemplateParameter : public parseAndSetSingletonFunctor<TemplateParameter, ParameterableElement> {
+            public:
+                SetOwningTemplateParameter();
+        };
     }
 }
 

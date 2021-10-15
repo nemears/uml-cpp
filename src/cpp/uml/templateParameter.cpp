@@ -37,15 +37,23 @@ void TemplateParameter::RemoveOwnedParameteredElementProcedure::operator()(Param
 }
 
 void TemplateParameter::AddOwnedParameteredElementProcedure::operator()(ParameterableElement* el) const {
-    if (m_me->hasParameteredElement()) {
-        if (m_me->getParameteredElementRef() != *el) {
-            m_me->setParameteredElement(el);
-        }
-    } else {
+    if (m_me->getParameteredElementID() != el->getID()) {
         m_me->setParameteredElement(el);
     }
     if (!m_me->getOwnedElements().count(el->getID())) {
         m_me->getOwnedElements().internalAdd(*el);
+    }
+    if (el->getOwningTemplateParameterID() != m_me->getID()) {
+        el->setOwningTemplateParameter(m_me);
+    }
+}
+
+void TemplateParameter::AddOwnedParameteredElementProcedure::operator()(ID id) const {
+    if (m_me->getParameteredElementID() != id) {
+        m_me->m_parameteredElement.setByID(id);
+    }
+    if (!m_me->getOwnedElements().count(id)) {
+        m_me->getOwnedElements().addByID(id);
     }
 }
 

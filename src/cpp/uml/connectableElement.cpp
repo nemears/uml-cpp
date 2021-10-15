@@ -2,6 +2,26 @@
 
 using namespace UML;
 
+void ConnectableElement::referencingReleased(ID id) {
+    TypedElement::referencingReleased(id);
+    ParameterableElement::referencingReleased(id);
+}
+
+void ConnectableElement::referenceReindexed(ID oldID, ID newID) {
+    TypedElement::referenceReindexed(oldID, newID);
+    ParameterableElement::referenceReindexed(oldID, newID);
+}
+
+void ConnectableElement::restoreReferences() {
+    TypedElement::restoreReferences();
+    ParameterableElement::restoreReferences();
+}
+
+void ConnectableElement::referenceErased(ID id) {
+    TypedElement::referenceErased(id);
+    ParameterableElement::referenceErased(id);
+}
+
 ElementType ConnectableElement::getElementType() const {
     return ElementType::CONNECTABLE_ELEMENT;
 }

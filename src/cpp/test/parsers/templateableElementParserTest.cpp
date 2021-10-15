@@ -293,9 +293,12 @@ TEST_F(TemplateableElementParserTest, emitBigTemplateExampleTest) {
 
 TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     UmlManager m;
+    Package& root = m.create<Package>();
     Class& clazz = m.create<Class>();
     TemplateSignature& signature = m.create<TemplateSignature>();
     TemplateParameter& ownedParameter = m.create<TemplateParameter>();
+    PrimitiveType& ownedParameterableElement = m.create<PrimitiveType>();
+    ownedParameter.setOwnedParameteredElement(ownedParameterableElement);
     signature.getOwnedParameter().add(ownedParameter);
     clazz.setOwnedTemplateSignature(signature);
 
@@ -379,6 +382,8 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(signature4.getOwnedElements().front(), ownedParameter2);
     ASSERT_EQ(ownedParameter2.getOwnerRef(), signature4);
     ASSERT_EQ(ownedParameter2.getSignatureRef(), signature4);
+    ASSERT_TRUE(ownedParameter2.hasOwnedParameteredElement());
+    ASSERT_EQ(ownedParameter2.getOwnedParameteredElementRef(), ownedParameterableElement);
 
     m.release(ownedParameter2, signature4);
     ASSERT_FALSE(m.loaded(signatureID));
@@ -395,4 +400,41 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(ownedParameter3.getOwnerRef(), signature5);
     ASSERT_EQ(signature5.getOwnedParameter().front(), ownedParameter3);
     ASSERT_EQ(signature5.getOwnedElements().front(), ownedParameter3);
+    ASSERT_TRUE(ownedParameter3.hasOwnedParameteredElement());
+    ASSERT_EQ(ownedParameter3.getOwnedParameteredElementRef(), ownedParameterableElement);
+
+    ID ownedParameterableElementID = ownedParameterableElement.getID();
+    m.release(ownedParameterableElement, ownedParameter3);
+    ASSERT_FALSE(m.loaded(ownedParameterableElementID));
+    ASSERT_FALSE(m.loaded(ownedParameterID));
+    PrimitiveType& ownedParameterableElement2 = m.aquire(ownedParameterableElementID)->as<PrimitiveType>();
+    ASSERT_TRUE(ownedParameterableElement2.hasOwningTemplateParameter());
+    ASSERT_EQ(ownedParameterableElement2.getOwningTemplateParameterID(), ownedParameterID);
+    ASSERT_TRUE(ownedParameterableElement2.hasOwner());
+    ASSERT_EQ(ownedParameterableElement2.getOwnerID(), ownedParameterID);
+    TemplateParameter& ownedParameter4 = m.aquire(ownedParameterID)->as<TemplateParameter>();
+    ASSERT_TRUE(ownedParameter4.hasOwnedParameteredElement());
+    ASSERT_EQ(ownedParameter4.getOwnedParameteredElementRef(), ownedParameterableElement2);
+    ASSERT_EQ(ownedParameter4.getOwnedElements().size(), 1);
+    ASSERT_EQ(ownedParameter4.getOwnedElements().front(), ownedParameterableElement2);
+    ASSERT_EQ(ownedParameterableElement2.getOwningTemplateParameterRef(), ownedParameter4);
+    ASSERT_EQ(ownedParameterableElement2.getOwnerRef(), ownedParameter4);
+
+    m.release(ownedParameterableElement2, ownedParameter4);
+    ASSERT_FALSE(m.loaded(ownedParameterableElementID));
+    ASSERT_FALSE(m.loaded(ownedParameterID));
+    TemplateParameter& ownedParameter5 = m.aquire(ownedParameterID)->as<TemplateParameter>();
+    ASSERT_TRUE(ownedParameter5.hasOwnedParameteredElement());
+    ASSERT_EQ(ownedParameter5.getOwnedParameteredElementID(), ownedParameterableElementID);
+    ASSERT_EQ(ownedParameter5.getOwnedElements().size(), 1);
+    ASSERT_EQ(ownedParameter5.getOwnedElements().frontID(), ownedParameterableElementID);
+    PrimitiveType& ownedParameterableElement3 = m.aquire(ownedParameterableElementID)->as<PrimitiveType>();
+    ASSERT_TRUE(ownedParameter5.hasOwnedParameteredElement());
+    ASSERT_EQ(ownedParameter5.getOwnedParameteredElementRef(), ownedParameterableElement3);
+    ASSERT_EQ(ownedParameter5.getOwnedElements().size(), 1);
+    ASSERT_EQ(ownedParameter5.getOwnedElements().front(), ownedParameterableElement3);
+    ASSERT_TRUE(ownedParameterableElement3.hasOwningTemplateParameter());
+    ASSERT_EQ(ownedParameterableElement3.getOwningTemplateParameterRef(), ownedParameter5);
+    ASSERT_TRUE(ownedParameterableElement3.hasOwner());
+    ASSERT_EQ(ownedParameterableElement3.getOwnerRef(), ownedParameter5);
 }

@@ -7,7 +7,10 @@
 namespace UML {
     class ConnectableElement : virtual public TypedElement, virtual public ParameterableElement {
         protected:
-
+            void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReferences() override;
+            void referenceErased(ID id) override;
         public:
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;

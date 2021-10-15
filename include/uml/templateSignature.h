@@ -38,6 +38,7 @@ namespace UML {
                 public:
                     AddOwnedParameterFunctor(TemplateSignature* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(TemplateParameter& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveOwnedParameterFunctor : public TemplateAbstractSequenceFunctor<TemplateParameter,TemplateSignature> {
                 public:

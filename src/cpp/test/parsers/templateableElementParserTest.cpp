@@ -378,7 +378,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(signature4.getOwnedElements().size(), 1);
     ASSERT_EQ(signature4.getOwnedElements().front(), ownedParameter2);
     ASSERT_EQ(ownedParameter2.getOwnerRef(), signature4);
-    ASSERT_EQ(ownedParameter2.getSignatureRef(), signature);
+    ASSERT_EQ(ownedParameter2.getSignatureRef(), signature4);
 
     m.release(ownedParameter2, signature4);
     ASSERT_FALSE(m.loaded(signatureID));
@@ -393,4 +393,6 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(ownedParameter3.getSignatureRef(), signature5);
     ASSERT_TRUE(ownedParameter3.hasOwner());
     ASSERT_EQ(ownedParameter3.getOwnerRef(), signature5);
+    ASSERT_EQ(signature5.getOwnedParameter().front(), ownedParameter3);
+    ASSERT_EQ(signature5.getOwnedElements().front(), ownedParameter3);
 }

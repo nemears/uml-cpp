@@ -14,6 +14,15 @@ void TemplateParameter::AddSignatureProcedure::operator()(TemplateSignature* el)
     if (!el->getOwnedParameter().count(m_me->getID())) {
         el->getOwnedParameter().add(*m_me);
     }
+    if (m_me->getOwnerID() != el->getID()) {
+        m_me->setOwner(el);
+    }
+}
+
+void TemplateParameter::AddSignatureProcedure::operator()(ID id) const {
+    if (m_me->getOwnerID() != id) {
+        m_me->setOwnerByID(id);
+    }
 }
 
 void TemplateParameter::RemoveOwnedParameteredElementProcedure::operator()(ParameterableElement* el) const {

@@ -190,6 +190,11 @@ namespace UML {
             public:
                 SetOwnedTemplateSignature();
         };
+
+        class SetSignature : public parseAndSetSingletonFunctor<TemplateSignature, TemplateParameter> {
+            public:
+                SetSignature();
+        };
     }
 }
 

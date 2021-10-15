@@ -221,6 +221,10 @@ SetOwnedTemplateSignature::SetOwnedTemplateSignature() {
     m_signature = &TemplateableElement::m_ownedTemplateSignature;
 }
 
+SetSignature::SetSignature() {
+    m_signature = &TemplateParameter::m_signature;
+}
+
 namespace {
 
 /**
@@ -538,6 +542,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &stereotype;
     }
 
+    if (node["templateParameter"]) {
+        TemplateParameter& parameter = data.m_manager->create<TemplateParameter>();
+        parseTemplateParameter(node["templateParameter"], parameter, data);
+        ret = &parameter;
+    }
+
     if (node["templateSignature"]) {
         TemplateSignature& templateSignature = data.m_manager->create<TemplateSignature>();
         parseTemplateSignature(node["templateSignature"], templateSignature, data);
@@ -673,6 +683,10 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         if (node["template"]) {
             SetTemplate setTemplate;
             parseSingleton(node["template"], data, ret->as<TemplateSignature>(), &TemplateSignature::setTemplate, setTemplate);
+        }
+        if (node["signature"]) {
+            SetSignature setSignature;
+            parseSingleton(node["signature"], data, ret->as<TemplateParameter>(), &TemplateParameter::setSignature, setSignature);
         }
     }
 
@@ -1047,6 +1061,12 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::TEMPLATE_SIGNATURE)) {
             if (el.as<TemplateSignature>().hasTemplate()) {
                 emitter << YAML::Key << "template" << YAML::Value << el.as<TemplateSignature>().getTemplateID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER)) {
+            if (el.as<TemplateParameter>().hasSignature()) {
+                emitter << YAML::Key << "signature" << YAML::Value << el.as<TemplateParameter>().getSignatureID().string();
                 return;
             }
         }

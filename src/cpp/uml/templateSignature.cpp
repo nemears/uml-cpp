@@ -47,6 +47,15 @@ void TemplateSignature::AddOwnedParameterFunctor::operator()(TemplateParameter& 
     updateCopiedSequenceAddedTo(el, &TemplateSignature::getOwnedParameter);
 }
 
+void TemplateSignature::AddOwnedParameterFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedElements().count(id)) {
+        m_el->getOwnedElements().addByID(id);
+    }
+    if (!m_el->getParameter().count(id)) {
+        m_el->getParameter().addByID(id);
+    }
+}
+
 void TemplateSignature::RemoveOwnedParameterFunctor::operator()(TemplateParameter& el) const {
     if (m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalRemove(el);

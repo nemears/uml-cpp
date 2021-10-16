@@ -233,6 +233,10 @@ SetOwningTemplateParameter::SetOwningTemplateParameter() {
     m_signature = &ParameterableElement::m_owningTemplateParameter;
 }
 
+SetTemplateParameter::SetTemplateParameter() {
+    m_signature = &ParameterableElement::m_templateParameter;
+}
+
 namespace {
 
 /**
@@ -1400,12 +1404,14 @@ Generalization& determineAndParseGeneralization(YAML::Node node, ParserMetaData&
 void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
     parseNamedElement(node, clazz, data);
     parseTemplateableElement(node, clazz, data);
+    parseParameterableElement(node, clazz, data);
     parseSequenceDefinitions(node, data, "generalizations", clazz, &Classifier::getGeneralizations, determineAndParseGeneralization);
 }
 
 void emitClassifier(YAML::Emitter& emitter, Classifier& clazz, EmitterMetaData& data) {
     emitNamedElement(emitter, clazz, data);
     emitTemplateableElement(emitter, clazz, data);
+    emitParameterableElement(emitter, clazz, data);
     emitSequence(emitter, "generalizations", data, clazz, &Classifier::getGeneralizations);
 }
 
@@ -1744,6 +1750,7 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
     parseTypedElement(node, prop, data);
     parseMultiplicityElement(node, prop, data);
     parseDeploymentTarget(node, prop, data);
+    parseParameterableElement(node, prop, data);
 
     if (node["aggregation"]) {
         if (node["aggregation"].IsScalar()) {
@@ -2073,7 +2080,8 @@ Stereotype& determineAndParseStereotype(YAML::Node node, ParserMetaData& data) {
 
 void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
     parseNamedElement(node, pckg, data);
-    parseTemplateableElement(node, pckg, data); 
+    parseTemplateableElement(node, pckg, data);
+    parseParameterableElement(node, pckg, data);
     parseSequenceDefinitions(node, data, "packageMerge", pckg, &Package::getPackageMerge, determineAndParsePackageMerge);
     parseSequenceDefinitions(node, data, "profileApplications", pckg, &Package::getProfileApplications, determineAndParseProfileApplication);
     parseSequenceDefinitions(node, data, "packagedElements", pckg, &Package::getPackagedElements, determineAndParsePackageableElement);
@@ -2084,6 +2092,7 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::PACKAGE, "package", pckg, data);
     emitNamedElement(emitter, pckg, data);
     emitTemplateableElement(emitter, pckg, data);
+    emitParameterableElement(emitter, pckg, data);
     emitSequence(emitter, "packageMerge", data, pckg, &Package::getPackageMerge);
     emitSequence(emitter, "profileApplications", data, pckg, &Package::getProfileApplications);
 
@@ -2181,6 +2190,7 @@ Slot& determineAndParseSlot(YAML::Node node, ParserMetaData& data) {
 void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data) {
     parseNamedElement(node, inst, data);
     parseDeploymentTarget(node, inst, data);
+    parseParameterableElement(node, inst, data);
 
     if (node["classifier"]) {
         if (node["classifier"].IsScalar()) {
@@ -2217,6 +2227,7 @@ void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& in
     emitElementDefenition(emitter, ElementType::INSTANCE_SPECIFICATION, "instanceSpecification", inst, data);
     emitNamedElement(emitter, inst, data);
     emitDeploymentTarget(emitter, inst, data);
+    emitParameterableElement(emitter, inst, data);
     if (inst.getClassifier()) {
         emitter << YAML::Key << "classifier" << YAML::Value << inst.getClassifier()->getID().string();
     }
@@ -2403,6 +2414,7 @@ void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge, EmitterMetaDa
 
 void parseLiteralBool(YAML::Node node, LiteralBool& lb, ParserMetaData& data) {
     parseTypedElement(node, lb, data);
+    parseParameterableElement(node, lb, data);
 
     if (node["value"]) {
         if (node["value"].IsScalar()) {
@@ -2418,6 +2430,7 @@ void emitLiteralBool(YAML::Emitter& emitter, LiteralBool& lb, EmitterMetaData& d
     emitElementDefenition(emitter, ElementType::LITERAL_BOOL, "literalBool", lb, data);
 
     emitTypedElement(emitter, lb, data);
+    emitParameterableElement(emitter, lb, data);
 
     emitter << YAML::Key << "value" << YAML::Value << lb.getValue();
 
@@ -2426,6 +2439,7 @@ void emitLiteralBool(YAML::Emitter& emitter, LiteralBool& lb, EmitterMetaData& d
 
 void parseLiteralInt(YAML::Node node, LiteralInt& li, ParserMetaData& data) {
     parseTypedElement(node, li, data);
+    parseParameterableElement(node, li, data);
 
     if (node["value"]) {
         if (node["value"].IsScalar()) {
@@ -2441,6 +2455,7 @@ void emitLiteralInt(YAML::Emitter& emitter, LiteralInt& li, EmitterMetaData& dat
     emitElementDefenition(emitter, ElementType::LITERAL_INT, "literalInt", li, data);
 
     emitTypedElement(emitter, li, data);
+    emitParameterableElement(emitter, li, data);
 
     emitter << YAML::Key << "value" << YAML::Value << li.getValue();
 
@@ -2449,6 +2464,7 @@ void emitLiteralInt(YAML::Emitter& emitter, LiteralInt& li, EmitterMetaData& dat
 
 void parseLiteralReal(YAML::Node node, LiteralReal& lr, ParserMetaData& data) {
     parseTypedElement(node, lr, data);
+    parseParameterableElement(node, lr, data);
 
     if (node["value"]) {
         if (node["value"].IsScalar()) {
@@ -3625,6 +3641,19 @@ void emitManifestation(YAML::Emitter& emitter, Manifestation& manifestation, Emi
     }
 
     emitElementDefenitionEnd(emitter, ElementType::MANIFESTATION, manifestation);
+}
+
+void parseParameterableElement(YAML::Node node, ParameterableElement& el, ParserMetaData& data) {
+    if (node["templateParameter"]) {
+        SetTemplateParameter setTemplateParameter;
+        parseSingleton(node["templateParameter"], data, el, &ParameterableElement::setTemplateParameter, setTemplateParameter);
+    }
+}
+
+void emitParameterableElement(YAML::Emitter& emitter, ParameterableElement& el, EmitterMetaData& data) {
+    if (el.hasTemplateParameter()) {
+        emitter << YAML::Key << "templateParameter" << YAML::Value << el.getTemplateParameterID().string();
+    }
 }
 
 }

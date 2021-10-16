@@ -58,19 +58,27 @@ void TemplateParameter::AddOwnedParameteredElementProcedure::operator()(ID id) c
 }
 
 void TemplateParameter::RemoveParameteredElementProcedure::operator()(ParameterableElement* el) const {
-    el->removeReference(m_me->getID());
+    if (el->getTemplateParameterID() == m_me->getID()) {
+        el->setTemplateParameter(0);
+    }
 }
 
 void TemplateParameter::AddParameteredElementProcedure::operator()(ParameterableElement* el) const {
-    el->setReference(m_me);
+    if (el->getTemplateParameterID() != m_me->getID()) {
+        el->setTemplateParameter(m_me);
+    }
 }
 
 void TemplateParameter::RemoveDefaultProcedure::operator()(ParameterableElement* el) const {
-    el->removeReference(m_me->getID());
+    if (el->getTemplateParameterID() == m_me->getID()) {
+        el->setTemplateParameter(0);
+    }
 }
 
 void TemplateParameter::AddDefaultProcedure::operator()(ParameterableElement* el) const {
-    el->setReference(m_me);
+    if (el->getTemplateParameterID() != m_me->getID()) {
+        el->setTemplateParameter(m_me);
+    }
 }
 
 void TemplateParameter::RemoveOwnedDefaultProcedure::operator()(ParameterableElement* el) const {
@@ -80,18 +88,20 @@ void TemplateParameter::RemoveOwnedDefaultProcedure::operator()(ParameterableEle
     if (m_me->getOwnedElements().count(el->getID())) {
         m_me->getOwnedElements().internalRemove(*el);
     }
+    if (el->getTemplateParameterID() == m_me->getID()) {
+        el->setTemplateParameter(0);
+    }
 }
 
 void TemplateParameter::AddOwnedDefaultProcedure::operator()(ParameterableElement* el) const {
-    if (m_me->hasDefault()) {
-        if (m_me->getDefaultRef() != *el) {
-            m_me->setDefault(el);
-        }
-    } else {
+    if (m_me->getDefaultID() != el->getID()) {
         m_me->setDefault(el);
     }
     if (!m_me->getOwnedElements().count(el->getID())) {
         m_me->getOwnedElements().internalAdd(*el);
+    }
+    if (el->getTemplateParameterID() != m_me->getID()) {
+        el->setTemplateParameter(m_me);
     }
 }
 

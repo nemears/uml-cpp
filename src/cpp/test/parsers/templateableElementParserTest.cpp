@@ -252,6 +252,7 @@ TEST_F(TemplateableElementParserTest, emitBigTemplateExampleTest) {
   packagedElements:
     - primitiveType:
         id: a2arTP9Z2LteDWsjTS0ziALCWlXU
+        templateParameter: Km4WF5rf3ohUeLTr99POiW7VMb_4
     - primitiveType:
         id: 4gA4RgL9vKTRYd61D99y1d_Yggj6
     - class:
@@ -265,6 +266,7 @@ TEST_F(TemplateableElementParserTest, emitBigTemplateExampleTest) {
                   ownedDefault:
                     primitiveType:
                       id: GZaiGksTjm4GeM2GdJ5BXuajWnGU
+                      templateParameter: OLULeTlF1Rzf4U5IpNQVW1nYd29c
               - templateParameter:
                   id: Km4WF5rf3ohUeLTr99POiW7VMb_4
                   default: a2arTP9Z2LteDWsjTS0ziALCWlXU
@@ -461,16 +463,19 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_TRUE(otherParameter2.hasParameteredElement());
     ASSERT_EQ(otherParameter2.getParameteredElementID(), parameteredElementID);
     PrimitiveType& parameteredElement2 = m.aquire(parameteredElementID)->as<PrimitiveType>();
-    // TODO implement templateSignatureSingleton in parameteredElement
+    ASSERT_TRUE(parameteredElement2.hasTemplateParameter());
+    ASSERT_EQ(parameteredElement2.getTemplateParameterRef(), otherParameter2);
     ASSERT_EQ(otherParameter2.getParameteredElementRef(), parameteredElement2);
 
     m.release(otherParameter2, parameteredElement2);
     ASSERT_FALSE(m.loaded(otherParameterID));
     ASSERT_FALSE(m.loaded(parameteredElementID));
     PrimitiveType& parameteredElement3 = m.aquire(parameteredElementID)->as<PrimitiveType>();
-    // TODO implement templateSignatureSingleton in parameteredElement
+    ASSERT_TRUE(parameteredElement2.hasTemplateParameter());
+    ASSERT_EQ(parameteredElement2.getTemplateParameterID(), otherParameterID);
     TemplateParameter& otherParameter3 = m.aquire(otherParameterID)->as<TemplateParameter>();
     ASSERT_TRUE(otherParameter3.hasParameteredElement());
     ASSERT_EQ(otherParameter3.getParameteredElementRef(), parameteredElement3);
+    ASSERT_EQ(parameteredElement3.getTemplateParameterRef(), otherParameter3);
 
 }

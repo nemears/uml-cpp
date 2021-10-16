@@ -10,6 +10,7 @@ namespace UML {
     class TemplateParameterSubstitution;
     namespace Parsers {
         class SetOwningTemplateParameter;
+        class SetTemplateParameter;
     }
 
     class ParameterableElement : virtual public Element {
@@ -18,6 +19,7 @@ namespace UML {
         friend class TemplateParameterSubstitution;
         friend class UmlManager;
         friend class Parsers::SetOwningTemplateParameter;
+        friend class Parsers::SetTemplateParameter;
 
         protected:
             Singleton<TemplateParameter, ParameterableElement> m_owningTemplateParameter = Singleton<TemplateParameter, ParameterableElement>(this);
@@ -31,6 +33,17 @@ namespace UML {
                     AddOwningTemplateParameterProcedure(ParameterableElement* me) : AbstractSingletonProcedure<TemplateParameter, ParameterableElement>(me) {};
                     void operator()(TemplateParameter* el) const override;
                     void operator()(ID id) const override;
+            };
+            Singleton<TemplateParameter, ParameterableElement> m_templateParameter = Singleton<TemplateParameter, ParameterableElement>(this);
+            class RemoveTemplateParameterProcedure : public AbstractSingletonProcedure<TemplateParameter, ParameterableElement> {
+                public:
+                    RemoveTemplateParameterProcedure(ParameterableElement* me) : AbstractSingletonProcedure<TemplateParameter, ParameterableElement>(me) {};
+                    void operator()(TemplateParameter* el) const override;
+            };
+            class AddTemplateParameterProcedure : public AbstractSingletonProcedure<TemplateParameter, ParameterableElement> {
+                public:
+                    AddTemplateParameterProcedure(ParameterableElement* me) : AbstractSingletonProcedure<TemplateParameter, ParameterableElement>(me) {};
+                    void operator()(TemplateParameter* el) const override;
             };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
@@ -46,6 +59,12 @@ namespace UML {
             bool hasOwningTemplateParameter()  const;
             void setOwningTemplateParameter(TemplateParameter* parameter);
             void setOwningTemplateParameter(TemplateParameter& parameter);
+            TemplateParameter* getTemplateParameter();
+            TemplateParameter& getTemplateParameterRef();
+            ID getTemplateParameterID() const;
+            bool hasTemplateParameter() const;
+            void setTemplateParameter(TemplateParameter* parameter);
+            void setTemplateParameter(TemplateParameter& parameter);
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

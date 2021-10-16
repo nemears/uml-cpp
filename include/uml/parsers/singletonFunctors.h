@@ -205,6 +205,11 @@ namespace UML {
             public:
                 SetOwningTemplateParameter();
         };
+
+        class SetTemplateParameter : public parseAndSetSingletonFunctor<TemplateParameter, ParameterableElement> {
+            public:
+                SetTemplateParameter();
+        };
     }
 }
 

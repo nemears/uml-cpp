@@ -295,16 +295,24 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     UmlManager m;
     Package& root = m.create<Package>();
     Class& clazz = m.create<Class>();
+    Class& otherClazz = m.create<Class>();
     TemplateSignature& signature = m.create<TemplateSignature>();
+    TemplateSignature& otherSignature = m.create<TemplateSignature>();
     TemplateParameter& ownedParameter = m.create<TemplateParameter>();
     PrimitiveType& ownedParameterableElement = m.create<PrimitiveType>();
+    TemplateParameter& otherParameter = m.create<TemplateParameter>();
+    PrimitiveType& parameteredElement = m.create<PrimitiveType>();
     ownedParameter.setOwnedParameteredElement(ownedParameterableElement);
+    otherParameter.setParameteredElement(parameteredElement);
     signature.getOwnedParameter().add(ownedParameter);
+    otherSignature.getOwnedParameter().add(otherParameter);
     clazz.setOwnedTemplateSignature(signature);
+    otherClazz.setOwnedTemplateSignature(otherSignature);
+    root.getPackagedElements().add(clazz, otherClazz, parameteredElement);
 
     // TODO more
 
-    m.setRoot(clazz);
+    m.setRoot(root);
     m.mount(ymlPath + "templateableElementTests");
 
     ID clazzID = clazz.getID();
@@ -417,6 +425,8 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(ownedParameter4.getOwnedParameteredElementRef(), ownedParameterableElement2);
     ASSERT_EQ(ownedParameter4.getOwnedElements().size(), 1);
     ASSERT_EQ(ownedParameter4.getOwnedElements().front(), ownedParameterableElement2);
+    ASSERT_TRUE(ownedParameter4.hasParameteredElement());
+    ASSERT_EQ(ownedParameter4.getParameteredElementRef(), ownedParameterableElement2);
     ASSERT_EQ(ownedParameterableElement2.getOwningTemplateParameterRef(), ownedParameter4);
     ASSERT_EQ(ownedParameterableElement2.getOwnerRef(), ownedParameter4);
 
@@ -428,13 +438,39 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(ownedParameter5.getOwnedParameteredElementID(), ownedParameterableElementID);
     ASSERT_EQ(ownedParameter5.getOwnedElements().size(), 1);
     ASSERT_EQ(ownedParameter5.getOwnedElements().frontID(), ownedParameterableElementID);
+    ASSERT_TRUE(ownedParameter5.hasParameteredElement());
+    ASSERT_EQ(ownedParameter5.getParameteredElementID(), ownedParameterableElementID);
     PrimitiveType& ownedParameterableElement3 = m.aquire(ownedParameterableElementID)->as<PrimitiveType>();
     ASSERT_TRUE(ownedParameter5.hasOwnedParameteredElement());
     ASSERT_EQ(ownedParameter5.getOwnedParameteredElementRef(), ownedParameterableElement3);
     ASSERT_EQ(ownedParameter5.getOwnedElements().size(), 1);
     ASSERT_EQ(ownedParameter5.getOwnedElements().front(), ownedParameterableElement3);
+    ASSERT_TRUE(ownedParameter5.hasParameteredElement());
+    ASSERT_EQ(ownedParameter5.getParameteredElementRef(), ownedParameterableElement3);
     ASSERT_TRUE(ownedParameterableElement3.hasOwningTemplateParameter());
     ASSERT_EQ(ownedParameterableElement3.getOwningTemplateParameterRef(), ownedParameter5);
     ASSERT_TRUE(ownedParameterableElement3.hasOwner());
     ASSERT_EQ(ownedParameterableElement3.getOwnerRef(), ownedParameter5);
+
+    ID otherParameterID = otherParameter.getID();
+    ID parameteredElementID = parameteredElement.getID();
+    m.release(otherParameter, parameteredElement);
+    ASSERT_FALSE(m.loaded(otherParameterID));
+    ASSERT_FALSE(m.loaded(parameteredElementID));
+    TemplateParameter& otherParameter2 = m.aquire(otherParameterID)->as<TemplateParameter>();
+    ASSERT_TRUE(otherParameter2.hasParameteredElement());
+    ASSERT_EQ(otherParameter2.getParameteredElementID(), parameteredElementID);
+    PrimitiveType& parameteredElement2 = m.aquire(parameteredElementID)->as<PrimitiveType>();
+    // TODO implement templateSignatureSingleton in parameteredElement
+    ASSERT_EQ(otherParameter2.getParameteredElementRef(), parameteredElement2);
+
+    m.release(otherParameter2, parameteredElement2);
+    ASSERT_FALSE(m.loaded(otherParameterID));
+    ASSERT_FALSE(m.loaded(parameteredElementID));
+    PrimitiveType& parameteredElement3 = m.aquire(parameteredElementID)->as<PrimitiveType>();
+    // TODO implement templateSignatureSingleton in parameteredElement
+    TemplateParameter& otherParameter3 = m.aquire(otherParameterID)->as<TemplateParameter>();
+    ASSERT_TRUE(otherParameter3.hasParameteredElement());
+    ASSERT_EQ(otherParameter3.getParameteredElementRef(), parameteredElement3);
+
 }

@@ -471,8 +471,8 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_FALSE(m.loaded(otherParameterID));
     ASSERT_FALSE(m.loaded(parameteredElementID));
     PrimitiveType& parameteredElement3 = m.aquire(parameteredElementID)->as<PrimitiveType>();
-    ASSERT_TRUE(parameteredElement2.hasTemplateParameter());
-    ASSERT_EQ(parameteredElement2.getTemplateParameterID(), otherParameterID);
+    ASSERT_TRUE(parameteredElement3.hasTemplateParameter());
+    ASSERT_EQ(parameteredElement3.getTemplateParameterID(), otherParameterID);
     TemplateParameter& otherParameter3 = m.aquire(otherParameterID)->as<TemplateParameter>();
     ASSERT_TRUE(otherParameter3.hasParameteredElement());
     ASSERT_EQ(otherParameter3.getParameteredElementRef(), parameteredElement3);

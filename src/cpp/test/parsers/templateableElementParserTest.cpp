@@ -466,6 +466,44 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_TRUE(ownedParameterableElement3.hasOwner());
     ASSERT_EQ(ownedParameterableElement3.getOwnerRef(), ownedParameter5);
 
+    ID ownedDefaultID = ownedDefault.getID();
+    m.release(ownedDefault, ownedParameter5);
+    ASSERT_FALSE(m.loaded(ownedDefaultID));
+    ASSERT_FALSE(m.loaded(ownedParameterID));
+    TemplateParameter& ownedParameter6 = m.aquire(ownedParameterID)->as<TemplateParameter>();
+    ASSERT_TRUE(ownedParameter6.hasOwnedDefault());
+    ASSERT_EQ(ownedParameter6.getOwnedDefaultID(), ownedDefaultID);
+    ASSERT_TRUE(ownedParameter6.hasDefault());
+    ASSERT_EQ(ownedParameter6.getDefaultID(), ownedDefaultID);
+    ASSERT_EQ(ownedParameter6.getOwnedElements().size(), 2);
+    ASSERT_EQ(ownedParameter6.getOwnedElements().frontID(), ownedDefaultID);
+    PrimitiveType& ownedDefault2 = m.aquire(ownedDefaultID)->as<PrimitiveType>();
+    ASSERT_TRUE(ownedDefault2.hasTemplateParameter());
+    ASSERT_EQ(ownedDefault2.getTemplateParameterRef(), ownedParameter6);
+    ASSERT_TRUE(ownedDefault2.hasOwner());
+    ASSERT_EQ(ownedDefault2.getOwnerRef(), ownedParameter6);
+    ASSERT_EQ(ownedParameter6.getOwnedDefaultRef(), ownedDefault2);
+    ASSERT_EQ(ownedParameter6.getDefaultRef(), ownedDefault2);
+    ASSERT_EQ(ownedParameter6.getOwnedElements().front(), ownedDefault2);
+
+    m.release(ownedDefault2, ownedParameter6);
+    ASSERT_FALSE(m.loaded(ownedDefaultID));
+    ASSERT_FALSE(m.loaded(ownedParameterID));
+    PrimitiveType& ownedDefault3 = m.aquire(ownedDefaultID)->as<PrimitiveType>();
+    ASSERT_TRUE(ownedDefault3.hasTemplateParameter());
+    ASSERT_EQ(ownedDefault3.getTemplateParameterID(), ownedParameterID);
+    ASSERT_TRUE(ownedDefault3.hasOwner());
+    ASSERT_EQ(ownedDefault3.getOwnerID(), ownedParameterID);
+    TemplateParameter& ownedParameter7 = m.aquire(ownedParameterID)->as<TemplateParameter>();
+    ASSERT_TRUE(ownedParameter7.hasOwnedDefault());
+    ASSERT_EQ(ownedParameter7.getOwnedDefaultRef(), ownedDefault3);
+    ASSERT_TRUE(ownedParameter7.hasDefault());
+    ASSERT_EQ(ownedParameter7.getDefaultRef(), ownedDefault3);
+    ASSERT_EQ(ownedParameter7.getOwnedElements().size(), 2);
+    ASSERT_EQ(ownedParameter7.getOwnedElements().front(), ownedDefault3);
+    ASSERT_EQ(ownedDefault3.getTemplateParameterRef(), ownedParameter7);
+    ASSERT_EQ(ownedDefault3.getOwnerRef(), ownedParameter7);
+
     ID otherParameterID = otherParameter.getID();
     ID parameteredElementID = parameteredElement.getID();
     m.release(otherParameter, parameteredElement);

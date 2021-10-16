@@ -2907,13 +2907,17 @@ void emitTemplateParameter(YAML::Emitter& emitter, TemplateParameter& parameter,
 
     emitElement(emitter, parameter, data);
 
-    if (parameter.getOwnedDefault()) {
+    if (parameter.hasOwnedDefault()) {
         emitter << YAML::Key << "ownedDefault" << YAML::Value;
-        emit(emitter, *parameter.getOwnedDefault(), data);
+        if (data.m_strategy == EmitterStrategy::WHOLE) {
+            emit(emitter, *parameter.getOwnedDefault(), data);
+        } else {
+            emitter << parameter.getOwnedDefaultID().string();
+        }
     }
 
-    if (parameter.getDefault() && !parameter.getOwnedDefault()) {
-        emitter << YAML::Key << "default" << YAML::Value << parameter.getDefault()->getID().string();
+    if (parameter.hasDefault() && !parameter.hasOwnedDefault()) {
+        emitter << YAML::Key << "default" << YAML::Value << parameter.getDefaultID().string();
     }
 
     if (parameter.hasOwnedParameteredElement() != 0) {

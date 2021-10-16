@@ -16,8 +16,7 @@ namespace UML {
                             throw UmlParserException("Could not identify YAML node for packaged elements", data.m_path.string(), node);
                         }
                         (el.*m_signature).set(packagedEl->as<T>());
-                    }
-                    else {
+                    } else {
                         std::string path = node.as<std::string>();
                         std::string idStr = path.substr(path.find_last_of("/") + 1, path.find_last_of("/") + 29);
                         if (isValidID(idStr)) {
@@ -28,6 +27,10 @@ namespace UML {
                             throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);
                         }
                     }
+                };
+
+                void set(U& me, T& val) {
+                    (me.*m_signature).set(val);
                 };
         };
 
@@ -209,6 +212,11 @@ namespace UML {
         class SetTemplateParameter : public parseAndSetSingletonFunctor<TemplateParameter, ParameterableElement> {
             public:
                 SetTemplateParameter();
+        };
+
+        class SetOwnedDefault : public parseAndSetSingletonFunctor<ParameterableElement, TemplateParameter> {
+            public:
+                SetOwnedDefault();
         };
     }
 }

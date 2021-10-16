@@ -237,6 +237,10 @@ SetTemplateParameter::SetTemplateParameter() {
     m_signature = &ParameterableElement::m_templateParameter;
 }
 
+SetOwnedDefault::SetOwnedDefault() {
+    m_signature = &TemplateParameter::m_ownedDefault;
+}
+
 namespace {
 
 /**
@@ -308,6 +312,16 @@ template <class T = Element> T& parseDefinition(YAML::Node node, ParserMetaData&
         return ret;
     } else {
         throw UmlParserException("Invalid yaml node type for " + key + " definition, it must be a map!", data.m_path.string(), node[key]);
+    }
+}
+
+template <class T = Element, class U = Element> void parseSingletonDefinition(YAML::Node node, ParserMetaData& data, string key, U& el, T& (*parser)(YAML::Node, ParserMetaData&), parseAndSetSingletonFunctor<T, U>& singletonFunctor) {
+    if (node[key]) {
+        if (node[key].IsMap()) {
+            singletonFunctor.set(el, (*parser)(node[key], data));
+        } else {
+            singletonFunctor(node[key], data, el);
+        }
     }
 }
 
@@ -2849,12 +2863,8 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
 
 void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data) {
     parseElement(node, parameter, data);
-    
-    if (node["ownedDefault"]) {
-        if (node["ownedDefault"].IsScalar()) {
-
-        }
-    }
+    SetOwnedDefault setOwnedDefault;
+    parseSingletonDefinition(node, data, "ownedDefault", parameter, determinAndParseParameterableElement, setOwnedDefault);
 
     if (node["default"]) {
         if (node["default"].IsScalar()) {

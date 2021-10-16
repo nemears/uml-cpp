@@ -70,8 +70,10 @@ void TemplateParameter::AddParameteredElementProcedure::operator()(Parameterable
 }
 
 void TemplateParameter::RemoveDefaultProcedure::operator()(ParameterableElement* el) const {
-    if (el->getTemplateParameterID() == m_me->getID()) {
+    if (el->getTemplateParameterID() == m_me->getID() && !m_me->m_setFlag) {
+        m_me->m_setFlag = true;
         el->setTemplateParameter(0);
+        m_me->m_setFlag = false;
     }
 }
 

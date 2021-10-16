@@ -34,9 +34,6 @@ void ParameterableElement::RemoveTemplateParameterProcedure::operator()(Template
     if (el->getDefaultID() == m_me->getID()) {
         el->setDefault(0);
     }
-    if (el->getOwnedDefaultID() == m_me->getID()) {
-        el->setOwnedDefault(0);
-    }
 }
 
 void ParameterableElement::AddTemplateParameterProcedure::operator()(TemplateParameter* el) const {

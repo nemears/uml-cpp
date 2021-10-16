@@ -107,6 +107,15 @@ void TemplateParameter::AddOwnedDefaultProcedure::operator()(ParameterableElemen
     }
 }
 
+void TemplateParameter::AddOwnedDefaultProcedure::operator()(ID id) const {
+    if (m_me->getDefaultID() != id) {
+        m_me->m_default.setByID(id);
+    }
+    if (!m_me->getOwnedElements().count(id)) {
+        m_me->getOwnedElements().addByID(id);
+    }
+}
+
 void TemplateParameter::referencingReleased(ID id) {
     Element::referencingReleased(id);
     m_signature.release(id);

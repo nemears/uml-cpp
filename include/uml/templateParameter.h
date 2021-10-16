@@ -81,6 +81,7 @@ namespace UML {
                 public:
                     AddOwnedDefaultProcedure(TemplateParameter* me) : AbstractSingletonProcedure<ParameterableElement, TemplateParameter>(me) {};
                     void operator()(ParameterableElement* el) const override;
+                    void operator()(ID id) const override;
             };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;

@@ -429,8 +429,8 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     TemplateParameter& ownedParameter4 = m.aquire(ownedParameterID)->as<TemplateParameter>();
     ASSERT_TRUE(ownedParameter4.hasOwnedParameteredElement());
     ASSERT_EQ(ownedParameter4.getOwnedParameteredElementRef(), ownedParameterableElement2);
-    ASSERT_EQ(ownedParameter4.getOwnedElements().size(), 1);
-    ASSERT_EQ(ownedParameter4.getOwnedElements().front(), ownedParameterableElement2);
+    ASSERT_EQ(ownedParameter4.getOwnedElements().size(), 2);
+    ASSERT_EQ(ownedParameter4.getOwnedElements().back(), ownedParameterableElement2);
     ASSERT_TRUE(ownedParameter4.hasParameteredElement());
     ASSERT_EQ(ownedParameter4.getParameteredElementRef(), ownedParameterableElement2);
     ASSERT_EQ(ownedParameterableElement2.getOwningTemplateParameterRef(), ownedParameter4);
@@ -446,8 +446,8 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     TemplateParameter& ownedParameter5 = m.aquire(ownedParameterID)->as<TemplateParameter>();
     ASSERT_TRUE(ownedParameter5.hasOwnedParameteredElement());
     ASSERT_EQ(ownedParameter5.getOwnedParameteredElementID(), ownedParameterableElementID);
-    ASSERT_EQ(ownedParameter5.getOwnedElements().size(), 1);
-    ASSERT_EQ(ownedParameter5.getOwnedElements().frontID(), ownedParameterableElementID);
+    ASSERT_EQ(ownedParameter5.getOwnedElements().size(), 2);
+    ASSERT_EQ(ownedParameter5.getOwnedElements().backID(), ownedParameterableElementID);
     ASSERT_TRUE(ownedParameter5.hasParameteredElement());
     ASSERT_EQ(ownedParameter5.getParameteredElementID(), ownedParameterableElementID);
     ASSERT_TRUE(ownedParameter5.hasOwnedDefault());
@@ -457,8 +457,8 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     PrimitiveType& ownedParameterableElement3 = m.aquire(ownedParameterableElementID)->as<PrimitiveType>();
     ASSERT_TRUE(ownedParameter5.hasOwnedParameteredElement());
     ASSERT_EQ(ownedParameter5.getOwnedParameteredElementRef(), ownedParameterableElement3);
-    ASSERT_EQ(ownedParameter5.getOwnedElements().size(), 1);
-    ASSERT_EQ(ownedParameter5.getOwnedElements().front(), ownedParameterableElement3);
+    ASSERT_EQ(ownedParameter5.getOwnedElements().size(), 2);
+    ASSERT_EQ(ownedParameter5.getOwnedElements().back(), ownedParameterableElement3);
     ASSERT_TRUE(ownedParameter5.hasParameteredElement());
     ASSERT_EQ(ownedParameter5.getParameteredElementRef(), ownedParameterableElement3);
     ASSERT_TRUE(ownedParameterableElement3.hasOwningTemplateParameter());

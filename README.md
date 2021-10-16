@@ -1,6 +1,8 @@
 # uml-cpp
 Lightweight UML based MBSE application built on yaml syntax UML config files    
-This is a work in progress but has basic functionality working
+This is a work in progress but has basic functionality working.
+
+All behavior of this api is based off of the uml-2.5 specification. If you have general questions about the api the PDF on the [OMG website](https://www.omg.org/spec/UML/2.5)
 
 ## Building
 uml-cpp is built with cmake  and has a couple of dependencies. 

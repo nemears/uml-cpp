@@ -304,8 +304,12 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     PrimitiveType& ownedParameterableElement = m.create<PrimitiveType>();
     TemplateParameter& otherParameter = m.create<TemplateParameter>();
     PrimitiveType& parameteredElement = m.create<PrimitiveType>();
+    PrimitiveType& ownedDefault = m.create<PrimitiveType>();
+    PrimitiveType& defaultParam = m.create<PrimitiveType>();
     ownedParameter.setOwnedParameteredElement(ownedParameterableElement);
+    ownedParameter.setOwnedDefault(ownedDefault);
     otherParameter.setParameteredElement(parameteredElement);
+    otherParameter.setDefault(defaultParam);
     signature.getOwnedParameter().add(ownedParameter);
     otherSignature.getOwnedParameter().add(otherParameter);
     clazz.setOwnedTemplateSignature(signature);
@@ -431,6 +435,10 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(ownedParameter4.getParameteredElementRef(), ownedParameterableElement2);
     ASSERT_EQ(ownedParameterableElement2.getOwningTemplateParameterRef(), ownedParameter4);
     ASSERT_EQ(ownedParameterableElement2.getOwnerRef(), ownedParameter4);
+    ASSERT_TRUE(ownedParameter4.hasOwnedDefault());
+    ASSERT_EQ(ownedParameter4.getOwnedDefaultRef(), ownedDefault);
+    ASSERT_TRUE(ownedParameter4.hasDefault());
+    ASSERT_EQ(ownedParameter4.getDefaultRef(), ownedDefault);
 
     m.release(ownedParameterableElement2, ownedParameter4);
     ASSERT_FALSE(m.loaded(ownedParameterableElementID));
@@ -442,6 +450,10 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(ownedParameter5.getOwnedElements().frontID(), ownedParameterableElementID);
     ASSERT_TRUE(ownedParameter5.hasParameteredElement());
     ASSERT_EQ(ownedParameter5.getParameteredElementID(), ownedParameterableElementID);
+    ASSERT_TRUE(ownedParameter5.hasOwnedDefault());
+    ASSERT_EQ(ownedParameter5.getOwnedDefaultRef(), ownedDefault);
+    ASSERT_TRUE(ownedParameter5.hasDefault());
+    ASSERT_EQ(ownedParameter5.getDefaultRef(), ownedDefault);
     PrimitiveType& ownedParameterableElement3 = m.aquire(ownedParameterableElementID)->as<PrimitiveType>();
     ASSERT_TRUE(ownedParameter5.hasOwnedParameteredElement());
     ASSERT_EQ(ownedParameter5.getOwnedParameteredElementRef(), ownedParameterableElement3);

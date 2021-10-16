@@ -2849,6 +2849,12 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
 
 void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data) {
     parseElement(node, parameter, data);
+    
+    if (node["ownedDefault"]) {
+        if (node["ownedDefault"].IsScalar()) {
+
+        }
+    }
 
     if (node["default"]) {
         if (node["default"].IsScalar()) {

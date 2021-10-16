@@ -303,9 +303,9 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     TemplateParameter& ownedParameter = m.create<TemplateParameter>();
     PrimitiveType& ownedParameterableElement = m.create<PrimitiveType>();
     TemplateParameter& otherParameter = m.create<TemplateParameter>();
-    PrimitiveType& parameteredElement = m.create<PrimitiveType>();
+    Property& parameteredElement = m.create<Property>();
     PrimitiveType& ownedDefault = m.create<PrimitiveType>();
-    PrimitiveType& defaultParam = m.create<PrimitiveType>();
+    Property& defaultParam = m.create<Property>();
     ownedParameter.setOwnedParameteredElement(ownedParameterableElement);
     ownedParameter.setOwnedDefault(ownedDefault);
     otherParameter.setParameteredElement(parameteredElement);
@@ -314,7 +314,8 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     otherSignature.getOwnedParameter().add(otherParameter);
     clazz.setOwnedTemplateSignature(signature);
     otherClazz.setOwnedTemplateSignature(otherSignature);
-    root.getPackagedElements().add(clazz, otherClazz, parameteredElement);
+    otherClazz.getOwnedAttributes().add(parameteredElement, defaultParam);
+    root.getPackagedElements().add(clazz, otherClazz);
 
     // TODO more
 
@@ -514,7 +515,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(otherParameter2.getParameteredElementID(), parameteredElementID);
     ASSERT_TRUE(otherParameter2.hasDefault());
     ASSERT_EQ(otherParameter2.getDefaultRef(), defaultParam);
-    PrimitiveType& parameteredElement2 = m.aquire(parameteredElementID)->as<PrimitiveType>();
+    Property& parameteredElement2 = m.aquire(parameteredElementID)->as<Property>();
     ASSERT_TRUE(parameteredElement2.hasTemplateParameter());
     ASSERT_EQ(parameteredElement2.getTemplateParameterRef(), otherParameter2);
     ASSERT_EQ(otherParameter2.getParameteredElementRef(), parameteredElement2);
@@ -522,7 +523,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     m.release(otherParameter2, parameteredElement2);
     ASSERT_FALSE(m.loaded(otherParameterID));
     ASSERT_FALSE(m.loaded(parameteredElementID));
-    PrimitiveType& parameteredElement3 = m.aquire(parameteredElementID)->as<PrimitiveType>();
+    Property& parameteredElement3 = m.aquire(parameteredElementID)->as<Property>();
     ASSERT_TRUE(parameteredElement3.hasTemplateParameter());
     ASSERT_EQ(parameteredElement3.getTemplateParameterID(), otherParameterID);
     TemplateParameter& otherParameter3 = m.aquire(otherParameterID)->as<TemplateParameter>();
@@ -536,7 +537,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     m.release(defaultParam, otherParameter3);
     ASSERT_FALSE(m.loaded(defaultParamID));
     ASSERT_FALSE(m.loaded(otherParameterID));
-    PrimitiveType& defaultParam2 = m.aquire(defaultParamID)->as<PrimitiveType>();
+    Property& defaultParam2 = m.aquire(defaultParamID)->as<Property>();
     ASSERT_TRUE(defaultParam2.hasTemplateParameter());
     ASSERT_EQ(defaultParam2.getTemplateParameterID(), otherParameterID);
     TemplateParameter& otherParameter4 = m.aquire(otherParameterID)->as<TemplateParameter>();
@@ -550,7 +551,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     TemplateParameter& otherParameter5 = m.aquire(otherParameterID)->as<TemplateParameter>();
     ASSERT_TRUE(otherParameter5.hasDefault());
     ASSERT_EQ(otherParameter5.getDefaultID(), defaultParamID);
-    PrimitiveType& defaultParam3 = m.aquire(defaultParamID)->as<PrimitiveType>();
+    Property& defaultParam3 = m.aquire(defaultParamID)->as<Property>();
     ASSERT_TRUE(defaultParam3.hasTemplateParameter());
     ASSERT_EQ(defaultParam3.getTemplateParameterRef(), otherParameter5);
     ASSERT_EQ(otherParameter5.getDefaultRef(), defaultParam3);

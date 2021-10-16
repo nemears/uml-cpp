@@ -1857,6 +1857,7 @@ void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data)
     emitTypedElement(emitter, prop, data);
     emitMultiplicityElement(emitter, prop, data);
     emitDeploymentTarget(emitter, prop, data);
+    emitParameterableElement(emitter, prop, data);
 
     if (prop.getAggregation() != AggregationKind::NONE) {
         string aggregationString;

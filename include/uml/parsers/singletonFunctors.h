@@ -218,6 +218,12 @@ namespace UML {
             public:
                 SetOwnedDefault();
         };
+
+        class SetOwner {
+            public:
+                void operator()(Element& el, Element& owner) const;
+                void operator()(Element& el, ID ownerID) const;
+        };
     }
 }
 

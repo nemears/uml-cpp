@@ -241,6 +241,14 @@ SetOwnedDefault::SetOwnedDefault() {
     m_signature = &TemplateParameter::m_ownedDefault;
 }
 
+void SetOwner::operator()(Element& el, Element& owner) const {
+    el.setOwner(&owner);
+}
+
+void SetOwner::operator()(Element& el, ID ownerID) const {
+    el.setOwnerByID(ownerID);
+}
+
 namespace {
 
 /**
@@ -718,6 +726,21 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
             SetOwningTemplateParameter setOwningTemplateParameter;
             parseSingleton(node["owningTemplateParameter"], data, ret->as<ParameterableElement>(), &ParameterableElement::setOwningTemplateParameter, setOwningTemplateParameter);
         }
+        if (node["owner"]) { // special case
+            if (node["owner"].IsScalar()) {
+                if (ret->isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
+                    if (ret->as<ParameterableElement>().hasTemplateParameter()) {
+                        ID id = ID::fromString(node["owner"].as<string>());
+                        SetOwner setOwner;
+                        if (data.m_manager->loaded(id)) {
+                            setOwner(*ret, data.m_manager->get<TemplateParameter>(id));
+                        } else {
+                            setOwner(*ret, id);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     return ret;
@@ -1103,6 +1126,9 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
             if (el.as<ParameterableElement>().hasOwningTemplateParameter()) {
                 emitter << YAML::Key << "owningTemplateParameter" << YAML::Value << el.as<ParameterableElement>().getOwningTemplateParameterID().string();
+                return;
+            } else if (el.hasOwner() && el.as<ParameterableElement>().hasTemplateParameter()) { // special case
+                emitter << YAML::Key << "owner" << YAML::Value << el.getOwnerID().string();
                 return;
             }
         }

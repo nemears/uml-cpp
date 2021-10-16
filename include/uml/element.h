@@ -133,6 +133,9 @@ namespace UML {
     class UmlManager;
     struct ManagerNode;
     class AddOwnedCommentFunctor;
+    namespace Parsers {
+        class SetOwner;
+    }
     /**
      * Element is the base class of all UML classes
      * It has three main attributes
@@ -154,6 +157,7 @@ namespace UML {
         template <class T, class U> friend class Singleton;
         template <class T> friend class Sequence;
         template <class T> friend struct SequenceIterator;
+        friend class Parsers::SetOwner;
         private:
             bool m_copiedElementFlag = false;
         protected:

@@ -512,6 +512,8 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     TemplateParameter& otherParameter2 = m.aquire(otherParameterID)->as<TemplateParameter>();
     ASSERT_TRUE(otherParameter2.hasParameteredElement());
     ASSERT_EQ(otherParameter2.getParameteredElementID(), parameteredElementID);
+    ASSERT_TRUE(otherParameter2.hasDefault());
+    ASSERT_EQ(otherParameter2.getDefaultRef(), defaultParam);
     PrimitiveType& parameteredElement2 = m.aquire(parameteredElementID)->as<PrimitiveType>();
     ASSERT_TRUE(parameteredElement2.hasTemplateParameter());
     ASSERT_EQ(parameteredElement2.getTemplateParameterRef(), otherParameter2);
@@ -527,5 +529,29 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_TRUE(otherParameter3.hasParameteredElement());
     ASSERT_EQ(otherParameter3.getParameteredElementRef(), parameteredElement3);
     ASSERT_EQ(parameteredElement3.getTemplateParameterRef(), otherParameter3);
+    ASSERT_TRUE(otherParameter3.hasDefault());
+    ASSERT_EQ(otherParameter3.getDefaultRef(), defaultParam);
 
+    ID defaultParamID = defaultParam.getID();
+    m.release(defaultParam, otherParameter3);
+    ASSERT_FALSE(m.loaded(defaultParamID));
+    ASSERT_FALSE(m.loaded(otherParameterID));
+    PrimitiveType& defaultParam2 = m.aquire(defaultParamID)->as<PrimitiveType>();
+    ASSERT_TRUE(defaultParam2.hasTemplateParameter());
+    ASSERT_EQ(defaultParam2.getTemplateParameterID(), otherParameterID);
+    TemplateParameter& otherParameter4 = m.aquire(otherParameterID)->as<TemplateParameter>();
+    ASSERT_TRUE(otherParameter4.hasDefault());
+    ASSERT_EQ(otherParameter4.getDefaultRef(), defaultParam2);
+    ASSERT_EQ(defaultParam2.getTemplateParameterRef(), otherParameter4);
+
+    m.release(defaultParam2, otherParameter4);
+    ASSERT_FALSE(m.loaded(defaultParamID));
+    ASSERT_FALSE(m.loaded(otherParameterID));
+    TemplateParameter& otherParameter5 = m.aquire(otherParameterID)->as<TemplateParameter>();
+    ASSERT_TRUE(otherParameter5.hasDefault());
+    ASSERT_EQ(otherParameter5.getDefaultID(), defaultParamID);
+    PrimitiveType& defaultParam3 = m.aquire(defaultParamID)->as<PrimitiveType>();
+    ASSERT_TRUE(defaultParam3.hasTemplateParameter());
+    ASSERT_EQ(defaultParam3.getTemplateParameterRef(), otherParameter5);
+    ASSERT_EQ(otherParameter5.getDefaultRef(), defaultParam3);
 }

@@ -224,6 +224,11 @@ namespace UML {
                 void operator()(Element& el, Element& owner) const;
                 void operator()(Element& el, ID ownerID) const;
         };
+
+        class SetDefault : public parseAndSetSingletonFunctor<ParameterableElement, TemplateParameter> {
+            public:
+                SetDefault();
+        };
     }
 }
 

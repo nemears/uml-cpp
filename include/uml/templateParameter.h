@@ -13,6 +13,7 @@ namespace UML {
         class SetSignature;
         class SetOwnedParameteredElement;
         class SetOwnedDefault;
+        class SetDefault;
     }
 
     class TemplateParameter : public Element {
@@ -22,6 +23,7 @@ namespace UML {
         friend class Parsers::SetSignature;
         friend class Parsers::SetOwnedParameteredElement;
         friend class Parsers::SetOwnedDefault;
+        friend class Parsers::SetDefault;
 
         private:
             Singleton<TemplateSignature, TemplateParameter> m_signature = Singleton<TemplateSignature, TemplateParameter>(this);

@@ -249,6 +249,10 @@ void SetOwner::operator()(Element& el, ID ownerID) const {
     el.setOwnerByID(ownerID);
 }
 
+SetDefault::SetDefault() {
+    m_signature = &TemplateParameter::m_default;
+}
+
 namespace {
 
 /**
@@ -2894,11 +2898,8 @@ void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, Parse
 
     if (node["default"]) {
         if (node["default"].IsScalar()) {
-            if (isValidID(node["default"].as<string>())) {
-                // TODO
-            } else {
-                throw UmlParserException("Invalid id, must be 28 character base64 urlsafe encoded string!", data.m_path.string(), node["default"]);
-            }
+            SetDefault setDefault;
+            parseSingleton(node["default"], data, parameter, &TemplateParameter::setDefault, setDefault);
         } else {
             throw UmlParserException("Invalid yaml node type, must be scalar!", data.m_path.string(), node["default"]);
         }

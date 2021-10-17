@@ -1614,7 +1614,9 @@ void emitStructuredClassifier(YAML::Emitter& emitter, StructuredClassifier& claz
 
 Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
     if (node["activity"]) {
+        Activity& activity = data.m_manager->create<Activity>();
         // TODO
+        return activity;
     } else if (node["artifact"]) {
         if (node["artifact"].IsMap()) {
             Artifact& artifact = data.m_manager->create<Artifact>();

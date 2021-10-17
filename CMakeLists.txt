@@ -37,12 +37,6 @@ set(YAML_CPP_BUILD_TESTS OFF)
 # src
 add_subdirectory(src)
 
-# wrapper application
-add_executable(uml-cpp src/cpp/application.cpp)
-
-# Link them all
-target_link_libraries(uml-cpp PUBLIC Parsers Uml cppParsers gtest yaml-cpp)
-
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)

@@ -54,6 +54,18 @@ void TemplateableElement::AddTemplateBindingFunctor::operator()(TemplateBinding&
     if (el.getBoundElementID() != m_el->getID()) {
         el.setBoundElement(m_el);
     }
+    if (!m_el->getDirectedRelationships().count(el.getID())) {
+        m_el->getDirectedRelationships().add(el);
+    }
+}
+
+void TemplateableElement::AddTemplateBindingFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedElements().count(id)) {
+        m_el->getOwnedElements().addByID(id);
+    }
+    if (!m_el->getDirectedRelationships().count(id)) {
+        m_el->getDirectedRelationships().addByID(id);
+    }
 }
 
 void TemplateableElement::referencingReleased(ID id) {

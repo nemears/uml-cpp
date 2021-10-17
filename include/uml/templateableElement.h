@@ -38,6 +38,7 @@ namespace UML {
                 public:
                     AddTemplateBindingFunctor(TemplateableElement* el) : TemplateAbstractSequenceFunctor(el) {};
                     void operator()(TemplateBinding& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveTemplateBindingFunctor : public TemplateAbstractSequenceFunctor<TemplateBinding, TemplateableElement> {
                 public:

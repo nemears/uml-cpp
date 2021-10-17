@@ -7,10 +7,14 @@ namespace UML {
 
     class TemplateParameterSubstitution;
     class TemplateableElement;
+    namespace Parsers {
+        class SetBoundElement;
+    }
 
     class TemplateBinding : public DirectedRelationship {
 
         friend class UmlManager;
+        friend class Parsers::SetBoundElement;
 
         private:
             Singleton<TemplateableElement, TemplateBinding> m_boundElement = Singleton<TemplateableElement, TemplateBinding>(this);
@@ -24,6 +28,7 @@ namespace UML {
                 public:
                     AddBoundElementProcedure(TemplateBinding* me) : AbstractSingletonProcedure<TemplateableElement, TemplateBinding>(me) {};
                     void operator()(TemplateableElement* el) const override;
+                    void operator()(ID id) const override;
             };
             Singleton<TemplateSignature, TemplateBinding> m_signature = Singleton<TemplateSignature, TemplateBinding>(this);
             class RemoveSignatureProcedure : public AbstractSingletonProcedure<TemplateSignature, TemplateBinding> {

@@ -253,6 +253,10 @@ SetDefault::SetDefault() {
     m_signature = &TemplateParameter::m_default;
 }
 
+SetBoundElement::SetBoundElement() {
+    m_signature = &TemplateBinding::m_boundElement;
+}
+
 namespace {
 
 /**
@@ -580,6 +584,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &stereotype;
     }
 
+    if (node["templateBinding"]) {
+        TemplateBinding& binding = data.m_manager->create<TemplateBinding>();
+        parseTemplateBinding(node["templateBinding"], binding, data);
+        ret = &binding;
+    }
+
     if (node["templateParameter"]) {
         TemplateParameter& parameter = data.m_manager->create<TemplateParameter>();
         parseTemplateParameter(node["templateParameter"], parameter, data);
@@ -729,6 +739,10 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         if (node["owningTemplateParameter"]) {
             SetOwningTemplateParameter setOwningTemplateParameter;
             parseSingleton(node["owningTemplateParameter"], data, ret->as<ParameterableElement>(), &ParameterableElement::setOwningTemplateParameter, setOwningTemplateParameter);
+        }
+        if (node["boundElement"]) {
+            SetBoundElement setBoundElement;
+            parseSingleton(node["boundElement"], data, ret->as<TemplateBinding>(), &TemplateBinding::setBoundElement, setBoundElement);
         }
         if (node["owner"]) { // special case
             if (node["owner"].IsScalar()) {
@@ -1134,6 +1148,11 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             } else if (el.hasOwner() && el.as<ParameterableElement>().hasTemplateParameter()) { // special case
                 emitter << YAML::Key << "owner" << YAML::Value << el.getOwnerID().string();
                 return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::TEMPLATE_BINDING)) {
+            if (el.as<TemplateBinding>().hasBoundElement()) {
+                emitter << YAML::Key << "boundElement" << YAML::Value << el.as<TemplateBinding>().getBoundElementID().string();
             }
         }
     }

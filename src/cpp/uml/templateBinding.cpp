@@ -14,6 +14,9 @@ void TemplateBinding::RemoveBoundElementProcedure::operator()(TemplateableElemen
         el->getTemplateBindings().remove(*m_me);
         m_me->m_setFlag = false;
     }
+    if (m_me->getOwnerID() == el->getID()) {
+        m_me->setOwner(0);
+    }
 }
 
 void TemplateBinding::AddBoundElementProcedure::operator()(TemplateableElement* el) const {
@@ -22,6 +25,18 @@ void TemplateBinding::AddBoundElementProcedure::operator()(TemplateableElement* 
     }
     if (!el->getTemplateBindings().count(m_me->getID())) {
         el->getTemplateBindings().add(*m_me);
+    }
+    if (m_me->getOwnerID() != el->getID()) {
+        m_me->setOwner(el);
+    }
+}
+
+void TemplateBinding::AddBoundElementProcedure::operator()(ID id) const {
+    if (!m_me->getSources().count(id)) {
+        m_me->getSources().addByID(id);
+    }
+    if (m_me->getOwnerID() != id) {
+        m_me->setOwnerByID(id);
     }
 }
 

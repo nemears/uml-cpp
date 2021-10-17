@@ -229,6 +229,11 @@ namespace UML {
             public:
                 SetDefault();
         };
+
+        class SetBoundElement : public parseAndSetSingletonFunctor<TemplateableElement, TemplateBinding> {
+            public:
+                SetBoundElement();
+        };
     }
 }
 

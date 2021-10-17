@@ -6,7 +6,7 @@
             templateSignature:
               id: LZNsKPxKJ7fB3775xyVUNLKn9SZ4
       - class:
-          templateBinding:
-            templateBinding:
-              signature: LZNsKPxKJ7fB3775xyVUNLKn9SZ4
+          templateBindings:
+              - templateBinding:
+                  signature: LZNsKPxKJ7fB3775xyVUNLKn9SZ4
 ...

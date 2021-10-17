@@ -6,12 +6,12 @@
             templateSignature:
               id: BXOJoKsvBCVhMIwUbxRV5ibHYMDf
       - class:
-          templateBinding:
-            templateBinding:
-              signature: BXOJoKsvBCVhMIwUbxRV5ibHYMDf
-              parameterSubstitution:
-                - templateParameterSubstitution:
-                    ownedActual:
-                      primitiveType:
-                        name: test
+          templateBindings:
+            - templateBinding:
+                signature: BXOJoKsvBCVhMIwUbxRV5ibHYMDf
+                parameterSubstitution:
+                  - templateParameterSubstitution:
+                      ownedActual:
+                        primitiveType:
+                          name: test
 ...

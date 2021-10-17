@@ -9,10 +9,10 @@
                 - templateParameter:
                     id: Yw0uEQ8ZDsgZx4bogVkuxvBL9CGR
       - class:
-          templateBinding:
-            templateBinding:
-              signature: t9DEpJVxrlACAQsPLxoHMRPPpDUq
-              parameterSubstitution:
-                - templateParameterSubstitution:
-                    formal: Yw0uEQ8ZDsgZx4bogVkuxvBL9CGR
-...
+          templateBindings:
+            - templateBinding:
+                signature: t9DEpJVxrlACAQsPLxoHMRPPpDUq
+                parameterSubstitution:
+                  - templateParameterSubstitution:
+                      formal: Yw0uEQ8ZDsgZx4bogVkuxvBL9CGR
+  ...

@@ -58,11 +58,13 @@ namespace UML {
             ~TemplateBinding();
             TemplateableElement* getBoundElement(); 
             TemplateableElement& getBoundElementRef();
+            ID getBoundElementID() const;
             bool hasBoundElement() const;
             void setBoundElement(TemplateableElement& el);
             void setBoundElement(TemplateableElement* el);
             TemplateSignature* getSignature();
             TemplateSignature& getSignatureRef();
+            ID getSignatureID() const;
             bool hasSignature() const;
             void setSignature(TemplateSignature& signature);
             void setSignature(TemplateSignature* signature);

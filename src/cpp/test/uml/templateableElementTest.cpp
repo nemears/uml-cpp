@@ -246,8 +246,8 @@ TEST_F(TemplateableElementTest, basicTemplateBindTest) {
     b.setSignature(&s);
     ASSERT_TRUE(b.getBoundElement() != 0);
     ASSERT_EQ(b.getBoundElement()->getID(), c.getID());
-    ASSERT_TRUE(c.getTemplateBinding() != 0);
-    ASSERT_EQ(c.getTemplateBinding()->getID(), b.getID());
+    ASSERT_EQ(c.getTemplateBindings().size(), 1);
+    ASSERT_EQ(c.getTemplateBindings().frontID(), b.getID());
     ASSERT_EQ(b.getSources().size(), 1);
     ASSERT_EQ(b.getSources().front().getID(), c.getID());
     ASSERT_EQ(c.getDirectedRelationships().size(), 1);
@@ -282,11 +282,11 @@ TEST_F(TemplateableElementTest, overrideBoundElementTest) {
     ASSERT_EQ(b.getRelatedElements().back().getID(), c2.getID());
     ASSERT_TRUE(b.getOwner() != 0);
     ASSERT_EQ(b.getOwner()->getID(), c2.getID());
-    ASSERT_TRUE(c2.getTemplateBinding() != 0);
-    ASSERT_EQ(c2.getTemplateBinding()->getID(), b.getID());
+    ASSERT_EQ(c2.getTemplateBindings().size(), 1);
+    ASSERT_EQ(c2.getTemplateBindings().frontID(), b.getID());
     ASSERT_EQ(c2.getOwnedElements().size(), 1);
     ASSERT_EQ(c2.getOwnedElements().front().getID(), b.getID());
-    ASSERT_TRUE(c1.getTemplateBinding() == 0);
+    ASSERT_EQ(c1.getTemplateBindings().size(), 1);
     ASSERT_EQ(c1.getOwnedElements().size(), 0);
 }
 
@@ -438,7 +438,7 @@ TEST_F(TemplateableElementTest, reindexTemplateableElementsTest) {
     TemplateBinding classBinding = m.create<TemplateBinding>();
     Package root = m.create<Package>();
     templateClass.setOwnedTemplateSignature(classSignature);
-    templateClass.setTemplateBinding(classBinding);
+    templateClass.getTemplateBindings().add(classBinding);
     classBinding.setSignature(classSignature);
     root.getPackagedElements().add(templateClass);
     m.setRoot(&root);

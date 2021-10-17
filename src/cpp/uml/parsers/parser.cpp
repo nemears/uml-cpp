@@ -2612,6 +2612,14 @@ void emitExpression(YAML::Emitter& emitter, Expression& exp, EmitterMetaData& da
     emitElementDefenitionEnd(emitter, ElementType::EXPRESSION, exp);
 }
 
+TemplateBinding& determineAndParseTemplateBinding(YAML::Node node, ParserMetaData& data) {
+    if (node["templateBinding"]) {
+        return parseDefinition(node, data, "templateBinding", parseTemplateBinding);
+    } else {
+        throw UmlParserException("Invalid element identifier, can only be a templateBinding!", data.m_path.string(), node);
+    }
+}
+
 void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data) {
     if (node["templateSignature"]) {
         if (node["templateSignature"].IsMap()) {
@@ -2634,26 +2642,7 @@ void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMe
         }
     }
 
-    if (node["templateBinding"]) {
-        if (node["templateBinding"].IsMap()) {
-            if (node["templateBinding"]["templateBinding"]) {
-                if (node["templateBinding"]["templateBinding"].IsMap()) {
-                    TemplateBinding& binding = data.m_manager->create<TemplateBinding>();
-                    parseTemplateBinding(node["templateBinding"]["templateBinding"], binding, data);
-                    el.setTemplateBinding(&binding);
-                } else if (node["templateBinding"]["templateBinding"].IsScalar()) {
-                    /** TODO: make mount ready **/
-                } else {
-                    // TODO error
-                }
-            } else {
-                throw UmlParserException("Must specify templateBinding field before templateBinding definition", data.m_path.string(), node["templateBinding"]);
-            }
-        } else {
-            el.setTemplateBinding(parseScalar<TemplateBinding>(node["templateBinding"], data));
-            //throw UmlParserException("Invalid YAML node for templateBinding definition, ", data.m_path.string(), node["templateBinding"]);
-        }
-    }
+    parseSequenceDefinitions(node, data, "templateBindings", el, &TemplateableElement::getTemplateBindings, determineAndParseTemplateBinding);
 }
 
 void emitTemplateableElement(YAML::Emitter& emitter, TemplateableElement& el, EmitterMetaData& data) {
@@ -2665,11 +2654,7 @@ void emitTemplateableElement(YAML::Emitter& emitter, TemplateableElement& el, Em
             emitter << el.getOwnedTemplateSignatureID().string() + ".yml";
         }
     }
-
-    if (el.hasTemplateBinding()) {
-        emitter << YAML::Key << "templateBinding" << YAML::Value;
-        emit(emitter, el.getTemplateBindingRef(), data);
-    }
+    emitSequence(emitter, "templateBindings", data, el, &TemplateableElement::getTemplateBindings);
 }
 
 void AddTemplateParmeterFunctor::operator()(Element& el) const {

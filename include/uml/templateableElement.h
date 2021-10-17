@@ -3,6 +3,7 @@
 
 #include "element.h"
 #include "singleton.h"
+#include "sequence.h"
 
 namespace UML {
 
@@ -32,16 +33,16 @@ namespace UML {
                     void operator()(TemplateSignature* el) const override;
                     void operator()(ID id) const override;
             };
-            Singleton<TemplateBinding, TemplateableElement> m_templateBinding = Singleton<TemplateBinding, TemplateableElement>(this);
-            class RemoveTemplateBindingProcedure : public AbstractSingletonProcedure<TemplateBinding, TemplateableElement> {
+            Sequence<TemplateBinding> m_templateBindings = Sequence<TemplateBinding>(this);
+            class AddTemplateBindingFunctor : public TemplateAbstractSequenceFunctor<TemplateBinding, TemplateableElement> {
                 public:
-                    RemoveTemplateBindingProcedure(TemplateableElement* me) : AbstractSingletonProcedure<TemplateBinding, TemplateableElement>(me) {};
-                    void operator()(TemplateBinding* el) const override;
+                    AddTemplateBindingFunctor(TemplateableElement* el) : TemplateAbstractSequenceFunctor(el) {};
+                    void operator()(TemplateBinding& el) const override;
             };
-            class AddTemplateBindingProcedure : public AbstractSingletonProcedure<TemplateBinding, TemplateableElement> {
+            class RemoveTemplateBindingFunctor : public TemplateAbstractSequenceFunctor<TemplateBinding, TemplateableElement> {
                 public:
-                    AddTemplateBindingProcedure(TemplateableElement* me) : AbstractSingletonProcedure<TemplateBinding, TemplateableElement>(me) {};
-                    void operator()(TemplateBinding* el) const override;
+                    RemoveTemplateBindingFunctor(TemplateableElement* el) : TemplateAbstractSequenceFunctor(el) {};
+                    void operator()(TemplateBinding& el) const override;
             };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
@@ -57,12 +58,7 @@ namespace UML {
             bool hasOwnedTemplateSignature() const;
             void setOwnedTemplateSignature(TemplateSignature& signature);
             void setOwnedTemplateSignature(TemplateSignature* signature);
-            TemplateBinding* getTemplateBinding();
-            TemplateBinding& getTemplateBindingRef();
-            ID getTemplateBindingID() const;
-            bool hasTemplateBinding() const;
-            void setTemplateBinding(TemplateBinding& binding);
-            void setTemplateBinding(TemplateBinding* binding);
+            Sequence<TemplateBinding>& getTemplateBindings();
             ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

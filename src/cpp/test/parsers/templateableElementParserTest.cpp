@@ -125,8 +125,8 @@ TEST_F(TemplateableElementParserTest, basicTemplateBindingTest) {
     TemplateSignature& s = *c1.getOwnedTemplateSignature();
     ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::CLASS);
     Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().back());
-    ASSERT_TRUE(c2.getTemplateBinding() != 0);
-    TemplateBinding& b = *c2.getTemplateBinding();
+    ASSERT_EQ(c2.getTemplateBindings().size(), 1);
+    TemplateBinding& b = c2.getTemplateBindings().front();
     ASSERT_TRUE(b.getSignature() != 0);
     ASSERT_EQ(b.getSignature()->getID(), s.getID());
 }
@@ -146,8 +146,8 @@ TEST_F(TemplateableElementParserTest, parameterSubstitutionW_formalTest) {
     TemplateParameter& t = s.getOwnedParameter().front();
     ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::CLASS);
     Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().back());
-    ASSERT_TRUE(c2.getTemplateBinding() != 0);
-    TemplateBinding& b = *c2.getTemplateBinding();
+    ASSERT_EQ(c2.getTemplateBindings().size(), 1);
+    TemplateBinding& b = c2.getTemplateBindings().front();
     ASSERT_TRUE(b.getSignature() != 0);
     ASSERT_EQ(b.getSignature()->getID(), s.getID());
     ASSERT_EQ(b.getParameterSubstitution().size(), 1);
@@ -169,8 +169,8 @@ TEST_F(TemplateableElementParserTest, parameterSubstitutionW_OwnedActualTest) {
     TemplateSignature& s = *c1.getOwnedTemplateSignature();
     ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::CLASS);
     Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().back());
-    ASSERT_TRUE(c2.getTemplateBinding() != 0);
-    TemplateBinding& b = *c2.getTemplateBinding();
+    ASSERT_EQ(c2.getTemplateBindings().size(), 1);
+    TemplateBinding& b = c2.getTemplateBindings().front();
     ASSERT_EQ(b.getParameterSubstitution().size(), 1);
     TemplateParameterSubstitution& p = b.getParameterSubstitution().front();
     ASSERT_TRUE(p.getOwnedActual() != 0);
@@ -191,8 +191,8 @@ TEST_F(TemplateableElementParserTest, parameterSubstitutionW_Actual) {
     TemplateSignature& s = *c1.getOwnedTemplateSignature();
     ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::CLASS);
     Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().back());
-    ASSERT_TRUE(c2.getTemplateBinding() != 0);
-    TemplateBinding& b = *c2.getTemplateBinding();
+    ASSERT_EQ(c2.getTemplateBindings().size(), 1);
+    TemplateBinding& b = c2.getTemplateBindings().front();
     ASSERT_EQ(b.getParameterSubstitution().size(), 1);
     TemplateParameterSubstitution& p = b.getParameterSubstitution().front();
     ASSERT_TRUE(p.getActual() != 0);
@@ -234,7 +234,7 @@ TEST_F(TemplateableElementParserTest, emitBigTemplateExampleTest) {
     sig.getOwnedParameter().add(p2);
     p1.setOwnedDefault(&d1);
     p2.setDefault(&d2);
-    c2.setTemplateBinding(&b);
+    c2.getTemplateBindings().add(b);
     b.setSignature(&sig);
     b.getParameterSubstitution().add(ps1);
     b.getParameterSubstitution().add(ps2);
@@ -272,21 +272,21 @@ TEST_F(TemplateableElementParserTest, emitBigTemplateExampleTest) {
                   default: a2arTP9Z2LteDWsjTS0ziALCWlXU
     - class:
         id: fMWs7G1YTFU1VQEAgNcZqt4lp6dB
-        templateBinding:
-          templateBinding:
-            id: e_ob7tgbN16Plhj_sTAOVD5ijLrL
-            signature: nOh5namt9s4oOvimAXQpR8nJHfTF
-            parameterSubstitution:
-              - templateParameterSubstitution:
-                  id: 7bYUY3yFUBrfPmzKKrV2NJmXuECA
-                  formal: OLULeTlF1Rzf4U5IpNQVW1nYd29c
-                  ownedActual:
-                    primitiveType:
-                      id: 8&K_0aLhvQDM12ZeYg9nPiSrexHo
-              - templateParameterSubstitution:
-                  id: puJaUTZsLPdGJkJSJtdX51MIA2ch
-                  formal: Km4WF5rf3ohUeLTr99POiW7VMb_4
-                  actual: 4gA4RgL9vKTRYd61D99y1d_Yggj6)"""";
+        templateBindings:
+          - templateBinding:
+              id: e_ob7tgbN16Plhj_sTAOVD5ijLrL
+              signature: nOh5namt9s4oOvimAXQpR8nJHfTF
+              parameterSubstitution:
+                - templateParameterSubstitution:
+                    id: 7bYUY3yFUBrfPmzKKrV2NJmXuECA
+                    formal: OLULeTlF1Rzf4U5IpNQVW1nYd29c
+                    ownedActual:
+                      primitiveType:
+                        id: 8&K_0aLhvQDM12ZeYg9nPiSrexHo
+                - templateParameterSubstitution:
+                    id: puJaUTZsLPdGJkJSJtdX51MIA2ch
+                    formal: Km4WF5rf3ohUeLTr99POiW7VMb_4
+                    actual: 4gA4RgL9vKTRYd61D99y1d_Yggj6)"""";
     string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
     cout << generatedEmit << '\n';
@@ -306,6 +306,8 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     Property& parameteredElement = m.create<Property>();
     PrimitiveType& ownedDefault = m.create<PrimitiveType>();
     Property& defaultParam = m.create<Property>();
+    Class& boundEl = m.create<Class>();
+    TemplateBinding& binding = m.create<TemplateBinding>();
     ownedParameter.setOwnedParameteredElement(ownedParameterableElement);
     ownedParameter.setOwnedDefault(ownedDefault);
     otherParameter.setParameteredElement(parameteredElement);
@@ -315,7 +317,9 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     clazz.setOwnedTemplateSignature(signature);
     otherClazz.setOwnedTemplateSignature(otherSignature);
     otherClazz.getOwnedAttributes().add(parameteredElement, defaultParam);
-    root.getPackagedElements().add(clazz, otherClazz);
+    binding.setSignature(signature);
+    boundEl.getTemplateBindings().add(binding);
+    root.getPackagedElements().add(clazz, otherClazz, boundEl);
 
     // TODO more
 

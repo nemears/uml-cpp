@@ -9,10 +9,10 @@
             templateSignature:
               id: fwxRqHbsLGJ5FwcCaFBAGIP1Kp3x
       - class:
-          templateBinding:
-            templateBinding:
-              signature: fwxRqHbsLGJ5FwcCaFBAGIP1Kp3x
-              parameterSubstitution:
-                - templateParameterSubstitution:
-                    actual: bool_bzkcabSy3CiFd&HmJOtnVRK
+          templateBindings:
+            - templateBinding:
+                signature: fwxRqHbsLGJ5FwcCaFBAGIP1Kp3x
+                parameterSubstitution:
+                  - templateParameterSubstitution:
+                      actual: bool_bzkcabSy3CiFd&HmJOtnVRK
 ...

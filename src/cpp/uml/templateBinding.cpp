@@ -9,9 +9,9 @@ void TemplateBinding::RemoveBoundElementProcedure::operator()(TemplateableElemen
     if (m_me->getSources().count(el->getID())) {
         m_me->getSources().remove(*el);
     }
-    if (el->hasTemplateBinding() && !m_me->m_setFlag) {
+    if (el->getTemplateBindings().count(m_me->getID()) && !m_me->m_setFlag) {
         m_me->m_setFlag = true;
-        el->setTemplateBinding(0);
+        el->getTemplateBindings().remove(*m_me);
         m_me->m_setFlag = false;
     }
 }
@@ -20,12 +20,8 @@ void TemplateBinding::AddBoundElementProcedure::operator()(TemplateableElement* 
     if (!m_me->getSources().count(el->getID())) {
         m_me->getSources().add(*el);
     }
-    if (el->hasTemplateBinding()) {
-        if (el->getTemplateBindingRef() != *m_me) {
-            el->setTemplateBinding(m_me);
-        }
-    } else {
-        el->setTemplateBinding(m_me);
+    if (!el->getTemplateBindings().count(m_me->getID())) {
+        el->getTemplateBindings().add(*m_me);
     }
 }
 
@@ -130,6 +126,10 @@ TemplateableElement& TemplateBinding::getBoundElementRef() {
     return m_boundElement.getRef();
 }
 
+ID TemplateBinding::getBoundElementID() const {
+    return m_boundElement.id();
+}
+
 bool TemplateBinding::hasBoundElement() const {
     return m_boundElement.has();
 }
@@ -148,6 +148,10 @@ TemplateSignature* TemplateBinding::getSignature() {
 
 TemplateSignature& TemplateBinding::getSignatureRef() {
     return m_signature.getRef();
+}
+
+ID TemplateBinding::getSignatureID() const {
+    return m_signature.id();
 }
 
 bool TemplateBinding::hasSignature() const {

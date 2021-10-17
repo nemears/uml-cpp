@@ -307,7 +307,13 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     PrimitiveType& ownedDefault = m.create<PrimitiveType>();
     Property& defaultParam = m.create<Property>();
     Class& boundEl = m.create<Class>();
+    Class& otherBoundEl = m.create<Class>();
     TemplateBinding& binding = m.create<TemplateBinding>();
+    TemplateBinding& otherBinding = m.create<TemplateBinding>();
+    PrimitiveType& actual = m.create<PrimitiveType>();
+    PrimitiveType& ownedActual = m.create<PrimitiveType>();
+    TemplateParameterSubstitution& subW_Actual = m.create<TemplateParameterSubstitution>();
+    TemplateParameterSubstitution& subW_OwnedActual = m.create<TemplateParameterSubstitution>();
     ownedParameter.setOwnedParameteredElement(ownedParameterableElement);
     ownedParameter.setOwnedDefault(ownedDefault);
     otherParameter.setParameteredElement(parameteredElement);
@@ -319,7 +325,15 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     otherClazz.getOwnedAttributes().add(parameteredElement, defaultParam);
     binding.setSignature(signature);
     boundEl.getTemplateBindings().add(binding);
-    root.getPackagedElements().add(clazz, otherClazz, boundEl);
+    otherBinding.setSignature(signature);
+    otherBoundEl.getTemplateBindings().add(otherBinding);
+    subW_Actual.setFormal(ownedParameter);
+    subW_Actual.setActual(actual);
+    subW_OwnedActual.setFormal(ownedParameter);
+    subW_OwnedActual.setOwnedActual(ownedActual);
+    binding.getParameterSubstitution().add(subW_OwnedActual);
+    otherBinding.getParameterSubstitution().add(subW_Actual);
+    root.getPackagedElements().add(clazz, otherClazz, boundEl, actual);
 
     // TODO more
 
@@ -614,9 +628,9 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(boundEl3.getOwnedElements().size(), 1);
     ASSERT_EQ(boundEl3.getOwnedElements().front(), binding3);
     ASSERT_EQ(binding3.getBoundElementRef(), boundEl3);
-    ASSERT_EQ(binding3.getOwnerRef(), boundEl);
-    ASSERT_EQ(binding3.getSources().front(), boundEl);
-    ASSERT_EQ(binding3.getRelatedElements().back(), boundEl);
+    ASSERT_EQ(binding3.getOwnerRef(), boundEl3);
+    ASSERT_EQ(binding3.getSources().front(), boundEl3);
+    ASSERT_EQ(binding3.getRelatedElements().back(), boundEl3);
 
     m.release(boundEl3, binding3);
     ASSERT_FALSE(m.loaded(bindingID));
@@ -639,4 +653,97 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(binding4.getSources().front(), boundEl4);
     ASSERT_EQ(binding4.getRelatedElements().size(), 2);
     ASSERT_EQ(binding4.getRelatedElements().back(), boundEl4);
+
+    ID subW_OwnedActualID = subW_OwnedActual.getID();
+    m.release(subW_OwnedActual);
+    ASSERT_FALSE(m.loaded(subW_OwnedActualID));
+    TemplateParameterSubstitution& subW_OwnedActual2 = m.aquire(subW_OwnedActualID)->as<TemplateParameterSubstitution>();
+    ASSERT_TRUE(subW_OwnedActual2.hasTemplateBinding());
+    ASSERT_EQ(subW_OwnedActual2.getTemplateBindingRef(), binding4);
+    ASSERT_TRUE(subW_OwnedActual2.hasOwner());
+    ASSERT_EQ(subW_OwnedActual2.getOwnerRef(), binding4);
+    ASSERT_TRUE(subW_OwnedActual2.hasFormal());
+    ASSERT_EQ(subW_OwnedActual2.getFormalRef(), ownedParameter7);
+    ASSERT_TRUE(subW_OwnedActual2.hasOwnedActual());
+    ASSERT_EQ(subW_OwnedActual2.getOwnedActualRef(), ownedActual);
+    ASSERT_TRUE(subW_OwnedActual2.hasActual());
+    ASSERT_EQ(subW_OwnedActual2.getActualRef(), ownedActual);
+    ASSERT_EQ(subW_OwnedActual2.getOwnedElements().size(), 1);
+    ASSERT_EQ(subW_OwnedActual2.getOwnedElements().front(), ownedActual);
+    
+    m.release(subW_OwnedActual2, binding4);
+    ASSERT_FALSE(m.loaded(subW_OwnedActualID));
+    ASSERT_FALSE(m.loaded(bindingID));
+    TemplateBinding& binding5 = m.aquire(bindingID)->as<TemplateBinding>();
+    ASSERT_EQ(binding5.getParameterSubstitution().size(), 1);
+    ASSERT_EQ(binding5.getParameterSubstitution().frontID(), subW_OwnedActualID);
+    ASSERT_EQ(binding5.getOwnedElements().size(), 1);
+    ASSERT_EQ(binding5.getOwnedElements().frontID(), subW_OwnedActualID);
+    TemplateParameterSubstitution& subW_OwnedActual3 = m.aquire(subW_OwnedActualID)->as<TemplateParameterSubstitution>();
+    ASSERT_TRUE(subW_OwnedActual3.hasTemplateBinding());
+    ASSERT_EQ(subW_OwnedActual3.getTemplateBindingRef(), binding5);
+    ASSERT_TRUE(subW_OwnedActual3.hasOwner());
+    ASSERT_EQ(subW_OwnedActual3.getOwnerRef(), binding5);
+
+    m.release(subW_OwnedActual3, ownedParameter7);
+    ASSERT_FALSE(m.loaded(subW_OwnedActualID));
+    ASSERT_FALSE(m.loaded(ownedParameterID));
+    TemplateParameterSubstitution& subW_OwnedActual4 = m.aquire(subW_OwnedActualID)->as<TemplateParameterSubstitution>();
+    ASSERT_TRUE(subW_OwnedActual4.hasFormal());
+    ASSERT_EQ(subW_OwnedActual4.getFormalID(), ownedParameterID);
+    TemplateParameter& ownedParameter8 = m.aquire(ownedParameterID)->as<TemplateParameter>();
+    ASSERT_EQ(subW_OwnedActual4.getFormalRef(), ownedParameter8);
+
+    ID ownedActualID = ownedActual.getID();
+    m.release(ownedActual, subW_OwnedActual4);
+    ASSERT_FALSE(m.loaded(ownedActualID));
+    ASSERT_FALSE(m.loaded(subW_OwnedActualID));
+    PrimitiveType& ownedActual2 = m.aquire(ownedActualID)->as<PrimitiveType>();
+    ASSERT_TRUE(ownedActual2.hasOwner());
+    ASSERT_EQ(ownedActual2.getOwnerID(), subW_OwnedActualID);
+    TemplateParameterSubstitution& subW_OwnedActual5 = m.aquire(subW_OwnedActualID)->as<TemplateParameterSubstitution>();
+    ASSERT_TRUE(subW_OwnedActual5.hasOwnedActual());
+    ASSERT_EQ(subW_OwnedActual5.getOwnedActualRef(), ownedActual2);
+    ASSERT_TRUE(subW_OwnedActual5.hasActual());
+    ASSERT_EQ(subW_OwnedActual5.getActualRef(), ownedActual2);
+    ASSERT_EQ(subW_OwnedActual5.getOwnedElements().size(), 1);
+    ASSERT_EQ(subW_OwnedActual5.getOwnedElements().front(), ownedActual2);
+    ASSERT_EQ(ownedActual2.getOwnerRef(), subW_OwnedActual5);
+
+    m.release(ownedActual2, subW_OwnedActual5);
+    ASSERT_FALSE(m.loaded(ownedActualID));
+    ASSERT_FALSE(m.loaded(subW_OwnedActualID));
+    TemplateParameterSubstitution& subW_OwnedActual6 = m.aquire(subW_OwnedActualID)->as<TemplateParameterSubstitution>();
+    ASSERT_TRUE(subW_OwnedActual6.hasOwnedActual());
+    ASSERT_EQ(subW_OwnedActual6.getOwnedActualID(), ownedActualID);
+    ASSERT_TRUE(subW_OwnedActual6.hasActual());
+    ASSERT_EQ(subW_OwnedActual6.getActualID(), ownedActualID);
+    ASSERT_EQ(subW_OwnedActual6.getOwnedElements().size(), 1);
+    ASSERT_EQ(subW_OwnedActual6.getOwnedElements().frontID(), ownedActualID);
+    PrimitiveType& ownedActual3 = m.aquire(ownedActualID)->as<PrimitiveType>();
+    ASSERT_TRUE(ownedActual3.hasOwner());
+    ASSERT_EQ(ownedActual3.getOwnerRef(), subW_OwnedActual6);
+    ASSERT_EQ(subW_OwnedActual6.getOwnedActualRef(), ownedActual3);
+    ASSERT_EQ(subW_OwnedActual6.getActualRef(), ownedActual3);
+    ASSERT_EQ(subW_OwnedActual6.getOwnedElements().front(), ownedActual3);
+
+    ID subW_ActualID = subW_Actual.getID();
+    ID actualID = actual.getID();
+    m.release(subW_Actual);
+    ASSERT_FALSE(m.loaded(subW_ActualID));
+    TemplateParameterSubstitution& subW_Actual2 = m.aquire(subW_ActualID)->as<TemplateParameterSubstitution>();
+    ASSERT_TRUE(subW_Actual2.hasActual());
+    ASSERT_EQ(subW_Actual2.getActualID(), actualID);
+    ASSERT_EQ(subW_Actual2.getActualRef(), actual);
+
+
+    m.release(actual, subW_Actual);
+    ASSERT_FALSE(m.loaded(subW_ActualID));
+    ASSERT_FALSE(m.loaded(actualID));
+    TemplateParameterSubstitution& subW_Actual3 = m.aquire(subW_ActualID)->as<TemplateParameterSubstitution>();
+    ASSERT_TRUE(subW_Actual3.hasActual());
+    ASSERT_EQ(subW_Actual3.getActualID(), actualID);
+    PrimitiveType& actual2 = m.aquire(actualID)->as<PrimitiveType>();
+    ASSERT_EQ(subW_Actual3.getActualRef(), actual2);
+
 }

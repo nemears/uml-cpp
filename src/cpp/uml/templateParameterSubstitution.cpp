@@ -143,6 +143,10 @@ TemplateParameter& TemplateParameterSubstitution::getFormalRef() {
     return m_formal.getRef();
 }
 
+ID TemplateParameterSubstitution::getFormalID() const {
+    return m_formal.id();
+}
+
 bool TemplateParameterSubstitution::hasFormal() const {
     return m_formal.has();
 }
@@ -161,6 +165,10 @@ TemplateBinding* TemplateParameterSubstitution::getTemplateBinding() {
 
 TemplateBinding& TemplateParameterSubstitution::getTemplateBindingRef() {
     return m_templateBinding.getRef();
+}
+
+ID TemplateParameterSubstitution::getTemplateBindingID() const {
+    return m_templateBinding.id();
 }
 
 bool TemplateParameterSubstitution::hasTemplateBinding() const {
@@ -183,11 +191,19 @@ ParameterableElement& TemplateParameterSubstitution::getActualRef() {
     return m_actual.getRef();
 }
 
+ID TemplateParameterSubstitution::getActualID() const {
+    return m_actual.id();
+}
+
 bool TemplateParameterSubstitution::hasActual() const {
     return m_actual.has();
 }
 
 void TemplateParameterSubstitution::setActual(ParameterableElement* actual) {
+    m_actual.set(actual);
+}
+
+void TemplateParameterSubstitution::setActual(ParameterableElement& actual) {
     m_actual.set(actual);
 }
 
@@ -199,11 +215,19 @@ ParameterableElement& TemplateParameterSubstitution::getOwnedActualRef() {
     return m_ownedActual.getRef();
 }
 
+ID TemplateParameterSubstitution::getOwnedActualID() const {
+    return m_ownedActual.id();
+}
+
 bool TemplateParameterSubstitution::hasOwnedActual() const {
     return m_ownedActual.has();
 }
 
 void TemplateParameterSubstitution::setOwnedActual(ParameterableElement* actual) {
+    m_ownedActual.set(actual);
+}
+
+void TemplateParameterSubstitution::setOwnedActual(ParameterableElement& actual) {
     m_ownedActual.set(actual);
 }
 

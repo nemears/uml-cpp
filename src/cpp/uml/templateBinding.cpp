@@ -9,10 +9,8 @@ void TemplateBinding::RemoveBoundElementProcedure::operator()(TemplateableElemen
     if (m_me->getSources().count(el->getID())) {
         m_me->getSources().remove(*el);
     }
-    if (el->getTemplateBindings().count(m_me->getID()) && !m_me->m_setFlag) {
-        m_me->m_setFlag = true;
+    if (el->getTemplateBindings().count(m_me->getID())) {
         el->getTemplateBindings().remove(*m_me);
-        m_me->m_setFlag = false;
     }
     if (m_me->getOwnerID() == el->getID()) {
         m_me->setOwner(0);

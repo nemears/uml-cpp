@@ -286,7 +286,7 @@ TEST_F(TemplateableElementTest, overrideBoundElementTest) {
     ASSERT_EQ(c2.getTemplateBindings().frontID(), b.getID());
     ASSERT_EQ(c2.getOwnedElements().size(), 1);
     ASSERT_EQ(c2.getOwnedElements().front().getID(), b.getID());
-    ASSERT_EQ(c1.getTemplateBindings().size(), 1);
+    ASSERT_EQ(c1.getTemplateBindings().size(), 0);
     ASSERT_EQ(c1.getOwnedElements().size(), 0);
 }
 

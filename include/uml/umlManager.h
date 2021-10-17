@@ -146,10 +146,6 @@ namespace UML {
                     if (!m_graph.count(id)) {
                         aquire(id);
                     }
-                    if (!m_graph[id].m_managerElementMemory) {
-                        aquire(id);
-                    }
-
                     return m_graph[id].m_managerElementMemory->template as<T>();
                 } else {
                     throw UnknownID_Exception(id);

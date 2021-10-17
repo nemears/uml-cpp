@@ -234,6 +234,26 @@ namespace UML {
             public:
                 SetBoundElement();
         };
+
+        class SetOwnedActual : public parseAndSetSingletonFunctor<ParameterableElement, TemplateParameterSubstitution> {
+            public:
+                SetOwnedActual();
+        };
+
+        class SetActual : public parseAndSetSingletonFunctor<ParameterableElement, TemplateParameterSubstitution> {
+            public:
+                SetActual();
+        };
+
+        class SetFormal : public parseAndSetSingletonFunctor<TemplateParameter, TemplateParameterSubstitution> {
+            public:
+                SetFormal();
+        };
+
+        class SetTemplateBinding : public parseAndSetSingletonFunctor<TemplateBinding, TemplateParameterSubstitution> {
+            public:
+                SetTemplateBinding();
+        };
     }
 }
 

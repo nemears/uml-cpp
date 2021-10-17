@@ -63,6 +63,12 @@ void TemplateBinding::AddParameterSubstitutionFunctor::operator()(TemplateParame
     updateCopiedSequenceAddedTo(el, &TemplateBinding::getParameterSubstitution);
 }
 
+void TemplateBinding::AddParameterSubstitutionFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedElements().count(id)) {
+        m_el->getOwnedElements().addByID(id);
+    }
+}
+
 void TemplateBinding::RemoveParameterSubstitutionFunctor::operator()(TemplateParameterSubstitution& el) const {
     if(el.getTemplateBinding() == m_el) {
         el.setTemplateBinding(0);

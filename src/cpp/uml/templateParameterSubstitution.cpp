@@ -11,7 +11,9 @@ void TemplateParameterSubstitution::RemoveFormalProcedure::operator()(TemplatePa
 }
 
 void TemplateParameterSubstitution::AddFormalProcedure::operator()(TemplateParameter* el) const {
-    el->setReference(m_me);
+    if (!el->m_node->m_references.count(m_me->getID())) {
+        el->setReference(m_me);
+    }
 }
 
 void TemplateParameterSubstitution::RemoveTemplateBindingProcedure::operator()(TemplateBinding* el) const {
@@ -24,14 +26,23 @@ void TemplateParameterSubstitution::AddTemplateBindingProcedure::operator()(Temp
     if (!el->getParameterSubstitution().count(m_me->getID())) {
         el->getParameterSubstitution().add(*m_me);
     }
+    if (m_me->getOwnerID() != el->getID()) {
+        m_me->setOwner(el);
+    }
+}
+
+void TemplateParameterSubstitution::AddTemplateBindingProcedure::operator()(ID id) const {
+    if (m_me->getOwnerID() != id) {
+        m_me->setOwnerByID(id);
+    }
 }
 
 void TemplateParameterSubstitution::RemoveActualProcedure::operator()(ParameterableElement* el) const {
-    el->removeReference(el->getID());
+    el->removeReference(m_me->getID());
 }
 
 void TemplateParameterSubstitution::AddActualProcedure::operator()(ParameterableElement* el) const {
-    el->setReference(el);
+    el->setReference(m_me);
 }
 
 void TemplateParameterSubstitution::RemoveOwnedActualProcedure::operator()(ParameterableElement* el) const {
@@ -44,16 +55,23 @@ void TemplateParameterSubstitution::RemoveOwnedActualProcedure::operator()(Param
 }
 
 void TemplateParameterSubstitution::AddOwnedActualProcedure::operator()(ParameterableElement* el) const {
-    if (m_me->hasActual()) {
-        if (m_me->getActualRef() != *el) {
-            m_me->setActual(el);
-        }
-    }
-    else {
+    if (m_me->getActualID() != el->getID()) {
         m_me->setActual(el);
     }
     if (!m_me->getOwnedElements().count(el->getID())) {
         m_me->getOwnedElements().internalAdd(*el);
+    }
+    if (el->getOwnerID() != m_me->getID()) {
+        el->setOwner(m_me);
+    }
+}
+
+void TemplateParameterSubstitution::AddOwnedActualProcedure::operator()(ID id) const {
+    if (m_me->getActualID() != id) {
+        m_me->m_actual.setByID(id);
+    }
+    if (!m_me->getOwnedElements().count(id)) {
+        m_me->getOwnedElements().addByID(id);
     }
 }
 

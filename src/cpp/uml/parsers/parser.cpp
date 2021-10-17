@@ -257,6 +257,22 @@ SetBoundElement::SetBoundElement() {
     m_signature = &TemplateBinding::m_boundElement;
 }
 
+SetOwnedActual::SetOwnedActual() {
+    m_signature = &TemplateParameterSubstitution::m_ownedActual;
+}
+
+SetActual::SetActual() {
+    m_signature = &TemplateParameterSubstitution::m_actual;
+}
+
+SetFormal::SetFormal() {
+    m_signature = &TemplateParameterSubstitution::m_formal;
+}
+
+SetTemplateBinding::SetTemplateBinding() {
+    m_signature = &TemplateParameterSubstitution::m_templateBinding;
+}
+
 namespace {
 
 /**
@@ -585,15 +601,23 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["templateBinding"]) {
-        TemplateBinding& binding = data.m_manager->create<TemplateBinding>();
-        parseTemplateBinding(node["templateBinding"], binding, data);
-        ret = &binding;
+        if (node["templateBinding"].IsMap()) {
+            TemplateBinding& binding = data.m_manager->create<TemplateBinding>();
+            parseTemplateBinding(node["templateBinding"], binding, data);
+            ret = &binding;
+        }
     }
 
     if (node["templateParameter"]) {
         TemplateParameter& parameter = data.m_manager->create<TemplateParameter>();
         parseTemplateParameter(node["templateParameter"], parameter, data);
         ret = &parameter;
+    }
+
+    if (node["templateParameterSubstitution"]) {
+        TemplateParameterSubstitution& templateParameterSubstitution = data.m_manager->create<TemplateParameterSubstitution>();
+        parseTemplateParameterSubstitution(node["templateParameterSubstitution"], templateParameterSubstitution, data);
+        ret = &templateParameterSubstitution;
     }
 
     if (node["templateSignature"]) {
@@ -744,18 +768,24 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
             SetBoundElement setBoundElement;
             parseSingleton(node["boundElement"], data, ret->as<TemplateBinding>(), &TemplateBinding::setBoundElement, setBoundElement);
         }
+        if (node["templateBinding"]) {
+            if (node["templateBinding"].IsScalar()) {
+                SetTemplateBinding setTemplateBinding;
+                parseSingleton(node["templateBinding"], data, ret->as<TemplateParameterSubstitution>(), &TemplateParameterSubstitution::setTemplateBinding, setTemplateBinding);
+            }
+        }
         if (node["owner"]) { // special case
             if (node["owner"].IsScalar()) {
                 if (ret->isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
-                    if (ret->as<ParameterableElement>().hasTemplateParameter()) {
+                    //if (ret->as<ParameterableElement>().hasTemplateParameter()) {
                         ID id = ID::fromString(node["owner"].as<string>());
                         SetOwner setOwner;
                         if (data.m_manager->loaded(id)) {
-                            setOwner(*ret, data.m_manager->get<TemplateParameter>(id));
+                            setOwner(*ret, data.m_manager->get<>(id));
                         } else {
                             setOwner(*ret, id);
                         }
-                    }
+                    //}
                 }
             }
         }
@@ -1115,6 +1145,7 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             }
             if (el.as<Parameter>().hasBehavior()) {
                 emitter << YAML::Key << "behavior" << YAML::Value << el.as<Parameter>().getBehaviorID().string();
+                return;
             }
         }
         if (el.isSubClassOf(ElementType::BEHAVIOR)) {
@@ -1141,18 +1172,26 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
                 return;
             }
         }
+        if (el.isSubClassOf(ElementType::TEMPLATE_BINDING)) {
+            if (el.as<TemplateBinding>().hasBoundElement()) {
+                emitter << YAML::Key << "boundElement" << YAML::Value << el.as<TemplateBinding>().getBoundElementID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER_SUBSTITUTION)) {
+            if (el.as<TemplateParameterSubstitution>().hasTemplateBinding()) {
+                emitter << YAML::Key << "templateBinding" << YAML::Value << el.as<TemplateParameterSubstitution>().getTemplateBindingID().string();
+                return;
+            }
+        }
         if (el.isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
             if (el.as<ParameterableElement>().hasOwningTemplateParameter()) {
                 emitter << YAML::Key << "owningTemplateParameter" << YAML::Value << el.as<ParameterableElement>().getOwningTemplateParameterID().string();
                 return;
-            } else if (el.hasOwner() && el.as<ParameterableElement>().hasTemplateParameter()) { // special case
+            }
+            else if (el.hasOwner()) { // special case
                 emitter << YAML::Key << "owner" << YAML::Value << el.getOwnerID().string();
                 return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::TEMPLATE_BINDING)) {
-            if (el.as<TemplateBinding>().hasBoundElement()) {
-                emitter << YAML::Key << "boundElement" << YAML::Value << el.as<TemplateBinding>().getBoundElementID().string();
             }
         }
     }
@@ -3040,7 +3079,13 @@ void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubsti
     if (node["formal"]) {
         if (node["formal"].IsScalar()) {
             if (isValidID(node["formal"].as<string>())) {
-                applyFunctor(data, ID::fromString(node["formal"].as<string>()), new SetFormalFunctor(&sub, node["formal"]));
+                ID formalID = ID::fromString(node["formal"].as<string>());
+                if (data.m_strategy == ParserStrategy::WHOLE) {
+                    applyFunctor(data, ID::fromString(node["formal"].as<string>()), new SetFormalFunctor(&sub, node["formal"]));
+                } else {
+                    SetFormal setFormal;
+                    setFormal(node["formal"], data, sub);
+                }
             } else {
                 throw UmlParserException("Invalid id, must be 28 character base64 urlsafe encoded string!", data.m_path.string(), node["actual"]);
             }
@@ -3049,18 +3094,19 @@ void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubsti
         }
     }
     
-    if (node["ownedActual"]) {
-        if (node["ownedActual"].IsMap()) {
-            sub.setOwnedActual(&determinAndParseParameterableElement(node["ownedActual"], data));
-        } else {
-            throw UmlParserException("invalid yaml node type, must be map!", data.m_path.string(), node["ownedActual"]);
-        }
-    }
+    SetOwnedActual setOWnedActual;
+    parseSingletonDefinition(node, data, "ownedActual", sub, determinAndParseParameterableElement, setOWnedActual);
 
     if (node["actual"]) {
         if (node["actual"].IsScalar()) {
             if (isValidID(node["actual"].as<string>())) {
-                applyFunctor(data, ID::fromString(node["actual"].as<string>()), new SetActualFunctor(&sub, node["actual"]));
+                ID actualID = ID::fromString(node["actual"].as<string>());
+                if (data.m_strategy == ParserStrategy::WHOLE) {
+                    applyFunctor(data, ID::fromString(node["actual"].as<string>()), new SetActualFunctor(&sub, node["actual"]));
+                } else {
+                    SetActual setActual;
+                    setActual(node["actual"], data, sub);
+                }
             } else {
                 throw UmlParserException("Invalid id, must be 28 character base64 urlsafe encoded string!", data.m_path.string(), node["actual"]);
             }
@@ -3075,17 +3121,21 @@ void emitTemplateParameterSubstitution(YAML::Emitter& emitter, TemplateParameter
 
     emitElement(emitter, sub, data);
 
-    if (sub.getFormal() != 0) {
-        emitter << YAML::Key << "formal" << YAML::Value << sub.getFormal()->getID().string();
+    if (sub.hasFormal()) {
+        emitter << YAML::Key << "formal" << YAML::Value << sub.getFormalID().string();
     }
 
-    if (sub.getOwnedActual() != 0) {
+    if (sub.hasOwnedActual() != 0) {
         emitter << YAML::Key << "ownedActual" << YAML::Value;
-        emit(emitter, *sub.getOwnedActual(), data);
+        if (data.m_strategy == EmitterStrategy::WHOLE) {
+            emit(emitter, *sub.getOwnedActual(), data);
+        } else {
+            emitter << sub.getOwnedActualID().string();
+        }
     }
 
-    if (sub.getActual() != 0 && sub.getOwnedActual() == 0) {
-        emitter << YAML::Key << "actual" << YAML::Value << sub.getActual()->getID().string();
+    if (sub.hasActual() && !sub.hasOwnedActual()) {
+        emitter << YAML::Key << "actual" << YAML::Value << sub.getActualID().string();
     }
 
     emitElementDefenitionEnd(emitter, ElementType::TEMPLATE_PARAMETER_SUBSTITUTION, sub);

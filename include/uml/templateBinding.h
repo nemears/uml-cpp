@@ -47,6 +47,7 @@ namespace UML {
                 public:
                     AddParameterSubstitutionFunctor(TemplateBinding* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(TemplateParameterSubstitution& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveParameterSubstitutionFunctor : public TemplateAbstractSequenceFunctor<TemplateParameterSubstitution,TemplateBinding> {
                 public:

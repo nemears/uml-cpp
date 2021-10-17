@@ -9,10 +9,20 @@ namespace UML {
     class TemplateBinding;
     class TemplateParameter;
     class ParameterableElement;
+    namespace Parsers {
+        class SetOwnedActual;
+        class SetActual;
+        class SetFormal;
+        class SetTemplateBinding;
+    }
 
     class TemplateParameterSubstitution : public Element {
 
         friend class UmlManager;
+        friend class Parsers::SetOwnedActual;
+        friend class Parsers::SetActual;
+        friend class Parsers::SetFormal;
+        friend class Parsers::SetTemplateBinding;
 
         private:
             Singleton<TemplateParameter, TemplateParameterSubstitution> m_formal = Singleton<TemplateParameter, TemplateParameterSubstitution>(this);
@@ -36,6 +46,7 @@ namespace UML {
                 public:
                     AddTemplateBindingProcedure(TemplateParameterSubstitution* me) : AbstractSingletonProcedure<TemplateBinding, TemplateParameterSubstitution>(me) {};
                     void operator()(TemplateBinding* el) const override;
+                    void operator()(ID id) const override;
             };
             Singleton<ParameterableElement, TemplateParameterSubstitution> m_actual = Singleton<ParameterableElement, TemplateParameterSubstitution>(this);
             class RemoveActualProcedure : public AbstractSingletonProcedure<ParameterableElement, TemplateParameterSubstitution> {
@@ -58,6 +69,7 @@ namespace UML {
                 public:
                     AddOwnedActualProcedure(TemplateParameterSubstitution* me) : AbstractSingletonProcedure<ParameterableElement, TemplateParameterSubstitution>(me) {};
                     void operator()(ParameterableElement* el) const override;
+                    void operator()(ID id) const override;
             };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;

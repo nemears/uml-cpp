@@ -150,7 +150,7 @@ namespace UML {
                         aquire(id);
                     }
 
-                    return *dynamic_cast<T*>(m_graph[id].m_managerElementMemory);
+                    return m_graph[id].m_managerElementMemory->template as<T>();
                 } else {
                     throw UnknownID_Exception(id);
                 }

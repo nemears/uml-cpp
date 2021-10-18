@@ -6,10 +6,14 @@
 namespace UML {
 
     class Profile;
+    namespace Parsers {
+        class SetProfile;
+    }
 
     class Stereotype : public Class {
 
         friend class UmlManager;
+        friend class Parsers::SetProfile;
 
         private:
             Singleton<Profile, Stereotype> m_profile = Singleton<Profile, Stereotype>(this);

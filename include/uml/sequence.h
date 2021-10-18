@@ -64,6 +64,7 @@ namespace UML {
     class BehavioredClassifier;
     class MultiplicityElement;
     class OpaqueBehavior;
+    class Profile;
     template <class V, class U> class TemplateAbstractSequenceFunctor;
 
     class ReadOnlySequenceException : public std::exception {
@@ -150,6 +151,7 @@ namespace UML {
         friend class SetOwnerFunctor;
         friend class RemoveOwnerFunctor;
         friend class OpaqueBehavior;
+        friend class Profile;
         template <class V, class U> friend class TemplateAbstractSequenceFunctor;
         
         private:

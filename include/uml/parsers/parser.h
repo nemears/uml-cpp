@@ -25,6 +25,7 @@ namespace UML {
     class Extension;
     class ProfileApplication;
     class Manifestation;
+    class Stereotype;
 
     namespace Parsers {
 
@@ -277,6 +278,8 @@ namespace UML {
             void emitManifestation(YAML::Emitter& emitter, Manifestation& Manifestation, EmitterMetaData& data);
             void parseParameterableElement(YAML::Node node, ParameterableElement& el, ParserMetaData& data);
             void emitParameterableElement(YAML::Emitter& emitter, ParameterableElement& el, EmitterMetaData& data);
+            void parseStereotype(YAML::Node node, Stereotype& stereotype, ParserMetaData& data);
+            void emitStereotype(YAML::Emitter& emitter, Stereotype& stereotype, EmitterMetaData& data);
         }
     }
 }

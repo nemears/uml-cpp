@@ -273,6 +273,10 @@ SetTemplateBinding::SetTemplateBinding() {
     m_signature = &TemplateParameterSubstitution::m_templateBinding;
 }
 
+SetProfile::SetProfile() {
+    m_signature = &Stereotype::m_profile;
+}
+
 namespace {
 
 /**
@@ -596,7 +600,7 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
 
     if (node["stereotype"]) {
         Stereotype& stereotype = data.m_manager->create<Stereotype>();
-        parseClass(node["stereotype"], stereotype, data);
+        parseStereotype(node["stereotype"], stereotype, data);
         ret = &stereotype;
     }
 
@@ -993,9 +997,7 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         }
         case ElementType::STEREOTYPE : {
             Stereotype& stereotype = el.as<Stereotype>();
-            emitElementDefenition(emitter, ElementType::STEREOTYPE, "stereotype", el, data);
-            emitClass(emitter, stereotype, data);
-            emitElementDefenitionEnd(emitter, ElementType::STEREOTYPE, el);
+            emitStereotype(emitter, stereotype, data);
             break;
         }
         case ElementType::TEMPLATE_BINDING : {
@@ -2173,7 +2175,7 @@ Stereotype& determineAndParseStereotype(YAML::Node node, ParserMetaData& data) {
     if (node["stereotype"]) {
         if (node["stereotype"].IsMap()) {
             Stereotype& stereotype = data.m_manager->create<Stereotype>();
-            parseClass(node["stereotype"], stereotype, data);
+            parseStereotype(node["stereotype"], stereotype, data);
             return stereotype;
         } else {
             throw UmlParserException("Invalid yaml node type for stereotype definition, it must be a map!", data.m_path.string(), node["stereotype"]);
@@ -2202,11 +2204,19 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
     emitSequence(emitter, "profileApplications", data, pckg, &Package::getProfileApplications);
 
     // special handling
-    if (!pckg.getPackagedElements().empty()) {
+    if (pckg.getPackagedElements().size() > pckg.getOwnedStereotypes().size()) {
         emitter << YAML::Key << "packagedElements" << YAML::Value << YAML::BeginSeq;
-        for (auto& el : pckg.getPackagedElements()) {
-            if (!el.isSubClassOf(ElementType::STEREOTYPE)) {
-                emit(emitter, el, data);
+        if (data.m_strategy == EmitterStrategy::WHOLE) {
+            for (auto& el : pckg.getPackagedElements()) {
+                if (!el.isSubClassOf(ElementType::STEREOTYPE)) {
+                    emit(emitter, el, data);
+                }
+            }
+        } else {
+            for (const ID id : pckg.getPackagedElements().ids()) {
+                if (!pckg.getOwnedStereotypes().count(id)) {
+                    emitter << YAML::Value << id.string() + ".yml";
+                }
             }
         }
         emitter << YAML::EndSeq;
@@ -2214,8 +2224,14 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
 
     if (!pckg.getOwnedStereotypes().empty()) {
         emitter << YAML::Key << "ownedStereotypes" << YAML::Value << YAML::BeginSeq;
-        for (auto& stereotype : pckg.getOwnedStereotypes()) {
-            emit(emitter, stereotype, data);
+        if (data.m_strategy == EmitterStrategy::WHOLE) {
+            for (auto& stereotype : pckg.getOwnedStereotypes()) {
+                emit(emitter, stereotype, data);
+            }
+        } else {
+            for (const ID id : pckg.getOwnedStereotypes().ids()) {
+                emitter << YAML::Value << id.string() + ".yml";
+            }
         }
         emitter << YAML::EndSeq;
     }
@@ -3758,6 +3774,30 @@ void emitParameterableElement(YAML::Emitter& emitter, ParameterableElement& el, 
     if (el.hasTemplateParameter()) {
         emitter << YAML::Key << "templateParameter" << YAML::Value << el.getTemplateParameterID().string();
     }
+}
+
+void parseStereotype(YAML::Node node, Stereotype& stereotype, ParserMetaData& data) {
+    parseClass(node, stereotype, data);
+    if (node["profile"]) {
+        if (node["profile"].IsScalar()) {
+            ID profileID = ID::fromString(node["profile"].as<string>());
+            if (data.m_manager->loaded(profileID)) {
+                stereotype.setProfile(data.m_manager->get<Profile>(profileID));
+            } else {
+                SetProfile setProfile;
+                setProfile(node["profile"], data, stereotype);
+            }
+        }
+    }
+}
+
+void emitStereotype(YAML::Emitter& emitter, Stereotype& stereotype, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::STEREOTYPE, "stereotype", stereotype, data);
+    emitClass(emitter, stereotype, data);
+    if (stereotype.hasProfile()) {
+        emitter << YAML::Key << "profile" << YAML::Value << stereotype.getProfileID().string();
+    }
+    emitElementDefenitionEnd(emitter, ElementType::STEREOTYPE, stereotype);
 }
 
 }

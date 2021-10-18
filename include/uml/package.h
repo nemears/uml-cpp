@@ -55,6 +55,7 @@ namespace UML {
                 public:
                     AddOwnedStereotypeFunctor(Package* me) : TemplateAbstractSequenceFunctor(me){};
                     void operator()(Stereotype& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveOwnedStereotypeFunctor : public TemplateAbstractSequenceFunctor<Stereotype,Package> {
                 public:

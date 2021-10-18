@@ -93,7 +93,8 @@ TEST_F(ProfileParserTest, emitProfileTest) {
             association: "&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ"
   ownedStereotypes:
     - stereotype:
-        id: 7PJxQhyjuuWylik9y2fgpNDXmMdv)"""";
+        id: 7PJxQhyjuuWylik9y2fgpNDXmMdv
+        profile: 83lphS&gucqvJwW&KSzVmTSMMG1z)"""";
     string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(profile));
     cout << generatedEmit << '\n';
@@ -219,7 +220,8 @@ TEST_F(ProfileParserTest, emitAppliedStereotypeTest) {
                   association: jjf&mHlwFSAjJXsBqng4IlxfYIJh
         ownedStereotypes:
           - stereotype:
-              id: x5r8XggyW2DI5c3RyAS8r_arWh79)"""";
+              id: x5r8XggyW2DI5c3RyAS8r_arWh79
+              profile: I3QrZblFek6tdX&j70kCP8u4QNAh)"""";
     string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(root));
     cout << generatedEmit << '\n';

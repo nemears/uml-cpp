@@ -93,6 +93,12 @@ void Package::AddOwnedStereotypeFunctor::operator()(Stereotype& el) const {
     updateCopiedSequenceAddedTo(el, &Package::getOwnedStereotypes);
 }
 
+void Package::AddOwnedStereotypeFunctor::operator()(ID id) const {
+    if (!m_el->getPackagedElements().count(id)) {
+        m_el->getPackagedElements().addByID(id);
+    }
+}
+
 void Package::RemoveOwnedStereotypeFunctor::operator()(Stereotype& el) const {
     if (m_el->getPackagedElements().count(el.getID())) {
         m_el->getPackagedElements().remove(el);

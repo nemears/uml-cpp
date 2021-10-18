@@ -254,6 +254,11 @@ namespace UML {
             public:
                 SetTemplateBinding();
         };
+
+        class SetProfile : public parseAndSetSingletonFunctor<Profile, Stereotype> {
+            public:
+                SetProfile();
+        };
     }
 }
 

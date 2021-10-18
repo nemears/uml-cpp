@@ -58,6 +58,10 @@ Profile& Stereotype::getProfileRef() {
     return m_profile.getRef();
 }
 
+ID Stereotype::getProfileID() const {
+    return m_profile.id();
+}
+
 bool Stereotype::hasProfile() const {
     return m_profile.has();
 }

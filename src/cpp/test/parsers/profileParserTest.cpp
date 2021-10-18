@@ -6,6 +6,7 @@
 #include "uml/profileApplication.h"
 #include "uml/extension.h"
 #include "uml/instanceSpecification.h"
+#include "test/umlTestUtil.h"
 
 using namespace std;
 using namespace UML;
@@ -223,4 +224,75 @@ TEST_F(ProfileParserTest, emitAppliedStereotypeTest) {
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(root));
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
+}
+
+TEST_F(ProfileParserTest, mountProfileTest) {
+  UmlManager m;
+  Profile& profile = m.create<Profile>();
+  Stereotype& stereotype = m.create<Stereotype>();
+  Extension& extension = m.create<Extension>();
+  ExtensionEnd& end = m.create<ExtensionEnd>();
+  Class& applying = m.create<Class>();
+  InstanceSpecification& stereotypeInst = m.create<InstanceSpecification>();
+  Package& root = m.create<Package>();
+  Package& pckg = m.create<Package>();
+  profile.getOwnedStereotypes().add(stereotype);
+  profile.getPackagedElements().add(extension);
+  extension.setOwnedEnd(end);
+  extension.setMetaClass(ElementType::CLASS);
+  end.setType(stereotype);
+  stereotypeInst.setClassifier(stereotype);
+  applying.getAppliedStereotypes().add(stereotypeInst);
+  pckg.getPackagedElements().add(applying);
+  root.getPackagedElements().add(pckg, profile);
+  m.setRoot(root);
+  m.mount(ymlPath + "profileTests");
+
+  ID profileID = profile.getID();
+  m.release(profile);
+  ASSERT_FALSE(m.loaded(profileID));
+  Profile& profile2 = m.aquire(profileID)->as<Profile>();
+  ASSERT_EQ(profile2.getPackagedElements().size(), 2);
+  ASSERT_EQ(profile2.getPackagedElements().front(), extension);
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(extension, profile2));
+  ASSERT_EQ(profile2.getPackagedElements().back(), stereotype);
+  ASSERT_EQ(profile2.getOwnedStereotypes().size(), 1);
+  ASSERT_EQ(profile2.getOwnedStereotypes().front(), stereotype);
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(stereotype, profile2));
+
+  ID stereotypeID = stereotype.getID();
+  m.release(stereotype, profile2);
+  ASSERT_FALSE(m.loaded(profileID));
+  ASSERT_FALSE(m.loaded(stereotypeID));
+  Profile& profile3 = m.aquire(profileID)->as<Profile>();
+  ASSERT_EQ(profile3.getOwnedStereotypes().size(), 1);
+  ASSERT_EQ(profile3.getOwnedStereotypes().frontID(), stereotypeID);
+  ASSERT_EQ(profile3.getPackagedElements().size(), 2);
+  ASSERT_EQ(profile3.getPackagedElements().backID(), stereotypeID);
+  Stereotype& stereotype2 = m.aquire(stereotypeID)->as<Stereotype>();
+  ASSERT_TRUE(stereotype2.hasProfile());
+  ASSERT_EQ(stereotype2.getProfileRef(), profile3);
+  ASSERT_TRUE(stereotype2.hasOwningPackage());
+  ASSERT_EQ(stereotype2.getOwningPackageRef(), profile3);
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(stereotype2, profile3));
+
+  m.release(stereotype2, profile3);
+  ASSERT_FALSE(m.loaded(profileID));
+  ASSERT_FALSE(m.loaded(stereotypeID));
+  Stereotype& stereotype3 = m.aquire(stereotypeID)->as<Stereotype>();
+  ASSERT_TRUE(stereotype3.hasProfile());
+  ASSERT_EQ(stereotype3.getProfileID(), profileID);
+  ASSERT_TRUE(stereotype3.hasOwningPackage());
+  ASSERT_EQ(stereotype3.getOwningPackageID(), profileID);
+  ASSERT_TRUE(stereotype3.hasNamespace());
+  ASSERT_EQ(stereotype3.getNamespaceID(), profileID);
+  ASSERT_TRUE(stereotype3.getMemberNamespace().count(profileID));
+  ASSERT_TRUE(stereotype3.hasOwner());
+  ASSERT_EQ(stereotype3.getOwnerID(), profileID);
+  Profile& profile4 = m.aquire(profileID)->as<Profile>();
+  ASSERT_EQ(profile4.getOwnedStereotypes().size(), 1);
+  ASSERT_EQ(profile4.getOwnedStereotypes().front(), stereotype3);
+  ASSERT_EQ(profile4.getPackagedElements().size(), 2);
+  ASSERT_EQ(profile4.getPackagedElements().back(), stereotype3);
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(stereotype3, profile4));
 }

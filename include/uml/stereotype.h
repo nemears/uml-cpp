@@ -33,6 +33,7 @@ namespace UML {
             virtual ~Stereotype();
             Profile* getProfile();
             Profile& getProfileRef();
+            ID getProfileID() const;
             bool hasProfile() const;
             void setProfile(Profile& profile);
             void setProfile(Profile* profile);

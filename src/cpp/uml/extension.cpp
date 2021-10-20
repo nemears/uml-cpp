@@ -28,6 +28,12 @@ void Extension::AddOwnedEndProcedure::operator()(ExtensionEnd* el) const {
     }
 }
 
+void Extension::AddOwnedEndProcedure::operator()(ID id) const {
+    if (!m_me->getOwnedEnds().count(id)) {
+        m_me->getOwnedEnds().addByID(id);
+    }
+}
+
 void Extension::referencingReleased(ID id) {
     Association::referencingReleased(id);
     m_ownedEnd.release(id);

@@ -379,7 +379,7 @@ TEST_F(ProfileParserTest, mountProfileTest) {
   ASSERT_EQ(extension4.getOwnedElements().size(), 1);
   ASSERT_EQ(extension4.getOwnedElements().front(), end3);
   ASSERT_EQ(extension4.getEndType().size(), 1);
-  ASSERT_EQ(extension4.getEndType().front(), stereotype);
+  ASSERT_EQ(extension4.getEndType().front(), stereotype3);
   ASSERT_EQ(end3.getExtensionRef(), extension4);
   ASSERT_EQ(end3.getOwningAssociationRef(), extension4);
   ASSERT_EQ(end3.getAssociationRef(), extension4);

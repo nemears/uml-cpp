@@ -6,10 +6,14 @@
 namespace UML {
 
     class ExtensionEnd;
+    namespace Parsers {
+        class SetOwnedEnd;
+    }
 
     class Extension : public Association {
 
         friend class UmlManager;
+        friend class Parsers::SetOwnedEnd;
 
         private:
             /**
@@ -28,6 +32,7 @@ namespace UML {
                 public:
                     AddOwnedEndProcedure(Extension* me) : AbstractSingletonProcedure<ExtensionEnd, Extension>(me) {};
                     void operator()(ExtensionEnd* el) const override;
+                    void operator()(ID id) const override;
             };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;

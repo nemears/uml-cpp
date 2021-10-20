@@ -277,6 +277,14 @@ SetProfile::SetProfile() {
     m_signature = &Stereotype::m_profile;
 }
 
+SetOwnedEnd::SetOwnedEnd() {
+    m_signature = &Extension::m_ownedEnd;
+}
+
+SetExtension::SetExtension() {
+    m_signature = &ExtensionEnd::m_extension;
+}
+
 namespace {
 
 /**
@@ -468,6 +476,20 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
             parseExpression(node["expression"], exp, data);
             ret = &exp;
         }
+    }
+
+    if (node["extension"]) {
+        if (node["extension"].IsMap()) {
+            Extension& extension = data.m_manager->create<Extension>();
+            parseExtension(node["extension"], extension, data);
+            ret = &extension;
+        }
+    }
+
+    if (node["extensionEnd"]) {
+        ExtensionEnd& extensionEnd = data.m_manager->create<ExtensionEnd>();
+        parseProperty(node["extensionEnd"], extensionEnd, data);
+        ret = &extensionEnd;
     }
 
     if (node["generalization"]) {
@@ -778,6 +800,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                 parseSingleton(node["templateBinding"], data, ret->as<TemplateParameterSubstitution>(), &TemplateParameterSubstitution::setTemplateBinding, setTemplateBinding);
             }
         }
+        if (node["extension"]) {
+            if (node["extension"].IsScalar()) {
+                SetExtension setExtension;
+                parseSingleton(node["extension"], data, ret->as<ExtensionEnd>(), &ExtensionEnd::setExtension, setExtension);
+            }
+        }
         if (node["owner"]) { // special case
             if (node["owner"].IsScalar()) {
                 if (ret->isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
@@ -1047,6 +1075,12 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::PACKAGE_MERGE)) {
             if (el.as<PackageMerge>().hasReceivingPackage()) {
                 emitter << YAML::Key << "receivingPackage" << el.as<PackageMerge>().getReceivingPackageID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::EXTENSION_END)) {
+            if (el.as<ExtensionEnd>().hasExtension()) {
+                emitter << YAML::Key << "extension" << el.as<ExtensionEnd>().getExtensionID().string();
                 return;
             }
         }
@@ -3236,25 +3270,20 @@ void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMe
     emitElementDefenitionEnd(emitter, ElementType::ASSOCIATION, association);
 }
 
+ExtensionEnd& determineAndParseOwnedEnd(YAML::Node node, ParserMetaData& data) {
+    if (node["extensionEnd"]) {
+        ExtensionEnd& extensionEnd = data.m_manager->create<ExtensionEnd>();
+        parseProperty(node["extensionEnd"], extensionEnd, data);
+        return extensionEnd;
+    } else {
+        throw UmlParserException("Invalide uml element identifier, can only be an extensionEnd!", data.m_path.string(), node);
+    }
+}
+
 void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data) {
     parseClassifier(node, extension, data);
-
-    if (node["ownedEnd"]) {
-        if (node["ownedEnd"].IsMap()) {
-            if (node["ownedEnd"]["extensionEnd"]) {
-                if (node["ownedEnd"]["extensionEnd"].IsMap()) {
-                    ExtensionEnd& end = data.m_manager->create<ExtensionEnd>();
-                    parseProperty(node["ownedEnd"]["extensionEnd"], end, data);
-                    extension.setOwnedEnd(&end);
-                } else {
-                    throw UmlParserException("Invalid yaml node type for extension ownedEnd extensionEnd definition, must be map!", data.m_path.string(), node["ownedEnd"]["extensionEnd"]);
-                }
-            }
-        } else {
-            throw UmlParserException("Invalid yaml nodeType for extension ownedEnd, must be map!", data.m_path.string(), node["ownedEnd"]);
-        }
-    }
-
+    SetOwnedEnd setOwnedEnd;
+    parseSingletonDefinition(node, data, "ownedEnd", extension, determineAndParseOwnedEnd, setOwnedEnd);
     if (node["metaClass"]) {
         if (node["metaClass"].IsScalar()) {
             extension.setMetaClass(elementTypeFromString(node["metaClass"].as<string>()));
@@ -3442,9 +3471,13 @@ void emitExtension(YAML::Emitter& emitter, Extension& extension, EmitterMetaData
 
     emitter << YAML::Key << "metaClass" << YAML::Value << Element::elementTypeToString(extension.getMetaClass());
 
-    if (extension.getOwnedEnd() != 0) {
+    if (extension.hasOwnedEnd()) {
         emitter << YAML::Key << "ownedEnd" << YAML::Value;
-        emit(emitter, *extension.getOwnedEnd(), data);
+        if (data.m_strategy == EmitterStrategy::WHOLE) {
+            emit(emitter, *extension.getOwnedEnd(), data);
+        } else {
+            emitter << extension.getOwnedEndID().string();
+        }
     }
 
     emitElementDefenitionEnd(emitter, ElementType::EXTENSION, extension);

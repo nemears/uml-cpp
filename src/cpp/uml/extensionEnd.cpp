@@ -29,6 +29,12 @@ void ExtensionEnd::AddExtensionProcedure::operator()(Extension* el) const {
     }
 }
 
+void ExtensionEnd::AddExtensionProcedure::operator()(ID id) const {
+    if (m_me->getOwningAssociationID() != id) {
+        m_me->m_owningAssociation.setByID(id);
+    }
+}
+
 void ExtensionEnd::RemoveExtensionTypeProcedure::operator()(Stereotype* el) const {
     if (m_me->TypedElement::hasType()) {
         m_me->TypedElement::setType(0);

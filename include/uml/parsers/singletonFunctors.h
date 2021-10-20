@@ -259,6 +259,16 @@ namespace UML {
             public:
                 SetProfile();
         };
+
+        class SetOwnedEnd : public parseAndSetSingletonFunctor<ExtensionEnd, Extension> {
+            public:
+                SetOwnedEnd();
+        };
+
+        class SetExtension : public parseAndSetSingletonFunctor<Extension, ExtensionEnd> {
+            public:
+                SetExtension();
+        };
     }
 }
 

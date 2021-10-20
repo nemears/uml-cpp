@@ -7,10 +7,14 @@
 namespace UML {
 
     class Extension;
+    namespace Parsers {
+        class SetExtension;
+    }
 
     class ExtensionEnd : public Property {
 
         friend class UmlManager;
+        friend class Parsers::SetExtension;
 
         private:
             Singleton<Extension, ExtensionEnd> m_extension = Singleton<Extension, ExtensionEnd>(this);
@@ -23,6 +27,7 @@ namespace UML {
                 public:
                     AddExtensionProcedure(ExtensionEnd* me) : AbstractSingletonProcedure<Extension, ExtensionEnd>(me) {};
                     void operator()(Extension* el) const override;
+                    void operator()(ID id) const override;
             };
             Singleton<Stereotype, ExtensionEnd> m_extensionType = Singleton<Stereotype, ExtensionEnd>(this);
             class RemoveExtensionTypeProcedure : public AbstractSingletonProcedure<Stereotype, ExtensionEnd> {

@@ -238,11 +238,14 @@ TEST_F(ProfileParserTest, mountProfileTest) {
   InstanceSpecification& stereotypeInst = m.create<InstanceSpecification>();
   Package& root = m.create<Package>();
   Package& pckg = m.create<Package>();
+  ProfileApplication& profileApplication = m.create<ProfileApplication>();
   profile.getOwnedStereotypes().add(stereotype);
   profile.getPackagedElements().add(extension);
   extension.setOwnedEnd(end);
   extension.setMetaClass(ElementType::CLASS);
   end.setType(stereotype);
+  profileApplication.setAppliedProfile(profile);
+  pckg.getProfileApplications().add(profileApplication);
   stereotypeInst.setClassifier(stereotype);
   applying.getAppliedStereotypes().add(stereotypeInst);
   pckg.getPackagedElements().add(applying);
@@ -386,4 +389,33 @@ TEST_F(ProfileParserTest, mountProfileTest) {
   ASSERT_EQ(end3.getFeaturingClassifierRef(), extension4);
   ASSERT_EQ(end3.getNamespaceRef(), extension4);
   ASSERT_EQ(end3.getOwnerRef(), extension4);
+
+  ID stereotypeInstID = stereotypeInst.getID();
+  ID applyingID = applying.getID();
+  m.release(applying, stereotypeInst);
+  ASSERT_FALSE(m.loaded(stereotypeInstID));
+  ASSERT_FALSE(m.loaded(applyingID));
+  Class& applying2 = m.aquire(applyingID)->as<Class>();
+  ASSERT_EQ(applying2.getAppliedStereotypes().size(), 1);
+  ASSERT_EQ(applying2.getAppliedStereotypes().frontID(), stereotypeInstID);
+  ASSERT_EQ(applying2.getOwnedElements().size(), 1);
+  ASSERT_EQ(applying2.getOwnedElements().frontID(), stereotypeInstID);
+  InstanceSpecification& stereotypeInst2 = m.aquire(stereotypeInstID)->as<InstanceSpecification>();
+  ASSERT_EQ(applying2.getAppliedStereotypes().front(), stereotypeInst2);
+  ASSERT_TRUE(stereotypeInst2.hasOwner());
+  ASSERT_EQ(stereotypeInst2.getOwnerRef(), applying2);
+  ASSERT_EQ(applying2.getOwnedElements().front(), stereotypeInst2);
+
+  m.release(stereotypeInst2, applying2);
+  ASSERT_FALSE(m.loaded(stereotypeInstID));
+  ASSERT_FALSE(m.loaded(applyingID));
+  InstanceSpecification& stereotypeInst3 = m.aquire(stereotypeInstID)->as<InstanceSpecification>();
+  ASSERT_TRUE(stereotypeInst2.hasOwner());
+  ASSERT_EQ(stereotypeInst2.getOwnerID(), applyingID);
+  Class& applying3 = m.aquire(applyingID)->as<Class>();
+  ASSERT_EQ(applying3.getAppliedStereotypes().size(), 1);
+  ASSERT_EQ(applying3.getAppliedStereotypes().front(), stereotypeInst3);
+  ASSERT_EQ(applying3.getOwnedElements().size(), 1);
+  ASSERT_EQ(applying3.getOwnedElements().front(), stereotypeInst3);
+  ASSERT_EQ(stereotypeInst3.getOwnerRef(), applying3);
 }

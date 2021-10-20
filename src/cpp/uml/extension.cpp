@@ -85,6 +85,10 @@ ExtensionEnd& Extension::getOwnedEndRef() {
     return m_ownedEnd.getRef();
 }
 
+ID Extension::getOwnedEndID() const {
+    return m_ownedEnd.id();
+}
+
 bool Extension::hasOwnedEnd() const {
     return m_ownedEnd.has();
 }

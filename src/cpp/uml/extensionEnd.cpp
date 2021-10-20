@@ -105,6 +105,10 @@ Extension& ExtensionEnd::getExtensionRef() {
     return m_extension.getRef();
 }
 
+ID ExtensionEnd::getExtensionID() const {
+    return m_extension.id();
+}
+
 bool ExtensionEnd::hasExtension() const {
     return m_extension.has();
 }

@@ -41,6 +41,7 @@ namespace UML {
             ElementType getMetaClass();
             ExtensionEnd* getOwnedEnd();
             ExtensionEnd& getOwnedEndRef();
+            ID getOwnedEndID() const;
             bool hasOwnedEnd() const;
             void setOwnedEnd(ExtensionEnd& end);
             void setOwnedEnd(ExtensionEnd* end);

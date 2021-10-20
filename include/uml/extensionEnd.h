@@ -45,6 +45,7 @@ namespace UML {
             virtual ~ExtensionEnd();
             Extension* getExtension();
             Extension& getExtensionRef();
+            ID getExtensionID() const;
             bool hasExtension() const;
             void setExtension(Extension& extension);
             void setExtension(Extension* extension);

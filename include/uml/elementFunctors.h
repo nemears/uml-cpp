@@ -72,6 +72,7 @@ namespace UML {
         public:
             AddAppliedStereotypeFunctor(Element* me) : TemplateAbstractSequenceFunctor(me) {};
             void operator()(InstanceSpecification& el) const override;
+            void operator()(ID id) const override;
     };
 
     class RemoveAppliedStereotypeFunctor : public TemplateAbstractSequenceFunctor<InstanceSpecification,Element> {

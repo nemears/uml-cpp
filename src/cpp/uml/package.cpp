@@ -118,6 +118,8 @@ void Package::referenceReindexed(ID oldID, ID newID) {
 
 void Package::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
+    PackageableElement::referencingReleased(id);
+    TemplateableElement::referencingReleased(id);
     m_packagedElements.elementReleased(id, &Package::getPackagedElements);
     m_packageMerge.elementReleased(id, &Package::getPackageMerge);
     m_profileApplications.elementReleased(id, &Package::getProfileApplications);

@@ -71,6 +71,12 @@ void AddAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {
     updateCopiedSequenceAddedTo(el, &Element::getAppliedStereotypes);
 }
 
+void AddAppliedStereotypeFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedElements().count(id)) {
+        m_el->getOwnedElements().addByID(id);
+    }
+}
+
 void RemoveAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {
     subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
     updateCopiedSequenceRemovedFrom(el, &Element::getAppliedStereotypes);
@@ -208,7 +214,7 @@ Element::Element() {
     m_appliedStereotype = new Sequence<InstanceSpecification>(this);
     m_appliedStereotype->addProcedures.push_back(new AddAppliedStereotypeFunctor(this));
     m_appliedStereotype->removeProcedures.push_back(new RemoveAppliedStereotypeFunctor(this));
-    m_appliedStereotype->addChecks.push_back(new CheckAppliedStereotypeFunctor(this));
+    //m_appliedStereotype->addChecks.push_back(new CheckAppliedStereotypeFunctor(this));
 }
 
 // Destructor
@@ -280,7 +286,7 @@ Element::Element(const Element& el) {
     m_appliedStereotype->removeProcedures.clear();
     m_appliedStereotype->addProcedures.push_back(new AddAppliedStereotypeFunctor(this));
     m_appliedStereotype->removeProcedures.push_back(new RemoveAppliedStereotypeFunctor(this));
-    m_appliedStereotype->addChecks.push_back(new CheckAppliedStereotypeFunctor(this));
+    //m_appliedStereotype->addChecks.push_back(new CheckAppliedStereotypeFunctor(this));
 }
 
 void Element::setID(string id) {

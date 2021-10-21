@@ -4,11 +4,11 @@
 using namespace UML;
 
 void Stereotype::RemoveProfileProcedure::operator()(Profile* el) const {
-    el->removeReference(el->getID());
+    el->removeReference(m_me->getID());
 }
 
 void Stereotype::AddProfileProcedure::operator()(Profile* el) const {
-    el->setReference(el);
+    el->setReference(m_me);
 }
 
 void Stereotype::referencingReleased(ID id) {

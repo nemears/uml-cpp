@@ -410,8 +410,8 @@ TEST_F(ProfileParserTest, mountProfileTest) {
   ASSERT_FALSE(m.loaded(stereotypeInstID));
   ASSERT_FALSE(m.loaded(applyingID));
   InstanceSpecification& stereotypeInst3 = m.aquire(stereotypeInstID)->as<InstanceSpecification>();
-  ASSERT_TRUE(stereotypeInst2.hasOwner());
-  ASSERT_EQ(stereotypeInst2.getOwnerID(), applyingID);
+  ASSERT_TRUE(stereotypeInst3.hasOwner());
+  ASSERT_EQ(stereotypeInst3.getOwnerID(), applyingID);
   Class& applying3 = m.aquire(applyingID)->as<Class>();
   ASSERT_EQ(applying3.getAppliedStereotypes().size(), 1);
   ASSERT_EQ(applying3.getAppliedStereotypes().front(), stereotypeInst3);

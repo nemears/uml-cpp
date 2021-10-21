@@ -28,7 +28,7 @@ Have not built yet on mac, should be possible.
 mkdir build
 cd build
 cmake -G <generator type> ..
-cmake --build build --config Release
+cmake .. --build .
 ```
 You can also choose to build from within your IDE or with whatever generator type make system you specified.
 ## Currently Implemented

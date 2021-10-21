@@ -737,7 +737,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(subW_Actual2.getActualRef(), actual);
 
 
-    m.release(actual, subW_Actual);
+    m.release(actual, subW_Actual2);
     ASSERT_FALSE(m.loaded(subW_ActualID));
     ASSERT_FALSE(m.loaded(actualID));
     TemplateParameterSubstitution& subW_Actual3 = m.aquire(subW_ActualID)->as<TemplateParameterSubstitution>();

@@ -6,7 +6,7 @@
 namespace UML {
     class LiteralReal : public LiteralSpecification {
         protected:
-            double value;
+            double value = 0;
         public:
             double getValue();
             void setValue(double val);

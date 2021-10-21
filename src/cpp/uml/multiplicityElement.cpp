@@ -14,6 +14,9 @@ void MultiplicityElement::RemoveLowerValueProcedures::operator()(ValueSpecificat
     if (m_me->getOwnedElements().count(el->getID())) {
         m_me->getOwnedElements().internalRemove(*el);
     }
+    m_me->updateCopiesScalar(-1, &MultiplicityElement::m_lower);
+    m_me->updateCopiesScalar(false, &MultiplicityElement::m_lowSpecified);
+    m_me->updateCopiesScalar(false, &MultiplicityElement::m_multiplicityIsSpecified);
 }
 
 void MultiplicityElement::AddLowerValueProcedures::operator()(ValueSpecification* el) const {
@@ -119,10 +122,13 @@ void MultiplicityElement::setLower(const int low) {
     m_lower = low;
     if (!m_lowSpecified) {
         m_lowSpecified = true;
+        updateCopiesScalar(m_lowSpecified, &MultiplicityElement::m_lowSpecified);
     }
     if (m_upSpecified) {
         m_multiplicityIsSpecified = true;
+        updateCopiesScalar(true, &MultiplicityElement::m_multiplicityIsSpecified);
     }
+    updateCopiesScalar(low, &MultiplicityElement::m_lower);
 }
 
 int MultiplicityElement::getUpper() {
@@ -137,10 +143,13 @@ void MultiplicityElement::setUpper(const int up) {
     m_upper = up;
     if (!m_upSpecified) {
         m_upSpecified = true;
+        updateCopiesScalar(true, &MultiplicityElement::m_upSpecified);
     }
     if (m_lowSpecified) {
         m_multiplicityIsSpecified = true;
+        updateCopiesScalar(true, &MultiplicityElement::m_multiplicityIsSpecified);
     }
+    updateCopiesScalar(up, &MultiplicityElement::m_upper);
 }
 
 bool MultiplicityElement::multiplicitySpecified() {

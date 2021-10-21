@@ -190,6 +190,7 @@ void Parameter::setDirection(ParameterDirectionKind direction) {
         }
     }
     m_direction = direction;
+    updateCopiesScalar(direction, &Parameter::m_direction);
 }
 
 string Parameter::getDirectionString() {

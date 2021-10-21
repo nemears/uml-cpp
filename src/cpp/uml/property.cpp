@@ -488,6 +488,7 @@ void Property::setComposite(bool composite) {
             }
         }
     }
+    updateCopiesScalar(composite, &Property::m_composite);
 }
 
 void Property::setAggregation(AggregationKind aggregation) {
@@ -502,6 +503,7 @@ void Property::setAggregation(AggregationKind aggregation) {
             setComposite(true);
         }
     }
+    updateCopiesScalar(aggregation, &Property::m_aggregation);
 }
 
 ValueSpecification* Property::getDefaultValue() {

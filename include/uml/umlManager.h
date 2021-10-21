@@ -1,8 +1,6 @@
 #ifndef UML_MANAGER_H
 #define UML_MANAGER_H
 
-#include <unordered_map>
-#include <unordered_set>
 #include <filesystem>
 #include "id.h"
 #include "element.h"
@@ -70,16 +68,6 @@ namespace UML {
      *  5) The Manager can be used as a top level filter of all of the model elements through the
      *         get<T>(ID id) function
      **/
-
-    struct ManagerNode {
-        Element* m_managerElementMemory = 0;
-        std::string m_path;
-        bool m_mountedFlag = false;
-        std::unordered_map<ID, ManagerNode*> m_references;
-        std::unordered_map<ID, size_t> m_referenceCount;
-        std::vector<ID> m_referenceOrder;
-        std::unordered_set<Element*> m_copies;
-    };
 
     class UmlManager {
         friend class Parsers::ParserMetaData;

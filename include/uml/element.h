@@ -5,6 +5,8 @@
 #include <regex>
 #include <exception>
 #include <memory>
+#include <unordered_map>
+#include <unordered_set>
 #include "id.h"
 
 namespace UML {
@@ -97,6 +99,23 @@ namespace UML {
         VALUE_SPECIFICATION
     };
 
+    class Element;
+
+    /**
+     * The ManagerNode struct is used as nodes in the internal graphs of the element's manager
+     * It is also stored as a pointer from within the element so each element can quickly access
+     * its place in the reference graph
+     **/
+    struct ManagerNode {
+        Element* m_managerElementMemory = 0;
+        std::string m_path;
+        bool m_mountedFlag = false;
+        std::unordered_map<ID, ManagerNode*> m_references;
+        std::unordered_map<ID, size_t> m_referenceCount;
+        std::vector<ID> m_referenceOrder;
+        std::unordered_set<Element*> m_copies;
+    };
+
     // Helper function to assess possible ids
     static bool isValidID(std::string strn) {
         return std::regex_match (strn, std::regex("(?:[A-Za-z0-9_&]{28})"));
@@ -186,6 +205,16 @@ namespace UML {
             virtual void restoreReferences();
             virtual void restoreReference(Element* el);
             virtual void referenceErased(ID id);
+            template <class T = Element, typename U> void updateCopiesScalar(U newVal, U T::*signature) {
+                if (m_node->m_managerElementMemory != this) {
+                    (dynamic_cast<T*>(m_node->m_managerElementMemory)->*signature) = newVal;
+                }
+                for (auto& copy : m_node->m_copies) {
+                    if (copy != this) {
+                        (dynamic_cast<T*>(copy)->*signature) = newVal;
+                    }
+                }
+            };
             Element();
         public:
             Element(const Element& el);

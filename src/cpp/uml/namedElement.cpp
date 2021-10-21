@@ -181,14 +181,7 @@ NamedElement::NamedElement(const NamedElement& el) : Element(el) {
 void NamedElement::setName(const string &name) {
     reindexName(m_name, name);
     m_name = name;
-    if (m_node->m_managerElementMemory != this) {
-        m_node->m_managerElementMemory->as<NamedElement>().m_name = name;
-    }
-    for (auto& copy : m_node->m_copies) {
-        if (copy != this) {
-            copy->as<NamedElement>().m_name = name;
-        }
-    }
+    updateCopiesScalar(name, &NamedElement::m_name);
 }
 
 void NamedElement::reindexName(string oldName, string newName) {
@@ -278,16 +271,7 @@ void NamedElement::setVisibility(VisibilityKind visibility) {
         }
     }
 
-    if (m_node) {
-        if (m_node->m_managerElementMemory != this) {
-            m_node->m_managerElementMemory->as<NamedElement>().m_visibility = m_visibility;
-        }
-        for (auto& copy : m_node->m_copies) {
-            if (copy != this) {
-                copy->as<NamedElement>().m_visibility = m_visibility;
-            }
-        }
-    }
+    updateCopiesScalar(visibility, &NamedElement::m_visibility);
 }
 
 ElementType NamedElement::getElementType() const {

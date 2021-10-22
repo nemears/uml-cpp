@@ -22,6 +22,19 @@ void Deployment::AddLocationProcedure::operator()(DeploymentTarget* el) const {
     if (!el->getDeployments().count(m_me->getID())) {
         el->getDeployments().add(*m_me);
     }
+
+    if (m_me->getOwnerID() != el->getID()) {
+        m_me->setOwner(el);
+    }
+}
+
+void Deployment::AddLocationProcedure::operator()(ID id) const {
+    if (!m_me->m_client.count(id)) {
+        m_me->m_client.addByID(id);
+    }
+    if (m_me->getOwnerID() != id) {
+        m_me->setOwnerByID(id);
+    }
 }
 
 void Deployment::AddDeployedArtifactFunctor::operator()(DeployedArtifact& el) const {

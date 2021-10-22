@@ -269,6 +269,11 @@ namespace UML {
             public:
                 SetExtension();
         };
+
+        class SetLocation : public parseAndSetSingletonFunctor<DeploymentTarget, Deployment> {
+            public:
+                SetLocation();
+        };
     }
 }
 

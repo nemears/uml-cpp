@@ -18,6 +18,7 @@ namespace UML {
                 public:
                     AddDeploymentFunctor(DeploymentTarget* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(Deployment& el) const override;
+                    void operator()(ID id) const override;
             };
             class RemoveDeploymentFunctor : public TemplateAbstractSequenceFunctor<Deployment,DeploymentTarget> {
                 public:

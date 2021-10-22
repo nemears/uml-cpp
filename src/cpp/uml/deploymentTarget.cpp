@@ -7,9 +7,20 @@ void DeploymentTarget::AddDeploymentFunctor::operator()(Deployment& el) const {
     if (!m_el->getOwnedElements().count(el.getID())) {
         m_el->getOwnedElements().internalAdd(el);
     }
+    if (!m_el->getClientDependencies().count(el.getID())) {
+        m_el->getClientDependencies().add(el);
+    }
 
     el.setLocation(m_el);
     updateCopiedSequenceAddedTo(el, &DeploymentTarget::getDeployments);
+}
+void DeploymentTarget::AddDeploymentFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedElements().count(id)) {
+        m_el->getOwnedElements().addByID(id);
+    }
+    if (!m_el->getClientDependencies().count(id)) {
+        m_el->getClientDependencies().addByID(id);
+    }
 }
 
 void DeploymentTarget::RemoveDeploymentFunctor::operator()(Deployment& el) const {

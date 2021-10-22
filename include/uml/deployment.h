@@ -7,10 +7,14 @@ namespace UML {
 
     class DeployedArtifact;
     class DeploymentTarget;
+    namespace Parsers {
+        class SetLocation;
+    }
 
     class Deployment : public Dependency {
 
         friend class UmlManager;
+        friend class Parsers::SetLocation;
 
         private:
             Sequence<DeployedArtifact> m_deployedArtifacts = Sequence<DeployedArtifact>(this);
@@ -24,6 +28,7 @@ namespace UML {
                 public:
                     AddLocationProcedure(Deployment* me) : AbstractSingletonProcedure<DeploymentTarget, Deployment>(me) {};
                     void operator()(DeploymentTarget* el) const override;
+                    void operator()(ID id) const override;
             };
             class AddDeployedArtifactFunctor : public TemplateAbstractSequenceFunctor<DeployedArtifact,Deployment> {
                 public:

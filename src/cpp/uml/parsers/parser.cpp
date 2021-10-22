@@ -285,6 +285,10 @@ SetExtension::SetExtension() {
     m_signature = &ExtensionEnd::m_extension;
 }
 
+SetLocation::SetLocation() {
+    m_signature = &Deployment::m_location;
+}
+
 namespace {
 
 /**
@@ -430,6 +434,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         Dependency& dependency = data.m_manager->create<Dependency>();
         parseDependency(node["dependency"], dependency, data);
         ret = &dependency;
+    }
+
+    if (node["deployment"]) {
+        Deployment& deployment = data.m_manager->create<Deployment>();
+        parseDeployment(node["deployment"], deployment, data);
+        ret = &deployment;
     }
 
     if (node["enumeration"]) {
@@ -781,6 +791,10 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                 SetExtension setExtension;
                 parseSingleton(node["extension"], data, ret->as<ExtensionEnd>(), &ExtensionEnd::setExtension, setExtension);
             }
+        }
+        if (node["location"]) {
+            SetLocation setLocation;
+            parseSingleton(node["location"], data, ret->as<Deployment>(), &Deployment::setLocation, setLocation);
         }
         if (node["owner"]) { // special case
             if (node["owner"].IsScalar()) {
@@ -1193,6 +1207,12 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER_SUBSTITUTION)) {
             if (el.as<TemplateParameterSubstitution>().hasTemplateBinding()) {
                 emitter << YAML::Key << "templateBinding" << YAML::Value << el.as<TemplateParameterSubstitution>().getTemplateBindingID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::DEPLOYMENT)) {
+            if (el.as<Deployment>().hasLocation()) {
+                emitter << YAML::Key << "location" << YAML::Value << el.as<Deployment>().getLocationID().string();
                 return;
             }
         }

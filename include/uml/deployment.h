@@ -38,6 +38,7 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
+            void restoreReferences() override;
             Deployment();
         public:
             Deployment(const Deployment& deployment);
@@ -45,6 +46,7 @@ namespace UML {
             Sequence<DeployedArtifact>& getDeployedArtifact();
             DeploymentTarget* getLocation();
             DeploymentTarget& getLocationRef();
+            ID getLocationID() const;
             bool hasLocation() const;
             void setLocation(DeploymentTarget& location);
             void setLocation(DeploymentTarget* location);

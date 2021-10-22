@@ -48,6 +48,12 @@ void Deployment::referenceReindexed(ID oldID, ID newID) {
     m_deployedArtifacts.reindex(oldID, newID, &Deployment::getDeployedArtifact);
 }
 
+void Deployment::restoreReferences() {
+    Dependency::restoreReferences();
+    m_location.restoreReference();
+    m_deployedArtifacts.restoreReferences();
+}
+
 void Deployment::referenceErased(ID id) {
     Dependency::referenceErased(id);
     m_location.elementErased(id);
@@ -90,6 +96,10 @@ DeploymentTarget* Deployment::getLocation() {
 
 DeploymentTarget& Deployment::getLocationRef() {
     return m_location.getRef();
+}
+
+ID Deployment::getLocationID() const {
+    return m_location.id();
 }
 
 bool Deployment::hasLocation() const {

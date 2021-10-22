@@ -468,7 +468,7 @@ TEST_F(DeploymentParserTest, mountDeploymentTest) {
     ASSERT_EQ(deploymentTarget3.getDeployments().size(), 1);
     ASSERT_EQ(deploymentTarget3.getDeployments().front(), deployment4);
 
-    m.release(deployment3, artifact);
+    m.release(deployment4, artifact);
     ASSERT_FALSE(m.loaded(deploymentID));
     ASSERT_FALSE(m.loaded(artifactID));
     Deployment& deployment5 = m.aquire(deploymentID)->as<Deployment>();

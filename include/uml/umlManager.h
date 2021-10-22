@@ -70,6 +70,7 @@ namespace UML {
      **/
 
     class UmlManager {
+
         friend class Parsers::ParserMetaData;
         friend struct Parsers::EmitterMetaData;
         friend class Element;
@@ -86,7 +87,8 @@ namespace UML {
         template<typename> friend class Sequence;
         template <class T> friend struct SequenceIterator;
         template <class T, class U> friend class Singleton;
-        private:
+
+        protected:
             std::unordered_set<ID> m_elements;
             std::unordered_map<ID, ManagerNode> m_graph;
             std::filesystem::path m_path;
@@ -123,7 +125,8 @@ namespace UML {
             void eraseNode(ManagerNode* node, ID id);
         public:
             UmlManager();
-            ~UmlManager();
+            virtual ~UmlManager();
+            const ID id;
             /**
               * get<T>(id) is used to get an element from the manager through just it's 
               * @param id, the id of the element you wish to get from the manager

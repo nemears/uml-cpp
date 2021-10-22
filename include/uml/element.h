@@ -164,6 +164,7 @@ namespace UML {
      * id - the elements unique id for quick comparison and indexing
      **/
     class Element {
+
         friend class ElementDoesntExistException;
         friend class SetOwnerFunctor;
         friend class RemoveOwnerFunctor;
@@ -178,6 +179,7 @@ namespace UML {
         template <class T> friend class Sequence;
         template <class T> friend struct SequenceIterator;
         friend class Parsers::SetOwner;
+        
         private:
             bool m_copiedElementFlag = false;
         protected:

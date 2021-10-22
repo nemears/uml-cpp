@@ -28,7 +28,7 @@ void UmlManager::clear() {
     m_elements.clear();
 }
 
-UmlManager::UmlManager() {
+UmlManager::UmlManager() : id(ID::randomID()) {
     m_model = 0;
     m_root = 0;
 }
@@ -157,7 +157,7 @@ void UmlManager::release(Element& el) {
         Parsers::EmitterMetaData data = {m_mountBase / "mount",
                                          Parsers::EmitterStrategy::INDIVIDUAL,
                                          el.getID().string() + ".yml", this};
-         Parsers::emitToFile(*el.m_node->m_managerElementMemory, data, data.m_path.string(), data.m_fileName);
+        Parsers::emitToFile(*el.m_node->m_managerElementMemory, data, data.m_path.string(), data.m_fileName);
         ManagerNode* node = el.m_node;
         ID id = el.getID();
         if (node->m_managerElementMemory) {

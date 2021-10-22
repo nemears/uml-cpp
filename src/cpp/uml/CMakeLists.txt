@@ -11,7 +11,7 @@ add_library(Uml namespace.cpp model.cpp element.cpp namedElement.cpp class.cpp c
                 templateParameterSubstitution.cpp literalNull.cpp literalUnlimitedNatural.cpp profile.cpp stereotype.cpp
                 profileApplication.cpp extension.cpp extensionEnd.cpp dependency.cpp abstraction.cpp realization.cpp usage.cpp
                 deployment.cpp deployedArtifact.cpp deploymentTarget.cpp artifact.cpp behavioredClassifier.cpp
-                manifestation.cpp)
+                manifestation.cpp managers/distributedManager.cpp)
 add_subdirectory(parsers)
 add_subdirectory(cpp)
 target_link_libraries(Uml PUBLIC yaml-cpp Parsers)

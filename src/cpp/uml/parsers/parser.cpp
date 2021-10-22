@@ -369,30 +369,6 @@ template <class T = Element, class U = Element> void parseSingletonDefinition(YA
     }
 }
 
-// TODO delete?
-template <class T =Element> T& parseScalar(YAML::Node node, ParserMetaData& data) {
-    if (data.m_strategy == ParserStrategy::WHOLE) {
-        Element* packagedEl = parseExternalAddToManager(data, node.as<std::string>());
-        if (packagedEl == 0) {
-            throw UmlParserException("Could not identify YAML node for packaged elements" , data.m_path.string(), node);
-        }
-        return dynamic_cast<T&>(*packagedEl);
-    } else {
-        std::string path = node.as<std::string>();
-        std::string idStr = path.substr(path.find_last_of("/") + 1, path.find_last_of("/") + 29);
-        if (isValidID(idStr)) {
-            ID id = ID::fromString(idStr);
-            if (data.m_manager->loaded(id)) {
-                return data.m_manager->get<T>(id);
-            } else {
-                throw UmlParserException("TODO: fix: if it isn't loaded it will recursively call untill all of lower tree is loaded, aka bad.", data.m_path.string(), node);
-            }
-        } else {
-            throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);
-        }
-    }
-}
-
 // Helper function for parsing scope in parseNode
 template <class T = Element, class U = Element> void parseSingleton(YAML::Node node, ParserMetaData& data, U& el, void (U::*setter)(T&), parseAndSetSingletonFunctor<T, U>& func) {
     ID id;

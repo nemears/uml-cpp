@@ -30,6 +30,7 @@ namespace UML{
 
         protected:
             std::string m_name;
+            std::string m_absoluteNamespace;
             Singleton<Namespace, NamedElement> m_namespace = Singleton<Namespace, NamedElement>(this);
             class RemoveNamespaceProcedures : public AbstractSingletonProcedure<Namespace, NamedElement> {
                 public:
@@ -48,6 +49,7 @@ namespace UML{
             // visibility defaults to public, don't think there is a none value
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             virtual void reindexName(std::string oldName, std::string newName);
+            void updateQualifiedName(std::string absoluteNamespace);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
@@ -58,6 +60,7 @@ namespace UML{
             NamedElement(const NamedElement& el);
             virtual std::string getName();
             virtual void setName(const std::string &name);
+            std::string getQualifiedName();
             Namespace* getNamespace();
             Namespace& getNamespaceRef();
             ID getNamespaceID() const;

@@ -152,3 +152,7 @@ TEST_F(NamedElementTest, eraseNamepaceTest) {
     ASSERT_TRUE(package.getMemberNamespace().empty());
     ASSERT_FALSE(package.hasOwner());
 }
+
+TEST_F(NamedElementTest, testQualifiedName) {
+    
+}

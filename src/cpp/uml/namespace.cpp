@@ -14,6 +14,7 @@ void Namespace::AddMemberFunctor::operator()(ID id) const {
 void Namespace::RemoveMemberFunctor::operator()(NamedElement& el) const {
     oppositeSequenceRemove(el, &NamedElement::getMemberNamespace);
     subsetsRemove<Namespace, NamedElement>(el, &Namespace::getOwnedMembers);
+    el.updateQualifiedName("");
     updateCopiedSequenceRemovedFrom(el, &Namespace::getMembers);
 }
 
@@ -21,6 +22,7 @@ void Namespace::AddOwnedMemberFunctor::operator()(NamedElement& el) const {
     subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
     subsetsAdd<Namespace, NamedElement>(el, &Namespace::getMembers);
     oppositeSingletonAdd(el, &NamedElement::setNamespace);
+    el.updateQualifiedName(m_el->getQualifiedName());
     updateCopiedSequenceAddedTo(el, &Namespace::getOwnedMembers);
 }
 
@@ -83,6 +85,13 @@ Namespace::Namespace(const Namespace& nmspc) : NamedElement(nmspc), Element(nmsp
     m_ownedMembers.addProcedures.push_back(new AddOwnedMemberFunctor(this));
     m_ownedMembers.removeProcedures.clear();
     m_ownedMembers.removeProcedures.push_back(new RemoveOwnedMemberFunctor(this));
+}
+
+void Namespace::setName(const std::string& name) {
+    NamedElement::setName(name);
+    for (auto& member : getOwnedMembers()) {
+        member.updateQualifiedName(getQualifiedName());
+    }
 }
 
 Sequence<NamedElement>& Namespace::getMembers() {

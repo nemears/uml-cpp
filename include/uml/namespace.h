@@ -44,6 +44,7 @@ namespace UML{
         public:
             virtual ~Namespace();
             Namespace(const Namespace& nmspc);
+            void setName(const std::string& name) override;
             Sequence<NamedElement>& getMembers();
             Sequence<NamedElement>& getOwnedMembers();
             ElementType getElementType() const override;

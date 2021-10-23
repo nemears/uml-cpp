@@ -28,6 +28,7 @@ void NamedElement::RemoveNamespaceProcedures::operator()(Namespace* el) const {
     if (m_me->getOwnerID() == el->getID()) {
         m_me->setOwner(0);
     }
+    m_me->updateQualifiedName("");
 }
 
 void NamedElement::AddNamespaceProcedures::operator()(Namespace* el) const {
@@ -40,6 +41,7 @@ void NamedElement::AddNamespaceProcedures::operator()(Namespace* el) const {
     if (m_me->getOwnerID() != el->getID()) {
         m_me->setOwner(el);
     }
+    m_me->updateQualifiedName(el->getQualifiedName());
 }
 
 void NamedElement::AddNamespaceProcedures::operator()(ID id) const {
@@ -200,6 +202,14 @@ void NamedElement::reindexName(string oldName, string newName) {
 
 string NamedElement::getName() {
     return m_name;
+}
+
+string NamedElement::getQualifiedName() {
+    return (hasNamespace() ? m_absoluteNamespace + "::" : "") +  m_name;
+}
+
+void NamedElement::updateQualifiedName(string absoluteNamespace) {
+    m_absoluteNamespace = absoluteNamespace;
 }
 
 Namespace* NamedElement::getNamespace() {

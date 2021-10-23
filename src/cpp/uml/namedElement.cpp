@@ -210,6 +210,7 @@ string NamedElement::getQualifiedName() {
 
 void NamedElement::updateQualifiedName(string absoluteNamespace) {
     m_absoluteNamespace = absoluteNamespace;
+    updateCopiesScalar(absoluteNamespace, &NamedElement::m_absoluteNamespace);
 }
 
 Namespace* NamedElement::getNamespace() {

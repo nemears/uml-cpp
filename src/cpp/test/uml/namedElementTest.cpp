@@ -154,5 +154,21 @@ TEST_F(NamedElementTest, eraseNamepaceTest) {
 }
 
 TEST_F(NamedElementTest, testQualifiedName) {
-    
+    UmlManager m;
+    Package one = m.create<Package>();
+    Package two = m.create<Package>();
+    Package three = m.create<Package>();
+    one.setName("1");
+    two.setName("2");
+    one.getPackagedElements().add(two);
+    ASSERT_EQ(one.getQualifiedName(), "1");
+    ASSERT_EQ(two.getQualifiedName(), "1::2");
+    two.getPackagedElements().add(three);
+    ASSERT_EQ(three.getQualifiedName(), "1::2::");
+    three.setName("3");
+    ASSERT_EQ(three.getQualifiedName(), "1::2::3");
+    two.getPackagedElements().remove(three);
+    ASSERT_EQ(three.getQualifiedName(), "3");
+    two.setName("");
+    ASSERT_EQ(two.getQualifiedName(), "1::");
 }

@@ -24,6 +24,7 @@ namespace UML {
             int m_socketD = 0;
             static void acceptNewClients(UmlServer* me);
             static void receiveFromClient(UmlServer* me, ID id);
+            Element& post(ElementType eType);
             std::thread* m_acceptThread;
             std::unordered_map<ID, ClientInfo> m_clients;
         public:

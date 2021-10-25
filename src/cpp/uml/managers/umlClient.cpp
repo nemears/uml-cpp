@@ -25,6 +25,7 @@ UmlClient::UmlClient() : id(ID::randomID()) {
     // get socket descriptor
     m_socketD = socket(myAddress->ai_family, myAddress->ai_socktype, myAddress->ai_protocol);
     connect(m_socketD, myAddress->ai_addr, myAddress->ai_addrlen);
+    freeaddrinfo(myAddress);
 
     char buff[3];
     int bytesReceived = recv(m_socketD, buff, sizeof buff, 0);

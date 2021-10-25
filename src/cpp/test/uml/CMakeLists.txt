@@ -5,6 +5,6 @@ add_executable(umltest elementTest.cpp namedElementTest.cpp sequenceTest.cpp nam
                        slotTest.cpp behaviorTest.cpp activityTest.cpp generalizationTest.cpp packageTest.cpp dataTypeTest.cpp
                        associationTest.cpp enumerationTest.cpp commentTest.cpp idTest.cpp UmlManagerTest.cpp 
                        templateableElementTest.cpp profileApplicationTest.cpp extensionTest.cpp stereotypeTest.cpp
-                       dependencyTest.cpp deploymentTest.cpp behavioredClassifierTest.cpp manifestationTest.cpp)
+                       dependencyTest.cpp deploymentTest.cpp behavioredClassifierTest.cpp manifestationTest.cpp restfulTest.cpp)
 target_link_libraries(umltest PUBLIC gtest gmock gtest_main Uml)
 add_test(umltest umltest)

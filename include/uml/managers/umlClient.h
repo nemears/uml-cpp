@@ -1,10 +1,10 @@
 #ifndef UML_UML_CLIENT_H
 #define UML_UML_CLIENT_H
 
-#include "uml/element.h"
+#include "uml/umlManager.h"
 
 namespace UML {
-    class UmlClient {
+    class UmlClient : public UmlManager {
         private:
             int m_socketD = 0;
         public:
@@ -14,8 +14,9 @@ namespace UML {
             Element& get(ID id);
             Element& get(std::string qualifiedName);
             void put(Element& el);
-            template <class T = Element> T& post() {
-                // TODO
+            Element& post(ElementType eType);
+            template<class T = Element> T& post() {
+                return post(T::elementType()).template as<T>();
             };
             void erase(Element& el);
     };

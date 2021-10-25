@@ -15,12 +15,17 @@ namespace UML {
 
     class UmlServer : public UmlManager {
         private:
+            struct ClientInfo {
+                int socket;
+                std::thread* thread;
+            };
             std::atomic<bool> m_running = false;
             std::atomic<std::ostream*> m_stream = &std::cout;
             int m_socketD = 0;
             static void acceptNewClients(UmlServer* me);
+            static void receiveFromClient(UmlServer* me, ID id);
             std::thread* m_acceptThread;
-            std::unordered_map<ID, int> m_clients;
+            std::unordered_map<ID, ClientInfo> m_clients;
         public:
             UmlServer();
             virtual ~UmlServer();

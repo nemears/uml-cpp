@@ -321,3 +321,15 @@ TEST_F(PackageParserTest, mountAndEditPackageTest) {
     m.release(merge2, c2);
     ASSERT_EQ(profileApplication2.getApplyingPackageRef().getPackageMerge().front().getMergedPackageRef(), merged);
 }
+
+TEST_F(PackageParserTest, parseStringTest) {
+    UmlManager m;
+    Package& p = m.create<Package>();
+    std::string ps = Parsers::emit(p);
+    ID pid = p.getID();
+    m.erase(p);
+    Parsers::ParserMetaData data(&m);
+    data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
+    Package& p2 = Parsers::parseString(ps, data).as<Package>();
+    ASSERT_EQ(p2.getID(), pid);
+}

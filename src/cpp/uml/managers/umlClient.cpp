@@ -5,6 +5,8 @@
 #include "uml/managers/umlServer.h"
 #include <iostream>
 #include <unistd.h>
+#include "yaml-cpp/yaml.h"
+#include "uml/parsers/parser.h"
 
 using namespace UML;
 
@@ -50,4 +52,20 @@ UmlClient::UmlClient() : id(ID::randomID()) {
 
 UmlClient::~UmlClient() {
     close(m_socketD);
+}
+
+Element& UmlClient::post(ElementType eType) {
+    YAML::Emitter emitter;
+    emitter << YAML::BeginMap << YAML::Key << "POST" << YAML::Value << Element::elementTypeToString(eType) << YAML::EndMap;
+    std::cout << "client writing post request:" << std::endl << emitter.c_str() << std::endl;
+    int bytesSent = send(m_socketD, emitter.c_str(), emitter.size(), 0);
+    char buff[100]; // get better sized buffer?
+    int bytesReceived = recv(m_socketD, buff, 100, 0);
+    if (bytesReceived <= 0) {
+        throw ManagerStateException();
+    }
+    std::cout << "Client received response from post request: " << std::endl << buff << std::endl;
+    Parsers::ParserMetaData data(this);
+    data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
+    return Parsers::parseString(buff, data);
 }

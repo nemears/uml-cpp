@@ -49,6 +49,8 @@ namespace UML {
 
         Element* parse(ParserMetaData& data);
 
+        Element& parseString(std::string body, ParserMetaData& data);
+
         std::string emit(Element& el);
 
         void emit(EmitterMetaData& data);
@@ -59,6 +61,8 @@ namespace UML {
         namespace {
             Element* parseExternalAddToManager(ParserMetaData& data, std::string path); 
         }
+
+        ElementType elementTypeFromString(std::string eType);
 
         // anonymous functions
         namespace {
@@ -251,7 +255,6 @@ namespace UML {
             void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMetaData& data);
             void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data);
             void emitExtension(YAML::Emitter& emitter, Extension& extension, EmitterMetaData& data);
-            ElementType elementTypeFromString(std::string eType);
             void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data);
             void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& application, EmitterMetaData& data);
             void parseComment(YAML::Node node, Comment& comment, ParserMetaData& data);

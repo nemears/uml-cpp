@@ -6,8 +6,44 @@
 #include <iostream>
 #include <unistd.h>
 #include <poll.h>
+#include <yaml-cpp/yaml.h>
+#include "uml/parsers/parser.h"
+#include "uml/class.h"
 
 using namespace UML;
+
+void UmlServer::receiveFromClient(UmlServer* me, ID id) {
+    struct pollfd pfds[1] = {{me->m_clients[id].socket, POLLIN}};
+    while (me->m_running) {
+        if (poll(pfds, 1, 1000)) {
+            char buff[100];
+            int bytesReceived = recv(pfds->fd, buff, 100, 0);
+            if (bytesReceived <= 0) {
+                continue;
+            }
+            *me->m_stream << "server got message from client(" + id.string() + "):" << std::endl << buff << std::endl;
+            // TODO all
+            YAML::Node node = YAML::Load(buff);
+            if (node["POST"]) {
+                *me->m_stream << "message is post request!" << std::endl;
+                ElementType type = Parsers::elementTypeFromString(node["POST"].as<std::string>());
+                Element* ret = 0;
+                switch (type) {
+                    case ElementType::CLASS : {
+                        ret = &static_cast<Element&>(me->create<Class>());
+                    }
+                }
+                std::string msg = Parsers::emit(*ret);
+                *me->m_stream << msg << std::endl;
+                int bytesSent = send(pfds->fd, msg.c_str(), msg.size() + 1, 0);
+                if (bytesSent <= 0) {
+                    throw ManagerStateException();
+                } 
+                *me->m_stream << "server created new element" << std::endl;
+            }
+        }
+    }
+}
 
 void UmlServer::acceptNewClients(UmlServer* me) {
     struct pollfd pfds[1] = {{me->m_socketD, POLLIN}};
@@ -41,7 +77,8 @@ void UmlServer::acceptNewClients(UmlServer* me) {
             throw ManagerStateException();
         }
         *me->m_stream << "server received id from new client: " << buff << std::endl;
-        me->m_clients[ID::fromString(buff)] = newSocketD;
+        std::thread* clientThread = new std::thread(receiveFromClient, me, ID::fromString(buff));
+        me->m_clients[ID::fromString(buff)] = {newSocketD, clientThread};
     }
 }
 
@@ -72,9 +109,12 @@ UmlServer::~UmlServer() {
     m_running = false;
     close(m_socketD);
     for (auto client : m_clients) {
-        close(client.second);
+        close(client.second.socket);
+        client.second.thread->join();
+        delete client.second.thread;
     }
     m_acceptThread->join();
+    delete m_acceptThread;
 }
 
 int UmlServer::numClients() {

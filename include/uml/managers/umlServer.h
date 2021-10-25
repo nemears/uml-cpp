@@ -4,6 +4,7 @@
 #include "uml/umlManager.h"
 #include <atomic>
 #include <iostream>
+#include <mutex>
 
 #define UML_PORT 8652
 
@@ -12,6 +13,10 @@ namespace std {
 }
 
 namespace UML {
+
+    struct ServerNode : public ManagerNode {
+        std::mutex mtx;
+    };
 
     class UmlServer : public UmlManager {
         private:

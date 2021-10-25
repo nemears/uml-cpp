@@ -144,8 +144,8 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
     struct pollfd pfds[1] = {{me->m_clients[id].socket, POLLIN}};
     while (me->m_running) {
         if (poll(pfds, 1, 1000)) {
-            char buff[100];
-            int bytesReceived = recv(pfds->fd, buff, 100, 0);
+            char buff[1000]; // optimize send in multiple messages instead of taking so much memory each time
+            int bytesReceived = recv(pfds->fd, buff, 1000, 0);
             if (bytesReceived <= 0) {
                 continue;
             }
@@ -173,6 +173,13 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                     throw ManagerStateException();
                 } 
                 *me->m_stream << "server created new element for client" + id.string() << std::endl;
+                continue;
+            }
+            if (node["PUT"]) {
+                Parsers::ParserMetaData data(me);
+                data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
+                *me->m_stream << "yaml being put into server:\n" + node["PUT"].as<std::string>() << std::endl;
+                Parsers::parseString(node["PUT"].as<std::string>(), data);
                 continue;
             }
         }

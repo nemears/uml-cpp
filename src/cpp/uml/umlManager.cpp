@@ -129,17 +129,21 @@ void UmlManager::mount(string path) {
 Element* UmlManager::aquire(ID id) {
     if (!m_mountBase.empty()) {
         if (!loaded(id)) {
-            Parsers::ParserMetaData data(this);
-            data.m_path = m_mountBase / "mount" / (id.string() + ".yml");
-            data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-            Element* ret = Parsers::parse(data);
-            if (ret) {
-                m_graph[id].m_managerElementMemory = ret;
-                ret->restoreReferences();
+            if (filesystem::exists(m_mountBase / "mount" / (id.string() + ".yml"))) {
+                Parsers::ParserMetaData data(this);
+                data.m_path = m_mountBase / "mount" / (id.string() + ".yml");
+                data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
+                Element* ret = Parsers::parse(data);
+                if (ret) {
+                    m_graph[id].m_managerElementMemory = ret;
+                    ret->restoreReferences();
+                } else {
+                    throw ManagerStateException();
+                }
+                return ret;
             } else {
-                throw ManagerStateException();
+                throw ID_doesNotExistException(id);
             }
-            return ret;
         } else {
             return &get<>(id);
         }

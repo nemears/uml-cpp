@@ -57,7 +57,7 @@ UmlClient::~UmlClient() {
 Element& UmlClient::get(ID id) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap << YAML::Key << "GET" << YAML::Value << id.string() << YAML::EndMap;
-    int bytesSent = send(m_socketD, emitter.c_str(), emitter.size(), 0);
+    int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
     char buff[100]; // TODO probs needs to be bigger
     int bytesReceived = recv(m_socketD, buff, 100, 0);
     if (bytesReceived <= 0) {
@@ -73,7 +73,7 @@ Element& UmlClient::post(ElementType eType) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap << YAML::Key << "POST" << YAML::Value << Element::elementTypeToString(eType) << YAML::EndMap;
     std::cout << "client writing post request:" << std::endl << emitter.c_str() << std::endl;
-    int bytesSent = send(m_socketD, emitter.c_str(), emitter.size(), 0);
+    int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
     char buff[100]; // get better sized buffer?
     int bytesReceived = recv(m_socketD, buff, 100, 0);
     if (bytesReceived <= 0) {
@@ -83,4 +83,12 @@ Element& UmlClient::post(ElementType eType) {
     Parsers::ParserMetaData data(this);
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
     return Parsers::parseString(buff, data);
+}
+
+void UmlClient::put(Element& el) {
+    std::string msg = Parsers::emitIndividual(el);
+    YAML::Emitter emitter;
+    emitter << YAML::BeginMap << YAML::Key << "PUT" << YAML::Value << msg << YAML::EndMap;
+    std::cout << emitter.c_str() << std::endl;
+    int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
 }

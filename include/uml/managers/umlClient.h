@@ -12,6 +12,9 @@ namespace UML {
             UmlClient();
             virtual ~UmlClient();
             Element& get(ID id);
+            template <class T = Element> T& get(ID id) {
+                return get(id).as<T>();
+            };
             Element& get(std::string qualifiedName);
             void put(Element& el);
             Element& post(ElementType eType);

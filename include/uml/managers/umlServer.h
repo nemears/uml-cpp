@@ -11,8 +11,6 @@ namespace std {
 
 namespace UML {
 
-    static void main(int argc, char* argv);
-
     class UmlServer : public UmlManager {
         private:
             int m_socketD = 0;

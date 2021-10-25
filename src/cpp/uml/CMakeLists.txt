@@ -14,4 +14,7 @@ add_library(Uml namespace.cpp model.cpp element.cpp namedElement.cpp class.cpp c
                 manifestation.cpp managers/umlClient.cpp managers/umlServer.cpp)
 add_subdirectory(parsers)
 add_subdirectory(cpp)
+add_executable(uml-server managers/main.cpp)
 target_link_libraries(Uml PUBLIC yaml-cpp Parsers)
+target_link_libraries(uml-server PUBLIC Uml)
+target_link_libraries(uml-server PRIVATE Threads::Threads)

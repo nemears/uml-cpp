@@ -11,4 +11,5 @@ class RestfulTest : public ::testing::Test {
 TEST_F(RestfulTest, clientConnectsToManagerTest) {
     UmlServer server;
     UmlClient client;
+    sleep(1);
 }

@@ -3,21 +3,50 @@
 #include <sys/types.h>
 #include <netdb.h>
 #include "uml/managers/umlServer.h"
+#include <iostream>
+#include <unistd.h>
 
 using namespace UML;
 
-UmlClient::UmlClient() {
+UmlClient::UmlClient() : id(ID::randomID()) {
     struct addrinfo hints;
     struct addrinfo* myAddress;
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;     // don't care IPv4 or IPv6
     hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
     hints.ai_flags = AI_PASSIVE; // fill in my IP for me
-    if (!getaddrinfo(NULL, std::to_string(UML_PORT).c_str(), &hints, &myAddress)) {
+    int status = 0;
+    if ((status = getaddrinfo(NULL, std::to_string(UML_PORT).c_str(), &hints, &myAddress)) != 0) {
+        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
+        std::cerr << stderr << std::endl;
         throw ManagerStateException();
     }
 
     // get socket descriptor
     m_socketD = socket(myAddress->ai_family, myAddress->ai_socktype, myAddress->ai_protocol);
     connect(m_socketD, myAddress->ai_addr, myAddress->ai_addrlen);
+
+    char buff[3];
+    int bytesReceived = recv(m_socketD, buff, sizeof buff, 0);
+    if (bytesReceived <= 0) {
+        throw ManagerStateException();
+    }
+    std::cout << "client received request for id" << std::endl;
+    if (std::string("id").compare(buff) != 0) {
+        throw ManagerStateException();
+    }
+    char* idMsg = new char[29];
+    std::string strBuff = id.string();
+    std::copy(strBuff.begin(), strBuff.end(), idMsg);
+    idMsg[28] = '\0';
+    int bytesSent = send(m_socketD, idMsg, 29, 0);
+    if (bytesSent != 29) {
+        std::cout << "did not send all bytes!" << std::endl;
+    }
+    std::cout << "client sent id (" << idMsg << ") to server" << std::endl;
+    delete[] idMsg;
+}
+
+UmlClient::~UmlClient() {
+    close(m_socketD);
 }

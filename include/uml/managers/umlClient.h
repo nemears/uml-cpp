@@ -8,7 +8,9 @@ namespace UML {
         private:
             int m_socketD = 0;
         public:
+            const ID id;
             UmlClient();
+            virtual ~UmlClient();
             Element& get(ID id);
             Element& get(std::string qualifiedName);
             void put(Element& el);

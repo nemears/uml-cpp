@@ -5,6 +5,10 @@
 
 #define UML_PORT 8652
 
+namespace std {
+    class thread;
+}
+
 namespace UML {
 
     static void main(int argc, char* argv);
@@ -13,9 +17,11 @@ namespace UML {
         private:
             int m_socketD = 0;
             static void acceptNewClients(UmlServer* me);
+            std::thread* m_acceptThread;
             std::unordered_map<ID, int> m_clients;
         public:
             UmlServer();
+            virtual ~UmlServer();
     };
 }
 

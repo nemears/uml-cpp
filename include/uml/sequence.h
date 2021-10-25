@@ -372,6 +372,12 @@ namespace UML {
                 remove(els...);
             };
 
+            void clear() {
+                for (const ID id : m_order) {
+                    remove(get(id));
+                }
+            };
+
             // Accessors
 
             size_t size() { return m_order.size(); };

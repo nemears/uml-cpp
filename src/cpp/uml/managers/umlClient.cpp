@@ -54,6 +54,21 @@ UmlClient::~UmlClient() {
     close(m_socketD);
 }
 
+Element& UmlClient::get(ID id) {
+    YAML::Emitter emitter;
+    emitter << YAML::BeginMap << YAML::Key << "GET" << YAML::Value << id.string() << YAML::EndMap;
+    int bytesSent = send(m_socketD, emitter.c_str(), emitter.size(), 0);
+    char buff[100]; // TODO probs needs to be bigger
+    int bytesReceived = recv(m_socketD, buff, 100, 0);
+    if (bytesReceived <= 0) {
+        throw ManagerStateException();
+    }
+    std::cout << "client message received: " << std::endl << buff << std::endl;
+    Parsers::ParserMetaData data(this);
+    data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
+    return Parsers::parseString(buff, data);
+}
+
 Element& UmlClient::post(ElementType eType) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap << YAML::Key << "POST" << YAML::Value << Element::elementTypeToString(eType) << YAML::EndMap;

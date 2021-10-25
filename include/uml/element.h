@@ -155,6 +155,7 @@ namespace UML {
     class AddOwnedCommentFunctor;
     namespace Parsers {
         class SetOwner;
+        std::string emitIndividual(Element& el);
     }
     /**
      * Element is the base class of all UML classes
@@ -179,6 +180,7 @@ namespace UML {
         template <class T> friend class Sequence;
         template <class T> friend struct SequenceIterator;
         friend class Parsers::SetOwner;
+        friend std::string Parsers::emitIndividual(Element& el);
         
         private:
             bool m_copiedElementFlag = false;

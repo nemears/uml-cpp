@@ -52,6 +52,7 @@ namespace UML {
         Element& parseString(std::string body, ParserMetaData& data);
 
         std::string emit(Element& el);
+        std::string emitIndividual(Element& el);
 
         void emit(EmitterMetaData& data);
 

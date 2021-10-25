@@ -152,8 +152,17 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
             *me->m_stream << "server got message from client(" + id.string() + "):" << std::endl << buff << std::endl;
             // TODO all
             YAML::Node node = YAML::Load(buff);
+            if (node["GET"]) {
+                ID elID = ID::fromString(node["GET"].as<std::string>());
+                std::string msg = Parsers::emitIndividual(me->get<>(elID));
+                int bytesSent = send(pfds->fd, msg.c_str(), msg.size() + 1, 0);
+                if (bytesSent <= 0) {
+                    throw ManagerStateException();
+                }
+                *me->m_stream << "server got element " +  elID.string() + " for client " + id.string() << std::endl << "msg: " << std::endl << msg << std::endl;
+                continue;
+            }
             if (node["POST"]) {
-                *me->m_stream << "message is post request!" << std::endl;
                 ElementType type = Parsers::elementTypeFromString(node["POST"].as<std::string>());
                 Element* ret = 0;
                 ret = &me->post(type);
@@ -163,7 +172,8 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 if (bytesSent <= 0) {
                     throw ManagerStateException();
                 } 
-                *me->m_stream << "server created new element" << std::endl;
+                *me->m_stream << "server created new element for client" + id.string() << std::endl;
+                continue;
             }
         }
     }

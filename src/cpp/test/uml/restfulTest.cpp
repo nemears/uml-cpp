@@ -24,3 +24,11 @@ TEST_F(RestfulTest, postTest) {
     ASSERT_TRUE(client.count(clazz.getID()));
     ASSERT_TRUE(server.count(clazz.getID()));
 }
+
+TEST_F(RestfulTest, basicGetTest) {
+    UmlServer server;
+    UmlClient client;
+    ID id = server.create<Class>().getID();
+    server.get<Class>(id).setName("test");
+    ASSERT_EQ(client.get(id).as<NamedElement>().getName(), "test");
+}

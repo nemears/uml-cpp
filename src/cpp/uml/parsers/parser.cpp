@@ -82,6 +82,15 @@ string emit(Element& el) {
     return emitter.c_str();
 }
 
+string emitIndividual(Element& el) {
+    EmitterMetaData data;
+    data.m_manager = el.m_manager;
+    data.m_strategy = EmitterStrategy::INDIVIDUAL;
+    YAML::Emitter emitter;
+    determineTypeAndEmit(emitter, el, data);
+    return emitter.c_str();
+}
+
 void emit(EmitterMetaData& data) {
     emitToFile(*data.m_manager->getRoot(), data, data.m_path.string(), data.m_fileName);
 }
@@ -1022,7 +1031,7 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             break;
         }
     }
-    if (newPath.empty() || (newPath.parent_path().compare(data.m_path) == 0 && newPath.filename().compare(data.m_fileName) == 0)) {
+    if (newPath.empty() || (/**newPath.parent_path().compare(data.m_path) == 0 &&**/ newPath.filename().compare(data.m_fileName) == 0)) {
         determineTypeAndEmit(emitter, el, data);
     } else {
         emitter << YAML::Value << newPath.filename().string();

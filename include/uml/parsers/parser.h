@@ -50,8 +50,10 @@ namespace UML {
         Element* parse(ParserMetaData& data);
 
         Element& parseString(std::string body, ParserMetaData& data);
+        Element& parseYAML(YAML::Node node, ParserMetaData& data);
 
         std::string emit(Element& el);
+        void emit(Element& el, YAML::Emitter& emitter);
         std::string emitIndividual(Element& el);
 
         void emit(EmitterMetaData& data);

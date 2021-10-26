@@ -154,11 +154,17 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 continue;
             }
             me->log("server got message from client(" + id.string() + "):"+ std::string(buff));
+            std::unique_lock<std::mutex> mLck(me->m_msgMtx);
+            me->m_msgCv.wait(mLck, [me]{ return me->m_msgV ? true : false; });
+            me->m_msgV = false;
             // TODO all
             YAML::Node node = YAML::Load(buff);
             if (node["GET"]) {
                 ID elID = ID::fromString(node["GET"].as<std::string>());
-                //std::lock_guard<std::mutex> elLck(*me->m_locks[elID]);
+                std::lock_guard<std::mutex> elLck(*me->m_locks[elID]);
+                me->log("aquired lock for element " + elID.string());
+                me->m_msgV = true;
+                me->m_msgCv.notify_one();
                 std::string msg = Parsers::emitIndividual(me->get<>(elID));
                 int bytesSent = send(pfds->fd, msg.c_str(), msg.size() + 1, 0);
                 if (bytesSent <= 0) {
@@ -168,6 +174,8 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 continue;
             }
             if (node["POST"]) {
+                me->m_msgV = true;
+                me->m_msgCv.notify_one();
                 *me->m_stream << "server handling post request from client " + id.string() <<std::endl;
                 ElementType type = Parsers::elementTypeFromString(node["POST"].as<std::string>());
                 Element* ret = 0;
@@ -184,18 +192,13 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
             if (node["PUT"]) {
                 Parsers::ParserMetaData data(me);
                 data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-                me->log("yaml being put into server:\n" + node["PUT"].as<std::string>());
-                // ID elID;
-                // for (YAML::const_iterator it=node["PUT"].begin();it!=node["PUT"].end();++it) {
-                //     if (it->second["id"]) {
-                //         elID = ID::fromString(it->second["id"].as<std::string>());
-                //         break;
-                //     }
-                // }
-                // std::mutex* mtx = me->m_locks[elID];
-                // mtx->lock();
-                Parsers::parseString(node["PUT"].as<std::string>(), data);
-                // mtx->unlock();
+                ID elID = ID::fromString(node["PUT"]["id"].as<std::string>());
+                std::lock_guard<std::mutex> elLck(*me->m_locks[elID]);
+                me->log("aquired lock for element " + elID.string());
+                me->m_msgV = true;
+                me->m_msgCv.notify_one();
+                Parsers::parseYAML(node["PUT"]["element"], data);
+                me->log("server put element " + elID.string() + " successfully");
                 continue;
             }
         }

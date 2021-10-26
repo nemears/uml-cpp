@@ -53,7 +53,7 @@ TEST_F(RestfulTest, basicPutTest) {
         UmlClient client2;
         ASSERT_TRUE(client2.get<Class>(id).getName().empty());
         client.put(clazz);
-        server.get<>(id); // let it load in server
+        //server.get<>(id); // let it load in server
         ASSERT_EQ(client2.get<Class>(id).getName(), "test");
     }
 }

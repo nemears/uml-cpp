@@ -86,9 +86,12 @@ Element& UmlClient::post(ElementType eType) {
 }
 
 void UmlClient::put(Element& el) {
-    std::string msg = Parsers::emitIndividual(el);
     YAML::Emitter emitter;
-    emitter << YAML::BeginMap << YAML::Key << "PUT" << YAML::Value << msg << YAML::EndMap;
+    emitter << YAML::BeginMap << YAML::Key << "PUT" << YAML::Value << YAML::BeginMap 
+            << YAML::Key << "id" << YAML::Value << el.getID().string() 
+            << YAML::Key << "element" << YAML::Value ;
+    Parsers::emit(el, emitter);
+    emitter << YAML::EndMap << YAML::EndMap;
     std::cout << emitter.c_str() << std::endl;
     int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
 }

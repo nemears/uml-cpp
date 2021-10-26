@@ -72,14 +72,27 @@ Element& parseString(string body, ParserMetaData& data) {
     }
 }
 
+Element& parseYAML(YAML::Node node, ParserMetaData& data) {
+    Element* ret = parseNode(node, data);
+    if (ret) {
+        return *ret;
+    } else {
+        throw UmlParserException("could not parse string representing an element!", "", node);
+    }
+}
+
 string emit(Element& el) {
+    YAML::Emitter emitter;
+    emit(el, emitter);
+    return emitter.c_str();
+}
+
+void emit(Element& el, YAML::Emitter& emitter) {
     UmlManager m;
     EmitterMetaData data;
     data.m_manager = &m;
     data.m_strategy = EmitterStrategy::WHOLE;
-    YAML::Emitter emitter;
     emit(emitter, el, data);
-    return emitter.c_str();
 }
 
 string emitIndividual(Element& el) {

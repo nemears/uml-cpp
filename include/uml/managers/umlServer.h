@@ -35,6 +35,9 @@ namespace UML {
             std::unordered_map<ID, std::mutex*> m_locks;
             std::mutex m_logMtx;
             std::mutex m_acceptMtx;
+            std::mutex m_msgMtx;
+            std::condition_variable m_msgCv;
+            std::atomic<bool> m_msgV = true;
             void createNode(Element* el) override;
             void log(std::string msg);
         public:

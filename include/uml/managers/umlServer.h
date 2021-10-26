@@ -21,6 +21,7 @@ namespace UML {
                 int socket;
                 std::thread* thread;
             };
+            const ID m_shutdownID = ID::randomID();
             std::atomic<bool> m_running = false;
             std::mutex m_runMtx;
             std::condition_variable m_runCv;

@@ -141,6 +141,7 @@ Element& UmlServer::post(ElementType eType) {
 }
 
 void UmlServer::receiveFromClient(UmlServer* me, ID id) {
+    *me->m_stream << "server set up thread to listen to client " + id.string() << std::endl;
     struct pollfd pfds[1] = {{me->m_clients[id].socket, POLLIN}};
     while (me->m_running) {
         if (poll(pfds, 1, 1000)) { 
@@ -155,7 +156,7 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
             YAML::Node node = YAML::Load(buff);
             if (node["GET"]) {
                 ID elID = ID::fromString(node["GET"].as<std::string>());
-                std::lock_guard<std::mutex> elLck(*me->m_locks[elID]);
+                //std::lock_guard<std::mutex> elLck(*me->m_locks[elID]);
                 std::string msg = Parsers::emitIndividual(me->get<>(elID));
                 int bytesSent = send(pfds->fd, msg.c_str(), msg.size() + 1, 0);
                 if (bytesSent <= 0) {
@@ -165,6 +166,7 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 continue;
             }
             if (node["POST"]) {
+                *me->m_stream << "server handling post request from client " + id.string() <<std::endl;
                 ElementType type = Parsers::elementTypeFromString(node["POST"].as<std::string>());
                 Element* ret = 0;
                 ret = &me->post(type);
@@ -234,10 +236,8 @@ void UmlServer::acceptNewClients(UmlServer* me) {
             if (bytesReceived <= 0) {
                 throw ManagerStateException();
             }
-            if (bytesReceived == 1) {
-                if (buff[0] == '-') { // hypheine as a first response means to shutdown (illegal id character)
-                    break;
-                }
+            if (ID::fromString(buff) == me->m_shutdownID) {
+                break;
             }
             *me->m_stream << "server received id from new client: " << buff << std::endl;
             std::thread* clientThread = new std::thread(receiveFromClient, me, ID::fromString(buff));
@@ -309,10 +309,14 @@ UmlServer::~UmlServer() {
     }
     
     // send terminate message
-    const char terminateMsg = '-';
-    send(tempSocket, &terminateMsg, 1, 0);
+    char* idMsg = new char[29];
+    std::string strBuff = m_shutdownID.string();
+    std::copy(strBuff.begin(), strBuff.end(), idMsg);
+    idMsg[28] = '\0';
+    send(tempSocket, idMsg, 29, 0);
     freeaddrinfo(myAddress);
     close(tempSocket);
+    delete[] idMsg;
 
     // wait for thread to stop
     std::unique_lock<std::mutex> rLck(m_runMtx);

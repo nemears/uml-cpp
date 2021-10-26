@@ -69,7 +69,8 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp",
-        "codecvt": "cpp"
+        "codecvt": "cpp",
+        "mutex": "cpp"
     },
     // cmake options
     "cmake.configureSettings" : {

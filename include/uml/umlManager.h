@@ -122,6 +122,7 @@ namespace UML {
                 return 0;
             }
             void addToMount(Element& el);
+            virtual void createNode(Element* el);
             void eraseNode(ManagerNode* node, ID id);
         public:
             UmlManager();
@@ -148,7 +149,7 @@ namespace UML {
                 T* ret = new T;
                 ret->m_manager = this;
                 m_elements.insert(ret->getID());
-                m_graph[ret->getID()] = {ret};
+                createNode(ret);
                 ret->m_node = &m_graph[ret->getID()];
                 return *ret;
             };

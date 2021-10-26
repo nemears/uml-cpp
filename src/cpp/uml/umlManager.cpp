@@ -28,6 +28,10 @@ void UmlManager::clear() {
     m_elements.clear();
 }
 
+void UmlManager::createNode(Element* el) {
+    m_graph[el->getID()] = {el};
+}
+
 UmlManager::UmlManager() : id(ID::randomID()) {
     m_model = 0;
     m_root = 0;

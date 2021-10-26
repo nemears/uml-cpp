@@ -143,8 +143,9 @@ Element& UmlServer::post(ElementType eType) {
 void UmlServer::receiveFromClient(UmlServer* me, ID id) {
     struct pollfd pfds[1] = {{me->m_clients[id].socket, POLLIN}};
     while (me->m_running) {
-        if (poll(pfds, 1, 1000)) {
-            char buff[1000]; // optimize send in multiple messages instead of taking so much memory each time
+        if (poll(pfds, 1, 1000)) { 
+            //std::lock_guard<std::mutex> rLck(me->m_runMtx);
+            char buff[1000]; // TODO: optimize send in multiple messages instead of taking so much memory each time
             int bytesReceived = recv(pfds->fd, buff, 1000, 0);
             if (bytesReceived <= 0) {
                 continue;
@@ -154,6 +155,7 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
             YAML::Node node = YAML::Load(buff);
             if (node["GET"]) {
                 ID elID = ID::fromString(node["GET"].as<std::string>());
+                std::lock_guard<std::mutex> elLck(*me->m_locks[elID]);
                 std::string msg = Parsers::emitIndividual(me->get<>(elID));
                 int bytesSent = send(pfds->fd, msg.c_str(), msg.size() + 1, 0);
                 if (bytesSent <= 0) {
@@ -179,7 +181,17 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 Parsers::ParserMetaData data(me);
                 data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
                 *me->m_stream << "yaml being put into server:\n" + node["PUT"].as<std::string>() << std::endl;
+                // ID elID;
+                // for (YAML::const_iterator it=node["PUT"].begin();it!=node["PUT"].end();++it) {
+                //     if (it->second["id"]) {
+                //         elID = ID::fromString(it->second["id"].as<std::string>());
+                //         break;
+                //     }
+                // }
+                // std::mutex* mtx = me->m_locks[elID];
+                // mtx->lock();
                 Parsers::parseString(node["PUT"].as<std::string>(), data);
+                // mtx->unlock();
                 continue;
             }
         }
@@ -188,14 +200,22 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
 
 void UmlServer::acceptNewClients(UmlServer* me) {
     struct pollfd pfds[1] = {{me->m_socketD, POLLIN}};
-    while (me->m_running) {
-        int newSocketD = -1;
-        struct addrinfo* clientAddress;
-        socklen_t addr_size = sizeof clientAddress;
-        if(poll(pfds, 1, 1000)) {
+    {
+        std::lock_guard<std::mutex> rLck(me->m_runMtx);
+        while (me->m_running) {
+            int newSocketD = -1;
+            struct addrinfo* clientAddress;
+            socklen_t addr_size = sizeof clientAddress;
+            if (!poll(pfds, 1, 1000)) { // TODO: change to ppoll
+                continue;
+            }
+            if (!me->m_running) {
+                break;
+            }
             newSocketD = accept(me->m_socketD, (struct sockaddr *)&clientAddress, &addr_size);
             if (newSocketD == -1) {
                 if (me->m_running) {
+                    std::cout << "bad socket accepted" << std::endl;
                     throw ManagerStateException();
                 } else {
                     continue;
@@ -203,28 +223,37 @@ void UmlServer::acceptNewClients(UmlServer* me) {
             } else {
                 *me->m_stream << "connected to client!" << std::endl;
             }
-        } else {
-            continue; // timeout
+            
+            // request ID
+            const char* idMsg = "id";
+            int len = strlen(idMsg);
+            int bytesSent = send(newSocketD, idMsg, len, 0);
+            *me->m_stream << "server sent request for id from new client" << std::endl;
+            char buff[29];
+            int bytesReceived = recv(newSocketD, buff, 29, 0);
+            if (bytesReceived <= 0) {
+                throw ManagerStateException();
+            }
+            if (bytesReceived == 1) {
+                if (buff[0] == '-') { // hypheine as a first response means to shutdown (illegal id character)
+                    break;
+                }
+            }
+            *me->m_stream << "server received id from new client: " << buff << std::endl;
+            std::thread* clientThread = new std::thread(receiveFromClient, me, ID::fromString(buff));
+            me->m_clients[ID::fromString(buff)] = {newSocketD, clientThread};
         }
-        
-        // request ID
-        const char* idMsg = "id";
-        int len = strlen(idMsg);
-        int bytesSent = send(newSocketD, idMsg, len, 0);
-        *me->m_stream << "server sent request for id from new client" << std::endl;
-        char buff[29];
-        int bytesReceived = recv(newSocketD, buff, 29, 0);
-        if (bytesReceived <= 0) {
-            throw ManagerStateException();
-        }
-        *me->m_stream << "server received id from new client: " << buff << std::endl;
-        std::thread* clientThread = new std::thread(receiveFromClient, me, ID::fromString(buff));
-        me->m_clients[ID::fromString(buff)] = {newSocketD, clientThread};
+        me->m_running = false;
     }
+    me->m_runCv.notify_all();
+}
+
+void UmlServer::createNode(Element* el) {
+    UmlManager::createNode(el);
+    m_locks[el->getID()] = new std::mutex;
 }
 
 UmlServer::UmlServer() {
-    m_running = true;
     int status;
     struct addrinfo hints;
     struct addrinfo* m_address;
@@ -242,20 +271,67 @@ UmlServer::UmlServer() {
     m_socketD = socket(m_address->ai_family, m_address->ai_socktype, m_address->ai_protocol);
     bind(m_socketD, m_address->ai_addr, m_address->ai_addrlen);
     listen(m_socketD, 10);
+    m_running = true;
     m_acceptThread = new std::thread(acceptNewClients, this);
     freeaddrinfo(m_address);
 }
 
 UmlServer::~UmlServer() {
-    m_running = false;
+
+    *m_stream << "#####\nDESTRUCTOR\n#####" << std::endl;
+
+    // connect to self to stop acceptNewClientsLoop
+    bool fail = false;
+    struct addrinfo hints;
+    struct addrinfo* myAddress;
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC;     // don't care IPv4 or IPv6
+    hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
+    hints.ai_flags = AI_PASSIVE; // fill in my IP for me
+    int status;
+    if ((status = getaddrinfo(NULL, std::to_string(UML_PORT).c_str(), &hints, &myAddress)) != 0) {
+        // TODO warn on improper shutdown
+        *m_stream << "server could not get address info!" << std::endl;
+        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
+        std::cerr << stderr << std::endl;
+        fail = true;
+    }
+    int tempSocket = socket(myAddress->ai_family, myAddress->ai_socktype, myAddress->ai_protocol);
+    if (tempSocket == -1) {
+        /** TODO: failure message **/
+        *m_stream << "server could not get socket descriptor!" << std::endl;
+        fail = true;
+    }
+    if (connect(tempSocket, myAddress->ai_addr, myAddress->ai_addrlen) == -1) {
+        /** TODO: failure message **/
+        *m_stream << "server could not connect to self!" << std::endl;
+        fail = true;
+    }
+    
+    // send terminate message
+    const char terminateMsg = '-';
+    send(tempSocket, &terminateMsg, 1, 0);
+    freeaddrinfo(myAddress);
+    close(tempSocket);
+
+    // wait for thread to stop
+    std::unique_lock<std::mutex> rLck(m_runMtx);
+    m_runCv.wait(rLck, [this]{ return !m_running; });
+
+    // close everything
     close(m_socketD);
     for (auto client : m_clients) {
         close(client.second.socket);
         client.second.thread->join();
         delete client.second.thread;
     }
+    for (auto lock : m_locks) {
+        delete lock.second;
+    }
     m_acceptThread->join();
     delete m_acceptThread;
+
+    *m_stream << "#####\nEND_DESTRUCTOR\n#####" << std::endl;
 }
 
 int UmlServer::numClients() {

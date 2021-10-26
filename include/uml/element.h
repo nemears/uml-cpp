@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include "id.h"
+#include <mutex>
 
 namespace UML {
 

@@ -33,7 +33,9 @@ namespace UML {
             std::thread* m_acceptThread;
             std::unordered_map<ID, ClientInfo> m_clients;
             std::unordered_map<ID, std::mutex*> m_locks;
+            std::mutex m_logMtx;
             void createNode(Element* el) override;
+            void log(std::string msg);
         public:
             UmlServer();
             virtual ~UmlServer();

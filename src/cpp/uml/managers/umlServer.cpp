@@ -9,6 +9,8 @@
 #include <yaml-cpp/yaml.h>
 #include "uml/parsers/parser.h"
 #include "uml/uml-stable.h"
+#include <chrono>
+#include <ctime>
 
 using namespace UML;
 
@@ -141,7 +143,7 @@ Element& UmlServer::post(ElementType eType) {
 }
 
 void UmlServer::receiveFromClient(UmlServer* me, ID id) {
-    *me->m_stream << "server set up thread to listen to client " + id.string() << std::endl;
+    me->log("server set up thread to listen to client " + id.string());
     struct pollfd pfds[1] = {{me->m_clients[id].socket, POLLIN}};
     while (me->m_running) {
         if (poll(pfds, 1, 1000)) { 
@@ -151,7 +153,7 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
             if (bytesReceived <= 0) {
                 continue;
             }
-            *me->m_stream << "server got message from client(" + id.string() + "):" << std::endl << buff << std::endl;
+            me->log("server got message from client(" + id.string() + "):"+ std::string(buff));
             // TODO all
             YAML::Node node = YAML::Load(buff);
             if (node["GET"]) {
@@ -162,7 +164,7 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 if (bytesSent <= 0) {
                     throw ManagerStateException();
                 }
-                *me->m_stream << "server got element " +  elID.string() + " for client " + id.string() << std::endl << "msg: " << std::endl << msg << std::endl;
+                me->log("server got element " +  elID.string() + " for client " + id.string() + "\nmsg:\n" + msg);
                 continue;
             }
             if (node["POST"]) {
@@ -171,18 +173,18 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 Element* ret = 0;
                 ret = &me->post(type);
                 std::string msg = Parsers::emit(*ret);
-                *me->m_stream << msg << std::endl;
+                me->log(msg);
                 int bytesSent = send(pfds->fd, msg.c_str(), msg.size() + 1, 0);
                 if (bytesSent <= 0) {
                     throw ManagerStateException();
                 } 
-                *me->m_stream << "server created new element for client" + id.string() << std::endl;
+                me->log("server created new element for client" + id.string());
                 continue;
             }
             if (node["PUT"]) {
                 Parsers::ParserMetaData data(me);
                 data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-                *me->m_stream << "yaml being put into server:\n" + node["PUT"].as<std::string>() << std::endl;
+                me->log("yaml being put into server:\n" + node["PUT"].as<std::string>());
                 // ID elID;
                 // for (YAML::const_iterator it=node["PUT"].begin();it!=node["PUT"].end();++it) {
                 //     if (it->second["id"]) {
@@ -217,20 +219,20 @@ void UmlServer::acceptNewClients(UmlServer* me) {
             newSocketD = accept(me->m_socketD, (struct sockaddr *)&clientAddress, &addr_size);
             if (newSocketD == -1) {
                 if (me->m_running) {
-                    std::cout << "bad socket accepted" << std::endl;
+                    me->log("bad socket accepted");
                     throw ManagerStateException();
                 } else {
                     continue;
                 }
             } else {
-                *me->m_stream << "connected to client!" << std::endl;
+                me->log("connected to client!");
             }
             
             // request ID
             const char* idMsg = "id";
             int len = strlen(idMsg);
             int bytesSent = send(newSocketD, idMsg, len, 0);
-            *me->m_stream << "server sent request for id from new client" << std::endl;
+            me->log("server sent request for id from new client");
             char buff[29];
             int bytesReceived = recv(newSocketD, buff, 29, 0);
             if (bytesReceived <= 0) {
@@ -239,7 +241,7 @@ void UmlServer::acceptNewClients(UmlServer* me) {
             if (ID::fromString(buff) == me->m_shutdownID) {
                 break;
             }
-            *me->m_stream << "server received id from new client: " << buff << std::endl;
+            me->log("server received id from new client: " + std::string(buff));
             std::thread* clientThread = new std::thread(receiveFromClient, me, ID::fromString(buff));
             me->m_clients[ID::fromString(buff)] = {newSocketD, clientThread};
         }
@@ -251,6 +253,14 @@ void UmlServer::acceptNewClients(UmlServer* me) {
 void UmlServer::createNode(Element* el) {
     UmlManager::createNode(el);
     m_locks[el->getID()] = new std::mutex;
+}
+
+void UmlServer::log(std::string msg) {
+    std::lock_guard<std::mutex> lck(m_logMtx);
+    auto now = std::chrono::system_clock::now();
+    std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
+    std::string nowStr = std::ctime(&nowTime);
+    std::cout << "[" + nowStr.substr(0, nowStr.size() - 1) + "]:" + msg << std::endl;
 }
 
 UmlServer::UmlServer() {
@@ -278,7 +288,7 @@ UmlServer::UmlServer() {
 
 UmlServer::~UmlServer() {
 
-    *m_stream << "#####\nDESTRUCTOR\n#####" << std::endl;
+    log("#####DESTRUCTOR#####");
 
     // connect to self to stop acceptNewClientsLoop
     bool fail = false;
@@ -335,7 +345,7 @@ UmlServer::~UmlServer() {
     m_acceptThread->join();
     delete m_acceptThread;
 
-    *m_stream << "#####\nEND_DESTRUCTOR\n#####" << std::endl;
+   log("#####END_DESTRUCTOR#####");
 }
 
 int UmlServer::numClients() {

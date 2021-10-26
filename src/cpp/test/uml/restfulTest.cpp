@@ -16,7 +16,6 @@ TEST_F(RestfulTest, clientsConnectToServerTest) {
     UmlServer server;
     UmlClient client1;
     UmlClient client2;
-    sleep(0.1);
     ASSERT_EQ(server.numClients(), 2);
 }
 
@@ -54,7 +53,7 @@ TEST_F(RestfulTest, basicPutTest) {
         UmlClient client2;
         ASSERT_TRUE(client2.get<Class>(id).getName().empty());
         client.put(clazz);
-        sleep (1); // takes p long to update from the put
+        server.get<>(id); // let it load in server
         ASSERT_EQ(client2.get<Class>(id).getName(), "test");
     }
 }

@@ -216,6 +216,7 @@ void UmlServer::acceptNewClients(UmlServer* me) {
             if (!me->m_running) {
                 break;
             }
+            std::lock_guard<std::mutex> aLck(me->m_acceptMtx);
             newSocketD = accept(me->m_socketD, (struct sockaddr *)&clientAddress, &addr_size);
             if (newSocketD == -1) {
                 if (me->m_running) {
@@ -349,5 +350,6 @@ UmlServer::~UmlServer() {
 }
 
 int UmlServer::numClients() {
+    std::lock_guard<std::mutex> lck(m_acceptMtx);
     return m_clients.size();
 }

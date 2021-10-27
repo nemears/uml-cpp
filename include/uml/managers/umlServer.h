@@ -22,22 +22,25 @@ namespace UML {
                 std::thread* thread;
             };
             const ID m_shutdownID = ID::randomID();
+            int m_socketD = 0;
+            std::unordered_map<ID, ClientInfo> m_clients;
+
+            // threading
+            static void acceptNewClients(UmlServer* me);
+            static void receiveFromClient(UmlServer* me, ID id);
+            std::thread* m_acceptThread;
+            std::unordered_map<ID, std::mutex*> m_locks;
             std::atomic<bool> m_running = false;
             std::mutex m_runMtx;
             std::condition_variable m_runCv;
-            std::atomic<std::ostream*> m_stream = &std::cout;
-            int m_socketD = 0;
-            static void acceptNewClients(UmlServer* me);
-            static void receiveFromClient(UmlServer* me, ID id);
-            Element& post(ElementType eType);
-            std::thread* m_acceptThread;
-            std::unordered_map<ID, ClientInfo> m_clients;
-            std::unordered_map<ID, std::mutex*> m_locks;
             std::mutex m_logMtx;
             std::mutex m_acceptMtx;
             std::mutex m_msgMtx;
             std::condition_variable m_msgCv;
             std::atomic<bool> m_msgV = true;
+
+            // helper methods
+            Element& post(ElementType eType);
             void createNode(Element* el) override;
             void log(std::string msg);
         public:

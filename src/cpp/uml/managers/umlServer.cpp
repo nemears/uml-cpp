@@ -188,7 +188,7 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
             if (node["POST"]) {
                 me->m_msgV = true;
                 me->m_msgCv.notify_one();
-                *me->m_stream << "server handling post request from client " + id.string() <<std::endl;
+                me->log("server handling post request from client " + id.string());
                 ElementType type = Parsers::elementTypeFromString(node["POST"].as<std::string>());
                 Element* ret = 0;
                 ret = &me->post(type);
@@ -313,7 +313,7 @@ UmlServer::~UmlServer() {
     int status;
     if ((status = getaddrinfo(NULL, std::to_string(UML_PORT).c_str(), &hints, &myAddress)) != 0) {
         // TODO warn on improper shutdown
-        *m_stream << "server could not get address info!" << std::endl;
+        log("server could not get address info!");
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
         std::cerr << stderr << std::endl;
         fail = true;
@@ -321,12 +321,12 @@ UmlServer::~UmlServer() {
     int tempSocket = socket(myAddress->ai_family, myAddress->ai_socktype, myAddress->ai_protocol);
     if (tempSocket == -1) {
         /** TODO: failure message **/
-        *m_stream << "server could not get socket descriptor!" << std::endl;
+        log("server could not get socket descriptor!");
         fail = true;
     }
     if (connect(tempSocket, myAddress->ai_addr, myAddress->ai_addrlen) == -1) {
         /** TODO: failure message **/
-        *m_stream << "server could not connect to self!" << std::endl;
+        log("server could not connect to self!");
         fail = true;
     }
     

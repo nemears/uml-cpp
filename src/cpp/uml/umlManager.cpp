@@ -32,7 +32,7 @@ void UmlManager::createNode(Element* el) {
     m_graph[el->getID()] = {el};
 }
 
-UmlManager::UmlManager() : id(ID::randomID()) {
+UmlManager::UmlManager() {
     m_model = 0;
     m_root = 0;
 }

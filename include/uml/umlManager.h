@@ -127,7 +127,6 @@ namespace UML {
         public:
             UmlManager();
             virtual ~UmlManager();
-            const ID id;
             /**
               * get<T>(id) is used to get an element from the manager through just it's 
               * @param id, the id of the element you wish to get from the manager

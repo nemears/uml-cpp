@@ -81,3 +81,16 @@ TEST_F(RestfulTest, basicGetByQualifiedName) {
     Class& clazz2 = client2.get<Class>("A::B");
     ASSERT_EQ(clazz2.getOwningPackageRef(), root);
 }
+
+TEST_F(RestfulTest, bigMessageTest) {
+    int numChildren = 25;
+    UmlServer server;
+    UmlClient client;
+    Package& root = client.post<Package>();
+    for (int i = 0; i < numChildren; i++) {
+        root.getPackagedElements().add(client.post<Package>());
+    }
+    ID id = root.getID();
+    client.release(root);
+    ASSERT_EQ(client.get<Package>(id).getPackagedElements().size(), numChildren);
+}

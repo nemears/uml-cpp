@@ -57,10 +57,20 @@ Element& UmlClient::get(ID id) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap << YAML::Key << "GET" << YAML::Value << id.string() << YAML::EndMap;
     int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
-    char buff[100]; // TODO probs needs to be bigger
-    int bytesReceived = recv(m_socketD, buff, 100, 0);
+    char* buff = (char*)malloc(1000); // TODO: optimize send in multiple messages instead of taking so much memory each time
+    int bytesReceived = recv(m_socketD, buff, 1000, 0);
     if (bytesReceived <= 0) {
         throw ManagerStateException();
+    }
+    int i = 0;
+    while (bytesReceived >= 999) {
+        if (buff[i*1000 + 999] != '\0') {
+            buff = (char*)realloc(buff, 2000 + i*1000);
+            bytesReceived = recv(m_socketD, &buff[1000 + i*1000], 1000, 0);
+        } else {
+            break;
+        }
+        i++;
     }
     Parsers::ParserMetaData data(this);
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
@@ -108,6 +118,10 @@ void UmlClient::put(Element& el) {
     Parsers::emitIndividual(el, emitter);
     emitter << YAML::EndMap << YAML::EndMap;
     int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
+    int i = 0;
+    while (bytesSent < emitter.size() - (1000 * i) - 1) {
+        bytesSent = send(m_socketD, &emitter.c_str()[1000], emitter.size() - 999, 0);
+    }
 }
 
 void UmlClient::erase(Element& el) {

@@ -147,13 +147,24 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
     struct pollfd pfds[1] = {{me->m_clients[id].socket, POLLIN}};
     while (me->m_running) {
         if (poll(pfds, 1, 1000)) { 
-            char buff[1000]; // TODO: optimize send in multiple messages instead of taking so much memory each time
+            char* buff = (char*)malloc(1000); // TODO: optimize send in multiple messages instead of taking so much memory each time
             int bytesReceived = recv(pfds->fd, buff, 1000, 0);
             if (bytesReceived <= 0) {
                 continue;
             }
-            std::unique_lock<std::mutex> mLck(me->m_msgMtx);
+            int i = 0;
+            while (bytesReceived >= 999) {
+                if (buff[i*1000 + 999] != '\0') {
+                    me->log("did not receive all of the message, waiting for follow up data");
+                    buff = (char*)realloc(buff, 2000 + i*1000);
+                    bytesReceived = recv(pfds->fd, &buff[1000 + i*1000], 1000, 0);
+                } else {
+                    break;
+                }
+                i++;
+            }
             me->log("server got message from client(" + id.string() + "):\n" + std::string(buff));
+            std::unique_lock<std::mutex> mLck(me->m_msgMtx);
             me->m_msgCv.wait(mLck, [me]{ return me->m_msgV ? true : false; });
             me->m_msgV = false;
             // TODO all

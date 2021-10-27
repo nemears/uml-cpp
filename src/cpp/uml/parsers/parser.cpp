@@ -81,6 +81,13 @@ Element& parseYAML(YAML::Node node, ParserMetaData& data) {
     }
 }
 
+EmitterMetaData getData(Element& el) {
+    EmitterMetaData data;
+    data.m_manager = el.m_manager;
+    data.m_strategy = EmitterStrategy::INDIVIDUAL;
+    return data;
+}
+
 string emit(Element& el) {
     YAML::Emitter emitter;
     emit(el, emitter);
@@ -96,12 +103,15 @@ void emit(Element& el, YAML::Emitter& emitter) {
 }
 
 string emitIndividual(Element& el) {
-    EmitterMetaData data;
-    data.m_manager = el.m_manager;
-    data.m_strategy = EmitterStrategy::INDIVIDUAL;
+    EmitterMetaData data = getData(el);
     YAML::Emitter emitter;
     determineTypeAndEmit(emitter, el, data);
     return emitter.c_str();
+}
+
+void emitIndividual(Element& el, YAML::Emitter& emitter) {
+    EmitterMetaData data = getData(el);
+    determineTypeAndEmit(emitter, el, data);
 }
 
 void emit(EmitterMetaData& data) {
@@ -584,7 +594,7 @@ template <class T = Element, class U = Element> void parseSingleton(YAML::Node n
     } else {
         id = ID::fromString(node.as<string>().substr(0, 28));
     }
-    if (data.m_manager->loaded(id)) {
+    if (data.m_manager->UmlManager::loaded(id)) {
         (el.*setter)(data.m_manager->get<T>(id));
     }
     else {

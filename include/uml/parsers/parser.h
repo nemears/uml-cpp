@@ -52,9 +52,11 @@ namespace UML {
         Element& parseString(std::string body, ParserMetaData& data);
         Element& parseYAML(YAML::Node node, ParserMetaData& data);
 
+        EmitterMetaData getData(Element& el);
         std::string emit(Element& el);
         void emit(Element& el, YAML::Emitter& emitter);
         std::string emitIndividual(Element& el);
+        void emitIndividual(Element& el, YAML::Emitter& emitter);
 
         void emit(EmitterMetaData& data);
 

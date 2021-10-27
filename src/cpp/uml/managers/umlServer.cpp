@@ -172,7 +172,12 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 continue;
             }
             if (node["GET"]) {
-                ID elID = ID::fromString(node["GET"].as<std::string>());
+                ID elID;
+                if (isValidID(node["GET"].as<std::string>())) {
+                    elID = ID::fromString(node["GET"].as<std::string>());
+                } else {
+                    elID = me->m_urls.at(node["GET"].as<std::string>());
+                }
                 std::lock_guard<std::mutex> elLck(*me->m_locks[elID]);
                 me->log("aquired lock for element " + elID.string());
                 me->m_msgV = true;
@@ -201,14 +206,20 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 continue;
             }
             if (node["PUT"]) {
-                Parsers::ParserMetaData data(me);
-                data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
                 ID elID = ID::fromString(node["PUT"]["id"].as<std::string>());
                 std::lock_guard<std::mutex> elLck(*me->m_locks[elID]);
                 me->log("aquired lock for element " + elID.string());
                 me->m_msgV = true;
                 me->m_msgCv.notify_one();
-                Parsers::parseYAML(node["PUT"]["element"], data);
+                if (node["PUT"]["qualifiedName"]) {
+                    me->m_urls[node["PUT"]["qualifiedName"].as<std::string>()] = elID;
+                }
+                Parsers::ParserMetaData data(me);
+                data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
+                Element& el = Parsers::parseYAML(node["PUT"]["element"], data);
+                if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
+                    me->m_urls[el.as<NamedElement>().getQualifiedName()] = el.getID();
+                }
                 me->log("server put element " + elID.string() + " successfully for client " + id.string());
                 continue;
             }
@@ -224,7 +235,7 @@ void UmlServer::acceptNewClients(UmlServer* me) {
             int newSocketD = -1;
             struct addrinfo* clientAddress;
             socklen_t addr_size = sizeof clientAddress;
-            if (!poll(pfds, 1, 1000)) { // TODO: change to ppoll
+            if (!poll(pfds, 1, 1000)) {
                 continue;
             }
             if (!me->m_running) {
@@ -294,6 +305,7 @@ UmlServer::UmlServer() {
     listen(m_socketD, 10);
     m_running = true;
     m_acceptThread = new std::thread(acceptNewClients, this);
+    log("server set up thread to accept new clients");
     freeaddrinfo(m_address);
 }
 

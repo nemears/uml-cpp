@@ -16,6 +16,9 @@ namespace UML {
                 return get(id).as<T>();
             };
             Element& get(std::string qualifiedName);
+            template <class T = Element> T& get(std::string qualifiedName) {
+                return get(qualifiedName).as<T>();
+            };
             void put(Element& el);
             Element& post(ElementType eType);
             template<class T = Element> T& post() {

@@ -67,6 +67,20 @@ Element& UmlClient::get(ID id) {
     return Parsers::parseString(buff, data);
 }
 
+Element& UmlClient::get(std::string qualifiedName) {
+    YAML::Emitter emitter;
+    emitter << YAML::BeginMap << YAML::Key << "GET" << YAML::Value << qualifiedName << YAML::EndMap;
+    int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
+    char buff[100]; // TODO probs needs to be bigger
+    int bytesReceived = recv(m_socketD, buff, 100, 0);
+    if (bytesReceived <= 0) {
+        throw ManagerStateException();
+    }
+    Parsers::ParserMetaData data(this);
+    data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
+    return Parsers::parseString(buff, data);
+}
+
 Element& UmlClient::post(ElementType eType) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap << YAML::Key << "POST" << YAML::Value << Element::elementTypeToString(eType) << YAML::EndMap;
@@ -84,9 +98,14 @@ Element& UmlClient::post(ElementType eType) {
 void UmlClient::put(Element& el) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap << YAML::Key << "PUT" << YAML::Value << YAML::BeginMap 
-            << YAML::Key << "id" << YAML::Value << el.getID().string() 
-            << YAML::Key << "element" << YAML::Value ;
-    Parsers::emit(el, emitter);
+            << YAML::Key << "id" << YAML::Value << el.getID().string();
+    if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
+        if (!el.as<NamedElement>().getQualifiedName().empty()) {
+            emitter << YAML::Key << "qualifiedName" << YAML::Value << el.as<NamedElement>().getQualifiedName();
+        }
+    }
+    emitter << YAML::Key << "element" << YAML::Value ;
+    Parsers::emitIndividual(el, emitter);
     emitter << YAML::EndMap << YAML::EndMap;
     int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
 }

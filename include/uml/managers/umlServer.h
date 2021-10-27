@@ -21,9 +21,12 @@ namespace UML {
                 int socket;
                 std::thread* thread;
             };
+
+            //data
             const ID m_shutdownID = ID::randomID();
             int m_socketD = 0;
             std::unordered_map<ID, ClientInfo> m_clients;
+            std::unordered_map<std::string, ID> m_urls;
 
             // threading
             static void acceptNewClients(UmlServer* me);

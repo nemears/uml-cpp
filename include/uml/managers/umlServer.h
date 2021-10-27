@@ -44,6 +44,7 @@ namespace UML {
             UmlServer();
             virtual ~UmlServer();
             int numClients();
+            bool loaded(ID id) override;
     };
 }
 

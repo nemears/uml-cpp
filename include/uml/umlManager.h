@@ -144,7 +144,7 @@ namespace UML {
                 }
             };
             size_t count(ID id);
-            bool loaded(ID id);
+            virtual bool loaded(ID id);
             template <class T = Element> T& create() {
                 T* ret = new T;
                 ret->m_manager = this;
@@ -194,7 +194,7 @@ namespace UML {
              * of an element completely and not keep track of it in persistent/mounted storage
              * @param el, the element to erase
              **/
-            void erase(Element& el);
+            virtual void erase(Element& el);
             /**
              * Saves the manager's model to the manager's path as a uml configuration file
              * WARN: if the model is saved, pointers to elements in model will have to be reaccessed 

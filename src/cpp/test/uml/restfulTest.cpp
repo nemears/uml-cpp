@@ -53,7 +53,17 @@ TEST_F(RestfulTest, basicPutTest) {
         UmlClient client2;
         ASSERT_TRUE(client2.get<Class>(id).getName().empty());
         client.put(clazz);
-        //server.get<>(id); // let it load in server
         ASSERT_EQ(client2.get<Class>(id).getName(), "test");
     }
+}
+
+TEST_F(RestfulTest, basicEraseTest) {
+    UmlServer server;
+    UmlClient client;
+    Class& clazz = client.post<Class>();
+    ID clazzID = clazz.getID();
+    client.erase(clazz);
+    ASSERT_FALSE(client.loaded(clazzID));
+    sleep(0.01);
+    ASSERT_FALSE(server.loaded(clazzID));
 }

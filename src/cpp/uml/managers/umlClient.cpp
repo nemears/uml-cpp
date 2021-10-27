@@ -34,7 +34,6 @@ UmlClient::UmlClient() : id(ID::randomID()) {
     if (bytesReceived <= 0) {
         throw ManagerStateException();
     }
-    std::cout << "client received request for id" << std::endl;
     if (std::string("id").compare(buff) != 0) {
         throw ManagerStateException();
     }
@@ -45,8 +44,8 @@ UmlClient::UmlClient() : id(ID::randomID()) {
     int bytesSent = send(m_socketD, idMsg, 29, 0);
     if (bytesSent != 29) {
         std::cout << "did not send all bytes!" << std::endl;
+        throw ManagerStateException();
     }
-    std::cout << "client sent id (" << idMsg << ") to server" << std::endl;
     delete[] idMsg;
 }
 
@@ -63,7 +62,6 @@ Element& UmlClient::get(ID id) {
     if (bytesReceived <= 0) {
         throw ManagerStateException();
     }
-    std::cout << "client message received: " << std::endl << buff << std::endl;
     Parsers::ParserMetaData data(this);
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
     return Parsers::parseString(buff, data);
@@ -72,14 +70,12 @@ Element& UmlClient::get(ID id) {
 Element& UmlClient::post(ElementType eType) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap << YAML::Key << "POST" << YAML::Value << Element::elementTypeToString(eType) << YAML::EndMap;
-    std::cout << "client writing post request:" << std::endl << emitter.c_str() << std::endl;
     int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
     char buff[100]; // get better sized buffer?
     int bytesReceived = recv(m_socketD, buff, 100, 0);
     if (bytesReceived <= 0) {
         throw ManagerStateException();
     }
-    std::cout << "Client received response from post request: " << std::endl << buff << std::endl;
     Parsers::ParserMetaData data(this);
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
     return Parsers::parseString(buff, data);
@@ -92,6 +88,12 @@ void UmlClient::put(Element& el) {
             << YAML::Key << "element" << YAML::Value ;
     Parsers::emit(el, emitter);
     emitter << YAML::EndMap << YAML::EndMap;
-    std::cout << emitter.c_str() << std::endl;
+    int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
+}
+
+void UmlClient::erase(Element& el) {
+    YAML::Emitter emitter;
+    emitter << YAML::BeginMap << YAML::Key << "DELETE" << YAML::Value << el.getID().string() << YAML::EndMap;
+    UmlManager::erase(el);
     int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
 }

@@ -21,7 +21,7 @@ namespace UML {
             template<class T = Element> T& post() {
                 return post(T::elementType()).template as<T>();
             };
-            void erase(Element& el);
+            void erase(Element& el) override;
     };
 }
 

@@ -174,7 +174,7 @@ namespace UML {
              * @return a pointer to the element you wish to aquire, will never be null
              **/
             virtual Element* aquire(ID id);
-            void release(ID id);
+            virtual void release(ID id);
             /**
              * release(el) will effectively delete the element object and write it's contents
              * to a file so that it can be aquired later if needed. Caveat: make sure all references

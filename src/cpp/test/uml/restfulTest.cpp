@@ -91,6 +91,9 @@ TEST_F(RestfulTest, bigMessageTest) {
         root.getPackagedElements().add(client.post<Package>());
     }
     ID id = root.getID();
+    root.setName("foo");
     client.release(root);
     ASSERT_EQ(client.get<Package>(id).getPackagedElements().size(), numChildren);
+    client.release(id);
+    ASSERT_EQ(client.get<Package>("foo").getPackagedElements().size(), numChildren);
 }

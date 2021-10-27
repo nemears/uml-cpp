@@ -27,6 +27,7 @@ namespace UML {
             void erase(Element& el) override;
             Element* aquire(ID id) override;
             void release(Element& el) override;
+            void release(ID id) override;
     };
 }
 

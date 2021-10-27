@@ -124,6 +124,7 @@ namespace UML {
             void addToMount(Element& el);
             virtual void createNode(Element* el);
             void eraseNode(ManagerNode* node, ID id);
+            void releaseNode(Element& el);
         public:
             UmlManager();
             virtual ~UmlManager();
@@ -172,7 +173,7 @@ namespace UML {
              * @param id, the id of the element you wish to aquire
              * @return a pointer to the element you wish to aquire, will never be null
              **/
-            Element* aquire(ID id);
+            virtual Element* aquire(ID id);
             void release(ID id);
             /**
              * release(el) will effectively delete the element object and write it's contents
@@ -181,7 +182,7 @@ namespace UML {
              * element's memory.
              * @param el, the element being released from memory
              **/
-            void release(Element& el);
+            virtual void release(Element& el);
             template <class ... Elements> void release(Element& el, Elements&... els) {
                 release(el);
                 release(els...);

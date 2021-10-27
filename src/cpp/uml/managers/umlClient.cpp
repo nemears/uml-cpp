@@ -116,3 +116,12 @@ void UmlClient::erase(Element& el) {
     UmlManager::erase(el);
     int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
 }
+
+Element* UmlClient::aquire(ID id) {
+    return &get(id);
+}
+
+void UmlClient::release(Element& el) {
+    put(el);
+    releaseNode(el);
+}

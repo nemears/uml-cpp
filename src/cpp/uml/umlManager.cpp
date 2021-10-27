@@ -160,29 +160,33 @@ void UmlManager::release(ID id) {
     release(*m_graph[id].m_managerElementMemory);
 }
 
+void UmlManager::releaseNode(Element& el) {
+    ManagerNode* node = el.m_node;
+    ID id = el.getID();
+    if (node->m_managerElementMemory) {
+        delete node->m_managerElementMemory;
+    }
+    for (auto& e : node->m_references) {
+        if (e.second) {
+            e.second->m_managerElementMemory->referencingReleased(id);
+        }
+    }
+    for (auto& copy : node->m_copies) {
+        // TODO show warning, bad practice to release without destroying all copies
+        // effecctively dereferences the copies from the manager
+        copy->m_node = 0;
+        copy->m_manager = 0;
+    }
+    m_graph.erase(id);
+}
+
 void UmlManager::release(Element& el) {
     if (!m_mountBase.empty()) {
         Parsers::EmitterMetaData data = {m_mountBase / "mount",
                                          Parsers::EmitterStrategy::INDIVIDUAL,
                                          el.getID().string() + ".yml", this};
         Parsers::emitToFile(*el.m_node->m_managerElementMemory, data, data.m_path.string(), data.m_fileName);
-        ManagerNode* node = el.m_node;
-        ID id = el.getID();
-        if (node->m_managerElementMemory) {
-            delete node->m_managerElementMemory;
-        }
-        for (auto& e : node->m_references) {
-            if (e.second) {
-                e.second->m_managerElementMemory->referencingReleased(id);
-            }
-        }
-        for (auto& copy : node->m_copies) {
-            // TODO show warning, bad practice to release without destroying all copies
-            // effecctively dereferences the copies from the manager
-            copy->m_node = 0;
-            copy->m_manager = 0;
-        }
-        m_graph.erase(id);
+        releaseNode(el);
     } else {
         throw ManagerNotMountedException();
     }

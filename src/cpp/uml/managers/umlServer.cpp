@@ -12,6 +12,8 @@
 #include <chrono>
 #include <ctime>
 
+#define UML_SERVER_MSG_SIZE 200
+
 using namespace UML;
 
 Element& UmlServer::post(ElementType eType) {
@@ -147,17 +149,17 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
     struct pollfd pfds[1] = {{me->m_clients[id].socket, POLLIN}};
     while (me->m_running) {
         if (poll(pfds, 1, 1000)) { 
-            char* buff = (char*)malloc(1000); // TODO: optimize send in multiple messages instead of taking so much memory each time
-            int bytesReceived = recv(pfds->fd, buff, 1000, 0);
+            char* buff = (char*)malloc(UML_SERVER_MSG_SIZE);
+            int bytesReceived = recv(pfds->fd, buff, UML_SERVER_MSG_SIZE, 0);
             if (bytesReceived <= 0) {
                 continue;
             }
             int i = 0;
-            while (bytesReceived >= 999) {
-                if (buff[i*1000 + 999] != '\0') {
+            while (bytesReceived >= UML_SERVER_MSG_SIZE - 1) {
+                if (buff[i*UML_SERVER_MSG_SIZE + UML_SERVER_MSG_SIZE - 1] != '\0') {
                     me->log("did not receive all of the message, waiting for follow up data");
-                    buff = (char*)realloc(buff, 2000 + i*1000);
-                    bytesReceived = recv(pfds->fd, &buff[1000 + i*1000], 1000, 0);
+                    buff = (char*)realloc(buff, 2 * UML_SERVER_MSG_SIZE + i * UML_SERVER_MSG_SIZE);
+                    bytesReceived = recv(pfds->fd, &buff[UML_SERVER_MSG_SIZE + i * UML_SERVER_MSG_SIZE], UML_SERVER_MSG_SIZE, 0);
                 } else {
                     break;
                 }
@@ -180,7 +182,6 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                     me->log("erased element " + elID.string());
                 }
                 me->m_locks.erase(elID);
-                continue;
             }
             if (node["GET"]) {
                 ID elID;
@@ -199,7 +200,6 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                     throw ManagerStateException();
                 }
                 me->log("server got element " +  elID.string() + " for client " + id.string() + ":\n" + msg);
-                continue;
             }
             if (node["POST"]) {
                 me->m_msgV = true;
@@ -214,7 +214,6 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                     throw ManagerStateException();
                 } 
                 me->log("server created new element for client" + id.string());
-                continue;
             }
             if (node["PUT"]) {
                 ID elID = ID::fromString(node["PUT"]["id"].as<std::string>());
@@ -232,8 +231,8 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                     me->m_urls[el.as<NamedElement>().getQualifiedName()] = el.getID();
                 }
                 me->log("server put element " + elID.string() + " successfully for client " + id.string());
-                continue;
             }
+            free(buff);
         }
     }
 }

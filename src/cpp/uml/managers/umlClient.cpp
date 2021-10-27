@@ -8,6 +8,8 @@
 #include "yaml-cpp/yaml.h"
 #include "uml/parsers/parser.h"
 
+#define UML_CLIENT_MSG_SIZE 200
+
 using namespace UML;
 
 UmlClient::UmlClient() : id(ID::randomID()) {
@@ -57,16 +59,16 @@ Element& UmlClient::get(ID id) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap << YAML::Key << "GET" << YAML::Value << id.string() << YAML::EndMap;
     int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
-    char* buff = (char*)malloc(1000);
-    int bytesReceived = recv(m_socketD, buff, 1000, 0);
+    char* buff = (char*)malloc(UML_CLIENT_MSG_SIZE);
+    int bytesReceived = recv(m_socketD, buff, UML_CLIENT_MSG_SIZE, 0);
     if (bytesReceived <= 0) {
         throw ManagerStateException();
     }
     int i = 0;
-    while (bytesReceived >= 999) {
-        if (buff[i*1000 + 999] != '\0') {
-            buff = (char*)realloc(buff, 2000 + i*1000);
-            bytesReceived = recv(m_socketD, &buff[1000 + i*1000], 1000, 0);
+    while (bytesReceived >= UML_CLIENT_MSG_SIZE - 1) {
+        if (buff[i * UML_CLIENT_MSG_SIZE + UML_CLIENT_MSG_SIZE - 1] != '\0') {
+            buff = (char*)realloc(buff, 2 * UML_CLIENT_MSG_SIZE + i * UML_CLIENT_MSG_SIZE);
+            bytesReceived = recv(m_socketD, &buff[UML_CLIENT_MSG_SIZE + i * UML_CLIENT_MSG_SIZE], UML_CLIENT_MSG_SIZE, 0);
         } else {
             break;
         }
@@ -74,23 +76,25 @@ Element& UmlClient::get(ID id) {
     }
     Parsers::ParserMetaData data(this);
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-    return Parsers::parseString(buff, data);
+    Element& ret = Parsers::parseString(buff, data);
+    free(buff);
+    return ret;
 }
 
 Element& UmlClient::get(std::string qualifiedName) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap << YAML::Key << "GET" << YAML::Value << qualifiedName << YAML::EndMap;
     int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
-    char* buff = (char*)malloc(1000);
-    int bytesReceived = recv(m_socketD, buff, 1000, 0);
+    char* buff = (char*)malloc(UML_CLIENT_MSG_SIZE);
+    int bytesReceived = recv(m_socketD, buff, UML_CLIENT_MSG_SIZE, 0);
     if (bytesReceived <= 0) {
         throw ManagerStateException();
     }
     int i = 0;
-    while (bytesReceived >= 999) {
-        if (buff[i*1000 + 999] != '\0') {
-            buff = (char*)realloc(buff, 2000 + i*1000);
-            bytesReceived = recv(m_socketD, &buff[1000 + i*1000], 1000, 0);
+    while (bytesReceived >= UML_CLIENT_MSG_SIZE - 1) {
+        if (buff[i * UML_CLIENT_MSG_SIZE + UML_CLIENT_MSG_SIZE - 1] != '\0') {
+            buff = (char*)realloc(buff, 2 * UML_CLIENT_MSG_SIZE + i * UML_CLIENT_MSG_SIZE);
+            bytesReceived = recv(m_socketD, &buff[UML_CLIENT_MSG_SIZE + i * UML_CLIENT_MSG_SIZE], UML_CLIENT_MSG_SIZE, 0);
         } else {
             break;
         }
@@ -98,7 +102,9 @@ Element& UmlClient::get(std::string qualifiedName) {
     }
     Parsers::ParserMetaData data(this);
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-    return Parsers::parseString(buff, data);
+    Element& ret = Parsers::parseString(buff, data);
+    free(buff);
+    return ret;
 }
 
 Element& UmlClient::post(ElementType eType) {

@@ -16,7 +16,7 @@ TEST_F(RestfulTest, clientsConnectToServerTest) {
     UmlServer server;
     UmlClient client1;
     UmlClient client2;
-    sleep(0.02);
+    //sleep(0.02);
     ASSERT_EQ(server.numClients(), 2);
 }
 

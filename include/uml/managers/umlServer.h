@@ -8,6 +8,7 @@
 #include <condition_variable>
 
 #define UML_PORT 8652
+#define UML_SERVER_MSG_SIZE 200
 
 namespace std {
     class thread;

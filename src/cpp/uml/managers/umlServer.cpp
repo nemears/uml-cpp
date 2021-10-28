@@ -12,8 +12,6 @@
 #include <chrono>
 #include <ctime>
 
-#define UML_SERVER_MSG_SIZE 200
-
 using namespace UML;
 
 Element& UmlServer::post(ElementType eType) {
@@ -252,6 +250,7 @@ void UmlServer::acceptNewClients(UmlServer* me) {
                 break;
             }
             std::lock_guard<std::mutex> aLck(me->m_acceptMtx);
+            me->log("server aquired acceptance lock");
             newSocketD = accept(me->m_socketD, (struct sockaddr *)&clientAddress, &addr_size);
             if (newSocketD == -1) {
                 if (me->m_running) {

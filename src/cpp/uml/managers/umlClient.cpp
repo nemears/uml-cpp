@@ -23,12 +23,17 @@ UmlClient::UmlClient() : id(ID::randomID()) {
     if ((status = getaddrinfo(NULL, std::to_string(UML_PORT).c_str(), &hints, &myAddress)) != 0) {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
         std::cerr << stderr << std::endl;
-        throw ManagerStateException();
+        throw ManagerStateException("client could not get address!");
     }
 
     // get socket descriptor
     m_socketD = socket(myAddress->ai_family, myAddress->ai_socktype, myAddress->ai_protocol);
-    connect(m_socketD, myAddress->ai_addr, myAddress->ai_addrlen);
+    if (m_socketD == -1) {
+        throw ManagerStateException("client could not get socket!");
+    }
+    if (connect(m_socketD, myAddress->ai_addr, myAddress->ai_addrlen) == -1) {
+        throw ManagerStateException("client could not connect to server!");
+    }
     freeaddrinfo(myAddress);
 
     char buff[3];
@@ -59,6 +64,7 @@ Element& UmlClient::get(ID id) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap << YAML::Key << "GET" << YAML::Value << id.string() << YAML::EndMap;
     int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
+    std::cout << "client sent get request to server" << std::endl;
     char* buff = (char*)malloc(UML_CLIENT_MSG_SIZE);
     int bytesReceived = recv(m_socketD, buff, UML_CLIENT_MSG_SIZE, 0);
     if (bytesReceived <= 0) {
@@ -85,6 +91,7 @@ Element& UmlClient::get(std::string qualifiedName) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap << YAML::Key << "GET" << YAML::Value << qualifiedName << YAML::EndMap;
     int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
+    std::cout << "client sent get request to server" << std::endl;
     char* buff = (char*)malloc(UML_CLIENT_MSG_SIZE);
     int bytesReceived = recv(m_socketD, buff, UML_CLIENT_MSG_SIZE, 0);
     if (bytesReceived <= 0) {
@@ -110,9 +117,14 @@ Element& UmlClient::get(std::string qualifiedName) {
 Element& UmlClient::post(ElementType eType) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap << YAML::Key << "POST" << YAML::Value << Element::elementTypeToString(eType) << YAML::EndMap;
-    int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
+    int bytesSent;
+    while ((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
+        send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
+    }
+    std::cout << "client sent post request to server" << std::endl;
     char buff[100]; // get better sized buffer?
     int bytesReceived = recv(m_socketD, buff, 100, 0);
+    std::cout << "client received posted elemnt" << std::endl;
     if (bytesReceived <= 0) {
         throw ManagerStateException();
     }
@@ -133,18 +145,25 @@ void UmlClient::put(Element& el) {
     emitter << YAML::Key << "element" << YAML::Value ;
     Parsers::emitIndividual(el, emitter);
     emitter << YAML::EndMap << YAML::EndMap;
-    int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
-    int i = 0;
-    while (bytesSent < emitter.size() - (1000 * i) - 1) {
-        bytesSent = send(m_socketD, &emitter.c_str()[1000], emitter.size() - 999, 0);
+    int bytesSent;
+    while ((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
+        send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
     }
+    int i = 0;
+    while (bytesSent < emitter.size() - (UML_SERVER_MSG_SIZE * i) - 1) {
+        bytesSent = send(m_socketD, &emitter.c_str()[1000], emitter.size() - (UML_SERVER_MSG_SIZE - 1), 0);
+    }
+    std::cout << "client sent put to server";
 }
 
 void UmlClient::erase(Element& el) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap << YAML::Key << "DELETE" << YAML::Value << el.getID().string() << YAML::EndMap;
     UmlManager::erase(el);
-    int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
+    int bytesSent;
+    while ((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
+        send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
+    }
 }
 
 Element* UmlClient::aquire(ID id) {

@@ -36,12 +36,11 @@ The code currently has an application, but the application will parse a config
 file and print it out. Besides that the source can be used as c++ uml library
 
 ### uml api
-Uml class definitions can be used to reference a model with the api. There is 
-also a class, UmlManager, supplied to control loading and saving from the config files
-with object pool semantics.
+Uml class definitions can be used to reference a model with the api. There is also a class, UmlManager, supplied to control loading and saving from the config files with object pool semantics through the `aquire` and `release` methods.
 
-### config files
-Most of Uml implemented is mapped to config files, These can be stored persistently on disc or used to exchange model information between applications.
+There are two classes in `uml/managers` called `UmlServer` and `UmlClient`. These two classes follow restful api semantics with `GET`, `PUT`, `POST`, and `DELETE` (the method is called `erase()`). `get()` can be used with element's id's or a "url" a.k.a the NamedElement's qualifiedNamespace. There is a build target called uml-server that will produce an executable `uml-server`, this executable can be run to start the server talking on port `8652`. **WARNING: Only works for POSIX**
+
+Most of Uml implemented is mapped to config files, These can be stored persistently on disc or used to exchange model information between applications. The `UmlManager` class and all subclasses have the ability to `open` a path, or `save` to a path where model information has been saved.
 
 ### cpp parsing
 Currently just playing around with clang AST and general mapping, want to round out 
@@ -56,5 +55,5 @@ There is a lot to do right now this is just the next couple items I plan on look
     * PC App that allows diagramming and realtime code binding (longterm goal)
     * further definition of uml    
       * Need to finish activities, get into interactions, and others  
-    * Restful uml-server that can handle requests for data from model (can be used for frontend)
+    * redesign sequences (again)... They can go down on memory by implementing subsets and redefines literally to get rid of duplicate references
     

@@ -8,40 +8,36 @@
 using namespace UML;
 
 class RestfulTest : public ::testing::Test {
-   public:
-    std::string ymlPath = YML_FILES_PATH;
+    public:
+        std::string ymlPath = YML_FILES_PATH;
+        UmlServer server;
+
+        void TearDown() override {
+            server.reset();
+        };
 };
 
 TEST_F(RestfulTest, clientsConnectToServerTest) {
-    UmlServer server;
     UmlClient client1;
     UmlClient client2;
-    //sleep(0.02);
     ASSERT_EQ(server.numClients(), 2);
 }
 
 TEST_F(RestfulTest, postTest) {
-    UmlServer server;
-    {
-        UmlClient client;
-        Class& clazz = client.post<Class>();
-        ASSERT_TRUE(client.count(clazz.getID()));
-        ASSERT_TRUE(server.count(clazz.getID()));
-    }
+    UmlClient client;
+    Class& clazz = client.post<Class>();
+    ASSERT_TRUE(client.count(clazz.getID()));
+    ASSERT_TRUE(server.count(clazz.getID()));
 }
 
 TEST_F(RestfulTest, basicGetTest) {
-    UmlServer server;
-    {
-        UmlClient client;
-        ID id = server.create<Class>().getID();
-        server.get<Class>(id).setName("test");
-        ASSERT_EQ(client.get<NamedElement>(id).getName(), "test");
-    }
+    UmlClient client;
+    ID id = server.create<Class>().getID();
+    server.get<Class>(id).setName("test");
+    ASSERT_EQ(client.get<NamedElement>(id).getName(), "test");
 }
 
 TEST_F(RestfulTest, basicPutTest) {
-    UmlServer server;
     Package& root = server.create<Package>();
     server.setRoot(root);
     server.mount(ymlPath + "umlManagerTests");
@@ -57,7 +53,6 @@ TEST_F(RestfulTest, basicPutTest) {
 }
 
 TEST_F(RestfulTest, basicEraseTest) {
-    UmlServer server;
     UmlClient client;
     Class& clazz = client.post<Class>();
     ID clazzID = clazz.getID();
@@ -68,7 +63,6 @@ TEST_F(RestfulTest, basicEraseTest) {
 }
 
 TEST_F(RestfulTest, basicGetByQualifiedName) {
-    UmlServer server;
     UmlClient client;
     Class& clazz = client.post<Class>();
     Package& root = client.post<Package>();
@@ -84,7 +78,6 @@ TEST_F(RestfulTest, basicGetByQualifiedName) {
 
 TEST_F(RestfulTest, bigMessageTest) {
     int numChildren = 25;
-    UmlServer server;
     UmlClient client;
     Package& root = client.post<Package>();
     for (int i = 0; i < numChildren; i++) {

@@ -29,11 +29,11 @@ namespace UML {
     class ManagerStateException : public std::exception {
         std::string m_msg;
         const char* what() const throw() override {
-            return ("UmlManager bad state! " + m_msg).c_str();
+            return m_msg.c_str();
         };
         public:
             ManagerStateException(){};
-            ManagerStateException(std::string msg) : m_msg(msg) {};
+            ManagerStateException(std::string msg) : m_msg("UmlManager bad state! " + msg) {};
     };
 
     class UnknownID_Exception : public std::exception {

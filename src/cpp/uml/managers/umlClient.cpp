@@ -51,9 +51,16 @@ UmlClient::UmlClient() : id(ID::randomID()) {
     int bytesSent = send(m_socketD, idMsg, 29, 0);
     if (bytesSent != 29) {
         std::cout << "did not send all bytes!" << std::endl;
-        throw ManagerStateException();
+        throw ManagerStateException("did not send all bytes!");
     }
     delete[] idMsg;
+    char acceptBuff[29];
+    if ((bytesReceived = recv(m_socketD, acceptBuff, 29, 0)) <= 0) {
+        throw ManagerStateException("did not get accept message!");
+    }
+    if (id.string().compare(acceptBuff) != 0) {
+        throw ManagerStateException("did not get proper accept message!");
+    }
 }
 
 UmlClient::~UmlClient() {
@@ -63,7 +70,10 @@ UmlClient::~UmlClient() {
 Element& UmlClient::get(ID id) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap << YAML::Key << "GET" << YAML::Value << id.string() << YAML::EndMap;
-    int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
+    int bytesSent;
+    while((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
+        send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
+    }
     std::cout << "client sent get request to server" << std::endl;
     char* buff = (char*)malloc(UML_CLIENT_MSG_SIZE);
     int bytesReceived = recv(m_socketD, buff, UML_CLIENT_MSG_SIZE, 0);
@@ -90,7 +100,10 @@ Element& UmlClient::get(ID id) {
 Element& UmlClient::get(std::string qualifiedName) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap << YAML::Key << "GET" << YAML::Value << qualifiedName << YAML::EndMap;
-    int bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
+    int bytesSent;
+    while((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
+        send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
+    }
     std::cout << "client sent get request to server" << std::endl;
     char* buff = (char*)malloc(UML_CLIENT_MSG_SIZE);
     int bytesReceived = recv(m_socketD, buff, UML_CLIENT_MSG_SIZE, 0);
@@ -153,7 +166,7 @@ void UmlClient::put(Element& el) {
     while (bytesSent < emitter.size() - (UML_SERVER_MSG_SIZE * i) - 1) {
         bytesSent = send(m_socketD, &emitter.c_str()[1000], emitter.size() - (UML_SERVER_MSG_SIZE - 1), 0);
     }
-    std::cout << "client sent put to server";
+    std::cout << "client sent put to server" << std::endl;;
 }
 
 void UmlClient::erase(Element& el) {

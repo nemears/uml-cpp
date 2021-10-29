@@ -167,6 +167,8 @@ void UmlClient::put(Element& el) {
         bytesSent = send(m_socketD, &emitter.c_str()[1000], emitter.size() - (UML_SERVER_MSG_SIZE - 1), 0);
     }
     std::cout << "client sent put to server" << std::endl;;
+    int response, bytesReceived;
+    bytesReceived = recv(m_socketD, &response, sizeof(int), 0);
 }
 
 void UmlClient::putAll() {

@@ -239,6 +239,10 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                         me->m_urls[el.as<NamedElement>().getQualifiedName()] = el.getID();
                     }
                     me->log("server put element " + elID.string() + " successfully for client " + id.string());
+                    int msg, bytesSent = 1;
+                    while((bytesSent = send(pfds->fd, &msg, sizeof(int), 0)) <= 0) {
+                        bytesSent = send(pfds->fd, &msg, sizeof(int), 0);
+                    }
                 }
                 free(buff);
             }

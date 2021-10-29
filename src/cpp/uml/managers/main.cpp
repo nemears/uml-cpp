@@ -33,6 +33,7 @@ int main(int argc, char* argv[]) {
             memcpy(dashDash, &argv[i][0], 6);
             dashDash[6] = '\0';
             if (strcmp(dashDash, "--port") == 0) {
+                free(dashDash);
                 port = atoi(&argv[i][7]);
                 i++;
                 continue;
@@ -41,11 +42,18 @@ int main(int argc, char* argv[]) {
             memcpy(dashDash, &argv[i][0], 12);
             dashDash[12] = '\0';
             if (strcmp(dashDash, "--mount-path") == 0) {
+                free(dashDash);
                 path = &argv[i][13];
                 i++;
                 continue;
             }
         }
+        free(dashDash);
+        if (i > 0) {
+            std::cerr << "invalid arguments! " << argv[i];
+            exit(-1);
+        }
+        i++;
     }
     UML::UmlServer server(port);
     server.mount(path);

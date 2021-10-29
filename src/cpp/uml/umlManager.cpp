@@ -122,11 +122,9 @@ void UmlManager::addToMount(Element& el) {
 
 void UmlManager::mount(string path) {
     m_mountBase = path;
+    filesystem::create_directories(path / filesystem::path("mount"));
     if (m_root) {
-        filesystem::create_directories(path / filesystem::path("mount"));
         addToMount(*m_root);
-    } else {
-        // TODO throw error
     }
 }
 

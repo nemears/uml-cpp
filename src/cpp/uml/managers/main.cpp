@@ -8,12 +8,14 @@
  * There are some commandline options:
  *  --port, -p : specify the port that the server will listen on, default 8652
  *  --mount-path, -m : specify the path that the server will be run on, default the path ran from
+ *  --location, -l : load from and save to the path specified
  **/
 
 int main(int argc, char* argv[]) {
     int i = 0;
     int port = 8652;
     std::string path = ".";
+    std::string location;
     while (i < argc) {
         if (strcmp(argv[i], "-p") == 0) {
             port = atoi(argv[i+1]);
@@ -23,6 +25,11 @@ int main(int argc, char* argv[]) {
         if (strcmp(argv[i], "-m") == 0) {
             path = argv[i+1];
             i+= 2;
+            continue;
+        }
+        if (strcmp(argv[i], "-l") == 0) {
+            location = argv[i+1];
+            i+=2;
             continue;
         }
         char* dashDash = (char*) malloc(3);
@@ -37,7 +44,16 @@ int main(int argc, char* argv[]) {
                 port = atoi(&argv[i][7]);
                 i++;
                 continue;
-            } 
+            }
+            dashDash = (char*)realloc(dashDash, 11);
+            memcpy(dashDash, &argv[i][0], 10);
+            dashDash[10] = '\0';
+            if (strcmp(dashDash, "--location") == 0) {
+                free(dashDash);
+                path = &argv[i][11];
+                i++;
+                continue;
+            }
             dashDash = (char*)realloc(dashDash, 13);
             memcpy(dashDash, &argv[i][0], 12);
             dashDash[12] = '\0';
@@ -56,15 +72,11 @@ int main(int argc, char* argv[]) {
         i++;
     }
     UML::UmlServer server(port);
+    if (!location.empty()) {
+        server.open(location);
+    }
     server.mount(path);
     int min = 0, hour = 0;
-    while(1) {
-        //std::cout << hour << ":" << (min < 10 ? "0" + std::to_string(min) : std::to_string(min)) << std::endl;
-        sleep(60);
-        min ++;
-        if (min == 60) {
-            min = 0;
-            hour++;
-        }
-    }
+    while(1) { /** TODO: some blocking mechanism waiting for server shutdown**/ }
+    server.save(location);
 }

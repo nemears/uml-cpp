@@ -1,0 +1,7 @@
+---
+  model:
+    name: Model
+    packagedElements:
+      - package:
+          name: test
+...

@@ -23,6 +23,8 @@ namespace UML {
                 std::thread* thread;
             };
 
+            int m_port = UML_PORT;
+
             //data
             const ID m_shutdownID = ID::randomID();
             int m_socketD = 0;
@@ -49,6 +51,7 @@ namespace UML {
             void log(std::string msg);
         public:
             UmlServer();
+            UmlServer(int port);
             virtual ~UmlServer();
             int numClients();
             bool loaded(ID id) override;

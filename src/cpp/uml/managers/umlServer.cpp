@@ -301,6 +301,10 @@ void UmlServer::log(std::string msg) {
     std::cout << "[" + nowStr.substr(0, nowStr.size() - 1) + "]:" + msg << std::endl;
 }
 
+UmlServer::UmlServer(int port) {
+    m_port = port;
+}
+
 UmlServer::UmlServer() {
     int status;
     struct addrinfo hints;
@@ -309,7 +313,7 @@ UmlServer::UmlServer() {
     hints.ai_family = AF_UNSPEC;     // don't care IPv4 or IPv6
     hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
     hints.ai_flags = AI_PASSIVE; // fill in my IP for me
-    if ((status = getaddrinfo(NULL, std::to_string(UML_PORT).c_str(), &hints, &m_address)) != 0) {
+    if ((status = getaddrinfo(NULL, std::to_string(m_port).c_str(), &hints, &m_address)) != 0) {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
         std::cerr << stderr << std::endl;
         throw ManagerStateException();
@@ -339,7 +343,7 @@ UmlServer::~UmlServer() {
     hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
     hints.ai_flags = AI_PASSIVE; // fill in my IP for me
     int status;
-    if ((status = getaddrinfo(NULL, std::to_string(UML_PORT).c_str(), &hints, &myAddress)) != 0) {
+    if ((status = getaddrinfo(NULL, std::to_string(m_port).c_str(), &hints, &myAddress)) != 0) {
         // TODO warn on improper shutdown
         log("server could not get address info!");
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));

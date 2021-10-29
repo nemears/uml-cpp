@@ -20,6 +20,7 @@ namespace UML {
                 return get(qualifiedName).as<T>();
             };
             void put(Element& el);
+            void putAll();
             Element& post(ElementType eType);
             template<class T = Element> T& post() {
                 return post(T::elementType()).template as<T>();
@@ -27,7 +28,12 @@ namespace UML {
             void erase(Element& el) override;
             Element* aquire(ID id) override;
             void release(Element& el) override;
+            template <class ... Elements> void release(Element& el, Elements&... els) {
+                release(el);
+                release(els...);
+            };
             void release(ID id) override;
+            void shutdownServer(); // maybe we need to pass a key or something
     };
 }
 

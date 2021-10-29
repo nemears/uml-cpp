@@ -170,6 +170,14 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 me->m_msgCv.wait(mLck, [me]{ return me->m_msgV ? true : false; });
                 me->m_msgV = false;
                 // TODO all
+
+                if (strcmp(buff, "KILL") == 0) {
+                    me->m_msgV = true;
+                    me->m_msgCv.notify_one();
+                    me->shutdown();
+                    continue;
+                }
+
                 YAML::Node node = YAML::Load(buff);
                 if (node["DELETE"]) {
                     ID elID = ID::fromString(node["DELETE"].as<std::string>());
@@ -330,9 +338,36 @@ UmlServer::UmlServer() {
 }
 
 UmlServer::~UmlServer() {
+    if (m_running) {
+        shutdown();
+    }
+}
+
+int UmlServer::numClients() {
+    std::lock_guard<std::mutex> lck(m_acceptMtx);
+    return m_clients.size();
+}
+
+bool UmlServer::loaded(ID id) {
     std::unique_lock<std::mutex> mLck(m_msgMtx);
     m_msgCv.wait(mLck, [this]{ return m_msgV ? true : false; });
-    log("#####DESTRUCTOR#####");
+    if (m_locks.count(id)) {
+        std::lock_guard<std::mutex> lck(*m_locks.at(id));
+    }
+    return UmlManager::loaded(id);
+}
+
+void UmlServer::reset() {
+    log("server resetting");
+    clear();
+}
+
+void UmlServer::shutdown() {
+    log("server shutting down");
+
+    // wait for processing message traffic to end
+    std::unique_lock<std::mutex> mLck(m_msgMtx);
+    m_msgCv.wait(mLck, [this]{ return m_msgV ? true : false; });
 
     // connect to self to stop acceptNewClientsLoop
     bool fail = false;
@@ -388,25 +423,4 @@ UmlServer::~UmlServer() {
     }
     m_acceptThread->join();
     delete m_acceptThread;
-
-   log("#####END_DESTRUCTOR#####");
-}
-
-int UmlServer::numClients() {
-    std::lock_guard<std::mutex> lck(m_acceptMtx);
-    return m_clients.size();
-}
-
-bool UmlServer::loaded(ID id) {
-    std::unique_lock<std::mutex> mLck(m_msgMtx);
-    m_msgCv.wait(mLck, [this]{ return m_msgV ? true : false; });
-    if (m_locks.count(id)) {
-        std::lock_guard<std::mutex> lck(*m_locks.at(id));
-    }
-    return UmlManager::loaded(id);
-}
-
-void UmlServer::reset() {
-    log("server resetting");
-    clear();
 }

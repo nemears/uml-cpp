@@ -4,6 +4,8 @@
 #include "uml/class.h"
 #include "test/yumlParsersTest.h"
 #include "uml/package.h"
+#include <stdlib.h>
+#include <thread>
 
 using namespace UML;
 
@@ -89,4 +91,22 @@ TEST_F(RestfulTest, bigMessageTest) {
     ASSERT_EQ(client.get<Package>(id).getPackagedElements().size(), numChildren);
     client.release(id);
     ASSERT_EQ(client.get<Package>("foo").getPackagedElements().size(), numChildren);
+}
+
+void runServer() {
+    system("../../../../../build/src/cpp/uml/./uml-server -l ../../../../../src/yml/umlManagerTests/server.yml");
+}
+
+TEST_F(RestfulTest, serverMainTest) {
+    server.shutdown();
+    sleep(1);
+    std::thread cmd = std::thread(runServer);
+    UmlClient client;
+    Package& test = client.get<Package>("Model::test");
+    Package& child = client.post<Package>();
+    child.setName("child");
+    client.release(test, child);
+    ASSERT_EQ(client.get<Package>("Model::test").getPackagedElements().front().getName(), "child");
+    client.shutdownServer();
+    cmd.join();
 }

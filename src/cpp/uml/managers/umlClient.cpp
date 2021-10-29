@@ -169,6 +169,12 @@ void UmlClient::put(Element& el) {
     std::cout << "client sent put to server" << std::endl;;
 }
 
+void UmlClient::putAll() {
+    for (auto& node : m_graph) {
+        put(*node.second.m_managerElementMemory);
+    }
+}
+
 void UmlClient::erase(Element& el) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap << YAML::Key << "DELETE" << YAML::Value << el.getID().string() << YAML::EndMap;
@@ -190,4 +196,12 @@ void UmlClient::release(Element& el) {
 
 void UmlClient::release(ID id) {
     release(*m_graph[id].m_managerElementMemory);
+}
+
+void UmlClient::shutdownServer() {
+    const char* msg = "KILL";
+    int bytesSent;
+    while ((bytesSent = send(m_socketD, msg, 5, 0)) <= 0) {
+        send(m_socketD, msg, 5, 0);
+    }
 }

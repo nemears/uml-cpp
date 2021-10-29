@@ -79,4 +79,5 @@ int main(int argc, char* argv[]) {
     int min = 0, hour = 0;
     while(1) { /** TODO: some blocking mechanism waiting for server shutdown**/ }
     server.save(location);
+    server.shutdown();
 }

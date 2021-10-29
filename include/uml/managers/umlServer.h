@@ -56,6 +56,7 @@ namespace UML {
             int numClients();
             bool loaded(ID id) override;
             void reset();
+            void shutdown();
     };
 }
 

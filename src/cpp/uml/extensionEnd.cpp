@@ -75,7 +75,7 @@ void ExtensionEnd::referenceErased(ID id) {
     m_extensionType.elementErased(id);
 }
 
-ExtensionEnd::ExtensionEnd() {
+ExtensionEnd::ExtensionEnd() : Element(ElementType::EXTENSION_END) {
     m_extension.m_signature = &ExtensionEnd::m_extension;
     m_extension.m_removeProcedures.push_back(new RemoveExtensionProcedure(this));
     m_extension.m_addProcedures.push_back(new AddExtensionProcedure(this));
@@ -84,7 +84,7 @@ ExtensionEnd::ExtensionEnd() {
     m_extensionType.m_removeProcedures.push_back(new RemoveExtensionTypeProcedure(this));
 }
 
-ExtensionEnd::ExtensionEnd(const ExtensionEnd& end) {
+ExtensionEnd::ExtensionEnd(const ExtensionEnd& end) : Element(end, ElementType::EXTENSION_END) {
     m_extension = end.m_extension;
     m_extension.m_me = this;
     m_extension.m_addProcedures.clear();
@@ -145,10 +145,6 @@ void ExtensionEnd::setType(Stereotype* type) {
 
 void ExtensionEnd::setType(Stereotype& type) {
     m_extensionType.set(type);
-}
-
-ElementType ExtensionEnd::getElementType() const {
-    return ElementType::EXTENSION_END;
 }
 
 bool ExtensionEnd::isSubClassOf(ElementType eType) const {

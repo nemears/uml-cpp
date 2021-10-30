@@ -15,9 +15,9 @@ namespace UML{
         friend class Operation;
         
         protected:
-            Type() {};
+            Type();
         public:
-            ElementType getElementType() const override;
+            Type(const Type& rhs);
             Type& operator=(Type&&) {
                 return *this;
             };

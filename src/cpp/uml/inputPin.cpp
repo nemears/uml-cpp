@@ -14,9 +14,9 @@ using namespace UML;
 //     ActivityNode::reindexName(oldName, newName);
 // }
 
-ElementType InputPin::getElementType() const {
-    return ElementType::INPUT_PIN;
-}
+InputPin::InputPin() : Element(ElementType::INPUT_PIN) {}
+
+InputPin::InputPin(const InputPin& rhs) : Element(rhs, ElementType::INPUT_PIN) {}
 
 bool InputPin::isSubClassOf(ElementType eType) const {
     bool ret = Pin::isSubClassOf(eType);

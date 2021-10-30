@@ -41,7 +41,6 @@ namespace UML {
             RedefinableElement(const RedefinableElement& el);
             Sequence<RedefinableElement>& getRedefinedElements();
             Sequence<Classifier>& getRedefinitionContext();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::REDEFINABLE_ELEMENT;

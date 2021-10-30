@@ -229,7 +229,7 @@ void Artifact::referenceErased(ID id) {
     m_artifact.elementErased(id);
 }
 
-Artifact::Artifact() {
+Artifact::Artifact() : Element(ElementType::ARTIFACT) {
     m_ownedAttributes.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
     m_ownedAttributes.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
     m_ownedOperations.addProcedures.push_back(new AddOwnedOperationFunctor(this));
@@ -248,7 +248,7 @@ Artifact::Artifact(const Artifact& artifact) : DeployedArtifact(artifact),
 Classifier(artifact),
 PackageableElement(artifact), 
 NamedElement(artifact),
-Element(artifact) {
+Element(artifact, ElementType::ARTIFACT) {
     m_ownedAttributes = artifact.m_ownedAttributes;
     m_ownedAttributes.m_el = this;
     m_ownedAttributes.addProcedures.clear();
@@ -325,10 +325,6 @@ void Artifact::setArtifact(Artifact& artifact) {
 
 Artifact::~Artifact() {
 
-}
-
-ElementType Artifact::getElementType() const {
-    return ElementType::ARTIFACT;
 }
 
 bool Artifact::isSubClassOf(ElementType eType) const {

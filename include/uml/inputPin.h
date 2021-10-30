@@ -6,10 +6,13 @@
 
 namespace UML {
     class InputPin : public Pin {
+
+        friend class UmlManager;
+
         protected:
-            // void reindexName(std::string oldName, std::string newName) override;
+            InputPin();
         public:
-            ElementType getElementType() const override;
+            InputPin(const InputPin& rhs);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::INPUT_PIN;

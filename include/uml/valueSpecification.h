@@ -89,7 +89,6 @@ namespace UML {
             bool hasExpression() const;
             void setExpression(Expression* expression);
             void setExpression(Expression& expression);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::VALUE_SPECIFICATION;

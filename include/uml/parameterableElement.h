@@ -65,7 +65,6 @@ namespace UML {
             bool hasTemplateParameter() const;
             void setTemplateParameter(TemplateParameter* parameter);
             void setTemplateParameter(TemplateParameter& parameter);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PARAMETERABLE_ELEMENT;

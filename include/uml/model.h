@@ -5,8 +5,13 @@
 
 namespace UML{
     class Model : public Package {
+
+        friend class UmlManager;
+
+        protected:
+            Model();
         public:
-            ElementType getElementType() const override;
+            Model(const Model& rhs);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::MODEL;

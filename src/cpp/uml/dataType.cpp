@@ -109,7 +109,7 @@ void DataType::referenceErased(ID id) {
     m_ownedOperation.elementErased(id);
 }
 
-DataType::DataType() {
+DataType::DataType() : Element(ElementType::DATA_TYPE) {
     m_ownedAttribute.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
     m_ownedAttribute.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
     m_ownedOperation.addProcedures.push_back(new AddOwnedOperationFunctor(this));
@@ -120,7 +120,11 @@ DataType::~DataType() {
     
 }
 
-DataType::DataType(const DataType& el) : Classifier(el), PackageableElement(el), NamedElement(el), Element(el){
+DataType::DataType(const DataType& el) : 
+Classifier(el), 
+PackageableElement(el), 
+NamedElement(el), 
+Element(el, ElementType::DATA_TYPE) {
     m_ownedAttribute = el.m_ownedAttribute;
     m_ownedAttribute.m_el = this;
     m_ownedAttribute.addProcedures.clear();
@@ -141,10 +145,6 @@ Sequence<Property>& DataType::getOwnedAttribute() {
 
 Sequence<Operation>& DataType::getOwnedOperation() {
     return m_ownedOperation;
-}
-
-ElementType DataType::getElementType() const {
-    return ElementType::DATA_TYPE;
 }
 
 bool DataType::isSubClassOf(ElementType eType) const {

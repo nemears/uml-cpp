@@ -55,7 +55,6 @@ namespace UML {
             bool hasLocation() const;
             void setLocation(DeploymentTarget& location);
             void setLocation(DeploymentTarget* location);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::DEPLOYMENT;

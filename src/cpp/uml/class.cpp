@@ -113,7 +113,7 @@ void Class::referenceErased(ID id) {
     m_nestedClassifiers.elementErased(id);
 }
 
-Class::Class() {
+Class::Class() : Element(ElementType::CLASS) {
     m_ownedOperations.addProcedures.push_back(new AddOwnedOperationFunctor(this));
     m_ownedOperations.removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
     m_ownedAttributes.addProcedures.push_back(new ClassAddOwnedAttributeFunctor(this));
@@ -131,7 +131,7 @@ BehavioredClassifier(clazz) ,
 Classifier(clazz),
 PackageableElement(clazz), 
 NamedElement(clazz), 
-Element(clazz) {
+Element(clazz, ElementType::CLASS) {
     m_ownedOperations = clazz.m_ownedOperations;
     m_ownedOperations.m_el = this;
     m_ownedOperations.addProcedures.clear();
@@ -153,10 +153,6 @@ Sequence<Operation>& Class::getOwnedOperations() {
 }
 Sequence<Classifier>& Class::getNestedClassifiers() {
     return m_nestedClassifiers;
-}
-
-ElementType Class::getElementType() const {
-    return ElementType::CLASS;
 }
 
 bool Class::isSubClassOf(ElementType eType) const {

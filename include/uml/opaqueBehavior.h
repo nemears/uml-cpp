@@ -31,7 +31,6 @@ namespace UML {
             OpaqueBehavior(const OpaqueBehavior& rhs);
             virtual ~OpaqueBehavior();
             Sequence<LiteralString>& getBodies();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::OPAQUE_BEHAVIOR;

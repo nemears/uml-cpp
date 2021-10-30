@@ -81,7 +81,7 @@ void MultiplicityElement::referenceErased(ID id) {
     m_upVal.elementErased(id);
 }
 
-MultiplicityElement::MultiplicityElement() {
+MultiplicityElement::MultiplicityElement() : Element(ElementType::MULTIPLICITY_ELEMENT) {
     m_lowVal.m_signature = &MultiplicityElement::m_lowVal;
     m_lowVal.m_removeProcedures.push_back(new RemoveLowerValueProcedures(this));
     m_lowVal.m_addProcedures.push_back(new AddLowerValueProcedures(this));
@@ -90,7 +90,7 @@ MultiplicityElement::MultiplicityElement() {
     m_upVal.m_addProcedures.push_back(new AddUpperValueProcedures(this));
 }
 
-MultiplicityElement::MultiplicityElement(const MultiplicityElement& rhs) {
+MultiplicityElement::MultiplicityElement(const MultiplicityElement& rhs) : Element(rhs, ElementType::MULTIPLICITY_ELEMENT) {
     m_lowVal = rhs.m_lowVal;
     m_lowVal.m_me = this;
     m_lowVal.m_removeProcedures.clear();
@@ -194,10 +194,6 @@ void MultiplicityElement::setUpperValue(ValueSpecification* val) {
 
 void MultiplicityElement::setUpperValue(ValueSpecification& val) {
     m_upVal.set(val);
-}
-
-ElementType MultiplicityElement::getElementType() const {
-    return ElementType::MULTIPLICITY_ELEMENT;
 }
 
 bool MultiplicityElement::isSubClassOf(ElementType eType) const {

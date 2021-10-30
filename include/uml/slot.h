@@ -73,7 +73,6 @@ namespace UML {
             bool hasOwningInstance() const;
             void setOwningInstance(InstanceSpecification& inst);
             void setOwningInstance(InstanceSpecification* inst);
-            ElementType getElementType() const override;
             class NullDefiningFeatureException : public std::exception {
                 public:
                     virtual const char* what() const throw() {

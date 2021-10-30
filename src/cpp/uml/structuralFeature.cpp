@@ -26,9 +26,14 @@ void StructuralFeature::referenceErased(ID id) {
     Feature::referenceErased(id);
 }
 
-ElementType StructuralFeature::getElementType() const {
-    return ElementType::STRUCTURAL_FEATURE;
-}
+StructuralFeature::StructuralFeature() : Element(ElementType::STRUCTURAL_FEATURE) {}
+
+StructuralFeature::StructuralFeature(const StructuralFeature& feature) : 
+TypedElement(feature), 
+MultiplicityElement(feature), 
+Feature(feature),
+NamedElement(feature),
+Element(feature, ElementType::STRUCTURAL_FEATURE) {}
 
 bool StructuralFeature::isSubClassOf(ElementType eType) const {
     bool ret = TypedElement::isSubClassOf(eType);

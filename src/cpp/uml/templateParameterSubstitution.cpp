@@ -107,7 +107,7 @@ void TemplateParameterSubstitution::referenceErased(ID id) {
     m_ownedActual.elementErased(id);
 }
 
-TemplateParameterSubstitution::TemplateParameterSubstitution() {
+TemplateParameterSubstitution::TemplateParameterSubstitution() : Element(ElementType::TEMPLATE_PARAMETER_SUBSTITUTION) {
     m_formal.m_signature = &TemplateParameterSubstitution::m_formal;
     m_formal.m_addProcedures.push_back(new AddFormalProcedure(this));
     m_formal.m_removeProcedures.push_back(new RemoveFormalProcedure(this));
@@ -122,7 +122,7 @@ TemplateParameterSubstitution::TemplateParameterSubstitution() {
     m_ownedActual.m_removeProcedures.push_back(new RemoveOwnedActualProcedure(this));
 }
 
-TemplateParameterSubstitution::TemplateParameterSubstitution(const TemplateParameterSubstitution& temp) {
+TemplateParameterSubstitution::TemplateParameterSubstitution(const TemplateParameterSubstitution& temp) : Element(ElementType::TEMPLATE_PARAMETER_SUBSTITUTION) {
     m_formal = temp.m_formal;
     m_formal.m_me = this;
     m_formal.m_addProcedures.clear();
@@ -247,10 +247,6 @@ void TemplateParameterSubstitution::setOwnedActual(ParameterableElement* actual)
 
 void TemplateParameterSubstitution::setOwnedActual(ParameterableElement& actual) {
     m_ownedActual.set(actual);
-}
-
-ElementType TemplateParameterSubstitution::getElementType() const {
-    return ElementType::TEMPLATE_PARAMETER_SUBSTITUTION;
 }
 
 bool TemplateParameterSubstitution::isSubClassOf(ElementType eType) const {

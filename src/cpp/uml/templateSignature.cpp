@@ -99,7 +99,7 @@ void TemplateSignature::referenceErased(ID id) {
     m_parameter.elementErased(id);
 }
 
-TemplateSignature::TemplateSignature() {
+TemplateSignature::TemplateSignature() : Element(ElementType::TEMPLATE_SIGNATURE) {
     m_template.m_signature = &TemplateSignature::m_template;
     m_template.m_removeProcedures.push_back(new RemoveTemplateProcedure(this));
     m_template.m_addProcedures.push_back(new AddTemplateProcedure(this));
@@ -107,7 +107,7 @@ TemplateSignature::TemplateSignature() {
     m_ownedParameter.removeProcedures.push_back(new RemoveOwnedParameterFunctor(this));
 }
 
-TemplateSignature::TemplateSignature(const TemplateSignature& el) : Element(el) {
+TemplateSignature::TemplateSignature(const TemplateSignature& el) : Element(el, ElementType::TEMPLATE_SIGNATURE) {
     m_template = el.m_template;
     m_template.m_me = this;
     m_template.m_removeProcedures.clear();
@@ -155,10 +155,6 @@ Sequence<TemplateParameter>& TemplateSignature::getOwnedParameter() {
 
 Sequence<TemplateParameter>& TemplateSignature::getParameter() {
     return m_parameter;
-}
-
-ElementType TemplateSignature::getElementType() const {
-    return ElementType::TEMPLATE_SIGNATURE;
 }
 
 bool TemplateSignature::isSubClassOf(ElementType eType) const {

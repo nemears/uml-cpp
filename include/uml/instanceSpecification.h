@@ -82,7 +82,6 @@ namespace UML{
             bool hasSpecification() const;
             void setSpecification(ValueSpecification* specification);
             void setSpecification(ValueSpecification& specification);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::INSTANCE_SPECIFICATION;

@@ -40,7 +40,6 @@ namespace UML {
             DataType(const DataType& data);
             Sequence<Property>& getOwnedAttribute();
             Sequence<Operation>& getOwnedOperation();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::DATA_TYPE;

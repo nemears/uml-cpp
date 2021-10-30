@@ -123,7 +123,6 @@ namespace UML {
             bool hasOwnedDefault() const;
             void setOwnedDefault(ParameterableElement& el);
             void setOwnedDefault(ParameterableElement* el);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::TEMPLATE_PARAMETER;

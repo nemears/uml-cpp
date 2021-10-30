@@ -58,7 +58,7 @@ void Relationship::referenceErased(ID id) {
     m_relatedElements.elementErased(id);
 }
 
-Relationship::Relationship() {
+Relationship::Relationship() : Element(ElementType::RELATIONSHIP) {
     m_relatedElements.addProcedures.push_back(new AddRelationshipFunctor(this));
     m_relatedElements.addChecks.push_back(new CheckRelatedElementsFunctor(this));
     m_relatedElements.addChecks.push_back(new ReadOnlySequenceFunctor(this, "relatedElements"));
@@ -66,7 +66,7 @@ Relationship::Relationship() {
     m_relatedElements.removeChecks.push_back(new ReadOnlySequenceFunctor(this, "relatedElements"));
 }
 
-Relationship::Relationship(const Relationship& relationship) {
+Relationship::Relationship(const Relationship& relationship) : Element(relationship, ElementType::RELATIONSHIP) {
     m_relatedElements = relationship.m_relatedElements;
     m_relatedElements.m_el = this;
     m_relatedElements.addProcedures.clear();
@@ -86,10 +86,6 @@ Relationship::~Relationship() {
 
 Sequence<>& Relationship::getRelatedElements() {
     return m_relatedElements;
-}
-
-ElementType Relationship::getElementType() const {
-    return ElementType::RELATIONSHIP;
 }
 
 bool Relationship::isSubClassOf(ElementType eType) const {

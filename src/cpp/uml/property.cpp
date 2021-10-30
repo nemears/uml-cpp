@@ -365,7 +365,7 @@ void Property::referenceErased(ID id) {
     m_redefinedProperties.elementErased(id);
 }
 
-Property::Property() {
+Property::Property() : Element(ElementType::PROPERTY) {
     m_aggregation = AggregationKind::NONE;
     m_composite = false;
     m_defaultValue.m_signature = &Property::m_defaultValue;
@@ -399,7 +399,12 @@ Property::Property() {
     m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));
 }
 
-Property::Property(const Property& prop) : StructuralFeature(prop), TypedElement(prop), RedefinableElement(prop), NamedElement(prop), Element(prop) {
+Property::Property(const Property& prop) : 
+StructuralFeature(prop), 
+TypedElement(prop), 
+RedefinableElement(prop), 
+NamedElement(prop), 
+Element(prop, ElementType::PROPERTY) {
     m_aggregation = prop.m_aggregation;
     m_composite = prop.m_composite;
     m_defaultValue = prop.m_defaultValue;
@@ -700,10 +705,6 @@ void Property::setArtifact(Artifact& artifact) {
 
 Sequence<Property>& Property::getRedefinedProperties() {
     return m_redefinedProperties;
-}
-
-ElementType Property::getElementType() const {
-    return ElementType::PROPERTY;
 }
 
 bool Property::isSubClassOf(ElementType eType) const {

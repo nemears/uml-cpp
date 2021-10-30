@@ -152,7 +152,7 @@ void TemplateParameter::referenceErased(ID id) {
     m_ownedDefault.elementErased(id);
 }
 
-TemplateParameter::TemplateParameter() {
+TemplateParameter::TemplateParameter() : Element(ElementType::TEMPLATE_PARAMETER) {
     m_signature.m_signature = &TemplateParameter::m_signature;
     m_signature.m_addProcedures.push_back(new AddSignatureProcedure(this));
     m_signature.m_removeProcedures.push_back(new RemoveSignatureProcedure(this));
@@ -170,7 +170,7 @@ TemplateParameter::TemplateParameter() {
     m_ownedDefault.m_removeProcedures.push_back(new RemoveOwnedDefaultProcedure(this));
 }
 
-TemplateParameter::TemplateParameter(const TemplateParameter& el) {
+TemplateParameter::TemplateParameter(const TemplateParameter& el) : Element(ElementType::TEMPLATE_PARAMETER) {
     m_signature = el.m_signature;
     m_signature.m_me = this;
     m_signature.m_removeProcedures.clear();
@@ -323,10 +323,6 @@ void TemplateParameter::setOwnedDefault(ParameterableElement* el) {
 
 void TemplateParameter::setOwnedDefault(ParameterableElement& el) {
     m_ownedDefault.set(el);
-}
-
-ElementType TemplateParameter::getElementType() const {
-    return ElementType::TEMPLATE_PARAMETER;
 }
 
 bool TemplateParameter::isSubClassOf(ElementType eType) const {

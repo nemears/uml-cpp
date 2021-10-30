@@ -32,7 +32,6 @@ namespace UML {
         public:
             Enumeration(const Enumeration& enumeration);
             Sequence<EnumerationLiteral>& getOwnedLiterals();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ENUMERATION;

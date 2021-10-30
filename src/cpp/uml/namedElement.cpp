@@ -130,7 +130,7 @@ void NamedElement::referenceErased(ID id) {
     m_supplierDependencies->elementErased(id);
 }
 
-NamedElement::NamedElement() {
+NamedElement::NamedElement() : Element(ElementType::NAMED_ELEMENT) {
     m_memberNamespace = new Sequence<Namespace>(this);
     m_memberNamespace->addProcedures.push_back(new AddMemberNamespaceFunctor(this));
     m_memberNamespace->removeProcedures.push_back(new RemoveMemberNamespaceFunctor(this));
@@ -283,10 +283,6 @@ void NamedElement::setVisibility(VisibilityKind visibility) {
     }
 
     updateCopiesScalar(visibility, &NamedElement::m_visibility);
-}
-
-ElementType NamedElement::getElementType() const {
-    return ElementType::NAMED_ELEMENT;
 }
 
 bool NamedElement::isSubClassOf(ElementType eType) const {

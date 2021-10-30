@@ -321,7 +321,7 @@ void Classifier::referenceErased(ID id) {
     m_nestingClass.elementErased(id);
 }
 
-Classifier::Classifier() {
+Classifier::Classifier() : Element(ElementType::CLASSIFIER) {
     m_attributes.addProcedures.push_back(new AddAttributeFunctor(this));
     m_attributes.removeProcedures.push_back(new RemoveAttributeFunctor(this));
     m_generalizations.addProcedures.push_back(new AddGeneralizationFunctor(this));
@@ -349,7 +349,7 @@ Namespace(clazz),
 PackageableElement(clazz), 
 NamedElement(clazz), 
 TemplateableElement(clazz), 
-Element(clazz) {
+Element(clazz, ElementType::CLASSIFIER) {
     m_attributes = clazz.m_attributes;
     m_attributes.addProcedures.clear();
     m_attributes.addProcedures.push_back(new AddAttributeFunctor(this));
@@ -441,10 +441,6 @@ void Classifier::setNestingClass(Class* clazz) {
 
 void Classifier::setNestingClass(Class& clazz) {
     m_nestingClass.set(clazz);
-}
-
-ElementType Classifier::getElementType() const {
-    return ElementType::CLASSIFIER;
 }
 
 bool Classifier::isSubClassOf(ElementType eType) const {

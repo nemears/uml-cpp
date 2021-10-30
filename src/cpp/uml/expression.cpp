@@ -44,12 +44,12 @@ void Expression::referenceErased(ID id) {
     m_operands.elementErased(id);
 }
 
-Expression::Expression() {
+Expression::Expression() : Element(ElementType::EXPRESSION) {
     m_operands.addProcedures.push_back(new AddOperandFunctor(this));
     m_operands.removeProcedures.push_back(new RemoveOperandFunctor(this));
 }
 
-Expression::Expression(const Expression& rhs) {
+Expression::Expression(const Expression& rhs) : Element(rhs, ElementType::EXPRESSION) {
     m_operands = rhs.m_operands;
     m_operands.m_el = this;
     m_operands.addProcedures.clear();
@@ -72,10 +72,6 @@ string Expression::getSymbol() {
 
 void Expression::setSymbol(string sym) {
     m_symbol = sym;
-}
-
-ElementType Expression::getElementType() const {
-    return ElementType::EXPRESSION;
 }
 
 bool Expression::isSubClassOf(ElementType eType) const {

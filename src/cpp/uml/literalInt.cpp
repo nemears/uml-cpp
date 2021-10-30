@@ -2,16 +2,16 @@
 
 using namespace UML;
 
+LiteralInt::LiteralInt() : Element(ElementType::LITERAL_INT) {}
+
+LiteralInt::LiteralInt(const LiteralInt& rhs) : Element(rhs, ElementType::LITERAL_INT) {}
+
 int LiteralInt::getValue() {
     return value;
 }
 
 void LiteralInt::setValue(int val) {
     value = val;
-}
-
-ElementType LiteralInt::getElementType() const {
-    return ElementType::LITERAL_INT;
 }
 
 bool LiteralInt::isSubClassOf(ElementType eType) const {

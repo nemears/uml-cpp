@@ -15,22 +15,18 @@ void Profile::ProfileRemoveOwnedStereotypeFunctor::operator()(Stereotype& el) co
     }
 }
 
-Profile::Profile() {
+Profile::Profile() : Element(ElementType::PROFILE) {
     m_ownedStereotypes.addProcedures.push_back(new ProfileAddOwnedStereotypeFunctor(this));
     m_ownedStereotypes.removeProcedures.push_back(new ProfileRemoveOwnedStereotypeFunctor(this));
 }
 
-Profile::Profile(const Profile& profile) {
+Profile::Profile(const Profile& profile) : Element(profile, ElementType::PROFILE) {
     m_ownedStereotypes.addProcedures.push_back(new ProfileAddOwnedStereotypeFunctor(this));
     m_ownedStereotypes.removeProcedures.push_back(new ProfileRemoveOwnedStereotypeFunctor(this));
 }
 
 Profile::~Profile() {
 
-}
-
-ElementType Profile::getElementType() const {
-    return ElementType::PROFILE;
 }
 
 bool Profile::isSubClassOf(ElementType eType) const {

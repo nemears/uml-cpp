@@ -9,11 +9,14 @@ namespace UML {
      * its full implementation or operation.
      **/
     class Usage : public Dependency {
-        public:
+
+        friend class UmlManager;
+
+        protected:
             Usage();
+        public:
             Usage(const Usage& usage);
             virtual ~Usage();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::USAGE;

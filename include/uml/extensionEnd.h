@@ -59,7 +59,6 @@ namespace UML {
             bool hasType() const;
             void setType(Stereotype& stereotype);
             void setType(Stereotype* stereotype);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::EXTENSION_END;

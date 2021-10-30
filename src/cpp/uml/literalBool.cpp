@@ -2,16 +2,16 @@
 
 using namespace UML;
 
+LiteralBool::LiteralBool() : Element(ElementType::LITERAL_BOOL) {}
+
+LiteralBool::LiteralBool(const LiteralBool& rhs) : Element(rhs, ElementType::LITERAL_BOOL) {}
+
 bool LiteralBool::getValue() {
     return value;
 }
 
 void LiteralBool::setValue(bool val) {
     value = val;
-}
-
-ElementType LiteralBool::getElementType() const {
-    return ElementType::LITERAL_BOOL;
 }
 
 bool LiteralBool::isSubClassOf(ElementType eType) const {

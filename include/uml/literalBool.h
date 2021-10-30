@@ -5,12 +5,16 @@
 
 namespace UML {
     class LiteralBool : public LiteralSpecification {
+
+        friend class UmlManager;
+
         protected:
             bool value;
+            LiteralBool();
         public:
+            LiteralBool(const LiteralBool& rhs);
             bool getValue();
             void setValue(bool val);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::LITERAL_BOOL;

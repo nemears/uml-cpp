@@ -105,7 +105,6 @@ namespace UML {
             bool hasArtifact() const;
             void setArtifact(Artifact& artifact);
             void setArtifact(Artifact* artifact);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::OPERATION;

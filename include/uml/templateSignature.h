@@ -61,7 +61,6 @@ namespace UML {
             void setTemplate(TemplateableElement* temp);
             Sequence<TemplateParameter>& getOwnedParameter();
             Sequence<TemplateParameter>& getParameter();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::TEMPLATE_SIGNATURE;

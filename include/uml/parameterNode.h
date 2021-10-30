@@ -6,15 +6,16 @@
 
 namespace UML {
     class ParameterNode : public ObjectNode {
+
+        friend class UmlManager;
+
         protected:
             Parameter* parameter;
+            ParameterNode();
         public:
+            ParameterNode(const ParameterNode& rhs);
             Parameter* getParameter();
             void setParameter(Parameter* parameter);
-            ElementType getElementType() const override;
-            ParameterNode() {
-                parameter = NULL;
-            }
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PARAMETER_NODE;

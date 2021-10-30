@@ -31,13 +31,13 @@ void InstanceValue::referenceErased(ID id) {
     m_instance.elementErased(id);
 }
 
-InstanceValue::InstanceValue() {
+InstanceValue::InstanceValue() : Element(ElementType::INSTANCE_VALUE) {
     m_instance.m_signature = &InstanceValue::m_instance;
     m_instance.m_addProcedures.push_back(new AddInstanceProcedure(this));
     m_instance.m_removeProcedures.push_back(new RemoveInstanceProcedure(this));
 }
 
-InstanceValue::InstanceValue(const InstanceValue& rhs) {
+InstanceValue::InstanceValue(const InstanceValue& rhs) : Element(rhs, ElementType::INSTANCE_VALUE) {
     m_instance = rhs.m_instance;
     m_instance.m_me = this;
     m_instance.m_addProcedures.push_back(new AddInstanceProcedure(this));
@@ -62,10 +62,6 @@ void InstanceValue::setInstance(InstanceSpecification* inst) {
 
 void InstanceValue::setInstance(InstanceSpecification& inst) {
     m_instance.set(inst);
-}
-
-ElementType InstanceValue::getElementType() const {
-    return ElementType::INSTANCE_VALUE;
 }
 
 bool InstanceValue::isSubClassOf(ElementType eType) const {

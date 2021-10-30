@@ -45,13 +45,13 @@ void Comment::referenceErased(ID id) {
     m_owningElement.elementErased(id);
 }
 
-Comment::Comment() {
+Comment::Comment() : Element(ElementType::COMMENT) {
     m_owningElement.m_signature = &Comment::m_owningElement;
     m_owningElement.m_removeProcedures.push_back(new RemoveOwningElementProcedure(this));
     m_owningElement.m_addProcedures.push_back(new AddOwningElementProcedure(this));
 }
 
-Comment::Comment(const Comment& lhs) : Element(lhs) {
+Comment::Comment(const Comment& lhs) : Element(lhs, ElementType::COMMENT) {
     m_owningElement = lhs.m_owningElement;
     m_owningElement.m_me = this;
     m_owningElement.m_addProcedures.clear();
@@ -90,10 +90,6 @@ void Comment::setOwningElement(Element* el) {
 
 void Comment::setOwningElement(Element& el) {
     m_owningElement.set(el);
-}
-
-ElementType Comment::getElementType() const {
-    return ElementType::COMMENT;
 }
 
 bool Comment::isSubClassOf(ElementType eType) const {

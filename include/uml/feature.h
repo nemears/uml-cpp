@@ -38,7 +38,6 @@ namespace UML {
             void setFeaturingClassifier(Classifier& clazz);
             bool isStatic();
             void setStatic(bool isStatic);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             Feature& operator=(Feature&&) {
                 return *this;

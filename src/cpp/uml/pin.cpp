@@ -7,9 +7,9 @@ void Pin::referenceReindexed(ID oldID, ID newID) {
     MultiplicityElement::referenceReindexed(oldID, newID);
 }
 
-ElementType Pin::getElementType() const {
-    return ElementType::PIN;
-}
+Pin::Pin() : Element(ElementType::PIN) {}
+
+Pin::Pin(const Pin& rhs) : Element(rhs, ElementType::PIN) {}
 
 bool Pin::isSubClassOf(ElementType eType) const {
     bool ret = ObjectNode::isSubClassOf(eType);

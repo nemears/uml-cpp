@@ -54,7 +54,6 @@ namespace UML {
             bool hasApplyingPackage() const;
             void setApplyingPackage(Package* pckg);
             void setApplyingPackage(Package& pckg);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PROFILE_APPLICATION;

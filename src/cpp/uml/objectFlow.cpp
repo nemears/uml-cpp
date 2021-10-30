@@ -2,9 +2,9 @@
 
 using namespace UML;
 
-ElementType ObjectFlow::getElementType() const {
-    return ElementType::OBJECT_FLOW;
-}
+ObjectFlow::ObjectFlow() : Element(ElementType::OBJECT_FLOW) {}
+
+ObjectFlow::ObjectFlow(const ObjectFlow& rhs) : Element(rhs, ElementType::OBJECT_FLOW) {}
 
 bool ObjectFlow::isSubClassOf(ElementType eType) const {
     bool ret = ActivityEdge::isSubClassOf(eType);

@@ -33,7 +33,6 @@ namespace UML {
             DeploymentTarget(const DeploymentTarget& deploymentTarget);
             virtual ~DeploymentTarget();
             Sequence<Deployment>& getDeployments();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::DEPLOYMENT_TARGET;

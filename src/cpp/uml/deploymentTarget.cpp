@@ -51,12 +51,12 @@ void DeploymentTarget::referenceErased(ID id) {
     m_deployments.elementErased(id);
 }
 
-DeploymentTarget::DeploymentTarget() {
+DeploymentTarget::DeploymentTarget() : Element(ElementType::DEPLOYMENT_TARGET) {
     m_deployments.addProcedures.push_back(new AddDeploymentFunctor(this));
     m_deployments.removeProcedures.push_back(new RemoveDeploymentFunctor(this));
 }
 
-DeploymentTarget::DeploymentTarget(const DeploymentTarget& deploymentTarget) {
+DeploymentTarget::DeploymentTarget(const DeploymentTarget& deploymentTarget) : Element(deploymentTarget, ElementType::DEPLOYMENT_TARGET) {
     m_deployments = deploymentTarget.m_deployments;
     m_deployments.m_el = this;
     m_deployments.addProcedures.clear();
@@ -71,10 +71,6 @@ DeploymentTarget::~DeploymentTarget() {
 
 Sequence<Deployment>& DeploymentTarget::getDeployments() {
     return m_deployments;
-}
-
-ElementType DeploymentTarget::getElementType() const {
-    return ElementType::DEPLOYMENT_TARGET;
 }
 
 bool DeploymentTarget::isSubClassOf(ElementType eType) const {

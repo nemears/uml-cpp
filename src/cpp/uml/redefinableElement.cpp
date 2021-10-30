@@ -41,7 +41,7 @@ void RedefinableElement::referenceErased(ID id) {
     m_redefinitionContext.elementErased(id);
 }
 
-RedefinableElement::RedefinableElement() {
+RedefinableElement::RedefinableElement() : Element(ElementType::REDEFINABLE_ELEMENT) {
     m_redefinedElement.addProcedures.push_back(new AddRedefinedElementFunctor(this));
     m_redefinedElement.removeProcedures.push_back(new RemoveRedefinedElementFunctor(this));
     m_redefinitionContext.addProcedures.push_back(new AddRedefinitionContextFunctor(this));
@@ -52,7 +52,7 @@ RedefinableElement::~RedefinableElement() {
 
 }
 
-RedefinableElement::RedefinableElement(const RedefinableElement& el) {
+RedefinableElement::RedefinableElement(const RedefinableElement& el) : Element(el, ElementType::REDEFINABLE_ELEMENT) {
     m_redefinedElement = el.m_redefinedElement;
     m_redefinedElement.m_el = this;
     m_redefinedElement.addProcedures.clear();
@@ -73,10 +73,6 @@ Sequence<RedefinableElement>& RedefinableElement::getRedefinedElements() {
 
 Sequence<Classifier>& RedefinableElement::getRedefinitionContext() {
     return m_redefinitionContext;
-}
-
-ElementType RedefinableElement::getElementType() const {
-    return ElementType::REDEFINABLE_ELEMENT;
 }
 
 bool RedefinableElement::isSubClassOf(ElementType eType) const {

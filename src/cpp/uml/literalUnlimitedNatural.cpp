@@ -2,9 +2,13 @@
 
 using namespace UML;
 
-LiteralUnlimitedNatural::LiteralUnlimitedNatural() {
+LiteralUnlimitedNatural::LiteralUnlimitedNatural() : Element(ElementType::LITERAL_UNLIMITED_NATURAL) {
     m_val = 0;
     m_infinite = false;
+}
+
+LiteralUnlimitedNatural::LiteralUnlimitedNatural(const LiteralUnlimitedNatural& rhs) : Element(rhs, ElementType::LITERAL_UNLIMITED_NATURAL) {
+    /** TODO: plz **/
 }
 
 bool LiteralUnlimitedNatural::isInfinite() {
@@ -22,10 +26,6 @@ void LiteralUnlimitedNatural::setNumberValue(unsigned long val) {
 void LiteralUnlimitedNatural::setInfinite() {
     m_val = 0;
     m_infinite = true;
-}
-
-ElementType LiteralUnlimitedNatural::getElementType() const {
-    return ElementType::LITERAL_UNLIMITED_NATURAL;
 }
 
 bool LiteralUnlimitedNatural::isSubClassOf(ElementType eType) const {

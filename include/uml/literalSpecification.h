@@ -5,8 +5,10 @@
 
 namespace UML {
     class LiteralSpecification : public ValueSpecification {
+        protected:
+            LiteralSpecification();
         public:
-            ElementType getElementType() const override;
+            LiteralSpecification(const LiteralSpecification& rhs);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::LITERAL_SPECIFICATION;

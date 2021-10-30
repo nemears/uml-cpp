@@ -65,7 +65,6 @@ namespace UML {
             virtual ~ActivityNode();
             Sequence<ActivityEdge>& getIncoming();
             Sequence<ActivityEdge>& getOutgoing();
-            ElementType getElementType() const override;
             Activity* getActivity();
             Activity& getActivityRef();
             bool hasActivity() const;

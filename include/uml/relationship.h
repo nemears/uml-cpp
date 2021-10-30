@@ -31,7 +31,6 @@ namespace UML {
             Relationship(const Relationship& relationship);
             virtual ~Relationship();
             Sequence<>& getRelatedElements();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::RELATIONSHIP;

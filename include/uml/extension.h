@@ -50,7 +50,6 @@ namespace UML {
             bool hasOwnedEnd() const;
             void setOwnedEnd(ExtensionEnd& end);
             void setOwnedEnd(ExtensionEnd* end);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::EXTENSION;

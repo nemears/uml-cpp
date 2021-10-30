@@ -65,14 +65,19 @@ void Activity::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
-Activity::Activity() {
+Activity::Activity() : Element(ElementType::ACTIVITY) {
     m_nodes.addProcedures.push_back(new AddNodeFunctor(this));
     m_nodes.removeProcedures.push_back(new RemoveNodeFunctor(this));
     m_edges.addProcedures.push_back(new AddEdgeFunctor(this));
     m_edges.removeProcedures.push_back(new RemoveEdgeFunctor(this));
 }
 
-Activity::Activity(const Activity& rhs) : Behavior(rhs), Classifier(rhs), PackageableElement(rhs), NamedElement(rhs), Element(rhs){
+Activity::Activity(const Activity& rhs) : 
+Behavior(rhs), 
+Classifier(rhs), 
+PackageableElement(rhs), 
+NamedElement(rhs), 
+Element(rhs, ElementType::ACTIVITY) {
     m_nodes = rhs.m_nodes;
     m_nodes.m_el = this;
     m_nodes.removeProcedures.clear();
@@ -97,10 +102,6 @@ Sequence<ActivityNode>& Activity::getNodes() {
 
 Sequence<ActivityEdge>& Activity::getEdges() {
     return m_edges;
-}
-
-ElementType Activity::getElementType() const {
-    return ElementType::ACTIVITY;
 }
 
 bool Activity::isSubClassOf(ElementType eType) const {

@@ -36,13 +36,15 @@ void TypedElement::referenceErased(ID id) {
     m_type.elementErased(id);
 }
 
-TypedElement::TypedElement() {
+TypedElement::TypedElement() : Element(ElementType::TYPED_ELEMENT) {
     m_type.m_signature = &TypedElement::m_type;
     m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));
     m_type.m_addProcedures.push_back(new AddTypeProcedure(this));
 }
 
-TypedElement::TypedElement(const TypedElement& el) {
+TypedElement::TypedElement(const TypedElement& el) : 
+NamedElement(el),
+Element(el, ElementType::TYPE) {
     m_type = el.m_type;
     m_type.m_me = this;
     m_type.m_removeProcedures.clear();
@@ -77,10 +79,6 @@ void TypedElement::setType(Type* type) {
 
 void TypedElement::setType(Type& type) {
     m_type.set(type);
-}
-
-ElementType TypedElement::getElementType() const {
-    return ElementType::TYPED_ELEMENT;
 }
 
 bool TypedElement::isSubClassOf(ElementType eType) const {

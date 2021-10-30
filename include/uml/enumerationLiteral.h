@@ -41,7 +41,6 @@ namespace UML {
             bool hasEnumeration() const;
             void setEnumeration(Enumeration& enumeration);
             void setEnumeration(Enumeration* enumeration);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ENUMERATION_LITERAL;

@@ -5,12 +5,16 @@
 
 namespace UML {
     class LiteralReal : public LiteralSpecification {
+
+        friend class UmlManager;
+
         protected:
             double value = 0;
+            LiteralReal();
         public:
+            LiteralReal(const LiteralReal& rhs);
             double getValue();
             void setValue(double val);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::LITERAL_REAL;

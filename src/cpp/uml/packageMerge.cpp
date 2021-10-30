@@ -57,7 +57,7 @@ void PackageMerge::referenceErased(ID id) {
     m_receivingPackage.elementErased(id);
 }
 
-PackageMerge::PackageMerge() {
+PackageMerge::PackageMerge() : Element(ElementType::PACKAGE_MERGE) {
     m_receivingPackage.m_signature = &PackageMerge::m_receivingPackage;
     m_receivingPackage.m_removeProcedures.push_back(new RemoveReceivingPackageProcedure(this));
     m_receivingPackage.m_addProcedures.push_back(new AddReceivingPackageProcedure(this));
@@ -66,7 +66,9 @@ PackageMerge::PackageMerge() {
     m_mergedPackage.m_addProcedures.push_back(new AddMergedPackageProcedure(this));
 }
 
-PackageMerge::PackageMerge(const PackageMerge& merge) : DirectedRelationship(merge), Element(merge) {
+PackageMerge::PackageMerge(const PackageMerge& merge) : 
+DirectedRelationship(merge), 
+Element(merge, ElementType::PACKAGE_MERGE) {
     m_receivingPackage = merge.m_receivingPackage;
     m_receivingPackage.m_me = this;
     m_receivingPackage.m_removeProcedures.clear();
@@ -131,10 +133,6 @@ void PackageMerge::setMergedPackage(Package* merge) {
 
 void PackageMerge::setMergedPackage(Package& merge) {
     m_mergedPackage.set(merge);
-}
-
-ElementType PackageMerge::getElementType() const {
-    return ElementType::PACKAGE_MERGE;
 }
 
 bool PackageMerge::isSubClassOf(ElementType eType) const {

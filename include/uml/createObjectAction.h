@@ -6,15 +6,16 @@
 
 namespace UML {
     class CreateObjectAction : public Action {
+
+        friend class UmlManager;
+
         protected:
             Classifier* classifier;
+            CreateObjectAction();
         public:
+            CreateObjectAction(const CreateObjectAction& rhs);
             Classifier* getClassifier();
             void setClassifier(Classifier* classifier);
-            CreateObjectAction() {
-                classifier = NULL;
-            };
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CREATE_OBJECT_ACTION;

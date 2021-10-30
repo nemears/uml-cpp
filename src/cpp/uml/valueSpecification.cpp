@@ -118,7 +118,7 @@ void ValueSpecification::referenceErased(ID id) {
     m_expression.elementErased(id);
 }
 
-ValueSpecification::ValueSpecification() {
+ValueSpecification::ValueSpecification() : Element(ElementType::VALUE_SPECIFICATION) {
     m_owningSlot.m_signature = &ValueSpecification::m_owningSlot;
     m_owningSlot.m_removeProcedures.push_back(new RemoveOwningSlotProcedure(this));
     m_owningSlot.m_addProcedures.push_back(new AddOwningSlotProcedure(this));
@@ -130,7 +130,11 @@ ValueSpecification::ValueSpecification() {
     m_expression.m_removeProcedures.push_back(new RemoveExpressionProcedure(this));
 }
 
-ValueSpecification::ValueSpecification(const ValueSpecification& rhs) {
+ValueSpecification::ValueSpecification(const ValueSpecification& rhs) : 
+TypedElement(rhs),
+PackageableElement(rhs),
+NamedElement(rhs),
+Element(rhs, ElementType::VALUE_SPECIFICATION) {
     m_owningSlot = rhs.m_owningSlot;
     m_owningSlot.m_me = this;
     m_owningSlot.m_removeProcedures.clear();
@@ -221,10 +225,6 @@ void ValueSpecification::setExpression(Expression* expression) {
 
 void ValueSpecification::setExpression(Expression& expression) {
     m_expression.set(expression);
-}
-
-ElementType ValueSpecification::getElementType() const {
-    return ElementType::VALUE_SPECIFICATION;
 }
 
 bool ValueSpecification::isSubClassOf(ElementType eType) const {

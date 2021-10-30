@@ -60,7 +60,6 @@ namespace UML {
             bool hasSpecific() const;
             void setSpecific(Classifier& specific);
             void setSpecific(Classifier* specific);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::GENERALIZATION;

@@ -5,8 +5,13 @@
 
 namespace UML {
     class ControlFlow : public ActivityEdge {
+        
+        friend class UmlManager;
+
+        protected:
+            ControlFlow();
         public:
-            ElementType getElementType() const override;
+            ControlFlow(const ControlFlow& rhs);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CONTROL_FLOW;

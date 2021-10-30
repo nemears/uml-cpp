@@ -51,13 +51,16 @@ void Enumeration::referenceErased(ID id) {
     m_ownedLiterals.elementErased(id);
 }
 
-Enumeration::Enumeration() {
+Enumeration::Enumeration() : Element(ElementType::ENUMERATION) {
     m_ownedLiterals.addProcedures.push_back(new AddOwnedLiteralFunctor(this));
     m_ownedLiterals.removeProcedures.push_back(new RemoveOwnedLiteralFunctor(this));
 }
 
-Enumeration::Enumeration(const Enumeration& enumeration) : DataType(enumeration) , PackageableElement(enumeration), NamedElement(enumeration),
-                                                           Element(enumeration) {
+Enumeration::Enumeration(const Enumeration& enumeration) : 
+DataType(enumeration), 
+PackageableElement(enumeration), 
+NamedElement(enumeration),
+Element(enumeration, ElementType::ENUMERATION) {
     m_ownedLiterals = enumeration.m_ownedLiterals;
     m_ownedLiterals.m_el = this;
     m_ownedLiterals.addProcedures.clear();
@@ -68,10 +71,6 @@ Enumeration::Enumeration(const Enumeration& enumeration) : DataType(enumeration)
 
 Sequence<EnumerationLiteral>& Enumeration::getOwnedLiterals() {
     return m_ownedLiterals;
-}
-
-ElementType Enumeration::getElementType() const {
-    return ElementType::ENUMERATION;
 }
 
 bool Enumeration::isSubClassOf(ElementType eType) const {

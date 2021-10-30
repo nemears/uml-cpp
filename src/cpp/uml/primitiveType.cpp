@@ -2,9 +2,9 @@
 
 using namespace UML;
 
-ElementType PrimitiveType::getElementType() const {
-    return ElementType::PRIMITIVE_TYPE;
-}
+PrimitiveType::PrimitiveType() : Element(ElementType::PRIMITIVE_TYPE) {}
+
+PrimitiveType::PrimitiveType(const PrimitiveType& rhs) : Element(rhs, ElementType::PRIMITIVE_TYPE) {}
 
 bool PrimitiveType::isSubClassOf(ElementType eType) const {
     bool ret = DataType::isSubClassOf(eType);

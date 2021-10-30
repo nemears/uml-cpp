@@ -73,7 +73,7 @@ void Deployment::referenceErased(ID id) {
     m_deployedArtifacts.elementErased(id);
 }
 
-Deployment::Deployment() {
+Deployment::Deployment() : Element(ElementType::DEPLOYMENT) {
     m_deployedArtifacts.addProcedures.push_back(new AddDeployedArtifactFunctor(this));
     m_deployedArtifacts.removeProcedures.push_back(new RemoveDeployedArtifactFunctor(this));
     m_location.m_signature = &Deployment::m_location;
@@ -81,7 +81,7 @@ Deployment::Deployment() {
     m_location.m_addProcedures.push_back(new AddLocationProcedure(this));
 }
 
-Deployment::Deployment(const Deployment& deployment) {
+Deployment::Deployment(const Deployment& deployment) : Element(ElementType::DEPLOYMENT) {
     m_deployedArtifacts = deployment.m_deployedArtifacts;
     m_deployedArtifacts.addProcedures.clear();
     m_deployedArtifacts.removeProcedures.clear();
@@ -125,10 +125,6 @@ void Deployment::setLocation(DeploymentTarget* location) {
 
 void Deployment::setLocation(DeploymentTarget& location) {
     m_location.set(location);
-}
-
-ElementType Deployment::getElementType() const {
-    return ElementType::DEPLOYMENT;
 }
 
 bool Deployment::isSubClassOf(ElementType eType) const {

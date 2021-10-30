@@ -103,7 +103,6 @@ namespace UML {
             bool hasOwnedActual() const;
             void setOwnedActual(ParameterableElement& actual);
             void setOwnedActual(ParameterableElement* actual);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::TEMPLATE_PARAMETER_SUBSTITUTION;

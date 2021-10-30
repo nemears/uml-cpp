@@ -62,7 +62,7 @@ void ParameterableElement::referenceErased(ID id) {
     m_templateParameter.elementErased(id);
 }
 
-ParameterableElement::ParameterableElement() {
+ParameterableElement::ParameterableElement() : Element(ElementType::PARAMETERABLE_ELEMENT) {
     m_owningTemplateParameter.m_signature = &ParameterableElement::m_owningTemplateParameter;
     m_owningTemplateParameter.m_addProcedures.push_back(new AddOwningTemplateParameterProcedure(this));
     m_owningTemplateParameter.m_removeProcedures.push_back(new RemoveOwningTemplateParameterProcedure(this));
@@ -71,7 +71,7 @@ ParameterableElement::ParameterableElement() {
     m_templateParameter.m_addProcedures.push_back(new AddTemplateParameterProcedure(this));
 }
 
-ParameterableElement::ParameterableElement(const ParameterableElement& el) : Element(el) {
+ParameterableElement::ParameterableElement(const ParameterableElement& el) : Element(el, ElementType::PARAMETERABLE_ELEMENT) {
     m_owningTemplateParameter = el.m_owningTemplateParameter;
     m_owningTemplateParameter.m_me = this;
     m_owningTemplateParameter.m_addProcedures.clear();
@@ -136,10 +136,6 @@ void ParameterableElement::setTemplateParameter(TemplateParameter* parameter) {
 
 void ParameterableElement::setTemplateParameter(TemplateParameter& parameter) {
     m_templateParameter.set(parameter);
-}
-
-ElementType ParameterableElement::getElementType() const {
-    return ElementType::PARAMETERABLE_ELEMENT;
 }
 
 bool ParameterableElement::isSubClassOf(ElementType eType) const {

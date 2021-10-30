@@ -74,7 +74,6 @@ namespace UML {
             void setSignature(TemplateSignature& signature);
             void setSignature(TemplateSignature* signature);
             Sequence<TemplateParameterSubstitution>& getParameterSubstitution();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::TEMPLATE_BINDING;

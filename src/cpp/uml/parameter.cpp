@@ -50,10 +50,6 @@ void Parameter::AddBehaviorProcedure::operator()(ID id) const {
     }
 }
 
-ElementType Parameter::getElementType() const {
-    return ElementType::PARAMETER;
-}
-
 void Parameter::reindexName(string oldName, string newName) {
     if (getOwner()) {
         if (getOwner()->isSubClassOf(ElementType::BEHAVIOR)) {
@@ -98,7 +94,7 @@ void Parameter::referenceErased(ID id) {
     m_behavior.elementErased(id);
 }
 
-Parameter::Parameter() {
+Parameter::Parameter() : Element(ElementType::PARAMETER) {
     m_direction = ParameterDirectionKind::NONE;
     m_operation.m_signature = &Parameter::m_operation;
     m_operation.m_removeProcedures.push_back(new RemoveOperationProcedure(this));
@@ -108,7 +104,10 @@ Parameter::Parameter() {
     m_behavior.m_removeProcedures.push_back(new RemoveBehaviorProcedure(this));
 }
 
-Parameter::Parameter(const Parameter& param) : TypedElement(param) , NamedElement(param), Element(param) {
+Parameter::Parameter(const Parameter& param) : 
+TypedElement(param), 
+NamedElement(param), 
+Element(param, ElementType::PARAMETER) {
     m_direction = param.m_direction;
     m_operation = param.m_operation;
     m_operation.m_me = this;

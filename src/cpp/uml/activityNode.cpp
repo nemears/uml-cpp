@@ -41,7 +41,7 @@ void ActivityNode::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
-ActivityNode::ActivityNode() {
+ActivityNode::ActivityNode() : Element(ElementType::ACTIVITY_NODE) {
     m_activity.m_signature = &ActivityNode::m_activity;
     m_activity.m_removeProcedures.push_back(new RemoveActivityProcedure(this));
     m_activity.m_addProcedures.push_back(new AddActivityProcedure(this));
@@ -53,7 +53,10 @@ ActivityNode::ActivityNode() {
     m_outgoing.removeProcedures.push_back(new RemoveOutgoingFunctor(this));
 }
 
-ActivityNode::ActivityNode(const ActivityNode& rhs) : RedefinableElement(rhs), NamedElement(rhs), Element(rhs) {
+ActivityNode::ActivityNode(const ActivityNode& rhs) : 
+RedefinableElement(rhs), 
+NamedElement(rhs), 
+Element(rhs, ElementType::ACTIVITY_NODE) {
     m_activity = rhs.m_activity;
     m_activity.m_me = this;
     m_activity.m_removeProcedures.clear();
@@ -136,10 +139,6 @@ Sequence<ActivityEdge>& ActivityNode::getIncoming() {
 
 Sequence<ActivityEdge>& ActivityNode::getOutgoing() {
     return m_outgoing;
-}
-
-ElementType ActivityNode::getElementType() const {
-    return ElementType::ACTIVITY_NODE;
 }
 
 Activity* ActivityNode::getActivity() {

@@ -69,7 +69,7 @@ void DirectedRelationship::referenceErased(ID id) {
     m_targets.elementErased(id);
 }
 
-DirectedRelationship::DirectedRelationship() {
+DirectedRelationship::DirectedRelationship() : Element(ElementType::DIRECTED_RELATIONSHIP) {
     m_targets.addProcedures.push_back(new AddRelatedElementFunctor(this));
     m_targets.removeProcedures.push_back(new RemoveRelatedElementFunctor(this));
     m_sources.addProcedures.push_back(new AddRelatedElementFunctor(this));
@@ -80,7 +80,7 @@ DirectedRelationship::DirectedRelationship() {
     m_sources.removeProcedures.push_back(new RemoveSourcesFunctor(this));
 }
 
-DirectedRelationship::DirectedRelationship(const DirectedRelationship& relationship) {
+DirectedRelationship::DirectedRelationship(const DirectedRelationship& relationship) : Element(relationship, ElementType::DIRECTED_RELATIONSHIP) {
     m_targets = relationship.m_targets;
     m_sources = relationship.m_sources;
     m_targets.m_el = this;
@@ -109,10 +109,6 @@ Sequence<>& DirectedRelationship::getTargets() {
 
 Sequence<>& DirectedRelationship::getSources() {
     return m_sources;
-}
-
-ElementType DirectedRelationship::getElementType() const {
-    return ElementType::DIRECTED_RELATIONSHIP;
 }
 
 bool DirectedRelationship::isSubClassOf(ElementType eType) const {

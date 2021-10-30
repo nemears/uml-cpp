@@ -6,13 +6,17 @@
 
 namespace UML {
     class Pin : public ObjectNode , public MultiplicityElement {
+
+        friend class UmlManager;
+
         protected:
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override {}; // TODO
             void referenceErased(ID id) override {}; // TODO
+            Pin();
         public:
-            ElementType getElementType() const override;
+            Pin(const Pin& rhs);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PIN;

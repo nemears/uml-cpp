@@ -61,7 +61,7 @@ void Namespace::referenceErased(ID id) {
     m_ownedMembers.elementErased(id);
 }
 
-Namespace::Namespace() {
+Namespace::Namespace() : Element(ElementType::NAMESPACE) {
     m_members.addProcedures.push_back(new AddMemberFunctor(this));
     m_members.removeProcedures.push_back(new RemoveMemberFunctor(this));
     m_ownedMembers.addProcedures.push_back(new AddOwnedMemberFunctor(this));
@@ -72,7 +72,9 @@ Namespace::~Namespace() {
     
 }
 
-Namespace::Namespace(const Namespace& nmspc) : NamedElement(nmspc), Element(nmspc) {
+Namespace::Namespace(const Namespace& nmspc) : 
+NamedElement(nmspc), 
+Element(nmspc, ElementType::NAMESPACE) {
     m_members = nmspc.m_members;
     m_members.m_el = this;
     m_members.addProcedures.clear();
@@ -100,10 +102,6 @@ Sequence<NamedElement>& Namespace::getMembers() {
 
 Sequence<NamedElement>& Namespace::getOwnedMembers() {
     return m_ownedMembers;
-}
-
-ElementType Namespace::getElementType() const {
-    return ElementType::NAMESPACE;
 }
 
 bool Namespace::isSubClassOf(ElementType eType) const {

@@ -182,7 +182,7 @@ void Association::referenceErased(ID id) {
     m_navigableOwnedEnds.elementErased(id);
 }
 
-Association::Association() {
+Association::Association() : Element(ElementType::ASSOCIATION) {
     m_memberEnds.addProcedures.push_back(new AddMemberEndFunctor(this));
     m_memberEnds.removeProcedures.push_back(new RemoveMemberEndFunctor(this));
     m_ownedEnds.addProcedures.push_back(new AddOwnedEndFunctor(this));
@@ -193,7 +193,12 @@ Association::Association() {
     m_endType.removeProcedures.push_back(new RemoveEndTypeFunctor(this));
 }
 
-Association::Association(const Association& rhs) : Classifier(rhs), PackageableElement(rhs), NamedElement(rhs), Relationship(rhs), Element(rhs) {
+Association::Association(const Association& rhs) : 
+Classifier(rhs), 
+PackageableElement(rhs), 
+NamedElement(rhs), 
+Relationship(rhs), 
+Element(rhs, ElementType::ASSOCIATION) {
     m_memberEnds = rhs.m_memberEnds;
     m_memberEnds.m_el = this;
     m_memberEnds.addProcedures.clear();
@@ -238,10 +243,6 @@ Sequence<Property>& Association::getNavigableOwnedEnds() {
 
 Sequence<Type>& Association::getEndType() {
     return m_endType;
-}
-
-ElementType Association::getElementType() const {
-    return ElementType::ASSOCIATION;
 }
 
 bool Association::isSubClassOf(ElementType eType) const {

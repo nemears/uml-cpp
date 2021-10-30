@@ -94,7 +94,7 @@ void Slot::referenceErased(ID id) {
     m_owningInstance.elementErased(id);
 }
 
-Slot::Slot() {
+Slot::Slot() : Element(ElementType::SLOT) {
     m_definingFeature.m_signature = &Slot::m_definingFeature;
     m_definingFeature.m_addProcedures.push_back(new AddDefiningFeatureProcedure(this));
     m_definingFeature.m_removeProcedures.push_back(new RemoveDefiningFeatureProcedure(this));
@@ -105,7 +105,7 @@ Slot::Slot() {
     m_owningInstance.m_addProcedures.push_back(new AddOwningInstanceProcedure(this));
 }
 
-Slot::Slot(const Slot& rhs) : Element(rhs) {
+Slot::Slot(const Slot& rhs) : Element(rhs, ElementType::SLOT) {
     m_definingFeature = rhs.m_definingFeature;
     m_definingFeature.m_me = this;
     m_definingFeature.m_removeProcedures.clear();
@@ -180,10 +180,6 @@ void Slot::setOwningInstance(InstanceSpecification* inst) {
 
 void Slot::setOwningInstance(InstanceSpecification& inst) {
     m_owningInstance.set(inst);
-}
-
-ElementType Slot::getElementType() const {
-    return ElementType::SLOT;
 }
 
 bool Slot::isSubClassOf(ElementType eType) const {

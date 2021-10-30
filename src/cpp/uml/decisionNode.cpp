@@ -2,16 +2,22 @@
 
 using namespace UML;
 
+DecisionNode::DecisionNode() : Element(ElementType::DECISION_NODE) {
+    decisionInputFlow = 0;
+}
+
+DecisionNode::DecisionNode(const DecisionNode& rhs) :
+ActivityNode(rhs),
+RedefinableElement(rhs),
+NamedElement(rhs),
+Element(rhs, ElementType::DECISION_NODE) {}
+
 ObjectFlow* DecisionNode::getDecisionInputFlow() {
     return decisionInputFlow;
 }
 
 void DecisionNode::setDecisionInputFlow(ObjectFlow* inputFlow) {
     this->decisionInputFlow = inputFlow;
-}
-
-ElementType DecisionNode::getElementType() const {
-    return ElementType::DECISION_NODE;
 }
 
 bool DecisionNode::isSubClassOf(ElementType eType) const {

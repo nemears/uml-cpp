@@ -41,7 +41,6 @@ namespace UML{
             bool hasType() const;
             virtual void setType(Type* type);
             void setType(Type& type);
-            ElementType getElementType() const override;
             TypedElement& operator=(TypedElement&&) {
                 return *this;
             };

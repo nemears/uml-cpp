@@ -42,7 +42,6 @@ namespace UML {
             virtual ~Activity();
             Sequence<ActivityNode>& getNodes();
             Sequence<ActivityEdge>& getEdges();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ACTIVITY;

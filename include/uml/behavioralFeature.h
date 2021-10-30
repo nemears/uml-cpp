@@ -49,7 +49,6 @@ namespace UML {
             Sequence<Behavior>& getMethods();
             Sequence<Parameter>& getOwnedParameters();
             bool isAbstract();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::BEHAVIORAL_FEATURE;

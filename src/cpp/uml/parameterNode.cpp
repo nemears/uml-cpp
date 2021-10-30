@@ -2,16 +2,18 @@
 
 using namespace UML;
 
+ParameterNode::ParameterNode() : Element(ElementType::PARAMETER_NODE) {
+    parameter = 0;
+}
+
+ParameterNode::ParameterNode(const ParameterNode& rhs) : Element(rhs, ElementType::PARAMETER_NODE) {}
+
 Parameter* ParameterNode::getParameter() {
     return parameter;
 }
 
 void ParameterNode::setParameter(Parameter* parameter) {
     this->parameter = parameter;
-}
-
-ElementType ParameterNode::getElementType() const {
-    return ElementType::PARAMETER_NODE;
 }
 
 bool ParameterNode::isSubClassOf(ElementType eType) const {

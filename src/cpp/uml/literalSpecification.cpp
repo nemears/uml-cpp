@@ -2,9 +2,12 @@
 
 using namespace UML;
 
-ElementType LiteralSpecification::getElementType() const {
-    return ElementType::LITERAL_SPECIFICATION;
-}
+LiteralSpecification::LiteralSpecification() : Element(ElementType::LITERAL_SPECIFICATION) {}
+
+LiteralSpecification::LiteralSpecification(const LiteralSpecification& rhs) :
+ValueSpecification(rhs),
+NamedElement(rhs),
+Element(rhs, ElementType::LITERAL_SPECIFICATION) {}
 
 bool LiteralSpecification::isSubClassOf(ElementType eType) const {
     bool ret = ValueSpecification::isSubClassOf(eType);

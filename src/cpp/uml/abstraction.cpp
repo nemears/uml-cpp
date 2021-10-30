@@ -2,20 +2,16 @@
 
 using namespace UML;
 
-Abstraction::Abstraction() {
+Abstraction::Abstraction() : Element(ElementType::ABSTRACTION) {
 
 }
 
-Abstraction::Abstraction(const Abstraction& abstraction) {
+Abstraction::Abstraction(const Abstraction& abstraction) : Element(abstraction, ElementType::ABSTRACTION) {
 
 }
 
 Abstraction::~Abstraction() {
 
-}
-
-ElementType Abstraction::getElementType() const {
-    return ElementType::ABSTRACTION;
 }
 
 bool Abstraction::isSubClassOf(ElementType eType) const {

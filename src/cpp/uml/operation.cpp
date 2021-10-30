@@ -128,7 +128,7 @@ void Operation::referenceErased(ID id) {
     m_artifact.elementErased(id);
 }
 
-Operation::Operation() {
+Operation::Operation() : Element(ElementType::OPERATION) {
     m_type.m_signature = &Operation::m_type;
     m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));
     m_type.m_addProcedures.push_back(new AddTypeProcedure(this));
@@ -143,7 +143,11 @@ Operation::Operation() {
     m_artifact.m_addProcedures.push_back(new AddArtifactProcedure(this));
 }
 
-Operation::Operation(const Operation& op) : BehavioralFeature(op), TemplateableElement(op), NamedElement(op), Element(op) {
+Operation::Operation(const Operation& op) : 
+BehavioralFeature(op), 
+TemplateableElement(op), 
+NamedElement(op), 
+Element(op, ElementType::OPERATION) {
     m_type = op.m_type;
     m_type.m_me = this;
     m_type.m_removeProcedures.clear();
@@ -264,10 +268,6 @@ void Operation::setArtifact(Artifact* artifact) {
 
 void Operation::setArtifact(Artifact& artifact) {
     m_artifact.set(artifact);
-}
-
-ElementType Operation::getElementType() const {
-    return ElementType::OPERATION;
 }
 
 bool Operation::isSubClassOf(ElementType eType) const {

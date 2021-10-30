@@ -24,7 +24,6 @@ namespace UML {
         public:
             Profile(const Profile& profile);
             virtual ~Profile();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PROFILE;

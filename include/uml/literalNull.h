@@ -5,8 +5,13 @@
 
 namespace UML {
     class LiteralNull : public LiteralSpecification {
+
+        friend class UmlManager;
+
+        protected:
+            LiteralNull();
         public:
-            ElementType getElementType() const override;
+            LiteralNull(const LiteralNull& rhs);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::LITERAL_NULL;

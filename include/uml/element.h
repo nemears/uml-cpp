@@ -187,7 +187,6 @@ namespace UML {
         
         private:
             bool m_copiedElementFlag = false;
-            void init();
         protected:
             UmlManager* m_manager;
             ManagerNode* m_node;
@@ -226,10 +225,9 @@ namespace UML {
                     }
                 }
             };
-            Element();
             Element(ElementType elementType);
         public:
-            Element(const Element& el);
+            Element(const Element& el, ElementType elementType);
             virtual ~Element();
             ID getID() const;
             Element* getOwner();
@@ -259,7 +257,7 @@ namespace UML {
                 }
                 throw InvalidElementCastException(getElementTypeString().c_str() , elementTypeToString(T::elementType()).c_str());
             }
-            virtual ElementType getElementType() const;
+            ElementType getElementType() const;
             virtual bool isSubClassOf(ElementType eType) const;
             virtual std::string getElementTypeString() const;
 

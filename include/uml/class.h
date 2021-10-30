@@ -57,7 +57,6 @@ namespace UML{
             Class(const Class& clazz);
             Sequence<Operation>& getOwnedOperations();
             Sequence<Classifier>& getNestedClassifiers();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CLASS;

@@ -43,7 +43,6 @@ namespace UML {
             virtual ~Action();
             Sequence<InputPin>& getInputs();
             Sequence<OutputPin>& getOutputs();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ACTION;

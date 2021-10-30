@@ -74,7 +74,6 @@ namespace UML {
             Sequence<PackageMerge>& getPackageMerge();
             Sequence<ProfileApplication>& getProfileApplications();
             Sequence<Stereotype>& getOwnedStereotypes();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PACKAGE;

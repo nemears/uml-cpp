@@ -187,28 +187,7 @@ void Element::referenceErased(ID id) {
     }
 }
 
-// Constructor
-Element::Element() : m_elementType(ElementType::ELEMENT) {
-    init();
-}
-
-// Destructor
-Element::~Element() {
-    delete m_ownedElements;
-    delete m_relationships;
-    delete m_directedRelationships;
-    delete m_ownedComments;
-    delete m_appliedStereotype;
-    if (m_copiedElementFlag) {
-        if (m_manager) {
-            if (m_node->m_copies.count(this)) {
-                m_node->m_copies.erase(this);
-            }
-        }
-    }
-}
-
-void Element::init() {
+Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_manager = 0;
     m_node = 0;
     m_id = ID::randomID();
@@ -237,11 +216,22 @@ void Element::init() {
     //m_appliedStereotype->addChecks.push_back(new CheckAppliedStereotypeFunctor(this));
 }
 
-Element::Element(ElementType elementType) : m_elementType(elementType) {
-    init();
+Element::~Element() {
+    delete m_ownedElements;
+    delete m_relationships;
+    delete m_directedRelationships;
+    delete m_ownedComments;
+    delete m_appliedStereotype;
+    if (m_copiedElementFlag) {
+        if (m_manager) {
+            if (m_node->m_copies.count(this)) {
+                m_node->m_copies.erase(this);
+            }
+        }
+    }
 }
 
-Element::Element(const Element& el) : m_elementType(ElementType::ELEMENT) {
+Element::Element(const Element& el, ElementType elementType) : m_elementType(elementType) {
     m_copiedElementFlag = true;
     m_id = el.m_id;
     m_manager = el.m_manager;
@@ -330,9 +320,7 @@ Sequence<DirectedRelationship>& Element::getDirectedRelationships() {
     return *m_directedRelationships;
 }
 
-Sequence<Comment>& Element::getOwnedComments() {
-    return *m_ownedComments;
-}
+            void init();
 
 ElementType Element::getElementType() const {
     return m_elementType;

@@ -2,20 +2,18 @@
 
 using namespace UML;
 
-Usage::Usage() {
+Usage::Usage() : Element(ElementType::USAGE) {
 
 };
 
-Usage::Usage(const Usage& usage) {
+Usage::Usage(const Usage& usage) : 
+Dependency(usage),
+Element(usage, ElementType::USAGE) {
 
 }
 
 Usage::~Usage() {
 
-}
-
-ElementType Usage::getElementType() const {
-    return ElementType::USAGE;
 }
 
 bool Usage::isSubClassOf(ElementType eType) const {

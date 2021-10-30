@@ -2,20 +2,16 @@
 
 using namespace UML;
 
-Realization::Realization() {
+Realization::Realization() : Element(ElementType::REALIZATION) {
 
 }
 
-Realization::Realization(const Realization& realization) {
+Realization::Realization(const Realization& realization) : Element(realization, ElementType::REALIZATION) {
 
 }
 
 Realization::~Realization() {
 
-}
-
-ElementType Realization::getElementType() const {
-    return ElementType::REALIZATION;
 }
 
 bool Realization::isSubClassOf(ElementType eType) const {

@@ -5,8 +5,13 @@
 
 namespace UML {
     class ForkNode : public ActivityNode {
+
+        friend class UmlManager;
+        
+        protected:
+            ForkNode();
         public:
-            ElementType getElementType() const override;
+            ForkNode(const ForkNode& rhs);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::FORK_NODE;

@@ -102,7 +102,7 @@ void TemplateBinding::referenceErased(ID id) {
     m_signature.elementErased(id);
 }
 
-TemplateBinding::TemplateBinding() {
+TemplateBinding::TemplateBinding() : Element(ElementType::TEMPLATE_BINDING) {
     m_boundElement.m_signature = &TemplateBinding::m_boundElement;
     m_boundElement.m_removeProcedures.push_back(new RemoveBoundElementProcedure(this));
     m_boundElement.m_addProcedures.push_back(new AddBoundElementProcedure(this));
@@ -113,7 +113,9 @@ TemplateBinding::TemplateBinding() {
     m_parameterSubstitution.removeProcedures.push_back(new RemoveParameterSubstitutionFunctor(this));
 }
 
-TemplateBinding::TemplateBinding(const TemplateBinding& bind) : DirectedRelationship(bind), Element(bind) {
+TemplateBinding::TemplateBinding(const TemplateBinding& bind) : 
+DirectedRelationship(bind), 
+Element(bind, ElementType::TEMPLATE_BINDING) {
     m_boundElement = bind.m_boundElement;
     m_boundElement.m_me = this;
     m_boundElement.m_removeProcedures.clear();
@@ -187,10 +189,6 @@ void TemplateBinding::setSignature(TemplateSignature& signature) {
 
 Sequence<TemplateParameterSubstitution>& TemplateBinding::getParameterSubstitution() {
     return m_parameterSubstitution;
-}
-
-ElementType TemplateBinding::getElementType() const {
-    return ElementType::TEMPLATE_BINDING;
 }
 
 bool TemplateBinding::isSubClassOf(ElementType eType) const {

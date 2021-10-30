@@ -12,10 +12,9 @@ namespace UML {
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
-            StructuralFeature(){};
+            StructuralFeature();
         public:
-            StructuralFeature(const StructuralFeature& feature) : TypedElement(feature), MultiplicityElement(feature), Feature(feature) {};
-            ElementType getElementType() const override;
+            StructuralFeature(const StructuralFeature& feature);
             class InvalidValueException: public std::exception {
                 public:
                     virtual const char* what() const throw() {

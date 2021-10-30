@@ -5,8 +5,13 @@
 
 namespace UML{
     class PrimitiveType : public DataType {
+
+        friend class UmlManager;
+
+        protected:
+            PrimitiveType();
         public:
-            ElementType getElementType() const override;
+            PrimitiveType(const PrimitiveType& rhs);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PRIMITIVE_TYPE;

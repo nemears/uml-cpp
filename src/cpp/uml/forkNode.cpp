@@ -2,9 +2,9 @@
 
 using namespace UML;
 
-ElementType ForkNode::getElementType() const {
-    return ElementType::FORK_NODE;
-}
+ForkNode::ForkNode() : Element(ElementType::FORK_NODE) {}
+
+ForkNode::ForkNode(const ForkNode& rhs) : Element(rhs, ElementType::FORK_NODE) {}
 
 bool ForkNode::isSubClassOf(ElementType eType) const {
     bool ret = ActivityNode::isSubClassOf(eType);

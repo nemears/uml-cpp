@@ -42,7 +42,6 @@ namespace UML {
             virtual ~Dependency();
             Sequence<NamedElement>& getClient();
             Sequence<NamedElement>& getSupplier();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::DEPENDENCY;

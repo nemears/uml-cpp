@@ -54,14 +54,14 @@ void Extension::referenceErased(ID id) {
     m_ownedEnd.elementErased(id);
 }
 
-Extension::Extension() {
+Extension::Extension() : Element(ElementType::EXTENSION) {
     m_metaClass = ElementType::ELEMENT;
     m_ownedEnd.m_signature = &Extension::m_ownedEnd;
     m_ownedEnd.m_addProcedures.push_back(new AddOwnedEndProcedure(this));
     m_ownedEnd.m_removeProcedures.push_back(new RemoveOwnedEndProcedure(this));
 }
 
-Extension::Extension(const Extension& extension) {
+Extension::Extension(const Extension& extension) : Element(extension, ElementType::EXTENSION) {
     m_metaClass = extension.m_metaClass;
     m_ownedEnd = extension.m_ownedEnd;
     m_ownedEnd.m_me = this;
@@ -105,10 +105,6 @@ void Extension::setOwnedEnd(ExtensionEnd* end) {
 
 void Extension::setOwnedEnd(ExtensionEnd& end) {
     m_ownedEnd.set(end);
-}
-
-ElementType Extension::getElementType() const {
-    return ElementType::EXTENSION;
 }
 
 bool Extension::isSubClassOf(ElementType eType) const {

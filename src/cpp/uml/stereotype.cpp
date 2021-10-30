@@ -31,13 +31,19 @@ void Stereotype::referenceErased(ID id) {
     m_profile.elementErased(id);
 }
 
-Stereotype::Stereotype() {
+Stereotype::Stereotype() : Element(ElementType::STEREOTYPE) {
     m_profile.m_signature = &Stereotype::m_profile;
     m_profile.m_addProcedures.push_back(new AddProfileProcedure(this));
     m_profile.m_removeProcedures.push_back(new RemoveProfileProcedure(this));
 }
 
-Stereotype::Stereotype(const Stereotype& stereotype) {
+Stereotype::Stereotype(const Stereotype& stereotype) :
+Class(stereotype),
+Classifier(stereotype),
+ParameterableElement(stereotype),
+PackageableElement(stereotype),
+NamedElement(stereotype),
+Element(stereotype, ElementType::STEREOTYPE) {
     m_profile.m_signature = &Stereotype::m_profile;
     m_profile.m_me = this;
     m_profile.m_addProcedures.clear();
@@ -72,10 +78,6 @@ void Stereotype::setProfile(Profile* profile) {
 
 void Stereotype::setProfile(Profile& profile) {
     m_profile.set(profile);
-}
-
-ElementType Stereotype::getElementType() const {
-    return ElementType::STEREOTYPE;
 }
 
 bool Stereotype::isSubClassOf(ElementType eType) const {

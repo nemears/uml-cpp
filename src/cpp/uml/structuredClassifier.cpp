@@ -127,7 +127,7 @@ void StructuredClassifier::referenceErased(ID id) {
     m_parts.elementErased(id);
 }
 
-StructuredClassifier::StructuredClassifier() {
+StructuredClassifier::StructuredClassifier() : Element(ElementType::STRUCTURED_CLASSIFIER) {
     m_ownedAttributes.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
     m_ownedAttributes.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
     m_role.addProcedures.push_back(new AddRoleFunctor(this));
@@ -136,7 +136,12 @@ StructuredClassifier::StructuredClassifier() {
     m_parts.removeProcedures.push_back(new RemovePartFunctor(this));
 }
 
-StructuredClassifier::StructuredClassifier(const StructuredClassifier& clazz) : Classifier(clazz) {
+StructuredClassifier::StructuredClassifier(const StructuredClassifier& clazz) : 
+Classifier(clazz),
+PackageableElement(clazz),
+ParameterableElement(clazz),
+NamedElement(clazz),
+Element(clazz, ElementType::STRUCTURED_CLASSIFIER) {
     m_ownedAttributes = clazz.m_ownedAttributes;
     m_ownedAttributes.addProcedures.clear();
     m_ownedAttributes.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
@@ -171,10 +176,6 @@ Sequence<ConnectableElement>& StructuredClassifier::getRole() {
 
 Sequence<Property>& StructuredClassifier::getParts() {
     return m_parts;
-}
-
-ElementType StructuredClassifier::getElementType() const {
-    return ElementType::STRUCTURED_CLASSIFIER;
 }
 
 bool StructuredClassifier::isSubClassOf(ElementType eType) const {

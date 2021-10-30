@@ -73,7 +73,6 @@ namespace UML {
             bool hasBehavioredClassifier() const;
             void setBehavioredClassifier(BehavioredClassifier& classifier);
             void setBehavioredClassifier(BehavioredClassifier* classifier);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::BEHAVIOR;

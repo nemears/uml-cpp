@@ -146,7 +146,7 @@ void Package::referenceErased(ID id) {
     m_ownedStereotypes.elementErased(id);
 }
 
-Package::Package() {
+Package::Package() : Element(ElementType::PACKAGE) {
     m_packagedElements.addProcedures.push_back(new AddPackagedElementFunctor(this));
     m_packagedElements.removeProcedures.push_back(new RemovePackagedElementFunctor(this));
     m_packageMerge.addProcedures.push_back(new AddPackageMergeFunctor(this));
@@ -161,7 +161,11 @@ Package::~Package() {
     
 }
 
-Package::Package(const Package& pckg) : Namespace(pckg), PackageableElement(pckg) , NamedElement(pckg), Element(pckg) {
+Package::Package(const Package& pckg) : 
+Namespace(pckg), 
+PackageableElement(pckg), 
+NamedElement(pckg), 
+Element(pckg, ElementType::PACKAGE) {
     m_packagedElements = pckg.m_packagedElements;
     m_packagedElements.m_el = this;
     m_packagedElements.addProcedures.clear();
@@ -200,10 +204,6 @@ Sequence<ProfileApplication>& Package::getProfileApplications() {
 
 Sequence<Stereotype>& Package::getOwnedStereotypes() {
     return m_ownedStereotypes;
-}
-
-ElementType Package::getElementType() const {
-    return ElementType::PACKAGE;
 }
 
 bool Package::isSubClassOf(ElementType eType) const {

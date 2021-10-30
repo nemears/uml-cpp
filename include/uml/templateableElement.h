@@ -60,7 +60,6 @@ namespace UML {
             void setOwnedTemplateSignature(TemplateSignature& signature);
             void setOwnedTemplateSignature(TemplateSignature* signature);
             Sequence<TemplateBinding>& getTemplateBindings();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::TEMPLATEABLE_ELEMENT;

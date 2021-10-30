@@ -22,9 +22,13 @@ void ConnectableElement::referenceErased(ID id) {
     ParameterableElement::referenceErased(id);
 }
 
-ElementType ConnectableElement::getElementType() const {
-    return ElementType::CONNECTABLE_ELEMENT;
-}
+ConnectableElement::ConnectableElement() : Element(ElementType::CONNECTABLE_ELEMENT) {}
+
+ConnectableElement::ConnectableElement(const ConnectableElement& rhs) :
+TypedElement(rhs),
+ParameterableElement(rhs),
+NamedElement(rhs),
+Element(rhs, ElementType::CONNECTABLE_ELEMENT) {}
 
 bool ConnectableElement::isSubClassOf(ElementType eType) const {
     bool ret = TypedElement::isSubClassOf(eType);

@@ -2,9 +2,9 @@
 
 using namespace UML;
 
-ElementType MergeNode::getElementType() const {
-    return ElementType::MERGE_NODE;
-}
+MergeNode::MergeNode() : Element(ElementType::MERGE_NODE) {}
+
+MergeNode::MergeNode(const MergeNode& rhs) : Element(rhs, ElementType::MERGE_NODE) {}
 
 bool MergeNode::isSubClassOf(ElementType eType) const {
     bool ret = ActivityNode::isSubClassOf(eType);

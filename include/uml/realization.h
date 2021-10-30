@@ -9,11 +9,14 @@ namespace UML {
      * specification (the supplier) and the other representing an implementation of that specification (the client).
      **/
     class Realization : public Abstraction {
-        public:
+        
+        friend class UmlManager;
+
+        protected:
             Realization();
+        public:
             Realization(const Realization& realization);
             virtual ~Realization();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::REALIZATION;

@@ -5,8 +5,13 @@
 
 namespace UML {
     class JoinNode : public ActivityNode {
+
+        friend class UmlManager;
+
+        protected:
+            JoinNode();
         public:
-            ElementType getElementType() const override;
+            JoinNode(const JoinNode& rhs);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::JOIN_NODE;

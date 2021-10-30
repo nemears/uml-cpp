@@ -44,7 +44,6 @@ namespace UML {
             bool hasOwningPackage() const;
             void setOwningPackage(Package& package);
             void setOwningPackage(Package* package);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             PackageableElement& operator=(PackageableElement&&) {
                 return *this;

@@ -47,7 +47,6 @@ namespace UML{
             void setName(const std::string& name) override;
             Sequence<NamedElement>& getMembers();
             Sequence<NamedElement>& getOwnedMembers();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::NAMESPACE;

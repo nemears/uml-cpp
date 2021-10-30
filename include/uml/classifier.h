@@ -144,7 +144,6 @@ namespace UML {
             bool hasNestingClass() const;
             void setNestingClass(Class* clazz);
             void setNestingClass(Class& clazz);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CLASSIFIER;

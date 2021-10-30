@@ -2,9 +2,9 @@
 
 using namespace UML;
 
-ElementType LiteralNull::getElementType() const {
-    return ElementType::LITERAL_NULL;
-}
+LiteralNull::LiteralNull() : Element(ElementType::LITERAL_NULL) {}
+
+LiteralNull::LiteralNull(const LiteralNull& rhs) : Element(rhs, ElementType::LITERAL_NULL) {}
 
 bool LiteralNull::isSubClassOf(ElementType eType) const {
     bool ret = LiteralSpecification::isSubClassOf(eType);

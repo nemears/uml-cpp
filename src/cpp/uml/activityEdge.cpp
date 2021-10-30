@@ -53,7 +53,7 @@ void ActivityEdge::AddGuardProcedure::operator()(ValueSpecification* el) const {
     }
 }
 
-ActivityEdge::ActivityEdge() {
+ActivityEdge::ActivityEdge() : Element(ElementType::ACTIVITY_EDGE) {
     m_activity.m_signature = &ActivityEdge::m_activity;
     m_activity.m_removeProcedures.push_back(new RemoveActivityProcedure(this));
     m_activity.m_addProcedures.push_back(new AddActivityProcedure(this));
@@ -68,7 +68,10 @@ ActivityEdge::ActivityEdge() {
     m_guard.m_addProcedures.push_back(new AddGuardProcedure(this));
 }
 
-ActivityEdge::ActivityEdge(const ActivityEdge& rhs) : RedefinableElement(rhs) , NamedElement(rhs), Element(rhs) {
+ActivityEdge::ActivityEdge(const ActivityEdge& rhs) : 
+RedefinableElement(rhs), 
+NamedElement(rhs), 
+Element(rhs, ElementType::ACTIVITY_EDGE) {
     m_activity = rhs.m_activity;
     m_activity.m_me = this;
     m_activity.m_addProcedures.clear();
@@ -193,10 +196,6 @@ void ActivityEdge::setGuard(ValueSpecification* guard) {
 
 void ActivityEdge::setGuard(ValueSpecification& guard) {
     m_guard.set(guard);
-}
-
-ElementType ActivityEdge::getElementType() const {
-    return ElementType::ACTIVITY_EDGE;
 }
 
 bool ActivityEdge::isSubClassOf(ElementType eType) const {

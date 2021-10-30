@@ -51,13 +51,15 @@ void PackageableElement::referenceErased(ID id) {
     m_owningPackage.elementErased(id);
 }
 
-PackageableElement::PackageableElement() {
+PackageableElement::PackageableElement() : Element(ElementType::PACKAGEABLE_ELEMENT) {
     m_owningPackage.m_signature = &PackageableElement::m_owningPackage;
     m_owningPackage.m_removeProcedures.push_back(new RemoveOwningPackageProcedure(this));
     m_owningPackage.m_addProcedures.push_back(new AddOwningPackageProcedure(this));
 }
 
-PackageableElement::PackageableElement(const PackageableElement& el) : NamedElement(el) {
+PackageableElement::PackageableElement(const PackageableElement& el) : 
+NamedElement(el), 
+Element(el, ElementType::PACKAGEABLE_ELEMENT) {
     m_owningPackage = el.m_owningPackage;
     m_owningPackage.m_me = this;
     m_owningPackage.m_removeProcedures.clear();
@@ -88,10 +90,6 @@ void PackageableElement::setOwningPackage(Package* package) {
 
 void PackageableElement::setOwningPackage(Package& package) {
     m_owningPackage.set(package);
-}
-
-ElementType PackageableElement::getElementType() const {
-    return ElementType::PACKAGEABLE_ELEMENT;
 }
 
 bool PackageableElement::isSubClassOf(ElementType eType) const {

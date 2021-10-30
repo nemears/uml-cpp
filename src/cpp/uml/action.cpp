@@ -48,14 +48,18 @@ void Action::referenceReindexed(ID oldID, ID newID) {
     }
 }
 
-Action::Action() {
+Action::Action() : Element(ElementType::ACTION) {
     m_inputs.addProcedures.push_back(new AddInputFunctor(this));
     m_inputs.removeProcedures.push_back(new RemoveInputFunctor(this));
     m_outputs.addProcedures.push_back(new AddOutputFunctor(this));
     m_outputs.removeProcedures.push_back(new RemoveOutputFunctor(this));
 }
 
-Action::Action(const Action& rhs) {
+Action::Action(const Action& rhs) : 
+ActivityNode(rhs),
+RedefinableElement(rhs),
+NamedElement(rhs),
+Element(rhs, ElementType::ACTION) {
     m_inputs = rhs.m_inputs;
     m_outputs = rhs.m_outputs;
     m_inputs.removeProcedures.clear();
@@ -78,10 +82,6 @@ Sequence<InputPin>& Action::getInputs() {
 
 Sequence<OutputPin>& Action::getOutputs() {
     return m_outputs;
-}
-
-ElementType Action::getElementType() const {
-    return ElementType::ACTION;
 }
 
 bool Action::isSubClassOf(ElementType eType) const {

@@ -65,7 +65,7 @@ void BehavioredClassifier::referenceErased(ID id) {
     m_classifierBehavior.elementErased(id);
 }
 
-BehavioredClassifier::BehavioredClassifier() {
+BehavioredClassifier::BehavioredClassifier() : Element(ElementType::BEHAVIORED_CLASSIFIER) {
     m_ownedBehaviors.addProcedures.push_back(new AddOwnedBehaviorFunctor(this));
     m_ownedBehaviors.removeProcedures.push_back(new RemoveOwnedBehaviorFunctor(this));
     m_classifierBehavior.m_signature = &BehavioredClassifier::m_classifierBehavior;
@@ -73,7 +73,7 @@ BehavioredClassifier::BehavioredClassifier() {
     m_classifierBehavior.m_addProcedures.push_back(new AddClassifierBehaviorProcedure(this));
 }
 
-BehavioredClassifier::BehavioredClassifier(const BehavioredClassifier& classifier) {
+BehavioredClassifier::BehavioredClassifier(const BehavioredClassifier& classifier) : Element(classifier, ElementType::BEHAVIORED_CLASSIFIER) {
     m_ownedBehaviors = classifier.m_ownedBehaviors;
     m_ownedBehaviors.m_el = this;
     m_ownedBehaviors.addProcedures.clear();
@@ -118,10 +118,6 @@ void BehavioredClassifier::setClassifierBehavior(Behavior* behavior) {
 
 void BehavioredClassifier::setClassifierBehavior(Behavior& behavior) {
     m_classifierBehavior.set(behavior);
-}
-
-ElementType BehavioredClassifier::getElementType() const {
-    return ElementType::BEHAVIORED_CLASSIFIER;
 }
 
 bool BehavioredClassifier::isSubClassOf(ElementType eType) const {

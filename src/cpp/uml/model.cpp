@@ -2,9 +2,9 @@
 
 using namespace UML;
 
-ElementType Model::getElementType() const {
-    return ElementType::MODEL;
-}
+Model::Model() : Element(ElementType::MODEL) {}
+
+Model::Model(const Model& rhs) : Element(rhs, ElementType::MODEL) {}
 
 bool Model::isSubClassOf(ElementType eType) const {
     bool ret = Package::isSubClassOf(eType);

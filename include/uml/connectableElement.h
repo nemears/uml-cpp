@@ -11,8 +11,9 @@ namespace UML {
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            ConnectableElement();
         public:
-            ElementType getElementType() const override;
+            ConnectableElement(const ConnectableElement& rhs);
             bool isSubClassOf(ElementType eType) const override;
             ConnectableElement& operator=(ConnectableElement&&) {
                 return *this;

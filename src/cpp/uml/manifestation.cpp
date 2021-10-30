@@ -71,7 +71,7 @@ void Manifestation::referenceErased(ID id) {
     m_artifact.elementErased(id);
 }
 
-Manifestation::Manifestation() {
+Manifestation::Manifestation() : Element(ElementType::MANIFESTATION) {
     m_utilizedElement.m_signature = &Manifestation::m_utilizedElement;
     m_utilizedElement.m_addProcedures.push_back(new AddUtilizedElementProcedure(this));
     m_utilizedElement.m_removeProcedures.push_back(new RemoveUtilizedElementProcedure(this));
@@ -80,7 +80,7 @@ Manifestation::Manifestation() {
     m_artifact.m_removeProcedures.push_back(new RemoveArtifactProcedure(this));
 }
 
-Manifestation::Manifestation(const Manifestation& manifestation) {
+Manifestation::Manifestation(const Manifestation& manifestation) : Element(manifestation, ElementType::MANIFESTATION) {
     m_utilizedElement = manifestation.m_utilizedElement;
     m_utilizedElement.m_me = this;
     m_utilizedElement.m_addProcedures.clear();
@@ -141,10 +141,6 @@ void Manifestation::setArtifact(Artifact* artifact) {
 
 void Manifestation::setArtifact(Artifact& artifact) {
     m_artifact.set(artifact);
-}
-
-ElementType Manifestation::getElementType() const {
-    return ElementType::MANIFESTATION;
 }
 
 bool Manifestation::isSubClassOf(ElementType eType) const {

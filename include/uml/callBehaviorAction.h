@@ -8,13 +8,11 @@ namespace UML {
     class CallBehaviorAction : public Action {
         protected:
             Behavior* behavior;
+            CallBehaviorAction();
         public:
+            CallBehaviorAction(const CallBehaviorAction& rhs);
             Behavior* getBehavior();
             void setBehavior(Behavior* bhv);
-            ElementType getElementType() const override;
-            CallBehaviorAction() {
-                behavior = NULL;
-            };
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CALL_BEHAVIOR_ACTION;

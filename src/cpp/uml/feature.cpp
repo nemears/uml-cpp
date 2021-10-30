@@ -56,14 +56,17 @@ void Feature::referenceErased(ID id) {
     m_featuringClassifier.elementErased(id);
 }
 
-Feature::Feature() {
+Feature::Feature() : Element(ElementType::FEATURE) {
     m_featuringClassifier.m_signature = &Feature::m_featuringClassifier;
     m_featuringClassifier.m_removeProcedures.push_back(new RemoveFeaturingClassifierProcedure(this));
     m_featuringClassifier.m_addProcedures.push_back(new AddFeaturingClassifierProcedure(this));
     m_static = false;
 }
 
-Feature::Feature(const Feature& feature) : RedefinableElement(feature), NamedElement(feature), Element(feature) {
+Feature::Feature(const Feature& feature) : 
+RedefinableElement(feature), 
+NamedElement(feature), 
+Element(feature, ElementType::FEATURE) {
     m_featuringClassifier = feature.m_featuringClassifier;
     m_featuringClassifier.m_me = this;
     m_featuringClassifier.m_removeProcedures.clear();
@@ -99,10 +102,6 @@ bool Feature::isStatic() {
 
 void Feature::setStatic(bool isStatic) {
     m_static = isStatic;
-}
-
-ElementType Feature::getElementType() const {
-    return ElementType::FEATURE;
 }
 
 bool Feature::isSubClassOf(ElementType eType) const {

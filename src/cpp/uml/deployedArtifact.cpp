@@ -2,20 +2,16 @@
 
 using namespace UML;
 
-DeployedArtifact::DeployedArtifact() {
+DeployedArtifact::DeployedArtifact() : Element(ElementType::DEPLOYED_ARTIFACT) {
     
 }
 
-DeployedArtifact::DeployedArtifact(const DeployedArtifact& deployedArtifact) {
+DeployedArtifact::DeployedArtifact(const DeployedArtifact& deployedArtifact) : Element(deployedArtifact, ElementType::DEPLOYED_ARTIFACT) {
 
 }
 
 DeployedArtifact::~DeployedArtifact() {
 
-}
-
-ElementType DeployedArtifact::getElementType() const {
-    return ElementType::DEPLOYED_ARTIFACT;
 }
 
 bool DeployedArtifact::isSubClassOf(ElementType eType) const {

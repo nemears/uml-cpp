@@ -76,7 +76,6 @@ namespace UML {
             bool hasBehavior() const;
             void setBehavior(Behavior* behavior);
             void setBehavior(Behavior& behavior);
-            ElementType getElementType() const override;
             ParameterDirectionKind getDirection();
             void setDirection(ParameterDirectionKind direction);
             std::string getDirectionString();

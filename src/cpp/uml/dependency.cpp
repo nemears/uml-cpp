@@ -82,14 +82,14 @@ void Dependency::referenceErased(ID id) {
     m_supplier.elementErased(id);
 }
 
-Dependency::Dependency() {
+Dependency::Dependency() : Element(ElementType::DEPENDENCY) {
     m_client.addProcedures.push_back(new AddClientFunctor(this));
     m_client.removeProcedures.push_back(new RemoveClientFunctor(this));
     m_supplier.addProcedures.push_back(new AddSupplierFunctor(this));
     m_supplier.removeProcedures.push_back(new RemoveSupplierFunctor(this));
 }
 
-Dependency::Dependency(const Dependency& dependency) {
+Dependency::Dependency(const Dependency& dependency) : Element(dependency, ElementType::DEPENDENCY) {
     m_client.m_el = this;
     m_supplier.m_el = this;
     m_client.addProcedures.clear();
@@ -110,10 +110,6 @@ Sequence<NamedElement>& Dependency::getClient() {
 
 Sequence<NamedElement>& Dependency::getSupplier() {
     return m_supplier;
-}
-
-ElementType Dependency::getElementType() const {
-    return ElementType::DEPENDENCY;
 }
 
 bool Dependency::isSubClassOf(ElementType eType) const {

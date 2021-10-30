@@ -55,7 +55,6 @@ namespace UML {
             Sequence<Property>& getOwnedAttributes();
             Sequence<ConnectableElement>& getRole();
             Sequence<Property>& getParts();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::STRUCTURED_CLASSIFIER;

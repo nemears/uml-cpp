@@ -38,12 +38,12 @@ void OpaqueBehavior::referenceErased(ID id) {
     m_bodies.elementErased(id);
 }
 
-OpaqueBehavior::OpaqueBehavior() {
+OpaqueBehavior::OpaqueBehavior() : Element(ElementType::OPAQUE_BEHAVIOR) {
     m_bodies.addProcedures.push_back(new AddBodyFunctor(this));
     m_bodies.removeProcedures.push_back(new RemoveBodyFunctor(this));
 }
 
-OpaqueBehavior::OpaqueBehavior(const OpaqueBehavior& rhs) {
+OpaqueBehavior::OpaqueBehavior(const OpaqueBehavior& rhs) : Element(rhs, ElementType::OPAQUE_BEHAVIOR) {
     m_bodies = rhs.m_bodies;
     m_bodies.m_el = this;
     m_bodies.addProcedures.clear();
@@ -58,10 +58,6 @@ OpaqueBehavior::~OpaqueBehavior() {
 
 Sequence<LiteralString>& OpaqueBehavior::getBodies() {
     return m_bodies;
-}
-
-ElementType OpaqueBehavior::getElementType() const {
-    return ElementType::OPAQUE_BEHAVIOR;
 }
 
 bool OpaqueBehavior::isSubClassOf(ElementType eType) const {

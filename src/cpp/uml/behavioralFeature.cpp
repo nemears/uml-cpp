@@ -99,7 +99,7 @@ void BehavioralFeature::referenceErased(ID id) {
     m_ownedParameters.elementErased(id);
 }
 
-BehavioralFeature::BehavioralFeature() {
+BehavioralFeature::BehavioralFeature() : Element(ElementType::BEHAVIORAL_FEATURE) {
     m_methods.addProcedures.push_back(new AddMethodFunctor(this));
     m_methods.removeProcedures.push_back(new RemoveMethodFunctor(this));
     m_ownedParameters.addProcedures.push_back(new AddParameterFunctor(this));
@@ -107,7 +107,9 @@ BehavioralFeature::BehavioralFeature() {
     m_ownedParameters.removeProcedures.push_back(new RemoveParameterFunctor(this));
 }
 
-BehavioralFeature::BehavioralFeature(const BehavioralFeature& el) : NamedElement(el), Element(el) {
+BehavioralFeature::BehavioralFeature(const BehavioralFeature& el) : 
+NamedElement(el), 
+Element(el, ElementType::BEHAVIORAL_FEATURE) {
     m_methods = el.m_methods;
     m_methods.addProcedures.clear();
     m_methods.removeProcedures.clear();
@@ -136,10 +138,6 @@ Sequence<Parameter>& BehavioralFeature::getOwnedParameters() {
 
 bool BehavioralFeature::isAbstract() {
     return m_methods.size() > 0;
-}
-
-ElementType BehavioralFeature::getElementType() const {
-    return ElementType::BEHAVIORAL_FEATURE;
 }
 
 bool BehavioralFeature::isSubClassOf(ElementType eType) const {

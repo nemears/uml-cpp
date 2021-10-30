@@ -88,7 +88,7 @@ void TemplateableElement::referenceErased(ID id) {
     m_templateBindings.elementErased(id);
 }
 
-TemplateableElement::TemplateableElement() {
+TemplateableElement::TemplateableElement() : Element(ElementType::TEMPLATEABLE_ELEMENT) {
     m_ownedTemplateSignature.m_signature = &TemplateableElement::m_ownedTemplateSignature;
     m_ownedTemplateSignature.m_removeProcedures.push_back(new RemoveOwnedTemplateSignatureProcedure(this));
     m_ownedTemplateSignature.m_addProcedures.push_back(new AddOwnedTemplateSignatureProcedure(this));
@@ -96,7 +96,7 @@ TemplateableElement::TemplateableElement() {
     m_templateBindings.removeProcedures.push_back(new RemoveTemplateBindingFunctor(this));
 }
 
-TemplateableElement::TemplateableElement(const TemplateableElement& el){
+TemplateableElement::TemplateableElement(const TemplateableElement& el) : Element(el, ElementType::TEMPLATEABLE_ELEMENT) {
     m_ownedTemplateSignature = el.m_ownedTemplateSignature;
     m_ownedTemplateSignature.m_me = this;
     m_ownedTemplateSignature.m_removeProcedures.clear();
@@ -141,10 +141,6 @@ void TemplateableElement::setOwnedTemplateSignature(TemplateSignature& signature
 
 Sequence<TemplateBinding>& TemplateableElement::getTemplateBindings() {
     return m_templateBindings;
-}
-
-ElementType TemplateableElement::getElementType() const {
-    return ElementType::TEMPLATEABLE_ELEMENT;
 }
 
 bool TemplateableElement::isSubClassOf(ElementType eType) const {

@@ -2,9 +2,9 @@
 
 using namespace UML;
 
-ElementType JoinNode::getElementType() const {
-    return ElementType::JOIN_NODE;
-}
+JoinNode::JoinNode() : Element(ElementType::JOIN_NODE) {}
+
+JoinNode::JoinNode(const JoinNode& rhs) : Element(rhs, ElementType::JOIN_NODE) {}
 
 bool JoinNode::isSubClassOf(ElementType eType) const {
     bool ret = ActivityNode::isSubClassOf(eType);

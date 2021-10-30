@@ -74,7 +74,6 @@ namespace UML {
              * endType is derived from the types of the member ends.
              **/
             Sequence<Type>& getEndType();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ASSOCIATION;

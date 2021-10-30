@@ -52,7 +52,6 @@ namespace UML {
             virtual ~DirectedRelationship();
             Sequence<>& getTargets();
             Sequence<>& getSources();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::DIRECTED_RELATIONSHIP;

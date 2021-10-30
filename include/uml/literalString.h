@@ -5,12 +5,16 @@
 
 namespace UML {
     class LiteralString : public LiteralSpecification {
+
+        friend class UmlManager;
+
         protected:
             std::string value;
+            LiteralString();
         public:
+            LiteralString(const LiteralString& rhs);
             std::string getValue();
             void setValue(std::string val);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::LITERAL_STRING;

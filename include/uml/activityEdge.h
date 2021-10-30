@@ -89,7 +89,6 @@ namespace UML {
             bool hasGuard() const;
             void setGuard(ValueSpecification* guard);
             void setGuard(ValueSpecification& guard);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ACTIVITY_EDGE;

@@ -227,7 +227,6 @@ namespace UML{
             void setArtifact(Artifact* artifact);
             void setArtifact(Artifact& artifact);
             Sequence<Property>& getRedefinedProperties();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PROPERTY;

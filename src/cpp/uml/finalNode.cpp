@@ -2,9 +2,9 @@
 
 using namespace UML;
 
-ElementType FinalNode::getElementType() const {
-    return ElementType::FINAL_NODE;
-}
+FinalNode::FinalNode() : Element(ElementType::FINAL_NODE) {}
+
+FinalNode::FinalNode(const FinalNode& rhs) : Element(rhs, ElementType::FINAL_NODE) {}
 
 bool FinalNode::isSubClassOf(ElementType eType) const {
     bool ret = ActivityNode::isSubClassOf(eType);

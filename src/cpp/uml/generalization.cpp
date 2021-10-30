@@ -125,7 +125,7 @@ void Generalization::referenceErased(ID id) {
     m_specific.elementErased(id);
 }
 
-Generalization::Generalization() {
+Generalization::Generalization() : Element(ElementType::GENERALIZATION) {
     m_general.m_signature = &Generalization::m_general;
     m_general.m_removeProcedures.push_back(new RemoveGeneralProcedure(this));
     m_general.m_addProcedures.push_back(new AddGeneralProcedure(this));
@@ -134,7 +134,9 @@ Generalization::Generalization() {
     m_specific.m_addProcedures.push_back(new AddSpecificProcedure(this));
 }
 
-Generalization::Generalization(const Generalization& rhs) : DirectedRelationship(rhs), Element(rhs) {
+Generalization::Generalization(const Generalization& rhs) : 
+DirectedRelationship(rhs), 
+Element(rhs, ElementType::GENERALIZATION) {
     m_general = rhs.m_general;
     m_general.m_me = this;
     m_general.m_removeProcedures.clear();
@@ -199,10 +201,6 @@ void Generalization::setSpecific(Classifier* specific) {
 
 void Generalization::setSpecific(Classifier& specific) {
     m_specific.set(specific);
-}
-
-ElementType Generalization::getElementType() const {
-    return ElementType::GENERALIZATION;
 }
 
 bool Generalization::isSubClassOf(ElementType eType) const {

@@ -13,7 +13,6 @@ namespace UML {
         public:
             DeployedArtifact(const DeployedArtifact& deployedArtifact);
             virtual ~DeployedArtifact();
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::DEPLOYED_ARTIFACT;

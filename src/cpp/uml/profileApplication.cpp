@@ -57,7 +57,7 @@ void ProfileApplication::referenceErased(ID id) {
     m_applyingPackage.elementErased(id);
 }
 
-ProfileApplication::ProfileApplication() {
+ProfileApplication::ProfileApplication() : Element(ElementType::PROFILE_APPLICATION) {
     m_appliedProfile.m_signature = &ProfileApplication::m_appliedProfile;
     m_appliedProfile.m_addProcedures.push_back(new AddAppliedProfileProcedure(this));
     m_appliedProfile.m_removeProcedures.push_back(new RemoveAppliedProfileProcedure(this));
@@ -66,7 +66,7 @@ ProfileApplication::ProfileApplication() {
     m_applyingPackage.m_removeProcedures.push_back(new RemoveApplyingPackageProcedure(this));
 }
 
-ProfileApplication::ProfileApplication(const ProfileApplication& profileApplication) {
+ProfileApplication::ProfileApplication(const ProfileApplication& profileApplication) : Element(profileApplication, ElementType::PROFILE_APPLICATION) {
     m_appliedProfile = profileApplication.m_appliedProfile;
     m_appliedProfile.m_me = this;
     m_appliedProfile.m_addProcedures.clear();
@@ -131,10 +131,6 @@ void ProfileApplication::setApplyingPackage(Package* pckg) {
 
 void ProfileApplication::setApplyingPackage(Package& pckg) {
     m_applyingPackage.set(pckg);
-}
-
-ElementType ProfileApplication::getElementType() const {
-    return ElementType::PROFILE_APPLICATION;
 }
 
 bool ProfileApplication::isSubClassOf(ElementType eType) const {

@@ -47,13 +47,13 @@ void EnumerationLiteral::referenceErased(ID id) {
     m_enumeration.elementErased(id);
 }
 
-EnumerationLiteral::EnumerationLiteral() {
+EnumerationLiteral::EnumerationLiteral() : Element(ElementType::ENUMERATION_LITERAL) {
     m_enumeration.m_signature = &EnumerationLiteral::m_enumeration;
     m_enumeration.m_addProcedures.push_back(new AddEnumerationProcedure(this));
     m_enumeration.m_removeProcedures.push_back(new RemoveEnumerationProcedure(this));
 }
 
-EnumerationLiteral::EnumerationLiteral(const EnumerationLiteral& rhs) {
+EnumerationLiteral::EnumerationLiteral(const EnumerationLiteral& rhs) : Element(rhs, ElementType::ENUMERATION_LITERAL) {
     m_enumeration = rhs.m_enumeration;
     m_enumeration.m_me = this;
     m_enumeration.m_removeProcedures.clear();
@@ -84,10 +84,6 @@ void EnumerationLiteral::setEnumeration(Enumeration* enumeration) {
 
 void EnumerationLiteral::setEnumeration(Enumeration& enumeration) {
     m_enumeration.set(enumeration);
-}
-
-ElementType EnumerationLiteral::getElementType() const {
-    return ElementType::ENUMERATION_LITERAL;
 }
 
 bool EnumerationLiteral::isSubClassOf(ElementType eType) const {

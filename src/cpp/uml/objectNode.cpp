@@ -12,16 +12,18 @@ void ObjectNode::referenceReindexed(ID oldID, ID newID) {
     TypedElement::referenceReindexed(oldID, newID);
 }
 
+ObjectNode::ObjectNode() : Element(ElementType::OBJECT_NODE) {
+    upperBound = 0;
+}
+
+ObjectNode::ObjectNode(const ObjectNode& rhs) : Element(rhs, ElementType::OBJECT_NODE) {}
+
 ValueSpecification* ObjectNode::getUpperBound() {
     return upperBound;
 }
 
 void ObjectNode::setUpperBound(ValueSpecification* upperBound) {
     this->upperBound = upperBound;
-}
-
-ElementType ObjectNode::getElementType() const {
-    return ElementType::OBJECT_NODE;
 }
 
 bool ObjectNode::isObjectNode() {

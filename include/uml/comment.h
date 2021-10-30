@@ -46,7 +46,6 @@ namespace UML {
             bool hasOwningElement() const;
             void setOwningElement(Element* el);
             void setOwningElement(Element& el);
-            ElementType getElementType() const override;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::COMMENT;

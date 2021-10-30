@@ -105,7 +105,7 @@ void InstanceSpecification::referenceErased(ID id) {
     m_slots.elementErased(id);
 }
 
-InstanceSpecification::InstanceSpecification() {
+InstanceSpecification::InstanceSpecification() : Element(ElementType::INSTANCE_SPECIFICATION) {
     m_classifier.m_signature = &InstanceSpecification::m_classifier;
     m_classifier.m_removeProcedures.push_back(new RemoveClassifierProcedure(this));
     m_classifier.m_addProcedures.push_back(new AddClassifierProcedure(this));
@@ -116,7 +116,13 @@ InstanceSpecification::InstanceSpecification() {
     m_specification.m_addProcedures.push_back(new AddSpecificationProcedure(this));
 }
 
-InstanceSpecification::InstanceSpecification(const InstanceSpecification& inst) : PackageableElement(inst), DeploymentTarget(inst), DeployedArtifact(inst), ParameterableElement(inst), NamedElement(inst), Element(inst) {
+InstanceSpecification::InstanceSpecification(const InstanceSpecification& inst) : 
+PackageableElement(inst), 
+DeploymentTarget(inst), 
+DeployedArtifact(inst), 
+ParameterableElement(inst), 
+NamedElement(inst), 
+Element(inst, ElementType::INSTANCE_SPECIFICATION) {
     m_classifier = inst.m_classifier;
     m_classifier.m_me = this;
     m_classifier.m_removeProcedures.clear();
@@ -190,10 +196,6 @@ void InstanceSpecification::setSpecification(ValueSpecification& specification) 
 
 Sequence<Slot>& InstanceSpecification::getSlots() {
     return m_slots;
-}
-
-ElementType InstanceSpecification::getElementType() const {
-    return ElementType::INSTANCE_SPECIFICATION;
 }
 
 bool InstanceSpecification::isSubClassOf(ElementType eType) const {

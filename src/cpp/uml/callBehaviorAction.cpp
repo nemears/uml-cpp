@@ -2,8 +2,16 @@
 
 using namespace UML;
 
-ElementType CallBehaviorAction::getElementType() const {
-    return ElementType::CALL_BEHAVIOR_ACTION;
+CallBehaviorAction::CallBehaviorAction() : Element(ElementType::CALL_BEHAVIOR_ACTION) {
+    /** TODO: this **/
+}
+
+CallBehaviorAction::CallBehaviorAction(const CallBehaviorAction& rhs) : 
+Action(rhs),
+RedefinableElement(rhs),
+NamedElement(rhs),
+Element(ElementType::CALL_BEHAVIOR_ACTION) {
+    /** TODO: this **/
 }
 
 Behavior* CallBehaviorAction::getBehavior() {

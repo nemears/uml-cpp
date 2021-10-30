@@ -8,13 +8,11 @@ namespace UML {
     class DecisionNode : public ActivityNode {
         protected:
             ObjectFlow* decisionInputFlow;
+            DecisionNode();
         public:
+            DecisionNode(const DecisionNode& rhs);
             ObjectFlow* getDecisionInputFlow();
             void setDecisionInputFlow(ObjectFlow* inputFlow);
-            ElementType getElementType() const override;
-            DecisionNode() {
-                decisionInputFlow = 0;
-            };
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::DECISION_NODE;

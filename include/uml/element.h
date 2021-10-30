@@ -49,6 +49,7 @@ namespace UML {
         FINAL_NODE,
         FORK_NODE,
         GENERALIZATION,
+        GENERALIZATION_SET,
         INITIAL_NODE,
         INPUT_PIN,
         INSTANCE_SPECIFICATION,
@@ -186,10 +187,13 @@ namespace UML {
         
         private:
             bool m_copiedElementFlag = false;
+            void init();
         protected:
             UmlManager* m_manager;
             ManagerNode* m_node;
             ID m_id;
+
+            const ElementType m_elementType;
 
             // owner
             ID m_ownerID;
@@ -223,6 +227,7 @@ namespace UML {
                 }
             };
             Element();
+            Element(ElementType elementType);
         public:
             Element(const Element& el);
             virtual ~Element();

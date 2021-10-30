@@ -188,7 +188,27 @@ void Element::referenceErased(ID id) {
 }
 
 // Constructor
-Element::Element() {
+Element::Element() : m_elementType(ElementType::ELEMENT) {
+    init();
+}
+
+// Destructor
+Element::~Element() {
+    delete m_ownedElements;
+    delete m_relationships;
+    delete m_directedRelationships;
+    delete m_ownedComments;
+    delete m_appliedStereotype;
+    if (m_copiedElementFlag) {
+        if (m_manager) {
+            if (m_node->m_copies.count(this)) {
+                m_node->m_copies.erase(this);
+            }
+        }
+    }
+}
+
+void Element::init() {
     m_manager = 0;
     m_node = 0;
     m_id = ID::randomID();
@@ -217,23 +237,11 @@ Element::Element() {
     //m_appliedStereotype->addChecks.push_back(new CheckAppliedStereotypeFunctor(this));
 }
 
-// Destructor
-Element::~Element() {
-    delete m_ownedElements;
-    delete m_relationships;
-    delete m_directedRelationships;
-    delete m_ownedComments;
-    delete m_appliedStereotype;
-    if (m_copiedElementFlag) {
-        if (m_manager) {
-            if (m_node->m_copies.count(this)) {
-                m_node->m_copies.erase(this);
-            }
-        }
-    }
+Element::Element(ElementType elementType) : m_elementType(elementType) {
+    init();
 }
 
-Element::Element(const Element& el) {
+Element::Element(const Element& el) : m_elementType(ElementType::ELEMENT) {
     m_copiedElementFlag = true;
     m_id = el.m_id;
     m_manager = el.m_manager;
@@ -327,7 +335,7 @@ Sequence<Comment>& Element::getOwnedComments() {
 }
 
 ElementType Element::getElementType() const {
-    return ElementType::ELEMENT;
+    return m_elementType;
 }
 
 bool Element::isSubClassOf(ElementType eType) const {
@@ -434,6 +442,9 @@ string Element::elementTypeToString(ElementType eType) {
         }
         case ElementType::GENERALIZATION : {
             return "GENERALIZATION";
+        }
+        case ElementType::GENERALIZATION_SET : {
+            return "GENERALIZATION_SET";
         }
         case ElementType::INITIAL_NODE : {
             return "INITIAL_NODE";

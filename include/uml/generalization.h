@@ -40,6 +40,17 @@ namespace UML {
                     void operator()(ID id) const override;
             };
             Singleton<Classifier, Generalization> m_specific = Singleton<Classifier, Generalization>(this);
+            Sequence<GeneralizationSet> m_generalizationSets = Sequence<GeneralizationSet>(this);
+            class AddGeneralizationSetFunctor : public TemplateAbstractSequenceFunctor<GeneralizationSet,Generalization> {
+                public:
+                    AddGeneralizationSetFunctor(Generalization* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(GeneralizationSet& el) const override;
+            };
+            class RemoveGeneralizationSetFunctor : public TemplateAbstractSequenceFunctor<GeneralizationSet,Generalization> {
+                public:
+                    RemoveGeneralizationSetFunctor(Generalization* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(GeneralizationSet& el) const override;
+            };
             void referenceReindexed(ID oldID, ID newID) override;
             void referencingReleased(ID id) override;
             void restoreReferences() override;
@@ -60,6 +71,7 @@ namespace UML {
             bool hasSpecific() const;
             void setSpecific(Classifier& specific);
             void setSpecific(Classifier* specific);
+            Sequence<GeneralizationSet>& getGeneralizationSets();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::GENERALIZATION;

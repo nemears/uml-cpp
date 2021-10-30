@@ -1,5 +1,6 @@
 #include "uml/generalization.h"
 #include "uml/classifier.h"
+#include "uml/generalizationSet.h"
 
 using namespace UML;
 
@@ -99,6 +100,20 @@ void Generalization::AddSpecificProcedure::operator()(ID id) const {
     if (m_me->getOwnerID() != id) {
         m_me->setOwnerByID(id);
     }
+}
+
+void Generalization::AddGeneralizationSetFunctor::operator()(GeneralizationSet& el) const {
+    if (!el.getGeneralizations().count(m_el->getID())) {
+        el.getGeneralizations().add(*m_el);
+    }
+    updateCopiedSequenceAddedTo(el, &Generalization::getGeneralizationSets);
+}
+
+void Generalization::RemoveGeneralizationSetFunctor::operator()(GeneralizationSet& el) const {
+    if (el.getGeneralizations().count(m_el->getID())) {
+        el.getGeneralizations().remove(*m_el);
+    }
+    updateCopiedSequenceRemovedFrom(el, &Generalization::getGeneralizationSets);
 }
 
 void Generalization::referenceReindexed(ID oldID, ID newID) {
@@ -201,6 +216,10 @@ void Generalization::setSpecific(Classifier* specific) {
 
 void Generalization::setSpecific(Classifier& specific) {
     m_specific.set(specific);
+}
+
+Sequence<GeneralizationSet>& Generalization::getGeneralizationSets() {
+    return m_generalizationSets;
 }
 
 bool Generalization::isSubClassOf(ElementType eType) const {

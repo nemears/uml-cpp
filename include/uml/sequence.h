@@ -65,6 +65,7 @@ namespace UML {
     class MultiplicityElement;
     class OpaqueBehavior;
     class Profile;
+    class GeneralizationSet;
     template <class V, class U> class TemplateAbstractSequenceFunctor;
 
     class ReadOnlySequenceException : public std::exception {
@@ -152,6 +153,7 @@ namespace UML {
         friend class RemoveOwnerFunctor;
         friend class OpaqueBehavior;
         friend class Profile;
+        friend class GeneralizationSet;
         template <class V, class U> friend class TemplateAbstractSequenceFunctor;
         
         private:

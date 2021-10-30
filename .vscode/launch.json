@@ -15,7 +15,9 @@
             // Resolved by CMake Tobols:
             "program": "${command:cmake.launchTargetPath}",
             "args": [
-                "--mount-path=~/Desktop -l ~/Projects/uml-cpp/src/yml/umlManagerTests/server.yml"
+                "--mount-path=~/Desktop",
+                "-l",
+                "~/Projects/uml-cpp/src/yml/umlManagerTests/server.yml"
             ],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}\\build",

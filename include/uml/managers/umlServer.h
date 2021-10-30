@@ -44,6 +44,9 @@ namespace UML {
             std::mutex m_msgMtx;
             std::condition_variable m_msgCv;
             std::atomic<bool> m_msgV = true;
+            std::mutex m_shutdownMtx;
+            std::condition_variable m_shutdownCv;
+            bool m_shutdownV = false;
 
             // helper methods
             Element& post(ElementType eType);
@@ -57,6 +60,8 @@ namespace UML {
             bool loaded(ID id) override;
             void reset();
             void shutdown();
+            int waitTillShutDown(int ms);
+            int waitTillShutDown();
     };
 }
 

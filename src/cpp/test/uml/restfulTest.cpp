@@ -94,13 +94,18 @@ TEST_F(RestfulTest, bigMessageTest) {
 }
 
 void runServer() {
-    system("../../../../../build/src/cpp/uml/./uml-server -l ../../../../../src/yml/umlManagerTests/server.yml");
+    FILE* f = popen("../../../../../build/src/cpp/uml/./uml-server -l ../../../../../src/yml/umlManagerTests/server.yml", "r");
+    if (f == 0) {
+        std::cout << "did not run server from commandline correctly" << std::endl;
+    }
+    std::cout << (char*)f << std::endl;
 }
 
 TEST_F(RestfulTest, serverMainTest) {
     server.shutdown();
-    sleep(1);
+    server.waitTillShutDown();
     std::thread cmd = std::thread(runServer);
+    cmd.detach();
     UmlClient client;
     Package& test = client.get<Package>("Model::test");
     Package& child = client.post<Package>();
@@ -108,5 +113,5 @@ TEST_F(RestfulTest, serverMainTest) {
     client.release(test, child);
     ASSERT_EQ(client.get<Package>("Model::test").getPackagedElements().front().getName(), "child");
     client.shutdownServer();
-    cmd.join();
+    //cmd.join();
 }

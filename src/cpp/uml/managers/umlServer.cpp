@@ -427,4 +427,21 @@ void UmlServer::shutdown() {
     }
     m_acceptThread->join();
     delete m_acceptThread;
+
+    m_shutdownV = true;
+    m_shutdownCv.notify_all();
+}
+
+using namespace std::chrono_literals;
+
+int UmlServer::waitTillShutDown(int ms) {
+    std::unique_lock<std::mutex> sLck(m_shutdownMtx);
+    m_shutdownCv.wait_for(sLck, ms * 1ms, [this] { return m_shutdownV; });
+    return 1;
+}
+
+int UmlServer::waitTillShutDown() {
+    std::unique_lock<std::mutex> sLck(m_shutdownMtx);
+    m_shutdownCv.wait(sLck, [this] { return m_shutdownV; });
+    return 1;
 }

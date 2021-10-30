@@ -76,8 +76,7 @@ int main(int argc, char* argv[]) {
         server.open(location);
     }
     server.mount(path);
-    int min = 0, hour = 0;
-    while(1) { /** TODO: some blocking mechanism waiting for server shutdown**/ }
+    server.waitTillShutDown();
     server.save(location);
     server.shutdown();
 }

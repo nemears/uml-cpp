@@ -3,6 +3,7 @@
 #include "uml/generalization.h"
 #include "uml/instanceSpecification.h"
 #include "uml/class.h"
+#include "uml/generalizationSet.h"
 
 using namespace std;
 using namespace UML;
@@ -257,6 +258,20 @@ void Classifier::AddNestingClassProcedure::operator()(ID id) const {
     }
 }
 
+void Classifier::AddPowerTypeExtentFunctor::operator()(GeneralizationSet& el) const {
+    if (el.getPowerTypeID() != m_el->getID()) {
+        el.setPowerType(m_el);
+    }
+    updateCopiedSequenceAddedTo(el, &Classifier::getPowerTypeExtent);
+}
+
+void Classifier::RemovePowerTypeExtentFunctor::operator()(GeneralizationSet& el) const {
+    if (el.getPowerTypeID() == m_el->getID()) {
+        el.setPowerType(0);
+    }
+    updateCopiedSequenceRemovedFrom(el, &Classifier::getPowerTypeExtent);
+}
+
 void Classifier::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     PackageableElement::referencingReleased(id);
@@ -267,6 +282,7 @@ void Classifier::referencingReleased(ID id) {
     m_generals.elementReleased(id, &Classifier::getGenerals);
     m_inheritedMembers.elementReleased(id, &Classifier::getInheritedMembers);
     m_nestingClass.release(id);
+    m_powerTypeExtent.elementReleased(id, &Classifier::getPowerTypeExtent);
 }
 
 void Classifier::referenceReindexed(ID oldID, ID newID) {
@@ -279,6 +295,7 @@ void Classifier::referenceReindexed(ID oldID, ID newID) {
     m_generals.reindex(oldID, newID, &Classifier::getGenerals);
     m_inheritedMembers.reindex(oldID, newID, &Classifier::getInheritedMembers);
     m_nestingClass.reindex(oldID, newID);
+    m_powerTypeExtent.reindex(oldID, newID, &Classifier::getPowerTypeExtent);
 }
 
 void Classifier::restoreReferences() {
@@ -306,6 +323,7 @@ void Classifier::restoreReferences() {
     m_features.restoreReferences();
     m_inheritedMembers.restoreReferences();
     m_nestingClass.restoreReference();
+    m_powerTypeExtent.restoreReferences();
 }
 
 void Classifier::referenceErased(ID id) {
@@ -319,6 +337,7 @@ void Classifier::referenceErased(ID id) {
     m_generals.elementErased(id);
     m_inheritedMembers.elementErased(id);
     m_nestingClass.elementErased(id);
+    m_powerTypeExtent.elementErased(id);
 }
 
 Classifier::Classifier() : Element(ElementType::CLASSIFIER) {
@@ -338,6 +357,8 @@ Classifier::Classifier() : Element(ElementType::CLASSIFIER) {
     m_nestingClass.m_signature = &Classifier::m_nestingClass;
     m_nestingClass.m_removeProcedures.push_back(new RemoveNestingClassProcedure(this));
     m_nestingClass.m_addProcedures.push_back(new AddNestingClassProcedure(this));
+    m_powerTypeExtent.addProcedures.push_back(new AddPowerTypeExtentFunctor(this));
+    m_powerTypeExtent.removeProcedures.push_back(new RemovePowerTypeExtentFunctor(this));
 }
 
 Classifier::~Classifier() {
@@ -385,6 +406,11 @@ Element(clazz, ElementType::CLASSIFIER) {
     m_nestingClass.m_removeProcedures.clear();
     m_nestingClass.m_removeProcedures.push_back(new RemoveNestingClassProcedure(this));
     m_nestingClass.m_addProcedures.push_back(new AddNestingClassProcedure(this));
+    m_powerTypeExtent = clazz.m_powerTypeExtent;
+    m_powerTypeExtent.addProcedures.clear();
+    m_powerTypeExtent.removeProcedures.clear();
+    m_powerTypeExtent.addProcedures.push_back(new AddPowerTypeExtentFunctor(this));
+    m_powerTypeExtent.removeProcedures.push_back(new RemovePowerTypeExtentFunctor(this));
 }
 
 void Classifier::reindexName(string oldName, string newName) {
@@ -417,6 +443,10 @@ Sequence<Classifier>& Classifier::getGenerals() {
 
 Sequence<NamedElement>& Classifier::getInheritedMembers() {
     return m_inheritedMembers;
+}
+
+Sequence<GeneralizationSet>& Classifier::getPowerTypeExtent() {
+    return m_powerTypeExtent;
 }
 
 Class* Classifier::getNestingClass() {

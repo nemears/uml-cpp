@@ -13,6 +13,7 @@ namespace UML {
     class Property;
     class Feature;
     class InstanceSpecification;
+    class GeneralizationSet;
     namespace Parsers {
         class SetNestingClass;
     }
@@ -33,6 +34,7 @@ namespace UML {
             Sequence<Generalization> m_generalizations = Sequence<Generalization>(this);
             Sequence<Classifier> m_generals = Sequence<Classifier>(this);
             Sequence<NamedElement> m_inheritedMembers = Sequence<NamedElement>(this);
+            Sequence<GeneralizationSet> m_powerTypeExtent = Sequence<GeneralizationSet>(this);
             class AddAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Classifier> {
                 public:
                     AddAttributeFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
@@ -102,6 +104,16 @@ namespace UML {
                     ClassifierRemoveMemberFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
                     void operator()(NamedElement& el) const override;
             };
+            class AddPowerTypeExtentFunctor : public TemplateAbstractSequenceFunctor<GeneralizationSet,Classifier> {
+                public:
+                    AddPowerTypeExtentFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(GeneralizationSet& el) const override;
+            };
+            class RemovePowerTypeExtentFunctor : public TemplateAbstractSequenceFunctor<GeneralizationSet,Classifier> {
+                public:
+                    RemovePowerTypeExtentFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
+                    void operator()(GeneralizationSet& el) const override;
+            };
             Singleton<Class, Classifier> m_nestingClass = Singleton<Class, Classifier>(this);
             class RemoveNestingClassProcedure : public AbstractSingletonProcedure<Class, Classifier> {
                 public:
@@ -137,6 +149,7 @@ namespace UML {
              **/
             Sequence<Classifier>& getGenerals();
             Sequence<NamedElement>& getInheritedMembers();
+            Sequence<GeneralizationSet>& getPowerTypeExtent();
             // TODO move NestingClass to protected
             Class* getNestingClass();
             Class& getNestingClassRef();

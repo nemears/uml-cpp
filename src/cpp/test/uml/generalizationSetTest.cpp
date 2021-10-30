@@ -12,7 +12,6 @@ class GeneralizationSetTest : public ::testing::Test {
 
 TEST_F(GeneralizationSetTest, testGetElementType) {
     UmlManager m;
-    GeneralizationSet set = m.create<GeneralizationSet>();
-    std::cout << set.getElementTypeString() << std::endl;
+    GeneralizationSet& set = m.create<GeneralizationSet>();
     ASSERT_EQ(set.getElementType(), ElementType::GENERALIZATION_SET);
 }

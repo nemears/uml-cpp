@@ -700,6 +700,10 @@ Sequence<InstanceSpecification>& Element::getAppliedStereotypes() {
     return *m_appliedStereotype;
 }
 
+Sequence<Comment>& Element::getOwnedComments() {
+    return *m_ownedComments;
+}
+
 /**
  * This func compares an id and an element without loading 
  * the element that corresponds to the id from the manager

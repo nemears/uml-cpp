@@ -3,6 +3,8 @@ project(uml-cpp VERSION 0.1.0)
 include(CTest)
 enable_testing()
 
+option(UML_CPP_BUILD_CLANG "allows for building the src/cpp/uml/cpp target if llvm is findable" ON)
+
 set (CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_AUTOMOC ON)
@@ -15,13 +17,15 @@ IF(UNIX)
     find_package(Threads REQUIRED)
 ENDIF()
 
-# llvm clang dependency
-find_package(LLVM 10 REQUIRED)
-# find_package(Clang REQUIRED)
-include_directories(${LLVM_INCLUDE_DIRS})
-link_directories(${LLVM_LIBRARY_DIR})
-add_definitions(${LLVM_DEFINITIONS})
-add_definitions(${CLANG_DEFINITIONS})
+if (UML_CPP_BUILD_CLANG) 
+    # llvm clang dependency
+    find_package(LLVM 10 REQUIRED)
+    # find_package(Clang REQUIRED)
+    include_directories(${LLVM_INCLUDE_DIRS})
+    link_directories(${LLVM_LIBRARY_DIR})
+    add_definitions(${LLVM_DEFINITIONS})
+    add_definitions(${CLANG_DEFINITIONS})
+endif()
 
 # Headers
 include_directories(include)

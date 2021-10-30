@@ -13,7 +13,9 @@ add_library(Uml namespace.cpp model.cpp element.cpp namedElement.cpp class.cpp c
                 deployment.cpp deployedArtifact.cpp deploymentTarget.cpp artifact.cpp behavioredClassifier.cpp
                 manifestation.cpp managers/umlClient.cpp managers/umlServer.cpp)
 add_subdirectory(parsers)
-add_subdirectory(cpp)
+if (UML_CPP_BUILD_CLANG)
+    add_subdirectory(cpp)
+endif()
 add_executable(uml-server managers/main.cpp)
 target_link_libraries(Uml PUBLIC yaml-cpp Parsers)
 target_link_libraries(uml-server PUBLIC Uml)

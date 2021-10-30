@@ -1,19 +1,6 @@
 #include "uml/cpp/cppParser.h"
 #include "uml/cpp/clang.h"
-#include "uml/class.h"
-#include "uml/operation.h"
-#include "uml/instanceSpecification.h"
-#include "uml/stereotype.h"
-#include "uml/literalInt.h"
-#include "uml/literalReal.h"
-#include "uml/primitiveType.h"
-#include "uml/property.h"
-#include "uml/parameter.h"
-#include "uml/literalBool.h"
-#include "uml/association.h"
-#include "uml/artifact.h"
-#include "uml/dataType.h"
-#include "uml/slot.h"
+#include "uml/uml-stable.h"
 
 using namespace std;
 
@@ -357,6 +344,16 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
                     break; 
                 }
             }
+            break;
+        }
+        case CXCursor_CXXBaseSpecifier : {
+            CXType type = clang_getCursorType(c);
+            CXString typeSpelling = clang_getTypeSpelling(type);
+            std::string generalName(clang_getCString(typeSpelling));
+            Classifier& general = data.owningElement.getOwnerRef().as<Namespace>().getMembers().get(generalName).as<Classifier>();
+            Generalization& generalization = data.manager.create<Generalization>();
+            generalization.setGeneral(general);
+            data.owningElement.as<Class>().getGeneralizations().add(generalization);
             break;
         }
         default : {

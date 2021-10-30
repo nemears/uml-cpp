@@ -6,6 +6,7 @@
 #include "uml/parameter.h"
 #include "uml/association.h"
 #include "uml/package.h"
+#include "uml/generalization.h"
 
 using namespace std;
 using namespace UML;
@@ -271,4 +272,21 @@ TEST_F(CppClassTest, predefinedTypeTest) {
     ASSERT_EQ(refEnd.getType()->getID(), bar.getID());
     ASSERT_EQ(refAssoc.getMemberEnds().size(), 2);
     ASSERT_EQ(refAssoc.getMemberEnds().front().getID(), refProp.getID());
+}
+
+TEST_F(CppClassTest, generalizationTests) {
+    UmlManager m;
+    // add cpp profile to memory
+    m.parse(profilePath + "cppProfile.yml");
+    Package* pckg;
+    ASSERT_NO_THROW(pckg = parseHeader(testPath + "classTests/classW_Generalization.h", m));
+    ASSERT_EQ(pckg->getPackagedElements().size(), 9);
+    ASSERT_EQ(pckg->getPackagedElements().get("general").getElementType(), ElementType::CLASS);
+    Class& general = pckg->getPackagedElements().get("general").as<Class>();
+    ASSERT_EQ(general.getOwnedAttributes().size(), 1);
+    ASSERT_EQ(pckg->getPackagedElements().get("public_specific").getElementType(), ElementType::CLASS);
+    Class& public_specific = pckg->getPackagedElements().get("public_specific").as<Class>();
+    ASSERT_EQ(public_specific.getGeneralizations().size(), 1);
+    Generalization& public_generalization = public_specific.getGeneralizations().front();
+    // TODO visibility and virtual (need generalization sets)
 }

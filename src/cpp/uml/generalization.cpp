@@ -147,6 +147,8 @@ Generalization::Generalization() : Element(ElementType::GENERALIZATION) {
     m_specific.m_signature = &Generalization::m_specific;
     m_specific.m_removeProcedures.push_back(new RemoveSpecificProcedure(this));
     m_specific.m_addProcedures.push_back(new AddSpecificProcedure(this));
+    m_generalizationSets.addProcedures.push_back(new AddGeneralizationSetFunctor(this));
+    m_generalizationSets.removeProcedures.push_back(new RemoveGeneralizationSetFunctor(this));
 }
 
 Generalization::Generalization(const Generalization& rhs) : 
@@ -164,6 +166,11 @@ Element(rhs, ElementType::GENERALIZATION) {
     m_specific.m_removeProcedures.clear();
     m_specific.m_removeProcedures.push_back(new RemoveSpecificProcedure(this));
     m_specific.m_addProcedures.push_back(new AddSpecificProcedure(this));
+    m_generalizationSets = rhs.m_generalizationSets;
+    m_generalizationSets.addProcedures.clear();
+    m_generalizationSets.removeProcedures.clear();
+    m_generalizationSets.addProcedures.push_back(new AddGeneralizationSetFunctor(this));
+    m_generalizationSets.removeProcedures.push_back(new RemoveGeneralizationSetFunctor(this));
 }
 
 Generalization::~Generalization() {

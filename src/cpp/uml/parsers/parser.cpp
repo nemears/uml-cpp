@@ -662,6 +662,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &generalization;
     }
 
+    if (node["generalizationSet"]) {
+        GeneralizationSet& generalizationSet = data.m_manager->create<GeneralizationSet>();
+        parseGeneralizationSet(node["generalizationSet"], generalizationSet, data);
+        ret = &generalizationSet;
+    }
+
     if (node["instanceSpecification"]) {
         InstanceSpecification& inst = data.m_manager->create<InstanceSpecification>();
         parseInstanceSpecification(node["instanceSpecification"], inst, data);
@@ -1092,6 +1098,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         }
         case ElementType::GENERALIZATION : {
             emitGeneralization(emitter, el.as<Generalization>(), data);
+            break;
+        }
+        case ElementType::GENERALIZATION_SET : {
+            emitGeneralizationSet(emitter, el.as<GeneralizationSet>(), data);
             break;
         }
         case ElementType::INSTANCE_SPECIFICATION : {
@@ -1722,6 +1732,13 @@ void emitClassifier(YAML::Emitter& emitter, Classifier& clazz, EmitterMetaData& 
     emitTemplateableElement(emitter, clazz, data);
     emitParameterableElement(emitter, clazz, data);
     emitSequence(emitter, "generalizations", data, clazz, &Classifier::getGeneralizations);
+    if (!clazz.getPowerTypeExtent().empty()) {
+        emitter << YAML::Key << "powerTypeExtent" << YAML::Value << YAML::BeginSeq;
+        for (const ID id : clazz.getPowerTypeExtent().ids()) {
+            emitter << YAML::Value << id.string();
+        }
+        emitter << YAML::EndSeq;
+    }
 }
 
 void SetGeneralFunctor::operator()(Element& el) const {
@@ -1768,6 +1785,14 @@ void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization, 
 
     if (generalization.getGeneral()) {
         emitter << YAML::Key << "general" << YAML::Value << generalization.getGeneral()->getID().string();
+    }
+    
+    if (!generalization.getGeneralizationSets().empty()) {
+        emitter << YAML::Key << "generalizationSets" << YAML::Value << YAML::BeginSeq;
+        for (const ID id : generalization.getGeneralizationSets().ids()) {
+            emitter << YAML::Value << id.string();
+        }
+        emitter << YAML::EndSeq;
     }
 
     emitElementDefenitionEnd(emitter, ElementType::GENERALIZATION, generalization);
@@ -3890,6 +3915,25 @@ void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSe
             throw UmlParserException("Invalid yaml node type for generalizations field, must be a sequence", data.m_path.string(), node["generalizations"]);
         }
     }
+}
+
+void emitGeneralizationSet(YAML::Emitter& emitter, GeneralizationSet& generalizationSet, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::GENERALIZATION_SET, "generalizationSet", generalizationSet, data);
+    emitNamedElement(emitter, generalizationSet, data);
+    emitParameterableElement(emitter, generalizationSet, data);
+    emitter << YAML::Key << "covering" << YAML::Value << generalizationSet.isCovering();
+    emitter << YAML::Key << "disjoint" << YAML::Value << generalizationSet.isDisjoint();
+    if (generalizationSet.hasPowerType()) {
+        emitter << YAML::Key << "powerType" << YAML::Value << generalizationSet.getPowerTypeID().string();
+    }
+    if (!generalizationSet.getGeneralizations().empty()) {
+        emitter << YAML::Key << "generalizations" << YAML::Value << YAML::BeginSeq;
+        for (const ID id : generalizationSet.getGeneralizations().ids()) {
+            emitter << YAML::Value << id.string();
+        }
+        emitter << YAML::EndSeq;
+    }
+    emitElementDefenitionEnd(emitter, ElementType::GENERALIZATION_SET, generalizationSet);
 }
 
 }

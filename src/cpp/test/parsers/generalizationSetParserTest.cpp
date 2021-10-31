@@ -5,6 +5,7 @@
 #include "uml/class.h"
 #include "test/yumlParsersTest.h"
 #include "uml/package.h"
+#include "uml/parsers/parser.h"
 
 using namespace UML;
 
@@ -38,4 +39,49 @@ TEST_F(GeneralizationSetParserTest, parseBasicGeneralizationSetTest) {
     ASSERT_EQ(set.getGeneralizations().front(), generalization);
     ASSERT_TRUE(set.isCovering());
     ASSERT_TRUE(set.isDisjoint());
+}
+
+TEST_F(GeneralizationSetParserTest, emitGeneralizationSetTest) {
+    UmlManager m;
+    Package& root = m.create<Package>();
+    Class& general = m.create<Class>();
+    Class& specific = m.create<Class>();
+    Generalization& generalization = m.create<Generalization>();
+    GeneralizationSet& set = m.create<GeneralizationSet>();
+    root.setID("UpJ207YoGcD0zWHbmtYZhLAYEhRP");
+    general.setID("mmUnLGAGcUocJQlNkF2BxGUzadjY");
+    specific.setID("wJ7Y3K6BmTpN3D2pEtbbBt5aMhuo");
+    generalization.setID("vGAiKV8tZmvkxePhhEns36Z654xF");
+    set.setID("uLHn5GsNBUhrk9cgTO&qLw5LO068");
+    specific.getGeneralizations().add(generalization);
+    generalization.setGeneral(general);
+    generalization.getGeneralizationSets().add(set);
+    set.setPowerType(general);
+    root.getPackagedElements().add(general, specific, set);
+    std::string expectedEmit = R""""(package:
+  id: UpJ207YoGcD0zWHbmtYZhLAYEhRP
+  packagedElements:
+    - class:
+        id: mmUnLGAGcUocJQlNkF2BxGUzadjY
+        powerTypeExtent:
+          - uLHn5GsNBUhrk9cgTO&qLw5LO068
+    - class:
+        id: wJ7Y3K6BmTpN3D2pEtbbBt5aMhuo
+        generalizations:
+          - generalization:
+              id: vGAiKV8tZmvkxePhhEns36Z654xF
+              general: mmUnLGAGcUocJQlNkF2BxGUzadjY
+              generalizationSets:
+                - uLHn5GsNBUhrk9cgTO&qLw5LO068
+    - generalizationSet:
+        id: uLHn5GsNBUhrk9cgTO&qLw5LO068
+        covering: false
+        disjoint: false
+        powerType: mmUnLGAGcUocJQlNkF2BxGUzadjY
+        generalizations:
+          - vGAiKV8tZmvkxePhhEns36Z654xF)"""";
+    std::string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(root));
+    std::cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
 }

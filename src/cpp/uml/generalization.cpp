@@ -120,24 +120,28 @@ void Generalization::referenceReindexed(ID oldID, ID newID) {
     DirectedRelationship::referenceReindexed(oldID, newID);
     m_general.reindex(oldID, newID);
     m_specific.reindex(oldID, newID);
+    m_generalizationSets.reindex(oldID, newID, &Generalization::getGeneralizationSets);
 }
 
 void Generalization::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
     m_general.release(id);
     m_specific.release(id);
+    m_generalizationSets.elementReleased(id, &Generalization::getGeneralizationSets);
 }
 
 void Generalization::restoreReferences() {
     DirectedRelationship::restoreReferences();
     m_general.restoreReference();
     m_specific.restoreReference();
+    m_generalizationSets.restoreReferences();
 }
 
 void Generalization::referenceErased(ID id) {
     DirectedRelationship::referenceErased(id);
     m_general.elementErased(id);
     m_specific.elementErased(id);
+    m_generalizationSets.elementErased(id);
 }
 
 Generalization::Generalization() : Element(ElementType::GENERALIZATION) {

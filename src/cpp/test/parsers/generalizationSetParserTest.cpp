@@ -6,6 +6,7 @@
 #include "test/yumlParsersTest.h"
 #include "uml/package.h"
 #include "uml/parsers/parser.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
 
@@ -84,4 +85,84 @@ TEST_F(GeneralizationSetParserTest, emitGeneralizationSetTest) {
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(root));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
+}
+
+TEST_F(GeneralizationSetParserTest, mountGeneralizationSet) {
+    UmlManager m;
+    Package& root = m.create<Package>();
+    Class& general = m.create<Class>();
+    Class& specific = m.create<Class>();
+    Generalization& generalization = m.create<Generalization>();
+    GeneralizationSet& set = m.create<GeneralizationSet>();
+    specific.getGeneralizations().add(generalization);
+    generalization.setGeneral(general);
+    generalization.getGeneralizationSets().add(set);
+    set.setPowerType(general);
+    root.getPackagedElements().add(general, specific, set);
+    m.setRoot(root);
+    m.mount(ymlPath + "generalizationSetTests");
+
+    ID setID = set.getID();
+    m.release(set);
+    ASSERT_FALSE(m.loaded(setID));
+    GeneralizationSet& set2 = m.aquire(setID)->as<GeneralizationSet>();
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(set2, root));
+    ASSERT_TRUE(set2.hasPowerType());
+    ASSERT_EQ(set2.getPowerTypeRef(), general);
+    ASSERT_EQ(set2.getGeneralizations().size(), 1);
+    ASSERT_EQ(set2.getGeneralizations().front(), generalization);
+
+    ID generalID = general.getID();
+    m.release(set2, general);
+    ASSERT_FALSE(m.loaded(generalID));
+    ASSERT_FALSE(m.loaded(setID));
+    GeneralizationSet& set3 = m.aquire(setID)->as<GeneralizationSet>();
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(set3, root));
+    ASSERT_TRUE(set3.hasPowerType());
+    ASSERT_EQ(set3.getPowerTypeID(), generalID);
+    ASSERT_EQ(set3.getGeneralizations().size(), 1);
+    ASSERT_EQ(set3.getGeneralizations().front(), generalization);
+    Class& general2 = m.aquire(generalID)->as<Class>();
+    ASSERT_EQ(general2.getPowerTypeExtent().size(), 1);
+    ASSERT_EQ(general2.getPowerTypeExtent().front(), set3);
+
+    m.release(set3, general2);
+    ASSERT_FALSE(m.loaded(generalID));
+    ASSERT_FALSE(m.loaded(setID));
+    Class& general3 = m.aquire(generalID)->as<Class>();
+    ASSERT_EQ(general3.getPowerTypeExtent().size(), 1);
+    ASSERT_EQ(general3.getPowerTypeExtent().frontID(), setID);
+    GeneralizationSet& set4 = m.aquire(setID)->as<GeneralizationSet>();
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(set4, root));
+    ASSERT_TRUE(set4.hasPowerType());
+    ASSERT_EQ(set4.getPowerTypeRef(), general3);
+    ASSERT_EQ(set4.getGeneralizations().size(), 1);
+    ASSERT_EQ(set4.getGeneralizations().front(), generalization);
+
+    ID generalizationID = generalization.getID();
+    m.release(set4, generalization);
+    ASSERT_FALSE(m.loaded(generalizationID));
+    ASSERT_FALSE(m.loaded(setID));
+    GeneralizationSet& set5 = m.aquire(setID)->as<GeneralizationSet>();
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(set5, root));
+    ASSERT_TRUE(set5.hasPowerType());
+    ASSERT_EQ(set5.getPowerTypeRef(), general3);
+    ASSERT_EQ(set5.getGeneralizations().size(), 1);
+    ASSERT_EQ(set5.getGeneralizations().frontID(), generalizationID);
+    Generalization& generalization2 = m.aquire(generalizationID)->as<Generalization>();
+    ASSERT_EQ(generalization2.getGeneralizationSets().size(), 1);
+    ASSERT_EQ(generalization2.getGeneralizationSets().front(), set5);
+
+    m.release(set5, generalization2);
+    ASSERT_FALSE(m.loaded(generalizationID));
+    ASSERT_FALSE(m.loaded(setID));
+    Generalization& generalization3 = m.aquire(generalizationID)->as<Generalization>();
+    ASSERT_EQ(generalization3.getGeneralizationSets().size(), 1);
+    ASSERT_EQ(generalization3.getGeneralizationSets().frontID(), setID);
+    GeneralizationSet& set6 = m.aquire(setID)->as<GeneralizationSet>();
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(set6, root));
+    ASSERT_TRUE(set6.hasPowerType());
+    ASSERT_EQ(set6.getPowerTypeRef(), general3);
+    ASSERT_EQ(set6.getGeneralizations().size(), 1);
+    ASSERT_EQ(set6.getGeneralizations().front(), generalization3);
 }

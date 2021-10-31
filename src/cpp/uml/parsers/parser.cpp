@@ -3906,7 +3906,11 @@ void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSe
             for (int i = 0; i < node["generalizations"].size(); i++) {
                 if (node["generalizations"][i].IsScalar()) {
                     ID generalizationID = ID::fromString(node["generalizations"][i].as<string>());
-                    generalizationSet.getGeneralizations().addByID(generalizationID);
+                    if (data.m_manager->UmlManager::loaded(generalizationID)) {
+                        generalizationSet.getGeneralizations().add(data.m_manager->get<Generalization>(generalizationID));
+                    } else {
+                        generalizationSet.getGeneralizations().addByID(generalizationID);
+                    }
                 } else {
                     throw UmlParserException("Invalid yaml node type for generalizations entry, must be a scalar", data.m_path.string(), node["generalizations"][i]);
                 }

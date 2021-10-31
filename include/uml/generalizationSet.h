@@ -8,12 +8,18 @@ namespace UML {
 
     class Classifier;
     class Generalization;
+    namespace Parsers {
+        class SetPowerType;
+    }
 
     class GeneralizationSet : public PackageableElement {
 
         friend class UmlManager;
+        friend class Parsers::SetPowerType;
 
         protected:
+            bool m_covering = false;
+            bool m_disjoint = false;
             Singleton<Classifier, GeneralizationSet> m_powerType = Singleton<Classifier, GeneralizationSet>(this);
             class RemovePowerTypeProcedure : public AbstractSingletonProcedure<Classifier, GeneralizationSet> {
                 public:
@@ -43,6 +49,10 @@ namespace UML {
             GeneralizationSet();
         public:
             GeneralizationSet(const GeneralizationSet& rhs);
+            bool isCovering() const;
+            bool isDisjoint() const;
+            void setCovering(bool covering);
+            void setDisjoint(bool disjoint);
             Classifier* getPowerType();
             Classifier& getPowerTypeRef();
             ID getPowerTypeID() const;

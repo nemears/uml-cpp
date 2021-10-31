@@ -274,6 +274,11 @@ namespace UML {
             public:
                 SetLocation();
         };
+
+        class SetPowerType : public parseAndSetSingletonFunctor<Classifier, GeneralizationSet> {
+            public:
+                SetPowerType();
+        };
     }
 }
 

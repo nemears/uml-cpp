@@ -1,47 +1,8 @@
 #include "uml/parsers/parser.h"
 #include <fstream>
-#include "uml/model.h"
-#include "uml/umlManager.h"
-#include "uml/literalNull.h"
-#include "uml/stereotype.h"
-#include "uml/extensionEnd.h"
-#include "uml/profile.h"
-#include "uml/profileApplication.h"
-#include "uml/comment.h"
-#include "uml/slot.h"
-#include "uml/packageMerge.h"
-#include "uml/profileApplication.h"
-#include "uml/templateSignature.h"
-#include "uml/parameterableElement.h"
-#include "uml/templateParameter.h"
-#include "uml/templateParameterSubstitution.h"
-#include "uml/dataType.h"
-#include "uml/enumeration.h"
-#include "uml/expression.h"
-#include "uml/instanceSpecification.h"
-#include "uml/instanceValue.h"
-#include "uml/literalBool.h"
-#include "uml/literalInt.h"
-#include "uml/literalReal.h"
-#include "uml/literalString.h"
-#include "uml/literalUnlimitedNatural.h"
-#include "uml/opaqueBehavior.h"
-#include "uml/operation.h"
-#include "uml/parameter.h"
-#include "uml/primitiveType.h"
-#include "uml/association.h"
-#include "uml/extension.h"
-#include "uml/generalization.h"
-#include "uml/activity.h"
-#include "uml/enumerationLiteral.h"
-#include "uml/templateBinding.h"
-#include "uml/dependency.h"
-#include "uml/abstraction.h"
-#include "uml/realization.h"
-#include "uml/usage.h"
-#include "uml/deployment.h"
-#include "uml/artifact.h"
-#include "uml/manifestation.h"
+#include "uml/uml-stable.h"
+#include "uml/activity.h" // the only "not stable" thing with a presence in this class
+#include "uml/generalizationSet.h" // TODO add to stable when parser done
 #include "uml/parsers/singletonFunctors.h"
 
 using namespace std;
@@ -329,6 +290,10 @@ SetExtension::SetExtension() {
 
 SetLocation::SetLocation() {
     m_signature = &Deployment::m_location;
+}
+
+SetPowerType::SetPowerType() {
+    m_signature = &GeneralizationSet::m_powerType;
 }
 
 ElementType elementTypeFromString(string eType) {
@@ -3852,6 +3817,68 @@ void emitStereotype(YAML::Emitter& emitter, Stereotype& stereotype, EmitterMetaD
         emitter << YAML::Key << "profile" << YAML::Value << stereotype.getProfileID().string();
     }
     emitElementDefenitionEnd(emitter, ElementType::STEREOTYPE, stereotype);
+}
+
+void SetPowerTypeFunctor::operator()(Element& el) const {
+    m_el->as<GeneralizationSet>().setPowerType(el.as<Classifier>());
+}
+
+void AddGeneralizationFunctor::operator()(Element& el) const {
+    m_el->as<GeneralizationSet>().getGeneralizations().add(el.as<Generalization>());
+}
+
+void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, ParserMetaData& data) {
+    parseNamedElement(node, generalizationSet, data);
+    parseParameterableElement(node, generalizationSet, data);
+
+    if (node["covering"]) {
+        if (node["covering"].IsScalar()) {
+            generalizationSet.setCovering(node["covering"].as<bool>());
+        } else {
+            throw UmlParserException("Invalid yaml node type for covering field", data.m_path.string(), node["covering"]);
+        }
+    }
+
+    if (node["disjoint"]) {
+        if (node["disjoint"].IsScalar()) {
+            generalizationSet.setDisjoint(node["disjoint"].as<bool>());
+        } else {
+            throw UmlParserException("Invalid yaml node type for disjoint field", data.m_path.string(), node["disjoint"]);
+        }
+    }
+
+    if (node["powerType"]) {
+        if (node["powerType"].IsScalar()) {
+            ID powerTypeID = ID::fromString(node["powerType"].as<string>());
+            if (data.m_strategy == ParserStrategy::WHOLE) {
+                applyFunctor(data, powerTypeID, new SetPowerTypeFunctor(&generalizationSet, node["powerType"]));
+            } else {
+                SetPowerType SetPowerType;
+                SetPowerType(node["powerType"], data, generalizationSet);
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for powerType field", data.m_path.string(), node["powerType"]);
+        }
+    }
+
+    if (node["generalizations"]) {
+        if (node["generalizations"].IsSequence()) {
+            for (int i = 0; i < node["generalizations"].size(); i++) {
+                if (node["generalizations"][i].IsScalar()) {
+                    ID generalizationID = ID::fromString(node["generalizations"][i].as<string>());
+                    if (data.m_strategy == ParserStrategy::WHOLE) {
+                        applyFunctor(data, generalizationID, new AddGeneralizationFunctor(&generalizationSet, node["generalizations"][i]));
+                    } else {
+                        generalizationSet.getGeneralizations().addByID(generalizationID);
+                    }
+                } else {
+                    throw UmlParserException("Invalid yaml node type for generalizations entry, must be a scalar", data.m_path.string(), node["generalizations"][i]);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for generalizations field, must be a sequence", data.m_path.string(), node["generalizations"]);
+        }
+    }
 }
 
 }

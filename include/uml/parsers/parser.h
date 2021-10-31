@@ -187,6 +187,16 @@ namespace UML {
                     AddSupplierDependencyFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
                     void operator()(Element& el) const override;
             };
+            class SetPowerTypeFunctor : public AbstractPostProcessFunctor {
+                public:
+                    SetPowerTypeFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
+            class AddGeneralizationFunctor : public AbstractPostProcessFunctor {
+                public:
+                    AddGeneralizationFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
+                    void operator()(Element& el) const override;
+            };
             void emitModel(YAML::Emitter& emitter, Model& model, EmitterMetaData& data);
             void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
             void emitElement(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
@@ -280,6 +290,8 @@ namespace UML {
             void emitParameterableElement(YAML::Emitter& emitter, ParameterableElement& el, EmitterMetaData& data);
             void parseStereotype(YAML::Node node, Stereotype& stereotype, ParserMetaData& data);
             void emitStereotype(YAML::Emitter& emitter, Stereotype& stereotype, EmitterMetaData& data);
+            void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, ParserMetaData& data);
+            void emitGeneralizationSet(YAML::Emitter& emitter, GeneralizationSet& generalizationSet, EmitterMetaData& data);
         }
     }
 }

@@ -79,6 +79,24 @@ Element(rhs, ElementType::GENERALIZATION_SET) {
     m_generalizations.removeProcedures.push_back(new RemoveGeneralizationFunctor(this));
 }
 
+bool GeneralizationSet::isCovering() const {
+    return m_covering;
+}
+
+bool GeneralizationSet::isDisjoint() const {
+    return m_disjoint;
+}
+
+void GeneralizationSet::setCovering(bool covering) {
+    m_covering = covering;
+    updateCopiesScalar(covering, &GeneralizationSet::m_covering);
+}
+
+void GeneralizationSet::setDisjoint(bool disjoint) {
+    m_disjoint = disjoint;
+    updateCopiesScalar(disjoint, &GeneralizationSet::m_disjoint);
+}
+
 Classifier* GeneralizationSet::getPowerType() {
     return m_powerType.get();
 }

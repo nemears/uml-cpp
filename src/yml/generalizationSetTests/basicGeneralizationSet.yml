@@ -1,0 +1,23 @@
+---
+  package:
+    packagedElements:
+      - class:
+          id: Y9ZCX7pp5W2D_OwPCFgTz&gcTRSc
+          name: general
+          powerTypeExtent:
+            - iav6FFkHBjBCffo8xBUsjyq1mtQe
+      - class:
+          name: specific
+          generalizations:
+            - generalization:
+                id: SoPUNRxlXkN3lwefnzrpowEcjka6
+                generalizationSets:
+                  - iav6FFkHBjBCffo8xBUsjyq1mtQe
+      - generalizationSet:
+          id: iav6FFkHBjBCffo8xBUsjyq1mtQe
+          covering: true
+          disjoint: true
+          powerType: Y9ZCX7pp5W2D_OwPCFgTz&gcTRSc
+          generalizations:
+            - SoPUNRxlXkN3lwefnzrpowEcjka6
+...

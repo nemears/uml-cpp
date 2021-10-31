@@ -1701,6 +1701,20 @@ void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
     parseTemplateableElement(node, clazz, data);
     parseParameterableElement(node, clazz, data);
     parseSequenceDefinitions(node, data, "generalizations", clazz, &Classifier::getGeneralizations, determineAndParseGeneralization);
+    if (node["powerTypeExtent"]) {
+        if (node["powerTypeExtent"].IsSequence()) {
+            for (int i = 0; i < node["powerTypeExtent"].size(); i++) {
+                if (node["powerTypeExtent"].IsScalar()) {
+                    ID powerTypeExtentID = ID::fromString(node["powerTypeExtent"].as<string>());
+                    clazz.getPowerTypeExtent().addByID(powerTypeExtentID);
+                } else {
+                    throw UmlParserException("Invalid yaml node type for powerTypeExtent field", data.m_path.string(), node["powerTypeExtent"][i]);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for powerTypeExtent field", data.m_path.string(), node["powerTypeExtent"]);
+        }
+    }
 }
 
 void emitClassifier(YAML::Emitter& emitter, Classifier& clazz, EmitterMetaData& data) {
@@ -1718,9 +1732,6 @@ void SetGeneralFunctor::operator()(Element& el) const {
 
 void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data) {
     parseElement(node, general, data);
-    if (node["specific"]) {
-        // TODO error? should be specified in specific
-    }
 
     if (node["general"]) {
         if (node["general"].IsScalar()) {
@@ -1731,6 +1742,21 @@ void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaDat
             }
         } else {
             throw UmlParserException("Cannot define general within generalization, generalization may own no elements!", data.m_path.string());
+        }
+    }
+
+    if (node["generalizationSets"]) {
+        if (node["generalizationSets"].IsSequence()) {
+            for (int i = 0; i < node["generalizationSets"].size(); i++) {
+                if (node["generalizationSets"].IsScalar()) {
+                    ID generalizationSetID = ID::fromString(node["generalizationSets"].as<string>());
+                    general.getGeneralizationSets().addByID(generalizationSetID);
+                } else {
+                    throw UmlParserException("Invalid yaml node type for generalizationSets entry, must be a scalar!", data.m_path.string(), node["generalizationSets"][i]);
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for generalizationSets field, must be a sequence", data.m_path.string(), node["generalizationSets"]);
         }
     }
 }
@@ -3819,14 +3845,6 @@ void emitStereotype(YAML::Emitter& emitter, Stereotype& stereotype, EmitterMetaD
     emitElementDefenitionEnd(emitter, ElementType::STEREOTYPE, stereotype);
 }
 
-void SetPowerTypeFunctor::operator()(Element& el) const {
-    m_el->as<GeneralizationSet>().setPowerType(el.as<Classifier>());
-}
-
-void AddGeneralizationFunctor::operator()(Element& el) const {
-    m_el->as<GeneralizationSet>().getGeneralizations().add(el.as<Generalization>());
-}
-
 void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, ParserMetaData& data) {
     parseNamedElement(node, generalizationSet, data);
     parseParameterableElement(node, generalizationSet, data);
@@ -3850,12 +3868,8 @@ void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSe
     if (node["powerType"]) {
         if (node["powerType"].IsScalar()) {
             ID powerTypeID = ID::fromString(node["powerType"].as<string>());
-            if (data.m_strategy == ParserStrategy::WHOLE) {
-                applyFunctor(data, powerTypeID, new SetPowerTypeFunctor(&generalizationSet, node["powerType"]));
-            } else {
-                SetPowerType SetPowerType;
-                SetPowerType(node["powerType"], data, generalizationSet);
-            }
+            SetPowerType SetPowerType;
+            SetPowerType(node["powerType"], data, generalizationSet);
         } else {
             throw UmlParserException("Invalid yaml node type for powerType field", data.m_path.string(), node["powerType"]);
         }
@@ -3866,11 +3880,7 @@ void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSe
             for (int i = 0; i < node["generalizations"].size(); i++) {
                 if (node["generalizations"][i].IsScalar()) {
                     ID generalizationID = ID::fromString(node["generalizations"][i].as<string>());
-                    if (data.m_strategy == ParserStrategy::WHOLE) {
-                        applyFunctor(data, generalizationID, new AddGeneralizationFunctor(&generalizationSet, node["generalizations"][i]));
-                    } else {
-                        generalizationSet.getGeneralizations().addByID(generalizationID);
-                    }
+                    generalizationSet.getGeneralizations().addByID(generalizationID);
                 } else {
                     throw UmlParserException("Invalid yaml node type for generalizations entry, must be a scalar", data.m_path.string(), node["generalizations"][i]);
                 }

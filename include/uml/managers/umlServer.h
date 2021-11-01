@@ -35,7 +35,7 @@ namespace UML {
             static void acceptNewClients(UmlServer* me);
             static void receiveFromClient(UmlServer* me, ID id);
             std::thread* m_acceptThread;
-            std::unordered_map<ID, std::mutex*> m_locks;
+            std::unordered_map<ID, std::mutex> m_locks;
             std::atomic<bool> m_running = false;
             std::mutex m_runMtx;
             std::condition_variable m_runCv;

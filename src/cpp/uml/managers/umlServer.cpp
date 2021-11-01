@@ -152,6 +152,7 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 char* buff = (char*)malloc(UML_SERVER_MSG_SIZE);
                 int bytesReceived = recv(pfds->fd, buff, UML_SERVER_MSG_SIZE, 0);
                 if (bytesReceived <= 0) {
+                    free(buff);
                     continue;
                 }
                 int i = 0;
@@ -175,6 +176,7 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                     me->m_msgV = true;
                     me->m_msgCv.notify_one();
                     me->shutdown();
+                    free(buff);
                     continue;
                 }
 
@@ -182,7 +184,7 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 if (node["DELETE"]) {
                     ID elID = ID::fromString(node["DELETE"].as<std::string>());
                     {
-                        std::lock_guard<std::mutex> elLck(*me->m_locks[elID]);
+                        std::lock_guard<std::mutex> elLck(me->m_locks[elID]);
                         me->log("aquired lock for element " + elID.string());
                         me->m_msgV = true;
                         me->m_msgCv.notify_one();
@@ -198,7 +200,7 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                     } else {
                         elID = me->m_urls.at(node["GET"].as<std::string>());
                     }
-                    std::lock_guard<std::mutex> elLck(*me->m_locks[elID]);
+                    std::lock_guard<std::mutex> elLck(me->m_locks[elID]);
                     me->log("aquired lock for element " + elID.string());
                     me->m_msgV = true;
                     me->m_msgCv.notify_one();
@@ -219,13 +221,14 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                     std::string msg = Parsers::emit(*ret);
                     int bytesSent = send(pfds->fd, msg.c_str(), msg.size() + 1, 0);
                     if (bytesSent <= 0) {
+                        free(buff);
                         throw ManagerStateException();
                     } 
                     me->log("server created new element for client" + id.string());
                 }
                 if (node["PUT"]) {
                     ID elID = ID::fromString(node["PUT"]["id"].as<std::string>());
-                    std::lock_guard<std::mutex> elLck(*me->m_locks[elID]);
+                    std::lock_guard<std::mutex> elLck(me->m_locks[elID]);
                     me->log("aquired lock for element " + elID.string());
                     me->m_msgV = true;
                     me->m_msgCv.notify_one();
@@ -302,7 +305,7 @@ void UmlServer::acceptNewClients(UmlServer* me) {
 
 void UmlServer::createNode(Element* el) {
     UmlManager::createNode(el);
-    m_locks[el->getID()] = new std::mutex;
+    m_locks[el->getID()];
 }
 
 void UmlServer::log(std::string msg) {
@@ -356,7 +359,7 @@ bool UmlServer::loaded(ID id) {
     std::unique_lock<std::mutex> mLck(m_msgMtx);
     m_msgCv.wait(mLck, [this]{ return m_msgV ? true : false; });
     if (m_locks.count(id)) {
-        std::lock_guard<std::mutex> lck(*m_locks.at(id));
+        std::lock_guard<std::mutex> lck(m_locks.at(id));
     }
     return UmlManager::loaded(id);
 }
@@ -421,9 +424,6 @@ void UmlServer::shutdown() {
         close(client.second.socket);
         client.second.thread->join();
         delete client.second.thread;
-    }
-    for (auto lock : m_locks) {
-        delete lock.second;
     }
     m_acceptThread->join();
     delete m_acceptThread;

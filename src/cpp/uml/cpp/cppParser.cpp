@@ -354,6 +354,7 @@ CXChildVisitResult classVisit(CXCursor c, CXCursor parent, CXClientData client_d
             Generalization& generalization = data.manager.create<Generalization>();
             generalization.setGeneral(general);
             data.owningElement.as<Class>().getGeneralizations().add(generalization);
+            // TODO handle virtual inheritance with generalization sets & access specifiers with stereotype, or generalization set
             break;
         }
         default : {

@@ -120,8 +120,6 @@ Element(bind, ElementType::TEMPLATE_BINDING) {
     m_boundElement.m_me = this;
     m_boundElement.m_removeProcedures.clear();
     m_boundElement.m_addProcedures.clear();
-    m_signature.m_removeProcedures.push_back(new RemoveSignatureProcedure(this));
-    m_signature.m_addProcedures.push_back(new AddSignatureProcedure(this));
     m_signature = bind.m_signature;
     m_signature.m_me = this;
     m_signature.m_removeProcedures.clear();

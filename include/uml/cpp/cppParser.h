@@ -22,6 +22,7 @@ namespace UML {
 
         // WARN: must load cppProfile.yml beforehand 
         Package* parseHeader(std::string path, UmlManager& manager);
+        void parseCpp(std::string name, std::vector<std::string> headers, std::vector<std::string> sourceFiles, UmlManager& manager);
 
         class UmlCppParserException : public std::exception {
             private:

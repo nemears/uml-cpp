@@ -755,6 +755,31 @@ Package* parseHeader(string path, UmlManager& manager) {
     return &containingPackage;
 }
 
+void parseCpp(std::string name, std::vector<std::string> headers, std::vector<std::string> sourceFiles, UmlManager& manager) {
+    Package& deploymentPackage = manager.create<Package>();
+    deploymentPackage.setName(name + "_deployment");
+    Package& cppPackage = manager.create<Package>();
+    cppPackage.setName(name);
+    if (manager.getRoot() != 0) {
+        manager.getRoot()->as<Package>().getPackagedElements().add(deploymentPackage, cppPackage);
+        if (!manager.getRoot()->as<Package>().getPackagedElements().count(ID::fromString("CPP_4zpFq9s6YilFjqZAPguiluqk"))) {
+            throw ManagerStateException("Did not have C++ profile owned by root package!");
+        }
+    }
+    Deployment& deployment = manager.create<Deployment>();
+    deployment.setName(name);
+    deploymentPackage.getPackagedElements().add(deployment);
+    for (string header : headers) {
+        Artifact& headerArtifact = manager.create<Artifact>();
+        headerArtifact.setName(header);
+        parseHeader(header, manager); // TODO change to Artifact
+        deployment.getDeployedArtifact().add(headerArtifact);
+        deploymentPackage.getPackagedElements().add(headerArtifact);
+    }
+
+    // TODO source files
+}
+
 std::string fileNameAndLineNumber(CXCursor c) {
     CXSourceRange range = clang_getCursorExtent(c);
     CXSourceLocation rangeStart = clang_getRangeStart(range);

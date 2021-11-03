@@ -12,7 +12,7 @@
 
 using namespace UML;
 
-UmlClient::UmlClient() : id(ID::randomID()) {
+void UmlClient::init() {
     struct addrinfo hints;
     struct addrinfo* myAddress;
     memset(&hints, 0, sizeof hints);
@@ -20,7 +20,7 @@ UmlClient::UmlClient() : id(ID::randomID()) {
     hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
     hints.ai_flags = AI_PASSIVE; // fill in my IP for me
     int status = 0;
-    if ((status = getaddrinfo(NULL, std::to_string(UML_PORT).c_str(), &hints, &myAddress)) != 0) {
+    if ((status = getaddrinfo(m_address.empty() ? 0 : m_address.c_str(), std::to_string(m_port).c_str(), &hints, &myAddress)) != 0) {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
         std::cerr << stderr << std::endl;
         throw ManagerStateException("client could not get address!");
@@ -61,6 +61,31 @@ UmlClient::UmlClient() : id(ID::randomID()) {
     if (id.string().compare(acceptBuff) != 0) {
         throw ManagerStateException("did not get proper accept message!");
     }
+}
+
+UmlClient::UmlClient() : id(ID::randomID()) {
+    m_port = UML_PORT;
+    init();
+}
+
+UmlClient::UmlClient(std::string adress) : id(ID::randomID()) {
+    bool adressAndPort = false;
+    if (adress.find(':')) {
+        for (char& c : adress.substr(adress.find_last_of(':'))) {
+            adressAndPort = std::isdigit(c);
+            if (adressAndPort) {
+                break;
+            }
+        }
+    } 
+    if (adressAndPort) {
+        m_address = adress.substr(0, adress.find_last_of(':'));
+        m_port = atoi(adress.substr(adress.find_last_of(':') + 1).c_str());
+    } else {
+        m_address = adress;
+        m_port = UML_PORT;
+    }
+    init();
 }
 
 UmlClient::~UmlClient() {

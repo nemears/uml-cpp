@@ -6,10 +6,14 @@
 namespace UML {
     class UmlClient : public UmlManager {
         private:
+            std::string m_address;
+            int m_port;
             int m_socketD = 0;
+            void init();
         public:
             const ID id;
             UmlClient();
+            UmlClient(std::string m_address);
             virtual ~UmlClient();
             Element& get(ID id);
             template <class T = Element> T& get(ID id) {

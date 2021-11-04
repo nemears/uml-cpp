@@ -22,9 +22,7 @@ void UmlClient::init() {
     hints.ai_flags = m_address.empty() ? AI_PASSIVE : AI_CANONNAME; // fill in my IP for me
     int status = 0;
     if ((status = getaddrinfo(m_address.empty() ? 0 : m_address.c_str(), std::to_string(m_port).c_str(), &hints, &myAddress)) != 0) {
-        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
-        std::cerr << stderr << std::endl;
-        throw ManagerStateException("client could not get address!");
+        throw ManagerStateException("client could not get address! " + std::string(strerror(errno)));
     }
 
     // get socket descriptor

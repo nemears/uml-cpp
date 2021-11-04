@@ -286,19 +286,23 @@ void UmlServer::acceptNewClients(UmlServer* me) {
             
             // request ID
             const char* idMsg = "id";
-            int len = strlen(idMsg);
-            int bytesSent = send(newSocketD, idMsg, len, 0);
+            int bytesSent = send(newSocketD, idMsg, 3, 0);
+            if (bytesSent != 3) {
+                throw ManagerStateException("could not send id request to new client!");
+            }
             char buff[29];
             int bytesReceived = recv(newSocketD, buff, 29, 0);
             if (bytesReceived <= 0) {
-                throw ManagerStateException();
+                throw ManagerStateException("Did not get proper id from client");
             }
             if (ID::fromString(buff) == me->m_shutdownID) {
                 break;
             }
             std::thread* clientThread = new std::thread(receiveFromClient, me, ID::fromString(buff));
             me->m_clients[ID::fromString(buff)] = {newSocketD, clientThread};
-            send(newSocketD, buff, 29, 0); // send ID back to say that the server has a thread ready for the client's messages
+            if (send(newSocketD, buff, 29, 0) == -1) { // send ID back to say that the server has a thread ready for the client's messages
+                throw ManagerStateException("Was not able to send response back to client!");
+            } 
         }
         me->m_running = false;
     }
@@ -331,9 +335,7 @@ UmlServer::UmlServer() {
     hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
     hints.ai_flags = AI_PASSIVE; // fill in my IP for me
     if ((status = getaddrinfo(NULL, std::to_string(m_port).c_str(), &hints, &m_address)) != 0) {
-        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
-        std::cerr << stderr << std::endl;
-        throw ManagerStateException();
+        throw ManagerStateException("Server could not get address info! error: " + std::string(strerror(errno)));
     }
 
     // get socket descriptor

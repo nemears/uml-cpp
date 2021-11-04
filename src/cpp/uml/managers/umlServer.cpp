@@ -11,6 +11,8 @@
 #include "uml/uml-stable.h"
 #include <chrono>
 #include <ctime>
+#include <errno.h>
+#include <string.h>
 
 using namespace UML;
 
@@ -275,8 +277,8 @@ void UmlServer::acceptNewClients(UmlServer* me) {
             newSocketD = accept(me->m_socketD, (struct sockaddr *)&clientAddress, &addr_size);
             if (newSocketD == -1) {
                 if (me->m_running) {
-                    me->log("bad socket accepted");
-                    throw ManagerStateException();
+                    me->log("bad socket accepted, error: " + std::string(strerror(errno)));
+                    throw ManagerStateException("bad socket accepted");
                 } else {
                     continue;
                 }
@@ -335,9 +337,15 @@ UmlServer::UmlServer() {
     }
 
     // get socket descriptor
-    m_socketD = socket(m_address->ai_family, m_address->ai_socktype, m_address->ai_protocol);
-    bind(m_socketD, m_address->ai_addr, m_address->ai_addrlen);
-    listen(m_socketD, 10);
+    if ((m_socketD = socket(m_address->ai_family, m_address->ai_socktype, m_address->ai_protocol)) == -1) {
+        throw ManagerStateException("Server could not get socket from addressinfo, error: " + std::string(strerror(errno)));
+    }
+    if ((status = bind(m_socketD, m_address->ai_addr, m_address->ai_addrlen)) == -1) {
+        throw ManagerStateException("Server could not bind to socket, error: " + std::string(strerror(errno)));
+    }
+    if ((status = listen(m_socketD, 10)) == -1) {
+        throw ManagerStateException("Server could not listen to socker, error:" + std::string(strerror(errno)));
+    }
     m_running = true;
     m_acceptThread = new std::thread(acceptNewClients, this);
     log("server set up thread to accept new clients");
@@ -392,40 +400,47 @@ void UmlServer::shutdown() {
         std::cerr << stderr << std::endl;
         fail = true;
     }
-    int tempSocket = socket(myAddress->ai_family, myAddress->ai_socktype, myAddress->ai_protocol);
-    if (tempSocket == -1) {
-        /** TODO: failure message **/
-        log("server could not get socket descriptor!");
-        fail = true;
+    int tempSocket;
+    if (!fail) {
+        tempSocket = socket(myAddress->ai_family, myAddress->ai_socktype, myAddress->ai_protocol);
+        if (tempSocket == -1) {
+            /** TODO: failure message **/
+            log("server could not get socket descriptor!");
+            fail = true;
+        }
     }
-    if (connect(tempSocket, myAddress->ai_addr, myAddress->ai_addrlen) == -1) {
-        /** TODO: failure message **/
-        log("server could not connect to self!");
-        fail = true;
+    if (!fail) {
+        if (connect(tempSocket, myAddress->ai_addr, myAddress->ai_addrlen) == -1) {
+            /** TODO: failure message **/
+            log("server could not connect to self!");
+            fail = true;
+        }
     }
     
-    // send terminate message
-    char* idMsg = new char[29];
-    std::string strBuff = m_shutdownID.string();
-    std::copy(strBuff.begin(), strBuff.end(), idMsg);
-    idMsg[28] = '\0';
-    send(tempSocket, idMsg, 29, 0);
-    freeaddrinfo(myAddress);
-    close(tempSocket);
-    delete[] idMsg;
+    if (!fail) {
+        // send terminate message
+        char* idMsg = new char[29];
+        std::string strBuff = m_shutdownID.string();
+        std::copy(strBuff.begin(), strBuff.end(), idMsg);
+        idMsg[28] = '\0';
+        send(tempSocket, idMsg, 29, 0);
+        freeaddrinfo(myAddress);
+        close(tempSocket);
+        delete[] idMsg;
 
-    // wait for thread to stop
-    std::unique_lock<std::mutex> rLck(m_runMtx);
-    m_runCv.wait(rLck, [this]{ return !m_running; });
+        // wait for thread to stop
+        std::unique_lock<std::mutex> rLck(m_runMtx);
+        m_runCv.wait(rLck, [this]{ return !m_running; });
+        m_acceptThread->join();
+    }
 
     // close everything
     close(m_socketD);
     for (auto client : m_clients) {
-        close(client.second.socket);
         client.second.thread->join();
+        close(client.second.socket);
         delete client.second.thread;
     }
-    m_acceptThread->join();
     delete m_acceptThread;
 
     m_shutdownV = true;

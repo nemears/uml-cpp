@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include "yaml-cpp/yaml.h"
 #include "uml/parsers/parser.h"
+#include <poll.h>
 
 #define UML_CLIENT_MSG_SIZE 200
 
@@ -18,7 +19,7 @@ void UmlClient::init() {
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;     // don't care IPv4 or IPv6
     hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
-    hints.ai_flags = AI_PASSIVE; // fill in my IP for me
+    hints.ai_flags = m_address.empty() ? AI_PASSIVE : AI_CANONNAME; // fill in my IP for me
     int status = 0;
     if ((status = getaddrinfo(m_address.empty() ? 0 : m_address.c_str(), std::to_string(m_port).c_str(), &hints, &myAddress)) != 0) {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
@@ -32,7 +33,7 @@ void UmlClient::init() {
         throw ManagerStateException("client could not get socket!");
     }
     if (connect(m_socketD, myAddress->ai_addr, myAddress->ai_addrlen) == -1) {
-        throw ManagerStateException("client could not connect to server!");
+        throw ManagerStateException("client could not connect to server! " + std::string(strerror(errno)));
     }
     freeaddrinfo(myAddress);
 
@@ -40,6 +41,10 @@ void UmlClient::init() {
     int bytesReceived = recv(m_socketD, buff, sizeof buff, 0);
     if (bytesReceived <= 0) {
         throw ManagerStateException();
+    }
+    if (buff[2] != '\0') {
+        char buff2[4] = {buff[0], buff[1], buff[2], '\0'};
+        throw ManagerStateException("Invalid connection response from server, message (might be garbage): " + std::string(buff2));
     }
     if (std::string("id").compare(buff) != 0) {
         throw ManagerStateException();
@@ -55,11 +60,17 @@ void UmlClient::init() {
     }
     delete[] idMsg;
     char acceptBuff[29];
-    if ((bytesReceived = recv(m_socketD, acceptBuff, 29, 0)) <= 0) {
-        throw ManagerStateException("did not get accept message!");
-    }
-    if (id.string().compare(acceptBuff) != 0) {
-        throw ManagerStateException("did not get proper accept message!");
+    struct pollfd pfds[1] = {{m_socketD, POLLIN}};
+    int pollRes;
+    if ((pollRes = poll(pfds, 0, 250)) > 0) {
+        if ((bytesReceived = recv(m_socketD, acceptBuff, 29, 0)) <= 0) {
+            throw ManagerStateException("did not get accept message!");
+        }
+        if (id.string().compare(acceptBuff) != 0) {
+            throw ManagerStateException("did not get proper accept message!");
+        }
+    } else {
+        throw ManagerStateException("Timeout waiting for server response!");
     }
 }
 

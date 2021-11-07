@@ -4,6 +4,7 @@
 #include "uml/sequence.h"
 #include "uml/package.h"
 #include "uml/slot.h"
+#include "uml/specialSequence.h"
 
 using namespace UML;
 
@@ -142,4 +143,23 @@ TEST_F(SequenceTest, variardicAddTest) {
     ASSERT_EQ(p.getPackagedElements().back().getID(), c3.getID());
     ASSERT_NO_THROW(p.getPackagedElements().remove(c1, c2, c3));
     ASSERT_TRUE(p.getPackagedElements().empty());
+}
+
+TEST_F(SequenceTest, specialSequenceTest) {
+    size_t numPackages = 20;
+    SpecialSequence<Package> seq;
+    UmlManager m;
+    Package& pckg = m.create<Package>();
+    seq.add(pckg);
+    ASSERT_EQ(seq.get(pckg.getID()), pckg);
+    std::vector<ID> ids(numPackages);
+    ids[0] = pckg.getID();
+    for (int i = 0; i < numPackages - 1; i++) {
+        Package& p = m.create<Package>();
+        ids[i+1] = p.getID();
+        seq.add(p);
+    }
+    for (const ID id : ids) {
+        ASSERT_TRUE(seq.contains(id));
+    }
 }

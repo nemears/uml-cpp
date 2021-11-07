@@ -164,8 +164,22 @@ TEST_F(SequenceTest, basicSpecialSequenceTest) {
     }
 }
 
-TEST_F(SequenceTest, basicSubsetsTest) {
-    SpecialSequence<PackageableElement> rootSeq;
-    SpecialSequence<Package> subSeq;
-    
+TEST_F(SequenceTest, basicRemoveTest) {
+    SpecialSequence<Package> seq;
+    UmlManager m;
+    const size_t constNumPackages = 8;
+    size_t numPackages = constNumPackages;
+    std::vector<ID> packages;
+    for (int i = 0; i < numPackages; i++) {
+        Package& temp = m.create<Package>();
+        packages.push_back(temp.getID());
+        seq.add(temp);
+    }
+    for (int i = 0; i < constNumPackages / 2; i++) {
+        int index = rand() % numPackages;
+        seq.remove(packages[index]);
+        packages.erase(std::remove(packages.begin(), packages.end(), packages[index]), packages.end()) - packages.begin();
+        numPackages--;
+    }
+    ASSERT_EQ(seq.size(), constNumPackages/2);
 }

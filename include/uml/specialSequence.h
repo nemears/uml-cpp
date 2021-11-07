@@ -29,6 +29,7 @@ namespace UML {
             };
 
             SequenceNode* m_root = 0;
+            size_t m_size = 0;
 
             void place(SequenceNode* node, SequenceNode* parent) {
                 if (parent->m_left) {
@@ -110,9 +111,89 @@ namespace UML {
                 } else {
                     place(node, m_root);
                 }
+                m_size++;
             };
             void remove(T& el) {
-
+                remove(el.getID());
+            };
+            void remove(ID id) {
+                if (m_root) {
+                    SequenceNode* temp = search(id, m_root);
+                    if (temp->m_parent) {
+                        // has parent
+                        bool isLeft = temp->m_parent->m_left ? temp->m_parent->m_left->m_id == temp->m_id ? true : false : false;
+                        if (isLeft) {
+                            // The removed element is on the left side of its parent
+                            if (!temp->m_parent->m_right) {
+                                // If the parent has no right side just copy the removed nodes children to the parents children
+                                temp->m_parent->m_left = temp->m_left;
+                                temp->m_parent->m_right = temp->m_right;
+                                if (temp->m_left) {
+                                    temp->m_left->m_parent = temp->m_parent;
+                                }
+                                if (temp->m_right) {
+                                    temp->m_right->m_parent = temp->m_parent;   
+                                }
+                            } else {
+                                if (temp->m_left) {
+                                    if (temp->m_parent->m_right->m_id > temp->m_left->m_id) {
+                                        // If the removed node's left side is less than the right side put the right to the left and left to the right and place the removed nodes right on the left side
+                                        temp->m_parent->m_left = temp->m_parent->m_right;
+                                        temp->m_parent->m_right = temp->m_left;
+                                        temp->m_left->m_parent = temp->m_parent;
+                                        if (temp->m_right) {
+                                            place(temp->m_right, temp->m_left);
+                                        }
+                                    } else {
+                                        // put the removed node's left side to the parent's left and place the right wherever it belongs
+                                        temp->m_parent->m_left = temp->m_left;
+                                        temp->m_left->m_parent = temp->m_parent;
+                                        if (temp->m_right) {
+                                            place(temp->m_right, temp->m_parent);
+                                        }
+                                    }
+                                } else {
+                                    // removed node has no children
+                                    temp->m_parent->m_left = temp->m_parent->m_right;
+                                    temp->m_parent->m_right = 0;
+                                    /** TODO: **/
+                                    // may be of use to rebalance tree here?
+                                }
+                            }
+                        } else {
+                            if (!temp->m_left) {
+                                // removed node has no children
+                                temp->m_parent->m_right = 0;
+                                /** TODO: **/
+                                // may be of use to rebalance tree here?
+                            } else {
+                                if (temp->m_left->m_id > temp->m_parent->m_left->m_id) {
+                                    temp->m_parent->m_right = temp->m_parent->m_left;
+                                    temp->m_parent->m_left = temp->m_left;
+                                    temp->m_left->m_parent = temp->m_parent;
+                                    if (temp->m_right) {
+                                        place(temp->m_right, temp->m_parent);
+                                    }
+                                } else {
+                                    temp->m_parent->m_right = temp->m_left;
+                                    temp->m_left->m_parent = temp->m_parent;
+                                    if (temp->m_right) {
+                                        place(temp->m_right, temp->m_parent);
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        // we are removing root
+                        m_root = temp->m_left;
+                        place(temp->m_right, m_root);
+                        m_root->m_parent = 0;
+                    }
+                    delete temp;
+                    m_size--;
+                } else {
+                    throw ID_doesNotExistException2(id);
+                }
             };
             T& get(ID id) {
                 if (m_root) {
@@ -128,6 +209,7 @@ namespace UML {
                     throw ID_doesNotExistException2(id);
                 }
             }
+            size_t size() const { return m_size; };
     };
 }
 

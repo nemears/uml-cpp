@@ -15,23 +15,37 @@ namespace UML {
             }
     };
 
+    template <class T> class SpecialSequence;
+
+    class AbstractContainer {
+        template <class T> friend class SpecialSequence;
+        protected:
+            size_t m_size = 0;
+            struct ContainerNode {
+                virtual ~ContainerNode() {};
+                ID m_id;
+                ContainerNode* m_parent = 0;
+                ContainerNode* m_left = 0;
+                ContainerNode* m_right = 0;
+            };
+            ContainerNode* m_root = 0;
+            virtual void place(ContainerNode* node, ContainerNode* parent) = 0;
+    };
+
     /**
      * This container is based around a weighted binary search tree
      **/
-    template <class T = Element> class SpecialSequence {
-        private:
-            struct SequenceNode {
-                ID m_id;
+    template <class T = Element> class SpecialSequence : public AbstractContainer {
+        protected:
+            struct SequenceNode : public ContainerNode {
+                SequenceNode(T& el) : m_el(&el) { m_id = el.getID(); };
+                virtual ~SequenceNode() {};
                 T* m_el = 0;
-                SequenceNode* m_parent = 0;
-                SequenceNode* m_left = 0;
-                SequenceNode* m_right = 0;
             };
 
-            SequenceNode* m_root = 0;
-            size_t m_size = 0;
+            std::vector<AbstractContainer*> m_subsetOf;
 
-            void place(SequenceNode* node, SequenceNode* parent) {
+            void place(ContainerNode* node, ContainerNode* parent) override {
                 if (parent->m_left) {
                     // prefer placement to left
                     if (parent->m_right) {
@@ -58,10 +72,10 @@ namespace UML {
                     node->m_parent = parent;
                 }
             };
-            SequenceNode* search(ID id, SequenceNode* node) {
+            SequenceNode* search(ID id, ContainerNode* node) {
                 if (node->m_id == id) {
                     // found match
-                    return node;
+                    return dynamic_cast<SequenceNode*>(node);
                 } else {
                     if (node->m_right) {
                         // if there is a right there is both children filled out
@@ -78,40 +92,56 @@ namespace UML {
                             return search(id, node->m_left);
                         } else {
                             // both are null, our search is unfruitful :(
-                            throw ID_doesNotExistException2(id);
+                            return 0;
                         }
                     }
                 }
             }
         public:
             virtual ~SpecialSequence() {
-                SequenceNode* curr = m_root;
-                while (curr) {
-                    if (!curr->m_right && !curr->m_left) {
-                        SequenceNode* temp = curr->m_parent;
-                        delete curr;
-                        curr = temp;
-                    } else {
-                        if (curr->m_right) {
-                            SequenceNode* temp = curr->m_right;
-                            curr->m_right = 0;
+                if (m_subsetOf.empty()) {
+                    // only root sequences will delete elements
+                    ContainerNode* curr = m_root;
+                    while (curr) {
+                        if (!curr->m_right && !curr->m_left) {
+                            ContainerNode* temp = curr->m_parent;
+                            delete curr;
                             curr = temp;
-                        } else if (curr->m_left) {
-                            SequenceNode* temp = curr->m_left;
-                            curr->m_left = 0;
-                            curr = temp;
+                        } else {
+                            if (curr->m_right) {
+                                ContainerNode* temp = curr->m_right;
+                                curr->m_right = 0;
+                                curr = temp;
+                            } else if (curr->m_left) {
+                                ContainerNode* temp = curr->m_left;
+                                curr->m_left = 0;
+                                curr = temp;
+                            }
                         }
                     }
                 }
             };
+            void subsets(AbstractContainer& subsetOf) {
+                m_subsetOf.push_back(&subsetOf);
+            };
             void add(T& el) {
-                SequenceNode* node = new SequenceNode{el.getID(), &el};
+                SequenceNode* node = new SequenceNode(el);
                 if (!m_root) {
                     m_root = node;
+                    for (auto& subsetOf : m_subsetOf) {
+                        if (subsetOf->m_root) {
+                            subsetOf->place(node, subsetOf->m_root);
+                        } else {
+                            subsetOf->m_root = node;
+                        }
+                    }
                 } else {
                     place(node, m_root);
                 }
                 m_size++;
+                for (auto& subsetOf : m_subsetOf) {
+                    subsetOf->m_size++;
+                }
             };
             void remove(T& el) {
                 remove(el.getID());
@@ -184,27 +214,44 @@ namespace UML {
                             }
                         }
                     } else {
-                        // we are removing root
-                        m_root = temp->m_left;
-                        place(temp->m_right, m_root);
-                        m_root->m_parent = 0;
+                        // we are removing base root of tree
+                        if (temp->m_left) {
+                            m_root = temp->m_left;
+                            if (temp->m_right) {
+                                place(temp->m_right, m_root);
+                            }
+                            m_root->m_parent = 0;
+                        }
+                    }
+                    if (temp->m_id == m_root->m_id) {
+                        // if we removed the root of the sequence
+                        if (temp->m_left) {
+                            m_root = temp->m_left;
+                        } else {
+                            m_root = 0;
+                        }
                     }
                     delete temp;
                     m_size--;
+                    for (auto subsetOf : m_subsetOf) {
+                        subsetOf->m_size--;
+                    }
                 } else {
                     throw ID_doesNotExistException2(id);
                 }
             };
             T& get(ID id) {
                 if (m_root) {
-                    return *search(id, m_root)->m_el;
-                } else {
-                    throw ID_doesNotExistException2(id);
+                    T* ret = search(id, m_root)->m_el;
+                    if (ret) {
+                        return *ret;
+                    }
                 }
+                throw ID_doesNotExistException2(id);
             };
             bool contains(ID id) {
                 if (m_root) {
-                    return search(id, m_root);
+                    return search(id, m_root) >= 0;
                 } else {
                     throw ID_doesNotExistException2(id);
                 }

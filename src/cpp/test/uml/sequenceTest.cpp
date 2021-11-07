@@ -182,4 +182,24 @@ TEST_F(SequenceTest, basicRemoveTest) {
         numPackages--;
     }
     ASSERT_EQ(seq.size(), constNumPackages/2);
+    for (int i = 0; i < constNumPackages/ 2; i++) {
+        int index = rand() % numPackages;
+        seq.remove(packages[index]);
+        packages.erase(std::remove(packages.begin(), packages.end(), packages[index]), packages.end()) - packages.begin();
+        numPackages--;
+    }
+    ASSERT_EQ(seq.size(), 0);
+}
+
+TEST_F(SequenceTest, basicSubsetsTest) {
+    SpecialSequence<PackageableElement> rootSeq;
+    SpecialSequence<Package> subSeq;
+    subSeq.subsets(rootSeq);
+    UmlManager m;
+    Package& pckg = m.create<Package>();
+    subSeq.add(pckg);
+    ASSERT_EQ(subSeq.size(), 1);
+    ASSERT_TRUE(subSeq.contains(pckg.getID()));
+    ASSERT_EQ(rootSeq.size(), 1);
+    ASSERT_TRUE(rootSeq.contains(pckg.getID()));
 }

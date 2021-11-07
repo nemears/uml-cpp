@@ -83,6 +83,26 @@ namespace UML {
                 }
             }
         public:
+            virtual ~SpecialSequence() {
+                SequenceNode* curr = m_root;
+                while (curr) {
+                    if (!curr->m_right && !curr->m_left) {
+                        SequenceNode* temp = curr->m_parent;
+                        delete curr;
+                        curr = temp;
+                    } else {
+                        if (curr->m_right) {
+                            SequenceNode* temp = curr->m_right;
+                            curr->m_right = 0;
+                            curr = temp;
+                        } else if (curr->m_left) {
+                            SequenceNode* temp = curr->m_left;
+                            curr->m_left = 0;
+                            curr = temp;
+                        }
+                    }
+                }
+            };
             void add(T& el) {
                 SequenceNode* node = new SequenceNode{el.getID(), &el};
                 if (!m_root) {

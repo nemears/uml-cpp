@@ -145,7 +145,7 @@ TEST_F(SequenceTest, variardicAddTest) {
     ASSERT_TRUE(p.getPackagedElements().empty());
 }
 
-TEST_F(SequenceTest, specialSequenceTest) {
+TEST_F(SequenceTest, basicSpecialSequenceTest) {
     size_t numPackages = 20;
     SpecialSequence<Package> seq;
     UmlManager m;
@@ -162,4 +162,10 @@ TEST_F(SequenceTest, specialSequenceTest) {
     for (const ID id : ids) {
         ASSERT_TRUE(seq.contains(id));
     }
+}
+
+TEST_F(SequenceTest, basicSubsetsTest) {
+    SpecialSequence<PackageableElement> rootSeq;
+    SpecialSequence<Package> subSeq;
+    
 }

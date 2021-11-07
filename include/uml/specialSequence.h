@@ -27,8 +27,10 @@ namespace UML {
                 ContainerNode* m_parent = 0;
                 ContainerNode* m_left = 0;
                 ContainerNode* m_right = 0;
+                size_t m_guard = 0;
             };
             ContainerNode* m_root = 0;
+            size_t m_guard = 0;
             virtual void place(ContainerNode* node, ContainerNode* parent) = 0;
     };
 
@@ -42,7 +44,6 @@ namespace UML {
                 virtual ~SequenceNode() {};
                 T* m_el = 0;
             };
-
             std::vector<AbstractContainer*> m_subsetOf;
 
             void place(ContainerNode* node, ContainerNode* parent) override {
@@ -50,12 +51,20 @@ namespace UML {
                     // prefer placement to left
                     if (parent->m_right) {
                         // both children are populated, determine where to place
-                        if (node->m_id > parent->m_right->m_id) {
+                        if (node->m_id > parent->m_right->m_id && parent->m_left->m_guard <= m_guard) {
                             // place to left if greater than right
                             place(node, parent->m_left);
-                        } else {
+                        } else if (parent->m_right->m_guard <= m_guard) {
                             // place to right if less than right
                             place(node, parent->m_right);
+                        } else {
+                            if (node->m_id > parent->m_right->m_id) {
+                                ContainerNode* temp = parent->m_left;
+                                parent->m_left = node;
+                                place(parent->m_right, temp);
+                                parent->m_right = temp;
+                                node->m_parent = parent;
+                            }
                         }
                     } else {
                         if (node->m_id > parent->m_left->m_id) {
@@ -72,10 +81,10 @@ namespace UML {
                     node->m_parent = parent;
                 }
             };
-            SequenceNode* search(ID id, ContainerNode* node) {
+            ContainerNode* search(ID id, ContainerNode* node) {
                 if (node->m_id == id) {
                     // found match
-                    return dynamic_cast<SequenceNode*>(node);
+                    return node;
                 } else {
                     if (node->m_right) {
                         // if there is a right there is both children filled out
@@ -122,10 +131,19 @@ namespace UML {
                 }
             };
             void subsets(AbstractContainer& subsetOf) {
-                m_subsetOf.push_back(&subsetOf);
+                if (!m_root && !subsetOf.m_root) {
+                    m_subsetOf.push_back(&subsetOf);
+                    if (subsetOf.m_guard <= m_guard) {
+                        m_guard = subsetOf.m_guard + 1;
+                    }
+                } else {
+                    // TODO error
+                    std::cerr << "WARNING subset set after sequence was used, must make sure subsetting is done during configuration, before use!" << std::endl;
+                }
             };
             void add(T& el) {
                 SequenceNode* node = new SequenceNode(el);
+                node->m_guard = m_guard;
                 if (!m_root) {
                     m_root = node;
                     for (auto& subsetOf : m_subsetOf) {
@@ -136,7 +154,14 @@ namespace UML {
                         }
                     }
                 } else {
-                    place(node, m_root);
+                    if (m_root->m_guard >= m_guard) {
+                        // if the root is a subsetted sequence push it under this one
+                        ContainerNode* temp = m_root;
+                        m_root = node;
+                        place(temp, node);
+                    } else {
+                        place(node, m_root);
+                    }
                 }
                 m_size++;
                 for (auto& subsetOf : m_subsetOf) {
@@ -148,7 +173,7 @@ namespace UML {
             };
             void remove(ID id) {
                 if (m_root) {
-                    SequenceNode* temp = search(id, m_root);
+                    ContainerNode* temp = search(id, m_root);
                     if (temp->m_parent) {
                         // has parent
                         bool isLeft = temp->m_parent->m_left ? temp->m_parent->m_left->m_id == temp->m_id ? true : false : false;
@@ -242,7 +267,7 @@ namespace UML {
             };
             T& get(ID id) {
                 if (m_root) {
-                    T* ret = search(id, m_root)->m_el;
+                    T* ret = dynamic_cast<SequenceNode*>(search(id, m_root))->m_el;
                     if (ret) {
                         return *ret;
                     }
@@ -250,11 +275,12 @@ namespace UML {
                 throw ID_doesNotExistException2(id);
             };
             bool contains(ID id) {
+                bool ret = false;
                 if (m_root) {
-                    return search(id, m_root) >= 0;
-                } else {
-                    throw ID_doesNotExistException2(id);
-                }
+                    ContainerNode* t = search(id, m_root);
+                    ret = t > 0;
+                } 
+                return ret;
             }
             size_t size() const { return m_size; };
     };

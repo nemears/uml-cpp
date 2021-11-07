@@ -5,6 +5,7 @@
 #include "uml/package.h"
 #include "uml/slot.h"
 #include "uml/specialSequence.h"
+#include "uml/class.h"
 
 using namespace UML;
 
@@ -202,4 +203,10 @@ TEST_F(SequenceTest, basicSubsetsTest) {
     ASSERT_TRUE(subSeq.contains(pckg.getID()));
     ASSERT_EQ(rootSeq.size(), 1);
     ASSERT_TRUE(rootSeq.contains(pckg.getID()));
+    Class& clazz = m.create<Class>();
+    rootSeq.add(clazz);
+    ASSERT_EQ(rootSeq.size(), 2);
+    ASSERT_TRUE(rootSeq.contains(clazz.getID()));
+    ASSERT_EQ(subSeq.size(), 1);
+    ASSERT_FALSE(subSeq.contains(clazz.getID()));
 }

@@ -11,12 +11,17 @@ add_library(Uml namespace.cpp model.cpp element.cpp namedElement.cpp class.cpp c
                 templateParameterSubstitution.cpp literalNull.cpp literalUnlimitedNatural.cpp profile.cpp stereotype.cpp
                 profileApplication.cpp extension.cpp extensionEnd.cpp dependency.cpp abstraction.cpp realization.cpp usage.cpp
                 deployment.cpp deployedArtifact.cpp deploymentTarget.cpp artifact.cpp behavioredClassifier.cpp
-                manifestation.cpp managers/umlClient.cpp managers/umlServer.cpp generalizationSet.cpp)
+                manifestation.cpp generalizationSet.cpp)
+if (UML_CLIENT_SERVER)
+    target_sources(Uml PRIVATE managers/umlClient.cpp managers/umlServer.cpp)
+endif()
 add_subdirectory(parsers)
 if (UML_CPP_BUILD_CLANG)
     add_subdirectory(cpp)
 endif()
-add_executable(uml-server managers/main.cpp)
 target_link_libraries(Uml PUBLIC yaml-cpp Parsers)
-target_link_libraries(uml-server PUBLIC Uml)
-target_link_libraries(uml-server PRIVATE Threads::Threads)
+if (UML_CLIENT_SERVER)
+    add_executable(uml-server managers/main.cpp)
+    target_link_libraries(uml-server PUBLIC Uml)
+    target_link_libraries(uml-server PRIVATE Threads::Threads)
+endif()

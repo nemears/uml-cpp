@@ -4,6 +4,7 @@ include(CTest)
 enable_testing()
 
 option(UML_CPP_BUILD_CLANG "allows for building the src/cpp/uml/cpp target if llvm is findable" ON)
+option(UML_CLIENT_SERVER "allows for building of src/cpp/uml/managers for restful server client classes" ON)
 
 set (CMAKE_CXX_STANDARD 17)
 

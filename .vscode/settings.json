@@ -77,7 +77,8 @@
         // this optioin turns off testing for yaml-cpp library
         "YAML_CPP_BUILD_TESTS":"OFF",
         "YAML_CPP_BUILD_TOOLS":"OFF",
-        "YAML_CPP_BUILD_CONTRIB":"OFF"
+        "YAML_CPP_BUILD_CONTRIB":"OFF",
+        "UML_CLIENT_SERVER":"OFF"
     },
     // python testing options
     "python.testing.unittestArgs": [

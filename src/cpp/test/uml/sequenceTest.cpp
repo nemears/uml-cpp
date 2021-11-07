@@ -6,6 +6,7 @@
 #include "uml/slot.h"
 #include "uml/specialSequence.h"
 #include "uml/class.h"
+#include "uml/instanceSpecification.h"
 
 using namespace UML;
 
@@ -209,4 +210,37 @@ TEST_F(SequenceTest, basicSubsetsTest) {
     ASSERT_TRUE(rootSeq.contains(clazz.getID()));
     ASSERT_EQ(subSeq.size(), 1);
     ASSERT_FALSE(subSeq.contains(clazz.getID()));
+}
+
+TEST_F(SequenceTest, multiSubsetsTest) {
+    SpecialSequence<NamedElement> seq1;
+    SpecialSequence<PackageableElement> seq2;
+    SpecialSequence<Package> subSeq;
+    subSeq.subsets(seq1);
+    subSeq.subsets(seq2);
+    UmlManager m;
+    Class& clazz = m.create<Class>();
+    seq1.add(clazz);
+    ASSERT_EQ(seq1.size(), 1);
+    ASSERT_TRUE(seq1.contains(clazz.getID()));
+    ASSERT_EQ(seq2.size(), 0);
+    ASSERT_FALSE(seq2.contains(clazz.getID()));
+    ASSERT_EQ(subSeq.size(), 0);
+    ASSERT_FALSE(subSeq.contains(clazz.getID()));
+    InstanceSpecification& inst = m.create<InstanceSpecification>();
+    seq2.add(inst);
+    ASSERT_EQ(seq1.size(), 1);
+    ASSERT_FALSE(seq1.contains(inst.getID()));
+    ASSERT_EQ(seq2.size(), 1);
+    ASSERT_TRUE(seq2.contains(inst.getID()));
+    ASSERT_EQ(subSeq.size(), 0);
+    ASSERT_FALSE(subSeq.contains(inst.getID()));
+    Package& pckg = m.create<Package>();
+    subSeq.add(pckg);
+    ASSERT_EQ(seq1.size(), 2);
+    ASSERT_TRUE(seq1.contains(pckg.getID()));
+    ASSERT_EQ(seq2.size(), 2);
+    ASSERT_TRUE(seq2.contains(pckg.getID()));
+    ASSERT_EQ(subSeq.size(), 1);
+    ASSERT_TRUE(subSeq.contains(pckg.getID()));
 }

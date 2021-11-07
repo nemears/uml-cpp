@@ -108,23 +108,34 @@ namespace UML {
             }
         public:
             virtual ~SpecialSequence() {
-                if (m_subsetOf.empty()) {
-                    // only root sequences will delete elements
-                    ContainerNode* curr = m_root;
-                    while (curr) {
-                        if (!curr->m_right && !curr->m_left) {
-                            ContainerNode* temp = curr->m_parent;
-                            delete curr;
-                            curr = temp;
-                        } else {
-                            if (curr->m_right) {
+                // only root sequences will delete elements
+                ContainerNode* curr = m_root;
+                while (curr) {
+                    if (!curr->m_right && !curr->m_left) {
+                        ContainerNode* temp = curr->m_parent;
+                        delete curr;
+                        if (curr->m_parent) {
+                            if (curr->m_parent->m_guard < m_guard) {
+                                break;
+                            }
+                        }
+                        curr = temp;
+                    } else {
+                        if (curr->m_right) {
+                            if (curr->m_right->m_guard <= m_guard) {
                                 ContainerNode* temp = curr->m_right;
                                 curr->m_right = 0;
                                 curr = temp;
-                            } else if (curr->m_left) {
+                                continue;
+                            }
+                            curr->m_right = 0;
+                        } if (curr->m_left) {
+                            if (curr->m_left->m_guard <= m_guard) {
                                 ContainerNode* temp = curr->m_left;
                                 curr->m_left = 0;
                                 curr = temp;
+                            } else {
+                                curr->m_left = 0;
                             }
                         }
                     }

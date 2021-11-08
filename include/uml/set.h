@@ -344,19 +344,21 @@ namespace UML {
                 }
                 throw ID_doesNotExistException2(id);
             };
-            T& get(std::string name) {
+            template <class U = Element> T& get(std::string name) {
+                using Node = typename Set<U>::SetNode;
                 if (m_root) {
-                    SetNode* searchResult = dynamic_cast<SetNode*>(search(name, m_root));
+                    Node* searchResult = dynamic_cast<Node*>(search(name, m_root));
                     if (!searchResult) {
                         // TODO throw proper error
                         throw ManagerStateException("Improper name used in set!"); // TODO change
                     }
-                    T* ret = searchResult->m_el;
+                    T* ret = dynamic_cast<T*>(searchResult->m_el);
                     if (ret) {
                         return *ret;
                     }
-                }
-            }
+                } 
+                throw ManagerStateException("Improper name used in set!"); // TODO change
+            };
             bool contains(ID id) {
                 bool ret = false;
                 if (m_root) {

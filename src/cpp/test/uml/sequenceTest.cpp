@@ -163,6 +163,7 @@ TEST_F(SequenceTest, basicSpecialSequenceTest) {
     }
     for (const ID id : ids) {
         ASSERT_TRUE(seq.contains(id));
+        ASSERT_EQ(seq.get(id).getID(), id);
     }
 }
 
@@ -202,14 +203,18 @@ TEST_F(SequenceTest, basicSubsetsTest) {
     subSeq.add(pckg);
     ASSERT_EQ(subSeq.size(), 1);
     ASSERT_TRUE(subSeq.contains(pckg.getID()));
+    ASSERT_EQ(subSeq.get(pckg.getID()), pckg);
     ASSERT_EQ(rootSeq.size(), 1);
     ASSERT_TRUE(rootSeq.contains(pckg.getID()));
+    ASSERT_EQ(rootSeq.get(pckg.getID()), pckg);
     Class& clazz = m.create<Class>();
     rootSeq.add(clazz);
     ASSERT_EQ(rootSeq.size(), 2);
     ASSERT_TRUE(rootSeq.contains(clazz.getID()));
+    ASSERT_EQ(rootSeq.get(clazz.getID()), clazz);
     ASSERT_EQ(subSeq.size(), 1);
     ASSERT_FALSE(subSeq.contains(clazz.getID()));
+    ASSERT_THROW(subSeq.get(clazz.getID()), ID_doesNotExistException2);
 }
 
 TEST_F(SequenceTest, multiSubsetsTest) {
@@ -257,6 +262,8 @@ TEST_F(SequenceTest, removeFromSubsettedSequenceTest) {
     ASSERT_EQ(rootSeq.size(), 0);
     ASSERT_FALSE(subSeq.contains(pckg.getID()));
     ASSERT_FALSE(rootSeq.contains(pckg.getID()));
+    ASSERT_EQ(rootSeq.get(pckg.getID()), pckg);
+    ASSERT_EQ(subSeq.get(pckg.getID()), pckg);
     subSeq.add(pckg);
     rootSeq.remove(pckg);
     ASSERT_EQ(subSeq.size(), 0);
@@ -285,4 +292,25 @@ TEST_F(SequenceTest, specialAutoForLoop) {
         if (i > numPackages + 10) break;
     }
     ASSERT_EQ(i, 10);
+}
+
+TEST_F(SequenceTest, getFromSetByNameTest) {
+    Set<Package> subSeq;
+    Set<PackageableElement> rootSeq;
+    subSeq.subsets(rootSeq);
+    UmlManager m;
+    Package& one = m.create<Package>();
+    Class& two = m.create<Class>();
+    one.setName("1");
+    two.setName("2");
+    subSeq.add(one);
+    rootSeq.add(two);
+    ASSERT_TRUE(rootSeq.contains("1"));
+    ASSERT_TRUE(rootSeq.contains("2"));
+    ASSERT_TRUE(subSeq.contains("1"));
+    ASSERT_FALSE(subSeq.contains("2"));
+    ASSERT_EQ(rootSeq.get("1"), one);
+    ASSERT_EQ(rootSeq.get("2"), two);
+    ASSERT_EQ(subSeq.get("1"), one);
+    ASSERT_THROW(subSeq.get("2"), ManagerStateException);
 }

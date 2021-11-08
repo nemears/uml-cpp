@@ -24,6 +24,7 @@ namespace UML {
             struct ContainerNode {
                 virtual ~ContainerNode() {};
                 ID m_id;
+                std::string m_name;
                 ContainerNode* m_parent = 0;
                 ContainerNode* m_left = 0;
                 ContainerNode* m_right = 0;
@@ -114,6 +115,24 @@ namespace UML {
                     }
                 }
             }
+            ContainerNode* search(std::string name, ContainerNode* node) {
+                if (node->m_name == name) {
+                    return node;
+                } else {
+                    ContainerNode* temp;
+                    if (node->m_right) {
+                        if((temp = search(name, node->m_right)) != 0) {
+                            return temp;
+                        }
+                    }
+                    if (node->m_left) {
+                        if ((temp = search(name, node->m_left)) != 0) {
+                            return temp;
+                        }
+                    }
+                }
+                return 0;
+            };
         public:
             virtual ~Set() { 
                 ContainerNode* curr = m_root;
@@ -162,6 +181,9 @@ namespace UML {
             };
             void add(T& el) {
                 SetNode* node = new SetNode(el);
+                if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
+                    node->m_name = el.template as<NamedElement>().getName();
+                }
                 node->m_guard = m_guard;
                 if (!m_root) {
                     m_root = node;
@@ -311,19 +333,44 @@ namespace UML {
             };
             T& get(ID id) {
                 if (m_root) {
-                    T* ret = dynamic_cast<SetNode*>(search(id, m_root))->m_el;
+                    SetNode* searchResult = dynamic_cast<SetNode*>(search(id, m_root));
+                    if (!searchResult) {
+                        throw ID_doesNotExistException2(id);
+                    }
+                    T* ret = searchResult->m_el;
                     if (ret) {
                         return *ret;
                     }
                 }
                 throw ID_doesNotExistException2(id);
             };
+            T& get(std::string name) {
+                if (m_root) {
+                    SetNode* searchResult = dynamic_cast<SetNode*>(search(name, m_root));
+                    if (!searchResult) {
+                        // TODO throw proper error
+                        throw ManagerStateException("Improper name used in set!"); // TODO change
+                    }
+                    T* ret = searchResult->m_el;
+                    if (ret) {
+                        return *ret;
+                    }
+                }
+            }
             bool contains(ID id) {
                 bool ret = false;
                 if (m_root) {
                     ContainerNode* t = search(id, m_root);
                     ret = t > 0;
                 } 
+                return ret;
+            }
+            bool contains(std::string name) {
+                bool ret = false;
+                if (m_root) {
+                    ContainerNode* t = search(name, m_root);
+                    ret = t > 0;
+                }
                 return ret;
             }
             size_t size() const { return m_size; };

@@ -121,8 +121,8 @@ namespace UML {
                     if (!curr->m_right && !curr->m_left) {
                         ContainerNode* temp = curr->m_parent;
                         delete curr;
-                        if (curr->m_parent) {
-                            if (curr->m_parent->m_guard < m_guard) {
+                        if (temp) {
+                            if (temp->m_guard < m_guard) {
                                 break;
                             }
                         }
@@ -334,7 +334,7 @@ namespace UML {
             };
             SetIterator<T> end() {
                 SetIterator<T> it;
-                it.m_node = it.m_endNode;
+                it.m_node = &it.m_endNode;
                 return it;
             };
     };
@@ -346,16 +346,8 @@ namespace UML {
         using NodeType = typename Set<T>::SetNode;
         private:
             NodeType* m_node;
-            NodeType* m_endNode;
+            NodeType m_endNode;
         public:
-            SetIterator() {
-                m_endNode = new NodeType();
-            };
-            ~SetIterator() {
-                // if (m_node->m_id == ID::nullID()) {
-                //     delete m_endNode;
-                // }
-            };
             T& operator*() { return *m_node->m_el; };
             T* operator->() { return m_node->m_el; };
 
@@ -380,7 +372,7 @@ namespace UML {
                         last = temp;
                     } while (temp->m_parent);
                     if (!found) {
-                        m_node = m_endNode;
+                        m_node = &m_endNode;
                     } else {
                         m_node = dynamic_cast<NodeType*>(temp->m_right);
                     }

@@ -22,8 +22,10 @@ namespace UML {
         protected:
             size_t m_size = 0;
             struct ContainerNode {
-                virtual ~ContainerNode() {};
+                ContainerNode(Element& el) : m_el(&el) { m_id = el.getID(); };
+                ContainerNode(){};
                 ID m_id;
+                Element* m_el;
                 std::string m_name;
                 ContainerNode* m_parent = 0;
                 ContainerNode* m_left = 0;
@@ -46,12 +48,6 @@ namespace UML {
         template <class U> friend class SetIterator;
 
         protected:
-            struct SetNode : public ContainerNode {
-                SetNode(T& el) : m_el(&el) { m_id = el.getID(); };
-                SetNode(){}; // blank constructor
-                virtual ~SetNode() {};
-                T* m_el = 0;
-            };
             std::vector<AbstractContainer*> m_subsetOf;
             std::vector<AbstractContainer*> m_subsettedContainers;
 
@@ -180,7 +176,7 @@ namespace UML {
                 }
             };
             void add(T& el) {
-                SetNode* node = new SetNode(el);
+                ContainerNode* node = new ContainerNode(el);
                 if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
                     node->m_name = el.template as<NamedElement>().getName();
                 }
@@ -333,21 +329,20 @@ namespace UML {
             };
             T& get(ID id) {
                 if (m_root) {
-                    SetNode* searchResult = dynamic_cast<SetNode*>(search(id, m_root));
+                    ContainerNode* searchResult = search(id, m_root);
                     if (!searchResult) {
                         throw ID_doesNotExistException2(id);
                     }
-                    T* ret = searchResult->m_el;
+                    T* ret = dynamic_cast<T*>(searchResult->m_el);
                     if (ret) {
                         return *ret;
                     }
                 }
                 throw ID_doesNotExistException2(id);
             };
-            template <class U = Element> T& get(std::string name) {
-                using Node = typename Set<U>::SetNode;
+            T& get(std::string name) {
                 if (m_root) {
-                    Node* searchResult = dynamic_cast<Node*>(search(name, m_root));
+                    ContainerNode* searchResult = search(name, m_root);
                     if (!searchResult) {
                         // TODO throw proper error
                         throw ManagerStateException("Improper name used in set!"); // TODO change
@@ -378,7 +373,7 @@ namespace UML {
             size_t size() const { return m_size; };
             SetIterator<T> begin() {
                 SetIterator<T> it;
-                it.m_node = dynamic_cast<SetNode*>(m_root);
+                it.m_node = m_root;
                 return it;
             };
             SetIterator<T> end() {
@@ -391,27 +386,27 @@ namespace UML {
     template <class T = Element> struct SetIterator {
 
         friend class Set<T>;
+        friend class AbstractContainer;
 
-        using NodeType = typename Set<T>::SetNode;
         private:
-            NodeType* m_node;
-            NodeType m_endNode;
+            AbstractContainer::ContainerNode* m_node;
+            AbstractContainer::ContainerNode m_endNode;
         public:
-            T& operator*() { return *m_node->m_el; };
-            T* operator->() { return m_node->m_el; };
+            T& operator*() { return dynamic_cast<T&>(*m_node->m_el); };
+            T* operator->() { return dynamic_cast<T*>(m_node->m_el); };
 
             // This is dfs
             SetIterator operator++() {
                 if (m_node->m_left) {
                     // always go left
-                    m_node = dynamic_cast<NodeType*>(m_node->m_left);
+                    m_node = m_node->m_left;
                 } else {
                     // we hit bottom, choose next right
-                    NodeType* temp;
-                    NodeType* last = dynamic_cast<NodeType*>(m_node);
+                    AbstractContainer::ContainerNode* temp;
+                    AbstractContainer::ContainerNode* last = dynamic_cast<AbstractContainer::ContainerNode*>(m_node);
                     bool found = false;
                     do {
-                        temp = dynamic_cast<NodeType*>(last->m_parent);
+                        temp = dynamic_cast<AbstractContainer::ContainerNode*>(last->m_parent);
                         if (temp->m_right) {
                             if (temp->m_right->m_id != last->m_id) {
                                 found = true;
@@ -423,7 +418,7 @@ namespace UML {
                     if (!found) {
                         m_node = &m_endNode;
                     } else {
-                        m_node = dynamic_cast<NodeType*>(temp->m_right);
+                        m_node = temp->m_right;
                     }
                 }
                 return *this;
@@ -431,14 +426,14 @@ namespace UML {
             SetIterator operator++(int) {
                if (m_node->m_left) {
                     // always go left
-                    m_node = dynamic_cast<NodeType*>(m_node->m_left);
+                    m_node = dynamic_cast<AbstractContainer::ContainerNode*>(m_node->m_left);
                 } else {
                     // we hit bottom, choose next right
-                    NodeType* temp;
-                    NodeType* last = dynamic_cast<NodeType*>(m_node);
+                    AbstractContainer::ContainerNode* temp;
+                    AbstractContainer::ContainerNode* last = dynamic_cast<AbstractContainer::ContainerNode*>(m_node);
                     bool found = false;
                     do {
-                        temp = dynamic_cast<NodeType*>(last->m_parent);
+                        temp = dynamic_cast<AbstractContainer::ContainerNode*>(last->m_parent);
                         if (temp->m_right) {
                             if (temp->m_right->m_id != last->m_id) {
                                 found = true;
@@ -450,7 +445,7 @@ namespace UML {
                     if (!found) {
                         m_node = m_endNode;
                     } else {
-                        m_node = dynamic_cast<NodeType*>(temp->m_right);
+                        m_node = dynamic_cast<AbstractContainer::ContainerNode*>(temp->m_right);
                     }
                 }
                 SetIterator ret = *this;

@@ -262,8 +262,6 @@ TEST_F(SequenceTest, removeFromSubsettedSequenceTest) {
     ASSERT_EQ(rootSeq.size(), 0);
     ASSERT_FALSE(subSeq.contains(pckg.getID()));
     ASSERT_FALSE(rootSeq.contains(pckg.getID()));
-    ASSERT_EQ(rootSeq.get(pckg.getID()), pckg);
-    ASSERT_EQ(subSeq.get(pckg.getID()), pckg);
     subSeq.add(pckg);
     rootSeq.remove(pckg);
     ASSERT_EQ(subSeq.size(), 0);

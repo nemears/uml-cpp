@@ -34,16 +34,20 @@ namespace UML {
             virtual void place(ContainerNode* node, ContainerNode* parent) = 0;
     };
 
+    template <class T> class SpecialSequenceIterator;
+
     /**
      * This container is based around a weighted binary search tree
      **/
     template <class T = Element> class SpecialSequence : public AbstractContainer {
 
         template <class U> friend class SpecialSequence;
+        template <class U> friend class SpecialSequenceIterator;
 
         protected:
             struct SequenceNode : public ContainerNode {
                 SequenceNode(T& el) : m_el(&el) { m_id = el.getID(); };
+                SequenceNode(){}; // blank constructor
                 virtual ~SequenceNode() {};
                 T* m_el = 0;
             };
@@ -111,8 +115,7 @@ namespace UML {
                 }
             }
         public:
-            virtual ~SpecialSequence() {
-                // only root sequences will delete elements
+            virtual ~SpecialSequence() { 
                 ContainerNode* curr = m_root;
                 while (curr) {
                     if (!curr->m_right && !curr->m_left) {
@@ -170,7 +173,7 @@ namespace UML {
                         }
                     }
                 } else {
-                    if (m_root->m_guard >= m_guard) {
+                    if (m_root->m_guard > m_guard) {
                         // if the root is a subsetted sequence push it under this one
                         ContainerNode* temp = m_root;
                         m_root = node;
@@ -324,6 +327,96 @@ namespace UML {
                 return ret;
             }
             size_t size() const { return m_size; };
+            SpecialSequenceIterator<T> begin() {
+                SpecialSequenceIterator<T> it;
+                it.m_node = dynamic_cast<SequenceNode*>(m_root);
+                return it;
+            };
+            SpecialSequenceIterator<T> end() {
+                SpecialSequenceIterator<T> it;
+                it.m_node = it.m_endNode;
+                return it;
+            };
+    };
+
+    template <class T = Element> struct SpecialSequenceIterator {
+
+        friend class SpecialSequence<T>;
+
+        using NodeType = typename SpecialSequence<T>::SequenceNode;
+        private:
+            NodeType* m_node;
+            NodeType* m_endNode;
+        public:
+            SpecialSequenceIterator() {
+                m_endNode = new NodeType();
+            };
+            ~SpecialSequenceIterator() {
+                // if (m_node->m_id == ID::nullID()) {
+                //     delete m_endNode;
+                // }
+            };
+            T& operator*() { return *m_node->m_el; };
+            T* operator->() { return m_node->m_el; };
+
+            // This is dfs
+            SpecialSequenceIterator operator++() {
+                if (m_node->m_left) {
+                    // always go left
+                    m_node = dynamic_cast<NodeType*>(m_node->m_left);
+                } else {
+                    // we hit bottom, choose next right
+                    NodeType* temp;
+                    NodeType* last = dynamic_cast<NodeType*>(m_node);
+                    bool found = false;
+                    do {
+                        temp = dynamic_cast<NodeType*>(last->m_parent);
+                        if (temp->m_right) {
+                            if (temp->m_right->m_id != last->m_id) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        last = temp;
+                    } while (temp->m_parent);
+                    if (!found) {
+                        m_node = m_endNode;
+                    } else {
+                        m_node = dynamic_cast<NodeType*>(temp->m_right);
+                    }
+                }
+                return *this;
+            };
+            SpecialSequenceIterator operator++(int) {
+               if (m_node->m_left) {
+                    // always go left
+                    m_node = dynamic_cast<NodeType*>(m_node->m_left);
+                } else {
+                    // we hit bottom, choose next right
+                    NodeType* temp;
+                    NodeType* last = dynamic_cast<NodeType*>(m_node);
+                    bool found = false;
+                    do {
+                        temp = dynamic_cast<NodeType*>(last->m_parent);
+                        if (temp->m_right) {
+                            if (temp->m_right->m_id != last->m_id) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        last = temp;
+                    } while (temp->m_parent);
+                    if (!found) {
+                        m_node = m_endNode;
+                    } else {
+                        m_node = dynamic_cast<NodeType*>(temp->m_right);
+                    }
+                }
+                SpecialSequenceIterator ret = *this;
+                return ret;
+            };
+            friend bool operator== (const SpecialSequenceIterator& a, const SpecialSequenceIterator& b) { return a.m_node->m_id == b.m_node->m_id; };
+            friend bool operator!= (const SpecialSequenceIterator& a, const SpecialSequenceIterator& b) { return a.m_node->m_id != b.m_node->m_id; };
     };
 }
 

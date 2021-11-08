@@ -264,3 +264,25 @@ TEST_F(SequenceTest, removeFromSubsettedSequenceTest) {
     ASSERT_FALSE(subSeq.contains(pckg.getID()));
     ASSERT_FALSE(rootSeq.contains(pckg.getID()));
 }
+
+TEST_F(SequenceTest, specialAutoForLoop) {
+    SpecialSequence<Package> seq;
+    int numPackages = 10;
+    UmlManager m;
+    for (int i = 0; i < numPackages; i++) {
+        Package& p = m.create<Package>(); 
+        seq.add(p);
+        std::hash<ID> hasher;
+        std::cout << p.getID().string() << ", hash: " << hasher(p.getID()) << std::endl;
+    }
+    std::cout << "=========================================================" << std::endl;
+    int i = 0;
+    for (auto& p : seq) {
+        i++;
+        ASSERT_EQ(p.getElementType(), ElementType::PACKAGE);
+        std::hash<ID> hasher;
+        std::cout << p.getID().string() << ", hash: " << hasher(p.getID()) << std::endl;
+        if (i > numPackages + 10) break;
+    }
+    ASSERT_EQ(i, 10);
+}

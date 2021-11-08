@@ -244,3 +244,23 @@ TEST_F(SequenceTest, multiSubsetsTest) {
     ASSERT_EQ(subSeq.size(), 1);
     ASSERT_TRUE(subSeq.contains(pckg.getID()));
 }
+
+TEST_F(SequenceTest, removeFromSubsettedSequenceTest) {
+    SpecialSequence<PackageableElement> rootSeq;
+    SpecialSequence<Package> subSeq;
+    subSeq.subsets(rootSeq);
+    UmlManager m;
+    Package& pckg = m.create<Package>();
+    subSeq.add(pckg);
+    subSeq.remove(pckg);
+    ASSERT_EQ(subSeq.size(), 0);
+    ASSERT_EQ(rootSeq.size(), 0);
+    ASSERT_FALSE(subSeq.contains(pckg.getID()));
+    ASSERT_FALSE(rootSeq.contains(pckg.getID()));
+    subSeq.add(pckg);
+    rootSeq.remove(pckg);
+    ASSERT_EQ(subSeq.size(), 0);
+    ASSERT_EQ(rootSeq.size(), 0);
+    ASSERT_FALSE(subSeq.contains(pckg.getID()));
+    ASSERT_FALSE(rootSeq.contains(pckg.getID()));
+}

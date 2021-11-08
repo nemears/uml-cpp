@@ -38,6 +38,9 @@ namespace UML {
      * This container is based around a weighted binary search tree
      **/
     template <class T = Element> class SpecialSequence : public AbstractContainer {
+
+        template <class U> friend class SpecialSequence;
+
         protected:
             struct SequenceNode : public ContainerNode {
                 SequenceNode(T& el) : m_el(&el) { m_id = el.getID(); };
@@ -45,6 +48,7 @@ namespace UML {
                 T* m_el = 0;
             };
             std::vector<AbstractContainer*> m_subsetOf;
+            std::vector<AbstractContainer*> m_subsettedContainers;
 
             void place(ContainerNode* node, ContainerNode* parent) override {
                 if (parent->m_left) {
@@ -141,9 +145,10 @@ namespace UML {
                     }
                 }
             };
-            void subsets(AbstractContainer& subsetOf) {
+            template <class U = Element> void subsets(SpecialSequence<U>& subsetOf) {
                 if (!m_root && !subsetOf.m_root) {
                     m_subsetOf.push_back(&subsetOf);
+                    subsetOf.m_subsettedContainers.push_back(this);
                     if (subsetOf.m_guard <= m_guard) {
                         m_guard = subsetOf.m_guard + 1;
                     }
@@ -262,16 +267,41 @@ namespace UML {
                     if (temp->m_id == m_root->m_id) {
                         // if we removed the root of the sequence
                         if (temp->m_left) {
+                            place(m_root->m_right, m_root->m_left);
+                            m_root->m_left->m_parent = m_root->m_parent;
                             m_root = temp->m_left;
                         } else {
                             m_root = 0;
                         }
                     }
-                    delete temp;
-                    m_size--;
+                    for (auto subset : m_subsettedContainers) {
+                        if (temp->m_guard >= subset->m_guard) {
+                            subset->m_size--;
+                            if (subset->m_root->m_id == id) {
+                                if (subset->m_root->m_left) {
+                                    place(subset->m_root->m_right, subset->m_root->m_left);
+                                    subset->m_root->m_left->m_parent = subset->m_root->m_parent;
+                                    subset->m_root = subset->m_root->m_left;
+                                } else {
+                                    subset->m_root = 0;
+                                }
+                            }
+                        }
+                    }
                     for (auto subsetOf : m_subsetOf) {
+                        if (subsetOf->m_root->m_id == id) {
+                            if (subsetOf->m_root->m_left) {
+                                place(subsetOf->m_root->m_right, subsetOf->m_root->m_left);
+                                m_root->m_left->m_parent = m_root->m_parent;
+                                m_root = subsetOf->m_root->m_left;
+                            } else {
+                                subsetOf->m_root = 0;
+                            }
+                        }
                         subsetOf->m_size--;
                     }
+                    delete temp;
+                    m_size--;
                 } else {
                     throw ID_doesNotExistException2(id);
                 }

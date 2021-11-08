@@ -20,9 +20,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
-    - name: Checkout submodules
-      uses: textbook/git-checkout-submodule-action@master
+      with:
+        submodules: recursive
 
     - name: clang
       run: sudo apt-get install -yq libclang-10-dev

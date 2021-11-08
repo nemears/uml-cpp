@@ -45,10 +45,10 @@ namespace UML {
         template <class U> friend class SetIterator;
 
         protected:
-            struct SequenceNode : public ContainerNode {
-                SequenceNode(T& el) : m_el(&el) { m_id = el.getID(); };
-                SequenceNode(){}; // blank constructor
-                virtual ~SequenceNode() {};
+            struct SetNode : public ContainerNode {
+                SetNode(T& el) : m_el(&el) { m_id = el.getID(); };
+                SetNode(){}; // blank constructor
+                virtual ~SetNode() {};
                 T* m_el = 0;
             };
             std::vector<AbstractContainer*> m_subsetOf;
@@ -157,11 +157,11 @@ namespace UML {
                     }
                 } else {
                     // TODO error
-                    std::cerr << "WARNING subset set after sequence was used, must make sure subsetting is done during configuration, before use!" << std::endl;
+                    std::cerr << "WARNING subset set after set was used, must make sure subsetting is done during configuration, before use!" << std::endl;
                 }
             };
             void add(T& el) {
-                SequenceNode* node = new SequenceNode(el);
+                SetNode* node = new SetNode(el);
                 node->m_guard = m_guard;
                 if (!m_root) {
                     m_root = node;
@@ -311,7 +311,7 @@ namespace UML {
             };
             T& get(ID id) {
                 if (m_root) {
-                    T* ret = dynamic_cast<SequenceNode*>(search(id, m_root))->m_el;
+                    T* ret = dynamic_cast<SetNode*>(search(id, m_root))->m_el;
                     if (ret) {
                         return *ret;
                     }
@@ -329,7 +329,7 @@ namespace UML {
             size_t size() const { return m_size; };
             SetIterator<T> begin() {
                 SetIterator<T> it;
-                it.m_node = dynamic_cast<SequenceNode*>(m_root);
+                it.m_node = dynamic_cast<SetNode*>(m_root);
                 return it;
             };
             SetIterator<T> end() {
@@ -343,7 +343,7 @@ namespace UML {
 
         friend class Set<T>;
 
-        using NodeType = typename Set<T>::SequenceNode;
+        using NodeType = typename Set<T>::SetNode;
         private:
             NodeType* m_node;
             NodeType* m_endNode;

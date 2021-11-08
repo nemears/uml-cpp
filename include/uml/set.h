@@ -15,10 +15,10 @@ namespace UML {
             }
     };
 
-    template <class T> class SpecialSequence;
+    template <class T> class Set;
 
     class AbstractContainer {
-        template <class T> friend class SpecialSequence;
+        template <class T> friend class Set;
         protected:
             size_t m_size = 0;
             struct ContainerNode {
@@ -34,15 +34,15 @@ namespace UML {
             virtual void place(ContainerNode* node, ContainerNode* parent) = 0;
     };
 
-    template <class T> class SpecialSequenceIterator;
+    template <class T> class SetIterator;
 
     /**
      * This container is based around a weighted binary search tree
      **/
-    template <class T = Element> class SpecialSequence : public AbstractContainer {
+    template <class T = Element> class Set : public AbstractContainer {
 
-        template <class U> friend class SpecialSequence;
-        template <class U> friend class SpecialSequenceIterator;
+        template <class U> friend class Set;
+        template <class U> friend class SetIterator;
 
         protected:
             struct SequenceNode : public ContainerNode {
@@ -115,7 +115,7 @@ namespace UML {
                 }
             }
         public:
-            virtual ~SpecialSequence() { 
+            virtual ~Set() { 
                 ContainerNode* curr = m_root;
                 while (curr) {
                     if (!curr->m_right && !curr->m_left) {
@@ -148,7 +148,7 @@ namespace UML {
                     }
                 }
             };
-            template <class U = Element> void subsets(SpecialSequence<U>& subsetOf) {
+            template <class U = Element> void subsets(Set<U>& subsetOf) {
                 if (!m_root && !subsetOf.m_root) {
                     m_subsetOf.push_back(&subsetOf);
                     subsetOf.m_subsettedContainers.push_back(this);
@@ -327,31 +327,31 @@ namespace UML {
                 return ret;
             }
             size_t size() const { return m_size; };
-            SpecialSequenceIterator<T> begin() {
-                SpecialSequenceIterator<T> it;
+            SetIterator<T> begin() {
+                SetIterator<T> it;
                 it.m_node = dynamic_cast<SequenceNode*>(m_root);
                 return it;
             };
-            SpecialSequenceIterator<T> end() {
-                SpecialSequenceIterator<T> it;
+            SetIterator<T> end() {
+                SetIterator<T> it;
                 it.m_node = it.m_endNode;
                 return it;
             };
     };
 
-    template <class T = Element> struct SpecialSequenceIterator {
+    template <class T = Element> struct SetIterator {
 
-        friend class SpecialSequence<T>;
+        friend class Set<T>;
 
-        using NodeType = typename SpecialSequence<T>::SequenceNode;
+        using NodeType = typename Set<T>::SequenceNode;
         private:
             NodeType* m_node;
             NodeType* m_endNode;
         public:
-            SpecialSequenceIterator() {
+            SetIterator() {
                 m_endNode = new NodeType();
             };
-            ~SpecialSequenceIterator() {
+            ~SetIterator() {
                 // if (m_node->m_id == ID::nullID()) {
                 //     delete m_endNode;
                 // }
@@ -360,7 +360,7 @@ namespace UML {
             T* operator->() { return m_node->m_el; };
 
             // This is dfs
-            SpecialSequenceIterator operator++() {
+            SetIterator operator++() {
                 if (m_node->m_left) {
                     // always go left
                     m_node = dynamic_cast<NodeType*>(m_node->m_left);
@@ -387,7 +387,7 @@ namespace UML {
                 }
                 return *this;
             };
-            SpecialSequenceIterator operator++(int) {
+            SetIterator operator++(int) {
                if (m_node->m_left) {
                     // always go left
                     m_node = dynamic_cast<NodeType*>(m_node->m_left);
@@ -412,11 +412,11 @@ namespace UML {
                         m_node = dynamic_cast<NodeType*>(temp->m_right);
                     }
                 }
-                SpecialSequenceIterator ret = *this;
+                SetIterator ret = *this;
                 return ret;
             };
-            friend bool operator== (const SpecialSequenceIterator& a, const SpecialSequenceIterator& b) { return a.m_node->m_id == b.m_node->m_id; };
-            friend bool operator!= (const SpecialSequenceIterator& a, const SpecialSequenceIterator& b) { return a.m_node->m_id != b.m_node->m_id; };
+            friend bool operator== (const SetIterator& a, const SetIterator& b) { return a.m_node->m_id == b.m_node->m_id; };
+            friend bool operator!= (const SetIterator& a, const SetIterator& b) { return a.m_node->m_id != b.m_node->m_id; };
     };
 }
 

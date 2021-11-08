@@ -4,7 +4,7 @@
 #include "uml/sequence.h"
 #include "uml/package.h"
 #include "uml/slot.h"
-#include "uml/specialSequence.h"
+#include "uml/set.h"
 #include "uml/class.h"
 #include "uml/instanceSpecification.h"
 
@@ -149,7 +149,7 @@ TEST_F(SequenceTest, variardicAddTest) {
 
 TEST_F(SequenceTest, basicSpecialSequenceTest) {
     size_t numPackages = 20;
-    SpecialSequence<Package> seq;
+    Set<Package> seq;
     UmlManager m;
     Package& pckg = m.create<Package>();
     seq.add(pckg);
@@ -167,7 +167,7 @@ TEST_F(SequenceTest, basicSpecialSequenceTest) {
 }
 
 TEST_F(SequenceTest, basicRemoveTest) {
-    SpecialSequence<Package> seq;
+    Set<Package> seq;
     UmlManager m;
     const size_t constNumPackages = 8;
     size_t numPackages = constNumPackages;
@@ -194,8 +194,8 @@ TEST_F(SequenceTest, basicRemoveTest) {
 }
 
 TEST_F(SequenceTest, basicSubsetsTest) {
-    SpecialSequence<PackageableElement> rootSeq;
-    SpecialSequence<Package> subSeq;
+    Set<PackageableElement> rootSeq;
+    Set<Package> subSeq;
     subSeq.subsets(rootSeq);
     UmlManager m;
     Package& pckg = m.create<Package>();
@@ -213,9 +213,9 @@ TEST_F(SequenceTest, basicSubsetsTest) {
 }
 
 TEST_F(SequenceTest, multiSubsetsTest) {
-    SpecialSequence<NamedElement> seq1;
-    SpecialSequence<PackageableElement> seq2;
-    SpecialSequence<Package> subSeq;
+    Set<NamedElement> seq1;
+    Set<PackageableElement> seq2;
+    Set<Package> subSeq;
     subSeq.subsets(seq1);
     subSeq.subsets(seq2);
     UmlManager m;
@@ -246,8 +246,8 @@ TEST_F(SequenceTest, multiSubsetsTest) {
 }
 
 TEST_F(SequenceTest, removeFromSubsettedSequenceTest) {
-    SpecialSequence<PackageableElement> rootSeq;
-    SpecialSequence<Package> subSeq;
+    Set<PackageableElement> rootSeq;
+    Set<Package> subSeq;
     subSeq.subsets(rootSeq);
     UmlManager m;
     Package& pckg = m.create<Package>();
@@ -266,7 +266,7 @@ TEST_F(SequenceTest, removeFromSubsettedSequenceTest) {
 }
 
 TEST_F(SequenceTest, specialAutoForLoop) {
-    SpecialSequence<Package> seq;
+    Set<Package> seq;
     int numPackages = 10;
     UmlManager m;
     for (int i = 0; i < numPackages; i++) {

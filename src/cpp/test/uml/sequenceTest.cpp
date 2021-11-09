@@ -423,4 +423,13 @@ TEST_F(SequenceTest, addToOrderedSetTest) {
     ASSERT_TRUE(set.contains("3"));
     ASSERT_EQ(set.get(p3.getID()), p3);
     ASSERT_EQ(set.get("3"), p3);
+    Package* ps[] = {&p, &p2, &p3};
+    int i = 0;
+    for (Package& pckg : set) {
+        ASSERT_EQ(*ps[i], pckg);
+        i++;
+    }
+    ASSERT_EQ(set.get(0), p);
+    ASSERT_EQ(set.get(1), p2);
+    ASSERT_EQ(set.get(2), p3);
 }

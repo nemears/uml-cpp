@@ -221,8 +221,8 @@ TEST_F(SequenceTest, multiSubsetsTest) {
     Set<NamedElement> seq1;
     Set<PackageableElement> seq2;
     Set<Package> subSeq;
-    subSeq.subsets(seq1);
     subSeq.subsets(seq2);
+    subSeq.subsets(seq1);
     UmlManager m;
     Class& clazz = m.create<Class>();
     seq1.add(clazz);
@@ -293,8 +293,8 @@ TEST_F(SequenceTest, specialAutoForLoop) {
 }
 
 TEST_F(SequenceTest, getFromSetByNameTest) {
-    Set<Package> subSeq;
     Set<PackageableElement> rootSeq;
+    Set<Package> subSeq;
     subSeq.subsets(rootSeq);
     UmlManager m;
     Package& one = m.create<Package>();
@@ -319,4 +319,23 @@ TEST_F(SequenceTest, addToSetTwice) {
     Package& p = m.create<Package>();
     set.add(p);
     ASSERT_THROW(set.add(p), DuplicateElementInSetException);
+}
+
+class TestElement : public Element {
+    private:
+        Set<TestElement, TestElement> m_others = Set<TestElement, TestElement>(this);
+    public:
+        TestElement() : Element(ElementType::ELEMENT) {
+            m_others.opposite(&TestElement::getOthers);
+        };
+        Set<TestElement, TestElement>& getOthers() { return m_others; };
+};
+
+TEST_F(SequenceTest, oppositeTest) {
+    TestElement t1;
+    TestElement t2;
+    t1.getOthers().add(t2);
+    ASSERT_EQ(t2.getOthers().size(), 1);
+    ASSERT_TRUE(t2.getOthers().contains(t1.getID()));
+    ASSERT_EQ(t2.getOthers().get(t1.getID()), t1);
 }

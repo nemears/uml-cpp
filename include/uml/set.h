@@ -22,10 +22,10 @@ namespace UML {
             };
     };
 
-    template <class T> class Set;
+    template <class T, class U> class Set;
 
     class AbstractContainer {
-        template <class T> friend class Set;
+        template <class T, class U> friend class Set;
         protected:
             size_t m_size = 0;
             struct ContainerNode {
@@ -49,18 +49,21 @@ namespace UML {
     /**
      * This container is based around a weighted binary search tree
      **/
-    template <class T = Element> class Set : public AbstractContainer {
-
-        template <class U> friend class Set;
-        template <class U> friend class SetIterator;
+    template <class T = Element, class U = Element> class Set : public AbstractContainer {
+        
+        template <class V, class W> friend class Set;
+        friend class Set<U>;
+        friend class SetIterator<U>;
 
         protected:
             std::vector<AbstractContainer*> m_subsetOf;
             std::vector<AbstractContainer*> m_subsettedContainers;
+            Set<U, T>& (T::*m_oppositeSignature)() = 0;
             Element* m_el;
 
             void place(ContainerNode* node, ContainerNode* parent) override {
                 if (node->m_id == parent->m_id) {
+                    delete node;
                     throw DuplicateElementInSetException();
                 }
                 if (parent->m_left) {
@@ -141,14 +144,33 @@ namespace UML {
                 return 0;
             };
         public:
-            Set(Element& el) : m_el(&el) {};
+            Set(Element* el) : m_el(el) {};
             Set() {};
             virtual ~Set() { 
                 ContainerNode* curr = m_root;
                 while (curr) {
                     if (!curr->m_right && !curr->m_left) {
                         ContainerNode* temp = curr->m_parent;
-                        delete curr;
+                        bool deleteNode = true;
+                        if (temp) {
+                            if (m_root) {
+                                if (curr->m_id == m_root->m_id) {
+                                    deleteNode = false;
+                                }
+                            }
+                            if (deleteNode) {
+                                if (temp->m_guard < m_guard) {
+                                    if (temp->m_left->m_id == curr->m_id) {
+                                        temp->m_left = 0;
+                                    } else {
+                                        temp->m_right = 0;
+                                    }
+                                }
+                            }
+                        }
+                        if (deleteNode) {
+                            delete curr;
+                        }
                         if (temp) {
                             if (temp->m_guard < m_guard) {
                                 break;
@@ -162,6 +184,9 @@ namespace UML {
                                 curr->m_right = 0;
                                 curr = temp;
                                 continue;
+                            } else if (curr->m_right->m_parent->m_id == curr->m_id) {
+                                // delete lefover root
+                                delete curr->m_right;
                             }
                             curr->m_right = 0;
                         } if (curr->m_left) {
@@ -170,13 +195,17 @@ namespace UML {
                                 curr->m_left = 0;
                                 curr = temp;
                             } else {
+                                if (curr->m_left->m_parent->m_id == curr->m_id) {
+                                    // delete leftover root
+                                    delete curr->m_left;
+                                }
                                 curr->m_left = 0;
                             }
                         }
                     }
                 }
             };
-            template <class U = Element> void subsets(Set<U>& subsetOf) {
+            template <class V = Element> void subsets(Set<V>& subsetOf) {
                 if (!m_root && !subsetOf.m_root) {
                     m_subsetOf.push_back(&subsetOf);
                     subsetOf.m_subsettedContainers.push_back(this);
@@ -188,10 +217,14 @@ namespace UML {
                     std::cerr << "WARNING subset set after set was used, must make sure subsetting is done during configuration, before use!" << std::endl;
                 }
             };
+            void opposite(Set<U, T>& (T::*op)()) {
+                /** TODO: static_assert that we have m_el for this instance **/
+                m_oppositeSignature = op;
+            };
             void add(T& el) {
                 ContainerNode* node = new ContainerNode(el);
                 if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
-                    node->m_name = el.template as<NamedElement>().getName();
+                    node->m_name = dynamic_cast<NamedElement&>(el).getName();
                 }
                 node->m_guard = m_guard;
                 if (!m_root) {
@@ -216,6 +249,11 @@ namespace UML {
                 m_size++;
                 for (auto& subsetOf : m_subsetOf) {
                     subsetOf->m_size++;
+                }
+                if (m_oppositeSignature) {
+                    if (!(el.*m_oppositeSignature)().contains(m_el->getID())) {
+                        (el.*m_oppositeSignature)().add(*dynamic_cast<U*>(m_el));
+                    }
                 }
             };
             void remove(T& el) {

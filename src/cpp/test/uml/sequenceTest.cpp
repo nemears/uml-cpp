@@ -350,3 +350,44 @@ TEST_F(SequenceTest, oppositeTest) {
     ASSERT_TRUE(t2.getOthers().contains(t1.getID()));
     ASSERT_EQ(t2.getOthers().get(t1.getID()), t1);
 }
+
+TEST_F(SequenceTest, setRedefinesTest) {
+    Set<Package> ogSet;
+    Set<Package> reSet;
+    reSet.redefines(ogSet);
+    UmlManager m;
+    Package& p = m.create<Package>();
+    reSet.add(p);
+    ASSERT_FALSE(ogSet.empty());
+    ASSERT_FALSE(reSet.empty());
+    ASSERT_EQ(ogSet.size(), 1);
+    ASSERT_EQ(reSet.size(), 1);
+    reSet.remove(p);
+    ASSERT_TRUE(ogSet.empty());
+    ASSERT_TRUE(reSet.empty());
+    ASSERT_EQ(ogSet.size(), 0);
+    ASSERT_EQ(reSet.size(), 0);
+    Package& p2 = m.create<Package>();
+    ogSet.add(p);
+    ASSERT_FALSE(ogSet.empty());
+    ASSERT_FALSE(reSet.empty());
+    ASSERT_EQ(ogSet.size(), 1);
+    ASSERT_EQ(reSet.size(), 1);
+    ogSet.remove(p);
+    ASSERT_TRUE(ogSet.empty());
+    ASSERT_TRUE(reSet.empty());
+    ASSERT_EQ(ogSet.size(), 0);
+    ASSERT_EQ(reSet.size(), 0);
+    ogSet.add(p);
+    reSet.add(p2);
+    ASSERT_FALSE(ogSet.empty());
+    ASSERT_FALSE(reSet.empty());
+    ASSERT_EQ(ogSet.size(), 2);
+    ASSERT_EQ(reSet.size(), 2);
+    Package& p3 = m.create<Package>();
+    ogSet.add(p3);
+    ASSERT_FALSE(ogSet.empty());
+    ASSERT_FALSE(reSet.empty());
+    ASSERT_EQ(ogSet.size(), 3);
+    ASSERT_EQ(reSet.size(), 3);
+}

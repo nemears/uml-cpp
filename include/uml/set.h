@@ -58,6 +58,8 @@ namespace UML {
         protected:
             std::vector<AbstractContainer*> m_subsetOf;
             std::vector<AbstractContainer*> m_subsettedContainers;
+            std::vector<AbstractContainer*> m_redefines;
+            bool m_rootRedefinedSet = true;
             Set<U, T>& (T::*m_oppositeSignature)() = 0;
             Element* m_el;
 
@@ -147,59 +149,61 @@ namespace UML {
             Set(Element* el) : m_el(el) {};
             Set() {};
             virtual ~Set() { 
-                ContainerNode* curr = m_root;
-                while (curr) {
-                    if (!curr->m_right && !curr->m_left) {
-                        ContainerNode* temp = curr->m_parent;
-                        bool deleteNode = true;
-                        if (temp) {
-                            if (m_root) {
-                                if (curr->m_id == m_root->m_id) {
-                                    deleteNode = false;
+                if (m_rootRedefinedSet) {
+                    ContainerNode* curr = m_root;
+                    while (curr) {
+                        if (!curr->m_right && !curr->m_left) {
+                            ContainerNode* temp = curr->m_parent;
+                            bool deleteNode = true;
+                            if (temp) {
+                                if (m_root) {
+                                    if (curr->m_id == m_root->m_id) {
+                                        deleteNode = false;
+                                    }
                                 }
-                            }
-                            if (deleteNode) {
-                                if (temp->m_guard < m_guard) {
-                                    if (temp->m_left->m_id == curr->m_id) {
-                                        temp->m_left = 0;
-                                    } else {
-                                        temp->m_right = 0;
+                                if (deleteNode) {
+                                    if (temp->m_guard < m_guard) {
+                                        if (temp->m_left->m_id == curr->m_id) {
+                                            temp->m_left = 0;
+                                        } else {
+                                            temp->m_right = 0;
+                                        }
                                     }
                                 }
                             }
-                        }
-                        if (deleteNode) {
-                            delete curr;
-                        }
-                        if (temp) {
-                            if (temp->m_guard < m_guard) {
-                                break;
+                            if (deleteNode) {
+                                delete curr;
                             }
-                        }
-                        curr = temp;
-                    } else {
-                        if (curr->m_right) {
-                            if (curr->m_right->m_guard <= m_guard) {
-                                ContainerNode* temp = curr->m_right;
-                                curr->m_right = 0;
-                                curr = temp;
-                                continue;
-                            } else if (curr->m_right->m_parent->m_id == curr->m_id) {
-                                // delete lefover root
-                                delete curr->m_right;
-                            }
-                            curr->m_right = 0;
-                        } if (curr->m_left) {
-                            if (curr->m_left->m_guard <= m_guard) {
-                                ContainerNode* temp = curr->m_left;
-                                curr->m_left = 0;
-                                curr = temp;
-                            } else {
-                                if (curr->m_left->m_parent->m_id == curr->m_id) {
-                                    // delete leftover root
-                                    delete curr->m_left;
+                            if (temp) {
+                                if (temp->m_guard < m_guard) {
+                                    break;
                                 }
-                                curr->m_left = 0;
+                            }
+                            curr = temp;
+                        } else {
+                            if (curr->m_right) {
+                                if (curr->m_right->m_guard <= m_guard) {
+                                    ContainerNode* temp = curr->m_right;
+                                    curr->m_right = 0;
+                                    curr = temp;
+                                    continue;
+                                } else if (curr->m_right->m_parent->m_id == curr->m_id) {
+                                    // delete lefover root
+                                    delete curr->m_right;
+                                }
+                                curr->m_right = 0;
+                            } if (curr->m_left) {
+                                if (curr->m_left->m_guard <= m_guard) {
+                                    ContainerNode* temp = curr->m_left;
+                                    curr->m_left = 0;
+                                    curr = temp;
+                                } else {
+                                    if (curr->m_left->m_parent->m_id == curr->m_id) {
+                                        // delete leftover root
+                                        delete curr->m_left;
+                                    }
+                                    curr->m_left = 0;
+                                }
                             }
                         }
                     }
@@ -209,14 +213,14 @@ namespace UML {
              * WARN: so for now ORDER MATTERS when subsetting a sequence
              * the first element subsetted should be the first element
              * instantiated, (e.g.):
-             * Set<> a;
-             * Set<> b;
-             * Set<> c;
-             * a.subsets(c); // BAD
-             * c.subsets(b); // BAD if subsetting a after
-             * c.subsets(a); // BAD
-             * c.subsets(a); // GOOD
-             * c.subsets(b); // GOOD because b instantiated after a
+             *  Set<> a;
+             *  Set<> b;
+             *  Set<> c;
+             *  a.subsets(c); // BAD
+             *  c.subsets(b); // BAD if subsetting a after
+             *  c.subsets(a); // BAD
+             *  c.subsets(a); // GOOD
+             *  c.subsets(b); // GOOD because b instantiated after a
              **/
             template <class V = Element> void subsets(Set<V>& subsetOf) {
                 if (!m_root && !subsetOf.m_root) {
@@ -234,6 +238,15 @@ namespace UML {
                 /** TODO: static_assert that we have m_el for this instance **/
                 m_oppositeSignature = op;
             };
+            void redefines(Set<T>& redefined) {
+                if (m_root) {
+                    std::cerr << "WARNING redefines set after set was used, must make sure redefining is done during configuration, before use!" << std::endl;
+                    return;
+                }
+                m_redefines.push_back(&redefined);
+                redefined.m_redefines.push_back(this);
+                m_rootRedefinedSet = false;
+            }
             void add(T& el) {
                 ContainerNode* node = new ContainerNode(el);
                 if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
@@ -242,11 +255,21 @@ namespace UML {
                 node->m_guard = m_guard;
                 if (!m_root) {
                     m_root = node;
+                    for (auto& redefined : m_redefines) {
+                        if (redefined->m_root) {
+                            if (redefined->m_root->m_id != m_root->m_id) {
+                                m_root = redefined->m_root;
+                                place(node, m_root);
+                            }
+                        } else {
+                            redefined->m_root = node;
+                        }
+                    }
                     for (auto& subsetOf : m_subsetOf) {
                         if (subsetOf->m_root) {
                             subsetOf->place(node, subsetOf->m_root);
                         } else {
-                            subsetOf->m_root = node;
+                            subsetOf->m_root = m_root;
                         }
                     }
                 } else {
@@ -262,6 +285,9 @@ namespace UML {
                 m_size++;
                 for (auto& subsetOf : m_subsetOf) {
                     subsetOf->m_size++;
+                }
+                for (auto& redefined : m_redefines) {
+                    redefined->m_size++;
                 }
                 if (m_oppositeSignature) {
                     if (!(el.*m_oppositeSignature)().contains(m_el->getID())) {
@@ -358,6 +384,9 @@ namespace UML {
                         } else {
                             m_root = 0;
                         }
+                        for (auto& redefined : m_redefines) {
+                            redefined->m_root = m_root;
+                        }
                     }
                     for (auto subset : m_subsettedContainers) {
                         if (temp->m_guard >= subset->m_guard) {
@@ -373,7 +402,7 @@ namespace UML {
                             }
                         }
                     }
-                    for (auto subsetOf : m_subsetOf) {
+                    for (auto& subsetOf : m_subsetOf) {
                         if (subsetOf->m_root->m_id == id) {
                             if (subsetOf->m_root->m_left) {
                                 place(subsetOf->m_root->m_right, subsetOf->m_root->m_left);
@@ -384,6 +413,9 @@ namespace UML {
                             }
                         }
                         subsetOf->m_size--;
+                    }
+                    for (auto& redefined : m_redefines) {
+                        redefined->m_size--;
                     }
                     delete temp;
                     m_size--;

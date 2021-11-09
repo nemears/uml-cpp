@@ -205,6 +205,19 @@ namespace UML {
                     }
                 }
             };
+            /**
+             * WARN: so for now ORDER MATTERS when subsetting a sequence
+             * the first element subsetted should be the first element
+             * instantiated, (e.g.):
+             * Set<> a;
+             * Set<> b;
+             * Set<> c;
+             * a.subsets(c); // BAD
+             * c.subsets(b); // BAD if subsetting a after
+             * c.subsets(a); // BAD
+             * c.subsets(a); // GOOD
+             * c.subsets(b); // GOOD because b instantiated after a
+             **/
             template <class V = Element> void subsets(Set<V>& subsetOf) {
                 if (!m_root && !subsetOf.m_root) {
                     m_subsetOf.push_back(&subsetOf);

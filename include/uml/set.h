@@ -421,6 +421,9 @@ namespace UML {
                 }
                 return ret;
             }
+            bool empty() const {
+                return m_root == 0;
+            };
             size_t size() const { return m_size; };
             SetIterator<T> begin() {
                 SetIterator<T> it;

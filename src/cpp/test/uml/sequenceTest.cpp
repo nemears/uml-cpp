@@ -147,12 +147,14 @@ TEST_F(SequenceTest, variardicAddTest) {
     ASSERT_TRUE(p.getPackagedElements().empty());
 }
 
-TEST_F(SequenceTest, basicSpecialSequenceTest) {
+TEST_F(SequenceTest, basicSetTest) {
     size_t numPackages = 20;
     Set<Package> seq;
+    ASSERT_TRUE(seq.empty());
     UmlManager m;
     Package& pckg = m.create<Package>();
     seq.add(pckg);
+    ASSERT_FALSE(seq.empty());
     ASSERT_EQ(seq.get(pckg.getID()), pckg);
     std::vector<ID> ids(numPackages);
     ids[0] = pckg.getID();
@@ -226,26 +228,35 @@ TEST_F(SequenceTest, multiSubsetsTest) {
     UmlManager m;
     Class& clazz = m.create<Class>();
     seq1.add(clazz);
+    ASSERT_FALSE(seq1.empty());
     ASSERT_EQ(seq1.size(), 1);
     ASSERT_TRUE(seq1.contains(clazz.getID()));
+    ASSERT_TRUE(seq2.empty());
     ASSERT_EQ(seq2.size(), 0);
     ASSERT_FALSE(seq2.contains(clazz.getID()));
+    ASSERT_TRUE(subSeq.empty());
     ASSERT_EQ(subSeq.size(), 0);
     ASSERT_FALSE(subSeq.contains(clazz.getID()));
     InstanceSpecification& inst = m.create<InstanceSpecification>();
     seq2.add(inst);
+    ASSERT_FALSE(seq1.empty());
     ASSERT_EQ(seq1.size(), 1);
     ASSERT_FALSE(seq1.contains(inst.getID()));
+    ASSERT_FALSE(seq2.empty());
     ASSERT_EQ(seq2.size(), 1);
     ASSERT_TRUE(seq2.contains(inst.getID()));
+    ASSERT_TRUE(subSeq.empty());
     ASSERT_EQ(subSeq.size(), 0);
     ASSERT_FALSE(subSeq.contains(inst.getID()));
     Package& pckg = m.create<Package>();
     subSeq.add(pckg);
+    ASSERT_FALSE(seq1.empty());
     ASSERT_EQ(seq1.size(), 2);
     ASSERT_TRUE(seq1.contains(pckg.getID()));
+    ASSERT_FALSE(seq2.empty());
     ASSERT_EQ(seq2.size(), 2);
     ASSERT_TRUE(seq2.contains(pckg.getID()));
+    ASSERT_FALSE(subSeq.empty());
     ASSERT_EQ(subSeq.size(), 1);
     ASSERT_TRUE(subSeq.contains(pckg.getID()));
 }

@@ -7,6 +7,7 @@
 #include "uml/set.h"
 #include "uml/class.h"
 #include "uml/instanceSpecification.h"
+#include "uml/orderedSet.h"
 
 using namespace UML;
 
@@ -390,4 +391,36 @@ TEST_F(SequenceTest, setRedefinesTest) {
     ASSERT_FALSE(reSet.empty());
     ASSERT_EQ(ogSet.size(), 3);
     ASSERT_EQ(reSet.size(), 3);
+}
+
+TEST_F(SequenceTest, addToOrderedSetTest) {
+    OrderedSet<Package> set;
+    UmlManager m;
+    Package& p = m.create<Package>();
+    p.setName("1");
+    set.add(p);
+    ASSERT_EQ(set.front(), p);
+    ASSERT_EQ(set.back(), p);
+    Package& p2 = m.create<Package>();
+    p2.setName("2");
+    set.add(p2);
+    ASSERT_EQ(set.front(), p);
+    ASSERT_EQ(set.back(), p2);
+    Package& p3 = m.create<Package>();
+    p3.setName("3");
+    set.add(p3);
+    ASSERT_EQ(set.front(), p);
+    ASSERT_EQ(set.back(), p3);
+    ASSERT_TRUE(set.contains(p.getID()));
+    ASSERT_TRUE(set.contains("1"));
+    ASSERT_EQ(set.get(p.getID()), p);
+    ASSERT_EQ(set.get("1"), p);
+    ASSERT_TRUE(set.contains(p2.getID()));
+    ASSERT_TRUE(set.contains("2"));
+    ASSERT_EQ(set.get(p2.getID()), p2);
+    ASSERT_EQ(set.get("2"), p2);
+    ASSERT_TRUE(set.contains(p3.getID()));
+    ASSERT_TRUE(set.contains("3"));
+    ASSERT_EQ(set.get(p3.getID()), p3);
+    ASSERT_EQ(set.get("3"), p3);
 }

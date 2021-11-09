@@ -23,9 +23,11 @@ namespace UML {
     };
 
     template <class T, class U> class Set;
+    template <class T, class U> class OrderedSet;
 
     class AbstractContainer {
         template <class T, class U> friend class Set;
+        template <class T, class U> friend class OrderedSet;
         protected:
             size_t m_size = 0;
             struct ContainerNode {
@@ -145,6 +147,9 @@ namespace UML {
                 }
                 return 0;
             };
+            virtual ContainerNode* createNode(T& el) {
+                return new ContainerNode(el);
+            }
         public:
             Set(Element* el) : m_el(el) {};
             Set() {};
@@ -248,7 +253,7 @@ namespace UML {
                 m_rootRedefinedSet = false;
             }
             void add(T& el) {
-                ContainerNode* node = new ContainerNode(el);
+                ContainerNode* node = createNode(el);
                 if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
                     node->m_name = dynamic_cast<NamedElement&>(el).getName();
                 }

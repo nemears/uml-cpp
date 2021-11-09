@@ -312,3 +312,11 @@ TEST_F(SequenceTest, getFromSetByNameTest) {
     ASSERT_EQ(subSeq.get("1"), one);
     ASSERT_THROW(subSeq.get("2"), ManagerStateException);
 }
+
+TEST_F(SequenceTest, addToSetTwice) {
+    Set<Package> set;
+    UmlManager m;
+    Package& p = m.create<Package>();
+    set.add(p);
+    ASSERT_THROW(set.add(p), DuplicateElementInSetException);
+}

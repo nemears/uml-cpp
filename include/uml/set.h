@@ -15,6 +15,13 @@ namespace UML {
             }
     };
 
+    class DuplicateElementInSetException : public std::exception {
+        public:
+            virtual const char* what() const throw() {
+                return "Duplicate element added to set!";
+            };
+    };
+
     template <class T> class Set;
 
     class AbstractContainer {
@@ -50,8 +57,12 @@ namespace UML {
         protected:
             std::vector<AbstractContainer*> m_subsetOf;
             std::vector<AbstractContainer*> m_subsettedContainers;
+            Element* m_el;
 
             void place(ContainerNode* node, ContainerNode* parent) override {
+                if (node->m_id == parent->m_id) {
+                    throw DuplicateElementInSetException();
+                }
                 if (parent->m_left) {
                     // prefer placement to left
                     if (parent->m_right) {
@@ -130,6 +141,8 @@ namespace UML {
                 return 0;
             };
         public:
+            Set(Element& el) : m_el(&el) {};
+            Set() {};
             virtual ~Set() { 
                 ContainerNode* curr = m_root;
                 while (curr) {

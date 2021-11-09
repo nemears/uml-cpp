@@ -433,3 +433,31 @@ TEST_F(SequenceTest, addToOrderedSetTest) {
     ASSERT_EQ(set.get(1), p2);
     ASSERT_EQ(set.get(2), p3);
 }
+
+TEST_F(SequenceTest, subsetOrderedSets) {
+    OrderedSet<PackageableElement> rootSet;
+    OrderedSet<Package> subSet;
+    subSet.subsets(rootSet);
+    UmlManager m;
+    Package& p = m.create<Package>();
+    subSet.add(p);
+    ASSERT_EQ(subSet.front(), p);
+    ASSERT_FALSE(rootSet.empty());
+    ASSERT_EQ(rootSet.size(), 1);
+    ASSERT_EQ(rootSet.front(), p);
+    Class& c = m.create<Class>();
+    rootSet.add(c);
+    ASSERT_FALSE(subSet.contains(c.getID()));
+    ASSERT_TRUE(rootSet.contains(c.getID()));
+    ASSERT_EQ(rootSet.back(), c);
+    int i = 0;
+    for (Package& pckg : subSet) {
+        i++;
+    }
+    ASSERT_EQ(i, 1);
+    i = 0;
+    for (PackageableElement& pckg : rootSet) {
+        i++;
+    }
+    ASSERT_EQ(i, 2);
+}

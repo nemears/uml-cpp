@@ -7,6 +7,10 @@ namespace UML {
 
     template <class T, class U> struct OrderedSetIterator;
 
+    /**
+     * This class implements a linkedList through the nodes of the weighted tree of the set
+     * so that we can index by id, name and order in this container
+     **/
     template <class T = Element, class U = Element> class OrderedSet : public Set<T,U> {
 
         friend struct OrderedSetIterator<T, U>;
@@ -19,19 +23,60 @@ namespace UML {
                 OrderedNode* m_next = 0;
             };
             OrderedNode* m_last = 0;
+            OrderedNode* m_first = 0;
             AbstractContainer::ContainerNode* createNode(T& el) override {
                 OrderedNode* ret = new OrderedNode(el);
+                if (!m_first) {
+                    m_first = ret;
+                    for (AbstractContainer* subSet : this->m_subsetOf) {
+                        OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(subSet);
+                        if (!set->m_first) {
+                            set->m_first = ret;
+                        }
+                    }
+                    for (AbstractContainer* redefined : this->m_redefines) {
+                        OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(redefined);
+                        if (!set->m_first) {
+                            set->m_first = ret;
+                        }
+                    }
+                }
                 if (m_last) {
                     ret->m_prev = m_last;
                     m_last->m_next = ret;
                 }
                 m_last = ret;
+                for (AbstractContainer* subSet : this->m_subsettedContainers) {
+                    OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(subSet);
+                    if (set) {
+                        set->m_last = ret;
+                    } else {
+                        throw ManagerStateException("TODO, orderedSet");
+                    }
+                }
+                for (AbstractContainer* owningSet : this->m_subsetOf) {
+                    OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(owningSet);
+                    if (set) {
+                        set->m_last = ret;
+                    } else {
+                        // actually i think this is okay
+                        throw ManagerStateException("TODO, orderedSet");
+                    }
+                }
+                for (AbstractContainer* redefined : this->m_redefines) {
+                    OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(redefined);
+                    if (set) {
+                        set->m_last = ret;
+                    } else {
+                        throw ManagerStateException("TODO, orderedSet");
+                    }
+                }
                 return ret;
             };
         public:
             T& front() {
-                if (this->m_root) {
-                    return *dynamic_cast<T*>(this->m_root->m_el);
+                if (this->m_first) {
+                    return *dynamic_cast<T*>(this->m_first->m_el);
                 } else {
                     throw ManagerStateException("TODO, OrderedSet");
                 }
@@ -54,12 +99,14 @@ namespace UML {
             T& get(std::string name) {return Set<T, U>::get(name);};
             OrderedSetIterator<T,U> begin() {
                 OrderedSetIterator<T,U> ret;
-                ret.m_node = static_cast<OrderedNode*>(this->m_root);
+                ret.m_node = static_cast<OrderedNode*>(this->m_first);
+                ret.m_guard = this->m_guard;
                 return ret;
             };
             OrderedSetIterator<T,U> end() {
                 OrderedSetIterator<T,U> ret;
                 ret.m_node = &ret.m_endNode;
+                ret.m_guard = this->m_guard;
                 return ret;
             };
     };
@@ -72,6 +119,7 @@ namespace UML {
         private:
             NodeType* m_node;
             NodeType m_endNode;
+            int m_guard;
         public:
             OrderedSetIterator() {};
             T& operator*() { return dynamic_cast<T&>(*m_node->m_el); };
@@ -86,7 +134,7 @@ namespace UML {
                             m_node = &m_endNode;
                             break;
                         }
-                    } while (m_node->m_guard < temp->m_guard);
+                    } while (m_node->m_guard < m_guard);
                 } else {
                     m_node = &m_endNode;
                 }
@@ -102,7 +150,7 @@ namespace UML {
                             m_node = &m_endNode;
                             break;
                         }
-                    } while (m_node->m_guard < temp->m_guard);
+                    } while (m_node->m_guard < m_guard);
                 } else {
                     m_node = &m_endNode;
                 }

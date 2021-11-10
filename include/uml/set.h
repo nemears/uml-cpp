@@ -46,7 +46,8 @@ namespace UML {
             virtual void place(ContainerNode* node, ContainerNode* parent) = 0;
     };
 
-    template <class T> class SetIterator;
+    template <class T> struct SetIterator;
+    template <class T> struct ID_Set;
 
     /**
      * This container is based around a weighted binary search tree
@@ -55,7 +56,8 @@ namespace UML {
         
         template <class V, class W> friend class Set;
         friend class Set<U>;
-        friend class SetIterator<U>;
+        friend struct SetIterator<U>;
+        friend struct ID_Set<T>;
 
         protected:
             std::vector<AbstractSet*> m_subsetOf;
@@ -175,6 +177,12 @@ namespace UML {
                 }
                 // TODO redefined and subsetted sets
             };
+            void eraseElement(ID id) {
+                // only remove from root seq
+                if (m_subsetOf.empty()) {
+                    remove(id); // this will invoke opposite opposite (maybe make inner function to remove to not invoke opposite?)
+                }
+            };
         public:
             Set(Element* el) : m_el(el) {};
             Set() {};
@@ -276,7 +284,7 @@ namespace UML {
                 m_redefines.push_back(&redefined);
                 redefined.m_redefines.push_back(this);
                 m_rootRedefinedSet = false;
-            }
+            };
             void add(T& el) {
                 ContainerNode* node = createNode(el);
                 if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
@@ -523,14 +531,20 @@ namespace UML {
                 it.m_el = m_el;
                 return it;
             };
+            ID_Set<T> ids() {
+                ID_Set<T> set;
+                set.m_root = m_root;
+                return set;
+            };
     };
 
     template <class T = Element> struct SetIterator {
 
         template <class V, class W> friend class Set;
         friend class AbstractSet;
+        template < class V> friend class ID_Set;
 
-        private:
+        protected:
             Element* m_el;
             AbstractSet::ContainerNode* m_node;
             AbstractSet::ContainerNode m_endNode;
@@ -606,6 +620,31 @@ namespace UML {
             };
             friend bool operator== (const SetIterator& a, const SetIterator& b) { return a.m_node->m_id == b.m_node->m_id; };
             friend bool operator!= (const SetIterator& a, const SetIterator& b) { return a.m_node->m_id != b.m_node->m_id; };
+    };
+
+    template <class T = Element> struct SetID_Iterator : public SetIterator<T> {
+        ID operator*() {
+            return this->m_node->m_id;
+        };
+    };
+
+    template <class T = Element> struct ID_Set {
+
+        template <class U, class V> friend class Set;
+
+        private:
+            AbstractSet::ContainerNode* m_root = 0;
+        public:
+            SetID_Iterator<T> begin() {
+                SetID_Iterator<T> it;
+                it.m_node = m_root;
+                return it;
+            };
+            SetID_Iterator<T> end() {
+                SetID_Iterator<T> it;
+                it.m_node = &it.m_endNode;
+                return it;
+            };
     };
 }
 

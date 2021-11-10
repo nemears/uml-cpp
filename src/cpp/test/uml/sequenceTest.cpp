@@ -491,3 +491,18 @@ TEST_F(SequenceTest, orderedSetSubSetsSet) {
     }
     ASSERT_EQ(i, 2);
 }
+
+TEST_F(SequenceTest, testIdsMethodLoop) {
+    Set<Package> set;
+    UmlManager m;
+    int numPackages = 10;
+    std::unordered_set<ID> ids;
+    for (int i = 0; i < numPackages; i++) {
+        Package& p = m.create<Package>();
+        set.add(p);
+        ids.insert(p.getID());
+    }
+    for (const ID id : set.ids()) {
+        ASSERT_TRUE(set.contains(id));
+    }
+}

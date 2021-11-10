@@ -9,6 +9,7 @@
 #include "uml/instanceSpecification.h"
 #include "uml/orderedSet.h"
 #include "test/yumlParsersTest.h"
+#include "uml/singleton2.h"
 
 using namespace UML;
 
@@ -503,6 +504,41 @@ TEST_F(SequenceTest, testIdsMethodLoop) {
         ids.insert(p.getID());
     }
     for (const ID id : set.ids()) {
-        ASSERT_TRUE(set.contains(id));
+        ASSERT_TRUE(ids.count(id));
     }
+}
+
+TEST_F(SequenceTest, singletonTest) {
+    Set<PackageableElement> rootSet;
+    Singleton2<Package> singleton;
+    UmlManager m;
+    singleton.subsets(rootSet);
+    ASSERT_TRUE(singleton.empty());
+    ASSERT_EQ(singleton.size(), 0);
+    Package& p = m.create<Package>();
+    singleton.set(p);
+    ASSERT_EQ(singleton.size(), 1);
+    ASSERT_FALSE(singleton.empty());
+    ASSERT_TRUE(singleton.has());
+    ASSERT_EQ(singleton.getRef(), p);
+    ASSERT_EQ(rootSet.size(), 1);
+    ASSERT_FALSE(rootSet.empty());
+    ASSERT_EQ(rootSet.get(p.getID()), p);
+    Class& c = m.create<Class>();
+    rootSet.add(c);
+    ASSERT_EQ(singleton.size(), 1);
+    ASSERT_FALSE(singleton.empty());
+    ASSERT_TRUE(singleton.has());
+    ASSERT_EQ(singleton.getRef(), p);
+    ASSERT_EQ(rootSet.size(), 2);
+    ASSERT_TRUE(rootSet.contains(p.getID()));
+    ASSERT_TRUE(rootSet.contains(c.getID()));
+    ASSERT_EQ(rootSet.get(p.getID()), p);
+    ASSERT_EQ(rootSet.get(c.getID()), c);
+    singleton.set(0);
+    ASSERT_FALSE(singleton.has());
+    ASSERT_FALSE(singleton.get());
+    ASSERT_EQ(rootSet.size(), 1);
+    ASSERT_TRUE(rootSet.contains(c.getID()));
+    ASSERT_FALSE(rootSet.contains(p.getID()));
 }

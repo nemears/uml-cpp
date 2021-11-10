@@ -2,6 +2,7 @@
 #define SPECIAL_SEQUENCE_H
 
 #include "element.h"
+#include <iostream>
 
 namespace UML {
 

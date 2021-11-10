@@ -8,6 +8,7 @@
 #include "uml/class.h"
 #include "uml/instanceSpecification.h"
 #include "uml/orderedSet.h"
+#include "test/yumlParsersTest.h"
 
 using namespace UML;
 
@@ -344,6 +345,7 @@ class TestElement : public Element {
 };
 
 TEST_F(SequenceTest, oppositeTest) {
+    UmlManager m;
     TestElement t1;
     TestElement t2;
     t1.getOthers().add(t2);

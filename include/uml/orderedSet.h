@@ -89,6 +89,9 @@ namespace UML {
                 }
             };
             T& get(int index) {
+                /**
+                 * TODO: this can be faster if we traverse tree maybe?
+                 **/
                 OrderedSetIterator it = begin();
                 for (int i = 0; i < index; i++) {
                     it++;

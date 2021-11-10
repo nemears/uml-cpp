@@ -63,7 +63,7 @@ namespace UML {
             std::vector<AbstractContainer*> m_redefines;
             bool m_rootRedefinedSet = true;
             Set<U, T>& (T::*m_oppositeSignature)() = 0;
-            Element* m_el;
+            Element* m_el = 0;
 
             void place(ContainerNode* node, ContainerNode* parent) override {
                 if (node->m_id == parent->m_id) {
@@ -214,6 +214,15 @@ namespace UML {
                     }
                 }
             };
+            void release(ID id) {
+                ContainerNode* searchResult = search(id, m_root);
+                if (!searchResult) {
+                    throw ID_doesNotExistException2(id);
+                }
+                if (searchResult->m_el) {
+                    searchResult->m_el = 0;
+                }
+            };
             /**
              * WARN: so for now ORDER MATTERS when subsetting a sequence
              * the first element subsetted should be the first element
@@ -285,6 +294,11 @@ namespace UML {
                         place(temp, node);
                     } else {
                         place(node, m_root);
+                    }
+                }
+                if (m_el) {
+                    if (m_el->m_manager) {
+                        m_el->setReference(&el);
                     }
                 }
                 m_size++;
@@ -434,6 +448,9 @@ namespace UML {
                     if (!searchResult) {
                         throw ID_doesNotExistException2(id);
                     }
+                    if (!searchResult->m_el) {
+                        searchResult->m_el = m_el->m_manager->get(m_el, id);
+                    }
                     T* ret = dynamic_cast<T*>(searchResult->m_el);
                     if (ret) {
                         return *ret;
@@ -447,6 +464,9 @@ namespace UML {
                     if (!searchResult) {
                         // TODO throw proper error
                         throw ManagerStateException("Improper name used in set!"); // TODO change
+                    }
+                    if (!searchResult->m_el) {
+                        searchResult->m_el = m_el->m_manager->get(m_el, searchResult->m_id);
                     }
                     T* ret = dynamic_cast<T*>(searchResult->m_el);
                     if (ret) {
@@ -478,26 +498,39 @@ namespace UML {
             SetIterator<T> begin() {
                 SetIterator<T> it;
                 it.m_node = m_root;
+                it.m_el = m_el;
                 return it;
             };
             SetIterator<T> end() {
                 SetIterator<T> it;
                 it.m_node = &it.m_endNode;
+                it.m_el = m_el;
                 return it;
             };
     };
 
     template <class T = Element> struct SetIterator {
 
-        friend class Set<T>;
+        template <class V, class W> friend class Set;
         friend class AbstractContainer;
 
         private:
+            Element* m_el;
             AbstractContainer::ContainerNode* m_node;
             AbstractContainer::ContainerNode m_endNode;
         public:
-            T& operator*() { return dynamic_cast<T&>(*m_node->m_el); };
-            T* operator->() { return dynamic_cast<T*>(m_node->m_el); };
+            T& operator*() {
+                if (!m_node->m_el) {
+                    m_node->m_el = m_el->m_manager->get(m_el, m_node->m_id);
+                }
+                return dynamic_cast<T&>(*m_node->m_el);
+            };
+            T* operator->() {
+                if (!m_node->m_el) {
+                    m_node->m_el = m_el->m_manager->get(m_el, m_node->m_id);
+                }
+                return dynamic_cast<T*>(m_node->m_el);
+            };
 
             // This is dfs
             SetIterator operator++() {

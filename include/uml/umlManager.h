@@ -91,6 +91,8 @@ namespace UML {
         template<typename> friend class Sequence;
         template <class T> friend struct SequenceIterator;
         template <class T, class U> friend class Singleton;
+        template <class T, class U> friend class Set;
+        template <class T> friend class SetIterator;
 
         protected:
             std::unordered_set<ID> m_elements;

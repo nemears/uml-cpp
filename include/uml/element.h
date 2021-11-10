@@ -155,6 +155,8 @@ namespace UML {
     class UmlManager;
     struct ManagerNode;
     class AddOwnedCommentFunctor;
+    template <class T, class U> class Set;
+    template <class T> class SetIterator;
     namespace Parsers {
         class SetOwner;
         struct EmitterMetaData;
@@ -182,6 +184,8 @@ namespace UML {
         template <class T, class U> friend class Singleton;
         template <class T> friend class Sequence;
         template <class T> friend struct SequenceIterator;
+        template <class T, class U> friend class Set;
+        template <class T> friend class SetIterator;
         friend class Parsers::SetOwner;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);
         

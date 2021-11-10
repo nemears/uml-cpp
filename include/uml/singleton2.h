@@ -6,6 +6,8 @@
 namespace UML {
     template <class T = Element, class U = Element> class Singleton2 : public Set<T, U> {
         public:
+            Singleton2(U* el) : Set<T, U>(el) {};
+            Singleton2() {};
             T* get() {
                 if (this->m_root) {
                     return dynamic_cast<T*>(this->m_root->m_el);
@@ -24,6 +26,9 @@ namespace UML {
             ID id() const {
                 if (this->m_root) {
                     return this->m_root->m_id;
+                } else {
+                    // TODO throw proper exception
+                    throw ManagerStateException("id()");
                 }
             };
             bool has() const {
@@ -39,6 +44,12 @@ namespace UML {
             };
             void set(T& el) {
                 set(&el);
+            };
+            void set(ID id) {
+                if (this->m_root) {
+                    this->remove(this->m_root->m_id);
+                }
+                this->add(id);
             };
     };
 }

@@ -157,6 +157,7 @@ namespace UML {
     class AddOwnedCommentFunctor;
     template <class T, class U> class Set;
     template <class T> class SetIterator;
+    template <class T, class U> class Singleton2;
     namespace Parsers {
         class SetOwner;
         struct EmitterMetaData;
@@ -199,11 +200,14 @@ namespace UML {
             const ElementType m_elementType;
 
             // owner
-            ID m_ownerID;
-            Element* m_ownerPtr;
+            // ID m_ownerID;
+            // Element* m_ownerPtr;
+            Singleton2<Element, Element>* m_owner;
+            Set<Element, Element>& getOwnerSingleton();
             
             // ownedElements
-            Sequence<Element>* m_ownedElements;
+            //Sequence<Element>* m_ownedElements;
+            Set<Element, Element>* m_ownedElements;
             Sequence<Relationship>* m_relationships;
             Sequence<DirectedRelationship>* m_directedRelationships;
             Sequence<Comment>* m_ownedComments;
@@ -238,7 +242,7 @@ namespace UML {
             Element& getOwnerRef();
             ID getOwnerID() const;
             bool hasOwner() const;
-            Sequence<Element>& getOwnedElements();
+            Set<Element, Element>& getOwnedElements();
             Sequence<Relationship>& getRelationships();
             Sequence<DirectedRelationship>& getDirectedRelationships();
             Sequence<Comment>& getOwnedComments();

@@ -59,6 +59,7 @@ namespace UML {
         friend class Set<U>;
         friend struct SetIterator<U>;
         friend struct ID_Set<T>;
+        friend class Element;
 
         protected:
             std::vector<AbstractSet*> m_subsetOf;
@@ -150,8 +151,52 @@ namespace UML {
                 }
                 return 0;
             };
+            void add(ContainerNode* node) {
+                node->m_guard = m_guard;
+                if (!m_root) {
+                    m_root = node;
+                    for (auto& redefined : m_redefines) {
+                        if (redefined->m_root) {
+                            if (redefined->m_root->m_id != m_root->m_id) {
+                                m_root = redefined->m_root;
+                                place(node, m_root);
+                            }
+                        } else {
+                            redefined->m_root = node;
+                        }
+                    }
+                    for (auto& subsetOf : m_subsetOf) {
+                        if (subsetOf->m_root) {
+                            subsetOf->place(node, subsetOf->m_root);
+                        } else {
+                            subsetOf->m_root = m_root;
+                        }
+                    }
+                } else {
+                    if (m_root->m_guard > m_guard) {
+                        // if the root is a subsetted sequence push it under this one
+                        ContainerNode* temp = m_root;
+                        m_root = node;
+                        place(temp, node);
+                    } else {
+                        place(node, m_root);
+                    }
+                }
+                m_size++;
+                for (auto& subsetOf : m_subsetOf) {
+                    subsetOf->m_size++;
+                }
+                for (auto& redefined : m_redefines) {
+                    redefined->m_size++;
+                }
+            };
             virtual ContainerNode* createNode(T& el) {
                 return new ContainerNode(el);
+            };
+            virtual ContainerNode* createNode(ID id) {
+                ContainerNode* ret = new ContainerNode();
+                ret->m_id = id;
+                return ret;
             };
             void release(ID id) {
                 ContainerNode* searchResult = search(id, m_root);
@@ -291,51 +336,24 @@ namespace UML {
                 if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
                     node->m_name = dynamic_cast<NamedElement&>(el).getName();
                 }
-                node->m_guard = m_guard;
-                if (!m_root) {
-                    m_root = node;
-                    for (auto& redefined : m_redefines) {
-                        if (redefined->m_root) {
-                            if (redefined->m_root->m_id != m_root->m_id) {
-                                m_root = redefined->m_root;
-                                place(node, m_root);
-                            }
-                        } else {
-                            redefined->m_root = node;
-                        }
-                    }
-                    for (auto& subsetOf : m_subsetOf) {
-                        if (subsetOf->m_root) {
-                            subsetOf->place(node, subsetOf->m_root);
-                        } else {
-                            subsetOf->m_root = m_root;
-                        }
-                    }
-                } else {
-                    if (m_root->m_guard > m_guard) {
-                        // if the root is a subsetted sequence push it under this one
-                        ContainerNode* temp = m_root;
-                        m_root = node;
-                        place(temp, node);
-                    } else {
-                        place(node, m_root);
-                    }
-                }
+                add(node);
                 if (m_el) {
                     if (m_el->m_manager) {
                         m_el->setReference(&el);
                     }
                 }
-                m_size++;
-                for (auto& subsetOf : m_subsetOf) {
-                    subsetOf->m_size++;
-                }
-                for (auto& redefined : m_redefines) {
-                    redefined->m_size++;
-                }
                 if (m_oppositeSignature) {
                     if (!(el.*m_oppositeSignature)().contains(m_el->getID())) {
                         (el.*m_oppositeSignature)().add(*dynamic_cast<U*>(m_el));
+                    }
+                }
+            };
+            void add(ID id) {
+                ContainerNode* node = createNode(id);
+                add(node);
+                if (m_el) {
+                    if (m_el->m_manager) {
+                        m_el->setReference(id);
                     }
                 }
             };

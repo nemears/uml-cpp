@@ -16,25 +16,25 @@ namespace UML {
         friend struct OrderedSetIterator<T, U>;
 
         protected:
-            struct OrderedNode : public AbstractContainer::ContainerNode {
-                OrderedNode(Element& el) : AbstractContainer::ContainerNode(el) {};
+            struct OrderedNode : public AbstractSet::ContainerNode {
+                OrderedNode(Element& el) : AbstractSet::ContainerNode(el) {};
                 OrderedNode() {};
                 OrderedNode* m_prev = 0;
                 OrderedNode* m_next = 0;
             };
             OrderedNode* m_last = 0;
             OrderedNode* m_first = 0;
-            AbstractContainer::ContainerNode* createNode(T& el) override {
+            AbstractSet::ContainerNode* createNode(T& el) override {
                 OrderedNode* ret = new OrderedNode(el);
                 if (!m_first) {
                     m_first = ret;
-                    for (AbstractContainer* subSet : this->m_subsetOf) {
+                    for (AbstractSet* subSet : this->m_subsetOf) {
                         OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(subSet);
                         if (!set->m_first) {
                             set->m_first = ret;
                         }
                     }
-                    for (AbstractContainer* redefined : this->m_redefines) {
+                    for (AbstractSet* redefined : this->m_redefines) {
                         OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(redefined);
                         if (!set->m_first) {
                             set->m_first = ret;
@@ -46,7 +46,7 @@ namespace UML {
                     m_last->m_next = ret;
                 }
                 m_last = ret;
-                for (AbstractContainer* subSet : this->m_subsettedContainers) {
+                for (AbstractSet* subSet : this->m_subsettedContainers) {
                     OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(subSet);
                     if (set) {
                         set->m_last = ret;
@@ -54,7 +54,7 @@ namespace UML {
                         throw ManagerStateException("TODO, orderedSet");
                     }
                 }
-                for (AbstractContainer* owningSet : this->m_subsetOf) {
+                for (AbstractSet* owningSet : this->m_subsetOf) {
                     OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(owningSet);
                     if (set) {
                         set->m_last = ret;
@@ -63,7 +63,7 @@ namespace UML {
                         throw ManagerStateException("TODO, orderedSet");
                     }
                 }
-                for (AbstractContainer* redefined : this->m_redefines) {
+                for (AbstractSet* redefined : this->m_redefines) {
                     OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(redefined);
                     if (set) {
                         set->m_last = ret;

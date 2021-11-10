@@ -25,7 +25,7 @@ namespace UML {
     template <class T, class U> class Set;
     template <class T, class U> class OrderedSet;
 
-    class AbstractContainer {
+    class AbstractSet {
         template <class T, class U> friend class Set;
         template <class T, class U> friend class OrderedSet;
         protected:
@@ -51,16 +51,16 @@ namespace UML {
     /**
      * This container is based around a weighted binary search tree
      **/
-    template <class T = Element, class U = Element> class Set : public AbstractContainer {
+    template <class T = Element, class U = Element> class Set : public AbstractSet {
         
         template <class V, class W> friend class Set;
         friend class Set<U>;
         friend class SetIterator<U>;
 
         protected:
-            std::vector<AbstractContainer*> m_subsetOf;
-            std::vector<AbstractContainer*> m_subsettedContainers;
-            std::vector<AbstractContainer*> m_redefines;
+            std::vector<AbstractSet*> m_subsetOf;
+            std::vector<AbstractSet*> m_subsettedContainers;
+            std::vector<AbstractSet*> m_redefines;
             bool m_rootRedefinedSet = true;
             Set<U, T>& (T::*m_oppositeSignature)() = 0;
             Element* m_el = 0;
@@ -149,7 +149,32 @@ namespace UML {
             };
             virtual ContainerNode* createNode(T& el) {
                 return new ContainerNode(el);
-            }
+            };
+            void release(ID id) {
+                ContainerNode* searchResult = search(id, m_root);
+                if (!searchResult) {
+                    throw ID_doesNotExistException2(id);
+                }
+                if (searchResult->m_el) {
+                    searchResult->m_el = 0;
+                }
+            };
+            void reindex(ID oldID, ID newID) {
+                ContainerNode* node = search(oldID, m_root);
+                node->m_id = newID;
+                if (node->m_parent->m_left->m_id == oldID) {
+                    if (node->m_parent->m_right->m_id > newID) {
+                        node->m_parent->m_left = node->m_parent->m_right;
+                        node->m_parent->m_right = node;
+                    }
+                } else {
+                    if (newID > node->m_parent->m_left->m_id) {
+                        node->m_parent->m_right = node->m_parent->m_left;
+                        node->m_parent->m_left = node;
+                    }
+                }
+                // TODO redefined and subsetted sets
+            };
         public:
             Set(Element* el) : m_el(el) {};
             Set() {};
@@ -212,15 +237,6 @@ namespace UML {
                             }
                         }
                     }
-                }
-            };
-            void release(ID id) {
-                ContainerNode* searchResult = search(id, m_root);
-                if (!searchResult) {
-                    throw ID_doesNotExistException2(id);
-                }
-                if (searchResult->m_el) {
-                    searchResult->m_el = 0;
                 }
             };
             /**
@@ -512,12 +528,12 @@ namespace UML {
     template <class T = Element> struct SetIterator {
 
         template <class V, class W> friend class Set;
-        friend class AbstractContainer;
+        friend class AbstractSet;
 
         private:
             Element* m_el;
-            AbstractContainer::ContainerNode* m_node;
-            AbstractContainer::ContainerNode m_endNode;
+            AbstractSet::ContainerNode* m_node;
+            AbstractSet::ContainerNode m_endNode;
         public:
             T& operator*() {
                 if (!m_node->m_el) {
@@ -539,11 +555,11 @@ namespace UML {
                     m_node = m_node->m_left;
                 } else {
                     // we hit bottom, choose next right
-                    AbstractContainer::ContainerNode* temp;
-                    AbstractContainer::ContainerNode* last = dynamic_cast<AbstractContainer::ContainerNode*>(m_node);
+                    AbstractSet::ContainerNode* temp;
+                    AbstractSet::ContainerNode* last = dynamic_cast<AbstractSet::ContainerNode*>(m_node);
                     bool found = false;
                     do {
-                        temp = dynamic_cast<AbstractContainer::ContainerNode*>(last->m_parent);
+                        temp = dynamic_cast<AbstractSet::ContainerNode*>(last->m_parent);
                         if (temp->m_right) {
                             if (temp->m_right->m_id != last->m_id) {
                                 found = true;
@@ -563,14 +579,14 @@ namespace UML {
             SetIterator operator++(int) {
                if (m_node->m_left) {
                     // always go left
-                    m_node = dynamic_cast<AbstractContainer::ContainerNode*>(m_node->m_left);
+                    m_node = dynamic_cast<AbstractSet::ContainerNode*>(m_node->m_left);
                 } else {
                     // we hit bottom, choose next right
-                    AbstractContainer::ContainerNode* temp;
-                    AbstractContainer::ContainerNode* last = dynamic_cast<AbstractContainer::ContainerNode*>(m_node);
+                    AbstractSet::ContainerNode* temp;
+                    AbstractSet::ContainerNode* last = dynamic_cast<AbstractSet::ContainerNode*>(m_node);
                     bool found = false;
                     do {
-                        temp = dynamic_cast<AbstractContainer::ContainerNode*>(last->m_parent);
+                        temp = dynamic_cast<AbstractSet::ContainerNode*>(last->m_parent);
                         if (temp->m_right) {
                             if (temp->m_right->m_id != last->m_id) {
                                 found = true;
@@ -582,7 +598,7 @@ namespace UML {
                     if (!found) {
                         m_node = m_endNode;
                     } else {
-                        m_node = dynamic_cast<AbstractContainer::ContainerNode*>(temp->m_right);
+                        m_node = dynamic_cast<AbstractSet::ContainerNode*>(temp->m_right);
                     }
                 }
                 SetIterator ret = *this;

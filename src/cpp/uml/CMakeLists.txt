@@ -11,7 +11,7 @@ add_library(Uml namespace.cpp model.cpp element.cpp namedElement.cpp class.cpp c
                 templateParameterSubstitution.cpp literalNull.cpp literalUnlimitedNatural.cpp profile.cpp stereotype.cpp
                 profileApplication.cpp extension.cpp extensionEnd.cpp dependency.cpp abstraction.cpp realization.cpp usage.cpp
                 deployment.cpp deployedArtifact.cpp deploymentTarget.cpp artifact.cpp behavioredClassifier.cpp
-                manifestation.cpp generalizationSet.cpp)
+                manifestation.cpp generalizationSet.cpp set.cpp)
 if (UML_CLIENT_SERVER)
     target_sources(Uml PRIVATE managers/umlClient.cpp managers/umlServer.cpp)
 endif()

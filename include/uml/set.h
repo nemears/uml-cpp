@@ -45,6 +45,7 @@ namespace UML {
             ContainerNode* m_root = 0;
             size_t m_guard = 0;
             virtual void place(ContainerNode* node, ContainerNode* parent) = 0;
+            void setName(ContainerNode* node);
     };
 
     template <class T> struct SetIterator;
@@ -333,9 +334,7 @@ namespace UML {
             };
             void add(T& el) {
                 ContainerNode* node = createNode(el);
-                if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
-                    node->m_name = dynamic_cast<NamedElement&>(el).getName();
-                }
+                setName(node);
                 add(node);
                 if (m_el) {
                     if (m_el->m_manager) {

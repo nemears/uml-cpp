@@ -4,6 +4,7 @@
 #include <string>
 #include "element.h"
 #include "singleton.h"
+#include "set.h"
 
 namespace UML{
 

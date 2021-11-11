@@ -52,6 +52,9 @@ namespace UML {
     template <class T> struct SetIterator;
     template <class T> struct ID_Set;
 
+    class Namespace;
+    class NamedElement;
+
     /**
      * This container is based around a weighted binary search tree
      **/
@@ -62,6 +65,8 @@ namespace UML {
         friend struct SetIterator<U>;
         friend struct ID_Set<T>;
         friend class Element;
+        friend class Namespace;
+        friend class NamedElement;
 
         protected:
             std::vector<AbstractSet*> m_subsetOf;
@@ -70,6 +75,14 @@ namespace UML {
             bool m_rootRedefinedSet = true;
             Set<U, T>& (T::*m_oppositeSignature)() = 0;
             Element* m_el = 0;
+
+            struct SetNode : public ContainerNode {
+                SetNode(T& el) {
+                    this->m_el = reinterpret_cast<Element*>(&el);
+                    this->m_id = this->m_el->getID(); 
+                };
+                SetNode() {};
+            };
 
             void place(ContainerNode* node, ContainerNode* parent) override {
                 if (node->m_id == parent->m_id) {
@@ -193,10 +206,10 @@ namespace UML {
                 }
             };
             virtual ContainerNode* createNode(T& el) {
-                return new ContainerNode(el);
+                return new SetNode(el);
             };
             virtual ContainerNode* createNode(ID id) {
-                ContainerNode* ret = new ContainerNode();
+                ContainerNode* ret = new SetNode();
                 ret->m_id = id;
                 return ret;
             };
@@ -340,7 +353,7 @@ namespace UML {
              *  c.subsets(a); // GOOD
              *  c.subsets(b); // GOOD because b instantiated after a
              **/
-            template <class V = Element> void subsets(Set<V>& subsetOf) {
+            template <class V = Element, class W = Element> void subsets(Set<V, W>& subsetOf) {
                 if (!m_root && !subsetOf.m_root) {
                     m_subsetOf.push_back(&subsetOf);
                     subsetOf.m_subsettedContainers.push_back(this);

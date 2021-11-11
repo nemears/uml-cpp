@@ -5,6 +5,13 @@
 
 namespace UML {
     template <class T = Element, class U = Element> class Singleton2 : public Set<T, U> {
+        
+        friend NamedElement;
+        
+        // protected:
+        //     template <class V = Element, class W = Element> void subsets(Singleton2<V,W>& subsetOf) {
+        //         Set<T, U>::subsets(subsetOf);
+        //     };
         public:
             Singleton2(U* el) : Set<T, U>(el) {};
             Singleton2() {};

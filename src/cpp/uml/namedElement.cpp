@@ -8,176 +8,152 @@
 using namespace UML;
 using namespace std;
 
-void AddMemberNamespaceFunctor::operator()(Namespace& el) const {
-    oppositeSequenceAdd(el, &Namespace::getMembers);
-    updateCopiedSequenceAddedTo(el, &NamedElement::getMemberNamespace);
-}
+// void AddMemberNamespaceFunctor::operator()(Namespace& el) const {
+//     oppositeSequenceAdd(el, &Namespace::getMembers);
+//     updateCopiedSequenceAddedTo(el, &NamedElement::getMemberNamespace);
+// }
 
-void RemoveMemberNamespaceFunctor::operator()(Namespace& el) const {
-    oppositeSequenceRemove(el, &Namespace::getMembers);
-    updateCopiedSequenceRemovedFrom(el, &NamedElement::getMemberNamespace);
-}
+// void RemoveMemberNamespaceFunctor::operator()(Namespace& el) const {
+//     oppositeSequenceRemove(el, &Namespace::getMembers);
+//     updateCopiedSequenceRemovedFrom(el, &NamedElement::getMemberNamespace);
+// }
 
-void NamedElement::RemoveNamespaceProcedures::operator()(Namespace* el) const {
-    if (el->getMembers().count(m_me->getID())) {
-        el->getMembers().internalRemove(*m_me);
-    }
-    if (m_me->getMemberNamespace().count(*el)) {
-        m_me->getMemberNamespace().remove(*el);
-    }
-    if (m_me->getOwnerID() == el->getID()) {
-        m_me->setOwner(0);
-    }
-    m_me->updateQualifiedName("");
-}
+// void NamedElement::RemoveNamespaceProcedures::operator()(Namespace* el) const {
+//     if (el->getMembers().count(m_me->getID())) {
+//         el->getMembers().internalRemove(*m_me);
+//     }
+//     if (m_me->getMemberNamespace().count(*el)) {
+//         m_me->getMemberNamespace().remove(*el);
+//     }
+//     if (m_me->getOwnerID() == el->getID()) {
+//         m_me->setOwner(0);
+//     }
+//     m_me->updateQualifiedName("");
+// }
 
-void NamedElement::AddNamespaceProcedures::operator()(Namespace* el) const {
-    if (!el->getOwnedMembers().count(m_me->getID())) {
-        el->getOwnedMembers().add(*m_me);
-    }
-    if (!m_me->getMemberNamespace().count(*el)) {
-        m_me->getMemberNamespace().add(*el);
-    }
-    if (m_me->getOwnerID() != el->getID()) {
-        m_me->setOwner(el);
-    }
-    m_me->updateQualifiedName(el->getQualifiedName());
-}
+// void NamedElement::AddNamespaceProcedures::operator()(Namespace* el) const {
+//     if (!el->getOwnedMembers().count(m_me->getID())) {
+//         el->getOwnedMembers().add(*m_me);
+//     }
+//     if (!m_me->getMemberNamespace().count(*el)) {
+//         m_me->getMemberNamespace().add(*el);
+//     }
+//     if (m_me->getOwnerID() != el->getID()) {
+//         m_me->setOwner(el);
+//     }
+//     m_me->updateQualifiedName(el->getQualifiedName());
+// }
 
-void NamedElement::AddNamespaceProcedures::operator()(ID id) const {
-    if (!m_me->getMemberNamespace().count(id)) {
-        m_me->getMemberNamespace().addByID(id);
-    }
-    if (m_me->getOwnerID() != id) {
-        m_me->setOwnerByID(id);
-    }
-}
+// void NamedElement::AddNamespaceProcedures::operator()(ID id) const {
+//     if (!m_me->getMemberNamespace().count(id)) {
+//         m_me->getMemberNamespace().addByID(id);
+//     }
+//     if (m_me->getOwnerID() != id) {
+//         m_me->setOwnerByID(id);
+//     }
+// }
 
-void AddClientDependencyFunctor::operator()(Dependency& el) const {
-    if (!el.getClient().count(m_el->getID())) {
-        el.getClient().add(*m_el);
-    }
-    if (!m_el->getDirectedRelationships().count(el.getID())) {
-        m_el->getDirectedRelationships().add(el);
-    }
-}
+// void AddClientDependencyFunctor::operator()(Dependency& el) const {
+//     if (!el.getClient().count(m_el->getID())) {
+//         el.getClient().add(*m_el);
+//     }
+//     if (!m_el->getDirectedRelationships().count(el.getID())) {
+//         m_el->getDirectedRelationships().add(el);
+//     }
+// }
 
-void AddClientDependencyFunctor::operator()(ID id) const {
-    if (!m_el->getDirectedRelationships().count(id)) {
-        m_el->getDirectedRelationships().addByID(id);
-    }
-}
+// void AddClientDependencyFunctor::operator()(ID id) const {
+//     if (!m_el->getDirectedRelationships().count(id)) {
+//         m_el->getDirectedRelationships().addByID(id);
+//     }
+// }
 
-void RemoveClientDependencyFunctor::operator()(Dependency& el) const {
-    if (el.getClient().count(m_el->getID())) {
-        el.getClient().remove(*m_el);
-    }
-    if (m_el->getDirectedRelationships().count(el.getID())) {
-        m_el->getDirectedRelationships().remove(el);
-    }
-}
+// void RemoveClientDependencyFunctor::operator()(Dependency& el) const {
+//     if (el.getClient().count(m_el->getID())) {
+//         el.getClient().remove(*m_el);
+//     }
+//     if (m_el->getDirectedRelationships().count(el.getID())) {
+//         m_el->getDirectedRelationships().remove(el);
+//     }
+// }
 
-void AddSupplierDependencyFunctor::operator()(Dependency& el) const {
-    if (!el.getSupplier().count(m_el->getID())) {
-        el.getSupplier().add(*m_el);
-    }
-    if (!m_el->getDirectedRelationships().count(el.getID())) {
-        m_el->getDirectedRelationships().add(el);
-    }
-}
+// void AddSupplierDependencyFunctor::operator()(Dependency& el) const {
+//     if (!el.getSupplier().count(m_el->getID())) {
+//         el.getSupplier().add(*m_el);
+//     }
+//     if (!m_el->getDirectedRelationships().count(el.getID())) {
+//         m_el->getDirectedRelationships().add(el);
+//     }
+// }
 
-void AddSupplierDependencyFunctor::operator()(ID id) const {
-    if (!m_el->getDirectedRelationships().count(id)) {
-        m_el->getDirectedRelationships().addByID(id);
-    }
-}
+// void AddSupplierDependencyFunctor::operator()(ID id) const {
+//     if (!m_el->getDirectedRelationships().count(id)) {
+//         m_el->getDirectedRelationships().addByID(id);
+//     }
+// }
 
-void RemoveSupplierDependencyFunctor::operator()(Dependency& el) const {
-    if (el.getSupplier().count(m_el->getID())) {
-        el.getSupplier().remove(*m_el);
-    }
-}
+// void RemoveSupplierDependencyFunctor::operator()(Dependency& el) const {
+//     if (el.getSupplier().count(m_el->getID())) {
+//         el.getSupplier().remove(*m_el);
+//     }
+// }
 
 void NamedElement::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
     m_namespace.reindex(oldID, newID);
-    m_memberNamespace->reindex(oldID, newID, &NamedElement::getMemberNamespace);
-    m_clientDependencies->reindex(oldID, newID, &NamedElement::getClientDependencies);
-    m_supplierDependencies->reindex(oldID, newID, &NamedElement::getSupplierDependencies);
+    m_memberNamespace.reindex(oldID, newID);
+    m_clientDependencies.reindex(oldID, newID);
+    m_supplierDependencies.reindex(oldID, newID);
 }
 
 void NamedElement::referencingReleased(ID id) {
     Element::referencingReleased(id);
-    m_memberNamespace->elementReleased(id, &NamedElement::getMemberNamespace);
+    m_memberNamespace.release(id);
     m_namespace.release(id);
-    m_clientDependencies->elementReleased(id, &NamedElement::getClientDependencies);
-    m_supplierDependencies->elementReleased(id, &NamedElement::getSupplierDependencies);
+    m_clientDependencies.release(id);
+    m_supplierDependencies.release(id);
 }
 
 void NamedElement::restoreReferences() {
     Element::restoreReferences();
-    m_memberNamespace->restoreReferences();
-    m_namespace.restoreReference();
-    m_clientDependencies->restoreReferences();
-    m_supplierDependencies->restoreReferences();
+    // m_memberNamespace->restoreReferences();
+    // m_namespace.restoreReference();
+    // m_clientDependencies->restoreReferences();
+    // m_supplierDependencies->restoreReferences();
 }
 
 void NamedElement::referenceErased(ID id) {
     Element::referenceErased(id);
-    m_memberNamespace->elementErased(id);
-    m_namespace.elementErased(id);
-    m_clientDependencies->elementErased(id);
-    m_supplierDependencies->elementErased(id);
+    m_memberNamespace.eraseElement(id);
+    m_namespace.eraseElement(id);
+    m_clientDependencies.eraseElement(id);
+    m_supplierDependencies.eraseElement(id);
+}
+
+Set<Namespace, NamedElement>& NamedElement::getNamespaceSingleton() {
+    return m_namespace;
 }
 
 NamedElement::NamedElement() : Element(ElementType::NAMED_ELEMENT) {
-    m_memberNamespace = new Sequence<Namespace>(this);
-    m_memberNamespace->addProcedures.push_back(new AddMemberNamespaceFunctor(this));
-    m_memberNamespace->removeProcedures.push_back(new RemoveMemberNamespaceFunctor(this));
-    m_namespace.m_signature = &NamedElement::m_namespace;
-    m_namespace.m_removeProcedures.push_back(new RemoveNamespaceProcedures(this));
-    m_namespace.m_addProcedures.push_back(new AddNamespaceProcedures(this));
-    m_clientDependencies = new Sequence<Dependency>(this);
-    m_clientDependencies->addProcedures.push_back(new AddClientDependencyFunctor(this));
-    m_clientDependencies->removeProcedures.push_back(new RemoveClientDependencyFunctor(this));
-    m_supplierDependencies = new Sequence<Dependency>(this);
-    m_supplierDependencies->addProcedures.push_back(new AddSupplierDependencyFunctor(this));
-    m_supplierDependencies->removeProcedures.push_back(new RemoveSupplierDependencyFunctor(this));
+    m_namespace.Set<Namespace, NamedElement>::subsets(static_cast<Set<Element,Element>&>(*m_owner));
+    m_namespace.opposite(&Namespace::getOwnedMembers);
+    m_memberNamespace.opposite(&Namespace::getMembers);
 }
 
 NamedElement::~NamedElement() {
-    delete m_memberNamespace;
-    delete m_clientDependencies;
-    delete m_supplierDependencies;
 }
 
 NamedElement::NamedElement(const NamedElement& el) : Element(el) {
     m_name = el.m_name;
     m_visibility = el.m_visibility;
-    m_memberNamespace = new Sequence<Namespace>(*el.m_memberNamespace);
-    m_memberNamespace->m_el = this;
-    m_memberNamespace->addProcedures.clear();
-    m_memberNamespace->addProcedures.push_back(new AddMemberNamespaceFunctor(this));
-    m_memberNamespace->removeProcedures.clear();
-    m_memberNamespace->removeProcedures.push_back(new RemoveMemberNamespaceFunctor(this));
+    m_memberNamespace = Set<Namespace, NamedElement>(el.m_memberNamespace);
+    m_memberNamespace.m_el = this;
     m_namespace = el.m_namespace;
-    m_namespace.m_me = this;
-    m_namespace.m_removeProcedures.clear();
-    m_namespace.m_addProcedures.clear();
-    m_namespace.m_removeProcedures.push_back(new RemoveNamespaceProcedures(this));
-    m_namespace.m_addProcedures.push_back(new AddNamespaceProcedures(this));
-    m_clientDependencies = new Sequence<Dependency>(*el.m_clientDependencies);
-    m_clientDependencies->m_el = this;
-    m_clientDependencies->addProcedures.clear();
-    m_clientDependencies->removeProcedures.clear();
-    m_clientDependencies->addProcedures.push_back(new AddClientDependencyFunctor(this));
-    m_clientDependencies->removeProcedures.push_back(new RemoveClientDependencyFunctor(this));
-    m_supplierDependencies = new Sequence<Dependency>(*el.m_supplierDependencies);
-    m_supplierDependencies->m_el = this;
-    m_supplierDependencies->addProcedures.clear();
-    m_supplierDependencies->removeProcedures.clear();
-    m_supplierDependencies->addProcedures.push_back(new AddSupplierDependencyFunctor(this));
-    m_supplierDependencies->removeProcedures.push_back(new RemoveSupplierDependencyFunctor(this));
+    m_namespace.m_el = this;
+    m_clientDependencies = Set<Dependency, NamedElement>(el.m_clientDependencies);
+    m_clientDependencies.m_el = this;
+    m_supplierDependencies = Set<Dependency, NamedElement>(el.m_supplierDependencies);
+    m_supplierDependencies.m_el = this;
 }
 
 void NamedElement::setName(const string &name) {
@@ -191,13 +167,13 @@ void NamedElement::reindexName(string oldName, string newName) {
     //     getOwner()->getOwnedElements().reindex(m_id, oldName, newName);
     // }
 
-    if (getNamespace()) {
-        getNamespace()->getOwnedMembers().reindex(m_id, oldName, newName);
-    }
+    // if (getNamespace()) {
+    //     getNamespace()->getOwnedMembers().reindex(m_id, oldName, newName);
+    // }
 
-    for (auto & nmspc : *m_memberNamespace) {
-        nmspc.getMembers().reindex(m_id, oldName, newName);
-    }
+    // for (auto & nmspc : *m_memberNamespace) {
+    //     nmspc.getMembers().reindex(m_id, oldName, newName);
+    // }
 }
 
 string NamedElement::getName() {
@@ -237,16 +213,16 @@ void NamedElement::setNamespace(Namespace& nmspc) {
     m_namespace.set(nmspc);
 }
 
-Sequence<Namespace>& NamedElement::getMemberNamespace() {
-    return *m_memberNamespace;
+Set<Namespace, NamedElement>& NamedElement::getMemberNamespace() {
+    return m_memberNamespace;
 }
 
-Sequence<Dependency>& NamedElement::getClientDependencies() {
-    return *m_clientDependencies;
+Set<Dependency, NamedElement>& NamedElement::getClientDependencies() {
+    return m_clientDependencies;
 }
 
-Sequence<Dependency>& NamedElement::getSupplierDependencies() {
-    return *m_supplierDependencies;
+Set<Dependency, NamedElement>& NamedElement::getSupplierDependencies() {
+    return m_supplierDependencies;
 }
 
 VisibilityKind NamedElement::getVisibility() {

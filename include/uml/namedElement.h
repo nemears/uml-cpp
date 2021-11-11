@@ -5,6 +5,7 @@
 #include "element.h"
 #include "singleton.h"
 #include "set.h"
+#include "singleton2.h"
 
 namespace UML{
 
@@ -32,21 +33,10 @@ namespace UML{
         protected:
             std::string m_name;
             std::string m_absoluteNamespace;
-            Singleton<Namespace, NamedElement> m_namespace = Singleton<Namespace, NamedElement>(this);
-            class RemoveNamespaceProcedures : public AbstractSingletonProcedure<Namespace, NamedElement> {
-                public:
-                    RemoveNamespaceProcedures(NamedElement* me) : AbstractSingletonProcedure<Namespace, NamedElement>(me) {};
-                    void operator()(Namespace* el) const override;
-            };
-            class AddNamespaceProcedures : public AbstractSingletonProcedure<Namespace, NamedElement> {
-                public:
-                    AddNamespaceProcedures(NamedElement* me) : AbstractSingletonProcedure<Namespace, NamedElement>(me) {};
-                    void operator()(Namespace* el) const override;
-                    void operator()(ID id) const override;
-            };
-            Sequence<Namespace>* m_memberNamespace;
-            Sequence<Dependency>* m_clientDependencies;
-            Sequence<Dependency>* m_supplierDependencies;
+            Singleton2<Namespace, NamedElement> m_namespace = Singleton2<Namespace, NamedElement>(this);
+            Set<Namespace, NamedElement> m_memberNamespace = Set<Namespace, NamedElement>(this);
+            Set<Dependency, NamedElement> m_clientDependencies = Set<Dependency, NamedElement>(this);
+            Set<Dependency, NamedElement> m_supplierDependencies =  Set<Dependency, NamedElement>(this);
             // visibility defaults to public, don't think there is a none value
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             virtual void reindexName(std::string oldName, std::string newName);
@@ -55,6 +45,7 @@ namespace UML{
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            Set<Namespace, NamedElement>& getNamespaceSingleton();
             NamedElement();
         public:
             virtual ~NamedElement();
@@ -68,9 +59,9 @@ namespace UML{
             bool hasNamespace() const;
             void setNamespace(Namespace* nmspc);
             void setNamespace(Namespace& nmspc);
-            Sequence<Namespace>& getMemberNamespace();
-            Sequence<Dependency>& getClientDependencies();
-            Sequence<Dependency>& getSupplierDependencies();
+            Set<Namespace, NamedElement>& getMemberNamespace();
+            Set<Dependency, NamedElement>& getClientDependencies();
+            Set<Dependency, NamedElement>& getSupplierDependencies();
             VisibilityKind getVisibility();
             void setVisibility(VisibilityKind visibility);
             bool isSubClassOf(ElementType eType) const override;

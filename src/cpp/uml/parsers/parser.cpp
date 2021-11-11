@@ -1547,7 +1547,7 @@ void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) 
                         if (data.m_manager->loaded(clientDependencyID)) {
                             el.getClientDependencies().add(data.m_manager->get<Dependency>(clientDependencyID));
                         } else {
-                            el.getClientDependencies().addByID(clientDependencyID);
+                            el.getClientDependencies().add(clientDependencyID);
                         }
                     }
                 } else {
@@ -1570,7 +1570,7 @@ void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) 
                         if (data.m_manager->loaded(supplierDependencyID)) {
                             el.getSupplierDependencies().add(data.m_manager->get<Dependency>(supplierDependencyID));
                         } else {
-                            el.getSupplierDependencies().addByID(supplierDependencyID);
+                            el.getSupplierDependencies().add(supplierDependencyID);
                         }
                     }
                 } else {

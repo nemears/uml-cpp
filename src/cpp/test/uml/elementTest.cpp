@@ -30,7 +30,7 @@ TEST_F(ElementTest, OverrideID_Test) {
     EXPECT_EQ(el1.getID(), id);
 }
 
-TEST_F(ElementTest, GetOwnedElementsTestW_Manager) {
+TEST_F(ElementTest, GetOwnedElementsTest) {
   UmlManager m;
   Package& el2 = m.create<Package>();
   Package& el3 = m.create<Package>();

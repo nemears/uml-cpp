@@ -1,6 +1,6 @@
 #include "uml/umlManager.h"
 #include <fstream>
-#include "uml/parsers/parser.h"
+// #include "uml/parsers/parser.h"
 #include "uml/parsers/emitterMetaData.h"
 #include "uml/callBehaviorAction.h"
 #include "uml/controlFlow.h"
@@ -107,17 +107,17 @@ void UmlManager::reindex(ID oldID, ID newID) {
 }
 
 void UmlManager::addToMount(Element& el) {
-    if (!el.m_node->m_mountedFlag) {
-        Parsers::EmitterMetaData data = { m_mountBase / filesystem::path("mount"),
-                                         Parsers::EmitterStrategy::INDIVIDUAL,
-                                         el.getID().string() + ".yml",
-                                         this };
-        el.m_node->m_mountedFlag = true;
-        Parsers::emitToFile(el, data, data.m_path.string(), data.m_fileName);
-        for (auto& child : el.getOwnedElements()) {
-            addToMount(child);
-        }
-    }
+    // if (!el.m_node->m_mountedFlag) {
+    //     Parsers::EmitterMetaData data = { m_mountBase / filesystem::path("mount"),
+    //                                      Parsers::EmitterStrategy::INDIVIDUAL,
+    //                                      el.getID().string() + ".yml",
+    //                                      this };
+    //     el.m_node->m_mountedFlag = true;
+    //     Parsers::emitToFile(el, data, data.m_path.string(), data.m_fileName);
+    //     for (auto& child : el.getOwnedElements()) {
+    //         addToMount(child);
+    //     }
+    // }
 }
 
 void UmlManager::mount(string path) {
@@ -129,29 +129,29 @@ void UmlManager::mount(string path) {
 }
 
 Element* UmlManager::aquire(ID id) {
-    if (!m_mountBase.empty()) {
-        if (!loaded(id)) {
-            if (filesystem::exists(m_mountBase / "mount" / (id.string() + ".yml"))) {
-                Parsers::ParserMetaData data(this);
-                data.m_path = m_mountBase / "mount" / (id.string() + ".yml");
-                data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-                Element* ret = Parsers::parse(data);
-                if (ret) {
-                    m_graph[id].m_managerElementMemory = ret;
-                    ret->restoreReferences();
-                } else {
-                    throw ManagerStateException();
-                }
-                return ret;
-            } else {
-                throw ID_doesNotExistException(id);
-            }
-        } else {
-            return &get<>(id);
-        }
-    } else {
-        throw ManagerNotMountedException();
-    }
+    // if (!m_mountBase.empty()) {
+    //     if (!loaded(id)) {
+    //         if (filesystem::exists(m_mountBase / "mount" / (id.string() + ".yml"))) {
+    //             Parsers::ParserMetaData data(this);
+    //             data.m_path = m_mountBase / "mount" / (id.string() + ".yml");
+    //             data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
+    //             Element* ret = Parsers::parse(data);
+    //             if (ret) {
+    //                 m_graph[id].m_managerElementMemory = ret;
+    //                 ret->restoreReferences();
+    //             } else {
+    //                 throw ManagerStateException();
+    //             }
+    //             return ret;
+    //         } else {
+    //             throw ID_doesNotExistException(id);
+    //         }
+    //     } else {
+    //         return &get<>(id);
+    //     }
+    // } else {
+    //     throw ManagerNotMountedException();
+    // }
 }
 
 void UmlManager::release(ID id) {
@@ -179,15 +179,15 @@ void UmlManager::releaseNode(Element& el) {
 }
 
 void UmlManager::release(Element& el) {
-    if (!m_mountBase.empty()) {
-        Parsers::EmitterMetaData data = {m_mountBase / "mount",
-                                         Parsers::EmitterStrategy::INDIVIDUAL,
-                                         el.getID().string() + ".yml", this};
-        Parsers::emitToFile(*el.m_node->m_managerElementMemory, data, data.m_path.string(), data.m_fileName);
-        releaseNode(el);
-    } else {
-        throw ManagerNotMountedException();
-    }
+    // if (!m_mountBase.empty()) {
+    //     Parsers::EmitterMetaData data = {m_mountBase / "mount",
+    //                                      Parsers::EmitterStrategy::INDIVIDUAL,
+    //                                      el.getID().string() + ".yml", this};
+    //     Parsers::emitToFile(*el.m_node->m_managerElementMemory, data, data.m_path.string(), data.m_fileName);
+    //     releaseNode(el);
+    // } else {
+    //     throw ManagerNotMountedException();
+    // }
 }
 
 void UmlManager::eraseNode(ManagerNode* node, ID id) {
@@ -222,16 +222,16 @@ void UmlManager::erase(Element& el) {
 }
 
 void UmlManager::save() {
-    if (m_path.empty() || !m_root) {
-        // TODO throw error
-        return;
-    }
-    Parsers::EmitterMetaData data;
-    data.m_manager =  this;
-    data.m_strategy = Parsers::EmitterStrategy::WHOLE;
-    data.m_path = m_path.parent_path();
-    data.m_fileName = m_path.filename().string();
-    Parsers::emit(data);
+    // if (m_path.empty() || !m_root) {
+    //     // TODO throw error
+    //     return;
+    // }
+    // Parsers::EmitterMetaData data;
+    // data.m_manager =  this;
+    // data.m_strategy = Parsers::EmitterStrategy::WHOLE;
+    // data.m_path = m_path.parent_path();
+    // data.m_fileName = m_path.filename().string();
+    // Parsers::emit(data);
 }
 
 void UmlManager::save(string path) {
@@ -240,16 +240,16 @@ void UmlManager::save(string path) {
 }
 
 void UmlManager::open() {
-    if (m_path.empty()) {
-        // todo thow error
-        return;
-    }
-    clear();
-    Parsers::ParserMetaData data(this);
-    m_root = Parsers::parse(data);
-    if (m_root->isSubClassOf(ElementType::MODEL)) {
-        m_model = dynamic_cast<Model*>(m_root);
-    }
+    // if (m_path.empty()) {
+    //     // todo thow error
+    //     return;
+    // }
+    // clear();
+    // Parsers::ParserMetaData data(this);
+    // m_root = Parsers::parse(data);
+    // if (m_root->isSubClassOf(ElementType::MODEL)) {
+    //     m_model = dynamic_cast<Model*>(m_root);
+    // }
 }
 
 void UmlManager::open(string path) {
@@ -258,13 +258,13 @@ void UmlManager::open(string path) {
 }
 
 Element* UmlManager::parse(string path) {
-    m_path = path;
-    Parsers::ParserMetaData data(this);
-    Element* el = Parsers::parse(data);
-    if (!getRoot()) {
-       setRoot(el);
-    }
-    return el;
+    // m_path = path;
+    // Parsers::ParserMetaData data(this);
+    // Element* el = Parsers::parse(data);
+    // if (!getRoot()) {
+    //    setRoot(el);
+    // }
+    // return el;
 }
 
 void UmlManager::setModel(Model* model) {

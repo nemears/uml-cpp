@@ -1,7 +1,6 @@
 #include "uml/namedElement.h"
 #include "uml/sequence.h"
 #include "uml/namespace.h"
-#include "uml/namedElementFunctors.h"
 #include "uml/classifier.h"
 #include "uml/dependency.h"
 

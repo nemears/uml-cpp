@@ -34,7 +34,7 @@ TEST_F(GeneralizationTest, basicSetSpecificAndGeneralTest) {
     ASSERT_EQ(s.getGeneralizations().size(), 1);
     ASSERT_EQ(s.getGeneralizations().front(), r);
     ASSERT_EQ(s.getOwnedElements().size(), 1);
-    ASSERT_EQ(s.getOwnedElements().front(), r);
+    ASSERT_EQ(*s.getOwnedElements().begin(), r);
     ASSERT_EQ(g.getGeneralizations().size(), 0);
     ASSERT_EQ(s.getGenerals().size(), 1);
     ASSERT_EQ(s.getGenerals().front(), g);
@@ -68,7 +68,7 @@ TEST_F(GeneralizationTest, addGeneralFunctorTest) {
     ASSERT_EQ(s.getGeneralizations().size(), 1);
     ASSERT_EQ(s.getGeneralizations().front(), *r);
     ASSERT_EQ(s.getOwnedElements().size(), 1);
-    ASSERT_EQ(s.getOwnedElements().front(), *r);
+    ASSERT_EQ(*s.getOwnedElements().begin(), *r);
 }
 
 TEST_F(GeneralizationTest, AddGeneralizationFunctorTest) {

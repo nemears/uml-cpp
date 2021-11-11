@@ -364,7 +364,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(base2.getMembers().size(), 2);
     ASSERT_EQ(&base2.getMembers().front(), &prop);
     ASSERT_EQ(base2.getOwnedElements().size(), 2);
-    ASSERT_EQ(&base2.getOwnedElements().front(), &prop);
+    ASSERT_EQ(*(base2.getOwnedElements().begin()++), prop);
 
     ASSERT_TRUE(op.getClass() != 0);
     ASSERT_EQ(op.getClass(), &base2);
@@ -382,7 +382,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(&base2.getFeatures().get(1), &op);
     ASSERT_EQ(&base2.getOwnedMembers().get(1), &op);
     ASSERT_EQ(&base2.getMembers().get(1), &op);
-    ASSERT_EQ(&base2.getOwnedElements().get(1), &op);
+    ASSERT_EQ(*(base2.getOwnedElements().begin()++), op);
 
     ASSERT_TRUE(gen.getGeneral() != 0);
     ASSERT_EQ(gen.getGeneral(), &base2);
@@ -429,8 +429,8 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(&spec2.getMembers().get(1), &prop);
     ASSERT_EQ(&spec2.getMembers().get(2), &op);
     ASSERT_EQ(spec2.getOwnedElements().size(), 2);
-    ASSERT_EQ(&spec2.getOwnedElements().front(), &gen);
-    ASSERT_EQ(&spec2.getOwnedElements().get(1), &nestSpec);
+    ASSERT_EQ(*spec2.getOwnedElements().begin(), gen);
+    ASSERT_EQ(*(spec2.getOwnedElements().begin()++), nestSpec);
 
     m.release(gen);
     ASSERT_EQ(spec2.getGeneralizations().size(), 1);
@@ -582,7 +582,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(base3.getFeatures().front(), prop2);
     ASSERT_EQ(base3.getOwnedMembers().front(), prop2);
     ASSERT_EQ(base3.getMembers().front(), prop2);
-    ASSERT_EQ(base3.getOwnedElements().front(), prop2);
+    ASSERT_EQ(*base3.getOwnedElements().begin(), prop2);
 
     m.release(base3, prop2);
     Property& prop3 = m.aquire(propID)->as<Property>();
@@ -603,7 +603,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(base4.getFeatures().front(), prop3);
     ASSERT_EQ(base4.getOwnedMembers().front(), prop3);
     ASSERT_EQ(base4.getMembers().front(), prop3);
-    ASSERT_EQ(base4.getOwnedElements().front(), prop3);
+    ASSERT_EQ(*base4.getOwnedElements().begin(), prop3);
 
     // testing inherited members
     ID baseID = base4.getID();

@@ -34,7 +34,7 @@ TEST_F(PackageParserTest, parsePackageWithActivityTest) {
     ASSERT_TRUE(pckg->getMembers().size() == 1);
     ASSERT_TRUE(&pckg->getMembers().front() == act);
     ASSERT_TRUE(pckg->getOwnedElements().size() == 1);
-    ASSERT_TRUE(&pckg->getOwnedElements().front() == act);
+    ASSERT_TRUE(*pckg->getOwnedElements().begin() == *act);
     ASSERT_TRUE(act->getOwningPackage() == pckg);
     ASSERT_TRUE(act->getNamespace() == pckg);
     ASSERT_TRUE(act->getOwner() == pckg);
@@ -60,8 +60,8 @@ TEST_F(PackageParserTest, parse3PackagesTest) {
     ASSERT_TRUE(pckg2->getNamespace() == pckg1);
     ASSERT_TRUE(pckg3->getNamespace() == pckg1);
     ASSERT_TRUE(pckg1->getOwnedElements().size() == 2);
-    ASSERT_TRUE(&pckg1->getOwnedElements().front() == pckg2);
-    ASSERT_TRUE(&pckg1->getOwnedElements().back() == pckg3);
+    ASSERT_TRUE(*pckg1->getOwnedElements().begin() == *pckg2);
+    ASSERT_TRUE(*(pckg1->getOwnedElements().begin()++) == *pckg3);
     ASSERT_TRUE(pckg2->getOwner() == pckg1);
     ASSERT_TRUE(pckg3->getOwner() == pckg1);
     ASSERT_TRUE(pckg2->getPackagedElements().size() == 1);

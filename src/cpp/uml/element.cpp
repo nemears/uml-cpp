@@ -50,39 +50,39 @@ void RemoveDirectedRelationshipFunctor::operator()(DirectedRelationship& el) con
     updateCopiedSequenceRemovedFrom(el, &Element::getDirectedRelationships);
 }
 
-// void AddOwnedCommentFunctor::operator()(Comment& el) const {
-//     subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
-//     oppositeSingletonAdd(el, &Comment::setOwningElement);
-//     updateCopiedSequenceAddedTo(el, &Element::getOwnedComments);
-// }
+void AddOwnedCommentFunctor::operator()(Comment& el) const {
+    //subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
+    oppositeSingletonAdd(el, &Comment::setOwningElement);
+    updateCopiedSequenceAddedTo(el, &Element::getOwnedComments);
+}
 
-// void AddOwnedCommentFunctor::operator()(ID id) const {
-//     if (!m_el->getOwnedElements().count(id)) {
-//         m_el->getOwnedElements().addByID(id);
-//     }
-// }
+void AddOwnedCommentFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedElements().count(id)) {
+        m_el->getOwnedElements().add(id);
+    }
+}
 
-// void RemoveOwnedCommentFunctor::operator()(Comment& el) const {
-//     subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
-//     oppositeSingletonRemove(el, &Comment::m_owningElement);
-//     updateCopiedSequenceRemovedFrom(el, &Element::getOwnedComments);
-// }
+void RemoveOwnedCommentFunctor::operator()(Comment& el) const {
+ //   subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
+    oppositeSingletonRemove(el, &Comment::m_owningElement);
+    updateCopiedSequenceRemovedFrom(el, &Element::getOwnedComments);
+}
 
-// void AddAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {
-//     subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
-//     updateCopiedSequenceAddedTo(el, &Element::getAppliedStereotypes);
-// }
+void AddAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {
+  //  subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
+    updateCopiedSequenceAddedTo(el, &Element::getAppliedStereotypes);
+}
 
-// void AddAppliedStereotypeFunctor::operator()(ID id) const {
-//     if (!m_el->getOwnedElements().count(id)) {
-//         m_el->getOwnedElements().addByID(id);
-//     }
-// }
+void AddAppliedStereotypeFunctor::operator()(ID id) const {
+    if (!m_el->getOwnedElements().count(id)) {
+        m_el->getOwnedElements().add(id);
+    }
+}
 
-// void RemoveAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {
-//     subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
-//     updateCopiedSequenceRemovedFrom(el, &Element::getAppliedStereotypes);
-// }
+void RemoveAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {
+//    subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
+    updateCopiedSequenceRemovedFrom(el, &Element::getAppliedStereotypes);
+}
 
 void CheckAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {
     if (el.getClassifier() != 0) {

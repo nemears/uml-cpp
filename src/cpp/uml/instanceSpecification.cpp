@@ -18,8 +18,8 @@ void InstanceSpecification::AddClassifierProcedure::operator()(Classifier* el) c
 }
 
 void InstanceSpecification::RemoveSpecificationProcedure::operator()(ValueSpecification* el) const {
-    if (m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalRemove(*el);
+    if (m_me->getOwnedElements().contains(el->getID())) {
+        m_me->getOwnedElements().remove(*el);
     }
     if (el->getOwningInstanceSpecID() == m_me->getID() && !m_me->m_setFlag) {
         m_me->m_setFlag = true;
@@ -29,8 +29,8 @@ void InstanceSpecification::RemoveSpecificationProcedure::operator()(ValueSpecif
 }
 
 void InstanceSpecification::AddSpecificationProcedure::operator()(ValueSpecification* el) const {
-    if (!m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalAdd(*el);
+    if (!m_me->getOwnedElements().contains(el->getID())) {
+        m_me->getOwnedElements().add(*el);
     }
     if (el->getOwningInstanceSpecID() != m_me->getID()) {
         el->setOwningInstanceSpec(m_me);
@@ -38,8 +38,8 @@ void InstanceSpecification::AddSpecificationProcedure::operator()(ValueSpecifica
 }
 
 void InstanceSpecification::AddSpecificationProcedure::operator()(ID id) const {
-    if (!m_me->getOwnedElements().count(id)) {
-        m_me->getOwnedElements().addByID(id);
+    if (!m_me->getOwnedElements().contains(id)) {
+        m_me->getOwnedElements().add(id);
     }
 }
 
@@ -52,15 +52,15 @@ void InstanceSpecification::AddSlotFunctor::operator()(Slot& el) const {
         el.setOwningInstance(m_el);
     }
 
-    if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalAdd(el);
+    if (!m_el->getOwnedElements().contains(el.getID())) {
+        m_el->getOwnedElements().add(el);
     }
     updateCopiedSequenceAddedTo(el, &InstanceSpecification::getSlots);
 }
 
 void InstanceSpecification::AddSlotFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedElements().count(id)) {
-        m_el->getOwnedElements().addByID(id);
+    if (!m_el->getOwnedElements().contains(id)) {
+        m_el->getOwnedElements().add(id);
     }
 }
 
@@ -69,8 +69,8 @@ void InstanceSpecification::RemoveSlotFunctor::operator()(Slot& el) const {
         el.setOwningInstance(0);
     }
 
-    if (m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalRemove(el);
+    if (m_el->getOwnedElements().contains(el.getID())) {
+        m_el->getOwnedElements().remove(el);
     }
     updateCopiedSequenceRemovedFrom(el, &InstanceSpecification::getSlots);
 }

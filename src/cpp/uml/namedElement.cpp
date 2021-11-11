@@ -187,9 +187,9 @@ void NamedElement::setName(const string &name) {
 }
 
 void NamedElement::reindexName(string oldName, string newName) {
-    if (getOwner()) {
-        getOwner()->getOwnedElements().reindex(m_id, oldName, newName);
-    }
+    // if (getOwner()) {
+    //     getOwner()->getOwnedElements().reindex(m_id, oldName, newName);
+    // }
 
     if (getNamespace()) {
         getNamespace()->getOwnedMembers().reindex(m_id, oldName, newName);

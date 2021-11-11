@@ -18,7 +18,7 @@ TEST_F(CommentTest, addOwnedCommentTest) {
     ASSERT_TRUE(e.getOwnedComments().size() == 1);
     ASSERT_TRUE(&e.getOwnedComments().front() == &c);
     ASSERT_TRUE(e.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&e.getOwnedElements().front() == &c);
+    ASSERT_TRUE(*e.getOwnedElements().begin() == c);
     ASSERT_TRUE(c.getOwningElement() == &e);
 }
 
@@ -42,5 +42,5 @@ TEST_F(CommentTest, overideOwningElement) {
     ASSERT_TRUE(e.getOwnedComments().size() == 1);
     ASSERT_TRUE(&e.getOwnedComments().front() == &c);
     ASSERT_TRUE(e.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&e.getOwnedElements().front() == &c);
+    ASSERT_TRUE(*e.getOwnedElements().begin() == c);
 }

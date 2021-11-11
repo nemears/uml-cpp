@@ -75,8 +75,8 @@ void Classifier::AddGeneralizationFunctor::operator()(Generalization& el) const 
         }
     }
 
-    if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalAdd(el);
+    if (!m_el->getOwnedElements().contains(el.getID())) {
+        m_el->getOwnedElements().add(el);
     }
     updateCopiedSequenceAddedTo(el, &Classifier::getGeneralizations);
 }
@@ -85,8 +85,8 @@ void Classifier::AddGeneralizationFunctor::operator()(ID id) const {
     if (!m_el->getDirectedRelationships().count(id)) {
         m_el->getDirectedRelationships().addByID(id);
     }
-    if (!m_el->getOwnedElements().count(id)) {
-        m_el->getOwnedElements().addByID(id);
+    if (!m_el->getOwnedElements().contains(id)) {
+        m_el->getOwnedElements().add(id);
     }
 }
 
@@ -109,8 +109,8 @@ void Classifier::RemoveGeneralizationFunctor::operator()(Generalization& el) con
         }
     }
 
-    if (m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalRemove(el);
+    if (m_el->getOwnedElements().contains(el.getID())) {
+        m_el->getOwnedElements().remove(el);
     }
     updateCopiedSequenceRemovedFrom(el, &Classifier::getGeneralizations);
 }

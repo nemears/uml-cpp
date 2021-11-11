@@ -132,8 +132,8 @@ void Artifact::RemoveNestedArtifactFunctor::operator()(Artifact& el) const {
 }
 
 void Artifact::AddManifestationFunctor::operator()(Manifestation& el) const {
-    if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalAdd(el);
+    if (!m_el->getOwnedElements().contains(el.getID())) {
+        m_el->getOwnedElements().add(el);
     }
 
     if (!m_el->getDirectedRelationships().count(el.getID())) {
@@ -145,8 +145,8 @@ void Artifact::AddManifestationFunctor::operator()(Manifestation& el) const {
 }
 
 void Artifact::AddManifestationFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedElements().count(id)) {
-        m_el->getOwnedElements().addByID(id);
+    if (!m_el->getOwnedElements().contains(id)) {
+        m_el->getOwnedElements().add(id);
     }
     if (!m_el->getDirectedRelationships().count(id)) {
         m_el->getDirectedRelationships().addByID(id);
@@ -154,8 +154,8 @@ void Artifact::AddManifestationFunctor::operator()(ID id) const {
 }
 
 void Artifact::RemoveManifestationFunctor::operator()(Manifestation& el) const {
-    if (m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalRemove(el);
+    if (m_el->getOwnedElements().contains(el.getID())) {
+        m_el->getOwnedElements().add(el);
     }
 
     if (m_el->getDirectedRelationships().count(el.getID())) {

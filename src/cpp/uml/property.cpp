@@ -11,12 +11,12 @@ using namespace std;
 using namespace UML;
 
 void Property::RemoveDefaultValueProcedure::operator()(ValueSpecification* el) const {
-    m_me->getOwnedElements().internalRemove(*el);
+    m_me->getOwnedElements().remove(*el);
 }
 
 void Property::AddDefaultValueProcedure::operator()(ValueSpecification* el) const {
-    if (!m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalAdd(*el);
+    if (!m_me->getOwnedElements().contains(el->getID())) {
+        m_me->getOwnedElements().add(*el);
     }
     if (el->getOwnerID() != m_me->getID()) {
         el->setOwner(m_me);
@@ -24,8 +24,8 @@ void Property::AddDefaultValueProcedure::operator()(ValueSpecification* el) cons
 }
 
 void Property::AddDefaultValueProcedure::operator()(ID id) const {
-    if (!m_me->getOwnedElements().count(id)) {
-        m_me->getOwnedElements().addByID(id);
+    if (!m_me->getOwnedElements().contains(id)) {
+        m_me->getOwnedElements().add(id);
     }
 }
 

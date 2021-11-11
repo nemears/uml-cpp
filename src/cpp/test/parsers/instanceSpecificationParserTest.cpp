@@ -194,7 +194,7 @@ void ASSERT_RESTORE_SLOT_CORRECTLY(InstanceSpecification& inst, Slot& slot, size
     ASSERT_EQ(inst.getSlots().size(), 1);
     ASSERT_EQ(inst.getSlots().get(i), slot);
     ASSERT_EQ(inst.getOwnedElements().size(), 1);
-    ASSERT_EQ(inst.getOwnedElements().get(i), slot);
+    //ASSERT_EQ(*(inst.getOwnedElements().begin() + i), slot);
 }
 
 TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
@@ -270,7 +270,7 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     ASSERT_EQ(slot3.getValues().size(), 1);
     ASSERT_EQ(slot3.getValues().front(), slotVal);
     ASSERT_EQ(slot3.getOwnedElements().size(), 1);
-    ASSERT_EQ(slot3.getOwnedElements().front(), slotVal);
+    ASSERT_EQ(*slot3.getOwnedElements().begin(), slotVal);
 
     m.release(slot3, inst4);
     InstanceSpecification& inst5 = m.aquire(instID)->as<InstanceSpecification>();
@@ -282,7 +282,7 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     ASSERT_TRUE(slot4.hasDefiningFeature());
     ASSERT_EQ(slot4.getDefiningFeatureRef(), attribute);
     ASSERT_EQ(slot4.getOwnedElements().size(), 1);
-    ASSERT_EQ(slot4.getOwnedElements().front(), slotVal);
+    ASSERT_EQ(*slot4.getOwnedElements().begin(), slotVal);
 
     ID propID = attribute.getID();
     m.release(slot4, attribute);
@@ -292,7 +292,7 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     ASSERT_TRUE(slot5.hasDefiningFeature());
     ASSERT_EQ(slot5.getDefiningFeatureRef(), attribute2);
     ASSERT_EQ(slot5.getOwnedElements().size(), 1);
-    ASSERT_EQ(slot5.getOwnedElements().front(), slotVal);
+    ASSERT_EQ(*slot5.getOwnedElements().begin(), slotVal);
 
     ID valID = slotVal.getID();
     m.release(slotVal, slot5);
@@ -300,7 +300,7 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     ASSERT_FALSE(m.loaded(valID));
     InstanceValue& slotVal2 = m.aquire(valID)->as<InstanceValue>();
     ASSERT_EQ(slot6.getOwnedElements().size(), 1);
-    ASSERT_EQ(slot6.getOwnedElements().front(), slotVal2);
+    ASSERT_EQ(*slot6.getOwnedElements().begin(), slotVal2);
     ASSERT_TRUE(slotVal2.hasOwningSlot());
     ASSERT_EQ(slotVal2.getOwningSlotRef(), slot6);
     ASSERT_TRUE(slotVal2.hasOwner());
@@ -321,7 +321,7 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     ASSERT_TRUE(typeInst2.hasSpecification());
     ASSERT_EQ(typeInst2.getSpecificationRef(), typeSpecification);
     ASSERT_EQ(typeInst2.getOwnedElements().size(), 1);
-    ASSERT_EQ(typeInst2.getOwnedElements().front(), typeSpecification);
+    ASSERT_EQ(*typeInst2.getOwnedElements().begin(), typeSpecification);
 
     ID specID = typeSpecification.getID();
     m.release(typeInst2, typeSpecification);
@@ -338,5 +338,5 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     ASSERT_EQ(typeInst3.getClassifierRef(), type);
     ASSERT_EQ(typeInst3.getSpecificationRef(), typeSpecification2);
     ASSERT_EQ(typeInst3.getOwnedElements().size(), 1);
-    ASSERT_EQ(typeInst3.getOwnedElements().front(), typeSpecification2);
+    ASSERT_EQ(*typeInst3.getOwnedElements().begin(), typeSpecification2);
 }

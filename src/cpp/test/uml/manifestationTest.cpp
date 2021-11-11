@@ -39,7 +39,7 @@ TEST_F(ManifestationTest, artifactTest) {
     ASSERT_EQ(a.getManifestations().size(),  1);
     ASSERT_EQ(a.getManifestations().front().getID(), man.getID());
     ASSERT_EQ(a.getOwnedElements().size(), 1);
-    ASSERT_EQ(a.getOwnedElements().front().getID(), man.getID());
+    ASSERT_EQ((*a.getOwnedElements().begin()).getID(), man.getID());
     man.setArtifact(&a2);
     ASSERT_TRUE(man.getArtifact() != 0);
     ASSERT_EQ(man.getArtifact(), &a2);
@@ -48,7 +48,7 @@ TEST_F(ManifestationTest, artifactTest) {
     ASSERT_EQ(a2.getManifestations().size(),  1);
     ASSERT_EQ(a2.getManifestations().front().getID(), man.getID());
     ASSERT_EQ(a2.getOwnedElements().size(), 1);
-    ASSERT_EQ(a2.getOwnedElements().front().getID(), man.getID());
+    ASSERT_EQ((*a2.getOwnedElements().begin()).getID(), man.getID());
     ASSERT_EQ(a.getManifestations().size(), 0);
     ASSERT_EQ(a.getOwnedElements().size(), 0);
     man.setArtifact(0);
@@ -63,7 +63,7 @@ TEST_F(ManifestationTest, artifactTest) {
     ASSERT_EQ(a2.getManifestations().size(),  1);
     ASSERT_EQ(a2.getManifestations().front().getID(), man.getID());
     ASSERT_EQ(a2.getOwnedElements().size(), 1);
-    ASSERT_EQ(a2.getOwnedElements().front().getID(), man.getID());
+    ASSERT_EQ((*a2.getOwnedElements().begin()).getID(), man.getID());
     a2.getManifestations().remove(man);
     ASSERT_TRUE(man.getArtifact() == 0);
     ASSERT_EQ(man.getClient().size(), 0);

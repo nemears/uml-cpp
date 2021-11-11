@@ -49,7 +49,7 @@ namespace UML {
                     }
                 }
                 if (m_last) {
-                    ret->m_prev = m_last;
+                    node->m_prev = m_last;
                     m_last->m_next = node;
                 }
                 m_last = node;

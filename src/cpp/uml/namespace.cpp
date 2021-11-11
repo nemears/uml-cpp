@@ -19,7 +19,7 @@ void Namespace::RemoveMemberFunctor::operator()(NamedElement& el) const {
 }
 
 void Namespace::AddOwnedMemberFunctor::operator()(NamedElement& el) const {
-    subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
+    //subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
     subsetsAdd<Namespace, NamedElement>(el, &Namespace::getMembers);
     oppositeSingletonAdd(el, &NamedElement::setNamespace);
     el.updateQualifiedName(m_el->getQualifiedName());
@@ -27,8 +27,8 @@ void Namespace::AddOwnedMemberFunctor::operator()(NamedElement& el) const {
 }
 
 void Namespace::AddOwnedMemberFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedElements().count(id)) {
-        m_el->getOwnedElements().addByID(id);
+    if (!m_el->getOwnedElements().contains(id)) {
+        m_el->getOwnedElements().add(id);
     }
     if (!m_el->getMembers().count(id)) {
         m_el->getMembers().addByID(id);
@@ -37,7 +37,7 @@ void Namespace::AddOwnedMemberFunctor::operator()(ID id) const {
 }
 
 void Namespace::RemoveOwnedMemberFunctor::operator()(NamedElement& el) const {
-    subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
+    //subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
     subsetsRemove<Namespace, NamedElement>(el, &Namespace::getMembers);
     oppositeSingletonRemove(el, &NamedElement::m_namespace);
     updateCopiedSequenceRemovedFrom(el, &Namespace::getOwnedMembers);

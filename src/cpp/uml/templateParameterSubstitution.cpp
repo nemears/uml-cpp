@@ -49,8 +49,8 @@ void TemplateParameterSubstitution::RemoveOwnedActualProcedure::operator()(Param
     if (m_me->hasActual()) {
         m_me->setActual(0);
     }
-    if (m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalRemove(*el);
+    if (m_me->getOwnedElements().contains(el->getID())) {
+        m_me->getOwnedElements().remove(*el);
     }
 }
 
@@ -58,8 +58,8 @@ void TemplateParameterSubstitution::AddOwnedActualProcedure::operator()(Paramete
     if (m_me->getActualID() != el->getID()) {
         m_me->setActual(el);
     }
-    if (!m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalAdd(*el);
+    if (!m_me->getOwnedElements().contains(el->getID())) {
+        m_me->getOwnedElements().add(*el);
     }
     if (el->getOwnerID() != m_me->getID()) {
         el->setOwner(m_me);
@@ -70,8 +70,8 @@ void TemplateParameterSubstitution::AddOwnedActualProcedure::operator()(ID id) c
     if (m_me->getActualID() != id) {
         m_me->m_actual.setByID(id);
     }
-    if (!m_me->getOwnedElements().count(id)) {
-        m_me->getOwnedElements().addByID(id);
+    if (!m_me->getOwnedElements().contains(id)) {
+        m_me->getOwnedElements().add(id);
     }
 }
 

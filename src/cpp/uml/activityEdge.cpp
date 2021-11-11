@@ -42,14 +42,14 @@ void ActivityEdge::AddTargetProcedure::operator()(ActivityNode* el) const {
 }
 
 void ActivityEdge::RemoveGuardProcedure::operator()(ValueSpecification* el) const {
-    if (m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalRemove(*el);
+    if (m_me->getOwnedElements().contains(el->getID())) {
+        m_me->getOwnedElements().remove(*el);
     }
 }
 
 void ActivityEdge::AddGuardProcedure::operator()(ValueSpecification* el) const {
-    if (!m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalAdd(*el);
+    if (!m_me->getOwnedElements().contains(el->getID())) {
+        m_me->getOwnedElements().add(*el);
     }
 }
 

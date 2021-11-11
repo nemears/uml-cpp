@@ -19,7 +19,7 @@ TEST_F(EnumerationTest, addOwnedLiteralTest) {
     ASSERT_TRUE(e.getMembers().size() == 1);
     ASSERT_TRUE(&e.getMembers().front() == &l);
     ASSERT_TRUE(e.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&e.getOwnedElements().front() == &l);
+    ASSERT_TRUE(*e.getOwnedElements().begin() == l);
 
     ASSERT_TRUE(l.getEnumeration() == &e);
     ASSERT_TRUE(l.getNamespace() == &e);
@@ -40,7 +40,7 @@ TEST_F(EnumerationTest, setEnumerationTest) {
     ASSERT_TRUE(e.getMembers().size() == 1);
     ASSERT_TRUE(&e.getMembers().front() == &l);
     ASSERT_TRUE(e.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&e.getOwnedElements().front() == &l);
+    ASSERT_TRUE(*e.getOwnedElements().begin() == l);
 
     ASSERT_TRUE(l.getEnumeration() == &e);
     ASSERT_TRUE(l.getNamespace() == &e);
@@ -105,6 +105,6 @@ TEST_F(EnumerationTest, copyEnumerationTest) {
     ASSERT_TRUE(e2.getMembers().size() == 1);
     ASSERT_TRUE(&e2.getMembers().front() == &l);
     ASSERT_TRUE(e2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&e2.getOwnedElements().front() == &l);
+    ASSERT_TRUE(*e2.getOwnedElements().begin() == l);
 
 }

@@ -333,7 +333,7 @@ TEST_F(ProfileParserTest, mountProfileTest) {
   ASSERT_EQ(extension3.getMembers().size(), 1);
   ASSERT_EQ(extension3.getMembers().frontID(), endID);
   ASSERT_EQ(extension3.getOwnedElements().size(), 1);
-  ASSERT_EQ(extension3.getOwnedElements().frontID(), endID);
+  ASSERT_EQ(*extension3.getOwnedElements().ids().begin(), endID);
   ASSERT_EQ(extension3.getEndType().size(), 1);
   ASSERT_EQ(extension3.getEndType().frontID(), stereotypeID);
   ExtensionEnd& end2 = m.aquire(endID)->as<ExtensionEnd>();
@@ -380,7 +380,7 @@ TEST_F(ProfileParserTest, mountProfileTest) {
   ASSERT_EQ(extension4.getMembers().size(), 1);
   ASSERT_EQ(extension4.getMembers().front(), end3);
   ASSERT_EQ(extension4.getOwnedElements().size(), 1);
-  ASSERT_EQ(extension4.getOwnedElements().front(), end3);
+  ASSERT_EQ(*extension4.getOwnedElements().begin(), end3);
   ASSERT_EQ(extension4.getEndType().size(), 1);
   ASSERT_EQ(extension4.getEndType().front(), stereotype3);
   ASSERT_EQ(end3.getExtensionRef(), extension4);
@@ -399,12 +399,12 @@ TEST_F(ProfileParserTest, mountProfileTest) {
   ASSERT_EQ(applying2.getAppliedStereotypes().size(), 1);
   ASSERT_EQ(applying2.getAppliedStereotypes().frontID(), stereotypeInstID);
   ASSERT_EQ(applying2.getOwnedElements().size(), 1);
-  ASSERT_EQ(applying2.getOwnedElements().frontID(), stereotypeInstID);
+  ASSERT_EQ(*applying2.getOwnedElements().ids().begin(), stereotypeInstID);
   InstanceSpecification& stereotypeInst2 = m.aquire(stereotypeInstID)->as<InstanceSpecification>();
   ASSERT_EQ(applying2.getAppliedStereotypes().front(), stereotypeInst2);
   ASSERT_TRUE(stereotypeInst2.hasOwner());
   ASSERT_EQ(stereotypeInst2.getOwnerRef(), applying2);
-  ASSERT_EQ(applying2.getOwnedElements().front(), stereotypeInst2);
+  ASSERT_EQ(*applying2.getOwnedElements().begin(), stereotypeInst2);
 
   m.release(stereotypeInst2, applying2);
   ASSERT_FALSE(m.loaded(stereotypeInstID));
@@ -416,6 +416,6 @@ TEST_F(ProfileParserTest, mountProfileTest) {
   ASSERT_EQ(applying3.getAppliedStereotypes().size(), 1);
   ASSERT_EQ(applying3.getAppliedStereotypes().front(), stereotypeInst3);
   ASSERT_EQ(applying3.getOwnedElements().size(), 1);
-  ASSERT_EQ(applying3.getOwnedElements().front(), stereotypeInst3);
+  ASSERT_EQ(*applying3.getOwnedElements().begin(), stereotypeInst3);
   ASSERT_EQ(stereotypeInst3.getOwnerRef(), applying3);
 }

@@ -12,8 +12,8 @@ void TemplateableElement::RemoveOwnedTemplateSignatureProcedure::operator()(Temp
         el->setTemplate(0);
         m_me->m_setFlag = false;
     }
-    if (m_me->m_ownedElements->count(el->getID())) {
-        m_me->m_ownedElements->internalRemove(*el);
+    if (m_me->m_ownedElements->contains(el->getID())) {
+        m_me->m_ownedElements->remove(*el);
     }
 }
 
@@ -25,20 +25,20 @@ void TemplateableElement::AddOwnedTemplateSignatureProcedure::operator()(Templat
     } else {
         el->setTemplate(m_me);
     }
-    if (!m_me->m_ownedElements->count(el->getID())) {
-        m_me->m_ownedElements->internalAdd(*el);
+    if (!m_me->m_ownedElements->contains(el->getID())) {
+        m_me->m_ownedElements->add(*el);
     }
 }
 
 void TemplateableElement::AddOwnedTemplateSignatureProcedure::operator()(ID id) const {
-    if (!m_me->m_ownedElements->count(id)) {
-        m_me->m_ownedElements->addByID(id);
+    if (!m_me->m_ownedElements->contains(id)) {
+        m_me->m_ownedElements->add(id);
     }
 }
 
 void TemplateableElement::RemoveTemplateBindingFunctor::operator()(TemplateBinding& el) const {
-    if (m_el->m_ownedElements->count(el.getID())) {
-        m_el->m_ownedElements->internalRemove(el);
+    if (m_el->m_ownedElements->contains(el.getID())) {
+        m_el->m_ownedElements->remove(el);
     }
     if (el.hasBoundElement() && !m_el->m_setFlag) {
         m_el->m_setFlag = true;
@@ -48,8 +48,8 @@ void TemplateableElement::RemoveTemplateBindingFunctor::operator()(TemplateBindi
 }
 
 void TemplateableElement::AddTemplateBindingFunctor::operator()(TemplateBinding& el) const {
-    if (!m_el->m_ownedElements->count(el.getID())) {
-        m_el->m_ownedElements->internalAdd(el);
+    if (!m_el->m_ownedElements->contains(el.getID())) {
+        m_el->m_ownedElements->add(el);
     }
     if (el.getBoundElementID() != m_el->getID()) {
         el.setBoundElement(m_el);
@@ -60,8 +60,8 @@ void TemplateableElement::AddTemplateBindingFunctor::operator()(TemplateBinding&
 }
 
 void TemplateableElement::AddTemplateBindingFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedElements().count(id)) {
-        m_el->getOwnedElements().addByID(id);
+    if (!m_el->getOwnedElements().contains(id)) {
+        m_el->getOwnedElements().add(id);
     }
     if (!m_el->getDirectedRelationships().count(id)) {
         m_el->getDirectedRelationships().addByID(id);

@@ -82,7 +82,7 @@ TEST_F(NamedElementTest, copyNamedElementTest) {
     ASSERT_TRUE(n2.getNamespace());
     ASSERT_EQ(n2.getNamespaceRef(), p);
     ASSERT_EQ(n2.getOwnedElements().size(), 1);
-    ASSERT_EQ(n2.getOwnedElements().front(), c);
+    ASSERT_EQ(n2.getOwnedElements().get(c.getID()), c);
     ASSERT_EQ(*c.getOwner(), n);
 }
 

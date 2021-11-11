@@ -45,7 +45,7 @@ TEST_F(ClassTest, addOperationFunctorTest) {
     ASSERT_TRUE(&c.getMembers().front() == &o);
     ASSERT_TRUE(o.getNamespace() == &c);
     ASSERT_TRUE(c.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&c.getOwnedElements().front() == &o);
+    ASSERT_TRUE(&c.getOwnedElements().get(o.getID()) == &o);
     ASSERT_TRUE(o.getOwner() == &c);
 }
 
@@ -64,7 +64,7 @@ TEST_F(ClassTest, setClassTest) {
     ASSERT_TRUE(&c.getMembers().front() == &o);
     ASSERT_TRUE(o.getNamespace() == &c);
     ASSERT_TRUE(c.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&c.getOwnedElements().front() == &o);
+    ASSERT_TRUE(&c.getOwnedElements().get(o.getID()) == &o);
     ASSERT_TRUE(o.getOwner() == &c);
 }
 
@@ -85,7 +85,7 @@ TEST_F(ClassTest, overwriteClassTest) {
   ASSERT_TRUE(&p2.getMembers().front() == &c);
   ASSERT_TRUE(c.getNamespace() == &p2);
   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&p2.getOwnedElements().front() == &c);
+  ASSERT_TRUE(&p2.getOwnedElements().get(c.getID()) == &c);
   ASSERT_TRUE(c.getOwner() == &p2);
   ASSERT_TRUE(p1.getOwnedOperations().size() == 0);
   ASSERT_TRUE(p1.getFeatures().size() == 0);
@@ -110,7 +110,7 @@ TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
   ASSERT_TRUE(&p2.getMembers().front() == &c);
   ASSERT_TRUE(c.getNamespace() == &p2);
   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&p2.getOwnedElements().front() == &c);
+  ASSERT_TRUE(&p2.getOwnedElements().get(c.getID()) == &c);
   ASSERT_TRUE(c.getOwner() == &p2);
   ASSERT_TRUE(p1.getOwnedOperations().size() == 0);
   ASSERT_TRUE(p1.getFeatures().size() == 0);
@@ -152,7 +152,7 @@ TEST_F(ClassTest, addOwnedAttributeTest) {
   ASSERT_TRUE(c.getMembers().size() == 1);
   ASSERT_TRUE(&c.getMembers().front() == &p);
   ASSERT_TRUE(c.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&c.getOwnedElements().front() == &p);
+  ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
 
   ASSERT_TRUE(p.getStructuredClassifier() == &c);
   ASSERT_TRUE(p.getClassifier() == &c);
@@ -181,7 +181,7 @@ TEST_F(ClassTest, setStructuredClassifierTest) {
   ASSERT_TRUE(c.getMembers().size() == 1);
   ASSERT_TRUE(&c.getMembers().front() == &p);
   ASSERT_TRUE(c.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&c.getOwnedElements().front() == &p);
+  ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
 
   ASSERT_TRUE(p.getStructuredClassifier() == &c);
   ASSERT_TRUE(p.getClassifier() == &c);
@@ -282,7 +282,7 @@ TEST_F(ClassTest, addCompositePropertyTest) {
   ASSERT_TRUE(c.getMembers().size() == 1);
   ASSERT_TRUE(&c.getMembers().front() == &p);
   ASSERT_TRUE(c.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&c.getOwnedElements().front() == &p);
+  ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
 
   ASSERT_TRUE(p.isComposite());
   ASSERT_TRUE(p.getStructuredClassifier() == &c);
@@ -315,7 +315,7 @@ TEST_F(ClassTest, addCompositePropertyTestW_Manager) {
   ASSERT_TRUE(c.getMembers().size() == 1);
   ASSERT_TRUE(&c.getMembers().front() == &p);
   ASSERT_TRUE(c.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&c.getOwnedElements().front() == &p);
+  ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
 
   ASSERT_TRUE(p.isComposite());
   ASSERT_TRUE(p.getStructuredClassifier() == &c);
@@ -348,7 +348,7 @@ TEST_F(ClassTest, backwardsAddCompositePropertyTest) {
   ASSERT_TRUE(c.getMembers().size() == 1);
   ASSERT_TRUE(&c.getMembers().front() == &p);
   ASSERT_TRUE(c.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&c.getOwnedElements().front() == &p);
+  ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
 
   ASSERT_TRUE(p.isComposite());
   ASSERT_TRUE(p.getStructuredClassifier() == &c);
@@ -382,7 +382,7 @@ TEST_F(ClassTest, removePropertyFromParts) {
   ASSERT_TRUE(c.getMembers().size() == 1);
   ASSERT_TRUE(&c.getMembers().front() == &p);
   ASSERT_TRUE(c.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&c.getOwnedElements().front() == &p);
+  ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
 
   ASSERT_TRUE(!p.isComposite());
   ASSERT_TRUE(p.getStructuredClassifier() == &c);
@@ -431,8 +431,8 @@ TEST_F(ClassTest, CopyClassTest) {
     ASSERT_TRUE(&c2.getMembers().front() == &p);
     ASSERT_TRUE(&c2.getMembers().back() == &o);
     ASSERT_TRUE(c2.getOwnedElements().size() == 2);
-    ASSERT_TRUE(&c2.getOwnedElements().front() == &p);
-    ASSERT_TRUE(&c2.getOwnedElements().back() == &o);
+    ASSERT_TRUE(&c2.getOwnedElements().get(p.getID()) == &p);
+    ASSERT_TRUE(&c2.getOwnedElements().get(o.getID()) == &o);
 }
 
 TEST_F(ClassTest, addAndRemoveNestedClassifierTest) {

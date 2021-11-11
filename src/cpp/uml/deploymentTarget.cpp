@@ -4,8 +4,8 @@
 using namespace UML;
 
 void DeploymentTarget::AddDeploymentFunctor::operator()(Deployment& el) const {
-    if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalAdd(el);
+    if (!m_el->getOwnedElements().contains(el.getID())) {
+        m_el->getOwnedElements().add(el);
     }
     if (!m_el->getClientDependencies().count(el.getID())) {
         m_el->getClientDependencies().add(el);
@@ -15,8 +15,8 @@ void DeploymentTarget::AddDeploymentFunctor::operator()(Deployment& el) const {
     updateCopiedSequenceAddedTo(el, &DeploymentTarget::getDeployments);
 }
 void DeploymentTarget::AddDeploymentFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedElements().count(id)) {
-        m_el->getOwnedElements().addByID(id);
+    if (!m_el->getOwnedElements().contains(id)) {
+        m_el->getOwnedElements().add(id);
     }
     if (!m_el->getClientDependencies().count(id)) {
         m_el->getClientDependencies().addByID(id);
@@ -24,8 +24,8 @@ void DeploymentTarget::AddDeploymentFunctor::operator()(ID id) const {
 }
 
 void DeploymentTarget::RemoveDeploymentFunctor::operator()(Deployment& el) const {
-    if (m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalRemove(el);
+    if (m_el->getOwnedElements().contains(el.getID())) {
+        m_el->getOwnedElements().remove(el);
     }
 
     if (el.getLocation()) {

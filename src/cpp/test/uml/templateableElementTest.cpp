@@ -23,7 +23,7 @@ TEST_F(TemplateableElementTest, setOwnedTemplateSignature) {
     ASSERT_NO_THROW(c.setOwnedTemplateSignature(&t));
     ASSERT_EQ(t.getTemplate(), &c);
     ASSERT_TRUE(c.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&c.getOwnedElements().front() == &t);
+    ASSERT_EQ(*c.getOwnedElements().begin(), t);
     ASSERT_TRUE(t.getOwner() == &c);
 }
 
@@ -37,7 +37,7 @@ TEST_F(TemplateableElementTest, overwriteOwnedTemplateSignatureTest) {
     ASSERT_EQ(t2.getTemplate(), &c);
     ASSERT_TRUE(t.getTemplate() == 0);
     ASSERT_TRUE(c.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&c.getOwnedElements().front() == &t2);
+    ASSERT_EQ(*c.getOwnedElements().begin(), t2);
     ASSERT_TRUE(t2.getOwner() == &c);
     ASSERT_TRUE(t.getOwner() == 0);
 }
@@ -49,7 +49,7 @@ TEST_F(TemplateableElementTest, setTemplateTest) {
     ASSERT_NO_THROW(t.setTemplate(&c));
     ASSERT_EQ(t.getTemplate(), &c);
     ASSERT_TRUE(c.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&c.getOwnedElements().front() == &t);
+    ASSERT_EQ(*c.getOwnedElements().begin(), t);
     ASSERT_TRUE(t.getOwner() == &c);
 }
 
@@ -65,7 +65,7 @@ TEST_F(TemplateableElementTest, overrideTemplateTest) {
     ASSERT_TRUE(c.getOwnedTemplateSignature() == 0);
     ASSERT_TRUE(c.getOwnedElements().size() == 0);
     ASSERT_TRUE(c2.getOwnedElements().size() == 1);
-    ASSERT_EQ(c2.getOwnedElements().front().getID(), t.getID());
+    ASSERT_EQ((*c2.getOwnedElements().begin()).getID(), t.getID());
     ASSERT_EQ(t.getOwner()->getID(), c2.getID());
 }
 
@@ -82,7 +82,7 @@ TEST_F(TemplateableElementTest, addTemplateParameterTest) {
     ASSERT_EQ(s.getParameter().front().getID(), p.getID());
     ASSERT_EQ(p.getSignature()->getID(), s.getID());
     ASSERT_EQ(s.getOwnedElements().size(), 1);
-    ASSERT_EQ(s.getOwnedElements().front().getID(), p.getID());
+    ASSERT_EQ((*s.getOwnedElements().begin()).getID(), p.getID());
     ASSERT_EQ(p.getOwner()->getID(), s.getID());
 }
 
@@ -106,7 +106,7 @@ TEST_F(TemplateableElementTest, overrideSignatureTest) {
     ASSERT_EQ(s1.getParameter().size(), 0);
     ASSERT_EQ(p.getOwner()->getID(), s2.getID());
     ASSERT_EQ(s2.getOwnedElements().size(), 1);
-    ASSERT_EQ(s2.getOwnedElements().front().getID(), p.getID());
+    ASSERT_EQ((*s2.getOwnedElements().begin()).getID(), p.getID());
     ASSERT_EQ(s1.getOwnedElements().size(), 0);
 }
 
@@ -144,7 +144,7 @@ TEST_F(TemplateableElementTest, setOwnedParameteredElementTest) {
     ASSERT_TRUE(p.getParameteredElement() != 0);
     ASSERT_EQ(p.getParameteredElement()->getID(), t.getID());
     ASSERT_EQ(p.getOwnedElements().size(), 1);
-    ASSERT_EQ(p.getOwnedElements().front().getID(), t.getID());
+    ASSERT_EQ((*p.getOwnedElements().begin()).getID(), t.getID());
     ASSERT_EQ(t.getOwner()->getID(), p.getID());
 }
 
@@ -163,7 +163,7 @@ TEST_F(TemplateableElementTest, overrideOwnedParameteredElementTest) {
     ASSERT_TRUE(p.getParameteredElement() != 0);
     ASSERT_EQ(p.getParameteredElement()->getID(), t2.getID());
     ASSERT_EQ(p.getOwnedElements().size(), 1);
-    ASSERT_EQ(p.getOwnedElements().front().getID(), t2.getID());
+    ASSERT_EQ((*p.getOwnedElements().begin()).getID(), t2.getID());
     ASSERT_EQ(t2.getOwner()->getID(), p.getID());
     ASSERT_TRUE(t1.getOwner() == 0);
 }
@@ -210,7 +210,7 @@ TEST_F(TemplateableElementTest, setOwnedDefaultTest) {
     ASSERT_TRUE(p.getDefault() != 0);
     ASSERT_EQ(p.getDefault()->getID(), t.getID());
     ASSERT_EQ(p.getOwnedElements().size(), 1);
-    ASSERT_EQ(p.getOwnedElements().front().getID(), t.getID());
+    ASSERT_EQ((*p.getOwnedElements().begin()).getID(), t.getID());
     ASSERT_TRUE(t.getOwner() != 0);
     ASSERT_EQ(t.getOwner()->getID(), p.getID());
 }
@@ -231,7 +231,7 @@ TEST_F(TemplateableElementTest, overrideOwnedDefaultTest) {
     ASSERT_TRUE(p.getDefault() != 0);
     ASSERT_EQ(p.getDefault()->getID(), t2.getID());
     ASSERT_EQ(p.getOwnedElements().size(), 1);
-    ASSERT_EQ(p.getOwnedElements().front().getID(), t2.getID());
+    ASSERT_EQ((*p.getOwnedElements().begin()).getID(), t2.getID());
     ASSERT_TRUE(t2.getOwner() != 0);
     ASSERT_EQ(t2.getOwner()->getID(), p.getID());
     ASSERT_TRUE(t1.getOwner() == 0);
@@ -255,7 +255,7 @@ TEST_F(TemplateableElementTest, basicTemplateBindTest) {
     ASSERT_EQ(c.getRelationships().size(), 1);
     ASSERT_EQ(c.getRelationships().front().getID(), b.getID());
     ASSERT_EQ(c.getOwnedElements().size(), 1);
-    ASSERT_EQ(c.getOwnedElements().front().getID(), b.getID());
+    ASSERT_EQ((*c.getOwnedElements().begin()).getID(), b.getID());
     ASSERT_TRUE(b.getSignature() != 0);
     ASSERT_EQ(b.getSignature()->getID(), s.getID());
     ASSERT_EQ(b.getTargets().size(), 1);
@@ -285,7 +285,7 @@ TEST_F(TemplateableElementTest, overrideBoundElementTest) {
     ASSERT_EQ(c2.getTemplateBindings().size(), 1);
     ASSERT_EQ(c2.getTemplateBindings().frontID(), b.getID());
     ASSERT_EQ(c2.getOwnedElements().size(), 1);
-    ASSERT_EQ(c2.getOwnedElements().front().getID(), b.getID());
+    ASSERT_EQ((*c2.getOwnedElements().begin()).getID(), b.getID());
     ASSERT_EQ(c1.getTemplateBindings().size(), 0);
     ASSERT_EQ(c1.getOwnedElements().size(), 0);
 }
@@ -416,7 +416,7 @@ TEST_F(TemplateableElementTest, setOwnedActualTestAndOverride) {
     ASSERT_EQ(s.getActual()->getID(), a1.getID());
     ASSERT_EQ(s.getOwnedActual()->getID(), a1.getID());
     ASSERT_EQ(s.getOwnedElements().size(), 1);
-    ASSERT_EQ(s.getOwnedElements().front().getID(), a1.getID());
+    ASSERT_EQ((*s.getOwnedElements().begin()).getID(), a1.getID());
     ASSERT_TRUE(a1.getOwner() != 0);
     ASSERT_EQ(a1.getOwner()->getID(), s.getID());
     s.setOwnedActual(&a2);
@@ -425,7 +425,7 @@ TEST_F(TemplateableElementTest, setOwnedActualTestAndOverride) {
     ASSERT_EQ(s.getActual()->getID(), a2.getID());
     ASSERT_EQ(s.getOwnedActual()->getID(), a2.getID());
     ASSERT_EQ(s.getOwnedElements().size(), 1);
-    ASSERT_EQ(s.getOwnedElements().front().getID(), a2.getID());
+    ASSERT_EQ((*s.getOwnedElements().begin()).getID(), a2.getID());
     ASSERT_TRUE(a2.getOwner() != 0);
     ASSERT_EQ(a2.getOwner()->getID(), s.getID());
     ASSERT_TRUE(a1.getOwner() == 0);

@@ -33,8 +33,8 @@ void TemplateSignature::AddTemplateProcedure::operator()(ID id) const {
 }
 
 void TemplateSignature::AddOwnedParameterFunctor::operator()(TemplateParameter& el) const {
-    if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalAdd(el);
+    if (!m_el->getOwnedElements().contains(el.getID())) {
+        m_el->getOwnedElements().add(el);
     }
 
     if (el.getSignature() != m_el) {
@@ -48,8 +48,8 @@ void TemplateSignature::AddOwnedParameterFunctor::operator()(TemplateParameter& 
 }
 
 void TemplateSignature::AddOwnedParameterFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedElements().count(id)) {
-        m_el->getOwnedElements().addByID(id);
+    if (!m_el->getOwnedElements().contains(id)) {
+        m_el->getOwnedElements().add(id);
     }
     if (!m_el->getParameter().count(id)) {
         m_el->getParameter().addByID(id);
@@ -57,8 +57,8 @@ void TemplateSignature::AddOwnedParameterFunctor::operator()(ID id) const {
 }
 
 void TemplateSignature::RemoveOwnedParameterFunctor::operator()(TemplateParameter& el) const {
-    if (m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalRemove(el);
+    if (m_el->getOwnedElements().contains(el.getID())) {
+        m_el->getOwnedElements().remove(el);
     }
 
     if (el.getSignature() == m_el) {

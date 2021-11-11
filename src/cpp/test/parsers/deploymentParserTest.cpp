@@ -440,7 +440,7 @@ TEST_F(DeploymentParserTest, mountDeploymentTest) {
     ASSERT_EQ(deploymentTarget2.getClientDependencies().size(), 1);
     ASSERT_EQ(deploymentTarget2.getClientDependencies().front(), deployment3);
     ASSERT_EQ(deploymentTarget2.getOwnedElements().size(), 1);
-    ASSERT_EQ(deploymentTarget2.getOwnedElements().front(), deployment3);
+    ASSERT_EQ(*deploymentTarget2.getOwnedElements().begin(), deployment3);
 
     m.release(deployment3, deploymentTarget2);
     ASSERT_FALSE(m.loaded(deploymentTargetID));
@@ -452,7 +452,7 @@ TEST_F(DeploymentParserTest, mountDeploymentTest) {
     ASSERT_EQ(deploymentTarget3.getClientDependencies().size(), 1);
     ASSERT_EQ(deploymentTarget3.getClientDependencies().frontID(), deploymentID);
     ASSERT_EQ(deploymentTarget3.getOwnedElements().size(), 1);
-    ASSERT_EQ(deploymentTarget3.getOwnedElements().frontID(), deploymentID);
+    ASSERT_EQ(*deploymentTarget3.getOwnedElements().ids().begin(), deploymentID);
     Deployment& deployment4 = m.aquire(deploymentID)->as<Deployment>();
     ASSERT_TRUE(deployment4.hasLocation());
     ASSERT_EQ(deployment4.getLocationRef(), deploymentTarget3);

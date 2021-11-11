@@ -2,6 +2,7 @@
 #define SPECIAL_SEQUENCE_H
 
 #include "element.h"
+#include "umlManager.h"
 #include <iostream>
 
 namespace UML {
@@ -517,6 +518,42 @@ namespace UML {
                 } 
                 throw ManagerStateException("Improper name used in set!"); // TODO change
             };
+            T& get(int i) {
+                // TODO proper implementation
+                // check size and determine which side to go down
+                if (m_root) {
+                    if (!m_root->m_el) {
+                        m_root->m_el = m_el->m_manager->get(m_el, m_root->m_id);
+                    }
+                    return *dynamic_cast<T*>(m_root->m_el);
+                }
+                throw ManagerStateException("TODO get()");
+            };
+            T& front() {
+                if (m_root) {
+                    if (!m_root->m_el) {
+                        m_root->m_el = m_el->m_manager->get(m_el, m_root->m_id);
+                    }
+                    return *dynamic_cast<T*>(m_root->m_el);
+                }
+                throw ManagerStateException("TODO front empty");
+            };
+            T& back() {
+                if (m_root) {
+                    ContainerNode* temp = m_root;
+                    while (temp->m_right) {
+                        temp = temp->m_right;
+                    }
+                    if (temp->m_left) {
+                        temp = temp->m_left;
+                    }
+                    if (!temp->m_el) {
+                        temp->m_el = m_el->m_manager->get(m_el, temp->m_id);
+                    }
+                    return *dynamic_cast<T*>(temp->m_el);
+                }
+                throw ManagerStateException("TODO back empty");
+            };
             bool contains(ID id) {
                 bool ret = false;
                 if (m_root) {
@@ -524,7 +561,14 @@ namespace UML {
                     ret = t > 0;
                 } 
                 return ret;
-            }
+            };
+            int count(ID id) {
+                if (contains(id)) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            };
             bool contains(std::string name) {
                 bool ret = false;
                 if (m_root) {
@@ -532,7 +576,14 @@ namespace UML {
                     ret = t > 0;
                 }
                 return ret;
-            }
+            };
+            int count(std::string name) {
+                if (contains(name)) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            };
             bool empty() const {
                 return m_root == 0;
             };
@@ -628,7 +679,7 @@ namespace UML {
                         last = temp;
                     } while (temp->m_parent);
                     if (!found) {
-                        m_node = m_endNode;
+                        m_node = &m_endNode;
                     } else {
                         m_node = dynamic_cast<AbstractSet::ContainerNode*>(temp->m_right);
                     }

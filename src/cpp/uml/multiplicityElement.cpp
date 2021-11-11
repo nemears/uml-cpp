@@ -11,8 +11,8 @@ void MultiplicityElement::RemoveLowerValueProcedures::operator()(ValueSpecificat
         m_me->m_multiplicityIsSpecified = false;
     }
 
-    if (m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalRemove(*el);
+    if (m_me->getOwnedElements().contains(el->getID())) {
+        m_me->getOwnedElements().remove(*el);
     }
     m_me->updateCopiesScalar(-1, &MultiplicityElement::m_lower);
     m_me->updateCopiesScalar(false, &MultiplicityElement::m_lowSpecified);
@@ -29,8 +29,8 @@ void MultiplicityElement::AddLowerValueProcedures::operator()(ValueSpecification
         // TODO evaluate expression
     }
 
-    if (!m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalAdd(*el);
+    if (!m_me->getOwnedElements().contains(el->getID())) {
+        m_me->getOwnedElements().add(*el);
     }
 }
 
@@ -41,8 +41,8 @@ void MultiplicityElement::RemoveUpperValueProcedures::operator()(ValueSpecificat
         m_me->m_multiplicityIsSpecified = false;
     }
 
-    if (m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalRemove(*el);
+    if (m_me->getOwnedElements().contains(el->getID())) {
+        m_me->getOwnedElements().remove(*el);
     }
 }
 
@@ -56,8 +56,8 @@ void MultiplicityElement::AddUpperValueProcedures::operator()(ValueSpecification
         // TODO evaluate expression
     }
 
-    if (!m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalAdd(*el);
+    if (!m_me->getOwnedElements().contains(el->getID())) {
+        m_me->getOwnedElements().add(*el);
     }
 }
 

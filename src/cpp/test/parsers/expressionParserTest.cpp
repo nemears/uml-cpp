@@ -80,8 +80,8 @@ TEST_F(ExpressionParserTest, mountExpressionTest) {
     ASSERT_EQ(expression2.getOperands().front(), first);
     ASSERT_EQ(expression2.getOperands().back(), last);
     ASSERT_EQ(expression2.getOwnedElements().size(), 2);
-    ASSERT_EQ(expression2.getOwnedElements().front(), first);
-    ASSERT_EQ(expression2.getOwnedElements().back(), last);
+    ASSERT_EQ(*expression2.getOwnedElements().begin(), first);
+    ASSERT_EQ(*(expression2.getOwnedElements().begin()++), last);
     ASSERT_TRUE(first.hasOwner());
     ASSERT_TRUE(last.hasOwner());
 
@@ -93,8 +93,8 @@ TEST_F(ExpressionParserTest, mountExpressionTest) {
     ASSERT_EQ(expression2.getOperands().front(), first2);
     ASSERT_EQ(expression2.getOperands().back(), last);
     ASSERT_EQ(expression2.getOwnedElements().size(), 2);
-    ASSERT_EQ(expression2.getOwnedElements().front(), first2);
-    ASSERT_EQ(expression2.getOwnedElements().back(), last);
+    ASSERT_EQ(*expression2.getOwnedElements().begin(), first2);
+    ASSERT_EQ(*(expression2.getOwnedElements().begin()++), last);
     ASSERT_TRUE(first2.hasOwner());
     ASSERT_TRUE(last.hasOwner());
 
@@ -107,8 +107,8 @@ TEST_F(ExpressionParserTest, mountExpressionTest) {
     ASSERT_EQ(expression3.getOperands().front(), first3);
     ASSERT_EQ(expression3.getOperands().back(), last);
     ASSERT_EQ(expression3.getOwnedElements().size(), 2);
-    ASSERT_EQ(expression3.getOwnedElements().front(), first3);
-    ASSERT_EQ(expression3.getOwnedElements().back(), last);
+    ASSERT_EQ(*expression3.getOwnedElements().begin(), first3);
+    ASSERT_EQ(*(expression3.getOwnedElements().begin()++), last);
     ASSERT_TRUE(first3.hasOwner());
     ASSERT_TRUE(last.hasOwner());
 }

@@ -134,7 +134,7 @@ TEST_F(ElementTest, setOwnerTest) {
     Package e = m.create<Package>();
     Package c = m.create<Package>();
     c.setOwningPackage(&e);
-    ASSERT_TRUE(e.getOwnedElements().count(c.getID()));
+    ASSERT_TRUE(e.getOwnedElements().contains(c.getID()));
     ASSERT_TRUE(e.getOwnedElements().size() == 1);
 }
 
@@ -146,7 +146,7 @@ TEST_F(ElementTest, overwriteOwnerTestW_Manager) {
   p1.getPackagedElements().add(c);
   c.setOwningPackage(&p2);
   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&p2.getOwnedElements().front() == &c);
+  ASSERT_TRUE(&p2.getOwnedElements().get(c.getID()) == &c);
   ASSERT_TRUE(c.getOwner() == &p2);
   ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }
@@ -159,7 +159,7 @@ TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTestW_Manager) {
   p1.getPackagedElements().add(c);
   p2.getPackagedElements().add(c);
   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&p2.getOwnedElements().front() == &c);
+  ASSERT_TRUE(&p2.getOwnedElements().get(c.getID()) == &c);
   ASSERT_TRUE(c.getOwner() == &p2);
   ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }
@@ -177,7 +177,7 @@ TEST_F(ElementTest, CopyTestW_Manager) {
   // TODO: clone method for deep model copy
   Package e2 = e1;
   ASSERT_TRUE(e2.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&e2.getOwnedElements().front() == &c1);
+  ASSERT_TRUE(&e2.getOwnedElements().get(c1.getID()) == &c1);
   ASSERT_TRUE(e2.getID() == e1.getID());
   ASSERT_TRUE(e2.getOwner() == &p1);
 }
@@ -262,8 +262,8 @@ TEST_F(ElementTest, isSameOrNullTest) {
   e.getPackagedElements().add(c1);
   e.getPackagedElements().add(c2);
   ASSERT_NO_THROW(c1.setOwningPackage(&e));
-  ASSERT_TRUE(&e.getOwnedElements().front() == &c1);
-  ASSERT_TRUE(&e.getOwnedElements().back() == &c2);
+  ASSERT_TRUE(&e.getOwnedElements().get(c1.getID()) == &c1);
+  ASSERT_TRUE(&e.getOwnedElements().get(c1.getID()) == &c2);
 }
 
 // TEST_F(ElementTest, checkAppliedStereotypeFunctorTest) {
@@ -304,7 +304,7 @@ TEST_F(ElementTest, copyAndChangeTest) {
                                          &Namespace::getOwnedMembers,
                                          &Package::getPackagedElements);
     ASSERT_EQ(package.getOwnedElements().size(), 1);
-    ASSERT_EQ(package.getOwnedElements().front().getID(), ownedEl.getID());
+    ASSERT_EQ(package.getOwnedElements().get(ownedEl.getID()).getID(), ownedEl.getID());
     ASSERT_EQ(package.getOwnedMembers().size(), 1);
     ASSERT_EQ(package.getOwnedMembers().front().getID(), ownedEl.getID());
     ASSERT_EQ(package.getMembers().size(), 1);

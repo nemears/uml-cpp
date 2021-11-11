@@ -347,7 +347,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_TRUE(clazz2.hasOwnedTemplateSignature());
     ASSERT_EQ(clazz2.getOwnedTemplateSignatureRef(), signature);
     ASSERT_EQ(clazz2.getOwnedElements().size(), 1);
-    ASSERT_EQ(clazz2.getOwnedElements().front(), signature);
+    ASSERT_EQ(*clazz2.getOwnedElements().begin(), signature);
     ASSERT_TRUE(signature.hasTemplate());
     ASSERT_EQ(signature.getTemplateRef(), clazz2);
     ASSERT_TRUE(signature.hasOwner());
@@ -366,7 +366,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_TRUE(clazz3.hasOwnedTemplateSignature());
     ASSERT_EQ(clazz3.getOwnedTemplateSignatureRef(), signature2);
     ASSERT_EQ(clazz3.getOwnedElements().size(), 1);
-    ASSERT_EQ(clazz3.getOwnedElements().front(), signature2);
+    ASSERT_EQ(*clazz3.getOwnedElements().begin(), signature2);
     ASSERT_TRUE(signature2.hasTemplate());
     ASSERT_EQ(signature2.getTemplateRef(), clazz3);
     ASSERT_TRUE(signature2.hasOwner());
@@ -374,7 +374,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(signature2.getOwnedParameter().size(), 1);
     ASSERT_EQ(signature2.getOwnedParameter().front(), ownedParameter);
     ASSERT_EQ(signature2.getOwnedElements().size(), 1);
-    ASSERT_EQ(signature2.getOwnedElements().front(), ownedParameter);
+    ASSERT_EQ(*signature2.getOwnedElements().begin(), ownedParameter);
 
     m.release(signature2, clazz3);
     ASSERT_FALSE(m.loaded(clazzID));
@@ -383,12 +383,12 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_TRUE(clazz4.hasOwnedTemplateSignature());
     ASSERT_EQ(clazz4.getOwnedTemplateSignatureID(), signatureID);
     ASSERT_TRUE(clazz4.getOwnedElements().count(signatureID));
-    ASSERT_EQ(clazz4.getOwnedElements().frontID(), signatureID);
+    ASSERT_EQ(*clazz4.getOwnedElements().ids().begin(), signatureID);
     TemplateSignature& signature3 = m.aquire(signatureID)->as<TemplateSignature>();
     ASSERT_TRUE(clazz4.hasOwnedTemplateSignature());
     ASSERT_EQ(clazz4.getOwnedTemplateSignatureRef(), signature3);
     ASSERT_EQ(clazz4.getOwnedElements().size(), 1);
-    ASSERT_EQ(clazz4.getOwnedElements().front(), signature3);
+    ASSERT_EQ(*clazz4.getOwnedElements().begin(), signature3);
     ASSERT_TRUE(signature3.hasTemplate());
     ASSERT_EQ(signature3.getTemplateRef(), clazz4);
     ASSERT_TRUE(signature3.hasOwner());
@@ -396,7 +396,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(signature3.getOwnedParameter().size(), 1);
     ASSERT_EQ(signature3.getOwnedParameter().front(), ownedParameter);
     ASSERT_EQ(signature3.getOwnedElements().size(), 1);
-    ASSERT_EQ(signature3.getOwnedElements().front(), ownedParameter);
+    ASSERT_EQ(*signature3.getOwnedElements().begin(), ownedParameter);
 
     ID ownedParameterID = ownedParameter.getID();
     m.release(ownedParameter, signature3);
@@ -412,7 +412,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(signature4.getOwnedParameter().size(), 1);
     ASSERT_EQ(signature4.getOwnedParameter().front(), ownedParameter2);
     ASSERT_EQ(signature4.getOwnedElements().size(), 1);
-    ASSERT_EQ(signature4.getOwnedElements().front(), ownedParameter2);
+    ASSERT_EQ(*signature4.getOwnedElements().begin(), ownedParameter2);
     ASSERT_EQ(ownedParameter2.getOwnerRef(), signature4);
     ASSERT_EQ(ownedParameter2.getSignatureRef(), signature4);
     ASSERT_TRUE(ownedParameter2.hasOwnedParameteredElement());
@@ -425,14 +425,14 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(signature5.getOwnedParameter().size(), 1);
     ASSERT_EQ(signature5.getOwnedParameter().frontID(), ownedParameterID);
     ASSERT_EQ(signature5.getOwnedElements().size(), 1);
-    ASSERT_EQ(signature5.getOwnedElements().frontID(), ownedParameterID);
+    ASSERT_EQ(*signature5.getOwnedElements().ids().begin(), ownedParameterID);
     TemplateParameter& ownedParameter3 = m.aquire(ownedParameterID)->as<TemplateParameter>();
     ASSERT_TRUE(ownedParameter3.hasSignature());
     ASSERT_EQ(ownedParameter3.getSignatureRef(), signature5);
     ASSERT_TRUE(ownedParameter3.hasOwner());
     ASSERT_EQ(ownedParameter3.getOwnerRef(), signature5);
     ASSERT_EQ(signature5.getOwnedParameter().front(), ownedParameter3);
-    ASSERT_EQ(signature5.getOwnedElements().front(), ownedParameter3);
+    ASSERT_EQ(*signature5.getOwnedElements().begin(), ownedParameter3);
     ASSERT_TRUE(ownedParameter3.hasOwnedParameteredElement());
     ASSERT_EQ(ownedParameter3.getOwnedParameteredElementRef(), ownedParameterableElement);
 
@@ -449,7 +449,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_TRUE(ownedParameter4.hasOwnedParameteredElement());
     ASSERT_EQ(ownedParameter4.getOwnedParameteredElementRef(), ownedParameterableElement2);
     ASSERT_EQ(ownedParameter4.getOwnedElements().size(), 2);
-    ASSERT_EQ(ownedParameter4.getOwnedElements().back(), ownedParameterableElement2);
+    ASSERT_EQ(*(ownedParameter4.getOwnedElements().begin()++), ownedParameterableElement2);
     ASSERT_TRUE(ownedParameter4.hasParameteredElement());
     ASSERT_EQ(ownedParameter4.getParameteredElementRef(), ownedParameterableElement2);
     ASSERT_EQ(ownedParameterableElement2.getOwningTemplateParameterRef(), ownedParameter4);
@@ -466,7 +466,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_TRUE(ownedParameter5.hasOwnedParameteredElement());
     ASSERT_EQ(ownedParameter5.getOwnedParameteredElementID(), ownedParameterableElementID);
     ASSERT_EQ(ownedParameter5.getOwnedElements().size(), 2);
-    ASSERT_EQ(ownedParameter5.getOwnedElements().backID(), ownedParameterableElementID);
+    //ASSERT_EQ(*(ownedParameter5.getOwnedElements().ids().begin()++), ownedParameterableElementID);
     ASSERT_TRUE(ownedParameter5.hasParameteredElement());
     ASSERT_EQ(ownedParameter5.getParameteredElementID(), ownedParameterableElementID);
     ASSERT_TRUE(ownedParameter5.hasOwnedDefault());
@@ -477,7 +477,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_TRUE(ownedParameter5.hasOwnedParameteredElement());
     ASSERT_EQ(ownedParameter5.getOwnedParameteredElementRef(), ownedParameterableElement3);
     ASSERT_EQ(ownedParameter5.getOwnedElements().size(), 2);
-    ASSERT_EQ(ownedParameter5.getOwnedElements().back(), ownedParameterableElement3);
+    ASSERT_EQ(*(ownedParameter5.getOwnedElements().begin()++), ownedParameterableElement3);
     ASSERT_TRUE(ownedParameter5.hasParameteredElement());
     ASSERT_EQ(ownedParameter5.getParameteredElementRef(), ownedParameterableElement3);
     ASSERT_TRUE(ownedParameterableElement3.hasOwningTemplateParameter());
@@ -495,7 +495,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_TRUE(ownedParameter6.hasDefault());
     ASSERT_EQ(ownedParameter6.getDefaultID(), ownedDefaultID);
     ASSERT_EQ(ownedParameter6.getOwnedElements().size(), 2);
-    ASSERT_EQ(ownedParameter6.getOwnedElements().frontID(), ownedDefaultID);
+    ASSERT_EQ(*ownedParameter6.getOwnedElements().ids().begin(), ownedDefaultID);
     PrimitiveType& ownedDefault2 = m.aquire(ownedDefaultID)->as<PrimitiveType>();
     ASSERT_TRUE(ownedDefault2.hasTemplateParameter());
     ASSERT_EQ(ownedDefault2.getTemplateParameterRef(), ownedParameter6);
@@ -503,7 +503,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(ownedDefault2.getOwnerRef(), ownedParameter6);
     ASSERT_EQ(ownedParameter6.getOwnedDefaultRef(), ownedDefault2);
     ASSERT_EQ(ownedParameter6.getDefaultRef(), ownedDefault2);
-    ASSERT_EQ(ownedParameter6.getOwnedElements().front(), ownedDefault2);
+    ASSERT_EQ(*ownedParameter6.getOwnedElements().begin(), ownedDefault2);
 
     m.release(ownedDefault2, ownedParameter6);
     ASSERT_FALSE(m.loaded(ownedDefaultID));
@@ -519,7 +519,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_TRUE(ownedParameter7.hasDefault());
     ASSERT_EQ(ownedParameter7.getDefaultRef(), ownedDefault3);
     ASSERT_EQ(ownedParameter7.getOwnedElements().size(), 2);
-    ASSERT_EQ(ownedParameter7.getOwnedElements().front(), ownedDefault3);
+    ASSERT_EQ(*ownedParameter7.getOwnedElements().begin(), ownedDefault3);
     ASSERT_EQ(ownedDefault3.getTemplateParameterRef(), ownedParameter7);
     ASSERT_EQ(ownedDefault3.getOwnerRef(), ownedParameter7);
 
@@ -639,7 +639,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(boundEl4.getTemplateBindings().size(), 1);
     ASSERT_EQ(boundEl4.getTemplateBindings().frontID(), bindingID);
     ASSERT_EQ(boundEl4.getOwnedElements().size(), 1);
-    ASSERT_EQ(boundEl4.getOwnedElements().frontID(), bindingID);
+    ASSERT_EQ(*boundEl4.getOwnedElements().ids().begin(), bindingID);
     ASSERT_EQ(boundEl4.getDirectedRelationships().size(), 1);
     ASSERT_EQ(boundEl4.getDirectedRelationships().frontID(), bindingID);
     ASSERT_EQ(boundEl4.getRelationships().size(), 1);
@@ -678,7 +678,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(binding5.getParameterSubstitution().size(), 1);
     ASSERT_EQ(binding5.getParameterSubstitution().frontID(), subW_OwnedActualID);
     ASSERT_EQ(binding5.getOwnedElements().size(), 1);
-    ASSERT_EQ(binding5.getOwnedElements().frontID(), subW_OwnedActualID);
+    ASSERT_EQ(*binding5.getOwnedElements().ids().begin(), subW_OwnedActualID);
     TemplateParameterSubstitution& subW_OwnedActual3 = m.aquire(subW_OwnedActualID)->as<TemplateParameterSubstitution>();
     ASSERT_TRUE(subW_OwnedActual3.hasTemplateBinding());
     ASSERT_EQ(subW_OwnedActual3.getTemplateBindingRef(), binding5);
@@ -719,7 +719,7 @@ TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {
     ASSERT_TRUE(subW_OwnedActual6.hasActual());
     ASSERT_EQ(subW_OwnedActual6.getActualID(), ownedActualID);
     ASSERT_EQ(subW_OwnedActual6.getOwnedElements().size(), 1);
-    ASSERT_EQ(subW_OwnedActual6.getOwnedElements().frontID(), ownedActualID);
+    ASSERT_EQ(*subW_OwnedActual6.getOwnedElements().ids().begin(), ownedActualID);
     PrimitiveType& ownedActual3 = m.aquire(ownedActualID)->as<PrimitiveType>();
     ASSERT_TRUE(ownedActual3.hasOwner());
     ASSERT_EQ(ownedActual3.getOwnerRef(), subW_OwnedActual6);

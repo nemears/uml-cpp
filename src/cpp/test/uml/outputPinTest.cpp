@@ -34,6 +34,6 @@ TEST_F(OutputPinTest, AddPinFunctorTest) {
     ASSERT_TRUE(a.getOutputs().size() == 1);
     ASSERT_TRUE(&a.getOutputs().front() == &i);
     ASSERT_TRUE(a.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&a.getOwnedElements().front() == &i);
+    ASSERT_TRUE(&a.getOwnedElements().get(i.getID()) == &i);
     ASSERT_TRUE(i.getOwner() == &a);
 }

@@ -78,7 +78,7 @@ TEST_F(OperationTest, AddParameterFunctorForAbstractOperationTest) {
     ASSERT_TRUE(&o.getMembers().front() == &p);
     ASSERT_TRUE(p.getNamespace() == &o);
     ASSERT_TRUE(o.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&o.getOwnedElements().front() == &p);
+    ASSERT_TRUE(&o.getOwnedElements().get(p.getID()) == &p);
     ASSERT_TRUE(p.getOwner() == &o);
 }
 
@@ -94,7 +94,7 @@ TEST_F(OperationTest, SetOperationAbstractOperationTest) {
     ASSERT_TRUE(&o.getMembers().front() == &p);
     ASSERT_TRUE(p.getNamespace() == &o);
     ASSERT_TRUE(o.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&o.getOwnedElements().front() == &p);
+    ASSERT_TRUE(&o.getOwnedElements().get(p.getID()) == &p);
     ASSERT_TRUE(p.getOwner() == &o);
 }
 
@@ -137,7 +137,7 @@ TEST_F(OperationTest, checkParameterFunctorTest) {
     ASSERT_TRUE(o.getMembers().size() == 1);
     ASSERT_TRUE(&o.getMembers().front() == &p);
     ASSERT_TRUE(o.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&o.getOwnedElements().front() == &p);
+    ASSERT_TRUE(&o.getOwnedElements().get(p.getID()) == &p);
 
     ASSERT_TRUE(p.getOperation() == &o);
     ASSERT_TRUE(p.getNamespace() == &o);
@@ -168,7 +168,7 @@ TEST_F(OperationTest, setOperationReturnParameterExceptionTest) {
     ASSERT_TRUE(o.getMembers().size() == 1);
     ASSERT_TRUE(&o.getMembers().front() == &p);
     ASSERT_TRUE(o.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&o.getOwnedElements().front() == &p);
+    ASSERT_TRUE(&o.getOwnedElements().get(p.getID()) == &p);
 
     ASSERT_TRUE(p.getOperation() == &o);
     ASSERT_TRUE(p.getNamespace() == &o);
@@ -236,7 +236,7 @@ TEST_F(OperationTest, overrideParameterOperationTest) {
     ASSERT_TRUE(o2.getMembers().size() == 1);
     ASSERT_TRUE(&o2.getMembers().front() == &p);
     ASSERT_TRUE(o2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&o2.getOwnedElements().front() == &p);
+    ASSERT_TRUE(&o2.getOwnedElements().get(p.getID()) == &p);
 
     ASSERT_TRUE(p.getOperation() == &o2);
     ASSERT_TRUE(p.getNamespace() == &o2);
@@ -264,8 +264,8 @@ TEST_F(OperationTest, reindexParameterDirectionTest) {
     ASSERT_TRUE(&o.getMembers().front() == &p);
     ASSERT_TRUE(&o.getMembers().back() == &p2);
     ASSERT_TRUE(o.getOwnedElements().size() == 2);
-    ASSERT_TRUE(&o.getOwnedElements().front() == &p);
-    ASSERT_TRUE(&o.getOwnedElements().back() == &p2);
+    ASSERT_TRUE(&o.getOwnedElements().get(p.getID()) == &p);
+    ASSERT_TRUE(&o.getOwnedElements().get(p2.getID()) == &p2);
 
     ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::RETURN);
     ASSERT_TRUE(p.getOperation() == &o);

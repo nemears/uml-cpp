@@ -24,7 +24,7 @@ TEST_F(DataTypeTest, addOwnedAttributeTest) {
     ASSERT_TRUE(d.getFeatures().size() == 1);
     ASSERT_TRUE(&d.getFeatures().front() == &p);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&d.getOwnedElements().front() == &p);
+    ASSERT_TRUE(*d.getOwnedElements().begin() == p);
 
     ASSERT_TRUE(p.getDataType() == &d);
     ASSERT_TRUE(p.getClassifier() == &d);
@@ -51,7 +51,7 @@ TEST_F(DataTypeTest, setDataTypeTest) {
     ASSERT_TRUE(d.getFeatures().size() == 1);
     ASSERT_TRUE(&d.getFeatures().front() == &p);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&d.getOwnedElements().front() == &p);
+    ASSERT_TRUE(*d.getOwnedElements().begin() == p);
 
     ASSERT_TRUE(p.getDataType() == &d);
     ASSERT_TRUE(p.getClassifier() == &d);
@@ -82,7 +82,7 @@ TEST_F(DataTypeTest, removeOwnedAttributeFunctorTest) {
     ASSERT_TRUE(d.getFeatures().size() == 1);
     ASSERT_TRUE(&d.getFeatures().front() == &p);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&d.getOwnedElements().front() == &p);
+    ASSERT_TRUE(*d.getOwnedElements().begin() == p);
 
     ASSERT_TRUE(p.getDataType() == &d);
     ASSERT_TRUE(p.getClassifier() == &d);
@@ -120,7 +120,7 @@ TEST_F(DataTypeTest, OverridePropertyDataTypeW_NullTest) {
     ASSERT_TRUE(d.getFeatures().size() == 1);
     ASSERT_TRUE(&d.getFeatures().front() == &p);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&d.getOwnedElements().front() == &p);
+    ASSERT_TRUE(*d.getOwnedElements().begin() == p);
 
     ASSERT_TRUE(p.getDataType() == &d);
     ASSERT_TRUE(p.getClassifier() == &d);
@@ -159,7 +159,7 @@ TEST_F(DataTypeTest, OverridePropertyDataTypeW_OtherTest) {
     ASSERT_TRUE(d.getFeatures().size() == 1);
     ASSERT_TRUE(&d.getFeatures().front() == &p);
     ASSERT_TRUE(d.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&d.getOwnedElements().front() == &p);
+    ASSERT_TRUE(*d.getOwnedElements().begin() == p);
 
     ASSERT_TRUE(p.getDataType() == &d);
     ASSERT_TRUE(p.getClassifier() == &d);
@@ -180,7 +180,7 @@ TEST_F(DataTypeTest, OverridePropertyDataTypeW_OtherTest) {
     ASSERT_TRUE(d2.getFeatures().size() == 1);
     ASSERT_TRUE(&d2.getFeatures().front() == &p2);
     ASSERT_TRUE(d2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&d2.getOwnedElements().front() == &p2);
+    ASSERT_TRUE(*d2.getOwnedElements().begin() == p2);
 
     ASSERT_TRUE(p2.getDataType() == &d2);
     ASSERT_TRUE(p2.getClassifier() == &d2);
@@ -313,7 +313,7 @@ TEST_F(DataTypeTest, overwriteOperationDataTypeW_OtherOperationTest) {
     ASSERT_TRUE(d2.getMembers().size() == 1);
     ASSERT_TRUE(&d2.getMembers().front() == &o);
     ASSERT_TRUE(d2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&d2.getOwnedElements().front() == &o);
+    ASSERT_TRUE(*d2.getOwnedElements().begin() == o);
 
     ASSERT_TRUE(o.getDataType() == &d2);
     ASSERT_TRUE(o.getFeaturingClassifier() == &d2);
@@ -411,8 +411,8 @@ TEST_F(DataTypeTest, copyDataTypeTest) {
     ASSERT_TRUE(&d2.getMembers().front() == &o);
     ASSERT_TRUE(&d2.getMembers().back() == &p);
     ASSERT_TRUE(d2.getOwnedElements().size() == 2);
-    ASSERT_TRUE(&d2.getOwnedElements().front() == &o);
-    ASSERT_TRUE(&d2.getOwnedElements().back() == &p);
+    ASSERT_TRUE(*d2.getOwnedElements().begin() == o);
+    ASSERT_TRUE(*(d2.getOwnedElements().begin()++) == p);
     ASSERT_TRUE(d2.getOwningPackage() == &pkg);
     ASSERT_TRUE(d2.getNamespace() == &pkg);
     ASSERT_TRUE(d2.getMemberNamespace().size() == 1);

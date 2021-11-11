@@ -138,7 +138,7 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
     ASSERT_EQ(&c2->getMemberNamespace().front(), &p);
     ASSERT_EQ(c2->getNamespace(), &p);
     ASSERT_EQ(c2->getOwningPackage(), &p);
-    ASSERT_EQ(&p.getOwnedElements().front(), c2);
+    ASSERT_EQ(*p.getOwnedElements().begin(), *c2);
     ASSERT_EQ(p.getMembers().size(), 2);
     ASSERT_EQ(p.getMembers().front(), *c2);
     ASSERT_EQ(&p.getMembers().front(), c2);
@@ -171,7 +171,7 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
     ASSERT_EQ(p2->getMembers().size(), 2);
     ASSERT_EQ(&p2->getMembers().front(), c2);
     ASSERT_EQ(p2->getOwnedElements().size(), 2);
-    ASSERT_EQ(&p2->getOwnedElements().front(), c2);
+    ASSERT_EQ(*p2->getOwnedElements().begin(), *c2);
 }
 
 TEST_F(UmlManagerTest, addToManagerAfterMountedTest) {

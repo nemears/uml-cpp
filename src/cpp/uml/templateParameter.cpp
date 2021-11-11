@@ -31,8 +31,8 @@ void TemplateParameter::RemoveOwnedParameteredElementProcedure::operator()(Param
         m_me->setParameteredElement(0);
         m_me->m_setFlag = false;
     }
-    if (m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalRemove(*el);
+    if (m_me->getOwnedElements().contains(el->getID())) {
+        m_me->getOwnedElements().remove(*el);
     }
 }
 
@@ -40,8 +40,8 @@ void TemplateParameter::AddOwnedParameteredElementProcedure::operator()(Paramete
     if (m_me->getParameteredElementID() != el->getID()) {
         m_me->setParameteredElement(el);
     }
-    if (!m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalAdd(*el);
+    if (!m_me->getOwnedElements().contains(el->getID())) {
+        m_me->getOwnedElements().add(*el);
     }
     if (el->getOwningTemplateParameterID() != m_me->getID()) {
         el->setOwningTemplateParameter(m_me);
@@ -52,8 +52,8 @@ void TemplateParameter::AddOwnedParameteredElementProcedure::operator()(ID id) c
     if (m_me->getParameteredElementID() != id) {
         m_me->m_parameteredElement.setByID(id);
     }
-    if (!m_me->getOwnedElements().count(id)) {
-        m_me->getOwnedElements().addByID(id);
+    if (!m_me->getOwnedElements().contains(id)) {
+        m_me->getOwnedElements().add(id);
     }
 }
 
@@ -87,8 +87,8 @@ void TemplateParameter::RemoveOwnedDefaultProcedure::operator()(ParameterableEle
     if (m_me->hasDefault()) {
         m_me->setDefault(0);
     }
-    if (m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalRemove(*el);
+    if (m_me->getOwnedElements().contains(el->getID())) {
+        m_me->getOwnedElements().remove(*el);
     }
     if (el->getTemplateParameterID() == m_me->getID()) {
         el->setTemplateParameter(0);
@@ -99,8 +99,8 @@ void TemplateParameter::AddOwnedDefaultProcedure::operator()(ParameterableElemen
     if (m_me->getDefaultID() != el->getID()) {
         m_me->setDefault(el);
     }
-    if (!m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalAdd(*el);
+    if (!m_me->getOwnedElements().contains(el->getID())) {
+        m_me->getOwnedElements().add(*el);
     }
     if (el->getTemplateParameterID() != m_me->getID()) {
         el->setTemplateParameter(m_me);
@@ -111,8 +111,8 @@ void TemplateParameter::AddOwnedDefaultProcedure::operator()(ID id) const {
     if (m_me->getDefaultID() != id) {
         m_me->m_default.setByID(id);
     }
-    if (!m_me->getOwnedElements().count(id)) {
-        m_me->getOwnedElements().addByID(id);
+    if (!m_me->getOwnedElements().contains(id)) {
+        m_me->getOwnedElements().add(id);
     }
 }
 

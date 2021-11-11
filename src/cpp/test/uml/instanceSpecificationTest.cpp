@@ -138,7 +138,7 @@ TEST_F(InstanceSpecificationTest, setAndRemoveSpecificationTest) {
     ASSERT_TRUE(inst.getSpecification() != 0);
     ASSERT_EQ(inst.getSpecification()->getID(), str.getID());
     ASSERT_EQ(inst.getOwnedElements().size(), 1);
-    ASSERT_EQ(inst.getOwnedElements().front().getID(), str.getID());
+    ASSERT_EQ(inst.getOwnedElements().get(str.getID()).getID(), str.getID()); //lol
     ASSERT_TRUE(str.getOwner() != 0);
     ASSERT_EQ(str.getOwner()->getID(), inst.getID());
     inst.setSpecification(0);

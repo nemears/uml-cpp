@@ -259,7 +259,7 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
     ASSERT_TRUE(prop2.getDefaultValue() != 0);
     ASSERT_EQ(&defaultValue, prop2.getDefaultValue());
     ASSERT_EQ(prop2.getOwnedElements().size(), 1);
-    ASSERT_EQ(&prop2.getOwnedElements().front(), &defaultValue);
+    ASSERT_EQ(*prop2.getOwnedElements().begin(), defaultValue);
     ASSERT_EQ(prop2.getRedefinedProperties().size(), 1);
     ASSERT_EQ(&prop2.getRedefinedProperties().front(), &redefined);
     ASSERT_EQ(prop2.getRedefinedElements().size(), 1);
@@ -277,8 +277,8 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
     ASSERT_EQ(&s.getMembers().front(), &redefined);
     ASSERT_EQ(&s.getMembers().back(), &prop2);
     ASSERT_EQ(s.getOwnedElements().size(), 2);
-    ASSERT_EQ(&s.getOwnedElements().front(), &gen);
-    ASSERT_EQ(&s.getOwnedElements().back(), &prop2);
+    ASSERT_EQ(*s.getOwnedElements().begin(), gen);
+    ASSERT_EQ(*(s.getOwnedElements().begin()++), prop2);
 
     // Release the redefined prop
     ASSERT_NO_THROW(m.release(redefined.getID()));
@@ -324,7 +324,7 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
     ASSERT_TRUE(prop3.hasDefaultValue());
     ASSERT_TRUE(prop3.getDefaultValueRef().isSubClassOf(ElementType::LITERAL_STRING));
     ASSERT_EQ(prop3.getOwnedElements().size(), 1);
-    ASSERT_EQ(prop3.getOwnedElements().front(), prop3.getDefaultValueRef());
+    ASSERT_EQ(*prop3.getOwnedElements().begin(), prop3.getDefaultValueRef());
     LiteralString& defaultValue2 = prop3.getDefaultValueRef().as<LiteralString>();
     ASSERT_TRUE(defaultValue2.hasOwner());
     ASSERT_EQ(defaultValue2.getOwnerRef(), prop3);

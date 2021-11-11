@@ -94,10 +94,10 @@ TEST_F(NamespaceTest, SharedMemberTest) {
     ASSERT_EQ(n1.getMembers().size(), 1);
     ASSERT_EQ(n1.getMembers().front(), m);
     ASSERT_EQ(n1.getOwnedElements().size(), 1);
-    ASSERT_EQ(n1.getOwnedElements().front(), m);
+    ASSERT_EQ(n1.getOwnedElements().get(m.getID()), m);
     ASSERT_EQ(n2.getOwnedMembers().size() , 0);
     ASSERT_EQ(n2.getMembers().size(), 1);
-    ASSERT_EQ(n2.getMembers().front(), m);
+    ASSERT_EQ(n2.getMembers().get(m.getID()), m);
     ASSERT_EQ(n2.getOwnedElements().size(), 0);
     ASSERT_TRUE(m.hasNamespace());
     ASSERT_TRUE(m.getNamespace());

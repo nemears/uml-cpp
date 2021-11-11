@@ -42,8 +42,8 @@ TEST_F(PrimitiveTypeParserTest, basicPrimitiveTypeTest) {
     ASSERT_TRUE(&d.getMembers().front() == p);
     ASSERT_TRUE(&d.getMembers().back() == o);
     ASSERT_TRUE(d.getOwnedElements().size() == 2);
-    ASSERT_TRUE(&d.getOwnedElements().front() == p);
-    ASSERT_TRUE(&d.getOwnedElements().back() == o);
+    ASSERT_TRUE(*d.getOwnedElements().begin() == *p);
+    ASSERT_TRUE(*(d.getOwnedElements().begin()++) == *o);
 }
 
 TEST_F(PrimitiveTypeParserTest, emitPrimWGeneralAndAttribute) {

@@ -4,8 +4,8 @@ using namespace std;
 using namespace UML;
 
 void Expression::AddOperandFunctor::operator()(ValueSpecification& el) const {
-    if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalAdd(el);
+    if (!m_el->getOwnedElements().contains(el.getID())) {
+        m_el->getOwnedElements().add(el);
     }
     if (el.getExpressionID() != m_el->getID()) {
         el.setExpression(m_el);
@@ -14,13 +14,13 @@ void Expression::AddOperandFunctor::operator()(ValueSpecification& el) const {
 }
 
 void Expression::AddOperandFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedElements().count(id)) {
-        m_el->getOwnedElements().addByID(id);
+    if (!m_el->getOwnedElements().contains(id)) {
+        m_el->getOwnedElements().add(id);
     }
 }
 
 void Expression::RemoveOperandFunctor::operator()(ValueSpecification& el) const {
-    if (m_el->getOwnedElements().count(el.getID())) {
+    if (m_el->getOwnedElements().contains(el.getID())) {
         m_el->getOwnedElements().remove(el);
     }
     if (el.getExpressionID() == m_el->getID()) {

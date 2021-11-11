@@ -34,8 +34,8 @@ TEST_F(EnumerationParserTest, basicEnumerationTest) {
     ASSERT_TRUE(&e->getMembers().front() == l1);
     ASSERT_TRUE(&e->getMembers().back() == l2);
     ASSERT_TRUE(e->getOwnedElements().size() == 2);
-    ASSERT_TRUE(&e->getOwnedElements().front() == l1);
-    ASSERT_TRUE(&e->getOwnedElements().back() == l2);
+    ASSERT_EQ(*e->getOwnedElements().begin(), *l1);
+    ASSERT_EQ(*(e->getOwnedElements().begin()++), *l2);
 
     ASSERT_TRUE(l1->getEnumeration() == e);
     ASSERT_TRUE(l1->getNamespace() == e);

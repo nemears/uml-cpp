@@ -27,7 +27,7 @@ void Package::RemovePackagedElementFunctor::operator()(PackageableElement& el) c
 void Package::AddPackageMergeFunctor::operator()(PackageMerge& el) const {
     oppositeSingletonAdd(el, &PackageMerge::setReceivingPackage);
     subsetsAdd<Element, DirectedRelationship>(el, &Element::getDirectedRelationships);
-    subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
+    //subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
     updateCopiedSequenceAddedTo(el, &Package::getPackageMerge);
 }
 
@@ -35,15 +35,15 @@ void Package::AddPackageMergeFunctor::operator()(ID id) const {
     if (!m_el->getDirectedRelationships().count(id)) {
         m_el->getDirectedRelationships().addByID(id);
     }
-    if (!m_el->getOwnedElements().count(id)) {
-        m_el->getOwnedElements().addByID(id);
+    if (!m_el->getOwnedElements().contains(id)) {
+        m_el->getOwnedElements().add(id);
     }
 }
 
 void Package::RemovePackageMergeFunctor::operator()(PackageMerge& el) const {
     oppositeSingletonRemove(el, &PackageMerge::m_receivingPackage);
     subsetsRemove<Element, DirectedRelationship>(el, &Element::getDirectedRelationships);
-    subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
+    //subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
     updateCopiedSequenceRemovedFrom(el, &Package::getPackageMerge);
 }
 
@@ -56,8 +56,8 @@ void Package::AddProfileApplicationFunctor::operator()(ProfileApplication& el) c
         m_el->getDirectedRelationships().add(el);
     }
 
-    if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalAdd(el);
+    if (!m_el->getOwnedElements().contains(el.getID())) {
+        m_el->getOwnedElements().add(el);
     }
     updateCopiedSequenceAddedTo(el, &Package::getProfileApplications);
 }
@@ -66,8 +66,8 @@ void Package::AddProfileApplicationFunctor::operator()(ID id)  const {
     if (!m_el->getDirectedRelationships().count(id)) {
         m_el->getDirectedRelationships().addByID(id);
     }
-    if (!m_el->getOwnedElements().count(id)) {
-        m_el->getOwnedElements().addByID(id);
+    if (!m_el->getOwnedElements().contains(id)) {
+        m_el->getOwnedElements().add(id);
     }
 }
 
@@ -80,8 +80,8 @@ void Package::RemoveProfileApplicationFunctor::operator()(ProfileApplication& el
         m_el->getDirectedRelationships().remove(el);
     }
 
-    if (m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalRemove(el);
+    if (m_el->getOwnedElements().contains(el.getID())) {
+        m_el->getOwnedElements().remove(el);
     }
     updateCopiedSequenceRemovedFrom(el, &Package::getProfileApplications);
 }

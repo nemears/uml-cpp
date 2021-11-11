@@ -91,7 +91,7 @@ TEST_F(OperationParserTest, mountAndEditOperationTest) {
     ASSERT_EQ(op2.getMembers().size(), 1);
     ASSERT_EQ(op2.getMembers().front(), param);
     ASSERT_EQ(op2.getOwnedElements().size(), 1);
-    ASSERT_EQ(op2.getOwnedElements().front(), param);
+    ASSERT_EQ(*op2.getOwnedElements().begin(), param);
 
     ID paramID = param.getID();
     m.release(param);

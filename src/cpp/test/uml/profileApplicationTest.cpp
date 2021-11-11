@@ -28,7 +28,7 @@ TEST_F(ProfileApplicationTest, setProfileAndPackageTest) {
     ASSERT_EQ(pckg.getDirectedRelationships().size(), 1);
     ASSERT_EQ(pckg.getDirectedRelationships().front().getID(), pa.getID());
     ASSERT_EQ(pckg.getOwnedElements().size(), 1);
-    ASSERT_EQ(pckg.getOwnedElements().front().getID(), pa.getID());
+    ASSERT_EQ((*pckg.getOwnedElements().begin()).getID(), pa.getID());
 }
 
 TEST_F(ProfileApplicationTest, removeProfileApplication) {

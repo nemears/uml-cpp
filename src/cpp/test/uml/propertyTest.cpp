@@ -29,7 +29,7 @@ TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
     ASSERT_NO_THROW(p.setDefaultValue(&ls));
     ASSERT_TRUE(p.getDefaultValue() == &ls);
     ASSERT_TRUE(p.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&p.getOwnedElements().front() == &ls);
+    ASSERT_TRUE(&p.getOwnedElements().get(ls.getID()) == &ls);
 }
 
 // TEST_F(PropertyTest, setDefaultValueOfImproperTypeTestString) {

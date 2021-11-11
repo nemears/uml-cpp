@@ -98,7 +98,7 @@ TEST_F(AssociationTest, addOwnedEndTest) {
     ASSERT_TRUE(a.getOwnedMembers().size() == 1);
     ASSERT_TRUE(&a.getOwnedMembers().front() == &p);
     ASSERT_TRUE(a.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&a.getOwnedElements().front() == &p);
+    ASSERT_TRUE(*a.getOwnedElements().begin() == p);
     ASSERT_TRUE(a.getFeatures().size() == 1);
     ASSERT_TRUE(&a.getFeatures().front() == &p);
     ASSERT_TRUE(a.getMemberEnds().size() == 1);
@@ -123,7 +123,7 @@ TEST_F(AssociationTest, setOwningAssociationTest) {
     ASSERT_TRUE(a.getOwnedMembers().size() == 1);
     ASSERT_TRUE(&a.getOwnedMembers().front() == &p);
     ASSERT_TRUE(a.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&a.getOwnedElements().front() == &p);
+    ASSERT_TRUE(*a.getOwnedElements().begin() == p);
     ASSERT_TRUE(a.getFeatures().size() == 1);
     ASSERT_TRUE(&a.getFeatures().front() == &p);
     ASSERT_TRUE(a.getMemberEnds().size() == 1);
@@ -199,7 +199,7 @@ TEST_F(AssociationTest, overwriteOwningAssociationTest) {
     ASSERT_TRUE(a2.getOwnedMembers().size() == 1);
     ASSERT_TRUE(&a2.getOwnedMembers().front() == &p);
     ASSERT_TRUE(a2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&a2.getOwnedElements().front() == &p);
+    ASSERT_TRUE(*a2.getOwnedElements().begin() == p);
     ASSERT_TRUE(a2.getFeatures().size() == 1);
     ASSERT_TRUE(&a2.getFeatures().front() == &p);
     ASSERT_TRUE(a2.getMemberEnds().size() == 1);
@@ -226,7 +226,7 @@ TEST_F(AssociationTest, addNavigableOwnedEndTest) {
     ASSERT_TRUE(a.getOwnedMembers().size() == 1);
     ASSERT_TRUE(&a.getOwnedMembers().front() == &p);
     ASSERT_TRUE(a.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&a.getOwnedElements().front() == &p);
+    ASSERT_TRUE(*a.getOwnedElements().begin() == p);
     ASSERT_TRUE(a.getFeatures().size() == 1);
     ASSERT_TRUE(&a.getFeatures().front() == &p);
     ASSERT_TRUE(a.getMemberEnds().size() == 1);
@@ -306,7 +306,7 @@ TEST_F(AssociationTest, navigableOwnedEndOverwriteOwningAssociationTest) {
     ASSERT_TRUE(a2.getOwnedMembers().size() == 1);
     ASSERT_TRUE(&a2.getOwnedMembers().front() == &p);
     ASSERT_TRUE(a2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&a2.getOwnedElements().front() == &p);
+    ASSERT_TRUE(*a2.getOwnedElements().begin() == p);
     ASSERT_TRUE(a2.getFeatures().size() == 1);
     ASSERT_TRUE(&a2.getFeatures().front() == &p);
     ASSERT_TRUE(a2.getMemberEnds().size() == 1);

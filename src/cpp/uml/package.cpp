@@ -5,156 +5,54 @@
 
 using namespace UML;
 
-void Package::AddPackagedElementFunctor::operator()(PackageableElement& el) const {
-    oppositeSingletonAdd(el, &PackageableElement::setOwningPackage);
-    subsetsAdd<Namespace, NamedElement>(el, &Namespace::getOwnedMembers);
-    updateCopiedSequenceAddedTo(el, &Package::getPackagedElements);
-}
-
-void Package::AddPackagedElementFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedMembers().count(id)) {
-        m_el->getOwnedMembers().addByID(id);
-    }
-    // TODO update copies
-}
-
-void Package::RemovePackagedElementFunctor::operator()(PackageableElement& el) const {
-    oppositeSingletonRemove(el, &PackageableElement::m_owningPackage);
-    subsetsRemove<Namespace, NamedElement>(el, &Namespace::getMembers);
-    updateCopiedSequenceRemovedFrom(el, &Package::getPackagedElements);
-}
-
-void Package::AddPackageMergeFunctor::operator()(PackageMerge& el) const {
-    oppositeSingletonAdd(el, &PackageMerge::setReceivingPackage);
-    subsetsAdd<Element, DirectedRelationship>(el, &Element::getDirectedRelationships);
-    //subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
-    updateCopiedSequenceAddedTo(el, &Package::getPackageMerge);
-}
-
-void Package::AddPackageMergeFunctor::operator()(ID id) const {
-    if (!m_el->getDirectedRelationships().count(id)) {
-        m_el->getDirectedRelationships().addByID(id);
-    }
-    if (!m_el->getOwnedElements().contains(id)) {
-        m_el->getOwnedElements().add(id);
-    }
-}
-
-void Package::RemovePackageMergeFunctor::operator()(PackageMerge& el) const {
-    oppositeSingletonRemove(el, &PackageMerge::m_receivingPackage);
-    subsetsRemove<Element, DirectedRelationship>(el, &Element::getDirectedRelationships);
-    //subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
-    updateCopiedSequenceRemovedFrom(el, &Package::getPackageMerge);
-}
-
-void Package::AddProfileApplicationFunctor::operator()(ProfileApplication& el) const {
-    if (el.getApplyingPackage() != m_el) {
-        el.setApplyingPackage(m_el);
-    }
-
-    if (!m_el->getDirectedRelationships().count(el.getID())) {
-        m_el->getDirectedRelationships().add(el);
-    }
-
-    if (!m_el->getOwnedElements().contains(el.getID())) {
-        m_el->getOwnedElements().add(el);
-    }
-    updateCopiedSequenceAddedTo(el, &Package::getProfileApplications);
-}
-
-void Package::AddProfileApplicationFunctor::operator()(ID id)  const {
-    if (!m_el->getDirectedRelationships().count(id)) {
-        m_el->getDirectedRelationships().addByID(id);
-    }
-    if (!m_el->getOwnedElements().contains(id)) {
-        m_el->getOwnedElements().add(id);
-    }
-}
-
-void Package::RemoveProfileApplicationFunctor::operator()(ProfileApplication& el) const {
-    if (el.getApplyingPackage() == m_el) {
-        el.setApplyingPackage(0);
-    }
-
-    if (m_el->getDirectedRelationships().count(el.getID())) {
-        m_el->getDirectedRelationships().remove(el);
-    }
-
-    if (m_el->getOwnedElements().contains(el.getID())) {
-        m_el->getOwnedElements().remove(el);
-    }
-    updateCopiedSequenceRemovedFrom(el, &Package::getProfileApplications);
-}
-
-void Package::AddOwnedStereotypeFunctor::operator()(Stereotype& el) const {
-    if (!m_el->getPackagedElements().count(el.getID())) {
-        m_el->getPackagedElements().add(el);
-    }
-    updateCopiedSequenceAddedTo(el, &Package::getOwnedStereotypes);
-}
-
-void Package::AddOwnedStereotypeFunctor::operator()(ID id) const {
-    if (!m_el->getPackagedElements().count(id)) {
-        m_el->getPackagedElements().addByID(id);
-    }
-}
-
-void Package::RemoveOwnedStereotypeFunctor::operator()(Stereotype& el) const {
-    if (m_el->getPackagedElements().count(el.getID())) {
-        m_el->getPackagedElements().remove(el);
-    }
-    updateCopiedSequenceRemovedFrom(el, &Package::getOwnedStereotypes);
-}
-
 void Package::referenceReindexed(ID oldID, ID newID) {
     Namespace::referenceReindexed(oldID, newID);
     PackageableElement::referenceReindexed(oldID, newID);
     TemplateableElement::referenceReindexed(oldID, newID);
-    m_packagedElements.reindex(oldID, newID, &Package::getPackagedElements);
-    m_packageMerge.reindex(oldID, newID, &Package::getPackageMerge);
-    m_profileApplications.reindex(oldID, newID, &Package::getProfileApplications);
-    m_ownedStereotypes.reindex(oldID, newID, &Package::getOwnedStereotypes);
+    m_packagedElements.reindex(oldID, newID);
+    m_packageMerge.reindex(oldID, newID);
+    m_profileApplications.reindex(oldID, newID);
+    m_ownedStereotypes.reindex(oldID, newID);
 }
 
 void Package::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     PackageableElement::referencingReleased(id);
     TemplateableElement::referencingReleased(id);
-    m_packagedElements.elementReleased(id, &Package::getPackagedElements);
-    m_packageMerge.elementReleased(id, &Package::getPackageMerge);
-    m_profileApplications.elementReleased(id, &Package::getProfileApplications);
-    m_ownedStereotypes.elementReleased(id, &Package::getOwnedStereotypes);
+    m_packagedElements.release(id);
+    m_packageMerge.release(id);
+    m_profileApplications.release(id);
+    m_ownedStereotypes.release(id);
 }
 
 void Package::restoreReferences() {
     Namespace::restoreReferences();
     PackageableElement::restoreReferences();
     TemplateableElement::restoreReferences();
-    m_packagedElements.restoreReferences();
-    m_packageMerge.restoreReferences();
-    m_profileApplications.restoreReferences();
-    m_ownedStereotypes.restoreReferences();
+    // m_packagedElements.restoreReferences();
+    // m_packageMerge.restoreReferences();
+    // m_profileApplications.restoreReferences();
+    // m_ownedStereotypes.restoreReferences();
 }
 
 void Package::referenceErased(ID id) {
     Namespace::referenceErased(id);
     PackageableElement::referenceErased(id);
     TemplateableElement::referenceErased(id);
-    m_packagedElements.elementErased(id);
-    m_packageMerge.elementErased(id);
-    m_profileApplications.elementErased(id);
-    m_ownedStereotypes.elementErased(id);
+    m_packagedElements.eraseElement(id);
+    m_packageMerge.eraseElement(id);
+    m_profileApplications.eraseElement(id);
+    m_ownedStereotypes.eraseElement(id);
 }
 
 Package::Package() : Element(ElementType::PACKAGE) {
-    m_packagedElements.addProcedures.push_back(new AddPackagedElementFunctor(this));
-    m_packagedElements.removeProcedures.push_back(new RemovePackagedElementFunctor(this));
-    m_packageMerge.addProcedures.push_back(new AddPackageMergeFunctor(this));
-    m_packageMerge.removeProcedures.push_back(new RemovePackageMergeFunctor(this));
-    m_profileApplications.addProcedures.push_back(new AddProfileApplicationFunctor(this));
-    m_profileApplications.removeProcedures.push_back(new RemoveProfileApplicationFunctor(this));
-    m_ownedStereotypes.addProcedures.push_back(new AddOwnedStereotypeFunctor(this));
-    m_ownedStereotypes.removeProcedures.push_back(new RemoveOwnedStereotypeFunctor(this));
+    m_packagedElements.subsets(m_ownedMembers);
+    m_packagedElements.opposite(&PackageableElement::getOwningPackageSingleton);
+    m_packageMerge.subsets(*m_ownedElements);
+    m_packageMerge.subsets(*m_directedRelationships);
+    m_profileApplications.subsets(*m_ownedElements);
+    m_profileApplications.subsets(*m_directedRelationships);
+    m_ownedStereotypes.subsets(m_packagedElements);
 }
 
 Package::~Package() {
@@ -168,41 +66,27 @@ NamedElement(pckg),
 Element(pckg, ElementType::PACKAGE) {
     m_packagedElements = pckg.m_packagedElements;
     m_packagedElements.m_el = this;
-    m_packagedElements.addProcedures.clear();
-    m_packagedElements.addProcedures.push_back(new AddPackagedElementFunctor(this));
-    m_packagedElements.removeProcedures.clear();
-    m_packagedElements.removeProcedures.push_back(new RemovePackagedElementFunctor(this));
     m_packageMerge = pckg.m_packageMerge;
     m_packageMerge.m_el = this;
-    m_packageMerge.addProcedures.clear();
-    m_packageMerge.removeProcedures.clear();
-    m_packageMerge.addProcedures.push_back(new AddPackageMergeFunctor(this));
-    m_packageMerge.removeProcedures.push_back(new RemovePackageMergeFunctor(this));
+    m_profileApplications = pckg.m_profileApplications;
     m_profileApplications.m_el = this;
-    m_profileApplications.addProcedures.clear();
-    m_profileApplications.removeProcedures.clear();
-    m_profileApplications.addProcedures.push_back(new AddProfileApplicationFunctor(this));
-    m_profileApplications.removeProcedures.push_back(new RemoveProfileApplicationFunctor(this));
+    m_ownedStereotypes = pckg.m_ownedStereotypes;
     m_ownedStereotypes.m_el = this;
-    m_ownedStereotypes.addProcedures.clear();
-    m_ownedStereotypes.removeProcedures.clear();
-    m_ownedStereotypes.addProcedures.push_back(new AddOwnedStereotypeFunctor(this));
-    m_ownedStereotypes.removeProcedures.push_back(new RemoveOwnedStereotypeFunctor(this));
 }
 
-Sequence<PackageableElement>& Package::getPackagedElements() {
+Set<PackageableElement, Package>& Package::getPackagedElements() {
     return m_packagedElements;
 }
 
-Sequence<PackageMerge>& Package::getPackageMerge() {
+Set<PackageMerge, Package>& Package::getPackageMerge() {
     return m_packageMerge;
 }
 
-Sequence<ProfileApplication>& Package::getProfileApplications() {
+Set<ProfileApplication, Package>& Package::getProfileApplications() {
     return m_profileApplications;
 }
 
-Sequence<Stereotype>& Package::getOwnedStereotypes() {
+Set<Stereotype, Package>& Package::getOwnedStereotypes() {
     return m_ownedStereotypes;
 }
 

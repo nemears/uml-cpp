@@ -18,22 +18,23 @@ namespace UML {
         friend class Parsers::SetOwningPackage;
 
         protected:
-            Singleton<Package, PackageableElement> m_owningPackage = Singleton<Package, PackageableElement>(this);
-            class RemoveOwningPackageProcedure : public AbstractSingletonProcedure<Package, PackageableElement> {
-                public:
-                    RemoveOwningPackageProcedure(PackageableElement* me) : AbstractSingletonProcedure<Package, PackageableElement>(me) {};
-                    void operator()(Package* el) const override;
-            };
-            class AddOwningPackageProcedure : public AbstractSingletonProcedure<Package, PackageableElement> {
-                public:
-                    AddOwningPackageProcedure(PackageableElement* me) : AbstractSingletonProcedure<Package, PackageableElement>(me) {};
-                    void operator()(Package* el) const override;
-                    void operator()(ID id) const override;
-            };
+            Singleton2<Package, PackageableElement> m_owningPackage = Singleton2<Package, PackageableElement>(this);
+            // class RemoveOwningPackageProcedure : public AbstractSingletonProcedure<Package, PackageableElement> {
+            //     public:
+            //         RemoveOwningPackageProcedure(PackageableElement* me) : AbstractSingletonProcedure<Package, PackageableElement>(me) {};
+            //         void operator()(Package* el) const override;
+            // };
+            // class AddOwningPackageProcedure : public AbstractSingletonProcedure<Package, PackageableElement> {
+            //     public:
+            //         AddOwningPackageProcedure(PackageableElement* me) : AbstractSingletonProcedure<Package, PackageableElement>(me) {};
+            //         void operator()(Package* el) const override;
+            //         void operator()(ID id) const override;
+            // };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            Set<Package, PackageableElement>& getOwningPackageSingleton();
             PackageableElement();
         public:
             PackageableElement(const PackageableElement& el);

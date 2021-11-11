@@ -54,6 +54,8 @@ namespace UML {
 
     class Namespace;
     class NamedElement;
+    class Package;
+    class PackageableElement;
 
     /**
      * This container is based around a weighted binary search tree
@@ -67,6 +69,8 @@ namespace UML {
         friend class Element;
         friend class Namespace;
         friend class NamedElement;
+        friend class Package;
+        friend class PackageableElement;
 
         protected:
             std::vector<AbstractSet*> m_subsetOf;

@@ -519,15 +519,22 @@ namespace UML {
                 throw ManagerStateException("Improper name used in set!"); // TODO change
             };
             T& get(int i) {
-                // TODO proper implementation
-                // check size and determine which side to go down
-                if (m_root) {
-                    if (!m_root->m_el) {
-                        m_root->m_el = m_el->m_manager->get(m_el, m_root->m_id);
+                int size = m_size;
+                ContainerNode* node = m_root;
+                while (i < size) {
+                    // check size and determine which side to go down
+                    size--;
+                    size = size / 2;
+                    if (i > size) {
+                        node = node->m_left;
+                    } else {
+                        node = node->m_right;
                     }
-                    return *dynamic_cast<T*>(m_root->m_el);
                 }
-                throw ManagerStateException("TODO get()");
+                if (!node->m_el) {
+                    node->m_el = m_el->m_manager->get(m_el, node->m_id);
+                }
+                return *dynamic_cast<T*>(node->m_el);
             };
             T& front() {
                 if (m_root) {

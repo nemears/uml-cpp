@@ -8,6 +8,7 @@ namespace UML {
         public:
             Singleton2(U* el) : Set<T, U>(el) {};
             Singleton2() {};
+            Singleton2<T,U>(const Singleton2<T,U>& rhs) : Set<T, U>(rhs) {};
             T* get() {
                 if (this->m_root) {
                     return dynamic_cast<T*>(this->m_root->m_el);

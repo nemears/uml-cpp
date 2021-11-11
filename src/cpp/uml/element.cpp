@@ -244,8 +244,8 @@ Element::Element(const Element& el, ElementType elementType) : m_elementType(ele
     // } else {
     //     m_ownerPtr = el.m_ownerPtr;
     // }
-    *m_owner = *el.m_owner;
-    *m_ownedElements = *el.m_ownedElements;
+    m_owner = new Singleton2<Element, Element>(*el.m_owner);
+    m_ownedElements = new Set<Element, Element>(*el.m_ownedElements);
 
     // m_ownedElements = new Sequence<>(*el.m_ownedElements);
     // m_ownedElements->m_el = this;

@@ -242,8 +242,10 @@ namespace UML {
                 m_rootRedefinedSet = rhs.m_rootRedefinedSet;
                 ContainerNode* curr = rhs.m_root;
                 ContainerNode* mine = m_root;
+                m_guard = rhs.m_guard;
                 while (curr) {
                     ContainerNode* temp = new ContainerNode();
+                    temp->m_guard = m_guard;
                     temp->m_parent = mine;
                     if (curr->m_left) {
                         temp->m_id = curr->m_left->m_id;

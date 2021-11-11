@@ -234,6 +234,36 @@ namespace UML {
         public:
             Set(Element* el) : m_el(el) {};
             Set() {};
+            Set(const Set<T,U>& rhs) {
+                if (rhs.m_root) {
+                    m_root = new ContainerNode(*rhs.m_root->m_el);
+                }
+                m_size = rhs.m_size;
+                m_rootRedefinedSet = rhs.m_rootRedefinedSet;
+                ContainerNode* curr = rhs.m_root;
+                ContainerNode* mine = m_root;
+                while (curr) {
+                    ContainerNode* temp = new ContainerNode();
+                    temp->m_parent = mine;
+                    if (curr->m_left) {
+                        temp->m_id = curr->m_left->m_id;
+                        temp->m_el = curr->m_left->m_el;
+                        curr = curr->m_left;
+                        mine = temp;
+                    } else {
+                        do {
+                            curr = curr->m_parent;
+                            mine = mine->m_parent;
+                        } while (!curr->m_right && curr);
+                        if (curr) {
+                            temp->m_id = curr->m_right->m_id;
+                            temp->m_el = curr->m_right->m_el;
+                            curr = curr->m_right;
+                            mine = temp;
+                        }
+                    }
+                }
+            };
             virtual ~Set() { 
                 if (m_rootRedefinedSet) {
                     ContainerNode* curr = m_root;
@@ -520,7 +550,7 @@ namespace UML {
             };
             T& get(int i) {
                 int size = m_size;
-                ContainerNode* node = m_root;
+                ContainerNode* node = m_root;  //this wont work
                 while (i < size) {
                     // check size and determine which side to go down
                     size--;

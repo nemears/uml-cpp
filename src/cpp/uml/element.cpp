@@ -2,7 +2,6 @@
 #include "uml/umlManager.h"
 #include "uml/sequence.h"
 #include "uml/relationship.h"
-#include "uml/elementFunctors.h"
 #include "uml/directedRelationship.h"
 #include "uml/comment.h"
 #include "uml/instanceSpecification.h"
@@ -13,88 +12,6 @@
 
 using namespace std;
 using namespace UML;
-
-// void SetOwnerFunctor::operator()(Element& el) const{
-//     oppositeSingletonAdd(el, &Element::setOwner);
-//     updateCopiedSequenceAddedTo(el, &Element::getOwnedElements);
-// }
-
-void AddRelationshipFunctor::operator()(Relationship& el) const {
-    oppositeSequenceAdd(el, &Relationship::getRelatedElements);
-    updateCopiedSequenceAddedTo(el, &Element::getRelationships);
-}
-
-void RemoveRelationshipFunctor::operator()(Relationship& el) const {
-    oppositeSequenceRemove(el, &Relationship::getRelatedElements);
-    updateCopiedSequenceRemovedFrom(el, &Element::getRelationships);
-}
-
-// void RemoveOwnerFunctor::operator()(Element& el) const {
-//     oppositeSingletonRemove(el, &Element::m_ownerID, &Element::setOwner);
-//     updateCopiedSequenceRemovedFrom(el, &Element::getOwnedElements);
-// }
-
-void AddDirectedRelationshipFunctor::operator()(DirectedRelationship& el) const {
-    subsetsAdd<Element, Relationship>(el, &Element::getRelationships);
-    updateCopiedSequenceAddedTo(el, &Element::getDirectedRelationships);
-}
-
-void AddDirectedRelationshipFunctor::operator()(ID id) const {
-    if (!m_el->getRelationships().count(id)) {
-        m_el->getRelationships().addByID(id);
-    }
-}
-
-void RemoveDirectedRelationshipFunctor::operator()(DirectedRelationship& el) const {
-    subsetsRemove<Element, Relationship>(el, &Element::getRelationships);
-    updateCopiedSequenceRemovedFrom(el, &Element::getDirectedRelationships);
-}
-
-void AddOwnedCommentFunctor::operator()(Comment& el) const {
-    //subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
-    oppositeSingletonAdd(el, &Comment::setOwningElement);
-    updateCopiedSequenceAddedTo(el, &Element::getOwnedComments);
-}
-
-void AddOwnedCommentFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedElements().count(id)) {
-        m_el->getOwnedElements().add(id);
-    }
-}
-
-void RemoveOwnedCommentFunctor::operator()(Comment& el) const {
- //   subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
-    oppositeSingletonRemove(el, &Comment::m_owningElement);
-    updateCopiedSequenceRemovedFrom(el, &Element::getOwnedComments);
-}
-
-void AddAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {
-  //  subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
-    updateCopiedSequenceAddedTo(el, &Element::getAppliedStereotypes);
-}
-
-void AddAppliedStereotypeFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedElements().count(id)) {
-        m_el->getOwnedElements().add(id);
-    }
-}
-
-void RemoveAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {
-//    subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
-    updateCopiedSequenceRemovedFrom(el, &Element::getAppliedStereotypes);
-}
-
-void CheckAppliedStereotypeFunctor::operator()(InstanceSpecification& el) const {
-    if (el.getClassifier() != 0) {
-        if (!el.getClassifier()->isSubClassOf(ElementType::STEREOTYPE)) {
-            // TODO: check extension
-            throw InvalidAppliedStereotypeException();
-        }
-    }
-    else {
-        throw InvalidAppliedStereotypeException();
-    }
-}
 
 void Element::setReference(Element* referencing) {
     if (m_node->m_references.count(referencing->getID())) {
@@ -132,10 +49,10 @@ void Element::removeReference(ID referencing) {
 void Element::referenceReindexed(ID oldID, ID newID) {
     m_ownedElements->reindex(oldID, newID);
     m_owner->reindex(oldID, newID);
-    m_ownedComments->reindex(oldID, newID, &Element::getOwnedComments);
-    m_relationships->reindex(oldID, newID, &Element::getRelationships);
-    m_directedRelationships->reindex(oldID, newID, &Element::getDirectedRelationships);
-    m_appliedStereotype->reindex(oldID, newID, &Element::getAppliedStereotypes);
+    m_ownedComments->reindex(oldID, newID);
+    m_relationships->reindex(oldID, newID);
+    m_directedRelationships->reindex(oldID, newID);
+    m_appliedStereotype->reindex(oldID, newID);
 }
 
 void Element::referencingReleased(ID id) {
@@ -144,10 +61,10 @@ void Element::referencingReleased(ID id) {
     }
     m_owner->release(id);
     m_ownedElements->release(id);
-    m_relationships->elementReleased(id, &Element::getRelationships);
-    m_directedRelationships->elementReleased(id, &Element::getDirectedRelationships);
-    m_ownedComments->elementReleased(id, &Element::getOwnedComments);
-    m_appliedStereotype->elementReleased(id, &Element::getAppliedStereotypes);
+    m_relationships->release(id);
+    m_directedRelationships->release(id);
+    m_ownedComments->release(id);
+    m_appliedStereotype->release(id);
 }
 
 void Element::restoreReferences() {
@@ -157,10 +74,10 @@ void Element::restoreReferences() {
     //         m_manager->get(this, m_ownerID)->restoreReference(this);
     //     }
     // }
-    m_ownedComments->restoreReferences();
-    m_relationships->restoreReferences();
-    m_directedRelationships->restoreReferences();
-    m_appliedStereotype->restoreReferences();
+    // m_ownedComments->restoreReferences();
+    // m_relationships->restoreReferences();
+    // m_directedRelationships->restoreReferences();
+    // m_appliedStereotype->restoreReferences();
 }
 
 void Element::restoreReference(Element* el) {
@@ -172,10 +89,10 @@ void Element::restoreReference(Element* el) {
 void Element::referenceErased(ID id) {
     m_owner->eraseElement(id);
     m_ownedElements->eraseElement(id);
-    m_ownedComments->elementErased(id);
-    m_relationships->elementErased(id);
-    m_directedRelationships->elementErased(id);
-    m_appliedStereotype->elementErased(id);
+    m_ownedComments->eraseElement(id);
+    m_relationships->eraseElement(id);
+    m_directedRelationships->eraseElement(id);
+    m_appliedStereotype->eraseElement(id);
 }
 
 Set<Element, Element>& Element::getOwnerSingleton() {
@@ -186,33 +103,22 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_manager = 0;
     m_node = 0;
     m_id = ID::randomID();
-    // m_ownerPtr = 0;
 
     m_owner = new Singleton2<Element, Element>(this);
 
-    // m_ownedElements = new Sequence<Element>(this);
-    // m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
-    // m_ownedElements->addChecks.push_back(new ReadOnlySequenceFunctor(this, "ownedElements"));
-    // m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
-    // m_ownedElements->removeChecks.push_back(new ReadOnlySequenceFunctor(this, "ownedElements"));
     m_ownedElements = new Set<Element, Element>(this);
     m_ownedElements->opposite(&Element::getOwnerSingleton);
 
-    m_relationships = new Sequence<Relationship>(this);
-    m_relationships->addProcedures.push_back(new AddRelationshipFunctor(this));
-    m_relationships->addChecks.push_back(new ReadOnlySequenceFunctor<Relationship>(this, "relationships"));
-    m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
-    m_relationships->removeChecks.push_back(new ReadOnlySequenceFunctor<Relationship>(this, "relationships"));
-    m_directedRelationships = new Sequence<DirectedRelationship>(this);
-    m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));
-    m_directedRelationships->removeProcedures.push_back(new RemoveDirectedRelationshipFunctor(this));
-    m_ownedComments = new Sequence<Comment>(this);
-    m_ownedComments->addProcedures.push_back(new AddOwnedCommentFunctor(this));
-    m_ownedComments->removeProcedures.push_back(new RemoveOwnedCommentFunctor(this));
-    m_appliedStereotype = new Sequence<InstanceSpecification>(this);
-    m_appliedStereotype->addProcedures.push_back(new AddAppliedStereotypeFunctor(this));
-    m_appliedStereotype->removeProcedures.push_back(new RemoveAppliedStereotypeFunctor(this));
-    //m_appliedStereotype->addChecks.push_back(new CheckAppliedStereotypeFunctor(this));
+    m_relationships = new Set<Relationship, Element>(this);
+
+    m_directedRelationships = new Set<DirectedRelationship>(this);
+    m_directedRelationships->subsets(*m_relationships);
+
+    m_ownedComments = new Set<Comment>(this);
+    m_ownedComments->subsets(*m_ownedElements);
+
+    m_appliedStereotype = new Set<InstanceSpecification>(this);
+    m_appliedStereotype->subsets(*m_ownedElements);
 }
 
 Element::~Element() {
@@ -237,56 +143,18 @@ Element::Element(const Element& el, ElementType elementType) : m_elementType(ele
     m_manager = el.m_manager;
     m_node = el.m_node;
 
-    // m_ownerID = el.m_ownerID;
-    // if (m_manager) {
-    //     m_manager->m_graph[m_id].m_copies.insert(this);
-    //     m_ownerPtr = 0;
-    // } else {
-    //     m_ownerPtr = el.m_ownerPtr;
-    // }
     m_owner = new Singleton2<Element, Element>(*el.m_owner);
+    m_owner->m_el = this;
     m_ownedElements = new Set<Element, Element>(*el.m_ownedElements);
-
-    // m_ownedElements = new Sequence<>(*el.m_ownedElements);
-    // m_ownedElements->m_el = this;
-    m_relationships = new Sequence<Relationship>(*el.m_relationships);
+    m_ownedElements->m_el = this;
+    m_relationships = new Set<Relationship, Element>(*el.m_relationships);
     m_relationships->m_el = this;
-    m_directedRelationships = new Sequence<DirectedRelationship>(*el.m_directedRelationships);
+    m_directedRelationships = new Set<DirectedRelationship, Element>(*el.m_directedRelationships);
     m_directedRelationships->m_el = this;
-    // m_ownedElements->addProcedures.clear();
-    // m_ownedElements->addProcedures.push_back(new SetOwnerFunctor(this));
-    // m_ownedElements->addChecks.clear();
-    // m_ownedElements->addChecks.push_back(new ReadOnlySequenceFunctor(this, "ownedElements"));
-    // m_ownedElements->removeProcedures.clear();
-    // m_ownedElements->removeProcedures.push_back(new RemoveOwnerFunctor(this));
-    // m_ownedElements->removeChecks.clear();
-    // m_ownedElements->removeChecks.push_back(new ReadOnlySequenceFunctor(this, "ownedElements"));
-    m_relationships->addProcedures.clear();
-    m_relationships->addProcedures.push_back(new AddRelationshipFunctor(this));
-    m_relationships->addChecks.clear();
-    m_relationships->addChecks.push_back(new ReadOnlySequenceFunctor<Relationship>(this, "relationships"));
-    m_relationships->removeProcedures.clear();
-    m_relationships->removeProcedures.push_back(new RemoveRelationshipFunctor(this));
-    m_relationships->removeChecks.clear();
-    m_relationships->removeChecks.push_back(new ReadOnlySequenceFunctor<Relationship>(this, "relationships"));
-    m_directedRelationships->addProcedures.clear();
-    m_directedRelationships->removeProcedures.clear();
-    m_directedRelationships->addProcedures.push_back(new AddDirectedRelationshipFunctor(this));
-    m_directedRelationships->removeProcedures.push_back(new RemoveDirectedRelationshipFunctor(this));
-    m_ownedComments = new Sequence<Comment>(*el.m_ownedComments);
+    m_ownedComments = new Set<Comment, Element>(*el.m_ownedComments);
     m_ownedComments->m_el = this;
-    m_ownedComments->addProcedures.clear();
-    m_ownedComments->addProcedures.push_back(new AddOwnedCommentFunctor(this));
-    m_ownedComments->removeProcedures.clear();
-    m_ownedComments->removeProcedures.push_back(new RemoveOwnedCommentFunctor(this));
-    m_appliedStereotype = new Sequence<InstanceSpecification>(*el.m_appliedStereotype);
+    m_appliedStereotype = new Set<InstanceSpecification, Element>(*el.m_appliedStereotype);
     m_appliedStereotype->m_el = this;
-    m_appliedStereotype->addChecks.clear();
-    m_appliedStereotype->addProcedures.clear();
-    m_appliedStereotype->removeProcedures.clear();
-    m_appliedStereotype->addProcedures.push_back(new AddAppliedStereotypeFunctor(this));
-    m_appliedStereotype->removeProcedures.push_back(new RemoveAppliedStereotypeFunctor(this));
-    //m_appliedStereotype->addChecks.push_back(new CheckAppliedStereotypeFunctor(this));
 }
 
 void Element::setID(string id) {
@@ -314,15 +182,13 @@ void Element::setID(ID id) {
     }
 }
 
-Sequence<Relationship>& Element::getRelationships() {
+Set<Relationship, Element>& Element::getRelationships() {
     return *m_relationships;
 }
 
-Sequence<DirectedRelationship>& Element::getDirectedRelationships() {
+Set<DirectedRelationship, Element>& Element::getDirectedRelationships() {
     return *m_directedRelationships;
 }
-
-            void init();
 
 ElementType Element::getElementType() const {
     return m_elementType;
@@ -628,11 +494,11 @@ Set<Element, Element>& Element::getOwnedElements() {
     return *m_ownedElements;
 }
 
-Sequence<InstanceSpecification>& Element::getAppliedStereotypes() {
+Set<InstanceSpecification, Element>& Element::getAppliedStereotypes() {
     return *m_appliedStereotype;
 }
 
-Sequence<Comment>& Element::getOwnedComments() {
+Set<Comment, Element>& Element::getOwnedComments() {
     return *m_ownedComments;
 }
 

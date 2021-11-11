@@ -208,10 +208,10 @@ namespace UML {
             // ownedElements
             //Sequence<Element>* m_ownedElements;
             Set<Element, Element>* m_ownedElements;
-            Sequence<Relationship>* m_relationships;
-            Sequence<DirectedRelationship>* m_directedRelationships;
-            Sequence<Comment>* m_ownedComments;
-            Sequence<InstanceSpecification>* m_appliedStereotype;
+            Set<Relationship, Element>* m_relationships;
+            Set<DirectedRelationship, Element>* m_directedRelationships;
+            Set<Comment, Element>* m_ownedComments;
+            Set<InstanceSpecification, Element>* m_appliedStereotype;
             void setOwner(Element* el);
             void setOwnerByID(ID id);
             static bool isSameOrNull(ID id, Element* el);
@@ -243,16 +243,16 @@ namespace UML {
             ID getOwnerID() const;
             bool hasOwner() const;
             Set<Element, Element>& getOwnedElements();
-            Sequence<Relationship>& getRelationships();
-            Sequence<DirectedRelationship>& getDirectedRelationships();
-            Sequence<Comment>& getOwnedComments();
+            Set<Relationship, Element>& getRelationships();
+            Set<DirectedRelationship, Element>& getDirectedRelationships();
+            Set<Comment, Element>& getOwnedComments();
             /**
              * TODO: I am keeping it simple for now, instance specification of stereotype to
              *       hold tags and operations, but I think it would be cool to dynamically map
              *       methods if we load the stereotype before runtime. Also would be cool to have
              *       stereotype tags as keyword in yaml config for disk storage (not necessarily useful though?)
              **/
-            Sequence<InstanceSpecification>& getAppliedStereotypes();
+            Set<InstanceSpecification, Element>& getAppliedStereotypes();
             virtual void setID(std::string id);
             void setID(ID id);
             static std::string elementTypeToString(ElementType eType);

@@ -279,7 +279,7 @@ Model* UmlManager::getModel() {
 void UmlManager::setRoot(Element* el) {
     m_root = el;
     if (m_root->isSubClassOf(ElementType::MODEL)) {
-        m_model = dynamic_cast<Model*>(el);
+        // m_model = dynamic_cast<Model*>(el);
     }
 }
 

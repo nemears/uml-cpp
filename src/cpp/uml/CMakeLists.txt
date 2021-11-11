@@ -1,4 +1,5 @@
-add_library(Uml element.cpp namedElement.cpp namespace.cpp package.cpp umlManager.cpp packageableElement.cpp)
+add_library(Uml element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp namespace.cpp package.cpp packageableElement.cpp
+                templateableElement.cpp parameterableElement.cpp)
 # add_library(Uml namespace.cpp model.cpp element.cpp namedElement.cpp class.cpp classifier.cpp property.cpp type.cpp typedElement.cpp 
 #                 valueSpecification.cpp primitiveType.cpp literalString.cpp literalInt.cpp literalReal.cpp literalBool.cpp 
 #                 instanceSpecification.cpp slot.cpp structuralFeature.cpp instanceValue.cpp operation.cpp behavior.cpp parameter.cpp

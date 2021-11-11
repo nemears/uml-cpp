@@ -139,35 +139,35 @@ VisibilityKind NamedElement::getVisibility() {
 }
 
 void NamedElement::setVisibility(VisibilityKind visibility) {
-    if (m_visibility != visibility) {
-        if (visibility == VisibilityKind::PRIVATE) {
-            vector<Classifier*> removeFromMe;
-            for (auto& nmspc: getMemberNamespace()) {
-                if (nmspc.isSubClassOf(ElementType::CLASSIFIER)) {
-                    if (dynamic_cast<Classifier&>(nmspc).getInheritedMembers().count(m_id)) {
-                        removeFromMe.push_back(dynamic_cast<Classifier*>(&nmspc));
-                    }
-                }
-            }
-            for (auto& clazz: removeFromMe) {
-                clazz->getInheritedMembers().remove(*this);
-            }
-        }
-    }
-    m_visibility = visibility;
-    if (m_visibility != visibility) {
-        if (m_visibility != VisibilityKind::PRIVATE) {
-            for (auto& nmspc: getMemberNamespace()) {
-                if (nmspc.isSubClassOf(ElementType::CLASSIFIER)) {
-                    if (!dynamic_cast<Classifier&>(nmspc).getInheritedMembers().count(m_id)) {
-                        dynamic_cast<Classifier&>(nmspc).getInheritedMembers().add(*this);
-                    }
-                }
-            }
-        }
-    }
+    // if (m_visibility != visibility) {
+    //     if (visibility == VisibilityKind::PRIVATE) {
+    //         vector<Classifier*> removeFromMe;
+    //         for (auto& nmspc: getMemberNamespace()) {
+    //             if (nmspc.isSubClassOf(ElementType::CLASSIFIER)) {
+    //                 if (dynamic_cast<Classifier&>(nmspc).getInheritedMembers().count(m_id)) {
+    //                     removeFromMe.push_back(dynamic_cast<Classifier*>(&nmspc));
+    //                 }
+    //             }
+    //         }
+    //         for (auto& clazz: removeFromMe) {
+    //             clazz->getInheritedMembers().remove(*this);
+    //         }
+    //     }
+    // }
+    // m_visibility = visibility;
+    // if (m_visibility != visibility) {
+    //     if (m_visibility != VisibilityKind::PRIVATE) {
+    //         for (auto& nmspc: getMemberNamespace()) {
+    //             if (nmspc.isSubClassOf(ElementType::CLASSIFIER)) {
+    //                 if (!dynamic_cast<Classifier&>(nmspc).getInheritedMembers().count(m_id)) {
+    //                     dynamic_cast<Classifier&>(nmspc).getInheritedMembers().add(*this);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
-    updateCopiesScalar(visibility, &NamedElement::m_visibility);
+    // updateCopiesScalar(visibility, &NamedElement::m_visibility);
 }
 
 bool NamedElement::isSubClassOf(ElementType eType) const {

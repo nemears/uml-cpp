@@ -282,7 +282,7 @@ namespace UML {
             };
             virtual ~Set() { 
                 if (m_el) {
-                    std::cout << m_el->getID().string() << " : " << m_guard;
+                    // std::cout << m_el->getID().string() << " : " << m_guard;
                 }
                 if (m_rootRedefinedSet) {
                     SetNode* curr = m_root;
@@ -310,7 +310,7 @@ namespace UML {
                                 deleteNode = false;
                             }
                             if (deleteNode) {
-                                std::cout << " DELETE ";
+                                // std::cout << " DELETE ";
                                 delete curr;
                             }
                             if (temp) {
@@ -328,7 +328,7 @@ namespace UML {
                                     continue;
                                 } else if (curr->m_right->m_parent->m_id == curr->m_id) {
                                     // delete lefover root
-                                    std::cout << " DELETE leftover";
+                                    // std::cout << " DELETE leftover";
                                     delete curr->m_right;
                                 }
                                 curr->m_right = 0;
@@ -340,7 +340,7 @@ namespace UML {
                                 } else {
                                     if (curr->m_left->m_parent->m_id == curr->m_id) {
                                         // delete leftover root
-                                        std::cout << " DELETE leftover";
+                                        // std::cout << " DELETE leftover";
                                         delete curr->m_left;
                                     }
                                     curr->m_left = 0;
@@ -349,7 +349,7 @@ namespace UML {
                         }
                     }
                 }
-                std::cout << std::endl;
+                // std::cout << std::endl;
             };
             /**
              * WARN: so for now ORDER MATTERS when subsetting a sequence

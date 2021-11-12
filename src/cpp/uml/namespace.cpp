@@ -62,19 +62,21 @@ void Namespace::referenceErased(ID id) {
 }
 
 void Namespace::init() {
+    m_ownedMembers.subsets(*m_ownedElements);
     m_members.opposite(&NamedElement::getNamespaceSingleton);
     m_members.subsets(m_ownedMembers);
 }
 
 Namespace::Namespace() : 
-Element(ElementType::NAMESPACE) {}
+Element(ElementType::NAMESPACE) {
+    init();
+}
 
 Namespace::~Namespace() {
     
 }
 
 Namespace::Namespace(const Namespace& nmspc) : Element(ElementType::NAMESPACE) {
-    std::cout << m_id.string() << " : Namespace copy constructor" << std::endl;
     m_members = nmspc.m_members;
     m_members.m_el = this;
     m_ownedMembers = nmspc.m_ownedMembers;

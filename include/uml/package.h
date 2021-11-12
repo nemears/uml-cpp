@@ -66,6 +66,7 @@ namespace UML {
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            void init();
             Package();
         public:
             virtual ~Package();

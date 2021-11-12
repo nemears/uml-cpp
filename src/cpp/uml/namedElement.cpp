@@ -57,7 +57,6 @@ NamedElement::~NamedElement() {
 }
 
 NamedElement::NamedElement(const NamedElement& el) : Element(ElementType::NAMED_ELEMENT) {
-    std::cout << m_id.string() << " : NamedElement copy constructor" << std::endl;
     m_name = el.m_name;
     m_visibility = el.m_visibility;
     m_memberNamespace = el.m_memberNamespace;

@@ -45,9 +45,13 @@ void Package::referenceErased(ID id) {
     // m_ownedStereotypes.eraseElement(id);
 }
 
-Package::Package() : Element(ElementType::PACKAGE) {
+void Package::init() {
     m_packagedElements.subsets(m_ownedMembers);
     m_packagedElements.opposite(&PackageableElement::getOwningPackageSingleton);
+}
+
+Package::Package() : Element(ElementType::PACKAGE) {
+    init();
     // m_packageMerge.subsets(*m_ownedElements);
     // m_packageMerge.subsets(*m_directedRelationships);
     // m_profileApplications.subsets(*m_ownedElements);
@@ -60,12 +64,9 @@ Package::~Package() {
 }
 
 Package::Package(const Package& pckg) : Element(ElementType::PACKAGE) {
-    std::cout << m_id.string() << " : Package copy constructor" << std::endl;
     m_packagedElements = pckg.m_packagedElements;
     m_packagedElements.m_el = this;
-    NamedElement::init();
-    Namespace::init();
-    PackageableElement::init();
+    init();
     // m_packageMerge = pckg.m_packageMerge;
     // m_packageMerge.m_el = this;
     // m_profileApplications = pckg.m_profileApplications;

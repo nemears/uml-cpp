@@ -219,6 +219,127 @@ namespace UML {
                     }
                 }
             };
+            void innerRemove(ID id) {
+                SetNode* temp = search(id, m_root);
+                if (temp->m_parent) {
+                    // has parent
+                    bool isLeft = temp->m_parent->m_left ? temp->m_parent->m_left->m_id == temp->m_id ? true : false : false;
+                    if (isLeft) {
+                        // The removed element is on the left side of its parent
+                        if (!temp->m_parent->m_right) {
+                            // If the parent has no right side just copy the removed nodes children to the parents children
+                            temp->m_parent->m_left = temp->m_left;
+                            temp->m_parent->m_right = temp->m_right;
+                            if (temp->m_left) {
+                                temp->m_left->m_parent = temp->m_parent;
+                            }
+                            if (temp->m_right) {
+                                temp->m_right->m_parent = temp->m_parent;   
+                            }
+                        } else {
+                            if (temp->m_left) {
+                                if (temp->m_parent->m_right->m_id > temp->m_left->m_id) {
+                                    // If the removed node's left side is less than the right side put the right to the left and left to the right and place the removed nodes right on the left side
+                                    temp->m_parent->m_left = temp->m_parent->m_right;
+                                    temp->m_parent->m_right = temp->m_left;
+                                    temp->m_left->m_parent = temp->m_parent;
+                                    if (temp->m_right) {
+                                        place(temp->m_right, temp->m_left);
+                                    }
+                                } else {
+                                    // put the removed node's left side to the parent's left and place the right wherever it belongs
+                                    temp->m_parent->m_left = temp->m_left;
+                                    temp->m_left->m_parent = temp->m_parent;
+                                    if (temp->m_right) {
+                                        place(temp->m_right, temp->m_parent);
+                                    }
+                                }
+                            } else {
+                                // removed node has no children
+                                temp->m_parent->m_left = temp->m_parent->m_right;
+                                temp->m_parent->m_right = 0;
+                                /** TODO: **/
+                                // may be of use to rebalance tree here?
+                            }
+                        }
+                    } else {
+                        if (!temp->m_left) {
+                            // removed node has no children
+                            temp->m_parent->m_right = 0;
+                            /** TODO: **/
+                            // may be of use to rebalance tree here?
+                        } else {
+                            if (temp->m_left->m_id > temp->m_parent->m_left->m_id) {
+                                temp->m_parent->m_right = temp->m_parent->m_left;
+                                temp->m_parent->m_left = temp->m_left;
+                                temp->m_left->m_parent = temp->m_parent;
+                                if (temp->m_right) {
+                                    place(temp->m_right, temp->m_parent);
+                                }
+                            } else {
+                                temp->m_parent->m_right = temp->m_left;
+                                temp->m_left->m_parent = temp->m_parent;
+                                if (temp->m_right) {
+                                    place(temp->m_right, temp->m_parent);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // we are removing base root of tree
+                    if (temp->m_left) {
+                        m_root = temp->m_left;
+                        if (temp->m_right) {
+                            place(temp->m_right, m_root);
+                        }
+                        m_root->m_parent = 0;
+                    }
+                }
+                if (temp->m_id == m_root->m_id) {
+                    // if we removed the root of the sequence
+                    if (temp->m_left) {
+                        place(m_root->m_right, m_root->m_left);
+                        m_root->m_left->m_parent = m_root->m_parent;
+                        m_root = temp->m_left;
+                    } else {
+                        m_root = 0;
+                    }
+                    for (auto& redefined : m_redefines) {
+                        redefined->m_root = m_root;
+                    }
+                }
+                for (auto subset : m_subsettedContainers) {
+                    if (temp->m_guard >= subset->m_guard) {
+                        subset->m_size--;
+                        if (subset->m_root->m_id == id) {
+                            if (subset->m_root->m_left) {
+                                place(subset->m_root->m_right, subset->m_root->m_left);
+                                subset->m_root->m_left->m_parent = subset->m_root->m_parent;
+                                subset->m_root = subset->m_root->m_left;
+                            } else {
+                                subset->m_root = 0;
+                            }
+                        }
+                    }
+                }
+                for (auto& subsetOf : m_subsetOf) {
+                    if (subsetOf->m_root->m_id == id) {
+                        if (subsetOf->m_root->m_left) {
+                            place(subsetOf->m_root->m_right, subsetOf->m_root->m_left);
+                            m_root->m_left->m_parent = m_root->m_parent;
+                            m_root = subsetOf->m_root->m_left;
+                        } else {
+                            subsetOf->m_root = 0;
+                        }
+                    }
+                    subsetOf->m_size--;
+                }
+                for (auto& redefined : m_redefines) {
+                    redefined->m_size--;
+                }
+                delete temp;
+                m_size--;
+            };
             virtual SetNode* createNode(T& el) {
                 return new SetNode(&el);
             };
@@ -485,134 +606,22 @@ namespace UML {
             };
             void remove(ID id) {
                 if (m_root) {
-                    SetNode* temp = search(id, m_root);
-                    if (temp->m_parent) {
-                        // has parent
-                        bool isLeft = temp->m_parent->m_left ? temp->m_parent->m_left->m_id == temp->m_id ? true : false : false;
-                        if (isLeft) {
-                            // The removed element is on the left side of its parent
-                            if (!temp->m_parent->m_right) {
-                                // If the parent has no right side just copy the removed nodes children to the parents children
-                                temp->m_parent->m_left = temp->m_left;
-                                temp->m_parent->m_right = temp->m_right;
-                                if (temp->m_left) {
-                                    temp->m_left->m_parent = temp->m_parent;
-                                }
-                                if (temp->m_right) {
-                                    temp->m_right->m_parent = temp->m_parent;   
-                                }
-                            } else {
-                                if (temp->m_left) {
-                                    if (temp->m_parent->m_right->m_id > temp->m_left->m_id) {
-                                        // If the removed node's left side is less than the right side put the right to the left and left to the right and place the removed nodes right on the left side
-                                        temp->m_parent->m_left = temp->m_parent->m_right;
-                                        temp->m_parent->m_right = temp->m_left;
-                                        temp->m_left->m_parent = temp->m_parent;
-                                        if (temp->m_right) {
-                                            place(temp->m_right, temp->m_left);
-                                        }
-                                    } else {
-                                        // put the removed node's left side to the parent's left and place the right wherever it belongs
-                                        temp->m_parent->m_left = temp->m_left;
-                                        temp->m_left->m_parent = temp->m_parent;
-                                        if (temp->m_right) {
-                                            place(temp->m_right, temp->m_parent);
-                                        }
-                                    }
-                                } else {
-                                    // removed node has no children
-                                    temp->m_parent->m_left = temp->m_parent->m_right;
-                                    temp->m_parent->m_right = 0;
-                                    /** TODO: **/
-                                    // may be of use to rebalance tree here?
-                                }
-                            }
-                        } else {
-                            if (!temp->m_left) {
-                                // removed node has no children
-                                temp->m_parent->m_right = 0;
-                                /** TODO: **/
-                                // may be of use to rebalance tree here?
-                            } else {
-                                if (temp->m_left->m_id > temp->m_parent->m_left->m_id) {
-                                    temp->m_parent->m_right = temp->m_parent->m_left;
-                                    temp->m_parent->m_left = temp->m_left;
-                                    temp->m_left->m_parent = temp->m_parent;
-                                    if (temp->m_right) {
-                                        place(temp->m_right, temp->m_parent);
-                                    }
-                                } else {
-                                    temp->m_parent->m_right = temp->m_left;
-                                    temp->m_left->m_parent = temp->m_parent;
-                                    if (temp->m_right) {
-                                        place(temp->m_right, temp->m_parent);
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        // we are removing base root of tree
-                        if (temp->m_left) {
-                            m_root = temp->m_left;
-                            if (temp->m_right) {
-                                place(temp->m_right, m_root);
-                            }
-                            m_root->m_parent = 0;
-                        }
+                    innerRemove(id);
+                    if (m_oppositeSignature) {
+                        T& el = m_el->m_manager->get<T>(m_el, id)->template as<T>();
+                        (el.*m_oppositeSignature)().innerRemove(m_el->getID());
+                        el.removeReference(m_el->getID());
                     }
-                    if (temp->m_id == m_root->m_id) {
-                        // if we removed the root of the sequence
-                        if (temp->m_left) {
-                            place(m_root->m_right, m_root->m_left);
-                            m_root->m_left->m_parent = m_root->m_parent;
-                            m_root = temp->m_left;
-                        } else {
-                            m_root = 0;
-                        }
-                        for (auto& redefined : m_redefines) {
-                            redefined->m_root = m_root;
-                        }
-                    }
-                    for (auto subset : m_subsettedContainers) {
-                        if (temp->m_guard >= subset->m_guard) {
-                            subset->m_size--;
-                            if (subset->m_root->m_id == id) {
-                                if (subset->m_root->m_left) {
-                                    place(subset->m_root->m_right, subset->m_root->m_left);
-                                    subset->m_root->m_left->m_parent = subset->m_root->m_parent;
-                                    subset->m_root = subset->m_root->m_left;
-                                } else {
-                                    subset->m_root = 0;
-                                }
-                            }
-                        }
-                    }
-                    for (auto& subsetOf : m_subsetOf) {
-                        if (subsetOf->m_root->m_id == id) {
-                            if (subsetOf->m_root->m_left) {
-                                place(subsetOf->m_root->m_right, subsetOf->m_root->m_left);
-                                m_root->m_left->m_parent = m_root->m_parent;
-                                m_root = subsetOf->m_root->m_left;
-                            } else {
-                                subsetOf->m_root = 0;
-                            }
-                        }
-                        subsetOf->m_size--;
-                    }
-                    for (auto& redefined : m_redefines) {
-                        redefined->m_size--;
-                    }
-                    delete temp;
-                    m_size--;
                     if (m_el) {
                         if (m_el->m_node->m_managerElementMemory != m_el) {
-                            (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().remove(id);
+                            (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().innerRemove(id);
                         }
                         for (auto& copy : m_el->m_node->m_copies) {
                             if (copy != m_el) {
-                                (copy->as<U>().*m_signature)().remove(id);
+                                (copy->as<U>().*m_signature)().innerRemove(id);
                             }
                         }
+                        m_el->removeReference(id);
                     }
                 } else {
                     throw ID_doesNotExistException2(id);

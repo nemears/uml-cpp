@@ -139,7 +139,7 @@ TEST_F(ElementTest, setOwnerTest) {
     ASSERT_TRUE(e.getOwnedElements().size() == 1);
 }
 
-TEST_F(ElementTest, overwriteOwnerTestW_Manager) {
+TEST_F(ElementTest, overwriteOwnerTest) {
   UmlManager m;
   Package& p1 = m.create<Package>();
   Package& p2 = m.create<Package>();
@@ -152,7 +152,7 @@ TEST_F(ElementTest, overwriteOwnerTestW_Manager) {
   ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }
 
-TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTestW_Manager) {
+TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
   UmlManager m;
   Package& p1 = m.create<Package>();
   Package& p2 = m.create<Package>();

@@ -49,10 +49,10 @@ void Element::removeReference(ID referencing) {
 void Element::referenceReindexed(ID oldID, ID newID) {
     m_ownedElements->reindex(oldID, newID);
     m_owner->reindex(oldID, newID);
-    m_ownedComments->reindex(oldID, newID);
-    m_relationships->reindex(oldID, newID);
-    m_directedRelationships->reindex(oldID, newID);
-    m_appliedStereotype->reindex(oldID, newID);
+    // m_ownedComments->reindex(oldID, newID);
+    // m_relationships->reindex(oldID, newID);
+    // m_directedRelationships->reindex(oldID, newID);
+    // m_appliedStereotype->reindex(oldID, newID);
 }
 
 void Element::referencingReleased(ID id) {
@@ -61,10 +61,10 @@ void Element::referencingReleased(ID id) {
     }
     m_owner->release(id);
     m_ownedElements->release(id);
-    m_relationships->release(id);
-    m_directedRelationships->release(id);
-    m_ownedComments->release(id);
-    m_appliedStereotype->release(id);
+    // m_relationships->release(id);
+    // m_directedRelationships->release(id);
+    // m_ownedComments->release(id);
+    // m_appliedStereotype->release(id);
 }
 
 void Element::restoreReferences() {
@@ -89,10 +89,10 @@ void Element::restoreReference(Element* el) {
 void Element::referenceErased(ID id) {
     m_owner->eraseElement(id);
     m_ownedElements->eraseElement(id);
-    m_ownedComments->eraseElement(id);
-    m_relationships->eraseElement(id);
-    m_directedRelationships->eraseElement(id);
-    m_appliedStereotype->eraseElement(id);
+    // m_ownedComments->eraseElement(id);
+    // m_relationships->eraseElement(id);
+    // m_directedRelationships->eraseElement(id);
+    // m_appliedStereotype->eraseElement(id);
 }
 
 Set<Element, Element>& Element::getOwnerSingleton() {
@@ -111,25 +111,25 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_ownedElements->opposite(&Element::getOwnerSingleton);
     m_ownedElements->m_signature = &Element::getOwnedElements;
 
-    m_relationships = new Set<Relationship, Element>(this);
+    // m_relationships = new Set<Relationship, Element>(this);
 
-    m_directedRelationships = new Set<DirectedRelationship>(this);
-    m_directedRelationships->subsets(*m_relationships);
+    // m_directedRelationships = new Set<DirectedRelationship>(this);
+    // m_directedRelationships->subsets(*m_relationships);
 
-    m_ownedComments = new Set<Comment>(this);
-    m_ownedComments->subsets(*m_ownedElements);
+    // m_ownedComments = new Set<Comment>(this);
+    // m_ownedComments->subsets(*m_ownedElements);
 
-    m_appliedStereotype = new Set<InstanceSpecification>(this);
-    m_appliedStereotype->subsets(*m_ownedElements);
+    // m_appliedStereotype = new Set<InstanceSpecification>(this);
+    // m_appliedStereotype->subsets(*m_ownedElements);
 }
 
 Element::~Element() {
     delete m_owner;
     delete m_ownedElements;
-    delete m_relationships;
-    delete m_directedRelationships;
-    delete m_ownedComments;
-    delete m_appliedStereotype;
+    // delete m_relationships;
+    // delete m_directedRelationships;
+    // delete m_ownedComments;
+    // delete m_appliedStereotype;
     if (m_copiedElementFlag) {
         if (m_manager) {
             if (m_node->m_copies.count(this)) {
@@ -152,14 +152,14 @@ Element::Element(const Element& el, ElementType elementType) : m_elementType(ele
     m_owner->m_el = this;
     m_ownedElements = new Set<Element, Element>(*el.m_ownedElements);
     m_ownedElements->m_el = this;
-    m_relationships = new Set<Relationship, Element>(*el.m_relationships);
-    m_relationships->m_el = this;
-    m_directedRelationships = new Set<DirectedRelationship, Element>(*el.m_directedRelationships);
-    m_directedRelationships->m_el = this;
-    m_ownedComments = new Set<Comment, Element>(*el.m_ownedComments);
-    m_ownedComments->m_el = this;
-    m_appliedStereotype = new Set<InstanceSpecification, Element>(*el.m_appliedStereotype);
-    m_appliedStereotype->m_el = this;
+    // m_relationships = new Set<Relationship, Element>(*el.m_relationships);
+    // m_relationships->m_el = this;
+    // m_directedRelationships = new Set<DirectedRelationship, Element>(*el.m_directedRelationships);
+    // m_directedRelationships->m_el = this;
+    // m_ownedComments = new Set<Comment, Element>(*el.m_ownedComments);
+    // m_ownedComments->m_el = this;
+    // m_appliedStereotype = new Set<InstanceSpecification, Element>(*el.m_appliedStereotype);
+    // m_appliedStereotype->m_el = this;
 }
 
 void Element::setID(string id) {
@@ -187,13 +187,13 @@ void Element::setID(ID id) {
     }
 }
 
-Set<Relationship, Element>& Element::getRelationships() {
-    return *m_relationships;
-}
+// Set<Relationship, Element>& Element::getRelationships() {
+//     return *m_relationships;
+// }
 
-Set<DirectedRelationship, Element>& Element::getDirectedRelationships() {
-    return *m_directedRelationships;
-}
+// Set<DirectedRelationship, Element>& Element::getDirectedRelationships() {
+//     return *m_directedRelationships;
+// }
 
 ElementType Element::getElementType() const {
     return m_elementType;
@@ -499,13 +499,13 @@ Set<Element, Element>& Element::getOwnedElements() {
     return *m_ownedElements;
 }
 
-Set<InstanceSpecification, Element>& Element::getAppliedStereotypes() {
-    return *m_appliedStereotype;
-}
+// Set<InstanceSpecification, Element>& Element::getAppliedStereotypes() {
+//     return *m_appliedStereotype;
+// }
 
-Set<Comment, Element>& Element::getOwnedComments() {
-    return *m_ownedComments;
-}
+// Set<Comment, Element>& Element::getOwnedComments() {
+//     return *m_ownedComments;
+// }
 
 /**
  * This func compares an id and an element without loading 

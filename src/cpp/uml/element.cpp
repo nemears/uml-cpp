@@ -138,10 +138,14 @@ Element::~Element() {
 }
 
 Element::Element(const Element& el, ElementType elementType) : m_elementType(elementType) {
+    std::cout << m_id.string() << " : Element copy constructor" << std::endl;
     m_copiedElementFlag = true;
     m_id = el.m_id;
     m_manager = el.m_manager;
     m_node = el.m_node;
+    if (m_manager) {
+        m_manager->m_graph[m_id].m_copies.insert(this);
+    }
 
     m_owner = new Singleton2<Element, Element>(*el.m_owner);
     m_owner->m_el = this;

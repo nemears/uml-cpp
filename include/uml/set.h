@@ -281,6 +281,9 @@ namespace UML {
                 }
             };
             virtual ~Set() { 
+                if (m_el) {
+                    std::cout << m_el->getID().string() << " : " << m_guard;
+                }
                 if (m_rootRedefinedSet) {
                     SetNode* curr = m_root;
                     while (curr) {
@@ -302,11 +305,12 @@ namespace UML {
                                         }
                                     }
                                 }
-                            } else if (!m_subsetOf.empty()) {
+                            } else if (m_guard > 0) {
                                 // don't delete root node if subsetting
                                 deleteNode = false;
                             }
                             if (deleteNode) {
+                                std::cout << " DELETE ";
                                 delete curr;
                             }
                             if (temp) {
@@ -324,6 +328,7 @@ namespace UML {
                                     continue;
                                 } else if (curr->m_right->m_parent->m_id == curr->m_id) {
                                     // delete lefover root
+                                    std::cout << " DELETE leftover";
                                     delete curr->m_right;
                                 }
                                 curr->m_right = 0;
@@ -335,6 +340,7 @@ namespace UML {
                                 } else {
                                     if (curr->m_left->m_parent->m_id == curr->m_id) {
                                         // delete leftover root
+                                        std::cout << " DELETE leftover";
                                         delete curr->m_left;
                                     }
                                     curr->m_left = 0;
@@ -343,6 +349,7 @@ namespace UML {
                         }
                     }
                 }
+                std::cout << std::endl;
             };
             /**
              * WARN: so for now ORDER MATTERS when subsetting a sequence

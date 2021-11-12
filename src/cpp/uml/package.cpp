@@ -59,13 +59,13 @@ Package::~Package() {
     
 }
 
-Package::Package(const Package& pckg) : 
-Namespace(pckg), 
-PackageableElement(pckg), 
-NamedElement(pckg), 
-Element(pckg, ElementType::PACKAGE) {
+Package::Package(const Package& pckg) : Element(ElementType::PACKAGE) {
+    std::cout << m_id.string() << " : Package copy constructor" << std::endl;
     m_packagedElements = pckg.m_packagedElements;
     m_packagedElements.m_el = this;
+    NamedElement::init();
+    Namespace::init();
+    PackageableElement::init();
     // m_packageMerge = pckg.m_packageMerge;
     // m_packageMerge.m_el = this;
     // m_profileApplications = pckg.m_profileApplications;

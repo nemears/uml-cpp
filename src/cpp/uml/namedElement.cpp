@@ -44,7 +44,7 @@ Set<Namespace, NamedElement>& NamedElement::getNamespaceSingleton() {
 }
 
 void NamedElement::init() {
-    m_namespace.Set<Namespace, NamedElement>::subsets(static_cast<Set<Element,Element>&>(*m_owner));
+    m_namespace.subsets(*m_owner);
     m_namespace.opposite(&Namespace::getOwnedMembers);
     m_memberNamespace.opposite(&Namespace::getMembers);
 }
@@ -56,7 +56,8 @@ NamedElement::NamedElement() : Element(ElementType::NAMED_ELEMENT) {
 NamedElement::~NamedElement() {
 }
 
-NamedElement::NamedElement(const NamedElement& el) : Element(el) {
+NamedElement::NamedElement(const NamedElement& el) : Element(ElementType::NAMED_ELEMENT) {
+    std::cout << m_id.string() << " : NamedElement copy constructor" << std::endl;
     m_name = el.m_name;
     m_visibility = el.m_visibility;
     m_memberNamespace = el.m_memberNamespace;
@@ -67,7 +68,7 @@ NamedElement::NamedElement(const NamedElement& el) : Element(el) {
     // m_clientDependencies.m_el = this;
     // m_supplierDependencies = Set<Dependency, NamedElement>(el.m_supplierDependencies);
     // m_supplierDependencies.m_el = this;
-    init();
+    //init();
 }
 
 void NamedElement::setName(const string &name) {

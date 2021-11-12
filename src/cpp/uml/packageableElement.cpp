@@ -40,9 +40,8 @@ PackageableElement::PackageableElement() : Element(ElementType::PACKAGEABLE_ELEM
     init();
 }
 
-PackageableElement::PackageableElement(const PackageableElement& el) : 
-NamedElement(el), 
-Element(el, ElementType::PACKAGEABLE_ELEMENT) {
+PackageableElement::PackageableElement(const PackageableElement& el) : Element(ElementType::PACKAGEABLE_ELEMENT) {
+    std::cout << m_id.string() << " : PackageableElement copy constructor" << std::endl;
     m_owningPackage = el.m_owningPackage;
     m_owningPackage.m_el = this;
     init();

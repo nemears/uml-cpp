@@ -18,6 +18,7 @@ namespace UML{
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            void init();
             Namespace();
         public:
             virtual ~Namespace();

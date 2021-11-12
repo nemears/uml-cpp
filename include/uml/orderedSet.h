@@ -16,8 +16,8 @@ namespace UML {
         friend struct OrderedSetIterator<T, U>;
 
         protected:
-            struct OrderedNode : public AbstractSet::ContainerNode {
-                OrderedNode(Element& el) : AbstractSet::ContainerNode(el) {};
+            struct OrderedNode : public AbstractSet::SetNode {
+                OrderedNode(Element& el) : AbstractSet::SetNode(el) {};
                 OrderedNode() {};
                 OrderedNode* m_prev = 0;
                 OrderedNode* m_next = 0;
@@ -79,12 +79,12 @@ namespace UML {
                     }
                 }
             };
-            AbstractSet::ContainerNode* createNode(T& el) override {
+            AbstractSet::SetNode* createNode(T& el) override {
                 OrderedNode* ret = createOrderedNode(el);
                 fillNode(ret);
                 return ret;
             };
-            AbstractSet::ContainerNode* createNode(ID id) override {
+            AbstractSet::SetNode* createNode(ID id) override {
                 OrderedNode* ret = createOrderedNode(id);
                 fillNode(ret);
                 return ret;

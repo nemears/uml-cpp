@@ -32,23 +32,23 @@ namespace UML {
         template <class T, class U> friend class OrderedSet;
         protected:
             size_t m_size = 0;
-            struct ContainerNode {
-                ContainerNode(Element* el);
-                ContainerNode(void* el);
-                ContainerNode(){};
+            struct SetNode {
+                SetNode(Element* el);
+                SetNode(void* el);
+                SetNode(){};
                 ID m_id;
                 Element* m_el;
                 std::string m_name;
-                ContainerNode* m_parent = 0;
-                ContainerNode* m_left = 0;
-                ContainerNode* m_right = 0;
+                SetNode* m_parent = 0;
+                SetNode* m_left = 0;
+                SetNode* m_right = 0;
                 size_t m_guard = 0;
             };
-            ContainerNode* m_root = 0;
+            SetNode* m_root = 0;
             size_t m_guard = 0;
-            virtual void place(ContainerNode* node, ContainerNode* parent) = 0;
-            void setName(ContainerNode* node);
-            void instantiateSetNode(ContainerNode* node);
+            virtual void place(SetNode* node, SetNode* parent) = 0;
+            void setName(SetNode* node);
+            void instantiateSetNode(SetNode* node);
     };
 
     template <class T> struct SetIterator;
@@ -82,7 +82,7 @@ namespace UML {
             Set<U, T>& (T::*m_oppositeSignature)() = 0;
             Element* m_el = 0;
 
-            void place(ContainerNode* node, ContainerNode* parent) override {
+            void place(SetNode* node, SetNode* parent) override {
                 if (node->m_id == parent->m_id) {
                     delete node;
                     throw DuplicateElementInSetException();
@@ -99,7 +99,7 @@ namespace UML {
                             place(node, parent->m_right);
                         } else {
                             if (node->m_id > parent->m_right->m_id) {
-                                ContainerNode* temp = parent->m_left;
+                                SetNode* temp = parent->m_left;
                                 parent->m_left = node;
                                 place(parent->m_right, temp);
                                 parent->m_right = temp;
@@ -121,7 +121,7 @@ namespace UML {
                     node->m_parent = parent;
                 }
             };
-            ContainerNode* search(ID id, ContainerNode* node) {
+            SetNode* search(ID id, SetNode* node) {
                 if (node->m_id == id) {
                     // found match
                     return node;
@@ -146,11 +146,11 @@ namespace UML {
                     }
                 }
             }
-            ContainerNode* search(std::string name, ContainerNode* node) {
+            SetNode* search(std::string name, SetNode* node) {
                 if (node->m_name == name) {
                     return node;
                 } else {
-                    ContainerNode* temp;
+                    SetNode* temp;
                     if (node->m_right) {
                         if((temp = search(name, node->m_right)) != 0) {
                             return temp;
@@ -164,7 +164,7 @@ namespace UML {
                 }
                 return 0;
             };
-            void add(ContainerNode* node) {
+            void add(SetNode* node) {
                 node->m_guard = m_guard;
                 if (!m_root) {
                     m_root = node;
@@ -188,7 +188,7 @@ namespace UML {
                 } else {
                     if (m_root->m_guard > m_guard) {
                         // if the root is a subsetted sequence push it under this one
-                        ContainerNode* temp = m_root;
+                        SetNode* temp = m_root;
                         m_root = node;
                         place(temp, node);
                     } else {
@@ -203,16 +203,16 @@ namespace UML {
                     redefined->m_size++;
                 }
             };
-            virtual ContainerNode* createNode(T& el) {
-                return new ContainerNode(&el);
+            virtual SetNode* createNode(T& el) {
+                return new SetNode(&el);
             };
-            virtual ContainerNode* createNode(ID id) {
-                ContainerNode* ret = new ContainerNode();
+            virtual SetNode* createNode(ID id) {
+                SetNode* ret = new SetNode();
                 ret->m_id = id;
                 return ret;
             };
             void release(ID id) {
-                ContainerNode* searchResult = search(id, m_root);
+                SetNode* searchResult = search(id, m_root);
                 if (!searchResult) {
                     throw ID_doesNotExistException2(id);
                 }
@@ -221,7 +221,7 @@ namespace UML {
                 }
             };
             void reindex(ID oldID, ID newID) {
-                ContainerNode* node = search(oldID, m_root);
+                SetNode* node = search(oldID, m_root);
                 node->m_id = newID;
                 if (node->m_parent->m_left->m_id == oldID) {
                     if (node->m_parent->m_right->m_id > newID) {
@@ -247,18 +247,18 @@ namespace UML {
             Set() {};
             Set(const Set<T,U>& rhs) {
                 if (rhs.m_root) {
-                    m_root = new ContainerNode(rhs.m_root->m_el);
+                    m_root = new SetNode(rhs.m_root->m_el);
                 }
                 m_size = rhs.m_size;
                 m_rootRedefinedSet = rhs.m_rootRedefinedSet;
-                ContainerNode* curr = rhs.m_root;
-                ContainerNode* mine = m_root;
+                SetNode* curr = rhs.m_root;
+                SetNode* mine = m_root;
                 m_guard = rhs.m_guard;
                 m_subsetOf.clear();
                 m_subsettedContainers.clear();
                 m_redefines.clear();
                 while (curr) {
-                    ContainerNode* temp = new ContainerNode();
+                    SetNode* temp = new SetNode();
                     temp->m_guard = m_guard;
                     temp->m_parent = mine;
                     if (curr->m_left) {
@@ -282,10 +282,10 @@ namespace UML {
             };
             virtual ~Set() { 
                 if (m_rootRedefinedSet) {
-                    ContainerNode* curr = m_root;
+                    SetNode* curr = m_root;
                     while (curr) {
                         if (!curr->m_right && !curr->m_left) {
-                            ContainerNode* temp = curr->m_parent;
+                            SetNode* temp = curr->m_parent;
                             bool deleteNode = true;
                             if (temp) {
                                 if (m_root) {
@@ -318,7 +318,7 @@ namespace UML {
                         } else {
                             if (curr->m_right) {
                                 if (curr->m_right->m_guard <= m_guard) {
-                                    ContainerNode* temp = curr->m_right;
+                                    SetNode* temp = curr->m_right;
                                     curr->m_right = 0;
                                     curr = temp;
                                     continue;
@@ -329,7 +329,7 @@ namespace UML {
                                 curr->m_right = 0;
                             } if (curr->m_left) {
                                 if (curr->m_left->m_guard <= m_guard) {
-                                    ContainerNode* temp = curr->m_left;
+                                    SetNode* temp = curr->m_left;
                                     curr->m_left = 0;
                                     curr = temp;
                                 } else {
@@ -388,7 +388,7 @@ namespace UML {
                 m_rootRedefinedSet = false;
             };
             void add(T& el) {
-                ContainerNode* node = createNode(el);
+                SetNode* node = createNode(el);
                 setName(node);
                 add(node);
                 if (m_el) {
@@ -403,7 +403,7 @@ namespace UML {
                 }
             };
             void add(ID id) {
-                ContainerNode* node = createNode(id);
+                SetNode* node = createNode(id);
                 add(node);
                 if (m_el) {
                     if (m_el->m_manager) {
@@ -416,7 +416,7 @@ namespace UML {
             };
             void remove(ID id) {
                 if (m_root) {
-                    ContainerNode* temp = search(id, m_root);
+                    SetNode* temp = search(id, m_root);
                     if (temp->m_parent) {
                         // has parent
                         bool isLeft = temp->m_parent->m_left ? temp->m_parent->m_left->m_id == temp->m_id ? true : false : false;
@@ -541,7 +541,7 @@ namespace UML {
             };
             T& get(ID id) {
                 if (m_root) {
-                    ContainerNode* searchResult = search(id, m_root);
+                    SetNode* searchResult = search(id, m_root);
                     if (!searchResult) {
                         throw ID_doesNotExistException2(id);
                     }
@@ -557,7 +557,7 @@ namespace UML {
             };
             T& get(std::string name) {
                 if (m_root) {
-                    ContainerNode* searchResult = search(name, m_root);
+                    SetNode* searchResult = search(name, m_root);
                     if (!searchResult) {
                         // TODO throw proper error
                         throw ManagerStateException("Improper name used in set!"); // TODO change
@@ -574,7 +574,7 @@ namespace UML {
             };
             T& get(int i) {
                 int size = m_size;
-                ContainerNode* node = m_root;  //this wont work
+                SetNode* node = m_root;  //this wont work
                 while (i < size) {
                     // check size and determine which side to go down
                     size--;
@@ -601,7 +601,7 @@ namespace UML {
             };
             T& back() {
                 if (m_root) {
-                    ContainerNode* temp = m_root;
+                    SetNode* temp = m_root;
                     while (temp->m_right) {
                         temp = temp->m_right;
                     }
@@ -618,7 +618,7 @@ namespace UML {
             bool contains(ID id) {
                 bool ret = false;
                 if (m_root) {
-                    ContainerNode* t = search(id, m_root);
+                    SetNode* t = search(id, m_root);
                     ret = t > 0;
                 } 
                 return ret;
@@ -633,7 +633,7 @@ namespace UML {
             bool contains(std::string name) {
                 bool ret = false;
                 if (m_root) {
-                    ContainerNode* t = search(name, m_root);
+                    SetNode* t = search(name, m_root);
                     ret = t > 0;
                 }
                 return ret;
@@ -676,8 +676,8 @@ namespace UML {
 
         protected:
             Element* m_el;
-            AbstractSet::ContainerNode* m_node;
-            AbstractSet::ContainerNode m_endNode;
+            AbstractSet::SetNode* m_node;
+            AbstractSet::SetNode m_endNode;
         public:
             T& operator*() {
                 if (!m_node->m_el) {
@@ -699,11 +699,11 @@ namespace UML {
                     m_node = m_node->m_left;
                 } else {
                     // we hit bottom, choose next right
-                    AbstractSet::ContainerNode* temp;
-                    AbstractSet::ContainerNode* last = dynamic_cast<AbstractSet::ContainerNode*>(m_node);
+                    AbstractSet::SetNode* temp;
+                    AbstractSet::SetNode* last = dynamic_cast<AbstractSet::SetNode*>(m_node);
                     bool found = false;
                     do {
-                        temp = dynamic_cast<AbstractSet::ContainerNode*>(last->m_parent);
+                        temp = dynamic_cast<AbstractSet::SetNode*>(last->m_parent);
                         if (temp->m_right) {
                             if (temp->m_right->m_id != last->m_id) {
                                 found = true;
@@ -723,14 +723,14 @@ namespace UML {
             SetIterator operator++(int) {
                if (m_node->m_left) {
                     // always go left
-                    m_node = dynamic_cast<AbstractSet::ContainerNode*>(m_node->m_left);
+                    m_node = dynamic_cast<AbstractSet::SetNode*>(m_node->m_left);
                 } else {
                     // we hit bottom, choose next right
-                    AbstractSet::ContainerNode* temp;
-                    AbstractSet::ContainerNode* last = dynamic_cast<AbstractSet::ContainerNode*>(m_node);
+                    AbstractSet::SetNode* temp;
+                    AbstractSet::SetNode* last = dynamic_cast<AbstractSet::SetNode*>(m_node);
                     bool found = false;
                     do {
-                        temp = dynamic_cast<AbstractSet::ContainerNode*>(last->m_parent);
+                        temp = dynamic_cast<AbstractSet::SetNode*>(last->m_parent);
                         if (temp->m_right) {
                             if (temp->m_right->m_id != last->m_id) {
                                 found = true;
@@ -742,7 +742,7 @@ namespace UML {
                     if (!found) {
                         m_node = &m_endNode;
                     } else {
-                        m_node = dynamic_cast<AbstractSet::ContainerNode*>(temp->m_right);
+                        m_node = dynamic_cast<AbstractSet::SetNode*>(temp->m_right);
                     }
                 }
                 SetIterator ret = *this;
@@ -763,7 +763,7 @@ namespace UML {
         template <class U, class V> friend class Set;
 
         private:
-            AbstractSet::ContainerNode* m_root = 0;
+            AbstractSet::SetNode* m_root = 0;
         public:
             SetID_Iterator<T> begin() {
                 SetID_Iterator<T> it;

@@ -658,7 +658,11 @@ namespace UML {
             size_t size() const { return m_size; };
             SetIterator<T> begin() {
                 SetIterator<T> it;
-                it.m_node = m_root;
+                if (m_root) {
+                    it.m_node = m_root;
+                } else {
+                    it.m_node = &it.m_endNode;
+                }
                 it.m_el = m_el;
                 return it;
             };

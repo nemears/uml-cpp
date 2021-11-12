@@ -73,6 +73,9 @@ Package::Package(const Package& rhs) : Element(rhs, ElementType::PACKAGE) {
     PackageableElement::copy(rhs);
     Namespace::copy(rhs);
     copy(rhs);
+    NamedElement::init();
+    PackageableElement::init();
+    Namespace::init();
     init();
 }
 

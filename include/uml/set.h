@@ -299,6 +299,9 @@ namespace UML {
                                         }
                                     }
                                 }
+                            } else if (!m_subsetOf.empty()) {
+                                // don't delete root node if subsetting
+                                deleteNode = false;
                             }
                             if (deleteNode) {
                                 delete curr;
@@ -356,7 +359,7 @@ namespace UML {
                     if (std::find(m_subsetOf.begin(), m_subsetOf.end(), &subsetOf) == m_subsetOf.end()) {
                         m_subsetOf.push_back(&subsetOf);
                         subsetOf.m_subsettedContainers.push_back(this);
-                        if (subsetOf.m_guard <= m_guard) {
+                        if (m_guard <= subsetOf.m_guard) {
                             m_guard = subsetOf.m_guard + 1;
                         }
                         for (auto& set : subsetOf.m_subsetOf) {

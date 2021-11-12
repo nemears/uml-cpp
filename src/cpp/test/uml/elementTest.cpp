@@ -57,6 +57,7 @@ TEST_F(ElementTest, setAndGetOwnerTest) {
     Package e = m.create<Package>();
     Package c = m.create<Package>();
     c.setOwningPackage(e);
+    ASSERT_TRUE(c.hasOwner());
     ASSERT_EQ(*c.getOwner(), e);
     ASSERT_TRUE(c.getOwner()->getID() == e.getID());
 }

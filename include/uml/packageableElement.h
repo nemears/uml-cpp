@@ -35,6 +35,7 @@ namespace UML {
             void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<Package, PackageableElement>& getOwningPackageSingleton();
+            void init();
             PackageableElement();
         public:
             PackageableElement(const PackageableElement& el);

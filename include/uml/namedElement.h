@@ -46,6 +46,7 @@ namespace UML{
             void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<Namespace, NamedElement>& getNamespaceSingleton();
+            void init();
             NamedElement();
         public:
             virtual ~NamedElement();

@@ -6,6 +6,7 @@ using namespace UML;
 AbstractSet::ContainerNode::ContainerNode(Element* el) : m_el(el) {
     m_id = el->getID();
 };
+
 AbstractSet::ContainerNode::ContainerNode(void* el) : m_el(reinterpret_cast<Element*>(el)) {
     m_id = m_el->getID();
 };

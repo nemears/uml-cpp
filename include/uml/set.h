@@ -254,6 +254,9 @@ namespace UML {
                 ContainerNode* curr = rhs.m_root;
                 ContainerNode* mine = m_root;
                 m_guard = rhs.m_guard;
+                m_subsetOf.clear();
+                m_subsettedContainers.clear();
+                m_redefines.clear();
                 while (curr) {
                     ContainerNode* temp = new ContainerNode();
                     temp->m_guard = m_guard;

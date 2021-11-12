@@ -31,9 +31,13 @@ Set<Package, PackageableElement>& PackageableElement::getOwningPackageSingleton(
     return m_owningPackage;
 }
 
-PackageableElement::PackageableElement() : Element(ElementType::PACKAGEABLE_ELEMENT) {
+void PackageableElement::init() {
     m_owningPackage.subsets(m_namespace);
     m_owningPackage.opposite(&Package::getPackagedElements);
+}
+
+PackageableElement::PackageableElement() : Element(ElementType::PACKAGEABLE_ELEMENT) {
+    init();
 }
 
 PackageableElement::PackageableElement(const PackageableElement& el) : 
@@ -41,6 +45,7 @@ NamedElement(el),
 Element(el, ElementType::PACKAGEABLE_ELEMENT) {
     m_owningPackage = el.m_owningPackage;
     m_owningPackage.m_el = this;
+    init();
 }
 
 Package* PackageableElement::getOwningPackage() {

@@ -36,7 +36,7 @@ TEST_F(ElementTest, GetOwnedElementsTest) {
   Package& el3 = m.create<Package>();
   el2.getPackagedElements().add(el3);
   EXPECT_FALSE(el2.getOwnedElements().empty());
-  EXPECT_EQ(&el2.getOwnedElements().get(0), &el3);
+  EXPECT_EQ(el2.getOwnedElements().front(), el3);
 }
 
 TEST_F(ElementTest, InvalidID_Test) {

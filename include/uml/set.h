@@ -33,7 +33,8 @@ namespace UML {
         protected:
             size_t m_size = 0;
             struct ContainerNode {
-                ContainerNode(Element& el) : m_el(&el) { m_id = el.getID(); };
+                ContainerNode(Element* el);
+                ContainerNode(void* el);
                 ContainerNode(){};
                 ID m_id;
                 Element* m_el;
@@ -47,6 +48,7 @@ namespace UML {
             size_t m_guard = 0;
             virtual void place(ContainerNode* node, ContainerNode* parent) = 0;
             void setName(ContainerNode* node);
+            void instantiateSetNode(ContainerNode* node);
     };
 
     template <class T> struct SetIterator;
@@ -79,14 +81,6 @@ namespace UML {
             bool m_rootRedefinedSet = true;
             Set<U, T>& (T::*m_oppositeSignature)() = 0;
             Element* m_el = 0;
-
-            struct SetNode : public ContainerNode {
-                SetNode(T& el) {
-                    this->m_el = reinterpret_cast<Element*>(&el);
-                    this->m_id = this->m_el->getID(); 
-                };
-                SetNode() {};
-            };
 
             void place(ContainerNode* node, ContainerNode* parent) override {
                 if (node->m_id == parent->m_id) {
@@ -210,10 +204,10 @@ namespace UML {
                 }
             };
             virtual ContainerNode* createNode(T& el) {
-                return new SetNode(el);
+                return new ContainerNode(&el);
             };
             virtual ContainerNode* createNode(ID id) {
-                ContainerNode* ret = new SetNode();
+                ContainerNode* ret = new ContainerNode();
                 ret->m_id = id;
                 return ret;
             };
@@ -253,7 +247,7 @@ namespace UML {
             Set() {};
             Set(const Set<T,U>& rhs) {
                 if (rhs.m_root) {
-                    m_root = new ContainerNode(*rhs.m_root->m_el);
+                    m_root = new ContainerNode(rhs.m_root->m_el);
                 }
                 m_size = rhs.m_size;
                 m_rootRedefinedSet = rhs.m_rootRedefinedSet;
@@ -359,10 +353,15 @@ namespace UML {
              **/
             template <class V = Element, class W = Element> void subsets(Set<V, W>& subsetOf) {
                 if (!m_root && !subsetOf.m_root) {
-                    m_subsetOf.push_back(&subsetOf);
-                    subsetOf.m_subsettedContainers.push_back(this);
-                    if (subsetOf.m_guard <= m_guard) {
-                        m_guard = subsetOf.m_guard + 1;
+                    if (std::find(m_subsetOf.begin(), m_subsetOf.end(), &subsetOf) == m_subsetOf.end()) {
+                        m_subsetOf.push_back(&subsetOf);
+                        subsetOf.m_subsettedContainers.push_back(this);
+                        if (subsetOf.m_guard <= m_guard) {
+                            m_guard = subsetOf.m_guard + 1;
+                        }
+                        for (auto& set : subsetOf.m_subsetOf) {
+                            this->subsets(*static_cast<Set*>(set));
+                        }
                     }
                 } else {
                     // TODO error

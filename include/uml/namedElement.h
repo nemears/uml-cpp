@@ -35,8 +35,8 @@ namespace UML{
             std::string m_absoluteNamespace;
             Singleton2<Namespace, NamedElement> m_namespace = Singleton2<Namespace, NamedElement>(this);
             Set<Namespace, NamedElement> m_memberNamespace = Set<Namespace, NamedElement>(this);
-            Set<Dependency, NamedElement> m_clientDependencies = Set<Dependency, NamedElement>(this);
-            Set<Dependency, NamedElement> m_supplierDependencies =  Set<Dependency, NamedElement>(this);
+            // Set<Dependency, NamedElement> m_clientDependencies = Set<Dependency, NamedElement>(this);
+            // Set<Dependency, NamedElement> m_supplierDependencies =  Set<Dependency, NamedElement>(this);
             // visibility defaults to public, don't think there is a none value
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             virtual void reindexName(std::string oldName, std::string newName);
@@ -60,8 +60,8 @@ namespace UML{
             void setNamespace(Namespace* nmspc);
             void setNamespace(Namespace& nmspc);
             Set<Namespace, NamedElement>& getMemberNamespace();
-            Set<Dependency, NamedElement>& getClientDependencies();
-            Set<Dependency, NamedElement>& getSupplierDependencies();
+            // Set<Dependency, NamedElement>& getClientDependencies();
+            // Set<Dependency, NamedElement>& getSupplierDependencies();
             VisibilityKind getVisibility();
             void setVisibility(VisibilityKind visibility);
             bool isSubClassOf(ElementType eType) const override;

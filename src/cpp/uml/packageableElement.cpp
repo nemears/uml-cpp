@@ -36,14 +36,17 @@ void PackageableElement::init() {
     m_owningPackage.opposite(&Package::getPackagedElements);
 }
 
+void PackageableElement::copy(const PackageableElement& rhs) {
+    m_owningPackage = Singleton2<Package, PackageableElement>(rhs.m_owningPackage);
+    m_owningPackage.m_el = this;
+}
+
 PackageableElement::PackageableElement() : Element(ElementType::PACKAGEABLE_ELEMENT) {
     init();
 }
 
 PackageableElement::PackageableElement(const PackageableElement& el) : Element(ElementType::PACKAGEABLE_ELEMENT) {
-    m_owningPackage = el.m_owningPackage;
-    m_owningPackage.m_el = this;
-    init();
+    // abstract
 }
 
 Package* PackageableElement::getOwningPackage() {

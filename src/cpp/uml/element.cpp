@@ -138,7 +138,6 @@ Element::~Element() {
 }
 
 Element::Element(const Element& el, ElementType elementType) : m_elementType(elementType) {
-    std::cout << m_id.string() << " : Element copy constructor" << std::endl;
     m_copiedElementFlag = true;
     m_id = el.m_id;
     m_manager = el.m_manager;

@@ -19,6 +19,7 @@ namespace UML{
             void restoreReferences() override;
             void referenceErased(ID id) override;
             void init();
+            void copy(const Namespace& rhs);
             Namespace();
         public:
             virtual ~Namespace();

@@ -67,10 +67,11 @@ namespace UML {
             void restoreReferences() override;
             void referenceErased(ID id) override;
             void init();
+            void copy(const Package& rhs);
             Package();
         public:
             virtual ~Package();
-            Package(const Package& pckg);
+            Package(const Package& rhs);
             Set<PackageableElement, Package>& getPackagedElements();
             // Set<PackageMerge, Package>& getPackageMerge();
             // Set<ProfileApplication, Package>& getProfileApplications();

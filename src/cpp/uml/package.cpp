@@ -50,6 +50,11 @@ void Package::init() {
     m_packagedElements.opposite(&PackageableElement::getOwningPackageSingleton);
 }
 
+void Package::copy(const Package& rhs) {
+    m_packagedElements = Set<PackageableElement, Package>(rhs.m_packagedElements);
+    m_packagedElements.m_el = this;
+}
+
 Package::Package() : Element(ElementType::PACKAGE) {
     init();
     // m_packageMerge.subsets(*m_ownedElements);
@@ -63,16 +68,12 @@ Package::~Package() {
     
 }
 
-Package::Package(const Package& pckg) : Element(ElementType::PACKAGE) {
-    m_packagedElements = pckg.m_packagedElements;
-    m_packagedElements.m_el = this;
+Package::Package(const Package& rhs) : Element(rhs, ElementType::PACKAGE) {
+    NamedElement::copy(rhs);
+    PackageableElement::copy(rhs);
+    Namespace::copy(rhs);
+    copy(rhs);
     init();
-    // m_packageMerge = pckg.m_packageMerge;
-    // m_packageMerge.m_el = this;
-    // m_profileApplications = pckg.m_profileApplications;
-    // m_profileApplications.m_el = this;
-    // m_ownedStereotypes = pckg.m_ownedStereotypes;
-    // m_ownedStereotypes.m_el = this;
 }
 
 Set<PackageableElement, Package>& Package::getPackagedElements() {

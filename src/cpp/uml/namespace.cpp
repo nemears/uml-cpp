@@ -67,6 +67,13 @@ void Namespace::init() {
     m_members.subsets(m_ownedMembers);
 }
 
+void Namespace::copy(const Namespace& rhs) {
+    m_members = Set<NamedElement, Namespace>(rhs.m_members);
+    m_members.m_el = this;
+    m_ownedMembers = Set<NamedElement, Namespace>(rhs.m_ownedMembers);
+    m_ownedMembers.m_el = this;
+}
+
 Namespace::Namespace() : 
 Element(ElementType::NAMESPACE) {
     init();
@@ -77,10 +84,7 @@ Namespace::~Namespace() {
 }
 
 Namespace::Namespace(const Namespace& nmspc) : Element(ElementType::NAMESPACE) {
-    m_members = nmspc.m_members;
-    m_members.m_el = this;
-    m_ownedMembers = nmspc.m_ownedMembers;
-    m_ownedMembers.m_el = this;
+    // abstract
 }
 
 void Namespace::setName(const std::string& name) {

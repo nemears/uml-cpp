@@ -81,6 +81,7 @@ namespace UML {
             bool m_rootRedefinedSet = true;
             Set<U, T>& (T::*m_oppositeSignature)() = 0;
             Element* m_el = 0;
+            Set<T,U>& (U::*m_signature)() = 0;
 
             void place(SetNode* node, SetNode* parent) override {
                 if (node->m_id == parent->m_id) {
@@ -203,6 +204,21 @@ namespace UML {
                     redefined->m_size++;
                 }
             };
+            void innerAdd(T& el) {
+                SetNode* node = createNode(el);
+                setName(node);
+                add(node);
+                if (m_el) {
+                    if (m_el->m_manager) {
+                        m_el->setReference(&el);
+                    }
+                }
+                if (m_oppositeSignature) {
+                    if (!(el.*m_oppositeSignature)().contains(m_el->getID())) {
+                        (el.*m_oppositeSignature)().add(*dynamic_cast<U*>(m_el));
+                    }
+                }
+            };
             virtual SetNode* createNode(T& el) {
                 return new SetNode(&el);
             };
@@ -220,21 +236,59 @@ namespace UML {
                     searchResult->m_el = 0;
                 }
             };
-            void reindex(ID oldID, ID newID) {
-                SetNode* node = search(oldID, m_root);
-                node->m_id = newID;
-                if (node->m_parent->m_left->m_id == oldID) {
-                    if (node->m_parent->m_right->m_id > newID) {
-                        node->m_parent->m_left = node->m_parent->m_right;
-                        node->m_parent->m_right = node;
-                    }
-                } else {
-                    if (newID > node->m_parent->m_left->m_id) {
-                        node->m_parent->m_right = node->m_parent->m_left;
-                        node->m_parent->m_left = node;
+            void innerReindex(ID oldID, ID newID) {
+                if (m_root) {
+                    SetNode* node = search(oldID, m_root);
+                    if (node) {
+                        node->m_id = newID;
+                        if (node->m_parent) {
+                            if (node->m_parent->m_left->m_id == oldID) {
+                                if (node->m_parent->m_right->m_id > newID) {
+                                    node->m_parent->m_left = node->m_parent->m_right;
+                                    node->m_parent->m_right = node;
+                                }
+                            } else {
+                                if (newID > node->m_parent->m_left->m_id) {
+                                    node->m_parent->m_right = node->m_parent->m_left;
+                                    node->m_parent->m_left = node;
+                                }
+                            }
+                        }
+                        // TODO but not the copies
                     }
                 }
-                // TODO redefined and subsetted sets
+            };
+            void reindex(ID oldID, ID newID) {
+                if (m_root) {
+                    SetNode* node = search(oldID, m_root);
+                    if (node) {
+                        node->m_id = newID;
+                        if (node->m_parent) {
+                            if (node->m_parent->m_left->m_id == oldID) {
+                                if (node->m_parent->m_right->m_id > newID) {
+                                    node->m_parent->m_left = node->m_parent->m_right;
+                                    node->m_parent->m_right = node;
+                                }
+                            } else {
+                                if (newID > node->m_parent->m_left->m_id) {
+                                    node->m_parent->m_right = node->m_parent->m_left;
+                                    node->m_parent->m_left = node;
+                                }
+                            }
+                        }
+                        if (m_el) {
+                            if (m_el->m_node->m_managerElementMemory != m_el) {
+                                (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().innerReindex(oldID, newID);
+                            }
+                            for (auto& copy : m_el->m_node->m_copies) {
+                                if (copy != m_el) {
+                                    (copy->as<U>().*m_signature)().innerReindex(oldID, newID);
+                                }
+                            }
+                        }
+                        // TODO redefined and subsetted sets
+                    }
+                }
             };
             void eraseElement(ID id) {
                 // only remove from root seq
@@ -395,17 +449,15 @@ namespace UML {
                 m_rootRedefinedSet = false;
             };
             void add(T& el) {
-                SetNode* node = createNode(el);
-                setName(node);
-                add(node);
+                innerAdd(el);
                 if (m_el) {
-                    if (m_el->m_manager) {
-                        m_el->setReference(&el);
+                    if (m_el->m_node->m_managerElementMemory != m_el) {
+                        (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().innerAdd(el);
                     }
-                }
-                if (m_oppositeSignature) {
-                    if (!(el.*m_oppositeSignature)().contains(m_el->getID())) {
-                        (el.*m_oppositeSignature)().add(*dynamic_cast<U*>(m_el));
+                    for (auto& copy : m_el->m_node->m_copies) {
+                        if (copy != m_el) {
+                            (copy->as<U>().*m_signature)().innerAdd(el);
+                        }
                     }
                 }
             };
@@ -415,6 +467,16 @@ namespace UML {
                 if (m_el) {
                     if (m_el->m_manager) {
                         m_el->setReference(id);
+                    }
+                }
+                if (m_el) {
+                    if (m_el->m_node->m_managerElementMemory != m_el) {
+                        (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().add(id);
+                    }
+                    for (auto& copy : m_el->m_node->m_copies) {
+                        if (copy != m_el) {
+                            (copy->as<U>().*m_signature)().add(id);
+                        }
                     }
                 }
             };
@@ -542,6 +604,16 @@ namespace UML {
                     }
                     delete temp;
                     m_size--;
+                    if (m_el) {
+                        if (m_el->m_node->m_managerElementMemory != m_el) {
+                            (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().remove(id);
+                        }
+                        for (auto& copy : m_el->m_node->m_copies) {
+                            if (copy != m_el) {
+                                (copy->as<U>().*m_signature)().remove(id);
+                            }
+                        }
+                    }
                 } else {
                     throw ID_doesNotExistException2(id);
                 }

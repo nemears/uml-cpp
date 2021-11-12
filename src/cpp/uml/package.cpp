@@ -48,6 +48,7 @@ void Package::referenceErased(ID id) {
 void Package::init() {
     m_packagedElements.subsets(m_ownedMembers);
     m_packagedElements.opposite(&PackageableElement::getOwningPackageSingleton);
+    m_packagedElements.m_signature = &Package::getPackagedElements;
 }
 
 void Package::copy(const Package& rhs) {

@@ -63,8 +63,10 @@ void Namespace::referenceErased(ID id) {
 
 void Namespace::init() {
     m_ownedMembers.subsets(*m_ownedElements);
+    m_ownedMembers.m_signature = &Namespace::getOwnedMembers;
     m_members.opposite(&NamedElement::getNamespaceSingleton);
     m_members.subsets(m_ownedMembers);
+    m_members.m_signature = &Namespace::getMembers;
 }
 
 void Namespace::copy(const Namespace& rhs) {

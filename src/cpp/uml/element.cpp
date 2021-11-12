@@ -105,9 +105,11 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_id = ID::randomID();
 
     m_owner = new Singleton2<Element, Element>(this);
+    m_owner->m_signature = &Element::getOwnerSingleton;
 
     m_ownedElements = new Set<Element, Element>(this);
     m_ownedElements->opposite(&Element::getOwnerSingleton);
+    m_ownedElements->m_signature = &Element::getOwnedElements;
 
     m_relationships = new Set<Relationship, Element>(this);
 

@@ -46,7 +46,9 @@ Set<Namespace, NamedElement>& NamedElement::getNamespaceSingleton() {
 void NamedElement::init() {
     m_namespace.subsets(*m_owner);
     m_namespace.opposite(&Namespace::getOwnedMembers);
+    m_namespace.m_signature = &NamedElement::getNamespaceSingleton;
     m_memberNamespace.opposite(&Namespace::getMembers);
+    m_memberNamespace.m_signature = &NamedElement::getMemberNamespace;
 }
 
 void NamedElement::copy(const NamedElement& rhs) {

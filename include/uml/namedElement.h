@@ -59,8 +59,6 @@ namespace UML{
             Namespace& getNamespaceRef();
             ID getNamespaceID() const;
             bool hasNamespace() const;
-            void setNamespace(Namespace* nmspc);
-            void setNamespace(Namespace& nmspc);
             Set<Namespace, NamedElement>& getMemberNamespace();
             // Set<Dependency, NamedElement>& getClientDependencies();
             // Set<Dependency, NamedElement>& getSupplierDependencies();

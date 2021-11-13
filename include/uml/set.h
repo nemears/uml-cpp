@@ -45,6 +45,7 @@ namespace UML {
         protected:
             size_t m_size = 0;
             size_t m_upper = 0;
+            bool m_ultimateSet = true;
             struct SetNode {
                 SetNode(Element* el);
                 SetNode(void* el);
@@ -472,9 +473,6 @@ namespace UML {
                 }
             };
             virtual ~Set() { 
-                if (m_el) {
-                    // std::cout << m_el->getID().string() << " : " << m_guard;
-                }
                 if (m_rootRedefinedSet) {
                     SetNode* curr = m_root;
                     while (curr) {
@@ -498,6 +496,8 @@ namespace UML {
                                 }
                             } else if (m_guard > 0) {
                                 // don't delete root node if subsetting
+                                deleteNode = false;
+                            } else if (!m_ultimateSet) {
                                 deleteNode = false;
                             }
                             if (deleteNode) {
@@ -558,6 +558,14 @@ namespace UML {
             template <class V = Element, class W = Element> void subsets(Set<V, W>& subsetOf) {
                 if (!m_root && !subsetOf.m_root) {
                     if (std::find(m_subsetOf.begin(), m_subsetOf.end(), &subsetOf) == m_subsetOf.end()) {
+                        m_ultimateSet = false;
+                        if (subsetOf.m_ultimateSet) {
+                            for (auto& set : m_subsetOf) {
+                                if (set->m_ultimateSet) {
+                                    subsetOf.m_ultimateSet = false;
+                                }
+                            }
+                        }
                         m_subsetOf.push_back(&subsetOf);
                         subsetOf.m_subsettedContainers.push_back(this);
                         if (m_guard <= subsetOf.m_guard) {

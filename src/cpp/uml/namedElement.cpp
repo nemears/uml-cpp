@@ -47,8 +47,10 @@ void NamedElement::init() {
     m_namespace.subsets(*m_owner);
     m_namespace.opposite(&Namespace::getOwnedMembers);
     m_namespace.m_signature = &NamedElement::getNamespaceSingleton;
+    m_namespace.m_readOnly = true;
     m_memberNamespace.opposite(&Namespace::getMembers);
     m_memberNamespace.m_signature = &NamedElement::getMemberNamespace;
+    m_memberNamespace.m_readOnly = true;
 }
 
 void NamedElement::copy(const NamedElement& rhs) {
@@ -119,14 +121,6 @@ ID NamedElement::getNamespaceID() const {
 
 bool NamedElement::hasNamespace() const {
     return m_namespace.has();
-}
-
-void NamedElement::setNamespace(Namespace* nmspc) {
-    m_namespace.set(nmspc);
-}
-
-void NamedElement::setNamespace(Namespace& nmspc) {
-    m_namespace.set(nmspc);
 }
 
 Set<Namespace, NamedElement>& NamedElement::getMemberNamespace() {

@@ -45,8 +45,8 @@ TEST_F(NamedElementTest, overwriteNamespaceTest) {
     Package p1 = m.create<Package>();
     Package p2 = m.create<Package>();
     Package c = m.create<Package>();
-    p1.getOwnedMembers().add(c);
-    c.setNamespace(p2);
+    p1.getPackagedElements().add(c);
+    c.setOwningPackage(p2);
     ASSERT_EQ(p2.getOwnedMembers().size(), 1);
     ASSERT_EQ(p2.getOwnedMembers().front(), c);
     ASSERT_EQ(*c.getNamespace(), p2);
@@ -72,7 +72,7 @@ TEST_F(NamedElementTest, copyNamedElementTest) {
     n.setName("test");
     Package p = m.create<Package>();
     Package c = m.create<Package>();
-    n.setNamespace(&p);
+    n.setOwningPackage(&p);
     n.getPackagedElements().add(c);
     Package n2 = n;
     ASSERT_TRUE(n2.getName().compare("test") == 0);

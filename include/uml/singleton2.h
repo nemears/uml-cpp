@@ -7,15 +7,17 @@ namespace UML {
     template <class T = Element, class U = Element> class Singleton2 : public Set<T, U> {
         
         friend NamedElement;
-        
-        // protected:
-        //     template <class V = Element, class W = Element> void subsets(Singleton2<V,W>& subsetOf) {
-        //         Set<T, U>::subsets(subsetOf);
-        //     };
+
         public:
-            Singleton2(U* el) : Set<T, U>(el) {};
-            Singleton2() {};
-            Singleton2<T,U>(const Singleton2<T,U>& rhs) : Set<T, U>(rhs) {};
+            Singleton2(U* el) : Set<T, U>(el) {
+                this->m_upper = 1;
+            };
+            Singleton2() {
+                this->m_upper = 1;
+            };
+            Singleton2<T,U>(const Singleton2<T,U>& rhs) : Set<T, U>(rhs) {
+                this->m_upper = 1;
+            };
             T* get() {
                 if (this->m_root) {
                     return dynamic_cast<T*>(this->m_root->m_el);
@@ -47,7 +49,7 @@ namespace UML {
                     this->remove(this->m_root->m_id);
                 }
                 if (el) {
-                    this->add(*el);
+                    this->Set<T,U>::add(*el);
                 }
             };
             void set(T& el) {
@@ -57,7 +59,7 @@ namespace UML {
                 if (this->m_root) {
                     this->remove(this->m_root->m_id);
                 }
-                this->add(id);
+                this->Set<T,U>::add(id);
             };
     };
 }

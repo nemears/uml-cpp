@@ -1,5 +1,5 @@
 #include "uml/set.h"
-#include "uml/namedElement.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 

@@ -32,6 +32,7 @@ namespace UML {
         template <class T, class U> friend class OrderedSet;
         protected:
             size_t m_size = 0;
+            size_t m_upper = 0;
             struct SetNode {
                 SetNode(Element* el);
                 SetNode(void* el);
@@ -570,6 +571,18 @@ namespace UML {
                 m_rootRedefinedSet = false;
             };
             void add(T& el) {
+                if (m_upper) {
+                    // this is a workaround to a polymorphic add, look at size to determine if singleton or not
+                    if (m_upper == 1) { // enforce singleton behavior
+                        if (this->m_root) {
+                            this->remove(this->m_root->m_id);
+                        }
+                    } else {
+                        if (m_size >= m_upper) {
+                            // TODO throw error
+                        }
+                    }
+                }
                 innerAdd(el);
                 if (m_el) {
                     if (m_el->m_node->m_managerElementMemory != m_el) {

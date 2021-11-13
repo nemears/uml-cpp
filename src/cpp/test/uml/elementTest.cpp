@@ -264,7 +264,7 @@ TEST_F(ElementTest, isSameOrNullTest) {
   e.getPackagedElements().add(c2);
   ASSERT_NO_THROW(c1.setOwningPackage(&e));
   ASSERT_TRUE(&e.getOwnedElements().get(c1.getID()) == &c1);
-  ASSERT_TRUE(&e.getOwnedElements().get(c1.getID()) == &c2);
+  ASSERT_TRUE(&e.getOwnedElements().get(c2.getID()) == &c2);
 }
 
 // TEST_F(ElementTest, checkAppliedStereotypeFunctorTest) {

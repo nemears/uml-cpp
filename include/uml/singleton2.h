@@ -45,10 +45,10 @@ namespace UML {
                 return this->m_root != 0;
             };
             void set(T* el) {
-                if (this->m_root) {
+                if (this->m_root && this->m_root->m_id != el->getID()) {
                     this->remove(this->m_root->m_id);
                 }
-                if (el) {
+                if (el && !this->m_root) {
                     this->Set<T,U>::add(*el);
                 }
             };

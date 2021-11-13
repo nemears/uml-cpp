@@ -58,8 +58,8 @@ TEST_F(NamedElementTest, overwriteNamespaceByOwnedMemebersAddTest) {
     Package p1 = m.create<Package>();
     Package p2 = m.create<Package>();
     Package c = m.create<Package>();
-    p1.getOwnedMembers().add(c);
-    p2.getOwnedMembers().add(c);
+    p1.getPackagedElements().add(c);
+    p2.getPackagedElements().add(c);
     ASSERT_EQ(p2.getOwnedMembers().size(), 1);
     ASSERT_EQ(p2.getOwnedMembers().front(), c);
     ASSERT_EQ(*c.getNamespace(), p2);

@@ -155,7 +155,7 @@ void NamedElement::setVisibility(VisibilityKind visibility) {
     //         }
     //     }
     // }
-    // m_visibility = visibility;
+    m_visibility = visibility;
     // if (m_visibility != visibility) {
     //     if (m_visibility != VisibilityKind::PRIVATE) {
     //         for (auto& nmspc: getMemberNamespace()) {
@@ -168,7 +168,7 @@ void NamedElement::setVisibility(VisibilityKind visibility) {
     //     }
     // }
 
-    // updateCopiesScalar(visibility, &NamedElement::m_visibility);
+    updateCopiesScalar(visibility, &NamedElement::m_visibility);
 }
 
 bool NamedElement::isSubClassOf(ElementType eType) const {

@@ -24,6 +24,18 @@ namespace UML {
             };
     };
 
+    class ReadOnlySetException : public std::exception {
+        friend class Element;
+        private:
+            std::string m_msg;
+
+        public:
+            ReadOnlySetException(std::string elID) : m_msg("Tried to mutate read only set for element uuid: " + elID) {};
+            virtual const char* what() const throw() {
+                return m_msg.c_str();
+            }
+    };
+
     template <class T, class U> class Set;
     template <class T, class U> class OrderedSet;
 
@@ -83,6 +95,7 @@ namespace UML {
             Set<U, T>& (T::*m_oppositeSignature)() = 0;
             Element* m_el = 0;
             Set<T,U>& (U::*m_signature)() = 0;
+            bool m_readOnly = false;
 
             void place(SetNode* node, SetNode* parent) override {
                 if (node->m_id == parent->m_id) {
@@ -431,6 +444,7 @@ namespace UML {
                 SetNode* mine = m_root;
                 m_guard = rhs.m_guard;
                 m_signature = rhs.m_signature;
+                m_readOnly = rhs.m_readOnly;
                 m_subsetOf.clear();
                 m_subsettedContainers.clear();
                 m_redefines.clear();
@@ -572,6 +586,9 @@ namespace UML {
                 m_rootRedefinedSet = false;
             };
             void add(T& el) {
+                if (m_readOnly) {
+                    throw ReadOnlySetException(el.getID().string());
+                }
                 if (m_upper) {
                     // this is a workaround to a polymorphic add, look at size to determine if singleton or not
                     if (m_upper == 1) { // enforce singleton behavior
@@ -597,6 +614,9 @@ namespace UML {
                 }
             };
             void add(ID id) {
+                if (m_readOnly) {
+                    throw ReadOnlySetException(id.string());
+                }
                 SetNode* node = createNode(id);
                 add(node);
                 if (m_el) {
@@ -619,6 +639,9 @@ namespace UML {
                 remove(el.getID());
             };
             void remove(ID id) {
+                if (m_readOnly) {
+                    throw ReadOnlySetException(id.string());
+                }
                 if (m_root) {
                     innerRemove(id);
                     if (m_oppositeSignature) {

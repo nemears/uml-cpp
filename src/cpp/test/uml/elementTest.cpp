@@ -208,8 +208,8 @@ TEST_F(ElementTest, readOnlySequenceTest) {
     Package c1 = m.create<Package>();
     Package c2 = m.create<Package>();
     ASSERT_NO_THROW(p.getPackagedElements().add(c1));
-    ASSERT_THROW(p.getOwnedElements().add(c2), ReadOnlySequenceException);
-    ASSERT_THROW(p.getOwnedElements().remove(c1), ReadOnlySequenceException);
+    ASSERT_THROW(p.getOwnedElements().add(c2), ReadOnlySetException);
+    ASSERT_THROW(p.getOwnedElements().remove(c1), ReadOnlySetException);
 }
 
 TEST_F(ElementTest, readOnlyRelationships) {

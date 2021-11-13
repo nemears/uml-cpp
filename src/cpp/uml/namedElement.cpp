@@ -9,7 +9,6 @@ using namespace std;
 
 void NamedElement::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    m_namespace.reindex(oldID, newID);
     m_memberNamespace.reindex(oldID, newID);
     // m_clientDependencies.reindex(oldID, newID);
     // m_supplierDependencies.reindex(oldID, newID);
@@ -18,7 +17,6 @@ void NamedElement::referenceReindexed(ID oldID, ID newID) {
 void NamedElement::referencingReleased(ID id) {
     Element::referencingReleased(id);
     m_memberNamespace.release(id);
-    m_namespace.release(id);
     // m_clientDependencies.release(id);
     // m_supplierDependencies.release(id);
 }
@@ -34,9 +32,6 @@ void NamedElement::restoreReferences() {
 void NamedElement::referenceErased(ID id) {
     Element::referenceErased(id);
     m_memberNamespace.eraseElement(id);
-    m_namespace.eraseElement(id);
-    // m_clientDependencies.eraseElement(id);
-    // m_supplierDependencies.eraseElement(id);
 }
 
 Set<Namespace, NamedElement>& NamedElement::getNamespaceSingleton() {

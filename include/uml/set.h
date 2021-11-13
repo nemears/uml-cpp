@@ -427,9 +427,11 @@ namespace UML {
                 }
             };
             void eraseElement(ID id) {
-                // only remove from root seq
-                if (m_subsetOf.empty()) {
-                    remove(id); // this will invoke opposite opposite (maybe make inner function to remove to not invoke opposite?)
+                // only remove if root seq
+                if (m_root) {
+                    if (m_subsetOf.empty()) {
+                        innerRemove(id); // this will invoke opposite opposite (maybe make inner function to remove to not invoke opposite?)
+                    }
                 }
             };
         public:

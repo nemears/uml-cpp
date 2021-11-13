@@ -9,40 +9,24 @@ void Package::referenceReindexed(ID oldID, ID newID) {
     Namespace::referenceReindexed(oldID, newID);
     PackageableElement::referenceReindexed(oldID, newID);
     TemplateableElement::referenceReindexed(oldID, newID);
-    m_packagedElements.reindex(oldID, newID);
-    // m_packageMerge.reindex(oldID, newID);
-    // m_profileApplications.reindex(oldID, newID);
-    // m_ownedStereotypes.reindex(oldID, newID);
 }
 
 void Package::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     PackageableElement::referencingReleased(id);
     TemplateableElement::referencingReleased(id);
-    m_packagedElements.release(id);
-    // m_packageMerge.release(id);
-    // m_profileApplications.release(id);
-    // m_ownedStereotypes.release(id);
 }
 
 void Package::restoreReferences() {
     Namespace::restoreReferences();
     PackageableElement::restoreReferences();
     TemplateableElement::restoreReferences();
-    // m_packagedElements.restoreReferences();
-    // m_packageMerge.restoreReferences();
-    // m_profileApplications.restoreReferences();
-    // m_ownedStereotypes.restoreReferences();
 }
 
 void Package::referenceErased(ID id) {
     Namespace::referenceErased(id);
     PackageableElement::referenceErased(id);
     TemplateableElement::referenceErased(id);
-    m_packagedElements.eraseElement(id);
-    // m_packageMerge.eraseElement(id);
-    // m_profileApplications.eraseElement(id);
-    // m_ownedStereotypes.eraseElement(id);
 }
 
 void Package::init() {

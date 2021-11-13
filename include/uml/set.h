@@ -438,38 +438,56 @@ namespace UML {
             Set(Element* el) : m_el(el) {};
             Set() {};
             Set(const Set<T,U>& rhs) {
-                if (rhs.m_root) {
-                    m_root = new SetNode(rhs.m_root->m_el);
-                }
+                // if (rhs.m_root) {
+                //     m_root = new SetNode(rhs.m_root->m_el);
+                // }
                 m_size = rhs.m_size;
+                m_upper = rhs.m_upper;
                 m_rootRedefinedSet = rhs.m_rootRedefinedSet;
-                SetNode* curr = rhs.m_root;
-                SetNode* mine = m_root;
                 m_guard = rhs.m_guard;
                 m_signature = rhs.m_signature;
                 m_readOnly = rhs.m_readOnly;
+                m_ultimateSet = rhs.m_ultimateSet;
                 m_subsetOf.clear();
                 m_subsettedContainers.clear();
                 m_redefines.clear();
-                while (curr) {
-                    SetNode* temp = new SetNode();
-                    temp->m_guard = m_guard;
-                    temp->m_parent = mine;
-                    if (curr->m_left) {
-                        temp->m_id = curr->m_left->m_id;
-                        temp->m_el = curr->m_left->m_el;
-                        curr = curr->m_left;
-                        mine = temp;
-                    } else {
-                        do {
-                            curr = curr->m_parent;
-                            mine = mine->m_parent;
-                        } while (curr && !curr->m_right);
-                        if (curr) {
-                            temp->m_id = curr->m_right->m_id;
-                            temp->m_el = curr->m_right->m_el;
-                            curr = curr->m_right;
-                            mine = temp;
+                if (m_guard == 0) {
+                    if (rhs.m_root) {
+                        if (rhs.m_root->m_guard && m_ultimateSet) {
+                            SetNode* curr = rhs.m_root;
+                            SetNode* mine = m_root;
+                            while (curr) {
+                                if (curr->m_guard > 0 && !m_ultimateSet) {
+                                    break;
+                                }
+                                SetNode* temp = new SetNode(curr->m_el);
+                                if (curr == rhs.m_root) {
+                                    m_root = temp;
+                                }
+                                temp->m_guard = curr->m_guard;
+                                temp->m_parent = mine;
+                                if (curr->m_left) {
+                                    temp->m_id = curr->m_left->m_id;
+                                    temp->m_el = curr->m_left->m_el;
+                                    curr = curr->m_left;
+                                    mine = temp;
+                                } else {
+                                    if (mine) {
+                                        do {
+                                            curr = curr->m_parent;
+                                            mine = mine->m_parent;
+                                        } while (curr && !curr->m_right);
+                                    } else {
+                                        curr = 0;
+                                    }
+                                    if (curr) {
+                                        temp->m_id = curr->m_right->m_id;
+                                        temp->m_el = curr->m_right->m_el;
+                                        curr = curr->m_right;
+                                        mine = temp;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -558,28 +576,26 @@ namespace UML {
              *  c.subsets(b); // GOOD because b instantiated after a
              **/
             template <class V = Element, class W = Element> void subsets(Set<V, W>& subsetOf) {
-                if (!m_root && !subsetOf.m_root) {
-                    if (std::find(m_subsetOf.begin(), m_subsetOf.end(), &subsetOf) == m_subsetOf.end()) {
-                        m_ultimateSet = false;
-                        if (subsetOf.m_ultimateSet) {
-                            for (auto& set : m_subsetOf) {
-                                if (set->m_ultimateSet) {
-                                    subsetOf.m_ultimateSet = false;
-                                }
+                if (std::find(m_subsetOf.begin(), m_subsetOf.end(), &subsetOf) == m_subsetOf.end()) {
+                    m_ultimateSet = false;
+                    if (subsetOf.m_ultimateSet) {
+                        for (auto& set : m_subsetOf) {
+                            if (set->m_ultimateSet) {
+                                subsetOf.m_ultimateSet = false;
                             }
                         }
-                        m_subsetOf.push_back(&subsetOf);
-                        subsetOf.m_subsettedContainers.push_back(this);
-                        if (m_guard <= subsetOf.m_guard) {
-                            m_guard = subsetOf.m_guard + 1;
-                        }
-                        for (auto& set : subsetOf.m_subsetOf) {
-                            this->subsets(*static_cast<Set*>(set));
-                        }
                     }
-                } else {
-                    // TODO error
-                    std::cerr << "WARNING subset set after set was used, must make sure subsetting is done during configuration, before use!" << std::endl;
+                    m_subsetOf.push_back(&subsetOf);
+                    subsetOf.m_subsettedContainers.push_back(this);
+                    if (m_guard <= subsetOf.m_guard) {
+                        m_guard = subsetOf.m_guard + 1;
+                    }
+                    for (auto& set : subsetOf.m_subsetOf) {
+                        this->subsets(*static_cast<Set*>(set));
+                    }
+                    if (!m_root) {
+                        m_root = subsetOf.m_root;
+                    }
                 }
             };
             void opposite(Set<U, T>& (T::*op)()) {

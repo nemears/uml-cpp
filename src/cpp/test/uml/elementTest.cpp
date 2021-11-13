@@ -165,7 +165,7 @@ TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
   ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }
 
-TEST_F(ElementTest, CopyTestW_Manager) {
+TEST_F(ElementTest, CopyTest) {
   UmlManager m;
   Package& e1 = m.create<Package>();
   Package& p1 = m.create<Package>();

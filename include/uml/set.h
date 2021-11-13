@@ -602,7 +602,7 @@ namespace UML {
                     }
                 }
                 innerAdd(el);
-                if (m_el) {
+                if (m_el && m_el->m_node) {
                     if (m_el->m_node->m_managerElementMemory != m_el) {
                         (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().innerAdd(el);
                     }

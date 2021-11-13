@@ -1,156 +1,19 @@
 #include "gtest/gtest.h"
 #include "uml/element.h"
 #include "uml/namedElement.h"
-#include "uml/sequence.h"
 #include "uml/package.h"
-#include "uml/slot.h"
 #include "uml/set.h"
-#include "uml/class.h"
-#include "uml/instanceSpecification.h"
 #include "uml/orderedSet.h"
 #include "test/yumlParsersTest.h"
 #include "uml/singleton2.h"
 
 using namespace UML;
 
-class SequenceTest : public ::testing::Test {
+class SetTest : public ::testing::Test {
    
 };
 
-TEST_F(SequenceTest, addGetAndRemoveElementTest) {
-    UmlManager m;
-    Package& p = m.create<Package>();
-    Sequence<PackageableElement>& seq = p.getPackagedElements();
-    ASSERT_TRUE(seq.size() == 0);
-    Package e = m.create<Package>();
-    ASSERT_NO_THROW(seq.add(e));
-    ASSERT_TRUE(seq.get(e.getID()) == e);
-    ASSERT_TRUE(seq.size() == 1);
-    seq.remove(e);
-    ASSERT_TRUE(seq.size() == 0);
-}
-
-TEST_F(SequenceTest, addGetAndRemoveElementByNameTest) {
-    UmlManager m;
-    Package& p = m.create<Package>();
-    Sequence<PackageableElement>& seq = p.getPackagedElements();
-    Package& e = m.create<Package>();
-    Package n = m.create<Package>();
-    n.setName("test");
-    seq.add(e);
-    seq.add(n);
-    ASSERT_TRUE(seq.get("test") == n);
-    ASSERT_TRUE(seq.get(n.getID()) == n);
-    ASSERT_TRUE(seq.get(e.getID()) == e);
-}
-
-TEST_F(SequenceTest, setNameLaterTest) {
-    UmlManager m;
-    Package& o = m.create<Package>();
-    Package& p = m.create<Package>();
-    o.getPackagedElements().add(p);
-    ASSERT_THROW(o.getOwnedElements().get("test"), ID_doesNotExistException);
-    p.setName("test");
-    ASSERT_NO_THROW(o.getOwnedElements().get("test"));
-    ASSERT_EQ(o.getOwnedElements().get("test").getID(), p.getID());
-}
-
-TEST_F(SequenceTest, addElementTwiceTest) {
-    UmlManager m;
-    Package& p = m.create<Package>();
-    Sequence<PackageableElement>& seq = p.getPackagedElements();
-    Package e = m.create<Package>();
-    ASSERT_NO_THROW(seq.add(e));
-    ASSERT_NO_THROW(seq.add(e));
-    ASSERT_TRUE(seq.get(e.getID()) == e);
-    ASSERT_TRUE(seq.size() == 2);
-    ASSERT_TRUE(seq.get(0) == e);
-    ASSERT_TRUE(seq.get(1) == e);
-    ASSERT_NO_THROW(seq.remove(e));
-    ASSERT_THROW(seq.get(e.getID()), ID_doesNotExistException);
-    ASSERT_TRUE(seq.size() == 0);
-    ASSERT_TRUE(seq.empty());
-}
-
-// TEST_F(SequenceTest, addNamedElementTwiceTest) {
-//     Sequence<> seq;
-//     NamedElement n;
-//     n.setName("name");
-//     ASSERT_NO_THROW(seq.add(n));
-//     ASSERT_NO_THROW(seq.add(n));
-//     ASSERT_TRUE(seq.get("name") == &n);
-//     ASSERT_TRUE(seq.get(n.getID()) == &n);
-//     ASSERT_NO_THROW(seq.remove(n));
-//     ASSERT_TRUE(seq.get("name") == NULL);
-//     ASSERT_TRUE(seq.get(n.getID()) == NULL);
-// }
-
-TEST_F(SequenceTest, removeElementThatWasntAddedTest) {
-    UmlManager m;
-    Package& p = m.create<Package>();
-    Sequence<PackageableElement>& seq = p.getPackagedElements();
-    Package e = m.create<Package>();
-    ASSERT_THROW(seq.remove(e), ElementDoesntExistException);
-}
-
-TEST_F(SequenceTest, useAutoForLoop2) {
-    UmlManager m;
-    Package& p = m.create<Package>();
-    Sequence<PackageableElement>& seq = p.getPackagedElements();
-    Package& e = m.create<Package>();
-    Package& f = m.create<Package>();
-    Package& b = m.create<Package>();
-    Package& c = m.create<Package>();
-    seq.add(e);
-    seq.add(f);
-    seq.add(b);
-    seq.add(c);
-    for (auto& e: seq) {
-        ASSERT_TRUE(!e.getID().isNull());
-    }
-}
-
-TEST_F(SequenceTest, getNonexistentElementByID_Test) {
-    UmlManager m;
-    Package e = m.create<Package>();
-    Package a = m.create<Package>();
-    e.getPackagedElements().add(a);
-    Package b = m.create<Package>();
-    ASSERT_THROW(e.getOwnedElements().get(b.getID()), ID_doesNotExistException);
-    ASSERT_NO_THROW(e.getOwnedElements().get(a.getID()));
-}
-
-TEST_F(SequenceTest, newSequenceTest) {
-    UmlManager m;
-    Package& p = m.create<Package>();
-    Sequence<PackageableElement>& s = p.getPackagedElements();
-    for (size_t i = 0; i < 100; i++) {
-        s.add(m.create<Package>());
-    }
-    ASSERT_EQ(s.size(), 100);
-    size_t i = 0;
-    for (auto const& package: s) {
-        i++;
-    }
-    ASSERT_EQ(i, 100);
-}
-
-TEST_F(SequenceTest, variardicAddTest) {
-    UmlManager m;
-    Package& p = m.create<Package>();
-    Package& c1 = m.create<Package>();
-    Package& c2 = m.create<Package>();
-    Package& c3 = m.create<Package>();
-    ASSERT_NO_THROW(p.getPackagedElements().add(c1, c2, c3));
-    ASSERT_EQ(p.getPackagedElements().size(), 3);
-    ASSERT_EQ(p.getPackagedElements().front().getID(), c1.getID());
-    ASSERT_EQ(p.getPackagedElements().get(1).getID(), c2.getID());
-    ASSERT_EQ(p.getPackagedElements().back().getID(), c3.getID());
-    ASSERT_NO_THROW(p.getPackagedElements().remove(c1, c2, c3));
-    ASSERT_TRUE(p.getPackagedElements().empty());
-}
-
-TEST_F(SequenceTest, basicSetTest) {
+TEST_F(SetTest, basicSetTest) {
     size_t numPackages = 20;
     Set<Package> seq;
     ASSERT_TRUE(seq.empty());
@@ -172,7 +35,7 @@ TEST_F(SequenceTest, basicSetTest) {
     }
 }
 
-TEST_F(SequenceTest, basicRemoveTest) {
+TEST_F(SetTest, basicRemoveTest) {
     Set<Package> seq;
     UmlManager m;
     const size_t constNumPackages = 8;
@@ -199,7 +62,7 @@ TEST_F(SequenceTest, basicRemoveTest) {
     ASSERT_EQ(seq.size(), 0);
 }
 
-TEST_F(SequenceTest, basicSubsetsTest) {
+TEST_F(SetTest, basicSubsetsTest) {
     Set<PackageableElement> rootSeq;
     Set<Package> subSeq;
     subSeq.subsets(rootSeq);
@@ -212,7 +75,7 @@ TEST_F(SequenceTest, basicSubsetsTest) {
     ASSERT_EQ(rootSeq.size(), 1);
     ASSERT_TRUE(rootSeq.contains(pckg.getID()));
     ASSERT_EQ(rootSeq.get(pckg.getID()), pckg);
-    Class& clazz = m.create<Class>();
+    Package& clazz = m.create<Package>();
     rootSeq.add(clazz);
     ASSERT_EQ(rootSeq.size(), 2);
     ASSERT_TRUE(rootSeq.contains(clazz.getID()));
@@ -222,14 +85,14 @@ TEST_F(SequenceTest, basicSubsetsTest) {
     ASSERT_THROW(subSeq.get(clazz.getID()), ID_doesNotExistException2);
 }
 
-TEST_F(SequenceTest, multiSubsetsTest) {
+TEST_F(SetTest, multiSubsetsTest) {
     Set<NamedElement> seq1;
     Set<PackageableElement> seq2;
     Set<Package> subSeq;
     subSeq.subsets(seq2);
     subSeq.subsets(seq1);
     UmlManager m;
-    Class& clazz = m.create<Class>();
+    Package& clazz = m.create<Package>();
     seq1.add(clazz);
     ASSERT_FALSE(seq1.empty());
     ASSERT_EQ(seq1.size(), 1);
@@ -240,7 +103,7 @@ TEST_F(SequenceTest, multiSubsetsTest) {
     ASSERT_TRUE(subSeq.empty());
     ASSERT_EQ(subSeq.size(), 0);
     ASSERT_FALSE(subSeq.contains(clazz.getID()));
-    InstanceSpecification& inst = m.create<InstanceSpecification>();
+    Package& inst = m.create<Package>();
     seq2.add(inst);
     ASSERT_FALSE(seq1.empty());
     ASSERT_EQ(seq1.size(), 1);
@@ -264,7 +127,7 @@ TEST_F(SequenceTest, multiSubsetsTest) {
     ASSERT_TRUE(subSeq.contains(pckg.getID()));
 }
 
-TEST_F(SequenceTest, removeFromSubsettedSequenceTest) {
+TEST_F(SetTest, removeFromSubsettedSequenceTest) {
     Set<PackageableElement> rootSeq;
     Set<Package> subSeq;
     subSeq.subsets(rootSeq);
@@ -284,7 +147,7 @@ TEST_F(SequenceTest, removeFromSubsettedSequenceTest) {
     ASSERT_FALSE(rootSeq.contains(pckg.getID()));
 }
 
-TEST_F(SequenceTest, specialAutoForLoop) {
+TEST_F(SetTest, specialAutoForLoop) {
     Set<Package> seq;
     int numPackages = 10;
     UmlManager m;
@@ -306,13 +169,13 @@ TEST_F(SequenceTest, specialAutoForLoop) {
     ASSERT_EQ(i, 10);
 }
 
-TEST_F(SequenceTest, getFromSetByNameTest) {
+TEST_F(SetTest, getFromSetByNameTest) {
     Set<PackageableElement> rootSeq;
     Set<Package> subSeq;
     subSeq.subsets(rootSeq);
     UmlManager m;
     Package& one = m.create<Package>();
-    Class& two = m.create<Class>();
+    Package& two = m.create<Package>();
     one.setName("1");
     two.setName("2");
     subSeq.add(one);
@@ -327,7 +190,7 @@ TEST_F(SequenceTest, getFromSetByNameTest) {
     ASSERT_THROW(subSeq.get("2"), ManagerStateException);
 }
 
-TEST_F(SequenceTest, addToSetTwice) {
+TEST_F(SetTest, addToSetTwice) {
     Set<Package> set;
     UmlManager m;
     Package& p = m.create<Package>();
@@ -345,7 +208,7 @@ class TestElement : public Element {
         Set<TestElement, TestElement>& getOthers() { return m_others; };
 };
 
-TEST_F(SequenceTest, oppositeTest) {
+TEST_F(SetTest, oppositeTest) {
     UmlManager m;
     TestElement t1;
     TestElement t2;
@@ -355,7 +218,7 @@ TEST_F(SequenceTest, oppositeTest) {
     ASSERT_EQ(t2.getOthers().get(t1.getID()), t1);
 }
 
-TEST_F(SequenceTest, setRedefinesTest) {
+TEST_F(SetTest, setRedefinesTest) {
     Set<Package> ogSet;
     Set<Package> reSet;
     reSet.redefines(ogSet);
@@ -396,7 +259,7 @@ TEST_F(SequenceTest, setRedefinesTest) {
     ASSERT_EQ(reSet.size(), 3);
 }
 
-TEST_F(SequenceTest, addToOrderedSetTest) {
+TEST_F(SetTest, addToOrderedSetTest) {
     OrderedSet<Package> set;
     UmlManager m;
     Package& p = m.create<Package>();
@@ -437,7 +300,7 @@ TEST_F(SequenceTest, addToOrderedSetTest) {
     ASSERT_EQ(set.get(2), p3);
 }
 
-TEST_F(SequenceTest, subsetOrderedSets) {
+TEST_F(SetTest, subsetOrderedSets) {
     OrderedSet<PackageableElement> rootSet;
     OrderedSet<Package> subSet;
     subSet.subsets(rootSet);
@@ -448,7 +311,7 @@ TEST_F(SequenceTest, subsetOrderedSets) {
     ASSERT_FALSE(rootSet.empty());
     ASSERT_EQ(rootSet.size(), 1);
     ASSERT_EQ(rootSet.front(), p);
-    Class& c = m.create<Class>();
+    Package& c = m.create<Package>();
     rootSet.add(c);
     ASSERT_FALSE(subSet.contains(c.getID()));
     ASSERT_TRUE(rootSet.contains(c.getID()));
@@ -465,7 +328,7 @@ TEST_F(SequenceTest, subsetOrderedSets) {
     ASSERT_EQ(i, 2);
 }
 
-TEST_F(SequenceTest, orderedSetSubSetsSet) {
+TEST_F(SetTest, orderedSetSubSetsSet) {
     Set<PackageableElement> rootSet;
     OrderedSet<Package> subSet;
     subSet.subsets(rootSet);
@@ -476,7 +339,7 @@ TEST_F(SequenceTest, orderedSetSubSetsSet) {
     ASSERT_FALSE(rootSet.empty());
     ASSERT_EQ(rootSet.size(), 1);
     ASSERT_EQ(rootSet.get(p.getID()), p);
-    Class& c = m.create<Class>();
+    Package& c = m.create<Package>();
     rootSet.add(c);
     ASSERT_FALSE(subSet.contains(c.getID()));
     ASSERT_TRUE(rootSet.contains(c.getID()));
@@ -493,7 +356,7 @@ TEST_F(SequenceTest, orderedSetSubSetsSet) {
     ASSERT_EQ(i, 2);
 }
 
-TEST_F(SequenceTest, testIdsMethodLoop) {
+TEST_F(SetTest, testIdsMethodLoop) {
     Set<Package> set;
     UmlManager m;
     int numPackages = 10;
@@ -508,7 +371,7 @@ TEST_F(SequenceTest, testIdsMethodLoop) {
     }
 }
 
-TEST_F(SequenceTest, singletonTest) {
+TEST_F(SetTest, singletonTest) {
     Set<PackageableElement> rootSet;
     Singleton2<Package> singleton;
     UmlManager m;
@@ -524,7 +387,7 @@ TEST_F(SequenceTest, singletonTest) {
     ASSERT_EQ(rootSet.size(), 1);
     ASSERT_FALSE(rootSet.empty());
     ASSERT_EQ(rootSet.get(p.getID()), p);
-    Class& c = m.create<Class>();
+    Package& c = m.create<Package>();
     rootSet.add(c);
     ASSERT_EQ(singleton.size(), 1);
     ASSERT_FALSE(singleton.empty());

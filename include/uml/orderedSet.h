@@ -17,7 +17,7 @@ namespace UML {
 
         protected:
             struct OrderedNode : public AbstractSet::SetNode {
-                OrderedNode(Element& el) : AbstractSet::SetNode(el) {};
+                OrderedNode(Element& el) : AbstractSet::SetNode(&el) {};
                 OrderedNode() {};
                 OrderedNode* m_prev = 0;
                 OrderedNode* m_next = 0;

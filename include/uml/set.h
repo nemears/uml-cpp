@@ -655,6 +655,9 @@ namespace UML {
                     if (m_oppositeSignature) {
                         T& el = m_el->m_manager->get<T>(m_el, id)->template as<T>();
                         (el.*m_oppositeSignature)().innerRemove(m_el->getID());
+                        for (auto& copy : el.m_node->m_copies) {
+                            (copy->template as<T>().*m_oppositeSignature)().innerRemove(m_el->getID());
+                        }
                         el.removeReference(m_el->getID());
                     }
                     if (m_el) {

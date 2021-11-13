@@ -518,7 +518,9 @@ namespace UML {
                                 // don't delete root node if subsetting
                                 deleteNode = false;
                             } else if (!m_ultimateSet) {
-                                deleteNode = false;
+                                if (curr->m_guard != 0) {
+                                    deleteNode = false;
+                                }
                             }
                             if (deleteNode) {
                                 // std::cout << " DELETE ";

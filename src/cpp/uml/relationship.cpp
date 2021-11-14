@@ -35,7 +35,7 @@ Relationship::Relationship() : Element(ElementType::RELATIONSHIP) {
     init();
 }
 
-Relationship::Relationship(const Relationship& relationship) : Element(relationship, ElementType::RELATIONSHIP) {
+Relationship::Relationship(const Relationship& relationship) : Element(ElementType::RELATIONSHIP) {
     // abstract
 }
 

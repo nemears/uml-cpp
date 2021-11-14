@@ -3,6 +3,7 @@
 
 #include "packageableElement.h"
 #include "directedRelationship.h"
+#include "sequence.h"
 
 namespace UML {
     class Dependency : public DirectedRelationship, public PackageableElement {

@@ -2,6 +2,7 @@
 #define DIRECTEDRELATIONSHIP_H
 
 #include "relationship.h"
+#include "sequence.h"
 
 namespace UML {
     class DirectedRelationship : public Relationship {

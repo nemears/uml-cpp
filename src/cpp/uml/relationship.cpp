@@ -1,90 +1,49 @@
 #include "uml/relationship.h"
-#include "uml/directedRelationship.h"
-#include "uml/elementFunctors.h"
 
-using namespace std;
 using namespace UML;
-
-void Relationship::AddRelationshipFunctor::operator()(Element& el) const {
-    // add to related elements if not duplicate
-    if (!el.getRelationships().count(m_el->getID())) {
-        el.getRelationships().internalAdd(*dynamic_cast<Relationship*>(m_el));
-    }
-
-    updateCopiedSequenceAddedTo(el, &Relationship::getRelatedElements);
-}
-
-void Relationship::CheckRelatedElementsFunctor::operator()(Element& el) const {
-    // add to related elements if not duplicate
-    if (dynamic_cast<Relationship*>(m_el)->getRelatedElements().count(el.getID())) {
-        throw DuplicateRelatedElementException(m_el->getID().string()); 
-    }
-}
-
-void Relationship::RemoveRelatedElementsFunctor::operator()(Element& el) const {
-    if (el.getRelationships().count(m_el->getID())) {
-        el.getRelationships().internalRemove(*dynamic_cast<Relationship*>(m_el));
-    }
-
-    /** TODO: move this to directedRelationship**/
-    if (m_el->isSubClassOf(ElementType::DIRECTED_RELATIONSHIP)) {
-        if (dynamic_cast<DirectedRelationship*>(m_el)->getTargets().count(el.getID())) {
-            dynamic_cast<DirectedRelationship*>(m_el)->getTargets().remove(el);
-        }
-        if (dynamic_cast<DirectedRelationship*>(m_el)->getSources().count(el.getID())) {
-            dynamic_cast<DirectedRelationship*>(m_el)->getSources().remove(el);
-        }
-    }
-    updateCopiedSequenceRemovedFrom(el, &Relationship::getRelatedElements);
-}
 
 void Relationship::referencingReleased(ID id) {
     Element::referencingReleased(id);
-    m_relatedElements.elementReleased(id, &Relationship::getRelatedElements);
+    m_relatedElements.release(id);
 }
 
 void Relationship::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    m_relatedElements.reindex(oldID, newID, &Relationship::getRelatedElements);
+    m_relatedElements.reindex(oldID, newID);
 }
 
 void Relationship::restoreReferences() {
     Element::restoreReferences();
-    m_relatedElements.restoreReferences();
+    // m_relatedElements.restoreReferences();
 }
 
 void Relationship::referenceErased(ID id) {
     Element::referenceErased(id);
-    m_relatedElements.elementErased(id);
+    m_relatedElements.eraseElement(id);
+}
+
+void Relationship::init() {
+    m_relatedElements.m_signature = &Relationship::getRelatedElements;
+}
+
+void Relationship::copy(const Relationship& rhs) {
+    m_relatedElements = Set<Element, Relationship>(rhs.m_relatedElements);
+    m_relatedElements.m_el = this;
 }
 
 Relationship::Relationship() : Element(ElementType::RELATIONSHIP) {
-    m_relatedElements.addProcedures.push_back(new AddRelationshipFunctor(this));
-    m_relatedElements.addChecks.push_back(new CheckRelatedElementsFunctor(this));
-    m_relatedElements.addChecks.push_back(new ReadOnlySequenceFunctor(this, "relatedElements"));
-    m_relatedElements.removeProcedures.push_back(new RemoveRelatedElementsFunctor(this));
-    m_relatedElements.removeChecks.push_back(new ReadOnlySequenceFunctor(this, "relatedElements"));
+    init();
 }
 
 Relationship::Relationship(const Relationship& relationship) : Element(relationship, ElementType::RELATIONSHIP) {
-    m_relatedElements = relationship.m_relatedElements;
-    m_relatedElements.m_el = this;
-    m_relatedElements.addProcedures.clear();
-    m_relatedElements.removeProcedures.clear();
-    m_relatedElements.addChecks.clear();
-    m_relatedElements.removeChecks.clear();
-    m_relatedElements.addProcedures.push_back(new AddRelationshipFunctor(this));
-    m_relatedElements.addChecks.push_back(new CheckRelatedElementsFunctor(this));
-    m_relatedElements.addChecks.push_back(new ReadOnlySequenceFunctor(this, "relatedElements"));
-    m_relatedElements.removeProcedures.push_back(new RemoveRelatedElementsFunctor(this));
-    m_relatedElements.removeChecks.push_back(new ReadOnlySequenceFunctor(this, "relatedElements"));
+    // abstract
 }
 
 Relationship::~Relationship() {
 
 }
 
-Sequence<>& Relationship::getRelatedElements() {
+Set<Element, Relationship>& Relationship::getRelatedElements() {
     return m_relatedElements;
 }
 

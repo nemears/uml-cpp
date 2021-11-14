@@ -1,36 +1,23 @@
 #ifndef RELATIONSHIP_H
 #define RELATIONSHIP_H
 
-#include "sequence.h"
+#include "set.h"
 
 namespace UML {
     class Relationship : virtual public Element {
         protected:
-            Sequence<> m_relatedElements = Sequence<>(this);
-            class AddRelationshipFunctor : public TemplateAbstractSequenceFunctor<Element,Relationship> {
-                public:
-                    AddRelationshipFunctor(Relationship* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
-            };
-            class CheckRelatedElementsFunctor : public TemplateAbstractSequenceFunctor<Element,Relationship> {
-                public:
-                    CheckRelatedElementsFunctor(Relationship* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
-            };
-            class RemoveRelatedElementsFunctor : public TemplateAbstractSequenceFunctor<Element,Relationship> {
-                public:
-                    RemoveRelatedElementsFunctor(Relationship* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Element& el) const override;
-            };
+            Set<Element, Relationship> m_relatedElements = Set<Element, Relationship>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            void init();
+            void copy(const Relationship& rhs);
             Relationship();
         public:
             Relationship(const Relationship& relationship);
             virtual ~Relationship();
-            Sequence<>& getRelatedElements();
+            Set<Element, Relationship>& getRelatedElements();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::RELATIONSHIP;

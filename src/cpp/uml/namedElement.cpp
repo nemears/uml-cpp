@@ -7,6 +7,14 @@
 using namespace UML;
 using namespace std;
 
+void NamedElement::UpdateQualifiedNameFunctor::operator()(Element& el) const {
+    m_el.as<NamedElement>().updateQualifiedName(el.as<NamedElement>().getQualifiedName());
+}
+
+void NamedElement::RemoveQualifiedNameFunctor::operator()(Element& el) const {
+    m_el.as<NamedElement>().updateQualifiedName("");
+}
+
 void NamedElement::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
     m_memberNamespace.reindex(oldID, newID);
@@ -43,18 +51,31 @@ void NamedElement::init() {
     m_namespace.opposite(&Namespace::getOwnedMembers);
     m_namespace.m_signature = &NamedElement::getNamespaceSingleton;
     m_namespace.m_readOnly = true;
+    m_namespace.m_addFunctors.insert(new UpdateQualifiedNameFunctor(this));
+    m_namespace.m_removeFunctors.insert(new RemoveQualifiedNameFunctor(this));
     m_memberNamespace.opposite(&Namespace::getMembers);
     m_memberNamespace.m_signature = &NamedElement::getMemberNamespace;
     m_memberNamespace.m_readOnly = true;
 }
 
 void NamedElement::copy(const NamedElement& rhs) {
+    // TODO see if we can delete these in Set
+    for (auto& func : m_namespace.m_addFunctors) {
+        if (!m_owner->m_addFunctors.count(func)) {
+            delete func;
+        }
+    }
+    for (auto& func : m_namespace.m_removeFunctors) {
+        if (!m_owner->m_removeFunctors.count(func)) {
+            delete func;
+        }
+    }
     m_name = rhs.m_name;
     m_visibility = rhs.m_visibility;
-    m_memberNamespace = Set<Namespace, NamedElement>(rhs.m_memberNamespace);
-    m_memberNamespace.m_el = this;
     m_namespace = Singleton2<Namespace, NamedElement>(rhs.m_namespace);
     m_namespace.m_el = this;
+    m_memberNamespace = Set<Namespace, NamedElement>(rhs.m_memberNamespace);
+    m_memberNamespace.m_el = this;
 }
 
 NamedElement::NamedElement() : Element(ElementType::NAMED_ELEMENT) {

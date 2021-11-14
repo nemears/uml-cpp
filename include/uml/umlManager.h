@@ -88,6 +88,7 @@ namespace UML {
         friend class PackageMerge;
         friend class Property;
         friend class Feature;
+        friend class AddToMountFunctor;
         template<typename> friend class Sequence;
         template <class T> friend struct SequenceIterator;
         template <class T, class U> friend class Singleton;

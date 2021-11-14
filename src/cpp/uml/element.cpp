@@ -11,7 +11,17 @@
 #include "uml/singleton2.h"
 
 using namespace std;
-using namespace UML;
+namespace UML {
+
+class AddToMountFunctor : public SetFunctor {
+    public:
+        AddToMountFunctor(Element* them) : SetFunctor(them) {};
+        void operator()(Element& el) const override {
+            if (!m_el.m_manager->m_mountBase.empty() && m_el.m_manager->count(el.getID())) {
+                m_el.m_manager->addToMount(m_el);
+            }
+        };
+};
 
 void Element::setReference(Element* referencing) {
     if (m_node->m_references.count(referencing->getID())) {
@@ -107,6 +117,7 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_owner = new Singleton2<Element, Element>(this);
     m_owner->m_signature = &Element::getOwnerSingleton;
     m_owner->m_readOnly = true;
+    m_owner->m_addFunctors.insert(new AddToMountFunctor(this));
 
     m_ownedElements = new Set<Element, Element>(this);
     m_ownedElements->opposite(&Element::getOwnerSingleton);
@@ -152,6 +163,7 @@ Element::Element(const Element& el, ElementType elementType) : m_elementType(ele
 
     m_owner = new Singleton2<Element, Element>(*el.m_owner);
     m_owner->m_el = this;
+    m_owner->m_addFunctors.insert(new AddToMountFunctor(this));
     m_ownedElements = new Set<Element, Element>(*el.m_ownedElements);
     m_ownedElements->m_el = this;
     // m_relationships = new Set<Relationship, Element>(*el.m_relationships);
@@ -522,4 +534,5 @@ bool Element::isSameOrNull(ID id, Element* el) {
         }
         return false;
     }
+}
 }

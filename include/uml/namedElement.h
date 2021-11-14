@@ -35,6 +35,16 @@ namespace UML{
             std::string m_absoluteNamespace;
             Singleton2<Namespace, NamedElement> m_namespace = Singleton2<Namespace, NamedElement>(this);
             Set<Namespace, NamedElement> m_memberNamespace = Set<Namespace, NamedElement>(this);
+            class UpdateQualifiedNameFunctor : public SetFunctor {
+                public:
+                    UpdateQualifiedNameFunctor(Element* them) : SetFunctor(them) {};
+                    void operator()(Element& el) const override;
+            };
+            class RemoveQualifiedNameFunctor : public SetFunctor {
+                public:
+                    RemoveQualifiedNameFunctor(Element* them) : SetFunctor(them) {};
+                    void operator()(Element& el) const override;
+            };
             // Set<Dependency, NamedElement> m_clientDependencies = Set<Dependency, NamedElement>(this);
             // Set<Dependency, NamedElement> m_supplierDependencies =  Set<Dependency, NamedElement>(this);
             // visibility defaults to public, don't think there is a none value

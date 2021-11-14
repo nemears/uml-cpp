@@ -146,15 +146,13 @@ namespace UML {
     class Relationship;
     class DirectedRelationship;
     class Comment;
-    class SetOwnerFunctor;
-    class RemoveOwnerFunctor;
     class Slot;
     class InstanceSpecification;
     class Property;
     class Association;
     class UmlManager;
     struct ManagerNode;
-    class AddOwnedCommentFunctor;
+    class AddToMountFunctor;
     template <class T, class U> class Set;
     template <class T> class SetIterator;
     template <class T, class U> class Singleton2;
@@ -173,13 +171,11 @@ namespace UML {
     class Element {
 
         friend class ElementDoesntExistException;
-        friend class SetOwnerFunctor;
-        friend class RemoveOwnerFunctor;
         friend class Slot;
         friend class Property;
         friend class Association;
         friend class UmlManager;
-        friend class AddOwnedCommentFunctor;
+        friend class AddToMountFunctor;
         template<typename> friend class Sequence;
         template <class T, class U> friend class TemplateAbstractSequenceFunctor;
         template <class T, class U> friend class Singleton;

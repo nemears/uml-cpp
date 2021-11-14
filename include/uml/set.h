@@ -65,6 +65,14 @@ namespace UML {
             void instantiateSetNode(SetNode* node);
     };
 
+    class SetFunctor {
+        protected:
+            Element& m_el;
+        public:
+            SetFunctor(Element* el) : m_el(*el) {};
+            virtual void operator()(Element& el) const = 0;
+    };
+
     template <class T> struct SetIterator;
     template <class T> struct ID_Set;
 
@@ -97,6 +105,8 @@ namespace UML {
             Element* m_el = 0;
             Set<T,U>& (U::*m_signature)() = 0;
             bool m_readOnly = false;
+            std::unordered_set<SetFunctor*> m_addFunctors;
+            std::unordered_set<SetFunctor*> m_removeFunctors;
 
             void place(SetNode* node, SetNode* parent) override {
                 if (node->m_id == parent->m_id) {
@@ -233,6 +243,9 @@ namespace UML {
                         (el.*m_oppositeSignature)().add(*dynamic_cast<U*>(m_el));
                     }
                 }
+                for (auto& func : m_addFunctors) {
+                    (*func)(el);
+                }
             };
             void innerRemove(ID id) {
                 SetNode* temp = search(id, m_root);
@@ -352,6 +365,12 @@ namespace UML {
                 for (auto& redefined : m_redefines) {
                     redefined->m_size--;
                 }
+                for (auto& func : m_removeFunctors) {
+                    if (!temp->m_el) {
+                        temp->m_el = m_el->m_manager->get(m_el, temp->m_id);
+                    }
+                    (*func)(*dynamic_cast<T*>(temp->m_el));
+                }
                 delete temp;
                 m_size--;
             };
@@ -438,9 +457,6 @@ namespace UML {
             Set(Element* el) : m_el(el) {};
             Set() {};
             Set(const Set<T,U>& rhs) {
-                // if (rhs.m_root) {
-                //     m_root = new SetNode(rhs.m_root->m_el);
-                // }
                 m_size = rhs.m_size;
                 m_upper = rhs.m_upper;
                 m_rootRedefinedSet = rhs.m_rootRedefinedSet;
@@ -448,9 +464,6 @@ namespace UML {
                 m_signature = rhs.m_signature;
                 m_readOnly = rhs.m_readOnly;
                 m_ultimateSet = rhs.m_ultimateSet;
-                m_subsetOf.clear();
-                m_subsettedContainers.clear();
-                m_redefines.clear();
                 if (m_guard == 0) {
                     if (rhs.m_root) {
                         if (rhs.m_root->m_guard && m_ultimateSet) {
@@ -562,7 +575,30 @@ namespace UML {
                         }
                     }
                 }
-                // std::cout << std::endl;
+                for (auto& func : m_addFunctors) {
+                    bool deleteFunc = true;
+                    for (auto& set : m_subsetOf) {
+                        if (static_cast<Set*>(set)->m_addFunctors.count(func)) {
+                            deleteFunc = false;
+                            break;
+                        }
+                    }
+                    if (deleteFunc) {
+                        delete func;
+                    }
+                }
+                for (auto& func : m_removeFunctors) {
+                    bool deleteFunc = true;
+                    for (auto& set : m_subsetOf) {
+                        if (static_cast<Set*>(set)->m_removeFunctors.count(func)) {
+                            deleteFunc = false;
+                            break;
+                        }
+                    }
+                    if (deleteFunc) {
+                        delete func;
+                    }
+                }
             };
             /**
              * WARN: so for now ORDER MATTERS when subsetting a sequence
@@ -594,6 +630,16 @@ namespace UML {
                     }
                     for (auto& set : subsetOf.m_subsetOf) {
                         this->subsets(*static_cast<Set*>(set));
+                    }
+                    for (const auto& set : subsetOf.m_addFunctors) {
+                        if (!m_addFunctors.count(set)) {
+                            m_addFunctors.insert(set);
+                        }
+                    }
+                    for (auto& set : subsetOf.m_removeFunctors) {
+                        if (!m_removeFunctors.count(set)) {
+                            m_removeFunctors.insert(set);
+                        }
                     }
                     if (!m_root) {
                         m_root = subsetOf.m_root;

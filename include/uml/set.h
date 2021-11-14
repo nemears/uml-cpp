@@ -82,6 +82,7 @@ namespace UML {
     class PackageableElement;
     class Relationship;
     class DirectedRelationship;
+    class PackageMerge;
 
     /**
      * This container is based around a weighted binary search tree
@@ -99,6 +100,7 @@ namespace UML {
         friend class PackageableElement;
         friend class Relationship;
         friend class DirectedRelationship;
+        friend class PackageMerge;
 
         protected:
             std::vector<AbstractSet*> m_subsetOf;

@@ -3,36 +3,6 @@
 
 using namespace UML;
 
-void PackageMerge::RemoveReceivingPackageProcedure::operator()(Package* el) const {
-    if (el->getPackageMerge().count(m_me->getID())) {
-        el->getPackageMerge().remove(*m_me);
-    }
-    if (m_me->getSources().count(el->getID())) {
-        m_me->getSources().remove(*el);
-    }
-}
-
-void PackageMerge::AddReceivingPackageProcedure::operator()(Package* el) const {
-    if (!el->getPackageMerge().count(m_me->getID())) {
-        el->getPackageMerge().add(*m_me);
-    }
-    if (!m_me->getSources().count(el->getID())) {
-        m_me->getSources().add(*el);
-    }
-}
-
-void PackageMerge::RemoveMergedPackageProcedure::operator()(Package* el) const {
-    if (m_me->getTargets().count(el->getID())) {
-        m_me->getTargets().remove(*el);
-    }
-}
-
-void PackageMerge::AddMergedPackageProcedure::operator()(Package* el) const {
-    if (!m_me->getTargets().count(el->getID())) {
-        m_me->getTargets().add(*el);
-    }
-}
-
 void PackageMerge::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
     m_mergedPackage.release(id);
@@ -47,40 +17,50 @@ void PackageMerge::referenceReindexed(ID oldID, ID newID) {
 
 void PackageMerge::restoreReferences() {
     DirectedRelationship::restoreReferences();
-    m_mergedPackage.restoreReference();
-    m_receivingPackage.restoreReference();
+    // m_mergedPackage.restoreReference();
+    // m_receivingPackage.restoreReference();
 }
 
 void PackageMerge::referenceErased(ID id) {
     DirectedRelationship::referenceErased(id);
-    m_mergedPackage.elementErased(id);
-    m_receivingPackage.elementErased(id);
+    m_mergedPackage.eraseElement(id);
+    m_receivingPackage.eraseElement(id);
+}
+
+Set<Package, PackageMerge>& PackageMerge::getReceivingPackageSingleton() {
+    return m_receivingPackage;
+}
+
+Set<Package, PackageMerge>& PackageMerge::getMergedPackageSingleton() {
+    return m_mergedPackage;
+}
+
+void PackageMerge::init() {
+    m_receivingPackage.subsets(*m_owner);
+    m_receivingPackage.subsets(m_sources);
+    m_receivingPackage.m_signature = &PackageMerge::getReceivingPackageSingleton;
+    m_mergedPackage.subsets(m_targets);
+    m_mergedPackage.m_signature = &PackageMerge::getMergedPackageSingleton;
+}
+
+void PackageMerge::copy(const PackageMerge& rhs) {
+    m_receivingPackage = Singleton2<Package, PackageMerge>(rhs.m_receivingPackage);
+    m_receivingPackage.m_el = this;
+    m_mergedPackage = Singleton2<Package, PackageMerge>(rhs.m_mergedPackage);
+    m_mergedPackage.m_el = this;
 }
 
 PackageMerge::PackageMerge() : Element(ElementType::PACKAGE_MERGE) {
-    m_receivingPackage.m_signature = &PackageMerge::m_receivingPackage;
-    m_receivingPackage.m_removeProcedures.push_back(new RemoveReceivingPackageProcedure(this));
-    m_receivingPackage.m_addProcedures.push_back(new AddReceivingPackageProcedure(this));
-    m_mergedPackage.m_signature = &PackageMerge::m_mergedPackage;
-    m_mergedPackage.m_removeProcedures.push_back(new RemoveMergedPackageProcedure(this));
-    m_mergedPackage.m_addProcedures.push_back(new AddMergedPackageProcedure(this));
+    
 }
 
-PackageMerge::PackageMerge(const PackageMerge& merge) : 
-DirectedRelationship(merge), 
-Element(merge, ElementType::PACKAGE_MERGE) {
-    m_receivingPackage = merge.m_receivingPackage;
-    m_receivingPackage.m_me = this;
-    m_receivingPackage.m_removeProcedures.clear();
-    m_receivingPackage.m_addProcedures.clear();
-    m_receivingPackage.m_removeProcedures.push_back(new RemoveReceivingPackageProcedure(this));
-    m_receivingPackage.m_addProcedures.push_back(new AddReceivingPackageProcedure(this));
-    m_mergedPackage = merge.m_mergedPackage;
-    m_mergedPackage.m_me = this;
-    m_mergedPackage.m_removeProcedures.clear();
-    m_mergedPackage.m_addProcedures.clear();
-    m_mergedPackage.m_removeProcedures.push_back(new RemoveMergedPackageProcedure(this));
-    m_mergedPackage.m_addProcedures.push_back(new AddMergedPackageProcedure(this));
+PackageMerge::PackageMerge(const PackageMerge& merge) : Element(ElementType::PACKAGE_MERGE) {
+    Relationship::copy(merge);
+    DirectedRelationship::copy(merge);
+    copy(merge);
+    Relationship::init();
+    DirectedRelationship::init();
+    init();
 }
 
 PackageMerge::~PackageMerge() {

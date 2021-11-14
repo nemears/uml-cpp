@@ -2,6 +2,8 @@
 #define PACKAGE_MERGE_H
 
 #include "directedRelationship.h"
+#include "singleton.h"
+#include "singleton2.h"
 
 namespace UML {
     
@@ -13,32 +15,16 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            Singleton<Package, PackageMerge> m_receivingPackage = Singleton<Package, PackageMerge>(this);
-            class RemoveReceivingPackageProcedure : public AbstractSingletonProcedure<Package, PackageMerge> {
-                public:
-                    RemoveReceivingPackageProcedure(PackageMerge* me) : AbstractSingletonProcedure<Package, PackageMerge>(me) {};
-                    void operator()(Package* el) const override;
-            };
-            class AddReceivingPackageProcedure : public AbstractSingletonProcedure<Package, PackageMerge> {
-                public:
-                    AddReceivingPackageProcedure(PackageMerge* me) : AbstractSingletonProcedure<Package, PackageMerge>(me) {};
-                    void operator()(Package* el) const override;
-            };
-            Singleton<Package, PackageMerge> m_mergedPackage = Singleton<Package, PackageMerge>(this);
-            class RemoveMergedPackageProcedure : public AbstractSingletonProcedure<Package, PackageMerge> {
-                public:
-                    RemoveMergedPackageProcedure(PackageMerge* me) : AbstractSingletonProcedure<Package, PackageMerge>(me) {};
-                    void operator()(Package* el) const override;
-            };
-            class AddMergedPackageProcedure : public AbstractSingletonProcedure<Package, PackageMerge> {
-                public:
-                    AddMergedPackageProcedure(PackageMerge* me) : AbstractSingletonProcedure<Package, PackageMerge>(me) {};
-                    void operator()(Package* el) const override;
-            };
+            Singleton2<Package, PackageMerge> m_receivingPackage = Singleton2<Package, PackageMerge>(this);
+            Singleton2<Package, PackageMerge> m_mergedPackage = Singleton2<Package, PackageMerge>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            Set<Package, PackageMerge>& getReceivingPackageSingleton();
+            Set<Package, PackageMerge>& getMergedPackageSingleton();
+            void init();
+            void copy(const PackageMerge& rhs);
             PackageMerge();
         public:
             PackageMerge(const PackageMerge& merge);

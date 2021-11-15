@@ -426,4 +426,24 @@ TEST_F(SetTest, sharedSubsetEvenTreeTest) {
     for (const ID id : superSet.ids()) {
         ASSERT_TRUE(superSet.contains(id));
     }
+    set1.remove(p1);
+    ASSERT_EQ(set2.size(), 1);
+    ASSERT_EQ(superSet.size(), 1);
+    ASSERT_EQ(superSet.front(), p2);
+    ASSERT_EQ(set2.front(), p2);
+    set1.add(p1);
+    ASSERT_FALSE(set1.contains(p2.getID()));
+    ASSERT_EQ(set1.front(), p1);
+    ASSERT_EQ(set2.front(), p2);
+    for (auto& el : superSet) {
+        ASSERT_TRUE(superSet.contains(el.getID()));
+    }
+    for (const ID id : superSet.ids()) {
+        ASSERT_TRUE(superSet.contains(id));
+    }
+    set2.remove(p2);
+    ASSERT_EQ(set1.size(), 1);
+    ASSERT_EQ(superSet.size(), 1);
+    ASSERT_EQ(superSet.front(), p1);
+    ASSERT_EQ(set1.front(), p1);
 }

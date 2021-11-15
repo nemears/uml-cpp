@@ -319,7 +319,29 @@ namespace UML {
                                 /** TODO: **/
                                 // may be of use to rebalance tree here?
 
-                                // TODO: get rid of placeholders
+                                if (temp->m_parent->m_id == placeholderID) {
+                                    for (auto& superSet : m_subsetOf) {
+                                        if (superSet->m_root == temp->m_parent) {
+                                            superSet->m_root = temp->m_parent->m_left;
+                                            superSet->m_root->m_parent = 0;
+                                        }
+                                        for (auto& set : static_cast<Set*>(superSet)->m_subsettedContainers) {
+                                            if (set != this) {
+                                                if (set->m_root == temp->m_parent) {
+                                                    SetNode* node =  temp->m_parent->m_left;
+                                                    if (node->m_parent) {
+                                                        node->m_parent = 0;
+                                                    }
+                                                    while (node && node->m_guard < set->m_guard) {
+                                                        node = node->m_left;
+                                                    }
+                                                    set->m_root = node;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    delete temp->m_parent;
+                                }
                             }
                         }
                     } else {
@@ -327,7 +349,30 @@ namespace UML {
                             // removed node has no children
                             temp->m_parent->m_right = 0;
                             /** TODO: **/
-                            // may be of use to rebalance tree here?
+                            // may be of use to rebalance tree here? 
+                            if (temp->m_parent->m_id == placeholderID) {
+                                for (auto& superSet : m_subsetOf) {
+                                    if (superSet->m_root == temp->m_parent) {
+                                        superSet->m_root = temp->m_parent->m_left;
+                                        superSet->m_root->m_parent = 0;
+                                    }
+                                    for (auto& set : static_cast<Set*>(superSet)->m_subsettedContainers) {
+                                        if (set != this) {
+                                            if (set->m_root == temp->m_parent) {
+                                                SetNode* node =  temp->m_parent->m_left;
+                                                if (node->m_parent) {
+                                                    node->m_parent = 0;
+                                                }
+                                                while (node && node->m_guard < set->m_guard) {
+                                                    node = node->m_left;
+                                                }
+                                                set->m_root = node;
+                                            }
+                                        }
+                                    }
+                                }
+                                delete temp->m_parent;
+                            }
                         } else {
                             if (temp->m_left->m_id > temp->m_parent->m_left->m_id) {
                                 temp->m_parent->m_right = temp->m_parent->m_left;

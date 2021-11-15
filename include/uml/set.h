@@ -88,6 +88,7 @@ namespace UML {
     class DirectedRelationship;
     class PackageMerge;
     class Dependency;
+    class Classifier;
 
     /**
      * This container is based around a weighted binary search tree
@@ -107,6 +108,7 @@ namespace UML {
         friend class DirectedRelationship;
         friend class PackageMerge;
         friend class Dependency;
+        friend class Classifier;
 
         protected:
             std::vector<AbstractSet*> m_subsetOf;

@@ -29,134 +29,46 @@ namespace UML {
         friend class Parsers::SetNestingClass;
 
         protected:
-            Sequence<Feature> m_features = Sequence<Feature>(this);
-            Sequence<Property> m_attributes = Sequence<Property>(this);
-            Sequence<Generalization> m_generalizations = Sequence<Generalization>(this);
-            Sequence<Classifier> m_generals = Sequence<Classifier>(this);
-            Sequence<NamedElement> m_inheritedMembers = Sequence<NamedElement>(this);
-            Sequence<GeneralizationSet> m_powerTypeExtent = Sequence<GeneralizationSet>(this);
-            class AddAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Classifier> {
-                public:
-                    AddAttributeFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Property& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Classifier> {
-                public:
-                    RemoveAttributeFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Property& el) const override;
-            };
-            class CheckGeneralizationFunctor : public TemplateAbstractSequenceFunctor<Generalization,Classifier> {
-                public:
-                    CheckGeneralizationFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Generalization& el) const override;
-            };
-            class AddGeneralizationFunctor : public TemplateAbstractSequenceFunctor<Generalization,Classifier> {
-                public:
-                    AddGeneralizationFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Generalization& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveGeneralizationFunctor : public TemplateAbstractSequenceFunctor<Generalization,Classifier> {
-                public:
-                    RemoveGeneralizationFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Generalization& el) const override;
-            };
-            class AddGeneralFunctor : public TemplateAbstractSequenceFunctor<Classifier,Classifier> {
-                public:
-                    AddGeneralFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Classifier& el) const override;
-            };
-            class RemoveGeneralFunctor : public TemplateAbstractSequenceFunctor<Classifier,Classifier> {
-                public:
-                    RemoveGeneralFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Classifier& el) const override;
-            };
-            class AddFeatureFunctor : public TemplateAbstractSequenceFunctor<Feature,Classifier> {
-                public:
-                    AddFeatureFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Feature& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveFeatureFunctor : public TemplateAbstractSequenceFunctor<Feature,Classifier> {
-                public:
-                    RemoveFeatureFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Feature& el) const override;
-            };
-            class AddInheritedMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Classifier> {
-                public:
-                    AddInheritedMemberFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(NamedElement& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveInheritedMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Classifier> {
-                public:
-                    RemoveInheritedMemberFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(NamedElement& el) const override;
-            };
-            class ClassifierAddMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Classifier> {
-                public:
-                    ClassifierAddMemberFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(NamedElement& el) const override;
-            };
-            class ClassifierRemoveMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Classifier> {
-                public:
-                    ClassifierRemoveMemberFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(NamedElement& el) const override;
-            };
-            class AddPowerTypeExtentFunctor : public TemplateAbstractSequenceFunctor<GeneralizationSet,Classifier> {
-                public:
-                    AddPowerTypeExtentFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(GeneralizationSet& el) const override;
-            };
-            class RemovePowerTypeExtentFunctor : public TemplateAbstractSequenceFunctor<GeneralizationSet,Classifier> {
-                public:
-                    RemovePowerTypeExtentFunctor(Classifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(GeneralizationSet& el) const override;
-            };
-            Singleton<Class, Classifier> m_nestingClass = Singleton<Class, Classifier>(this);
-            class RemoveNestingClassProcedure : public AbstractSingletonProcedure<Class, Classifier> {
-                public:
-                    RemoveNestingClassProcedure(Classifier* me) : AbstractSingletonProcedure<Class, Classifier>(me) {};
-                    void operator()(Class* el) const override;
-            };
-            class AddNestingClassProcedure : public AbstractSingletonProcedure<Class, Classifier> {
-                public:
-                    AddNestingClassProcedure(Classifier* me) : AbstractSingletonProcedure<Class, Classifier>(me) {};
-                    void operator()(Class* el) const override;
-                    void operator()(ID id) const override;
-            };
+            Set<Feature, Classifier> m_features = Set<Feature, Classifier>(this);
+            Set<Property, Classifier> m_attributes = Set<Property, Classifier>(this);
+            // Set<Generalization, Classifier> m_generalizations = Set<Generalization, Classifier>(this);
+            // Set<Classifier, Classifier> m_generals = Set<Classifier, Classifier>(this);
+            // Set<NamedElement, Classifier> m_inheritedMembers = Set<NamedElement, Classifier>(this);
+            // Set<GeneralizationSet, Classifier> m_powerTypeExtent = Set<GeneralizationSet, Classifier>(this);
+            // Singleton<Class, Classifier> m_nestingClass = Singleton<Class, Classifier>(this);
             void reindexName(std::string oldName, std::string newName) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referencingReleased(ID id) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            void init();
+            void copy(const Classifier& rhs);
             Classifier();
         public:
             virtual ~Classifier();
-            Classifier(const Classifier& clazz);
+            Classifier(const Classifier& rhs);
             std::string getName() override;
             void setName(const std::string& name) override;
-            Sequence<Feature>& getFeatures();
-            Sequence<Property>& getAttributes();
+            Set<Feature, Classifier>& getFeatures();
+            Set<Property, Classifier>& getAttributes();
             /**
              * Generalizations to inherited classifier
              * the generalizations specific reference is this classifier
              **/
-            Sequence<Generalization>& getGeneralizations();
-            /**
-             * this returns all classifiers this classifier inherits from
-             **/
-            Sequence<Classifier>& getGenerals();
-            Sequence<NamedElement>& getInheritedMembers();
-            Sequence<GeneralizationSet>& getPowerTypeExtent();
-            // TODO move NestingClass to protected
-            Class* getNestingClass();
-            Class& getNestingClassRef();
-            ID getNestingClassID() const;
-            bool hasNestingClass() const;
-            void setNestingClass(Class* clazz);
-            void setNestingClass(Class& clazz);
+            // Sequence<Generalization>& getGeneralizations();
+            // /**
+            //  * this returns all classifiers this classifier inherits from
+            //  **/
+            // Sequence<Classifier>& getGenerals();
+            // Sequence<NamedElement>& getInheritedMembers();
+            // Sequence<GeneralizationSet>& getPowerTypeExtent();
+            // // TODO move NestingClass to protected
+            // Class* getNestingClass();
+            // Class& getNestingClassRef();
+            // ID getNestingClassID() const;
+            // bool hasNestingClass() const;
+            // void setNestingClass(Class* clazz);
+            // void setNestingClass(Class& clazz);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CLASSIFIER;

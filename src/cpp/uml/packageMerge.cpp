@@ -3,6 +3,14 @@
 
 using namespace UML;
 
+void PackageMerge::MergedPackageReferenceFunctor::operator()(Element& el) const {
+    el.setReference(&m_el);
+}
+
+void PackageMerge::RemoveMergedPackageReferenceFunctor::operator()(Element& el) const {
+    el.removeReference(m_el.getID());
+}
+
 void PackageMerge::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
     m_mergedPackage.release(id);
@@ -39,6 +47,8 @@ void PackageMerge::init() {
     m_receivingPackage.subsets(*m_owner);
     m_receivingPackage.subsets(m_sources);
     m_receivingPackage.m_signature = &PackageMerge::getReceivingPackageSingleton;
+    m_mergedPackage.m_addFunctors.insert(new MergedPackageReferenceFunctor(this));
+    m_mergedPackage.m_removeFunctors.insert(new RemoveMergedPackageReferenceFunctor(this));
     m_mergedPackage.subsets(m_targets);
     m_mergedPackage.m_signature = &PackageMerge::getMergedPackageSingleton;
 }

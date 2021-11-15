@@ -206,6 +206,7 @@ namespace UML {
                 node->m_guard = m_guard;
                 if (!m_root) {
                     m_root = node;
+                    // handle redefines
                     for (auto& redefined : m_redefines) {
                         if (redefined->m_root) {
                             if (redefined->m_root->m_id != m_root->m_id) {
@@ -216,8 +217,10 @@ namespace UML {
                             redefined->m_root = node;
                         }
                     }
+                    // handle subsets
                     for (auto& subsetOf : m_subsetOf) {
                         if (subsetOf->m_root) {
+                            // determine if we need a placeholder to keep subsets separate
                             bool createPlaceholder = false;
                             for (auto& set : static_cast<Set*>(subsetOf)->m_subsettedContainers) {
                                 if (set != this) {
@@ -472,7 +475,6 @@ namespace UML {
                 if (m_root) {
                     SetNode* node = search(oldID, m_root);
                     if (node) {
-                        node->m_id = newID;
                         if (node->m_parent) {
                             if (node->m_parent->m_left->m_id == oldID) {
                                 if (node->m_parent->m_right->m_id > newID) {
@@ -486,7 +488,7 @@ namespace UML {
                                 }
                             }
                         }
-                        // TODO but not the copies
+                        node->m_id = newID;
                     }
                 }
             };
@@ -494,7 +496,6 @@ namespace UML {
                 if (m_root) {
                     SetNode* node = search(oldID, m_root);
                     if (node) {
-                        node->m_id = newID;
                         if (node->m_parent) {
                             if (node->m_parent->m_left->m_id == oldID) {
                                 if (node->m_parent->m_right->m_id > newID) {
@@ -508,6 +509,7 @@ namespace UML {
                                 }
                             }
                         }
+                        node->m_id = newID;
                         if (m_el) {
                             if (m_el->m_node->m_managerElementMemory != m_el) {
                                 (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().innerReindex(oldID, newID);
@@ -518,12 +520,11 @@ namespace UML {
                                 }
                             }
                         }
-                        // TODO redefined and subsetted sets
                     }
                 }
             };
             void eraseElement(ID id) {
-                // othis will always need to search tree (don't know any quicker way)
+                // this will always need to search tree (don't know any quicker way)
                 if (contains(id)) {
                     innerRemove(id);
                 }

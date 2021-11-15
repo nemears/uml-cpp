@@ -153,6 +153,7 @@ namespace UML {
     class UmlManager;
     struct ManagerNode;
     class AddToMountFunctor;
+    class PackageMerge;
     template <class T, class U> class Set;
     template <class T> class SetIterator;
     template <class T, class U> class Singleton2;
@@ -176,6 +177,7 @@ namespace UML {
         friend class Association;
         friend class UmlManager;
         friend class AddToMountFunctor;
+        friend class PackageMerge;
         template<typename> friend class Sequence;
         template <class T, class U> friend class TemplateAbstractSequenceFunctor;
         template <class T, class U> friend class Singleton;

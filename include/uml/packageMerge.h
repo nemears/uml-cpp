@@ -17,6 +17,16 @@ namespace UML {
         protected:
             Singleton2<Package, PackageMerge> m_receivingPackage = Singleton2<Package, PackageMerge>(this);
             Singleton2<Package, PackageMerge> m_mergedPackage = Singleton2<Package, PackageMerge>(this);
+            class MergedPackageReferenceFunctor : public SetFunctor {
+                public:
+                    MergedPackageReferenceFunctor(Element* them) : SetFunctor(them) {};
+                    void operator()(Element& el) const override;
+            };
+            class RemoveMergedPackageReferenceFunctor : public SetFunctor {
+                public:
+                    RemoveMergedPackageReferenceFunctor(Element* them) : SetFunctor(them) {};
+                    void operator()(Element& el) const override;
+            };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;

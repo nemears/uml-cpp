@@ -78,7 +78,7 @@ TEST_F(ElementTest, getOwnedElementByNameTest) {
     Package b = m.create<Package>();
     ASSERT_NO_THROW(e.getPackagedElements().add(b));
     ASSERT_NO_THROW(e.getPackagedElements().add(n));
-    // ASSERT_TRUE(e.getOwnedElements().get("name") == &n);
+    ASSERT_EQ(e.getOwnedElements().get("name"), n);
     ASSERT_NO_THROW(&e.getOwnedElements().get(n.getID()) == &n);
     ASSERT_NO_THROW(&e.getOwnedElements().get(b.getID()) == &b);
 }
@@ -92,20 +92,20 @@ TEST_F(ElementTest, reIndexID_Test) {
     ASSERT_NO_THROW(e1.getOwnedElements().get(e2.getID()));
 }
 
-TEST_F(ElementTest, basicRelationshipTestW_Manager) {
-  // UmlManager m;
-  // Package& e = m.create<Package>();
-  // Package& a = m.create<Package>();
-  // PackageMerge& r = m.create<PackageMerge>();
-  // e.getPackageMerge().add(r);
-  // r.setMergedPackage(&a);
-  // ASSERT_TRUE(r.getRelatedElements().size() == 2);
-  // ASSERT_TRUE(&r.getRelatedElements().front() == &e);
-  // ASSERT_TRUE(&r.getRelatedElements().back() == &a);
-  // ASSERT_TRUE(e.getRelationships().size() == 1);
-  // ASSERT_TRUE(&e.getRelationships().front() == &r);
-  // ASSERT_TRUE(a.getRelationships().size() == 1);
-  // ASSERT_TRUE(&a.getRelationships().front() == &r);
+TEST_F(ElementTest, basicRelationshipTest) {
+  UmlManager m;
+  Package& e = m.create<Package>();
+  Package& a = m.create<Package>();
+  PackageMerge& r = m.create<PackageMerge>();
+  e.getPackageMerge().add(r);
+  r.setMergedPackage(&a);
+  ASSERT_EQ(r.getRelatedElements().size(), 2);
+  ASSERT_EQ(r.getRelatedElements().front(), e);
+  ASSERT_EQ(r.getRelatedElements().back(), a);
+  ASSERT_EQ(e.getPackageMerge().size(), 1);
+  ASSERT_EQ(e.getPackageMerge().front(), r);
+  // ASSERT_EQ(a.getPackageMerge().size(), 1);
+  // ASSERT_EQ(a.getPackageMerge().front(), r);
 }
 
 TEST_F(ElementTest, reindexRelationshipID_test) {

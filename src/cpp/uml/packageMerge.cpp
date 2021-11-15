@@ -51,7 +51,7 @@ void PackageMerge::copy(const PackageMerge& rhs) {
 }
 
 PackageMerge::PackageMerge() : Element(ElementType::PACKAGE_MERGE) {
-    
+    init();
 }
 
 PackageMerge::PackageMerge(const PackageMerge& merge) : Element(ElementType::PACKAGE_MERGE) {

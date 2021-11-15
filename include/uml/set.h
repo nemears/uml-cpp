@@ -569,6 +569,11 @@ namespace UML {
                                     SetNode* temp = curr->m_left;
                                     curr->m_left = 0;
                                     curr = temp;
+                                    if (curr->m_id == m_root->m_id && curr->m_guard == m_guard) {
+                                        // edge case for root
+                                        delete curr;
+                                        curr = 0;
+                                    }
                                 } else {
                                     if (curr->m_left->m_parent->m_id == curr->m_id) {
                                         // delete leftover root

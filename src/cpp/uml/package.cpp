@@ -33,20 +33,20 @@ void Package::init() {
     m_packagedElements.subsets(m_ownedMembers);
     m_packagedElements.opposite(&PackageableElement::getOwningPackageSingleton);
     m_packagedElements.m_signature = &Package::getPackagedElements;
+    m_packageMerge.subsets(*m_ownedElements);
+    m_packageMerge.opposite(&PackageMerge::getReceivingPackageSingleton);
+    m_packageMerge.m_signature = &Package::getPackageMerge;
 }
 
 void Package::copy(const Package& rhs) {
     m_packagedElements = Set<PackageableElement, Package>(rhs.m_packagedElements);
     m_packagedElements.m_el = this;
+    m_packageMerge = Set<PackageMerge, Package>(rhs.m_packageMerge);
+    m_packageMerge.m_el = this;
 }
 
 Package::Package() : Element(ElementType::PACKAGE) {
     init();
-    // m_packageMerge.subsets(*m_ownedElements);
-    // m_packageMerge.subsets(*m_directedRelationships);
-    // m_profileApplications.subsets(*m_ownedElements);
-    // m_profileApplications.subsets(*m_directedRelationships);
-    // m_ownedStereotypes.subsets(m_packagedElements);
 }
 
 Package::~Package() {
@@ -68,9 +68,9 @@ Set<PackageableElement, Package>& Package::getPackagedElements() {
     return m_packagedElements;
 }
 
-// Set<PackageMerge, Package>& Package::getPackageMerge() {
-//     return m_packageMerge;
-// }
+Set<PackageMerge, Package>& Package::getPackageMerge() {
+    return m_packageMerge;
+}
 
 // Set<ProfileApplication, Package>& Package::getProfileApplications() {
 //     return m_profileApplications;

@@ -23,6 +23,7 @@ void Relationship::referenceErased(ID id) {
 }
 
 void Relationship::init() {
+    m_relatedElements.m_readOnly = true;
     m_relatedElements.m_signature = &Relationship::getRelatedElements;
 }
 

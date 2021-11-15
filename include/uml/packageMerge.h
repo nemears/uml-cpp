@@ -27,7 +27,7 @@ namespace UML {
             void copy(const PackageMerge& rhs);
             PackageMerge();
         public:
-            PackageMerge(const PackageMerge& merge);
+            PackageMerge(const PackageMerge& rhs);
             virtual ~PackageMerge();
             Package* getReceivingPackage();
             Package& getReceivingPackageRef();

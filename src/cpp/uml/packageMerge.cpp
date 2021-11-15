@@ -54,10 +54,10 @@ PackageMerge::PackageMerge() : Element(ElementType::PACKAGE_MERGE) {
     init();
 }
 
-PackageMerge::PackageMerge(const PackageMerge& merge) : Element(ElementType::PACKAGE_MERGE) {
-    Relationship::copy(merge);
-    DirectedRelationship::copy(merge);
-    copy(merge);
+PackageMerge::PackageMerge(const PackageMerge& rhs) : Element(rhs, ElementType::PACKAGE_MERGE) {
+    Relationship::copy(rhs);
+    DirectedRelationship::copy(rhs);
+    copy(rhs);
     Relationship::init();
     DirectedRelationship::init();
     init();

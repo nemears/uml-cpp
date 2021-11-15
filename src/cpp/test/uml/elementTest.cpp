@@ -109,16 +109,16 @@ TEST_F(ElementTest, basicRelationshipTest) {
 }
 
 TEST_F(ElementTest, reindexRelationshipID_test) {
-    // UmlManager m;
-    // Package e = m.create<Package>();
-    // Package a = m.create<Package>();
-    // PackageMerge r = m.create<PackageMerge>();
-    // e.getPackageMerge().add(r);
-    // r.setMergedPackage(&a);
-    // r.setID("190d1cb913dc44e6a064126891ae");
-    // e.setID("7d18ee4282c64f528ec4fab67a75");
-    // ASSERT_NO_THROW(r.getRelatedElements().get(e.getID()));
-    // ASSERT_NO_THROW(e.getRelationships().get(r.getID()));
+    UmlManager m;
+    Package e = m.create<Package>();
+    Package a = m.create<Package>();
+    PackageMerge r = m.create<PackageMerge>();
+    e.getPackageMerge().add(r);
+    r.setMergedPackage(&a);
+    r.setID("190d1cb913dc44e6a064126891ae");
+    e.setID("7d18ee4282c64f528ec4fab67a75");
+    ASSERT_NO_THROW(r.getRelatedElements().get(e.getID()));
+    ASSERT_NO_THROW(e.getPackageMerge().get(r.getID()));
 }
 
 TEST_F(ElementTest, setOwnerFunctorTest) {
@@ -192,16 +192,6 @@ TEST_F(ElementTest, doINeedAnAddRelationshipFunctorTest) { // answer is yes
     // ASSERT_EQ(r.getRelatedElements().front(), e);
 }
 
-// TEST_F(ElementTest, fullCopyTest) {
-//   Package p;
-//   Package c;
-//   p.getPackagedElements().add(c);
-//   Package p2 = p;
-//   ASSERT_TRUE(p2.getPackagedElements().size() == 1);
-//   ASSERT_TRUE(p2.getPackagedElements().front()->getID() == c.getID());
-//   ASSERT_TRUE(p2.getPackagedElements().front() != &c);
-// }
-
 TEST_F(ElementTest, readOnlySequenceTest) {
     UmlManager m;
     Package p = m.create<Package>();
@@ -225,15 +215,15 @@ TEST_F(ElementTest, readOnlyRelationships) {
 }
 
 TEST_F(ElementTest, readOnlyRelatedElementsTest) {
-    // UmlManager mm;
-    // Package p = mm.create<Package>();
-    // Package m = mm.create<Package>();
-    // PackageMerge r = mm.create<PackageMerge>();
-    // Package h = mm.create<Package>();
-    // p.getPackageMerge().add(r);
-    // r.setMergedPackage(&m);
-    // ASSERT_THROW(r.getRelatedElements().remove(p), ReadOnlySequenceException);
-    // ASSERT_THROW(r.getRelatedElements().add(h), ReadOnlySequenceException);
+    UmlManager mm;
+    Package p = mm.create<Package>();
+    Package m = mm.create<Package>();
+    PackageMerge r = mm.create<PackageMerge>();
+    Package h = mm.create<Package>();
+    p.getPackageMerge().add(r);
+    r.setMergedPackage(&m);
+    ASSERT_THROW(r.getRelatedElements().remove(p), ReadOnlySetException);
+    ASSERT_THROW(r.getRelatedElements().add(h), ReadOnlySetException);
 }
 
 // TEST_F(ElementTest, setAndGetOwnerTest2) {
@@ -409,17 +399,17 @@ TEST_F(ElementTest, FullElementCopyTest) {
 //   root.getPackagedElements().add(p1);
 //   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments, &Element::getDirectedRelationships, &Element::getRelationships));
 //   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
-// }
+}
 
-// TEST_F(ElementTest, hasAndRefMethodTest) {
-//   UmlManager m;
-//   Package root = m.create<Package>();
-//   Package child = m.create<Package>();
-//   root.getPackagedElements().add(child);
-//   ASSERT_FALSE(root.hasOwner());
-//   ASSERT_FALSE(root.getOwner());
-//   ASSERT_THROW(root.getOwnerRef(), NullReferenceException);
-//   ASSERT_TRUE(child.hasOwner());
-//   ASSERT_TRUE(child.getOwner());
-//   ASSERT_EQ(child.getOwnerRef(), root);
+TEST_F(ElementTest, hasAndRefMethodTest) {
+  UmlManager m;
+  Package root = m.create<Package>();
+  Package child = m.create<Package>();
+  root.getPackagedElements().add(child);
+  ASSERT_FALSE(root.hasOwner());
+  ASSERT_FALSE(root.getOwner());
+  ASSERT_THROW(root.getOwnerRef(), NullReferenceException);
+  ASSERT_TRUE(child.hasOwner());
+  ASSERT_TRUE(child.getOwner());
+  ASSERT_EQ(child.getOwnerRef(), root);
 }

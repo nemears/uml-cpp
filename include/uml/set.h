@@ -89,6 +89,7 @@ namespace UML {
     class PackageMerge;
     class Dependency;
     class Classifier;
+    class TypedElement;
 
     /**
      * This container is based around a weighted binary search tree
@@ -109,6 +110,7 @@ namespace UML {
         friend class PackageMerge;
         friend class Dependency;
         friend class Classifier;
+        friend class TypedElement;
 
         protected:
             std::vector<AbstractSet*> m_subsetOf;

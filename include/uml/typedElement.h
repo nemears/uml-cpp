@@ -16,21 +16,13 @@ namespace UML{
         friend class Parsers::SetType;
 
         protected:
-            Singleton<Type, TypedElement> m_type = Singleton<Type, TypedElement>(this);
-            class RemoveTypeProcedure : public AbstractSingletonProcedure<Type, TypedElement> {
-                public:
-                    RemoveTypeProcedure(TypedElement* me) : AbstractSingletonProcedure<Type, TypedElement>(me) {};
-                    void operator()(Type* el) const override;
-            };
-            class AddTypeProcedure : public AbstractSingletonProcedure<Type, TypedElement> {
-                public:
-                    AddTypeProcedure(TypedElement* me) : AbstractSingletonProcedure<Type, TypedElement>(me) {};
-                    void operator()(Type* el) const override;
-            };
+            Singleton2<Type, TypedElement> m_type = Singleton2<Type, TypedElement>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            void init();
+            void copy(const TypedElement& rhs);
             TypedElement();
         public:
             TypedElement(const TypedElement& el);

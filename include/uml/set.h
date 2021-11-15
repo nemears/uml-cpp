@@ -7,6 +7,10 @@
 
 namespace UML {
 
+    namespace {
+        const ID placeholderID = ID::fromString("&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+    }
+
     class ID_doesNotExistException2 : public std::exception {
         private:
             std::string m_msg;
@@ -214,6 +218,24 @@ namespace UML {
                     }
                     for (auto& subsetOf : m_subsetOf) {
                         if (subsetOf->m_root) {
+                            bool createPlaceholder = false;
+                            for (auto& set : static_cast<Set*>(subsetOf)->m_subsettedContainers) {
+                                if (set != this) {
+                                    Set* rSet = static_cast<Set*>(set);
+                                    if (std::find(rSet->m_subsettedContainers.begin(), rSet->m_subsettedContainers.end(), this) == rSet->m_subsettedContainers.end()) {
+                                        createPlaceholder = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (createPlaceholder) {
+                                // create a "placeholder" node to balance subsets so they dont overlap in even tree
+                                SetNode* temp = subsetOf->m_root;
+                                subsetOf->m_root = new SetNode();
+                                subsetOf->m_root->m_id = placeholderID;
+                                subsetOf->m_root->m_guard = subsetOf->m_guard;
+                                subsetOf->place(temp, subsetOf->m_root);
+                            }
                             subsetOf->place(node, subsetOf->m_root);
                         } else {
                             subsetOf->m_root = m_root;
@@ -296,6 +318,8 @@ namespace UML {
                                 temp->m_parent->m_right = 0;
                                 /** TODO: **/
                                 // may be of use to rebalance tree here?
+
+                                // TODO: get rid of placeholders
                             }
                         }
                     } else {
@@ -530,6 +554,18 @@ namespace UML {
                                             temp->m_left = 0;
                                         } else {
                                             temp->m_right = 0;
+                                        }
+                                    }
+                                }
+                                for (auto& superSet : m_subsetOf) {
+                                    if (superSet->m_root->m_id == curr->m_id) {
+                                        if (superSet->m_ultimateSet) {
+                                            if (temp->m_right->m_id == curr->m_id) {
+                                                temp->m_right = 0;
+                                            } else if (temp->m_left->m_id == curr->m_id) {
+                                                temp->m_left = 0;
+                                            }
+                                            curr->m_parent = 0;
                                         }
                                     }
                                 }
@@ -813,11 +849,17 @@ namespace UML {
                 return *dynamic_cast<T*>(node->m_el);
             };
             T& front() {
+                SetNode* node;
                 if (m_root) {
-                    if (!m_root->m_el) {
-                        m_root->m_el = m_el->m_manager->get(m_el, m_root->m_id);
+                    node = m_root;
+                    // select first non placeholder node
+                    while (node->m_id == placeholderID) {
+                        node = node->m_left;
                     }
-                    return *dynamic_cast<T*>(m_root->m_el);
+                    if (!node->m_el) {
+                        node->m_el = m_el->m_manager->get(m_el, node->m_id);
+                    }
+                    return *dynamic_cast<T*>(node->m_el);
                 }
                 throw ManagerStateException("TODO front empty");
             };

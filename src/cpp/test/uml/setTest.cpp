@@ -405,3 +405,17 @@ TEST_F(SetTest, singletonTest) {
     ASSERT_TRUE(rootSet.contains(c.getID()));
     ASSERT_FALSE(rootSet.contains(p.getID()));
 }
+
+TEST_F(SetTest, sharedSubsetEvenTreeTest) {
+    Set<PackageableElement> superSet;
+    Set<Package> set1;
+    Set<Package> set2;
+    set1.subsets(superSet);
+    set2.subsets(superSet);
+    UmlManager m;
+    Package& p1 = m.create<Package>();
+    Package& p2 = m.create<Package>();
+    set1.add(p1);
+    set2.add(p2);
+    ASSERT_FALSE(set1.contains(p2.getID()));
+}

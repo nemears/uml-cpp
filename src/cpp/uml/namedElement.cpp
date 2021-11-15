@@ -47,15 +47,16 @@ Set<Namespace, NamedElement>& NamedElement::getNamespaceSingleton() {
 }
 
 void NamedElement::init() {
+    m_memberNamespace.opposite(&Namespace::getMembers);
+    m_memberNamespace.m_signature = &NamedElement::getMemberNamespace;
+    m_memberNamespace.m_readOnly = true;
     m_namespace.subsets(*m_owner);
+    m_namespace.subsets(m_memberNamespace);
     m_namespace.opposite(&Namespace::getOwnedMembers);
     m_namespace.m_signature = &NamedElement::getNamespaceSingleton;
     m_namespace.m_readOnly = true;
     m_namespace.m_addFunctors.insert(new UpdateQualifiedNameFunctor(this));
     m_namespace.m_removeFunctors.insert(new RemoveQualifiedNameFunctor(this));
-    m_memberNamespace.opposite(&Namespace::getMembers);
-    m_memberNamespace.m_signature = &NamedElement::getMemberNamespace;
-    m_memberNamespace.m_readOnly = true;
 }
 
 void NamedElement::copy(const NamedElement& rhs) {
@@ -72,10 +73,10 @@ void NamedElement::copy(const NamedElement& rhs) {
     }
     m_name = rhs.m_name;
     m_visibility = rhs.m_visibility;
-    m_namespace = Singleton2<Namespace, NamedElement>(rhs.m_namespace);
-    m_namespace.m_el = this;
     m_memberNamespace = Set<Namespace, NamedElement>(rhs.m_memberNamespace);
     m_memberNamespace.m_el = this;
+    m_namespace = Singleton2<Namespace, NamedElement>(rhs.m_namespace);
+    m_namespace.m_el = this;
 }
 
 NamedElement::NamedElement() : Element(ElementType::NAMED_ELEMENT) {

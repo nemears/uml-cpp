@@ -654,6 +654,8 @@ namespace UML {
                     }
                     if (!m_root) {
                         m_root = subsetOf.m_root;
+                    } else if (!subsetOf.m_root) {
+                        subsetOf.m_root = m_root;
                     }
                 }
             };

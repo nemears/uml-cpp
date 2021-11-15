@@ -191,14 +191,14 @@ void UmlManager::release(Element& el) {
 }
 
 void UmlManager::eraseNode(ManagerNode* node, ID id) {
-    if (node->m_managerElementMemory) {
-        delete node->m_managerElementMemory;
-    }
     for (size_t i = 0; i < node->m_referenceOrder.size(); i++) {
         if (!node->m_references[node->m_referenceOrder[i]]->m_managerElementMemory) {
             aquire(node->m_referenceOrder[i]);
         }
         node->m_references[node->m_referenceOrder[i]]->m_managerElementMemory->referenceErased(id);
+    }
+    if (node->m_managerElementMemory) {
+        delete node->m_managerElementMemory;
     }
     if (node->m_copies.size() > 0) {
         // TODO warning

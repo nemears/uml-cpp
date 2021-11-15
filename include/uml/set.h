@@ -452,11 +452,9 @@ namespace UML {
                 }
             };
             void eraseElement(ID id) {
-                // only remove if root seq
-                if (m_root) {
-                    if (m_subsetOf.empty()) {
-                        innerRemove(id); // this will invoke opposite opposite (maybe make inner function to remove to not invoke opposite?)
-                    }
+                // othis will always need to search tree (don't know any quicker way)
+                if (contains(id)) {
+                    innerRemove(id);
                 }
             };
         public:
@@ -571,6 +569,11 @@ namespace UML {
                                     curr = temp;
                                     if (curr->m_id == m_root->m_id && curr->m_guard == m_guard) {
                                         // edge case for root
+                                        for (auto& superSet : m_subsetOf) {
+                                            if (superSet->m_root->m_id == curr->m_id) {
+                                                superSet->m_root = 0;
+                                            }
+                                        }
                                         delete curr;
                                         curr = 0;
                                     }
@@ -797,7 +800,9 @@ namespace UML {
                     if (i > size) {
                         node = node->m_left;
                     } else {
-                        node = node->m_right;
+                        if (node->m_right) {
+                            node = node->m_right;
+                        }
                     }
                 }
                 if (!node->m_el) {

@@ -24,9 +24,10 @@ void Package::restoreReferences() {
 }
 
 void Package::referenceErased(ID id) {
-    Namespace::referenceErased(id);
-    PackageableElement::referenceErased(id);
-    TemplateableElement::referenceErased(id);
+    // Only invoke on root sets
+    m_owningPackage.eraseElement(id);
+    m_packagedElements.eraseElement(id);
+    m_packageMerge.eraseElement(id);
 }
 
 void Package::init() {

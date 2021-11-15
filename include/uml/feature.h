@@ -9,24 +9,16 @@ namespace UML {
 
     class Feature : virtual public RedefinableElement {
         protected:
-            Singleton<Classifier, Feature> m_featuringClassifier = Singleton<Classifier, Feature>(this);
-            class RemoveFeaturingClassifierProcedure : public AbstractSingletonProcedure<Classifier, Feature> {
-                public:
-                    RemoveFeaturingClassifierProcedure(Feature* me) : AbstractSingletonProcedure<Classifier, Feature>(me) {};
-                    void operator()(Classifier* el) const override;
-            };
-            class AddFeaturingClassifierProcedure : public AbstractSingletonProcedure<Classifier, Feature> {
-                public:
-                    AddFeaturingClassifierProcedure(Feature* me) : AbstractSingletonProcedure<Classifier, Feature>(me) {};
-                    void operator()(Classifier* el) const override;
-                    void operator()(ID id) const override;
-            };
+            Singleton2<Classifier, Feature> m_featuringClassifier = Singleton2<Classifier, Feature>(this);
             bool m_static;
             void reindexName(std::string oldName, std::string newName) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            Set<Classifier, Feature>& getFeaturingClassifierSingleton();
+            void init();
+            void copy(const Feature& rhs);
             Feature();
         public:
             Feature(const Feature& feature);

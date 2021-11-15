@@ -25,11 +25,11 @@ void TypedElement::referenceErased(ID id) {
 }
 
 void TypedElement::init() {
-    
+    m_type.m_signature = &TypedElement::getTypeSingleton;
 }
 
 void TypedElement::copy(const TypedElement& rhs) {
-    
+    m_type =  Singleton2<Type, TypedElement>(rhs.m_type);
 }
 
 TypedElement::TypedElement() : Element(ElementType::TYPED_ELEMENT) {

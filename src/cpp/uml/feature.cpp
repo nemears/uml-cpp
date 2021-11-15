@@ -1,36 +1,7 @@
 #include "uml/feature.h"
 #include "uml/classifier.h"
 
-using namespace std;
 using namespace UML;
-
-void Feature::RemoveFeaturingClassifierProcedure::operator()(Classifier* el) const {
-    if (el->getFeatures().count(m_me->getID())) {
-        el->getFeatures().remove(*m_me);
-    }
-}
-
-void Feature::AddFeaturingClassifierProcedure::operator()(Classifier* el) const {
-    if (!el->getFeatures().count(m_me->getID())) {
-        el->getFeatures().add(*m_me);
-    }
-    if (m_me->getNamespaceID() != el->getID()) {
-        m_me->setNamespace(el);
-    }
-}
-
-void Feature::AddFeaturingClassifierProcedure::operator()(ID id) const {
-    if (m_me->getNamespaceID() != id) {
-        m_me->m_namespace.setByID(id);
-    }
-}
-
-void Feature::reindexName(string oldName, string newName) {
-    if (getFeaturingClassifier()) {
-        getFeaturingClassifier()->getFeatures().reindex(m_id, oldName, newName);
-    }
-    NamedElement::reindexName(oldName, newName);
-}
 
 void Feature::referenceReindexed(ID oldID, ID newID) {
     RedefinableElement::referenceReindexed(oldID, newID);
@@ -41,39 +12,41 @@ void Feature::referenceReindexed(ID oldID, ID newID) {
 void Feature::referencingReleased(ID id) {
     RedefinableElement::referencingReleased(id);
     NamedElement::referencingReleased(id);
-    m_featuringClassifier.release();
+    m_featuringClassifier.release(id);
 }
 
 void Feature::restoreReferences() {
     RedefinableElement::restoreReferences();
     NamedElement::restoreReferences();
-    m_featuringClassifier.restoreReference();
+    // m_featuringClassifier.restoreReference();
 }
 
 void Feature::referenceErased(ID id) {
     RedefinableElement::referenceErased(id);
     NamedElement::referenceErased(id);
-    m_featuringClassifier.elementErased(id);
+    m_featuringClassifier.eraseElement(id);
+}
+
+Set<Classifier, Feature>& Feature::getFeaturingClassifierSingleton() {
+    return m_featuringClassifier;
+}
+
+void Feature::init() {
+    m_featuringClassifier.subsets(m_memberNamespace);
+    m_featuringClassifier.m_signature = &Feature::getFeaturingClassifierSingleton;
+    m_featuringClassifier.opposite(&Classifier::getFeatures);
+}
+
+void Feature::copy(const Feature& rhs) {
+
 }
 
 Feature::Feature() : Element(ElementType::FEATURE) {
-    m_featuringClassifier.m_signature = &Feature::m_featuringClassifier;
-    m_featuringClassifier.m_removeProcedures.push_back(new RemoveFeaturingClassifierProcedure(this));
-    m_featuringClassifier.m_addProcedures.push_back(new AddFeaturingClassifierProcedure(this));
-    m_static = false;
+    init();
 }
 
-Feature::Feature(const Feature& feature) : 
-RedefinableElement(feature), 
-NamedElement(feature), 
-Element(feature, ElementType::FEATURE) {
-    m_featuringClassifier = feature.m_featuringClassifier;
-    m_featuringClassifier.m_me = this;
-    m_featuringClassifier.m_removeProcedures.clear();
-    m_featuringClassifier.m_addProcedures.clear();
-    m_featuringClassifier.m_removeProcedures.push_back(new RemoveFeaturingClassifierProcedure(this));
-    m_featuringClassifier.m_addProcedures.push_back(new AddFeaturingClassifierProcedure(this));
-    m_static = feature.m_static;
+Feature::Feature(const Feature& feature) : Element(ElementType::FEATURE) {
+    // abstract
 }
 
 Classifier* Feature::getFeaturingClassifier() {

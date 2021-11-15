@@ -21,6 +21,7 @@ namespace UML{
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            Set<Type, TypedElement>& getTypeSingleton();
             void init();
             void copy(const TypedElement& rhs);
             TypedElement();

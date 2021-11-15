@@ -196,18 +196,15 @@ namespace UML {
             const ElementType m_elementType;
 
             // owner
-            // ID m_ownerID;
-            // Element* m_ownerPtr;
             Singleton2<Element, Element>* m_owner;
             Set<Element, Element>& getOwnerSingleton();
             
             // ownedElements
-            //Sequence<Element>* m_ownedElements;
             Set<Element, Element>* m_ownedElements;
-            Set<Relationship, Element>* m_relationships;
-            Set<DirectedRelationship, Element>* m_directedRelationships;
-            Set<Comment, Element>* m_ownedComments;
-            Set<InstanceSpecification, Element>* m_appliedStereotype;
+            // Set<Relationship, Element>* m_relationships;
+            // Set<DirectedRelationship, Element>* m_directedRelationships;
+            // Set<Comment, Element>* m_ownedComments;
+            // Set<InstanceSpecification, Element>* m_appliedStereotype;
             void setOwner(Element* el);
             void setOwnerByID(ID id);
             static bool isSameOrNull(ID id, Element* el);

@@ -921,6 +921,9 @@ namespace UML {
                     it.m_node = &it.m_endNode;
                 }
                 it.m_el = m_el;
+                if (it.m_node->m_id == placeholderID) {
+                    it++;
+                }
                 return it;
             };
             SetIterator<T> end() {
@@ -962,57 +965,61 @@ namespace UML {
 
             // This is dfs
             SetIterator operator++() {
-                if (m_node->m_left) {
-                    // always go left
-                    m_node = m_node->m_left;
-                } else {
-                    // we hit bottom, choose next right
-                    AbstractSet::SetNode* temp;
-                    AbstractSet::SetNode* last = dynamic_cast<AbstractSet::SetNode*>(m_node);
-                    bool found = false;
-                    do {
-                        temp = dynamic_cast<AbstractSet::SetNode*>(last->m_parent);
-                        if (temp->m_right) {
-                            if (temp->m_right->m_id != last->m_id) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        last = temp;
-                    } while (temp->m_parent);
-                    if (!found) {
-                        m_node = &m_endNode;
+                do {
+                    if (m_node->m_left) {
+                        // always go left
+                        m_node = m_node->m_left;
                     } else {
-                        m_node = temp->m_right;
+                        // we hit bottom, choose next right
+                        AbstractSet::SetNode* temp;
+                        AbstractSet::SetNode* last = dynamic_cast<AbstractSet::SetNode*>(m_node);
+                        bool found = false;
+                        do {
+                            temp = dynamic_cast<AbstractSet::SetNode*>(last->m_parent);
+                            if (temp->m_right) {
+                                if (temp->m_right->m_id != last->m_id) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            last = temp;
+                        } while (temp->m_parent);
+                        if (!found) {
+                            m_node = &m_endNode;
+                        } else {
+                            m_node = temp->m_right;
+                        }
                     }
-                }
+                } while (m_node->m_id == placeholderID);
                 return *this;
             };
             SetIterator operator++(int) {
-               if (m_node->m_left) {
-                    // always go left
-                    m_node = dynamic_cast<AbstractSet::SetNode*>(m_node->m_left);
-                } else {
-                    // we hit bottom, choose next right
-                    AbstractSet::SetNode* temp;
-                    AbstractSet::SetNode* last = dynamic_cast<AbstractSet::SetNode*>(m_node);
-                    bool found = false;
-                    do {
-                        temp = dynamic_cast<AbstractSet::SetNode*>(last->m_parent);
-                        if (temp->m_right) {
-                            if (temp->m_right->m_id != last->m_id) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        last = temp;
-                    } while (temp->m_parent);
-                    if (!found) {
-                        m_node = &m_endNode;
+                do {
+                    if (m_node->m_left) {
+                        // always go left
+                        m_node = dynamic_cast<AbstractSet::SetNode*>(m_node->m_left);
                     } else {
-                        m_node = dynamic_cast<AbstractSet::SetNode*>(temp->m_right);
+                        // we hit bottom, choose next right
+                        AbstractSet::SetNode* temp;
+                        AbstractSet::SetNode* last = dynamic_cast<AbstractSet::SetNode*>(m_node);
+                        bool found = false;
+                        do {
+                            temp = dynamic_cast<AbstractSet::SetNode*>(last->m_parent);
+                            if (temp->m_right) {
+                                if (temp->m_right->m_id != last->m_id) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            last = temp;
+                        } while (temp->m_parent);
+                        if (!found) {
+                            m_node = &m_endNode;
+                        } else {
+                            m_node = dynamic_cast<AbstractSet::SetNode*>(temp->m_right);
+                        }
                     }
-                }
+                } while (m_node->m_id == placeholderID);
                 SetIterator ret = *this;
                 return ret;
             };

@@ -418,4 +418,12 @@ TEST_F(SetTest, sharedSubsetEvenTreeTest) {
     set1.add(p1);
     set2.add(p2);
     ASSERT_FALSE(set1.contains(p2.getID()));
+    ASSERT_EQ(set1.front(), p1);
+    ASSERT_EQ(set2.front(), p2);
+    for (auto& el : superSet) {
+        ASSERT_TRUE(superSet.contains(el.getID()));
+    }
+    for (const ID id : superSet.ids()) {
+        ASSERT_TRUE(superSet.contains(id));
+    }
 }

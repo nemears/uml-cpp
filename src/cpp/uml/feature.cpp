@@ -4,25 +4,25 @@
 using namespace UML;
 
 void Feature::referenceReindexed(ID oldID, ID newID) {
-    RedefinableElement::referenceReindexed(oldID, newID);
+    // RedefinableElement::referenceReindexed(oldID, newID);
     NamedElement::referenceReindexed(oldID, newID);
     m_featuringClassifier.reindex(oldID, newID);
 }
 
 void Feature::referencingReleased(ID id) {
-    RedefinableElement::referencingReleased(id);
+    // RedefinableElement::referencingReleased(id);
     NamedElement::referencingReleased(id);
     m_featuringClassifier.release(id);
 }
 
 void Feature::restoreReferences() {
-    RedefinableElement::restoreReferences();
+    // RedefinableElement::restoreReferences();
     NamedElement::restoreReferences();
     // m_featuringClassifier.restoreReference();
 }
 
 void Feature::referenceErased(ID id) {
-    RedefinableElement::referenceErased(id);
+    // RedefinableElement::referenceErased(id);
     NamedElement::referenceErased(id);
     m_featuringClassifier.eraseElement(id);
 }
@@ -33,8 +33,8 @@ Set<Classifier, Feature>& Feature::getFeaturingClassifierSingleton() {
 
 void Feature::init() {
     m_featuringClassifier.subsets(m_memberNamespace);
-    m_featuringClassifier.m_signature = &Feature::getFeaturingClassifierSingleton;
     m_featuringClassifier.opposite(&Classifier::getFeatures);
+    m_featuringClassifier.m_signature = &Feature::getFeaturingClassifierSingleton;
 }
 
 void Feature::copy(const Feature& rhs) {

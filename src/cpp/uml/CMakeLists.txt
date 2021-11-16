@@ -1,14 +1,15 @@
 add_library(Uml element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp namespace.cpp package.cpp packageableElement.cpp
                 templateableElement.cpp parameterableElement.cpp relationship.cpp directedRelationship.cpp packageMerge.cpp
-                dependency.cpp classifier.cpp typedElement.cpp feature.cpp)
-# add_library(Uml namespace.cpp model.cpp element.cpp namedElement.cpp class.cpp classifier.cpp property.cpp type.cpp 
+                dependency.cpp classifier.cpp typedElement.cpp feature.cpp property.cpp class.cpp structuredClassifier.cpp
+                redefinableElement.cpp type.cpp structuralFeature.cpp)
+# add_library(Uml namespace.cpp model.cpp element.cpp namedElement.cpp class.cpp classifier.cpp   
 #                 valueSpecification.cpp primitiveType.cpp literalString.cpp literalInt.cpp literalReal.cpp literalBool.cpp 
 #                 instanceSpecification.cpp slot.cpp structuralFeature.cpp instanceValue.cpp operation.cpp behavior.cpp parameter.cpp
 #                 opaqueBehavior.cpp activity.cpp activityNode.cpp activityEdge.cpp objectNode.cpp multiplicityElement.cpp pin.cpp
 #                 action.cpp inputPin.cpp outputPin.cpp controlFlow.cpp objectFlow.cpp initialNode.cpp finalNode.cpp decisionNode.cpp
 #                 joinNode.cpp forkNode.cpp mergeNode.cpp parameterNode.cpp callBehaviorAction.cpp expression.cpp createObjectAction.cpp
 #                 relationship.cpp directedRelationship.cpp generalization.cpp packageableElement.cpp package.cpp literalSpecification.cpp
-#                  behavioralFeature.cpp dataType.cpp redefinableElement.cpp structuredClassifier.cpp connectableElement.cpp
+#                  behavioralFeature.cpp dataType.cpp redefinableElement.cpp connectableElement.cpp
 #                 association.cpp enumeration.cpp enumerationLiteral.cpp packageMerge.cpp comment.cpp id.cpp umlManager.cpp
 #                 templateableElement.cpp templateSignature.cpp templateParameter.cpp parameterableElement.cpp templateBinding.cpp
 #                 templateParameterSubstitution.cpp literalNull.cpp literalUnlimitedNatural.cpp profile.cpp stereotype.cpp

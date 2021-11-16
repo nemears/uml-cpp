@@ -3,7 +3,6 @@
 
 #include "type.h"
 #include "redefinableElement.h"
-#include "sequence.h"
 #include "namespace.h"
 #include "templateableElement.h"
 

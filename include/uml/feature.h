@@ -11,7 +11,7 @@ namespace UML {
         protected:
             Singleton2<Classifier, Feature> m_featuringClassifier = Singleton2<Classifier, Feature>(this);
             bool m_static;
-            void reindexName(std::string oldName, std::string newName) override;
+            // void reindexName(std::string oldName, std::string newName) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;

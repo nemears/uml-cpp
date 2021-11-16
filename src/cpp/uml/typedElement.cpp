@@ -24,6 +24,10 @@ void TypedElement::referenceErased(ID id) {
     m_type.eraseElement(id);
 }
 
+Set<Type, TypedElement>& TypedElement::getTypeSingleton() {
+    return m_type;
+}
+
 void TypedElement::init() {
     m_type.m_signature = &TypedElement::getTypeSingleton;
 }

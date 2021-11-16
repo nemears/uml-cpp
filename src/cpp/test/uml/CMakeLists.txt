@@ -1,5 +1,6 @@
-add_executable(umltest elementTest.cpp setTest.cpp namedElementTest.cpp namespaceTest.cpp packageTest.cpp dependencyTest.cpp)
-                    # classifierTest.cpp typedElementTest.cpp 
+add_executable(umltest elementTest.cpp setTest.cpp namedElementTest.cpp namespaceTest.cpp packageTest.cpp dependencyTest.cpp
+                       classifierTest.cpp)
+                    #  typedElementTest.cpp 
                     #    valueSpecificationTest.cpp propertyTest.cpp instanceSpecificationTest.cpp classTest.cpp 
                     #    parameterTest.cpp operationTest.cpp activityEdgeTest.cpp multiplicityElementTest.cpp
                     #    objectNodeTest.cpp activityNodeTest.cpp inputPinTest.cpp outputPinTest.cpp directedRelationshipTest.cpp 

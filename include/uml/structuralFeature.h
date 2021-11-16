@@ -2,11 +2,11 @@
 #define STRUCTURALFEATUREH
 
 #include "typedElement.h"
-#include "multiplicityElement.h"
+// #include "multiplicityElement.h"
 #include "feature.h"
 
 namespace UML {
-    class StructuralFeature : virtual public TypedElement, public MultiplicityElement, public Feature {
+    class StructuralFeature : virtual public TypedElement, /**public MultiplicityElement,**/ public Feature {
         protected:
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;

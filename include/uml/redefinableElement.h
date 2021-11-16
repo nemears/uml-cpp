@@ -9,28 +9,28 @@ namespace UML {
 
     class RedefinableElement : virtual public NamedElement {
         protected:
-            Sequence<RedefinableElement> m_redefinedElement = Sequence<RedefinableElement>(this);
-            Sequence<Classifier> m_redefinitionContext = Sequence<Classifier>(this);
-            class AddRedefinedElementFunctor : public TemplateAbstractSequenceFunctor<RedefinableElement, RedefinableElement> {
-                public:
-                    AddRedefinedElementFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(RedefinableElement& el) const override;
-            };
-            class RemoveRedefinedElementFunctor : public TemplateAbstractSequenceFunctor<RedefinableElement, RedefinableElement> {
-                public:
-                    RemoveRedefinedElementFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(RedefinableElement& el) const override;
-            };
-            class AddRedefinitionContextFunctor : public TemplateAbstractSequenceFunctor<Classifier, RedefinableElement> {
-                public:
-                    AddRedefinitionContextFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Classifier& el) const override;
-            };
-            class RemoveRedefinitionContextFunctor : public TemplateAbstractSequenceFunctor<Classifier, RedefinableElement> {
-                public:
-                    RemoveRedefinitionContextFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Classifier& el) const override;
-            };
+            // Sequence<RedefinableElement> m_redefinedElement = Sequence<RedefinableElement>(this);
+            // Sequence<Classifier> m_redefinitionContext = Sequence<Classifier>(this);
+            // class AddRedefinedElementFunctor : public TemplateAbstractSequenceFunctor<RedefinableElement, RedefinableElement> {
+            //     public:
+            //         AddRedefinedElementFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
+            //         void operator()(RedefinableElement& el) const override;
+            // };
+            // class RemoveRedefinedElementFunctor : public TemplateAbstractSequenceFunctor<RedefinableElement, RedefinableElement> {
+            //     public:
+            //         RemoveRedefinedElementFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
+            //         void operator()(RedefinableElement& el) const override;
+            // };
+            // class AddRedefinitionContextFunctor : public TemplateAbstractSequenceFunctor<Classifier, RedefinableElement> {
+            //     public:
+            //         AddRedefinitionContextFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
+            //         void operator()(Classifier& el) const override;
+            // };
+            // class RemoveRedefinitionContextFunctor : public TemplateAbstractSequenceFunctor<Classifier, RedefinableElement> {
+            //     public:
+            //         RemoveRedefinitionContextFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
+            //         void operator()(Classifier& el) const override;
+            // };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
@@ -39,8 +39,8 @@ namespace UML {
         public:
             virtual ~RedefinableElement();
             RedefinableElement(const RedefinableElement& el);
-            Sequence<RedefinableElement>& getRedefinedElements();
-            Sequence<Classifier>& getRedefinitionContext();
+            // Sequence<RedefinableElement>& getRedefinedElements();
+            // Sequence<Classifier>& getRedefinitionContext();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::REDEFINABLE_ELEMENT;

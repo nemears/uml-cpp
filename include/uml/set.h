@@ -91,6 +91,8 @@ namespace UML {
     class Classifier;
     class TypedElement;
     class Feature;
+    class Property;
+    class StructuredClassifier;
 
     /**
      * This container is based around a weighted binary search tree
@@ -113,6 +115,8 @@ namespace UML {
         friend class Classifier;
         friend class TypedElement;
         friend class Feature;
+        friend class Property;
+        friend class StructuredClassifier;
 
         protected:
             std::vector<AbstractSet*> m_subsetOf;

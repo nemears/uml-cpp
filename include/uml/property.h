@@ -40,6 +40,7 @@ namespace UML{
         friend class Parsers::SetOwningAssociation;
         friend class Parsers::SetAssociation;
         friend class Classifier;
+        friend class StructuredClassifier;
 
         protected:
             AggregationKind m_aggregation;

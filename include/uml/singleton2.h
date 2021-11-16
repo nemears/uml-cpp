@@ -30,7 +30,7 @@ namespace UML {
                     return *dynamic_cast<T*>(this->m_root->m_el);
                 } else {
                     // TODO throw exception
-                    throw NullReferenceException();
+                    throw UML::NullReferenceException();
                 }
             };
             ID id() const {

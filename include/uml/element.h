@@ -203,8 +203,6 @@ namespace UML {
             
             // ownedElements
             Set<Element, Element>* m_ownedElements;
-            // Set<Relationship, Element>* m_relationships;
-            // Set<DirectedRelationship, Element>* m_directedRelationships;
             // Set<Comment, Element>* m_ownedComments;
             // Set<InstanceSpecification, Element>* m_appliedStereotype;
             void setOwner(Element* el);
@@ -238,9 +236,7 @@ namespace UML {
             ID getOwnerID() const;
             bool hasOwner() const;
             Set<Element, Element>& getOwnedElements();
-            Set<Relationship, Element>& getRelationships();
-            Set<DirectedRelationship, Element>& getDirectedRelationships();
-            Set<Comment, Element>& getOwnedComments();
+            // Set<Comment, Element>& getOwnedComments();
             /**
              * TODO: I am keeping it simple for now, instance specification of stereotype to
              *       hold tags and operations, but I think it would be cool to dynamically map

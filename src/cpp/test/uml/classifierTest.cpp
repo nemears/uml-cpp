@@ -24,7 +24,7 @@ TEST_F(ClassifierTest, addAttributeFunctorTest) {
   UmlManager m;
   Class& c = m.create<Class>();
   Property& p = m.create<Property>();
-  c.getAttributes().add(p);
+  c.getOwnedAttributes().add(p);
   ASSERT_TRUE(c.getAttributes().size() == 1);
   ASSERT_TRUE(&c.getAttributes().front() == &p);
   ASSERT_TRUE(p.getClassifier() == &c);
@@ -55,8 +55,8 @@ TEST_F(ClassifierTest, setClassifierTest) {
 TEST_F(ClassifierTest, removeAttributeFunctorTest) {
   UmlManager m;
   Property& p = m.create<Property>();
-  Classifier& c = m.create<Class>();
-  c.getAttributes().add(p);
+  Class& c = m.create<Class>();
+  c.getOwnedAttributes().add(p);
   ASSERT_NO_THROW(c.getAttributes().remove(p));
   ASSERT_TRUE(c.getAttributes().size() == 0);
   ASSERT_TRUE(c.getFeatures().size() == 0);

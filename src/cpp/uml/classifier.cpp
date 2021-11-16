@@ -1,6 +1,6 @@
 #include "uml/classifier.h"
 #include "uml/property.h"
-// #include "uml/generalization.h"
+#include "uml/generalization.h"
 // #include "uml/instanceSpecification.h"
 // #include "uml/class.h"
 // #include "uml/generalizationSet.h"
@@ -79,9 +79,14 @@ void Classifier::init() {
     m_features.subsets(m_members);
     m_features.opposite(&Feature::getFeaturingClassifierSingleton);
     m_features.m_signature = &Classifier::getFeatures;
+    m_features.m_readOnly = true;
     m_attributes.subsets(m_features);
     m_attributes.opposite(&Property::getClassifierSingleton);
     m_attributes.m_signature = &Classifier::getAttributes;
+    m_attributes.m_readOnly = true;
+    m_generalizations.subsets(*m_ownedElements);
+    m_generalizations.opposite(&Generalization::getSpecificSingleton);
+    m_generalizations.m_signature = &Classifier::getGeneralizations;
 }
 
 void Classifier::copy(const Classifier& rhs) {
@@ -123,9 +128,9 @@ Set<Property, Classifier>& Classifier::getAttributes() {
     return m_attributes;
 }
 
-// Sequence<Generalization>& Classifier::getGeneralizations() {
-//     return m_generalizations;
-// }
+Set<Generalization, Classifier>& Classifier::getGeneralizations() {
+    return m_generalizations;
+}
 
 // Sequence<Classifier>& Classifier::getGenerals() {
 //     return m_generals;

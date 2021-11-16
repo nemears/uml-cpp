@@ -81,7 +81,6 @@ void Classifier::init() {
     m_features.m_signature = &Classifier::getFeatures;
     m_features.m_readOnly = true;
     m_attributes.subsets(m_features);
-    m_attributes.opposite(&Property::getClassifierSingleton);
     m_attributes.m_signature = &Classifier::getAttributes;
     m_attributes.m_readOnly = true;
     m_generalizations.subsets(*m_ownedElements);

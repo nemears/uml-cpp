@@ -27,7 +27,6 @@ TEST_F(ClassifierTest, addAttributeFunctorTest) {
   c.getOwnedAttributes().add(p);
   ASSERT_TRUE(c.getAttributes().size() == 1);
   ASSERT_TRUE(&c.getAttributes().front() == &p);
-  ASSERT_TRUE(p.getClassifier() == &c);
   ASSERT_TRUE(c.getFeatures().size() == 1);
   ASSERT_TRUE(&c.getFeatures().front() == &p);
   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
@@ -37,32 +36,31 @@ TEST_F(ClassifierTest, addAttributeFunctorTest) {
   ASSERT_TRUE(&p.getMemberNamespace().front() == &c);
 }
 
-TEST_F(ClassifierTest, setClassifierTest) {
-  UmlManager m;
-  Property& p = m.create<Property>();
-  Classifier& c = m.create<Class>();
-  p.setClassifier(&c);
-  ASSERT_TRUE(c.getAttributes().size() == 1);
-  ASSERT_TRUE(&c.getAttributes().front() == &p);
-  ASSERT_TRUE(p.getClassifier() == &c);
-  ASSERT_TRUE(c.getFeatures().size() == 1);
-  ASSERT_TRUE(&c.getFeatures().front() == &p);
-  ASSERT_TRUE(p.getFeaturingClassifier() == &c);
-  ASSERT_TRUE(c.getMembers().count(p.getID()));
-  ASSERT_TRUE(p.getMemberNamespace().count(c.getID()));
-}
+// TEST_F(ClassifierTest, setClassifierTest) {
+//   UmlManager m;
+//   Property& p = m.create<Property>();
+//   Classifier& c = m.create<Class>();
+//   p.setClassifier(&c);
+//   ASSERT_TRUE(c.getAttributes().size() == 1);
+//   ASSERT_TRUE(&c.getAttributes().front() == &p);
+//   ASSERT_TRUE(p.getClassifier() == &c);
+//   ASSERT_TRUE(c.getFeatures().size() == 1);
+//   ASSERT_TRUE(&c.getFeatures().front() == &p);
+//   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
+//   ASSERT_TRUE(c.getMembers().count(p.getID()));
+//   ASSERT_TRUE(p.getMemberNamespace().count(c.getID()));
+// }
 
 TEST_F(ClassifierTest, removeAttributeFunctorTest) {
   UmlManager m;
   Property& p = m.create<Property>();
   Class& c = m.create<Class>();
   c.getOwnedAttributes().add(p);
-  ASSERT_NO_THROW(c.getAttributes().remove(p));
+  ASSERT_NO_THROW(c.getOwnedAttributes().remove(p));
   ASSERT_TRUE(c.getAttributes().size() == 0);
   ASSERT_TRUE(c.getFeatures().size() == 0);
   ASSERT_TRUE(c.getMembers().size() == 0);
   ASSERT_TRUE(c.getOwnedElements().size() == 0);
-  ASSERT_TRUE(!p.getClassifier());
   ASSERT_TRUE(!p.getFeaturingClassifier());
   ASSERT_TRUE(!p.getNamespace());
   ASSERT_TRUE(p.getMemberNamespace().size() == 0);

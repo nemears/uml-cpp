@@ -68,7 +68,7 @@ Set<Classifier, Property>& Property::getClassifierSingleton() {
 }
 
 void Property::init() {
-    m_classifier.subsets(m_namespace);
+    m_classifier.subsets(m_featuringClassifier);
     m_classifier.opposite(&Classifier::getAttributes);
     m_classifier.m_signature = &Property::getClassifierSingleton;
 }

@@ -22,7 +22,7 @@ TEST_F(ClassifierTest, GetOwnedAttributesTest) {
 
 TEST_F(ClassifierTest, addAttributeFunctorTest) {
   UmlManager m;
-  Classifier& c = m.create<Class>();
+  Class& c = m.create<Class>();
   Property& p = m.create<Property>();
   c.getAttributes().add(p);
   ASSERT_TRUE(c.getAttributes().size() == 1);

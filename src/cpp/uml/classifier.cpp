@@ -76,11 +76,19 @@ void Classifier::referenceErased(ID id) {
 }
 
 void Classifier::init() {
-
+    m_features.subsets(m_members);
+    m_features.opposite(&Feature::getFeaturingClassifierSingleton);
+    m_features.m_signature = &Classifier::getFeatures;
+    m_attributes.subsets(m_features);
+    m_attributes.opposite(&Property::getClassifierSingleton);
+    m_attributes.m_signature = &Classifier::getAttributes;
 }
 
 void Classifier::copy(const Classifier& rhs) {
-
+    m_features = Set<Feature, Classifier>(rhs.m_features);
+    m_features.m_el = this;
+    m_attributes = Set<Property, Classifier>(rhs.m_attributes);
+    m_attributes.m_el = this;
 }
 
 Classifier::Classifier() : Element(ElementType::CLASSIFIER) {

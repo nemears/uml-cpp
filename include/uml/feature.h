@@ -8,6 +8,9 @@ namespace UML {
     class Classifier;
 
     class Feature : virtual public RedefinableElement {
+
+        friend class Classifier;
+
         protected:
             Singleton2<Classifier, Feature> m_featuringClassifier = Singleton2<Classifier, Feature>(this);
             bool m_static;

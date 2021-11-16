@@ -39,6 +39,7 @@ namespace UML{
         friend class Parsers::PropertySetArtifact;
         friend class Parsers::SetOwningAssociation;
         friend class Parsers::SetAssociation;
+        friend class Classifier;
 
         protected:
             AggregationKind m_aggregation;

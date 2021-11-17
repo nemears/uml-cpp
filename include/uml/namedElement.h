@@ -34,7 +34,6 @@ namespace UML{
             std::string m_name;
             std::string m_absoluteNamespace;
             Singleton2<Namespace, NamedElement> m_namespace = Singleton2<Namespace, NamedElement>(this);
-            Set<Namespace, NamedElement> m_memberNamespace = Set<Namespace, NamedElement>(this);
             class UpdateQualifiedNameFunctor : public SetFunctor {
                 public:
                     UpdateQualifiedNameFunctor(Element* them) : SetFunctor(them) {};
@@ -67,7 +66,6 @@ namespace UML{
             Namespace& getNamespaceRef();
             ID getNamespaceID() const;
             bool hasNamespace() const;
-            Set<Namespace, NamedElement>& getMemberNamespace();
             Set<Dependency, NamedElement>& getClientDependencies();
             VisibilityKind getVisibility();
             void setVisibility(VisibilityKind visibility);

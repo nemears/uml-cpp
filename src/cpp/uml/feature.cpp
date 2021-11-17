@@ -32,7 +32,6 @@ Set<Classifier, Feature>& Feature::getFeaturingClassifierSingleton() {
 }
 
 void Feature::init() {
-    m_featuringClassifier.subsets(m_memberNamespace);
     m_featuringClassifier.opposite(&Classifier::getFeatures);
     m_featuringClassifier.m_signature = &Feature::getFeaturingClassifierSingleton;
 }

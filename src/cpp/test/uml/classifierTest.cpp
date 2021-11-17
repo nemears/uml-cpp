@@ -31,9 +31,9 @@ TEST_F(ClassifierTest, addAttributeFunctorTest) {
   ASSERT_TRUE(&c.getFeatures().front() == &p);
   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
   ASSERT_TRUE(c.getMembers().count(p.getID()));
-  ASSERT_TRUE(p.getMemberNamespace().count(c.getID()) == 1);
-  ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-  ASSERT_TRUE(&p.getMemberNamespace().front() == &c);
+  // ASSERT_TRUE(p.getMemberNamespace().count(c.getID()) == 1);
+  // ASSERT_TRUE(p.getMemberNamespace().size() == 1);
+  // ASSERT_TRUE(&p.getMemberNamespace().front() == &c);
 }
 
 // TEST_F(ClassifierTest, setClassifierTest) {
@@ -63,7 +63,7 @@ TEST_F(ClassifierTest, removeAttributeFunctorTest) {
   ASSERT_TRUE(c.getOwnedElements().size() == 0);
   ASSERT_TRUE(!p.getFeaturingClassifier());
   ASSERT_TRUE(!p.getNamespace());
-  ASSERT_TRUE(p.getMemberNamespace().size() == 0);
+  // ASSERT_TRUE(p.getMemberNamespace().size() == 0);
   ASSERT_TRUE(!p.getOwner());
 }
 

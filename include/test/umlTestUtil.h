@@ -61,7 +61,7 @@ namespace UML {
     inline void ASSERT_RESTORED_NAMESPACE(NamedElement& el, Namespace& nmspc) {
         ASSERT_TRUE(el.hasNamespace());
         ASSERT_EQ(el.getNamespaceRef(), nmspc);
-        ASSERT_TRUE(el.getMemberNamespace().count(nmspc.getID()));
+        // ASSERT_TRUE(el.getMemberNamespace().count(nmspc.getID()));
         ASSERT_TRUE(el.hasOwner());
         ASSERT_EQ(el.getOwnerRef(), nmspc);
         ASSERT_TRUE(nmspc.getOwnedMembers().count(el.getID()));

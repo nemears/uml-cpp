@@ -23,7 +23,6 @@ void Namespace::referenceErased(ID id) {
 }
 
 void Namespace::init() {
-    m_members.opposite(&NamedElement::getMemberNamespace);
     m_members.m_signature = &Namespace::getMembers;
     m_members.m_readOnly = true;
     m_ownedMembers.subsets(*m_ownedElements);

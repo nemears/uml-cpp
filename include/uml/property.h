@@ -45,9 +45,7 @@ namespace UML{
         protected:
             AggregationKind m_aggregation;
             bool m_composite;
-            // Singleton<ValueSpecification, Property> m_defaultValue = Singleton<ValueSpecification, Property>(this);
-            // Singleton<Classifier, Property> m_classifier = Singleton<Classifier, Property>(this);
-            // Singleton<StructuredClassifier, Property> m_structuredClassifier = Singleton<StructuredClassifier, Property>(this);
+            Singleton<ValueSpecification, Property> m_defaultValue = Singleton<ValueSpecification, Property>(this);
             // Singleton<DataType, Property> m_dataType = Singleton<DataType, Property>(this);
             // Singleton<Class, Property> m_class = Singleton<Class, Property>(this);
             // Singleton<Association, Property> m_association = Singleton<Association, Property>(this);
@@ -61,7 +59,7 @@ namespace UML{
             void restoreReferences() override;
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
-            // Set<ValueSpecification, Property>& getDefaultValueSingleton();
+            Set<ValueSpecification, Property>& getDefaultValueSingleton();
             // Set<Classifier, Property>& getClassifierSingleton();
             // Set<StructuredClassifier, Property>& getStructuredClassifierSingleton();
             void init();
@@ -72,12 +70,12 @@ namespace UML{
             AggregationKind getAggregation();
             bool isComposite();
             void setAggregation(AggregationKind aggregation);
-            // void setDefaultValue(ValueSpecification* val);
-            // void setDefaultValue(ValueSpecification& val);
-            // ValueSpecification* getDefaultValue();
-            // ValueSpecification& getDefaultValueRef();
-            // ID getDefaultValueID() const;
-            // bool hasDefaultValue() const;
+            void setDefaultValue(ValueSpecification* val);
+            void setDefaultValue(ValueSpecification& val);
+            ValueSpecification* getDefaultValue();
+            ValueSpecification& getDefaultValueRef();
+            ID getDefaultValueID() const;
+            bool hasDefaultValue() const;
             // Classifier* getClassifier();
             // Classifier& getClassifierRef();
             // ID getClassifierID() const;

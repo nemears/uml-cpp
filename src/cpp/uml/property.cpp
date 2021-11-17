@@ -1,11 +1,12 @@
 #include "uml/property.h"
 #include "uml/classifier.h"
+#include "uml/valueSpecification.h"
 
 using namespace UML;
 
 void Property::referencingReleased(ID id) {
     StructuralFeature::referencingReleased(id);
-    // m_defaultValue.release(id);
+    m_defaultValue.release(id);
     // m_classifier.release(id);
     // m_structuredClassifier.release(id);
     // m_dataType.release(id);
@@ -18,7 +19,7 @@ void Property::referencingReleased(ID id) {
 
 void Property::referenceReindexed(ID oldID, ID newID) {
     StructuralFeature::referenceReindexed(oldID, newID);
-    // m_defaultValue.reindex(oldID, newID);
+    m_defaultValue.reindex(oldID, newID);
     // m_classifier.reindex(oldID, newID);
     // m_structuredClassifier.reindex(oldID, newID);
     // m_dataType.reindex(oldID, newID);
@@ -52,9 +53,7 @@ void Property::restoreReference(Element* el) {
 void Property::referenceErased(ID id) {
     StructuralFeature::referenceErased(id);
     // DeploymentTarget::referenceErased(id);
-    // m_defaultValue.elementErased(id);
-    // m_classifier.eraseElement(id);
-    // m_structuredClassifier.eraseElement(id);
+    m_defaultValue.eraseElement(id);
     // m_dataType.elementErased(id);
     // m_class.elementErased(id);
     // m_association.elementErased(id);
@@ -63,23 +62,17 @@ void Property::referenceErased(ID id) {
     // m_redefinedProperties.elementErased(id);
 }
 
-// Set<Classifier, Property>& Property::getClassifierSingleton() {
-//     return m_classifier;
-// }
-
-// Set<StructuredClassifier, Property>& Property::getStructuredClassifierSingleton() {
-//     return m_structuredClassifier;
-// }
+Set<ValueSpecification, Property>& Property::getDefaultValueSingleton() {
+    return m_defaultValue;
+}
 
 void Property::init() {
-    // m_classifier.subsets(m_featuringClassifier);
-    // m_classifier.opposite(&Classifier::getAttributes);
-    // m_classifier.m_signature = &Property::getClassifierSingleton;
-    // m_structuredClassifier.subsets(m_classifier);
+    m_defaultValue.subsets(*m_ownedElements);
+    m_defaultValue.m_signature = &Property::getDefaultValueSingleton;
 }
 
 void Property::copy(const Property& rhs) {
-
+    m_defaultValue = rhs.m_defaultValue;
 }
 
 Property::Property() : Element(ElementType::PROPERTY) {
@@ -136,77 +129,29 @@ void Property::setAggregation(AggregationKind aggregation) {
     updateCopiesScalar(aggregation, &Property::m_aggregation);
 }
 
-// ValueSpecification* Property::getDefaultValue() {
-//     return m_defaultValue.get();
-// }
+ValueSpecification* Property::getDefaultValue() {
+    return m_defaultValue.get();
+}
 
-// ValueSpecification& Property::getDefaultValueRef() {
-//     return m_defaultValue.getRef();
-// }
+ValueSpecification& Property::getDefaultValueRef() {
+    return m_defaultValue.getRef();
+}
 
-// ID Property::getDefaultValueID() const {
-//     return m_defaultValue.id();
-// }
+ID Property::getDefaultValueID() const {
+    return m_defaultValue.id();
+}
 
-// bool Property::hasDefaultValue() const {
-//     return m_defaultValue.has();
-// }
+bool Property::hasDefaultValue() const {
+    return m_defaultValue.has();
+}
 
-// void Property::setDefaultValue(ValueSpecification* val) {
-//     m_defaultValue.set(val);
-// }
+void Property::setDefaultValue(ValueSpecification* val) {
+    m_defaultValue.set(val);
+}
 
-// void Property::setDefaultValue(ValueSpecification& val) {
-//     m_defaultValue.set(val);
-// }
-
-// Classifier* Property::getClassifier() {
-//     return m_classifier.get();
-// }
-
-// Classifier& Property::getClassifierRef() {
-//     return m_classifier.getRef();
-// }
-
-// ID Property::getClassifierID() const {
-//     return m_classifier.id();
-// }
-
-// bool Property::hasClassifier() const {
-//     return m_classifier.has();
-// }
-
-// void Property::setClassifier(Classifier* classifier) {
-//     m_classifier.set(classifier);
-// }
-
-// void Property::setClassifier(Classifier& classifier) {
-//     m_classifier.set(classifier);
-// }
-
-// StructuredClassifier* Property::getStructuredClassifier() {
-//     return m_structuredClassifier.get();
-// }
-
-// StructuredClassifier& Property::getStructuredClassifierRef() {
-//     return m_structuredClassifier.getRef();
-// }
-
-// ID Property::getStructuredClassifierID() const {
-//     return m_structuredClassifier.id();
-// }
-
-// bool Property::hasStructuredClassifier() const {
-//     return m_structuredClassifier.has();
-// }
-
-// void Property::setStructuredClassifier(StructuredClassifier* classifier) {
-//     m_structuredClassifier.set(classifier);
-// }
-
-// void Property::setStructuredClassifier(StructuredClassifier& classifier) {
-//     m_structuredClassifier.set(classifier);
-// }
+void Property::setDefaultValue(ValueSpecification& val) {
+    m_defaultValue.set(val);
+}
 
 // DataType* Property::getDataType() {
 //     return m_dataType.get();

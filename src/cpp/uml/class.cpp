@@ -46,7 +46,7 @@ void Class::copy(const Class& rhs) {
 }
 
 Class::Class() : Element(ElementType::CLASS) {
-    // init
+    init();
 }
 
 Class::~Class() {
@@ -54,6 +54,7 @@ Class::~Class() {
 }
 
 Class::Class(const Class& rhs) : Element(rhs, ElementType::CLASS) {
+    init();
     NamedElement::copy(rhs);
     Namespace::copy(rhs);
     PackageableElement::copy(rhs);

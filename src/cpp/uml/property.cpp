@@ -70,6 +70,7 @@ void Property::init() {
     m_defaultValue.subsets(*m_ownedElements);
     m_defaultValue.m_signature = &Property::getDefaultValueSingleton;
     m_class.subsets(m_namespace);
+    m_class.subsets(m_featuringClassifier);
     m_class.opposite(&Class::getOwnedAttributes);
     m_class.m_signature = &Property::getClassSingleton;
 }

@@ -843,6 +843,9 @@ namespace UML {
                 m_redefines.push_back(&redefined);
                 redefined.m_redefines.push_back(this);
                 m_rootRedefinedSet = false;
+                for (auto& set : redefined.m_subsetOf) {
+                    subsets(*static_cast<Set*>(set));
+                }
             };
             void add(T& el) {
                 if (m_readOnly) {

@@ -18,7 +18,7 @@ namespace UML {
         friend class Parsers::SetOwningPackage;
 
         protected:
-            Singleton2<Package, PackageableElement> m_owningPackage = Singleton2<Package, PackageableElement>(this);
+            Singleton<Package, PackageableElement> m_owningPackage = Singleton<Package, PackageableElement>(this);
             // class RemoveOwningPackageProcedure : public AbstractSingletonProcedure<Package, PackageableElement> {
             //     public:
             //         RemoveOwningPackageProcedure(PackageableElement* me) : AbstractSingletonProcedure<Package, PackageableElement>(me) {};

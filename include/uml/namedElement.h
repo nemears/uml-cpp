@@ -5,7 +5,6 @@
 #include "element.h"
 #include "singleton.h"
 #include "set.h"
-#include "singleton2.h"
 
 namespace UML{
 
@@ -31,7 +30,7 @@ namespace UML{
         protected:
             std::string m_name;
             std::string m_absoluteNamespace;
-            Singleton2<Namespace, NamedElement> m_namespace = Singleton2<Namespace, NamedElement>(this);
+            Singleton<Namespace, NamedElement> m_namespace = Singleton<Namespace, NamedElement>(this);
             class UpdateQualifiedNameFunctor : public SetFunctor {
                 public:
                     UpdateQualifiedNameFunctor(Element* them) : SetFunctor(them) {};

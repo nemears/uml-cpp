@@ -3,7 +3,6 @@
 
 #include "directedRelationship.h"
 #include "singleton.h"
-#include "singleton2.h"
 
 namespace UML {
 
@@ -20,8 +19,8 @@ namespace UML {
         friend class Classifier;
 
         protected:
-            Singleton2<Classifier, Generalization> m_general = Singleton2<Classifier, Generalization>(this);
-            Singleton2<Classifier, Generalization> m_specific = Singleton2<Classifier, Generalization>(this);
+            Singleton<Classifier, Generalization> m_general = Singleton<Classifier, Generalization>(this);
+            Singleton<Classifier, Generalization> m_specific = Singleton<Classifier, Generalization>(this);
             // Sequence<GeneralizationSet> m_generalizationSets = Sequence<GeneralizationSet>(this);
             void referenceReindexed(ID oldID, ID newID) override;
             void referencingReleased(ID id) override;

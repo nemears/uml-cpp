@@ -12,7 +12,7 @@ namespace UML {
         friend class Classifier;
 
         protected:
-            Singleton2<Classifier, Feature> m_featuringClassifier = Singleton2<Classifier, Feature>(this);
+            Singleton<Classifier, Feature> m_featuringClassifier = Singleton<Classifier, Feature>(this);
             bool m_static;
             // void reindexName(std::string oldName, std::string newName) override;
             void referencingReleased(ID id) override;

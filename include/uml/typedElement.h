@@ -16,7 +16,7 @@ namespace UML{
         friend class Parsers::SetType;
 
         protected:
-            Singleton2<Type, TypedElement> m_type = Singleton2<Type, TypedElement>(this);
+            Singleton<Type, TypedElement> m_type = Singleton<Type, TypedElement>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;

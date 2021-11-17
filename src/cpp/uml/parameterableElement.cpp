@@ -1,5 +1,5 @@
 #include "uml/parameterableElement.h"
-#include "uml/templateParameter.h"
+// #include "uml/templateParameter.h"
 
 using namespace UML;
 

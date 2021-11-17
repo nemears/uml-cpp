@@ -5,7 +5,6 @@
 #include "uml/set.h"
 #include "uml/orderedSet.h"
 #include "test/yumlParsersTest.h"
-#include "uml/singleton2.h"
 
 using namespace UML;
 
@@ -373,7 +372,7 @@ TEST_F(SetTest, testIdsMethodLoop) {
 
 TEST_F(SetTest, singletonTest) {
     Set<PackageableElement> rootSet;
-    Singleton2<Package> singleton;
+    Singleton<Package> singleton;
     UmlManager m;
     singleton.subsets(rootSet);
     ASSERT_TRUE(singleton.empty());

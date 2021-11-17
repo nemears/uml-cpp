@@ -54,9 +54,9 @@ void PackageMerge::init() {
 }
 
 void PackageMerge::copy(const PackageMerge& rhs) {
-    m_receivingPackage = Singleton2<Package, PackageMerge>(rhs.m_receivingPackage);
+    m_receivingPackage = Singleton<Package, PackageMerge>(rhs.m_receivingPackage);
     m_receivingPackage.m_el = this;
-    m_mergedPackage = Singleton2<Package, PackageMerge>(rhs.m_mergedPackage);
+    m_mergedPackage = Singleton<Package, PackageMerge>(rhs.m_mergedPackage);
     m_mergedPackage.m_el = this;
 }
 

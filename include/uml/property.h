@@ -2,7 +2,7 @@
 #define PROPERTYH
 
 #include "structuralFeature.h"
-#include "valueSpecification.h"
+// #include "valueSpecification.h"
 // #include "connectableElement.h"
 // #include "deploymentTarget.h"
 
@@ -45,9 +45,9 @@ namespace UML{
         protected:
             AggregationKind m_aggregation;
             bool m_composite;
-            // Singleton2<ValueSpecification, Property> m_defaultValue = Singleton2<ValueSpecification, Property>(this);
-            // Singleton2<Classifier, Property> m_classifier = Singleton2<Classifier, Property>(this);
-            // Singleton2<StructuredClassifier, Property> m_structuredClassifier = Singleton2<StructuredClassifier, Property>(this);
+            // Singleton<ValueSpecification, Property> m_defaultValue = Singleton<ValueSpecification, Property>(this);
+            // Singleton<Classifier, Property> m_classifier = Singleton<Classifier, Property>(this);
+            // Singleton<StructuredClassifier, Property> m_structuredClassifier = Singleton<StructuredClassifier, Property>(this);
             // Singleton<DataType, Property> m_dataType = Singleton<DataType, Property>(this);
             // Singleton<Class, Property> m_class = Singleton<Class, Property>(this);
             // Singleton<Association, Property> m_association = Singleton<Association, Property>(this);

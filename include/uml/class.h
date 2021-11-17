@@ -2,7 +2,7 @@
 #define CLASSH
 #include <list>
 #include "structuredClassifier.h"
-#include "behavioredClassifier.h"
+// #include "behavioredClassifier.h"
 
 namespace UML{
 

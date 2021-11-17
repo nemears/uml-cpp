@@ -1,8 +1,8 @@
 #include "uml/templateableElement.h"
-#include "uml/umlManager.h"
-#include "uml/sequence.h"
-#include "uml/templateBinding.h"
-#include "uml/templateSignature.h"
+// #include "uml/umlManager.h"
+// #include "uml/sequence.h"
+// #include "uml/templateBinding.h"
+// #include "uml/templateSignature.h"
 
 using namespace UML;
 

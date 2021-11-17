@@ -1,14 +1,12 @@
 #include "uml/element.h"
 #include "uml/umlManager.h"
-#include "uml/sequence.h"
-#include "uml/relationship.h"
-#include "uml/directedRelationship.h"
-#include "uml/comment.h"
-#include "uml/instanceSpecification.h"
-#include "uml/classifier.h"
+// #include "uml/sequence.h"
+// #include "uml/relationship.h"
+// #include "uml/directedRelationship.h"
+// #include "uml/comment.h"
+// #include "uml/instanceSpecification.h"
+// #include "uml/classifier.h"
 #include "uml/singleton.h"
-#include "uml/set.h"
-#include "uml/singleton2.h"
 
 using namespace std;
 namespace UML {
@@ -114,7 +112,7 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_node = 0;
     m_id = ID::randomID();
 
-    m_owner = new Singleton2<Element, Element>(this);
+    m_owner = new Singleton<Element, Element>(this);
     m_owner->m_signature = &Element::getOwnerSingleton;
     m_owner->m_readOnly = true;
     m_owner->m_addFunctors.insert(new AddToMountFunctor(this));

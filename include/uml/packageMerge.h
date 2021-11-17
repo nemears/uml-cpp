@@ -3,7 +3,6 @@
 
 #include "directedRelationship.h"
 #include "singleton.h"
-#include "singleton2.h"
 
 namespace UML {
     
@@ -15,8 +14,8 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            Singleton2<Package, PackageMerge> m_receivingPackage = Singleton2<Package, PackageMerge>(this);
-            Singleton2<Package, PackageMerge> m_mergedPackage = Singleton2<Package, PackageMerge>(this);
+            Singleton<Package, PackageMerge> m_receivingPackage = Singleton<Package, PackageMerge>(this);
+            Singleton<Package, PackageMerge> m_mergedPackage = Singleton<Package, PackageMerge>(this);
             class MergedPackageReferenceFunctor : public SetFunctor {
                 public:
                     MergedPackageReferenceFunctor(Element* them) : SetFunctor(them) {};

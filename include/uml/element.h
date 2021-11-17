@@ -157,7 +157,7 @@ namespace UML {
     class PackageMerge;
     template <class T, class U> class Set;
     template <class T> class SetIterator;
-    template <class T, class U> class Singleton2;
+    template <class T, class U> class Singleton;
     namespace Parsers {
         class SetOwner;
         struct EmitterMetaData;
@@ -200,7 +200,7 @@ namespace UML {
             const ElementType m_elementType;
 
             // owner
-            Singleton2<Element, Element>* m_owner;
+            Singleton<Element, Element>* m_owner;
             Set<Element, Element>& getOwnerSingleton();
             
             // ownedElements

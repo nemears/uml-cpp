@@ -1,11 +1,10 @@
 #include "gtest/gtest.h"
-#include "uml/classifier.h"
 #include "uml/package.h"
 #include "uml/class.h"
 #include "uml/generalization.h"
 #include "uml/property.h"
-#include "uml/dataType.h"
-#include "uml/instanceSpecification.h"
+// #include "uml/dataType.h"
+// #include "uml/instanceSpecification.h"
 
 using namespace UML;
 

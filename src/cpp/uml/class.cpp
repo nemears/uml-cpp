@@ -114,12 +114,7 @@ using namespace UML;
 // }
 
 Class::Class() : Element(ElementType::CLASS) {
-    // m_ownedOperations.addProcedures.push_back(new AddOwnedOperationFunctor(this));
-    // m_ownedOperations.removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
-    // m_ownedAttributes.addProcedures.push_back(new ClassAddOwnedAttributeFunctor(this));
-    // m_ownedAttributes.removeProcedures.push_back(new ClassRemoveOwnedAttributeFunctor(this));
-    // m_nestedClassifiers.addProcedures.push_back(new AddNestedClassifierFunctor(this));
-    // m_nestedClassifiers.removeProcedures.push_back(new RemoveNestedClassifierFunctor(this));
+    // init
 }
 
 Class::~Class() {
@@ -127,7 +122,16 @@ Class::~Class() {
 }
 
 Class::Class(const Class& rhs) : Element(rhs, ElementType::CLASS) {
-    
+    NamedElement::copy(rhs);
+    Namespace::copy(rhs);
+    PackageableElement::copy(rhs);
+    Classifier::copy(rhs);
+    StructuredClassifier::copy(rhs);
+    NamedElement::init();
+    Namespace::init();
+    PackageableElement::init();
+    Classifier::init();
+    StructuredClassifier::init();
 }
 
 // Sequence<Operation>& Class::getOwnedOperations() {

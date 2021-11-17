@@ -612,6 +612,9 @@ namespace UML {
                 m_signature = rhs.m_signature;
                 m_readOnly = rhs.m_readOnly;
                 m_ultimateSet = rhs.m_ultimateSet;
+                if (m_ownsOppositeFunctor) {
+                    delete m_oppositeFunctor;
+                }
                 if (m_guard == 0) {
                     if (rhs.m_root) {
                         if (rhs.m_root->m_guard && m_ultimateSet) {
@@ -654,6 +657,9 @@ namespace UML {
                 }
             };
             virtual ~Set() { 
+                if (m_ownsOppositeFunctor) {
+                    delete m_oppositeFunctor;
+                }
                 if (m_rootRedefinedSet) {
                     SetNode* curr = m_root;
                     while (curr) {
@@ -743,9 +749,6 @@ namespace UML {
                                 }
                             }
                         }
-                    }
-                    if (m_ownsOppositeFunctor) {
-                        delete m_oppositeFunctor;
                     }
                 }
                 for (auto& func : m_addFunctors) {

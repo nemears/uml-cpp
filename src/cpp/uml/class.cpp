@@ -127,11 +127,6 @@ Class::Class(const Class& rhs) : Element(rhs, ElementType::CLASS) {
     PackageableElement::copy(rhs);
     Classifier::copy(rhs);
     StructuredClassifier::copy(rhs);
-    NamedElement::init();
-    Namespace::init();
-    PackageableElement::init();
-    Classifier::init();
-    StructuredClassifier::init();
 }
 
 // Sequence<Operation>& Class::getOwnedOperations() {

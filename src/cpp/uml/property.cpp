@@ -87,7 +87,11 @@ Property::Property() : Element(ElementType::PROPERTY) {
 }
 
 Property::Property(const Property& rhs) : Element(rhs, ElementType::PROPERTY) {
-    // TODO
+    init();
+    NamedElement::copy(rhs);
+    TypedElement::copy(rhs);
+    Feature::copy(rhs);
+    copy(rhs);
 }
 
 AggregationKind Property::getAggregation() {

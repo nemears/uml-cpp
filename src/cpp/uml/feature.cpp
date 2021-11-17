@@ -38,7 +38,7 @@ void Feature::init() {
 }
 
 void Feature::copy(const Feature& rhs) {
-
+    m_featuringClassifier = rhs.m_featuringClassifier;
 }
 
 Feature::Feature() : Element(ElementType::FEATURE) {

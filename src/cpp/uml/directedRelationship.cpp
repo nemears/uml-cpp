@@ -34,10 +34,8 @@ void DirectedRelationship::init() {
 }
 
 void DirectedRelationship::copy(const DirectedRelationship& rhs) {
-    m_sources = Set<Element, DirectedRelationship>(rhs.m_sources);
-    m_sources.m_el = this;
-    m_targets = Set<Element, DirectedRelationship>(rhs.m_targets);
-    m_targets.m_el = this;
+    m_sources = rhs.m_sources;
+    m_targets = rhs.m_targets;
 }
 
 DirectedRelationship::DirectedRelationship() : Element(ElementType::DIRECTED_RELATIONSHIP) {

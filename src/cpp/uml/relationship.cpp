@@ -28,8 +28,7 @@ void Relationship::init() {
 }
 
 void Relationship::copy(const Relationship& rhs) {
-    m_relatedElements = Set<Element, Relationship>(rhs.m_relatedElements);
-    m_relatedElements.m_el = this;
+    m_relatedElements = rhs.m_relatedElements;
 }
 
 Relationship::Relationship() : Element(ElementType::RELATIONSHIP) {

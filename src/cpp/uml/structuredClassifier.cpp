@@ -42,12 +42,11 @@ void StructuredClassifier::referenceErased(ID id) {
 void StructuredClassifier::init() {
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.subsets(m_ownedMembers);
-    // m_ownedAttributes.opposite(&Property::getStructuredClassifer);
     m_ownedAttributes.m_signature = &StructuredClassifier::getOwnedAttributes;
 }
 
 void StructuredClassifier::copy(const StructuredClassifier& rhs) {
-
+    m_ownedAttributes = rhs.m_ownedAttributes;
 }
 
 StructuredClassifier::StructuredClassifier() : Element(ElementType::STRUCTURED_CLASSIFIER) {

@@ -89,9 +89,9 @@ void Classifier::init() {
 }
 
 void Classifier::copy(const Classifier& rhs) {
-    m_features = Set<Feature, Classifier>(rhs.m_features);
+    m_features = rhs.m_features;
     m_features.m_el = this;
-    m_attributes = Set<Property, Classifier>(rhs.m_attributes);
+    m_attributes = rhs.m_attributes;
     m_attributes.m_el = this;
 }
 

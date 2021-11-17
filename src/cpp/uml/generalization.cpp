@@ -50,9 +50,9 @@ void Generalization::init() {
 }
 
 void Generalization::copy(const Generalization& rhs) {
-    m_general = Singleton2<Classifier, Generalization>(rhs.m_general);
+    m_general = rhs.m_general;
     m_general.m_el = this;
-    m_specific = Singleton2<Classifier, Generalization>(rhs.m_general);
+    m_specific = rhs.m_general;
     m_specific.m_el = this;
 }
 
@@ -61,12 +61,10 @@ Generalization::Generalization() : Element(ElementType::GENERALIZATION) {
 }
 
 Generalization::Generalization(const Generalization& rhs) : Element(rhs, ElementType::GENERALIZATION) {
+    init();
     Relationship::copy(rhs);
     DirectedRelationship::copy(rhs);
     copy(rhs);
-    Relationship::init();
-    DirectedRelationship::init();
-    init();
 }
 
 Generalization::~Generalization() {

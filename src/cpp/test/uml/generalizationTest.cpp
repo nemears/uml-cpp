@@ -125,8 +125,8 @@ TEST_F(GeneralizationTest, resetGeneralTest) {
     // ASSERT_TRUE(g2.getDirectedRelationships().size() == 1);
     // ASSERT_TRUE(&g2.getDirectedRelationships().front() == &r);
     ASSERT_TRUE(r.getRelatedElements().size() == 2);
-    ASSERT_TRUE(&r.getRelatedElements().front() == &s);
-    ASSERT_TRUE(&r.getRelatedElements().back() == &g2);
+    ASSERT_TRUE(r.getRelatedElements().contains(s.getID()));
+    ASSERT_TRUE(r.getRelatedElements().contains(g2.getID()));
     ASSERT_TRUE(r.getTargets().size() == 1);
     ASSERT_TRUE(&r.getTargets().front() == &g2);
     ASSERT_TRUE(r.getSources().size() == 1);

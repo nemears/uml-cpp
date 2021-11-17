@@ -11,6 +11,9 @@ namespace UML {
         const ID placeholderID = ID::fromString("&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
     }
 
+    template <class T, class U> class Set;
+    template <class T, class U> class OrderedSet;
+
     class ID_doesNotExistException2 : public std::exception {
         private:
             std::string m_msg;
@@ -40,8 +43,29 @@ namespace UML {
             }
     };
 
-    template <class T, class U> class Set;
-    template <class T, class U> class OrderedSet;
+    class AbstractOppositeFunctor {
+        public:
+            virtual void operator()(Element& el) const = 0;
+            virtual void operator()(Element& el, bool remove) const = 0;
+    };
+    
+    template <class T = Element, class U = Element> class OppositeFunctor : public AbstractOppositeFunctor {
+        private:
+            U* m_el;
+        public:
+            Set<U,T>& (T::*m_signature)() = 0;
+            OppositeFunctor(U* el) : m_el(el) {};
+            void operator()(Element& el) const override {
+                (el.as<T>().*m_signature)().nonOppositeAdd(*m_el);
+            };
+            void operator()(Element& el, bool remove) const override {
+                if (remove) {
+                    (el.as<T>().*m_signature)().nonOppositeRemove(m_el->getID());
+                } else {
+                    (el.as<T>().*m_signature)().nonOppositeAdd(*m_el);
+                }
+            }
+    };
 
     class AbstractSet {
         template <class T, class U> friend class Set;
@@ -101,6 +125,7 @@ namespace UML {
     template <class T = Element, class U = Element> class Set : public AbstractSet {
         
         template <class V, class W> friend class Set;
+        template <class V, class W> friend class OppositeFunctor;
         friend class Set<U>;
         friend struct SetIterator<U>;
         friend struct ID_Set<T>;
@@ -125,7 +150,8 @@ namespace UML {
             std::vector<AbstractSet*> m_subsettedContainers;
             std::vector<AbstractSet*> m_redefines;
             bool m_rootRedefinedSet = true;
-            Set<U, T>& (T::*m_oppositeSignature)() = 0;
+            AbstractOppositeFunctor* m_oppositeFunctor = 0;
+            bool m_ownsOppositeFunctor = false;
             Element* m_el = 0;
             Set<T,U>& (U::*m_signature)() = 0;
             bool m_readOnly = false;
@@ -283,15 +309,35 @@ namespace UML {
                         m_el->setReference(&el);
                     }
                 }
-                if (m_oppositeSignature) {
-                    if (!(el.*m_oppositeSignature)().contains(m_el->getID())) {
-                        (el.*m_oppositeSignature)().add(*dynamic_cast<U*>(m_el));
-                    }
-                }
                 for (auto& func : m_addFunctors) {
                     (*func)(el);
                 }
             };
+            void nonOppositeAdd(T& el) {
+                if (m_upper) {
+                    // this is a workaround to a polymorphic add, look at size to determine if singleton or not
+                    if (m_upper == 1) { // enforce singleton behavior
+                        if (this->m_root) {
+                            this->remove(this->m_root->m_id);
+                        }
+                    } else {
+                        if (m_size >= m_upper) {
+                            // TODO throw error
+                        }
+                    }
+                }
+                innerAdd(el);
+                if (m_el && m_el->m_node) {
+                    if (m_el->m_node->m_managerElementMemory != m_el) {
+                        (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().innerAdd(el);
+                    }
+                    for (auto& copy : m_el->m_node->m_copies) {
+                        if (copy != m_el) {
+                            (copy->as<U>().*m_signature)().innerAdd(el);
+                        }
+                    }
+                }
+            }
             void innerRemove(ID id) {
                 SetNode* temp = search(id, m_root);
                 if (temp->m_parent) {
@@ -465,6 +511,20 @@ namespace UML {
                 }
                 delete temp;
                 m_size--;
+            };
+            void nonOppositeRemove(ID id) {
+                innerRemove(id);
+                if (m_el) {
+                    if (m_el->m_node->m_managerElementMemory != m_el) {
+                        (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().innerRemove(id);
+                    }
+                    for (auto& copy : m_el->m_node->m_copies) {
+                        if (copy != m_el) {
+                            (copy->as<U>().*m_signature)().innerRemove(id);
+                        }
+                    }
+                    m_el->removeReference(id);
+                }
             };
             virtual SetNode* createNode(T& el) {
                 return new SetNode(&el);
@@ -684,6 +744,9 @@ namespace UML {
                             }
                         }
                     }
+                    if (m_ownsOppositeFunctor) {
+                        delete m_oppositeFunctor;
+                    }
                 }
                 for (auto& func : m_addFunctors) {
                     bool deleteFunc = true;
@@ -738,6 +801,9 @@ namespace UML {
                     if (m_guard <= subsetOf.m_guard) {
                         m_guard = subsetOf.m_guard + 1;
                     }
+                    if (!m_oppositeFunctor && subsetOf.m_oppositeFunctor && m_el) {
+                        m_oppositeFunctor = subsetOf.m_oppositeFunctor;
+                    }
                     for (auto& set : subsetOf.m_subsetOf) {
                         this->subsets(*static_cast<Set*>(set));
                     }
@@ -760,7 +826,14 @@ namespace UML {
             };
             void opposite(Set<U, T>& (T::*op)()) {
                 /** TODO: static_assert that we have m_el for this instance **/
-                m_oppositeSignature = op;
+                if (m_el) {
+                    OppositeFunctor<T,U>* opFunc = new OppositeFunctor<T,U>(dynamic_cast<U*>(m_el));
+                    opFunc->m_signature = op;
+                    m_oppositeFunctor = opFunc;
+                    m_ownsOppositeFunctor = true;
+                } else {
+                    std::cerr << "WARN: opposite called when there is now element owning the set, make sure to use proper constructor!" << std::endl;
+                }
             };
             void redefines(Set<T>& redefined) {
                 if (m_root) {
@@ -775,28 +848,9 @@ namespace UML {
                 if (m_readOnly) {
                     throw ReadOnlySetException(el.getID().string());
                 }
-                if (m_upper) {
-                    // this is a workaround to a polymorphic add, look at size to determine if singleton or not
-                    if (m_upper == 1) { // enforce singleton behavior
-                        if (this->m_root) {
-                            this->remove(this->m_root->m_id);
-                        }
-                    } else {
-                        if (m_size >= m_upper) {
-                            // TODO throw error
-                        }
-                    }
-                }
-                innerAdd(el);
-                if (m_el && m_el->m_node) {
-                    if (m_el->m_node->m_managerElementMemory != m_el) {
-                        (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().innerAdd(el);
-                    }
-                    for (auto& copy : m_el->m_node->m_copies) {
-                        if (copy != m_el) {
-                            (copy->as<U>().*m_signature)().innerAdd(el);
-                        }
-                    }
+                nonOppositeAdd(el);
+                if (m_oppositeFunctor) {
+                    (*m_oppositeFunctor)(el);
                 }
             };
             void add(ID id) {
@@ -830,13 +884,9 @@ namespace UML {
                 }
                 if (m_root) {
                     innerRemove(id);
-                    if (m_oppositeSignature) {
+                    if (m_oppositeFunctor) {
                         T& el = m_el->m_manager->get<T>(m_el, id)->template as<T>();
-                        (el.*m_oppositeSignature)().innerRemove(m_el->getID());
-                        for (auto& copy : el.m_node->m_copies) {
-                            (copy->template as<T>().*m_oppositeSignature)().innerRemove(m_el->getID());
-                        }
-                        el.removeReference(m_el->getID());
+                        (*m_oppositeFunctor)(el, 1);
                     }
                     if (m_el) {
                         if (m_el->m_node->m_managerElementMemory != m_el) {

@@ -142,6 +142,7 @@ namespace UML {
     template <class T, class U> class TemplateAbstractSequenceFunctor;
     template <class T, class U> class Singleton;
     template <class T> struct SequenceIterator;
+    template <class V, class W> class OppositeFunctor;
     class ElementDoesntExistException;
     class Relationship;
     class DirectedRelationship;
@@ -184,6 +185,7 @@ namespace UML {
         template <class T> friend class Sequence;
         template <class T> friend struct SequenceIterator;
         template <class T, class U> friend class Set;
+        template <class V, class W> friend class OppositeFunctor;
         template <class T> friend class SetIterator;
         friend class Parsers::SetOwner;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);

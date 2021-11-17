@@ -118,6 +118,7 @@ namespace UML {
     class Property;
     class StructuredClassifier;
     class Generalization;
+    class Class;
 
     /**
      * This container is based around a weighted binary search tree
@@ -144,6 +145,7 @@ namespace UML {
         friend class Property;
         friend class StructuredClassifier;
         friend class Generalization;
+        friend class Class;
 
         protected:
             std::vector<AbstractSet*> m_subsetOf;
@@ -833,7 +835,7 @@ namespace UML {
                     std::cerr << "WARN: opposite called when there is now element owning the set, make sure to use proper constructor!" << std::endl;
                 }
             };
-            void redefines(Set<T>& redefined) {
+            template <class V = Element, class W = Element> void redefines(Set<V, W>& redefined) {
                 if (m_root) {
                     std::cerr << "WARNING redefines set after set was used, must make sure redefining is done during configuration, before use!" << std::endl;
                     return;

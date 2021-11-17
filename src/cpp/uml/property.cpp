@@ -1,5 +1,5 @@
 #include "uml/property.h"
-#include "uml/classifier.h"
+#include "uml/class.h"
 #include "uml/valueSpecification.h"
 
 using namespace UML;
@@ -7,10 +7,8 @@ using namespace UML;
 void Property::referencingReleased(ID id) {
     StructuralFeature::referencingReleased(id);
     m_defaultValue.release(id);
-    // m_classifier.release(id);
-    // m_structuredClassifier.release(id);
     // m_dataType.release(id);
-    // m_class.release(id);
+    m_class.release(id);
     // m_artifact.release(id);
     // m_association.release(id);
     // m_owningAssociation.release(id);
@@ -20,10 +18,8 @@ void Property::referencingReleased(ID id) {
 void Property::referenceReindexed(ID oldID, ID newID) {
     StructuralFeature::referenceReindexed(oldID, newID);
     m_defaultValue.reindex(oldID, newID);
-    // m_classifier.reindex(oldID, newID);
-    // m_structuredClassifier.reindex(oldID, newID);
     // m_dataType.reindex(oldID, newID);
-    // m_class.reindex(oldID, newID);
+    m_class.reindex(oldID, newID);
     // m_artifact.reindex(oldID, newID);
     // m_association.reindex(oldID, newID);
     // m_owningAssociation.reindex(oldID, newID);
@@ -55,7 +51,7 @@ void Property::referenceErased(ID id) {
     // DeploymentTarget::referenceErased(id);
     m_defaultValue.eraseElement(id);
     // m_dataType.elementErased(id);
-    // m_class.elementErased(id);
+    m_class.eraseElement(id);
     // m_association.elementErased(id);
     // m_owningAssociation.elementErased(id);
     // m_artifact.elementErased(id);
@@ -66,13 +62,21 @@ Set<ValueSpecification, Property>& Property::getDefaultValueSingleton() {
     return m_defaultValue;
 }
 
+Set<Class, Property>& Property::getClassSingleton() {
+    return m_class;
+}
+
 void Property::init() {
     m_defaultValue.subsets(*m_ownedElements);
     m_defaultValue.m_signature = &Property::getDefaultValueSingleton;
+    m_class.subsets(m_namespace);
+    m_class.opposite(&Class::getOwnedAttributes);
+    m_class.m_signature = &Property::getClassSingleton;
 }
 
 void Property::copy(const Property& rhs) {
     m_defaultValue = rhs.m_defaultValue;
+    m_class = rhs.m_class;
 }
 
 Property::Property() : Element(ElementType::PROPERTY) {
@@ -177,29 +181,29 @@ void Property::setDefaultValue(ValueSpecification& val) {
 //     m_dataType.set(dataType);
 // }
 
-// Class* Property::getClass() {
-//     return m_class.get();
-// }
+Class* Property::getClass() {
+    return m_class.get();
+}
 
-// Class& Property::getClassRef() {
-//     return m_class.getRef();
-// }
+Class& Property::getClassRef() {
+    return m_class.getRef();
+}
 
-// ID Property::getClassID() const {
-//     return m_class.id();
-// }
+ID Property::getClassID() const {
+    return m_class.id();
+}
 
-// bool Property::hasClass() const {
-//     return m_class.has();
-// }
+bool Property::hasClass() const {
+    return m_class.has();
+}
 
-// void Property::setClass(Class* clazz) {
-//     m_class.set(clazz);
-// }
+void Property::setClass(Class* clazz) {
+    m_class.set(clazz);
+}
 
-// void Property::setClass(Class& clazz) {
-//     m_class.set(clazz);
-// }
+void Property::setClass(Class& clazz) {
+    m_class.set(clazz);
+}
 
 // Association* Property::getAssociation() {
 //     return m_association.get();

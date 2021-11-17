@@ -55,14 +55,11 @@ Package::~Package() {
 }
 
 Package::Package(const Package& rhs) : Element(rhs, ElementType::PACKAGE) {
+    init();
     NamedElement::copy(rhs);
     PackageableElement::copy(rhs);
     Namespace::copy(rhs);
     copy(rhs);
-    // NamedElement::init();
-    // PackageableElement::init();
-    // Namespace::init();
-    // init();
 }
 
 Set<PackageableElement, Package>& Package::getPackagedElements() {

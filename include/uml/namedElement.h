@@ -9,9 +9,7 @@
 
 namespace UML{
 
-    template <class T> class Sequence;
     class Namespace;
-    template <class T> class AbstractSequenceFunctor;
     class UmlManager;
     class Dependency;
 

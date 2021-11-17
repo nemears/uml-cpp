@@ -1,11 +1,9 @@
 #include "uml/namedElement.h"
-#include "uml/sequence.h"
 #include "uml/namespace.h"
 #include "uml/classifier.h"
 #include "uml/dependency.h"
 
 using namespace UML;
-using namespace std;
 
 void NamedElement::UpdateQualifiedNameFunctor::operator()(Element& el) const {
     m_el.as<NamedElement>().updateQualifiedName(el.as<NamedElement>().getQualifiedName());
@@ -77,13 +75,13 @@ NamedElement::NamedElement(const NamedElement& el) : Element(ElementType::NAMED_
     // abstract
 }
 
-void NamedElement::setName(const string &name) {
+void NamedElement::setName(const std::string &name) {
     reindexName(m_name, name);
     m_name = name;
     updateCopiesScalar(name, &NamedElement::m_name);
 }
 
-void NamedElement::reindexName(string oldName, string newName) {
+void NamedElement::reindexName(std::string oldName, std::string newName) {
     // if (getOwner()) {
     //     getOwner()->getOwnedElements().reindex(m_id, oldName, newName);
     // }
@@ -97,15 +95,15 @@ void NamedElement::reindexName(string oldName, string newName) {
     // }
 }
 
-string NamedElement::getName() {
+std::string NamedElement::getName() {
     return m_name;
 }
 
-string NamedElement::getQualifiedName() {
+std::string NamedElement::getQualifiedName() {
     return (hasNamespace() ? m_absoluteNamespace + "::" : "") +  m_name;
 }
 
-void NamedElement::updateQualifiedName(string absoluteNamespace) {
+void NamedElement::updateQualifiedName(std::string absoluteNamespace) {
     m_absoluteNamespace = absoluteNamespace;
     updateCopiesScalar(absoluteNamespace, &NamedElement::m_absoluteNamespace);
 }

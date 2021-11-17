@@ -152,7 +152,7 @@ Element::~Element() {
     }
 }
 
-Element::Element(const Element& el, ElementType elementType) : m_elementType(elementType) {
+Element::Element(const Element& el, ElementType elementType) : Element(elementType) {
     m_copiedElementFlag = true;
     m_id = el.m_id;
     m_manager = el.m_manager;
@@ -161,10 +161,10 @@ Element::Element(const Element& el, ElementType elementType) : m_elementType(ele
         m_manager->m_graph[m_id].m_copies.insert(this);
     }
 
-    m_owner = new Singleton2<Element, Element>(*el.m_owner);
+    *m_owner = *el.m_owner;
     m_owner->m_el = this;
-    m_owner->m_addFunctors.insert(new AddToMountFunctor(this));
-    m_ownedElements = new Set<Element, Element>(*el.m_ownedElements);
+    // m_owner->m_addFunctors.insert(new AddToMountFunctor(this));
+    *m_ownedElements = *el.m_ownedElements;
     m_ownedElements->m_el = this;
     // m_relationships = new Set<Relationship, Element>(*el.m_relationships);
     // m_relationships->m_el = this;

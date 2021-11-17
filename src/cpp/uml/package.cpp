@@ -40,9 +40,9 @@ void Package::init() {
 }
 
 void Package::copy(const Package& rhs) {
-    m_packagedElements = Set<PackageableElement, Package>(rhs.m_packagedElements);
+    m_packagedElements = rhs.m_packagedElements;
     m_packagedElements.m_el = this;
-    m_packageMerge = Set<PackageMerge, Package>(rhs.m_packageMerge);
+    m_packageMerge = rhs.m_packageMerge;
     m_packageMerge.m_el = this;
 }
 
@@ -59,10 +59,10 @@ Package::Package(const Package& rhs) : Element(rhs, ElementType::PACKAGE) {
     PackageableElement::copy(rhs);
     Namespace::copy(rhs);
     copy(rhs);
-    NamedElement::init();
-    PackageableElement::init();
-    Namespace::init();
-    init();
+    // NamedElement::init();
+    // PackageableElement::init();
+    // Namespace::init();
+    // init();
 }
 
 Set<PackageableElement, Package>& Package::getPackagedElements() {

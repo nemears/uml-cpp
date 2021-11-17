@@ -38,7 +38,7 @@ void PackageableElement::init() {
 }
 
 void PackageableElement::copy(const PackageableElement& rhs) {
-    m_owningPackage = Singleton2<Package, PackageableElement>(rhs.m_owningPackage);
+    m_owningPackage = rhs.m_owningPackage;
     m_owningPackage.m_el = this;
 }
 

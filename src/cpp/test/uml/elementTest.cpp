@@ -24,7 +24,8 @@ class ElementTest : public ::testing::Test {};
 
 TEST_F(ElementTest, OverrideID_Test) {
     UmlManager m;
-    Package el1 = m.create<Package>();
+    Package& el = m.create<Package>();
+    Package el1 = el;
     el1.setID("7d18ee4282c64f528ec4fab67a75");
     ID id = ID::fromString("7d18ee4282c64f528ec4fab67a75");
     EXPECT_EQ(el1.getID(), id);

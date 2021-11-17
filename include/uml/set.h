@@ -337,7 +337,7 @@ namespace UML {
                         }
                     }
                 }
-            }
+            };
             void innerRemove(ID id) {
                 SetNode* temp = search(id, m_root);
                 if (temp->m_parent) {
@@ -604,17 +604,8 @@ namespace UML {
         public:
             Set(Element* el) : m_el(el) {};
             Set() {};
-            Set(const Set<T,U>& rhs) {
+            void operator=(const Set &rhs) {
                 m_size = rhs.m_size;
-                m_upper = rhs.m_upper;
-                m_rootRedefinedSet = rhs.m_rootRedefinedSet;
-                m_guard = rhs.m_guard;
-                m_signature = rhs.m_signature;
-                m_readOnly = rhs.m_readOnly;
-                m_ultimateSet = rhs.m_ultimateSet;
-                if (m_ownsOppositeFunctor) {
-                    delete m_oppositeFunctor;
-                }
                 if (m_guard == 0) {
                     if (rhs.m_root) {
                         if (rhs.m_root->m_guard && m_ultimateSet) {
@@ -655,6 +646,10 @@ namespace UML {
                         }
                     }
                 }
+            };
+            Set(const Set<T,U>& rhs) {
+                *this = rhs;
+                // maybe copy over some of the other aspects here?
             };
             virtual ~Set() { 
                 if (m_ownsOppositeFunctor) {

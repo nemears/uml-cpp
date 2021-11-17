@@ -63,24 +63,13 @@ void NamedElement::init() {
 }
 
 void NamedElement::copy(const NamedElement& rhs) {
-    // TODO see if we can delete these in Set
-    for (auto& func : m_namespace.m_addFunctors) {
-        if (!m_owner->m_addFunctors.count(func)) {
-            delete func;
-        }
-    }
-    for (auto& func : m_namespace.m_removeFunctors) {
-        if (!m_owner->m_removeFunctors.count(func)) {
-            delete func;
-        }
-    }
     m_name = rhs.m_name;
     m_visibility = rhs.m_visibility;
-    m_memberNamespace = Set<Namespace, NamedElement>(rhs.m_memberNamespace);
+    m_memberNamespace = rhs.m_memberNamespace;
     m_memberNamespace.m_el = this;
-    m_namespace = Singleton2<Namespace, NamedElement>(rhs.m_namespace);
+    m_namespace = rhs.m_namespace;
     m_namespace.m_el = this;
-    m_clientDependencies = Set<Dependency, NamedElement>(rhs.m_clientDependencies);
+    m_clientDependencies = rhs.m_clientDependencies;
     m_clientDependencies.m_el = this;
 }
 

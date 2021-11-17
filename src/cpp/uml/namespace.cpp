@@ -34,9 +34,9 @@ void Namespace::init() {
 }
 
 void Namespace::copy(const Namespace& rhs) {
-    m_members = Set<NamedElement, Namespace>(rhs.m_members);
+    m_members = rhs.m_members;
     m_members.m_el = this;
-    m_ownedMembers = Set<NamedElement, Namespace>(rhs.m_ownedMembers);
+    m_ownedMembers = rhs.m_ownedMembers;
     m_ownedMembers.m_el = this;
 }
 

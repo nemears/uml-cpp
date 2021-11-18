@@ -113,6 +113,7 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_id = ID::randomID();
 
     m_owner = new Singleton<Element, Element>(this);
+    m_owner->opposite(&Element::getOwnedElements);
     m_owner->m_signature = &Element::getOwnerSingleton;
     m_owner->m_readOnly = true;
     m_owner->m_addFunctors.insert(new AddToMountFunctor(this));
@@ -121,11 +122,6 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_ownedElements->opposite(&Element::getOwnerSingleton);
     m_ownedElements->m_signature = &Element::getOwnedElements;
     m_ownedElements->m_readOnly = true;
-
-    // m_relationships = new Set<Relationship, Element>(this);
-
-    // m_directedRelationships = new Set<DirectedRelationship>(this);
-    // m_directedRelationships->subsets(*m_relationships);
 
     // m_ownedComments = new Set<Comment>(this);
     // m_ownedComments->subsets(*m_ownedElements);

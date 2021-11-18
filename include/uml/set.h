@@ -327,7 +327,7 @@ namespace UML {
                     // this is a workaround to a polymorphic add, look at size to determine if singleton or not
                     if (m_upper == 1) { // enforce singleton behavior
                         if (this->m_root) {
-                            this->remove(this->m_root->m_id);
+                            this->removeReadOnly(this->m_root->m_id);
                         }
                     } else {
                         if (m_size >= m_upper) {
@@ -608,6 +608,28 @@ namespace UML {
                 // this will always need to search tree (don't know any quicker way)
                 if (contains(id)) {
                     innerRemove(id);
+                }
+            };
+            void removeReadOnly(ID id) {
+                if (m_root) {
+                    innerRemove(id);
+                    if (m_oppositeFunctor) {
+                        T& el = m_el->m_manager->get<T>(m_el, id)->template as<T>();
+                        (*m_oppositeFunctor)(el, 1);
+                    }
+                    if (m_el) {
+                        if (m_el->m_node->m_managerElementMemory != m_el) {
+                            (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().innerRemove(id);
+                        }
+                        for (auto& copy : m_el->m_node->m_copies) {
+                            if (copy != m_el) {
+                                (copy->as<U>().*m_signature)().innerRemove(id);
+                            }
+                        }
+                        m_el->removeReference(id);
+                    }
+                } else {
+                    throw ID_doesNotExistException2(id);
                 }
             };
         public:

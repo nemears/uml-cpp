@@ -16,6 +16,7 @@ namespace UML {
 
     class Slot : public Element {
         friend class UmlManager;
+        friend class InstanceSpecification;
         friend class Parsers::SetOwningInstance;
         friend class Parsers::SetDefiningFeature;
         protected:

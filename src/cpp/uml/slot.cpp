@@ -43,11 +43,18 @@ Set<InstanceSpecification, Slot>& Slot::getOwningInstanceSingleton() {
 }
 
 void Slot::init() {
-
+    m_definingFeature.m_signature = &Slot::getDefiningFeatureSingleton;
+    m_owningInstance.subsets(*m_owner);
+    m_owningInstance.opposite(&InstanceSpecification::getSlots);
+    m_owningInstance.m_signature = &Slot::getOwningInstanceSingleton;
+    m_values.subsets(*m_ownedElements);
+    m_values.m_signature = &Slot::getValues;
 }
 
 void Slot::copy(const Slot& rhs) {
-
+    m_definingFeature = rhs.m_definingFeature;
+    m_owningInstance = rhs.m_owningInstance;
+    m_values = rhs.m_values;
 }
 
 Slot::Slot() : Element(ElementType::SLOT) {

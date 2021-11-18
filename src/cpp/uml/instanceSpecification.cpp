@@ -37,11 +37,18 @@ void InstanceSpecification::referenceErased(ID id) {
 }
 
 void InstanceSpecification::init() {
-
+    m_classifiers.m_signature = &InstanceSpecification::getClassifiers;
+    m_specification.subsets(*m_ownedElements);
+    m_specification.m_signature = &InstanceSpecification::getSpecificationSingleton;
+    m_slots.subsets(*m_ownedElements);
+    m_slots.opposite(&Slot::getOwningInstanceSingleton);
+    m_slots.m_signature = &InstanceSpecification::getSlots;
 }
 
 void InstanceSpecification::copy(const InstanceSpecification& rhs) {
-
+    m_classifiers = rhs.m_classifiers;
+    m_specification = rhs.m_specification;
+    m_slots = rhs.m_slots;
 }
 
 InstanceSpecification::InstanceSpecification() : Element(ElementType::INSTANCE_SPECIFICATION) {

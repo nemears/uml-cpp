@@ -36,6 +36,10 @@ void InstanceSpecification::referenceErased(ID id) {
     m_slots.eraseElement(id);
 }
 
+Set<ValueSpecification, InstanceSpecification>& InstanceSpecification::getSpecificationSingleton() {
+    return m_specification;
+}
+
 void InstanceSpecification::init() {
     m_classifiers.m_signature = &InstanceSpecification::getClassifiers;
     m_specification.subsets(*m_ownedElements);

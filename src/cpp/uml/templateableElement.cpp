@@ -3,6 +3,9 @@
 // #include "uml/sequence.h"
 // #include "uml/templateBinding.h"
 // #include "uml/templateSignature.h"
+#include "uml/dependency.h"
+#include "uml/package.h"
+#include "uml/packageMerge.h"
 
 using namespace UML;
 

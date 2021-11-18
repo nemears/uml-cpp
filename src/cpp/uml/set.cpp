@@ -1,15 +1,18 @@
 #include "uml/set.h"
 #include "uml/namedElement.h"
+#include "uml/dependency.h"
+#include "uml/package.h"
+#include "uml/packageMerge.h"
 
 using namespace UML;
 
-AbstractSet::SetNode::SetNode(Element* el) : m_el(el) {
-    m_id = el->getID();
-};
+// AbstractSet::SetNode::SetNode(Element* el) : m_el(el) {
+//     m_id = el->getID();
+// };
 
-AbstractSet::SetNode::SetNode(void* el) : m_el(reinterpret_cast<Element*>(el)) {
-    m_id = m_el->getID();
-};
+// AbstractSet::SetNode::SetNode(void* el) : m_el(reinterpret_cast<Element*>(el)) {
+//     m_id = m_el->getID();
+// };
 
 void AbstractSet::setName(SetNode* node) {
     if (node->m_el) {

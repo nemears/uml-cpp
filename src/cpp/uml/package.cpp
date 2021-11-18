@@ -2,6 +2,8 @@
 // #include "uml/stereotype.h"
 #include "uml/packageMerge.h"
 // #include "uml/profileApplication.h"
+#include "uml/dependency.h"
+#include "uml/type.h"
 
 using namespace UML;
 

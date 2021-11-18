@@ -1,7 +1,6 @@
 #include "uml/namedElement.h"
 #include "uml/namespace.h"
-#include "uml/classifier.h"
-#include "uml/dependency.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 

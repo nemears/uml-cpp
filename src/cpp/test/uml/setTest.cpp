@@ -5,6 +5,7 @@
 #include "uml/set.h"
 #include "uml/orderedSet.h"
 #include "test/yumlParsersTest.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 

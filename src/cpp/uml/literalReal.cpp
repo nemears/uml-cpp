@@ -1,4 +1,8 @@
 #include "uml/literalReal.h"
+#include "uml/package.h"
+#include "uml/packageMerge.h"
+#include "uml/type.h"
+#include "uml/dependency.h"
 
 using namespace UML;
 

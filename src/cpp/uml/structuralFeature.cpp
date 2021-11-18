@@ -1,4 +1,5 @@
 #include "uml/structuralFeature.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 

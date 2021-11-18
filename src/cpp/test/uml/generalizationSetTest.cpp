@@ -1,8 +1,5 @@
 #include "gtest/gtest.h"
-#include "uml/generalization.h"
-#include "uml/generalizationSet.h"
-#include "uml/classifier.h"
-#include "uml/class.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 

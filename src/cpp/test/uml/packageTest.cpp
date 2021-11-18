@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
-#include "uml/package.h"
-#include "uml/packageMerge.h"
+#include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
 
 using namespace UML;

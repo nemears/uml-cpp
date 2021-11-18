@@ -1,17 +1,20 @@
 #include "uml/literalString.h"
+#include "uml/package.h"
+#include "uml/packageMerge.h"
+#include "uml/type.h"
+#include "uml/dependency.h"
 
-using namespace std;
 using namespace UML;
 
 LiteralString::LiteralString() : Element(ElementType::LITERAL_STRING) {}
 
 LiteralString::LiteralString(const LiteralString& rhs) : Element(rhs, ElementType::LITERAL_STRING) {}
 
-string LiteralString::getValue() {
+std::string LiteralString::getValue() {
     return value;
 }
 
-void LiteralString::setValue(string val) {
+void LiteralString::setValue(std::string val) {
     value = val;
 }
 

@@ -14,6 +14,7 @@
 // #include "uml/parameterNode.h"
 #include "uml/model.h"
 #include <algorithm>
+#include "uml/uml-stable.h"
 
 using namespace std;
 using namespace UML;

@@ -1,9 +1,5 @@
 #include "gtest/gtest.h"
-#include "uml/namedElement.h"
-#include "uml/sequence.h"
-#include "uml/namespace.h"
-#include "uml/package.h"
-#include "uml/umlManager.h"
+#include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
 #include "test/yumlParsersTest.h"
 

@@ -1,7 +1,7 @@
 #include "uml/property.h"
 #include "uml/class.h"
 #include "uml/dataType.h"
-#include "uml/valueSpecification.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 

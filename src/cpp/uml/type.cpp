@@ -1,5 +1,9 @@
 #include "uml/type.h"
 #include "uml/typedElement.h"
+#include "uml/package.h"
+#include "uml/packageMerge.h"
+#include "uml/dependency.h"
+#include "uml/type.h"
 
 using namespace UML;
 

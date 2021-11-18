@@ -1,6 +1,7 @@
 #include "uml/dataType.h"
 // #include "uml/operation.h"
 #include "uml/property.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -23,8 +24,8 @@ void DataType::referenceErased(ID id) {
 }
 
 void DataType::init() {
-    m_ownedAttributes.subsets(*m_ownedElements);
     m_ownedAttributes.subsets(m_attributes);
+    m_ownedAttributes.subsets(m_ownedMembers);
     m_ownedAttributes.opposite(&Property::getDataTypeSingleton);
     m_ownedAttributes.m_signature = &DataType::getOwnedAttributes;
 }

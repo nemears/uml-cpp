@@ -1,4 +1,7 @@
 #include "uml/namespace.h"
+#include "uml/dependency.h"
+#include "uml/package.h"
+#include "uml/packageMerge.h"
 
 using namespace UML;
 

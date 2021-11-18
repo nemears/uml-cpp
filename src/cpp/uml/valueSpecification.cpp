@@ -1,4 +1,9 @@
 #include "uml/valueSpecification.h"
+#include "uml/package.h"
+#include "uml/packageMerge.h"
+#include "uml/type.h"
+#include "uml/dependency.h"
+#include "uml/valueSpecification.h"
 
 using namespace UML;
 

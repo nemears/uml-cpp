@@ -1,5 +1,6 @@
 #include "uml/feature.h"
 #include "uml/classifier.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 

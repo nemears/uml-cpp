@@ -1,10 +1,10 @@
 add_executable(umltest elementTest.cpp setTest.cpp namedElementTest.cpp namespaceTest.cpp packageTest.cpp dependencyTest.cpp
-                       classifierTest.cpp generalizationTest.cpp)
+                       classifierTest.cpp generalizationTest.cpp dataTypeTest.cpp)
                     #  typedElementTest.cpp 
                     #    valueSpecificationTest.cpp propertyTest.cpp instanceSpecificationTest.cpp classTest.cpp 
                     #    parameterTest.cpp operationTest.cpp activityEdgeTest.cpp multiplicityElementTest.cpp
                     #    objectNodeTest.cpp activityNodeTest.cpp inputPinTest.cpp outputPinTest.cpp directedRelationshipTest.cpp 
-                    #    slotTest.cpp behaviorTest.cpp activityTest.cpp dataTypeTest.cpp
+                    #    slotTest.cpp behaviorTest.cpp activityTest.cpp 
                     #    associationTest.cpp enumerationTest.cpp commentTest.cpp idTest.cpp UmlManagerTest.cpp 
                     #    templateableElementTest.cpp profileApplicationTest.cpp extensionTest.cpp stereotypeTest.cpp
                     #     deploymentTest.cpp behavioredClassifierTest.cpp manifestationTest.cpp generalizationSetTest.cpp)

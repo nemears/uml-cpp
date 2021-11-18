@@ -1,5 +1,6 @@
 #include "uml/structuredClassifier.h"
 #include "uml/property.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 

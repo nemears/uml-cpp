@@ -75,11 +75,13 @@ namespace UML {
             size_t m_upper = 0;
             bool m_ultimateSet = true;
             struct SetNode {
-                SetNode(Element* el);
-                SetNode(void* el);
+                SetNode(Element* el) : m_el(el) {
+                    m_id = el->getID();
+                };
+                // SetNode(void* el);
                 SetNode(){};
                 ID m_id;
-                Element* m_el;
+                Element* m_el = 0;
                 std::string m_name;
                 SetNode* m_parent = 0;
                 SetNode* m_left = 0;
@@ -530,8 +532,8 @@ namespace UML {
                     m_el->removeReference(id);
                 }
             };
-            virtual SetNode* createNode(T& el) {
-                return new SetNode(&el);
+            inline virtual SetNode* createNode(T& el) {
+                return new SetNode(static_cast<Element*>(&el));
             };
             virtual SetNode* createNode(ID id) {
                 SetNode* ret = new SetNode();
@@ -606,8 +608,8 @@ namespace UML {
                 }
             };
         public:
-            Set(Element* el) : m_el(el) {};
-            Set() {};
+            inline Set(Element* el) : m_el(el) {};
+            inline Set() {};
             void operator=(const Set &rhs) {
                 m_size = rhs.m_size;
                 if (m_guard == 0) {

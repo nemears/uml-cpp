@@ -121,6 +121,7 @@ namespace UML {
     class Generalization;
     class Class;
     class DataType;
+    class InstanceSpecification;
 
     /**
      * This container is based around a weighted binary search tree
@@ -149,6 +150,7 @@ namespace UML {
         friend class Generalization;
         friend class Class;
         friend class DataType;
+        friend class InstanceSpecification;
 
         protected:
             std::vector<AbstractSet*> m_subsetOf;

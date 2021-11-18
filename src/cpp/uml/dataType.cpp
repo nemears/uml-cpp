@@ -1,151 +1,61 @@
 #include "uml/dataType.h"
-#include "uml/operation.h"
+// #include "uml/operation.h"
 #include "uml/property.h"
 
 using namespace UML;
 
-void DataType::AddOwnedAttributeFunctor::operator()(Property& el) const {
-    if (!m_el->getAttributes().count(el.getID())) {
-        m_el->getAttributes().add(el);
-    }
-
-    if (!m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().add(el);
-    }
-
-    if (el.getDataType() != m_el) {
-        el.setDataType(m_el);
-    }
-    updateCopiedSequenceAddedTo(el, &DataType::getOwnedAttribute);
-}
-
-void DataType::AddOwnedAttributeFunctor::operator()(ID id) const {
-    if (!m_el->getAttributes().count(id)) {
-        m_el->getAttributes().addByID(id);
-    }
-    
-    if (!m_el->getOwnedMembers().count(id)) {
-        m_el->getOwnedMembers().addByID(id);
-    }
-}
-
-void DataType::RemoveOwnedAttributeFunctor::operator()(Property& el) const {
-    if (m_el->getAttributes().count(el.getID())) {
-        m_el->getAttributes().remove(el);
-    }
-
-    if (m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().remove(el);
-    }
-
-    if (el.getDataType() == m_el) {
-        el.setDataType(0);
-    }
-    updateCopiedSequenceRemovedFrom(el, &DataType::getOwnedAttribute);
-}
-
-void DataType::AddOwnedOperationFunctor::operator()(Operation& el) const {
-    if (!m_el->getFeatures().count(el.getID())) {
-        m_el->getFeatures().add(el);
-    }
-
-    if (!m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().add(el);
-    }
-
-    if (el.getDataType() != m_el) {
-        el.setDataType(m_el);
-    }
-
-    if (!el.getRedefinitionContext().count(m_el->getID())) {
-        el.getRedefinitionContext().add(*m_el);
-    }
-    updateCopiedSequenceAddedTo(el, &DataType::getOwnedOperation);
-}
-
-void DataType::AddOwnedOperationFunctor::operator()(ID id) const {
-    if (!m_el->getFeatures().count(id)) {
-        m_el->getFeatures().addByID(id);
-    }
-    if (!m_el->getOwnedMembers().count(id)) {
-        m_el->getOwnedMembers().addByID(id);
-    }
-}
-
-void DataType::RemoveOwnedOperationFunctor::operator()(Operation& el) const {
-    if (m_el->getFeatures().count(el.getID())) {
-        m_el->getFeatures().remove(el);
-    }
-
-    if (m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().remove(el);
-    }
-
-    if (el.getDataType() == m_el) {
-        el.setDataType(0);
-    }
-
-    if (el.getRedefinitionContext().count(m_el->getID())) {
-        el.getRedefinitionContext().remove(*m_el);
-    }
-    updateCopiedSequenceRemovedFrom(el, &DataType::getOwnedOperation);
-}
-
 void DataType::referenceReindexed(ID oldID, ID newID) {
     Classifier::referenceReindexed(oldID, newID);
-    m_ownedAttribute.reindex(oldID, newID, &DataType::getOwnedAttribute);
-    m_ownedOperation.reindex(oldID, newID, &DataType::getOwnedOperation);
+    m_ownedAttributes.reindex(oldID, newID);
+    // m_ownedOperation.reindex(oldID, newID, &DataType::getOwnedOperation);
 }
 
 void DataType::referencingReleased(ID id) {
     Classifier::referencingReleased(id);
-    m_ownedAttribute.elementReleased(id, &DataType::getOwnedAttribute);
-    m_ownedOperation.elementReleased(id, &DataType::getOwnedOperation);
+    m_ownedAttributes.release(id);
+    // m_ownedOperation.elementReleased(id, &DataType::getOwnedOperation);
 }
 
 void DataType::referenceErased(ID id) {
     Classifier::referenceErased(id);
-    m_ownedAttribute.elementErased(id);
-    m_ownedOperation.elementErased(id);
+    m_ownedAttributes.eraseElement(id);
+    // m_ownedOperation.elementErased(id);
+}
+
+void DataType::init() {
+    m_ownedAttributes.subsets(*m_ownedElements);
+    m_ownedAttributes.subsets(m_attributes);
+    m_ownedAttributes.m_signature = &DataType::getOwnedAttributes;
+}
+
+void DataType::copy(const DataType& rhs) {
+    m_ownedAttributes = rhs.m_ownedAttributes;
 }
 
 DataType::DataType() : Element(ElementType::DATA_TYPE) {
-    m_ownedAttribute.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
-    m_ownedAttribute.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
-    m_ownedOperation.addProcedures.push_back(new AddOwnedOperationFunctor(this));
-    m_ownedOperation.removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
+    init();
 }
 
 DataType::~DataType() {
     
 }
 
-DataType::DataType(const DataType& el) : 
-Classifier(el), 
-PackageableElement(el), 
-NamedElement(el), 
-Element(el, ElementType::DATA_TYPE) {
-    m_ownedAttribute = el.m_ownedAttribute;
-    m_ownedAttribute.m_el = this;
-    m_ownedAttribute.addProcedures.clear();
-    m_ownedAttribute.addProcedures.push_back(new AddOwnedAttributeFunctor(this));
-    m_ownedAttribute.removeProcedures.clear();
-    m_ownedAttribute.removeProcedures.push_back(new RemoveOwnedAttributeFunctor(this));
-    m_ownedOperation = el.m_ownedOperation;
-    m_ownedOperation.m_el = this;
-    m_ownedOperation.addProcedures.clear();
-    m_ownedOperation.addProcedures.push_back(new AddOwnedOperationFunctor(this));
-    m_ownedOperation.removeProcedures.clear();
-    m_ownedOperation.removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
+DataType::DataType(const DataType& rhs) : Element(rhs, ElementType::DATA_TYPE) {
+    init();
+    NamedElement::copy(rhs);
+    Namespace::copy(rhs);
+    PackageableElement::copy(rhs);
+    Classifier::copy(rhs);
+    copy(rhs);
 }
 
-Sequence<Property>& DataType::getOwnedAttribute() {
-    return m_ownedAttribute;
+Set<Property, DataType>& DataType::getOwnedAttributes() {
+    return m_ownedAttributes;
 }
 
-Sequence<Operation>& DataType::getOwnedOperation() {
-    return m_ownedOperation;
-}
+// Sequence<Operation>& DataType::getOwnedOperation() {
+//     return m_ownedOperation;
+// }
 
 bool DataType::isSubClassOf(ElementType eType) const {
     bool ret = Classifier::isSubClassOf(eType);

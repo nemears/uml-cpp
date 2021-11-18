@@ -119,6 +119,7 @@ namespace UML {
     class StructuredClassifier;
     class Generalization;
     class Class;
+    class DataType;
 
     /**
      * This container is based around a weighted binary search tree
@@ -146,6 +147,7 @@ namespace UML {
         friend class StructuredClassifier;
         friend class Generalization;
         friend class Class;
+        friend class DataType;
 
         protected:
             std::vector<AbstractSet*> m_subsetOf;

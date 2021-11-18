@@ -7,39 +7,19 @@ namespace UML {
     class DataType : public Classifier {
         friend class UmlManager;
         protected:
-            Sequence<Property> m_ownedAttribute = Sequence<Property>(this);
-            Sequence<Operation> m_ownedOperation = Sequence<Operation>(this);
-            class AddOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,DataType> {
-                public:
-                    AddOwnedAttributeFunctor(DataType* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Property& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,DataType> {
-                public:
-                    RemoveOwnedAttributeFunctor(DataType* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Property& el) const override;
-            };
-            class AddOwnedOperationFunctor : public TemplateAbstractSequenceFunctor<Operation,DataType> {
-                public:
-                    AddOwnedOperationFunctor(DataType* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Operation& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveOwnedOperationFunctor : public TemplateAbstractSequenceFunctor<Operation,DataType> {
-                public:
-                    RemoveOwnedOperationFunctor(DataType* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Operation& el) const override;
-            };
+            Set<Property, DataType> m_ownedAttributes = Set<Property, DataType>(this);
+            // Sequence<Operation> m_ownedOperation = Sequence<Operation>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
+            void init();
+            void copy(const DataType& rhs);
             DataType();
         public:
             ~DataType();
-            DataType(const DataType& data);
-            Sequence<Property>& getOwnedAttribute();
-            Sequence<Operation>& getOwnedOperation();
+            DataType(const DataType& rhs);
+            Set<Property, DataType>& getOwnedAttributes();
+            // Sequence<Operation>& getOwnedOperation();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::DATA_TYPE;

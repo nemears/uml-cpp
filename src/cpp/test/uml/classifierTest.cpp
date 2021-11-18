@@ -170,7 +170,7 @@ TEST_F(ClassifierTest, reindexClassifierID_test) {
 	// InstanceSpecification instance = m.create<InstanceSpecification>();
 	// reindexed.getGeneralizations().add(generalization);
 	// generalization.setGeneral(general);
-	// reindexed.getOwnedAttribute().add(attribute);
+	// reindexed.getOwnedAttributes().add(attribute);
 	// instance.setClassifier(reindexed);
 	// root.getPackagedElements().add(reindexed, general, instance);
 	// ID id = ID::fromString("YXA7t1zgj89FRZePjCmulq1h5s5s");

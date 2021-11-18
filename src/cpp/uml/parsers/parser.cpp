@@ -1824,14 +1824,14 @@ Operation& determineAndParseOwnedOperation(YAML::Node node, ParserMetaData& data
 
 void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
     parseClassifier(node, dataType, data);
-    parseSequenceDefinitions(node, data, "ownedAttribute", dataType, &DataType::getOwnedAttribute, determineAndParseOwnedAttribute);
+    parseSequenceDefinitions(node, data, "ownedAttribute", dataType, &DataType::getOwnedAttributes, determineAndParseOwnedAttribute);
     parseSequenceDefinitions(node, data, "ownedOperation", dataType, &DataType::getOwnedOperation, determineAndParseOwnedOperation);
 }
 
 void emitDataType(YAML::Emitter& emitter, DataType& dataType, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::DATA_TYPE, "dataType", dataType, data);
     emitClassifier(emitter, dataType, data);
-    emitSequence(emitter, "ownedAttribute", data, dataType, &DataType::getOwnedAttribute);
+    emitSequence(emitter, "ownedAttribute", data, dataType, &DataType::getOwnedAttributes);
     emitSequence(emitter, "ownedOperation", data, dataType, &DataType::getOwnedOperation);
     emitElementDefenitionEnd(emitter, ElementType::DATA_TYPE, dataType);
 }

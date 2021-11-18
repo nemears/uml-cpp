@@ -39,6 +39,7 @@ void Feature::init() {
 
 void Feature::copy(const Feature& rhs) {
     m_featuringClassifier = rhs.m_featuringClassifier;
+    m_static = rhs.m_static;
 }
 
 Feature::Feature() : Element(ElementType::FEATURE) {
@@ -75,6 +76,7 @@ bool Feature::isStatic() {
 
 void Feature::setStatic(bool isStatic) {
     m_static = isStatic;
+    updateCopiesScalar(isStatic, &Feature::m_static);
 }
 
 bool Feature::isSubClassOf(ElementType eType) const {

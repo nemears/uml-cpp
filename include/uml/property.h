@@ -38,8 +38,8 @@ namespace UML{
         friend class DataType;
 
         protected:
-            AggregationKind m_aggregation;
-            bool m_composite;
+            AggregationKind m_aggregation = AggregationKind::NONE;
+            bool m_composite = false;
             Singleton<ValueSpecification, Property> m_defaultValue = Singleton<ValueSpecification, Property>(this);
             Singleton<DataType, Property> m_dataType = Singleton<DataType, Property>(this);
             Singleton<Class, Property> m_class = Singleton<Class, Property>(this);

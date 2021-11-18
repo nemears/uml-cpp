@@ -88,6 +88,8 @@ void Property::copy(const Property& rhs) {
     m_defaultValue = rhs.m_defaultValue;
     m_class = rhs.m_class;
     m_dataType =  rhs.m_dataType;
+    m_composite = rhs.m_composite;
+    m_aggregation = rhs.m_aggregation;
 }
 
 Property::Property() : Element(ElementType::PROPERTY) {

@@ -613,7 +613,7 @@ namespace UML {
                 m_size = rhs.m_size;
                 if (m_guard == 0) {
                     if (rhs.m_root) {
-                        if (rhs.m_root->m_guard && m_ultimateSet) {
+                        if (m_ultimateSet) {
                             SetNode* curr = rhs.m_root;
                             SetNode* mine = m_root;
                             while (curr) {

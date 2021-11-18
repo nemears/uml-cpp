@@ -859,6 +859,10 @@ namespace UML {
                     (*m_oppositeFunctor)(el);
                 }
             };
+            template <class ... Ts> void add(T& el, Ts&... els) {
+                add(el);
+                add(els...);
+            };
             void add(ID id) {
                 if (m_readOnly) {
                     throw ReadOnlySetException(id.string());

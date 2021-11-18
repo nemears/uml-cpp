@@ -32,16 +32,16 @@ namespace UML{
     class Property: public StructuralFeature/**, public ConnectableElement , public DeploymentTarget**/ {
 
         friend class UmlManager;
-        template <class T> friend class Sequence;
         friend class Class;
         friend class Classifier;
         friend class StructuredClassifier;
+        friend class DataType;
 
         protected:
             AggregationKind m_aggregation;
             bool m_composite;
             Singleton<ValueSpecification, Property> m_defaultValue = Singleton<ValueSpecification, Property>(this);
-            // Singleton<DataType, Property> m_dataType = Singleton<DataType, Property>(this);
+            Singleton<DataType, Property> m_dataType = Singleton<DataType, Property>(this);
             Singleton<Class, Property> m_class = Singleton<Class, Property>(this);
             // Singleton<Association, Property> m_association = Singleton<Association, Property>(this);
             // Singleton<Association, Property> m_owningAssociation = Singleton<Association, Property>(this);
@@ -56,6 +56,7 @@ namespace UML{
             void referenceErased(ID id) override;
             Set<ValueSpecification, Property>& getDefaultValueSingleton();
             Set<Class, Property>& getClassSingleton();
+            Set<DataType, Property>& getDataTypeSingleton();
             void init();
             void copy(const Property& rhs);
             Property();
@@ -70,12 +71,12 @@ namespace UML{
             ValueSpecification& getDefaultValueRef();
             ID getDefaultValueID() const;
             bool hasDefaultValue() const;
-            // DataType* getDataType();
-            // DataType& getDataTypeRef();
-            // ID getDataTypeID() const;
-            // bool hasDataType() const;
-            // void setDataType(DataType* dataType);
-            // void setDataType(DataType& dataType);
+            DataType* getDataType();
+            DataType& getDataTypeRef();
+            ID getDataTypeID() const;
+            bool hasDataType() const;
+            void setDataType(DataType* dataType);
+            void setDataType(DataType& dataType);
             Class* getClass();
             Class& getClassRef();
             ID getClassID() const;

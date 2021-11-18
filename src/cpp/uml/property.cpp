@@ -1,5 +1,6 @@
 #include "uml/property.h"
 #include "uml/class.h"
+#include "uml/dataType.h"
 #include "uml/valueSpecification.h"
 
 using namespace UML;
@@ -7,7 +8,7 @@ using namespace UML;
 void Property::referencingReleased(ID id) {
     StructuralFeature::referencingReleased(id);
     m_defaultValue.release(id);
-    // m_dataType.release(id);
+    m_dataType.release(id);
     m_class.release(id);
     // m_artifact.release(id);
     // m_association.release(id);
@@ -18,7 +19,7 @@ void Property::referencingReleased(ID id) {
 void Property::referenceReindexed(ID oldID, ID newID) {
     StructuralFeature::referenceReindexed(oldID, newID);
     m_defaultValue.reindex(oldID, newID);
-    // m_dataType.reindex(oldID, newID);
+    m_dataType.reindex(oldID, newID);
     m_class.reindex(oldID, newID);
     // m_artifact.reindex(oldID, newID);
     // m_association.reindex(oldID, newID);
@@ -50,7 +51,7 @@ void Property::referenceErased(ID id) {
     StructuralFeature::referenceErased(id);
     // DeploymentTarget::referenceErased(id);
     m_defaultValue.eraseElement(id);
-    // m_dataType.elementErased(id);
+    m_dataType.eraseElement(id);
     m_class.eraseElement(id);
     // m_association.elementErased(id);
     // m_owningAssociation.elementErased(id);
@@ -66,6 +67,10 @@ Set<Class, Property>& Property::getClassSingleton() {
     return m_class;
 }
 
+Set<DataType, Property>& Property::getDataTypeSingleton() {
+    return m_dataType;
+}
+
 void Property::init() {
     m_defaultValue.subsets(*m_ownedElements);
     m_defaultValue.m_signature = &Property::getDefaultValueSingleton;
@@ -73,11 +78,16 @@ void Property::init() {
     m_class.subsets(m_featuringClassifier);
     m_class.opposite(&Class::getOwnedAttributes);
     m_class.m_signature = &Property::getClassSingleton;
+    m_dataType.subsets(m_namespace);
+    m_dataType.subsets(m_featuringClassifier);
+    m_dataType.opposite(&DataType::getOwnedAttributes);
+    m_dataType.m_signature = &Property::getDataTypeSingleton;
 }
 
 void Property::copy(const Property& rhs) {
     m_defaultValue = rhs.m_defaultValue;
     m_class = rhs.m_class;
+    m_dataType =  rhs.m_dataType;
 }
 
 Property::Property() : Element(ElementType::PROPERTY) {
@@ -158,29 +168,29 @@ void Property::setDefaultValue(ValueSpecification& val) {
     m_defaultValue.set(val);
 }
 
-// DataType* Property::getDataType() {
-//     return m_dataType.get();
-// }
+DataType* Property::getDataType() {
+    return m_dataType.get();
+}
 
-// DataType& Property::getDataTypeRef() {
-//     return m_dataType.getRef();
-// }
+DataType& Property::getDataTypeRef() {
+    return m_dataType.getRef();
+}
 
-// ID Property::getDataTypeID() const {
-//     return m_dataType.id();
-// }
+ID Property::getDataTypeID() const {
+    return m_dataType.id();
+}
 
-// bool Property::hasDataType() const {
-//     return m_dataType.has();
-// }
+bool Property::hasDataType() const {
+    return m_dataType.has();
+}
 
-// void Property::setDataType(DataType* dataType) {
-//     m_dataType.set(dataType);
-// }
+void Property::setDataType(DataType* dataType) {
+    m_dataType.set(dataType);
+}
 
-// void Property::setDataType(DataType& dataType) {
-//     m_dataType.set(dataType);
-// }
+void Property::setDataType(DataType& dataType) {
+    m_dataType.set(dataType);
+}
 
 Class* Property::getClass() {
     return m_class.get();

@@ -25,6 +25,7 @@ void DataType::referenceErased(ID id) {
 void DataType::init() {
     m_ownedAttributes.subsets(*m_ownedElements);
     m_ownedAttributes.subsets(m_attributes);
+    m_ownedAttributes.opposite(&Property::getDataTypeSingleton);
     m_ownedAttributes.m_signature = &DataType::getOwnedAttributes;
 }
 

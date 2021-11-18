@@ -78,7 +78,6 @@ namespace UML {
                 SetNode(Element* el) : m_el(el) {
                     m_id = el->getID();
                 };
-                // SetNode(void* el);
                 SetNode(){};
                 ID m_id;
                 Element* m_el = 0;

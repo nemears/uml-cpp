@@ -34,7 +34,7 @@
 #include "uml/package.h"
 #include "uml/packageMerge.h"
 // #include "uml/parameter.h"
-// #include "uml/primitiveType.h"
+#include "uml/primitiveType.h"
 // #include "uml/profile.h"
 // #include "uml/profileApplication.h"
 #include "uml/property.h"

@@ -87,9 +87,8 @@ void Classifier::init() {
 
 void Classifier::copy(const Classifier& rhs) {
     m_features = rhs.m_features;
-    m_features.m_el = this;
     m_attributes = rhs.m_attributes;
-    m_attributes.m_el = this;
+    m_generalizations = rhs.m_generalizations;
 }
 
 Classifier::Classifier() : Element(ElementType::CLASSIFIER) {

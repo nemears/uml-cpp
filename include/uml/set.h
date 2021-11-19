@@ -640,13 +640,20 @@ namespace UML {
                 if (m_guard == 0) {
                     if (rhs.m_root) {
                         if (m_ultimateSet) {
+                            // copy over tree data
                             SetNode* curr = rhs.m_root;
                             SetNode* mine = m_root;
                             while (curr) {
                                 if (curr->m_guard > 0 && !m_ultimateSet) {
                                     break;
                                 }
-                                SetNode* temp = new SetNode(curr->m_el);
+                                SetNode* temp;
+                                if (curr->m_el) {
+                                    temp = new SetNode(curr->m_el);
+                                } else {
+                                    temp = new SetNode();
+                                    temp->m_id = curr->m_id;
+                                }
                                 if (curr == rhs.m_root) {
                                     m_root = temp;
                                 }
@@ -655,6 +662,7 @@ namespace UML {
                                 if (curr->m_left) {
                                     temp->m_id = curr->m_left->m_id;
                                     temp->m_el = curr->m_left->m_el;
+                                    temp->m_parent = mine;
                                     curr = curr->m_left;
                                     mine = temp;
                                 } else {
@@ -669,10 +677,24 @@ namespace UML {
                                     if (curr) {
                                         temp->m_id = curr->m_right->m_id;
                                         temp->m_el = curr->m_right->m_el;
+                                        temp->m_parent = mine;
                                         curr = curr->m_right;
                                         mine = temp;
+                                        if (!curr->m_left) {
+                                            curr = 0;
+                                        }
                                     }
                                 }
+                            }
+                        }
+                    }
+                } else {
+                    // set root from already copied tree
+                    if (rhs.m_root) {
+                        for (auto& set : m_subsetOf) {
+                            m_root = static_cast<Set*>(set)->search(rhs.m_root->m_id, set->m_root);
+                            if (m_root) {
+                                break;
                             }
                         }
                     }

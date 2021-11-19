@@ -107,6 +107,11 @@ Set<Element, Element>& Element::getOwnerSingleton() {
     return *m_owner;
 }
 
+void Element::copy(const Element& rhs) {
+    *m_owner = *rhs.m_owner;
+    *m_ownedElements = *rhs.m_ownedElements;
+}
+
 Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_manager = 0;
     m_node = 0;
@@ -146,24 +151,14 @@ Element::~Element() {
     }
 }
 
-Element::Element(const Element& el, ElementType elementType) : Element(elementType) {
+Element::Element(const Element& rhs, ElementType elementType) : Element(elementType) {
     m_copiedElementFlag = true;
-    m_id = el.m_id;
-    m_manager = el.m_manager;
-    m_node = el.m_node;
+    m_id = rhs.m_id;
+    m_manager = rhs.m_manager;
+    m_node = rhs.m_node;
     if (m_manager) {
         m_manager->m_graph[m_id].m_copies.insert(this);
     }
-
-    *m_owner = *el.m_owner;
-    m_owner->m_el = this;
-    // m_owner->m_addFunctors.insert(new AddToMountFunctor(this));
-    *m_ownedElements = *el.m_ownedElements;
-    m_ownedElements->m_el = this;
-    // m_relationships = new Set<Relationship, Element>(*el.m_relationships);
-    // m_relationships->m_el = this;
-    // m_directedRelationships = new Set<DirectedRelationship, Element>(*el.m_directedRelationships);
-    // m_directedRelationships->m_el = this;
     // m_ownedComments = new Set<Comment, Element>(*el.m_ownedComments);
     // m_ownedComments->m_el = this;
     // m_appliedStereotype = new Set<InstanceSpecification, Element>(*el.m_appliedStereotype);

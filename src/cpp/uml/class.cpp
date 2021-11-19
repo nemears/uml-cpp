@@ -56,11 +56,13 @@ Class::~Class() {
 
 Class::Class(const Class& rhs) : Element(rhs, ElementType::CLASS) {
     init();
+    Element::copy(rhs);
     NamedElement::copy(rhs);
     Namespace::copy(rhs);
     PackageableElement::copy(rhs);
     Classifier::copy(rhs);
     StructuredClassifier::copy(rhs);
+    copy(rhs);
 }
 
 Set<Property, Class>& Class::getOwnedAttributes() {

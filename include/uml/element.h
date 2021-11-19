@@ -228,9 +228,10 @@ namespace UML {
                     }
                 }
             };
+            void copy(const Element& rhs);
             Element(ElementType elementType);
         public:
-            Element(const Element& el, ElementType elementType);
+            Element(const Element& rhs, ElementType elementType);
             virtual ~Element();
             ID getID() const;
             Element* getOwner();

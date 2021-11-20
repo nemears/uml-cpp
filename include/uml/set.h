@@ -646,6 +646,21 @@ namespace UML {
                             }
                         }
                     }
+                    if (!m_root && !m_ultimateSet) {
+                        // if haven't found it in supersets, look in subsets supersets
+                        for (auto& set : m_subsettedContainers) {
+                            for (auto& disjointSet : static_cast<Set*>(set)->m_subsetOf) {
+                                if (disjointSet->m_root) {
+                                    if ((m_root = static_cast<Set*>(disjointSet)->search(rhs.m_root->m_id, disjointSet->m_root)) != 0) {
+                                        break;
+                                    }
+                                }
+                            }
+                            if (m_root) {
+                                break;
+                            }
+                        }
+                    }
                     if (!m_root) {
                         // if root hasn't been copied over, copy everything from rhs
                         SetNode* curr = rhs.m_root;
@@ -654,6 +669,8 @@ namespace UML {
                             SetNode* newNode = new SetNode();
                             newNode->m_id = curr->m_id;
                             newNode->m_el = curr->m_el;
+                            newNode->m_guard = curr->m_guard;
+                            newNode->m_name = curr->m_name;
                             if (curr->m_id == rhs.m_root->m_id) {
                                 m_root = newNode;
                             }
@@ -671,6 +688,8 @@ namespace UML {
                                     newNode->m_parent = copy;
                                     if (copy->m_left) {
                                         copy->m_right = newNode;
+                                    } else {
+                                        copy->m_left = newNode;
                                     }
                                 } else {
                                     throw ManagerStateException("copy set!");
@@ -678,7 +697,7 @@ namespace UML {
                             }
                             if (curr->m_left) {
                                 // if left go left for dfs
-                                copy->m_left = newNode;
+                                curr = curr->m_left;
                                 copy = newNode;
                             } else {
                                 // if there is nothing find first right we skipped
@@ -687,8 +706,12 @@ namespace UML {
                                     // find parent of first right
                                     curr = curr->m_parent;
                                     newNode = newNode->m_parent;
-                                } while (curr && !curr->m_right && curr->m_right->m_id != og->m_id);
+                                } while (curr && !curr->m_right);
                                 if (curr) {
+                                    if (curr->m_right->m_id == og->m_id) {
+                                        // without this line it will just keep copying bottom right
+                                        break;
+                                    }
                                     curr = curr->m_right;
                                     copy = newNode;
                                 }

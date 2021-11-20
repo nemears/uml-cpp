@@ -637,64 +637,61 @@ namespace UML {
             inline Set() {};
             void operator=(const Set &rhs) {
                 m_size = rhs.m_size;
-                if (m_guard == 0) {
-                    if (rhs.m_root) {
-                        if (m_ultimateSet) {
-                            // copy over tree data
-                            SetNode* curr = rhs.m_root;
-                            SetNode* mine = m_root;
-                            while (curr) {
-                                if (curr->m_guard > 0 && !m_ultimateSet) {
-                                    break;
-                                }
-                                SetNode* temp;
-                                if (curr->m_el) {
-                                    temp = new SetNode(curr->m_el);
-                                } else {
-                                    temp = new SetNode();
-                                    temp->m_id = curr->m_id;
-                                }
-                                if (curr == rhs.m_root) {
-                                    m_root = temp;
-                                }
-                                temp->m_guard = curr->m_guard;
-                                temp->m_parent = mine;
-                                if (curr->m_left) {
-                                    temp->m_id = curr->m_left->m_id;
-                                    temp->m_el = curr->m_left->m_el;
-                                    temp->m_parent = mine;
-                                    curr = curr->m_left;
-                                    mine = temp;
-                                } else {
-                                    if (mine) {
-                                        do {
-                                            curr = curr->m_parent;
-                                            mine = mine->m_parent;
-                                        } while (curr && !curr->m_right);
-                                    } else {
-                                        curr = 0;
-                                    }
-                                    if (curr) {
-                                        temp->m_id = curr->m_right->m_id;
-                                        temp->m_el = curr->m_right->m_el;
-                                        temp->m_parent = mine;
-                                        curr = curr->m_right;
-                                        mine = temp;
-                                        if (!curr->m_left) {
-                                            curr = 0;
-                                        }
-                                    }
-                                }
+                if (rhs.m_root) {
+                    for (auto& set : m_subsetOf) {
+                        // find if root has already been copied
+                        if (set->m_root) {
+                            if ((m_root = static_cast<Set*>(set)->search(rhs.m_root->m_id, set->m_root)) != 0) {
+                                break;
                             }
                         }
                     }
-                } else {
-                    // set root from already copied tree
-                    if (rhs.m_root) {
-                        for (auto& set : m_subsetOf) {
-                            m_root = static_cast<Set*>(set)->search(rhs.m_root->m_id, set->m_root);
-                            if (m_root) {
-                                break;
+                    if (!m_root) {
+                        // if root hasn't been copied over, copy everything from rhs
+                        SetNode* curr = rhs.m_root;
+                        SetNode* copy = 0;
+                        while(curr) {
+                            SetNode* newNode = new SetNode();
+                            newNode->m_id = curr->m_id;
+                            newNode->m_el = curr->m_el;
+                            if (curr->m_id == rhs.m_root->m_id) {
+                                m_root = newNode;
+                            }
+                            if (curr->m_parent) {
+                                if (!copy) {
+                                    // we need to find parent from tree
+                                    for (auto& set : m_subsetOf) {
+                                        // find if parent has already been copied
+                                        if ((copy = static_cast<Set*>(set)->search(curr->m_id, set->m_root)) != 0) {
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (copy) {
+                                    newNode->m_parent = copy;
+                                    if (copy->m_left) {
+                                        copy->m_right = newNode;
+                                    }
+                                } else {
+                                    throw ManagerStateException("copy set!");
+                                }
+                            }
+                            if (curr->m_left) {
+                                // if left go left for dfs
+                                copy->m_left = newNode;
+                                copy = newNode;
+                            } else {
+                                // if there is nothing find first right we skipped
+                                SetNode* og = newNode;
+                                do {
+                                    // find parent of first right
+                                    curr = curr->m_parent;
+                                    newNode = newNode->m_parent;
+                                } while (curr && !curr->m_right && curr->m_right->m_id != og->m_id);
+                                if (curr) {
+                                    curr = curr->m_right;
+                                    copy = newNode;
+                                }
                             }
                         }
                     }

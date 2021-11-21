@@ -35,7 +35,7 @@ namespace UML {
             void fillNode(OrderedNode* node) {
                 if (!m_first) {
                     m_first = node;
-                    for (AbstractSet* subSet : this->m_subsetOf) {
+                    for (AbstractSet* subSet : this->m_superSets) {
                         OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(subSet);
                         if (!set->m_first) {
                             set->m_first = node;
@@ -53,7 +53,7 @@ namespace UML {
                     m_last->m_next = node;
                 }
                 m_last = node;
-                for (AbstractSet* subSet : this->m_subsettedContainers) {
+                for (AbstractSet* subSet : this->m_subSets) {
                     OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(subSet);
                     if (set) {
                         set->m_last = node;
@@ -61,7 +61,7 @@ namespace UML {
                         throw ManagerStateException("TODO, orderedSet");
                     }
                 }
-                for (AbstractSet* owningSet : this->m_subsetOf) {
+                for (AbstractSet* owningSet : this->m_superSets) {
                     OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(owningSet);
                     if (set) {
                         set->m_last = node;

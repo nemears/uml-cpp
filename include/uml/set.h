@@ -155,8 +155,8 @@ namespace UML {
         friend class Slot;
 
         protected:
-            std::vector<AbstractSet*> m_subsetOf;
-            std::vector<AbstractSet*> m_subsettedContainers;
+            std::vector<AbstractSet*> m_superSets;
+            std::vector<AbstractSet*> m_subSets;
             std::vector<AbstractSet*> m_redefines;
             bool m_rootRedefinedSet = true;
             AbstractOppositeFunctor* m_oppositeFunctor = 0;
@@ -265,14 +265,14 @@ namespace UML {
                         }
                     }
                     // handle subsets
-                    for (auto& subsetOf : m_subsetOf) {
+                    for (auto& subsetOf : m_superSets) {
                         if (subsetOf->m_root) {
                             // determine if we need a placeholder to keep subsets separate
                             bool createPlaceholder = false;
-                            for (auto& set : static_cast<Set*>(subsetOf)->m_subsettedContainers) {
+                            for (auto& set : static_cast<Set*>(subsetOf)->m_subSets) {
                                 if (set != this) {
                                     Set* rSet = static_cast<Set*>(set);
-                                    if (std::find(rSet->m_subsettedContainers.begin(), rSet->m_subsettedContainers.end(), this) == rSet->m_subsettedContainers.end()) {
+                                    if (std::find(rSet->m_subSets.begin(), rSet->m_subSets.end(), this) == rSet->m_subSets.end()) {
                                         createPlaceholder = true;
                                         break;
                                     }
@@ -302,7 +302,7 @@ namespace UML {
                     }
                 }
                 m_size++;
-                for (auto& subsetOf : m_subsetOf) {
+                for (auto& subsetOf : m_superSets) {
                     subsetOf->m_size++;
                 }
                 for (auto& redefined : m_redefines) {
@@ -390,12 +390,12 @@ namespace UML {
                                 // may be of use to rebalance tree here?
 
                                 if (temp->m_parent->m_id == placeholderID) {
-                                    for (auto& superSet : m_subsetOf) {
+                                    for (auto& superSet : m_superSets) {
                                         if (superSet->m_root == temp->m_parent) {
                                             superSet->m_root = temp->m_parent->m_left;
                                             superSet->m_root->m_parent = 0;
                                         }
-                                        for (auto& set : static_cast<Set*>(superSet)->m_subsettedContainers) {
+                                        for (auto& set : static_cast<Set*>(superSet)->m_subSets) {
                                             if (set != this) {
                                                 if (set->m_root == temp->m_parent) {
                                                     SetNode* node =  temp->m_parent->m_left;
@@ -421,12 +421,12 @@ namespace UML {
                             /** TODO: **/
                             // may be of use to rebalance tree here? 
                             if (temp->m_parent->m_id == placeholderID) {
-                                for (auto& superSet : m_subsetOf) {
+                                for (auto& superSet : m_superSets) {
                                     if (superSet->m_root == temp->m_parent) {
                                         superSet->m_root = temp->m_parent->m_left;
                                         superSet->m_root->m_parent = 0;
                                     }
-                                    for (auto& set : static_cast<Set*>(superSet)->m_subsettedContainers) {
+                                    for (auto& set : static_cast<Set*>(superSet)->m_subSets) {
                                         if (set != this) {
                                             if (set->m_root == temp->m_parent) {
                                                 SetNode* node =  temp->m_parent->m_left;
@@ -483,7 +483,7 @@ namespace UML {
                         redefined->m_root = m_root;
                     }
                 }
-                for (auto subset : m_subsettedContainers) {
+                for (auto subset : m_subSets) {
                     if (temp->m_guard >= subset->m_guard) {
                         subset->m_size--;
                         if (subset->m_root->m_id == id) {
@@ -497,7 +497,7 @@ namespace UML {
                         }
                     }
                 }
-                for (auto& subsetOf : m_subsetOf) {
+                for (auto& subsetOf : m_superSets) {
                     if (subsetOf->m_root->m_id == id) {
                         if (subsetOf->m_root->m_left) {
                             place(subsetOf->m_root->m_right, subsetOf->m_root->m_left);
@@ -638,7 +638,7 @@ namespace UML {
             void operator=(const Set &rhs) {
                 m_size = rhs.m_size;
                 if (rhs.m_root) {
-                    for (auto& set : m_subsetOf) {
+                    for (auto& set : m_superSets) {
                         // find if root has already been copied
                         if (set->m_root) {
                             if ((m_root = static_cast<Set*>(set)->search(rhs.m_root->m_id, set->m_root)) != 0) {
@@ -648,8 +648,8 @@ namespace UML {
                     }
                     if (!m_root && !m_ultimateSet) {
                         // if haven't found it in supersets, look in subsets supersets
-                        for (auto& set : m_subsettedContainers) {
-                            for (auto& disjointSet : static_cast<Set*>(set)->m_subsetOf) {
+                        for (auto& set : m_subSets) {
+                            for (auto& disjointSet : static_cast<Set*>(set)->m_superSets) {
                                 if (disjointSet->m_root) {
                                     if ((m_root = static_cast<Set*>(disjointSet)->search(rhs.m_root->m_id, disjointSet->m_root)) != 0) {
                                         break;
@@ -677,7 +677,7 @@ namespace UML {
                             if (curr->m_parent) {
                                 if (!copy) {
                                     // we need to find parent from tree
-                                    for (auto& set : m_subsetOf) {
+                                    for (auto& set : m_superSets) {
                                         // find if parent has already been copied
                                         if ((copy = static_cast<Set*>(set)->search(curr->m_id, set->m_root)) != 0) {
                                             break;
@@ -749,7 +749,7 @@ namespace UML {
                                         }
                                     }
                                 }
-                                for (auto& superSet : m_subsetOf) {
+                                for (auto& superSet : m_superSets) {
                                     if (superSet->m_root->m_id == curr->m_id) {
                                         if (superSet->m_ultimateSet) {
                                             if (temp->m_right->m_id == curr->m_id) {
@@ -799,7 +799,7 @@ namespace UML {
                                     curr = temp;
                                     if (curr->m_id == m_root->m_id && curr->m_guard == m_guard) {
                                         // edge case for root
-                                        for (auto& superSet : m_subsetOf) {
+                                        for (auto& superSet : m_superSets) {
                                             if (superSet->m_root->m_id == curr->m_id) {
                                                 superSet->m_root = 0;
                                             }
@@ -821,7 +821,7 @@ namespace UML {
                 }
                 for (auto& func : m_addFunctors) {
                     bool deleteFunc = true;
-                    for (auto& set : m_subsetOf) {
+                    for (auto& set : m_superSets) {
                         if (static_cast<Set*>(set)->m_addFunctors.count(func)) {
                             deleteFunc = false;
                             break;
@@ -833,7 +833,7 @@ namespace UML {
                 }
                 for (auto& func : m_removeFunctors) {
                     bool deleteFunc = true;
-                    for (auto& set : m_subsetOf) {
+                    for (auto& set : m_superSets) {
                         if (static_cast<Set*>(set)->m_removeFunctors.count(func)) {
                             deleteFunc = false;
                             break;
@@ -858,24 +858,24 @@ namespace UML {
              *  c.subsets(b); // GOOD because b instantiated after a
              **/
             template <class V = Element, class W = Element> void subsets(Set<V, W>& subsetOf) {
-                if (std::find(m_subsetOf.begin(), m_subsetOf.end(), &subsetOf) == m_subsetOf.end()) {
+                if (std::find(m_superSets.begin(), m_superSets.end(), &subsetOf) == m_superSets.end()) {
                     m_ultimateSet = false;
                     if (subsetOf.m_ultimateSet) {
-                        for (auto& set : m_subsetOf) {
+                        for (auto& set : m_superSets) {
                             if (set->m_ultimateSet) {
                                 subsetOf.m_ultimateSet = false;
                             }
                         }
                     }
-                    m_subsetOf.push_back(&subsetOf);
-                    subsetOf.m_subsettedContainers.push_back(this);
+                    m_superSets.push_back(&subsetOf);
+                    subsetOf.m_subSets.push_back(this);
                     if (m_guard <= subsetOf.m_guard) {
                         m_guard = subsetOf.m_guard + 1;
                     }
                     if (!m_oppositeFunctor && subsetOf.m_oppositeFunctor && m_el) {
                         m_oppositeFunctor = subsetOf.m_oppositeFunctor;
                     }
-                    for (auto& set : subsetOf.m_subsetOf) {
+                    for (auto& set : subsetOf.m_superSets) {
                         this->subsets(*static_cast<Set*>(set));
                     }
                     for (const auto& set : subsetOf.m_addFunctors) {
@@ -914,7 +914,7 @@ namespace UML {
                 m_redefines.push_back(&redefined);
                 redefined.m_redefines.push_back(this);
                 m_rootRedefinedSet = false;
-                for (auto& set : redefined.m_subsetOf) {
+                for (auto& set : redefined.m_superSets) {
                     subsets(*static_cast<Set*>(set));
                 }
             };

@@ -78,7 +78,8 @@
         "YAML_CPP_BUILD_TESTS":"OFF",
         "YAML_CPP_BUILD_TOOLS":"OFF",
         "YAML_CPP_BUILD_CONTRIB":"OFF",
-        "UML_CLIENT_SERVER":"OFF"
+        "UML_CLIENT_SERVER":"OFF",
+        "UML_CPP_BUILD_CLANG":"OFF",
     },
     // python testing options
     "python.testing.unittestArgs": [

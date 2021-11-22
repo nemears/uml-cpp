@@ -447,3 +447,25 @@ TEST_F(SetTest, sharedSubsetEvenTreeTest) {
     ASSERT_EQ(superSet.front(), p1);
     ASSERT_EQ(set1.front(), p1);
 }
+
+TEST_F(SetTest, multiRootWithinRootTest) {
+    Set<NamedElement> r1;
+    Set<PackageableElement> r2;
+    Set<Package> subSet;
+    UmlManager m;
+    subSet.subsets(r1);
+    subSet.subsets(r2);
+    Class& c = m.create<Class>();
+    Package& p = m.create<Package>();
+    r1.add(c);
+    subSet.add(p);
+    ASSERT_EQ(r1.size(), 2);
+    ASSERT_EQ(r2.size(), 1);
+    ASSERT_EQ(subSet.size(), 1);
+    ASSERT_TRUE(r1.contains(c.getID()));
+    ASSERT_FALSE(r2.contains(c.getID()));
+    ASSERT_FALSE(subSet.contains(c.getID()));
+    ASSERT_TRUE(r1.contains(p.getID()));
+    ASSERT_TRUE(r2.contains(p.getID()));
+    ASSERT_TRUE(subSet.contains(p.getID()));
+}

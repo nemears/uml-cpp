@@ -73,7 +73,6 @@ namespace UML {
         protected:
             size_t m_size = 0;
             size_t m_upper = 0;
-            bool m_ultimateSet = true;
             struct SetNode {
                 SetNode(Element* el) : m_el(el) {
                     m_id = el->getID();
@@ -646,7 +645,7 @@ namespace UML {
                             }
                         }
                     }
-                    if (!m_root && !m_ultimateSet) {
+                    if (!m_root && m_guard != 0) {
                         // if haven't found it in supersets, look in subsets supersets
                         for (auto& set : m_subSets) {
                             for (auto& disjointSet : static_cast<Set*>(set)->m_superSets) {
@@ -754,7 +753,7 @@ namespace UML {
                                 }
                                 for (auto& superSet : m_superSets) {
                                     if (superSet->m_root->m_id == curr->m_id) {
-                                        if (superSet->m_ultimateSet) {
+                                        if (superSet->m_guard == 0) {
                                             if (temp->m_right && temp->m_right->m_id == curr->m_id) {
                                                 temp->m_right = 0;
                                             } else if (temp->m_left->m_id == curr->m_id) {
@@ -767,7 +766,7 @@ namespace UML {
                             } else if (m_guard > 0) {
                                 // don't delete root node if subsetting
                                 deleteNode = false;
-                            } else if (!m_ultimateSet) {
+                            } else if (m_guard == 0) {
                                 if (curr->m_guard != 0) {
                                     deleteNode = false;
                                 }
@@ -861,16 +860,14 @@ namespace UML {
              **/
             template <class V = Element, class W = Element> void subsets(Set<V, W>& subsetOf) {
                 if (std::find(m_superSets.begin(), m_superSets.end(), &subsetOf) == m_superSets.end()) {
-                    m_ultimateSet = false;
-                    if (subsetOf.m_ultimateSet) {
-                        // for (auto& set : m_superSets) {
-                        //     if (set->m_ultimateSet) {
-                        //         subsetOf.m_ultimateSet = false;
-                        //     }
-                        // }
-                    }
                     m_superSets.push_back(&subsetOf);
                     subsetOf.m_subSets.push_back(this);
+                    for (auto& set : m_superSets) {
+                        // compare and update guard of superset to previous supersets
+                        if (set->m_guard <= subsetOf.m_guard) {
+                            subsetOf.m_guard += 1;
+                        }
+                    }
                     if (m_guard <= subsetOf.m_guard) {
                         m_guard = subsetOf.m_guard + 1;
                     }

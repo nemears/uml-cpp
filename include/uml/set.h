@@ -732,11 +732,14 @@ namespace UML {
                     SetNode* curr = m_root;
                     while (curr) {
                         if (!curr->m_right && !curr->m_left) {
+                            // current node has no children, prepare to delete
                             SetNode* temp = curr->m_parent;
                             bool deleteNode = true;
                             if (temp) {
+                                // the current node has a parent
                                 if (m_root) {
                                     if (curr->m_id == m_root->m_id) {
+                                        // if current is the same as root and it has a parent we will save it to be deleted by something else
                                         deleteNode = false;
                                     }
                                 }
@@ -752,7 +755,7 @@ namespace UML {
                                 for (auto& superSet : m_superSets) {
                                     if (superSet->m_root->m_id == curr->m_id) {
                                         if (superSet->m_ultimateSet) {
-                                            if (temp->m_right->m_id == curr->m_id) {
+                                            if (temp->m_right && temp->m_right->m_id == curr->m_id) {
                                                 temp->m_right = 0;
                                             } else if (temp->m_left->m_id == curr->m_id) {
                                                 temp->m_left = 0;
@@ -770,7 +773,6 @@ namespace UML {
                                 }
                             }
                             if (deleteNode) {
-                                // std::cout << " DELETE ";
                                 delete curr;
                             }
                             if (temp) {
@@ -861,11 +863,11 @@ namespace UML {
                 if (std::find(m_superSets.begin(), m_superSets.end(), &subsetOf) == m_superSets.end()) {
                     m_ultimateSet = false;
                     if (subsetOf.m_ultimateSet) {
-                        for (auto& set : m_superSets) {
-                            if (set->m_ultimateSet) {
-                                subsetOf.m_ultimateSet = false;
-                            }
-                        }
+                        // for (auto& set : m_superSets) {
+                        //     if (set->m_ultimateSet) {
+                        //         subsetOf.m_ultimateSet = false;
+                        //     }
+                        // }
                     }
                     m_superSets.push_back(&subsetOf);
                     subsetOf.m_subSets.push_back(this);

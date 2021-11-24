@@ -89,6 +89,7 @@ namespace UML {
             SetNode* m_root = 0;
             size_t m_guard = 0;
             virtual void place(SetNode* node, SetNode* parent) = 0;
+            virtual SetNode* search(ID id, SetNode* node) = 0;
             void setName(SetNode* node);
             void instantiateSetNode(SetNode* node);
     };
@@ -205,7 +206,7 @@ namespace UML {
                     node->m_parent = parent;
                 }
             };
-            SetNode* search(ID id, SetNode* node) {
+            SetNode* search(ID id, SetNode* node) override {
                 if (node->m_id == id) {
                     // found match
                     return node;
@@ -268,11 +269,13 @@ namespace UML {
                         if (subsetOf->m_root) {
                             // determine if we need a placeholder to keep subsets separate
                             bool createPlaceholder = false;
+                            int placeHolderGuard = 0;
                             for (auto& set : static_cast<Set*>(subsetOf)->m_subSets) {
                                 if (set != this) {
                                     Set* rSet = static_cast<Set*>(set);
                                     if (std::find(rSet->m_subSets.begin(), rSet->m_subSets.end(), this) == rSet->m_subSets.end()) {
                                         createPlaceholder = true;
+                                        placeHolderGuard = rSet->m_guard;
                                         break;
                                     }
                                 }
@@ -282,7 +285,7 @@ namespace UML {
                                 SetNode* temp = subsetOf->m_root;
                                 subsetOf->m_root = new SetNode();
                                 subsetOf->m_root->m_id = placeholderID;
-                                subsetOf->m_root->m_guard = subsetOf->m_guard;
+                                subsetOf->m_root->m_guard = placeHolderGuard;
                                 subsetOf->place(temp, subsetOf->m_root);
                             }
                             subsetOf->place(node, subsetOf->m_root);
@@ -724,101 +727,71 @@ namespace UML {
                 // maybe copy over some of the other aspects here?
             };
             virtual ~Set() { 
-                if (m_ownsOppositeFunctor) {
-                    delete m_oppositeFunctor;
-                }
                 if (m_rootRedefinedSet) {
                     SetNode* curr = m_root;
+                    // start destroying from bottom left
+                    while (curr && curr->m_left) {
+                        curr = curr->m_left;
+                    }
                     while (curr) {
-                        if (!curr->m_right && !curr->m_left) {
-                            // current node has no children, prepare to delete
-                            SetNode* temp = curr->m_parent;
-                            bool deleteNode = true;
-                            if (temp) {
-                                // the current node has a parent
-                                if (m_root) {
-                                    if (curr->m_id == m_root->m_id) {
-                                        // if current is the same as root and it has a parent we will save it to be deleted by something else
-                                        deleteNode = false;
-                                    }
-                                }
-                                if (deleteNode) {
-                                    if (temp->m_guard < m_guard) {
-                                        if (temp->m_left->m_id == curr->m_id) {
-                                            temp->m_left = 0;
-                                        } else {
-                                            temp->m_right = 0;
+                        if (curr->m_right) {
+                            curr = curr->m_right;
+                        } else if (curr->m_left) {
+                            curr = curr->m_left;
+                        } else {
+                            // delete this node conditionally
+                            if (curr->m_guard == m_guard) {
+                                // we are going to delete it
+                                SetNode* currParent = curr->m_parent;
+                                for (auto& set : m_superSets) {
+                                    // set supersets root to 0 if it is the node
+                                    if (set->m_root->m_id == curr->m_id) {
+                                        set->m_root = 0;
+                                    } else if (currParent && set->m_root && !set->search(currParent->m_id, set->m_root)) {
+                                        // this set owns this element through a different parent
+                                        // we must find it and set the pointer to curr to 0
+                                        SetNode* temp = set->m_root;
+                                        while (temp->m_left != curr && temp->m_right != curr) {
+                                            if (temp->m_right) {
+                                                if (curr->m_id > temp->m_id) {
+                                                    temp = temp->m_left;
+                                                } else {
+                                                    temp = temp->m_right;
+                                                }
+                                            } else if (temp->m_left) {
+                                                temp = temp->m_left;
+                                            } else {
+                                                std::cerr << "could not find second parent for setNode with id: " << curr->m_id.string() << std::endl;
+                                                temp = 0;
+                                                break;
+                                            }
                                         }
-                                    }
-                                }
-                                for (auto& superSet : m_superSets) {
-                                    if (superSet->m_root->m_id == curr->m_id) {
-                                        if (superSet->m_guard == 0) {
-                                            if (temp->m_right && temp->m_right->m_id == curr->m_id) {
+                                        if (temp) {
+                                            if (temp->m_right == curr) {
                                                 temp->m_right = 0;
-                                            } else if (temp->m_left->m_id == curr->m_id) {
+                                            } else {
                                                 temp->m_left = 0;
                                             }
-                                            curr->m_parent = 0;
                                         }
                                     }
                                 }
-                            } else if (m_guard > 0) {
-                                // don't delete root node if subsetting
-                                deleteNode = false;
-                            } else if (m_guard == 0) {
-                                if (curr->m_guard != 0) {
-                                    deleteNode = false;
+                                if (currParent) {
+                                    if (currParent->m_left == curr) {
+                                        currParent->m_left = 0;
+                                    } else {
+                                        currParent->m_right = 0;
+                                    }
                                 }
-                            }
-                            if (deleteNode) {
                                 delete curr;
-                            }
-                            if (temp) {
-                                if (temp->m_guard < m_guard) {
-                                    break;
-                                }
-                            }
-                            curr = temp;
-                        } else {
-                            if (curr->m_right) {
-                                if (curr->m_right->m_guard <= m_guard) {
-                                    SetNode* temp = curr->m_right;
-                                    curr->m_right = 0;
-                                    curr = temp;
-                                    continue;
-                                } else if (curr->m_right->m_parent->m_id == curr->m_id) {
-                                    // delete lefover root
-                                    // std::cout << " DELETE leftover";
-                                    delete curr->m_right;
-                                }
-                                curr->m_right = 0;
-                            } if (curr->m_left) {
-                                if (curr->m_left->m_guard <= m_guard) {
-                                    SetNode* temp = curr->m_left;
-                                    curr->m_left = 0;
-                                    curr = temp;
-                                    if (curr->m_id == m_root->m_id && curr->m_guard == m_guard) {
-                                        // edge case for root
-                                        for (auto& superSet : m_superSets) {
-                                            if (superSet->m_root->m_id == curr->m_id) {
-                                                superSet->m_root = 0;
-                                            }
-                                        }
-                                        delete curr;
-                                        curr = 0;
-                                    }
-                                } else {
-                                    if (curr->m_left->m_parent->m_id == curr->m_id) {
-                                        // delete leftover root
-                                        // std::cout << " DELETE leftover";
-                                        delete curr->m_left;
-                                    }
-                                    curr->m_left = 0;
-                                }
+                                curr =  currParent;
+                            } else {
+                                break;
                             }
                         }
                     }
+                }
+                if (m_ownsOppositeFunctor) {
+                    delete m_oppositeFunctor;
                 }
                 for (auto& func : m_addFunctors) {
                     bool deleteFunc = true;

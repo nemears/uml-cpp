@@ -63,26 +63,28 @@ TEST_F(SetTest, basicRemoveTest) {
 }
 
 TEST_F(SetTest, basicSubsetsTest) {
-    Set<PackageableElement> rootSeq;
-    Set<Package> subSeq;
-    subSeq.subsets(rootSeq);
+    Set<PackageableElement>* rootSeq = new Set<PackageableElement>();
+    Set<Package>* subSeq = new Set<Package>();
+    subSeq->subsets(*rootSeq);
     UmlManager m;
     Package& pckg = m.create<Package>();
-    subSeq.add(pckg);
-    ASSERT_EQ(subSeq.size(), 1);
-    ASSERT_TRUE(subSeq.contains(pckg.getID()));
-    ASSERT_EQ(subSeq.get(pckg.getID()), pckg);
-    ASSERT_EQ(rootSeq.size(), 1);
-    ASSERT_TRUE(rootSeq.contains(pckg.getID()));
-    ASSERT_EQ(rootSeq.get(pckg.getID()), pckg);
+    subSeq->add(pckg);
+    ASSERT_EQ(subSeq->size(), 1);
+    ASSERT_TRUE(subSeq->contains(pckg.getID()));
+    ASSERT_EQ(subSeq->get(pckg.getID()), pckg);
+    ASSERT_EQ(rootSeq->size(), 1);
+    ASSERT_TRUE(rootSeq->contains(pckg.getID()));
+    ASSERT_EQ(rootSeq->get(pckg.getID()), pckg);
     Package& clazz = m.create<Package>();
-    rootSeq.add(clazz);
-    ASSERT_EQ(rootSeq.size(), 2);
-    ASSERT_TRUE(rootSeq.contains(clazz.getID()));
-    ASSERT_EQ(rootSeq.get(clazz.getID()), clazz);
-    ASSERT_EQ(subSeq.size(), 1);
-    ASSERT_FALSE(subSeq.contains(clazz.getID()));
-    ASSERT_THROW(subSeq.get(clazz.getID()), ID_doesNotExistException2);
+    rootSeq->add(clazz);
+    ASSERT_EQ(rootSeq->size(), 2);
+    ASSERT_TRUE(rootSeq->contains(clazz.getID()));
+    ASSERT_EQ(rootSeq->get(clazz.getID()), clazz);
+    ASSERT_EQ(subSeq->size(), 1);
+    ASSERT_FALSE(subSeq->contains(clazz.getID()));
+    ASSERT_THROW(subSeq->get(clazz.getID()), ID_doesNotExistException2);
+    delete subSeq;
+    delete rootSeq;
 }
 
 TEST_F(SetTest, multiSubsetsTest) {

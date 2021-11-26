@@ -494,3 +494,37 @@ TEST_F(SetTest, multiSubsetsOneElement) {
     delete r2;
     delete r1;
 }
+
+TEST_F(SetTest, twoWayMultiSetSplitTest) {
+    Set<Element>* rootSet = new Set<Element>();
+    Set<NamedElement>* rightSet1 = new Set<NamedElement>();
+    Set<NamedElement>* leftSet1 = new Set<NamedElement>();
+    Set<PackageableElement>* rightSet2 = new Set<PackageableElement>();
+    Set<PackageableElement>* leftSet2 = new Set<PackageableElement>();
+    rightSet1->subsets(*rootSet);
+    leftSet1->subsets(*rootSet);
+    rightSet2->subsets(*rightSet1);
+    leftSet2->subsets(*leftSet1);
+    UmlManager m;
+    Package& rightP = m.create<Package>();
+    Package& leftP = m.create<Package>();
+    rightSet2->add(rightP);
+    leftSet2->add(leftP);
+    ASSERT_EQ(rightSet2->size(), 1);
+    ASSERT_EQ(rightSet1->size(), 1);
+    ASSERT_EQ(leftSet2->size(), 1);
+    ASSERT_EQ(leftSet1->size(), 1);
+    ASSERT_EQ(rootSet->size(), 2);
+    ASSERT_TRUE(rightSet2->contains(rightP.getID()));
+    ASSERT_TRUE(rightSet1->contains(rightP.getID()));
+    ASSERT_TRUE(rootSet->contains(rightP.getID()));
+    ASSERT_TRUE(leftSet1->contains(leftP.getID()));
+    ASSERT_TRUE(leftSet2->contains(leftP.getID()));
+    ASSERT_TRUE(rootSet->contains(leftP.getID()));
+    delete leftSet2;
+    delete rightSet2;
+    delete leftSet1;
+    delete rightSet1;
+    delete rootSet;
+    // ASSERT_FALSE(rootRoot->m_id == ID::fromString("&&&&&&&&&&&&&&&&&&&&&&&&&&&&"));
+}

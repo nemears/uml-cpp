@@ -174,7 +174,6 @@ TEST_F(ClassifierTest, reindexClassifierID_test) {
 	ASSERT_NO_THROW(ASSERT_EQ(generalization.getSources().get(id), reindexed));
 	ASSERT_NO_THROW(ASSERT_EQ(*generalization.getOwner(), reindexed));
 	ASSERT_NO_THROW(ASSERT_EQ(attribute.getDataTypeRef(), reindexed));
-	ASSERT_NO_THROW(ASSERT_EQ(attribute.getClassRef(), reindexed));
 	ASSERT_NO_THROW(ASSERT_EQ(attribute.getFeaturingClassifierRef(), reindexed));
 	ASSERT_NO_THROW(ASSERT_EQ(attribute.getNamespaceRef(), reindexed));
 	ASSERT_NO_THROW(ASSERT_EQ(*attribute.getOwner(), reindexed));

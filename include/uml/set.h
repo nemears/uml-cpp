@@ -5,6 +5,8 @@
 #include "umlManager.h"
 #include <iostream>
 
+class SetTest_twoWayMultiSetSplitTest_Test;
+
 namespace UML {
 
     namespace {
@@ -70,6 +72,7 @@ namespace UML {
     class AbstractSet {
         template <class T, class U> friend class Set;
         template <class T, class U> friend class OrderedSet;
+        friend class SetTest_twoWayMultiSetSplitTest_Test;
         protected:
             size_t m_size = 0;
             size_t m_upper = 0;
@@ -275,7 +278,7 @@ namespace UML {
                                     Set* rSet = static_cast<Set*>(set);
                                     if (std::find(rSet->m_subSets.begin(), rSet->m_subSets.end(), this) == rSet->m_subSets.end()) {
                                         createPlaceholder = true;
-                                        placeHolderGuard = rSet->m_guard;
+                                        placeHolderGuard = subsetOf->m_guard;
                                         break;
                                     }
                                 }
@@ -784,6 +787,9 @@ namespace UML {
                                 }
                                 delete curr;
                                 curr =  currParent;
+                                if (curr && curr->m_id == placeholderID) {
+                                    break;
+                                }
                             } else {
                                 break;
                             }
@@ -837,7 +843,7 @@ namespace UML {
                     subsetOf.m_subSets.push_back(this);
                     for (auto& set : m_superSets) {
                         // compare and update guard of superset to previous supersets
-                        if (set->m_guard <= subsetOf.m_guard) {
+                        if (set != &subsetOf && set->m_guard <= subsetOf.m_guard) {
                             subsetOf.m_guard += 1;
                         }
                     }

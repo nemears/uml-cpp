@@ -1,7 +1,7 @@
 #include "uml/behavioralFeature.h"
 //#include "uml/operation.h"
 #include "uml/behavior.h"
-// #include "uml/parameter.h"
+#include "uml/parameter.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;

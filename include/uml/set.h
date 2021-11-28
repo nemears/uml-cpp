@@ -129,6 +129,7 @@ namespace UML {
     class BehavioralFeature;
     class Behavior;
     class MultiplicityElement;
+    class Operation;
 
     /**
      * This container is based around a weighted binary search tree
@@ -162,6 +163,7 @@ namespace UML {
         friend class BehavioralFeature;
         friend class Behavior;
         friend class MultiplicityElement;
+        friend class Operation;
 
         protected:
             std::vector<AbstractSet*> m_superSets;

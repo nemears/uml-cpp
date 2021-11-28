@@ -1,62 +1,59 @@
 #include "uml/opaqueBehavior.h"
 #include "uml/literalString.h"
+#include "uml/uml-stable.h"
 
 namespace UML {
 
-void OpaqueBehavior::AddBodyFunctor::operator()(LiteralString& el) const {
-    if (el.hasOwner()) {
-        if (*el.getOwner() != *m_el) {
-            el.setOwner(m_el);
-        }
-    } else {
-        el.setOwner(m_el);
-    }
-    updateCopiedSequenceAddedTo(el, &OpaqueBehavior::getBodies);
-}
-
-void OpaqueBehavior::RemoveBodyFunctor::operator()(LiteralString& el) const {
-    if (el.hasOwner()) {
-        if (*el.getOwner() == *m_el) {
-            el.setOwner(0);
-        }
-    }
-    updateCopiedSequenceRemovedFrom(el, &OpaqueBehavior::getBodies);
-}
-
 void OpaqueBehavior::referencingReleased(ID id) {
     Behavior::referencingReleased(id);
-    m_bodies.elementReleased(id, &OpaqueBehavior::getBodies);
+    m_bodies.release(id);
 }
 
 void OpaqueBehavior::referenceReindexed(ID oldID, ID newID) {
     Behavior::referenceReindexed(oldID, newID);
-    m_bodies.reindex(oldID, newID, &OpaqueBehavior::getBodies);
+    m_bodies.reindex(oldID, newID);
 }
 
 void OpaqueBehavior::referenceErased(ID id) {
     Behavior::referenceErased(id);
-    m_bodies.elementErased(id);
+    m_bodies.eraseElement(id);
+}
+
+Set<LiteralString, OpaqueBehavior>& OpaqueBehavior::getBodiesSet() {
+    return m_bodies;
+}
+
+void OpaqueBehavior::init() {
+    m_bodies.subsets(*m_ownedElements);
+    m_bodies.m_signature = &OpaqueBehavior::getBodiesSet;
+}
+
+void OpaqueBehavior::copy(const OpaqueBehavior& rhs) {
+    m_bodies = rhs.m_bodies;
 }
 
 OpaqueBehavior::OpaqueBehavior() : Element(ElementType::OPAQUE_BEHAVIOR) {
-    m_bodies.addProcedures.push_back(new AddBodyFunctor(this));
-    m_bodies.removeProcedures.push_back(new RemoveBodyFunctor(this));
+    init();
 }
 
 OpaqueBehavior::OpaqueBehavior(const OpaqueBehavior& rhs) : Element(rhs, ElementType::OPAQUE_BEHAVIOR) {
-    m_bodies = rhs.m_bodies;
-    m_bodies.m_el = this;
-    m_bodies.addProcedures.clear();
-    m_bodies.removeProcedures.clear();
-    m_bodies.addProcedures.push_back(new AddBodyFunctor(this));
-    m_bodies.removeProcedures.push_back(new RemoveBodyFunctor(this));
+    init();
+    Element::copy(rhs);
+    NamedElement::copy(rhs);
+    Namespace::copy(rhs);
+    PackageableElement::copy(rhs);
+    Classifier::copy(rhs);
+    StructuredClassifier::copy(rhs);
+    Class::copy(rhs);
+    Behavior::copy(rhs);
+    copy(rhs);
 }
 
 OpaqueBehavior::~OpaqueBehavior() {
     
 }
 
-Sequence<LiteralString>& OpaqueBehavior::getBodies() {
+OrderedSet<LiteralString, OpaqueBehavior>& OpaqueBehavior::getBodies() {
     return m_bodies;
 }
 

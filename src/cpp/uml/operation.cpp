@@ -47,7 +47,7 @@ Set<DataType, Operation>& Operation::getDataTypeSingleton() {
 }
 
 void Operation::init() {
-
+    
 }
 
 void Operation::copy(const Operation& rhs) {

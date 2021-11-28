@@ -1,138 +1,69 @@
 #include "uml/behavioralFeature.h"
-#include "uml/operation.h"
-#include "uml/behavior.h"
-#include "uml/parameter.h"
+//#include "uml/operation.h"
+//#include "uml/behavior.h"
+// #include "uml/parameter.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
-
-void BehavioralFeature::AddMethodFunctor::operator()(Behavior& el) const {
-    if (!el.getSpecification()) {
-        el.setSpecification(m_el);
-    }
-    updateCopiedSequenceAddedTo(el, &BehavioralFeature::getMethods);
-}
-
-void BehavioralFeature::RemoveMethodFunctor::operator()(Behavior& el) const {
-    if (el.getSpecification() == m_el) {
-        el.setSpecification(0);
-    }
-    updateCopiedSequenceRemovedFrom(el, &BehavioralFeature::getMethods);
-}
-
-void BehavioralFeature::AddParameterFunctor::operator()(Parameter& el) const {
-    if (m_el->isSubClassOf(ElementType::OPERATION)) {
-        if (el.getOperationID() != m_el->getID()) {
-            el.setOperation(&m_el->as<Operation>());
-        }
-    }
-
-    if (!m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().add(el);
-    }
-
-    // I think we shouldn't enforce parameters being the same OMG UML 2.5.1 spec pg 289 bottom of page
-
-    // TODO behavior must have same parameters as it's specification, but they are not the same parameters
-    // TODO think about whether to be different just in memory or have different ids but same everything else
-    // for (auto const& method : dynamic_cast<BehavioralFeature*>(m_el)->getMethods()) {
-    //     if (!method->getOwnedParameters().count(el.getID())) {
-    //         method->getOwnedParameters().add(dynamic_cast<Parameter&>(el));
-    //     }
-    // }
-    updateCopiedSequenceAddedTo(el, &BehavioralFeature::getOwnedParameters);
-}
-
-void BehavioralFeature::CheckParameterFunctor::operator()(Parameter& el) const {
-    ParameterDirectionKind direction = el.getDirection();
-    if (direction == ParameterDirectionKind::RETURN || direction == ParameterDirectionKind::OUT || direction == ParameterDirectionKind::INOUT) {
-        if (m_el->m_returnSpecified) {
-            if (m_el->isSubClassOf(ElementType::OPERATION)) {
-                if (el.getOperation() == m_el) {
-                    el.setOperation(0);
-                }
-            }
-            throw ReturnParameterException(m_el->getElementTypeString() + " " + m_el->getID().string());
-        } else {
-            m_el->m_returnSpecified = true;
-        }
-    }
-}
-
-void BehavioralFeature::RemoveParameterFunctor::operator()(Parameter& el) const {
-    if (m_el->isSubClassOf(ElementType::OPERATION)) {
-        if (el.getOperation() == m_el) {
-            el.setOperation(0);
-        }
-    }
-
-    if (m_el->getMembers().count(el.getID())) {
-        m_el->getMembers().remove(el);
-    }
-    updateCopiedSequenceRemovedFrom(el, &BehavioralFeature::getOwnedParameters);
-}
 
 void BehavioralFeature::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     Feature::referencingReleased(id);
-    m_methods.elementReleased(id, &BehavioralFeature::getMethods);
-    m_ownedParameters.elementReleased(id, &BehavioralFeature::getOwnedParameters);
+    m_methods.release(id);
+    m_ownedParameters.release(id);
 }
 
 void BehavioralFeature::referenceReindexed(ID oldID, ID newID) {
     Feature::referenceReindexed(oldID, newID);
     Namespace::referenceReindexed(oldID, newID);
-    m_methods.reindex(oldID, newID, &BehavioralFeature::getMethods);
-    m_ownedParameters.reindex(oldID, newID, &BehavioralFeature::getOwnedParameters);
+    m_methods.reindex(oldID, newID);
+    m_ownedParameters.reindex(oldID, newID);
 }
 
 void BehavioralFeature::restoreReferences() {
     Namespace::restoreReferences();
     Feature::restoreReferences();
-    m_methods.restoreReferences();
-    m_ownedParameters.restoreReferences();
+    // m_methods.restoreReferences();
+    // m_ownedParameters.restoreReferences();
 }
 
 void BehavioralFeature::referenceErased(ID id) {
     Namespace::referenceErased(id);
     Feature::referenceErased(id);
-    m_methods.elementErased(id);
-    m_ownedParameters.elementErased(id);
+    m_methods.eraseElement(id);
+    m_ownedParameters.eraseElement(id);
+}
+
+void BehavioralFeature::init() {
+    // m_methods.opposit(&Behavior::getSpecifications);
+    m_methods.m_signature = &BehavioralFeature::getMethods;
+    m_ownedParameters.subsets(m_ownedMembers);
+    m_ownedParameters.m_signature = &BehavioralFeature::getOwnedParameters;
+}
+
+void BehavioralFeature::copy(const BehavioralFeature& rhs) {
+    m_methods = rhs.m_methods;
+    m_ownedParameters = rhs.m_ownedParameters;
+    m_returnSpecified = rhs.m_returnSpecified;
 }
 
 BehavioralFeature::BehavioralFeature() : Element(ElementType::BEHAVIORAL_FEATURE) {
-    m_methods.addProcedures.push_back(new AddMethodFunctor(this));
-    m_methods.removeProcedures.push_back(new RemoveMethodFunctor(this));
-    m_ownedParameters.addProcedures.push_back(new AddParameterFunctor(this));
-    m_ownedParameters.addChecks.push_back(new CheckParameterFunctor(this));
-    m_ownedParameters.removeProcedures.push_back(new RemoveParameterFunctor(this));
+    init();
 }
 
-BehavioralFeature::BehavioralFeature(const BehavioralFeature& el) : 
-NamedElement(el), 
-Element(el, ElementType::BEHAVIORAL_FEATURE) {
-    m_methods = el.m_methods;
-    m_methods.addProcedures.clear();
-    m_methods.removeProcedures.clear();
-    m_methods.addProcedures.push_back(new AddMethodFunctor(this));
-    m_methods.removeProcedures.push_back(new RemoveMethodFunctor(this));
-    m_ownedParameters = el.m_ownedParameters;
-    m_ownedParameters.addProcedures.clear();
-    m_ownedParameters.addChecks.clear();
-    m_ownedParameters.removeProcedures.clear();
-    m_ownedParameters.addProcedures.push_back(new AddParameterFunctor(this));
-    m_ownedParameters.addChecks.push_back(new CheckParameterFunctor(this));
-    m_ownedParameters.removeProcedures.push_back(new RemoveParameterFunctor(this));
+BehavioralFeature::BehavioralFeature(const BehavioralFeature& el) : Element(ElementType::BEHAVIORAL_FEATURE) {
+    // abstract
 }
 
 BehavioralFeature::~BehavioralFeature() {
 
 }
 
-Sequence<Behavior>& BehavioralFeature::getMethods() {
+Set<Behavior, BehavioralFeature>& BehavioralFeature::getMethods() {
     return m_methods;
 }
 
-Sequence<Parameter>& BehavioralFeature::getOwnedParameters() {
+Set<Parameter, BehavioralFeature>& BehavioralFeature::getOwnedParameters() {
     return m_ownedParameters;
 }
 

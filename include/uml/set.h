@@ -126,6 +126,7 @@ namespace UML {
     class DataType;
     class InstanceSpecification;
     class Slot;
+    class BehavioralFeature;
 
     /**
      * This container is based around a weighted binary search tree
@@ -156,6 +157,7 @@ namespace UML {
         friend class DataType;
         friend class InstanceSpecification;
         friend class Slot;
+        friend class BehavioralFeature;
 
         protected:
             std::vector<AbstractSet*> m_superSets;

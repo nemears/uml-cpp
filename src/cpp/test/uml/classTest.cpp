@@ -1,14 +1,5 @@
 #include "gtest/gtest.h"
-#include "uml/class.h"
-#include "uml/operation.h"
-#include "uml/opaqueBehavior.h"
-#include "uml/parameter.h"
-#include "uml/sequence.h"
-#include "uml/operation.h"
-#include "uml/package.h"
-#include "uml/property.h"
-#include "uml/literalString.h"
-#include "uml/dataType.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -141,8 +132,8 @@ TEST_F(ClassTest, addOwnedAttributeTest) {
   ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
   ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
   ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
-  ASSERT_TRUE(c.getRole().size() == 1);
-  ASSERT_TRUE(&c.getRole().front() == &p);
+  // ASSERT_TRUE(c.getRole().size() == 1);
+  // ASSERT_TRUE(&c.getRole().front() == &p);
   ASSERT_TRUE(c.getOwnedMembers().size() == 1);
   ASSERT_TRUE(&c.getOwnedMembers().front() == &p);
   ASSERT_TRUE(c.getFeatures().size() == 1);
@@ -154,12 +145,8 @@ TEST_F(ClassTest, addOwnedAttributeTest) {
   ASSERT_TRUE(c.getOwnedElements().size() == 1);
   ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
 
-  ASSERT_TRUE(p.getStructuredClassifier() == &c);
-  ASSERT_TRUE(p.getClassifier() == &c);
   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
   ASSERT_TRUE(p.getNamespace() == &c);
-  ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-  ASSERT_TRUE(&p.getMemberNamespace().front() == &c);
   ASSERT_TRUE(p.getOwner() == &c);
 }
 
@@ -167,11 +154,11 @@ TEST_F(ClassTest, setStructuredClassifierTest) {
   UmlManager m;
   Class& c = m.create<Class>();
   Property& p = m.create<Property>();
-  ASSERT_NO_THROW(p.setStructuredClassifier(&c));
+  ASSERT_NO_THROW(p.setClass(&c));
   ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
   ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
-  ASSERT_TRUE(c.getRole().size() == 1);
-  ASSERT_TRUE(&c.getRole().front() == &p);
+  // ASSERT_TRUE(c.getRole().size() == 1);
+  // ASSERT_TRUE(&c.getRole().front() == &p);
   ASSERT_TRUE(c.getOwnedMembers().size() == 1);
   ASSERT_TRUE(&c.getOwnedMembers().front() == &p);
   ASSERT_TRUE(c.getFeatures().size() == 1);
@@ -183,12 +170,8 @@ TEST_F(ClassTest, setStructuredClassifierTest) {
   ASSERT_TRUE(c.getOwnedElements().size() == 1);
   ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
 
-  ASSERT_TRUE(p.getStructuredClassifier() == &c);
-  ASSERT_TRUE(p.getClassifier() == &c);
   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
   ASSERT_TRUE(p.getNamespace() == &c);
-  ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-  ASSERT_TRUE(&p.getMemberNamespace().front() == &c);
   ASSERT_TRUE(p.getOwner() == &c);
 }
 
@@ -200,17 +183,13 @@ TEST_F(ClassTest, removeOwnedAttributeFunctorTest) {
   ASSERT_NO_THROW(c.getOwnedAttributes().remove(p));
   ASSERT_TRUE(c.getOwnedAttributes().size() == 0);
   ASSERT_TRUE(c.getAttributes().size() == 0);
-  ASSERT_TRUE(c.getRole().size() == 0);
+  // ASSERT_TRUE(c.getRole().size() == 0);
   ASSERT_TRUE(c.getFeatures().size() == 0);
   ASSERT_TRUE(c.getOwnedMembers().size() == 0);
   ASSERT_TRUE(c.getMembers().size() == 0);
   ASSERT_TRUE(c.getOwnedElements().size() == 0);
-
-  ASSERT_TRUE(p.getStructuredClassifier() == 0);
-  ASSERT_TRUE(p.getClassifier() == 0);
   ASSERT_TRUE(p.getFeaturingClassifier() == 0);
   ASSERT_TRUE(p.getNamespace() == 0);
-  ASSERT_TRUE(p.getMemberNamespace().size() == 0);
   ASSERT_TRUE(p.getOwner() == 0);
 }
 
@@ -219,180 +198,177 @@ TEST_F(ClassTest, setFeaturingClassifierNullTest) {
   Class& c = m.create<Class>();
   Property& p = m.create<Property>();
   c.getOwnedAttributes().add(p);
-  ASSERT_NO_THROW(p.setStructuredClassifier(0));
+  ASSERT_NO_THROW(p.setClass(0));
   ASSERT_TRUE(c.getOwnedAttributes().size() == 0);
   ASSERT_TRUE(c.getAttributes().size() == 0);
-  ASSERT_TRUE(c.getRole().size() == 0);
+  // ASSERT_TRUE(c.getRole().size() == 0);
   ASSERT_TRUE(c.getFeatures().size() == 0);
   ASSERT_TRUE(c.getOwnedMembers().size() == 0);
   ASSERT_TRUE(c.getMembers().size() == 0);
   ASSERT_TRUE(c.getOwnedElements().size() == 0);
 
-  ASSERT_TRUE(p.getStructuredClassifier() == 0);
-  ASSERT_TRUE(p.getClassifier() == 0);
   ASSERT_TRUE(p.getFeaturingClassifier() == 0);
   ASSERT_TRUE(p.getNamespace() == 0);
-  ASSERT_TRUE(p.getMemberNamespace().size() == 0);
   ASSERT_TRUE(p.getOwner() == 0);
 }
 
-TEST_F(ClassTest, addRoleFunctorTest) {
-  UmlManager m;
-  Class &c = m.create<Class>();
-  Property& r = m.create<Property>();
-  ASSERT_NO_THROW(c.getRole().add(r));
-  ASSERT_TRUE(c.getRole().size() == 1);
-  ASSERT_TRUE(&c.getRole().front() == &r);
-  ASSERT_TRUE(c.getMembers().size() == 1);
-  ASSERT_TRUE(&c.getMembers().front() == &r);
+// TEST_F(ClassTest, addRoleFunctorTest) {
+//   UmlManager m;
+//   Class &c = m.create<Class>();
+//   Property& r = m.create<Property>();
+//   ASSERT_NO_THROW(c.getRole().add(r));
+//   ASSERT_TRUE(c.getRole().size() == 1);
+//   ASSERT_TRUE(&c.getRole().front() == &r);
+//   ASSERT_TRUE(c.getMembers().size() == 1);
+//   ASSERT_TRUE(&c.getMembers().front() == &r);
 
-  ASSERT_TRUE(r.getMemberNamespace().size() == 1);
-  ASSERT_TRUE(&r.getMemberNamespace().front() == &c);
-}
+//   ASSERT_TRUE(r.getMemberNamespace().size() == 1);
+//   ASSERT_TRUE(&r.getMemberNamespace().front() == &c);
+// }
 
-TEST_F(ClassTest, removeRoleFunctorTest) {
-  UmlManager m;
-  Class &c = m.create<Class>();
-  Property& r = m.create<Property>();
-  c.getRole().add(r);
-  ASSERT_NO_THROW(c.getRole().remove(r));
-  ASSERT_TRUE(c.getRole().size() == 0);
-  ASSERT_TRUE(c.getMembers().size() == 0);
-  ASSERT_TRUE(r.getMemberNamespace().size() == 0);
-}
+// TEST_F(ClassTest, removeRoleFunctorTest) {
+//   UmlManager m;
+//   Class &c = m.create<Class>();
+//   Property& r = m.create<Property>();
+//   c.getRole().add(r);
+//   ASSERT_NO_THROW(c.getRole().remove(r));
+//   ASSERT_TRUE(c.getRole().size() == 0);
+//   ASSERT_TRUE(c.getMembers().size() == 0);
+//   ASSERT_TRUE(r.getMemberNamespace().size() == 0);
+// }
 
-TEST_F(ClassTest, addCompositePropertyTest) {
-  UmlManager m;
-  Class& c = m.create<Class>();
-  Property& p = m.create<Property>();
-  p.setAggregation(AggregationKind::COMPOSITE);
-  ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
-  ASSERT_TRUE(c.getParts().size() == 1);
-  ASSERT_TRUE(&c.getParts().front() == &p);
-  ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
-  ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
-  ASSERT_TRUE(c.getAttributes().size() == 1);
-  ASSERT_TRUE(&c.getAttributes().front() == &p);
-  ASSERT_TRUE(c.getRole().size() == 1);
-  ASSERT_TRUE(&c.getRole().front() == &p);
-  ASSERT_TRUE(c.getFeatures().size() == 1);
-  ASSERT_TRUE(&c.getFeatures().front() == &p);
-  ASSERT_TRUE(c.getOwnedMembers().size() == 1);
-  ASSERT_TRUE(&c.getOwnedMembers().front() == &p);
-  ASSERT_TRUE(c.getMembers().size() == 1);
-  ASSERT_TRUE(&c.getMembers().front() == &p);
-  ASSERT_TRUE(c.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
+// TEST_F(ClassTest, addCompositePropertyTest) {
+//   UmlManager m;
+//   Class& c = m.create<Class>();
+//   Property& p = m.create<Property>();
+//   p.setAggregation(AggregationKind::COMPOSITE);
+//   ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
+//   ASSERT_TRUE(c.getParts().size() == 1);
+//   ASSERT_TRUE(&c.getParts().front() == &p);
+//   ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
+//   ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
+//   ASSERT_TRUE(c.getAttributes().size() == 1);
+//   ASSERT_TRUE(&c.getAttributes().front() == &p);
+//   ASSERT_TRUE(c.getRole().size() == 1);
+//   ASSERT_TRUE(&c.getRole().front() == &p);
+//   ASSERT_TRUE(c.getFeatures().size() == 1);
+//   ASSERT_TRUE(&c.getFeatures().front() == &p);
+//   ASSERT_TRUE(c.getOwnedMembers().size() == 1);
+//   ASSERT_TRUE(&c.getOwnedMembers().front() == &p);
+//   ASSERT_TRUE(c.getMembers().size() == 1);
+//   ASSERT_TRUE(&c.getMembers().front() == &p);
+//   ASSERT_TRUE(c.getOwnedElements().size() == 1);
+//   ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
 
-  ASSERT_TRUE(p.isComposite());
-  ASSERT_TRUE(p.getStructuredClassifier() == &c);
-  ASSERT_TRUE(p.getClassifier() == &c);
-  ASSERT_TRUE(p.getFeaturingClassifier() == &c);
-  ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-  ASSERT_TRUE(&p.getMemberNamespace().front() == &c);
-  ASSERT_TRUE(p.getNamespace() == &c);
-  ASSERT_TRUE(p.getOwner() == &c);
-}
+//   ASSERT_TRUE(p.isComposite());
+//   ASSERT_TRUE(p.getStructuredClassifier() == &c);
+//   ASSERT_TRUE(p.getClassifier() == &c);
+//   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
+//   ASSERT_TRUE(p.getMemberNamespace().size() == 1);
+//   ASSERT_TRUE(&p.getMemberNamespace().front() == &c);
+//   ASSERT_TRUE(p.getNamespace() == &c);
+//   ASSERT_TRUE(p.getOwner() == &c);
+// }
 
-TEST_F(ClassTest, addCompositePropertyTestW_Manager) {
-  UmlManager m;
-  Class& c = m.create<Class>();
-  Property& p = m.create<Property>();
-  p.setAggregation(AggregationKind::COMPOSITE);
-  ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
-  ASSERT_TRUE(c.getParts().size() == 1);
-  ASSERT_TRUE(&c.getParts().front() == &p);
-  ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
-  ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
-  ASSERT_TRUE(c.getAttributes().size() == 1);
-  ASSERT_TRUE(&c.getAttributes().front() == &p);
-  ASSERT_TRUE(c.getRole().size() == 1);
-  ASSERT_TRUE(&c.getRole().front() == &p);
-  ASSERT_TRUE(c.getFeatures().size() == 1);
-  ASSERT_TRUE(&c.getFeatures().front() == &p);
-  ASSERT_TRUE(c.getOwnedMembers().size() == 1);
-  ASSERT_TRUE(&c.getOwnedMembers().front() == &p);
-  ASSERT_TRUE(c.getMembers().size() == 1);
-  ASSERT_TRUE(&c.getMembers().front() == &p);
-  ASSERT_TRUE(c.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
+// TEST_F(ClassTest, addCompositePropertyTestW_Manager) {
+//   UmlManager m;
+//   Class& c = m.create<Class>();
+//   Property& p = m.create<Property>();
+//   p.setAggregation(AggregationKind::COMPOSITE);
+//   ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
+//   ASSERT_TRUE(c.getParts().size() == 1);
+//   ASSERT_TRUE(&c.getParts().front() == &p);
+//   ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
+//   ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
+//   ASSERT_TRUE(c.getAttributes().size() == 1);
+//   ASSERT_TRUE(&c.getAttributes().front() == &p);
+//   ASSERT_TRUE(c.getRole().size() == 1);
+//   ASSERT_TRUE(&c.getRole().front() == &p);
+//   ASSERT_TRUE(c.getFeatures().size() == 1);
+//   ASSERT_TRUE(&c.getFeatures().front() == &p);
+//   ASSERT_TRUE(c.getOwnedMembers().size() == 1);
+//   ASSERT_TRUE(&c.getOwnedMembers().front() == &p);
+//   ASSERT_TRUE(c.getMembers().size() == 1);
+//   ASSERT_TRUE(&c.getMembers().front() == &p);
+//   ASSERT_TRUE(c.getOwnedElements().size() == 1);
+//   ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
 
-  ASSERT_TRUE(p.isComposite());
-  ASSERT_TRUE(p.getStructuredClassifier() == &c);
-  ASSERT_TRUE(p.getClassifier() == &c);
-  ASSERT_TRUE(p.getFeaturingClassifier() == &c);
-  ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-  ASSERT_TRUE(&p.getMemberNamespace().front() == &c);
-  ASSERT_TRUE(p.getNamespace() == &c);
-  ASSERT_TRUE(p.getOwner() == &c);
-}
+//   ASSERT_TRUE(p.isComposite());
+//   ASSERT_TRUE(p.getStructuredClassifier() == &c);
+//   ASSERT_TRUE(p.getClassifier() == &c);
+//   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
+//   ASSERT_TRUE(p.getMemberNamespace().size() == 1);
+//   ASSERT_TRUE(&p.getMemberNamespace().front() == &c);
+//   ASSERT_TRUE(p.getNamespace() == &c);
+//   ASSERT_TRUE(p.getOwner() == &c);
+// }
 
-TEST_F(ClassTest, backwardsAddCompositePropertyTest) {
-  UmlManager m;
-  Class& c = m.create<Class>();
-  Property& p = m.create<Property>();
-  ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
-  ASSERT_NO_THROW(p.setAggregation(AggregationKind::COMPOSITE));
-  ASSERT_TRUE(c.getParts().size() == 1);
-  ASSERT_TRUE(&c.getParts().front() == &p);
-  ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
-  ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
-  ASSERT_TRUE(c.getAttributes().size() == 1);
-  ASSERT_TRUE(&c.getAttributes().front() == &p);
-  ASSERT_TRUE(c.getRole().size() == 1);
-  ASSERT_TRUE(&c.getRole().front() == &p);
-  ASSERT_TRUE(c.getFeatures().size() == 1);
-  ASSERT_TRUE(&c.getFeatures().front() == &p);
-  ASSERT_TRUE(c.getOwnedMembers().size() == 1);
-  ASSERT_TRUE(&c.getOwnedMembers().front() == &p);
-  ASSERT_TRUE(c.getMembers().size() == 1);
-  ASSERT_TRUE(&c.getMembers().front() == &p);
-  ASSERT_TRUE(c.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
+// TEST_F(ClassTest, backwardsAddCompositePropertyTest) {
+//   UmlManager m;
+//   Class& c = m.create<Class>();
+//   Property& p = m.create<Property>();
+//   ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
+//   ASSERT_NO_THROW(p.setAggregation(AggregationKind::COMPOSITE));
+//   ASSERT_TRUE(c.getParts().size() == 1);
+//   ASSERT_TRUE(&c.getParts().front() == &p);
+//   ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
+//   ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
+//   ASSERT_TRUE(c.getAttributes().size() == 1);
+//   ASSERT_TRUE(&c.getAttributes().front() == &p);
+//   ASSERT_TRUE(c.getRole().size() == 1);
+//   ASSERT_TRUE(&c.getRole().front() == &p);
+//   ASSERT_TRUE(c.getFeatures().size() == 1);
+//   ASSERT_TRUE(&c.getFeatures().front() == &p);
+//   ASSERT_TRUE(c.getOwnedMembers().size() == 1);
+//   ASSERT_TRUE(&c.getOwnedMembers().front() == &p);
+//   ASSERT_TRUE(c.getMembers().size() == 1);
+//   ASSERT_TRUE(&c.getMembers().front() == &p);
+//   ASSERT_TRUE(c.getOwnedElements().size() == 1);
+//   ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
 
-  ASSERT_TRUE(p.isComposite());
-  ASSERT_TRUE(p.getStructuredClassifier() == &c);
-  ASSERT_TRUE(p.getClassifier() == &c);
-  ASSERT_TRUE(p.getFeaturingClassifier() == &c);
-  ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-  ASSERT_TRUE(&p.getMemberNamespace().front() == &c);
-  ASSERT_TRUE(p.getNamespace() == &c);
-  ASSERT_TRUE(p.getOwner() == &c);
-}
+//   ASSERT_TRUE(p.isComposite());
+//   ASSERT_TRUE(p.getStructuredClassifier() == &c);
+//   ASSERT_TRUE(p.getClassifier() == &c);
+//   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
+//   ASSERT_TRUE(p.getMemberNamespace().size() == 1);
+//   ASSERT_TRUE(&p.getMemberNamespace().front() == &c);
+//   ASSERT_TRUE(p.getNamespace() == &c);
+//   ASSERT_TRUE(p.getOwner() == &c);
+// }
 
-TEST_F(ClassTest, removePropertyFromParts) {
-  UmlManager m;
-  Class& c = m.create<Class>();
-  Property& p = m.create<Property>();
-  p.setAggregation(AggregationKind::COMPOSITE);
-  c.getOwnedAttributes().add(p);
-  ASSERT_NO_THROW(p.setAggregation(AggregationKind::NONE));
+// TEST_F(ClassTest, removePropertyFromParts) {
+//   UmlManager m;
+//   Class& c = m.create<Class>();
+//   Property& p = m.create<Property>();
+//   p.setAggregation(AggregationKind::COMPOSITE);
+//   c.getOwnedAttributes().add(p);
+//   ASSERT_NO_THROW(p.setAggregation(AggregationKind::NONE));
 
-  ASSERT_TRUE(c.getParts().size() == 0);
-  ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
-  ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
-  ASSERT_TRUE(c.getAttributes().size() == 1);
-  ASSERT_TRUE(&c.getAttributes().front() == &p);
-  ASSERT_TRUE(c.getRole().size() == 1);
-  ASSERT_TRUE(&c.getRole().front() == &p);
-  ASSERT_TRUE(c.getFeatures().size() == 1);
-  ASSERT_TRUE(&c.getFeatures().front() == &p);
-  ASSERT_TRUE(c.getOwnedMembers().size() == 1);
-  ASSERT_TRUE(&c.getOwnedMembers().front() == &p);
-  ASSERT_TRUE(c.getMembers().size() == 1);
-  ASSERT_TRUE(&c.getMembers().front() == &p);
-  ASSERT_TRUE(c.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
+//   ASSERT_TRUE(c.getParts().size() == 0);
+//   ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
+//   ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
+//   ASSERT_TRUE(c.getAttributes().size() == 1);
+//   ASSERT_TRUE(&c.getAttributes().front() == &p);
+//   ASSERT_TRUE(c.getRole().size() == 1);
+//   ASSERT_TRUE(&c.getRole().front() == &p);
+//   ASSERT_TRUE(c.getFeatures().size() == 1);
+//   ASSERT_TRUE(&c.getFeatures().front() == &p);
+//   ASSERT_TRUE(c.getOwnedMembers().size() == 1);
+//   ASSERT_TRUE(&c.getOwnedMembers().front() == &p);
+//   ASSERT_TRUE(c.getMembers().size() == 1);
+//   ASSERT_TRUE(&c.getMembers().front() == &p);
+//   ASSERT_TRUE(c.getOwnedElements().size() == 1);
+//   ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
 
-  ASSERT_TRUE(!p.isComposite());
-  ASSERT_TRUE(p.getStructuredClassifier() == &c);
-  ASSERT_TRUE(p.getClassifier() == &c);
-  ASSERT_TRUE(p.getFeaturingClassifier() == &c);
-  ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-  ASSERT_TRUE(&p.getMemberNamespace().front() == &c);
-  ASSERT_TRUE(p.getNamespace() == &c);
-  ASSERT_TRUE(p.getOwner() == &c);
-}
+//   ASSERT_TRUE(!p.isComposite());
+//   ASSERT_TRUE(p.getStructuredClassifier() == &c);
+//   ASSERT_TRUE(p.getClassifier() == &c);
+//   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
+//   ASSERT_TRUE(p.getMemberNamespace().size() == 1);
+//   ASSERT_TRUE(&p.getMemberNamespace().front() == &c);
+//   ASSERT_TRUE(p.getNamespace() == &c);
+//   ASSERT_TRUE(p.getOwner() == &c);
+// }
 
 TEST_F(ClassTest, CopyClassTest) {
     UmlManager m;
@@ -408,17 +384,15 @@ TEST_F(ClassTest, CopyClassTest) {
     Class c2 = c;
     ASSERT_TRUE(c2.getOwningPackage() == &pk);
     ASSERT_TRUE(c2.getNamespace() == &pk);
-    ASSERT_TRUE(c2.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(&c2.getMemberNamespace().front() == &pk);
     ASSERT_TRUE(c2.getOwner() == &pk);
-    ASSERT_TRUE(c2.getParts().size() == 1);
-    ASSERT_TRUE(&c2.getParts().front() == &p);
+    // ASSERT_TRUE(c2.getParts().size() == 1);
+    // ASSERT_TRUE(&c2.getParts().front() == &p);
     ASSERT_TRUE(c2.getOwnedAttributes().size() == 1);
     ASSERT_TRUE(&c2.getOwnedAttributes().front() == &p);
     ASSERT_TRUE(c2.getAttributes().size() == 1);
     ASSERT_TRUE(&c2.getAttributes().front() == &p);
-    ASSERT_TRUE(c2.getRole().size() == 1);
-    ASSERT_TRUE(&c2.getRole().front() == &p);
+    // ASSERT_TRUE(c2.getRole().size() == 1);
+    // ASSERT_TRUE(&c2.getRole().front() == &p);
     ASSERT_TRUE(c2.getOwnedOperations().size() == 1);
     ASSERT_TRUE(&c2.getOwnedOperations().front() == &o);
     ASSERT_TRUE(c2.getFeatures().size() == 2);
@@ -444,8 +418,8 @@ TEST_F(ClassTest, addAndRemoveNestedClassifierTest) {
   ASSERT_EQ(c.getNestedClassifiers().front().getID(), d.getID());
   ASSERT_EQ(c.getOwnedMembers().size(), 1);
   ASSERT_EQ(c.getOwnedMembers().front().getID(), d.getID());
-  ASSERT_EQ(c.getRedefinedElements().size(), 1);
-  ASSERT_EQ(c.getRedefinedElements().front().getID(), d.getID());
+  // ASSERT_EQ(c.getRedefinedElements().size(), 1);
+  // ASSERT_EQ(c.getRedefinedElements().front().getID(), d.getID());
   c.getNestedClassifiers().remove(d);
   ASSERT_EQ(c.getNestedClassifiers().size(), 0);
   ASSERT_EQ(c.getOwnedMembers().size(), 0);

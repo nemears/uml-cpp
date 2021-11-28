@@ -2,7 +2,7 @@
 #define UML_UML_STABLE_H
 
 /**
- * Comprehensive include of all stable parts of api
+ * Comprehensive include of all stable non-abstract parts of the api
  **/
 
 // #include "uml/abstraction.h"
@@ -33,7 +33,7 @@
 // #include "uml/operation.h"
 #include "uml/package.h"
 #include "uml/packageMerge.h"
-// #include "uml/parameter.h"
+#include "uml/parameter.h"
 #include "uml/primitiveType.h"
 // #include "uml/profile.h"
 // #include "uml/profileApplication.h"

@@ -2,7 +2,6 @@
 #define PARAMETERH
 
 #include "multiplicityElement.h"
-#include "sequence.h"
 #include "connectableElement.h"
 
 namespace UML {
@@ -27,55 +26,25 @@ namespace UML {
         friend class Parsers::SetBehavior;
 
         protected:
-            ParameterDirectionKind m_direction;
-            Singleton<Operation, Parameter> m_operation = Singleton<Operation, Parameter>(this);
-            class RemoveOperationProcedure : public AbstractSingletonProcedure<Operation, Parameter> {
-                public:
-                    RemoveOperationProcedure(Parameter* me) : AbstractSingletonProcedure<Operation, Parameter>(me) {};
-                    void operator()(Operation* el) const override;
-            };
-            class AddOperationProcedure : public AbstractSingletonProcedure<Operation, Parameter> {
-                public:
-                    AddOperationProcedure(Parameter* me) : AbstractSingletonProcedure<Operation, Parameter>(me) {};
-                    void operator()(Operation* el) const override;
-                    void operator()(ID id) const override;
-            };
-            Singleton<Behavior, Parameter> m_behavior = Singleton<Behavior, Parameter>(this);
-            class RemoveBehaviorProcedure : public AbstractSingletonProcedure<Behavior, Parameter> {
-                public:
-                    RemoveBehaviorProcedure(Parameter* me) : AbstractSingletonProcedure<Behavior, Parameter>(me) {};
-                    void operator()(Behavior* el) const override;
-            };
-            class AddBehaviorProcedure : public AbstractSingletonProcedure<Behavior, Parameter> {
-                public:
-                    AddBehaviorProcedure(Parameter* me) : AbstractSingletonProcedure<Behavior, Parameter>(me) {};
-                    void operator()(Behavior* el) const override;
-                    void operator()(ID id) const override;
-            };
-            void reindexName(std::string oldName, std::string newName) override;
+            ParameterDirectionKind m_direction = ParameterDirectionKind::NONE;
+            // Singleton<Operation, Parameter> m_operation = Singleton<Operation, Parameter>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
             Parameter();
         public:
-            Parameter(const Parameter& parameter);
+            Parameter(const Parameter& rhs);
             virtual ~Parameter();
             Parameter& operator=(Parameter&&) {
                 return *this;
             };
-            Operation* getOperation();
-            Operation& getOperationRef();
-            ID getOperationID() const;
-            bool hasOperation() const;
-            void setOperation(Operation& operation);
-            void setOperation(Operation* operation);
-            Behavior* getBehavior();
-            Behavior& getBehaviorRef();
-            ID getBehaviorID() const;
-            bool hasBehavior() const;
-            void setBehavior(Behavior* behavior);
-            void setBehavior(Behavior& behavior);
+            // Operation* getOperation();
+            // Operation& getOperationRef();
+            // ID getOperationID() const;
+            // bool hasOperation() const;
+            // void setOperation(Operation& operation);
+            // void setOperation(Operation* operation);
             ParameterDirectionKind getDirection();
             void setDirection(ParameterDirectionKind direction);
             std::string getDirectionString();

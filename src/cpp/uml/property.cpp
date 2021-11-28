@@ -101,6 +101,7 @@ Property::Property(const Property& rhs) : Element(rhs, ElementType::PROPERTY) {
     Element::copy(rhs);
     NamedElement::copy(rhs);
     TypedElement::copy(rhs);
+    MultiplicityElement::copy(rhs);
     Feature::copy(rhs);
     copy(rhs);
 }

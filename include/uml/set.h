@@ -128,6 +128,7 @@ namespace UML {
     class Slot;
     class BehavioralFeature;
     class Behavior;
+    class MultiplicityElement;
 
     /**
      * This container is based around a weighted binary search tree
@@ -160,6 +161,7 @@ namespace UML {
         friend class Slot;
         friend class BehavioralFeature;
         friend class Behavior;
+        friend class MultiplicityElement;
 
         protected:
             std::vector<AbstractSet*> m_superSets;

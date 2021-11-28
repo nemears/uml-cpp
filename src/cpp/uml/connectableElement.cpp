@@ -1,4 +1,5 @@
 #include "uml/connectableElement.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -24,11 +25,7 @@ void ConnectableElement::referenceErased(ID id) {
 
 ConnectableElement::ConnectableElement() : Element(ElementType::CONNECTABLE_ELEMENT) {}
 
-ConnectableElement::ConnectableElement(const ConnectableElement& rhs) :
-TypedElement(rhs),
-ParameterableElement(rhs),
-NamedElement(rhs),
-Element(rhs, ElementType::CONNECTABLE_ELEMENT) {}
+ConnectableElement::ConnectableElement(const ConnectableElement& rhs) : Element(ElementType::CONNECTABLE_ELEMENT) {}
 
 bool ConnectableElement::isSubClassOf(ElementType eType) const {
     bool ret = TypedElement::isSubClassOf(eType);

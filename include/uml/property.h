@@ -2,8 +2,7 @@
 #define PROPERTYH
 
 #include "structuralFeature.h"
-// #include "valueSpecification.h"
-// #include "connectableElement.h"
+#include "connectableElement.h"
 // #include "deploymentTarget.h"
 
 namespace UML{
@@ -29,7 +28,7 @@ namespace UML{
         COMPOSITE
     };
 
-    class Property: public StructuralFeature/**, public ConnectableElement , public DeploymentTarget**/ {
+    class Property: public StructuralFeature, public ConnectableElement/** , public DeploymentTarget**/ {
 
         friend class UmlManager;
         friend class Class;

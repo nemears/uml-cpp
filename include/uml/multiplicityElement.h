@@ -13,31 +13,15 @@ namespace UML {
             int m_lower = -1;
             int m_upper = -1;
             Singleton<ValueSpecification, MultiplicityElement> m_lowVal = Singleton<ValueSpecification, MultiplicityElement>(this);
-            class RemoveLowerValueProcedures : public AbstractSingletonProcedure<ValueSpecification, MultiplicityElement> {
-                public:
-                    RemoveLowerValueProcedures(MultiplicityElement* me) : AbstractSingletonProcedure<ValueSpecification, MultiplicityElement>(me) {};
-                    void operator()(ValueSpecification* el) const override;
-            };
-            class AddLowerValueProcedures : public AbstractSingletonProcedure<ValueSpecification, MultiplicityElement> {
-                public:
-                    AddLowerValueProcedures(MultiplicityElement* me) : AbstractSingletonProcedure<ValueSpecification, MultiplicityElement>(me) {};
-                    void operator()(ValueSpecification* el) const override;
-            };
             Singleton<ValueSpecification, MultiplicityElement> m_upVal = Singleton<ValueSpecification, MultiplicityElement>(this);
-            class RemoveUpperValueProcedures : public AbstractSingletonProcedure<ValueSpecification, MultiplicityElement> {
-                public:
-                    RemoveUpperValueProcedures(MultiplicityElement* me) : AbstractSingletonProcedure<ValueSpecification, MultiplicityElement>(me) {};
-                    void operator()(ValueSpecification* el) const override;
-            };
-            class AddUpperValueProcedures : public AbstractSingletonProcedure<ValueSpecification, MultiplicityElement> {
-                public:
-                    AddUpperValueProcedures(MultiplicityElement* me) : AbstractSingletonProcedure<ValueSpecification, MultiplicityElement>(me) {};
-                    void operator()(ValueSpecification* el) const override;
-            };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            Set<ValueSpecification, MultiplicityElement>& getLowerValueSingleton();
+            Set<ValueSpecification, MultiplicityElement>& getUpperValueSingleton();
+            void init();
+            void copy(const MultiplicityElement& rhs);
             MultiplicityElement();
         private:
             bool m_multiplicityIsSpecified = false;

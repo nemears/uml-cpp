@@ -62,6 +62,7 @@ namespace UML{
             Property();
         public:
             Property(const Property& prop);
+            virtual ~Property();
             AggregationKind getAggregation();
             bool isComposite();
             void setAggregation(AggregationKind aggregation);

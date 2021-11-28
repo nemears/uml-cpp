@@ -146,6 +146,8 @@ TEST_F(PropertyTest, copyPropertyTest) {
     ASSERT_EQ(p2.getNamespaceRef(), c);
     ASSERT_TRUE(p2.hasFeaturingClassifier());
     ASSERT_EQ(p2.getFeaturingClassifierRef(), c);
+    ASSERT_TRUE(p2.hasOwner());
+    ASSERT_EQ(p2.getOwnerRef(), c);
     ASSERT_TRUE(p2.isStatic());
 }
 

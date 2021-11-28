@@ -844,17 +844,17 @@ namespace UML {
                     for (auto& set : m_superSets) {
                         // compare and update guard of superset to previous supersets
                         if (set != &subsetOf && set->m_guard <= subsetOf.m_guard) {
-                            subsetOf.m_guard += 1;
+                            subsetOf.m_guard = set->m_guard + 1;
                         }
-                    }
-                    if (m_guard <= subsetOf.m_guard) {
-                        m_guard = subsetOf.m_guard + 1;
                     }
                     if (!m_oppositeFunctor && subsetOf.m_oppositeFunctor && m_el) {
                         m_oppositeFunctor = subsetOf.m_oppositeFunctor;
                     }
                     for (auto& set : subsetOf.m_superSets) {
                         this->subsets(*static_cast<Set*>(set));
+                    }
+                    if (m_guard <= subsetOf.m_guard) {
+                        m_guard = subsetOf.m_guard + 1;
                     }
                     for (const auto& set : subsetOf.m_addFunctors) {
                         if (!m_addFunctors.count(set)) {

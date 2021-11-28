@@ -75,7 +75,7 @@ namespace UML {
         friend class SetTest_twoWayMultiSetSplitTest_Test;
         protected:
             size_t m_size = 0;
-            size_t m_upper = 0;
+            size_t m_upper = 0; // this effectively lets us determine the type of the set (1 = singleton, 0 = set, -1 = orderedSet)
             struct SetNode {
                 SetNode(Element* el) : m_el(el) {
                     m_id = el->getID();

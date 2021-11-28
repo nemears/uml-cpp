@@ -36,15 +36,19 @@ namespace UML {
                 if (!m_first) {
                     m_first = node;
                     for (AbstractSet* subSet : this->m_superSets) {
-                        OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(subSet);
-                        if (!set->m_first) {
-                            set->m_first = node;
+                        if (subSet->m_upper == -1) { // compare types (ordered set will be two bytes bigger than set and singleton)
+                            OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(subSet);
+                            if (!set->m_first) {
+                                set->m_first = node;
+                            }
                         }
                     }
                     for (AbstractSet* redefined : this->m_redefines) {
-                        OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(redefined);
-                        if (!set->m_first) {
-                            set->m_first = node;
+                        if (redefined->m_upper == -1) {
+                            OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(redefined);
+                            if (!set->m_first) {
+                                set->m_first = node;
+                            }
                         }
                     }
                 }
@@ -54,28 +58,34 @@ namespace UML {
                 }
                 m_last = node;
                 for (AbstractSet* subSet : this->m_subSets) {
-                    OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(subSet);
-                    if (set) {
-                        set->m_last = node;
-                    } else {
-                        throw ManagerStateException("TODO, orderedSet");
+                    if (subSet->m_upper == -1) {
+                        OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(subSet);
+                        if (set) {
+                            set->m_last = node;
+                        } else {
+                            throw ManagerStateException("TODO, orderedSet");
+                        }
                     }
                 }
                 for (AbstractSet* owningSet : this->m_superSets) {
-                    OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(owningSet);
-                    if (set) {
-                        set->m_last = node;
-                    } else {
-                        // actually i think this is okay
-                        throw ManagerStateException("TODO, orderedSet");
+                    if (owningSet->m_upper == -1) {
+                        OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(owningSet);
+                        if (set) {
+                            set->m_last = node;
+                        } else {
+                            // actually i think this is okay
+                            throw ManagerStateException("TODO, orderedSet");
+                        }
                     }
                 }
                 for (AbstractSet* redefined : this->m_redefines) {
-                    OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(redefined);
-                    if (set) {
-                        set->m_last = node;
-                    } else {
-                        throw ManagerStateException("TODO, orderedSet");
+                    if (redefined->m_upper == -1) {
+                        OrderedSet<T,U>* set = static_cast<OrderedSet<T,U>*>(redefined);
+                        if (set) {
+                            set->m_last = node;
+                        } else {
+                            throw ManagerStateException("TODO, orderedSet");
+                        }
                     }
                 }
             };
@@ -90,8 +100,12 @@ namespace UML {
                 return ret;
             };
         public:
-            inline OrderedSet<T,U>(U* el) : Set<T,U>(el) {};
-            inline OrderedSet<T,U>() : Set<T,U>() {};
+            inline OrderedSet<T,U>(U* el) : Set<T,U>(el) {
+                this->m_upper = -1;
+            };
+            inline OrderedSet<T,U>() : Set<T,U>() {
+                this->m_upper = -1;
+            };
             T& front() {
                 if (this->m_first) {
                     return *dynamic_cast<T*>(this->m_first->m_el);

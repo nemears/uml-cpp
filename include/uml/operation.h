@@ -19,6 +19,7 @@ namespace UML {
     class Operation : public BehavioralFeature , public TemplateableElement, public ParameterableElement {
         
         friend class UmlManager;
+        friend class Class;
         friend class Parameter;
         friend class Parsers::OperationSetClass;
         friend class Parsers::OperationSetDataType;

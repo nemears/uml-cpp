@@ -1,7 +1,7 @@
 #ifndef REDEFINABLE_ELEMENT_H
 #define REDEFINABLE_ELEMENT_H
 
-#include "sequence.h"
+#include "namedElement.h"
 
 namespace UML {
 

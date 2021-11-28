@@ -6,6 +6,7 @@
  **/
 
 // #include "uml/abstraction.h"
+#include "uml/behavior.h"
 #include "uml/class.h"
 // #include "uml/comment.h"
 // #include "uml/artifact.h"
@@ -30,7 +31,7 @@
 // #include "uml/manifestation.h"
 // #include "uml/model.h"
 // #include "uml/opaqueBehavior.h"
-// #include "uml/operation.h"
+#include "uml/operation.h"
 #include "uml/package.h"
 #include "uml/packageMerge.h"
 #include "uml/parameter.h"

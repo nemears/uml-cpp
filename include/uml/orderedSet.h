@@ -17,22 +17,22 @@ namespace UML {
 
         protected:
             struct OrderedNode : public AbstractSet::SetNode {
-                OrderedNode(Element& el) : AbstractSet::SetNode(&el) {};
+                inline OrderedNode(Element& el) : AbstractSet::SetNode(&el) {};
                 OrderedNode() {};
                 OrderedNode* m_prev = 0;
                 OrderedNode* m_next = 0;
             };
             OrderedNode* m_last = 0;
             OrderedNode* m_first = 0;
-            OrderedNode* createOrderedNode(T& el) {
+            inline OrderedNode* createOrderedNode(T& el) {
                 return new OrderedNode(el);
             };
-            OrderedNode* createOrderedNode(ID id) {
+            inline OrderedNode* createOrderedNode(ID id) {
                 OrderedNode* ret = new OrderedNode;
                 ret->m_id = id;
                 return ret;
             };
-            void fillNode(OrderedNode* node) {
+            inline void fillNode(OrderedNode* node) {
                 if (!m_first) {
                     m_first = node;
                     for (AbstractSet* subSet : this->m_superSets) {
@@ -79,17 +79,19 @@ namespace UML {
                     }
                 }
             };
-            AbstractSet::SetNode* createNode(T& el) override {
+            inline AbstractSet::SetNode* createNode(T& el) override {
                 OrderedNode* ret = createOrderedNode(el);
                 fillNode(ret);
                 return ret;
             };
-            AbstractSet::SetNode* createNode(ID id) override {
+            inline AbstractSet::SetNode* createNode(ID id) override {
                 OrderedNode* ret = createOrderedNode(id);
                 fillNode(ret);
                 return ret;
             };
         public:
+            inline OrderedSet<T,U>(U* el) : Set<T,U>(el) {};
+            inline OrderedSet<T,U>() : Set<T,U>() {};
             T& front() {
                 if (this->m_first) {
                     return *dynamic_cast<T*>(this->m_first->m_el);

@@ -76,7 +76,7 @@ void Property::init() {
     m_defaultValue.m_signature = &Property::getDefaultValueSingleton;
     m_class.subsets(m_namespace);
     m_class.subsets(m_featuringClassifier);
-    m_class.opposite(&Class::getOwnedAttributes);
+    m_class.opposite(&Class::getOwnedAttributesSet);
     m_class.m_signature = &Property::getClassSingleton;
     m_dataType.subsets(m_namespace);
     m_dataType.subsets(m_featuringClassifier);

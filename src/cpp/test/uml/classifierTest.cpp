@@ -7,8 +7,8 @@ class ClassifierTest : public ::testing::Test {};
 
 TEST_F(ClassifierTest, GetOwnedAttributesTest) {
 	UmlManager m;
-	Class classifier1 = m.create<Class>();
-	Property prop = m.create<Property>();
+	Class& classifier1 = m.create<Class>();
+	Property& prop = m.create<Property>();
 	classifier1.getOwnedAttributes().add(prop);
 	ASSERT_FALSE(classifier1.getAttributes().empty());
 	ASSERT_EQ(classifier1.getAttributes().front(), prop);

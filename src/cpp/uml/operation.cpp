@@ -47,11 +47,19 @@ Set<DataType, Operation>& Operation::getDataTypeSingleton() {
 }
 
 void Operation::init() {
-    
+    m_class.subsets(m_featuringClassifier);
+    m_class.subsets(m_namespace);
+    m_class.opposite(&Class::getOwnedOperationsSet);
+    m_class.m_signature = &Operation::getClassSingleton;
+    m_dataType.subsets(m_featuringClassifier);
+    m_dataType.subsets(m_namespace);
+    m_dataType.m_signature = &Operation::getDataTypeSingleton;
 }
 
 void Operation::copy(const Operation& rhs) {
-
+    m_type = rhs.m_type;
+    m_class = rhs.m_class;
+    m_dataType = rhs.m_dataType;
 }
 
 Operation::Operation() : Element(ElementType::OPERATION) {

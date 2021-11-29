@@ -15,6 +15,7 @@ namespace UML{
 
         friend class UmlManager;
         friend class Property;
+        friend class Operation;
 
         protected:
             OrderedSet<Property, Class> m_classOwnedAttrubutes = OrderedSet<Property, Class>(this);

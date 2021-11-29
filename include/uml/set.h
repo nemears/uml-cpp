@@ -758,9 +758,9 @@ namespace UML {
                                 SetNode* currParent = curr->m_parent;
                                 for (auto& set : m_superSets) {
                                     // set supersets root to 0 if it is the node
-                                    if (set->m_root->m_id == curr->m_id) {
+                                    if (set->m_root->m_id == curr->m_id && set->m_root == curr) {
                                         set->m_root = 0;
-                                    } else if (currParent && set->m_root && !set->search(currParent->m_id, set->m_root)) {
+                                    } else if (currParent && set->m_root && currParent != set->search(currParent->m_id, set->m_root)) {
                                         // this set owns this element through a different parent
                                         // we must find it and set the pointer to curr to 0
                                         SetNode* temp = set->m_root;

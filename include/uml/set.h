@@ -131,6 +131,7 @@ namespace UML {
     class MultiplicityElement;
     class Operation;
     class OpaqueBehavior;
+    class Parameter;
 
     /**
      * This container is based around a weighted binary search tree
@@ -166,6 +167,7 @@ namespace UML {
         friend class MultiplicityElement;
         friend class Operation;
         friend class OpaqueBehavior;
+        friend class Parameter;
 
         protected:
             std::vector<AbstractSet*> m_superSets;

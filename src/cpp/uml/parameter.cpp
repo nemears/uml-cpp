@@ -6,14 +6,14 @@ using namespace UML;
 void Parameter::referenceReindexed(ID oldID, ID newID) {
     TypedElement::referenceReindexed(oldID, newID);
     MultiplicityElement::referenceReindexed(oldID, newID);
-    // m_operation.reindex(oldID, newID);
+    m_operation.reindex(oldID, newID);
     // m_behavior.reindex(oldID, newID);
 }
 
 void Parameter::referencingReleased(ID id) {
     TypedElement::referencingReleased(id);
     MultiplicityElement::referencingReleased(id);
-    // m_operation.release(id);
+    m_operation.release(id);
     // m_behavior.release(id);
 }
 
@@ -27,50 +27,64 @@ void Parameter::restoreReferences() {
 void Parameter::referenceErased(ID id) {
     TypedElement::referenceErased(id);
     MultiplicityElement::referenceErased(id);
-    // m_operation.elementErased(id);
+    m_operation.eraseElement(id);
     // m_behavior.elementErased(id);
 }
 
+Set<Operation, Parameter>& Parameter::getOperationSingleton() {
+    return m_operation;
+}
+
+void Parameter::init() {
+    m_operation.subsets(m_namespace);
+    m_operation.opposite(&Operation::getOwnedParametersSet);
+    m_operation.m_signature = &Parameter::getOperationSingleton;
+}
+
+void Parameter::copy(const Parameter& rhs) {
+    m_operation = rhs.m_operation;
+}
+
 Parameter::Parameter() : Element(ElementType::PARAMETER) {
-    // init();
+    init();
 }
 
 Parameter::Parameter(const Parameter& rhs) : Element(rhs, ElementType::PARAMETER) {
-    // init();
+    init();
     Element::copy(rhs);
     NamedElement::copy(rhs);
     TypedElement::copy(rhs);
     MultiplicityElement::copy(rhs);
-    // copy(rhs);
+    copy(rhs);
 }
 
 Parameter::~Parameter() {
 
 }
 
-// Operation* Parameter::getOperation() {
-//     return m_operation.get();
-// }
+Operation* Parameter::getOperation() {
+    return m_operation.get();
+}
 
-// Operation& Parameter::getOperationRef() {
-//     return m_operation.getRef();
-// }
+Operation& Parameter::getOperationRef() {
+    return m_operation.getRef();
+}
 
-// ID Parameter::getOperationID() const {
-//     return m_operation.id();
-// }
+ID Parameter::getOperationID() const {
+    return m_operation.id();
+}
 
-// bool Parameter::hasOperation() const {
-//     return m_operation.has();
-// }
+bool Parameter::hasOperation() const {
+    return m_operation.has();
+}
 
-// void Parameter::setOperation(Operation* operation) {
-//     m_operation.set(operation);
-// }
+void Parameter::setOperation(Operation* operation) {
+    m_operation.set(operation);
+}
 
-// void Parameter::setOperation(Operation& operation) {
-//     m_operation.set(operation);
-// }
+void Parameter::setOperation(Operation& operation) {
+    m_operation.set(operation);
+}
 
 ParameterDirectionKind Parameter::getDirection() {
     return m_direction;

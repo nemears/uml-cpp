@@ -14,6 +14,7 @@ namespace UML {
     class Behavior : public Class {
 
         friend class UmlManager;
+        friend class BehavioralFeature;
         friend class Parsers::BehaviorSetSpecification;
         friend class Parsers::SetBehavioredClassifier;
 

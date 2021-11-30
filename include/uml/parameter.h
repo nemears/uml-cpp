@@ -22,16 +22,20 @@ namespace UML {
     class Parameter : public ConnectableElement , public MultiplicityElement {
 
         friend class UmlManager;
+        friend class Operation;
         friend class Parsers::SetOperation;
         friend class Parsers::SetBehavior;
 
         protected:
             ParameterDirectionKind m_direction = ParameterDirectionKind::NONE;
-            // Singleton<Operation, Parameter> m_operation = Singleton<Operation, Parameter>(this);
+            Singleton<Operation, Parameter> m_operation = Singleton<Operation, Parameter>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            Set<Operation, Parameter>& getOperationSingleton();
+            void init();
+            void copy(const Parameter& rhs);
             Parameter();
         public:
             Parameter(const Parameter& rhs);
@@ -39,12 +43,12 @@ namespace UML {
             Parameter& operator=(Parameter&&) {
                 return *this;
             };
-            // Operation* getOperation();
-            // Operation& getOperationRef();
-            // ID getOperationID() const;
-            // bool hasOperation() const;
-            // void setOperation(Operation& operation);
-            // void setOperation(Operation* operation);
+            Operation* getOperation();
+            Operation& getOperationRef();
+            ID getOperationID() const;
+            bool hasOperation() const;
+            void setOperation(Operation& operation);
+            void setOperation(Operation* operation);
             ParameterDirectionKind getDirection();
             void setDirection(ParameterDirectionKind direction);
             std::string getDirectionString();

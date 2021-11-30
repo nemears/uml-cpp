@@ -1,8 +1,5 @@
 #include "gtest/gtest.h"
-#include "uml/behavior.h"
-#include "uml/operation.h"
-#include "uml/parameter.h"
-#include "uml/activity.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 

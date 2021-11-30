@@ -35,7 +35,7 @@ void BehavioralFeature::referenceErased(ID id) {
 }
 
 void BehavioralFeature::init() {
-    // m_methods.opposit(&Behavior::getSpecifications);
+    m_methods.opposite(&Behavior::getSpecificationSingleton);
     m_methods.m_signature = &BehavioralFeature::getMethods;
     m_ownedParameters.subsets(m_ownedMembers);
     m_ownedParameters.m_signature = &BehavioralFeature::getOwnedParameters;

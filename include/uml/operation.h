@@ -4,6 +4,7 @@
 #include "behavioralFeature.h"
 #include "templateableElement.h"
 #include "parameterableElement.h"
+#include "orderedSet.h"
 
 namespace UML {
 
@@ -29,6 +30,7 @@ namespace UML {
             Singleton<Type, Operation> m_type = Singleton<Type, Operation>(this);
             Singleton<Class, Operation> m_class = Singleton<Class, Operation>(this);
             Singleton<DataType, Operation> m_dataType = Singleton<DataType, Operation>(this);
+            OrderedSet<Parameter, Operation> m_operationOwnedParameters = OrderedSet<Parameter, Operation>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
@@ -36,6 +38,7 @@ namespace UML {
             Set<Type, Operation>& getTypeSingleton();
             Set<Class, Operation>& getClassSingleton();
             Set<DataType, Operation>& getDataTypeSingleton();
+            Set<Parameter, Operation>& getOwnedParametersSet();
             void init();
             void copy(const Operation& rhs);
             Operation();
@@ -59,6 +62,7 @@ namespace UML {
             bool hasDataType() const;
             void setDataType(DataType& dataType);
             void setDataType(DataType* dataType);
+            OrderedSet<Parameter, Operation>& getOwnedParameters();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::OPERATION;

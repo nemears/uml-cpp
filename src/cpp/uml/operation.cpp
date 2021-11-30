@@ -46,6 +46,10 @@ Set<DataType, Operation>& Operation::getDataTypeSingleton() {
     return m_dataType;
 }
 
+Set<Parameter, Operation>& Operation::getOwnedParametersSet() {\
+    return m_operationOwnedParameters;
+}
+
 void Operation::init() {
     m_class.subsets(m_featuringClassifier);
     m_class.subsets(m_namespace);
@@ -54,6 +58,9 @@ void Operation::init() {
     m_dataType.subsets(m_featuringClassifier);
     m_dataType.subsets(m_namespace);
     m_dataType.m_signature = &Operation::getDataTypeSingleton;
+    m_operationOwnedParameters.redefines(m_ownedParameters);
+    m_operationOwnedParameters.opposite(&Parameter::getOperationSingleton);
+    m_operationOwnedParameters.m_signature = &Operation::getOwnedParametersSet;
 }
 
 void Operation::copy(const Operation& rhs) {
@@ -145,6 +152,10 @@ void Operation::setDataType(DataType* dataType) {
 
 void Operation::setDataType(DataType& dataType) {
     m_dataType.set(dataType);
+}
+
+OrderedSet<Parameter, Operation>& Operation::getOwnedParameters() {
+    return m_operationOwnedParameters;
 }
 
 bool Operation::isSubClassOf(ElementType eType) const {

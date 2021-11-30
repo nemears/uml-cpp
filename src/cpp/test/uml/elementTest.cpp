@@ -170,12 +170,12 @@ TEST_F(ElementTest, CopyTest) {
 }
 
 TEST_F(ElementTest, doINeedAnAddRelationshipFunctorTest) { // answer is yes
-    // UmlManager m;
-    // Package e = m.create<Package>();
-    // PackageMerge r = m.create<PackageMerge>();
-    // e.getPackageMerge().add(r);
-    // ASSERT_TRUE(r.getRelatedElements().size() == 1);
-    // ASSERT_EQ(r.getRelatedElements().front(), e);
+    UmlManager m;
+    Package e = m.create<Package>();
+    PackageMerge r = m.create<PackageMerge>();
+    e.getPackageMerge().add(r);
+    ASSERT_TRUE(r.getRelatedElements().size() == 1);
+    ASSERT_EQ(r.getRelatedElements().front(), e);
 }
 
 TEST_F(ElementTest, readOnlySequenceTest) {
@@ -186,18 +186,6 @@ TEST_F(ElementTest, readOnlySequenceTest) {
     ASSERT_NO_THROW(p.getPackagedElements().add(c1));
     ASSERT_THROW(p.getOwnedElements().add(c2), ReadOnlySetException);
     ASSERT_THROW(p.getOwnedElements().remove(c1), ReadOnlySetException);
-}
-
-TEST_F(ElementTest, readOnlyRelationships) {
-    // UmlManager mm;
-    // Package p = mm.create<Package>();
-    // Package m = mm.create<Package>();
-    // PackageMerge r = mm.create<PackageMerge>();
-    // p.getPackageMerge().add(r);
-    // r.setMergedPackage(&m);
-    // PackageMerge r2 = mm.create<PackageMerge>();
-    // ASSERT_THROW(p.getRelationships().add(r2), ReadOnlySequenceException);
-    // ASSERT_THROW(p.getRelationships().remove(r), ReadOnlySequenceException);
 }
 
 TEST_F(ElementTest, readOnlyRelatedElementsTest) {
@@ -211,24 +199,6 @@ TEST_F(ElementTest, readOnlyRelatedElementsTest) {
     ASSERT_THROW(r.getRelatedElements().remove(p), ReadOnlySetException);
     ASSERT_THROW(r.getRelatedElements().add(h), ReadOnlySetException);
 }
-
-// TEST_F(ElementTest, setAndGetOwnerTest2) {
-//   UmlManager m;
-//   Element& owner = m.create<Element>();
-//   Element& ownee = m.create<Element>();
-//   ownee.setOwner2(&owner);
-//   ASSERT_TRUE(ownee.getOwner2() == &owner);
-// }
-
-// TEST_F(ElementTest, addToOwnedElementsTest) {
-//   UmlManager m;
-//   Element& owner = m.create<Element>();
-//   Element& ownee = m.create<Element>();
-//   ASSERT_NO_THROW(owner.getOwnedElements2().add(ownee));
-//   ASSERT_TRUE(owner.getOwnedElements2().size() == 1);
-//   ASSERT_TRUE(owner.getOwnedElements2().front() == &ownee);
-//   ASSERT_TRUE(ownee.getOwner() == &owner); // TODO change
-// }
 
 TEST_F(ElementTest, isSameOrNullTest) {
   UmlManager m;
@@ -263,51 +233,49 @@ TEST_F(ElementTest, AddAndRemoveAppliedStereotypetest) {
 }
 
 TEST_F(ElementTest, asFuncTest) {
-  // UmlManager m;
-  // Classifier& classifier = m.create<Class>();
-  // Class& clazz = classifier.as<Class>();
-  // ASSERT_EQ(classifier.getID(), clazz.getID());
+  UmlManager m;
+  Classifier& classifier = m.create<Class>();
+  Class& clazz = classifier.as<Class>();
+  ASSERT_EQ(classifier.getID(), clazz.getID());
 }
 
 TEST_F(ElementTest, copyAndChangeTest) {
-  // UmlManager m;
-  // Package& package = m.create<Package>();
-  // Class& ownedEl = m.create<Class>();
-  // {
-  //   Package copy = package;
-  //   copy.getPackagedElements().add(ownedEl);
-  //   ASSERT_COPY_SEQUENCE_CORRECTLY(package, copy, &Element::getOwnedElements,
-  //                                        &Namespace::getMembers,
-  //                                        &Namespace::getOwnedMembers,
-  //                                        &Package::getPackagedElements);
-  //   ASSERT_EQ(package.getOwnedElements().size(), 1);
-  //   ASSERT_EQ(package.getOwnedElements().get(ownedEl.getID()).getID(), ownedEl.getID());
-  //   ASSERT_EQ(package.getOwnedMembers().size(), 1);
-  //   ASSERT_EQ(package.getOwnedMembers().front().getID(), ownedEl.getID());
-  //   ASSERT_EQ(package.getMembers().size(), 1);
-  //   ASSERT_EQ(package.getMembers().front().getID(), ownedEl.getID());
-  //   ASSERT_EQ(package.getPackagedElements().size(), 1);
-  //   ASSERT_EQ(package.getPackagedElements().front().getID(), ownedEl.getID());
-  //   ASSERT_TRUE(ownedEl.getOwner() != 0);
-  //   ASSERT_EQ(ownedEl.getOwner()->getID(), package.getID());
-  //   ASSERT_TRUE(ownedEl.getNamespace() != 0);
-  //   ASSERT_EQ(ownedEl.getNamespace()->getID(), package.getID());
-  //   ASSERT_EQ(ownedEl.getMemberNamespace().size(), 1);
-  //   ASSERT_EQ(ownedEl.getMemberNamespace().front().getID(), package.getID());
-  //   ASSERT_TRUE(ownedEl.getOwningPackage() != 0);
-  //   ASSERT_EQ(ownedEl.getOwningPackage()->getID(), package.getID());
-  //   package.getPackagedElements().remove(ownedEl);
-  //   ASSERT_EQ(copy.getOwnedElements().size(), 0);
-  //   ASSERT_EQ(copy.getOwnedMembers().size(), 0);
-  //   ASSERT_EQ(copy.getMembers().size(), 0);
-  //   ASSERT_EQ(copy.getPackagedElements().size(), 0);
-  //   copy.getPackagedElements().add(m.create<Package>());
-  //   ASSERT_COPY_SEQUENCE_CORRECTLY(package, copy, &Element::getOwnedElements,
-  //                                        &Namespace::getMembers,
-  //                                        &Namespace::getOwnedMembers,
-  //                                        &Package::getPackagedElements);
-  // }
-  // ASSERT_EQ(package.getPackagedElements().size(), 1);
+  UmlManager m;
+  Package& package = m.create<Package>();
+  Class& ownedEl = m.create<Class>();
+  {
+    Package copy = package;
+    copy.getPackagedElements().add(ownedEl);
+    ASSERT_COPY_SEQUENCE_CORRECTLY(package, copy, &Element::getOwnedElements,
+                                         &Namespace::getMembers,
+                                         &Namespace::getOwnedMembers,
+                                         &Package::getPackagedElements);
+    ASSERT_EQ(package.getOwnedElements().size(), 1);
+    ASSERT_EQ(package.getOwnedElements().get(ownedEl.getID()).getID(), ownedEl.getID());
+    ASSERT_EQ(package.getOwnedMembers().size(), 1);
+    ASSERT_EQ(package.getOwnedMembers().front().getID(), ownedEl.getID());
+    ASSERT_EQ(package.getMembers().size(), 1);
+    ASSERT_EQ(package.getMembers().front().getID(), ownedEl.getID());
+    ASSERT_EQ(package.getPackagedElements().size(), 1);
+    ASSERT_EQ(package.getPackagedElements().front().getID(), ownedEl.getID());
+    ASSERT_TRUE(ownedEl.getOwner() != 0);
+    ASSERT_EQ(ownedEl.getOwner()->getID(), package.getID());
+    ASSERT_TRUE(ownedEl.getNamespace() != 0);
+    ASSERT_EQ(ownedEl.getNamespace()->getID(), package.getID());
+    ASSERT_TRUE(ownedEl.getOwningPackage() != 0);
+    ASSERT_EQ(ownedEl.getOwningPackage()->getID(), package.getID());
+    package.getPackagedElements().remove(ownedEl);
+    ASSERT_EQ(copy.getOwnedElements().size(), 0);
+    ASSERT_EQ(copy.getOwnedMembers().size(), 0);
+    ASSERT_EQ(copy.getMembers().size(), 0);
+    ASSERT_EQ(copy.getPackagedElements().size(), 0);
+    copy.getPackagedElements().add(m.create<Package>());
+    ASSERT_COPY_SEQUENCE_CORRECTLY(package, copy, &Element::getOwnedElements,
+                                         &Namespace::getMembers,
+                                         &Namespace::getOwnedMembers,
+                                         &Package::getPackagedElements);
+  }
+  ASSERT_EQ(package.getPackagedElements().size(), 1);
 }
 
 TEST_F(ElementTest, copySingletonCorrectly) {

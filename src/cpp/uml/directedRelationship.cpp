@@ -29,8 +29,10 @@ void DirectedRelationship::referenceErased(ID id) {
 void DirectedRelationship::init() {
     m_sources.subsets(m_relatedElements);
     m_sources.m_signature = &DirectedRelationship::getSources;
+    m_sources.m_readOnly = true;
     m_targets.subsets(m_relatedElements);
     m_targets.m_signature = &DirectedRelationship::getTargets;
+    m_targets.m_readOnly = true;
 }
 
 void DirectedRelationship::copy(const DirectedRelationship& rhs) {

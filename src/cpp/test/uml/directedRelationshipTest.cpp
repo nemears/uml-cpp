@@ -1,7 +1,5 @@
 #include "gtest/gtest.h"
-#include "uml/directedRelationship.h"
-#include "uml/package.h"
-#include "uml/packageMerge.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -14,8 +12,8 @@ TEST_F(DirectedRelationshipTest, sourceAndTargetTest) {
     PackageMerge dr = m.create<PackageMerge>();
     Package a = m.create<Package>();
     Package b = m.create<Package>();
-    dr.getSources().add(a);
-    dr.getTargets().add(b);
+    dr.setReceivingPackage(a);
+    dr.setMergedPackage(b);
     ASSERT_TRUE(dr.getSources().size() == 1);
     ASSERT_TRUE(dr.getSources().front() == a);
     ASSERT_TRUE(dr.getTargets().size() == 1);
@@ -27,25 +25,11 @@ TEST_F(DirectedRelationshipTest, addTargetFunctorTest) {
     PackageMerge dr = m.create<PackageMerge>();
     Package a = m.create<Package>();
     Package b = m.create<Package>();
-    dr.getTargets().add(a);
-    dr.getSources().add(b);
+    dr.setReceivingPackage(a);
+    dr.setMergedPackage(b);
     ASSERT_EQ(dr.getRelatedElements().size(), 2);
     ASSERT_EQ(dr.getRelatedElements().front(), a);
     ASSERT_EQ(dr.getRelatedElements().back(), b);
-    ASSERT_EQ(a.getRelationships().size(), 1);
-    ASSERT_EQ(a.getRelationships().front(), dr);
-    ASSERT_EQ(b.getRelationships().size(), 1);
-    ASSERT_EQ(b.getRelationships().front(), dr);
-}
-
-TEST_F(DirectedRelationshipTest, duplicateRelationshipExceptionTest) {
-    UmlManager m;
-    PackageMerge dr = m.create<PackageMerge>();
-    Package a = m.create<Package>();
-    Package b = m.create<Package>();
-    dr.getTargets().add(a);
-    dr.getSources().add(b);
-    ASSERT_THROW(dr.getRelatedElements().add(a), DuplicateRelatedElementException);
 }
 
 TEST_F(DirectedRelationshipTest, removeRelationshipFunctorTest) {
@@ -59,9 +43,7 @@ TEST_F(DirectedRelationshipTest, removeRelationshipFunctorTest) {
     a.getPackageMerge().remove(dr);
     ASSERT_FALSE(dr.getTargets().count(a.getID()));
     ASSERT_FALSE(dr.getRelatedElements().count(a.getID()));
-    ASSERT_FALSE(a.getRelationships().count(dr.getID()));
     
     ASSERT_FALSE(dr.getSources().count(b.getID()));
     ASSERT_FALSE(dr.getRelatedElements().count(b.getID()));
-    ASSERT_FALSE(b.getRelationships().count(dr.getID()));
 }

@@ -43,6 +43,7 @@ void Parameter::init() {
 
 void Parameter::copy(const Parameter& rhs) {
     m_operation = rhs.m_operation;
+    m_direction = rhs.m_direction;
 }
 
 Parameter::Parameter() : Element(ElementType::PARAMETER) {

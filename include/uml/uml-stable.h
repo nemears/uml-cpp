@@ -10,7 +10,7 @@
 #include "uml/class.h"
 // #include "uml/comment.h"
 // #include "uml/artifact.h"
-// #include "uml/association.h"
+#include "uml/association.h"
 #include "uml/dataType.h"
 #include "uml/dependency.h"
 // #include "uml/deployment.h"

@@ -23,20 +23,6 @@ TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
     ASSERT_TRUE(&p.getOwnedElements().get(ls.getID()) == &ls);
 }
 
-// TEST_F(PropertyTest, setDefaultValueOfImproperTypeTestString) {
-//     Property p;
-//     PrimitiveType stringP;
-
-//     // assign it improper type if expecting string
-//     stringP.setPrimitiveType(PrimitiveType::Primitive::INT);
-
-//     p.setType(&stringP);
-    
-//     LiteralString ls;
-//     ls.setValue("test");
-//     EXPECT_THROW(p.setDefaultValue(&ls), Property::InvalidValueException);
-// }
-
 TEST_F(PropertyTest, reindexID_forClassiferTest) {
     UmlManager m;
     Class& c = m.create<Class>();

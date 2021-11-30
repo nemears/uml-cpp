@@ -58,15 +58,15 @@ TEST_F(ValueSpecificationTest, LiteralBoolTest) {
     EXPECT_EQ(ls.getValue(), false);
 }
 
-// TEST_F(ValueSpecificationTest, reindexID_forSlotTest) {
-//     UmlManager m;
-//     LiteralBool& v = m.create<LiteralBool>();
-//     Slot& s = m.create<Slot>();
-//     s.getValues().add(v);
-//     v.setID("eb092018_0bef_4ad6_b80f_05fa");
-//     ASSERT_NO_THROW(s.getValues().get(v.getID()));
-//     ASSERT_NO_THROW(s.getOwnedElements().get(v.getID()));
-// }
+TEST_F(ValueSpecificationTest, reindexID_forSlotTest) {
+    UmlManager m;
+    LiteralBool& v = m.create<LiteralBool>();
+    Slot& s = m.create<Slot>();
+    s.getValues().add(v);
+    v.setID("eb092018_0bef_4ad6_b80f_05fa");
+    ASSERT_NO_THROW(s.getValues().get(v.getID()));
+    ASSERT_NO_THROW(s.getOwnedElements().get(v.getID()));
+}
 
 // TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
 //     LiteralInt v;

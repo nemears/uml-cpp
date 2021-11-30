@@ -14,6 +14,26 @@ namespace UML {
             int m_upper = -1;
             Singleton<ValueSpecification, MultiplicityElement> m_lowVal = Singleton<ValueSpecification, MultiplicityElement>(this);
             Singleton<ValueSpecification, MultiplicityElement> m_upVal = Singleton<ValueSpecification, MultiplicityElement>(this);
+            class AddLowerFunctor : public SetFunctor {
+                public:
+                    AddLowerFunctor(Element* them) : SetFunctor(them) {};
+                    void operator()(Element& el) const override;
+            };
+            class RemoveLowerFunctor : public SetFunctor {
+                public:
+                    RemoveLowerFunctor(Element* them) : SetFunctor(them) {};
+                    void operator()(Element& el) const override;
+            };
+            class AddUpperFunctor : public SetFunctor {
+                public:
+                    AddUpperFunctor(Element* them) : SetFunctor(them) {};
+                    void operator()(Element& el) const override;
+            };
+            class RemoveUpperFunctor : public SetFunctor {
+                public:
+                    RemoveUpperFunctor(Element* them) : SetFunctor(them) {};
+                    void operator()(Element& el) const override;
+            };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;

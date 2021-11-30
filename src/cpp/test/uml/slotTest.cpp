@@ -46,19 +46,6 @@ TEST_F(SlotTest, removeValueFunctorTest) {
     ASSERT_TRUE(l.getOwner() == 0);
 }
 
-// TEST_F(SlotTest, overrideOwningSlotW_NullTest) {
-//     UmlManager m;
-//     Slot& s = m.create<Slot>();
-//     LiteralString& l = m.create<LiteralString>();
-//     s.getValues().add(l);
-//     // ASSERT_NO_THROW(l.setOwningSlot(0));
-//     ASSERT_TRUE(s.getValues().size() == 0);
-//     ASSERT_TRUE(s.getOwnedElements().size() == 0);
-    
-//     // ASSERT_TRUE(l.getOwningSlot() == 0);
-//     ASSERT_TRUE(l.getOwner() == 0);
-// }
-
 TEST_F(SlotTest, overrideOwningSlotW_OtherSlotTest) {
     UmlManager m;
     Slot& s = m.create<Slot>();

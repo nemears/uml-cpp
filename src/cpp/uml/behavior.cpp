@@ -1,7 +1,7 @@
 #include "uml/behavior.h"
 #include "uml/behavioralFeature.h"
-// #include "uml/operation.h"
-// #include "uml/parameter.h"
+#include "uml/operation.h"
+#include "uml/parameter.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -10,28 +10,24 @@ void Behavior::referencingReleased(ID id) {
     Class::referencingReleased(id);
     m_ownedParameters.release(id);
     m_specification.release(id);
-    // m_behavioredClassifier.release(id);
 }
 
 void Behavior::referenceReindexed(ID oldID, ID newID) {
     Class::referenceReindexed(oldID, newID);
     m_ownedParameters.reindex(oldID, newID);
     m_specification.reindex(oldID, newID);
-    // m_behavioredClassifier.reindex(oldID, newID);
 }
 
 void Behavior::restoreReferences() {
     Class::restoreReferences();
     // m_ownedParameters.restoreReferences();
     // m_specification.restoreReference();
-    // m_behavioredClassifier.restoreReference();
 }
 
 void Behavior::referenceErased(ID id) {
     Class::referenceErased(id);
     m_ownedParameters.eraseElement(id);
     m_specification.eraseElement(id);
-    // m_behavioredClassifier.elementErased(id);
 }
 
 Set<BehavioralFeature, Behavior>& Behavior::getSpecificationSingleton() {
@@ -89,30 +85,6 @@ void Behavior::setSpecification(BehavioralFeature* specification) {
 void Behavior::setSpecification(BehavioralFeature& specification) {
     m_specification.set(specification);
 }
-
-// BehavioredClassifier* Behavior::getBehavioredClassifier() {
-//     return m_behavioredClassifier.get();
-// }
-
-// BehavioredClassifier& Behavior::getBehavioredClassifierRef() {
-//     return m_behavioredClassifier.getRef();
-// }
-
-// ID Behavior::getBehavioredClassifierID() const {
-//     return m_behavioredClassifier.id();
-// }
-
-// bool Behavior::hasBehavioredClassifier() const {
-//     return m_behavioredClassifier.has();
-// }
-
-// void Behavior::setBehavioredClassifier(BehavioredClassifier* classifier) {
-//     m_behavioredClassifier.set(classifier);
-// }
-
-// void Behavior::setBehavioredClassifier(BehavioredClassifier& classifier) {
-//     m_behavioredClassifier.set(classifier);
-// }
 
 bool Behavior::isSubClassOf(ElementType eType) const {
     bool ret = Class::isSubClassOf(eType);

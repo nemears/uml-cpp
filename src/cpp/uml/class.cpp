@@ -7,31 +7,31 @@ using namespace UML;
 
 void Class::referencingReleased(ID id) {
     StructuredClassifier::referencingReleased(id);
+    BehavioredClassifier::referencingReleased(id);
     m_classOwnedAttrubutes.release(id);
-    // BehavioredClassifier::referencingReleased(id);
     m_ownedOperations.release(id);
     m_nestedClassifiers.release(id);
 }
 
 void Class::referenceReindexed(ID oldID, ID newID) {
     StructuredClassifier::referenceReindexed(oldID, newID);
+    BehavioredClassifier::referenceReindexed(oldID, newID);
     m_classOwnedAttrubutes.reindex(oldID, newID);
-    // BehavioredClassifier::referenceReindexed(oldID, newID);
     m_ownedOperations.reindex(oldID, newID);
     m_nestedClassifiers.reindex(oldID, newID);
 }
 
 void Class::restoreReferences() {
     StructuredClassifier::restoreReferences();
-    // BehavioredClassifier::restoreReferences();
+    BehavioredClassifier::restoreReferences();
     // m_ownedOperations.restoreReferences();
     // m_nestedClassifiers.restoreReferences();
 }
 
 void Class::referenceErased(ID id) {
     StructuredClassifier::referenceErased(id);
+    BehavioredClassifier::referenceErased(id);
     m_classOwnedAttrubutes.eraseElement(id);
-    // BehavioredClassifier::referenceErased(id);
     m_ownedOperations.eraseElement(id);
     m_nestedClassifiers.eraseElement(id);
 }
@@ -82,6 +82,7 @@ Class::Class(const Class& rhs) : Element(rhs, ElementType::CLASS) {
     PackageableElement::copy(rhs);
     Classifier::copy(rhs);
     StructuredClassifier::copy(rhs);
+    BehavioredClassifier::copy(rhs);
     copy(rhs);
 }
 
@@ -100,9 +101,9 @@ OrderedSet<Classifier, Class>& Class::getNestedClassifiers() {
 bool Class::isSubClassOf(ElementType eType) const {
     bool ret = StructuredClassifier::isSubClassOf(eType);
 
-    // if (!ret) {
-    //     ret = BehavioredClassifier::isSubClassOf(eType);
-    // }
+    if (!ret) {
+        ret = BehavioredClassifier::isSubClassOf(eType);
+    }
 
     if (!ret) {
         ret = eType == ElementType::CLASS;

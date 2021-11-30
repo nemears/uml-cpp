@@ -42,6 +42,7 @@ void Behavior::init() {
     m_ownedParameters.subsets(m_ownedMembers);
     m_ownedParameters.m_signature = &Behavior::getOwnedParameters;
     m_specification.opposite(&BehavioralFeature::getMethods);
+    m_specification.m_signature = &Behavior::getSpecificationSingleton;
 }
 
 void Behavior::copy(const Behavior& rhs) {

@@ -1,98 +1,58 @@
 #include "uml/behavioredClassifier.h"
 #include "uml/behavior.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void BehavioredClassifier::RemoveClassifierBehaviorProcedure::operator()(Behavior* el) const {
-    if (m_me->getOwnedBehaviors().count(el->getID())) {
-        m_me->getOwnedBehaviors().remove(*el);
-    }
-}
-
-void BehavioredClassifier::AddClassifierBehaviorProcedure::operator()(Behavior* el) const {
-    if (!m_me->getOwnedBehaviors().count(el->getID())) {
-        m_me->getOwnedBehaviors().add(*el);
-    }
-}
-
-void BehavioredClassifier::AddClassifierBehaviorProcedure::operator()(ID id) const {
-    if (!m_me->getOwnedBehaviors().count(id)) {
-        m_me->getOwnedBehaviors().addByID(id);
-    }
-}
-
-void BehavioredClassifier::AddOwnedBehaviorFunctor::operator()(Behavior& el) const {
-    if (!m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().add(el);
-    }
-
-    el.setBehavioredClassifier(m_el);
-    updateCopiedSequenceAddedTo(el, &BehavioredClassifier::getOwnedBehaviors);
-}
-
-void BehavioredClassifier::AddOwnedBehaviorFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedMembers().count(id)) {
-        m_el->getOwnedMembers().addByID(id);
-    }
-}
-
-void BehavioredClassifier::RemoveOwnedBehaviorFunctor::operator()(Behavior& el) const {
-    if (m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().remove(el);
-    }
-
-    el.setBehavioredClassifier(0);
-    updateCopiedSequenceRemovedFrom(el, &BehavioredClassifier::getOwnedBehaviors);
-}
-
 void BehavioredClassifier::referencingReleased(ID id) {
-    m_ownedBehaviors.elementReleased(id, &BehavioredClassifier::getOwnedBehaviors);
+    m_ownedBehaviors.release(id);
     m_classifierBehavior.release(id);
 }
 
 void BehavioredClassifier::referenceReindexed(ID oldID, ID newID) {
-    m_ownedBehaviors.reindex(oldID, newID, &BehavioredClassifier::getOwnedBehaviors);
+    m_ownedBehaviors.reindex(oldID, newID);
     m_classifierBehavior.reindex(oldID, newID);
 }
 
 void BehavioredClassifier::restoreReferences() {
-    m_ownedBehaviors.restoreReferences();
-    m_classifierBehavior.restoreReference();
+    // m_ownedBehaviors.restoreReferences();
+    // m_classifierBehavior.restoreReference();
 }
 
 void BehavioredClassifier::referenceErased(ID id) {
-    m_ownedBehaviors.elementErased(id);
-    m_classifierBehavior.elementErased(id);
+    m_ownedBehaviors.eraseElement(id);
+    m_classifierBehavior.eraseElement(id);
+}
+
+Set<Behavior, BehavioredClassifier>& BehavioredClassifier::getClassifierBehaviorSingleton() {
+    return m_classifierBehavior;
+}
+
+void BehavioredClassifier::init() {
+    m_ownedBehaviors.subsets(m_ownedMembers);
+    m_ownedBehaviors.m_signature = &BehavioredClassifier::getOwnedBehaviors;
+    m_classifierBehavior.subsets(m_ownedBehaviors);
+    m_classifierBehavior.m_signature = &BehavioredClassifier::getClassifierBehaviorSingleton;
+}
+
+void BehavioredClassifier::copy(const BehavioredClassifier& rhs) {
+    m_ownedBehaviors = rhs.m_ownedBehaviors;
+    m_classifierBehavior = rhs.m_classifierBehavior;
 }
 
 BehavioredClassifier::BehavioredClassifier() : Element(ElementType::BEHAVIORED_CLASSIFIER) {
-    m_ownedBehaviors.addProcedures.push_back(new AddOwnedBehaviorFunctor(this));
-    m_ownedBehaviors.removeProcedures.push_back(new RemoveOwnedBehaviorFunctor(this));
-    m_classifierBehavior.m_signature = &BehavioredClassifier::m_classifierBehavior;
-    m_classifierBehavior.m_removeProcedures.push_back(new RemoveClassifierBehaviorProcedure(this));
-    m_classifierBehavior.m_addProcedures.push_back(new AddClassifierBehaviorProcedure(this));
+    init();
 }
 
 BehavioredClassifier::BehavioredClassifier(const BehavioredClassifier& classifier) : Element(classifier, ElementType::BEHAVIORED_CLASSIFIER) {
-    m_ownedBehaviors = classifier.m_ownedBehaviors;
-    m_ownedBehaviors.m_el = this;
-    m_ownedBehaviors.addProcedures.clear();
-    m_ownedBehaviors.removeProcedures.clear();
-    m_ownedBehaviors.addProcedures.push_back(new AddOwnedBehaviorFunctor(this));
-    m_ownedBehaviors.removeProcedures.push_back(new RemoveOwnedBehaviorFunctor(this));
-    m_classifierBehavior = classifier.m_classifierBehavior;
-    m_classifierBehavior.m_me = this;
-    m_classifierBehavior.m_removeProcedures.clear();
-    m_classifierBehavior.m_addProcedures.clear();
-    m_classifierBehavior.m_removeProcedures.push_back(new RemoveClassifierBehaviorProcedure(this));
-    m_classifierBehavior.m_addProcedures.push_back(new AddClassifierBehaviorProcedure(this));
+    // abstract
 }
 
 BehavioredClassifier::~BehavioredClassifier() {
 
 }
 
-Sequence<Behavior>& BehavioredClassifier::getOwnedBehaviors() {
+Set<Behavior, BehavioredClassifier>& BehavioredClassifier::getOwnedBehaviors() {
     return m_ownedBehaviors;
 }
 

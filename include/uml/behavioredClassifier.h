@@ -15,39 +15,20 @@ namespace UML {
         friend class Parsers::SetClassifierBehavior;
 
         protected:
-            Sequence<Behavior> m_ownedBehaviors = Sequence<Behavior>(this);
+            Set<Behavior, BehavioredClassifier> m_ownedBehaviors = Set<Behavior, BehavioredClassifier>(this);
             Singleton<Behavior, BehavioredClassifier> m_classifierBehavior = Singleton<Behavior, BehavioredClassifier>(this);
-            class RemoveClassifierBehaviorProcedure : public AbstractSingletonProcedure<Behavior, BehavioredClassifier> {
-                public:
-                    RemoveClassifierBehaviorProcedure(BehavioredClassifier* me) : AbstractSingletonProcedure<Behavior, BehavioredClassifier>(me) {};
-                    void operator()(Behavior* el) const override;
-            };
-            class AddClassifierBehaviorProcedure : public AbstractSingletonProcedure<Behavior, BehavioredClassifier> {
-                public:
-                    AddClassifierBehaviorProcedure(BehavioredClassifier* me) : AbstractSingletonProcedure<Behavior, BehavioredClassifier>(me) {};
-                    void operator()(Behavior* el) const override;
-                    void operator()(ID id) const override;
-            };
-            class AddOwnedBehaviorFunctor : public TemplateAbstractSequenceFunctor<Behavior,BehavioredClassifier> {
-                public:
-                    AddOwnedBehaviorFunctor(BehavioredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Behavior& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveOwnedBehaviorFunctor : public TemplateAbstractSequenceFunctor<Behavior,BehavioredClassifier> {
-                public:
-                    RemoveOwnedBehaviorFunctor(BehavioredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Behavior& el) const override;
-            };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            Set<Behavior, BehavioredClassifier>& getClassifierBehaviorSingleton();
+            void init();
+            void copy(const BehavioredClassifier& rhs);
             BehavioredClassifier();
         public:
-            BehavioredClassifier(const BehavioredClassifier& classifier);
+            BehavioredClassifier(const BehavioredClassifier& rhs);
             virtual ~BehavioredClassifier();
-            Sequence<Behavior>& getOwnedBehaviors();
+            Set<Behavior, BehavioredClassifier>& getOwnedBehaviors();
             Behavior* getClassifierBehavior();
             Behavior& getClassifierBehaviorRef();
             ID getClassifierBehaviorID() const;

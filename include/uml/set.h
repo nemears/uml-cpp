@@ -132,6 +132,7 @@ namespace UML {
     class Operation;
     class OpaqueBehavior;
     class Parameter;
+    class BehavioredClassifier;
 
     /**
      * This container is based around a weighted binary search tree
@@ -168,6 +169,7 @@ namespace UML {
         friend class Operation;
         friend class OpaqueBehavior;
         friend class Parameter;
+        friend class BehavioredClassifier;
 
         protected:
             std::vector<AbstractSet*> m_superSets;

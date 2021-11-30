@@ -5,13 +5,13 @@
 #include "operation.h"
 #include "parameter.h"
 #include "orderedSet.h"
-// #include "behavioredClassifier.h"
+#include "behavioredClassifier.h"
 
 namespace UML{
 
     class Operation;
 
-    class Class : public StructuredClassifier /**, public BehavioredClassifier**/ {
+    class Class : public StructuredClassifier , public BehavioredClassifier {
 
         friend class UmlManager;
         friend class Property;

@@ -68,24 +68,23 @@ TEST_F(BehaviorTest, removeParameterFunctorTest) {
 //     ASSERT_TRUE(p.getOperation() == &o);
 // }
 
-// TEST_F(BehaviorTest, reindexBehaviorID_Test) {
-//     UmlManager m;
-//     OpaqueBehavior behavior = m.create<OpaqueBehavior>();
-//     Parameter param = m.create<Parameter>();
-//     Class owner = m.create<Class>();
-//     Operation specification = m.create<Operation>();
-//     behavior.getOwnedParameters().add(param);
-//     owner.getOwnedBehaviors().add(behavior);
-//     owner.getOwnedOperations().add(specification);
-//     specification.getMethods().add(behavior);
-//     ID id = ID::fromString("paTTKz60cn0lguUMWAMLUNO0EoXS");
-//     behavior.setID(id);
-//     ASSERT_EQ(param.getNamespaceRef(), behavior);
-//     ASSERT_EQ(*param.getOwner(), behavior);
-//     ASSERT_EQ(param.getMemberNamespace().get(id), behavior);
-//     ASSERT_EQ(owner.getOwnedBehaviors().get(id), behavior);
-//     ASSERT_EQ(owner.getOwnedMembers().get(id), behavior);
-//     ASSERT_EQ(owner.getMembers().get(id), behavior);
-//     ASSERT_EQ(owner.getOwnedElements().get(id), behavior);
-//     ASSERT_EQ(specification.getMethods().get(id), behavior);
-// }
+TEST_F(BehaviorTest, reindexBehaviorID_Test) {
+    UmlManager m;
+    OpaqueBehavior behavior = m.create<OpaqueBehavior>();
+    Parameter param = m.create<Parameter>();
+    Class owner = m.create<Class>();
+    Operation specification = m.create<Operation>();
+    behavior.getOwnedParameters().add(param);
+    owner.getOwnedBehaviors().add(behavior);
+    owner.getOwnedOperations().add(specification);
+    specification.getMethods().add(behavior);
+    ID id = ID::fromString("paTTKz60cn0lguUMWAMLUNO0EoXS");
+    behavior.setID(id);
+    ASSERT_EQ(param.getNamespaceRef(), behavior);
+    ASSERT_EQ(*param.getOwner(), behavior);
+    ASSERT_EQ(owner.getOwnedBehaviors().get(id), behavior);
+    ASSERT_EQ(owner.getOwnedMembers().get(id), behavior);
+    ASSERT_EQ(owner.getMembers().get(id), behavior);
+    ASSERT_EQ(owner.getOwnedElements().get(id), behavior);
+    ASSERT_EQ(specification.getMethods().get(id), behavior);
+}

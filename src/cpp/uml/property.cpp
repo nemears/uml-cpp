@@ -1,6 +1,7 @@
 #include "uml/property.h"
 #include "uml/class.h"
 #include "uml/dataType.h"
+#include "uml/association.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -11,8 +12,8 @@ void Property::referencingReleased(ID id) {
     m_dataType.release(id);
     m_class.release(id);
     // m_artifact.release(id);
-    // m_association.release(id);
-    // m_owningAssociation.release(id);
+    m_association.release(id);
+    m_owningAssociation.release(id);
     // m_redefinedProperties.elementReleased(id, &Property::getRedefinedProperties);
 }
 
@@ -22,8 +23,8 @@ void Property::referenceReindexed(ID oldID, ID newID) {
     m_dataType.reindex(oldID, newID);
     m_class.reindex(oldID, newID);
     // m_artifact.reindex(oldID, newID);
-    // m_association.reindex(oldID, newID);
-    // m_owningAssociation.reindex(oldID, newID);
+    m_association.reindex(oldID, newID);
+    m_owningAssociation.reindex(oldID, newID);
     // m_redefinedProperties.reindex(oldID, newID, &Property::getRedefinedProperties);
 }
 
@@ -53,8 +54,8 @@ void Property::referenceErased(ID id) {
     m_defaultValue.eraseElement(id);
     m_dataType.eraseElement(id);
     m_class.eraseElement(id);
-    // m_association.elementErased(id);
-    // m_owningAssociation.elementErased(id);
+    m_association.eraseElement(id);
+    m_owningAssociation.eraseElement(id);
     // m_artifact.elementErased(id);
     // m_redefinedProperties.elementErased(id);
 }
@@ -71,6 +72,14 @@ Set<DataType, Property>& Property::getDataTypeSingleton() {
     return m_dataType;
 }
 
+Set<Association, Property>& Property::getAssociationSingleton() {
+    return m_association;
+}
+
+Set<Association, Property>& Property::getOwningAssociationSingleton() {
+    return m_owningAssociation;
+}
+
 void Property::init() {
     m_defaultValue.subsets(*m_ownedElements);
     m_defaultValue.m_signature = &Property::getDefaultValueSingleton;
@@ -82,6 +91,13 @@ void Property::init() {
     m_dataType.subsets(m_featuringClassifier);
     m_dataType.opposite(&DataType::getOwnedAttributes);
     m_dataType.m_signature = &Property::getDataTypeSingleton;
+    m_association.opposite(&Association::getMemberEndsSet);
+    m_association.m_signature = &Property::getAssociationSingleton;
+    m_owningAssociation.subsets(m_namespace);
+    m_owningAssociation.subsets(m_featuringClassifier);
+    m_owningAssociation.subsets(m_association);
+    m_owningAssociation.opposite(&Association::getOwnedEndsSet);
+    m_owningAssociation.m_signature = &Property::getOwningAssociationSingleton;
 }
 
 void Property::copy(const Property& rhs) {
@@ -224,53 +240,53 @@ void Property::setClass(Class& clazz) {
     m_class.set(clazz);
 }
 
-// Association* Property::getAssociation() {
-//     return m_association.get();
-// }
+Association* Property::getAssociation() {
+    return m_association.get();
+}
 
-// Association& Property::getAssociationRef() {
-//     return m_association.getRef();
-// }
+Association& Property::getAssociationRef() {
+    return m_association.getRef();
+}
 
-// ID Property::getAssociationID() const {
-//     return m_association.id();
-// }
+ID Property::getAssociationID() const {
+    return m_association.id();
+}
 
-// bool Property::hasAssociation() const {
-//     return m_association.has();
-// }
+bool Property::hasAssociation() const {
+    return m_association.has();
+}
 
-// void Property::setAssociation(Association* association) {
-//     m_association.set(association);
-// }
+void Property::setAssociation(Association* association) {
+    m_association.set(association);
+}
 
-// void Property::setAssociation(Association& association) {
-//     m_association.set(association);
-// }
+void Property::setAssociation(Association& association) {
+    m_association.set(association);
+}
 
-// Association* Property::getOwningAssociation() {
-//     return m_owningAssociation.get();
-// }
+Association* Property::getOwningAssociation() {
+    return m_owningAssociation.get();
+}
 
-// Association& Property::getOwningAssociationRef() {
-//     return m_owningAssociation.getRef();
-// }
+Association& Property::getOwningAssociationRef() {
+    return m_owningAssociation.getRef();
+}
 
-// ID Property::getOwningAssociationID() const {
-//     return m_owningAssociation.id();
-// }
+ID Property::getOwningAssociationID() const {
+    return m_owningAssociation.id();
+}
 
-// bool Property::hasOwningAssociation() const {
-//     return m_owningAssociation.has();
-// }
+bool Property::hasOwningAssociation() const {
+    return m_owningAssociation.has();
+}
 
-// void Property::setOwningAssociation(Association* association) {
-//     m_owningAssociation.set(association);
-// }
+void Property::setOwningAssociation(Association* association) {
+    m_owningAssociation.set(association);
+}
 
-// void Property::setOwningAssociation(Association& association) {
-//     m_owningAssociation.set(association);
-// }
+void Property::setOwningAssociation(Association& association) {
+    m_owningAssociation.set(association);
+}
 
 // Artifact* Property::getArtifact() {
 //     return m_artifact.get();
@@ -303,9 +319,9 @@ void Property::setClass(Class& clazz) {
 bool Property::isSubClassOf(ElementType eType) const {
     bool ret = StructuralFeature::isSubClassOf(eType);
 
-    // if (!ret) {
-    //     ret = ConnectableElement::isSubClassOf(eType);
-    // }
+    if (!ret) {
+        ret = ConnectableElement::isSubClassOf(eType);
+    }
 
     // if (!ret) {
     //     ret = DeploymentTarget::isSubClassOf(eType);

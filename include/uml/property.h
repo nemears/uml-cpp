@@ -35,6 +35,7 @@ namespace UML{
         friend class Classifier;
         friend class StructuredClassifier;
         friend class DataType;
+        friend class Association;
 
         protected:
             AggregationKind m_aggregation = AggregationKind::NONE;
@@ -42,8 +43,8 @@ namespace UML{
             Singleton<ValueSpecification, Property> m_defaultValue = Singleton<ValueSpecification, Property>(this);
             Singleton<DataType, Property> m_dataType = Singleton<DataType, Property>(this);
             Singleton<Class, Property> m_class = Singleton<Class, Property>(this);
-            // Singleton<Association, Property> m_association = Singleton<Association, Property>(this);
-            // Singleton<Association, Property> m_owningAssociation = Singleton<Association, Property>(this);
+            Singleton<Association, Property> m_association = Singleton<Association, Property>(this);
+            Singleton<Association, Property> m_owningAssociation = Singleton<Association, Property>(this);
             // Singleton<Artifact, Property> m_artifact = Singleton<Artifact, Property>(this);
             // Sequence<Property> m_redefinedProperties = Sequence<Property>(this);
             // void reindexName(std::string oldName, std::string newName) override;
@@ -56,6 +57,8 @@ namespace UML{
             Set<ValueSpecification, Property>& getDefaultValueSingleton();
             Set<Class, Property>& getClassSingleton();
             Set<DataType, Property>& getDataTypeSingleton();
+            Set<Association, Property>& getAssociationSingleton();
+            Set<Association, Property>& getOwningAssociationSingleton();
             void init();
             void copy(const Property& rhs);
             Property();
@@ -83,18 +86,18 @@ namespace UML{
             bool hasClass() const;
             void setClass(Class* clazz);
             void setClass(Class& clazz);
-            // Association* getAssociation();
-            // Association& getAssociationRef();
-            // ID getAssociationID() const;
-            // bool hasAssociation() const;
-            // void setAssociation(Association* association);
-            // void setAssociation(Association& association);
-            // Association* getOwningAssociation();
-            // Association& getOwningAssociationRef();
-            // ID getOwningAssociationID() const;
-            // bool hasOwningAssociation() const;
-            // void setOwningAssociation(Association* association);
-            // void setOwningAssociation(Association& association);
+            Association* getAssociation();
+            Association& getAssociationRef();
+            ID getAssociationID() const;
+            bool hasAssociation() const;
+            void setAssociation(Association* association);
+            void setAssociation(Association& association);
+            Association* getOwningAssociation();
+            Association& getOwningAssociationRef();
+            ID getOwningAssociationID() const;
+            bool hasOwningAssociation() const;
+            void setOwningAssociation(Association* association);
+            void setOwningAssociation(Association& association);
             // virtual Artifact* getArtifact();
             // Artifact& getArtifactRef();
             // ID getArtifactID() const;

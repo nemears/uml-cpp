@@ -9,13 +9,13 @@ namespace UML {
     class Association : public Classifier, public Relationship {
 
         friend class UmlManager;
+        friend class Property;
 
         protected:
             OrderedSet<Property, Association> m_memberEnds = OrderedSet<Property, Association>(this);
             OrderedSet<Property, Association> m_ownedEnds = OrderedSet<Property, Association>(this);
             Set<Property, Association> m_navigableOwnedEnds = Set<Property, Association>(this);
             Set<Type, Association> m_endType = Set<Type, Association>(this);
-            void reindexName(std::string oldName, std::string newName) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;

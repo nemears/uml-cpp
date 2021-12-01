@@ -48,6 +48,18 @@ namespace UML{
             // Singleton<Artifact, Property> m_artifact = Singleton<Artifact, Property>(this);
             // Sequence<Property> m_redefinedProperties = Sequence<Property>(this);
             // void reindexName(std::string oldName, std::string newName) override;
+            class AddEndTypeFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    AddEndTypeFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class RemoveEndTypeFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    RemoveEndTypeFunctor(Element* el) : SetFunctor(el) {};
+            };
             void setComposite(bool composite);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;

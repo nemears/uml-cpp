@@ -339,9 +339,6 @@ namespace UML {
                         m_el->setReference(&el);
                     }
                 }
-                for (auto& func : m_addFunctors) {
-                    (*func)(el);
-                }
             };
             void nonOppositeAdd(T& el) {
                 if (m_upper) {
@@ -352,7 +349,7 @@ namespace UML {
                         }
                     } else {
                         if (m_size >= m_upper) {
-                            // TODO throw error
+                            throw ManagerStateException("TODO: size > upper");
                         }
                     }
                 }
@@ -366,6 +363,9 @@ namespace UML {
                             (copy->as<U>().*m_signature)().innerAdd(el);
                         }
                     }
+                }
+                for (auto& func : m_addFunctors) {
+                    (*func)(el);
                 }
             };
             void innerRemove(ID id) {

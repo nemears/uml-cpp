@@ -6,6 +6,22 @@
 
 using namespace UML;
 
+void Property::AddEndTypeFunctor::operator()(Element& el) const {
+    if (m_el.as<Property>().hasAssociation()) {
+        m_el.as<Property>().getAssociationRef().getEndType().add(el.as<Type>());
+        el.setReference(m_el.as<Property>().getAssociation());
+    }
+}
+
+void Property::RemoveEndTypeFunctor::operator()(Element& el) const {
+    if (m_el.as<Property>().hasAssociation()) {
+        if (m_el.as<Property>().getAssociationRef().getEndType().contains(el.getID())) {
+            m_el.as<Property>().getAssociationRef().getEndType().remove(el.getID());
+            el.removeReference(m_el.as<Property>().getAssociationID());
+        }
+    }
+}
+
 void Property::referencingReleased(ID id) {
     StructuralFeature::referencingReleased(id);
     m_defaultValue.release(id);
@@ -98,6 +114,8 @@ void Property::init() {
     m_owningAssociation.subsets(m_association);
     m_owningAssociation.opposite(&Association::getOwnedEndsSet);
     m_owningAssociation.m_signature = &Property::getOwningAssociationSingleton;
+    m_type.m_addFunctors.insert(new AddEndTypeFunctor(this));
+    m_type.m_removeFunctors.insert(new RemoveEndTypeFunctor(this));
 }
 
 void Property::copy(const Property& rhs) {

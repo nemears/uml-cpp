@@ -28,8 +28,8 @@ TEST_F(DirectedRelationshipTest, addTargetFunctorTest) {
     dr.setReceivingPackage(a);
     dr.setMergedPackage(b);
     ASSERT_EQ(dr.getRelatedElements().size(), 2);
-    ASSERT_EQ(dr.getRelatedElements().front(), a);
-    ASSERT_EQ(dr.getRelatedElements().back(), b);
+    ASSERT_TRUE(dr.getRelatedElements().contains(a.getID()));
+    ASSERT_TRUE(dr.getRelatedElements().contains(b.getID()));
 }
 
 TEST_F(DirectedRelationshipTest, removeRelationshipFunctorTest) {

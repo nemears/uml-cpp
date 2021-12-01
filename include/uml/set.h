@@ -270,6 +270,15 @@ namespace UML {
             };
             void add(SetNode* node) {
                 node->m_guard = m_guard;
+                for (auto& subsetOf : m_superSets) {
+                    SetNode* temp = 0;
+                    if (subsetOf->m_root && (temp = subsetOf->search(node->m_id, subsetOf->m_root)) != 0) {
+                        // the element has already been added within a superset, remove and add it from within this set instead
+                        // TODO: may be faster to take already allocated node and move it within tree and change guard?
+                        static_cast<Set*>(subsetOf)->remove(node->m_id);
+                        break;
+                    }
+                }
                 if (!m_root) {
                     m_root = node;
                     // handle redefines

@@ -563,3 +563,25 @@ TEST_F(SetTest, TODO_NAME) {
     delete superSet3;
     delete rootSet;
 }
+
+TEST_F(SetTest, AddElementThatIsInSuperSet) {
+    Set<PackageableElement> superSet;
+    Set<Package> set;
+    set.subsets(superSet);
+    UmlManager m;
+    Package& p = m.create<Package>();
+    superSet.add(p);
+    ASSERT_FALSE(superSet.empty());
+    ASSERT_TRUE(set.empty());
+    ASSERT_EQ(superSet.size(), 1);
+    ASSERT_EQ(set.size(), 0);
+    ASSERT_TRUE(superSet.contains(p.getID()));
+    ASSERT_FALSE(set.contains(p.getID()));
+    set.add(p);
+    ASSERT_FALSE(superSet.empty());
+    ASSERT_FALSE(set.empty());
+    ASSERT_EQ(superSet.size(), 1);
+    ASSERT_EQ(set.size(), 1);
+    ASSERT_TRUE(superSet.contains(p.getID()));
+    ASSERT_TRUE(set.contains(p.getID()));
+}

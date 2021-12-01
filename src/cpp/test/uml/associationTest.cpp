@@ -1,8 +1,5 @@
 #include "gtest/gtest.h"
-#include "uml/association.h"
-#include "uml/class.h"
-#include "uml/property.h"
-#include "uml/primitiveType.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -25,8 +22,6 @@ TEST_F(AssociationTest, addMemberEndFunctorTest) {
     ASSERT_TRUE(&a.getEndType().front() == &c);
 
     ASSERT_TRUE(p.getAssociation() == &a);
-    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(&p.getMemberNamespace().front() == &a);
 }
 
 TEST_F(AssociationTest, setAssociationTest) {
@@ -40,8 +35,6 @@ TEST_F(AssociationTest, setAssociationTest) {
     ASSERT_TRUE(&a.getMembers().front() == &p);
 
     ASSERT_TRUE(p.getAssociation() == &a);
-    ASSERT_EQ(p.getMemberNamespace().size(), 1);
-    ASSERT_EQ(&p.getMemberNamespace().front(), &a);
 }
 
 TEST_F(AssociationTest, removeMemberEndFunctor) {
@@ -53,7 +46,6 @@ TEST_F(AssociationTest, removeMemberEndFunctor) {
     ASSERT_TRUE(a.getMemberEnds().size() == 0);
     ASSERT_TRUE(a.getMembers().size() == 0);
     ASSERT_TRUE(p.getAssociation() == 0);
-    ASSERT_TRUE(p.getMemberNamespace().size() == 0);
 }
 
 TEST_F(AssociationTest, overwriteAssociationW_NullTest) {
@@ -65,7 +57,6 @@ TEST_F(AssociationTest, overwriteAssociationW_NullTest) {
     ASSERT_TRUE(a.getMemberEnds().size() == 0);
     ASSERT_TRUE(a.getMembers().size() == 0);
     ASSERT_TRUE(p.getAssociation() == 0);
-    ASSERT_TRUE(p.getMemberNamespace().size() == 0);
 }
 
 TEST_F(AssociationTest, overwriteAssociationW_OtherTest) {
@@ -81,10 +72,7 @@ TEST_F(AssociationTest, overwriteAssociationW_OtherTest) {
     ASSERT_TRUE(&a2.getMembers().front() == &p);
 
     ASSERT_TRUE(p.getAssociation() == &a2);
-    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(&p.getMemberNamespace().front() == &a2);
 
-    ASSERT_TRUE(a.getMemberEnds().size() == 0);
     ASSERT_TRUE(a.getMembers().size() == 0);
 }
 
@@ -108,8 +96,6 @@ TEST_F(AssociationTest, addOwnedEndTest) {
     ASSERT_TRUE(p.getAssociation() == &a);
     ASSERT_TRUE(p.getFeaturingClassifier() == &a);
     ASSERT_TRUE(p.getNamespace() == &a);
-    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(&p.getMemberNamespace().front() == &a);
     ASSERT_TRUE(p.getOwner() == &a);
 }
 
@@ -133,8 +119,6 @@ TEST_F(AssociationTest, setOwningAssociationTest) {
     ASSERT_TRUE(p.getAssociation() == &a);
     ASSERT_TRUE(p.getFeaturingClassifier() == &a);
     ASSERT_TRUE(p.getNamespace() == &a);
-    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(&p.getMemberNamespace().front() == &a);
     ASSERT_TRUE(p.getOwner() == &a);
 }
 
@@ -155,7 +139,6 @@ TEST_F(AssociationTest, removeOwnedEndTest) {
     ASSERT_TRUE(p.getAssociation() == 0);
     ASSERT_TRUE(p.getFeaturingClassifier() == 0);
     ASSERT_TRUE(p.getNamespace() == 0);
-    ASSERT_TRUE(p.getMemberNamespace().size() == 0);
     ASSERT_TRUE(p.getOwner() == 0);
 }
 
@@ -176,7 +159,6 @@ TEST_F(AssociationTest, setOwningAssociationW_NullTest) {
     ASSERT_TRUE(p.getAssociation() == 0);
     ASSERT_TRUE(p.getFeaturingClassifier() == 0);
     ASSERT_TRUE(p.getNamespace() == 0);
-    ASSERT_TRUE(p.getMemberNamespace().size() == 0);
     ASSERT_TRUE(p.getOwner() == 0);
 }
 
@@ -209,8 +191,6 @@ TEST_F(AssociationTest, overwriteOwningAssociationTest) {
     ASSERT_TRUE(p.getAssociation() == &a2);
     ASSERT_TRUE(p.getFeaturingClassifier() == &a2);
     ASSERT_TRUE(p.getNamespace() == &a2);
-    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(&p.getMemberNamespace().front() == &a2);
     ASSERT_TRUE(p.getOwner() == &a2);
 }
 
@@ -236,8 +216,6 @@ TEST_F(AssociationTest, addNavigableOwnedEndTest) {
     ASSERT_TRUE(p.getAssociation() == &a);
     ASSERT_TRUE(p.getFeaturingClassifier() == &a);
     ASSERT_TRUE(p.getNamespace() == &a);
-    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(&p.getMemberNamespace().front() == &a);
     ASSERT_TRUE(p.getOwner() == &a);
 }
 
@@ -259,7 +237,6 @@ TEST_F(AssociationTest, removeNavigableOwnedEndTest) {
     ASSERT_TRUE(p.getAssociation() == 0);
     ASSERT_TRUE(p.getFeaturingClassifier() == 0);
     ASSERT_TRUE(p.getNamespace() == 0);
-    ASSERT_TRUE(p.getMemberNamespace().size() == 0);
     ASSERT_TRUE(p.getOwner() == 0);
 }
 
@@ -281,7 +258,6 @@ TEST_F(AssociationTest, navigableOwnedEndSetOwningAssociationW_NullTest) {
     ASSERT_TRUE(p.getAssociation() == 0);
     ASSERT_TRUE(p.getFeaturingClassifier() == 0);
     ASSERT_TRUE(p.getNamespace() == 0);
-    ASSERT_TRUE(p.getMemberNamespace().size() == 0);
     ASSERT_TRUE(p.getOwner() == 0);
 }
 
@@ -316,8 +292,6 @@ TEST_F(AssociationTest, navigableOwnedEndOverwriteOwningAssociationTest) {
     ASSERT_TRUE(p.getAssociation() == &a2);
     ASSERT_TRUE(p.getFeaturingClassifier() == &a2);
     ASSERT_TRUE(p.getNamespace() == &a2);
-    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(&p.getMemberNamespace().front() == &a2);
     ASSERT_TRUE(p.getOwner() == &a2);
 }
 
@@ -337,8 +311,6 @@ TEST_F(AssociationTest, reindexTypeTest) {
     ASSERT_TRUE(&a.getEndType().front() == &c);
 
     ASSERT_TRUE(p.getAssociation() == &a);
-    ASSERT_TRUE(p.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(&p.getMemberNamespace().front() == &a);
 }
 
 TEST_F(AssociationTest, reindexTypeIDTest) {

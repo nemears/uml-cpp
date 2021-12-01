@@ -12,6 +12,12 @@ namespace UML {
             Set<ConnectableElement, StructuredClassifier> m_roles = Set<ConnectableElement, StructuredClassifier>(this);
             Set<Property, StructuredClassifier> m_ownedAttributes = Set<Property, StructuredClassifier>(this);
             Set<Property, StructuredClassifier> m_parts = Set<Property, StructuredClassifier>(this);
+            class AddPartFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    AddPartFunctor(Element* el) : SetFunctor(el) {};
+            };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID);
             void restoreReferences() override;

@@ -4,6 +4,12 @@
 
 using namespace UML;
 
+void StructuredClassifier::AddPartFunctor::operator()(Element& el) const {
+    if (el.as<Property>().isComposite()) {
+        m_el.as<StructuredClassifier>().getParts().add(el.as<Property>());
+    }
+}
+
 void StructuredClassifier::referencingReleased(ID id) {
     Classifier::referencingReleased(id);
     m_ownedAttributes.release(id);
@@ -43,10 +49,12 @@ void StructuredClassifier::referenceErased(ID id) {
 void StructuredClassifier::init() {
     m_roles.subsets(m_members);
     m_roles.m_signature = &StructuredClassifier::getRoles;
+    m_roles.m_readOnly = true;
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.subsets(m_roles);
     m_ownedAttributes.subsets(m_ownedMembers);
     m_ownedAttributes.m_signature = &StructuredClassifier::getOwnedAttributes;
+    m_ownedAttributes.m_addFunctors.insert(new AddPartFunctor(this));
     m_parts.subsets(m_ownedAttributes);
     m_parts.m_signature = &StructuredClassifier::getParts;
     m_parts.m_readOnly = true;

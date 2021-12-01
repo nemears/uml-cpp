@@ -4,6 +4,20 @@
 
 using namespace UML;
 
+void Association::AddEndTypeFunctor::operator()(Element& el) const {
+    if (el.as<Property>().hasType()) {
+        m_el.as<Association>().getEndType().add(el.as<Property>().getTypeRef());
+    }
+}
+
+void Association::RemoveEndTypeFunctor::operator()(Element& el) const {
+    if (el.as<Property>().hasType()) {
+        if (m_el.as<Association>().getEndType().contains(el.as<Property>().getTypeID())) {
+            m_el.as<Association>().getEndType().remove(el.as<Property>().getTypeID());
+        }
+    }
+}
+
 void Association::referencingReleased(ID id) {
     Classifier::referencingReleased(id);
     Relationship::referencingReleased(id);
@@ -70,6 +84,8 @@ void Association::init() {
     m_memberEnds.subsets(m_members);
     m_memberEnds.opposite(&Property::getAssociationSingleton);
     m_memberEnds.m_signature = &Association::getMemberEndsSet;
+    m_memberEnds.m_addFunctors.insert(new AddEndTypeFunctor(this));
+    m_memberEnds.m_removeFunctors.insert(new RemoveEndTypeFunctor(this));
     m_ownedEnds.subsets(m_ownedMembers);
     m_ownedEnds.subsets(m_features);
     m_ownedEnds.subsets(m_memberEnds);

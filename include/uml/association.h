@@ -13,6 +13,18 @@ namespace UML {
 
         protected:
             OrderedSet<Property, Association> m_memberEnds = OrderedSet<Property, Association>(this);
+            class AddEndTypeFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    AddEndTypeFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class RemoveEndTypeFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    RemoveEndTypeFunctor(Element* el) : SetFunctor(el) {};
+            };
             OrderedSet<Property, Association> m_ownedEnds = OrderedSet<Property, Association>(this);
             Set<Property, Association> m_navigableOwnedEnds = Set<Property, Association>(this);
             Set<Type, Association> m_endType = Set<Type, Association>(this);

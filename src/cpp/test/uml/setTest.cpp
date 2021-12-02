@@ -221,44 +221,67 @@ TEST_F(SetTest, oppositeTest) {
 }
 
 TEST_F(SetTest, setRedefinesTest) {
-    Set<Package> ogSet;
-    Set<Package> reSet;
-    reSet.redefines(ogSet);
+    Set<Package>* ogSet = new Set<Package>;
+    Set<Package>* reSet = new Set<Package>;
+    reSet->redefines(*ogSet);
     UmlManager m;
     Package& p = m.create<Package>();
-    reSet.add(p);
-    ASSERT_FALSE(ogSet.empty());
-    ASSERT_FALSE(reSet.empty());
-    ASSERT_EQ(ogSet.size(), 1);
-    ASSERT_EQ(reSet.size(), 1);
-    reSet.remove(p);
-    ASSERT_TRUE(ogSet.empty());
-    ASSERT_TRUE(reSet.empty());
-    ASSERT_EQ(ogSet.size(), 0);
-    ASSERT_EQ(reSet.size(), 0);
+    reSet->add(p);
+    ASSERT_FALSE(ogSet->empty());
+    ASSERT_FALSE(reSet->empty());
+    ASSERT_EQ(ogSet->size(), 1);
+    ASSERT_EQ(reSet->size(), 1);
+    reSet->remove(p);
+    ASSERT_TRUE(ogSet->empty());
+    ASSERT_TRUE(reSet->empty());
+    ASSERT_EQ(ogSet->size(), 0);
+    ASSERT_EQ(reSet->size(), 0);
     Package& p2 = m.create<Package>();
-    ogSet.add(p);
-    ASSERT_FALSE(ogSet.empty());
-    ASSERT_FALSE(reSet.empty());
-    ASSERT_EQ(ogSet.size(), 1);
-    ASSERT_EQ(reSet.size(), 1);
-    ogSet.remove(p);
-    ASSERT_TRUE(ogSet.empty());
-    ASSERT_TRUE(reSet.empty());
-    ASSERT_EQ(ogSet.size(), 0);
-    ASSERT_EQ(reSet.size(), 0);
-    ogSet.add(p);
-    reSet.add(p2);
-    ASSERT_FALSE(ogSet.empty());
-    ASSERT_FALSE(reSet.empty());
-    ASSERT_EQ(ogSet.size(), 2);
-    ASSERT_EQ(reSet.size(), 2);
+    ogSet->add(p);
+    ASSERT_FALSE(ogSet->empty());
+    ASSERT_FALSE(reSet->empty());
+    ASSERT_EQ(ogSet->size(), 1);
+    ASSERT_EQ(reSet->size(), 1);
+    ogSet->remove(p);
+    ASSERT_TRUE(ogSet->empty());
+    ASSERT_TRUE(reSet->empty());
+    ASSERT_EQ(ogSet->size(), 0);
+    ASSERT_EQ(reSet->size(), 0);
+    ogSet->add(p);
+    reSet->add(p2);
+    ASSERT_FALSE(ogSet->empty());
+    ASSERT_FALSE(reSet->empty());
+    ASSERT_EQ(ogSet->size(), 2);
+    ASSERT_EQ(reSet->size(), 2);
     Package& p3 = m.create<Package>();
-    ogSet.add(p3);
-    ASSERT_FALSE(ogSet.empty());
-    ASSERT_FALSE(reSet.empty());
-    ASSERT_EQ(ogSet.size(), 3);
-    ASSERT_EQ(reSet.size(), 3);
+    ogSet->add(p3);
+    ASSERT_FALSE(ogSet->empty());
+    ASSERT_FALSE(reSet->empty());
+    ASSERT_EQ(ogSet->size(), 3);
+    ASSERT_EQ(reSet->size(), 3);
+    delete reSet;
+    delete ogSet;
+}
+
+class gFunc : public SetFunctor {
+    private:
+        void operator()(Element& el) const override {
+            std::cout << "gFunc!" << std::endl;
+        };
+    public:
+        gFunc(Element* el) : SetFunctor(el) {};
+};
+
+TEST_F(SetTest, setRedefinedWFunctors) {
+    Set<Package>* oSet = new Set<Package>;
+    Set<Package>* rSet = new Set<Package>;
+    UmlManager m;
+    Package& g = m.create<Package>();
+    oSet->addFunctor(new gFunc(&g));
+    rSet->redefines(*oSet);
+    rSet->add(g);
+    delete rSet;
+    delete oSet;
 }
 
 TEST_F(SetTest, addToOrderedSetTest) {

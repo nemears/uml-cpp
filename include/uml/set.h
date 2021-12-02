@@ -5,8 +5,6 @@
 #include "umlManager.h"
 #include <iostream>
 
-class SetTest_twoWayMultiSetSplitTest_Test;
-
 namespace UML {
 
     namespace {
@@ -72,7 +70,6 @@ namespace UML {
     class AbstractSet {
         template <class T, class U> friend class Set;
         template <class T, class U> friend class OrderedSet;
-        friend class SetTest_twoWayMultiSetSplitTest_Test;
         protected:
             size_t m_size = 0;
             size_t m_upper = 0; // this effectively lets us determine the type of the set (1 = singleton, 0 = set, -1 = orderedSet)
@@ -833,6 +830,14 @@ namespace UML {
                         }
                     }
                     if (deleteFunc) {
+                        for (auto& set : m_redefines) {
+                            if (static_cast<Set*>(set)->m_addFunctors.count(func)) {
+                                deleteFunc = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (deleteFunc) {
                         delete func;
                     }
                 }
@@ -846,6 +851,13 @@ namespace UML {
                     }
                     if (deleteFunc) {
                         delete func;
+                    }
+                }
+                for (auto& set : m_redefines) {
+                    Set* rSet = static_cast<Set*>(set);
+                    std::vector<AbstractSet*>::iterator it;
+                    if ((it = std::find(rSet->m_redefines.begin(), rSet->m_redefines.end(), this)) != rSet->m_redefines.end()) {
+                        rSet->m_redefines.erase(it);
                     }
                 }
             };
@@ -920,6 +932,17 @@ namespace UML {
                 for (auto& set : redefined.m_superSets) {
                     subsets(*static_cast<Set*>(set));
                 }
+                for (auto& func :redefined.m_addFunctors) {
+                    if (!m_addFunctors.count(func)) {
+                        m_addFunctors.insert(func);
+                    }
+                }
+            };
+            void addFunctor(SetFunctor* func) {
+                m_addFunctors.insert(func);
+            };
+            void removeFunctor(SetFunctor* func) {
+                m_removeFunctors.insert(func);
             };
             void add(T& el) {
                 if (m_readOnly) {

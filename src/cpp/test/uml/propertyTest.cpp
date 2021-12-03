@@ -36,20 +36,20 @@ TEST_F(PropertyTest, reindexID_forClassiferTest) {
     ASSERT_NO_THROW(c.getFeatures().get(p.getID()));
     ASSERT_NO_THROW(c.getAttributes().get(p.getID()));
     ASSERT_NO_THROW(c.getOwnedAttributes().get(p.getID()));
-    // ASSERT_NO_THROW(c.getRole().get(p.getID()));
-    // ASSERT_NO_THROW(c.getParts().get(p.getID()));
+    ASSERT_NO_THROW(c.getRoles().get(p.getID()));
+    ASSERT_NO_THROW(c.getParts().get(p.getID()));
 
-    // Association& a = m.create<Association>();
-    // Property& p2 = m.create<Property>();
-    // a.getNavigableOwnedEnds().add(p2);
-    // ASSERT_NO_THROW(p2.setID("c0ab87cc_d00b_4afb_9558_5382"));
-    // ASSERT_NO_THROW(a.getNavigableOwnedEnds().get(p2.getID()));
-    // ASSERT_NO_THROW(a.getOwnedEnds().get(p2.getID()));
-    // ASSERT_NO_THROW(a.getMemberEnds().get(p2.getID()));
-    // ASSERT_NO_THROW(a.getFeatures().get(p2.getID()));
-    // ASSERT_NO_THROW(a.getOwnedMembers().get(p2.getID()));
-    // ASSERT_NO_THROW(a.getMembers().get(p2.getID()));
-    // ASSERT_NO_THROW(a.getOwnedElements().get(p2.getID()));
+    Association& a = m.create<Association>();
+    Property& p2 = m.create<Property>();
+    a.getNavigableOwnedEnds().add(p2);
+    ASSERT_NO_THROW(p2.setID("c0ab87cc_d00b_4afb_9558_5382"));
+    ASSERT_NO_THROW(a.getNavigableOwnedEnds().get(p2.getID()));
+    ASSERT_NO_THROW(a.getOwnedEnds().get(p2.getID()));
+    ASSERT_NO_THROW(a.getMemberEnds().get(p2.getID()));
+    ASSERT_NO_THROW(a.getFeatures().get(p2.getID()));
+    ASSERT_NO_THROW(a.getOwnedMembers().get(p2.getID()));
+    ASSERT_NO_THROW(a.getMembers().get(p2.getID()));
+    ASSERT_NO_THROW(a.getOwnedElements().get(p2.getID()));
 }
 
 // TEST_F(PropertyTest, reindexNameForClassifierTest) {

@@ -608,3 +608,30 @@ TEST_F(SetTest, AddElementThatIsInSuperSet) {
     ASSERT_TRUE(superSet.contains(p.getID()));
     ASSERT_TRUE(set.contains(p.getID()));
 }
+
+TEST_F(SetTest, subsetAddsFromRootSet) {
+    Set<PackageableElement> set;
+    Set<Package> subSet;
+    subSet.subsets(set);
+    UmlManager m;
+    Package& p1 = m.create<Package>();
+    Package& p2 = m.create<Package>();
+    Package& p3 = m.create<Package>();
+    set.add(p1);
+    set.add(p2);
+    set.add(p3);
+    ASSERT_FALSE(set.empty());
+    ASSERT_TRUE(subSet.empty());
+    ASSERT_EQ(set.size(), 3);
+    ASSERT_EQ(subSet.size(), 0);
+    subSet.add(p1);
+    ASSERT_FALSE(subSet.empty());
+    ASSERT_EQ(subSet.size(), 1);
+    ASSERT_EQ(set.size(), 3);
+    subSet.add(p3);
+    ASSERT_EQ(subSet.size(), 2);
+    ASSERT_EQ(set.size(), 3);
+    subSet.add(p2);
+    ASSERT_EQ(subSet.size(), 3);
+    ASSERT_EQ(set.size(), 3);
+}

@@ -5,8 +5,8 @@
 using namespace UML;
 
 void StructuredClassifier::AddPartFunctor::operator()(Element& el) const {
-    if (el.as<Property>().isComposite()) {
-        m_el.as<StructuredClassifier>().getParts().add(el.as<Property>());
+    if (el.as<Property>().isComposite() && !m_el.as<StructuredClassifier>().m_parts.contains(el.getID())) {
+        m_el.as<StructuredClassifier>().m_parts.nonOppositeAdd(el.as<Property>());
     }
 }
 

@@ -86,12 +86,10 @@ TEST_F(ElementTest, basicRelationshipTest) {
   e.getPackageMerge().add(r);
   r.setMergedPackage(&a);
   ASSERT_EQ(r.getRelatedElements().size(), 2);
-  ASSERT_EQ(r.getRelatedElements().front(), e);
-  ASSERT_EQ(r.getRelatedElements().back(), a);
+  ASSERT_TRUE(r.getRelatedElements().contains(e.getID()));
+  ASSERT_TRUE(r.getRelatedElements().contains(a.getID()));
   ASSERT_EQ(e.getPackageMerge().size(), 1);
   ASSERT_EQ(e.getPackageMerge().front(), r);
-  // ASSERT_EQ(a.getPackageMerge().size(), 1);
-  // ASSERT_EQ(a.getPackageMerge().front(), r);
 }
 
 TEST_F(ElementTest, reindexRelationshipID_test) {

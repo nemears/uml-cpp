@@ -8,6 +8,9 @@ namespace UML {
     class ConnectableElement;
 
     class StructuredClassifier : virtual public Classifier {
+
+        friend class Property;
+
         protected:
             Set<ConnectableElement, StructuredClassifier> m_roles = Set<ConnectableElement, StructuredClassifier>(this);
             Set<Property, StructuredClassifier> m_ownedAttributes = Set<Property, StructuredClassifier>(this);

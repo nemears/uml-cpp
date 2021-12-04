@@ -72,7 +72,7 @@ namespace UML {
         template <class T, class U> friend class OrderedSet;
         protected:
             size_t m_size = 0;
-            size_t m_upper = 0; // this effectively lets us determine the type of the set (1 = singleton, 0 = set, -1 = orderedSet)
+            int m_upper = 0; // this effectively lets us determine the type of the set (1 = singleton, 0 = set, -1 = orderedSet)
             struct SetNode {
                 SetNode(Element* el) : m_el(el) {
                     m_id = el->getID();
@@ -267,15 +267,6 @@ namespace UML {
             };
             void add(SetNode* node) {
                 node->m_guard = m_guard;
-                for (auto& subsetOf : m_superSets) {
-                    SetNode* temp = 0;
-                    if (subsetOf->m_root && (temp = subsetOf->search(node->m_id, subsetOf->m_root)) != 0) {
-                        // the element has already been added within a superset, remove and add it from within this set instead
-                        // TODO: may be faster to take already allocated node and move it within tree and change guard?
-                        static_cast<Set*>(subsetOf)->nonOppositeRemove(node->m_id);
-                        break;
-                    }
-                }
                 if (!m_root) {
                     m_root = node;
                     // handle redefines
@@ -563,6 +554,43 @@ namespace UML {
                 }
             };
             inline virtual SetNode* createNode(T& el) {
+                for (auto& subsetOf : m_superSets) { // TODO i want to move this
+                    SetNode* temp = 0;
+                    if (subsetOf->m_root && (temp = subsetOf->search(el.getID(), subsetOf->m_root)) != 0) {
+                        // the element has already been added within a superset, remove and add it from within this set instead
+                        // TODO: may be faster to take already allocated node and move it within tree and change guard?
+                        temp->m_guard = m_guard;
+                        if (subsetOf->m_root->m_id == temp->m_id) {
+                            if (temp->m_left) {
+                                subsetOf->m_root = temp->m_left;
+                            } else {
+                                subsetOf->m_root = 0;
+                            }
+                        }
+                        if (temp->m_left) {
+                            if (temp->m_right) {
+                                temp->m_right->m_parent = 0;
+                                subsetOf->place(temp->m_right, temp->m_left);
+                            }
+                            temp->m_left->m_parent = 0;
+                        }
+                        if (temp->m_parent) {
+                            if (temp->m_parent->m_left->m_id == temp->m_id) {
+                                temp->m_parent->m_left = 0;
+                            } else {
+                                temp->m_parent->m_right = 0;
+                            }
+                            if (temp->m_left) {
+                                subsetOf->place(temp->m_left, temp->m_parent);
+                            }
+                        }
+                        temp->m_parent = 0;
+                        temp->m_left = 0;
+                        temp->m_right = 0;
+                        subsetOf->m_size--;
+                        return temp;
+                    }
+                }
                 return new SetNode(static_cast<Element*>(&el));
             };
             virtual SetNode* createNode(ID id) {

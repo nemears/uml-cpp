@@ -1,4 +1,7 @@
 # uml-cpp
+
+![example branch parameter](https://github.com/nemears/uml-cpp/actions/workflows/cmake.yml/badge.svg?branch=master)
+
 Lightweight UML based MBSE application built on yaml syntax UML config files    
 This is a work in progress but has basic functionality working.
 

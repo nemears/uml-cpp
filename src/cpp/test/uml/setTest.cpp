@@ -648,3 +648,31 @@ TEST_F(SetTest, removeFirstElementFromOrderedSetTest) {
     ASSERT_EQ(set.size(), 0);
     ASSERT_THROW(set.front(), ManagerStateException);
 }
+
+TEST_F(SetTest, removeLastElementFromOrderedSetTest) {
+    OrderedSet<Package> set;
+    UmlManager m;
+    Package& p = m.create<Package>();
+    set.add(p);
+    Package& p2 = m.create<Package>();
+    set.add(p2);
+    set.remove(p2);
+    ASSERT_EQ(set.back(), p);
+    ASSERT_FALSE(set.contains(p2.getID()));
+    ASSERT_EQ(set.size(), 1);
+}
+
+TEST_F(SetTest, removeMiddleElementFromOrderedSetTest) {
+    OrderedSet<Package> set;
+    UmlManager m;
+    Package& p = m.create<Package>();
+    set.add(p);
+    Package& p2 = m.create<Package>();
+    set.add(p2);
+    Package& p3 = m.create<Package>();
+    set.add(p3);
+    set.remove(p2);
+    OrderedSetIterator it = set.begin();
+    it++;
+    ASSERT_EQ(*it, p3);
+}

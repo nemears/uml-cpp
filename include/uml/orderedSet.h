@@ -125,6 +125,20 @@ namespace UML {
                         m_last = 0;
                     }
                 }
+                if (oNode->m_prev) {
+                    if (oNode->m_next) {
+                        oNode->m_prev->m_next = oNode->m_next;
+                    } else {
+                        oNode->m_prev->m_next = 0;
+                    }
+                }
+                if (oNode->m_next) {
+                    if (oNode->m_prev) {
+                        oNode->m_next->m_prev = oNode->m_prev;
+                    } else {
+                        oNode->m_next->m_prev = 0;
+                    }
+                }
                 Set<T,U>::deleteNode(node);
             };
         public:

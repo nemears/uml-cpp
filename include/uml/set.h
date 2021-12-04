@@ -365,6 +365,9 @@ namespace UML {
                     (*func)(el);
                 }
             };
+            virtual void deleteNode(SetNode* node) {
+                delete node;
+            };
             void innerRemove(ID id) {
                 SetNode* temp = search(id, m_root);
                 if (temp->m_parent) {
@@ -536,7 +539,7 @@ namespace UML {
                     }
                     (*func)(*dynamic_cast<T*>(temp->m_el));
                 }
-                delete temp;
+                deleteNode(temp);
                 m_size--;
             };
             void nonOppositeRemove(ID id) {
@@ -553,12 +556,10 @@ namespace UML {
                     m_el->removeReference(id);
                 }
             };
-            inline virtual SetNode* createNode(T& el) {
-                for (auto& subsetOf : m_superSets) { // TODO i want to move this
+            inline SetNode* lookForNodeInParents(ID id) {
+                for (auto& subsetOf : m_superSets) {
                     SetNode* temp = 0;
-                    if (subsetOf->m_root && (temp = subsetOf->search(el.getID(), subsetOf->m_root)) != 0) {
-                        // the element has already been added within a superset, remove and add it from within this set instead
-                        // TODO: may be faster to take already allocated node and move it within tree and change guard?
+                    if (subsetOf->m_root && (temp = subsetOf->search(id, subsetOf->m_root)) != 0) {
                         temp->m_guard = m_guard;
                         if (subsetOf->m_root->m_id == temp->m_id) {
                             if (temp->m_left) {
@@ -590,6 +591,13 @@ namespace UML {
                         subsetOf->m_size--;
                         return temp;
                     }
+                }
+                return 0;
+            };
+            inline virtual SetNode* createNode(T& el) {
+                SetNode* temp = lookForNodeInParents(el.getID());
+                if (temp) {
+                    return temp;
                 }
                 return new SetNode(static_cast<Element*>(&el));
             };

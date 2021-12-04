@@ -90,14 +90,42 @@ namespace UML {
                 }
             };
             inline AbstractSet::SetNode* createNode(T& el) override {
+                AbstractSet::SetNode* temp = this->lookForNodeInParents(el.getID());
+                if (temp) {
+                    // TODO change to orderedNode?
+                    return temp;
+                }
                 OrderedNode* ret = createOrderedNode(el);
                 fillNode(ret);
                 return ret;
             };
             inline AbstractSet::SetNode* createNode(ID id) override {
+                AbstractSet::SetNode* temp = this->lookForNodeInParents(id);
+                if (temp) {
+                    // TODO change to orderedNode?
+                    return temp;
+                }
                 OrderedNode* ret = createOrderedNode(id);
                 fillNode(ret);
                 return ret;
+            };
+            void deleteNode(AbstractSet::SetNode* node) {
+                OrderedNode* oNode = static_cast<OrderedNode*>(node);
+                if (m_first->m_id == oNode->m_id) {
+                    if (oNode->m_next) {
+                        m_first = oNode->m_next;
+                    } else {
+                        m_first = 0;
+                    }
+                }
+                if (m_last->m_id == oNode->m_id) {
+                    if (oNode->m_prev) {
+                        m_last = oNode->m_prev;
+                    } else {
+                        m_last = 0;
+                    }
+                }
+                Set<T,U>::deleteNode(node);
             };
         public:
             inline OrderedSet<T,U>(U* el) : Set<T,U>(el) {

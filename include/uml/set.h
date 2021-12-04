@@ -567,6 +567,11 @@ namespace UML {
                             } else {
                                 subsetOf->m_root = 0;
                             }
+                            for (auto& superSet : m_superSets) {
+                                if (superSet->m_root == temp) {
+                                    superSet->m_root = subsetOf->m_root;
+                                }
+                            }
                         }
                         if (temp->m_left) {
                             if (temp->m_right) {
@@ -588,7 +593,9 @@ namespace UML {
                         temp->m_parent = 0;
                         temp->m_left = 0;
                         temp->m_right = 0;
-                        subsetOf->m_size--;
+                        for (auto& superSet : m_superSets) {
+                            superSet->m_size--;
+                        }
                         return temp;
                     }
                 }

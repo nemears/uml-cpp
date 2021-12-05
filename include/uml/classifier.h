@@ -25,6 +25,7 @@ namespace UML {
         friend class UmlManager;
         friend class InstanceSpecification;
         friend class Generalization;
+        friend class NamedElement;
         friend class Parsers::SetNestingClass;
 
         protected:

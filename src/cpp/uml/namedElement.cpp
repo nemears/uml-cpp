@@ -137,14 +137,17 @@ VisibilityKind NamedElement::getVisibility() {
 void NamedElement::setVisibility(VisibilityKind visibility) {
     if (m_visibility != visibility) {
         if (visibility == VisibilityKind::PRIVATE) {
+            std::vector<Classifier*> clazzs;
             for (auto& pair : m_node->m_references) {
                 // find use as inherited member through references and remove
                 if (pair.second->m_managerElementMemory && pair.second->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER)) {
-                    Classifier& clazz = pair.second->m_managerElementMemory->as<Classifier>();
-                    if (clazz.getInheritedMembers().contains(m_id)) {
-                        clazz.getInheritedMembers().nonOppositeRemove(m_id);
+                    if (pair.second->m_managerElementMemory->as<Classifier>().m_inheritedMembers.contains(m_id)) {
+                        clazzs.push_back(&pair.second->m_managerElementMemory->as<Classifier>());
                     }
                 }
+            }
+            for (auto& clazz : clazzs) {
+                clazz->m_inheritedMembers.nonOppositeRemove(m_id);
             }
         }
     }

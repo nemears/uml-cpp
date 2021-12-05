@@ -8,10 +8,12 @@ using namespace UML;
 void Namespace::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
     m_members.reindex(oldID, newID);
+    m_ownedMembers.reindex(oldID, newID);
 }
 
 void Namespace::referencingReleased(ID id) {
     NamedElement::referencingReleased(id);
+    m_members.release(id);
     m_ownedMembers.release(id);
 }
 
@@ -23,6 +25,7 @@ void Namespace::restoreReferences() {
 void Namespace::referenceErased(ID id) {
     NamedElement::referenceErased(id);
     m_members.eraseElement(id);
+    m_ownedMembers.eraseElement(id);
 }
 
 void Namespace::init() {

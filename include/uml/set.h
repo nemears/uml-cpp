@@ -961,7 +961,7 @@ namespace UML {
                     m_oppositeFunctor = opFunc;
                     m_ownsOppositeFunctor = true;
                 } else {
-                    std::cerr << "WARN: opposite called when there is now element owning the set, make sure to use proper constructor!" << std::endl;
+                    std::cerr << "WARN: opposite called when there is no element owning the set, make sure to use proper constructor!" << std::endl;
                 }
             };
             template <class V = Element, class W = Element> void redefines(Set<V, W>& redefined) {
@@ -980,6 +980,7 @@ namespace UML {
                         m_addFunctors.insert(func);
                     }
                 }
+                m_guard = redefined.m_guard;
             };
             void addFunctor(SetFunctor* func) {
                 m_addFunctors.insert(func);
@@ -987,6 +988,37 @@ namespace UML {
             void removeFunctor(SetFunctor* func) {
                 m_removeFunctors.insert(func);
             };
+            void removeFromJustThisSet(ID id) {
+                if (m_root->m_id == id) {
+                    m_root->m_guard--;
+                    m_root = 0;
+                } else {
+                    SetNode* temp = search(id, m_root);
+                    if (temp->m_left) {
+                        if (temp->m_right) {
+                            temp->m_right->m_parent = 0;
+                            place(temp->m_right, temp->m_left);
+                        }
+                        temp->m_left->m_parent = 0;
+                    }
+                    if (temp->m_parent) {
+                        if (temp->m_parent->m_left->m_id == temp->m_id) {
+                            temp->m_parent->m_left = 0;
+                        } else {
+                            temp->m_parent->m_right = 0;
+                        }
+                        if (temp->m_left) {
+                            place(temp->m_left, temp->m_parent);
+                        }
+                    }
+                    temp->m_parent = 0;
+                    temp->m_left = 0;
+                    temp->m_right = 0;
+                    temp->m_guard--;
+                    m_superSets.front()->place(temp, m_superSets.front()->m_root);
+                }
+                m_size--;
+            }
             void add(T& el) {
                 if (m_readOnly) {
                     throw ReadOnlySetException(el.getID().string());

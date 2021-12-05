@@ -676,3 +676,22 @@ TEST_F(SetTest, removeMiddleElementFromOrderedSetTest) {
     it++;
     ASSERT_EQ(*it, p3);
 }
+
+TEST_F(SetTest, removeFromSuperSetTest) {
+    Set<PackageableElement>* set = new Set<PackageableElement>;
+    Set<Package>* subSet = new Set<Package>;
+    subSet->subsets(*set);
+    UmlManager m;
+    Package& pckg = m.create<Package>();
+    subSet->add(pckg);
+    subSet->removeFromJustThisSet(pckg.getID());
+    ASSERT_FALSE(set->empty());
+    ASSERT_TRUE(subSet->empty());
+    ASSERT_EQ(set->size(), 1);
+    ASSERT_EQ(subSet->size(), 0);
+    ASSERT_TRUE(set->contains(pckg.getID()));
+    ASSERT_FALSE(subSet->contains(pckg.getID()));
+    
+    delete subSet;
+    delete set;
+}

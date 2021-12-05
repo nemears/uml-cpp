@@ -35,6 +35,30 @@ namespace UML {
             Set<NamedElement, Classifier> m_inheritedMembers = Set<NamedElement, Classifier>(this);
             // Set<GeneralizationSet, Classifier> m_powerTypeExtent = Set<GeneralizationSet, Classifier>(this);
             // Singleton<Class, Classifier> m_nestingClass = Singleton<Class, Classifier>(this);
+            class AddGeneralizationFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    AddGeneralizationFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class RemoveGeneralizationFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    RemoveGeneralizationFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class AddGeneralFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    AddGeneralFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class RemoveGeneralFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    RemoveGeneralFunctor(Element* el) : SetFunctor(el) {};
+            };
             void reindexName(std::string oldName, std::string newName) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referencingReleased(ID id) override;

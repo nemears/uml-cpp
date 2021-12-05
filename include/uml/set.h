@@ -1331,6 +1331,11 @@ namespace UML {
                         // always go left
                         m_node = m_node->m_left;
                     } else {
+                        if (!m_node->m_parent) {
+                            // if there is no parent to go to we must end
+                            m_node = &m_endNode;
+                            break;
+                        }
                         // we hit bottom, choose next right
                         AbstractSet::SetNode* temp;
                         AbstractSet::SetNode* last = dynamic_cast<AbstractSet::SetNode*>(m_node);
@@ -1360,6 +1365,11 @@ namespace UML {
                         // always go left
                         m_node = dynamic_cast<AbstractSet::SetNode*>(m_node->m_left);
                     } else {
+                        if (!m_node->m_parent) {
+                            // if there is no parent to go to we must end
+                            m_node = &m_endNode;
+                            break;
+                        }
                         // we hit bottom, choose next right
                         AbstractSet::SetNode* temp;
                         AbstractSet::SetNode* last = dynamic_cast<AbstractSet::SetNode*>(m_node);

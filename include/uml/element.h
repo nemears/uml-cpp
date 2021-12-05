@@ -155,6 +155,7 @@ namespace UML {
     struct ManagerNode;
     class AddToMountFunctor;
     class PackageMerge;
+    class Classifier;
     template <class T, class U> class Set;
     template <class T> class SetIterator;
     template <class T, class U> class Singleton;
@@ -189,6 +190,7 @@ namespace UML {
         template <class T> friend class SetIterator;
         friend class Parsers::SetOwner;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);
+        friend class Classifier;
         
         private:
             bool m_copiedElementFlag = false;

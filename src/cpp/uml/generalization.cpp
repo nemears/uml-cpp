@@ -5,6 +5,18 @@
 
 using namespace UML;
 
+void Generalization::AddGeneralFunctor::operator()(Element& el) const {
+    if (m_el.as<Generalization>().hasSpecific() && !m_el.as<Generalization>().getSpecificRef().getGenerals().contains(el.getID())) {
+        m_el.as<Generalization>().getSpecificRef().getGenerals().add(el.as<Classifier>());
+    }
+}
+
+void Generalization::RemoveGeneralFunctor::operator()(Element& el) const {
+    if (m_el.as<Generalization>().hasSpecific() && m_el.as<Generalization>().getSpecificRef().getGenerals().contains(el.getID())) {
+        m_el.as<Generalization>().getSpecificRef().getGenerals().remove(el.as<Classifier>());
+    }
+}
+
 void Generalization::referenceReindexed(ID oldID, ID newID) {
     DirectedRelationship::referenceReindexed(oldID, newID);
     m_general.reindex(oldID, newID);
@@ -44,6 +56,8 @@ Set<Classifier, Generalization>& Generalization::getSpecificSingleton() {
 void Generalization::init() {
     m_general.subsets(m_targets);
     m_general.m_signature = &Generalization::getGeneralSingleton;
+    m_general.m_addFunctors.insert(new AddGeneralFunctor(this));
+    m_general.m_removeFunctors.insert(new RemoveGeneralFunctor(this));
     m_specific.subsets(*m_owner);
     m_specific.subsets(m_sources);
     m_specific.opposite(&Classifier::getGeneralizations);

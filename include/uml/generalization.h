@@ -21,6 +21,18 @@ namespace UML {
         protected:
             Singleton<Classifier, Generalization> m_general = Singleton<Classifier, Generalization>(this);
             Singleton<Classifier, Generalization> m_specific = Singleton<Classifier, Generalization>(this);
+            class AddGeneralFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    AddGeneralFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class RemoveGeneralFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    RemoveGeneralFunctor(Element* el) : SetFunctor(el) {};
+            };
             // Sequence<GeneralizationSet> m_generalizationSets = Sequence<GeneralizationSet>(this);
             void referenceReindexed(ID oldID, ID newID) override;
             void referencingReleased(ID id) override;

@@ -143,16 +143,16 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   g5.getOwnedAttributes().add(p5);
   s5.getGenerals().add(g5);
   p5.setVisibility(VisibilityKind::PRIVATE);
-  ASSERT_TRUE(s5.getInheritedMembers().size() == 0);
-  ASSERT_TRUE(s5.getMembers().size() == 0);
+  ASSERT_EQ(s5.getInheritedMembers().size(), 0);
+  ASSERT_EQ(s5.getMembers().size(), 0);
 
   Class& g6 = m.create<Class>();
   Class& s6 = m.create<Class>();
   Property& p6 = m.create<Property>();
   s6.getGenerals().add(g6);
   g6.getOwnedAttributes().add(p6);
-  ASSERT_TRUE(s6.getInheritedMembers().size() == 1);
-  ASSERT_TRUE(s6.getMembers().size() == 1);
+  ASSERT_EQ(s6.getInheritedMembers().size(), 1);
+  ASSERT_EQ(s6.getMembers().size(), 1);
 }
 
 TEST_F(ClassifierTest, reindexClassifierID_test) {

@@ -156,6 +156,7 @@ namespace UML {
     class AddToMountFunctor;
     class PackageMerge;
     class Classifier;
+    class Namespace;
     template <class T, class U> class Set;
     template <class T> class SetIterator;
     template <class T, class U> class Singleton;
@@ -191,6 +192,7 @@ namespace UML {
         friend class Parsers::SetOwner;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);
         friend class Classifier;
+        friend class Namespace;
         
         private:
             bool m_copiedElementFlag = false;

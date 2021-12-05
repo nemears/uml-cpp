@@ -5,6 +5,14 @@
 
 using namespace UML;
 
+void Namespace::AddMemberFunctor::operator()(Element& el) const {
+    el.setReference(&m_el);
+}
+
+void Namespace::RemoveMemberFunctor::operator()(Element& el) const {
+    el.removeReference(m_el.getID());
+}
+
 void Namespace::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
     m_members.reindex(oldID, newID);
@@ -31,6 +39,8 @@ void Namespace::referenceErased(ID id) {
 void Namespace::init() {
     m_members.m_signature = &Namespace::getMembers;
     m_members.m_readOnly = true;
+    m_members.m_addFunctors.insert(new AddMemberFunctor(this));
+    m_members.m_removeFunctors.insert(new RemoveMemberFunctor(this));
     m_ownedMembers.subsets(*m_ownedElements);
     m_ownedMembers.subsets(m_members);
     m_ownedMembers.opposite(&NamedElement::getNamespaceSingleton);

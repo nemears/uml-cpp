@@ -10,8 +10,8 @@ void Classifier::referencingReleased(ID id) {
     TemplateableElement::referencingReleased(id);
     m_attributes.release(id);
     m_features.release(id);
-    // m_generalizations.release(id, &Classifier::getGeneralizations);
-    // m_generals.release(id, &Classifier::getGenerals);
+    m_generalizations.release(id);
+    m_generals.release(id);
     m_inheritedMembers.release(id);
     // m_nestingClass.release(id);
     // m_powerTypeExtent.release(id, &Classifier::getPowerTypeExtent);
@@ -23,8 +23,8 @@ void Classifier::referenceReindexed(ID oldID, ID newID) {
     TemplateableElement::referenceReindexed(oldID, newID);
     m_attributes.reindex(oldID, newID);
     m_features.reindex(oldID, newID);
-    // m_generalizations.reindex(oldID, newID, &Classifier::getGeneralizations);
-    // m_generals.reindex(oldID, newID, &Classifier::getGenerals);
+    m_generalizations.reindex(oldID, newID);
+    m_generals.reindex(oldID, newID);
     m_inheritedMembers.reindex(oldID, newID);
     // m_nestingClass.reindex(oldID, newID);
     // m_powerTypeExtent.reindex(oldID, newID, &Classifier::getPowerTypeExtent);
@@ -65,8 +65,8 @@ void Classifier::referenceErased(ID id) {
     TemplateableElement::referenceErased(id);
     m_attributes.eraseElement(id);
     m_features.eraseElement(id);
-    // m_generalizations.elementErased(id);
-    // m_generals.elementErased(id);
+    m_generalizations.eraseElement(id);
+    m_generals.eraseElement(id);
     m_inheritedMembers.eraseElement(id);
     // m_nestingClass.elementErased(id);
     // m_powerTypeExtent.elementErased(id);
@@ -83,8 +83,10 @@ void Classifier::init() {
     m_generalizations.subsets(*m_ownedElements);
     m_generalizations.opposite(&Generalization::getSpecificSingleton);
     m_generalizations.m_signature = &Classifier::getGeneralizations;
+    m_generals.m_signature = &Classifier::getGenerals;
     m_inheritedMembers.subsets(m_members);
     m_inheritedMembers.m_signature = &Classifier::getInheritedMembers;
+    m_inheritedMembers.m_readOnly = true;
 }
 
 void Classifier::copy(const Classifier& rhs) {
@@ -130,9 +132,9 @@ Set<Generalization, Classifier>& Classifier::getGeneralizations() {
     return m_generalizations;
 }
 
-// Sequence<Classifier>& Classifier::getGenerals() {
-//     return m_generals;
-// }
+Set<Classifier, Classifier>& Classifier::getGenerals() {
+    return m_generals;
+}
 
 Set<NamedElement, Classifier>& Classifier::getInheritedMembers() {
     return m_inheritedMembers;

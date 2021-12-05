@@ -32,7 +32,7 @@ namespace UML {
             Set<Property, Classifier> m_attributes = Set<Property, Classifier>(this);
             Set<Generalization, Classifier> m_generalizations = Set<Generalization, Classifier>(this);
             // Set<Classifier, Classifier> m_generals = Set<Classifier, Classifier>(this);
-            // Set<NamedElement, Classifier> m_inheritedMembers = Set<NamedElement, Classifier>(this);
+            Set<NamedElement, Classifier> m_inheritedMembers = Set<NamedElement, Classifier>(this);
             // Set<GeneralizationSet, Classifier> m_powerTypeExtent = Set<GeneralizationSet, Classifier>(this);
             // Singleton<Class, Classifier> m_nestingClass = Singleton<Class, Classifier>(this);
             void reindexName(std::string oldName, std::string newName) override;
@@ -59,7 +59,7 @@ namespace UML {
             //  * this returns all classifiers this classifier inherits from
             //  **/
             // Sequence<Classifier>& getGenerals();
-            // Sequence<NamedElement>& getInheritedMembers();
+            Set<NamedElement, Classifier>& getInheritedMembers();
             // Sequence<GeneralizationSet>& getPowerTypeExtent();
             // // TODO move NestingClass to protected
             // Class* getNestingClass();

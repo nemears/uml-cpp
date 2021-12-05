@@ -12,7 +12,7 @@ void Classifier::referencingReleased(ID id) {
     m_features.release(id);
     // m_generalizations.release(id, &Classifier::getGeneralizations);
     // m_generals.release(id, &Classifier::getGenerals);
-    // m_inheritedMembers.release(id, &Classifier::getInheritedMembers);
+    m_inheritedMembers.release(id);
     // m_nestingClass.release(id);
     // m_powerTypeExtent.release(id, &Classifier::getPowerTypeExtent);
 }
@@ -25,7 +25,7 @@ void Classifier::referenceReindexed(ID oldID, ID newID) {
     m_features.reindex(oldID, newID);
     // m_generalizations.reindex(oldID, newID, &Classifier::getGeneralizations);
     // m_generals.reindex(oldID, newID, &Classifier::getGenerals);
-    // m_inheritedMembers.reindex(oldID, newID, &Classifier::getInheritedMembers);
+    m_inheritedMembers.reindex(oldID, newID);
     // m_nestingClass.reindex(oldID, newID);
     // m_powerTypeExtent.reindex(oldID, newID, &Classifier::getPowerTypeExtent);
 }
@@ -67,7 +67,7 @@ void Classifier::referenceErased(ID id) {
     m_features.eraseElement(id);
     // m_generalizations.elementErased(id);
     // m_generals.elementErased(id);
-    // m_inheritedMembers.elementErased(id);
+    m_inheritedMembers.eraseElement(id);
     // m_nestingClass.elementErased(id);
     // m_powerTypeExtent.elementErased(id);
 }
@@ -83,12 +83,15 @@ void Classifier::init() {
     m_generalizations.subsets(*m_ownedElements);
     m_generalizations.opposite(&Generalization::getSpecificSingleton);
     m_generalizations.m_signature = &Classifier::getGeneralizations;
+    m_inheritedMembers.subsets(m_members);
+    m_inheritedMembers.m_signature = &Classifier::getInheritedMembers;
 }
 
 void Classifier::copy(const Classifier& rhs) {
     m_features = rhs.m_features;
     m_attributes = rhs.m_attributes;
     m_generalizations = rhs.m_generalizations;
+    m_inheritedMembers = rhs.m_inheritedMembers;
 }
 
 Classifier::Classifier() : Element(ElementType::CLASSIFIER) {
@@ -131,9 +134,9 @@ Set<Generalization, Classifier>& Classifier::getGeneralizations() {
 //     return m_generals;
 // }
 
-// Sequence<NamedElement>& Classifier::getInheritedMembers() {
-//     return m_inheritedMembers;
-// }
+Set<NamedElement, Classifier>& Classifier::getInheritedMembers() {
+    return m_inheritedMembers;
+}
 
 // Sequence<GeneralizationSet>& Classifier::getPowerTypeExtent() {
 //     return m_powerTypeExtent;

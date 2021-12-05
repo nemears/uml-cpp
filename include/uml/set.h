@@ -639,6 +639,43 @@ namespace UML {
                                 }
                             }
                         }
+                        for (auto& set : m_subSets) {
+                            for (auto& superSet : static_cast<Set*>(set)->m_superSets) {
+                                SetNode* node2 = superSet->m_root;
+                                while (node2) {
+                                    if (node2->m_left) {
+                                        if (node2->m_left->m_id == oldID) {
+                                            if (node2->m_right && node2->m_right->m_id > newID) {
+                                                // switch
+                                                SetNode* temp = node2->m_left;
+                                                node2->m_left = node2->m_right;
+                                                node2->m_right = temp;
+                                            }
+                                            node2 = 0;
+                                        } else if (node2->m_right && node2->m_right->m_id == oldID) {
+                                            if (newID > node2->m_left->m_id) {
+                                                SetNode* temp = node2->m_left;
+                                                node2->m_left = node2->m_right;
+                                                node2->m_right = temp;
+                                            }
+                                            node2 = 0;
+                                        } else {
+                                            node2 = node2->m_left;
+                                        }
+                                    } else {
+                                        if (node2->m_parent && node2->m_parent->m_right == node2) {
+                                            break;
+                                        }
+                                        do {
+                                            node2 = node2->m_parent;
+                                        } while (node2 && !node2->m_right);
+                                        if (node2) {
+                                            node2 = node2->m_right;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         node->m_id = newID;
                     }
                 }
@@ -657,6 +694,43 @@ namespace UML {
                                 if (newID > node->m_parent->m_left->m_id) {
                                     node->m_parent->m_right = node->m_parent->m_left;
                                     node->m_parent->m_left = node;
+                                }
+                            }
+                            for (auto& set : m_subSets) {
+                                for (auto& superSet : static_cast<Set*>(set)->m_superSets) {
+                                    SetNode* node2 = superSet->m_root;
+                                    while (node2) {
+                                        if (node2->m_left) {
+                                            if (node2->m_left->m_id == oldID) {
+                                                if (node2->m_right && node2->m_right->m_id > newID) {
+                                                    // switch
+                                                    SetNode* temp = node2->m_left;
+                                                    node2->m_left = node2->m_right;
+                                                    node2->m_right = temp;
+                                                }
+                                                node2 = 0;
+                                            } else if (node2->m_right && node2->m_right->m_id == oldID) {
+                                                if (newID > node2->m_left->m_id) {
+                                                    SetNode* temp = node2->m_left;
+                                                    node2->m_left = node2->m_right;
+                                                    node2->m_right = temp;
+                                                }
+                                                node2 = 0;
+                                            } else {
+                                                node2 = node2->m_left;
+                                            }
+                                        } else {
+                                            if (node2->m_parent && node2->m_parent->m_right == node2) {
+                                                break;
+                                            }
+                                            do {
+                                                node2 = node2->m_parent;
+                                            } while (node2 && !node2->m_right);
+                                            if (node2) {
+                                                node2 = node2->m_right;
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

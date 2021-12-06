@@ -2,6 +2,7 @@
 #include "uml/enumeration.h"
 #include "uml/package.h"
 #include "uml/enumerationLiteral.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -23,8 +24,6 @@ TEST_F(EnumerationTest, addOwnedLiteralTest) {
 
     ASSERT_TRUE(l.getEnumeration() == &e);
     ASSERT_TRUE(l.getNamespace() == &e);
-    ASSERT_TRUE(l.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(&l.getMemberNamespace().front() == &e);
     ASSERT_TRUE(l.getOwner() == &e);
 }
 
@@ -44,8 +43,6 @@ TEST_F(EnumerationTest, setEnumerationTest) {
 
     ASSERT_TRUE(l.getEnumeration() == &e);
     ASSERT_TRUE(l.getNamespace() == &e);
-    ASSERT_TRUE(l.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(&l.getMemberNamespace().front() == &e);
     ASSERT_TRUE(l.getOwner() == &e);
 }
 
@@ -62,7 +59,6 @@ TEST_F(EnumerationTest, removeOwnedLiteralTest) {
     
     ASSERT_TRUE(l.getEnumeration() == 0);
     ASSERT_TRUE(l.getNamespace() == 0);
-    ASSERT_TRUE(l.getMemberNamespace().size() == 0);
     ASSERT_TRUE(l.getOwner() == 0);
 }
 
@@ -79,7 +75,6 @@ TEST_F(EnumerationTest, setNullEnumeration) {
     
     ASSERT_TRUE(l.getEnumeration() == 0);
     ASSERT_TRUE(l.getNamespace() == 0);
-    ASSERT_TRUE(l.getMemberNamespace().size() == 0);
     ASSERT_TRUE(l.getOwner() == 0);
 }
 
@@ -95,8 +90,6 @@ TEST_F(EnumerationTest, copyEnumerationTest) {
     ASSERT_TRUE(e2.getName().compare("test") == 0);
     ASSERT_TRUE(e2.getOwningPackage() == &p);
     ASSERT_TRUE(e2.getNamespace() == &p);
-    ASSERT_TRUE(e2.getMemberNamespace().size() == 1);
-    ASSERT_TRUE(&e2.getMemberNamespace().front() == &p);
     ASSERT_TRUE(e2.getOwner() == &p);
     ASSERT_TRUE(e2.getOwnedLiterals().size() == 1);
     ASSERT_TRUE(&e2.getOwnedLiterals().front() == &l);

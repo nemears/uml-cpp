@@ -34,6 +34,10 @@ void EnumerationLiteral::init() {
     m_enumeration.m_signature = &EnumerationLiteral::getEnumerationSingleton;
 }
 
+void EnumerationLiteral::copy(const EnumerationLiteral& rhs) {
+    m_enumeration = rhs.m_enumeration;
+}
+
 EnumerationLiteral::EnumerationLiteral() : Element(ElementType::ENUMERATION_LITERAL) {
     init();
 }

@@ -136,6 +136,8 @@ namespace UML {
     class Comment;
     class InstanceValue;
     class Expression;
+    class TemplateableElement;
+    class TemplateSignature;
 
     /**
      * This container is based around a weighted binary search tree
@@ -179,6 +181,8 @@ namespace UML {
         friend class Comment;
         friend class InstanceValue;
         friend class Expression;
+        friend class TemplateableElement;
+        friend class TemplateSignature;
 
         protected:
             std::vector<AbstractSet*> m_superSets;

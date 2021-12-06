@@ -1,8 +1,5 @@
 #include "uml/literalSpecification.h"
-#include "uml/package.h"
-#include "uml/packageMerge.h"
-#include "uml/type.h"
-#include "uml/dependency.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 

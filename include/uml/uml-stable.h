@@ -45,7 +45,7 @@
 // #include "uml/templateBinding.h"
 // #include "uml/templateParameter.h"
 // #include "uml/templateParameterSubstitution.h"
-// #include "uml/templateSignature.h"
+#include "uml/templateSignature.h"
 #include "uml/umlManager.h"
 #include "uml/usage.h"
 

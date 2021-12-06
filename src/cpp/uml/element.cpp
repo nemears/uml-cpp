@@ -1,9 +1,6 @@
 #include "uml/element.h"
 #include "uml/umlManager.h"
-// #include "uml/sequence.h"
-// #include "uml/relationship.h"
-// #include "uml/directedRelationship.h"
-// #include "uml/comment.h"
+#include "uml/comment.h"
 // #include "uml/instanceSpecification.h"
 // #include "uml/classifier.h"
 #include "uml/singleton.h"
@@ -57,9 +54,7 @@ void Element::removeReference(ID referencing) {
 void Element::referenceReindexed(ID oldID, ID newID) {
     m_ownedElements->reindex(oldID, newID);
     m_owner->reindex(oldID, newID);
-    // m_ownedComments->reindex(oldID, newID);
-    // m_relationships->reindex(oldID, newID);
-    // m_directedRelationships->reindex(oldID, newID);
+    m_ownedComments->reindex(oldID, newID);
     // m_appliedStereotype->reindex(oldID, newID);
 }
 
@@ -69,9 +64,7 @@ void Element::referencingReleased(ID id) {
     }
     m_owner->release(id);
     m_ownedElements->release(id);
-    // m_relationships->release(id);
-    // m_directedRelationships->release(id);
-    // m_ownedComments->release(id);
+    m_ownedComments->release(id);
     // m_appliedStereotype->release(id);
 }
 
@@ -97,9 +90,7 @@ void Element::restoreReference(Element* el) {
 void Element::referenceErased(ID id) {
     m_owner->eraseElement(id);
     m_ownedElements->eraseElement(id);
-    // m_ownedComments->eraseElement(id);
-    // m_relationships->eraseElement(id);
-    // m_directedRelationships->eraseElement(id);
+    m_ownedComments->eraseElement(id);
     // m_appliedStereotype->eraseElement(id);
 }
 
@@ -110,6 +101,7 @@ Set<Element, Element>& Element::getOwnerSingleton() {
 void Element::copy(const Element& rhs) {
     *m_owner = *rhs.m_owner;
     *m_ownedElements = *rhs.m_ownedElements;
+    *m_ownedComments = *rhs.m_ownedComments;
 }
 
 Element::Element(ElementType elementType) : m_elementType(elementType) {
@@ -128,8 +120,9 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_ownedElements->m_signature = &Element::getOwnedElements;
     m_ownedElements->m_readOnly = true;
 
-    // m_ownedComments = new Set<Comment>(this);
-    // m_ownedComments->subsets(*m_ownedElements);
+    m_ownedComments = new Set<Comment, Element>(this);
+    m_ownedComments->subsets(*m_ownedElements);
+    m_ownedComments->m_signature = &Element::getOwnedComments;
 
     // m_appliedStereotype = new Set<InstanceSpecification>(this);
     // m_appliedStereotype->subsets(*m_ownedElements);
@@ -138,9 +131,7 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
 Element::~Element() {
     delete m_owner;
     delete m_ownedElements;
-    // delete m_relationships;
-    // delete m_directedRelationships;
-    // delete m_ownedComments;
+    delete m_ownedComments;
     // delete m_appliedStereotype;
     if (m_copiedElementFlag) {
         if (m_manager) {
@@ -159,10 +150,6 @@ Element::Element(const Element& rhs, ElementType elementType) : Element(elementT
     if (m_manager) {
         m_manager->m_graph[m_id].m_copies.insert(this);
     }
-    // m_ownedComments = new Set<Comment, Element>(*el.m_ownedComments);
-    // m_ownedComments->m_el = this;
-    // m_appliedStereotype = new Set<InstanceSpecification, Element>(*el.m_appliedStereotype);
-    // m_appliedStereotype->m_el = this;
 }
 
 void Element::setID(string id) {
@@ -189,14 +176,6 @@ void Element::setID(ID id) {
         }
     }
 }
-
-// Set<Relationship, Element>& Element::getRelationships() {
-//     return *m_relationships;
-// }
-
-// Set<DirectedRelationship, Element>& Element::getDirectedRelationships() {
-//     return *m_directedRelationships;
-// }
 
 ElementType Element::getElementType() const {
     return m_elementType;
@@ -506,9 +485,9 @@ Set<Element, Element>& Element::getOwnedElements() {
 //     return *m_appliedStereotype;
 // }
 
-// Set<Comment, Element>& Element::getOwnedComments() {
-//     return *m_ownedComments;
-// }
+Set<Comment, Element>& Element::getOwnedComments() {
+    return *m_ownedComments;
+}
 
 /**
  * This func compares an id and an element without loading 

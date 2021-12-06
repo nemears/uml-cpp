@@ -511,7 +511,7 @@ namespace UML {
                 for (auto subset : m_subSets) {
                     if (temp->m_guard >= subset->m_guard) {
                         subset->m_size--;
-                        if (subset->m_root->m_id == id) {
+                        if (subset->m_root && subset->m_root->m_id == id) {
                             if (subset->m_root->m_left) {
                                 place(subset->m_root->m_right, subset->m_root->m_left);
                                 subset->m_root->m_left->m_parent = subset->m_root->m_parent;

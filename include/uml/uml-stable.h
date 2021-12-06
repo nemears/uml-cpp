@@ -8,7 +8,7 @@
 // #include "uml/abstraction.h"
 #include "uml/behavior.h"
 #include "uml/class.h"
-// #include "uml/comment.h"
+#include "uml/comment.h"
 // #include "uml/artifact.h"
 #include "uml/association.h"
 #include "uml/dataType.h"

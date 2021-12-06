@@ -42,7 +42,7 @@
 #include "uml/realization.h"
 #include "uml/slot.h"
 // #include "uml/stereotype.h"
-// #include "uml/templateBinding.h"
+#include "uml/templateBinding.h"
 #include "uml/templateParameter.h"
 // #include "uml/templateParameterSubstitution.h"
 #include "uml/templateSignature.h"

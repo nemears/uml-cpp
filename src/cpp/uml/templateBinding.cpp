@@ -2,135 +2,73 @@
 #include "uml/templateParameterSubstitution.h"
 #include "uml/templateableElement.h"
 #include "uml/templateSignature.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
-
-void TemplateBinding::RemoveBoundElementProcedure::operator()(TemplateableElement* el) const {
-    if (m_me->getSources().count(el->getID())) {
-        m_me->getSources().remove(*el);
-    }
-    if (el->getTemplateBindings().count(m_me->getID())) {
-        el->getTemplateBindings().remove(*m_me);
-    }
-    if (m_me->getOwnerID() == el->getID()) {
-        m_me->setOwner(0);
-    }
-}
-
-void TemplateBinding::AddBoundElementProcedure::operator()(TemplateableElement* el) const {
-    if (!m_me->getSources().count(el->getID())) {
-        m_me->getSources().add(*el);
-    }
-    if (!el->getTemplateBindings().count(m_me->getID())) {
-        el->getTemplateBindings().add(*m_me);
-    }
-    if (m_me->getOwnerID() != el->getID()) {
-        m_me->setOwner(el);
-    }
-}
-
-void TemplateBinding::AddBoundElementProcedure::operator()(ID id) const {
-    if (!m_me->getSources().count(id)) {
-        m_me->getSources().addByID(id);
-    }
-    if (m_me->getOwnerID() != id) {
-        m_me->setOwnerByID(id);
-    }
-}
-
-void TemplateBinding::RemoveSignatureProcedure::operator()(TemplateSignature* el) const {
-    if (m_me->getTargets().count(el->getID())) {
-        m_me->getTargets().remove(*el);
-    }
-}
-
-void TemplateBinding::AddSignatureProcedure::operator()(TemplateSignature* el) const {
-    if (!m_me->getTargets().count(el->getID())) {
-        m_me->getTargets().add(*el);
-    }
-}
-
-void TemplateBinding::AddParameterSubstitutionFunctor::operator()(TemplateParameterSubstitution& el) const {
-    if(el.getTemplateBinding() != m_el) {
-        el.setTemplateBinding(m_el);
-    }
-
-    if (!m_el->getOwnedElements().contains(el.getID())) {
-        m_el->getOwnedElements().add(el);
-    }
-    updateCopiedSequenceAddedTo(el, &TemplateBinding::getParameterSubstitution);
-}
-
-void TemplateBinding::AddParameterSubstitutionFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedElements().contains(id)) {
-        m_el->getOwnedElements().add(id);
-    }
-}
-
-void TemplateBinding::RemoveParameterSubstitutionFunctor::operator()(TemplateParameterSubstitution& el) const {
-    if(el.getTemplateBinding() == m_el) {
-        el.setTemplateBinding(0);
-    }
-
-    if (m_el->getOwnedElements().contains(el.getID())) {
-        m_el->getOwnedElements().remove(el);
-    }
-    updateCopiedSequenceRemovedFrom(el, &TemplateBinding::getParameterSubstitution);
-}
 
 void TemplateBinding::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
     m_boundElement.release(id);
     m_signature.release(id);
+    m_parameterSubstitution.release(id);
 }
 
 void TemplateBinding::referenceReindexed(ID oldID, ID newID) {
     DirectedRelationship::referenceReindexed(oldID, newID);
     m_boundElement.reindex(oldID, newID);
     m_signature.reindex(oldID, newID);
+    m_parameterSubstitution.reindex(oldID, newID);
 }
 
 void TemplateBinding::restoreReferences() {
     DirectedRelationship::restoreReferences();
-    m_boundElement.restoreReference();
-    m_signature.restoreReference();
+    // m_boundElement.restoreReference();
+    // m_signature.restoreReference();
 }
 
 void TemplateBinding::referenceErased(ID id) {
     DirectedRelationship::referenceErased(id);
-    m_boundElement.elementErased(id);
-    m_signature.elementErased(id);
+    m_boundElement.eraseElement(id);
+    m_signature.eraseElement(id);
+    m_parameterSubstitution.eraseElement(id);
+}
+
+Set<TemplateableElement, TemplateBinding>& TemplateBinding::getBoundElementSingleton() {
+    return m_boundElement;
+}
+
+Set<TemplateSignature, TemplateBinding>& TemplateBinding::getSignatureSingleton() {
+    return m_signature;
+}
+
+void TemplateBinding::init() {
+    m_boundElement.subsets(m_sources);
+    m_boundElement.subsets(*m_owner);
+    // m_boundElement.opposite(&TemplateableElement::getTemplateBindings);
+    m_boundElement.m_signature = &TemplateBinding::getBoundElementSingleton;
+    m_signature.subsets(m_targets);
+    m_signature.m_signature = &TemplateBinding::getSignatureSingleton;
+    m_parameterSubstitution.subsets(*m_ownedElements);
+    // m_parameterSubstitution.opposite(&TemplateParameterSubstitution::getTemplateBindingSingleton);
+    m_parameterSubstitution.m_signature = &TemplateBinding::getParameterSubstitution;
+}
+
+void TemplateBinding::copy(const TemplateBinding& rhs) {
+    m_boundElement = rhs.m_boundElement;
+    m_signature = rhs.m_signature;
+    m_parameterSubstitution = rhs.m_parameterSubstitution;
 }
 
 TemplateBinding::TemplateBinding() : Element(ElementType::TEMPLATE_BINDING) {
-    m_boundElement.m_signature = &TemplateBinding::m_boundElement;
-    m_boundElement.m_removeProcedures.push_back(new RemoveBoundElementProcedure(this));
-    m_boundElement.m_addProcedures.push_back(new AddBoundElementProcedure(this));
-    m_signature.m_signature = &TemplateBinding::m_signature;
-    m_signature.m_removeProcedures.push_back(new RemoveSignatureProcedure(this));
-    m_signature.m_addProcedures.push_back(new AddSignatureProcedure(this));
-    m_parameterSubstitution.addProcedures.push_back(new AddParameterSubstitutionFunctor(this));
-    m_parameterSubstitution.removeProcedures.push_back(new RemoveParameterSubstitutionFunctor(this));
+    init();
 }
 
-TemplateBinding::TemplateBinding(const TemplateBinding& bind) : 
-DirectedRelationship(bind), 
-Element(bind, ElementType::TEMPLATE_BINDING) {
-    m_boundElement = bind.m_boundElement;
-    m_boundElement.m_me = this;
-    m_boundElement.m_removeProcedures.clear();
-    m_boundElement.m_addProcedures.clear();
-    m_signature = bind.m_signature;
-    m_signature.m_me = this;
-    m_signature.m_removeProcedures.clear();
-    m_signature.m_addProcedures.clear();
-    m_signature.m_removeProcedures.push_back(new RemoveSignatureProcedure(this));
-    m_signature.m_addProcedures.push_back(new AddSignatureProcedure(this));
-    m_parameterSubstitution = bind.m_parameterSubstitution;
-    m_parameterSubstitution.addProcedures.clear();
-    m_parameterSubstitution.addProcedures.push_back(new AddParameterSubstitutionFunctor(this));
-    m_parameterSubstitution.removeProcedures.clear();
-    m_parameterSubstitution.removeProcedures.push_back(new RemoveParameterSubstitutionFunctor(this));
+TemplateBinding::TemplateBinding(const TemplateBinding& rhs) : Element(rhs, ElementType::TEMPLATE_BINDING) {
+    init();
+    Element::copy(rhs);
+    Relationship::copy(rhs);
+    DirectedRelationship::copy(rhs);
+    copy(rhs);
 }
 
 TemplateBinding::~TemplateBinding() {
@@ -185,7 +123,7 @@ void TemplateBinding::setSignature(TemplateSignature& signature) {
     m_signature.set(signature);
 }
 
-Sequence<TemplateParameterSubstitution>& TemplateBinding::getParameterSubstitution() {
+Set<TemplateParameterSubstitution, TemplateBinding>& TemplateBinding::getParameterSubstitution() {
     return m_parameterSubstitution;
 }
 

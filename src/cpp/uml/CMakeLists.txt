@@ -7,13 +7,13 @@ add_library(Uml element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp names
                 behavioralFeature.cpp behavior.cpp connectableElement.cpp multiplicityElement.cpp parameter.cpp
                 operation.cpp opaqueBehavior.cpp behavioredClassifier.cpp association.cpp enumeration.cpp enumerationLiteral.cpp
                 comment.cpp instanceValue.cpp expression.cpp abstraction.cpp realization.cpp usage.cpp model.cpp 
-                templateableElement.cpp templateSignature.cpp parameterableElement.cpp templateParameter.cpp)
+                templateableElement.cpp templateSignature.cpp parameterableElement.cpp templateParameter.cpp
+                templateBinding.cpp)
 # add_library(Uml   
 #                 activity.cpp activityNode.cpp activityEdge.cpp objectNode.cpp  pin.cpp
 #                 action.cpp inputPin.cpp outputPin.cpp controlFlow.cpp objectFlow.cpp initialNode.cpp finalNode.cpp decisionNode.cpp
 #                 joinNode.cpp forkNode.cpp mergeNode.cpp parameterNode.cpp callBehaviorAction.cpp  createObjectAction.cpp
 #                 redefinableElement.cpp
-#                 templateBinding.cpp
 #                 templateParameterSubstitution.cpp profile.cpp stereotype.cpp
 #                 profileApplication.cpp extension.cpp extensionEnd.cpp dependency.cpp 
 #                 deployment.cpp deployedArtifact.cpp deploymentTarget.cpp artifact.cpp 

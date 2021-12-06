@@ -1,76 +1,60 @@
 #include "uml/expression.h"
+#include "uml/uml-stable.h"
 
-using namespace std;
 using namespace UML;
-
-void Expression::AddOperandFunctor::operator()(ValueSpecification& el) const {
-    if (!m_el->getOwnedElements().contains(el.getID())) {
-        m_el->getOwnedElements().add(el);
-    }
-    if (el.getExpressionID() != m_el->getID()) {
-        el.setExpression(m_el);
-    }
-    updateCopiedSequenceAddedTo(el, &Expression::getOperands);
-}
-
-void Expression::AddOperandFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedElements().contains(id)) {
-        m_el->getOwnedElements().add(id);
-    }
-}
-
-void Expression::RemoveOperandFunctor::operator()(ValueSpecification& el) const {
-    if (m_el->getOwnedElements().contains(el.getID())) {
-        m_el->getOwnedElements().remove(el);
-    }
-    if (el.getExpressionID() == m_el->getID()) {
-        el.setExpression(m_el);
-    }
-    updateCopiedSequenceRemovedFrom(el, &Expression::getOperands);
-}
 
 void Expression::referencingReleased(ID id) {
     ValueSpecification::referencingReleased(id);
-    m_operands.elementReleased(id, &Expression::getOperands);
+    m_operands.release(id);
 }
 
 void Expression::referenceReindexed(ID oldID, ID newID) {
     ValueSpecification::referenceReindexed(oldID, newID);
-    m_operands.reindex(oldID, newID, &Expression::getOperands);
+    m_operands.reindex(oldID, newID);
 }
 
 void Expression::referenceErased(ID id) {
     ValueSpecification::referenceErased(id);
-    m_operands.elementErased(id);
+    m_operands.eraseElement(id);
+}
+
+Set<ValueSpecification, Expression>& Expression::getOperandsSet() {
+    return m_operands;
+}
+
+void Expression::init() {
+    m_operands.subsets(*m_ownedElements);
+}
+
+void Expression::copy(const Expression& rhs) {
+    m_operands = rhs.m_operands;
 }
 
 Expression::Expression() : Element(ElementType::EXPRESSION) {
-    m_operands.addProcedures.push_back(new AddOperandFunctor(this));
-    m_operands.removeProcedures.push_back(new RemoveOperandFunctor(this));
+    init();
 }
 
 Expression::Expression(const Expression& rhs) : Element(rhs, ElementType::EXPRESSION) {
-    m_operands = rhs.m_operands;
-    m_operands.m_el = this;
-    m_operands.addProcedures.clear();
-    m_operands.removeProcedures.clear();
-    m_operands.addProcedures.push_back(new AddOperandFunctor(this));
-    m_operands.removeProcedures.push_back(new RemoveOperandFunctor(this));
+    init();
+    Element::copy(rhs);
+    TypedElement::copy(rhs);
+    PackageableElement::copy(rhs);
+    copy(rhs);
 }
 
 Expression::~Expression() {
     
 }
 
-Sequence<ValueSpecification>& Expression::getOperands() {
+OrderedSet<ValueSpecification, Expression>& Expression::getOperands() {
     return m_operands;
 }
 
-string Expression::getSymbol() {
+std::string Expression::getSymbol() {
     return m_symbol;
 }
 
-void Expression::setSymbol(string sym) {
+void Expression::setSymbol(std::string sym) {
     m_symbol = sym;
 }
 

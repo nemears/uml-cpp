@@ -1271,12 +1271,18 @@ namespace UML {
                 } 
                 return ret;
             };
+            bool contains(T& el) {
+                return contains(el.getID());
+            };
             int count(ID id) {
                 if (contains(id)) {
                     return 1;
                 } else {
                     return 0;
                 }
+            };
+            int count(T& el) {
+                return count(el.getID());
             };
             bool contains(std::string name) {
                 bool ret = false;

@@ -695,3 +695,39 @@ TEST_F(SetTest, removeFromSuperSetTest) {
     delete subSet;
     delete set;
 }
+
+TEST_F(SetTest, siamondSubsetsTest) {
+    Set<Element> root;
+    Set<NamedElement> set1;
+    Set<PackageableElement> set2;
+    Set<Package> dSet;
+    set1.subsets(root);
+    set2.subsets(root);
+    dSet.subsets(set1);
+    dSet.subsets(set2);
+    UmlManager m;
+    Package& p1 = m.create<Package>();
+    Package& p2 = m.create<Package>();
+    Package& d1 = m.create<Package>();
+    Package& d2 = m.create<Package>();
+    set1.add(p1);
+    set2.add(p2);
+    set1.add(d1);
+    set2.add(d2);
+    dSet.add(d1);
+    dSet.add(d2);
+    ASSERT_EQ(root.size(), 4);
+    ASSERT_EQ(set1.size(), 2);
+    ASSERT_EQ(set2.size(), 2);
+    ASSERT_EQ(dSet.size(), 2);
+    ASSERT_TRUE(root.contains(p1));
+    ASSERT_TRUE(set1.contains(p1));
+    ASSERT_TRUE(root.contains(p2));
+    ASSERT_TRUE(set2.contains(p2));
+    ASSERT_TRUE(root.contains(d1));
+    ASSERT_TRUE(set1.contains(d1));
+    ASSERT_TRUE(dSet.contains(d1));
+    ASSERT_TRUE(root.contains(d2));
+    ASSERT_TRUE(set2.contains(d2));
+    ASSERT_TRUE(dSet.contains(d2));
+}

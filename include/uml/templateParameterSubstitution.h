@@ -19,6 +19,7 @@ namespace UML {
     class TemplateParameterSubstitution : public Element {
 
         friend class UmlManager;
+        friend class TemplateBinding;
         friend class Parsers::SetOwnedActual;
         friend class Parsers::SetActual;
         friend class Parsers::SetFormal;

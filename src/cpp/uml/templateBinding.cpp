@@ -49,7 +49,7 @@ void TemplateBinding::init() {
     m_signature.subsets(m_targets);
     m_signature.m_signature = &TemplateBinding::getSignatureSingleton;
     m_parameterSubstitution.subsets(*m_ownedElements);
-    // m_parameterSubstitution.opposite(&TemplateParameterSubstitution::getTemplateBindingSingleton);
+    m_parameterSubstitution.opposite(&TemplateParameterSubstitution::getTemplateBindingSingleton);
     m_parameterSubstitution.m_signature = &TemplateBinding::getParameterSubstitution;
 }
 

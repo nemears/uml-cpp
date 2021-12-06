@@ -36,28 +36,28 @@ TEST_F(InstanceSpecificationTest, setStringValueSlots) {
     ASSERT_TRUE(i.getSlots().front().getValues().front().getID() == ls.getID());
 }
 
-// TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
-//     UmlManager m;
-//     Class c = m.create<Class>();
-//     c.setName("typeA");
-//     Class b = m.create<Class>();
-//     b.setName("typeB");
-//     Property bProp = m.create<Property>();
-//     bProp.setName("b");
-//     bProp.setType(&b);
-//     c.getAttributes().add(bProp);
-//     InstanceSpecification bInst = m.create<InstanceSpecification>();
-//     bInst.setClassifier(&b);
-//     InstanceSpecification aInst = m.create<InstanceSpecification>();
-//     aInst.setClassifier(&c);
-//     InstanceValue& bVal = m.create<InstanceValue>();
-//     bVal.setInstance(&bInst);
-//     Slot&    aSlot = m.create<Slot>();
-//     aSlot.setDefiningFeature(&bProp);
-//     aSlot.getValues().add(bVal);
-//     aInst.getSlots().add(aSlot);
-//     ASSERT_TRUE(aInst.getSlots().front().getDefiningFeature()->getID() == bProp.getID());
-// }
+TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
+    UmlManager m;
+    Class c = m.create<Class>();
+    c.setName("typeA");
+    Class b = m.create<Class>();
+    b.setName("typeB");
+    Property bProp = m.create<Property>();
+    bProp.setName("b");
+    bProp.setType(&b);
+    c.getOwnedAttributes().add(bProp);
+    InstanceSpecification bInst = m.create<InstanceSpecification>();
+    bInst.getClassifiers().add(b);
+    InstanceSpecification aInst = m.create<InstanceSpecification>();
+    aInst.getClassifiers().add(c);
+    InstanceValue& bVal = m.create<InstanceValue>();
+    bVal.setInstance(&bInst);
+    Slot& aSlot = m.create<Slot>();
+    aSlot.setDefiningFeature(&bProp);
+    aSlot.getValues().add(bVal);
+    aInst.getSlots().add(aSlot);
+    ASSERT_TRUE(aInst.getSlots().front().getDefiningFeature()->getID() == bProp.getID());
+}
 
 // TODO add throw for pushing slots that don't correspond structural feature
 

@@ -21,7 +21,7 @@
 // #include "uml/extensionEnd.h"
 #include "uml/generalization.h"
 #include "uml/instanceSpecification.h"
-// #include "uml/instanceValue.h"
+#include "uml/instanceValue.h"
 #include "uml/literalBool.h"
 #include "uml/literalInt.h"
 #include "uml/literalNull.h"

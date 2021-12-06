@@ -60,6 +60,18 @@ namespace UML {
                 public:
                     RemoveGeneralFunctor(Element* el) : SetFunctor(el) {};
             };
+            class AddOwnedMemberFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    AddOwnedMemberFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class RemoveOwnedMemberFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    RemoveOwnedMemberFunctor(Element* el) : SetFunctor(el) {};
+            };
             void reindexName(std::string oldName, std::string newName) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referencingReleased(ID id) override;

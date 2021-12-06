@@ -34,6 +34,7 @@ void Classifier::AddGeneralFunctor::operator()(Element& el) const {
             m_el.as<Class>().m_inheritedMembers.nonOppositeAdd(mem);
         }
     }
+    el.setReference(&m_el);
 }
 
 void Classifier::RemoveGeneralFunctor::operator()(Element& el) const {
@@ -52,6 +53,27 @@ void Classifier::RemoveGeneralFunctor::operator()(Element& el) const {
     for (auto& mem : el.as<Classifier>().m_members) {
         if (mem.getVisibility() != VisibilityKind::PRIVATE && m_el.as<Classifier>().m_inheritedMembers.contains(mem.getID())) {
             m_el.as<Classifier>().m_inheritedMembers.nonOppositeRemove(mem.getID());
+        }
+    }
+    el.removeReference(m_el.getID());
+}
+
+void Classifier::AddOwnedMemberFunctor::operator()(Element& el) const {
+    if (el.as<NamedElement>().getVisibility() != VisibilityKind::PRIVATE) {
+        for (auto& pair : m_el.m_node->m_references) {
+            if (pair.second->m_managerElementMemory && pair.second->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && pair.second->m_managerElementMemory->as<Classifier>().m_generals.contains(m_el.getID())) {
+                pair.second->m_managerElementMemory->as<Classifier>().getInheritedMembers().nonOppositeAdd(el.as<NamedElement>());
+            }
+        }
+    }
+}
+
+void Classifier::RemoveOwnedMemberFunctor::operator()(Element& el) const {
+    if (el.as<NamedElement>().getVisibility() != VisibilityKind::PRIVATE) {
+        for (auto& pair : m_el.m_node->m_references) {
+            if (pair.second->m_managerElementMemory && pair.second->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && pair.second->m_managerElementMemory->as<Classifier>().m_generals.contains(m_el.getID())) {
+                pair.second->m_managerElementMemory->as<Classifier>().m_inheritedMembers.nonOppositeRemove(el.getID());
+            }
         }
     }
 }
@@ -125,6 +147,8 @@ void Classifier::referenceErased(ID id) {
 }
 
 void Classifier::init() {
+    m_ownedMembers.m_addFunctors.insert(new AddOwnedMemberFunctor(this));
+    m_ownedMembers.m_removeFunctors.insert(new RemoveOwnedMemberFunctor(this));
     m_features.subsets(m_members);
     m_features.opposite(&Feature::getFeaturingClassifierSingleton);
     m_features.m_signature = &Classifier::getFeatures;

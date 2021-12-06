@@ -97,6 +97,7 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   ASSERT_EQ(s1.getInheritedMembers().front(), p1);
   ASSERT_TRUE(s1.getMembers().size() == 1);
   ASSERT_TRUE(&s1.getMembers().front() == &p1);
+  ASSERT_EQ(g1.getInheritedMembers().size(), 0);
   ASSERT_NO_THROW(s1.getGeneralizations().remove(gen1));
   ASSERT_TRUE(s1.getInheritedMembers().size() == 0);
   ASSERT_TRUE(s1.getMembers().size() == 0);
@@ -110,6 +111,7 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   ASSERT_TRUE(&s2.getInheritedMembers().front() == &p2);
   ASSERT_TRUE(s2.getMembers().size() == 1);
   ASSERT_TRUE(&s2.getMembers().front() == &p2);
+  ASSERT_EQ(g2.getInheritedMembers().size(), 0);
   ASSERT_NO_THROW(s2.getGenerals().remove(g2));
   ASSERT_TRUE(s2.getInheritedMembers().size() == 0);
   ASSERT_TRUE(s2.getMembers().size() == 0);

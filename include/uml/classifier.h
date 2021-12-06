@@ -35,7 +35,6 @@ namespace UML {
             Set<Classifier, Classifier> m_generals = Set<Classifier, Classifier>(this);
             Set<NamedElement, Classifier> m_inheritedMembers = Set<NamedElement, Classifier>(this);
             // Set<GeneralizationSet, Classifier> m_powerTypeExtent = Set<GeneralizationSet, Classifier>(this);
-            // Singleton<Class, Classifier> m_nestingClass = Singleton<Class, Classifier>(this);
             class AddGeneralizationFunctor : public SetFunctor {
                 private:
                     void operator()(Element& el) const override;
@@ -91,13 +90,6 @@ namespace UML {
             Set<Classifier, Classifier>& getGenerals();
             Set<NamedElement, Classifier>& getInheritedMembers();
             // Sequence<GeneralizationSet>& getPowerTypeExtent();
-            // // TODO move NestingClass to protected
-            // Class* getNestingClass();
-            // Class& getNestingClassRef();
-            // ID getNestingClassID() const;
-            // bool hasNestingClass() const;
-            // void setNestingClass(Class* clazz);
-            // void setNestingClass(Class& clazz);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CLASSIFIER;

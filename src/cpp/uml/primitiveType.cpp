@@ -6,7 +6,6 @@ using namespace UML;
 PrimitiveType::PrimitiveType() : Element(ElementType::PRIMITIVE_TYPE) {}
 
 PrimitiveType::PrimitiveType(const PrimitiveType& rhs) : Element(rhs, ElementType::PRIMITIVE_TYPE) {
-    init();
     Element::copy(rhs);
     NamedElement::copy(rhs);
     Namespace::copy(rhs);

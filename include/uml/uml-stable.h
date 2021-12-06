@@ -16,7 +16,7 @@
 // #include "uml/deployment.h"
 #include "uml/enumeration.h"
 #include "uml/enumerationLiteral.h"
-// #include "uml/expression.h"
+#include "uml/expression.h"
 // #include "uml/extension.h"
 // #include "uml/extensionEnd.h"
 #include "uml/generalization.h"

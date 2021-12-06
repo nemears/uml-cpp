@@ -77,16 +77,16 @@ TEST_F(ValueSpecificationTest, reindexID_forSlotTest) {
 //     ASSERT_TRUE(s.getOwnedElements().get("test"));
 // }
 
-// TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
-//     UmlManager m;
-//     Expression& e = m.create<Expression>();
-//     LiteralBool& b = m.create<LiteralBool>();
-//     e.getOperands().add(b);
-//     e.setSymbol("==");
-//     b.setID("eb092018_0bef_4ad6_b80f_05fa");
-//     ASSERT_NO_THROW(e.getOperands().get(b.getID()));
-//     ASSERT_NO_THROW(e.getOwnedElements().get(b.getID()));
-// }
+TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
+    UmlManager m;
+    Expression& e = m.create<Expression>();
+    LiteralBool& b = m.create<LiteralBool>();
+    e.getOperands().add(b);
+    e.setSymbol("==");
+    b.setID("eb092018_0bef_4ad6_b80f_05fa");
+    ASSERT_NO_THROW(e.getOperands().get(b.getID()));
+    ASSERT_NO_THROW(e.getOwnedElements().get(b.getID()));
+}
 
 // TEST_F(ValueSpecificationTest, reindexNameExpressionTest) {
 //     Expression e;

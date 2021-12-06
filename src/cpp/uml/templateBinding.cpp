@@ -44,7 +44,7 @@ Set<TemplateSignature, TemplateBinding>& TemplateBinding::getSignatureSingleton(
 void TemplateBinding::init() {
     m_boundElement.subsets(m_sources);
     m_boundElement.subsets(*m_owner);
-    // m_boundElement.opposite(&TemplateableElement::getTemplateBindings);
+    m_boundElement.opposite(&TemplateableElement::getTemplateBindings);
     m_boundElement.m_signature = &TemplateBinding::getBoundElementSingleton;
     m_signature.subsets(m_targets);
     m_signature.m_signature = &TemplateBinding::getSignatureSingleton;

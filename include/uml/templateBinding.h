@@ -15,6 +15,7 @@ namespace UML {
     class TemplateBinding : public DirectedRelationship {
 
         friend class UmlManager;
+        friend class TemplateableElement;
         friend class Parsers::SetBoundElement;
 
         private:

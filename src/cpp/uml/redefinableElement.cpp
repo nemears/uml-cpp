@@ -3,32 +3,14 @@
 
 using namespace UML;
 
-// void RedefinableElement::AddRedefinedElementFunctor::operator()(RedefinableElement& el) const {
-//     el.setReference(m_el);
-//     updateCopiedSequenceAddedTo(el, &RedefinableElement::getRedefinedElements);
-// }
-
-// void RedefinableElement::RemoveRedefinedElementFunctor::operator()(RedefinableElement& el) const {
-//     el.removeReference(m_el->getID());
-//     updateCopiedSequenceRemovedFrom(el, &RedefinableElement::getRedefinedElements);
-// }
-
-// void RedefinableElement::AddRedefinitionContextFunctor::operator()(Classifier& el) const {
-//     updateCopiedSequenceAddedTo(el, &RedefinableElement::getRedefinitionContext);
-// }
-
-// void RedefinableElement::RemoveRedefinitionContextFunctor::operator()(Classifier& el) const {
-//     updateCopiedSequenceRemovedFrom(el, &RedefinableElement::getRedefinitionContext);
-// }
-
 void RedefinableElement::referencingReleased(ID id) {
-    // m_redefinedElement.elementReleased(id, &RedefinableElement::getRedefinedElements);
-    // m_redefinitionContext.elementReleased(id, &RedefinableElement::getRedefinitionContext);
+    m_redefinedElement.release(id);
+    m_redefinitionContext.release(id);
 }
 
 void RedefinableElement::referenceReindexed(ID oldID, ID newID) {
-    // m_redefinedElement.reindex(oldID, newID, &RedefinableElement::getRedefinedElements);
-    // m_redefinitionContext.reindex(oldID, newID, &RedefinableElement::getRedefinitionContext);
+    m_redefinedElement.reindex(oldID, newID);
+    m_redefinitionContext.reindex(oldID, newID);
 }
 
 void RedefinableElement::restoreReferences() {
@@ -37,12 +19,19 @@ void RedefinableElement::restoreReferences() {
 }
 
 void RedefinableElement::referenceErased(ID id) {
-    // m_redefinedElement.elementErased(id);
-    // m_redefinitionContext.elementErased(id);
+    m_redefinedElement.eraseElement(id);
+    m_redefinitionContext.eraseElement(id);
+}
+
+void RedefinableElement::init() {
+    m_redefinedElement.m_readOnly = true;
+    m_redefinedElement.m_signature = &RedefinableElement::getRedefinedElements;
+    m_redefinitionContext.m_readOnly = true;
+    m_redefinitionContext.m_signature = &RedefinableElement::getRedefinitionContext;
 }
 
 RedefinableElement::RedefinableElement() : Element(ElementType::REDEFINABLE_ELEMENT) {
-
+    init();
 }
 
 RedefinableElement::~RedefinableElement() {
@@ -50,16 +39,16 @@ RedefinableElement::~RedefinableElement() {
 }
 
 RedefinableElement::RedefinableElement(const RedefinableElement& el) : Element(el, ElementType::REDEFINABLE_ELEMENT) {
-    
+    // abstract
 }
 
-// Sequence<RedefinableElement>& RedefinableElement::getRedefinedElements() {
-//     return m_redefinedElement;
-// }
+Set<RedefinableElement, RedefinableElement>& RedefinableElement::getRedefinedElements() {
+    return m_redefinedElement;
+}
 
-// Sequence<Classifier>& RedefinableElement::getRedefinitionContext() {
-//     return m_redefinitionContext;
-// }
+Set<Classifier, RedefinableElement>& RedefinableElement::getRedefinitionContext() {
+    return m_redefinitionContext;
+}
 
 bool RedefinableElement::isSubClassOf(ElementType eType) const {
     bool ret = NamedElement::isSubClassOf(eType);

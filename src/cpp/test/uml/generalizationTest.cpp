@@ -190,8 +190,8 @@ TEST_F(GeneralizationTest, ResetSpecificByGeneralTest) {
     ASSERT_TRUE(s2.getGeneralizations().size() == 1);
     ASSERT_TRUE(&s2.getGeneralizations().front() == r);
     ASSERT_TRUE(r->getRelatedElements().size() == 2);
-    ASSERT_TRUE(&r->getRelatedElements().front() == &g);
-    ASSERT_TRUE(&r->getRelatedElements().back() == &s2);
+    ASSERT_TRUE(r->getRelatedElements().contains(g.getID()));
+    ASSERT_TRUE(r->getRelatedElements().contains(s2.getID()));
     ASSERT_TRUE(r->getTargets().size() == 1);
     ASSERT_TRUE(&r->getTargets().front() == &g);
     ASSERT_TRUE(r->getSources().size() == 1);

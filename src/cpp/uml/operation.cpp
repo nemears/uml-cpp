@@ -57,6 +57,7 @@ void Operation::init() {
     m_class.m_signature = &Operation::getClassSingleton;
     m_dataType.subsets(m_featuringClassifier);
     m_dataType.subsets(m_namespace);
+    m_dataType.opposite(&DataType::getOwnedOperationsSet);
     m_dataType.m_signature = &Operation::getDataTypeSingleton;
     m_operationOwnedParameters.redefines(m_ownedParameters);
     m_operationOwnedParameters.opposite(&Parameter::getOperationSingleton);

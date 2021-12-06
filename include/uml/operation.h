@@ -22,6 +22,7 @@ namespace UML {
         friend class UmlManager;
         friend class Class;
         friend class Parameter;
+        friend class DataType;
         friend class Parsers::OperationSetClass;
         friend class Parsers::OperationSetDataType;
         friend class Parsers::OperationSetArtifact;

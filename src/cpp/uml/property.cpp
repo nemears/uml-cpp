@@ -105,7 +105,7 @@ void Property::init() {
     m_class.m_signature = &Property::getClassSingleton;
     m_dataType.subsets(m_namespace);
     m_dataType.subsets(m_featuringClassifier);
-    m_dataType.opposite(&DataType::getOwnedAttributes);
+    m_dataType.opposite(&DataType::getOwnedAttributesSet);
     m_dataType.m_signature = &Property::getDataTypeSingleton;
     m_association.opposite(&Association::getMemberEndsSet);
     m_association.m_signature = &Property::getAssociationSingleton;

@@ -21,6 +21,7 @@ namespace UML {
         friend class UmlManager;
         friend class TemplateParameterSubstitution;
         friend class TemplateSignature;
+        friend class ParameterableElement;
         friend class Parsers::SetSignature;
         friend class Parsers::SetOwnedParameteredElement;
         friend class Parsers::SetOwnedDefault;

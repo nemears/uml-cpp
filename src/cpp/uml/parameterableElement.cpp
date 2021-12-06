@@ -33,11 +33,11 @@ Set<TemplateParameter, ParameterableElement>& ParameterableElement::getTemplateP
 }
 
 void ParameterableElement::init() {
-    // m_templateParameter.opposite(&TemplateParameter::getParameteredElementSingleton);
+    m_templateParameter.opposite(&TemplateParameter::getParameteredElementSingleton);
     m_templateParameter.m_signature = &ParameterableElement::getTemplateParameterSingleton;
     m_owningTemplateParameter.subsets(m_templateParameter);
     m_owningTemplateParameter.subsets(*m_owner);
-    // m_owningTemplateParameter.opposite(&TemplateParameter::getOwnedParameteredElementSingleton);
+    m_owningTemplateParameter.opposite(&TemplateParameter::getOwnedParameteredElementSingleton);
     m_owningTemplateParameter.m_signature = &ParameterableElement::getOwningTemplateParameterSingleton;
 }
 

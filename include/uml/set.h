@@ -807,7 +807,7 @@ namespace UML {
                             }
                         }
                     }
-                    if (!m_root && m_guard != 0) {
+                    if (!m_root) {
                         // if haven't found it in supersets, look in subsets supersets
                         for (auto& set : m_subSets) {
                             for (auto& disjointSet : static_cast<Set*>(set)->m_superSets) {

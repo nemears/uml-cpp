@@ -119,7 +119,9 @@ Association::Association(const Association& rhs) : Element(rhs, ElementType::ASS
     Element::copy(rhs);
     NamedElement::copy(rhs);
     Namespace::copy(rhs);
+    ParameterableElement::copy(rhs);
     PackageableElement::copy(rhs);
+    TemplateableElement::copy(rhs);
     Classifier::copy(rhs);
     Relationship::copy(rhs);
     copy(rhs);

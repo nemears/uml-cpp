@@ -60,7 +60,9 @@ DataType::DataType(const DataType& rhs) : Element(rhs, ElementType::DATA_TYPE) {
     Element::copy(rhs);
     NamedElement::copy(rhs);
     Namespace::copy(rhs);
+    ParameterableElement::copy(rhs);
     PackageableElement::copy(rhs);
+    TemplateableElement::copy(rhs);
     Classifier::copy(rhs);
     copy(rhs);
 }

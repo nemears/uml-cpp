@@ -51,16 +51,13 @@ Dependency::Dependency() : Element(ElementType::DEPENDENCY) {
 }
 
 Dependency::Dependency(const Dependency& rhs) : Element(rhs, ElementType::DEPENDENCY) {
+    init();
     Relationship::copy(rhs);
     DirectedRelationship::copy(rhs);
     NamedElement::copy(rhs);
+    ParameterableElement::copy(rhs);
     PackageableElement::copy(rhs);
     copy(rhs);
-    Relationship::init();
-    DirectedRelationship::init();
-    NamedElement::init();
-    PackageableElement::init();
-    init();
 }
 
 Dependency::~Dependency() {

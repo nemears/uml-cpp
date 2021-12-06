@@ -13,6 +13,7 @@ Usage::Usage(const Usage& rhs) : Element(rhs, ElementType::USAGE) {
     Relationship::copy(rhs);
     DirectedRelationship::copy(rhs);
     NamedElement::copy(rhs);
+    ParameterableElement::copy(rhs);
     PackageableElement::copy(rhs);
     Dependency::copy(rhs);
 }

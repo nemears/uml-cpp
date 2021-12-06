@@ -10,7 +10,9 @@ Model::Model(const Model& rhs) : Element(rhs, ElementType::MODEL) {
     Element::copy(rhs);
     NamedElement::copy(rhs);
     Namespace::copy(rhs);
+    ParameterableElement::copy(rhs);
     PackageableElement::copy(rhs);
+    TemplateableElement::copy(rhs);
     Package::copy(rhs);
 }
 

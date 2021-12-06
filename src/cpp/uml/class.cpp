@@ -80,7 +80,9 @@ Class::Class(const Class& rhs) : Element(rhs, ElementType::CLASS) {
     Element::copy(rhs);
     NamedElement::copy(rhs);
     Namespace::copy(rhs);
+    ParameterableElement::copy(rhs);
     PackageableElement::copy(rhs);
+    TemplateableElement::copy(rhs);
     Classifier::copy(rhs);
     StructuredClassifier::copy(rhs);
     BehavioredClassifier::copy(rhs);

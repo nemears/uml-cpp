@@ -41,6 +41,11 @@ void ParameterableElement::init() {
     m_owningTemplateParameter.m_signature = &ParameterableElement::getOwningTemplateParameterSingleton;
 }
 
+void ParameterableElement::copy(const ParameterableElement& rhs) {
+    m_templateParameter = rhs.m_templateParameter;
+    m_owningTemplateParameter = rhs.m_owningTemplateParameter;
+}
+
 ParameterableElement::ParameterableElement() : Element(ElementType::PARAMETERABLE_ELEMENT) {
     init();
 }

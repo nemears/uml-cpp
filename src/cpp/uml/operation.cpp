@@ -80,6 +80,7 @@ Operation::Operation(const Operation& rhs) : Element(rhs, ElementType::OPERATION
     NamedElement::copy(rhs);
     Feature::copy(rhs);
     BehavioralFeature::copy(rhs);
+    TemplateableElement::copy(rhs);
     copy(rhs);
 }
 

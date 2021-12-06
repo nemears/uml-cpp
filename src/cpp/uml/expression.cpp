@@ -38,6 +38,7 @@ Expression::Expression(const Expression& rhs) : Element(rhs, ElementType::EXPRES
     init();
     Element::copy(rhs);
     TypedElement::copy(rhs);
+    ParameterableElement::copy(rhs);
     PackageableElement::copy(rhs);
     copy(rhs);
 }

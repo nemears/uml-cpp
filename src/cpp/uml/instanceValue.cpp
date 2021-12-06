@@ -44,6 +44,7 @@ InstanceValue::InstanceValue(const InstanceValue& rhs) : Element(rhs, ElementTyp
     init();
     Element::copy(rhs);
     TypedElement::copy(rhs);
+    ParameterableElement::copy(rhs);
     PackageableElement::copy(rhs);
     copy(rhs);
 }

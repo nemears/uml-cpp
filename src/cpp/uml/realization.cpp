@@ -13,6 +13,7 @@ Realization::Realization(const Realization& rhs) : Element(rhs, ElementType::REA
     Relationship::copy(rhs);
     DirectedRelationship::copy(rhs);
     NamedElement::copy(rhs);
+    ParameterableElement::copy(rhs);
     PackageableElement::copy(rhs);
     Dependency::copy(rhs);
 }

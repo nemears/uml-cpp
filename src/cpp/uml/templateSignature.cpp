@@ -1,7 +1,7 @@
 #include "uml/templateSignature.h"
 #include "uml/templateableElement.h"
 #include "uml/umlManager.h"
-// #include "uml/templateParameter.h"
+#include "uml/templateParameter.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -9,39 +9,52 @@ using namespace UML;
 void TemplateSignature::referencingReleased(ID id) {
     Element::referencingReleased(id);
     m_template.release(id);
-    // m_ownedParameter.elementReleased(id, &TemplateSignature::getOwnedParameter);
-    // m_parameter.elementReleased(id, &TemplateSignature::getParameter);
+    m_ownedParameters.release(id);
+    m_parameters.release(id);
 }
 
 void TemplateSignature::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
     m_template.reindex(oldID, newID);
-    // m_ownedParameter.reindex(oldID, newID, &TemplateSignature::getOwnedParameter);
-    // m_parameter.reindex(oldID, newID, &TemplateSignature::getParameter);
+    m_ownedParameters.reindex(oldID, newID);
+    m_parameters.reindex(oldID, newID);
 }
 
 void TemplateSignature::restoreReferences() {
     Element::restoreReferences();
     // m_template.restoreReference();
-    // m_ownedParameter.restoreReferences();
-    // m_parameter.restoreReferences();
+    // m_ownedParameters.restoreReferences();
+    // m_parameters.restoreReferences();
 }
 
 void TemplateSignature::referenceErased(ID id) {
     Element::referenceErased(id);
     m_template.eraseElement(id);
-    // m_ownedParameter.elementErased(id);
-    // m_parameter.elementErased(id);
+    m_ownedParameters.eraseElement(id);
+    m_parameters.eraseElement(id);
 }
 
 Set<TemplateableElement, TemplateSignature>& TemplateSignature::getTemplateSingleton() {
     return m_template;
 }
 
+Set<TemplateParameter, TemplateSignature>& TemplateSignature::getParametersSet() {
+    return m_parameters;
+}
+
+Set<TemplateParameter, TemplateSignature>& TemplateSignature::getOwnedParametersSet() {
+    return m_ownedParameters;
+}
+
 void TemplateSignature::init() {
     m_template.subsets(*m_owner);
     m_template.opposite(&TemplateableElement::getOwnedTemplateSignatureSingleton);
     m_template.m_signature = &TemplateSignature::getTemplateSingleton;
+    m_parameters.m_signature = &TemplateSignature::getParametersSet;
+    m_ownedParameters.subsets(m_parameters);
+    m_ownedParameters.subsets(*m_ownedElements);
+    m_ownedParameters.opposite(&TemplateParameter::getSignatureSingleton);
+    m_ownedParameters.m_signature = &TemplateSignature::getOwnedParametersSet;
 }
 
 void TemplateSignature::copy(const TemplateSignature& rhs) {
@@ -86,13 +99,13 @@ void TemplateSignature::setTemplate(TemplateableElement& temp) {
     m_template.set(temp);
 }
 
-// Sequence<TemplateParameter>& TemplateSignature::getOwnedParameter() {
-//     return m_ownedParameter;
-// }
+OrderedSet<TemplateParameter, TemplateSignature>& TemplateSignature::getOwnedParameters() {
+    return m_ownedParameters;
+}
 
-// Sequence<TemplateParameter>& TemplateSignature::getParameter() {
-//     return m_parameter;
-// }
+OrderedSet<TemplateParameter, TemplateSignature>& TemplateSignature::getParameters() {
+    return m_parameters;
+}
 
 bool TemplateSignature::isSubClassOf(ElementType eType) const {
     bool ret = Element::isSubClassOf(eType);

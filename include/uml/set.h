@@ -138,6 +138,8 @@ namespace UML {
     class Expression;
     class TemplateableElement;
     class TemplateSignature;
+    class ParameterableElement;
+    class TemplateParameter;
 
     /**
      * This container is based around a weighted binary search tree
@@ -183,6 +185,8 @@ namespace UML {
         friend class Expression;
         friend class TemplateableElement;
         friend class TemplateSignature;
+        friend class ParameterableElement;
+        friend class TemplateParameter;
 
         protected:
             std::vector<AbstractSet*> m_superSets;

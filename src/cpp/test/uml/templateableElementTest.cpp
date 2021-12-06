@@ -75,11 +75,11 @@ TEST_F(TemplateableElementTest, addTemplateParameterTest) {
     TemplateSignature& s = m.create<TemplateSignature>();
     TemplateParameter& p = m.create<TemplateParameter>();
     c.setOwnedTemplateSignature(&s);
-    ASSERT_NO_THROW(s.getOwnedParameter().add(p));
-    ASSERT_EQ(s.getOwnedParameter().size(), 1);
-    ASSERT_EQ(s.getOwnedParameter().front().getID(), p.getID());
-    ASSERT_EQ(s.getParameter().size(), 1);
-    ASSERT_EQ(s.getParameter().front().getID(), p.getID());
+    ASSERT_NO_THROW(s.getOwnedParameters().add(p));
+    ASSERT_EQ(s.getOwnedParameters().size(), 1);
+    ASSERT_EQ(s.getOwnedParameters().front().getID(), p.getID());
+    ASSERT_EQ(s.getParameters().size(), 1);
+    ASSERT_EQ(s.getParameters().front().getID(), p.getID());
     ASSERT_EQ(p.getSignature()->getID(), s.getID());
     ASSERT_EQ(s.getOwnedElements().size(), 1);
     ASSERT_EQ((*s.getOwnedElements().begin()).getID(), p.getID());
@@ -95,15 +95,15 @@ TEST_F(TemplateableElementTest, overrideSignatureTest) {
     TemplateParameter& p = m.create<TemplateParameter>();
     c1.setOwnedTemplateSignature(&s1);
     c2.setOwnedTemplateSignature(&s2);
-    s1.getOwnedParameter().add(p);
+    s1.getOwnedParameters().add(p);
     ASSERT_NO_THROW(p.setSignature(&s2));
     ASSERT_TRUE(p.getSignature() == &s2);
-    ASSERT_EQ(s2.getOwnedParameter().size(), 1);
-    ASSERT_EQ(s2.getOwnedParameter().front().getID(), p.getID());
-    ASSERT_EQ(s2.getParameter().size(), 1);
-    ASSERT_EQ(s2.getParameter().front().getID(), p.getID());
-    ASSERT_EQ(s1.getOwnedParameter().size(), 0);
-    ASSERT_EQ(s1.getParameter().size(), 0);
+    ASSERT_EQ(s2.getOwnedParameters().size(), 1);
+    ASSERT_EQ(s2.getOwnedParameters().front().getID(), p.getID());
+    ASSERT_EQ(s2.getParameters().size(), 1);
+    ASSERT_EQ(s2.getParameters().front().getID(), p.getID());
+    ASSERT_EQ(s1.getOwnedParameters().size(), 0);
+    ASSERT_EQ(s1.getParameters().size(), 0);
     ASSERT_EQ(p.getOwner()->getID(), s2.getID());
     ASSERT_EQ(s2.getOwnedElements().size(), 1);
     ASSERT_EQ((*s2.getOwnedElements().begin()).getID(), p.getID());
@@ -116,7 +116,7 @@ TEST_F(TemplateableElementTest, copyTemplateableTest) {
     TemplateSignature& s = m.create<TemplateSignature>();
     TemplateParameter& p = m.create<TemplateParameter>();
     c.setOwnedTemplateSignature(&s);
-    s.getOwnedParameter().add(p);
+    s.getOwnedParameters().add(p);
     Class c2 = c;
     ASSERT_EQ(c2.getID(), c.getID());
     ASSERT_EQ(c2.getOwnedTemplateSignature()->getID(), c.getOwnedTemplateSignature()->getID());
@@ -125,7 +125,7 @@ TEST_F(TemplateableElementTest, copyTemplateableTest) {
     TemplateSignature& s1 = m.create<TemplateSignature>();
     TemplateParameter& p1 = m.create<TemplateParameter>();
     o.setOwnedTemplateSignature(&s1);
-    s1.getOwnedParameter().add(p1);
+    s1.getOwnedParameters().add(p1);
     Operation o2 = o;
     ASSERT_EQ(o2.getID(), o.getID());
     ASSERT_EQ(o2.getOwnedTemplateSignature()->getID(), o.getOwnedTemplateSignature()->getID());
@@ -138,7 +138,7 @@ TEST_F(TemplateableElementTest, setOwnedParameteredElementTest) {
     TemplateParameter& p = m.create<TemplateParameter>();
     PrimitiveType& t = m.create<PrimitiveType>();
     c.setOwnedTemplateSignature(&s);
-    s.getOwnedParameter().add(p);
+    s.getOwnedParameters().add(p);
     ASSERT_NO_THROW(p.setOwnedParameteredElement(&t));
     ASSERT_EQ(p.getOwnedParameteredElement()->getID(), t.getID());
     ASSERT_TRUE(p.getParameteredElement() != 0);
@@ -156,7 +156,7 @@ TEST_F(TemplateableElementTest, overrideOwnedParameteredElementTest) {
     PrimitiveType& t1 = m.create<PrimitiveType>();
     PrimitiveType& t2 = m.create<PrimitiveType>();
     c.setOwnedTemplateSignature(&s);
-    s.getOwnedParameter().add(p);
+    s.getOwnedParameters().add(p);
     p.setOwnedParameteredElement(&t1);
     p.setOwnedParameteredElement(&t2);
     ASSERT_EQ(p.getOwnedParameteredElement()->getID(), t2.getID());
@@ -175,7 +175,7 @@ TEST_F(TemplateableElementTest, setDefaultTest) {
     TemplateParameter& p = m.create<TemplateParameter>();
     PrimitiveType& t = m.create<PrimitiveType>();
     c.setOwnedTemplateSignature(&s);
-    s.getOwnedParameter().add(p);
+    s.getOwnedParameters().add(p);
     p.setDefault(&t);
     ASSERT_TRUE(p.getDefault() != 0);
     ASSERT_EQ(p.getDefault()->getID(), t.getID());
@@ -189,7 +189,7 @@ TEST_F(TemplateableElementTest, overrideDefaultTest) {
     PrimitiveType& t1 = m.create<PrimitiveType>();
     PrimitiveType& t2 = m.create<PrimitiveType>();
     c.setOwnedTemplateSignature(&s);
-    s.getOwnedParameter().add(p);
+    s.getOwnedParameters().add(p);
     p.setDefault(&t1);
     p.setDefault(&t2);
     ASSERT_TRUE(p.getDefault() != 0);
@@ -203,7 +203,7 @@ TEST_F(TemplateableElementTest, setOwnedDefaultTest) {
     TemplateParameter& p = m.create<TemplateParameter>();
     PrimitiveType& t = m.create<PrimitiveType>();
     c.setOwnedTemplateSignature(&s);
-    s.getOwnedParameter().add(p);
+    s.getOwnedParameters().add(p);
     p.setOwnedDefault(&t);
     ASSERT_TRUE(p.getOwnedDefault() != 0);
     ASSERT_EQ(p.getOwnedDefault()->getID(), t.getID());
@@ -223,7 +223,7 @@ TEST_F(TemplateableElementTest, overrideOwnedDefaultTest) {
     PrimitiveType& t1 = m.create<PrimitiveType>();
     PrimitiveType& t2 = m.create<PrimitiveType>();
     c.setOwnedTemplateSignature(&s);
-    s.getOwnedParameter().add(p);
+    s.getOwnedParameters().add(p);
     p.setOwnedDefault(&t1);
     p.setOwnedDefault(&t2);
     ASSERT_TRUE(p.getOwnedDefault() != 0);
@@ -316,7 +316,7 @@ TEST_F(TemplateableElementTest, setFormalParameterTest) {
     TemplateParameter& pp = m.create<TemplateParameter>();
     TemplateParameterSubstitution& ps = m.create<TemplateParameterSubstitution>();
     c.setOwnedTemplateSignature(&s);
-    s.getOwnedParameter().add(p);
+    s.getOwnedParameters().add(p);
     b.setBoundElement(&bc);
     b.setSignature(&s);
     b.getParameterSubstitution().add(ps);
@@ -342,7 +342,7 @@ TEST_F(TemplateableElementTest, overrideFormalTest) {
     TemplateParameterSubstitution& ps = m.create<TemplateParameterSubstitution>();
     TemplateParameter& pp2 = m.create<TemplateParameter>();
     c.setOwnedTemplateSignature(&s);
-    s.getOwnedParameter().add(p);
+    s.getOwnedParameters().add(p);
     b.setBoundElement(&bc);
     b.setSignature(&s);
     b.getParameterSubstitution().add(ps);
@@ -367,7 +367,7 @@ TEST_F(TemplateableElementTest, overrideFormalTest) {
 //     TemplateParameterSubstitution& ps = m.create<TemplateParameterSubstitution>();
 //     TemplateParameterSubstitution& ps2 = m.create<TemplateParameterSubstitution>();
 //     c.setOwnedTemplateSignature(&s);
-//     s.getOwnedParameter().add(p);
+//     s.getOwnedParameters().add(p);
 //     b.setBoundElement(&bc);
 //     b.setSignature(&s);
 //     b.setParameterSubstitution(&ps);

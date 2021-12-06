@@ -2979,7 +2979,7 @@ void emitTemplateableElement(YAML::Emitter& emitter, TemplateableElement& el, Em
 
 void AddTemplateParmeterFunctor::operator()(Element& el) const {
     if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER)) {
-        dynamic_cast<TemplateSignature*>(m_el)->getParameter().add(dynamic_cast<TemplateParameter&>(el));
+        dynamic_cast<TemplateSignature*>(m_el)->getParameters().add(dynamic_cast<TemplateParameter&>(el));
     } else {
         throw UmlParserException("Tried to add parameter to signature that wasn't a parameter! ", "", m_node);
     }
@@ -2995,7 +2995,7 @@ TemplateParameter& determineAndParseTemplateParameter(YAML::Node node, ParserMet
 
 void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, ParserMetaData& data) {
     parseElement(node, signature, data);
-    parseSequenceDefinitions(node, data, "ownedParameters", signature, &TemplateSignature::getOwnedParameter, determineAndParseTemplateParameter);
+    parseSequenceDefinitions(node, data, "ownedParameters", signature, &TemplateSignature::getOwnedParameters, determineAndParseTemplateParameter);
     if (node["parameters"]) {
         if (node["parameters"].IsSequence()) {
             for (size_t i = 0; i < node["parameters"].size(); i++) {
@@ -3016,12 +3016,12 @@ void emitTemplateSignature(YAML::Emitter& emitter, TemplateSignature& signature,
     emitElementDefenition(emitter, ElementType::TEMPLATE_SIGNATURE, "templateSignature", signature, data);
 
     emitElement(emitter, signature, data);
-    emitSequence(emitter, "ownedParameters", data, signature, &TemplateSignature::getOwnedParameter);
+    emitSequence(emitter, "ownedParameters", data, signature, &TemplateSignature::getOwnedParameters);
     // special handling
-    if (signature.getParameter().size() > signature.getOwnedParameter().size()) {
+    if (signature.getParameters().size() > signature.getOwnedParameters().size()) {
         emitter << YAML::Key << "parameters" << YAML::Value << YAML::BeginSeq;
-        for (auto& param: signature.getParameter()) {
-            if (!signature.getOwnedParameter().count(param.getID())) {
+        for (auto& param: signature.getParameters()) {
+            if (!signature.getOwnedParameters().count(param.getID())) {
                 emitter << param.getID().string();
             }
         }

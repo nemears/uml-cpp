@@ -1,123 +1,11 @@
 #include "uml/templateParameter.h"
 #include "uml/templateSignature.h"
 #include "uml/parameterableElement.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void TemplateParameter::RemoveSignatureProcedure::operator()(TemplateSignature* el) const {
-    if (el->getOwnedParameter().count(m_me->getID())) {
-        el->getOwnedParameter().remove(*m_me);
-    }
-}
-
-void TemplateParameter::AddSignatureProcedure::operator()(TemplateSignature* el) const {
-    if (!el->getOwnedParameter().count(m_me->getID())) {
-        el->getOwnedParameter().add(*m_me);
-    }
-    if (m_me->getOwnerID() != el->getID()) {
-        m_me->setOwner(el);
-    }
-}
-
-void TemplateParameter::AddSignatureProcedure::operator()(ID id) const {
-    if (m_me->getOwnerID() != id) {
-        m_me->setOwnerByID(id);
-    }
-}
-
-void TemplateParameter::RemoveOwnedParameteredElementProcedure::operator()(ParameterableElement* el) const {
-    if (m_me->hasParameteredElement() && !m_me->m_setFlag) {
-        m_me->m_setFlag = true;
-        m_me->setParameteredElement(0);
-        m_me->m_setFlag = false;
-    }
-    if (m_me->getOwnedElements().contains(el->getID())) {
-        m_me->getOwnedElements().remove(*el);
-    }
-}
-
-void TemplateParameter::AddOwnedParameteredElementProcedure::operator()(ParameterableElement* el) const {
-    if (m_me->getParameteredElementID() != el->getID()) {
-        m_me->setParameteredElement(el);
-    }
-    if (!m_me->getOwnedElements().contains(el->getID())) {
-        m_me->getOwnedElements().add(*el);
-    }
-    if (el->getOwningTemplateParameterID() != m_me->getID()) {
-        el->setOwningTemplateParameter(m_me);
-    }
-}
-
-void TemplateParameter::AddOwnedParameteredElementProcedure::operator()(ID id) const {
-    if (m_me->getParameteredElementID() != id) {
-        m_me->m_parameteredElement.setByID(id);
-    }
-    if (!m_me->getOwnedElements().contains(id)) {
-        m_me->getOwnedElements().add(id);
-    }
-}
-
-void TemplateParameter::RemoveParameteredElementProcedure::operator()(ParameterableElement* el) const {
-    if (el->getTemplateParameterID() == m_me->getID()) {
-        el->setTemplateParameter(0);
-    }
-}
-
-void TemplateParameter::AddParameteredElementProcedure::operator()(ParameterableElement* el) const {
-    if (el->getTemplateParameterID() != m_me->getID()) {
-        el->setTemplateParameter(m_me);
-    }
-}
-
-void TemplateParameter::RemoveDefaultProcedure::operator()(ParameterableElement* el) const {
-    if (el->getTemplateParameterID() == m_me->getID() && !m_me->m_setFlag) {
-        m_me->m_setFlag = true;
-        el->setTemplateParameter(0);
-        m_me->m_setFlag = false;
-    }
-}
-
-void TemplateParameter::AddDefaultProcedure::operator()(ParameterableElement* el) const {
-    if (el->getTemplateParameterID() != m_me->getID()) {
-        el->setTemplateParameter(m_me);
-    }
-}
-
-void TemplateParameter::RemoveOwnedDefaultProcedure::operator()(ParameterableElement* el) const {
-    if (m_me->hasDefault()) {
-        m_me->setDefault(0);
-    }
-    if (m_me->getOwnedElements().contains(el->getID())) {
-        m_me->getOwnedElements().remove(*el);
-    }
-    if (el->getTemplateParameterID() == m_me->getID()) {
-        el->setTemplateParameter(0);
-    }
-}
-
-void TemplateParameter::AddOwnedDefaultProcedure::operator()(ParameterableElement* el) const {
-    if (m_me->getDefaultID() != el->getID()) {
-        m_me->setDefault(el);
-    }
-    if (!m_me->getOwnedElements().contains(el->getID())) {
-        m_me->getOwnedElements().add(*el);
-    }
-    if (el->getTemplateParameterID() != m_me->getID()) {
-        el->setTemplateParameter(m_me);
-    }
-}
-
-void TemplateParameter::AddOwnedDefaultProcedure::operator()(ID id) const {
-    if (m_me->getDefaultID() != id) {
-        m_me->m_default.setByID(id);
-    }
-    if (!m_me->getOwnedElements().contains(id)) {
-        m_me->getOwnedElements().add(id);
-    }
-}
-
 void TemplateParameter::referencingReleased(ID id) {
-    Element::referencingReleased(id);
     m_signature.release(id);
     m_ownedParameteredElement.release(id);
     m_parameteredElement.release(id);
@@ -126,7 +14,6 @@ void TemplateParameter::referencingReleased(ID id) {
 }
 
 void TemplateParameter::referenceReindexed(ID oldID, ID newID) {
-    Element::referenceReindexed(oldID, newID);
     m_signature.reindex(oldID, newID);
     m_ownedParameteredElement.reindex(oldID, newID);
     m_parameteredElement.reindex(oldID, newID);
@@ -135,70 +22,74 @@ void TemplateParameter::referenceReindexed(ID oldID, ID newID) {
 }
 
 void TemplateParameter::restoreReferences() {
-    Element::restoreReferences();
-    m_signature.restoreReference();
-    m_ownedParameteredElement.restoreReference();
-    m_parameteredElement.restoreReference();
-    m_default.restoreReference();
-    m_ownedDefault.restoreReference();
+    // Element::restoreReferences();
+    // m_signature.restoreReference();
+    // m_ownedParameteredElement.restoreReference();
+    // m_parameteredElement.restoreReference();
+    // m_default.restoreReference();
+    // m_ownedDefault.restoreReference();
 }
 
 void TemplateParameter::referenceErased(ID id) {
-    Element::referenceErased(id);
-    m_signature.elementErased(id);
-    m_ownedParameteredElement.elementErased(id);
-    m_parameteredElement.elementErased(id);
-    m_default.elementErased(id);
-    m_ownedDefault.elementErased(id);
+    m_signature.eraseElement(id);
+    m_ownedParameteredElement.eraseElement(id);
+    m_parameteredElement.eraseElement(id);
+    m_default.eraseElement(id);
+    m_ownedDefault.eraseElement(id);
+}
+
+Set<TemplateSignature, TemplateParameter>& TemplateParameter::getSignatureSingleton() {
+    return m_signature;
+}
+
+Set<ParameterableElement, TemplateParameter>& TemplateParameter::getParameteredElementSingleton() {
+    return m_parameteredElement;
+}
+
+Set<ParameterableElement, TemplateParameter>& TemplateParameter::getOwnedParameteredElementSingleton() {
+    return m_ownedParameteredElement;
+}
+
+Set<ParameterableElement, TemplateParameter>& TemplateParameter::getDefaultSingleton() {
+    return m_default;
+}
+
+Set<ParameterableElement, TemplateParameter>& TemplateParameter::getOwnedDefaultSingleton() {
+    return m_ownedDefault;
+}
+
+void TemplateParameter::init() {
+    m_signature.subsets(*m_owner);
+    m_signature.opposite(&TemplateSignature::getOwnedParametersSet);
+    m_signature.m_signature = &TemplateParameter::getSignatureSingleton;
+    m_parameteredElement.opposite(&ParameterableElement::getTemplateParameterSingleton);
+    m_parameteredElement.m_signature = &TemplateParameter::getParameteredElementSingleton;
+    m_ownedParameteredElement.subsets(m_parameteredElement);
+    m_ownedParameteredElement.subsets(*m_ownedElements);
+    m_ownedParameteredElement.opposite(&ParameterableElement::getOwningTemplateParameterSingleton);
+    m_ownedParameteredElement.m_signature = &TemplateParameter::getOwnedParameteredElementSingleton;
+    m_default.m_signature = &TemplateParameter::getDefaultSingleton;
+    m_ownedDefault.subsets(m_default);
+    m_ownedDefault.subsets(*m_ownedElements);
+    m_ownedDefault.m_signature = &TemplateParameter::getOwnedDefaultSingleton;
+}
+
+void TemplateParameter::copy(const TemplateParameter& rhs) {
+    m_signature = rhs.m_signature;
+    m_parameteredElement = rhs.m_parameteredElement;
+    m_ownedParameteredElement = rhs.m_ownedParameteredElement;
+    m_default = rhs.m_default;
+    m_ownedDefault = rhs.m_ownedDefault;
 }
 
 TemplateParameter::TemplateParameter() : Element(ElementType::TEMPLATE_PARAMETER) {
-    m_signature.m_signature = &TemplateParameter::m_signature;
-    m_signature.m_addProcedures.push_back(new AddSignatureProcedure(this));
-    m_signature.m_removeProcedures.push_back(new RemoveSignatureProcedure(this));
-    m_ownedParameteredElement.m_signature = &TemplateParameter::m_ownedParameteredElement;
-    m_ownedParameteredElement.m_addProcedures.push_back(new AddOwnedParameteredElementProcedure(this));
-    m_ownedParameteredElement.m_removeProcedures.push_back(new RemoveOwnedParameteredElementProcedure(this));
-    m_parameteredElement.m_signature = &TemplateParameter::m_parameteredElement;
-    m_parameteredElement.m_addProcedures.push_back(new AddParameteredElementProcedure(this));
-    m_parameteredElement.m_removeProcedures.push_back(new RemoveOwnedParameteredElementProcedure(this));
-    m_default.m_signature = &TemplateParameter::m_default;
-    m_default.m_addProcedures.push_back(new AddDefaultProcedure(this));
-    m_default.m_removeProcedures.push_back(new RemoveDefaultProcedure(this));
-    m_ownedDefault.m_signature = &TemplateParameter::m_ownedDefault;
-    m_ownedDefault.m_addProcedures.push_back(new AddOwnedDefaultProcedure(this));
-    m_ownedDefault.m_removeProcedures.push_back(new RemoveOwnedDefaultProcedure(this));
+    init();
 }
 
-TemplateParameter::TemplateParameter(const TemplateParameter& el) : Element(ElementType::TEMPLATE_PARAMETER) {
-    m_signature = el.m_signature;
-    m_signature.m_me = this;
-    m_signature.m_removeProcedures.clear();
-    m_signature.m_addProcedures.clear();
-    m_signature.m_addProcedures.push_back(new AddSignatureProcedure(this));
-    m_signature.m_removeProcedures.push_back(new RemoveSignatureProcedure(this));
-    m_ownedParameteredElement = el.m_ownedParameteredElement;
-    m_ownedParameteredElement.m_me = this;
-    m_ownedParameteredElement.m_addProcedures.clear();
-    m_ownedParameteredElement.m_removeProcedures.clear();
-    m_ownedParameteredElement.m_addProcedures.push_back(new AddOwnedParameteredElementProcedure(this));
-    m_ownedParameteredElement.m_removeProcedures.push_back(new RemoveOwnedParameteredElementProcedure(this));
-    m_parameteredElement = el.m_parameteredElement;
-    m_parameteredElement.m_me = this;
-    m_parameteredElement.m_removeProcedures.clear();
-    m_parameteredElement.m_addProcedures.clear();
-    m_parameteredElement.m_addProcedures.push_back(new AddParameteredElementProcedure(this));
-    m_parameteredElement.m_removeProcedures.push_back(new RemoveOwnedParameteredElementProcedure(this));
-    m_default = el.m_default;
-    m_default.m_me = this;
-    m_default.m_addProcedures.clear();
-    m_default.m_removeProcedures.clear();
-    m_default.m_addProcedures.push_back(new AddDefaultProcedure(this));
-    m_default.m_removeProcedures.push_back(new RemoveDefaultProcedure(this));
-    m_ownedDefault = el.m_ownedDefault;
-    m_ownedDefault.m_me = this;
-    m_ownedDefault.m_addProcedures.clear();
-    m_ownedDefault.m_removeProcedures.clear();
+TemplateParameter::TemplateParameter(const TemplateParameter& rhs) : Element(rhs, ElementType::TEMPLATE_PARAMETER) {
+    init();
+    Element::copy(rhs);
+    copy(rhs);
 }
 
 TemplateParameter::~TemplateParameter() {

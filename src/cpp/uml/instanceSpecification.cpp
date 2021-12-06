@@ -61,6 +61,7 @@ InstanceSpecification::InstanceSpecification() : Element(ElementType::INSTANCE_S
 
 InstanceSpecification::InstanceSpecification(const InstanceSpecification& rhs) : Element(rhs, ElementType::INSTANCE_SPECIFICATION) {
     init();
+    Element::copy(rhs);
     NamedElement::copy(rhs);
     PackageableElement::copy(rhs);
     copy(rhs);

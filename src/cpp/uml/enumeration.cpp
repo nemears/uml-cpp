@@ -1,75 +1,59 @@
 #include "uml/enumeration.h"
 #include "uml/enumerationLiteral.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void Enumeration::AddOwnedLiteralFunctor::operator()(EnumerationLiteral& el) const {
-    if (!m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().add(el);
-    }
-
-    if (el.getEnumeration() != m_el) {
-        el.setEnumeration(m_el);
-    }
-    updateCopiedSequenceAddedTo(el, &Enumeration::getOwnedLiterals);
-}
-
-void Enumeration::AddOwnedLiteralFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedMembers().count(id)) {
-        m_el->getOwnedMembers().addByID(id);
-    }
-}
-
-void Enumeration::RemoveOwnedLiteralFunctor::operator()(EnumerationLiteral& el) const {
-    if (m_el->getMembers().count(el.getID())) {
-        m_el->getMembers().remove(el);
-    }
-
-    if (el.getEnumeration() == m_el) {
-        el.setEnumeration(0);
-    }
-    updateCopiedSequenceRemovedFrom(el, &Enumeration::getOwnedLiterals);
-}
-
 void Enumeration::referencingReleased(ID id) {
     DataType::referencingReleased(id);
-    m_ownedLiterals.elementReleased(id, &Enumeration::getOwnedLiterals);
+    m_ownedLiterals.release(id);
 }
 
 void Enumeration::referenceReindexed(ID oldID, ID newID) {
     DataType::referenceReindexed(oldID, newID);
-    m_ownedLiterals.reindex(oldID, newID, &Enumeration::getOwnedLiterals);
+    m_ownedLiterals.reindex(oldID, newID);
 }
 
 void Enumeration::restoreReferences() {
     DataType::restoreReferences();
-    m_ownedLiterals.restoreReferences();
+    // m_ownedLiterals.restoreReferences();
 }
 
 void Enumeration::referenceErased(ID id) {
     DataType::referenceErased(id);
-    m_ownedLiterals.elementErased(id);
+    m_ownedLiterals.eraseElement(id);
+}
+
+Set<EnumerationLiteral, Enumeration>& Enumeration::getOwnedLiteralsSet() {
+    return m_ownedLiterals;
+}
+
+void Enumeration::init() {
+    m_ownedLiterals.subsets(m_ownedMembers);
+    m_ownedLiterals.opposite(&EnumerationLiteral::getEnumerationSingleton);
+    m_ownedLiterals.m_signature = &Enumeration::getOwnedLiteralsSet;
+}
+
+void Enumeration::copy(const Enumeration& rhs) {
+    m_ownedLiterals = rhs.m_ownedLiterals;
 }
 
 Enumeration::Enumeration() : Element(ElementType::ENUMERATION) {
-    m_ownedLiterals.addProcedures.push_back(new AddOwnedLiteralFunctor(this));
-    m_ownedLiterals.removeProcedures.push_back(new RemoveOwnedLiteralFunctor(this));
+    init();
 }
 
-Enumeration::Enumeration(const Enumeration& enumeration) : 
-DataType(enumeration), 
-PackageableElement(enumeration), 
-NamedElement(enumeration),
-Element(enumeration, ElementType::ENUMERATION) {
-    m_ownedLiterals = enumeration.m_ownedLiterals;
-    m_ownedLiterals.m_el = this;
-    m_ownedLiterals.addProcedures.clear();
-    m_ownedLiterals.addProcedures.push_back(new AddOwnedLiteralFunctor(this));
-    m_ownedLiterals.removeProcedures.clear();
-    m_ownedLiterals.removeProcedures.push_back(new RemoveOwnedLiteralFunctor(this));
+Enumeration::Enumeration(const Enumeration& rhs) : Element(rhs, ElementType::ENUMERATION) {
+    init();
+    Element::copy(rhs);
+    NamedElement::copy(rhs);
+    Namespace::copy(rhs);
+    PackageableElement::copy(rhs);
+    Classifier::copy(rhs);
+    DataType::copy(rhs);
+    copy(rhs);
 }
 
-Sequence<EnumerationLiteral>& Enumeration::getOwnedLiterals() {
+OrderedSet<EnumerationLiteral, Enumeration>& Enumeration::getOwnedLiterals() {
     return m_ownedLiterals;
 }
 

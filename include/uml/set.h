@@ -131,6 +131,8 @@ namespace UML {
     class Parameter;
     class BehavioredClassifier;
     class Association;
+    class Enumeration;
+    class EnumerationLiteral;
 
     /**
      * This container is based around a weighted binary search tree
@@ -169,6 +171,8 @@ namespace UML {
         friend class Parameter;
         friend class BehavioredClassifier;
         friend class Association;
+        friend class Enumeration;
+        friend class EnumerationLiteral;
 
         protected:
             std::vector<AbstractSet*> m_superSets;

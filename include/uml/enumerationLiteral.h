@@ -13,25 +13,18 @@ namespace UML {
     class EnumerationLiteral : public InstanceSpecification {
         
         friend class UmlManager;
+        friend class Enumeration;
         friend class Parsers::SetEnumeration;
 
         protected:
             Singleton<Enumeration, EnumerationLiteral> m_enumeration = Singleton<Enumeration, EnumerationLiteral>(this);
-            class RemoveEnumerationProcedure : public AbstractSingletonProcedure<Enumeration, EnumerationLiteral> {
-                public:
-                    RemoveEnumerationProcedure(EnumerationLiteral* me) : AbstractSingletonProcedure<Enumeration, EnumerationLiteral>(me) {};
-                    void operator()(Enumeration* el) const override;
-            };
-            class AddEnumerationProcedure : public AbstractSingletonProcedure<Enumeration, EnumerationLiteral> {
-                public:
-                    AddEnumerationProcedure(EnumerationLiteral* me) : AbstractSingletonProcedure<Enumeration, EnumerationLiteral>(me) {};
-                    void operator()(Enumeration* el) const override;
-                    void operator()(ID id) const override;
-            };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            Set<Enumeration, EnumerationLiteral>& getEnumerationSingleton();
+            void init();
+            void copy(const EnumerationLiteral& rhs);
             EnumerationLiteral();
         public:
             EnumerationLiteral(const EnumerationLiteral& rhs);

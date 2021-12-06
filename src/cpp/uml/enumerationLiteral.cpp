@@ -1,31 +1,8 @@
 #include "uml/enumerationLiteral.h"
 #include "uml/enumeration.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
-
-void EnumerationLiteral::RemoveEnumerationProcedure::operator()(Enumeration* el) const {
-    if (el->getOwnedLiterals().count(m_me->getID())) {
-        el->getOwnedLiterals().remove(*m_me);
-    }
-    if (m_me->getNamespaceID() == el->getID()) {
-        m_me->setNamespace(0);
-    }
-}
-
-void EnumerationLiteral::AddEnumerationProcedure::operator()(Enumeration* el) const {
-    if (!el->getOwnedLiterals().count(m_me->getID())) {
-        el->getOwnedLiterals().add(*m_me);
-    }
-    if (m_me->getNamespaceID() != el->getID()) {
-        m_me->setNamespace(el);
-    }
-}
-
-void EnumerationLiteral::AddEnumerationProcedure::operator()(ID id) const {
-    if (m_me->getNamespaceID() != id) {
-        m_me->m_namespace.setByID(id);
-    }
-}
 
 void EnumerationLiteral::referencingReleased(ID id) {
     InstanceSpecification::referencingReleased(id);
@@ -39,27 +16,35 @@ void EnumerationLiteral::referenceReindexed(ID oldID, ID newID) {
 
 void EnumerationLiteral::restoreReferences() {
     InstanceSpecification::restoreReferences();
-    m_enumeration.restoreReference();
+    // m_enumeration.restoreReference();
 }
 
 void EnumerationLiteral::referenceErased(ID id) {
     InstanceSpecification::referenceErased(id);
-    m_enumeration.elementErased(id);
+    m_enumeration.eraseElement(id);
+}
+
+Set<Enumeration, EnumerationLiteral>& EnumerationLiteral::getEnumerationSingleton() {
+    return m_enumeration;
+}
+
+void EnumerationLiteral::init() {
+    m_enumeration.subsets(m_namespace);
+    m_enumeration.opposite(&Enumeration::getOwnedLiteralsSet);
+    m_enumeration.m_signature = &EnumerationLiteral::getEnumerationSingleton;
 }
 
 EnumerationLiteral::EnumerationLiteral() : Element(ElementType::ENUMERATION_LITERAL) {
-    m_enumeration.m_signature = &EnumerationLiteral::m_enumeration;
-    m_enumeration.m_addProcedures.push_back(new AddEnumerationProcedure(this));
-    m_enumeration.m_removeProcedures.push_back(new RemoveEnumerationProcedure(this));
+    init();
 }
 
 EnumerationLiteral::EnumerationLiteral(const EnumerationLiteral& rhs) : Element(rhs, ElementType::ENUMERATION_LITERAL) {
-    m_enumeration = rhs.m_enumeration;
-    m_enumeration.m_me = this;
-    m_enumeration.m_removeProcedures.clear();
-    m_enumeration.m_addProcedures.clear();
-    m_enumeration.m_addProcedures.push_back(new AddEnumerationProcedure(this));
-    m_enumeration.m_removeProcedures.push_back(new RemoveEnumerationProcedure(this));
+    init();
+    Element::copy(rhs);
+    NamedElement::copy(rhs);
+    PackageableElement::copy(rhs);
+    InstanceSpecification::copy(rhs);
+    copy(rhs);
 }
 
 Enumeration* EnumerationLiteral::getEnumeration() {

@@ -5,13 +5,13 @@ add_library(Uml element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp names
                 literalSpecification.cpp literalString.cpp literalInt.cpp literalReal.cpp literalBool.cpp literalNull.cpp
                 literalUnlimitedNatural.cpp dataType.cpp primitiveType.cpp instanceSpecification.cpp slot.cpp 
                 behavioralFeature.cpp behavior.cpp connectableElement.cpp multiplicityElement.cpp parameter.cpp
-                operation.cpp opaqueBehavior.cpp behavioredClassifier.cpp association.cpp)
+                operation.cpp opaqueBehavior.cpp behavioredClassifier.cpp association.cpp enumeration.cpp enumerationLiteral.cpp)
 # add_library(Uml model.cpp instanceValue.cpp 
 #                  activity.cpp activityNode.cpp activityEdge.cpp objectNode.cpp  pin.cpp
 #                 action.cpp inputPin.cpp outputPin.cpp controlFlow.cpp objectFlow.cpp initialNode.cpp finalNode.cpp decisionNode.cpp
 #                 joinNode.cpp forkNode.cpp mergeNode.cpp parameterNode.cpp callBehaviorAction.cpp expression.cpp createObjectAction.cpp
 #                   redefinableElement.cpp
-#                 enumeration.cpp enumerationLiteral.cpp comment.cpp id.cpp umlManager.cpp
+#                  comment.cpp id.cpp umlManager.cpp
 #                 templateableElement.cpp templateSignature.cpp templateParameter.cpp parameterableElement.cpp templateBinding.cpp
 #                 templateParameterSubstitution.cpp profile.cpp stereotype.cpp
 #                 profileApplication.cpp extension.cpp extensionEnd.cpp dependency.cpp abstraction.cpp realization.cpp usage.cpp

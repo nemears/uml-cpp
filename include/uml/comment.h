@@ -5,17 +5,9 @@
 #include "singleton.h"
 
 namespace UML {
-
-    class RemoveOwnedCommentFunctor;
-    namespace Parsers {
-        class SetOwningElement;
-    }
-
     class Comment : public Element {
 
         friend class UmlManager;
-        friend class RemoveOwnedCommentFunctor;
-        friend class Parsers::SetOwningElement;
 
         private:
             std::string m_body;

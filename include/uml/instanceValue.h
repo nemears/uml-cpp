@@ -17,25 +17,19 @@ namespace UML {
 
         protected:
             Singleton<InstanceSpecification, InstanceValue> m_instance = Singleton<InstanceSpecification, InstanceValue>(this);
-            class RemoveInstanceProcedure : public AbstractSingletonProcedure<InstanceSpecification, InstanceValue> {
-                public:
-                    RemoveInstanceProcedure(InstanceValue* me) : AbstractSingletonProcedure<InstanceSpecification, InstanceValue>(me) {};
-                    void operator()(InstanceSpecification* el) const override;
-            };
-            class AddInstanceProcedure : public AbstractSingletonProcedure<InstanceSpecification, InstanceValue> {
-                public:
-                    AddInstanceProcedure(InstanceValue* me) : AbstractSingletonProcedure<InstanceSpecification, InstanceValue>(me) {};
-                    void operator()(InstanceSpecification* el) const override;
-            };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            Set<InstanceSpecification, InstanceValue>& getInstanceSingleton();
+            void init();
+            void copy(const InstanceValue& rhs);
             InstanceValue();
         public:
             InstanceValue(const InstanceValue& rhs);
             InstanceSpecification* getInstance();
             InstanceSpecification& getInstanceRef();
+            ID getInstanceID();
             bool hasInstance() const;
             void setInstance(InstanceSpecification& inst);
             void setInstance(InstanceSpecification* inst);

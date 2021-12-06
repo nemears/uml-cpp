@@ -134,6 +134,7 @@ namespace UML {
     class Enumeration;
     class EnumerationLiteral;
     class Comment;
+    class InstanceValue;
 
     /**
      * This container is based around a weighted binary search tree
@@ -175,6 +176,7 @@ namespace UML {
         friend class Enumeration;
         friend class EnumerationLiteral;
         friend class Comment;
+        friend class InstanceValue;
 
         protected:
             std::vector<AbstractSet*> m_superSets;

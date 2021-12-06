@@ -588,10 +588,9 @@ namespace UML {
                         }
                         if (temp->m_parent) {
                             if (temp->m_parent->m_left->m_id == temp->m_id) {
-                                temp->m_parent->m_left = 0;
-                            } else {
-                                temp->m_parent->m_right = 0;
-                            }
+                                temp->m_parent->m_left = temp->m_parent->m_right;
+                            } 
+                            temp->m_parent->m_right = 0;
                             if (temp->m_left) {
                                 subsetOf->place(temp->m_left, temp->m_parent);
                             }

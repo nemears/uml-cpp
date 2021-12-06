@@ -44,6 +44,7 @@ void DataType::init() {
 
 void DataType::copy(const DataType& rhs) {
     m_ownedAttributes = rhs.m_ownedAttributes;
+    m_ownedOperations = rhs.m_ownedOperations;
 }
 
 DataType::DataType() : Element(ElementType::DATA_TYPE) {
@@ -56,6 +57,7 @@ DataType::~DataType() {
 
 DataType::DataType(const DataType& rhs) : Element(rhs, ElementType::DATA_TYPE) {
     init();
+    Element::copy(rhs);
     NamedElement::copy(rhs);
     Namespace::copy(rhs);
     PackageableElement::copy(rhs);

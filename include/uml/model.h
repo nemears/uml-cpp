@@ -10,8 +10,11 @@ namespace UML{
 
         protected:
             Model();
+            std::string m_viewpoint;
         public:
             Model(const Model& rhs);
+            std::string getViewpoint() const;
+            void setViewpoint(std::string viewpoint);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::MODEL;

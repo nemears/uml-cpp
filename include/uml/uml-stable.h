@@ -29,7 +29,7 @@
 #include "uml/literalString.h"
 #include "uml/literalUnlimitedNatural.h"
 // #include "uml/manifestation.h"
-// #include "uml/model.h"
+#include "uml/model.h"
 #include "uml/opaqueBehavior.h"
 #include "uml/operation.h"
 #include "uml/package.h"

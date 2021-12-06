@@ -38,18 +38,18 @@ void Classifier::AddGeneralFunctor::operator()(Element& el) const {
 }
 
 void Classifier::RemoveGeneralFunctor::operator()(Element& el) const {
-    bool removeGeneralization = false;
-    Generalization* generalizationPtr = 0;
-    for (auto& generalization : m_el.as<Classifier>().m_generalizations) {
-        if (generalization.getGeneralID() == el.getID()) {
-            removeGeneralization = true;
-            generalizationPtr = &generalization;
-            break;
-        }
-    }
-    if (removeGeneralization) {
-        m_el.as<Classifier>().m_generalizations.remove(*generalizationPtr);
-    }
+    // bool removeGeneralization = false;
+    // Generalization* generalizationPtr = 0;
+    // for (auto& generalization : m_el.as<Classifier>().m_generalizations) {
+    //     if (generalization.getGeneralID() == el.getID()) {
+    //         removeGeneralization = true;
+    //         generalizationPtr = &generalization;
+    //         break;
+    //     }
+    // }
+    // if (removeGeneralization) {
+    //     m_el.as<Classifier>().m_generalizations.remove(*generalizationPtr);
+    // }
     for (auto& mem : el.as<Classifier>().m_members) {
         if (mem.getVisibility() != VisibilityKind::PRIVATE && m_el.as<Classifier>().m_inheritedMembers.contains(mem.getID())) {
             m_el.as<Classifier>().m_inheritedMembers.nonOppositeRemove(mem.getID());

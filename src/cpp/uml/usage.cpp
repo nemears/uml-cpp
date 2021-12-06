@@ -1,4 +1,5 @@
 #include "uml/usage.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -6,10 +7,14 @@ Usage::Usage() : Element(ElementType::USAGE) {
 
 };
 
-Usage::Usage(const Usage& usage) : 
-Dependency(usage),
-Element(usage, ElementType::USAGE) {
-
+Usage::Usage(const Usage& rhs) : Element(rhs, ElementType::USAGE) {
+    init();
+    Element::copy(rhs);
+    Relationship::copy(rhs);
+    DirectedRelationship::copy(rhs);
+    NamedElement::copy(rhs);
+    PackageableElement::copy(rhs);
+    Dependency::copy(rhs);
 }
 
 Usage::~Usage() {

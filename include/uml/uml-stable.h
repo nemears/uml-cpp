@@ -5,7 +5,7 @@
  * Comprehensive include of all stable non-abstract parts of the api
  **/
 
-// #include "uml/abstraction.h"
+#include "uml/abstraction.h"
 #include "uml/behavior.h"
 #include "uml/class.h"
 #include "uml/comment.h"
@@ -39,7 +39,7 @@
 // #include "uml/profile.h"
 // #include "uml/profileApplication.h"
 #include "uml/property.h"
-// #include "uml/realization.h"
+#include "uml/realization.h"
 #include "uml/slot.h"
 // #include "uml/stereotype.h"
 // #include "uml/templateBinding.h"
@@ -47,6 +47,6 @@
 // #include "uml/templateParameterSubstitution.h"
 // #include "uml/templateSignature.h"
 #include "uml/umlManager.h"
-// #include "uml/usage.h"
+#include "uml/usage.h"
 
 #endif

@@ -97,7 +97,7 @@ namespace UML {
             SetNode* m_root = 0;
             size_t m_guard = 0;
             size_t m_guardDenominator = 1;
-            std::vector<AbstractSet*> m_superSets;
+            std::list<AbstractSet*> m_superSets;
             std::vector<AbstractSet*> m_subSets;
             std::vector<AbstractSet*> m_redefines;
             std::unordered_set<SetFunctor*> m_addFunctors;
@@ -1040,7 +1040,7 @@ namespace UML {
              **/
             template <class V = Element, class W = Element> void subsets(Set<V, W>& subsetOf) {
                 if (std::find(m_superSets.begin(), m_superSets.end(), &subsetOf) == m_superSets.end()) {
-                    m_superSets.push_back(&subsetOf);
+                    m_superSets.push_front(&subsetOf);
                     subsetOf.m_subSets.push_back(this);
                     for (auto& set : m_superSets) {
                         // compare and update guard of superset to previous supersets
@@ -1053,6 +1053,28 @@ namespace UML {
                     }
                     for (auto& set : subsetOf.m_superSets) {
                         this->subsets(*static_cast<Set*>(set));
+                    }
+                    for (auto& set: m_superSets) {
+                        if (std::find(subsetOf.m_superSets.begin(), subsetOf.m_superSets.end(), set) == subsetOf.m_superSets.end()) {
+                            // found diamond set, adjust guard and denominator
+                            set->m_guardDenominator = nextPrime(set->m_guardDenominator);
+                            while(set->m_guard % set->m_guardDenominator != 0) {
+                                set->m_guard++;
+                            }
+                            for (auto& setSubSet : set->m_subSets) {
+                                setSubSet->m_guardDenominator = set->m_guardDenominator;
+                                setSubSet->m_guard = set->m_guard + set->m_guardDenominator;
+                            }
+                            subsetOf.m_guardDenominator = nextPrime(set->m_guardDenominator);
+                            while (subsetOf.m_guard & subsetOf.m_guardDenominator != 0) {
+                                subsetOf.m_guard++;
+                            }
+                            for (auto& subsetOfsubSet : subsetOf.m_subSets) {
+                                subsetOfsubSet->m_guardDenominator = subsetOf.m_guardDenominator;
+                                subsetOfsubSet->m_guard = subsetOf.m_guard + subsetOf.m_guardDenominator;
+                            }
+                        }
+                        break;
                     }
                     if (m_guard <= subsetOf.m_guard) {
                         m_guard = subsetOf.m_guard + m_guardDenominator;
@@ -1072,9 +1094,6 @@ namespace UML {
                     } else if (!subsetOf.m_root) {
                         subsetOf.m_root = m_root;
                     }
-                } else {
-                    // This is a diamond subset, get the disjoint sets in question
-                    std::cout << "WARN: DIAMOND SUBSETS NOT STABLE" << std::endl;
                 }
             };
             void opposite(Set<U, T>& (T::*op)()) {

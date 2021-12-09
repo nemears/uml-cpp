@@ -65,6 +65,8 @@ void Class::copy(const Class& rhs) {
     m_classOwnedAttrubutes = rhs.m_classOwnedAttrubutes;
     m_ownedOperations = rhs.m_ownedOperations;
     m_nestedClassifiers = rhs.m_nestedClassifiers;
+
+    m_redefinedElement.subsets(m_ownedOperations);
 }
 
 Class::Class() : Element(ElementType::CLASS) {

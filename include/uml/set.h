@@ -67,6 +67,14 @@ namespace UML {
             }
     };
 
+    class SetFunctor {
+        protected:
+            Element& m_el;
+        public:
+            SetFunctor(Element* el) : m_el(*el) {};
+            virtual void operator()(Element& el) const = 0;
+    };
+
     class AbstractSet {
         template <class T, class U> friend class Set;
         template <class T, class U> friend class OrderedSet;
@@ -88,18 +96,16 @@ namespace UML {
             };
             SetNode* m_root = 0;
             size_t m_guard = 0;
+            size_t m_guardDenominator = 1;
+            std::vector<AbstractSet*> m_superSets;
+            std::vector<AbstractSet*> m_subSets;
+            std::vector<AbstractSet*> m_redefines;
+            std::unordered_set<SetFunctor*> m_addFunctors;
+            std::unordered_set<SetFunctor*> m_removeFunctors;
             virtual void place(SetNode* node, SetNode* parent) = 0;
             virtual SetNode* search(ID id, SetNode* node) = 0;
             void setName(SetNode* node);
             void instantiateSetNode(SetNode* node);
-    };
-
-    class SetFunctor {
-        protected:
-            Element& m_el;
-        public:
-            SetFunctor(Element* el) : m_el(*el) {};
-            virtual void operator()(Element& el) const = 0;
     };
 
     template <class T> struct SetIterator;
@@ -195,17 +201,12 @@ namespace UML {
         friend class RedefinableElement;
 
         protected:
-            std::vector<AbstractSet*> m_superSets;
-            std::vector<AbstractSet*> m_subSets;
-            std::vector<AbstractSet*> m_redefines;
             bool m_rootRedefinedSet = true;
             AbstractOppositeFunctor* m_oppositeFunctor = 0;
             bool m_ownsOppositeFunctor = false;
             Element* m_el = 0;
             Set<T,U>& (U::*m_signature)() = 0;
             bool m_readOnly = false;
-            std::unordered_set<SetFunctor*> m_addFunctors;
-            std::unordered_set<SetFunctor*> m_removeFunctors;
 
             void place(SetNode* node, SetNode* parent) override {
                 if (node->m_id == parent->m_id) {
@@ -216,10 +217,10 @@ namespace UML {
                     // prefer placement to left
                     if (parent->m_right) {
                         // both children are populated, determine where to place
-                        if (node->m_id > parent->m_right->m_id && parent->m_left->m_guard <= m_guard) {
+                        if (node->m_id > parent->m_right->m_id && parent->m_left->m_guard <= m_guard && parent->m_left->m_guard % m_guardDenominator == 0) {
                             // place to left if greater than right
                             place(node, parent->m_left);
-                        } else if (parent->m_right->m_guard <= m_guard) {
+                        } else if (parent->m_right->m_guard <= m_guard && parent->m_right->m_guard % m_guardDenominator == 0) {
                             // place to right if less than right
                             place(node, parent->m_right);
                         } else {
@@ -310,7 +311,7 @@ namespace UML {
                             // determine if we need a placeholder to keep subsets separate
                             bool createPlaceholder = false;
                             int placeHolderGuard = 0;
-                            for (auto& set : static_cast<Set*>(subsetOf)->m_subSets) {
+                            for (auto& set :subsetOf->m_subSets) {
                                 if (set != this) {
                                     Set* rSet = static_cast<Set*>(set);
                                     if (std::find(rSet->m_subSets.begin(), rSet->m_subSets.end(), this) == rSet->m_subSets.end()) {
@@ -440,7 +441,7 @@ namespace UML {
                                             superSet->m_root = temp->m_parent->m_left;
                                             superSet->m_root->m_parent = 0;
                                         }
-                                        for (auto& set : static_cast<Set*>(superSet)->m_subSets) {
+                                        for (auto& set : superSet->m_subSets) {
                                             if (set != this) {
                                                 if (set->m_root == temp->m_parent) {
                                                     SetNode* node =  temp->m_parent->m_left;
@@ -471,7 +472,7 @@ namespace UML {
                                         superSet->m_root = temp->m_parent->m_left;
                                         superSet->m_root->m_parent = 0;
                                     }
-                                    for (auto& set : static_cast<Set*>(superSet)->m_subSets) {
+                                    for (auto& set : superSet->m_subSets) {
                                         if (set != this) {
                                             if (set->m_root == temp->m_parent) {
                                                 SetNode* node =  temp->m_parent->m_left;
@@ -663,7 +664,7 @@ namespace UML {
                             }
                         }
                         for (auto& set : m_subSets) {
-                            for (auto& superSet : static_cast<Set*>(set)->m_superSets) {
+                            for (auto& superSet : set->m_superSets) {
                                 SetNode* node2 = superSet->m_root;
                                 while (node2) {
                                     if (node2->m_left) {
@@ -720,7 +721,7 @@ namespace UML {
                                 }
                             }
                             for (auto& set : m_subSets) {
-                                for (auto& superSet : static_cast<Set*>(set)->m_superSets) {
+                                for (auto& superSet : set->m_superSets) {
                                     SetNode* node2 = superSet->m_root;
                                     while (node2) {
                                         if (node2->m_left) {
@@ -799,6 +800,29 @@ namespace UML {
                     throw ID_doesNotExistException2(id);
                 }
             };
+            bool isPrime(size_t num) {
+                if (num == 2 || num == 3) {
+                    return true;
+                }
+                if (num % 2 == 0 || num % 3 == 0) {
+                    return false;
+                }
+                int divisor = 6;
+                while (divisor * divisor - 2 * divisor + 1 <= num) {
+                    if (num % (divisor - 1) == 0) {
+                        return false;
+                    }
+                    if (num % (divisor + 1) == 0) {
+                        return false;
+                    }
+                    divisor += 6;
+                }
+                return true;
+            };
+            size_t nextPrime(size_t curr) {
+                while (!isPrime(curr++)){};
+                return curr;
+            };
         public:
             inline Set(Element* el) : m_el(el) {};
             inline Set() {};
@@ -808,7 +832,7 @@ namespace UML {
                     for (auto& set : m_superSets) {
                         // find if root has already been copied
                         if (set->m_root) {
-                            if ((m_root = static_cast<Set*>(set)->search(rhs.m_root->m_id, set->m_root)) != 0) {
+                            if ((m_root = set->search(rhs.m_root->m_id, set->m_root)) != 0) {
                                 break;
                             }
                         }
@@ -816,9 +840,9 @@ namespace UML {
                     if (!m_root) {
                         // if haven't found it in supersets, look in subsets supersets
                         for (auto& set : m_subSets) {
-                            for (auto& disjointSet : static_cast<Set*>(set)->m_superSets) {
+                            for (auto& disjointSet : set->m_superSets) {
                                 if (disjointSet->m_root) {
-                                    if ((m_root = static_cast<Set*>(disjointSet)->search(rhs.m_root->m_id, disjointSet->m_root)) != 0) {
+                                    if ((m_root = disjointSet->search(rhs.m_root->m_id, disjointSet->m_root)) != 0) {
                                         break;
                                     }
                                 }
@@ -846,7 +870,7 @@ namespace UML {
                                     // we need to find parent from tree
                                     for (auto& set : m_superSets) {
                                         // find if parent has already been copied
-                                        if ((copy = static_cast<Set*>(set)->search(curr->m_id, set->m_root)) != 0) {
+                                        if ((copy = set->search(curr->m_id, set->m_root)) != 0) {
                                             break;
                                         }
                                     }
@@ -964,14 +988,14 @@ namespace UML {
                 for (auto& func : m_addFunctors) {
                     bool deleteFunc = true;
                     for (auto& set : m_superSets) {
-                        if (static_cast<Set*>(set)->m_addFunctors.count(func)) {
+                        if (set->m_addFunctors.count(func)) {
                             deleteFunc = false;
                             break;
                         }
                     }
                     if (deleteFunc) {
                         for (auto& set : m_redefines) {
-                            if (static_cast<Set*>(set)->m_addFunctors.count(func)) {
+                            if (set->m_addFunctors.count(func)) {
                                 deleteFunc = false;
                                 break;
                             }
@@ -984,7 +1008,7 @@ namespace UML {
                 for (auto& func : m_removeFunctors) {
                     bool deleteFunc = true;
                     for (auto& set : m_superSets) {
-                        if (static_cast<Set*>(set)->m_removeFunctors.count(func)) {
+                        if (set->m_removeFunctors.count(func)) {
                             deleteFunc = false;
                             break;
                         }
@@ -1021,7 +1045,7 @@ namespace UML {
                     for (auto& set : m_superSets) {
                         // compare and update guard of superset to previous supersets
                         if (set != &subsetOf && set->m_guard <= subsetOf.m_guard) {
-                            subsetOf.m_guard = set->m_guard + 1;
+                            subsetOf.m_guard = set->m_guard + subsetOf.m_guardDenominator;
                         }
                     }
                     if (!m_oppositeFunctor && subsetOf.m_oppositeFunctor && m_el) {
@@ -1031,7 +1055,7 @@ namespace UML {
                         this->subsets(*static_cast<Set*>(set));
                     }
                     if (m_guard <= subsetOf.m_guard) {
-                        m_guard = subsetOf.m_guard + 1;
+                        m_guard = subsetOf.m_guard + m_guardDenominator;
                     }
                     for (const auto& set : subsetOf.m_addFunctors) {
                         if (!m_addFunctors.count(set)) {
@@ -1048,6 +1072,9 @@ namespace UML {
                     } else if (!subsetOf.m_root) {
                         subsetOf.m_root = m_root;
                     }
+                } else {
+                    // This is a diamond subset, get the disjoint sets in question
+                    std::cout << "WARN: DIAMOND SUBSETS NOT STABLE" << std::endl;
                 }
             };
             void opposite(Set<U, T>& (T::*op)()) {

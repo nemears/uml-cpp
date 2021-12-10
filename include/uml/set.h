@@ -1051,30 +1051,37 @@ namespace UML {
                     if (!m_oppositeFunctor && subsetOf.m_oppositeFunctor && m_el) {
                         m_oppositeFunctor = subsetOf.m_oppositeFunctor;
                     }
-                    for (auto& set : subsetOf.m_superSets) {
-                        this->subsets(*static_cast<Set*>(set));
-                    }
                     for (auto& set: m_superSets) {
-                        if (std::find(subsetOf.m_superSets.begin(), subsetOf.m_superSets.end(), set) == subsetOf.m_superSets.end()) {
+                        if (std::find(subsetOf.m_superSets.begin(), subsetOf.m_superSets.end(), set) == subsetOf.m_superSets.end() && 
+                            std::find(subsetOf.m_subSets.begin(), subsetOf.m_subSets.end(), set) == subsetOf.m_subSets.end() && 
+                            set != &subsetOf) {
                             // found diamond set, adjust guard and denominator
                             set->m_guardDenominator = nextPrime(set->m_guardDenominator);
                             while(set->m_guard % set->m_guardDenominator != 0) {
                                 set->m_guard++;
                             }
                             for (auto& setSubSet : set->m_subSets) {
-                                setSubSet->m_guardDenominator = set->m_guardDenominator;
-                                setSubSet->m_guard = set->m_guard + set->m_guardDenominator;
+                                if (setSubSet != this) {
+                                    setSubSet->m_guardDenominator = set->m_guardDenominator;
+                                    setSubSet->m_guard = set->m_guard + set->m_guardDenominator;
+                                }
                             }
                             subsetOf.m_guardDenominator = nextPrime(set->m_guardDenominator);
-                            while (subsetOf.m_guard & subsetOf.m_guardDenominator != 0) {
+                            while (subsetOf.m_guard % subsetOf.m_guardDenominator != 0) {
                                 subsetOf.m_guard++;
                             }
                             for (auto& subsetOfsubSet : subsetOf.m_subSets) {
-                                subsetOfsubSet->m_guardDenominator = subsetOf.m_guardDenominator;
-                                subsetOfsubSet->m_guard = subsetOf.m_guard + subsetOf.m_guardDenominator;
+                                if (subsetOfsubSet != this) {
+                                    subsetOfsubSet->m_guardDenominator = subsetOf.m_guardDenominator;
+                                    subsetOfsubSet->m_guard = subsetOf.m_guard + subsetOf.m_guardDenominator;
+                                }
                             }
+                            m_guard = set->m_guardDenominator * subsetOf.m_guardDenominator;
+                            break;
                         }
-                        break;
+                    }
+                    for (auto& set : subsetOf.m_superSets) {
+                        this->subsets(*static_cast<Set*>(set));
                     }
                     if (m_guard <= subsetOf.m_guard) {
                         m_guard = subsetOf.m_guard + m_guardDenominator;

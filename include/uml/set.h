@@ -100,6 +100,7 @@ namespace UML {
             std::list<AbstractSet*> m_superSets;
             std::vector<AbstractSet*> m_subSets;
             std::vector<AbstractSet*> m_redefines;
+            std::unordered_set<AbstractSet*> m_diamondSuperSets;
             std::unordered_set<SetFunctor*> m_addFunctors;
             std::unordered_set<SetFunctor*> m_removeFunctors;
             virtual void place(SetNode* node, SetNode* parent) = 0;
@@ -291,7 +292,7 @@ namespace UML {
                 return 0;
             };
             void add(SetNode* node) {
-                node->m_guard = m_guard;
+                // node->m_guard = m_guard;
                 if (!m_root) {
                     m_root = node;
                     // handle redefines
@@ -305,7 +306,7 @@ namespace UML {
                             redefined->m_root = node;
                         }
                     }
-                    // handle subsets
+                    // handle supersets
                     for (auto& subsetOf : m_superSets) {
                         if (subsetOf->m_root) {
                             // determine if we need a placeholder to keep subsets separate
@@ -341,9 +342,31 @@ namespace UML {
                         m_root = node;
                         place(temp, node);
                     } else {
+                        // determine if need to split up diamond sets
+                        for (auto& set : m_diamondSuperSets) {
+                            bool needToBreak = false;
+                            if (set->m_guard == node->m_guard && m_root->m_id != placeholderID) {
+                                for (auto& oSet : m_diamondSuperSets) {
+                                    if (oSet != set && oSet->search(m_root->m_id, oSet->m_root)) {
+                                        // create placeholder to split set
+                                        SetNode* temp = m_root;
+                                        m_root = new SetNode();
+                                        m_root->m_id = placeholderID;
+                                        m_root->m_guard = node->m_guard;
+                                        place(temp, m_root);
+                                        needToBreak = true;
+                                        break;       
+                                    }
+                                }
+                            }
+                            if (needToBreak) {
+                                break;
+                            }
+                        }
                         place(node, m_root);
                     }
                 }
+                node->m_guard = m_guard;
                 m_size++;
                 for (auto& subsetOf : m_superSets) {
                     subsetOf->m_size++;
@@ -585,7 +608,7 @@ namespace UML {
                 for (auto& subsetOf : m_superSets) {
                     SetNode* temp = 0;
                     if (subsetOf->m_root && (temp = subsetOf->search(id, subsetOf->m_root)) != 0) {
-                        temp->m_guard = m_guard;
+                        // temp->m_guard = m_guard;
                         if (subsetOf->m_root->m_id == temp->m_id) {
                             if (temp->m_left) {
                                 subsetOf->m_root = temp->m_left;
@@ -1077,6 +1100,8 @@ namespace UML {
                                 }
                             }
                             m_guard = set->m_guardDenominator * subsetOf.m_guardDenominator;
+                            m_diamondSuperSets.insert(set);
+                            m_diamondSuperSets.insert(&subsetOf);
                             break;
                         }
                     }

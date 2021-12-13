@@ -100,7 +100,7 @@ namespace UML {
             std::list<AbstractSet*> m_superSets;
             std::vector<AbstractSet*> m_subSets;
             std::vector<AbstractSet*> m_redefines;
-            std::unordered_set<AbstractSet*> m_diamondSuperSets;
+            std::unordered_set<AbstractSet*> m_disjointSuperSets;
             std::unordered_set<SetFunctor*> m_addFunctors;
             std::unordered_set<SetFunctor*> m_removeFunctors;
             virtual void place(SetNode* node, SetNode* parent) = 0;
@@ -292,7 +292,6 @@ namespace UML {
                 return 0;
             };
             void add(SetNode* node) {
-                // node->m_guard = m_guard;
                 if (!m_root) {
                     m_root = node;
                     // handle redefines
@@ -306,16 +305,30 @@ namespace UML {
                             redefined->m_root = node;
                         }
                     }
+                    std::list<AbstractSet*> nonDisjointParents = m_superSets;
+                    // handle disjoint supersets
+                    for (auto& disjointSet : m_disjointSuperSets) {
+                        if (node->m_guard == m_guard) {
+                            // adding new element
+                            if (disjointSet->m_root) {
+                                disjointSet->place(node, disjointSet->m_root);
+                            } else {
+                                disjointSet->m_root = node;
+                            }
+                        }
+                        nonDisjointParents.erase(std::find(nonDisjointParents.begin(), nonDisjointParents.end(), disjointSet));
+                    }
                     // handle supersets
-                    for (auto& subsetOf : m_superSets) {
-                        if (subsetOf->m_root) {
+                    for (auto& subsetOf : nonDisjointParents) {
+                        if (!subsetOf->m_root) {
+                            subsetOf->m_root = m_root;
+                        } else {
                             // determine if we need a placeholder to keep subsets separate
                             bool createPlaceholder = false;
                             int placeHolderGuard = 0;
-                            for (auto& set :subsetOf->m_subSets) {
+                            for (auto& set : subsetOf->m_subSets) {
                                 if (set != this) {
-                                    Set* rSet = static_cast<Set*>(set);
-                                    if (std::find(rSet->m_subSets.begin(), rSet->m_subSets.end(), this) == rSet->m_subSets.end()) {
+                                    if (std::find(set->m_subSets.begin(), set->m_subSets.end(), this) == set->m_subSets.end()) {
                                         createPlaceholder = true;
                                         placeHolderGuard = subsetOf->m_guard;
                                         break;
@@ -331,8 +344,6 @@ namespace UML {
                                 subsetOf->place(temp, subsetOf->m_root);
                             }
                             subsetOf->place(node, subsetOf->m_root);
-                        } else {
-                            subsetOf->m_root = m_root;
                         }
                     }
                 } else {
@@ -342,27 +353,6 @@ namespace UML {
                         m_root = node;
                         place(temp, node);
                     } else {
-                        // determine if need to split up diamond sets
-                        for (auto& set : m_diamondSuperSets) {
-                            bool needToBreak = false;
-                            if (set->m_guard == node->m_guard && m_root->m_id != placeholderID) {
-                                for (auto& oSet : m_diamondSuperSets) {
-                                    if (oSet != set && oSet->search(m_root->m_id, oSet->m_root)) {
-                                        // create placeholder to split set
-                                        SetNode* temp = m_root;
-                                        m_root = new SetNode();
-                                        m_root->m_id = placeholderID;
-                                        m_root->m_guard = node->m_guard;
-                                        place(temp, m_root);
-                                        needToBreak = true;
-                                        break;       
-                                    }
-                                }
-                            }
-                            if (needToBreak) {
-                                break;
-                            }
-                        }
                         place(node, m_root);
                     }
                 }
@@ -608,7 +598,6 @@ namespace UML {
                 for (auto& subsetOf : m_superSets) {
                     SetNode* temp = 0;
                     if (subsetOf->m_root && (temp = subsetOf->search(id, subsetOf->m_root)) != 0) {
-                        // temp->m_guard = m_guard;
                         if (subsetOf->m_root->m_id == temp->m_id) {
                             if (temp->m_left) {
                                 subsetOf->m_root = temp->m_left;
@@ -653,11 +642,14 @@ namespace UML {
                 if (temp) {
                     return temp;
                 }
-                return new SetNode(static_cast<Element*>(&el));
+                SetNode* ret = new SetNode(static_cast<Element*>(&el));
+                ret->m_guard = m_guard;
+                return ret;
             };
             virtual SetNode* createNode(ID id) {
                 SetNode* ret = new SetNode();
                 ret->m_id = id;
+                ret->m_guard = m_guard;
                 return ret;
             };
             void release(ID id) {
@@ -1078,30 +1070,9 @@ namespace UML {
                         if (std::find(subsetOf.m_superSets.begin(), subsetOf.m_superSets.end(), set) == subsetOf.m_superSets.end() && 
                             std::find(subsetOf.m_subSets.begin(), subsetOf.m_subSets.end(), set) == subsetOf.m_subSets.end() && 
                             set != &subsetOf) {
-                            // found diamond set, adjust guard and denominator
-                            set->m_guardDenominator = nextPrime(set->m_guardDenominator);
-                            while(set->m_guard % set->m_guardDenominator != 0) {
-                                set->m_guard++;
-                            }
-                            for (auto& setSubSet : set->m_subSets) {
-                                if (setSubSet != this) {
-                                    setSubSet->m_guardDenominator = set->m_guardDenominator;
-                                    setSubSet->m_guard = set->m_guard + set->m_guardDenominator;
-                                }
-                            }
-                            subsetOf.m_guardDenominator = nextPrime(set->m_guardDenominator);
-                            while (subsetOf.m_guard % subsetOf.m_guardDenominator != 0) {
-                                subsetOf.m_guard++;
-                            }
-                            for (auto& subsetOfsubSet : subsetOf.m_subSets) {
-                                if (subsetOfsubSet != this) {
-                                    subsetOfsubSet->m_guardDenominator = subsetOf.m_guardDenominator;
-                                    subsetOfsubSet->m_guard = subsetOf.m_guard + subsetOf.m_guardDenominator;
-                                }
-                            }
-                            m_guard = set->m_guardDenominator * subsetOf.m_guardDenominator;
-                            m_diamondSuperSets.insert(set);
-                            m_diamondSuperSets.insert(&subsetOf);
+                            // found diamond set
+                            m_disjointSuperSets.insert(set);
+                            m_disjointSuperSets.insert(&subsetOf);
                             break;
                         }
                     }

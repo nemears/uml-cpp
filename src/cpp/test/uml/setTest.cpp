@@ -552,6 +552,13 @@ TEST_F(SetTest, twoWayMultiSetSplitTest) {
     // ASSERT_FALSE(rootRoot->m_id == ID::fromString("&&&&&&&&&&&&&&&&&&&&&&&&&&&&"));
 }
 
+/** This is a quick tree diagram of the subsetting at play here
+ *      R   SS3
+ *       \  /  \
+ *        SS2   SS1
+ *         | \  / |
+ *        S1  S2  S1
+ **/
 TEST_F(SetTest, TODO_NAME) {
     Set<Element>* rootSet = new Set<Element>;
     Set<NamedElement>* superSet3 = new Set<NamedElement>;
@@ -715,6 +722,22 @@ TEST_F(SetTest, diamondSubsetsTest) {
     set1->add(d1);
     set2->add(d2);
     dSet->add(d1);
+    ASSERT_EQ(root->size(), 4);
+    ASSERT_EQ(set1->size(), 2);
+    ASSERT_EQ(set2->size(), 2);
+    ASSERT_EQ(dSet->size(), 1);
+    ASSERT_TRUE(root->contains(p1));
+    ASSERT_TRUE(set1->contains(p1));
+    ASSERT_FALSE(set2->contains(p1));
+    ASSERT_FALSE(dSet->contains(p1));
+    ASSERT_TRUE(root->contains(p2));
+    ASSERT_FALSE(set1->contains(p2)); 
+    ASSERT_TRUE(set2->contains(p2));
+    ASSERT_FALSE(dSet->contains(p2));
+    ASSERT_TRUE(root->contains(d1));
+    ASSERT_TRUE(set1->contains(d1));
+    ASSERT_FALSE(set2->contains(d1));
+    ASSERT_TRUE(dSet->contains(d1));
     dSet->add(d2);
     ASSERT_EQ(root->size(), 4);
     ASSERT_EQ(set1->size(), 2);

@@ -96,6 +96,7 @@ namespace UML {
                     return temp;
                 }
                 OrderedNode* ret = createOrderedNode(el);
+                ret->m_guard = this->m_guard;
                 fillNode(ret);
                 return ret;
             };
@@ -106,6 +107,7 @@ namespace UML {
                     return temp;
                 }
                 OrderedNode* ret = createOrderedNode(id);
+                ret->m_guard = this->m_guard;
                 fillNode(ret);
                 return ret;
             };

@@ -408,7 +408,68 @@ namespace UML {
                         }
                         place(temp, node);
                     } else {
-                        place(node, m_root);
+                        if (node->m_guard == m_guard) {
+                            place(node, m_root);
+                        } else {
+                            AbstractSet* dSet = 0;
+                            for (auto& disjointSet : m_disjointSuperSets) {
+                                if (node->m_guard == disjointSet->m_guard) {
+                                    SetNode* temp = m_root;
+                                    bool createPlaceholder = false;
+                                    while (temp && temp->m_id != placeholderID) {
+                                        if (temp->m_id != placeholderID) {
+                                            if (!disjointSet->search(temp->m_id, disjointSet->m_root)) {
+                                                createPlaceholder = true;
+                                                dSet = disjointSet;
+                                                break;
+                                            }
+                                        }
+                                        if (temp->m_left) {
+                                            temp = temp->m_left;
+                                        } else {
+                                            temp = temp->m_parent;
+                                            while(temp && !temp->m_right) {
+                                                temp = temp->m_parent;
+                                            }
+                                            if (temp) {
+                                                temp = temp->m_right;
+                                            } else {
+                                                throw ManagerStateException("Diamond set exception, placeholder error!");
+                                            }
+                                        }
+                                    }
+                                    if (createPlaceholder) {
+                                        SetNode* placeholderNode = new SetNode();
+                                        placeholderNode->m_id = placeholderID;
+                                        placeholderNode->m_guard = m_guard;
+                                        if (temp == m_root) {
+                                            m_root = placeholderNode;
+                                        } else {
+                                            placeholderNode->m_parent = temp->m_parent;
+                                        }
+                                        if (temp->m_right) {
+                                            placeholderNode->m_right = temp->m_right;
+                                            temp->m_right->m_parent = placeholderNode;
+                                            temp->m_right = temp->m_left->m_left;
+                                            if (temp->m_right) {
+                                                temp->m_right->m_parent = temp;
+                                            }
+                                        }
+                                        placeholderNode->m_left = temp;
+                                    }
+                                    break;
+                                }
+                            }
+                            place(node, m_root);
+                            if (dSet) {
+                                if (dSet->m_root) {
+                                    dSet->place(node, dSet->m_root);
+                                } else {
+                                    dSet->m_root = node;
+                                    // TODO for loop to account for supersets that may have taken this node temporarily away for add
+                                }
+                            }
+                        }
                     }
                 }
                 node->m_guard = m_guard;

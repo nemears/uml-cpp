@@ -544,6 +544,26 @@ TEST_F(SetTest, twoWayMultiSetSplitTest) {
     ASSERT_TRUE(leftSet1->contains(leftP.getID()));
     ASSERT_TRUE(leftSet2->contains(leftP.getID()));
     ASSERT_TRUE(rootSet->contains(leftP.getID()));
+
+    Package& rightP2 = m.create<Package>();
+    Package& leftP2 = m.create<Package>();
+    rightSet1->add(rightP2);
+    leftSet1->add(leftP2);
+    ASSERT_EQ(rootSet->size(), 4);
+    ASSERT_EQ(rightSet1->size(), 2);
+    ASSERT_EQ(leftSet1->size(), 2);
+    ASSERT_EQ(rightSet2->size(), 1);
+    ASSERT_EQ(leftSet2->size(), 1);
+    ASSERT_TRUE(rootSet->contains(rightP2));
+    ASSERT_TRUE(rightSet1->contains(rightP2));
+    ASSERT_FALSE(rightSet2->contains(rightP2));
+    ASSERT_FALSE(leftSet1->contains(rightP2));
+    ASSERT_FALSE(leftSet2->contains(rightP2));
+    ASSERT_TRUE(rootSet->contains(leftP2));
+    ASSERT_TRUE(leftSet1->contains(leftP2));
+    ASSERT_FALSE(leftSet2->contains(leftP2));
+    ASSERT_FALSE(rightSet1->contains(leftP2));
+    ASSERT_FALSE(rightSet2->contains(leftP2));
     delete leftSet2;
     delete rightSet2;
     delete leftSet1;

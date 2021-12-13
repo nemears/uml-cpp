@@ -252,7 +252,7 @@ namespace UML {
                 if (node->m_id == id) {
                     // found match
                     return node;
-                } else {
+                } else if (node->m_id != placeholderID) { // != is faster than == for id
                     if (node->m_right) {
                         // if there is a right there is both children filled out
                         if (id > node->m_right->m_id) {
@@ -271,8 +271,20 @@ namespace UML {
                             return 0;
                         }
                     }
+                } else {
+                    SetNode* ret = 0;
+                    if (node->m_right) {
+                        ret = search(id, node->m_right);
+                        if (ret) {
+                            return ret;
+                        }
+                    }
+                    if (node->m_left) {
+                        ret = search(id, node->m_left);
+                    }
+                    return ret;
                 }
-            }
+            };
             SetNode* search(std::string name, SetNode* node) {
                 if (node->m_name == name) {
                     return node;
@@ -372,6 +384,28 @@ namespace UML {
                         // if the root is a subsetted sequence push it under this one
                         SetNode* temp = m_root;
                         m_root = node;
+                        if (temp->m_parent) {
+                            node->m_parent = temp->m_parent;
+                            if (temp->m_parent->m_left->m_id == temp->m_id) {
+                                if (temp->m_parent->m_right) {
+                                    if (node->m_id > temp->m_parent->m_right->m_id) {
+                                        temp->m_parent->m_left = node;
+                                    } else {
+                                        temp->m_parent->m_left = temp->m_parent->m_right;
+                                        temp->m_parent->m_right = node;
+                                    }
+                                } else {
+                                    temp->m_parent->m_left = node;
+                                }
+                            } else {
+                                if (node->m_id > temp->m_parent->m_left->m_id) {
+                                    temp->m_parent->m_right = temp->m_parent->m_left;
+                                    temp->m_parent->m_left = node;
+                                } else {
+                                    temp->m_parent->m_right = node;
+                                }
+                            }
+                        }
                         place(temp, node);
                     } else {
                         place(node, m_root);

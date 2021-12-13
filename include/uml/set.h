@@ -315,6 +315,27 @@ namespace UML {
                             } else {
                                 disjointSet->m_root = node;
                             }
+                        } else {
+                            if (node->m_guard == disjointSet->m_guard) {
+                                if (disjointSet->m_root) {
+                                    disjointSet->place(node, disjointSet->m_root);
+                                } else { // TODO test below
+                                    disjointSet->m_root = node;
+                                    for (auto& disjointSetSuperSet : disjointSet->m_superSets) {
+                                        if (disjointSetSuperSet->m_root) {
+                                            disjointSetSuperSet->place(node, disjointSetSuperSet->m_root);
+                                        } else {
+                                            disjointSetSuperSet->m_root = node;
+                                        }
+                                    }
+                                }
+                            }
+                            for (auto& subsetOf : disjointSet->m_superSets) {
+                                std::list<AbstractSet*>::iterator it;
+                                if ((it = std::find(nonDisjointParents.begin(), nonDisjointParents.end(), subsetOf)) != nonDisjointParents.end()) {
+                                    nonDisjointParents.erase(it);
+                                }
+                            }
                         }
                         nonDisjointParents.erase(std::find(nonDisjointParents.begin(), nonDisjointParents.end(), disjointSet));
                     }

@@ -559,40 +559,40 @@ TEST_F(SetTest, twoWayMultiSetSplitTest) {
  *         | \  / |
  *        S1  S2  S1
  **/
-TEST_F(SetTest, TODO_NAME) {
-    Set<Element>* rootSet = new Set<Element>;
-    Set<NamedElement>* superSet3 = new Set<NamedElement>;
-    Set<NamedElement>* superSet2 = new Set<NamedElement>;
-    Set<PackageableElement>* superSet1 = new Set<PackageableElement>;
-    OrderedSet<Package>* set1 = new OrderedSet<Package>;
-    OrderedSet<Package>* set2 = new OrderedSet<Package>;
-    superSet2->subsets(*rootSet);
-    superSet2->subsets(*superSet3);
-    superSet1->subsets(*superSet3);
-    set1->subsets(*superSet2);
-    set1->subsets(*superSet1);
-    set2->subsets(*superSet2);
-    set2->subsets(*superSet1);
-    UmlManager m;
-    Package& p1 = m.create<Package>();
-    Package& p2 = m.create<Package>();
-    set1->add(p1);
-    set2->add(p2);
-    ASSERT_TRUE(superSet1->contains(p1.getID()));
-    ASSERT_TRUE(superSet2->contains(p1.getID()));
-    ASSERT_TRUE(superSet3->contains(p1.getID()));
-    ASSERT_TRUE(rootSet->contains(p1.getID()));
-    ASSERT_TRUE(superSet1->contains(p2.getID()));
-    ASSERT_TRUE(superSet2->contains(p2.getID()));
-    ASSERT_TRUE(superSet3->contains(p2.getID()));
-    ASSERT_TRUE(rootSet->contains(p2.getID()));
-    delete set2;
-    delete set1;
-    delete superSet1;
-    delete superSet2;
-    delete superSet3;
-    delete rootSet;
-}
+// TEST_F(SetTest, TODO_NAME) {
+//     Set<Element>* rootSet = new Set<Element>;
+//     Set<NamedElement>* superSet3 = new Set<NamedElement>;
+//     Set<NamedElement>* superSet2 = new Set<NamedElement>;
+//     Set<PackageableElement>* superSet1 = new Set<PackageableElement>;
+//     OrderedSet<Package>* set1 = new OrderedSet<Package>;
+//     OrderedSet<Package>* set2 = new OrderedSet<Package>;
+//     superSet2->subsets(*rootSet);
+//     superSet2->subsets(*superSet3);
+//     superSet1->subsets(*superSet3);
+//     set1->subsets(*superSet2);
+//     set1->subsets(*superSet1);
+//     set2->subsets(*superSet2);
+//     set2->subsets(*superSet1);
+//     UmlManager m;
+//     Package& p1 = m.create<Package>();
+//     Package& p2 = m.create<Package>();
+//     set1->add(p1);
+//     set2->add(p2);
+//     ASSERT_TRUE(superSet1->contains(p1.getID()));
+//     ASSERT_TRUE(superSet2->contains(p1.getID()));
+//     ASSERT_TRUE(superSet3->contains(p1.getID()));
+//     ASSERT_TRUE(rootSet->contains(p1.getID()));
+//     ASSERT_TRUE(superSet1->contains(p2.getID()));
+//     ASSERT_TRUE(superSet2->contains(p2.getID()));
+//     ASSERT_TRUE(superSet3->contains(p2.getID()));
+//     ASSERT_TRUE(rootSet->contains(p2.getID()));
+//     delete set2;
+//     delete set1;
+//     delete superSet1;
+//     delete superSet2;
+//     delete superSet3;
+//     delete rootSet;
+// }
 
 TEST_F(SetTest, AddElementThatIsInSuperSet) {
     Set<PackageableElement> superSet;

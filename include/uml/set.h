@@ -456,11 +456,11 @@ namespace UML {
                                             }
                                         }
                                         placeholderNode->m_left = temp;
+                                        temp->m_parent = placeholderNode;
                                     }
                                     break;
                                 }
                             }
-                            place(node, m_root);
                             if (dSet) {
                                 if (dSet->m_root) {
                                     dSet->place(node, dSet->m_root);
@@ -469,6 +469,7 @@ namespace UML {
                                     // TODO for loop to account for supersets that may have taken this node temporarily away for add
                                 }
                             }
+                            place(node, m_root);
                         }
                     }
                 }
@@ -1067,7 +1068,9 @@ namespace UML {
                                     // set supersets root to 0 if it is the node
                                     if (set->m_root->m_id == curr->m_id && set->m_root == curr) {
                                         set->m_root = 0;
-                                    } else if (currParent && set->m_root && currParent != set->search(currParent->m_id, set->m_root)) {
+                                    } else if (currParent && 
+                                               set->m_root && 
+                                               currParent != set->search(currParent->m_id, set->m_root)) {
                                         // this set owns this element through a different parent
                                         // we must find it and set the pointer to curr to 0
                                         SetNode* temp = set->m_root;
@@ -1081,7 +1084,7 @@ namespace UML {
                                             } else if (temp->m_left) {
                                                 temp = temp->m_left;
                                             } else {
-                                                std::cerr << "could not find second parent for setNode with id: " << curr->m_id.string() << std::endl;
+                                                // this is probably a diamond subset, we wont find it
                                                 temp = 0;
                                                 break;
                                             }
@@ -1104,7 +1107,7 @@ namespace UML {
                                 }
                                 delete curr;
                                 curr =  currParent;
-                                if (curr && curr->m_id == placeholderID) {
+                                if (curr && curr->m_id == placeholderID && curr->m_guard < m_guard) {
                                     break;
                                 }
                             } else {

@@ -96,7 +96,6 @@ namespace UML {
             };
             SetNode* m_root = 0;
             size_t m_guard = 0;
-            size_t m_guardDenominator = 1;
             std::list<AbstractSet*> m_superSets;
             std::vector<AbstractSet*> m_subSets;
             std::vector<AbstractSet*> m_redefines;
@@ -218,10 +217,10 @@ namespace UML {
                     // prefer placement to left
                     if (parent->m_right) {
                         // both children are populated, determine where to place
-                        if (node->m_id > parent->m_right->m_id && parent->m_left->m_guard <= m_guard && parent->m_left->m_guard % m_guardDenominator == 0) {
+                        if (node->m_id > parent->m_right->m_id && parent->m_left->m_guard <= m_guard) {
                             // place to left if greater than right
                             place(node, parent->m_left);
-                        } else if (parent->m_right->m_guard <= m_guard && parent->m_right->m_guard % m_guardDenominator == 0) {
+                        } else if (parent->m_right->m_guard <= m_guard) {
                             // place to right if less than right
                             place(node, parent->m_right);
                         } else {
@@ -1179,7 +1178,7 @@ namespace UML {
                     for (auto& set : m_superSets) {
                         // compare and update guard of superset to previous supersets
                         if (set != &subsetOf && set->m_guard <= subsetOf.m_guard && std::find(m_disjointSuperSets.begin(), m_disjointSuperSets.end(), set) == m_disjointSuperSets.end()) {
-                            subsetOf.m_guard = set->m_guard + subsetOf.m_guardDenominator;
+                            subsetOf.m_guard = set->m_guard + 1;
                         }
                     }
                     if (!m_oppositeFunctor && subsetOf.m_oppositeFunctor && m_el) {
@@ -1199,7 +1198,14 @@ namespace UML {
                         this->subsets(*static_cast<Set*>(set));
                     }
                     if (m_guard <= subsetOf.m_guard) {
-                        m_guard = subsetOf.m_guard + m_guardDenominator;
+                        m_guard = subsetOf.m_guard + 1;
+                    }
+                    for (auto& set : subsetOf.m_subSets) {
+                        if (set != this) {
+                            if (set->m_guard > m_guard) {
+                                m_guard = set->m_guard + 1;
+                            }
+                        }
                     }
                     for (const auto& set : subsetOf.m_addFunctors) {
                         if (!m_addFunctors.count(set)) {

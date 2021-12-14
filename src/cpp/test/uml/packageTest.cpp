@@ -90,8 +90,8 @@ TEST_F(PackageTest, packageMergeTest) {
     Package p = mm.create<Package>();
     PackageMerge m = mm.create<PackageMerge>();
     Package mp = mm.create<Package>();
-    ASSERT_NO_THROW(m.setMergedPackage(&mp));
-    ASSERT_NO_THROW(p.getPackageMerge().add(m));
+    m.setMergedPackage(&mp);
+    p.getPackageMerge().add(m);
     ASSERT_EQ(p.getPackageMerge().size(), 1);
     ASSERT_EQ(p.getPackageMerge().front(), m);
     // ASSERT_EQ(p.getDirectedRelationships().size(), 1);

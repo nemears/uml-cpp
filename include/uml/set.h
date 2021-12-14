@@ -322,6 +322,26 @@ namespace UML {
                         if (node->m_guard == m_guard) {
                             // adding new element
                             if (disjointSet->m_root) {
+                                // determine if we need a placeholder to keep subsets separate
+                                bool createPlaceholder = false;
+                                int placeHolderGuard = 0;
+                                for (auto& set : disjointSet->m_subSets) {
+                                    if (set != this) {
+                                        if (std::find(set->m_subSets.begin(), set->m_subSets.end(), this) == set->m_subSets.end()) {
+                                            createPlaceholder = true;
+                                            placeHolderGuard = disjointSet->m_guard;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (createPlaceholder) {
+                                    // create a "placeholder" node to balance subsets so they dont overlap in even tree
+                                    SetNode* temp = disjointSet->m_root;
+                                    disjointSet->m_root = new SetNode();
+                                    disjointSet->m_root->m_id = placeholderID;
+                                    disjointSet->m_root->m_guard = placeHolderGuard;
+                                    disjointSet->place(temp, disjointSet->m_root);
+                                }
                                 disjointSet->place(node, disjointSet->m_root);
                             } else {
                                 disjointSet->m_root = node;

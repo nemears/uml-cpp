@@ -1069,8 +1069,8 @@ namespace UML {
                                     if (set->m_root->m_id == curr->m_id && set->m_root == curr) {
                                         set->m_root = 0;
                                     } else if (currParent && 
-                                               set->m_root && 
-                                               currParent != set->search(currParent->m_id, set->m_root)) {
+                                            set->m_root && 
+                                            currParent != set->search(currParent->m_id, set->m_root)) {
                                         // this set owns this element through a different parent
                                         // we must find it and set the pointer to curr to 0
                                         SetNode* temp = set->m_root;
@@ -1178,7 +1178,7 @@ namespace UML {
                     subsetOf.m_subSets.push_back(this);
                     for (auto& set : m_superSets) {
                         // compare and update guard of superset to previous supersets
-                        if (set != &subsetOf && set->m_guard <= subsetOf.m_guard) {
+                        if (set != &subsetOf && set->m_guard <= subsetOf.m_guard && std::find(m_disjointSuperSets.begin(), m_disjointSuperSets.end(), set) == m_disjointSuperSets.end()) {
                             subsetOf.m_guard = set->m_guard + subsetOf.m_guardDenominator;
                         }
                     }

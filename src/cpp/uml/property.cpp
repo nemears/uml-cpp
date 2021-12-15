@@ -27,6 +27,7 @@ void Property::AddRedefinitionContextFunctor::operator()(Element& el) const {
     if (me.hasFeaturingClassifier() && !me.m_redefinitionContext.contains(me.getFeaturingClassifierID())) {
         m_el.as<Property>().m_redefinitionContext.nonOppositeAdd(m_el.as<Property>().getFeaturingClassifierRef());
     }
+    el.setReference(&m_el);
 }
 
 void Property::referencingReleased(ID id) {

@@ -160,72 +160,72 @@ TEST_F(PropertyTest, redefinePropertyTest) {
 //   ASSERT_THROW(prop.getRedefinedProperties().add(notRelated), ImproperRedefinitionException);
 }
 
-// TEST_F(PropertyTest, copyAndEditTest) {
-//     UmlManager m;
-//     Class& gen = m.create<Class>();
-//     Class& spec = m.create<Class>();
-//     Property& og = m.create<Property>();
-//     Property& red = m.create<Property>();
-//     Generalization generalization = m.create<Generalization>();
-//     Package& pckg = m.create<Package>();
-//     Class& type = m.create<Class>();
-//     InstanceSpecification& typeInst = m.create<InstanceSpecification>();
-//     InstanceValue& val = m.create<InstanceValue>();
-//     gen.getOwnedAttributes().add(og);
-//     spec.getOwnedAttributes().add(red);
-//     red.getRedefinedProperties().add(og);
-//     red.setType(&type);
-//     typeInst.setClassifier(&type);
-//     val.setInstance(&typeInst);
-//     red.setDefaultValue(&val);
-//     og.setType(&type);
-//     pckg.getPackagedElements().add(gen, spec, type, typeInst);
-//     Property red2 = red;
-//     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(red2, red, &Property::getDefaultValue, &TypedElement::getType, &Property::getClass, &Property::getClassifier,& Property::getStructuredClassifier, &Feature::getFeaturingClassifier, &NamedElement::getNamespace, &Element::getOwner));
-//     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(red2, red, &Property::getRedefinedProperties, &RedefinableElement::getRedefinedElements, &RedefinableElement::getRedefinitionContext, &NamedElement::getMemberNamespace));
-//     red2.getRedefinedProperties().remove(og);
-//     red2.setDefaultValue(0);
-//     red2.setType(0);
-//     spec.getOwnedAttributes().remove(red2);
-//     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(red2, red, &Property::getDefaultValue, &TypedElement::getType, &Property::getClass, &Property::getClassifier, &Property::getStructuredClassifier, &Feature::getFeaturingClassifier, &NamedElement::getNamespace, &Element::getOwner));
-//     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(red2, red, &Property::getRedefinedProperties, &RedefinableElement::getRedefinedElements, &RedefinableElement::getRedefinitionContext, &NamedElement::getMemberNamespace));
-//     red2.setType(&type);
-//     red2.setDefaultValue(&val);
-//     spec.getOwnedAttributes().add(red2);
-//     red2.getRedefinedProperties().add(og);
-//     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(red2, red, &Property::getDefaultValue, &TypedElement::getType, &Property::getClass, &Property::getClassifier, &Property::getStructuredClassifier, &Feature::getFeaturingClassifier, &NamedElement::getNamespace, &Element::getOwner));
-//     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(red2, red, &Property::getRedefinedProperties, &RedefinableElement::getRedefinedElements, &RedefinableElement::getRedefinitionContext, &NamedElement::getMemberNamespace));
-// }
+TEST_F(PropertyTest, copyAndEditTest) {
+    UmlManager m;
+    Class& gen = m.create<Class>();
+    Class& spec = m.create<Class>();
+    Property& og = m.create<Property>();
+    Property& red = m.create<Property>();
+    Generalization generalization = m.create<Generalization>();
+    Package& pckg = m.create<Package>();
+    Class& type = m.create<Class>();
+    InstanceSpecification& typeInst = m.create<InstanceSpecification>();
+    InstanceValue& val = m.create<InstanceValue>();
+    gen.getOwnedAttributes().add(og);
+    spec.getOwnedAttributes().add(red);
+    red.getRedefinedProperties().add(og);
+    red.setType(&type);
+    typeInst.getClassifiers().add(type);
+    val.setInstance(&typeInst);
+    red.setDefaultValue(&val);
+    og.setType(&type);
+    pckg.getPackagedElements().add(gen, spec, type, typeInst);
+    Property red2 = red;
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(red2, red, &Property::getDefaultValue, &TypedElement::getType, &Property::getClass, &Feature::getFeaturingClassifier, &NamedElement::getNamespace, &Element::getOwner));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(red2, red, &Property::getRedefinedProperties, &RedefinableElement::getRedefinedElements, &RedefinableElement::getRedefinitionContext));
+    red2.getRedefinedProperties().remove(og);
+    red2.setDefaultValue(0);
+    red2.setType(0);
+    spec.getOwnedAttributes().remove(red2);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(red2, red, &Property::getDefaultValue, &TypedElement::getType, &Property::getClass, &Feature::getFeaturingClassifier, &NamedElement::getNamespace, &Element::getOwner));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(red2, red, &Property::getRedefinedProperties, &RedefinableElement::getRedefinedElements, &RedefinableElement::getRedefinitionContext));
+    red2.setType(&type);
+    red2.setDefaultValue(&val);
+    spec.getOwnedAttributes().add(red2);
+    red2.getRedefinedProperties().add(og);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(red2, red, &Property::getDefaultValue, &TypedElement::getType, &Property::getClass, &Feature::getFeaturingClassifier, &NamedElement::getNamespace, &Element::getOwner));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(red2, red, &Property::getRedefinedProperties, &RedefinableElement::getRedefinedElements, &RedefinableElement::getRedefinitionContext));
+}
 
-// TEST_F(PropertyTest, reindexRedefinedPropertyTest) {
-//     UmlManager m;
-//     Class b = m.create<Class>();
-//     Class s = m.create<Class>();
-//     Generalization g = m.create<Generalization>();
-//     Property red = m.create<Property>();
-//     Property ov = m.create<Property>(); // override
-//     Package root = m.create<Package>();
-//     s.getGeneralizations().add(g);
-//     g.setGeneral(&b);
-//     b.getOwnedAttributes().add(red);
-//     s.getOwnedAttributes().add(ov);
-//     root.getPackagedElements().add(b, s);
-//     ov.getRedefinedProperties().add(red);
-//     ID id = ID::fromString("cLvWpn5ofnVR_f2lob3ofVyLu0Fc");
-//     red.setID(id);
-//     m.setRoot(&root);
-//     ASSERT_EQ(ov.getRedefinedProperties().size(), 1);
-//     ASSERT_EQ(ov.getRedefinedProperties().front().getID(), id);
-//     ASSERT_NO_THROW(ov.getRedefinedProperties().get(id));
-//     ASSERT_EQ(ov.getRedefinedElements().size(), 1);
-//     ASSERT_EQ(ov.getRedefinedElements().front().getID(), id);
-//     ASSERT_NO_THROW(ov.getRedefinedElements().get(id));
-//     m.mount(ymlPath + "propertyTests");
-//     m.release(red);
-//     ASSERT_EQ(ov.getRedefinedProperties().size(), 1);
-//     ASSERT_EQ(ov.getRedefinedProperties().front().getID(), id);
-//     ASSERT_NO_THROW(ov.getRedefinedProperties().get(id));
-//     ASSERT_EQ(ov.getRedefinedElements().size(), 1);
-//     ASSERT_EQ(ov.getRedefinedElements().front().getID(), id);
-//     ASSERT_NO_THROW(ov.getRedefinedElements().get(id));
-// }
+TEST_F(PropertyTest, reindexRedefinedPropertyTest) {
+    UmlManager m;
+    Class b = m.create<Class>();
+    Class s = m.create<Class>();
+    Generalization g = m.create<Generalization>();
+    Property red = m.create<Property>();
+    Property ov = m.create<Property>(); // override
+    Package root = m.create<Package>();
+    s.getGeneralizations().add(g);
+    g.setGeneral(&b);
+    b.getOwnedAttributes().add(red);
+    s.getOwnedAttributes().add(ov);
+    root.getPackagedElements().add(b, s);
+    ov.getRedefinedProperties().add(red);
+    ID id = ID::fromString("cLvWpn5ofnVR_f2lob3ofVyLu0Fc");
+    red.setID(id);
+    m.setRoot(&root);
+    ASSERT_EQ(ov.getRedefinedProperties().size(), 1);
+    ASSERT_EQ(ov.getRedefinedProperties().front().getID(), id);
+    ASSERT_NO_THROW(ov.getRedefinedProperties().get(id));
+    ASSERT_EQ(ov.getRedefinedElements().size(), 1);
+    ASSERT_EQ(ov.getRedefinedElements().front().getID(), id);
+    ASSERT_NO_THROW(ov.getRedefinedElements().get(id));
+    // m.mount(ymlPath + "propertyTests");
+    // m.release(red);
+    // ASSERT_EQ(ov.getRedefinedProperties().size(), 1);
+    // ASSERT_EQ(ov.getRedefinedProperties().front().getID(), id);
+    // ASSERT_NO_THROW(ov.getRedefinedProperties().get(id));
+    // ASSERT_EQ(ov.getRedefinedElements().size(), 1);
+    // ASSERT_EQ(ov.getRedefinedElements().front().getID(), id);
+    // ASSERT_NO_THROW(ov.getRedefinedElements().get(id));
+}

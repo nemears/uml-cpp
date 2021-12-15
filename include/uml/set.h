@@ -360,15 +360,24 @@ namespace UML {
                                         }
                                     }
                                 }
-                            }
-                            for (auto& subsetOf : disjointSet->m_superSets) {
-                                std::list<AbstractSet*>::iterator it;
-                                if ((it = std::find(nonDisjointParents.begin(), nonDisjointParents.end(), subsetOf)) != nonDisjointParents.end()) {
-                                    nonDisjointParents.erase(it);
+                                for (auto& subsetOf : disjointSet->m_superSets) {
+                                    if (!subsetOf->m_root) {
+                                        subsetOf->m_root = node;
+                                    }
+                                    std::list<AbstractSet*>::iterator it;
+                                    if ((it = std::find(nonDisjointParents.begin(), nonDisjointParents.end(), subsetOf)) != nonDisjointParents.end()) {
+                                        nonDisjointParents.erase(it);
+                                    }
                                 }
                             }
+                            if (!disjointSet->m_root) {
+                                disjointSet->m_root = node;
+                            }
                         }
-                        nonDisjointParents.erase(std::find(nonDisjointParents.begin(), nonDisjointParents.end(), disjointSet));
+                        std::list<AbstractSet*>::iterator it;
+                        if ((it = std::find(nonDisjointParents.begin(), nonDisjointParents.end(), disjointSet)) != nonDisjointParents.end()) {
+                            nonDisjointParents.erase(it);   
+                        }
                     }
                     // handle supersets
                     for (auto& subsetOf : nonDisjointParents) {

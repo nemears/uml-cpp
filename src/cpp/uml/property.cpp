@@ -25,9 +25,17 @@ void Property::RemoveEndTypeFunctor::operator()(Element& el) const {
 void Property::AddRedefinitionContextFunctor::operator()(Element& el) const {
     Property& me = m_el.as<Property>();
     if (me.hasFeaturingClassifier() && !me.m_redefinitionContext.contains(me.getFeaturingClassifierID())) {
-        m_el.as<Property>().m_redefinitionContext.nonOppositeAdd(m_el.as<Property>().getFeaturingClassifierRef());
+        me.m_redefinitionContext.nonOppositeAdd(me.getFeaturingClassifierRef());
     }
     el.setReference(&m_el);
+}
+
+void Property::RemoveRedefinitionContextFunctor::operator()(Element& el) const {
+    Property& me = m_el.as<Property>();
+    if (me.m_redefinedElement.empty() && me.hasFeaturingClassifier() && !me.m_redefinitionContext.empty()) {
+        me.m_redefinitionContext.nonOppositeRemove(me.getFeaturingClassifierID());
+    }
+    el.removeReference(m_el.getID());
 }
 
 void Property::referencingReleased(ID id) {
@@ -127,6 +135,7 @@ void Property::init() {
     m_redefinedProperties.subsets(m_redefinedElement);
     m_redefinedProperties.m_signature = &Property::getRedefinedProperties;
     m_redefinedProperties.m_addFunctors.insert(new AddRedefinitionContextFunctor(this));
+    m_redefinedProperties.m_removeFunctors.insert(new RemoveRedefinitionContextFunctor(this));
 }
 
 void Property::copy(const Property& rhs) {

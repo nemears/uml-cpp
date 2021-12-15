@@ -66,6 +66,12 @@ namespace UML{
                 public:
                     AddRedefinitionContextFunctor(Element* el) : SetFunctor(el) {};
             };
+            class RemoveRedefinitionContextFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    RemoveRedefinitionContextFunctor(Element* el) : SetFunctor(el) {};
+            };
             void setComposite(bool composite);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;

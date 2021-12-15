@@ -46,7 +46,7 @@ namespace UML{
             Singleton<Association, Property> m_association = Singleton<Association, Property>(this);
             Singleton<Association, Property> m_owningAssociation = Singleton<Association, Property>(this);
             // Singleton<Artifact, Property> m_artifact = Singleton<Artifact, Property>(this);
-            // Sequence<Property> m_redefinedProperties = Sequence<Property>(this);
+            Set<Property, Property> m_redefinedProperties = Set<Property, Property>(this);
             // void reindexName(std::string oldName, std::string newName) override;
             class AddEndTypeFunctor : public SetFunctor {
                 private:
@@ -59,6 +59,12 @@ namespace UML{
                     void operator()(Element& el) const override;
                 public:
                     RemoveEndTypeFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class AddRedefinitionContextFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    AddRedefinitionContextFunctor(Element* el) : SetFunctor(el) {};
             };
             void setComposite(bool composite);
             void referencingReleased(ID id) override;
@@ -116,7 +122,7 @@ namespace UML{
             // bool hasArtifact() const;
             // void setArtifact(Artifact* artifact);
             // void setArtifact(Artifact& artifact);
-            // Sequence<Property>& getRedefinedProperties();
+            Set<Property, Property>& getRedefinedProperties();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PROPERTY;

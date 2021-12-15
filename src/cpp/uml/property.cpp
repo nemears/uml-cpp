@@ -22,6 +22,13 @@ void Property::RemoveEndTypeFunctor::operator()(Element& el) const {
     }
 }
 
+void Property::AddRedefinitionContextFunctor::operator()(Element& el) const {
+    Property& me = m_el.as<Property>();
+    if (me.hasFeaturingClassifier() && !me.m_redefinitionContext.contains(me.getFeaturingClassifierID())) {
+        m_el.as<Property>().m_redefinitionContext.nonOppositeAdd(m_el.as<Property>().getFeaturingClassifierRef());
+    }
+}
+
 void Property::referencingReleased(ID id) {
     StructuralFeature::referencingReleased(id);
     m_defaultValue.release(id);
@@ -30,7 +37,7 @@ void Property::referencingReleased(ID id) {
     // m_artifact.release(id);
     m_association.release(id);
     m_owningAssociation.release(id);
-    // m_redefinedProperties.elementReleased(id, &Property::getRedefinedProperties);
+    m_redefinedProperties.release(id);
 }
 
 void Property::referenceReindexed(ID oldID, ID newID) {
@@ -41,7 +48,7 @@ void Property::referenceReindexed(ID oldID, ID newID) {
     // m_artifact.reindex(oldID, newID);
     m_association.reindex(oldID, newID);
     m_owningAssociation.reindex(oldID, newID);
-    // m_redefinedProperties.reindex(oldID, newID, &Property::getRedefinedProperties);
+    m_redefinedProperties.reindex(oldID, newID);
 }
 
 void Property::restoreReferences() {
@@ -73,7 +80,7 @@ void Property::referenceErased(ID id) {
     m_association.eraseElement(id);
     m_owningAssociation.eraseElement(id);
     // m_artifact.elementErased(id);
-    // m_redefinedProperties.elementErased(id);
+    m_redefinedProperties.eraseElement(id);
 }
 
 Set<ValueSpecification, Property>& Property::getDefaultValueSingleton() {
@@ -116,6 +123,9 @@ void Property::init() {
     m_owningAssociation.m_signature = &Property::getOwningAssociationSingleton;
     m_type.m_addFunctors.insert(new AddEndTypeFunctor(this));
     m_type.m_removeFunctors.insert(new RemoveEndTypeFunctor(this));
+    m_redefinedProperties.subsets(m_redefinedElement);
+    m_redefinedProperties.m_signature = &Property::getRedefinedProperties;
+    m_redefinedProperties.m_addFunctors.insert(new AddRedefinitionContextFunctor(this));
 }
 
 void Property::copy(const Property& rhs) {
@@ -124,6 +134,7 @@ void Property::copy(const Property& rhs) {
     m_dataType =  rhs.m_dataType;
     m_composite = rhs.m_composite;
     m_aggregation = rhs.m_aggregation;
+    m_redefinedProperties = rhs.m_redefinedProperties;
 }
 
 Property::Property() : Element(ElementType::PROPERTY) {
@@ -136,6 +147,7 @@ Property::Property(const Property& rhs) : Element(rhs, ElementType::PROPERTY) {
     NamedElement::copy(rhs);
     TypedElement::copy(rhs);
     MultiplicityElement::copy(rhs);
+    RedefinableElement::copy(rhs);
     Feature::copy(rhs);
     copy(rhs);
 }
@@ -326,9 +338,9 @@ void Property::setOwningAssociation(Association& association) {
 //     m_artifact.set(artifact);
 // }
 
-// Sequence<Property>& Property::getRedefinedProperties() {
-//     return m_redefinedProperties;
-// }
+Set<Property, Property>& Property::getRedefinedProperties() {
+    return m_redefinedProperties;
+}
 
 bool Property::isSubClassOf(ElementType eType) const {
     bool ret = StructuralFeature::isSubClassOf(eType);

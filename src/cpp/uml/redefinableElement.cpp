@@ -30,6 +30,11 @@ void RedefinableElement::init() {
     m_redefinitionContext.m_signature = &RedefinableElement::getRedefinitionContext;
 }
 
+void RedefinableElement::copy(const RedefinableElement& rhs) {
+    m_redefinedElement = rhs.m_redefinedElement;
+    m_redefinitionContext = rhs.m_redefinitionContext;
+}
+
 RedefinableElement::RedefinableElement() : Element(ElementType::REDEFINABLE_ELEMENT) {
     init();
 }

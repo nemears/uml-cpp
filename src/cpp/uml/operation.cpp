@@ -78,6 +78,7 @@ Operation::Operation(const Operation& rhs) : Element(rhs, ElementType::OPERATION
     init();
     Element::copy(rhs);
     NamedElement::copy(rhs);
+    RedefinableElement::copy(rhs);
     Feature::copy(rhs);
     BehavioralFeature::copy(rhs);
     TemplateableElement::copy(rhs);

@@ -59,14 +59,14 @@ void Class::init() {
     m_ownedOperations.m_signature = &Class::getOwnedOperationsSet;
     m_nestedClassifiers.subsets(m_ownedMembers);
     m_nestedClassifiers.m_signature = &Class::getNestedClassifiersSet;
+
+    m_redefinedElement.subsets(m_ownedOperations);
 }
 
 void Class::copy(const Class& rhs) {
     m_classOwnedAttrubutes = rhs.m_classOwnedAttrubutes;
     m_ownedOperations = rhs.m_ownedOperations;
     m_nestedClassifiers = rhs.m_nestedClassifiers;
-
-    m_redefinedElement.subsets(m_ownedOperations);
 }
 
 Class::Class() : Element(ElementType::CLASS) {
@@ -85,6 +85,7 @@ Class::Class(const Class& rhs) : Element(rhs, ElementType::CLASS) {
     ParameterableElement::copy(rhs);
     PackageableElement::copy(rhs);
     TemplateableElement::copy(rhs);
+    RedefinableElement::copy(rhs);
     Classifier::copy(rhs);
     StructuredClassifier::copy(rhs);
     BehavioredClassifier::copy(rhs);

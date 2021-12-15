@@ -156,7 +156,7 @@ void Classifier::init() {
     m_inheritedMembers.m_signature = &Classifier::getInheritedMembers;
     m_inheritedMembers.m_readOnly = true;
 
-    // m_redefinedElement.subsets(m_attributes);
+    m_redefinedElement.subsets(m_attributes);
 }
 
 void Classifier::copy(const Classifier& rhs) {

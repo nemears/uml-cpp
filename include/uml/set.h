@@ -1180,11 +1180,16 @@ namespace UML {
                     }
                 }
                 for (auto& set : m_redefines) {
-                    Set* rSet = static_cast<Set*>(set);
                     std::vector<AbstractSet*>::iterator it;
-                    if ((it = std::find(rSet->m_redefines.begin(), rSet->m_redefines.end(), this)) != rSet->m_redefines.end()) {
-                        rSet->m_redefines.erase(it);
+                    if ((it = std::find(set->m_redefines.begin(), set->m_redefines.end(), this)) != set->m_redefines.end()) {
+                        set->m_redefines.erase(it);
                     }
+                }
+                for (auto& subsetOf : m_superSets) {
+                    subsetOf->m_subSets.erase(std::find(subsetOf->m_subSets.begin(), subsetOf->m_subSets.end(), this));
+                }
+                for (auto& subset : m_subSets) {
+                    subset->m_superSets.erase(std::find(subset->m_superSets.begin(), subset->m_superSets.end(), this));
                 }
             };
             /**

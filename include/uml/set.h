@@ -151,6 +151,7 @@ namespace UML {
     class RedefinableElement;
     class Stereotype;
     class Profile;
+    class ProfileApplication;
 
     /**
      * This container is based around a weighted binary search tree
@@ -203,6 +204,7 @@ namespace UML {
         friend class RedefinableElement;
         friend class Stereotype;
         friend class Profile;
+        friend class ProfileApplication;
 
         protected:
             bool m_rootRedefinedSet = true;

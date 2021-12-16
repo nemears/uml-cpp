@@ -142,43 +142,43 @@ TEST_F(PackageTest, removeOwnedStereotype) {
     ASSERT_EQ(p.getPackagedElements().size(), 0);
 }
 
-// TEST_F(PackageTest, packageFullCopyAndEditTest) {
-//     UmlManager m;
-//     Package& root = m.create<Package>();
-//     Package& c1 = m.create<Package>();
-//     Package& merged = m.create<Package>();
-//     Profile& profile = m.create<Profile>();
-//     PackageMerge& merge = m.create<PackageMerge>();
-//     ProfileApplication& profileApplication = m.create<ProfileApplication>();
-//     Stereotype& stereotype = m.create<Stereotype>();
-//     c1.getOwnedStereotypes().add(stereotype);
-//     merge.setMergedPackage(&merged);
-//     c1.getPackageMerge().add(merge);
-//     profileApplication.setAppliedProfile(&profile);
-//     c1.getProfileApplications().add(profileApplication);
-//     root.getPackagedElements().add(c1, merged, profile);
-//     Package& copy = c1;
-//     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c1, copy, &Package::getPackagedElements, &Package::getPackageMerge, &Package::getProfileApplications, &Package::getOwnedStereotypes, &Namespace::getOwnedMembers, &Namespace::getMembers, &NamedElement::getMemberNamespace, &Element::getOwnedElements));
-//     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c1, copy, &NamedElement::getNamespace, &Element::getOwner));
-//     copy.getOwnedStereotypes().remove(stereotype);
-//     copy.getPackageMerge().remove(merge);
-//     copy.getProfileApplications().remove(profileApplication);
-//     root.getPackagedElements().remove(copy);
-//     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c1, copy, &Package::getPackagedElements, &Package::getPackageMerge, &Package::getProfileApplications, &Package::getOwnedStereotypes, &Namespace::getOwnedMembers, &Namespace::getMembers, &NamedElement::getMemberNamespace, &Element::getOwnedElements));
-//     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c1, copy, &NamedElement::getNamespace, &Element::getOwner));
-//     copy.getOwnedStereotypes().add(stereotype);
-//     copy.getPackageMerge().add(merge);
-//     copy.getProfileApplications().add(profileApplication);
-//     root.getPackagedElements().add(copy);
-//     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c1, copy, &Package::getPackagedElements, &Package::getPackageMerge, &Package::getProfileApplications, &Package::getOwnedStereotypes, &Namespace::getOwnedMembers, &Namespace::getMembers, &NamedElement::getMemberNamespace, &Element::getOwnedElements));
-//     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c1, copy, &NamedElement::getNamespace, &Element::getOwner));
-//     c1.getOwnedStereotypes().remove(stereotype);
-//     c1.getPackageMerge().remove(merge);
-//     c1.getProfileApplications().remove(profileApplication);
-//     c1.setOwningPackage(0);
-//     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c1, copy, &Package::getPackagedElements, &Package::getPackageMerge, &Package::getProfileApplications, &Package::getOwnedStereotypes, &Namespace::getOwnedMembers, &Namespace::getMembers, &NamedElement::getMemberNamespace, &Element::getOwnedElements));
-//     ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c1, copy, &NamedElement::getNamespace, &Element::getOwner));
-// }
+TEST_F(PackageTest, packageFullCopyAndEditTest) {
+    UmlManager m;
+    Package& root = m.create<Package>();
+    Package& c1 = m.create<Package>();
+    Package& merged = m.create<Package>();
+    Profile& profile = m.create<Profile>();
+    PackageMerge& merge = m.create<PackageMerge>();
+    ProfileApplication& profileApplication = m.create<ProfileApplication>();
+    Stereotype& stereotype = m.create<Stereotype>();
+    c1.getOwnedStereotypes().add(stereotype);
+    merge.setMergedPackage(&merged);
+    c1.getPackageMerge().add(merge);
+    profileApplication.setAppliedProfile(&profile);
+    c1.getProfileApplications().add(profileApplication);
+    root.getPackagedElements().add(c1, merged, profile);
+    Package& copy = c1;
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c1, copy, &Package::getPackagedElements, &Package::getPackageMerge, &Package::getProfileApplications, &Package::getOwnedStereotypes, &Namespace::getOwnedMembers, &Namespace::getMembers, &Element::getOwnedElements));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c1, copy, &NamedElement::getNamespace, &Element::getOwner));
+    copy.getOwnedStereotypes().remove(stereotype);
+    copy.getPackageMerge().remove(merge);
+    copy.getProfileApplications().remove(profileApplication);
+    root.getPackagedElements().remove(copy);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c1, copy, &Package::getPackagedElements, &Package::getPackageMerge, &Package::getProfileApplications, &Package::getOwnedStereotypes, &Namespace::getOwnedMembers, &Namespace::getMembers, &Element::getOwnedElements));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c1, copy, &NamedElement::getNamespace, &Element::getOwner));
+    copy.getOwnedStereotypes().add(stereotype);
+    copy.getPackageMerge().add(merge);
+    copy.getProfileApplications().add(profileApplication);
+    root.getPackagedElements().add(copy);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c1, copy, &Package::getPackagedElements, &Package::getPackageMerge, &Package::getProfileApplications, &Package::getOwnedStereotypes, &Namespace::getOwnedMembers, &Namespace::getMembers, &Element::getOwnedElements));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c1, copy, &NamedElement::getNamespace, &Element::getOwner));
+    c1.getOwnedStereotypes().remove(stereotype);
+    c1.getPackageMerge().remove(merge);
+    c1.getProfileApplications().remove(profileApplication);
+    c1.setOwningPackage(0);
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c1, copy, &Package::getPackagedElements, &Package::getPackageMerge, &Package::getProfileApplications, &Package::getOwnedStereotypes, &Namespace::getOwnedMembers, &Namespace::getMembers, &Element::getOwnedElements));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c1, copy, &NamedElement::getNamespace, &Element::getOwner));
+}
 
 TEST_F(PackageTest, erasePackagedElementTest) {
     UmlManager m;

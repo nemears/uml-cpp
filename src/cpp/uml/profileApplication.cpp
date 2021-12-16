@@ -1,37 +1,8 @@
 #include "uml/profileApplication.h"
 #include "uml/profile.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
-
-void ProfileApplication::RemoveAppliedProfileProcedure::operator()(Profile* el) const {
-    if (m_me->getTargets().count(el->getID())) {
-        m_me->getTargets().remove(*el);
-    }
-}
-
-void ProfileApplication::AddAppliedProfileProcedure::operator()(Profile* el) const {
-    if (!m_me->getTargets().count(el->getID())) {
-        m_me->getTargets().add(*el);
-    }
-}
-
-void ProfileApplication::RemoveApplyingPackageProcedure::operator()(Package* el) const {
-    if (m_me->getSources().count(el->getID())) {
-        m_me->getSources().remove(*el);
-    }
-    if (el->getProfileApplications().count(m_me->getID())) {
-        el->getProfileApplications().remove(*m_me);
-    }
-}
-
-void ProfileApplication::AddApplyingPackageProcedure::operator()(Package* el) const {
-    if (!m_me->getSources().count(el->getID())) {
-        m_me->getSources().add(*el);
-    }
-    if (!el->getProfileApplications().count(m_me->getID())) {
-        el->getProfileApplications().add(*m_me);
-    }
-}
 
 void ProfileApplication::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
@@ -47,38 +18,48 @@ void ProfileApplication::referenceReindexed(ID oldID, ID newID) {
 
 void ProfileApplication::restoreReferences() {
     DirectedRelationship::restoreReferences();
-    m_appliedProfile.restoreReference();
-    m_applyingPackage.restoreReference();
+    // m_appliedProfile.restoreReference();
+    // m_applyingPackage.restoreReference();
 }
 
 void ProfileApplication::referenceErased(ID id) {
     DirectedRelationship::referenceErased(id);
-    m_appliedProfile.elementErased(id);
-    m_applyingPackage.elementErased(id);
+    m_appliedProfile.eraseElement(id);
+    m_applyingPackage.eraseElement(id);
+}
+
+Set<Profile, ProfileApplication>& ProfileApplication::getAppliedProfileSingleton() {
+    return m_appliedProfile;
+}
+
+Set<Package, ProfileApplication>& ProfileApplication::getApplyingPackageSingleton() {
+    return m_applyingPackage;
+}
+
+void ProfileApplication::init() {
+    m_appliedProfile.subsets(m_targets);
+    m_appliedProfile.m_signature = &ProfileApplication::getAppliedProfileSingleton;
+    m_applyingPackage.subsets(*m_owner);
+    m_applyingPackage.subsets(m_sources);
+    m_applyingPackage.opposite(&Package::getProfileApplications);
+    m_applyingPackage.m_signature = &ProfileApplication::getApplyingPackageSingleton;
+}
+
+void ProfileApplication::copy(const ProfileApplication& rhs) {
+    m_appliedProfile = rhs.m_appliedProfile;
+    m_applyingPackage = rhs.m_applyingPackage;
 }
 
 ProfileApplication::ProfileApplication() : Element(ElementType::PROFILE_APPLICATION) {
-    m_appliedProfile.m_signature = &ProfileApplication::m_appliedProfile;
-    m_appliedProfile.m_addProcedures.push_back(new AddAppliedProfileProcedure(this));
-    m_appliedProfile.m_removeProcedures.push_back(new RemoveAppliedProfileProcedure(this));
-    m_applyingPackage.m_signature = &ProfileApplication::m_applyingPackage;
-    m_applyingPackage.m_addProcedures.push_back(new AddApplyingPackageProcedure(this));
-    m_applyingPackage.m_removeProcedures.push_back(new RemoveApplyingPackageProcedure(this));
+    init();
 }
 
-ProfileApplication::ProfileApplication(const ProfileApplication& profileApplication) : Element(profileApplication, ElementType::PROFILE_APPLICATION) {
-    m_appliedProfile = profileApplication.m_appliedProfile;
-    m_appliedProfile.m_me = this;
-    m_appliedProfile.m_addProcedures.clear();
-    m_applyingPackage.m_removeProcedures.clear();
-    m_appliedProfile.m_addProcedures.push_back(new AddAppliedProfileProcedure(this));
-    m_appliedProfile.m_removeProcedures.push_back(new RemoveAppliedProfileProcedure(this));
-    m_applyingPackage = profileApplication.m_applyingPackage;
-    m_applyingPackage.m_me = this;
-    m_applyingPackage.m_addProcedures.clear();
-    m_applyingPackage.m_removeProcedures.clear();
-    m_applyingPackage.m_addProcedures.push_back(new AddApplyingPackageProcedure(this));
-    m_applyingPackage.m_removeProcedures.push_back(new RemoveApplyingPackageProcedure(this));
+ProfileApplication::ProfileApplication(const ProfileApplication& rhs) : Element(rhs, ElementType::PROFILE_APPLICATION) {
+    init();
+    Element::copy(rhs);
+    Relationship::copy(rhs);
+    DirectedRelationship::copy(rhs);
+    copy(rhs);
 }
 
 ProfileApplication::~ProfileApplication() {

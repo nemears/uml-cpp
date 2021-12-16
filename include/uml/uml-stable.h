@@ -37,7 +37,7 @@
 #include "uml/parameter.h"
 #include "uml/primitiveType.h"
 #include "uml/profile.h"
-// #include "uml/profileApplication.h"
+#include "uml/profileApplication.h"
 #include "uml/property.h"
 #include "uml/realization.h"
 #include "uml/slot.h"

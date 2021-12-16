@@ -1,7 +1,7 @@
 #include "uml/package.h"
-// #include "uml/stereotype.h"
+#include "uml/stereotype.h"
 #include "uml/packageMerge.h"
-// #include "uml/profileApplication.h"
+#include "uml/profileApplication.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -30,6 +30,7 @@ void Package::referenceErased(ID id) {
     m_packagedElements.eraseElement(id);
     m_packageMerge.eraseElement(id);
     m_ownedStereotypes.eraseElement(id);
+    m_profileApplications.eraseElement(id);
 }
 
 void Package::init() {
@@ -41,6 +42,9 @@ void Package::init() {
     m_packageMerge.m_signature = &Package::getPackageMerge;
     m_ownedStereotypes.subsets(m_packagedElements);
     m_ownedStereotypes.m_signature = &Package::getOwnedStereotypes;
+    m_profileApplications.subsets(*m_ownedElements);
+    m_profileApplications.opposite(&ProfileApplication::getApplyingPackageSingleton);
+    m_profileApplications.m_signature = &Package::getProfileApplications;
 }
 
 void Package::copy(const Package& rhs) {
@@ -76,9 +80,9 @@ Set<PackageMerge, Package>& Package::getPackageMerge() {
     return m_packageMerge;
 }
 
-// Set<ProfileApplication, Package>& Package::getProfileApplications() {
-//     return m_profileApplications;
-// }
+Set<ProfileApplication, Package>& Package::getProfileApplications() {
+    return m_profileApplications;
+}
 
 Set<Stereotype, Package>& Package::getOwnedStereotypes() {
     return m_ownedStereotypes;

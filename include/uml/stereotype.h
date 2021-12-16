@@ -14,26 +14,20 @@ namespace UML {
 
         friend class UmlManager;
         friend class Parsers::SetProfile;
+        friend class Profile;
 
         private:
             Singleton<Profile, Stereotype> m_profile = Singleton<Profile, Stereotype>(this);
-            class RemoveProfileProcedure : public AbstractSingletonProcedure<Profile, Stereotype> {
-                public:
-                    RemoveProfileProcedure(Stereotype* me) : AbstractSingletonProcedure<Profile, Stereotype>(me) {};
-                    void operator()(Profile* el) const override;
-            };
-            class AddProfileProcedure : public AbstractSingletonProcedure<Profile, Stereotype> {
-                public:
-                    AddProfileProcedure(Stereotype* me) : AbstractSingletonProcedure<Profile, Stereotype>(me) {};
-                    void operator()(Profile* el) const override;
-            };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            Set<Profile, Stereotype>& getProfileSingleton();
+            void init();
+            void copy(const Stereotype& rhs);
             Stereotype();
         public:
-            Stereotype(const Stereotype& stereotype);
+            Stereotype(const Stereotype& rhs);
             virtual ~Stereotype();
             Profile* getProfile();
             Profile& getProfileRef();

@@ -94,10 +94,6 @@ TEST_F(PackageTest, packageMergeTest) {
     p.getPackageMerge().add(m);
     ASSERT_EQ(p.getPackageMerge().size(), 1);
     ASSERT_EQ(p.getPackageMerge().front(), m);
-    // ASSERT_EQ(p.getDirectedRelationships().size(), 1);
-    // ASSERT_EQ(p.getDirectedRelationships().front(), m);
-    // ASSERT_EQ(p.getRelationships().size(), 1);
-    // ASSERT_EQ(p.getRelationships().front(), m);
     ASSERT_EQ(p.getOwnedElements().size(), 1);
     ASSERT_EQ(p.getOwnedElements().get(m.getID()), m);
 
@@ -125,26 +121,26 @@ TEST_F(PackageTest, removePackageMergeTest) {
     ASSERT_TRUE(m.getRelatedElements().size() == 0);
 }
 
-// TEST_F(PackageTest, addOwnedStereotype) {
-//     UmlManager m;
-//     Profile& p = m.create<Profile>();
-//     Stereotype& s = m.create<Stereotype>();
-//     p.getOwnedStereotypes().add(s);
-//     ASSERT_EQ(p.getOwnedStereotypes().size(), 1);
-//     ASSERT_EQ(p.getOwnedStereotypes().front().getID(), s.getID());
-//     ASSERT_EQ(p.getPackagedElements().size(), 1);
-//     ASSERT_EQ(p.getPackagedElements().front().getID(), s.getID());
-// }
+TEST_F(PackageTest, addOwnedStereotype) {
+    UmlManager m;
+    Profile& p = m.create<Profile>();
+    Stereotype& s = m.create<Stereotype>();
+    p.getOwnedStereotypes().add(s);
+    ASSERT_EQ(p.getOwnedStereotypes().size(), 1);
+    ASSERT_EQ(p.getOwnedStereotypes().front().getID(), s.getID());
+    ASSERT_EQ(p.getPackagedElements().size(), 1);
+    ASSERT_EQ(p.getPackagedElements().front().getID(), s.getID());
+}
 
-// TEST_F(PackageTest, removeOwnedStereotype) {
-//     UmlManager m;
-//     Profile& p = m.create<Profile>();
-//     Stereotype& s = m.create<Stereotype>();
-//     p.getOwnedStereotypes().add(s);
-//     p.getOwnedStereotypes().remove(s);
-//     ASSERT_EQ(p.getOwnedStereotypes().size(), 0);
-//     ASSERT_EQ(p.getPackagedElements().size(), 0);
-// }
+TEST_F(PackageTest, removeOwnedStereotype) {
+    UmlManager m;
+    Profile& p = m.create<Profile>();
+    Stereotype& s = m.create<Stereotype>();
+    p.getOwnedStereotypes().add(s);
+    p.getOwnedStereotypes().remove(s);
+    ASSERT_EQ(p.getOwnedStereotypes().size(), 0);
+    ASSERT_EQ(p.getPackagedElements().size(), 0);
+}
 
 // TEST_F(PackageTest, packageFullCopyAndEditTest) {
 //     UmlManager m;

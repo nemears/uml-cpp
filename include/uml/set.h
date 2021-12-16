@@ -149,6 +149,8 @@ namespace UML {
     class TemplateBinding;
     class TemplateParameterSubstitution;
     class RedefinableElement;
+    class Stereotype;
+    class Profile;
 
     /**
      * This container is based around a weighted binary search tree
@@ -199,6 +201,8 @@ namespace UML {
         friend class TemplateBinding;
         friend class TemplateParameterSubstitution;
         friend class RedefinableElement;
+        friend class Stereotype;
+        friend class Profile;
 
         protected:
             bool m_rootRedefinedSet = true;

@@ -29,6 +29,7 @@ void Package::referenceErased(ID id) {
     m_owningPackage.eraseElement(id);
     m_packagedElements.eraseElement(id);
     m_packageMerge.eraseElement(id);
+    m_ownedStereotypes.eraseElement(id);
 }
 
 void Package::init() {
@@ -38,13 +39,14 @@ void Package::init() {
     m_packageMerge.subsets(*m_ownedElements);
     m_packageMerge.opposite(&PackageMerge::getReceivingPackageSingleton);
     m_packageMerge.m_signature = &Package::getPackageMerge;
+    m_ownedStereotypes.subsets(m_packagedElements);
+    m_ownedStereotypes.m_signature = &Package::getOwnedStereotypes;
 }
 
 void Package::copy(const Package& rhs) {
     m_packagedElements = rhs.m_packagedElements;
-    m_packagedElements.m_el = this;
     m_packageMerge = rhs.m_packageMerge;
-    m_packageMerge.m_el = this;
+    m_ownedStereotypes = rhs.m_ownedStereotypes;
 }
 
 Package::Package() : Element(ElementType::PACKAGE) {
@@ -78,9 +80,9 @@ Set<PackageMerge, Package>& Package::getPackageMerge() {
 //     return m_profileApplications;
 // }
 
-// Set<Stereotype, Package>& Package::getOwnedStereotypes() {
-//     return m_ownedStereotypes;
-// }
+Set<Stereotype, Package>& Package::getOwnedStereotypes() {
+    return m_ownedStereotypes;
+}
 
 bool Package::isSubClassOf(ElementType eType) const {
     bool ret = PackageableElement::isSubClassOf(eType);

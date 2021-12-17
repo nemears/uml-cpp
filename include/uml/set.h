@@ -96,16 +96,16 @@ namespace UML {
             };
             SetNode* m_root = 0;
             size_t m_guard = 0;
-            std::list<AbstractSet*> m_superSets;
+            std::vector<AbstractSet*> m_superSets;
             std::vector<AbstractSet*> m_subSets;
             std::vector<AbstractSet*> m_redefines;
-            std::unordered_set<AbstractSet*> m_disjointSuperSets;
             std::unordered_set<SetFunctor*> m_addFunctors;
             std::unordered_set<SetFunctor*> m_removeFunctors;
             virtual void place(SetNode* node, SetNode* parent) = 0;
             virtual SetNode* search(ID id, SetNode* node) = 0;
             void setName(SetNode* node);
             void instantiateSetNode(SetNode* node);
+            virtual void superSetAdd(SetNode* node) = 0;
     };
 
     template <class T> struct SetIterator;
@@ -308,6 +308,47 @@ namespace UML {
                 }
                 return 0;
             };
+            void superSetAdd(SetNode* node) override {
+                if (!m_root) {
+                    m_root = node;
+                    for (auto& subsetOf : m_superSets) {
+                        subsetOf->superSetAdd(node);
+                    }
+                } else {
+                    // determine whether to create placeholder (adding node of guard not equal to root)
+                    if (m_root->m_guard != node->m_guard) {
+                        // find node to create placeholder
+                        SetNode* temp = m_root;
+                        while (temp->m_id == placeholderID) {
+                            temp = temp->m_left;
+                        }
+                        // create placeholder node
+                        SetNode* placeholderNode = new SetNode();
+                        placeholderNode->m_id = placeholderID;
+                        placeholderNode->m_guard = m_guard;
+                        // replace temp with placeholder
+                        if (temp == m_root) {
+                            m_root = placeholderNode;
+                        }
+                        if (temp->m_parent) {
+                            placeholderNode->m_parent = temp->m_parent;
+                            if (temp->m_parent->m_left == temp) {
+                                temp->m_parent->m_left = placeholderNode;
+                            } else {
+                                temp->m_parent->m_right = temp->m_parent->m_left;
+                                temp->m_parent->m_left = placeholderNode;
+                            }
+                        }
+                        place(temp, placeholderNode);
+                    } else {
+                        // TODO re-adding node
+                    }
+                    place(node, m_root);
+                }
+                for (auto& subsetOf : m_superSets) {
+                    subsetOf->m_size++;
+                }
+            };
             void add(SetNode* node) {
                 if (!m_root) {
                     m_root = node;
@@ -322,96 +363,10 @@ namespace UML {
                             redefined->m_root = node;
                         }
                     }
-                    std::list<AbstractSet*> nonDisjointParents = m_superSets;
-                    // handle disjoint supersets
-                    for (auto& disjointSet : m_disjointSuperSets) {
-                        if (node->m_guard == m_guard) {
-                            // adding new element
-                            if (disjointSet->m_root) {
-                                // determine if we need a placeholder to keep subsets separate
-                                bool createPlaceholder = false;
-                                int placeHolderGuard = 0;
-                                for (auto& set : disjointSet->m_subSets) {
-                                    if (set != this) {
-                                        if (std::find(set->m_subSets.begin(), set->m_subSets.end(), this) == set->m_subSets.end()) {
-                                            createPlaceholder = true;
-                                            placeHolderGuard = disjointSet->m_guard;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (createPlaceholder) {
-                                    // create a "placeholder" node to balance subsets so they dont overlap in even tree
-                                    SetNode* temp = disjointSet->m_root;
-                                    disjointSet->m_root = new SetNode();
-                                    disjointSet->m_root->m_id = placeholderID;
-                                    disjointSet->m_root->m_guard = placeHolderGuard;
-                                    disjointSet->place(temp, disjointSet->m_root);
-                                }
-                                disjointSet->place(node, disjointSet->m_root);
-                            } else {
-                                disjointSet->m_root = node;
-                            }
-                        } else {
-                            if (node->m_guard == disjointSet->m_guard) {
-                                if (disjointSet->m_root) {
-                                    disjointSet->place(node, disjointSet->m_root);
-                                } else { // TODO test below
-                                    disjointSet->m_root = node;
-                                    for (auto& disjointSetSuperSet : disjointSet->m_superSets) {
-                                        if (disjointSetSuperSet->m_root) {
-                                            disjointSetSuperSet->place(node, disjointSetSuperSet->m_root);
-                                        } else {
-                                            disjointSetSuperSet->m_root = node;
-                                        }
-                                    }
-                                }
-                                for (auto& subsetOf : disjointSet->m_superSets) {
-                                    if (!subsetOf->m_root) {
-                                        subsetOf->m_root = node;
-                                    }
-                                    std::list<AbstractSet*>::iterator it;
-                                    if ((it = std::find(nonDisjointParents.begin(), nonDisjointParents.end(), subsetOf)) != nonDisjointParents.end()) {
-                                        nonDisjointParents.erase(it);
-                                    }
-                                }
-                            }
-                            if (!disjointSet->m_root) {
-                                disjointSet->m_root = node;
-                            }
-                        }
-                        std::list<AbstractSet*>::iterator it;
-                        if ((it = std::find(nonDisjointParents.begin(), nonDisjointParents.end(), disjointSet)) != nonDisjointParents.end()) {
-                            nonDisjointParents.erase(it);   
-                        }
-                    }
                     // handle supersets
-                    for (auto& subsetOf : nonDisjointParents) {
-                        if (!subsetOf->m_root) {
-                            subsetOf->m_root = m_root;
-                        } else {
-                            // determine if we need a placeholder to keep subsets separate
-                            bool createPlaceholder = false;
-                            int placeHolderGuard = 0;
-                            for (auto& set : subsetOf->m_subSets) {
-                                if (set != this) {
-                                    if (std::find(set->m_subSets.begin(), set->m_subSets.end(), this) == set->m_subSets.end()) {
-                                        createPlaceholder = true;
-                                        placeHolderGuard = subsetOf->m_guard;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (createPlaceholder) {
-                                // create a "placeholder" node to balance subsets so they dont overlap in even tree
-                                SetNode* temp = subsetOf->m_root;
-                                subsetOf->m_root = new SetNode();
-                                subsetOf->m_root->m_id = placeholderID;
-                                subsetOf->m_root->m_guard = placeHolderGuard;
-                                subsetOf->place(temp, subsetOf->m_root);
-                            }
-                            subsetOf->place(node, subsetOf->m_root);
-                        }
+                    for (auto& subsetOf : m_superSets) {
+                        // TODO: method that recursively goes to root superset at top of set tree
+                        subsetOf->superSetAdd(node);
                     }
                 } else {
                     if (m_root->m_guard > m_guard) {
@@ -445,8 +400,9 @@ namespace UML {
                         if (node->m_guard == m_guard) {
                             place(node, m_root);
                         } else {
+                            // SuperSet already has this node
                             AbstractSet* dSet = 0;
-                            for (auto& disjointSet : m_disjointSuperSets) {
+                            for (auto& disjointSet : m_superSets) {
                                 if (node->m_guard == disjointSet->m_guard) {
                                     SetNode* temp = m_root;
                                     bool createPlaceholder = false;
@@ -1213,38 +1169,13 @@ namespace UML {
              **/
             template <class V = Element, class W = Element> void subsets(Set<V, W>& subsetOf) {
                 if (std::find(m_superSets.begin(), m_superSets.end(), &subsetOf) == m_superSets.end()) {
-                    m_superSets.push_front(&subsetOf);
+                    m_superSets.push_back(&subsetOf);
+                    m_guard = subsetOf.m_subSets.empty() ? subsetOf.m_guard + 1 : subsetOf.m_subSets.back()->m_guard + 1;
                     subsetOf.m_subSets.push_back(this);
-                    for (auto& set : m_superSets) {
-                        // compare and update guard of superset to previous supersets
-                        if (set != &subsetOf && set->m_guard <= subsetOf.m_guard && std::find(m_disjointSuperSets.begin(), m_disjointSuperSets.end(), set) == m_disjointSuperSets.end()) {
-                            subsetOf.m_guard = set->m_guard + 1;
-                        }
-                    }
-                    if (!m_oppositeFunctor && subsetOf.m_oppositeFunctor && m_el) {
-                        m_oppositeFunctor = subsetOf.m_oppositeFunctor;
-                    }
-                    for (auto& set: m_superSets) {
-                        if (std::find(subsetOf.m_superSets.begin(), subsetOf.m_superSets.end(), set) == subsetOf.m_superSets.end() && 
-                            std::find(subsetOf.m_subSets.begin(), subsetOf.m_subSets.end(), set) == subsetOf.m_subSets.end() && 
-                            set != &subsetOf) {
-                            // found diamond set
-                            m_disjointSuperSets.insert(set);
-                            m_disjointSuperSets.insert(&subsetOf);
-                            break;
-                        }
-                    }
-                    for (auto& set : subsetOf.m_superSets) {
-                        this->subsets(*static_cast<Set*>(set));
-                    }
-                    if (m_guard <= subsetOf.m_guard) {
-                        m_guard = subsetOf.m_guard + 1;
-                    }
-                    for (auto& set : subsetOf.m_subSets) {
-                        if (set != this) {
-                            if (set->m_guard > m_guard) {
-                                m_guard = set->m_guard + 1;
-                            }
+                    size_t max_guard = m_guard;
+                    for (auto& subset : m_subSets) {
+                        if (subset->m_guard <= max_guard) {
+                            subset->m_guard = max_guard + 1;
                         }
                     }
                     for (const auto& set : subsetOf.m_addFunctors) {

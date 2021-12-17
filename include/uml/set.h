@@ -215,7 +215,7 @@ namespace UML {
             bool m_readOnly = false;
 
             void place(SetNode* node, SetNode* parent) override {
-                if (node->m_id == parent->m_id) {
+                if (node->m_id != placeholderID && node->m_id == parent->m_id) {
                     delete node;
                     throw DuplicateElementInSetException();
                 }
@@ -1439,6 +1439,10 @@ namespace UML {
                         if (node->m_right) {
                             node = node->m_right;
                         }
+                    }
+                    if (node->m_id == placeholderID) {
+                        size = size * 2;
+                        size ++;
                     }
                 }
                 if (!node->m_el) {

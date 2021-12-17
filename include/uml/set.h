@@ -314,6 +314,9 @@ namespace UML {
                     for (auto& subsetOf : m_superSets) {
                         subsetOf->superSetAdd(node);
                     }
+                    for (auto& subsetOf : m_superSets) {
+                        subsetOf->m_size++;
+                    }
                 } else {
                     // determine whether to create placeholder (adding node of guard not equal to root)
                     if (m_root->m_guard != node->m_guard) {
@@ -340,13 +343,11 @@ namespace UML {
                             }
                         }
                         place(temp, placeholderNode);
-                    } else {
-                        // TODO re-adding node
+                        for (auto& subsetOf : m_superSets) {
+                            subsetOf->m_size++;
+                        }
                     }
                     place(node, m_root);
-                }
-                for (auto& subsetOf : m_superSets) {
-                    subsetOf->m_size++;
                 }
             };
             void add(SetNode* node) {
@@ -365,8 +366,9 @@ namespace UML {
                     }
                     // handle supersets
                     for (auto& subsetOf : m_superSets) {
-                        // TODO: method that recursively goes to root superset at top of set tree
-                        subsetOf->superSetAdd(node);
+                        if (node->m_guard == m_guard || subsetOf->m_guard == node->m_guard) {
+                            subsetOf->superSetAdd(node);
+                        }
                     }
                 } else {
                     if (m_root->m_guard > m_guard) {
@@ -401,64 +403,7 @@ namespace UML {
                             place(node, m_root);
                         } else {
                             // SuperSet already has this node
-                            AbstractSet* dSet = 0;
-                            for (auto& disjointSet : m_superSets) {
-                                if (node->m_guard == disjointSet->m_guard) {
-                                    SetNode* temp = m_root;
-                                    bool createPlaceholder = false;
-                                    while (temp && temp->m_id != placeholderID) {
-                                        if (temp->m_id != placeholderID) {
-                                            if (!disjointSet->search(temp->m_id, disjointSet->m_root)) {
-                                                createPlaceholder = true;
-                                                dSet = disjointSet;
-                                                break;
-                                            }
-                                        }
-                                        if (temp->m_left) {
-                                            temp = temp->m_left;
-                                        } else {
-                                            temp = temp->m_parent;
-                                            while(temp && !temp->m_right) {
-                                                temp = temp->m_parent;
-                                            }
-                                            if (temp) {
-                                                temp = temp->m_right;
-                                            } else {
-                                                throw ManagerStateException("Diamond set exception, placeholder error!");
-                                            }
-                                        }
-                                    }
-                                    if (createPlaceholder) {
-                                        SetNode* placeholderNode = new SetNode();
-                                        placeholderNode->m_id = placeholderID;
-                                        placeholderNode->m_guard = m_guard;
-                                        if (temp == m_root) {
-                                            m_root = placeholderNode;
-                                        } else {
-                                            placeholderNode->m_parent = temp->m_parent;
-                                        }
-                                        if (temp->m_right) {
-                                            placeholderNode->m_right = temp->m_right;
-                                            temp->m_right->m_parent = placeholderNode;
-                                            temp->m_right = temp->m_left->m_left;
-                                            if (temp->m_right) {
-                                                temp->m_right->m_parent = temp;
-                                            }
-                                        }
-                                        placeholderNode->m_left = temp;
-                                        temp->m_parent = placeholderNode;
-                                    }
-                                    break;
-                                }
-                            }
-                            if (dSet) {
-                                if (dSet->m_root) {
-                                    dSet->place(node, dSet->m_root);
-                                } else {
-                                    dSet->m_root = node;
-                                    // TODO for loop to account for supersets that may have taken this node temporarily away for add
-                                }
-                            }
+                            // TODO placeholder for diamond subset
                             place(node, m_root);
                         }
                     }

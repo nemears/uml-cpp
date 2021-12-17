@@ -106,6 +106,7 @@ namespace UML {
             void setName(SetNode* node);
             void instantiateSetNode(SetNode* node);
             virtual void superSetAdd(SetNode* node) = 0;
+            virtual void superSetRemove(ID id) = 0;
     };
 
     template <class T> struct SetIterator;
@@ -486,6 +487,15 @@ namespace UML {
             virtual void deleteNode(SetNode* node) {
                 delete node;
             };
+            void superSetRemove(ID id) override {
+                if (m_root->m_id == id) {
+                    m_root = 0;
+                    for (auto& subsetOf : m_superSets) {
+                        subsetOf->superSetRemove(id);
+                        subsetOf->m_size--;
+                    }
+                }
+            };
             void innerRemove(ID id) {
                 SetNode* temp = search(id, m_root);
                 if (temp->m_parent) {
@@ -637,15 +647,16 @@ namespace UML {
                     }
                 }
                 for (auto& subsetOf : m_superSets) {
-                    if (subsetOf->m_root->m_id == id) {
-                        if (subsetOf->m_root->m_left) {
-                            place(subsetOf->m_root->m_right, subsetOf->m_root->m_left);
-                            m_root->m_left->m_parent = m_root->m_parent;
-                            m_root = subsetOf->m_root->m_left;
-                        } else {
-                            subsetOf->m_root = 0;
-                        }
-                    }
+                    subsetOf->superSetRemove(id);
+                    // if (subsetOf->m_root->m_id == id) {
+                    //     if (subsetOf->m_root->m_left) {
+                    //         place(subsetOf->m_root->m_right, subsetOf->m_root->m_left);
+                    //         m_root->m_left->m_parent = m_root->m_parent;
+                    //         m_root = subsetOf->m_root->m_left;
+                    //     } else {
+                    //         subsetOf->m_root = 0;
+                    //     }
+                    // }
                     subsetOf->m_size--;
                 }
                 for (auto& redefined : m_redefines) {
@@ -1031,6 +1042,17 @@ namespace UML {
                                     // set supersets root to 0 if it is the node
                                     if (set->m_root->m_id == curr->m_id && set->m_root == curr) {
                                         set->m_root = 0;
+                                        for (std::vector<AbstractSet*>::iterator it = set->m_superSets.begin(); it != set->m_superSets.end() ; it++) {
+                                            if ((*it)->m_root == curr) {
+                                                (*it)->m_root = 0;
+                                                if ((*it)->m_superSets.empty()) {
+                                                    it = set->m_superSets.begin();
+                                                } else {
+                                                    it = (*it)->m_superSets.begin();
+                                                }
+                                            }
+                                            
+                                        } 
                                     } else if (currParent && 
                                             set->m_root && 
                                             currParent != set->search(currParent->m_id, set->m_root)) {

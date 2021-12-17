@@ -1122,6 +1122,10 @@ namespace UML {
                     }
                     if (deleteFunc) {
                         delete func;
+                    } else {
+                        for (auto& subset : m_subSets) {
+                            subset->m_addFunctors.erase(func);
+                        }
                     }
                 }
                 for (auto& func : m_removeFunctors) {
@@ -1134,6 +1138,10 @@ namespace UML {
                     }
                     if (deleteFunc) {
                         delete func;
+                    } else {
+                        for (auto& subset : m_subSets) {
+                            subset->m_removeFunctors.erase(func);
+                        }
                     }
                 }
                 for (auto& set : m_redefines) {

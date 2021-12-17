@@ -31,6 +31,7 @@ Set<Profile, Stereotype>& Stereotype::getProfileSingleton() {
 void Stereotype::init() {
     m_profile.subsets(m_owningPackage);
     m_profile.opposite(&Profile::getOwnedStereotypes);
+    m_profile.m_signature = &Stereotype::getProfileSingleton;
 }
 
 void Stereotype::copy(const Stereotype& rhs) {

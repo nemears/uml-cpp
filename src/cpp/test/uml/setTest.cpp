@@ -130,8 +130,10 @@ TEST_F(SetTest, multiSubsetsTest) {
 }
 
 TEST_F(SetTest, removeFromSubsettedSequenceTest) {
+    Set<NamedElement> rootRootSeq;
     Set<PackageableElement> rootSeq;
     Set<Package> subSeq;
+    rootSeq.subsets(rootRootSeq);
     subSeq.subsets(rootSeq);
     UmlManager m;
     Package& pckg = m.create<Package>();
@@ -139,14 +141,18 @@ TEST_F(SetTest, removeFromSubsettedSequenceTest) {
     subSeq.remove(pckg);
     ASSERT_EQ(subSeq.size(), 0);
     ASSERT_EQ(rootSeq.size(), 0);
-    ASSERT_FALSE(subSeq.contains(pckg.getID()));
-    ASSERT_FALSE(rootSeq.contains(pckg.getID()));
+    ASSERT_EQ(rootRootSeq.size(), 0);
+    ASSERT_FALSE(subSeq.contains(pckg));
+    ASSERT_FALSE(rootSeq.contains(pckg));
+    ASSERT_FALSE(rootRootSeq.contains(pckg));
     subSeq.add(pckg);
     rootSeq.remove(pckg);
     ASSERT_EQ(subSeq.size(), 0);
     ASSERT_EQ(rootSeq.size(), 0);
-    ASSERT_FALSE(subSeq.contains(pckg.getID()));
-    ASSERT_FALSE(rootSeq.contains(pckg.getID()));
+    ASSERT_EQ(rootRootSeq.size(), 0);
+    ASSERT_FALSE(subSeq.contains(pckg));
+    ASSERT_FALSE(rootSeq.contains(pckg));
+    ASSERT_FALSE(rootRootSeq.contains(pckg));
 }
 
 TEST_F(SetTest, specialAutoForLoop) {

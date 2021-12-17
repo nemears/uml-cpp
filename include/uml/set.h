@@ -402,8 +402,36 @@ namespace UML {
                         if (node->m_guard == m_guard) {
                             place(node, m_root);
                         } else {
-                            // SuperSet already has this node
-                            // TODO placeholder for diamond subset
+                            // a SuperSet already has this node , but it has been dereferenced from set
+                            if (m_root->m_guard != node->m_guard) {
+                                SetNode* temp = m_root;
+                                while (temp->m_id == placeholderID) {
+                                    temp = temp->m_left;
+                                }
+                                bool createPlaceholder = false;
+                                AbstractSet* setThatOwnedNode = 0;
+                                for (auto& subsetOf : m_superSets) {
+                                    if (subsetOf->m_guard == node->m_guard) {
+                                        if (!subsetOf->search(temp->m_id, subsetOf->m_root)) {
+                                            createPlaceholder = true;
+                                            setThatOwnedNode = subsetOf;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (createPlaceholder) {
+                                    // create placeholder node
+                                    SetNode* placeholderNode = new SetNode();
+                                    placeholderNode->m_id = placeholderID;
+                                    placeholderNode->m_guard = m_guard;
+                                    // replace temp with placeholder
+                                    if (temp == m_root) {
+                                        m_root = placeholderNode;
+                                    }
+                                    place(temp, placeholderNode);
+                                    setThatOwnedNode->superSetAdd(node);
+                                }
+                            }
                             place(node, m_root);
                         }
                     }

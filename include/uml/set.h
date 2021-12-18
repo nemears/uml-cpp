@@ -333,6 +333,22 @@ namespace UML {
                         // replace temp with placeholder
                         if (temp == m_root) {
                             m_root = placeholderNode;
+                            // bfs replace parents root with this placeholder
+                            std::list<AbstractSet*> queue;
+                            for (auto& subsetOf : m_superSets) {
+                                queue.push_back(subsetOf);
+                            }
+                            while (!queue.empty()) {
+                                AbstractSet* set = queue.front();
+                                queue.pop_front();
+                                if (set->m_root == temp) {
+                                    set->m_root = placeholderNode;
+                                    for (auto& subsetOf : set->m_superSets) {
+                                        queue.push_back(subsetOf);
+                                        subsetOf->m_size++;
+                                    }
+                                }
+                            }
                         }
                         if (temp->m_parent) {
                             placeholderNode->m_parent = temp->m_parent;

@@ -130,6 +130,34 @@ TEST_F(PackageTest, addOwnedStereotype) {
     ASSERT_EQ(p.getOwnedStereotypes().front().getID(), s.getID());
     ASSERT_EQ(p.getPackagedElements().size(), 1);
     ASSERT_EQ(p.getPackagedElements().front().getID(), s.getID());
+    ASSERT_EQ(p.getOwnedMembers().size(), 1);
+    ASSERT_TRUE(p.getOwnedMembers().contains(s));
+    ASSERT_EQ(p.getMembers().size(), 1);
+    ASSERT_TRUE(p.getMembers().contains(s));
+    ASSERT_EQ(p.getOwnedElements().size(), 1);
+    ASSERT_TRUE(p.getOwnedElements().contains(s));
+    
+    // now with another element in packagedElements
+    Profile& p2 = m.create<Profile>();
+    Stereotype& s2 = m.create<Stereotype>();
+    Package& pp = m.create<Package>();
+    p2.getPackagedElements().add(pp);
+    p2.getOwnedStereotypes().add(s2);
+    ASSERT_EQ(p2.getOwnedStereotypes().size(), 1);
+    ASSERT_EQ(p2.getPackagedElements().size(), 2);
+    ASSERT_TRUE(p2.getOwnedStereotypes().contains(s2));
+    ASSERT_FALSE(p2.getOwnedStereotypes().contains(pp.getID()));
+    ASSERT_TRUE(p2.getPackagedElements().contains(s2));
+    ASSERT_TRUE(p2.getPackagedElements().contains(pp));
+    ASSERT_EQ(p2.getOwnedMembers().size(), 2);
+    ASSERT_TRUE(p2.getOwnedMembers().contains(s2));
+    ASSERT_TRUE(p2.getOwnedMembers().contains(pp));
+    ASSERT_EQ(p2.getMembers().size(), 2);
+    ASSERT_TRUE(p2.getMembers().contains(s2));
+    ASSERT_TRUE(p2.getMembers().contains(pp));
+    ASSERT_EQ(p2.getOwnedElements().size(), 2);
+    ASSERT_TRUE(p2.getOwnedElements().contains(s2));
+    ASSERT_TRUE(p2.getOwnedElements().contains(pp));
 }
 
 TEST_F(PackageTest, removeOwnedStereotype) {
@@ -140,6 +168,22 @@ TEST_F(PackageTest, removeOwnedStereotype) {
     p.getOwnedStereotypes().remove(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 0);
     ASSERT_EQ(p.getPackagedElements().size(), 0);
+    Package& pp = m.create<Package>();
+    p.getPackagedElements().add(pp);
+    p.getOwnedStereotypes().add(s);
+    ASSERT_EQ(p.getOwnedStereotypes().size(), 1);
+    ASSERT_EQ(p.getPackagedElements().size(), 2);
+    ASSERT_TRUE(p.getOwnedStereotypes().contains(s));
+    ASSERT_TRUE(p.getPackagedElements().contains(s));
+    ASSERT_FALSE(p.getOwnedStereotypes().contains(pp.getID()));
+    ASSERT_TRUE(p.getPackagedElements().contains(pp));
+    p.getOwnedStereotypes().remove(s);
+    ASSERT_EQ(p.getOwnedStereotypes().size(), 0);
+    ASSERT_EQ(p.getPackagedElements().size(), 1);
+    ASSERT_FALSE(p.getOwnedStereotypes().contains(s));
+    ASSERT_FALSE(p.getOwnedStereotypes().contains(pp.getID()));
+    ASSERT_FALSE(p.getPackagedElements().contains(s));
+    ASSERT_TRUE(p.getPackagedElements().contains(pp));
 }
 
 TEST_F(PackageTest, packageFullCopyAndEditTest) {

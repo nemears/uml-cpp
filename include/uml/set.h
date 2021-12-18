@@ -1041,18 +1041,18 @@ namespace UML {
                                 for (auto& set : m_superSets) {
                                     // set supersets root to 0 if it is the node
                                     if (set->m_root->m_id == curr->m_id && set->m_root == curr) {
-                                        set->m_root = 0;
-                                        for (std::vector<AbstractSet*>::iterator it = set->m_superSets.begin(); it != set->m_superSets.end() ; it++) {
-                                            if ((*it)->m_root == curr) {
-                                                (*it)->m_root = 0;
-                                                if ((*it)->m_superSets.empty()) {
-                                                    it = set->m_superSets.begin();
-                                                } else {
-                                                    it = (*it)->m_superSets.begin();
+                                        // bfs set roots to zero
+                                        std::list<AbstractSet*> queue = {set};
+                                        while(!queue.empty()) {
+                                            AbstractSet* front = queue.front();
+                                            queue.pop_front();
+                                            if (front->m_root == curr) {
+                                                front->m_root = 0;
+                                                for (auto& subsetOf : front->m_superSets) {
+                                                    queue.push_back(subsetOf);
                                                 }
-                                            }
-                                            
-                                        } 
+                                            }                                            
+                                        }
                                     } else if (currParent && 
                                             set->m_root && 
                                             currParent != set->search(currParent->m_id, set->m_root)) {

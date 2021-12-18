@@ -27,6 +27,7 @@ void Profile::referenceErased(ID id) {
 void Profile::init() {
     m_profileOwnedStereotypes.redefines(m_ownedStereotypes);
     m_profileOwnedStereotypes.opposite(&Stereotype::getProfileSingleton);
+    m_profileOwnedStereotypes.m_signature = &Profile::getOwnedStereotypes;
 }
 
 void Profile::copy(const Profile& rhs) {

@@ -480,28 +480,28 @@ TEST_F(SetTest, sharedSubsetEvenTreeTest) {
 }
 
 TEST_F(SetTest, multiRootWithinRootTest) {
-    // Set<NamedElement>* r1 = new Set<NamedElement>();
-    // Set<PackageableElement>* r2 = new Set<PackageableElement>();
-    // Set<Package>* subSet = new Set<Package>();
-    // UmlManager m;
-    // subSet->subsets(*r1);
-    // subSet->subsets(*r2);
-    // Class& c = m.create<Class>();
-    // Package& p = m.create<Package>();
-    // r1->add(c);
-    // subSet->add(p);
-    // ASSERT_EQ(r1->size(), 2);
-    // ASSERT_EQ(r2->size(), 1);
-    // ASSERT_EQ(subSet->size(), 1);
-    // ASSERT_TRUE(r1->contains(c.getID()));
-    // ASSERT_FALSE(r2->contains(c.getID()));
-    // ASSERT_FALSE(subSet->contains(c.getID()));
-    // ASSERT_TRUE(r1->contains(p.getID()));
-    // ASSERT_TRUE(r2->contains(p.getID()));
-    // ASSERT_TRUE(subSet->contains(p.getID()));
-    // delete subSet;
-    // delete r2;
-    // delete r1;
+    Set<NamedElement>* r1 = new Set<NamedElement>();
+    Set<PackageableElement>* r2 = new Set<PackageableElement>();
+    Set<Package>* subSet = new Set<Package>();
+    UmlManager m;
+    subSet->subsets(*r1);
+    subSet->subsets(*r2);
+    Class& c = m.create<Class>();
+    Package& p = m.create<Package>();
+    r1->add(c);
+    subSet->add(p);
+    ASSERT_EQ(r1->size(), 2);
+    ASSERT_EQ(r2->size(), 1);
+    ASSERT_EQ(subSet->size(), 1);
+    ASSERT_TRUE(r1->contains(c.getID()));
+    ASSERT_FALSE(r2->contains(c.getID()));
+    ASSERT_FALSE(subSet->contains(c.getID()));
+    ASSERT_TRUE(r1->contains(p.getID()));
+    ASSERT_TRUE(r2->contains(p.getID()));
+    ASSERT_TRUE(subSet->contains(p.getID()));
+    delete subSet;
+    delete r2;
+    delete r1;
 }
 
 TEST_F(SetTest, multiSubsetsOneElement) {

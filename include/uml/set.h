@@ -512,6 +512,44 @@ namespace UML {
                     }
                 }
             };
+            void removePlaceholder(SetNode* node) {
+                if (node->m_parent->m_id == placeholderID) {
+                    // bfs fix get rid of placeholder
+                    std::list<AbstractSet*> queue;
+                    for (auto& subsetOf : m_superSets) {
+                        queue.push_back(subsetOf);
+                    }
+                    while (!queue.empty()) {
+                        AbstractSet* front = queue.front();
+                        queue.pop_front();
+                        if (front->m_root == node->m_parent) {
+                            front->m_root = node->m_parent->m_left;
+                            if (front->m_root) {
+                                front->m_root->m_parent = 0;
+                            }
+                            for (auto& subset : front->m_subSets) {
+                                if (subset != this) {
+                                    if (subset->m_root == node->m_parent) {
+                                        SetNode* temp =  node->m_parent->m_left;
+                                        if (temp->m_parent) {
+                                            temp->m_parent = 0;
+                                        }
+                                        while (temp && temp->m_guard < subset->m_guard) {
+                                            temp = node->m_left;
+                                        }
+                                        subset->m_root = temp;
+                                    }
+                                }
+                            }
+                            for (auto& subsetOf : front->m_superSets) {
+                                queue.push_back(subsetOf);
+                            }
+                        }
+                    }
+                    delete node->m_parent;
+                    node->m_parent = 0;
+                }
+            };
             void innerRemove(ID id) {
                 SetNode* temp = search(id, m_root);
                 if (temp->m_parent) {
@@ -551,83 +589,14 @@ namespace UML {
                                 // removed node has no children
                                 temp->m_parent->m_left = temp->m_parent->m_right;
                                 temp->m_parent->m_right = 0;
-                                /** TODO: **/
-                                // may be of use to rebalance tree here?
-
-                                if (temp->m_parent->m_id == placeholderID) {
-                                    for (auto& superSet : m_superSets) {
-                                        if (superSet->m_root == temp->m_parent) {
-                                            superSet->m_root = temp->m_parent->m_left;
-                                            if (superSet->m_root) {
-                                                superSet->m_root->m_parent = 0;
-                                            }
-                                            // bfs set parents root to 0 if same placeholder
-                                            std::list<AbstractSet*> queue;
-                                            for (auto& set : superSet->m_superSets) {
-                                                queue.push_back(set);
-                                            }
-                                            while (!queue.empty()) {
-                                                AbstractSet* front = queue.front();
-                                                queue.pop_front();
-                                                if (front->m_root == temp->m_parent) {
-                                                    front->m_root = temp->m_parent->m_left;
-                                                    if (front->m_root) {
-                                                        front->m_root->m_parent = 0;
-                                                    }
-                                                    for (auto& set : front->m_superSets) {
-                                                        queue.push_back(set);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        for (auto& set : superSet->m_subSets) {
-                                            if (set != this) {
-                                                if (set->m_root == temp->m_parent) {
-                                                    SetNode* node =  temp->m_parent->m_left;
-                                                    if (node->m_parent) {
-                                                        node->m_parent = 0;
-                                                    }
-                                                    while (node && node->m_guard < set->m_guard) {
-                                                        node = node->m_left;
-                                                    }
-                                                    set->m_root = node;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    delete temp->m_parent;
-                                }
+                                removePlaceholder(temp);
                             }
                         }
                     } else {
                         if (!temp->m_left) {
                             // removed node has no children
                             temp->m_parent->m_right = 0;
-                            /** TODO: **/
-                            // may be of use to rebalance tree here? 
-                            if (temp->m_parent->m_id == placeholderID) {
-                                for (auto& superSet : m_superSets) {
-                                    if (superSet->m_root == temp->m_parent) {
-                                        superSet->m_root = temp->m_parent->m_left;
-                                        superSet->m_root->m_parent = 0;
-                                    }
-                                    for (auto& set : superSet->m_subSets) {
-                                        if (set != this) {
-                                            if (set->m_root == temp->m_parent) {
-                                                SetNode* node =  temp->m_parent->m_left;
-                                                if (node->m_parent) {
-                                                    node->m_parent = 0;
-                                                }
-                                                while (node && node->m_guard < set->m_guard) {
-                                                    node = node->m_left;
-                                                }
-                                                set->m_root = node;
-                                            }
-                                        }
-                                    }
-                                }
-                                delete temp->m_parent;
-                            }
+                            removePlaceholder(temp);
                         } else {
                             if (temp->m_left->m_id > temp->m_parent->m_left->m_id) {
                                 temp->m_parent->m_right = temp->m_parent->m_left;
@@ -663,6 +632,27 @@ namespace UML {
                         m_root = temp->m_left;
                     } else {
                         m_root = 0;
+                    }
+                    if (temp->m_parent && temp->m_parent->m_id == placeholderID) {
+                        if (temp->m_parent->m_parent) {
+                            temp->m_parent->m_parent->m_left = temp->m_parent->m_parent->m_right;
+                        }
+                        //bfs set superSet roots to 0 if applicable
+                        std::list<AbstractSet*> queue;
+                        for (auto& subsetOf : m_superSets) {
+                            queue.push_back(subsetOf);
+                        }
+                        while (!queue.empty()) {
+                            AbstractSet* front = queue.front();
+                            queue.pop_front();
+                            if (front->m_root == temp->m_parent) {
+                                front->m_root = 0;
+                                for (auto& subsetOf : front->m_superSets) {
+                                    queue.push_back(subsetOf);
+                                }
+                            }
+                        }
+                        delete temp->m_parent;
                     }
                     for (auto& redefined : m_redefines) {
                         redefined->m_root = m_root;

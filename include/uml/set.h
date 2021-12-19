@@ -558,7 +558,27 @@ namespace UML {
                                     for (auto& superSet : m_superSets) {
                                         if (superSet->m_root == temp->m_parent) {
                                             superSet->m_root = temp->m_parent->m_left;
-                                            superSet->m_root->m_parent = 0;
+                                            if (superSet->m_root) {
+                                                superSet->m_root->m_parent = 0;
+                                            }
+                                            // bfs set parents root to 0 if same placeholder
+                                            std::list<AbstractSet*> queue;
+                                            for (auto& set : superSet->m_superSets) {
+                                                queue.push_back(set);
+                                            }
+                                            while (!queue.empty()) {
+                                                AbstractSet* front = queue.front();
+                                                queue.pop_front();
+                                                if (front->m_root == temp->m_parent) {
+                                                    front->m_root = temp->m_parent->m_left;
+                                                    if (front->m_root) {
+                                                        front->m_root->m_parent = 0;
+                                                    }
+                                                    for (auto& set : front->m_superSets) {
+                                                        queue.push_back(set);
+                                                    }
+                                                }
+                                            }
                                         }
                                         for (auto& set : superSet->m_subSets) {
                                             if (set != this) {

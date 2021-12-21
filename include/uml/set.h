@@ -508,7 +508,7 @@ namespace UML {
             };
             void superSetRemove(ID id) override {
                 if (m_root && m_root->m_id == id) {
-                    m_root = 0;
+                    m_root = m_root->m_left;
                     for (auto& subsetOf : m_superSets) {
                         subsetOf->superSetRemove(id);
                         subsetOf->m_size--;

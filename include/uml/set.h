@@ -504,7 +504,7 @@ namespace UML {
                 delete node;
             };
             void superSetRemove(ID id) override {
-                if (m_root->m_id == id) {
+                if (m_root && m_root->m_id == id) {
                     m_root = 0;
                     for (auto& subsetOf : m_superSets) {
                         subsetOf->superSetRemove(id);
@@ -541,9 +541,9 @@ namespace UML {
                                     }
                                 }
                             }
-                            for (auto& subsetOf : front->m_superSets) {
-                                queue.push_back(subsetOf);
-                            }
+                        }
+                        for (auto& subsetOf : front->m_superSets) {
+                            queue.push_back(subsetOf);
                         }
                     }
                     delete node->m_parent;
@@ -567,6 +567,7 @@ namespace UML {
                             if (temp->m_right) {
                                 temp->m_right->m_parent = temp->m_parent;   
                             }
+                            removePlaceholder(temp);
                         } else {
                             if (temp->m_left) {
                                 if (temp->m_parent->m_right->m_id > temp->m_left->m_id) {

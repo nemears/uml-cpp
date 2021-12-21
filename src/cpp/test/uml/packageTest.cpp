@@ -186,6 +186,52 @@ TEST_F(PackageTest, removeOwnedStereotype) {
     ASSERT_TRUE(p.getPackagedElements().contains(pp));
 }
 
+TEST_F(PackageTest, inTreeRemoveOwnedStereotype) {
+    UmlManager m;
+    Package& p = m.create<Package>();
+    Stereotype& s = m.create<Stereotype>();
+    PackageMerge& pm = m.create<PackageMerge>();
+    p.getOwnedStereotypes().add(s);
+    p.getPackageMerge().add(pm);
+    ASSERT_EQ(p.getOwnedStereotypes().size(), 1);
+    ASSERT_EQ(p.getPackagedElements().size(), 1);
+    ASSERT_EQ(p.getOwnedMembers().size(), 1);
+    ASSERT_EQ(p.getMembers().size(), 1);
+    ASSERT_EQ(p.getPackageMerge().size(), 1);
+    ASSERT_EQ(p.getOwnedElements().size(), 2);
+    ASSERT_TRUE(p.getOwnedStereotypes().contains(s));
+    ASSERT_TRUE(p.getPackagedElements().contains(s));
+    ASSERT_TRUE(p.getOwnedMembers().contains(s));
+    ASSERT_TRUE(p.getMembers().contains(s));
+    ASSERT_TRUE(p.getOwnedElements().contains(s));
+    ASSERT_FALSE(p.getPackageMerge().contains(s.getID()));
+    ASSERT_FALSE(p.getOwnedStereotypes().contains(pm.getID()));
+    ASSERT_FALSE(p.getPackagedElements().contains(pm.getID()));
+    ASSERT_FALSE(p.getOwnedMembers().contains(pm.getID()));
+    ASSERT_FALSE(p.getMembers().contains(pm.getID()));
+    ASSERT_TRUE(p.getOwnedElements().contains(pm));
+    ASSERT_TRUE(p.getPackageMerge().contains(pm));
+    p.getOwnedStereotypes().remove(s);
+    ASSERT_EQ(p.getOwnedStereotypes().size(), 0);
+    ASSERT_EQ(p.getPackagedElements().size(), 0);
+    ASSERT_EQ(p.getOwnedMembers().size(), 0);
+    ASSERT_EQ(p.getMembers().size(), 0);
+    ASSERT_EQ(p.getPackageMerge().size(), 1);
+    ASSERT_EQ(p.getOwnedElements().size(), 1);
+    ASSERT_FALSE(p.getOwnedStereotypes().contains(s));
+    ASSERT_FALSE(p.getPackagedElements().contains(s));
+    ASSERT_FALSE(p.getOwnedMembers().contains(s));
+    ASSERT_FALSE(p.getMembers().contains(s));
+    ASSERT_FALSE(p.getOwnedElements().contains(s));
+    ASSERT_FALSE(p.getPackageMerge().contains(s.getID()));
+    ASSERT_FALSE(p.getOwnedStereotypes().contains(pm.getID()));
+    ASSERT_FALSE(p.getPackagedElements().contains(pm.getID()));
+    ASSERT_FALSE(p.getOwnedMembers().contains(pm.getID()));
+    ASSERT_FALSE(p.getMembers().contains(pm.getID()));
+    ASSERT_TRUE(p.getOwnedElements().contains(pm));
+    ASSERT_TRUE(p.getPackageMerge().contains(pm));
+}
+
 TEST_F(PackageTest, packageFullCopyAndEditTest) {
     UmlManager m;
     Package& root = m.create<Package>();

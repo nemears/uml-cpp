@@ -523,30 +523,28 @@ namespace UML {
                         AbstractSet* front = queue.front();
                         queue.pop_front();
                         if (front->m_root == node->m_parent) {
+                            for (auto& subset : front->m_subSets) {
+                                if (subset != this && subset->m_root && subset->m_root == node->m_parent) {
+                                    SetNode* temp =  node->m_parent->m_left;
+                                    if (temp->m_parent) {
+                                        temp->m_parent = 0;
+                                    }
+                                    while (temp && temp->m_guard < subset->m_guard) {
+                                        temp = node->m_left;
+                                    }
+                                    subset->m_root = temp;
+                                }
+                            }
                             front->m_root = node->m_parent->m_left;
                             if (front->m_root) {
                                 front->m_root->m_parent = 0;
-                            }
-                            for (auto& subset : front->m_subSets) {
-                                if (subset != this) {
-                                    if (subset->m_root == node->m_parent) {
-                                        SetNode* temp =  node->m_parent->m_left;
-                                        if (temp->m_parent) {
-                                            temp->m_parent = 0;
-                                        }
-                                        while (temp && temp->m_guard < subset->m_guard) {
-                                            temp = node->m_left;
-                                        }
-                                        subset->m_root = temp;
-                                    }
-                                }
                             }
                         }
                         for (auto& subsetOf : front->m_superSets) {
                             queue.push_back(subsetOf);
                         }
                     }
-                    delete node->m_parent;
+                    deleteNode(node->m_parent);
                     node->m_parent = 0;
                 }
             };

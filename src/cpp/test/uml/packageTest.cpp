@@ -241,6 +241,9 @@ TEST_F(PackageTest, packageFullCopyAndEditTest) {
     PackageMerge& merge = m.create<PackageMerge>();
     ProfileApplication& profileApplication = m.create<ProfileApplication>();
     Stereotype& stereotype = m.create<Stereotype>();
+    stereotype.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
+    profileApplication.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
+    merge.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
     c1.getOwnedStereotypes().add(stereotype);
     merge.setMergedPackage(&merged);
     c1.getPackageMerge().add(merge);

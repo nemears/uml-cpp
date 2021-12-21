@@ -790,3 +790,112 @@ TEST_F(SetTest, diamondSubsetsTest) {
     delete set1;
     delete root;
 }
+
+TEST_F(SetTest, tripleRemovePlacholder) {
+    Set<Element>* root = new Set<Element>;
+    Set<NamedElement>* set1 = new Set<NamedElement>;
+    Set<PackageableElement>* set2 = new Set<PackageableElement>;
+    Set<Package>* set3 = new Set<Package>;
+    set1->subsets(*root);
+    set2->subsets(*root);
+    set3->subsets(*root);
+    UmlManager m;
+    Package& pckg1 = m.create<Package>();
+    Package& pckg2 = m.create<Package>();
+    Package& pckg3 = m.create<Package>();
+
+    set1->add(pckg1);
+    set2->add(pckg2);
+    set3->add(pckg3);
+
+    ASSERT_EQ(root->size(), 3);
+    ASSERT_EQ(set1->size(), 1);
+    ASSERT_EQ(set2->size(), 1);
+    ASSERT_EQ(set3->size(), 1);
+
+    ASSERT_TRUE(root->contains(pckg1));
+    ASSERT_TRUE(set1->contains(pckg1));
+    ASSERT_FALSE(set2->contains(pckg1));
+    ASSERT_FALSE(set3->contains(pckg1));
+
+    ASSERT_TRUE(root->contains(pckg2));
+    ASSERT_FALSE(set1->contains(pckg2));
+    ASSERT_TRUE(set2->contains(pckg2));
+    ASSERT_FALSE(set3->contains(pckg2));
+
+    ASSERT_TRUE(root->contains(pckg3));
+    ASSERT_FALSE(set1->contains(pckg3));
+    ASSERT_FALSE(set2->contains(pckg3));
+    ASSERT_TRUE(set3->contains(pckg3));
+
+    set1->remove(pckg1);
+
+    ASSERT_EQ(root->size(), 2);
+    ASSERT_EQ(set1->size(), 0);
+    ASSERT_EQ(set2->size(), 1);
+    ASSERT_EQ(set3->size(), 1);
+
+    ASSERT_FALSE(root->contains(pckg1));
+    ASSERT_FALSE(set1->contains(pckg1));
+    ASSERT_FALSE(set2->contains(pckg1));
+    ASSERT_FALSE(set3->contains(pckg1));
+
+    ASSERT_TRUE(root->contains(pckg2));
+    ASSERT_FALSE(set1->contains(pckg2));
+    ASSERT_TRUE(set2->contains(pckg2));
+    ASSERT_FALSE(set3->contains(pckg2));
+
+    ASSERT_TRUE(root->contains(pckg3));
+    ASSERT_FALSE(set1->contains(pckg3));
+    ASSERT_FALSE(set2->contains(pckg3));
+    ASSERT_TRUE(set3->contains(pckg3));
+
+    set2->remove(pckg2);
+
+    ASSERT_EQ(root->size(), 1);
+    ASSERT_EQ(set1->size(), 0);
+    ASSERT_EQ(set2->size(), 0);
+    ASSERT_EQ(set3->size(), 1);
+
+    ASSERT_FALSE(root->contains(pckg1));
+    ASSERT_FALSE(set1->contains(pckg1));
+    ASSERT_FALSE(set2->contains(pckg1));
+    ASSERT_FALSE(set3->contains(pckg1));
+
+    ASSERT_TRUE(root->contains(pckg2));
+    ASSERT_FALSE(set1->contains(pckg2));
+    ASSERT_FALSE(set2->contains(pckg2));
+    ASSERT_FALSE(set3->contains(pckg2));
+
+    ASSERT_TRUE(root->contains(pckg3));
+    ASSERT_FALSE(set1->contains(pckg3));
+    ASSERT_FALSE(set2->contains(pckg3));
+    ASSERT_TRUE(set3->contains(pckg3));
+
+    set3->remove(pckg3);
+
+    ASSERT_EQ(root->size(), 0);
+    ASSERT_EQ(set1->size(), 0);
+    ASSERT_EQ(set2->size(), 0);
+    ASSERT_EQ(set3->size(), 0);
+
+    ASSERT_FALSE(root->contains(pckg1));
+    ASSERT_FALSE(set1->contains(pckg1));
+    ASSERT_FALSE(set2->contains(pckg1));
+    ASSERT_FALSE(set3->contains(pckg1));
+
+    ASSERT_TRUE(root->contains(pckg2));
+    ASSERT_FALSE(set1->contains(pckg2));
+    ASSERT_FALSE(set2->contains(pckg2));
+    ASSERT_FALSE(set3->contains(pckg2));
+
+    ASSERT_FALSE(root->contains(pckg3));
+    ASSERT_FALSE(set1->contains(pckg3));
+    ASSERT_FALSE(set2->contains(pckg3));
+    ASSERT_FALSE(set3->contains(pckg3));
+
+    delete set3;
+    delete set2;
+    delete set1;
+    delete root;
+}

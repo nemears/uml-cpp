@@ -865,7 +865,7 @@ TEST_F(SetTest, tripleRemovePlacholder) {
     ASSERT_FALSE(set2->contains(pckg1));
     ASSERT_FALSE(set3->contains(pckg1));
 
-    ASSERT_TRUE(root->contains(pckg2));
+    ASSERT_FALSE(root->contains(pckg2));
     ASSERT_FALSE(set1->contains(pckg2));
     ASSERT_FALSE(set2->contains(pckg2));
     ASSERT_FALSE(set3->contains(pckg2));
@@ -887,7 +887,7 @@ TEST_F(SetTest, tripleRemovePlacholder) {
     ASSERT_FALSE(set2->contains(pckg1));
     ASSERT_FALSE(set3->contains(pckg1));
 
-    ASSERT_TRUE(root->contains(pckg2));
+    ASSERT_FALSE(root->contains(pckg2));
     ASSERT_FALSE(set1->contains(pckg2));
     ASSERT_FALSE(set2->contains(pckg2));
     ASSERT_FALSE(set3->contains(pckg2));

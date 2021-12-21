@@ -550,7 +550,7 @@ namespace UML {
                     }
                     node->m_parent->m_left->m_parent = node->m_parent->m_parent;
                     if (node->m_parent->m_parent) {
-                        node->m_parent->m_parent = node->m_parent->m_left;
+                        node->m_parent->m_parent->m_left = node->m_parent->m_left;
                     }
                     deleteNode(node->m_parent);
                     node->m_parent = 0;

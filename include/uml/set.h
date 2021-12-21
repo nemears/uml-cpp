@@ -237,6 +237,9 @@ namespace UML {
                                 place(parent->m_right, temp);
                                 parent->m_right = temp;
                                 node->m_parent = parent;
+                            } else {
+                                // TODO double check logic
+                                place(node, parent->m_left);
                             }
                         }
                     } else {
@@ -321,7 +324,7 @@ namespace UML {
                 } else {
                     // determine whether to create placeholder (adding node of guard not equal to root)
                     if (m_root->m_guard != node->m_guard) {
-                        // find node to create placeholder
+                        // go all the way left to create placeholder
                         SetNode* temp = m_root;
                         while (temp->m_id == placeholderID) {
                             temp = temp->m_left;
@@ -523,8 +526,13 @@ namespace UML {
                         AbstractSet* front = queue.front();
                         queue.pop_front();
                         if (front->m_root == node->m_parent) {
+                            front->m_root = node->m_parent->m_left;
+                            if (front->m_root) {
+                                front->m_root->m_parent = 0;
+                            }
                             for (auto& subset : front->m_subSets) {
                                 if (subset != this && subset->m_root && subset->m_root == node->m_parent) {
+                                    // set proper root to other subset if removed
                                     SetNode* temp =  node->m_parent->m_left;
                                     if (temp->m_parent) {
                                         temp->m_parent = 0;
@@ -535,14 +543,14 @@ namespace UML {
                                     subset->m_root = temp;
                                 }
                             }
-                            front->m_root = node->m_parent->m_left;
-                            if (front->m_root) {
-                                front->m_root->m_parent = 0;
-                            }
                         }
                         for (auto& subsetOf : front->m_superSets) {
                             queue.push_back(subsetOf);
                         }
+                    }
+                    node->m_parent->m_left->m_parent = node->m_parent->m_parent;
+                    if (node->m_parent->m_parent) {
+                        node->m_parent->m_parent = node->m_parent->m_left;
                     }
                     deleteNode(node->m_parent);
                     node->m_parent = 0;
@@ -565,7 +573,7 @@ namespace UML {
                             if (temp->m_right) {
                                 temp->m_right->m_parent = temp->m_parent;   
                             }
-                            removePlaceholder(temp);
+                            // removePlaceholder(temp);
                         } else {
                             if (temp->m_left) {
                                 if (temp->m_parent->m_right->m_id > temp->m_left->m_id) {

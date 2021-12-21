@@ -803,6 +803,9 @@ TEST_F(SetTest, tripleRemovePlacholder) {
     Package& pckg1 = m.create<Package>();
     Package& pckg2 = m.create<Package>();
     Package& pckg3 = m.create<Package>();
+    pckg1.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
+    pckg2.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
+    pckg3.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
 
     set1->add(pckg1);
     set2->add(pckg2);

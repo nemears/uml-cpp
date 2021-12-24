@@ -10,8 +10,20 @@ TEST_F(ClassifierTest, GetOwnedAttributesTest) {
 	Class& classifier1 = m.create<Class>();
 	Property& prop = m.create<Property>();
 	classifier1.getOwnedAttributes().add(prop);
+  ASSERT_FALSE(classifier1.getOwnedAttributes().empty());
+  ASSERT_EQ(classifier1.getOwnedAttributes().size(), 1);
+  ASSERT_TRUE(classifier1.getOwnedAttributes().contains(prop));
 	ASSERT_FALSE(classifier1.getAttributes().empty());
 	ASSERT_EQ(classifier1.getAttributes().front(), prop);
+  ASSERT_TRUE(classifier1.getAttributes().contains(prop));
+  ASSERT_EQ(classifier1.getFeatures().size(), 1);
+  ASSERT_TRUE(classifier1.getFeatures().contains(prop));
+  ASSERT_EQ(classifier1.getOwnedMembers().size(), 1);
+  ASSERT_TRUE(classifier1.getOwnedMembers().contains(prop));
+  ASSERT_EQ(classifier1.getMembers().size(), 1);
+  ASSERT_TRUE(classifier1.getMembers().contains(prop));
+  ASSERT_EQ(classifier1.getOwnedElements().size(), 1);
+  ASSERT_TRUE(classifier1.getOwnedElements().contains(prop));
 }
 
 TEST_F(ClassifierTest, addAttributeFunctorTest) {
@@ -76,7 +88,7 @@ TEST_F(ClassifierTest, copyClassifierTest) {
   ASSERT_TRUE(&c2.getAttributes().front() == &p);
   ASSERT_TRUE(c2.getFeatures().size() == 1);
   ASSERT_TRUE(&c2.getFeatures().front() == &p);
-  ASSERT_TRUE(c2.getMembers().size() == 1);
+  ASSERT_EQ(c2.getMembers().size(), 1);
   ASSERT_TRUE(&c2.getMembers().front() == &p);
   ASSERT_TRUE(c2.getOwningPackage() == &d);
   ASSERT_EQ(c2.getGeneralizations().size(), 1);

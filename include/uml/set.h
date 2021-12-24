@@ -316,10 +316,10 @@ namespace UML {
                 if (!m_root) {
                     m_root = node;
                     for (auto& subsetOf : m_superSets) {
-                        subsetOf->superSetAdd(node);
-                    }
-                    for (auto& subsetOf : m_superSets) {
-                        subsetOf->m_size++;
+                        if (!subsetOf->m_root || (subsetOf->m_root && subsetOf->m_root->m_guard != node->m_guard)) {
+                            subsetOf->superSetAdd(node);
+                            subsetOf->m_size++;
+                        }
                     }
                 } else {
                     // determine whether to create placeholder (adding node of guard not equal to root)
@@ -679,19 +679,39 @@ namespace UML {
                         }
                     }
                 }
+                // graph bfs adjust supersets
+                std::list<AbstractSet*> queue;
                 for (auto& subsetOf : m_superSets) {
-                    subsetOf->superSetRemove(id);
-                    // if (subsetOf->m_root->m_id == id) {
-                    //     if (subsetOf->m_root->m_left) {
-                    //         place(subsetOf->m_root->m_right, subsetOf->m_root->m_left);
-                    //         m_root->m_left->m_parent = m_root->m_parent;
-                    //         m_root = subsetOf->m_root->m_left;
-                    //     } else {
-                    //         subsetOf->m_root = 0;
-                    //     }
-                    // }
+                    queue.push_back(subsetOf);
+                }
+                while (!queue.empty()) {
+                    AbstractSet* front = queue.front();
+                    queue.pop_front();
+                    for (auto& subsetOf : front->m_superSets) {
+                        if (std::find(queue.begin(), queue.end(), front) == queue.end()) {
+                            queue.push_back(subsetOf);
+                        }
+                    }
+                }
+                for (auto& subsetOf : queue) {
+                    if (subsetOf->m_root && subsetOf->m_root->m_id == id) {
+                        subsetOf->m_root = subsetOf->m_root->m_left;
+                    }
                     subsetOf->m_size--;
                 }
+                // for (auto& subsetOf : m_superSets) {
+                //     subsetOf->superSetRemove(id);
+                //     // if (subsetOf->m_root->m_id == id) {
+                //     //     if (subsetOf->m_root->m_left) {
+                //     //         place(subsetOf->m_root->m_right, subsetOf->m_root->m_left);
+                //     //         m_root->m_left->m_parent = m_root->m_parent;
+                //     //         m_root = subsetOf->m_root->m_left;
+                //     //     } else {
+                //     //         subsetOf->m_root = 0;
+                //     //     }
+                //     // }
+                //     subsetOf->m_size--;
+                // }
                 for (auto& redefined : m_redefines) {
                     redefined->m_size--;
                 }

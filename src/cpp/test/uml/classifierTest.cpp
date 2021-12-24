@@ -58,11 +58,11 @@ TEST_F(ClassifierTest, removeAttributeFunctorTest) {
   Property& p = m.create<Property>();
   Class& c = m.create<Class>();
   c.getOwnedAttributes().add(p);
-  ASSERT_NO_THROW(c.getOwnedAttributes().remove(p));
-  ASSERT_TRUE(c.getAttributes().size() == 0);
-  ASSERT_TRUE(c.getFeatures().size() == 0);
-  ASSERT_TRUE(c.getMembers().size() == 0);
-  ASSERT_TRUE(c.getOwnedElements().size() == 0);
+  c.getOwnedAttributes().remove(p);
+  ASSERT_EQ(c.getAttributes().size(), 0);
+  ASSERT_EQ(c.getFeatures().size(), 0);
+  ASSERT_EQ(c.getMembers().size(), 0);
+  ASSERT_EQ(c.getOwnedElements().size(), 0);
   ASSERT_TRUE(!p.getFeaturingClassifier());
   ASSERT_TRUE(!p.getNamespace());
   ASSERT_TRUE(!p.getOwner());

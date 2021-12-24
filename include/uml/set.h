@@ -684,16 +684,20 @@ namespace UML {
                 for (auto& subsetOf : m_superSets) {
                     queue.push_back(subsetOf);
                 }
+                std::vector<AbstractSet*> allSuperSets;
                 while (!queue.empty()) {
                     AbstractSet* front = queue.front();
+                    if (std::find(allSuperSets.begin(), allSuperSets.end(), front) == allSuperSets.end()) {
+                        allSuperSets.push_back(front);
+                    }
                     queue.pop_front();
                     for (auto& subsetOf : front->m_superSets) {
-                        if (std::find(queue.begin(), queue.end(), front) == queue.end()) {
+                        if (std::find(allSuperSets.begin(), allSuperSets.end(), subsetOf) == allSuperSets.end()) {
                             queue.push_back(subsetOf);
                         }
                     }
                 }
-                for (auto& subsetOf : queue) {
+                for (auto& subsetOf : allSuperSets) {
                     if (subsetOf->m_root && subsetOf->m_root->m_id == id) {
                         subsetOf->m_root = subsetOf->m_root->m_left;
                     }

@@ -312,13 +312,35 @@ namespace UML {
                 }
                 return 0;
             };
+            void increaseSuperSetSize() {
+                //graph bfs adjust all supersets above this size
+                std::list<AbstractSet*> queue;
+                std::vector<AbstractSet*> allSuperSets;
+                for (auto& subsetOf : m_superSets) {
+                    queue.push_back(subsetOf);
+                }
+                while (!queue.empty()) {
+                    AbstractSet* front = queue.front();
+                    queue.pop_front();
+                    if (std::find(allSuperSets.begin(), allSuperSets.end(), front) == allSuperSets.end()) {
+                        allSuperSets.push_back(front);
+                        for (auto& subsetOf : front->m_superSets) {
+                            queue.push_back(subsetOf);
+                        }
+                    }
+                }
+                for (auto& subsetOf : allSuperSets) {
+                    subsetOf->m_size++;
+                }
+            }
             void superSetAdd(SetNode* node) override {
                 if (!m_root) {
                     m_root = node;
+                    m_size++;
                     for (auto& subsetOf : m_superSets) {
                         if (!subsetOf->m_root || (subsetOf->m_root && subsetOf->m_root->m_guard != node->m_guard)) {
                             subsetOf->superSetAdd(node);
-                            subsetOf->m_size++;
+                            // subsetOf->m_size++;
                         }
                     }
                 } else {
@@ -363,11 +385,10 @@ namespace UML {
                             }
                         }
                         place(temp, placeholderNode);
-                        for (auto& subsetOf : m_superSets) {
-                            subsetOf->m_size++;
-                        }
+                        increaseSuperSetSize();
                     }
                     place(node, m_root);
+                    m_size++;
                 }
             };
             void add(SetNode* node) {
@@ -418,6 +439,25 @@ namespace UML {
                             }
                         }
                         place(temp, node);
+                        //graph bfs adjust all supersets above this size
+                        std::list<AbstractSet*> queue;
+                        std::vector<AbstractSet*> allSuperSets;
+                        for (auto& subsetOf : m_superSets) {
+                            queue.push_back(subsetOf);
+                        }
+                        while (!queue.empty()) {
+                            AbstractSet* front = queue.front();
+                            queue.pop_front();
+                            if (std::find(allSuperSets.begin(), allSuperSets.end(), front) == allSuperSets.end()) {
+                                allSuperSets.push_back(front);
+                                for (auto& subsetOf : front->m_superSets) {
+                                    queue.push_back(subsetOf);
+                                }
+                            }
+                        }
+                        for (auto& subsetOf : allSuperSets) {
+                            subsetOf->m_size++;
+                        }
                     } else {
                         if (node->m_guard == m_guard) {
                             place(node, m_root);
@@ -453,14 +493,49 @@ namespace UML {
                                 }
                             }
                             place(node, m_root);
+                            //graph bfs adjust all supersets above this size
+                            std::list<AbstractSet*> queue;
+                            std::vector<AbstractSet*> allSuperSets;
+                            for (auto& subsetOf : m_superSets) {
+                                queue.push_back(subsetOf);
+                            }
+                            while (!queue.empty()) {
+                                AbstractSet* front = queue.front();
+                                queue.pop_front();
+                                if (std::find(allSuperSets.begin(), allSuperSets.end(), front) == allSuperSets.end()) {
+                                    allSuperSets.push_back(front);
+                                    for (auto& subsetOf : front->m_superSets) {
+                                        queue.push_back(subsetOf);
+                                    }
+                                }
+                            }
+                            for (auto& subsetOf : allSuperSets) {
+                                subsetOf->m_size++;
+                            }
                         }
                     }
                 }
                 node->m_guard = m_guard;
                 m_size++;
-                for (auto& subsetOf : m_superSets) {
-                    subsetOf->m_size++;
-                }
+                // // graph bfs adjust all supersets size
+                // std::list<AbstractSet*> queue;
+                // std::vector<AbstractSet*> allSuperSets;
+                // for (auto& subsetOf : m_superSets) {
+                //     queue.push_back(subsetOf);
+                // }
+                // while (!queue.empty()) {
+                //     AbstractSet* front = queue.front();
+                //     queue.pop_front();
+                //     if (std::find(allSuperSets.begin(), allSuperSets.end(), front) == allSuperSets.end()) {
+                //         allSuperSets.push_back(front);
+                //     }
+                //     for (auto& subsetOf : front->m_superSets) {
+                //         queue.push_back(subsetOf);
+                //     }
+                // }
+                // for (auto& subsetOf : allSuperSets) {
+                //     subsetOf->m_size++;
+                // }
                 for (auto& redefined : m_redefines) {
                     redefined->m_size++;
                 }
@@ -692,9 +767,7 @@ namespace UML {
                     }
                     queue.pop_front();
                     for (auto& subsetOf : front->m_superSets) {
-                        if (std::find(allSuperSets.begin(), allSuperSets.end(), subsetOf) == allSuperSets.end()) {
-                            queue.push_back(subsetOf);
-                        }
+                        queue.push_back(subsetOf);
                     }
                 }
                 for (auto& subsetOf : allSuperSets) {
@@ -703,19 +776,6 @@ namespace UML {
                     }
                     subsetOf->m_size--;
                 }
-                // for (auto& subsetOf : m_superSets) {
-                //     subsetOf->superSetRemove(id);
-                //     // if (subsetOf->m_root->m_id == id) {
-                //     //     if (subsetOf->m_root->m_left) {
-                //     //         place(subsetOf->m_root->m_right, subsetOf->m_root->m_left);
-                //     //         m_root->m_left->m_parent = m_root->m_parent;
-                //     //         m_root = subsetOf->m_root->m_left;
-                //     //     } else {
-                //     //         subsetOf->m_root = 0;
-                //     //     }
-                //     // }
-                //     subsetOf->m_size--;
-                // }
                 for (auto& redefined : m_redefines) {
                     redefined->m_size--;
                 }
@@ -962,29 +1022,6 @@ namespace UML {
                 } else {
                     throw ID_doesNotExistException2(id);
                 }
-            };
-            bool isPrime(size_t num) {
-                if (num == 2 || num == 3) {
-                    return true;
-                }
-                if (num % 2 == 0 || num % 3 == 0) {
-                    return false;
-                }
-                int divisor = 6;
-                while (divisor * divisor - 2 * divisor + 1 <= num) {
-                    if (num % (divisor - 1) == 0) {
-                        return false;
-                    }
-                    if (num % (divisor + 1) == 0) {
-                        return false;
-                    }
-                    divisor += 6;
-                }
-                return true;
-            };
-            size_t nextPrime(size_t curr) {
-                while (!isPrime(curr++)){};
-                return curr;
             };
         public:
             inline Set(Element* el) : m_el(el) {};

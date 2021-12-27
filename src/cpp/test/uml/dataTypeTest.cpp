@@ -59,16 +59,44 @@ TEST_F(DataTypeTest, removeOwnedAttributeFunctorTest) {
     Property& p = m.create<Property>();
     Property& p2 = m.create<Property>();
     d.getOwnedAttributes().add(p);
-    d.getOwnedAttributes().add(p2);
-    ASSERT_NO_THROW(d.getOwnedAttributes().remove(p2));
     
-    ASSERT_TRUE(d.getOwnedAttributes().size() == 1);
+    ASSERT_EQ(d.getOwnedAttributes().size(), 1);
+    ASSERT_TRUE(d.getOwnedAttributes().contains(p));
+    ASSERT_EQ(d.getAttributes().size(), 1);
+    ASSERT_TRUE(d.getAttributes().contains(p));
+    ASSERT_EQ(d.getFeatures().size(), 1);
+    ASSERT_TRUE(d.getFeatures().contains(p));
+    ASSERT_EQ(d.getOwnedMembers().size(), 1);
+    ASSERT_TRUE(d.getOwnedMembers().contains(p));
+    ASSERT_EQ(d.getMembers().size(), 1);
+    ASSERT_TRUE(d.getMembers().contains(p));
+    ASSERT_EQ(d.getOwnedElements().size(), 1);
+    ASSERT_TRUE(d.getOwnedElements().contains(p));
+
+    d.getOwnedAttributes().add(p2);
+
+    ASSERT_EQ(d.getOwnedAttributes().size(), 2);
+    ASSERT_TRUE(d.getOwnedAttributes().contains(p2));
+    ASSERT_EQ(d.getAttributes().size(), 2);
+    ASSERT_TRUE(d.getAttributes().contains(p2));
+    ASSERT_EQ(d.getFeatures().size(), 2);
+    ASSERT_TRUE(d.getFeatures().contains(p2));
+    ASSERT_EQ(d.getOwnedMembers().size(), 2);
+    ASSERT_TRUE(d.getOwnedMembers().contains(p2));
+    ASSERT_EQ(d.getMembers().size(), 2);
+    ASSERT_TRUE(d.getMembers().contains(p2));
+    ASSERT_EQ(d.getOwnedElements().size(), 2);
+    ASSERT_TRUE(d.getOwnedElements().contains(p2));
+
+    d.getOwnedAttributes().remove(p2);
+    
+    ASSERT_EQ(d.getOwnedAttributes().size(), 1);
     ASSERT_TRUE(&d.getOwnedAttributes().front() == &p);
-    ASSERT_TRUE(d.getAttributes().size() == 1);
+    ASSERT_EQ(d.getAttributes().size(), 1);
     ASSERT_TRUE(&d.getAttributes().front() == &p);
-    ASSERT_TRUE(d.getMembers().size() == 1);
+    ASSERT_EQ(d.getMembers().size(), 1);
     ASSERT_TRUE(&d.getMembers().front() == &p);
-    ASSERT_TRUE(d.getOwnedMembers().size() == 1);
+    ASSERT_EQ(d.getOwnedMembers().size(), 1);
     ASSERT_TRUE(&d.getOwnedMembers().front() == &p);
     ASSERT_TRUE(d.getFeatures().size() == 1);
     ASSERT_TRUE(&d.getFeatures().front() == &p);

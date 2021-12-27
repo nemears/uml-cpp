@@ -340,11 +340,10 @@ namespace UML {
                     for (auto& subsetOf : m_superSets) {
                         if (!subsetOf->m_root || (subsetOf->m_root && subsetOf->m_root->m_guard != node->m_guard)) {
                             subsetOf->superSetAdd(node);
-                            // subsetOf->m_size++;
                         }
                     }
                 } else {
-                    // determine whether to create placeholder (adding node of guard not equal to root)
+                    // determine whether to create placeholder (adding node of guard not equal to root and other subsets are full)
                     if (m_root->m_guard != node->m_guard) {
                         // go all the way left to create placeholder
                         SetNode* temp = m_root;
@@ -370,7 +369,7 @@ namespace UML {
                                     set->m_root = placeholderNode;
                                     for (auto& subsetOf : set->m_superSets) {
                                         queue.push_back(subsetOf);
-                                        subsetOf->m_size++;
+                                        // subsetOf->m_size++;
                                     }
                                 }
                             }
@@ -461,6 +460,7 @@ namespace UML {
                     } else {
                         if (node->m_guard == m_guard) {
                             place(node, m_root);
+                            increaseSuperSetSize();
                         } else {
                             // a SuperSet already has this node , but it has been dereferenced from set
                             if (m_root->m_guard != node->m_guard) {

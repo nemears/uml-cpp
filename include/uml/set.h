@@ -215,6 +215,11 @@ namespace UML {
             Set<T,U>& (U::*m_signature)() = 0;
             bool m_readOnly = false;
 
+            /**
+             * Places the node within the tree taking in account the id and the guard of the node
+             * @param node the new node being placed within the tree
+             * @param parent the node that you want to place the new node below
+             **/
             void place(SetNode* node, SetNode* parent) override {
                 if (node->m_id != placeholderID && node->m_id == parent->m_id) {
                     delete node;
@@ -257,6 +262,12 @@ namespace UML {
                     node->m_parent = parent;
                 }
             };
+            /**
+             * Searched the tree for the node with given id from the node supplied
+             * @param id the ID of the node you are looking for
+             * @param node the node you are basing your search off of
+             * @return pointer to the node that matched the ID, or 0 if the node was not found
+             **/
             SetNode* search(ID id, SetNode* node) override {
                 if (node->m_id == id) {
                     // found match
@@ -294,6 +305,12 @@ namespace UML {
                     return ret;
                 }
             };
+            /**
+             * Searches the tree for the node with the name supplied
+             * @param name string of the name of the node being searched for
+             * @param node the node that you are basing your search off of
+             * @return the node that was found that matched the name supplied or 0 if no match was found
+             **/
             SetNode* search(std::string name, SetNode* node) {
                 if (node->m_name == name) {
                     return node;
@@ -312,6 +329,9 @@ namespace UML {
                 }
                 return 0;
             };
+            /**
+             * increase the size of all supersets of this set, this does a graph bfs search for all nodes and increases their size
+             **/
             void increaseSuperSetSize() {
                 //graph bfs adjust all supersets above this size
                 std::list<AbstractSet*> queue;
@@ -333,6 +353,11 @@ namespace UML {
                     subsetOf->m_size++;
                 }
             }
+            /**
+             * this set makes a node added to a set conform to its superset
+             * TODO: double check description and use
+             * @param node the new node added to this sets subsets
+             **/
             void superSetAdd(SetNode* node) override {
                 if (!m_root) {
                     m_root = node;
@@ -384,12 +409,16 @@ namespace UML {
                             }
                         }
                         place(temp, placeholderNode);
-                        increaseSuperSetSize();
                     }
                     place(node, m_root);
                     m_size++;
+                    increaseSuperSetSize();
                 }
             };
+            /**
+             * Adds a node into the tree for this set
+             * @param node the new node being added to the tree
+             **/
             void add(SetNode* node) {
                 if (!m_root) {
                     m_root = node;
@@ -540,6 +569,10 @@ namespace UML {
                     redefined->m_size++;
                 }
             };
+            /**
+             * adds an element to the set without invoking it's opposite, functors or singleton behavior
+             * @param el the element being added to the set
+             **/
             void innerAdd(T& el) {
                 SetNode* node = createNode(el);
                 setName(node);
@@ -550,6 +583,10 @@ namespace UML {
                     }
                 }
             };
+            /**
+             * Adds an element to the set without invoking its opposite functor
+             * @param el the element being added to the set
+             **/
             void nonOppositeAdd(T& el) {
                 if (m_upper) {
                     // this is a workaround to a polymorphic add, look at size to determine if singleton or not
@@ -578,9 +615,17 @@ namespace UML {
                     (*func)(el);
                 }
             };
+            /**
+             * polymorphic method to delete a node on removal or destruction
+             * @param node the node being deleted from memory
+             **/
             virtual void deleteNode(SetNode* node) {
                 delete node;
             };
+            /**
+             * makes removed node satisfy condition of supersets specifically the size and if the root was removed
+             * @param id the id of the node being removed
+             **/
             void superSetRemove(ID id) override {
                 if (m_root && m_root->m_id == id) {
                     m_root = m_root->m_left;
@@ -590,6 +635,10 @@ namespace UML {
                     }
                 }
             };
+            /**
+             * checks if the parent of the node being removed is a placeholder and if it needs to be deleted
+             * @param node the node being removed to check for placeholders
+             **/
             void removePlaceholder(SetNode* node) {
                 if (node->m_parent->m_id == placeholderID) {
                     // bfs fix get rid of placeholder
@@ -631,6 +680,10 @@ namespace UML {
                     node->m_parent = 0;
                 }
             };
+            /**
+             * removes a node from the tree with the supplied id without invoking the opposite, copies, or functors
+             * @param id the id of the node being removed
+             **/
             void innerRemove(ID id) {
                 SetNode* temp = search(id, m_root);
                 if (temp->m_parent) {
@@ -788,6 +841,10 @@ namespace UML {
                 deleteNode(temp);
                 m_size--;
             };
+            /**
+             * removes the node with the supplied id without invoking the opposite functors
+             * @param id the id of the node being removed
+             **/
             void nonOppositeRemove(ID id) {
                 innerRemove(id);
                 if (m_el) {
@@ -802,6 +859,11 @@ namespace UML {
                     m_el->removeReference(id);
                 }
             };
+            /**
+             * looks for a node with the supplied id in its parent sets to see if a new node has to be created
+             * @param id the id of the node we are looking for in parent sets
+             * @return the node if found, or 0 if it was not found
+             **/
             inline SetNode* lookForNodeInParents(ID id) {
                 for (auto& subsetOf : m_superSets) {
                     SetNode* temp = 0;
@@ -845,6 +907,11 @@ namespace UML {
                 }
                 return 0;
             };
+            /**
+             * polymorphic method to create a new node for placement in the set, or find in parents set
+             * @param el the Element we are creating a node for
+             * @return the node that was created or found
+             **/
             inline virtual SetNode* createNode(T& el) {
                 SetNode* temp = lookForNodeInParents(el.getID());
                 if (temp) {
@@ -854,12 +921,21 @@ namespace UML {
                 ret->m_guard = m_guard;
                 return ret;
             };
+            /**
+             * polymorphic method to create a new node for placement in the set, or find in parents set
+             * @param id the id of the Element we are creating a node for
+             * @return the node that was created or found
+             **/
             virtual SetNode* createNode(ID id) {
                 SetNode* ret = new SetNode();
                 ret->m_id = id;
                 ret->m_guard = m_guard;
                 return ret;
             };
+            /**
+             * releases the pointer to the element that is being deleted from memory
+             * @param id the id of the Element we are releasing
+             **/
             void release(ID id) {
                 SetNode* searchResult = search(id, m_root);
                 if (!searchResult) {
@@ -869,6 +945,11 @@ namespace UML {
                     searchResult->m_el = 0;
                 }
             };
+            /**
+             * reindex a node from one id to another without invoking copies or other referenced sets
+             * @param oldID the old id of the node
+             * @param newID the new id of the node
+             **/
             void innerReindex(ID oldID, ID newID) {
                 if (m_root) {
                     SetNode* node = search(oldID, m_root);
@@ -927,6 +1008,11 @@ namespace UML {
                     }
                 }
             };
+            /**
+             * reindex a node from one id to another
+             * @param oldID the old id of the node
+             * @param newID the new id of the node
+             **/
             void reindex(ID oldID, ID newID) {
                 if (m_root) {
                     SetNode* node = search(oldID, m_root);
@@ -995,12 +1081,20 @@ namespace UML {
                     }
                 }
             };
+            /**
+             * the element is being erased from the model, we must remove it
+             * TODO
+             **/
             void eraseElement(ID id) {
                 // this will always need to search tree (don't know any quicker way)
                 if (contains(id)) {
                     innerRemove(id);
                 }
             };
+            /**
+             * protected method to allow friends to remove from a readonly set
+             * @param id the id of the node we are removing
+             **/
             void removeReadOnly(ID id) {
                 if (m_root) {
                     innerRemove(id);
@@ -1252,17 +1346,9 @@ namespace UML {
                 }
             };
             /**
-             * WARN: so for now ORDER MATTERS when subsetting a sequence
-             * the first element subsetted should be the first element
-             * instantiated, (e.g.):
-             *  Set<> a;
-             *  Set<> b;
-             *  Set<> c;
-             *  a.subsets(c); // BAD
-             *  c.subsets(b); // BAD if subsetting a after
-             *  c.subsets(a); // BAD
-             *  c.subsets(a); // GOOD
-             *  c.subsets(b); // GOOD because b instantiated after a
+             * this set subsets the set supplied, meaning all elements within this set will be contained within the set supplied
+             * but this set will not necessarily have all of the elements within the set supplied
+             * @param subsetOf the set that we are a subset of
              **/
             template <class V = Element, class W = Element> void subsets(Set<V, W>& subsetOf) {
                 if (std::find(m_superSets.begin(), m_superSets.end(), &subsetOf) == m_superSets.end()) {
@@ -1292,6 +1378,11 @@ namespace UML {
                     }
                 }
             };
+            /**
+             * creates a relationship between two sets by signature that if an element is added the set
+             * the other set referenced by the signature supplied will have this sets owning element within it
+             * @param op the signature for the set that this set is opposite of
+             **/
             void opposite(Set<U, T>& (T::*op)()) {
                 /** TODO: static_assert that we have m_el for this instance **/
                 if (m_el) {
@@ -1303,6 +1394,10 @@ namespace UML {
                     std::cerr << "WARN: opposite called when there is no element owning the set, make sure to use proper constructor!" << std::endl;
                 }
             };
+            /**
+             * makes sure that the set we are redefining is the same tree as ours and vice versa
+             * @param redefined, the set that this set is redefining
+             **/
             template <class V = Element, class W = Element> void redefines(Set<V, W>& redefined) {
                 if (m_root) {
                     std::cerr << "WARNING redefines set after set was used, must make sure redefining is done during configuration, before use!" << std::endl;
@@ -1327,6 +1422,10 @@ namespace UML {
             void removeFunctor(SetFunctor* func) {
                 m_removeFunctors.insert(func);
             };
+            /**
+             * removes an element with the supplied id from this set but keeps it within its supersets, not its subsets
+             * @param id the id of the node we want to remove from just this set
+             **/
             void removeFromJustThisSet(ID id) {
                 if (m_root->m_id == id) {
                     m_root->m_guard--;
@@ -1358,6 +1457,10 @@ namespace UML {
                 }
                 m_size--;
             }
+            /**
+             * Add an element to this set and all of its supersets
+             * @param el the element being added to the set
+             **/
             void add(T& el) {
                 if (m_readOnly) {
                     throw ReadOnlySetException(el.getID().string());
@@ -1367,10 +1470,19 @@ namespace UML {
                     (*m_oppositeFunctor)(el);
                 }
             };
+             /**
+             * Add an element to this set and all of its supersets
+             * @param el the element being added to the set
+             * @param els variardic variable to add more than one element in method call
+             **/
             template <class ... Ts> void add(T& el, Ts&... els) {
                 add(el);
                 add(els...);
             };
+            /**
+             * Adds an element to the set just using its id
+             * @param id the id of the element we want to add to the set
+             **/
             void add(ID id) {
                 if (m_readOnly) {
                     throw ReadOnlySetException(id.string());
@@ -1393,9 +1505,17 @@ namespace UML {
                     }
                 }
             };
+            /**
+             * removes the supplied element from this set
+             * @param el the element being removed from the set
+             **/
             void remove(T& el) {
                 remove(el.getID());
             };
+            /**
+             * removes the element with the given id from the set
+             * @param id the id of the element being removed from the set
+             **/
             void remove(ID id) {
                 if (m_readOnly) {
                     throw ReadOnlySetException(id.string());
@@ -1421,6 +1541,11 @@ namespace UML {
                     throw ID_doesNotExistException2(id);
                 }
             };
+            /**
+             * gets the element with the given id from the set
+             * @param id the id of the element we want to get
+             * @return the element with the supplied id
+             **/
             T& get(ID id) {
                 if (m_root) {
                     SetNode* searchResult = search(id, m_root);
@@ -1437,6 +1562,11 @@ namespace UML {
                 }
                 throw ID_doesNotExistException2(id);
             };
+            /**
+             * gets the element with the given name from the set
+             * @param name the name of the element to retreive from the set
+             * @return the first element with name supplied
+             **/
             T& get(std::string name) {
                 if (m_root) {
                     SetNode* searchResult = search(name, m_root);
@@ -1454,6 +1584,11 @@ namespace UML {
                 } 
                 throw ManagerStateException("Improper name used in set!"); // TODO change
             };
+            /**
+             * Gets the i'th element in the set, no guarantee to be the same order after mutation
+             * @param i the index of the element in the set
+             * @return the element at the index supplied
+             **/
             T& get(int i) {
                 int size = m_size;
                 SetNode* node = m_root;  //this wont work
@@ -1478,6 +1613,10 @@ namespace UML {
                 }
                 return *dynamic_cast<T*>(node->m_el);
             };
+            /**
+             * gets the first element in the set, no guarantee to be the same after mutation
+             * @return the first element in the set
+             **/
             T& front() {
                 SetNode* node;
                 if (m_root) {
@@ -1493,6 +1632,10 @@ namespace UML {
                 }
                 throw ManagerStateException("TODO front empty");
             };
+            /** 
+             * gets the last element in the set, no guarantee to be the same after mutation
+             * @return the last element in the set
+             **/
             T& back() {
                 if (m_root) {
                     SetNode* temp = m_root;
@@ -1509,6 +1652,11 @@ namespace UML {
                 }
                 throw ManagerStateException("TODO back empty");
             };
+            /**
+             * returns a bool on whether the id supplied is in the set
+             * @param id the id of the element to be determined is in the set
+             * @return true means the id supplied is in the set, false means the id supplied is not in the set
+             **/
             bool contains(ID id) {
                 bool ret = false;
                 if (m_root) {
@@ -1517,9 +1665,19 @@ namespace UML {
                 } 
                 return ret;
             };
+            /**
+             * return a bool on whether the element supplied is in the set
+             * @param el the element to be determined is in the set
+             * @return true means the element supplied is in the set, false means the element supplied is not in the set
+             **/
             bool contains(T& el) {
                 return contains(el.getID());
             };
+            /**
+             * returns the number of times the id supplied is in the set
+             * @param id the id of the element to be determined is in the set
+             * @return 1 means the id supplied is in the set, 0 means the id supplied is not in the set
+             **/
             int count(ID id) {
                 if (contains(id)) {
                     return 1;
@@ -1527,9 +1685,19 @@ namespace UML {
                     return 0;
                 }
             };
+            /**
+             * returns the number of times the id supplied is in the set
+             * @param el the element to be determined is in the set
+             * @return 1 means the id supplied is in the set, 0 means the id supplied is not in the set
+             **/
             int count(T& el) {
                 return count(el.getID());
             };
+            /**
+             * return a bool on whether the element supplied is in the set
+             * @param name the name of the element to be determined is in the set
+             * @return true means the element supplied is in the set, false means the element supplied is not in the set
+             **/
             bool contains(std::string name) {
                 bool ret = false;
                 if (m_root) {
@@ -1538,6 +1706,11 @@ namespace UML {
                 }
                 return ret;
             };
+            /**
+             * return an int on whether the element supplied is in the set
+             * @param name the name of the element to be determined is in the set
+             * @return 1 means the element supplied is in the set, 0 means the element supplied is not in the set
+             **/
             int count(std::string name) {
                 if (contains(name)) {
                     return 1;
@@ -1545,10 +1718,22 @@ namespace UML {
                     return 0;
                 }
             };
+            /** 
+             * method to determine if any elements are contained in the set
+             * @return true means there is atleast one element in the set, false means there are no elements in the set
+             **/
             bool empty() const {
                 return m_root == 0;
             };
+            /**
+             * return the number of elements in the set
+             * @return the number of elements in the set
+             **/
             size_t size() const { return m_size; };
+            /**
+             * returns an iterator to the beginning of the set
+             * @return the iterator
+             **/
             SetIterator<T> begin() {
                 SetIterator<T> it;
                 if (m_root) {
@@ -1562,12 +1747,20 @@ namespace UML {
                 }
                 return it;
             };
+            /** 
+             * returns an iterator to the end of the set
+             * @return the iterator
+             **/
             SetIterator<T> end() {
                 SetIterator<T> it;
                 it.m_node = &it.m_endNode;
                 it.m_el = m_el;
                 return it;
             };
+            /**
+             * returns an object that lets you iterate through just the ids of the set without accessing the elements
+             * @return the ID_Set object that has basic begin and end methods to id iterators
+             **/
             ID_Set<T> ids() {
                 ID_Set<T> set;
                 set.m_root = m_root;

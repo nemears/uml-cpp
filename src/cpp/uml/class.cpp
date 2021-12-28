@@ -59,8 +59,6 @@ void Class::init() {
     m_ownedOperations.m_signature = &Class::getOwnedOperationsSet;
     m_nestedClassifiers.subsets(m_ownedMembers);
     m_nestedClassifiers.m_signature = &Class::getNestedClassifiersSet;
-
-    m_redefinedElement.subsets(m_ownedOperations);
 }
 
 void Class::copy(const Class& rhs) {

@@ -368,13 +368,13 @@ namespace UML {
                         }
                     }
                 } else {
+                    // go all the way left to determine if placeholder is needed
+                    SetNode* temp = m_root;
+                    while (temp->m_id == placeholderID) {
+                        temp = temp->m_left;
+                    }
                     // determine whether to create placeholder (adding node of guard not equal to root and other subsets are full)
-                    if (m_root->m_guard != node->m_guard) {
-                        // go all the way left to create placeholder
-                        SetNode* temp = m_root;
-                        while (temp->m_id == placeholderID) {
-                            temp = temp->m_left;
-                        }
+                    if (temp->m_guard != node->m_guard) {
                         // create placeholder node
                         SetNode* placeholderNode = new SetNode();
                         placeholderNode->m_id = placeholderID;

@@ -902,3 +902,77 @@ TEST_F(SetTest, tripleRemovePlacholder) {
     delete set1;
     delete root;
 }
+
+TEST_F(SetTest, StructuredClassifierOwnedAttributesEmulationTest) {
+    Set<>* ownedElements = new Set<>;
+    Set<NamedElement>* members = new Set<NamedElement>;
+    Set<NamedElement>* ownedMembers = new Set<NamedElement>;
+    Set<Feature>* features = new Set<Feature>;
+    Set<Property>* attributes = new Set<Property>;
+    Set<NamedElement>* inheritedMembers = new Set<NamedElement>;
+    Set<ConnectableElement>* roles = new Set<ConnectableElement>;
+    Set<Property>* ownedAttributes = new Set<Property>;
+
+    ownedMembers->subsets(*ownedElements);
+    ownedMembers->subsets(*members);
+    features->subsets(*members);
+    attributes->subsets(*features);
+    inheritedMembers->subsets(*members);
+    roles->subsets(*members);
+    ownedAttributes->subsets(*attributes);
+    ownedAttributes->subsets(*roles);
+    ownedAttributes->subsets(*ownedMembers);
+
+    UmlManager m;
+    
+    Property& member = m.create<Property>();
+    Property& property = m.create<Property>();
+
+    inheritedMembers->add(member);
+
+    ASSERT_EQ(ownedElements->size(), 0);
+    ASSERT_EQ(members->size(), 1);
+    ASSERT_EQ(ownedMembers->size(), 0);
+    ASSERT_EQ(features->size(), 0);
+    ASSERT_EQ(attributes->size(), 0);
+    ASSERT_EQ(inheritedMembers->size(), 1);
+    ASSERT_EQ(roles->size(), 0);
+    ASSERT_EQ(ownedAttributes->size(), 0);
+    ASSERT_FALSE(ownedElements->contains(member));
+    ASSERT_FALSE(ownedMembers->contains(member));
+    ASSERT_FALSE(features->contains(member));
+    ASSERT_FALSE(attributes->contains(member));
+    ASSERT_FALSE(ownedAttributes->contains(member));
+    ASSERT_FALSE(roles->contains(member));
+
+    ASSERT_TRUE(members->contains(member));
+    ASSERT_TRUE(inheritedMembers->contains(member));
+    
+    ownedAttributes->add(property);
+
+    ASSERT_EQ(ownedElements->size(), 1);
+    ASSERT_EQ(members->size(), 2);
+    ASSERT_EQ(inheritedMembers->size(), 1);
+    ASSERT_EQ(features->size(), 1);
+    ASSERT_EQ(attributes->size(), 1);
+    ASSERT_EQ(roles->size(), 1);
+    ASSERT_EQ(ownedMembers->size(), 1);
+    ASSERT_EQ(ownedAttributes->size(), 1);
+
+    ASSERT_TRUE(ownedElements->contains(property));
+    ASSERT_TRUE(members->contains(property));
+    ASSERT_TRUE(ownedMembers->contains(property));
+    ASSERT_TRUE(features->contains(property));
+    ASSERT_TRUE(attributes->contains(property));
+    ASSERT_TRUE(roles->contains(property));
+    ASSERT_TRUE(ownedAttributes->contains(property));
+    ASSERT_FALSE(inheritedMembers->contains(property));
+
+    delete ownedAttributes;
+    delete roles;
+    delete attributes;
+    delete features;
+    delete ownedMembers;
+    delete members;
+    delete ownedElements;
+}

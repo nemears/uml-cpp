@@ -40,8 +40,6 @@ void DataType::init() {
     m_ownedOperations.subsets(m_ownedMembers);
     m_ownedOperations.opposite(&Operation::getDataTypeSingleton);
     m_ownedOperations.m_signature = &DataType::getOwnedOperationsSet;
-
-    m_redefinedElement.subsets(m_ownedOperations);
 }
 
 void DataType::copy(const DataType& rhs) {

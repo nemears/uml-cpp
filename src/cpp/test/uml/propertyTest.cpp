@@ -138,23 +138,52 @@ TEST_F(PropertyTest, copyPropertyTest) {
 }
 
 TEST_F(PropertyTest, redefinePropertyTest) {
-  UmlManager m;
-  Property& prop = m.create<Property>();
-  Property& redefined = m.create<Property>();
-  Class& b = m.create<Class>();
-  Class& s = m.create<Class>();
-  Generalization& gen = m.create<Generalization>();
-  s.getGeneralizations().add(gen);
-  gen.setGeneral(&b);
-  b.getOwnedAttributes().add(redefined);
-  s.getOwnedAttributes().add(prop);
-  ASSERT_NO_THROW(prop.getRedefinedProperties().add(redefined));
-  ASSERT_EQ(prop.getRedefinedProperties().size(), 1);
-  ASSERT_EQ(prop.getRedefinedProperties().front().getID(), redefined.getID());
-  ASSERT_EQ(prop.getRedefinitionContext().size(), 1);
-  ASSERT_EQ(prop.getRedefinitionContext().front().getID(), s.getID());
-  ASSERT_EQ(prop.getRedefinedElements().size(), 1);
-  ASSERT_EQ(prop.getRedefinedElements().front().getID(), redefined.getID());
+    UmlManager m;
+    Property& prop = m.create<Property>();
+    prop.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
+    Property& redefined = m.create<Property>();
+    prop.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
+    Class& b = m.create<Class>();
+    Class& s = m.create<Class>();
+    Generalization& gen = m.create<Generalization>();
+    s.getGeneralizations().add(gen);
+    gen.setGeneral(&b);
+    b.getOwnedAttributes().add(redefined);
+    s.getOwnedAttributes().add(prop);
+    ASSERT_NO_THROW(prop.getRedefinedProperties().add(redefined));
+    ASSERT_EQ(prop.getRedefinedProperties().size(), 1);
+    ASSERT_EQ(prop.getRedefinedProperties().front().getID(), redefined.getID());
+    ASSERT_EQ(prop.getRedefinitionContext().size(), 1);
+    ASSERT_EQ(prop.getRedefinitionContext().front().getID(), s.getID());
+    ASSERT_EQ(prop.getRedefinedElements().size(), 1);
+    ASSERT_EQ(prop.getRedefinedElements().front().getID(), redefined.getID());
+
+    ASSERT_EQ(b.getOwnedAttributes().size(), 1);
+    ASSERT_TRUE(b.getOwnedAttributes().contains(redefined));
+    ASSERT_EQ(b.getAttributes().size(), 1);
+    ASSERT_TRUE(b.getAttributes().contains(redefined));
+    ASSERT_EQ(b.getFeatures().size(), 1);
+    ASSERT_TRUE(b.getFeatures().contains(redefined));
+    ASSERT_EQ(b.getOwnedMembers().size(), 1);
+    ASSERT_TRUE(b.getOwnedMembers().contains(redefined));
+    ASSERT_EQ(b.getMembers().size(), 1);
+    ASSERT_TRUE(b.getMembers().contains(redefined));
+    ASSERT_EQ(b.getOwnedElements().size(), 1);
+    ASSERT_TRUE(b.getOwnedElements().contains(redefined));
+
+    ASSERT_EQ(s.getOwnedAttributes().size(), 1);
+    ASSERT_TRUE(s.getOwnedAttributes().contains(prop));
+    ASSERT_EQ(s.getAttributes().size(), 1);
+    ASSERT_TRUE(s.getAttributes().contains(prop));
+    ASSERT_EQ(s.getFeatures().size(), 1);
+    ASSERT_TRUE(s.getFeatures().contains(prop));
+    ASSERT_EQ(s.getOwnedMembers().size(), 1);
+    ASSERT_TRUE(s.getOwnedMembers().contains(prop));
+    ASSERT_EQ(s.getMembers().size(), 2);
+    ASSERT_TRUE(s.getMembers().contains(prop));
+    ASSERT_EQ(s.getOwnedElements().size(), 2);
+    ASSERT_TRUE(s.getOwnedElements().contains(prop));
+
   // TODO : restore below
 //   Property& notRelated = m.create<Property>();
 //   ASSERT_THROW(prop.getRedefinedProperties().add(notRelated), ImproperRedefinitionException);

@@ -95,6 +95,14 @@ namespace UML {
                 size_t m_guard = 0;
             };
             SetNode* m_root = 0;
+            /**
+             * The guard is the sets way of figuring out quick whether a node should be in it or not
+             * When a node is created or added to a new set it is assigned a guard to manage this
+             * the rules that determine a guard are as follows
+             *  1) if the guard is 0 it is a root set (no super sets)
+             *  2) all subsets of a set shall have a guard less than the sets guard
+             *  3) all subsets of a set shall have different guards
+             **/
             size_t m_guard = 0;
             std::vector<AbstractSet*> m_superSets;
             std::vector<AbstractSet*> m_subSets;
@@ -263,7 +271,7 @@ namespace UML {
                 }
             };
             /**
-             * Searched the tree for the node with given id from the node supplied
+             * Searches the tree for the node with given id from the node supplied
              * @param id the ID of the node you are looking for
              * @param node the node you are basing your search off of
              * @return pointer to the node that matched the ID, or 0 if the node was not found
@@ -354,6 +362,7 @@ namespace UML {
                 }
             }
             /**
+             * TODO: DELETE
              * this set makes a node added to a set conform to its superset
              * TODO: double check description and use
              * @param node the new node added to this sets subsets
@@ -434,9 +443,61 @@ namespace UML {
                         }
                     }
                     // handle supersets
+                    // graph bfs search
+                    std::list<AbstractSet*> queue;
+                    std::vector<AbstractSet*> allSuperSets;
                     for (auto& subsetOf : m_superSets) {
-                        if (node->m_guard == m_guard || subsetOf->m_guard == node->m_guard) {
-                            subsetOf->superSetAdd(node);
+                        queue.push_back(subsetOf);
+                    }
+                    while (!queue.empty()) {
+                        AbstractSet* front = queue.front();
+                        queue.pop_front();
+                        if (std::find(allSuperSets.begin(), allSuperSets.end(), front) == allSuperSets.end()) {
+                            allSuperSets.push_back(front);
+                            for (auto& subsetOf : front->m_superSets) {
+                                queue.push_back(subsetOf);
+                            }
+                        }
+                    }
+                    for (std::vector<AbstractSet*>::iterator it = allSuperSets.begin(); it != allSuperSets.end(); it++) {
+                        if (!(*it)->m_root) {
+                            (*it)->m_root = node;
+                            (*it)->m_size++;
+                        } else {
+                            // create placeholder and set superset roots as well as skip over them in list
+                            SetNode* temp = (*it)->m_root;
+                            while (temp->m_id == placeholderID) {
+                                temp = temp->m_left;
+                            }
+                            if (temp->m_guard != node->m_guard) {
+                                // create placeholder node
+                                SetNode* placeholderNode = new SetNode();
+                                placeholderNode->m_id = placeholderID;
+                                placeholderNode->m_guard = (*it)->m_guard;
+                                if (temp == (*it)->m_root) {
+                                    (*it)->m_root = placeholderNode;
+                                }
+                                if (temp->m_parent) {
+                                    placeholderNode->m_parent = temp->m_parent;
+                                    if (temp->m_parent->m_left == temp) {
+                                        temp->m_parent->m_left = placeholderNode;
+                                    } else {
+                                        temp->m_parent->m_right = temp->m_parent->m_left;
+                                        temp->m_parent->m_left = placeholderNode;
+                                    }
+                                }
+                                place(temp, placeholderNode);
+                                place(node, placeholderNode);
+                                (*it)->m_size++;
+                                // set next sets roots to this placeholder until the root is different from temp
+                                std::vector<AbstractSet*>::iterator oIt = it + 1;
+                                while (oIt != allSuperSets.end() && (*oIt)->m_root == temp) {
+                                    (*oIt)->m_root = placeholderNode;
+                                    (*oIt)->m_size++;
+                                    oIt++;
+                                }
+                                it = oIt - 1;
+                            }
                         }
                     }
                 } else {
@@ -485,6 +546,9 @@ namespace UML {
                         }
                         for (auto& subsetOf : allSuperSets) {
                             subsetOf->m_size++;
+                            if (subsetOf->m_root == temp) {
+                                subsetOf->m_root = node;
+                            }
                         }
                     } else {
                         if (node->m_guard == m_guard) {
@@ -500,7 +564,7 @@ namespace UML {
                                 bool createPlaceholder = false;
                                 AbstractSet* setThatOwnedNode = 0;
                                 for (auto& subsetOf : m_superSets) {
-                                    if (subsetOf->m_guard == node->m_guard) {
+                                    if (subsetOf->m_guard == node->m_guard && subsetOf != this) {
                                         if (!subsetOf->search(temp->m_id, subsetOf->m_root)) {
                                             createPlaceholder = true;
                                             setThatOwnedNode = subsetOf;
@@ -522,25 +586,7 @@ namespace UML {
                                 }
                             }
                             place(node, m_root);
-                            //graph bfs adjust all supersets above this size
-                            std::list<AbstractSet*> queue;
-                            std::vector<AbstractSet*> allSuperSets;
-                            for (auto& subsetOf : m_superSets) {
-                                queue.push_back(subsetOf);
-                            }
-                            while (!queue.empty()) {
-                                AbstractSet* front = queue.front();
-                                queue.pop_front();
-                                if (std::find(allSuperSets.begin(), allSuperSets.end(), front) == allSuperSets.end()) {
-                                    allSuperSets.push_back(front);
-                                    for (auto& subsetOf : front->m_superSets) {
-                                        queue.push_back(subsetOf);
-                                    }
-                                }
-                            }
-                            for (auto& subsetOf : allSuperSets) {
-                                subsetOf->m_size++;
-                            }
+                            // increaseSuperSetSize();
                         }
                     }
                 }
@@ -1353,13 +1399,18 @@ namespace UML {
             template <class V = Element, class W = Element> void subsets(Set<V, W>& subsetOf) {
                 if (std::find(m_superSets.begin(), m_superSets.end(), &subsetOf) == m_superSets.end()) {
                     m_superSets.push_back(&subsetOf);
-                    m_guard = subsetOf.m_subSets.empty() ? subsetOf.m_guard + 1 : subsetOf.m_subSets.back()->m_guard + 1;
-                    subsetOf.m_subSets.push_back(this);
                     size_t max_guard = m_guard;
+                    m_guard = subsetOf.m_subSets.empty() ? subsetOf.m_guard + 1 : subsetOf.m_subSets.back()->m_guard + 1;
+                    if (max_guard > m_guard) {
+                        m_guard = max_guard;
+                    }
+                    max_guard = m_guard;
+                    subsetOf.m_subSets.push_back(this);
                     for (auto& subset : m_subSets) {
                         if (subset->m_guard <= max_guard) {
                             subset->m_guard = max_guard + 1;
                         }
+                        max_guard++;
                     }
                     for (const auto& set : subsetOf.m_addFunctors) {
                         if (!m_addFunctors.count(set)) {

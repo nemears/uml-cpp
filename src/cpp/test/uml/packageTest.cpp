@@ -124,7 +124,9 @@ TEST_F(PackageTest, removePackageMergeTest) {
 TEST_F(PackageTest, addOwnedStereotype) {
     UmlManager m;
     Profile& p = m.create<Profile>();
+    p.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
     Stereotype& s = m.create<Stereotype>();
+    s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
     p.getOwnedStereotypes().add(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 1);
     ASSERT_EQ(p.getOwnedStereotypes().front().getID(), s.getID());
@@ -140,7 +142,9 @@ TEST_F(PackageTest, addOwnedStereotype) {
     // now with another element in packagedElements
     Profile& p2 = m.create<Profile>();
     Stereotype& s2 = m.create<Stereotype>();
+    s2.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
     Package& pp = m.create<Package>();
+    pp.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
     p2.getPackagedElements().add(pp);
     p2.getOwnedStereotypes().add(s2);
     ASSERT_EQ(p2.getOwnedStereotypes().size(), 1);
@@ -169,6 +173,7 @@ TEST_F(PackageTest, removeOwnedStereotype) {
     ASSERT_EQ(p.getOwnedStereotypes().size(), 0);
     ASSERT_EQ(p.getPackagedElements().size(), 0);
     Package& pp = m.create<Package>();
+    s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
     p.getPackagedElements().add(pp);
     p.getOwnedStereotypes().add(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 1);

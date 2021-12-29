@@ -932,6 +932,7 @@ TEST_F(SetTest, StructuredClassifierOwnedAttributesEmulationTest) {
     Set<NamedElement>* ownedMembers = new Set<NamedElement>;
     Set<Feature>* features = new Set<Feature>;
     Set<Property>* attributes = new Set<Property>;
+    Set<Generalization>* generalizations = new Set<Generalization>;
     Set<NamedElement>* inheritedMembers = new Set<NamedElement>;
     Set<ConnectableElement>* roles = new Set<ConnectableElement>;
     Set<Property>* ownedAttributes = new Set<Property>;
@@ -940,6 +941,7 @@ TEST_F(SetTest, StructuredClassifierOwnedAttributesEmulationTest) {
     ownedMembers->subsets(*members);
     features->subsets(*members);
     attributes->subsets(*features);
+    generalizations->subsets(*ownedElements);
     inheritedMembers->subsets(*members);
     roles->subsets(*members);
     ownedAttributes->subsets(*attributes);
@@ -950,14 +952,37 @@ TEST_F(SetTest, StructuredClassifierOwnedAttributesEmulationTest) {
     
     Property& member = m.create<Property>();
     Property& property = m.create<Property>();
+    Generalization& generalization = m.create<Generalization>();
+
+    generalizations->add(generalization);
+
+    ASSERT_EQ(ownedElements->size(), 1);
+    ASSERT_EQ(members->size(), 0);
+    ASSERT_EQ(ownedMembers->size(), 0);
+    ASSERT_EQ(features->size(), 0);
+    ASSERT_EQ(attributes->size(), 0);
+    ASSERT_EQ(generalizations->size(), 1);
+    ASSERT_EQ(inheritedMembers->size(), 0);
+    ASSERT_EQ(roles->size(), 0);
+    ASSERT_EQ(ownedAttributes->size(), 0);
+    ASSERT_TRUE(ownedElements->contains(generalization));
+    ASSERT_FALSE(ownedMembers->contains(generalization.getID()));
+    ASSERT_FALSE(features->contains(generalization.getID()));
+    ASSERT_FALSE(attributes->contains(generalization.getID()));
+    ASSERT_TRUE(generalizations->contains(generalization));
+    ASSERT_FALSE(ownedAttributes->contains(generalization.getID()));
+    ASSERT_FALSE(roles->contains(generalization.getID()));
+    ASSERT_FALSE(members->contains(generalization.getID()));
+    ASSERT_FALSE(inheritedMembers->contains(generalization.getID()));
 
     inheritedMembers->add(member);
 
-    ASSERT_EQ(ownedElements->size(), 0);
+    ASSERT_EQ(ownedElements->size(), 1);
     ASSERT_EQ(members->size(), 1);
     ASSERT_EQ(ownedMembers->size(), 0);
     ASSERT_EQ(features->size(), 0);
     ASSERT_EQ(attributes->size(), 0);
+    ASSERT_EQ(generalizations->size(), 1);
     ASSERT_EQ(inheritedMembers->size(), 1);
     ASSERT_EQ(roles->size(), 0);
     ASSERT_EQ(ownedAttributes->size(), 0);
@@ -965,18 +990,29 @@ TEST_F(SetTest, StructuredClassifierOwnedAttributesEmulationTest) {
     ASSERT_FALSE(ownedMembers->contains(member));
     ASSERT_FALSE(features->contains(member));
     ASSERT_FALSE(attributes->contains(member));
+    ASSERT_FALSE(generalizations->contains(member.getID()));
     ASSERT_FALSE(ownedAttributes->contains(member));
     ASSERT_FALSE(roles->contains(member));
     ASSERT_TRUE(members->contains(member));
     ASSERT_TRUE(inheritedMembers->contains(member));
+    ASSERT_TRUE(ownedElements->contains(generalization));
+    ASSERT_FALSE(ownedMembers->contains(generalization.getID()));
+    ASSERT_FALSE(features->contains(generalization.getID()));
+    ASSERT_FALSE(attributes->contains(generalization.getID()));
+    ASSERT_TRUE(generalizations->contains(generalization));
+    ASSERT_FALSE(ownedAttributes->contains(generalization.getID()));
+    ASSERT_FALSE(roles->contains(generalization.getID()));
+    ASSERT_FALSE(members->contains(generalization.getID()));
+    ASSERT_FALSE(inheritedMembers->contains(generalization.getID()));
     
     ownedAttributes->add(property);
 
-    ASSERT_EQ(ownedElements->size(), 1);
+    ASSERT_EQ(ownedElements->size(), 2);
     ASSERT_EQ(members->size(), 2);
     ASSERT_EQ(inheritedMembers->size(), 1);
     ASSERT_EQ(features->size(), 1);
     ASSERT_EQ(attributes->size(), 1);
+    ASSERT_EQ(generalizations->size(), 1);
     ASSERT_EQ(roles->size(), 1);
     ASSERT_EQ(ownedMembers->size(), 1);
     ASSERT_EQ(ownedAttributes->size(), 1);
@@ -986,6 +1022,7 @@ TEST_F(SetTest, StructuredClassifierOwnedAttributesEmulationTest) {
     ASSERT_TRUE(ownedMembers->contains(property));
     ASSERT_TRUE(features->contains(property));
     ASSERT_TRUE(attributes->contains(property));
+    ASSERT_FALSE(generalizations->contains(property.getID()));
     ASSERT_TRUE(roles->contains(property));
     ASSERT_TRUE(ownedAttributes->contains(property));
     ASSERT_FALSE(inheritedMembers->contains(property));
@@ -993,14 +1030,25 @@ TEST_F(SetTest, StructuredClassifierOwnedAttributesEmulationTest) {
     ASSERT_FALSE(ownedMembers->contains(member));
     ASSERT_FALSE(features->contains(member));
     ASSERT_FALSE(attributes->contains(member));
+    ASSERT_FALSE(generalizations->contains(member.getID()));
     ASSERT_FALSE(ownedAttributes->contains(member));
     ASSERT_FALSE(roles->contains(member));
     ASSERT_TRUE(members->contains(member));
     ASSERT_TRUE(inheritedMembers->contains(member));
+    ASSERT_TRUE(ownedElements->contains(generalization));
+    ASSERT_FALSE(ownedMembers->contains(generalization.getID()));
+    ASSERT_FALSE(features->contains(generalization.getID()));
+    ASSERT_FALSE(attributes->contains(generalization.getID()));
+    ASSERT_TRUE(generalizations->contains(generalization));
+    ASSERT_FALSE(ownedAttributes->contains(generalization.getID()));
+    ASSERT_FALSE(roles->contains(generalization.getID()));
+    ASSERT_FALSE(members->contains(generalization.getID()));
+    ASSERT_FALSE(inheritedMembers->contains(generalization.getID()));
 
     delete ownedAttributes;
     delete roles;
     delete inheritedMembers;
+    delete generalizations;
     delete attributes;
     delete features;
     delete ownedMembers;
@@ -1093,6 +1141,72 @@ TEST_F(SetTest, redefineMoreComplexSet) {
     delete redefinedStereotypes;
     delete ownedStereotypes;
     delete packagedElements;
+    delete ownedMembers;
+    delete members;
+    delete ownedElements;
+}
+
+TEST_F(SetTest, BehavioredClassifierEmulationTest) {
+    Set<>* ownedElements = new Set<>;
+    Set<NamedElement>* members = new Set<NamedElement>;
+    Set<NamedElement>* ownedMembers = new Set<NamedElement>;
+    Set<Feature>* features = new Set<Feature>;
+    Set<Behavior>* ownedBehaviors = new Set<Behavior>;
+    Set<Operation>* ownedOperations = new Set<Operation>;
+
+    ownedMembers->subsets(*ownedElements);
+    ownedMembers->subsets(*members);
+    features->subsets(*members);
+    ownedBehaviors->subsets(*ownedMembers);
+    ownedOperations->subsets(*features);
+    ownedOperations->subsets(*ownedMembers);
+
+    UmlManager m;
+    Behavior& bhv = m.create<Behavior>();
+    Operation& op = m.create<Operation>();
+
+    ownedBehaviors->add(bhv);
+
+    ASSERT_EQ(ownedElements->size(), 1);
+    ASSERT_EQ(members->size(), 1);
+    ASSERT_EQ(ownedMembers->size(), 1);
+    ASSERT_EQ(features->size(), 0);
+    ASSERT_EQ(ownedBehaviors->size(), 1);
+    ASSERT_EQ(ownedOperations->size(), 0);
+
+    ASSERT_TRUE(ownedElements->contains(bhv));
+    ASSERT_TRUE(members->contains(bhv));
+    ASSERT_TRUE(ownedMembers->contains(bhv));
+    ASSERT_FALSE(features->contains(bhv.getID()));
+    ASSERT_TRUE(ownedBehaviors->contains(bhv));
+    ASSERT_FALSE(ownedOperations->contains(bhv.getID()));
+
+    ownedOperations->add(op);
+
+    ASSERT_EQ(ownedElements->size(), 2);
+    ASSERT_EQ(members->size(), 2);
+    ASSERT_EQ(ownedMembers->size(), 2);
+    ASSERT_EQ(features->size(), 1);
+    ASSERT_EQ(ownedBehaviors->size(), 1);
+    ASSERT_EQ(ownedOperations->size(), 1);
+
+    ASSERT_TRUE(ownedElements->contains(bhv));
+    ASSERT_TRUE(members->contains(bhv));
+    ASSERT_TRUE(ownedMembers->contains(bhv));
+    ASSERT_FALSE(features->contains(bhv.getID()));
+    ASSERT_TRUE(ownedBehaviors->contains(bhv));
+    ASSERT_FALSE(ownedOperations->contains(bhv.getID()));
+
+    ASSERT_TRUE(ownedElements->contains(op));
+    ASSERT_TRUE(members->contains(op));
+    ASSERT_TRUE(ownedMembers->contains(op));
+    ASSERT_TRUE(features->contains(op));
+    ASSERT_FALSE(ownedBehaviors->contains(op.getID()));
+    ASSERT_TRUE(ownedOperations->contains(op));
+
+    delete ownedOperations;
+    delete ownedBehaviors;
+    delete features;
     delete ownedMembers;
     delete members;
     delete ownedElements;

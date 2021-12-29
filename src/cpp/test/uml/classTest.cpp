@@ -325,7 +325,7 @@ TEST_F(ClassTest, CopyClassTest) {
     ASSERT_TRUE(&c2.getRoles().front() == &p);
     ASSERT_TRUE(c2.getOwnedOperations().size() == 1);
     ASSERT_TRUE(&c2.getOwnedOperations().front() == &o);
-    ASSERT_TRUE(c2.getFeatures().size() == 2);
+    ASSERT_EQ(c2.getFeatures().size(), 2);
     ASSERT_TRUE(c2.getFeatures().contains(p.getID()));
     ASSERT_TRUE(c2.getFeatures().contains(o.getID()));
     ASSERT_TRUE(c2.getOwnedMembers().size() == 2);

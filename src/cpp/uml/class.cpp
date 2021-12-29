@@ -53,8 +53,8 @@ void Class::init() {
     m_classOwnedAttrubutes.opposite(&Property::getClassSingleton);
     m_classOwnedAttrubutes.m_signature = &Class::getOwnedAttributesSet;
     // m_parts.subsets(m_classOwnedAttrubutes);
-    m_ownedOperations.subsets(m_ownedMembers);
     m_ownedOperations.subsets(m_features);
+    m_ownedOperations.subsets(m_ownedMembers);
     m_ownedOperations.opposite(&Operation::getClassSingleton);
     m_ownedOperations.m_signature = &Class::getOwnedOperationsSet;
     m_nestedClassifiers.subsets(m_ownedMembers);

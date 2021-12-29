@@ -425,6 +425,30 @@ namespace UML {
                 }
             };
             /**
+             * Gets all sets that are a superset of this one in bfs order and stored in a pointer to a vector, 
+             * responsibility of vector destruction is required
+             * TODO: fix subsets method to make sure it will be 'proper' bfs order for algorithms
+             * @return the pointer to a vector of all supersets of this set
+             **/
+            std::vector<AbstractSet*>* getAllSuperSets() {
+                std::list<AbstractSet*> queue;
+                std::vector<AbstractSet*>* allSuperSets = new std::vector<AbstractSet*>;
+                for (auto& subsetOf : m_superSets) {
+                    queue.push_back(subsetOf);
+                }
+                while (!queue.empty()) {
+                    AbstractSet* front = queue.front();
+                    queue.pop_front();
+                    if (std::find(allSuperSets->begin(), allSuperSets->end(), front) == allSuperSets->end()) {
+                        allSuperSets->push_back(front);
+                        for (auto& subsetOf : front->m_superSets) {
+                            queue.push_back(subsetOf);
+                        }
+                    }
+                }
+                return allSuperSets;
+            }
+            /**
              * Adds a node into the tree for this set
              * @param node the new node being added to the tree
              **/
@@ -444,22 +468,8 @@ namespace UML {
                     }
                     // handle supersets
                     // graph bfs search
-                    std::list<AbstractSet*> queue;
-                    std::vector<AbstractSet*> allSuperSets;
-                    for (auto& subsetOf : m_superSets) {
-                        queue.push_back(subsetOf);
-                    }
-                    while (!queue.empty()) {
-                        AbstractSet* front = queue.front();
-                        queue.pop_front();
-                        if (std::find(allSuperSets.begin(), allSuperSets.end(), front) == allSuperSets.end()) {
-                            allSuperSets.push_back(front);
-                            for (auto& subsetOf : front->m_superSets) {
-                                queue.push_back(subsetOf);
-                            }
-                        }
-                    }
-                    for (std::vector<AbstractSet*>::iterator it = allSuperSets.begin(); it != allSuperSets.end(); it++) {
+                    std::vector<AbstractSet*>* allSuperSets = getAllSuperSets();
+                    for (std::vector<AbstractSet*>::iterator it = allSuperSets->begin(); it != allSuperSets->end(); it++) {
                         if (!(*it)->m_root) {
                             (*it)->m_root = node;
                             (*it)->m_size++;
@@ -491,7 +501,7 @@ namespace UML {
                                 (*it)->m_size++;
                                 // set next sets roots to this placeholder until the root is different from temp
                                 std::vector<AbstractSet*>::iterator oIt = it + 1;
-                                while (oIt != allSuperSets.end() && (*oIt)->m_root == temp) {
+                                while (oIt != allSuperSets->end() && (*oIt)->m_root == temp) {
                                     (*oIt)->m_root = placeholderNode;
                                     (*oIt)->m_size++;
                                     oIt++;
@@ -500,6 +510,7 @@ namespace UML {
                             }
                         }
                     }
+                    delete allSuperSets;
                 } else {
                     if (m_root->m_guard > m_guard) {
                         // if the root is a subsetted sequence push it under this one
@@ -529,88 +540,56 @@ namespace UML {
                         }
                         place(temp, node);
                         //graph bfs adjust all supersets above this size
-                        std::list<AbstractSet*> queue;
-                        std::vector<AbstractSet*> allSuperSets;
-                        for (auto& subsetOf : m_superSets) {
-                            queue.push_back(subsetOf);
-                        }
-                        while (!queue.empty()) {
-                            AbstractSet* front = queue.front();
-                            queue.pop_front();
-                            if (std::find(allSuperSets.begin(), allSuperSets.end(), front) == allSuperSets.end()) {
-                                allSuperSets.push_back(front);
-                                for (auto& subsetOf : front->m_superSets) {
-                                    queue.push_back(subsetOf);
-                                }
-                            }
-                        }
-                        for (auto& subsetOf : allSuperSets) {
+                        std::vector<AbstractSet*>* allSuperSets = getAllSuperSets();
+                        for (auto& subsetOf : *allSuperSets) {
                             subsetOf->m_size++;
                             if (subsetOf->m_root == temp) {
                                 subsetOf->m_root = node;
                             }
                         }
+                        delete allSuperSets;
                     } else {
                         if (node->m_guard == m_guard) {
                             place(node, m_root);
                             increaseSuperSetSize();
                         } else {
+                            throw ManagerStateException("TODO, diamond set special case");
                             // a SuperSet already has this node , but it has been dereferenced from set
-                            if (m_root->m_guard != node->m_guard) {
-                                SetNode* temp = m_root;
-                                while (temp->m_id == placeholderID) {
-                                    temp = temp->m_left;
-                                }
-                                bool createPlaceholder = false;
-                                AbstractSet* setThatOwnedNode = 0;
-                                for (auto& subsetOf : m_superSets) {
-                                    if (subsetOf->m_guard == node->m_guard && subsetOf != this) {
-                                        if (!subsetOf->search(temp->m_id, subsetOf->m_root)) {
-                                            createPlaceholder = true;
-                                            setThatOwnedNode = subsetOf;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (createPlaceholder) {
-                                    // create placeholder node
-                                    SetNode* placeholderNode = new SetNode();
-                                    placeholderNode->m_id = placeholderID;
-                                    placeholderNode->m_guard = m_guard;
-                                    // replace temp with placeholder
-                                    if (temp == m_root) {
-                                        m_root = placeholderNode;
-                                    }
-                                    place(temp, placeholderNode);
-                                    setThatOwnedNode->superSetAdd(node);
-                                }
-                            }
-                            place(node, m_root);
-                            // increaseSuperSetSize();
+                            // if (m_root->m_guard != node->m_guard) {
+                            //     SetNode* temp = m_root;
+                            //     while (temp->m_id == placeholderID) {
+                            //         temp = temp->m_left;
+                            //     }
+                            //     bool createPlaceholder = false;
+                            //     AbstractSet* setThatOwnedNode = 0;
+                            //     for (auto& subsetOf : m_superSets) {
+                            //         if (subsetOf->m_guard == node->m_guard && subsetOf != this) {
+                            //             if (!subsetOf->search(temp->m_id, subsetOf->m_root)) {
+                            //                 createPlaceholder = true;
+                            //                 setThatOwnedNode = subsetOf;
+                            //                 break;
+                            //             }
+                            //         }
+                            //     }
+                            //     if (createPlaceholder) {
+                            //         // create placeholder node
+                            //         SetNode* placeholderNode = new SetNode();
+                            //         placeholderNode->m_id = placeholderID;
+                            //         placeholderNode->m_guard = m_guard;
+                            //         // replace temp with placeholder
+                            //         if (temp == m_root) {
+                            //             m_root = placeholderNode;
+                            //         }
+                            //         place(temp, placeholderNode);
+                            //         setThatOwnedNode->superSetAdd(node);
+                            //     }
+                            // }
+                            // place(node, m_root);
                         }
                     }
                 }
                 node->m_guard = m_guard;
                 m_size++;
-                // // graph bfs adjust all supersets size
-                // std::list<AbstractSet*> queue;
-                // std::vector<AbstractSet*> allSuperSets;
-                // for (auto& subsetOf : m_superSets) {
-                //     queue.push_back(subsetOf);
-                // }
-                // while (!queue.empty()) {
-                //     AbstractSet* front = queue.front();
-                //     queue.pop_front();
-                //     if (std::find(allSuperSets.begin(), allSuperSets.end(), front) == allSuperSets.end()) {
-                //         allSuperSets.push_back(front);
-                //     }
-                //     for (auto& subsetOf : front->m_superSets) {
-                //         queue.push_back(subsetOf);
-                //     }
-                // }
-                // for (auto& subsetOf : allSuperSets) {
-                //     subsetOf->m_size++;
-                // }
                 for (auto& redefined : m_redefines) {
                     redefined->m_size++;
                 }
@@ -1272,27 +1251,17 @@ namespace UML {
                             if (curr->m_guard == m_guard) {
                                 // we are going to delete it
                                 SetNode* currParent = curr->m_parent;
-                                for (auto& set : m_superSets) {
-                                    // set supersets root to 0 if it is the node
-                                    if (set->m_root->m_id == curr->m_id && set->m_root == curr) {
-                                        // bfs set roots to zero
-                                        std::list<AbstractSet*> queue = {set};
-                                        while(!queue.empty()) {
-                                            AbstractSet* front = queue.front();
-                                            queue.pop_front();
-                                            if (front->m_root == curr) {
-                                                front->m_root = 0;
-                                                for (auto& subsetOf : front->m_superSets) {
-                                                    queue.push_back(subsetOf);
-                                                }
-                                            }                                            
-                                        }
+                                // check for superset roots and secondary parents
+                                std::vector<AbstractSet*>* allSuperSets = getAllSuperSets();
+                                for (auto& subsetOf : *allSuperSets) {
+                                    if (subsetOf->m_root->m_id == curr->m_id && subsetOf->m_root == curr) {
+                                        subsetOf->m_root = 0;
                                     } else if (currParent && 
-                                            set->m_root && 
-                                            currParent != set->search(currParent->m_id, set->m_root)) {
+                                            subsetOf->m_root && 
+                                            currParent != subsetOf->search(currParent->m_id, subsetOf->m_root)) {
                                         // this set owns this element through a different parent
                                         // we must find it and set the pointer to curr to 0
-                                        SetNode* temp = set->m_root;
+                                        SetNode* temp = subsetOf->m_root;
                                         while (temp->m_left != curr && temp->m_right != curr) {
                                             if (temp->m_right) {
                                                 if (curr->m_id > temp->m_id) {
@@ -1317,6 +1286,7 @@ namespace UML {
                                         }
                                     }
                                 }
+                                delete allSuperSets;
                                 if (currParent) {
                                     if (currParent->m_left == curr) {
                                         currParent->m_left = 0;
@@ -1324,8 +1294,8 @@ namespace UML {
                                         currParent->m_right = 0;
                                     }
                                 }
-                                delete curr;
-                                curr =  currParent;
+                                deleteNode(curr);
+                                curr = currParent;
                                 if (curr && curr->m_id == placeholderID && curr->m_guard < m_guard) {
                                     break;
                                 }
@@ -1404,8 +1374,29 @@ namespace UML {
                     if (max_guard > m_guard) {
                         m_guard = max_guard;
                     }
-                    max_guard = m_guard;
+                    // graph bfs check subsetOfs subsets to make sure we are greater than all of those
+                    std::list<AbstractSet*> queue;
+                    std::vector<AbstractSet*> allSubsetsOfSubsetOf;
+                    for (auto& subset : subsetOf.m_subSets) {
+                        queue.push_back(subset);
+                    }
+                    while (!queue.empty()) {
+                        AbstractSet* front = queue.front();
+                        queue.pop_front();
+                        if (std::find(allSubsetsOfSubsetOf.begin(), allSubsetsOfSubsetOf.end(), front) == allSubsetsOfSubsetOf.end()) {
+                            allSubsetsOfSubsetOf.push_back(front);
+                            for (auto& set : front->m_subSets) {
+                                queue.push_back(set);
+                            }
+                        }
+                    }
+                    for (auto& disjointSet : allSubsetsOfSubsetOf) {
+                        if (disjointSet->m_guard > m_guard) {
+                            m_guard = disjointSet->m_guard  + 1;
+                        }
+                    }
                     subsetOf.m_subSets.push_back(this);
+                    max_guard = m_guard;
                     for (auto& subset : m_subSets) {
                         if (subset->m_guard <= max_guard) {
                             subset->m_guard = max_guard + 1;
@@ -1421,6 +1412,9 @@ namespace UML {
                         if (!m_removeFunctors.count(set)) {
                             m_removeFunctors.insert(set);
                         }
+                    }
+                    if (subsetOf.m_oppositeFunctor) {
+                        m_oppositeFunctor = subsetOf.m_oppositeFunctor;
                     }
                     if (!m_root) {
                         m_root = subsetOf.m_root;

@@ -26,7 +26,7 @@ namespace UML {
                     RemoveEndTypeFunctor(Element* el) : SetFunctor(el) {};
             };
             OrderedSet<Property, Association> m_ownedEnds = OrderedSet<Property, Association>(this);
-            OrderedSet<Property, Association> m_navigableOwnedEnds = OrderedSet<Property, Association>(this);
+            Set<Property, Association> m_navigableOwnedEnds = Set<Property, Association>(this);
             Set<Type, Association> m_endType = Set<Type, Association>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
@@ -35,7 +35,6 @@ namespace UML {
             void referenceErased(ID id) override;
             Set<Property, Association>& getMemberEndsSet();
             Set<Property, Association>& getOwnedEndsSet();
-            Set<Property, Association>& getNavigableOwnedEndsSet();
             void init();
             void copy(const Association& rhs);
             Association();
@@ -44,7 +43,7 @@ namespace UML {
             virtual ~Association();
             OrderedSet<Property, Association>& getMemberEnds();
             OrderedSet<Property, Association>& getOwnedEnds();
-            OrderedSet<Property, Association>& getNavigableOwnedEnds();
+            Set<Property, Association>& getNavigableOwnedEnds();
             /**
              * endType is derived from the types of the member ends.
              **/

@@ -82,10 +82,6 @@ Set<Property, Association>& Association::getOwnedEndsSet() {
     return m_ownedEnds;
 }
 
-Set<Property, Association>& Association::getNavigableOwnedEndsSet() {
-    return m_ownedEnds;
-}
-
 void Association::init() {
     m_memberEnds.subsets(m_members);
     m_memberEnds.opposite(&Property::getAssociationSingleton);
@@ -98,7 +94,7 @@ void Association::init() {
     m_ownedEnds.opposite(&Property::getOwningAssociationSingleton);
     m_ownedEnds.m_signature = &Association::getOwnedEndsSet;
     m_navigableOwnedEnds.subsets(m_ownedEnds);
-    m_navigableOwnedEnds.m_signature = &Association::getNavigableOwnedEndsSet;
+    m_navigableOwnedEnds.m_signature = &Association::getNavigableOwnedEnds;
     m_endType.subsets(m_relatedElements);
     m_endType.m_signature = &Association::getEndType;
 }
@@ -139,7 +135,7 @@ OrderedSet<Property, Association>& Association::getOwnedEnds() {
     return m_ownedEnds;
 }
 
-OrderedSet<Property, Association>& Association::getNavigableOwnedEnds() {
+Set<Property, Association>& Association::getNavigableOwnedEnds() {
     return m_navigableOwnedEnds;
 }
 

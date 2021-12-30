@@ -1,9 +1,10 @@
 #include "uml/element.h"
 #include "uml/umlManager.h"
 #include "uml/comment.h"
-// #include "uml/instanceSpecification.h"
+#include "uml/instanceSpecification.h"
 // #include "uml/classifier.h"
 #include "uml/singleton.h"
+#include "uml/uml-stable.h"
 
 using namespace std;
 namespace UML {
@@ -55,7 +56,7 @@ void Element::referenceReindexed(ID oldID, ID newID) {
     m_ownedElements->reindex(oldID, newID);
     m_owner->reindex(oldID, newID);
     m_ownedComments->reindex(oldID, newID);
-    // m_appliedStereotype->reindex(oldID, newID);
+    m_appliedStereotype->reindex(oldID, newID);
 }
 
 void Element::referencingReleased(ID id) {
@@ -65,7 +66,7 @@ void Element::referencingReleased(ID id) {
     m_owner->release(id);
     m_ownedElements->release(id);
     m_ownedComments->release(id);
-    // m_appliedStereotype->release(id);
+    m_appliedStereotype->release(id);
 }
 
 void Element::restoreReferences() {
@@ -91,7 +92,7 @@ void Element::referenceErased(ID id) {
     m_owner->eraseElement(id);
     m_ownedElements->eraseElement(id);
     m_ownedComments->eraseElement(id);
-    // m_appliedStereotype->eraseElement(id);
+    m_appliedStereotype->eraseElement(id);
 }
 
 Set<Element, Element>& Element::getOwnerSingleton() {
@@ -102,6 +103,7 @@ void Element::copy(const Element& rhs) {
     *m_owner = *rhs.m_owner;
     *m_ownedElements = *rhs.m_ownedElements;
     *m_ownedComments = *rhs.m_ownedComments;
+    *m_appliedStereotype = *rhs.m_appliedStereotype;
 }
 
 Element::Element(ElementType elementType) : m_elementType(elementType) {
@@ -124,15 +126,16 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_ownedComments->subsets(*m_ownedElements);
     m_ownedComments->m_signature = &Element::getOwnedComments;
 
-    // m_appliedStereotype = new Set<InstanceSpecification>(this);
-    // m_appliedStereotype->subsets(*m_ownedElements);
+    m_appliedStereotype = new Set<InstanceSpecification, Element>(this);
+    m_appliedStereotype->subsets(*m_ownedElements);
+    m_appliedStereotype->m_signature = &Element::getAppliedStereotypes;
 }
 
 Element::~Element() {
     delete m_ownedComments;
     delete m_owner;
     delete m_ownedElements;
-    // delete m_appliedStereotype;
+    delete m_appliedStereotype;
     if (m_copiedElementFlag) {
         if (m_manager) {
             if (m_node->m_copies.count(this)) {
@@ -481,9 +484,9 @@ Set<Element, Element>& Element::getOwnedElements() {
     return *m_ownedElements;
 }
 
-// Set<InstanceSpecification, Element>& Element::getAppliedStereotypes() {
-//     return *m_appliedStereotype;
-// }
+Set<InstanceSpecification, Element>& Element::getAppliedStereotypes() {
+    return *m_appliedStereotype;
+}
 
 Set<Comment, Element>& Element::getOwnedComments() {
     return *m_ownedComments;

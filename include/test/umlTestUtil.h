@@ -24,7 +24,7 @@ namespace UML {
     void ASSERT_COPY_SEQUENCE_CORRECTLY(size_t index, T& og, T& copy, S seq, Ss... sequences) {
         ASSERT_EQ((og.*seq)().size(), (copy.*seq)().size()) << " at index " << index;
         for (size_t i = 0; i < (og.*seq)().size(); i++) {
-            ASSERT_EQ((og.*seq)().get(i).getID(), (copy.*seq)().get(i).getID()) << " at index " << index;
+            ASSERT_TRUE((copy.*seq)().contains((og.*seq)().get(i))) << " at index " << index;
         }
         index++;
         ASSERT_COPY_SEQUENCE_CORRECTLY<T, U>(index, og, copy, sequences...);

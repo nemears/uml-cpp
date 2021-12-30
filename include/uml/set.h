@@ -1193,7 +1193,7 @@ namespace UML {
                             newNode->m_el = curr->m_el;
                             newNode->m_guard = curr->m_guard;
                             newNode->m_name = curr->m_name;
-                            if (curr->m_id == rhs.m_root->m_id) {
+                            if (!m_root && curr->m_id == rhs.m_root->m_id) {
                                 m_root = newNode;
                             }
                             if (curr->m_parent) {

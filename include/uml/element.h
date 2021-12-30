@@ -210,7 +210,7 @@ namespace UML {
             // ownedElements
             Set<Element, Element>* m_ownedElements;
             Set<Comment, Element>* m_ownedComments;
-            // Set<InstanceSpecification, Element>* m_appliedStereotype;
+            Set<InstanceSpecification, Element>* m_appliedStereotype;
             void setOwner(Element* el);
             void setOwnerByID(ID id);
             static bool isSameOrNull(ID id, Element* el);

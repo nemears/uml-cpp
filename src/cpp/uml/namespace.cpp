@@ -48,9 +48,7 @@ void Namespace::init() {
 
 void Namespace::copy(const Namespace& rhs) {
     m_members = rhs.m_members;
-    m_members.m_el = this;
     m_ownedMembers = rhs.m_ownedMembers;
-    m_ownedMembers.m_el = this;
 }
 
 Namespace::Namespace() : Element(ElementType::NAMESPACE) {

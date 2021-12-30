@@ -219,15 +219,15 @@ TEST_F(ElementTest, isSameOrNullTest) {
 // }
 
 TEST_F(ElementTest, AddAndRemoveAppliedStereotypetest) {
-  // UmlManager m;
-  // Class& c = m.create<Class>();
-  // InstanceSpecification& i = m.create<InstanceSpecification>();
-  // Stereotype& s = m.create<Stereotype>();
-  // i.setClassifier(&s);
-  // ASSERT_NO_THROW(c.getAppliedStereotypes().add(i));
-  // ASSERT_EQ(c.getOwnedElements().size(), 1);
-  // ASSERT_NO_THROW(c.getAppliedStereotypes().remove(i));
-  // ASSERT_EQ(c.getOwnedElements().size(), 0);
+  UmlManager m;
+  Class& c = m.create<Class>();
+  InstanceSpecification& i = m.create<InstanceSpecification>();
+  Stereotype& s = m.create<Stereotype>();
+  i.getClassifiers().add(s);
+  ASSERT_NO_THROW(c.getAppliedStereotypes().add(i));
+  ASSERT_EQ(c.getOwnedElements().size(), 1);
+  ASSERT_NO_THROW(c.getAppliedStereotypes().remove(i));
+  ASSERT_EQ(c.getOwnedElements().size(), 0);
 }
 
 TEST_F(ElementTest, asFuncTest) {
@@ -291,66 +291,66 @@ TEST_F(ElementTest, copySingletonCorrectly) {
 }
 
 TEST_F(ElementTest, FullElementCopyTest) {
-//   UmlManager m;
-//   Package& p1 = m.create<Package>();
-//   Package& p2 = m.create<Package>();
-//   Package& root = m.create<Package>();
-//   Package& child = m.create<Package>();
-//   Stereotype& stereotype = m.create<Stereotype>();
-//   Extension& extension = m.create<Extension>();
-//   ExtensionEnd& end = m.create<ExtensionEnd>();
-//   InstanceSpecification& stereotypeInst = m.create<InstanceSpecification>();
-//   Comment& comment = m.create<Comment>();
-//   Dependency& dependency = m.create<Dependency>();
+  UmlManager m;
+  Package& p1 = m.create<Package>();
+  Package& p2 = m.create<Package>();
+  Package& root = m.create<Package>();
+  Package& child = m.create<Package>();
+  Stereotype& stereotype = m.create<Stereotype>();
+  Extension& extension = m.create<Extension>();
+  ExtensionEnd& end = m.create<ExtensionEnd>();
+  InstanceSpecification& stereotypeInst = m.create<InstanceSpecification>();
+  Comment& comment = m.create<Comment>();
+  Dependency& dependency = m.create<Dependency>();
   
-//   m.setRoot(&root);
-//   root.getPackagedElements().add(p1);
-//   root.getPackagedElements().add(p2);
-//   p1.getPackagedElements().add(child);
-//   end.setExtension(&extension);
-//   extension.setMetaClass(ElementType::PACKAGE);
-//   end.setType(&stereotype);
-//   stereotypeInst.setClassifier(&stereotype);
-//   p1.getAppliedStereotypes().add(stereotypeInst);
-//   p1.getOwnedComments().add(comment);
-//   root.getOwnedStereotypes().add(stereotype);
-//   root.getPackagedElements().add(extension);
-//   dependency.getClient().add(p1);
-//   dependency.getSupplier().add(p2);
-//   root.getPackagedElements().add(dependency);
+  m.setRoot(&root);
+  root.getPackagedElements().add(p1);
+  root.getPackagedElements().add(p2);
+  p1.getPackagedElements().add(child);
+  end.setOwningAssociation(&extension);
+  extension.setMetaClass(ElementType::PACKAGE);
+  end.setType(&stereotype);
+  stereotypeInst.getClassifiers().add(stereotype);
+  p1.getAppliedStereotypes().add(stereotypeInst);
+  p1.getOwnedComments().add(comment);
+  root.getOwnedStereotypes().add(stereotype);
+  root.getPackagedElements().add(extension);
+  dependency.getClient().add(p1);
+  dependency.getSupplier().add(p2);
+  root.getPackagedElements().add(dependency);
 
-//   Package copy = p1;
-//   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments, &Element::getDirectedRelationships, &Element::getRelationships));
-//   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
-//   ASSERT_NO_THROW(m.mount(std::string(YML_FILES_PATH) + "elementTests"));
-//   copy.getPackagedElements().remove(child);
-//   copy.getAppliedStereotypes().remove(stereotypeInst);
-//   copy.getOwnedComments().remove(comment);
-//   dependency.getClient().remove(copy);
-//   root.getPackagedElements().remove(copy);
-//   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments, &Element::getDirectedRelationships, &Element::getRelationships));
-//   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
-//   copy.getPackagedElements().add(child);
-//   copy.getAppliedStereotypes().add(stereotypeInst);
-//   copy.getOwnedComments().add(comment);
-//   dependency.getClient().add(copy);
-//   root.getPackagedElements().add(copy);
-//   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments, &Element::getDirectedRelationships, &Element::getRelationships));
-//   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
-//   p1.getPackagedElements().remove(child);
-//   p1.getAppliedStereotypes().remove(stereotypeInst);
-//   p1.getOwnedComments().remove(comment);
-//   dependency.getClient().remove(p1);
-//   root.getPackagedElements().remove(p1);
-//   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments, &Element::getDirectedRelationships, &Element::getRelationships));
-//   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
-//   p1.getPackagedElements().add(child);
-//   p1.getAppliedStereotypes().add(stereotypeInst);
-//   p1.getOwnedComments().add(comment);
-//   dependency.getClient().add(p1);
-//   root.getPackagedElements().add(p1);
-//   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments, &Element::getDirectedRelationships, &Element::getRelationships));
-//   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
+  Package copy = p1;
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
+  ASSERT_NO_THROW(m.mount(std::string(YML_FILES_PATH) + "elementTests"));
+  copy.getPackagedElements().remove(child);
+  copy.getAppliedStereotypes().remove(stereotypeInst);
+  copy.getOwnedComments().remove(comment);
+  dependency.getClient().remove(copy);
+  root.getPackagedElements().remove(copy);
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
+  copy.getPackagedElements().add(child);
+  copy.getAppliedStereotypes().add(stereotypeInst);
+  copy.getOwnedComments().add(comment);
+  dependency.getClient().add(copy);
+  root.getPackagedElements().add(copy);
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
+  p1.getPackagedElements().remove(child);
+  p1.getAppliedStereotypes().remove(stereotypeInst);
+  p1.getOwnedComments().remove(comment);
+  dependency.getClient().remove(p1);
+  root.getPackagedElements().remove(p1);
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
+  p1.getPackagedElements().add(child);
+  p1.getAppliedStereotypes().add(stereotypeInst);
+  p1.getOwnedComments().add(comment);
+  dependency.getClient().add(p1);
+  root.getPackagedElements().add(p1);
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
 }
 
 TEST_F(ElementTest, hasAndRefMethodTest) {

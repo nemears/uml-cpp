@@ -62,7 +62,7 @@ namespace UML {
                     }
                 }
                 if (el && !this->m_root) {
-                    this->Set<T,U>::add(*el);
+                    this->add(*el);
                 }
             };
             void set(T& el) {

@@ -1364,7 +1364,15 @@ namespace UML {
                         }
                     }
                     if (deleteFunc) {
-                        delete func;
+                        for (auto& set : m_redefines) {
+                            if (set->m_removeFunctors.count(func)) {
+                                deleteFunc = false;
+                                break;
+                            }
+                        }
+                        if (deleteFunc) {
+                            delete func;
+                        }
                     } else {
                         for (auto& subset : m_subSets) {
                             subset->m_removeFunctors.erase(func);
@@ -1444,7 +1452,7 @@ namespace UML {
                     } else if (!subsetOf.m_root) {
                         subsetOf.m_root = m_root;
                     }
-                    if (subsetOf.m_upper < 0) {
+                    if (subsetOf.m_upper < 0 && subsetOf.m_upper != m_upper) {
                         m_setToInstantiate = &subsetOf;
                     }
                 }
@@ -1484,6 +1492,17 @@ namespace UML {
                     if (!m_addFunctors.count(func)) {
                         m_addFunctors.insert(func);
                     }
+                }
+                for (auto& func : redefined.m_removeFunctors) {
+                    if (!m_removeFunctors.count(func)) {
+                        m_removeFunctors.insert(func);
+                    }
+                }
+                if (redefined.m_ownsOppositeFunctor && !m_ownsOppositeFunctor) {
+                    m_oppositeFunctor = redefined.m_oppositeFunctor;
+                }
+                if (redefined.m_upper < 0 && redefined.m_upper != m_upper) {
+                    m_setToInstantiate = &redefined;
                 }
                 m_guard = redefined.m_guard;
             };

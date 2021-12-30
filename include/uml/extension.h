@@ -14,6 +14,7 @@ namespace UML {
 
         friend class UmlManager;
         friend class Parsers::SetOwnedEnd;
+        friend class ExtensionEnd;
 
         private:
             /**

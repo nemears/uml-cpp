@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/profileApplication.h"
 #include "uml/profile.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -25,8 +26,6 @@ TEST_F(ProfileApplicationTest, setProfileAndPackageTest) {
     ASSERT_EQ(pa.getOwner()->getID(), pckg.getID());
     ASSERT_EQ(pckg.getProfileApplications().size(), 1);
     ASSERT_EQ(pckg.getProfileApplications().front().getID(), pa.getID());
-    ASSERT_EQ(pckg.getDirectedRelationships().size(), 1);
-    ASSERT_EQ(pckg.getDirectedRelationships().front().getID(), pa.getID());
     ASSERT_EQ(pckg.getOwnedElements().size(), 1);
     ASSERT_EQ((*pckg.getOwnedElements().begin()).getID(), pa.getID());
 }
@@ -47,7 +46,6 @@ TEST_F(ProfileApplicationTest, removeProfileApplication) {
     ASSERT_EQ(pa.getSources().size(), 0);
     ASSERT_TRUE(pa.getOwner() == 0);
     ASSERT_EQ(pckg.getProfileApplications().size(), 0);
-    ASSERT_EQ(pckg.getDirectedRelationships().size(), 0);
     ASSERT_EQ(pckg.getOwnedElements().size(), 0);
 }
 
@@ -67,6 +65,5 @@ TEST_F(ProfileApplicationTest, setApplyingPackageNull) {
     ASSERT_EQ(pa.getSources().size(), 0);
     ASSERT_TRUE(pa.getOwner() == 0);
     ASSERT_EQ(pckg.getProfileApplications().size(), 0);
-    ASSERT_EQ(pckg.getDirectedRelationships().size(), 0);
     ASSERT_EQ(pckg.getOwnedElements().size(), 0);
 }

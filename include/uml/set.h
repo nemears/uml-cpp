@@ -222,6 +222,7 @@ namespace UML {
             Element* m_el = 0;
             Set<T,U>& (U::*m_signature)() = 0;
             bool m_readOnly = false;
+            AbstractSet* m_setToInstantiate = 0;
 
             /**
              * Places the node within the tree taking in account the id and the guard of the node
@@ -938,6 +939,9 @@ namespace UML {
              * @return the node that was created or found
              **/
             inline virtual SetNode* createNode(T& el) {
+                if (m_setToInstantiate) {
+                    return static_cast<Set*>(m_setToInstantiate)->createNode(el);
+                }
                 SetNode* temp = lookForNodeInParents(el.getID());
                 if (temp) {
                     return temp;
@@ -952,6 +956,10 @@ namespace UML {
              * @return the node that was created or found
              **/
             virtual SetNode* createNode(ID id) {
+                SetNode* temp = lookForNodeInParents(id);
+                if (temp) {
+                    return temp;
+                }
                 SetNode* ret = new SetNode();
                 ret->m_id = id;
                 ret->m_guard = m_guard;
@@ -1431,6 +1439,9 @@ namespace UML {
                         m_root = subsetOf.m_root;
                     } else if (!subsetOf.m_root) {
                         subsetOf.m_root = m_root;
+                    }
+                    if (subsetOf.m_upper < 0) {
+                        m_setToInstantiate = &subsetOf;
                     }
                 }
             };

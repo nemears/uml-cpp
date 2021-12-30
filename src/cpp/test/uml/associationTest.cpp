@@ -198,7 +198,7 @@ TEST_F(AssociationTest, addNavigableOwnedEndTest) {
     UmlManager m;
     Property& p = m.create<Property>();
     Association& a = m.create<Association>();
-    ASSERT_NO_THROW(a.getNavigableOwnedEnds().add(p));
+    a.getNavigableOwnedEnds().add(p);
     ASSERT_TRUE(a.getNavigableOwnedEnds().size() == 1);
     ASSERT_TRUE(&a.getNavigableOwnedEnds().front() == &p);
     ASSERT_TRUE(a.getOwnedEnds().size() == 1);

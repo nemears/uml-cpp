@@ -161,6 +161,8 @@ namespace UML {
     class Stereotype;
     class Profile;
     class ProfileApplication;
+    class Extension;
+    class ExtensionEnd;
 
     /**
      * This container is based around a weighted binary search tree
@@ -214,6 +216,8 @@ namespace UML {
         friend class Stereotype;
         friend class Profile;
         friend class ProfileApplication;
+        friend class Extension;
+        friend class ExtensionEnd;
 
         protected:
             bool m_rootRedefinedSet = true;

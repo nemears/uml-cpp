@@ -1,38 +1,8 @@
 #include "uml/extension.h"
 #include "uml/extensionEnd.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
-
-void Extension::RemoveOwnedEndProcedure::operator()(ExtensionEnd* el) const {
-    if (el->hasExtension()&& !m_me->m_setFlag) {
-        m_me->m_setFlag = true;
-        el->setExtension(0);
-        m_me->m_setFlag = false;
-    }
-    if (m_me->getOwnedEnds().count(el->getID())) {
-        m_me->getOwnedEnds().remove(*el);
-    }
-}
-
-void Extension::AddOwnedEndProcedure::operator()(ExtensionEnd* el) const {
-    if (el->hasExtension()) {
-        if (el->getExtensionRef() != *m_me) {
-            el->setExtension(m_me);
-        }
-    }
-    else {
-        el->setExtension(m_me);
-    }
-    if (!m_me->getOwnedEnds().count(el->getID())) {
-        m_me->getOwnedEnds().add(*el);
-    }
-}
-
-void Extension::AddOwnedEndProcedure::operator()(ID id) const {
-    if (!m_me->getOwnedEnds().count(id)) {
-        m_me->getOwnedEnds().addByID(id);
-    }
-}
 
 void Extension::referencingReleased(ID id) {
     Association::referencingReleased(id);
@@ -45,30 +15,45 @@ void Extension::referenceReindexed(ID oldID, ID newID) {
 }
 
 void Extension::restoreReferences() {
-    Association::restoreReferences();
-    m_ownedEnd.restoreReference();
+    // Association::restoreReferences();
+    // m_ownedEnd.restoreReference();
 }
 
 void Extension::referenceErased(ID id) {
     Association::referenceErased(id);
-    m_ownedEnd.elementErased(id);
+    m_ownedEnd.eraseElement(id);
+}
+
+Set<ExtensionEnd, Extension>& Extension::getOwnedEndSingleton() {
+    return m_ownedEnd;
+}
+
+void Extension::init() {
+    m_ownedEnd.redefines(m_ownedEnds);
+    m_ownedEnd.m_signature = &Extension::getOwnedEndSingleton;
+}
+
+void Extension::copy(const Extension& rhs) {
+    m_ownedEnd = rhs.m_ownedEnd;
+    m_metaClass = rhs.m_metaClass;
 }
 
 Extension::Extension() : Element(ElementType::EXTENSION) {
-    m_metaClass = ElementType::ELEMENT;
-    m_ownedEnd.m_signature = &Extension::m_ownedEnd;
-    m_ownedEnd.m_addProcedures.push_back(new AddOwnedEndProcedure(this));
-    m_ownedEnd.m_removeProcedures.push_back(new RemoveOwnedEndProcedure(this));
+    init();
 }
 
-Extension::Extension(const Extension& extension) : Element(extension, ElementType::EXTENSION) {
-    m_metaClass = extension.m_metaClass;
-    m_ownedEnd = extension.m_ownedEnd;
-    m_ownedEnd.m_me = this;
-    m_ownedEnd.m_addProcedures.clear();
-    m_ownedEnd.m_removeProcedures.clear();
-    m_ownedEnd.m_addProcedures.push_back(new AddOwnedEndProcedure(this));
-    m_ownedEnd.m_removeProcedures.push_back(new RemoveOwnedEndProcedure(this));
+Extension::Extension(const Extension& rhs) : Element(rhs, ElementType::EXTENSION) {
+    init();
+    Element::copy(rhs);
+    NamedElement::copy(rhs);
+    Namespace::copy(rhs);
+    ParameterableElement::copy(rhs);
+    PackageableElement::copy(rhs);
+    TemplateableElement::copy(rhs);
+    Classifier::copy(rhs);
+    Relationship::copy(rhs);
+    Association::copy(rhs);
+    copy(rhs);
 }
 
 Extension::~Extension() {

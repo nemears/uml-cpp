@@ -1296,10 +1296,21 @@ namespace UML {
                                 }
                                 deleteNode(curr);
                                 curr = currParent;
-                                if (curr && curr->m_id == placeholderID && curr->m_guard < m_guard) {
-                                    break;
-                                }
                             } else {
+                                if (curr->m_id == placeholderID && !curr->m_left && !curr->m_right) {
+                                    // we've created an empty placeholder node, lets get rid of it for now
+                                    std::vector<AbstractSet*>* allSuperSets = getAllSuperSets();
+                                    for (auto& subsetOf : *allSuperSets) {
+                                        if (subsetOf->m_root == curr) {
+                                            subsetOf->m_root = 0;
+                                        }
+                                    }
+                                    delete allSuperSets;
+                                    // if (curr->m_parent) {
+                                    //     curr->m_parent->m_left = 0;
+                                    // }
+                                    delete curr;
+                                }
                                 break;
                             }
                         }

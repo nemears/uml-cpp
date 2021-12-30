@@ -87,9 +87,9 @@ TEST_F(PackageTest, copyPackageTest) {
 
 TEST_F(PackageTest, packageMergeTest) {
     UmlManager mm;
-    Package p = mm.create<Package>();
-    PackageMerge m = mm.create<PackageMerge>();
-    Package mp = mm.create<Package>();
+    Package& p = mm.create<Package>();
+    PackageMerge& m = mm.create<PackageMerge>();
+    Package& mp = mm.create<Package>();
     m.setMergedPackage(&mp);
     p.getPackageMerge().add(m);
     ASSERT_EQ(p.getPackageMerge().size(), 1);

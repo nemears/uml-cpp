@@ -1211,3 +1211,67 @@ TEST_F(SetTest, BehavioredClassifierEmulationTest) {
     delete members;
     delete ownedElements;
 }
+
+TEST_F(SetTest, ClassAttributeAndOperationEmulationTest) {
+    Set<>* ownedElements = new Set<>;
+    Set<NamedElement>* members = new Set<NamedElement>;
+    Set<NamedElement>* ownedMembers = new Set<NamedElement>;
+    Set<Feature>* features = new Set<Feature>;
+    Set<Property>* attributes = new Set<Property>;
+    Set<ConnectableElement>* roles =  new Set<ConnectableElement>;
+    Set<Property>* ownedAttributes = new Set<Property>;
+    Set<Operation>* ownedOperations = new Set<Operation>;
+
+    ownedMembers->subsets(*ownedElements);
+    ownedMembers->subsets(*members);
+    features->subsets(*members);
+    attributes->subsets(*features);
+    roles->subsets(*members);
+    ownedAttributes->subsets(*attributes);
+    ownedAttributes->subsets(*roles);
+    ownedAttributes->subsets(*ownedMembers);
+    ownedOperations->subsets(*ownedMembers);
+    ownedOperations->subsets(*features);
+
+    UmlManager m;
+    Property& p = m.create<Property>();
+    Operation& o = m.create<Operation>();
+    ownedAttributes->add(p);
+    ownedOperations->add(o);
+
+    ASSERT_EQ(ownedElements->size(), 2);
+    ASSERT_EQ(members->size(), 2);
+    ASSERT_EQ(ownedMembers->size(), 2);
+    ASSERT_EQ(features->size(), 2);
+    ASSERT_EQ(attributes->size(), 1);
+    ASSERT_EQ(roles->size(), 1);
+    ASSERT_EQ(ownedAttributes->size(), 1);
+    ASSERT_EQ(ownedOperations->size(), 1);
+
+    ASSERT_TRUE(ownedElements->contains(p));
+    ASSERT_TRUE(members->contains(p));
+    ASSERT_TRUE(ownedMembers->contains(p));
+    ASSERT_TRUE(features->contains(p));
+    ASSERT_TRUE(attributes->contains(p));
+    ASSERT_TRUE(roles->contains(p));
+    ASSERT_TRUE(ownedAttributes->contains(p));
+    ASSERT_FALSE(ownedOperations->contains(p.getID()));
+
+    ASSERT_TRUE(ownedElements->contains(o));
+    ASSERT_TRUE(members->contains(o));
+    ASSERT_TRUE(ownedMembers->contains(o));
+    ASSERT_TRUE(features->contains(o));
+    ASSERT_FALSE(attributes->contains(o.getID()));
+    ASSERT_FALSE(roles->contains(o.getID()));
+    ASSERT_FALSE(ownedAttributes->contains(o.getID()));
+    ASSERT_TRUE(ownedOperations->contains(o));
+
+    delete ownedOperations;
+    delete ownedAttributes;
+    delete roles;
+    delete attributes;
+    delete features;
+    delete ownedMembers;
+    delete members;
+    delete ownedElements;
+}

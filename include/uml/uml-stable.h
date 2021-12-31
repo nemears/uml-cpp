@@ -13,7 +13,7 @@
 #include "uml/association.h"
 #include "uml/dataType.h"
 #include "uml/dependency.h"
-// #include "uml/deployment.h"
+#include "uml/deployment.h"
 #include "uml/enumeration.h"
 #include "uml/enumerationLiteral.h"
 #include "uml/expression.h"

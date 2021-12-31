@@ -1,105 +1,67 @@
 #include "uml/deployment.h"
 #include "uml/deployedArtifact.h"
 #include "uml/deploymentTarget.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
-
-void Deployment::RemoveLocationProcedure::operator()(DeploymentTarget* el) const {
-    if (el->getDeployments().count(m_me->getID())) {
-        el->getDeployments().remove(*m_me);
-    }
-
-    if (m_me->m_client.count(el->getID())) {
-        m_me->m_client.remove(*el);
-    }
-}
-
-void Deployment::AddLocationProcedure::operator()(DeploymentTarget* el) const {
-    if (!m_me->m_client.count(el->getID())) {
-        m_me->m_client.add(*el);
-    }
-
-    if (!el->getDeployments().count(m_me->getID())) {
-        el->getDeployments().add(*m_me);
-    }
-
-    if (m_me->getOwnerID() != el->getID()) {
-        m_me->setOwner(el);
-    }
-}
-
-void Deployment::AddLocationProcedure::operator()(ID id) const {
-    if (!m_me->m_client.count(id)) {
-        m_me->m_client.addByID(id);
-    }
-    if (m_me->getOwnerID() != id) {
-        m_me->setOwnerByID(id);
-    }
-}
-
-void Deployment::AddDeployedArtifactFunctor::operator()(DeployedArtifact& el) const {
-    if (!m_el->getSupplier().count(el.getID())) {
-        m_el->getSupplier().add(el);
-    }
-}
-
-void Deployment::RemoveDeployedArtifactFunctor::operator()(DeployedArtifact& el) const {
-    if (m_el->getSupplier().count(el.getID())) {
-        m_el->getSupplier().remove(el);
-    }
-}
 
 void Deployment::referencingReleased(ID id) {
     Dependency::referencingReleased(id);
     m_location.release(id);
-    m_deployedArtifacts.elementReleased(id, &Deployment::getDeployedArtifact);
+    m_deployedArtifacts.release(id);
 }
 
 void Deployment::referenceReindexed(ID oldID, ID newID) {
     Dependency::referenceReindexed(oldID, newID);
     m_location.reindex(oldID, newID);
-    m_deployedArtifacts.reindex(oldID, newID, &Deployment::getDeployedArtifact);
+    m_deployedArtifacts.reindex(oldID, newID);
 }
 
 void Deployment::restoreReferences() {
     Dependency::restoreReferences();
-    m_location.restoreReference();
-    m_deployedArtifacts.restoreReferences();
+    // m_location.restoreReference();
+    // m_deployedArtifacts.restoreReferences();
 }
 
 void Deployment::referenceErased(ID id) {
     Dependency::referenceErased(id);
-    m_location.elementErased(id);
-    m_deployedArtifacts.elementErased(id);
+    m_location.eraseElement(id);
+    m_deployedArtifacts.eraseElement(id);
+}
+
+Set<DeploymentTarget, Deployment>& Deployment::getLocationSingleton() {
+    return m_location;
+}
+
+void Deployment::init() {
+    m_location.subsets(m_client);
+    m_location.subsets(*m_owner);
+    m_location.opposite(&DeploymentTarget::getDeployments);
+    m_location.m_signature = &Deployment::getLocationSingleton;
+    m_deployedArtifacts.subsets(m_supplier);
+    m_deployedArtifacts.m_signature = &Deployment::getDeployedArtifacts;
 }
 
 Deployment::Deployment() : Element(ElementType::DEPLOYMENT) {
-    m_deployedArtifacts.addProcedures.push_back(new AddDeployedArtifactFunctor(this));
-    m_deployedArtifacts.removeProcedures.push_back(new RemoveDeployedArtifactFunctor(this));
-    m_location.m_signature = &Deployment::m_location;
-    m_location.m_removeProcedures.push_back(new RemoveLocationProcedure(this));
-    m_location.m_addProcedures.push_back(new AddLocationProcedure(this));
+    init();
 }
 
-Deployment::Deployment(const Deployment& deployment) : Element(ElementType::DEPLOYMENT) {
-    m_deployedArtifacts = deployment.m_deployedArtifacts;
-    m_deployedArtifacts.addProcedures.clear();
-    m_deployedArtifacts.removeProcedures.clear();
-    m_deployedArtifacts.addProcedures.push_back(new AddDeployedArtifactFunctor(this));
-    m_deployedArtifacts.removeProcedures.push_back(new RemoveDeployedArtifactFunctor(this));
-    m_location = deployment.m_location;
-    m_location.m_me = this;
-    m_location.m_removeProcedures.clear();
-    m_location.m_addProcedures.clear();
-    m_location.m_removeProcedures.push_back(new RemoveLocationProcedure(this));
-    m_location.m_addProcedures.push_back(new AddLocationProcedure(this));
+Deployment::Deployment(const Deployment& rhs) : Element(ElementType::DEPLOYMENT) {
+    init();
+    Relationship::copy(rhs);
+    DirectedRelationship::copy(rhs);
+    NamedElement::copy(rhs);
+    ParameterableElement::copy(rhs);
+    PackageableElement::copy(rhs);
+    Dependency::copy(rhs);
+    copy(rhs);
 }
 
 Deployment::~Deployment() {
 
 }
 
-Sequence<DeployedArtifact>& Deployment::getDeployedArtifact() {
+Set<DeployedArtifact, Deployment>& Deployment::getDeployedArtifacts() {
     return m_deployedArtifacts;
 }
 

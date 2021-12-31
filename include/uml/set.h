@@ -163,6 +163,8 @@ namespace UML {
     class ProfileApplication;
     class Extension;
     class ExtensionEnd;
+    class DeploymentTarget;
+    class Deployment;
 
     /**
      * This container is based around a weighted binary search tree
@@ -218,6 +220,8 @@ namespace UML {
         friend class ProfileApplication;
         friend class Extension;
         friend class ExtensionEnd;
+        friend class DeploymentTarget;
+        friend class Deployment;
 
         protected:
             bool m_rootRedefinedSet = true;

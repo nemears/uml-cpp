@@ -39,7 +39,7 @@ You can also choose to build from within your IDE or with whatever generator typ
 ## Currently Implemented
 
 ### uml api
-Uml class definitions can be used to reference a model with the api. There is also a class, UmlManager, supplied to control loading and saving from the config files with object pool semantics through the `aquire` and `release` methods.
+Uml class definitions can be used to reference a model with the api. To include the uml definitions into your code all of the relevant headers necessary are aquired through the `uml/uml-stable.h` header. This includes a class, UmlManager, supplied to control instantiation, loading and saving of uml objects from the config files with object pool semantics through the `create`, `aquire` and `release` methods.
 
 There are two experimental classes in `uml/managers` called `UmlServer` and `UmlClient`. These two classes follow restful api semantics with `GET`, `PUT`, `POST`, and `DELETE` (the method is called `erase()`). `get()` can be used with element's id's or a "url" a.k.a the NamedElement's qualifiedNamespace. There is a build target called uml-server that will produce an executable `uml-server`, this executable can be run to start the server talking on port `8652`. **WARNING: Only works for POSIX**
 

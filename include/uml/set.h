@@ -1230,12 +1230,22 @@ namespace UML {
                                     newNode = newNode->m_parent;
                                 } while (curr && !curr->m_right);
                                 if (curr) {
+                                    bool rootRight = false;
                                     if (curr->m_right->m_id == og->m_id) {
                                         // without this line it will just keep copying bottom right
-                                        break;
+                                        if (rhs.m_root->m_right && !m_root->m_right) {
+                                            rootRight = true;
+                                        } else {
+                                            break;
+                                        }
                                     }
-                                    curr = curr->m_right;
-                                    copy = newNode;
+                                    if (rootRight) {
+                                        curr = rhs.m_root->m_right;
+                                        copy = m_root;
+                                    } else {
+                                        curr = curr->m_right;
+                                        copy = newNode;
+                                    }
                                 }
                             }
                         }
@@ -1266,8 +1276,8 @@ namespace UML {
                                 // check for superset roots and secondary parents
                                 std::vector<AbstractSet*>* allSuperSets = getAllSuperSets();
                                 for (auto& subsetOf : *allSuperSets) {
-                                    if (subsetOf->m_root->m_id == curr->m_id && subsetOf->m_root == curr) {
-                                        subsetOf->m_root = 0;
+                                    if (subsetOf->m_root == curr) {
+                                        subsetOf->m_root = subsetOf->m_root->m_left;
                                     } else if (currParent && 
                                             subsetOf->m_root && 
                                             currParent != subsetOf->search(currParent->m_id, subsetOf->m_root)) {
@@ -1316,11 +1326,17 @@ namespace UML {
                                         if (subsetOf->m_root == curr) {
                                             subsetOf->m_root = 0;
                                         }
+                                        for (auto& subset : subsetOf->m_subSets) {
+                                            if (subset != this && subset->m_root && subset->m_root->m_parent == curr) {
+                                                subset->m_root->m_parent = curr->m_parent;
+                                                curr->m_parent->m_left = subset->m_root;
+                                            }
+                                        }
                                     }
                                     delete allSuperSets;
-                                    // if (curr->m_parent) {
-                                    //     curr->m_parent->m_left = 0;
-                                    // }
+                                    if (curr->m_parent && curr->m_parent->m_left == curr) {
+                                        curr->m_parent->m_left = 0;
+                                    }
                                     delete curr;
                                 }
                                 break;

@@ -132,10 +132,10 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
 }
 
 Element::~Element() {
+    delete m_appliedStereotype;
     delete m_ownedComments;
     delete m_owner;
     delete m_ownedElements;
-    delete m_appliedStereotype;
     if (m_copiedElementFlag) {
         if (m_manager) {
             if (m_node->m_copies.count(this)) {

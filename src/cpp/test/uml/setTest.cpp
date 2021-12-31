@@ -1275,3 +1275,77 @@ TEST_F(SetTest, ClassAttributeAndOperationEmulationTest) {
     delete members;
     delete ownedElements;
 }
+
+TEST_F(SetTest, copyComplexTreeTest) {
+    Set<>* ownedElements = new Set<>;
+    Set<Comment>* ownedComments =  new Set<Comment>;
+    Set<InstanceSpecification>* appliedStereotypes = new Set<InstanceSpecification>;
+    Set<NamedElement>* members = new Set<NamedElement>;
+    Set<NamedElement>* ownedMembers = new Set<NamedElement>;
+    
+    ownedComments->subsets(*ownedElements);
+    appliedStereotypes->subsets(*ownedElements);
+    ownedMembers->subsets(*ownedElements);
+    ownedMembers->subsets(*members);
+
+    UmlManager m;
+    InstanceSpecification& s = m.create<InstanceSpecification>();
+    Comment& c = m.create<Comment>();
+    Package& p = m.create<Package>();
+
+    s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
+    c.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
+    p.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
+
+    ownedMembers->add(p);
+    appliedStereotypes->add(s);
+    ownedComments->add(c);
+
+    Set<> ownedElements2;
+    Set<Comment> ownedComments2;
+    Set<InstanceSpecification> appliedStereotypes2;
+    Set<NamedElement> members2;
+    Set<NamedElement> ownedMembers2;
+
+    ownedComments2.subsets(ownedElements2);
+    appliedStereotypes2.subsets(ownedElements2);
+    ownedMembers2.subsets(ownedElements2);
+    ownedMembers2.subsets(members2);
+
+    ownedElements2 = *ownedElements;
+    ownedComments2 = *ownedComments;
+    appliedStereotypes2 = *appliedStereotypes;
+    members2 = *members;
+    ownedMembers2 = *ownedMembers;
+
+    ASSERT_EQ(ownedElements2.size(), 3);
+    ASSERT_EQ(ownedComments2.size(), 1);
+    ASSERT_EQ(appliedStereotypes2.size(), 1);
+    ASSERT_EQ(members2.size(), 1);
+    ASSERT_EQ(ownedMembers2.size(), 1);
+
+    ASSERT_TRUE(ownedElements2.contains(p));
+    ASSERT_FALSE(ownedComments2.contains(p.getID()));
+    ASSERT_FALSE(appliedStereotypes2.contains(p.getID()));
+    ASSERT_FALSE(ownedComments2.contains(p.getID()));
+    ASSERT_TRUE(members2.contains(p));
+    ASSERT_TRUE(ownedMembers2.contains(p));
+
+    ASSERT_TRUE(ownedElements2.contains(s));
+    ASSERT_FALSE(ownedComments2.contains(s.getID()));
+    ASSERT_TRUE(appliedStereotypes2.contains(s));
+    ASSERT_FALSE(members2.contains(s.getID()));
+    ASSERT_FALSE(ownedMembers2.contains(s.getID()));
+
+    ASSERT_TRUE(ownedElements2.contains(c));
+    ASSERT_TRUE(ownedComments2.contains(c));
+    ASSERT_FALSE(appliedStereotypes2.contains(c.getID()));
+    ASSERT_FALSE(members2.contains(c.getID()));
+    ASSERT_FALSE(ownedMembers2.contains(c.getID()));
+
+    delete ownedMembers;
+    delete members;
+    delete appliedStereotypes;
+    delete ownedComments;
+    delete ownedElements;
+}

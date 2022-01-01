@@ -42,6 +42,11 @@ void Deployment::init() {
     m_deployedArtifacts.m_signature = &Deployment::getDeployedArtifacts;
 }
 
+void Deployment::copy(const Deployment& rhs) {
+    m_location = rhs.m_location;
+    m_deployedArtifacts = rhs.m_deployedArtifacts;
+}
+
 Deployment::Deployment() : Element(ElementType::DEPLOYMENT) {
     init();
 }

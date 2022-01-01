@@ -3,12 +3,12 @@ add_executable(umltest idTest.cpp setTest.cpp elementTest.cpp namedElementTest.c
                        typedElementTest.cpp instanceSpecificationTest.cpp slotTest.cpp classTest.cpp multiplicityElementTest.cpp
                        directedRelationshipTest.cpp operationTest.cpp parameterTest.cpp behaviorTest.cpp associationTest.cpp
                        enumerationTest.cpp commentTest.cpp templateableElementTest.cpp profileApplicationTest.cpp extensionTest.cpp
-                       stereotypeTest.cpp behavioredClassifierTest.cpp)
+                       stereotypeTest.cpp behavioredClassifierTest.cpp deploymentTest.cpp manifestationTest.cpp)
                     #     activityEdgeTest.cpp 
                     #    objectNodeTest.cpp activityNodeTest.cpp inputPinTest.cpp outputPinTest.cpp  
                     #      activityTest.cpp 
                     #    UmlManagerTest.cpp 
-                    #     deploymentTest.cpp manifestationTest.cpp generalizationSetTest.cpp)
+                    #      generalizationSetTest.cpp)
 if (UML_CLIENT_SERVER)
     target_sources(umltest PRIVATE restfulTest.cpp)
 endif()

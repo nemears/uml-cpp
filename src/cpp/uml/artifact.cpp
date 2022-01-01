@@ -88,6 +88,10 @@ Artifact::Artifact(const Artifact& rhs) : Element(rhs, ElementType::ARTIFACT) {
     copy(rhs);
 }
 
+Artifact::~Artifact() {
+    
+}
+
 OrderedSet<Property, Artifact>& Artifact::getOwnedAttributes() {
     return m_ownedAttributes;
 }

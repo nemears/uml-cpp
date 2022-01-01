@@ -9,13 +9,13 @@ add_library(Uml element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp names
                 comment.cpp instanceValue.cpp expression.cpp abstraction.cpp realization.cpp usage.cpp model.cpp 
                 templateableElement.cpp templateSignature.cpp parameterableElement.cpp templateParameter.cpp
                 templateBinding.cpp templateParameterSubstitution.cpp redefinableElement.cpp profile.cpp stereotype.cpp
-                profileApplication.cpp extension.cpp extensionEnd.cpp deployment.cpp deployedArtifact.cpp deploymentTarget.cpp)
+                profileApplication.cpp extension.cpp extensionEnd.cpp deployment.cpp deployedArtifact.cpp deploymentTarget.cpp
+                artifact.cpp manifestation.cpp)
 # add_library(Uml   
 #                 activity.cpp activityNode.cpp activityEdge.cpp objectNode.cpp  pin.cpp
 #                 action.cpp inputPin.cpp outputPin.cpp controlFlow.cpp objectFlow.cpp initialNode.cpp finalNode.cpp decisionNode.cpp
-#                 joinNode.cpp forkNode.cpp mergeNode.cpp parameterNode.cpp callBehaviorAction.cpp  createObjectAction.cpp 
-#                  artifact.cpp 
-#                 manifestation.cpp generalizationSet.cpp)
+#                 joinNode.cpp forkNode.cpp mergeNode.cpp parameterNode.cpp callBehaviorAction.cpp  createObjectAction.cpp  
+#                  generalizationSet.cpp)
 if (UML_CLIENT_SERVER)
     target_sources(Uml PRIVATE managers/umlClient.cpp managers/umlServer.cpp)
 endif()

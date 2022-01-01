@@ -165,6 +165,8 @@ namespace UML {
     class ExtensionEnd;
     class DeploymentTarget;
     class Deployment;
+    class Artifact;
+    class Manifestation;
 
     /**
      * This container is based around a weighted binary search tree
@@ -222,6 +224,8 @@ namespace UML {
         friend class ExtensionEnd;
         friend class DeploymentTarget;
         friend class Deployment;
+        friend class Artifact;
+        friend class Manifestation;
 
         protected:
             bool m_rootRedefinedSet = true;

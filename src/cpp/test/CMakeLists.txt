@@ -1,5 +1,5 @@
 add_subdirectory(uml)
-# add_subdirectory(parsers)
+add_subdirectory(parsers)
 if (UML_CPP_BUILD_CLANG) 
    # add_subdirectory(cppParsers)
 endif()

@@ -159,6 +159,7 @@ Property::Property(const Property& rhs) : Element(rhs, ElementType::PROPERTY) {
     MultiplicityElement::copy(rhs);
     RedefinableElement::copy(rhs);
     Feature::copy(rhs);
+    DeploymentTarget::copy(rhs);
     copy(rhs);
 }
 
@@ -324,30 +325,6 @@ void Property::setOwningAssociation(Association& association) {
     m_owningAssociation.set(association);
 }
 
-// Artifact* Property::getArtifact() {
-//     return m_artifact.get();
-// }
-
-// Artifact& Property::getArtifactRef() {
-//     return m_artifact.getRef();
-// }
-
-// ID Property::getArtifactID() const {
-//     return m_artifact.id();
-// }
-
-// bool Property::hasArtifact() const {
-//     return m_artifact.has();
-// }
-
-// void Property::setArtifact(Artifact* artifact) {
-//     m_artifact.set(artifact);
-// }
-
-// void Property::setArtifact(Artifact& artifact) {
-//     m_artifact.set(artifact);
-// }
-
 Set<Property, Property>& Property::getRedefinedProperties() {
     return m_redefinedProperties;
 }
@@ -359,9 +336,9 @@ bool Property::isSubClassOf(ElementType eType) const {
         ret = ConnectableElement::isSubClassOf(eType);
     }
 
-    // if (!ret) {
-    //     ret = DeploymentTarget::isSubClassOf(eType);
-    // }
+    if (!ret) {
+        ret = DeploymentTarget::isSubClassOf(eType);
+    }
 
     if (!ret) {
         ret = eType == ElementType::PROPERTY;

@@ -28,7 +28,7 @@ namespace UML{
         COMPOSITE
     };
 
-    class Property: public StructuralFeature, public ConnectableElement/** , public DeploymentTarget**/ {
+    class Property: public StructuralFeature, public ConnectableElement , public DeploymentTarget {
 
         friend class UmlManager;
         friend class Class;
@@ -45,7 +45,6 @@ namespace UML{
             Singleton<Class, Property> m_class = Singleton<Class, Property>(this);
             Singleton<Association, Property> m_association = Singleton<Association, Property>(this);
             Singleton<Association, Property> m_owningAssociation = Singleton<Association, Property>(this);
-            // Singleton<Artifact, Property> m_artifact = Singleton<Artifact, Property>(this);
             Set<Property, Property> m_redefinedProperties = Set<Property, Property>(this);
             // void reindexName(std::string oldName, std::string newName) override;
             class AddEndTypeFunctor : public SetFunctor {
@@ -122,12 +121,6 @@ namespace UML{
             bool hasOwningAssociation() const;
             void setOwningAssociation(Association* association);
             void setOwningAssociation(Association& association);
-            // virtual Artifact* getArtifact();
-            // Artifact& getArtifactRef();
-            // ID getArtifactID() const;
-            // bool hasArtifact() const;
-            // void setArtifact(Artifact* artifact);
-            // void setArtifact(Artifact& artifact);
             Set<Property, Property>& getRedefinedProperties();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

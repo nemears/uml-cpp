@@ -64,6 +64,8 @@ InstanceSpecification::InstanceSpecification(const InstanceSpecification& rhs) :
     Element::copy(rhs);
     NamedElement::copy(rhs);
     PackageableElement::copy(rhs);
+    DeploymentTarget::copy(rhs);
+    DeployedArtifact::copy(rhs);
     copy(rhs);
 }
 
@@ -106,13 +108,13 @@ Set<Slot, InstanceSpecification>& InstanceSpecification::getSlots() {
 bool InstanceSpecification::isSubClassOf(ElementType eType) const {
     bool ret = PackageableElement::isSubClassOf(eType);
 
-    // if (!ret) {
-    //     ret = DeploymentTarget::isSubClassOf(eType);
-    // }
+    if (!ret) {
+        ret = DeploymentTarget::isSubClassOf(eType);
+    }
 
-    // if (!ret) {
-    //     ret = DeployedArtifact::isSubClassOf(eType);
-    // }
+    if (!ret) {
+        ret = DeployedArtifact::isSubClassOf(eType);
+    }
 
     if (!ret) {
         ret = eType == ElementType::INSTANCE_SPECIFICATION;

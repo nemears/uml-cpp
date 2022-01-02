@@ -2,7 +2,6 @@
 #include <fstream>
 #include "uml/uml-stable.h"
 #include "uml/activity.h" // the only "not stable" thing with a presence in this class
-#include "uml/generalizationSet.h" // TODO add to stable when parser done
 #include "uml/parsers/singletonFunctors.h"
 
 using namespace std;
@@ -96,205 +95,205 @@ void emitToFile(Element& el, EmitterMetaData& data, string path, string fileName
     data.m_fileName = cFile;
 }
 
-SetDefaultValue::SetDefaultValue() {
-    m_signature = &Property::m_defaultValue;
-}
+// SetDefaultValue::SetDefaultValue() {
+//     m_signature = &Property::m_defaultValue;
+// }
 
-SetSpecific::SetSpecific() {
-    m_signature = &Generalization::m_specific;
-}
+// SetSpecific::SetSpecific() {
+//     m_signature = &Generalization::m_specific;
+// }
 
-SetNestingClass::SetNestingClass() {
-    m_signature = &Classifier::m_nestingClass;
-}
+// SetNestingClass::SetNestingClass() {
+//     m_signature = &Classifier::m_nestingClass;
+// }
 
-OperationSetClass::OperationSetClass() {
-    m_signature = &Operation::m_class;
-}
+// OperationSetClass::OperationSetClass() {
+//     m_signature = &Operation::m_class;
+// }
 
-PropertySetClass::PropertySetClass() {
-    m_signature = &Property::m_class;
-}
+// PropertySetClass::PropertySetClass() {
+//     m_signature = &Property::m_class;
+// }
 
-SetOwningPackage::SetOwningPackage() {
-    m_signature = &PackageableElement::m_owningPackage;
-}
+// SetOwningPackage::SetOwningPackage() {
+//     m_signature = &PackageableElement::m_owningPackage;
+// }
 
-PropertySetDataType::PropertySetDataType() {
-    m_signature = &Property::m_dataType;
-}
+// PropertySetDataType::PropertySetDataType() {
+//     m_signature = &Property::m_dataType;
+// }
 
-OperationSetDataType::OperationSetDataType() {
-    m_signature = &Operation::m_dataType;
-}
+// OperationSetDataType::OperationSetDataType() {
+//     m_signature = &Operation::m_dataType;
+// }
 
-SetOwningElement::SetOwningElement() {
-    m_signature = &Comment::m_owningElement;
-}
+// SetOwningElement::SetOwningElement() {
+//     m_signature = &Comment::m_owningElement;
+// }
 
-PropertySetArtifact::PropertySetArtifact() {
-    m_signature = &Property::m_artifact;
-}
+// PropertySetArtifact::PropertySetArtifact() {
+//     m_signature = &Property::m_artifact;
+// }
 
-OperationSetArtifact::OperationSetArtifact() {
-    m_signature = &Operation::m_artifact;
-}
+// OperationSetArtifact::OperationSetArtifact() {
+//     m_signature = &Operation::m_artifact;
+// }
 
-ArtifactSetArtifact::ArtifactSetArtifact() {
-    m_signature = &Artifact::m_artifact;
-}
+// ArtifactSetArtifact::ArtifactSetArtifact() {
+//     m_signature = &Artifact::m_artifact;
+// }
 
-ManifestationSetArtifact::ManifestationSetArtifact() {
-    m_signature = &Manifestation::m_artifact;
-}
+// ManifestationSetArtifact::ManifestationSetArtifact() {
+//     m_signature = &Manifestation::m_artifact;
+// }
 
-InstanceSpecificationSetClassifier::InstanceSpecificationSetClassifier() {
-    m_signature = &InstanceSpecification::m_classifier;
-}
+// InstanceSpecificationSetClassifier::InstanceSpecificationSetClassifier() {
+//     m_signature = &InstanceSpecification::m_classifier;
+// }
 
-SetOwningInstance::SetOwningInstance() {
-    m_signature = &Slot::m_owningInstance;
-}
+// SetOwningInstance::SetOwningInstance() {
+//     m_signature = &Slot::m_owningInstance;
+// }
 
-SetDefiningFeature::SetDefiningFeature() {
-    m_signature = &Slot::m_definingFeature;
-}
+// SetDefiningFeature::SetDefiningFeature() {
+//     m_signature = &Slot::m_definingFeature;
+// }
 
-SetOwningSlot::SetOwningSlot() {
-    m_signature = &ValueSpecification::m_owningSlot;
-}
+// SetOwningSlot::SetOwningSlot() {
+//     m_signature = &ValueSpecification::m_owningSlot;
+// }
 
-SetSpecification::SetSpecification() {
-    m_signature = &InstanceSpecification::m_specification;
-}
+// SetSpecification::SetSpecification() {
+//     m_signature = &InstanceSpecification::m_specification;
+// }
 
-SetInstance::SetInstance() {
-    m_signature = &InstanceValue::m_instance;
-}
+// SetInstance::SetInstance() {
+//     m_signature = &InstanceValue::m_instance;
+// }
 
-SetOwningInstanceSpec::SetOwningInstanceSpec() {
-    m_signature = &ValueSpecification::m_owningInstanceSpec;
-}
+// SetOwningInstanceSpec::SetOwningInstanceSpec() {
+//     m_signature = &ValueSpecification::m_owningInstanceSpec;
+// }
 
-SetOwningAssociation::SetOwningAssociation() {
-    m_signature = &Property::m_owningAssociation;
-}
+// SetOwningAssociation::SetOwningAssociation() {
+//     m_signature = &Property::m_owningAssociation;
+// }
 
-SetAssociation::SetAssociation() {
-    m_signature = &Property::m_association;
-}
+// SetAssociation::SetAssociation() {
+//     m_signature = &Property::m_association;
+// }
 
-SetType::SetType() {
-    m_signature = &TypedElement::m_type;
-}
+// SetType::SetType() {
+//     m_signature = &TypedElement::m_type;
+// }
 
-SetOperation::SetOperation() {
-    m_signature = &Parameter::m_operation;
-}
+// SetOperation::SetOperation() {
+//     m_signature = &Parameter::m_operation;
+// }
 
-BehaviorSetSpecification::BehaviorSetSpecification() {
-    m_signature = &Behavior::m_specification;
-}
+// BehaviorSetSpecification::BehaviorSetSpecification() {
+//     m_signature = &Behavior::m_specification;
+// }
 
-SetBehavioredClassifier::SetBehavioredClassifier() {
-    m_signature = &Behavior::m_behavioredClassifier;
-}
+// SetBehavioredClassifier::SetBehavioredClassifier() {
+//     m_signature = &Behavior::m_behavioredClassifier;
+// }
 
-SetBehavior::SetBehavior() {
-    m_signature = &Parameter::m_behavior;
-}
+// SetBehavior::SetBehavior() {
+//     m_signature = &Parameter::m_behavior;
+// }
 
-SetEnumeration::SetEnumeration() {
-    m_signature = &EnumerationLiteral::m_enumeration;
-}
+// SetEnumeration::SetEnumeration() {
+//     m_signature = &EnumerationLiteral::m_enumeration;
+// }
 
-SetExpression::SetExpression() {
-    m_signature = &ValueSpecification::m_expression;
-}
+// SetExpression::SetExpression() {
+//     m_signature = &ValueSpecification::m_expression;
+// }
 
-SetClassifierBehavior::SetClassifierBehavior() {
-    m_signature = &BehavioredClassifier::m_classifierBehavior;
-}
+// SetClassifierBehavior::SetClassifierBehavior() {
+//     m_signature = &BehavioredClassifier::m_classifierBehavior;
+// }
 
-SetTemplate::SetTemplate() {
-    m_signature = &TemplateSignature::m_template;
-}
+// SetTemplate::SetTemplate() {
+//     m_signature = &TemplateSignature::m_template;
+// }
 
-SetOwnedTemplateSignature::SetOwnedTemplateSignature() {
-    m_signature = &TemplateableElement::m_ownedTemplateSignature;
-}
+// SetOwnedTemplateSignature::SetOwnedTemplateSignature() {
+//     m_signature = &TemplateableElement::m_ownedTemplateSignature;
+// }
 
-SetSignature::SetSignature() {
-    m_signature = &TemplateParameter::m_signature;
-}
+// SetSignature::SetSignature() {
+//     m_signature = &TemplateParameter::m_signature;
+// }
 
-SetOwnedParameteredElement::SetOwnedParameteredElement() {
-    m_signature = &TemplateParameter::m_ownedParameteredElement;
-}
+// SetOwnedParameteredElement::SetOwnedParameteredElement() {
+//     m_signature = &TemplateParameter::m_ownedParameteredElement;
+// }
 
-SetOwningTemplateParameter::SetOwningTemplateParameter() {
-    m_signature = &ParameterableElement::m_owningTemplateParameter;
-}
+// SetOwningTemplateParameter::SetOwningTemplateParameter() {
+//     m_signature = &ParameterableElement::m_owningTemplateParameter;
+// }
 
-SetTemplateParameter::SetTemplateParameter() {
-    m_signature = &ParameterableElement::m_templateParameter;
-}
+// SetTemplateParameter::SetTemplateParameter() {
+//     m_signature = &ParameterableElement::m_templateParameter;
+// }
 
-SetOwnedDefault::SetOwnedDefault() {
-    m_signature = &TemplateParameter::m_ownedDefault;
-}
+// SetOwnedDefault::SetOwnedDefault() {
+//     m_signature = &TemplateParameter::m_ownedDefault;
+// }
 
-void SetOwner::operator()(Element& el, Element& owner) const {
-    el.setOwner(&owner);
-}
+// void SetOwner::operator()(Element& el, Element& owner) const {
+//     el.setOwner(&owner);
+// }
 
-void SetOwner::operator()(Element& el, ID ownerID) const {
-    el.setOwnerByID(ownerID);
-}
+// void SetOwner::operator()(Element& el, ID ownerID) const {
+//     el.setOwnerByID(ownerID);
+// }
 
-SetDefault::SetDefault() {
-    m_signature = &TemplateParameter::m_default;
-}
+// SetDefault::SetDefault() {
+//     m_signature = &TemplateParameter::m_default;
+// }
 
-SetBoundElement::SetBoundElement() {
-    m_signature = &TemplateBinding::m_boundElement;
-}
+// SetBoundElement::SetBoundElement() {
+//     m_signature = &TemplateBinding::m_boundElement;
+// }
 
-SetOwnedActual::SetOwnedActual() {
-    m_signature = &TemplateParameterSubstitution::m_ownedActual;
-}
+// SetOwnedActual::SetOwnedActual() {
+//     m_signature = &TemplateParameterSubstitution::m_ownedActual;
+// }
 
-SetActual::SetActual() {
-    m_signature = &TemplateParameterSubstitution::m_actual;
-}
+// SetActual::SetActual() {
+//     m_signature = &TemplateParameterSubstitution::m_actual;
+// }
 
-SetFormal::SetFormal() {
-    m_signature = &TemplateParameterSubstitution::m_formal;
-}
+// SetFormal::SetFormal() {
+//     m_signature = &TemplateParameterSubstitution::m_formal;
+// }
 
-SetTemplateBinding::SetTemplateBinding() {
-    m_signature = &TemplateParameterSubstitution::m_templateBinding;
-}
+// SetTemplateBinding::SetTemplateBinding() {
+//     m_signature = &TemplateParameterSubstitution::m_templateBinding;
+// }
 
-SetProfile::SetProfile() {
-    m_signature = &Stereotype::m_profile;
-}
+// SetProfile::SetProfile() {
+//     m_signature = &Stereotype::m_profile;
+// }
 
-SetOwnedEnd::SetOwnedEnd() {
-    m_signature = &Extension::m_ownedEnd;
-}
+// SetOwnedEnd::SetOwnedEnd() {
+//     m_signature = &Extension::m_ownedEnd;
+// }
 
-SetExtension::SetExtension() {
-    m_signature = &ExtensionEnd::m_extension;
-}
+// SetExtension::SetExtension() {
+//     m_signature = &ExtensionEnd::m_extension;
+// }
 
-SetLocation::SetLocation() {
-    m_signature = &Deployment::m_location;
-}
+// SetLocation::SetLocation() {
+//     m_signature = &Deployment::m_location;
+// }
 
-SetPowerType::SetPowerType() {
-    m_signature = &GeneralizationSet::m_powerType;
-}
+// SetPowerType::SetPowerType() {
+//     m_signature = &GeneralizationSet::m_powerType;
+// }
 
 ElementType elementTypeFromString(string eType) {
     if (eType.compare("ABSTRACTION") == 0) {
@@ -478,7 +477,7 @@ namespace {
  * @param el, the element that owns the element being parsed
  * @param signature, the signature of the sequence to add the parsed element to
  **/
-template <class T = Element, class U = Element> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, Sequence<T>& (U::* signature)()) {
+template <class T = Element, class U = Element, class S = Set<T,U>> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, S& (U::* signature)()) {
     if (data.m_strategy == ParserStrategy::WHOLE) {
         Element* packagedEl = parseExternalAddToManager(data, node.as<std::string>());
         if (packagedEl == 0) {
@@ -493,7 +492,7 @@ template <class T = Element, class U = Element> void parseAndAddToSequence(YAML:
             if (data.m_manager->UmlManager::loaded(id)) {
                 (el.*signature)().add(data.m_manager->get<T>(id)); // Too slow? makes it easier
             } else {
-                (el.*signature)().addByID(id);
+                (el.*signature)().add(id);
             }
         } else {
             throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);
@@ -510,7 +509,7 @@ template <class T = Element, class U = Element> void parseAndAddToSequence(YAML:
  * @param sequenceSignature, the signature of the sequence we are adding to
  * @param parserSignature, the signature of the function we are using to parse it's children in WHOLE parser strategy mode
  **/
-template <class T = Element, class U = Element> void parseSequenceDefinitions(YAML::Node node, ParserMetaData& data, string key, U& owner, Sequence<T>& (U::*sequenceSignature)(), T& (*parserSignature)(YAML::Node, ParserMetaData&)) {
+template <class T = Element, class U = Element, class S = Set<T,U>> void parseSequenceDefinitions(YAML::Node node, ParserMetaData& data, string key, U& owner, S& (U::*sequenceSignature)(), T& (*parserSignature)(YAML::Node, ParserMetaData&)) {
     if (node[key]) {
         if (node[key].IsSequence()) {
             for (size_t i = 0; i < node[key].size(); i++) {
@@ -823,178 +822,178 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (ret && data.m_strategy == ParserStrategy::INDIVIDUAL) {
-        if (node["owningPackage"]) {
-            SetOwningPackage setOwningPackage;
-            parseSingleton(node["owningPackage"], data, ret->as<PackageableElement>(), &PackageableElement::setOwningPackage, setOwningPackage);
-        }
-        if (node["receivingPackage"]) {
-            ID receivingPackageID = ID::fromString(node["receivingPackage"].as<string>());
-            if (data.m_manager->loaded(receivingPackageID)) {
-                ret->as<PackageMerge>().setReceivingPackage(data.m_manager->get<Package>(receivingPackageID));
-            } else {
-                throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["receivingPackage"]);
-            }
-        }
-        if (node["applyingPackage"]) {
-            ID applyingPackageID = ID::fromString(node["applyingPackage"].as<string>());
-            if (data.m_manager->loaded(applyingPackageID)) {
-                ret->as<ProfileApplication>().setApplyingPackage(data.m_manager->get<Package>(applyingPackageID));
-            } else {
-                throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["applyingPackage"]);
-            }
-        }
-        if (node["class"]) {
-            if (node["class"].IsScalar()) {
-                if (ret->isSubClassOf(ElementType::PROPERTY)) {
-                    PropertySetClass setClass;
-                    parseSingleton(node["class"], data, ret->as<Property>(), &Property::setClass, setClass);
-                } else if (ret->isSubClassOf(ElementType::OPERATION)) {
-                    OperationSetClass setClass;
-                    parseSingleton(node["class"], data, ret->as<Operation>(), &Operation::setClass, setClass);
-                }
-            }
-        }
-        if (node["dataType"]) {
-            if (node["dataType"].IsScalar()) {
-                if (ret->isSubClassOf(ElementType::PROPERTY)) {
-                    PropertySetDataType setDataType;
-                    parseSingleton(node["dataType"], data, ret->as<Property>(), &Property::setDataType, setDataType);
-                } else if (ret->isSubClassOf(ElementType::OPERATION)) {
-                    OperationSetDataType setDataType;
-                    parseSingleton(node["dataType"], data, ret->as<Operation>(), &Operation::setDataType, setDataType);
-                }
-            }
-        }
+        // if (node["owningPackage"]) {
+        //     SetOwningPackage setOwningPackage;
+        //     parseSingleton(node["owningPackage"], data, ret->as<PackageableElement>(), &PackageableElement::setOwningPackage, setOwningPackage);
+        // }
+        // if (node["receivingPackage"]) {
+        //     ID receivingPackageID = ID::fromString(node["receivingPackage"].as<string>());
+        //     if (data.m_manager->loaded(receivingPackageID)) {
+        //         ret->as<PackageMerge>().setReceivingPackage(data.m_manager->get<Package>(receivingPackageID));
+        //     } else {
+        //         throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["receivingPackage"]);
+        //     }
+        // }
+        // if (node["applyingPackage"]) {
+        //     ID applyingPackageID = ID::fromString(node["applyingPackage"].as<string>());
+        //     if (data.m_manager->loaded(applyingPackageID)) {
+        //         ret->as<ProfileApplication>().setApplyingPackage(data.m_manager->get<Package>(applyingPackageID));
+        //     } else {
+        //         throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["applyingPackage"]);
+        //     }
+        // }
+        // if (node["class"]) {
+        //     if (node["class"].IsScalar()) {
+        //         if (ret->isSubClassOf(ElementType::PROPERTY)) {
+        //             PropertySetClass setClass;
+        //             parseSingleton(node["class"], data, ret->as<Property>(), &Property::setClass, setClass);
+        //         } else if (ret->isSubClassOf(ElementType::OPERATION)) {
+        //             OperationSetClass setClass;
+        //             parseSingleton(node["class"], data, ret->as<Operation>(), &Operation::setClass, setClass);
+        //         }
+        //     }
+        // }
+        // if (node["dataType"]) {
+        //     if (node["dataType"].IsScalar()) {
+        //         if (ret->isSubClassOf(ElementType::PROPERTY)) {
+        //             PropertySetDataType setDataType;
+        //             parseSingleton(node["dataType"], data, ret->as<Property>(), &Property::setDataType, setDataType);
+        //         } else if (ret->isSubClassOf(ElementType::OPERATION)) {
+        //             OperationSetDataType setDataType;
+        //             parseSingleton(node["dataType"], data, ret->as<Operation>(), &Operation::setDataType, setDataType);
+        //         }
+        //     }
+        // }
 
-        if (node["artifact"]) {
-            if (node["artifact"].IsScalar()) {
-                if (ret->isSubClassOf(ElementType::PROPERTY)) {
-                    PropertySetArtifact setArtifact;
-                    parseSingleton(node["artifact"], data, ret->as<Property>(), &Property::setArtifact, setArtifact);
-                } else if (ret->isSubClassOf(ElementType::OPERATION)) {
-                    OperationSetArtifact setArtifact;
-                    parseSingleton(node["artifact"], data, ret->as<Operation>(), &Operation::setArtifact, setArtifact);
-                } else if (ret->isSubClassOf(ElementType::MANIFESTATION)) {
-                    ManifestationSetArtifact setArtifact;
-                    parseSingleton(node["artifact"], data, ret->as<Manifestation>(), &Manifestation::setArtifact, setArtifact);
-                }
-            }
-        }
+        // if (node["artifact"]) {
+        //     if (node["artifact"].IsScalar()) {
+        //         if (ret->isSubClassOf(ElementType::PROPERTY)) {
+        //             PropertySetArtifact setArtifact;
+        //             parseSingleton(node["artifact"], data, ret->as<Property>(), &Property::setArtifact, setArtifact);
+        //         } else if (ret->isSubClassOf(ElementType::OPERATION)) {
+        //             OperationSetArtifact setArtifact;
+        //             parseSingleton(node["artifact"], data, ret->as<Operation>(), &Operation::setArtifact, setArtifact);
+        //         } else if (ret->isSubClassOf(ElementType::MANIFESTATION)) {
+        //             ManifestationSetArtifact setArtifact;
+        //             parseSingleton(node["artifact"], data, ret->as<Manifestation>(), &Manifestation::setArtifact, setArtifact);
+        //         }
+        //     }
+        // }
 
-        if (node["owningArtifact"]) {
-            ArtifactSetArtifact setArtifact;
-            parseSingleton(node["owningArtifact"], data, ret->as<Artifact>(), &Artifact::setArtifact, setArtifact);
-        }
+        // if (node["owningArtifact"]) {
+        //     ArtifactSetArtifact setArtifact;
+        //     parseSingleton(node["owningArtifact"], data, ret->as<Artifact>(), &Artifact::setArtifact, setArtifact);
+        // }
 
-        if (node["owningProperty"]) {
-            ID owningPropertyID = ID::fromString(node["owningProperty"].as<string>());
-            if (data.m_manager->loaded(owningPropertyID)) {
-                data.m_manager->get<Property>(owningPropertyID).setDefaultValue(ret->as<ValueSpecification>());
-            } else {
-                throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["owningProperty"]);
-            }
-        }
-        if (node["specific"]) {
-            SetSpecific setSpecific;
-            parseSingleton(node["specific"], data, ret->as<Generalization>(), &Generalization::setSpecific, setSpecific);
-        }
-        if (node["nestingClass"]) {
-            SetNestingClass setNestingClass;
-            parseSingleton(node["nestingClass"], data, ret->as<Classifier>(), &Classifier::setNestingClass, setNestingClass);
-        }
-        if (node["owningElement"]) {
-            SetOwningElement setOwningElement;
-            parseSingleton(node["owningElement"], data, ret->as<Comment>(), &Comment::setOwningElement, setOwningElement);
-        }
-        if (node["owningInstance"]) {
-            SetOwningInstance setOwningInstance;
-            parseSingleton(node["owningInstance"], data, ret->as<Slot>(), &Slot::setOwningInstance, setOwningInstance);
-        }
-        if (node["owningSlot"]) {
-            SetOwningSlot setOwningSlot;
-            parseSingleton(node["owningSlot"], data, ret->as<ValueSpecification>(), &ValueSpecification::setOwningSlot, setOwningSlot);
-        }
-        if (node["owningInstanceSpec"]) {
-            SetOwningInstanceSpec setOwningInstanceSpec;
-            parseSingleton(node["owningInstanceSpec"], data, ret->as<ValueSpecification>(), &ValueSpecification::setOwningInstanceSpec, setOwningInstanceSpec);
-        }
-        if (node["owningAssociation"]) {
-            SetOwningAssociation setOwningAssociation;
-            parseSingleton(node["owningAssociation"], data, ret->as<Property>(), &Property::setOwningAssociation, setOwningAssociation);
-        }
-        if (node["operation"]) {
-            if (node["operation"].IsScalar()) {
-                SetOperation setOperation;
-                parseSingleton(node["operation"], data, ret->as<Parameter>(), &Parameter::setOperation, setOperation);
-            }
-        }
-        if (node["behavioredClassifier"]) {
-            SetBehavioredClassifier setBehavioredClassifier;
-            parseSingleton(node["behavioredClassifier"], data, ret->as<Behavior>(), &Behavior::setBehavioredClassifier, setBehavioredClassifier);
-        }
-        if (node["behavior"]) {
-            SetBehavior setBehavior;
-            parseSingleton(node["behavior"], data, ret->as<Parameter>(), &Parameter::setBehavior, setBehavior);
-        }
-        if (node["enumeration"]) {
-            if (node["enumeration"].IsScalar()) {
-                SetEnumeration setEnumeration;
-                parseSingleton(node["enumeration"], data, ret->as<EnumerationLiteral>(), &EnumerationLiteral::setEnumeration, setEnumeration);
-            }
-        }
-        if (node["expression"]) {
-            if (node["expression"].IsScalar()) {
-                SetExpression setExpression;
-                parseSingleton(node["expression"], data, ret->as<ValueSpecification>(), &ValueSpecification::setExpression, setExpression);
-            }
-        }
-        if (node["template"]) {
-            SetTemplate setTemplate;
-            parseSingleton(node["template"], data, ret->as<TemplateSignature>(), &TemplateSignature::setTemplate, setTemplate);
-        }
-        if (node["signature"]) {
-            SetSignature setSignature;
-            parseSingleton(node["signature"], data, ret->as<TemplateParameter>(), &TemplateParameter::setSignature, setSignature);
-        }
-        if (node["owningTemplateParameter"]) {
-            SetOwningTemplateParameter setOwningTemplateParameter;
-            parseSingleton(node["owningTemplateParameter"], data, ret->as<ParameterableElement>(), &ParameterableElement::setOwningTemplateParameter, setOwningTemplateParameter);
-        }
-        if (node["boundElement"]) {
-            SetBoundElement setBoundElement;
-            parseSingleton(node["boundElement"], data, ret->as<TemplateBinding>(), &TemplateBinding::setBoundElement, setBoundElement);
-        }
-        if (node["templateBinding"]) {
-            if (node["templateBinding"].IsScalar()) {
-                SetTemplateBinding setTemplateBinding;
-                parseSingleton(node["templateBinding"], data, ret->as<TemplateParameterSubstitution>(), &TemplateParameterSubstitution::setTemplateBinding, setTemplateBinding);
-            }
-        }
-        if (node["extension"]) {
-            if (node["extension"].IsScalar()) {
-                SetExtension setExtension;
-                parseSingleton(node["extension"], data, ret->as<ExtensionEnd>(), &ExtensionEnd::setExtension, setExtension);
-            }
-        }
-        if (node["location"]) {
-            SetLocation setLocation;
-            parseSingleton(node["location"], data, ret->as<Deployment>(), &Deployment::setLocation, setLocation);
-        }
-        if (node["owner"]) { // special case
-            if (node["owner"].IsScalar()) {
-                if (ret->isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
-                    //if (ret->as<ParameterableElement>().hasTemplateParameter()) {
-                        ID id = ID::fromString(node["owner"].as<string>());
-                        SetOwner setOwner;
-                        if (data.m_manager->loaded(id)) {
-                            setOwner(*ret, data.m_manager->get<>(id));
-                        } else {
-                            setOwner(*ret, id);
-                        }
-                    //}
-                }
-            }
-        }
+        // if (node["owningProperty"]) {
+        //     ID owningPropertyID = ID::fromString(node["owningProperty"].as<string>());
+        //     if (data.m_manager->loaded(owningPropertyID)) {
+        //         data.m_manager->get<Property>(owningPropertyID).setDefaultValue(ret->as<ValueSpecification>());
+        //     } else {
+        //         throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["owningProperty"]);
+        //     }
+        // }
+        // if (node["specific"]) {
+        //     SetSpecific setSpecific;
+        //     parseSingleton(node["specific"], data, ret->as<Generalization>(), &Generalization::setSpecific, setSpecific);
+        // }
+        // if (node["nestingClass"]) {
+        //     SetNestingClass setNestingClass;
+        //     parseSingleton(node["nestingClass"], data, ret->as<Classifier>(), &Classifier::setNestingClass, setNestingClass);
+        // }
+        // if (node["owningElement"]) {
+        //     SetOwningElement setOwningElement;
+        //     parseSingleton(node["owningElement"], data, ret->as<Comment>(), &Comment::setOwningElement, setOwningElement);
+        // }
+        // if (node["owningInstance"]) {
+        //     SetOwningInstance setOwningInstance;
+        //     parseSingleton(node["owningInstance"], data, ret->as<Slot>(), &Slot::setOwningInstance, setOwningInstance);
+        // }
+        // if (node["owningSlot"]) {
+        //     SetOwningSlot setOwningSlot;
+        //     parseSingleton(node["owningSlot"], data, ret->as<ValueSpecification>(), &ValueSpecification::setOwningSlot, setOwningSlot);
+        // }
+        // if (node["owningInstanceSpec"]) {
+        //     SetOwningInstanceSpec setOwningInstanceSpec;
+        //     parseSingleton(node["owningInstanceSpec"], data, ret->as<ValueSpecification>(), &ValueSpecification::setOwningInstanceSpec, setOwningInstanceSpec);
+        // }
+        // if (node["owningAssociation"]) {
+        //     SetOwningAssociation setOwningAssociation;
+        //     parseSingleton(node["owningAssociation"], data, ret->as<Property>(), &Property::setOwningAssociation, setOwningAssociation);
+        // }
+        // if (node["operation"]) {
+        //     if (node["operation"].IsScalar()) {
+        //         SetOperation setOperation;
+        //         parseSingleton(node["operation"], data, ret->as<Parameter>(), &Parameter::setOperation, setOperation);
+        //     }
+        // }
+        // if (node["behavioredClassifier"]) {
+        //     SetBehavioredClassifier setBehavioredClassifier;
+        //     parseSingleton(node["behavioredClassifier"], data, ret->as<Behavior>(), &Behavior::setBehavioredClassifier, setBehavioredClassifier);
+        // }
+        // if (node["behavior"]) {
+        //     SetBehavior setBehavior;
+        //     parseSingleton(node["behavior"], data, ret->as<Parameter>(), &Parameter::setBehavior, setBehavior);
+        // }
+        // if (node["enumeration"]) {
+        //     if (node["enumeration"].IsScalar()) {
+        //         SetEnumeration setEnumeration;
+        //         parseSingleton(node["enumeration"], data, ret->as<EnumerationLiteral>(), &EnumerationLiteral::setEnumeration, setEnumeration);
+        //     }
+        // }
+        // if (node["expression"]) {
+        //     if (node["expression"].IsScalar()) {
+        //         SetExpression setExpression;
+        //         parseSingleton(node["expression"], data, ret->as<ValueSpecification>(), &ValueSpecification::setExpression, setExpression);
+        //     }
+        // }
+        // if (node["template"]) {
+        //     SetTemplate setTemplate;
+        //     parseSingleton(node["template"], data, ret->as<TemplateSignature>(), &TemplateSignature::setTemplate, setTemplate);
+        // }
+        // if (node["signature"]) {
+        //     SetSignature setSignature;
+        //     parseSingleton(node["signature"], data, ret->as<TemplateParameter>(), &TemplateParameter::setSignature, setSignature);
+        // }
+        // if (node["owningTemplateParameter"]) {
+        //     SetOwningTemplateParameter setOwningTemplateParameter;
+        //     parseSingleton(node["owningTemplateParameter"], data, ret->as<ParameterableElement>(), &ParameterableElement::setOwningTemplateParameter, setOwningTemplateParameter);
+        // }
+        // if (node["boundElement"]) {
+        //     SetBoundElement setBoundElement;
+        //     parseSingleton(node["boundElement"], data, ret->as<TemplateBinding>(), &TemplateBinding::setBoundElement, setBoundElement);
+        // }
+        // if (node["templateBinding"]) {
+        //     if (node["templateBinding"].IsScalar()) {
+        //         SetTemplateBinding setTemplateBinding;
+        //         parseSingleton(node["templateBinding"], data, ret->as<TemplateParameterSubstitution>(), &TemplateParameterSubstitution::setTemplateBinding, setTemplateBinding);
+        //     }
+        // }
+        // if (node["extension"]) {
+        //     if (node["extension"].IsScalar()) {
+        //         SetExtension setExtension;
+        //         parseSingleton(node["extension"], data, ret->as<ExtensionEnd>(), &ExtensionEnd::setExtension, setExtension);
+        //     }
+        // }
+        // if (node["location"]) {
+        //     SetLocation setLocation;
+        //     parseSingleton(node["location"], data, ret->as<Deployment>(), &Deployment::setLocation, setLocation);
+        // }
+        // if (node["owner"]) { // special case
+        //     if (node["owner"].IsScalar()) {
+        //         if (ret->isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
+        //             //if (ret->as<ParameterableElement>().hasTemplateParameter()) {
+        //                 ID id = ID::fromString(node["owner"].as<string>());
+        //                 SetOwner setOwner;
+        //                 if (data.m_manager->loaded(id)) {
+        //                     setOwner(*ret, data.m_manager->get<>(id));
+        //                 } else {
+        //                     setOwner(*ret, id);
+        //                 }
+        //             //}
+        //         }
+        //     }
+        // }
     }
 
     return ret;
@@ -1237,187 +1236,187 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
 }
 
 void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
-    if (data.m_strategy == EmitterStrategy::INDIVIDUAL) {
-        if (el.isSubClassOf(ElementType::PACKAGEABLE_ELEMENT)) {
-            if (el.as<PackageableElement>().hasOwningPackage()) {
-                emitter << YAML::Key << "owningPackage" << el.as<PackageableElement>().getOwningPackageID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::PROFILE_APPLICATION)) {
-            if (el.as<ProfileApplication>().hasApplyingPackage()) {
-                emitter << YAML::Key << "applyingPackage" << YAML::Value << el.as<ProfileApplication>().getApplyingPackageID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::PACKAGE_MERGE)) {
-            if (el.as<PackageMerge>().hasReceivingPackage()) {
-                emitter << YAML::Key << "receivingPackage" << el.as<PackageMerge>().getReceivingPackageID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::EXTENSION_END)) {
-            if (el.as<ExtensionEnd>().hasExtension()) {
-                emitter << YAML::Key << "extension" << el.as<ExtensionEnd>().getExtensionID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::PROPERTY)) {
-            if (el.as<Property>().hasClass()) {
-                emitter << YAML::Key << "class" << el.as<Property>().getClassID().string();
-                return;
-            }
-            if (el.as<Property>().hasDataType()) {
-                emitter << YAML::Key << "dataType" << YAML::Value << el.as<Property>().getDataTypeID().string();
-                return;
-            }   
-            if (el.as<Property>().hasArtifact()) {
-                emitter << YAML::Key << "artifact" << YAML::Value << el.as<Property>().getArtifactID().string();
-                return;
-            }
-            if (el.as<Property>().hasOwningAssociation()) {
-                emitter << YAML::Key << "owningAssociation" << YAML::Value << el.as<Property>().getOwningAssociationID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::VALUE_SPECIFICATION)) {
-            if (el.hasOwner()) {
-                if (el.getOwnerRef().isSubClassOf(ElementType::PROPERTY)) {
-                    if (el.getOwnerRef().as<Property>().getDefaultValueID() == el.getID()) {
-                        emitter << YAML::Key << "owningProperty" << YAML::Value << el.getOwnerID().string();
-                        return;
-                    }
-                }
-                if (el.as<ValueSpecification>().hasOwningSlot()) {
-                    emitter << YAML::Key << "owningSlot" << YAML::Value << el.as<ValueSpecification>().getOwningSlotID().string();
-                    return;
-                }
-                if (el.as<ValueSpecification>().hasOwningInstanceSpec()) {
-                    emitter << YAML::Key << "owningInstanceSpec" << YAML::Value << el.as<ValueSpecification>().getOwningInstanceSpecID().string();
-                    return;
-                }
-                if (el.as<ValueSpecification>().hasExpression()) {
-                    emitter << YAML::Key << "expression" << YAML::Value << el.as<ValueSpecification>().getExpressionID().string();
-                    return;
-                }
-            }
-        }
-        if (el.isSubClassOf(ElementType::GENERALIZATION)) {
-            if (el.as<Generalization>().hasSpecific()) {
-                emitter << YAML::Key << "specific" << YAML::Value << el.as<Generalization>().getSpecificID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::CLASSIFIER)) {
-            if (el.as<Classifier>().hasNestingClass()) {
-                emitter << YAML::Key << "nestingClass" << YAML::Value << el.as<Classifier>().getNestingClassID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::OPERATION)) {
-            if (el.as<Operation>().hasClass()) {
-                emitter << YAML::Key << "class" << YAML::Value << el.as<Operation>().getClassID().string();
-                return;
-            }
-            if (el.as<Operation>().hasDataType()) {
-                emitter << YAML::Key << "dataType" << YAML::Value << el.as<Operation>().getDataTypeID().string();
-                return;
-            }
-            if (el.as<Operation>().hasArtifact()) {
-                emitter << YAML::Key << "artifact" << YAML::Value << el.as<Operation>().getArtifactID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::COMMENT)) {
-            if (el.as<Comment>().hasOwningElement()) {
-                emitter << YAML::Key << "owningElement" << YAML::Value << el.as<Comment>().getOwningElementID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::ARTIFACT)) {
-            if (el.as<Artifact>().hasArtifact()) {
-                emitter << YAML::Key << "owningArtifact" << YAML::Value << el.as<Artifact>().getArtifactID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::MANIFESTATION)) {
-            if (el.as<Manifestation>().hasArtifact()) {
-                emitter << YAML::Key << "artifact" << YAML::Value << el.as<Manifestation>().getArtifactID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::SLOT)) {
-            if (el.as<Slot>().hasOwningInstance()) {
-                emitter << YAML::Key << "owningInstance" << YAML::Value << el.as<Slot>().getOwningInstanceID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::PARAMETER)) {
-            if (el.as<Parameter>().hasOperation()) {
-                emitter << YAML::Key << "operation" << YAML::Value << el.as<Parameter>().getOperationID().string();
-                return;
-            }
-            if (el.as<Parameter>().hasBehavior()) {
-                emitter << YAML::Key << "behavior" << YAML::Value << el.as<Parameter>().getBehaviorID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::BEHAVIOR)) {
-            if (el.as<Behavior>().hasBehavioredClassifier()) {
-                emitter << YAML::Key << "behavioredClassifier" << YAML::Value << el.as<Behavior>().getBehavioredClassifierID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::ENUMERATION_LITERAL)) {
-            if (el.as<EnumerationLiteral>().hasEnumeration()) {
-                emitter << YAML::Key << "enumeration" << YAML::Value << el.as<EnumerationLiteral>().getEnumerationID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::TEMPLATE_SIGNATURE)) {
-            if (el.as<TemplateSignature>().hasTemplate()) {
-                emitter << YAML::Key << "template" << YAML::Value << el.as<TemplateSignature>().getTemplateID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER)) {
-            if (el.as<TemplateParameter>().hasSignature()) {
-                emitter << YAML::Key << "signature" << YAML::Value << el.as<TemplateParameter>().getSignatureID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::TEMPLATE_BINDING)) {
-            if (el.as<TemplateBinding>().hasBoundElement()) {
-                emitter << YAML::Key << "boundElement" << YAML::Value << el.as<TemplateBinding>().getBoundElementID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER_SUBSTITUTION)) {
-            if (el.as<TemplateParameterSubstitution>().hasTemplateBinding()) {
-                emitter << YAML::Key << "templateBinding" << YAML::Value << el.as<TemplateParameterSubstitution>().getTemplateBindingID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::DEPLOYMENT)) {
-            if (el.as<Deployment>().hasLocation()) {
-                emitter << YAML::Key << "location" << YAML::Value << el.as<Deployment>().getLocationID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
-            if (el.as<ParameterableElement>().hasOwningTemplateParameter()) {
-                emitter << YAML::Key << "owningTemplateParameter" << YAML::Value << el.as<ParameterableElement>().getOwningTemplateParameterID().string();
-                return;
-            }
-            else if (el.hasOwner()) { // special case
-                emitter << YAML::Key << "owner" << YAML::Value << el.getOwnerID().string();
-                return;
-            }
-        }
-    }
+    // if (data.m_strategy == EmitterStrategy::INDIVIDUAL) {
+    //     if (el.isSubClassOf(ElementType::PACKAGEABLE_ELEMENT)) {
+    //         if (el.as<PackageableElement>().hasOwningPackage()) {
+    //             emitter << YAML::Key << "owningPackage" << el.as<PackageableElement>().getOwningPackageID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::PROFILE_APPLICATION)) {
+    //         if (el.as<ProfileApplication>().hasApplyingPackage()) {
+    //             emitter << YAML::Key << "applyingPackage" << YAML::Value << el.as<ProfileApplication>().getApplyingPackageID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::PACKAGE_MERGE)) {
+    //         if (el.as<PackageMerge>().hasReceivingPackage()) {
+    //             emitter << YAML::Key << "receivingPackage" << el.as<PackageMerge>().getReceivingPackageID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::EXTENSION_END)) {
+    //         if (el.as<ExtensionEnd>().hasExtension()) {
+    //             emitter << YAML::Key << "extension" << el.as<ExtensionEnd>().getExtensionID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::PROPERTY)) {
+    //         if (el.as<Property>().hasClass()) {
+    //             emitter << YAML::Key << "class" << el.as<Property>().getClassID().string();
+    //             return;
+    //         }
+    //         if (el.as<Property>().hasDataType()) {
+    //             emitter << YAML::Key << "dataType" << YAML::Value << el.as<Property>().getDataTypeID().string();
+    //             return;
+    //         }   
+    //         if (el.as<Property>().hasArtifact()) {
+    //             emitter << YAML::Key << "artifact" << YAML::Value << el.as<Property>().getArtifactID().string();
+    //             return;
+    //         }
+    //         if (el.as<Property>().hasOwningAssociation()) {
+    //             emitter << YAML::Key << "owningAssociation" << YAML::Value << el.as<Property>().getOwningAssociationID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::VALUE_SPECIFICATION)) {
+    //         if (el.hasOwner()) {
+    //             if (el.getOwnerRef().isSubClassOf(ElementType::PROPERTY)) {
+    //                 if (el.getOwnerRef().as<Property>().getDefaultValueID() == el.getID()) {
+    //                     emitter << YAML::Key << "owningProperty" << YAML::Value << el.getOwnerID().string();
+    //                     return;
+    //                 }
+    //             }
+    //             if (el.as<ValueSpecification>().hasOwningSlot()) {
+    //                 emitter << YAML::Key << "owningSlot" << YAML::Value << el.as<ValueSpecification>().getOwningSlotID().string();
+    //                 return;
+    //             }
+    //             if (el.as<ValueSpecification>().hasOwningInstanceSpec()) {
+    //                 emitter << YAML::Key << "owningInstanceSpec" << YAML::Value << el.as<ValueSpecification>().getOwningInstanceSpecID().string();
+    //                 return;
+    //             }
+    //             if (el.as<ValueSpecification>().hasExpression()) {
+    //                 emitter << YAML::Key << "expression" << YAML::Value << el.as<ValueSpecification>().getExpressionID().string();
+    //                 return;
+    //             }
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::GENERALIZATION)) {
+    //         if (el.as<Generalization>().hasSpecific()) {
+    //             emitter << YAML::Key << "specific" << YAML::Value << el.as<Generalization>().getSpecificID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::CLASSIFIER)) {
+    //         if (el.as<Classifier>().hasNestingClass()) {
+    //             emitter << YAML::Key << "nestingClass" << YAML::Value << el.as<Classifier>().getNestingClassID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::OPERATION)) {
+    //         if (el.as<Operation>().hasClass()) {
+    //             emitter << YAML::Key << "class" << YAML::Value << el.as<Operation>().getClassID().string();
+    //             return;
+    //         }
+    //         if (el.as<Operation>().hasDataType()) {
+    //             emitter << YAML::Key << "dataType" << YAML::Value << el.as<Operation>().getDataTypeID().string();
+    //             return;
+    //         }
+    //         if (el.as<Operation>().hasArtifact()) {
+    //             emitter << YAML::Key << "artifact" << YAML::Value << el.as<Operation>().getArtifactID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::COMMENT)) {
+    //         if (el.as<Comment>().hasOwningElement()) {
+    //             emitter << YAML::Key << "owningElement" << YAML::Value << el.as<Comment>().getOwningElementID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::ARTIFACT)) {
+    //         if (el.as<Artifact>().hasArtifact()) {
+    //             emitter << YAML::Key << "owningArtifact" << YAML::Value << el.as<Artifact>().getArtifactID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::MANIFESTATION)) {
+    //         if (el.as<Manifestation>().hasArtifact()) {
+    //             emitter << YAML::Key << "artifact" << YAML::Value << el.as<Manifestation>().getArtifactID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::SLOT)) {
+    //         if (el.as<Slot>().hasOwningInstance()) {
+    //             emitter << YAML::Key << "owningInstance" << YAML::Value << el.as<Slot>().getOwningInstanceID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::PARAMETER)) {
+    //         if (el.as<Parameter>().hasOperation()) {
+    //             emitter << YAML::Key << "operation" << YAML::Value << el.as<Parameter>().getOperationID().string();
+    //             return;
+    //         }
+    //         if (el.as<Parameter>().hasBehavior()) {
+    //             emitter << YAML::Key << "behavior" << YAML::Value << el.as<Parameter>().getBehaviorID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::BEHAVIOR)) {
+    //         if (el.as<Behavior>().hasBehavioredClassifier()) {
+    //             emitter << YAML::Key << "behavioredClassifier" << YAML::Value << el.as<Behavior>().getBehavioredClassifierID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::ENUMERATION_LITERAL)) {
+    //         if (el.as<EnumerationLiteral>().hasEnumeration()) {
+    //             emitter << YAML::Key << "enumeration" << YAML::Value << el.as<EnumerationLiteral>().getEnumerationID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::TEMPLATE_SIGNATURE)) {
+    //         if (el.as<TemplateSignature>().hasTemplate()) {
+    //             emitter << YAML::Key << "template" << YAML::Value << el.as<TemplateSignature>().getTemplateID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER)) {
+    //         if (el.as<TemplateParameter>().hasSignature()) {
+    //             emitter << YAML::Key << "signature" << YAML::Value << el.as<TemplateParameter>().getSignatureID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::TEMPLATE_BINDING)) {
+    //         if (el.as<TemplateBinding>().hasBoundElement()) {
+    //             emitter << YAML::Key << "boundElement" << YAML::Value << el.as<TemplateBinding>().getBoundElementID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER_SUBSTITUTION)) {
+    //         if (el.as<TemplateParameterSubstitution>().hasTemplateBinding()) {
+    //             emitter << YAML::Key << "templateBinding" << YAML::Value << el.as<TemplateParameterSubstitution>().getTemplateBindingID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::DEPLOYMENT)) {
+    //         if (el.as<Deployment>().hasLocation()) {
+    //             emitter << YAML::Key << "location" << YAML::Value << el.as<Deployment>().getLocationID().string();
+    //             return;
+    //         }
+    //     }
+    //     if (el.isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
+    //         if (el.as<ParameterableElement>().hasOwningTemplateParameter()) {
+    //             emitter << YAML::Key << "owningTemplateParameter" << YAML::Value << el.as<ParameterableElement>().getOwningTemplateParameterID().string();
+    //             return;
+    //         }
+    //         else if (el.hasOwner()) { // special case
+    //             emitter << YAML::Key << "owner" << YAML::Value << el.getOwnerID().string();
+    //             return;
+    //         }
+    //     }
+    // }
 }
 
-template <class T = Element, class U = Element> void emitSequence(YAML::Emitter& emitter, string sequenceName, EmitterMetaData& data, U& el, Sequence<T>& (U::* sequenceMethod)()) {
+template <class T = Element, class U = Element, class S = Set<T,U>> void emitSequence(YAML::Emitter& emitter, string sequenceName, EmitterMetaData& data, U& el, S& (U::* sequenceMethod)()) {
     if (!(el.*sequenceMethod)().empty()) {
         emitter << YAML::Key << sequenceName << YAML::Value << YAML::BeginSeq;
         if (data.m_strategy == EmitterStrategy::WHOLE) {
@@ -1505,9 +1504,9 @@ void AddClientDepencyFunctor::operator()(Element& el) const {
     m_el->as<NamedElement>().getClientDependencies().add(el.as<Dependency>());
 }
 
-void AddSupplierDependencyFunctor::operator()(Element& el) const {
-    m_el->as<NamedElement>().getSupplierDependencies().add(el.as<Dependency>());
-}
+// void AddSupplierDependencyFunctor::operator()(Element& el) const {
+//     m_el->as<NamedElement>().getSupplierDependencies().add(el.as<Dependency>());
+// }
 
 void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) {
 
@@ -1559,28 +1558,28 @@ void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) 
         }
     }
 
-    if (node["supplierDependencies"]) {
-        if (node["supplierDependencies"].IsSequence()) {
-            for (size_t i = 0; i < node["supplierDependencies"].size(); i++) {
-                if (node["supplierDependencies"][i].IsScalar()) {
-                    ID supplierDependencyID = ID::fromString(node["supplierDependencies"][i].as<string>());
-                    if (data.m_strategy == ParserStrategy::WHOLE) {
-                        applyFunctor(data, supplierDependencyID, new AddSupplierDependencyFunctor(&el, node["supplierDependencies"][i]));
-                    } else {
-                        if (data.m_manager->loaded(supplierDependencyID)) {
-                            el.getSupplierDependencies().add(data.m_manager->get<Dependency>(supplierDependencyID));
-                        } else {
-                            el.getSupplierDependencies().add(supplierDependencyID);
-                        }
-                    }
-                } else {
-                    throw UmlParserException("Invalid yaml node type for NamedElement supplierDependencies entry, must be a scalar!", data.m_path.string(), node["supplierDependencies"][i]);
-                }
-            }
-        } else {
-            throw UmlParserException("Invalid yaml node type for NamedElement supplierDependencies, must be a sequence!", data.m_path.string(), node["supplierDependencies"]);
-        }
-    }
+    // if (node["supplierDependencies"]) {
+    //     if (node["supplierDependencies"].IsSequence()) {
+    //         for (size_t i = 0; i < node["supplierDependencies"].size(); i++) {
+    //             if (node["supplierDependencies"][i].IsScalar()) {
+    //                 ID supplierDependencyID = ID::fromString(node["supplierDependencies"][i].as<string>());
+    //                 if (data.m_strategy == ParserStrategy::WHOLE) {
+    //                     applyFunctor(data, supplierDependencyID, new AddSupplierDependencyFunctor(&el, node["supplierDependencies"][i]));
+    //                 } else {
+    //                     if (data.m_manager->loaded(supplierDependencyID)) {
+    //                         el.getSupplierDependencies().add(data.m_manager->get<Dependency>(supplierDependencyID));
+    //                     } else {
+    //                         el.getSupplierDependencies().add(supplierDependencyID);
+    //                     }
+    //                 }
+    //             } else {
+    //                 throw UmlParserException("Invalid yaml node type for NamedElement supplierDependencies entry, must be a scalar!", data.m_path.string(), node["supplierDependencies"][i]);
+    //             }
+    //         }
+    //     } else {
+    //         throw UmlParserException("Invalid yaml node type for NamedElement supplierDependencies, must be a sequence!", data.m_path.string(), node["supplierDependencies"]);
+    //     }
+    // }
 }
 
 void emitNamedElement(YAML::Emitter& emitter, NamedElement& el, EmitterMetaData& data) {
@@ -1641,13 +1640,13 @@ void emitNamedElement(YAML::Emitter& emitter, NamedElement& el, EmitterMetaData&
         }
     }
 
-    if (!el.getSupplierDependencies().empty()) {
-        emitter << YAML::Key << "supplierDependencies" << YAML::Value << YAML::BeginSeq;
-        for (const ID id : el.getSupplierDependencies().ids()) {
-            emitter << YAML::Value << id.string();
-        }
-        emitter << YAML::EndSeq;
-    }
+    // if (!el.getSupplierDependencies().empty()) {
+    //     emitter << YAML::Key << "supplierDependencies" << YAML::Value << YAML::BeginSeq;
+    //     for (const ID id : el.getSupplierDependencies().ids()) {
+    //         emitter << YAML::Value << id.string();
+    //     }
+    //     emitter << YAML::EndSeq;
+    // }
 }
 
 void SetTypeFunctor::operator()(Element& el) const {
@@ -1716,7 +1715,7 @@ void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
             for (int i = 0; i < node["powerTypeExtent"].size(); i++) {
                 if (node["powerTypeExtent"][i].IsScalar()) {
                     ID powerTypeExtentID = ID::fromString(node["powerTypeExtent"][i].as<string>());
-                    clazz.getPowerTypeExtent().addByID(powerTypeExtentID);
+                    clazz.getPowerTypeExtent().add(powerTypeExtentID);
                 } else {
                     throw UmlParserException("Invalid yaml node type for powerTypeExtent field, must be a scalar!", data.m_path.string(), node["powerTypeExtent"][i]);
                 }
@@ -1767,7 +1766,7 @@ void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaDat
             for (int i = 0; i < node["generalizationSets"].size(); i++) {
                 if (node["generalizationSets"][i].IsScalar()) {
                     ID generalizationSetID = ID::fromString(node["generalizationSets"][i].as<string>());
-                    general.getGeneralizationSets().addByID(generalizationSetID);
+                    general.getGeneralizationSets().add(generalizationSetID);
                 } else {
                     throw UmlParserException("Invalid yaml node type for generalizationSets entry, must be a scalar!", data.m_path.string(), node["generalizationSets"][i]);
                 }
@@ -1825,14 +1824,14 @@ Operation& determineAndParseOwnedOperation(YAML::Node node, ParserMetaData& data
 void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
     parseClassifier(node, dataType, data);
     parseSequenceDefinitions(node, data, "ownedAttribute", dataType, &DataType::getOwnedAttributes, determineAndParseOwnedAttribute);
-    parseSequenceDefinitions(node, data, "ownedOperation", dataType, &DataType::getOwnedOperation, determineAndParseOwnedOperation);
+    parseSequenceDefinitions(node, data, "ownedOperation", dataType, &DataType::getOwnedOperations, determineAndParseOwnedOperation);
 }
 
 void emitDataType(YAML::Emitter& emitter, DataType& dataType, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::DATA_TYPE, "dataType", dataType, data);
     emitClassifier(emitter, dataType, data);
     emitSequence(emitter, "ownedAttribute", data, dataType, &DataType::getOwnedAttributes);
-    emitSequence(emitter, "ownedOperation", data, dataType, &DataType::getOwnedOperation);
+    emitSequence(emitter, "ownedOperation", data, dataType, &DataType::getOwnedOperations);
     emitElementDefenitionEnd(emitter, ElementType::DATA_TYPE, dataType);
 }
 
@@ -2266,7 +2265,7 @@ void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
                     if (data.m_manager->loaded(methodID)) {
                         op.getMethods().add(data.m_manager->get<Behavior>(methodID));
                     } else {
-                        op.getMethods().addByID(methodID);
+                        op.getMethods().add(methodID);
                     }
                 } else {
                     throw UmlParserException("Invalid yaml node type for operation method entry, must be a scalar!", data.m_path.string(), node["methods"][i]);
@@ -2593,9 +2592,7 @@ void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& in
     emitNamedElement(emitter, inst, data);
     emitDeploymentTarget(emitter, inst, data);
     emitParameterableElement(emitter, inst, data);
-    if (inst.getClassifier()) {
-        emitter << YAML::Key << "classifier" << YAML::Value << inst.getClassifier()->getID().string();
-    }
+    emitSequence(emitter, "classifiers", data, inst, &InstanceSpecification::getClassifiers);
     emitSequence(emitter, "slots", data, inst, &InstanceSpecification::getSlots);
     if (inst.getSpecification()) {
         emitter << YAML::Key << "specification" << YAML::Value;
@@ -3430,7 +3427,7 @@ void parseAssociation(YAML::Node node, Association& association, ParserMetaData&
                         if (data.m_manager->loaded(ID::fromString(node["memberEnds"][i].as<string>()))) {
                             association.getMemberEnds().add(data.m_manager->get<Property>(ID::fromString(node["memberEnds"][i].as<string>())));
                         } else {
-                            association.getMemberEnds().addByID(ID::fromString(node["memberEnds"][i].as<string>()));
+                            association.getMemberEnds().add(ID::fromString(node["memberEnds"][i].as<string>()));
                         }
                     }
                 } else {
@@ -3624,7 +3621,7 @@ void parseDependency(YAML::Node node, Dependency& dependency, ParserMetaData& da
                             if (data.m_manager->loaded(clientID)) {
                                 dependency.getClient().add(data.m_manager->get<NamedElement>(clientID));
                             } else {
-                                dependency.getClient().addByID(clientID);
+                                dependency.getClient().add(clientID);
                             }
                         }
                     } else {
@@ -3651,7 +3648,7 @@ void parseDependency(YAML::Node node, Dependency& dependency, ParserMetaData& da
                             if (data.m_manager->loaded(supplierID)) {
                                 dependency.getSupplier().add(data.m_manager->get<NamedElement>(supplierID));
                             } else {
-                                dependency.getSupplier().addByID(supplierID);
+                                dependency.getSupplier().add(supplierID);
                             }
                         }
                     } else {
@@ -3692,7 +3689,7 @@ void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaD
 }
 
 void AddDeployedArtifactFunctor::operator()(Element& el) const {
-    m_el->as<Deployment>().getDeployedArtifact().add(el.as<DeployedArtifact>());
+    m_el->as<Deployment>().getDeployedArtifacts().add(el.as<DeployedArtifact>());
 }
 
 void parseDeployment(YAML::Node node, Deployment& deployment, ParserMetaData& data) {
@@ -3719,9 +3716,9 @@ void emitDeployment(YAML::Emitter& emitter, Deployment& deployment, EmitterMetaD
 
     emitNamedElement(emitter, deployment, data);
 
-    if (!deployment.getDeployedArtifact().empty()) {
+    if (!deployment.getDeployedArtifacts().empty()) {
         emitter << YAML::Key << "deployedArtifacts" << YAML::Value << YAML::BeginSeq;
-        for (const ID id : deployment.getDeployedArtifact().ids()) {
+        for (const ID id : deployment.getDeployedArtifacts().ids()) {
             emitter << id.string();
         }
         emitter << YAML::EndSeq;
@@ -3909,7 +3906,7 @@ void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSe
                     if (data.m_manager->UmlManager::loaded(generalizationID)) {
                         generalizationSet.getGeneralizations().add(data.m_manager->get<Generalization>(generalizationID));
                     } else {
-                        generalizationSet.getGeneralizations().addByID(generalizationID);
+                        generalizationSet.getGeneralizations().add(generalizationID);
                     }
                 } else {
                     throw UmlParserException("Invalid yaml node type for generalizations entry, must be a scalar", data.m_path.string(), node["generalizations"][i]);

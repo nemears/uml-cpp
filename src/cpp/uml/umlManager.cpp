@@ -1,17 +1,7 @@
 #include "uml/umlManager.h"
 #include <fstream>
-// #include "uml/parsers/parser.h"
+#include "uml/parsers/parser.h"
 #include "uml/parsers/emitterMetaData.h"
-// #include "uml/callBehaviorAction.h"
-// #include "uml/controlFlow.h"
-// #include "uml/createObjectAction.h"
-// #include "uml/decisionNode.h"
-// #include "uml/finalNode.h"
-// #include "uml/forkNode.h"
-// #include "uml/initialNode.h"
-// #include "uml/joinNode.h"
-// #include "uml/mergeNode.h"
-// #include "uml/parameterNode.h"
 #include "uml/model.h"
 #include <algorithm>
 #include "uml/uml-stable.h"
@@ -259,13 +249,13 @@ void UmlManager::open(string path) {
 }
 
 Element* UmlManager::parse(string path) {
-    // m_path = path;
-    // Parsers::ParserMetaData data(this);
-    // Element* el = Parsers::parse(data);
-    // if (!getRoot()) {
-    //    setRoot(el);
-    // }
-    // return el;
+    m_path = path;
+    Parsers::ParserMetaData data(this);
+    Element* el = Parsers::parse(data);
+    if (!getRoot()) {
+       setRoot(el);
+    }
+    return el;
 }
 
 void UmlManager::setModel(Model* model) {

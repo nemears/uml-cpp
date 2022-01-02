@@ -16,7 +16,7 @@ namespace UML{
         class SetSpecification;
     }
 
-    class InstanceSpecification : public PackageableElement /**, public DeployedArtifact, public DeploymentTarget**/ {
+    class InstanceSpecification : public PackageableElement , public DeployedArtifact, public DeploymentTarget {
 
         friend class UmlManager;
         friend class Classifier;

@@ -24,6 +24,14 @@ TEST_F(ClassifierTest, GetOwnedAttributesTest) {
   ASSERT_TRUE(classifier1.getMembers().contains(prop));
   ASSERT_EQ(classifier1.getOwnedElements().size(), 1);
   ASSERT_TRUE(classifier1.getOwnedElements().contains(prop));
+  ASSERT_TRUE(prop.hasOwner());
+  ASSERT_TRUE(prop.hasNamespace());
+  ASSERT_TRUE(prop.hasFeaturingClassifier());
+  ASSERT_TRUE(prop.hasClass());
+  ASSERT_EQ(prop.getOwnerRef(), classifier1);
+  ASSERT_EQ(prop.getNamespaceRef(), classifier1);
+  ASSERT_EQ(prop.getFeaturingClassifierRef(), classifier1);
+  ASSERT_EQ(prop.getClassRef(), classifier1);
 }
 
 TEST_F(ClassifierTest, addAttributeFunctorTest) {

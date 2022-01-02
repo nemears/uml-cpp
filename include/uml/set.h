@@ -231,6 +231,7 @@ namespace UML {
             bool m_rootRedefinedSet = true;
             AbstractOppositeFunctor* m_oppositeFunctor = 0;
             bool m_ownsOppositeFunctor = false;
+            std::vector<AbstractOppositeFunctor*> m_otherOpposites;
             Element* m_el = 0;
             Set<T,U>& (U::*m_signature)() = 0;
             bool m_readOnly = false;
@@ -714,7 +715,8 @@ namespace UML {
                     if (node->m_parent->m_parent) {
                         node->m_parent->m_parent->m_left = node->m_parent->m_left;
                     }
-                    deleteNode(node->m_parent);
+                    // no polymorphic delete
+                    delete node->m_parent;
                     node->m_parent = 0;
                 }
             };
@@ -1468,8 +1470,14 @@ namespace UML {
                             m_removeFunctors.insert(set);
                         }
                     }
-                    if (subsetOf.m_oppositeFunctor) {
-                        m_oppositeFunctor = subsetOf.m_oppositeFunctor;
+                    if (subsetOf.m_oppositeFunctor && 
+                        std::find(m_otherOpposites.begin(), m_otherOpposites.end(), subsetOf.m_oppositeFunctor) == m_otherOpposites.end()) {
+                        m_otherOpposites.push_back(subsetOf.m_oppositeFunctor);
+                    }
+                    for (auto& op : subsetOf.m_otherOpposites) {
+                        if (std::find(m_otherOpposites.begin(), m_otherOpposites.end(), op) == m_otherOpposites.end()) {
+                            m_otherOpposites.push_back(op);
+                        }
                     }
                     if (!m_root) {
                         m_root = subsetOf.m_root;
@@ -1493,6 +1501,7 @@ namespace UML {
                     opFunc->m_signature = op;
                     m_oppositeFunctor = opFunc;
                     m_ownsOppositeFunctor = true;
+                    m_otherOpposites.clear();
                 } else {
                     std::cerr << "WARN: opposite called when there is no element owning the set, make sure to use proper constructor!" << std::endl;
                 }
@@ -1524,6 +1533,11 @@ namespace UML {
                 }
                 if (redefined.m_ownsOppositeFunctor && !m_ownsOppositeFunctor) {
                     m_oppositeFunctor = redefined.m_oppositeFunctor;
+                    m_otherOpposites.clear();
+                } else {
+                    for (auto& opp : redefined.m_otherOpposites) {
+                        m_otherOpposites.push_back(opp);
+                    }
                 }
                 if (redefined.m_upper < 0 && redefined.m_upper != m_upper) {
                     m_setToInstantiate = &redefined;
@@ -1583,6 +1597,9 @@ namespace UML {
                 if (m_oppositeFunctor) {
                     (*m_oppositeFunctor)(el);
                 }
+                for (auto& op : m_otherOpposites) {
+                    (*op)(el);
+                }
             };
              /**
              * Add an element to this set and all of its supersets
@@ -1639,6 +1656,10 @@ namespace UML {
                     if (m_oppositeFunctor) {
                         T& el = m_el->m_manager->get<T>(m_el, id)->template as<T>();
                         (*m_oppositeFunctor)(el, 1);
+                    }
+                    for (auto& op : m_otherOpposites) {
+                        T& el = m_el->m_manager->get<T>(m_el, id)->template as<T>();
+                        (*op)(el, 1);
                     }
                     if (m_el) {
                         if (m_el->m_node->m_managerElementMemory != m_el) {

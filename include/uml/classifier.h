@@ -34,7 +34,7 @@ namespace UML {
             Set<Generalization, Classifier> m_generalizations = Set<Generalization, Classifier>(this);
             Set<Classifier, Classifier> m_generals = Set<Classifier, Classifier>(this);
             Set<NamedElement, Classifier> m_inheritedMembers = Set<NamedElement, Classifier>(this);
-            // Set<GeneralizationSet, Classifier> m_powerTypeExtent = Set<GeneralizationSet, Classifier>(this);
+            Set<GeneralizationSet, Classifier> m_powerTypeExtent = Set<GeneralizationSet, Classifier>(this);
             class AddGeneralizationFunctor : public SetFunctor {
                 private:
                     void operator()(Element& el) const override;
@@ -89,7 +89,7 @@ namespace UML {
             Set<Generalization, Classifier>& getGeneralizations();
             Set<Classifier, Classifier>& getGenerals();
             Set<NamedElement, Classifier>& getInheritedMembers();
-            // Sequence<GeneralizationSet>& getPowerTypeExtent();
+            Set<GeneralizationSet, Classifier>& getPowerTypeExtent();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CLASSIFIER;

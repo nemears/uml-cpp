@@ -1,82 +1,61 @@
 #include "uml/generalizationSet.h"
 #include "uml/classifier.h"
 #include "uml/generalization.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
-
-void GeneralizationSet::RemovePowerTypeProcedure::operator()(Classifier* el) const {
-    if (el->getPowerTypeExtent().count(m_me->getID())) {
-        el->getPowerTypeExtent().remove(*m_me);
-    }
-}
-
-void GeneralizationSet::AddPowerTypeProcedure::operator()(Classifier* el) const {
-    if (!el->getPowerTypeExtent().count(m_me->getID())) {
-        el->getPowerTypeExtent().add(*m_me);
-    }
-}
-
-void GeneralizationSet::AddGeneralizationFunctor::operator()(Generalization& el) const {
-    if (!el.getGeneralizationSets().count(m_el->getID())) {
-        el.getGeneralizationSets().add(*m_el);
-    }
-}
-
-void GeneralizationSet::RemoveGeneralizationFunctor::operator()(Generalization& el) const {
-    if (el.getGeneralizationSets().count(m_el->getID())) {
-        el.getGeneralizationSets().remove(*m_el);
-    }
-}
 
 void GeneralizationSet::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
     m_powerType.reindex(oldID, newID);
-    m_generalizations.reindex(oldID, newID, &GeneralizationSet::getGeneralizations);
+    m_generalizations.reindex(oldID, newID);
 }
 
 void GeneralizationSet::referencingReleased(ID id) {
     PackageableElement::referencingReleased(id);
     m_powerType.release(id);
-    m_generalizations.elementReleased(id, &GeneralizationSet::getGeneralizations);
+    m_generalizations.release(id);
 }
 
 void GeneralizationSet::restoreReferences() {
     PackageableElement::restoreReferences();
-    m_powerType.restoreReference();
-    m_generalizations.restoreReferences();
+    // m_powerType.restoreReference();
+    // m_generalizations.restoreReferences();
 }
 
 void GeneralizationSet::referenceErased(ID id) {
     PackageableElement::referenceErased(id);
-    m_powerType.elementErased(id);
-    m_generalizations.elementErased(id);
+    m_powerType.eraseElement(id);
+    m_generalizations.eraseElement(id);
+}
+
+Set<Classifier, GeneralizationSet>& GeneralizationSet::getPowerTypeSingleton() {
+    return m_powerType;
+}
+
+void GeneralizationSet::init() {
+    m_generalizations.opposite(&Generalization::getGeneralizationSets);
+    m_generalizations.m_signature = &GeneralizationSet::getGeneralizations;
+    m_powerType.opposite(&Classifier::getPowerTypeExtent);
+    m_powerType.m_signature = &GeneralizationSet::getPowerTypeSingleton;
+}
+
+void GeneralizationSet::copy(const GeneralizationSet& rhs) {
+    m_generalizations = rhs.m_generalizations;
+    m_powerType = rhs.m_powerType;
+    m_covering = rhs.m_covering;
+    m_disjoint = rhs.m_disjoint;
 }
 
 GeneralizationSet::GeneralizationSet() : Element(ElementType::GENERALIZATION_SET) {
-    m_powerType.m_signature = &GeneralizationSet::m_powerType;
-    m_powerType.m_addProcedures.push_back(new AddPowerTypeProcedure(this));
-    m_powerType.m_removeProcedures.push_back(new RemovePowerTypeProcedure(this));
-    m_generalizations.addProcedures.push_back(new AddGeneralizationFunctor(this));
-    m_generalizations.removeProcedures.push_back(new RemoveGeneralizationFunctor(this));
+    init();
 }
-
-GeneralizationSet::GeneralizationSet(const GeneralizationSet& rhs) :
-PackageableElement(rhs),
-ParameterableElement(rhs),
-NamedElement(rhs),
-Element(rhs, ElementType::GENERALIZATION_SET) {
-    m_powerType = rhs.m_powerType;
-    m_powerType.m_me = this;
-    m_powerType.m_addProcedures.clear();
-    m_powerType.m_removeProcedures.clear();
-    m_powerType.m_addProcedures.push_back(new AddPowerTypeProcedure(this));
-    m_powerType.m_removeProcedures.push_back(new RemovePowerTypeProcedure(this));
-    m_generalizations = rhs.m_generalizations;
-    m_generalizations.m_el = this;
-    m_generalizations.addProcedures.clear();
-    m_generalizations.removeProcedures.clear();
-    m_generalizations.addProcedures.push_back(new AddGeneralizationFunctor(this));
-    m_generalizations.removeProcedures.push_back(new RemoveGeneralizationFunctor(this));
+GeneralizationSet::GeneralizationSet(const GeneralizationSet& rhs) : Element(rhs, ElementType::GENERALIZATION_SET) {
+    init();
+    Element::copy(rhs);
+    NamedElement::copy(rhs);
+    PackageableElement::copy(rhs);
+    copy(rhs);
 }
 
 bool GeneralizationSet::isCovering() const {
@@ -121,7 +100,7 @@ void GeneralizationSet::setPowerType(Classifier& powerType) {
     m_powerType.set(powerType);
 }
 
-Sequence<Generalization>& GeneralizationSet::getGeneralizations() {
+Set<Generalization, GeneralizationSet>& GeneralizationSet::getGeneralizations() {
     return m_generalizations;
 }
 

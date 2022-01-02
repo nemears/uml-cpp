@@ -7,6 +7,7 @@
 namespace UML {
 
     class Classifier;
+    class GeneralizationSet;
 
     namespace Parsers {
         class SetSpecific;
@@ -21,6 +22,7 @@ namespace UML {
         protected:
             Singleton<Classifier, Generalization> m_general = Singleton<Classifier, Generalization>(this);
             Singleton<Classifier, Generalization> m_specific = Singleton<Classifier, Generalization>(this);
+            Set<GeneralizationSet, Generalization> m_generalizationSets = Set<GeneralizationSet, Generalization>(this);
             class AddGeneralFunctor : public SetFunctor {
                 private:
                     void operator()(Element& el) const override;
@@ -33,7 +35,6 @@ namespace UML {
                 public:
                     RemoveGeneralFunctor(Element* el) : SetFunctor(el) {};
             };
-            // Sequence<GeneralizationSet> m_generalizationSets = Sequence<GeneralizationSet>(this);
             void referenceReindexed(ID oldID, ID newID) override;
             void referencingReleased(ID id) override;
             void restoreReferences() override;
@@ -58,7 +59,7 @@ namespace UML {
             bool hasSpecific() const;
             void setSpecific(Classifier& specific);
             void setSpecific(Classifier* specific);
-            // Sequence<GeneralizationSet>& getGeneralizationSets();
+            Set<GeneralizationSet, Generalization>& getGeneralizationSets();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::GENERALIZATION;

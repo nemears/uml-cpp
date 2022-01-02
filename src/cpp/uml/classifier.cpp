@@ -1,5 +1,6 @@
 #include "uml/classifier.h"
 #include "uml/property.h"
+#include "uml/generalizationSet.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -155,6 +156,8 @@ void Classifier::init() {
     m_inheritedMembers.subsets(m_members);
     m_inheritedMembers.m_signature = &Classifier::getInheritedMembers;
     m_inheritedMembers.m_readOnly = true;
+    m_powerTypeExtent.opposite(&GeneralizationSet::getPowerTypeSingleton);
+    m_powerTypeExtent.m_signature = &Classifier::getPowerTypeExtent;
 }
 
 void Classifier::copy(const Classifier& rhs) {
@@ -162,6 +165,7 @@ void Classifier::copy(const Classifier& rhs) {
     m_attributes = rhs.m_attributes;
     m_generalizations = rhs.m_generalizations;
     m_inheritedMembers = rhs.m_inheritedMembers;
+    m_powerTypeExtent = rhs.m_powerTypeExtent;
 }
 
 Classifier::Classifier() : Element(ElementType::CLASSIFIER) {
@@ -208,9 +212,9 @@ Set<NamedElement, Classifier>& Classifier::getInheritedMembers() {
     return m_inheritedMembers;
 }
 
-// Sequence<GeneralizationSet>& Classifier::getPowerTypeExtent() {
-//     return m_powerTypeExtent;
-// }
+Set<GeneralizationSet, Classifier>& Classifier::getPowerTypeExtent() {
+    return m_powerTypeExtent;
+}
 
 // Class* Classifier::getNestingClass() {
 //     return m_nestingClass.get();

@@ -167,6 +167,7 @@ namespace UML {
     class Deployment;
     class Artifact;
     class Manifestation;
+    class GeneralizationSet;
 
     /**
      * This container is based around a weighted binary search tree
@@ -226,6 +227,7 @@ namespace UML {
         friend class Deployment;
         friend class Artifact;
         friend class Manifestation;
+        friend class GeneralizationSet;
 
         protected:
             bool m_rootRedefinedSet = true;

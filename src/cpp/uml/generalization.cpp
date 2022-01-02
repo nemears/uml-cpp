@@ -1,6 +1,6 @@
 #include "uml/generalization.h"
 #include "uml/classifier.h"
-// #include "uml/generalizationSet.h"
+#include "uml/generalizationSet.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -21,14 +21,14 @@ void Generalization::referenceReindexed(ID oldID, ID newID) {
     DirectedRelationship::referenceReindexed(oldID, newID);
     m_general.reindex(oldID, newID);
     m_specific.reindex(oldID, newID);
-    // m_generalizationSets.reindex(oldID, newID, &Generalization::getGeneralizationSets);
+    m_generalizationSets.reindex(oldID, newID);
 }
 
 void Generalization::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
     m_general.release(id);
     m_specific.release(id);
-    // m_generalizationSets.elementReleased(id, &Generalization::getGeneralizationSets);
+    m_generalizationSets.release(id);
 }
 
 void Generalization::restoreReferences() {
@@ -42,7 +42,7 @@ void Generalization::referenceErased(ID id) {
     DirectedRelationship::referenceErased(id);
     m_general.eraseElement(id);
     m_specific.eraseElement(id);
-    // m_generalizationSets.elementErased(id);
+    m_generalizationSets.eraseElement(id);
 }
 
 Set<Classifier, Generalization>& Generalization::getGeneralSingleton() {
@@ -62,13 +62,14 @@ void Generalization::init() {
     m_specific.subsets(m_sources);
     m_specific.opposite(&Classifier::getGeneralizations);
     m_specific.m_signature = &Generalization::getSpecificSingleton;
+    m_generalizationSets.opposite(&GeneralizationSet::getGeneralizations);
+    m_generalizationSets.m_signature = &Generalization::getGeneralizationSets;
 }
 
 void Generalization::copy(const Generalization& rhs) {
     m_general = rhs.m_general;
-    m_general.m_el = this;
     m_specific = rhs.m_general;
-    m_specific.m_el = this;
+    m_generalizationSets = rhs.m_generalizationSets;
 }
 
 Generalization::Generalization() : Element(ElementType::GENERALIZATION) {
@@ -134,9 +135,9 @@ void Generalization::setSpecific(Classifier& specific) {
     m_specific.set(specific);
 }
 
-// Sequence<GeneralizationSet>& Generalization::getGeneralizationSets() {
-//     return m_generalizationSets;
-// }
+Set<GeneralizationSet, Generalization>& Generalization::getGeneralizationSets() {
+    return m_generalizationSets;
+}
 
 bool Generalization::isSubClassOf(ElementType eType) const {
     bool ret = DirectedRelationship::isSubClassOf(eType);

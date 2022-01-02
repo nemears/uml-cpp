@@ -3,7 +3,6 @@
 
 #include "element.h"
 #include "umlManager.h"
-#include <iostream>
 
 namespace UML {
 
@@ -1505,7 +1504,7 @@ namespace UML {
                     m_ownsOppositeFunctor = true;
                     m_otherOpposites.clear();
                 } else {
-                    std::cerr << "WARN: opposite called when there is no element owning the set, make sure to use proper constructor!" << std::endl;
+                    throw ManagerStateException("WARN: opposite called when there is no element owning the set, make sure to use proper constructor!");
                 }
             };
             /**
@@ -1514,7 +1513,7 @@ namespace UML {
              **/
             template <class V = Element, class W = Element> void redefines(Set<V, W>& redefined) {
                 if (m_root) {
-                    std::cerr << "WARNING redefines set after set was used, must make sure redefining is done during configuration, before use!" << std::endl;
+                    throw ManagerStateException("WARNING redefines set after set was used, must make sure redefining is done during configuration, before use!");
                     return;
                 }
                 m_redefines.push_back(&redefined);

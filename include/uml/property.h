@@ -3,7 +3,7 @@
 
 #include "structuralFeature.h"
 #include "connectableElement.h"
-// #include "deploymentTarget.h"
+#include "deploymentTarget.h"
 
 namespace UML{
 

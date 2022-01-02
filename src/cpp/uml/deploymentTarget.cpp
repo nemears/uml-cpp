@@ -26,6 +26,10 @@ void DeploymentTarget::init() {
     m_deployments.m_signature = &DeploymentTarget::getDeployments;
 }
 
+void DeploymentTarget::copy(const DeploymentTarget& rhs) {
+    m_deployments = rhs.m_deployments;
+}
+
 DeploymentTarget::DeploymentTarget() : Element(ElementType::DEPLOYMENT_TARGET) {
     init();
 }

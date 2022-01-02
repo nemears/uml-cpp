@@ -21,7 +21,7 @@ namespace UML {
                         std::string idStr = path.substr(path.find_last_of("/") + 1, path.find_last_of("/") + 29);
                         if (isValidID(idStr)) {
                             ID id = ID::fromString(idStr);
-                            (el.*m_signature).setByID(id);
+                            (el.*m_signature).set(id);
                         }
                         else {
                             throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);

@@ -4,11 +4,11 @@
       - package:
           id: 8q2Rht9aAZlY0EnMGtEKlw5Odr_u
           packagedElements:
-            - activity:
+            - class:
                 id: IMFAEVPbMaMPSnkYnxMkdbqEIVGg
       - package:
           id: mxRlVDCtqT_rNCfbWRdG&gbA9mEK
           packagedElements:
-            - activity:
+            - class:
                 id: 88ZhPNbz1iQdMJlXPktDVMvpkyBD
 ...

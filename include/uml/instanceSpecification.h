@@ -4,7 +4,6 @@
 #include "packageableElement.h"
 #include "deployedArtifact.h"
 #include "deploymentTarget.h"
-#include "sequence.h"
 
 namespace UML{
 

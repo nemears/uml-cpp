@@ -106,6 +106,7 @@ namespace UML {
         }
 
         void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
+        void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data);
         void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);
 
         // anonymous functions
@@ -241,7 +242,6 @@ namespace UML {
             void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data);
             void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data);
             void emitClassifier(YAML::Emitter& emitter, Classifier& clazz, EmitterMetaData& data);
-            void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data);
             void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization, EmitterMetaData& data);
             void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data);
             void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& inst, EmitterMetaData& data);

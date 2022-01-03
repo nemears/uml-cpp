@@ -1551,6 +1551,8 @@ namespace UML {
                 }
                 if (redefined.m_upper < 0 && redefined.m_upper != m_upper) {
                     m_setToInstantiate = &redefined;
+                } else if (m_upper < 0 && redefined.m_upper >= 0) {
+                    redefined.m_setToInstantiate = this;
                 }
                 m_guard = redefined.m_guard;
             };

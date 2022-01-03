@@ -3,20 +3,20 @@
 
 #include "directedRelationship.h"
 #include "singleton.h"
+#include "yaml-cpp/yaml.h"
 
 namespace UML {
 
     class Classifier;
     class GeneralizationSet;
-
     namespace Parsers {
-        class SetSpecific;
+        void parseGeneralization(YAML::Node node, Generalization& generalization, Parsers::ParserMetaData& data);
     }
 
     class Generalization : public DirectedRelationship {
 
         friend class UmlManager;
-        friend class Parsers::SetSpecific;
+        friend void Parsers::parseGeneralization(YAML::Node node, Generalization& generalization, Parsers::ParserMetaData& data);
         friend class Classifier;
 
         protected:

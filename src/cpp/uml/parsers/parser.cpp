@@ -1724,37 +1724,6 @@ void SetGeneralFunctor::operator()(Element& el) const {
     }
 }
 
-void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data) {
-    parseElement(node, general, data);
-
-    // if (node["general"]) {
-    //     if (node["general"].IsScalar()) {
-    //         string generalString = node["general"].as<string>();
-    //         if (isValidID(generalString)) {
-    //             ID generalID = ID::fromString(generalString);
-    //             applyFunctor(data, generalID, new SetGeneralFunctor(&general, node["general"]));
-    //         }
-    //     } else {
-    //         throw UmlParserException("Cannot define general within generalization, generalization may own no elements!", data.m_path.string());
-    //     }
-    // }
-
-    if (node["generalizationSets"]) {
-        if (node["generalizationSets"].IsSequence()) {
-            for (int i = 0; i < node["generalizationSets"].size(); i++) {
-                if (node["generalizationSets"][i].IsScalar()) {
-                    ID generalizationSetID = ID::fromString(node["generalizationSets"][i].as<string>());
-                    general.getGeneralizationSets().add(generalizationSetID);
-                } else {
-                    throw UmlParserException("Invalid yaml node type for generalizationSets entry, must be a scalar!", data.m_path.string(), node["generalizationSets"][i]);
-                }
-            }
-        } else {
-            throw UmlParserException("Invalid yaml node type for generalizationSets field, must be a sequence", data.m_path.string(), node["generalizationSets"]);
-        }
-    }
-}
-
 void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::GENERALIZATION, "generalization", generalization, data);
 
@@ -3893,6 +3862,12 @@ void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
     parseParameterableElement(node, clazz, data);
     parseSequenceDefinitions(node, data, "generalizations", clazz, &Classifier::getGeneralizations, determineAndParseGeneralization);
     parseSequenceReference<GeneralizationSet, Classifier>(node, data, "powerTypeExtent", clazz, &Classifier::getPowerTypeExtent);
+}
+
+void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data) {
+    parseElement(node, general, data);
+    parseSingletonReference(node, data, "general", general, &Generalization::m_general);
+    parseSequenceReference<GeneralizationSet, Generalization>(node, data, "generalizationSets", general, &Generalization::getGeneralizationSets);
 }
 
 void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data) {

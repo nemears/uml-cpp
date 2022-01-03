@@ -69,6 +69,25 @@ namespace UML {
 
         ElementType elementTypeFromString(std::string eType);
 
+        template <class T = Element, class U = Element> void parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string key, U& owner, Singleton<T,U> U::*signature) {
+            if (node[key] && node[key].IsScalar()) {
+                if (isValidID(node[key].as<std::string>())) {
+                    // ID
+                    ID id = ID::fromString(node[key].as<std::string>());
+                    if (data.m_manager->loaded(id)) {
+                        (owner.*signature).set(data.m_manager->get<T>(id));
+                    } else {
+                        (owner.*signature).add(id);
+                    }
+                } else {
+                    // Path
+                    throw UmlParserException("TODO, parse reference from path (seems a lil irrelevant)", data.m_path.string(), node[key]);
+                }
+            }
+        };
+
+        void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);
+
         // anonymous functions
         namespace {
 
@@ -231,7 +250,6 @@ namespace UML {
             void emitMultiplicityElement(YAML::Emitter& emitter, MultiplicityElement& el, EmitterMetaData& data);
             void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data);
             void emitInstanceValue(YAML::Emitter& emitter, InstanceValue& val, EmitterMetaData& data);
-            void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);
             void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge, EmitterMetaData& data);
             void parseLiteralBool(YAML::Node node, LiteralBool& lb, ParserMetaData& data);
             void emitLiteralBool(YAML::Emitter& emitter, LiteralBool& lb, EmitterMetaData& data);

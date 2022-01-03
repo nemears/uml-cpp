@@ -94,7 +94,6 @@ void emitToFile(Element& el, EmitterMetaData& data, string path, string fileName
     data.m_path = cPath;
     data.m_fileName = cFile;
 }
-
 // SetDefaultValue::SetDefaultValue() {
 //     m_signature = &Property::m_defaultValue;
 // }
@@ -2723,37 +2722,6 @@ void SetMergedPackageFunctor::operator()(Element& el) const {
     }
 }
 
-void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data) {
-    parseElement(node, merge, data);
-
-    if (node["receivingPackage"]) {
-        // This won't be called cause it is always defined from within receiving Package body
-        throw UmlParserException("TODO", "" , node["receivingPackage"]);
-    }
-
-    // if (node["mergedPackage"]) {
-    //     if (node["mergedPackage"].IsScalar()) {
-    //         string pckgString = node["mergedPackage"].as<string>();
-    //         if (isValidID(pckgString)) {
-    //             ID pckgID = ID::fromString(pckgString);
-    //             applyFunctor(data, pckgID, new SetMergedPackageFunctor(&merge, node["mergedPackage"]));
-    //         } else {
-    //             Element* mergedPackage = parseExternalAddToManager(data, pckgString);
-    //             if (mergedPackage == 0) {
-    //                 throw UmlParserException("Could not parse external merged package!", data.m_path.string(), node["mergedPackage"]);
-    //             }
-    //             if (mergedPackage->isSubClassOf(ElementType::PACKAGE)) {
-    //                 merge.setMergedPackage(dynamic_cast<Package*>(mergedPackage));
-    //             } else {
-    //                 throw UmlParserException("mergedPackage is not a package, ", data.m_path.string(), node["mergedPackage"]);
-    //             }
-    //         }
-    //     } else {
-    //         throw UmlParserException("Invalid YAML node type for PackageMerge field mergedPackage, expected scalar, ", data.m_path.string(), node["mergedPackage"]);
-    //     }
-    // }
-}
-
 void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::PACKAGE_MERGE, "packageMerge", merge, data);
 
@@ -3938,6 +3906,11 @@ void emitGeneralizationSet(YAML::Emitter& emitter, GeneralizationSet& generaliza
     emitElementDefenitionEnd(emitter, ElementType::GENERALIZATION_SET, generalizationSet);
 }
 
+}
+
+void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data) {
+    parseElement(node, merge, data);
+    parseSingletonReference(node, data, "mergedPackage", merge, &PackageMerge::m_mergedPackage);
 }
 
 }

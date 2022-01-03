@@ -1,18 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/parsers/parser.h"
 #include "test/yumlParsersTest.h"
-#include "uml/class.h"
-#include "uml/operation.h"
-#include "uml/opaqueBehavior.h"
-#include "uml/property.h"
-#include "uml/literalString.h"
-#include "uml/package.h"
-#include "uml/generalization.h"
-#include "uml/parameter.h"
-#include "uml/association.h"
-#include "uml/artifact.h"
-#include "uml/primitiveType.h"
-#include "uml/enumeration.h"
+#include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
 
 using namespace std;
@@ -45,12 +34,12 @@ TEST_F(ClassParserTest, parseBasicProperty) {
     ASSERT_TRUE(clazz->getAttributes().size() == 2);
     Property* prop1 = dynamic_cast<Property*>(&clazz->getAttributes().front());
     Property* prop2 = dynamic_cast<Property*>(&clazz->getAttributes().back());
-    ASSERT_TRUE(prop1->getClassifier() == clazz);
+    ASSERT_TRUE(prop1->getClass() == clazz);
     // ASSERT_TRUE(prop1->getNamespace() == clazz);
     // ASSERT_TRUE(prop1->getOwner() == clazz);
     ASSERT_TRUE(&clazz->getMembers().front() == prop1);
     // ASSERT_TRUE(clazz->getOwnedElements().front() == prop1);
-    ASSERT_TRUE(prop2->getClassifier() == clazz);
+    ASSERT_TRUE(prop2->getClass() == clazz);
     //ASSERT_TRUE(prop2->getNamespace() == clazz);
     // ASSERT_TRUE(prop2->getOwner() == clazz);
     ASSERT_TRUE(&clazz->getMembers().back() == prop2);
@@ -342,16 +331,10 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     Class& base2 = prop.getOwner()->as<Class>();
     ASSERT_TRUE(prop.getClass() != 0);
     ASSERT_EQ(prop.getClass(), &base2);
-    ASSERT_TRUE(prop.getClassifier() != 0);
-    ASSERT_EQ(prop.getClassifier(), &base2);
-    ASSERT_TRUE(prop.getStructuredClassifier() != 0);
-    ASSERT_EQ(prop.getStructuredClassifier(), &base2);
     ASSERT_TRUE(prop.getFeaturingClassifier() != 0);
     ASSERT_EQ(prop.getFeaturingClassifier(), &base2);
     ASSERT_TRUE(prop.getNamespace() != 0);
     ASSERT_EQ(prop.getNamespace(), &base2);
-    ASSERT_EQ(prop.getMemberNamespace().size(), 2);
-    ASSERT_EQ(&prop.getMemberNamespace().front(), &base2);
 
     ASSERT_EQ(base2.getOwnedAttributes().size(), 1);
     ASSERT_EQ(base2.getOwnedAttributes().front(), prop);
@@ -372,8 +355,6 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(op.getFeaturingClassifier(), &base2);
     ASSERT_TRUE(op.getNamespace() != 0);
     ASSERT_EQ(op.getNamespace(), &base2);
-    ASSERT_EQ(op.getMemberNamespace().size(), 2);
-    ASSERT_EQ(&op.getMemberNamespace().front(), &base2);
     ASSERT_TRUE(op.getOwner() != 0);
     ASSERT_EQ(op.getOwner(), &base2);
 
@@ -404,17 +385,11 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(gen.getOwner(), &spec2);
 
     ASSERT_TRUE(nestSpec.getNamespace() != 0);
-    ASSERT_EQ(nestSpec.getMemberNamespace().size(), 1);
-    ASSERT_EQ(&nestSpec.getMemberNamespace().front(), &spec2);
     ASSERT_TRUE(nestSpec.getOwner() != 0);
     ASSERT_EQ(nestSpec.getOwner(), &spec2);
 
     ASSERT_EQ(spec2.getGeneralizations().size(), 1);
     ASSERT_EQ(&spec2.getGeneralizations().front(), &gen);
-    ASSERT_EQ(spec2.getDirectedRelationships().size(), 1);
-    ASSERT_EQ(&spec2.getDirectedRelationships().front(), &gen);
-    ASSERT_EQ(spec2.getRelationships().size(), 1);
-    ASSERT_EQ(&spec2.getRelationships().front(), &gen);
     ASSERT_EQ(spec2.getGenerals().size(), 1);
     ASSERT_EQ(&spec2.getGenerals().front(), &base2);
     ASSERT_EQ(spec2.getInheritedMembers().size(), 2);
@@ -474,9 +449,6 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     Class& nestSpec2 = spec3.getNestedClassifiers().front().as<Class>();
     ASSERT_TRUE(nestSpec2.hasNamespace());
     ASSERT_EQ(nestSpec2.getNamespaceRef(), spec3);
-    ASSERT_EQ(nestSpec2.getMemberNamespace().size(), 1);
-    ASSERT_TRUE(nestSpec2.getMemberNamespace().count(spec3.getID()));
-    ASSERT_EQ(nestSpec2.getMemberNamespace().front(), spec3);
     ASSERT_TRUE(nestSpec2.hasOwner());
     ASSERT_EQ(nestSpec2.getOwnerRef(), spec3);
     
@@ -491,16 +463,11 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     m.release(spec3, nestSpec2);
     ASSERT_FALSE(m.loaded(specID));
     Class& nestSpec3 = m.aquire(nestSpecID)->as<Class>();
-    ASSERT_TRUE(nestSpec3.hasNestingClass());
-    Class& spec4 = nestSpec3.getNestingClassRef();
     ASSERT_TRUE(nestSpec3.hasNamespace());
+    Class& spec4 = nestSpec3.getNamespaceRef().as<Class>();
     ASSERT_EQ(nestSpec3.getNamespaceRef(), spec4);
-    ASSERT_EQ(nestSpec3.getMemberNamespace().size(), 1);
-    ASSERT_TRUE(nestSpec3.getMemberNamespace().count(spec4.getID()));
-    ASSERT_EQ(nestSpec3.getMemberNamespace().front(), spec4);
     ASSERT_TRUE(nestSpec3.hasOwner());
     ASSERT_EQ(nestSpec3.getOwnerRef(), spec4);
-
     ASSERT_EQ(spec4.getNestedClassifiers().size(), 1);
     ASSERT_EQ(spec4.getNestedClassifiers().front(), nestSpec3);
     ASSERT_TRUE(spec4.getOwnedMembers().count(nestSpec3.getID()));
@@ -524,7 +491,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     // that would be too costly?
         //ASSERT_EQ(op2.getMemberNamespace().size(), 2);
     //***********************************************
-    ASSERT_TRUE(op2.getMemberNamespace().count(base2));
+    // ASSERT_TRUE(op2.getMemberNamespace().count(base2));
     //ASSERT_TRUE(op2.getMemberNamespace().count(spec4));
     ASSERT_TRUE(op2.hasOwner());
     ASSERT_EQ(op2.getOwnerRef(), base2);
@@ -551,7 +518,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     // that would be too costly?
         //ASSERT_EQ(op2.getMemberNamespace().size(), 2);
     //***********************************************
-    ASSERT_TRUE(op3.getMemberNamespace().count(base3));
+    // ASSERT_TRUE(op3.getMemberNamespace().count(base3));
     //ASSERT_TRUE(op3.getMemberNamespace().count(spec4));
     ASSERT_TRUE(op3.hasOwner());
     ASSERT_EQ(op3.getOwnerRef(), base3);
@@ -567,10 +534,6 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     Property& prop2 = base3.getOwnedAttributes().front();
     ASSERT_TRUE(prop2.hasClass());
     ASSERT_EQ(prop2.getClassRef(), base3);
-    ASSERT_TRUE(prop2.hasClassifier());
-    ASSERT_EQ(prop2.getClassifierRef(), base3);
-    ASSERT_TRUE(prop2.hasStructuredClassifier());
-    ASSERT_EQ(prop2.getStructuredClassifierRef(), base3);
     ASSERT_TRUE(prop2.hasFeaturingClassifier());
     ASSERT_EQ(prop2.getFeaturingClassifierRef(), base3);
     ASSERT_TRUE(prop2.hasNamespace());
@@ -588,10 +551,6 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     Property& prop3 = m.aquire(propID)->as<Property>();
     ASSERT_TRUE(prop3.hasClass());
     Class& base4 = prop3.getClassRef();
-    ASSERT_TRUE(prop3.hasClassifier());
-    ASSERT_EQ(prop3.getClassifierRef(), base4);
-    ASSERT_TRUE(prop3.hasStructuredClassifier());
-    ASSERT_EQ(prop3.getStructuredClassifierRef(), base4);
     ASSERT_TRUE(prop3.hasFeaturingClassifier());
     ASSERT_EQ(prop3.getFeaturingClassifierRef(), base4);
     ASSERT_TRUE(prop3.hasNamespace());

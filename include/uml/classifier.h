@@ -13,9 +13,6 @@ namespace UML {
     class Feature;
     class InstanceSpecification;
     class GeneralizationSet;
-    namespace Parsers {
-        class SetNestingClass;
-    }
 
     /**
      * A Classifier represents a classification of instances according to their Features
@@ -26,7 +23,6 @@ namespace UML {
         friend class InstanceSpecification;
         friend class Generalization;
         friend class NamedElement;
-        friend class Parsers::SetNestingClass;
 
         protected:
             Set<Feature, Classifier> m_features = Set<Feature, Classifier>(this);

@@ -69,7 +69,8 @@ namespace UML {
 
         ElementType elementTypeFromString(std::string eType);
 
-        template <class T = Element, class U = Element> void parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string key, U& owner, Singleton<T,U> U::*signature) {
+        template <class T = Element, class U = Element> 
+        void parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string key, U& owner, Singleton<T,U> U::*signature) {
             if (node[key] && node[key].IsScalar()) {
                 if (isValidID(node[key].as<std::string>())) {
                     // ID
@@ -86,6 +87,25 @@ namespace UML {
             }
         };
 
+        template <class T = Element, class U = Element, class S = Set<T,U>>
+        void parseSequenceReference(YAML::Node node, ParserMetaData& data, std::string key, U& owner, S& (U::*signature)()) {
+            if (node[key]) {
+                if (node[key].IsSequence()) {
+                    for (size_t i = 0; i < node[key].size(); i++) {
+                        if (isValidID(node[key][i].as<std::string>())) {
+                            ID id = ID::fromString(node[key][i].as<std::string>());
+                            if (data.m_manager->loaded(id)) {
+                                (owner.*signature)().add(data.m_manager->get<T>(id));
+                            } else {
+                                (owner.*signature)().add(id);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
         void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);
 
         // anonymous functions
@@ -220,7 +240,6 @@ namespace UML {
             void emitParameter(YAML::Emitter& emitter, Parameter& el, EmitterMetaData& data);
             void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data);
             void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data);
-            void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
             void emitClassifier(YAML::Emitter& emitter, Classifier& clazz, EmitterMetaData& data);
             void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data);
             void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization, EmitterMetaData& data);

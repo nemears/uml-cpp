@@ -1503,6 +1503,15 @@ namespace UML {
                     m_oppositeFunctor = opFunc;
                     m_ownsOppositeFunctor = true;
                     m_otherOpposites.clear();
+                    for (auto& redefined : m_redefines) {
+                        Set* redefinedSet = static_cast<Set*>(redefined);
+                        if (redefinedSet->m_ownsOppositeFunctor) {
+                            delete redefinedSet->m_oppositeFunctor;
+                        }
+                        redefinedSet->m_oppositeFunctor = opFunc;
+                        redefinedSet->m_ownsOppositeFunctor = false;
+                        redefinedSet->m_otherOpposites.clear();
+                    }
                 } else {
                     throw ManagerStateException("WARN: opposite called when there is no element owning the set, make sure to use proper constructor!");
                 }

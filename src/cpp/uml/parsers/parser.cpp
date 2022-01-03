@@ -1704,27 +1704,6 @@ Generalization& determineAndParseGeneralization(YAML::Node node, ParserMetaData&
     }
 }
 
-void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
-    parseNamedElement(node, clazz, data);
-    parseTemplateableElement(node, clazz, data);
-    parseParameterableElement(node, clazz, data);
-    parseSequenceDefinitions(node, data, "generalizations", clazz, &Classifier::getGeneralizations, determineAndParseGeneralization);
-    if (node["powerTypeExtent"]) {
-        if (node["powerTypeExtent"].IsSequence()) {
-            for (int i = 0; i < node["powerTypeExtent"].size(); i++) {
-                if (node["powerTypeExtent"][i].IsScalar()) {
-                    ID powerTypeExtentID = ID::fromString(node["powerTypeExtent"][i].as<string>());
-                    clazz.getPowerTypeExtent().add(powerTypeExtentID);
-                } else {
-                    throw UmlParserException("Invalid yaml node type for powerTypeExtent field, must be a scalar!", data.m_path.string(), node["powerTypeExtent"][i]);
-                }
-            }
-        } else {
-            throw UmlParserException("Invalid yaml node type for powerTypeExtent field", data.m_path.string(), node["powerTypeExtent"]);
-        }
-    }
-}
-
 void emitClassifier(YAML::Emitter& emitter, Classifier& clazz, EmitterMetaData& data) {
     emitNamedElement(emitter, clazz, data);
     emitTemplateableElement(emitter, clazz, data);
@@ -3906,6 +3885,14 @@ void emitGeneralizationSet(YAML::Emitter& emitter, GeneralizationSet& generaliza
     emitElementDefenitionEnd(emitter, ElementType::GENERALIZATION_SET, generalizationSet);
 }
 
+}
+
+void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
+    parseNamedElement(node, clazz, data);
+    parseTemplateableElement(node, clazz, data);
+    parseParameterableElement(node, clazz, data);
+    parseSequenceDefinitions(node, data, "generalizations", clazz, &Classifier::getGeneralizations, determineAndParseGeneralization);
+    parseSequenceReference<GeneralizationSet, Classifier>(node, data, "powerTypeExtent", clazz, &Classifier::getPowerTypeExtent);
 }
 
 void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data) {

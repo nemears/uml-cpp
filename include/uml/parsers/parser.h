@@ -83,7 +83,13 @@ namespace UML {
                         }
                     } else {
                         // Path
-                        throw UmlParserException("TODO, parse reference from path (seems a lil irrelevant)", data.m_path.string(), node[key]);
+                        Element* parsed = parseExternalAddToManager(data, node[key].as<std::string>());
+                        if (parsed) {
+                            (owner.*signature).set(parsed->as<T>());
+                        } else {
+                            throw UmlParserException("Could not identify valid file at path " + node[key].as<std::string>(), data.m_path.string(), node[key]);
+                        }
+                        // throw UmlParserException("TODO, parse reference from path (seems a lil irrelevant)", data.m_path.string(), node[key]);
                     }
                 } else {
                     throw UmlParserException("Invalid yaml node type for " + key + " entry, expected a scalar id", data.m_path.string(), node[key]);

@@ -16,6 +16,7 @@
                 name: memberEnd
                 type: m7pAITPBHxM9c1_aPbfnMLUOC5Dc
       - association:
+          name: association
           navigableOwnedEnds:
             - property:
                 type: real_aZG&w6yl61bXVWutgeyScN9

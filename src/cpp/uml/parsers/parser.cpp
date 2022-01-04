@@ -2834,32 +2834,7 @@ void parseAssociation(YAML::Node node, Association& association, ParserMetaData&
     parseClassifier(node, association, data);
     parseSequenceDefinitions(node, data, "navigableOwnedEnds", association, &Association::getNavigableOwnedEnds, determineAndParseOwnedAttribute);
     parseSequenceDefinitions(node, data, "ownedEnds", association, &Association::getOwnedEnds, determineAndParseOwnedAttribute);
-    
-    // if (node["memberEnds"]) {
-    //     if (node["memberEnds"].IsSequence()) {
-    //         for (size_t i = 0; i < node["memberEnds"].size(); i++) {
-    //             if (node["memberEnds"][i].IsScalar()) {
-    //                 if (data.m_strategy == ParserStrategy::WHOLE) {
-    //                     if (isValidID(node["memberEnds"][i].as<string>())) {
-    //                         applyFunctor(data, ID::fromString(node["memberEnds"][i].as<string>()), new AddMemberEndFunctor(&association, node["memberEnds"][i]));
-    //                     } else {
-    //                         throw UmlParserException("Invalid ID for member end entry, must be a 28 character url safe 64bit encoded string!", data.m_path.string(), node["memberEnds"][i]);
-    //                     }
-    //                 } else {
-    //                     if (data.m_manager->loaded(ID::fromString(node["memberEnds"][i].as<string>()))) {
-    //                         association.getMemberEnds().add(data.m_manager->get<Property>(ID::fromString(node["memberEnds"][i].as<string>())));
-    //                     } else {
-    //                         association.getMemberEnds().add(ID::fromString(node["memberEnds"][i].as<string>()));
-    //                     }
-    //                 }
-    //             } else {
-    //                 throw UmlParserException("Invalid yaml node type, must be scalar!", data.m_path.string(), node["memberEnds"][i]);
-    //             }
-    //         }
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type, must be sequence!", data.m_path.string(), node["memberEnds"]);
-    //     }
-    // } 
+    parseSequenceReference<Property, Association>(node, data, "memberEnds", association, &Association::getMemberEnds);
 }
 
 void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMetaData& data) {

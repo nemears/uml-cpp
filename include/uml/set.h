@@ -2043,6 +2043,9 @@ namespace UML {
                 SetID_Iterator<T> it;
                 it.m_node = m_root;
                 it.m_guard = m_guard;
+                if (it.m_node->m_id == placeholderID) {
+                    it++;
+                }
                 return it;
             };
             SetID_Iterator<T> end() {

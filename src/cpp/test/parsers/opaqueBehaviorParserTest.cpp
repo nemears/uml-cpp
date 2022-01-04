@@ -1,11 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/parsers/parser.h"
 #include "test/yumlParsersTest.h"
-#include "uml/opaqueBehavior.h"
-#include "uml/literalString.h"
-#include "uml/parameter.h"
-#include "uml/property.h"
-#include "uml/operation.h"
+#include "uml/uml-stable.h"
 
 using namespace std;
 using namespace UML;

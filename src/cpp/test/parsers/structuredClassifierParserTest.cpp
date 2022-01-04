@@ -1,8 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/parsers/parser.h"
 #include "test/yumlParsersTest.h"
-#include "uml/class.h"
-#include "uml/property.h"
+#include "uml/uml-stable.h"
 
 using namespace std;
 using namespace UML;
@@ -25,8 +24,8 @@ TEST_F(StructuredClassifierParserTest, parseOwnedAttributeTest) {
     Property* p = &c.getOwnedAttributes().front();
     ASSERT_TRUE(c.getAttributes().size() == 1);
     ASSERT_TRUE(&c.getAttributes().front() == p);
-    ASSERT_TRUE(c.getRole().size() == 1);
-    ASSERT_TRUE(&c.getRole().front() == p);
+    ASSERT_TRUE(c.getRoles().size() == 1);
+    ASSERT_TRUE(&c.getRoles().front() == p);
     ASSERT_TRUE(c.getFeatures().size() == 1);
     ASSERT_TRUE(&c.getFeatures().front() == p);
     ASSERT_TRUE(c.getOwnedMembers().size() == 1);
@@ -48,8 +47,8 @@ TEST_F(StructuredClassifierParserTest, partTest) {
     ASSERT_TRUE(&c.getParts().front() == p);
     ASSERT_TRUE(c.getAttributes().size() == 1);
     ASSERT_TRUE(&c.getAttributes().front() == p);
-    ASSERT_TRUE(c.getRole().size() == 1);
-    ASSERT_TRUE(&c.getRole().front() == p);
+    ASSERT_TRUE(c.getRoles().size() == 1);
+    ASSERT_TRUE(&c.getRoles().front() == p);
     ASSERT_TRUE(c.getFeatures().size() == 1);
     ASSERT_TRUE(&c.getFeatures().front() == p);
     ASSERT_TRUE(c.getOwnedMembers().size() == 1);

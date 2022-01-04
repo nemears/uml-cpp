@@ -84,6 +84,8 @@ namespace UML {
                     // Path
                     throw UmlParserException("TODO, parse reference from path (seems a lil irrelevant)", data.m_path.string(), node[key]);
                 }
+            } else {
+                throw UmlParserException("Invalid yaml node type for " + key + "entry, expected a scalar id", data.m_path.string(), node[key]);
             }
         };
 
@@ -101,6 +103,8 @@ namespace UML {
                             }
                         }
                     }
+                } else {
+                    throw UmlParserException("Invalid yaml node type for " + key + " entry, expected a sequence", data.m_path.string(), node[key]);
                 }
             }
         }
@@ -108,6 +112,7 @@ namespace UML {
         void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
         void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data);
         void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);
+        void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data);
 
         // anonymous functions
         namespace {
@@ -232,7 +237,6 @@ namespace UML {
             void emitElement(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
             void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data);
             void emitNamedElement(YAML::Emitter& emitter, NamedElement& el, EmitterMetaData& data);
-            void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data);
             void emitTypedElement(YAML::Emitter& emitter, TypedElement& el, EmitterMetaData& data);
             ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserMetaData& data);
             void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data);

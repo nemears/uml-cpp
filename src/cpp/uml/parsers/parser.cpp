@@ -1662,30 +1662,6 @@ void SetTypeFunctor::operator()(Element& el) const {
     }
 }
 
-void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data) {
-
-    parseNamedElement(node, el, data);
-
-    // if (node["type"]) {
-    //     if (node["type"].IsScalar()) {
-    //         if (data.m_strategy == ParserStrategy::WHOLE) {
-    //             string typeIDstring = node["type"].as<string>();
-    //             if (isValidID(typeIDstring)) {
-    //                 ID typeID = ID::fromString(typeIDstring);
-    //                 applyFunctor(data, typeID, new SetTypeFunctor(&el, node["type"]));
-    //             } else {
-    //                 throw UmlParserException("ID for " + el.getElementTypeString() + " type field is invalid, ", data.m_path.string(), node["type"]);
-    //             }
-    //         } else {
-    //             SetType setType;
-    //             setType(node["type"], data, el);
-    //         }
-    //     } else {
-    //         throw UmlParserException("Improper YAML node type for type field, must be scalar, " , data.m_path.string() , node["type"]);
-    //     }
-    // }
-}
-
 void emitTypedElement(YAML::Emitter& emitter, TypedElement& el, EmitterMetaData& data) {
     emitNamedElement(emitter, el, data);
 
@@ -3854,6 +3830,11 @@ void emitGeneralizationSet(YAML::Emitter& emitter, GeneralizationSet& generaliza
     emitElementDefenitionEnd(emitter, ElementType::GENERALIZATION_SET, generalizationSet);
 }
 
+}
+
+void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data) {
+    parseNamedElement(node, el, data);
+    parseSingletonReference(node, data, "type", el, &TypedElement::m_type);
 }
 
 void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {

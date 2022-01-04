@@ -27,6 +27,9 @@ namespace UML {
             };
             T* get() {
                 if (this->m_root) {
+                    if (this->m_root->m_el == 0) { // TODO make this faster
+                        this->m_root->m_el = &this->m_el->m_manager->template get<T>(this->m_root->m_id);
+                    }
                     return dynamic_cast<T*>(this->m_root->m_el);
                 } else {
                     return 0;
@@ -34,6 +37,9 @@ namespace UML {
             };
             T& getRef() {
                 if (this->m_root) {
+                    if (this->m_root->m_el == 0) {
+                        this->m_root->m_el = &this->m_el->m_manager->template get<T>(this->m_root->m_id);
+                    }
                     return *dynamic_cast<T*>(this->m_root->m_el);
                 } else {
                     // TODO throw exception

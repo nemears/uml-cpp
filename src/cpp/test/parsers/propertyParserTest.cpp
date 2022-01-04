@@ -1,16 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/parsers/parser.h"
 #include "test/yumlParsersTest.h"
-#include "uml/property.h"
-#include "uml/class.h"
-#include "uml/package.h"
-#include "uml/packageMerge.h"
-#include "uml/primitiveType.h"
-#include "uml/literalBool.h"
-#include "uml/literalInt.h"
-#include "uml/literalString.h"
-#include "uml/literalReal.h"
-#include "uml/generalization.h"
+#include "uml/uml-stable.h"
 
 using namespace std;
 using namespace UML;
@@ -52,7 +43,8 @@ TEST_F(PropertyParserTest, backwardsTypeTest) {
     Class* clazz2 = dynamic_cast<Class*>(&pckg->getPackagedElements().back());
     ASSERT_TRUE(clazz1->getAttributes().size() == 1);
     Property* prop = &clazz1->getAttributes().front();
-    ASSERT_TRUE(prop->getType() == clazz2);
+    ASSERT_TRUE(prop->hasType());
+    ASSERT_EQ(prop->getType(), clazz2);
 }
 
 TEST_F(PropertyParserTest, multiplicityTest) {
@@ -247,11 +239,6 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
     Property& prop2 = s.getOwnedAttributes().front();
     ASSERT_TRUE(prop2.getClass() != 0);
     ASSERT_EQ(prop2.getClass(), &s);
-    ASSERT_TRUE(prop2.getStructuredClassifier() != 0);
-    ASSERT_EQ(prop2.getStructuredClassifier(), &s);
-    ASSERT_TRUE(prop2.getClassifier() != 0);
-    ASSERT_EQ(prop2.getMemberNamespace().size(), 1);
-    ASSERT_EQ(&prop2.getMemberNamespace().front(), &s);
     ASSERT_TRUE(prop2.getNamespace() != 0);
     ASSERT_EQ(prop2.getNamespace(), &s);
     ASSERT_TRUE(prop2.getOwner());
@@ -291,10 +278,6 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
     ASSERT_EQ(redefined2.getType(), &m.get<Type>(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT")));
     ASSERT_TRUE(redefined2.hasClass());
     ASSERT_EQ(redefined2.getClassRef().getID(), b.getID());
-    ASSERT_TRUE(redefined2.hasStructuredClassifier());
-    ASSERT_EQ(redefined2.getStructuredClassifierRef().getID(), b.getID());
-    ASSERT_TRUE(redefined2.hasClassifier());
-    ASSERT_EQ(redefined2.getClassifierRef().getID(), b.getID());
     ASSERT_TRUE(redefined2.hasFeaturingClassifier());
     ASSERT_EQ(redefined2.getFeaturingClassifierRef().getID(), b.getID());
 
@@ -310,10 +293,6 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
     ASSERT_EQ(redefined3.getType(), &m.get<Type>(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT")));
     ASSERT_TRUE(redefined3.hasClass());
     ASSERT_EQ(redefined3.getClassRef().getID(), b.getID());
-    ASSERT_TRUE(redefined3.hasStructuredClassifier());
-    ASSERT_EQ(redefined3.getStructuredClassifierRef().getID(), b.getID());
-    ASSERT_TRUE(redefined3.hasClassifier());
-    ASSERT_EQ(redefined3.getClassifierRef().getID(), b.getID());
     ASSERT_TRUE(redefined3.hasFeaturingClassifier());
     ASSERT_EQ(redefined3.getFeaturingClassifierRef().getID(), b.getID());
 

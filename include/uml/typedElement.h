@@ -2,18 +2,19 @@
 #define TYPED_ELEMENT_H
 
 #include "namedElement.h"
+#include "yaml-cpp/yaml.h"
 
 namespace UML{
 
     class Type;
     namespace Parsers {
-        class SetType;
+        void parseTypedElement(YAML::Node node, TypedElement& el, Parsers::ParserMetaData& data);
     }
 
     class TypedElement : virtual public NamedElement {
 
         friend class Type;
-        friend class Parsers::SetType;
+        friend void Parsers::parseTypedElement(YAML::Node node, TypedElement& el, Parsers::ParserMetaData& data);
 
         protected:
             Singleton<Type, TypedElement> m_type = Singleton<Type, TypedElement>(this);

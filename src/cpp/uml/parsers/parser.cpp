@@ -539,12 +539,13 @@ template <class T = Element> T& parseDefinition(YAML::Node node, ParserMetaData&
     }
 }
 
-template <class T = Element, class U = Element> void parseSingletonDefinition(YAML::Node node, ParserMetaData& data, string key, U& el, T& (*parser)(YAML::Node, ParserMetaData&), parseAndSetSingletonFunctor<T, U>& singletonFunctor) {
+template <class T = Element, class U = Element>
+void parseSingletonDefinition(YAML::Node node, ParserMetaData& data, std::string key, U& owner, T& (*parser)(YAML::Node, ParserMetaData&), Singleton<T,U> U::*singletonSignature) {
     if (node[key]) {
         if (node[key].IsMap()) {
-            singletonFunctor.set(el, (*parser)(node[key], data));
+            (owner.*singletonSignature).set((*parser)(node[key], data));
         } else {
-            singletonFunctor(node[key], data, el);
+            throw UmlParserException("TODO, parse path", data.m_path.string(), node[key]);
         }
     }
 }
@@ -2474,25 +2475,6 @@ Slot& determineAndParseSlot(YAML::Node node, ParserMetaData& data) {
     }
 }
 
-void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data) {
-    parseNamedElement(node, inst, data);
-    parseDeploymentTarget(node, inst, data);
-    parseParameterableElement(node, inst, data);
-    parseSequenceReference<Classifier, InstanceSpecification>(node, data, "classifiers", inst, &InstanceSpecification::getClassifiers);
-    parseSequenceDefinitions(node, data, "slots", inst, &InstanceSpecification::getSlots, determineAndParseSlot);
-    
-    // if (node["specification"]) {
-    //     if (node["specification"].IsMap()) {
-    //         inst.setSpecification(&determineAndParseValueSpecification(node["specification"], data));
-    //     } else if (node["specification"].IsScalar()) {
-    //         SetSpecification setSpecification;
-    //         setSpecification(node["specification"], data, inst);
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type for specification field, must be a map or scalar!", data.m_path.string(), node["specification"]);
-    //     }
-    // }
-}
-
 void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& inst, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::INSTANCE_SPECIFICATION, "instanceSpecification", inst, data);
     emitNamedElement(emitter, inst, data);
@@ -3802,6 +3784,15 @@ void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
 void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data) {
     parseTypedElement(node, val, data);
     parseSingletonReference(node, data, "instance", val, &InstanceValue::m_instance);
+}
+
+void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data) {
+    parseNamedElement(node, inst, data);
+    parseDeploymentTarget(node, inst, data);
+    parseParameterableElement(node, inst, data);
+    parseSequenceReference<Classifier, InstanceSpecification>(node, data, "classifiers", inst, &InstanceSpecification::getClassifiers);
+    parseSequenceDefinitions(node, data, "slots", inst, &InstanceSpecification::getSlots, determineAndParseSlot);
+    parseSingletonDefinition(node, data, "specification", inst, determineAndParseValueSpecification, &InstanceSpecification::m_specification);
 }
 
 }

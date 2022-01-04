@@ -4,6 +4,7 @@
 #include "packageableElement.h"
 #include "deployedArtifact.h"
 #include "deploymentTarget.h"
+#include "yaml-cpp/yaml.h"
 
 namespace UML{
 
@@ -11,8 +12,7 @@ namespace UML{
     class Classifier;
     class InstanceValue;
     namespace Parsers {
-        class InstanceSpecificationSetClassifier;
-        class SetSpecification;
+        void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Parsers::ParserMetaData& data);
     }
 
     class InstanceSpecification : public PackageableElement , public DeployedArtifact, public DeploymentTarget {
@@ -20,8 +20,7 @@ namespace UML{
         friend class UmlManager;
         friend class Classifier;
         friend class InstanceValue;
-        friend class Parsers::InstanceSpecificationSetClassifier;
-        friend class Parsers::SetSpecification;
+        friend void Parsers::parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Parsers::ParserMetaData& data);
 
         protected:
             bool m_setFlag = false;

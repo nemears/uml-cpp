@@ -124,6 +124,7 @@ namespace UML {
         void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data);
         void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data);
         void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data);
+        void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data);
 
         // anonymous functions
         namespace {
@@ -250,7 +251,6 @@ namespace UML {
             void emitNamedElement(YAML::Emitter& emitter, NamedElement& el, EmitterMetaData& data);
             void emitTypedElement(YAML::Emitter& emitter, TypedElement& el, EmitterMetaData& data);
             ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserMetaData& data);
-            void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data);
             void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data);
             void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data);
             void emitParameter(YAML::Emitter& emitter, Parameter& el, EmitterMetaData& data);

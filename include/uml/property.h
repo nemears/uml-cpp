@@ -4,6 +4,7 @@
 #include "structuralFeature.h"
 #include "connectableElement.h"
 #include "deploymentTarget.h"
+#include "yaml-cpp/yaml.h"
 
 namespace UML{
 
@@ -14,12 +15,7 @@ namespace UML{
     class Class;
     class Artifact;
     namespace Parsers {
-        class SetDefaultValue;
-        class PropertySetClass;
-        class PropertySetDataType;
-        class PropertySetArtifact;
-        class SetOwningAssociation;
-        class SetAssociation;
+        void parseProperty(YAML::Node node, Property& prop, Parsers::ParserMetaData& data);
     }
 
     enum class AggregationKind {
@@ -36,6 +32,7 @@ namespace UML{
         friend class StructuredClassifier;
         friend class DataType;
         friend class Association;
+        friend void Parsers::parseProperty(YAML::Node node, Property& prop, Parsers::ParserMetaData& data);
 
         protected:
             AggregationKind m_aggregation = AggregationKind::NONE;

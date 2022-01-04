@@ -94,205 +94,6 @@ void emitToFile(Element& el, EmitterMetaData& data, string path, string fileName
     data.m_path = cPath;
     data.m_fileName = cFile;
 }
-// SetDefaultValue::SetDefaultValue() {
-//     m_signature = &Property::m_defaultValue;
-// }
-
-// SetSpecific::SetSpecific() {
-//     m_signature = &Generalization::m_specific;
-// }
-
-// SetNestingClass::SetNestingClass() {
-//     m_signature = &Classifier::m_nestingClass;
-// }
-
-// OperationSetClass::OperationSetClass() {
-//     m_signature = &Operation::m_class;
-// }
-
-// PropertySetClass::PropertySetClass() {
-//     m_signature = &Property::m_class;
-// }
-
-// SetOwningPackage::SetOwningPackage() {
-//     m_signature = &PackageableElement::m_owningPackage;
-// }
-
-// PropertySetDataType::PropertySetDataType() {
-//     m_signature = &Property::m_dataType;
-// }
-
-// OperationSetDataType::OperationSetDataType() {
-//     m_signature = &Operation::m_dataType;
-// }
-
-// SetOwningElement::SetOwningElement() {
-//     m_signature = &Comment::m_owningElement;
-// }
-
-// PropertySetArtifact::PropertySetArtifact() {
-//     m_signature = &Property::m_artifact;
-// }
-
-// OperationSetArtifact::OperationSetArtifact() {
-//     m_signature = &Operation::m_artifact;
-// }
-
-// ArtifactSetArtifact::ArtifactSetArtifact() {
-//     m_signature = &Artifact::m_artifact;
-// }
-
-// ManifestationSetArtifact::ManifestationSetArtifact() {
-//     m_signature = &Manifestation::m_artifact;
-// }
-
-// InstanceSpecificationSetClassifier::InstanceSpecificationSetClassifier() {
-//     m_signature = &InstanceSpecification::m_classifier;
-// }
-
-// SetOwningInstance::SetOwningInstance() {
-//     m_signature = &Slot::m_owningInstance;
-// }
-
-// SetDefiningFeature::SetDefiningFeature() {
-//     m_signature = &Slot::m_definingFeature;
-// }
-
-// SetOwningSlot::SetOwningSlot() {
-//     m_signature = &ValueSpecification::m_owningSlot;
-// }
-
-// SetSpecification::SetSpecification() {
-//     m_signature = &InstanceSpecification::m_specification;
-// }
-
-// SetInstance::SetInstance() {
-//     m_signature = &InstanceValue::m_instance;
-// }
-
-// SetOwningInstanceSpec::SetOwningInstanceSpec() {
-//     m_signature = &ValueSpecification::m_owningInstanceSpec;
-// }
-
-// SetOwningAssociation::SetOwningAssociation() {
-//     m_signature = &Property::m_owningAssociation;
-// }
-
-// SetAssociation::SetAssociation() {
-//     m_signature = &Property::m_association;
-// }
-
-// SetType::SetType() {
-//     m_signature = &TypedElement::m_type;
-// }
-
-// SetOperation::SetOperation() {
-//     m_signature = &Parameter::m_operation;
-// }
-
-// BehaviorSetSpecification::BehaviorSetSpecification() {
-//     m_signature = &Behavior::m_specification;
-// }
-
-// SetBehavioredClassifier::SetBehavioredClassifier() {
-//     m_signature = &Behavior::m_behavioredClassifier;
-// }
-
-// SetBehavior::SetBehavior() {
-//     m_signature = &Parameter::m_behavior;
-// }
-
-// SetEnumeration::SetEnumeration() {
-//     m_signature = &EnumerationLiteral::m_enumeration;
-// }
-
-// SetExpression::SetExpression() {
-//     m_signature = &ValueSpecification::m_expression;
-// }
-
-// SetClassifierBehavior::SetClassifierBehavior() {
-//     m_signature = &BehavioredClassifier::m_classifierBehavior;
-// }
-
-// SetTemplate::SetTemplate() {
-//     m_signature = &TemplateSignature::m_template;
-// }
-
-// SetOwnedTemplateSignature::SetOwnedTemplateSignature() {
-//     m_signature = &TemplateableElement::m_ownedTemplateSignature;
-// }
-
-// SetSignature::SetSignature() {
-//     m_signature = &TemplateParameter::m_signature;
-// }
-
-// SetOwnedParameteredElement::SetOwnedParameteredElement() {
-//     m_signature = &TemplateParameter::m_ownedParameteredElement;
-// }
-
-// SetOwningTemplateParameter::SetOwningTemplateParameter() {
-//     m_signature = &ParameterableElement::m_owningTemplateParameter;
-// }
-
-// SetTemplateParameter::SetTemplateParameter() {
-//     m_signature = &ParameterableElement::m_templateParameter;
-// }
-
-// SetOwnedDefault::SetOwnedDefault() {
-//     m_signature = &TemplateParameter::m_ownedDefault;
-// }
-
-// void SetOwner::operator()(Element& el, Element& owner) const {
-//     el.setOwner(&owner);
-// }
-
-// void SetOwner::operator()(Element& el, ID ownerID) const {
-//     el.setOwnerByID(ownerID);
-// }
-
-// SetDefault::SetDefault() {
-//     m_signature = &TemplateParameter::m_default;
-// }
-
-// SetBoundElement::SetBoundElement() {
-//     m_signature = &TemplateBinding::m_boundElement;
-// }
-
-// SetOwnedActual::SetOwnedActual() {
-//     m_signature = &TemplateParameterSubstitution::m_ownedActual;
-// }
-
-// SetActual::SetActual() {
-//     m_signature = &TemplateParameterSubstitution::m_actual;
-// }
-
-// SetFormal::SetFormal() {
-//     m_signature = &TemplateParameterSubstitution::m_formal;
-// }
-
-// SetTemplateBinding::SetTemplateBinding() {
-//     m_signature = &TemplateParameterSubstitution::m_templateBinding;
-// }
-
-// SetProfile::SetProfile() {
-//     m_signature = &Stereotype::m_profile;
-// }
-
-// SetOwnedEnd::SetOwnedEnd() {
-//     m_signature = &Extension::m_ownedEnd;
-// }
-
-// SetExtension::SetExtension() {
-//     m_signature = &ExtensionEnd::m_extension;
-// }
-
-// SetLocation::SetLocation() {
-//     m_signature = &Deployment::m_location;
-// }
-
-// SetPowerType::SetPowerType() {
-//     m_signature = &GeneralizationSet::m_powerType;
-// }
 
 ElementType elementTypeFromString(string eType) {
     if (eType.compare("ABSTRACTION") == 0) {
@@ -2017,67 +1818,6 @@ ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserM
     return dumb;
 }
 
-void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
-    parseTypedElement(node, prop, data);
-    parseMultiplicityElement(node, prop, data);
-    parseDeploymentTarget(node, prop, data);
-    parseParameterableElement(node, prop, data);
-
-    if (node["aggregation"]) {
-        if (node["aggregation"].IsScalar()) {
-            string aggregation = node["aggregation"].as<string>();
-            if (aggregation.compare("COMPOSITE") == 0) {
-                prop.setAggregation(AggregationKind::COMPOSITE);
-            } else if (aggregation.compare("SHARED") == 0) {
-                prop.setAggregation(AggregationKind::SHARED);
-            } else if (aggregation.compare("NONE") == 0) {
-                prop.setAggregation(AggregationKind::NONE);
-            }
-        } else {
-            throw UmlParserException("Improper YAML node type for bodies, must be scalar, ", data.m_path.string(), node["aggregation"]);
-        }
-    }
-
-    // if (node["defaultValue"]) {
-    //     if (node["defaultValue"].IsMap()) {
-    //         prop.setDefaultValue(&determineAndParseValueSpecification(node["defaultValue"], data));
-    //     } else if (node["defaultValue"].IsScalar()) {
-    //         SetDefaultValue setDefaultValue;
-    //         setDefaultValue(node["defaultValue"], data, prop);
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type for property default value entry, must be Map or scalar!", data.m_path.string(), node["defaultValue"]);
-    //     }
-    // }
-
-    if (node["redefinedProperties"]) {
-        if (node["redefinedProperties"].IsSequence()) {
-            for (size_t i = 0; i < node["redefinedProperties"].size(); i++) {
-                if (node["redefinedProperties"][i].IsScalar()) {
-                    if (isValidID(node["redefinedProperties"][i].as<string>())) {
-                        ID redefinedID = ID::fromString(node["redefinedProperties"][i].as<string>());
-                        prop.getRedefinedProperties().add(data.m_manager->get<Property>(redefinedID));
-                    } else {
-                        throw UmlParserException("Invalid uml id for redefinedProperties reference, must be a 28 character base64 url safe string!", data.m_path.string(), node["redefinedProperties"][i]);
-                    }
-                } else {
-                    throw UmlParserException("Invalid yaml node type for redefinedProperties reference, must be a scalar!", data.m_path.string(), node["redefinedProperties"][i]);
-                }
-            }
-        } else {
-            throw UmlParserException("Invalid yaml node type for redefinedProperties specification, must be a sequence!", data.m_path.string(), node["redefinedProperties"]);
-        }
-    }
-
-    // if (node["association"]) {
-    //     if (node["association"].IsScalar()) {
-    //         SetAssociation setAssociation;
-    //         setAssociation(node["association"], data, prop);
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type for association field, must be a scalar!", data.m_path.string(), node["redefinedProperties"]);
-    //     }
-    // }
-}
-
 void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::PROPERTY, "property", prop, data);
 
@@ -3793,6 +3533,32 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
     parseSequenceReference<Classifier, InstanceSpecification>(node, data, "classifiers", inst, &InstanceSpecification::getClassifiers);
     parseSequenceDefinitions(node, data, "slots", inst, &InstanceSpecification::getSlots, determineAndParseSlot);
     parseSingletonDefinition(node, data, "specification", inst, determineAndParseValueSpecification, &InstanceSpecification::m_specification);
+}
+
+void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
+    parseTypedElement(node, prop, data);
+    parseMultiplicityElement(node, prop, data);
+    parseDeploymentTarget(node, prop, data);
+    parseParameterableElement(node, prop, data);
+
+    if (node["aggregation"]) {
+        if (node["aggregation"].IsScalar()) {
+            string aggregation = node["aggregation"].as<string>();
+            if (aggregation.compare("COMPOSITE") == 0) {
+                prop.setAggregation(AggregationKind::COMPOSITE);
+            } else if (aggregation.compare("SHARED") == 0) {
+                prop.setAggregation(AggregationKind::SHARED);
+            } else if (aggregation.compare("NONE") == 0) {
+                prop.setAggregation(AggregationKind::NONE);
+            }
+        } else {
+            throw UmlParserException("Improper YAML node type for bodies, must be scalar, ", data.m_path.string(), node["aggregation"]);
+        }
+    }
+
+    parseSingletonDefinition(node, data, "defaultValue", prop, determineAndParseValueSpecification, &Property::m_defaultValue);
+    parseSequenceReference<Property, Property>(node, data, "redefinedProperties", prop, &Property::getRedefinedProperties);
+    parseSingletonReference(node, data, "association", prop, &Property::m_association);
 }
 
 }

@@ -28,17 +28,17 @@ TEST_F(PrimitiveTypeParserTest, basicPrimitiveTypeTest) {
     ASSERT_TRUE(d.getOwnedOperations().size() == 1);
     Operation* o = &d.getOwnedOperations().front();
     ASSERT_TRUE(d.getFeatures().size() == 2);
-    ASSERT_TRUE(&d.getFeatures().front() == p);
-    ASSERT_TRUE(&d.getFeatures().back() == o);
+    ASSERT_TRUE(&d.getFeatures().get("val") == p);
+    ASSERT_TRUE(&d.getFeatures().get("+") == o);
     ASSERT_TRUE(d.getOwnedMembers().size() == 2);
-    ASSERT_TRUE(&d.getOwnedMembers().front() == p);
-    ASSERT_TRUE(&d.getOwnedMembers().back() == o);
+    ASSERT_TRUE(&d.getOwnedMembers().get("val") == p);
+    ASSERT_TRUE(&d.getOwnedMembers().get("+") == o);
     ASSERT_TRUE(d.getMembers().size() == 2);
-    ASSERT_TRUE(&d.getMembers().front() == p);
-    ASSERT_TRUE(&d.getMembers().back() == o);
+    ASSERT_TRUE(&d.getMembers().get("val") == p);
+    ASSERT_TRUE(&d.getMembers().get("+") == o);
     ASSERT_TRUE(d.getOwnedElements().size() == 2);
-    ASSERT_TRUE(*d.getOwnedElements().begin() == *p);
-    ASSERT_TRUE(*(d.getOwnedElements().begin()++) == *o);
+    ASSERT_TRUE(d.getOwnedElements().get("val") == *p);
+    ASSERT_TRUE(d.getOwnedElements().get("+") == *o);
 }
 
 TEST_F(PrimitiveTypeParserTest, emitPrimWGeneralAndAttribute) {

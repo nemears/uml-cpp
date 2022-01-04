@@ -71,21 +71,23 @@ namespace UML {
 
         template <class T = Element, class U = Element> 
         void parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string key, U& owner, Singleton<T,U> U::*signature) {
-            if (node[key] && node[key].IsScalar()) {
-                if (isValidID(node[key].as<std::string>())) {
-                    // ID
-                    ID id = ID::fromString(node[key].as<std::string>());
-                    if (data.m_manager->loaded(id)) {
-                        (owner.*signature).set(data.m_manager->get<T>(id));
+            if (node[key]) {
+                if (node[key].IsScalar()) {
+                    if (isValidID(node[key].as<std::string>())) {
+                        // ID
+                        ID id = ID::fromString(node[key].as<std::string>());
+                        if (data.m_manager->loaded(id)) {
+                            (owner.*signature).set(data.m_manager->get<T>(id));
+                        } else {
+                            (owner.*signature).add(id);
+                        }
                     } else {
-                        (owner.*signature).add(id);
+                        // Path
+                        throw UmlParserException("TODO, parse reference from path (seems a lil irrelevant)", data.m_path.string(), node[key]);
                     }
                 } else {
-                    // Path
-                    throw UmlParserException("TODO, parse reference from path (seems a lil irrelevant)", data.m_path.string(), node[key]);
+                    throw UmlParserException("Invalid yaml node type for " + key + " entry, expected a scalar id", data.m_path.string(), node[key]);
                 }
-            } else {
-                throw UmlParserException("Invalid yaml node type for " + key + "entry, expected a scalar id", data.m_path.string(), node[key]);
             }
         };
 
@@ -107,7 +109,7 @@ namespace UML {
                     throw UmlParserException("Invalid yaml node type for " + key + " entry, expected a sequence", data.m_path.string(), node[key]);
                 }
             }
-        }
+        };
 
         void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
         void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data);

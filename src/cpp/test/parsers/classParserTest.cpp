@@ -99,10 +99,10 @@ TEST_F(ClassParserTest, inheritedMembersTest) {
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 4);
     ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
-    Class* general = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
+    Class* general = dynamic_cast<Class*>(&pckg->getPackagedElements().get("general"));
     ASSERT_TRUE(general->getName().compare("general") == 0);
     ASSERT_TRUE(pckg->getPackagedElements().get(1).getElementType() == ElementType::CLASS);
-    Class* specific = dynamic_cast<Class*>(&pckg->getPackagedElements().get(1));
+    Class* specific = dynamic_cast<Class*>(&pckg->getPackagedElements().get("specific"));
     ASSERT_TRUE(specific->getName().compare("specific") == 0);
     ASSERT_TRUE(specific->getGeneralizations().size() == 1);
     ASSERT_TRUE(specific->getGenerals().size() == 1);
@@ -116,9 +116,9 @@ TEST_F(ClassParserTest, inheritedMembersTest) {
     ASSERT_TRUE(&specific->getInheritedMembers().front() == gProp);
     
     ASSERT_TRUE(pckg->getPackagedElements().get(2).getElementType() == ElementType::CLASS);
-    Class* privateGeneral = dynamic_cast<Class*>(&pckg->getPackagedElements().get(2));
+    Class* privateGeneral = dynamic_cast<Class*>(&pckg->getPackagedElements().get("private"));
     ASSERT_TRUE(pckg->getPackagedElements().get(3).getElementType() == ElementType::CLASS);
-    Class* privateSpecific = dynamic_cast<Class*>(&pckg->getPackagedElements().get(3));
+    Class* privateSpecific = dynamic_cast<Class*>(&pckg->getPackagedElements().get(ID::fromString("hWVMp5upOkVsWnkrfl0I6O5bQsbO")));
     ASSERT_TRUE(privateGeneral->getOwnedAttributes().size() == 1);
     ASSERT_TRUE(privateGeneral->getOwnedAttributes().front().getVisibility() == VisibilityKind::PRIVATE);
     ASSERT_TRUE(privateSpecific->getInheritedMembers().size() == 0);
@@ -177,7 +177,7 @@ TEST_F(ClassParserTest, emitClassWAttributeNOperation) {
         name: op
         visibility: PROTECTED)"""";
     string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(c));
+    generatedEmit = Parsers::emit(c);
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }

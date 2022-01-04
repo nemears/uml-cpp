@@ -19,6 +19,7 @@
             - property:
                 visibility: PRIVATE
       - class:
+          id: hWVMp5upOkVsWnkrfl0I6O5bQsbO
           generalizations:
             - generalization:
                 general: "&FgUHSqnpwRczACXqRbQ3NbTywkm"

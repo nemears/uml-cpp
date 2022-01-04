@@ -1461,6 +1461,9 @@ namespace UML {
                         }
                         max_guard++;
                     }
+                    for (auto& redefinedSet : subsetOf.m_redefines) {
+                        redefinedSet->m_guard = subsetOf.m_guard;
+                    }
                     for (const auto& set : subsetOf.m_addFunctors) {
                         if (!m_addFunctors.count(set)) {
                             m_addFunctors.insert(set);
@@ -1892,6 +1895,7 @@ namespace UML {
                 if (it.m_node->m_id == placeholderID) {
                     it++;
                 }
+                it.m_guard = m_guard;
                 return it;
             };
             /** 
@@ -1902,6 +1906,7 @@ namespace UML {
                 SetIterator<T> it;
                 it.m_node = &it.m_endNode;
                 it.m_el = m_el;
+                it.m_guard = m_guard;
                 return it;
             };
             /**
@@ -1911,6 +1916,7 @@ namespace UML {
             ID_Set<T> ids() {
                 ID_Set<T> set;
                 set.m_root = m_root;
+                set.m_guard = m_guard;
                 return set;
             };
     };
@@ -1925,6 +1931,7 @@ namespace UML {
             Element* m_el;
             AbstractSet::SetNode* m_node;
             AbstractSet::SetNode m_endNode;
+            size_t m_guard = 0;
         public:
             T& operator*() {
                 if (!m_node->m_el) {
@@ -1946,7 +1953,7 @@ namespace UML {
                         // always go left
                         m_node = m_node->m_left;
                     } else {
-                        if (!m_node->m_parent) {
+                        if (!m_node->m_parent || m_node->m_parent->m_guard < m_guard) {
                             // if there is no parent to go to we must end
                             m_node = &m_endNode;
                             break;
@@ -1980,7 +1987,7 @@ namespace UML {
                         // always go left
                         m_node = dynamic_cast<AbstractSet::SetNode*>(m_node->m_left);
                     } else {
-                        if (!m_node->m_parent) {
+                        if (!m_node->m_parent  || m_node->m_parent->m_guard < m_guard) {
                             // if there is no parent to go to we must end
                             m_node = &m_endNode;
                             break;
@@ -2025,15 +2032,18 @@ namespace UML {
 
         private:
             AbstractSet::SetNode* m_root = 0;
+            size_t m_guard = 0;
         public:
             SetID_Iterator<T> begin() {
                 SetID_Iterator<T> it;
                 it.m_node = m_root;
+                it.m_guard = m_guard;
                 return it;
             };
             SetID_Iterator<T> end() {
                 SetID_Iterator<T> it;
                 it.m_node = &it.m_endNode;
+                it.m_guard = m_guard;
                 return it;
             };
     };

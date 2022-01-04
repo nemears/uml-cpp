@@ -2,7 +2,8 @@
   package:
     packagedElements:
       - instanceSpecification:
-          classifier: wkz5zWQPLT7RaxpqT3RDFMeF0bA7
+          classifiers: 
+            - wkz5zWQPLT7RaxpqT3RDFMeF0bA7
       - class:
           id: wkz5zWQPLT7RaxpqT3RDFMeF0bA7
 ...

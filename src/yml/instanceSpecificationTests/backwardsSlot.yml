@@ -2,7 +2,8 @@
   package:
     packagedElements:
       - instanceSpecification:
-            classifier: hMD2Bcd8fmrFu8&1CE5vPEPCNC3y
+            classifiers: 
+              - hMD2Bcd8fmrFu8&1CE5vPEPCNC3y
             slots:
               - slot:
                   definingFeature: uylQc4lo4DjT63xz4nuNoboQFFzf

@@ -14,10 +14,12 @@
               type : wve24hkcPVSmqMP&DCzk3gn&wu9W
     - instanceSpecification :
         id : x2zUOks6utCje0z&ID4EOM91HJuj
-        classifier : wve24hkcPVSmqMP&DCzk3gn&wu9W
+        classifiers : 
+          - wve24hkcPVSmqMP&DCzk3gn&wu9W
     - instanceSpecification :
         id : 6CB8GbwIp4Ii0rKfx4YSVRoiZvmc
-        classifier : Na3CGFoA8ZP10TB5n8psjAgGaaTE
+        classifiers : 
+          - Na3CGFoA8ZP10TB5n8psjAgGaaTE
         slots :
           - slot :
               id : 9ILRQCX87_7ianEyqeSRpTDTV_oY

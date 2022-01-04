@@ -3,6 +3,7 @@
 
 #include "uml/set.h"
 #include "uml/singleton.h"
+#include "yaml-cpp/yaml.h"
 
 namespace UML {
 
@@ -10,15 +11,13 @@ namespace UML {
     class StructuralFeature;
     class ValueSpecification;
     namespace Parsers {
-        class SetOwningInstance;
-        class SetDefiningFeature;
+        void parseSlot(YAML::Node node, Slot& slot, Parsers::ParserMetaData& data);
     }
 
     class Slot : public Element {
         friend class UmlManager;
         friend class InstanceSpecification;
-        friend class Parsers::SetOwningInstance;
-        friend class Parsers::SetDefiningFeature;
+        friend void Parsers::parseSlot(YAML::Node node, Slot& slot, Parsers::ParserMetaData& data);
         protected:
             Singleton<StructuralFeature, Slot> m_definingFeature = Singleton<StructuralFeature, Slot>(this);
             Set<ValueSpecification, Slot> m_values = Set<ValueSpecification, Slot>(this);

@@ -115,6 +115,8 @@ namespace UML {
         void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data);
         void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);
         void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data);
+        void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data);
+        void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data);
 
         // anonymous functions
         namespace {
@@ -251,7 +253,6 @@ namespace UML {
             void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization, EmitterMetaData& data);
             void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data);
             void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& inst, EmitterMetaData& data);
-            void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data);
             void emitSlot(YAML::Emitter& emitter, Slot& slot, EmitterMetaData& data);
             void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data);
             void emitDataType(YAML::Emitter& emitter, DataType& dataType, EmitterMetaData& data);
@@ -273,7 +274,6 @@ namespace UML {
             void emitOperation(YAML::Emitter& emitter, Operation& op, EmitterMetaData& data);
             void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data);
             void emitMultiplicityElement(YAML::Emitter& emitter, MultiplicityElement& el, EmitterMetaData& data);
-            void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data);
             void emitInstanceValue(YAML::Emitter& emitter, InstanceValue& val, EmitterMetaData& data);
             void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge, EmitterMetaData& data);
             void parseLiteralBool(YAML::Node node, LiteralBool& lb, ParserMetaData& data);

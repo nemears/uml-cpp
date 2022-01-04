@@ -2478,26 +2478,9 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
     parseNamedElement(node, inst, data);
     parseDeploymentTarget(node, inst, data);
     parseParameterableElement(node, inst, data);
-
-    // if (node["classifier"]) {
-    //     if (node["classifier"].IsScalar()) {
-    //         string classifierID = node["classifier"].as<string>();
-    //         if (isValidID(classifierID)) {
-    //             if (data.m_strategy == ParserStrategy::WHOLE) {
-    //                 ID id = ID::fromString(classifierID);
-    //                 applyFunctor(data, id, new SetClassifierFunctor(&inst, node["classifier"]));
-    //             } else {
-    //                 InstanceSpecificationSetClassifier setClassifier;
-    //                 setClassifier(node["classifier"], data, inst);
-    //             }
-    //         }
-    //     } else {
-    //         throw UmlParserException("Invalid YAML node type for InstanceSpecification field classifier,", data.m_path.string(), node["classifier"]);
-    //     }
-    // }
-
+    parseSequenceReference<Classifier, InstanceSpecification>(node, data, "classifiers", inst, &InstanceSpecification::getClassifiers);
     parseSequenceDefinitions(node, data, "slots", inst, &InstanceSpecification::getSlots, determineAndParseSlot);
-
+    
     // if (node["specification"]) {
     //     if (node["specification"].IsMap()) {
     //         inst.setSpecification(&determineAndParseValueSpecification(node["specification"], data));
@@ -2531,28 +2514,6 @@ void SetDefiningFeatureFunctor::operator()(Element& el) const {
         throw UmlParserException(m_el->getElementTypeString() + " id: " + m_el->getID().string() + 
                                  " assigned definingFeature is not a structuralFeature! line ","", m_node);
     }
-}
-
-void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
-    parseElement(node, slot, data);
-
-    // if (node["definingFeature"]) {
-    //     if (node["definingFeature"].IsScalar()) {
-    //         if (data.m_strategy == ParserStrategy::WHOLE) {
-    //             string stringID = node["definingFeature"].as<string>();
-    //             if (isValidID(stringID)) {
-    //                 ID definingFeatureID = ID::fromString(stringID);
-    //                 applyFunctor(data, definingFeatureID, new SetDefiningFeatureFunctor(&slot, node["definingFeature"]));
-    //             }
-    //         } else {
-    //             SetDefiningFeature setDefiningFeature;
-    //             setDefiningFeature(node["definingFeature"], data, slot);
-    //         }
-    //     } else {
-    //         throw UmlParserException("Invalid YAML node type for Slot field definingFeature, expected scalar, ", data.m_path.string(), node["definingFeature"]);
-    //     }
-    // }
-    parseSequenceDefinitions(node, data, "values", slot, &Slot::getValues, &determineAndParseValueSpecification);
 }
 
 void emitSlot(YAML::Emitter& emitter, Slot& slot, EmitterMetaData& data) {
@@ -2602,30 +2563,6 @@ void SetInstanceFunctor::operator()(Element& el) const {
         throw UmlParserException(m_el->getElementTypeString() + " id: " + m_el->getID().string() + 
                                  " assigned instance is not an instanceSpecification! line ", "", m_node);
     }
-}
-
-void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data) {
-    parseTypedElement(node, val, data);
-
-    // if (node["instance"]) {
-    //     if (node["instance"].IsScalar()) {
-    //         if (data.m_strategy == ParserStrategy::WHOLE) {
-    //             string instID = node["instance"].as<string>();
-    //             if (isValidID(instID)) {
-    //                 ID id = ID::fromString(instID);
-    //                 applyFunctor(data, id, new SetInstanceFunctor(&val, node["instance"]));
-    //             }
-    //             else {
-    //                 throw UmlParserException("Scalar YAML node for InstanceValue field instance is not a valid id, must be base64 url safe 28 character string, ", data.m_path.string(), node["instance"]);
-    //             }
-    //         } else {
-    //             SetInstance setInstance;
-    //             setInstance(node["instance"], data, val);
-    //         }
-    //     } else {
-    //         throw UmlParserException("Invalid YAML node type for InstanceValue field instance, expect scalar, ", data.m_path.string(), node["instance"]);
-    //     }
-    // }
 }
 
 void emitInstanceValue(YAML::Emitter& emitter, InstanceValue& val, EmitterMetaData& data) {
@@ -3854,6 +3791,17 @@ void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaDat
 void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data) {
     parseElement(node, merge, data);
     parseSingletonReference(node, data, "mergedPackage", merge, &PackageMerge::m_mergedPackage);
+}
+
+void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
+    parseElement(node, slot, data);
+    parseSingletonReference(node, data, "definingFeature", slot, &Slot::m_definingFeature);
+    parseSequenceDefinitions(node, data, "values", slot, &Slot::getValues, &determineAndParseValueSpecification);
+}
+
+void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data) {
+    parseTypedElement(node, val, data);
+    parseSingletonReference(node, data, "instance", val, &InstanceValue::m_instance);
 }
 
 }

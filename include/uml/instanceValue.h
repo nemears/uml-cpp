@@ -2,18 +2,19 @@
 #define INSTANCEVALUEH
 
 #include "valueSpecification.h"
+#include "yaml-cpp/yaml.h"
 
 namespace UML {
 
     class InstanceSpecification;
     namespace Parsers {
-        class SetInstance;
+        void parseInstanceValue(YAML::Node node, InstanceValue& val, Parsers::ParserMetaData& data);
     }
 
     class InstanceValue : public ValueSpecification {
 
         friend class UmlManager;
-        friend class Parsers::SetInstance;
+        friend void Parsers::parseInstanceValue(YAML::Node node, InstanceValue& val, Parsers::ParserMetaData& data);
 
         protected:
             Singleton<InstanceSpecification, InstanceValue> m_instance = Singleton<InstanceSpecification, InstanceValue>(this);

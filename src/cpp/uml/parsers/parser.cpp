@@ -2488,29 +2488,10 @@ TemplateBinding& determineAndParseTemplateBinding(YAML::Node node, ParserMetaDat
     }
 }
 
-void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data) {
-    // if (node["templateSignature"]) {
-    //     if (node["templateSignature"].IsMap()) {
-    //         if (node["templateSignature"]["templateSignature"]) {
-    //             if (node["templateSignature"]["templateSignature"].IsMap()) {
-    //                 TemplateSignature& signature = data.m_manager->create<TemplateSignature>();
-    //                 parseTemplateSignature(node["templateSignature"]["templateSignature"], signature, data);
-    //                 el.setOwnedTemplateSignature(&signature);
-    //             } else {
-    //                 throw UmlParserException("Invalid uml element identifier for templateSignature field, may only be a templateSignature!", data.m_path.string(), node["templateSignature"]);
-    //             }
-    //         } else {
-    //             throw UmlParserException("Must specify templateSignature field before templateSignature definition", data.m_path.string(), node["templateSignature"]);
-    //         }
-    //     } else if (node["templateSignature"].IsScalar()) {
-    //         SetOwnedTemplateSignature setOwnedTemplateSignature;
-    //         parseSingleton(node["templateSignature"], data, el, &TemplateableElement::setOwnedTemplateSignature, setOwnedTemplateSignature);
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type for template signature field, may only be map or scalar!", data.m_path.string(), node["templateSignature"]);
-    //     }
-    // }
-
-    parseSequenceDefinitions(node, data, "templateBindings", el, &TemplateableElement::getTemplateBindings, determineAndParseTemplateBinding);
+TemplateSignature& determineAndParseTemplateSignature(YAML::Node node, ParserMetaData& data) {
+    if (node["templateSignature"]) {
+        return parseDefinition(node, data, "templateSignature", parseTemplateSignature);
+    }
 }
 
 void emitTemplateableElement(YAML::Emitter& emitter, TemplateableElement& el, EmitterMetaData& data) {
@@ -2544,19 +2525,7 @@ TemplateParameter& determineAndParseTemplateParameter(YAML::Node node, ParserMet
 void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, ParserMetaData& data) {
     parseElement(node, signature, data);
     parseSequenceDefinitions(node, data, "ownedParameters", signature, &TemplateSignature::getOwnedParameters, determineAndParseTemplateParameter);
-    // if (node["parameters"]) {
-    //     if (node["parameters"].IsSequence()) {
-    //         for (size_t i = 0; i < node["parameters"].size(); i++) {
-    //             if (node["parameters"][i].IsScalar()) {
-    //                 if (isValidID(node["parameters"][i].as<string>())) {
-    //                     applyFunctor(data, ID::fromString(node["parameters"][i].as<string>()), new AddTemplateParmeterFunctor(&signature, node["parameters"]));
-    //                 }
-    //             }
-    //         }
-    //     } else {
-    //         throw UmlParserException("Invalid node type for template signature parameters, should be a sequence, ", data.m_path.string(), node["parameters"]);
-    //     }
-    // }
+    parseSequenceReference<TemplateParameter, TemplateSignature>(node, data, "parameters", signature, &TemplateSignature::getParameters);
 }
 
 void emitTemplateSignature(YAML::Emitter& emitter, TemplateSignature& signature, EmitterMetaData& data) {
@@ -2745,44 +2714,6 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
     return dumb;
 }
 
-void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data) {
-    parseElement(node, parameter, data);
-    // SetOwnedDefault setOwnedDefault;
-    // parseSingletonDefinition(node, data, "ownedDefault", parameter, determinAndParseParameterableElement, setOwnedDefault);
-
-    // if (node["default"]) {
-    //     if (node["default"].IsScalar()) {
-    //         SetDefault setDefault;
-    //         parseSingleton(node["default"], data, parameter, &TemplateParameter::setDefault, setDefault);
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type, must be scalar!", data.m_path.string(), node["default"]);
-    //     }
-    // }
-
-    // if (node["ownedParameteredElement"]) {
-    //     if (node["ownedParameteredElement"].IsMap()) {
-    //         parameter.setOwnedParameteredElement(&determinAndParseParameterableElement(node["ownedParameteredElement"], data));
-    //     } else if (node["ownedParameteredElement"].IsScalar()) {
-    //         SetOwnedParameteredElement setOwnedParameteredElement;
-    //         parseSingleton(node["ownedParameteredElement"], data, parameter, &TemplateParameter::setOwnedParameteredElement, setOwnedParameteredElement);
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type, must be map or scalar! ", data.m_path.string(), node["ownedParameteredElement"]);
-    //     }
-    // }
-
-    // if (node["parameteredElement"]) {
-    //     if (node["parameteredElement"].IsScalar()) {
-    //         if (isValidID(node["parameteredElement"].as<string>())) {
-    //             applyFunctor(data, ID::fromString(node["parameteredElement"].as<string>()), new SetParameteredElementFunctor(&parameter, node["parameteredElement"]));
-    //         } else {
-    //             throw UmlParserException("Invalid id for parametered element, must be base64 url safe 28 character string! ", data.m_path.string(), node["parameteredElement"]);
-    //         }
-    //     } else {
-    //         throw UmlParserException("Invalid YAML node type for parameteredElement, must be scalar ", data.m_path.string(), node["parameteredElement"]);
-    //     }
-    // }
-}
-
 void emitTemplateParameter(YAML::Emitter& emitter, TemplateParameter& parameter, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::TEMPLATE_PARAMETER, "templateParameter", parameter, data);
 
@@ -2833,23 +2764,6 @@ TemplateParameterSubstitution& determineAndParseTemplateParameterSubstitution(YA
     }
 }
 
-void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaData& data) {
-    parseElement(node, binding, data);
-
-    // if (node["signature"]) {
-    //     if (node["signature"].IsScalar()) {
-    //         if (isValidID(node["signature"].as<string>())) {
-    //             applyFunctor(data, ID::fromString(node["signature"].as<string>()), new SetSignatureFunctor(&binding, node["signature"]));
-    //         } else {
-    //             throw UmlParserException("TemplateBinding signature not a valid id, must be base64 url safe 28 character string ", data.m_path.string(), node["signature"]);
-    //         }
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type for templateBinding signature, must be scaler, ", data.m_path.string(), node["signature"]);
-    //     }
-    // }
-    parseSequenceDefinitions(node, data, "parameterSubstitution", binding, &TemplateBinding::getParameterSubstitution, determineAndParseTemplateParameterSubstitution);
-}
-
 void emitTemplateBinding(YAML::Emitter& emitter, TemplateBinding& binding, EmitterMetaData& data) {
     // TODO change
     if (binding.getElementType() == ElementType::TEMPLATE_BINDING) {
@@ -2881,49 +2795,6 @@ void SetActualFunctor::operator()(Element& el) const {
     } else {
         throw UmlParserException("TemplateParameterSubstitution actual must be a parameterableElement", "", m_node);
     }
-}
-
-void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data) {
-    parseElement(node, sub, data);
-
-    // if (node["formal"]) {
-    //     if (node["formal"].IsScalar()) {
-    //         if (isValidID(node["formal"].as<string>())) {
-    //             ID formalID = ID::fromString(node["formal"].as<string>());
-    //             if (data.m_strategy == ParserStrategy::WHOLE) {
-    //                 applyFunctor(data, ID::fromString(node["formal"].as<string>()), new SetFormalFunctor(&sub, node["formal"]));
-    //             } else {
-    //                 SetFormal setFormal;
-    //                 setFormal(node["formal"], data, sub);
-    //             }
-    //         } else {
-    //             throw UmlParserException("Invalid id, must be 28 character base64 urlsafe encoded string!", data.m_path.string(), node["actual"]);
-    //         }
-    //     } else {
-    //         throw UmlParserException("Invalid YAML node type, must be scalar for formal, ", data.m_path.string(), node["formal"]);
-    //     }
-    // }
-    
-    // SetOwnedActual setOWnedActual;
-    // parseSingletonDefinition(node, data, "ownedActual", sub, determinAndParseParameterableElement, setOWnedActual);
-
-    // if (node["actual"]) {
-    //     if (node["actual"].IsScalar()) {
-    //         if (isValidID(node["actual"].as<string>())) {
-    //             ID actualID = ID::fromString(node["actual"].as<string>());
-    //             if (data.m_strategy == ParserStrategy::WHOLE) {
-    //                 applyFunctor(data, ID::fromString(node["actual"].as<string>()), new SetActualFunctor(&sub, node["actual"]));
-    //             } else {
-    //                 SetActual setActual;
-    //                 setActual(node["actual"], data, sub);
-    //             }
-    //         } else {
-    //             throw UmlParserException("Invalid id, must be 28 character base64 urlsafe encoded string!", data.m_path.string(), node["actual"]);
-    //         }
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type, must be scalar!", data.m_path.string(), node["actual"]);
-    //     }
-    // }
 }
 
 void emitTemplateParameterSubstitution(YAML::Emitter& emitter, TemplateParameterSubstitution& sub, EmitterMetaData& data) {
@@ -3559,6 +3430,32 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
     parseSingletonDefinition(node, data, "defaultValue", prop, determineAndParseValueSpecification, &Property::m_defaultValue);
     parseSequenceReference<Property, Property>(node, data, "redefinedProperties", prop, &Property::getRedefinedProperties);
     parseSingletonReference(node, data, "association", prop, &Property::m_association);
+}
+
+void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data) {
+    parseSingletonDefinition(node, data, "templateSignature", el, determineAndParseTemplateSignature, &TemplateableElement::m_ownedTemplateSignature);
+    parseSequenceDefinitions(node, data, "templateBindings", el, &TemplateableElement::getTemplateBindings, determineAndParseTemplateBinding);
+}
+
+void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data) {
+    parseElement(node, parameter, data);
+    parseSingletonDefinition(node, data, "ownedDefault", parameter, determinAndParseParameterableElement, &TemplateParameter::m_ownedDefault);
+    parseSingletonReference(node, data, "default", parameter, &TemplateParameter::m_default);
+    parseSingletonDefinition(node, data, "ownedParameteredElement", parameter, determinAndParseParameterableElement, &TemplateParameter::m_ownedParameteredElement);
+    parseSingletonReference(node, data, "parameteredElement", parameter, &TemplateParameter::m_parameteredElement);
+}
+
+void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaData& data) {
+    parseElement(node, binding, data);
+    parseSingletonReference(node, data, "signature", binding, &TemplateBinding::m_signature);
+    parseSequenceDefinitions(node, data, "parameterSubstitution", binding, &TemplateBinding::getParameterSubstitution, determineAndParseTemplateParameterSubstitution);
+}
+
+void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data) {
+    parseElement(node, sub, data);
+    parseSingletonReference(node, data, "formal", sub, &TemplateParameterSubstitution::m_formal);
+    parseSingletonDefinition(node, data, "ownedActual", sub, determinAndParseParameterableElement, &TemplateParameterSubstitution::m_ownedActual);
+    parseSingletonReference(node, data, "actual", sub, &TemplateParameterSubstitution::m_actual);
 }
 
 }

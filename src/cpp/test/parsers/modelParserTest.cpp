@@ -1,9 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/parsers/parser.h"
 #include "test/yumlParsersTest.h"
-#include "uml/model.h"
-#include "uml/class.h"
-#include "uml/property.h"
+#include "uml/uml-stable.h"
 
 using namespace std;
 using namespace UML;
@@ -21,7 +19,7 @@ TEST_F(ModelParserTest, parsedAndCreatedElementTest) {
     // Parse
     Model* m;
     UmlManager mm;
-    ASSERT_NO_THROW(mm.open(ymlPath + "modelTests/modelW_Packages.yml"));
+    mm.open(ymlPath + "modelTests/modelW_Packages.yml");
 
     m = mm.getModel();
 

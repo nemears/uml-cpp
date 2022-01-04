@@ -1,9 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/parsers/parser.h"
 #include "test/yumlParsersTest.h"
-#include "uml/literalUnlimitedNatural.h"
-#include "uml/literalNull.h"
-#include "uml/package.h"
+#include "uml/uml-stable.h"
 
 using namespace std;
 using namespace UML;
@@ -23,17 +21,17 @@ TEST_F(LiteralsParserTest, testParsingSomeLiterals) {
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_EQ(pckg->getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg->getPackagedElements().front().getElementType(), ElementType::LITERAL_UNLIMITED_NATURAL);
-    LiteralUnlimitedNatural* n1 = dynamic_cast<LiteralUnlimitedNatural*>(&pckg->getPackagedElements().front());
+    ASSERT_EQ(pckg->getPackagedElements().get("infinity").getElementType(), ElementType::LITERAL_UNLIMITED_NATURAL);
+    LiteralUnlimitedNatural* n1 = dynamic_cast<LiteralUnlimitedNatural*>(&pckg->getPackagedElements().get("infinity"));
     ASSERT_EQ(n1->getName(), "infinity");
     ASSERT_EQ(n1->isInfinite(), true);
-    ASSERT_EQ(pckg->getPackagedElements().get(1).getElementType(), ElementType::LITERAL_UNLIMITED_NATURAL);
-    LiteralUnlimitedNatural* n2 = dynamic_cast<LiteralUnlimitedNatural*>(&pckg->getPackagedElements().get(1));
+    ASSERT_EQ(pckg->getPackagedElements().get("number").getElementType(), ElementType::LITERAL_UNLIMITED_NATURAL);
+    LiteralUnlimitedNatural* n2 = dynamic_cast<LiteralUnlimitedNatural*>(&pckg->getPackagedElements().get("number"));
     ASSERT_EQ(n2->getName(), "number");
     ASSERT_EQ(n2->isInfinite(), false);
     ASSERT_EQ(n2->getNumberValue(), 9);
-    ASSERT_EQ(pckg->getPackagedElements().back().getElementType(), ElementType::LITERAL_NULL);
-    LiteralNull* n3 = dynamic_cast<LiteralNull*>(&pckg->getPackagedElements().back());
+    ASSERT_EQ(pckg->getPackagedElements().get("nullLiteral").getElementType(), ElementType::LITERAL_NULL);
+    LiteralNull* n3 = dynamic_cast<LiteralNull*>(&pckg->getPackagedElements().get("nullLiteral"));
     ASSERT_EQ(n3->getName(), "nullLiteral");
 }
 
@@ -65,11 +63,11 @@ TEST_F(LiteralsParserTest, testEmitLiteralUnlimitedNatural) {
     - literalUnlimitedNatural:
         id: puJaUTZsLPdGJkJSJtdX51MIA2ch
         value: "*"
+    - literalNull:
+        id: 4gA4RgL9vKTRYd61D99y1d_Yggj6
     - literalUnlimitedNatural:
         id: 8&K_0aLhvQDM12ZeYg9nPiSrexHo
-        value: 9999
-    - literalNull:
-        id: 4gA4RgL9vKTRYd61D99y1d_Yggj6)"""";
+        value: 9999)"""";
     string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(p));
     cout << generatedEmit << '\n';

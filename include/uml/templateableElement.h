@@ -3,19 +3,20 @@
 
 #include "element.h"
 #include "singleton.h"
+#include "yaml-cpp/yaml.h"
 
 namespace UML {
 
     class TemplateBinding;
     class TemplateSignature;
     namespace Parsers {
-        class SetOwnedTemplateSignature;
+        void parseTemplateableElement(YAML::Node node, TemplateableElement& el, Parsers::ParserMetaData& data);
     }
 
     class TemplateableElement : virtual public Element {
 
         friend class TemplateSignature;
-        friend class Parsers::SetOwnedTemplateSignature;
+        friend void Parsers::parseTemplateableElement(YAML::Node node, TemplateableElement& el, Parsers::ParserMetaData& data);
 
         protected:
             Singleton<TemplateSignature, TemplateableElement> m_ownedTemplateSignature = Singleton<TemplateSignature, TemplateableElement>(this);

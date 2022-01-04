@@ -3,6 +3,7 @@
 
 #include "element.h"
 #include "singleton.h"
+#include "yaml-cpp/yaml.h"
 
 namespace UML {
 
@@ -10,20 +11,14 @@ namespace UML {
     class TemplateParameter;
     class ParameterableElement;
     namespace Parsers {
-        class SetOwnedActual;
-        class SetActual;
-        class SetFormal;
-        class SetTemplateBinding;
+        void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, Parsers::ParserMetaData& data);
     }
 
     class TemplateParameterSubstitution : public Element {
 
         friend class UmlManager;
         friend class TemplateBinding;
-        friend class Parsers::SetOwnedActual;
-        friend class Parsers::SetActual;
-        friend class Parsers::SetFormal;
-        friend class Parsers::SetTemplateBinding;
+        friend void Parsers::parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, Parsers::ParserMetaData& data);
 
         private:
             Singleton<TemplateParameter, TemplateParameterSubstitution> m_formal = Singleton<TemplateParameter, TemplateParameterSubstitution>(this);

@@ -3,20 +3,21 @@
 
 #include "directedRelationship.h"
 #include "singleton.h"
+#include "yaml-cpp/yaml.h"
 
 namespace UML {
 
     class TemplateParameterSubstitution;
     class TemplateableElement;
     namespace Parsers {
-        class SetBoundElement;
+        void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, Parsers::ParserMetaData& data);
     }
 
     class TemplateBinding : public DirectedRelationship {
 
         friend class UmlManager;
         friend class TemplateableElement;
-        friend class Parsers::SetBoundElement;
+        friend void Parsers::parseTemplateBinding(YAML::Node node, TemplateBinding& binding, Parsers::ParserMetaData& data);
 
         private:
             Singleton<TemplateableElement, TemplateBinding> m_boundElement = Singleton<TemplateableElement, TemplateBinding>(this);

@@ -231,16 +231,16 @@ void UmlManager::save(string path) {
 }
 
 void UmlManager::open() {
-    // if (m_path.empty()) {
-    //     // todo thow error
-    //     return;
-    // }
-    // clear();
-    // Parsers::ParserMetaData data(this);
-    // m_root = Parsers::parse(data);
-    // if (m_root->isSubClassOf(ElementType::MODEL)) {
-    //     m_model = dynamic_cast<Model*>(m_root);
-    // }
+    if (m_path.empty()) {
+        // todo thow error
+        return;
+    }
+    clear();
+    Parsers::ParserMetaData data(this);
+    m_root = Parsers::parse(data);
+    if (m_root->isSubClassOf(ElementType::MODEL)) {
+        m_model = dynamic_cast<Model*>(m_root);
+    }
 }
 
 void UmlManager::open(string path) {

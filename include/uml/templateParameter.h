@@ -3,6 +3,7 @@
 
 #include "element.h"
 #include "singleton.h"
+#include "yaml-cpp/yaml.h"
 
 namespace UML {
 
@@ -10,10 +11,7 @@ namespace UML {
     class ParameterableElement;
     class TemplateParameterSubstitution;
     namespace Parsers {
-        class SetSignature;
-        class SetOwnedParameteredElement;
-        class SetOwnedDefault;
-        class SetDefault;
+        void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, Parsers::ParserMetaData& data);
     }
 
     class TemplateParameter : public Element {
@@ -22,10 +20,7 @@ namespace UML {
         friend class TemplateParameterSubstitution;
         friend class TemplateSignature;
         friend class ParameterableElement;
-        friend class Parsers::SetSignature;
-        friend class Parsers::SetOwnedParameteredElement;
-        friend class Parsers::SetOwnedDefault;
-        friend class Parsers::SetDefault;
+        friend void Parsers::parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, Parsers::ParserMetaData& data);
 
         private:
             Singleton<TemplateSignature, TemplateParameter> m_signature = Singleton<TemplateSignature, TemplateParameter>(this);

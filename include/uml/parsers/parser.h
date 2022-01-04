@@ -125,6 +125,10 @@ namespace UML {
         void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data);
         void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data);
         void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data);
+        void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data);
+        void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data);
+        void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaData& data);
+        void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data);
 
         // anonymous functions
         namespace {
@@ -294,16 +298,12 @@ namespace UML {
             void emitLiteralUnlimitedNatural(YAML::Emitter& emitter, LiteralUnlimitedNatural& ln, EmitterMetaData& data);
             void parseExpression(YAML::Node node, Expression& exp, ParserMetaData& data);
             void emitExpression(YAML::Emitter& emitter, Expression& exp, EmitterMetaData& data);
-            void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data);
             void emitTemplateableElement(YAML::Emitter& emitter, TemplateableElement& el, EmitterMetaData& data);
             void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, ParserMetaData& data);
             void emitTemplateSignature(YAML::Emitter& node, TemplateSignature& signautre, EmitterMetaData& data);
             ParameterableElement& determinAndParseParameterableElement(YAML::Node node, ParserMetaData& data);
-            void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data);
             void emitTemplateParameter(YAML::Emitter& emitter, TemplateParameter& parameter, EmitterMetaData& data);
-            void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaData& data);
             void emitTemplateBinding(YAML::Emitter& emitter, TemplateBinding& binding, EmitterMetaData& data);
-            void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data);
             void emitTemplateParameterSubstitution(YAML::Emitter& emitter, TemplateParameterSubstitution& sub, EmitterMetaData& data);
             void parseAssociation(YAML::Node node, Association& association, ParserMetaData& data);
             void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMetaData& data);

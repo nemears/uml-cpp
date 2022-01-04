@@ -1338,9 +1338,14 @@ namespace UML {
                                             subsetOf->m_root = 0;
                                         }
                                         for (auto& subset : subsetOf->m_subSets) {
-                                            if (subset != this && subset->m_root && subset->m_root->m_parent == curr) {
+                                            if (subset != this && 
+                                                std::find(m_redefines.begin(), m_redefines.end(), subset) == m_redefines.end() && 
+                                                subset->m_root && 
+                                                subset->m_root->m_parent == curr) {
                                                 subset->m_root->m_parent = curr->m_parent;
-                                                curr->m_parent->m_left = subset->m_root;
+                                                if (curr->m_parent) {
+                                                    curr->m_parent->m_left = subset->m_root;
+                                                }
                                             }
                                         }
                                     }

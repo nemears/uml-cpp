@@ -3,15 +3,21 @@
 
 #include "uml/directedRelationship.h"
 #include "uml/singleton.h"
+#include "yaml-cpp/yaml.h"
 
 namespace UML {
 
     class Profile;
 
+    namespace Parsers {
+        void parseProfileApplication(YAML::Node node, ProfileApplication& application, Parsers::ParserMetaData& data);
+    }
+
     class ProfileApplication : public DirectedRelationship {
 
         friend class UmlManager;
         friend class Package;
+        friend void Parsers::parseProfileApplication(YAML::Node node, ProfileApplication& application, Parsers::ParserMetaData& data);
 
         private:
             Singleton<Profile, ProfileApplication> m_appliedProfile = Singleton<Profile, ProfileApplication>(this);

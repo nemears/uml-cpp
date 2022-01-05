@@ -129,6 +129,8 @@ namespace UML {
         void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data);
         void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaData& data);
         void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data);
+        void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data);
+        void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data);
 
         // anonymous functions
         namespace {
@@ -307,9 +309,7 @@ namespace UML {
             void emitTemplateParameterSubstitution(YAML::Emitter& emitter, TemplateParameterSubstitution& sub, EmitterMetaData& data);
             void parseAssociation(YAML::Node node, Association& association, ParserMetaData& data);
             void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMetaData& data);
-            void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data);
             void emitExtension(YAML::Emitter& emitter, Extension& extension, EmitterMetaData& data);
-            void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data);
             void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& application, EmitterMetaData& data);
             void parseComment(YAML::Node node, Comment& comment, ParserMetaData& data);
             void emitComment(YAML::Emitter& emitter, Comment& comment, EmitterMetaData& data);

@@ -2220,7 +2220,14 @@ void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& in
     emitNamedElement(emitter, inst, data);
     emitDeploymentTarget(emitter, inst, data);
     emitParameterableElement(emitter, inst, data);
-    emitSequence(emitter, "classifiers", data, inst, &InstanceSpecification::getClassifiers);
+    if (!inst.getClassifiers().empty()) {
+        emitter << YAML::Key << "classifiers" << YAML::Value << YAML::BeginSeq;
+        for (const ID id : inst.getClassifiers().ids()) {
+            emitter << YAML::Value << id.string();
+        }
+        emitter << YAML::EndSeq;
+    }
+    
     emitSequence(emitter, "slots", data, inst, &InstanceSpecification::getSlots);
     if (inst.getSpecification()) {
         emitter << YAML::Key << "specification" << YAML::Value;
@@ -2884,19 +2891,6 @@ ExtensionEnd& determineAndParseOwnedEnd(YAML::Node node, ParserMetaData& data) {
     }
 }
 
-void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data) {
-    parseClassifier(node, extension, data);
-    // SetOwnedEnd setOwnedEnd;
-    // parseSingletonDefinition(node, data, "ownedEnd", extension, determineAndParseOwnedEnd, setOwnedEnd);
-    if (node["metaClass"]) {
-        if (node["metaClass"].IsScalar()) {
-            extension.setMetaClass(elementTypeFromString(node["metaClass"].as<string>()));
-        } else {
-            throw UmlParserException("Invalid yaml node type for extension MetaClass, must be scalar!", data.m_path.string(), node["metaClass"]);
-        }
-    }
-}
-
 void emitExtension(YAML::Emitter& emitter, Extension& extension, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::EXTENSION, "extension", extension, data);
 
@@ -2922,29 +2916,6 @@ void SetAppliedProfileFunctor::operator()(Element& el) const {
     } else {
         throw UmlParserException("Tried to set applied profile to non profile", "", m_node);
     }
-}
-
-void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data) {
-    parseElement(node, application, data);
-
-    // if (node["appliedProfile"]) {
-    //     if (node["appliedProfile"].IsScalar()) {
-    //         string profileString = node["appliedProfile"].as<string>();
-    //         if (isValidID(profileString)) {
-    //             applyFunctor(data, ID::fromString(profileString), new SetAppliedProfileFunctor(&application, node["appliedProfile"]));
-    //         } else {
-    //             Element* profile = parseExternalAddToManager(data, profileString);
-    //             if (profile == 0) {
-    //                 throw UmlParserException("Could not parse external profile!", data.m_path.string(), node["appliedProfile"]);
-    //             }
-    //             if (profile->isSubClassOf(ElementType::PROFILE)) {
-    //                 application.setAppliedProfile(dynamic_cast<Profile*>(profile));
-    //             } else {
-    //                 throw UmlParserException("File for applied profile is not root element type profile", data.m_path.string(), node["appliedProfile"]);
-    //             }
-    //         }
-    //     }
-    // }
 }
 
 void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& application, EmitterMetaData& data) {
@@ -3431,6 +3402,23 @@ void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubsti
     parseSingletonReference(node, data, "formal", sub, &TemplateParameterSubstitution::m_formal);
     parseSingletonDefinition(node, data, "ownedActual", sub, determinAndParseParameterableElement, &TemplateParameterSubstitution::m_ownedActual);
     parseSingletonReference(node, data, "actual", sub, &TemplateParameterSubstitution::m_actual);
+}
+
+void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data) {
+    parseClassifier(node, extension, data);
+    parseSingletonDefinition(node, data, "ownedEnd", extension, determineAndParseOwnedEnd, &Extension::m_ownedEnd);
+    if (node["metaClass"]) {
+        if (node["metaClass"].IsScalar()) {
+            extension.setMetaClass(elementTypeFromString(node["metaClass"].as<string>()));
+        } else {
+            throw UmlParserException("Invalid yaml node type for extension MetaClass, must be scalar!", data.m_path.string(), node["metaClass"]);
+        }
+    }
+}
+
+void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data) {
+    parseElement(node, application, data);
+    parseSingletonReference(node, data, "appliedProfile", application, &ProfileApplication::m_appliedProfile);
 }
 
 }

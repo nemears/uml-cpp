@@ -7,13 +7,13 @@ namespace UML {
 
     class ExtensionEnd;
     namespace Parsers {
-        class SetOwnedEnd;
+        void parseExtension(YAML::Node node, Extension& extension, Parsers::ParserMetaData& data);
     }
 
     class Extension : public Association {
 
         friend class UmlManager;
-        friend class Parsers::SetOwnedEnd;
+        friend void Parsers::parseExtension(YAML::Node node, Extension& extension, Parsers::ParserMetaData& data);
         friend class ExtensionEnd;
 
         private:

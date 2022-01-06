@@ -2,13 +2,16 @@
   package:
     packagedElements:
       - class:
+          name: utilizedEl1
           id: pNMfBcFpCg0vhc06VYZFdkgu3ZPq
       - artifact:
+          name: artifact
           manifestations:
             - manifestation:
                 utilizedElement: HPylwSjRzCyu&YVrkO1V_z0g0RGg
             - manifestation:
                 utilizedElement: pNMfBcFpCg0vhc06VYZFdkgu3ZPq
       - class:
+          name: utilizedEl2
           id: HPylwSjRzCyu&YVrkO1V_z0g0RGg
 ...

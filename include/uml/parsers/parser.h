@@ -131,6 +131,7 @@ namespace UML {
         void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data);
         void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data);
         void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data);
+        void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMetaData& data);
 
         // anonymous functions
         namespace {
@@ -323,7 +324,6 @@ namespace UML {
             void emitDeploymentTarget(YAML::Emitter& emitter, DeploymentTarget& target, EmitterMetaData& data);
             void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, ParserMetaData& data);
             void emitBehavioredClassifier(YAML::Emitter& emitter, BehavioredClassifier& classifier, EmitterMetaData& data);
-            void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMetaData& data);
             void emitManifestation(YAML::Emitter& emitter, Manifestation& Manifestation, EmitterMetaData& data);
             void parseParameterableElement(YAML::Node node, ParameterableElement& el, ParserMetaData& data);
             void emitParameterableElement(YAML::Emitter& emitter, ParameterableElement& el, EmitterMetaData& data);

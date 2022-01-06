@@ -2,17 +2,18 @@
 #define MANIFESTATION_H
 
 #include "abstraction.h"
+#include "yaml-cpp/yaml.h"
 
 namespace UML {
 
     namespace Parsers {
-        class ManifestationSetArtifact;
+        void parseManifestation(YAML::Node node, Manifestation& manifestation, Parsers::ParserMetaData& data);
     }
 
     class Manifestation : public Abstraction {
 
         friend class UmlManager;
-        friend class Parsers::ManifestationSetArtifact;
+        friend void Parsers::parseManifestation(YAML::Node node, Manifestation& manifestation, Parsers::ParserMetaData& data);
 
         protected:
             Singleton<PackageableElement, Manifestation> m_utilizedElement = Singleton<PackageableElement, Manifestation>(this);

@@ -2498,6 +2498,8 @@ TemplateBinding& determineAndParseTemplateBinding(YAML::Node node, ParserMetaDat
 TemplateSignature& determineAndParseTemplateSignature(YAML::Node node, ParserMetaData& data) {
     if (node["templateSignature"]) {
         return parseDefinition(node, data, "templateSignature", parseTemplateSignature);
+    } else {
+        throw UmlParserException("Invalid element identifier, can only be a templateSignature!", data.m_path.string(), node);
     }
 }
 
@@ -2976,61 +2978,8 @@ void AddSupplierFunctor::operator()(Element& el) const {
 
 void parseDependency(YAML::Node node, Dependency& dependency, ParserMetaData& data) {
     parseNamedElement(node, dependency, data);
-
-    // if (node["client"]) {
-    //     if (node["client"].IsSequence()) {
-    //         for (size_t i = 0; i < node["client"].size(); i++) {
-    //             if (node["client"][i].IsScalar()) {
-    //                 if (isValidID(node["client"][i].as<string>())) {
-    //                     ID clientID = ID::fromString(node["client"][i].as<string>());
-    //                     if (data.m_strategy == ParserStrategy::WHOLE) {
-    //                         applyFunctor(data, clientID, new AddClientFunctor(&dependency, node["client"][i]));
-    //                     } else {
-    //                         if (data.m_manager->loaded(clientInedActual setOWnedActual;
-    // parseSingD)) {
-    //                             dependency.getClient().add(data.m_manager->get<NamedElement>(clientID));
-    //                         } else {
-    //                             dependency.getClient().add(clientID);
-    //                         }
-    //                     }
-    //                 } else {
-    //                     throw UmlParserException("Invalid ID, must be a base64 url safe 28 character string!", data.m_path.string(), node["client"][i]);
-    //                 }
-    //             } else {
-    //                 throw UmlParserException("Invalid yaml node type for dependency client entry, must be a scalar!", data.m_path.string(), node["client"][i]);
-    //             }
-    //         }
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type for dependency client, must be a sequence!", data.m_path.string(), node["client"]);
-    //     }
-    // }
-
-    // if (node["supplier"]) {
-    //     if (node["supplier"].IsSequence()) {
-    //         for (size_t i = 0; i < node["supplier"].size(); i++) {
-    //             if (node["supplier"][i].IsScalar()) {
-    //                 if (isValidID(node["supplier"][i].as<string>())) {
-    //                     ID supplierID = ID::fromString(node["supplier"][i].as<string>());
-    //                     if (data.m_strategy == ParserStrategy::WHOLE) {
-    //                         applyFunctor(data, supplierID, new AddSupplierFunctor(&dependency, node["supplier"][i]));
-    //                     } else {
-    //                         if (data.m_manager->loaded(supplierID)) {
-    //                             dependency.getSupplier().add(data.m_manager->get<NamedElement>(supplierID));
-    //                         } else {
-    //                             dependency.getSupplier().add(supplierID);
-    //                         }
-    //                     }
-    //                 } else {
-    //                     throw UmlParserException("Invalid ID, must be a base64 url safe 28 character string!", data.m_path.string(), node["supplier"][i]);
-    //                 }
-    //             } else {
-    //                 throw UmlParserException("Invalid yaml node type for dependency client entry, must be a scalar!", data.m_path.string(), node["supplier"][i]);
-    //             }
-    //         }
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type for dependency supplier, must be a sequence!", data.m_path.string(), node["supplier"]);
-    //     }
-    // }
+    parseSequenceReference<NamedElement, Dependency>(node, data, "client", dependency, &Dependency::getClient);
+    parseSequenceReference<NamedElement, Dependency>(node, data, "supplier", dependency, &Dependency::getSupplier);
 }
 
 void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaData& data) {
@@ -3062,22 +3011,8 @@ void AddDeployedArtifactFunctor::operator()(Element& el) const {
 }
 
 void parseDeployment(YAML::Node node, Deployment& deployment, ParserMetaData& data) {
-    
     parseNamedElement(node, deployment, data);
-
-    // if (node["deployedArtifacts"]) {
-    //     if (node["deployedArtifacts"].IsSequence()) {
-    //         for (size_t i = 0; i < node["deployedArtifacts"].size(); i++) {
-    //             if (node["deployedArtifacts"][i].IsScalar()) {
-    //                 applyFunctor(data, ID::fromString(node["deployedArtifacts"][i].as<string>()), new AddDeployedArtifactFunctor(&deployment, node["deployedArtifacts"][i]));
-    //             } else {
-    //                 throw UmlParserException("Invalid yaml node type for deployment deployedArtifacts reference, must be a scalar!", data.m_path.string(), node["deployedArtifacts"][i]);
-    //             }
-    //         }
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type for deployment deployedArtifacts field, must be a sequence!", data.m_path.string(), node["deployedArtifacts"]);
-    //     }
-    // }
+    parseSequenceReference<DeployedArtifact, Deployment>(node, data, "deployedArtifacts", deployment, &Deployment::getDeployedArtifacts);
 }
 
 void emitDeployment(YAML::Emitter& emitter, Deployment& deployment, EmitterMetaData& data) {
@@ -3176,17 +3111,6 @@ void emitBehavioredClassifier(YAML::Emitter& emitter, BehavioredClassifier& clas
 
 void SetUtilizedElementFunctor::operator()(Element& el) const {
     m_el->as<Manifestation>().setUtilizedElement(&el.as<PackageableElement>());
-}
-
-void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMetaData& data) {
-    parseNamedElement(node, manifestation, data);
-    // if (node["utilizedElement"]) {
-    //     if (node["utilizedElement"].IsScalar()) {
-    //         applyFunctor(data, ID::fromString(node["utilizedElement"].as<string>()), new SetUtilizedElementFunctor(&manifestation, node["utilizedElement"]));
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type for manifestation utilized element field, must be a scalar!", data.m_path.string(), node["utilizedElement"]);
-    //     }
-    // }
 }
 
 void emitManifestation(YAML::Emitter& emitter, Manifestation& manifestation, EmitterMetaData& data) {
@@ -3419,6 +3343,11 @@ void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data)
 void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data) {
     parseElement(node, application, data);
     parseSingletonReference(node, data, "appliedProfile", application, &ProfileApplication::m_appliedProfile);
+}
+
+void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMetaData& data) {
+    parseNamedElement(node, manifestation, data);
+    parseSingletonReference(node, data, "utilizedElement", manifestation, &Manifestation::m_utilizedElement);
 }
 
 }

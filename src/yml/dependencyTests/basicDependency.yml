@@ -2,12 +2,15 @@
   package:
     packagedElements:
       - dependency:
+          name: dependency
           client:
             - 2ktf9NejSgq72oOAGlRBzxyDEV33
           supplier:
             - Yf7WfzUB0ugvec5jGUWNeq_A3ArD
       - package:
+          name: supplier
           id: Yf7WfzUB0ugvec5jGUWNeq_A3ArD
       - package:
+          name: client
           id: 2ktf9NejSgq72oOAGlRBzxyDEV33
 ...

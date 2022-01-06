@@ -440,24 +440,24 @@ namespace UML {
                 }
             };
             /**
-             * Gets all sets that are a superset of this one in bfs order and stored in a pointer to a vector, 
+             * Gets all sets that are a superset of this one in dfs order and stored in a pointer to a vector, 
              * responsibility of vector destruction is required
              * TODO: fix subsets method to make sure it will be 'proper' bfs order for algorithms
              * @return the pointer to a vector of all supersets of this set
              **/
             std::vector<AbstractSet*>* getAllSuperSets() {
-                std::list<AbstractSet*> queue;
+                std::list<AbstractSet*> stack;
                 std::vector<AbstractSet*>* allSuperSets = new std::vector<AbstractSet*>;
                 for (auto& subsetOf : m_superSets) {
-                    queue.push_back(subsetOf);
+                    stack.push_back(subsetOf);
                 }
-                while (!queue.empty()) {
-                    AbstractSet* front = queue.front();
-                    queue.pop_front();
+                while (!stack.empty()) {
+                    AbstractSet* front = stack.front();
+                    stack.pop_front();
                     if (std::find(allSuperSets->begin(), allSuperSets->end(), front) == allSuperSets->end()) {
                         allSuperSets->push_back(front);
                         for (auto& subsetOf : front->m_superSets) {
-                            queue.push_back(subsetOf);
+                            stack.push_front(subsetOf);
                         }
                     }
                 }

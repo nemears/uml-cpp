@@ -2,17 +2,18 @@
 #define BEHAVIORED_CLASSIFIER_H
 
 #include "uml/classifier.h"
+#include "yaml-cpp/yaml.h"
 
 namespace UML {
 
     class Behavior;
     namespace Parsers {
-        class SetClassifierBehavior;
+        void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, Parsers::ParserMetaData& data);
     }
 
     class BehavioredClassifier : virtual public Classifier {
 
-        friend class Parsers::SetClassifierBehavior;
+        friend void Parsers::parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, Parsers::ParserMetaData& data);
 
         protected:
             Set<Behavior, BehavioredClassifier> m_ownedBehaviors = Set<Behavior, BehavioredClassifier>(this);

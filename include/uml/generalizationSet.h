@@ -2,20 +2,21 @@
 #define UML_GENERALIZATION_SET_H
 
 #include "uml/packageableElement.h"
+#include "yaml-cpp/yaml.h"
 
 namespace UML {
 
     class Classifier;
     class Generalization;
     namespace Parsers {
-        class SetPowerType;
+        void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, Parsers::ParserMetaData& data);
     }
 
     class GeneralizationSet : public PackageableElement {
 
         friend class UmlManager;
         friend class Classifier;
-        friend class Parsers::SetPowerType;
+        friend void Parsers::parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, Parsers::ParserMetaData& data);
 
         protected:
             bool m_covering = false;

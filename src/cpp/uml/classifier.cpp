@@ -216,30 +216,6 @@ Set<GeneralizationSet, Classifier>& Classifier::getPowerTypeExtent() {
     return m_powerTypeExtent;
 }
 
-// Class* Classifier::getNestingClass() {
-//     return m_nestingClass.get();
-// }
-
-// Class& Classifier::getNestingClassRef() {
-//     return m_nestingClass.getRef();
-// }
-
-// ID Classifier::getNestingClassID() const {
-//     return m_nestingClass.id();
-// }
-
-// bool Classifier::hasNestingClass() const {
-//     return m_nestingClass.has();
-// }
-
-// void Classifier::setNestingClass(Class* clazz) {
-//     m_nestingClass.set(clazz);
-// }
-
-// void Classifier::setNestingClass(Class& clazz) {
-//     m_nestingClass.set(clazz);
-// }
-
 bool Classifier::isSubClassOf(ElementType eType) const {
     bool ret = Namespace::isSubClassOf(eType);
 

@@ -3089,19 +3089,6 @@ Behavior& determineAndParseBehavior(YAML::Node node, ParserMetaData& data) {
     }
 }
 
-void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, ParserMetaData& data) {
-    parseSequenceDefinitions(node, data, "ownedBehaviors", classifier, &BehavioredClassifier::getOwnedBehaviors, determineAndParseBehavior);
-    
-    // if (node["classifierBehavior"]) {
-    //     if (node["classifierBehavior"].IsScalar()) {
-    //         SetClassifierBehavior setClassifierBehavior;
-    //         parseSingleton(node["classifierBehavior"], data, classifier, &BehavioredClassifier::setClassifierBehavior, setClassifierBehavior);
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type for classifierBehavior reference, must be a scalar!", data.m_path.string(), node["classifierBehavior"]);
-    //     }
-    // }
-}
-
 void emitBehavioredClassifier(YAML::Emitter& emitter, BehavioredClassifier& classifier, EmitterMetaData& data) {
     emitSequence(emitter, "ownedBehaviors", data, classifier, &BehavioredClassifier::getOwnedBehaviors);
     if (classifier.hasClassifierBehavior()) {
@@ -3160,55 +3147,6 @@ void emitStereotype(YAML::Emitter& emitter, Stereotype& stereotype, EmitterMetaD
         emitter << YAML::Key << "profile" << YAML::Value << stereotype.getProfileID().string();
     }
     emitElementDefenitionEnd(emitter, ElementType::STEREOTYPE, stereotype);
-}
-
-void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, ParserMetaData& data) {
-    parseNamedElement(node, generalizationSet, data);
-    parseParameterableElement(node, generalizationSet, data);
-
-    if (node["covering"]) {
-        if (node["covering"].IsScalar()) {
-            generalizationSet.setCovering(node["covering"].as<bool>());
-        } else {
-            throw UmlParserException("Invalid yaml node type for covering field", data.m_path.string(), node["covering"]);
-        }
-    }
-
-    if (node["disjoint"]) {
-        if (node["disjoint"].IsScalar()) {
-            generalizationSet.setDisjoint(node["disjoint"].as<bool>());
-        } else {
-            throw UmlParserException("Invalid yaml node type for disjoint field", data.m_path.string(), node["disjoint"]);
-        }
-    }
-
-    // if (node["powerType"]) {
-    //     if (node["powerType"].IsScalar()) {
-    //         SetPowerType setPowerType;
-    //         parseSingleton(node["powerType"], data, generalizationSet, &GeneralizationSet::setPowerType, setPowerType);
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type for powerType field", data.m_path.string(), node["powerType"]);
-    //     }
-    // }
-
-    if (node["generalizations"]) {
-        if (node["generalizations"].IsSequence()) {
-            for (int i = 0; i < node["generalizations"].size(); i++) {
-                if (node["generalizations"][i].IsScalar()) {
-                    ID generalizationID = ID::fromString(node["generalizations"][i].as<string>());
-                    if (data.m_manager->UmlManager::loaded(generalizationID)) {
-                        generalizationSet.getGeneralizations().add(data.m_manager->get<Generalization>(generalizationID));
-                    } else {
-                        generalizationSet.getGeneralizations().add(generalizationID);
-                    }
-                } else {
-                    throw UmlParserException("Invalid yaml node type for generalizations entry, must be a scalar", data.m_path.string(), node["generalizations"][i]);
-                }
-            }
-        } else {
-            throw UmlParserException("Invalid yaml node type for generalizations field, must be a sequence", data.m_path.string(), node["generalizations"]);
-        }
-    }
 }
 
 void emitGeneralizationSet(YAML::Emitter& emitter, GeneralizationSet& generalizationSet, EmitterMetaData& data) {
@@ -3348,6 +3286,35 @@ void parseProfileApplication(YAML::Node node, ProfileApplication& application, P
 void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMetaData& data) {
     parseNamedElement(node, manifestation, data);
     parseSingletonReference(node, data, "utilizedElement", manifestation, &Manifestation::m_utilizedElement);
+}
+
+void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, ParserMetaData& data) {
+    parseSequenceDefinitions(node, data, "ownedBehaviors", classifier, &BehavioredClassifier::getOwnedBehaviors, determineAndParseBehavior);
+    parseSingletonReference(node, data, "classifierBehavior", classifier, &BehavioredClassifier::m_classifierBehavior);
+}
+
+void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, ParserMetaData& data) {
+    parseNamedElement(node, generalizationSet, data);
+    parseParameterableElement(node, generalizationSet, data);
+
+    if (node["covering"]) {
+        if (node["covering"].IsScalar()) {
+            generalizationSet.setCovering(node["covering"].as<bool>());
+        } else {
+            throw UmlParserException("Invalid yaml node type for covering field", data.m_path.string(), node["covering"]);
+        }
+    }
+
+    if (node["disjoint"]) {
+        if (node["disjoint"].IsScalar()) {
+            generalizationSet.setDisjoint(node["disjoint"].as<bool>());
+        } else {
+            throw UmlParserException("Invalid yaml node type for disjoint field", data.m_path.string(), node["disjoint"]);
+        }
+    }
+
+    parseSingletonReference(node, data, "powerType", generalizationSet, &GeneralizationSet::m_powerType);
+    parseSequenceReference<Generalization, GeneralizationSet>(node, data, "generalizations", generalizationSet, &GeneralizationSet::getGeneralizations);
 }
 
 }

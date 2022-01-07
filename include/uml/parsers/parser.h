@@ -132,6 +132,8 @@ namespace UML {
         void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data);
         void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data);
         void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMetaData& data);
+        void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, ParserMetaData& data);
+        void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, ParserMetaData& data);
 
         // anonymous functions
         namespace {
@@ -322,14 +324,12 @@ namespace UML {
             void emitArtifact(YAML::Emitter& emitter, Artifact& artifact, EmitterMetaData& data);
             void parseDeploymentTarget(YAML::Node node, DeploymentTarget& target, ParserMetaData& data);
             void emitDeploymentTarget(YAML::Emitter& emitter, DeploymentTarget& target, EmitterMetaData& data);
-            void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, ParserMetaData& data);
             void emitBehavioredClassifier(YAML::Emitter& emitter, BehavioredClassifier& classifier, EmitterMetaData& data);
             void emitManifestation(YAML::Emitter& emitter, Manifestation& Manifestation, EmitterMetaData& data);
             void parseParameterableElement(YAML::Node node, ParameterableElement& el, ParserMetaData& data);
             void emitParameterableElement(YAML::Emitter& emitter, ParameterableElement& el, EmitterMetaData& data);
             void parseStereotype(YAML::Node node, Stereotype& stereotype, ParserMetaData& data);
             void emitStereotype(YAML::Emitter& emitter, Stereotype& stereotype, EmitterMetaData& data);
-            void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, ParserMetaData& data);
             void emitGeneralizationSet(YAML::Emitter& emitter, GeneralizationSet& generalizationSet, EmitterMetaData& data);
         }
     }

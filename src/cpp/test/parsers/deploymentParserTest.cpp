@@ -105,34 +105,34 @@ TEST_F(DeploymentParserTest, emitDeploymentTargetTest) {
 }
 
 TEST_F(DeploymentParserTest, emitArtifactTest) {
-    std::cout << "!!!!!!!!!!!!!!!!!!!!!\nTODO: fix artifact/set so this test doesnt leak\n!!!!!!!!!!!!!!!!!!!!!!111" << std::endl;
-//     UmlManager m;
-//     Artifact& a = m.create<Artifact>();
-//     Property& p = m.create<Property>();
-//     Operation& o = m.create<Operation>();
-//     Artifact& n = m.create<Artifact>();
-//     a.setID("dzpr85AOkv_Z2mLs8cKLbHnR5DBq");
-//     p.setID("xr6rIEO8UBfSS2vlFWWNGPcNjVJv");
-//     o.setID("VdLJMfQodStjxL1RCzvyR6RLzCe5");
-//     n.setID("KWkfV0HFADssmGEBNUj1AwPB4SeC");
-//     a.getOwnedAttributes().add(p);
-//     a.getOwnedOperations().add(o);
-//     a.getNestedArtifacts().add(n);
-//     string expectedEmit = R""""(artifact:
-//   id: dzpr85AOkv_Z2mLs8cKLbHnR5DBq
-//   ownedAttributes:
-//     - property:
-//         id: xr6rIEO8UBfSS2vlFWWNGPcNjVJv
-//   ownedOperations:
-//     - operation:
-//         id: VdLJMfQodStjxL1RCzvyR6RLzCe5
-//   nestedArtifacts:
-//     - artifact:
-//         id: KWkfV0HFADssmGEBNUj1AwPB4SeC)"""";
-//     string generatedEmit;
-//     ASSERT_NO_THROW(generatedEmit = Parsers::emit(a));
-//     cout << generatedEmit << '\n';
-//     ASSERT_EQ(expectedEmit, generatedEmit);
+    // std::cout << "!!!!!!!!!!!!!!!!!!!!!\nTODO: fix artifact/set so this test doesnt leak\n!!!!!!!!!!!!!!!!!!!!!!111" << std::endl;
+    UmlManager m;
+    Artifact& a = m.create<Artifact>();
+    Property& p = m.create<Property>();
+    Operation& o = m.create<Operation>();
+    Artifact& n = m.create<Artifact>();
+    a.setID("dzpr85AOkv_Z2mLs8cKLbHnR5DBq");
+    p.setID("xr6rIEO8UBfSS2vlFWWNGPcNjVJv");
+    o.setID("VdLJMfQodStjxL1RCzvyR6RLzCe5");
+    n.setID("KWkfV0HFADssmGEBNUj1AwPB4SeC");
+    a.getOwnedAttributes().add(p);
+    a.getOwnedOperations().add(o);
+    a.getNestedArtifacts().add(n);
+    string expectedEmit = R""""(artifact:
+  id: dzpr85AOkv_Z2mLs8cKLbHnR5DBq
+  ownedAttributes:
+    - property:
+        id: xr6rIEO8UBfSS2vlFWWNGPcNjVJv
+  ownedOperations:
+    - operation:
+        id: VdLJMfQodStjxL1RCzvyR6RLzCe5
+  nestedArtifacts:
+    - artifact:
+        id: KWkfV0HFADssmGEBNUj1AwPB4SeC)"""";
+    string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(a));
+    cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(DeploymentParserTest, parseManifestationsTest) {

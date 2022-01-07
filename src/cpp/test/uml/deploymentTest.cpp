@@ -59,6 +59,44 @@ TEST_F(DeploymentTest, artifactOperationAndAttributeTest) {
     ASSERT_EQ(artifact.getOwnedOperations().size(), 0);
 }
 
+TEST_F(DeploymentTest, artifactWithAttributeOperationAndNestedArtifact) {
+    UmlManager m;
+    Artifact& artifact = m.create<Artifact>();
+    Property& property = m.create<Property>();
+    Operation& operation = m.create<Operation>();
+    Artifact& nestedArtifact = m.create<Artifact>();
+
+    operation.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
+    property.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
+
+    artifact.getOwnedAttributes().add(property);
+    artifact.getOwnedOperations().add(operation);
+    artifact.getNestedArtifacts().add(nestedArtifact);
+    ASSERT_EQ(artifact.getOwnedAttributes().size(), 1);
+    ASSERT_TRUE(artifact.getOwnedAttributes().contains(property));
+    ASSERT_EQ(artifact.getOwnedOperations().size(), 1);
+    ASSERT_TRUE(artifact.getOwnedOperations().contains(operation));
+    ASSERT_EQ(artifact.getNestedArtifacts().size(), 1);
+    ASSERT_TRUE(artifact.getNestedArtifacts().contains(nestedArtifact));
+    ASSERT_EQ(artifact.getAttributes().size(), 1);
+    ASSERT_TRUE(artifact.getAttributes().contains(property));
+    ASSERT_EQ(artifact.getFeatures().size(), 2);
+    ASSERT_TRUE(artifact.getFeatures().contains(property));
+    ASSERT_TRUE(artifact.getFeatures().contains(operation));
+    ASSERT_EQ(artifact.getOwnedMembers().size(), 3);
+    ASSERT_TRUE(artifact.getOwnedMembers().contains(property));
+    ASSERT_TRUE(artifact.getOwnedMembers().contains(operation));
+    ASSERT_TRUE(artifact.getOwnedMembers().contains(nestedArtifact));
+    ASSERT_EQ(artifact.getMembers().size(), 3);
+    ASSERT_TRUE(artifact.getMembers().contains(property));
+    ASSERT_TRUE(artifact.getMembers().contains(operation));
+    ASSERT_TRUE(artifact.getMembers().contains(nestedArtifact));
+    ASSERT_EQ(artifact.getOwnedElements().size(), 3);
+    ASSERT_TRUE(artifact.getOwnedElements().contains(property));
+    ASSERT_TRUE(artifact.getOwnedElements().contains(operation));
+    ASSERT_TRUE(artifact.getOwnedElements().contains(nestedArtifact));
+}
+
 // TEST_F(DeploymentTest, setArtifactTest) {
 //     UmlManager m;
 //     Artifact& artifact = m.create<Artifact>();

@@ -502,17 +502,37 @@ namespace UML {
                                 if (temp == (*it)->m_root) {
                                     (*it)->m_root = placeholderNode;
                                 }
-                                if (temp->m_parent) {
-                                    placeholderNode->m_parent = temp->m_parent;
-                                    if (temp->m_parent->m_left == temp) {
-                                        temp->m_parent->m_left = placeholderNode;
-                                    } else {
-                                        temp->m_parent->m_right = temp->m_parent->m_left;
-                                        temp->m_parent->m_left = placeholderNode;
-                                    }
+                                // find place to put placeholder
+                                SetNode* tempParent = temp->m_parent;
+                                while (tempParent && tempParent->m_guard > placeholderNode->m_guard) {
+                                    tempParent = tempParent->m_parent;
                                 }
-                                place(temp, placeholderNode);
-                                place(node, placeholderNode);
+                                bool swapRoot = false;
+                                if (tempParent) {
+                                    placeholderNode->m_parent = tempParent;
+                                    if (tempParent->m_left == temp) {
+                                        tempParent->m_left = placeholderNode;
+                                    } else {
+                                        tempParent->m_right = tempParent->m_left;
+                                        tempParent->m_left = placeholderNode;
+                                    }
+                                } else if (temp->m_parent) {
+                                    // edge case where we want to place placeholder if intermediate set
+                                    temp = temp->m_parent;
+                                    swapRoot = true;
+                                }
+                                if (swapRoot) {
+                                    placeholderNode->m_left = temp;
+                                    placeholderNode->m_right = node;
+                                    temp->m_parent = placeholderNode;
+                                    node->m_parent = placeholderNode;
+                                    if (temp == (*it)->m_root) {
+                                        (*it)->m_root = placeholderNode;
+                                    }
+                                } else {
+                                    place(temp, placeholderNode);
+                                    place(node, placeholderNode);
+                                }
                                 (*it)->m_size++;
                                 // set next sets roots to this placeholder until the root is different from temp
                                 std::vector<AbstractSet*>::iterator oIt = it + 1;
@@ -1289,32 +1309,37 @@ namespace UML {
                                 for (auto& subsetOf : *allSuperSets) {
                                     if (subsetOf->m_root == curr) {
                                         subsetOf->m_root = subsetOf->m_root->m_left;
-                                    } else if (currParent && 
-                                            subsetOf->m_root && 
-                                            currParent != subsetOf->search(currParent->m_id, subsetOf->m_root)) {
-                                        // this set owns this element through a different parent
-                                        // we must find it and set the pointer to curr to 0
-                                        SetNode* temp = subsetOf->m_root;
-                                        while (temp->m_left != curr && temp->m_right != curr) {
-                                            if (temp->m_right) {
-                                                if (curr->m_id > temp->m_id) {
+                                    } else if (currParent && subsetOf->m_root) {
+                                        // confirm that it is not a parent of the placeholder
+                                        SetNode* tempParent = currParent;
+                                        while (tempParent && tempParent != subsetOf->m_root) {
+                                            tempParent = tempParent->m_parent;
+                                        }
+                                        if (!tempParent) {
+                                            // this set owns this element through a different parent
+                                            // we must find it and set the pointer to curr to 0
+                                            SetNode* temp = subsetOf->m_root;
+                                            while (temp->m_left != curr && temp->m_right != curr) {
+                                                if (temp->m_right) {
+                                                    if (curr->m_id > temp->m_id) {
+                                                        temp = temp->m_left;
+                                                    } else {
+                                                        temp = temp->m_right;
+                                                    }
+                                                } else if (temp->m_left) {
                                                     temp = temp->m_left;
                                                 } else {
-                                                    temp = temp->m_right;
+                                                    // this is probably a diamond subset, we wont find it
+                                                    temp = 0;
+                                                    break;
                                                 }
-                                            } else if (temp->m_left) {
-                                                temp = temp->m_left;
-                                            } else {
-                                                // this is probably a diamond subset, we wont find it
-                                                temp = 0;
-                                                break;
                                             }
-                                        }
-                                        if (temp) {
-                                            if (temp->m_right == curr) {
-                                                temp->m_right = 0;
-                                            } else {
-                                                temp->m_left = 0;
+                                            if (temp) {
+                                                if (temp->m_right == curr) {
+                                                    temp->m_right = 0;
+                                                } else {
+                                                    temp->m_left = 0;
+                                                }
                                             }
                                         }
                                     }

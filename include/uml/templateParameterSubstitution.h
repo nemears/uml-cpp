@@ -3,22 +3,17 @@
 
 #include "element.h"
 #include "singleton.h"
-#include "yaml-cpp/yaml.h"
 
 namespace UML {
 
     class TemplateBinding;
     class TemplateParameter;
     class ParameterableElement;
-    namespace Parsers {
-        void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, Parsers::ParserMetaData& data);
-    }
 
     class TemplateParameterSubstitution : public Element {
 
         friend class UmlManager;
         friend class TemplateBinding;
-        friend void Parsers::parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, Parsers::ParserMetaData& data);
 
         private:
             Singleton<TemplateParameter, TemplateParameterSubstitution> m_formal = Singleton<TemplateParameter, TemplateParameterSubstitution>(this);
@@ -45,24 +40,28 @@ namespace UML {
             bool hasFormal() const;
             void setFormal(TemplateParameter& formal);
             void setFormal(TemplateParameter* formal);
+            void setFormal(ID id);
             TemplateBinding* getTemplateBinding();
             TemplateBinding& getTemplateBindingRef();
             ID getTemplateBindingID() const;
             bool hasTemplateBinding() const;
             void setTemplateBinding(TemplateBinding& binding);
             void setTemplateBinding(TemplateBinding* binding);
+            void setTemplateBinding(ID id);
             ParameterableElement* getActual();
             ParameterableElement& getActualRef();
             ID getActualID() const;
             bool hasActual() const;
             void setActual(ParameterableElement& actual);
             void setActual(ParameterableElement* actual);
+            void setActual(ID id);
             ParameterableElement* getOwnedActual();
             ParameterableElement& getOwnedActualRef();
             ID getOwnedActualID() const;
             bool hasOwnedActual() const;
             void setOwnedActual(ParameterableElement& actual);
             void setOwnedActual(ParameterableElement* actual);
+            void setOwnedActual(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::TEMPLATE_PARAMETER_SUBSTITUTION;

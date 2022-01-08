@@ -4,23 +4,18 @@
 #include "packageableElement.h"
 #include "deployedArtifact.h"
 #include "deploymentTarget.h"
-#include "yaml-cpp/yaml.h"
 
 namespace UML{
 
     class Slot;
     class Classifier;
     class InstanceValue;
-    namespace Parsers {
-        void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Parsers::ParserMetaData& data);
-    }
 
     class InstanceSpecification : public PackageableElement , public DeployedArtifact, public DeploymentTarget {
 
         friend class UmlManager;
         friend class Classifier;
         friend class InstanceValue;
-        friend void Parsers::parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Parsers::ParserMetaData& data);
 
         protected:
             bool m_setFlag = false;
@@ -58,6 +53,7 @@ namespace UML{
             bool hasSpecification() const;
             void setSpecification(ValueSpecification* specification);
             void setSpecification(ValueSpecification& specification);
+            void setSpecification(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::INSTANCE_SPECIFICATION;

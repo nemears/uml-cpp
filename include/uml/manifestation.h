@@ -2,19 +2,13 @@
 #define MANIFESTATION_H
 
 #include "abstraction.h"
-#include "yaml-cpp/yaml.h"
 
 namespace UML {
-
-    namespace Parsers {
-        void parseManifestation(YAML::Node node, Manifestation& manifestation, Parsers::ParserMetaData& data);
-    }
 
     class Manifestation : public Abstraction {
 
         friend class UmlManager;
-        friend void Parsers::parseManifestation(YAML::Node node, Manifestation& manifestation, Parsers::ParserMetaData& data);
-
+        
         protected:
             Singleton<PackageableElement, Manifestation> m_utilizedElement = Singleton<PackageableElement, Manifestation>(this);
             void referencingReleased(ID id) override;
@@ -33,6 +27,7 @@ namespace UML {
             bool hasUtilizedElement() const;
             void setUtilizedElement(PackageableElement& utilizedElement);
             void setUtilizedElement(PackageableElement* utilizedElement);
+            void setUtilizedElement(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::MANIFESTATION;

@@ -35,6 +35,7 @@ namespace UML{
             bool hasType() const;
             virtual void setType(Type* type);
             void setType(Type& type);
+            void setType(ID id);
             TypedElement& operator=(TypedElement&&) {
                 return *this;
             };

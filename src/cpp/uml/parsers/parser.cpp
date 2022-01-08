@@ -341,15 +341,15 @@ template <class T = Element> T& parseDefinition(YAML::Node node, ParserMetaData&
 }
 
 template <class T = Element, class U = Element>
-void parseSingletonDefinition(YAML::Node node, ParserMetaData& data, std::string key, U& owner, T& (*parser)(YAML::Node, ParserMetaData&), Singleton<T,U> U::*singletonSignature) {
+void parseSingletonDefinition(YAML::Node node, ParserMetaData& data, std::string key, U& owner, T& (*parser)(YAML::Node, ParserMetaData&), void (U::*elSignature)(T&)) {
     if (node[key]) {
         if (node[key].IsMap()) {
-            (owner.*singletonSignature).set((*parser)(node[key], data));
+            (owner.*elSignature)((*parser)(node[key], data));
         } else {
             throw UmlParserException("TODO, parse path", data.m_path.string(), node[key]);
         }
     }
-}
+};
 
 // Helper function for parsing scope in parseNode
 template <class T = Element, class U = Element> void parseSingleton(YAML::Node node, ParserMetaData& data, U& el, void (U::*setter)(T&), parseAndSetSingletonFunctor<T, U>& func) {
@@ -623,10 +623,9 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (ret && data.m_strategy == ParserStrategy::INDIVIDUAL) {
-        // if (node["owningPackage"]) {
-        //     SetOwningPackage setOwningPackage;
-        //     parseSingleton(node["owningPackage"], data, ret->as<PackageableElement>(), &PackageableElement::setOwningPackage, setOwningPackage);
-        // }
+        if (node["owningPackage"]) {
+            parseSingletonReference(node, data, "owningPackage", ret->as<PackageableElement>(), &PackageableElement::setOwningPackage, &PackageableElement::setOwningPackage);
+        }
         // if (node["receivingPackage"]) {
         //     ID receivingPackageID = ID::fromString(node["receivingPackage"].as<string>());
         //     if (data.m_manager->loaded(receivingPackageID)) {
@@ -1037,184 +1036,114 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
 }
 
 void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
-    // if (data.m_strategy == EmitterStrategy::INDIVIDUAL) {
-    //     if (el.isSubClassOf(ElementType::PACKAGEABLE_ELEMENT)) {
-    //         if (el.as<PackageableElement>().hasOwningPackage()) {
-    //             emitter << YAML::Key << "owningPackage" << el.as<PackageableElement>().getOwningPackageID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::PROFILE_APPLICATION)) {
-    //         if (el.as<ProfileApplication>().hasApplyingPackage()) {
-    //             emitter << YAML::Key << "applyingPackage" << YAML::Value << el.as<ProfileApplication>().getApplyingPackageID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::PACKAGE_MERGE)) {
-    //         if (el.as<PackageMerge>().hasReceivingPackage()) {
-    //             emitter << YAML::Key << "receivingPackage" << el.as<PackageMerge>().getReceivingPackageID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::EXTENSION_END)) {
-    //         if (el.as<ExtensionEnd>().hasExtension()) {
-    //             emitter << YAML::Key << "extension" << el.as<ExtensionEnd>().getExtensionID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::PROPERTY)) {
-    //         if (el.as<Property>().hasClass()) {
-    //             emitter << YAML::Key << "class" << el.as<Property>().getClassID().string();
-    //             return;
-    //         }
-    //         if (el.as<Property>().hasDataType()) {
-    //             emitter << YAML::Key << "dataType" << YAML::Value << el.as<Property>().getDataTypeID().string();
-    //             return;
-    //         }   
-    //         if (el.as<Property>().hasArtifact()) {
-    //             emitter << YAML::Key << "artifact" << YAML::Value << el.as<Property>().getArtifactID().string();
-    //             return;
-    //         }
-    //         if (el.as<Property>().hasOwningAssociation()) {
-    //             emitter << YAML::Key << "owningAssociation" << YAML::Value << el.as<Property>().getOwningAssociationID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::VALUE_SPECIFICATION)) {
-    //         if (el.hasOwner()) {
-    //             if (el.getOwnerRef().isSubClassOf(ElementType::PROPERTY)) {
-    //                 if (el.getOwnerRef().as<Property>().getDefaultValueID() == el.getID()) {
-    //                     emitter << YAML::Key << "owningProperty" << YAML::Value << el.getOwnerID().string();
-    //                     return;
-    //                 }
-    //             }
-    //             if (el.as<ValueSpecification>().hasOwningSlot()) {
-    //                 emitter << YAML::Key << "owningSlot" << YAML::Value << el.as<ValueSpecification>().getOwningSlotID().string();
-    //                 return;
-    //             }
-    //             if (el.as<ValueSpecification>().hasOwningInstanceSpec()) {
-    //                 emitter << YAML::Key << "owningInstanceSpec" << YAML::Value << el.as<ValueSpecification>().getOwningInstanceSpecID().string();
-    //                 return;
-    //             }
-    //             if (el.as<ValueSpecification>().hasExpression()) {
-    //                 emitter << YAML::Key << "expression" << YAML::Value << el.as<ValueSpecification>().getExpressionID().string();
-    //                 return;
-    //             }
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::GENERALIZATION)) {
-    //         if (el.as<Generalization>().hasSpecific()) {
-    //             emitter << YAML::Key << "specific" << YAML::Value << el.as<Generalization>().getSpecificID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::CLASSIFIER)) {
-    //         if (el.as<Classifier>().hasNestingClass()) {
-    //             emitter << YAML::Key << "nestingClass" << YAML::Value << el.as<Classifier>().getNestingClassID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::OPERATION)) {
-    //         if (el.as<Operation>().hasClass()) {
-    //             emitter << YAML::Key << "class" << YAML::Value << el.as<Operation>().getClassID().string();
-    //             return;
-    //         }
-    //         if (el.as<Operation>().hasDataType()) {
-    //             emitter << YAML::Key << "dataType" << YAML::Value << el.as<Operation>().getDataTypeID().string();
-    //             return;
-    //         }
-    //         if (el.as<Operation>().hasArtifact()) {
-    //             emitter << YAML::Key << "artifact" << YAML::Value << el.as<Operation>().getArtifactID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::COMMENT)) {
-    //         if (el.as<Comment>().hasOwningElement()) {
-    //             emitter << YAML::Key << "owningElement" << YAML::Value << el.as<Comment>().getOwningElementID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::ARTIFACT)) {
-    //         if (el.as<Artifact>().hasArtifact()) {
-    //             emitter << YAML::Key << "owningArtifact" << YAML::Value << el.as<Artifact>().getArtifactID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::MANIFESTATION)) {
-    //         if (el.as<Manifestation>().hasArtifact()) {
-    //             emitter << YAML::Key << "artifact" << YAML::Value << el.as<Manifestation>().getArtifactID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::SLOT)) {
-    //         if (el.as<Slot>().hasOwningInstance()) {
-    //             emitter << YAML::Key << "owningInstance" << YAML::Value << el.as<Slot>().getOwningInstanceID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::PARAMETER)) {
-    //         if (el.as<Parameter>().hasOperation()) {
-    //             emitter << YAML::Key << "operation" << YAML::Value << el.as<Parameter>().getOperationID().string();
-    //             return;
-    //         }
-    //         if (el.as<Parameter>().hasBehavior()) {
-    //             emitter << YAML::Key << "behavior" << YAML::Value << el.as<Parameter>().getBehaviorID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::BEHAVIOR)) {
-    //         if (el.as<Behavior>().hasBehavioredClassifier()) {
-    //             emitter << YAML::Key << "behavioredClassifier" << YAML::Value << el.as<Behavior>().getBehavioredClassifierID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::ENUMERATION_LITERAL)) {
-    //         if (el.as<EnumerationLiteral>().hasEnumeration()) {
-    //             emitter << YAML::Key << "enumeration" << YAML::Value << el.as<EnumerationLiteral>().getEnumerationID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::TEMPLATE_SIGNATURE)) {
-    //         if (el.as<TemplateSignature>().hasTemplate()) {
-    //             emitter << YAML::Key << "template" << YAML::Value << el.as<TemplateSignature>().getTemplateID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER)) {
-    //         if (el.as<TemplateParameter>().hasSignature()) {
-    //             emitter << YAML::Key << "signature" << YAML::Value << el.as<TemplateParameter>().getSignatureID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::TEMPLATE_BINDING)) {
-    //         if (el.as<TemplateBinding>().hasBoundElement()) {
-    //             emitter << YAML::Key << "boundElement" << YAML::Value << el.as<TemplateBinding>().getBoundElementID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER_SUBSTITUTION)) {
-    //         if (el.as<TemplateParameterSubstitution>().hasTemplateBinding()) {
-    //             emitter << YAML::Key << "templateBinding" << YAML::Value << el.as<TemplateParameterSubstitution>().getTemplateBindingID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::DEPLOYMENT)) {
-    //         if (el.as<Deployment>().hasLocation()) {
-    //             emitter << YAML::Key << "location" << YAML::Value << el.as<Deployment>().getLocationID().string();
-    //             return;
-    //         }
-    //     }
-    //     if (el.isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
-    //         if (el.as<ParameterableElement>().hasOwningTemplateParameter()) {
-    //             emitter << YAML::Key << "owningTemplateParameter" << YAML::Value << el.as<ParameterableElement>().getOwningTemplateParameterID().string();
-    //             return;
-    //         }
-    //         else if (el.hasOwner()) { // special case
-    //             emitter << YAML::Key << "owner" << YAML::Value << el.getOwnerID().string();
-    //             return;
-    //         }
-    //     }
-    // }
+    if (data.m_strategy == EmitterStrategy::INDIVIDUAL) {
+        if (el.isSubClassOf(ElementType::PACKAGEABLE_ELEMENT)) {
+            if (el.as<PackageableElement>().hasOwningPackage()) {
+                emitter << YAML::Key << "owningPackage" << el.as<PackageableElement>().getOwningPackageID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::PROFILE_APPLICATION)) {
+            if (el.as<ProfileApplication>().hasApplyingPackage()) {
+                emitter << YAML::Key << "applyingPackage" << YAML::Value << el.as<ProfileApplication>().getApplyingPackageID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::PACKAGE_MERGE)) {
+            if (el.as<PackageMerge>().hasReceivingPackage()) {
+                emitter << YAML::Key << "receivingPackage" << el.as<PackageMerge>().getReceivingPackageID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::PROPERTY)) {
+            if (el.as<Property>().hasClass()) {
+                emitter << YAML::Key << "class" << el.as<Property>().getClassID().string();
+                return;
+            }
+            if (el.as<Property>().hasDataType()) {
+                emitter << YAML::Key << "dataType" << YAML::Value << el.as<Property>().getDataTypeID().string();
+                return;
+            }
+            if (el.as<Property>().hasOwningAssociation()) {
+                emitter << YAML::Key << "owningAssociation" << YAML::Value << el.as<Property>().getOwningAssociationID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::GENERALIZATION)) {
+            if (el.as<Generalization>().hasSpecific()) {
+                emitter << YAML::Key << "specific" << YAML::Value << el.as<Generalization>().getSpecificID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::OPERATION)) {
+            if (el.as<Operation>().hasClass()) {
+                emitter << YAML::Key << "class" << YAML::Value << el.as<Operation>().getClassID().string();
+                return;
+            }
+            if (el.as<Operation>().hasDataType()) {
+                emitter << YAML::Key << "dataType" << YAML::Value << el.as<Operation>().getDataTypeID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::SLOT)) {
+            if (el.as<Slot>().hasOwningInstance()) {
+                emitter << YAML::Key << "owningInstance" << YAML::Value << el.as<Slot>().getOwningInstanceID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::PARAMETER)) {
+            if (el.as<Parameter>().hasOperation()) {
+                emitter << YAML::Key << "operation" << YAML::Value << el.as<Parameter>().getOperationID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::ENUMERATION_LITERAL)) {
+            if (el.as<EnumerationLiteral>().hasEnumeration()) {
+                emitter << YAML::Key << "enumeration" << YAML::Value << el.as<EnumerationLiteral>().getEnumerationID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::TEMPLATE_SIGNATURE)) {
+            if (el.as<TemplateSignature>().hasTemplate()) {
+                emitter << YAML::Key << "template" << YAML::Value << el.as<TemplateSignature>().getTemplateID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER)) {
+            if (el.as<TemplateParameter>().hasSignature()) {
+                emitter << YAML::Key << "signature" << YAML::Value << el.as<TemplateParameter>().getSignatureID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::TEMPLATE_BINDING)) {
+            if (el.as<TemplateBinding>().hasBoundElement()) {
+                emitter << YAML::Key << "boundElement" << YAML::Value << el.as<TemplateBinding>().getBoundElementID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER_SUBSTITUTION)) {
+            if (el.as<TemplateParameterSubstitution>().hasTemplateBinding()) {
+                emitter << YAML::Key << "templateBinding" << YAML::Value << el.as<TemplateParameterSubstitution>().getTemplateBindingID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::DEPLOYMENT)) {
+            if (el.as<Deployment>().hasLocation()) {
+                emitter << YAML::Key << "location" << YAML::Value << el.as<Deployment>().getLocationID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
+            if (el.as<ParameterableElement>().hasOwningTemplateParameter()) {
+                emitter << YAML::Key << "owningTemplateParameter" << YAML::Value << el.as<ParameterableElement>().getOwningTemplateParameterID().string();
+                return;
+            }
+            else if (el.hasOwner()) { // special case
+                emitter << YAML::Key << "owner" << YAML::Value << el.getOwnerID().string();
+                return;
+            }
+        }
+    }
 }
 
 template <class T = Element, class U = Element, class S = Set<T,U>> void emitSequence(YAML::Emitter& emitter, string sequenceName, EmitterMetaData& data, U& el, S& (U::* sequenceMethod)()) {
@@ -3172,7 +3101,7 @@ void emitGeneralizationSet(YAML::Emitter& emitter, GeneralizationSet& generaliza
 
 void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data) {
     parseNamedElement(node, el, data);
-    parseSingletonReference(node, data, "type", el, &TypedElement::m_type);
+    parseSingletonReference(node, data, "type", el, &TypedElement::setType, &TypedElement::setType);
 }
 
 void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
@@ -3185,24 +3114,24 @@ void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
 
 void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data) {
     parseElement(node, general, data);
-    parseSingletonReference(node, data, "general", general, &Generalization::m_general);
+    parseSingletonReference(node, data, "general", general, &Generalization::setGeneral, &Generalization::setGeneral);
     parseSequenceReference<GeneralizationSet, Generalization>(node, data, "generalizationSets", general, &Generalization::getGeneralizationSets);
 }
 
 void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data) {
     parseElement(node, merge, data);
-    parseSingletonReference(node, data, "mergedPackage", merge, &PackageMerge::m_mergedPackage);
+    parseSingletonReference(node, data, "mergedPackage", merge, &PackageMerge::setMergedPackage, &PackageMerge::setMergedPackage);
 }
 
 void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
     parseElement(node, slot, data);
-    parseSingletonReference(node, data, "definingFeature", slot, &Slot::m_definingFeature);
+    parseSingletonReference(node, data, "definingFeature", slot, &Slot::setDefiningFeature, &Slot::setDefiningFeature);
     parseSequenceDefinitions(node, data, "values", slot, &Slot::getValues, &determineAndParseValueSpecification);
 }
 
 void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data) {
     parseTypedElement(node, val, data);
-    parseSingletonReference(node, data, "instance", val, &InstanceValue::m_instance);
+    parseSingletonReference(node, data, "instance", val, &InstanceValue::setInstance, &InstanceValue::setInstance);
 }
 
 void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data) {
@@ -3211,7 +3140,7 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
     parseParameterableElement(node, inst, data);
     parseSequenceReference<Classifier, InstanceSpecification>(node, data, "classifiers", inst, &InstanceSpecification::getClassifiers);
     parseSequenceDefinitions(node, data, "slots", inst, &InstanceSpecification::getSlots, determineAndParseSlot);
-    parseSingletonDefinition(node, data, "specification", inst, determineAndParseValueSpecification, &InstanceSpecification::m_specification);
+    parseSingletonDefinition<ValueSpecification, InstanceSpecification>(node, data, "specification", inst, determineAndParseValueSpecification, &InstanceSpecification::setSpecification);
 }
 
 void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
@@ -3235,40 +3164,40 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
         }
     }
 
-    parseSingletonDefinition(node, data, "defaultValue", prop, determineAndParseValueSpecification, &Property::m_defaultValue);
+    parseSingletonDefinition(node, data, "defaultValue", prop, determineAndParseValueSpecification, &Property::setDefaultValue);
     parseSequenceReference<Property, Property>(node, data, "redefinedProperties", prop, &Property::getRedefinedProperties);
-    parseSingletonReference(node, data, "association", prop, &Property::m_association);
+    parseSingletonReference(node, data, "association", prop, &Property::setAssociation, &Property::setAssociation);
 }
 
 void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data) {
-    parseSingletonDefinition(node, data, "templateSignature", el, determineAndParseTemplateSignature, &TemplateableElement::m_ownedTemplateSignature);
+    parseSingletonDefinition(node, data, "templateSignature", el, determineAndParseTemplateSignature, &TemplateableElement::setOwnedTemplateSignature);
     parseSequenceDefinitions(node, data, "templateBindings", el, &TemplateableElement::getTemplateBindings, determineAndParseTemplateBinding);
 }
 
 void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data) {
     parseElement(node, parameter, data);
-    parseSingletonDefinition(node, data, "ownedDefault", parameter, determinAndParseParameterableElement, &TemplateParameter::m_ownedDefault);
-    parseSingletonReference(node, data, "default", parameter, &TemplateParameter::m_default);
-    parseSingletonDefinition(node, data, "ownedParameteredElement", parameter, determinAndParseParameterableElement, &TemplateParameter::m_ownedParameteredElement);
-    parseSingletonReference(node, data, "parameteredElement", parameter, &TemplateParameter::m_parameteredElement);
+    parseSingletonDefinition(node, data, "ownedDefault", parameter, determinAndParseParameterableElement, &TemplateParameter::setOwnedDefault);
+    parseSingletonReference(node, data, "default", parameter, &TemplateParameter::setDefault, &TemplateParameter::setDefault);
+    parseSingletonDefinition(node, data, "ownedParameteredElement", parameter, determinAndParseParameterableElement, &TemplateParameter::setOwnedParameteredElement);
+    parseSingletonReference(node, data, "parameteredElement", parameter, &TemplateParameter::setParameteredElement, &TemplateParameter::setParameteredElement);
 }
 
 void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaData& data) {
     parseElement(node, binding, data);
-    parseSingletonReference(node, data, "signature", binding, &TemplateBinding::m_signature);
+    parseSingletonReference(node, data, "signature", binding, &TemplateBinding::setSignature, &TemplateBinding::setSignature);
     parseSequenceDefinitions(node, data, "parameterSubstitution", binding, &TemplateBinding::getParameterSubstitution, determineAndParseTemplateParameterSubstitution);
 }
 
 void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data) {
     parseElement(node, sub, data);
-    parseSingletonReference(node, data, "formal", sub, &TemplateParameterSubstitution::m_formal);
-    parseSingletonDefinition(node, data, "ownedActual", sub, determinAndParseParameterableElement, &TemplateParameterSubstitution::m_ownedActual);
-    parseSingletonReference(node, data, "actual", sub, &TemplateParameterSubstitution::m_actual);
+    parseSingletonReference(node, data, "formal", sub, &TemplateParameterSubstitution::setFormal, &TemplateParameterSubstitution::setFormal);
+    parseSingletonDefinition(node, data, "ownedActual", sub, determinAndParseParameterableElement, &TemplateParameterSubstitution::setOwnedActual);
+    parseSingletonReference(node, data, "actual", sub, &TemplateParameterSubstitution::setActual, &TemplateParameterSubstitution::setActual);
 }
 
 void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data) {
     parseClassifier(node, extension, data);
-    parseSingletonDefinition(node, data, "ownedEnd", extension, determineAndParseOwnedEnd, &Extension::m_ownedEnd);
+    parseSingletonDefinition(node, data, "ownedEnd", extension, determineAndParseOwnedEnd, &Extension::setOwnedEnd);
     if (node["metaClass"]) {
         if (node["metaClass"].IsScalar()) {
             extension.setMetaClass(elementTypeFromString(node["metaClass"].as<string>()));
@@ -3280,17 +3209,17 @@ void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data)
 
 void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data) {
     parseElement(node, application, data);
-    parseSingletonReference(node, data, "appliedProfile", application, &ProfileApplication::m_appliedProfile);
+    parseSingletonReference(node, data, "appliedProfile", application, &ProfileApplication::setAppliedProfile, &ProfileApplication::setAppliedProfile);
 }
 
 void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMetaData& data) {
     parseNamedElement(node, manifestation, data);
-    parseSingletonReference(node, data, "utilizedElement", manifestation, &Manifestation::m_utilizedElement);
+    parseSingletonReference(node, data, "utilizedElement", manifestation, &Manifestation::setUtilizedElement, &Manifestation::setUtilizedElement);
 }
 
 void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, ParserMetaData& data) {
     parseSequenceDefinitions(node, data, "ownedBehaviors", classifier, &BehavioredClassifier::getOwnedBehaviors, determineAndParseBehavior);
-    parseSingletonReference(node, data, "classifierBehavior", classifier, &BehavioredClassifier::m_classifierBehavior);
+    parseSingletonReference(node, data, "classifierBehavior", classifier, &BehavioredClassifier::setClassifierBehavior, &BehavioredClassifier::setClassifierBehavior);
 }
 
 void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, ParserMetaData& data) {
@@ -3313,7 +3242,7 @@ void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSe
         }
     }
 
-    parseSingletonReference(node, data, "powerType", generalizationSet, &GeneralizationSet::m_powerType);
+    parseSingletonReference(node, data, "powerType", generalizationSet, &GeneralizationSet::setPowerType, &GeneralizationSet::setPowerType);
     parseSequenceReference<Generalization, GeneralizationSet>(node, data, "generalizations", generalizationSet, &GeneralizationSet::getGeneralizations);
 }
 

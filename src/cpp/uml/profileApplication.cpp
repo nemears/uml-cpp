@@ -90,6 +90,10 @@ void ProfileApplication::setAppliedProfile(Profile& profile) {
     m_appliedProfile.set(profile);
 }
 
+void ProfileApplication::setAppliedProfile(ID id) {
+    m_appliedProfile.set(id);
+}
+
 Package* ProfileApplication::getApplyingPackage() {
     return m_applyingPackage.get();
 }
@@ -112,6 +116,10 @@ void ProfileApplication::setApplyingPackage(Package* pckg) {
 
 void ProfileApplication::setApplyingPackage(Package& pckg) {
     m_applyingPackage.set(pckg);
+}
+
+void ProfileApplication::setApplyingPackage(ID id) {
+    m_applyingPackage.set(id);
 }
 
 bool ProfileApplication::isSubClassOf(ElementType eType) const {

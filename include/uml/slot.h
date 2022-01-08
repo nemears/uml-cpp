@@ -3,21 +3,17 @@
 
 #include "uml/set.h"
 #include "uml/singleton.h"
-#include "yaml-cpp/yaml.h"
 
 namespace UML {
 
     class InstanceSpecification;
     class StructuralFeature;
     class ValueSpecification;
-    namespace Parsers {
-        void parseSlot(YAML::Node node, Slot& slot, Parsers::ParserMetaData& data);
-    }
 
     class Slot : public Element {
         friend class UmlManager;
         friend class InstanceSpecification;
-        friend void Parsers::parseSlot(YAML::Node node, Slot& slot, Parsers::ParserMetaData& data);
+        
         protected:
             Singleton<StructuralFeature, Slot> m_definingFeature = Singleton<StructuralFeature, Slot>(this);
             Set<ValueSpecification, Slot> m_values = Set<ValueSpecification, Slot>(this);
@@ -41,12 +37,14 @@ namespace UML {
             bool hasDefiningFeature() const;
             void setDefiningFeature(StructuralFeature& definingFeature);
             void setDefiningFeature(StructuralFeature* definingFeature);
+            void setDefiningFeature(ID id);
             InstanceSpecification* getOwningInstance();
             InstanceSpecification& getOwningInstanceRef();
             ID getOwningInstanceID() const;
             bool hasOwningInstance() const;
             void setOwningInstance(InstanceSpecification& inst);
             void setOwningInstance(InstanceSpecification* inst);
+            void setOwningInstance(ID id);
             class NullDefiningFeatureException : public std::exception {
                 public:
                     virtual const char* what() const throw() {

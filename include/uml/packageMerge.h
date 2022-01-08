@@ -3,20 +3,15 @@
 
 #include "directedRelationship.h"
 #include "singleton.h"
-#include "yaml-cpp/yaml.h"
 
 namespace UML {
     
     class Package;
-    namespace Parsers {
-        void parsePackageMerge(YAML::Node node, PackageMerge& merge, Parsers::ParserMetaData& data);
-    }
 
     class PackageMerge : public DirectedRelationship {
 
         friend class Package;
         friend class UmlManager;
-        friend void Parsers::parsePackageMerge(YAML::Node node, PackageMerge& merge, Parsers::ParserMetaData& data);
 
         protected:
             Singleton<Package, PackageMerge> m_receivingPackage = Singleton<Package, PackageMerge>(this);
@@ -49,12 +44,14 @@ namespace UML {
             bool hasReceivingPackage() const;
             void setReceivingPackage(Package& receive);
             void setReceivingPackage(Package* receive);
+            void setReceivingPackage(ID id);
             Package* getMergedPackage();
             Package& getMergedPackageRef();
             ID getMergedPackageID() const;
             bool hasMergedPackage() const;
             void setMergedPackage(Package& merge);
             void setMergedPackage(Package* merge);
+            void setMergedPackage(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PACKAGE_MERGE;

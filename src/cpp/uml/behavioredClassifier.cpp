@@ -80,6 +80,10 @@ void BehavioredClassifier::setClassifierBehavior(Behavior& behavior) {
     m_classifierBehavior.set(behavior);
 }
 
+void BehavioredClassifier::setClassifierBehavior(ID id) {
+    m_classifierBehavior.set(id);
+}
+
 bool BehavioredClassifier::isSubClassOf(ElementType eType) const {
     bool ret = Classifier::isSubClassOf(eType);
 

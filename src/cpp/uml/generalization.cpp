@@ -111,6 +111,10 @@ void Generalization::setGeneral(Classifier& general) {
     m_general.set(general);
 }
 
+void Generalization::setGeneral(ID id) {
+    m_general.set(id);
+}
+
 Classifier* Generalization::getSpecific() {
     return m_specific.get();
 }
@@ -133,6 +137,10 @@ void Generalization::setSpecific(Classifier* specific) {
 
 void Generalization::setSpecific(Classifier& specific) {
     m_specific.set(specific);
+}
+
+void Generalization::setSpecific(ID id) {
+    m_specific.set(id);
 }
 
 Set<GeneralizationSet, Generalization>& Generalization::getGeneralizationSets() {

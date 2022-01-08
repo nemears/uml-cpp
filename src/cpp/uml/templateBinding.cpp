@@ -99,6 +99,10 @@ void TemplateBinding::setBoundElement(TemplateableElement& el) {
     m_boundElement.set(el);
 }
 
+void TemplateBinding::setBoundElement(ID id) {
+    m_boundElement.set(id);
+}
+
 TemplateSignature* TemplateBinding::getSignature() {
     return m_signature.get();
 }
@@ -121,6 +125,10 @@ void TemplateBinding::setSignature(TemplateSignature* signature) {
 
 void TemplateBinding::setSignature(TemplateSignature& signature) {
     m_signature.set(signature);
+}
+
+void TemplateBinding::setSignature(ID id) {
+    m_signature.set(id);
 }
 
 Set<TemplateParameterSubstitution, TemplateBinding>& TemplateBinding::getParameterSubstitution() {

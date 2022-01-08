@@ -98,6 +98,10 @@ void Slot::setDefiningFeature(StructuralFeature& definingFeature) {
     m_definingFeature.set(definingFeature);
 }
 
+void Slot::setDefiningFeature(ID id) {
+    m_definingFeature.set(id);
+}
+
 InstanceSpecification* Slot::getOwningInstance() {
     return m_owningInstance.get();
 }
@@ -120,6 +124,10 @@ void Slot::setOwningInstance(InstanceSpecification* inst) {
 
 void Slot::setOwningInstance(InstanceSpecification& inst) {
     m_owningInstance.set(inst);
+}
+
+void Slot::setOwningInstance(ID id) {
+    m_owningInstance.set(id);
 }
 
 bool Slot::isSubClassOf(ElementType eType) const {

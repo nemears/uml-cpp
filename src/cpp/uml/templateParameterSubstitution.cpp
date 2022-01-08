@@ -111,6 +111,10 @@ void TemplateParameterSubstitution::setFormal(TemplateParameter& formal) {
     m_formal.set(formal);
 }
 
+void TemplateParameterSubstitution::setFormal(ID id) {
+    m_formal.set(id);
+}
+
 TemplateBinding* TemplateParameterSubstitution::getTemplateBinding() {
     return m_templateBinding.get();
 }
@@ -133,6 +137,10 @@ void TemplateParameterSubstitution::setTemplateBinding(TemplateBinding* bind) {
 
 void TemplateParameterSubstitution::setTemplateBinding(TemplateBinding& bind) {
     m_templateBinding.set(bind);
+}
+
+void TemplateParameterSubstitution::setTemplateBinding(ID id) {
+    m_templateBinding.set(id);
 }
 
 ParameterableElement* TemplateParameterSubstitution::getActual() {
@@ -159,6 +167,10 @@ void TemplateParameterSubstitution::setActual(ParameterableElement& actual) {
     m_actual.set(actual);
 }
 
+void TemplateParameterSubstitution::setActual(ID id) {
+    m_actual.set(id);
+}
+
 ParameterableElement* TemplateParameterSubstitution::getOwnedActual() {
     return m_ownedActual.get();
 }
@@ -181,6 +193,10 @@ void TemplateParameterSubstitution::setOwnedActual(ParameterableElement* actual)
 
 void TemplateParameterSubstitution::setOwnedActual(ParameterableElement& actual) {
     m_ownedActual.set(actual);
+}
+
+void TemplateParameterSubstitution::setOwnedActual(ID id) {
+    m_ownedActual.set(id);
 }
 
 bool TemplateParameterSubstitution::isSubClassOf(ElementType eType) const {

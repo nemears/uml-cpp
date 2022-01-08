@@ -69,23 +69,23 @@ namespace UML {
 
         ElementType elementTypeFromString(std::string eType);
 
-        template <class T = Element, class U = Element> 
-        void parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string key, U& owner, Singleton<T,U> U::*signature) {
+        template <class T = Element, class U = Element>
+        void parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string key, U& el, void (U::*elSignature)(T& el), void (U::*idSignature)(ID id)) {
             if (node[key]) {
                 if (node[key].IsScalar()) {
                     if (isValidID(node[key].as<std::string>())) {
                         // ID
                         ID id = ID::fromString(node[key].as<std::string>());
-                        if (data.m_manager->loaded(id)) {
-                            (owner.*signature).set(data.m_manager->get<T>(id));
+                        if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
+                            (el.*elSignature)(data.m_manager->get<T>(id));
                         } else {
-                            (owner.*signature).add(id);
+                            (el.*idSignature)(id);
                         }
                     } else {
                         // Path
                         Element* parsed = parseExternalAddToManager(data, node[key].as<std::string>());
                         if (parsed) {
-                            (owner.*signature).set(parsed->as<T>());
+                            (el.*elSignature)(parsed->as<T>());
                         } else {
                             throw UmlParserException("Could not identify valid file at path " + node[key].as<std::string>(), data.m_path.string(), node[key]);
                         }

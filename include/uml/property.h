@@ -4,7 +4,6 @@
 #include "structuralFeature.h"
 #include "connectableElement.h"
 #include "deploymentTarget.h"
-#include "yaml-cpp/yaml.h"
 
 namespace UML{
 
@@ -14,9 +13,6 @@ namespace UML{
     class Association;
     class Class;
     class Artifact;
-    namespace Parsers {
-        void parseProperty(YAML::Node node, Property& prop, Parsers::ParserMetaData& data);
-    }
 
     enum class AggregationKind {
         NONE,
@@ -32,7 +28,6 @@ namespace UML{
         friend class StructuredClassifier;
         friend class DataType;
         friend class Association;
-        friend void Parsers::parseProperty(YAML::Node node, Property& prop, Parsers::ParserMetaData& data);
 
         protected:
             AggregationKind m_aggregation = AggregationKind::NONE;
@@ -90,6 +85,7 @@ namespace UML{
             void setAggregation(AggregationKind aggregation);
             void setDefaultValue(ValueSpecification* val);
             void setDefaultValue(ValueSpecification& val);
+            void setDefaultValue(ID id);
             ValueSpecification* getDefaultValue();
             ValueSpecification& getDefaultValueRef();
             ID getDefaultValueID() const;
@@ -100,24 +96,28 @@ namespace UML{
             bool hasDataType() const;
             void setDataType(DataType* dataType);
             void setDataType(DataType& dataType);
+            void setDataType(ID id);
             Class* getClass();
             Class& getClassRef();
             ID getClassID() const;
             bool hasClass() const;
             void setClass(Class* clazz);
             void setClass(Class& clazz);
+            void setClass(ID id);
             Association* getAssociation();
             Association& getAssociationRef();
             ID getAssociationID() const;
             bool hasAssociation() const;
             void setAssociation(Association* association);
             void setAssociation(Association& association);
+            void setAssociation(ID id);
             Association* getOwningAssociation();
             Association& getOwningAssociationRef();
             ID getOwningAssociationID() const;
             bool hasOwningAssociation() const;
             void setOwningAssociation(Association* association);
             void setOwningAssociation(Association& association);
+            void setOwningAssociation(ID id);
             Set<Property, Property>& getRedefinedProperties();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

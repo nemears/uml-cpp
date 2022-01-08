@@ -100,6 +100,10 @@ void GeneralizationSet::setPowerType(Classifier& powerType) {
     m_powerType.set(powerType);
 }
 
+void GeneralizationSet::setPowerType(ID id) {
+    m_powerType.set(id);
+}
+
 Set<Generalization, GeneralizationSet>& GeneralizationSet::getGeneralizations() {
     return m_generalizations;
 }

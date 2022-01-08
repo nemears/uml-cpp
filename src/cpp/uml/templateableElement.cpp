@@ -78,6 +78,10 @@ void TemplateableElement::setOwnedTemplateSignature(TemplateSignature& signature
     m_ownedTemplateSignature.set(signature);
 }
 
+void TemplateableElement::setOwnedTemplateSignature(ID id) {
+    m_ownedTemplateSignature.set(id);
+}
+
 Set<TemplateBinding, TemplateableElement>& TemplateableElement::getTemplateBindings() {
     return m_templateBindings;
 }

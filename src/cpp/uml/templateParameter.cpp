@@ -120,6 +120,10 @@ void TemplateParameter::setSignature(TemplateSignature& signature) {
     m_signature.set(signature);
 }
 
+void TemplateParameter::setSignature(ID id) {
+    m_signature.set(id);
+}
+
 ParameterableElement* TemplateParameter::getOwnedParameteredElement() {
     return m_ownedParameteredElement.get();
 }
@@ -142,6 +146,10 @@ void TemplateParameter::setOwnedParameteredElement(ParameterableElement* el) {
 
 void TemplateParameter::setOwnedParameteredElement(ParameterableElement& el) {
     m_ownedParameteredElement.set(el);
+}
+
+void TemplateParameter::setOwnedParameteredElement(ID id) {
+    m_ownedParameteredElement.set(id);
 }
 
 ParameterableElement* TemplateParameter::getParameteredElement() {
@@ -168,6 +176,10 @@ void TemplateParameter::setParameteredElement(ParameterableElement& el) {
     m_parameteredElement.set(el);
 }
 
+void TemplateParameter::setParameteredElement(ID id) {
+    m_parameteredElement.set(id);
+}
+
 ParameterableElement* TemplateParameter::getDefault() {
     return m_default.get();
 }
@@ -192,6 +204,10 @@ void TemplateParameter::setDefault(ParameterableElement& el) {
     m_default.set(el);
 }
 
+void TemplateParameter::setDefault(ID id) {
+    m_default.set(id);
+}
+
 ParameterableElement* TemplateParameter::getOwnedDefault() {
     return m_ownedDefault.get();
 }
@@ -214,6 +230,10 @@ void TemplateParameter::setOwnedDefault(ParameterableElement* el) {
 
 void TemplateParameter::setOwnedDefault(ParameterableElement& el) {
     m_ownedDefault.set(el);
+}
+
+void TemplateParameter::setOwnedDefault(ID id) {
+    m_ownedDefault.set(id);
 }
 
 bool TemplateParameter::isSubClassOf(ElementType eType) const {

@@ -3,22 +3,17 @@
 
 #include "directedRelationship.h"
 #include "singleton.h"
-#include "yaml-cpp/yaml.h"
 
 namespace UML {
 
     class TemplateParameterSubstitution;
     class TemplateableElement;
-    namespace Parsers {
-        void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, Parsers::ParserMetaData& data);
-    }
 
     class TemplateBinding : public DirectedRelationship {
 
         friend class UmlManager;
         friend class TemplateableElement;
-        friend void Parsers::parseTemplateBinding(YAML::Node node, TemplateBinding& binding, Parsers::ParserMetaData& data);
-
+        
         private:
             Singleton<TemplateableElement, TemplateBinding> m_boundElement = Singleton<TemplateableElement, TemplateBinding>(this);
             Singleton<TemplateSignature, TemplateBinding> m_signature = Singleton<TemplateSignature, TemplateBinding>(this);
@@ -41,12 +36,14 @@ namespace UML {
             bool hasBoundElement() const;
             void setBoundElement(TemplateableElement& el);
             void setBoundElement(TemplateableElement* el);
+            void setBoundElement(ID id);
             TemplateSignature* getSignature();
             TemplateSignature& getSignatureRef();
             ID getSignatureID() const;
             bool hasSignature() const;
             void setSignature(TemplateSignature& signature);
             void setSignature(TemplateSignature* signature);
+            void setSignature(ID id);
             Set<TemplateParameterSubstitution, TemplateBinding>& getParameterSubstitution();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

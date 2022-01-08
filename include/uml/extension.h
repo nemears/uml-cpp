@@ -6,14 +6,10 @@
 namespace UML {
 
     class ExtensionEnd;
-    namespace Parsers {
-        void parseExtension(YAML::Node node, Extension& extension, Parsers::ParserMetaData& data);
-    }
 
     class Extension : public Association {
 
         friend class UmlManager;
-        friend void Parsers::parseExtension(YAML::Node node, Extension& extension, Parsers::ParserMetaData& data);
         friend class ExtensionEnd;
 
         private:
@@ -43,6 +39,7 @@ namespace UML {
             bool hasOwnedEnd() const;
             void setOwnedEnd(ExtensionEnd& end);
             void setOwnedEnd(ExtensionEnd* end);
+            void setOwnedEnd(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::EXTENSION;

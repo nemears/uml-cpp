@@ -3,20 +3,15 @@
 
 #include "directedRelationship.h"
 #include "singleton.h"
-#include "yaml-cpp/yaml.h"
 
 namespace UML {
 
     class Classifier;
     class GeneralizationSet;
-    namespace Parsers {
-        void parseGeneralization(YAML::Node node, Generalization& generalization, Parsers::ParserMetaData& data);
-    }
 
     class Generalization : public DirectedRelationship {
 
         friend class UmlManager;
-        friend void Parsers::parseGeneralization(YAML::Node node, Generalization& generalization, Parsers::ParserMetaData& data);
         friend class Classifier;
 
         protected:
@@ -53,12 +48,14 @@ namespace UML {
             bool hasGeneral() const;
             void setGeneral(Classifier* general);
             void setGeneral(Classifier& general);
+            void setGeneral(ID id);
             Classifier* getSpecific();
             Classifier& getSpecificRef();
             ID getSpecificID() const;
             bool hasSpecific() const;
             void setSpecific(Classifier& specific);
             void setSpecific(Classifier* specific);
+            void setSpecific(ID id);
             Set<GeneralizationSet, Generalization>& getGeneralizationSets();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

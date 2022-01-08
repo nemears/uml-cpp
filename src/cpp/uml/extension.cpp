@@ -92,6 +92,10 @@ void Extension::setOwnedEnd(ExtensionEnd& end) {
     m_ownedEnd.set(end);
 }
 
+void Extension::setOwnedEnd(ID id) {
+    m_ownedEnd.set(id);
+}
+
 bool Extension::isSubClassOf(ElementType eType) const {
     bool ret = Association::isSubClassOf(eType);
 

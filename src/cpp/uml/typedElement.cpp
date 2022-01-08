@@ -71,6 +71,10 @@ void TypedElement::setType(Type& type) {
     m_type.set(type);
 }
 
+void TypedElement::setType(ID id) {
+    m_type.set(id);
+}
+
 bool TypedElement::isSubClassOf(ElementType eType) const {
     bool ret = NamedElement::isSubClassOf(eType);
 

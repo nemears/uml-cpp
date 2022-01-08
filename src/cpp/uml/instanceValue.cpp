@@ -69,6 +69,10 @@ void InstanceValue::setInstance(InstanceSpecification& inst) {
     m_instance.set(inst);
 }
 
+void InstanceValue::setInstance(ID id) {
+    m_instance.set(id);
+}
+
 bool InstanceValue::isSubClassOf(ElementType eType) const {
     bool ret = ValueSpecification::isSubClassOf(eType);
 

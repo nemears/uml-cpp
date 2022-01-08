@@ -2,22 +2,17 @@
 #define UML_GENERALIZATION_SET_H
 
 #include "uml/packageableElement.h"
-#include "yaml-cpp/yaml.h"
 
 namespace UML {
 
     class Classifier;
     class Generalization;
-    namespace Parsers {
-        void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, Parsers::ParserMetaData& data);
-    }
 
     class GeneralizationSet : public PackageableElement {
 
         friend class UmlManager;
         friend class Classifier;
-        friend void Parsers::parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, Parsers::ParserMetaData& data);
-
+        
         protected:
             bool m_covering = false;
             bool m_disjoint = false;
@@ -43,6 +38,7 @@ namespace UML {
             bool hasPowerType() const;
             void setPowerType(Classifier* powerType);
             void setPowerType(Classifier& powerType);
+            void setPowerType(ID id);
             Set<Generalization, GeneralizationSet>& getGeneralizations();
             bool isSubClassOf(ElementType eType) const override;
     };

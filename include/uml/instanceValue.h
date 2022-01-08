@@ -34,6 +34,7 @@ namespace UML {
             bool hasInstance() const;
             void setInstance(InstanceSpecification& inst);
             void setInstance(InstanceSpecification* inst);
+            void setInstance(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::INSTANCE_VALUE;

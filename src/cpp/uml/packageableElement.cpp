@@ -75,6 +75,10 @@ void PackageableElement::setOwningPackage(Package& package) {
     m_owningPackage.set(package);
 }
 
+void PackageableElement::setOwningPackage(ID id) {
+    m_owningPackage.set(id);
+}
+
 bool PackageableElement::isSubClassOf(ElementType eType) const {
     bool ret = NamedElement::isSubClassOf(eType);
 

@@ -78,6 +78,10 @@ void Manifestation::setUtilizedElement(PackageableElement& utilizedElement) {
     m_utilizedElement.set(utilizedElement);
 }
 
+void Manifestation::setUtilizedElement(ID id) {
+    m_utilizedElement.set(id);
+}
+
 bool Manifestation::isSubClassOf(ElementType eType) const {
     bool ret = Abstraction::isSubClassOf(eType);
 

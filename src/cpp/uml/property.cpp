@@ -229,6 +229,10 @@ void Property::setDefaultValue(ValueSpecification& val) {
     m_defaultValue.set(val);
 }
 
+void Property::setDefaultValue(ID id) {
+    m_defaultValue.set(id);
+}
+
 DataType* Property::getDataType() {
     return m_dataType.get();
 }
@@ -251,6 +255,10 @@ void Property::setDataType(DataType* dataType) {
 
 void Property::setDataType(DataType& dataType) {
     m_dataType.set(dataType);
+}
+
+void Property::setDataType(ID id) {
+    m_dataType.set(id);
 }
 
 Class* Property::getClass() {
@@ -277,6 +285,10 @@ void Property::setClass(Class& clazz) {
     m_class.set(clazz);
 }
 
+void Property::setClass(ID id) {
+    m_class.set(id);
+}
+
 Association* Property::getAssociation() {
     return m_association.get();
 }
@@ -301,6 +313,10 @@ void Property::setAssociation(Association& association) {
     m_association.set(association);
 }
 
+void Property::setAssociation(ID id) {
+    m_association.set(id);
+}
+
 Association* Property::getOwningAssociation() {
     return m_owningAssociation.get();
 }
@@ -323,6 +339,10 @@ void Property::setOwningAssociation(Association* association) {
 
 void Property::setOwningAssociation(Association& association) {
     m_owningAssociation.set(association);
+}
+
+void Property::setOwningAssociation(ID id) {
+    m_owningAssociation.set(id);
 }
 
 Set<Property, Property>& Property::getRedefinedProperties() {

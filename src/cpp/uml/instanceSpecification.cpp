@@ -111,6 +111,10 @@ void InstanceSpecification::setSpecification(ValueSpecification& specification) 
     m_specification.set(specification);
 }
 
+void InstanceSpecification::setSpecification(ID id) {
+    m_specification.set(id);
+}
+
 Set<Slot, InstanceSpecification>& InstanceSpecification::getSlots() {
     return m_slots;
 }

@@ -2,12 +2,148 @@
 #include <fstream>
 #include "uml/uml-stable.h"
 #include "uml/activity.h" // the only "not stable" thing with a presence in this class
-#include "uml/parsers/singletonFunctors.h"
 
 using namespace std;
 
 namespace UML {
 namespace Parsers {
+
+/**
+ * Template helper functions for parsing
+ **/
+template <class T = Element, class U = Element>
+void parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string key, U& el, void (U::*elSignature)(T& el), void (U::*idSignature)(ID id)) {
+    if (node[key]) {
+        if (node[key].IsScalar()) {
+            if (isValidID(node[key].as<std::string>())) {
+                // ID
+                ID id = ID::fromString(node[key].as<std::string>());
+                if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
+                    (el.*elSignature)(data.m_manager->get<T>(id));
+                } else {
+                    (el.*idSignature)(id);
+                }
+            } else {
+                // Path
+                Element* parsed = parseExternalAddToManager(data, node[key].as<std::string>());
+                if (parsed) {
+                    (el.*elSignature)(parsed->as<T>());
+                } else {
+                    throw UmlParserException("Could not identify valid file at path " + node[key].as<std::string>(), data.m_path.string(), node[key]);
+                }
+                // throw UmlParserException("TODO, parse reference from path (seems a lil irrelevant)", data.m_path.string(), node[key]);
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for " + key + " entry, expected a scalar id", data.m_path.string(), node[key]);
+        }
+    }
+};
+
+template <class T = Element, class U = Element, class S = Set<T,U>>
+void parseSetReferences(YAML::Node node, ParserMetaData& data, std::string key, U& owner, S& (U::*signature)()) {
+    if (node[key]) {
+        if (node[key].IsSequence()) {
+            for (size_t i = 0; i < node[key].size(); i++) {
+                if (isValidID(node[key][i].as<std::string>())) {
+                    ID id = ID::fromString(node[key][i].as<std::string>());
+                    if (data.m_manager->loaded(id)) {
+                        (owner.*signature)().add(data.m_manager->get<T>(id));
+                    } else {
+                        (owner.*signature)().add(id);
+                    }
+                }
+            }
+        } else {
+            throw UmlParserException("Invalid yaml node type for " + key + " entry, expected a sequence", data.m_path.string(), node[key]);
+        }
+    }
+};
+
+/**
+ * This function is used to parse an element definition contained within a seperate 
+ * file, and then add that element to the designated sequence. This should only be 
+ * called with sequences that subset  Element::getOwnedElements
+ * @param node, the node containing the element defenition file
+ * @param data, the data for this parsing session
+ * @param el, the element that owns the element being parsed
+ * @param signature, the signature of the sequence to add the parsed element to
+ **/
+template <class T = Element, class U = Element, class S = Set<T,U>>
+void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, S& (U::* signature)()) {
+    if (data.m_strategy == ParserStrategy::WHOLE) {
+        Element* packagedEl = parseExternalAddToManager(data, node.as<std::string>());
+        if (packagedEl == 0) {
+            throw UmlParserException("Could not identify YAML node for packaged elements", data.m_path.string(), node);
+        }
+        (el.*signature)().add(*dynamic_cast<T*>(packagedEl));
+    } else {
+        std::string path = node.as<std::string>();
+        std::string idStr = path.substr(path.find_last_of("/") + 1, path.find_last_of("/") + 29);
+        if (isValidID(idStr)) {
+            ID id = ID::fromString(idStr);
+            // if (data.m_manager->UmlManager::loaded(id)) {
+            //     (el.*signature)().add(data.m_manager->get<T>(id)); // Too slow? makes it easier
+            // } else {
+                (el.*signature)().add(id);
+            // }
+        } else {
+            throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);
+        }
+    }
+}
+
+/**
+ * This function is used to parse a sequence that subsets Element::getOwnedElements
+ * @param node, the node of the element who's sequence we're parsing
+ * @param data, the data for this parsing session
+ * @param key, the key for the sequence to index the node
+ * @param owner, the element that owns all elements in the sequence being parsed
+ * @param sequenceSignature, the signature of the sequence we are adding to
+ * @param parserSignature, the signature of the function we are using to parse it's children in WHOLE parser strategy mode
+ **/
+template <class T = Element, class U = Element, class S = Set<T,U>>
+void parseSequenceDefinitions(YAML::Node node, ParserMetaData& data, string key, U& owner, S& (U::*sequenceSignature)(), T& (*parserSignature)(YAML::Node, ParserMetaData&)) {
+    if (node[key]) {
+        if (node[key].IsSequence()) {
+            for (size_t i = 0; i < node[key].size(); i++) {
+                if (node[key][i].IsMap()) {
+                    (owner.*sequenceSignature)().add((*parserSignature)(node[key][i], data));
+                }
+                else if (node[key][i].IsScalar()) {
+                    parseAndAddToSequence<T,U,S>(node[key][i], data, owner, sequenceSignature);
+                }
+                else {
+                    throw UmlParserException("Invalid yaml node type for " + key + " entry, must be a scalar or map!", data.m_path.string(), node[key][i]);
+                }
+            }
+        }
+        else {
+            throw UmlParserException("Invalid YAML node type for field " + key + ", must be sequence, ", data.m_path.string(), node[key]);
+        }
+    }
+}
+
+template <class T = Element> 
+T& parseDefinition(YAML::Node node, ParserMetaData& data, string key, void (*parser)(YAML::Node, T&, ParserMetaData&)) {
+    if (node[key].IsMap()) {
+        T& ret = data.m_manager->create<T>();
+        parser(node[key], ret, data);
+        return ret;
+    } else {
+        throw UmlParserException("Invalid yaml node type for " + key + " definition, it must be a map!", data.m_path.string(), node[key]);
+    }
+}
+
+template <class T = Element, class U = Element>
+void parseSingletonDefinition(YAML::Node node, ParserMetaData& data, std::string key, U& owner, T& (*parser)(YAML::Node, ParserMetaData&), void (U::*elSignature)(T&)) {
+    if (node[key]) {
+        if (node[key].IsMap()) {
+            (owner.*elSignature)((*parser)(node[key], data));
+        } else {
+            throw UmlParserException("TODO, parse path", data.m_path.string(), node[key]);
+        }
+    }
+};
 
 UmlManager* parse(string path) {
     UmlManager* ret = new UmlManager;
@@ -267,105 +403,6 @@ ElementType elementTypeFromString(string eType) {
 }
 
 namespace {
-
-/**
- * This function is used to parse an element definition contained within a seperate 
- * file, and then add that element to the designated sequence. This should only be 
- * called with sequences that subset  Element::getOwnedElements
- * @param node, the node containing the element defenition file
- * @param data, the data for this parsing session
- * @param el, the element that owns the element being parsed
- * @param signature, the signature of the sequence to add the parsed element to
- **/
-template <class T = Element, class U = Element, class S = Set<T,U>> void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, S& (U::* signature)()) {
-    if (data.m_strategy == ParserStrategy::WHOLE) {
-        Element* packagedEl = parseExternalAddToManager(data, node.as<std::string>());
-        if (packagedEl == 0) {
-            throw UmlParserException("Could not identify YAML node for packaged elements", data.m_path.string(), node);
-        }
-        (el.*signature)().add(*dynamic_cast<T*>(packagedEl));
-    } else {
-        std::string path = node.as<std::string>();
-        std::string idStr = path.substr(path.find_last_of("/") + 1, path.find_last_of("/") + 29);
-        if (isValidID(idStr)) {
-            ID id = ID::fromString(idStr);
-            // if (data.m_manager->UmlManager::loaded(id)) {
-            //     (el.*signature)().add(data.m_manager->get<T>(id)); // Too slow? makes it easier
-            // } else {
-                (el.*signature)().add(id);
-            // }
-        } else {
-            throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);
-        }
-    }
-}
-
-/**
- * This function is used to parse a sequence that subsets Element::getOwnedElements
- * @param node, the node of the element who's sequence we're parsing
- * @param data, the data for this parsing session
- * @param key, the key for the sequence to index the node
- * @param owner, the element that owns all elements in the sequence being parsed
- * @param sequenceSignature, the signature of the sequence we are adding to
- * @param parserSignature, the signature of the function we are using to parse it's children in WHOLE parser strategy mode
- **/
-template <class T = Element, class U = Element, class S = Set<T,U>> void parseSequenceDefinitions(YAML::Node node, ParserMetaData& data, string key, U& owner, S& (U::*sequenceSignature)(), T& (*parserSignature)(YAML::Node, ParserMetaData&)) {
-    if (node[key]) {
-        if (node[key].IsSequence()) {
-            for (size_t i = 0; i < node[key].size(); i++) {
-                if (node[key][i].IsMap()) {
-                    (owner.*sequenceSignature)().add((*parserSignature)(node[key][i], data));
-                }
-                else if (node[key][i].IsScalar()) {
-                    parseAndAddToSequence<T,U,S>(node[key][i], data, owner, sequenceSignature);
-                }
-                else {
-                    throw UmlParserException("Invalid yaml node type for " + key + " entry, must be a scalar or map!", data.m_path.string(), node[key][i]);
-                }
-            }
-        }
-        else {
-            throw UmlParserException("Invalid YAML node type for field " + key + ", must be sequence, ", data.m_path.string(), node[key]);
-        }
-    }
-}
-
-template <class T = Element> T& parseDefinition(YAML::Node node, ParserMetaData& data, string key, void (*parser)(YAML::Node, T&, ParserMetaData&)) {
-    if (node[key].IsMap()) {
-        T& ret = data.m_manager->create<T>();
-        parser(node[key], ret, data);
-        return ret;
-    } else {
-        throw UmlParserException("Invalid yaml node type for " + key + " definition, it must be a map!", data.m_path.string(), node[key]);
-    }
-}
-
-template <class T = Element, class U = Element>
-void parseSingletonDefinition(YAML::Node node, ParserMetaData& data, std::string key, U& owner, T& (*parser)(YAML::Node, ParserMetaData&), void (U::*elSignature)(T&)) {
-    if (node[key]) {
-        if (node[key].IsMap()) {
-            (owner.*elSignature)((*parser)(node[key], data));
-        } else {
-            throw UmlParserException("TODO, parse path", data.m_path.string(), node[key]);
-        }
-    }
-};
-
-// Helper function for parsing scope in parseNode
-template <class T = Element, class U = Element> void parseSingleton(YAML::Node node, ParserMetaData& data, U& el, void (U::*setter)(T&), parseAndSetSingletonFunctor<T, U>& func) {
-    ID id;
-    if (node.as<string>().length() == 28) {
-        id = ID::fromString(node.as<string>());
-    } else {
-        id = ID::fromString(node.as<string>().substr(0, 28));
-    }
-    if (data.m_manager->UmlManager::loaded(id)) {
-        (el.*setter)(data.m_manager->get<T>(id));
-    }
-    else {
-        func(node, data, el);
-    }
-}
 
 Element* parseNode(YAML::Node node, ParserMetaData& data) {
     Element* ret = 0;
@@ -2463,7 +2500,7 @@ TemplateParameter& determineAndParseTemplateParameter(YAML::Node node, ParserMet
 void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, ParserMetaData& data) {
     parseElement(node, signature, data);
     parseSequenceDefinitions(node, data, "ownedParameters", signature, &TemplateSignature::getOwnedParameters, determineAndParseTemplateParameter);
-    parseSequenceReference<TemplateParameter, TemplateSignature>(node, data, "parameters", signature, &TemplateSignature::getParameters);
+    parseSetReferences<TemplateParameter, TemplateSignature>(node, data, "parameters", signature, &TemplateSignature::getParameters);
 }
 
 void emitTemplateSignature(YAML::Emitter& emitter, TemplateSignature& signature, EmitterMetaData& data) {
@@ -2772,7 +2809,7 @@ void parseAssociation(YAML::Node node, Association& association, ParserMetaData&
     parseClassifier(node, association, data);
     parseSequenceDefinitions(node, data, "navigableOwnedEnds", association, &Association::getNavigableOwnedEnds, determineAndParseOwnedAttribute);
     parseSequenceDefinitions(node, data, "ownedEnds", association, &Association::getOwnedEnds, determineAndParseOwnedAttribute);
-    parseSequenceReference<Property, Association>(node, data, "memberEnds", association, &Association::getMemberEnds);
+    parseSetReferences<Property, Association>(node, data, "memberEnds", association, &Association::getMemberEnds);
 }
 
 void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMetaData& data) {
@@ -2907,8 +2944,8 @@ void AddSupplierFunctor::operator()(Element& el) const {
 
 void parseDependency(YAML::Node node, Dependency& dependency, ParserMetaData& data) {
     parseNamedElement(node, dependency, data);
-    parseSequenceReference<NamedElement, Dependency>(node, data, "client", dependency, &Dependency::getClient);
-    parseSequenceReference<NamedElement, Dependency>(node, data, "supplier", dependency, &Dependency::getSupplier);
+    parseSetReferences<NamedElement, Dependency>(node, data, "client", dependency, &Dependency::getClient);
+    parseSetReferences<NamedElement, Dependency>(node, data, "supplier", dependency, &Dependency::getSupplier);
 }
 
 void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaData& data) {
@@ -2941,7 +2978,7 @@ void AddDeployedArtifactFunctor::operator()(Element& el) const {
 
 void parseDeployment(YAML::Node node, Deployment& deployment, ParserMetaData& data) {
     parseNamedElement(node, deployment, data);
-    parseSequenceReference<DeployedArtifact, Deployment>(node, data, "deployedArtifacts", deployment, &Deployment::getDeployedArtifacts);
+    parseSetReferences<DeployedArtifact, Deployment>(node, data, "deployedArtifacts", deployment, &Deployment::getDeployedArtifacts);
 }
 
 void emitDeployment(YAML::Emitter& emitter, Deployment& deployment, EmitterMetaData& data) {
@@ -3109,13 +3146,13 @@ void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
     parseTemplateableElement(node, clazz, data);
     parseParameterableElement(node, clazz, data);
     parseSequenceDefinitions(node, data, "generalizations", clazz, &Classifier::getGeneralizations, determineAndParseGeneralization);
-    parseSequenceReference<GeneralizationSet, Classifier>(node, data, "powerTypeExtent", clazz, &Classifier::getPowerTypeExtent);
+    parseSetReferences<GeneralizationSet, Classifier>(node, data, "powerTypeExtent", clazz, &Classifier::getPowerTypeExtent);
 }
 
 void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data) {
     parseElement(node, general, data);
     parseSingletonReference(node, data, "general", general, &Generalization::setGeneral, &Generalization::setGeneral);
-    parseSequenceReference<GeneralizationSet, Generalization>(node, data, "generalizationSets", general, &Generalization::getGeneralizationSets);
+    parseSetReferences<GeneralizationSet, Generalization>(node, data, "generalizationSets", general, &Generalization::getGeneralizationSets);
 }
 
 void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data) {
@@ -3138,7 +3175,7 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
     parseNamedElement(node, inst, data);
     parseDeploymentTarget(node, inst, data);
     parseParameterableElement(node, inst, data);
-    parseSequenceReference<Classifier, InstanceSpecification>(node, data, "classifiers", inst, &InstanceSpecification::getClassifiers);
+    parseSetReferences<Classifier, InstanceSpecification>(node, data, "classifiers", inst, &InstanceSpecification::getClassifiers);
     parseSequenceDefinitions(node, data, "slots", inst, &InstanceSpecification::getSlots, determineAndParseSlot);
     parseSingletonDefinition<ValueSpecification, InstanceSpecification>(node, data, "specification", inst, determineAndParseValueSpecification, &InstanceSpecification::setSpecification);
 }
@@ -3165,7 +3202,7 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
     }
 
     parseSingletonDefinition(node, data, "defaultValue", prop, determineAndParseValueSpecification, &Property::setDefaultValue);
-    parseSequenceReference<Property, Property>(node, data, "redefinedProperties", prop, &Property::getRedefinedProperties);
+    parseSetReferences<Property, Property>(node, data, "redefinedProperties", prop, &Property::getRedefinedProperties);
     parseSingletonReference(node, data, "association", prop, &Property::setAssociation, &Property::setAssociation);
 }
 
@@ -3243,7 +3280,7 @@ void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSe
     }
 
     parseSingletonReference(node, data, "powerType", generalizationSet, &GeneralizationSet::setPowerType, &GeneralizationSet::setPowerType);
-    parseSequenceReference<Generalization, GeneralizationSet>(node, data, "generalizations", generalizationSet, &GeneralizationSet::getGeneralizations);
+    parseSetReferences<Generalization, GeneralizationSet>(node, data, "generalizations", generalizationSet, &GeneralizationSet::getGeneralizations);
 }
 
 }

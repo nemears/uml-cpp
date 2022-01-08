@@ -69,54 +69,6 @@ namespace UML {
 
         ElementType elementTypeFromString(std::string eType);
 
-        template <class T = Element, class U = Element>
-        void parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string key, U& el, void (U::*elSignature)(T& el), void (U::*idSignature)(ID id)) {
-            if (node[key]) {
-                if (node[key].IsScalar()) {
-                    if (isValidID(node[key].as<std::string>())) {
-                        // ID
-                        ID id = ID::fromString(node[key].as<std::string>());
-                        if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
-                            (el.*elSignature)(data.m_manager->get<T>(id));
-                        } else {
-                            (el.*idSignature)(id);
-                        }
-                    } else {
-                        // Path
-                        Element* parsed = parseExternalAddToManager(data, node[key].as<std::string>());
-                        if (parsed) {
-                            (el.*elSignature)(parsed->as<T>());
-                        } else {
-                            throw UmlParserException("Could not identify valid file at path " + node[key].as<std::string>(), data.m_path.string(), node[key]);
-                        }
-                        // throw UmlParserException("TODO, parse reference from path (seems a lil irrelevant)", data.m_path.string(), node[key]);
-                    }
-                } else {
-                    throw UmlParserException("Invalid yaml node type for " + key + " entry, expected a scalar id", data.m_path.string(), node[key]);
-                }
-            }
-        };
-
-        template <class T = Element, class U = Element, class S = Set<T,U>>
-        void parseSequenceReference(YAML::Node node, ParserMetaData& data, std::string key, U& owner, S& (U::*signature)()) {
-            if (node[key]) {
-                if (node[key].IsSequence()) {
-                    for (size_t i = 0; i < node[key].size(); i++) {
-                        if (isValidID(node[key][i].as<std::string>())) {
-                            ID id = ID::fromString(node[key][i].as<std::string>());
-                            if (data.m_manager->loaded(id)) {
-                                (owner.*signature)().add(data.m_manager->get<T>(id));
-                            } else {
-                                (owner.*signature)().add(id);
-                            }
-                        }
-                    }
-                } else {
-                    throw UmlParserException("Invalid yaml node type for " + key + " entry, expected a sequence", data.m_path.string(), node[key]);
-                }
-            }
-        };
-
         void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
         void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data);
         void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);

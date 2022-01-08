@@ -193,7 +193,8 @@ namespace UML {
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);
         friend class Classifier;
         friend class Namespace;
-        
+        friend class InstanceSpecification;
+
         private:
             bool m_copiedElementFlag = false;
         protected:

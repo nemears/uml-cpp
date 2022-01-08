@@ -105,6 +105,7 @@ TEST_F(UmlManagerTest, releaseTest) {
     p.setName("name");
     ID pid = p.getID();
     ASSERT_NO_THROW(m.release(p.getID()));
+    ASSERT_FALSE(m.loaded(pid));
     UmlManager* m2 = Parsers::parse((filesystem::path(ymlPath + "umlManagerTests") / "mount" / (pid.string() + ".yml")).string());
     ASSERT_EQ(m2->getRoot()->getElementType(), ElementType::PACKAGE);
     Package& p2 = m2->getRoot()->as<Package>();

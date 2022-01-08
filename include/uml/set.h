@@ -1003,12 +1003,11 @@ namespace UML {
              * @param id the id of the Element we are releasing
              **/
             void release(ID id) {
-                SetNode* searchResult = search(id, m_root);
-                if (!searchResult) {
-                    throw ID_doesNotExistException2(id);
-                }
-                if (searchResult->m_el) {
-                    searchResult->m_el = 0;
+                if (m_root) {
+                    SetNode* searchResult = search(id, m_root);
+                    if (searchResult && searchResult->m_el) {
+                        searchResult->m_el = 0;
+                    }
                 }
             };
             /**

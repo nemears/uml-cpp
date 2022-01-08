@@ -25,6 +25,18 @@ namespace UML{
         protected:
             bool m_setFlag = false;
             Set<Classifier, InstanceSpecification> m_classifiers = Set<Classifier, InstanceSpecification>(this);
+            class AddClassifierFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    AddClassifierFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class RemoveClassifierFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    RemoveClassifierFunctor(Element* el) : SetFunctor(el) {};
+            };
             Set<Slot, InstanceSpecification> m_slots = Set<Slot, InstanceSpecification>(this);
             Singleton <ValueSpecification, InstanceSpecification> m_specification = Singleton<ValueSpecification, InstanceSpecification>(this);
             void referencingReleased(ID id) override;

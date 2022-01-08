@@ -6,6 +6,14 @@
 
 using namespace UML;
 
+void InstanceSpecification::AddClassifierFunctor::operator()(Element& el) const {
+    el.setReference(&m_el);
+}
+
+void InstanceSpecification::RemoveClassifierFunctor::operator()(Element& el) const {
+    el.removeReference(el.getID());
+}
+
 void InstanceSpecification::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
     // DeployedArtifact::referenceReindexed(oldID, newID);
@@ -42,6 +50,8 @@ Set<ValueSpecification, InstanceSpecification>& InstanceSpecification::getSpecif
 
 void InstanceSpecification::init() {
     m_classifiers.m_signature = &InstanceSpecification::getClassifiers;
+    m_classifiers.m_addFunctors.insert(new AddClassifierFunctor(this));
+    m_classifiers.m_removeFunctors.insert(new RemoveClassifierFunctor(this));
     m_specification.subsets(*m_ownedElements);
     m_specification.m_signature = &InstanceSpecification::getSpecificationSingleton;
     m_slots.subsets(*m_ownedElements);

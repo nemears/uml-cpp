@@ -108,8 +108,120 @@ namespace UML {
             std::vector<AbstractSet*> m_redefines;
             std::unordered_set<SetFunctor*> m_addFunctors;
             std::unordered_set<SetFunctor*> m_removeFunctors;
-            virtual void place(SetNode* node, SetNode* parent) = 0;
-            virtual SetNode* search(ID id, SetNode* node) = 0;
+            /**
+             * Places the node within the tree taking in account the id and the guard of the node
+             * @param node the new node being placed within the tree
+             * @param parent the node that you want to place the new node below
+             **/
+            void place(SetNode* node, SetNode* parent) {
+                if (node->m_id != placeholderID && node->m_id == parent->m_id) {
+                    delete node;
+                    throw DuplicateElementInSetException();
+                }
+                if (parent->m_left) {
+                    // prefer placement to left
+                    if (parent->m_right) {
+                        // both children are populated, determine where to place
+                        if (node->m_id > parent->m_right->m_id && parent->m_left->m_guard <= m_guard) {
+                            // place to left if greater than right
+                            place(node, parent->m_left);
+                        } else if (parent->m_right->m_guard <= m_guard) {
+                            // place to right if less than right
+                            place(node, parent->m_right);
+                        } else {
+                            if (node->m_id > parent->m_right->m_id) {
+                                SetNode* temp = parent->m_left;
+                                parent->m_left = node;
+                                place(parent->m_right, temp);
+                                parent->m_right = temp;
+                                node->m_parent = parent;
+                            } else {
+                                // TODO double check logic
+                                place(node, parent->m_left);
+                            }
+                        }
+                    } else {
+                        if (node->m_id > parent->m_left->m_id) {
+                            // if node greater than left, swap left to right
+                            parent->m_right = parent->m_left;
+                            parent->m_left = node;
+                        } else {
+                            parent->m_right = node;
+                        }
+                        node->m_parent = parent;
+                    }
+                } else {
+                    parent->m_left = node;
+                    node->m_parent = parent;
+                }
+            };
+            /**
+             * Searches the tree for the node with given id from the node supplied
+             * @param id the ID of the node you are looking for
+             * @param node the node you are basing your search off of
+             * @return pointer to the node that matched the ID, or 0 if the node was not found
+             **/
+            SetNode* search(ID id, SetNode* node) {
+                if (node->m_id == id) {
+                    // found match
+                    return node;
+                } else if (node->m_id != placeholderID) { // != is faster than == for id
+                    if (node->m_right) {
+                        // if there is a right there is both children filled out
+                        if (id > node->m_right->m_id) {
+                            // if it is greater than the right it has to be within the left
+                            return search(id, node->m_left);
+                        } else {
+                            // if not it must be in the right
+                            return search(id, node->m_right);
+                        }
+                    } else {
+                        if (node->m_left) {
+                            // if left exist search it
+                            return search(id, node->m_left);
+                        } else {
+                            // both are null, our search is unfruitful :(
+                            return 0;
+                        }
+                    }
+                } else {
+                    SetNode* ret = 0;
+                    if (node->m_right) {
+                        ret = search(id, node->m_right);
+                        if (ret) {
+                            return ret;
+                        }
+                    }
+                    if (node->m_left) {
+                        ret = search(id, node->m_left);
+                    }
+                    return ret;
+                }
+            };
+            /**
+             * Searches the tree for the node with the name supplied
+             * @param name string of the name of the node being searched for
+             * @param node the node that you are basing your search off of
+             * @return the node that was found that matched the name supplied or 0 if no match was found
+             **/
+            SetNode* search(std::string name, SetNode* node) {
+                if (node->m_name == name) {
+                    return node;
+                } else {
+                    SetNode* temp;
+                    if (node->m_right) {
+                        if((temp = search(name, node->m_right)) != 0) {
+                            return temp;
+                        }
+                    }
+                    if (node->m_left) {
+                        if ((temp = search(name, node->m_left)) != 0) {
+                            return temp;
+                        }
+                    }
+                }
+                return 0;
+            };
             void setName(SetNode* node);
             void instantiateSetNode(SetNode* node);
             virtual void superSetAdd(SetNode* node) = 0;
@@ -238,120 +350,6 @@ namespace UML {
             bool m_readOnly = false;
             AbstractSet* m_setToInstantiate = 0;
 
-            /**
-             * Places the node within the tree taking in account the id and the guard of the node
-             * @param node the new node being placed within the tree
-             * @param parent the node that you want to place the new node below
-             **/
-            void place(SetNode* node, SetNode* parent) override {
-                if (node->m_id != placeholderID && node->m_id == parent->m_id) {
-                    delete node;
-                    throw DuplicateElementInSetException();
-                }
-                if (parent->m_left) {
-                    // prefer placement to left
-                    if (parent->m_right) {
-                        // both children are populated, determine where to place
-                        if (node->m_id > parent->m_right->m_id && parent->m_left->m_guard <= m_guard) {
-                            // place to left if greater than right
-                            place(node, parent->m_left);
-                        } else if (parent->m_right->m_guard <= m_guard) {
-                            // place to right if less than right
-                            place(node, parent->m_right);
-                        } else {
-                            if (node->m_id > parent->m_right->m_id) {
-                                SetNode* temp = parent->m_left;
-                                parent->m_left = node;
-                                place(parent->m_right, temp);
-                                parent->m_right = temp;
-                                node->m_parent = parent;
-                            } else {
-                                // TODO double check logic
-                                place(node, parent->m_left);
-                            }
-                        }
-                    } else {
-                        if (node->m_id > parent->m_left->m_id) {
-                            // if node greater than left, swap left to right
-                            parent->m_right = parent->m_left;
-                            parent->m_left = node;
-                        } else {
-                            parent->m_right = node;
-                        }
-                        node->m_parent = parent;
-                    }
-                } else {
-                    parent->m_left = node;
-                    node->m_parent = parent;
-                }
-            };
-            /**
-             * Searches the tree for the node with given id from the node supplied
-             * @param id the ID of the node you are looking for
-             * @param node the node you are basing your search off of
-             * @return pointer to the node that matched the ID, or 0 if the node was not found
-             **/
-            SetNode* search(ID id, SetNode* node) override {
-                if (node->m_id == id) {
-                    // found match
-                    return node;
-                } else if (node->m_id != placeholderID) { // != is faster than == for id
-                    if (node->m_right) {
-                        // if there is a right there is both children filled out
-                        if (id > node->m_right->m_id) {
-                            // if it is greater than the right it has to be within the left
-                            return search(id, node->m_left);
-                        } else {
-                            // if not it must be in the right
-                            return search(id, node->m_right);
-                        }
-                    } else {
-                        if (node->m_left) {
-                            // if left exist search it
-                            return search(id, node->m_left);
-                        } else {
-                            // both are null, our search is unfruitful :(
-                            return 0;
-                        }
-                    }
-                } else {
-                    SetNode* ret = 0;
-                    if (node->m_right) {
-                        ret = search(id, node->m_right);
-                        if (ret) {
-                            return ret;
-                        }
-                    }
-                    if (node->m_left) {
-                        ret = search(id, node->m_left);
-                    }
-                    return ret;
-                }
-            };
-            /**
-             * Searches the tree for the node with the name supplied
-             * @param name string of the name of the node being searched for
-             * @param node the node that you are basing your search off of
-             * @return the node that was found that matched the name supplied or 0 if no match was found
-             **/
-            SetNode* search(std::string name, SetNode* node) {
-                if (node->m_name == name) {
-                    return node;
-                } else {
-                    SetNode* temp;
-                    if (node->m_right) {
-                        if((temp = search(name, node->m_right)) != 0) {
-                            return temp;
-                        }
-                    }
-                    if (node->m_left) {
-                        if ((temp = search(name, node->m_left)) != 0) {
-                            return temp;
-                        }
-                    }
-                }
-                return 0;
-            };
             /**
              * increase the size of all supersets of this set, this does a graph bfs search for all nodes and increases their size
              **/
@@ -1185,6 +1183,13 @@ namespace UML {
                     throw ID_doesNotExistException2(id);
                 }
             };
+            bool loaded(ID id) {
+                SetNode* res = search(id, m_root);
+                if (!res) {
+                    return false;
+                }
+                return res->m_el != 0;
+            };
         public:
             inline Set(Element* el) : m_el(el) {};
             inline Set() {};
@@ -1947,6 +1952,7 @@ namespace UML {
                 ID_Set<T> set;
                 set.m_root = m_root;
                 set.m_guard = m_guard;
+                set.set = this;
                 return set;
             };
     };
@@ -2063,6 +2069,7 @@ namespace UML {
         private:
             AbstractSet::SetNode* m_root = 0;
             size_t m_guard = 0;
+            AbstractSet* set  = 0;
         public:
             SetID_Iterator<T> begin() {
                 SetID_Iterator<T> it;
@@ -2078,6 +2085,21 @@ namespace UML {
                 it.m_node = &it.m_endNode;
                 it.m_guard = m_guard;
                 return it;
+            };
+            ID front() {
+                SetID_Iterator<T> it;
+                it.m_node = m_root;
+                if (it.m_node->m_id == placeholderID) {
+                    it++;
+                }
+                return *it;
+            };
+            ID get(std::string name) {
+                AbstractSet::SetNode* res = set->search(name, m_root);
+                if (res) {
+                    return res->m_id;
+                }
+                return ID::nullID();
             };
     };
 }

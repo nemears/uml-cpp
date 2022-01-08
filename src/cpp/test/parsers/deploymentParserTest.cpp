@@ -105,7 +105,6 @@ TEST_F(DeploymentParserTest, emitDeploymentTargetTest) {
 }
 
 TEST_F(DeploymentParserTest, emitArtifactTest) {
-    // std::cout << "!!!!!!!!!!!!!!!!!!!!!\nTODO: fix artifact/set so this test doesnt leak\n!!!!!!!!!!!!!!!!!!!!!!111" << std::endl;
     UmlManager m;
     Artifact& a = m.create<Artifact>();
     Property& p = m.create<Property>();

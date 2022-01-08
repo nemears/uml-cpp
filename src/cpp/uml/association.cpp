@@ -6,8 +6,10 @@ using namespace UML;
 
 void Association::AddEndTypeFunctor::operator()(Element& el) const {
     if (el.as<Property>().hasType()) {
-        m_el.as<Association>().getEndType().add(el.as<Property>().getTypeRef());
-        el.as<Property>().getTypeRef().setReference(&m_el);
+        if (el.as<Property>().m_type.loaded(el.as<Property>().m_type.ids().front())) {
+            m_el.as<Association>().getEndType().add(el.as<Property>().getTypeRef());
+            el.as<Property>().getTypeRef().setReference(&m_el);
+        }
     }
 }
 

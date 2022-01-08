@@ -398,22 +398,22 @@ TEST_F(TemplateableElementTest, setOwnedActualTestAndOverride) {
     ASSERT_TRUE(a1.getOwner() == 0);
 }
 
-TEST_F(TemplateableElementTest, reindexTemplateableElementsTest) {
-    UmlManager m;
-    Class templateClass = m.create<Class>();
-    TemplateSignature classSignature = m.create<TemplateSignature>();
-    TemplateBinding classBinding = m.create<TemplateBinding>();
-    Package root = m.create<Package>();
-    templateClass.setOwnedTemplateSignature(classSignature);
-    templateClass.getTemplateBindings().add(classBinding);
-    classBinding.setSignature(classSignature);
-    root.getPackagedElements().add(templateClass);
-    m.setRoot(&root);
-    m.mount(ymlPath + "templateableElementTests");
-    ID classID = ID::fromString("x6iYAE&S1H7jjIFXc0Um0zdAfOVl");
-    templateClass.setID(classID);
-    m.release(templateClass);
-    ASSERT_NO_THROW(ASSERT_EQ(classSignature.getTemplateRef().getID(), classID));
-    m.release(classID);
-    ASSERT_NO_THROW(ASSERT_EQ(classBinding.getBoundElementRef().getID(), classID));
-}
+// TEST_F(TemplateableElementTest, reindexTemplateableElementsTest) {
+//     UmlManager m;
+//     Class templateClass = m.create<Class>();
+//     TemplateSignature classSignature = m.create<TemplateSignature>();
+//     TemplateBinding classBinding = m.create<TemplateBinding>();
+//     Package root = m.create<Package>();
+//     templateClass.setOwnedTemplateSignature(classSignature);
+//     templateClass.getTemplateBindings().add(classBinding);
+//     classBinding.setSignature(classSignature);
+//     root.getPackagedElements().add(templateClass);
+//     m.setRoot(&root);
+//     m.mount(ymlPath + "templateableElementTests");
+//     ID classID = ID::fromString("x6iYAE&S1H7jjIFXc0Um0zdAfOVl");
+//     templateClass.setID(classID);
+//     m.release(templateClass);
+//     ASSERT_NO_THROW(ASSERT_EQ(classSignature.getTemplateRef().getID(), classID));
+//     m.release(classID);
+//     ASSERT_NO_THROW(ASSERT_EQ(classBinding.getBoundElementRef().getID(), classID));
+// }

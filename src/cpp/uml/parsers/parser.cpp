@@ -660,8 +660,14 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (ret && data.m_strategy == ParserStrategy::INDIVIDUAL) {
-        if (node["owningPackage"]) {
+        if (ret->isSubClassOf(ElementType::PACKAGEABLE_ELEMENT)) {
             parseSingletonReference(node, data, "owningPackage", ret->as<PackageableElement>(), &PackageableElement::setOwningPackage, &PackageableElement::setOwningPackage);
+        }
+        if (ret->isSubClassOf(ElementType::PACKAGE_MERGE)) {
+            parseSingletonReference(node, data, "receivingPackage", ret->as<PackageMerge>(), &PackageMerge::setReceivingPackage, &PackageMerge::setReceivingPackage);
+        }
+        if (ret->isSubClassOf(ElementType::PROFILE_APPLICATION)) {
+            parseSingletonReference(node, data, "applyingPackage", ret->as<ProfileApplication>(), &ProfileApplication::setApplyingPackage, &ProfileApplication::setApplyingPackage);
         }
         // if (node["receivingPackage"]) {
         //     ID receivingPackageID = ID::fromString(node["receivingPackage"].as<string>());

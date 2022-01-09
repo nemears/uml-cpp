@@ -86,6 +86,8 @@ void Element::restoreReference(Element* el) {
     if (m_node->m_references.count(el->getID())) {
         m_node->m_references[el->getID()] = el->m_node;
     }
+    m_ownedElements->restore(el);
+    m_owner->restore(el);
 }
 
 void Element::referenceErased(ID id) {

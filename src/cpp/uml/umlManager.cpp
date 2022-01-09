@@ -128,7 +128,21 @@ Element* UmlManager::aquire(ID id) {
                 data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
                 Element* ret = Parsers::parse(data);
                 if (ret) {
-                    m_graph[id].m_managerElementMemory = ret;
+                    ret->m_node->m_managerElementMemory = ret;
+                    for (auto& pair : ret->m_node->m_references) {
+                        if (!pair.second && loaded(pair.first)) {
+                            Element* el = 0;
+                            try {
+                                el = &get<>(pair.first); // TODO make this faster somehow this line is a real limiter of speed
+                            } catch (std::exception e) {
+                                // nothing
+                            }
+                            if (el) {
+                                pair.second = el->m_node;
+                                el->restoreReference(ret);
+                            }
+                        }
+                    }
                     ret->restoreReferences();
                 } else {
                     throw ManagerStateException();

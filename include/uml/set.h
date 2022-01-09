@@ -1010,6 +1010,14 @@ namespace UML {
                     }
                 }
             };
+            void restore(Element* el) {
+                if (m_root) {
+                    SetNode* res = search(el->getID(), m_root);
+                    if (res) {
+                        res->m_el = el;
+                    }
+                }
+            };
             /**
              * reindex a node from one id to another without invoking copies or other referenced sets
              * @param oldID the old id of the node

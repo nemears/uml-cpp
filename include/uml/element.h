@@ -155,16 +155,18 @@ namespace UML {
     class PackageMerge;
     class Classifier;
     class Namespace;
+    class NamedElement;
     class Generalization;
+    class Dependency;
     template <class T, class U> class Set;
     template <class T> class SetIterator;
     template <class V, class W> class OppositeFunctor;
     template <class T, class U> class Singleton;
     template <class T, class U> class OrderedSet;
     namespace Parsers {
-        class SetOwner;
         struct EmitterMetaData;
         EmitterMetaData getData(Element& el);
+        void setOwner(Element& el, ID id);
     }
     /**
      * Element is the base class of all UML classes
@@ -185,16 +187,19 @@ namespace UML {
         friend class UmlManager;
         friend class AddToMountFunctor;
         friend class PackageMerge;
+        friend class Classifier;
+        friend class Namespace;
+        friend class InstanceSpecification;
+        friend class NamedElement;
         friend class Generalization;
+        friend class Dependency;
         template <class T, class U> friend class Singleton;
         template <class T, class U> friend class Set;
         template <class V, class W> friend class OppositeFunctor;
         template <class T> friend class SetIterator;
         template <class T, class U> friend class OrderedSet;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);
-        friend class Classifier;
-        friend class Namespace;
-        friend class InstanceSpecification;
+        friend void Parsers::setOwner(Element& el, ID id);
 
         private:
             bool m_copiedElementFlag = false;
@@ -224,7 +229,8 @@ namespace UML {
             virtual void restoreReferences();
             virtual void restoreReference(Element* el);
             virtual void referenceErased(ID id);
-            template <class T = Element, typename U> void updateCopiesScalar(U newVal, U T::*signature) {
+            template <class T = Element, typename U> 
+            void updateCopiesScalar(U newVal, U T::*signature) {
                 if (m_node->m_managerElementMemory != this) {
                     (dynamic_cast<T*>(m_node->m_managerElementMemory)->*signature) = newVal;
                 }

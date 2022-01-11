@@ -46,7 +46,7 @@ void parseSetReferences(YAML::Node node, ParserMetaData& data, std::string key, 
             for (size_t i = 0; i < node[key].size(); i++) {
                 if (isValidID(node[key][i].as<std::string>())) {
                     ID id = ID::fromString(node[key][i].as<std::string>());
-                    if (data.m_manager->loaded(id)) {
+                    if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
                         (owner.*signature)().add(data.m_manager->get<T>(id));
                     } else {
                         (owner.*signature)().add(id);
@@ -89,6 +89,22 @@ void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, S& (U::
         } else {
             throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);
         }
+    }
+}
+
+template <class T = Element, class U = Element>
+void parseAndSetSingleton(YAML::Node node, ParserMetaData& data, U& el, void (U::*idSignature)(ID id)) {
+    if (data.m_strategy == ParserStrategy::INDIVIDUAL) {
+        std::string path = node.as<std::string>();
+        std::string idStr = path.substr(path.find_last_of("/") + 1, path.find_last_of("/") + 29);
+        if (isValidID(idStr)) {
+            ID id = ID::fromString(idStr);
+            (el.*idSignature)(id);
+        } else {
+            throw UmlParserException("Invalid id for path", data.m_path.string(), node);
+        }
+    } else {
+        throw UmlParserException("TODO alalla", data.m_path.string(), node);
     }
 }
 
@@ -135,12 +151,12 @@ T& parseDefinition(YAML::Node node, ParserMetaData& data, string key, void (*par
 }
 
 template <class T = Element, class U = Element>
-void parseSingletonDefinition(YAML::Node node, ParserMetaData& data, std::string key, U& owner, T& (*parser)(YAML::Node, ParserMetaData&), void (U::*elSignature)(T&)) {
+void parseSingletonDefinition(YAML::Node node, ParserMetaData& data, std::string key, U& owner, T& (*parser)(YAML::Node, ParserMetaData&), void (U::*elSignature)(T&), void (U::*idSignature)(ID)) {
     if (node[key]) {
         if (node[key].IsMap()) {
             (owner.*elSignature)((*parser)(node[key], data));
         } else {
-            throw UmlParserException("TODO, parse path", data.m_path.string(), node[key]);
+            parseAndSetSingleton(node[key], data, owner, idSignature);
         }
     }
 };
@@ -404,6 +420,10 @@ ElementType elementTypeFromString(string eType) {
 
 void setNamespace(NamedElement& el, ID id) {
     el.m_namespace.addReadOnly(id);
+}
+
+void setOwner(Element& el, ID id) {
+    el.m_owner->addReadOnly(id);
 }
 
 namespace {
@@ -687,9 +707,20 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         }
         if (ret->isSubClassOf(ElementType::OPERATION)) {
             parseSingletonReference(node, data, "class", ret->as<Operation>(), &Operation::setClass, &Operation::setClass);
+            parseSingletonReference(node, data, "dataType", ret->as<Operation>(), &Operation::setDataType, &Operation::setDataType);
         }
         if (ret->isSubClassOf(ElementType::PROPERTY)) {
             parseSingletonReference(node, data, "class", ret->as<Property>(), &Property::setClass, &Property::setClass);
+            parseSingletonReference(node, data, "dataType", ret->as<Property>(), &Property::setDataType, &Property::setDataType);
+        }
+        if (ret->isSubClassOf(ElementType::VALUE_SPECIFICATION)) {
+            if (node["owner"]) {
+                if (node["owner"].IsScalar()) {
+                    if (isValidID(node["owner"].as<std::string>())) {
+                        setOwner(*ret, ID::fromString(node["owner"].as<std::string>()));
+                    }
+                }
+            }
         }
         // if (node["receivingPackage"]) {
         //     ID receivingPackageID = ID::fromString(node["receivingPackage"].as<string>());
@@ -3211,7 +3242,7 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
     parseParameterableElement(node, inst, data);
     parseSetReferences<Classifier, InstanceSpecification>(node, data, "classifiers", inst, &InstanceSpecification::getClassifiers);
     parseSequenceDefinitions(node, data, "slots", inst, &InstanceSpecification::getSlots, determineAndParseSlot);
-    parseSingletonDefinition<ValueSpecification, InstanceSpecification>(node, data, "specification", inst, determineAndParseValueSpecification, &InstanceSpecification::setSpecification);
+    parseSingletonDefinition<ValueSpecification, InstanceSpecification>(node, data, "specification", inst, determineAndParseValueSpecification, &InstanceSpecification::setSpecification, &InstanceSpecification::setSpecification);
 }
 
 void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
@@ -3235,21 +3266,21 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
         }
     }
 
-    parseSingletonDefinition(node, data, "defaultValue", prop, determineAndParseValueSpecification, &Property::setDefaultValue);
+    parseSingletonDefinition(node, data, "defaultValue", prop, determineAndParseValueSpecification, &Property::setDefaultValue, &Property::setDefaultValue);
     parseSetReferences<Property, Property>(node, data, "redefinedProperties", prop, &Property::getRedefinedProperties);
     parseSingletonReference(node, data, "association", prop, &Property::setAssociation, &Property::setAssociation);
 }
 
 void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data) {
-    parseSingletonDefinition(node, data, "templateSignature", el, determineAndParseTemplateSignature, &TemplateableElement::setOwnedTemplateSignature);
+    parseSingletonDefinition(node, data, "templateSignature", el, determineAndParseTemplateSignature, &TemplateableElement::setOwnedTemplateSignature, &TemplateableElement::setOwnedTemplateSignature);
     parseSequenceDefinitions(node, data, "templateBindings", el, &TemplateableElement::getTemplateBindings, determineAndParseTemplateBinding);
 }
 
 void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data) {
     parseElement(node, parameter, data);
-    parseSingletonDefinition(node, data, "ownedDefault", parameter, determinAndParseParameterableElement, &TemplateParameter::setOwnedDefault);
+    parseSingletonDefinition(node, data, "ownedDefault", parameter, determinAndParseParameterableElement, &TemplateParameter::setOwnedDefault, &TemplateParameter::setOwnedDefault);
     parseSingletonReference(node, data, "default", parameter, &TemplateParameter::setDefault, &TemplateParameter::setDefault);
-    parseSingletonDefinition(node, data, "ownedParameteredElement", parameter, determinAndParseParameterableElement, &TemplateParameter::setOwnedParameteredElement);
+    parseSingletonDefinition(node, data, "ownedParameteredElement", parameter, determinAndParseParameterableElement, &TemplateParameter::setOwnedParameteredElement, &TemplateParameter::setOwnedDefault);
     parseSingletonReference(node, data, "parameteredElement", parameter, &TemplateParameter::setParameteredElement, &TemplateParameter::setParameteredElement);
 }
 
@@ -3262,13 +3293,13 @@ void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaD
 void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data) {
     parseElement(node, sub, data);
     parseSingletonReference(node, data, "formal", sub, &TemplateParameterSubstitution::setFormal, &TemplateParameterSubstitution::setFormal);
-    parseSingletonDefinition(node, data, "ownedActual", sub, determinAndParseParameterableElement, &TemplateParameterSubstitution::setOwnedActual);
+    parseSingletonDefinition(node, data, "ownedActual", sub, determinAndParseParameterableElement, &TemplateParameterSubstitution::setOwnedActual, &TemplateParameterSubstitution::setOwnedActual);
     parseSingletonReference(node, data, "actual", sub, &TemplateParameterSubstitution::setActual, &TemplateParameterSubstitution::setActual);
 }
 
 void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data) {
     parseClassifier(node, extension, data);
-    parseSingletonDefinition(node, data, "ownedEnd", extension, determineAndParseOwnedEnd, &Extension::setOwnedEnd);
+    parseSingletonDefinition(node, data, "ownedEnd", extension, determineAndParseOwnedEnd, &Extension::setOwnedEnd, &Extension::setOwnedEnd);
     if (node["metaClass"]) {
         if (node["metaClass"].IsScalar()) {
             extension.setMetaClass(elementTypeFromString(node["metaClass"].as<string>()));

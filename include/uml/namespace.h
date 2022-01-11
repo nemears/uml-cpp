@@ -14,18 +14,6 @@ namespace UML{
         protected:
             Set<NamedElement, Namespace> m_members = Set<NamedElement, Namespace>(this);
             Set<NamedElement, Namespace> m_ownedMembers = Set<NamedElement, Namespace>(this);
-            class AddMemberFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
-                public:
-                    AddMemberFunctor(Element* el) : SetFunctor(el) {};
-            };
-            class RemoveMemberFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
-                public:
-                    RemoveMemberFunctor(Element* el) : SetFunctor(el) {};
-            };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReferences() override;

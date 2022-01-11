@@ -75,9 +75,12 @@ void Property::restoreReferences() {
 
 void Property::restoreReference(Element* el) {
     StructuralFeature::restoreReference(el);
-    // if (m_redefinedProperties.count(el->getID())) {
-    //     el->setReference(this);
-    // }
+    if (m_redefinedProperties.contains(el->getID())) {
+        el->setReference(this);
+        if (m_featuringClassifier.has() && !m_redefinitionContext.contains(m_featuringClassifier.id())) {
+            m_redefinitionContext.addReadOnly(m_featuringClassifier.id());
+        }
+    }
 }
 
 void Property::referenceErased(ID id) {

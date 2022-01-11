@@ -282,6 +282,7 @@ namespace UML {
 
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
+        void setOwner(Element& el, ID id);
     }
 
     /**
@@ -345,6 +346,7 @@ namespace UML {
         friend class GeneralizationSet;
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
+        friend void Parsers::setOwner(Element& el, ID id);
 
         protected:
             bool m_rootRedefinedSet = true;

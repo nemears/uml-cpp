@@ -17,6 +17,13 @@ void Dependency::referenceReindexed(ID oldID, ID newID) {
     m_supplier.reindex(oldID, newID);
 }
 
+void Dependency::restoreReference(Element* el) {
+    PackageableElement::restoreReference(el);
+    if (m_supplier.contains(el->getID())) {
+        el->setReference(this); // need this logic for all setReference top level calls
+    }
+}
+
 void Dependency::restoreReferences() {
     PackageableElement::restoreReferences();
     DirectedRelationship::restoreReferences();
@@ -37,6 +44,8 @@ void Dependency::init() {
     m_client.m_signature = &Dependency::getClient;
     m_supplier.subsets(m_targets);
     m_supplier.m_signature = &Dependency::getSupplier;
+    m_supplier.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_supplier.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
 void Dependency::copy(const Dependency& rhs) {

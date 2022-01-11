@@ -402,6 +402,10 @@ ElementType elementTypeFromString(string eType) {
     throw UmlParserException("Could not identify entity type by keyword: " + eType + '!', "");
 }
 
+void setNamespace(NamedElement& el, ID id) {
+    el.m_namespace.addReadOnly(id);
+}
+
 namespace {
 
 Element* parseNode(YAML::Node node, ParserMetaData& data) {
@@ -668,6 +672,24 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         }
         if (ret->isSubClassOf(ElementType::PROFILE_APPLICATION)) {
             parseSingletonReference(node, data, "applyingPackage", ret->as<ProfileApplication>(), &ProfileApplication::setApplyingPackage, &ProfileApplication::setApplyingPackage);
+        }
+        if (ret->isSubClassOf(ElementType::GENERALIZATION)) {
+            parseSingletonReference(node, data, "specific", ret->as<Generalization>(), &Generalization::setSpecific, &Generalization::setSpecific);
+        }
+        if (ret->isSubClassOf(ElementType::CLASSIFIER)) {
+            if (node["namespace"]) {
+                if (node["namespace"].IsScalar()) {
+                    if (isValidID(node["namespace"].as<std::string>())) {
+                        setNamespace(ret->as<NamedElement>(), ID::fromString(node["namespace"].as<std::string>()));
+                    }
+                }
+            }
+        }
+        if (ret->isSubClassOf(ElementType::OPERATION)) {
+            parseSingletonReference(node, data, "class", ret->as<Operation>(), &Operation::setClass, &Operation::setClass);
+        }
+        if (ret->isSubClassOf(ElementType::PROPERTY)) {
+            parseSingletonReference(node, data, "class", ret->as<Property>(), &Property::setClass, &Property::setClass);
         }
         // if (node["receivingPackage"]) {
         //     ID receivingPackageID = ID::fromString(node["receivingPackage"].as<string>());
@@ -1118,6 +1140,12 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
                 return;
             }
         }
+        if (el.isSubClassOf(ElementType::CLASSIFIER)) {
+            if (el.as<Classifier>().hasNamespace()) {
+                emitter << YAML::Key << "namespace" << YAML::Value << el.as<Classifier>().getNamespaceID().string();
+                return;
+            }
+        }
         if (el.isSubClassOf(ElementType::OPERATION)) {
             if (el.as<Operation>().hasClass()) {
                 emitter << YAML::Key << "class" << YAML::Value << el.as<Operation>().getClassID().string();
@@ -1479,8 +1507,8 @@ void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization, 
 
     emitElement(emitter, generalization, data);
 
-    if (generalization.getGeneral()) {
-        emitter << YAML::Key << "general" << YAML::Value << generalization.getGeneral()->getID().string();
+    if (generalization.hasGeneral()) {
+        emitter << YAML::Key << "general" << YAML::Value << generalization.getGeneralID().string();
     }
     
     if (!generalization.getGeneralizationSets().empty()) {

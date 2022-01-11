@@ -9,12 +9,14 @@ void Generalization::AddGeneralFunctor::operator()(Element& el) const {
     if (m_el.as<Generalization>().hasSpecific() && !m_el.as<Generalization>().getSpecificRef().getGenerals().contains(el.getID())) {
         m_el.as<Generalization>().getSpecificRef().getGenerals().add(el.as<Classifier>());
     }
+    el.setReference(&m_el);
 }
 
 void Generalization::RemoveGeneralFunctor::operator()(Element& el) const {
     if (m_el.as<Generalization>().hasSpecific() && m_el.as<Generalization>().getSpecificRef().getGenerals().contains(el.getID())) {
         m_el.as<Generalization>().getSpecificRef().getGenerals().remove(el.as<Classifier>());
     }
+    el.removeReference(m_el.getID());
 }
 
 void Generalization::referenceReindexed(ID oldID, ID newID) {
@@ -43,6 +45,15 @@ void Generalization::referenceErased(ID id) {
     m_general.eraseElement(id);
     m_specific.eraseElement(id);
     m_generalizationSets.eraseElement(id);
+}
+
+void Generalization::restoreReference(Element* el) {
+    DirectedRelationship::restoreReference(el);
+    if (m_specific.id() == el->getID() && m_general.has() && !m_specific.get()->getGenerals().contains(m_general.id())) {
+        m_specific.get()->getGenerals().add(m_general.getRef());
+    } else if (m_general.id() == el->getID()) {
+        m_general.getRef().setReference(this);
+    }
 }
 
 Set<Classifier, Generalization>& Generalization::getGeneralSingleton() {

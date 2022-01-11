@@ -96,6 +96,10 @@ void Classifier::referenceReindexed(ID oldID, ID newID) {
 void Classifier::restoreReferences() {
     Namespace::restoreReferences();
     PackageableElement::restoreReferences();
+    TemplateableElement::restoreReferences();
+    for (auto& generalization : m_generalizations) {
+        // load through loop
+    }
     // m_attributes.restoreReferences();
     // m_generalizations.restoreReferences();
     // need to load generalizations

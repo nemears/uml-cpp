@@ -50,8 +50,7 @@ namespace UML {
                 if (this->m_root) {
                     return this->m_root->m_id;
                 } else {
-                    // TODO throw proper exception
-                    throw ManagerStateException("id()");
+                    return ID::nullID();
                 }
             };
             bool has() const {

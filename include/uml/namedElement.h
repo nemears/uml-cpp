@@ -12,6 +12,10 @@ namespace UML{
     class UmlManager;
     class Dependency;
 
+    namespace Parsers {
+        void setNamespace(NamedElement& el, ID id);
+    }
+
     enum class VisibilityKind {
         PUBLIC,
         PROTECTED,
@@ -26,6 +30,7 @@ namespace UML{
 
         friend class UmlManager;
         friend class Namespace;
+        friend void Parsers::setNamespace(NamedElement& el, ID id);
 
         protected:
             std::string m_name;

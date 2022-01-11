@@ -11,11 +11,6 @@ namespace UML {
     class Class;
     class DataType;
     class Type;
-    namespace Parsers {
-        class OperationSetClass;
-        class OperationSetDataType;
-        class OperationSetArtifact;
-    }
 
     class Operation : public BehavioralFeature , public TemplateableElement, public ParameterableElement {
         
@@ -23,9 +18,6 @@ namespace UML {
         friend class Class;
         friend class Parameter;
         friend class DataType;
-        friend class Parsers::OperationSetClass;
-        friend class Parsers::OperationSetDataType;
-        friend class Parsers::OperationSetArtifact;
 
         protected:
             Singleton<Type, Operation> m_type = Singleton<Type, Operation>(this);
@@ -51,18 +43,21 @@ namespace UML {
             bool hasType() const;
             void setType(Type& type);
             void setType(Type* type);
+            void setType(ID id);
             Class* getClass();
             Class& getClassRef();
             ID getClassID() const;
             bool hasClass() const;
             void setClass(Class& clazz);
             void setClass(Class* clazz);
+            void setClass(ID id);
             DataType* getDataType();
             DataType& getDataTypeRef();
             ID getDataTypeID() const;
             bool hasDataType() const;
             void setDataType(DataType& dataType);
             void setDataType(DataType* dataType);
+            void setDataType(ID id);
             OrderedSet<Parameter, Operation>& getOwnedParameters();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

@@ -109,6 +109,10 @@ void Operation::setType(Type& type) {
     m_type.set(type);
 }
 
+void Operation::setType(ID id) {
+    m_type.set(id);
+}
+
 Class* Operation::getClass() {
     return m_class.get();
 }
@@ -133,6 +137,10 @@ void Operation::setClass(Class& clazz) {
     m_class.set(clazz);
 }
 
+void Operation::setClass(ID id) {
+    m_class.set(id);
+}
+
 DataType* Operation::getDataType() {
     return m_dataType.get();
 }
@@ -155,6 +163,10 @@ void Operation::setDataType(DataType* dataType) {
 
 void Operation::setDataType(DataType& dataType) {
     m_dataType.set(dataType);
+}
+
+void Operation::setDataType(ID id) {
+    m_dataType.set(id);
 }
 
 OrderedSet<Parameter, Operation>& Operation::getOwnedParameters() {

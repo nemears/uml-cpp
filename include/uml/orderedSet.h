@@ -152,6 +152,9 @@ namespace UML {
             };
             T& front() {
                 if (this->m_first) {
+                    if (!m_first->m_el) {
+                        m_first->m_el = &this->m_el->m_manager->get(m_first->m_id);
+                    }
                     return *dynamic_cast<T*>(this->m_first->m_el);
                 } else {
                     throw ManagerStateException("TODO, OrderedSet");
@@ -159,6 +162,9 @@ namespace UML {
             };
             T& back() {
                 if (m_last) {
+                    if (!m_last->m_el) {
+                        m_last->m_el = &this->m_el->m_manager->get(m_last->m_id);
+                    }
                     return *dynamic_cast<T*>(m_last->m_el);
                 } else {
                     throw ManagerStateException("TODO, OrderedSet");

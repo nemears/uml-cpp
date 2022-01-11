@@ -129,18 +129,24 @@ Element* UmlManager::aquire(ID id) {
                 Element* ret = Parsers::parse(data);
                 if (ret) {
                     ret->m_node->m_managerElementMemory = ret;
-                    for (auto& pair : ret->m_node->m_references) {
-                        if (!pair.second && loaded(pair.first)) {
-                            Element* el = 0;
+                    size_t numEls = ret->m_node->m_referenceOrder.size();
+                    for (size_t i = 0; i < numEls; i++) {
+                        ID refID = ret->m_node->m_referenceOrder[i];
+                        ManagerNode* node = ret->m_node->m_references.at(refID);
+                        Element* el = 0;
+                        if (!node && loaded(refID)) {
                             try {
-                                el = &get<>(pair.first); // TODO make this faster somehow this line is a real limiter of speed
+                                el = &get<>(refID); // TODO make this faster somehow this line is a real limiter of speed
+                                ret->m_node->m_references[refID] = el->m_node;
                             } catch (std::exception e) {
                                 // nothing
                             }
-                            if (el) {
-                                pair.second = el->m_node;
-                                el->restoreReference(ret);
-                            }
+                        } else if (node && loaded(refID)) {
+                            el =  node->m_managerElementMemory;
+                        }
+                        if (el) {
+                            el->restoreReference(ret);
+                            ret->restoreReference(el);
                         }
                     }
                     ret->restoreReferences();
@@ -170,6 +176,9 @@ void UmlManager::releaseNode(Element& el) {
         delete node->m_managerElementMemory;
     }
     for (auto& e : node->m_references) {
+        if (!e.second && loaded(e.first)) {
+            e.second = get(e.first).m_node; // slow :(
+        }
         if (e.second) {
             e.second->m_managerElementMemory->referencingReleased(id);
         }

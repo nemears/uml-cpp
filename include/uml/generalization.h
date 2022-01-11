@@ -34,6 +34,7 @@ namespace UML {
             void referencingReleased(ID id) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
+            void restoreReference(Element* el) override;
             Set<Classifier, Generalization>& getGeneralSingleton();
             Set<Classifier, Generalization>& getSpecificSingleton();
             void init();

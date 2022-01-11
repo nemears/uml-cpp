@@ -138,11 +138,9 @@ namespace UML {
             };
     };
 
+    // TODO delete me
     template <class T> class Sequence;
-    template <class T, class U> class TemplateAbstractSequenceFunctor;
-    template <class T, class U> class Singleton;
-    template <class T> struct SequenceIterator;
-    template <class V, class W> class OppositeFunctor;
+
     class ElementDoesntExistException;
     class Relationship;
     class DirectedRelationship;
@@ -157,9 +155,12 @@ namespace UML {
     class PackageMerge;
     class Classifier;
     class Namespace;
+    class Generalization;
     template <class T, class U> class Set;
     template <class T> class SetIterator;
+    template <class V, class W> class OppositeFunctor;
     template <class T, class U> class Singleton;
+    template <class T, class U> class OrderedSet;
     namespace Parsers {
         class SetOwner;
         struct EmitterMetaData;
@@ -174,6 +175,9 @@ namespace UML {
      **/
     class Element {
 
+        // TODO delete
+        template <class T> friend class Sequence;
+
         friend class ElementDoesntExistException;
         friend class Slot;
         friend class Property;
@@ -181,15 +185,12 @@ namespace UML {
         friend class UmlManager;
         friend class AddToMountFunctor;
         friend class PackageMerge;
-        template<typename> friend class Sequence;
-        template <class T, class U> friend class TemplateAbstractSequenceFunctor;
+        friend class Generalization;
         template <class T, class U> friend class Singleton;
-        template <class T> friend class Sequence;
-        template <class T> friend struct SequenceIterator;
         template <class T, class U> friend class Set;
         template <class V, class W> friend class OppositeFunctor;
         template <class T> friend class SetIterator;
-        friend class Parsers::SetOwner;
+        template <class T, class U> friend class OrderedSet;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);
         friend class Classifier;
         friend class Namespace;

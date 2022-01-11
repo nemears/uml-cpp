@@ -280,6 +280,10 @@ namespace UML {
     class Manifestation;
     class GeneralizationSet;
 
+    namespace Parsers {
+        void setNamespace(NamedElement& el, ID id);
+    }
+
     /**
      * This container is based around a weighted binary search tree
      **/
@@ -339,6 +343,8 @@ namespace UML {
         friend class Artifact;
         friend class Manifestation;
         friend class GeneralizationSet;
+
+        friend void Parsers::setNamespace(NamedElement& el, ID id);
 
         protected:
             bool m_rootRedefinedSet = true;
@@ -989,6 +995,9 @@ namespace UML {
              * @return the node that was created or found
              **/
             virtual SetNode* createNode(ID id) {
+                if (m_setToInstantiate) {
+                    return static_cast<Set*>(m_setToInstantiate)->createNode(id);
+                }
                 SetNode* temp = lookForNodeInParents(id);
                 if (temp) {
                     return temp;
@@ -1015,6 +1024,7 @@ namespace UML {
                     SetNode* res = search(el->getID(), m_root);
                     if (res) {
                         res->m_el = el;
+                        setName(res);
                     }
                 }
             };
@@ -1164,6 +1174,27 @@ namespace UML {
                     innerRemove(id);
                 }
             };
+            /**
+             * protected method to allow friends to add to a readonly set
+             * @param id the id of the element we are adding
+             **/
+            void addReadOnly(ID id) {
+                SetNode* node = createNode(id);
+                add(node);
+                if (m_el && m_el->m_manager) {
+                    m_el->setReference(id);
+                }
+                if (m_el) {
+                    if (m_el->m_node->m_managerElementMemory != m_el) {
+                        (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().add(id);
+                    }
+                    for (auto& copy : m_el->m_node->m_copies) {
+                        if (copy != m_el) {
+                            (copy->as<U>().*m_signature)().add(id);
+                        }
+                    }
+                }
+            }
             /**
              * protected method to allow friends to remove from a readonly set
              * @param id the id of the node we are removing
@@ -1677,10 +1708,8 @@ namespace UML {
                 }
                 SetNode* node = createNode(id);
                 add(node);
-                if (m_el) {
-                    if (m_el->m_manager) {
-                        m_el->setReference(id);
-                    }
+                if (m_el && m_el->m_manager) {
+                    m_el->setReference(id);
                 }
                 if (m_el) {
                     if (m_el->m_node->m_managerElementMemory != m_el) {

@@ -5,6 +5,7 @@
 // #include "uml/classifier.h"
 #include "uml/singleton.h"
 #include "uml/uml-stable.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace std;
 namespace UML {
@@ -508,4 +509,13 @@ bool Element::isSameOrNull(ID id, Element* el) {
         return false;
     }
 }
+
+void SetReferenceFunctor::operator()(Element& el) const {
+    el.setReference(&m_el);
+}
+
+void RemoveReferenceFunctor::operator()(Element& el) const {
+    el.removeReference(m_el.getID());
+}
+
 }

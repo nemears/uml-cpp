@@ -6,6 +6,7 @@
 using namespace UML;
 
 void TemplateParameter::referencingReleased(ID id) {
+    Element::referencingReleased(id);
     m_signature.release(id);
     m_ownedParameteredElement.release(id);
     m_parameteredElement.release(id);
@@ -14,6 +15,7 @@ void TemplateParameter::referencingReleased(ID id) {
 }
 
 void TemplateParameter::referenceReindexed(ID oldID, ID newID) {
+    Element::referenceReindexed(oldID, newID);
     m_signature.reindex(oldID, newID);
     m_ownedParameteredElement.reindex(oldID, newID);
     m_parameteredElement.reindex(oldID, newID);
@@ -31,6 +33,7 @@ void TemplateParameter::restoreReferences() {
 }
 
 void TemplateParameter::referenceErased(ID id) {
+    Element::referenceErased(id);
     m_signature.eraseElement(id);
     m_ownedParameteredElement.eraseElement(id);
     m_parameteredElement.eraseElement(id);
@@ -68,9 +71,11 @@ void TemplateParameter::init() {
     m_ownedParameteredElement.subsets(*m_ownedElements);
     m_ownedParameteredElement.opposite(&ParameterableElement::getOwningTemplateParameterSingleton);
     m_ownedParameteredElement.m_signature = &TemplateParameter::getOwnedParameteredElementSingleton;
+    m_default.opposite(&ParameterableElement::getTemplateParameterSingleton);
     m_default.m_signature = &TemplateParameter::getDefaultSingleton;
     m_ownedDefault.subsets(m_default);
     m_ownedDefault.subsets(*m_ownedElements);
+    m_ownedDefault.opposite(&ParameterableElement::getOwningTemplateParameterSingleton);
     m_ownedDefault.m_signature = &TemplateParameter::getOwnedDefaultSingleton;
 }
 

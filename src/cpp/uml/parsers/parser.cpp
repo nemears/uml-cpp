@@ -12,7 +12,7 @@ namespace Parsers {
  * Template helper functions for parsing
  **/
 template <class T = Element, class U = Element>
-void parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string key, U& el, void (U::*elSignature)(T& el), void (U::*idSignature)(ID id)) {
+bool parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string key, U& el, void (U::*elSignature)(T& el), void (U::*idSignature)(ID id)) {
     if (node[key]) {
         if (node[key].IsScalar()) {
             if (isValidID(node[key].as<std::string>())) {
@@ -23,6 +23,7 @@ void parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string 
                 } else {
                     (el.*idSignature)(id);
                 }
+                return true;
             } else {
                 // Path
                 Element* parsed = parseExternalAddToManager(data, node[key].as<std::string>());
@@ -31,12 +32,14 @@ void parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string 
                 } else {
                     throw UmlParserException("Could not identify valid file at path " + node[key].as<std::string>(), data.m_path.string(), node[key]);
                 }
+                return true;
                 // throw UmlParserException("TODO, parse reference from path (seems a lil irrelevant)", data.m_path.string(), node[key]);
             }
         } else {
             throw UmlParserException("Invalid yaml node type for " + key + " entry, expected a scalar id", data.m_path.string(), node[key]);
         }
     }
+    return false;
 };
 
 template <class T = Element, class U = Element, class S = Set<T,U>>
@@ -432,6 +435,123 @@ void setOwner(Element& el, ID id) {
 
 namespace {
 
+void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
+    if (ret->isSubClassOf(ElementType::PACKAGEABLE_ELEMENT)) {
+        if (parseSingletonReference(node, data, "owningPackage", ret->as<PackageableElement>(), &PackageableElement::setOwningPackage, &PackageableElement::setOwningPackage)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::PACKAGE_MERGE)) {
+        if (parseSingletonReference(node, data, "receivingPackage", ret->as<PackageMerge>(), &PackageMerge::setReceivingPackage, &PackageMerge::setReceivingPackage)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::PROFILE_APPLICATION)) {
+        if (parseSingletonReference(node, data, "applyingPackage", ret->as<ProfileApplication>(), &ProfileApplication::setApplyingPackage, &ProfileApplication::setApplyingPackage)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::GENERALIZATION)) {
+        if (parseSingletonReference(node, data, "specific", ret->as<Generalization>(), &Generalization::setSpecific, &Generalization::setSpecific)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::CLASSIFIER)) {
+        if (node["namespace"]) {
+            if (node["namespace"].IsScalar()) {
+                if (isValidID(node["namespace"].as<std::string>())) {
+                    setNamespace(ret->as<NamedElement>(), ID::fromString(node["namespace"].as<std::string>()));
+                    return;
+                }
+            }
+        }
+    }
+    if (ret->isSubClassOf(ElementType::OPERATION)) {
+        if (parseSingletonReference(node, data, "class", ret->as<Operation>(), &Operation::setClass, &Operation::setClass)) {
+            return;
+        }
+        if (parseSingletonReference(node, data, "dataType", ret->as<Operation>(), &Operation::setDataType, &Operation::setDataType)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::PROPERTY)) {
+        if (parseSingletonReference(node, data, "class", ret->as<Property>(), &Property::setClass, &Property::setClass)) {
+            return;
+        }
+        if (parseSingletonReference(node, data, "dataType", ret->as<Property>(), &Property::setDataType, &Property::setDataType)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::VALUE_SPECIFICATION)) {
+        if (node["owner"]) {
+            if (node["owner"].IsScalar()) {
+                if (isValidID(node["owner"].as<std::string>())) {
+                    setOwner(*ret, ID::fromString(node["owner"].as<std::string>()));
+                    // TODO i think we also need to check parameterable element here too
+                    return;
+                }
+            }
+        }
+    }
+    if (ret->isSubClassOf(ElementType::PARAMETER)) {
+        if (parseSingletonReference(node, data, "operation", ret->as<Parameter>(), &Parameter::setOperation, &Parameter::setOperation)) {
+            return;
+        }
+        if (node["namespace"]) {
+            if (node["namespace"].IsScalar()) {
+                if (isValidID(node["namespace"].as<std::string>())) {
+                    setNamespace(ret->as<NamedElement>(), ID::fromString(node["namespace"].as<std::string>()));
+                    return;
+                }
+            }
+        }
+    }
+    if (ret->isSubClassOf(ElementType::SLOT)) {
+        if (parseSingletonReference(node, data, "owningInstance", ret->as<Slot>(), &Slot::setOwningInstance, &Slot::setOwningInstance)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::ENUMERATION_LITERAL)) {
+        if (parseSingletonReference(node, data, "enumeration", ret->as<EnumerationLiteral>(), &EnumerationLiteral::setEnumeration, &EnumerationLiteral::setEnumeration)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::TEMPLATE_SIGNATURE)) {
+        if (parseSingletonReference(node, data, "template", ret->as<TemplateSignature>(), &TemplateSignature::setTemplate, &TemplateSignature::setTemplate)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::TEMPLATE_PARAMETER)) {
+        if (parseSingletonReference(node, data, "signature", ret->as<TemplateParameter>(), &TemplateParameter::setSignature, &TemplateParameter::setSignature)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::TEMPLATE_BINDING)) {
+        if (parseSingletonReference(node, data, "boundElement", ret->as<TemplateBinding>(), &TemplateBinding::setBoundElement, &TemplateBinding::setBoundElement)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::TEMPLATE_PARAMETER_SUBSTITUTION)) {
+        if (parseSingletonReference(node, data, "templateBinding", ret->as<TemplateParameterSubstitution>(), &TemplateParameterSubstitution::setTemplateBinding, &TemplateParameterSubstitution::setTemplateBinding)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
+        if (parseSingletonReference(node, data, "owningTemplateParameter", ret->as<ParameterableElement>(), &ParameterableElement::setOwningTemplateParameter, &ParameterableElement::setOwningTemplateParameter)) {
+            return;
+        }
+        if (node["owner"]) {
+            if (node["owner"].IsScalar()) {
+                if (isValidID(node["owner"].as<std::string>())) {
+                    setOwner(*ret, ID::fromString(node["owner"].as<std::string>()));
+                    // ret->as<ParameterableElement>().setTemplateParameter(ID::fromString(node["owner"].as<std::string>()));
+                    return;
+                }
+            }
+        }
+    }
+};
+
 Element* parseNode(YAML::Node node, ParserMetaData& data) {
     Element* ret = 0;
 
@@ -688,225 +808,7 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (ret && data.m_strategy == ParserStrategy::INDIVIDUAL) {
-        if (ret->isSubClassOf(ElementType::PACKAGEABLE_ELEMENT)) {
-            parseSingletonReference(node, data, "owningPackage", ret->as<PackageableElement>(), &PackageableElement::setOwningPackage, &PackageableElement::setOwningPackage);
-        }
-        if (ret->isSubClassOf(ElementType::PACKAGE_MERGE)) {
-            parseSingletonReference(node, data, "receivingPackage", ret->as<PackageMerge>(), &PackageMerge::setReceivingPackage, &PackageMerge::setReceivingPackage);
-        }
-        if (ret->isSubClassOf(ElementType::PROFILE_APPLICATION)) {
-            parseSingletonReference(node, data, "applyingPackage", ret->as<ProfileApplication>(), &ProfileApplication::setApplyingPackage, &ProfileApplication::setApplyingPackage);
-        }
-        if (ret->isSubClassOf(ElementType::GENERALIZATION)) {
-            parseSingletonReference(node, data, "specific", ret->as<Generalization>(), &Generalization::setSpecific, &Generalization::setSpecific);
-        }
-        if (ret->isSubClassOf(ElementType::CLASSIFIER)) {
-            if (node["namespace"]) {
-                if (node["namespace"].IsScalar()) {
-                    if (isValidID(node["namespace"].as<std::string>())) {
-                        setNamespace(ret->as<NamedElement>(), ID::fromString(node["namespace"].as<std::string>()));
-                    }
-                }
-            }
-        }
-        if (ret->isSubClassOf(ElementType::OPERATION)) {
-            parseSingletonReference(node, data, "class", ret->as<Operation>(), &Operation::setClass, &Operation::setClass);
-            parseSingletonReference(node, data, "dataType", ret->as<Operation>(), &Operation::setDataType, &Operation::setDataType);
-        }
-        if (ret->isSubClassOf(ElementType::PROPERTY)) {
-            parseSingletonReference(node, data, "class", ret->as<Property>(), &Property::setClass, &Property::setClass);
-            parseSingletonReference(node, data, "dataType", ret->as<Property>(), &Property::setDataType, &Property::setDataType);
-        }
-        if (ret->isSubClassOf(ElementType::VALUE_SPECIFICATION)) {
-            if (node["owner"]) {
-                if (node["owner"].IsScalar()) {
-                    if (isValidID(node["owner"].as<std::string>())) {
-                        setOwner(*ret, ID::fromString(node["owner"].as<std::string>()));
-                    }
-                }
-            }
-        }
-        if (ret->isSubClassOf(ElementType::PARAMETER)) {
-            parseSingletonReference(node, data, "operation", ret->as<Parameter>(), &Parameter::setOperation, &Parameter::setOperation);
-            if (node["namespace"]) {
-                if (node["namespace"].IsScalar()) {
-                    if (isValidID(node["namespace"].as<std::string>())) {
-                        setNamespace(ret->as<NamedElement>(), ID::fromString(node["namespace"].as<std::string>()));
-                    }
-                }
-            }
-        }
-        if (ret->isSubClassOf(ElementType::SLOT)) {
-            parseSingletonReference(node, data, "owningInstance", ret->as<Slot>(), &Slot::setOwningInstance, &Slot::setOwningInstance);
-        }
-        // if (node["receivingPackage"]) {
-        //     ID receivingPackageID = ID::fromString(node["receivingPackage"].as<string>());
-        //     if (data.m_manager->loaded(receivingPackageID)) {
-        //         ret->as<PackageMerge>().setReceivingPackage(data.m_manager->get<Package>(receivingPackageID));
-        //     } else {
-        //         throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["receivingPackage"]);
-        //     }
-        // }
-        // if (node["applyingPackage"]) {
-        //     ID applyingPackageID = ID::fromString(node["applyingPackage"].as<string>());
-        //     if (data.m_manager->loaded(applyingPackageID)) {
-        //         ret->as<ProfileApplication>().setApplyingPackage(data.m_manager->get<Package>(applyingPackageID));
-        //     } else {
-        //         throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["applyingPackage"]);
-        //     }
-        // }
-        // if (node["class"]) {
-        //     if (node["class"].IsScalar()) {
-        //         if (ret->isSubClassOf(ElementType::PROPERTY)) {
-        //             PropertySetClass setClass;
-        //             parseSingleton(node["class"], data, ret->as<Property>(), &Property::setClass, setClass);
-        //         } else if (ret->isSubClassOf(ElementType::OPERATION)) {
-        //             OperationSetClass setClass;
-        //             parseSingleton(node["class"], data, ret->as<Operation>(), &Operation::setClass, setClass);
-        //         }
-        //     }
-        // }
-        // if (node["dataType"]) {
-        //     if (node["dataType"].IsScalar()) {
-        //         if (ret->isSubClassOf(ElementType::PROPERTY)) {
-        //             PropertySetDataType setDataType;
-        //             parseSingleton(node["dataType"], data, ret->as<Property>(), &Property::setDataType, setDataType);
-        //         } else if (ret->isSubClassOf(ElementType::OPERATION)) {
-        //             OperationSetDataType setDataType;
-        //             parseSingleton(node["dataType"], data, ret->as<Operation>(), &Operation::setDataType, setDataType);
-        //         }
-        //     }
-        // }
-
-        // if (node["artifact"]) {
-        //     if (node["artifact"].IsScalar()) {
-        //         if (ret->isSubClassOf(ElementType::PROPERTY)) {
-        //             PropertySetArtifact setArtifact;
-        //             parseSingleton(node["artifact"], data, ret->as<Property>(), &Property::setArtifact, setArtifact);
-        //         } else if (ret->isSubClassOf(ElementType::OPERATION)) {
-        //             OperationSetArtifact setArtifact;
-        //             parseSingleton(node["artifact"], data, ret->as<Operation>(), &Operation::setArtifact, setArtifact);
-        //         } else if (ret->isSubClassOf(ElementType::MANIFESTATION)) {
-        //             ManifestationSetArtifact setArtifact;
-        //             parseSingleton(node["artifact"], data, ret->as<Manifestation>(), &Manifestation::setArtifact, setArtifact);
-        //         }
-        //     }
-        // }
-
-        // if (node["owningArtifact"]) {
-        //     ArtifactSetArtifact setArtifact;
-        //     parseSingleton(node["owningArtifact"], data, ret->as<Artifact>(), &Artifact::setArtifact, setArtifact);
-        // }
-
-        // if (node["owningProperty"]) {
-        //     ID owningPropertyID = ID::fromString(node["owningProperty"].as<string>());
-        //     if (data.m_manager->loaded(owningPropertyID)) {
-        //         data.m_manager->get<Property>(owningPropertyID).setDefaultValue(ret->as<ValueSpecification>());
-        //     } else {
-        //         throw UmlParserException("TODO: fix this, just set id", data.m_path.string(), node["owningProperty"]);
-        //     }
-        // }
-        // if (node["specific"]) {
-        //     SetSpecific setSpecific;
-        //     parseSingleton(node["specific"], data, ret->as<Generalization>(), &Generalization::setSpecific, setSpecific);
-        // }
-        // if (node["nestingClass"]) {
-        //     SetNestingClass setNestingClass;
-        //     parseSingleton(node["nestingClass"], data, ret->as<Classifier>(), &Classifier::setNestingClass, setNestingClass);
-        // }
-        // if (node["owningElement"]) {
-        //     SetOwningElement setOwningElement;
-        //     parseSingleton(node["owningElement"], data, ret->as<Comment>(), &Comment::setOwningElement, setOwningElement);
-        // }
-        // if (node["owningInstance"]) {
-        //     SetOwningInstance setOwningInstance;
-        //     parseSingleton(node["owningInstance"], data, ret->as<Slot>(), &Slot::setOwningInstance, setOwningInstance);
-        // }
-        // if (node["owningSlot"]) {
-        //     SetOwningSlot setOwningSlot;
-        //     parseSingleton(node["owningSlot"], data, ret->as<ValueSpecification>(), &ValueSpecification::setOwningSlot, setOwningSlot);
-        // }
-        // if (node["owningInstanceSpec"]) {
-        //     SetOwningInstanceSpec setOwningInstanceSpec;
-        //     parseSingleton(node["owningInstanceSpec"], data, ret->as<ValueSpecification>(), &ValueSpecification::setOwningInstanceSpec, setOwningInstanceSpec);
-        // }
-        // if (node["owningAssociation"]) {
-        //     SetOwningAssociation setOwningAssociation;
-        //     parseSingleton(node["owningAssociation"], data, ret->as<Property>(), &Property::setOwningAssociation, setOwningAssociation);
-        // }
-        // if (node["operation"]) {
-        //     if (node["operation"].IsScalar()) {
-        //         SetOperation setOperation;
-        //         parseSingleton(node["operation"], data, ret->as<Parameter>(), &Parameter::setOperation, setOperation);
-        //     }
-        // }
-        // if (node["behavioredClassifier"]) {
-        //     SetBehavioredClassifier setBehavioredClassifier;
-        //     parseSingleton(node["behavioredClassifier"], data, ret->as<Behavior>(), &Behavior::setBehavioredClassifier, setBehavioredClassifier);
-        // }
-        // if (node["behavior"]) {
-        //     SetBehavior setBehavior;
-        //     parseSingleton(node["behavior"], data, ret->as<Parameter>(), &Parameter::setBehavior, setBehavior);
-        // }
-        // if (node["enumeration"]) {
-        //     if (node["enumeration"].IsScalar()) {
-        //         SetEnumeration setEnumeration;
-        //         parseSingleton(node["enumeration"], data, ret->as<EnumerationLiteral>(), &EnumerationLiteral::setEnumeration, setEnumeration);
-        //     }
-        // }
-        // if (node["expression"]) {
-        //     if (node["expression"].IsScalar()) {
-        //         SetExpression setExpression;
-        //         parseSingleton(node["expression"], data, ret->as<ValueSpecification>(), &ValueSpecification::setExpression, setExpression);
-        //     }
-        // }
-        // if (node["template"]) {
-        //     SetTemplate setTemplate;
-        //     parseSingleton(node["template"], data, ret->as<TemplateSignature>(), &TemplateSignature::setTemplate, setTemplate);
-        // }
-        // if (node["signature"]) {
-        //     SetSignature setSignature;
-        //     parseSingleton(node["signature"], data, ret->as<TemplateParameter>(), &TemplateParameter::setSignature, setSignature);
-        // }
-        // if (node["owningTemplateParameter"]) {
-        //     SetOwningTemplateParameter setOwningTemplateParameter;
-        //     parseSingleton(node["owningTemplateParameter"], data, ret->as<ParameterableElement>(), &ParameterableElement::setOwningTemplateParameter, setOwningTemplateParameter);
-        // }
-        // if (node["boundElement"]) {
-        //     SetBoundElement setBoundElement;
-        //     parseSingleton(node["boundElement"], data, ret->as<TemplateBinding>(), &TemplateBinding::setBoundElement, setBoundElement);
-        // }
-        // if (node["templateBinding"]) {
-        //     if (node["templateBinding"].IsScalar()) {
-        //         SetTemplateBinding setTemplateBinding;
-        //         parseSingleton(node["templateBinding"], data, ret->as<TemplateParameterSubstitution>(), &TemplateParameterSubstitution::setTemplateBinding, setTemplateBinding);
-        //     }
-        // }
-        // if (node["extension"]) {
-        //     if (node["extension"].IsScalar()) {
-        //         SetExtension setExtension;
-        //         parseSingleton(node["extension"], data, ret->as<ExtensionEnd>(), &ExtensionEnd::setExtension, setExtension);
-        //     }
-        // }
-        // if (node["location"]) {
-        //     SetLocation setLocation;
-        //     parseSingleton(node["location"], data, ret->as<Deployment>(), &Deployment::setLocation, setLocation);
-        // }
-        // if (node["owner"]) { // special case
-        //     if (node["owner"].IsScalar()) {
-        //         if (ret->isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
-        //             //if (ret->as<ParameterableElement>().hasTemplateParameter()) {
-        //                 ID id = ID::fromString(node["owner"].as<string>());
-        //                 SetOwner setOwner;
-        //                 if (data.m_manager->loaded(id)) {
-        //                     setOwner(*ret, data.m_manager->get<>(id));
-        //                 } else {
-        //                     setOwner(*ret, id);
-        //                 }
-        //             //}
-        //         }
-        //     }
-        // }
+        parseScope(node, data, ret);
     }
 
     return ret;
@@ -3139,10 +3041,7 @@ void emitManifestation(YAML::Emitter& emitter, Manifestation& manifestation, Emi
 }
 
 void parseParameterableElement(YAML::Node node, ParameterableElement& el, ParserMetaData& data) {
-//     if (node["templateParameter"]) {
-//         SetTemplateParameter setTemplateParameter;
-//         parseSingleton(node["templateParameter"], data, el, &ParameterableElement::setTemplateParameter, setTemplateParameter);
-//     }
+    parseSingletonReference(node, data, "templateParameter", el, &ParameterableElement::setTemplateParameter, &ParameterableElement::setTemplateParameter);
 }
 
 void emitParameterableElement(YAML::Emitter& emitter, ParameterableElement& el, EmitterMetaData& data) {
@@ -3275,7 +3174,7 @@ void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, Parse
     parseElement(node, parameter, data);
     parseSingletonDefinition(node, data, "ownedDefault", parameter, determinAndParseParameterableElement, &TemplateParameter::setOwnedDefault, &TemplateParameter::setOwnedDefault);
     parseSingletonReference(node, data, "default", parameter, &TemplateParameter::setDefault, &TemplateParameter::setDefault);
-    parseSingletonDefinition(node, data, "ownedParameteredElement", parameter, determinAndParseParameterableElement, &TemplateParameter::setOwnedParameteredElement, &TemplateParameter::setOwnedDefault);
+    parseSingletonDefinition(node, data, "ownedParameteredElement", parameter, determinAndParseParameterableElement, &TemplateParameter::setOwnedParameteredElement, &TemplateParameter::setOwnedParameteredElement);
     parseSingletonReference(node, data, "parameteredElement", parameter, &TemplateParameter::setParameteredElement, &TemplateParameter::setParameteredElement);
 }
 

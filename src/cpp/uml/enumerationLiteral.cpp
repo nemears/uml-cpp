@@ -75,6 +75,10 @@ void EnumerationLiteral::setEnumeration(Enumeration& enumeration) {
     m_enumeration.set(enumeration);
 }
 
+void EnumerationLiteral::setEnumeration(ID id) {
+    m_enumeration.set(id);
+}
+
 bool EnumerationLiteral::isSubClassOf(ElementType eType) const {
     bool ret = InstanceSpecification::isSubClassOf(eType);
 

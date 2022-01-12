@@ -158,11 +158,15 @@ namespace UML {
     class NamedElement;
     class Generalization;
     class Dependency;
+    class TemplateBinding;
+    class TemplateParameterSubstitution;
     template <class T, class U> class Set;
     template <class T> class SetIterator;
     template <class V, class W> class OppositeFunctor;
     template <class T, class U> class Singleton;
     template <class T, class U> class OrderedSet;
+    class SetReferenceFunctor;
+    class RemoveReferenceFunctor;
     namespace Parsers {
         struct EmitterMetaData;
         EmitterMetaData getData(Element& el);
@@ -193,6 +197,8 @@ namespace UML {
         friend class NamedElement;
         friend class Generalization;
         friend class Dependency;
+        friend class TemplateBinding;
+        friend class TemplateParameterSubstitution;
         template <class T, class U> friend class Singleton;
         template <class T, class U> friend class Set;
         template <class V, class W> friend class OppositeFunctor;
@@ -200,6 +206,8 @@ namespace UML {
         template <class T, class U> friend class OrderedSet;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);
         friend void Parsers::setOwner(Element& el, ID id);
+        friend class SetReferenceFunctor;
+        friend class RemoveReferenceFunctor;
 
         private:
             bool m_copiedElementFlag = false;

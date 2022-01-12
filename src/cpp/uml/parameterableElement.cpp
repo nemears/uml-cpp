@@ -14,6 +14,16 @@ void ParameterableElement::referenceReindexed(ID oldID, ID newID) {
     m_templateParameter.reindex(oldID, newID);
 }
 
+void ParameterableElement::restoreReference(Element* el) {
+    Element::restoreReference(el);
+    if (el->isSubClassOf(ElementType::TEMPLATE_PARAMETER) && el->as<TemplateParameter>().m_ownedDefault.id() == m_id) {
+        if (m_templateParameter.empty()) {
+            m_templateParameter.set(el->getID());
+        }
+        m_templateParameter.restore(el);
+    }
+}
+
 void ParameterableElement::restoreReferences() {
     // m_owningTemplateParameter.restoreReference();
     // m_templateParameter.restoreReference();
@@ -82,6 +92,10 @@ void ParameterableElement::setOwningTemplateParameter(TemplateParameter& paramet
     m_owningTemplateParameter.set(parameter);
 }
 
+void ParameterableElement::setOwningTemplateParameter(ID id) {
+    m_owningTemplateParameter.set(id);
+}
+
 TemplateParameter* ParameterableElement::getTemplateParameter() {
     return m_templateParameter.get();
 }
@@ -104,6 +118,10 @@ void ParameterableElement::setTemplateParameter(TemplateParameter* parameter) {
 
 void ParameterableElement::setTemplateParameter(TemplateParameter& parameter) {
     m_templateParameter.set(parameter);
+}
+
+void ParameterableElement::setTemplateParameter(ID id) {
+    m_templateParameter.set(id);
 }
 
 bool ParameterableElement::isSubClassOf(ElementType eType) const {

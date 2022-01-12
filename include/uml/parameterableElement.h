@@ -26,6 +26,7 @@ namespace UML {
             Singleton<TemplateParameter, ParameterableElement> m_owningTemplateParameter = Singleton<TemplateParameter, ParameterableElement>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReference(Element* el) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<TemplateParameter, ParameterableElement>& getOwningTemplateParameterSingleton();
@@ -42,12 +43,14 @@ namespace UML {
             bool hasOwningTemplateParameter()  const;
             void setOwningTemplateParameter(TemplateParameter* parameter);
             void setOwningTemplateParameter(TemplateParameter& parameter);
+            void setOwningTemplateParameter(ID id);
             TemplateParameter* getTemplateParameter();
             TemplateParameter& getTemplateParameterRef();
             ID getTemplateParameterID() const;
             bool hasTemplateParameter() const;
             void setTemplateParameter(TemplateParameter* parameter);
             void setTemplateParameter(TemplateParameter& parameter);
+            void setTemplateParameter(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PARAMETERABLE_ELEMENT;

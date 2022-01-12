@@ -12,14 +12,6 @@ void NamedElement::RemoveQualifiedNameFunctor::operator()(Element& el) const {
     m_el.as<NamedElement>().updateQualifiedName("");
 }
 
-void NamedElement::SetReferenceFunctor::operator()(Element& el) const {
-    el.setReference(&m_el);
-}
-
-void NamedElement::RemoveReferenceFunctor::operator()(Element& el) const {
-    el.removeReference(m_el.getID());
-}
-
 // Example of macro to replace below three method definitions
 // IMPLEMENT_ELEMENT_VIRTUALS2(NamedElement, m_namespace, m_clientDependencies, Element)
 

@@ -1,5 +1,6 @@
 #include "uml/dependency.h"
 #include "uml/uml-stable.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 

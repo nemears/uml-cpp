@@ -43,6 +43,7 @@ namespace UML {
             bool hasTemplate() const;
             void setTemplate(TemplateableElement& temp);
             void setTemplate(TemplateableElement* temp);
+            void setTemplate(ID id);
             OrderedSet<TemplateParameter, TemplateSignature>& getOwnedParameters();
             OrderedSet<TemplateParameter, TemplateSignature>& getParameters();
             bool isSubClassOf(ElementType eType) const override;

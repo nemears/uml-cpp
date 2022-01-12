@@ -22,6 +22,7 @@ namespace UML {
             Singleton<ParameterableElement, TemplateParameterSubstitution> m_ownedActual = Singleton<ParameterableElement, TemplateParameterSubstitution>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReference(Element* el) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<TemplateParameter, TemplateParameterSubstitution>& getFormalSingleton();

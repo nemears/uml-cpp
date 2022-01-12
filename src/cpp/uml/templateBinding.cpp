@@ -2,7 +2,9 @@
 #include "uml/templateParameterSubstitution.h"
 #include "uml/templateableElement.h"
 #include "uml/templateSignature.h"
+#include "uml/namedElement.h"
 #include "uml/uml-stable.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
@@ -18,6 +20,13 @@ void TemplateBinding::referenceReindexed(ID oldID, ID newID) {
     m_boundElement.reindex(oldID, newID);
     m_signature.reindex(oldID, newID);
     m_parameterSubstitution.reindex(oldID, newID);
+}
+
+void TemplateBinding::restoreReference(Element* el) {
+    DirectedRelationship::restoreReference(el);
+    if (m_signature.id() == el->getID()) {
+        el->setReference(this);
+    }
 }
 
 void TemplateBinding::restoreReferences() {
@@ -47,6 +56,8 @@ void TemplateBinding::init() {
     m_boundElement.opposite(&TemplateableElement::getTemplateBindings);
     m_boundElement.m_signature = &TemplateBinding::getBoundElementSingleton;
     m_signature.subsets(m_targets);
+    m_signature.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_signature.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_signature.m_signature = &TemplateBinding::getSignatureSingleton;
     m_parameterSubstitution.subsets(*m_ownedElements);
     m_parameterSubstitution.opposite(&TemplateParameterSubstitution::getTemplateBindingSingleton);

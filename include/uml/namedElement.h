@@ -46,16 +46,6 @@ namespace UML{
                     RemoveQualifiedNameFunctor(Element* them) : SetFunctor(them) {};
                     void operator()(Element& el) const override;
             };
-            class SetReferenceFunctor : public SetFunctor {
-                public:
-                    SetReferenceFunctor(Element* them) : SetFunctor(them) {};
-                    void operator()(Element& el) const override;
-            };
-            class RemoveReferenceFunctor : public SetFunctor {
-                public:
-                    RemoveReferenceFunctor(Element* them) : SetFunctor(them) {};
-                    void operator()(Element& el) const override;
-            };
             Set<Dependency, NamedElement> m_clientDependencies = Set<Dependency, NamedElement>(this);
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             virtual void reindexName(std::string oldName, std::string newName);

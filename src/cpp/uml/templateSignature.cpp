@@ -99,6 +99,10 @@ void TemplateSignature::setTemplate(TemplateableElement& temp) {
     m_template.set(temp);
 }
 
+void TemplateSignature::setTemplate(ID id) {
+    m_template.set(id);
+}
+
 OrderedSet<TemplateParameter, TemplateSignature>& TemplateSignature::getOwnedParameters() {
     return m_ownedParameters;
 }

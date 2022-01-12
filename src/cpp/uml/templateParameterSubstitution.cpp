@@ -4,6 +4,7 @@
 #include "uml/templateParameter.h"
 #include "uml/parameterableElement.h"
 #include "uml/uml-stable.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
@@ -21,6 +22,16 @@ void TemplateParameterSubstitution::referenceReindexed(ID oldID, ID newID) {
     m_templateBinding.reindex(oldID, newID);
     m_actual.reindex(oldID, newID);
     m_ownedActual.reindex(oldID, newID);
+}
+
+void TemplateParameterSubstitution::restoreReference(Element* el) {
+    Element::restoreReference(el);
+    if (m_formal.id() == el->getID()) {
+        el->setReference(this);
+    }
+    if (m_actual.id() == el->getID()) {
+        el->setReference(this);
+    }
 }
 
 void TemplateParameterSubstitution::restoreReferences() {
@@ -57,10 +68,14 @@ Set<ParameterableElement, TemplateParameterSubstitution>& TemplateParameterSubst
 
 void TemplateParameterSubstitution::init() {
     m_formal.m_signature = &TemplateParameterSubstitution::getFormalSingleton;
+    m_formal.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_formal.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_templateBinding.subsets(*m_owner);
     m_templateBinding.opposite(&TemplateBinding::getParameterSubstitution);
     m_templateBinding.m_signature = &TemplateParameterSubstitution::getTemplateBindingSingleton;
     m_actual.m_signature = &TemplateParameterSubstitution::getActualSingleton;
+    m_actual.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_actual.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_ownedActual.subsets(*m_ownedElements);
     m_ownedActual.subsets(m_actual);
     m_ownedActual.m_signature = &TemplateParameterSubstitution::getOwnedActualSingleton;

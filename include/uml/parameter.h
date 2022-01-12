@@ -49,6 +49,7 @@ namespace UML {
             bool hasOperation() const;
             void setOperation(Operation& operation);
             void setOperation(Operation* operation);
+            void setOperation(ID id);
             ParameterDirectionKind getDirection();
             void setDirection(ParameterDirectionKind direction);
             std::string getDirectionString();

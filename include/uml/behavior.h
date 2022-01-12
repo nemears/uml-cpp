@@ -6,17 +6,11 @@
 namespace UML {
 
     class BehavioralFeature;
-    namespace Parsers {
-        class BehaviorSetSpecification;
-        class SetBehavioredClassifier;
-    }
 
     class Behavior : public Class {
 
         friend class UmlManager;
         friend class BehavioralFeature;
-        friend class Parsers::BehaviorSetSpecification;
-        friend class Parsers::SetBehavioredClassifier;
 
         protected:
             Set<Parameter, Behavior> m_ownedParameters = Set<Parameter, Behavior>(this);
@@ -39,6 +33,7 @@ namespace UML {
             bool hasSpecification() const;
             void setSpecification(BehavioralFeature& specification);
             void setSpecification(BehavioralFeature* specification);
+            void setSpecification(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::BEHAVIOR;

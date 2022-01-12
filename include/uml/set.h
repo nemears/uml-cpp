@@ -1027,6 +1027,18 @@ namespace UML {
                     if (res) {
                         res->m_el = el;
                         setName(res);
+                        for (auto& copy : m_el->m_node->m_copies) {
+                            if (copy != m_el) {
+                                SetNode* copyRes = (copy->as<U>().*m_signature)().search(res->m_id, (copy->as<U>().*m_signature)().m_root);
+                                copyRes->m_el = el;
+                                (copy->as<U>().*m_signature)().setName(res);
+                            }
+                        }
+                        if (m_el->m_node->m_managerElementMemory != m_el) {
+                            SetNode* copyRes = (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().search(res->m_id, (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().m_root);
+                            copyRes->m_el = el;
+                            (el->m_node->m_managerElementMemory->as<U>().*m_signature)().setName(res);
+                        } 
                     }
                 }
             };

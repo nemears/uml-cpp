@@ -87,6 +87,10 @@ void Parameter::setOperation(Operation& operation) {
     m_operation.set(operation);
 }
 
+void Parameter::setOperation(ID id) {
+    m_operation.set(id);
+}
+
 ParameterDirectionKind Parameter::getDirection() {
     return m_direction;
 }

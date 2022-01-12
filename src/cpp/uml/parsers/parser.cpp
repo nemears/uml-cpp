@@ -44,13 +44,17 @@ void parseSetReferences(YAML::Node node, ParserMetaData& data, std::string key, 
     if (node[key]) {
         if (node[key].IsSequence()) {
             for (size_t i = 0; i < node[key].size(); i++) {
-                if (isValidID(node[key][i].as<std::string>())) {
-                    ID id = ID::fromString(node[key][i].as<std::string>());
-                    if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
-                        (owner.*signature)().add(data.m_manager->get<T>(id));
-                    } else {
-                        (owner.*signature)().add(id);
+                if (node[key][i].IsScalar()) {
+                    if (isValidID(node[key][i].as<std::string>())) {
+                        ID id = ID::fromString(node[key][i].as<std::string>());
+                        if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
+                            (owner.*signature)().add(data.m_manager->get<T>(id));
+                        } else {
+                            (owner.*signature)().add(id);
+                        }
                     }
+                } else {
+                    throw UmlParserException("Invalid yaml node type for " + key + " entry, expected a scalar id", data.m_path.string(), node);
                 }
             }
         } else {
@@ -722,6 +726,19 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
                 }
             }
         }
+        if (ret->isSubClassOf(ElementType::PARAMETER)) {
+            parseSingletonReference(node, data, "operation", ret->as<Parameter>(), &Parameter::setOperation, &Parameter::setOperation);
+            if (node["namespace"]) {
+                if (node["namespace"].IsScalar()) {
+                    if (isValidID(node["namespace"].as<std::string>())) {
+                        setNamespace(ret->as<NamedElement>(), ID::fromString(node["namespace"].as<std::string>()));
+                    }
+                }
+            }
+        }
+        if (ret->isSubClassOf(ElementType::SLOT)) {
+            parseSingletonReference(node, data, "owningInstance", ret->as<Slot>(), &Slot::setOwningInstance, &Slot::setOwningInstance);
+        }
         // if (node["receivingPackage"]) {
         //     ID receivingPackageID = ID::fromString(node["receivingPackage"].as<string>());
         //     if (data.m_manager->loaded(receivingPackageID)) {
@@ -1196,6 +1213,9 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::PARAMETER)) {
             if (el.as<Parameter>().hasOperation()) {
                 emitter << YAML::Key << "operation" << YAML::Value << el.as<Parameter>().getOperationID().string();
+                return;
+            } else if (el.as<NamedElement>().hasNamespace()) {
+                emitter << YAML::Key << "namespace" << YAML::Value << el.as<NamedElement>().getNamespaceID().string();
                 return;
             }
         }
@@ -1718,14 +1738,7 @@ Parameter& determineAndParseParameter(YAML::Node node, ParserMetaData& data) {
 void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data) {
     parseClass(node, bhv, data);
     parseSequenceDefinitions(node, data, "parameters", bhv, &Behavior::getOwnedParameters, determineAndParseParameter);
-    // if (node["specification"]) {
-    //     if (node["specification"].IsScalar()) {
-    //         BehaviorSetSpecification setSpecification;
-    //         parseSingleton(node["specification"], data, bhv, &Behavior::setSpecification, setSpecification);
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type for behavior specification field, must be scalar!", data.m_path.string(), node["specification"]);
-    //     }
-    // }
+    parseSingletonReference(node, data, "specification", bhv, &Behavior::setSpecification, &Behavior::setSpecification);
 }
 
 void emitBehavior(YAML::Emitter& emitter, Behavior& bhv, EmitterMetaData& data) {
@@ -1952,25 +1965,7 @@ void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
     parseTemplateableElement(node, op, data);
 
     // TODO: maybe move all this to new function parseBehavioralFeature once the other ones are implemented
-    if (node["methods"]) {
-        if (node["methods"].IsSequence()) {
-            for (size_t i=0; i<node["methods"].size(); i++) {
-                if (node["methods"][i].IsScalar()) {
-                    ID methodID = ID::fromString(node["methods"][i].as<string>());
-                    if (data.m_manager->loaded(methodID)) {
-                        op.getMethods().add(data.m_manager->get<Behavior>(methodID));
-                    } else {
-                        op.getMethods().add(methodID);
-                    }
-                } else {
-                    throw UmlParserException("Invalid yaml node type for operation method entry, must be a scalar!", data.m_path.string(), node["methods"][i]);
-                }
-            }
-        } else {
-            throw UmlParserException("Improper YAML node type for methods, must be sequence, ", data.m_path.string(), node["methods"]);
-        }
-    }
-
+    parseSetReferences<Behavior, BehavioralFeature>(node, data, "methods", static_cast<BehavioralFeature&>(op), &BehavioralFeature::getMethods);
     parseSequenceDefinitions(node, data, "ownedParameters", static_cast<BehavioralFeature&>(op), &BehavioralFeature::getOwnedParameters, determineAndParseParameter);
 }
 

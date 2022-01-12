@@ -86,6 +86,10 @@ void Behavior::setSpecification(BehavioralFeature& specification) {
     m_specification.set(specification);
 }
 
+void Behavior::setSpecification(ID id) {
+    m_specification.set(id);
+}
+
 bool Behavior::isSubClassOf(ElementType eType) const {
     bool ret = Class::isSubClassOf(eType);
 

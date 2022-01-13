@@ -1,5 +1,6 @@
 #include "uml/typedElement.h"
 #include "uml/uml-stable.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
@@ -11,6 +12,13 @@ void TypedElement::referencingReleased(ID id) {
 void TypedElement::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
     m_type.reindex(oldID, newID);
+}
+
+void TypedElement::restoreReference(Element* el) {
+    NamedElement::restoreReference(el);
+    if (m_type.id() == el->getID()) {
+        el->setReference(this);
+    }
 }
 
 void TypedElement::restoreReferences() {
@@ -28,6 +36,8 @@ Set<Type, TypedElement>& TypedElement::getTypeSingleton() {
 }
 
 void TypedElement::init() {
+    m_type.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_type.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_type.m_signature = &TypedElement::getTypeSingleton;
 }
 

@@ -70,6 +70,10 @@ void Feature::setFeaturingClassifier(Classifier* clazz) {
     m_featuringClassifier.set(clazz);
 }
 
+void Feature::setFeaturingClassifier(ID id) {
+    m_featuringClassifier.set(id);
+}
+
 bool Feature::isStatic() {
     return m_static;
 }

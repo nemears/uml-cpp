@@ -481,6 +481,19 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
         if (parseSingletonReference(node, data, "dataType", ret->as<Property>(), &Property::setDataType, &Property::setDataType)) {
             return;
         }
+        if (parseSingletonReference(node, data, "owningAssociation", ret->as<Property>(), &Property::setOwningAssociation, &Property::setOwningAssociation)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::FEATURE)) {
+        if (node["featuringClassifier"]) {
+            if (node["featuringClassifier"].IsScalar() && isValidID(node["featuringClassifier"].as<std::string>())) {
+                ID id = ID::fromString(node["featuringClassifier"].as<std::string>());
+                ret->as<Feature>().setFeaturingClassifier(id);
+                setNamespace(ret->as<NamedElement>(), id); // not guranteed in api but cant think of other case
+                return;
+            }
+        }
     }
     if (ret->isSubClassOf(ElementType::VALUE_SPECIFICATION)) {
         if (node["owner"]) {
@@ -534,6 +547,28 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
     if (ret->isSubClassOf(ElementType::TEMPLATE_PARAMETER_SUBSTITUTION)) {
         if (parseSingletonReference(node, data, "templateBinding", ret->as<TemplateParameterSubstitution>(), &TemplateParameterSubstitution::setTemplateBinding, &TemplateParameterSubstitution::setTemplateBinding)) {
             return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::MANIFESTATION)) {
+        if (node["client"]) {
+            if (node["client"].IsScalar()) {
+                if (isValidID(node["client"].as<std::string>())) {
+                    ID id = ID::fromString(node["client"].as<std::string>());
+                    ret->as<Manifestation>().getClient().add(id);
+                    setOwner(*ret, id);
+                    return;
+                }
+            }
+        }
+    }
+    if (ret->isSubClassOf(ElementType::COMMENT)) {
+        if (node["owner"]) {
+            if (node["owner"].IsScalar()) {
+                if (isValidID(node["owner"].as<std::string>())) {
+                    setOwner(*ret, ID::fromString(node["owner"].as<std::string>()));
+                    return;
+                }
+            }
         }
     }
     if (ret->isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
@@ -1084,6 +1119,22 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
                 return;
             }
         }
+        if (el.isSubClassOf(ElementType::OPERATION)) {
+            if (el.as<Operation>().hasClass()) {
+                emitter << YAML::Key << "class" << YAML::Value << el.as<Operation>().getClassID().string();
+                return;
+            }
+            if (el.as<Operation>().hasDataType()) {
+                emitter << YAML::Key << "dataType" << YAML::Value << el.as<Operation>().getDataTypeID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::FEATURE)) {
+            if (el.as<Feature>().hasFeaturingClassifier()) {
+                emitter << YAML::Key << "featuringClassifier" << YAML::Value << el.as<Feature>().getFeaturingClassifierID().string();
+                return;
+            }
+        }
         if (el.isSubClassOf(ElementType::GENERALIZATION)) {
             if (el.as<Generalization>().hasSpecific()) {
                 emitter << YAML::Key << "specific" << YAML::Value << el.as<Generalization>().getSpecificID().string();
@@ -1093,16 +1144,6 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::CLASSIFIER)) {
             if (el.as<Classifier>().hasNamespace()) {
                 emitter << YAML::Key << "namespace" << YAML::Value << el.as<Classifier>().getNamespaceID().string();
-                return;
-            }
-        }
-        if (el.isSubClassOf(ElementType::OPERATION)) {
-            if (el.as<Operation>().hasClass()) {
-                emitter << YAML::Key << "class" << YAML::Value << el.as<Operation>().getClassID().string();
-                return;
-            }
-            if (el.as<Operation>().hasDataType()) {
-                emitter << YAML::Key << "dataType" << YAML::Value << el.as<Operation>().getDataTypeID().string();
                 return;
             }
         }
@@ -1154,6 +1195,18 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::DEPLOYMENT)) {
             if (el.as<Deployment>().hasLocation()) {
                 emitter << YAML::Key << "location" << YAML::Value << el.as<Deployment>().getLocationID().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::MANIFESTATION)) {
+            if (!el.as<Manifestation>().getClient().empty()) {
+                emitter << YAML::Key << "client" << YAML::Value << el.as<Manifestation>().getClient().ids().front().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::COMMENT)) {
+            if (el.hasOwner()) {
+                emitter << YAML::Key << "owner" << YAML::Value << el.getOwnerID().string();
                 return;
             }
         }

@@ -12,6 +12,7 @@ namespace UML {
             void reindexName(std::string oldName, std::string newName) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void restoreReference(Element* el) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;
             ValueSpecification();

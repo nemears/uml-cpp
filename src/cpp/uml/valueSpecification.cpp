@@ -22,6 +22,12 @@ void ValueSpecification::referencingReleased(ID id) {
 
 void ValueSpecification::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
+    // TODO type
+}
+
+void ValueSpecification::restoreReference(Element* el) {
+    PackageableElement::restoreReference(el);
+    // TODO type
 }
 
 void ValueSpecification::restoreReferences() {

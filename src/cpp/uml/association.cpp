@@ -43,6 +43,11 @@ void Association::referenceReindexed(ID oldID, ID newID) {
 void Association::restoreReferences() {
     Classifier::restoreReferences();
     Relationship::restoreReferences();
+    for (auto& prop : m_memberEnds) {
+        if (prop.hasType()) {
+            m_endType.add(prop.getTypeID());
+        }
+    }
     // m_memberEnds.restoreReferences();
     // m_ownedEnds.restoreReferences();
     // m_navigableOwnedEnds.restoreReferences();

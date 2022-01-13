@@ -26,6 +26,11 @@ void StructuredClassifier::referenceReindexed(ID oldID, ID newID) {
 
 void StructuredClassifier::restoreReferences() {
     Classifier::restoreReferences();
+    for (auto& prop : m_ownedAttributes) {
+        if (prop.isComposite() && !m_parts.contains(prop)) {
+            m_parts.addReadOnly(prop.getID());
+        }
+    }
     // m_ownedAttributes.restoreReferences();
     // m_role.restoreReferences();
     // m_parts.restoreReferences();

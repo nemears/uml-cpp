@@ -15,7 +15,6 @@ void ParameterableElement::referenceReindexed(ID oldID, ID newID) {
 }
 
 void ParameterableElement::restoreReference(Element* el) {
-    Element::restoreReference(el);
     if (el->isSubClassOf(ElementType::TEMPLATE_PARAMETER) && el->as<TemplateParameter>().m_ownedDefault.id() == m_id) {
         if (m_templateParameter.empty()) {
             m_templateParameter.set(el->getID());

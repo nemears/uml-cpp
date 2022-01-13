@@ -31,6 +31,7 @@ namespace UML {
             bool hasFeaturingClassifier() const;
             void setFeaturingClassifier(Classifier* clazz);
             void setFeaturingClassifier(Classifier& clazz);
+            void setFeaturingClassifier(ID id);
             bool isStatic();
             void setStatic(bool isStatic);
             bool isSubClassOf(ElementType eType) const override;

@@ -184,12 +184,14 @@ namespace UML {
             T& get(std::string name) {return Set<T, U>::get(name);};
             OrderedSetIterator<T,U> begin() {
                 OrderedSetIterator<T,U> ret;
+                ret.m_el = this->m_el;
                 ret.m_node = static_cast<OrderedNode*>(this->m_first);
                 ret.m_guard = this->m_guard;
                 return ret;
             };
             OrderedSetIterator<T,U> end() {
                 OrderedSetIterator<T,U> ret;
+                ret.m_el = this->m_el;
                 ret.m_node = &ret.m_endNode;
                 ret.m_guard = this->m_guard;
                 return ret;
@@ -202,12 +204,18 @@ namespace UML {
         using NodeType = typename OrderedSet<T,U>::OrderedNode;
 
         private:
+            Element* m_el = 0;
             NodeType* m_node;
             NodeType m_endNode;
             int m_guard;
         public:
             OrderedSetIterator() {};
-            T& operator*() { return dynamic_cast<T&>(*m_node->m_el); };
+            T& operator*() {
+                if (!m_node->m_el) {
+                    m_node->m_el = &m_el->m_manager->get(m_node->m_id);
+                }
+                return dynamic_cast<T&>(*m_node->m_el);
+            };
             T* operator->() { return dynamic_cast<T*>(m_node->m_el); };
             OrderedSetIterator operator++() {
                 if (m_node->m_next) {

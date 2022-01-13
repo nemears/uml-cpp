@@ -160,11 +160,13 @@ namespace UML {
     class Dependency;
     class TemplateBinding;
     class TemplateParameterSubstitution;
+    class TypedElement;
     template <class T, class U> class Set;
     template <class T> class SetIterator;
     template <class V, class W> class OppositeFunctor;
     template <class T, class U> class Singleton;
     template <class T, class U> class OrderedSet;
+    template <class T, class U> struct OrderedSetIterator;
     class SetReferenceFunctor;
     class RemoveReferenceFunctor;
     namespace Parsers {
@@ -199,11 +201,13 @@ namespace UML {
         friend class Dependency;
         friend class TemplateBinding;
         friend class TemplateParameterSubstitution;
+        friend class TypedElement;
         template <class T, class U> friend class Singleton;
         template <class T, class U> friend class Set;
         template <class V, class W> friend class OppositeFunctor;
         template <class T> friend class SetIterator;
         template <class T, class U> friend class OrderedSet;
+        template <class T, class U> friend struct OrderedSetIterator;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);
         friend void Parsers::setOwner(Element& el, ID id);
         friend class SetReferenceFunctor;

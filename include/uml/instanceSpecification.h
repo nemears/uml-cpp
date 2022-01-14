@@ -10,6 +10,7 @@ namespace UML{
     class Slot;
     class Classifier;
     class InstanceValue;
+    class ValueSpecification;
 
     class InstanceSpecification : public PackageableElement , public DeployedArtifact, public DeploymentTarget {
 

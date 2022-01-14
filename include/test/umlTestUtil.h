@@ -2,7 +2,6 @@
 #define UML_UML_TEST_UTIL
 
 #include "uml/umlManager.h"
-#include "uml/sequence.h"
 #include "uml/package.h"
 
 namespace UML {

@@ -1,12 +1,18 @@
 #include "uml/parsers/parser.h"
 #include <fstream>
-#include "uml/uml-stable.h"
 #include "uml/activity.h" // the only "not stable" thing with a presence in this class
 
 using namespace std;
 
 namespace UML {
 namespace Parsers {
+
+ParserMetaData::ParserMetaData(UmlManager* manager) {
+    m_manager = manager;
+    if (!manager->m_path.empty()) {
+        m_path = m_manager->m_path;
+    }
+}
 
 /**
  * Template helper functions for parsing
@@ -1334,10 +1340,6 @@ void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
             throw UmlParserException("Improper YAML node type for id field, must be scalar, " , data.m_path.string(), node["id"]);
         }
     }
-
-    // apply post processing here via functor
-    data.elements.add(el);
-
     parseSequenceDefinitions<Comment, Element, Set<Comment,Element>>(node, data, "ownedComments", el, &Element::getOwnedComments, determineAndParseOwnedComment);
     parseSequenceDefinitions(node, data, "appliedStereotypes", el, &Element::getAppliedStereotypes, determinAndParseAppliedStereotype);
 }
@@ -1347,14 +1349,6 @@ void emitElement(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     emitSequence(emitter, "ownedComments", data, el, &Element::getOwnedComments);
     emitSequence(emitter, "appliedStereotypes", data, el, &Element::getAppliedStereotypes);
 }
-
-void AddClientDepencyFunctor::operator()(Element& el) const {
-    m_el->as<NamedElement>().getClientDependencies().add(el.as<Dependency>());
-}
-
-// void AddSupplierDependencyFunctor::operator()(Element& el) const {
-//     m_el->as<NamedElement>().getSupplierDependencies().add(el.as<Dependency>());
-// }
 
 void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) {
 
@@ -1403,29 +1397,6 @@ void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) 
     //         }
     //     } else {
     //         throw UmlParserException("Improper yaml node type for NamedElement field clientDependencies, must be a sequence!", data.m_path.string(), node["clientDependencies"]);
-    //     }
-    // }
-
-    // if (node["supplierDependencies"]) {
-    //     if (node["supplierDependencies"].IsSequence()) {
-    //         for (size_t i = 0; i < node["supplierDependencies"].size(); i++) {
-    //             if (node["supplierDependencies"][i].IsScalar()) {
-    //                 ID supplierDependencyID = ID::fromString(node["supplierDependencies"][i].as<string>());
-    //                 if (data.m_strategy == ParserStrategy::WHOLE) {
-    //                     applyFunctor(data, supplierDependencyID, new AddSupplierDependencyFunctor(&el, node["supplierDependencies"][i]));
-    //                 } else {
-    //                     if (data.m_manager->loaded(supplierDependencyID)) {
-    //                         el.getSupplierDependencies().add(data.m_manager->get<Dependency>(supplierDependencyID));
-    //                     } else {
-    //                         el.getSupplierDependencies().add(supplierDependencyID);
-    //                     }
-    //                 }
-    //             } else {
-    //                 throw UmlParserException("Invalid yaml node type for NamedElement supplierDependencies entry, must be a scalar!", data.m_path.string(), node["supplierDependencies"][i]);
-    //             }
-    //         }
-    //     } else {
-    //         throw UmlParserException("Invalid yaml node type for NamedElement supplierDependencies, must be a sequence!", data.m_path.string(), node["supplierDependencies"]);
     //     }
     // }
 }
@@ -1487,28 +1458,6 @@ void emitNamedElement(YAML::Emitter& emitter, NamedElement& el, EmitterMetaData&
             emitter << YAML::EndSeq;
         }
     }
-
-    // if (!el.getSupplierDependencies().empty()) {
-    //     emitter << YAML::Key << "supplierDependencies" << YAML::Value << YAML::BeginSeq;
-    //     for (const ID id : el.getSupplierDependencies().ids()) {
-    //         emitter << YAML::Value << id.string();
-    //     }
-    //     emitter << YAML::EndSeq;
-    // }
-}
-
-void SetTypeFunctor::operator()(Element& el) const {
-    if (el.isSubClassOf(ElementType::TYPE)) {
-        // need to cast to make polymorphic with stereotype as parameter
-        if (el.isSubClassOf(ElementType::STEREOTYPE) && m_el->isSubClassOf(ElementType::EXTENSION_END)) {
-            dynamic_cast<ExtensionEnd*>(m_el)->setType(&dynamic_cast<Stereotype&>(el));
-        } else {
-            dynamic_cast<TypedElement*>(m_el)->setType(&dynamic_cast<Type&>(el));
-        }
-    } else {
-        throw UmlParserException(m_el->getElementTypeString() + " id: " + m_el->getID().string() + 
-                                 " assigned type is not a typed Element! line " , "" , m_node);
-    }
 }
 
 void emitTypedElement(YAML::Emitter& emitter, TypedElement& el, EmitterMetaData& data) {
@@ -1540,12 +1489,6 @@ void emitClassifier(YAML::Emitter& emitter, Classifier& clazz, EmitterMetaData& 
             emitter << YAML::Value << id.string();
         }
         emitter << YAML::EndSeq;
-    }
-}
-
-void SetGeneralFunctor::operator()(Element& el) const {
-    if (el.isSubClassOf(ElementType::CLASSIFIER)) {
-        dynamic_cast<Generalization*>(m_el)->setGeneral(&dynamic_cast<Classifier&>(el));
     }
 }
 
@@ -2220,15 +2163,6 @@ void emitMultiplicityElement(YAML::Emitter& emitter, MultiplicityElement& el, Em
     }
 }
 
-void SetClassifierFunctor::operator()(Element& el) const {
-    // if (el.isSubClassOf(ElementType::CLASSIFIER)) {
-    //     dynamic_cast<InstanceSpecification*>(m_el)->setClassifier(&dynamic_cast<Classifier&>(el));
-    // } else {
-    //     throw UmlParserException(m_el->getElementTypeString() + " id: " + m_el->getID().string() + 
-    //                              " assigned classifier is not a classifer! line ", "", m_node);
-    // }
-}
-
 Slot& determineAndParseSlot(YAML::Node node, ParserMetaData& data) {
     if (node["slot"]) {
         return parseDefinition(node, data, "slot", parseSlot);
@@ -2256,15 +2190,6 @@ void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& in
         emit(emitter, *inst.getSpecification(), data);
     }
     emitElementDefenitionEnd(emitter, ElementType::INSTANCE_SPECIFICATION, inst);
-}
-
-void SetDefiningFeatureFunctor::operator()(Element& el) const {
-    if (el.isSubClassOf(ElementType::STRUCTURAL_FEATURE)) {
-        dynamic_cast<Slot*>(m_el)->setDefiningFeature(&dynamic_cast<StructuralFeature&>(el));
-    } else {
-        throw UmlParserException(m_el->getElementTypeString() + " id: " + m_el->getID().string() + 
-                                 " assigned definingFeature is not a structuralFeature! line ","", m_node);
-    }
 }
 
 void emitSlot(YAML::Emitter& emitter, Slot& slot, EmitterMetaData& data) {
@@ -2307,15 +2232,6 @@ void emitEnumerationLiteral(YAML::Emitter& emitter, EnumerationLiteral& literal,
     emitElementDefenitionEnd(emitter, ElementType::ENUMERATION_LITERAL, literal);
 }
 
-void SetInstanceFunctor::operator()(Element& el) const {
-    if (el.isSubClassOf(ElementType::INSTANCE_SPECIFICATION)) {
-        dynamic_cast<InstanceValue*>(m_el)->setInstance(&dynamic_cast<InstanceSpecification&>(el));
-    } else {
-        throw UmlParserException(m_el->getElementTypeString() + " id: " + m_el->getID().string() + 
-                                 " assigned instance is not an instanceSpecification! line ", "", m_node);
-    }
-}
-
 void emitInstanceValue(YAML::Emitter& emitter, InstanceValue& val, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::INSTANCE_VALUE, "instanceValue", val, data);
     emitTypedElement(emitter, val, data);
@@ -2323,15 +2239,6 @@ void emitInstanceValue(YAML::Emitter& emitter, InstanceValue& val, EmitterMetaDa
         emitter << YAML::Key << "instance" << YAML::Value << val.getInstance()->getID().string();
     }
     emitElementDefenitionEnd(emitter, ElementType::INSTANCE_VALUE, val);
-}
-
-void SetMergedPackageFunctor::operator()(Element& el) const {
-    if (el.isSubClassOf(ElementType::PACKAGE)) {
-        dynamic_cast<PackageMerge*>(m_el)->setMergedPackage(&dynamic_cast<Package&>(el));
-    } else {
-        throw UmlParserException(m_el->getElementTypeString() + " id: " + m_el->getID().string() + 
-                                        " assigned mergedPackage that is not a Package! line ", "", m_node);
-    }
 }
 
 void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge, EmitterMetaData& data) {
@@ -2537,14 +2444,6 @@ void emitTemplateableElement(YAML::Emitter& emitter, TemplateableElement& el, Em
     emitSequence(emitter, "templateBindings", data, el, &TemplateableElement::getTemplateBindings);
 }
 
-void AddTemplateParmeterFunctor::operator()(Element& el) const {
-    if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER)) {
-        dynamic_cast<TemplateSignature*>(m_el)->getParameters().add(dynamic_cast<TemplateParameter&>(el));
-    } else {
-        throw UmlParserException("Tried to add parameter to signature that wasn't a parameter! ", "", m_node);
-    }
-}
-
 TemplateParameter& determineAndParseTemplateParameter(YAML::Node node, ParserMetaData& data) {
     if (node["templateParameter"]) {
         return parseDefinition(node, data, "templateParameter", parseTemplateParameter);
@@ -2577,14 +2476,6 @@ void emitTemplateSignature(YAML::Emitter& emitter, TemplateSignature& signature,
     }
 
     emitElementDefenitionEnd(emitter, ElementType::TEMPLATE_SIGNATURE, signature);
-}
-
-void SetParameteredElementFunctor::operator()(Element& el) const {
-    if (el.isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
-        dynamic_cast<TemplateParameter*>(m_el)->setParameteredElement(dynamic_cast<ParameterableElement*>(&el));
-    } else {
-        throw UmlParserException("Tried to assign non-parameterable element to TemplateParameter parameteredElement!", "", m_node);
-    }
 }
 
 ParameterableElement& determinAndParseParameterableElement(YAML::Node node, ParserMetaData& data) {
@@ -2779,14 +2670,6 @@ void emitTemplateParameter(YAML::Emitter& emitter, TemplateParameter& parameter,
     emitElementDefenitionEnd(emitter, ElementType::TEMPLATE_PARAMETER, parameter);
 }
 
-void SetSignatureFunctor::operator()(Element& el) const {
-    if (el.isSubClassOf(ElementType::TEMPLATE_SIGNATURE)) {
-        dynamic_cast<TemplateBinding*>(m_el)->setSignature(dynamic_cast<TemplateSignature*>(&el));
-    } else {
-        throw UmlParserException("Tried to set binding signature to not signature, line ", "", m_node);
-    }
-}
-
 TemplateParameterSubstitution& determineAndParseTemplateParameterSubstitution(YAML::Node node, ParserMetaData& data) {
     if (node["templateParameterSubstitution"]) {
         return parseDefinition(node, data, "templateParameterSubstitution", parseTemplateParameterSubstitution);
@@ -2809,22 +2692,6 @@ void emitTemplateBinding(YAML::Emitter& emitter, TemplateBinding& binding, Emitt
 
     if (binding.getElementType() == ElementType::TEMPLATE_BINDING) {
         emitter << YAML::EndMap;// << YAML::EndMap;
-    }
-}
-
-void SetFormalFunctor::operator()(Element& el) const {
-    if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER)) {
-        dynamic_cast<TemplateParameterSubstitution*>(m_el)->setFormal(dynamic_cast<TemplateParameter*>(&el));
-    } else {
-        throw UmlParserException("TemplateParameterSubstitution formal must be a templateParameter ", "", m_node);
-    }
-};
-
-void SetActualFunctor::operator()(Element& el) const {
-    if (el.isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
-        dynamic_cast<TemplateParameterSubstitution*>(m_el)->setActual(dynamic_cast<ParameterableElement*>(&el));
-    } else {
-        throw UmlParserException("TemplateParameterSubstitution actual must be a parameterableElement", "", m_node);
     }
 }
 
@@ -2851,14 +2718,6 @@ void emitTemplateParameterSubstitution(YAML::Emitter& emitter, TemplateParameter
     }
 
     emitElementDefenitionEnd(emitter, ElementType::TEMPLATE_PARAMETER_SUBSTITUTION, sub);
-}
-
-void AddMemberEndFunctor::operator()(Element& el) const {
-    if (el.isSubClassOf(ElementType::PROPERTY)) {
-        dynamic_cast<Association*>(m_el)->getMemberEnds().add(dynamic_cast<Property&>(el));
-    } else {
-        throw UmlParserException("Invalid element added to association member ends, must be a property!", "", m_node);
-    }
 }
 
 void parseAssociation(YAML::Node node, Association& association, ParserMetaData& data) {
@@ -2934,14 +2793,6 @@ void emitExtension(YAML::Emitter& emitter, Extension& extension, EmitterMetaData
     emitElementDefenitionEnd(emitter, ElementType::EXTENSION, extension);
 }
 
-void SetAppliedProfileFunctor::operator()(Element& el) const {
-    if (el.isSubClassOf(ElementType::PROFILE)) {
-        dynamic_cast<ProfileApplication*>(m_el)->setAppliedProfile(&dynamic_cast<Profile&>(el));
-    } else {
-        throw UmlParserException("Tried to set applied profile to non profile", "", m_node);
-    }
-}
-
 void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& application, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::PROFILE_APPLICATION, "profileApplication", application, data);
 
@@ -2986,18 +2837,6 @@ void emitComment(YAML::Emitter& emitter, Comment& comment, EmitterMetaData& data
     emitElementDefenitionEnd(emitter, ElementType::COMMENT, comment);
 }
 
-void AddClientFunctor::operator()(Element& el) const {
-    if (!m_el->as<Dependency>().getClient().count(el.getID())) {
-        m_el->as<Dependency>().getClient().add(el.as<NamedElement>());
-    }
-}
-
-void AddSupplierFunctor::operator()(Element& el) const {
-    if (!m_el->as<Dependency>().getSupplier().count(el.getID())) {
-        m_el->as<Dependency>().getSupplier().add(el.as<NamedElement>());
-    }
-}
-
 void parseDependency(YAML::Node node, Dependency& dependency, ParserMetaData& data) {
     parseNamedElement(node, dependency, data);
     parseSetReferences<NamedElement, Dependency>(node, data, "client", dependency, &Dependency::getClient);
@@ -3026,10 +2865,6 @@ void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaD
     }
 
     emitElementDefenitionEnd(emitter, ElementType::DEPENDENCY, dependency);
-}
-
-void AddDeployedArtifactFunctor::operator()(Element& el) const {
-    m_el->as<Deployment>().getDeployedArtifacts().add(el.as<DeployedArtifact>());
 }
 
 void parseDeployment(YAML::Node node, Deployment& deployment, ParserMetaData& data) {
@@ -3118,10 +2953,6 @@ void emitBehavioredClassifier(YAML::Emitter& emitter, BehavioredClassifier& clas
     }
 }
 
-void SetUtilizedElementFunctor::operator()(Element& el) const {
-    m_el->as<Manifestation>().setUtilizedElement(&el.as<PackageableElement>());
-}
-
 void emitManifestation(YAML::Emitter& emitter, Manifestation& manifestation, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::MANIFESTATION, "manifestation", manifestation, data);
 
@@ -3161,8 +2992,6 @@ void emitGeneralizationSet(YAML::Emitter& emitter, GeneralizationSet& generaliza
         emitter << YAML::EndSeq;
     }
     emitElementDefenitionEnd(emitter, ElementType::GENERALIZATION_SET, generalizationSet);
-}
-
 }
 
 void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data) {
@@ -3312,5 +3141,6 @@ void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSe
     parseSetReferences<Generalization, GeneralizationSet>(node, data, "generalizations", generalizationSet, &GeneralizationSet::getGeneralizations);
 }
 
+}
 }
 }

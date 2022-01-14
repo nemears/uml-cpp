@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include "namedElement.h"
-#include "sequence.h"
 
 namespace UML{
     /**

@@ -1,5 +1,5 @@
-#ifndef SPECIAL_SEQUENCE_H
-#define SPECIAL_SEQUENCE_H
+#ifndef _UML_SET_H_
+#define _UML_SET_H_
 
 #include "element.h"
 #include "umlManager.h"
@@ -7,17 +7,17 @@
 namespace UML {
 
     namespace {
-        const ID placeholderID = ID::fromString("&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+        const ID placeholderID = ID::nullID();
     }
 
     template <class T, class U> class Set;
     template <class T, class U> class OrderedSet;
 
-    class ID_doesNotExistException2 : public std::exception {
+    class ID_doesNotExistException : public std::exception {
         private:
             std::string m_msg;
         public:
-            ID_doesNotExistException2(ID id) : m_msg(id.string() + " was not found within the sequence!"){};
+            ID_doesNotExistException(ID id) : m_msg(id.string() + " was not found within the sequence!"){};
             virtual const char* what() const throw() {
                 return m_msg.c_str();
             }
@@ -248,7 +248,6 @@ namespace UML {
             };
             void setName(SetNode* node);
             void instantiateSetNode(SetNode* node);
-            virtual void superSetAdd(SetNode* node) = 0;
             virtual void superSetRemove(ID id) = 0;
     };
 
@@ -405,69 +404,6 @@ namespace UML {
                 for (auto& subsetOf : allSuperSets) {
                     subsetOf->m_size++;
                 }
-            }
-            /**
-             * TODO: DELETE
-             * this set makes a node added to a set conform to its superset
-             * TODO: double check description and use
-             * @param node the new node added to this sets subsets
-             **/
-            void superSetAdd(SetNode* node) override {
-                if (!m_root) {
-                    m_root = node;
-                    m_size++;
-                    for (auto& subsetOf : m_superSets) {
-                        if (!subsetOf->m_root || (subsetOf->m_root && subsetOf->m_root->m_guard != node->m_guard)) {
-                            subsetOf->superSetAdd(node);
-                        }
-                    }
-                } else {
-                    // go all the way left to determine if placeholder is needed
-                    SetNode* temp = m_root;
-                    while (temp->m_id == placeholderID) {
-                        temp = temp->m_left;
-                    }
-                    // determine whether to create placeholder (adding node of guard not equal to root and other subsets are full)
-                    if (temp->m_guard != node->m_guard) {
-                        // create placeholder node
-                        SetNode* placeholderNode = new SetNode();
-                        placeholderNode->m_id = placeholderID;
-                        placeholderNode->m_guard = m_guard;
-                        // replace temp with placeholder
-                        if (temp == m_root) {
-                            m_root = placeholderNode;
-                            // bfs replace parents root with this placeholder
-                            std::list<AbstractSet*> queue;
-                            for (auto& subsetOf : m_superSets) {
-                                queue.push_back(subsetOf);
-                            }
-                            while (!queue.empty()) {
-                                AbstractSet* set = queue.front();
-                                queue.pop_front();
-                                if (set->m_root == temp) {
-                                    set->m_root = placeholderNode;
-                                    for (auto& subsetOf : set->m_superSets) {
-                                        queue.push_back(subsetOf);
-                                        // subsetOf->m_size++;
-                                    }
-                                }
-                            }
-                        }
-                        if (temp->m_parent) {
-                            placeholderNode->m_parent = temp->m_parent;
-                            if (temp->m_parent->m_left == temp) {
-                                temp->m_parent->m_left = placeholderNode;
-                            } else {
-                                temp->m_parent->m_right = temp->m_parent->m_left;
-                                temp->m_parent->m_left = placeholderNode;
-                            }
-                        }
-                        place(temp, placeholderNode);
-                    }
-                    place(node, m_root);
-                    m_size++;
-                    increaseSuperSetSize();
-                }
             };
             /**
              * Adds a node into the tree for this set
@@ -569,15 +505,6 @@ namespace UML {
                                     (*it)->m_size++;
                                 } else {
                                     throw ManagerStateException("TODO, lookForNodeInParents edge case!");
-                                    // (*it)->m_root = node;
-                                    // (*it)->m_size++;
-                                    // std::vector<AbstractSet*>::iterator oIt = it + 1;
-                                    // while (oIt != allSuperSets->end() && !(*oIt)->m_root) {
-                                    //     (*oIt)->m_root = node;
-                                    //     (*oIt)->m_size++;
-                                    //     oIt++;
-                                    // }
-                                    // it = oIt - 1;
                                 }
                                 break;
                             }
@@ -627,37 +554,6 @@ namespace UML {
                             increaseSuperSetSize();
                         } else {
                             throw ManagerStateException("TODO, diamond set special case");
-                            // a SuperSet already has this node , but it has been dereferenced from set
-                            // if (m_root->m_guard != node->m_guard) {
-                            //     SetNode* temp = m_root;
-                            //     while (temp->m_id == placeholderID) {
-                            //         temp = temp->m_left;
-                            //     }
-                            //     bool createPlaceholder = false;
-                            //     AbstractSet* setThatOwnedNode = 0;
-                            //     for (auto& subsetOf : m_superSets) {
-                            //         if (subsetOf->m_guard == node->m_guard && subsetOf != this) {
-                            //             if (!subsetOf->search(temp->m_id, subsetOf->m_root)) {
-                            //                 createPlaceholder = true;
-                            //                 setThatOwnedNode = subsetOf;
-                            //                 break;
-                            //             }
-                            //         }
-                            //     }
-                            //     if (createPlaceholder) {
-                            //         // create placeholder node
-                            //         SetNode* placeholderNode = new SetNode();
-                            //         placeholderNode->m_id = placeholderID;
-                            //         placeholderNode->m_guard = m_guard;
-                            //         // replace temp with placeholder
-                            //         if (temp == m_root) {
-                            //             m_root = placeholderNode;
-                            //         }
-                            //         place(temp, placeholderNode);
-                            //         setThatOwnedNode->superSetAdd(node);
-                            //     }
-                            // }
-                            // place(node, m_root);
                         }
                     }
                 }
@@ -1268,7 +1164,7 @@ namespace UML {
                         m_el->removeReference(id);
                     }
                 } else {
-                    throw ID_doesNotExistException2(id);
+                    throw ID_doesNotExistException(id);
                 }
             };
             bool loaded(ID id) {
@@ -1833,7 +1729,7 @@ namespace UML {
                         m_el->removeReference(id);
                     }
                 } else {
-                    throw ID_doesNotExistException2(id);
+                    throw ID_doesNotExistException(id);
                 }
             };
             /**
@@ -1845,7 +1741,7 @@ namespace UML {
                 if (m_root) {
                     SetNode* searchResult = search(id, m_root);
                     if (!searchResult) {
-                        throw ID_doesNotExistException2(id);
+                        throw ID_doesNotExistException(id);
                     }
                     if (!searchResult->m_el) {
                         searchResult->m_el = m_el->m_manager->get(m_el, id);
@@ -1855,7 +1751,7 @@ namespace UML {
                         return *ret;
                     }
                 }
-                throw ID_doesNotExistException2(id);
+                throw ID_doesNotExistException(id);
             };
             /**
              * gets the element with the given name from the set

@@ -2,7 +2,6 @@
 #define DEPLOYMENT_TARGET_H
 
 #include "namedElement.h"
-#include "sequence.h"
 
 namespace UML {
 

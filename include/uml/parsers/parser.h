@@ -5,27 +5,9 @@
 #include "yaml-cpp/yaml.h"
 #include "uml/parsers/parserMetaData.h"
 #include "uml/parsers/emitterMetaData.h"
-#include "uml/element.h"
+#include "uml/uml-stable.h"
 
 namespace UML {
-
-    class PrimitiveType;
-    class EnumerationLiteral;
-    class OpaqueBehavior;
-    class InstanceValue;
-    class LiteralBool;
-    class LiteralInt;
-    class LiteralReal;
-    class LiteralString;
-    class LiteralUnlimitedNatural;
-    class ParameterableElement;
-    class TypedElement;
-    class MultiplicityElement;
-    class PackageMerge;
-    class Extension;
-    class ProfileApplication;
-    class Manifestation;
-    class Stereotype;
 
     namespace Parsers {
 
@@ -69,24 +51,6 @@ namespace UML {
 
         ElementType elementTypeFromString(std::string eType);
 
-        void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
-        void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data);
-        void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);
-        void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data);
-        void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data);
-        void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data);
-        void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data);
-        void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data);
-        void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data);
-        void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data);
-        void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaData& data);
-        void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data);
-        void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data);
-        void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data);
-        void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMetaData& data);
-        void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, ParserMetaData& data);
-        void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, ParserMetaData& data);
-
         // anonymous functions
         namespace {
 
@@ -98,113 +62,6 @@ namespace UML {
             void emitElementDefenition(YAML::Emitter& emitter, ElementType eType, std::string yamlName, Element& el, EmitterMetaData& data);
             void emitElementDefenitionEnd(YAML::Emitter& emitter, ElementType eType, Element& el);
 
-            class SetTypeFunctor : public AbstractPostProcessFunctor {
-                public:
-                    SetTypeFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-
-            class SetClassifierFunctor : public AbstractPostProcessFunctor {
-                public:
-                    SetClassifierFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-
-            class SetDefiningFeatureFunctor : public AbstractPostProcessFunctor {
-                public:
-                    SetDefiningFeatureFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-
-            class SetInstanceFunctor : public AbstractPostProcessFunctor {
-                public:
-                    SetInstanceFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-
-            class SetMergedPackageFunctor : public AbstractPostProcessFunctor {
-                public:
-                    SetMergedPackageFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-
-            class SetGeneralFunctor : public AbstractPostProcessFunctor {
-                public:
-                    SetGeneralFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-
-            class AddTemplateParmeterFunctor : public AbstractPostProcessFunctor {
-                public:
-                    AddTemplateParmeterFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-
-            class SetParameteredElementFunctor : public AbstractPostProcessFunctor {
-                public:
-                    SetParameteredElementFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-
-            class SetSignatureFunctor : public AbstractPostProcessFunctor {
-                public:
-                    SetSignatureFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-
-            class SetFormalFunctor : public AbstractPostProcessFunctor {
-                public:
-                    SetFormalFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-
-            class SetActualFunctor : public AbstractPostProcessFunctor {
-                public:
-                    SetActualFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-            
-            class AddMemberEndFunctor : public AbstractPostProcessFunctor {
-                public:
-                    AddMemberEndFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-
-            class SetAppliedProfileFunctor : public AbstractPostProcessFunctor {
-                public:
-                    SetAppliedProfileFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-            class AddClientFunctor : public AbstractPostProcessFunctor {
-                public:
-                    AddClientFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-            class AddSupplierFunctor : public AbstractPostProcessFunctor {
-                public:
-                    AddSupplierFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-            class AddDeployedArtifactFunctor : public AbstractPostProcessFunctor {
-                public:
-                    AddDeployedArtifactFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-            class SetUtilizedElementFunctor : public AbstractPostProcessFunctor {
-                public:
-                    SetUtilizedElementFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-            class AddClientDepencyFunctor : public AbstractPostProcessFunctor {
-                public:
-                    AddClientDepencyFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
-            class AddSupplierDependencyFunctor : public AbstractPostProcessFunctor {
-                public:
-                    AddSupplierDependencyFunctor(Element* el, YAML::Node node) : AbstractPostProcessFunctor(el, node) {};
-                    void operator()(Element& el) const override;
-            };
             void emitModel(YAML::Emitter& emitter, Model& model, EmitterMetaData& data);
             void parseElement(YAML::Node node, Element& el, ParserMetaData& data);
             void emitElement(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
@@ -281,6 +138,23 @@ namespace UML {
             void parseParameterableElement(YAML::Node node, ParameterableElement& el, ParserMetaData& data);
             void emitParameterableElement(YAML::Emitter& emitter, ParameterableElement& el, EmitterMetaData& data);
             void emitGeneralizationSet(YAML::Emitter& emitter, GeneralizationSet& generalizationSet, EmitterMetaData& data);
+            void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data);
+            void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data);
+            void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& data);
+            void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data);
+            void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data);
+            void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data);
+            void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, ParserMetaData& data);
+            void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data);
+            void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data);
+            void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data);
+            void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaData& data);
+            void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data);
+            void parseExtension(YAML::Node node, Extension& extension, ParserMetaData& data);
+            void parseProfileApplication(YAML::Node node, ProfileApplication& application, ParserMetaData& data);
+            void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMetaData& data);
+            void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, ParserMetaData& data);
+            void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, ParserMetaData& data);
         }
     }
 }

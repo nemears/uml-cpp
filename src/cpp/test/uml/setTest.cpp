@@ -82,7 +82,7 @@ TEST_F(SetTest, basicSubsetsTest) {
     ASSERT_EQ(rootSeq->get(clazz.getID()), clazz);
     ASSERT_EQ(subSeq->size(), 1);
     ASSERT_FALSE(subSeq->contains(clazz.getID()));
-    ASSERT_THROW(subSeq->get(clazz.getID()), ID_doesNotExistException2);
+    ASSERT_THROW(subSeq->get(clazz.getID()), ID_doesNotExistException);
     delete subSeq;
     delete rootSeq;
 }

@@ -261,11 +261,11 @@ TEST_F(PropertyParserTest, mountPropertyTest) {
     ASSERT_EQ(s.getOwnedMembers().size(), 1);
     ASSERT_EQ(&s.getOwnedMembers().front(), &prop2);
     ASSERT_EQ(s.getMembers().size(), 2);
-    ASSERT_EQ(&s.getMembers().front(), &redefined);
-    ASSERT_EQ(&s.getMembers().back(), &prop2);
+    ASSERT_TRUE(s.getMembers().contains(redefined));
+    ASSERT_TRUE(s.getMembers().contains(prop2));
     ASSERT_EQ(s.getOwnedElements().size(), 2);
-    ASSERT_EQ(*s.getOwnedElements().begin(), gen);
-    ASSERT_EQ(*(s.getOwnedElements().begin()++), prop2);
+    ASSERT_TRUE(s.getOwnedElements().contains(gen));
+    ASSERT_TRUE(s.getOwnedElements().contains(prop2));
 
     // Release the redefined prop
     ASSERT_NO_THROW(m.release(redefined.getID()));

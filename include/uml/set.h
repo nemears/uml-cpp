@@ -222,6 +222,30 @@ namespace UML {
                 }
                 return 0;
             };
+            /**
+             * Gets all sets that are a superset of this one in dfs order and stored in a pointer to a vector, 
+             * responsibility of vector destruction is required
+             * TODO: fix subsets method to make sure it will be 'proper' bfs order for algorithms
+             * @return the pointer to a vector of all supersets of this set
+             **/
+            std::vector<AbstractSet*>* getAllSuperSets() {
+                std::list<AbstractSet*> stack;
+                std::vector<AbstractSet*>* allSuperSets = new std::vector<AbstractSet*>;
+                for (auto& subsetOf : m_superSets) {
+                    stack.push_back(subsetOf);
+                }
+                while (!stack.empty()) {
+                    AbstractSet* front = stack.front();
+                    stack.pop_front();
+                    if (std::find(allSuperSets->begin(), allSuperSets->end(), front) == allSuperSets->end()) {
+                        allSuperSets->push_back(front);
+                        for (auto& subsetOf : front->m_superSets) {
+                            stack.push_front(subsetOf);
+                        }
+                    }
+                }
+                return allSuperSets;
+            };
             void setName(SetNode* node);
             void instantiateSetNode(SetNode* node);
             virtual void superSetAdd(SetNode* node) = 0;
@@ -446,30 +470,6 @@ namespace UML {
                 }
             };
             /**
-             * Gets all sets that are a superset of this one in dfs order and stored in a pointer to a vector, 
-             * responsibility of vector destruction is required
-             * TODO: fix subsets method to make sure it will be 'proper' bfs order for algorithms
-             * @return the pointer to a vector of all supersets of this set
-             **/
-            std::vector<AbstractSet*>* getAllSuperSets() {
-                std::list<AbstractSet*> stack;
-                std::vector<AbstractSet*>* allSuperSets = new std::vector<AbstractSet*>;
-                for (auto& subsetOf : m_superSets) {
-                    stack.push_back(subsetOf);
-                }
-                while (!stack.empty()) {
-                    AbstractSet* front = stack.front();
-                    stack.pop_front();
-                    if (std::find(allSuperSets->begin(), allSuperSets->end(), front) == allSuperSets->end()) {
-                        allSuperSets->push_back(front);
-                        for (auto& subsetOf : front->m_superSets) {
-                            stack.push_front(subsetOf);
-                        }
-                    }
-                }
-                return allSuperSets;
-            }
-            /**
              * Adds a node into the tree for this set
              * @param node the new node being added to the tree
              **/
@@ -505,6 +505,7 @@ namespace UML {
                                 SetNode* placeholderNode = new SetNode();
                                 placeholderNode->m_id = placeholderID;
                                 placeholderNode->m_guard = (*it)->m_guard;
+                                SetNode* oldRoot = (*it)->m_root;
                                 if (temp == (*it)->m_root) {
                                     (*it)->m_root = placeholderNode;
                                 }
@@ -514,13 +515,21 @@ namespace UML {
                                     tempParent = tempParent->m_parent;
                                 }
                                 bool swapRoot = false;
+                                bool placeNode = true;
                                 if (tempParent) {
                                     placeholderNode->m_parent = tempParent;
                                     if (tempParent->m_left == temp) {
                                         tempParent->m_left = placeholderNode;
-                                    } else {
+                                    } else if (tempParent->m_right == temp) {
                                         tempParent->m_right = tempParent->m_left;
                                         tempParent->m_left = placeholderNode;
+                                    } else {
+                                        SetNode* leftTemp = tempParent->m_left;
+                                        tempParent->m_left = placeholderNode;
+                                        placeholderNode->m_left = leftTemp;
+                                        placeholderNode->m_right = node;
+                                        node->m_parent = placeholderNode;
+                                        placeNode = false;
                                     }
                                 } else if (temp->m_parent) {
                                     // edge case where we want to place placeholder if intermediate set
@@ -535,15 +544,20 @@ namespace UML {
                                     if (temp == (*it)->m_root) {
                                         (*it)->m_root = placeholderNode;
                                     }
-                                } else {
+                                } else if (placeNode) {
                                     place(temp, placeholderNode);
                                     place(node, placeholderNode);
                                 }
                                 (*it)->m_size++;
                                 // set next sets roots to this placeholder until the root is different from temp
+                                if (temp != oldRoot) {
+                                    temp = oldRoot;
+                                }
                                 std::vector<AbstractSet*>::iterator oIt = it + 1;
                                 while (oIt != allSuperSets->end() && (*oIt)->m_root == temp) {
-                                    (*oIt)->m_root = placeholderNode;
+                                    if ((*oIt)->m_root != (*it)->m_root) {
+                                        (*oIt)->m_root = placeholderNode;
+                                    }
                                     (*oIt)->m_size++;
                                     oIt++;
                                 }
@@ -1408,6 +1422,23 @@ namespace UML {
                                     } else {
                                         currParent->m_right = 0;
                                     }
+                                    if (currParent->m_id == placeholderID && currParent->m_left && currParent->m_parent) {
+                                        // intermediate placeholder edge case
+                                        if (!curr->m_parent->m_right || currParent->m_parent->m_right->m_guard <= m_guard) {
+                                            currParent->m_parent->m_left = currParent->m_left;
+                                            currParent->m_left->m_parent = currParent->m_parent;
+                                            std::vector<AbstractSet*>* allSuperSets = getAllSuperSets();
+                                            for (auto& subsetOf : *allSuperSets) {
+                                                if (subsetOf->m_root == currParent) {
+                                                    subsetOf->m_root = currParent->m_left;
+                                                }
+                                            }
+                                            delete allSuperSets;
+                                            deleteNode(curr);
+                                            delete currParent;
+                                            break;
+                                        }
+                                    }
                                 }
                                 deleteNode(curr);
                                 curr = currParent;
@@ -1429,6 +1460,13 @@ namespace UML {
                                                     curr->m_parent->m_left = subset->m_root;
                                                 }
                                             }
+                                            std::vector<AbstractSet*>* subsetAllSupersets = subset->getAllSuperSets();
+                                            for (auto& subsetSuperSet : *subsetAllSupersets) { // triple for loop seems slow :/ but is based on complexity not size
+                                                if (subsetSuperSet != subsetOf && subsetSuperSet->m_root && subsetSuperSet->m_root->m_parent == curr) {
+                                                    subsetSuperSet->m_root->m_parent = 0;
+                                                }
+                                            }
+                                            delete subsetAllSupersets;
                                         }
                                     }
                                     delete allSuperSets;

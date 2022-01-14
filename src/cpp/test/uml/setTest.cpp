@@ -1349,3 +1349,175 @@ TEST_F(SetTest, copyComplexTreeTest) {
     delete ownedComments;
     delete ownedElements;
 }
+
+TEST_F(SetTest, EmulateFullArtifactTest) {
+    Set<>* ownedElements = new Set<>;
+    Set<Dependency>* clientDependencies = new Set<Dependency>;
+    Set<NamedElement>* members = new Set<NamedElement>;
+    Set<NamedElement>* ownedMembers = new Set<NamedElement>;
+    Set<Feature>* features = new Set<Feature>;
+    Set<Property>* attributes = new Set<Property>;
+    Set<Artifact>* nestedArtifacts = new Set<Artifact>;
+    OrderedSet<Property>* ownedAttributes = new OrderedSet<Property>;
+    OrderedSet<Operation>* ownedOperations = new OrderedSet<Operation>;
+    Set<Manifestation>* manifestations = new Set<Manifestation>;
+
+    ownedMembers->subsets(*ownedElements);
+    ownedMembers->subsets(*members);
+    features->subsets(*members);
+    attributes->subsets(*features);
+    nestedArtifacts->subsets(*ownedMembers);
+    ownedAttributes->subsets(*attributes);
+    ownedAttributes->subsets(*ownedMembers);
+    ownedOperations->subsets(*features);
+    ownedOperations->subsets(*ownedMembers);
+    manifestations->subsets(*ownedMembers);
+    manifestations->subsets(*clientDependencies);
+
+    UmlManager m;
+    Property& attribute = m.create<Property>();
+    attribute.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAD"));
+    Operation& operation = m.create<Operation>();
+    operation.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAC"));
+    Artifact& nested = m.create<Artifact>();
+    nested.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAB"));
+    Manifestation& manifestation = m.create<Manifestation>();
+
+    ownedAttributes->add(attribute);
+
+    ASSERT_EQ(ownedAttributes->size(), 1);
+    ASSERT_EQ(attributes->size(), 1);
+    ASSERT_EQ(ownedOperations->size(), 0);
+    ASSERT_EQ(features->size(), 1);
+    ASSERT_EQ(nestedArtifacts->size(), 0);
+    ASSERT_EQ(manifestations->size(), 0);
+    ASSERT_EQ(ownedMembers->size(), 1);
+    ASSERT_EQ(members->size(), 1);
+    ASSERT_EQ(clientDependencies->size(), 0);
+    ASSERT_EQ(ownedElements->size(), 1);
+
+    ASSERT_TRUE(ownedAttributes->contains(attribute));
+    ASSERT_TRUE(attributes->contains(attribute));
+    ASSERT_TRUE(features->contains(attribute));
+    ASSERT_TRUE(ownedMembers->contains(attribute));
+    ASSERT_TRUE(members->contains(attribute));
+    ASSERT_TRUE(ownedElements->contains(attribute));
+    ASSERT_FALSE(ownedOperations->contains(attribute.getID()));
+    ASSERT_FALSE(nestedArtifacts->contains(attribute.getID()));
+    ASSERT_FALSE(manifestations->contains(attribute.getID()));
+    ASSERT_FALSE(clientDependencies->contains(attribute.getID()));
+
+    ownedOperations->add(operation);
+
+    ASSERT_EQ(ownedAttributes->size(), 1);
+    ASSERT_EQ(attributes->size(), 1);
+    ASSERT_EQ(ownedOperations->size(), 1);
+    ASSERT_EQ(features->size(), 2);
+    ASSERT_EQ(nestedArtifacts->size(), 0);
+    ASSERT_EQ(manifestations->size(), 0);
+    ASSERT_EQ(ownedMembers->size(), 2);
+    ASSERT_EQ(members->size(), 2);
+    ASSERT_EQ(clientDependencies->size(), 0);
+    ASSERT_EQ(ownedElements->size(), 2);
+
+    ASSERT_TRUE(ownedOperations->contains(operation));
+    ASSERT_TRUE(features->contains(operation));
+    ASSERT_TRUE(ownedMembers->contains(operation));
+    ASSERT_TRUE(members->contains(operation));
+    ASSERT_TRUE(ownedElements->contains(operation));
+    ASSERT_FALSE(ownedAttributes->contains(operation.getID()));
+    ASSERT_FALSE(attributes->contains(operation.getID()));
+    ASSERT_FALSE(nestedArtifacts->contains(operation.getID()));
+    ASSERT_FALSE(manifestations->contains(operation.getID()));
+    ASSERT_FALSE(clientDependencies->contains(operation.getID()));
+
+    nestedArtifacts->add(nested);
+
+    ASSERT_EQ(ownedAttributes->size(), 1);
+    ASSERT_EQ(attributes->size(), 1);
+    ASSERT_EQ(ownedOperations->size(), 1);
+    ASSERT_EQ(features->size(), 2);
+    ASSERT_EQ(nestedArtifacts->size(), 1);
+    ASSERT_EQ(manifestations->size(), 0);
+    ASSERT_EQ(ownedMembers->size(), 3);
+    ASSERT_EQ(members->size(), 3);
+    ASSERT_EQ(clientDependencies->size(), 0);
+    ASSERT_EQ(ownedElements->size(), 3);
+    
+    ASSERT_TRUE(nestedArtifacts->contains(nested));
+    ASSERT_TRUE(ownedMembers->contains(nested));
+    ASSERT_TRUE(members->contains(nested));
+    ASSERT_TRUE(ownedElements->contains(nested));
+    ASSERT_FALSE(ownedAttributes->contains(nested.getID()));
+    ASSERT_FALSE(ownedOperations->contains(nested.getID()));
+    ASSERT_FALSE(attributes->contains(nested.getID()));
+    ASSERT_FALSE(features->contains(nested.getID()));
+    ASSERT_FALSE(clientDependencies->contains(nested.getID()));
+
+    manifestations->add(manifestation);
+
+    ASSERT_EQ(ownedAttributes->size(), 1);
+    ASSERT_EQ(attributes->size(), 1);
+    ASSERT_EQ(ownedOperations->size(), 1);
+    ASSERT_EQ(features->size(), 2);
+    ASSERT_EQ(nestedArtifacts->size(), 1);
+    ASSERT_EQ(manifestations->size(), 1);
+    ASSERT_EQ(ownedMembers->size(), 4);
+    ASSERT_EQ(members->size(), 4);
+    ASSERT_EQ(clientDependencies->size(), 1);
+    ASSERT_EQ(ownedElements->size(), 4);
+
+    ASSERT_TRUE(manifestations->contains(manifestation));
+    ASSERT_TRUE(ownedMembers->contains(manifestation));
+    ASSERT_TRUE(members->contains(manifestation));
+    ASSERT_TRUE(clientDependencies->contains(manifestation));
+    ASSERT_TRUE(ownedElements->contains(manifestation));
+    ASSERT_FALSE(ownedAttributes->contains(manifestation.getID()));
+    ASSERT_FALSE(ownedOperations->contains(manifestation.getID()));
+    ASSERT_FALSE(attributes->contains(manifestation.getID()));
+    ASSERT_FALSE(features->contains(manifestation.getID()));
+    ASSERT_FALSE(nestedArtifacts->contains(manifestation.getID()));
+
+    ASSERT_TRUE(ownedAttributes->contains(attribute));
+    ASSERT_TRUE(attributes->contains(attribute));
+    ASSERT_TRUE(features->contains(attribute));
+    ASSERT_TRUE(ownedMembers->contains(attribute));
+    ASSERT_TRUE(members->contains(attribute));
+    ASSERT_TRUE(ownedElements->contains(attribute));
+    ASSERT_FALSE(ownedOperations->contains(attribute.getID()));
+    ASSERT_FALSE(nestedArtifacts->contains(attribute.getID()));
+    ASSERT_FALSE(manifestations->contains(attribute.getID()));
+    ASSERT_FALSE(clientDependencies->contains(attribute.getID()));
+
+    ASSERT_TRUE(ownedOperations->contains(operation));
+    ASSERT_TRUE(features->contains(operation));
+    ASSERT_TRUE(ownedMembers->contains(operation));
+    ASSERT_TRUE(members->contains(operation));
+    ASSERT_TRUE(ownedElements->contains(operation));
+    ASSERT_FALSE(ownedAttributes->contains(operation.getID()));
+    ASSERT_FALSE(attributes->contains(operation.getID()));
+    ASSERT_FALSE(nestedArtifacts->contains(operation.getID()));
+    ASSERT_FALSE(manifestations->contains(operation.getID()));
+    ASSERT_FALSE(clientDependencies->contains(operation.getID()));
+
+    ASSERT_TRUE(nestedArtifacts->contains(nested));
+    ASSERT_TRUE(ownedMembers->contains(nested));
+    ASSERT_TRUE(members->contains(nested));
+    ASSERT_TRUE(ownedElements->contains(nested));
+    ASSERT_FALSE(ownedAttributes->contains(nested.getID()));
+    ASSERT_FALSE(ownedOperations->contains(nested.getID()));
+    ASSERT_FALSE(attributes->contains(nested.getID()));
+    ASSERT_FALSE(features->contains(nested.getID()));
+    ASSERT_FALSE(clientDependencies->contains(nested.getID()));
+
+    delete manifestations;
+    delete ownedOperations;
+    delete ownedAttributes;
+    delete nestedArtifacts;
+    delete attributes;
+    delete features;
+    delete clientDependencies;
+    delete ownedMembers;
+    delete members;
+    delete ownedElements;
+}

@@ -315,6 +315,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     Property& prop = m.create<Property>();
     Operation& op = m.create<Operation>();
     Generalization& gen = m.create<Generalization>();
+    spec.setName("specific");
     prop.setName("property");
     base.getOwnedAttributes().add(prop);
     op.setName("operation");
@@ -377,7 +378,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     /** TODO: anything else to test with base class? **/
     /** release specific **/
     ASSERT_NO_THROW(m.release(spec));
-    Class& spec2 = pckg.getPackagedElements().get(1).as<Class>(); // load specific
+    Class& spec2 = pckg.getPackagedElements().get("specific").as<Class>(); // load specific
 
     ASSERT_TRUE(gen.getSpecific() != 0);
     ASSERT_EQ(gen.getSpecific(), &spec2);

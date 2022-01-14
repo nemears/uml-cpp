@@ -15,6 +15,7 @@
                   - iav6FFkHBjBCffo8xBUsjyq1mtQe
       - generalizationSet:
           id: iav6FFkHBjBCffo8xBUsjyq1mtQe
+          name: set
           covering: true
           disjoint: true
           powerType: Y9ZCX7pp5W2D_OwPCFgTz&gcTRSc

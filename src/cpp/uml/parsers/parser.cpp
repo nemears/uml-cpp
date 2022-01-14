@@ -19,7 +19,14 @@ bool parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string 
                 // ID
                 ID id = ID::fromString(node[key].as<std::string>());
                 if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
-                    (el.*elSignature)(data.m_manager->get<T>(id));
+                    try {
+                        (el.*elSignature)(data.m_manager->get<T>(id));
+                    } catch (DuplicateElementInSetException& e) {
+                        // nothing let (that part) fail
+                    }
+                    catch (std::exception e) {
+                        throw UmlParserException("Unexpected Uml error: " + std::string(e.what()), data.m_path.string(), node[key]);
+                    }
                 } else {
                     (el.*idSignature)(id);
                 }
@@ -51,7 +58,13 @@ void parseSetReferences(YAML::Node node, ParserMetaData& data, std::string key, 
                     if (isValidID(node[key][i].as<std::string>())) {
                         ID id = ID::fromString(node[key][i].as<std::string>());
                         if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
-                            (owner.*signature)().add(data.m_manager->get<T>(id));
+                            try {
+                                (owner.*signature)().add(data.m_manager->get<T>(id));
+                            } catch (DuplicateElementInSetException e) {
+                                // nothing
+                            } catch (std::exception e) {
+                                throw UmlParserException("Unexpected Uml error: " + std::string(e.what()), data.m_path.string(), node[key][i]);
+                            }
                         } else {
                             (owner.*signature)().add(id);
                         }
@@ -561,6 +574,16 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
             }
         }
     }
+    if (ret->isSubClassOf(ElementType::DEPLOYMENT)) {
+        if (parseSingletonReference(node, data, "location", ret->as<Deployment>(), &Deployment::setLocation, &Deployment::setLocation)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::STEREOTYPE)) {
+        if (parseSingletonReference(node, data, "profile", ret->as<Stereotype>(), &Stereotype::setProfile, &Stereotype::setProfile)) {
+            return;
+        }
+    }
     if (ret->isSubClassOf(ElementType::COMMENT)) {
         if (node["owner"]) {
             if (node["owner"].IsScalar()) {
@@ -571,6 +594,16 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
             }
         }
     }
+    // if (ret->isSubClassOf(ElementType::BEHAVIOR)) {
+    //     if (node["namespace"]) {
+    //         if (node["namespace"].IsScalar()) {
+    //             if (isValidID(node["owner"].as<std::string>())) {
+    //                 setNamespace(ret->as<NamedElement>(), ID::fromString(node["namespace"].as<std::string>()));
+    //                 return;
+    //             }
+    //         }
+    //     }
+    // }
     if (ret->isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
         if (parseSingletonReference(node, data, "owningTemplateParameter", ret->as<ParameterableElement>(), &ParameterableElement::setOwningTemplateParameter, &ParameterableElement::setOwningTemplateParameter)) {
             return;
@@ -786,7 +819,7 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &type;
     }
 
-    if (node["profile"]) {
+    if (node["profile"] && node["profile"].IsMap()) {
         Profile& profile = data.m_manager->create<Profile>();
         parsePackage(node["profile"], profile, data);
         ret = &profile;
@@ -812,7 +845,7 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
 
     if (node["stereotype"]) {
         Stereotype& stereotype = data.m_manager->create<Stereotype>();
-        parseStereotype(node["stereotype"], stereotype, data);
+        parseClass(node["stereotype"], stereotype, data);
         ret = &stereotype;
     }
 
@@ -1052,7 +1085,9 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         }
         case ElementType::STEREOTYPE : {
             Stereotype& stereotype = el.as<Stereotype>();
-            emitStereotype(emitter, stereotype, data);
+            emitElementDefenition(emitter, ElementType::STEREOTYPE, "stereotype", el, data);
+            emitClass(emitter, stereotype, data);
+            emitElementDefenitionEnd(emitter, ElementType::STEREOTYPE, el);
             break;
         }
         case ElementType::TEMPLATE_BINDING : {
@@ -1087,6 +1122,12 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
 
 void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     if (data.m_strategy == EmitterStrategy::INDIVIDUAL) {
+        if (el.isSubClassOf(ElementType::STEREOTYPE)) {
+            if (el.as<Stereotype>().hasProfile()) {
+                emitter << YAML::Key << "profile" << el.as<Stereotype>().getProfileID().string();
+                return;
+            }
+        }
         if (el.isSubClassOf(ElementType::PACKAGEABLE_ELEMENT)) {
             if (el.as<PackageableElement>().hasOwningPackage()) {
                 emitter << YAML::Key << "owningPackage" << el.as<PackageableElement>().getOwningPackageID().string();
@@ -2063,7 +2104,7 @@ Stereotype& determineAndParseStereotype(YAML::Node node, ParserMetaData& data) {
     if (node["stereotype"]) {
         if (node["stereotype"].IsMap()) {
             Stereotype& stereotype = data.m_manager->create<Stereotype>();
-            parseStereotype(node["stereotype"], stereotype, data);
+            parseClass(node["stereotype"], stereotype, data);
             return stereotype;
         } else {
             throw UmlParserException("Invalid yaml node type for stereotype definition, it must be a map!", data.m_path.string(), node["stereotype"]);
@@ -3101,30 +3142,6 @@ void emitParameterableElement(YAML::Emitter& emitter, ParameterableElement& el, 
     if (el.hasTemplateParameter()) {
         emitter << YAML::Key << "templateParameter" << YAML::Value << el.getTemplateParameterID().string();
     }
-}
-
-void parseStereotype(YAML::Node node, Stereotype& stereotype, ParserMetaData& data) {
-    parseClass(node, stereotype, data);
-    // if (node["profile"]) {
-    //     if (node["profile"].IsScalar()) {
-    //         ID profileID = ID::fromString(node["profile"].as<string>());
-    //         if (data.m_manager->loaded(profileID)) {
-    //             stereotype.setProfile(data.m_manager->get<Profile>(profileID));
-    //         } else {
-    //             SetProfile setProfile;
-    //             setProfile(node["profile"], data, stereotype);
-    //         }
-    //     }
-    // }
-}
-
-void emitStereotype(YAML::Emitter& emitter, Stereotype& stereotype, EmitterMetaData& data) {
-    emitElementDefenition(emitter, ElementType::STEREOTYPE, "stereotype", stereotype, data);
-    emitClass(emitter, stereotype, data);
-    if (stereotype.hasProfile()) {
-        emitter << YAML::Key << "profile" << YAML::Value << stereotype.getProfileID().string();
-    }
-    emitElementDefenitionEnd(emitter, ElementType::STEREOTYPE, stereotype);
 }
 
 void emitGeneralizationSet(YAML::Emitter& emitter, GeneralizationSet& generalizationSet, EmitterMetaData& data) {

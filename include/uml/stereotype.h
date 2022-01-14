@@ -35,6 +35,7 @@ namespace UML {
             bool hasProfile() const;
             void setProfile(Profile& profile);
             void setProfile(Profile* profile);
+            void setProfile(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::STEREOTYPE;

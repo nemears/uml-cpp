@@ -15,7 +15,7 @@ void Extension::referenceReindexed(ID oldID, ID newID) {
 }
 
 void Extension::restoreReferences() {
-    // Association::restoreReferences();
+    Association::restoreReferences();
     // m_ownedEnd.restoreReference();
 }
 

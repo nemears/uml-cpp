@@ -85,6 +85,10 @@ void Stereotype::setProfile(Profile& profile) {
     m_profile.set(profile);
 }
 
+void Stereotype::setProfile(ID id) {
+    m_profile.set(id);
+}
+
 bool Stereotype::isSubClassOf(ElementType eType) const {
     bool ret = Class::isSubClassOf(eType);
 

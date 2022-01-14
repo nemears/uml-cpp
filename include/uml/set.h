@@ -488,7 +488,7 @@ namespace UML {
                         }
                     }
                     // handle supersets
-                    // graph bfs search
+                    // graph dfs search
                     std::vector<AbstractSet*>* allSuperSets = getAllSuperSets();
                     for (std::vector<AbstractSet*>::iterator it = allSuperSets->begin(); it != allSuperSets->end(); it++) {
                         if (!(*it)->m_root) {
@@ -562,6 +562,24 @@ namespace UML {
                                     oIt++;
                                 }
                                 it = oIt - 1;
+                            } else if (node->m_guard == (*it)->m_guard) {
+                                // took node away in lookForNodeInParents
+                                if ((*it)->m_root) {
+                                    (*it)->place(node, (*it)->m_root);
+                                    (*it)->m_size++;
+                                } else {
+                                    throw ManagerStateException("TODO, lookForNodeInParents edge case!");
+                                    // (*it)->m_root = node;
+                                    // (*it)->m_size++;
+                                    // std::vector<AbstractSet*>::iterator oIt = it + 1;
+                                    // while (oIt != allSuperSets->end() && !(*oIt)->m_root) {
+                                    //     (*oIt)->m_root = node;
+                                    //     (*oIt)->m_size++;
+                                    //     oIt++;
+                                    // }
+                                    // it = oIt - 1;
+                                }
+                                break;
                             }
                         }
                     }
@@ -672,6 +690,10 @@ namespace UML {
                     // this is a workaround to a polymorphic add, look at size to determine if singleton or not
                     if (m_upper == 1) { // enforce singleton behavior
                         if (this->m_root) {
+                            if (this->m_root->m_id == el.getID()) {
+                                // edge case where adding from already added superset without invoking opposite
+                                return;
+                            }
                             this->removeReadOnly(this->m_root->m_id);
                         }
                     } else {

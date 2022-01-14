@@ -94,6 +94,10 @@ void Deployment::setLocation(DeploymentTarget& location) {
     m_location.set(location);
 }
 
+void Deployment::setLocation(ID id) {
+    m_location.set(id);
+}
+
 bool Deployment::isSubClassOf(ElementType eType) const {
     bool ret = Dependency::isSubClassOf(eType);
 

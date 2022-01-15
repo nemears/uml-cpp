@@ -16,12 +16,6 @@ void Feature::referencingReleased(ID id) {
     m_featuringClassifier.release(id);
 }
 
-void Feature::restoreReferences() {
-    RedefinableElement::restoreReferences();
-    NamedElement::restoreReferences();
-    // m_featuringClassifier.restoreReference();
-}
-
 void Feature::referenceErased(ID id) {
     RedefinableElement::referenceErased(id);
     NamedElement::referenceErased(id);

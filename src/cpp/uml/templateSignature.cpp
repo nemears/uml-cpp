@@ -20,13 +20,6 @@ void TemplateSignature::referenceReindexed(ID oldID, ID newID) {
     m_parameters.reindex(oldID, newID);
 }
 
-void TemplateSignature::restoreReferences() {
-    Element::restoreReferences();
-    // m_template.restoreReference();
-    // m_ownedParameters.restoreReferences();
-    // m_parameters.restoreReferences();
-}
-
 void TemplateSignature::referenceErased(ID id) {
     Element::referenceErased(id);
     m_template.eraseElement(id);

@@ -22,12 +22,6 @@ void Package::referencingReleased(ID id) {
     m_profileApplications.release(id);
 }
 
-void Package::restoreReferences() {
-    Namespace::restoreReferences();
-    PackageableElement::restoreReferences();
-    TemplateableElement::restoreReferences();
-}
-
 void Package::referenceErased(ID id) {
     // Only invoke on root sets
     m_owningPackage.eraseElement(id);

@@ -52,7 +52,6 @@ namespace UML{
             void updateQualifiedName(std::string absoluteNamespace);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<Namespace, NamedElement>& getNamespaceSingleton();
             void init();

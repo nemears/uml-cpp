@@ -14,11 +14,6 @@ void Profile::referenceReindexed(ID oldID, ID newID) {
     m_profileOwnedStereotypes.reindex(oldID, newID);
 }
 
-void Profile::restoreReferences() {
-    Package::restoreReferences();
-    //
-}
-
 void Profile::referenceErased(ID id) {
     Package::referenceErased(id);
     m_profileOwnedStereotypes.eraseElement(id);

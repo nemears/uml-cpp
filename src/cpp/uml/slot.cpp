@@ -20,13 +20,6 @@ void Slot::referenceReindexed(ID oldID, ID newID) {
     m_owningInstance.reindex(oldID, newID);
 }
 
-void Slot::restoreReferences() {
-    Element::restoreReferences();
-    // m_definingFeature.restoreReference();
-    // m_values.restoreReferences();
-    // m_owningInstance.restoreReference();
-}
-
 void Slot::referenceErased(ID id) {
     Element::referenceErased(id);
     m_definingFeature.eraseElement(id);

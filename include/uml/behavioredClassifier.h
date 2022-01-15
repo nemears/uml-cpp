@@ -14,7 +14,6 @@ namespace UML {
             Singleton<Behavior, BehavioredClassifier> m_classifierBehavior = Singleton<Behavior, BehavioredClassifier>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<Behavior, BehavioredClassifier>& getClassifierBehaviorSingleton();
             void init();

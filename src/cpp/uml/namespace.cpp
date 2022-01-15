@@ -16,11 +16,6 @@ void Namespace::referencingReleased(ID id) {
     m_ownedMembers.release(id);
 }
 
-void Namespace::restoreReferences() {
-    NamedElement::restoreReferences();
-    // m_members.restoreReferences();
-}
-
 void Namespace::referenceErased(ID id) {
     NamedElement::referenceErased(id);
     m_members.eraseElement(id);

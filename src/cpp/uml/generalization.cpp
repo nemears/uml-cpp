@@ -33,13 +33,6 @@ void Generalization::referencingReleased(ID id) {
     m_generalizationSets.release(id);
 }
 
-void Generalization::restoreReferences() {
-    DirectedRelationship::restoreReferences();
-    // m_general.restoreReference();
-    // m_specific.restoreReference();
-    // m_generalizationSets.restoreReferences();
-}
-
 void Generalization::referenceErased(ID id) {
     DirectedRelationship::referenceErased(id);
     m_general.eraseElement(id);

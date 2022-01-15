@@ -13,11 +13,6 @@ void RedefinableElement::referenceReindexed(ID oldID, ID newID) {
     m_redefinitionContext.reindex(oldID, newID);
 }
 
-void RedefinableElement::restoreReferences() {
-    // m_redefinedElement.restoreReferences();
-    // m_redefinitionContext.restoreReferences();
-}
-
 void RedefinableElement::referenceErased(ID id) {
     m_redefinedElement.eraseElement(id);
     m_redefinitionContext.eraseElement(id);

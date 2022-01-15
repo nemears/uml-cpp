@@ -20,7 +20,6 @@ namespace UML {
             Set<Generalization, GeneralizationSet> m_generalizations = Set<Generalization, GeneralizationSet>(this);
             void referenceReindexed(ID oldID, ID newID) override;
             void referencingReleased(ID id) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<Classifier, GeneralizationSet>& getPowerTypeSingleton();
             void init();

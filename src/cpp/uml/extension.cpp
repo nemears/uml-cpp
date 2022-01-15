@@ -14,11 +14,6 @@ void Extension::referenceReindexed(ID oldID, ID newID) {
     m_ownedEnd.reindex(oldID, newID);
 }
 
-void Extension::restoreReferences() {
-    Association::restoreReferences();
-    // m_ownedEnd.restoreReference();
-}
-
 void Extension::referenceErased(ID id) {
     Association::referenceErased(id);
     m_ownedEnd.eraseElement(id);

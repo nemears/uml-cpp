@@ -24,12 +24,6 @@ void PackageMerge::referenceReindexed(ID oldID, ID newID) {
     m_receivingPackage.reindex(oldID, newID);
 }
 
-void PackageMerge::restoreReferences() {
-    DirectedRelationship::restoreReferences();
-    // m_mergedPackage.restoreReference();
-    // m_receivingPackage.restoreReference();
-}
-
 void PackageMerge::referenceErased(ID id) {
     DirectedRelationship::referenceErased(id);
     m_mergedPackage.eraseElement(id);

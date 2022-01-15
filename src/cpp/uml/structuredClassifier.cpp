@@ -31,17 +31,6 @@ void StructuredClassifier::restoreReferences() {
             m_parts.addReadOnly(prop.getID());
         }
     }
-    // m_ownedAttributes.restoreReferences();
-    // m_role.restoreReferences();
-    // m_parts.restoreReferences();
-    // // Load all attributes in
-    // for (auto& attribute : m_ownedAttributes) {
-    //     if (attribute.isComposite()) {
-    //         if (!m_parts.count(attribute.getID())) {
-    //             m_parts.add(attribute);
-    //         }
-    //     }
-    // }
 }
 
 void StructuredClassifier::referenceErased(ID id) {

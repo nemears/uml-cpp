@@ -17,12 +17,6 @@ void Deployment::referenceReindexed(ID oldID, ID newID) {
     m_deployedArtifacts.reindex(oldID, newID);
 }
 
-void Deployment::restoreReferences() {
-    Dependency::restoreReferences();
-    // m_location.restoreReference();
-    // m_deployedArtifacts.restoreReferences();
-}
-
 void Deployment::referenceErased(ID id) {
     Dependency::referenceErased(id);
     m_location.eraseElement(id);

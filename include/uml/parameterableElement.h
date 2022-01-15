@@ -8,18 +8,12 @@ namespace UML {
 
     class TemplateParameter;
     class TemplateParameterSubstitution;
-    namespace Parsers {
-        class SetOwningTemplateParameter;
-        class SetTemplateParameter;
-    }
 
     class ParameterableElement : virtual public Element {
 
         friend class TemplateParameter;
         friend class TemplateParameterSubstitution;
         friend class UmlManager;
-        friend class Parsers::SetOwningTemplateParameter;
-        friend class Parsers::SetTemplateParameter;
 
         protected:
             Singleton<TemplateParameter, ParameterableElement> m_templateParameter = Singleton<TemplateParameter, ParameterableElement>(this);
@@ -27,7 +21,6 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReference(Element* el) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<TemplateParameter, ParameterableElement>& getOwningTemplateParameterSingleton();
             Set<TemplateParameter, ParameterableElement>& getTemplateParameterSingleton();

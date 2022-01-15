@@ -43,7 +43,6 @@ void Property::referencingReleased(ID id) {
     m_defaultValue.release(id);
     m_dataType.release(id);
     m_class.release(id);
-    // m_artifact.release(id);
     m_association.release(id);
     m_owningAssociation.release(id);
     m_redefinedProperties.release(id);
@@ -54,23 +53,9 @@ void Property::referenceReindexed(ID oldID, ID newID) {
     m_defaultValue.reindex(oldID, newID);
     m_dataType.reindex(oldID, newID);
     m_class.reindex(oldID, newID);
-    // m_artifact.reindex(oldID, newID);
     m_association.reindex(oldID, newID);
     m_owningAssociation.reindex(oldID, newID);
     m_redefinedProperties.reindex(oldID, newID);
-}
-
-void Property::restoreReferences() {
-    StructuralFeature::restoreReferences();
-    // m_defaultValue.restoreReference();
-    // m_classifier.restoreReference();
-    // m_structuredClassifier.restoreReference();
-    // m_dataType.restoreReference();
-    // m_class.restoreReference();
-    // m_association.restoreReference();
-    // m_owningAssociation.restoreReference();
-    // m_artifact.restoreReference();
-    // m_redefinedProperties.restoreReferences();
 }
 
 void Property::restoreReference(Element* el) {
@@ -85,13 +70,12 @@ void Property::restoreReference(Element* el) {
 
 void Property::referenceErased(ID id) {
     StructuralFeature::referenceErased(id);
-    // DeploymentTarget::referenceErased(id);
+    DeploymentTarget::referenceErased(id);
     m_defaultValue.eraseElement(id);
     m_dataType.eraseElement(id);
     m_class.eraseElement(id);
     m_association.eraseElement(id);
     m_owningAssociation.eraseElement(id);
-    // m_artifact.elementErased(id);
     m_redefinedProperties.eraseElement(id);
 }
 

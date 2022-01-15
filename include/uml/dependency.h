@@ -15,7 +15,6 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void restoreReference(Element* el) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             void init();
             void copy(const Dependency& rhs);

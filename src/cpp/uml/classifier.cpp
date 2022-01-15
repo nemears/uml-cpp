@@ -76,8 +76,6 @@ void Classifier::referencingReleased(ID id) {
     m_generalizations.release(id);
     m_generals.release(id);
     m_inheritedMembers.release(id);
-    // m_nestingClass.release(id);
-    // m_powerTypeExtent.release(id, &Classifier::getPowerTypeExtent);
 }
 
 void Classifier::referenceReindexed(ID oldID, ID newID) {
@@ -89,8 +87,6 @@ void Classifier::referenceReindexed(ID oldID, ID newID) {
     m_generalizations.reindex(oldID, newID);
     m_generals.reindex(oldID, newID);
     m_inheritedMembers.reindex(oldID, newID);
-    // m_nestingClass.reindex(oldID, newID);
-    // m_powerTypeExtent.reindex(oldID, newID, &Classifier::getPowerTypeExtent);
 }
 
 void Classifier::restoreReferences() {
@@ -100,29 +96,6 @@ void Classifier::restoreReferences() {
     for (auto& generalization : m_generalizations) {
         // load through loop
     }
-    // m_attributes.restoreReferences();
-    // m_generalizations.restoreReferences();
-    // need to load generalizations
-    // for (auto& generalization : m_generalizations) {
-    //     if (generalization.hasGeneral()) {
-    //         if (!m_generals.count(generalization.getGeneralID())) {
-    //             m_generals.addByID(generalization.getGeneralID());
-    //         }
-    //     }
-    // }
-    // m_generals.restoreReferences();
-    // // need to load generals
-    // for (auto& general : m_generals) {
-    //     for (auto& member : general.getMembers()) {
-    //         if (member.getVisibility() != VisibilityKind::PRIVATE && !m_inheritedMembers.count(member.getID())) {
-    //             m_inheritedMembers.addByID(member.getID());
-    //         }
-    //     }
-    // }
-    // m_features.restoreReferences();
-    // m_inheritedMembers.restoreReferences();
-    // m_nestingClass.restoreReference();
-    // m_powerTypeExtent.restoreReferences();
 }
 
 void Classifier::referenceErased(ID id) {
@@ -135,8 +108,6 @@ void Classifier::referenceErased(ID id) {
     m_generalizations.eraseElement(id);
     m_generals.eraseElement(id);
     m_inheritedMembers.eraseElement(id);
-    // m_nestingClass.elementErased(id);
-    // m_powerTypeExtent.elementErased(id);
 }
 
 void Classifier::init() {

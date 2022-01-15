@@ -23,15 +23,6 @@ void TemplateParameter::referenceReindexed(ID oldID, ID newID) {
     m_ownedDefault.reindex(oldID, newID);
 }
 
-void TemplateParameter::restoreReferences() {
-    // Element::restoreReferences();
-    // m_signature.restoreReference();
-    // m_ownedParameteredElement.restoreReference();
-    // m_parameteredElement.restoreReference();
-    // m_default.restoreReference();
-    // m_ownedDefault.restoreReference();
-}
-
 void TemplateParameter::referenceErased(ID id) {
     Element::referenceErased(id);
     m_signature.eraseElement(id);

@@ -17,12 +17,6 @@ void GeneralizationSet::referencingReleased(ID id) {
     m_generalizations.release(id);
 }
 
-void GeneralizationSet::restoreReferences() {
-    PackageableElement::restoreReferences();
-    // m_powerType.restoreReference();
-    // m_generalizations.restoreReferences();
-}
-
 void GeneralizationSet::referenceErased(ID id) {
     PackageableElement::referenceErased(id);
     m_powerType.eraseElement(id);

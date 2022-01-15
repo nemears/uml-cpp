@@ -30,11 +30,6 @@ void ValueSpecification::restoreReference(Element* el) {
     // TODO type
 }
 
-void ValueSpecification::restoreReferences() {
-    TypedElement::restoreReferences();
-    PackageableElement::restoreReferences();
-}
-
 void ValueSpecification::referenceErased(ID id) {
     TypedElement::referenceErased(id);
     PackageableElement::referenceErased(id);

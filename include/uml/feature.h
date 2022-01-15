@@ -17,7 +17,6 @@ namespace UML {
             // void reindexName(std::string oldName, std::string newName) override;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<Classifier, Feature>& getFeaturingClassifierSingleton();
             void init();

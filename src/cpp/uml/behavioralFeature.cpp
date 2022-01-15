@@ -20,13 +20,6 @@ void BehavioralFeature::referenceReindexed(ID oldID, ID newID) {
     m_ownedParameters.reindex(oldID, newID);
 }
 
-void BehavioralFeature::restoreReferences() {
-    Namespace::restoreReferences();
-    Feature::restoreReferences();
-    // m_methods.restoreReferences();
-    // m_ownedParameters.restoreReferences();
-}
-
 void BehavioralFeature::referenceErased(ID id) {
     Namespace::referenceErased(id);
     Feature::referenceErased(id);

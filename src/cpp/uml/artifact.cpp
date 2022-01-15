@@ -24,15 +24,6 @@ void Artifact::referencingReleased(ID id) {
     m_manifestations.release(id);
 }
 
-void Artifact::restoreReferences() {
-    Classifier::restoreReferences();
-    DeployedArtifact::restoreReferences();
-    // m_ownedAttributes.restoreReferences();
-    // m_ownedOperations.restoreReferences();
-    // m_nestedArtifacts.restoreReferences();
-    // m_manifestations.restoreReferences();
-}
-
 void Artifact::referenceErased(ID id) {
     Classifier::referenceErased(id);
     m_ownedAttributes.eraseElement(id);

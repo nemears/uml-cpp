@@ -15,7 +15,6 @@ namespace UML {
             bool m_returnSpecified = false;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             void init();
             void copy(const BehavioralFeature& rhs);

@@ -6,21 +6,16 @@
 namespace UML {
 
     class Enumeration;
-    namespace Parsers {
-        class SetEnumeration;
-    }
 
     class EnumerationLiteral : public InstanceSpecification {
         
         friend class UmlManager;
         friend class Enumeration;
-        friend class Parsers::SetEnumeration;
 
         protected:
             Singleton<Enumeration, EnumerationLiteral> m_enumeration = Singleton<Enumeration, EnumerationLiteral>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<Enumeration, EnumerationLiteral>& getEnumerationSingleton();
             void init();

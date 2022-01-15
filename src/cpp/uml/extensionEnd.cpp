@@ -14,11 +14,6 @@ void ExtensionEnd::referenceReindexed(ID oldID, ID newID) {
     m_extensionType.reindex(oldID, newID);
 }
 
-void ExtensionEnd::restoreReferences() {
-    Property::restoreReferences();
-    // m_extensionType.restoreReference();
-}
-
 void ExtensionEnd::referenceErased(ID id) {
     Property::referenceErased(id);
     m_extensionType.eraseElement(id);

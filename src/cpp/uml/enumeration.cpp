@@ -14,11 +14,6 @@ void Enumeration::referenceReindexed(ID oldID, ID newID) {
     m_ownedLiterals.reindex(oldID, newID);
 }
 
-void Enumeration::restoreReferences() {
-    DataType::restoreReferences();
-    // m_ownedLiterals.restoreReferences();
-}
-
 void Enumeration::referenceErased(ID id) {
     DataType::referenceErased(id);
     m_ownedLiterals.eraseElement(id);

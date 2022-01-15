@@ -37,7 +37,6 @@ namespace UML{
             Singleton <ValueSpecification, InstanceSpecification> m_specification = Singleton<ValueSpecification, InstanceSpecification>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<ValueSpecification, InstanceSpecification>& getSpecificationSingleton();
             void init();

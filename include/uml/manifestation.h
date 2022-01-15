@@ -13,7 +13,6 @@ namespace UML {
             Singleton<PackageableElement, Manifestation> m_utilizedElement = Singleton<PackageableElement, Manifestation>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<PackageableElement, Manifestation>& getUtilizedElementSingleton();
             void init();

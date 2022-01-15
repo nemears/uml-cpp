@@ -16,12 +16,6 @@ void ProfileApplication::referenceReindexed(ID oldID, ID newID) {
     m_applyingPackage.reindex(oldID, newID);
 }
 
-void ProfileApplication::restoreReferences() {
-    DirectedRelationship::restoreReferences();
-    // m_appliedProfile.restoreReference();
-    // m_applyingPackage.restoreReference();
-}
-
 void ProfileApplication::referenceErased(ID id) {
     DirectedRelationship::referenceErased(id);
     m_appliedProfile.eraseElement(id);

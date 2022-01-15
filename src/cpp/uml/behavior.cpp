@@ -18,12 +18,6 @@ void Behavior::referenceReindexed(ID oldID, ID newID) {
     m_specification.reindex(oldID, newID);
 }
 
-void Behavior::restoreReferences() {
-    Class::restoreReferences();
-    // m_ownedParameters.restoreReferences();
-    // m_specification.restoreReference();
-}
-
 void Behavior::referenceErased(ID id) {
     Class::referenceErased(id);
     m_ownedParameters.eraseElement(id);

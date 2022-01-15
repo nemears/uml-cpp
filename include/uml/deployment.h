@@ -23,7 +23,6 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
-            void restoreReferences() override;
             Set<DeploymentTarget, Deployment>& getLocationSingleton();
             void init();
             void copy(const Deployment& rhs);

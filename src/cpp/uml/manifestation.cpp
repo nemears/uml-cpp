@@ -15,11 +15,6 @@ void Manifestation::referenceReindexed(ID oldID, ID newID) {
     m_utilizedElement.reindex(oldID, newID);
 }
 
-void Manifestation::restoreReferences() {
-    Abstraction::restoreReferences();
-    // m_utilizedElement.restoreReference();
-}
-
 void Manifestation::referenceErased(ID id) {
     Abstraction::referenceErased(id);
     m_utilizedElement.eraseElement(id);

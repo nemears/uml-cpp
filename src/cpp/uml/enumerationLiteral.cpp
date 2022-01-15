@@ -14,11 +14,6 @@ void EnumerationLiteral::referenceReindexed(ID oldID, ID newID) {
     m_enumeration.reindex(oldID, newID);
 }
 
-void EnumerationLiteral::restoreReferences() {
-    InstanceSpecification::restoreReferences();
-    // m_enumeration.restoreReference();
-}
-
 void EnumerationLiteral::referenceErased(ID id) {
     InstanceSpecification::referenceErased(id);
     m_enumeration.eraseElement(id);

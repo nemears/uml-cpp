@@ -12,11 +12,6 @@ void Relationship::referenceReindexed(ID oldID, ID newID) {
     m_relatedElements.reindex(oldID, newID);
 }
 
-void Relationship::restoreReferences() {
-    Element::restoreReferences();
-    // m_relatedElements.restoreReferences();
-}
-
 void Relationship::referenceErased(ID id) {
     Element::referenceErased(id);
     m_relatedElements.eraseElement(id);

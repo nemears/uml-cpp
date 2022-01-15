@@ -14,12 +14,6 @@ void DirectedRelationship::referenceReindexed(ID oldID, ID newID) {
     m_targets.reindex(oldID, newID);
 }
 
-void DirectedRelationship::restoreReferences() {
-    Relationship::restoreReferences();
-    // m_sources.restoreReferences();
-    // m_targets.restoreReferences();
-}
-
 void DirectedRelationship::referenceErased(ID id) {
     Relationship::referenceErased(id);
     m_sources.eraseElement(id);

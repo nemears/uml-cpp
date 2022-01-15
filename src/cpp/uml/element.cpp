@@ -2,12 +2,10 @@
 #include "uml/umlManager.h"
 #include "uml/comment.h"
 #include "uml/instanceSpecification.h"
-// #include "uml/classifier.h"
 #include "uml/singleton.h"
 #include "uml/uml-stable.h"
 #include "uml/setReferenceFunctor.h"
 
-using namespace std;
 namespace UML {
 
 class AddToMountFunctor : public SetFunctor {
@@ -71,16 +69,7 @@ void Element::referencingReleased(ID id) {
 }
 
 void Element::restoreReferences() {
-    //m_ownedElements->restoreReferences();
-    // if (hasOwner()) {
-    //     if (m_manager->loaded(m_ownerID)) {
-    //         m_manager->get(this, m_ownerID)->restoreReference(this);
-    //     }
-    // }
-    // m_ownedComments->restoreReferences();
-    // m_relationships->restoreReferences();
-    // m_directedRelationships->restoreReferences();
-    // m_appliedStereotype->restoreReferences();
+    // nothing
 }
 
 void Element::restoreReference(Element* el) {
@@ -158,7 +147,7 @@ Element::Element(const Element& rhs, ElementType elementType) : Element(elementT
     }
 }
 
-void Element::setID(string id) {
+void Element::setID(std::string id) {
     if (UML::isValidID(id)) {
         setID(ID::fromString(id));
     } else {
@@ -191,7 +180,7 @@ bool Element::isSubClassOf(ElementType eType) const {
     return eType == ElementType::ELEMENT;
 }
 
-string Element::elementTypeToString(ElementType eType) {
+std::string Element::elementTypeToString(ElementType eType) {
     switch(eType) {
         case ElementType::ABSTRACTION : {
             return "ABSTRACTION";
@@ -451,7 +440,7 @@ string Element::elementTypeToString(ElementType eType) {
     }
 }
 
-string Element::getElementTypeString() const {
+std::string Element::getElementTypeString() const {
     return elementTypeToString(getElementType());
 }
 

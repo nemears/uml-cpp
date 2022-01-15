@@ -18,7 +18,6 @@ namespace UML {
             Set<TemplateBinding, TemplateableElement> m_templateBindings = Set<TemplateBinding, TemplateableElement>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<TemplateSignature, TemplateableElement>& getOwnedTemplateSignatureSingleton();
             void init();

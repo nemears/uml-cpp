@@ -15,7 +15,6 @@ namespace UML {
             Singleton<InstanceSpecification, InstanceValue> m_instance = Singleton<InstanceSpecification, InstanceValue>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<InstanceSpecification, InstanceValue>& getInstanceSingleton();
             void init();

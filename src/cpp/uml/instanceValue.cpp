@@ -14,11 +14,6 @@ void InstanceValue::referenceReindexed(ID oldID, ID newID) {
     m_instance.reindex(oldID, newID);
 }
 
-void InstanceValue::restoreReferences() {
-    ValueSpecification::restoreReferences();
-    // m_instance.restoreReference();
-}
-
 void InstanceValue::referenceErased(ID id) {
     ValueSpecification::referenceErased(id);
     m_instance.eraseElement(id);

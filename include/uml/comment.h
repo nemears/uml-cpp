@@ -14,7 +14,6 @@ namespace UML {
             std::string m_body;
             void referenceReindexed(ID oldID, ID newID) override;
             void referencingReleased(ID id) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             void init();
             void copy(const Comment& rhs);

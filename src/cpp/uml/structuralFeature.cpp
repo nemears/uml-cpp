@@ -15,12 +15,6 @@ void StructuralFeature::referenceReindexed(ID oldID, ID newID) {
     MultiplicityElement::referenceReindexed(oldID, newID);
 }
 
-void StructuralFeature::restoreReferences() {
-    TypedElement::restoreReferences();
-    MultiplicityElement::restoreReferences();
-    Feature::restoreReferences();
-}
-
 void StructuralFeature::referenceErased(ID id) {
     TypedElement::referenceErased(id);
     MultiplicityElement::referenceErased(id);

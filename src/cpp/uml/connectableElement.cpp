@@ -18,11 +18,6 @@ void ConnectableElement::restoreReference(Element* el) {
     ParameterableElement::restoreReference(el);
 }
 
-void ConnectableElement::restoreReferences() {
-    TypedElement::restoreReferences();
-    ParameterableElement::restoreReferences();
-}
-
 void ConnectableElement::referenceErased(ID id) {
     TypedElement::referenceErased(id);
     ParameterableElement::referenceErased(id);

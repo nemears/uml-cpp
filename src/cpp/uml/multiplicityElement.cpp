@@ -61,11 +61,6 @@ void MultiplicityElement::referenceReindexed(ID oldID, ID newID) {
     m_lowVal.reindex(oldID, newID);
 }
 
-void MultiplicityElement::restoreReferences() {
-    // m_lowVal.restoreReference();
-    // m_upVal.restoreReference();
-}
-
 void MultiplicityElement::referenceErased(ID id) {
     m_lowVal.eraseElement(id);
     m_upVal.eraseElement(id);

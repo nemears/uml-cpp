@@ -23,11 +23,6 @@ void ParameterableElement::restoreReference(Element* el) {
     }
 }
 
-void ParameterableElement::restoreReferences() {
-    // m_owningTemplateParameter.restoreReference();
-    // m_templateParameter.restoreReference();
-}
-
 void ParameterableElement::referenceErased(ID id) {
     m_owningTemplateParameter.eraseElement(id);
     m_templateParameter.eraseElement(id);

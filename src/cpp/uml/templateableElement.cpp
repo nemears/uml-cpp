@@ -14,11 +14,6 @@ void TemplateableElement::referenceReindexed(ID oldID, ID newID) {
     m_templateBindings.reindex(oldID, newID);
 }
 
-void TemplateableElement::restoreReferences() {
-    // m_ownedTemplateSignature.restoreReference();
-    // m_templateBindings.restoreReferences();
-}
-
 void TemplateableElement::referenceErased(ID id) {
     m_ownedTemplateSignature.eraseElement(id);
     m_templateBindings.eraseElement(id);

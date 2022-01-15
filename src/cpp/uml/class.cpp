@@ -21,13 +21,6 @@ void Class::referenceReindexed(ID oldID, ID newID) {
     m_nestedClassifiers.reindex(oldID, newID);
 }
 
-void Class::restoreReferences() {
-    StructuredClassifier::restoreReferences();
-    BehavioredClassifier::restoreReferences();
-    // m_ownedOperations.restoreReferences();
-    // m_nestedClassifiers.restoreReferences();
-}
-
 void Class::referenceErased(ID id) {
     StructuredClassifier::referenceErased(id);
     BehavioredClassifier::referenceErased(id);

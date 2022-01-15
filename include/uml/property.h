@@ -66,7 +66,6 @@ namespace UML{
             void setComposite(bool composite);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
             Set<ValueSpecification, Property>& getDefaultValueSingleton();

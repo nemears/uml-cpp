@@ -23,7 +23,6 @@ namespace UML{
             OrderedSet<Classifier, Class> m_nestedClassifiers = OrderedSet<Classifier, Class>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<Property, Class>& getOwnedAttributesSet();
             Set<Operation, Class>& getOwnedOperationsSet();

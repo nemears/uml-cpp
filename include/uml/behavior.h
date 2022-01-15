@@ -17,7 +17,6 @@ namespace UML {
             Singleton<BehavioralFeature, Behavior> m_specification = Singleton<BehavioralFeature, Behavior>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<BehavioralFeature, Behavior>& getSpecificationSingleton();
             void init();

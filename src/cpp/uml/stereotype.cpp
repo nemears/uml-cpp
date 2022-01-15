@@ -14,11 +14,6 @@ void Stereotype::referenceReindexed(ID oldID, ID newID) {
     m_profile.reindex(oldID, newID);
 }
 
-void Stereotype::restoreReferences() {
-    Class::restoreReferences();
-    // m_profile.restoreReference();
-}
-
 void Stereotype::referenceErased(ID id) {
     Class::referenceErased(id);
     m_profile.eraseElement(id);

@@ -20,13 +20,6 @@ void Operation::referenceReindexed(ID oldID, ID newID) {
     m_dataType.reindex(oldID, newID);
 }
 
-void Operation::restoreReferences() {
-    BehavioralFeature::restoreReferences();
-    // m_type.restoreReference();
-    // m_class.restoreReference();
-    // m_dataType.restoreReference();
-}
-
 void Operation::referenceErased(ID id) {
     BehavioralFeature::referenceErased(id);
     m_type.eraseElement(id);

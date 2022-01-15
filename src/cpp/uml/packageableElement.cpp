@@ -21,12 +21,6 @@ void PackageableElement::restoreReference(Element* el) {
     ParameterableElement::restoreReference(el);
 }
 
-void PackageableElement::restoreReferences() {
-    NamedElement::restoreReferences();
-    ParameterableElement::restoreReferences();
-   // m_owningPackage.restoreReference();
-}
-
 void PackageableElement::referenceErased(ID id) {
     NamedElement::referenceErased(id);
     ParameterableElement::referenceErased(id);

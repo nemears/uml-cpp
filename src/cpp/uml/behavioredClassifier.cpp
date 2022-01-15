@@ -14,11 +14,6 @@ void BehavioredClassifier::referenceReindexed(ID oldID, ID newID) {
     m_classifierBehavior.reindex(oldID, newID);
 }
 
-void BehavioredClassifier::restoreReferences() {
-    // m_ownedBehaviors.restoreReferences();
-    // m_classifierBehavior.restoreReference();
-}
-
 void BehavioredClassifier::referenceErased(ID id) {
     m_ownedBehaviors.eraseElement(id);
     m_classifierBehavior.eraseElement(id);

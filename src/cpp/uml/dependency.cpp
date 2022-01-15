@@ -25,13 +25,6 @@ void Dependency::restoreReference(Element* el) {
     }
 }
 
-void Dependency::restoreReferences() {
-    PackageableElement::restoreReferences();
-    DirectedRelationship::restoreReferences();
-    // m_client.restoreReferences();
-    // m_supplier.restoreReferences();
-}
-
 void Dependency::referenceErased(ID id) {
     // PackageableElement::referenceErased(id);
     // DirectedRelationship::referenceErased(id);

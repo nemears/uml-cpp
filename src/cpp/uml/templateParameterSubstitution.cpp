@@ -34,14 +34,6 @@ void TemplateParameterSubstitution::restoreReference(Element* el) {
     }
 }
 
-void TemplateParameterSubstitution::restoreReferences() {
-    Element::restoreReferences();
-    // m_formal.restoreReference();
-    // m_templateBinding.restoreReference();
-    // m_actual.restoreReference();
-    // m_ownedActual.restoreReference();
-}
-
 void TemplateParameterSubstitution::referenceErased(ID id) {
     Element::referenceErased(id);
     m_formal.eraseElement(id);

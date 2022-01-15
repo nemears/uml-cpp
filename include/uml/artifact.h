@@ -24,7 +24,6 @@ namespace UML {
             Set<Manifestation, Artifact> m_manifestations =  Set<Manifestation, Artifact>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<Property, Artifact>& getOwnedAttributesSet();
             Set<Operation, Artifact>& getOwnedOperationsSet();

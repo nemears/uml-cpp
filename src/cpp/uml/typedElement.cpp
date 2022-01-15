@@ -21,11 +21,6 @@ void TypedElement::restoreReference(Element* el) {
     }
 }
 
-void TypedElement::restoreReferences() {
-    NamedElement::restoreReferences();
-    // m_type.restoreReference();
-}
-
 void TypedElement::referenceErased(ID id) {
     NamedElement::referenceErased(id);
     m_type.eraseElement(id);

@@ -36,7 +36,6 @@ namespace UML {
             };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
             Set<ValueSpecification, MultiplicityElement>& getLowerValueSingleton();
             Set<ValueSpecification, MultiplicityElement>& getUpperValueSingleton();

@@ -27,14 +27,6 @@ void NamedElement::referencingReleased(ID id) {
     m_clientDependencies.release(id);
 }
 
-void NamedElement::restoreReferences() {
-    Element::restoreReferences();
-    // m_memberNamespace->restoreReferences();
-    // m_namespace.restoreReference();
-    // m_clientDependencies->restoreReferences();
-    // m_supplierDependencies->restoreReferences();
-}
-
 void NamedElement::referenceErased(ID id) {
     Element::referenceErased(id);
     m_namespace.eraseElement(id);

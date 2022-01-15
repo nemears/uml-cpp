@@ -7,28 +7,18 @@ void Parameter::referenceReindexed(ID oldID, ID newID) {
     TypedElement::referenceReindexed(oldID, newID);
     MultiplicityElement::referenceReindexed(oldID, newID);
     m_operation.reindex(oldID, newID);
-    // m_behavior.reindex(oldID, newID);
 }
 
 void Parameter::referencingReleased(ID id) {
     TypedElement::referencingReleased(id);
     MultiplicityElement::referencingReleased(id);
     m_operation.release(id);
-    // m_behavior.release(id);
-}
-
-void Parameter::restoreReferences() {
-    TypedElement::restoreReferences();
-    MultiplicityElement::restoreReferences();
-    // m_operation.restoreReference();
-    // m_behavior.restoreReference();
 }
 
 void Parameter::referenceErased(ID id) {
     TypedElement::referenceErased(id);
     MultiplicityElement::referenceErased(id);
     m_operation.eraseElement(id);
-    // m_behavior.elementErased(id);
 }
 
 Set<Operation, Parameter>& Parameter::getOperationSingleton() {

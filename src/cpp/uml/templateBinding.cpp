@@ -29,12 +29,6 @@ void TemplateBinding::restoreReference(Element* el) {
     }
 }
 
-void TemplateBinding::restoreReferences() {
-    DirectedRelationship::restoreReferences();
-    // m_boundElement.restoreReference();
-    // m_signature.restoreReference();
-}
-
 void TemplateBinding::referenceErased(ID id) {
     DirectedRelationship::referenceErased(id);
     m_boundElement.eraseElement(id);

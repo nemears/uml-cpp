@@ -238,6 +238,7 @@ namespace UML {
             void removeReference(ID referencing);
             void setReference(ID id);
             virtual void referenceReindexed(ID oldID, ID newID);
+            virtual void reindexName(std::string oldName, std::string newName);
             virtual void restoreReferences();
             virtual void restoreReference(Element* el);
             virtual void referenceErased(ID id);

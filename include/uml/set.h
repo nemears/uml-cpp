@@ -1134,6 +1134,30 @@ namespace UML {
                     }
                 }
             };
+            bool innerReindexName(std::string oldName, std::string newName) {
+                if (m_root) {
+                    SetNode* match = search(oldName, m_root);
+                    if (match) {
+                        match->m_name = newName;
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+                return false;
+            }
+            void reindexName(std::string oldName, std::string newName) {
+                if (innerReindexName(oldName, newName)) {
+                    if (m_el !=  m_el->m_node->m_managerElementMemory) {
+                        (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().innerReindexName(oldName, newName);
+                    }
+                    for (auto& copy : m_el->m_node->m_copies) {
+                        if (copy != m_el) {
+                            (copy->as<U>().*m_signature)().innerReindexName(oldName, newName);
+                        }
+                    }
+                }
+            };
             /**
              * the element is being erased from the model, we must remove it
              * TODO

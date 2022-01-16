@@ -64,23 +64,19 @@ NamedElement::NamedElement(const NamedElement& el) : Element(ElementType::NAMED_
 }
 
 void NamedElement::setName(const std::string &name) {
-    reindexName(m_name, name);
+    for (auto& pair : m_node->m_references) {
+        if (!pair.second) {
+            m_manager->get<>(pair.first);
+        }
+        pair.second->m_managerElementMemory->reindexName(m_name, name);
+    }
     m_name = name;
     updateCopiesScalar(name, &NamedElement::m_name);
 }
 
 void NamedElement::reindexName(std::string oldName, std::string newName) {
-    // if (getOwner()) {
-    //     getOwner()->getOwnedElements().reindex(m_id, oldName, newName);
-    // }
-
-    // if (getNamespace()) {
-    //     getNamespace()->getOwnedMembers().reindex(m_id, oldName, newName);
-    // }
-
-    // for (auto & nmspc : *m_memberNamespace) {
-    //     nmspc.getMembers().reindex(m_id, oldName, newName);
-    // }
+    Element::reindexName(oldName, newName);
+    m_clientDependencies.reindexName(oldName, newName);
 }
 
 std::string NamedElement::getName() {

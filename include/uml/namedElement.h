@@ -48,7 +48,7 @@ namespace UML{
             };
             Set<Dependency, NamedElement> m_clientDependencies = Set<Dependency, NamedElement>(this);
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
-            virtual void reindexName(std::string oldName, std::string newName);
+            void reindexName(std::string oldName, std::string newName) override;
             void updateQualifiedName(std::string absoluteNamespace);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;

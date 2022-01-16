@@ -8,6 +8,10 @@ Set<Association, Connector>& Connector::getTypeSingleton() {
     return m_type;
 }
 
+Set<ConnectorEnd, Connector>& Connector::getEndsSet() {
+    return m_ends;
+}
+
 void Connector::referencingReleased(ID id) {
     Feature::referencingReleased(id);
     m_type.release(id);
@@ -48,11 +52,14 @@ void Connector::init() {
     m_contracts.m_signature = &Connector::getContracts;
     m_contracts.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_contracts.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
+    m_ends.subsets(*m_ownedElements);
+    m_ends.m_signature = &Connector::getEndsSet;
 }
 
 void Connector::copy(const Connector& rhs) {
     m_type = rhs.m_type;
     m_contracts = rhs.m_contracts;
+    m_ends = rhs.m_ends;
 }
 
 Connector::Connector() : Element(ElementType::CONNECTOR) {
@@ -102,6 +109,10 @@ void Connector::setType(ID id) {
 
 Set<Behavior, Connector>& Connector::getContracts() {
     return m_contracts;
+}
+
+OrderedSet<ConnectorEnd, Connector>& Connector::getEnds() {
+    return m_ends;
 }
 
 bool Connector::isSubClassOf(ElementType eType) const {

@@ -12,6 +12,7 @@
 #include "uml/artifact.h"
 #include "uml/association.h"
 #include "uml/connector.h"
+#include "uml/connectorEnd.h"
 #include "uml/dataType.h"
 #include "uml/dependency.h"
 #include "uml/deployment.h"

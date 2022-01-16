@@ -303,6 +303,8 @@ namespace UML {
     class Manifestation;
     class GeneralizationSet;
     class Connector;
+    class ConnectorEnd;
+    class ConnectableElement;
 
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
@@ -369,6 +371,8 @@ namespace UML {
         friend class Manifestation;
         friend class GeneralizationSet;
         friend class Connector;
+        friend class ConnectorEnd;
+        friend class ConnectableElement;
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
         friend void Parsers::setOwner(Element& el, ID id);

@@ -17,6 +17,12 @@ void TemplateParameter::referenceReindexed(ID oldID, ID newID) {
     m_default.reindex(oldID, newID);
 }
 
+void TemplateParameter::reindexName(std::string oldName, std::string newName) {
+    Element::reindexName(oldName, newName);
+    m_parameteredElement.reindexName(oldName, newName);
+    m_default.reindexName(oldName, newName);
+}
+
 void TemplateParameter::referenceErased(ID id) {
     Element::referenceErased(id);
     m_parameteredElement.eraseElement(id);

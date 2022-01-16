@@ -12,6 +12,10 @@ void ParameterableElement::referenceReindexed(ID oldID, ID newID) {
     m_templateParameter.reindex(oldID, newID);
 }
 
+void ParameterableElement::reindexName(std::string oldName, std::string newName) {
+    m_templateParameter.reindexName(oldName, newName);
+}
+
 void ParameterableElement::restoreReference(Element* el) {
     if (el->isSubClassOf(ElementType::TEMPLATE_PARAMETER) && el->as<TemplateParameter>().m_ownedDefault.id() == m_id) {
         if (m_templateParameter.empty()) {

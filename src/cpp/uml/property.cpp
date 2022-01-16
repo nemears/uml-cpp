@@ -41,13 +41,16 @@ void Property::RemoveRedefinitionContextFunctor::operator()(Element& el) const {
 void Property::referencingReleased(ID id) {
     StructuralFeature::referencingReleased(id);
     m_association.release(id);
-    m_redefinedProperties.release(id);
 }
 
 void Property::referenceReindexed(ID oldID, ID newID) {
     StructuralFeature::referenceReindexed(oldID, newID);
     m_association.reindex(oldID, newID);
-    m_redefinedProperties.reindex(oldID, newID);
+}
+
+void Property::reindexName(std::string oldName, std::string newName) {
+    StructuralFeature::reindexName(oldName, newName);
+    m_association.reindexName(oldName, newName);
 }
 
 void Property::restoreReference(Element* el) {
@@ -64,7 +67,6 @@ void Property::referenceErased(ID id) {
     StructuralFeature::referenceErased(id);
     DeploymentTarget::referenceErased(id);
     m_association.eraseElement(id);
-    m_redefinedProperties.eraseElement(id);
 }
 
 Set<ValueSpecification, Property>& Property::getDefaultValueSingleton() {

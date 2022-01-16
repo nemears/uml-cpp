@@ -9,6 +9,7 @@ namespace UML {
         protected:
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void reindexName(std::string oldName, std::string newName) override;
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
             ConnectableElement();

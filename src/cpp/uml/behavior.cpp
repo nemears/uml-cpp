@@ -11,6 +11,11 @@ void Behavior::referencingReleased(ID id) {
     m_specification.release(id);
 }
 
+void Behavior::reindexName(std::string oldName, std::string newName) {
+    Class::reindexName(oldName, newName);
+    m_specification.reindexName(oldName, newName);
+}
+
 void Behavior::referenceReindexed(ID oldID, ID newID) {
     Class::referenceReindexed(oldID, newID);
     m_specification.reindex(oldID, newID);

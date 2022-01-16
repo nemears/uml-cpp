@@ -3,18 +3,6 @@
 
 using namespace UML;
 
-void ValueSpecification::reindexName(std::string oldName, std::string newName) {
-    // if (getOwner()) {
-    //     if (getOwner()->isSubClassOf(ElementType::SLOT)) {
-    //         dynamic_cast<Slot*>(getOwner())->getValues().reindex(m_id, oldName, newName);
-    //     } else if (getOwner()->isSubClassOf(ElementType::EXPRESSION)) {
-    //         dynamic_cast<Expression*>(getOwner())->getOperands().reindex(m_id, oldName, newName);
-    //     }
-    // }
-
-    NamedElement::reindexName(oldName, newName);
-}
-
 void ValueSpecification::referencingReleased(ID id) {
     PackageableElement::referencingReleased(id);
     TypedElement::referencingReleased(id);
@@ -23,6 +11,11 @@ void ValueSpecification::referencingReleased(ID id) {
 void ValueSpecification::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
     // TODO type
+}
+
+void ValueSpecification::reindexName(std::string oldName, std::string newName) {
+    PackageableElement::reindexName(oldName, newName);
+    TypedElement::reindexName(oldName, newName);
 }
 
 void ValueSpecification::restoreReference(Element* el) {

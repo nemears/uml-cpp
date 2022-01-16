@@ -13,6 +13,11 @@ void Comment::referenceReindexed(ID oldID, ID newID) {
     m_annotatedElements.reindex(oldID, newID);
 }
 
+void Comment::reindexName(std::string oldName, std::string newName) {
+    Element::reindexName(oldName, newName);
+    m_annotatedElements.reindexName(oldName, newName);
+}
+
 void Comment::referenceErased(ID id) {
     Element::referenceErased(id);
     m_annotatedElements.eraseElement(id);

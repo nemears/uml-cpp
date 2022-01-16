@@ -11,6 +11,11 @@ void Package::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
 }
 
+void Package::reindexName(std::string oldName, std::string newName) {
+    Namespace::reindexName(oldName, newName);
+    PackageableElement::reindexName(oldName, newName);
+}
+
 void Package::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     PackageableElement::referencingReleased(id);

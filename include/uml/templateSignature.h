@@ -26,6 +26,7 @@ namespace UML {
             OrderedSet<TemplateParameter, TemplateSignature> m_ownedParameters =  OrderedSet<TemplateParameter, TemplateSignature>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
             Set<TemplateableElement, TemplateSignature>& getTemplateSingleton();
             Set<TemplateParameter, TemplateSignature>& getParametersSet();

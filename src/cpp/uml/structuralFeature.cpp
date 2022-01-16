@@ -13,6 +13,11 @@ void StructuralFeature::referenceReindexed(ID oldID, ID newID) {
     TypedElement::referenceReindexed(oldID, newID);
 }
 
+void StructuralFeature::reindexName(std::string oldName, std::string newName) {
+    Feature::reindexName(oldName, newName);
+    TypedElement::reindexName(oldName, newName);
+}
+
 void StructuralFeature::referenceErased(ID id) {
     TypedElement::referenceErased(id);
     Feature::referenceErased(id);

@@ -15,6 +15,7 @@ namespace UML{
             Singleton<Type, TypedElement> m_type = Singleton<Type, TypedElement>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void reindexName(std::string oldName, std::string newName) override;
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
             Set<Type, TypedElement>& getTypeSingleton();

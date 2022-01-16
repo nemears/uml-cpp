@@ -17,6 +17,11 @@ void NamedElement::referenceReindexed(ID oldID, ID newID) {
     m_clientDependencies.reindex(oldID, newID);
 }
 
+void NamedElement::reindexName(std::string oldName, std::string newName) {
+    Element::reindexName(oldName, newName);
+    m_clientDependencies.reindexName(oldName, newName);
+}
+
 void NamedElement::referencingReleased(ID id) {
     Element::referencingReleased(id);
     m_clientDependencies.release(id);
@@ -72,11 +77,6 @@ void NamedElement::setName(const std::string &name) {
     }
     m_name = name;
     updateCopiesScalar(name, &NamedElement::m_name);
-}
-
-void NamedElement::reindexName(std::string oldName, std::string newName) {
-    Element::reindexName(oldName, newName);
-    m_clientDependencies.reindexName(oldName, newName);
 }
 
 std::string NamedElement::getName() {

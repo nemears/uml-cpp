@@ -10,6 +10,11 @@ void Feature::referenceReindexed(ID oldID, ID newID) {
     m_featuringClassifier.reindex(oldID, newID);
 }
 
+void Feature::reindexName(std::string oldName, std::string newName) {
+    RedefinableElement::reindexName(oldName, newName);
+    NamedElement::reindexName(oldName, newName);
+}
+
 void Feature::referencingReleased(ID id) {
     RedefinableElement::referencingReleased(id);
     NamedElement::referencingReleased(id);

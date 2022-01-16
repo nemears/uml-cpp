@@ -13,6 +13,11 @@ void ConnectableElement::referenceReindexed(ID oldID, ID newID) {
     ParameterableElement::referenceReindexed(oldID, newID);
 }
 
+void ConnectableElement::reindexName(std::string oldName, std::string newName) {
+    TypedElement::reindexName(oldName, newName);
+    ParameterableElement::reindexName(oldName, newName);
+}
+
 void ConnectableElement::restoreReference(Element* el) {
     TypedElement::restoreReference(el);
     ParameterableElement::restoreReference(el);

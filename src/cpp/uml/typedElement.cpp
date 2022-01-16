@@ -14,6 +14,11 @@ void TypedElement::referenceReindexed(ID oldID, ID newID) {
     m_type.reindex(oldID, newID);
 }
 
+void TypedElement::reindexName(std::string oldName, std::string newName) {
+    NamedElement::reindexName(oldName, newName);
+    m_type.reindexName(oldName, newName);
+}
+
 void TypedElement::restoreReference(Element* el) {
     NamedElement::restoreReference(el);
     if (m_type.id() == el->getID()) {

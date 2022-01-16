@@ -1,5 +1,5 @@
-#ifndef CLASSH
-#define CLASSH
+#ifndef _CLASS_H_
+#define _CLASS_H_
 
 #include "structuredClassifier.h"
 #include "operation.h"
@@ -21,9 +21,6 @@ namespace UML{
             OrderedSet<Property, Class> m_classOwnedAttrubutes = OrderedSet<Property, Class>(this);
             OrderedSet<Operation, Class> m_ownedOperations = OrderedSet<Operation, Class>(this);
             OrderedSet<Classifier, Class> m_nestedClassifiers = OrderedSet<Classifier, Class>(this);
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
             Set<Property, Class>& getOwnedAttributesSet();
             Set<Operation, Class>& getOwnedOperationsSet();
             Set<Classifier, Class>& getNestedClassifiersSet();

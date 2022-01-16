@@ -30,6 +30,7 @@ namespace UML {
         CLASSIFIER,
         COMMENT,
         CONNECTABLE_ELEMENT,
+        CONNECTOR,
         CONTROL_FLOW,
         CREATE_OBJECT_ACTION,
         DATA_TYPE,
@@ -161,6 +162,7 @@ namespace UML {
     class TemplateBinding;
     class TemplateParameterSubstitution;
     class TypedElement;
+    class Connector;
     template <class T, class U> class Set;
     template <class T> class SetIterator;
     template <class V, class W> class OppositeFunctor;
@@ -202,6 +204,7 @@ namespace UML {
         friend class TemplateBinding;
         friend class TemplateParameterSubstitution;
         friend class TypedElement;
+        friend class Connector;
         template <class T, class U> friend class Singleton;
         template <class T, class U> friend class Set;
         template <class V, class W> friend class OppositeFunctor;

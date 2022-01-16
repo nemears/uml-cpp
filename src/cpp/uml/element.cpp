@@ -232,6 +232,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::CONNECTABLE_ELEMENT : {
             return "CONNECTABLE_ELEMENT";
         }
+        case ElementType::CONNECTOR : {
+            return "CONNECTOR";
+        }
         case ElementType::CONTROL_FLOW : {
             return "CONTROL_FLOW";
         }

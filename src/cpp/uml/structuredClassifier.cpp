@@ -31,12 +31,16 @@ void StructuredClassifier::init() {
     m_parts.subsets(m_ownedAttributes);
     m_parts.m_signature = &StructuredClassifier::getParts;
     m_parts.m_readOnly = true;
+    m_ownedConnectors.subsets(m_ownedMembers);
+    m_ownedConnectors.subsets(m_features);
+    m_ownedConnectors.m_signature = &StructuredClassifier::getOwnedConnectors;
 }
 
 void StructuredClassifier::copy(const StructuredClassifier& rhs) {
     m_roles = rhs.m_roles;
     m_ownedAttributes = rhs.m_ownedAttributes;
     m_parts = rhs.m_parts;
+    m_ownedConnectors = rhs.m_ownedConnectors;
 }
 
 StructuredClassifier::StructuredClassifier() : Element(ElementType::STRUCTURED_CLASSIFIER) {
@@ -61,6 +65,10 @@ Set<ConnectableElement, StructuredClassifier>& StructuredClassifier::getRoles() 
 
 Set<Property, StructuredClassifier>& StructuredClassifier::getParts() {
     return m_parts;
+}
+
+Set<Connector, StructuredClassifier>& StructuredClassifier::getOwnedConnectors() {
+    return m_ownedConnectors;
 }
 
 bool StructuredClassifier::isSubClassOf(ElementType eType) const {

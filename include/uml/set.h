@@ -302,6 +302,7 @@ namespace UML {
     class Artifact;
     class Manifestation;
     class GeneralizationSet;
+    class Connector;
 
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
@@ -367,6 +368,7 @@ namespace UML {
         friend class Artifact;
         friend class Manifestation;
         friend class GeneralizationSet;
+        friend class Connector;
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
         friend void Parsers::setOwner(Element& el, ID id);

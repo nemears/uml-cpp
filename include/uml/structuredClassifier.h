@@ -6,6 +6,7 @@
 namespace UML {
 
     class ConnectableElement;
+    class Connector;
 
     class StructuredClassifier : virtual public Classifier {
 
@@ -15,6 +16,7 @@ namespace UML {
             Set<ConnectableElement, StructuredClassifier> m_roles = Set<ConnectableElement, StructuredClassifier>(this);
             Set<Property, StructuredClassifier> m_ownedAttributes = Set<Property, StructuredClassifier>(this);
             Set<Property, StructuredClassifier> m_parts = Set<Property, StructuredClassifier>(this);
+            Set<Connector, StructuredClassifier> m_ownedConnectors = Set<Connector, StructuredClassifier>(this);
             class AddPartFunctor : public SetFunctor {
                 private:
                     void operator()(Element& el) const override;
@@ -31,6 +33,7 @@ namespace UML {
             Set<Property, StructuredClassifier>& getOwnedAttributes();
             Set<ConnectableElement, StructuredClassifier>& getRoles();
             Set<Property, StructuredClassifier>& getParts();
+            Set<Connector, StructuredClassifier>& getOwnedConnectors();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::STRUCTURED_CLASSIFIER;

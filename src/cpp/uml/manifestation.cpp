@@ -5,21 +5,6 @@
 
 using namespace UML;
 
-void Manifestation::referencingReleased(ID id) {
-    Abstraction::referencingReleased(id);
-    m_utilizedElement.release(id);
-}
-
-void Manifestation::referenceReindexed(ID oldID, ID newID) {
-    Abstraction::referenceReindexed(oldID, newID);
-    m_utilizedElement.reindex(oldID, newID);
-}
-
-void Manifestation::referenceErased(ID id) {
-    Abstraction::referenceErased(id);
-    m_utilizedElement.eraseElement(id);
-}
-
 Set<PackageableElement, Manifestation>& Manifestation::getUtilizedElementSingleton() {
     return m_utilizedElement;
 }

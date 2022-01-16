@@ -16,26 +16,17 @@ void InstanceSpecification::RemoveClassifierFunctor::operator()(Element& el) con
 
 void InstanceSpecification::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
-    DeployedArtifact::referenceReindexed(oldID, newID);
     m_classifiers.reindex(oldID, newID);
-    m_slots.reindex(oldID, newID);
-    m_specification.reindex(oldID, newID);
 }
 
 void InstanceSpecification::referencingReleased(ID id) {
     PackageableElement::referencingReleased(id);
-    DeployedArtifact::referencingReleased(id);
     m_classifiers.release(id);
-    m_specification.release(id);
-    m_slots.release(id);
 }
 
 void InstanceSpecification::referenceErased(ID id) {
     PackageableElement::referenceErased(id);
-    DeployedArtifact::referenceErased(id);
     m_classifiers.eraseElement(id);
-    m_specification.eraseElement(id);
-    m_slots.eraseElement(id);
 }
 
 Set<ValueSpecification, InstanceSpecification>& InstanceSpecification::getSpecificationSingleton() {

@@ -7,13 +7,11 @@ using namespace UML;
 void PackageableElement::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
     ParameterableElement::referenceReindexed(oldID, newID);
-    m_owningPackage.reindex(oldID, newID);
 }
 
 void PackageableElement::referencingReleased(ID id) {
     NamedElement::referencingReleased(id);
     ParameterableElement::referencingReleased(id);
-    m_owningPackage.release(id);
 }
 
 void PackageableElement::restoreReference(Element* el) {
@@ -24,7 +22,6 @@ void PackageableElement::restoreReference(Element* el) {
 void PackageableElement::referenceErased(ID id) {
     NamedElement::referenceErased(id);
     ParameterableElement::referenceErased(id);
-    m_owningPackage.eraseElement(id);
 }
 
 Set<Package, PackageableElement>& PackageableElement::getOwningPackageSingleton() {

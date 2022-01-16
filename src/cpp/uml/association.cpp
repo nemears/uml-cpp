@@ -25,19 +25,11 @@ void Association::RemoveEndTypeFunctor::operator()(Element& el) const {
 void Association::referencingReleased(ID id) {
     Classifier::referencingReleased(id);
     Relationship::referencingReleased(id);
-    m_memberEnds.release(id);
-    m_ownedEnds.release(id);
-    m_navigableOwnedEnds.release(id);
-    m_endType.release(id);
 }
 
 void Association::referenceReindexed(ID oldID, ID newID) {
     Classifier::referenceReindexed(oldID, newID);
     Relationship::referenceReindexed(oldID, newID);
-    m_memberEnds.reindex(oldID, newID);
-    m_ownedEnds.reindex(oldID, newID);
-    m_navigableOwnedEnds.reindex(oldID, newID);
-    m_endType.reindex(oldID, newID);
 }
 
 void Association::restoreReferences() {
@@ -60,10 +52,6 @@ void Association::restoreReference(Element* el) {
 void Association::referenceErased(ID id) {
     Classifier::referenceErased(id);
     Relationship::referenceErased(id);
-    m_memberEnds.eraseElement(id);
-    m_ownedEnds.eraseElement(id);
-    m_navigableOwnedEnds.eraseElement(id);
-    m_endType.eraseElement(id);
 }
 
 Set<Property, Association>& Association::getMemberEndsSet() {

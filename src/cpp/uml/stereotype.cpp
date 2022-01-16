@@ -4,21 +4,6 @@
 
 using namespace UML;
 
-void Stereotype::referencingReleased(ID id) {
-    Class::referencingReleased(id);
-    m_profile.release(id);
-}
-
-void Stereotype::referenceReindexed(ID oldID, ID newID) {
-    Class::referenceReindexed(oldID, newID);
-    m_profile.reindex(oldID, newID);
-}
-
-void Stereotype::referenceErased(ID id) {
-    Class::referenceErased(id);
-    m_profile.eraseElement(id);
-}
-
 Set<Profile, Stereotype>& Stereotype::getProfileSingleton() {
     return m_profile;
 }

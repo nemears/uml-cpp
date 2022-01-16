@@ -4,24 +4,6 @@
 
 using namespace UML;
 
-void ProfileApplication::referencingReleased(ID id) {
-    DirectedRelationship::referencingReleased(id);
-    m_appliedProfile.release(id);
-    m_applyingPackage.release(id);
-}
-
-void ProfileApplication::referenceReindexed(ID oldID, ID newID) {
-    DirectedRelationship::referenceReindexed(oldID, newID);
-    m_appliedProfile.reindex(oldID, newID);
-    m_applyingPackage.reindex(oldID, newID);
-}
-
-void ProfileApplication::referenceErased(ID id) {
-    DirectedRelationship::referenceErased(id);
-    m_appliedProfile.eraseElement(id);
-    m_applyingPackage.eraseElement(id);
-}
-
 Set<Profile, ProfileApplication>& ProfileApplication::getAppliedProfileSingleton() {
     return m_appliedProfile;
 }

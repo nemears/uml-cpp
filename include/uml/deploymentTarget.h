@@ -13,9 +13,6 @@ namespace UML {
 
         protected:
             Set<Deployment, DeploymentTarget> m_deployments = Set<Deployment, DeploymentTarget>(this);
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
             void init();
             void copy(const DeploymentTarget& rhs);
             DeploymentTarget();

@@ -5,24 +5,6 @@
 
 using namespace UML;
 
-void Deployment::referencingReleased(ID id) {
-    Dependency::referencingReleased(id);
-    m_location.release(id);
-    m_deployedArtifacts.release(id);
-}
-
-void Deployment::referenceReindexed(ID oldID, ID newID) {
-    Dependency::referenceReindexed(oldID, newID);
-    m_location.reindex(oldID, newID);
-    m_deployedArtifacts.reindex(oldID, newID);
-}
-
-void Deployment::referenceErased(ID id) {
-    Dependency::referenceErased(id);
-    m_location.eraseElement(id);
-    m_deployedArtifacts.eraseElement(id);
-}
-
 Set<DeploymentTarget, Deployment>& Deployment::getLocationSingleton() {
     return m_location;
 }

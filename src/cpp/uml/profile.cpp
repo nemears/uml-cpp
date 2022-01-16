@@ -4,21 +4,6 @@
 
 using namespace UML;
 
-void Profile::referencingReleased(ID id) {
-    Package::referencingReleased(id);
-    m_profileOwnedStereotypes.release(id);
-}
-
-void Profile::referenceReindexed(ID oldID, ID newID) {
-    Package::referenceReindexed(oldID, newID);
-    m_profileOwnedStereotypes.reindex(oldID, newID);
-}
-
-void Profile::referenceErased(ID id) {
-    Package::referenceErased(id);
-    m_profileOwnedStereotypes.eraseElement(id);
-}
-
 void Profile::init() {
     m_profileOwnedStereotypes.redefines(m_ownedStereotypes);
     m_profileOwnedStereotypes.opposite(&Stereotype::getProfileSingleton);

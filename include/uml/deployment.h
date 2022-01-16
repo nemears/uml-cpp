@@ -20,9 +20,6 @@ namespace UML {
         private:
             Set<DeployedArtifact, Deployment> m_deployedArtifacts = Set<DeployedArtifact, Deployment>(this);
             Singleton<DeploymentTarget, Deployment> m_location = Singleton<DeploymentTarget, Deployment>(this);
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
             Set<DeploymentTarget, Deployment>& getLocationSingleton();
             void init();
             void copy(const Deployment& rhs);

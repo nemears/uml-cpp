@@ -5,12 +5,10 @@
 using namespace UML;
 
 void ParameterableElement::referencingReleased(ID id) {
-    m_owningTemplateParameter.release(id);
     m_templateParameter.release(id);
 }
 
 void ParameterableElement::referenceReindexed(ID oldID, ID newID) {
-    m_owningTemplateParameter.reindex(oldID, newID);
     m_templateParameter.reindex(oldID, newID);
 }
 
@@ -24,7 +22,6 @@ void ParameterableElement::restoreReference(Element* el) {
 }
 
 void ParameterableElement::referenceErased(ID id) {
-    m_owningTemplateParameter.eraseElement(id);
     m_templateParameter.eraseElement(id);
 }
 

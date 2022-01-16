@@ -26,9 +26,6 @@ namespace UML {
                     RemoveMergedPackageReferenceFunctor(Element* them) : SetFunctor(them) {};
                     void operator()(Element& el) const override;
             };
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
             Set<Package, PackageMerge>& getReceivingPackageSingleton();
             Set<Package, PackageMerge>& getMergedPackageSingleton();
             void init();

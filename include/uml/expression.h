@@ -12,9 +12,6 @@ namespace UML {
         protected:
             std::string m_symbol = "";
             OrderedSet<ValueSpecification, Expression> m_operands = OrderedSet<ValueSpecification, Expression>(this);
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
             Set<ValueSpecification, Expression>& getOperandsSet();
             void init();
             void copy(const Expression& rhs);

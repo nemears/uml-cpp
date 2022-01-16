@@ -11,17 +11,13 @@ using namespace UML;
 void TemplateParameterSubstitution::referencingReleased(ID id) {
     Element::referencingReleased(id);
     m_formal.release(id);
-    m_templateBinding.release(id);
     m_actual.release(id);
-    m_ownedActual.release(id);
 }
 
 void TemplateParameterSubstitution::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
     m_formal.reindex(oldID, newID);
-    m_templateBinding.reindex(oldID, newID);
     m_actual.reindex(oldID, newID);
-    m_ownedActual.reindex(oldID, newID);
 }
 
 void TemplateParameterSubstitution::restoreReference(Element* el) {
@@ -37,9 +33,7 @@ void TemplateParameterSubstitution::restoreReference(Element* el) {
 void TemplateParameterSubstitution::referenceErased(ID id) {
     Element::referenceErased(id);
     m_formal.eraseElement(id);
-    m_templateBinding.eraseElement(id);
     m_actual.eraseElement(id);
-    m_ownedActual.eraseElement(id);
 }
 
 Set<TemplateParameter, TemplateParameterSubstitution>& TemplateParameterSubstitution::getFormalSingleton() {

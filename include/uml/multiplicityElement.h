@@ -34,9 +34,6 @@ namespace UML {
                     RemoveUpperFunctor(Element* them) : SetFunctor(them) {};
                     void operator()(Element& el) const override;
             };
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
             Set<ValueSpecification, MultiplicityElement>& getLowerValueSingleton();
             Set<ValueSpecification, MultiplicityElement>& getUpperValueSingleton();
             void init();

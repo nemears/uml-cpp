@@ -792,14 +792,38 @@ namespace UML {
                         redefined->m_root = m_root;
                     }
                 }
-                for (auto subset : m_subSets) {
+                std::list<AbstractSet*> subSetQueue;
+                for (auto& subset: m_subSets) {
+                    subSetQueue.push_back(subset);
+                }
+                std::vector<AbstractSet*> allSubSets;
+                while (!subSetQueue.empty()) {
+                    AbstractSet* front = subSetQueue.front();
+                    subSetQueue.pop_front();
+                    if (temp->m_guard >= front->m_guard && std::find(allSubSets.begin(), allSubSets.end(), front) == allSubSets.end()) {
+                        allSubSets.push_back(front);
+                        for (auto& subset : front->m_subSets) {
+                            if (subset != this && std::find(allSubSets.begin(), allSubSets.end(), subset) == allSubSets.end()) {
+                                subSetQueue.push_back(subset);
+                            }
+                        }
+                        for (auto& superSet : front->m_superSets) {
+                            if (superSet != this && 
+                                std::find(allSubSets.begin(), allSubSets.end(), superSet) == allSubSets.end() &&
+                                std::find(m_superSets.begin(), m_superSets.end(), front) == m_superSets.end()) {
+                                subSetQueue.push_back(superSet);
+                            }
+                        }
+                    }
+                }
+                for (auto& subset : allSubSets) {
                     if (temp->m_guard >= subset->m_guard) {
                         subset->m_size--;
                         if (subset->m_root && subset->m_root->m_id == id) {
-                            if (subset->m_root->m_left) {
-                                place(subset->m_root->m_right, subset->m_root->m_left);
-                                subset->m_root->m_left->m_parent = subset->m_root->m_parent;
-                                subset->m_root = subset->m_root->m_left;
+                            if (temp->m_parent && temp->m_parent->m_guard >= subset->m_guard) {
+                                subset->m_root = temp->m_parent;
+                            } else if (temp->m_left && temp->m_left->m_guard >= subset->m_guard) {
+                                subset->m_root = temp->m_left;
                             } else {
                                 subset->m_root = 0;
                             }

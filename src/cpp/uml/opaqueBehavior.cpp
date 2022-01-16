@@ -4,21 +4,6 @@
 
 namespace UML {
 
-void OpaqueBehavior::referencingReleased(ID id) {
-    Behavior::referencingReleased(id);
-    m_bodies.release(id);
-}
-
-void OpaqueBehavior::referenceReindexed(ID oldID, ID newID) {
-    Behavior::referenceReindexed(oldID, newID);
-    m_bodies.reindex(oldID, newID);
-}
-
-void OpaqueBehavior::referenceErased(ID id) {
-    Behavior::referenceErased(id);
-    m_bodies.eraseElement(id);
-}
-
 Set<LiteralString, OpaqueBehavior>& OpaqueBehavior::getBodiesSet() {
     return m_bodies;
 }

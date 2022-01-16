@@ -3,21 +3,6 @@
 
 using namespace UML;
 
-void Expression::referencingReleased(ID id) {
-    ValueSpecification::referencingReleased(id);
-    m_operands.release(id);
-}
-
-void Expression::referenceReindexed(ID oldID, ID newID) {
-    ValueSpecification::referenceReindexed(oldID, newID);
-    m_operands.reindex(oldID, newID);
-}
-
-void Expression::referenceErased(ID id) {
-    ValueSpecification::referenceErased(id);
-    m_operands.eraseElement(id);
-}
-
 Set<ValueSpecification, Expression>& Expression::getOperandsSet() {
     return m_operands;
 }

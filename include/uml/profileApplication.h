@@ -16,9 +16,6 @@ namespace UML {
         private:
             Singleton<Profile, ProfileApplication> m_appliedProfile = Singleton<Profile, ProfileApplication>(this);
             Singleton<Package, ProfileApplication> m_applyingPackage = Singleton<Package, ProfileApplication>(this);
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
             Set<Profile, ProfileApplication>& getAppliedProfileSingleton();
             Set<Package, ProfileApplication>& getApplyingPackageSingleton();
             void init();

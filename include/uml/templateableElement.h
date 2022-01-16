@@ -16,9 +16,6 @@ namespace UML {
         protected:
             Singleton<TemplateSignature, TemplateableElement> m_ownedTemplateSignature = Singleton<TemplateSignature, TemplateableElement>(this);
             Set<TemplateBinding, TemplateableElement> m_templateBindings = Set<TemplateBinding, TemplateableElement>(this);
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
             Set<TemplateSignature, TemplateableElement>& getOwnedTemplateSignatureSingleton();
             void init();
             void copy(const TemplateableElement& rhs);

@@ -8,32 +8,11 @@
 
 using namespace UML;
 
-void TemplateBinding::referencingReleased(ID id) {
-    DirectedRelationship::referencingReleased(id);
-    m_boundElement.release(id);
-    m_signature.release(id);
-    m_parameterSubstitution.release(id);
-}
-
-void TemplateBinding::referenceReindexed(ID oldID, ID newID) {
-    DirectedRelationship::referenceReindexed(oldID, newID);
-    m_boundElement.reindex(oldID, newID);
-    m_signature.reindex(oldID, newID);
-    m_parameterSubstitution.reindex(oldID, newID);
-}
-
 void TemplateBinding::restoreReference(Element* el) {
     DirectedRelationship::restoreReference(el);
     if (m_signature.id() == el->getID()) {
         el->setReference(this);
     }
-}
-
-void TemplateBinding::referenceErased(ID id) {
-    DirectedRelationship::referenceErased(id);
-    m_boundElement.eraseElement(id);
-    m_signature.eraseElement(id);
-    m_parameterSubstitution.eraseElement(id);
 }
 
 Set<TemplateableElement, TemplateBinding>& TemplateBinding::getBoundElementSingleton() {

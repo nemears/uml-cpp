@@ -1,27 +1,9 @@
 #include "uml/dataType.h"
-// #include "uml/operation.h"
+#include "uml/operation.h"
 #include "uml/property.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
-
-void DataType::referenceReindexed(ID oldID, ID newID) {
-    Classifier::referenceReindexed(oldID, newID);
-    m_ownedAttributes.reindex(oldID, newID);
-    m_ownedOperations.reindex(oldID, newID);
-}
-
-void DataType::referencingReleased(ID id) {
-    Classifier::referencingReleased(id);
-    m_ownedAttributes.release(id);
-    m_ownedOperations.release(id);
-}
-
-void DataType::referenceErased(ID id) {
-    Classifier::referenceErased(id);
-    m_ownedAttributes.eraseElement(id);
-    m_ownedOperations.eraseElement(id);
-}
 
 Set<Property, DataType>& DataType::getOwnedAttributesSet() {
     return m_ownedAttributes;

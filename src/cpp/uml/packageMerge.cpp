@@ -12,24 +12,6 @@ void PackageMerge::RemoveMergedPackageReferenceFunctor::operator()(Element& el) 
     el.removeReference(m_el.getID());
 }
 
-void PackageMerge::referencingReleased(ID id) {
-    DirectedRelationship::referencingReleased(id);
-    m_mergedPackage.release(id);
-    m_receivingPackage.release(id);
-}
-
-void PackageMerge::referenceReindexed(ID oldID, ID newID) {
-    DirectedRelationship::referenceReindexed(oldID, newID);
-    m_mergedPackage.reindex(oldID, newID);
-    m_receivingPackage.reindex(oldID, newID);
-}
-
-void PackageMerge::referenceErased(ID id) {
-    DirectedRelationship::referenceErased(id);
-    m_mergedPackage.eraseElement(id);
-    m_receivingPackage.eraseElement(id);
-}
-
 Set<Package, PackageMerge>& PackageMerge::getReceivingPackageSingleton() {
     return m_receivingPackage;
 }

@@ -6,18 +6,15 @@ using namespace UML;
 void StructuralFeature::referencingReleased(ID id) {
     Feature::referencingReleased(id);
     TypedElement::referencingReleased(id);
-    MultiplicityElement::referencingReleased(id);
 }
 
 void StructuralFeature::referenceReindexed(ID oldID, ID newID) {
     Feature::referenceReindexed(oldID, newID);
     TypedElement::referenceReindexed(oldID, newID);
-    MultiplicityElement::referenceReindexed(oldID, newID);
 }
 
 void StructuralFeature::referenceErased(ID id) {
     TypedElement::referenceErased(id);
-    MultiplicityElement::referenceErased(id);
     Feature::referenceErased(id);
 }
 

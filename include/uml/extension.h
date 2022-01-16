@@ -20,9 +20,6 @@ namespace UML {
             ElementType m_metaClass;
             Singleton<ExtensionEnd, Extension> m_ownedEnd = Singleton<ExtensionEnd, Extension>(this);
             bool m_setFlag = false;
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
             Set<ExtensionEnd, Extension>& getOwnedEndSingleton();
             void init();
             void copy(const Extension& rhs);

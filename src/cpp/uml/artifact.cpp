@@ -6,32 +6,6 @@
 
 using namespace UML;
 
-void Artifact::referenceReindexed(ID oldID, ID newID) {
-    Classifier::referenceReindexed(oldID, newID);
-    DeployedArtifact::referenceReindexed(oldID, newID);
-    m_ownedAttributes.reindex(oldID, newID);
-    m_ownedOperations.reindex(oldID, newID);
-    m_nestedArtifacts.reindex(oldID, newID);
-    m_manifestations.reindex(oldID, newID);
-}
-
-void Artifact::referencingReleased(ID id) {
-    Classifier::referencingReleased(id);
-    DeployedArtifact::referencingReleased(id);
-    m_ownedAttributes.release(id);
-    m_ownedOperations.release(id);
-    m_nestedArtifacts.release(id);
-    m_manifestations.release(id);
-}
-
-void Artifact::referenceErased(ID id) {
-    Classifier::referenceErased(id);
-    m_ownedAttributes.eraseElement(id);
-    m_ownedOperations.eraseElement(id);
-    m_nestedArtifacts.eraseElement(id);
-    m_manifestations.eraseElement(id);
-}
-
 Set<Property, Artifact>& Artifact::getOwnedAttributesSet() {
     return m_ownedAttributes;
 }

@@ -21,10 +21,7 @@ namespace UML {
                 public:
                     AddPartFunctor(Element* el) : SetFunctor(el) {};
             };
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID);
             void restoreReferences() override;
-            void referenceErased(ID id) override;
             void init();
             void copy(const StructuredClassifier& rhs);
             StructuredClassifier();

@@ -12,10 +12,7 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            OrderedSet<LiteralString, OpaqueBehavior> m_bodies = OrderedSet<LiteralString, OpaqueBehavior>(this); // TODO this should be a sequence according to spec
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
+            OrderedSet<LiteralString, OpaqueBehavior> m_bodies = OrderedSet<LiteralString, OpaqueBehavior>(this);
             Set<LiteralString, OpaqueBehavior>& getBodiesSet();
             void init();
             void copy(const OpaqueBehavior& rhs);

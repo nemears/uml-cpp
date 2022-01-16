@@ -29,9 +29,6 @@ namespace UML {
         protected:
             ParameterDirectionKind m_direction = ParameterDirectionKind::NONE;
             Singleton<Operation, Parameter> m_operation = Singleton<Operation, Parameter>(this);
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
             Set<Operation, Parameter>& getOperationSingleton();
             void init();
             void copy(const Parameter& rhs);

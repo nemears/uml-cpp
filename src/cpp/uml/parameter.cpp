@@ -3,24 +3,6 @@
 
 using namespace UML;
 
-void Parameter::referenceReindexed(ID oldID, ID newID) {
-    TypedElement::referenceReindexed(oldID, newID);
-    MultiplicityElement::referenceReindexed(oldID, newID);
-    m_operation.reindex(oldID, newID);
-}
-
-void Parameter::referencingReleased(ID id) {
-    TypedElement::referencingReleased(id);
-    MultiplicityElement::referencingReleased(id);
-    m_operation.release(id);
-}
-
-void Parameter::referenceErased(ID id) {
-    TypedElement::referenceErased(id);
-    MultiplicityElement::referenceErased(id);
-    m_operation.eraseElement(id);
-}
-
 Set<Operation, Parameter>& Parameter::getOperationSingleton() {
     return m_operation;
 }

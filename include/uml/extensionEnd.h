@@ -18,9 +18,6 @@ namespace UML {
 
         private:
             Singleton<Stereotype, ExtensionEnd> m_extensionType = Singleton<Stereotype, ExtensionEnd>(this);
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
             Set<Stereotype, ExtensionEnd>& getTypeSingleton();
             void init();
             void copy(const ExtensionEnd& rhs);

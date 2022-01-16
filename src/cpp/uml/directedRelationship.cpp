@@ -2,24 +2,6 @@
 
 using namespace UML;
 
-void DirectedRelationship::referencingReleased(ID id) {
-    Relationship::referencingReleased(id);
-    m_sources.release(id);
-    m_targets.release(id);
-}
-
-void DirectedRelationship::referenceReindexed(ID oldID, ID newID) {
-    Relationship::referenceReindexed(oldID, newID);
-    m_sources.reindex(oldID, newID);
-    m_targets.reindex(oldID, newID);
-}
-
-void DirectedRelationship::referenceErased(ID id) {
-    Relationship::referenceErased(id);
-    m_sources.eraseElement(id);
-    m_targets.eraseElement(id);
-}
-
 void DirectedRelationship::init() {
     m_sources.subsets(m_relatedElements);
     m_sources.m_signature = &DirectedRelationship::getSources;

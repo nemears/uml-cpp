@@ -4,21 +4,6 @@
 
 using namespace UML;
 
-void BehavioredClassifier::referencingReleased(ID id) {
-    m_ownedBehaviors.release(id);
-    m_classifierBehavior.release(id);
-}
-
-void BehavioredClassifier::referenceReindexed(ID oldID, ID newID) {
-    m_ownedBehaviors.reindex(oldID, newID);
-    m_classifierBehavior.reindex(oldID, newID);
-}
-
-void BehavioredClassifier::referenceErased(ID id) {
-    m_ownedBehaviors.eraseElement(id);
-    m_classifierBehavior.eraseElement(id);
-}
-
 Set<Behavior, BehavioredClassifier>& BehavioredClassifier::getClassifierBehaviorSingleton() {
     return m_classifierBehavior;
 }

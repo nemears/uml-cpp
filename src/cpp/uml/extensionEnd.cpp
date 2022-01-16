@@ -4,21 +4,6 @@
 
 using namespace UML;
 
-void ExtensionEnd::referencingReleased(ID id) {
-    Property::referencingReleased(id);
-    m_extensionType.release(id);
-}
-
-void ExtensionEnd::referenceReindexed(ID oldID, ID newID) {
-    Property::referenceReindexed(oldID, newID);
-    m_extensionType.reindex(oldID, newID);
-}
-
-void ExtensionEnd::referenceErased(ID id) {
-    Property::referenceErased(id);
-    m_extensionType.eraseElement(id);
-}
-
 Set<Stereotype, ExtensionEnd>& ExtensionEnd::getTypeSingleton() {
     return m_extensionType;
 }

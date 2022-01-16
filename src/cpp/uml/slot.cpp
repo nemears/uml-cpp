@@ -9,22 +9,16 @@ using namespace UML;
 void Slot::referencingReleased(ID id) {
     Element::referencingReleased(id);
     m_definingFeature.release(id);
-    m_values.release(id);
-    m_owningInstance.release(id);
 }
 
 void Slot::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
     m_definingFeature.reindex(oldID, newID);
-    m_values.reindex(oldID, newID);
-    m_owningInstance.reindex(oldID, newID);
 }
 
 void Slot::referenceErased(ID id) {
     Element::referenceErased(id);
     m_definingFeature.eraseElement(id);
-    m_values.eraseElement(id);
-    m_owningInstance.eraseElement(id);
 }
 
 Set<StructuralFeature, Slot>& Slot::getDefiningFeatureSingleton() {

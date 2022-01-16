@@ -14,9 +14,6 @@ namespace UML {
 
         protected:
             Singleton<Enumeration, EnumerationLiteral> m_enumeration = Singleton<Enumeration, EnumerationLiteral>(this);
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
             Set<Enumeration, EnumerationLiteral>& getEnumerationSingleton();
             void init();
             void copy(const EnumerationLiteral& rhs);

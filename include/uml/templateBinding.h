@@ -18,10 +18,7 @@ namespace UML {
             Singleton<TemplateableElement, TemplateBinding> m_boundElement = Singleton<TemplateableElement, TemplateBinding>(this);
             Singleton<TemplateSignature, TemplateBinding> m_signature = Singleton<TemplateSignature, TemplateBinding>(this);
             Set<TemplateParameterSubstitution, TemplateBinding> m_parameterSubstitution = Set<TemplateParameterSubstitution, TemplateBinding>(this);
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
             void restoreReference(Element* el) override;
-            void referenceErased(ID id) override;
             Set<TemplateableElement, TemplateBinding>& getBoundElementSingleton();
             Set<TemplateSignature, TemplateBinding>& getSignatureSingleton();
             void init();

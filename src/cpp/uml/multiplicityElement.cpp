@@ -51,21 +51,6 @@ void MultiplicityElement::RemoveUpperFunctor::operator()(Element& el) const {
     m_me.updateCopiesScalar(false, &MultiplicityElement::m_multiplicityIsSpecified);
 }
 
-void MultiplicityElement::referencingReleased(ID id) {
-    m_lowVal.release(id);
-    m_upVal.release(id);
-}
-
-void MultiplicityElement::referenceReindexed(ID oldID, ID newID) {
-    m_lowVal.reindex(oldID, newID);
-    m_lowVal.reindex(oldID, newID);
-}
-
-void MultiplicityElement::referenceErased(ID id) {
-    m_lowVal.eraseElement(id);
-    m_upVal.eraseElement(id);
-}
-
 Set<ValueSpecification, MultiplicityElement>& MultiplicityElement::getLowerValueSingleton() {
     return m_lowVal;
 }

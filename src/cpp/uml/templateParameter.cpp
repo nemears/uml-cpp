@@ -7,29 +7,20 @@ using namespace UML;
 
 void TemplateParameter::referencingReleased(ID id) {
     Element::referencingReleased(id);
-    m_signature.release(id);
-    m_ownedParameteredElement.release(id);
     m_parameteredElement.release(id);
     m_default.release(id);
-    m_ownedDefault.release(id);
 }
 
 void TemplateParameter::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    m_signature.reindex(oldID, newID);
-    m_ownedParameteredElement.reindex(oldID, newID);
     m_parameteredElement.reindex(oldID, newID);
     m_default.reindex(oldID, newID);
-    m_ownedDefault.reindex(oldID, newID);
 }
 
 void TemplateParameter::referenceErased(ID id) {
     Element::referenceErased(id);
-    m_signature.eraseElement(id);
-    m_ownedParameteredElement.eraseElement(id);
     m_parameteredElement.eraseElement(id);
     m_default.eraseElement(id);
-    m_ownedDefault.eraseElement(id);
 }
 
 Set<TemplateSignature, TemplateParameter>& TemplateParameter::getSignatureSingleton() {

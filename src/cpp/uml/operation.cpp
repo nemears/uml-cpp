@@ -8,23 +8,17 @@ using namespace UML;
 
 void Operation::referencingReleased(ID id) {
     BehavioralFeature::referencingReleased(id);
-    m_type.release(id);
-    m_class.release(id);
-    m_dataType.release(id);
+    ParameterableElement::referencingReleased(id);
 }
 
 void Operation::referenceReindexed(ID oldID, ID newID) {
     BehavioralFeature::referenceReindexed(oldID, newID);
-    m_type.reindex(oldID, newID);
-    m_class.reindex(oldID, newID);
-    m_dataType.reindex(oldID, newID);
+    ParameterableElement::referenceReindexed(oldID, newID);
 }
 
 void Operation::referenceErased(ID id) {
     BehavioralFeature::referenceErased(id);
-    m_type.eraseElement(id);
-    m_class.eraseElement(id);
-    m_dataType.eraseElement(id);
+    ParameterableElement::referenceErased(id);
 }
 
 Set<Type, Operation>& Operation::getTypeSingleton() {

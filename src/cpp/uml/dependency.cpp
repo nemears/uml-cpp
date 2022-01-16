@@ -7,15 +7,11 @@ using namespace UML;
 void Dependency::referencingReleased(ID id) {
     DirectedRelationship::referencingReleased(id);
     PackageableElement::referencingReleased(id);
-    m_client.release(id);
-    m_supplier.release(id);
 }
 
 void Dependency::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
     Relationship::referenceReindexed(oldID, newID);
-    m_client.reindex(oldID, newID);
-    m_supplier.reindex(oldID, newID);
 }
 
 void Dependency::restoreReference(Element* el) {
@@ -26,10 +22,8 @@ void Dependency::restoreReference(Element* el) {
 }
 
 void Dependency::referenceErased(ID id) {
-    // PackageableElement::referenceErased(id);
-    // DirectedRelationship::referenceErased(id);
-    m_client.eraseElement(id);
-    m_supplier.eraseElement(id);
+    PackageableElement::referenceErased(id);
+    DirectedRelationship::referenceErased(id);
 }
 
 void Dependency::init() {

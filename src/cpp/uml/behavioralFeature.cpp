@@ -1,5 +1,4 @@
 #include "uml/behavioralFeature.h"
-//#include "uml/operation.h"
 #include "uml/behavior.h"
 #include "uml/parameter.h"
 #include "uml/uml-stable.h"
@@ -10,21 +9,18 @@ void BehavioralFeature::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     Feature::referencingReleased(id);
     m_methods.release(id);
-    m_ownedParameters.release(id);
 }
 
 void BehavioralFeature::referenceReindexed(ID oldID, ID newID) {
     Feature::referenceReindexed(oldID, newID);
     Namespace::referenceReindexed(oldID, newID);
     m_methods.reindex(oldID, newID);
-    m_ownedParameters.reindex(oldID, newID);
 }
 
 void BehavioralFeature::referenceErased(ID id) {
     Namespace::referenceErased(id);
     Feature::referenceErased(id);
     m_methods.eraseElement(id);
-    m_ownedParameters.eraseElement(id);
 }
 
 void BehavioralFeature::init() {

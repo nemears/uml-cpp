@@ -4,21 +4,6 @@
 
 using namespace UML;
 
-void EnumerationLiteral::referencingReleased(ID id) {
-    InstanceSpecification::referencingReleased(id);
-    m_enumeration.release(id);
-}
-
-void EnumerationLiteral::referenceReindexed(ID oldID, ID newID) {
-    InstanceSpecification::referenceReindexed(oldID, newID);
-    m_enumeration.reindex(oldID, newID);
-}
-
-void EnumerationLiteral::referenceErased(ID id) {
-    InstanceSpecification::referenceErased(id);
-    m_enumeration.eraseElement(id);
-}
-
 Set<Enumeration, EnumerationLiteral>& EnumerationLiteral::getEnumerationSingleton() {
     return m_enumeration;
 }

@@ -43,9 +43,9 @@ TEST_F(AssociationTest, removeMemberEndFunctor) {
     Association& a = m.create<Association>();
     ASSERT_NO_THROW(p.setAssociation(&a));
     ASSERT_NO_THROW(a.getMemberEnds().remove(p));
-    ASSERT_TRUE(a.getMemberEnds().size() == 0);
-    ASSERT_TRUE(a.getMembers().size() == 0);
-    ASSERT_TRUE(p.getAssociation() == 0);
+    ASSERT_EQ(a.getMemberEnds().size(), 0);
+    ASSERT_EQ(a.getMembers().size(), 0);
+    ASSERT_FALSE(p.hasAssociation());
 }
 
 TEST_F(AssociationTest, overwriteAssociationW_NullTest) {
@@ -54,9 +54,9 @@ TEST_F(AssociationTest, overwriteAssociationW_NullTest) {
     Association& a = m.create<Association>();
     ASSERT_NO_THROW(a.getMemberEnds().add(p));
     ASSERT_NO_THROW(p.setAssociation(0));
-    ASSERT_TRUE(a.getMemberEnds().size() == 0);
-    ASSERT_TRUE(a.getMembers().size() == 0);
-    ASSERT_TRUE(p.getAssociation() == 0);
+    ASSERT_EQ(a.getMemberEnds().size(), 0);
+    ASSERT_EQ(a.getMembers().size(), 0);
+    ASSERT_FALSE(p.hasAssociation());
 }
 
 TEST_F(AssociationTest, overwriteAssociationW_OtherTest) {
@@ -66,14 +66,14 @@ TEST_F(AssociationTest, overwriteAssociationW_OtherTest) {
     Association& a2 = m.create<Association>();
     ASSERT_NO_THROW(a.getMemberEnds().add(p));
     ASSERT_NO_THROW(p.setAssociation(&a2));
-    ASSERT_TRUE(a2.getMemberEnds().size() == 1);
-    ASSERT_TRUE(&a2.getMemberEnds().front() == &p);
-    ASSERT_TRUE(a2.getMembers().size() == 1);
-    ASSERT_TRUE(&a2.getMembers().front() == &p);
+    ASSERT_EQ(a2.getMemberEnds().size(), 1);
+    ASSERT_EQ(&a2.getMemberEnds().front(), &p);
+    ASSERT_EQ(a2.getMembers().size(), 1);
+    ASSERT_EQ(&a2.getMembers().front(), &p);
 
-    ASSERT_TRUE(p.getAssociation() == &a2);
+    ASSERT_EQ(p.getAssociation(), &a2);
 
-    ASSERT_TRUE(a.getMembers().size() == 0);
+    ASSERT_EQ(a.getMembers().size(), 0);
 }
 
 TEST_F(AssociationTest, addOwnedEndTest) {

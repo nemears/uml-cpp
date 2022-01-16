@@ -70,29 +70,20 @@ void Classifier::RemoveOwnedMemberFunctor::operator()(Element& el) const {
 void Classifier::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     PackageableElement::referencingReleased(id);
-    TemplateableElement::referencingReleased(id);
-    m_attributes.release(id);
-    m_features.release(id);
-    m_generalizations.release(id);
     m_generals.release(id);
-    m_inheritedMembers.release(id);
+    m_powerTypeExtent.release(id);
 }
 
 void Classifier::referenceReindexed(ID oldID, ID newID) {
     Namespace::referenceReindexed(oldID, newID);
-    PackageableElement::referenceReindexed(oldID, newID);
-    TemplateableElement::referenceReindexed(oldID, newID);
-    m_attributes.reindex(oldID, newID);
-    m_features.reindex(oldID, newID);
-    m_generalizations.reindex(oldID, newID);
+    PackageableElement::referenceReindexed(oldID, newID); // todo non super call meth
     m_generals.reindex(oldID, newID);
-    m_inheritedMembers.reindex(oldID, newID);
+    m_powerTypeExtent.reindex(oldID, newID);
 }
 
 void Classifier::restoreReferences() {
     Namespace::restoreReferences();
     PackageableElement::restoreReferences();
-    TemplateableElement::restoreReferences();
     for (auto& generalization : m_generalizations) {
         // load through loop
     }
@@ -103,11 +94,8 @@ void Classifier::referenceErased(ID id) {
     Type::referenceErased(id);
     RedefinableElement::referenceErased(id);
     TemplateableElement::referenceErased(id);
-    m_attributes.eraseElement(id);
-    m_features.eraseElement(id);
-    m_generalizations.eraseElement(id);
     m_generals.eraseElement(id);
-    m_inheritedMembers.eraseElement(id);
+    m_powerTypeExtent.eraseElement(id);
 }
 
 void Classifier::init() {

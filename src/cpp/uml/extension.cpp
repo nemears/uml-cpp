@@ -4,21 +4,6 @@
 
 using namespace UML;
 
-void Extension::referencingReleased(ID id) {
-    Association::referencingReleased(id);
-    m_ownedEnd.release(id);
-}
-
-void Extension::referenceReindexed(ID oldID, ID newID) {
-    Association::referenceReindexed(oldID, newID);
-    m_ownedEnd.reindex(oldID, newID);
-}
-
-void Extension::referenceErased(ID id) {
-    Association::referenceErased(id);
-    m_ownedEnd.eraseElement(id);
-}
-
 Set<ExtensionEnd, Extension>& Extension::getOwnedEndSingleton() {
     return m_ownedEnd;
 }

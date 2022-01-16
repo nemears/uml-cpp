@@ -8,19 +8,16 @@ using namespace UML;
 
 void Behavior::referencingReleased(ID id) {
     Class::referencingReleased(id);
-    m_ownedParameters.release(id);
     m_specification.release(id);
 }
 
 void Behavior::referenceReindexed(ID oldID, ID newID) {
     Class::referenceReindexed(oldID, newID);
-    m_ownedParameters.reindex(oldID, newID);
     m_specification.reindex(oldID, newID);
 }
 
 void Behavior::referenceErased(ID id) {
     Class::referenceErased(id);
-    m_ownedParameters.eraseElement(id);
     m_specification.eraseElement(id);
 }
 

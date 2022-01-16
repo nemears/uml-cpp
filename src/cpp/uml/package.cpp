@@ -9,26 +9,16 @@ using namespace UML;
 void Package::referenceReindexed(ID oldID, ID newID) {
     Namespace::referenceReindexed(oldID, newID);
     PackageableElement::referenceReindexed(oldID, newID);
-    TemplateableElement::referenceReindexed(oldID, newID);
-    m_packageMerge.reindex(oldID, newID);
-    m_profileApplications.reindex(oldID, newID);
 }
 
 void Package::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     PackageableElement::referencingReleased(id);
-    TemplateableElement::referencingReleased(id);
-    m_packageMerge.release(id);
-    m_profileApplications.release(id);
 }
 
 void Package::referenceErased(ID id) {
-    // Only invoke on root sets
-    m_owningPackage.eraseElement(id);
-    m_packagedElements.eraseElement(id);
-    m_packageMerge.eraseElement(id);
-    m_ownedStereotypes.eraseElement(id);
-    m_profileApplications.eraseElement(id);
+    Namespace::referenceErased(id);
+    PackageableElement::referenceErased(id);
 }
 
 void Package::init() {

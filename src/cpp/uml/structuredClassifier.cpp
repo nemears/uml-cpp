@@ -10,20 +10,6 @@ void StructuredClassifier::AddPartFunctor::operator()(Element& el) const {
     }
 }
 
-void StructuredClassifier::referencingReleased(ID id) {
-    Classifier::referencingReleased(id);
-    m_ownedAttributes.release(id);
-    m_roles.release(id);
-    m_parts.release(id);
-}
-
-void StructuredClassifier::referenceReindexed(ID oldID, ID newID) {
-    Classifier::referenceReindexed(oldID, newID);
-    m_ownedAttributes.reindex(oldID, newID);
-    m_roles.reindex(oldID, newID);
-    m_parts.reindex(oldID, newID);
-}
-
 void StructuredClassifier::restoreReferences() {
     Classifier::restoreReferences();
     for (auto& prop : m_ownedAttributes) {
@@ -31,13 +17,6 @@ void StructuredClassifier::restoreReferences() {
             m_parts.addReadOnly(prop.getID());
         }
     }
-}
-
-void StructuredClassifier::referenceErased(ID id) {
-    Classifier::referenceErased(id);
-    m_ownedAttributes.eraseElement(id);
-    m_roles.eraseElement(id);
-    m_parts.eraseElement(id);
 }
 
 void StructuredClassifier::init() {

@@ -4,21 +4,6 @@
 
 using namespace UML;
 
-void TemplateableElement::referencingReleased(ID id) {
-    m_ownedTemplateSignature.release(id);
-    m_templateBindings.release(id);
-}
-
-void TemplateableElement::referenceReindexed(ID oldID, ID newID) {
-    m_ownedTemplateSignature.reindex(oldID, newID);
-    m_templateBindings.reindex(oldID, newID);
-}
-
-void TemplateableElement::referenceErased(ID id) {
-    m_ownedTemplateSignature.eraseElement(id);
-    m_templateBindings.eraseElement(id);
-}
-
 Set<TemplateSignature, TemplateableElement>& TemplateableElement::getOwnedTemplateSignatureSingleton() {
     return m_ownedTemplateSignature;
 }

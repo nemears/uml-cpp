@@ -14,9 +14,6 @@ namespace UML {
         protected:
             OrderedSet<Property, DataType> m_ownedAttributes = OrderedSet<Property, DataType>(this);
             OrderedSet<Operation, DataType> m_ownedOperations = OrderedSet<Operation, DataType>(this);
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
             Set<Property, DataType>& getOwnedAttributesSet();
             Set<Operation, DataType>& getOwnedOperationsSet();
             void init();

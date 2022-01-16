@@ -12,9 +12,6 @@ namespace UML {
         protected:
             Set<Behavior, BehavioredClassifier> m_ownedBehaviors = Set<Behavior, BehavioredClassifier>(this);
             Singleton<Behavior, BehavioredClassifier> m_classifierBehavior = Singleton<Behavior, BehavioredClassifier>(this);
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
             Set<Behavior, BehavioredClassifier>& getClassifierBehaviorSingleton();
             void init();
             void copy(const BehavioredClassifier& rhs);

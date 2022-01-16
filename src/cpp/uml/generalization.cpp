@@ -19,27 +19,6 @@ void Generalization::RemoveGeneralFunctor::operator()(Element& el) const {
     el.removeReference(m_el.getID());
 }
 
-void Generalization::referenceReindexed(ID oldID, ID newID) {
-    DirectedRelationship::referenceReindexed(oldID, newID);
-    m_general.reindex(oldID, newID);
-    m_specific.reindex(oldID, newID);
-    m_generalizationSets.reindex(oldID, newID);
-}
-
-void Generalization::referencingReleased(ID id) {
-    DirectedRelationship::referencingReleased(id);
-    m_general.release(id);
-    m_specific.release(id);
-    m_generalizationSets.release(id);
-}
-
-void Generalization::referenceErased(ID id) {
-    DirectedRelationship::referenceErased(id);
-    m_general.eraseElement(id);
-    m_specific.eraseElement(id);
-    m_generalizationSets.eraseElement(id);
-}
-
 void Generalization::restoreReference(Element* el) {
     DirectedRelationship::restoreReference(el);
     if (m_specific.id() == el->getID() && m_general.has() && !m_specific.get()->getGenerals().contains(m_general.id())) {

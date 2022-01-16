@@ -8,22 +8,16 @@ using namespace UML;
 
 void TemplateSignature::referencingReleased(ID id) {
     Element::referencingReleased(id);
-    m_template.release(id);
-    m_ownedParameters.release(id);
     m_parameters.release(id);
 }
 
 void TemplateSignature::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    m_template.reindex(oldID, newID);
-    m_ownedParameters.reindex(oldID, newID);
     m_parameters.reindex(oldID, newID);
 }
 
 void TemplateSignature::referenceErased(ID id) {
     Element::referenceErased(id);
-    m_template.eraseElement(id);
-    m_ownedParameters.eraseElement(id);
     m_parameters.eraseElement(id);
 }
 

@@ -45,7 +45,6 @@ void Class::init() {
     m_classOwnedAttrubutes.redefines(m_ownedAttributes);
     m_classOwnedAttrubutes.opposite(&Property::getClassSingleton);
     m_classOwnedAttrubutes.m_signature = &Class::getOwnedAttributesSet;
-    // m_parts.subsets(m_classOwnedAttrubutes);
     m_ownedOperations.subsets(m_features);
     m_ownedOperations.subsets(m_ownedMembers);
     m_ownedOperations.opposite(&Operation::getClassSingleton);

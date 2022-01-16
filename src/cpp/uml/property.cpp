@@ -40,21 +40,13 @@ void Property::RemoveRedefinitionContextFunctor::operator()(Element& el) const {
 
 void Property::referencingReleased(ID id) {
     StructuralFeature::referencingReleased(id);
-    m_defaultValue.release(id);
-    m_dataType.release(id);
-    m_class.release(id);
     m_association.release(id);
-    m_owningAssociation.release(id);
     m_redefinedProperties.release(id);
 }
 
 void Property::referenceReindexed(ID oldID, ID newID) {
     StructuralFeature::referenceReindexed(oldID, newID);
-    m_defaultValue.reindex(oldID, newID);
-    m_dataType.reindex(oldID, newID);
-    m_class.reindex(oldID, newID);
     m_association.reindex(oldID, newID);
-    m_owningAssociation.reindex(oldID, newID);
     m_redefinedProperties.reindex(oldID, newID);
 }
 
@@ -71,11 +63,7 @@ void Property::restoreReference(Element* el) {
 void Property::referenceErased(ID id) {
     StructuralFeature::referenceErased(id);
     DeploymentTarget::referenceErased(id);
-    m_defaultValue.eraseElement(id);
-    m_dataType.eraseElement(id);
-    m_class.eraseElement(id);
     m_association.eraseElement(id);
-    m_owningAssociation.eraseElement(id);
     m_redefinedProperties.eraseElement(id);
 }
 

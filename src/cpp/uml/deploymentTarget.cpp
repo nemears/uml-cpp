@@ -4,21 +4,6 @@
 
 using namespace UML;
 
-void DeploymentTarget::referencingReleased(ID id) {
-    NamedElement::referencingReleased(id);
-    m_deployments.release(id);
-}
-
-void DeploymentTarget::referenceReindexed(ID oldID, ID newID) {
-    NamedElement::referenceReindexed(oldID, newID);
-    m_deployments.reindex(oldID, newID);
-}
-
-void DeploymentTarget::referenceErased(ID id) {
-    NamedElement::referenceErased(id);
-    m_deployments.eraseElement(id);
-}
-
 void DeploymentTarget::init() {
     m_deployments.subsets(m_clientDependencies);
     m_deployments.subsets(*m_ownedElements);

@@ -4,21 +4,6 @@
 
 using namespace UML;
 
-void Enumeration::referencingReleased(ID id) {
-    DataType::referencingReleased(id);
-    m_ownedLiterals.release(id);
-}
-
-void Enumeration::referenceReindexed(ID oldID, ID newID) {
-    DataType::referenceReindexed(oldID, newID);
-    m_ownedLiterals.reindex(oldID, newID);
-}
-
-void Enumeration::referenceErased(ID id) {
-    DataType::referenceErased(id);
-    m_ownedLiterals.eraseElement(id);
-}
-
 Set<EnumerationLiteral, Enumeration>& Enumeration::getOwnedLiteralsSet() {
     return m_ownedLiterals;
 }

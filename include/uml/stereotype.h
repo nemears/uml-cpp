@@ -18,9 +18,6 @@ namespace UML {
 
         private:
             Singleton<Profile, Stereotype> m_profile = Singleton<Profile, Stereotype>(this);
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
             Set<Profile, Stereotype>& getProfileSingleton();
             void init();
             void copy(const Stereotype& rhs);

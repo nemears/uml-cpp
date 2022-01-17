@@ -6,6 +6,9 @@
 
 namespace UML {
     class Connector : public Feature {
+
+        friend class UmlManager;
+
         protected:
             Singleton<Association, Connector> m_type = Singleton<Association, Connector>(this);
             Set<Behavior, Connector> m_contracts = Set<Behavior, Connector>(this);

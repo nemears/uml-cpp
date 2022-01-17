@@ -88,6 +88,10 @@ MultiplicityElement::MultiplicityElement(const MultiplicityElement& rhs) : Eleme
     // abstract
 }
 
+MultiplicityElement::~MultiplicityElement() {
+    
+}
+
 int MultiplicityElement::getLower() {
     if (m_lowSpecified) {
         return m_lower;

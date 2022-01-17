@@ -1521,3 +1521,84 @@ TEST_F(SetTest, EmulateFullArtifactTest) {
     delete members;
     delete ownedElements;
 }
+
+TEST_F(SetTest, emulateClassWConnectorTest) {
+    Set<>* ownedElements = new Set<>;
+    Set<NamedElement>* members = new Set<NamedElement>;
+    Set<NamedElement>* ownedMembers = new Set<NamedElement>;
+    Set<Feature>* features = new Set<Feature>;
+    Set<Property>* attributes = new Set<Property>;
+    Set<ConnectableElement>* roles =  new Set<ConnectableElement>;
+    Set<Property>* ownedAttributes = new Set<Property>;
+    Set<Connector>* ownedConnectors = new Set<Connector>;
+    Set<Property>* classOwnedAttributes = new Set<Property>;
+
+    ownedMembers->subsets(*ownedElements);
+    ownedMembers->subsets(*members);
+    features->subsets(*members);
+    attributes->subsets(*features);
+    roles->subsets(*members);
+    ownedAttributes->subsets(*attributes);
+    ownedAttributes->subsets(*roles);
+    ownedAttributes->subsets(*ownedMembers);
+    ownedConnectors->subsets(*ownedMembers);
+    ownedConnectors->subsets(*features);
+    classOwnedAttributes->redefines(*ownedAttributes);
+
+    UmlManager m;
+    Property& prop1 = m.create<Property>();
+    Property& prop2 = m.create<Property>();
+    Connector& connector = m.create<Connector>();
+    classOwnedAttributes->add(prop1, prop2);
+    ownedConnectors->add(connector);
+
+    ASSERT_EQ(classOwnedAttributes->size(), 2);
+    ASSERT_EQ(ownedAttributes->size(), 2);
+    ASSERT_EQ(attributes->size(), 2);
+    ASSERT_EQ(roles->size(), 2);
+    ASSERT_EQ(ownedConnectors->size(), 1);
+    ASSERT_EQ(features->size(), 3);
+    ASSERT_EQ(ownedMembers->size(), 3);
+    ASSERT_EQ(members->size(), 3);
+    ASSERT_EQ(ownedElements->size(), 3);
+
+    ASSERT_TRUE(classOwnedAttributes->contains(prop1));
+    ASSERT_TRUE(ownedAttributes->contains(prop1));
+    ASSERT_TRUE(roles->contains(prop1));
+    ASSERT_TRUE(attributes->contains(prop1));
+    ASSERT_FALSE(ownedConnectors->contains(prop1.getID()));
+    ASSERT_TRUE(features->contains(prop1));
+    ASSERT_TRUE(ownedMembers->contains(prop1));
+    ASSERT_TRUE(members->contains(prop1));
+    ASSERT_TRUE(ownedElements->contains(prop1));
+
+    ASSERT_TRUE(classOwnedAttributes->contains(prop2));
+    ASSERT_TRUE(ownedAttributes->contains(prop2));
+    ASSERT_TRUE(roles->contains(prop2));
+    ASSERT_TRUE(attributes->contains(prop2));
+    ASSERT_FALSE(ownedConnectors->contains(prop2.getID()));
+    ASSERT_TRUE(features->contains(prop2));
+    ASSERT_TRUE(ownedMembers->contains(prop2));
+    ASSERT_TRUE(members->contains(prop2));
+    ASSERT_TRUE(ownedElements->contains(prop2));
+
+    ASSERT_FALSE(classOwnedAttributes->contains(connector.getID()));
+    ASSERT_FALSE(ownedAttributes->contains(connector.getID()));
+    ASSERT_FALSE(roles->contains(connector.getID()));
+    ASSERT_FALSE(attributes->contains(connector.getID()));
+    ASSERT_TRUE(ownedConnectors->contains(connector));
+    ASSERT_TRUE(features->contains(connector));
+    ASSERT_TRUE(ownedMembers->contains(connector));
+    ASSERT_TRUE(members->contains(connector));
+    ASSERT_TRUE(ownedElements->contains(connector));
+
+    delete classOwnedAttributes;
+    delete ownedConnectors;
+    delete ownedAttributes;
+    delete roles;
+    delete attributes;
+    delete features;
+    delete ownedMembers;
+    delete members;
+    delete ownedElements;
+}

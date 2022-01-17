@@ -13,6 +13,7 @@ Set<Property, ConnectorEnd>& ConnectorEnd::getDefiningEndSingleton() {
 
 void ConnectorEnd::init() {
     m_role.m_signature = &ConnectorEnd::getRoleSingleton;
+    m_role.opposite(&ConnectableElement::getEnds);
     m_definingEnd.m_readOnly = true;
     m_definingEnd.m_signature = &ConnectorEnd::getDefiningEndSingleton;
 }
@@ -31,6 +32,10 @@ ConnectorEnd::ConnectorEnd(const ConnectorEnd& rhs) : Element(rhs, ElementType::
     Element::copy(rhs);
     MultiplicityElement::copy(rhs);
     copy(rhs);
+}
+
+ConnectorEnd::~ConnectorEnd() {
+
 }
 
 ConnectableElement* ConnectorEnd::getRole() {
@@ -75,4 +80,14 @@ ID ConnectorEnd::getDefiningEndID() const {
 
 bool ConnectorEnd::hasDefiningEnd() const {
     return m_definingEnd.has();
+}
+
+bool ConnectorEnd::isSubClassOf(ElementType eType) const {
+    bool ret = MultiplicityElement::isSubClassOf(eType);
+
+    if (!ret) {
+        ret = eType == ElementType::CONNECTOR_END;
+    }
+
+    return ret;
 }

@@ -4,7 +4,7 @@ add_executable(umltest idTest.cpp setTest.cpp elementTest.cpp namedElementTest.c
                        directedRelationshipTest.cpp operationTest.cpp parameterTest.cpp behaviorTest.cpp associationTest.cpp
                        enumerationTest.cpp commentTest.cpp templateableElementTest.cpp profileApplicationTest.cpp extensionTest.cpp
                        stereotypeTest.cpp behavioredClassifierTest.cpp deploymentTest.cpp manifestationTest.cpp
-                       generalizationSetTest.cpp UmlManagerTest.cpp)
+                       generalizationSetTest.cpp UmlManagerTest.cpp connectorTest.cpp)
                     #     activityEdgeTest.cpp 
                     #    objectNodeTest.cpp activityNodeTest.cpp inputPinTest.cpp outputPinTest.cpp  
                     #      activityTest.cpp )

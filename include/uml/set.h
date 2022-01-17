@@ -1387,6 +1387,11 @@ namespace UML {
                                         }
                                     }
                                 }
+                                if (curr == m_root) {
+                                    for (auto& redefinedSet : m_redefines) {
+                                        redefinedSet-> m_root = 0;
+                                    }
+                                }
                                 delete allSuperSets;
                                 if (currParent) {
                                     if (currParent->m_left == curr) {

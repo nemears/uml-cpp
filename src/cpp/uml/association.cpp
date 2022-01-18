@@ -73,9 +73,9 @@ void Association::init() {
     m_memberEnds.m_signature = &Association::getMemberEndsSet;
     m_memberEnds.m_addFunctors.insert(new AddEndTypeFunctor(this));
     m_memberEnds.m_removeFunctors.insert(new RemoveEndTypeFunctor(this));
+    m_ownedEnds.subsets(m_memberEnds);
     m_ownedEnds.subsets(m_ownedMembers);
     m_ownedEnds.subsets(m_features);
-    m_ownedEnds.subsets(m_memberEnds);
     m_ownedEnds.opposite(&Property::getOwningAssociationSingleton);
     m_ownedEnds.m_signature = &Association::getOwnedEndsSet;
     m_navigableOwnedEnds.subsets(m_ownedEnds);

@@ -1530,6 +1530,7 @@ TEST_F(SetTest, emulateClassWConnectorTest) {
     Set<Property>* attributes = new Set<Property>;
     Set<ConnectableElement>* roles =  new Set<ConnectableElement>;
     Set<Property>* ownedAttributes = new Set<Property>;
+    Set<Property>* parts = new Set<Property>;
     Set<Connector>* ownedConnectors = new Set<Connector>;
     Set<Property>* classOwnedAttributes = new Set<Property>;
 
@@ -1541,6 +1542,7 @@ TEST_F(SetTest, emulateClassWConnectorTest) {
     ownedAttributes->subsets(*attributes);
     ownedAttributes->subsets(*roles);
     ownedAttributes->subsets(*ownedMembers);
+    parts->subsets(*ownedAttributes);
     ownedConnectors->subsets(*ownedMembers);
     ownedConnectors->subsets(*features);
     classOwnedAttributes->redefines(*ownedAttributes);
@@ -1550,9 +1552,11 @@ TEST_F(SetTest, emulateClassWConnectorTest) {
     Property& prop2 = m.create<Property>();
     Connector& connector = m.create<Connector>();
     classOwnedAttributes->add(prop1, prop2);
+    parts->add(prop2);
     ownedConnectors->add(connector);
 
     ASSERT_EQ(classOwnedAttributes->size(), 2);
+    ASSERT_EQ(parts->size(), 1);
     ASSERT_EQ(ownedAttributes->size(), 2);
     ASSERT_EQ(attributes->size(), 2);
     ASSERT_EQ(roles->size(), 2);
@@ -1563,6 +1567,7 @@ TEST_F(SetTest, emulateClassWConnectorTest) {
     ASSERT_EQ(ownedElements->size(), 3);
 
     ASSERT_TRUE(classOwnedAttributes->contains(prop1));
+    ASSERT_FALSE(parts->contains(prop1));
     ASSERT_TRUE(ownedAttributes->contains(prop1));
     ASSERT_TRUE(roles->contains(prop1));
     ASSERT_TRUE(attributes->contains(prop1));
@@ -1573,6 +1578,7 @@ TEST_F(SetTest, emulateClassWConnectorTest) {
     ASSERT_TRUE(ownedElements->contains(prop1));
 
     ASSERT_TRUE(classOwnedAttributes->contains(prop2));
+    ASSERT_TRUE(parts->contains(prop2));
     ASSERT_TRUE(ownedAttributes->contains(prop2));
     ASSERT_TRUE(roles->contains(prop2));
     ASSERT_TRUE(attributes->contains(prop2));
@@ -1583,6 +1589,7 @@ TEST_F(SetTest, emulateClassWConnectorTest) {
     ASSERT_TRUE(ownedElements->contains(prop2));
 
     ASSERT_FALSE(classOwnedAttributes->contains(connector.getID()));
+    ASSERT_FALSE(parts->contains(connector.getID()));
     ASSERT_FALSE(ownedAttributes->contains(connector.getID()));
     ASSERT_FALSE(roles->contains(connector.getID()));
     ASSERT_FALSE(attributes->contains(connector.getID()));
@@ -1594,6 +1601,7 @@ TEST_F(SetTest, emulateClassWConnectorTest) {
 
     delete classOwnedAttributes;
     delete ownedConnectors;
+    delete parts;
     delete ownedAttributes;
     delete roles;
     delete attributes;

@@ -1344,7 +1344,14 @@ namespace UML {
                             curr = curr->m_left;
                         } else {
                             // delete this node conditionally
-                            if (curr->m_guard == m_guard) {
+                            bool subsetNode = false;
+                            for (auto& subSet : m_subSets) {
+                                if (subSet->m_guard == curr->m_guard) {
+                                    subsetNode = true;
+                                    break;
+                                }
+                            }
+                            if (curr->m_guard == m_guard || subsetNode) {
                                 // we are going to delete it
                                 SetNode* currParent = curr->m_parent;
                                 // check for superset roots and secondary parents
@@ -1387,33 +1394,67 @@ namespace UML {
                                         }
                                     }
                                 }
+                                delete allSuperSets;
                                 if (curr == m_root) {
                                     for (auto& redefinedSet : m_redefines) {
                                         redefinedSet-> m_root = 0;
                                     }
                                 }
-                                delete allSuperSets;
                                 if (currParent) {
                                     if (currParent->m_left == curr) {
                                         currParent->m_left = 0;
                                     } else {
                                         currParent->m_right = 0;
                                     }
-                                    if (currParent->m_id == placeholderID && currParent->m_left && currParent->m_parent) {
-                                        // intermediate placeholder edge case
-                                        if (!curr->m_parent->m_right || currParent->m_parent->m_right->m_guard <= m_guard) {
-                                            currParent->m_parent->m_left = currParent->m_left;
-                                            currParent->m_left->m_parent = currParent->m_parent;
-                                            std::vector<AbstractSet*>* allSuperSets = getAllSuperSets();
-                                            for (auto& subsetOf : *allSuperSets) {
-                                                if (subsetOf->m_root == currParent) {
-                                                    subsetOf->m_root = currParent->m_left;
+                                    if (currParent->m_id == placeholderID) {
+                                        if (currParent->m_left) {
+                                            if (currParent->m_parent) {
+                                                // intermediate placeholder edge case
+                                                if (!curr->m_parent->m_right || currParent->m_parent->m_right->m_guard <= m_guard) {
+                                                    currParent->m_parent->m_left = currParent->m_left;
+                                                    currParent->m_left->m_parent = currParent->m_parent;
+                                                    std::vector<AbstractSet*>* allSuperSets = getAllSuperSets();
+                                                    for (auto& subsetOf : *allSuperSets) {
+                                                        if (subsetOf->m_root == currParent) {
+                                                            subsetOf->m_root = currParent->m_left;
+                                                        }
+                                                    }
+                                                    delete allSuperSets;
+                                                    deleteNode(curr);
+                                                    delete currParent;
+                                                    break;
                                                 }
+                                            } else {
+                                                std::vector<AbstractSet*>* allSuperSets = getAllSuperSets();
+                                                for (auto& subsetOf : *allSuperSets) {
+                                                    if (subsetOf->m_root == currParent) {
+                                                        subsetOf->m_root = currParent->m_left;
+                                                    }
+                                                }
+                                                if (currParent->m_left->m_parent == currParent) {
+                                                    currParent->m_left->m_parent = 0;
+                                                }
+                                                delete allSuperSets;
+                                                deleteNode(curr);
+                                                delete currParent;
+                                                break;
                                             }
-                                            delete allSuperSets;
-                                            deleteNode(curr);
-                                            delete currParent;
-                                            break;
+                                        } else if (currParent->m_right) {
+                                            if (!currParent->m_parent) {
+                                                std::vector<AbstractSet*>* allSuperSets = getAllSuperSets();
+                                                for (auto& subsetOf : *allSuperSets) {
+                                                    if (subsetOf->m_root == currParent) {
+                                                        subsetOf->m_root = currParent->m_right;
+                                                    }
+                                                }
+                                                if (currParent->m_right->m_parent == currParent) {
+                                                    currParent->m_right->m_parent = 0;
+                                                }
+                                                delete allSuperSets;
+                                                deleteNode(curr);
+                                                delete currParent;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
@@ -1456,6 +1497,9 @@ namespace UML {
                             }
                         }
                     }
+                }
+                for (auto& subSet : m_subSets) {
+                    subSet->m_root = 0; // edge case for m_parts
                 }
                 if (m_ownsOppositeFunctor) {
                     delete m_oppositeFunctor;
@@ -1518,7 +1562,9 @@ namespace UML {
                     subsetOf->m_subSets.erase(std::find(subsetOf->m_subSets.begin(), subsetOf->m_subSets.end(), this));
                 }
                 for (auto& subset : m_subSets) {
-                    subset->m_superSets.erase(std::find(subset->m_superSets.begin(), subset->m_superSets.end(), this));
+                    if (std::find(subset->m_superSets.begin(), subset->m_superSets.end(), this) != subset->m_superSets.end()) {
+                        subset->m_superSets.erase(std::find(subset->m_superSets.begin(), subset->m_superSets.end(), this));
+                    }
                 }
             };
             /**
@@ -1636,7 +1682,11 @@ namespace UML {
                 for (auto& set : redefined.m_superSets) {
                     subsets(*static_cast<Set*>(set));
                 }
-                for (auto& func :redefined.m_addFunctors) {
+                for (auto& subSet : redefined.m_subSets) {
+                    m_subSets.push_back(subSet);
+                    // subSet->m_superSets.push_back(this);
+                }
+                for (auto& func : redefined.m_addFunctors) {
                     if (!m_addFunctors.count(func)) {
                         m_addFunctors.insert(func);
                     }
@@ -2072,10 +2122,15 @@ namespace UML {
                                 }
                             }
                             last = temp;
-                        } while (temp->m_parent);
+                        } while (temp->m_parent && temp->m_parent->m_guard >= m_guard);
                         if (!found) {
                             m_node = &m_endNode;
+                            break;
                         } else {
+                            if (temp->m_right == m_node) {
+                                m_node = &m_endNode;
+                                break;
+                            }
                             m_node = temp->m_right;
                         }
                     }
@@ -2106,10 +2161,15 @@ namespace UML {
                                 }
                             }
                             last = temp;
-                        } while (temp->m_parent);
+                        } while (temp->m_parent && temp->m_parent->m_guard >= m_guard);
                         if (!found) {
                             m_node = &m_endNode;
+                            break;
                         } else {
+                            if (temp->m_right == m_node) {
+                                m_node = &m_endNode;
+                                break;
+                            }
                             m_node = dynamic_cast<AbstractSet::SetNode*>(temp->m_right);
                         }
                     }

@@ -15,6 +15,30 @@ namespace UML {
             OrderedSet<ConnectorEnd, Connector> m_ends = OrderedSet<ConnectorEnd, Connector>(this);
             Set<Association, Connector>& getTypeSingleton();
             Set<ConnectorEnd, Connector>& getEndsSet();
+            class SetTypeFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    SetTypeFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class RemoveTypeFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    RemoveTypeFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class AddEndFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    AddEndFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class RemoveEndFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    RemoveEndFunctor(Element* el) : SetFunctor(el) {};
+            };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;

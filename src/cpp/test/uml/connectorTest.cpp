@@ -212,4 +212,81 @@ TEST_F(ConnectorTest, typedConnectorTest) {
     ASSERT_FALSE(engineAssociation.getOwnedMembers().contains(engineCarProp));
     ASSERT_FALSE(engineAssociation.getOwnedElements().contains(engineCarProp));
     ASSERT_TRUE(engineAssociation.getEndType().contains(car));
+
+    // car engine association
+    ASSERT_EQ(axle.getNavigableOwnedEnds().size(), 0);
+    ASSERT_EQ(axle.getOwnedEnds().size(), 2);
+    ASSERT_EQ(axle.getMemberEnds().size(), 2);
+    ASSERT_EQ(axle.getMembers().size(), 2);
+    ASSERT_EQ(axle.getEndType().size(), 2);
+    ASSERT_EQ(axle.getOwnedMembers().size(), 2);
+    ASSERT_EQ(axle.getOwnedElements().size(), 2);
+
+    ASSERT_TRUE(axle.getOwnedEnds().contains(axleWheelEnd));
+    ASSERT_TRUE(axle.getMemberEnds().contains(axleWheelEnd));
+    ASSERT_TRUE(axle.getMembers().contains(axleWheelEnd));
+    ASSERT_TRUE(axle.getOwnedMembers().contains(axleWheelEnd));
+    ASSERT_TRUE(axle.getOwnedElements().contains(axleWheelEnd));
+    ASSERT_TRUE(axle.getEndType().contains(wheel));
+
+    ASSERT_TRUE(axle.getOwnedEnds().contains(axleEngineEnd));
+    ASSERT_TRUE(axle.getMemberEnds().contains(axleEngineEnd));
+    ASSERT_TRUE(axle.getMembers().contains(axleEngineEnd));
+    ASSERT_TRUE(axle.getOwnedMembers().contains(axleEngineEnd));
+    ASSERT_TRUE(axle.getOwnedElements().contains(axleEngineEnd));
+    ASSERT_TRUE(axle.getEndType().contains(engine));
+
+    // connector a
+    ASSERT_EQ(a.getEnds().size(), 2);
+    ASSERT_EQ(a.getOwnedElements().size(), 2);
+    ASSERT_TRUE(a.hasType());
+
+    ASSERT_TRUE(a.getEnds().contains(wheelEnd));
+    ASSERT_TRUE(a.getOwnedElements().contains(wheelEnd));
+
+    ASSERT_TRUE(a.getEnds().contains(engineEnd));
+    ASSERT_TRUE(a.getOwnedElements().contains(engineEnd));
+
+    // wheel end
+    ASSERT_TRUE(wheelEnd.hasRole());
+    ASSERT_TRUE(wheelEnd.hasDefiningEnd());
+    ASSERT_TRUE(wheelEnd.hasOwner());
+
+    ASSERT_EQ(wheelEnd.getRoleRef(), rear);
+    ASSERT_EQ(wheelEnd.getDefiningEndRef(), axleWheelEnd);
+    ASSERT_EQ(wheelEnd.getOwnerRef(), a);
+
+    // rear
+    ASSERT_TRUE(rear.hasClass());
+    ASSERT_TRUE(rear.hasAssociation());
+    ASSERT_TRUE(rear.hasFeaturingClassifier());
+    ASSERT_EQ(rear.getEnds().size(), 1);
+
+    ASSERT_EQ(rear.getClassRef(), car);
+    ASSERT_EQ(rear.getAssociationRef(), wheelAssociation);
+    ASSERT_EQ(rear.getFeaturingClassifierRef(), car);
+    ASSERT_EQ(rear.getTypeRef(), wheel);
+    ASSERT_EQ(rear.getEnds().front(), wheelEnd);
+
+    // engine end
+    ASSERT_TRUE(engineEnd.hasRole());
+    ASSERT_TRUE(engineEnd.hasDefiningEnd());
+    ASSERT_TRUE(engineEnd.hasOwner());
+
+    ASSERT_EQ(engineEnd.getRoleRef(), e);
+    ASSERT_EQ(engineEnd.getDefiningEndRef(), axleEngineEnd);
+    ASSERT_EQ(engineEnd.getOwnerRef(), a);
+
+    // e
+    ASSERT_TRUE(e.hasClass());
+    ASSERT_TRUE(e.hasAssociation());
+    ASSERT_TRUE(e.hasFeaturingClassifier());
+    ASSERT_TRUE(e.hasType());
+    ASSERT_EQ(e.getEnds().size(), 1);
+
+    ASSERT_EQ(e.getClassRef(), car);
+    ASSERT_EQ(e.getAssociationRef(), engineAssociation);
+    ASSERT_EQ(e.getFeaturingClassifierRef(), car);
+    ASSERT_EQ(e.getTypeRef(), engine);
+    ASSERT_EQ(e.getEnds().front(), engineEnd);
 }

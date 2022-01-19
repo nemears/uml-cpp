@@ -185,7 +185,11 @@ namespace UML {
             OrderedSetIterator<T,U> begin() {
                 OrderedSetIterator<T,U> ret;
                 ret.m_el = this->m_el;
-                ret.m_node = static_cast<OrderedNode*>(this->m_first);
+                if (m_first) {
+                    ret.m_node = static_cast<OrderedNode*>(this->m_first);
+                } else {
+                    ret.m_node = &ret.m_endNode;
+                }
                 ret.m_guard = this->m_guard;
                 return ret;
             };

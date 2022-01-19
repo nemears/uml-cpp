@@ -6,10 +6,12 @@
 namespace UML {
 
     class ConnectableElement;
+    class Connector;
 
     class ConnectorEnd : public MultiplicityElement {
 
         friend class UmlManager;
+        friend class Connector;
 
         protected:
             Singleton<ConnectableElement, ConnectorEnd> m_role = Singleton<ConnectableElement, ConnectorEnd>(this);

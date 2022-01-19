@@ -130,9 +130,12 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     Property& cProp = m.create<Property>();
     Property& aProp = m.create<Property>();
     Association& association = m.create<Association>();
+    cProp.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
     cProp.setAggregation(AggregationKind::COMPOSITE);
     cProp.setType(type);
+    association.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
     association.getMemberEnds().add(cProp);
+    aProp.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
     aProp.setType(clazz);
     association.getNavigableOwnedEnds().add(aProp);
     clazz.getOwnedAttributes().add(cProp);
@@ -173,7 +176,7 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ID associationID = association.getID();
     m.release(aProp2, association);
     Association& association2 = m.aquire(associationID)->as<Association>();
-    // ASSERT_TRUE(m.loaded(aPropID));
+    ASSERT_TRUE(m.loaded(aPropID));
     Property& aProp3 = m.get<Property>(aPropID);
     ASSERT_TRUE(aProp3.hasOwningAssociation());
     ASSERT_EQ(aProp3.getOwningAssociationRef(), association2);

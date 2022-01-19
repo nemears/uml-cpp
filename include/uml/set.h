@@ -432,21 +432,28 @@ namespace UML {
                     // handle supersets
                     // graph dfs search
                     std::vector<AbstractSet*>* allSuperSets = getAllSuperSets();
+                    SetNode* lastNode = 0;
+                    SetNode* lastPlaceholder = 0;
                     for (std::vector<AbstractSet*>::iterator it = allSuperSets->begin(); it != allSuperSets->end(); it++) {
                         if (!(*it)->m_root) {
                             (*it)->m_root = node;
                             (*it)->m_size++;
+                        } else if ((*it)->m_root == lastNode) {
+                            (*it)->m_root = lastPlaceholder;
+                            (*it)->m_size++;
                         } else {
                             // create placeholder and set superset roots as well as skip over them in list
                             SetNode* temp = (*it)->m_root;
+                            lastNode = temp;
                             while (temp->m_id == placeholderID) {
                                 temp = temp->m_left;
                             }
-                            if (temp->m_guard != node->m_guard) {
+                            if (temp->m_guard != node->m_guard && node->m_guard == m_guard) {
                                 // create placeholder node
                                 SetNode* placeholderNode = new SetNode();
                                 placeholderNode->m_id = placeholderID;
                                 placeholderNode->m_guard = (*it)->m_guard;
+                                lastPlaceholder = placeholderNode;
                                 SetNode* oldRoot = (*it)->m_root;
                                 if (temp == (*it)->m_root) {
                                     (*it)->m_root = placeholderNode;
@@ -509,6 +516,11 @@ namespace UML {
                                 if ((*it)->m_root) {
                                     (*it)->place(node, (*it)->m_root);
                                     (*it)->m_size++;
+                                    std::vector<AbstractSet*>* subsetOfSuperSets = (*it)->getAllSuperSets();
+                                    for (auto& superSet : *subsetOfSuperSets) {
+                                        superSet->m_size++;
+                                    }
+                                    delete subsetOfSuperSets;
                                 } else {
                                     throw ManagerStateException("TODO, lookForNodeInParents edge case!");
                                 }
@@ -903,11 +915,13 @@ namespace UML {
                             } else {
                                 subsetOf->m_root = 0;
                             }
-                            for (auto& superSet : m_superSets) {
+                            std::vector<AbstractSet*>* superSetAllSuperSets = subsetOf->getAllSuperSets();
+                            for (auto& superSet : *superSetAllSuperSets) {
                                 if (superSet->m_root == temp) {
                                     superSet->m_root = subsetOf->m_root;
                                 }
                             }
+                            delete superSetAllSuperSets;
                         }
                         if (temp->m_left) {
                             if (temp->m_right) {
@@ -928,9 +942,12 @@ namespace UML {
                         temp->m_parent = 0;
                         temp->m_left = 0;
                         temp->m_right = 0;
-                        for (auto& superSet : m_superSets) {
+                        std::vector<AbstractSet*>* superSetAllSuperSets = subsetOf->getAllSuperSets();
+                        for (auto& superSet : *superSetAllSuperSets) {
                             superSet->m_size--;
                         }
+                        subsetOf->m_size--;
+                        delete superSetAllSuperSets;
                         return temp;
                     }
                 }
@@ -943,7 +960,9 @@ namespace UML {
              **/
             inline virtual SetNode* createNode(T& el) {
                 if (m_setToInstantiate) {
-                    return static_cast<Set*>(m_setToInstantiate)->createNode(el);
+                    SetNode* ret = static_cast<Set*>(m_setToInstantiate)->createNode(el);
+                    ret->m_guard = m_guard;
+                    return ret;
                 }
                 SetNode* temp = lookForNodeInParents(el.getID());
                 if (temp) {
@@ -960,7 +979,9 @@ namespace UML {
              **/
             virtual SetNode* createNode(ID id) {
                 if (m_setToInstantiate) {
-                    return static_cast<Set*>(m_setToInstantiate)->createNode(id);
+                    SetNode* ret = static_cast<Set*>(m_setToInstantiate)->createNode(id);
+                    ret->m_guard = m_guard;
+                    return ret;
                 }
                 SetNode* temp = lookForNodeInParents(id);
                 if (temp) {
@@ -1441,8 +1462,29 @@ namespace UML {
                                             }
                                         } else if (currParent->m_right) {
                                             if (!currParent->m_parent) {
-                                                std::vector<AbstractSet*>* allSuperSets = getAllSuperSets();
-                                                for (auto& subsetOf : *allSuperSets) {
+                                                std::vector<AbstractSet*>* allSuperSetsTemp = getAllSuperSets();
+                                                std::vector<AbstractSet*> allSuperSets;
+                                                /**
+                                                 * TODO: implement this in other conditions for other edge case configurations
+                                                 **/
+                                                for (auto& subsetOf : *allSuperSetsTemp) {
+                                                    allSuperSets.push_back(subsetOf);
+                                                }
+                                                for (auto& subsetOf : *allSuperSetsTemp) {
+                                                    for (auto& subset : subsetOf->m_subSets) {
+                                                        if (std::find(allSuperSets.begin(), allSuperSets.end(), subset) == allSuperSets.end()) {
+                                                            allSuperSets.push_back(subset);
+                                                            std::vector<AbstractSet*>* subsetAllSuperSets = subset->getAllSuperSets();
+                                                            for (auto& subsetSuperSet : *subsetAllSuperSets) {
+                                                                if (std::find(allSuperSets.begin(), allSuperSets.end(), subsetSuperSet) == allSuperSets.end()) {
+                                                                    allSuperSets.push_back(subsetSuperSet);
+                                                                }
+                                                            }
+                                                            delete subsetAllSuperSets;
+                                                        }
+                                                    }
+                                                }
+                                                for (auto& subsetOf : allSuperSets) {
                                                     if (subsetOf->m_root == currParent) {
                                                         subsetOf->m_root = currParent->m_right;
                                                     }
@@ -1450,7 +1492,7 @@ namespace UML {
                                                 if (currParent->m_right->m_parent == currParent) {
                                                     currParent->m_right->m_parent = 0;
                                                 }
-                                                delete allSuperSets;
+                                                delete allSuperSetsTemp;
                                                 deleteNode(curr);
                                                 delete currParent;
                                                 break;
@@ -2045,6 +2087,7 @@ namespace UML {
                 if (it.m_node->m_id == placeholderID) {
                     it++;
                 }
+                it.m_root = m_root;
                 it.m_guard = m_guard;
                 return it;
             };
@@ -2056,6 +2099,7 @@ namespace UML {
                 SetIterator<T> it;
                 it.m_node = &it.m_endNode;
                 it.m_el = m_el;
+                it.m_root = m_root;
                 it.m_guard = m_guard;
                 return it;
             };
@@ -2081,6 +2125,7 @@ namespace UML {
         protected:
             Element* m_el;
             AbstractSet::SetNode* m_node;
+            AbstractSet::SetNode* m_root;
             AbstractSet::SetNode m_endNode;
             size_t m_guard = 0;
         public:
@@ -2104,7 +2149,7 @@ namespace UML {
                         // always go left
                         m_node = m_node->m_left;
                     } else {
-                        if (!m_node->m_parent || m_node->m_parent->m_guard < m_guard) {
+                        if (!m_node->m_parent/** || m_node->m_parent->m_guard < m_guard**/) {
                             // if there is no parent to go to we must end
                             m_node = &m_endNode;
                             break;
@@ -2112,6 +2157,10 @@ namespace UML {
                         // we hit bottom, choose next right
                         AbstractSet::SetNode* temp;
                         AbstractSet::SetNode* last = dynamic_cast<AbstractSet::SetNode*>(m_node);
+                        if (last == m_root) {
+                            m_node = &m_endNode;
+                            break;
+                        }
                         bool found = false;
                         do {
                             temp = dynamic_cast<AbstractSet::SetNode*>(last->m_parent);
@@ -2143,7 +2192,7 @@ namespace UML {
                         // always go left
                         m_node = dynamic_cast<AbstractSet::SetNode*>(m_node->m_left);
                     } else {
-                        if (!m_node->m_parent  || m_node->m_parent->m_guard < m_guard) {
+                        if (!m_node->m_parent /** || m_node->m_parent->m_guard < m_guard**/) {
                             // if there is no parent to go to we must end
                             m_node = &m_endNode;
                             break;
@@ -2151,6 +2200,10 @@ namespace UML {
                         // we hit bottom, choose next right
                         AbstractSet::SetNode* temp;
                         AbstractSet::SetNode* last = dynamic_cast<AbstractSet::SetNode*>(m_node);
+                        if (last == m_root) {
+                            m_node = &m_endNode;
+                            break;
+                        }
                         bool found = false;
                         do {
                             temp = dynamic_cast<AbstractSet::SetNode*>(last->m_parent);
@@ -2199,6 +2252,7 @@ namespace UML {
             SetID_Iterator<T> begin() {
                 SetID_Iterator<T> it;
                 it.m_node = m_root;
+                it.m_root = m_root;
                 it.m_guard = m_guard;
                 if (it.m_node->m_id == placeholderID) {
                     it++;
@@ -2208,12 +2262,14 @@ namespace UML {
             SetID_Iterator<T> end() {
                 SetID_Iterator<T> it;
                 it.m_node = &it.m_endNode;
+                it.m_root = m_root;
                 it.m_guard = m_guard;
                 return it;
             };
             ID front() {
                 SetID_Iterator<T> it;
                 it.m_node = m_root;
+                it.m_root = m_root;
                 if (it.m_node->m_id == placeholderID) {
                     it++;
                 }

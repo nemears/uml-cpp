@@ -1610,3 +1610,63 @@ TEST_F(SetTest, emulateClassWConnectorTest) {
     delete members;
     delete ownedElements;
 }
+
+TEST_F(SetTest, emulateAssociationTest) {
+    Set<>* ownedElements = new Set<>;
+    Set<NamedElement>* members = new Set<NamedElement>;
+    Set<NamedElement>* ownedMembers = new Set<NamedElement>;
+    Set<Feature>* features = new Set<Feature>;
+    Set<>* relatedElements = new Set<>;
+    OrderedSet<Property>* memberEnds = new OrderedSet<Property>;
+    OrderedSet<Property>* ownedEnds = new OrderedSet<Property>;
+    Set<Property>* navigableOwnedEnds = new Set<Property>;
+    Set<Type>* endTypes = new Set<Type>;
+
+    ownedMembers->subsets(*ownedElements);
+    ownedMembers->subsets(*members);
+    features->subsets(*members);
+    memberEnds->subsets(*members);
+    ownedEnds->subsets(*memberEnds);
+    ownedEnds->subsets(*ownedMembers);
+    ownedEnds->subsets(*features);
+    navigableOwnedEnds->subsets(*ownedEnds);
+    endTypes->subsets(*relatedElements);
+
+    UmlManager m;
+    Property& memberEnd = m.create<Property>();
+    Property& ownedEnd = m.create<Property>();
+    Class& endType1 = m.create<Class>();
+    Class& endType2 = m.create<Class>();
+
+    memberEnd.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
+    ownedEnd.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
+    memberEnds->add(memberEnd);
+    endTypes->add(endType1);
+    navigableOwnedEnds->add(ownedEnd);
+    endTypes->add(endType2);
+
+    // test loops
+    ID id = ownedEnd.getID();
+    size_t i = 0;
+    for (auto& el : *ownedElements) {
+        i++;
+        ASSERT_TRUE(ownedElements->contains(el.getID()));
+        ASSERT_TRUE(members->contains(el.getID()));
+        ASSERT_TRUE(ownedMembers->contains(el.getID()));
+        ASSERT_TRUE(memberEnds->contains(el.getID()));
+        ASSERT_TRUE(ownedElements->contains(el.getID()));
+        ASSERT_EQ(id, el.getID());
+        ASSERT_EQ(i, 1);
+    }
+
+
+    delete endTypes;
+    delete navigableOwnedEnds;
+    delete ownedEnds;
+    delete memberEnds;
+    delete relatedElements;
+    delete features;
+    delete ownedMembers;
+    delete members;
+    delete ownedElements;
+}

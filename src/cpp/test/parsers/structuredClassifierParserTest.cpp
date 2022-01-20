@@ -58,3 +58,39 @@ TEST_F(StructuredClassifierParserTest, partTest) {
 
     ASSERT_TRUE(p->getAggregation() == AggregationKind::COMPOSITE);
 }
+
+TEST_F(StructuredClassifierParserTest, parseConnectorTest) {
+    Element* el;
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "structuredClassifierTests/connector.yml"));
+
+    ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
+    Package& root = el->as<Package>();
+    OpaqueBehavior& contract = root.getPackagedElements().get("contract").as<OpaqueBehavior>();
+    Association& association = root.getPackagedElements().get("association").as<Association>();
+    Property& assocEnd1 = association.getOwnedEnds().get("end1");
+    Property& assocEnd2 = association.getOwnedEnds().get("end2");
+    DataType& type1 = root.getPackagedElements().get("type1").as<DataType>();
+    DataType& type2 = root.getPackagedElements().get("type2").as<DataType>();
+    Class& clazz = root.getPackagedElements().get("clazz").as<Class>();
+    ASSERT_EQ(association.getMemberEnds().size(), 2);
+    ASSERT_EQ(clazz.getOwnedAttributes().size(), 2);
+    Property& prop1 = clazz.getOwnedAttributes().get("prop1");
+    Property& prop2 = clazz.getOwnedAttributes().get("prop2");
+    Connector& connector = clazz.getOwnedConnectors().front();
+    ASSERT_TRUE(connector.hasType());
+    ASSERT_EQ(connector.getTypeRef(), association);
+    ASSERT_EQ(connector.getContracts().size(), 1);
+    ASSERT_TRUE(connector.getContracts().contains(contract));
+    ASSERT_EQ(connector.getEnds().size(), 2);
+    ConnectorEnd& end1 = connector.getEnds().get(ID::fromString("iluwBJEOrucpPYWRjAf2Wl0Y7xJb"));
+    ConnectorEnd& end2 = connector.getEnds().get(ID::fromString("Xa_ufGeUWxU5cUPY3f8VfRdmsH1V"));
+    ASSERT_TRUE(end1.hasRole());
+    ASSERT_EQ(end1.getRoleRef(), prop1);
+    ASSERT_TRUE(end1.hasDefiningEnd());
+    ASSERT_EQ(end1.getDefiningEndRef(), assocEnd1);
+    ASSERT_TRUE(end2.hasRole());
+    ASSERT_EQ(end2.getRoleRef(), prop2);
+    ASSERT_TRUE(end2.hasDefiningEnd());
+    ASSERT_EQ(end2.getDefiningEndRef(), assocEnd2);
+}

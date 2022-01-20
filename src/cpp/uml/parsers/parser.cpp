@@ -1560,9 +1560,18 @@ void emitPrimitiveType(YAML::Emitter& emitter, PrimitiveType& type, EmitterMetaD
     emitElementDefenitionEnd(emitter, ElementType::PRIMITIVE_TYPE, type);
 }
 
+Connector& determineAndParseConnector(YAML::Node node, ParserMetaData& data) {
+    if (node["connector"]) {
+        return parseDefinition(node, data, "connector", &parseConnector);
+    } else {
+        throw UmlParserException("Invalid key for connector entry!", data.m_path.string(), node);
+    }
+}
+
 void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, ParserMetaData& data) {
     parseClassifier(node, clazz, data);
     parseSequenceDefinitions(node, data, "ownedAttributes", clazz, &StructuredClassifier::getOwnedAttributes, determineAndParseOwnedAttribute);
+    parseSequenceDefinitions(node, data, "ownedConnectors", clazz, &StructuredClassifier::getOwnedConnectors, determineAndParseConnector);
 }
 
 void emitStructuredClassifier(YAML::Emitter& emitter, StructuredClassifier& clazz, EmitterMetaData& data) {
@@ -3139,6 +3148,55 @@ void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSe
 
     parseSingletonReference(node, data, "powerType", generalizationSet, &GeneralizationSet::setPowerType, &GeneralizationSet::setPowerType);
     parseSetReferences<Generalization, GeneralizationSet>(node, data, "generalizations", generalizationSet, &GeneralizationSet::getGeneralizations);
+}
+
+ConnectorEnd& determineAndParseConnectorEnd(YAML::Node node, ParserMetaData& data) {
+    if (node["connectorEnd"]) {
+        return parseDefinition(node, data, "connectorEnd", parseConnectorEnd);
+    } else {
+        throw UmlParserException("Invalide definition for connectorEnd!", data.m_path.string(), node);
+    }
+}
+
+void parseConnector(YAML::Node node, Connector& connector, ParserMetaData& data) {
+    parseNamedElement(node, connector, data);
+    parseSequenceDefinitions(node, data, "ends", connector, &Connector::getEnds, &determineAndParseConnectorEnd);
+    parseSingletonReference(node, data, "type", connector, &Connector::setType, &Connector::setType);
+    parseSetReferences<Behavior, Connector>(node, data, "contracts", connector, &Connector::getContracts);
+    // todo kind
+}
+
+void emitConnector(YAML::Emitter& emitter, Connector& connector, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::CONNECTOR, "connector", connector, data);
+    emitNamedElement(emitter, connector, data);
+    emitSequence(emitter, "ends", data, connector, &Connector::getEnds);
+    if (connector.hasType()) {
+        emitter << YAML::Key << "type" << YAML::Value << connector.getTypeID().string();
+    }
+    if (!connector.getContracts().empty()) {
+        emitter << YAML::Key << "contracts" << YAML::Value << YAML::BeginSeq;
+        for (const ID id : connector.getContracts().ids()) {
+            emitter << YAML::Value << id.string();
+        }
+        emitter << YAML::EndSeq;
+    }
+    emitElementDefenitionEnd(emitter, ElementType::CONNECTOR, connector);
+}
+
+void parseConnectorEnd(YAML::Node node, ConnectorEnd& end, ParserMetaData& data) {
+    parseElement(node, end, data);
+    parseMultiplicityElement(node, end, data);
+    parseSingletonReference(node, data, "role", end, &ConnectorEnd::setRole, &ConnectorEnd::setRole);
+}
+
+void emitConnectorEnd(YAML::Emitter& emitter, ConnectorEnd& end, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::CONNECTOR_END, "connectorEnd", end, data);
+    emitElement(emitter, end, data);
+    emitMultiplicityElement(emitter, end, data);
+    if (end.hasRole()) {
+        emitter << YAML::Key << "role" << YAML::Value << end.getRoleID().string();
+    }
+    emitElementDefenitionEnd(emitter, ElementType::CONNECTOR_END, end);
 }
 
 }

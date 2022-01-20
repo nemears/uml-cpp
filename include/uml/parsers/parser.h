@@ -155,6 +155,10 @@ namespace UML {
             void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMetaData& data);
             void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, ParserMetaData& data);
             void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, ParserMetaData& data);
+            void parseConnector(YAML::Node node, Connector& connector, ParserMetaData& data);
+            void emitConnector(YAML::Emitter& emitter, Connector& connector, EmitterMetaData& data);
+            void parseConnectorEnd(YAML::Node node, ConnectorEnd& end, ParserMetaData& data);
+            void emitConnectorEnd(YAML::Emitter& emitter, ConnectorEnd& end, ParserMetaData& data);
         }
     }
 }

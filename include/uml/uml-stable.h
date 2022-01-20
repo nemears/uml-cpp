@@ -38,6 +38,7 @@
 #include "uml/package.h"
 #include "uml/packageMerge.h"
 #include "uml/parameter.h"
+#include "uml/port.h"
 #include "uml/primitiveType.h"
 #include "uml/profile.h"
 #include "uml/profileApplication.h"

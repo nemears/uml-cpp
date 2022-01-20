@@ -54,6 +54,7 @@ Class::Class(const Class& rhs) : Element(rhs, ElementType::CLASS) {
     RedefinableElement::copy(rhs);
     Classifier::copy(rhs);
     StructuredClassifier::copy(rhs);
+    EncapsulatedClassifier::copy(rhs);
     BehavioredClassifier::copy(rhs);
     copy(rhs);
 }
@@ -71,7 +72,7 @@ OrderedSet<Classifier, Class>& Class::getNestedClassifiers() {
 }
 
 bool Class::isSubClassOf(ElementType eType) const {
-    bool ret = StructuredClassifier::isSubClassOf(eType);
+    bool ret = EncapsulatedClassifier::isSubClassOf(eType);
 
     if (!ret) {
         ret = BehavioredClassifier::isSubClassOf(eType);

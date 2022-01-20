@@ -1,7 +1,7 @@
 #ifndef _CLASS_H_
 #define _CLASS_H_
 
-#include "structuredClassifier.h"
+#include "encapsulatedClassifier.h"
 #include "operation.h"
 #include "parameter.h"
 #include "orderedSet.h"
@@ -11,7 +11,7 @@ namespace UML{
 
     class Operation;
 
-    class Class : public StructuredClassifier , public BehavioredClassifier {
+    class Class : public EncapsulatedClassifier , public BehavioredClassifier {
 
         friend class UmlManager;
         friend class Property;

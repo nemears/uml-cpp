@@ -265,6 +265,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::ELEMENT : {
             return "ELEMENT";
         }
+        case ElementType::ENCAPSULATED_CLASSIFIER : {
+            return "ENCAPSULATED_CLASSIFIER";
+        }
         case ElementType::ENUMERATION : {
             return "ENUMERATION";
         }
@@ -381,6 +384,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         }
         case ElementType::PIN : {
             return "PIN";
+        }
+        case ElementType::PORT : {
+            return "PORT";
         }
         case ElementType::PRIMITIVE_TYPE : {
             return "PRIMITIVE_TYPE";

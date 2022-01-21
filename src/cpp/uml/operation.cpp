@@ -38,7 +38,11 @@ Set<DataType, Operation>& Operation::getDataTypeSingleton() {
     return m_dataType;
 }
 
-Set<Parameter, Operation>& Operation::getOwnedParametersSet() {\
+Set<Interface, Operation>& Operation::getInterfaceSingleton() {
+    return m_interface;
+}
+
+Set<Parameter, Operation>& Operation::getOwnedParametersSet() {
     return m_operationOwnedParameters;
 }
 
@@ -51,6 +55,10 @@ void Operation::init() {
     m_dataType.subsets(m_namespace);
     m_dataType.opposite(&DataType::getOwnedOperationsSet);
     m_dataType.m_signature = &Operation::getDataTypeSingleton;
+    m_interface.subsets(m_namespace);
+    m_interface.subsets(m_featuringClassifier);
+    m_interface.opposite(&Interface::getOwnedOperationsSet);
+    m_interface.m_signature = &Operation::getInterfaceSingleton;
     m_operationOwnedParameters.redefines(m_ownedParameters);
     m_operationOwnedParameters.opposite(&Parameter::getOperationSingleton);
     m_operationOwnedParameters.m_signature = &Operation::getOwnedParametersSet;
@@ -159,6 +167,34 @@ void Operation::setDataType(DataType& dataType) {
 
 void Operation::setDataType(ID id) {
     m_dataType.set(id);
+}
+
+Interface* Operation::getInterface() {
+    return m_interface.get();
+}
+
+Interface& Operation::getInterfaceRef() {
+    return m_interface.getRef();
+}
+
+bool Operation::hasInterface() const {
+    return m_interface.has();
+}
+
+ID Operation::getInterfaceID() const {
+    return m_interface.id();
+}
+
+void Operation::setInterface(Interface* interface) {
+    m_interface.set(interface);
+}
+
+void Operation::setInterface(Interface& interface) {
+    m_interface.set(interface);
+}
+
+void Operation::setInterface(ID id) {
+    m_interface.set(id);
 }
 
 OrderedSet<Parameter, Operation>& Operation::getOwnedParameters() {

@@ -89,6 +89,10 @@ Set<Association, Property>& Property::getOwningAssociationSingleton() {
     return m_owningAssociation;
 }
 
+Set<Interface, Property>& Property::getInterfaceSingleton() {
+    return m_interface;
+}
+
 void Property::init() {
     m_defaultValue.subsets(*m_ownedElements);
     m_defaultValue.m_signature = &Property::getDefaultValueSingleton;
@@ -107,6 +111,10 @@ void Property::init() {
     m_owningAssociation.subsets(m_association);
     m_owningAssociation.opposite(&Association::getOwnedEndsSet);
     m_owningAssociation.m_signature = &Property::getOwningAssociationSingleton;
+    m_interface.subsets(m_namespace);
+    m_interface.subsets(m_featuringClassifier);
+    m_interface.opposite(&Interface::getOwnedAttributesSet);
+    m_interface.m_signature = &Property::getInterfaceSingleton;
     m_type.m_addFunctors.insert(new AddEndTypeFunctor(this));
     m_type.m_removeFunctors.insert(new RemoveEndTypeFunctor(this));
     m_redefinedProperties.subsets(m_redefinedElement);
@@ -320,6 +328,34 @@ void Property::setOwningAssociation(Association& association) {
 
 void Property::setOwningAssociation(ID id) {
     m_owningAssociation.set(id);
+}
+
+Interface* Property::getInterface() {
+    return m_interface.get();
+}
+
+Interface& Property::getInterfaceRef() {
+    return m_interface.getRef();
+}
+
+bool Property::hasInterface() const {
+    return m_interface.has();
+}
+
+ID Property::getInterfaceID() const {
+    return m_interface.id();
+}
+
+void Property::setInterface(Interface* interface) {
+    m_interface.set(interface);
+}
+
+void Property::setInterface(Interface& interface) {
+    m_interface.set(interface);
+}
+
+void Property::setInterface(ID id) {
+    m_interface.set(id);
 }
 
 Set<Property, Property>& Property::getRedefinedProperties() {

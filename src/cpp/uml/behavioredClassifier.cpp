@@ -13,11 +13,13 @@ void BehavioredClassifier::init() {
     m_ownedBehaviors.m_signature = &BehavioredClassifier::getOwnedBehaviors;
     m_classifierBehavior.subsets(m_ownedBehaviors);
     m_classifierBehavior.m_signature = &BehavioredClassifier::getClassifierBehaviorSingleton;
+    m_interfaceRealizations.m_signature = &BehavioredClassifier::getInterfaceRealizations;
 }
 
 void BehavioredClassifier::copy(const BehavioredClassifier& rhs) {
     m_ownedBehaviors = rhs.m_ownedBehaviors;
     m_classifierBehavior = rhs.m_classifierBehavior;
+    m_interfaceRealizations = rhs.m_interfaceRealizations;
 }
 
 BehavioredClassifier::BehavioredClassifier() : Element(ElementType::BEHAVIORED_CLASSIFIER) {
@@ -62,6 +64,10 @@ void BehavioredClassifier::setClassifierBehavior(Behavior& behavior) {
 
 void BehavioredClassifier::setClassifierBehavior(ID id) {
     m_classifierBehavior.set(id);
+}
+
+Set<InterfaceRealization, BehavioredClassifier>& BehavioredClassifier::getInterfaceRealizations() {
+    return m_interfaceRealizations;
 }
 
 bool BehavioredClassifier::isSubClassOf(ElementType eType) const {

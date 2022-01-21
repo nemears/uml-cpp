@@ -12,7 +12,6 @@ namespace UML{
     class StructuredClassifier;
     class Association;
     class Class;
-    class Artifact;
 
     enum class AggregationKind {
         NONE,
@@ -28,6 +27,7 @@ namespace UML{
         friend class StructuredClassifier;
         friend class DataType;
         friend class Association;
+        friend class Interface;
 
         protected:
             AggregationKind m_aggregation = AggregationKind::NONE;
@@ -37,6 +37,7 @@ namespace UML{
             Singleton<Class, Property> m_class = Singleton<Class, Property>(this);
             Singleton<Association, Property> m_association = Singleton<Association, Property>(this);
             Singleton<Association, Property> m_owningAssociation = Singleton<Association, Property>(this);
+            Singleton<Interface, Property> m_interface = Singleton<Interface, Property>(this);
             Set<Property, Property> m_redefinedProperties = Set<Property, Property>(this);
             // void reindexName(std::string oldName, std::string newName) override;
             class AddEndTypeFunctor : public SetFunctor {
@@ -74,6 +75,7 @@ namespace UML{
             Set<DataType, Property>& getDataTypeSingleton();
             Set<Association, Property>& getAssociationSingleton();
             Set<Association, Property>& getOwningAssociationSingleton();
+            Set<Interface, Property>& getInterfaceSingleton();
             void init();
             void copy(const Property& rhs);
             Property();
@@ -118,6 +120,13 @@ namespace UML{
             void setOwningAssociation(Association* association);
             void setOwningAssociation(Association& association);
             void setOwningAssociation(ID id);
+            Interface* getInterface();
+            Interface& getInterfaceRef();
+            bool hasInterface() const;
+            ID getInterfaceID() const;
+            void setInterface(Interface* interface);
+            void setInterface(Interface& interface);
+            void setInterface(ID id);
             Set<Property, Property>& getRedefinedProperties();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

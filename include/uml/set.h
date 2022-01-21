@@ -306,6 +306,8 @@ namespace UML {
     class ConnectorEnd;
     class ConnectableElement;
     class EncapsulatedClassifier;
+    class Interface;
+    class InterfaceRealization;
 
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
@@ -375,6 +377,8 @@ namespace UML {
         friend class ConnectorEnd;
         friend class ConnectableElement;
         friend class EncapsulatedClassifier;
+        friend class Interface;
+        friend class InterfaceRealization;
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
         friend void Parsers::setOwner(Element& el, ID id);

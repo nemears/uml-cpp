@@ -11,7 +11,7 @@ add_library(Uml element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp names
                 templateBinding.cpp templateParameterSubstitution.cpp redefinableElement.cpp profile.cpp stereotype.cpp
                 profileApplication.cpp extension.cpp extensionEnd.cpp deployment.cpp deployedArtifact.cpp deploymentTarget.cpp
                 artifact.cpp manifestation.cpp generalizationSet.cpp connector.cpp connectorEnd.cpp port.cpp
-                encapsulatedClassifier.cpp)
+                encapsulatedClassifier.cpp interface.cpp interfaceRealization.cpp)
 # add_library(Uml   
 #                 activity.cpp activityNode.cpp activityEdge.cpp objectNode.cpp  pin.cpp
 #                 action.cpp inputPin.cpp outputPin.cpp controlFlow.cpp objectFlow.cpp initialNode.cpp finalNode.cpp decisionNode.cpp

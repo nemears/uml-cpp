@@ -25,6 +25,8 @@
 #include "uml/generalizationSet.h"
 #include "uml/instanceSpecification.h"
 #include "uml/instanceValue.h"
+#include "uml/interface.h"
+#include "uml/interfaceRealization.h"
 #include "uml/literalBool.h"
 #include "uml/literalInt.h"
 #include "uml/literalNull.h"

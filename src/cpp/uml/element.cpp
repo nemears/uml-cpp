@@ -307,6 +307,12 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::INSTANCE_VALUE : {
             return "INSTANCE_VALUE";
         }
+        case ElementType::INTERFACE : {
+            return "INTERFACE";
+        }
+        case ElementType::INTERFACE_REALIZATION : {
+            return "INTERFACE_REALIZATION";
+        }
         case ElementType::JOIN_NODE : {
             return "JOIN_NODE";
         }

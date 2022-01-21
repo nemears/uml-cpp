@@ -12,6 +12,7 @@ namespace UML {
         protected:
             Set<Behavior, BehavioredClassifier> m_ownedBehaviors = Set<Behavior, BehavioredClassifier>(this);
             Singleton<Behavior, BehavioredClassifier> m_classifierBehavior = Singleton<Behavior, BehavioredClassifier>(this);
+            Set<InterfaceRealization, BehavioredClassifier> m_interfaceRealizations = Set<InterfaceRealization, BehavioredClassifier>(this);
             Set<Behavior, BehavioredClassifier>& getClassifierBehaviorSingleton();
             void init();
             void copy(const BehavioredClassifier& rhs);
@@ -27,6 +28,7 @@ namespace UML {
             void setClassifierBehavior(Behavior& behavior);
             void setClassifierBehavior(Behavior* behavior);
             void setClassifierBehavior(ID id);
+            Set<InterfaceRealization, BehavioredClassifier>& getInterfaceRealizations();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::BEHAVIORED_CLASSIFIER;

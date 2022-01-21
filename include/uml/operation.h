@@ -18,11 +18,13 @@ namespace UML {
         friend class Class;
         friend class Parameter;
         friend class DataType;
+        friend class Interface;
 
         protected:
             Singleton<Type, Operation> m_type = Singleton<Type, Operation>(this);
             Singleton<Class, Operation> m_class = Singleton<Class, Operation>(this);
             Singleton<DataType, Operation> m_dataType = Singleton<DataType, Operation>(this);
+            Singleton<Interface, Operation> m_interface = Singleton<Interface, Operation>(this);
             OrderedSet<Parameter, Operation> m_operationOwnedParameters = OrderedSet<Parameter, Operation>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
@@ -31,6 +33,7 @@ namespace UML {
             Set<Type, Operation>& getTypeSingleton();
             Set<Class, Operation>& getClassSingleton();
             Set<DataType, Operation>& getDataTypeSingleton();
+            Set<Interface, Operation>& getInterfaceSingleton();
             Set<Parameter, Operation>& getOwnedParametersSet();
             void init();
             void copy(const Operation& rhs);
@@ -58,6 +61,13 @@ namespace UML {
             void setDataType(DataType& dataType);
             void setDataType(DataType* dataType);
             void setDataType(ID id);
+            Interface* getInterface();
+            Interface& getInterfaceRef();
+            bool hasInterface() const;
+            ID getInterfaceID() const;
+            void setInterface(Interface* interface);
+            void setInterface(Interface& interface);
+            void setInterface(ID id);
             OrderedSet<Parameter, Operation>& getOwnedParameters();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

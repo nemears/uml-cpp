@@ -169,6 +169,7 @@ namespace UML {
     class TypedElement;
     class Connector;
     class ConnectableElement;
+    class Port;
     template <class T, class U> class Set;
     template <class T> class SetIterator;
     template <class V, class W> class OppositeFunctor;
@@ -212,6 +213,7 @@ namespace UML {
         friend class TypedElement;
         friend class Connector;
         friend class ConnectableElement;
+        friend class Port;
         template <class T, class U> friend class Singleton;
         template <class T, class U> friend class Set;
         template <class V, class W> friend class OppositeFunctor;

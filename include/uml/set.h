@@ -308,6 +308,7 @@ namespace UML {
     class EncapsulatedClassifier;
     class Interface;
     class InterfaceRealization;
+    class Port;
 
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
@@ -379,6 +380,7 @@ namespace UML {
         friend class EncapsulatedClassifier;
         friend class Interface;
         friend class InterfaceRealization;
+        friend class Port;
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
         friend void Parsers::setOwner(Element& el, ID id);

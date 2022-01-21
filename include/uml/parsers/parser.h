@@ -158,7 +158,13 @@ namespace UML {
             void parseConnector(YAML::Node node, Connector& connector, ParserMetaData& data);
             void emitConnector(YAML::Emitter& emitter, Connector& connector, EmitterMetaData& data);
             void parseConnectorEnd(YAML::Node node, ConnectorEnd& end, ParserMetaData& data);
-            void emitConnectorEnd(YAML::Emitter& emitter, ConnectorEnd& end, ParserMetaData& data);
+            void emitConnectorEnd(YAML::Emitter& emitter, ConnectorEnd& end, EmitterMetaData& data);
+            void parsePort(YAML::Node node, Port& port, ParserMetaData& data);
+            void emitPort(YAML::Emitter& emitter, Port& port, EmitterMetaData& data);
+            void parseInterface(YAML::Node node, Interface& interface, ParserMetaData& data);
+            void emitInterface(YAML::Emitter& emitter, Interface& interface, EmitterMetaData& data);
+            void parseInterfaceRealization(YAML::Node node, InterfaceRealization& realization, ParserMetaData& data);
+            void emitInterfaceRealization(YAML::Emitter& emitter, InterfaceRealization& realization, EmitterMetaData& data);
         }
     }
 }

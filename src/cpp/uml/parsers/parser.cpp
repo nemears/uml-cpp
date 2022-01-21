@@ -659,6 +659,14 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         }
     }
 
+    if (node["connector"]) {
+        ret = &parseDefinition(node, data, "connector", parseConnector);
+    }
+
+    if (node["connectorEnd"]) {
+        ret = &parseDefinition(node, data, "connectorEnd", parseConnectorEnd);
+    }
+
     if (node["dataType"]) {
         if (node["dataType"].IsMap()) {
             DataType& dataType = data.m_manager->create<DataType>();
@@ -739,6 +747,14 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &instVal;
     }
 
+    if (node["interface"]) {
+        ret = &parseDefinition(node, data, "interface", parseInterface);
+    }
+
+    if (node["interfaceRealization"]) {
+        ret = &parseDefinition(node, data, "interfaceRealization", parseInterfaceRealization);
+    }
+
     if (node["literalBool"]) {
         LiteralBool& lb = data.m_manager->create<LiteralBool>();
         parseLiteralBool(node["literalBool"], lb, data);
@@ -817,6 +833,10 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         Parameter& param = data.m_manager->create<Parameter>();
         parseParameter(node["parameter"], param, data);
         ret = &param;
+    }
+
+    if (node["port"]) {
+        ret = & parseDefinition(node, data, "port", parsePort);
     }
 
     if (node["primitiveType"]) {
@@ -950,6 +970,14 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitComment(emitter, el.as<Comment>(), data);
             break;
         }
+        case ElementType::CONNECTOR : {
+            emitConnector(emitter, el.as<Connector>(), data);
+            break;
+        }
+        case ElementType::CONNECTOR_END : {
+            emitConnectorEnd(emitter, el.as<ConnectorEnd>(), data);
+            break;
+        }
         case ElementType::DATA_TYPE : {
             emitDataType(emitter, dynamic_cast<DataType&>(el), data);
             break;
@@ -1000,6 +1028,14 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         case ElementType::INSTANCE_VALUE: {
             InstanceValue& instanceValue = el.as<InstanceValue>();
             emitInstanceValue(emitter, instanceValue, data);
+            break;
+        }
+        case ElementType::INTERFACE : {
+            emitInterface(emitter, el.as<Interface>(), data);
+            break;
+        }
+        case ElementType::INTERFACE_REALIZATION : {
+            emitInterfaceRealization(emitter, el.as<InterfaceRealization>(), data);
             break;
         }
         case ElementType::LITERAL_BOOL : {
@@ -1056,6 +1092,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         }
         case ElementType::PARAMETER : {
             emitParameter(emitter, el.as<Parameter>(), data);
+            break;
+        }
+        case ElementType::PORT : {
+            emitPort(emitter, el.as<Port>(), data);
             break;
         }
         case ElementType::PRIMITIVE_TYPE : {
@@ -1521,8 +1561,16 @@ Property& determineAndParseOwnedAttribute(YAML::Node node, ParserMetaData& data)
         } else {
             throw UmlParserException("Invalid yaml node type for property definition, must be a map!", data.m_path.string(), node["property"]);
         }
+    } else if (node["port"]) {
+        if (node["port"].IsMap()) {
+            Port& port = data.m_manager->create<Port>();
+            parsePort(node["port"], port, data);
+            return port;
+        } else {
+            throw UmlParserException("Invalid yaml node type for port definition, must be a map!", data.m_path.string(), node["port"]);
+        }
     } else {
-        throw UmlParserException("Invalid uml definition for ownedAttribute, may be a property only!", data.m_path.string(), node);
+        throw UmlParserException("Invalid uml definition for ownedAttribute, may be a property or port only!", data.m_path.string(), node);
     }
 }
 
@@ -1577,6 +1625,7 @@ void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, Par
 void emitStructuredClassifier(YAML::Emitter& emitter, StructuredClassifier& clazz, EmitterMetaData& data) {
     emitClassifier(emitter, clazz, data);
     emitSequence(emitter, "ownedAttributes", data, clazz, &StructuredClassifier::getOwnedAttributes);
+    emitSequence(emitter, "ownedConnectors", data, clazz, &StructuredClassifier::getOwnedConnectors);
 }
 
 Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
@@ -1632,6 +1681,8 @@ Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
         } else {
             throw UmlParserException("Invalide yaml node type for extension definition, must be a map!", data.m_path.string(), node["extension"]);
         }
+    } else if (node["interface"]) {
+        return parseDefinition(node, data, "interface", parseInterface);
     } else if (node["opaqueBehavior"]) {
         if (node["opaqueBehavior"].IsMap()) {
             OpaqueBehavior& opaqueBehavior = data.m_manager->create<OpaqueBehavior>();
@@ -1999,6 +2050,8 @@ PackageableElement& determineAndParsePackageableElement(YAML::Node node, ParserM
         return parseDefinition(node, data, "instanceSpecification", parseInstanceSpecification);
     } else if (node["instanceValue"]) {
         return parseDefinition(node, data, "instanceValue", parseInstanceValue);
+    } else if (node["interface"]) {
+        return parseDefinition(node, data, "interface", parseInterface);
     } else if (node["literalBool"]) {
         return parseDefinition(node, data, "literalBool", parseLiteralBool);
     } else if (node["literalInt"]) {
@@ -2960,6 +3013,7 @@ void emitBehavioredClassifier(YAML::Emitter& emitter, BehavioredClassifier& clas
     if (classifier.hasClassifierBehavior()) {
         emitter << YAML::Key << "classifierBehavior" << YAML::Value << classifier.getClassifierBehaviorID().string();
     }
+    emitSequence(emitter, "interfaceRealization", data, classifier, &BehavioredClassifier::getInterfaceRealizations);
 }
 
 void emitManifestation(YAML::Emitter& emitter, Manifestation& manifestation, EmitterMetaData& data) {
@@ -3121,9 +3175,18 @@ void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMet
     parseSingletonReference(node, data, "utilizedElement", manifestation, &Manifestation::setUtilizedElement, &Manifestation::setUtilizedElement);
 }
 
+InterfaceRealization& determineAndParseInterfaceRealization(YAML::Node node, ParserMetaData& data) {
+    if (node["interfaceRealization"]) {
+        return parseDefinition(node, data, "interfaceRealization", parseInterfaceRealization);
+    } else {
+        throw UmlParserException("Invalid key for interfaceRealization", data.m_path.string(), node);
+    }
+}
+
 void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, ParserMetaData& data) {
     parseSequenceDefinitions(node, data, "ownedBehaviors", classifier, &BehavioredClassifier::getOwnedBehaviors, determineAndParseBehavior);
     parseSingletonReference(node, data, "classifierBehavior", classifier, &BehavioredClassifier::setClassifierBehavior, &BehavioredClassifier::setClassifierBehavior);
+    parseSequenceDefinitions(node, data, "interfaceRealizations", classifier, &BehavioredClassifier::getInterfaceRealizations, determineAndParseInterfaceRealization);
 }
 
 void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, ParserMetaData& data) {
@@ -3197,6 +3260,75 @@ void emitConnectorEnd(YAML::Emitter& emitter, ConnectorEnd& end, EmitterMetaData
         emitter << YAML::Key << "role" << YAML::Value << end.getRoleID().string();
     }
     emitElementDefenitionEnd(emitter, ElementType::CONNECTOR_END, end);
+}
+
+void parsePort(YAML::Node node, Port& port, ParserMetaData& data) {
+    parseProperty(node, port, data);
+    if (node["isBehavior"]) {
+        if (node["isBehavior"].IsScalar()) {
+            port.setIsBehavior(node["isBehavior"].as<bool>());
+        } else {
+            throw UmlParserException("Port field isBehavior must be a boolean scalar!", data.m_path.string(), node["isBehavior"]);
+        }
+    }
+    if (node["isConjugated"]) {
+        if (node["isConjugated"].IsScalar()) {
+            port.setIsConjugated(node["isConjugated"].as<bool>());
+        } else {
+            throw UmlParserException("Port field isConjugated must be a boolean scalar!", data.m_path.string(), node["isConjugated"]);
+        }
+    }
+    if (node["isService"]) {
+        if (node["isService"].IsScalar()) {
+            port.setIsService(node["isService"].as<bool>());
+        } else {
+            throw UmlParserException("Port field isService must be a boolean scalar!", data.m_path.string(), node["isService"]);
+        }
+    }
+}
+
+void emitPort(YAML::Emitter& emitter, Port& port, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::PORT, "port", port, data);
+    if (port.isBehavior()) {
+        emitter << YAML::Key << "isBehavior" << YAML::Value << true;
+    }
+    if (port.isConjugated()) {
+        emitter << YAML::Key << "isConjugated" << YAML::Value << true;
+    }
+    if (!port.isService()) {
+        emitter << YAML::Key << "isService" << YAML::Value << false;
+    }
+    emitElementDefenitionEnd(emitter, ElementType::PORT, port);
+}
+
+void parseInterface(YAML::Node node, Interface& interface, ParserMetaData& data) {
+    parseClassifier(node, interface, data);
+    parseSequenceDefinitions(node, data, "ownedAttributes", interface, &Interface::getOwnedAttributes, determineAndParseOwnedAttribute);
+    parseSequenceDefinitions(node, data, "ownedOperations", interface, &Interface::getOwnedOperations, determineAndParseOwnedOperation);
+    parseSequenceDefinitions(node, data, "nestedClassifiers", interface, &Interface::getNestedClassifiers, determineAndParseClassifier);
+}
+
+void emitInterface(YAML::Emitter& emitter, Interface& interface, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::INTERFACE, "interface", interface, data);
+    emitClassifier(emitter, interface, data);
+    emitSequence(emitter, "ownedAttributes", data, interface, &Interface::getOwnedAttributes);
+    emitSequence(emitter, "ownedOperations", data, interface, &Interface::getOwnedOperations);
+    emitSequence(emitter, "nestedClassifiers", data, interface, &Interface::getNestedClassifiers);
+}
+
+void parseInterfaceRealization(YAML::Node node, InterfaceRealization& realization, ParserMetaData& data) {
+    parseNamedElement(node, realization, data);
+    parseParameterableElement(node, realization, data);
+    parseSingletonReference(node, data, "contract", realization, &InterfaceRealization::setContract, &InterfaceRealization::setContract);
+}
+
+void emitInterfaceRealization(YAML::Emitter& emitter, InterfaceRealization& realization, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::INTERFACE_REALIZATION, "interfaceRealization", realization, data);
+    emitNamedElement(emitter, realization, data);
+    if (realization.hasContract()) {
+        emitter << YAML::Key << "contract" << YAML::Value << realization.getContractID().string();
+    }
+    emitElementDefenitionEnd(emitter, ElementType::INTERFACE_REALIZATION, realization);
 }
 
 }

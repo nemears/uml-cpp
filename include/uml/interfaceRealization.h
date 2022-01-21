@@ -5,6 +5,10 @@
 
 namespace UML {
     class InterfaceRealization : public Realization {
+
+        friend class UmlManager;
+        friend class BehavioredClassifier;
+
         protected:
             Singleton<Interface, InterfaceRealization> m_contract = Singleton<Interface, InterfaceRealization>(this);
             Singleton<BehavioredClassifier, InterfaceRealization> m_implementingClassifier = Singleton<BehavioredClassifier, InterfaceRealization>(this);

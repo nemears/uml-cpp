@@ -1,5 +1,5 @@
-#ifndef CLASSIFIERH
-#define CLASSIFIERH
+#ifndef _UML_CLASSIFIER_H_
+#define _UML_CLASSIFIER_H_
 
 #include "type.h"
 #include "redefinableElement.h"

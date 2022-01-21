@@ -12,7 +12,12 @@ Set<BehavioredClassifier, InterfaceRealization>& InterfaceRealization::getImplem
 }
 
 void InterfaceRealization::init() {
-
+    m_contract.subsets(m_supplier);
+    m_contract.m_signature = &InterfaceRealization::getContractSingleton;
+    m_implementingClassifier.subsets(m_client);
+    m_implementingClassifier.subsets(*m_owner);
+    m_implementingClassifier.opposite(&BehavioredClassifier::getInterfaceRealizations);
+    m_implementingClassifier.m_signature = &InterfaceRealization::getImplementingClassifierSingleton;
 }
 
 void InterfaceRealization::copy(const InterfaceRealization& rhs) {
@@ -25,12 +30,7 @@ InterfaceRealization::InterfaceRealization() : Element(ElementType::INTERFACE_RE
 }
 
 InterfaceRealization::~InterfaceRealization() {
-    m_contract.subsets(m_supplier);
-    m_contract.m_signature = &InterfaceRealization::getContractSingleton;
-    m_implementingClassifier.subsets(m_client);
-    m_implementingClassifier.subsets(*m_owner);
-    m_implementingClassifier.opposite(&BehavioredClassifier::getInterfaceRealizations);
-    m_implementingClassifier.m_signature = &InterfaceRealization::getImplementingClassifierSingleton;
+    
 }
 
 InterfaceRealization::InterfaceRealization(const InterfaceRealization& rhs) : Element(rhs, ElementType::INTERFACE_REALIZATION) {

@@ -13,6 +13,8 @@ void BehavioredClassifier::init() {
     m_ownedBehaviors.m_signature = &BehavioredClassifier::getOwnedBehaviors;
     m_classifierBehavior.subsets(m_ownedBehaviors);
     m_classifierBehavior.m_signature = &BehavioredClassifier::getClassifierBehaviorSingleton;
+    m_interfaceRealizations.subsets(*m_ownedElements);
+    m_interfaceRealizations.opposite(&InterfaceRealization::getImplementingClassifierSingleton);
     m_interfaceRealizations.m_signature = &BehavioredClassifier::getInterfaceRealizations;
 }
 

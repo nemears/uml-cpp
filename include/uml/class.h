@@ -1,5 +1,5 @@
-#ifndef _CLASS_H_
-#define _CLASS_H_
+#ifndef _UML_CLASS_H_
+#define _UML_CLASS_H_
 
 #include "encapsulatedClassifier.h"
 #include "operation.h"

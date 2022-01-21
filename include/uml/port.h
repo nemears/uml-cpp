@@ -5,6 +5,9 @@
 
 namespace UML {
     class Port : public Property {
+
+        friend UmlManager;
+
         private:
             void setPortInterfaces(BehavioredClassifier& clazz);
             void removePortInterfaces(BehavioredClassifier& clazz);
@@ -44,7 +47,7 @@ namespace UML {
             bool isService() const;
             void setIsService(bool isService);
             Set<Interface, Port>& getRequired();
-            Set<Interface, Port>& getProvied();
+            Set<Interface, Port>& getProvided();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PORT;

@@ -78,7 +78,7 @@ void Port::removePortInterfaces(BehavioredClassifier& clazz) {
 
 void Port::RemoveTypeFunctor::operator()(Element& el) const {
     if (el.isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
-
+        m_el.as<Port>().removePortInterfaces(el.as<BehavioredClassifier>());
     } else if (el.isSubClassOf(ElementType::INTERFACE)) {
         if (m_el.as<Port>().isComposite()) {
             m_el.as<Port>().m_required.removeReadOnly(el.getID());
@@ -130,7 +130,7 @@ void Port::init() {
     m_required.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_required.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_provided.m_readOnly = true;
-    m_provided.m_signature = &Port::getProvied;
+    m_provided.m_signature = &Port::getProvided;
     m_provided.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_provided.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
@@ -177,8 +177,8 @@ bool Port::isConjugated() const {
 
 void Port::setIsConjugated(bool isConjugated) {
     if (isConjugated != m_isConjugated) {
-        std::vector<Interface*> oldRequired(m_required.size());
-        std::vector<Interface*> oldProvided(m_provided.size());
+        std::vector<Interface*> oldRequired;
+        std::vector<Interface*> oldProvided;
         for (auto& required : m_required) {
             oldRequired.push_back(&required);
         }
@@ -186,12 +186,12 @@ void Port::setIsConjugated(bool isConjugated) {
             oldProvided.push_back(&provided);
         }
         for (auto& newProvided : oldRequired) {
-            m_required.remove(*newProvided);
-            m_provided.add(*newProvided);
+            m_required.removeReadOnly(newProvided->getID());
+            m_provided.nonOppositeAdd(*newProvided);
         }
         for (auto& newRequired : oldProvided) {
-            m_provided.remove(*newRequired);
-            m_required.add(*newRequired);
+            m_provided.removeReadOnly(newRequired->getID());
+            m_required.nonOppositeAdd(*newRequired);
         }
     }
     m_isConjugated = isConjugated;
@@ -211,7 +211,7 @@ Set<Interface, Port>& Port::getRequired() {
     return m_required;
 }
 
-Set<Interface, Port>& Port::getProvied() {
+Set<Interface, Port>& Port::getProvided() {
     return m_provided;
 }
 

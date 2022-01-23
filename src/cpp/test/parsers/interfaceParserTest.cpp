@@ -41,3 +41,63 @@ TEST_F(InterfaceParserTest, parseBasicInterfaceTest) {
     ASSERT_TRUE(realization.hasContract());
     ASSERT_EQ(realization.getContractRef(), interface);
 }
+
+TEST_F(InterfaceParserTest, emitInterfaceTest) {
+    UmlManager m;
+    Package& root = m.create<Package>();
+    Interface& interface = m.create<Interface>();
+    Property& prop = m.create<Property>();
+    Operation& op = m.create<Operation>();
+    DataType& nest = m.create<DataType>();
+    Interface& general = m.create<Interface>();
+    Generalization& generalization = m.create<Generalization>();
+    Class& implementing = m.create<Class>();
+    InterfaceRealization& realization = m.create<InterfaceRealization>();
+    root.setID("efOYpQ48NuwY3f2xX0u9WkxcjfY6");
+    interface.setID("fqag25FXykqQlo_bQWmS&cAB6338");
+    prop.setID("Jp2IhMjC2qNN7cIYPXiFZU4vDdun");
+    op.setID("kbreSzh_ys_8SepvJR6Q58tzWdFI");
+    nest.setID("TeIMyndF4nm_NOTbFZ&vZDLXxvtC");
+    general.setID("msHdxlZxjCCYwm2GLlDyaIq3KX4o");
+    generalization.setID("9mSwZjJaig2cKZA98jZku3nU74eH");
+    implementing.setID("GqrX5Ta8KQDdFfaHrau08OS7Et3n");
+    realization.setID("IFDK1OePanvL7GwUxLspBo4p2JjA");
+    interface.getOwnedAttributes().add(prop);
+    interface.getOwnedOperations().add(op);
+    interface.getNestedClassifiers().add(nest);
+    generalization.setGeneral(general);
+    interface.getGeneralizations().add(generalization);
+    realization.setContract(interface);
+    implementing.getInterfaceRealizations().add(realization);
+    root.getPackagedElements().add(interface, general, implementing);
+    std::string expectedEmit = R""""(package:
+  id: efOYpQ48NuwY3f2xX0u9WkxcjfY6
+  packagedElements:
+    - interface:
+        id: fqag25FXykqQlo_bQWmS&cAB6338
+        generalizations:
+          - generalization:
+              id: 9mSwZjJaig2cKZA98jZku3nU74eH
+              general: msHdxlZxjCCYwm2GLlDyaIq3KX4o
+        ownedAttributes:
+          - property:
+              id: Jp2IhMjC2qNN7cIYPXiFZU4vDdun
+        ownedOperations:
+          - operation:
+              id: kbreSzh_ys_8SepvJR6Q58tzWdFI
+        nestedClassifiers:
+          - dataType:
+              id: TeIMyndF4nm_NOTbFZ&vZDLXxvtC
+    - class:
+        id: GqrX5Ta8KQDdFfaHrau08OS7Et3n
+        interfaceRealizations:
+          - interfaceRealization:
+              id: IFDK1OePanvL7GwUxLspBo4p2JjA
+              contract: fqag25FXykqQlo_bQWmS&cAB6338
+    - interface:
+        id: msHdxlZxjCCYwm2GLlDyaIq3KX4o)"""";
+    std::string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(root));
+    std::cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

@@ -3013,7 +3013,7 @@ void emitBehavioredClassifier(YAML::Emitter& emitter, BehavioredClassifier& clas
     if (classifier.hasClassifierBehavior()) {
         emitter << YAML::Key << "classifierBehavior" << YAML::Value << classifier.getClassifierBehaviorID().string();
     }
-    emitSequence(emitter, "interfaceRealization", data, classifier, &BehavioredClassifier::getInterfaceRealizations);
+    emitSequence(emitter, "interfaceRealizations", data, classifier, &BehavioredClassifier::getInterfaceRealizations);
 }
 
 void emitManifestation(YAML::Emitter& emitter, Manifestation& manifestation, EmitterMetaData& data) {
@@ -3314,6 +3314,7 @@ void emitInterface(YAML::Emitter& emitter, Interface& interface, EmitterMetaData
     emitSequence(emitter, "ownedAttributes", data, interface, &Interface::getOwnedAttributes);
     emitSequence(emitter, "ownedOperations", data, interface, &Interface::getOwnedOperations);
     emitSequence(emitter, "nestedClassifiers", data, interface, &Interface::getNestedClassifiers);
+    emitElementDefenitionEnd(emitter, ElementType::INTERFACE, interface);
 }
 
 void parseInterfaceRealization(YAML::Node node, InterfaceRealization& realization, ParserMetaData& data) {

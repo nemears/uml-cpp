@@ -75,5 +75,4 @@ TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
     ASSERT_EQ(port.getProvided().size(), 0);
 
     // TODO test getting rid of realization and usage, those will definitely not work
-    
 }

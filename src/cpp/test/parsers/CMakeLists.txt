@@ -3,6 +3,7 @@ add_executable(parsersTest packageParserTest.cpp classParserTest.cpp propertyPar
                structuredClassifierParserTest.cpp instanceSpecificationParserTest.cpp enumerationParserTest.cpp 
                expressionParserTest.cpp modelParserTest.cpp literalsParserTest.cpp templateableElementParserTest.cpp
                associationParserTest.cpp profileParserTest.cpp commentParserTest.cpp dependencyParserTest.cpp
-               deploymentParserTest.cpp behavioredClassifierParserTest.cpp generalizationSetParserTest.cpp)
+               deploymentParserTest.cpp behavioredClassifierParserTest.cpp generalizationSetParserTest.cpp
+               interfaceParserTest.cpp)
 target_link_libraries(parsersTest PUBLIC gtest gmock gtest_main Uml Parsers yaml-cpp)
 add_test(parsersTest parsersTest)

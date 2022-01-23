@@ -103,6 +103,7 @@ namespace UML {
              *  3) all subsets of a set shall have different guards
              **/
             size_t m_guard = 0;
+            size_t m_nextSubsetGuard = 1;
             std::vector<AbstractSet*> m_superSets;
             std::vector<AbstractSet*> m_subSets;
             std::vector<AbstractSet*> m_redefines;
@@ -453,10 +454,10 @@ namespace UML {
                             // create placeholder and set superset roots as well as skip over them in list
                             SetNode* temp = (*it)->m_root;
                             lastNode = temp;
-                            while (temp->m_id == placeholderID) {
+                            while (temp->m_id == placeholderID && temp->m_right != node) {
                                 temp = temp->m_left;
                             }
-                            if (temp->m_guard != node->m_guard && node->m_guard == m_guard) {
+                            if (temp->m_guard != node->m_guard && node->m_guard == m_guard && temp->m_right != node) {
                                 // create placeholder node
                                 SetNode* placeholderNode = new SetNode();
                                 placeholderNode->m_id = placeholderID;
@@ -486,6 +487,7 @@ namespace UML {
                                         placeholderNode->m_left = leftTemp;
                                         placeholderNode->m_right = node;
                                         node->m_parent = placeholderNode;
+                                        leftTemp->m_parent = placeholderNode;
                                         placeNode = false;
                                     }
                                 } else if (temp->m_parent) {
@@ -1625,40 +1627,26 @@ namespace UML {
             template <class V = Element, class W = Element> void subsets(Set<V, W>& subsetOf) {
                 if (std::find(m_superSets.begin(), m_superSets.end(), &subsetOf) == m_superSets.end()) {
                     m_superSets.push_back(&subsetOf);
+                    std::vector<AbstractSet*>* allSuperSets = getAllSuperSets();
+                    for (auto& subsetOfSubsetOf : *allSuperSets) {
+                        if (m_guard < subsetOfSubsetOf->m_nextSubsetGuard) {
+                            m_guard = subsetOfSubsetOf->m_nextSubsetGuard;
+                        }
+                    }
                     size_t max_guard = m_guard;
-                    m_guard = subsetOf.m_subSets.empty() ? subsetOf.m_guard + 1 : subsetOf.m_subSets.back()->m_guard + 1;
-                    if (max_guard > m_guard) {
-                        m_guard = max_guard;
-                    }
-                    // graph bfs check subsetOfs subsets to make sure we are greater than all of those
-                    std::list<AbstractSet*> queue;
-                    std::vector<AbstractSet*> allSubsetsOfSubsetOf;
-                    for (auto& subset : subsetOf.m_subSets) {
-                        queue.push_back(subset);
-                    }
-                    while (!queue.empty()) {
-                        AbstractSet* front = queue.front();
-                        queue.pop_front();
-                        if (std::find(allSubsetsOfSubsetOf.begin(), allSubsetsOfSubsetOf.end(), front) == allSubsetsOfSubsetOf.end()) {
-                            allSubsetsOfSubsetOf.push_back(front);
-                            for (auto& set : front->m_subSets) {
-                                queue.push_back(set);
-                            }
-                        }
-                    }
-                    for (auto& disjointSet : allSubsetsOfSubsetOf) {
-                        if (disjointSet->m_guard > m_guard) {
-                            m_guard = disjointSet->m_guard  + 1;
-                        }
-                    }
-                    subsetOf.m_subSets.push_back(this);
-                    max_guard = m_guard;
                     for (auto& subset : m_subSets) {
                         if (subset->m_guard <= max_guard) {
                             subset->m_guard = max_guard + 1;
                         }
                         max_guard++;
                     }
+                    for (auto& subsetOfSubsetOf : *allSuperSets) {
+                        if (max_guard >= subsetOfSubsetOf->m_nextSubsetGuard) {
+                            subsetOfSubsetOf->m_nextSubsetGuard = max_guard + 1;
+                        }
+                    }
+                    delete allSuperSets;
+                    subsetOf.m_subSets.push_back(this);
                     for (auto& redefinedSet : subsetOf.m_redefines) {
                         redefinedSet->m_guard = subsetOf.m_guard;
                     }

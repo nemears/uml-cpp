@@ -75,4 +75,83 @@ TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
     ASSERT_EQ(port.getProvided().size(), 0);
 
     // TODO test getting rid of realization and usage, those will definitely not work
+    port.setType(specific);
+
+    ASSERT_EQ(port.getRequired().size(), 1);
+    ASSERT_EQ(port.getProvided().size(), 1);
+    ASSERT_EQ(port.getRequired().front(), realizedInterface);
+    ASSERT_EQ(port.getProvided().front(), usedInterface);
+
+    specific.getInterfaceRealizations().remove(realization);
+
+    ASSERT_EQ(port.getRequired().size(), 0);
+    ASSERT_EQ(port.getProvided().size(), 1);
+
+    specific.getInterfaceRealizations().add(realization);
+    
+    ASSERT_EQ(port.getRequired().size(), 1);
+    ASSERT_EQ(port.getProvided().size(), 1);
+    ASSERT_EQ(port.getRequired().front(), realizedInterface);
+    ASSERT_EQ(port.getProvided().front(), usedInterface);
+
+    realization.setContract(0);
+
+    ASSERT_EQ(port.getRequired().size(), 0);
+    ASSERT_EQ(port.getProvided().size(), 1);
+
+    realization.setContract(realizedInterface);
+
+    ASSERT_EQ(port.getRequired().size(), 1);
+    ASSERT_EQ(port.getProvided().size(), 1);
+    ASSERT_EQ(port.getRequired().front(), realizedInterface);
+    ASSERT_EQ(port.getProvided().front(), usedInterface);
+
+    usage.getClient().remove(general);
+
+    ASSERT_EQ(port.getRequired().size(), 1);
+    ASSERT_EQ(port.getProvided().size(), 0);
+
+    usage.getClient().add(general);
+
+    ASSERT_EQ(port.getRequired().size(), 1);
+    ASSERT_EQ(port.getProvided().size(), 1);
+    ASSERT_EQ(port.getRequired().front(), realizedInterface);
+    ASSERT_EQ(port.getProvided().front(), usedInterface);
+
+    specific.getInterfaceRealizations().remove(realization);
+    usage.getClient().remove(general);
+
+    ASSERT_EQ(port.getRequired().size(), 0);
+    ASSERT_EQ(port.getProvided().size(), 0);
+
+    general.getInterfaceRealizations().add(realization);
+
+    ASSERT_EQ(port.getRequired().size(), 1);
+    ASSERT_EQ(port.getProvided().size(), 0);
+
+    usage.getClient().add(specific);
+
+    ASSERT_EQ(port.getRequired().size(), 1);
+    ASSERT_EQ(port.getProvided().size(), 1);
+    ASSERT_EQ(port.getRequired().front(), realizedInterface);
+    ASSERT_EQ(port.getProvided().front(), usedInterface);
+
+    general.getInterfaceRealizations().remove(realization);
+
+    ASSERT_EQ(port.getRequired().size(), 0);
+    ASSERT_EQ(port.getProvided().size(), 1);
+
+    general.getInterfaceRealizations().add(realization);
+
+    usage.getClient().remove(specific);
+
+    ASSERT_EQ(port.getRequired().size(), 1);
+    ASSERT_EQ(port.getProvided().size(), 0);
+
+    usage.getClient().add(specific);
+
+    ASSERT_EQ(port.getRequired().size(), 1);
+    ASSERT_EQ(port.getProvided().size(), 1);
+    ASSERT_EQ(port.getRequired().front(), realizedInterface);
+    ASSERT_EQ(port.getProvided().front(), usedInterface);
 }

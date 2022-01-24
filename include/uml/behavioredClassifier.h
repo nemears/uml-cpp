@@ -13,6 +13,18 @@ namespace UML {
             Set<Behavior, BehavioredClassifier> m_ownedBehaviors = Set<Behavior, BehavioredClassifier>(this);
             Singleton<Behavior, BehavioredClassifier> m_classifierBehavior = Singleton<Behavior, BehavioredClassifier>(this);
             Set<InterfaceRealization, BehavioredClassifier> m_interfaceRealizations = Set<InterfaceRealization, BehavioredClassifier>(this);
+            class RemoveInterfaceRealizationFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    RemoveInterfaceRealizationFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class AddInterfaceRealizationFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    AddInterfaceRealizationFunctor(Element* el) : SetFunctor(el) {};
+            };
             Set<Behavior, BehavioredClassifier>& getClassifierBehaviorSingleton();
             void init();
             void copy(const BehavioredClassifier& rhs);

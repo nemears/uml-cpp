@@ -3,6 +3,46 @@
 
 using namespace UML;
 
+void InterfaceRealization::RemoveContractFunctor::operator()(Element& el) const {
+    if (m_el.as<InterfaceRealization>().hasImplementingClassifier()) {
+        for (auto& pair : m_el.as<InterfaceRealization>().m_implementingClassifier.getRef().m_node->m_references) {
+            if (pair.second && 
+                pair.second->m_managerElementMemory->isSubClassOf(ElementType::PORT) && 
+                pair.second->m_managerElementMemory->as<Port>().getTypeID() == m_el.as<InterfaceRealization>().m_implementingClassifier.id()) {
+                if (pair.second->m_managerElementMemory->as<Port>().isConjugated()) {
+                    if (pair.second->m_managerElementMemory->as<Port>().getRequired().contains(el.getID())) {
+                        pair.second->m_managerElementMemory->as<Port>().getRequired().removeReadOnly(el.getID());
+                    }
+                } else {
+                    if (pair.second->m_managerElementMemory->as<Port>().getProvided().contains(el.getID())) {
+                        pair.second->m_managerElementMemory->as<Port>().getProvided().removeReadOnly(el.getID());
+                    }
+                }
+            }
+        }
+    }
+}
+
+void InterfaceRealization::SetContractFunctor::operator()(Element& el) const {
+    if (m_el.as<InterfaceRealization>().hasImplementingClassifier()) {
+        for (auto& pair : m_el.as<InterfaceRealization>().m_implementingClassifier.getRef().m_node->m_references) {
+            if (pair.second && 
+                pair.second->m_managerElementMemory->isSubClassOf(ElementType::PORT) && 
+                pair.second->m_managerElementMemory->as<Port>().getTypeID() == m_el.as<InterfaceRealization>().m_implementingClassifier.id()) {
+                if (pair.second->m_managerElementMemory->as<Port>().isConjugated()) {
+                    if (!pair.second->m_managerElementMemory->as<Port>().getRequired().contains(el.getID())) {
+                        pair.second->m_managerElementMemory->as<Port>().getRequired().nonOppositeAdd(el.as<Interface>());
+                    }
+                } else {
+                    if (!pair.second->m_managerElementMemory->as<Port>().getProvided().contains(el.getID())) {
+                        pair.second->m_managerElementMemory->as<Port>().getProvided().nonOppositeAdd(el.as<Interface>());
+                    }
+                }
+            }
+        }
+    }
+}
+
 Set<Interface, InterfaceRealization>& InterfaceRealization::getContractSingleton() {
     return m_contract;
 }
@@ -14,6 +54,8 @@ Set<BehavioredClassifier, InterfaceRealization>& InterfaceRealization::getImplem
 void InterfaceRealization::init() {
     m_contract.subsets(m_supplier);
     m_contract.m_signature = &InterfaceRealization::getContractSingleton;
+    m_contract.m_addFunctors.insert(new SetContractFunctor(this));
+    m_contract.m_removeFunctors.insert(new RemoveContractFunctor(this));
     m_implementingClassifier.subsets(m_client);
     m_implementingClassifier.subsets(*m_owner);
     m_implementingClassifier.opposite(&BehavioredClassifier::getInterfaceRealizations);

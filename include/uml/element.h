@@ -170,6 +170,9 @@ namespace UML {
     class Connector;
     class ConnectableElement;
     class Port;
+    class BehavioredClassifier;
+    class InterfaceRealization;
+    class Usage;
     template <class T, class U> class Set;
     template <class T> class SetIterator;
     template <class V, class W> class OppositeFunctor;
@@ -214,6 +217,9 @@ namespace UML {
         friend class Connector;
         friend class ConnectableElement;
         friend class Port;
+        friend class BehavioredClassifier;
+        friend class InterfaceRealization;
+        friend class Usage;
         template <class T, class U> friend class Singleton;
         template <class T, class U> friend class Set;
         template <class V, class W> friend class OppositeFunctor;

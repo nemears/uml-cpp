@@ -12,6 +12,18 @@ namespace UML {
         protected:
             Singleton<Interface, InterfaceRealization> m_contract = Singleton<Interface, InterfaceRealization>(this);
             Singleton<BehavioredClassifier, InterfaceRealization> m_implementingClassifier = Singleton<BehavioredClassifier, InterfaceRealization>(this);
+            class RemoveContractFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    RemoveContractFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class SetContractFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    SetContractFunctor(Element* el) : SetFunctor(el) {};
+            };
             Set<Interface, InterfaceRealization>& getContractSingleton();
             Set<BehavioredClassifier, InterfaceRealization>& getImplementingClassifierSingleton();
             void init();

@@ -4,6 +4,64 @@
 
 using namespace UML;
 
+void BehavioredClassifier::RemoveInterfaceRealizationFunctor::operator()(Element& el) const {
+    if (el.as<InterfaceRealization>().hasContract()) {
+        std::list<Classifier*> queue = {&m_el.as<Classifier>()};
+        while (!queue.empty()) {
+            Classifier* front = queue.front();
+            queue.pop_front();
+            for (auto& pair : front->m_node->m_references) {
+                if (pair.second && pair.second->m_managerElementMemory->isSubClassOf(ElementType::PORT)) {
+                    if (front->getID() == pair.second->m_managerElementMemory->as<Port>().getTypeID()) {
+                        if (pair.second->m_managerElementMemory->as<Port>().isConjugated()) {
+                            if (pair.second->m_managerElementMemory->as<Port>().getRequired().contains(el.as<InterfaceRealization>().getContractID())) {
+                                pair.second->m_managerElementMemory->as<Port>().getRequired().removeReadOnly(el.as<InterfaceRealization>().getContractID());
+                            }
+                        } else {
+                            if (pair.second->m_managerElementMemory->as<Port>().getProvided().contains(el.as<InterfaceRealization>().getContractID())) {
+                                pair.second->m_managerElementMemory->as<Port>().getProvided().removeReadOnly(el.as<InterfaceRealization>().getContractID());
+                            }
+                        }
+                    }
+                } else if (pair.second->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER)) {
+                    if (pair.second->m_managerElementMemory->as<Classifier>().getGenerals().contains(*front)) {
+                        queue.push_back(&pair.second->m_managerElementMemory->as<Classifier>());
+                    }
+                }
+            }   
+        }
+    }
+}
+
+void BehavioredClassifier::AddInterfaceRealizationFunctor::operator()(Element& el) const {
+    if (el.as<InterfaceRealization>().hasContract()) {
+        std::list<Classifier*> queue = {&m_el.as<Classifier>()};
+        while (!queue.empty()) {
+            Classifier* front = queue.front();
+            queue.pop_front();
+            for (auto& pair : front->m_node->m_references) {
+                if (pair.second && pair.second->m_managerElementMemory->isSubClassOf(ElementType::PORT)) {
+                    if (pair.second->m_managerElementMemory->as<Port>().getTypeID() == front->m_id) {
+                        if (pair.second->m_managerElementMemory->as<Port>().isConjugated()) {
+                            if (!pair.second->m_managerElementMemory->as<Port>().getRequired().contains(el.as<InterfaceRealization>().getContractID())) {
+                                pair.second->m_managerElementMemory->as<Port>().getRequired().nonOppositeAdd(el.as<InterfaceRealization>().getContractRef());
+                            }
+                        } else {
+                            if (!pair.second->m_managerElementMemory->as<Port>().getProvided().contains(el.as<InterfaceRealization>().getContractID())) {
+                                pair.second->m_managerElementMemory->as<Port>().getProvided().nonOppositeAdd(el.as<InterfaceRealization>().getContractRef());
+                            }
+                        }
+                    }
+                } else if (pair.second->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER)) {
+                    if (pair.second->m_managerElementMemory->as<Classifier>().getGenerals().contains(*front)) {
+                        queue.push_back(&pair.second->m_managerElementMemory->as<Classifier>());
+                    }
+                }
+            }
+        }
+    }
+}
+
 Set<Behavior, BehavioredClassifier>& BehavioredClassifier::getClassifierBehaviorSingleton() {
     return m_classifierBehavior;
 }
@@ -16,6 +74,8 @@ void BehavioredClassifier::init() {
     m_interfaceRealizations.subsets(*m_ownedElements);
     m_interfaceRealizations.opposite(&InterfaceRealization::getImplementingClassifierSingleton);
     m_interfaceRealizations.m_signature = &BehavioredClassifier::getInterfaceRealizations;
+    m_interfaceRealizations.m_addFunctors.insert(new AddInterfaceRealizationFunctor(this));
+    m_interfaceRealizations.m_removeFunctors.insert(new RemoveInterfaceRealizationFunctor(this));
 }
 
 void BehavioredClassifier::copy(const BehavioredClassifier& rhs) {

@@ -310,6 +310,7 @@ namespace UML {
     class Interface;
     class InterfaceRealization;
     class Port;
+    class Usage;
 
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
@@ -382,6 +383,7 @@ namespace UML {
         friend class Interface;
         friend class InterfaceRealization;
         friend class Port;
+        friend class Usage;
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
         friend void Parsers::setOwner(Element& el, ID id);

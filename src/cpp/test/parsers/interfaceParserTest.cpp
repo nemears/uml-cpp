@@ -101,3 +101,72 @@ TEST_F(InterfaceParserTest, emitInterfaceTest) {
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(InterfaceParserTest, parsePortW_InterfaceTest) {
+    UmlManager m;
+    Element* el;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "interfaceTests/portW_Interface.yml"));
+    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
+    Package& pckg = el->as<Package>();
+    ASSERT_EQ(pckg.getPackagedElements().size(), 3);
+    Class& implementing = pckg.getPackagedElements().get("implementing").as<Class>();
+    Interface& interface = pckg.getPackagedElements().get("interface").as<Interface>();
+    Class& encapsulated = pckg.getPackagedElements().get("encapsulated").as<Class>();
+    ASSERT_EQ(implementing.getInterfaceRealizations().size(), 1);
+    InterfaceRealization& realization = implementing.getInterfaceRealizations().front();
+    ASSERT_TRUE(realization.hasContract());
+    ASSERT_EQ(realization.getContractRef(), interface);
+    ASSERT_EQ(encapsulated.getOwnedPorts().size(), 1);
+    Port& port = encapsulated.getOwnedPorts().front();
+    ASSERT_TRUE(port.isConjugated());
+    ASSERT_EQ(port.getRequired().size(), 1);
+    ASSERT_EQ(port.getRequired().front(), interface);
+}
+
+TEST_F(InterfaceParserTest, emitPortWInterfaceTest) {
+    UmlManager m;
+    Package& root = m.create<Package>();
+    Class& implementing = m.create<Class>();
+    Interface& interface = m.create<Interface>();
+    Class& encapsulated = m.create<Class>();
+    InterfaceRealization& realization = m.create<InterfaceRealization>();
+    Port& port = m.create<Port>();
+    root.setID("epLFcWN0KeMt8t5mAuF4TUCa75ns");
+    implementing.setID("508FPtzv15GguudyAK6odJA7Rxoa");
+    interface.setID("Ehn7ZlJH&ULe75R26WWVcYlMKXeY");
+    encapsulated.setID("R3dx7zjpK3&3NGLh0DVLt9Yolka8");
+    realization.setID("65&HAREuzThGM38K2m82T1NWR28N");
+    port.setID("loA63PcT8hpUsfQkDvU1p0YT4vRj");
+    realization.setContract(interface);
+    implementing.getInterfaceRealizations().add(realization);
+    encapsulated.getOwnedAttributes().add(port);
+    port.setType(implementing);
+    port.setIsBehavior(true);
+    port.setIsConjugated(true);
+    port.setIsService(false);
+    root.getPackagedElements().add(implementing, interface, encapsulated);
+    std::string expectedEmit = R""""(package:
+  id: epLFcWN0KeMt8t5mAuF4TUCa75ns
+  packagedElements:
+    - class:
+        id: 508FPtzv15GguudyAK6odJA7Rxoa
+        interfaceRealizations:
+          - interfaceRealization:
+              id: 65&HAREuzThGM38K2m82T1NWR28N
+              contract: Ehn7ZlJH&ULe75R26WWVcYlMKXeY
+    - interface:
+        id: Ehn7ZlJH&ULe75R26WWVcYlMKXeY
+    - class:
+        id: R3dx7zjpK3&3NGLh0DVLt9Yolka8
+        ownedAttributes:
+          - port:
+              id: loA63PcT8hpUsfQkDvU1p0YT4vRj
+              type: 508FPtzv15GguudyAK6odJA7Rxoa
+              isBehavior: true
+              isConjugated: true
+              isService: false)"""";
+    std::string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = Parsers::emit(root));
+    std::cout << generatedEmit << '\n';
+    ASSERT_EQ(expectedEmit, generatedEmit);
+}

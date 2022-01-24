@@ -3289,6 +3289,7 @@ void parsePort(YAML::Node node, Port& port, ParserMetaData& data) {
 
 void emitPort(YAML::Emitter& emitter, Port& port, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::PORT, "port", port, data);
+    emitProperty(emitter, port, data);
     if (port.isBehavior()) {
         emitter << YAML::Key << "isBehavior" << YAML::Value << true;
     }

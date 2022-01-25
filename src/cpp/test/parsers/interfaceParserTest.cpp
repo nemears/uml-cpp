@@ -170,3 +170,106 @@ TEST_F(InterfaceParserTest, emitPortWInterfaceTest) {
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(InterfaceParserTest, mountInterfaceTest) {
+    UmlManager m;
+    Package& root = m.create<Package>();
+    Interface& interface = m.create<Interface>();
+    Property& prop = m.create<Property>();
+    Operation& op = m.create<Operation>();
+    DataType& nest = m.create<DataType>();
+    Class& implementing = m.create<Class>();
+    InterfaceRealization& realization = m.create<InterfaceRealization>();
+    Class& engine = m.create<Class>();
+    Class& propeller = m.create<Class>();
+    Port& pPort = m.create<Port>();
+    Port& ePort = m.create<Port>();
+    Property& pProp = m.create<Property>();
+    Property& eProp = m.create<Property>();
+    Class& boat = m.create<Class>();
+    Connector& connector = m.create<Connector>();
+    ConnectorEnd& pEnd = m.create<ConnectorEnd>();
+    ConnectorEnd& eEnd = m.create<ConnectorEnd>();
+    interface.getOwnedAttributes().add(prop);
+    interface.getOwnedOperations().add(op);
+    interface.getNestedClassifiers().add(nest);
+    realization.setContract(interface);
+    implementing.getInterfaceRealizations().add(realization);
+    pPort.setType(implementing);
+    ePort.setType(implementing);
+    engine.getOwnedAttributes().add(ePort);
+    propeller.getOwnedAttributes().add(pPort);
+    pProp.setType(propeller);
+    eProp.setType(engine);
+    boat.getOwnedAttributes().add(eProp, pProp);
+    eEnd.setRole(pPort);
+    pEnd.setRole(ePort);
+    // TODO part with port
+    connector.getEnds().add(pEnd, eEnd);
+    boat.getOwnedConnectors().add(connector);
+    root.getPackagedElements().add(interface, implementing, engine, propeller, boat);
+    m.setRoot(root);
+    m.mount(ymlPath + "interfaceTests");
+
+    ID interfaceID = interface.getID();
+    m.release(interface);
+    ASSERT_FALSE(m.loaded(interfaceID));
+    Interface& interface2 = m.aquire(interfaceID)->as<Interface>();
+    ASSERT_EQ(interface2.getOwningPackageID(), root.getID());
+    ASSERT_EQ(interface2.getOwnedAttributes().size(), 1);
+    ASSERT_EQ(interface2.getOwnedOperations().size(), 1);
+    ASSERT_EQ(interface2.getNestedClassifiers().size(), 1);
+    ASSERT_EQ(interface2.getAttributes().size(), 1);
+    ASSERT_EQ(interface2.getFeatures().size(), 2);
+    ASSERT_EQ(interface2.getOwnedMembers().size(), 3);
+    ASSERT_EQ(interface2.getMembers().size(), 3);
+    ASSERT_EQ(interface2.getOwnedElements().size(), 3);
+    ASSERT_EQ(interface2.getOwnedAttributes().front(), prop);
+    ASSERT_EQ(interface2.getOwnedOperations().front(), op);
+    ASSERT_EQ(interface2.getNestedClassifiers().front(), nest);
+
+    ASSERT_EQ(pPort.getProvided().front(), interface2);
+    ASSERT_EQ(ePort.getProvided().front(), interface2);
+
+    ID propertyID = prop.getID();
+    m.release(prop);
+    ASSERT_FALSE(m.loaded(propertyID));
+    Property& prop2 = m.aquire(propertyID)->as<Property>();
+    ASSERT_TRUE(prop2.hasInterface());
+    ASSERT_EQ(prop2.getInterfaceRef(), interface2);
+
+    ID operationID = op.getID();
+    m.release(op);
+    ASSERT_FALSE(m.loaded(operationID));
+    Operation& op2 = m.aquire(operationID)->as<Operation>();
+    ASSERT_TRUE(op2.hasInterface());
+    ASSERT_EQ(op2.getInterfaceRef(), interface2);
+
+    ID nestID = nest.getID();
+    m.release(nest);
+    ASSERT_FALSE(m.loaded(nestID));
+    DataType& nest2 = m.aquire(nestID)->as<DataType>();
+    ASSERT_TRUE(nest2.hasNamespace());
+    ASSERT_EQ(nest2.getNamespaceRef(), interface2);
+
+    ID realizationID = realization.getID();
+    m.release(realization);
+    ASSERT_FALSE(m.loaded(realizationID));
+    InterfaceRealization& realization2 = m.aquire(realizationID)->as<InterfaceRealization>();
+    ASSERT_TRUE(realization2.hasImplementingClassifier());
+    ASSERT_EQ(realization2.getImplementingClassifierRef(), implementing);
+
+    ID pPortID = pPort.getID();
+    m.release(pPort);
+    ASSERT_FALSE(m.loaded(pPortID));
+    Port& pPort2 = m.aquire(pPortID)->as<Port>();
+    ASSERT_TRUE(pPort2.hasClass());
+    ASSERT_EQ(pPort2.getClassRef(), propeller);
+
+    ID connectorID = connector.getID();
+    m.release(connector);
+    ASSERT_FALSE(m.loaded(connectorID));
+    Connector& connector2 = m.aquire(connectorID)->as<Connector>();
+    ASSERT_TRUE(connector2.hasFeaturingClassifier());
+    ASSERT_EQ(connector2.getFeaturingClassifierRef(), boat);
+}

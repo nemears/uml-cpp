@@ -492,6 +492,9 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
         if (parseSingletonReference(node, data, "dataType", ret->as<Operation>(), &Operation::setDataType, &Operation::setDataType)) {
             return;
         }
+        if (parseSingletonReference(node, data, "interface", ret->as<Operation>(), &Operation::setInterface, &Operation::setInterface)) {
+            return;
+        }
     }
     if (ret->isSubClassOf(ElementType::PROPERTY)) {
         if (parseSingletonReference(node, data, "class", ret->as<Property>(), &Property::setClass, &Property::setClass)) {
@@ -501,6 +504,9 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
             return;
         }
         if (parseSingletonReference(node, data, "owningAssociation", ret->as<Property>(), &Property::setOwningAssociation, &Property::setOwningAssociation)) {
+            return;
+        }
+        if (parseSingletonReference(node, data, "interface", ret->as<Property>(), &Property::setInterface, &Property::setInterface)) {
             return;
         }
     }
@@ -587,6 +593,11 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
     }
     if (ret->isSubClassOf(ElementType::STEREOTYPE)) {
         if (parseSingletonReference(node, data, "profile", ret->as<Stereotype>(), &Stereotype::setProfile, &Stereotype::setProfile)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::INTERFACE_REALIZATION)) {
+        if (parseSingletonReference(node, data, "implementingClassifier", ret->as<InterfaceRealization>(), &InterfaceRealization::setImplementingClassifier, &InterfaceRealization::setImplementingClassifier)) {
             return;
         }
     }
@@ -748,7 +759,9 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["interface"]) {
-        ret = &parseDefinition(node, data, "interface", parseInterface);
+        if (node["interface"].IsMap()) {
+            ret = &parseDefinition(node, data, "interface", parseInterface);
+        }
     }
 
     if (node["interfaceRealization"]) {
@@ -1205,6 +1218,10 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
                 emitter << YAML::Key << "owningAssociation" << YAML::Value << el.as<Property>().getOwningAssociationID().string();
                 return;
             }
+            if (el.as<Property>().hasInterface()) {
+                emitter << YAML::Key << "interface" << YAML::Value << el.as<Property>().getInterfaceID().string();
+                return;
+            }
         }
         if (el.isSubClassOf(ElementType::OPERATION)) {
             if (el.as<Operation>().hasClass()) {
@@ -1213,6 +1230,10 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             }
             if (el.as<Operation>().hasDataType()) {
                 emitter << YAML::Key << "dataType" << YAML::Value << el.as<Operation>().getDataTypeID().string();
+                return;
+            }
+            if (el.as<Operation>().hasInterface()) {
+                emitter << YAML::Key << "interface" << YAML::Value << el.as<Operation>().getInterfaceID().string();
                 return;
             }
         }
@@ -1288,6 +1309,12 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::MANIFESTATION)) {
             if (!el.as<Manifestation>().getClient().empty()) {
                 emitter << YAML::Key << "client" << YAML::Value << el.as<Manifestation>().getClient().ids().front().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::INTERFACE_REALIZATION)) {
+            if (el.as<InterfaceRealization>().hasImplementingClassifier()) {
+                emitter << YAML::Key << "implementingClassifier" << el.as<InterfaceRealization>().getImplementingClassifierID().string();
                 return;
             }
         }

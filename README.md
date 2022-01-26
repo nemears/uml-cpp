@@ -43,10 +43,11 @@ Uml class definitions can be used to reference a model with the api. To include 
 
 Most of Uml implemented is mapped to config files, These can be stored persistently on disc or used to exchange model information between applications. The `UmlManager` class and all subclasses have the ability to `open` a path, or `save` to a path where model information has been saved.
 
-There are two experimental classes in `uml/managers` called `UmlServer` and `UmlClient` to offer a quicker way to acheive aquire and release elements. These two classes follow restful api semantics with `GET`, `PUT`, `POST`, and `DELETE` (the method is called `erase()`). `get()` can be used with element's id's or a "url" a.k.a the NamedElement's qualifiedNamespace. There is a build target called uml-server that will produce an executable `uml-server`, this executable can be run to start the server talking on port `8652`. **WARNING: Only works for POSIX**
+### client server managers
+There are two experimental classes in `uml/managers` called `UmlServer` and `UmlClient` to offer a quicker way to acheive aquire and release elements. These two classes follow restful api semantics with `GET`, `PUT`, `POST`, and `DELETE` (the method is called `erase()`). `get()` can be used with element's id's or a "url" a.k.a the NamedElement's qualifiedNamespace. There is a build target called uml-server that will produce an executable `uml-server`, this executable can be run to start the server talking on port `8652`. If you don't want to build the experimental managers set the cmake option `UML_CLIENT_SERVER` to NO. **WARNING: Only works for POSIX**
 
 ### cpp parsing
-Currently just playing around with clang AST and general mapping. Eventual goal is to fully roundtrip the c group of languages with this api. This will allow for 1:1 changes to code from a program that uses the api. 
+Currently just playing around with clang AST and general mapping. Eventual goal is to fully roundtrip the c group of languages with this api. This will allow for 1:1 changes to code from a program that uses the api. If you dont want to build the experimental library set `UML_CPP_BUILD_CLANG` cmake option to NO. 
 
 ## TODO
 There is a lot to do right now this is just the next couple items I plan on looking into:  

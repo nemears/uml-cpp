@@ -1,9 +1,8 @@
 #include "gtest/gtest.h"
 #include "uml/managers/umlServer.h"
 #include "uml/managers/umlClient.h"
-#include "uml/class.h"
 #include "test/yumlParsersTest.h"
-#include "uml/package.h"
+#include "uml/uml-stable.h"
 #include <stdlib.h>
 #include <thread>
 

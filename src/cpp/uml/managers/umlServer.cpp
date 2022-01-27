@@ -300,9 +300,9 @@ void UmlServer::acceptNewClients(UmlServer* me) {
             }
             std::thread* clientThread = new std::thread(receiveFromClient, me, ID::fromString(buff));
             me->m_clients[ID::fromString(buff)] = {newSocketD, clientThread};
-            if (send(newSocketD, buff, 29, 0) == -1) { // send ID back to say that the server has a thread ready for the client's messages
+            if (!send(newSocketD, buff, 29, 0)) { // send ID back to say that the server has a thread ready for the client's messages
                 throw ManagerStateException("Was not able to send response back to client!");
-            } 
+            }
         }
         me->m_running = false;
     }
@@ -342,6 +342,12 @@ UmlServer::UmlServer() {
     if ((m_socketD = socket(m_address->ai_family, m_address->ai_socktype, m_address->ai_protocol)) == -1) {
         throw ManagerStateException("Server could not get socket from addressinfo, error: " + std::string(strerror(errno)));
     }
+
+    int enable = 1;
+    if (setsockopt(m_socketD, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0) {
+        throw ManagerStateException("Server could not set socket options, error: " + std::string(strerror(errno)));
+    }
+
     if ((status = bind(m_socketD, m_address->ai_addr, m_address->ai_addrlen)) == -1) {
         throw ManagerStateException("Server could not bind to socket, error: " + std::string(strerror(errno)));
     }

@@ -60,7 +60,7 @@ void UmlClient::init() {
     char acceptBuff[29];
     struct pollfd pfds[1] = {{m_socketD, POLLIN}};
     int pollRes;
-    if ((pollRes = poll(pfds, 0, 250)) > 0) {
+    if ((pollRes = poll(pfds, 1, 25000)) > 0) {
         if ((bytesReceived = recv(m_socketD, acceptBuff, 29, 0)) <= 0) {
             throw ManagerStateException("did not get accept message!");
         }
@@ -68,7 +68,11 @@ void UmlClient::init() {
             throw ManagerStateException("did not get proper accept message!");
         }
     } else {
-        throw ManagerStateException("Timeout waiting for server response!");
+        if (pollRes == 0) {
+            throw ManagerStateException("Timeout waiting for server response!");
+        } else {
+            throw ManagerStateException("Error waiting for server, TODO print error!");
+        }
     }
 }
 

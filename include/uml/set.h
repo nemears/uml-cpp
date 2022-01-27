@@ -12,6 +12,7 @@ namespace UML {
 
     template <class T, class U> class Set;
     template <class T, class U> class OrderedSet;
+    template <class T> struct SetIterator;
 
     class ID_doesNotExistException : public std::exception {
         private:
@@ -77,6 +78,7 @@ namespace UML {
     class AbstractSet {
         template <class T, class U> friend class Set;
         template <class T, class U> friend class OrderedSet;
+        template <class T> friend struct SetIterator;
         protected:
             size_t m_size = 0;
             int m_upper = 0; // this effectively lets us determine the type of the set (1 = singleton, 0 = set, -1 = orderedSet)
@@ -2001,7 +2003,7 @@ namespace UML {
                 bool ret = false;
                 if (m_root) {
                     SetNode* t = search(id, m_root);
-                    ret = t > 0;
+                    ret = t != 0;
                 } 
                 return ret;
             };
@@ -2042,7 +2044,7 @@ namespace UML {
                 bool ret = false;
                 if (m_root) {
                     SetNode* t = search(name, m_root);
-                    ret = t > 0;
+                    ret = t != 0;
                 }
                 return ret;
             };

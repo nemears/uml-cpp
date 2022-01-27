@@ -6,7 +6,7 @@
 namespace UML {
     class Port : public Property {
 
-        friend UmlManager;
+        friend class UmlManager;
 
         private:
             void setPortInterfaces(BehavioredClassifier& clazz);

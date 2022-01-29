@@ -15,7 +15,7 @@ namespace UML {
             UmlClient();
             UmlClient(std::string m_address);
             virtual ~UmlClient();
-            Element& get(ID id);
+            Element& get(ID id) override;
             template <class T = Element> T& get(ID id) {
                 return get(id).as<T>();
             };

@@ -47,6 +47,9 @@ namespace UML {
             std::mutex m_shutdownMtx;
             std::condition_variable m_shutdownCv;
             bool m_shutdownV = false;
+            std::mutex m_processingMtx;
+            std::condition_variable m_processingCv;
+            bool m_processingAV = false;
 
             // helper methods
             Element& post(ElementType eType);
@@ -62,6 +65,7 @@ namespace UML {
             void shutdown();
             int waitTillShutDown(int ms);
             int waitTillShutDown();
+            int waitForProcessing();
     };
 }
 

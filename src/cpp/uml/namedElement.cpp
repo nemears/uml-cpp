@@ -73,7 +73,9 @@ void NamedElement::setName(const std::string &name) {
         if (!pair.second) {
             m_manager->get<>(pair.first);
         }
-        pair.second->m_managerElementMemory->reindexName(m_name, name);
+        if (pair.second) {  // TODO: don't really like this if statement
+            pair.second->m_managerElementMemory->reindexName(m_name, name); 
+        }
     }
     m_name = name;
     updateCopiesScalar(name, &NamedElement::m_name);

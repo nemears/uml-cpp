@@ -150,6 +150,7 @@ namespace UML {
                     throw UnknownID_Exception(id);
                 }
             };
+            virtual Element& get(ID id);
             size_t count(ID id);
             virtual bool loaded(ID id);
             template <class T = Element> T& create() {

@@ -24,7 +24,7 @@ bool parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string 
             if (isValidID(node[key].as<std::string>())) {
                 // ID
                 ID id = ID::fromString(node[key].as<std::string>());
-                if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
+                if (data.m_manager->UmlManager::loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
                     try {
                         (el.*elSignature)(data.m_manager->get<T>(id));
                     } catch (DuplicateElementInSetException& e) {
@@ -63,7 +63,7 @@ void parseSetReferences(YAML::Node node, ParserMetaData& data, std::string key, 
                 if (node[key][i].IsScalar()) {
                     if (isValidID(node[key][i].as<std::string>())) {
                         ID id = ID::fromString(node[key][i].as<std::string>());
-                        if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
+                        if (data.m_manager->UmlManager::loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
                             try {
                                 (owner.*signature)().add(data.m_manager->get<T>(id));
                             } catch (DuplicateElementInSetException e) {
@@ -107,11 +107,7 @@ void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, S& (U::
         std::string idStr = path.substr(path.find_last_of("/") + 1, path.find_last_of("/") + 29);
         if (isValidID(idStr)) {
             ID id = ID::fromString(idStr);
-            // if (data.m_manager->UmlManager::loaded(id)) {
-            //     (el.*signature)().add(data.m_manager->get<T>(id)); // Too slow? makes it easier
-            // } else {
-                (el.*signature)().add(id);
-            // }
+            (el.*signature)().add(id);
         } else {
             throw UmlParserException("Invalid id for path, was the data specified as individual, that can only work on a mount!", data.m_path.string(), node);
         }

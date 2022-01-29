@@ -147,9 +147,16 @@ Element& UmlServer::post(ElementType eType) {
 void UmlServer::receiveFromClient(UmlServer* me, ID id) {
     me->log("server set up thread to listen to client " + id.string());
     struct pollfd pfds[1] = {{me->m_clients[id].socket, POLLIN}};
+    if (!send(me->m_clients[id].socket, id.string().c_str(), 29, 0)) { // send ID back to say that the server has a thread ready for the client's messages
+        throw ManagerStateException("Was not able to send response back to client!");
+    }
     while (me->m_running) {
         int numEvents;
         if ((numEvents = poll(pfds, 1, 1000)) > 0) { 
+            me->m_processingAV = true;
+            bool unlock = false;
+            unlock = me->m_processingMtx.try_lock(); // may be better way than directly doing this?
+            me->m_processingAV = false;
             for (int msgCount = 0; msgCount < numEvents; msgCount++) {
                 char* buff = (char*)malloc(UML_SERVER_MSG_SIZE);
                 int bytesReceived = recv(pfds->fd, buff, UML_SERVER_MSG_SIZE, 0);
@@ -239,17 +246,27 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                     }
                     Parsers::ParserMetaData data(me);
                     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-                    Element& el = Parsers::parseYAML(node["PUT"]["element"], data);
-                    if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
-                        me->m_urls[el.as<NamedElement>().getQualifiedName()] = el.getID();
+                    try {
+                        Element& el = Parsers::parseYAML(node["PUT"]["element"], data);
+                        if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
+                            me->m_urls[el.as<NamedElement>().getQualifiedName()] = el.getID();
+                        }
+                        me->log("server put element " + elID.string() + " successfully for client " + id.string());
+                    } catch (std::exception& e) {
+                        me->log("Error parsing PUT request: " + std::string(e.what()));
                     }
-                    me->log("server put element " + elID.string() + " successfully for client " + id.string());
-                    int msg, bytesSent = 1;
+                    
+                    int msg = 1, bytesSent = 1;
                     while((bytesSent = send(pfds->fd, &msg, sizeof(int), 0)) <= 0) {
                         bytesSent = send(pfds->fd, &msg, sizeof(int), 0);
                     }
+                    me->log("told client we got element put");
                 }
                 free(buff);
+            }
+            me->m_processingCv.notify_all();
+            if (unlock) {
+                me->m_processingMtx.unlock();
             }
         } else if (numEvents == -1) {
             me->log("Server experienced error from poll for client " + id.string());
@@ -300,9 +317,6 @@ void UmlServer::acceptNewClients(UmlServer* me) {
             }
             std::thread* clientThread = new std::thread(receiveFromClient, me, ID::fromString(buff));
             me->m_clients[ID::fromString(buff)] = {newSocketD, clientThread};
-            if (!send(newSocketD, buff, 29, 0)) { // send ID back to say that the server has a thread ready for the client's messages
-                throw ManagerStateException("Was not able to send response back to client!");
-            }
         }
         me->m_running = false;
     }
@@ -466,5 +480,12 @@ int UmlServer::waitTillShutDown(int ms) {
 int UmlServer::waitTillShutDown() {
     std::unique_lock<std::mutex> sLck(m_shutdownMtx);
     m_shutdownCv.wait(sLck, [this] { return m_shutdownV; });
+    return 1;
+}
+
+int UmlServer::waitForProcessing() {
+    std::unique_lock<std::mutex> pLck(m_processingMtx);
+    m_processingCv.wait(pLck, [this] { return !m_processingAV; });
+    m_processingCv.notify_all();
     return 1;
 }

@@ -59,7 +59,7 @@ TEST_F(RestfulTest, basicEraseTest) {
     ID clazzID = clazz.getID();
     client.erase(clazz);
     ASSERT_FALSE(client.loaded(clazzID));
-    sleep(0.01);
+    server.waitForProcessing();
     ASSERT_FALSE(server.loaded(clazzID));
 }
 

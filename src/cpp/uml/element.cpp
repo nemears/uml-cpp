@@ -280,6 +280,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::EXTENSION : {
             return "EXTENSION";
         }
+        case ElementType::EXTENSION_END : {
+            return "EXTENSION_END";
+        }
         case ElementType::FEATURE : {
             return "FEATURE";
         }

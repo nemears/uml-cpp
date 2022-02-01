@@ -58,22 +58,26 @@ void UmlClient::init() {
     }
     delete[] idMsg;
     char acceptBuff[29];
-    struct pollfd pfds[1] = {{m_socketD, POLLIN}};
-    int pollRes;
-    if ((pollRes = poll(pfds, 1, 25000)) > 0) {
+    // struct pollfd pfds[1] = {{m_socketD, POLLIN}};
+    // int pollRes;
+    // if ((pollRes = poll(pfds, 1, 25000)) > 0) {
         if ((bytesReceived = recv(m_socketD, acceptBuff, 29, 0)) <= 0) {
-            throw ManagerStateException("did not get accept message!");
+            if (bytesReceived == 0) {
+                throw ManagerStateException("did not get accept message!");
+            } else {
+                throw ManagerStateException("Error reciving acceptance message: " + std::string(strerror(errno)));
+            }
         }
         if (id.string().compare(acceptBuff) != 0) {
             throw ManagerStateException("did not get proper accept message!");
         }
-    } else {
-        if (pollRes == 0) {
-            throw ManagerStateException("Timeout waiting for server response!");
-        } else {
-            throw ManagerStateException("Error waiting for server, TODO print error!");
-        }
-    }
+    // } else {
+    //     if (pollRes == 0) {
+    //         throw ManagerStateException("Timeout waiting for server response!");
+    //     } else {
+    //         throw ManagerStateException("Error waiting for server, TODO print error!");
+    //     }
+    // }
 }
 
 UmlClient::UmlClient() : id(ID::randomID()) {
@@ -112,7 +116,6 @@ Element& UmlClient::get(ID id) {
     while((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
         send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
     }
-    std::cout << "client sent get request to server" << std::endl;
     char* buff = (char*)malloc(UML_CLIENT_MSG_SIZE);
     int bytesReceived = recv(m_socketD, buff, UML_CLIENT_MSG_SIZE, 0);
     if (bytesReceived <= 0) {
@@ -142,7 +145,6 @@ Element& UmlClient::get(std::string qualifiedName) {
     while((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
         send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
     }
-    std::cout << "client sent get request to server" << std::endl;
     char* buff = (char*)malloc(UML_CLIENT_MSG_SIZE);
     int bytesReceived = recv(m_socketD, buff, UML_CLIENT_MSG_SIZE, 0);
     if (bytesReceived <= 0) {
@@ -172,10 +174,8 @@ Element& UmlClient::post(ElementType eType) {
     while ((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
         send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
     }
-    std::cout << "client sent post request to server" << std::endl;
     char buff[100]; // get better sized buffer?
     int bytesReceived = recv(m_socketD, buff, 100, 0);
-    std::cout << "client received posted elemnt" << std::endl;
     if (bytesReceived <= 0) {
         throw ManagerStateException();
     }
@@ -204,7 +204,6 @@ void UmlClient::put(Element& el) {
     while (bytesSent < emitter.size() - (UML_SERVER_MSG_SIZE * i) - 1) {
         bytesSent = send(m_socketD, &emitter.c_str()[1000], emitter.size() - (UML_SERVER_MSG_SIZE - 1), 0);
     }
-    std::cout << "client sent put to server" << std::endl;;
     int response, bytesReceived;
     bytesReceived = recv(m_socketD, &response, sizeof(int), 0);
 }

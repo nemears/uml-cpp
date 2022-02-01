@@ -16,6 +16,7 @@ int main(int argc, char* argv[]) {
     int port = 8652;
     std::string path = ".";
     std::string location;
+    srand(time(0));
     while (i < argc) {
         if (strcmp(argv[i], "-p") == 0) {
             port = atoi(argv[i+1]);
@@ -71,12 +72,19 @@ int main(int argc, char* argv[]) {
         }
         i++;
     }
-    UML::UmlServer server(port);
-    if (!location.empty()) {
-        server.open(location);
+    try {
+        UML::UmlServer server(port);
+        if (!location.empty()) {
+            server.open(location);
+        }
+        server.mount(path);
+        std::cout << "server running" << std::endl;
+        server.waitTillShutDown();
+        server.save(location);
+        server.shutdown();
+        exit(0);
+    } catch (std::exception& e) {
+        std::cout << e.what() << std::endl;
+        exit(1);
     }
-    server.mount(path);
-    server.waitTillShutDown();
-    server.save(location);
-    server.shutdown();
 }

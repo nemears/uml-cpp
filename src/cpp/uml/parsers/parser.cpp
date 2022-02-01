@@ -298,6 +298,10 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::CLASSIFIER;
     } else if (eType.compare("COMMENT") == 0) {
         return ElementType::COMMENT;
+    } else if (eType.compare("CONNECTOR") == 0) {
+        return ElementType::CONNECTOR;
+    } else if (eType.compare("CONNECTOR_END") == 0) {
+        return ElementType::CONNECTOR_END;
     } else if (eType.compare("CONNECTABLE_ELEMENT") == 0) {
         return ElementType::CONNECTABLE_ELEMENT;
     } else if (eType.compare("CONTROL_FLOW") == 0) {
@@ -338,6 +342,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::FORK_NODE;
     } else if (eType.compare("GENERALIZATION") == 0) {
         return ElementType::GENERALIZATION;
+    } else if (eType.compare("GENERALIZATION_SET") == 0) {
+        return ElementType::GENERALIZATION_SET;
     } else if (eType.compare("INITITAL_NODE") == 0) {
         return ElementType::INITIAL_NODE;
     } else if (eType.compare("INPUT_PIN") == 0) {
@@ -346,6 +352,10 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::INSTANCE_SPECIFICATION;
     } else if (eType.compare("INSTANCE_VALUE") == 0) {
         return ElementType::INSTANCE_VALUE;
+    } else if (eType.compare("INTERFACE") == 0) {
+        return ElementType::INTERFACE;
+    } else if (eType.compare("INTERFACE_REALIZATION") == 0) {
+        return ElementType::INTERFACE_REALIZATION;
     } else if (eType.compare("JOIN_NODE") == 0) {
         return ElementType::JOIN_NODE;
     } else if (eType.compare("LITERAL_BOOL") == 0) {
@@ -362,6 +372,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::LITERAL_STRING;
     } else if (eType.compare("LITERAL_UNLIMITED_NATURAL") == 0) {
         return ElementType::LITERAL_UNLIMITED_NATURAL;
+    } else if (eType.compare("MANIFESTATION") == 0) {
+        return ElementType::MANIFESTATION;
     } else if (eType.compare("MERGE_NODE") == 0) {
         return ElementType::MERGE_NODE;
     } else if (eType.compare("MODEL") == 0) {
@@ -396,6 +408,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::PARAMETER_NODE;
     } else if (eType.compare("PIN") == 0) {
         return ElementType::PIN;
+    } else if (eType.compare("PORT") == 0) {
+        return ElementType::PORT;
     } else if (eType.compare("PRIMITIVE_TYPE") == 0) {
         return ElementType::PRIMITIVE_TYPE;
     } else if (eType.compare("PROFILE") == 0) {

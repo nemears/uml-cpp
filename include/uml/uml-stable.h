@@ -55,4 +55,6 @@
 #include "uml/umlManager.h"
 #include "uml/usage.h"
 
+#include "uml/managers/umlClient.h"
+
 #endif

@@ -29,6 +29,9 @@ namespace UML {
             template<class T = Element> T& post() {
                 return post(T::elementType()).template as<T>();
             };
+            template<class T = Element> T& create() {
+                return post(T::elementType()).template as<T>();
+            };
             void erase(Element& el) override;
             Element* aquire(ID id) override;
             void release(Element& el) override;

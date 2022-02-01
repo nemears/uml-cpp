@@ -22,6 +22,9 @@ Element& UmlServer::post(ElementType eType) {
             return static_cast<Element&>(create<Abstraction>());
         }
         case ElementType::ARTIFACT : {
+            return static_cast<Element&>(create<Artifact>());
+        }
+        case ElementType::ASSOCIATION : {
             return static_cast<Element&>(create<Association>());
         }
         case ElementType::CLASS : {
@@ -29,6 +32,12 @@ Element& UmlServer::post(ElementType eType) {
         }
         case ElementType::COMMENT : {
             return static_cast<Element&>(create<Comment>());
+        }
+        case ElementType::CONNECTOR : {
+            return static_cast<Element&>(create<Connector>());
+        }
+        case ElementType::CONNECTOR_END : {
+            return static_cast<Element&>(create<ConnectorEnd>());
         }
         case ElementType::DATA_TYPE : {
             return static_cast<Element&>(create<DataType>());
@@ -57,11 +66,20 @@ Element& UmlServer::post(ElementType eType) {
         case ElementType::GENERALIZATION : {
             return static_cast<Element&>(create<Generalization>());
         }
+        case ElementType::GENERALIZATION_SET : {
+            return static_cast<Element&>(create<GeneralizationSet>());
+        }
         case ElementType::INSTANCE_SPECIFICATION : {
             return static_cast<Element&>(create<InstanceSpecification>());
         }
         case ElementType::INSTANCE_VALUE : {
             return static_cast<Element&>(create<InstanceValue>());
+        }
+        case ElementType::INTERFACE : {
+            return static_cast<Element&>(create<Interface>());
+        }
+        case ElementType::INTERFACE_REALIZATION : {
+            return static_cast<Element&>(create<InterfaceRealization>());
         }
         case ElementType::LITERAL_BOOL : {
             return static_cast<Element&>(create<LiteralBool>());
@@ -102,6 +120,9 @@ Element& UmlServer::post(ElementType eType) {
         case ElementType::PARAMETER : {
             return static_cast<Element&>(create<Parameter>());
         }
+        case ElementType::PORT : {
+            return static_cast<Element&>(create<Port>());
+        }
         case ElementType::PRIMITIVE_TYPE : {
             return static_cast<Element&>(create<PrimitiveType>());
         }
@@ -139,7 +160,7 @@ Element& UmlServer::post(ElementType eType) {
             return static_cast<Element&>(create<Usage>());
         }
         default : {
-            throw ManagerStateException();
+            throw ManagerStateException("Could not POST element with unmapped element type: " + Element::elementTypeToString(eType));
         }
     }
 }
@@ -147,9 +168,6 @@ Element& UmlServer::post(ElementType eType) {
 void UmlServer::receiveFromClient(UmlServer* me, ID id) {
     me->log("server set up thread to listen to client " + id.string());
     struct pollfd pfds[1] = {{me->m_clients[id].socket, POLLIN}};
-    if (!send(me->m_clients[id].socket, id.string().c_str(), 29, 0)) { // send ID back to say that the server has a thread ready for the client's messages
-        throw ManagerStateException("Was not able to send response back to client!");
-    }
     while (me->m_running) {
         int numEvents;
         if ((numEvents = poll(pfds, 1, 1000)) > 0) { 
@@ -226,14 +244,24 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                     me->log("server handling post request from client " + id.string());
                     ElementType type = Parsers::elementTypeFromString(node["POST"].as<std::string>());
                     Element* ret = 0;
-                    ret = &me->post(type);
-                    std::string msg = Parsers::emit(*ret);
-                    int bytesSent = send(pfds->fd, msg.c_str(), msg.size() + 1, 0);
-                    if (bytesSent <= 0) {
-                        free(buff);
-                        throw ManagerStateException();
-                    } 
-                    me->log("server created new element for client" + id.string());
+                    try {
+                        ret = &me->post(type);
+                        std::string msg = Parsers::emit(*ret);
+                        int bytesSent = send(pfds->fd, msg.c_str(), msg.size() + 1, 0);
+                        if (bytesSent <= 0) {
+                            free(buff);
+                            throw ManagerStateException();
+                        } 
+                        me->log("server created new element for client" + id.string());
+                    } catch (std::exception& e) {
+                        std::string msg = "ERROR: " + std::string(e.what());
+                        int bytesSent = send(pfds->fd, msg.c_str(), msg.size() + 1 , 0);
+                        if (bytesSent <= 0) {
+                            free(buff);
+                            throw ManagerStateException();
+                        }
+                        me->log("server could not create new element for client " + id.string() + ", exception with request: " + std::string(e.what()));
+                    }
                 }
                 if (node["PUT"]) {
                     ID elID = ID::fromString(node["PUT"]["id"].as<std::string>());
@@ -315,8 +343,13 @@ void UmlServer::acceptNewClients(UmlServer* me) {
             if (ID::fromString(buff) == me->m_shutdownID) {
                 break;
             }
+            me->log("got id from client: " + std::string(buff));
             std::thread* clientThread = new std::thread(receiveFromClient, me, ID::fromString(buff));
             me->m_clients[ID::fromString(buff)] = {newSocketD, clientThread};
+            if (!send(newSocketD, buff, 29, 0)) { // send ID back to say that the server has a thread ready for the client's messages
+                throw ManagerStateException("Was not able to send response back to client!");
+            }
+            me->log("sent id back to client: " + std::string(buff));
         }
         me->m_running = false;
     }
@@ -336,7 +369,7 @@ void UmlServer::log(std::string msg) {
     std::cout << "[" + nowStr.substr(0, nowStr.size() - 1) + "]:" + msg << std::endl;
 }
 
-UmlServer::UmlServer(int port) {
+UmlServer::UmlServer(int port) : UmlServer() {
     m_port = port;
 }
 

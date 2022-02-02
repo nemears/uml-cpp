@@ -242,9 +242,9 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                     me->m_msgV = true;
                     me->m_msgCv.notify_one();
                     me->log("server handling post request from client " + id.string());
-                    ElementType type = Parsers::elementTypeFromString(node["POST"].as<std::string>());
-                    Element* ret = 0;
                     try {
+                        ElementType type = Parsers::elementTypeFromString(node["POST"].as<std::string>());
+                        Element* ret = 0;
                         ret = &me->post(type);
                         std::string msg = Parsers::emit(*ret);
                         int bytesSent = send(pfds->fd, msg.c_str(), msg.size() + 1, 0);

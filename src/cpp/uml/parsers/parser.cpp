@@ -451,7 +451,7 @@ ElementType elementTypeFromString(string eType) {
     } else if (eType.compare("VALUE_SPECIFICATION") == 0) {
         return ElementType::VALUE_SPECIFICATION;
     } 
-    throw UmlParserException("Could not identify entity type by keyword: " + eType + '!', "");
+    throw UmlParserException("Could not identify element type by keyword: " + eType + '!', "");
 }
 
 void setNamespace(NamedElement& el, ID id) {
@@ -922,6 +922,12 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         TemplateSignature& templateSignature = data.m_manager->create<TemplateSignature>();
         parseTemplateSignature(node["templateSignature"], templateSignature, data);
         ret = &templateSignature;
+    }
+
+    if (node["usage"]) {
+        Usage& usage = data.m_manager->create<Usage>();
+        parseDependency(node["usage"], usage, data);
+        ret = &usage;
     }
 
     if (ret && data.m_strategy == ParserStrategy::INDIVIDUAL) {

@@ -41,6 +41,9 @@ namespace UML {
             void setPowerType(ID id);
             Set<Generalization, GeneralizationSet>& getGeneralizations();
             bool isSubClassOf(ElementType eType) const override;
+            static ElementType elementType() {
+                return ElementType::GENERALIZATION_SET;
+            };
     };
 }
 

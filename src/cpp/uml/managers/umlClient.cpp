@@ -179,6 +179,9 @@ Element& UmlClient::post(ElementType eType) {
     if (bytesReceived <= 0) {
         throw ManagerStateException();
     }
+    if (std::string(buff, 0, 5) == "ERROR") {
+        throw ManagerStateException("error from server trying to post element:" + std::string(buff, 5, 95));
+    }
     Parsers::ParserMetaData data(this);
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
     return Parsers::parseString(buff, data);

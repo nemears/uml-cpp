@@ -13,9 +13,9 @@ class RestfulTest : public ::testing::Test {
         std::string ymlPath = YML_FILES_PATH;
         UmlServer server;
 
-        void TearDown() override {
-            server.reset();
-        };
+        // void TearDown() override {
+        //     server.reset();
+        // };
 };
 
 TEST_F(RestfulTest, clientsConnectToServerTest) {
@@ -28,6 +28,7 @@ TEST_F(RestfulTest, postTest) {
     UmlClient client;
     Class& clazz = client.post<Class>();
     ASSERT_TRUE(client.count(clazz.getID()));
+    server.waitForProcessing();
     ASSERT_TRUE(server.count(clazz.getID()));
 }
 

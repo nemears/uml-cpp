@@ -58,26 +58,16 @@ void UmlClient::init() {
     }
     delete[] idMsg;
     char acceptBuff[29];
-    // struct pollfd pfds[1] = {{m_socketD, POLLIN}};
-    // int pollRes;
-    // if ((pollRes = poll(pfds, 1, 25000)) > 0) {
-        if ((bytesReceived = recv(m_socketD, acceptBuff, 29, 0)) <= 0) {
-            if (bytesReceived == 0) {
-                throw ManagerStateException("did not get accept message!");
-            } else {
-                throw ManagerStateException("Error reciving acceptance message: " + std::string(strerror(errno)));
-            }
+    if ((bytesReceived = recv(m_socketD, acceptBuff, 29, 0)) <= 0) {
+        if (bytesReceived == 0) {
+            throw ManagerStateException("did not get accept message!");
+        } else {
+            throw ManagerStateException("Error reciving acceptance message: " + std::string(strerror(errno)));
         }
-        if (id.string().compare(acceptBuff) != 0) {
-            throw ManagerStateException("did not get proper accept message!");
-        }
-    // } else {
-    //     if (pollRes == 0) {
-    //         throw ManagerStateException("Timeout waiting for server response!");
-    //     } else {
-    //         throw ManagerStateException("Error waiting for server, TODO print error!");
-    //     }
-    // }
+    }
+    if (id.string().compare(acceptBuff) != 0) {
+        throw ManagerStateException("did not get proper accept message!");
+    }
 }
 
 UmlClient::UmlClient() : id(ID::randomID()) {
@@ -111,7 +101,9 @@ UmlClient::~UmlClient() {
 
 Element& UmlClient::get(ID id) {
     YAML::Emitter emitter;
-    emitter << YAML::BeginMap << YAML::Key << "GET" << YAML::Value << id.string() << YAML::EndMap;
+    emitter << YAML::BeginDoc << YAML::BeginMap << 
+        YAML::Key << "GET" << YAML::Value << id.string() << 
+    YAML::EndMap << YAML::EndDoc;
     int bytesSent;
     while((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
         send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
@@ -140,7 +132,9 @@ Element& UmlClient::get(ID id) {
 
 Element& UmlClient::get(std::string qualifiedName) {
     YAML::Emitter emitter;
-    emitter << YAML::BeginMap << YAML::Key << "GET" << YAML::Value << qualifiedName << YAML::EndMap;
+    emitter << YAML::BeginDoc << YAML::BeginMap << 
+        YAML::Key << "GET" << YAML::Value << qualifiedName << 
+    YAML::EndMap << YAML::EndDoc;
     int bytesSent;
     while((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
         send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
@@ -169,36 +163,32 @@ Element& UmlClient::get(std::string qualifiedName) {
 
 Element& UmlClient::post(ElementType eType) {
     YAML::Emitter emitter;
-    emitter << YAML::BeginMap << YAML::Key << "POST" << YAML::Value << Element::elementTypeToString(eType) << YAML::EndMap;
+    Element& ret = UmlManager::create(eType);
+    emitter << YAML::BeginDoc << YAML::BeginMap << 
+        YAML::Key << "POST" << YAML::Value << Element::elementTypeToString(eType) << 
+        YAML::Key << "id" << YAML::Value << ret.getID().string() <<
+    YAML::EndMap << YAML::EndDoc;
     int bytesSent;
     while ((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
         send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
     }
-    char buff[100]; // get better sized buffer?
-    int bytesReceived = recv(m_socketD, buff, 100, 0);
-    if (bytesReceived <= 0) {
-        throw ManagerStateException();
-    }
-    if (std::string(buff, 0, 5) == "ERROR") {
-        throw ManagerStateException("error from server trying to post element:" + std::string(buff, 5, 95));
-    }
-    Parsers::ParserMetaData data(this);
-    data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-    return Parsers::parseString(buff, data);
+    std::cout << "client posted id: "  << ret.getID().string() << std::endl;
+    return ret;
 }
 
 void UmlClient::put(Element& el) {
     YAML::Emitter emitter;
-    emitter << YAML::BeginMap << YAML::Key << "PUT" << YAML::Value << YAML::BeginMap 
-            << YAML::Key << "id" << YAML::Value << el.getID().string();
-    if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
-        if (!el.as<NamedElement>().getQualifiedName().empty()) {
-            emitter << YAML::Key << "qualifiedName" << YAML::Value << el.as<NamedElement>().getQualifiedName();
+    emitter << YAML::BeginDoc << YAML::BeginMap << 
+        YAML::Key << "PUT" << YAML::Value << YAML::BeginMap 
+        << YAML::Key << "id" << YAML::Value << el.getID().string();
+        if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
+            if (!el.as<NamedElement>().getQualifiedName().empty()) {
+                emitter << YAML::Key << "qualifiedName" << YAML::Value << el.as<NamedElement>().getQualifiedName();
+            }
         }
-    }
-    emitter << YAML::Key << "element" << YAML::Value ;
-    Parsers::emitIndividual(el, emitter);
-    emitter << YAML::EndMap << YAML::EndMap;
+        emitter << YAML::Key << "element" << YAML::Value ;
+        Parsers::emitIndividual(el, emitter);
+    emitter << YAML::EndMap << YAML::EndMap << YAML::EndDoc;
     int bytesSent;
     while ((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
         send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
@@ -207,8 +197,6 @@ void UmlClient::put(Element& el) {
     while (bytesSent < emitter.size() - (UML_SERVER_MSG_SIZE * i) - 1) {
         bytesSent = send(m_socketD, &emitter.c_str()[1000], emitter.size() - (UML_SERVER_MSG_SIZE - 1), 0);
     }
-    int response, bytesReceived;
-    bytesReceived = recv(m_socketD, &response, sizeof(int), 0);
 }
 
 void UmlClient::putAll() {
@@ -219,7 +207,9 @@ void UmlClient::putAll() {
 
 void UmlClient::erase(Element& el) {
     YAML::Emitter emitter;
-    emitter << YAML::BeginMap << YAML::Key << "DELETE" << YAML::Value << el.getID().string() << YAML::EndMap;
+    emitter << YAML::BeginDoc << YAML::BeginMap << 
+        YAML::Key << "DELETE" << YAML::Value << el.getID().string() << 
+    YAML::EndMap << YAML::EndDoc;
     UmlManager::erase(el);
     int bytesSent;
     while ((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {

@@ -47,6 +47,155 @@ bool UmlManager::loaded(ID id) {
     }
 }
 
+Element& UmlManager::create(ElementType eType) {
+    switch (eType) {
+        case ElementType::ABSTRACTION : {
+            return static_cast<Element&>(create<Abstraction>());
+        }
+        case ElementType::ARTIFACT : {
+            return static_cast<Element&>(create<Artifact>());
+        }
+        case ElementType::ASSOCIATION : {
+            return static_cast<Element&>(create<Association>());
+        }
+        case ElementType::CLASS : {
+            return static_cast<Element&>(create<Class>());
+        }
+        case ElementType::COMMENT : {
+            return static_cast<Element&>(create<Comment>());
+        }
+        case ElementType::CONNECTOR : {
+            return static_cast<Element&>(create<Connector>());
+        }
+        case ElementType::CONNECTOR_END : {
+            return static_cast<Element&>(create<ConnectorEnd>());
+        }
+        case ElementType::DATA_TYPE : {
+            return static_cast<Element&>(create<DataType>());
+        }
+        case ElementType::DEPENDENCY : {
+            return static_cast<Element&>(create<Dependency>());
+        }
+        case ElementType::DEPLOYMENT : {
+            return static_cast<Element&>(create<Deployment>());
+        }
+        case ElementType::ENUMERATION : {
+            return static_cast<Element&>(create<Enumeration>());
+        }
+        case ElementType::ENUMERATION_LITERAL : {
+            return static_cast<Element&>(create<EnumerationLiteral>());
+        }
+        case ElementType::EXPRESSION : {
+            return static_cast<Element&>(create<Expression>());
+        }
+        case ElementType::EXTENSION : {
+            return static_cast<Element&>(create<Extension>());
+        }
+        case ElementType::EXTENSION_END : {
+            return static_cast<Element&>(create<ExtensionEnd>());
+        }
+        case ElementType::GENERALIZATION : {
+            return static_cast<Element&>(create<Generalization>());
+        }
+        case ElementType::GENERALIZATION_SET : {
+            return static_cast<Element&>(create<GeneralizationSet>());
+        }
+        case ElementType::INSTANCE_SPECIFICATION : {
+            return static_cast<Element&>(create<InstanceSpecification>());
+        }
+        case ElementType::INSTANCE_VALUE : {
+            return static_cast<Element&>(create<InstanceValue>());
+        }
+        case ElementType::INTERFACE : {
+            return static_cast<Element&>(create<Interface>());
+        }
+        case ElementType::INTERFACE_REALIZATION : {
+            return static_cast<Element&>(create<InterfaceRealization>());
+        }
+        case ElementType::LITERAL_BOOL : {
+            return static_cast<Element&>(create<LiteralBool>());
+        }
+        case ElementType::LITERAL_INT : {
+            return static_cast<Element&>(create<LiteralInt>());
+        }
+        case ElementType::LITERAL_NULL : {
+            return static_cast<Element&>(create<LiteralNull>());
+        }
+        case ElementType::LITERAL_REAL : {
+            return static_cast<Element&>(create<LiteralReal>());
+        }
+        case ElementType::LITERAL_STRING : {
+            return static_cast<Element&>(create<LiteralString>());
+        }
+        case ElementType::LITERAL_UNLIMITED_NATURAL : {
+            return static_cast<Element&>(create<LiteralUnlimitedNatural>());
+        }
+        case ElementType::MANIFESTATION : {
+            return static_cast<Element&>(create<Manifestation>());
+        }
+        case ElementType::MODEL : {
+            return static_cast<Element&>(create<Model>());
+        }
+        case ElementType::OPAQUE_BEHAVIOR : {
+            return static_cast<Element&>(create<OpaqueBehavior>());
+        }
+        case ElementType::OPERATION : {
+            return static_cast<Element&>(create<Operation>());
+        }
+        case ElementType::PACKAGE : {
+            return static_cast<Element&>(create<Package>());
+        }
+        case ElementType::PACKAGE_MERGE : {
+            return static_cast<Element&>(create<PackageMerge>());
+        }
+        case ElementType::PARAMETER : {
+            return static_cast<Element&>(create<Parameter>());
+        }
+        case ElementType::PORT : {
+            return static_cast<Element&>(create<Port>());
+        }
+        case ElementType::PRIMITIVE_TYPE : {
+            return static_cast<Element&>(create<PrimitiveType>());
+        }
+        case ElementType::PROFILE : {
+            return static_cast<Element&>(create<Profile>());
+        }
+        case ElementType::PROFILE_APPLICATION : {
+            return static_cast<Element&>(create<ProfileApplication>());
+        }
+        case ElementType::PROPERTY : {
+            return static_cast<Element&>(create<Property>());
+        }
+        case ElementType::REALIZATION : {
+            return static_cast<Element&>(create<Realization>());
+        }
+        case ElementType::SLOT : {
+            return static_cast<Element&>(create<Slot>());
+        }
+        case ElementType::STEREOTYPE : {
+            return static_cast<Element&>(create<Stereotype>());
+        }
+        case ElementType::TEMPLATE_BINDING : {
+            return static_cast<Element&>(create<TemplateBinding>());
+        }
+        case ElementType::TEMPLATE_PARAMETER : {
+            return static_cast<Element&>(create<TemplateParameter>());
+        }
+        case ElementType::TEMPLATE_PARAMETER_SUBSTITUTION : {
+            return static_cast<Element&>(create<TemplateParameterSubstitution>());
+        }
+        case ElementType::TEMPLATE_SIGNATURE : {
+            return static_cast<Element&>(create<TemplateSignature>());
+        }
+        case ElementType::USAGE : {
+            return static_cast<Element&>(create<Usage>());
+        }
+        default : {
+            throw ManagerStateException("Could not POST element with unmapped element type: " + Element::elementTypeToString(eType));
+        }
+    }
+}
+
 Element& UmlManager::get(ID id) {
     return get<>(id);
 }
@@ -181,7 +330,7 @@ void UmlManager::releaseNode(Element& el) {
     }
     for (auto& e : node->m_references) {
         if (!e.second && loaded(e.first)) {
-            e.second = get(e.first).m_node; // slow :(
+            e.second = &m_graph[e.first]; // slow :(
         }
         if (e.second) {
             e.second->m_managerElementMemory->referencingReleased(id);

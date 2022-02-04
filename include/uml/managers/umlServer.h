@@ -21,6 +21,14 @@ namespace UML {
             struct ClientInfo {
                 int socket;
                 std::thread* thread;
+                std::thread* handler;
+                std::mutex handlerMtx;
+                std::condition_variable handlerCv;
+                bool handlerV = false;
+                std::mutex messageMtx;
+                std::condition_variable messageCv;
+                bool messageV = false;
+                std::list<std::thread*> threadQueue;
             };
 
             int m_port = UML_PORT;
@@ -34,6 +42,8 @@ namespace UML {
             // threading
             static void acceptNewClients(UmlServer* me);
             static void receiveFromClient(UmlServer* me, ID id);
+            static void clientSubThreadHandler(UmlServer* me, ID id);
+            static void handleMessage(UmlServer* me, ID id, char* buff);
             std::thread* m_acceptThread;
             std::unordered_map<ID, std::mutex> m_locks;
             std::atomic<bool> m_running = false;
@@ -43,16 +53,12 @@ namespace UML {
             std::mutex m_acceptMtx;
             std::mutex m_msgMtx;
             std::condition_variable m_msgCv;
-            std::atomic<bool> m_msgV = true;
+            bool m_msgV = false;
             std::mutex m_shutdownMtx;
             std::condition_variable m_shutdownCv;
             bool m_shutdownV = false;
-            std::mutex m_processingMtx;
-            std::condition_variable m_processingCv;
-            bool m_processingAV = false;
 
             // helper methods
-            Element& post(ElementType eType);
             void createNode(Element* el) override;
             void log(std::string msg);
         public:

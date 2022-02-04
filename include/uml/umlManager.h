@@ -161,6 +161,7 @@ namespace UML {
                 ret->m_node = &m_graph[ret->getID()];
                 return *ret;
             };
+            Element& create(ElementType eType);
             void reindex(ID oldID, ID newID);
             /**
              * This function doesn't deal with memory, just sets the m_manager so the Sequence Value

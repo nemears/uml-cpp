@@ -104,10 +104,13 @@ Element& UmlClient::get(ID id) {
     emitter << YAML::BeginDoc << YAML::BeginMap << 
         YAML::Key << "GET" << YAML::Value << id.string() << 
     YAML::EndMap << YAML::EndDoc;
+    size_t size = emitter.size() + 1;
+    send(m_socketD, &size, 1, 0);
     int bytesSent;
     while((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
         send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
     }
+    std::cout << "waiting for response to get " + id.string() << std::endl;
     char* buff = (char*)malloc(UML_CLIENT_MSG_SIZE);
     int bytesReceived = recv(m_socketD, buff, UML_CLIENT_MSG_SIZE, 0);
     if (bytesReceived <= 0) {
@@ -136,6 +139,8 @@ Element& UmlClient::get(std::string qualifiedName) {
         YAML::Key << "GET" << YAML::Value << qualifiedName << 
     YAML::EndMap << YAML::EndDoc;
     int bytesSent;
+    size_t size = emitter.size() + 1;
+    send(m_socketD, &size, 1, 0);
     while((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
         send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
     }
@@ -168,6 +173,8 @@ Element& UmlClient::post(ElementType eType) {
         YAML::Key << "POST" << YAML::Value << Element::elementTypeToString(eType) << 
         YAML::Key << "id" << YAML::Value << ret.getID().string() <<
     YAML::EndMap << YAML::EndDoc;
+    size_t size = emitter.size() + 1;
+    send(m_socketD, &size, 1, 0);
     int bytesSent;
     while ((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
         send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
@@ -190,13 +197,16 @@ void UmlClient::put(Element& el) {
         Parsers::emitIndividual(el, emitter);
     emitter << YAML::EndMap << YAML::EndMap << YAML::EndDoc;
     int bytesSent;
+    size_t size = emitter.size() + 1;
+    send(m_socketD, &size, 1, 0);
     while ((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
         send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);
     }
-    int i = 0;
-    while (bytesSent < emitter.size() - (UML_SERVER_MSG_SIZE * i) - 1) {
-        bytesSent = send(m_socketD, &emitter.c_str()[1000], emitter.size() - (UML_SERVER_MSG_SIZE - 1), 0);
-    }
+    // int i = 0;
+    // while (bytesSent < emitter.size() - (UML_SERVER_MSG_SIZE * i) - 1) {
+    //     bytesSent = send(m_socketD, &emitter.c_str()[1000], emitter.size() - (UML_SERVER_MSG_SIZE - 1), 0);
+    // }
+    std::cout << "sent put to server for el: " << el.getID().string() << std::endl;
 }
 
 void UmlClient::putAll() {
@@ -211,6 +221,8 @@ void UmlClient::erase(Element& el) {
         YAML::Key << "DELETE" << YAML::Value << el.getID().string() << 
     YAML::EndMap << YAML::EndDoc;
     UmlManager::erase(el);
+    size_t size = emitter.size() + 1;
+    send(m_socketD, &size, 1, 0);
     int bytesSent;
     while ((bytesSent = send(m_socketD, emitter.c_str(), emitter.size() + 1, 0)) <= 0) {
         send(m_socketD, emitter.c_str(), emitter.size() + 1, 0);

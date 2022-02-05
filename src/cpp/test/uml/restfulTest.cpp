@@ -11,7 +11,7 @@ using namespace UML;
 class RestfulTest : public ::testing::Test {
     public:
         std::string ymlPath = YML_FILES_PATH;
-        UmlServer server;
+        // UmlServer server;
 
         // void TearDown() override {
         //     server.reset();
@@ -21,37 +21,18 @@ class RestfulTest : public ::testing::Test {
 TEST_F(RestfulTest, clientsConnectToServerTest) {
     UmlClient client1;
     UmlClient client2;
-    ASSERT_EQ(server.numClients(), 2);
+    // ASSERT_EQ(server.numClients(), 2);
 }
 
-TEST_F(RestfulTest, postTest) {
+TEST_F(RestfulTest, postAndGetTest) {
     UmlClient client;
     Class& clazz = client.post<Class>();
+    ID clazzID = clazz.getID();
+    clazz.setName("clazz");
     ASSERT_TRUE(client.count(clazz.getID()));
-    server.waitForProcessing();
-    ASSERT_TRUE(server.count(clazz.getID()));
-}
-
-TEST_F(RestfulTest, basicGetTest) {
-    UmlClient client;
-    ID id = server.create<Class>().getID();
-    server.get<Class>(id).setName("test");
-    ASSERT_EQ(client.get<NamedElement>(id).getName(), "test");
-}
-
-TEST_F(RestfulTest, basicPutTest) {
-    Package& root = server.create<Package>();
-    server.setRoot(root);
-    server.mount(ymlPath + "umlManagerTests");
-    UmlClient client;
-    Class& clazz = client.post<Class>();
-    ID id = clazz.getID();
-    clazz.setName("test");
-    clazz.setOwningPackage(root);
-    UmlClient client2;
-    ASSERT_TRUE(client2.get<Class>(id).getName().empty());
-    client.put(clazz);
-    ASSERT_EQ(client2.get<Class>(id).getName(), "test");
+    client.release(clazz);
+    Class& clazz2 = client.get<Class>(clazzID);
+    ASSERT_EQ(clazz2.getName(), "clazz");
 }
 
 TEST_F(RestfulTest, basicEraseTest) {
@@ -60,8 +41,8 @@ TEST_F(RestfulTest, basicEraseTest) {
     ID clazzID = clazz.getID();
     client.erase(clazz);
     ASSERT_FALSE(client.loaded(clazzID));
-    server.waitForProcessing();
-    ASSERT_FALSE(server.loaded(clazzID));
+    // server.waitForProcessing();
+    // ASSERT_FALSE(server.loaded(clazzID));
 }
 
 TEST_F(RestfulTest, basicGetByQualifiedName) {

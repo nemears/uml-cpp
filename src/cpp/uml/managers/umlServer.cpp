@@ -16,174 +16,158 @@
 
 using namespace UML;
 
-void UmlServer::handleMessage(UmlServer* me, ID id, char* buff) {
-    ClientInfo& info = me->m_clients[id];
-    if (!me->m_msgV) {
-        me->m_msgV = true;
-    }
-    // wait for handler / client thread to tell us to start
-    std::unique_lock<std::mutex> clientLock(info.messageMtx);
-    me->m_msgCv.wait(clientLock, [&info] { return info.messageV; });
-    info.handlerV = false;
-    info.messageV = false;
+void UmlServer::handleMessage(ID id, std::string buff) {
+    ClientInfo& info = m_clients[id];
+    log("server got message from client(" + id.string() + "):\n" + std::string(buff));
 
-    // handle message TODO cleanup
-    me->log("server got message from client(" + id.string() + "):\n" + std::string(buff));
-
-    if (strcmp(buff, "KILL") == 0) {
-        me->m_msgV = true;
-        me->m_msgCv.notify_one();
-        info.handlerCv.notify_one();
-        me->shutdown();
-        free(buff);
-        return;
-    }
+    // if (strcmp(buff, "KILL") == 0) {
+    //     me->m_msgV = true;
+    //     me->m_msgCv.notify_one();
+    //     info.handlerCv.notify_one();
+    //     me->shutdown();
+    //     free(buff);
+    //     return;
+    // }
     
     std::vector<YAML::Node> messages = YAML::LoadAll(buff);
     for (YAML::Node node : messages) {
         if (node["DELETE"]) {
             ID elID = ID::fromString(node["DELETE"].as<std::string>());
             {
-                std::lock_guard<std::mutex> elLck(me->m_locks[elID]);
-                me->log("aquired lock for element " + elID.string());
-                me->m_msgV = true;
-                me->m_msgCv.notify_one();
-                me->erase(elID);
-                me->log("erased element " + elID.string());
+                std::lock_guard<std::mutex> elLck(m_locks[elID]);
+                log("aquired lock for element " + elID.string());
+                m_msgV = true;
+                m_msgCv.notify_one();
+                erase(elID);
+                log("erased element " + elID.string());
             }
-            me->m_locks.erase(elID);
+            m_locks.erase(elID);
         }
         if (node["GET"]) {
             ID elID;
             if (isValidID(node["GET"].as<std::string>())) {
                 elID = ID::fromString(node["GET"].as<std::string>());
             } else {
-                elID = me->m_urls.at(node["GET"].as<std::string>());
+                elID = m_urls.at(node["GET"].as<std::string>());
             }
-            std::lock_guard<std::mutex> elLck(me->m_locks[elID]);
-            me->log("aquired lock for element " + elID.string());
-            me->m_msgV = true;
-            me->m_msgCv.notify_one();
-            std::string msg = Parsers::emitIndividual(me->get<>(elID));
+            std::lock_guard<std::mutex> elLck(m_locks[elID]);
+            log("aquired lock for element " + elID.string());
+            m_msgV = true;
+            m_msgCv.notify_one();
+            std::string msg = Parsers::emitIndividual(get<>(elID));
             int bytesSent = send(info.socket, msg.c_str(), msg.size() + 1, 0);
             if (bytesSent <= 0) {
                 throw ManagerStateException();
             }
-            me->log("server got element " +  elID.string() + " for client " + id.string() + ":\n" + msg);
+            log("server got element " +  elID.string() + " for client " + id.string() + ":\n" + msg);
         }
         if (node["POST"]) {
-            me->m_msgV = true;
-            me->m_msgCv.notify_one();
-            me->log("server handling post request from client " + id.string());
+            m_msgV = true;
+            m_msgCv.notify_one();
+            log("server handling post request from client " + id.string());
             try {
                 ElementType type = Parsers::elementTypeFromString(node["POST"].as<std::string>());
                 ID id = ID::fromString(node["id"].as<std::string>());
                 Element* ret = 0;
-                ret = &me->create(type);
+                ret = &create(type);
                 ret->setID(id);
-                // std::string msg = Parsers::emit(*ret);
-                // int bytesSent = send(pfds->fd, msg.c_str(), msg.size() + 1, 0);
-                // if (bytesSent <= 0) {
-                //     free(buff);
-                //     throw ManagerStateException();
-                // } 
-                me->log("server created new element for client" + id.string());
+                log("server created new element for client" + id.string());
             } catch (std::exception& e) {
-                // std::string msg = "ERROR: " + std::string(e.what());
-                // int bytesSent = send(pfds->fd, msg.c_str(), msg.size() + 1 , 0);
-                // if (bytesSent <= 0) {
-                //     free(buff);
-                //     throw ManagerStateException();
-                // }
-                // TODO revive above and implement thread to handle errors for client
-                me->log("server could not create new element for client " + id.string() + ", exception with request: " + std::string(e.what()));
+                log("server could not create new element for client " + id.string() + ", exception with request: " + std::string(e.what()));
             }
         }
         if (node["PUT"]) {
             ID elID = ID::fromString(node["PUT"]["id"].as<std::string>());
-            std::lock_guard<std::mutex> elLck(me->m_locks[elID]);
-            me->log("aquired lock for element " + elID.string());
-            me->m_msgV = true;
-            me->m_msgCv.notify_one();
+            std::lock_guard<std::mutex> elLck(m_locks[elID]);
+            log("aquired lock for element " + elID.string());
+            m_msgV = true;
+            m_msgCv.notify_one();
             if (node["PUT"]["qualifiedName"]) {
-                me->m_urls[node["PUT"]["qualifiedName"].as<std::string>()] = elID;
+                m_urls[node["PUT"]["qualifiedName"].as<std::string>()] = elID;
             }
-            Parsers::ParserMetaData data(me);
+            Parsers::ParserMetaData data(this);
             data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
             try {
                 Element& el = Parsers::parseYAML(node["PUT"]["element"], data);
                 if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
-                    me->m_urls[el.as<NamedElement>().getQualifiedName()] = el.getID();
+                    m_urls[el.as<NamedElement>().getQualifiedName()] = el.getID();
                 }
-                me->log("server put element " + elID.string() + " successfully for client " + id.string());
+                log("server put element " + elID.string() + " successfully for client " + id.string());
             } catch (std::exception& e) {
-                me->log("Error parsing PUT request: " + std::string(e.what()));
+                log("Error parsing PUT request: " + std::string(e.what()));
             }
-            
-            // int msg = 1, bytesSent = 1;
-            // while((bytesSent = send(pfds->fd, &msg, sizeof(int), 0)) <= 0) {
-            //     bytesSent = send(pfds->fd, &msg, sizeof(int), 0);
-            // }
-            // me->log("told client we got element put");
         }
     }
-    free(buff);
-    info.handlerV = true;
-    info.handlerCv.notify_one();
 }
 
 void UmlServer::receiveFromClient(UmlServer* me, ID id) {
+
+    /**
+     * TODO: lossless receive, client can rapidfire messages
+     **/
+
     me->log("server set up thread to listen to client " + id.string());
-    struct pollfd pfds[1] = {{me->m_clients[id].socket, POLLIN}};
+    ClientInfo& info = me->m_clients[id];
     while (me->m_running) {
         int numEvents;
-        if ((numEvents = poll(pfds, 1, 1000)) > 0) { 
-            /**
-             * TODO: Move everything in this conditional to a message handler thread so that poll wont miss any
-             *       messages from the client. We need another thread to properly join it later without blocking this thread
-             **/
-            if (numEvents == 0) {
+        struct pollfd pfds[1] = {{info.socket, POLLIN}};
+        if ((numEvents = poll(pfds, 1, 1000))) {
+            // data to read
+            // first byte is size of message
+            size_t size = 0;
+            ssize_t bytesRead = recv(info.socket, &size, 1, 0);
+            if (bytesRead == 0) {
+                // client shutdown
+                me->log("error receiving message, lost connection to client");
+                return;
+            }
+            if (bytesRead < 0) {
+                // error
+                me->log("error receiving message, " + std::string(strerror(errno)));
                 continue;
             }
-            ClientInfo& info = me->m_clients[id];
-            char* buff = (char*)malloc(UML_SERVER_MSG_SIZE);
-            int bytesReceived = recv(info.socket, buff, UML_SERVER_MSG_SIZE, 0);
-            if (bytesReceived <= 0) {
-                free(buff);
-                // info.handlerCv.notify_one();
-                continue;//return;
+
+            if (size == 0) {
+                me->log("error determining size of message");
+                continue;
             }
-            int i = 0;
-            while (bytesReceived >= UML_SERVER_MSG_SIZE - 1) {
-                if (buff[i*UML_SERVER_MSG_SIZE + UML_SERVER_MSG_SIZE - 1] != '\0') {
-                    me->log("did not receive all of the message, waiting for follow up data");
-                    // replace escape character if there is one
-                    char c = buff[i*UML_SERVER_MSG_SIZE + 1];
-                    size_t ci = 1;
-                    while (c != '\0' && ci < UML_SERVER_MSG_SIZE) {
-                        c = buff[i*UML_SERVER_MSG_SIZE + ci];
-                        ci++;
-                    }
-                    if (c == '\0') {
-                        *(buff + (i*UML_SERVER_MSG_SIZE) + ci-1) = '\n';
-                    }
-                    // get rest of data
-                    buff = (char*)realloc(buff, 2 * UML_SERVER_MSG_SIZE + i * UML_SERVER_MSG_SIZE);
-                    bytesReceived = recv(info.socket, buff + UML_SERVER_MSG_SIZE + (i * UML_SERVER_MSG_SIZE), UML_SERVER_MSG_SIZE, 0);
+
+            // get rest of message
+            char* messageBuffer = (char*) malloc(2 * size);
+            bytesRead = recv(info.socket, messageBuffer, 2 * size, 0);
+
+            // store message data
+            char* bufferForThread = (char*) malloc(size);
+            memcpy(bufferForThread, messageBuffer, size);
+            info.threadQueue.push_back(bufferForThread);
+            std::lock_guard<std::mutex> handlerLck(info.handlerMtx);
+
+            // check for additional data
+            ssize_t totalBytesRead = bytesRead;
+            size_t totalSize = size;
+            while (bytesRead > size) {
+                me->log("received additional data...");
+                size_t secondSize = messageBuffer[totalSize];
+                if (secondSize > bytesRead - size) {
+                    me->log("need to receive more");
+                    messageBuffer = (char*) realloc(messageBuffer, totalBytesRead + (2 * secondSize));
+                    bytesRead = recv(info.socket, messageBuffer + totalBytesRead, secondSize * 2, 0);
                 } else {
-                    break;
+                    bytesRead = 0;
                 }
-                i++;
+
+                totalBytesRead += bytesRead;
+                size = secondSize;
+                totalSize += size + 1;
+
+                // store message data
+                char* bufferForSecondThread = (char*) malloc(size);
+                memcpy(bufferForSecondThread, messageBuffer + totalBytesRead - size, size);
+                info.threadQueue.push_back(bufferForSecondThread);
             }
-            me->m_clients[id].threadQueue.push_back(new std::thread(handleMessage, me, id, buff));
-            if (me->m_clients[id].threadQueue.size() == 1) {
-                // if thread queue is empty start it up
-                me->m_clients[id].messageV = true;
-                me->m_clients[id].messageCv.notify_one();
-            }
-        } else if (numEvents == -1) {
-            me->log("Server experienced error from poll for client " + id.string());
-            throw ManagerStateException("Server experienced error from poll!");
+
+            // start processing messages
+            info.handlerCv.notify_one();
         }
     }
 }
@@ -247,30 +231,11 @@ void UmlServer::clientSubThreadHandler(UmlServer* me, ID id) {
     ClientInfo& info = me->m_clients[id];
     while (me->m_running) {
         std::unique_lock<std::mutex> lck(info.handlerMtx);
-        info.handlerCv.wait(lck, [&info] { return info.handlerV; });
-        if (!info.threadQueue.empty()) {
-            std::lock_guard<std::mutex> mLck(me->m_msgMtx);
-            std::thread* doneThread = info.threadQueue.front();
-            info.threadQueue.pop_front();
-            doneThread->join();
-            delete doneThread;
-            info.messageV = true;
-            info.messageCv.notify_one();
-            if (info.threadQueue.empty()) {
-                // check other clients to make sure no processing is being done and notify server if idle
-                bool isIdle = true;
-                for (auto& pair : me->m_clients) {
-                    if (!pair.second.threadQueue.empty()) {
-                        isIdle = false;
-                        break;
-                    }
-                }
-                if (isIdle) {
-                    me->m_msgV = false;
-                    me->m_msgCv.notify_all();
-                }
-            }
+        info.handlerCv.wait(lck, [&info] { return !info.threadQueue.empty(); });
+        for (std::string buff : info.threadQueue) {
+            me->handleMessage(id, buff);
         }
+        info.threadQueue.clear();
     }
 }
 
@@ -413,7 +378,6 @@ void UmlServer::shutdown() {
         client.second.thread->join();
         close(client.second.socket);
         delete client.second.thread;
-        client.second.handlerV = true;
         client.second.handlerCv.notify_all();
         client.second.handler->join();
         delete client.second.handler;

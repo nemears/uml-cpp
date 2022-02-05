@@ -9,6 +9,7 @@
  *  --port, -p : specify the port that the server will listen on, default 8652
  *  --mount-path, -m : specify the path that the server will be run on, default the path ran from
  *  --location, -l : load from and save to the path specified
+ *  --duration, -d : run for specified duration in ms
  **/
 
 int main(int argc, char* argv[]) {
@@ -16,6 +17,7 @@ int main(int argc, char* argv[]) {
     int port = 8652;
     std::string path = ".";
     std::string location;
+    int duration = -1;
     srand(time(0));
     while (i < argc) {
         if (strcmp(argv[i], "-p") == 0) {
@@ -31,6 +33,11 @@ int main(int argc, char* argv[]) {
         if (strcmp(argv[i], "-l") == 0) {
             location = argv[i+1];
             i+=2;
+            continue;
+        }
+        if (strcmp(argv[i], "-d") == 0) {
+            duration = atoi(argv[i+1]);
+            i += 2;
             continue;
         }
         char* dashDash = (char*) malloc(3);
@@ -52,6 +59,11 @@ int main(int argc, char* argv[]) {
             if (strcmp(dashDash, "--location") == 0) {
                 free(dashDash);
                 path = &argv[i][11];
+                i++;
+                continue;
+            } else if (strcmp(dashDash, "--duration") == 0) {
+                free(dashDash);
+                duration = atoi(&argv[i][11]);
                 i++;
                 continue;
             }
@@ -79,8 +91,14 @@ int main(int argc, char* argv[]) {
         }
         server.mount(path);
         std::cout << "server running" << std::endl;
-        server.waitTillShutDown();
-        server.save(location);
+        if (duration < 0) {
+            server.waitTillShutDown();
+        } else {
+            server.waitTillShutDown(duration);
+        }
+        if (!location.empty()) {
+            server.save(location);
+        }
         server.shutdown();
         exit(0);
     } catch (std::exception& e) {

@@ -113,9 +113,11 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
         struct pollfd pfds[1] = {{info.socket, POLLIN}};
         if ((numEvents = poll(pfds, 1, 1000))) {
             // data to read
-            // first byte is size of message
-            size_t size = 0;
-            ssize_t bytesRead = recv(info.socket, &size, 1, 0);
+            // first bytes are size of message
+            uint32_t size;
+            ssize_t bytesRead = recv(info.socket, &size, sizeof(uint32_t), 0);
+            size = ntohl(size);
+            size_t sizeSize = sizeof(uint32_t);
             if (bytesRead == 0) {
                 // client shutdown
                 me->log("error receiving message, lost connection to client");
@@ -137,33 +139,35 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
             bytesRead = recv(info.socket, messageBuffer, 2 * size, 0);
 
             // store message data
-            char* bufferForThread = (char*) malloc(size);
-            memcpy(bufferForThread, messageBuffer, size);
-            info.threadQueue.push_back(bufferForThread);
+            info.threadQueue.push_back(messageBuffer);
             std::lock_guard<std::mutex> handlerLck(info.handlerMtx);
 
             // check for additional data
-            ssize_t totalBytesRead = bytesRead;
-            size_t totalSize = size;
-            while (bytesRead > size) {
+            while (bytesRead > size) { // TODO broken
                 me->log("received additional data...");
-                size_t secondSize = messageBuffer[totalSize];
-                if (secondSize > bytesRead - size) {
+                uint32_t secondSize;
+                memcpy(&secondSize, &messageBuffer[size], sizeof(uint32_t));
+                secondSize = ntohl(secondSize);
+                if (secondSize > bytesRead - size - sizeSize) {
                     me->log("need to receive more");
-                    messageBuffer = (char*) realloc(messageBuffer, totalBytesRead + (2 * secondSize));
-                    bytesRead = recv(info.socket, messageBuffer + totalBytesRead, secondSize * 2, 0);
+                    char* tempBuffer = (char*) malloc(bytesRead - size - sizeSize);
+                    memcpy(tempBuffer, messageBuffer + size + sizeSize, bytesRead - size - sizeSize);
+                    free(messageBuffer);
+                    messageBuffer = (char*) malloc(2 * secondSize);
+                    memcpy(messageBuffer, tempBuffer, bytesRead - size - sizeSize);
+                    free(tempBuffer);
+                    bytesRead = size - sizeSize + recv(info.socket, 
+                                                       messageBuffer + bytesRead - size - sizeSize, 
+                                                       (secondSize * 2) - (bytesRead - size - sizeSize), 
+                                                       0);
                 } else {
+                    messageBuffer = messageBuffer + size + sizeSize;
                     bytesRead = 0;
                 }
 
-                totalBytesRead += bytesRead;
-                size = secondSize;
-                totalSize += size + 1;
-
                 // store message data
-                char* bufferForSecondThread = (char*) malloc(size);
-                memcpy(bufferForSecondThread, messageBuffer + totalBytesRead - size, size);
-                info.threadQueue.push_back(bufferForSecondThread);
+                info.threadQueue.push_back(messageBuffer);
+                size = secondSize;
             }
 
             // start processing messages
@@ -233,7 +237,9 @@ void UmlServer::clientSubThreadHandler(UmlServer* me, ID id) {
         std::unique_lock<std::mutex> lck(info.handlerMtx);
         info.handlerCv.wait(lck, [&info] { return !info.threadQueue.empty(); });
         for (std::string buff : info.threadQueue) {
-            me->handleMessage(id, buff);
+            if (!buff.empty()) {
+                me->handleMessage(id, buff);
+            }
         }
         info.threadQueue.clear();
     }
@@ -319,8 +325,8 @@ void UmlServer::shutdown() {
     log("server shutting down");
 
     // wait for processing message traffic to end
-    std::unique_lock<std::mutex> mLck(m_msgMtx);
-    m_msgCv.wait(mLck, [this]{ return !m_msgV; });
+    // std::unique_lock<std::mutex> mLck(m_msgMtx);
+    // m_msgCv.wait(mLck, [this]{ return !m_msgV; });
 
     // connect to self to stop acceptNewClientsLoop
     bool fail = false;
@@ -378,6 +384,7 @@ void UmlServer::shutdown() {
         client.second.thread->join();
         close(client.second.socket);
         delete client.second.thread;
+        client.second.threadQueue.push_back("");
         client.second.handlerCv.notify_all();
         client.second.handler->join();
         delete client.second.handler;

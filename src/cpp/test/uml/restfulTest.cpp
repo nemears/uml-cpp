@@ -41,8 +41,6 @@ TEST_F(RestfulTest, basicEraseTest) {
     ID clazzID = clazz.getID();
     client.erase(clazz);
     ASSERT_FALSE(client.loaded(clazzID));
-    // server.waitForProcessing();
-    // ASSERT_FALSE(server.loaded(clazzID));
 }
 
 TEST_F(RestfulTest, basicGetByQualifiedName) {
@@ -53,10 +51,9 @@ TEST_F(RestfulTest, basicGetByQualifiedName) {
     clazz.setName("B");
     root.getPackagedElements().add(clazz);
     ASSERT_EQ(clazz.getQualifiedName(), "A::B");
-    client.put(clazz);
-    UmlClient client2;
-    Class& clazz2 = client2.get<Class>("A::B");
-    ASSERT_EQ(clazz2.getOwningPackageRef(), root);
+    ID clazzID = clazz.getID();
+    client.release(clazz);
+    ASSERT_EQ(client.get("A::B").getID(), clazzID);
 }
 
 TEST_F(RestfulTest, bigMessageTest) {

@@ -11,17 +11,11 @@ using namespace UML;
 class RestfulTest : public ::testing::Test {
     public:
         std::string ymlPath = YML_FILES_PATH;
-        // UmlServer server;
-
-        // void TearDown() override {
-        //     server.reset();
-        // };
 };
 
 TEST_F(RestfulTest, clientsConnectToServerTest) {
     UmlClient client1;
     UmlClient client2;
-    // ASSERT_EQ(server.numClients(), 2);
 }
 
 TEST_F(RestfulTest, postAndGetTest) {
@@ -70,32 +64,3 @@ TEST_F(RestfulTest, bigMessageTest) {
     client.release(id);
     ASSERT_EQ(client.get<Package>("foo").getPackagedElements().size(), numChildren);
 }
-
-/**
- * TODO: 
- *  expand testing to test using client with server in seperate terminal, can't currently get test to work
- *  definitely look into more wholesome threading procedures and locks so blocking is less likely in debug and valgrind
- **/
-
-// void runServer() {
-//     FILE* f = popen("../../../../../build/src/cpp/uml/./uml-server -l ../../../../../src/yml/umlManagerTests/server.yml", "r");
-//     if (f == 0) {
-//         std::cout << "did not run server from commandline correctly" << std::endl;
-//     }
-//     std::cout << (char*)f << std::endl;
-// }
-
-// TEST_F(RestfulTest, serverMainTest) {
-//     server.shutdown();
-//     server.waitTillShutDown();
-//     std::thread cmd = std::thread(runServer);
-//     cmd.detach();
-//     UmlClient client;
-//     Package& test = client.get<Package>("Model::test");
-//     Package& child = client.post<Package>();
-//     child.setName("child");
-//     client.release(test, child);
-//     ASSERT_EQ(client.get<Package>("Model::test").getPackagedElements().front().getName(), "child");
-//     client.shutdownServer();
-//     //cmd.join();
-// }

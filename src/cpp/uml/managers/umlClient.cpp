@@ -21,7 +21,7 @@ void sendEmitter(int socket, YAML::Emitter& emitter) {
     uint32_t sizeOfEmitter = htonl(emitter.size() + 1);
     memcpy(packet, &sizeOfEmitter, sizeof(uint32_t));
     strcpy(packet + sizeof(uint32_t), emitter.c_str());
-    while ((bytesSent = send(socket, packet, packetSize - totalBytesSent, 0)) < packetSize - totalBytesSent) {
+    while ((bytesSent = send(socket, packet + totalBytesSent, packetSize - totalBytesSent, 0)) < packetSize - totalBytesSent) {
         if (bytesSent == -1) {
             throw ManagerStateException("could not send packet to server: " + std::string(strerror(errno)));
         } else {
@@ -71,7 +71,6 @@ void UmlClient::init() {
     idMsg[28] = '\0';
     int bytesSent = send(m_socketD, idMsg, 29, 0);
     if (bytesSent != 29) {
-        std::cout << "did not send all bytes!" << std::endl;
         throw ManagerStateException("did not send all bytes!");
     }
     delete[] idMsg;
@@ -95,7 +94,7 @@ UmlClient::UmlClient() : id(ID::randomID()) {
 
 UmlClient::UmlClient(std::string adress) : id(ID::randomID()) {
     bool adressAndPort = false;
-    if (adress.find(':')) {
+    if (adress.find(':') != std::string::npos) {
         for (char& c : adress.substr(adress.find_last_of(':'))) {
             adressAndPort = std::isdigit(c);
             if (adressAndPort) {
@@ -119,11 +118,10 @@ UmlClient::~UmlClient() {
 
 Element& UmlClient::get(ID id) {
     YAML::Emitter emitter;
-    emitter << YAML::BeginDoc << YAML::BeginMap << 
+    emitter << YAML::BeginMap << 
         YAML::Key << "GET" << YAML::Value << id.string() << 
-    YAML::EndMap << YAML::EndDoc;
+    YAML::EndMap;
     sendEmitter(m_socketD, emitter);
-    std::cout << "waiting for response to get " + id.string() << std::endl;
     char* buff = (char*)malloc(UML_CLIENT_MSG_SIZE);
     int bytesReceived = recv(m_socketD, buff, UML_CLIENT_MSG_SIZE, 0);
     if (bytesReceived <= 0) {
@@ -148,9 +146,9 @@ Element& UmlClient::get(ID id) {
 
 Element& UmlClient::get(std::string qualifiedName) {
     YAML::Emitter emitter;
-    emitter << YAML::BeginDoc << YAML::BeginMap << 
+    emitter << YAML::BeginMap << 
         YAML::Key << "GET" << YAML::Value << qualifiedName << 
-    YAML::EndMap << YAML::EndDoc;
+    YAML::EndMap;
     sendEmitter(m_socketD, emitter);
     char* buff = (char*)malloc(UML_CLIENT_MSG_SIZE);
     int bytesReceived = recv(m_socketD, buff, UML_CLIENT_MSG_SIZE, 0);
@@ -177,18 +175,17 @@ Element& UmlClient::get(std::string qualifiedName) {
 Element& UmlClient::post(ElementType eType) {
     YAML::Emitter emitter;
     Element& ret = UmlManager::create(eType);
-    emitter << YAML::BeginDoc << YAML::BeginMap << 
+    emitter << YAML::BeginMap << 
         YAML::Key << "POST" << YAML::Value << Element::elementTypeToString(eType) << 
         YAML::Key << "id" << YAML::Value << ret.getID().string() <<
-    YAML::EndMap << YAML::EndDoc;
+    YAML::EndMap;
     sendEmitter(m_socketD, emitter);
-    std::cout << "client posted id: "  << ret.getID().string() << std::endl;
     return ret;
 }
 
 void UmlClient::put(Element& el) {
     YAML::Emitter emitter;
-    emitter << YAML::BeginDoc << YAML::BeginMap << 
+    emitter << YAML::BeginMap << 
         YAML::Key << "PUT" << YAML::Value << YAML::BeginMap 
         << YAML::Key << "id" << YAML::Value << el.getID().string();
         if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
@@ -198,9 +195,8 @@ void UmlClient::put(Element& el) {
         }
         emitter << YAML::Key << "element" << YAML::Value ;
         Parsers::emitIndividual(el, emitter);
-    emitter << YAML::EndMap << YAML::EndMap << YAML::EndDoc;
+    emitter << YAML::EndMap << YAML::EndMap;
     sendEmitter(m_socketD, emitter);
-    std::cout << "sent put to server for el: " << el.getID().string() << std::endl;
 }
 
 void UmlClient::putAll() {
@@ -211,9 +207,9 @@ void UmlClient::putAll() {
 
 void UmlClient::erase(Element& el) {
     YAML::Emitter emitter;
-    emitter << YAML::BeginDoc << YAML::BeginMap << 
+    emitter << YAML::BeginMap << 
         YAML::Key << "DELETE" << YAML::Value << el.getID().string() << 
-    YAML::EndMap << YAML::EndDoc;
+    YAML::EndMap;
     UmlManager::erase(el);
     sendEmitter(m_socketD, emitter);
 }

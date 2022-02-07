@@ -415,11 +415,17 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::REALIZATION : {
             return "REALIZATION";
         }
+        case ElementType::RECEPTION : {
+            return "RECEPTION";
+        }
         case ElementType::REDEFINABLE_ELEMENT : {
             return "REDEFINABLE_ELEMENT";
         }
         case ElementType::RELATIONSHIP : {
             return "RELATIONSHIP";
+        }
+        case ElementType::SIGNAL : {
+            return "SIGNAL";
         }
         case ElementType::SLOT : {
             return "SLOT";

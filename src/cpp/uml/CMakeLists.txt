@@ -11,7 +11,7 @@ set(umlSources  element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp names
                 templateBinding.cpp templateParameterSubstitution.cpp redefinableElement.cpp profile.cpp stereotype.cpp
                 profileApplication.cpp extension.cpp extensionEnd.cpp deployment.cpp deployedArtifact.cpp deploymentTarget.cpp
                 artifact.cpp manifestation.cpp generalizationSet.cpp connector.cpp connectorEnd.cpp port.cpp
-                encapsulatedClassifier.cpp interface.cpp interfaceRealization.cpp
+                encapsulatedClassifier.cpp interface.cpp interfaceRealization.cpp signal.cpp reception.cpp
                 
                 #parsers
                 parsers/parser.cpp parsers/emitterMetaData.cpp

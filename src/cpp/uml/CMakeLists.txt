@@ -1,4 +1,4 @@
-add_library(Uml element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp namespace.cpp package.cpp packageableElement.cpp
+set(umlSources  element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp namespace.cpp package.cpp packageableElement.cpp
                 templateableElement.cpp parameterableElement.cpp relationship.cpp directedRelationship.cpp packageMerge.cpp
                 dependency.cpp classifier.cpp typedElement.cpp feature.cpp property.cpp class.cpp structuredClassifier.cpp
                 redefinableElement.cpp type.cpp structuralFeature.cpp generalization.cpp valueSpecification.cpp 
@@ -11,21 +11,18 @@ add_library(Uml element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp names
                 templateBinding.cpp templateParameterSubstitution.cpp redefinableElement.cpp profile.cpp stereotype.cpp
                 profileApplication.cpp extension.cpp extensionEnd.cpp deployment.cpp deployedArtifact.cpp deploymentTarget.cpp
                 artifact.cpp manifestation.cpp generalizationSet.cpp connector.cpp connectorEnd.cpp port.cpp
-                encapsulatedClassifier.cpp interface.cpp interfaceRealization.cpp)
+                encapsulatedClassifier.cpp interface.cpp interfaceRealization.cpp
+                
+                #parsers
+                parsers/parser.cpp parsers/emitterMetaData.cpp
+
+                #CMAKE option for set
+                PARENT_SCOPE)
 # add_library(Uml   
 #                 activity.cpp activityNode.cpp activityEdge.cpp objectNode.cpp  pin.cpp
 #                 action.cpp inputPin.cpp outputPin.cpp controlFlow.cpp objectFlow.cpp initialNode.cpp finalNode.cpp decisionNode.cpp
 #                 joinNode.cpp forkNode.cpp mergeNode.cpp parameterNode.cpp callBehaviorAction.cpp  createObjectAction.cpp)
 if (UML_CLIENT_SERVER)
-    target_sources(Uml PRIVATE managers/umlClient.cpp managers/umlServer.cpp)
+    
 endif()
-add_subdirectory(parsers)
-# if (UML_CPP_BUILD_CLANG)
-#     add_subdirectory(cpp)
-# endif()
-target_link_libraries(Uml PUBLIC yaml-cpp Parsers)
-if (UML_CLIENT_SERVER)
-    add_executable(uml-server managers/main.cpp)
-    target_link_libraries(uml-server PUBLIC Uml)
-    target_link_libraries(uml-server PRIVATE Threads::Threads)
-endif()
+message(STATUS "uml sources are ${umlSources}")

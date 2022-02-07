@@ -11,5 +11,5 @@ add_executable(umltest idTest.cpp setTest.cpp elementTest.cpp namedElementTest.c
 if (UML_CLIENT_SERVER)
     target_sources(umltest PRIVATE restfulTest.cpp)
 endif()
-target_link_libraries(umltest PUBLIC gtest gmock gtest_main Uml)
+target_link_libraries(umltest PUBLIC gtest gmock gtest_main uml)
 add_test(umltest umltest)

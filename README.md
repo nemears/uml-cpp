@@ -17,13 +17,13 @@ Uml class definitions can be used to reference a model with the api. To include 
 Most of Uml implemented is mapped to config files, These can be stored persistently on disc or used to exchange model information between applications. The `UmlManager` class and all subclasses have the ability to `open` a path, or `save` to a path where model information has been saved.
 
 ### client server managers
-There are two experimental classes in `uml/managers` called `UmlServer` and `UmlClient` to offer a quicker way to acheive aquire and release elements. These two classes follow restful api semantics with `GET`, `PUT`, `POST`, and `DELETE` (the method is called `erase()`). `get()` can be used with element's id's or a "url" a.k.a the NamedElement's qualifiedNamespace. There is a build target called uml-server that will produce an executable `uml-server`, this executable can be run to start the server talking on port `8652`. If you don't want to build the experimental managers set the cmake option `UML_CLIENT_SERVER` to NO. **WARNING: Only works for POSIX**
+There are two experimental classes in `uml/managers` called `UmlServer` and `UlClient` to offer a quicker way to aquire and release elements. These two classes follow restful api semantics with `GET`, `PUT`, `POST`, and `DELETE` (the method is called `erase()`). `get()` can be used with element's id's or a "url" a.k.a the NamedElement's qualifiedNamespace. There is a build target called uml-server that will produce an executable `uml-server`, this executable can be run to start the server talking on port `8652`. If you don't want to build the experimental managers set the cmake option `UML_CLIENT_SERVER` to NO. **WARNING: Only works for POSIX**
     
 ### future development
-I plan to continue developing this library until all of uml 2.5 is included within the api. I am also interested in developing other libraries that may be useful with this one, such as : clang cpp parsing (rount-tripping), MagicDraw plugin to function as UmlServer for client, stereotypes to extend api (SysML object) etc...
+I plan to continue developing this library until all of uml 2.5 is included within the api. Eventually I will try to get to a `winsocket` version of UmlClient and UmlServer working, but you should just switch off windows before it is too late anyways. I am also interested in developing other libraries that may be useful with this one, such as : clang cpp parsing (round-tripping), MagicDraw plugin to function as UmlServer for client, stereotypes to extend api (SysML object) etc...
 
 ## Contributing
-TODO
+Please feel free to contribute to uml-cpp, just take a look at the [CONTRIBUTING.md](CONTRIBUTING.md) before you make a pull request.
 
 ## Questions
 email me at nickmears2@gmail.com or leave an issue.

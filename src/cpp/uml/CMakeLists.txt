@@ -25,4 +25,3 @@ set(umlSources  element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp names
 if (UML_CLIENT_SERVER)
     
 endif()
-message(STATUS "uml sources are ${umlSources}")

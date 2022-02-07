@@ -57,7 +57,7 @@ So to just dive right into how the data of uml-cpp is organized we are going to 
 ```
 Element& root = *manager.getRoot();
 Element* owner = root.getOwner(); // will return null/0
-Set<Element&> ownedElements = root.getOwnedElements();
+Set<Element,Element>& ownedElements = root.getOwnedElements();
 Element& ownedElement = ownedElements.front();
 ```
 These containers have additional functionality other than just organizing the elements, they also enforce the needed parts of uml. For example below is how package and packageable elements enforce the opposite and subsets behavior in the specification (excuse the googletest macro).

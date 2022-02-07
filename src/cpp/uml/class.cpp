@@ -27,12 +27,16 @@ void Class::init() {
     m_ownedOperations.m_signature = &Class::getOwnedOperationsSet;
     m_nestedClassifiers.subsets(m_ownedMembers);
     m_nestedClassifiers.m_signature = &Class::getNestedClassifiersSet;
+    m_ownedReceptions.subsets(m_features);
+    m_ownedReceptions.subsets(m_ownedMembers);
+    m_ownedReceptions.m_signature = &Class::getOwnedReceptions;
 }
 
 void Class::copy(const Class& rhs) {
     m_classOwnedAttrubutes = rhs.m_classOwnedAttrubutes;
     m_ownedOperations = rhs.m_ownedOperations;
     m_nestedClassifiers = rhs.m_nestedClassifiers;
+    m_ownedReceptions = rhs.m_ownedReceptions;
 }
 
 Class::Class() : Element(ElementType::CLASS) {
@@ -69,6 +73,10 @@ OrderedSet<Operation, Class>& Class::getOwnedOperations() {
 
 OrderedSet<Classifier, Class>& Class::getNestedClassifiers() {
     return m_nestedClassifiers;
+}
+
+Set<Reception, Class>& Class::getOwnedReceptions() {
+    return m_ownedReceptions;
 }
 
 bool Class::isSubClassOf(ElementType eType) const {

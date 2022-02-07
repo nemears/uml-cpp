@@ -46,6 +46,8 @@
 #include "uml/profileApplication.h"
 #include "uml/property.h"
 #include "uml/realization.h"
+#include "uml/reception.h"
+#include "uml/signal.h"
 #include "uml/slot.h"
 #include "uml/stereotype.h"
 #include "uml/templateBinding.h"

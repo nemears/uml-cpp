@@ -169,6 +169,12 @@ Element& UmlManager::create(ElementType eType) {
         case ElementType::REALIZATION : {
             return static_cast<Element&>(create<Realization>());
         }
+        case ElementType::RECEPTION : {
+            return static_cast<Element&>(create<Reception>());
+        }
+        case ElementType::SIGNAL : {
+            return static_cast<Element&>(create<Signal>());
+        }
         case ElementType::SLOT : {
             return static_cast<Element&>(create<Slot>());
         }

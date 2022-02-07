@@ -10,6 +10,7 @@
  *  --mount-path, -m : specify the path that the server will be run on, default the path ran from
  *  --location, -l : load from and save to the path specified
  *  --duration, -d : run for specified duration in ms
+ *  --num-els, -n : max number of elements in memory before releasing
  **/
 
 int main(int argc, char* argv[]) {
@@ -18,6 +19,7 @@ int main(int argc, char* argv[]) {
     std::string path = ".";
     std::string location;
     int duration = -1;
+    int numEls = UML_SERVER_NUM_ELS;
     srand(time(0));
     while (i < argc) {
         if (strcmp(argv[i], "-p") == 0) {
@@ -40,6 +42,11 @@ int main(int argc, char* argv[]) {
             i += 2;
             continue;
         }
+        if (strcmp(argv[i], "-n") == 0) {
+            numEls = atoi(argv[i+1]);
+            i += 2;
+            continue;
+        }
         char* dashDash = (char*) malloc(3);
         memcpy(dashDash, &argv[i][0], 2);
         dashDash[2] = '\0';
@@ -50,6 +57,15 @@ int main(int argc, char* argv[]) {
             if (strcmp(dashDash, "--port") == 0) {
                 free(dashDash);
                 port = atoi(&argv[i][7]);
+                i++;
+                continue;
+            }
+            dashDash = (char*)realloc(dashDash, 10);
+            memcpy(dashDash, &argv[i][0], 9);
+            dashDash[9] = '\0';
+            if (strcmp(dashDash, "--num-els") == 0) {
+                free(dashDash);
+                numEls = atoi(&argv[i][10]);
                 i++;
                 continue;
             }
@@ -89,6 +105,7 @@ int main(int argc, char* argv[]) {
         if (!location.empty()) {
             server.open(location);
         }
+        server.setMaxEls(numEls);
         server.mount(path);
         std::cout << "server running" << std::endl;
         if (duration < 0) {
@@ -99,6 +116,7 @@ int main(int argc, char* argv[]) {
         if (!location.empty()) {
             server.save(location);
         }
+        server.log("server has " + std::to_string(server.getNumElsInMemory()) + " of " + std::to_string(server.getMaxEls()) + " elements in memory before shutdown");
         server.shutdown();
         exit(0);
     } catch (std::exception& e) {

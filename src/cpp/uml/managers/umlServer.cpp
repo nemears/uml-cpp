@@ -32,15 +32,22 @@ void UmlServer::handleMessage(ID id, std::string buff) {
     
     if (node["DELETE"]) {
         ID elID = ID::fromString(node["DELETE"].as<std::string>());
-        {
-            std::lock_guard<std::mutex> elLck(m_locks[elID]);
-            log("aquired lock for element " + elID.string());
-            m_msgV = true;
-            m_msgCv.notify_one();
-            erase(elID);
+        try {
+            {
+                std::lock_guard<std::mutex> elLck(m_locks[elID]);
+                log("aquired lock for element " + elID.string());
+                m_msgV = true;
+                m_msgCv.notify_one();
+                erase(elID);
+            }
+            m_locks.erase(elID);
             log("erased element " + elID.string());
+            std::lock_guard<std::mutex> garbageLck(m_garbageMtx);
+            m_releaseQueue.remove(elID);
+            m_numEls--;
+        } catch (std::exception& e) {
+            log("exception encountered when trying to delete element: " + std::string(e.what()));
         }
-        m_locks.erase(elID);
     }
     if (node["GET"]) {
         ID elID;
@@ -71,6 +78,9 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             ret = &create(type);
             ret->setID(id);
             log("server created new element for client" + id.string());
+            std::lock_guard<std::mutex> garbageLck(m_garbageMtx);
+            m_releaseQueue.push_front(id);
+            m_garbageCv.notify_one();
         } catch (std::exception& e) {
             log("server could not create new element for client " + id.string() + ", exception with request: " + std::string(e.what()));
         }
@@ -243,6 +253,21 @@ void UmlServer::clientSubThreadHandler(UmlServer* me, ID id) {
     }
 }
 
+void UmlServer::garbageCollector(UmlServer* me) {
+    while(me->m_running) {
+        std::unique_lock<std::mutex> garbageLck(me->m_garbageMtx);
+        me->m_garbageCv.wait(garbageLck, [me] { return me->m_releaseQueue.size() != me->m_numEls; });
+        if (me->m_numEls == me->m_maxEls) {
+            ID releasedID = me->m_releaseQueue.back();
+            me->release(releasedID);
+            me->m_releaseQueue.pop_back();
+            me->m_locks.erase(releasedID);
+        } else {
+            me->m_numEls++;
+        }
+    }
+}
+
 void UmlServer::createNode(Element* el) {
     UmlManager::createNode(el);
     m_locks[el->getID()];
@@ -287,6 +312,7 @@ UmlServer::UmlServer(int port) {
     }
     m_running = true;
     m_acceptThread = new std::thread(acceptNewClients, this);
+    m_garbageCollectionThread = new std::thread(garbageCollector, this);
     log("server set up thread to accept new clients");
     freeaddrinfo(m_address);
 }
@@ -390,9 +416,28 @@ void UmlServer::shutdown() {
     }
     delete m_acceptThread;
 
+    m_releaseQueue.clear();
+    m_numEls = -1;
+    m_garbageCv.notify_one();
+    m_garbageCollectionThread->join();
+    delete m_garbageCollectionThread;
+
     m_shutdownV = true;
     m_shutdownCv.notify_all();
     log("server succesfully shut down");
+}
+
+void UmlServer::setMaxEls(int maxEls) {
+    std::lock_guard<std::mutex> garbageLck(m_garbageMtx);
+    m_maxEls = maxEls;
+}
+
+int UmlServer::getMaxEls() {
+    return m_maxEls;
+}
+
+int UmlServer::getNumElsInMemory() {
+    return m_numEls;
 }
 
 using namespace std::chrono_literals;

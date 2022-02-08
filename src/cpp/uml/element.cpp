@@ -516,21 +516,6 @@ Set<Comment, Element>& Element::getOwnedComments() {
     return *m_ownedComments;
 }
 
-/**
- * This func compares an id and an element without loading 
- * the element that corresponds to the id from the manager
- **/
-bool Element::isSameOrNull(ID id, Element* el) {
-    if (id.isNull()) {
-        return true;
-    } else {
-        if (el) {
-            return id == el->getID();
-        }
-        return false;
-    }
-}
-
 void SetReferenceFunctor::operator()(Element& el) const {
     el.setReference(&m_el);
 }

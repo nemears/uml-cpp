@@ -4,6 +4,11 @@
 #include "element.h"
 #include "umlManager.h"
 
+/**
+ * A quick note: The Set class is complicated and took a lot of time for me to figure out.
+ * There are probably some oversights on my part, and some optimizations that could be implementd.
+ **/
+
 namespace UML {
 
     namespace {

@@ -165,6 +165,12 @@ namespace UML {
             void emitInterface(YAML::Emitter& emitter, Interface& interface, EmitterMetaData& data);
             void parseInterfaceRealization(YAML::Node node, InterfaceRealization& realization, ParserMetaData& data);
             void emitInterfaceRealization(YAML::Emitter& emitter, InterfaceRealization& realization, EmitterMetaData& data);
+            void parseSignal(YAML::Node node, Signal& signal, ParserMetaData& data);
+            void emitSignal(YAML::Emitter& emiiter, Signal& signal, EmitterMetaData& data);
+            void parseBehavioralFeature(YAML::Node node, BehavioralFeature& feature, ParserMetaData& data);
+            void emitBehavioralFeature(YAML::Emitter& emitter, BehavioralFeature& feature, EmitterMetaData& data);
+            void parseReception(YAML::Node node, Reception& reception, ParserMetaData& data);
+            void emitReception(YAML::Emitter& emitter, Reception& reception, EmitterMetaData& data);
         }
     }
 }

@@ -30,6 +30,7 @@ namespace UML {
             ID getSignalID() const;
             void setSignal(Signal* signal);
             void setSignal(Signal& signal);
+            void setSignal(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::RECEPTION;

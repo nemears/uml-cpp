@@ -76,6 +76,10 @@ void Reception::setSignal(Signal& signal) {
     m_signal.set(signal);
 }
 
+void Reception::setSignal(ID id) {
+    m_signal.set(id);
+}
+
 bool Reception::isSubClassOf(ElementType eType) const {
     bool ret = BehavioralFeature::isSubClassOf(eType);
 

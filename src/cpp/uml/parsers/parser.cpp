@@ -886,6 +886,18 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &prop;
     }
 
+    if (node["realization"]) {
+        Realization& realization = data.m_manager->create<Realization>();
+        parseDependency(node["realization"], realization, data);
+        ret = &realization;
+    }
+
+    if (node["signal"]) {
+        Signal& signal = data.m_manager->create<Signal>();
+        parseSignal(node["signal"], signal, data);
+        ret = &signal;
+    }
+
     if (node["slot"]) {
         Slot& slot = data.m_manager->create<Slot>();
         parseSlot(node["slot"], slot, data);
@@ -1152,6 +1164,14 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitElementDefenition(emitter, ElementType::REALIZATION, "realization", el, data);
             emitDependency(emitter, el.as<Realization>(), data);
             emitElementDefenitionEnd(emitter, ElementType::REALIZATION, el);
+            break;
+        }
+        case ElementType::RECEPTION : {
+            emitReception(emitter, el.as<Reception>(), data);
+            break;
+        }
+        case ElementType::SIGNAL : {
+            emitSignal(emitter, el.as<Signal>(), data);
             break;
         }
         case ElementType::SLOT : {
@@ -1742,8 +1762,30 @@ Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
         } else {
             throw UmlParserException("Invalid yaml node type for primitiveType definition", data.m_path.string(), node["primitiveType"]);
         }
+    } else if (node["signal"]) {
+        if (node["signal"].IsMap()) {
+            Signal& signal = data.m_manager->create<Signal>();
+            parseSignal(node["signal"], signal, data);
+            return signal;
+        } else {
+            throw UmlParserException("Invalid yaml node type for signal definition", data.m_path.string(), node["signal"]);
+        }
     } else {
         throw UmlParserException("invalid classifier definition for entry!", data.m_path.string(), node);
+    }
+}
+
+Reception& determineAndParseOwnedReception(YAML::Node node, ParserMetaData& data) {
+    if (node["reception"]) {
+        if (node["reception"].IsMap()) {
+            Reception& reception = data.m_manager->create<Reception>();
+            parseReception(node["reception"], reception, data);
+            return reception;
+        } else {
+            throw UmlParserException("Invalid yaml node type for reception definition", data.m_path.string(), node["reception"]);
+        }
+    } else {
+        throw UmlParserException("invalid ownedReceptions definition", data.m_path.string(), node);
     }
 }
 
@@ -1752,6 +1794,7 @@ void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
     parseBehavioredClassifier(node, clazz, data);
     parseSequenceDefinitions(node, data, "ownedOperations", clazz, &Class::getOwnedOperations, determineAndParseOwnedOperation);
     parseSequenceDefinitions(node, data, "nestedClassifiers", clazz, &Class::getNestedClassifiers, determineAndParseClassifier);
+    parseSequenceDefinitions(node, data, "ownedReceptions", clazz, &Class::getOwnedReceptions, determineAndParseOwnedReception);
 }
 
 void emitClass(YAML::Emitter& emitter, Class& clazz, EmitterMetaData& data) {
@@ -1760,6 +1803,7 @@ void emitClass(YAML::Emitter& emitter, Class& clazz, EmitterMetaData& data) {
     emitBehavioredClassifier(emitter, clazz, data);
     emitSequence(emitter, "ownedOperations", data, clazz, &Class::getOwnedOperations);
     emitSequence(emitter, "nestedClassifiers", data, clazz, &Class::getNestedClassifiers);
+    emitSequence(emitter, "ownedReceptions", data, clazz, &Class::getOwnedReceptions);
     emitElementDefenitionEnd(emitter, ElementType::CLASS, clazz);
 }
 
@@ -2003,26 +2047,14 @@ void emitParameter(YAML::Emitter& emitter, Parameter& el, EmitterMetaData& data)
 }
 
 void parseOperation(YAML::Node node, Operation& op, ParserMetaData& data) {
-    parseNamedElement(node, op, data);
+    parseBehavioralFeature(node, op, data);
     parseTemplateableElement(node, op, data);
-
-    // TODO: maybe move all this to new function parseBehavioralFeature once the other ones are implemented
-    parseSetReferences<Behavior, BehavioralFeature>(node, data, "methods", static_cast<BehavioralFeature&>(op), &BehavioralFeature::getMethods);
-    parseSequenceDefinitions(node, data, "ownedParameters", static_cast<BehavioralFeature&>(op), &BehavioralFeature::getOwnedParameters, determineAndParseParameter);
 }
 
 void emitOperation(YAML::Emitter& emitter, Operation& op, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::OPERATION, "operation", op, data);
-    emitNamedElement(emitter, op, data);
+    emitBehavioralFeature(emitter, op, data);
     emitTemplateableElement(emitter, op, data);
-    if (!op.getMethods().empty()) {
-        emitter << YAML::Key << "methods" << YAML::Value << YAML::BeginSeq;
-        for (const ID id : op.getMethods().ids()) {
-            emitter << YAML::Value << id.string();
-        }
-        emitter << YAML::EndSeq;
-    }
-    emitSequence(emitter, "ownedParameters", data, static_cast<BehavioralFeature&>(op), &BehavioralFeature::getOwnedParameters);
     emitElementDefenitionEnd(emitter, ElementType::OPERATION, op);
 }
 
@@ -2135,6 +2167,8 @@ PackageableElement& determineAndParsePackageableElement(YAML::Node node, ParserM
         } else {
             throw UmlParserException("Invalid yaml node type for realization definition, must be a map!", data.m_path.string(), node["realization"]);
         }
+    } else if (node["signal"]) {
+        return parseDefinition(node, data, "signal", parseSignal);
     } else if (node["usage"]) {
         if (node["usage"].IsMap()) {
             Usage& usage = data.m_manager->create<Usage>();
@@ -3374,6 +3408,50 @@ void emitInterfaceRealization(YAML::Emitter& emitter, InterfaceRealization& real
         emitter << YAML::Key << "contract" << YAML::Value << realization.getContractID().string();
     }
     emitElementDefenitionEnd(emitter, ElementType::INTERFACE_REALIZATION, realization);
+}
+
+void parseSignal(YAML::Node node, Signal& signal, ParserMetaData& data) {
+    parseClassifier(node, signal, data);
+    parseSequenceDefinitions(node, data, "ownedAttributes", signal, &Signal::getOwnedAttributes, determineAndParseOwnedAttribute);
+}
+
+void emitSignal(YAML::Emitter& emitter, Signal& signal, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::SIGNAL, "signal", signal, data);
+    emitClassifier(emitter, signal, data);
+    emitSequence(emitter, "ownedAttributes", data, signal, &Signal::getOwnedAttributes);
+    emitElementDefenitionEnd(emitter, ElementType::SIGNAL, signal);
+}
+
+void parseBehavioralFeature(YAML::Node node, BehavioralFeature& feature, ParserMetaData& data) {
+    parseNamedElement(node, feature, data);
+    parseSetReferences<Behavior, BehavioralFeature>(node, data, "methods", feature, &BehavioralFeature::getMethods);
+    parseSequenceDefinitions(node, data, "ownedParameters", feature, &BehavioralFeature::getOwnedParameters, determineAndParseParameter);
+}
+
+void emitBehavioralFeature(YAML::Emitter& emitter, BehavioralFeature& feature, EmitterMetaData& data) {
+    emitNamedElement(emitter, feature, data);
+    if (!feature.getMethods().empty()) {
+        emitter << YAML::Key << "methods" << YAML::Value << YAML::BeginSeq;
+        for (const ID id : feature.getMethods().ids()) {
+            emitter << YAML::Value << id.string();
+        }
+        emitter << YAML::EndSeq;
+    }
+    emitSequence(emitter, "ownedParameters", data, feature, &BehavioralFeature::getOwnedParameters);
+}
+
+void parseReception(YAML::Node node, Reception& reception, ParserMetaData& data) {
+    parseBehavioralFeature(node, reception, data);
+    parseSingletonReference(node, data, "signal", reception, &Reception::setSignal, &Reception::setSignal);
+}
+
+void emitReception(YAML::Emitter& emitter, Reception& reception, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::RECEPTION, "reception", reception, data);
+    emitBehavioralFeature(emitter, reception, data);
+    if (reception.hasSignal()) {
+        emitter << YAML::Key << "signal" << YAML::Value << reception.getSignalID().string();
+    }
+    emitElementDefenitionEnd(emitter, ElementType::RECEPTION, reception);
 }
 
 }

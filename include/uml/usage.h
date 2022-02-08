@@ -13,6 +13,19 @@ namespace UML {
         friend class UmlManager;
 
         protected:
+            class RemoveClientFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    RemoveClientFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class SetClientFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    SetClientFunctor(Element* el) : SetFunctor(el) {};
+            };
+            void init();
             Usage();
         public:
             Usage(const Usage& usage);

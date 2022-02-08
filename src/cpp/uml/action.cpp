@@ -6,28 +6,28 @@ using namespace UML;
 
 void Action::AddInputFunctor::operator()(InputPin& el) const {
     if (el.getOwner() != m_el) {
-        m_el->getOwnedElements().internalAdd(el);
+        m_el->getOwnedElements().add(el);
     }
     updateCopiedSequenceAddedTo(el, &Action::getInputs);
 }
 
 void Action::RemoveInputFunctor::operator()(InputPin& el) const {
     if (el.getOwner() == m_el) {
-        m_el->getOwnedElements().internalRemove(el);
+        m_el->getOwnedElements().remove(el);
     }
     updateCopiedSequenceRemovedFrom(el, &Action::getInputs);
 }
 
 void Action::AddOutputFunctor::operator()(OutputPin& el) const {
     if (el.getOwner() != m_el) {
-        m_el->getOwnedElements().internalAdd(el);
+        m_el->getOwnedElements().add(el);
     }
     updateCopiedSequenceAddedTo(el, &Action::getOutputs);
 }
 
 void Action::RemoveOutputFunctor::operator()(OutputPin& el) const {
     if (*el.getOwner() == *m_el) {
-        m_el->getOwnedElements().internalRemove(el);
+        m_el->getOwnedElements().remove(el);
     }
     updateCopiedSequenceRemovedFrom(el, &Action::getOutputs);
 }

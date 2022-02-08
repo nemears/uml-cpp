@@ -4,14 +4,17 @@
 #include <string>
 #include "element.h"
 #include "singleton.h"
+#include "set.h"
 
 namespace UML{
 
-    template <class T> class Sequence;
     class Namespace;
-    template <class T> class AbstractSequenceFunctor;
     class UmlManager;
     class Dependency;
+
+    namespace Parsers {
+        void setNamespace(NamedElement& el, ID id);
+    }
 
     enum class VisibilityKind {
         PUBLIC,
@@ -27,33 +30,32 @@ namespace UML{
 
         friend class UmlManager;
         friend class Namespace;
+        friend void Parsers::setNamespace(NamedElement& el, ID id);
 
         protected:
             std::string m_name;
             std::string m_absoluteNamespace;
             Singleton<Namespace, NamedElement> m_namespace = Singleton<Namespace, NamedElement>(this);
-            class RemoveNamespaceProcedures : public AbstractSingletonProcedure<Namespace, NamedElement> {
+            class UpdateQualifiedNameFunctor : public SetFunctor {
                 public:
-                    RemoveNamespaceProcedures(NamedElement* me) : AbstractSingletonProcedure<Namespace, NamedElement>(me) {};
-                    void operator()(Namespace* el) const override;
+                    UpdateQualifiedNameFunctor(Element* them) : SetFunctor(them) {};
+                    void operator()(Element& el) const override;
             };
-            class AddNamespaceProcedures : public AbstractSingletonProcedure<Namespace, NamedElement> {
+            class RemoveQualifiedNameFunctor : public SetFunctor {
                 public:
-                    AddNamespaceProcedures(NamedElement* me) : AbstractSingletonProcedure<Namespace, NamedElement>(me) {};
-                    void operator()(Namespace* el) const override;
-                    void operator()(ID id) const override;
+                    RemoveQualifiedNameFunctor(Element* them) : SetFunctor(them) {};
+                    void operator()(Element& el) const override;
             };
-            Sequence<Namespace>* m_memberNamespace;
-            Sequence<Dependency>* m_clientDependencies;
-            Sequence<Dependency>* m_supplierDependencies;
-            // visibility defaults to public, don't think there is a none value
+            Set<Dependency, NamedElement> m_clientDependencies = Set<Dependency, NamedElement>(this);
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
-            virtual void reindexName(std::string oldName, std::string newName);
+            void reindexName(std::string oldName, std::string newName) override;
             void updateQualifiedName(std::string absoluteNamespace);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
+            Set<Namespace, NamedElement>& getNamespaceSingleton();
+            void init();
+            void copy(const NamedElement& rhs);
             NamedElement();
         public:
             virtual ~NamedElement();
@@ -65,11 +67,7 @@ namespace UML{
             Namespace& getNamespaceRef();
             ID getNamespaceID() const;
             bool hasNamespace() const;
-            void setNamespace(Namespace* nmspc);
-            void setNamespace(Namespace& nmspc);
-            Sequence<Namespace>& getMemberNamespace();
-            Sequence<Dependency>& getClientDependencies();
-            Sequence<Dependency>& getSupplierDependencies();
+            Set<Dependency, NamedElement>& getClientDependencies();
             VisibilityKind getVisibility();
             void setVisibility(VisibilityKind visibility);
             bool isSubClassOf(ElementType eType) const override;

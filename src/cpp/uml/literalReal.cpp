@@ -1,4 +1,5 @@
 #include "uml/literalReal.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 

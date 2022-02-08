@@ -1,0 +1,28 @@
+---
+  package:
+    name: root
+    packagedElements:
+      - interface:
+          id: esxm8xwOZHuIGIeLysj0&sp83GJK
+          name: general
+      - interface:
+          id: RGIxSmP7CYBkx7oQbIkGmAwXFhlz
+          name: interface
+          generalizations:
+            - generalization:
+                general: esxm8xwOZHuIGIeLysj0&sp83GJK
+          ownedAttributes:
+            - property:
+                name: prop
+          ownedOperations:
+            - operation:
+                name: op
+          nestedClassifiers:
+            - dataType:
+                name: nest
+      - class:
+          name: implementingClazz
+          interfaceRealizations:
+            - interfaceRealization:
+                contract: RGIxSmP7CYBkx7oQbIkGmAwXFhlz
+...

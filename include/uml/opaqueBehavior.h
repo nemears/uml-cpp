@@ -12,25 +12,15 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            Sequence<LiteralString> m_bodies = Sequence<LiteralString>(this);
-            class AddBodyFunctor : public TemplateAbstractSequenceFunctor<LiteralString, OpaqueBehavior> {
-                public:
-                    AddBodyFunctor(OpaqueBehavior* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(LiteralString& el) const override;
-            };
-            class RemoveBodyFunctor : public TemplateAbstractSequenceFunctor<LiteralString, OpaqueBehavior> {
-                public:
-                    RemoveBodyFunctor(OpaqueBehavior* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(LiteralString& el) const override;
-            };
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
+            OrderedSet<LiteralString, OpaqueBehavior> m_bodies = OrderedSet<LiteralString, OpaqueBehavior>(this);
+            Set<LiteralString, OpaqueBehavior>& getBodiesSet();
+            void init();
+            void copy(const OpaqueBehavior& rhs);
             OpaqueBehavior();
         public:
             OpaqueBehavior(const OpaqueBehavior& rhs);
             virtual ~OpaqueBehavior();
-            Sequence<LiteralString>& getBodies();
+            OrderedSet<LiteralString, OpaqueBehavior>& getBodies();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::OPAQUE_BEHAVIOR;

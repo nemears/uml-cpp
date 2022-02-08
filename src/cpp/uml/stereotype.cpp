@@ -1,55 +1,40 @@
 #include "uml/stereotype.h"
 #include "uml/profile.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void Stereotype::RemoveProfileProcedure::operator()(Profile* el) const {
-    el->removeReference(m_me->getID());
+Set<Profile, Stereotype>& Stereotype::getProfileSingleton() {
+    return m_profile;
 }
 
-void Stereotype::AddProfileProcedure::operator()(Profile* el) const {
-    el->setReference(m_me);
+void Stereotype::init() {
+    m_profile.subsets(m_owningPackage);
+    m_profile.opposite(&Profile::getOwnedStereotypes);
+    m_profile.m_signature = &Stereotype::getProfileSingleton;
 }
 
-void Stereotype::referencingReleased(ID id) {
-    Class::referencingReleased(id);
-    m_profile.release(id);
-}
-
-void Stereotype::referenceReindexed(ID oldID, ID newID) {
-    Class::referenceReindexed(oldID, newID);
-    m_profile.reindex(oldID, newID);
-}
-
-void Stereotype::restoreReferences() {
-    Class::restoreReferences();
-    m_profile.restoreReference();
-}
-
-void Stereotype::referenceErased(ID id) {
-    Class::referenceErased(id);
-    m_profile.elementErased(id);
+void Stereotype::copy(const Stereotype& rhs) {
+    m_profile = rhs.m_profile;
 }
 
 Stereotype::Stereotype() : Element(ElementType::STEREOTYPE) {
-    m_profile.m_signature = &Stereotype::m_profile;
-    m_profile.m_addProcedures.push_back(new AddProfileProcedure(this));
-    m_profile.m_removeProcedures.push_back(new RemoveProfileProcedure(this));
+    init();
 }
 
-Stereotype::Stereotype(const Stereotype& stereotype) :
-Class(stereotype),
-Classifier(stereotype),
-ParameterableElement(stereotype),
-PackageableElement(stereotype),
-NamedElement(stereotype),
-Element(stereotype, ElementType::STEREOTYPE) {
-    m_profile.m_signature = &Stereotype::m_profile;
-    m_profile.m_me = this;
-    m_profile.m_addProcedures.clear();
-    m_profile.m_removeProcedures.clear();
-    m_profile.m_addProcedures.push_back(new AddProfileProcedure(this));
-    m_profile.m_removeProcedures.push_back(new RemoveProfileProcedure(this));
+Stereotype::Stereotype(const Stereotype& rhs) : Element(rhs, ElementType::STEREOTYPE) {
+    init();
+    Element::copy(rhs);
+    NamedElement::copy(rhs);
+    Namespace::copy(rhs);
+    ParameterableElement::copy(rhs);
+    PackageableElement::copy(rhs);
+    TemplateableElement::copy(rhs);
+    RedefinableElement::copy(rhs);
+    StructuredClassifier::copy(rhs);
+    BehavioredClassifier::copy(rhs);
+    Classifier::copy(rhs);
+    copy(rhs);
 }
 
 Stereotype::~Stereotype() {
@@ -78,6 +63,10 @@ void Stereotype::setProfile(Profile* profile) {
 
 void Stereotype::setProfile(Profile& profile) {
     m_profile.set(profile);
+}
+
+void Stereotype::setProfile(ID id) {
+    m_profile.set(id);
 }
 
 bool Stereotype::isSubClassOf(ElementType eType) const {

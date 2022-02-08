@@ -1,8 +1,5 @@
 #include "gtest/gtest.h"
-#include "uml/behavior.h"
-#include "uml/operation.h"
-#include "uml/parameter.h"
-#include "uml/activity.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -73,7 +70,7 @@ TEST_F(BehaviorTest, removeParameterFunctorTest) {
 
 TEST_F(BehaviorTest, reindexBehaviorID_Test) {
     UmlManager m;
-    Activity behavior = m.create<Activity>();
+    OpaqueBehavior behavior = m.create<OpaqueBehavior>();
     Parameter param = m.create<Parameter>();
     Class owner = m.create<Class>();
     Operation specification = m.create<Operation>();
@@ -85,7 +82,6 @@ TEST_F(BehaviorTest, reindexBehaviorID_Test) {
     behavior.setID(id);
     ASSERT_EQ(param.getNamespaceRef(), behavior);
     ASSERT_EQ(*param.getOwner(), behavior);
-    ASSERT_EQ(param.getMemberNamespace().get(id), behavior);
     ASSERT_EQ(owner.getOwnedBehaviors().get(id), behavior);
     ASSERT_EQ(owner.getOwnedMembers().get(id), behavior);
     ASSERT_EQ(owner.getMembers().get(id), behavior);

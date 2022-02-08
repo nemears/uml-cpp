@@ -10,44 +10,21 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            Sequence<Behavior> m_methods = Sequence<Behavior>(this);
-            Sequence<Parameter> m_ownedParameters = Sequence<Parameter>(this);
+            Set<Behavior, BehavioralFeature> m_methods = Set<Behavior, BehavioralFeature>(this);
+            Set<Parameter, BehavioralFeature> m_ownedParameters = Set<Parameter, BehavioralFeature>(this);
             bool m_returnSpecified = false;
-            class AddMethodFunctor : public TemplateAbstractSequenceFunctor<Behavior,BehavioralFeature> {
-                public:
-                    AddMethodFunctor(BehavioralFeature* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Behavior& el) const override;
-            };
-            class RemoveMethodFunctor : public TemplateAbstractSequenceFunctor<Behavior,BehavioralFeature> {
-                public:
-                    RemoveMethodFunctor(BehavioralFeature* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Behavior& el) const override;
-            };
-            class AddParameterFunctor : public TemplateAbstractSequenceFunctor<Parameter,BehavioralFeature> {
-                public:
-                    AddParameterFunctor(BehavioralFeature* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Parameter& el) const override;
-            };
-            class CheckParameterFunctor : public TemplateAbstractSequenceFunctor<Parameter,BehavioralFeature> {
-                public:
-                    CheckParameterFunctor(BehavioralFeature* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Parameter& el) const override;
-            };
-            class RemoveParameterFunctor : public TemplateAbstractSequenceFunctor<Parameter,BehavioralFeature> {
-                public:
-                    RemoveParameterFunctor(BehavioralFeature* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Parameter& el) const override;
-            };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
+            void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
+            void init();
+            void copy(const BehavioralFeature& rhs);
             BehavioralFeature();
         public:
             BehavioralFeature(const BehavioralFeature& el);
-            ~BehavioralFeature();
-            Sequence<Behavior>& getMethods();
-            Sequence<Parameter>& getOwnedParameters();
+            virtual ~BehavioralFeature();
+            Set<Behavior, BehavioralFeature>& getMethods();
+            Set<Parameter, BehavioralFeature>& getOwnedParameters();
             bool isAbstract();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

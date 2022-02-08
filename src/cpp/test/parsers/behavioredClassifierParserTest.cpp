@@ -1,8 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/parsers/parser.h"
 #include "test/yumlParsersTest.h"
-#include "uml/class.h"
-#include "uml/opaqueBehavior.h"
+#include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
 
 using namespace std;
@@ -67,8 +66,10 @@ TEST_F(BehavioredClassifierParserTest, mountFullBehavioredClassifierTest) {
     ASSERT_TRUE(clazz2.hasClassifierBehavior());
     ASSERT_EQ(clazz2.getClassifierBehaviorRef(), classifierBehavior);
     ASSERT_EQ(clazz2.getOwnedBehaviors().size(), 2);
-    ASSERT_EQ(clazz2.getOwnedBehaviors().front(), classifierBehavior);
+    ASSERT_TRUE(clazz2.getOwnedBehaviors().contains(classifierBehavior));
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(classifierBehavior, clazz2));
+    ASSERT_TRUE(clazz2.getOwnedBehaviors().contains(ownedBehavior));
+    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(ownedBehavior, clazz2));
 
     m.release(classifierBehavior, clazz2);
     ASSERT_FALSE(m.loaded(classifierBehaviorID));
@@ -82,35 +83,31 @@ TEST_F(BehavioredClassifierParserTest, mountFullBehavioredClassifierTest) {
     ASSERT_TRUE(clazz3.hasClassifierBehavior());
     ASSERT_EQ(clazz3.getClassifierBehaviorRef(), classifierBehavior2);
     ASSERT_EQ(clazz3.getOwnedBehaviors().size(), 2);
-    ASSERT_EQ(clazz3.getOwnedBehaviors().front(), classifierBehavior2);
+    ASSERT_TRUE(clazz3.getOwnedBehaviors().contains(classifierBehavior2));
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(classifierBehavior2, clazz3));
 
     m.release(clazz3, classifierBehavior2);
     ASSERT_FALSE(m.loaded(classifierBehaviorID));
     ASSERT_FALSE(m.loaded(clazzID));
     OpaqueBehavior& classifierBehavior3 = m.aquire(classifierBehaviorID)->as<OpaqueBehavior>();
-    ASSERT_TRUE(classifierBehavior3.hasBehavioredClassifier());
     ASSERT_TRUE(classifierBehavior3.hasNamespace());
-    ASSERT_EQ(classifierBehavior3.getMemberNamespace().size(), 1);
     ASSERT_TRUE(classifierBehavior3.hasOwner());
     Class& clazz4 = m.aquire(clazzID)->as<Class>();
     ASSERT_TRUE(clazz4.hasClassifierBehavior());
     ASSERT_EQ(clazz4.getClassifierBehaviorRef(), classifierBehavior3);
     ASSERT_EQ(clazz4.getOwnedBehaviors().size(), 2);
-    ASSERT_EQ(clazz4.getOwnedBehaviors().front(), classifierBehavior3);
+    ASSERT_TRUE(clazz4.getOwnedBehaviors().contains(classifierBehavior3));
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(classifierBehavior3, clazz4));
 
     m.release(ownedBehavior, clazz4);
     ASSERT_FALSE(m.loaded(ownedBehaviorID));
     ASSERT_FALSE(m.loaded(clazzID));
     OpaqueBehavior& ownedBehavior2 = m.aquire(ownedBehaviorID)->as<OpaqueBehavior>();
-    ASSERT_TRUE(ownedBehavior2.hasBehavioredClassifier());
     ASSERT_TRUE(ownedBehavior2.hasNamespace());
-    ASSERT_EQ(ownedBehavior2.getMemberNamespace().size(), 1);
     ASSERT_TRUE(ownedBehavior2.hasOwner());
     Class& clazz5 = m.aquire(clazzID)->as<Class>();
     ASSERT_EQ(clazz5.getOwnedBehaviors().size(), 2);
-    ASSERT_EQ(clazz5.getOwnedBehaviors().get(1), ownedBehavior2);
+    ASSERT_TRUE(clazz5.getOwnedBehaviors().contains(ownedBehavior2));
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(ownedBehavior2, clazz5));
 
     m.release(ownedBehavior2, clazz5);
@@ -123,6 +120,6 @@ TEST_F(BehavioredClassifierParserTest, mountFullBehavioredClassifierTest) {
     ASSERT_EQ(clazz6.getOwnedElements().size(), 2);
     OpaqueBehavior& ownedBehavior3 = m.aquire(ownedBehaviorID)->as<OpaqueBehavior>();
     ASSERT_EQ(clazz6.getOwnedBehaviors().size(), 2);
-    ASSERT_EQ(clazz6.getOwnedBehaviors().get(1), ownedBehavior3);
+    ASSERT_TRUE(clazz6.getOwnedBehaviors().contains(ownedBehavior3));
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(ownedBehavior3, clazz6));
 }

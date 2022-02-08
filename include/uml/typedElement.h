@@ -6,31 +6,21 @@
 namespace UML{
 
     class Type;
-    namespace Parsers {
-        class SetType;
-    }
 
     class TypedElement : virtual public NamedElement {
 
         friend class Type;
-        friend class Parsers::SetType;
 
         protected:
             Singleton<Type, TypedElement> m_type = Singleton<Type, TypedElement>(this);
-            class RemoveTypeProcedure : public AbstractSingletonProcedure<Type, TypedElement> {
-                public:
-                    RemoveTypeProcedure(TypedElement* me) : AbstractSingletonProcedure<Type, TypedElement>(me) {};
-                    void operator()(Type* el) const override;
-            };
-            class AddTypeProcedure : public AbstractSingletonProcedure<Type, TypedElement> {
-                public:
-                    AddTypeProcedure(TypedElement* me) : AbstractSingletonProcedure<Type, TypedElement>(me) {};
-                    void operator()(Type* el) const override;
-            };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
+            void reindexName(std::string oldName, std::string newName) override;
+            void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
+            Set<Type, TypedElement>& getTypeSingleton();
+            void init();
+            void copy(const TypedElement& rhs);
             TypedElement();
         public:
             TypedElement(const TypedElement& el);
@@ -41,6 +31,7 @@ namespace UML{
             bool hasType() const;
             virtual void setType(Type* type);
             void setType(Type& type);
+            void setType(ID id);
             TypedElement& operator=(TypedElement&&) {
                 return *this;
             };

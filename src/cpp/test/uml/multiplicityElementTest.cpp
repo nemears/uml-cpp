@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
-#include "uml/property.h"
-#include "uml/literalInt.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 

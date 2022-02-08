@@ -2,7 +2,6 @@
 #define DEPLOYMENT_TARGET_H
 
 #include "namedElement.h"
-#include "sequence.h"
 
 namespace UML {
 
@@ -13,26 +12,14 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            Sequence<Deployment> m_deployments = Sequence<Deployment>(this);
-            class AddDeploymentFunctor : public TemplateAbstractSequenceFunctor<Deployment,DeploymentTarget> {
-                public:
-                    AddDeploymentFunctor(DeploymentTarget* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Deployment& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveDeploymentFunctor : public TemplateAbstractSequenceFunctor<Deployment,DeploymentTarget> {
-                public:
-                    RemoveDeploymentFunctor(DeploymentTarget* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Deployment& el) const override;
-            };
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
+            Set<Deployment, DeploymentTarget> m_deployments = Set<Deployment, DeploymentTarget>(this);
+            void init();
+            void copy(const DeploymentTarget& rhs);
             DeploymentTarget();
         public:
-            DeploymentTarget(const DeploymentTarget& deploymentTarget);
+            DeploymentTarget(const DeploymentTarget& rhs);
             virtual ~DeploymentTarget();
-            Sequence<Deployment>& getDeployments();
+            Set<Deployment, DeploymentTarget>& getDeployments();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::DEPLOYMENT_TARGET;

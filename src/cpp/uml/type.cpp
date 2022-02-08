@@ -1,5 +1,5 @@
 #include "uml/type.h"
-#include "uml/typedElement.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 

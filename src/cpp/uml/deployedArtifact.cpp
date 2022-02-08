@@ -1,4 +1,5 @@
 #include "uml/deployedArtifact.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 

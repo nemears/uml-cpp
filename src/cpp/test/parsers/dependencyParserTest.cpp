@@ -1,10 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/parsers/parser.h"
 #include "test/yumlParsersTest.h"
-#include "uml/dependency.h"
-#include "uml/package.h"
-#include "uml/realization.h"
-#include "uml/usage.h"
+#include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
 
 using namespace std;
@@ -25,12 +22,12 @@ TEST_F(DependencyParserTest, basicDependencyTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package& pckg = el->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::DEPENDENCY);
-    Dependency& dep = pckg.getPackagedElements().front().as<Dependency>();
+    ASSERT_EQ(pckg.getPackagedElements().get("dependency").getElementType(), ElementType::DEPENDENCY);
+    Dependency& dep = pckg.getPackagedElements().get("dependency").as<Dependency>();
     ASSERT_EQ(dep.getClient().size(), 1);
-    ASSERT_EQ(dep.getClient().front().getID(), pckg.getPackagedElements().back().getID());
+    ASSERT_EQ(dep.getClient().front().getID(), pckg.getPackagedElements().get("client").getID());
     ASSERT_EQ(dep.getSupplier().size(), 1);
-    ASSERT_EQ(dep.getSupplier().front().getID(), pckg.getPackagedElements().get(1).getID());
+    ASSERT_EQ(dep.getSupplier().front().getID(), pckg.getPackagedElements().get("supplier").getID());
 }
 
 TEST_F(DependencyParserTest, basicDependencyEmitTest) {
@@ -60,12 +57,10 @@ TEST_F(DependencyParserTest, basicDependencyEmitTest) {
         supplier:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
     - package:
+        id: uONNU0sKPVjLALJuw2pHcNqljgkg
+    - package:
         id: zMVDkDbSoENGrPr&JLyOGzYo&_D0
         clientDependencies:
-          - tAps&UBn21dKnQ5z7qaAzKBZqR7S
-    - package:
-        id: uONNU0sKPVjLALJuw2pHcNqljgkg
-        supplierDependencies:
           - tAps&UBn21dKnQ5z7qaAzKBZqR7S)"""";
     string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
@@ -80,26 +75,26 @@ TEST_F(DependencyParserTest, parseAllTheSubclassesTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package& pckg = el->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 5);
-    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::ABSTRACTION);
-    Abstraction& abs = pckg.getPackagedElements().front().as<Abstraction>();
+    ASSERT_EQ(pckg.getPackagedElements().get("abstraction").getElementType(), ElementType::ABSTRACTION);
+    Abstraction& abs = pckg.getPackagedElements().get("abstraction").as<Abstraction>();
     ASSERT_EQ(abs.getClient().size(), 1);
-    ASSERT_EQ(abs.getClient().front().getID(), pckg.getPackagedElements().get(3).getID());
+    ASSERT_EQ(abs.getClient().front().getID(), pckg.getPackagedElements().get("client").getID());
     ASSERT_EQ(abs.getSupplier().size(), 1);
-    ASSERT_EQ(abs.getSupplier().front().getID(), pckg.getPackagedElements().get(4).getID());
+    ASSERT_EQ(abs.getSupplier().front().getID(), pckg.getPackagedElements().get("supplier").getID());
 
-    ASSERT_EQ(pckg.getPackagedElements().get(1).getElementType(), ElementType::REALIZATION);
-    Realization& real = pckg.getPackagedElements().get(1).as<Realization>();
+    ASSERT_EQ(pckg.getPackagedElements().get("realization").getElementType(), ElementType::REALIZATION);
+    Realization& real = pckg.getPackagedElements().get("realization").as<Realization>();
     ASSERT_EQ(real.getClient().size(), 1);
-    ASSERT_EQ(real.getClient().front().getID(), pckg.getPackagedElements().get(3).getID());
+    ASSERT_EQ(real.getClient().front().getID(), pckg.getPackagedElements().get("client").getID());
     ASSERT_EQ(real.getSupplier().size(), 1);
-    ASSERT_EQ(real.getSupplier().front().getID(), pckg.getPackagedElements().get(4).getID());
+    ASSERT_EQ(real.getSupplier().front().getID(), pckg.getPackagedElements().get("supplier").getID());
 
-    ASSERT_EQ(pckg.getPackagedElements().get(2).getElementType(), ElementType::USAGE);
-    Usage& usage = pckg.getPackagedElements().get(2).as<Usage>();
+    ASSERT_EQ(pckg.getPackagedElements().get("usage").getElementType(), ElementType::USAGE);
+    Usage& usage = pckg.getPackagedElements().get("usage").as<Usage>();
     ASSERT_EQ(usage.getClient().size(), 1);
-    ASSERT_EQ(usage.getClient().front().getID(), pckg.getPackagedElements().get(3).getID());
+    ASSERT_EQ(usage.getClient().front().getID(), pckg.getPackagedElements().get("client").getID());
     ASSERT_EQ(usage.getSupplier().size(), 1);
-    ASSERT_EQ(usage.getSupplier().front().getID(), pckg.getPackagedElements().get(4).getID());
+    ASSERT_EQ(usage.getSupplier().front().getID(), pckg.getPackagedElements().get("supplier").getID());
 }
 
 TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {
@@ -140,13 +135,6 @@ TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {
           - zMVDkDbSoENGrPr&JLyOGzYo&_D0
         supplier:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
-    - realization:
-        id: V5lXdO3DLF2UCpqipGloE976L6QN
-        name: r
-        client:
-          - zMVDkDbSoENGrPr&JLyOGzYo&_D0
-        supplier:
-          - uONNU0sKPVjLALJuw2pHcNqljgkg
     - usage:
         id: ouZEty1jCLeAk_tZzWBKblwwBdGm
         name: u
@@ -155,17 +143,20 @@ TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {
         supplier:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
     - package:
+        id: uONNU0sKPVjLALJuw2pHcNqljgkg
+    - package:
         id: zMVDkDbSoENGrPr&JLyOGzYo&_D0
         clientDependencies:
           - tAps&UBn21dKnQ5z7qaAzKBZqR7S
-          - V5lXdO3DLF2UCpqipGloE976L6QN
           - ouZEty1jCLeAk_tZzWBKblwwBdGm
-    - package:
-        id: uONNU0sKPVjLALJuw2pHcNqljgkg
-        supplierDependencies:
-          - tAps&UBn21dKnQ5z7qaAzKBZqR7S
           - V5lXdO3DLF2UCpqipGloE976L6QN
-          - ouZEty1jCLeAk_tZzWBKblwwBdGm)"""";
+    - realization:
+        id: V5lXdO3DLF2UCpqipGloE976L6QN
+        name: r
+        client:
+          - zMVDkDbSoENGrPr&JLyOGzYo&_D0
+        supplier:
+          - uONNU0sKPVjLALJuw2pHcNqljgkg)"""";
     string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
     cout << generatedEmit << '\n';
@@ -183,80 +174,73 @@ void ASSERT_RESTORE_DEPENDENCY(Dependency& dependency, NamedElement& client, Nam
     ASSERT_EQ(dependency.getTargets().size(), 1);
     ASSERT_EQ(dependency.getTargets().front(), supplier);
     ASSERT_TRUE(dependency.getRelatedElements().count(supplier.getID()));
-    ASSERT_EQ(client.getDirectedRelationships().size(), 1);
-    ASSERT_EQ(client.getDirectedRelationships().front(), dependency);
-    ASSERT_EQ(client.getRelationships().size(), 1);
-    ASSERT_EQ(client.getRelationships().front(), dependency);
-    ASSERT_EQ(supplier.getDirectedRelationships().size(), 1);
-    ASSERT_EQ(supplier.getDirectedRelationships().front(), dependency);
-    ASSERT_EQ(supplier.getRelationships().size(), 1);
-    ASSERT_EQ(supplier.getRelationships().front(), dependency);
 }
 
 TEST_F(DependencyParserTest, mountAndEditDependencyTest) {
-    UmlManager m;
-    Package& root = m.create<Package>();
-    Package& supplier = m.create<Package>();
-    Package& client = m.create<Package>();
-    Dependency& dependency = m.create<Dependency>();
-    dependency.getClient().add(client);
-    dependency.getSupplier().add(supplier);
-    root.getPackagedElements().add(dependency, client, supplier);
-    m.setRoot(&root);
-    m.mount(ymlPath + "dependencyTests");
-    
-    ID dependencyID = dependency.getID();
-    m.release(dependency);
-    ASSERT_FALSE(m.loaded(dependencyID));
-    Dependency& dependency2 = m.aquire(dependencyID)->as<Dependency>();
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency2, client, supplier));
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency2, root));
+  // std::cout << "!!!!!!!!!!\nTODO uncomment me por favor\n!!!!!!!!!!!!" << std::endl;
+  UmlManager m;
+  Package& root = m.create<Package>();
+  Package& supplier = m.create<Package>();
+  Package& client = m.create<Package>();
+  Dependency& dependency = m.create<Dependency>();
+  dependency.getClient().add(client);
+  dependency.getSupplier().add(supplier);
+  root.getPackagedElements().add(dependency, client, supplier);
+  m.setRoot(&root);
+  m.mount(ymlPath + "dependencyTests");
+  
+  ID dependencyID = dependency.getID();
+  m.release(dependency);
+  ASSERT_FALSE(m.loaded(dependencyID));
+  Dependency& dependency2 = m.aquire(dependencyID)->as<Dependency>();
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency2, client, supplier));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency2, root));
 
-    ID clientID = client.getID();
-    m.release(client, dependency2);
-    ASSERT_FALSE(m.loaded(dependencyID));
-    ASSERT_FALSE(m.loaded(clientID));
-    Dependency& dependency3 = m.aquire(dependencyID)->as<Dependency>();
-    ASSERT_FALSE(m.loaded(clientID));
-    Package& client2 = m.aquire(clientID)->as<Package>();
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency3, client2, supplier));
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency3, root));
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(client2, root));
+  ID clientID = client.getID();
+  m.release(client, dependency2);
+  ASSERT_FALSE(m.loaded(dependencyID));
+  ASSERT_FALSE(m.loaded(clientID));
+  Dependency& dependency3 = m.aquire(dependencyID)->as<Dependency>();
+  ASSERT_FALSE(m.loaded(clientID));
+  Package& client2 = m.aquire(clientID)->as<Package>();
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency3, client2, supplier));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency3, root));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(client2, root));
 
-    m.release(dependency3, client2);
-    ASSERT_FALSE(m.loaded(dependencyID));
-    ASSERT_FALSE(m.loaded(clientID));
-    Package& client3= m.aquire(clientID)->as<Package>();
-    ASSERT_FALSE(m.loaded(dependencyID));
-    Dependency& dependency4 = m.aquire(dependencyID)->as<Dependency>();
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency4, client3, supplier));
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency4, root));
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(client3, root));
+  m.release(dependency3, client2);
+  ASSERT_FALSE(m.loaded(dependencyID));
+  ASSERT_FALSE(m.loaded(clientID));
+  Package& client3= m.aquire(clientID)->as<Package>();
+  ASSERT_FALSE(m.loaded(dependencyID));
+  Dependency& dependency4 = m.aquire(dependencyID)->as<Dependency>();
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency4, client3, supplier));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency4, root));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(client3, root));
 
-    ID supplierID = supplier.getID();
-    m.release(supplier);
-    ASSERT_FALSE(m.loaded(supplierID));
-    Package& supplier2 = m.aquire(supplierID)->as<Package>();
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency4, client3, supplier2));
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(supplier2, root));
+  ID supplierID = supplier.getID();
+  m.release(supplier);
+  ASSERT_FALSE(m.loaded(supplierID));
+  Package& supplier2 = m.aquire(supplierID)->as<Package>();
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency4, client3, supplier2));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(supplier2, root));
 
-    m.release(supplier2, dependency4);
-    ASSERT_FALSE(m.loaded(dependencyID));
-    ASSERT_FALSE(m.loaded(supplierID));
-    Dependency& dependency5 = m.aquire(dependencyID)->as<Dependency>();
-    ASSERT_FALSE(m.loaded(supplierID));
-    Package& supplier3 = m.aquire(supplierID)->as<Package>();
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency5, client3, supplier3));
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(supplier3, root));
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency5, root));
+  m.release(supplier2, dependency4);
+  ASSERT_FALSE(m.loaded(dependencyID));
+  ASSERT_FALSE(m.loaded(supplierID));
+  Dependency& dependency5 = m.aquire(dependencyID)->as<Dependency>();
+  ASSERT_FALSE(m.loaded(supplierID));
+  Package& supplier3 = m.aquire(supplierID)->as<Package>();
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency5, client3, supplier3));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(supplier3, root));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency5, root));
 
-    m.release(dependency5, supplier3);
-    ASSERT_FALSE(m.loaded(dependencyID));
-    ASSERT_FALSE(m.loaded(supplierID));
-    Package& supplier4 = m.aquire(supplierID)->as<Package>();
-    ASSERT_FALSE(m.loaded(dependencyID));
-    Dependency& dependency6 = m.aquire(dependencyID)->as<Dependency>();
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency6, client3, supplier4));
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(supplier4, root));
-    ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency6, root));
+  m.release(dependency5, supplier3);
+  ASSERT_FALSE(m.loaded(dependencyID));
+  ASSERT_FALSE(m.loaded(supplierID));
+  Package& supplier4 = m.aquire(supplierID)->as<Package>();
+  ASSERT_FALSE(m.loaded(dependencyID));
+  Dependency& dependency6 = m.aquire(dependencyID)->as<Dependency>();
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency6, client3, supplier4));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(supplier4, root));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency6, root));
 }

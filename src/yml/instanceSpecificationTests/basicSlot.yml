@@ -8,7 +8,8 @@
                 id: 6Mpm2vfQypGQmOQW7RV69iFAsF52
                 name: test  
       - instanceSpecification:
-          classifier: efp5gW8d2yV5b9bKtY&OmBHJpUYw
+          classifiers: 
+            - efp5gW8d2yV5b9bKtY&OmBHJpUYw
           slots:
             - slot:
                 definingFeature: 6Mpm2vfQypGQmOQW7RV69iFAsF52

@@ -6,42 +6,25 @@
 
 namespace UML {
     class Dependency : public DirectedRelationship, public PackageableElement {
+
         friend class UmlManager;
+
         protected:
-            Sequence<NamedElement> m_client = Sequence<NamedElement>(this);
-            Sequence<NamedElement> m_supplier = Sequence<NamedElement>(this);
-            class AddClientFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Dependency> {
-                public:
-                    AddClientFunctor(Dependency* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(NamedElement& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveClientFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Dependency> {
-                public:
-                    RemoveClientFunctor(Dependency* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(NamedElement& el) const override;
-            };
-            class AddSupplierFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Dependency> {
-                public:
-                    AddSupplierFunctor(Dependency* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(NamedElement& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveSupplierFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Dependency> {
-                public:
-                    RemoveSupplierFunctor(Dependency* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(NamedElement& el) const override;
-            };
+            Set<NamedElement, Dependency> m_client = Set<NamedElement, Dependency>(this);
+            Set<NamedElement, Dependency> m_supplier = Set<NamedElement, Dependency>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
+            void reindexName(std::string oldName, std::string newName) override;
+            void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
+            void init();
+            void copy(const Dependency& rhs);
             Dependency();
         public:
-            Dependency(const Dependency& dependency);
+            Dependency(const Dependency& rhs);
             virtual ~Dependency();
-            Sequence<NamedElement>& getClient();
-            Sequence<NamedElement>& getSupplier();
+            Set<NamedElement, Dependency>& getClient();
+            Set<NamedElement, Dependency>& getSupplier();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::DEPENDENCY;

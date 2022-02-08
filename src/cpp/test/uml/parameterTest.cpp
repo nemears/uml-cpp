@@ -1,7 +1,5 @@
 #include "gtest/gtest.h"
-#include "uml/parameter.h"
-#include "uml/activity.h"
-#include "uml/operation.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -22,11 +20,9 @@ TEST_F(ParameterTest, TestGetNotSetDirection) {
 
 TEST_F(ParameterTest, reindexID_ownerTest) {
     UmlManager m;
-    Activity a = m.create<Activity>();
+    OpaqueBehavior a = m.create<OpaqueBehavior>();
     Parameter p = m.create<Parameter>();
     a.getOwnedParameters().add(p);
-    p.setNamespace(&a);
-    a.getMembers().add(p);
     p.setID("190d1cb9_13dc_44e6_a064_1268");
     ASSERT_NO_THROW(a.getOwnedParameters().get(p.getID()));
     ASSERT_NO_THROW(a.getMembers().get(p.getID()));
@@ -97,7 +93,7 @@ TEST_F(ParameterTest, copyParameterTest) {
     p.setType(&t);
     p.setOperation(&o);
     Parameter p2 = p;
-    ASSERT_TRUE(p2.getDirection() == ParameterDirectionKind::IN);
-    ASSERT_TRUE(p2.getType() == &t);
-    ASSERT_TRUE(p2.getOperation() == &o);
+    ASSERT_EQ(p2.getDirection(), ParameterDirectionKind::IN);
+    ASSERT_EQ(p2.getType(), &t);
+    ASSERT_EQ(p2.getOperation(), &o);
 }

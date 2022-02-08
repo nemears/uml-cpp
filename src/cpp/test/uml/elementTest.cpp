@@ -1,21 +1,6 @@
 #include "gtest/gtest.h"
-#include "uml/element.h"
-#include "uml/umlManager.h"
-#include "uml/namedElement.h"
-#include "uml/sequence.h"
-#include "uml/relationship.h"
-#include "uml/package.h"
-#include "uml/class.h"
-#include "uml/instanceSpecification.h"
-#include "uml/stereotype.h"
-#include "uml/packageMerge.h"
+#include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
-#include "uml/dependency.h"
-#include "uml/extension.h"
-#include "uml/extensionEnd.h"
-#include "uml/stereotype.h"
-#include "uml/comment.h"
-#include "uml/dependency.h"
 #include "test/yumlParsersTest.h"
 
 using namespace UML;
@@ -24,19 +9,20 @@ class ElementTest : public ::testing::Test {};
 
 TEST_F(ElementTest, OverrideID_Test) {
     UmlManager m;
-    Package el1 = m.create<Package>();
+    Package& el = m.create<Package>();
+    Package el1 = el;
     el1.setID("7d18ee4282c64f528ec4fab67a75");
     ID id = ID::fromString("7d18ee4282c64f528ec4fab67a75");
     EXPECT_EQ(el1.getID(), id);
 }
 
-TEST_F(ElementTest, GetOwnedElementsTestW_Manager) {
+TEST_F(ElementTest, GetOwnedElementsTest) {
   UmlManager m;
   Package& el2 = m.create<Package>();
   Package& el3 = m.create<Package>();
   el2.getPackagedElements().add(el3);
   EXPECT_FALSE(el2.getOwnedElements().empty());
-  EXPECT_EQ(&el2.getOwnedElements().get(0), &el3);
+  EXPECT_EQ(el2.getOwnedElements().front(), el3);
 }
 
 TEST_F(ElementTest, InvalidID_Test) {
@@ -57,6 +43,7 @@ TEST_F(ElementTest, setAndGetOwnerTest) {
     Package e = m.create<Package>();
     Package c = m.create<Package>();
     c.setOwningPackage(e);
+    ASSERT_TRUE(c.hasOwner());
     ASSERT_EQ(*c.getOwner(), e);
     ASSERT_TRUE(c.getOwner()->getID() == e.getID());
 }
@@ -77,7 +64,7 @@ TEST_F(ElementTest, getOwnedElementByNameTest) {
     Package b = m.create<Package>();
     ASSERT_NO_THROW(e.getPackagedElements().add(b));
     ASSERT_NO_THROW(e.getPackagedElements().add(n));
-    // ASSERT_TRUE(e.getOwnedElements().get("name") == &n);
+    ASSERT_EQ(e.getOwnedElements().get("name"), n);
     ASSERT_NO_THROW(&e.getOwnedElements().get(n.getID()) == &n);
     ASSERT_NO_THROW(&e.getOwnedElements().get(b.getID()) == &b);
 }
@@ -91,20 +78,18 @@ TEST_F(ElementTest, reIndexID_Test) {
     ASSERT_NO_THROW(e1.getOwnedElements().get(e2.getID()));
 }
 
-TEST_F(ElementTest, basicRelationshipTestW_Manager) {
+TEST_F(ElementTest, basicRelationshipTest) {
   UmlManager m;
   Package& e = m.create<Package>();
   Package& a = m.create<Package>();
   PackageMerge& r = m.create<PackageMerge>();
   e.getPackageMerge().add(r);
   r.setMergedPackage(&a);
-  ASSERT_TRUE(r.getRelatedElements().size() == 2);
-  ASSERT_TRUE(&r.getRelatedElements().front() == &e);
-  ASSERT_TRUE(&r.getRelatedElements().back() == &a);
-  ASSERT_TRUE(e.getRelationships().size() == 1);
-  ASSERT_TRUE(&e.getRelationships().front() == &r);
-  ASSERT_TRUE(a.getRelationships().size() == 1);
-  ASSERT_TRUE(&a.getRelationships().front() == &r);
+  ASSERT_EQ(r.getRelatedElements().size(), 2);
+  ASSERT_TRUE(r.getRelatedElements().contains(e.getID()));
+  ASSERT_TRUE(r.getRelatedElements().contains(a.getID()));
+  ASSERT_EQ(e.getPackageMerge().size(), 1);
+  ASSERT_EQ(e.getPackageMerge().front(), r);
 }
 
 TEST_F(ElementTest, reindexRelationshipID_test) {
@@ -117,7 +102,7 @@ TEST_F(ElementTest, reindexRelationshipID_test) {
     r.setID("190d1cb913dc44e6a064126891ae");
     e.setID("7d18ee4282c64f528ec4fab67a75");
     ASSERT_NO_THROW(r.getRelatedElements().get(e.getID()));
-    ASSERT_NO_THROW(e.getRelationships().get(r.getID()));
+    ASSERT_NO_THROW(e.getPackageMerge().get(r.getID()));
 }
 
 TEST_F(ElementTest, setOwnerFunctorTest) {
@@ -134,11 +119,11 @@ TEST_F(ElementTest, setOwnerTest) {
     Package e = m.create<Package>();
     Package c = m.create<Package>();
     c.setOwningPackage(&e);
-    ASSERT_TRUE(e.getOwnedElements().count(c.getID()));
+    ASSERT_TRUE(e.getOwnedElements().contains(c.getID()));
     ASSERT_TRUE(e.getOwnedElements().size() == 1);
 }
 
-TEST_F(ElementTest, overwriteOwnerTestW_Manager) {
+TEST_F(ElementTest, overwriteOwnerTest) {
   UmlManager m;
   Package& p1 = m.create<Package>();
   Package& p2 = m.create<Package>();
@@ -146,12 +131,12 @@ TEST_F(ElementTest, overwriteOwnerTestW_Manager) {
   p1.getPackagedElements().add(c);
   c.setOwningPackage(&p2);
   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&p2.getOwnedElements().front() == &c);
+  ASSERT_TRUE(&p2.getOwnedElements().get(c.getID()) == &c);
   ASSERT_TRUE(c.getOwner() == &p2);
   ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }
 
-TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTestW_Manager) {
+TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
   UmlManager m;
   Package& p1 = m.create<Package>();
   Package& p2 = m.create<Package>();
@@ -159,12 +144,12 @@ TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTestW_Manager) {
   p1.getPackagedElements().add(c);
   p2.getPackagedElements().add(c);
   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&p2.getOwnedElements().front() == &c);
+  ASSERT_TRUE(&p2.getOwnedElements().get(c.getID()) == &c);
   ASSERT_TRUE(c.getOwner() == &p2);
   ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }
 
-TEST_F(ElementTest, CopyTestW_Manager) {
+TEST_F(ElementTest, CopyTest) {
   UmlManager m;
   Package& e1 = m.create<Package>();
   Package& p1 = m.create<Package>();
@@ -177,7 +162,7 @@ TEST_F(ElementTest, CopyTestW_Manager) {
   // TODO: clone method for deep model copy
   Package e2 = e1;
   ASSERT_TRUE(e2.getOwnedElements().size() == 1);
-  ASSERT_TRUE(&e2.getOwnedElements().front() == &c1);
+  ASSERT_TRUE(&e2.getOwnedElements().get(c1.getID()) == &c1);
   ASSERT_TRUE(e2.getID() == e1.getID());
   ASSERT_TRUE(e2.getOwner() == &p1);
 }
@@ -191,36 +176,14 @@ TEST_F(ElementTest, doINeedAnAddRelationshipFunctorTest) { // answer is yes
     ASSERT_EQ(r.getRelatedElements().front(), e);
 }
 
-// TEST_F(ElementTest, fullCopyTest) {
-//   Package p;
-//   Package c;
-//   p.getPackagedElements().add(c);
-//   Package p2 = p;
-//   ASSERT_TRUE(p2.getPackagedElements().size() == 1);
-//   ASSERT_TRUE(p2.getPackagedElements().front()->getID() == c.getID());
-//   ASSERT_TRUE(p2.getPackagedElements().front() != &c);
-// }
-
 TEST_F(ElementTest, readOnlySequenceTest) {
     UmlManager m;
     Package p = m.create<Package>();
     Package c1 = m.create<Package>();
     Package c2 = m.create<Package>();
     ASSERT_NO_THROW(p.getPackagedElements().add(c1));
-    ASSERT_THROW(p.getOwnedElements().add(c2), ReadOnlySequenceException);
-    ASSERT_THROW(p.getOwnedElements().remove(c1), ReadOnlySequenceException);
-}
-
-TEST_F(ElementTest, readOnlyRelationships) {
-    UmlManager mm;
-    Package p = mm.create<Package>();
-    Package m = mm.create<Package>();
-    PackageMerge r = mm.create<PackageMerge>();
-    p.getPackageMerge().add(r);
-    r.setMergedPackage(&m);
-    PackageMerge r2 = mm.create<PackageMerge>();
-    ASSERT_THROW(p.getRelationships().add(r2), ReadOnlySequenceException);
-    ASSERT_THROW(p.getRelationships().remove(r), ReadOnlySequenceException);
+    ASSERT_THROW(p.getOwnedElements().add(c2), ReadOnlySetException);
+    ASSERT_THROW(p.getOwnedElements().remove(c1), ReadOnlySetException);
 }
 
 TEST_F(ElementTest, readOnlyRelatedElementsTest) {
@@ -231,27 +194,9 @@ TEST_F(ElementTest, readOnlyRelatedElementsTest) {
     Package h = mm.create<Package>();
     p.getPackageMerge().add(r);
     r.setMergedPackage(&m);
-    ASSERT_THROW(r.getRelatedElements().remove(p), ReadOnlySequenceException);
-    ASSERT_THROW(r.getRelatedElements().add(h), ReadOnlySequenceException);
+    ASSERT_THROW(r.getRelatedElements().remove(p), ReadOnlySetException);
+    ASSERT_THROW(r.getRelatedElements().add(h), ReadOnlySetException);
 }
-
-// TEST_F(ElementTest, setAndGetOwnerTest2) {
-//   UmlManager m;
-//   Element& owner = m.create<Element>();
-//   Element& ownee = m.create<Element>();
-//   ownee.setOwner2(&owner);
-//   ASSERT_TRUE(ownee.getOwner2() == &owner);
-// }
-
-// TEST_F(ElementTest, addToOwnedElementsTest) {
-//   UmlManager m;
-//   Element& owner = m.create<Element>();
-//   Element& ownee = m.create<Element>();
-//   ASSERT_NO_THROW(owner.getOwnedElements2().add(ownee));
-//   ASSERT_TRUE(owner.getOwnedElements2().size() == 1);
-//   ASSERT_TRUE(owner.getOwnedElements2().front() == &ownee);
-//   ASSERT_TRUE(ownee.getOwner() == &owner); // TODO change
-// }
 
 TEST_F(ElementTest, isSameOrNullTest) {
   UmlManager m;
@@ -262,8 +207,8 @@ TEST_F(ElementTest, isSameOrNullTest) {
   e.getPackagedElements().add(c1);
   e.getPackagedElements().add(c2);
   ASSERT_NO_THROW(c1.setOwningPackage(&e));
-  ASSERT_TRUE(&e.getOwnedElements().front() == &c1);
-  ASSERT_TRUE(&e.getOwnedElements().back() == &c2);
+  ASSERT_TRUE(&e.getOwnedElements().get(c1.getID()) == &c1);
+  ASSERT_TRUE(&e.getOwnedElements().get(c2.getID()) == &c2);
 }
 
 // TEST_F(ElementTest, checkAppliedStereotypeFunctorTest) {
@@ -278,7 +223,7 @@ TEST_F(ElementTest, AddAndRemoveAppliedStereotypetest) {
   Class& c = m.create<Class>();
   InstanceSpecification& i = m.create<InstanceSpecification>();
   Stereotype& s = m.create<Stereotype>();
-  i.setClassifier(&s);
+  i.getClassifiers().add(s);
   ASSERT_NO_THROW(c.getAppliedStereotypes().add(i));
   ASSERT_EQ(c.getOwnedElements().size(), 1);
   ASSERT_NO_THROW(c.getAppliedStereotypes().remove(i));
@@ -304,7 +249,7 @@ TEST_F(ElementTest, copyAndChangeTest) {
                                          &Namespace::getOwnedMembers,
                                          &Package::getPackagedElements);
     ASSERT_EQ(package.getOwnedElements().size(), 1);
-    ASSERT_EQ(package.getOwnedElements().front().getID(), ownedEl.getID());
+    ASSERT_EQ(package.getOwnedElements().get(ownedEl.getID()).getID(), ownedEl.getID());
     ASSERT_EQ(package.getOwnedMembers().size(), 1);
     ASSERT_EQ(package.getOwnedMembers().front().getID(), ownedEl.getID());
     ASSERT_EQ(package.getMembers().size(), 1);
@@ -315,8 +260,6 @@ TEST_F(ElementTest, copyAndChangeTest) {
     ASSERT_EQ(ownedEl.getOwner()->getID(), package.getID());
     ASSERT_TRUE(ownedEl.getNamespace() != 0);
     ASSERT_EQ(ownedEl.getNamespace()->getID(), package.getID());
-    ASSERT_EQ(ownedEl.getMemberNamespace().size(), 1);
-    ASSERT_EQ(ownedEl.getMemberNamespace().front().getID(), package.getID());
     ASSERT_TRUE(ownedEl.getOwningPackage() != 0);
     ASSERT_EQ(ownedEl.getOwningPackage()->getID(), package.getID());
     package.getPackagedElements().remove(ownedEl);
@@ -364,10 +307,10 @@ TEST_F(ElementTest, FullElementCopyTest) {
   root.getPackagedElements().add(p1);
   root.getPackagedElements().add(p2);
   p1.getPackagedElements().add(child);
-  end.setExtension(&extension);
+  end.setOwningAssociation(&extension);
   extension.setMetaClass(ElementType::PACKAGE);
   end.setType(&stereotype);
-  stereotypeInst.setClassifier(&stereotype);
+  stereotypeInst.getClassifiers().add(stereotype);
   p1.getAppliedStereotypes().add(stereotypeInst);
   p1.getOwnedComments().add(comment);
   root.getOwnedStereotypes().add(stereotype);
@@ -377,7 +320,7 @@ TEST_F(ElementTest, FullElementCopyTest) {
   root.getPackagedElements().add(dependency);
 
   Package copy = p1;
-  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments, &Element::getDirectedRelationships, &Element::getRelationships));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments));
   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
   ASSERT_NO_THROW(m.mount(std::string(YML_FILES_PATH) + "elementTests"));
   copy.getPackagedElements().remove(child);
@@ -385,28 +328,28 @@ TEST_F(ElementTest, FullElementCopyTest) {
   copy.getOwnedComments().remove(comment);
   dependency.getClient().remove(copy);
   root.getPackagedElements().remove(copy);
-  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments, &Element::getDirectedRelationships, &Element::getRelationships));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments));
   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
   copy.getPackagedElements().add(child);
   copy.getAppliedStereotypes().add(stereotypeInst);
   copy.getOwnedComments().add(comment);
   dependency.getClient().add(copy);
   root.getPackagedElements().add(copy);
-  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments, &Element::getDirectedRelationships, &Element::getRelationships));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments));
   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
   p1.getPackagedElements().remove(child);
   p1.getAppliedStereotypes().remove(stereotypeInst);
   p1.getOwnedComments().remove(comment);
   dependency.getClient().remove(p1);
   root.getPackagedElements().remove(p1);
-  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments, &Element::getDirectedRelationships, &Element::getRelationships));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments));
   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
   p1.getPackagedElements().add(child);
   p1.getAppliedStereotypes().add(stereotypeInst);
   p1.getOwnedComments().add(comment);
   dependency.getClient().add(p1);
   root.getPackagedElements().add(p1);
-  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments, &Element::getDirectedRelationships, &Element::getRelationships));
+  ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(p1, copy, &Element::getOwnedElements, &Element::getAppliedStereotypes, &Element::getOwnedComments));
   ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(p1, copy, &Element::getOwner));
 }
 

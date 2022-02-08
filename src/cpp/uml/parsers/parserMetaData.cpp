@@ -1,6 +1,7 @@
 #include "uml/parsers/parserMetaData.h"
 #include <algorithm>
 #include "uml/umlManager.h"
+#include "uml/uml-stable.h"
 
 using namespace std;
 

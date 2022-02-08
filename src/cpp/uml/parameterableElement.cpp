@@ -1,89 +1,62 @@
 #include "uml/parameterableElement.h"
 #include "uml/templateParameter.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void ParameterableElement::RemoveOwningTemplateParameterProcedure::operator()(TemplateParameter* el) const {
-    if (el->getOwnedParameteredElementID() == m_me->getID()) {
-        el->setOwnedParameteredElement(0);
-    }
-    if (m_me->getOwnerID() == el->getID()) {
-        m_me->setOwner(0);
-    }
-}
-
-void ParameterableElement::AddOwningTemplateParameterProcedure::operator()(TemplateParameter* el) const {
-    if (el->getOwnedParameteredElementID() != m_me->getID()) {
-        el->setOwnedParameteredElement(m_me);
-    }
-    if (m_me->getOwnerID() != el->getID()) {
-        m_me->setOwner(el);
-    }
-}
-
-void ParameterableElement::AddOwningTemplateParameterProcedure::operator()(ID id) const {
-    if (m_me->getOwnerID() != id) {
-        m_me->setOwnerByID(id);
-    }
-}
-
-void ParameterableElement::RemoveTemplateParameterProcedure::operator()(TemplateParameter* el) const {
-    if (el->getParameteredElementID() == m_me->getID()) {
-        el->setParameteredElement(0);
-    }
-    if (el->getDefaultID() == m_me->getID()) {
-        el->setDefault(0);
-    }
-}
-
-void ParameterableElement::AddTemplateParameterProcedure::operator()(TemplateParameter* el) const {
-    if (el->getParameteredElementID() != m_me->getID() && el->getDefaultID() != m_me->getID()) {
-        el->setParameteredElement(m_me);
-    }
-}
-
 void ParameterableElement::referencingReleased(ID id) {
-    m_owningTemplateParameter.release(id);
     m_templateParameter.release(id);
 }
 
 void ParameterableElement::referenceReindexed(ID oldID, ID newID) {
-    m_owningTemplateParameter.reindex(oldID, newID);
     m_templateParameter.reindex(oldID, newID);
 }
 
-void ParameterableElement::restoreReferences() {
-    m_owningTemplateParameter.restoreReference();
-    m_templateParameter.restoreReference();
+void ParameterableElement::reindexName(std::string oldName, std::string newName) {
+    m_templateParameter.reindexName(oldName, newName);
+}
+
+void ParameterableElement::restoreReference(Element* el) {
+    if (el->isSubClassOf(ElementType::TEMPLATE_PARAMETER) && el->as<TemplateParameter>().m_ownedDefault.id() == m_id) {
+        if (m_templateParameter.empty()) {
+            m_templateParameter.set(el->getID());
+        }
+        m_templateParameter.restore(el);
+    }
 }
 
 void ParameterableElement::referenceErased(ID id) {
-    m_owningTemplateParameter.elementErased(id);
-    m_templateParameter.elementErased(id);
+    m_templateParameter.eraseElement(id);
+}
+
+Set<TemplateParameter, ParameterableElement>& ParameterableElement::getOwningTemplateParameterSingleton() {
+    return m_owningTemplateParameter;
+}
+
+Set<TemplateParameter, ParameterableElement>& ParameterableElement::getTemplateParameterSingleton() {
+    return m_templateParameter;
+}
+
+void ParameterableElement::init() {
+    m_templateParameter.opposite(&TemplateParameter::getParameteredElementSingleton);
+    m_templateParameter.m_signature = &ParameterableElement::getTemplateParameterSingleton;
+    m_owningTemplateParameter.subsets(m_templateParameter);
+    m_owningTemplateParameter.subsets(*m_owner);
+    m_owningTemplateParameter.opposite(&TemplateParameter::getOwnedParameteredElementSingleton);
+    m_owningTemplateParameter.m_signature = &ParameterableElement::getOwningTemplateParameterSingleton;
+}
+
+void ParameterableElement::copy(const ParameterableElement& rhs) {
+    m_templateParameter = rhs.m_templateParameter;
+    m_owningTemplateParameter = rhs.m_owningTemplateParameter;
 }
 
 ParameterableElement::ParameterableElement() : Element(ElementType::PARAMETERABLE_ELEMENT) {
-    m_owningTemplateParameter.m_signature = &ParameterableElement::m_owningTemplateParameter;
-    m_owningTemplateParameter.m_addProcedures.push_back(new AddOwningTemplateParameterProcedure(this));
-    m_owningTemplateParameter.m_removeProcedures.push_back(new RemoveOwningTemplateParameterProcedure(this));
-    m_templateParameter.m_signature = &ParameterableElement::m_templateParameter;
-    m_templateParameter.m_removeProcedures.push_back(new RemoveTemplateParameterProcedure(this));
-    m_templateParameter.m_addProcedures.push_back(new AddTemplateParameterProcedure(this));
+    init();
 }
 
 ParameterableElement::ParameterableElement(const ParameterableElement& el) : Element(el, ElementType::PARAMETERABLE_ELEMENT) {
-    m_owningTemplateParameter = el.m_owningTemplateParameter;
-    m_owningTemplateParameter.m_me = this;
-    m_owningTemplateParameter.m_addProcedures.clear();
-    m_owningTemplateParameter.m_removeProcedures.clear();
-    m_owningTemplateParameter.m_addProcedures.push_back(new AddOwningTemplateParameterProcedure(this));
-    m_owningTemplateParameter.m_removeProcedures.push_back(new RemoveOwningTemplateParameterProcedure(this));
-    m_templateParameter = el.m_templateParameter;
-    m_templateParameter.m_me = this;
-    m_templateParameter.m_addProcedures.clear();
-    m_templateParameter.m_removeProcedures.clear();
-    m_templateParameter.m_removeProcedures.push_back(new RemoveTemplateParameterProcedure(this));
-    m_templateParameter.m_addProcedures.push_back(new AddTemplateParameterProcedure(this));
+    // abstract
 }
 
 ParameterableElement::~ParameterableElement() {
@@ -114,6 +87,10 @@ void ParameterableElement::setOwningTemplateParameter(TemplateParameter& paramet
     m_owningTemplateParameter.set(parameter);
 }
 
+void ParameterableElement::setOwningTemplateParameter(ID id) {
+    m_owningTemplateParameter.set(id);
+}
+
 TemplateParameter* ParameterableElement::getTemplateParameter() {
     return m_templateParameter.get();
 }
@@ -136,6 +113,10 @@ void ParameterableElement::setTemplateParameter(TemplateParameter* parameter) {
 
 void ParameterableElement::setTemplateParameter(TemplateParameter& parameter) {
     m_templateParameter.set(parameter);
+}
+
+void ParameterableElement::setTemplateParameter(ID id) {
+    m_templateParameter.set(id);
 }
 
 bool ParameterableElement::isSubClassOf(ElementType eType) const {

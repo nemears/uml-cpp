@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include "namedElement.h"
-#include "sequence.h"
 
 namespace UML{
     /**
@@ -12,41 +11,21 @@ namespace UML{
     class Namespace : virtual public NamedElement {
         friend class UmlManager;
         protected:
-            Sequence<NamedElement> m_members = Sequence<NamedElement>(this);
-            Sequence<NamedElement> m_ownedMembers = Sequence<NamedElement>(this);
-            class AddMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Namespace> {
-                public:
-                    AddMemberFunctor(Namespace* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(NamedElement& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Namespace> {
-                public:
-                    RemoveMemberFunctor(Namespace* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(NamedElement& el) const override;
-            };
-            class AddOwnedMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Namespace> {
-                public:
-                    AddOwnedMemberFunctor(Namespace* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(NamedElement& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveOwnedMemberFunctor : public TemplateAbstractSequenceFunctor<NamedElement,Namespace> {
-                public:
-                    RemoveOwnedMemberFunctor(Namespace* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(NamedElement& el) const override;
-            };
+            Set<NamedElement, Namespace> m_members = Set<NamedElement, Namespace>(this);
+            Set<NamedElement, Namespace> m_ownedMembers = Set<NamedElement, Namespace>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
+            void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
+            void init();
+            void copy(const Namespace& rhs);
             Namespace();
         public:
             virtual ~Namespace();
             Namespace(const Namespace& nmspc);
             void setName(const std::string& name) override;
-            Sequence<NamedElement>& getMembers();
-            Sequence<NamedElement>& getOwnedMembers();
+            Set<NamedElement, Namespace>& getMembers();
+            Set<NamedElement, Namespace>& getOwnedMembers();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::NAMESPACE;

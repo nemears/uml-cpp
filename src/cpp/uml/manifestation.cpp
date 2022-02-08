@@ -1,98 +1,37 @@
 #include "uml/manifestation.h"
 #include "uml/packageableElement.h"
 #include "uml/artifact.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void Manifestation::RemoveUtilizedElementProcedure::operator()(PackageableElement* el) const {
-    if (m_me->getSupplier().count(el->getID())) {
-        m_me->getSupplier().remove(*el);
-    }
+Set<PackageableElement, Manifestation>& Manifestation::getUtilizedElementSingleton() {
+    return m_utilizedElement;
 }
 
-void Manifestation::AddUtilizedElementProcedure::operator()(PackageableElement* el) const {
-    if (!m_me->getSupplier().count(el->getID())) {
-        m_me->getSupplier().add(*el);
-    }
+void Manifestation::init() {
+    m_utilizedElement.subsets(m_supplier);
+    m_utilizedElement.m_signature = &Manifestation::getUtilizedElementSingleton;
 }
 
-void Manifestation::RemoveArtifactProcedure::operator()(Artifact* el) const {
-    if (m_me->getClient().count(el->getID())) {
-        m_me->getClient().remove(*el);
-    }
-    if (el->getManifestations().count(m_me->getID())) {
-        el->getManifestations().remove(*m_me);
-    }
-}
-
-void Manifestation::AddArtifactProcedure::operator()(Artifact* el) const {
-    if (!m_me->getClient().count(el->getID())) {
-        m_me->getClient().add(*el);
-    }
-    if (!el->getManifestations().count(m_me->getID())) {
-        el->getManifestations().add(*m_me);
-    }
-    if (m_me->getOwnerID() != el->getID()) {
-        m_me->setOwner(el);
-    }
-}
-
-void Manifestation::AddArtifactProcedure::operator()(ID id) const {
-    if (!m_me->getClient().count(id)) {
-        m_me->getClient().addByID(id);
-    }
-
-    if (m_me->getOwnerID() != id) {
-        m_me->setOwnerByID(id);
-    }
-}
-
-void Manifestation::referencingReleased(ID id) {
-    Abstraction::referencingReleased(id);
-    m_utilizedElement.release(id);
-    m_utilizedElement.release(id);
-}
-
-void Manifestation::referenceReindexed(ID oldID, ID newID) {
-    Abstraction::referenceReindexed(oldID, newID);
-    m_utilizedElement.reindex(oldID, newID);
-    m_artifact.reindex(oldID, newID);
-}
-
-void Manifestation::restoreReferences() {
-    Abstraction::restoreReferences();
-    m_utilizedElement.restoreReference();
-    m_artifact.restoreReference();
-}
-
-void Manifestation::referenceErased(ID id) {
-    Abstraction::referenceErased(id);
-    m_utilizedElement.elementErased(id);
-    m_artifact.elementErased(id);
+void Manifestation::copy(const Manifestation& rhs) {
+    m_utilizedElement = rhs.m_utilizedElement;
 }
 
 Manifestation::Manifestation() : Element(ElementType::MANIFESTATION) {
-    m_utilizedElement.m_signature = &Manifestation::m_utilizedElement;
-    m_utilizedElement.m_addProcedures.push_back(new AddUtilizedElementProcedure(this));
-    m_utilizedElement.m_removeProcedures.push_back(new RemoveUtilizedElementProcedure(this));
-    m_artifact.m_signature = &Manifestation::m_artifact;
-    m_artifact.m_addProcedures.push_back(new AddArtifactProcedure(this));
-    m_artifact.m_removeProcedures.push_back(new RemoveArtifactProcedure(this));
+    init();
 }
 
-Manifestation::Manifestation(const Manifestation& manifestation) : Element(manifestation, ElementType::MANIFESTATION) {
-    m_utilizedElement = manifestation.m_utilizedElement;
-    m_utilizedElement.m_me = this;
-    m_utilizedElement.m_addProcedures.clear();
-    m_utilizedElement.m_removeProcedures.clear();
-    m_utilizedElement.m_addProcedures.push_back(new AddUtilizedElementProcedure(this));
-    m_utilizedElement.m_removeProcedures.push_back(new RemoveUtilizedElementProcedure(this));
-    m_artifact = manifestation.m_artifact;
-    m_artifact.m_me = this;
-    m_artifact.m_addProcedures.clear();
-    m_artifact.m_removeProcedures.clear();
-    m_artifact.m_addProcedures.push_back(new AddArtifactProcedure(this));
-    m_artifact.m_removeProcedures.push_back(new RemoveArtifactProcedure(this));
+Manifestation::Manifestation(const Manifestation& rhs) : Element(rhs, ElementType::MANIFESTATION) {
+    init();
+    Element::copy(rhs);
+    Relationship::copy(rhs);
+    DirectedRelationship::copy(rhs);
+    NamedElement::copy(rhs);
+    ParameterableElement::copy(rhs);
+    PackageableElement::copy(rhs);
+    Dependency::copy(rhs);
+    copy(rhs);
 }
 
 Manifestation::~Manifestation() {
@@ -119,28 +58,8 @@ void Manifestation::setUtilizedElement(PackageableElement& utilizedElement) {
     m_utilizedElement.set(utilizedElement);
 }
 
-Artifact* Manifestation::getArtifact() {
-    return m_artifact.get();
-}
-
-Artifact& Manifestation::getArtifactRef() {
-    return m_artifact.getRef();
-}
-
-ID Manifestation::getArtifactID() const {
-    return m_artifact.id();
-}
-
-bool Manifestation::hasArtifact() const {
-    return m_artifact.has();
-}
-
-void Manifestation::setArtifact(Artifact* artifact) {
-    m_artifact.set(artifact);
-}
-
-void Manifestation::setArtifact(Artifact& artifact) {
-    m_artifact.set(artifact);
+void Manifestation::setUtilizedElement(ID id) {
+    m_utilizedElement.set(id);
 }
 
 bool Manifestation::isSubClassOf(ElementType eType) const {

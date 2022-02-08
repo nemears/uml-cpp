@@ -6,14 +6,11 @@
 namespace UML {
 
     class ExtensionEnd;
-    namespace Parsers {
-        class SetOwnedEnd;
-    }
 
     class Extension : public Association {
 
         friend class UmlManager;
-        friend class Parsers::SetOwnedEnd;
+        friend class ExtensionEnd;
 
         private:
             /**
@@ -23,21 +20,9 @@ namespace UML {
             ElementType m_metaClass;
             Singleton<ExtensionEnd, Extension> m_ownedEnd = Singleton<ExtensionEnd, Extension>(this);
             bool m_setFlag = false;
-            class RemoveOwnedEndProcedure : public AbstractSingletonProcedure<ExtensionEnd, Extension> {
-                public:
-                    RemoveOwnedEndProcedure(Extension* me) : AbstractSingletonProcedure<ExtensionEnd, Extension>(me) {};
-                    void operator()(ExtensionEnd* el) const override;
-            };
-            class AddOwnedEndProcedure : public AbstractSingletonProcedure<ExtensionEnd, Extension> {
-                public:
-                    AddOwnedEndProcedure(Extension* me) : AbstractSingletonProcedure<ExtensionEnd, Extension>(me) {};
-                    void operator()(ExtensionEnd* el) const override;
-                    void operator()(ID id) const override;
-            };
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
-            void referenceErased(ID id) override;
+            Set<ExtensionEnd, Extension>& getOwnedEndSingleton();
+            void init();
+            void copy(const Extension& rhs);
             Extension();
         public:
             Extension(const Extension& rhs);
@@ -50,6 +35,7 @@ namespace UML {
             bool hasOwnedEnd() const;
             void setOwnedEnd(ExtensionEnd& end);
             void setOwnedEnd(ExtensionEnd* end);
+            void setOwnedEnd(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::EXTENSION;

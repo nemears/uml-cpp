@@ -1,92 +1,56 @@
 #include "uml/namespace.h"
+#include "uml/uml-stable.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
-void Namespace::AddMemberFunctor::operator()(NamedElement& el) const {
-    oppositeSequenceAdd(el, &NamedElement::getMemberNamespace);
-    updateCopiedSequenceAddedTo(el, &Namespace::getMembers);
-}
-
-void Namespace::AddMemberFunctor::operator()(ID id) const {
-    // TODO update copies
-}
-
-void Namespace::RemoveMemberFunctor::operator()(NamedElement& el) const {
-    oppositeSequenceRemove(el, &NamedElement::getMemberNamespace);
-    subsetsRemove<Namespace, NamedElement>(el, &Namespace::getOwnedMembers);
-    el.updateQualifiedName("");
-    updateCopiedSequenceRemovedFrom(el, &Namespace::getMembers);
-}
-
-void Namespace::AddOwnedMemberFunctor::operator()(NamedElement& el) const {
-    subsetsAdd<Element, Element>(el, &Element::getOwnedElements);
-    subsetsAdd<Namespace, NamedElement>(el, &Namespace::getMembers);
-    oppositeSingletonAdd(el, &NamedElement::setNamespace);
-    el.updateQualifiedName(m_el->getQualifiedName());
-    updateCopiedSequenceAddedTo(el, &Namespace::getOwnedMembers);
-}
-
-void Namespace::AddOwnedMemberFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedElements().count(id)) {
-        m_el->getOwnedElements().addByID(id);
-    }
-    if (!m_el->getMembers().count(id)) {
-        m_el->getMembers().addByID(id);
-    }
-    // TODO update copies
-}
-
-void Namespace::RemoveOwnedMemberFunctor::operator()(NamedElement& el) const {
-    subsetsRemove<Element, Element>(el, &Element::getOwnedElements);
-    subsetsRemove<Namespace, NamedElement>(el, &Namespace::getMembers);
-    oppositeSingletonRemove(el, &NamedElement::m_namespace);
-    updateCopiedSequenceRemovedFrom(el, &Namespace::getOwnedMembers);
-}
-
 void Namespace::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
-    m_members.reindex(oldID, newID, &Namespace::getMembers);
-    m_ownedMembers.reindex(oldID, newID, &Namespace::getOwnedMembers);
+    m_members.reindex(oldID, newID);
 }
 
-void Namespace::restoreReferences() {
-    NamedElement::restoreReferences();
-    m_members.restoreReferences();
-    m_ownedMembers.restoreReferences();
+void Namespace::reindexName(std::string oldName, std::string newName) {
+    NamedElement::reindexName(oldName, newName);
+    m_members.reindexName(oldName, newName);
+}
+
+void Namespace::referencingReleased(ID id) {
+    NamedElement::referencingReleased(id);
+    m_members.release(id);
 }
 
 void Namespace::referenceErased(ID id) {
     NamedElement::referenceErased(id);
-    m_members.elementErased(id);
-    m_ownedMembers.elementErased(id);
+    m_members.eraseElement(id);
+}
+
+void Namespace::init() {
+    m_members.m_signature = &Namespace::getMembers;
+    m_members.m_readOnly = true;
+    m_members.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_members.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
+    m_ownedMembers.subsets(*m_ownedElements);
+    m_ownedMembers.subsets(m_members);
+    m_ownedMembers.opposite(&NamedElement::getNamespaceSingleton);
+    m_ownedMembers.m_signature = &Namespace::getOwnedMembers;
+    m_ownedMembers.m_readOnly = true;
+}
+
+void Namespace::copy(const Namespace& rhs) {
+    m_members = rhs.m_members;
+    m_ownedMembers = rhs.m_ownedMembers;
 }
 
 Namespace::Namespace() : Element(ElementType::NAMESPACE) {
-    m_members.addProcedures.push_back(new AddMemberFunctor(this));
-    m_members.removeProcedures.push_back(new RemoveMemberFunctor(this));
-    m_ownedMembers.addProcedures.push_back(new AddOwnedMemberFunctor(this));
-    m_ownedMembers.removeProcedures.push_back(new RemoveOwnedMemberFunctor(this));
+    init();
 }
 
 Namespace::~Namespace() {
     
 }
 
-Namespace::Namespace(const Namespace& nmspc) : 
-NamedElement(nmspc), 
-Element(nmspc, ElementType::NAMESPACE) {
-    m_members = nmspc.m_members;
-    m_members.m_el = this;
-    m_members.addProcedures.clear();
-    m_members.addProcedures.push_back(new AddMemberFunctor(this));
-    m_members.removeProcedures.clear();
-    m_members.removeProcedures.push_back(new RemoveMemberFunctor(this));
-    m_ownedMembers = nmspc.m_ownedMembers;
-    m_ownedMembers.m_el = this;
-    m_ownedMembers.addProcedures.clear();
-    m_ownedMembers.addProcedures.push_back(new AddOwnedMemberFunctor(this));
-    m_ownedMembers.removeProcedures.clear();
-    m_ownedMembers.removeProcedures.push_back(new RemoveOwnedMemberFunctor(this));
+Namespace::Namespace(const Namespace& nmspc) : Element(ElementType::NAMESPACE) {
+    // abstract
 }
 
 void Namespace::setName(const std::string& name) {
@@ -96,11 +60,11 @@ void Namespace::setName(const std::string& name) {
     }
 }
 
-Sequence<NamedElement>& Namespace::getMembers() {
+Set<NamedElement, Namespace>& Namespace::getMembers() {
     return m_members;
 }
 
-Sequence<NamedElement>& Namespace::getOwnedMembers() {
+Set<NamedElement, Namespace>& Namespace::getOwnedMembers() {
     return m_ownedMembers;
 }
 
@@ -112,10 +76,4 @@ bool Namespace::isSubClassOf(ElementType eType) const {
     }
 
     return ret;
-}
-
-void Namespace::referencingReleased(ID id) {
-    NamedElement::referencingReleased(id);
-    m_ownedMembers.elementReleased(id, &Namespace::getOwnedMembers);
-    m_members.elementReleased(id, &Namespace::getMembers);
 }

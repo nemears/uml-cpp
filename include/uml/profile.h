@@ -10,20 +10,14 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            class ProfileAddOwnedStereotypeFunctor : public TemplateAbstractSequenceFunctor<Stereotype, Profile> {
-                public:
-                    ProfileAddOwnedStereotypeFunctor(Profile* el) : TemplateAbstractSequenceFunctor(el) {};
-                    void operator()(Stereotype& el) const override;
-            };
-            class ProfileRemoveOwnedStereotypeFunctor : public TemplateAbstractSequenceFunctor<Stereotype, Profile> {
-                public:
-                    ProfileRemoveOwnedStereotypeFunctor(Profile* el) : TemplateAbstractSequenceFunctor(el) {};
-                    void operator()(Stereotype& el) const override;
-            };
+            Set<Stereotype, Profile> m_profileOwnedStereotypes = Set<Stereotype, Profile>(this);
+            void init();
+            void copy(const Profile& rhs);
             Profile();
         public:
-            Profile(const Profile& profile);
+            Profile(const Profile& rhs);
             virtual ~Profile();
+            Set<Stereotype, Profile>& getOwnedStereotypes();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PROFILE;

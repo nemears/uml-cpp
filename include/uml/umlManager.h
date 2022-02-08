@@ -88,9 +88,12 @@ namespace UML {
         friend class PackageMerge;
         friend class Property;
         friend class Feature;
+        friend class AddToMountFunctor;
         template<typename> friend class Sequence;
         template <class T> friend struct SequenceIterator;
         template <class T, class U> friend class Singleton;
+        template <class T, class U> friend class Set;
+        template <class T> friend class SetIterator;
 
         protected:
             std::unordered_set<ID> m_elements;
@@ -147,6 +150,7 @@ namespace UML {
                     throw UnknownID_Exception(id);
                 }
             };
+            virtual Element& get(ID id);
             size_t count(ID id);
             virtual bool loaded(ID id);
             template <class T = Element> T& create() {
@@ -157,6 +161,7 @@ namespace UML {
                 ret->m_node = &m_graph[ret->getID()];
                 return *ret;
             };
+            Element& create(ElementType eType);
             void reindex(ID oldID, ID newID);
             /**
              * This function doesn't deal with memory, just sets the m_manager so the Sequence Value

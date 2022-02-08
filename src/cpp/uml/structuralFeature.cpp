@@ -1,39 +1,33 @@
 #include "uml/structuralFeature.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
 void StructuralFeature::referencingReleased(ID id) {
     Feature::referencingReleased(id);
     TypedElement::referencingReleased(id);
-    MultiplicityElement::referencingReleased(id);
 }
 
 void StructuralFeature::referenceReindexed(ID oldID, ID newID) {
     Feature::referenceReindexed(oldID, newID);
     TypedElement::referenceReindexed(oldID, newID);
-    MultiplicityElement::referenceReindexed(oldID, newID);
 }
 
-void StructuralFeature::restoreReferences() {
-    TypedElement::restoreReferences();
-    MultiplicityElement::restoreReferences();
-    Feature::restoreReferences();
+void StructuralFeature::reindexName(std::string oldName, std::string newName) {
+    Feature::reindexName(oldName, newName);
+    TypedElement::reindexName(oldName, newName);
 }
 
 void StructuralFeature::referenceErased(ID id) {
     TypedElement::referenceErased(id);
-    MultiplicityElement::referenceErased(id);
     Feature::referenceErased(id);
 }
 
-StructuralFeature::StructuralFeature() : Element(ElementType::STRUCTURAL_FEATURE) {}
+StructuralFeature::StructuralFeature() : Element(ElementType::STRUCTURAL_FEATURE) {
 
-StructuralFeature::StructuralFeature(const StructuralFeature& feature) : 
-TypedElement(feature), 
-MultiplicityElement(feature), 
-Feature(feature),
-NamedElement(feature),
-Element(feature, ElementType::STRUCTURAL_FEATURE) {}
+}
+
+StructuralFeature::StructuralFeature(const StructuralFeature& feature) : Element(feature, ElementType::STRUCTURAL_FEATURE) {}
 
 bool StructuralFeature::isSubClassOf(ElementType eType) const {
     bool ret = TypedElement::isSubClassOf(eType);

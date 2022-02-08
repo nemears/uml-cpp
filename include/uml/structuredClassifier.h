@@ -6,55 +6,34 @@
 namespace UML {
 
     class ConnectableElement;
+    class Connector;
 
     class StructuredClassifier : virtual public Classifier {
+
+        friend class Property;
+
         protected:
-            Sequence<Property> m_ownedAttributes = Sequence<Property>(this);
-            Sequence<ConnectableElement> m_role = Sequence<ConnectableElement>(this);
-            Sequence<Property> m_parts = Sequence<Property>(this);
-            class AddOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,StructuredClassifier> {
+            Set<ConnectableElement, StructuredClassifier> m_roles = Set<ConnectableElement, StructuredClassifier>(this);
+            Set<Property, StructuredClassifier> m_ownedAttributes = Set<Property, StructuredClassifier>(this);
+            Set<Property, StructuredClassifier> m_parts = Set<Property, StructuredClassifier>(this);
+            Set<Connector, StructuredClassifier> m_ownedConnectors = Set<Connector, StructuredClassifier>(this);
+            class AddPartFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
                 public:
-                    AddOwnedAttributeFunctor(StructuredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Property& el) const override;
-                    void operator()(ID id) const override;
+                    AddPartFunctor(Element* el) : SetFunctor(el) {};
             };
-            class RemoveOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,StructuredClassifier> {
-                public:
-                    RemoveOwnedAttributeFunctor(StructuredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Property& el) const override;
-            };
-            class AddRoleFunctor : public TemplateAbstractSequenceFunctor<ConnectableElement,StructuredClassifier> {
-                public:
-                    AddRoleFunctor(StructuredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(ConnectableElement& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveRoleFunctor : public TemplateAbstractSequenceFunctor<ConnectableElement,StructuredClassifier> {
-                public:
-                    RemoveRoleFunctor(StructuredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(ConnectableElement& el) const override;
-            };
-            class AddPartFunctor : public TemplateAbstractSequenceFunctor<Property, StructuredClassifier> {
-                public:
-                    AddPartFunctor(StructuredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Property& el) const override;
-            };
-            class RemovePartFunctor : public TemplateAbstractSequenceFunctor<Property, StructuredClassifier> {
-                public:
-                    RemovePartFunctor(StructuredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Property& el) const override;
-            };
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID);
             void restoreReferences() override;
-            void referenceErased(ID id) override;
+            void init();
+            void copy(const StructuredClassifier& rhs);
             StructuredClassifier();
         public:
             StructuredClassifier(const StructuredClassifier& clazz);
             virtual ~StructuredClassifier();
-            Sequence<Property>& getOwnedAttributes();
-            Sequence<ConnectableElement>& getRole();
-            Sequence<Property>& getParts();
+            Set<Property, StructuredClassifier>& getOwnedAttributes();
+            Set<ConnectableElement, StructuredClassifier>& getRoles();
+            Set<Property, StructuredClassifier>& getParts();
+            Set<Connector, StructuredClassifier>& getOwnedConnectors();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::STRUCTURED_CLASSIFIER;

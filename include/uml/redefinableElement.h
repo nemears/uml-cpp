@@ -1,7 +1,7 @@
 #ifndef REDEFINABLE_ELEMENT_H
 #define REDEFINABLE_ELEMENT_H
 
-#include "sequence.h"
+#include "namedElement.h"
 
 namespace UML {
 
@@ -9,38 +9,20 @@ namespace UML {
 
     class RedefinableElement : virtual public NamedElement {
         protected:
-            Sequence<RedefinableElement> m_redefinedElement = Sequence<RedefinableElement>(this);
-            Sequence<Classifier> m_redefinitionContext = Sequence<Classifier>(this);
-            class AddRedefinedElementFunctor : public TemplateAbstractSequenceFunctor<RedefinableElement, RedefinableElement> {
-                public:
-                    AddRedefinedElementFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(RedefinableElement& el) const override;
-            };
-            class RemoveRedefinedElementFunctor : public TemplateAbstractSequenceFunctor<RedefinableElement, RedefinableElement> {
-                public:
-                    RemoveRedefinedElementFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(RedefinableElement& el) const override;
-            };
-            class AddRedefinitionContextFunctor : public TemplateAbstractSequenceFunctor<Classifier, RedefinableElement> {
-                public:
-                    AddRedefinitionContextFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Classifier& el) const override;
-            };
-            class RemoveRedefinitionContextFunctor : public TemplateAbstractSequenceFunctor<Classifier, RedefinableElement> {
-                public:
-                    RemoveRedefinitionContextFunctor(RedefinableElement* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Classifier& el) const override;
-            };
+            Set<RedefinableElement, RedefinableElement> m_redefinedElement = Set<RedefinableElement, RedefinableElement>(this);
+            Set<Classifier, RedefinableElement> m_redefinitionContext = Set<Classifier, RedefinableElement>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
+            void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
+            void init();
+            void copy(const RedefinableElement& rhs);
             RedefinableElement();
         public:
             virtual ~RedefinableElement();
             RedefinableElement(const RedefinableElement& el);
-            Sequence<RedefinableElement>& getRedefinedElements();
-            Sequence<Classifier>& getRedefinitionContext();
+            Set<RedefinableElement, RedefinableElement>& getRedefinedElements();
+            Set<Classifier, RedefinableElement>& getRedefinitionContext();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::REDEFINABLE_ELEMENT;

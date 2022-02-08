@@ -1,12 +1,7 @@
 #include "gtest/gtest.h"
-#include "uml/umlManager.h"
-#include "uml/expression.h"
-#include "uml/class.h"
+#include "uml/uml-stable.h"
 #include "test/yumlParsersTest.h"
-#include "uml/model.h"
-#include "uml/profileApplication.h"
 #include "uml/parsers/parser.h"
-#include "uml/instanceSpecification.h"
 #include "test/umlTestUtil.h"
 
 using namespace std;
@@ -110,6 +105,7 @@ TEST_F(UmlManagerTest, releaseTest) {
     p.setName("name");
     ID pid = p.getID();
     ASSERT_NO_THROW(m.release(p.getID()));
+    ASSERT_FALSE(m.loaded(pid));
     UmlManager* m2 = Parsers::parse((filesystem::path(ymlPath + "umlManagerTests") / "mount" / (pid.string() + ".yml")).string());
     ASSERT_EQ(m2->getRoot()->getElementType(), ElementType::PACKAGE);
     Package& p2 = m2->getRoot()->as<Package>();
@@ -122,23 +118,21 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
     Package& p = m.create<Package>();
     Class& c = m.create<Class>();
     InstanceSpecification& i = m.create<InstanceSpecification>();
-    i.setClassifier(&c);
+    i.getClassifiers().add(c);
     p.getPackagedElements().add(c);
     p.getPackagedElements().add(i);
     m.setRoot(&p);
     ASSERT_NO_THROW(m.mount(ymlPath + "umlManagerTests"));
-    ASSERT_TRUE(i.getClassifier() != 0);
-    ASSERT_EQ(i.getClassifier()->getID(), c.getID());
+    ASSERT_TRUE(i.getClassifiers().size() != 0);
+    ASSERT_EQ(i.getClassifiers().front().getID(), c.getID());
     ASSERT_NO_THROW(m.release(c.getID()));
-    ASSERT_TRUE(i.getClassifier() != 0);
-    Class* c2 = &i.getClassifier()->as<Class>();
+    ASSERT_TRUE(i.getClassifiers().size() != 0);
+    Class* c2 = &i.getClassifiers().front().as<Class>();
     ASSERT_TRUE(i.getOwner() != 0);
     ASSERT_TRUE(c2->getOwner() != 0);
-    ASSERT_EQ(c2->getMemberNamespace().size(), 1);
-    ASSERT_EQ(&c2->getMemberNamespace().front(), &p);
     ASSERT_EQ(c2->getNamespace(), &p);
     ASSERT_EQ(c2->getOwningPackage(), &p);
-    ASSERT_EQ(&p.getOwnedElements().front(), c2);
+    ASSERT_EQ(*p.getOwnedElements().begin(), *c2);
     ASSERT_EQ(p.getMembers().size(), 2);
     ASSERT_EQ(p.getMembers().front(), *c2);
     ASSERT_EQ(&p.getMembers().front(), c2);
@@ -150,16 +144,12 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
     ASSERT_EQ(c2->getOwner(), p2);
     ASSERT_TRUE(c2->getNamespace() != 0);
     ASSERT_EQ(c2->getNamespace(), p2);
-    ASSERT_EQ(c2->getMemberNamespace().size(), 1);
-    ASSERT_EQ(&c2->getMemberNamespace().front(), p2);
     ASSERT_TRUE(c2->getOwningPackage() != 0);
     ASSERT_EQ(c2->getOwningPackage(), p2);
 
     ASSERT_EQ(i.getOwner(), p2);
     ASSERT_TRUE(i.getNamespace() != 0);
     ASSERT_EQ(i.getNamespace(), p2);
-    ASSERT_EQ(i.getMemberNamespace().size(), 1);
-    ASSERT_EQ(&i.getMemberNamespace().front(), p2);
     ASSERT_TRUE(i.getOwningPackage() != 0);
     ASSERT_EQ(i.getOwningPackage(), p2);
 
@@ -171,7 +161,7 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
     ASSERT_EQ(p2->getMembers().size(), 2);
     ASSERT_EQ(&p2->getMembers().front(), c2);
     ASSERT_EQ(p2->getOwnedElements().size(), 2);
-    ASSERT_EQ(&p2->getOwnedElements().front(), c2);
+    ASSERT_EQ(*p2->getOwnedElements().begin(), *c2);
 }
 
 TEST_F(UmlManagerTest, addToManagerAfterMountedTest) {
@@ -207,7 +197,7 @@ TEST_F(UmlManagerTest, ManagerMountStressTest) {
     Package& root2 = m.get<Package>(rootID); // try to only aquire root
     pckg = &root2;
     for (size_t i = 0; i < numElements; i++) {
-        EXPECT_FALSE(m.loaded(pckg->getPackagedElements().frontID())) << "at index " << i;
+        EXPECT_FALSE(m.loaded(*pckg->getPackagedElements().ids().begin())) << "at index " << i;
         ASSERT_EQ(pckg->getPackagedElements().size(), 1) << "at index " << i;
         ASSERT_EQ(pckg->getOwnedMembers().size(), 1) << "at index " << i;
         ASSERT_EQ(pckg->getMembers().size(), 1) << "at index " << i;

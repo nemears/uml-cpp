@@ -1,0 +1,19 @@
+---
+  package:
+    packagedElements:
+      - class:
+          id: ZzEaSlDHd6F&TJY8_2ExY1BFwxQ9
+          name: implementing
+          interfaceRealizations:
+            - interfaceRealization:
+                contract: SYyozHHhoydH2lP2LTie6dB&abzm
+      - interface:
+          name: interface
+          id: SYyozHHhoydH2lP2LTie6dB&abzm
+      - class:
+          name: encapsulated
+          ownedAttributes:
+            - port:
+                isConjugated: true
+                type: ZzEaSlDHd6F&TJY8_2ExY1BFwxQ9
+...

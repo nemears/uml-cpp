@@ -1,51 +1,42 @@
 #include "uml/redefinableElement.h"
-#include "uml/classifier.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void RedefinableElement::AddRedefinedElementFunctor::operator()(RedefinableElement& el) const {
-    el.setReference(m_el);
-    updateCopiedSequenceAddedTo(el, &RedefinableElement::getRedefinedElements);
-}
-
-void RedefinableElement::RemoveRedefinedElementFunctor::operator()(RedefinableElement& el) const {
-    el.removeReference(m_el->getID());
-    updateCopiedSequenceRemovedFrom(el, &RedefinableElement::getRedefinedElements);
-}
-
-void RedefinableElement::AddRedefinitionContextFunctor::operator()(Classifier& el) const {
-    updateCopiedSequenceAddedTo(el, &RedefinableElement::getRedefinitionContext);
-}
-
-void RedefinableElement::RemoveRedefinitionContextFunctor::operator()(Classifier& el) const {
-    updateCopiedSequenceRemovedFrom(el, &RedefinableElement::getRedefinitionContext);
-}
-
 void RedefinableElement::referencingReleased(ID id) {
-    m_redefinedElement.elementReleased(id, &RedefinableElement::getRedefinedElements);
-    m_redefinitionContext.elementReleased(id, &RedefinableElement::getRedefinitionContext);
+    m_redefinedElement.release(id);
+    m_redefinitionContext.release(id);
 }
 
 void RedefinableElement::referenceReindexed(ID oldID, ID newID) {
-    m_redefinedElement.reindex(oldID, newID, &RedefinableElement::getRedefinedElements);
-    m_redefinitionContext.reindex(oldID, newID, &RedefinableElement::getRedefinitionContext);
+    m_redefinedElement.reindex(oldID, newID);
+    m_redefinitionContext.reindex(oldID, newID);
 }
 
-void RedefinableElement::restoreReferences() {
-    m_redefinedElement.restoreReferences();
-    m_redefinitionContext.restoreReferences();
+void RedefinableElement::reindexName(std::string oldName, std::string newName) {
+    m_redefinedElement.reindexName(oldName, newName);
+    m_redefinitionContext.reindexName(oldName, newName);
 }
 
 void RedefinableElement::referenceErased(ID id) {
-    m_redefinedElement.elementErased(id);
-    m_redefinitionContext.elementErased(id);
+    m_redefinedElement.eraseElement(id);
+    m_redefinitionContext.eraseElement(id);
+}
+
+void RedefinableElement::init() {
+    m_redefinedElement.m_readOnly = true;
+    m_redefinedElement.m_signature = &RedefinableElement::getRedefinedElements;
+    m_redefinitionContext.m_readOnly = true;
+    m_redefinitionContext.m_signature = &RedefinableElement::getRedefinitionContext;
+}
+
+void RedefinableElement::copy(const RedefinableElement& rhs) {
+    m_redefinedElement = rhs.m_redefinedElement;
+    m_redefinitionContext = rhs.m_redefinitionContext;
 }
 
 RedefinableElement::RedefinableElement() : Element(ElementType::REDEFINABLE_ELEMENT) {
-    m_redefinedElement.addProcedures.push_back(new AddRedefinedElementFunctor(this));
-    m_redefinedElement.removeProcedures.push_back(new RemoveRedefinedElementFunctor(this));
-    m_redefinitionContext.addProcedures.push_back(new AddRedefinitionContextFunctor(this));
-    m_redefinitionContext.removeProcedures.push_back(new RemoveRedefinitionContextFunctor(this));
+    init();
 }
 
 RedefinableElement::~RedefinableElement() {
@@ -53,25 +44,14 @@ RedefinableElement::~RedefinableElement() {
 }
 
 RedefinableElement::RedefinableElement(const RedefinableElement& el) : Element(el, ElementType::REDEFINABLE_ELEMENT) {
-    m_redefinedElement = el.m_redefinedElement;
-    m_redefinedElement.m_el = this;
-    m_redefinedElement.addProcedures.clear();
-    m_redefinedElement.removeProcedures.clear();
-    m_redefinedElement.addProcedures.push_back(new AddRedefinedElementFunctor(this));
-    m_redefinedElement.removeProcedures.push_back(new RemoveRedefinedElementFunctor(this));
-    m_redefinitionContext = el.m_redefinitionContext;
-    m_redefinitionContext.m_el = this;
-    m_redefinitionContext.addProcedures.clear();
-    m_redefinitionContext.removeProcedures.clear();
-    m_redefinitionContext.addProcedures.push_back(new AddRedefinitionContextFunctor(this));
-    m_redefinitionContext.removeProcedures.push_back(new RemoveRedefinitionContextFunctor(this));
+    // abstract
 }
 
-Sequence<RedefinableElement>& RedefinableElement::getRedefinedElements() {
+Set<RedefinableElement, RedefinableElement>& RedefinableElement::getRedefinedElements() {
     return m_redefinedElement;
 }
 
-Sequence<Classifier>& RedefinableElement::getRedefinitionContext() {
+Set<Classifier, RedefinableElement>& RedefinableElement::getRedefinitionContext() {
     return m_redefinitionContext;
 }
 

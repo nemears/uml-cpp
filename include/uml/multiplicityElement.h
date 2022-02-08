@@ -13,31 +13,31 @@ namespace UML {
             int m_lower = -1;
             int m_upper = -1;
             Singleton<ValueSpecification, MultiplicityElement> m_lowVal = Singleton<ValueSpecification, MultiplicityElement>(this);
-            class RemoveLowerValueProcedures : public AbstractSingletonProcedure<ValueSpecification, MultiplicityElement> {
-                public:
-                    RemoveLowerValueProcedures(MultiplicityElement* me) : AbstractSingletonProcedure<ValueSpecification, MultiplicityElement>(me) {};
-                    void operator()(ValueSpecification* el) const override;
-            };
-            class AddLowerValueProcedures : public AbstractSingletonProcedure<ValueSpecification, MultiplicityElement> {
-                public:
-                    AddLowerValueProcedures(MultiplicityElement* me) : AbstractSingletonProcedure<ValueSpecification, MultiplicityElement>(me) {};
-                    void operator()(ValueSpecification* el) const override;
-            };
             Singleton<ValueSpecification, MultiplicityElement> m_upVal = Singleton<ValueSpecification, MultiplicityElement>(this);
-            class RemoveUpperValueProcedures : public AbstractSingletonProcedure<ValueSpecification, MultiplicityElement> {
+            class AddLowerFunctor : public SetFunctor {
                 public:
-                    RemoveUpperValueProcedures(MultiplicityElement* me) : AbstractSingletonProcedure<ValueSpecification, MultiplicityElement>(me) {};
-                    void operator()(ValueSpecification* el) const override;
+                    AddLowerFunctor(Element* them) : SetFunctor(them) {};
+                    void operator()(Element& el) const override;
             };
-            class AddUpperValueProcedures : public AbstractSingletonProcedure<ValueSpecification, MultiplicityElement> {
+            class RemoveLowerFunctor : public SetFunctor {
                 public:
-                    AddUpperValueProcedures(MultiplicityElement* me) : AbstractSingletonProcedure<ValueSpecification, MultiplicityElement>(me) {};
-                    void operator()(ValueSpecification* el) const override;
+                    RemoveLowerFunctor(Element* them) : SetFunctor(them) {};
+                    void operator()(Element& el) const override;
             };
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
-            void referenceErased(ID id) override;
+            class AddUpperFunctor : public SetFunctor {
+                public:
+                    AddUpperFunctor(Element* them) : SetFunctor(them) {};
+                    void operator()(Element& el) const override;
+            };
+            class RemoveUpperFunctor : public SetFunctor {
+                public:
+                    RemoveUpperFunctor(Element* them) : SetFunctor(them) {};
+                    void operator()(Element& el) const override;
+            };
+            Set<ValueSpecification, MultiplicityElement>& getLowerValueSingleton();
+            Set<ValueSpecification, MultiplicityElement>& getUpperValueSingleton();
+            void init();
+            void copy(const MultiplicityElement& rhs);
             MultiplicityElement();
         private:
             bool m_multiplicityIsSpecified = false;
@@ -45,6 +45,7 @@ namespace UML {
             bool m_upSpecified = false;
         public:
             MultiplicityElement(const MultiplicityElement& rhs);
+            virtual ~MultiplicityElement();
             int getLower();
             void setLower(const int low);
             ValueSpecification* getLowerValue();

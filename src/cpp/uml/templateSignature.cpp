@@ -2,123 +2,65 @@
 #include "uml/templateableElement.h"
 #include "uml/umlManager.h"
 #include "uml/templateParameter.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void TemplateSignature::RemoveTemplateProcedure::operator()(TemplateableElement* el) const {
-    if (el->hasOwnedTemplateSignature() && !m_me->m_setFlag) {
-        m_me->m_setFlag = true;
-        el->setOwnedTemplateSignature(0);
-        m_me->m_setFlag = false;
-    }
-}
-
-void TemplateSignature::AddTemplateProcedure::operator()(TemplateableElement* el) const {
-    if (el->hasOwnedTemplateSignature()) {
-        if (el->getOwnedTemplateSignatureRef() != *m_me) {
-            el->setOwnedTemplateSignature(m_me);
-        }
-    } else {
-        el->setOwnedTemplateSignature(m_me);
-    }
-    if (m_me->getOwnerID() != el->getID()) {
-        m_me->setOwner(el);
-    }
-}
-
-void TemplateSignature::AddTemplateProcedure::operator()(ID id) const {
-    if (m_me->getOwnerID() != id) {
-        m_me->setOwnerByID(id);
-    }
-}
-
-void TemplateSignature::AddOwnedParameterFunctor::operator()(TemplateParameter& el) const {
-    if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalAdd(el);
-    }
-
-    if (el.getSignature() != m_el) {
-        el.setSignature(m_el);
-    }
-
-    if (!m_el->getParameter().count(el.getID())) {
-        m_el->getParameter().add(el);
-    }
-    updateCopiedSequenceAddedTo(el, &TemplateSignature::getOwnedParameter);
-}
-
-void TemplateSignature::AddOwnedParameterFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedElements().count(id)) {
-        m_el->getOwnedElements().addByID(id);
-    }
-    if (!m_el->getParameter().count(id)) {
-        m_el->getParameter().addByID(id);
-    }
-}
-
-void TemplateSignature::RemoveOwnedParameterFunctor::operator()(TemplateParameter& el) const {
-    if (m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalRemove(el);
-    }
-
-    if (el.getSignature() == m_el) {
-        el.setSignature(0);
-    }
-
-    if (m_el->getParameter().count(el.getID())) {
-        m_el->getParameter().remove(el);
-    }
-    updateCopiedSequenceRemovedFrom(el, &TemplateSignature::getOwnedParameter);
-}
-
 void TemplateSignature::referencingReleased(ID id) {
     Element::referencingReleased(id);
-    m_template.release(id);
-    m_ownedParameter.elementReleased(id, &TemplateSignature::getOwnedParameter);
-    m_parameter.elementReleased(id, &TemplateSignature::getParameter);
+    m_parameters.release(id);
+}
+
+void TemplateSignature::reindexName(std::string oldName, std::string newName) {
+    Element::reindexName(oldName, newName);
+    m_parameters.reindexName(oldName, newName);
 }
 
 void TemplateSignature::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    m_template.reindex(oldID, newID);
-    m_ownedParameter.reindex(oldID, newID, &TemplateSignature::getOwnedParameter);
-    m_parameter.reindex(oldID, newID, &TemplateSignature::getParameter);
-}
-
-void TemplateSignature::restoreReferences() {
-    Element::restoreReferences();
-    m_template.restoreReference();
-    m_ownedParameter.restoreReferences();
-    m_parameter.restoreReferences();
+    m_parameters.reindex(oldID, newID);
 }
 
 void TemplateSignature::referenceErased(ID id) {
     Element::referenceErased(id);
-    m_template.elementErased(id);
-    m_ownedParameter.elementErased(id);
-    m_parameter.elementErased(id);
+    m_parameters.eraseElement(id);
+}
+
+Set<TemplateableElement, TemplateSignature>& TemplateSignature::getTemplateSingleton() {
+    return m_template;
+}
+
+Set<TemplateParameter, TemplateSignature>& TemplateSignature::getParametersSet() {
+    return m_parameters;
+}
+
+Set<TemplateParameter, TemplateSignature>& TemplateSignature::getOwnedParametersSet() {
+    return m_ownedParameters;
+}
+
+void TemplateSignature::init() {
+    m_template.subsets(*m_owner);
+    m_template.opposite(&TemplateableElement::getOwnedTemplateSignatureSingleton);
+    m_template.m_signature = &TemplateSignature::getTemplateSingleton;
+    m_parameters.m_signature = &TemplateSignature::getParametersSet;
+    m_ownedParameters.subsets(m_parameters);
+    m_ownedParameters.subsets(*m_ownedElements);
+    m_ownedParameters.opposite(&TemplateParameter::getSignatureSingleton);
+    m_ownedParameters.m_signature = &TemplateSignature::getOwnedParametersSet;
+}
+
+void TemplateSignature::copy(const TemplateSignature& rhs) {
+    m_template = rhs.m_template;
 }
 
 TemplateSignature::TemplateSignature() : Element(ElementType::TEMPLATE_SIGNATURE) {
-    m_template.m_signature = &TemplateSignature::m_template;
-    m_template.m_removeProcedures.push_back(new RemoveTemplateProcedure(this));
-    m_template.m_addProcedures.push_back(new AddTemplateProcedure(this));
-    m_ownedParameter.addProcedures.push_back(new AddOwnedParameterFunctor(this));
-    m_ownedParameter.removeProcedures.push_back(new RemoveOwnedParameterFunctor(this));
+    init();
 }
 
-TemplateSignature::TemplateSignature(const TemplateSignature& el) : Element(el, ElementType::TEMPLATE_SIGNATURE) {
-    m_template = el.m_template;
-    m_template.m_me = this;
-    m_template.m_removeProcedures.clear();
-    m_template.m_addProcedures.clear();
-    m_template.m_removeProcedures.push_back(new RemoveTemplateProcedure(this));
-    m_template.m_addProcedures.push_back(new AddTemplateProcedure(this));
-    m_ownedParameter = el.m_ownedParameter;
-    m_ownedParameter.addProcedures.clear();
-    m_ownedParameter.removeProcedures.clear();
-    m_ownedParameter.addProcedures.push_back(new AddOwnedParameterFunctor(this));
-    m_ownedParameter.removeProcedures.push_back(new RemoveOwnedParameterFunctor(this));
+TemplateSignature::TemplateSignature(const TemplateSignature& rhs) : Element(rhs, ElementType::TEMPLATE_SIGNATURE) {
+    init();
+    Element::copy(rhs);
+    copy(rhs);
 }
 
 TemplateSignature::~TemplateSignature() {
@@ -149,12 +91,16 @@ void TemplateSignature::setTemplate(TemplateableElement& temp) {
     m_template.set(temp);
 }
 
-Sequence<TemplateParameter>& TemplateSignature::getOwnedParameter() {
-    return m_ownedParameter;
+void TemplateSignature::setTemplate(ID id) {
+    m_template.set(id);
 }
 
-Sequence<TemplateParameter>& TemplateSignature::getParameter() {
-    return m_parameter;
+OrderedSet<TemplateParameter, TemplateSignature>& TemplateSignature::getOwnedParameters() {
+    return m_ownedParameters;
+}
+
+OrderedSet<TemplateParameter, TemplateSignature>& TemplateSignature::getParameters() {
+    return m_parameters;
 }
 
 bool TemplateSignature::isSubClassOf(ElementType eType) const {

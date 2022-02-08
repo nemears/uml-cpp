@@ -1,12 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/parsers/parser.h"
 #include "test/yumlParsersTest.h"
-#include "uml/association.h"
-#include "uml/packageMerge.h"
-#include "uml/package.h"
-#include "uml/class.h"
-#include "uml/property.h"
-#include "uml/primitiveType.h"
+#include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
 
 using namespace std;
@@ -31,16 +26,16 @@ TEST_F(AssociationParserTest, parseNavigableOwnedEndAndMemberEndTest) {
     // TODO?
 
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
-    Class& type = m.get<Class>(pckg.getPackagedElements().front().getID());
-    ASSERT_EQ(pckg.getPackagedElements().get(1).getElementType(), ElementType::CLASS);
-    Class& c = *dynamic_cast<Class*>(&pckg.getPackagedElements().get(1));
+    ASSERT_EQ(pckg.getPackagedElements().get("type").getElementType(), ElementType::CLASS);
+    Class& type = m.get<Class>(pckg.getPackagedElements().get("type").getID());
+    ASSERT_EQ(pckg.getPackagedElements().get("hasAssociation").getElementType(), ElementType::CLASS);
+    Class& c = *dynamic_cast<Class*>(&pckg.getPackagedElements().get("hasAssociation"));
     ASSERT_EQ(c.getOwnedAttributes().size(), 1);
     Property& p = c.getOwnedAttributes().front();
     ASSERT_TRUE(p.getType() != 0);
     ASSERT_EQ(p.getType()->getID(), type.getID());
-    ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::ASSOCIATION);
-    Association& ass = dynamic_cast<Association&>(pckg.getPackagedElements().back());
+    ASSERT_EQ(pckg.getPackagedElements().get("association").getElementType(), ElementType::ASSOCIATION);
+    Association& ass = dynamic_cast<Association&>(pckg.getPackagedElements().get("association"));
     ASSERT_EQ(ass.getMemberEnds().size(), 2);
     ASSERT_EQ(ass.getMemberEnds().back().getID(), p.getID());
     ASSERT_EQ(ass.getNavigableOwnedEnds().size(), 1);
@@ -60,18 +55,18 @@ TEST_F(AssociationParserTest, parseOwnedEndAndMemberEndTest) {
     // TODO?
 
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
-    Class& type = m.get<Class>(pckg.getPackagedElements().front().getID());
-    ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::CLASS);
-    Class& c = *dynamic_cast<Class*>(&pckg.getPackagedElements().back());
+    ASSERT_EQ(pckg.getPackagedElements().get("type").getElementType(), ElementType::CLASS);
+    Class& type = m.get<Class>(pckg.getPackagedElements().get("type").getID());
+    ASSERT_EQ(pckg.getPackagedElements().get("hasAssociation").getElementType(), ElementType::CLASS);
+    Class& c = *dynamic_cast<Class*>(&pckg.getPackagedElements().get("hasAssociation"));
     ASSERT_EQ(c.getOwnedAttributes().size(), 1);
     Property& p = c.getOwnedAttributes().front();
     ASSERT_TRUE(p.getType() != 0);
     ASSERT_EQ(p.getType()->getID(), type.getID());
-    ASSERT_EQ(pckg.getPackagedElements().get(1).getElementType(), ElementType::ASSOCIATION);
-    Association& ass = dynamic_cast<Association&>(pckg.getPackagedElements().get(1));
+    ASSERT_EQ(pckg.getPackagedElements().get("association").getElementType(), ElementType::ASSOCIATION);
+    Association& ass = dynamic_cast<Association&>(pckg.getPackagedElements().get("association"));
     ASSERT_EQ(ass.getMemberEnds().size(), 2);
-    ASSERT_EQ(ass.getMemberEnds().back().getID(), p.getID());
+    ASSERT_EQ(ass.getMemberEnds().get(ID::fromString("KpMoyOIGjkm&tB8F_zGExQejc7T7")).getID(), p.getID());
     ASSERT_EQ(ass.getOwnedEnds().size(), 1);
     Property& ne = ass.getOwnedEnds().front();
     ASSERT_TRUE(ne.getType() != 0);
@@ -135,9 +130,12 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     Property& cProp = m.create<Property>();
     Property& aProp = m.create<Property>();
     Association& association = m.create<Association>();
+    cProp.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
     cProp.setAggregation(AggregationKind::COMPOSITE);
     cProp.setType(type);
+    association.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
     association.getMemberEnds().add(cProp);
+    aProp.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
     aProp.setType(clazz);
     association.getNavigableOwnedEnds().add(aProp);
     clazz.getOwnedAttributes().add(cProp);
@@ -156,7 +154,6 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_EQ(aProp2.getFeaturingClassifierRef(), association);
     ASSERT_TRUE(aProp2.hasNamespace());
     ASSERT_EQ(aProp2.getNamespaceRef(), association);
-    ASSERT_TRUE(aProp2.getMemberNamespace().count(association.getID()));
     ASSERT_TRUE(aProp2.hasOwner());
     ASSERT_EQ(aProp2.getOwnerRef(), association);
     ASSERT_TRUE(aProp2.hasType());
@@ -170,9 +167,9 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_EQ(association.getOwnedMembers().size(), 1);
     ASSERT_EQ(association.getOwnedMembers().front(), aProp2);
     ASSERT_EQ(association.getMembers().size(), 2);
-    ASSERT_EQ(association.getMembers().back(), aProp2);
+    ASSERT_TRUE(association.getMembers().contains(aProp2));
     ASSERT_EQ(association.getOwnedElements().size(), 1);
-    ASSERT_EQ(association.getOwnedElements().front(), aProp2);
+    ASSERT_EQ(*association.getOwnedElements().begin(), aProp2);
     ASSERT_EQ(association.getEndType().size(), 2);
     ASSERT_EQ(association.getEndType().back(), clazz);
 
@@ -189,7 +186,6 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_EQ(aProp3.getFeaturingClassifierRef(), association2);
     ASSERT_TRUE(aProp3.hasNamespace());
     ASSERT_EQ(aProp3.getNamespaceRef(), association2);
-    ASSERT_TRUE(aProp3.getMemberNamespace().count(association2.getID()));
     ASSERT_TRUE(aProp3.hasOwner());
     ASSERT_EQ(aProp3.getOwnerRef(), association2);
     ASSERT_EQ(association2.getNavigableOwnedEnds().size(), 1);
@@ -201,12 +197,12 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_EQ(association2.getOwnedMembers().size(), 1);
     ASSERT_EQ(association2.getOwnedMembers().front(), aProp3);
     ASSERT_EQ(association2.getMembers().size(), 2);
-    ASSERT_EQ(association2.getMembers().front(), aProp3);
+    ASSERT_TRUE(association2.getMembers().contains(aProp3));
     ASSERT_EQ(association2.getOwnedElements().size(), 1);
-    ASSERT_EQ(association2.getOwnedElements().front(), aProp3);
+    ASSERT_TRUE(association2.getOwnedElements().contains(aProp3));
     ASSERT_EQ(association2.getEndType().size(), 2);
-    ASSERT_EQ(association2.getEndType().front(), type);
-    ASSERT_EQ(association2.getEndType().back(), clazz);
+    ASSERT_TRUE(association2.getEndType().contains(type));
+    ASSERT_TRUE(association2.getEndType().contains(clazz));
 
     ID cPropID = cProp.getID();
     m.release(cProp);
@@ -214,14 +210,13 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_TRUE(cProp2.isComposite());
     ASSERT_TRUE(cProp2.hasAssociation());
     ASSERT_EQ(cProp2.getAssociationRef(), association2);
-    ASSERT_TRUE(cProp2.getMemberNamespace().count(association2.getID()));
     ASSERT_EQ(association2.getMemberEnds().size(), 2);
     ASSERT_EQ(association2.getMemberEnds().back(), cProp2);
     ASSERT_EQ(association2.getMembers().size(), 2);
-    ASSERT_EQ(association2.getMembers().back(), cProp2);
+    ASSERT_TRUE(association2.getMembers().contains(cProp2));
     ASSERT_EQ(association2.getEndType().size(), 2);
-    ASSERT_EQ(association2.getEndType().front(), type);
-    ASSERT_EQ(association2.getEndType().back(), clazz);
+    ASSERT_TRUE(association2.getEndType().contains(type));
+    ASSERT_TRUE(association2.getEndType().contains(clazz));
     ASSERT_EQ(clazz.getParts().size(), 1);
     ASSERT_EQ(clazz.getParts().front(), cProp2);
     ASSERT_EQ(clazz.getOwnedAttributes().size(), 1);
@@ -239,14 +234,13 @@ TEST_F(AssociationParserTest, mountAndEditAssociation) {
     ASSERT_TRUE(cProp3.isComposite());
     ASSERT_TRUE(cProp3.hasAssociation());
     ASSERT_EQ(cProp3.getAssociationRef(), association3);
-    ASSERT_TRUE(cProp3.getMemberNamespace().count(association3.getID()));
     ASSERT_EQ(association3.getMemberEnds().size(), 2);
     ASSERT_EQ(association3.getMemberEnds().back(), cProp3);
     ASSERT_EQ(association3.getMembers().size(), 2);
-    ASSERT_EQ(association3.getMembers().back(), cProp3);
+    ASSERT_TRUE(association3.getMembers().contains(cProp3));
     ASSERT_EQ(association3.getEndType().size(), 2);
-    ASSERT_EQ(association3.getEndType().back(), type);
-    ASSERT_EQ(association3.getEndType().front(), clazz);
+    ASSERT_TRUE(association3.getEndType().contains(type));
+    ASSERT_TRUE(association3.getEndType().contains(clazz));
 
     ID clazzID = clazz.getID();
     m.release(association3, clazz, aProp3, cProp3);

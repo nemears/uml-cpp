@@ -30,6 +30,8 @@ namespace UML {
         CLASSIFIER,
         COMMENT,
         CONNECTABLE_ELEMENT,
+        CONNECTOR,
+        CONNECTOR_END,
         CONTROL_FLOW,
         CREATE_OBJECT_ACTION,
         DATA_TYPE,
@@ -40,6 +42,7 @@ namespace UML {
         DEPLOYMENT_TARGET,
         DIRECTED_RELATIONSHIP,
         ELEMENT,
+        ENCAPSULATED_CLASSIFIER,
         ENUMERATION,
         ENUMERATION_LITERAL,
         EXPRESSION,
@@ -54,6 +57,8 @@ namespace UML {
         INPUT_PIN,
         INSTANCE_SPECIFICATION,
         INSTANCE_VALUE,
+        INTERFACE,
+        INTERFACE_REALIZATION,
         JOIN_NODE,
         LITERAL_BOOL,
         LITERAL_INT,
@@ -80,13 +85,16 @@ namespace UML {
         PARAMETERABLE_ELEMENT,
         PARAMETER_NODE,
         PIN,
+        PORT,
         PRIMITIVE_TYPE,
         PROFILE,
         PROFILE_APPLICATION,
         PROPERTY,
         REALIZATION,
+        RECEPTION,
         REDEFINABLE_ELEMENT,
         RELATIONSHIP,
+        SIGNAL,
         SLOT,
         STEREOTYPE,
         STRUCTURAL_FEATURE,
@@ -103,6 +111,12 @@ namespace UML {
     };
 
     class Element;
+
+    /**
+     * A Note on manager node and keeping track of elements: Right now we are just using a raw pointer,
+     * it may be simpler and simplify some umlmanager methods if it was implemented with a unique_pointer
+     * or something similar, but this is how its implemented currently.
+     **/
 
     /**
      * The ManagerNode struct is used as nodes in the internal graphs of the element's manager
@@ -138,27 +152,47 @@ namespace UML {
             };
     };
 
+    // TODO delete me
     template <class T> class Sequence;
-    template <class T, class U> class TemplateAbstractSequenceFunctor;
-    template <class T, class U> class Singleton;
-    template <class T> struct SequenceIterator;
+
     class ElementDoesntExistException;
     class Relationship;
     class DirectedRelationship;
     class Comment;
-    class SetOwnerFunctor;
-    class RemoveOwnerFunctor;
     class Slot;
     class InstanceSpecification;
     class Property;
     class Association;
     class UmlManager;
     struct ManagerNode;
-    class AddOwnedCommentFunctor;
+    class AddToMountFunctor;
+    class PackageMerge;
+    class Classifier;
+    class Namespace;
+    class NamedElement;
+    class Generalization;
+    class Dependency;
+    class TemplateBinding;
+    class TemplateParameterSubstitution;
+    class TypedElement;
+    class Connector;
+    class ConnectableElement;
+    class Port;
+    class BehavioredClassifier;
+    class InterfaceRealization;
+    class Usage;
+    template <class T, class U> class Set;
+    template <class T> class SetIterator;
+    template <class V, class W> class OppositeFunctor;
+    template <class T, class U> class Singleton;
+    template <class T, class U> class OrderedSet;
+    template <class T, class U> struct OrderedSetIterator;
+    class SetReferenceFunctor;
+    class RemoveReferenceFunctor;
     namespace Parsers {
-        class SetOwner;
         struct EmitterMetaData;
         EmitterMetaData getData(Element& el);
+        void setOwner(Element& el, ID id);
     }
     /**
      * Element is the base class of all UML classes
@@ -169,22 +203,42 @@ namespace UML {
      **/
     class Element {
 
+        // TODO delete
+        template <class T> friend class Sequence;
+
         friend class ElementDoesntExistException;
-        friend class SetOwnerFunctor;
-        friend class RemoveOwnerFunctor;
         friend class Slot;
         friend class Property;
         friend class Association;
         friend class UmlManager;
-        friend class AddOwnedCommentFunctor;
-        template<typename> friend class Sequence;
-        template <class T, class U> friend class TemplateAbstractSequenceFunctor;
+        friend class AddToMountFunctor;
+        friend class PackageMerge;
+        friend class Classifier;
+        friend class Namespace;
+        friend class InstanceSpecification;
+        friend class NamedElement;
+        friend class Generalization;
+        friend class Dependency;
+        friend class TemplateBinding;
+        friend class TemplateParameterSubstitution;
+        friend class TypedElement;
+        friend class Connector;
+        friend class ConnectableElement;
+        friend class Port;
+        friend class BehavioredClassifier;
+        friend class InterfaceRealization;
+        friend class Usage;
         template <class T, class U> friend class Singleton;
-        template <class T> friend class Sequence;
-        template <class T> friend struct SequenceIterator;
-        friend class Parsers::SetOwner;
+        template <class T, class U> friend class Set;
+        template <class V, class W> friend class OppositeFunctor;
+        template <class T> friend class SetIterator;
+        template <class T, class U> friend class OrderedSet;
+        template <class T, class U> friend struct OrderedSetIterator;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);
-        
+        friend void Parsers::setOwner(Element& el, ID id);
+        friend class SetReferenceFunctor;
+        friend class RemoveReferenceFunctor;
+
         private:
             bool m_copiedElementFlag = false;
         protected:
@@ -195,27 +249,26 @@ namespace UML {
             const ElementType m_elementType;
 
             // owner
-            ID m_ownerID;
-            Element* m_ownerPtr;
+            Singleton<Element, Element>* m_owner;
+            Set<Element, Element>& getOwnerSingleton();
             
             // ownedElements
-            Sequence<Element>* m_ownedElements;
-            Sequence<Relationship>* m_relationships;
-            Sequence<DirectedRelationship>* m_directedRelationships;
-            Sequence<Comment>* m_ownedComments;
-            Sequence<InstanceSpecification>* m_appliedStereotype;
+            Set<Element, Element>* m_ownedElements;
+            Set<Comment, Element>* m_ownedComments;
+            Set<InstanceSpecification, Element>* m_appliedStereotype;
             void setOwner(Element* el);
             void setOwnerByID(ID id);
-            static bool isSameOrNull(ID id, Element* el);
             virtual void referencingReleased(ID id);
             void setReference(Element* referencing);
             void removeReference(ID referencing);
             void setReference(ID id);
             virtual void referenceReindexed(ID oldID, ID newID);
+            virtual void reindexName(std::string oldName, std::string newName);
             virtual void restoreReferences();
             virtual void restoreReference(Element* el);
             virtual void referenceErased(ID id);
-            template <class T = Element, typename U> void updateCopiesScalar(U newVal, U T::*signature) {
+            template <class T = Element, typename U> 
+            void updateCopiesScalar(U newVal, U T::*signature) {
                 if (m_node->m_managerElementMemory != this) {
                     (dynamic_cast<T*>(m_node->m_managerElementMemory)->*signature) = newVal;
                 }
@@ -225,26 +278,25 @@ namespace UML {
                     }
                 }
             };
+            void copy(const Element& rhs);
             Element(ElementType elementType);
         public:
-            Element(const Element& el, ElementType elementType);
+            Element(const Element& rhs, ElementType elementType);
             virtual ~Element();
             ID getID() const;
             Element* getOwner();
             Element& getOwnerRef();
             ID getOwnerID() const;
             bool hasOwner() const;
-            Sequence<Element>& getOwnedElements();
-            Sequence<Relationship>& getRelationships();
-            Sequence<DirectedRelationship>& getDirectedRelationships();
-            Sequence<Comment>& getOwnedComments();
+            Set<Element, Element>& getOwnedElements();
+            Set<Comment, Element>& getOwnedComments();
             /**
              * TODO: I am keeping it simple for now, instance specification of stereotype to
              *       hold tags and operations, but I think it would be cool to dynamically map
-             *       methods if we load the stereotype bef ore runtime. Also would be cool to have
+             *       methods if we load the stereotype before runtime. Also would be cool to have
              *       stereotype tags as keyword in yaml config for disk storage (not necessarily useful though?)
              **/
-            Sequence<InstanceSpecification>& getAppliedStereotypes();
+            Set<InstanceSpecification, Element>& getAppliedStereotypes();
             virtual void setID(std::string id);
             void setID(ID id);
             static std::string elementTypeToString(ElementType eType);

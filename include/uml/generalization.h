@@ -2,59 +2,39 @@
 #define GENERALIZATION_H
 
 #include "directedRelationship.h"
+#include "singleton.h"
 
 namespace UML {
 
     class Classifier;
-
-    namespace Parsers {
-        class SetSpecific;
-    }
+    class GeneralizationSet;
 
     class Generalization : public DirectedRelationship {
 
         friend class UmlManager;
-        friend class Parsers::SetSpecific;
+        friend class Classifier;
 
         protected:
             Singleton<Classifier, Generalization> m_general = Singleton<Classifier, Generalization>(this);
-            class RemoveGeneralProcedure : public AbstractSingletonProcedure<Classifier, Generalization> {
-                public:
-                    RemoveGeneralProcedure(Generalization* me) : AbstractSingletonProcedure<Classifier, Generalization>(me) {};
-                    void operator()(Classifier* el) const override;
-            };
-            class AddGeneralProcedure : public AbstractSingletonProcedure<Classifier, Generalization> {
-                public:
-                    AddGeneralProcedure(Generalization* me) : AbstractSingletonProcedure<Classifier, Generalization>(me) {};
-                    void operator()(Classifier* el) const override;
-            };
-            class RemoveSpecificProcedure : public AbstractSingletonProcedure<Classifier, Generalization> {
-                public:
-                    RemoveSpecificProcedure(Generalization* me) : AbstractSingletonProcedure<Classifier, Generalization>(me) {};
-                    void operator()(Classifier* el) const override;
-            };
-            class AddSpecificProcedure : public AbstractSingletonProcedure<Classifier, Generalization> {
-                public:
-                    AddSpecificProcedure(Generalization* me) : AbstractSingletonProcedure<Classifier, Generalization>(me) {};
-                    void operator()(Classifier* el) const override;
-                    void operator()(ID id) const override;
-            };
             Singleton<Classifier, Generalization> m_specific = Singleton<Classifier, Generalization>(this);
-            Sequence<GeneralizationSet> m_generalizationSets = Sequence<GeneralizationSet>(this);
-            class AddGeneralizationSetFunctor : public TemplateAbstractSequenceFunctor<GeneralizationSet,Generalization> {
+            Set<GeneralizationSet, Generalization> m_generalizationSets = Set<GeneralizationSet, Generalization>(this);
+            class AddGeneralFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
                 public:
-                    AddGeneralizationSetFunctor(Generalization* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(GeneralizationSet& el) const override;
+                    AddGeneralFunctor(Element* el) : SetFunctor(el) {};
             };
-            class RemoveGeneralizationSetFunctor : public TemplateAbstractSequenceFunctor<GeneralizationSet,Generalization> {
+            class RemoveGeneralFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
                 public:
-                    RemoveGeneralizationSetFunctor(Generalization* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(GeneralizationSet& el) const override;
+                    RemoveGeneralFunctor(Element* el) : SetFunctor(el) {};
             };
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referencingReleased(ID id) override;
-            void restoreReferences() override;
-            void referenceErased(ID id) override;
+            void restoreReference(Element* el) override;
+            Set<Classifier, Generalization>& getGeneralSingleton();
+            Set<Classifier, Generalization>& getSpecificSingleton();
+            void init();
+            void copy(const Generalization& rhs);
             Generalization();
         public:
             Generalization(const Generalization& rhs);
@@ -65,13 +45,15 @@ namespace UML {
             bool hasGeneral() const;
             void setGeneral(Classifier* general);
             void setGeneral(Classifier& general);
+            void setGeneral(ID id);
             Classifier* getSpecific();
             Classifier& getSpecificRef();
             ID getSpecificID() const;
             bool hasSpecific() const;
             void setSpecific(Classifier& specific);
             void setSpecific(Classifier* specific);
-            Sequence<GeneralizationSet>& getGeneralizationSets();
+            void setSpecific(ID id);
+            Set<GeneralizationSet, Generalization>& getGeneralizationSets();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::GENERALIZATION;

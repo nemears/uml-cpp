@@ -1,130 +1,40 @@
 #include "uml/extensionEnd.h"
 #include "uml/extension.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void ExtensionEnd::RemoveExtensionProcedure::operator()(Extension* el) const {
-    if (el->hasOwnedEnd()) {
-        el->setOwnedEnd(0);
-    }
-    if (m_me->hasOwningAssociation()) {
-        m_me->setOwningAssociation(0);
-    }
+Set<Stereotype, ExtensionEnd>& ExtensionEnd::getTypeSingleton() {
+    return m_extensionType;
 }
 
-void ExtensionEnd::AddExtensionProcedure::operator()(Extension* el) const {
-    if (el->hasOwnedEnd()) {
-        if (el->getOwnedEndRef() != *m_me) {
-            el->setOwnedEnd(m_me);
-        }
-    } else {
-        el->setOwnedEnd(m_me);
-    }
-    if (m_me->hasOwningAssociation()) {
-        if (m_me->getOwningAssociationRef() != *el) {
-            m_me->setOwningAssociation(el);
-        }
-    } else {
-        m_me->setOwningAssociation(el);
-    }
+void ExtensionEnd::init() {
+    m_extensionType.redefines(m_type);
+    m_extensionType.m_signature = &ExtensionEnd::getTypeSingleton;
 }
 
-void ExtensionEnd::AddExtensionProcedure::operator()(ID id) const {
-    if (m_me->getOwningAssociationID() != id) {
-        m_me->m_owningAssociation.setByID(id);
-    }
-}
-
-void ExtensionEnd::RemoveExtensionTypeProcedure::operator()(Stereotype* el) const {
-    if (m_me->TypedElement::hasType()) {
-        m_me->TypedElement::setType(0);
-    }
-}
-
-void ExtensionEnd::AddExtensionTypeProcedure::operator()(Stereotype* el) const {
-    if (m_me->TypedElement::hasType()) {
-        if (m_me->TypedElement::getTypeRef() != *m_me) {
-            m_me->TypedElement::setType(el);
-        }
-    } else {
-        m_me->TypedElement::setType(el);
-    }
-}
-
-void ExtensionEnd::referencingReleased(ID id) {
-    Property::referencingReleased(id);
-    m_extension.release(id);
-    m_extensionType.release(id);
-}
-
-void ExtensionEnd::referenceReindexed(ID oldID, ID newID) {
-    Property::referenceReindexed(oldID, newID);
-    m_extension.reindex(oldID, newID);
-    m_extensionType.reindex(oldID, newID);
-}
-
-void ExtensionEnd::restoreReferences() {
-    Property::restoreReferences();
-    m_extension.restoreReference();
-    m_extensionType.restoreReference();
-}
-
-void ExtensionEnd::referenceErased(ID id) {
-    Property::referenceErased(id);
-    m_extension.elementErased(id);
-    m_extensionType.elementErased(id);
+void ExtensionEnd::copy(const ExtensionEnd& rhs) {
+    m_extensionType = rhs.m_extensionType;
 }
 
 ExtensionEnd::ExtensionEnd() : Element(ElementType::EXTENSION_END) {
-    m_extension.m_signature = &ExtensionEnd::m_extension;
-    m_extension.m_removeProcedures.push_back(new RemoveExtensionProcedure(this));
-    m_extension.m_addProcedures.push_back(new AddExtensionProcedure(this));
-    m_extensionType.m_signature = &ExtensionEnd::m_extensionType;
-    m_extensionType.m_addProcedures.push_back(new AddExtensionTypeProcedure(this));
-    m_extensionType.m_removeProcedures.push_back(new RemoveExtensionTypeProcedure(this));
+    init();
 }
 
-ExtensionEnd::ExtensionEnd(const ExtensionEnd& end) : Element(end, ElementType::EXTENSION_END) {
-    m_extension = end.m_extension;
-    m_extension.m_me = this;
-    m_extension.m_addProcedures.clear();
-    m_extension.m_removeProcedures.clear();
-    m_extension.m_removeProcedures.push_back(new RemoveExtensionProcedure(this));
-    m_extension.m_addProcedures.push_back(new AddExtensionProcedure(this));
-    m_extensionType = end.m_extensionType;
-    m_extensionType.m_me = this;
-    m_extensionType.m_addProcedures.clear();
-    m_extensionType.m_removeProcedures.clear();
-    m_extensionType.m_addProcedures.push_back(new AddExtensionTypeProcedure(this));
-    m_extensionType.m_removeProcedures.push_back(new RemoveExtensionTypeProcedure(this));
+ExtensionEnd::ExtensionEnd(const ExtensionEnd& rhs) : Element(rhs, ElementType::EXTENSION_END) {
+    init();
+    Element::copy(rhs);
+    NamedElement::copy(rhs);
+    TypedElement::copy(rhs);
+    MultiplicityElement::copy(rhs);
+    RedefinableElement::copy(rhs);
+    Feature::copy(rhs);
+    Property::copy(rhs);
+    copy(rhs);
 }
 
 ExtensionEnd::~ExtensionEnd() {
 
-}
-
-Extension* ExtensionEnd::getExtension() {
-    return m_extension.get();
-}
-
-Extension& ExtensionEnd::getExtensionRef() {
-    return m_extension.getRef();
-}
-
-ID ExtensionEnd::getExtensionID() const {
-    return m_extension.id();
-}
-
-bool ExtensionEnd::hasExtension() const {
-    return m_extension.has();
-}
-
-void ExtensionEnd::setExtension(Extension* extension) {
-    m_extension.set(extension);
-}
-
-void ExtensionEnd::setExtension(Extension& extension) {
-    m_extension.set(extension);
 }
 
 Stereotype* ExtensionEnd::getType() {

@@ -1,46 +1,24 @@
 #include "gtest/gtest.h"
-#include "uml/class.h"
-#include "uml/comment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-class CommentTest : public ::testing::Test {
-   
-};
+class CommentTest : public ::testing::Test {};
 
-TEST_F(CommentTest, addOwnedCommentTest) {
+TEST_F(CommentTest, annotatedElementTest) {
     UmlManager m;
-    Class& e = m.create<Class>();
-    Comment& c = m.create<Comment>();
-    c.setBody("I am a pretty cool comment B)");
-    e.getOwnedComments().add(c);
-    ASSERT_EQ(c.getBody(), "I am a pretty cool comment B)");
-    ASSERT_TRUE(e.getOwnedComments().size() == 1);
-    ASSERT_TRUE(&e.getOwnedComments().front() == &c);
-    ASSERT_TRUE(e.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&e.getOwnedElements().front() == &c);
-    ASSERT_TRUE(c.getOwningElement() == &e);
+    Package& pckg = m.create<Package>();
+    Package& annotated = m.create<Package>();
+    Comment& comment = m.create<Comment>();
+    comment.setBody("I am a comment!");
+    comment.getAnnotatedElements().add(annotated);
+    pckg.getPackagedElements().add(annotated);
+    pckg.getOwnedComments().add(comment);
+    ASSERT_EQ(pckg.getOwnedComments().size(), 1);
+    ASSERT_EQ(pckg.getOwnedComments().front(), comment);
+    ASSERT_EQ(pckg.getOwnedElements().size(), 2);
+    ASSERT_TRUE(comment.hasOwner());
+    ASSERT_EQ(comment.getOwnerRef(), pckg);
+    ASSERT_EQ(comment.getBody(), "I am a comment!");
 }
 
-TEST_F(CommentTest, removeOwnedCommentTest) {
-    UmlManager m;
-    Class& e = m.create<Class>();
-    Comment& c = m.create<Comment>();
-    c.setBody("p cool comment");
-    e.getOwnedComments().add(c);
-    ASSERT_NO_THROW(e.getOwnedComments().remove(c));
-    ASSERT_TRUE(e.getOwnedComments().size() == 0);
-    ASSERT_TRUE(e.getOwnedElements().size() == 0);
-    ASSERT_TRUE(c.getOwningElement() == 0);
-}
-
-TEST_F(CommentTest, overideOwningElement) {
-    UmlManager m;
-    Class& e = m.create<Class>();
-    Comment& c = m.create<Comment>();
-    c.setOwningElement(&e);
-    ASSERT_TRUE(e.getOwnedComments().size() == 1);
-    ASSERT_TRUE(&e.getOwnedComments().front() == &c);
-    ASSERT_TRUE(e.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&e.getOwnedElements().front() == &c);
-}

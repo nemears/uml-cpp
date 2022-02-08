@@ -3,6 +3,7 @@
 
 #include "classifier.h"
 #include "deployedArtifact.h"
+#include "orderedSet.h"
 
 namespace UML {
 
@@ -17,89 +18,22 @@ namespace UML {
         friend class Parsers::ArtifactSetArtifact;
 
         protected:
-            Sequence<Artifact> m_nestedArtifacts = Sequence<Artifact>(this);
-            Sequence<Property> m_ownedAttributes = Sequence<Property>(this);
-            Sequence<Operation> m_ownedOperations = Sequence<Operation>(this);
-            Sequence<Manifestation> m_manifestations =  Sequence<Manifestation>(this);
-            class AddOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Artifact> {
-                public:
-                    AddOwnedAttributeFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Property& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Artifact> {
-                public:
-                    RemoveOwnedAttributeFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Property& el) const override;
-            };
-            class AddOwnedOperationFunctor : public TemplateAbstractSequenceFunctor<Operation,Artifact> {
-                public:
-                    AddOwnedOperationFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Operation& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveOwnedOperationFunctor : public TemplateAbstractSequenceFunctor<Operation,Artifact> {
-                public:
-                    RemoveOwnedOperationFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Operation& el) const override;
-            };
-            class CheckNestedArtifactFunctor : public TemplateAbstractSequenceFunctor<Artifact,Artifact> {
-                public:
-                    CheckNestedArtifactFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Artifact& el) const override;
-            };
-            class AddNestedArtifactFunctor : public TemplateAbstractSequenceFunctor<Artifact,Artifact> {
-                public:
-                    AddNestedArtifactFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Artifact& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveNestedArtifactFunctor : public TemplateAbstractSequenceFunctor<Artifact,Artifact> {
-                public:
-                    RemoveNestedArtifactFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Artifact& el) const override;
-            };
-            class AddManifestationFunctor : public TemplateAbstractSequenceFunctor<Manifestation,Artifact> {
-                public:
-                    AddManifestationFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Manifestation& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveManifestationFunctor : public TemplateAbstractSequenceFunctor<Manifestation,Artifact> {
-                public:
-                    RemoveManifestationFunctor(Artifact* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Manifestation& el) const override;
-            };
-            Singleton<Artifact, Artifact> m_artifact = Singleton<Artifact, Artifact>(this);
-            class RemoveArtifactProcedure : public AbstractSingletonProcedure<Artifact, Artifact> {
-                public:
-                    RemoveArtifactProcedure(Artifact* me) : AbstractSingletonProcedure(me) {};
-                    void operator()(Artifact* el) const override;
-            };
-            class AddArtifactProcedure : public AbstractSingletonProcedure<Artifact, Artifact> {
-                public:
-                    AddArtifactProcedure(Artifact* me) : AbstractSingletonProcedure(me) {};
-                    void operator()(Artifact* el) const override;
-                    void operator()(ID id) const override;
-            };
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
-            void referenceErased(ID id) override;
+            Set<Artifact, Artifact> m_nestedArtifacts = Set<Artifact, Artifact>(this);
+            OrderedSet<Property, Artifact> m_ownedAttributes = OrderedSet<Property, Artifact>(this);
+            OrderedSet<Operation, Artifact> m_ownedOperations = OrderedSet<Operation, Artifact>(this);
+            Set<Manifestation, Artifact> m_manifestations =  Set<Manifestation, Artifact>(this);
+            Set<Property, Artifact>& getOwnedAttributesSet();
+            Set<Operation, Artifact>& getOwnedOperationsSet();
+            void init();
+            void copy(const Artifact& rhs);
             Artifact();
         public:
-            Artifact(const Artifact& artifact);
+            Artifact(const Artifact& rhs);
             virtual ~Artifact();
-            Sequence<Property>& getOwnedAttributes();
-            Sequence<Operation>& getOwnedOperations();
-            Sequence<Artifact>& getNestedArtifacts();
-            Sequence<Manifestation>& getManifestations();
-            Artifact* getArtifact();
-            Artifact& getArtifactRef();
-            ID getArtifactID() const;
-            bool hasArtifact() const;
-            void setArtifact(Artifact* artifact);
-            void setArtifact(Artifact& artifact);
+            OrderedSet<Property, Artifact>& getOwnedAttributes();
+            OrderedSet<Operation, Artifact>& getOwnedOperations();
+            Set<Artifact, Artifact>& getNestedArtifacts();
+            Set<Manifestation, Artifact>& getManifestations();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ARTIFACT;

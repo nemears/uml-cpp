@@ -1,62 +1,41 @@
-#ifndef CLASSH
-#define CLASSH
-#include <list>
-#include "structuredClassifier.h"
+#ifndef _UML_CLASS_H_
+#define _UML_CLASS_H_
+
+#include "encapsulatedClassifier.h"
+#include "operation.h"
+#include "parameter.h"
+#include "orderedSet.h"
 #include "behavioredClassifier.h"
 
 namespace UML{
 
     class Operation;
+    class Reception;
 
-    class Class : public StructuredClassifier , public BehavioredClassifier {
+    class Class : public EncapsulatedClassifier , public BehavioredClassifier {
 
         friend class UmlManager;
+        friend class Property;
+        friend class Operation;
 
         protected:
-            Sequence<Operation> m_ownedOperations = Sequence<Operation>(this);
-            Sequence<Classifier> m_nestedClassifiers = Sequence<Classifier>(this);
-            class AddOwnedOperationFunctor : public TemplateAbstractSequenceFunctor<Operation,Class> {
-                public:
-                    AddOwnedOperationFunctor(Class* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Operation& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveOwnedOperationFunctor : public TemplateAbstractSequenceFunctor<Operation,Class> {
-                public:
-                    RemoveOwnedOperationFunctor(Class* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Operation& el) const override;
-            };
-            class ClassAddOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Class> {
-                public:
-                    ClassAddOwnedAttributeFunctor(Class* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Property& el) const override;
-            };
-            class ClassRemoveOwnedAttributeFunctor : public TemplateAbstractSequenceFunctor<Property,Class> {
-                public:
-                    ClassRemoveOwnedAttributeFunctor(Class* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Property& el) const override;
-            };
-            class AddNestedClassifierFunctor : public TemplateAbstractSequenceFunctor<Classifier,Class> {
-                public:
-                    AddNestedClassifierFunctor(Class* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Classifier& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveNestedClassifierFunctor : public TemplateAbstractSequenceFunctor<Classifier,Class> {
-                public:
-                    RemoveNestedClassifierFunctor(Class* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Classifier& el) const override;
-            };
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
-            void referenceErased(ID id) override;
+            OrderedSet<Property, Class> m_classOwnedAttrubutes = OrderedSet<Property, Class>(this);
+            OrderedSet<Operation, Class> m_ownedOperations = OrderedSet<Operation, Class>(this);
+            OrderedSet<Classifier, Class> m_nestedClassifiers = OrderedSet<Classifier, Class>(this);
+            Set<Reception, Class> m_ownedReceptions = Set<Reception, Class>(this);
+            Set<Property, Class>& getOwnedAttributesSet();
+            Set<Operation, Class>& getOwnedOperationsSet();
+            Set<Classifier, Class>& getNestedClassifiersSet();
+            void init();
+            void copy(const Class& rhs);
             Class();
         public:
             virtual ~Class();
             Class(const Class& clazz);
-            Sequence<Operation>& getOwnedOperations();
-            Sequence<Classifier>& getNestedClassifiers();
+            OrderedSet<Property, Class>& getOwnedAttributes();
+            OrderedSet<Operation, Class>& getOwnedOperations();
+            OrderedSet<Classifier, Class>& getNestedClassifiers();
+            Set<Reception, Class>& getOwnedReceptions();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CLASS;

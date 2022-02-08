@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/extension.h"
 #include "uml/extensionEnd.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -15,8 +16,8 @@ TEST_F(ExtensionTest, basicExtensionTest) {
     ASSERT_EQ(ext.getMetaClass(), ElementType::PACKAGE);
     ASSERT_TRUE(ext.getOwnedEnd() != 0);
     ASSERT_EQ(ext.getOwnedEnd()->getID(), end.getID());
-    ASSERT_TRUE(end.getExtension() != 0);
-    ASSERT_EQ(end.getExtension()->getID(), ext.getID());
+    ASSERT_TRUE(end.getOwningAssociation() != 0);
+    ASSERT_EQ(end.getOwningAssociation()->getID(), ext.getID());
     ASSERT_TRUE(end.getOwningAssociation() != 0);
     ASSERT_EQ(end.getOwningAssociation()->getID(), ext.getID());
 }
@@ -31,7 +32,6 @@ TEST_F(ExtensionTest, setOwnedEndToNullTest) {
     ASSERT_EQ(ext.getMetaClass(), ElementType::PACKAGE);
     ASSERT_TRUE(ext.getOwnedEnd() == 0);
     ASSERT_EQ(ext.getOwnedEnds().size(), 0);
-    ASSERT_TRUE(end.getExtension() == 0);
     ASSERT_TRUE(end.getOwningAssociation() == 0);
 }
 
@@ -41,11 +41,10 @@ TEST_F(ExtensionTest, setExtensionToNullTest) {
     ExtensionEnd& end = m.create<ExtensionEnd>();
     ext.setMetaClass(ElementType::PACKAGE);
     ext.setOwnedEnd(&end);
-    end.setExtension(0);
+    end.setOwningAssociation(0);
     ASSERT_EQ(ext.getMetaClass(), ElementType::PACKAGE);
     ASSERT_TRUE(ext.getOwnedEnd() == 0);
     ASSERT_EQ(ext.getOwnedEnds().size(), 0);
-    ASSERT_TRUE(end.getExtension() == 0);
     ASSERT_TRUE(end.getOwningAssociation() == 0);
 }
 
@@ -60,8 +59,6 @@ TEST_F(ExtensionTest, setEndTypeTest) {
     ASSERT_EQ(ext.getMetaClass(), ElementType::PACKAGE);
     ASSERT_TRUE(ext.getOwnedEnd() != 0);
     ASSERT_EQ(ext.getOwnedEnd()->getID(), end.getID());
-    ASSERT_TRUE(end.getExtension() != 0);
-    ASSERT_EQ(end.getExtension()->getID(), ext.getID());
     ASSERT_TRUE(end.getOwningAssociation() != 0);
     ASSERT_EQ(end.getOwningAssociation()->getID(), ext.getID());
     ASSERT_TRUE(end.getType() != 0);
@@ -82,8 +79,6 @@ TEST_F(ExtensionTest, setEndTypeNullTest) {
     ASSERT_EQ(ext.getMetaClass(), ElementType::PACKAGE);
     ASSERT_TRUE(ext.getOwnedEnd() != 0);
     ASSERT_EQ(ext.getOwnedEnd()->getID(), end.getID());
-    ASSERT_TRUE(end.getExtension() != 0);
-    ASSERT_EQ(end.getExtension()->getID(), ext.getID());
     ASSERT_TRUE(end.getOwningAssociation() != 0);
     ASSERT_EQ(end.getOwningAssociation()->getID(), ext.getID());
     ASSERT_TRUE(end.getType() == 0);

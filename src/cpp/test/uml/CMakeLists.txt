@@ -1,13 +1,15 @@
-add_executable(umltest elementTest.cpp namedElementTest.cpp sequenceTest.cpp namespaceTest.cpp classifierTest.cpp typedElementTest.cpp 
-                       valueSpecificationTest.cpp propertyTest.cpp instanceSpecificationTest.cpp classTest.cpp 
-                       parameterTest.cpp operationTest.cpp activityEdgeTest.cpp multiplicityElementTest.cpp
-                       objectNodeTest.cpp activityNodeTest.cpp inputPinTest.cpp outputPinTest.cpp directedRelationshipTest.cpp 
-                       slotTest.cpp behaviorTest.cpp activityTest.cpp generalizationTest.cpp packageTest.cpp dataTypeTest.cpp
-                       associationTest.cpp enumerationTest.cpp commentTest.cpp idTest.cpp UmlManagerTest.cpp 
-                       templateableElementTest.cpp profileApplicationTest.cpp extensionTest.cpp stereotypeTest.cpp
-                       dependencyTest.cpp deploymentTest.cpp behavioredClassifierTest.cpp manifestationTest.cpp generalizationSetTest.cpp)
+add_executable(umltest idTest.cpp setTest.cpp elementTest.cpp namedElementTest.cpp namespaceTest.cpp packageTest.cpp dependencyTest.cpp
+                       classifierTest.cpp generalizationTest.cpp dataTypeTest.cpp propertyTest.cpp valueSpecificationTest.cpp
+                       typedElementTest.cpp instanceSpecificationTest.cpp slotTest.cpp classTest.cpp multiplicityElementTest.cpp
+                       directedRelationshipTest.cpp operationTest.cpp parameterTest.cpp behaviorTest.cpp associationTest.cpp
+                       enumerationTest.cpp commentTest.cpp templateableElementTest.cpp profileApplicationTest.cpp extensionTest.cpp
+                       stereotypeTest.cpp behavioredClassifierTest.cpp deploymentTest.cpp manifestationTest.cpp
+                       generalizationSetTest.cpp UmlManagerTest.cpp connectorTest.cpp interfaceTest.cpp portTest.cpp signalTest.cpp)
+                    #     activityEdgeTest.cpp 
+                    #    objectNodeTest.cpp activityNodeTest.cpp inputPinTest.cpp outputPinTest.cpp  
+                    #      activityTest.cpp )
 if (UML_CLIENT_SERVER)
     target_sources(umltest PRIVATE restfulTest.cpp)
 endif()
-target_link_libraries(umltest PUBLIC gtest gmock gtest_main Uml)
+target_link_libraries(umltest PUBLIC gtest gmock gtest_main uml)
 add_test(umltest umltest)

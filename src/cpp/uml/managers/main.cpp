@@ -9,6 +9,8 @@
  *  --port, -p : specify the port that the server will listen on, default 8652
  *  --mount-path, -m : specify the path that the server will be run on, default the path ran from
  *  --location, -l : load from and save to the path specified
+ *  --duration, -d : run for specified duration in ms
+ *  --num-els, -n : max number of elements in memory before releasing
  **/
 
 int main(int argc, char* argv[]) {
@@ -16,6 +18,9 @@ int main(int argc, char* argv[]) {
     int port = 8652;
     std::string path = ".";
     std::string location;
+    int duration = -1;
+    int numEls = UML_SERVER_NUM_ELS;
+    srand(time(0));
     while (i < argc) {
         if (strcmp(argv[i], "-p") == 0) {
             port = atoi(argv[i+1]);
@@ -32,6 +37,16 @@ int main(int argc, char* argv[]) {
             i+=2;
             continue;
         }
+        if (strcmp(argv[i], "-d") == 0) {
+            duration = atoi(argv[i+1]);
+            i += 2;
+            continue;
+        }
+        if (strcmp(argv[i], "-n") == 0) {
+            numEls = atoi(argv[i+1]);
+            i += 2;
+            continue;
+        }
         char* dashDash = (char*) malloc(3);
         memcpy(dashDash, &argv[i][0], 2);
         dashDash[2] = '\0';
@@ -45,12 +60,26 @@ int main(int argc, char* argv[]) {
                 i++;
                 continue;
             }
+            dashDash = (char*)realloc(dashDash, 10);
+            memcpy(dashDash, &argv[i][0], 9);
+            dashDash[9] = '\0';
+            if (strcmp(dashDash, "--num-els") == 0) {
+                free(dashDash);
+                numEls = atoi(&argv[i][10]);
+                i++;
+                continue;
+            }
             dashDash = (char*)realloc(dashDash, 11);
             memcpy(dashDash, &argv[i][0], 10);
             dashDash[10] = '\0';
             if (strcmp(dashDash, "--location") == 0) {
                 free(dashDash);
                 path = &argv[i][11];
+                i++;
+                continue;
+            } else if (strcmp(dashDash, "--duration") == 0) {
+                free(dashDash);
+                duration = atoi(&argv[i][11]);
                 i++;
                 continue;
             }
@@ -71,12 +100,27 @@ int main(int argc, char* argv[]) {
         }
         i++;
     }
-    UML::UmlServer server(port);
-    if (!location.empty()) {
-        server.open(location);
+    try {
+        UML::UmlServer server(port);
+        if (!location.empty()) {
+            server.open(location);
+        }
+        server.setMaxEls(numEls);
+        server.mount(path);
+        std::cout << "server running" << std::endl;
+        if (duration < 0) {
+            server.waitTillShutDown();
+        } else {
+            server.waitTillShutDown(duration);
+        }
+        if (!location.empty()) {
+            server.save(location);
+        }
+        server.log("server has " + std::to_string(server.getNumElsInMemory()) + " of " + std::to_string(server.getMaxEls()) + " elements in memory before shutdown");
+        server.shutdown();
+        exit(0);
+    } catch (std::exception& e) {
+        std::cout << e.what() << std::endl;
+        exit(1);
     }
-    server.mount(path);
-    server.waitTillShutDown();
-    server.save(location);
-    server.shutdown();
 }

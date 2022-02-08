@@ -2,6 +2,7 @@
 #define EXPRESSION_H
 
 #include "valueSpecification.h"
+#include "orderedSet.h"
 
 namespace UML {
     class Expression : public ValueSpecification {
@@ -10,26 +11,15 @@ namespace UML {
 
         protected:
             std::string m_symbol = "";
-            Sequence<ValueSpecification> m_operands = Sequence<ValueSpecification>(this);
-            class AddOperandFunctor : public TemplateAbstractSequenceFunctor<ValueSpecification,Expression> {
-                public:
-                    AddOperandFunctor(Expression* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(ValueSpecification& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveOperandFunctor : public TemplateAbstractSequenceFunctor<ValueSpecification, Expression> {
-                public:
-                    RemoveOperandFunctor(Expression* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(ValueSpecification& el) const override;
-            };
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void referenceErased(ID id) override;
+            OrderedSet<ValueSpecification, Expression> m_operands = OrderedSet<ValueSpecification, Expression>(this);
+            Set<ValueSpecification, Expression>& getOperandsSet();
+            void init();
+            void copy(const Expression& rhs);
             Expression();
         public:
             Expression(const Expression& rhs);
             virtual ~Expression();
-            Sequence<ValueSpecification>& getOperands();
+            OrderedSet<ValueSpecification, Expression>& getOperands();
             std::string getSymbol();
             void setSymbol(std::string sym);
             bool isSubClassOf(ElementType eType) const override;

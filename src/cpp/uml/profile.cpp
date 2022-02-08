@@ -1,32 +1,41 @@
 #include "uml/profile.h"
 #include "uml/stereotype.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void Profile::ProfileAddOwnedStereotypeFunctor::operator()(Stereotype& el) const {
-    if (el.getProfileID() != m_el->getID()) {
-        el.setProfile(m_el);
-    }
+void Profile::init() {
+    m_profileOwnedStereotypes.redefines(m_ownedStereotypes);
+    m_profileOwnedStereotypes.opposite(&Stereotype::getProfileSingleton);
+    m_profileOwnedStereotypes.m_signature = &Profile::getOwnedStereotypes;
 }
 
-void Profile::ProfileRemoveOwnedStereotypeFunctor::operator()(Stereotype& el) const {
-    if (el.getProfileID() == m_el->getID()) {
-        el.setProfile(0);
-    }
+void Profile::copy(const Profile& rhs) {
+    m_profileOwnedStereotypes = rhs.m_profileOwnedStereotypes;
 }
 
 Profile::Profile() : Element(ElementType::PROFILE) {
-    m_ownedStereotypes.addProcedures.push_back(new ProfileAddOwnedStereotypeFunctor(this));
-    m_ownedStereotypes.removeProcedures.push_back(new ProfileRemoveOwnedStereotypeFunctor(this));
+    init();
 }
 
-Profile::Profile(const Profile& profile) : Element(profile, ElementType::PROFILE) {
-    m_ownedStereotypes.addProcedures.push_back(new ProfileAddOwnedStereotypeFunctor(this));
-    m_ownedStereotypes.removeProcedures.push_back(new ProfileRemoveOwnedStereotypeFunctor(this));
+Profile::Profile(const Profile& rhs) : Element(rhs, ElementType::PROFILE) {
+    init();
+    Element::copy(rhs);
+    NamedElement::copy(rhs);
+    Namespace::copy(rhs);
+    ParameterableElement::copy(rhs);
+    PackageableElement::copy(rhs);
+    TemplateableElement::copy(rhs);
+    Package::copy(rhs);
+    copy(rhs);
 }
 
 Profile::~Profile() {
 
+}
+
+Set<Stereotype, Profile>& Profile::getOwnedStereotypes() {
+    return m_profileOwnedStereotypes;
 }
 
 bool Profile::isSubClassOf(ElementType eType) const {

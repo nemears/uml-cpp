@@ -1,162 +1,86 @@
 #include "uml/class.h"
 #include "uml/operation.h"
 #include "uml/property.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void Class::AddOwnedOperationFunctor::operator()(Operation& el) const {
-    if (el.getClass() != m_el) {
-        el.setClass(m_el);
-    }
-    if (!m_el->getFeatures().count(el.getID())) {
-        m_el->getFeatures().add(el);
-    }
-    if (!m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().add(el);
-    }
-    updateCopiedSequenceAddedTo(el, &Class::getOwnedOperations);
+Set<Property, Class>& Class::getOwnedAttributesSet() {
+    return m_classOwnedAttrubutes;
 }
 
-void Class::AddOwnedOperationFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedMembers().count(id)) {
-        m_el->getOwnedMembers().addByID(id);
-    }
-    if (!m_el->getFeatures().count(id)) {
-        m_el->getFeatures().addByID(id);
-    }
+Set<Operation, Class>& Class::getOwnedOperationsSet() {
+    return m_ownedOperations;
 }
 
-void Class::RemoveOwnedOperationFunctor::operator()(Operation& el) const {
-    if (el.getClass() == m_el) {
-        el.setClass(0);
-    }
-
-    if (m_el->getFeatures().count(el.getID())) {
-        m_el->getFeatures().remove(el);
-    }
-    updateCopiedSequenceRemovedFrom(el, &Class::getOwnedOperations);
+Set<Classifier, Class>& Class::getNestedClassifiersSet() {
+    return m_nestedClassifiers;
 }
 
-void Class::ClassAddOwnedAttributeFunctor::operator()(Property& el) const {
-    if (el.getClass() != m_el) {
-        el.setClass(m_el);
-    }
+void Class::init() {
+    m_classOwnedAttrubutes.redefines(m_ownedAttributes);
+    m_classOwnedAttrubutes.opposite(&Property::getClassSingleton);
+    m_classOwnedAttrubutes.m_signature = &Class::getOwnedAttributesSet;
+    m_ownedOperations.subsets(m_features);
+    m_ownedOperations.subsets(m_ownedMembers);
+    m_ownedOperations.opposite(&Operation::getClassSingleton);
+    m_ownedOperations.m_signature = &Class::getOwnedOperationsSet;
+    m_nestedClassifiers.subsets(m_ownedMembers);
+    m_nestedClassifiers.m_signature = &Class::getNestedClassifiersSet;
+    m_ownedReceptions.subsets(m_features);
+    m_ownedReceptions.subsets(m_ownedMembers);
+    m_ownedReceptions.m_signature = &Class::getOwnedReceptions;
 }
 
-void Class::ClassRemoveOwnedAttributeFunctor::operator()(Property& el) const {
-    if (el.getClass() == m_el) {
-        el.setClass(0);
-    }
-}
-
-void Class::AddNestedClassifierFunctor::operator()(Classifier& el) const {
-    if (el.getNestingClassID() != m_el->getID()) {
-        el.setNestingClass(m_el);
-    }
-
-    if (!m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().add(el);
-    }
-
-    if (!m_el->getRedefinedElements().count(el.getID())) {
-        m_el->getRedefinedElements().add(el);
-    }
-    updateCopiedSequenceAddedTo(el, &Class::getNestedClassifiers);
-}
-
-void Class::AddNestedClassifierFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedMembers().count(id)) {
-        m_el->getOwnedMembers().addByID(id);
-    }
-}
-
-void Class::RemoveNestedClassifierFunctor::operator()(Classifier& el) const {
-    if (el.getNestingClassID() == m_el->getID()) {
-        el.setNestingClass(0);
-    }
-
-    if (m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().remove(el);
-    }
-
-    if (m_el->getRedefinedElements().count(el.getID())) {
-        m_el->getRedefinedElements().remove(el);
-    }
-    updateCopiedSequenceRemovedFrom(el, &Class::getNestedClassifiers);
-}
-
-void Class::referencingReleased(ID id) {
-    StructuredClassifier::referencingReleased(id);
-    BehavioredClassifier::referencingReleased(id);
-    m_ownedOperations.elementReleased(id, &Class::getOwnedOperations);
-    m_nestedClassifiers.elementReleased(id, &Class::getNestedClassifiers);
-}
-
-void Class::referenceReindexed(ID oldID, ID newID) {
-    StructuredClassifier::referenceReindexed(oldID, newID);
-    BehavioredClassifier::referenceReindexed(oldID, newID);
-    m_ownedOperations.reindex(oldID, newID, &Class::getOwnedOperations);
-    m_nestedClassifiers.reindex(oldID, newID, &Class::getNestedClassifiers);
-}
-
-void Class::restoreReferences() {
-    StructuredClassifier::restoreReferences();
-    BehavioredClassifier::restoreReferences();
-    m_ownedOperations.restoreReferences();
-    m_nestedClassifiers.restoreReferences();
-}
-
-void Class::referenceErased(ID id) {
-    StructuredClassifier::referenceErased(id);
-    BehavioredClassifier::referenceErased(id);
-    m_ownedOperations.elementErased(id);
-    m_nestedClassifiers.elementErased(id);
+void Class::copy(const Class& rhs) {
+    m_classOwnedAttrubutes = rhs.m_classOwnedAttrubutes;
+    m_ownedOperations = rhs.m_ownedOperations;
+    m_nestedClassifiers = rhs.m_nestedClassifiers;
+    m_ownedReceptions = rhs.m_ownedReceptions;
 }
 
 Class::Class() : Element(ElementType::CLASS) {
-    m_ownedOperations.addProcedures.push_back(new AddOwnedOperationFunctor(this));
-    m_ownedOperations.removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
-    m_ownedAttributes.addProcedures.push_back(new ClassAddOwnedAttributeFunctor(this));
-    m_ownedAttributes.removeProcedures.push_back(new ClassRemoveOwnedAttributeFunctor(this));
-    m_nestedClassifiers.addProcedures.push_back(new AddNestedClassifierFunctor(this));
-    m_nestedClassifiers.removeProcedures.push_back(new RemoveNestedClassifierFunctor(this));
+    init();
 }
 
 Class::~Class() {
     
 }
 
-Class::Class(const Class& clazz) : StructuredClassifier(clazz) , 
-BehavioredClassifier(clazz) , 
-Classifier(clazz),
-PackageableElement(clazz), 
-NamedElement(clazz), 
-Element(clazz, ElementType::CLASS) {
-    m_ownedOperations = clazz.m_ownedOperations;
-    m_ownedOperations.m_el = this;
-    m_ownedOperations.addProcedures.clear();
-    m_ownedOperations.addProcedures.push_back(new AddOwnedOperationFunctor(this));
-    m_ownedOperations.removeProcedures.clear();
-    m_ownedOperations.removeProcedures.push_back(new RemoveOwnedOperationFunctor(this));
-    m_ownedAttributes.addProcedures.push_back(new ClassAddOwnedAttributeFunctor(this));
-    m_ownedAttributes.removeProcedures.push_back(new ClassRemoveOwnedAttributeFunctor(this));
-    m_nestedClassifiers = clazz.m_nestedClassifiers;
-    m_nestedClassifiers.m_el = this;
-    m_nestedClassifiers.addProcedures.clear();
-    m_nestedClassifiers.removeProcedures.clear();
-    m_nestedClassifiers.addProcedures.push_back(new AddNestedClassifierFunctor(this));
-    m_nestedClassifiers.removeProcedures.push_back(new RemoveNestedClassifierFunctor(this));
+Class::Class(const Class& rhs) : Element(rhs, ElementType::CLASS) {
+    init();
+    Element::copy(rhs);
+    NamedElement::copy(rhs);
+    Namespace::copy(rhs);
+    ParameterableElement::copy(rhs);
+    PackageableElement::copy(rhs);
+    TemplateableElement::copy(rhs);
+    RedefinableElement::copy(rhs);
+    Classifier::copy(rhs);
+    StructuredClassifier::copy(rhs);
+    EncapsulatedClassifier::copy(rhs);
+    BehavioredClassifier::copy(rhs);
+    copy(rhs);
 }
 
-Sequence<Operation>& Class::getOwnedOperations() {
+OrderedSet<Property, Class>& Class::getOwnedAttributes() {
+    return m_classOwnedAttrubutes;
+}
+
+OrderedSet<Operation, Class>& Class::getOwnedOperations() {
     return m_ownedOperations;
 }
-Sequence<Classifier>& Class::getNestedClassifiers() {
+
+OrderedSet<Classifier, Class>& Class::getNestedClassifiers() {
     return m_nestedClassifiers;
 }
 
+Set<Reception, Class>& Class::getOwnedReceptions() {
+    return m_ownedReceptions;
+}
+
 bool Class::isSubClassOf(ElementType eType) const {
-    bool ret = StructuredClassifier::isSubClassOf(eType);
+    bool ret = EncapsulatedClassifier::isSubClassOf(eType);
 
     if (!ret) {
         ret = BehavioredClassifier::isSubClassOf(eType);

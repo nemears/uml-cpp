@@ -1,71 +1,55 @@
 #include "uml/packageableElement.h"
 #include "uml/package.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
-
-void PackageableElement::RemoveOwningPackageProcedure::operator()(Package* el) const {
-    if (el->getPackagedElements().count(m_me->getID())) {
-        el->getPackagedElements().remove(*m_me);
-    }
-    if (m_me->getNamespaceID() == el->getID()) {
-        m_me->setNamespace(0);
-    }
-}
-
-void PackageableElement::AddOwningPackageProcedure::operator()(Package* el) const {
-    if (!el->getPackagedElements().count(m_me->getID())) {
-        el->getPackagedElements().add(*m_me);
-    }
-    if (m_me->getNamespaceID() != el->getID()) {
-        m_me->setNamespace(el);
-    }
-}
-
-void PackageableElement::AddOwningPackageProcedure::operator()(ID id) const {
-    if (m_me->getNamespaceID() != id) {
-        m_me->m_namespace.setByID(id);
-    }
-}
 
 void PackageableElement::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
     ParameterableElement::referenceReindexed(oldID, newID);
-    m_owningPackage.reindex(oldID, newID);
+}
+
+void PackageableElement::reindexName(std::string oldName, std::string newName) {
+    NamedElement::reindexName(oldName, newName);
+    ParameterableElement::reindexName(oldName, newName);
 }
 
 void PackageableElement::referencingReleased(ID id) {
     NamedElement::referencingReleased(id);
     ParameterableElement::referencingReleased(id);
-    m_owningPackage.release(id);
 }
 
-void PackageableElement::restoreReferences() {
-    NamedElement::restoreReferences();
-    ParameterableElement::restoreReferences();
-    m_owningPackage.restoreReference();
+void PackageableElement::restoreReference(Element* el) {
+    NamedElement::restoreReference(el);
+    ParameterableElement::restoreReference(el);
 }
 
 void PackageableElement::referenceErased(ID id) {
     NamedElement::referenceErased(id);
     ParameterableElement::referenceErased(id);
-    m_owningPackage.elementErased(id);
+}
+
+Set<Package, PackageableElement>& PackageableElement::getOwningPackageSingleton() {
+    return m_owningPackage;
+}
+
+void PackageableElement::init() {
+    m_owningPackage.subsets(m_namespace);
+    m_owningPackage.opposite(&Package::getPackagedElements);
+    m_owningPackage.m_signature = &PackageableElement::getOwningPackageSingleton;
+}
+
+void PackageableElement::copy(const PackageableElement& rhs) {
+    m_owningPackage = rhs.m_owningPackage;
+    m_owningPackage.m_el = this;
 }
 
 PackageableElement::PackageableElement() : Element(ElementType::PACKAGEABLE_ELEMENT) {
-    m_owningPackage.m_signature = &PackageableElement::m_owningPackage;
-    m_owningPackage.m_removeProcedures.push_back(new RemoveOwningPackageProcedure(this));
-    m_owningPackage.m_addProcedures.push_back(new AddOwningPackageProcedure(this));
+    init();
 }
 
-PackageableElement::PackageableElement(const PackageableElement& el) : 
-NamedElement(el), 
-Element(el, ElementType::PACKAGEABLE_ELEMENT) {
-    m_owningPackage = el.m_owningPackage;
-    m_owningPackage.m_me = this;
-    m_owningPackage.m_removeProcedures.clear();
-    m_owningPackage.m_addProcedures.clear();
-    m_owningPackage.m_removeProcedures.push_back(new RemoveOwningPackageProcedure(this));
-    m_owningPackage.m_addProcedures.push_back(new AddOwningPackageProcedure(this));
+PackageableElement::PackageableElement(const PackageableElement& el) : Element(ElementType::PACKAGEABLE_ELEMENT) {
+    // abstract
 }
 
 Package* PackageableElement::getOwningPackage() {
@@ -90,6 +74,10 @@ void PackageableElement::setOwningPackage(Package* package) {
 
 void PackageableElement::setOwningPackage(Package& package) {
     m_owningPackage.set(package);
+}
+
+void PackageableElement::setOwningPackage(ID id) {
+    m_owningPackage.set(id);
 }
 
 bool PackageableElement::isSubClassOf(ElementType eType) const {

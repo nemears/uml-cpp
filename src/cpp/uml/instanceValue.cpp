@@ -1,15 +1,8 @@
 #include "uml/instanceValue.h"
 #include "uml/instanceSpecification.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
-
-void InstanceValue::RemoveInstanceProcedure::operator()(InstanceSpecification* el) const {
-    el->removeReference(m_me->getID());
-}
-
-void InstanceValue::AddInstanceProcedure::operator()(InstanceSpecification* el) const {
-    el->setReference(m_me);
-}
 
 void InstanceValue::referencingReleased(ID id) {
     ValueSpecification::referencingReleased(id);
@@ -21,27 +14,39 @@ void InstanceValue::referenceReindexed(ID oldID, ID newID) {
     m_instance.reindex(oldID, newID);
 }
 
-void InstanceValue::restoreReferences() {
-    ValueSpecification::restoreReferences();
-    m_instance.restoreReference();
+void InstanceValue::reindexName(std::string oldName, std::string newName) {
+    ValueSpecification::reindexName(oldName, newName);
+    m_instance.reindexName(oldName, newName);
 }
 
 void InstanceValue::referenceErased(ID id) {
     ValueSpecification::referenceErased(id);
-    m_instance.elementErased(id);
+    m_instance.eraseElement(id);
+}
+
+Set<InstanceSpecification, InstanceValue>& InstanceValue::getInstanceSingleton() {
+    return m_instance;
+}
+
+void InstanceValue::init() {
+    m_instance.m_signature = &InstanceValue::getInstanceSingleton;
+}
+
+void InstanceValue::copy(const InstanceValue& rhs) {
+    m_instance = rhs.m_instance;
 }
 
 InstanceValue::InstanceValue() : Element(ElementType::INSTANCE_VALUE) {
-    m_instance.m_signature = &InstanceValue::m_instance;
-    m_instance.m_addProcedures.push_back(new AddInstanceProcedure(this));
-    m_instance.m_removeProcedures.push_back(new RemoveInstanceProcedure(this));
+    init();
 }
 
 InstanceValue::InstanceValue(const InstanceValue& rhs) : Element(rhs, ElementType::INSTANCE_VALUE) {
-    m_instance = rhs.m_instance;
-    m_instance.m_me = this;
-    m_instance.m_addProcedures.push_back(new AddInstanceProcedure(this));
-    m_instance.m_removeProcedures.push_back(new RemoveInstanceProcedure(this));
+    init();
+    Element::copy(rhs);
+    TypedElement::copy(rhs);
+    ParameterableElement::copy(rhs);
+    PackageableElement::copy(rhs);
+    copy(rhs);
 }
 
 InstanceSpecification*  InstanceValue::getInstance() {
@@ -62,6 +67,10 @@ void InstanceValue::setInstance(InstanceSpecification* inst) {
 
 void InstanceValue::setInstance(InstanceSpecification& inst) {
     m_instance.set(inst);
+}
+
+void InstanceValue::setInstance(ID id) {
+    m_instance.set(id);
 }
 
 bool InstanceValue::isSubClassOf(ElementType eType) const {

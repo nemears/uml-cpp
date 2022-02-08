@@ -2,7 +2,6 @@
 #define UML_UML_TEST_UTIL
 
 #include "uml/umlManager.h"
-#include "uml/sequence.h"
 #include "uml/package.h"
 
 namespace UML {
@@ -24,7 +23,7 @@ namespace UML {
     void ASSERT_COPY_SEQUENCE_CORRECTLY(size_t index, T& og, T& copy, S seq, Ss... sequences) {
         ASSERT_EQ((og.*seq)().size(), (copy.*seq)().size()) << " at index " << index;
         for (size_t i = 0; i < (og.*seq)().size(); i++) {
-            ASSERT_EQ((og.*seq)().get(i).getID(), (copy.*seq)().get(i).getID()) << " at index " << index;
+            ASSERT_TRUE((copy.*seq)().contains((og.*seq)().get(i))) << " at index " << index;
         }
         index++;
         ASSERT_COPY_SEQUENCE_CORRECTLY<T, U>(index, og, copy, sequences...);
@@ -61,7 +60,7 @@ namespace UML {
     inline void ASSERT_RESTORED_NAMESPACE(NamedElement& el, Namespace& nmspc) {
         ASSERT_TRUE(el.hasNamespace());
         ASSERT_EQ(el.getNamespaceRef(), nmspc);
-        ASSERT_TRUE(el.getMemberNamespace().count(nmspc.getID()));
+        // ASSERT_TRUE(el.getMemberNamespace().count(nmspc.getID()));
         ASSERT_TRUE(el.hasOwner());
         ASSERT_EQ(el.getOwnerRef(), nmspc);
         ASSERT_TRUE(nmspc.getOwnedMembers().count(el.getID()));

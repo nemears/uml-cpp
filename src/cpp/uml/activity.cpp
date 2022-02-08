@@ -11,8 +11,8 @@ void Activity::AddNodeFunctor::operator()(ActivityNode& el) const {
 
     // if owner not already specified make it the activity (don't overwrite pins ownership)
     if (!el.getOwner()) {
-        if (!m_el->getOwnedElements().count(el.getID())) {
-            m_el->getOwnedElements().internalAdd(el);
+        if (!m_el->getOwnedElements().contains(el.getID())) {
+            m_el->getOwnedElements().add(el);
         }
     }
 
@@ -24,8 +24,8 @@ void Activity::RemoveNodeFunctor::operator()(ActivityNode& el) const {
         el.setActivity(0);
     }
 
-    if (m_el->getOwnedElements().count(el)) {
-        m_el->getOwnedElements().internalRemove(el);
+    if (m_el->getOwnedElements().contains(el.getID())) {
+        m_el->getOwnedElements().remove(el);
     }
     updateCopiedSequenceRemovedFrom(el, &Activity::getNodes);
 }
@@ -35,8 +35,8 @@ void Activity::AddEdgeFunctor::operator()(ActivityEdge& el) const {
         el.setActivity(m_el);
     }
 
-    if (!m_el->getOwnedElements().count(el.getID())) {
-        m_el->getOwnedElements().internalAdd(el);
+    if (!m_el->getOwnedElements().contains(el.getID())) {
+        m_el->getOwnedElements().add(el);
     }
     updateCopiedSequenceAddedTo(el, &Activity::getEdges);
 }
@@ -45,7 +45,7 @@ void Activity::RemoveEdgeFunctor::operator()(ActivityEdge& el) const {
     if (el.getActivity() == m_el) {
         el.setActivity(m_el);
     }
-    subsetsRemove(el, &Element::getOwnedElements);
+    //subsetsRemove(el, &Element::getOwnedElements);
     updateCopiedSequenceRemovedFrom(el, &Activity::getEdges);
 }
 

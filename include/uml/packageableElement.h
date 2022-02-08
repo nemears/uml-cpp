@@ -8,32 +8,21 @@
 namespace UML {
 
     class Package;
-    namespace Parsers {
-        class SetOwningPackage;
-    }
 
     class PackageableElement : virtual public NamedElement , virtual public ParameterableElement {
 
         friend class Package;
-        friend class Parsers::SetOwningPackage;
 
         protected:
             Singleton<Package, PackageableElement> m_owningPackage = Singleton<Package, PackageableElement>(this);
-            class RemoveOwningPackageProcedure : public AbstractSingletonProcedure<Package, PackageableElement> {
-                public:
-                    RemoveOwningPackageProcedure(PackageableElement* me) : AbstractSingletonProcedure<Package, PackageableElement>(me) {};
-                    void operator()(Package* el) const override;
-            };
-            class AddOwningPackageProcedure : public AbstractSingletonProcedure<Package, PackageableElement> {
-                public:
-                    AddOwningPackageProcedure(PackageableElement* me) : AbstractSingletonProcedure<Package, PackageableElement>(me) {};
-                    void operator()(Package* el) const override;
-                    void operator()(ID id) const override;
-            };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
+            void reindexName(std::string oldName, std::string newName) override;
+            void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
+            Set<Package, PackageableElement>& getOwningPackageSingleton();
+            void init();
+            void copy(const PackageableElement& rhs);
             PackageableElement();
         public:
             PackageableElement(const PackageableElement& el);
@@ -44,6 +33,7 @@ namespace UML {
             bool hasOwningPackage() const;
             void setOwningPackage(Package& package);
             void setOwningPackage(Package* package);
+            void setOwningPackage(ID id);
             bool isSubClassOf(ElementType eType) const override;
             PackageableElement& operator=(PackageableElement&&) {
                 return *this;

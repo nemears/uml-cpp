@@ -4,84 +4,57 @@
 #include "packageableElement.h"
 #include "deployedArtifact.h"
 #include "deploymentTarget.h"
-#include "sequence.h"
 
 namespace UML{
 
     class Slot;
     class Classifier;
     class InstanceValue;
-    namespace Parsers {
-        class InstanceSpecificationSetClassifier;
-        class SetSpecification;
-    }
+    class ValueSpecification;
 
     class InstanceSpecification : public PackageableElement , public DeployedArtifact, public DeploymentTarget {
 
         friend class UmlManager;
         friend class Classifier;
         friend class InstanceValue;
-        friend class Parsers::InstanceSpecificationSetClassifier;
-        friend class Parsers::SetSpecification;
 
         protected:
             bool m_setFlag = false;
-            Singleton<Classifier, InstanceSpecification> m_classifier = Singleton<Classifier, InstanceSpecification>(this);
-            class RemoveClassifierProcedure : public AbstractSingletonProcedure<Classifier, InstanceSpecification> {
+            Set<Classifier, InstanceSpecification> m_classifiers = Set<Classifier, InstanceSpecification>(this);
+            class AddClassifierFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
                 public:
-                    RemoveClassifierProcedure(InstanceSpecification* me) : AbstractSingletonProcedure<Classifier, InstanceSpecification>(me) {};
-                    void operator()(Classifier* el) const override;
+                    AddClassifierFunctor(Element* el) : SetFunctor(el) {};
             };
-            class AddClassifierProcedure : public AbstractSingletonProcedure<Classifier, InstanceSpecification>{
+            class RemoveClassifierFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
                 public:
-                    AddClassifierProcedure(InstanceSpecification * me) : AbstractSingletonProcedure<Classifier, InstanceSpecification>(me) {};
-                    void operator()(Classifier* el) const override;
+                    RemoveClassifierFunctor(Element* el) : SetFunctor(el) {};
             };
-            Sequence<Slot> m_slots = Sequence<Slot>(this);
+            Set<Slot, InstanceSpecification> m_slots = Set<Slot, InstanceSpecification>(this);
             Singleton <ValueSpecification, InstanceSpecification> m_specification = Singleton<ValueSpecification, InstanceSpecification>(this);
-            class RemoveSpecificationProcedure : public AbstractSingletonProcedure<ValueSpecification, InstanceSpecification> {
-                public:
-                    RemoveSpecificationProcedure(InstanceSpecification* me) : AbstractSingletonProcedure<ValueSpecification, InstanceSpecification>(me) {};
-                    void operator()(ValueSpecification* el) const override;
-            };
-            class AddSpecificationProcedure : public AbstractSingletonProcedure<ValueSpecification, InstanceSpecification> {
-                public:
-                    AddSpecificationProcedure(InstanceSpecification* me) : AbstractSingletonProcedure<ValueSpecification, InstanceSpecification>(me) {};
-                    void operator()(ValueSpecification* el) const override;
-                    void operator()(ID id) const override;
-            };
-            class AddSlotFunctor : public TemplateAbstractSequenceFunctor<Slot,InstanceSpecification> {
-                public:
-                    AddSlotFunctor(InstanceSpecification* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Slot& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveSlotFunctor : public TemplateAbstractSequenceFunctor<Slot,InstanceSpecification> {
-                public:
-                    RemoveSlotFunctor(InstanceSpecification* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Slot& el) const override;
-            };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
+            void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
+            Set<ValueSpecification, InstanceSpecification>& getSpecificationSingleton();
+            void init();
+            void copy(const InstanceSpecification& rhs);
             InstanceSpecification();
         public:
-            InstanceSpecification(const InstanceSpecification& inst);
+            InstanceSpecification(const InstanceSpecification& rhs);
             virtual ~InstanceSpecification();
-            Classifier* getClassifier();
-            Classifier& getClassifierRef();
-            ID getClassifierID() const;
-            bool hasClassifier() const;
-            void setClassifier(Classifier* classifier);
-            void setClassifier(Classifier& classifier);
-            Sequence<Slot>& getSlots();
+            Set<Classifier, InstanceSpecification>& getClassifiers();
+            Set<Slot, InstanceSpecification>& getSlots();
             ValueSpecification* getSpecification();
             ValueSpecification& getSpecificationRef();
             ID getSpecificationID() const;
             bool hasSpecification() const;
             void setSpecification(ValueSpecification* specification);
             void setSpecification(ValueSpecification& specification);
+            void setSpecification(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::INSTANCE_SPECIFICATION;

@@ -1,14 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/parsers/parser.h"
 #include "test/yumlParsersTest.h"
-#include "uml/package.h"
-#include "uml/activity.h"
-#include "uml/packageMerge.h"
-#include "uml/primitiveType.h"
-#include "uml/property.h"
-#include "uml/profile.h"
-#include "uml/profileApplication.h"
-#include "uml/stereotype.h"
+#include "uml/uml-stable.h"
 
 using namespace std;
 using namespace UML;
@@ -21,24 +14,24 @@ class PackageParserTest : public ::testing::Test {
     };
 };
 
-TEST_F(PackageParserTest, parsePackageWithActivityTest) {
-    UmlManager m;
-    Element* el;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "packageParserTests/packageWithActivity.yml"));
-    ASSERT_TRUE(el);
-    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
-    Package* pckg = dynamic_cast<Package*>(el);
-    ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::ACTIVITY);
-    Activity* act = &dynamic_cast<Activity&>(pckg->getPackagedElements().front());
-    ASSERT_TRUE(pckg->getMembers().size() == 1);
-    ASSERT_TRUE(&pckg->getMembers().front() == act);
-    ASSERT_TRUE(pckg->getOwnedElements().size() == 1);
-    ASSERT_TRUE(&pckg->getOwnedElements().front() == act);
-    ASSERT_TRUE(act->getOwningPackage() == pckg);
-    ASSERT_TRUE(act->getNamespace() == pckg);
-    ASSERT_TRUE(act->getOwner() == pckg);
-}
+// TEST_F(PackageParserTest, parsePackageWithActivityTest) {
+//     UmlManager m;
+//     Element* el;
+//     ASSERT_NO_THROW(el = m.parse(ymlPath + "packageParserTests/packageWithActivity.yml"));
+//     ASSERT_TRUE(el);
+//     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
+//     Package* pckg = dynamic_cast<Package*>(el);
+//     ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
+//     ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::ACTIVITY);
+//     Activity* act = &dynamic_cast<Activity&>(pckg->getPackagedElements().front());
+//     ASSERT_TRUE(pckg->getMembers().size() == 1);
+//     ASSERT_TRUE(&pckg->getMembers().front() == act);
+//     ASSERT_TRUE(pckg->getOwnedElements().size() == 1);
+//     ASSERT_TRUE(*pckg->getOwnedElements().begin() == *act);
+//     ASSERT_TRUE(act->getOwningPackage() == pckg);
+//     ASSERT_TRUE(act->getNamespace() == pckg);
+//     ASSERT_TRUE(act->getOwner() == pckg);
+// }
 
 TEST_F(PackageParserTest, parse3PackagesTest) {
     UmlManager m;
@@ -60,19 +53,19 @@ TEST_F(PackageParserTest, parse3PackagesTest) {
     ASSERT_TRUE(pckg2->getNamespace() == pckg1);
     ASSERT_TRUE(pckg3->getNamespace() == pckg1);
     ASSERT_TRUE(pckg1->getOwnedElements().size() == 2);
-    ASSERT_TRUE(&pckg1->getOwnedElements().front() == pckg2);
-    ASSERT_TRUE(&pckg1->getOwnedElements().back() == pckg3);
+    ASSERT_TRUE(*pckg1->getOwnedElements().begin() == *pckg2);
+    ASSERT_TRUE(*(pckg1->getOwnedElements().begin()++) == *pckg3);
     ASSERT_TRUE(pckg2->getOwner() == pckg1);
     ASSERT_TRUE(pckg3->getOwner() == pckg1);
     ASSERT_TRUE(pckg2->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg2->getPackagedElements().front().getElementType() == ElementType::ACTIVITY);
-    Activity* act1 = dynamic_cast<Activity*>(&pckg2->getPackagedElements().front());
+    ASSERT_TRUE(pckg2->getPackagedElements().front().getElementType() == ElementType::CLASS);
+    Class* act1 = dynamic_cast<Class*>(&pckg2->getPackagedElements().front());
     ASSERT_TRUE(act1->getOwningPackage() == pckg2);
     ASSERT_TRUE(act1->getNamespace() == pckg2);
     ASSERT_TRUE(act1->getOwner() == pckg2);
     ASSERT_TRUE(pckg3->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg3->getPackagedElements().front().getElementType() == ElementType::ACTIVITY);
-    Activity* act2 = dynamic_cast<Activity*>(&pckg3->getPackagedElements().front());
+    ASSERT_TRUE(pckg3->getPackagedElements().front().getElementType() == ElementType::CLASS);
+    Class* act2 = dynamic_cast<Class*>(&pckg3->getPackagedElements().front());
     ASSERT_TRUE(act2->getOwningPackage() == pckg3);
     ASSERT_TRUE(act2->getNamespace() == pckg3);
     ASSERT_TRUE(act2->getOwner() == pckg3);
@@ -249,8 +242,6 @@ TEST_F(PackageParserTest, mountAndEditPackageTest) {
     ASSERT_EQ(&c2.getPackageMerge().front(), &merge);
     ASSERT_TRUE(c2.getOwnedElements().count(merge.getID()));
     ASSERT_EQ(c2.getOwnedElements().get(merge.getID()), merge);
-    ASSERT_TRUE(c2.getDirectedRelationships().count(merge.getID()));
-    ASSERT_EQ(c2.getDirectedRelationships().get(merge.getID()), merge);
     ASSERT_TRUE(merge.hasReceivingPackage());
     ASSERT_EQ(merge.getReceivingPackageRef(), c2);
     ASSERT_TRUE(merge.hasOwner());
@@ -261,8 +252,6 @@ TEST_F(PackageParserTest, mountAndEditPackageTest) {
     ASSERT_EQ(&c2.getProfileApplications().front(), &profileApplication);
     ASSERT_TRUE(c2.getOwnedElements().count(profileApplication.getID()));
     ASSERT_EQ(c2.getOwnedElements().get(profileApplication.getID()), profileApplication);
-    ASSERT_TRUE(c2.getDirectedRelationships().count(profileApplication.getID()));
-    ASSERT_EQ(c2.getDirectedRelationships().get(profileApplication.getID()), profileApplication);
     ASSERT_TRUE(profileApplication.hasApplyingPackage());
     ASSERT_EQ(profileApplication.getApplyingPackageRef(), c2);
     ASSERT_TRUE(profileApplication.hasOwner());
@@ -283,8 +272,6 @@ TEST_F(PackageParserTest, mountAndEditPackageTest) {
     ASSERT_EQ(c2.getOwnedElements().get(stereotype.getID()), stereotype);
     ASSERT_TRUE(stereotype.hasNamespace());
     ASSERT_EQ(stereotype.getNamespaceRef(), c2);
-    ASSERT_EQ(stereotype.getMemberNamespace().size(), 1);
-    ASSERT_EQ(stereotype.getMemberNamespace().front(), c2);
     ASSERT_TRUE(stereotype.hasOwner());
     ASSERT_EQ(stereotype.getOwnerRef(), c2);
 
@@ -313,8 +300,6 @@ TEST_F(PackageParserTest, mountAndEditPackageTest) {
     ASSERT_EQ(stereotype2.getOwningPackage(), &c2);
     ASSERT_TRUE(stereotype2.getNamespace() != 0);
     ASSERT_EQ(stereotype2.getNamespace(), &c2);
-    ASSERT_EQ(stereotype2.getMemberNamespace().size(), 1);
-    ASSERT_EQ(&stereotype2.getMemberNamespace().front(), &c2);
     ASSERT_TRUE(stereotype2.getOwner() != 0);
     ASSERT_EQ(stereotype2.getOwner(), &c2);
 

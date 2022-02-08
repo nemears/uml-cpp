@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/stereotype.h"
 #include "uml/profile.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 

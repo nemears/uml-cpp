@@ -1,170 +1,50 @@
 #include "uml/association.h"
 #include "uml/property.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void Association::reindexName(std::string oldName, std::string newName) {
-    Classifier::reindexName(oldName, newName);
-}
-
-void Association::AddMemberEndFunctor::operator()(Property& el) const {
-    if (el.getAssociation() != m_el) {
-        el.setAssociation(m_el);
-    }
-
-    if (!m_el->getMembers().count(el.getID())) {
-        m_el->getMembers().add(el);
-    }
-
-    if (el.getType()) {
-        if (!m_el->getEndType().count(el.getType()->getID())) {
-            m_el->getEndType().add(*el.getType());
+void Association::AddEndTypeFunctor::operator()(Element& el) const {
+    if (el.as<Property>().hasType()) {
+        if (el.as<Property>().m_type.loaded(el.as<Property>().m_type.ids().front())) {
+            m_el.as<Association>().getEndType().add(el.as<Property>().getTypeRef());
+            el.as<Property>().getTypeRef().setReference(&m_el);
         }
     }
-    updateCopiedSequenceAddedTo(el, &Association::getMemberEnds);
 }
 
-void Association::AddMemberEndFunctor::operator()(ID id) const {
-    if (!m_el->getMembers().count(id)) {
-        m_el->getMembers().addByID(id);
-    }
-}
-
-void Association::RemoveMemberEndFunctor::operator()(Property& el) const {
-    if (el.getAssociation() == m_el) {
-        el.setAssociation(0);
-    }
-
-    if (m_el->getMembers().count(el.getID())) {
-        m_el->getMembers().remove(el);
-    }
-
-    if (el.getType()) {
-        if (m_el->getEndType().count(el.getType()->getID())) {
-            m_el->getEndType().remove(*el.getType());
+void Association::RemoveEndTypeFunctor::operator()(Element& el) const {
+    if (el.as<Property>().hasType()) {
+        if (m_el.as<Association>().getEndType().contains(el.as<Property>().getTypeID())) {
+            m_el.as<Association>().getEndType().remove(el.as<Property>().getTypeID());
+            el.as<Property>().getTypeRef().removeReference(m_el.getID());
         }
     }
-    updateCopiedSequenceRemovedFrom(el, &Association::getMemberEnds);
-}
-
-void Association::AddOwnedEndFunctor::operator()(Property& el) const {
-    if (el.getOwningAssociation() != m_el) {
-        el.setOwningAssociation(m_el);
-    }
-
-    if (!m_el->getMemberEnds().count(el.getID())) {
-        m_el->getMemberEnds().add(el);
-    }
-
-    if (!m_el->getFeatures().count(el.getID())) {
-        m_el->getFeatures().add(el);
-    }
-
-    if (!m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().add(el);
-    }
-    updateCopiedSequenceAddedTo(el, &Association::getOwnedEnds);
-}
-
-void Association::AddOwnedEndFunctor::operator()(ID id) const {
-    if (!m_el->getMemberEnds().count(id)) {
-        m_el->getMemberEnds().addByID(id);
-    }
-
-    if (!m_el->getFeatures().count(id)) {
-        m_el->getFeatures().addByID(id);
-    }
-
-    if (!m_el->getOwnedMembers().count(id)) {
-        m_el->getOwnedMembers().addByID(id);
-    }
-}
-
-void Association::RemoveOwnedEndFunctor::operator()(Property& el) const {
-    if (el.getOwningAssociation() == m_el) {
-        el.setOwningAssociation(0);
-    }
-
-    if (m_el->getMemberEnds().count(el.getID())) {
-        m_el->getMemberEnds().remove(el);
-    }
-
-    if (m_el->getFeatures().count(el.getID())) {
-        m_el->getFeatures().remove(el);
-    }
-
-    if (m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().remove(el);
-    }
-    updateCopiedSequenceRemovedFrom(el, &Association::getOwnedEnds);
-}
-
-void Association::AddNavigableOwnedEndFunctor::operator()(Property& el) const {
-    if (!m_el->getOwnedEnds().count(el.getID())) {
-        m_el->getOwnedEnds().add(el);
-    }
-    updateCopiedSequenceAddedTo(el, &Association::getNavigableOwnedEnds);
-}
-
-void Association::AddNavigableOwnedEndFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedEnds().count(id)) {
-        m_el->getOwnedEnds().addByID(id);
-    }
-}
-
-void Association::RemoveNavigableOwnedEndFunctor::operator()(Property& el) const {
-    if (dynamic_cast<Association*>(m_el)->getOwnedEnds().count(el.getID())) {
-        dynamic_cast<Association*>(m_el)->getOwnedEnds().remove(dynamic_cast<Property&>(el));
-    }
-    updateCopiedSequenceRemovedFrom(el, &Association::getNavigableOwnedEnds);
-}
-
-void Association::AddEndTypeFunctor::operator()(Type& el) const {
-    el.setReference(m_el);
-    updateCopiedSequenceAddedTo(el, &Association::getEndType);
-}
-
-void Association::RemoveEndTypeFunctor::operator()(Type& el) const {
-    el.removeReference(m_el->getID());
-    updateCopiedSequenceRemovedFrom(el, &Association::getEndType);
 }
 
 void Association::referencingReleased(ID id) {
     Classifier::referencingReleased(id);
     Relationship::referencingReleased(id);
-    m_memberEnds.elementReleased(id, &Association::getMemberEnds);
-    m_ownedEnds.elementReleased(id, &Association::getOwnedEnds);
-    m_navigableOwnedEnds.elementReleased(id, &Association::getNavigableOwnedEnds);
-    m_endType.elementReleased(id, &Association::getEndType);
 }
 
 void Association::referenceReindexed(ID oldID, ID newID) {
     Classifier::referenceReindexed(oldID, newID);
     Relationship::referenceReindexed(oldID, newID);
-    m_memberEnds.reindex(oldID, newID, &Association::getMemberEnds);
-    m_ownedEnds.reindex(oldID, newID, &Association::getOwnedEnds);
-    m_navigableOwnedEnds.reindex(oldID, newID, &Association::getNavigableOwnedEnds);
-    m_endType.reindex(oldID, newID, &Association::getEndType);
+}
+
+void Association::reindexName(std::string oldName, std::string newName) {
+    Classifier::reindexName(oldName, newName);
+    Relationship::reindexName(oldName, newName);
 }
 
 void Association::restoreReferences() {
     Classifier::restoreReferences();
     Relationship::restoreReferences();
-    m_memberEnds.restoreReferences();
-    m_ownedEnds.restoreReferences();
-    m_navigableOwnedEnds.restoreReferences();
-    for (auto& end : m_memberEnds) {
-        if (end.hasType()) {
-            if (!m_endType.count(end.getTypeID())) {
-                if (m_manager->loaded(end.getTypeID())) {
-                    m_endType.add(end.getTypeRef());
-                } else {
-                    m_endType.addByID(end.getTypeID());
-                }
-            }
+    for (auto& prop : m_memberEnds) {
+        if (prop.hasType()) {
+            m_endType.add(prop.getTypeID());
         }
     }
-    m_endType.restoreReferences();
 }
 
 void Association::restoreReference(Element* el) {
@@ -177,71 +57,74 @@ void Association::restoreReference(Element* el) {
 void Association::referenceErased(ID id) {
     Classifier::referenceErased(id);
     Relationship::referenceErased(id);
-    m_memberEnds.elementErased(id);
-    m_ownedEnds.elementErased(id);
-    m_navigableOwnedEnds.elementErased(id);
 }
 
-Association::Association() : Element(ElementType::ASSOCIATION) {
-    m_memberEnds.addProcedures.push_back(new AddMemberEndFunctor(this));
-    m_memberEnds.removeProcedures.push_back(new RemoveMemberEndFunctor(this));
-    m_ownedEnds.addProcedures.push_back(new AddOwnedEndFunctor(this));
-    m_ownedEnds.removeProcedures.push_back(new RemoveOwnedEndFunctor(this));
-    m_navigableOwnedEnds.addProcedures.push_back(new AddNavigableOwnedEndFunctor(this));
-    m_navigableOwnedEnds.removeProcedures.push_back(new RemoveNavigableOwnedEndFunctor(this));
-    m_endType.addProcedures.push_back(new AddEndTypeFunctor(this));
-    m_endType.removeProcedures.push_back(new RemoveEndTypeFunctor(this));
-}
-
-Association::Association(const Association& rhs) : 
-Classifier(rhs), 
-PackageableElement(rhs), 
-NamedElement(rhs), 
-Relationship(rhs), 
-Element(rhs, ElementType::ASSOCIATION) {
-    m_memberEnds = rhs.m_memberEnds;
-    m_memberEnds.m_el = this;
-    m_memberEnds.addProcedures.clear();
-    m_memberEnds.removeProcedures.clear();
-    m_memberEnds.addProcedures.push_back(new AddMemberEndFunctor(this));
-    m_memberEnds.removeProcedures.push_back(new RemoveMemberEndFunctor(this));
-    m_ownedEnds = rhs.m_ownedEnds;
-    m_ownedEnds.m_el = this;
-    m_ownedEnds.addProcedures.clear();
-    m_ownedEnds.removeProcedures.clear();
-    m_ownedEnds.addProcedures.push_back(new AddOwnedEndFunctor(this));
-    m_ownedEnds.removeProcedures.push_back(new RemoveOwnedEndFunctor(this));
-    m_navigableOwnedEnds = rhs.m_navigableOwnedEnds;
-    m_navigableOwnedEnds.m_el = this;
-    m_navigableOwnedEnds.addProcedures.clear();
-    m_navigableOwnedEnds.removeProcedures.clear();
-    m_navigableOwnedEnds.addProcedures.push_back(new AddNavigableOwnedEndFunctor(this));
-    m_navigableOwnedEnds.removeProcedures.push_back(new RemoveNavigableOwnedEndFunctor(this));
-    m_endType = rhs.m_endType;
-    m_endType.m_el = this;
-    m_endType.addProcedures.clear();
-    m_endType.removeProcedures.clear();
-    m_endType.addProcedures.push_back(new AddEndTypeFunctor(this));
-    m_endType.removeProcedures.push_back(new RemoveEndTypeFunctor(this));
-}
-
-Association::~Association() {
-    // nothing
-}
-
-Sequence<Property>& Association::getMemberEnds() {
+Set<Property, Association>& Association::getMemberEndsSet() {
     return m_memberEnds;
 }
 
-Sequence<Property>& Association::getOwnedEnds() {
+Set<Property, Association>& Association::getOwnedEndsSet() {
     return m_ownedEnds;
 }
 
-Sequence<Property>& Association::getNavigableOwnedEnds() {
+void Association::init() {
+    m_memberEnds.subsets(m_members);
+    m_memberEnds.opposite(&Property::getAssociationSingleton);
+    m_memberEnds.m_signature = &Association::getMemberEndsSet;
+    m_memberEnds.m_addFunctors.insert(new AddEndTypeFunctor(this));
+    m_memberEnds.m_removeFunctors.insert(new RemoveEndTypeFunctor(this));
+    m_ownedEnds.subsets(m_memberEnds);
+    m_ownedEnds.subsets(m_ownedMembers);
+    m_ownedEnds.subsets(m_features);
+    m_ownedEnds.opposite(&Property::getOwningAssociationSingleton);
+    m_ownedEnds.m_signature = &Association::getOwnedEndsSet;
+    m_navigableOwnedEnds.subsets(m_ownedEnds);
+    m_navigableOwnedEnds.m_signature = &Association::getNavigableOwnedEnds;
+    m_endType.subsets(m_relatedElements);
+    m_endType.m_signature = &Association::getEndType;
+}
+
+void Association::copy(const Association& rhs) {
+    m_memberEnds = rhs.m_memberEnds;
+    m_ownedEnds = rhs.m_ownedEnds;
+    m_navigableOwnedEnds = rhs.m_navigableOwnedEnds;
+    m_endType = rhs.m_endType;
+}
+
+Association::Association() : Element(ElementType::ASSOCIATION) {
+    init();
+}
+
+Association::Association(const Association& rhs) : Element(rhs, ElementType::ASSOCIATION) {
+    init();
+    Element::copy(rhs);
+    NamedElement::copy(rhs);
+    Namespace::copy(rhs);
+    ParameterableElement::copy(rhs);
+    PackageableElement::copy(rhs);
+    TemplateableElement::copy(rhs);
+    Classifier::copy(rhs);
+    Relationship::copy(rhs);
+    copy(rhs);
+}
+
+Association::~Association() {
+    
+}
+
+OrderedSet<Property, Association>& Association::getMemberEnds() {
+    return m_memberEnds;
+}
+
+OrderedSet<Property, Association>& Association::getOwnedEnds() {
+    return m_ownedEnds;
+}
+
+Set<Property, Association>& Association::getNavigableOwnedEnds() {
     return m_navigableOwnedEnds;
 }
 
-Sequence<Type>& Association::getEndType() {
+Set<Type, Association>& Association::getEndType() {
     return m_endType;
 }
 

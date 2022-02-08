@@ -1,24 +1,12 @@
 #include "uml/typedElement.h"
-#include "uml/umlManager.h"
-#include "uml/type.h"
+#include "uml/uml-stable.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
-void TypedElement::RemoveTypeProcedure::operator()(Type* el) const {
-    if (el->m_node) {
-        el->removeReference(m_me->getID());
-    }
-}
-
-void TypedElement::AddTypeProcedure::operator()(Type* el) const {
-    if (el->m_node) {
-        el->setReference(m_me);
-    }
-}
-
 void TypedElement::referencingReleased(ID id) {
     NamedElement::referencingReleased(id);
-    m_type.release();
+    m_type.release(id);
 }
 
 void TypedElement::referenceReindexed(ID oldID, ID newID) {
@@ -26,31 +14,43 @@ void TypedElement::referenceReindexed(ID oldID, ID newID) {
     m_type.reindex(oldID, newID);
 }
 
-void TypedElement::restoreReferences() {
-    NamedElement::restoreReferences();
-    m_type.restoreReference();
+void TypedElement::reindexName(std::string oldName, std::string newName) {
+    NamedElement::reindexName(oldName, newName);
+    m_type.reindexName(oldName, newName);
+}
+
+void TypedElement::restoreReference(Element* el) {
+    NamedElement::restoreReference(el);
+    if (m_type.id() == el->getID()) {
+        el->setReference(this);
+    }
 }
 
 void TypedElement::referenceErased(ID id) {
     NamedElement::referenceErased(id);
-    m_type.elementErased(id);
+    m_type.eraseElement(id);
+}
+
+Set<Type, TypedElement>& TypedElement::getTypeSingleton() {
+    return m_type;
+}
+
+void TypedElement::init() {
+    m_type.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_type.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
+    m_type.m_signature = &TypedElement::getTypeSingleton;
+}
+
+void TypedElement::copy(const TypedElement& rhs) {
+    m_type =  rhs.m_type;
 }
 
 TypedElement::TypedElement() : Element(ElementType::TYPED_ELEMENT) {
-    m_type.m_signature = &TypedElement::m_type;
-    m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));
-    m_type.m_addProcedures.push_back(new AddTypeProcedure(this));
+    init();
 }
 
-TypedElement::TypedElement(const TypedElement& el) : 
-NamedElement(el),
-Element(el, ElementType::TYPE) {
-    m_type = el.m_type;
-    m_type.m_me = this;
-    m_type.m_removeProcedures.clear();
-    m_type.m_addProcedures.clear();
-    m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));
-    m_type.m_addProcedures.push_back(new AddTypeProcedure(this));
+TypedElement::TypedElement(const TypedElement& el) : Element(ElementType::TYPE) {
+    // abstract
 }
 
 TypedElement::~TypedElement() {
@@ -79,6 +79,10 @@ void TypedElement::setType(Type* type) {
 
 void TypedElement::setType(Type& type) {
     m_type.set(type);
+}
+
+void TypedElement::setType(ID id) {
+    m_type.set(id);
 }
 
 bool TypedElement::isSubClassOf(ElementType eType) const {

@@ -1,472 +1,155 @@
 #include "uml/property.h"
-#include "uml/primitiveType.h"
-#include "uml/classifier.h"
-#include "uml/dataType.h"
-#include "uml/structuredClassifier.h"
 #include "uml/class.h"
+#include "uml/dataType.h"
 #include "uml/association.h"
-#include "uml/artifact.h"
+#include "uml/uml-stable.h"
 
-using namespace std;
 using namespace UML;
 
-void Property::RemoveDefaultValueProcedure::operator()(ValueSpecification* el) const {
-    m_me->getOwnedElements().internalRemove(*el);
-}
-
-void Property::AddDefaultValueProcedure::operator()(ValueSpecification* el) const {
-    if (!m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalAdd(*el);
-    }
-    if (el->getOwnerID() != m_me->getID()) {
-        el->setOwner(m_me);
+void Property::AddEndTypeFunctor::operator()(Element& el) const {
+    if (m_el.as<Property>().hasAssociation()) {
+        m_el.as<Property>().getAssociationRef().getEndType().add(el.as<Type>());
+        el.setReference(m_el.as<Property>().getAssociation());
     }
 }
 
-void Property::AddDefaultValueProcedure::operator()(ID id) const {
-    if (!m_me->getOwnedElements().count(id)) {
-        m_me->getOwnedElements().addByID(id);
-    }
-}
-
-void Property::RemoveStructuredClassifierProcedure::operator()(StructuredClassifier* el) const {
-    if (el->getOwnedAttributes().count(m_me->getID())) {
-        el->getOwnedAttributes().remove(*m_me);
-    }
-}
-
-void Property::AddStructuredClassifierProcedure::operator()(StructuredClassifier* el) const {
-    if (!el->getOwnedAttributes().count(m_me->getID())) {
-        el->getOwnedAttributes().add(*m_me);
-    }
-    if (m_me->getClassifierID() != el->getID()) {
-        m_me->setClassifier(el);
-    }
-}
-
-void Property::AddStructuredClassifierProcedure::operator()(ID id) const {
-    if (m_me->getClassifierID() != id) {
-        m_me->m_classifier.setByID(id);
-    }
-}
-
-void Property::RemoveClassifierProcedure::operator()(Classifier* el) const {
-    if (el->getAttributes().count(m_me->getID())) {
-        el->getAttributes().remove(*m_me);
-    }
-}
-
-void Property::AddClassifierProcedure::operator()(Classifier* el) const {
-    if (!el->getAttributes().count(m_me->getID())) {
-        el->getAttributes().add(*m_me);
-    }
-    if (!m_me->getRedefinedProperties().empty()) {
-        if (!m_me->getRedefinitionContext().count(el->getID())) {
-            m_me->getRedefinitionContext().add(*el);
-        }
-    }
-    if (m_me->getFeaturingClassifierID() != el->getID()) {
-        m_me->setFeaturingClassifier(el);
-    }
-}
-
-void Property::AddClassifierProcedure::operator()(ID id) const {
-    if (m_me->getFeaturingClassifierID() != id) {
-        m_me->m_featuringClassifier.setByID(id);
-    }
-    if (!m_me->getRedefinedProperties().empty()) {
-        if (!m_me->getRedefinitionContext().count(id)) {
-            m_me->getRedefinitionContext().addByID(id);
+void Property::RemoveEndTypeFunctor::operator()(Element& el) const {
+    if (m_el.as<Property>().hasAssociation()) {
+        if (m_el.as<Property>().getAssociationRef().getEndType().contains(el.getID())) {
+            m_el.as<Property>().getAssociationRef().getEndType().remove(el.getID());
+            el.removeReference(m_el.as<Property>().getAssociationID());
         }
     }
 }
 
-void Property::RemoveDataTypeProcedure::operator()(DataType* el) const {
-    if (el->getOwnedAttribute().count(m_me->getID())) {
-        el->getOwnedAttribute().remove(*m_me);
+void Property::AddRedefinitionContextFunctor::operator()(Element& el) const {
+    Property& me = m_el.as<Property>();
+    if (me.hasFeaturingClassifier() && !me.m_redefinitionContext.contains(me.getFeaturingClassifierID())) {
+        me.m_redefinitionContext.nonOppositeAdd(me.getFeaturingClassifierRef());
     }
+    el.setReference(&m_el);
 }
 
-void Property::AddDataTypeProcedure::operator()(DataType* el) const {
-    if (!el->getOwnedAttribute().count(m_me->getID())) {
-        el->getOwnedAttribute().add(*m_me);
+void Property::RemoveRedefinitionContextFunctor::operator()(Element& el) const {
+    Property& me = m_el.as<Property>();
+    if (me.m_redefinedElement.empty() && me.hasFeaturingClassifier() && !me.m_redefinitionContext.empty()) {
+        me.m_redefinitionContext.nonOppositeRemove(me.getFeaturingClassifierID());
     }
-    if (m_me->getClassifierID() != el->getID()) {
-        m_me->setClassifier(el);
-    }
-}
-
-void Property::AddDataTypeProcedure::operator()(ID id) const {
-    if (m_me->getClassifierID() != id) {
-        m_me->m_classifier.setByID(id);
-    }
-}
-
-void Property::RemoveClassProcedure::operator()(Class* el) const {
-    if (el->getOwnedAttributes().count(m_me->getID())) {
-        el->getOwnedAttributes().remove(*m_me);
-    }
-}
-
-void Property::AddClassProcedure::operator()(Class* el) const {
-    if (!el->getOwnedAttributes().count(m_me->getID())) {
-        el->getOwnedAttributes().add(*m_me);
-    }
-    if (m_me->getStructuredClassifierID() != el->getID()) {
-        m_me->setStructuredClassifier(el);
-    }
-}
-
-void Property::AddClassProcedure::operator()(ID id) const {
-    if (m_me->getStructuredClassifierID() != id) {
-        m_me->m_structuredClassifier.setByID(id);
-    }
-}
-
-void Property::RemoveAssociationProcedure::operator()(Association* el) const {
-    if (el->getMemberEnds().count(m_me->getID())) {
-        el->getMemberEnds().remove(*m_me);
-    }
-}
-
-void Property::AddAssociationProcedure::operator()(Association* el) const {
-    if (!el->getMemberEnds().count(m_me->getID())) {
-        el->getMemberEnds().add(*m_me);
-    }
-    if (!m_me->getMemberNamespace().count(el->getID())) {
-        m_me->getMemberNamespace().add(*el);
-    }
-}
-
-void Property::AddAssociationProcedure::operator()(ID id) const {
-    if (!m_me->getMemberNamespace().count(id)) {
-        m_me->getMemberNamespace().addByID(id);
-    }
-}
-
-void Property::RemoveOwningAssociationProcedure::operator()(Association* el) const {
-    if (el->getOwnedEnds().count(m_me->getID())) {
-        el->getOwnedEnds().remove(*m_me);
-    }
-    if (el->getNavigableOwnedEnds().count(m_me->getID())) {
-        el->getNavigableOwnedEnds().remove(*m_me);
-    }
-}
-
-void Property::AddOwningAssociationProcedure::operator()(Association* el) const {
-    if (!el->getOwnedEnds().count(m_me->getID())) {
-        el->getOwnedEnds().add(*m_me);
-    }
-    if (m_me->getAssociationID() != el->getID()) {
-        m_me->m_association.set(el);
-    }
-    if (m_me->getFeaturingClassifierID() != el->getID()) {
-        m_me->m_featuringClassifier.set(el);
-    }
-}
-
-void Property::AddOwningAssociationProcedure::operator()(ID id) const {
-    if (m_me->getAssociationID() != id) {
-        m_me->m_association.setByID(id);
-    }
-    if (m_me->getFeaturingClassifierID() != id) {
-        m_me->m_featuringClassifier.setByID(id);
-    }
-}
-
-void Property::RemoveArtifactProcedure::operator()(Artifact* el) const {
-    if (el->getOwnedAttributes().count(m_me->getID())) {
-        el->getOwnedAttributes().remove(*m_me);
-    }
-}
-
-void Property::AddArtifactProcedure::operator()(Artifact* el) const {
-    if (!el->getOwnedAttributes().count(m_me->getID())) {
-        el->getOwnedAttributes().add(*m_me);
-    }
-    if (m_me->getClassifierID() != el->getID()) {
-        m_me->setClassifier(el);
-    }
-}
-
-void Property::AddArtifactProcedure::operator()(ID id) const {
-    if (m_me->getClassifierID() != id) {
-        m_me->m_classifier.setByID(id);
-    }
-}
-
-void Property::RemoveTypeProcedure::operator()(Type* el) const {
-    if (m_me->m_association.has()) {
-        if (m_me->m_association.get()->getEndType().count(m_me->m_type.get()->getID())) {
-            m_me->m_association.get()->getEndType().remove(m_me->m_type.getRef());
-        }
-    }
-}
-
-void Property::AddTypeProcedure::operator()(Type* el) const {
-    if (m_me->m_association.has()) {
-        if (el) {
-            if (!m_me->m_association.get()->getEndType().count(el->getID())) {
-                m_me->m_association.get()->getEndType().add(*el);
-            }
-        }
-    }
-}
-
-void Property::reindexName(string oldName, string newName) {
-    if (getClassifier()) {
-        getClassifier()->getAttributes().reindex(m_id, oldName, newName);
-    }
-
-    if (getDataType()) {
-        getDataType()->getOwnedAttribute().reindex(m_id, oldName, newName);
-    }
-
-    if (getStructuredClassifier()) {
-        if (getStructuredClassifier()->getOwnedAttributes().count(m_id)) {
-            getStructuredClassifier()->getOwnedAttributes().reindex(m_id, oldName, newName);
-        }
-        if (getStructuredClassifier()->getRole().count(m_id)) {
-            getStructuredClassifier()->getRole().reindex(m_id, oldName, newName);
-        }
-        if (getStructuredClassifier()->getParts().count(m_id)) {
-            getStructuredClassifier()->getParts().reindex(m_id, oldName, newName);
-        }
-    }
-
-    if (getAssociation()) {
-        if (getAssociation()->getMemberEnds().count(m_id)) {
-            getAssociation()->getMemberEnds().reindex(m_id, oldName, newName);
-        }
-    }
-
-    if (getOwningAssociation()) {
-        if (getOwningAssociation()->getOwnedEnds().count(m_id)) {
-            getOwningAssociation()->getOwnedEnds().reindex(m_id, oldName, newName);
-        }
-        if (getOwningAssociation()->getNavigableOwnedEnds().count(m_id)) {
-            getOwningAssociation()->getNavigableOwnedEnds().reindex(m_id, oldName, newName);
-        }
-    }
-
-    Feature::reindexName(oldName, newName);
-}
-
-void Property::AddRedefinedPropertyFunctor::operator()(Property& el) const {
-    if (!m_el->m_redefinedElement.count(el.getID())) {
-        m_el->m_redefinedElement.add(el);
-    }
-
-    if (m_el->m_classifier.has()) {
-        if (!m_el->m_redefinitionContext.count(m_el->m_classifier.id())) {
-            m_el->m_redefinitionContext.add(*m_el->getClassifier());
-        }
-    }
-    el.setReference(m_el);
-    updateCopiedSequenceAddedTo(el, &Property::getRedefinedProperties);
-}
-
-bool findProperty(Classifier& clazz, ID propID) {
-    for (auto& general : clazz.getGenerals()) {
-        if (!general.getAttributes().count(propID)) {
-            bool ret = findProperty(general, propID);
-            if (ret) {
-                return ret;
-            }
-        }
-        else {
-            return true;
-        }
-    }
-    return false;
-}
-
-void Property::CheckRedefinedPropertyFunctor::operator()(Property& el) const {
-    // if (!m_el->as<Property>().m_classifierID.isNull()) {
-    //     if (!findProperty(*m_el->as<Property>().getClassifier(), el.getID())) {
-    //         throw ImproperRedefinitionException();
-    //     }
-    // } else {
-    //     throw ImproperRedefinitionException();
-    // }
-}
-
-void Property::RemoveRedefinedPropertyFunctor::operator()(Property& el) const {
-    if (m_el->m_redefinedElement.count(el.getID())) {
-        m_el->m_redefinedElement.remove(el);
-    }
-
-    if (!m_el->m_classifier.has()) {
-        if (m_el->m_redefinitionContext.count(m_el->m_classifier.id()) && m_el->m_redefinedProperties.empty()) {
-            m_el->m_redefinitionContext.add(*m_el->getClassifier());
-        }
-    }
-    el.removeReference(m_el->getID());
-    updateCopiedSequenceRemovedFrom(el, &Property::getRedefinedProperties);
+    el.removeReference(m_el.getID());
 }
 
 void Property::referencingReleased(ID id) {
     StructuralFeature::referencingReleased(id);
-    m_defaultValue.release(id);
-    m_classifier.release(id);
-    m_structuredClassifier.release(id);
-    m_dataType.release(id);
-    m_class.release(id);
-    m_artifact.release(id);
     m_association.release(id);
-    m_owningAssociation.release(id);
-    m_redefinedProperties.elementReleased(id, &Property::getRedefinedProperties);
 }
 
 void Property::referenceReindexed(ID oldID, ID newID) {
     StructuralFeature::referenceReindexed(oldID, newID);
-    m_defaultValue.reindex(oldID, newID);
-    m_classifier.reindex(oldID, newID);
-    m_structuredClassifier.reindex(oldID, newID);
-    m_dataType.reindex(oldID, newID);
-    m_class.reindex(oldID, newID);
-    m_artifact.reindex(oldID, newID);
     m_association.reindex(oldID, newID);
-    m_owningAssociation.reindex(oldID, newID);
-    m_redefinedProperties.reindex(oldID, newID, &Property::getRedefinedProperties);
 }
 
-void Property::restoreReferences() {
-    StructuralFeature::restoreReferences();
-    m_defaultValue.restoreReference();
-    m_classifier.restoreReference();
-    m_structuredClassifier.restoreReference();
-    m_dataType.restoreReference();
-    m_class.restoreReference();
-    m_association.restoreReference();
-    m_owningAssociation.restoreReference();
-    m_artifact.restoreReference();
-    m_redefinedProperties.restoreReferences();
+void Property::reindexName(std::string oldName, std::string newName) {
+    StructuralFeature::reindexName(oldName, newName);
+    m_association.reindexName(oldName, newName);
 }
 
 void Property::restoreReference(Element* el) {
     StructuralFeature::restoreReference(el);
-    if (m_redefinedProperties.count(el->getID())) {
+    if (m_redefinedProperties.contains(el->getID())) {
         el->setReference(this);
+        if (m_featuringClassifier.has() && !m_redefinitionContext.contains(m_featuringClassifier.id())) {
+            m_redefinitionContext.addReadOnly(m_featuringClassifier.id());
+        }
     }
 }
 
 void Property::referenceErased(ID id) {
     StructuralFeature::referenceErased(id);
     DeploymentTarget::referenceErased(id);
-    m_defaultValue.elementErased(id);
-    m_classifier.elementErased(id);
-    m_structuredClassifier.elementErased(id);
-    m_dataType.elementErased(id);
-    m_class.elementErased(id);
-    m_association.elementErased(id);
-    m_owningAssociation.elementErased(id);
-    m_artifact.elementErased(id);
-    m_redefinedProperties.elementErased(id);
+    m_association.eraseElement(id);
+}
+
+Set<ValueSpecification, Property>& Property::getDefaultValueSingleton() {
+    return m_defaultValue;
+}
+
+Set<Class, Property>& Property::getClassSingleton() {
+    return m_class;
+}
+
+Set<DataType, Property>& Property::getDataTypeSingleton() {
+    return m_dataType;
+}
+
+Set<Association, Property>& Property::getAssociationSingleton() {
+    return m_association;
+}
+
+Set<Association, Property>& Property::getOwningAssociationSingleton() {
+    return m_owningAssociation;
+}
+
+Set<Interface, Property>& Property::getInterfaceSingleton() {
+    return m_interface;
+}
+
+void Property::init() {
+    m_defaultValue.subsets(*m_ownedElements);
+    m_defaultValue.m_signature = &Property::getDefaultValueSingleton;
+    m_class.subsets(m_namespace);
+    m_class.subsets(m_featuringClassifier);
+    m_class.opposite(&Class::getOwnedAttributesSet);
+    m_class.m_signature = &Property::getClassSingleton;
+    m_dataType.subsets(m_namespace);
+    m_dataType.subsets(m_featuringClassifier);
+    m_dataType.opposite(&DataType::getOwnedAttributesSet);
+    m_dataType.m_signature = &Property::getDataTypeSingleton;
+    m_association.opposite(&Association::getMemberEndsSet);
+    m_association.m_signature = &Property::getAssociationSingleton;
+    m_owningAssociation.subsets(m_namespace);
+    m_owningAssociation.subsets(m_featuringClassifier);
+    m_owningAssociation.subsets(m_association);
+    m_owningAssociation.opposite(&Association::getOwnedEndsSet);
+    m_owningAssociation.m_signature = &Property::getOwningAssociationSingleton;
+    m_interface.subsets(m_namespace);
+    m_interface.subsets(m_featuringClassifier);
+    m_interface.opposite(&Interface::getOwnedAttributesSet);
+    m_interface.m_signature = &Property::getInterfaceSingleton;
+    m_type.m_addFunctors.insert(new AddEndTypeFunctor(this));
+    m_type.m_removeFunctors.insert(new RemoveEndTypeFunctor(this));
+    m_redefinedProperties.subsets(m_redefinedElement);
+    m_redefinedProperties.m_signature = &Property::getRedefinedProperties;
+    m_redefinedProperties.m_addFunctors.insert(new AddRedefinitionContextFunctor(this));
+    m_redefinedProperties.m_removeFunctors.insert(new RemoveRedefinitionContextFunctor(this));
+}
+
+void Property::copy(const Property& rhs) {
+    m_defaultValue = rhs.m_defaultValue;
+    m_class = rhs.m_class;
+    m_dataType =  rhs.m_dataType;
+    m_composite = rhs.m_composite;
+    m_aggregation = rhs.m_aggregation;
+    m_redefinedProperties = rhs.m_redefinedProperties;
 }
 
 Property::Property() : Element(ElementType::PROPERTY) {
-    m_aggregation = AggregationKind::NONE;
-    m_composite = false;
-    m_defaultValue.m_signature = &Property::m_defaultValue;
-    m_defaultValue.m_removeProcedures.push_back(new RemoveDefaultValueProcedure(this));
-    m_defaultValue.m_addProcedures.push_back(new AddDefaultValueProcedure(this));
-    m_classifier.m_signature = &Property::m_classifier;
-    m_classifier.m_removeProcedures.push_back(new RemoveClassifierProcedure(this));
-    m_classifier.m_addProcedures.push_back(new AddClassifierProcedure(this));
-    m_dataType.m_signature = &Property::m_dataType;
-    m_dataType.m_removeProcedures.push_back(new RemoveDataTypeProcedure(this));
-    m_dataType.m_addProcedures.push_back(new AddDataTypeProcedure(this));
-    m_structuredClassifier.m_signature = &Property::m_structuredClassifier;
-    m_structuredClassifier.m_removeProcedures.push_back(new RemoveStructuredClassifierProcedure(this));
-    m_structuredClassifier.m_addProcedures.push_back(new AddStructuredClassifierProcedure(this));
-    m_class.m_signature = &Property::m_class;
-    m_class.m_removeProcedures.push_back(new RemoveClassProcedure(this));
-    m_class.m_addProcedures.push_back(new AddClassProcedure(this));
-    m_association.m_signature = &Property::m_association;
-    m_association.m_removeProcedures.push_back(new RemoveAssociationProcedure(this));
-    m_association.m_addProcedures.push_back(new AddAssociationProcedure(this));
-    m_owningAssociation.m_signature = &Property::m_owningAssociation;
-    m_owningAssociation.m_removeProcedures.push_back(new RemoveOwningAssociationProcedure(this));
-    m_owningAssociation.m_addProcedures.push_back(new AddOwningAssociationProcedure(this));
-    m_artifact.m_signature = &Property::m_artifact;
-    m_artifact.m_removeProcedures.push_back(new RemoveArtifactProcedure(this));
-    m_artifact.m_addProcedures.push_back(new AddArtifactProcedure(this));
-    m_redefinedProperties.addProcedures.push_back(new AddRedefinedPropertyFunctor(this));
-    m_redefinedProperties.addChecks.push_back(new CheckRedefinedPropertyFunctor(this));
-    m_redefinedProperties.removeProcedures.push_back(new RemoveRedefinedPropertyFunctor(this));
-    m_type.m_addProcedures.push_back(new AddTypeProcedure(this));
-    m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));
+    init();
 }
 
-Property::Property(const Property& prop) : 
-StructuralFeature(prop), 
-TypedElement(prop), 
-RedefinableElement(prop), 
-NamedElement(prop), 
-Element(prop, ElementType::PROPERTY) {
-    m_aggregation = prop.m_aggregation;
-    m_composite = prop.m_composite;
-    m_defaultValue = prop.m_defaultValue;
-    m_defaultValue.m_me = this;
-    m_defaultValue.m_removeProcedures.clear();
-    m_defaultValue.m_addProcedures.clear();
-    m_defaultValue.m_removeProcedures.push_back(new RemoveDefaultValueProcedure(this));
-    m_defaultValue.m_addProcedures.push_back(new AddDefaultValueProcedure(this));
-    m_classifier = prop.m_classifier;
-    m_classifier.m_me = this;
-    m_classifier.m_removeProcedures.clear();
-    m_classifier.m_addProcedures.clear();
-    m_classifier.m_removeProcedures.push_back(new RemoveClassifierProcedure(this));
-    m_classifier.m_addProcedures.push_back(new AddClassifierProcedure(this));
-    m_dataType = prop.m_dataType;
-    m_dataType.m_me = this;
-    m_dataType.m_removeProcedures.clear();
-    m_dataType.m_addProcedures.clear();
-    m_dataType.m_removeProcedures.push_back(new RemoveDataTypeProcedure(this));
-    m_dataType.m_addProcedures.push_back(new AddDataTypeProcedure(this));
-    m_class = prop.m_class;
-    m_class.m_me = this;
-    m_class.m_removeProcedures.clear();
-    m_class.m_addProcedures.clear();
-    m_class.m_removeProcedures.push_back(new RemoveClassProcedure(this));
-    m_class.m_addProcedures.push_back(new AddClassProcedure(this));
-    m_structuredClassifier = prop.m_structuredClassifier;
-    m_structuredClassifier.m_me = this;
-    m_structuredClassifier.m_removeProcedures.clear();
-    m_structuredClassifier.m_addProcedures.clear();
-    m_structuredClassifier.m_removeProcedures.clear();
-    m_structuredClassifier.m_removeProcedures.push_back(new RemoveStructuredClassifierProcedure(this));
-    m_structuredClassifier.m_addProcedures.push_back(new AddStructuredClassifierProcedure(this));
-    m_association = prop.m_association;
-    m_association.m_me = this;
-    m_association.m_removeProcedures.clear();
-    m_association.m_addProcedures.clear();
-    m_association.m_removeProcedures.push_back(new RemoveAssociationProcedure(this));
-    m_association.m_addProcedures.push_back(new AddAssociationProcedure(this));
-    m_owningAssociation = prop.m_owningAssociation;
-    m_owningAssociation.m_me = this;
-    m_owningAssociation.m_removeProcedures.clear();
-    m_owningAssociation.m_addProcedures.clear();
-    m_owningAssociation.m_removeProcedures.push_back(new RemoveOwningAssociationProcedure(this));
-    m_owningAssociation.m_addProcedures.push_back(new AddOwningAssociationProcedure(this));
-    m_artifact = prop.m_artifact;
-    m_artifact.m_me = this;
-    m_artifact.m_removeProcedures.clear();
-    m_artifact.m_addProcedures.clear();
-    m_artifact.m_removeProcedures.push_back(new RemoveArtifactProcedure(this));
-    m_artifact.m_addProcedures.push_back(new AddArtifactProcedure(this));
-    m_redefinedProperties = prop.m_redefinedProperties;
-    m_redefinedProperties.m_el = this;
-    m_redefinedProperties.addProcedures.clear();
-    m_redefinedProperties.addChecks.clear();
-    m_redefinedProperties.removeProcedures.clear();
-    m_redefinedProperties.addProcedures.push_back(new AddRedefinedPropertyFunctor(this));
-    m_redefinedProperties.addChecks.push_back(new CheckRedefinedPropertyFunctor(this));
-    m_redefinedProperties.removeProcedures.push_back(new RemoveRedefinedPropertyFunctor(this));
-    m_redefinedProperties.m_el = this;
-    m_type.m_addProcedures.push_back(new AddTypeProcedure(this));
-    m_type.m_removeProcedures.push_back(new RemoveTypeProcedure(this));
+Property::Property(const Property& rhs) : Element(rhs, ElementType::PROPERTY) {
+    init();
+    Element::copy(rhs);
+    NamedElement::copy(rhs);
+    TypedElement::copy(rhs);
+    MultiplicityElement::copy(rhs);
+    RedefinableElement::copy(rhs);
+    Feature::copy(rhs);
+    DeploymentTarget::copy(rhs);
+    copy(rhs);
+}
+
+Property::~Property() {
+
 }
 
 AggregationKind Property::getAggregation() {
@@ -479,18 +162,14 @@ bool Property::isComposite() {
 
 void Property::setComposite(bool composite) {
     if (!composite && m_composite) {
-        if (m_structuredClassifier.has()) {
-            if (m_structuredClassifier.get()->getParts().count(m_id)) {
-                m_structuredClassifier.get()->getParts().remove(*this);
-            }
+        if (m_featuringClassifier.has() && m_featuringClassifier.getRef().isSubClassOf(ElementType::STRUCTURED_CLASSIFIER)) {
+            m_featuringClassifier.getRef().as<StructuredClassifier>().m_parts.removeFromJustThisSet(m_id);
         }
     }
     m_composite = composite;
     if (m_composite) {
-        if (m_structuredClassifier.has()) {
-            if (!m_structuredClassifier.get()->getParts().count(m_id)) {
-                m_structuredClassifier.get()->getParts().add(*this);
-            }
+        if (m_featuringClassifier.has() && m_featuringClassifier.getRef().isSubClassOf(ElementType::STRUCTURED_CLASSIFIER)) {
+            m_featuringClassifier.getRef().as<StructuredClassifier>().m_parts.nonOppositeAdd(*this);
         }
     }
     updateCopiesScalar(composite, &Property::m_composite);
@@ -535,52 +214,8 @@ void Property::setDefaultValue(ValueSpecification& val) {
     m_defaultValue.set(val);
 }
 
-Classifier* Property::getClassifier() {
-    return m_classifier.get();
-}
-
-Classifier& Property::getClassifierRef() {
-    return m_classifier.getRef();
-}
-
-ID Property::getClassifierID() const {
-    return m_classifier.id();
-}
-
-bool Property::hasClassifier() const {
-    return m_classifier.has();
-}
-
-void Property::setClassifier(Classifier* classifier) {
-    m_classifier.set(classifier);
-}
-
-void Property::setClassifier(Classifier& classifier) {
-    m_classifier.set(classifier);
-}
-
-StructuredClassifier* Property::getStructuredClassifier() {
-    return m_structuredClassifier.get();
-}
-
-StructuredClassifier& Property::getStructuredClassifierRef() {
-    return m_structuredClassifier.getRef();
-}
-
-ID Property::getStructuredClassifierID() const {
-    return m_structuredClassifier.id();
-}
-
-bool Property::hasStructuredClassifier() const {
-    return m_structuredClassifier.has();
-}
-
-void Property::setStructuredClassifier(StructuredClassifier* classifier) {
-    m_structuredClassifier.set(classifier);
-}
-
-void Property::setStructuredClassifier(StructuredClassifier& classifier) {
-    m_structuredClassifier.set(classifier);
+void Property::setDefaultValue(ID id) {
+    m_defaultValue.set(id);
 }
 
 DataType* Property::getDataType() {
@@ -607,6 +242,10 @@ void Property::setDataType(DataType& dataType) {
     m_dataType.set(dataType);
 }
 
+void Property::setDataType(ID id) {
+    m_dataType.set(id);
+}
+
 Class* Property::getClass() {
     return m_class.get();
 }
@@ -629,6 +268,10 @@ void Property::setClass(Class* clazz) {
 
 void Property::setClass(Class& clazz) {
     m_class.set(clazz);
+}
+
+void Property::setClass(ID id) {
+    m_class.set(id);
 }
 
 Association* Property::getAssociation() {
@@ -655,6 +298,10 @@ void Property::setAssociation(Association& association) {
     m_association.set(association);
 }
 
+void Property::setAssociation(ID id) {
+    m_association.set(id);
+}
+
 Association* Property::getOwningAssociation() {
     return m_owningAssociation.get();
 }
@@ -679,31 +326,39 @@ void Property::setOwningAssociation(Association& association) {
     m_owningAssociation.set(association);
 }
 
-Artifact* Property::getArtifact() {
-    return m_artifact.get();
+void Property::setOwningAssociation(ID id) {
+    m_owningAssociation.set(id);
 }
 
-Artifact& Property::getArtifactRef() {
-    return m_artifact.getRef();
+Interface* Property::getInterface() {
+    return m_interface.get();
 }
 
-ID Property::getArtifactID() const {
-    return m_artifact.id();
+Interface& Property::getInterfaceRef() {
+    return m_interface.getRef();
 }
 
-bool Property::hasArtifact() const {
-    return m_artifact.has();
+bool Property::hasInterface() const {
+    return m_interface.has();
 }
 
-void Property::setArtifact(Artifact* artifact) {
-    m_artifact.set(artifact);
+ID Property::getInterfaceID() const {
+    return m_interface.id();
 }
 
-void Property::setArtifact(Artifact& artifact) {
-    m_artifact.set(artifact);
+void Property::setInterface(Interface* interface) {
+    m_interface.set(interface);
 }
 
-Sequence<Property>& Property::getRedefinedProperties() {
+void Property::setInterface(Interface& interface) {
+    m_interface.set(interface);
+}
+
+void Property::setInterface(ID id) {
+    m_interface.set(id);
+}
+
+Set<Property, Property>& Property::getRedefinedProperties() {
     return m_redefinedProperties;
 }
 

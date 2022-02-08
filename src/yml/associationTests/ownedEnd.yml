@@ -8,6 +8,7 @@
           id: m7pAITPBHxM9c1_aPbfnMLUOC5Dc
           name: type
       - association:
+          name: association
           ownedEnds:
             - property:
                 type: real_aZG&w6yl61bXVWutgeyScN9

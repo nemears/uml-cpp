@@ -1,11 +1,7 @@
  #include "gtest/gtest.h"
 #include "uml/parsers/parser.h"
 #include "test/yumlParsersTest.h"
-#include "uml/dataType.h"
-#include "uml/property.h"
-#include "uml/operation.h"
-#include "uml/package.h"
-#include "uml/generalization.h"
+#include "uml/uml-stable.h"
 
 using namespace std;
 using namespace UML;
@@ -25,24 +21,24 @@ TEST_F(DataTypeParserTest, basicDataTypeTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::DATA_TYPE);
     DataType d = *dynamic_cast<DataType*>(el);
     ASSERT_TRUE(d.getName().compare("int") == 0);
-    ASSERT_TRUE(d.getOwnedAttribute().size() == 1);
-    Property* p = &d.getOwnedAttribute().front();
+    ASSERT_TRUE(d.getOwnedAttributes().size() == 1);
+    Property* p = &d.getOwnedAttributes().front();
     ASSERT_TRUE(d.getAttributes().size() == 1);
     ASSERT_TRUE(&d.getAttributes().front() == p);
-    ASSERT_TRUE(d.getOwnedOperation().size() == 1);
-    Operation* o = &d.getOwnedOperation().front();
+    ASSERT_TRUE(d.getOwnedOperations().size() == 1);
+    Operation* o = &d.getOwnedOperations().front();
     ASSERT_TRUE(d.getFeatures().size() == 2);
-    ASSERT_TRUE(&d.getFeatures().front() == p);
-    ASSERT_TRUE(&d.getFeatures().back() == o);
+    ASSERT_TRUE(&d.getFeatures().get("val") == p);
+    ASSERT_TRUE(&d.getFeatures().get("+") == o);
     ASSERT_TRUE(d.getOwnedMembers().size() == 2);
-    ASSERT_TRUE(&d.getOwnedMembers().front() == p);
-    ASSERT_TRUE(&d.getOwnedMembers().back() == o);
+    ASSERT_TRUE(&d.getOwnedMembers().get("val") == p);
+    ASSERT_TRUE(&d.getOwnedMembers().get("+") == o);
     ASSERT_TRUE(d.getMembers().size() == 2);
-    ASSERT_TRUE(&d.getMembers().front() == p);
-    ASSERT_TRUE(&d.getMembers().back() == o);
+    ASSERT_TRUE(&d.getMembers().get("val") == p);
+    ASSERT_TRUE(&d.getMembers().get("+") == o);
     ASSERT_TRUE(d.getOwnedElements().size() == 2);
-    ASSERT_TRUE(&d.getOwnedElements().front() == p);
-    ASSERT_TRUE(&d.getOwnedElements().back() == o);
+    ASSERT_TRUE(d.getOwnedElements().contains(*p));
+    ASSERT_TRUE(d.getOwnedElements().contains(*o));
 }
 
 TEST_F(DataTypeParserTest, emitDataTypeW_GeneralAndAttribute) {
@@ -67,7 +63,7 @@ TEST_F(DataTypeParserTest, emitDataTypeW_GeneralAndAttribute) {
     p.setID("m8K65o0wEqtIznmEPmuXaTph2JJu");
     p.setName("generalProp");
     p.setType(&t);
-    g.getOwnedAttribute().add(p);
+    g.getOwnedAttributes().add(p);
     pckg.getPackagedElements().add(t);
     pckg.getPackagedElements().add(g);
     pckg.getPackagedElements().add(s);
@@ -110,9 +106,9 @@ TEST_F(DataTypeParserTest, mountAndEditDataType) {
     Package& root = m.create<Package>();
     generalization.setGeneral(baseType);
     specificType.getGeneralizations().add(generalization);
-    baseType.getOwnedAttribute().add(baseProp);
-    baseType.getOwnedOperation().add(baseOp);
-    specificType.getOwnedAttribute().add(specProp);
+    baseType.getOwnedAttributes().add(baseProp);
+    baseType.getOwnedOperations().add(baseOp);
+    specificType.getOwnedAttributes().add(specProp);
     specProp.getRedefinedProperties().add(baseProp);
     root.getPackagedElements().add(baseType, specificType);
     m.setRoot(&root);
@@ -124,9 +120,6 @@ TEST_F(DataTypeParserTest, mountAndEditDataType) {
     ASSERT_EQ(baseType2.getOwningPackageRef(), root);
     ASSERT_TRUE(baseType2.hasNamespace());
     ASSERT_EQ(baseType2.getNamespaceRef(), root);
-    ASSERT_TRUE(baseType2.getMemberNamespace().count(root.getID()));
-    ASSERT_TRUE(baseType2.hasNamespace());
-    ASSERT_EQ(baseType2.getNamespaceRef(), root);
     
     ID baseTypeID = baseType2.getID();
     m.release(baseType2, root);
@@ -135,24 +128,20 @@ TEST_F(DataTypeParserTest, mountAndEditDataType) {
     Package& root2 = baseType3.getOwningPackageRef();
     ASSERT_TRUE(baseType3.hasNamespace());
     ASSERT_EQ(baseType3.getNamespaceRef(), root2);
-    ASSERT_TRUE(baseType3.getMemberNamespace().count(root2.getID()));
     ASSERT_TRUE(baseType3.hasOwner());
     ASSERT_EQ(baseType3.getOwnerRef(), root2);
 
     m.release(baseProp);
-    Property& baseProp2 = baseType3.getOwnedAttribute().front();
+    Property& baseProp2 = baseType3.getOwnedAttributes().front();
     ASSERT_TRUE(baseProp2.hasDataType());
     ASSERT_EQ(baseProp2.getDataTypeRef(), baseType3);
-    ASSERT_TRUE(baseProp2.hasClassifier());
-    ASSERT_EQ(baseProp2.getClassifierRef(), baseType3);
     ASSERT_TRUE(baseProp2.hasFeaturingClassifier());
     ASSERT_EQ(baseProp2.getFeaturingClassifierRef(), baseType3);
     ASSERT_TRUE(baseProp2.hasNamespace());
     ASSERT_EQ(baseProp2.getNamespaceRef(), baseType3);
-    ASSERT_TRUE(baseProp2.getMemberNamespace().count(baseTypeID));
     ASSERT_TRUE(baseProp2.hasOwner());
     ASSERT_EQ(baseProp2.getOwnerRef(), baseType3);
-    ASSERT_TRUE(baseType3.getOwnedAttribute().count(baseProp2.getID()));
+    ASSERT_TRUE(baseType3.getOwnedAttributes().count(baseProp2.getID()));
     ASSERT_TRUE(baseType3.getAttributes().count(baseProp2.getID()));
     ASSERT_TRUE(baseType3.getFeatures().count(baseProp2.getID()));
     ASSERT_TRUE(baseType3.getOwnedMembers().count(baseProp2.getID()));
@@ -163,16 +152,13 @@ TEST_F(DataTypeParserTest, mountAndEditDataType) {
     m.release(baseProp2, baseType3);
     Property& baseProp3 = m.aquire(basePropID)->as<Property>();
     DataType& baseType4 = baseProp3.getDataTypeRef();
-    ASSERT_TRUE(baseProp3.hasClassifier());
-    ASSERT_EQ(baseProp3.getClassifierRef(), baseType4);
     ASSERT_TRUE(baseProp3.hasFeaturingClassifier());
     ASSERT_EQ(baseProp3.getFeaturingClassifierRef(), baseType4);
     ASSERT_TRUE(baseProp3.hasNamespace());
     ASSERT_EQ(baseProp3.getNamespaceRef(), baseType4);
-    ASSERT_TRUE(baseProp3.getMemberNamespace().count(baseTypeID));
     ASSERT_TRUE(baseProp3.hasOwner());
     ASSERT_EQ(baseProp3.getOwnerRef(), baseType4);
-    ASSERT_TRUE(baseType4.getOwnedAttribute().count(baseProp3.getID()));
+    ASSERT_TRUE(baseType4.getOwnedAttributes().count(baseProp3.getID()));
     ASSERT_TRUE(baseType4.getAttributes().count(baseProp3.getID()));
     ASSERT_TRUE(baseType4.getFeatures().count(baseProp3.getID()));
     ASSERT_TRUE(baseType4.getOwnedMembers().count(baseProp3.getID()));
@@ -180,17 +166,15 @@ TEST_F(DataTypeParserTest, mountAndEditDataType) {
     ASSERT_TRUE(baseType4.getOwnedElements().count(baseProp3.getID()));
 
     m.release(baseOp);
-    Operation& baseOp2 = baseType4.getOwnedOperation().front();
+    Operation& baseOp2 = baseType4.getOwnedOperations().front();
     ASSERT_TRUE(baseOp2.hasDataType());
     ASSERT_EQ(baseOp2.getDataTypeRef(), baseType4);
     ASSERT_TRUE(baseOp2.hasFeaturingClassifier());
     ASSERT_EQ(baseOp2.getFeaturingClassifierRef(), baseType4);
     ASSERT_TRUE(baseOp2.hasNamespace());
     ASSERT_EQ(baseOp2.getNamespaceRef(), baseType4);
-    ASSERT_TRUE(baseOp2.getMemberNamespace().count(baseType4));
     ASSERT_TRUE(baseOp2.hasOwner());
     ASSERT_EQ(baseOp2.getOwnerRef(), baseType4);
-    ASSERT_TRUE(baseType4.getOwnedOperation().count(baseOp2.getID()));
     ASSERT_TRUE(baseType4.getFeatures().count(baseOp2.getID()));
     ASSERT_TRUE(baseType4.getOwnedMembers().count(baseOp2.getID()));
     ASSERT_TRUE(baseType4.getMembers().count(baseOp2.getID()));
@@ -206,10 +190,9 @@ TEST_F(DataTypeParserTest, mountAndEditDataType) {
     ASSERT_EQ(baseOp3.getFeaturingClassifierRef(), baseType5);
     ASSERT_TRUE(baseOp3.hasNamespace());
     ASSERT_EQ(baseOp3.getNamespaceRef(), baseType5);
-    ASSERT_TRUE(baseOp3.getMemberNamespace().count(baseType5));
     ASSERT_TRUE(baseOp3.hasOwner());
     ASSERT_EQ(baseOp3.getOwnerRef(), baseType5);
-    ASSERT_TRUE(baseType5.getOwnedOperation().count(baseOp3.getID()));
+    ASSERT_TRUE(baseType5.getOwnedOperations().count(baseOp3.getID()));
     ASSERT_TRUE(baseType5.getFeatures().count(baseOp3.getID()));
     ASSERT_TRUE(baseType5.getOwnedMembers().count(baseOp3.getID()));
     ASSERT_TRUE(baseType5.getMembers().count(baseOp3.getID()));

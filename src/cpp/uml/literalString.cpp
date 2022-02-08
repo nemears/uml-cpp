@@ -1,17 +1,17 @@
 #include "uml/literalString.h"
+#include "uml/uml-stable.h"
 
-using namespace std;
 using namespace UML;
 
 LiteralString::LiteralString() : Element(ElementType::LITERAL_STRING) {}
 
 LiteralString::LiteralString(const LiteralString& rhs) : Element(rhs, ElementType::LITERAL_STRING) {}
 
-string LiteralString::getValue() {
+std::string LiteralString::getValue() {
     return value;
 }
 
-void LiteralString::setValue(string val) {
+void LiteralString::setValue(std::string val) {
     value = val;
 }
 

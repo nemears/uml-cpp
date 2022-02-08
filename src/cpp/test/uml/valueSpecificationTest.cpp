@@ -1,14 +1,5 @@
 #include "gtest/gtest.h"
-#include "uml/valueSpecification.h"
-#include "uml/property.h"
-#include "uml/primitiveType.h"
-#include "uml/literalString.h"
-#include "uml/literalInt.h"
-#include "uml/literalReal.h"
-#include "uml/literalBool.h"
-#include "uml/slot.h"
-#include "uml/expression.h"
-#include "uml/literalUnlimitedNatural.h"
+#include "uml/uml-stable.h"
 
 using namespace std;
 using namespace UML;

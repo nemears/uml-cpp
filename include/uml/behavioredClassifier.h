@@ -6,54 +6,41 @@
 namespace UML {
 
     class Behavior;
-    namespace Parsers {
-        class SetClassifierBehavior;
-    }
 
     class BehavioredClassifier : virtual public Classifier {
 
-        friend class Parsers::SetClassifierBehavior;
-
         protected:
-            Sequence<Behavior> m_ownedBehaviors = Sequence<Behavior>(this);
+            Set<Behavior, BehavioredClassifier> m_ownedBehaviors = Set<Behavior, BehavioredClassifier>(this);
             Singleton<Behavior, BehavioredClassifier> m_classifierBehavior = Singleton<Behavior, BehavioredClassifier>(this);
-            class RemoveClassifierBehaviorProcedure : public AbstractSingletonProcedure<Behavior, BehavioredClassifier> {
+            Set<InterfaceRealization, BehavioredClassifier> m_interfaceRealizations = Set<InterfaceRealization, BehavioredClassifier>(this);
+            class RemoveInterfaceRealizationFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
                 public:
-                    RemoveClassifierBehaviorProcedure(BehavioredClassifier* me) : AbstractSingletonProcedure<Behavior, BehavioredClassifier>(me) {};
-                    void operator()(Behavior* el) const override;
+                    RemoveInterfaceRealizationFunctor(Element* el) : SetFunctor(el) {};
             };
-            class AddClassifierBehaviorProcedure : public AbstractSingletonProcedure<Behavior, BehavioredClassifier> {
+            class AddInterfaceRealizationFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
                 public:
-                    AddClassifierBehaviorProcedure(BehavioredClassifier* me) : AbstractSingletonProcedure<Behavior, BehavioredClassifier>(me) {};
-                    void operator()(Behavior* el) const override;
-                    void operator()(ID id) const override;
+                    AddInterfaceRealizationFunctor(Element* el) : SetFunctor(el) {};
             };
-            class AddOwnedBehaviorFunctor : public TemplateAbstractSequenceFunctor<Behavior,BehavioredClassifier> {
-                public:
-                    AddOwnedBehaviorFunctor(BehavioredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Behavior& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveOwnedBehaviorFunctor : public TemplateAbstractSequenceFunctor<Behavior,BehavioredClassifier> {
-                public:
-                    RemoveOwnedBehaviorFunctor(BehavioredClassifier* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(Behavior& el) const override;
-            };
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
-            void referenceErased(ID id) override;
+            Set<Behavior, BehavioredClassifier>& getClassifierBehaviorSingleton();
+            void init();
+            void copy(const BehavioredClassifier& rhs);
             BehavioredClassifier();
         public:
-            BehavioredClassifier(const BehavioredClassifier& classifier);
+            BehavioredClassifier(const BehavioredClassifier& rhs);
             virtual ~BehavioredClassifier();
-            Sequence<Behavior>& getOwnedBehaviors();
+            Set<Behavior, BehavioredClassifier>& getOwnedBehaviors();
             Behavior* getClassifierBehavior();
             Behavior& getClassifierBehaviorRef();
             ID getClassifierBehaviorID() const;
             bool hasClassifierBehavior() const;
             void setClassifierBehavior(Behavior& behavior);
             void setClassifierBehavior(Behavior* behavior);
+            void setClassifierBehavior(ID id);
+            Set<InterfaceRealization, BehavioredClassifier>& getInterfaceRealizations();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::BEHAVIORED_CLASSIFIER;

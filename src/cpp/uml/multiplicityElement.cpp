@@ -1,113 +1,95 @@
 #include "uml/multiplicityElement.h"
 #include "uml/literalInt.h"
 #include "uml/valueSpecification.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void MultiplicityElement::RemoveLowerValueProcedures::operator()(ValueSpecification* el) const {
-    if (m_me->m_lowSpecified) {
-        m_me->m_lower = -1;
-        m_me->m_lowSpecified = false;
-        m_me->m_multiplicityIsSpecified = false;
-    }
-
-    if (m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalRemove(*el);
-    }
-    m_me->updateCopiesScalar(-1, &MultiplicityElement::m_lower);
-    m_me->updateCopiesScalar(false, &MultiplicityElement::m_lowSpecified);
-    m_me->updateCopiesScalar(false, &MultiplicityElement::m_multiplicityIsSpecified);
-}
-
-void MultiplicityElement::AddLowerValueProcedures::operator()(ValueSpecification* el) const {
-    if (el->isSubClassOf(ElementType::LITERAL_INT)) {
-        if (dynamic_cast<LiteralInt*>(el)->getValue() >= 0) {
-            m_me->setLower(dynamic_cast<LiteralInt*>(el)->getValue());
+void MultiplicityElement::AddLowerFunctor::operator()(Element& el) const {
+    if (el.isSubClassOf(ElementType::LITERAL_INT)) {
+        if (dynamic_cast<LiteralInt&>(el).getValue() >= 0) {
+            m_el.as<MultiplicityElement>().setLower(dynamic_cast<LiteralInt&>(el).getValue());
         }
     }
-    else if (el->isSubClassOf(ElementType::EXPRESSION)) {
+    else if (el.isSubClassOf(ElementType::EXPRESSION)) {
         // TODO evaluate expression
     }
-
-    if (!m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalAdd(*el);
-    }
 }
 
-void MultiplicityElement::RemoveUpperValueProcedures::operator()(ValueSpecification* el) const {
-    if (m_me->m_upSpecified) {
-        m_me->m_upper = -1;
-        m_me->m_upSpecified = false;
-        m_me->m_multiplicityIsSpecified = false;
+void MultiplicityElement::RemoveLowerFunctor::operator()(Element& el) const {
+    MultiplicityElement& m_me = m_el.as<MultiplicityElement>();
+    if (m_me.m_lowSpecified) {
+        m_me.m_lower = -1;
+        m_me.m_lowSpecified = false;
+        m_me.m_multiplicityIsSpecified = false;
     }
-
-    if (m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalRemove(*el);
-    }
+    m_me.updateCopiesScalar(-1, &MultiplicityElement::m_lower);
+    m_me.updateCopiesScalar(false, &MultiplicityElement::m_lowSpecified);
+    m_me.updateCopiesScalar(false, &MultiplicityElement::m_multiplicityIsSpecified);
 }
 
-void MultiplicityElement::AddUpperValueProcedures::operator()(ValueSpecification* el) const {
-    if (el->isSubClassOf(ElementType::LITERAL_INT)) {
-        if (dynamic_cast<LiteralInt*>(el)->getValue() >= 0) {
-            m_me->setUpper(dynamic_cast<LiteralInt*>(el)->getValue());
+void MultiplicityElement::AddUpperFunctor::operator()(Element& el) const {
+    if (el.isSubClassOf(ElementType::LITERAL_INT)) {
+        if (dynamic_cast<LiteralInt&>(el).getValue() >= 0) {
+            m_el.as<MultiplicityElement>().setUpper(dynamic_cast<LiteralInt&>(el).getValue());
         }
     }
-    else if (el->isSubClassOf(ElementType::EXPRESSION)) {
+    else if (el.isSubClassOf(ElementType::EXPRESSION)) {
         // TODO evaluate expression
     }
+}
 
-    if (!m_me->getOwnedElements().count(el->getID())) {
-        m_me->getOwnedElements().internalAdd(*el);
+void MultiplicityElement::RemoveUpperFunctor::operator()(Element& el) const {
+    MultiplicityElement& m_me = m_el.as<MultiplicityElement>();
+    if (m_me.m_upSpecified) {
+        m_me.m_upper = -1;
+        m_me.m_upSpecified = false;
+        m_me.m_multiplicityIsSpecified = false;
     }
+    m_me.updateCopiesScalar(-1, &MultiplicityElement::m_lower);
+    m_me.updateCopiesScalar(false, &MultiplicityElement::m_lowSpecified);
+    m_me.updateCopiesScalar(false, &MultiplicityElement::m_multiplicityIsSpecified);
 }
 
-void MultiplicityElement::referencingReleased(ID id) {
-    m_lowVal.release(id);
-    m_upVal.release(id);
+Set<ValueSpecification, MultiplicityElement>& MultiplicityElement::getLowerValueSingleton() {
+    return m_lowVal;
 }
 
-void MultiplicityElement::referenceReindexed(ID oldID, ID newID) {
-    m_lowVal.reindex(oldID, newID);
-    m_lowVal.reindex(oldID, newID);
+Set<ValueSpecification, MultiplicityElement>& MultiplicityElement::getUpperValueSingleton() {
+    return m_upVal;
 }
 
-void MultiplicityElement::restoreReferences() {
-    m_lowVal.restoreReference();
-    m_upVal.restoreReference();
+void MultiplicityElement::init() {
+    m_lowVal.subsets(*m_ownedElements);
+    m_lowVal.m_signature = &MultiplicityElement::getLowerValueSingleton;
+    m_lowVal.m_addFunctors.insert(new AddLowerFunctor(this));
+    m_lowVal.m_removeFunctors.insert(new RemoveLowerFunctor(this));
+    m_upVal.subsets(*m_ownedElements);
+    m_upVal.m_signature = &MultiplicityElement::getUpperValueSingleton;
+    m_upVal.m_addFunctors.insert(new AddUpperFunctor(this));
+    m_upVal.m_removeFunctors.insert(new RemoveUpperFunctor(this));
 }
 
-void MultiplicityElement::referenceErased(ID id) {
-    m_lowVal.elementErased(id);
-    m_upVal.elementErased(id);
-}
-
-MultiplicityElement::MultiplicityElement() : Element(ElementType::MULTIPLICITY_ELEMENT) {
-    m_lowVal.m_signature = &MultiplicityElement::m_lowVal;
-    m_lowVal.m_removeProcedures.push_back(new RemoveLowerValueProcedures(this));
-    m_lowVal.m_addProcedures.push_back(new AddLowerValueProcedures(this));
-    m_upVal.m_signature = &MultiplicityElement::m_upVal;
-    m_upVal.m_removeProcedures.push_back(new RemoveUpperValueProcedures(this));
-    m_upVal.m_addProcedures.push_back(new AddUpperValueProcedures(this));
-}
-
-MultiplicityElement::MultiplicityElement(const MultiplicityElement& rhs) : Element(rhs, ElementType::MULTIPLICITY_ELEMENT) {
+void MultiplicityElement::copy(const MultiplicityElement& rhs) {
     m_lowVal = rhs.m_lowVal;
-    m_lowVal.m_me = this;
-    m_lowVal.m_removeProcedures.clear();
-    m_lowVal.m_addProcedures.clear();
-    m_lowVal.m_removeProcedures.push_back(new RemoveLowerValueProcedures(this));
-    m_lowVal.m_addProcedures.push_back(new AddLowerValueProcedures(this));
     m_upVal = rhs.m_upVal;
-    m_upVal.m_me = this;
-    m_upVal.m_removeProcedures.clear();
-    m_upVal.m_addProcedures.clear();
-    m_upVal.m_removeProcedures.push_back(new RemoveUpperValueProcedures(this));
-    m_upVal.m_addProcedures.push_back(new AddUpperValueProcedures(this));
     m_upper = rhs.m_upper;
     m_lower = rhs.m_lower;
     m_upSpecified = rhs.m_upSpecified;
     m_lowSpecified = rhs.m_lowSpecified;
     m_multiplicityIsSpecified = rhs.m_multiplicityIsSpecified;
+}
+
+MultiplicityElement::MultiplicityElement() : Element(ElementType::MULTIPLICITY_ELEMENT) {
+    init();
+}
+
+MultiplicityElement::MultiplicityElement(const MultiplicityElement& rhs) : Element(ElementType::MULTIPLICITY_ELEMENT) {
+    // abstract
+}
+
+MultiplicityElement::~MultiplicityElement() {
+    
 }
 
 int MultiplicityElement::getLower() {

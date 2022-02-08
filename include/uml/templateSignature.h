@@ -2,7 +2,8 @@
 #define TEMPLATE_SIGNATURE_H
 
 #include "element.h"
-#include "sequence.h"
+#include "singleton.h"
+#include "orderedSet.h"
 
 namespace UML {
 
@@ -15,40 +16,23 @@ namespace UML {
     class TemplateSignature : public Element {
 
         friend class UmlManager;
+        friend class TemplateParameter;
         friend class Parsers::SetTemplate;
+        friend class TemplateableElement;
 
         private:
             Singleton<TemplateableElement, TemplateSignature> m_template = Singleton<TemplateableElement, TemplateSignature>(this);
-            bool m_setFlag = false;
-            class RemoveTemplateProcedure : public AbstractSingletonProcedure<TemplateableElement, TemplateSignature> {
-                public:
-                    RemoveTemplateProcedure(TemplateSignature* me) : AbstractSingletonProcedure<TemplateableElement, TemplateSignature>(me) {};
-                    void operator()(TemplateableElement* el) const override;
-            };
-            class AddTemplateProcedure : public AbstractSingletonProcedure<TemplateableElement, TemplateSignature> {
-                public:
-                    AddTemplateProcedure(TemplateSignature* me) : AbstractSingletonProcedure<TemplateableElement, TemplateSignature>(me) {};
-                    void operator()(TemplateableElement* el) const override;
-                    void operator()(ID id) const override;
-            };
-            Sequence<TemplateParameter> m_ownedParameter =  Sequence<TemplateParameter>(this);
-            Sequence<TemplateParameter> m_parameter = Sequence<TemplateParameter>(this);
-
-            class AddOwnedParameterFunctor : public TemplateAbstractSequenceFunctor<TemplateParameter,TemplateSignature> {
-                public:
-                    AddOwnedParameterFunctor(TemplateSignature* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(TemplateParameter& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveOwnedParameterFunctor : public TemplateAbstractSequenceFunctor<TemplateParameter,TemplateSignature> {
-                public:
-                    RemoveOwnedParameterFunctor(TemplateSignature* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(TemplateParameter& el) const override;
-            };
+            OrderedSet<TemplateParameter, TemplateSignature> m_parameters = OrderedSet<TemplateParameter, TemplateSignature>(this);
+            OrderedSet<TemplateParameter, TemplateSignature> m_ownedParameters =  OrderedSet<TemplateParameter, TemplateSignature>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
+            void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
+            Set<TemplateableElement, TemplateSignature>& getTemplateSingleton();
+            Set<TemplateParameter, TemplateSignature>& getParametersSet();
+            Set<TemplateParameter, TemplateSignature>& getOwnedParametersSet();
+            void init();
+            void copy(const TemplateSignature& rhs);
             TemplateSignature();
         public:
             TemplateSignature(const TemplateSignature& el);
@@ -59,8 +43,9 @@ namespace UML {
             bool hasTemplate() const;
             void setTemplate(TemplateableElement& temp);
             void setTemplate(TemplateableElement* temp);
-            Sequence<TemplateParameter>& getOwnedParameter();
-            Sequence<TemplateParameter>& getParameter();
+            void setTemplate(ID id);
+            OrderedSet<TemplateParameter, TemplateSignature>& getOwnedParameters();
+            OrderedSet<TemplateParameter, TemplateSignature>& getParameters();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::TEMPLATE_SIGNATURE;

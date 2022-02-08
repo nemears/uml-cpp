@@ -1,4 +1,5 @@
 #include "uml/realization.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -6,8 +7,15 @@ Realization::Realization() : Element(ElementType::REALIZATION) {
 
 }
 
-Realization::Realization(const Realization& realization) : Element(realization, ElementType::REALIZATION) {
-
+Realization::Realization(const Realization& rhs) : Element(rhs, ElementType::REALIZATION) {
+    init();
+    Element::copy(rhs);
+    Relationship::copy(rhs);
+    DirectedRelationship::copy(rhs);
+    NamedElement::copy(rhs);
+    ParameterableElement::copy(rhs);
+    PackageableElement::copy(rhs);
+    Dependency::copy(rhs);
 }
 
 Realization::~Realization() {

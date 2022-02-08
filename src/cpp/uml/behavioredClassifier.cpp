@@ -1,98 +1,102 @@
 #include "uml/behavioredClassifier.h"
 #include "uml/behavior.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void BehavioredClassifier::RemoveClassifierBehaviorProcedure::operator()(Behavior* el) const {
-    if (m_me->getOwnedBehaviors().count(el->getID())) {
-        m_me->getOwnedBehaviors().remove(*el);
+void BehavioredClassifier::RemoveInterfaceRealizationFunctor::operator()(Element& el) const {
+    if (el.as<InterfaceRealization>().hasContract()) {
+        std::list<Classifier*> queue = {&m_el.as<Classifier>()};
+        while (!queue.empty()) {
+            Classifier* front = queue.front();
+            queue.pop_front();
+            for (auto& pair : front->m_node->m_references) {
+                if (pair.second && pair.second->m_managerElementMemory->isSubClassOf(ElementType::PORT)) {
+                    if (front->getID() == pair.second->m_managerElementMemory->as<Port>().getTypeID()) {
+                        if (pair.second->m_managerElementMemory->as<Port>().isConjugated()) {
+                            if (pair.second->m_managerElementMemory->as<Port>().getRequired().contains(el.as<InterfaceRealization>().getContractID())) {
+                                pair.second->m_managerElementMemory->as<Port>().getRequired().removeReadOnly(el.as<InterfaceRealization>().getContractID());
+                            }
+                        } else {
+                            if (pair.second->m_managerElementMemory->as<Port>().getProvided().contains(el.as<InterfaceRealization>().getContractID())) {
+                                pair.second->m_managerElementMemory->as<Port>().getProvided().removeReadOnly(el.as<InterfaceRealization>().getContractID());
+                            }
+                        }
+                    }
+                } else if (pair.second->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER)) {
+                    if (pair.second->m_managerElementMemory->as<Classifier>().getGenerals().contains(*front)) {
+                        queue.push_back(&pair.second->m_managerElementMemory->as<Classifier>());
+                    }
+                }
+            }   
+        }
     }
 }
 
-void BehavioredClassifier::AddClassifierBehaviorProcedure::operator()(Behavior* el) const {
-    if (!m_me->getOwnedBehaviors().count(el->getID())) {
-        m_me->getOwnedBehaviors().add(*el);
+void BehavioredClassifier::AddInterfaceRealizationFunctor::operator()(Element& el) const {
+    if (el.as<InterfaceRealization>().hasContract()) {
+        std::list<Classifier*> queue = {&m_el.as<Classifier>()};
+        while (!queue.empty()) {
+            Classifier* front = queue.front();
+            queue.pop_front();
+            for (auto& pair : front->m_node->m_references) {
+                if (pair.second && pair.second->m_managerElementMemory->isSubClassOf(ElementType::PORT)) {
+                    if (pair.second->m_managerElementMemory->as<Port>().getTypeID() == front->m_id) {
+                        if (pair.second->m_managerElementMemory->as<Port>().isConjugated()) {
+                            if (!pair.second->m_managerElementMemory->as<Port>().getRequired().contains(el.as<InterfaceRealization>().getContractID())) {
+                                pair.second->m_managerElementMemory->as<Port>().getRequired().nonOppositeAdd(el.as<InterfaceRealization>().getContractRef());
+                            }
+                        } else {
+                            if (!pair.second->m_managerElementMemory->as<Port>().getProvided().contains(el.as<InterfaceRealization>().getContractID())) {
+                                pair.second->m_managerElementMemory->as<Port>().getProvided().nonOppositeAdd(el.as<InterfaceRealization>().getContractRef());
+                            }
+                        }
+                    }
+                } else if (pair.second->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER)) {
+                    if (pair.second->m_managerElementMemory->as<Classifier>().getGenerals().contains(*front)) {
+                        queue.push_back(&pair.second->m_managerElementMemory->as<Classifier>());
+                    }
+                }
+            }
+        }
     }
 }
 
-void BehavioredClassifier::AddClassifierBehaviorProcedure::operator()(ID id) const {
-    if (!m_me->getOwnedBehaviors().count(id)) {
-        m_me->getOwnedBehaviors().addByID(id);
-    }
+Set<Behavior, BehavioredClassifier>& BehavioredClassifier::getClassifierBehaviorSingleton() {
+    return m_classifierBehavior;
 }
 
-void BehavioredClassifier::AddOwnedBehaviorFunctor::operator()(Behavior& el) const {
-    if (!m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().add(el);
-    }
-
-    el.setBehavioredClassifier(m_el);
-    updateCopiedSequenceAddedTo(el, &BehavioredClassifier::getOwnedBehaviors);
+void BehavioredClassifier::init() {
+    m_ownedBehaviors.subsets(m_ownedMembers);
+    m_ownedBehaviors.m_signature = &BehavioredClassifier::getOwnedBehaviors;
+    m_classifierBehavior.subsets(m_ownedBehaviors);
+    m_classifierBehavior.m_signature = &BehavioredClassifier::getClassifierBehaviorSingleton;
+    m_interfaceRealizations.subsets(*m_ownedElements);
+    m_interfaceRealizations.opposite(&InterfaceRealization::getImplementingClassifierSingleton);
+    m_interfaceRealizations.m_signature = &BehavioredClassifier::getInterfaceRealizations;
+    m_interfaceRealizations.m_addFunctors.insert(new AddInterfaceRealizationFunctor(this));
+    m_interfaceRealizations.m_removeFunctors.insert(new RemoveInterfaceRealizationFunctor(this));
 }
 
-void BehavioredClassifier::AddOwnedBehaviorFunctor::operator()(ID id) const {
-    if (!m_el->getOwnedMembers().count(id)) {
-        m_el->getOwnedMembers().addByID(id);
-    }
-}
-
-void BehavioredClassifier::RemoveOwnedBehaviorFunctor::operator()(Behavior& el) const {
-    if (m_el->getOwnedMembers().count(el.getID())) {
-        m_el->getOwnedMembers().remove(el);
-    }
-
-    el.setBehavioredClassifier(0);
-    updateCopiedSequenceRemovedFrom(el, &BehavioredClassifier::getOwnedBehaviors);
-}
-
-void BehavioredClassifier::referencingReleased(ID id) {
-    m_ownedBehaviors.elementReleased(id, &BehavioredClassifier::getOwnedBehaviors);
-    m_classifierBehavior.release(id);
-}
-
-void BehavioredClassifier::referenceReindexed(ID oldID, ID newID) {
-    m_ownedBehaviors.reindex(oldID, newID, &BehavioredClassifier::getOwnedBehaviors);
-    m_classifierBehavior.reindex(oldID, newID);
-}
-
-void BehavioredClassifier::restoreReferences() {
-    m_ownedBehaviors.restoreReferences();
-    m_classifierBehavior.restoreReference();
-}
-
-void BehavioredClassifier::referenceErased(ID id) {
-    m_ownedBehaviors.elementErased(id);
-    m_classifierBehavior.elementErased(id);
+void BehavioredClassifier::copy(const BehavioredClassifier& rhs) {
+    m_ownedBehaviors = rhs.m_ownedBehaviors;
+    m_classifierBehavior = rhs.m_classifierBehavior;
+    m_interfaceRealizations = rhs.m_interfaceRealizations;
 }
 
 BehavioredClassifier::BehavioredClassifier() : Element(ElementType::BEHAVIORED_CLASSIFIER) {
-    m_ownedBehaviors.addProcedures.push_back(new AddOwnedBehaviorFunctor(this));
-    m_ownedBehaviors.removeProcedures.push_back(new RemoveOwnedBehaviorFunctor(this));
-    m_classifierBehavior.m_signature = &BehavioredClassifier::m_classifierBehavior;
-    m_classifierBehavior.m_removeProcedures.push_back(new RemoveClassifierBehaviorProcedure(this));
-    m_classifierBehavior.m_addProcedures.push_back(new AddClassifierBehaviorProcedure(this));
+    init();
 }
 
 BehavioredClassifier::BehavioredClassifier(const BehavioredClassifier& classifier) : Element(classifier, ElementType::BEHAVIORED_CLASSIFIER) {
-    m_ownedBehaviors = classifier.m_ownedBehaviors;
-    m_ownedBehaviors.m_el = this;
-    m_ownedBehaviors.addProcedures.clear();
-    m_ownedBehaviors.removeProcedures.clear();
-    m_ownedBehaviors.addProcedures.push_back(new AddOwnedBehaviorFunctor(this));
-    m_ownedBehaviors.removeProcedures.push_back(new RemoveOwnedBehaviorFunctor(this));
-    m_classifierBehavior = classifier.m_classifierBehavior;
-    m_classifierBehavior.m_me = this;
-    m_classifierBehavior.m_removeProcedures.clear();
-    m_classifierBehavior.m_addProcedures.clear();
-    m_classifierBehavior.m_removeProcedures.push_back(new RemoveClassifierBehaviorProcedure(this));
-    m_classifierBehavior.m_addProcedures.push_back(new AddClassifierBehaviorProcedure(this));
+    // abstract
 }
 
 BehavioredClassifier::~BehavioredClassifier() {
 
 }
 
-Sequence<Behavior>& BehavioredClassifier::getOwnedBehaviors() {
+Set<Behavior, BehavioredClassifier>& BehavioredClassifier::getOwnedBehaviors() {
     return m_ownedBehaviors;
 }
 
@@ -118,6 +122,14 @@ void BehavioredClassifier::setClassifierBehavior(Behavior* behavior) {
 
 void BehavioredClassifier::setClassifierBehavior(Behavior& behavior) {
     m_classifierBehavior.set(behavior);
+}
+
+void BehavioredClassifier::setClassifierBehavior(ID id) {
+    m_classifierBehavior.set(id);
+}
+
+Set<InterfaceRealization, BehavioredClassifier>& BehavioredClassifier::getInterfaceRealizations() {
+    return m_interfaceRealizations;
 }
 
 bool BehavioredClassifier::isSubClassOf(ElementType eType) const {

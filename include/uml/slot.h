@@ -1,78 +1,49 @@
 #ifndef SLOT_H
 #define SLOT_H
 
-#include "sequence.h"
+#include "uml/set.h"
+#include "uml/singleton.h"
 
 namespace UML {
 
     class InstanceSpecification;
     class StructuralFeature;
-    namespace Parsers {
-        class SetOwningInstance;
-        class SetDefiningFeature;
-    }
+    class ValueSpecification;
 
     class Slot : public Element {
         friend class UmlManager;
-        friend class Parsers::SetOwningInstance;
-        friend class Parsers::SetDefiningFeature;
+        friend class InstanceSpecification;
+        
         protected:
             Singleton<StructuralFeature, Slot> m_definingFeature = Singleton<StructuralFeature, Slot>(this);
-            class RemoveDefiningFeatureProcedure : public AbstractSingletonProcedure<StructuralFeature, Slot> {
-                public:
-                    RemoveDefiningFeatureProcedure(Slot* me) : AbstractSingletonProcedure<StructuralFeature, Slot>(me) {};
-                    void operator()(StructuralFeature* el) const override;
-            };
-            class AddDefiningFeatureProcedure : public AbstractSingletonProcedure<StructuralFeature, Slot> {
-                public:
-                    AddDefiningFeatureProcedure(Slot* me) : AbstractSingletonProcedure<StructuralFeature, Slot>(me) {};
-                    void operator()(StructuralFeature* el) const override;
-            };
-            Sequence<ValueSpecification> m_values = Sequence<ValueSpecification>(this);
+            Set<ValueSpecification, Slot> m_values = Set<ValueSpecification, Slot>(this);
             Singleton<InstanceSpecification, Slot> m_owningInstance = Singleton<InstanceSpecification, Slot>(this);
-            class RemoveOwningInstanceProcedure : public AbstractSingletonProcedure<InstanceSpecification, Slot> {
-                public:
-                    RemoveOwningInstanceProcedure(Slot* me) : AbstractSingletonProcedure<InstanceSpecification, Slot>(me) {};
-                    void operator()(InstanceSpecification* el) const override;
-            };
-            class AddOwningInstanceProcedure : public AbstractSingletonProcedure<InstanceSpecification, Slot> {
-                public:
-                    AddOwningInstanceProcedure(Slot* me) : AbstractSingletonProcedure<InstanceSpecification, Slot>(me) {};
-                    void operator()(InstanceSpecification* el) const override;
-                    void operator()(ID id) const override;
-            };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override;
             void referenceErased(ID id) override;
-            class AddValueFunctor : public TemplateAbstractSequenceFunctor<ValueSpecification,Slot> {
-                public:
-                    AddValueFunctor(Slot* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(ValueSpecification& el) const override;
-                    void operator()(ID id) const override;
-            };
-            class RemoveValueFunctor : public TemplateAbstractSequenceFunctor<ValueSpecification,Slot> {
-                public:
-                    RemoveValueFunctor(Slot* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(ValueSpecification& el) const override;
-            };
+            Set<StructuralFeature, Slot>& getDefiningFeatureSingleton();
+            Set<InstanceSpecification, Slot>& getOwningInstanceSingleton();
+            void init();
+            void copy(const Slot& rhs);
             Slot();
         public:
             Slot(const Slot& rhs);
             virtual ~Slot();
-            Sequence<ValueSpecification>& getValues();
+            Set<ValueSpecification, Slot>& getValues();
             StructuralFeature* getDefiningFeature();
             StructuralFeature& getDefiningFeatureRef();
             ID getDefiningFeatureID() const;
             bool hasDefiningFeature() const;
             void setDefiningFeature(StructuralFeature& definingFeature);
             void setDefiningFeature(StructuralFeature* definingFeature);
+            void setDefiningFeature(ID id);
             InstanceSpecification* getOwningInstance();
             InstanceSpecification& getOwningInstanceRef();
             ID getOwningInstanceID() const;
             bool hasOwningInstance() const;
             void setOwningInstance(InstanceSpecification& inst);
             void setOwningInstance(InstanceSpecification* inst);
+            void setOwningInstance(ID id);
             class NullDefiningFeatureException : public std::exception {
                 public:
                     virtual const char* what() const throw() {

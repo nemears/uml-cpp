@@ -18,6 +18,7 @@ namespace UML {
     template <class T, class U> class Set;
     template <class T, class U> class OrderedSet;
     template <class T> struct SetIterator;
+    template <class T> struct ID_Set;
 
     class ID_doesNotExistException : public std::exception {
         private:
@@ -52,6 +53,7 @@ namespace UML {
         public:
             virtual void operator()(Element& el) const = 0;
             virtual void operator()(Element& el, bool remove) const = 0;
+            virtual ~AbstractOppositeFunctor() {};
     };
     
     template <class T = Element, class U = Element> class OppositeFunctor : public AbstractOppositeFunctor {
@@ -78,12 +80,14 @@ namespace UML {
         public:
             SetFunctor(Element* el) : m_el(*el) {};
             virtual void operator()(Element& el) const = 0;
+            virtual ~SetFunctor() {};
     };
 
     class AbstractSet {
         template <class T, class U> friend class Set;
         template <class T, class U> friend class OrderedSet;
         template <class T> friend struct SetIterator;
+        template <class T> friend struct ID_Set;
         protected:
             size_t m_size = 0;
             int m_upper = 0; // this effectively lets us determine the type of the set (1 = singleton, 0 = set, -1 = orderedSet)

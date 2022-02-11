@@ -111,7 +111,7 @@ namespace UML {
                 fillNode(ret);
                 return ret;
             };
-            void deleteNode(AbstractSet::SetNode* node) {
+            void deleteNode(AbstractSet::SetNode* node) override {
                 OrderedNode* oNode = static_cast<OrderedNode*>(node);
                 if (m_first->m_id == oNode->m_id) {
                     if (oNode->m_next) {

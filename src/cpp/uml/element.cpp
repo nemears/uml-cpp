@@ -92,6 +92,20 @@ void Element::referenceErased(ID id) {
     m_appliedStereotype->eraseElement(id);
 }
 
+void Element::mountAndRelease() {
+    if (!m_copiedElementFlag && !m_createVal) {
+        m_manager->mountEl(*this);
+        m_manager->releaseNode(*this);
+        m_createVal = true;
+    }
+}
+
+void Element::release() {
+    m_manager->mountEl(*this);
+    m_manager->releaseNode(*this);
+    delete this;
+}
+
 Set<Element, Element>& Element::getOwnerSingleton() {
     return *m_owner;
 }
@@ -147,7 +161,11 @@ Element::Element(const Element& rhs, ElementType elementType) : Element(elementT
     m_id = rhs.m_id;
     m_manager = rhs.m_manager;
     m_node = rhs.m_node;
-    if (m_manager) {
+    if (rhs.m_createVal) {
+        // we are being created from createVal<>(), replace rhs in graph with this
+        m_manager->m_graph[m_id].m_managerElementMemory = this;
+        m_copiedElementFlag = false;
+    } else {
         m_manager->m_graph[m_id].m_copies.insert(this);
     }
 }

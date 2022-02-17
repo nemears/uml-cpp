@@ -1162,7 +1162,7 @@ TEST_F(SetTest, BehavioredClassifierEmulationTest) {
     ownedOperations->subsets(*ownedMembers);
 
     UmlManager m;
-    Behavior& bhv = m.create<Behavior>();
+    OpaqueBehavior& bhv = m.create<OpaqueBehavior>();
     Operation& op = m.create<Operation>();
 
     ownedBehaviors->add(bhv);

@@ -365,3 +365,14 @@ TEST_F(ElementTest, hasAndRefMethodTest) {
   ASSERT_TRUE(child.getOwner());
   ASSERT_EQ(child.getOwnerRef(), root);
 }
+
+TEST_F(ElementTest, createValTest) {
+  UmlManager m;
+  ID pckgID;
+  {
+    Package pckg = m.createVal<Package>();
+    pckgID = pckg.getID();
+    ASSERT_TRUE(m.loaded(pckgID));
+  }
+  ASSERT_FALSE(m.loaded(pckgID));
+}

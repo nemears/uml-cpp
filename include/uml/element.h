@@ -150,10 +150,7 @@ namespace UML {
             virtual const char* what() const throw() {
                 return m_msg;
             };
-    };
-
-    // TODO delete me
-    template <class T> class Sequence;
+    };  
 
     class ElementDoesntExistException;
     class Relationship;
@@ -240,8 +237,9 @@ namespace UML {
         friend class RemoveReferenceFunctor;
 
         private:
-            bool m_copiedElementFlag = false;
         protected:
+            bool m_copiedElementFlag = false;
+            bool m_createVal = false;
             UmlManager* m_manager;
             ManagerNode* m_node;
             ID m_id;
@@ -267,6 +265,7 @@ namespace UML {
             virtual void restoreReferences();
             virtual void restoreReference(Element* el);
             virtual void referenceErased(ID id);
+            void mountAndRelease();
             template <class T = Element, typename U> 
             void updateCopiesScalar(U newVal, U T::*signature) {
                 if (m_node->m_managerElementMemory != this) {
@@ -312,6 +311,7 @@ namespace UML {
             ElementType getElementType() const;
             virtual bool isSubClassOf(ElementType eType) const;
             virtual std::string getElementTypeString() const;
+            void release();
 
             friend bool operator==(const Element& lhs, const Element& rhs) {
                 return lhs.m_id == rhs.m_id;

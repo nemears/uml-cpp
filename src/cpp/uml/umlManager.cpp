@@ -6,13 +6,15 @@
 #include <algorithm>
 #include "uml/uml-stable.h"
 
-using namespace std;
 using namespace UML;
 
 void UmlManager::clear() {
-    for (auto& e : m_graph) {
-        if (e.second.m_managerElementMemory) {
-            delete e.second.m_managerElementMemory;
+    for (const ID id : m_elements) {
+        Element* managerElement = m_graph[id].m_managerElementMemory;
+        if (managerElement) {
+            // managerElement->mountAndRelease();
+            managerElement->m_createVal = true;
+            delete managerElement;
         }
     }
     m_graph.clear();
@@ -31,7 +33,7 @@ UmlManager::UmlManager() {
 UmlManager::~UmlManager() {
     clear();
     if (!m_mountBase.empty()) {
-        filesystem::remove_all(m_mountBase / "mount");
+        std::filesystem::remove_all(m_mountBase / "mount");
     }
 }
 
@@ -250,7 +252,7 @@ void UmlManager::reindex(ID oldID, ID newID) {
         }
         m_graph.erase(oldID);
         if (!m_mountBase.empty()) {
-            filesystem::remove(m_mountBase / "mount" / (oldID.string() + ".yml"));
+            std::filesystem::remove(m_mountBase / "mount" / (oldID.string() + ".yml"));
             /** Should we write to new file now?**/
         }
     }
@@ -258,21 +260,27 @@ void UmlManager::reindex(ID oldID, ID newID) {
 
 void UmlManager::addToMount(Element& el) {
     if (!el.m_node->m_mountedFlag) {
-        Parsers::EmitterMetaData data = { m_mountBase / filesystem::path("mount"),
-                                         Parsers::EmitterStrategy::INDIVIDUAL,
-                                         el.getID().string() + ".yml",
-                                         this };
-        el.m_node->m_mountedFlag = true;
-        Parsers::emitToFile(el, data, data.m_path.string(), data.m_fileName);
+        mountEl(el);
         for (auto& child : el.getOwnedElements()) {
             addToMount(child);
         }
     }
 }
 
-void UmlManager::mount(string path) {
+void UmlManager::mountEl(Element& el) {
+    if (!m_mountBase.empty()) {
+        Parsers::EmitterMetaData data = { m_mountBase / std::filesystem::path("mount"),
+                                            Parsers::EmitterStrategy::INDIVIDUAL,
+                                            el.getID().string() + ".yml",
+                                            this };
+        el.m_node->m_mountedFlag = true;
+        Parsers::emitToFile(el, data, data.m_path.string(), data.m_fileName);
+    }
+}
+
+void UmlManager::mount(std::string path) {
     m_mountBase = path;
-    filesystem::create_directories(path / filesystem::path("mount"));
+    std::filesystem::create_directories(path / std::filesystem::path("mount"));
     if (m_root) {
         addToMount(*m_root);
     }
@@ -281,7 +289,7 @@ void UmlManager::mount(string path) {
 Element* UmlManager::aquire(ID id) {
     if (!m_mountBase.empty()) {
         if (!loaded(id)) {
-            if (filesystem::exists(m_mountBase / "mount" / (id.string() + ".yml"))) {
+            if (std::filesystem::exists(m_mountBase / "mount" / (id.string() + ".yml"))) {
                 Parsers::ParserMetaData data(this);
                 data.m_path = m_mountBase / "mount" / (id.string() + ".yml");
                 data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
@@ -331,9 +339,6 @@ void UmlManager::release(ID id) {
 void UmlManager::releaseNode(Element& el) {
     ManagerNode* node = el.m_node;
     ID id = el.getID();
-    if (node->m_managerElementMemory) {
-        delete node->m_managerElementMemory;
-    }
     for (auto& e : node->m_references) {
         if (!e.second && loaded(e.first)) {
             e.second = &m_graph[e.first]; // slow :(
@@ -353,11 +358,10 @@ void UmlManager::releaseNode(Element& el) {
 
 void UmlManager::release(Element& el) {
     if (!m_mountBase.empty()) {
-        Parsers::EmitterMetaData data = {m_mountBase / "mount",
-                                         Parsers::EmitterStrategy::INDIVIDUAL,
-                                         el.getID().string() + ".yml", this};
-        Parsers::emitToFile(*el.m_node->m_managerElementMemory, data, data.m_path.string(), data.m_fileName);
+        mountEl(el);
         releaseNode(el);
+        el.m_createVal = true;
+        delete &el;
     } else {
         throw ManagerNotMountedException();
     }
@@ -371,6 +375,7 @@ void UmlManager::eraseNode(ManagerNode* node, ID id) {
         node->m_references[node->m_referenceOrder[i]]->m_managerElementMemory->referenceErased(id);
     }
     if (node->m_managerElementMemory) {
+        node->m_managerElementMemory->m_createVal = true;
         delete node->m_managerElementMemory;
     }
     if (node->m_copies.size() > 0) {
@@ -382,7 +387,7 @@ void UmlManager::eraseNode(ManagerNode* node, ID id) {
     m_graph.erase(id);
     m_elements.erase(std::find(m_elements.begin(), m_elements.end(), id));
     if (!m_mountBase.empty()) {
-        filesystem::remove_all(m_mountBase / (id.string() + ".yml"));
+        std::filesystem::remove_all(m_mountBase / (id.string() + ".yml"));
     }
 }
 
@@ -407,7 +412,7 @@ void UmlManager::save() {
     Parsers::emit(data);
 }
 
-void UmlManager::save(string path) {
+void UmlManager::save(std::string path) {
     m_path = path;
     save();
 }
@@ -425,12 +430,12 @@ void UmlManager::open() {
     }
 }
 
-void UmlManager::open(string path) {
+void UmlManager::open(std::string path) {
     m_path = path;
     open();
 }
 
-Element* UmlManager::parse(string path) {
+Element* UmlManager::parse(std::string path) {
     m_path = path;
     Parsers::ParserMetaData data(this);
     Element* el = Parsers::parse(data);
@@ -464,6 +469,6 @@ Element* UmlManager::getRoot() {
     return m_root;
 }
 
-void UmlManager::setPath(ID elID, string path) {
+void UmlManager::setPath(ID elID, std::string path) {
     m_graph[elID].m_path = path;
 }

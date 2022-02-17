@@ -17,9 +17,8 @@ namespace UML {
     class TypedElement;
     class Property;
     class Feature;
+    class Package;
 
-    template <class T> class Sequence;
-    template <class T> struct SequenceIterator;
     template <class T, class U> class Singleton;
     class Model;
 
@@ -44,6 +43,16 @@ namespace UML {
             };
         public:
             UnknownID_Exception(ID id) : m_msg("unknown ID given when trying to get an element from the manager, ID: "  + id.string()) {};
+    };
+
+    template <class T = Element>
+    class CreateValue : public T {
+
+        friend class UmlManager;
+
+        CreateValue() : Element(T::elementType()) {
+            Element::m_createVal = true;
+        };
     };
 
     /**
@@ -88,9 +97,8 @@ namespace UML {
         friend class PackageMerge;
         friend class Property;
         friend class Feature;
+        friend class Package;
         friend class AddToMountFunctor;
-        template<typename> friend class Sequence;
-        template <class T> friend struct SequenceIterator;
         template <class T, class U> friend class Singleton;
         template <class T, class U> friend class Set;
         template <class T> friend class SetIterator;
@@ -153,6 +161,14 @@ namespace UML {
             virtual Element& get(ID id);
             size_t count(ID id);
             virtual bool loaded(ID id);
+            template <class T = Element> CreateValue<T>& createVal() {
+                CreateValue<T>* ret = new CreateValue<T>;
+                ret->m_manager = this;
+                m_elements.insert(ret->getID());
+                createNode(ret);
+                ret->m_node = &m_graph[ret->getID()];
+                return *ret;
+            };
             template <class T = Element> T& create() {
                 T* ret = new T;
                 ret->m_manager = this;
@@ -163,19 +179,9 @@ namespace UML {
             };
             Element& create(ElementType eType);
             void reindex(ID oldID, ID newID);
-            /**
-             * This function doesn't deal with memory, just sets the m_manager so the Sequence Value
-             * can communicate to the manager for allocation.
-             * WARN: Sequences should always be values
-             **/
-            template <class T = Element> Sequence<T> createSequence() {
-                Sequence<T> ret(0);
-                ret.m_manager = this;
-                return ret;
-            };
-
             // Sets up composite directory of model for quick aquire and release
             void mount(std::string path);
+            void mountEl(Element& el);
             /**
              * aquire(id) will aquire an element from disc if it is not already loaded
              * and return a pointer to the element if it was succesfully aquired

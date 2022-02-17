@@ -46,9 +46,11 @@ void UmlClient::init() {
     // get socket descriptor
     m_socketD = socket(myAddress->ai_family, myAddress->ai_socktype, myAddress->ai_protocol);
     if (m_socketD == -1) {
+        freeaddrinfo(myAddress);
         throw ManagerStateException("client could not get socket!");
     }
     if (connect(m_socketD, myAddress->ai_addr, myAddress->ai_addrlen) == -1) {
+        freeaddrinfo(myAddress);
         throw ManagerStateException("client could not connect to server! " + std::string(strerror(errno)));
     }
     freeaddrinfo(myAddress);
@@ -221,6 +223,7 @@ Element* UmlClient::aquire(ID id) {
 void UmlClient::release(Element& el) {
     put(el);
     releaseNode(el);
+    delete &el;
 }
 
 void UmlClient::release(ID id) {

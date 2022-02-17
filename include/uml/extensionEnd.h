@@ -14,7 +14,6 @@ namespace UML {
     class ExtensionEnd : public Property {
 
         friend class UmlManager;
-        friend class Parsers::SetExtension;
 
         private:
             Singleton<Stereotype, ExtensionEnd> m_extensionType = Singleton<Stereotype, ExtensionEnd>(this);

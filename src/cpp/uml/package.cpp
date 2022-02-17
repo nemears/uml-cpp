@@ -51,7 +51,7 @@ Package::Package() : Element(ElementType::PACKAGE) {
 }
 
 Package::~Package() {
-    
+    mountAndRelease();
 }
 
 Package::Package(const Package& rhs) : Element(rhs, ElementType::PACKAGE) {
@@ -63,6 +63,9 @@ Package::Package(const Package& rhs) : Element(rhs, ElementType::PACKAGE) {
     Namespace::copy(rhs);
     TemplateableElement::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Set<PackageableElement, Package>& Package::getPackagedElements() {

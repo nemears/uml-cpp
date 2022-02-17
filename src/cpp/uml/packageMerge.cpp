@@ -51,7 +51,7 @@ PackageMerge::PackageMerge(const PackageMerge& rhs) : Element(rhs, ElementType::
 }
 
 PackageMerge::~PackageMerge() {
-
+    
 }
 
 Package* PackageMerge::getReceivingPackage() {

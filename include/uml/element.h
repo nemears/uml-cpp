@@ -184,6 +184,7 @@ namespace UML {
     template <class T, class U> class Singleton;
     template <class T, class U> class OrderedSet;
     template <class T, class U> struct OrderedSetIterator;
+    template <class T> class UmlPtr;
     class SetReferenceFunctor;
     class RemoveReferenceFunctor;
     namespace Parsers {
@@ -191,6 +192,8 @@ namespace UML {
         EmitterMetaData getData(Element& el);
         void setOwner(Element& el, ID id);
     }
+
+    typedef UmlPtr<Element> ElementPtr;
     /**
      * Element is the base class of all UML classes
      * It has three main attributes
@@ -231,6 +234,7 @@ namespace UML {
         template <class T> friend class SetIterator;
         template <class T, class U> friend class OrderedSet;
         template <class T, class U> friend struct OrderedSetIterator;
+        template <class T> friend class UmlPtr;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);
         friend void Parsers::setOwner(Element& el, ID id);
         friend class SetReferenceFunctor;
@@ -252,8 +256,8 @@ namespace UML {
             
             // ownedElements
             Set<Element, Element>* m_ownedElements;
-            Set<Comment, Element>* m_ownedComments;
-            Set<InstanceSpecification, Element>* m_appliedStereotype;
+            // Set<Comment, Element>* m_ownedComments;
+            // Set<InstanceSpecification, Element>* m_appliedStereotype;
             void setOwner(Element* el);
             void setOwnerByID(ID id);
             virtual void referencingReleased(ID id);
@@ -283,19 +287,20 @@ namespace UML {
             Element(const Element& rhs, ElementType elementType);
             virtual ~Element();
             ID getID() const;
-            Element* getOwner();
-            Element& getOwnerRef();
-            ID getOwnerID() const;
-            bool hasOwner() const;
+            ElementPtr getOwner();
+            // Element* getOwner();
+            // Element& getOwnerRef();
+            // ID getOwnerID() const;
+            // bool hasOwner() const;
             Set<Element, Element>& getOwnedElements();
-            Set<Comment, Element>& getOwnedComments();
+            // Set<Comment, Element>& getOwnedComments();
             /**
              * TODO: I am keeping it simple for now, instance specification of stereotype to
              *       hold tags and operations, but I think it would be cool to dynamically map
              *       methods if we load the stereotype before runtime. Also would be cool to have
              *       stereotype tags as keyword in yaml config for disk storage (not necessarily useful though?)
              **/
-            Set<InstanceSpecification, Element>& getAppliedStereotypes();
+            // Set<InstanceSpecification, Element>& getAppliedStereotypes();
             virtual void setID(std::string id);
             void setID(ID id);
             static std::string elementTypeToString(ElementType eType);

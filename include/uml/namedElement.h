@@ -1,16 +1,16 @@
-#ifndef NAMEDELEMENTH
-#define NAMEDELEMENTH
+#ifndef _UML_NAMED_ELEMENT_H_
+#define _UML_NAMED_ELEMENT_H_
 
 #include <string>
 #include "element.h"
 #include "singleton.h"
-#include "set.h"
 
 namespace UML{
 
     class Namespace;
     class UmlManager;
     class Dependency;
+    typedef UmlPtr<Namespace> NamespacePtr;
 
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
@@ -46,7 +46,7 @@ namespace UML{
                     RemoveQualifiedNameFunctor(Element* them) : SetFunctor(them) {};
                     void operator()(Element& el) const override;
             };
-            Set<Dependency, NamedElement> m_clientDependencies = Set<Dependency, NamedElement>(this);
+            // Set<Dependency, NamedElement> m_clientDependencies = Set<Dependency, NamedElement>(this);
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             void reindexName(std::string oldName, std::string newName) override;
             void updateQualifiedName(std::string absoluteNamespace);
@@ -63,11 +63,8 @@ namespace UML{
             virtual std::string getName();
             virtual void setName(const std::string &name);
             std::string getQualifiedName();
-            Namespace* getNamespace();
-            Namespace& getNamespaceRef();
-            ID getNamespaceID() const;
-            bool hasNamespace() const;
-            Set<Dependency, NamedElement>& getClientDependencies();
+            NamespacePtr getNamespace();
+            // Set<Dependency, NamedElement>& getClientDependencies();
             VisibilityKind getVisibility();
             void setVisibility(VisibilityKind visibility);
             bool isSubClassOf(ElementType eType) const override;

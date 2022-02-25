@@ -2,14 +2,15 @@
 #define PACKAGEABLE_ELEMENT_H
 
 #include "namedElement.h"
-#include "parameterableElement.h"
+// #include "parameterableElement.h"
 #include "singleton.h"
 
 namespace UML {
 
     class Package;
+    typedef UmlPtr<Package> PackagePtr;
 
-    class PackageableElement : virtual public NamedElement , virtual public ParameterableElement {
+    class PackageableElement : virtual public NamedElement /**, virtual public ParameterableElement**/ {
 
         friend class Package;
 
@@ -27,10 +28,7 @@ namespace UML {
         public:
             PackageableElement(const PackageableElement& el);
             virtual ~PackageableElement() {};
-            Package* getOwningPackage();
-            Package& getOwningPackageRef();
-            ID getOwningPackageID() const;
-            bool hasOwningPackage() const;
+            PackagePtr getOwningPackage();
             void setOwningPackage(Package& package);
             void setOwningPackage(Package* package);
             void setOwningPackage(ID id);

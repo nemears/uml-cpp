@@ -177,7 +177,7 @@ namespace UML {
                 ret->m_node = &m_graph[ret->getID()];
                 return *ret;
             };
-            Element& create(ElementType eType);
+            // Element& create(ElementType eType);
             void reindex(ID oldID, ID newID);
             // Sets up composite directory of model for quick aquire and release
             void mount(std::string path);
@@ -239,10 +239,10 @@ namespace UML {
              **/
             Element* parse(std::string path);
 
-            void setModel(Model* model);
+            // void setModel(Model* model);
             void setRoot(Element* el);
             void setRoot(Element& el);
-            Model* getModel();
+            // Model* getModel();
             Element* getRoot();
             void setPath(ID elID, std::string path);
     };

@@ -1,5 +1,5 @@
-#ifndef UML_SINGLETON_2
-#define UML_SINGLETON_2
+#ifndef _UML_SINGLETON_H_
+#define _UML_SINGLETON_H_
 
 #include "set.h"
 
@@ -35,27 +35,27 @@ namespace UML {
                     return 0;
                 }
             };
-            T& getRef() {
-                if (this->m_root) {
-                    if (this->m_root->m_el == 0) {
-                        this->m_root->m_el = &this->m_el->m_manager->get(this->m_root->m_id);
-                    }
-                    return *dynamic_cast<T*>(this->m_root->m_el);
-                } else {
-                    // TODO throw exception
-                    throw UML::NullReferenceException();
-                }
-            };
-            ID id() const {
-                if (this->m_root) {
-                    return this->m_root->m_id;
-                } else {
-                    return ID::nullID();
-                }
-            };
-            bool has() const {
-                return this->m_root != 0;
-            };
+            // T& getRef() {
+            //     if (this->m_root) {
+            //         if (this->m_root->m_el == 0) {
+            //             this->m_root->m_el = &this->m_el->m_manager->get(this->m_root->m_id);
+            //         }
+            //         return *dynamic_cast<T*>(this->m_root->m_el);
+            //     } else {
+            //         // TODO throw exception
+            //         throw UML::NullReferenceException();
+            //     }
+            // };
+            // ID id() const {
+            //     if (this->m_root) {
+            //         return this->m_root->m_id;
+            //     } else {
+            //         return ID::nullID();
+            //     }
+            // };
+            // bool has() const {
+            //     return this->m_root != 0;
+            // };
             void set(T* el) {
                 if (el) {
                     if (this->m_root && this->m_root->m_id != el->getID()) {

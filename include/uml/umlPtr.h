@@ -22,9 +22,6 @@ namespace UML {
                 if (m_id == ID::nullID()) {
                     throw NullPtrException();
                 } else {
-                    if (!m_ptr) {
-                        m_ptr = dynamic_cast<T&>(*m_manager->get<T>(m_id));
-                    }
                     return *m_ptr;
                 }
             };
@@ -32,14 +29,26 @@ namespace UML {
                 if (m_id == ID::nullID()) {
                     throw NullPtrException();
                 } else {
-                    if (!m_ptr) {
-                        m_ptr = dynamic_cast<T&>(*m_manager->get<T>(m_id));
-                    }
                     return m_ptr;
                 }
             };
+            operator bool() const {
+                return m_ptr != 0;
+            };
             bool has() const {
-                return m_id == ID::nullID();
+                return m_id != ID::nullID();
+            };
+            inline friend bool operator==(const T* lhs, const UmlPtr& rhs) {
+                return lhs == rhs.m_ptr;
+            };
+            inline friend bool operator!=(const T* lhs, const UmlPtr& rhs) {
+                return lhs != rhs.m_ptr;
+            };
+            inline friend bool operator==(const UmlPtr& lhs, const UmlPtr& rhs) {
+                return lhs.m_id == rhs.m_id;
+            };
+            inline friend bool operator!=(const UmlPtr& lhs, const UmlPtr& rhs) {
+                return lhs.m_id != rhs.m_id;
             };
             ID id() const {
                 return m_id;

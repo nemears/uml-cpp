@@ -1,5 +1,5 @@
-#ifndef PACKAGE_H
-#define PACKAGE_H
+#ifndef _UML_PACKAGE_H_
+#define _UML_PACKAGE_H_
 
 #include "packageableElement.h"
 #include "namespace.h"

@@ -1,10 +1,11 @@
 #include "uml/umlManager.h"
+#include "uml/set.h"
 #include <fstream>
-#include "uml/parsers/parser.h"
-#include "uml/parsers/emitterMetaData.h"
-#include "uml/model.h"
+// #include "uml/parsers/parser.h"
+// #include "uml/parsers/emitterMetaData.h"
+// #include "uml/model.h"
 #include <algorithm>
-#include "uml/uml-stable.h"
+// #include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -49,160 +50,160 @@ bool UmlManager::loaded(ID id) {
     }
 }
 
-Element& UmlManager::create(ElementType eType) {
-    switch (eType) {
-        case ElementType::ABSTRACTION : {
-            return static_cast<Element&>(create<Abstraction>());
-        }
-        case ElementType::ARTIFACT : {
-            return static_cast<Element&>(create<Artifact>());
-        }
-        case ElementType::ASSOCIATION : {
-            return static_cast<Element&>(create<Association>());
-        }
-        case ElementType::CLASS : {
-            return static_cast<Element&>(create<Class>());
-        }
-        case ElementType::COMMENT : {
-            return static_cast<Element&>(create<Comment>());
-        }
-        case ElementType::CONNECTOR : {
-            return static_cast<Element&>(create<Connector>());
-        }
-        case ElementType::CONNECTOR_END : {
-            return static_cast<Element&>(create<ConnectorEnd>());
-        }
-        case ElementType::DATA_TYPE : {
-            return static_cast<Element&>(create<DataType>());
-        }
-        case ElementType::DEPENDENCY : {
-            return static_cast<Element&>(create<Dependency>());
-        }
-        case ElementType::DEPLOYMENT : {
-            return static_cast<Element&>(create<Deployment>());
-        }
-        case ElementType::ENUMERATION : {
-            return static_cast<Element&>(create<Enumeration>());
-        }
-        case ElementType::ENUMERATION_LITERAL : {
-            return static_cast<Element&>(create<EnumerationLiteral>());
-        }
-        case ElementType::EXPRESSION : {
-            return static_cast<Element&>(create<Expression>());
-        }
-        case ElementType::EXTENSION : {
-            return static_cast<Element&>(create<Extension>());
-        }
-        case ElementType::EXTENSION_END : {
-            return static_cast<Element&>(create<ExtensionEnd>());
-        }
-        case ElementType::GENERALIZATION : {
-            return static_cast<Element&>(create<Generalization>());
-        }
-        case ElementType::GENERALIZATION_SET : {
-            return static_cast<Element&>(create<GeneralizationSet>());
-        }
-        case ElementType::INSTANCE_SPECIFICATION : {
-            return static_cast<Element&>(create<InstanceSpecification>());
-        }
-        case ElementType::INSTANCE_VALUE : {
-            return static_cast<Element&>(create<InstanceValue>());
-        }
-        case ElementType::INTERFACE : {
-            return static_cast<Element&>(create<Interface>());
-        }
-        case ElementType::INTERFACE_REALIZATION : {
-            return static_cast<Element&>(create<InterfaceRealization>());
-        }
-        case ElementType::LITERAL_BOOL : {
-            return static_cast<Element&>(create<LiteralBool>());
-        }
-        case ElementType::LITERAL_INT : {
-            return static_cast<Element&>(create<LiteralInt>());
-        }
-        case ElementType::LITERAL_NULL : {
-            return static_cast<Element&>(create<LiteralNull>());
-        }
-        case ElementType::LITERAL_REAL : {
-            return static_cast<Element&>(create<LiteralReal>());
-        }
-        case ElementType::LITERAL_STRING : {
-            return static_cast<Element&>(create<LiteralString>());
-        }
-        case ElementType::LITERAL_UNLIMITED_NATURAL : {
-            return static_cast<Element&>(create<LiteralUnlimitedNatural>());
-        }
-        case ElementType::MANIFESTATION : {
-            return static_cast<Element&>(create<Manifestation>());
-        }
-        case ElementType::MODEL : {
-            return static_cast<Element&>(create<Model>());
-        }
-        case ElementType::OPAQUE_BEHAVIOR : {
-            return static_cast<Element&>(create<OpaqueBehavior>());
-        }
-        case ElementType::OPERATION : {
-            return static_cast<Element&>(create<Operation>());
-        }
-        case ElementType::PACKAGE : {
-            return static_cast<Element&>(create<Package>());
-        }
-        case ElementType::PACKAGE_MERGE : {
-            return static_cast<Element&>(create<PackageMerge>());
-        }
-        case ElementType::PARAMETER : {
-            return static_cast<Element&>(create<Parameter>());
-        }
-        case ElementType::PORT : {
-            return static_cast<Element&>(create<Port>());
-        }
-        case ElementType::PRIMITIVE_TYPE : {
-            return static_cast<Element&>(create<PrimitiveType>());
-        }
-        case ElementType::PROFILE : {
-            return static_cast<Element&>(create<Profile>());
-        }
-        case ElementType::PROFILE_APPLICATION : {
-            return static_cast<Element&>(create<ProfileApplication>());
-        }
-        case ElementType::PROPERTY : {
-            return static_cast<Element&>(create<Property>());
-        }
-        case ElementType::REALIZATION : {
-            return static_cast<Element&>(create<Realization>());
-        }
-        case ElementType::RECEPTION : {
-            return static_cast<Element&>(create<Reception>());
-        }
-        case ElementType::SIGNAL : {
-            return static_cast<Element&>(create<Signal>());
-        }
-        case ElementType::SLOT : {
-            return static_cast<Element&>(create<Slot>());
-        }
-        case ElementType::STEREOTYPE : {
-            return static_cast<Element&>(create<Stereotype>());
-        }
-        case ElementType::TEMPLATE_BINDING : {
-            return static_cast<Element&>(create<TemplateBinding>());
-        }
-        case ElementType::TEMPLATE_PARAMETER : {
-            return static_cast<Element&>(create<TemplateParameter>());
-        }
-        case ElementType::TEMPLATE_PARAMETER_SUBSTITUTION : {
-            return static_cast<Element&>(create<TemplateParameterSubstitution>());
-        }
-        case ElementType::TEMPLATE_SIGNATURE : {
-            return static_cast<Element&>(create<TemplateSignature>());
-        }
-        case ElementType::USAGE : {
-            return static_cast<Element&>(create<Usage>());
-        }
-        default : {
-            throw ManagerStateException("Could not POST element with unmapped element type: " + Element::elementTypeToString(eType));
-        }
-    }
-}
+// Element& UmlManager::create(ElementType eType) {
+//     switch (eType) {
+//         case ElementType::ABSTRACTION : {
+//             return static_cast<Element&>(create<Abstraction>());
+//         }
+//         case ElementType::ARTIFACT : {
+//             return static_cast<Element&>(create<Artifact>());
+//         }
+//         case ElementType::ASSOCIATION : {
+//             return static_cast<Element&>(create<Association>());
+//         }
+//         case ElementType::CLASS : {
+//             return static_cast<Element&>(create<Class>());
+//         }
+//         case ElementType::COMMENT : {
+//             return static_cast<Element&>(create<Comment>());
+//         }
+//         case ElementType::CONNECTOR : {
+//             return static_cast<Element&>(create<Connector>());
+//         }
+//         case ElementType::CONNECTOR_END : {
+//             return static_cast<Element&>(create<ConnectorEnd>());
+//         }
+//         case ElementType::DATA_TYPE : {
+//             return static_cast<Element&>(create<DataType>());
+//         }
+//         case ElementType::DEPENDENCY : {
+//             return static_cast<Element&>(create<Dependency>());
+//         }
+//         case ElementType::DEPLOYMENT : {
+//             return static_cast<Element&>(create<Deployment>());
+//         }
+//         case ElementType::ENUMERATION : {
+//             return static_cast<Element&>(create<Enumeration>());
+//         }
+//         case ElementType::ENUMERATION_LITERAL : {
+//             return static_cast<Element&>(create<EnumerationLiteral>());
+//         }
+//         case ElementType::EXPRESSION : {
+//             return static_cast<Element&>(create<Expression>());
+//         }
+//         case ElementType::EXTENSION : {
+//             return static_cast<Element&>(create<Extension>());
+//         }
+//         case ElementType::EXTENSION_END : {
+//             return static_cast<Element&>(create<ExtensionEnd>());
+//         }
+//         case ElementType::GENERALIZATION : {
+//             return static_cast<Element&>(create<Generalization>());
+//         }
+//         case ElementType::GENERALIZATION_SET : {
+//             return static_cast<Element&>(create<GeneralizationSet>());
+//         }
+//         case ElementType::INSTANCE_SPECIFICATION : {
+//             return static_cast<Element&>(create<InstanceSpecification>());
+//         }
+//         case ElementType::INSTANCE_VALUE : {
+//             return static_cast<Element&>(create<InstanceValue>());
+//         }
+//         case ElementType::INTERFACE : {
+//             return static_cast<Element&>(create<Interface>());
+//         }
+//         case ElementType::INTERFACE_REALIZATION : {
+//             return static_cast<Element&>(create<InterfaceRealization>());
+//         }
+//         case ElementType::LITERAL_BOOL : {
+//             return static_cast<Element&>(create<LiteralBool>());
+//         }
+//         case ElementType::LITERAL_INT : {
+//             return static_cast<Element&>(create<LiteralInt>());
+//         }
+//         case ElementType::LITERAL_NULL : {
+//             return static_cast<Element&>(create<LiteralNull>());
+//         }
+//         case ElementType::LITERAL_REAL : {
+//             return static_cast<Element&>(create<LiteralReal>());
+//         }
+//         case ElementType::LITERAL_STRING : {
+//             return static_cast<Element&>(create<LiteralString>());
+//         }
+//         case ElementType::LITERAL_UNLIMITED_NATURAL : {
+//             return static_cast<Element&>(create<LiteralUnlimitedNatural>());
+//         }
+//         case ElementType::MANIFESTATION : {
+//             return static_cast<Element&>(create<Manifestation>());
+//         }
+//         case ElementType::MODEL : {
+//             return static_cast<Element&>(create<Model>());
+//         }
+//         case ElementType::OPAQUE_BEHAVIOR : {
+//             return static_cast<Element&>(create<OpaqueBehavior>());
+//         }
+//         case ElementType::OPERATION : {
+//             return static_cast<Element&>(create<Operation>());
+//         }
+//         case ElementType::PACKAGE : {
+//             return static_cast<Element&>(create<Package>());
+//         }
+//         case ElementType::PACKAGE_MERGE : {
+//             return static_cast<Element&>(create<PackageMerge>());
+//         }
+//         case ElementType::PARAMETER : {
+//             return static_cast<Element&>(create<Parameter>());
+//         }
+//         case ElementType::PORT : {
+//             return static_cast<Element&>(create<Port>());
+//         }
+//         case ElementType::PRIMITIVE_TYPE : {
+//             return static_cast<Element&>(create<PrimitiveType>());
+//         }
+//         case ElementType::PROFILE : {
+//             return static_cast<Element&>(create<Profile>());
+//         }
+//         case ElementType::PROFILE_APPLICATION : {
+//             return static_cast<Element&>(create<ProfileApplication>());
+//         }
+//         case ElementType::PROPERTY : {
+//             return static_cast<Element&>(create<Property>());
+//         }
+//         case ElementType::REALIZATION : {
+//             return static_cast<Element&>(create<Realization>());
+//         }
+//         case ElementType::RECEPTION : {
+//             return static_cast<Element&>(create<Reception>());
+//         }
+//         case ElementType::SIGNAL : {
+//             return static_cast<Element&>(create<Signal>());
+//         }
+//         case ElementType::SLOT : {
+//             return static_cast<Element&>(create<Slot>());
+//         }
+//         case ElementType::STEREOTYPE : {
+//             return static_cast<Element&>(create<Stereotype>());
+//         }
+//         case ElementType::TEMPLATE_BINDING : {
+//             return static_cast<Element&>(create<TemplateBinding>());
+//         }
+//         case ElementType::TEMPLATE_PARAMETER : {
+//             return static_cast<Element&>(create<TemplateParameter>());
+//         }
+//         case ElementType::TEMPLATE_PARAMETER_SUBSTITUTION : {
+//             return static_cast<Element&>(create<TemplateParameterSubstitution>());
+//         }
+//         case ElementType::TEMPLATE_SIGNATURE : {
+//             return static_cast<Element&>(create<TemplateSignature>());
+//         }
+//         case ElementType::USAGE : {
+//             return static_cast<Element&>(create<Usage>());
+//         }
+//         default : {
+//             throw ManagerStateException("Could not POST element with unmapped element type: " + Element::elementTypeToString(eType));
+//         }
+//     }
+// }
 
 Element& UmlManager::get(ID id) {
     return get<>(id);
@@ -272,12 +273,12 @@ void UmlManager::addToMount(Element& el) {
 
 void UmlManager::mountEl(Element& el) {
     if (!m_mountBase.empty()) {
-        Parsers::EmitterMetaData data = { m_mountBase / std::filesystem::path("mount"),
-                                            Parsers::EmitterStrategy::INDIVIDUAL,
-                                            el.getID().string() + ".yml",
-                                            this };
-        el.m_node->m_mountedFlag = true;
-        Parsers::emitToFile(el, data, data.m_path.string(), data.m_fileName);
+        // Parsers::EmitterMetaData data = { m_mountBase / std::filesystem::path("mount"),
+        //                                     Parsers::EmitterStrategy::INDIVIDUAL,
+        //                                     el.getID().string() + ".yml",
+        //                                     this };
+        // el.m_node->m_mountedFlag = true;
+        // Parsers::emitToFile(el, data, data.m_path.string(), data.m_fileName);
     }
 }
 
@@ -292,41 +293,41 @@ void UmlManager::mount(std::string path) {
 Element* UmlManager::aquire(ID id) {
     if (!m_mountBase.empty()) {
         if (!loaded(id)) {
-            if (std::filesystem::exists(m_mountBase / "mount" / (id.string() + ".yml"))) {
-                Parsers::ParserMetaData data(this);
-                data.m_path = m_mountBase / "mount" / (id.string() + ".yml");
-                data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-                Element* ret = Parsers::parse(data);
-                if (ret) {
-                    ret->m_node->m_managerElementMemory = ret;
-                    size_t numEls = ret->m_node->m_referenceOrder.size();
-                    for (size_t i = 0; i < numEls; i++) {
-                        ID refID = ret->m_node->m_referenceOrder[i];
-                        ManagerNode* node = ret->m_node->m_references.at(refID);
-                        Element* el = 0;
-                        if (!node && loaded(refID)) {
-                            try {
-                                el = &get<>(refID); // TODO make this faster somehow this line is a real limiter of speed
-                                ret->m_node->m_references[refID] = el->m_node;
-                            } catch (std::exception e) {
-                                // nothing
-                            }
-                        } else if (node && loaded(refID)) {
-                            el =  node->m_managerElementMemory;
-                        }
-                        if (el) {
-                            el->restoreReference(ret);
-                            ret->restoreReference(el);
-                        }
-                    }
-                    ret->restoreReferences();
-                } else {
-                    throw ManagerStateException();
-                }
-                return ret;
-            } else {
-                throw ID_doesNotExistException(id);
-            }
+            // if (std::filesystem::exists(m_mountBase / "mount" / (id.string() + ".yml"))) {
+            //     // Parsers::ParserMetaData data(this);
+            //     // data.m_path = m_mountBase / "mount" / (id.string() + ".yml");
+            //     // data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
+            //     // Element* ret = Parsers::parse(data);
+            //     // if (ret) {
+            //     //     ret->m_node->m_managerElementMemory = ret;
+            //     //     size_t numEls = ret->m_node->m_referenceOrder.size();
+            //     //     for (size_t i = 0; i < numEls; i++) {
+            //     //         ID refID = ret->m_node->m_referenceOrder[i];
+            //     //         ManagerNode* node = ret->m_node->m_references.at(refID);
+            //     //         Element* el = 0;
+            //     //         if (!node && loaded(refID)) {
+            //     //             try {
+            //     //                 el = &get<>(refID); // TODO make this faster somehow this line is a real limiter of speed
+            //     //                 ret->m_node->m_references[refID] = el->m_node;
+            //     //             } catch (std::exception e) {
+            //     //                 // nothing
+            //     //             }
+            //     //         } else if (node && loaded(refID)) {
+            //     //             el =  node->m_managerElementMemory;
+            //     //         }
+            //     //         if (el) {
+            //     //             el->restoreReference(ret);
+            //     //             ret->restoreReference(el);
+            //     //         }
+            //     //     }
+            //     //     ret->restoreReferences();
+            //     // } else {
+            //     //     throw ManagerStateException();
+            //     // }
+            //     // return ret;
+            // } else {
+            //     throw ID_doesNotExistException(id);
+            // }
         } else {
             return &get<>(id);
         }
@@ -410,12 +411,12 @@ void UmlManager::save() {
         // TODO throw error
         return;
     }
-    Parsers::EmitterMetaData data;
-    data.m_manager =  this;
-    data.m_strategy = Parsers::EmitterStrategy::WHOLE;
-    data.m_path = m_path.parent_path();
-    data.m_fileName = m_path.filename().string();
-    Parsers::emit(data);
+    // Parsers::EmitterMetaData data;
+    // data.m_manager =  this;
+    // data.m_strategy = Parsers::EmitterStrategy::WHOLE;
+    // data.m_path = m_path.parent_path();
+    // data.m_fileName = m_path.filename().string();
+    // Parsers::emit(data);
 }
 
 void UmlManager::save(std::string path) {
@@ -429,11 +430,11 @@ void UmlManager::open() {
         return;
     }
     clear();
-    Parsers::ParserMetaData data(this);
-    m_root = Parsers::parse(data);
-    if (m_root->isSubClassOf(ElementType::MODEL)) {
-        m_model = dynamic_cast<Model*>(m_root);
-    }
+    // Parsers::ParserMetaData data(this);
+    // m_root = Parsers::parse(data);
+    // if (m_root->isSubClassOf(ElementType::MODEL)) {
+    //     m_model = dynamic_cast<Model*>(m_root);
+    // }
 }
 
 void UmlManager::open(std::string path) {
@@ -443,22 +444,22 @@ void UmlManager::open(std::string path) {
 
 Element* UmlManager::parse(std::string path) {
     m_path = path;
-    Parsers::ParserMetaData data(this);
-    Element* el = Parsers::parse(data);
-    if (!getRoot()) {
-       setRoot(el);
-    }
-    return el;
+    // Parsers::ParserMetaData data(this);
+    // Element* el = Parsers::parse(data);
+    // if (!getRoot()) {
+    //    setRoot(el);
+    // }
+    // return el;
 }
 
-void UmlManager::setModel(Model* model) {
-    m_model = model;
-    m_root = model;
-}
+// void UmlManager::setModel(Model* model) {
+//     m_model = model;
+//     // m_root = model;
+// }
 
-Model* UmlManager::getModel() {
-    return m_model;
-}
+// Model* UmlManager::getModel() {
+//     return m_model;
+// }
 
 void UmlManager::setRoot(Element* el) {
     m_root = el;

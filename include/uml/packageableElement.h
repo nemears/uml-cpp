@@ -1,5 +1,5 @@
-#ifndef PACKAGEABLE_ELEMENT_H
-#define PACKAGEABLE_ELEMENT_H
+#ifndef _UML_PACKAGEABLE_ELEMENT_H_
+#define _UML_PACKAGEABLE_ELEMENT_H_
 
 #include "namedElement.h"
 // #include "parameterableElement.h"

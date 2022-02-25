@@ -44,7 +44,7 @@ target_link_libraries(uml PUBLIC yaml-cpp)
 #     target_link_libraries(uml-server PUBLIC uml)
 #     target_link_libraries(uml-server PRIVATE Threads::Threads)
 # endif()
-# add_subdirectory(src/cpp/test)
+add_subdirectory(src/cpp/test)
 # target_include_directories(umltest PRIVATE libs/yaml-cpp/include)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

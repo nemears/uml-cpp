@@ -1,9 +1,10 @@
 #include "uml/element.h"
 #include "uml/umlManager.h"
-#include "uml/comment.h"
-#include "uml/instanceSpecification.h"
+#include "uml/umlPtr.h"
+// #include "uml/comment.h"
+// #include "uml/instanceSpecification.h"
 #include "uml/singleton.h"
-#include "uml/uml-stable.h"
+// #include "uml/uml-stable.h"
 #include "uml/setReferenceFunctor.h"
 
 namespace UML {
@@ -54,8 +55,8 @@ void Element::removeReference(ID referencing) {
 void Element::referenceReindexed(ID oldID, ID newID) {
     m_ownedElements->reindex(oldID, newID);
     m_owner->reindex(oldID, newID);
-    m_ownedComments->reindex(oldID, newID);
-    m_appliedStereotype->reindex(oldID, newID);
+    // m_ownedComments->reindex(oldID, newID);
+    // m_appliedStereotype->reindex(oldID, newID);
 }
 
 void Element::reindexName(std::string oldName, std::string newName) {
@@ -69,8 +70,8 @@ void Element::referencingReleased(ID id) {
     }
     m_owner->release(id);
     m_ownedElements->release(id);
-    m_ownedComments->release(id);
-    m_appliedStereotype->release(id);
+    // m_ownedComments->release(id);
+    // m_appliedStereotype->release(id);
 }
 
 void Element::restoreReferences() {
@@ -88,8 +89,8 @@ void Element::restoreReference(Element* el) {
 void Element::referenceErased(ID id) {
     m_owner->eraseElement(id);
     m_ownedElements->eraseElement(id);
-    m_ownedComments->eraseElement(id);
-    m_appliedStereotype->eraseElement(id);
+    // m_ownedComments->eraseElement(id);
+    // m_appliedStereotype->eraseElement(id);
 }
 
 void Element::mountAndRelease() {
@@ -114,8 +115,8 @@ Set<Element, Element>& Element::getOwnerSingleton() {
 void Element::copy(const Element& rhs) {
     *m_owner = *rhs.m_owner;
     *m_ownedElements = *rhs.m_ownedElements;
-    *m_ownedComments = *rhs.m_ownedComments;
-    *m_appliedStereotype = *rhs.m_appliedStereotype;
+    // *m_ownedComments = *rhs.m_ownedComments;
+    // *m_appliedStereotype = *rhs.m_appliedStereotype;
 }
 
 Element::Element(ElementType elementType) : m_elementType(elementType) {
@@ -134,18 +135,18 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_ownedElements->m_signature = &Element::getOwnedElements;
     m_ownedElements->m_readOnly = true;
 
-    m_ownedComments = new Set<Comment, Element>(this);
-    m_ownedComments->subsets(*m_ownedElements);
-    m_ownedComments->m_signature = &Element::getOwnedComments;
+    // m_ownedComments = new Set<Comment, Element>(this);
+    // m_ownedComments->subsets(*m_ownedElements);
+    // m_ownedComments->m_signature = &Element::getOwnedComments;
 
-    m_appliedStereotype = new Set<InstanceSpecification, Element>(this);
-    m_appliedStereotype->subsets(*m_ownedElements);
-    m_appliedStereotype->m_signature = &Element::getAppliedStereotypes;
+    // m_appliedStereotype = new Set<InstanceSpecification, Element>(this);
+    // m_appliedStereotype->subsets(*m_ownedElements);
+    // m_appliedStereotype->m_signature = &Element::getAppliedStereotypes;
 }
 
 Element::~Element() {
-    delete m_appliedStereotype;
-    delete m_ownedComments;
+    // delete m_appliedStereotype;
+    // delete m_ownedComments;
     delete m_owner;
     delete m_ownedElements;
     if (m_copiedElementFlag) {
@@ -503,20 +504,24 @@ ID Element::getID() const {
     return m_id;
 }
 
-Element* Element::getOwner() {
-    return m_owner->get();
-}
+// Element* Element::getOwner() {
+//     return m_owner->get();
+// }
 
-Element& Element::getOwnerRef() {
-    return m_owner->getRef();
-}
+// Element& Element::getOwnerRef() {
+//     return m_owner->getRef();
+// }
 
-ID Element::getOwnerID() const {
-    return m_owner->id();
-}
+// ID Element::getOwnerID() const {
+//     return m_owner->id();
+// }
 
-bool Element::hasOwner() const {
-    return m_owner->has();
+// bool Element::hasOwner() const {
+//     return m_owner->has();
+// }
+
+ElementPtr Element::getOwner() {
+    return ElementPtr(m_owner->get());
 }
 
 void Element::setOwner(Element* owner) {
@@ -531,13 +536,13 @@ Set<Element, Element>& Element::getOwnedElements() {
     return *m_ownedElements;
 }
 
-Set<InstanceSpecification, Element>& Element::getAppliedStereotypes() {
-    return *m_appliedStereotype;
-}
+// Set<InstanceSpecification, Element>& Element::getAppliedStereotypes() {
+//     return *m_appliedStereotype;
+// }
 
-Set<Comment, Element>& Element::getOwnedComments() {
-    return *m_ownedComments;
-}
+// Set<Comment, Element>& Element::getOwnedComments() {
+//     return *m_ownedComments;
+// }
 
 void SetReferenceFunctor::operator()(Element& el) const {
     el.setReference(&m_el);

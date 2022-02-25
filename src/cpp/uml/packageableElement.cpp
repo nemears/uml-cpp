@@ -1,32 +1,33 @@
 #include "uml/packageableElement.h"
+#include "uml/umlPtr.h"
 #include "uml/package.h"
-#include "uml/uml-stable.h"
+// #include "uml/uml-stable.h"
 
 using namespace UML;
 
 void PackageableElement::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
-    ParameterableElement::referenceReindexed(oldID, newID);
+    // ParameterableElement::referenceReindexed(oldID, newID);
 }
 
 void PackageableElement::reindexName(std::string oldName, std::string newName) {
     NamedElement::reindexName(oldName, newName);
-    ParameterableElement::reindexName(oldName, newName);
+    // ParameterableElement::reindexName(oldName, newName);
 }
 
 void PackageableElement::referencingReleased(ID id) {
     NamedElement::referencingReleased(id);
-    ParameterableElement::referencingReleased(id);
+    // ParameterableElement::referencingReleased(id);
 }
 
 void PackageableElement::restoreReference(Element* el) {
     NamedElement::restoreReference(el);
-    ParameterableElement::restoreReference(el);
+    // ParameterableElement::restoreReference(el);
 }
 
 void PackageableElement::referenceErased(ID id) {
     NamedElement::referenceErased(id);
-    ParameterableElement::referenceErased(id);
+    // ParameterableElement::referenceErased(id);
 }
 
 Set<Package, PackageableElement>& PackageableElement::getOwningPackageSingleton() {
@@ -52,21 +53,21 @@ PackageableElement::PackageableElement(const PackageableElement& el) : Element(E
     // abstract
 }
 
-Package* PackageableElement::getOwningPackage() {
-    return m_owningPackage.get();
+PackagePtr PackageableElement::getOwningPackage() {
+    return PackagePtr(m_owningPackage.get());
 }
 
-Package& PackageableElement::getOwningPackageRef() {
-    return m_owningPackage.getRef();
-}
+// Package& PackageableElement::getOwningPackageRef() {
+//     return m_owningPackage.getRef();
+// }
 
-ID PackageableElement::getOwningPackageID() const {
-    return m_owningPackage.id();
-}
+// ID PackageableElement::getOwningPackageID() const {
+//     return m_owningPackage.id();
+// }
 
-bool PackageableElement::hasOwningPackage() const {
-    return m_owningPackage.has();
-}
+// bool PackageableElement::hasOwningPackage() const {
+//     return m_owningPackage.has();
+// }
 
 void PackageableElement::setOwningPackage(Package* package) {
     m_owningPackage.set(package);
@@ -83,9 +84,9 @@ void PackageableElement::setOwningPackage(ID id) {
 bool PackageableElement::isSubClassOf(ElementType eType) const {
     bool ret = NamedElement::isSubClassOf(eType);
 
-    if (!ret) {
-        ret = ParameterableElement::isSubClassOf(eType);
-    }
+    // if (!ret) {
+    //     ret = ParameterableElement::isSubClassOf(eType);
+    // }
 
     if (!ret) {
         ret = eType == ElementType::PACKAGEABLE_ELEMENT;

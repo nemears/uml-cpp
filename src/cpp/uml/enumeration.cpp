@@ -31,6 +31,13 @@ Enumeration::Enumeration(const Enumeration& rhs) : Element(rhs, ElementType::ENU
     Classifier::copy(rhs);
     DataType::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
+}
+
+Enumeration::~Enumeration() {
+    mountAndRelease();
 }
 
 OrderedSet<EnumerationLiteral, Enumeration>& Enumeration::getOwnedLiterals() {

@@ -83,10 +83,13 @@ TemplateParameter::TemplateParameter(const TemplateParameter& rhs) : Element(rhs
     init();
     Element::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 TemplateParameter::~TemplateParameter() {
-
+    mountAndRelease();
 }
 
 TemplateSignature* TemplateParameter::getSignature() {

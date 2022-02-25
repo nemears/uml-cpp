@@ -16,10 +16,13 @@ Abstraction::Abstraction(const Abstraction& rhs) : Element(rhs, ElementType::ABS
     ParameterableElement::copy(rhs);
     PackageableElement::copy(rhs);
     Dependency::copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Abstraction::~Abstraction() {
-
+    mountAndRelease();
 }
 
 bool Abstraction::isSubClassOf(ElementType eType) const {

@@ -9,7 +9,7 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            int value = 0; // TODO change to long so we can hold any number?
+            int m_value = 0; // TODO change to long so we can hold any number?
             LiteralInt();
         public:
             LiteralInt(const LiteralInt& rhs);

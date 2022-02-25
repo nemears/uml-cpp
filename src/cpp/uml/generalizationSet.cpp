@@ -56,6 +56,13 @@ GeneralizationSet::GeneralizationSet(const GeneralizationSet& rhs) : Element(rhs
     NamedElement::copy(rhs);
     PackageableElement::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
+}
+
+GeneralizationSet::~GeneralizationSet() {
+    mountAndRelease();
 }
 
 bool GeneralizationSet::isCovering() const {

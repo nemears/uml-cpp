@@ -21,6 +21,7 @@ namespace UML {
             Comment();
         public:
             Comment(const Comment& rhs);
+            virtual ~Comment();
             std::string getBody();
             void setBody(std::string body);
             Set<Element, Comment>& getAnnotatedElements();

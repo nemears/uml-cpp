@@ -9,7 +9,7 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            std::string value;
+            std::string m_value;
             LiteralString();
         public:
             LiteralString(const LiteralString& rhs);

@@ -20,6 +20,7 @@ namespace UML {
             EnumerationLiteral();
         public:
             EnumerationLiteral(const EnumerationLiteral& rhs);
+            virtual ~EnumerationLiteral();
             Enumeration* getEnumeration();
             Enumeration& getEnumerationRef();
             ID getEnumerationID() const;

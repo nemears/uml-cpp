@@ -16,10 +16,13 @@ Realization::Realization(const Realization& rhs) : Element(rhs, ElementType::REA
     ParameterableElement::copy(rhs);
     PackageableElement::copy(rhs);
     Dependency::copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Realization::~Realization() {
-
+    mountAndRelease();
 }
 
 bool Realization::isSubClassOf(ElementType eType) const {

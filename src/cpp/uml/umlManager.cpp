@@ -216,7 +216,10 @@ void UmlManager::reindex(ID oldID, ID newID) {
         // during a UmlManager::open() or UmlManager::aquire(id) invoke
         
         ManagerNode* m_node = &m_graph[newID];
-        delete m_node->m_managerElementMemory;
+        if (m_node->m_managerElementMemory) {
+            m_node->m_managerElementMemory->m_createVal = true;
+            delete m_node->m_managerElementMemory;
+        }
         m_node->m_managerElementMemory = m_graph[oldID].m_managerElementMemory;
         m_node->m_managerElementMemory->m_node = m_node;
         for (auto& countPair : m_node->m_referenceCount) {
@@ -351,17 +354,20 @@ void UmlManager::releaseNode(Element& el) {
         // TODO show warning, bad practice to release without destroying all copies
         // effecctively dereferences the copies from the manager
         copy->m_node = 0;
-        copy->m_manager = 0;
+        copy->m_manager = 0;  
     }
-    m_graph.erase(id);
 }
 
 void UmlManager::release(Element& el) {
     if (!m_mountBase.empty()) {
+        ID elID = el.getID();
         mountEl(el);
         releaseNode(el);
-        el.m_createVal = true;
-        delete &el;
+        if (!el.m_copiedElementFlag && !el.m_createVal) {
+            el.m_createVal = true;
+            delete &el;
+        }
+        m_graph.erase(elID);
     } else {
         throw ManagerNotMountedException();
     }
@@ -378,12 +384,12 @@ void UmlManager::eraseNode(ManagerNode* node, ID id) {
         node->m_managerElementMemory->m_createVal = true;
         delete node->m_managerElementMemory;
     }
-    if (node->m_copies.size() > 0) {
-        // TODO warning
-        for (auto& copy : node->m_copies) {
-            copy->m_node = 0;
-        }
-    }
+    // if (node->m_copies.size() > 0) {
+    //     // TODO warning
+    //     for (auto& copy : node->m_copies) {
+    //         copy->m_node = 0;
+    //     }
+    // }
     m_graph.erase(id);
     m_elements.erase(std::find(m_elements.begin(), m_elements.end(), id));
     if (!m_mountBase.empty()) {

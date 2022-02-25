@@ -44,7 +44,7 @@ Class::Class() : Element(ElementType::CLASS) {
 }
 
 Class::~Class() {
-    
+    mountAndRelease();
 }
 
 Class::Class(const Class& rhs) : Element(rhs, ElementType::CLASS) {
@@ -61,6 +61,9 @@ Class::Class(const Class& rhs) : Element(rhs, ElementType::CLASS) {
     EncapsulatedClassifier::copy(rhs);
     BehavioredClassifier::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 OrderedSet<Property, Class>& Class::getOwnedAttributes() {

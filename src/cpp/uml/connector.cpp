@@ -111,10 +111,13 @@ Connector::Connector(const Connector& rhs) : Element(rhs, ElementType::CONNECTOR
     RedefinableElement::copy(rhs);
     Feature::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Connector::~Connector() {
-
+    mountAndRelease();
 }
 
 Association* Connector::getType() {

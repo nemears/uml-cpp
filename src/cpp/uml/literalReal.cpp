@@ -5,14 +5,16 @@ using namespace UML;
 
 LiteralReal::LiteralReal() : Element(ElementType::LITERAL_REAL) {}
 
-LiteralReal::LiteralReal(const LiteralReal& rhs) : Element(rhs, ElementType::LITERAL_REAL) {}
+LiteralReal::LiteralReal(const LiteralReal& rhs) : Element(rhs, ElementType::LITERAL_REAL) {
+    m_value = rhs.m_value;
+}
 
 double LiteralReal::getValue() {
-    return value;
+    return m_value;
 }
 
 void LiteralReal::setValue(double val) {
-    value = val;
+    m_value = val;
 }
 
 bool LiteralReal::isSubClassOf(ElementType eType) const {

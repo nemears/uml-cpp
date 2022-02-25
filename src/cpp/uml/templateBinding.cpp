@@ -53,10 +53,13 @@ TemplateBinding::TemplateBinding(const TemplateBinding& rhs) : Element(rhs, Elem
     Relationship::copy(rhs);
     DirectedRelationship::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 TemplateBinding::~TemplateBinding() {
-
+    mountAndRelease();
 }
 
 TemplateableElement* TemplateBinding::getBoundElement() {

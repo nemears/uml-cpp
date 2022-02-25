@@ -146,7 +146,7 @@ Port::Port() : Element(ElementType::PORT) {
 }
 
 Port::~Port() {
-
+    mountAndRelease();
 }
 
 Port::Port(const Port& rhs) : Element(rhs, ElementType::PORT) {
@@ -160,6 +160,9 @@ Port::Port(const Port& rhs) : Element(rhs, ElementType::PORT) {
     DeploymentTarget::copy(rhs);
     Property::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 bool Port::isBehavior() const {

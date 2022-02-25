@@ -88,10 +88,13 @@ TemplateParameterSubstitution::TemplateParameterSubstitution(const TemplateParam
     init();
     Element::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 TemplateParameterSubstitution::~TemplateParameterSubstitution() {
-
+    mountAndRelease();
 }
 
 TemplateParameter* TemplateParameterSubstitution::getFormal() {

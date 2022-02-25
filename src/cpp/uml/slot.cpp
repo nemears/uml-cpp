@@ -50,11 +50,15 @@ Slot::Slot() : Element(ElementType::SLOT) {
 
 Slot::Slot(const Slot& rhs) : Element(rhs, ElementType::SLOT) {
     init();
+    Element::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Slot::~Slot() {
-
+    mountAndRelease();
 }
 
 Set<ValueSpecification, Slot>& Slot::getValues() {

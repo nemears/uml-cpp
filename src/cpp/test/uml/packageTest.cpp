@@ -144,7 +144,7 @@ TEST_F(PackageTest, addOwnedStereotype) {
     Stereotype& s2 = m.create<Stereotype>();
     s2.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
     Package& pp = m.create<Package>();
-    pp.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
+    pp.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAF");
     p2.getPackagedElements().add(pp);
     p2.getOwnedStereotypes().add(s2);
     ASSERT_EQ(p2.getOwnedStereotypes().size(), 1);

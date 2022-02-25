@@ -51,10 +51,13 @@ Artifact::Artifact(const Artifact& rhs) : Element(rhs, ElementType::ARTIFACT) {
     Classifier::copy(rhs);
     DeployedArtifact::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Artifact::~Artifact() {
-    
+    mountAndRelease();
 }
 
 OrderedSet<Property, Artifact>& Artifact::getOwnedAttributes() {

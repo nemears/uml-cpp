@@ -28,6 +28,7 @@ namespace UML {
             GeneralizationSet();
         public:
             GeneralizationSet(const GeneralizationSet& rhs);
+            virtual ~GeneralizationSet();
             bool isCovering() const;
             bool isDisjoint() const;
             void setCovering(bool covering);

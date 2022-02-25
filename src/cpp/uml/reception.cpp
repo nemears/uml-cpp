@@ -46,10 +46,13 @@ Reception::Reception(const Reception& rhs) : Element(rhs, ElementType::RECEPTION
     Feature::copy(rhs);
     BehavioralFeature::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Reception::~Reception() {
-
+    mountAndRelease();
 }
 
 Signal* Reception::getSignal() {

@@ -64,10 +64,13 @@ Generalization::Generalization(const Generalization& rhs) : Element(rhs, Element
     Relationship::copy(rhs);
     DirectedRelationship::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Generalization::~Generalization() {
-    
+    mountAndRelease();
 }
 
 Classifier* Generalization::getGeneral() {

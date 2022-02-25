@@ -5,14 +5,16 @@ using namespace UML;
 
 LiteralInt::LiteralInt() : Element(ElementType::LITERAL_INT) {}
 
-LiteralInt::LiteralInt(const LiteralInt& rhs) : Element(rhs, ElementType::LITERAL_INT) {}
+LiteralInt::LiteralInt(const LiteralInt& rhs) : Element(rhs, ElementType::LITERAL_INT) {
+    m_value = rhs.m_value;
+}
 
 int LiteralInt::getValue() {
-    return value;
+    return m_value;
 }
 
 void LiteralInt::setValue(int val) {
-    value = val;
+    m_value = val;
 }
 
 bool LiteralInt::isSubClassOf(ElementType eType) const {

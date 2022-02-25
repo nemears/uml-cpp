@@ -9,7 +9,7 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            double value = 0;
+            double m_value = 0;
             LiteralReal();
         public:
             LiteralReal(const LiteralReal& rhs);

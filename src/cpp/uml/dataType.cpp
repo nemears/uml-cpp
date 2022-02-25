@@ -34,7 +34,7 @@ DataType::DataType() : Element(ElementType::DATA_TYPE) {
 }
 
 DataType::~DataType() {
-    
+    mountAndRelease();
 }
 
 DataType::DataType(const DataType& rhs) : Element(rhs, ElementType::DATA_TYPE) {
@@ -48,6 +48,9 @@ DataType::DataType(const DataType& rhs) : Element(rhs, ElementType::DATA_TYPE) {
     RedefinableElement::copy(rhs);
     Classifier::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 OrderedSet<Property, DataType>& DataType::getOwnedAttributes() {

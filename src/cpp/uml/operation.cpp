@@ -83,10 +83,13 @@ Operation::Operation(const Operation& rhs) : Element(rhs, ElementType::OPERATION
     BehavioralFeature::copy(rhs);
     TemplateableElement::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Operation::~Operation() {
-
+    mountAndRelease();
 }
 
 Type* Operation::getType() {

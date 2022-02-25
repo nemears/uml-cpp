@@ -72,7 +72,7 @@ InterfaceRealization::InterfaceRealization() : Element(ElementType::INTERFACE_RE
 }
 
 InterfaceRealization::~InterfaceRealization() {
-    
+    mountAndRelease();
 }
 
 InterfaceRealization::InterfaceRealization(const InterfaceRealization& rhs) : Element(rhs, ElementType::INTERFACE_REALIZATION) {
@@ -85,6 +85,9 @@ InterfaceRealization::InterfaceRealization(const InterfaceRealization& rhs) : El
     DirectedRelationship::copy(rhs);
     Dependency::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Interface* InterfaceRealization::getContract() {

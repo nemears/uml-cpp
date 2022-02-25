@@ -36,10 +36,13 @@ ProfileApplication::ProfileApplication(const ProfileApplication& rhs) : Element(
     Relationship::copy(rhs);
     DirectedRelationship::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 ProfileApplication::~ProfileApplication() {
-
+    mountAndRelease();
 }
 
 Profile* ProfileApplication::getAppliedProfile() {

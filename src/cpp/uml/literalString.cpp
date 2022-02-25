@@ -5,14 +5,16 @@ using namespace UML;
 
 LiteralString::LiteralString() : Element(ElementType::LITERAL_STRING) {}
 
-LiteralString::LiteralString(const LiteralString& rhs) : Element(rhs, ElementType::LITERAL_STRING) {}
+LiteralString::LiteralString(const LiteralString& rhs) : Element(rhs, ElementType::LITERAL_STRING) {
+    m_value = rhs.m_value;
+}
 
 std::string LiteralString::getValue() {
-    return value;
+    return m_value;
 }
 
 void LiteralString::setValue(std::string val) {
-    value = val;
+    m_value = val;
 }
 
 bool LiteralString::isSubClassOf(ElementType eType) const {

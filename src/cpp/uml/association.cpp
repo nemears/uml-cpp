@@ -106,10 +106,13 @@ Association::Association(const Association& rhs) : Element(rhs, ElementType::ASS
     Classifier::copy(rhs);
     Relationship::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Association::~Association() {
-    
+    mountAndRelease();
 }
 
 OrderedSet<Property, Association>& Association::getMemberEnds() {

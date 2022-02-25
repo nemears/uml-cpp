@@ -47,6 +47,13 @@ InstanceValue::InstanceValue(const InstanceValue& rhs) : Element(rhs, ElementTyp
     ParameterableElement::copy(rhs);
     PackageableElement::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
+}
+
+InstanceValue::~InstanceValue() {
+    mountAndRelease();
 }
 
 InstanceSpecification*  InstanceValue::getInstance() {

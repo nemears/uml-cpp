@@ -9,7 +9,8 @@ LiteralUnlimitedNatural::LiteralUnlimitedNatural() : Element(ElementType::LITERA
 }
 
 LiteralUnlimitedNatural::LiteralUnlimitedNatural(const LiteralUnlimitedNatural& rhs) : Element(rhs, ElementType::LITERAL_UNLIMITED_NATURAL) {
-    /** TODO: plz **/
+    m_val = rhs.m_val;
+    m_infinite = rhs.m_infinite;
 }
 
 bool LiteralUnlimitedNatural::isInfinite() {

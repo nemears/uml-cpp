@@ -32,10 +32,13 @@ ConnectorEnd::ConnectorEnd(const ConnectorEnd& rhs) : Element(rhs, ElementType::
     Element::copy(rhs);
     MultiplicityElement::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 ConnectorEnd::~ConnectorEnd() {
-
+    mountAndRelease();
 }
 
 ConnectableElement* ConnectorEnd::getRole() {

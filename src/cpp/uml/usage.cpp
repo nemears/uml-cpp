@@ -87,10 +87,13 @@ Usage::Usage(const Usage& rhs) : Element(rhs, ElementType::USAGE) {
     ParameterableElement::copy(rhs);
     PackageableElement::copy(rhs);
     Dependency::copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Usage::~Usage() {
-
+    mountAndRelease();
 }
 
 bool Usage::isSubClassOf(ElementType eType) const {

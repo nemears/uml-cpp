@@ -225,3 +225,10 @@ TEST_F(UmlManagerTest, basicEraseFunctionalityTest) {
     ASSERT_TRUE(package.getOwnedElements().empty());
     ASSERT_FALSE(m.loaded(childID));
 }
+
+TEST_F(UmlManagerTest, releaseCopyTest) {
+    UmlManager m;
+    m.mount(".");
+    Package p = m.createVal<Package>();
+    m.release(p);
+}

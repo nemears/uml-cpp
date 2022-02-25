@@ -32,10 +32,13 @@ Signal::Signal(const Signal& rhs) : Element(rhs, ElementType::SIGNAL) {
     RedefinableElement::copy(rhs);
     Classifier::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Signal::~Signal() {
-
+    mountAndRelease();
 }
 
 OrderedSet<Property, Signal>& Signal::getOwnedAttributes() {

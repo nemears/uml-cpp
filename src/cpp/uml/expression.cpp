@@ -26,10 +26,13 @@ Expression::Expression(const Expression& rhs) : Element(rhs, ElementType::EXPRES
     ParameterableElement::copy(rhs);
     PackageableElement::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Expression::~Expression() {
-    
+    mountAndRelease();
 }
 
 OrderedSet<ValueSpecification, Expression>& Expression::getOperands() {

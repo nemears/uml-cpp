@@ -67,10 +67,13 @@ InstanceSpecification::InstanceSpecification(const InstanceSpecification& rhs) :
     DeploymentTarget::copy(rhs);
     DeployedArtifact::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 InstanceSpecification::~InstanceSpecification() {
-    
+    mountAndRelease();
 }
 
 Set<Classifier, InstanceSpecification>& InstanceSpecification::getClassifiers() {

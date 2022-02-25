@@ -31,7 +31,7 @@ Profile::Profile(const Profile& rhs) : Element(rhs, ElementType::PROFILE) {
 }
 
 Profile::~Profile() {
-
+    mountAndRelease();
 }
 
 Set<Stereotype, Profile>& Profile::getOwnedStereotypes() {

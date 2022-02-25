@@ -14,6 +14,9 @@ Model::Model(const Model& rhs) : Element(rhs, ElementType::MODEL) {
     PackageableElement::copy(rhs);
     TemplateableElement::copy(rhs);
     Package::copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 std::string Model::getViewpoint() const {

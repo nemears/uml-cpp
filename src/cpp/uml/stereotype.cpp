@@ -35,10 +35,13 @@ Stereotype::Stereotype(const Stereotype& rhs) : Element(rhs, ElementType::STEREO
     BehavioredClassifier::copy(rhs);
     Classifier::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Stereotype::~Stereotype() {
-
+    mountAndRelease();
 }
 
 Profile* Stereotype::getProfile() {

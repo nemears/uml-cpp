@@ -146,10 +146,13 @@ Property::Property(const Property& rhs) : Element(rhs, ElementType::PROPERTY) {
     Feature::copy(rhs);
     DeploymentTarget::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Property::~Property() {
-
+    mountAndRelease();
 }
 
 AggregationKind Property::getAggregation() {

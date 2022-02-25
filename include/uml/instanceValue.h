@@ -23,6 +23,7 @@ namespace UML {
             InstanceValue();
         public:
             InstanceValue(const InstanceValue& rhs);
+            virtual ~InstanceValue();
             InstanceSpecification* getInstance();
             InstanceSpecification& getInstanceRef();
             ID getInstanceID();

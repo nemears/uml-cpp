@@ -32,10 +32,13 @@ OpaqueBehavior::OpaqueBehavior(const OpaqueBehavior& rhs) : Element(rhs, Element
     Class::copy(rhs);
     Behavior::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 OpaqueBehavior::~OpaqueBehavior() {
-    
+    mountAndRelease();
 }
 
 OrderedSet<LiteralString, OpaqueBehavior>& OpaqueBehavior::getBodies() {

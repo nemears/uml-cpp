@@ -29,10 +29,13 @@ Parameter::Parameter(const Parameter& rhs) : Element(rhs, ElementType::PARAMETER
     TypedElement::copy(rhs);
     MultiplicityElement::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Parameter::~Parameter() {
-
+    mountAndRelease();
 }
 
 Operation* Parameter::getOperation() {

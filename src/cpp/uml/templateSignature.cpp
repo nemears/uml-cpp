@@ -61,10 +61,13 @@ TemplateSignature::TemplateSignature(const TemplateSignature& rhs) : Element(rhs
     init();
     Element::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 TemplateSignature::~TemplateSignature() {
-
+    mountAndRelease();
 }
 
 TemplateableElement* TemplateSignature::getTemplate() {

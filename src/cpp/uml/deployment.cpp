@@ -36,10 +36,13 @@ Deployment::Deployment(const Deployment& rhs) : Element(ElementType::DEPLOYMENT)
     PackageableElement::copy(rhs);
     Dependency::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Deployment::~Deployment() {
-
+    mountAndRelease();
 }
 
 Set<DeployedArtifact, Deployment>& Deployment::getDeployedArtifacts() {

@@ -48,10 +48,13 @@ PackageMerge::PackageMerge(const PackageMerge& rhs) : Element(rhs, ElementType::
     Relationship::init();
     DirectedRelationship::init();
     init();
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 PackageMerge::~PackageMerge() {
-    
+    mountAndRelease();
 }
 
 Package* PackageMerge::getReceivingPackage() {

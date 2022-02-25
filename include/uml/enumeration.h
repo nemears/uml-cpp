@@ -20,6 +20,7 @@ namespace UML {
             Enumeration();
         public:
             Enumeration(const Enumeration& enumeration);
+            virtual ~Enumeration();
             OrderedSet<EnumerationLiteral, Enumeration>& getOwnedLiterals();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

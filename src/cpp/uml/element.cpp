@@ -96,6 +96,7 @@ void Element::mountAndRelease() {
     if (!m_copiedElementFlag && !m_createVal) {
         m_manager->mountEl(*this);
         m_manager->releaseNode(*this);
+        m_manager->m_graph.erase(m_id);
         m_createVal = true;
     }
 }
@@ -153,6 +154,8 @@ Element::~Element() {
                 m_node->m_copies.erase(this);
             }
         }
+    } else if (!m_createVal) {
+        m_manager->m_graph.erase(m_id);
     }
 }
 
@@ -163,7 +166,9 @@ Element::Element(const Element& rhs, ElementType elementType) : Element(elementT
     m_node = rhs.m_node;
     if (rhs.m_createVal) {
         // we are being created from createVal<>(), replace rhs in graph with this
-        m_manager->m_graph[m_id].m_managerElementMemory = this;
+        if (&rhs == m_node->m_managerElementMemory) {
+            m_manager->m_graph[m_id].m_managerElementMemory = this;
+        }
         m_copiedElementFlag = false;
     } else {
         m_manager->m_graph[m_id].m_copies.insert(this);

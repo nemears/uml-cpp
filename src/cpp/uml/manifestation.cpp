@@ -32,10 +32,13 @@ Manifestation::Manifestation(const Manifestation& rhs) : Element(rhs, ElementTyp
     PackageableElement::copy(rhs);
     Dependency::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Manifestation::~Manifestation() {
-
+    mountAndRelease();
 }
 
 PackageableElement* Manifestation::getUtilizedElement() {

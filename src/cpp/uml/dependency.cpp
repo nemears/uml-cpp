@@ -60,10 +60,13 @@ Dependency::Dependency(const Dependency& rhs) : Element(rhs, ElementType::DEPEND
     ParameterableElement::copy(rhs);
     PackageableElement::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Dependency::~Dependency() {
-
+    mountAndRelease();
 }
 
 Set<NamedElement, Dependency>& Dependency::getClient() {

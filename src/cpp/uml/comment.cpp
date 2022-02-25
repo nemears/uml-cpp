@@ -36,7 +36,16 @@ Comment::Comment() : Element(ElementType::COMMENT) {
 }
 
 Comment::Comment(const Comment& rhs) : Element(rhs, ElementType::COMMENT) {
+    init();
     Element::copy(rhs);
+    copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
+}
+
+Comment::~Comment() {
+    mountAndRelease();
 }
 
 std::string Comment::getBody() {

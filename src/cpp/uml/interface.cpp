@@ -39,7 +39,7 @@ Interface::Interface() : Element(ElementType::INTERFACE) {
 }
 
 Interface::~Interface() {
-
+    mountAndRelease();
 }
 
 Interface::Interface(const Interface& rhs) : Element(rhs, ElementType::INTERFACE) {
@@ -53,6 +53,9 @@ Interface::Interface(const Interface& rhs) : Element(rhs, ElementType::INTERFACE
     RedefinableElement::copy(rhs);
     Classifier::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 OrderedSet<Property, Interface>& Interface::getOwnedAttributes() {

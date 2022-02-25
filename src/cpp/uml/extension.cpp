@@ -34,10 +34,13 @@ Extension::Extension(const Extension& rhs) : Element(rhs, ElementType::EXTENSION
     Relationship::copy(rhs);
     Association::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 Extension::~Extension() {
-
+    mountAndRelease();
 }
 
 void Extension::setMetaClass(ElementType metaClass) {

@@ -207,19 +207,25 @@ TEST_F(SetTest, addToSetTwice) {
 }
 
 class TestElement : public Element {
+
+    friend class UmlManager;
+
     private:
         Set<TestElement, TestElement> m_others = Set<TestElement, TestElement>(this);
     public:
         TestElement() : Element(ElementType::ELEMENT) {
             m_others.opposite(&TestElement::getOthers);
         };
+        virtual ~TestElement() {
+            mountAndRelease();
+        };
         Set<TestElement, TestElement>& getOthers() { return m_others; };
 };
 
 TEST_F(SetTest, oppositeTest) {
     UmlManager m;
-    TestElement t1;
-    TestElement t2;
+    TestElement& t1 = m.create<TestElement>();
+    TestElement& t2 = m.create<TestElement>();
     t1.getOthers().add(t2);
     ASSERT_EQ(t2.getOthers().size(), 1);
     ASSERT_TRUE(t2.getOthers().contains(t1.getID()));

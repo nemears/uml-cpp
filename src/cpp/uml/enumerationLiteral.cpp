@@ -29,6 +29,13 @@ EnumerationLiteral::EnumerationLiteral(const EnumerationLiteral& rhs) : Element(
     PackageableElement::copy(rhs);
     InstanceSpecification::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
+}
+
+EnumerationLiteral::~EnumerationLiteral() {
+    mountAndRelease();
 }
 
 Enumeration* EnumerationLiteral::getEnumeration() {

@@ -31,10 +31,13 @@ ExtensionEnd::ExtensionEnd(const ExtensionEnd& rhs) : Element(rhs, ElementType::
     Feature::copy(rhs);
     Property::copy(rhs);
     copy(rhs);
+    if (!m_copiedElementFlag) {
+        delete &rhs;
+    }
 }
 
 ExtensionEnd::~ExtensionEnd() {
-
+    mountAndRelease();
 }
 
 Stereotype* ExtensionEnd::getType() {

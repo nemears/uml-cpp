@@ -55,11 +55,9 @@ namespace UML{
             void referenceErased(ID id) override;
             Set<Namespace, NamedElement>& getNamespaceSingleton();
             void init();
-            void copy(const NamedElement& rhs);
             NamedElement();
         public:
             virtual ~NamedElement();
-            // NamedElement(const NamedElement& el);
             virtual std::string getName();
             virtual void setName(const std::string &name);
             std::string getQualifiedName();

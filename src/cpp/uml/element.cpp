@@ -4,7 +4,6 @@
 // #include "uml/comment.h"
 // #include "uml/instanceSpecification.h"
 #include "uml/singleton.h"
-// #include "uml/uml-stable.h"
 #include "uml/setReferenceFunctor.h"
 
 namespace UML {
@@ -112,13 +111,6 @@ Set<Element, Element>& Element::getOwnerSingleton() {
     return *m_owner;
 }
 
-// void Element::copy(const Element& rhs) {
-//     *m_owner = *rhs.m_owner;
-//     *m_ownedElements = *rhs.m_ownedElements;
-//     // *m_ownedComments = *rhs.m_ownedComments;
-//     // *m_appliedStereotype = *rhs.m_appliedStereotype;
-// }
-
 Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_manager = 0;
     m_node = 0;
@@ -149,32 +141,7 @@ Element::~Element() {
     // delete m_ownedComments;
     delete m_owner;
     delete m_ownedElements;
-    // if (m_copiedElementFlag) {
-    //     if (m_manager) {
-    //         if (m_node->m_copies.count(this)) {
-    //             m_node->m_copies.erase(this);
-    //         }
-    //     }
-    // } else if (!m_createVal) {
-    //     m_manager->m_graph.erase(m_id);
-    // }
 }
-
-// Element::Element(const Element& rhs, ElementType elementType) : Element(elementType) {
-//     m_copiedElementFlag = true;
-//     m_id = rhs.m_id;
-//     m_manager = rhs.m_manager;
-//     m_node = rhs.m_node;
-//     if (rhs.m_createVal) {
-//         // we are being created from createVal<>(), replace rhs in graph with this
-//         if (&rhs == m_node->m_managerElementMemory) {
-//             m_manager->m_graph[m_id].m_managerElementMemory = this;
-//         }
-//         m_copiedElementFlag = false;
-//     } else {
-//         m_manager->m_graph[m_id].m_copies.insert(this);
-//     }
-// }
 
 void Element::setID(std::string id) {
     if (UML::isValidID(id)) {
@@ -189,16 +156,6 @@ void Element::setID(ID id) {
         m_manager->reindex(m_id, id);
     }
     m_id = id;
-    // if (m_manager) {
-    //     // for (auto& copy : m_node->m_copies) {
-    //     //     if (copy != this) {
-    //     //         copy->m_id = id;
-    //     //     }
-    //     // }
-    //     if (m_node->m_managerElementMemory != this) {
-    //         m_node->m_managerElementMemory->m_id = id;
-    //     }
-    // }
 }
 
 ElementType Element::getElementType() const {
@@ -503,22 +460,6 @@ std::string Element::getElementTypeString() const {
 ID Element::getID() const {
     return m_id;
 }
-
-// Element* Element::getOwner() {
-//     return m_owner->get();
-// }
-
-// Element& Element::getOwnerRef() {
-//     return m_owner->getRef();
-// }
-
-// ID Element::getOwnerID() const {
-//     return m_owner->id();
-// }
-
-// bool Element::hasOwner() const {
-//     return m_owner->has();
-// }
 
 ElementPtr Element::getOwner() {
     return ElementPtr(m_owner->get());

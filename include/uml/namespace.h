@@ -18,11 +18,9 @@ namespace UML{
             void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
-            void copy(const Namespace& rhs);
             Namespace();
         public:
             virtual ~Namespace();
-            // Namespace(const Namespace& nmspc);
             void setName(const std::string& name) override;
             Set<NamedElement, Namespace>& getMembers();
             Set<NamedElement, Namespace>& getOwnedMembers();

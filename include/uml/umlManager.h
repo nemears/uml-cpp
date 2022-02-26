@@ -45,16 +45,6 @@ namespace UML {
             UnknownID_Exception(ID id) : m_msg("unknown ID given when trying to get an element from the manager, ID: "  + id.string()) {};
     };
 
-    // template <class T = Element>
-    // class CreateValue : public T {
-
-    //     friend class UmlManager;
-
-    //     CreateValue() : Element(T::elementType()) {
-    //         Element::m_createVal = true;
-    //     };
-    // };
-
     /**
      * UmlManager is the object that handles all of the instantiation and deletion of UML objects
      * from a model. It follows object pool semantics to be able to hold information about large
@@ -161,14 +151,6 @@ namespace UML {
             virtual Element& get(ID id);
             size_t count(ID id);
             virtual bool loaded(ID id);
-            // template <class T = Element> CreateValue<T>& createVal() {
-            //     CreateValue<T>* ret = new CreateValue<T>;
-            //     ret->m_manager = this;
-            //     m_elements.insert(ret->getID());
-            //     createNode(ret);
-            //     ret->m_node = &m_graph[ret->getID()];
-            //     return *ret;
-            // };
             template <class T = Element>
             UmlPtr<T> create() {
                 UmlPtr<T> ret(new T);

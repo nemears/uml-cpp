@@ -1,5 +1,4 @@
 #include "uml/namespace.h"
-#include "uml/uml-stable.h"
 #include "uml/setReferenceFunctor.h"
 
 using namespace UML;
@@ -36,11 +35,6 @@ void Namespace::init() {
     m_ownedMembers.m_readOnly = true;
 }
 
-void Namespace::copy(const Namespace& rhs) {
-    m_members = rhs.m_members;
-    m_ownedMembers = rhs.m_ownedMembers;
-}
-
 Namespace::Namespace() : Element(ElementType::NAMESPACE) {
     init();
 }
@@ -48,10 +42,6 @@ Namespace::Namespace() : Element(ElementType::NAMESPACE) {
 Namespace::~Namespace() {
     
 }
-
-// Namespace::Namespace(const Namespace& nmspc) : Element(ElementType::NAMESPACE) {
-//     // abstract
-// }
 
 void Namespace::setName(const std::string& name) {
     NamedElement::setName(name);

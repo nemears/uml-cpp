@@ -45,15 +45,15 @@ namespace UML {
             UnknownID_Exception(ID id) : m_msg("unknown ID given when trying to get an element from the manager, ID: "  + id.string()) {};
     };
 
-    template <class T = Element>
-    class CreateValue : public T {
+    // template <class T = Element>
+    // class CreateValue : public T {
 
-        friend class UmlManager;
+    //     friend class UmlManager;
 
-        CreateValue() : Element(T::elementType()) {
-            Element::m_createVal = true;
-        };
-    };
+    //     CreateValue() : Element(T::elementType()) {
+    //         Element::m_createVal = true;
+    //     };
+    // };
 
     /**
      * UmlManager is the object that handles all of the instantiation and deletion of UML objects
@@ -161,21 +161,22 @@ namespace UML {
             virtual Element& get(ID id);
             size_t count(ID id);
             virtual bool loaded(ID id);
-            template <class T = Element> CreateValue<T>& createVal() {
-                CreateValue<T>* ret = new CreateValue<T>;
+            // template <class T = Element> CreateValue<T>& createVal() {
+            //     CreateValue<T>* ret = new CreateValue<T>;
+            //     ret->m_manager = this;
+            //     m_elements.insert(ret->getID());
+            //     createNode(ret);
+            //     ret->m_node = &m_graph[ret->getID()];
+            //     return *ret;
+            // };
+            template <class T = Element>
+            UmlPtr<T> create() {
+                UmlPtr<T> ret(new T);
                 ret->m_manager = this;
                 m_elements.insert(ret->getID());
-                createNode(ret);
+                createNode(&(*ret));
                 ret->m_node = &m_graph[ret->getID()];
-                return *ret;
-            };
-            template <class T = Element> T& create() {
-                T* ret = new T;
-                ret->m_manager = this;
-                m_elements.insert(ret->getID());
-                createNode(ret);
-                ret->m_node = &m_graph[ret->getID()];
-                return *ret;
+                return ret;
             };
             // Element& create(ElementType eType);
             void reindex(ID oldID, ID newID);
@@ -198,7 +199,8 @@ namespace UML {
              * @param el, the element being released from memory
              **/
             virtual void release(Element& el);
-            template <class ... Elements> void release(Element& el, Elements&... els) {
+            template <class ... Elements> 
+            void release(Element& el, Elements&... els) {
                 release(el);
                 release(els...);
             };

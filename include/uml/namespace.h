@@ -22,7 +22,7 @@ namespace UML{
             Namespace();
         public:
             virtual ~Namespace();
-            Namespace(const Namespace& nmspc);
+            // Namespace(const Namespace& nmspc);
             void setName(const std::string& name) override;
             Set<NamedElement, Namespace>& getMembers();
             Set<NamedElement, Namespace>& getOwnedMembers();

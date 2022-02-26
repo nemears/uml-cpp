@@ -29,7 +29,7 @@ namespace UML {
             Package();
         public:
             virtual ~Package();
-            Package(const Package& rhs);
+            // Package(const Package& rhs);
             Set<PackageableElement, Package>& getPackagedElements();
             // Set<PackageMerge, Package>& getPackageMerge();
             // Set<ProfileApplication, Package>& getProfileApplications();

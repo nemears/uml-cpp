@@ -59,7 +59,7 @@ namespace UML{
             NamedElement();
         public:
             virtual ~NamedElement();
-            NamedElement(const NamedElement& el);
+            // NamedElement(const NamedElement& el);
             virtual std::string getName();
             virtual void setName(const std::string &name);
             std::string getQualifiedName();

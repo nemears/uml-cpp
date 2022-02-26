@@ -49,9 +49,9 @@ Namespace::~Namespace() {
     
 }
 
-Namespace::Namespace(const Namespace& nmspc) : Element(ElementType::NAMESPACE) {
-    // abstract
-}
+// Namespace::Namespace(const Namespace& nmspc) : Element(ElementType::NAMESPACE) {
+//     // abstract
+// }
 
 void Namespace::setName(const std::string& name) {
     NamedElement::setName(name);

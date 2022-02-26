@@ -65,9 +65,9 @@ NamedElement::~NamedElement() {
 
 }
 
-NamedElement::NamedElement(const NamedElement& el) : Element(ElementType::NAMED_ELEMENT) {
-    // abstract
-}
+// NamedElement::NamedElement(const NamedElement& el) : Element(ElementType::NAMED_ELEMENT) {
+//     // abstract
+// }
 
 void NamedElement::setName(const std::string &name) {
     for (auto& pair : m_node->m_references) {
@@ -79,7 +79,7 @@ void NamedElement::setName(const std::string &name) {
         }
     }
     m_name = name;
-    updateCopiesScalar(name, &NamedElement::m_name);
+    // updateCopiesScalar(name, &NamedElement::m_name);
 }
 
 std::string NamedElement::getName() {
@@ -92,7 +92,7 @@ std::string NamedElement::getQualifiedName() {
 
 void NamedElement::updateQualifiedName(std::string absoluteNamespace) {
     m_absoluteNamespace = absoluteNamespace;
-    updateCopiesScalar(absoluteNamespace, &NamedElement::m_absoluteNamespace);
+    // updateCopiesScalar(absoluteNamespace, &NamedElement::m_absoluteNamespace);
 }
 
 NamespacePtr NamedElement::getNamespace() {

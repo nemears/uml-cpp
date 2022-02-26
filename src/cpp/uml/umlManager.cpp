@@ -12,11 +12,11 @@ using namespace UML;
 void UmlManager::clear() {
     for (const ID id : m_elements) {
         Element* managerElement = m_graph[id].m_managerElementMemory;
-        if (managerElement) {
+        // if (managerElement) {
             // managerElement->mountAndRelease();
-            managerElement->m_createVal = true;
+            // managerElement->m_createVal = true;
             delete managerElement;
-        }
+        // }
     }
     m_graph.clear();
     m_elements.clear();
@@ -217,10 +217,10 @@ void UmlManager::reindex(ID oldID, ID newID) {
         // during a UmlManager::open() or UmlManager::aquire(id) invoke
         
         ManagerNode* m_node = &m_graph[newID];
-        if (m_node->m_managerElementMemory) {
-            m_node->m_managerElementMemory->m_createVal = true;
+        // if (m_node->m_managerElementMemory) {
+            // m_node->m_managerElementMemory->m_createVal = true;
             delete m_node->m_managerElementMemory;
-        }
+        // }
         m_node->m_managerElementMemory = m_graph[oldID].m_managerElementMemory;
         m_node->m_managerElementMemory->m_node = m_node;
         for (auto& countPair : m_node->m_referenceCount) {
@@ -251,9 +251,9 @@ void UmlManager::reindex(ID oldID, ID newID) {
             ref.second->m_managerElementMemory->referenceReindexed(oldID, newID);
         }
         newDisc->m_managerElementMemory->m_node = newDisc;
-        for (auto& copy : newDisc->m_copies) {
-            copy->m_node = newDisc;
-        }
+        // for (auto& copy : newDisc->m_copies) {
+        //     copy->m_node = newDisc;
+        // }
         m_graph.erase(oldID);
         if (!m_mountBase.empty()) {
             std::filesystem::remove(m_mountBase / "mount" / (oldID.string() + ".yml"));
@@ -351,12 +351,12 @@ void UmlManager::releaseNode(Element& el) {
             e.second->m_managerElementMemory->referencingReleased(id);
         }
     }
-    for (auto& copy : node->m_copies) {
-        // TODO show warning, bad practice to release without destroying all copies
-        // effecctively dereferences the copies from the manager
-        copy->m_node = 0;
-        copy->m_manager = 0;  
-    }
+    // for (auto& copy : node->m_copies) {
+    //     // TODO show warning, bad practice to release without destroying all copies
+    //     // effecctively dereferences the copies from the manager
+    //     copy->m_node = 0;
+    //     copy->m_manager = 0;  
+    // }
 }
 
 void UmlManager::release(Element& el) {
@@ -364,10 +364,10 @@ void UmlManager::release(Element& el) {
         ID elID = el.getID();
         mountEl(el);
         releaseNode(el);
-        if (!el.m_copiedElementFlag && !el.m_createVal) {
-            el.m_createVal = true;
+        // if (!el.m_copiedElementFlag && !el.m_createVal) {
+        //     el.m_createVal = true;
             delete &el;
-        }
+        // }
         m_graph.erase(elID);
     } else {
         throw ManagerNotMountedException();
@@ -381,10 +381,10 @@ void UmlManager::eraseNode(ManagerNode* node, ID id) {
         }
         node->m_references[node->m_referenceOrder[i]]->m_managerElementMemory->referenceErased(id);
     }
-    if (node->m_managerElementMemory) {
-        node->m_managerElementMemory->m_createVal = true;
+    // if (node->m_managerElementMemory) {
+    //     node->m_managerElementMemory->m_createVal = true;
         delete node->m_managerElementMemory;
-    }
+    // }
     // if (node->m_copies.size() > 0) {
     //     // TODO warning
     //     for (auto& copy : node->m_copies) {

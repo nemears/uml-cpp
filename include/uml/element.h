@@ -130,7 +130,7 @@ namespace UML {
         std::unordered_map<ID, ManagerNode*> m_references;
         std::unordered_map<ID, size_t> m_referenceCount;
         std::vector<ID> m_referenceOrder;
-        std::unordered_set<Element*> m_copies;
+        // std::unordered_set<Element*> m_copies;
     };
 
     // Helper function to assess possible ids
@@ -242,8 +242,8 @@ namespace UML {
 
         private:
         protected:
-            bool m_copiedElementFlag = false;
-            bool m_createVal = false;
+            // bool m_copiedElementFlag = false;
+            // bool m_createVal = false;
             UmlManager* m_manager;
             ManagerNode* m_node;
             ID m_id;
@@ -270,21 +270,23 @@ namespace UML {
             virtual void restoreReference(Element* el);
             virtual void referenceErased(ID id);
             void mountAndRelease();
-            template <class T = Element, typename U> 
-            void updateCopiesScalar(U newVal, U T::*signature) {
-                if (m_node->m_managerElementMemory != this) {
-                    (dynamic_cast<T*>(m_node->m_managerElementMemory)->*signature) = newVal;
-                }
-                for (auto& copy : m_node->m_copies) {
-                    if (copy != this) {
-                        (dynamic_cast<T*>(copy)->*signature) = newVal;
-                    }
-                }
-            };
-            void copy(const Element& rhs);
+            // template <class T = Element, typename U> 
+            // void updateCopiesScalar(U newVal, U T::*signature) {
+            //     if (m_node->m_managerElementMemory != this) {
+            //         (dynamic_cast<T*>(m_node->m_managerElementMemory)->*signature) = newVal;
+            //     }
+            //     for (auto& copy : m_node->m_copies) {
+            //         if (copy != this) {
+            //             (dynamic_cast<T*>(copy)->*signature) = newVal;
+            //         }
+            //     }
+            // };
+            // void copy(const Element& rhs);
             Element(ElementType elementType);
         public:
-            Element(const Element& rhs, ElementType elementType);
+            Element(const Element&) = delete;
+            Element& operator=(const Element&) = delete;
+            // Element(const Element& rhs, ElementType elementType);
             virtual ~Element();
             ID getID() const;
             ElementPtr getOwner();
@@ -318,10 +320,10 @@ namespace UML {
             virtual std::string getElementTypeString() const;
             void release();
 
-            friend bool operator==(const Element& lhs, const Element& rhs) {
+            inline friend bool operator==(const Element& lhs, const Element& rhs) {
                 return lhs.m_id == rhs.m_id;
             };
-            friend bool operator!=(const Element& lhs, const Element& rhs) {
+            inline friend bool operator!=(const Element& lhs, const Element& rhs) {
                 return lhs.m_id != rhs.m_id;
             };
     };

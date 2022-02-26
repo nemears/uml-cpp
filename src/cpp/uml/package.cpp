@@ -54,19 +54,19 @@ Package::~Package() {
     mountAndRelease();
 }
 
-Package::Package(const Package& rhs) : Element(rhs, ElementType::PACKAGE) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    // ParameterableElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    Namespace::copy(rhs);
-    // TemplateableElement::copy(rhs);
-    copy(rhs);
-    if (!m_copiedElementFlag) {
-        delete &rhs;
-    }
-}
+// Package::Package(const Package& rhs) : Element(rhs, ElementType::PACKAGE) {
+//     init();
+//     Element::copy(rhs);
+//     NamedElement::copy(rhs);
+//     // ParameterableElement::copy(rhs);
+//     PackageableElement::copy(rhs);
+//     Namespace::copy(rhs);
+//     // TemplateableElement::copy(rhs);
+//     copy(rhs);
+//     if (!m_copiedElementFlag) {
+//         delete &rhs;
+//     }
+// }
 
 Set<PackageableElement, Package>& Package::getPackagedElements() {
     return m_packagedElements;

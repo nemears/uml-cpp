@@ -8,10 +8,10 @@ using namespace UML;
 
 class ElementTest : public ::testing::Test {};
 
-TEST_F(ElementTest, getOwnerTest) {
+TEST_F(ElementTest, UmlPtrTest) {
     UmlManager m;
-    Package& pckg = m.create<Package>();
-    Package& child = m.create<Package>();
+    Package& pckg = *m.create<Package>();
+    Package& child = *m.create<Package>();
     pckg.getPackagedElements().add(child);
     ASSERT_FALSE(pckg.getOwningPackage().has());
     ASSERT_FALSE(pckg.getOwningPackage());
@@ -22,6 +22,17 @@ TEST_F(ElementTest, getOwnerTest) {
     ASSERT_EQ(child.getOwningPackage(), &pckg);
     ASSERT_EQ(*(child.getOwningPackage()), pckg);
     ASSERT_EQ(child.getOwningPackage()->getID(), pckg.getID());
+}
+
+TEST_F(ElementTest, UmlPtrComparisonTest) {
+    UmlManager m;
+    PackagePtr pckg = m.create<Package>();
+    PackagePtr child = m.create<Package>();
+    pckg->getPackagedElements().add(*child);
+    ASSERT_FALSE(pckg->getOwningPackage());
+    ASSERT_TRUE(!pckg->getOwningPackage());
+    ASSERT_EQ(child->getOwningPackage(), pckg);
+    ASSERT_EQ(*(child->getOwningPackage()), *pckg);
 }
 
 // TEST_F(ElementTest, OverrideID_Test) {

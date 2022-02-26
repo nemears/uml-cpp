@@ -26,7 +26,7 @@ namespace UML {
             void copy(const PackageableElement& rhs);
             PackageableElement();
         public:
-            PackageableElement(const PackageableElement& el);
+            // PackageableElement(const PackageableElement& el);
             virtual ~PackageableElement() {};
             PackagePtr getOwningPackage();
             void setOwningPackage(Package& package);

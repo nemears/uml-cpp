@@ -49,9 +49,9 @@ PackageableElement::PackageableElement() : Element(ElementType::PACKAGEABLE_ELEM
     init();
 }
 
-PackageableElement::PackageableElement(const PackageableElement& el) : Element(ElementType::PACKAGEABLE_ELEMENT) {
-    // abstract
-}
+// PackageableElement::PackageableElement(const PackageableElement& el) : Element(ElementType::PACKAGEABLE_ELEMENT) {
+//     // abstract
+// }
 
 PackagePtr PackageableElement::getOwningPackage() {
     return PackagePtr(m_owningPackage.get());

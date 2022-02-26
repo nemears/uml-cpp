@@ -1,7 +1,6 @@
 #include "uml/packageableElement.h"
 #include "uml/umlPtr.h"
 #include "uml/package.h"
-// #include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -40,34 +39,13 @@ void PackageableElement::init() {
     m_owningPackage.m_signature = &PackageableElement::getOwningPackageSingleton;
 }
 
-void PackageableElement::copy(const PackageableElement& rhs) {
-    m_owningPackage = rhs.m_owningPackage;
-    m_owningPackage.m_el = this;
-}
-
 PackageableElement::PackageableElement() : Element(ElementType::PACKAGEABLE_ELEMENT) {
     init();
 }
 
-// PackageableElement::PackageableElement(const PackageableElement& el) : Element(ElementType::PACKAGEABLE_ELEMENT) {
-//     // abstract
-// }
-
 PackagePtr PackageableElement::getOwningPackage() {
     return PackagePtr(m_owningPackage.get());
 }
-
-// Package& PackageableElement::getOwningPackageRef() {
-//     return m_owningPackage.getRef();
-// }
-
-// ID PackageableElement::getOwningPackageID() const {
-//     return m_owningPackage.id();
-// }
-
-// bool PackageableElement::hasOwningPackage() const {
-//     return m_owningPackage.has();
-// }
 
 void PackageableElement::setOwningPackage(Package* package) {
     m_owningPackage.set(package);

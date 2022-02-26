@@ -25,11 +25,9 @@ namespace UML {
             void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
-            void copy(const Package& rhs);
             Package();
         public:
             virtual ~Package();
-            // Package(const Package& rhs);
             Set<PackageableElement, Package>& getPackagedElements();
             // Set<PackageMerge, Package>& getPackageMerge();
             // Set<ProfileApplication, Package>& getProfileApplications();

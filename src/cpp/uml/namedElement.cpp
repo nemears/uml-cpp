@@ -1,7 +1,6 @@
 #include "uml/namedElement.h"
 #include "uml/umlPtr.h"
 #include "uml/namespace.h"
-// #include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -48,15 +47,6 @@ void NamedElement::init() {
     // m_clientDependencies.m_signature = &NamedElement::getClientDependencies;
 }
 
-void NamedElement::copy(const NamedElement& rhs) {
-    m_name = rhs.m_name;
-    m_visibility = rhs.m_visibility;
-    m_namespace = rhs.m_namespace;
-    m_namespace.m_el = this;
-    // m_clientDependencies = rhs.m_clientDependencies;
-    // m_clientDependencies.m_el = this;
-}
-
 NamedElement::NamedElement() : Element(ElementType::NAMED_ELEMENT) {
     init();
 }
@@ -64,10 +54,6 @@ NamedElement::NamedElement() : Element(ElementType::NAMED_ELEMENT) {
 NamedElement::~NamedElement() {
 
 }
-
-// NamedElement::NamedElement(const NamedElement& el) : Element(ElementType::NAMED_ELEMENT) {
-//     // abstract
-// }
 
 void NamedElement::setName(const std::string &name) {
     for (auto& pair : m_node->m_references) {
@@ -79,7 +65,6 @@ void NamedElement::setName(const std::string &name) {
         }
     }
     m_name = name;
-    // updateCopiesScalar(name, &NamedElement::m_name);
 }
 
 std::string NamedElement::getName() {
@@ -92,24 +77,11 @@ std::string NamedElement::getQualifiedName() {
 
 void NamedElement::updateQualifiedName(std::string absoluteNamespace) {
     m_absoluteNamespace = absoluteNamespace;
-    // updateCopiesScalar(absoluteNamespace, &NamedElement::m_absoluteNamespace);
 }
 
 NamespacePtr NamedElement::getNamespace() {
     return NamespacePtr(m_namespace.get());
 }
-
-// Namespace& NamedElement::getNamespaceRef() {
-//     return m_namespace.getRef();
-// }
-
-// ID NamedElement::getNamespaceID() const {
-//     return m_namespace.id();
-// }
-
-// bool NamedElement::hasNamespace() const {
-//     return m_namespace.has();
-// }
 
 // Set<Dependency, NamedElement>& NamedElement::getClientDependencies() {
 //     return m_clientDependencies;
@@ -148,8 +120,6 @@ void NamedElement::setVisibility(VisibilityKind visibility) {
     // //         }
     // //     }
     // // }
-
-    // updateCopiesScalar(visibility, &NamedElement::m_visibility);
 }
 
 bool NamedElement::isSubClassOf(ElementType eType) const {

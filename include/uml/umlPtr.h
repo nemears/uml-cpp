@@ -58,6 +58,22 @@ namespace UML {
                     m_id = el->getID();
                     m_ptr = el;
                     m_manager = el->m_manager;
+                    el->m_node->m_ptrCount++;
+                }
+            };
+            virtual ~UmlPtr() {
+                if (m_id != ID::nullID()) {
+                    if (!m_ptr) {
+                        m_ptr = &m_manager->get<T>(m_id);
+                    }
+                    m_ptr->m_node->m_ptrCount--;
+                    if (m_ptr->m_node->m_ptrCount == 0) {
+                        if (!m_manager->m_lossless || !m_manager->m_mountBase.empty()) {
+                            delete m_ptr;
+                            // mountAndRelease
+                            m_manager->m_graph.erase(m_id);
+                        }
+                    }
                 }
             };
     };

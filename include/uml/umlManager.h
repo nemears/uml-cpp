@@ -92,8 +92,10 @@ namespace UML {
         template <class T, class U> friend class Singleton;
         template <class T, class U> friend class Set;
         template <class T> friend class SetIterator;
+        template <class T> friend class UmlPtr;
 
         protected:
+            bool m_lossless = true;
             std::unordered_set<ID> m_elements;
             std::unordered_map<ID, ManagerNode> m_graph;
             std::filesystem::path m_path;
@@ -153,13 +155,15 @@ namespace UML {
             virtual bool loaded(ID id);
             template <class T = Element>
             UmlPtr<T> create() {
-                UmlPtr<T> ret(new T);
-                ret->m_manager = this;
-                m_elements.insert(ret->getID());
-                createNode(&(*ret));
-                ret->m_node = &m_graph[ret->getID()];
+                T* ptr = new T;
+                ptr->m_manager = this;
+                m_elements.insert(ptr->getID());
+                createNode(ptr);
+                ptr->m_node = &m_graph[ptr->getID()];
+                UmlPtr<T> ret(ptr);
                 return ret;
             };
+            void lossless(bool lossless);
             // Element& create(ElementType eType);
             void reindex(ID oldID, ID newID);
             // Sets up composite directory of model for quick aquire and release

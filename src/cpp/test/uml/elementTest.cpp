@@ -35,6 +35,25 @@ TEST_F(ElementTest, UmlPtrComparisonTest) {
     ASSERT_EQ(*(child->getOwningPackage()), *pckg);
 }
 
+TEST_F(ElementTest, UmlPtrScopeTest) {
+    UmlManager m;
+    m.lossless(false);
+    ID pckgID;
+    {
+        PackagePtr pckg = m.create<Package>();
+        pckgID = pckg->getID();
+        ASSERT_TRUE(m.loaded(pckgID));
+    }
+    ASSERT_FALSE(m.loaded(pckgID));
+    m.lossless(true);
+    {
+        PackagePtr pckg = m.create<Package>();
+        pckgID = pckg->getID();
+        ASSERT_TRUE(m.loaded(pckgID));
+    }
+    ASSERT_TRUE(m.loaded(pckgID));
+}
+
 // TEST_F(ElementTest, OverrideID_Test) {
 //     UmlManager m;
 //     Package& el = m.create<Package>();

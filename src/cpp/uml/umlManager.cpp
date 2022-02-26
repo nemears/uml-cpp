@@ -203,6 +203,10 @@ Element& UmlManager::get(ID id) {
     return get<>(id);
 }
 
+void UmlManager::lossless(bool lossless) {
+    m_lossless = lossless;
+}
+
 void UmlManager::reindex(ID oldID, ID newID) {
     if (m_elements.count(newID)) {
         // Element with this ID already exists, overwrite it with new one

@@ -130,6 +130,7 @@ namespace UML {
         std::unordered_map<ID, ManagerNode*> m_references;
         std::unordered_map<ID, size_t> m_referenceCount;
         std::vector<ID> m_referenceOrder;
+        size_t m_ptrCount = 0;
     };
 
     // Helper function to assess possible ids

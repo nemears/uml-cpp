@@ -1189,7 +1189,7 @@ namespace UML {
                 if (m_root) {
                     innerRemove(id);
                     if (m_oppositeFunctor) {
-                        T& el = m_el->m_manager->get<T>(m_el, id)->template as<T>();
+                        T& el = m_el->m_manager->get(m_el, id)->template as<T>();
                         (*m_oppositeFunctor)(el, 1);
                     }
                     if (m_el) {
@@ -1794,11 +1794,11 @@ namespace UML {
                 if (m_root) {
                     innerRemove(id);
                     if (m_oppositeFunctor) {
-                        T& el = m_el->m_manager->get<T>(m_el, id)->template as<T>();
+                        T& el = m_el->m_manager->get(m_el, id)->template as<T>();
                         (*m_oppositeFunctor)(el, 1);
                     }
                     for (auto& op : m_otherOpposites) {
-                        T& el = m_el->m_manager->get<T>(m_el, id)->template as<T>();
+                        T& el = m_el->m_manager->get(m_el, id)->template as<T>();
                         (*op)(el, 1);
                     }
                     if (m_el) {

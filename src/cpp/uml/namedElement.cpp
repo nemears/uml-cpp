@@ -58,7 +58,7 @@ NamedElement::~NamedElement() {
 void NamedElement::setName(const std::string &name) {
     for (auto& pair : m_node->m_references) {
         if (!pair.second) {
-            m_manager->get<>(pair.first);
+            m_manager->get(pair.first);
         }
         if (pair.second) {  // TODO: don't really like this if statement
             pair.second->m_managerElementMemory->reindexName(m_name, name); 

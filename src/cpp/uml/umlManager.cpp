@@ -1,8 +1,9 @@
 #include "uml/umlManager.h"
 #include "uml/set.h"
 #include <fstream>
-// #include "uml/parsers/parser.h"
-// #include "uml/parsers/emitterMetaData.h"
+#include "uml/parsers/parser.h"
+#include "uml/parsers/emitterMetaData.h"
+#include "uml/umlPtr.h"
 // #include "uml/model.h"
 #include <algorithm>
 
@@ -21,8 +22,7 @@ void UmlManager::createNode(Element* el) {
 }
 
 UmlManager::UmlManager() {
-    m_model = 0;
-    m_root = 0;
+
 }
 
 UmlManager::~UmlManager() {
@@ -200,7 +200,14 @@ bool UmlManager::loaded(ID id) {
 // }
 
 Element& UmlManager::get(ID id) {
-    return get<>(id);
+    if (m_elements.count(id)) {
+        if (!m_graph.count(id)) {
+            aquire(id);
+        }
+        return *m_graph[id].m_managerElementMemory;
+    } else {
+        throw UnknownID_Exception(id);
+    }
 }
 
 void UmlManager::lossless(bool lossless) {
@@ -220,6 +227,10 @@ void UmlManager::reindex(ID oldID, ID newID) {
         m_node->m_managerElementMemory->m_node = m_node;
         for (auto& countPair : m_node->m_referenceCount) {
             countPair.second = 0;
+        }
+        for (auto& ptr : m_graph[oldID].m_ptrs) {
+            static_cast<AbstractUmlPtr*>(ptr)->reindex(newID, m_node->m_managerElementMemory);
+            m_node->m_ptrs.push_back(ptr);
         }
         m_elements.erase(oldID);
         m_graph.erase(oldID);
@@ -265,12 +276,12 @@ void UmlManager::addToMount(Element& el) {
 
 void UmlManager::mountEl(Element& el) {
     if (!m_mountBase.empty()) {
-        // Parsers::EmitterMetaData data = { m_mountBase / std::filesystem::path("mount"),
-        //                                     Parsers::EmitterStrategy::INDIVIDUAL,
-        //                                     el.getID().string() + ".yml",
-        //                                     this };
-        // el.m_node->m_mountedFlag = true;
-        // Parsers::emitToFile(el, data, data.m_path.string(), data.m_fileName);
+        Parsers::EmitterMetaData data = { m_mountBase / std::filesystem::path("mount"),
+                                            Parsers::EmitterStrategy::INDIVIDUAL,
+                                            el.getID().string() + ".yml",
+                                            this };
+        el.m_node->m_mountedFlag = true;
+        Parsers::emitToFile(el, data, data.m_path.string(), data.m_fileName);
     }
 }
 
@@ -282,46 +293,46 @@ void UmlManager::mount(std::string path) {
     }
 }
 
-Element* UmlManager::aquire(ID id) {
+ElementPtr UmlManager::aquire(ID id) {
     if (!m_mountBase.empty()) {
         if (!loaded(id)) {
-            // if (std::filesystem::exists(m_mountBase / "mount" / (id.string() + ".yml"))) {
-            //     // Parsers::ParserMetaData data(this);
-            //     // data.m_path = m_mountBase / "mount" / (id.string() + ".yml");
-            //     // data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-            //     // Element* ret = Parsers::parse(data);
-            //     // if (ret) {
-            //     //     ret->m_node->m_managerElementMemory = ret;
-            //     //     size_t numEls = ret->m_node->m_referenceOrder.size();
-            //     //     for (size_t i = 0; i < numEls; i++) {
-            //     //         ID refID = ret->m_node->m_referenceOrder[i];
-            //     //         ManagerNode* node = ret->m_node->m_references.at(refID);
-            //     //         Element* el = 0;
-            //     //         if (!node && loaded(refID)) {
-            //     //             try {
-            //     //                 el = &get<>(refID); // TODO make this faster somehow this line is a real limiter of speed
-            //     //                 ret->m_node->m_references[refID] = el->m_node;
-            //     //             } catch (std::exception e) {
-            //     //                 // nothing
-            //     //             }
-            //     //         } else if (node && loaded(refID)) {
-            //     //             el =  node->m_managerElementMemory;
-            //     //         }
-            //     //         if (el) {
-            //     //             el->restoreReference(ret);
-            //     //             ret->restoreReference(el);
-            //     //         }
-            //     //     }
-            //     //     ret->restoreReferences();
-            //     // } else {
-            //     //     throw ManagerStateException();
-            //     // }
-            //     // return ret;
-            // } else {
-            //     throw ID_doesNotExistException(id);
-            // }
+            if (std::filesystem::exists(m_mountBase / "mount" / (id.string() + ".yml"))) {
+                Parsers::ParserMetaData data(this);
+                data.m_path = m_mountBase / "mount" / (id.string() + ".yml");
+                data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
+                ElementPtr ret = Parsers::parse(data);
+                if (ret) {
+                    ret->m_node->m_managerElementMemory = &*ret;
+                    size_t numEls = ret->m_node->m_referenceOrder.size();
+                    for (size_t i = 0; i < numEls; i++) {
+                        ID refID = ret->m_node->m_referenceOrder[i];
+                        ManagerNode* node = ret->m_node->m_references.at(refID);
+                        Element* el = 0;
+                        if (!node && loaded(refID)) {
+                            try {
+                                el = &get(refID); // TODO make this faster somehow this line is a real limiter of speed
+                                ret->m_node->m_references[refID] = el->m_node;
+                            } catch (std::exception e) {
+                                // nothing
+                            }
+                        } else if (node && loaded(refID)) {
+                            el =  node->m_managerElementMemory;
+                        }
+                        if (el) {
+                            el->restoreReference(ret.ptr());
+                            ret->restoreReference(el);
+                        }
+                    }
+                    ret->restoreReferences();
+                } else {
+                    throw ManagerStateException();
+                }
+                return ret;
+            } else {
+                throw ID_doesNotExistException(id);
+            }
         } else {
-            return &get<>(id);
+            return &get(id);
         }
     } else {
         throw ManagerNotMountedException();
@@ -385,12 +396,12 @@ void UmlManager::save() {
         // TODO throw error
         return;
     }
-    // Parsers::EmitterMetaData data;
-    // data.m_manager =  this;
-    // data.m_strategy = Parsers::EmitterStrategy::WHOLE;
-    // data.m_path = m_path.parent_path();
-    // data.m_fileName = m_path.filename().string();
-    // Parsers::emit(data);
+    Parsers::EmitterMetaData data;
+    data.m_manager =  this;
+    data.m_strategy = Parsers::EmitterStrategy::WHOLE;
+    data.m_path = m_path.parent_path();
+    data.m_fileName = m_path.filename().string();
+    Parsers::emit(data);
 }
 
 void UmlManager::save(std::string path) {
@@ -404,8 +415,8 @@ void UmlManager::open() {
         return;
     }
     clear();
-    // Parsers::ParserMetaData data(this);
-    // m_root = Parsers::parse(data);
+    Parsers::ParserMetaData data(this);
+    m_root = &*Parsers::parse(data);
     // if (m_root->isSubClassOf(ElementType::MODEL)) {
     //     m_model = dynamic_cast<Model*>(m_root);
     // }
@@ -416,14 +427,14 @@ void UmlManager::open(std::string path) {
     open();
 }
 
-Element* UmlManager::parse(std::string path) {
+ElementPtr UmlManager::parse(std::string path) {
     m_path = path;
-    // Parsers::ParserMetaData data(this);
-    // Element* el = Parsers::parse(data);
-    // if (!getRoot()) {
-    //    setRoot(el);
-    // }
-    // return el;
+    Parsers::ParserMetaData data(this);
+    ElementPtr el = Parsers::parse(data);
+    if (!getRoot()) {
+       setRoot(*el);
+    }
+    return el;
 }
 
 // void UmlManager::setModel(Model* model) {
@@ -446,10 +457,34 @@ void UmlManager::setRoot(Element& el) {
     setRoot(&el);
 }
 
-Element* UmlManager::getRoot() {
+ElementPtr UmlManager::getRoot() {
     return m_root;
 }
 
 void UmlManager::setPath(ID elID, std::string path) {
     m_graph[elID].m_path = path;
+}
+
+Element* UmlManager::get(Element* me, ID theID) {
+    if (!theID.isNull()) {
+        if (me->m_node) {
+            if (me->m_node->m_references.count(theID)) {
+                if (!me->m_node->m_references[theID]) {
+                    if (loaded(theID)) {
+                        me->restoreReference(&get(theID));
+                    } else {
+                        ElementPtr aquired = aquire(theID);
+                        me->m_node->m_references[theID] = aquired->m_node;
+                    }
+                }
+                return me->m_node->m_references[theID]->m_managerElementMemory;
+            } else {
+                throw ManagerStateException();
+            }
+        } else {
+            aquire(theID);
+            return  me->m_node->m_references[theID]->m_managerElementMemory;
+        }
+    }
+    return 0;
 }

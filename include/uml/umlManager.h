@@ -100,34 +100,12 @@ namespace UML {
             std::unordered_map<ID, ManagerNode> m_graph;
             std::filesystem::path m_path;
             std::filesystem::path m_mountBase;
-            Model* m_model;
-            Element* m_root;
+            // Model* m_model;
+            Element* m_root = 0;
             void clear();
             /** Using this get is faster than the get<T>(ID id) method (usually) because it will base it's
              *  search on a particular element, only for internal api use where trying to set and return a ptr**/
-            template <class T = Element> T* get(Element* me, ID theID) {
-                if (!theID.isNull()) {
-                    if (me->m_node) {
-                        if (me->m_node->m_references.count(theID)) {
-                            if (!me->m_node->m_references[theID]) {
-                                if (loaded(theID)) {
-                                    me->restoreReference(&get<T>(theID));
-                                } else {
-                                    Element* aquired = aquire(theID);
-                                    me->m_node->m_references[theID] = aquired->m_node;
-                                }
-                            }
-                            return dynamic_cast<T*>(me->m_node->m_references[theID]->m_managerElementMemory);
-                        } else {
-                            throw ManagerStateException();
-                        }
-                    } else {
-                        aquire(theID);
-                        return  dynamic_cast<T*>(me->m_node->m_references[theID]->m_managerElementMemory);
-                    }
-                }
-                return 0;
-            }
+            Element* get(Element* me, ID theID);
             void addToMount(Element& el);
             virtual void createNode(Element* el);
             void eraseNode(ManagerNode* node, ID id);
@@ -140,16 +118,6 @@ namespace UML {
               * @param id, the id of the element you wish to get from the manager
               * @return the element you wish to get from the manager
              **/
-            template <class T = Element> T& get(ID id) {
-                if (m_elements.count(id)) {
-                    if (!m_graph.count(id)) {
-                        aquire(id);
-                    }
-                    return m_graph[id].m_managerElementMemory->template as<T>();
-                } else {
-                    throw UnknownID_Exception(id);
-                }
-            };
             virtual Element& get(ID id);
             size_t count(ID id);
             virtual bool loaded(ID id);
@@ -175,7 +143,7 @@ namespace UML {
              * @param id, the id of the element you wish to aquire
              * @return a pointer to the element you wish to aquire, will never be null
              **/
-            virtual Element* aquire(ID id);
+            virtual ElementPtr aquire(ID id);
             virtual void release(ID id);
             /**
              * release(el) will effectively delete the element object and write it's contents
@@ -225,13 +193,13 @@ namespace UML {
             /**
              * Parses the file into memory, but does not set root
              **/
-            Element* parse(std::string path);
+            ElementPtr parse(std::string path);
 
             // void setModel(Model* model);
             void setRoot(Element* el);
             void setRoot(Element& el);
             // Model* getModel();
-            Element* getRoot();
+            ElementPtr getRoot();
             void setPath(ID elID, std::string path);
     };
 

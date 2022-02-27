@@ -33,7 +33,7 @@ namespace UML {
                 return post(T::elementType()).template as<T>();
             };
             void erase(Element& el) override;
-            Element* aquire(ID id) override;
+            ElementPtr aquire(ID id) override;
             void release(Element& el) override;
             template <class ... Elements> void release(Element& el, Elements&... els) {
                 release(el);

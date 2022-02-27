@@ -130,7 +130,7 @@ namespace UML {
         std::unordered_map<ID, ManagerNode*> m_references;
         std::unordered_map<ID, size_t> m_referenceCount;
         std::vector<ID> m_referenceOrder;
-        size_t m_ptrCount = 0;
+        std::list<void*> m_ptrs; // list to UmlPtr*'s
     };
 
     // Helper function to assess possible ids
@@ -296,7 +296,6 @@ namespace UML {
             ElementType getElementType() const;
             virtual bool isSubClassOf(ElementType eType) const;
             virtual std::string getElementTypeString() const;
-            void release();
 
             inline friend bool operator==(const Element& lhs, const Element& rhs) {
                 return lhs.m_id == rhs.m_id;

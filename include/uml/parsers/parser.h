@@ -29,10 +29,10 @@ namespace UML {
 
         UmlManager* parse(std::string path);
 
-        Element* parse(ParserMetaData& data);
+        ElementPtr parse(ParserMetaData& data);
 
-        Element& parseString(std::string body, ParserMetaData& data);
-        Element& parseYAML(YAML::Node node, ParserMetaData& data);
+        ElementPtr parseString(std::string body, ParserMetaData& data);
+        ElementPtr parseYAML(YAML::Node node, ParserMetaData& data);
 
         EmitterMetaData getData(Element& el);
         std::string emit(Element& el);
@@ -46,7 +46,7 @@ namespace UML {
         void emitToFile(Element& el, EmitterMetaData& data, std::string path, std::string fileName);
 
         namespace {
-            Element* parseExternalAddToManager(ParserMetaData& data, std::string path); 
+            ElementPtr parseExternalAddToManager(ParserMetaData& data, std::string path); 
         }
 
         ElementType elementTypeFromString(std::string eType);
@@ -54,7 +54,7 @@ namespace UML {
         // anonymous functions
         namespace {
 
-            Element* parseNode(YAML::Node node, ParserMetaData& data);
+            ElementPtr parseNode(YAML::Node node, ParserMetaData& data);
 
             void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
             void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);

@@ -28,13 +28,20 @@ namespace UML {
             T* get() {
                 if (this->m_root) {
                     if (this->m_root->m_el == 0) { // TODO make this faster
-                        this->m_root->m_el = &this->m_el->m_manager->template get<T>(this->m_root->m_id);
+                        this->m_root->m_el = &this->m_el->m_manager->get(this->m_root->m_id);
                     }
                     return dynamic_cast<T*>(this->m_root->m_el);
                 } else {
                     return 0;
                 }
             };
+            void setPtr(UmlPtr<T>& ptr) {
+                if (this->m_root) {
+                    ptr.m_id = this->m_root->m_id;
+                    ptr.m_ptr = dynamic_cast<T*>(this->m_root->m_el);
+                    ptr.m_manager = this->m_el->m_manager;
+                }
+            }
             // T& getRef() {
             //     if (this->m_root) {
             //         if (this->m_root->m_el == 0) {

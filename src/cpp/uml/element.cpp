@@ -8,16 +8,6 @@
 
 namespace UML {
 
-class AddToMountFunctor : public SetFunctor {
-    public:
-        AddToMountFunctor(Element* them) : SetFunctor(them) {};
-        void operator()(Element& el) const override {
-            if (!m_el.m_manager->m_mountBase.empty() && m_el.m_manager->count(el.getID())) {
-                m_el.m_manager->addToMount(m_el);
-            }
-        };
-};
-
 void Element::setReference(Element* referencing) {
     if (m_node->m_references.count(referencing->getID())) {
         m_node->m_referenceCount[referencing->getID()]++;
@@ -101,12 +91,6 @@ void Element::mountAndRelease() {
     // }
 }
 
-void Element::release() {
-    m_manager->mountEl(*this);
-    m_manager->releaseNode(*this);
-    delete this;
-}
-
 Set<Element, Element>& Element::getOwnerSingleton() {
     return *m_owner;
 }
@@ -120,7 +104,6 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_owner->opposite(&Element::getOwnedElements);
     m_owner->m_signature = &Element::getOwnerSingleton;
     m_owner->m_readOnly = true;
-    m_owner->m_addFunctors.insert(new AddToMountFunctor(this));
 
     m_ownedElements = new Set<Element, Element>(this);
     m_ownedElements->opposite(&Element::getOwnerSingleton);

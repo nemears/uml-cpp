@@ -33,6 +33,10 @@ TEST_F(ElementTest, UmlPtrComparisonTest) {
     ASSERT_TRUE(!pckg->getOwningPackage());
     ASSERT_EQ(child->getOwningPackage(), pckg);
     ASSERT_EQ(*(child->getOwningPackage()), *pckg);
+    ASSERT_EQ(child->getNamespace(), pckg);
+    ASSERT_EQ(*(child->getNamespace()), *pckg);
+    ASSERT_EQ(child->getOwner(), pckg);
+    ASSERT_EQ(*(child->getOwner()), *pckg);
 }
 
 TEST_F(ElementTest, UmlPtrScopeTest) {
@@ -51,6 +55,23 @@ TEST_F(ElementTest, UmlPtrScopeTest) {
         pckgID = pckg->getID();
         ASSERT_TRUE(m.loaded(pckgID));
     }
+    ASSERT_TRUE(m.loaded(pckgID));
+}
+
+TEST_F(ElementTest, UmlPtrReleaseTest) {
+    UmlManager m;
+    m.mount(".");
+    PackagePtr pckg = m.create<Package>();
+    PackagePtr child = m.create<Package>();
+    ID pckgID = pckg->getID();
+    ID childID = child->getID();
+    pckg->getPackagedElements().add(*child);
+    ASSERT_TRUE(m.loaded(pckgID));
+    pckg.release();
+    ASSERT_FALSE(m.loaded(pckgID));
+    ASSERT_EQ(child->getOwningPackage().id(), pckgID);
+    ASSERT_FALSE(m.loaded(pckgID));
+    pckg.aquire();
     ASSERT_TRUE(m.loaded(pckgID));
 }
 

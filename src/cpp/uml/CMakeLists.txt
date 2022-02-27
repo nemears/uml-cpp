@@ -14,7 +14,7 @@ set(umlSources  element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp names
                 # encapsulatedClassifier.cpp interface.cpp interfaceRealization.cpp signal.cpp reception.cpp
                 
                 # #parsers
-                # parsers/parser.cpp parsers/emitterMetaData.cpp
+                parsers/parser.cpp parsers/emitterMetaData.cpp
 
                 #CMAKE option for set
                 PARENT_SCOPE)

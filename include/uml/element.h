@@ -111,6 +111,7 @@ namespace UML {
     };
 
     class Element;
+    class AbstractUmlPtr;
 
     /**
      * A Note on manager node and keeping track of elements: Right now we are just using a raw pointer,

@@ -20,6 +20,7 @@ namespace UML {
         protected:
             ID m_id = ID::nullID();
             virtual void reindex(ID newID, Element* el) = 0;
+            virtual void releasePtr() = 0;
     };
 
     template <class T = Element>
@@ -35,20 +36,31 @@ namespace UML {
             void reindex(ID newID, Element* el) override {
                 m_id = newID;
                 m_ptr = dynamic_cast<T*>(el);
-            }
+            };
+            void releasePtr() override {
+                m_ptr = 0;
+            };
         public:
             T& operator*() const {
                 if (m_id == ID::nullID()) {
                     throw NullPtrException();
-                } else {
+                } else if (m_ptr) {
                     return *m_ptr;
+                } else {
+                    ElementPtr temp = m_manager->aquire(m_id);
+                    temp->m_node->m_ptrs.push_back((void*) this);
+                    return  *dynamic_cast<T*>(temp.ptr());
                 }
             };
             T* operator->() const {
                 if (m_id == ID::nullID()) {
                     throw NullPtrException();
-                } else {
+                } else if (m_ptr) {
                     return m_ptr;
+                } else {
+                    ElementPtr temp = m_manager->aquire(m_id);
+                    temp->m_node->m_ptrs.push_back((void*) this);
+                    return  dynamic_cast<T*>(temp.ptr());
                 }
             };
             operator bool() const {
@@ -99,10 +111,7 @@ namespace UML {
             };
             void release() {
                 if (m_ptr) {
-                    m_manager->mountEl(*m_ptr);
-                    m_manager->releaseNode(*m_ptr);
-                    m_manager->m_graph.erase(m_id);
-                    delete m_ptr;
+                    m_manager->release(*m_ptr);
                 }
             };
             void aquire() {

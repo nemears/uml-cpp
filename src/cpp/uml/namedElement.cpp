@@ -108,18 +108,18 @@ void NamedElement::setVisibility(VisibilityKind visibility) {
     //         }
     //     }
     // }
-    // m_visibility = visibility;
-    // // if (m_visibility != visibility) {
-    // //     if (m_visibility != VisibilityKind::PRIVATE) {
-    // //         for (auto& nmspc: getMemberNamespace()) {
-    // //             if (nmspc.isSubClassOf(ElementType::CLASSIFIER)) {
-    // //                 if (!dynamic_cast<Classifier&>(nmspc).getInheritedMembers().count(m_id)) {
-    // //                     dynamic_cast<Classifier&>(nmspc).getInheritedMembers().add(*this);
-    // //                 }
-    // //             }
-    // //         }
-    // //     }
-    // // }
+    m_visibility = visibility;
+    // if (m_visibility != visibility) {
+    //     if (m_visibility != VisibilityKind::PRIVATE) {
+    //         for (auto& nmspc: getMemberNamespace()) {
+    //             if (nmspc.isSubClassOf(ElementType::CLASSIFIER)) {
+    //                 if (!dynamic_cast<Classifier&>(nmspc).getInheritedMembers().count(m_id)) {
+    //                     dynamic_cast<Classifier&>(nmspc).getInheritedMembers().add(*this);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 }
 
 bool NamedElement::isSubClassOf(ElementType eType) const {

@@ -488,3 +488,7 @@ Element* UmlManager::get(Element* me, ID theID) {
     }
     return 0;
 }
+
+void UmlManager::lazy(bool lazy) {
+    m_lazy = lazy;
+}

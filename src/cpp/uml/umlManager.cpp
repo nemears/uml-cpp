@@ -323,6 +323,9 @@ ElementPtr UmlManager::aquire(ID id) {
                             ret->restoreReference(el);
                         }
                     }
+                    for (auto& ptr : ret->m_node->m_ptrs) {
+                        static_cast<AbstractUmlPtr*>(ptr)->reindex(id, ret.ptr());
+                    }
                     ret->restoreReferences();
                 } else {
                     throw ManagerStateException();
@@ -353,6 +356,9 @@ void UmlManager::releaseNode(Element& el) {
         if (e.second) {
             e.second->m_managerElementMemory->referencingReleased(id);
         }
+    }
+    for (auto& ptr : node->m_ptrs) {
+        static_cast<AbstractUmlPtr*>(ptr)->releasePtr();
     }
 }
 

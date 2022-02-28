@@ -77,6 +77,18 @@ TEST_F(ElementTest, UmlPtrReleaseTest) {
     ASSERT_TRUE(m.loaded(pckgID));
 }
 
+TEST_F(ElementTest, AcessReleasedPtrTest) {
+    UmlManager m;
+    m.mount(".");
+    m.lazy(false);
+    m.lossless(false);
+    PackagePtr pckg = m.create<Package>();
+    pckg.release();
+    ASSERT_FALSE(m.loaded(pckg.id()));
+    ASSERT_EQ(pckg->getID(), pckg.id());
+    ASSERT_TRUE(m.loaded(pckg.id()));
+}
+
 TEST_F(ElementTest, OverrideID_Test) {
     UmlManager m;
     PackagePtr el = m.create<Package>();

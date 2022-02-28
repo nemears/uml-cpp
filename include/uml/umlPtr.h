@@ -54,16 +54,22 @@ namespace UML {
             operator bool() const {
                 return m_id != ID::nullID();
             };
-            inline friend bool operator==(const T* lhs, const UmlPtr& rhs) {
+            inline friend bool operator==(const Element* lhs, const UmlPtr& rhs) {
                 return lhs == rhs.m_ptr;
             };
-            inline friend bool operator!=(const T* lhs, const UmlPtr& rhs) {
+            inline friend bool operator!=(const Element* lhs, const UmlPtr& rhs) {
                 return lhs != rhs.m_ptr;
             };
             inline friend bool operator==(const UmlPtr& lhs, const UmlPtr& rhs) {
                 return lhs.m_id == rhs.m_id;
             };
             inline friend bool operator!=(const UmlPtr& lhs, const UmlPtr& rhs) {
+                return lhs.m_id != rhs.m_id;
+            };
+            inline friend bool operator==(const Element& lhs, const UmlPtr& rhs) {
+                return lhs.m_id == rhs.m_id;
+            };
+            inline friend bool operator!=(const Element& lhs, const UmlPtr& rhs) {
                 return lhs.m_id != rhs.m_id;
             };
             void operator=(const T* el) {
@@ -117,10 +123,11 @@ namespace UML {
                     if (m_ptr) {
                         m_ptr->m_node->m_ptrs.remove(this);
                         if (m_ptr->m_node->m_ptrs.empty()) {
-                            if (!m_manager->m_lossless || !m_manager->m_mountBase.empty()) {
-                                delete m_ptr;
-                                // mountAndRelease();
+                            if ((!m_manager->m_lossless || !m_manager->m_mountBase.empty()) && !m_manager->m_lazy) {
+                                m_manager->mountEl(*m_ptr);
+                                m_manager->releaseNode(*m_ptr);
                                 m_manager->m_graph.erase(m_id);
+                                delete m_ptr;
                             }
                         }
                     }

@@ -96,6 +96,7 @@ namespace UML {
 
         protected:
             bool m_lossless = true;
+            bool m_lazy = true;
             std::unordered_set<ID> m_elements;
             std::unordered_map<ID, ManagerNode> m_graph;
             std::filesystem::path m_path;
@@ -132,6 +133,7 @@ namespace UML {
                 return ret;
             };
             void lossless(bool lossless);
+            void lazy(bool lazy);
             // Element& create(ElementType eType);
             void reindex(ID oldID, ID newID);
             // Sets up composite directory of model for quick aquire and release

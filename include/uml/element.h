@@ -1,5 +1,5 @@
-#ifndef ELEMENTH
-#define ELEMENTH
+#ifndef _UML_ELEMENT_H_
+#define _UML_ELEMENT_H_
 
 #include <string>
 #include <list>

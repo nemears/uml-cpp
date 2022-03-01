@@ -25,44 +25,15 @@ namespace UML {
             Singleton<T,U>(const Singleton<T,U>& rhs) : Set<T, U>(rhs) {
                 this->m_upper = 1;
             };
-            T* get() {
+            UmlPtr<T> get() {
+                UmlPtr<T> ret(0);
                 if (this->m_root) {
-                    if (this->m_root->m_el == 0) { // TODO make this faster
-                        this->m_root->m_el = &this->m_el->m_manager->get(this->m_root->m_id);
-                    }
-                    return dynamic_cast<T*>(this->m_root->m_el);
-                } else {
-                    return 0;
+                    ret.m_id = this->m_root->m_id;
+                    ret.m_ptr = this->m_root ? dynamic_cast<T*>(this->m_root->m_el) : 0;
+                    ret.m_manager = this->m_el->m_manager;
                 }
+                return ret;
             };
-            void setPtr(UmlPtr<T>& ptr) {
-                if (this->m_root) {
-                    ptr.m_id = this->m_root->m_id;
-                    ptr.m_ptr = dynamic_cast<T*>(this->m_root->m_el);
-                    ptr.m_manager = this->m_el->m_manager;
-                }
-            }
-            // T& getRef() {
-            //     if (this->m_root) {
-            //         if (this->m_root->m_el == 0) {
-            //             this->m_root->m_el = &this->m_el->m_manager->get(this->m_root->m_id);
-            //         }
-            //         return *dynamic_cast<T*>(this->m_root->m_el);
-            //     } else {
-            //         // TODO throw exception
-            //         throw UML::NullReferenceException();
-            //     }
-            // };
-            // ID id() const {
-            //     if (this->m_root) {
-            //         return this->m_root->m_id;
-            //     } else {
-            //         return ID::nullID();
-            //     }
-            // };
-            // bool has() const {
-            //     return this->m_root != 0;
-            // };
             void set(T* el) {
                 if (el) {
                     if (this->m_root && this->m_root->m_id != el->getID()) {

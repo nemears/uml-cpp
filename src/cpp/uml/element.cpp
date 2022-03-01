@@ -445,7 +445,7 @@ ID Element::getID() const {
 }
 
 ElementPtr Element::getOwner() {
-    return ElementPtr(m_owner->get());
+    return m_owner->get();
 }
 
 void Element::setOwner(Element* owner) {

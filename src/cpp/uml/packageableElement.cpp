@@ -44,9 +44,7 @@ PackageableElement::PackageableElement() : Element(ElementType::PACKAGEABLE_ELEM
 }
 
 PackagePtr PackageableElement::getOwningPackage() {
-    PackagePtr ret(0);
-    m_owningPackage.setPtr(ret);
-    return ret;
+    return m_owningPackage.get();
 }
 
 void PackageableElement::setOwningPackage(Package* package) {

@@ -1,5 +1,5 @@
-#ifndef RELATIONSHIP_H
-#define RELATIONSHIP_H
+#ifndef _UML_RELATIONSHIP_H_
+#define _UML_RELATIONSHIP_H_
 
 #include "set.h"
 

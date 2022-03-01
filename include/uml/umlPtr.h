@@ -67,10 +67,10 @@ namespace UML {
                 return m_id != ID::nullID();
             };
             inline friend bool operator==(const Element* lhs, const UmlPtr& rhs) {
-                return lhs == rhs.m_ptr;
+                return lhs->m_id == rhs.m_id;
             };
             inline friend bool operator!=(const Element* lhs, const UmlPtr& rhs) {
-                return lhs != rhs.m_ptr;
+                return lhs->m_id != rhs.m_id;
             };
             inline friend bool operator==(const UmlPtr& lhs, const UmlPtr& rhs) {
                 return lhs.m_id == rhs.m_id;

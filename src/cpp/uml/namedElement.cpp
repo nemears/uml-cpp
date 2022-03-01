@@ -80,7 +80,7 @@ void NamedElement::updateQualifiedName(std::string absoluteNamespace) {
 }
 
 NamespacePtr NamedElement::getNamespace() {
-    return NamespacePtr(m_namespace.get());
+    return m_namespace.get();
 }
 
 // Set<Dependency, NamedElement>& NamedElement::getClientDependencies() {

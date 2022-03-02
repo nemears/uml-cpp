@@ -1,6 +1,8 @@
 #include "uml/typedElement.h"
-#include "uml/uml-stable.h"
+#include "uml/type.h"
+#include "uml/package.h"
 #include "uml/setReferenceFunctor.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -21,7 +23,7 @@ void TypedElement::reindexName(std::string oldName, std::string newName) {
 
 void TypedElement::restoreReference(Element* el) {
     NamedElement::restoreReference(el);
-    if (m_type.id() == el->getID()) {
+    if (m_type.get().id() == el->getID()) {
         el->setReference(this);
     }
 }
@@ -41,36 +43,16 @@ void TypedElement::init() {
     m_type.m_signature = &TypedElement::getTypeSingleton;
 }
 
-void TypedElement::copy(const TypedElement& rhs) {
-    m_type =  rhs.m_type;
-}
-
 TypedElement::TypedElement() : Element(ElementType::TYPED_ELEMENT) {
     init();
-}
-
-TypedElement::TypedElement(const TypedElement& el) : Element(ElementType::TYPE) {
-    // abstract
 }
 
 TypedElement::~TypedElement() {
     
 }
 
-Type* TypedElement::getType() {
+TypePtr TypedElement::getType() {
     return m_type.get();
-}
-
-Type& TypedElement::getTypeRef() {
-    return m_type.getRef();
-}
-
-ID TypedElement::getTypeID() const {
-    return m_type.id();
-}
-
-bool TypedElement::hasType() const {
-    return m_type.has();
 }
 
 void TypedElement::setType(Type* type) {

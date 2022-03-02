@@ -1,6 +1,11 @@
 #include "gtest/gtest.h"
 #include "uml/package.h"
+#include "uml/class.h"
 #include "uml/umlPtr.h"
+#include "uml/property.h"
+#include "uml/generalization.h"
+
+
 // #include "test/umlTestUtil.h"
 // #include "test/yumlParsersTest.h"
 
@@ -163,32 +168,32 @@ TEST_F(ElementTest, reIndexID_Test) {
     ASSERT_NO_THROW(e1.getOwnedElements().get(e2.getID()));
 }
 
-// TEST_F(ElementTest, basicRelationshipTest) {
-//   UmlManager m;
-//   Package& e = m.create<Package>();
-//   Package& a = m.create<Package>();
-//   PackageMerge& r = m.create<PackageMerge>();
-//   e.getPackageMerge().add(r);
-//   r.setMergedPackage(&a);
-//   ASSERT_EQ(r.getRelatedElements().size(), 2);
-//   ASSERT_TRUE(r.getRelatedElements().contains(e.getID()));
-//   ASSERT_TRUE(r.getRelatedElements().contains(a.getID()));
-//   ASSERT_EQ(e.getPackageMerge().size(), 1);
-//   ASSERT_EQ(e.getPackageMerge().front(), r);
-// }
+TEST_F(ElementTest, basicRelationshipTest) {
+  UmlManager m;
+  Package& e = *m.create<Package>();
+  Package& a = *m.create<Package>();
+  PackageMerge& r = *m.create<PackageMerge>();
+  e.getPackageMerge().add(r);
+  r.setMergedPackage(&a);
+  ASSERT_EQ(r.getRelatedElements().size(), 2);
+  ASSERT_TRUE(r.getRelatedElements().contains(e.getID()));
+  ASSERT_TRUE(r.getRelatedElements().contains(a.getID()));
+  ASSERT_EQ(e.getPackageMerge().size(), 1);
+  ASSERT_EQ(e.getPackageMerge().front(), r);
+}
 
-// TEST_F(ElementTest, reindexRelationshipID_test) {
-//     UmlManager m;
-//     Package e = m.create<Package>();
-//     Package a = m.create<Package>();
-//     PackageMerge r = m.create<PackageMerge>();
-//     e.getPackageMerge().add(r);
-//     r.setMergedPackage(&a);
-//     r.setID("190d1cb913dc44e6a064126891ae");
-//     e.setID("7d18ee4282c64f528ec4fab67a75");
-//     ASSERT_NO_THROW(r.getRelatedElements().get(e.getID()));
-//     ASSERT_NO_THROW(e.getPackageMerge().get(r.getID()));
-// }
+TEST_F(ElementTest, reindexRelationshipID_test) {
+    UmlManager m;
+    Package& e = *m.create<Package>();
+    Package& a = *m.create<Package>();
+    PackageMerge& r = *m.create<PackageMerge>();
+    e.getPackageMerge().add(r);
+    r.setMergedPackage(&a);
+    r.setID("190d1cb913dc44e6a064126891ae");
+    e.setID("7d18ee4282c64f528ec4fab67a75");
+    ASSERT_NO_THROW(r.getRelatedElements().get(e.getID()));
+    ASSERT_NO_THROW(e.getPackageMerge().get(r.getID()));
+}
 
 TEST_F(ElementTest, setOwnerFunctorTest) {
     UmlManager m;
@@ -234,15 +239,6 @@ TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
   ASSERT_EQ(p1.getOwnedElements().size(), 0);
 }
 
-// TEST_F(ElementTest, doINeedAnAddRelationshipFunctorTest) { // answer is yes
-//     UmlManager m;
-//     Package e = m.create<Package>();
-//     PackageMerge r = m.create<PackageMerge>();
-//     e.getPackageMerge().add(r);
-//     ASSERT_TRUE(r.getRelatedElements().size() == 1);
-//     ASSERT_EQ(r.getRelatedElements().front(), e);
-// }
-
 TEST_F(ElementTest, readOnlySequenceTest) {
     UmlManager m;
     Package& p = *m.create<Package>();
@@ -253,17 +249,17 @@ TEST_F(ElementTest, readOnlySequenceTest) {
     ASSERT_THROW(p.getOwnedElements().remove(c1), ReadOnlySetException);
 }
 
-// TEST_F(ElementTest, readOnlyRelatedElementsTest) {
-//     UmlManager mm;
-//     Package p = mm.create<Package>();
-//     Package m = mm.create<Package>();
-//     PackageMerge r = mm.create<PackageMerge>();
-//     Package h = mm.create<Package>();
-//     p.getPackageMerge().add(r);
-//     r.setMergedPackage(&m);
-//     ASSERT_THROW(r.getRelatedElements().remove(p), ReadOnlySetException);
-//     ASSERT_THROW(r.getRelatedElements().add(h), ReadOnlySetException);
-// }
+TEST_F(ElementTest, readOnlyRelatedElementsTest) {
+    UmlManager mm;
+    Package& p = *mm.create<Package>();
+    Package& m = *mm.create<Package>();
+    PackageMerge& r = *mm.create<PackageMerge>();
+    Package& h = *mm.create<Package>();
+    p.getPackageMerge().add(r);
+    r.setMergedPackage(&m);
+    ASSERT_THROW(r.getRelatedElements().remove(p), ReadOnlySetException);
+    ASSERT_THROW(r.getRelatedElements().add(h), ReadOnlySetException);
+}
 
 // // TEST_F(ElementTest, checkAppliedStereotypeFunctorTest) {
 // //   UmlManager m;
@@ -284,9 +280,9 @@ TEST_F(ElementTest, readOnlySequenceTest) {
 //   ASSERT_EQ(c.getOwnedElements().size(), 0);
 // }
 
-// TEST_F(ElementTest, asFuncTest) {
-//   UmlManager m;
-//   Classifier& classifier = m.create<Class>();
-//   Class& clazz = classifier.as<Class>();
-//   ASSERT_EQ(classifier.getID(), clazz.getID());
-// }
+TEST_F(ElementTest, asFuncTest) {
+  UmlManager m;
+  UmlPtr<Classifier> classifier = m.create<Class>();
+  Class& clazz = classifier->as<Class>();
+  ASSERT_EQ(classifier->getID(), clazz.getID());
+}

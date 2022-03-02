@@ -1,5 +1,4 @@
 #include "uml/dependency.h"
-#include "uml/uml-stable.h"
 #include "uml/setReferenceFunctor.h"
 
 using namespace UML;
@@ -41,28 +40,8 @@ void Dependency::init() {
     m_supplier.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
-void Dependency::copy(const Dependency& rhs) {
-    m_client = Set<NamedElement, Dependency>(rhs.m_client);
-    m_client.m_el = this;
-    m_supplier = Set<NamedElement, Dependency>(rhs.m_supplier);
-    m_supplier.m_el = this;
-}
-
 Dependency::Dependency() : Element(ElementType::DEPENDENCY) {
     init();
-}
-
-Dependency::Dependency(const Dependency& rhs) : Element(rhs, ElementType::DEPENDENCY) {
-    init();
-    Relationship::copy(rhs);
-    DirectedRelationship::copy(rhs);
-    NamedElement::copy(rhs);
-    ParameterableElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    copy(rhs);
-    if (!m_copiedElementFlag) {
-        delete &rhs;
-    }
 }
 
 Dependency::~Dependency() {

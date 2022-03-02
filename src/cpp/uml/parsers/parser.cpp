@@ -1,7 +1,7 @@
 #include "uml/parsers/parser.h"
 #include <fstream>
 #include "uml/umlPtr.h"
-#include "uml/activity.h" // the only "not stable" thing with a presence in this class
+#include "uml/package.h"
 
 using namespace std;
 

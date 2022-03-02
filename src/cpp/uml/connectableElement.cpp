@@ -1,33 +1,34 @@
 #include "uml/connectableElement.h"
-#include "uml/uml-stable.h"
 #include "uml/setReferenceFunctor.h"
+#include "uml/type.h"
+#include "uml/package.h"
 
 using namespace UML;
 
 void ConnectableElement::referencingReleased(ID id) {
     TypedElement::referencingReleased(id);
     ParameterableElement::referencingReleased(id);
-    m_ends.release(id);
+    // m_ends.release(id);
 }
 
 void ConnectableElement::referenceReindexed(ID oldID, ID newID) {
     TypedElement::referenceReindexed(oldID, newID);
     ParameterableElement::referenceReindexed(oldID, newID);
-    m_ends.reindex(oldID, newID);
+    // m_ends.reindex(oldID, newID);
 }
 
 void ConnectableElement::reindexName(std::string oldName, std::string newName) {
     TypedElement::reindexName(oldName, newName);
     ParameterableElement::reindexName(oldName, newName);
-    m_ends.reindexName(oldName, newName);
+    // m_ends.reindexName(oldName, newName);
 }
 
 void ConnectableElement::restoreReference(Element* el) {
     TypedElement::restoreReference(el);
     ParameterableElement::restoreReference(el);
-    if (m_ends.contains(el->getID())) {
-        el->setReference(this);
-    }
+    // if (m_ends.contains(el->getID())) {
+    //     el->setReference(this);
+    // }
 }
 
 void ConnectableElement::referenceErased(ID id) {
@@ -36,14 +37,10 @@ void ConnectableElement::referenceErased(ID id) {
 }
 
 void ConnectableElement::init() {
-    m_ends.m_readOnly = true;
-    m_ends.m_signature = &ConnectableElement::getEnds;
-    m_ends.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_ends.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-}
-
-void ConnectableElement::copy(const ConnectableElement& rhs) {
-    m_ends = rhs.m_ends;
+    // m_ends.m_readOnly = true;
+    // m_ends.m_signature = &ConnectableElement::getEnds;
+    // m_ends.m_addFunctors.insert(new SetReferenceFunctor(this));
+    // m_ends.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
 ConnectableElement::ConnectableElement() : Element(ElementType::CONNECTABLE_ELEMENT) {
@@ -54,13 +51,9 @@ ConnectableElement::~ConnectableElement() {
     
 }
 
-ConnectableElement::ConnectableElement(const ConnectableElement& rhs) : Element(ElementType::CONNECTABLE_ELEMENT) {
-    // abstract
-}
-
-Set<ConnectorEnd, ConnectableElement>& ConnectableElement::getEnds() {
-    return m_ends;
-}
+// Set<ConnectorEnd, ConnectableElement>& ConnectableElement::getEnds() {
+//     return m_ends;
+// }
 
 bool ConnectableElement::isSubClassOf(ElementType eType) const {
     bool ret = TypedElement::isSubClassOf(eType);

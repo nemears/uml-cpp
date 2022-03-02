@@ -2,15 +2,14 @@
 #define _UML_PACKAGEABLE_ELEMENT_H_
 
 #include "namedElement.h"
-// #include "parameterableElement.h"
-#include "singleton.h"
+#include "parameterableElement.h"
 
 namespace UML {
 
     class Package;
     typedef UmlPtr<Package> PackagePtr;
 
-    class PackageableElement : virtual public NamedElement /**, virtual public ParameterableElement**/ {
+    class PackageableElement : virtual public NamedElement , virtual public ParameterableElement {
 
         friend class Package;
 

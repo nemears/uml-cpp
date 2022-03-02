@@ -1,11 +1,12 @@
-#ifndef TYPED_ELEMENT_H
-#define TYPED_ELEMENT_H
+#ifndef _UML_TYPED_ELEMENT_H_
+#define _UML_TYPED_ELEMENT_H_
 
 #include "namedElement.h"
 
 namespace UML{
 
     class Type;
+    typedef UmlPtr<Type> TypePtr;
 
     class TypedElement : virtual public NamedElement {
 
@@ -20,21 +21,16 @@ namespace UML{
             void referenceErased(ID id) override;
             Set<Type, TypedElement>& getTypeSingleton();
             void init();
-            void copy(const TypedElement& rhs);
             TypedElement();
         public:
-            TypedElement(const TypedElement& el);
             virtual ~TypedElement();
-            virtual Type* getType();
-            Type& getTypeRef();
-            ID getTypeID() const;
-            bool hasType() const;
+            virtual TypePtr getType();
             virtual void setType(Type* type);
             void setType(Type& type);
             void setType(ID id);
-            TypedElement& operator=(TypedElement&&) {
-                return *this;
-            };
+            // TypedElement& operator=(TypedElement&&) {
+            //     return *this;
+            // };
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::TYPED_ELEMENT;

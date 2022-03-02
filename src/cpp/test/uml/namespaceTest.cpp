@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
-#include "uml/uml-stable.h"
+#include "uml/package.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -39,8 +40,6 @@ TEST_F(NamespaceTest, AddOwnedMemeberFunctorTest) {
     ASSERT_EQ(*m.getNamespace(), n);
     ASSERT_EQ(n.getMembers().size(), 1);
     ASSERT_EQ(n.getMembers().front(), m);
-    // ASSERT_EQ(m.getMemberNamespace().size(), 1);
-    // ASSERT_EQ(m.getMemberNamespace().front(), n);
 }
 
 TEST_F(NamespaceTest, setNamespaceTest) {

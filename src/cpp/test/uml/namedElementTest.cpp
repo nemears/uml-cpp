@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
-#include "uml/uml-stable.h"
+#include "uml/package.h"
+#include "uml/umlPtr.h"
 // #include "test/umlTestUtil.h"
 #include "test/yumlParsersTest.h"
 

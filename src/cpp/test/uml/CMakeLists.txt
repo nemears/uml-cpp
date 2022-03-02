@@ -1,6 +1,4 @@
-add_executable(umltest idTest.cpp 
-                        #setTest.cpp 
-                        elementTest.cpp namedElementTest.cpp namespaceTest.cpp packageTest.cpp 
+add_executable(umltest idTest.cpp elementTest.cpp namedElementTest.cpp namespaceTest.cpp packageTest.cpp classifierTest.cpp setTest.cpp
                     #dependencyTest.cpp
                     #    classifierTest.cpp generalizationTest.cpp dataTypeTest.cpp propertyTest.cpp valueSpecificationTest.cpp
                     #    typedElementTest.cpp instanceSpecificationTest.cpp slotTest.cpp classTest.cpp multiplicityElementTest.cpp

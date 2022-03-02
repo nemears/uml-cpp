@@ -3,7 +3,8 @@
 
 #include "packageableElement.h"
 #include "namespace.h"
-// #include "templateableElement.h"
+#include "packageMerge.h"
+#include "templateableElement.h"
 
 namespace UML {
 
@@ -11,13 +12,13 @@ namespace UML {
     class ProfileApplication;
     class PackageMerge;
 
-    class Package : public PackageableElement, public Namespace/**, public TemplateableElement**/ {
+    class Package : public PackageableElement, public Namespace, public TemplateableElement {
 
         friend class UmlManager;
 
         protected:
             Set<PackageableElement, Package> m_packagedElements = Set<PackageableElement, Package>(this);
-            // Set<PackageMerge, Package> m_packageMerge = Set<PackageMerge, Package>(this);
+            Set<PackageMerge, Package> m_packageMerge = Set<PackageMerge, Package>(this);
             // Set<Stereotype, Package> m_ownedStereotypes = Set<Stereotype, Package>(this);
             // Set<ProfileApplication, Package> m_profileApplications = Set<ProfileApplication, Package>(this);
             void referencingReleased(ID id) override;
@@ -29,7 +30,7 @@ namespace UML {
         public:
             virtual ~Package();
             Set<PackageableElement, Package>& getPackagedElements();
-            // Set<PackageMerge, Package>& getPackageMerge();
+            Set<PackageMerge, Package>& getPackageMerge();
             // Set<ProfileApplication, Package>& getProfileApplications();
             // Set<Stereotype, Package>& getOwnedStereotypes();
             bool isSubClassOf(ElementType eType) const override;

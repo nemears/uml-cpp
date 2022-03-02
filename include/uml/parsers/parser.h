@@ -1,13 +1,24 @@
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef _UML_PARSERS_PARSER_H_
+#define _UML_PARSERS_PARSER_H_
 
 #include <exception>
 #include "yaml-cpp/yaml.h"
 #include "uml/parsers/parserMetaData.h"
 #include "uml/parsers/emitterMetaData.h"
-#include "uml/uml-stable.h"
+#include "uml/umlManager.h"
+#include "uml/umlPtr.h"
+#include "uml/set.h"
+#include "uml/singleton.h"
 
 namespace UML {
+    
+    class ValueSpecification;
+    class PrimitiveType;
+    class LiteralBool;
+    class LiteralReal;
+    class LiteralInt;
+    class LiteralString;
+    class LiteralUnlimitedNatural;
 
     namespace Parsers {
 

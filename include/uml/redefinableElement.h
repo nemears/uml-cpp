@@ -1,5 +1,5 @@
-#ifndef REDEFINABLE_ELEMENT_H
-#define REDEFINABLE_ELEMENT_H
+#ifndef _UML_REDEFINABLE_ELEMENT_H_
+#define _UML_REDEFINABLE_ELEMENT_H_
 
 #include "namedElement.h"
 
@@ -16,11 +16,9 @@ namespace UML {
             void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
-            void copy(const RedefinableElement& rhs);
             RedefinableElement();
         public:
             virtual ~RedefinableElement();
-            RedefinableElement(const RedefinableElement& el);
             Set<RedefinableElement, RedefinableElement>& getRedefinedElements();
             Set<Classifier, RedefinableElement>& getRedefinitionContext();
             bool isSubClassOf(ElementType eType) const override;

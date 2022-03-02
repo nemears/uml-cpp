@@ -11,17 +11,8 @@ void DirectedRelationship::init() {
     m_targets.m_readOnly = true;
 }
 
-void DirectedRelationship::copy(const DirectedRelationship& rhs) {
-    m_sources = rhs.m_sources;
-    m_targets = rhs.m_targets;
-}
-
 DirectedRelationship::DirectedRelationship() : Element(ElementType::DIRECTED_RELATIONSHIP) {
     init();
-}
-
-DirectedRelationship::DirectedRelationship(const DirectedRelationship& relationship) : Element(ElementType::DIRECTED_RELATIONSHIP) {
-    // abstract
 }
 
 DirectedRelationship::~DirectedRelationship() {

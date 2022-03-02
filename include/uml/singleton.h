@@ -30,7 +30,9 @@ namespace UML {
                 if (this->m_root) {
                     ret.m_id = this->m_root->m_id;
                     ret.m_ptr = this->m_root ? dynamic_cast<T*>(this->m_root->m_el) : 0;
-                    ret.m_manager = this->m_el->m_manager;
+                    if (this->m_el) {
+                        ret.m_manager = this->m_el->m_manager;
+                    }
                 }
                 return ret;
             };

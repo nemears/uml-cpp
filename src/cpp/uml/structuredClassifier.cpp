@@ -1,6 +1,10 @@
 #include "uml/structuredClassifier.h"
 #include "uml/property.h"
-#include "uml/uml-stable.h"
+#include "uml/type.h"
+#include "uml/connectableElement.h"
+#include "uml/package.h"
+#include "uml/generalization.h"
+#include "uml/class.h"
 
 using namespace UML;
 
@@ -31,24 +35,13 @@ void StructuredClassifier::init() {
     m_parts.subsets(m_ownedAttributes);
     m_parts.m_signature = &StructuredClassifier::getParts;
     m_parts.m_readOnly = true;
-    m_ownedConnectors.subsets(m_ownedMembers);
-    m_ownedConnectors.subsets(m_features);
-    m_ownedConnectors.m_signature = &StructuredClassifier::getOwnedConnectors;
-}
-
-void StructuredClassifier::copy(const StructuredClassifier& rhs) {
-    m_roles = rhs.m_roles;
-    m_ownedAttributes = rhs.m_ownedAttributes;
-    m_parts = rhs.m_parts;
-    m_ownedConnectors = rhs.m_ownedConnectors;
+    // m_ownedConnectors.subsets(m_ownedMembers);
+    // m_ownedConnectors.subsets(m_features);
+    // m_ownedConnectors.m_signature = &StructuredClassifier::getOwnedConnectors;
 }
 
 StructuredClassifier::StructuredClassifier() : Element(ElementType::STRUCTURED_CLASSIFIER) {
     init();
-}
-
-StructuredClassifier::StructuredClassifier(const StructuredClassifier& clazz) : Element(clazz, ElementType::STRUCTURED_CLASSIFIER) {
-    // abstract
 }
 
 StructuredClassifier::~StructuredClassifier() {
@@ -67,9 +60,9 @@ Set<Property, StructuredClassifier>& StructuredClassifier::getParts() {
     return m_parts;
 }
 
-Set<Connector, StructuredClassifier>& StructuredClassifier::getOwnedConnectors() {
-    return m_ownedConnectors;
-}
+// Set<Connector, StructuredClassifier>& StructuredClassifier::getOwnedConnectors() {
+//     return m_ownedConnectors;
+// }
 
 bool StructuredClassifier::isSubClassOf(ElementType eType) const {
     bool ret = Classifier::isSubClassOf(eType);

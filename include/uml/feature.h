@@ -1,11 +1,12 @@
-#ifndef FEATURE_H
-#define FEATURE_H
+#ifndef _UML_FEATURE_H_
+#define _UML_FEATURE_H_
 
 #include "redefinableElement.h"
 
 namespace UML {
 
     class Classifier;
+    typedef UmlPtr<Classifier> ClassifierPtr;
 
     class Feature : virtual public RedefinableElement {
 
@@ -20,14 +21,9 @@ namespace UML {
             void referenceErased(ID id) override;
             Set<Classifier, Feature>& getFeaturingClassifierSingleton();
             void init();
-            void copy(const Feature& rhs);
             Feature();
         public:
-            Feature(const Feature& feature);
-            Classifier* getFeaturingClassifier();
-            Classifier& getFeaturingClassifierRef();
-            ID getFeaturingClassifierID() const;
-            bool hasFeaturingClassifier() const;
+            ClassifierPtr getFeaturingClassifier();
             void setFeaturingClassifier(Classifier* clazz);
             void setFeaturingClassifier(Classifier& clazz);
             void setFeaturingClassifier(ID id);

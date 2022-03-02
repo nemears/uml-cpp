@@ -1,6 +1,6 @@
 #include "uml/packageMerge.h"
 #include "uml/package.h"
-#include "uml/uml-stable.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -30,47 +30,16 @@ void PackageMerge::init() {
     m_mergedPackage.m_signature = &PackageMerge::getMergedPackageSingleton;
 }
 
-void PackageMerge::copy(const PackageMerge& rhs) {
-    m_receivingPackage = Singleton<Package, PackageMerge>(rhs.m_receivingPackage);
-    m_receivingPackage.m_el = this;
-    m_mergedPackage = Singleton<Package, PackageMerge>(rhs.m_mergedPackage);
-    m_mergedPackage.m_el = this;
-}
-
 PackageMerge::PackageMerge() : Element(ElementType::PACKAGE_MERGE) {
     init();
-}
-
-PackageMerge::PackageMerge(const PackageMerge& rhs) : Element(rhs, ElementType::PACKAGE_MERGE) {
-    Relationship::copy(rhs);
-    DirectedRelationship::copy(rhs);
-    copy(rhs);
-    Relationship::init();
-    DirectedRelationship::init();
-    init();
-    if (!m_copiedElementFlag) {
-        delete &rhs;
-    }
 }
 
 PackageMerge::~PackageMerge() {
     mountAndRelease();
 }
 
-Package* PackageMerge::getReceivingPackage() {
+PackagePtr PackageMerge::getReceivingPackage() {
     return m_receivingPackage.get();
-}
-
-Package& PackageMerge::getReceivingPackageRef() {
-    return m_receivingPackage.getRef();
-}
-
-ID PackageMerge::getReceivingPackageID() const {
-    return m_receivingPackage.id();
-}
-
-bool PackageMerge::hasReceivingPackage() const {
-    return m_receivingPackage.has();
 }
 
 void PackageMerge::setReceivingPackage(Package* receiving) {
@@ -85,20 +54,8 @@ void PackageMerge::setReceivingPackage(ID id) {
     m_receivingPackage.set(id);
 }
 
-Package* PackageMerge::getMergedPackage() {
+PackagePtr PackageMerge::getMergedPackage() {
     return m_mergedPackage.get();
-}
-
-Package& PackageMerge::getMergedPackageRef() {
-    return m_mergedPackage.getRef();
-}
-
-ID PackageMerge::getMergedPackageID() const {
-    return m_mergedPackage.id();
-}
-
-bool PackageMerge::hasMergedPackage() const {
-    return m_mergedPackage.has();
 }
 
 void PackageMerge::setMergedPackage(Package* merge) {

@@ -27,16 +27,8 @@ void Relationship::init() {
     m_relatedElements.m_signature = &Relationship::getRelatedElements;
 }
 
-void Relationship::copy(const Relationship& rhs) {
-    m_relatedElements = rhs.m_relatedElements;
-}
-
 Relationship::Relationship() : Element(ElementType::RELATIONSHIP) {
     init();
-}
-
-Relationship::Relationship(const Relationship& relationship) : Element(ElementType::RELATIONSHIP) {
-    // abstract
 }
 
 Relationship::~Relationship() {

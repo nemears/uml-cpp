@@ -46,7 +46,7 @@ namespace UML{
                     RemoveQualifiedNameFunctor(Element* them) : SetFunctor(them) {};
                     void operator()(Element& el) const override;
             };
-            // Set<Dependency, NamedElement> m_clientDependencies = Set<Dependency, NamedElement>(this);
+            Set<Dependency, NamedElement>* m_clientDependencies;
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             void reindexName(std::string oldName, std::string newName) override;
             void updateQualifiedName(std::string absoluteNamespace);
@@ -62,7 +62,7 @@ namespace UML{
             virtual void setName(const std::string &name);
             std::string getQualifiedName();
             NamespacePtr getNamespace();
-            // Set<Dependency, NamedElement>& getClientDependencies();
+            Set<Dependency, NamedElement>& getClientDependencies();
             VisibilityKind getVisibility();
             void setVisibility(VisibilityKind visibility);
             bool isSubClassOf(ElementType eType) const override;

@@ -12,10 +12,8 @@ namespace UML {
             Set<Element, DirectedRelationship> m_targets = Set<Element, DirectedRelationship>(this);
             Set<Element, DirectedRelationship> m_sources = Set<Element, DirectedRelationship>(this);
             void init();
-            void copy(const DirectedRelationship& rhs);
             DirectedRelationship();
         public:
-            DirectedRelationship(const DirectedRelationship& relationship);
             virtual ~DirectedRelationship();
             Set<Element, DirectedRelationship>& getTargets();
             Set<Element, DirectedRelationship>& getSources();

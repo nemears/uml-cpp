@@ -1,7 +1,8 @@
 set(umlSources  element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp namespace.cpp package.cpp packageableElement.cpp
-                # templateableElement.cpp parameterableElement.cpp relationship.cpp directedRelationship.cpp packageMerge.cpp
-                # dependency.cpp classifier.cpp typedElement.cpp feature.cpp property.cpp class.cpp structuredClassifier.cpp
-                # redefinableElement.cpp type.cpp structuralFeature.cpp generalization.cpp valueSpecification.cpp 
+                templateableElement.cpp parameterableElement.cpp relationship.cpp directedRelationship.cpp packageMerge.cpp
+                dependency.cpp classifier.cpp typedElement.cpp feature.cpp property.cpp structuredClassifier.cpp class.cpp 
+                connectableElement.cpp encapsulatedClassifier.cpp
+                redefinableElement.cpp type.cpp structuralFeature.cpp generalization.cpp #valueSpecification.cpp 
                 # literalSpecification.cpp literalString.cpp literalInt.cpp literalReal.cpp literalBool.cpp literalNull.cpp
                 # literalUnlimitedNatural.cpp dataType.cpp primitiveType.cpp instanceSpecification.cpp slot.cpp 
                 # behavioralFeature.cpp behavior.cpp connectableElement.cpp multiplicityElement.cpp parameter.cpp

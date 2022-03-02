@@ -1,9 +1,9 @@
 #ifndef _UML_CLASSIFIER_H_
 #define _UML_CLASSIFIER_H_
 
+#include "namespace.h"
 #include "type.h"
 #include "redefinableElement.h"
-#include "namespace.h"
 #include "templateableElement.h"
 
 namespace UML {
@@ -30,7 +30,7 @@ namespace UML {
             Set<Generalization, Classifier> m_generalizations = Set<Generalization, Classifier>(this);
             Set<Classifier, Classifier> m_generals = Set<Classifier, Classifier>(this);
             Set<NamedElement, Classifier> m_inheritedMembers = Set<NamedElement, Classifier>(this);
-            Set<GeneralizationSet, Classifier> m_powerTypeExtent = Set<GeneralizationSet, Classifier>(this);
+            // Set<GeneralizationSet, Classifier> m_powerTypeExtent = Set<GeneralizationSet, Classifier>(this);
             class AddGeneralizationFunctor : public SetFunctor {
                 private:
                     void operator()(Element& el) const override;
@@ -73,11 +73,9 @@ namespace UML {
             void restoreReferences() override;
             void referenceErased(ID id) override;
             void init();
-            void copy(const Classifier& rhs);
             Classifier();
         public:
             virtual ~Classifier();
-            Classifier(const Classifier& rhs);
             std::string getName() override;
             void setName(const std::string& name) override;
             Set<Feature, Classifier>& getFeatures();
@@ -85,7 +83,7 @@ namespace UML {
             Set<Generalization, Classifier>& getGeneralizations();
             Set<Classifier, Classifier>& getGenerals();
             Set<NamedElement, Classifier>& getInheritedMembers();
-            Set<GeneralizationSet, Classifier>& getPowerTypeExtent();
+            // Set<GeneralizationSet, Classifier>& getPowerTypeExtent();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CLASSIFIER;

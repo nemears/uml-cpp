@@ -28,6 +28,7 @@ namespace UML {
 
         template <class U, class V> friend class Singleton;
         friend class UmlManager;
+        template <class U> friend class UmlPtr;
 
         private:
             UmlManager* m_manager;
@@ -78,6 +79,14 @@ namespace UML {
             inline friend bool operator!=(const UmlPtr& lhs, const UmlPtr& rhs) {
                 return lhs.m_id != rhs.m_id;
             };
+            template <class U = Element>
+            inline friend bool operator==(const UmlPtr& lhs, const UmlPtr<U>& rhs) {
+                return lhs.id() == rhs.id();
+            };
+            template <class U = Element>
+            inline friend bool operator!=(const UmlPtr& lhs, const UmlPtr<U>& rhs) {
+                return lhs.id() != rhs.id();
+            };
             inline friend bool operator==(const Element& lhs, const UmlPtr& rhs) {
                 return lhs.m_id == rhs.m_id;
             };
@@ -96,6 +105,15 @@ namespace UML {
                 if (rhs.m_ptr) {
                     m_id = rhs.m_id;
                     m_ptr = rhs.m_ptr;
+                    m_manager = rhs.m_manager;
+                    m_ptr->m_node->m_ptrs.push_back((void*) this);
+                }
+            };
+            template <class U = Element>
+            UmlPtr(const UmlPtr<U>& rhs) {
+                if (rhs.m_ptr) {
+                    m_ptr = const_cast<T*>(&rhs->template as<T>());
+                    m_id = rhs.m_id;
                     m_manager = rhs.m_manager;
                     m_ptr->m_node->m_ptrs.push_back((void*) this);
                 }

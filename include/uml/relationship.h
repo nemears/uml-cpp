@@ -12,10 +12,8 @@ namespace UML {
             void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
-            void copy(const Relationship& rhs);
             Relationship();
         public:
-            Relationship(const Relationship& relationship);
             virtual ~Relationship();
             Set<Element, Relationship>& getRelatedElements();
             bool isSubClassOf(ElementType eType) const override;

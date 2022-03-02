@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
-#include "uml/uml-stable.h"
+#include "uml/package.h"
+#include "uml/umlPtr.h"
 // #include "test/umlTestUtil.h"
 
 using namespace UML;
@@ -63,41 +64,39 @@ TEST_F(PackageTest, overwriteOwningPackageTest) {
     ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }
 
-// TEST_F(PackageTest, packageMergeTest) {
-//     UmlManager mm;
-//     Package& p = *mm.create<Package>();
-//     PackageMerge& m = *mm.create<PackageMerge>();
-//     Package& mp = *mm.create<Package>();
-//     m.setMergedPackage(&mp);
-//     p.getPackageMerge().add(m);
-//     ASSERT_EQ(p.getPackageMerge().size(), 1);
-//     ASSERT_EQ(p.getPackageMerge().front(), m);
-//     ASSERT_EQ(p.getOwnedElements().size(), 1);
-//     ASSERT_EQ(p.getOwnedElements().get(m.getID()), m);
+TEST_F(PackageTest, packageMergeTest) {
+    UmlManager mm;
+    Package& p = *mm.create<Package>();
+    PackageMerge& m = *mm.create<PackageMerge>();
+    Package& mp = *mm.create<Package>();
+    m.setMergedPackage(&mp);
+    p.getPackageMerge().add(m);
+    ASSERT_EQ(p.getPackageMerge().size(), 1);
+    ASSERT_EQ(p.getPackageMerge().front(), m);
+    ASSERT_EQ(p.getOwnedElements().size(), 1);
+    ASSERT_EQ(p.getOwnedElements().get(m.getID()), m);
 
-//     ASSERT_EQ(*m.getMergedPackage(), mp);
-//     ASSERT_EQ(*m.getReceivingPackage(), p);
-//     ASSERT_EQ(m.getSources().size(), 1);
-//     ASSERT_EQ(m.getSources().front(), p);
-//     ASSERT_EQ(m.getTargets().size(), 1);
-//     ASSERT_EQ(m.getTargets().front(), mp);
-//     ASSERT_EQ(m.getTargets().front(), mp);
-// }
+    ASSERT_EQ(*m.getMergedPackage(), mp);
+    ASSERT_EQ(*m.getReceivingPackage(), p);
+    ASSERT_EQ(m.getSources().size(), 1);
+    ASSERT_EQ(m.getSources().front(), p);
+    ASSERT_EQ(m.getTargets().size(), 1);
+    ASSERT_EQ(m.getTargets().front(), mp);
+    ASSERT_EQ(m.getTargets().front(), mp);
+}
 
-// TEST_F(PackageTest, removePackageMergeTest) {
-//     UmlManager mm;
-//     Package p = mm.create<Package>();
-//     PackageMerge m = mm.create<PackageMerge>();
-//     p.getPackageMerge().add(m);
-//     ASSERT_NO_THROW(p.getPackageMerge().remove(m));
-//     ASSERT_TRUE(p.getPackageMerge().size() == 0);
-//     // ASSERT_TRUE(p.getDirectedRelationships().size() == 0);
-//     ASSERT_TRUE(p.getOwnedElements().size() == 0);
-//     // ASSERT_TRUE(p.getRelationships().size() == 0);
-//     ASSERT_TRUE(m.getReceivingPackage() == 0);
-//     ASSERT_TRUE(m.getSources().size() == 0);
-//     ASSERT_TRUE(m.getRelatedElements().size() == 0);
-// }
+TEST_F(PackageTest, removePackageMergeTest) {
+    UmlManager mm;
+    Package& p = *mm.create<Package>();
+    PackageMerge& m = *mm.create<PackageMerge>();
+    p.getPackageMerge().add(m);
+    ASSERT_NO_THROW(p.getPackageMerge().remove(m));
+    ASSERT_TRUE(p.getPackageMerge().size() == 0);
+    ASSERT_TRUE(p.getOwnedElements().size() == 0);
+    ASSERT_FALSE(m.getReceivingPackage());
+    ASSERT_TRUE(m.getSources().size() == 0);
+    ASSERT_TRUE(m.getRelatedElements().size() == 0);
+}
 
 // TEST_F(PackageTest, addOwnedStereotype) {
 //     UmlManager m;

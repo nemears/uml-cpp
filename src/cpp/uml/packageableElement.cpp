@@ -62,9 +62,9 @@ void PackageableElement::setOwningPackage(ID id) {
 bool PackageableElement::isSubClassOf(ElementType eType) const {
     bool ret = NamedElement::isSubClassOf(eType);
 
-    // if (!ret) {
-    //     ret = ParameterableElement::isSubClassOf(eType);
-    // }
+    if (!ret) {
+        ret = ParameterableElement::isSubClassOf(eType);
+    }
 
     if (!ret) {
         ret = eType == ElementType::PACKAGEABLE_ELEMENT;

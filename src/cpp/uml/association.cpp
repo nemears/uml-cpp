@@ -1,23 +1,28 @@
 #include "uml/association.h"
 #include "uml/property.h"
-#include "uml/uml-stable.h"
+#include "uml/umlPtr.h"
+#include "uml/package.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/stereotype.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
 void Association::AddEndTypeFunctor::operator()(Element& el) const {
-    if (el.as<Property>().hasType()) {
+    if (el.as<Property>().getType()) {
         if (el.as<Property>().m_type.loaded(el.as<Property>().m_type.ids().front())) {
-            m_el.as<Association>().getEndType().add(el.as<Property>().getTypeRef());
-            el.as<Property>().getTypeRef().setReference(&m_el);
+            m_el.as<Association>().getEndType().add(*el.as<Property>().getType());
+            el.as<Property>().getType()->setReference(&m_el);
         }
     }
 }
 
 void Association::RemoveEndTypeFunctor::operator()(Element& el) const {
-    if (el.as<Property>().hasType()) {
-        if (m_el.as<Association>().getEndType().contains(el.as<Property>().getTypeID())) {
-            m_el.as<Association>().getEndType().remove(el.as<Property>().getTypeID());
-            el.as<Property>().getTypeRef().removeReference(m_el.getID());
+    if (el.as<Property>().getType()) {
+        if (m_el.as<Association>().getEndType().contains(el.as<Property>().getType().id())) {
+            m_el.as<Association>().getEndType().remove(el.as<Property>().getType().id());
+            el.as<Property>().getType()->removeReference(m_el.getID());
         }
     }
 }
@@ -41,8 +46,8 @@ void Association::restoreReferences() {
     Classifier::restoreReferences();
     Relationship::restoreReferences();
     for (auto& prop : m_memberEnds) {
-        if (prop.hasType()) {
-            m_endType.add(prop.getTypeID());
+        if (prop.getType()) {
+            m_endType.add(prop.getType().id());
         }
     }
 }
@@ -84,31 +89,8 @@ void Association::init() {
     m_endType.m_signature = &Association::getEndType;
 }
 
-void Association::copy(const Association& rhs) {
-    m_memberEnds = rhs.m_memberEnds;
-    m_ownedEnds = rhs.m_ownedEnds;
-    m_navigableOwnedEnds = rhs.m_navigableOwnedEnds;
-    m_endType = rhs.m_endType;
-}
-
 Association::Association() : Element(ElementType::ASSOCIATION) {
     init();
-}
-
-Association::Association(const Association& rhs) : Element(rhs, ElementType::ASSOCIATION) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    Namespace::copy(rhs);
-    ParameterableElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    TemplateableElement::copy(rhs);
-    Classifier::copy(rhs);
-    Relationship::copy(rhs);
-    copy(rhs);
-    if (!m_copiedElementFlag) {
-        delete &rhs;
-    }
 }
 
 Association::~Association() {

@@ -1,20 +1,20 @@
-#ifndef DEPLOYMENT_H
-#define DEPLOYMENT_H
+#ifndef _UML_DEPLOYMENT_H_
+#define _UML_DEPLOYMENT_H_
 
 #include "dependency.h"
+#include "deployedArtifact.h"
+#include "deploymentTarget.h"
 
 namespace UML {
 
     class DeployedArtifact;
     class DeploymentTarget;
-    namespace Parsers {
-        class SetLocation;
-    }
+
+    typedef UmlPtr<DeploymentTarget> DeploymentTargetPtr;
 
     class Deployment : public Dependency {
 
         friend class UmlManager;
-        friend class Parsers::SetLocation;
         friend class DeploymentTarget;
 
         private:
@@ -22,16 +22,11 @@ namespace UML {
             Singleton<DeploymentTarget, Deployment> m_location = Singleton<DeploymentTarget, Deployment>(this);
             Set<DeploymentTarget, Deployment>& getLocationSingleton();
             void init();
-            void copy(const Deployment& rhs);
             Deployment();
         public:
-            Deployment(const Deployment& rhs);
             virtual ~Deployment();
             Set<DeployedArtifact, Deployment>& getDeployedArtifacts();
-            DeploymentTarget* getLocation();
-            DeploymentTarget& getLocationRef();
-            ID getLocationID() const;
-            bool hasLocation() const;
+            DeploymentTargetPtr getLocation() const;
             void setLocation(DeploymentTarget& location);
             void setLocation(DeploymentTarget* location);
             void setLocation(ID id);

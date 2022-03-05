@@ -9,9 +9,9 @@ class DirectedRelationshipTest : public ::testing::Test {
 
 TEST_F(DirectedRelationshipTest, sourceAndTargetTest) {
     UmlManager m;
-    PackageMerge dr = m.create<PackageMerge>();
-    Package a = m.create<Package>();
-    Package b = m.create<Package>();
+    PackageMerge& dr = *m.create<PackageMerge>();
+    Package& a = *m.create<Package>();
+    Package& b = *m.create<Package>();
     dr.setReceivingPackage(a);
     dr.setMergedPackage(b);
     ASSERT_TRUE(dr.getSources().size() == 1);
@@ -22,9 +22,9 @@ TEST_F(DirectedRelationshipTest, sourceAndTargetTest) {
 
 TEST_F(DirectedRelationshipTest, addTargetFunctorTest) {
     UmlManager m;
-    PackageMerge dr = m.create<PackageMerge>();
-    Package a = m.create<Package>();
-    Package b = m.create<Package>();
+    PackageMerge& dr = *m.create<PackageMerge>();
+    Package& a = *m.create<Package>();
+    Package& b = *m.create<Package>();
     dr.setReceivingPackage(a);
     dr.setMergedPackage(b);
     ASSERT_EQ(dr.getRelatedElements().size(), 2);
@@ -34,9 +34,9 @@ TEST_F(DirectedRelationshipTest, addTargetFunctorTest) {
 
 TEST_F(DirectedRelationshipTest, removeRelationshipFunctorTest) {
     UmlManager m;
-    PackageMerge& dr = m.create<PackageMerge>();
-    Package& a = m.create<Package>();
-    Package& b = m.create<Package>(); 
+    PackageMerge& dr = *m.create<PackageMerge>();
+    Package& a = *m.create<Package>();
+    Package& b = *m.create<Package>(); 
     a.getPackageMerge().add(dr);
     dr.setMergedPackage(&b);
     dr.setMergedPackage(0);

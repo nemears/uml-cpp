@@ -7,21 +7,21 @@ class ParameterTest : public ::testing::Test {};
 
 TEST_F(ParameterTest, TestSetDirection) {
     UmlManager m;
-    Parameter p = m.create<Parameter>();
+    Parameter& p = *m.create<Parameter>();
     p.setDirection(ParameterDirectionKind::IN);
     ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::IN);
 }
 
 TEST_F(ParameterTest, TestGetNotSetDirection) {
     UmlManager m;
-    Parameter p = m.create<Parameter>();
+    Parameter& p = *m.create<Parameter>();
     ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::NONE);
 }
 
 TEST_F(ParameterTest, reindexID_ownerTest) {
     UmlManager m;
-    OpaqueBehavior a = m.create<OpaqueBehavior>();
-    Parameter p = m.create<Parameter>();
+    OpaqueBehavior& a = *m.create<OpaqueBehavior>();
+    Parameter& p = *m.create<Parameter>();
     a.getOwnedParameters().add(p);
     p.setID("190d1cb9_13dc_44e6_a064_1268");
     ASSERT_NO_THROW(a.getOwnedParameters().get(p.getID()));
@@ -83,17 +83,3 @@ TEST_F(ParameterTest, reindexID_ownerTest) {
 //     // ASSERT_TRUE(o.getOwnedElements().get("test1"));
 //     // ASSERT_TRUE(o.getOwnedElements().get("test2"));
 // }
-
-TEST_F(ParameterTest, copyParameterTest) {
-    UmlManager m;
-    Parameter& p = m.create<Parameter>();
-    Classifier& t = m.create<Classifier>();
-    Operation& o = m.create<Operation>();
-    p.setDirection(ParameterDirectionKind::IN);
-    p.setType(&t);
-    p.setOperation(&o);
-    Parameter p2 = p;
-    ASSERT_EQ(p2.getDirection(), ParameterDirectionKind::IN);
-    ASSERT_EQ(p2.getType(), &t);
-    ASSERT_EQ(p2.getOperation(), &o);
-}

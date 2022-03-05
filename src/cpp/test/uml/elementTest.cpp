@@ -1,9 +1,6 @@
 #include "gtest/gtest.h"
-#include "uml/package.h"
-#include "uml/class.h"
-#include "uml/umlPtr.h"
-#include "uml/property.h"
-#include "uml/generalization.h"
+
+#include "uml/uml-stable.h"
 
 
 // #include "test/umlTestUtil.h"

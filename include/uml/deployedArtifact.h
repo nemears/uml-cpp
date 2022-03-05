@@ -1,5 +1,5 @@
-#ifndef DEPLOYED_ARTIFACT_H
-#define DEPLOYED_ARTIFACT_H
+#ifndef _UML_DEPLOYED_ARTIFACT_H_
+#define _UML_DEPLOYED_ARTIFACT_H_
 
 #include "namedElement.h"
 
@@ -11,7 +11,6 @@ namespace UML {
         protected:
             DeployedArtifact();
         public:
-            DeployedArtifact(const DeployedArtifact& deployedArtifact);
             virtual ~DeployedArtifact();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

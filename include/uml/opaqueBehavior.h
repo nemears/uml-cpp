@@ -1,5 +1,5 @@
-#ifndef OPAQUEBEHAVIORH
-#define OPAQUEBEHAVIORH
+#ifndef _UML_OPAQUE_BEHAVIOR_H_
+#define _UML_OPAQUE_BEHAVIOR_H_
 
 #include "behavior.h"
 
@@ -15,10 +15,8 @@ namespace UML {
             OrderedSet<LiteralString, OpaqueBehavior> m_bodies = OrderedSet<LiteralString, OpaqueBehavior>(this);
             Set<LiteralString, OpaqueBehavior>& getBodiesSet();
             void init();
-            void copy(const OpaqueBehavior& rhs);
             OpaqueBehavior();
         public:
-            OpaqueBehavior(const OpaqueBehavior& rhs);
             virtual ~OpaqueBehavior();
             OrderedSet<LiteralString, OpaqueBehavior>& getBodies();
             bool isSubClassOf(ElementType eType) const override;

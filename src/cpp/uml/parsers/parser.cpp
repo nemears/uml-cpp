@@ -1,7 +1,6 @@
 #include "uml/parsers/parser.h"
 #include <fstream>
-#include "uml/umlPtr.h"
-#include "uml/package.h"
+#include "uml/uml-stable.h"
 
 using namespace std;
 

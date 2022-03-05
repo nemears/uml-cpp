@@ -1,14 +1,21 @@
 #include "uml/connector.h"
-#include "uml/uml-stable.h"
+#include "uml/operation.h"
+#include "uml/manifestation.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/deployment.h"
 #include "uml/setReferenceFunctor.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
 void Connector::SetTypeFunctor::operator()(Element& el) const {
-    for (auto end : m_el.as<Connector>().getEnds()) {
-        if (end.hasRole() && end.getRoleRef().getTypeID() != ID::nullID()) {
+    for (auto& end : m_el.as<Connector>().getEnds()) {
+        if (end.getRole() && end.getRole()->getType().id() != ID::nullID()) {
             for (auto& assocEnd : el.as<Association>().getMemberEnds()) {
-                if (assocEnd.getTypeID() == end.getRoleRef().getTypeID()) {
+                if (assocEnd.getType().id() == end.getRole()->getType().id()) {
                     end.m_definingEnd.nonOppositeAdd(assocEnd);
                     break;
                 }
@@ -22,10 +29,10 @@ void Connector::RemoveTypeFunctor::operator()(Element& el) const {
 }
 
 void Connector::AddEndFunctor::operator()(Element& el) const {
-    if (m_el.as<Connector>().hasType()) {
-        if (el.as<ConnectorEnd>().hasRole() && el.as<ConnectorEnd>().getRoleRef().hasType()) {
-            for (auto& assocEnd : m_el.as<Connector>().getTypeRef().getMemberEnds()) {
-                if (assocEnd.getTypeID() == el.as<ConnectorEnd>().getRoleRef().getTypeID()) {
+    if (m_el.as<Connector>().getType()) {
+        if (el.as<ConnectorEnd>().getRole() && el.as<ConnectorEnd>().getRole()->getType()) {
+            for (auto& assocEnd : m_el.as<Connector>().getType()->getMemberEnds()) {
+                if (assocEnd.getType().id() == el.as<ConnectorEnd>().getRole()->getType().id()) {
                     el.as<ConnectorEnd>().m_definingEnd.nonOppositeAdd(assocEnd);
                     break;
                 }
@@ -66,7 +73,7 @@ void Connector::reindexName(std::string oldName, std::string newName) {
 
 void Connector::restoreReference(Element* el) {
     Feature::restoreReference(el);
-    if (m_type.id() == el->getID()) {
+    if (m_type.get().id() == el->getID()) {
         el->setReference(this);
     } else if (m_contracts.contains(el->getID())) {
         el->setReference(this);
@@ -94,46 +101,16 @@ void Connector::init() {
     m_ends.m_removeFunctors.insert(new RemoveEndFunctor(this));
 }
 
-void Connector::copy(const Connector& rhs) {
-    m_type = rhs.m_type;
-    m_contracts = rhs.m_contracts;
-    m_ends = rhs.m_ends;
-}
-
 Connector::Connector() : Element(ElementType::CONNECTOR) {
     init();
-}
-
-Connector::Connector(const Connector& rhs) : Element(rhs, ElementType::CONNECTOR) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    RedefinableElement::copy(rhs);
-    Feature::copy(rhs);
-    copy(rhs);
-    if (!m_copiedElementFlag) {
-        delete &rhs;
-    }
 }
 
 Connector::~Connector() {
     mountAndRelease();
 }
 
-Association* Connector::getType() {
+AssociationPtr Connector::getType() const {
     return m_type.get();
-}
-
-Association& Connector::getTypeRef() {
-    return m_type.getRef();
-}
-
-ID Connector::getTypeID() const {
-    return m_type.id();
-}
-
-bool Connector::hasType() const {
-    return m_type.has();
 }
 
 void Connector::setType(Association* type) {

@@ -1,25 +1,29 @@
 #include "uml/behavioredClassifier.h"
 #include "uml/behavior.h"
-#include "uml/uml-stable.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/umlPtr.h"
+#include "uml/stereotype.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
 void BehavioredClassifier::RemoveInterfaceRealizationFunctor::operator()(Element& el) const {
-    if (el.as<InterfaceRealization>().hasContract()) {
+    if (el.as<InterfaceRealization>().getContract()) {
         std::list<Classifier*> queue = {&m_el.as<Classifier>()};
         while (!queue.empty()) {
             Classifier* front = queue.front();
             queue.pop_front();
             for (auto& pair : front->m_node->m_references) {
                 if (pair.second && pair.second->m_managerElementMemory->isSubClassOf(ElementType::PORT)) {
-                    if (front->getID() == pair.second->m_managerElementMemory->as<Port>().getTypeID()) {
+                    if (front->getID() == pair.second->m_managerElementMemory->as<Port>().getType().id()) {
                         if (pair.second->m_managerElementMemory->as<Port>().isConjugated()) {
-                            if (pair.second->m_managerElementMemory->as<Port>().getRequired().contains(el.as<InterfaceRealization>().getContractID())) {
-                                pair.second->m_managerElementMemory->as<Port>().getRequired().removeReadOnly(el.as<InterfaceRealization>().getContractID());
+                            if (pair.second->m_managerElementMemory->as<Port>().getRequired().contains(el.as<InterfaceRealization>().getContract().id())) {
+                                pair.second->m_managerElementMemory->as<Port>().getRequired().removeReadOnly(el.as<InterfaceRealization>().getContract().id());
                             }
                         } else {
-                            if (pair.second->m_managerElementMemory->as<Port>().getProvided().contains(el.as<InterfaceRealization>().getContractID())) {
-                                pair.second->m_managerElementMemory->as<Port>().getProvided().removeReadOnly(el.as<InterfaceRealization>().getContractID());
+                            if (pair.second->m_managerElementMemory->as<Port>().getProvided().contains(el.as<InterfaceRealization>().getContract().id())) {
+                                pair.second->m_managerElementMemory->as<Port>().getProvided().removeReadOnly(el.as<InterfaceRealization>().getContract().id());
                             }
                         }
                     }
@@ -34,21 +38,21 @@ void BehavioredClassifier::RemoveInterfaceRealizationFunctor::operator()(Element
 }
 
 void BehavioredClassifier::AddInterfaceRealizationFunctor::operator()(Element& el) const {
-    if (el.as<InterfaceRealization>().hasContract()) {
+    if (el.as<InterfaceRealization>().getContract()) {
         std::list<Classifier*> queue = {&m_el.as<Classifier>()};
         while (!queue.empty()) {
             Classifier* front = queue.front();
             queue.pop_front();
             for (auto& pair : front->m_node->m_references) {
                 if (pair.second && pair.second->m_managerElementMemory->isSubClassOf(ElementType::PORT)) {
-                    if (pair.second->m_managerElementMemory->as<Port>().getTypeID() == front->m_id) {
+                    if (pair.second->m_managerElementMemory->as<Port>().getType().id() == front->m_id) {
                         if (pair.second->m_managerElementMemory->as<Port>().isConjugated()) {
-                            if (!pair.second->m_managerElementMemory->as<Port>().getRequired().contains(el.as<InterfaceRealization>().getContractID())) {
-                                pair.second->m_managerElementMemory->as<Port>().getRequired().nonOppositeAdd(el.as<InterfaceRealization>().getContractRef());
+                            if (!pair.second->m_managerElementMemory->as<Port>().getRequired().contains(el.as<InterfaceRealization>().getContract().id())) {
+                                pair.second->m_managerElementMemory->as<Port>().getRequired().nonOppositeAdd(*el.as<InterfaceRealization>().getContract());
                             }
                         } else {
-                            if (!pair.second->m_managerElementMemory->as<Port>().getProvided().contains(el.as<InterfaceRealization>().getContractID())) {
-                                pair.second->m_managerElementMemory->as<Port>().getProvided().nonOppositeAdd(el.as<InterfaceRealization>().getContractRef());
+                            if (!pair.second->m_managerElementMemory->as<Port>().getProvided().contains(el.as<InterfaceRealization>().getContract().id())) {
+                                pair.second->m_managerElementMemory->as<Port>().getProvided().nonOppositeAdd(*el.as<InterfaceRealization>().getContract());
                             }
                         }
                     }
@@ -78,18 +82,8 @@ void BehavioredClassifier::init() {
     m_interfaceRealizations.m_removeFunctors.insert(new RemoveInterfaceRealizationFunctor(this));
 }
 
-void BehavioredClassifier::copy(const BehavioredClassifier& rhs) {
-    m_ownedBehaviors = rhs.m_ownedBehaviors;
-    m_classifierBehavior = rhs.m_classifierBehavior;
-    m_interfaceRealizations = rhs.m_interfaceRealizations;
-}
-
 BehavioredClassifier::BehavioredClassifier() : Element(ElementType::BEHAVIORED_CLASSIFIER) {
     init();
-}
-
-BehavioredClassifier::BehavioredClassifier(const BehavioredClassifier& classifier) : Element(classifier, ElementType::BEHAVIORED_CLASSIFIER) {
-    // abstract
 }
 
 BehavioredClassifier::~BehavioredClassifier() {
@@ -100,20 +94,8 @@ Set<Behavior, BehavioredClassifier>& BehavioredClassifier::getOwnedBehaviors() {
     return m_ownedBehaviors;
 }
 
-Behavior* BehavioredClassifier::getClassifierBehavior() {
+BehaviorPtr BehavioredClassifier::getClassifierBehavior() const {
     return m_classifierBehavior.get();
-}
-
-Behavior& BehavioredClassifier::getClassifierBehaviorRef() {
-    return m_classifierBehavior.getRef();
-}
-
-ID BehavioredClassifier::getClassifierBehaviorID() const {
-    return m_classifierBehavior.id();
-}
-
-bool BehavioredClassifier::hasClassifierBehavior() const {
-    return m_classifierBehavior.has();
 }
 
 void BehavioredClassifier::setClassifierBehavior(Behavior* behavior) {

@@ -1,16 +1,22 @@
-#ifndef OPERATIONH
-#define OPERATIONH
+#ifndef _UML_OPERATION_H_
+#define _UML_OPERATION_H_
 
 #include "behavioralFeature.h"
 #include "templateableElement.h"
 #include "parameterableElement.h"
 #include "orderedSet.h"
+#include "parameter.h"
 
 namespace UML {
 
     class Class;
     class DataType;
     class Type;
+
+    typedef UmlPtr<Type> TypePtr;
+    typedef UmlPtr<Class> ClassPtr;
+    typedef UmlPtr<DataType> DataTypePtr;
+    typedef UmlPtr<Interface> InterfacePtr;
 
     class Operation : public BehavioralFeature , public TemplateableElement, public ParameterableElement {
         
@@ -36,35 +42,22 @@ namespace UML {
             Set<Interface, Operation>& getInterfaceSingleton();
             Set<Parameter, Operation>& getOwnedParametersSet();
             void init();
-            void copy(const Operation& rhs);
             Operation();
         public:
-            Operation(const Operation& rhs);
             virtual ~Operation();
-            Type* getType();
-            Type& getTypeRef();
-            bool hasType() const;
+            TypePtr getType() const;
             void setType(Type& type);
             void setType(Type* type);
             void setType(ID id);
-            Class* getClass();
-            Class& getClassRef();
-            ID getClassID() const;
-            bool hasClass() const;
+            ClassPtr getClass() const;
             void setClass(Class& clazz);
             void setClass(Class* clazz);
             void setClass(ID id);
-            DataType* getDataType();
-            DataType& getDataTypeRef();
-            ID getDataTypeID() const;
-            bool hasDataType() const;
+            DataTypePtr getDataType() const;
             void setDataType(DataType& dataType);
             void setDataType(DataType* dataType);
             void setDataType(ID id);
-            Interface* getInterface();
-            Interface& getInterfaceRef();
-            bool hasInterface() const;
-            ID getInterfaceID() const;
+            InterfacePtr getInterface() const;
             void setInterface(Interface* interface);
             void setInterface(Interface& interface);
             void setInterface(ID id);

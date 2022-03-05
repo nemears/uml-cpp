@@ -12,7 +12,6 @@ namespace UML {
             bool m_value;
             LiteralBool();
         public:
-            LiteralBool(const LiteralBool& rhs);
             bool getValue();
             void setValue(bool val);
             bool isSubClassOf(ElementType eType) const override;

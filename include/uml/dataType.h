@@ -1,5 +1,5 @@
-#ifndef DATATYPE_H
-#define DATATYPE_H
+#ifndef _UML_DATA_TYPE_H_
+#define _UML_DATA_TYPE_H_
 
 #include "classifier.h"
 #include "orderedSet.h"
@@ -17,11 +17,9 @@ namespace UML {
             Set<Property, DataType>& getOwnedAttributesSet();
             Set<Operation, DataType>& getOwnedOperationsSet();
             void init();
-            void copy(const DataType& rhs);
             DataType();
         public:
             ~DataType();
-            DataType(const DataType& rhs);
             OrderedSet<Property, DataType>& getOwnedAttributes();
             OrderedSet<Operation, DataType>& getOwnedOperations();
             bool isSubClassOf(ElementType eType) const override;

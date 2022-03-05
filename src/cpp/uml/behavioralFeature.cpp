@@ -1,7 +1,11 @@
 #include "uml/behavioralFeature.h"
 #include "uml/behavior.h"
 #include "uml/parameter.h"
-#include "uml/uml-stable.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -36,18 +40,8 @@ void BehavioralFeature::init() {
     m_ownedParameters.m_signature = &BehavioralFeature::getOwnedParameters;
 }
 
-void BehavioralFeature::copy(const BehavioralFeature& rhs) {
-    m_methods = rhs.m_methods;
-    m_ownedParameters = rhs.m_ownedParameters;
-    m_returnSpecified = rhs.m_returnSpecified;
-}
-
 BehavioralFeature::BehavioralFeature() : Element(ElementType::BEHAVIORAL_FEATURE) {
     init();
-}
-
-BehavioralFeature::BehavioralFeature(const BehavioralFeature& el) : Element(ElementType::BEHAVIORAL_FEATURE) {
-    // abstract
 }
 
 BehavioralFeature::~BehavioralFeature() {

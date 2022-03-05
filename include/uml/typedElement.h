@@ -24,13 +24,10 @@ namespace UML{
             TypedElement();
         public:
             virtual ~TypedElement();
-            virtual TypePtr getType();
+            virtual TypePtr getType() const;
             virtual void setType(Type* type);
             void setType(Type& type);
             void setType(ID id);
-            // TypedElement& operator=(TypedElement&&) {
-            //     return *this;
-            // };
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::TYPED_ELEMENT;

@@ -1,9 +1,14 @@
 #include "uml/generalization.h"
-#include "uml/class.h"
+#include "uml/behavior.h"
 #include "uml/umlPtr.h"
 #include "uml/property.h"
 #include "uml/package.h"
-// #include "uml/generalizationSet.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/generalizationSet.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -47,8 +52,8 @@ void Generalization::init() {
     m_specific.subsets(m_sources);
     m_specific.opposite(&Classifier::getGeneralizations);
     m_specific.m_signature = &Generalization::getSpecificSingleton;
-    // m_generalizationSets.opposite(&GeneralizationSet::getGeneralizations);
-    // m_generalizationSets.m_signature = &Generalization::getGeneralizationSets;
+    m_generalizationSets.opposite(&GeneralizationSet::getGeneralizations);
+    m_generalizationSets.m_signature = &Generalization::getGeneralizationSets;
 }
 
 Generalization::Generalization() : Element(ElementType::GENERALIZATION) {
@@ -59,7 +64,7 @@ Generalization::~Generalization() {
     mountAndRelease();
 }
 
-ClassifierPtr Generalization::getGeneral() {
+ClassifierPtr Generalization::getGeneral() const {
     return m_general.get();
 }
 
@@ -75,7 +80,7 @@ void Generalization::setGeneral(ID id) {
     m_general.set(id);
 }
 
-ClassifierPtr Generalization::getSpecific() {
+ClassifierPtr Generalization::getSpecific() const {
     return m_specific.get();
 }
 
@@ -91,9 +96,9 @@ void Generalization::setSpecific(ID id) {
     m_specific.set(id);
 }
 
-// Set<GeneralizationSet, Generalization>& Generalization::getGeneralizationSets() {
-//     return m_generalizationSets;
-// }
+Set<GeneralizationSet, Generalization>& Generalization::getGeneralizationSets() {
+    return m_generalizationSets;
+}
 
 bool Generalization::isSubClassOf(ElementType eType) const {
     bool ret = DirectedRelationship::isSubClassOf(eType);

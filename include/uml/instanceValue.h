@@ -1,11 +1,12 @@
-#ifndef INSTANCEVALUEH
-#define INSTANCEVALUEH
+#ifndef _UML_INSTANCE_VALUE_H_
+#define _UML_INSTANCE_VALUE_H_
 
 #include "valueSpecification.h"
 
 namespace UML {
 
     class InstanceSpecification;
+    typedef UmlPtr<InstanceSpecification> InstanceSpecificationPtr;
 
     class InstanceValue : public ValueSpecification {
 
@@ -19,15 +20,10 @@ namespace UML {
             void referenceErased(ID id) override;
             Set<InstanceSpecification, InstanceValue>& getInstanceSingleton();
             void init();
-            void copy(const InstanceValue& rhs);
             InstanceValue();
         public:
-            InstanceValue(const InstanceValue& rhs);
             virtual ~InstanceValue();
-            InstanceSpecification* getInstance();
-            InstanceSpecification& getInstanceRef();
-            ID getInstanceID();
-            bool hasInstance() const;
+            InstanceSpecificationPtr getInstance() const;
             void setInstance(InstanceSpecification& inst);
             void setInstance(InstanceSpecification* inst);
             void setInstance(ID id);

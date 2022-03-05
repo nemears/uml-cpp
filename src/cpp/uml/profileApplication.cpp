@@ -1,6 +1,11 @@
 #include "uml/profileApplication.h"
 #include "uml/profile.h"
-#include "uml/uml-stable.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -21,44 +26,16 @@ void ProfileApplication::init() {
     m_applyingPackage.m_signature = &ProfileApplication::getApplyingPackageSingleton;
 }
 
-void ProfileApplication::copy(const ProfileApplication& rhs) {
-    m_appliedProfile = rhs.m_appliedProfile;
-    m_applyingPackage = rhs.m_applyingPackage;
-}
-
 ProfileApplication::ProfileApplication() : Element(ElementType::PROFILE_APPLICATION) {
     init();
-}
-
-ProfileApplication::ProfileApplication(const ProfileApplication& rhs) : Element(rhs, ElementType::PROFILE_APPLICATION) {
-    init();
-    Element::copy(rhs);
-    Relationship::copy(rhs);
-    DirectedRelationship::copy(rhs);
-    copy(rhs);
-    if (!m_copiedElementFlag) {
-        delete &rhs;
-    }
 }
 
 ProfileApplication::~ProfileApplication() {
     mountAndRelease();
 }
 
-Profile* ProfileApplication::getAppliedProfile() {
+ProfilePtr ProfileApplication::getAppliedProfile() const {
     return m_appliedProfile.get();
-}
-
-Profile& ProfileApplication::getAppliedProfileRef() {
-    return m_appliedProfile.getRef();
-}
-
-ID ProfileApplication::getAppliedProfileID() const {
-    return m_appliedProfile.id();
-}
-
-bool ProfileApplication::hasAppliedProfile() const {
-    return m_appliedProfile.has();
 }
 
 void ProfileApplication::setAppliedProfile(Profile* profile) {
@@ -73,20 +50,8 @@ void ProfileApplication::setAppliedProfile(ID id) {
     m_appliedProfile.set(id);
 }
 
-Package* ProfileApplication::getApplyingPackage() {
+PackagePtr ProfileApplication::getApplyingPackage() {
     return m_applyingPackage.get();
-}
-
-Package& ProfileApplication::getApplyingPackageRef() {
-    return m_applyingPackage.getRef();
-}
-
-ID ProfileApplication::getApplyingPackageID() const {
-    return m_applyingPackage.id();
-}
-
-bool ProfileApplication::hasApplyingPackage() const {
-    return m_applyingPackage.has();
 }
 
 void ProfileApplication::setApplyingPackage(Package* pckg) {

@@ -1,8 +1,13 @@
 #include "uml/operation.h"
-#include "uml/class.h"
+#include "uml/behavior.h"
 #include "uml/dataType.h"
 #include "uml/behavior.h"
-#include "uml/uml-stable.h"
+#include "uml/parameter.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -64,44 +69,16 @@ void Operation::init() {
     m_operationOwnedParameters.m_signature = &Operation::getOwnedParametersSet;
 }
 
-void Operation::copy(const Operation& rhs) {
-    m_type = rhs.m_type;
-    m_class = rhs.m_class;
-    m_dataType = rhs.m_dataType;
-}
-
 Operation::Operation() : Element(ElementType::OPERATION) {
     init();
-}
-
-Operation::Operation(const Operation& rhs) : Element(rhs, ElementType::OPERATION) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    RedefinableElement::copy(rhs);
-    Feature::copy(rhs);
-    BehavioralFeature::copy(rhs);
-    TemplateableElement::copy(rhs);
-    copy(rhs);
-    if (!m_copiedElementFlag) {
-        delete &rhs;
-    }
 }
 
 Operation::~Operation() {
     mountAndRelease();
 }
 
-Type* Operation::getType() {
+TypePtr Operation::getType() const {
     return m_type.get();
-}
-
-Type& Operation::getTypeRef() {
-    return m_type.getRef();
-}
-
-bool Operation::hasType() const {
-    return m_type.has();
 }
 
 void Operation::setType(Type* type) {
@@ -116,20 +93,8 @@ void Operation::setType(ID id) {
     m_type.set(id);
 }
 
-Class* Operation::getClass() {
+ClassPtr Operation::getClass() const {
     return m_class.get();
-}
-
-Class& Operation::getClassRef() {
-    return m_class.getRef();
-}
-
-ID Operation::getClassID() const {
-    return m_class.id();
-}
-
-bool Operation::hasClass() const {
-    return m_class.has();
 }
 
 void Operation::setClass(Class* clazz) {
@@ -144,20 +109,8 @@ void Operation::setClass(ID id) {
     m_class.set(id);
 }
 
-DataType* Operation::getDataType() {
+DataTypePtr Operation::getDataType() const {
     return m_dataType.get();
-}
-
-DataType& Operation::getDataTypeRef() {
-    return m_dataType.getRef();
-}
-
-ID Operation::getDataTypeID() const {
-    return m_dataType.id();
-}
-
-bool Operation::hasDataType() const {
-    return m_dataType.has();
 }
 
 void Operation::setDataType(DataType* dataType) {
@@ -172,20 +125,8 @@ void Operation::setDataType(ID id) {
     m_dataType.set(id);
 }
 
-Interface* Operation::getInterface() {
+InterfacePtr Operation::getInterface() const {
     return m_interface.get();
-}
-
-Interface& Operation::getInterfaceRef() {
-    return m_interface.getRef();
-}
-
-bool Operation::hasInterface() const {
-    return m_interface.has();
-}
-
-ID Operation::getInterfaceID() const {
-    return m_interface.id();
 }
 
 void Operation::setInterface(Interface* interface) {

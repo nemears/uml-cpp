@@ -1,19 +1,22 @@
 #include "uml/templateableElement.h"
-// #include "uml/templateSignature.h"
+#include "uml/templateSignature.h"
+#include "uml/templateBinding.h"
+#include "uml/parameterableElement.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
-// Set<TemplateSignature, TemplateableElement>& TemplateableElement::getOwnedTemplateSignatureSingleton() {
-//     return m_ownedTemplateSignature;
-// }
+Set<TemplateSignature, TemplateableElement>& TemplateableElement::getOwnedTemplateSignatureSingleton() {
+    return m_ownedTemplateSignature;
+}
 
 void TemplateableElement::init() {
-    // m_ownedTemplateSignature.subsets(*m_ownedElements);
-    // m_ownedTemplateSignature.opposite(&TemplateSignature::getTemplateSingleton);
-    // m_ownedTemplateSignature.m_signature = &TemplateableElement::getOwnedTemplateSignatureSingleton;
-    // m_templateBindings.subsets(*m_ownedElements);
-    // m_templateBindings.opposite(&TemplateBinding::getBoundElementSingleton);
-    // m_templateBindings.m_signature = &TemplateableElement::getTemplateBindings;
+    m_ownedTemplateSignature.subsets(*m_ownedElements);
+    m_ownedTemplateSignature.opposite(&TemplateSignature::getTemplateSingleton);
+    m_ownedTemplateSignature.m_signature = &TemplateableElement::getOwnedTemplateSignatureSingleton;
+    m_templateBindings.subsets(*m_ownedElements);
+    m_templateBindings.opposite(&TemplateBinding::getBoundElementSingleton);
+    m_templateBindings.m_signature = &TemplateableElement::getTemplateBindings;
 }
 
 TemplateableElement::TemplateableElement() : Element(ElementType::TEMPLATEABLE_ELEMENT) {
@@ -24,37 +27,25 @@ TemplateableElement::~TemplateableElement() {
 
 }
 
-// TemplateSignature* TemplateableElement::getOwnedTemplateSignature() {
-//     return m_ownedTemplateSignature.get();
-// }
+TemplateSignaturePtr TemplateableElement::getOwnedTemplateSignature() const {
+    return m_ownedTemplateSignature.get();
+}
 
-// TemplateSignature& TemplateableElement::getOwnedTemplateSignatureRef() {
-//     return m_ownedTemplateSignature.getRef();
-// }
+void TemplateableElement::setOwnedTemplateSignature(TemplateSignature* signature) {
+    m_ownedTemplateSignature.set(signature);
+}
 
-// ID TemplateableElement::getOwnedTemplateSignatureID() const {
-//     return m_ownedTemplateSignature.id();
-// }
+void TemplateableElement::setOwnedTemplateSignature(TemplateSignature& signature) {
+    m_ownedTemplateSignature.set(signature);
+}
 
-// bool TemplateableElement::hasOwnedTemplateSignature() const {
-//     return m_ownedTemplateSignature.has();
-// }
+void TemplateableElement::setOwnedTemplateSignature(ID id) {
+    m_ownedTemplateSignature.set(id);
+}
 
-// void TemplateableElement::setOwnedTemplateSignature(TemplateSignature* signature) {
-//     m_ownedTemplateSignature.set(signature);
-// }
-
-// void TemplateableElement::setOwnedTemplateSignature(TemplateSignature& signature) {
-//     m_ownedTemplateSignature.set(signature);
-// }
-
-// void TemplateableElement::setOwnedTemplateSignature(ID id) {
-//     m_ownedTemplateSignature.set(id);
-// }
-
-// Set<TemplateBinding, TemplateableElement>& TemplateableElement::getTemplateBindings() {
-//     return m_templateBindings;
-// }
+Set<TemplateBinding, TemplateableElement>& TemplateableElement::getTemplateBindings() {
+    return m_templateBindings;
+}
 
 bool TemplateableElement::isSubClassOf(ElementType eType) const {
     bool ret = Element::isSubClassOf(eType);

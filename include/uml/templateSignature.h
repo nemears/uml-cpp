@@ -1,7 +1,8 @@
-#ifndef TEMPLATE_SIGNATURE_H
-#define TEMPLATE_SIGNATURE_H
+#ifndef _UML_TEMPLATE_SIGNATURE_H_
+#define _UML_TEMPLATE_SIGNATURE_H_
 
 #include "element.h"
+#include "templateParameter.h"
 #include "singleton.h"
 #include "orderedSet.h"
 
@@ -9,15 +10,13 @@ namespace UML {
 
     class TemplateableElement;
     class TemplateParameter;
-    namespace Parsers {
-        class SetTemplate;
-    }
+
+    typedef UmlPtr<TemplateableElement> TemplateableElementPtr;
 
     class TemplateSignature : public Element {
 
         friend class UmlManager;
         friend class TemplateParameter;
-        friend class Parsers::SetTemplate;
         friend class TemplateableElement;
 
         private:
@@ -32,15 +31,10 @@ namespace UML {
             Set<TemplateParameter, TemplateSignature>& getParametersSet();
             Set<TemplateParameter, TemplateSignature>& getOwnedParametersSet();
             void init();
-            void copy(const TemplateSignature& rhs);
             TemplateSignature();
         public:
-            TemplateSignature(const TemplateSignature& el);
             virtual ~TemplateSignature();
-            TemplateableElement* getTemplate();
-            TemplateableElement& getTemplateRef();
-            ID getTemplateID() const;
-            bool hasTemplate() const;
+            TemplateableElementPtr getTemplate() const;
             void setTemplate(TemplateableElement& temp);
             void setTemplate(TemplateableElement* temp);
             void setTemplate(ID id);

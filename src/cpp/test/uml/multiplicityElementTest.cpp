@@ -9,7 +9,7 @@ class MultiplicityElementTest : public ::testing::Test {
 
 TEST_F(MultiplicityElementTest, SetAndGetProperLowerAndUpperTest) {
     UmlManager m;
-    Property& p = m.create<Property>();
+    Property& p = *m.create<Property>();
     p.setLower(0);
     p.setUpper(1);
     ASSERT_NO_THROW(p.getLower());
@@ -20,19 +20,19 @@ TEST_F(MultiplicityElementTest, SetAndGetProperLowerAndUpperTest) {
 
 TEST_F(MultiplicityElementTest, GetLowerBeforeSettingTest) {
     UmlManager m;
-    Property& p = m.create<Property>();
+    Property& p = *m.create<Property>();
     ASSERT_THROW(p.getLower(), MultiplicityElement::MultiplicityNotSpecifiedException);
 }
 
 TEST_F(MultiplicityElementTest, GetUpperBeforeSettingTest) {
     UmlManager m;
-    Property& p = m.create<Property>();
+    Property& p = *m.create<Property>();
     ASSERT_THROW(p.getUpper(), MultiplicityElement::MultiplicityNotSpecifiedException);
 }
 
 TEST_F(MultiplicityElementTest, MultiplictySpecifiedTest) {
     UmlManager m;
-    Property& p = m.create<Property>();
+    Property& p = *m.create<Property>();
     ASSERT_FALSE(p.multiplicitySpecified());
     p.setLower(0);
     ASSERT_FALSE(p.multiplicitySpecified());
@@ -42,10 +42,10 @@ TEST_F(MultiplicityElementTest, MultiplictySpecifiedTest) {
 
 TEST_F(MultiplicityElementTest, MultiplicityValueTest) {
     UmlManager m;
-    Property& p = m.create<Property>();
-    LiteralInt& low = m.create<LiteralInt>();
+    Property& p = *m.create<Property>();
+    LiteralInt& low = *m.create<LiteralInt>();
     low.setValue(0);
-    LiteralInt& up = m.create<LiteralInt>();
+    LiteralInt& up = *m.create<LiteralInt>();
     up.setValue(10);
     p.setLowerValue(&low);
     p.setUpperValue(&up);

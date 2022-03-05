@@ -1,5 +1,5 @@
-#ifndef EXTENSION_END_H
-#define EXTENSION_END_H
+#ifndef _UML_EXTENSION_END_H_
+#define _UML_EXTENSION_END_H_
 
 #include "property.h"
 #include "stereotype.h"
@@ -7,9 +7,6 @@
 namespace UML {
 
     class Extension;
-    namespace Parsers {
-        class SetExtension;
-    }
 
     class ExtensionEnd : public Property {
 
@@ -19,14 +16,10 @@ namespace UML {
             Singleton<Stereotype, ExtensionEnd> m_extensionType = Singleton<Stereotype, ExtensionEnd>(this);
             Set<Stereotype, ExtensionEnd>& getTypeSingleton();
             void init();
-            void copy(const ExtensionEnd& rhs);
             ExtensionEnd();
         public:
-            ExtensionEnd(const ExtensionEnd& end);
             virtual ~ExtensionEnd();
-            Stereotype* getType() override;
-            Stereotype& getTypeRef();
-            bool hasType() const;
+            TypePtr getType() const override;
             void setType(Stereotype& stereotype);
             void setType(Stereotype* stereotype);
             bool isSubClassOf(ElementType eType) const override;

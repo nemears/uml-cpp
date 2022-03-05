@@ -1,5 +1,5 @@
-#ifndef ARTIFACT_H
-#define ARTIFACT_H
+#ifndef _UML_ARTIFACT_H_
+#define _UML_ARTIFACT_H_
 
 #include "classifier.h"
 #include "deployedArtifact.h"
@@ -8,14 +8,10 @@
 namespace UML {
 
     class Manifestation;
-    namespace Parsers {
-        class ArtifactSetArtifact;
-    }
 
     class Artifact : public Classifier, public DeployedArtifact {
 
         friend class UmlManager;
-        friend class Parsers::ArtifactSetArtifact;
 
         protected:
             Set<Artifact, Artifact> m_nestedArtifacts = Set<Artifact, Artifact>(this);
@@ -25,10 +21,8 @@ namespace UML {
             Set<Property, Artifact>& getOwnedAttributesSet();
             Set<Operation, Artifact>& getOwnedOperationsSet();
             void init();
-            void copy(const Artifact& rhs);
             Artifact();
         public:
-            Artifact(const Artifact& rhs);
             virtual ~Artifact();
             OrderedSet<Property, Artifact>& getOwnedAttributes();
             OrderedSet<Operation, Artifact>& getOwnedOperations();

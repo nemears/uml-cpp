@@ -1,5 +1,4 @@
 #include "uml/comment.h"
-#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -27,21 +26,8 @@ void Comment::init() {
     m_annotatedElements.m_signature = &Comment::getAnnotatedElements;
 }
 
-void Comment::copy(const Comment& rhs) {
-    m_annotatedElements = rhs.m_annotatedElements;
-}
-
 Comment::Comment() : Element(ElementType::COMMENT) {
     
-}
-
-Comment::Comment(const Comment& rhs) : Element(rhs, ElementType::COMMENT) {
-    init();
-    Element::copy(rhs);
-    copy(rhs);
-    if (!m_copiedElementFlag) {
-        delete &rhs;
-    }
 }
 
 Comment::~Comment() {

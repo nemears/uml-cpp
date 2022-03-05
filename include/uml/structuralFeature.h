@@ -1,12 +1,12 @@
-#ifndef _STRUCTURAL_FEATURE_H_
-#define _STRUCTURAL_FEATURE_H_
+#ifndef _UML_STRUCTURAL_FEATURE_H_
+#define _UML_STRUCTURAL_FEATURE_H_
 
 #include "typedElement.h"
-// #include "multiplicityElement.h"
+#include "multiplicityElement.h"
 #include "feature.h"
 
 namespace UML {
-    class StructuralFeature : virtual public TypedElement/**, public MultiplicityElement**/, public Feature {
+    class StructuralFeature : virtual public TypedElement, public MultiplicityElement, public Feature {
         protected:
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;

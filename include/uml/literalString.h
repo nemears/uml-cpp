@@ -1,5 +1,5 @@
-#ifndef LITERALSTRINGH
-#define LITERALSTRINGH
+#ifndef _UML_LITERAL_STRING_H_
+#define _UML_LITERAL_STRING_H_
 
 #include "literalSpecification.h"
 
@@ -12,7 +12,6 @@ namespace UML {
             std::string m_value;
             LiteralString();
         public:
-            LiteralString(const LiteralString& rhs);
             std::string getValue();
             void setValue(std::string val);
             bool isSubClassOf(ElementType eType) const override;

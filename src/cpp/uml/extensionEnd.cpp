@@ -1,6 +1,11 @@
 #include "uml/extensionEnd.h"
 #include "uml/extension.h"
-#include "uml/uml-stable.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -13,43 +18,16 @@ void ExtensionEnd::init() {
     m_extensionType.m_signature = &ExtensionEnd::getTypeSingleton;
 }
 
-void ExtensionEnd::copy(const ExtensionEnd& rhs) {
-    m_extensionType = rhs.m_extensionType;
-}
-
 ExtensionEnd::ExtensionEnd() : Element(ElementType::EXTENSION_END) {
     init();
-}
-
-ExtensionEnd::ExtensionEnd(const ExtensionEnd& rhs) : Element(rhs, ElementType::EXTENSION_END) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    TypedElement::copy(rhs);
-    MultiplicityElement::copy(rhs);
-    RedefinableElement::copy(rhs);
-    Feature::copy(rhs);
-    Property::copy(rhs);
-    copy(rhs);
-    if (!m_copiedElementFlag) {
-        delete &rhs;
-    }
 }
 
 ExtensionEnd::~ExtensionEnd() {
     mountAndRelease();
 }
 
-Stereotype* ExtensionEnd::getType() {
+TypePtr ExtensionEnd::getType() const {
     return m_extensionType.get();
-}
-
-Stereotype& ExtensionEnd::getTypeRef() {
-    return m_extensionType.getRef();
-}
-
-bool ExtensionEnd::hasType() const {
-    return m_extensionType.has();
 }
 
 void ExtensionEnd::setType(Stereotype* type) {

@@ -1,8 +1,14 @@
 #include "uml/structuralFeature.h"
-#include "uml/class.h"
+#include "uml/behavior.h"
 #include "uml/package.h"
 #include "uml/property.h"
 #include "uml/generalization.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/structuralFeature.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -33,9 +39,9 @@ StructuralFeature::StructuralFeature() : Element(ElementType::STRUCTURAL_FEATURE
 bool StructuralFeature::isSubClassOf(ElementType eType) const {
     bool ret = TypedElement::isSubClassOf(eType);
     
-    // if (!ret) {
-    //     ret = MultiplicityElement::isSubClassOf(eType);
-    // }
+    if (!ret) {
+        ret = MultiplicityElement::isSubClassOf(eType);
+    }
 
     if (!ret) {
         ret = Feature::isSubClassOf(eType);

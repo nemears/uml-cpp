@@ -7,10 +7,10 @@ class SignalTest : public ::testing::Test {};
 
 TEST_F(SignalTest, basicSignalAndReceptionTest) {
     UmlManager m;
-    Class& clazz = m.create<Class>();
-    Signal& signal = m.create<Signal>();
-    Reception& reception = m.create<Reception>();
-    Property& attr = m.create<Property>();
+    Class& clazz = *m.create<Class>();
+    Signal& signal = *m.create<Signal>();
+    Reception& reception = *m.create<Reception>();
+    Property& attr = *m.create<Property>();
     signal.getOwnedAttributes().add(attr);
     reception.setSignal(signal);
     clazz.getOwnedReceptions().add(reception);
@@ -29,15 +29,15 @@ TEST_F(SignalTest, basicSignalAndReceptionTest) {
     ASSERT_EQ(signal.getMembers().front(), attr);
     ASSERT_EQ(signal.getOwnedElements().front(), attr);
 
-    ASSERT_TRUE(attr.hasFeaturingClassifier());
-    ASSERT_TRUE(attr.hasNamespace());
-    ASSERT_TRUE(attr.hasOwner());
-    ASSERT_EQ(attr.getFeaturingClassifierRef(), signal);
-    ASSERT_EQ(attr.getNamespaceRef(), signal);
-    ASSERT_EQ(attr.getOwnerRef(), signal);
+    ASSERT_TRUE(attr.getFeaturingClassifier());
+    ASSERT_TRUE(attr.getNamespace());
+    ASSERT_TRUE(attr.getOwner());
+    ASSERT_EQ(*attr.getFeaturingClassifier(), signal);
+    ASSERT_EQ(*attr.getNamespace(), signal);
+    ASSERT_EQ(*attr.getOwner(), signal);
 
-    ASSERT_TRUE(reception.hasSignal());
-    ASSERT_EQ(reception.getSignalRef(), signal);
+    ASSERT_TRUE(reception.getSignal());
+    ASSERT_EQ(*reception.getSignal(), signal);
 
     ASSERT_EQ(clazz.getOwnedReceptions().size(), 1);
     ASSERT_EQ(clazz.getFeatures().size(), 1);
@@ -45,11 +45,11 @@ TEST_F(SignalTest, basicSignalAndReceptionTest) {
     ASSERT_EQ(clazz.getMembers().size(), 1);
     ASSERT_EQ(clazz.getOwnedElements().size(), 1);
 
-    ASSERT_TRUE(reception.hasFeaturingClassifier());
-    ASSERT_TRUE(reception.hasNamespace());
-    ASSERT_TRUE(reception.hasOwner());
+    ASSERT_TRUE(reception.getFeaturingClassifier());
+    ASSERT_TRUE(reception.getNamespace());
+    ASSERT_TRUE(reception.getOwner());
 
-    ASSERT_EQ(reception.getFeaturingClassifierRef(), clazz);
-    ASSERT_EQ(reception.getNamespaceRef(), clazz);
-    ASSERT_EQ(reception.getOwnerRef(), clazz);
+    ASSERT_EQ(*reception.getFeaturingClassifier(), clazz);
+    ASSERT_EQ(*reception.getNamespace(), clazz);
+    ASSERT_EQ(*reception.getOwner(), clazz);
 }

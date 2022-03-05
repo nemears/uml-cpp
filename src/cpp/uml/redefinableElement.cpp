@@ -1,8 +1,13 @@
 #include "uml/redefinableElement.h"
-#include "uml/class.h"
+#include "uml/behavior.h"
 #include "uml/package.h"
 #include "uml/property.h"
 #include "uml/generalization.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/deployment.h"
+#include "uml/interface.h"
 
 using namespace UML;
 

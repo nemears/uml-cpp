@@ -1,5 +1,12 @@
 #include "uml/packageMerge.h"
 #include "uml/package.h"
+#include "uml/stereotype.h"
+#include "uml/packageMerge.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 #include "uml/umlPtr.h"
 
 using namespace UML;

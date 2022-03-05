@@ -1,12 +1,16 @@
 #include "uml/literalInt.h"
-#include "uml/uml-stable.h"
+#include "uml/package.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
-LiteralInt::LiteralInt() : Element(ElementType::LITERAL_INT) {}
+LiteralInt::LiteralInt() : Element(ElementType::LITERAL_INT) {
 
-LiteralInt::LiteralInt(const LiteralInt& rhs) : Element(rhs, ElementType::LITERAL_INT) {
-    m_value = rhs.m_value;
 }
 
 int LiteralInt::getValue() {

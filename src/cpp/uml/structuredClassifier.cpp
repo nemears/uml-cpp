@@ -4,7 +4,12 @@
 #include "uml/connectableElement.h"
 #include "uml/package.h"
 #include "uml/generalization.h"
-#include "uml/class.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -35,9 +40,9 @@ void StructuredClassifier::init() {
     m_parts.subsets(m_ownedAttributes);
     m_parts.m_signature = &StructuredClassifier::getParts;
     m_parts.m_readOnly = true;
-    // m_ownedConnectors.subsets(m_ownedMembers);
-    // m_ownedConnectors.subsets(m_features);
-    // m_ownedConnectors.m_signature = &StructuredClassifier::getOwnedConnectors;
+    m_ownedConnectors.subsets(m_ownedMembers);
+    m_ownedConnectors.subsets(m_features);
+    m_ownedConnectors.m_signature = &StructuredClassifier::getOwnedConnectors;
 }
 
 StructuredClassifier::StructuredClassifier() : Element(ElementType::STRUCTURED_CLASSIFIER) {
@@ -60,9 +65,9 @@ Set<Property, StructuredClassifier>& StructuredClassifier::getParts() {
     return m_parts;
 }
 
-// Set<Connector, StructuredClassifier>& StructuredClassifier::getOwnedConnectors() {
-//     return m_ownedConnectors;
-// }
+Set<Connector, StructuredClassifier>& StructuredClassifier::getOwnedConnectors() {
+    return m_ownedConnectors;
+}
 
 bool StructuredClassifier::isSubClassOf(ElementType eType) const {
     bool ret = Classifier::isSubClassOf(eType);

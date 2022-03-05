@@ -1,7 +1,8 @@
 #include "uml/templateParameter.h"
 #include "uml/templateSignature.h"
 #include "uml/parameterableElement.h"
-#include "uml/uml-stable.h"
+#include "uml/templateableElement.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -67,45 +68,16 @@ void TemplateParameter::init() {
     m_ownedDefault.m_signature = &TemplateParameter::getOwnedDefaultSingleton;
 }
 
-void TemplateParameter::copy(const TemplateParameter& rhs) {
-    m_signature = rhs.m_signature;
-    m_parameteredElement = rhs.m_parameteredElement;
-    m_ownedParameteredElement = rhs.m_ownedParameteredElement;
-    m_default = rhs.m_default;
-    m_ownedDefault = rhs.m_ownedDefault;
-}
-
 TemplateParameter::TemplateParameter() : Element(ElementType::TEMPLATE_PARAMETER) {
     init();
-}
-
-TemplateParameter::TemplateParameter(const TemplateParameter& rhs) : Element(rhs, ElementType::TEMPLATE_PARAMETER) {
-    init();
-    Element::copy(rhs);
-    copy(rhs);
-    if (!m_copiedElementFlag) {
-        delete &rhs;
-    }
 }
 
 TemplateParameter::~TemplateParameter() {
     mountAndRelease();
 }
 
-TemplateSignature* TemplateParameter::getSignature() {
+TemplateSignaturePtr TemplateParameter::getSignature() const {
     return m_signature.get();
-}
-
-TemplateSignature& TemplateParameter::getSignatureRef() {
-    return m_signature.getRef();
-}
-
-ID TemplateParameter::getSignatureID() const {
-    return m_signature.id();
-}
-
-bool TemplateParameter::hasSignature() const {
-    return m_signature.has();
 }
 
 void TemplateParameter::setSignature(TemplateSignature* signature) {
@@ -120,20 +92,8 @@ void TemplateParameter::setSignature(ID id) {
     m_signature.set(id);
 }
 
-ParameterableElement* TemplateParameter::getOwnedParameteredElement() {
+ParameterableElementPtr TemplateParameter::getOwnedParameteredElement() const {
     return m_ownedParameteredElement.get();
-}
-
-ParameterableElement& TemplateParameter::getOwnedParameteredElementRef() {
-    return m_ownedParameteredElement.getRef();
-}
-
-ID TemplateParameter::getOwnedParameteredElementID() const {
-    return m_ownedParameteredElement.id();
-}
-
-bool TemplateParameter::hasOwnedParameteredElement() const {
-    return m_ownedParameteredElement.has();
 }
 
 void TemplateParameter::setOwnedParameteredElement(ParameterableElement* el) {
@@ -148,20 +108,8 @@ void TemplateParameter::setOwnedParameteredElement(ID id) {
     m_ownedParameteredElement.set(id);
 }
 
-ParameterableElement* TemplateParameter::getParameteredElement() {
+ParameterableElementPtr TemplateParameter::getParameteredElement() const {
     return m_parameteredElement.get();
-}
-
-ParameterableElement& TemplateParameter::getParameteredElementRef() {
-    return m_parameteredElement.getRef();
-}
-
-ID TemplateParameter::getParameteredElementID() const {
-    return m_parameteredElement.id();
-}
-
-bool TemplateParameter::hasParameteredElement() const {
-    return m_parameteredElement.has();
 }
 
 void TemplateParameter::setParameteredElement(ParameterableElement* el) {
@@ -176,20 +124,8 @@ void TemplateParameter::setParameteredElement(ID id) {
     m_parameteredElement.set(id);
 }
 
-ParameterableElement* TemplateParameter::getDefault() {
+ParameterableElementPtr TemplateParameter::getDefault() const {
     return m_default.get();
-}
-
-ParameterableElement& TemplateParameter::getDefaultRef() {
-    return m_default.getRef();
-}
-
-ID TemplateParameter::getDefaultID() const {
-    return m_default.id();
-}
-
-bool TemplateParameter::hasDefault() const {
-    return m_default.has();
 }
 
 void TemplateParameter::setDefault(ParameterableElement* el) {
@@ -204,20 +140,8 @@ void TemplateParameter::setDefault(ID id) {
     m_default.set(id);
 }
 
-ParameterableElement* TemplateParameter::getOwnedDefault() {
+ParameterableElementPtr TemplateParameter::getOwnedDefault() const {
     return m_ownedDefault.get();
-}
-
-ParameterableElement& TemplateParameter::getOwnedDefaultRef() {
-    return m_ownedDefault.getRef();
-}
-
-ID TemplateParameter::getOwnedDefaultID() const {
-    return m_ownedDefault.id();
-}
-
-bool TemplateParameter::hasOwnedDefault() const {
-    return m_ownedDefault.has();
 }
 
 void TemplateParameter::setOwnedDefault(ParameterableElement* el) {

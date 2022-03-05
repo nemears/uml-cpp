@@ -2,9 +2,13 @@
 #define _UML_CONNECTOR_H
 
 #include "feature.h"
+#include "connectorEnd.h"
 #include "orderedSet.h"
 
 namespace UML {
+
+    typedef UmlPtr<Association> AssociationPtr;
+
     class Connector : public Feature {
 
         friend class UmlManager;
@@ -45,15 +49,10 @@ namespace UML {
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
             void init();
-            void copy(const Connector& rhs);
             Connector();
         public:
-            Connector(const Connector& rhs);
             virtual ~Connector();
-            Association* getType();
-            Association& getTypeRef();
-            ID getTypeID() const;
-            bool hasType() const;
+            AssociationPtr getType() const;
             void setType(Association* type);
             void setType(Association& type);
             void setType(ID id);

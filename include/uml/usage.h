@@ -1,5 +1,5 @@
-#ifndef USAGE_H
-#define USAGE_H
+#ifndef _UML_USAGE_H_
+#define _UML_USAGE_H_
 
 #include "dependency.h"
 
@@ -28,7 +28,6 @@ namespace UML {
             void init();
             Usage();
         public:
-            Usage(const Usage& usage);
             virtual ~Usage();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

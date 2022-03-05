@@ -7,6 +7,9 @@ namespace UML {
 
     class ConnectableElement;
     class Connector;
+    
+    typedef UmlPtr<ConnectableElement> ConnectableElementPtr;
+    typedef UmlPtr<Property> PropertyPtr;
 
     class ConnectorEnd : public MultiplicityElement {
 
@@ -19,22 +22,14 @@ namespace UML {
             Set<ConnectableElement, ConnectorEnd>& getRoleSingleton();
             Set<Property, ConnectorEnd>& getDefiningEndSingleton();
             void init();
-            void copy(const ConnectorEnd& rhs);
             ConnectorEnd();
         public:
-            ConnectorEnd(const ConnectorEnd& rhs);
             virtual ~ConnectorEnd();
-            ConnectableElement* getRole();
-            ConnectableElement& getRoleRef();
-            ID getRoleID() const;
-            bool hasRole() const;
+            ConnectableElementPtr getRole() const;
             void setRole(ConnectableElement* role);
             void setRole(ConnectableElement& role);
             void setRole(ID id);
-            Property* getDefiningEnd();
-            Property& getDefiningEndRef();
-            ID getDefiningEndID() const;
-            bool hasDefiningEnd() const;
+            PropertyPtr getDefiningEnd() const;
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CONNECTOR_END;

@@ -1,32 +1,38 @@
 #include "uml/packageableElement.h"
 #include "uml/umlPtr.h"
 #include "uml/package.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
 void PackageableElement::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
-    // ParameterableElement::referenceReindexed(oldID, newID);
+    ParameterableElement::referenceReindexed(oldID, newID);
 }
 
 void PackageableElement::reindexName(std::string oldName, std::string newName) {
     NamedElement::reindexName(oldName, newName);
-    // ParameterableElement::reindexName(oldName, newName);
+    ParameterableElement::reindexName(oldName, newName);
 }
 
 void PackageableElement::referencingReleased(ID id) {
     NamedElement::referencingReleased(id);
-    // ParameterableElement::referencingReleased(id);
+    ParameterableElement::referencingReleased(id);
 }
 
 void PackageableElement::restoreReference(Element* el) {
     NamedElement::restoreReference(el);
-    // ParameterableElement::restoreReference(el);
+    ParameterableElement::restoreReference(el);
 }
 
 void PackageableElement::referenceErased(ID id) {
     NamedElement::referenceErased(id);
-    // ParameterableElement::referenceErased(id);
+    ParameterableElement::referenceErased(id);
 }
 
 Set<Package, PackageableElement>& PackageableElement::getOwningPackageSingleton() {
@@ -43,7 +49,7 @@ PackageableElement::PackageableElement() : Element(ElementType::PACKAGEABLE_ELEM
     init();
 }
 
-PackagePtr PackageableElement::getOwningPackage() {
+PackagePtr PackageableElement::getOwningPackage() const {
     return m_owningPackage.get();
 }
 

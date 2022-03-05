@@ -1,8 +1,13 @@
 #include "uml/behavior.h"
 #include "uml/behavioralFeature.h"
+#include "uml/dataType.h"
 #include "uml/operation.h"
 #include "uml/parameter.h"
-#include "uml/uml-stable.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -37,17 +42,8 @@ void Behavior::init() {
     m_specification.m_signature = &Behavior::getSpecificationSingleton;
 }
 
-void Behavior::copy(const Behavior& rhs) {
-    m_ownedParameters = rhs.m_ownedParameters;
-    m_specification = rhs.m_specification;
-}
-
 Behavior::Behavior() : Element(ElementType::BEHAVIOR) {
     init();
-}
-
-Behavior::Behavior(const Behavior& rhs) : Element(ElementType::BEHAVIOR) {
-    // abstract
 }
 
 Behavior::~Behavior() {
@@ -58,20 +54,8 @@ Set<Parameter, Behavior>& Behavior::getOwnedParameters() {
     return m_ownedParameters;
 }
 
-BehavioralFeature* Behavior::getSpecification() {
+BehavioralFeaturePtr Behavior::getSpecification() const {
     return m_specification.get();
-}
-
-BehavioralFeature& Behavior::getSpecificationRef() {
-    return m_specification.getRef();
-}
-
-ID Behavior::getSpecificationID() const {
-    return m_specification.id();
-}
-
-bool Behavior::hasSpecification() const {
-    return m_specification.has();
 }
 
 void Behavior::setSpecification(BehavioralFeature* specification) {

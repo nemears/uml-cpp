@@ -35,11 +35,9 @@ namespace UML {
             void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
-            void copy(const Port& rhs);
             Port();
         public:
             virtual ~Port();
-            Port(const Port& rhs);
             bool isBehavior() const;
             void setIsBehavior(bool isBehavior);
             bool isConjugated() const;

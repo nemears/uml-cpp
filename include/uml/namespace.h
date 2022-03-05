@@ -1,5 +1,5 @@
-#ifndef NAMESPACEH
-#define NAMESPACEH
+#ifndef _UML_NAMESPACE_H_
+#define _UML_NAMESPACE_H_
 
 #include <iostream>
 #include "namedElement.h"

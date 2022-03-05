@@ -1,11 +1,13 @@
-#ifndef BEHAVIORED_CLASSIFIER_H
-#define BEHAVIORED_CLASSIFIER_H
+#ifndef _UML_BEHAVIORED_CLASSIFIER_H_
+#define _UML_BEHAVIORED_CLASSIFIER_H_
 
 #include "uml/classifier.h"
+#include "uml/interfaceRealization.h"
 
 namespace UML {
 
     class Behavior;
+    typedef UmlPtr<Behavior> BehaviorPtr;
 
     class BehavioredClassifier : virtual public Classifier {
 
@@ -27,16 +29,11 @@ namespace UML {
             };
             Set<Behavior, BehavioredClassifier>& getClassifierBehaviorSingleton();
             void init();
-            void copy(const BehavioredClassifier& rhs);
             BehavioredClassifier();
         public:
-            BehavioredClassifier(const BehavioredClassifier& rhs);
             virtual ~BehavioredClassifier();
             Set<Behavior, BehavioredClassifier>& getOwnedBehaviors();
-            Behavior* getClassifierBehavior();
-            Behavior& getClassifierBehaviorRef();
-            ID getClassifierBehaviorID() const;
-            bool hasClassifierBehavior() const;
+            BehaviorPtr getClassifierBehavior() const;
             void setClassifierBehavior(Behavior& behavior);
             void setClassifierBehavior(Behavior* behavior);
             void setClassifierBehavior(ID id);

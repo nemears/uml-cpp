@@ -25,7 +25,7 @@ namespace UML {
             Singleton<T,U>(const Singleton<T,U>& rhs) : Set<T, U>(rhs) {
                 this->m_upper = 1;
             };
-            UmlPtr<T> get() {
+            UmlPtr<T> get() const {
                 UmlPtr<T> ret(0);
                 if (this->m_root) {
                     ret.m_id = this->m_root->m_id;

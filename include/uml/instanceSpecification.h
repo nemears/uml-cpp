@@ -1,9 +1,10 @@
-#ifndef INSTANCESPECIFICATIONH
-#define INSTANCESPECIFICATIONH
+#ifndef _UML_INSTANCE_SPECIFICATION_H_
+#define _UML_INSTANCE_SPECIFICATION_H_
 
 #include "packageableElement.h"
 #include "deployedArtifact.h"
 #include "deploymentTarget.h"
+#include "slot.h"
 
 namespace UML{
 
@@ -11,6 +12,7 @@ namespace UML{
     class Classifier;
     class InstanceValue;
     class ValueSpecification;
+    typedef UmlPtr<ValueSpecification> ValueSpecificationPtr;
 
     class InstanceSpecification : public PackageableElement , public DeployedArtifact, public DeploymentTarget {
 
@@ -41,17 +43,12 @@ namespace UML{
             void referenceErased(ID id) override;
             Set<ValueSpecification, InstanceSpecification>& getSpecificationSingleton();
             void init();
-            void copy(const InstanceSpecification& rhs);
             InstanceSpecification();
         public:
-            InstanceSpecification(const InstanceSpecification& rhs);
             virtual ~InstanceSpecification();
             Set<Classifier, InstanceSpecification>& getClassifiers();
             Set<Slot, InstanceSpecification>& getSlots();
-            ValueSpecification* getSpecification();
-            ValueSpecification& getSpecificationRef();
-            ID getSpecificationID() const;
-            bool hasSpecification() const;
+            ValueSpecificationPtr getSpecification() const;
             void setSpecification(ValueSpecification* specification);
             void setSpecification(ValueSpecification& specification);
             void setSpecification(ID id);

@@ -1,5 +1,5 @@
-#ifndef DEPLOYMENT_TARGET_H
-#define DEPLOYMENT_TARGET_H
+#ifndef _UML_DEPLOYMENT_TARGET_H_
+#define _UML_DEPLOYMENT_TARGET_H_
 
 #include "namedElement.h"
 
@@ -14,10 +14,8 @@ namespace UML {
         protected:
             Set<Deployment, DeploymentTarget> m_deployments = Set<Deployment, DeploymentTarget>(this);
             void init();
-            void copy(const DeploymentTarget& rhs);
             DeploymentTarget();
         public:
-            DeploymentTarget(const DeploymentTarget& rhs);
             virtual ~DeploymentTarget();
             Set<Deployment, DeploymentTarget>& getDeployments();
             bool isSubClassOf(ElementType eType) const override;

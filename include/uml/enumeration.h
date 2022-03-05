@@ -1,5 +1,5 @@
-#ifndef ENUMERATION_H
-#define ENUMERATION_H
+#ifndef _UML_ENUMERATION_H_
+#define _UML_ENUMERATION_H_
 
 #include "dataType.h"
 
@@ -16,10 +16,8 @@ namespace UML {
             OrderedSet<EnumerationLiteral, Enumeration> m_ownedLiterals = OrderedSet<EnumerationLiteral, Enumeration>(this);
             Set<EnumerationLiteral, Enumeration>& getOwnedLiteralsSet();
             void init();
-            void copy(const Enumeration& rhs);
             Enumeration();
         public:
-            Enumeration(const Enumeration& enumeration);
             virtual ~Enumeration();
             OrderedSet<EnumerationLiteral, Enumeration>& getOwnedLiterals();
             bool isSubClassOf(ElementType eType) const override;

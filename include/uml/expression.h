@@ -1,5 +1,5 @@
-#ifndef EXPRESSION_H
-#define EXPRESSION_H
+#ifndef _UML_EXPRESSION_H_
+#define _UML_EXPRESSION_H_
 
 #include "valueSpecification.h"
 #include "orderedSet.h"
@@ -14,10 +14,8 @@ namespace UML {
             OrderedSet<ValueSpecification, Expression> m_operands = OrderedSet<ValueSpecification, Expression>(this);
             Set<ValueSpecification, Expression>& getOperandsSet();
             void init();
-            void copy(const Expression& rhs);
             Expression();
         public:
-            Expression(const Expression& rhs);
             virtual ~Expression();
             OrderedSet<ValueSpecification, Expression>& getOperands();
             std::string getSymbol();

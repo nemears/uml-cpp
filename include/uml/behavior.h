@@ -1,11 +1,12 @@
-#ifndef BEHAVIORH
-#define BEHAVIORH
+#ifndef _UML_BEHAVIOR_H_
+#define _UML_BEHAVIOR_H_
 
 #include "class.h"
 
 namespace UML {
 
     class BehavioralFeature;
+    typedef UmlPtr<BehavioralFeature> BehavioralFeaturePtr;
 
     class Behavior : public Class {
 
@@ -21,16 +22,11 @@ namespace UML {
             void referenceErased(ID id) override;
             Set<BehavioralFeature, Behavior>& getSpecificationSingleton();
             void init();
-            void copy(const Behavior& rhs);
             Behavior();
         public:
-            Behavior(const Behavior& rhs);
             virtual ~Behavior();
             Set<Parameter, Behavior>& getOwnedParameters();
-            BehavioralFeature* getSpecification();
-            BehavioralFeature& getSpecificationRef();
-            ID getSpecificationID() const;
-            bool hasSpecification() const;
+            BehavioralFeaturePtr getSpecification() const;
             void setSpecification(BehavioralFeature& specification);
             void setSpecification(BehavioralFeature* specification);
             void setSpecification(ID id);

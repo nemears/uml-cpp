@@ -19,11 +19,9 @@ namespace UML {
             Set<Operation, Interface>& getOwnedOperationsSet();
             Set<Classifier, Interface>& getNestedClassifiersSet();
             void init();
-            void copy(const Interface& rhs);
             Interface();
         public:
             virtual ~Interface();
-            Interface(const Interface& rhs);
             OrderedSet<Property, Interface>& getOwnedAttributes();
             OrderedSet<Operation, Interface>& getOwnedOperations();
             OrderedSet<Classifier, Interface>& getNestedClassifiers();

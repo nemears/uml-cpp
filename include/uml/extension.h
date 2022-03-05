@@ -1,11 +1,12 @@
-#ifndef EXTENSION_H
-#define EXTENSION_H
+#ifndef _UML_EXTENSION_H_
+#define _UML_EXTENSION_H_
 
 #include "association.h"
 
 namespace UML {
 
     class ExtensionEnd;
+    typedef UmlPtr<ExtensionEnd> ExtensionEndPtr;
 
     class Extension : public Association {
 
@@ -22,17 +23,12 @@ namespace UML {
             bool m_setFlag = false;
             Set<ExtensionEnd, Extension>& getOwnedEndSingleton();
             void init();
-            void copy(const Extension& rhs);
             Extension();
         public:
-            Extension(const Extension& rhs);
             virtual ~Extension();
             void setMetaClass(ElementType metaClass);
             ElementType getMetaClass();
-            ExtensionEnd* getOwnedEnd();
-            ExtensionEnd& getOwnedEndRef();
-            ID getOwnedEndID() const;
-            bool hasOwnedEnd() const;
+            ExtensionEndPtr getOwnedEnd() const;
             void setOwnedEnd(ExtensionEnd& end);
             void setOwnedEnd(ExtensionEnd* end);
             void setOwnedEnd(ID id);

@@ -23,7 +23,7 @@ namespace UML {
             void init();
             Feature();
         public:
-            ClassifierPtr getFeaturingClassifier();
+            ClassifierPtr getFeaturingClassifier() const;
             void setFeaturingClassifier(Classifier* clazz);
             void setFeaturingClassifier(Classifier& clazz);
             void setFeaturingClassifier(ID id);

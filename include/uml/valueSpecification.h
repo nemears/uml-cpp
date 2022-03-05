@@ -1,5 +1,5 @@
-#ifndef VALUE_SPECIFICATION_H
-#define VALUE_SPECIFICATION_H
+#ifndef _UML_VALUE_SPECIFICATION_H_
+#define _UML_VALUE_SPECIFICATION_H_
 
 #include "typedElement.h"
 #include "packageableElement.h"
@@ -16,7 +16,6 @@ namespace UML {
             void referenceErased(ID id) override;
             ValueSpecification();
         public:
-            ValueSpecification(const ValueSpecification& rhs);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::VALUE_SPECIFICATION;

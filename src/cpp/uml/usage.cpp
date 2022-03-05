@@ -1,5 +1,10 @@
 #include "uml/usage.h"
-#include "uml/uml-stable.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -47,7 +52,7 @@ void Usage::SetClientFunctor::operator()(Element& el) const {
                     for (auto& pair : front->m_node->m_references) {
                         if (pair.second) {
                             if (pair.second->m_managerElementMemory->isSubClassOf(ElementType::PORT)) {
-                                if (pair.second->m_managerElementMemory->as<Port>().getTypeID() == front->getID()) {
+                                if (pair.second->m_managerElementMemory->as<Port>().getType().id() == front->getID()) {
                                     if (pair.second->m_managerElementMemory->as<Port>().isConjugated()) {
                                         pair.second->m_managerElementMemory->as<Port>().getProvided().nonOppositeAdd(supplier.as<Interface>());
                                     } else {
@@ -77,20 +82,6 @@ void Usage::init() {
 Usage::Usage() : Element(ElementType::USAGE) {
     init();
 };
-
-Usage::Usage(const Usage& rhs) : Element(rhs, ElementType::USAGE) {
-    init();
-    Element::copy(rhs);
-    Relationship::copy(rhs);
-    DirectedRelationship::copy(rhs);
-    NamedElement::copy(rhs);
-    ParameterableElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    Dependency::copy(rhs);
-    if (!m_copiedElementFlag) {
-        delete &rhs;
-    }
-}
 
 Usage::~Usage() {
     mountAndRelease();

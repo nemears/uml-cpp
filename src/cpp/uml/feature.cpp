@@ -1,8 +1,13 @@
 #include "uml/feature.h"
-#include "uml/class.h"
+#include "uml/behavior.h"
 #include "uml/package.h"
 #include "uml/property.h"
 #include "uml/generalization.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 #include "uml/umlPtr.h"
 
 using namespace UML;
@@ -43,7 +48,7 @@ Feature::Feature() : Element(ElementType::FEATURE) {
     init();
 }
 
-ClassifierPtr Feature::getFeaturingClassifier() {
+ClassifierPtr Feature::getFeaturingClassifier() const {
     return m_featuringClassifier.get();
 }
 

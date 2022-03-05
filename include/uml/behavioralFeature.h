@@ -1,5 +1,5 @@
-#ifndef BEHAVIORAL_FEATURE_H
-#define BEHAVIORAL_FEATURE_H
+#ifndef _UML_BEHAVIORAL_FEATURE_H_
+#define _UML_BEHAVIORAL_FEATURE_H_
 
 #include "feature.h"
 #include "namespace.h"
@@ -18,10 +18,8 @@ namespace UML {
             void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
-            void copy(const BehavioralFeature& rhs);
             BehavioralFeature();
         public:
-            BehavioralFeature(const BehavioralFeature& el);
             virtual ~BehavioralFeature();
             Set<Behavior, BehavioralFeature>& getMethods();
             Set<Parameter, BehavioralFeature>& getOwnedParameters();

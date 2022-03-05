@@ -61,7 +61,7 @@ namespace UML{
             virtual std::string getName();
             virtual void setName(const std::string &name);
             std::string getQualifiedName();
-            NamespacePtr getNamespace();
+            NamespacePtr getNamespace() const;
             Set<Dependency, NamedElement>& getClientDependencies();
             VisibilityKind getVisibility();
             void setVisibility(VisibilityKind visibility);

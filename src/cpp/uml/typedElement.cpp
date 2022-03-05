@@ -1,6 +1,11 @@
 #include "uml/typedElement.h"
-#include "uml/type.h"
 #include "uml/package.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 #include "uml/setReferenceFunctor.h"
 #include "uml/umlPtr.h"
 
@@ -51,7 +56,7 @@ TypedElement::~TypedElement() {
     
 }
 
-TypePtr TypedElement::getType() {
+TypePtr TypedElement::getType() const {
     return m_type.get();
 }
 

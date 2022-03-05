@@ -7,7 +7,7 @@
 namespace UML {
     class ConnectableElement : virtual public TypedElement, virtual public ParameterableElement {
         protected:
-            // Set<ConnectorEnd, ConnectableElement> m_ends = Set<ConnectorEnd, ConnectableElement>(this);
+            Set<ConnectorEnd, ConnectableElement> m_ends = Set<ConnectorEnd, ConnectableElement>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
@@ -17,11 +17,8 @@ namespace UML {
             ConnectableElement();
         public:
             virtual ~ConnectableElement();
-            // Set<ConnectorEnd, ConnectableElement>& getEnds();
+            Set<ConnectorEnd, ConnectableElement>& getEnds();
             bool isSubClassOf(ElementType eType) const override;
-            // ConnectableElement& operator=(ConnectableElement&&) {
-            //     return *this;
-            // };
             static ElementType elementType() {
                 return ElementType::CONNECTABLE_ELEMENT;
             };

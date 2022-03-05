@@ -1,5 +1,5 @@
-#ifndef PROFILE_APPLICATION_H
-#define PROFILE_APPLICATION_H
+#ifndef _UML_PROFILE_APPLICATION_H_
+#define _UML_PROFILE_APPLICATION_H_
 
 #include "uml/directedRelationship.h"
 #include "uml/singleton.h"
@@ -7,6 +7,8 @@
 namespace UML {
 
     class Profile;
+    typedef UmlPtr<Profile> ProfilePtr;
+    typedef UmlPtr<Package> PackagePtr;
 
     class ProfileApplication : public DirectedRelationship {
 
@@ -19,22 +21,14 @@ namespace UML {
             Set<Profile, ProfileApplication>& getAppliedProfileSingleton();
             Set<Package, ProfileApplication>& getApplyingPackageSingleton();
             void init();
-            void copy(const ProfileApplication& rhs);
             ProfileApplication();
         public:
-            ProfileApplication(const ProfileApplication& rhs);
             virtual ~ProfileApplication();
-            Profile* getAppliedProfile();
-            Profile& getAppliedProfileRef();
-            ID getAppliedProfileID() const;
-            bool hasAppliedProfile() const;
+            ProfilePtr getAppliedProfile() const;
             void setAppliedProfile(Profile& profile);
             void setAppliedProfile(Profile* profile);
             void setAppliedProfile(ID id);
-            Package* getApplyingPackage();
-            Package& getApplyingPackageRef();
-            ID getApplyingPackageID() const;
-            bool hasApplyingPackage() const;
+            PackagePtr getApplyingPackage();
             void setApplyingPackage(Package* pckg);
             void setApplyingPackage(Package& pckg);
             void setApplyingPackage(ID id);

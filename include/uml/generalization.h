@@ -18,7 +18,7 @@ namespace UML {
         protected:
             Singleton<Classifier, Generalization> m_general = Singleton<Classifier, Generalization>(this);
             Singleton<Classifier, Generalization> m_specific = Singleton<Classifier, Generalization>(this);
-            // Set<GeneralizationSet, Generalization> m_generalizationSets = Set<GeneralizationSet, Generalization>(this);
+            Set<GeneralizationSet, Generalization> m_generalizationSets = Set<GeneralizationSet, Generalization>(this);
             class AddGeneralFunctor : public SetFunctor {
                 private:
                     void operator()(Element& el) const override;
@@ -38,11 +38,11 @@ namespace UML {
             Generalization();
         public:
             virtual ~Generalization();
-            ClassifierPtr getGeneral();
+            ClassifierPtr getGeneral() const;
             void setGeneral(Classifier* general);
             void setGeneral(Classifier& general);
             void setGeneral(ID id);
-            ClassifierPtr getSpecific();
+            ClassifierPtr getSpecific() const;
             void setSpecific(Classifier& specific);
             void setSpecific(Classifier* specific);
             void setSpecific(ID id);

@@ -9,6 +9,9 @@
 #include "uml/class.h"
 #include "uml/generalization.h"
 #include "uml/property.h"
+#include "uml/dataType.h"
+
+#include "uml/uml-stable.h"
 
 using namespace UML;
 

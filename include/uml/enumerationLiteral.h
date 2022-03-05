@@ -1,11 +1,13 @@
-#ifndef ENUMERATION_LITERAL_H
-#define ENUMERATION_LITERAL_H
+#ifndef _UML_ENUMERATION_LITERAL_H_
+#define _UML_ENUMERATION_LITERAL_H_
 
 #include "instanceSpecification.h"
 
 namespace UML {
 
     class Enumeration;
+
+    typedef UmlPtr<Enumeration> EnumerationPtr;
 
     class EnumerationLiteral : public InstanceSpecification {
         
@@ -16,15 +18,10 @@ namespace UML {
             Singleton<Enumeration, EnumerationLiteral> m_enumeration = Singleton<Enumeration, EnumerationLiteral>(this);
             Set<Enumeration, EnumerationLiteral>& getEnumerationSingleton();
             void init();
-            void copy(const EnumerationLiteral& rhs);
             EnumerationLiteral();
         public:
-            EnumerationLiteral(const EnumerationLiteral& rhs);
             virtual ~EnumerationLiteral();
-            Enumeration* getEnumeration();
-            Enumeration& getEnumerationRef();
-            ID getEnumerationID() const;
-            bool hasEnumeration() const;
+            EnumerationPtr getEnumeration() const;
             void setEnumeration(Enumeration& enumeration);
             void setEnumeration(Enumeration* enumeration);
             void setEnumeration(ID id);

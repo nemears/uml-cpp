@@ -7,12 +7,12 @@ class ConnectorTest : public ::testing::Test {};
 
 TEST_F(ConnectorTest, basicPropertyConnectorTest) {
     UmlManager m;
-    Class& structuredClassifier = m.create<Class>();
-    Connector& connector = m.create<Connector>();
-    Property& prop1 = m.create<Property>();
-    Property& prop2 = m.create<Property>();
-    ConnectorEnd& end1 = m.create<ConnectorEnd>();
-    ConnectorEnd& end2 = m.create<ConnectorEnd>();
+    Class& structuredClassifier = *m.create<Class>();
+    Connector& connector = *m.create<Connector>();
+    Property& prop1 = *m.create<Property>();
+    Property& prop2 = *m.create<Property>();
+    ConnectorEnd& end1 = *m.create<ConnectorEnd>();
+    ConnectorEnd& end2 = *m.create<ConnectorEnd>();
 
     structuredClassifier.getOwnedAttributes().add(prop1, prop2);
     end1.setRole(prop1);
@@ -52,37 +52,37 @@ TEST_F(ConnectorTest, basicPropertyConnectorTest) {
     ASSERT_TRUE(structuredClassifier.getMembers().contains(connector));
     ASSERT_TRUE(structuredClassifier.getOwnedElements().contains(connector));
 
-    ASSERT_TRUE(prop1.hasFeaturingClassifier());
-    ASSERT_TRUE(prop1.hasClass());
-    ASSERT_TRUE(prop1.hasNamespace());
-    ASSERT_TRUE(prop1.hasOwner());
+    ASSERT_TRUE(prop1.getFeaturingClassifier());
+    ASSERT_TRUE(prop1.getClass());
+    ASSERT_TRUE(prop1.getNamespace());
+    ASSERT_TRUE(prop1.getOwner());
 
-    ASSERT_TRUE(prop2.hasFeaturingClassifier());
-    ASSERT_TRUE(prop2.hasClass());
-    ASSERT_TRUE(prop2.hasNamespace());
-    ASSERT_TRUE(prop2.hasOwner());
+    ASSERT_TRUE(prop2.getFeaturingClassifier());
+    ASSERT_TRUE(prop2.getClass());
+    ASSERT_TRUE(prop2.getNamespace());
+    ASSERT_TRUE(prop2.getOwner());
 
-    ASSERT_TRUE(connector.hasFeaturingClassifier());
-    ASSERT_TRUE(connector.hasNamespace());
-    ASSERT_TRUE(connector.hasOwner());
+    ASSERT_TRUE(connector.getFeaturingClassifier());
+    ASSERT_TRUE(connector.getNamespace());
+    ASSERT_TRUE(connector.getOwner());
 
     ASSERT_EQ(prop1.getEnds().size(), 1);
     ASSERT_TRUE(prop1.getEnds().contains(end1));
-    ASSERT_TRUE(end1.hasRole());
-    ASSERT_EQ(end1.getRoleRef(), prop1);
+    ASSERT_TRUE(end1.getRole());
+    ASSERT_EQ(*end1.getRole(), prop1);
 
     ASSERT_EQ(prop2.getEnds().size(), 1);
     ASSERT_TRUE(prop2.getEnds().contains(end2));
-    ASSERT_TRUE(end2.hasRole());
-    ASSERT_EQ(end2.getRoleRef(), prop2);
+    ASSERT_TRUE(end2.getRole());
+    ASSERT_EQ(*end2.getRole(), prop2);
 
     ASSERT_EQ(connector.getEnds().size(), 2);
     ASSERT_TRUE(connector.getEnds().contains(end1));
     ASSERT_TRUE(connector.getEnds().contains(end2));
-    ASSERT_TRUE(end1.hasOwner());
-    ASSERT_EQ(end1.getOwnerRef(), connector);
-    ASSERT_TRUE(end2.hasOwner());
-    ASSERT_EQ(end2.getOwnerRef(), connector);
+    ASSERT_TRUE(end1.getOwner());
+    ASSERT_EQ(*end1.getOwner(), connector);
+    ASSERT_TRUE(end2.getOwner());
+    ASSERT_EQ(*end2.getOwner(), connector);
 }
 
 /**
@@ -90,21 +90,21 @@ TEST_F(ConnectorTest, basicPropertyConnectorTest) {
  **/
 TEST_F(ConnectorTest, typedConnectorTest) {
     UmlManager m;
-    Class& car = m.create<Class>();
-    Class& wheel = m.create<Class>();
-    Class& engine = m.create<Class>();
-    Property& rear = m.create<Property>();
-    Property& e = m.create<Property>();
-    Association& wheelAssociation = m.create<Association>();
-    Property& wheelAssociationEnd = m.create<Property>();
-    Association& engineAssociation = m.create<Association>();
-    Property& engineCarProp = m.create<Property>();
-    Association& axle = m.create<Association>(); // connector type
-    Property& axleWheelEnd = m.create<Property>();
-    Property& axleEngineEnd = m.create<Property>();
-    Connector& a = m.create<Connector>();
-    ConnectorEnd& wheelEnd = m.create<ConnectorEnd>();
-    ConnectorEnd& engineEnd = m.create<ConnectorEnd>();
+    Class& car = *m.create<Class>();
+    Class& wheel = *m.create<Class>();
+    Class& engine = *m.create<Class>();
+    Property& rear = *m.create<Property>();
+    Property& e = *m.create<Property>();
+    Association& wheelAssociation = *m.create<Association>();
+    Property& wheelAssociationEnd = *m.create<Property>();
+    Association& engineAssociation = *m.create<Association>();
+    Property& engineCarProp = *m.create<Property>();
+    Association& axle = *m.create<Association>(); // connector type
+    Property& axleWheelEnd = *m.create<Property>();
+    Property& axleEngineEnd = *m.create<Property>();
+    Connector& a = *m.create<Connector>();
+    ConnectorEnd& wheelEnd = *m.create<ConnectorEnd>();
+    ConnectorEnd& engineEnd = *m.create<ConnectorEnd>();
 
     car.setName("Car");
     wheel.setName("Wheel");
@@ -239,7 +239,7 @@ TEST_F(ConnectorTest, typedConnectorTest) {
     // connector a
     ASSERT_EQ(a.getEnds().size(), 2);
     ASSERT_EQ(a.getOwnedElements().size(), 2);
-    ASSERT_TRUE(a.hasType());
+    ASSERT_TRUE(a.getType());
 
     ASSERT_TRUE(a.getEnds().contains(wheelEnd));
     ASSERT_TRUE(a.getOwnedElements().contains(wheelEnd));
@@ -248,45 +248,45 @@ TEST_F(ConnectorTest, typedConnectorTest) {
     ASSERT_TRUE(a.getOwnedElements().contains(engineEnd));
 
     // wheel end
-    ASSERT_TRUE(wheelEnd.hasRole());
-    ASSERT_TRUE(wheelEnd.hasDefiningEnd());
-    ASSERT_TRUE(wheelEnd.hasOwner());
+    ASSERT_TRUE(wheelEnd.getRole());
+    ASSERT_TRUE(wheelEnd.getDefiningEnd());
+    ASSERT_TRUE(wheelEnd.getOwner());
 
-    ASSERT_EQ(wheelEnd.getRoleRef(), rear);
-    ASSERT_EQ(wheelEnd.getDefiningEndRef(), axleWheelEnd);
-    ASSERT_EQ(wheelEnd.getOwnerRef(), a);
+    ASSERT_EQ(*wheelEnd.getRole(), rear);
+    ASSERT_EQ(*wheelEnd.getDefiningEnd(), axleWheelEnd);
+    ASSERT_EQ(*wheelEnd.getOwner(), a);
 
     // rear
-    ASSERT_TRUE(rear.hasClass());
-    ASSERT_TRUE(rear.hasAssociation());
-    ASSERT_TRUE(rear.hasFeaturingClassifier());
+    ASSERT_TRUE(rear.getClass());
+    ASSERT_TRUE(rear.getAssociation());
+    ASSERT_TRUE(rear.getFeaturingClassifier());
     ASSERT_EQ(rear.getEnds().size(), 1);
 
-    ASSERT_EQ(rear.getClassRef(), car);
-    ASSERT_EQ(rear.getAssociationRef(), wheelAssociation);
-    ASSERT_EQ(rear.getFeaturingClassifierRef(), car);
-    ASSERT_EQ(rear.getTypeRef(), wheel);
+    ASSERT_EQ(*rear.getClass(), car);
+    ASSERT_EQ(*rear.getAssociation(), wheelAssociation);
+    ASSERT_EQ(*rear.getFeaturingClassifier(), car);
+    ASSERT_EQ(*rear.getType(), wheel);
     ASSERT_EQ(rear.getEnds().front(), wheelEnd);
 
     // engine end
-    ASSERT_TRUE(engineEnd.hasRole());
-    ASSERT_TRUE(engineEnd.hasDefiningEnd());
-    ASSERT_TRUE(engineEnd.hasOwner());
+    ASSERT_TRUE(engineEnd.getRole());
+    ASSERT_TRUE(engineEnd.getDefiningEnd());
+    ASSERT_TRUE(engineEnd.getOwner());
 
-    ASSERT_EQ(engineEnd.getRoleRef(), e);
-    ASSERT_EQ(engineEnd.getDefiningEndRef(), axleEngineEnd);
-    ASSERT_EQ(engineEnd.getOwnerRef(), a);
+    ASSERT_EQ(*engineEnd.getRole(), e);
+    ASSERT_EQ(*engineEnd.getDefiningEnd(), axleEngineEnd);
+    ASSERT_EQ(*engineEnd.getOwner(), a);
 
     // e
-    ASSERT_TRUE(e.hasClass());
-    ASSERT_TRUE(e.hasAssociation());
-    ASSERT_TRUE(e.hasFeaturingClassifier());
-    ASSERT_TRUE(e.hasType());
+    ASSERT_TRUE(e.getClass());
+    ASSERT_TRUE(e.getAssociation());
+    ASSERT_TRUE(e.getFeaturingClassifier());
+    ASSERT_TRUE(e.getType());
     ASSERT_EQ(e.getEnds().size(), 1);
 
-    ASSERT_EQ(e.getClassRef(), car);
-    ASSERT_EQ(e.getAssociationRef(), engineAssociation);
-    ASSERT_EQ(e.getFeaturingClassifierRef(), car);
-    ASSERT_EQ(e.getTypeRef(), engine);
+    ASSERT_EQ(*e.getClass(), car);
+    ASSERT_EQ(*e.getAssociation(), engineAssociation);
+    ASSERT_EQ(*e.getFeaturingClassifier(), car);
+    ASSERT_EQ(*e.getType(), engine);
     ASSERT_EQ(e.getEnds().front(), engineEnd);
 }

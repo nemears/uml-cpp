@@ -1,6 +1,11 @@
 #include "uml/package.h"
-// #include "uml/stereotype.h"
-// #include "uml/profileApplication.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/profileApplication.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -31,11 +36,11 @@ void Package::init() {
     m_packageMerge.subsets(*m_ownedElements);
     m_packageMerge.opposite(&PackageMerge::getReceivingPackageSingleton);
     m_packageMerge.m_signature = &Package::getPackageMerge;
-    // m_ownedStereotypes.subsets(m_packagedElements);
-    // m_ownedStereotypes.m_signature = &Package::getOwnedStereotypes;
-    // m_profileApplications.subsets(*m_ownedElements);
-    // m_profileApplications.opposite(&ProfileApplication::getApplyingPackageSingleton);
-    // m_profileApplications.m_signature = &Package::getProfileApplications;
+    m_ownedStereotypes.subsets(m_packagedElements);
+    m_ownedStereotypes.m_signature = &Package::getOwnedStereotypes;
+    m_profileApplications.subsets(*m_ownedElements);
+    m_profileApplications.opposite(&ProfileApplication::getApplyingPackageSingleton);
+    m_profileApplications.m_signature = &Package::getProfileApplications;
 }
 
 Package::Package() : Element(ElementType::PACKAGE) {
@@ -54,13 +59,13 @@ Set<PackageMerge, Package>& Package::getPackageMerge() {
     return m_packageMerge;
 }
 
-// Set<ProfileApplication, Package>& Package::getProfileApplications() {
-//     return m_profileApplications;
-// }
+Set<ProfileApplication, Package>& Package::getProfileApplications() {
+    return m_profileApplications;
+}
 
-// Set<Stereotype, Package>& Package::getOwnedStereotypes() {
-//     return m_ownedStereotypes;
-// }
+Set<Stereotype, Package>& Package::getOwnedStereotypes() {
+    return m_ownedStereotypes;
+}
 
 bool Package::isSubClassOf(ElementType eType) const {
     bool ret = PackageableElement::isSubClassOf(eType);

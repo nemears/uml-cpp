@@ -1,5 +1,5 @@
-#ifndef DIRECTEDRELATIONSHIP_H
-#define DIRECTEDRELATIONSHIP_H
+#ifndef _UML_DIRECTED_RELATIONSHIP_H_
+#define _UML_DIRECTED_RELATIONSHIP_H_
 
 #include "relationship.h"
 

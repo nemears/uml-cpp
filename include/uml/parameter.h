@@ -1,5 +1,5 @@
-#ifndef PARAMETERH
-#define PARAMETERH
+#ifndef _UML_PARAMETER_H_
+#define _UML_PARAMETER_H_
 
 #include "multiplicityElement.h"
 #include "connectableElement.h"
@@ -7,6 +7,7 @@
 namespace UML {
 
     class Operation;
+    typedef UmlPtr<Operation> OperationPtr;
     namespace Parsers {
         class SetOperation;
         class SetBehavior;
@@ -23,26 +24,16 @@ namespace UML {
 
         friend class UmlManager;
         friend class Operation;
-        friend class Parsers::SetOperation;
-        friend class Parsers::SetBehavior;
 
         protected:
             ParameterDirectionKind m_direction = ParameterDirectionKind::NONE;
             Singleton<Operation, Parameter> m_operation = Singleton<Operation, Parameter>(this);
             Set<Operation, Parameter>& getOperationSingleton();
             void init();
-            void copy(const Parameter& rhs);
             Parameter();
         public:
-            Parameter(const Parameter& rhs);
             virtual ~Parameter();
-            Parameter& operator=(Parameter&&) {
-                return *this;
-            };
-            Operation* getOperation();
-            Operation& getOperationRef();
-            ID getOperationID() const;
-            bool hasOperation() const;
+            OperationPtr getOperation() const;
             void setOperation(Operation& operation);
             void setOperation(Operation* operation);
             void setOperation(ID id);

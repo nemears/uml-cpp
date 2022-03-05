@@ -1,6 +1,11 @@
 #include "uml/extension.h"
 #include "uml/extensionEnd.h"
-#include "uml/uml-stable.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -13,30 +18,8 @@ void Extension::init() {
     m_ownedEnd.m_signature = &Extension::getOwnedEndSingleton;
 }
 
-void Extension::copy(const Extension& rhs) {
-    m_ownedEnd = rhs.m_ownedEnd;
-    m_metaClass = rhs.m_metaClass;
-}
-
 Extension::Extension() : Element(ElementType::EXTENSION) {
     init();
-}
-
-Extension::Extension(const Extension& rhs) : Element(rhs, ElementType::EXTENSION) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    Namespace::copy(rhs);
-    ParameterableElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    TemplateableElement::copy(rhs);
-    Classifier::copy(rhs);
-    Relationship::copy(rhs);
-    Association::copy(rhs);
-    copy(rhs);
-    if (!m_copiedElementFlag) {
-        delete &rhs;
-    }
 }
 
 Extension::~Extension() {
@@ -51,20 +34,8 @@ ElementType Extension::getMetaClass() {
     return m_metaClass;
 }
 
-ExtensionEnd* Extension::getOwnedEnd() {
+ExtensionEndPtr Extension::getOwnedEnd() const {
     return m_ownedEnd.get();
-}
-
-ExtensionEnd& Extension::getOwnedEndRef() {
-    return m_ownedEnd.getRef();
-}
-
-ID Extension::getOwnedEndID() const {
-    return m_ownedEnd.id();
-}
-
-bool Extension::hasOwnedEnd() const {
-    return m_ownedEnd.has();
 }
 
 void Extension::setOwnedEnd(ExtensionEnd* end) {

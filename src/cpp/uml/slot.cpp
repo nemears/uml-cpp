@@ -2,7 +2,16 @@
 #include "uml/instanceSpecification.h"
 #include "uml/structuralFeature.h"
 #include "uml/valueSpecification.h"
-#include "uml/uml-stable.h"
+#include "uml/behavior.h"
+#include "uml/property.h"
+#include "uml/dataType.h"
+#include "uml/generalization.h"
+#include "uml/package.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -38,23 +47,8 @@ void Slot::init() {
     m_values.m_signature = &Slot::getValues;
 }
 
-void Slot::copy(const Slot& rhs) {
-    m_definingFeature = rhs.m_definingFeature;
-    m_owningInstance = rhs.m_owningInstance;
-    m_values = rhs.m_values;
-}
-
 Slot::Slot() : Element(ElementType::SLOT) {
     init();
-}
-
-Slot::Slot(const Slot& rhs) : Element(rhs, ElementType::SLOT) {
-    init();
-    Element::copy(rhs);
-    copy(rhs);
-    if (!m_copiedElementFlag) {
-        delete &rhs;
-    }
 }
 
 Slot::~Slot() {
@@ -65,20 +59,8 @@ Set<ValueSpecification, Slot>& Slot::getValues() {
     return m_values;
 }
 
-StructuralFeature* Slot::getDefiningFeature() {
+StructuralFeaturePtr Slot::getDefiningFeature() const {
     return m_definingFeature.get();
-}
-
-StructuralFeature& Slot::getDefiningFeatureRef() {
-    return m_definingFeature.getRef();
-}
-
-ID Slot::getDefiningFeatureID() const {
-    return m_definingFeature.id();
-}
-
-bool Slot::hasDefiningFeature() const {
-    return m_definingFeature.has();
 }
 
 void Slot::setDefiningFeature(StructuralFeature* definingFeature) {
@@ -93,20 +75,8 @@ void Slot::setDefiningFeature(ID id) {
     m_definingFeature.set(id);
 }
 
-InstanceSpecification* Slot::getOwningInstance() {
+InstanceSpecificationPtr Slot::getOwningInstance() const {
     return m_owningInstance.get();
-}
-
-InstanceSpecification& Slot::getOwningInstanceRef() {
-    return m_owningInstance.getRef();
-}
-
-ID Slot::getOwningInstanceID() const {
-    return m_owningInstance.id();
-}
-
-bool Slot::hasOwningInstance() const {
-    return m_owningInstance.has();
 }
 
 void Slot::setOwningInstance(InstanceSpecification* inst) {

@@ -1,5 +1,5 @@
-#ifndef PRIMITIVETYPEH
-#define PRIMITIVETYPEH
+#ifndef _UML_PRIMITIVE_TYPE_H_
+#define _UML_PRIMITIVE_TYPE_H_
 
 #include "dataType.h"
 
@@ -11,7 +11,6 @@ namespace UML{
         protected:
             PrimitiveType();
         public:
-            PrimitiveType(const PrimitiveType& rhs);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PRIMITIVE_TYPE;

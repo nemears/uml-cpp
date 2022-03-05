@@ -2,9 +2,14 @@
 #include "uml/umlPtr.h"
 #include "uml/namespace.h"
 #include "uml/dependency.h"
-#include "uml/class.h"
+#include "uml/behavior.h"
 #include "uml/generalization.h"
 #include "uml/property.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -84,7 +89,7 @@ void NamedElement::updateQualifiedName(std::string absoluteNamespace) {
     m_absoluteNamespace = absoluteNamespace;
 }
 
-NamespacePtr NamedElement::getNamespace() {
+NamespacePtr NamedElement::getNamespace() const {
     return m_namespace.get();
 }
 

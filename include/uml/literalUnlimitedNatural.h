@@ -1,5 +1,5 @@
-#ifndef LITERAL_UNLIMITED_NATURAL_H
-#define LITERAL_UNLIMITED_NATURAL_H
+#ifndef _UML_LITERAL_UNLIMITED_NATURAL_H_
+#define _UML_LITERAL_UNLIMITED_NATURAL_H_
 
 #include "literalSpecification.h"
 
@@ -13,7 +13,6 @@ namespace UML {
             bool m_infinite;
             LiteralUnlimitedNatural(); 
         public:
-            LiteralUnlimitedNatural(const LiteralUnlimitedNatural& rhs);
             /** 
              *  NOTE: this will always be initialized to 0
              **/   

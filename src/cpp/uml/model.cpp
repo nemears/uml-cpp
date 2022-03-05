@@ -1,22 +1,18 @@
 #include "uml/model.h"
-#include "uml/uml-stable.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
-Model::Model() : Element(ElementType::MODEL) {}
+Model::Model() : Element(ElementType::MODEL) {
+    
+}
 
-Model::Model(const Model& rhs) : Element(rhs, ElementType::MODEL) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    Namespace::copy(rhs);
-    ParameterableElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    TemplateableElement::copy(rhs);
-    Package::copy(rhs);
-    if (!m_copiedElementFlag) {
-        delete &rhs;
-    }
+Model::~Model() {
+
 }
 
 std::string Model::getViewpoint() const {

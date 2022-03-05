@@ -25,7 +25,7 @@ namespace UML {
             PackageableElement();
         public:
             virtual ~PackageableElement() {};
-            PackagePtr getOwningPackage();
+            PackagePtr getOwningPackage() const;
             void setOwningPackage(Package& package);
             void setOwningPackage(Package* package);
             void setOwningPackage(ID id);

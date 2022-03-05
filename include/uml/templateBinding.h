@@ -1,13 +1,17 @@
-#ifndef TEMPLATE_BINDING_H
-#define TEMPLATE_BINDING_H
+#ifndef _UML_TEMPLATE_BINDING_H_
+#define _UML_TEMPLATE_BINDING_H_
 
 #include "directedRelationship.h"
+#include "templateParameterSubstitution.h"
 #include "singleton.h"
 
 namespace UML {
 
     class TemplateParameterSubstitution;
     class TemplateableElement;
+
+    typedef UmlPtr<TemplateableElement> TemplateableElementPtr;
+    typedef UmlPtr<TemplateSignature> TemplateSignaturePtr;
 
     class TemplateBinding : public DirectedRelationship {
 
@@ -22,22 +26,14 @@ namespace UML {
             Set<TemplateableElement, TemplateBinding>& getBoundElementSingleton();
             Set<TemplateSignature, TemplateBinding>& getSignatureSingleton();
             void init();
-            void copy(const TemplateBinding& rhs);
             TemplateBinding();
         public:
-            TemplateBinding(const TemplateBinding& bind);
             ~TemplateBinding();
-            TemplateableElement* getBoundElement(); 
-            TemplateableElement& getBoundElementRef();
-            ID getBoundElementID() const;
-            bool hasBoundElement() const;
+            TemplateableElementPtr getBoundElement() const;
             void setBoundElement(TemplateableElement& el);
             void setBoundElement(TemplateableElement* el);
             void setBoundElement(ID id);
-            TemplateSignature* getSignature();
-            TemplateSignature& getSignatureRef();
-            ID getSignatureID() const;
-            bool hasSignature() const;
+            TemplateSignaturePtr getSignature() const;
             void setSignature(TemplateSignature& signature);
             void setSignature(TemplateSignature* signature);
             void setSignature(ID id);

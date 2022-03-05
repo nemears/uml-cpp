@@ -1,16 +1,17 @@
 #include "uml/literalUnlimitedNatural.h"
-#include "uml/uml-stable.h"
+#include "uml/package.h"
+#include "uml/behavior.h"
+#include "uml/stereotype.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
 LiteralUnlimitedNatural::LiteralUnlimitedNatural() : Element(ElementType::LITERAL_UNLIMITED_NATURAL) {
     m_val = 0;
     m_infinite = false;
-}
-
-LiteralUnlimitedNatural::LiteralUnlimitedNatural(const LiteralUnlimitedNatural& rhs) : Element(rhs, ElementType::LITERAL_UNLIMITED_NATURAL) {
-    m_val = rhs.m_val;
-    m_infinite = rhs.m_infinite;
 }
 
 bool LiteralUnlimitedNatural::isInfinite() {

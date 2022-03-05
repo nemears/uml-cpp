@@ -1,5 +1,5 @@
-#ifndef ABSTRACTION_H
-#define ABSTRACTION_H
+#ifndef _UML_ABSTRACTION_H_
+#define _UML_ABSTRACTION_H_
 
 #include "dependency.h"
 
@@ -9,9 +9,12 @@ namespace UML {
      * concept at different levels of abstraction or from different viewpoints.
      **/
     class Abstraction : public Dependency {
-        // TODO
-        public:
+
+        friend class UmlManager;
+
+        protected:
             Abstraction();
+        public:
             Abstraction(const Abstraction& abstraction);
             virtual ~Abstraction();
             bool isSubClassOf(ElementType eType) const override;

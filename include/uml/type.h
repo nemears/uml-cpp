@@ -2,6 +2,7 @@
 #define _UML_TYPE_H_
 
 #include "packageableElement.h"
+#include "package.h"
 
 namespace UML{
 
@@ -19,9 +20,6 @@ namespace UML{
             Type();
         public:
             virtual ~Type();
-            // Type& operator=(Type&&) {
-            //     return *this;
-            // };
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::TYPE;

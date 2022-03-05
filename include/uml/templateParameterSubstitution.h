@@ -1,5 +1,5 @@
-#ifndef TEMPLATE_PARAMETER_SUBSTITUTION_H
-#define TEMPLATE_PARAMETER_SUBSTITUTION_H
+#ifndef _UML_TEMPLATE_PARAMETER_SUBSTITUTION_H_
+#define _UML_TEMPLATE_PARAMETER_SUBSTITUTION_H_
 
 #include "element.h"
 #include "singleton.h"
@@ -9,6 +9,10 @@ namespace UML {
     class TemplateBinding;
     class TemplateParameter;
     class ParameterableElement;
+
+    typedef UmlPtr<TemplateParameter> TemplateParameterPtr;
+    typedef UmlPtr<ParameterableElement> ParameterableElementPtr;
+    typedef UmlPtr<TemplateBinding> TemplateBindingPtr;
 
     class TemplateParameterSubstitution : public Element {
 
@@ -30,36 +34,22 @@ namespace UML {
             Set<ParameterableElement, TemplateParameterSubstitution>& getActualSingleton();
             Set<ParameterableElement, TemplateParameterSubstitution>& getOwnedActualSingleton();
             void init();
-            void copy(const TemplateParameterSubstitution& rhs);
             TemplateParameterSubstitution();
         public:
-            TemplateParameterSubstitution(const TemplateParameterSubstitution& sub);
             ~TemplateParameterSubstitution();
-            TemplateParameter* getFormal();
-            TemplateParameter& getFormalRef();
-            ID getFormalID() const;
-            bool hasFormal() const;
+            TemplateParameterPtr getFormal() const;
             void setFormal(TemplateParameter& formal);
             void setFormal(TemplateParameter* formal);
             void setFormal(ID id);
-            TemplateBinding* getTemplateBinding();
-            TemplateBinding& getTemplateBindingRef();
-            ID getTemplateBindingID() const;
-            bool hasTemplateBinding() const;
+            TemplateBindingPtr getTemplateBinding() const;
             void setTemplateBinding(TemplateBinding& binding);
             void setTemplateBinding(TemplateBinding* binding);
             void setTemplateBinding(ID id);
-            ParameterableElement* getActual();
-            ParameterableElement& getActualRef();
-            ID getActualID() const;
-            bool hasActual() const;
+            ParameterableElementPtr getActual() const;
             void setActual(ParameterableElement& actual);
             void setActual(ParameterableElement* actual);
             void setActual(ID id);
-            ParameterableElement* getOwnedActual();
-            ParameterableElement& getOwnedActualRef();
-            ID getOwnedActualID() const;
-            bool hasOwnedActual() const;
+            ParameterableElementPtr getOwnedActual() const;
             void setOwnedActual(ParameterableElement& actual);
             void setOwnedActual(ParameterableElement* actual);
             void setOwnedActual(ID id);

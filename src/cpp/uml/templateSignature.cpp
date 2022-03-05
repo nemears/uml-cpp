@@ -2,7 +2,8 @@
 #include "uml/templateableElement.h"
 #include "uml/umlManager.h"
 #include "uml/templateParameter.h"
-#include "uml/uml-stable.h"
+#include "uml/parameterableElement.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -49,41 +50,16 @@ void TemplateSignature::init() {
     m_ownedParameters.m_signature = &TemplateSignature::getOwnedParametersSet;
 }
 
-void TemplateSignature::copy(const TemplateSignature& rhs) {
-    m_template = rhs.m_template;
-}
-
 TemplateSignature::TemplateSignature() : Element(ElementType::TEMPLATE_SIGNATURE) {
     init();
-}
-
-TemplateSignature::TemplateSignature(const TemplateSignature& rhs) : Element(rhs, ElementType::TEMPLATE_SIGNATURE) {
-    init();
-    Element::copy(rhs);
-    copy(rhs);
-    if (!m_copiedElementFlag) {
-        delete &rhs;
-    }
 }
 
 TemplateSignature::~TemplateSignature() {
     mountAndRelease();
 }
 
-TemplateableElement* TemplateSignature::getTemplate() {
+TemplateableElementPtr TemplateSignature::getTemplate() const {
     return m_template.get();
-}
-
-TemplateableElement& TemplateSignature::getTemplateRef() {
-    return m_template.getRef();
-}
-
-ID TemplateSignature::getTemplateID() const {
-    return m_template.id();
-}
-
-bool TemplateSignature::hasTemplate() const {
-    return m_template.has();
 }
 
 void TemplateSignature::setTemplate(TemplateableElement* temp) {

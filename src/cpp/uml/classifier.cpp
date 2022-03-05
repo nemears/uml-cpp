@@ -3,8 +3,12 @@
 #include "uml/property.h"
 #include "uml/generalization.h"
 #include "uml/umlPtr.h"
-#include "uml/class.h"
-// #include "uml/generalizationSet.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -74,21 +78,21 @@ void Classifier::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     PackageableElement::referencingReleased(id);
     m_generals.release(id);
-    // m_powerTypeExtent.release(id);
+    m_powerTypeExtent.release(id);
 }
 
 void Classifier::referenceReindexed(ID oldID, ID newID) {
     Namespace::referenceReindexed(oldID, newID);
     PackageableElement::referenceReindexed(oldID, newID); // todo non super call meth
     m_generals.reindex(oldID, newID);
-    // m_powerTypeExtent.reindex(oldID, newID);
+    m_powerTypeExtent.reindex(oldID, newID);
 }
 
 void Classifier::reindexName(std::string oldName, std::string newName) {
     Namespace::reindexName(oldName, newName);
     PackageableElement::reindexName(oldName, newName);
     m_generals.reindexName(oldName, newName);
-    // m_powerTypeExtent.reindexName(oldName, newName);
+    m_powerTypeExtent.reindexName(oldName, newName);
 }
 
 void Classifier::restoreReferences() {
@@ -105,7 +109,7 @@ void Classifier::referenceErased(ID id) {
     RedefinableElement::referenceErased(id);
     TemplateableElement::referenceErased(id);
     m_generals.eraseElement(id);
-    // m_powerTypeExtent.eraseElement(id);
+    m_powerTypeExtent.eraseElement(id);
 }
 
 void Classifier::init() {
@@ -129,8 +133,8 @@ void Classifier::init() {
     m_inheritedMembers.subsets(m_members);
     m_inheritedMembers.m_signature = &Classifier::getInheritedMembers;
     m_inheritedMembers.m_readOnly = true;
-    // m_powerTypeExtent.opposite(&GeneralizationSet::getPowerTypeSingleton);
-    // m_powerTypeExtent.m_signature = &Classifier::getPowerTypeExtent;
+    m_powerTypeExtent.opposite(&GeneralizationSet::getPowerTypeSingleton);
+    m_powerTypeExtent.m_signature = &Classifier::getPowerTypeExtent;
 }
 
 Classifier::Classifier() : Element(ElementType::CLASSIFIER) {
@@ -169,9 +173,9 @@ Set<NamedElement, Classifier>& Classifier::getInheritedMembers() {
     return m_inheritedMembers;
 }
 
-// Set<GeneralizationSet, Classifier>& Classifier::getPowerTypeExtent() {
-//     return m_powerTypeExtent;
-// }
+Set<GeneralizationSet, Classifier>& Classifier::getPowerTypeExtent() {
+    return m_powerTypeExtent;
+}
 
 bool Classifier::isSubClassOf(ElementType eType) const {
     bool ret = Namespace::isSubClassOf(eType);

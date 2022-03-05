@@ -7,9 +7,9 @@ class DependencyTest : public ::testing::Test {};
 
 TEST_F(DependencyTest, addClientAndSupplierTest) {
     UmlManager m;
-    Package& client = m.create<Package>();
-    Package& supplier = m.create<Package>();
-    Dependency& dep = m.create<Dependency>();
+    Package& client = *m.create<Package>();
+    Package& supplier = *m.create<Package>();
+    Dependency& dep = *m.create<Dependency>();
     dep.getClient().add(client);
     dep.getSupplier().add(supplier);
     ASSERT_EQ(dep.getClient().size(), 1);
@@ -26,9 +26,9 @@ TEST_F(DependencyTest, addClientAndSupplierTest) {
 
 TEST_F(DependencyTest, removeClientAndSupplierTest) {
     UmlManager m;
-    Package& client = m.create<Package>();
-    Package& supplier = m.create<Package>();
-    Dependency& dep = m.create<Dependency>();
+    Package& client = *m.create<Package>();
+    Package& supplier = *m.create<Package>();
+    Dependency& dep = *m.create<Dependency>();
     dep.getClient().add(client);
     dep.getSupplier().add(supplier);
     ASSERT_EQ(dep.getClient().size(), 1);
@@ -50,8 +50,8 @@ TEST_F(DependencyTest, removeClientAndSupplierTest) {
 
 TEST_F(DependencyTest, setAndRemoveFromClientTest) {
     UmlManager m;
-    Package& client = m.create<Package>();
-    Dependency& dependency = m.create<Dependency>();
+    Package& client = *m.create<Package>();
+    Dependency& dependency = *m.create<Dependency>();
     client.getClientDependencies().add(dependency);
     ASSERT_EQ(client.getClientDependencies().size(), 1);
     ASSERT_EQ(client.getClientDependencies().front(), dependency);

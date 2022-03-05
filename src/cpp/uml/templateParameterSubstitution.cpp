@@ -3,8 +3,10 @@
 #include "uml/templateBinding.h"
 #include "uml/templateParameter.h"
 #include "uml/parameterableElement.h"
-#include "uml/uml-stable.h"
+#include "uml/templateSignature.h"
+#include "uml/templateableElement.h"
 #include "uml/setReferenceFunctor.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -28,10 +30,10 @@ void TemplateParameterSubstitution::reindexName(std::string oldName, std::string
 
 void TemplateParameterSubstitution::restoreReference(Element* el) {
     Element::restoreReference(el);
-    if (m_formal.id() == el->getID()) {
+    if (m_formal.get().id() == el->getID()) {
         el->setReference(this);
     }
-    if (m_actual.id() == el->getID()) {
+    if (m_actual.get().id() == el->getID()) {
         el->setReference(this);
     }
 }
@@ -73,44 +75,16 @@ void TemplateParameterSubstitution::init() {
     m_ownedActual.m_signature = &TemplateParameterSubstitution::getOwnedActualSingleton;
 }
 
-void TemplateParameterSubstitution::copy(const TemplateParameterSubstitution& rhs) {
-    m_formal = rhs.m_formal;
-    m_templateBinding = rhs.m_templateBinding;
-    m_actual = rhs.m_actual;
-    m_ownedActual = rhs.m_ownedActual;
-}
-
 TemplateParameterSubstitution::TemplateParameterSubstitution() : Element(ElementType::TEMPLATE_PARAMETER_SUBSTITUTION) {
     init();
-}
-
-TemplateParameterSubstitution::TemplateParameterSubstitution(const TemplateParameterSubstitution& rhs) : Element(rhs, ElementType::TEMPLATE_PARAMETER_SUBSTITUTION) {
-    init();
-    Element::copy(rhs);
-    copy(rhs);
-    if (!m_copiedElementFlag) {
-        delete &rhs;
-    }
 }
 
 TemplateParameterSubstitution::~TemplateParameterSubstitution() {
     mountAndRelease();
 }
 
-TemplateParameter* TemplateParameterSubstitution::getFormal() {
+TemplateParameterPtr TemplateParameterSubstitution::getFormal() const {
     return m_formal.get();
-}
-
-TemplateParameter& TemplateParameterSubstitution::getFormalRef() {
-    return m_formal.getRef();
-}
-
-ID TemplateParameterSubstitution::getFormalID() const {
-    return m_formal.id();
-}
-
-bool TemplateParameterSubstitution::hasFormal() const {
-    return m_formal.has();
 }
 
 void TemplateParameterSubstitution::setFormal(TemplateParameter* formal) {
@@ -125,20 +99,8 @@ void TemplateParameterSubstitution::setFormal(ID id) {
     m_formal.set(id);
 }
 
-TemplateBinding* TemplateParameterSubstitution::getTemplateBinding() {
+TemplateBindingPtr TemplateParameterSubstitution::getTemplateBinding() const {
     return m_templateBinding.get();
-}
-
-TemplateBinding& TemplateParameterSubstitution::getTemplateBindingRef() {
-    return m_templateBinding.getRef();
-}
-
-ID TemplateParameterSubstitution::getTemplateBindingID() const {
-    return m_templateBinding.id();
-}
-
-bool TemplateParameterSubstitution::hasTemplateBinding() const {
-    return m_templateBinding.has();
 }
 
 void TemplateParameterSubstitution::setTemplateBinding(TemplateBinding* bind) {
@@ -153,20 +115,8 @@ void TemplateParameterSubstitution::setTemplateBinding(ID id) {
     m_templateBinding.set(id);
 }
 
-ParameterableElement* TemplateParameterSubstitution::getActual() {
+ParameterableElementPtr TemplateParameterSubstitution::getActual() const {
     return m_actual.get();
-}
-
-ParameterableElement& TemplateParameterSubstitution::getActualRef() {
-    return m_actual.getRef();
-}
-
-ID TemplateParameterSubstitution::getActualID() const {
-    return m_actual.id();
-}
-
-bool TemplateParameterSubstitution::hasActual() const {
-    return m_actual.has();
 }
 
 void TemplateParameterSubstitution::setActual(ParameterableElement* actual) {
@@ -181,20 +131,8 @@ void TemplateParameterSubstitution::setActual(ID id) {
     m_actual.set(id);
 }
 
-ParameterableElement* TemplateParameterSubstitution::getOwnedActual() {
+ParameterableElementPtr TemplateParameterSubstitution::getOwnedActual() const {
     return m_ownedActual.get();
-}
-
-ParameterableElement& TemplateParameterSubstitution::getOwnedActualRef() {
-    return m_ownedActual.getRef();
-}
-
-ID TemplateParameterSubstitution::getOwnedActualID() const {
-    return m_ownedActual.id();
-}
-
-bool TemplateParameterSubstitution::hasOwnedActual() const {
-    return m_ownedActual.has();
 }
 
 void TemplateParameterSubstitution::setOwnedActual(ParameterableElement* actual) {

@@ -18,7 +18,7 @@ class DependencyParserTest : public ::testing::Test {
 TEST_F(DependencyParserTest, basicDependencyTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "dependencyTests/basicDependency.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "dependencyTests/basicDependency.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package& pckg = el->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
@@ -32,10 +32,10 @@ TEST_F(DependencyParserTest, basicDependencyTest) {
 
 TEST_F(DependencyParserTest, basicDependencyEmitTest) {
     UmlManager m;
-    Package& pckg = m.create<Package>();
-    Dependency& dependency = m.create<Dependency>();
-    Package& client = m.create<Package>();
-    Package& supplier = m.create<Package>();
+    Package& pckg = *m.create<Package>();
+    Dependency& dependency = *m.create<Dependency>();
+    Package& client = *m.create<Package>();
+    Package& supplier = *m.create<Package>();
     pckg.setID("oT59r8w9_ZlGzo2NFpN&vJgH_4YJ");
     dependency.setID("tAps&UBn21dKnQ5z7qaAzKBZqR7S");
     client.setID("zMVDkDbSoENGrPr&JLyOGzYo&_D0");
@@ -71,7 +71,7 @@ TEST_F(DependencyParserTest, basicDependencyEmitTest) {
 TEST_F(DependencyParserTest, parseAllTheSubclassesTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "dependencyTests/allSubClasses.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "dependencyTests/allSubClasses.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package& pckg = el->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 5);
@@ -99,12 +99,12 @@ TEST_F(DependencyParserTest, parseAllTheSubclassesTest) {
 
 TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {
     UmlManager m;
-    Package& pckg = m.create<Package>();
-    Abstraction& abstraction = m.create<Abstraction>();
-    Realization& realization = m.create<Realization>();
-    Usage& usage = m.create<Usage>();
-    Package& client = m.create<Package>();
-    Package& supplier = m.create<Package>();
+    Package& pckg = *m.create<Package>();
+    Abstraction& abstraction = *m.create<Abstraction>();
+    Realization& realization = *m.create<Realization>();
+    Usage& usage = *m.create<Usage>();
+    Package& client = *m.create<Package>();
+    Package& supplier = *m.create<Package>();
     pckg.setID("oT59r8w9_ZlGzo2NFpN&vJgH_4YJ");
     abstraction.setID("tAps&UBn21dKnQ5z7qaAzKBZqR7S");
     realization.setID("V5lXdO3DLF2UCpqipGloE976L6QN");
@@ -177,12 +177,11 @@ void ASSERT_RESTORE_DEPENDENCY(Dependency& dependency, NamedElement& client, Nam
 }
 
 TEST_F(DependencyParserTest, mountAndEditDependencyTest) {
-  // std::cout << "!!!!!!!!!!\nTODO uncomment me por favor\n!!!!!!!!!!!!" << std::endl;
   UmlManager m;
-  Package& root = m.create<Package>();
-  Package& supplier = m.create<Package>();
-  Package& client = m.create<Package>();
-  Dependency& dependency = m.create<Dependency>();
+  Package& root = *m.create<Package>();
+  Package& supplier = *m.create<Package>();
+  Package& client = *m.create<Package>();
+  Dependency& dependency = *m.create<Dependency>();
   dependency.getClient().add(client);
   dependency.getSupplier().add(supplier);
   root.getPackagedElements().add(dependency, client, supplier);

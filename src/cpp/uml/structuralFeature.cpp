@@ -32,6 +32,11 @@ void StructuralFeature::referenceErased(ID id) {
     Feature::referenceErased(id);
 }
 
+void StructuralFeature::restoreReference(Element* el) {
+    TypedElement::restoreReference(el);
+    Feature::restoreReference(el);
+}
+
 StructuralFeature::StructuralFeature() : Element(ElementType::STRUCTURAL_FEATURE) {
 
 }

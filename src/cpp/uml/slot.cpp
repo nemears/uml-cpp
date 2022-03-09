@@ -30,6 +30,11 @@ void Slot::referenceErased(ID id) {
     m_definingFeature.eraseElement(id);
 }
 
+void Slot::restoreReference(Element* el) {
+    Element::restoreReference(el);
+    m_definingFeature.restore(el);
+}
+
 Set<StructuralFeature, Slot>& Slot::getDefiningFeatureSingleton() {
     return m_definingFeature;
 }

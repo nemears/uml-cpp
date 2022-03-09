@@ -18,7 +18,7 @@ class ClassParserTest : public ::testing::Test {
 TEST_F(ClassParserTest, parseID_andName) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/class_w_id_and_name.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/class_w_id_and_name.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
     ASSERT_TRUE(clazz->getID() == ID::fromString("g8WBwHt6sgOqvS9ZlgKv9XTmHZ&C"));
@@ -28,7 +28,7 @@ TEST_F(ClassParserTest, parseID_andName) {
 TEST_F(ClassParserTest, parseBasicProperty) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/classWithAttributes.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/classWithAttributes.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
     ASSERT_TRUE(clazz->getAttributes().size() == 2);
@@ -49,7 +49,7 @@ TEST_F(ClassParserTest, parseBasicProperty) {
 TEST_F(ClassParserTest, parseOperation) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/operation.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/operation.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
     Class* clazz = dynamic_cast<Class*>(el);
     ASSERT_EQ(clazz->getOwnedOperations().size(), 1);
@@ -66,14 +66,14 @@ TEST_F(ClassParserTest, parseOperation) {
 TEST_F(ClassParserTest, properErrors) {
     Element* el;
     UmlManager m;
-    ASSERT_THROW(el = m.parse(ymlPath + "classTests/improperOperationIdentifier.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "classTests/operationsNotSequence.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "classTests/improperOperationIdentifier.yml").ptr(), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "classTests/operationsNotSequence.yml").ptr(), Parsers::UmlParserException);
 }
 
 TEST_F(ClassParserTest, basicGeneralizationTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/basicGeneralization.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/basicGeneralization.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -94,7 +94,7 @@ TEST_F(ClassParserTest, basicGeneralizationTest) {
 TEST_F(ClassParserTest, inheritedMembersTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/inheritedMembers.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/inheritedMembers.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 4);
@@ -126,8 +126,8 @@ TEST_F(ClassParserTest, inheritedMembersTest) {
 
 TEST_F(ClassParserTest, emitClassWAttribute) {
     UmlManager m;
-    Class& c = m.create<Class>();
-    Property& p = m.create<Property>();
+    Class& c = *m.create<Class>();
+    Property& p = *m.create<Property>();
     c.setID("hWVMp5upOkVsWnkrfl0I6O5bQsbO");
     c.setName("Class");
     p.setID("61255etITfg0LgPLZaU1PEByTjo3");
@@ -150,9 +150,9 @@ TEST_F(ClassParserTest, emitClassWAttribute) {
 
 TEST_F(ClassParserTest, emitClassWAttributeNOperation) {
     UmlManager m;
-    Class& c = m.create<Class>();
-    Property& p = m.create<Property>();
-    Operation& o = m.create<Operation>();
+    Class& c = *m.create<Class>();
+    Property& p = *m.create<Property>();
+    Operation& o = *m.create<Operation>();
     c.setID("b0XPjtodVDLoVu2YCMwBWYqglsoX");
     c.setName("Class");
     p.setID("kfuX2BvkrRFhMX4UAfchHJgL8sER");
@@ -184,11 +184,11 @@ TEST_F(ClassParserTest, emitClassWAttributeNOperation) {
 
 TEST_F(ClassParserTest, emitFilledInOperation) {
     UmlManager m;
-    Class& c = m.create<Class>();
-    Operation& o = m.create<Operation>();
-    OpaqueBehavior& b = m.create<OpaqueBehavior>();
-    Parameter& p = m.create<Parameter>();
-    Parameter& p2 = m.create<Parameter>();
+    Class& c = *m.create<Class>();
+    Operation& o = *m.create<Operation>();
+    OpaqueBehavior& b = *m.create<OpaqueBehavior>();
+    Parameter& p = *m.create<Parameter>();
+    Parameter& p2 = *m.create<Parameter>();
     c.setID("6cCDjqUmkrXZ46z7CcNaTDso4SfQ");
     c.setName("Class");
     o.setID("Y3WV0c_Wa_zfOTb6zo9BAiIqRhn7");
@@ -237,7 +237,7 @@ TEST_F(ClassParserTest, emitFilledInOperation) {
 TEST_F(ClassParserTest, nestedClassifierParsingTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/nestedClassifiers.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/nestedClassifiers.yml").ptr());
     ASSERT_EQ(el->getElementType(), ElementType::CLASS);
     Class& clazz = el->as<Class>();
     ASSERT_EQ(clazz.getNestedClassifiers().size(), 7);
@@ -259,14 +259,14 @@ TEST_F(ClassParserTest, nestedClassifierParsingTest) {
 
 TEST_F(ClassParserTest, nestedClassifierEmitTest) {
     UmlManager m;
-    Class& clazz = m.create<Class>();
-    Artifact& artifact = m.create<Artifact>();
-    Association& association = m.create<Association>();
-    Class& nestedClazz = m.create<Class>();
-    DataType& dataType = m.create<DataType>();
-    Enumeration& enumeration = m.create<Enumeration>();
-    OpaqueBehavior& opaqueBehavior = m.create<OpaqueBehavior>();
-    PrimitiveType& primitiveType = m.create<PrimitiveType>();
+    Class& clazz = *m.create<Class>();
+    Artifact& artifact = *m.create<Artifact>();
+    Association& association = *m.create<Association>();
+    Class& nestedClazz = *m.create<Class>();
+    DataType& dataType = *m.create<DataType>();
+    Enumeration& enumeration = *m.create<Enumeration>();
+    OpaqueBehavior& opaqueBehavior = *m.create<OpaqueBehavior>();
+    PrimitiveType& primitiveType = *m.create<PrimitiveType>();
     clazz.setID("5mOWzor&UjeUs13VT9&HYj5DKh&Y");
     artifact.setID("F_exblp0xsz5k1lmTLDtjBrFWqS6");
     association.setID("oOgal3or1U2zY9ktKohwQS6ChLw7");
@@ -308,13 +308,13 @@ TEST_F(ClassParserTest, nestedClassifierEmitTest) {
 TEST_F(ClassParserTest, mountFullClassTest) {
     // std::cout << "!!!!!!!!!!\nTODO uncomment me por favor\n!!!!!!!!!!!!" << std::endl;
     UmlManager m;
-    Package& pckg = m.create<Package>();
-    Class& base = m.create<Class>();
-    Class& spec = m.create<Class>();
-    Class& nestSpec = m.create<Class>();
-    Property& prop = m.create<Property>();
-    Operation& op = m.create<Operation>();
-    Generalization& gen = m.create<Generalization>();
+    Package& pckg = *m.create<Package>();
+    Class& base = *m.create<Class>();
+    Class& spec = *m.create<Class>();
+    Class& nestSpec = *m.create<Class>();
+    Property& prop = *m.create<Property>();
+    Operation& op = *m.create<Operation>();
+    Generalization& gen = *m.create<Generalization>();
     spec.setName("specific");
     prop.setName("property");
     base.getOwnedAttributes().add(prop);
@@ -332,14 +332,14 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_MOUNT(pckg, ymlPath + "classTests"));
 
     ASSERT_NO_THROW(m.release(base.getID()));
-    ASSERT_TRUE(prop.getOwner() != 0);
+    ASSERT_TRUE(prop.getOwner());
     Class& base2 = prop.getOwner()->as<Class>();
-    ASSERT_TRUE(prop.getClass() != 0);
+    ASSERT_TRUE(prop.getClass());
     ASSERT_EQ(prop.getClass(), &base2);
-    ASSERT_TRUE(prop.getFeaturingClassifier() != 0);
-    ASSERT_EQ(prop.getFeaturingClassifier(), &base2);
-    ASSERT_TRUE(prop.getNamespace() != 0);
-    ASSERT_EQ(prop.getNamespace(), &base2);
+    ASSERT_TRUE(prop.getFeaturingClassifier());
+    ASSERT_EQ(*prop.getFeaturingClassifier(), base2);
+    ASSERT_TRUE(prop.getNamespace());
+    ASSERT_EQ(*prop.getNamespace(), base2);
 
     ASSERT_EQ(base2.getOwnedAttributes().size(), 1);
     ASSERT_EQ(base2.getOwnedAttributes().front(), prop);
@@ -354,14 +354,14 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(base2.getOwnedElements().size(), 2);
     ASSERT_EQ(base2.getOwnedElements().get("property"), prop);
 
-    ASSERT_TRUE(op.getClass() != 0);
-    ASSERT_EQ(op.getClass(), &base2);
-    ASSERT_TRUE(op.getFeaturingClassifier() != 0);
-    ASSERT_EQ(op.getFeaturingClassifier(), &base2);
-    ASSERT_TRUE(op.getNamespace() != 0);
-    ASSERT_EQ(op.getNamespace(), &base2);
-    ASSERT_TRUE(op.getOwner() != 0);
-    ASSERT_EQ(op.getOwner(), &base2);
+    ASSERT_TRUE(op.getClass());
+    ASSERT_EQ(*op.getClass(), base2);
+    ASSERT_TRUE(op.getFeaturingClassifier());
+    ASSERT_EQ(*op.getFeaturingClassifier(), base2);
+    ASSERT_TRUE(op.getNamespace());
+    ASSERT_EQ(*op.getNamespace(), base2);
+    ASSERT_TRUE(op.getOwner());
+    ASSERT_EQ(*op.getOwner(), base2);
 
     ASSERT_EQ(base2.getOwnedOperations().size(), 1);
     ASSERT_EQ(&base2.getOwnedOperations().front(), &op);
@@ -370,7 +370,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(&base2.getMembers().get("operation"), &op);
     ASSERT_EQ(base2.getOwnedElements().get("operation"), op);
 
-    ASSERT_TRUE(gen.getGeneral() != 0);
+    ASSERT_TRUE(gen.getGeneral());
     ASSERT_EQ(gen.getGeneral(), &base2);
     ASSERT_EQ(spec.getGenerals().size(), 1);
     ASSERT_EQ(&spec.getGenerals().front(), &base2);
@@ -380,18 +380,18 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_NO_THROW(m.release(spec));
     Class& spec2 = pckg.getPackagedElements().get("specific").as<Class>(); // load specific
 
-    ASSERT_TRUE(gen.getSpecific() != 0);
-    ASSERT_EQ(gen.getSpecific(), &spec2);
+    ASSERT_TRUE(gen.getSpecific());
+    ASSERT_EQ(*gen.getSpecific(), spec2);
     ASSERT_EQ(gen.getSources().size(), 1);
     ASSERT_EQ(&gen.getSources().front(), &spec2);
     ASSERT_EQ(gen.getRelatedElements().size(), 2);
     ASSERT_EQ(&gen.getRelatedElements().back(), &spec2);
-    ASSERT_TRUE(gen.getOwner() != 0);
-    ASSERT_EQ(gen.getOwner(), &spec2);
+    ASSERT_TRUE(gen.getOwner());
+    ASSERT_EQ(*gen.getOwner(), spec2);
 
-    ASSERT_TRUE(nestSpec.getNamespace() != 0);
-    ASSERT_TRUE(nestSpec.getOwner() != 0);
-    ASSERT_EQ(nestSpec.getOwner(), &spec2);
+    ASSERT_TRUE(nestSpec.getNamespace());
+    ASSERT_TRUE(nestSpec.getOwner());
+    ASSERT_EQ(*nestSpec.getOwner(), spec2);
 
     ASSERT_EQ(spec2.getGeneralizations().size(), 1);
     ASSERT_EQ(&spec2.getGeneralizations().front(), &gen);
@@ -415,17 +415,17 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     m.release(gen);
     ASSERT_EQ(spec2.getGeneralizations().size(), 1);
     Generalization& gen2 = spec2.getGeneralizations().front();
-    ASSERT_TRUE(gen2.hasSpecific());
-    ASSERT_EQ(gen2.getSpecificRef(), spec2);
+    ASSERT_TRUE(gen2.getSpecific());
+    ASSERT_EQ(*gen2.getSpecific(), spec2);
     ASSERT_EQ(gen2.getSources().size(), 1);
     ASSERT_EQ(gen2.getSources().front(), spec2);
     ASSERT_EQ(gen2.getRelatedElements().size(), 2);
     ASSERT_TRUE(gen2.getRelatedElements().count(spec2.getID()));
     ASSERT_EQ(gen2.getRelatedElements().get(spec2.getID()), spec2);
-    ASSERT_TRUE(gen2.hasOwner());
-    ASSERT_EQ(gen2.getOwnerRef(), spec2);
-    ASSERT_TRUE(gen2.hasGeneral());
-    ASSERT_EQ(gen2.getGeneralRef(), base2);
+    ASSERT_TRUE(gen2.getOwner());
+    ASSERT_EQ(*gen2.getOwner(), spec2);
+    ASSERT_TRUE(gen2.getGeneral());
+    ASSERT_EQ(*gen2.getGeneral(), base2);
     ASSERT_EQ(gen2.getTargets().size(), 1);
     ASSERT_EQ(gen2.getTargets().front(), base2);
     ASSERT_TRUE(gen2.getRelatedElements().count(base2.getID()));
@@ -434,17 +434,17 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ID genID = gen2.getID();
     m.release(gen2, spec2);
     Generalization& gen3 = m.aquire(genID)->as<Generalization>();
-    ASSERT_TRUE(gen3.hasSpecific());
-    Class& spec3 = gen3.getSpecificRef().as<Class>();
+    ASSERT_TRUE(gen3.getSpecific());
+    Class& spec3 = gen3.getSpecific()->as<Class>();
     ASSERT_EQ(gen3.getSources().size(), 1);
     ASSERT_EQ(gen3.getSources().front(), spec3);
     ASSERT_EQ(gen3.getRelatedElements().size(), 2);
     ASSERT_TRUE(gen3.getRelatedElements().count(spec3.getID()));
     ASSERT_EQ(gen3.getRelatedElements().get(spec3.getID()), spec3);
-    ASSERT_TRUE(gen3.hasOwner());
-    ASSERT_EQ(gen3.getOwnerRef(), spec3);
-    ASSERT_TRUE(gen3.hasGeneral());
-    ASSERT_EQ(gen3.getGeneralRef(), base2);
+    ASSERT_TRUE(gen3.getOwner());
+    ASSERT_EQ(*gen3.getOwner(), spec3);
+    ASSERT_TRUE(gen3.getGeneral());
+    ASSERT_EQ(*gen3.getGeneral(), base2);
     ASSERT_EQ(gen3.getTargets().size(), 1);
     ASSERT_EQ(gen3.getTargets().front(), base2);
     ASSERT_TRUE(gen3.getRelatedElements().count(base2.getID()));
@@ -452,10 +452,10 @@ TEST_F(ClassParserTest, mountFullClassTest) {
 
     m.release(nestSpec);
     Class& nestSpec2 = spec3.getNestedClassifiers().front().as<Class>();
-    ASSERT_TRUE(nestSpec2.hasNamespace());
-    ASSERT_EQ(nestSpec2.getNamespaceRef(), spec3);
-    ASSERT_TRUE(nestSpec2.hasOwner());
-    ASSERT_EQ(nestSpec2.getOwnerRef(), spec3);
+    ASSERT_TRUE(nestSpec2.getNamespace());
+    ASSERT_EQ(*nestSpec2.getNamespace(), spec3);
+    ASSERT_TRUE(nestSpec2.getOwner());
+    ASSERT_EQ(*nestSpec2.getOwner(), spec3);
     
     ASSERT_EQ(spec3.getNestedClassifiers().size(), 1);
     ASSERT_EQ(spec3.getNestedClassifiers().front(), nestSpec2);
@@ -468,11 +468,11 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     m.release(spec3, nestSpec2);
     ASSERT_FALSE(m.loaded(specID));
     Class& nestSpec3 = m.aquire(nestSpecID)->as<Class>();
-    ASSERT_TRUE(nestSpec3.hasNamespace());
-    Class& spec4 = nestSpec3.getNamespaceRef().as<Class>();
-    ASSERT_EQ(nestSpec3.getNamespaceRef(), spec4);
-    ASSERT_TRUE(nestSpec3.hasOwner());
-    ASSERT_EQ(nestSpec3.getOwnerRef(), spec4);
+    ASSERT_TRUE(nestSpec3.getNamespace());
+    Class& spec4 = nestSpec3.getNamespace()->as<Class>();
+    ASSERT_EQ(*nestSpec3.getNamespace(), spec4);
+    ASSERT_TRUE(nestSpec3.getOwner());
+    ASSERT_EQ(*nestSpec3.getOwner(), spec4);
     ASSERT_EQ(spec4.getNestedClassifiers().size(), 1);
     ASSERT_EQ(spec4.getNestedClassifiers().front(), nestSpec3);
     ASSERT_TRUE(spec4.getOwnedMembers().count(nestSpec3.getID()));
@@ -482,14 +482,14 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     m.release(op);
     ASSERT_EQ(base2.getOwnedOperations().size(), 1);
     Operation& op2 = base2.getOwnedOperations().front();
-    ASSERT_TRUE(op2.hasClass());
-    ASSERT_EQ(op2.getClassRef(), base2);
-    ASSERT_TRUE(op2.hasFeaturingClassifier());
-    ASSERT_EQ(op2.getFeaturingClassifierRef(), base2);
-    ASSERT_TRUE(op2.hasNamespace());
-    ASSERT_EQ(op2.getNamespaceRef(), base2);
-    ASSERT_TRUE(op2.hasOwner());
-    ASSERT_EQ(op2.getOwnerRef(), base2);
+    ASSERT_TRUE(op2.getClass());
+    ASSERT_EQ(*op2.getClass(), base2);
+    ASSERT_TRUE(op2.getFeaturingClassifier());
+    ASSERT_EQ(*op2.getFeaturingClassifier(), base2);
+    ASSERT_TRUE(op2.getNamespace());
+    ASSERT_EQ(*op2.getNamespace(), base2);
+    ASSERT_TRUE(op2.getOwner());
+    ASSERT_EQ(*op2.getOwner(), base2);
 
     ASSERT_TRUE(base2.getFeatures().count(op2.getID()));
     ASSERT_TRUE(base2.getOwnedMembers().count(op2.getID()));
@@ -499,14 +499,14 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ID opID = op2.getID();
     m.release(base2, op2);
     Operation& op3 = m.aquire(opID)->as<Operation>();
-    ASSERT_TRUE(op3.hasClass());
-    Class& base3 = op3.getClassRef();
-    ASSERT_TRUE(op3.hasFeaturingClassifier());
-    ASSERT_EQ(op3.getFeaturingClassifierRef(), base3);
-    ASSERT_TRUE(op3.hasNamespace());
-    ASSERT_EQ(op3.getNamespaceRef(), base3);
-    ASSERT_TRUE(op3.hasOwner());
-    ASSERT_EQ(op3.getOwnerRef(), base3);
+    ASSERT_TRUE(op3.getClass());
+    Class& base3 = *op3.getClass();
+    ASSERT_TRUE(op3.getFeaturingClassifier());
+    ASSERT_EQ(*op3.getFeaturingClassifier(), base3);
+    ASSERT_TRUE(op3.getNamespace());
+    ASSERT_EQ(*op3.getNamespace(), base3);
+    ASSERT_TRUE(op3.getOwner());
+    ASSERT_EQ(*op3.getOwner(), base3);
 
     ASSERT_TRUE(base3.getFeatures().count(op3.getID()));
     ASSERT_TRUE(base3.getOwnedMembers().count(op3.getID()));
@@ -517,14 +517,14 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     m.release(prop);
     ASSERT_TRUE(base3.getOwnedAttributes().count(propID));
     Property& prop2 = base3.getOwnedAttributes().front();
-    ASSERT_TRUE(prop2.hasClass());
-    ASSERT_EQ(prop2.getClassRef(), base3);
-    ASSERT_TRUE(prop2.hasFeaturingClassifier());
-    ASSERT_EQ(prop2.getFeaturingClassifierRef(), base3);
-    ASSERT_TRUE(prop2.hasNamespace());
-    ASSERT_EQ(prop2.getNamespaceRef(), base3);
-    ASSERT_TRUE(prop2.hasOwner());
-    ASSERT_EQ(prop2.getOwnerRef(), base3);
+    ASSERT_TRUE(prop2.getClass());
+    ASSERT_EQ(*prop2.getClass(), base3);
+    ASSERT_TRUE(prop2.getFeaturingClassifier());
+    ASSERT_EQ(*prop2.getFeaturingClassifier(), base3);
+    ASSERT_TRUE(prop2.getNamespace());
+    ASSERT_EQ(*prop2.getNamespace(), base3);
+    ASSERT_TRUE(prop2.getOwner());
+    ASSERT_EQ(*prop2.getOwner(), base3);
     ASSERT_EQ(base3.getOwnedAttributes().front(), prop2);
     ASSERT_EQ(base3.getAttributes().front(), prop2);
     ASSERT_TRUE(base3.getFeatures().contains(prop2));
@@ -534,14 +534,14 @@ TEST_F(ClassParserTest, mountFullClassTest) {
 
     m.release(base3, prop2);
     Property& prop3 = m.aquire(propID)->as<Property>();
-    ASSERT_TRUE(prop3.hasClass());
-    Class& base4 = prop3.getClassRef();
-    ASSERT_TRUE(prop3.hasFeaturingClassifier());
-    ASSERT_EQ(prop3.getFeaturingClassifierRef(), base4);
-    ASSERT_TRUE(prop3.hasNamespace());
-    ASSERT_EQ(prop3.getNamespaceRef(), base4);
-    ASSERT_TRUE(prop3.hasOwner());
-    ASSERT_EQ(prop3.getOwnerRef(), base4);
+    ASSERT_TRUE(prop3.getClass());
+    Class& base4 = *prop3.getClass();
+    ASSERT_TRUE(prop3.getFeaturingClassifier());
+    ASSERT_EQ(*prop3.getFeaturingClassifier(), base4);
+    ASSERT_TRUE(prop3.getNamespace());
+    ASSERT_EQ(*prop3.getNamespace(), base4);
+    ASSERT_TRUE(prop3.getOwner());
+    ASSERT_EQ(*prop3.getOwner(), base4);
     ASSERT_TRUE(base4.getOwnedAttributes().contains(prop3));
     ASSERT_EQ(base4.getAttributes().front(), prop3);
     ASSERT_TRUE(base4.getFeatures().contains(prop3));

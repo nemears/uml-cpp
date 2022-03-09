@@ -17,7 +17,7 @@ class CommentParserTest : public ::testing::Test {
 TEST_F(CommentParserTest, testBasicComment) {
     UmlManager m;
     Element* el;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "commentTests/comment.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "commentTests/comment.yml").ptr());
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& pckg = *dynamic_cast<Package*>(el);
     ASSERT_EQ(pckg.getOwnedComments().size(), 1);
@@ -27,8 +27,8 @@ TEST_F(CommentParserTest, testBasicComment) {
 
 TEST_F(CommentParserTest, commentEmitTest) {
     UmlManager m;
-    Package& pckg = m.create<Package>();
-    Comment& comment = m.create<Comment>();
+    Package& pckg = *m.create<Package>();
+    Comment& comment = *m.create<Comment>();
     pckg.setID("zN&UM2AHrXX07rAiNxTmmMwLYI1O");
     comment.setID("FqaulNq6bCe_8J5M0Ff2oCCaQD05");
     pckg.getOwnedComments().add(comment);
@@ -45,8 +45,8 @@ TEST_F(CommentParserTest, commentEmitTest) {
 
 TEST_F(CommentParserTest, mountAndEditCommentTest) {
     UmlManager m;
-    Package& root = m.create<Package>();
-    Comment& comment = m.create<Comment>();
+    Package& root = *m.create<Package>();
+    Comment& comment = *m.create<Comment>();
     root.getOwnedComments().add(comment);
     comment.setBody("foo bar");
     m.setRoot(&root);
@@ -54,17 +54,17 @@ TEST_F(CommentParserTest, mountAndEditCommentTest) {
 
     m.release(comment);
     Comment& comment2 = root.getOwnedComments().front();
-    ASSERT_TRUE(comment2.hasOwner());
-    ASSERT_EQ(comment2.getOwnerRef(), root);
+    ASSERT_TRUE(comment2.getOwner());
+    ASSERT_EQ(*comment2.getOwner(), root);
     ASSERT_TRUE(root.getOwnedComments().count(comment2.getID()));
     ASSERT_TRUE(root.getOwnedElements().count(comment2.getID()));
 
     ID commentID = comment2.getID();
     m.release(comment2, root);
     Comment& comment3 = m.aquire(commentID)->as<Comment>();
-    Package& root2 = comment3.getOwnerRef().as<Package>();
-    ASSERT_TRUE(comment3.hasOwner());
-    ASSERT_EQ(comment3.getOwnerRef(), root2);
+    Package& root2 = comment3.getOwner()->as<Package>();
+    ASSERT_TRUE(comment3.getOwner());
+    ASSERT_EQ(*comment3.getOwner(), root2);
     ASSERT_TRUE(root2.getOwnedComments().count(comment3.getID()));
     ASSERT_TRUE(root2.getOwnedElements().count(comment3.getID()));
 }

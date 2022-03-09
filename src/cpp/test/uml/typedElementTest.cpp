@@ -29,23 +29,22 @@ TEST_F(TypedElementTest, GetTypeReturnsNullTest) {
     ASSERT_FALSE(t.getType());
 }
 
-// TEST_F(TypedElementTest, reindexTypeTest) {
-// 	UmlManager m;
-// 	Class& t = *m.create<Class>();
-// 	Property& p = *m.create<Property>();
-// 	Class& c = *m.create<Class>();
-// 	Package& root = *m.create<Package>();
-// 	p.setType(t);
-// 	c.getOwnedAttributes().add(p);
-// 	root.getPackagedElements().add(t, c);
-// 	m.setRoot(&root);
-// 	m.mount(ymlPath + "typedElementTests");
-// 	ID id = ID::fromString("iera5tJozUcDPwn2dcJ_0ZCP&goY");
-// 	t.setID(id);
-// 	ASSERT_TRUE(p.getType());
-// 	ASSERT_EQ(p.getType()->getID(), id);
-// 	// m.release(id);
-// 	// ASSERT_TRUE(p.hasType());
-// 	// ASSERT_TRUE(p.getType());
-// 	// ASSERT_EQ(p.getTypeRef().getID(), id);
-// }
+TEST_F(TypedElementTest, reindexTypeTest) {
+	UmlManager m;
+	Class& t = *m.create<Class>();
+	Property& p = *m.create<Property>();
+	Class& c = *m.create<Class>();
+	Package& root = *m.create<Package>();
+	p.setType(t);
+	c.getOwnedAttributes().add(p);
+	root.getPackagedElements().add(t, c);
+	m.setRoot(&root);
+	m.mount(ymlPath + "typedElementTests");
+	ID id = ID::fromString("iera5tJozUcDPwn2dcJ_0ZCP&goY");
+	t.setID(id);
+	ASSERT_TRUE(p.getType());
+	ASSERT_EQ(p.getType()->getID(), id);
+	m.release(id);
+	ASSERT_TRUE(p.getType());
+	ASSERT_EQ(p.getType()->getID(), id);
+}

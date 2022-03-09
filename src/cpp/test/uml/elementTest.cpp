@@ -82,13 +82,28 @@ TEST_F(ElementTest, UmlPtrReleaseTest) {
 TEST_F(ElementTest, AcessReleasedPtrTest) {
     UmlManager m;
     m.mount(".");
-    m.lazy(false);
-    m.lossless(false);
+    // m.lazy(false);
+    // m.lossless(false);
     PackagePtr pckg = m.create<Package>();
     pckg.release();
     ASSERT_FALSE(m.loaded(pckg.id()));
     ASSERT_EQ(pckg->getID(), pckg.id());
     ASSERT_TRUE(m.loaded(pckg.id()));
+}
+
+TEST_F(ElementTest, reassignPtrTest) {
+    UmlManager m;
+    PackagePtr pckg = m.create<Package>();
+    PackagePtr ogPckg = pckg;
+    ID ogID = pckg.id();    
+    {
+        PackagePtr newPckg = m.create<Package>();
+        pckg = newPckg;
+    }
+    ASSERT_NE(pckg.id(), ogID);
+    ASSERT_NE(pckg.id(), ogPckg.id());
+    ASSERT_EQ(pckg.id(), pckg->getID());
+    ASSERT_EQ(ogPckg.id(), ogPckg->getID());
 }
 
 TEST_F(ElementTest, OverrideID_Test) {
@@ -258,24 +273,24 @@ TEST_F(ElementTest, readOnlyRelatedElementsTest) {
     ASSERT_THROW(r.getRelatedElements().add(h), ReadOnlySetException);
 }
 
-// // TEST_F(ElementTest, checkAppliedStereotypeFunctorTest) {
-// //   UmlManager m;
-// //   Class& c = m.create<Class>();
-// //   InstanceSpecification& s = m.create<InstanceSpecification>();
-// //   ASSERT_THROW(c.getAppliedStereotypes().add(s), InvalidAppliedStereotypeException());
-// // }
-
-// TEST_F(ElementTest, AddAndRemoveAppliedStereotypetest) {
+// TEST_F(ElementTest, checkAppliedStereotypeFunctorTest) {
 //   UmlManager m;
 //   Class& c = m.create<Class>();
-//   InstanceSpecification& i = m.create<InstanceSpecification>();
-//   Stereotype& s = m.create<Stereotype>();
-//   i.getClassifiers().add(s);
-//   ASSERT_NO_THROW(c.getAppliedStereotypes().add(i));
-//   ASSERT_EQ(c.getOwnedElements().size(), 1);
-//   ASSERT_NO_THROW(c.getAppliedStereotypes().remove(i));
-//   ASSERT_EQ(c.getOwnedElements().size(), 0);
+//   InstanceSpecification& s = m.create<InstanceSpecification>();
+//   ASSERT_THROW(c.getAppliedStereotypes().add(s), InvalidAppliedStereotypeException());
 // }
+
+TEST_F(ElementTest, AddAndRemoveAppliedStereotypetest) {
+  UmlManager m;
+  Class& c = *m.create<Class>();
+  InstanceSpecification& i = *m.create<InstanceSpecification>();
+  Stereotype& s = *m.create<Stereotype>();
+  i.getClassifiers().add(s);
+  ASSERT_NO_THROW(c.getAppliedStereotypes().add(i));
+  ASSERT_EQ(c.getOwnedElements().size(), 1);
+  ASSERT_NO_THROW(c.getAppliedStereotypes().remove(i));
+  ASSERT_EQ(c.getOwnedElements().size(), 0);
+}
 
 TEST_F(ElementTest, asFuncTest) {
   UmlManager m;

@@ -26,6 +26,7 @@ void Dependency::reindexName(std::string oldName, std::string newName) {
 
 void Dependency::restoreReference(Element* el) {
     PackageableElement::restoreReference(el);
+    Relationship::restoreReference(el);
     if (m_supplier.contains(el->getID())) {
         el->setReference(this); // need this logic for all setReference top level calls
     }

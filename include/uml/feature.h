@@ -19,6 +19,7 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
+            void restoreReference(Element* el) override;
             Set<Classifier, Feature>& getFeaturingClassifierSingleton();
             void init();
             Feature();

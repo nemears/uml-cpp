@@ -30,6 +30,8 @@ void TemplateParameterSubstitution::reindexName(std::string oldName, std::string
 
 void TemplateParameterSubstitution::restoreReference(Element* el) {
     Element::restoreReference(el);
+    m_formal.restore(el);
+    m_actual.restore(el);
     if (m_formal.get().id() == el->getID()) {
         el->setReference(this);
     }

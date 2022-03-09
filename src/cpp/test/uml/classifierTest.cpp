@@ -149,31 +149,31 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   ASSERT_EQ(s6.getMembers().size(), 1);
 }
 
-// TEST_F(ClassifierTest, reindexClassifierID_test) {
-// 	UmlManager m;
-// 	DataType reindexed = m.create<DataType>();
-// 	DataType general = m.create<DataType>();
-// 	Generalization generalization = m.create<Generalization>();
-// 	Property attribute = m.create<Property>();
-// 	Package root = m.create<Package>();
-// 	InstanceSpecification instance = m.create<InstanceSpecification>();
-// 	reindexed.getGeneralizations().add(generalization);
-// 	generalization.setGeneral(general);
-// 	reindexed.getOwnedAttributes().add(attribute);
-// 	instance.getClassifiers().add(reindexed);
-// 	root.getPackagedElements().add(reindexed, general, instance);
-// 	ID id = ID::fromString("YXA7t1zgj89FRZePjCmulq1h5s5s");
-// 	reindexed.setID(id);
-// 	ASSERT_NO_THROW(ASSERT_EQ(generalization.getSpecificRef(), reindexed));
-// 	ASSERT_NO_THROW(ASSERT_EQ(generalization.getSources().get(id), reindexed));
-// 	ASSERT_NO_THROW(ASSERT_EQ(*generalization.getOwner(), reindexed));
-// 	ASSERT_NO_THROW(ASSERT_EQ(attribute.getDataTypeRef(), reindexed));
-// 	ASSERT_NO_THROW(ASSERT_EQ(attribute.getFeaturingClassifierRef(), reindexed));
-// 	ASSERT_NO_THROW(ASSERT_EQ(attribute.getNamespaceRef(), reindexed));
-// 	ASSERT_NO_THROW(ASSERT_EQ(*attribute.getOwner(), reindexed));
-// 	ASSERT_NO_THROW(ASSERT_EQ(root.getPackagedElements().get(id), reindexed));
-// 	ASSERT_NO_THROW(ASSERT_EQ(root.getOwnedMembers().get(id), reindexed));
-// 	ASSERT_NO_THROW(ASSERT_EQ(root.getMembers().get(id), reindexed));
-// 	ASSERT_NO_THROW(ASSERT_EQ(root.getOwnedElements().get(id), reindexed));
-// 	ASSERT_NO_THROW(ASSERT_EQ(instance.getClassifiers().front(), reindexed));
-// }
+TEST_F(ClassifierTest, reindexClassifierID_test) {
+	UmlManager m;
+	DataType& reindexed = *m.create<DataType>();
+	DataType& general = *m.create<DataType>();
+	Generalization& generalization = *m.create<Generalization>();
+	Property& attribute = *m.create<Property>();
+	Package& root = *m.create<Package>();
+	InstanceSpecification& instance = *m.create<InstanceSpecification>();
+	reindexed.getGeneralizations().add(generalization);
+	generalization.setGeneral(general);
+	reindexed.getOwnedAttributes().add(attribute);
+	instance.getClassifiers().add(reindexed);
+	root.getPackagedElements().add(reindexed, general, instance);
+	ID id = ID::fromString("YXA7t1zgj89FRZePjCmulq1h5s5s");
+	reindexed.setID(id);
+	ASSERT_NO_THROW(ASSERT_EQ(*generalization.getSpecific(), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(generalization.getSources().get(id), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(*generalization.getOwner(), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(*attribute.getDataType(), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(*attribute.getFeaturingClassifier(), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(*attribute.getNamespace(), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(*attribute.getOwner(), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(root.getPackagedElements().get(id), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(root.getOwnedMembers().get(id), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(root.getMembers().get(id), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(root.getOwnedElements().get(id), reindexed));
+	ASSERT_NO_THROW(ASSERT_EQ(instance.getClassifiers().front(), reindexed));
+}

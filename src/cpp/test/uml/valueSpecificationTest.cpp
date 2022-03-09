@@ -76,35 +76,37 @@ TEST_F(ValueSpecificationTest, reindexID_forSlotTest) {
     ASSERT_NO_THROW(s.getOwnedElements().get(v.getID()));
 }
 
-// TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
-//     LiteralInt v;
-//     Slot s;
-//     s.getValues().add(v);
-//     v.setName("test");
-//     ASSERT_TRUE(s.getValues().get("test"));
-//     ASSERT_TRUE(s.getOwnedElements().get("test"));
-// }
+TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
+    UmlManager m;
+    LiteralInt& v = *m.create<LiteralInt>();
+    Slot& s = *m.create<Slot>();
+    s.getValues().add(v);
+    v.setName("test");
+    ASSERT_EQ(s.getValues().get("test"), v);
+    ASSERT_EQ(s.getOwnedElements().get("test"), v);
+}
 
-// TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
-//     UmlManager m;
-//     Expression& e = m.create<Expression>();
-//     LiteralBool& b = m.create<LiteralBool>();
-//     e.getOperands().add(b);
-//     e.setSymbol("==");
-//     b.setID("eb092018_0bef_4ad6_b80f_05fa");
-//     ASSERT_NO_THROW(e.getOperands().get(b.getID()));
-//     ASSERT_NO_THROW(e.getOwnedElements().get(b.getID()));
-// }
+TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
+    UmlManager m;
+    Expression& e = *m.create<Expression>();
+    LiteralBool& b = *m.create<LiteralBool>();
+    e.getOperands().add(b);
+    e.setSymbol("==");
+    b.setID("eb092018_0bef_4ad6_b80f_05fa");
+    ASSERT_NO_THROW(e.getOperands().get(b.getID()));
+    ASSERT_NO_THROW(e.getOwnedElements().get(b.getID()));
+}
 
-// TEST_F(ValueSpecificationTest, reindexNameExpressionTest) {
-//     Expression e;
-//     LiteralBool b;
-//     e.getOperands().add(b);
-//     e.setSymbol("==");
-//     b.setName("test");
-//     ASSERT_TRUE(e.getOperands().get("test"));
-//     ASSERT_TRUE(e.getOwnedElements().get("test"));
-// }
+TEST_F(ValueSpecificationTest, reindexNameExpressionTest) {
+    UmlManager m;
+    Expression& e = *m.create<Expression>();
+    LiteralBool& b = *m.create<LiteralBool>();
+    e.getOperands().add(b);
+    e.setSymbol("==");
+    b.setName("test");
+    ASSERT_EQ(e.getOperands().get("test"), b);
+    ASSERT_EQ(e.getOwnedElements().get("test"), b);
+}
 
 TEST_F(ValueSpecificationTest, LiteralUnlimitedNaturalTest) {
     UmlManager m;

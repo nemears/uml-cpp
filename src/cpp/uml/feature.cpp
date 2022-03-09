@@ -35,6 +35,11 @@ void Feature::referenceErased(ID id) {
     m_featuringClassifier.eraseElement(id);
 }
 
+void Feature::restoreReference(Element* el) {
+    RedefinableElement::restoreReference(el);
+    m_featuringClassifier.restore(el);
+}
+
 Set<Classifier, Feature>& Feature::getFeaturingClassifierSingleton() {
     return m_featuringClassifier;
 }

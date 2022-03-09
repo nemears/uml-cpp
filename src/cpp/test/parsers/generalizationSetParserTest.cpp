@@ -14,7 +14,7 @@ class GeneralizationSetParserTest : public ::testing::Test {
 TEST_F(GeneralizationSetParserTest, parseBasicGeneralizationSetTest) {
   UmlManager m;
   Element* el;
-  ASSERT_NO_THROW(el = m.parse(ymlPath + "generalizationSetTests/basicGeneralizationSet.yml"));
+  ASSERT_NO_THROW(el = m.parse(ymlPath + "generalizationSetTests/basicGeneralizationSet.yml").ptr());
   ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
   Package& pckg = el->as<Package>();
   ASSERT_EQ(pckg.getPackagedElements().size(), 3);
@@ -30,8 +30,8 @@ TEST_F(GeneralizationSetParserTest, parseBasicGeneralizationSetTest) {
   GeneralizationSet& set = pckg.getPackagedElements().get("set").as<GeneralizationSet>();
   ASSERT_EQ(general.getPowerTypeExtent().front(), set);
   ASSERT_EQ(generalization.getGeneralizationSets().front(), set);
-  ASSERT_TRUE(set.hasPowerType());
-  ASSERT_EQ(set.getPowerTypeRef(), general);
+  ASSERT_TRUE(set.getPowerType());
+  ASSERT_EQ(*set.getPowerType(), general);
   ASSERT_EQ(set.getGeneralizations().size(), 1);
   ASSERT_EQ(set.getGeneralizations().front(), generalization);
   ASSERT_TRUE(set.isCovering());
@@ -40,11 +40,11 @@ TEST_F(GeneralizationSetParserTest, parseBasicGeneralizationSetTest) {
 
 TEST_F(GeneralizationSetParserTest, emitGeneralizationSetTest) {
     UmlManager m;
-    Package& root = m.create<Package>();
-    Class& general = m.create<Class>();
-    Class& specific = m.create<Class>();
-    Generalization& generalization = m.create<Generalization>();
-    GeneralizationSet& set = m.create<GeneralizationSet>();
+    Package& root = *m.create<Package>();
+    Class& general = *m.create<Class>();
+    Class& specific = *m.create<Class>();
+    Generalization& generalization = *m.create<Generalization>();
+    GeneralizationSet& set = *m.create<GeneralizationSet>();
     root.setID("UpJ207YoGcD0zWHbmtYZhLAYEhRP");
     general.setID("mmUnLGAGcUocJQlNkF2BxGUzadjY");
     specific.setID("wJ7Y3K6BmTpN3D2pEtbbBt5aMhuo");
@@ -85,11 +85,11 @@ TEST_F(GeneralizationSetParserTest, emitGeneralizationSetTest) {
 
 TEST_F(GeneralizationSetParserTest, mountGeneralizationSet) {
   UmlManager m;
-  Package& root = m.create<Package>();
-  Class& general = m.create<Class>();
-  Class& specific = m.create<Class>();
-  Generalization& generalization = m.create<Generalization>();
-  GeneralizationSet& set = m.create<GeneralizationSet>();
+  Package& root = *m.create<Package>();
+  Class& general = *m.create<Class>();
+  Class& specific = *m.create<Class>();
+  Generalization& generalization = *m.create<Generalization>();
+  GeneralizationSet& set = *m.create<GeneralizationSet>();
   specific.getGeneralizations().add(generalization);
   generalization.setGeneral(general);
   generalization.getGeneralizationSets().add(set);
@@ -103,8 +103,8 @@ TEST_F(GeneralizationSetParserTest, mountGeneralizationSet) {
   ASSERT_FALSE(m.loaded(setID));
   GeneralizationSet& set2 = m.aquire(setID)->as<GeneralizationSet>();
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(set2, root));
-  ASSERT_TRUE(set2.hasPowerType());
-  ASSERT_EQ(set2.getPowerTypeRef(), general);
+  ASSERT_TRUE(set2.getPowerType());
+  ASSERT_EQ(*set2.getPowerType(), general);
   ASSERT_EQ(set2.getGeneralizations().size(), 1);
   ASSERT_EQ(set2.getGeneralizations().front(), generalization);
 
@@ -114,8 +114,8 @@ TEST_F(GeneralizationSetParserTest, mountGeneralizationSet) {
   ASSERT_FALSE(m.loaded(setID));
   GeneralizationSet& set3 = m.aquire(setID)->as<GeneralizationSet>();
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(set3, root));
-  ASSERT_TRUE(set3.hasPowerType());
-  ASSERT_EQ(set3.getPowerTypeID(), generalID);
+  ASSERT_TRUE(set3.getPowerType());
+  ASSERT_EQ(set3.getPowerType().id(), generalID);
   ASSERT_EQ(set3.getGeneralizations().size(), 1);
   ASSERT_EQ(set3.getGeneralizations().front(), generalization);
   Class& general2 = m.aquire(generalID)->as<Class>();
@@ -130,8 +130,8 @@ TEST_F(GeneralizationSetParserTest, mountGeneralizationSet) {
   ASSERT_EQ(general3.getPowerTypeExtent().ids().front(), setID);
   GeneralizationSet& set4 = m.aquire(setID)->as<GeneralizationSet>();
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(set4, root));
-  ASSERT_TRUE(set4.hasPowerType());
-  ASSERT_EQ(set4.getPowerTypeRef(), general3);
+  ASSERT_TRUE(set4.getPowerType());
+  ASSERT_EQ(*set4.getPowerType(), general3);
   ASSERT_EQ(set4.getGeneralizations().size(), 1);
   ASSERT_EQ(set4.getGeneralizations().front(), generalization);
 
@@ -141,8 +141,8 @@ TEST_F(GeneralizationSetParserTest, mountGeneralizationSet) {
   ASSERT_FALSE(m.loaded(setID));
   GeneralizationSet& set5 = m.aquire(setID)->as<GeneralizationSet>();
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(set5, root));
-  ASSERT_TRUE(set5.hasPowerType());
-  ASSERT_EQ(set5.getPowerTypeRef(), general3);
+  ASSERT_TRUE(set5.getPowerType());
+  ASSERT_EQ(*set5.getPowerType(), general3);
   ASSERT_EQ(set5.getGeneralizations().size(), 1);
   ASSERT_EQ(set5.getGeneralizations().ids().front(), generalizationID);
   Generalization& generalization2 = m.aquire(generalizationID)->as<Generalization>();
@@ -157,8 +157,8 @@ TEST_F(GeneralizationSetParserTest, mountGeneralizationSet) {
   ASSERT_EQ(generalization3.getGeneralizationSets().ids().front(), setID);
   GeneralizationSet& set6 = m.aquire(setID)->as<GeneralizationSet>();
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(set6, root));
-  ASSERT_TRUE(set6.hasPowerType());
-  ASSERT_EQ(set6.getPowerTypeRef(), general3);
+  ASSERT_TRUE(set6.getPowerType());
+  ASSERT_EQ(*set6.getPowerType(), general3);
   ASSERT_EQ(set6.getGeneralizations().size(), 1);
   ASSERT_EQ(set6.getGeneralizations().front(), generalization3);
 }

@@ -17,11 +17,11 @@ void ParameterableElement::reindexName(std::string oldName, std::string newName)
 }
 
 void ParameterableElement::restoreReference(Element* el) {
+    m_templateParameter.restore(el);
     if (el->isSubClassOf(ElementType::TEMPLATE_PARAMETER) && el->as<TemplateParameter>().m_ownedDefault.get().id() == m_id) {
         if (m_templateParameter.empty()) {
             m_templateParameter.set(el->getID());
         }
-        m_templateParameter.restore(el);
     }
 }
 

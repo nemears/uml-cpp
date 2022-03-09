@@ -18,7 +18,7 @@ class ProfileParserTest : public ::testing::Test {
 TEST_F(ProfileParserTest, stereotypeWithExtensionTest) {
   UmlManager m;
   Element* el;
-  el = m.parse(ymlPath + "profileTests/stereotypeW_Extension.yml");
+  el = m.parse(ymlPath + "profileTests/stereotypeW_Extension.yml").ptr();
   ASSERT_EQ(el->getElementType(), ElementType::PROFILE);
   Profile& profile = dynamic_cast<Profile&>(*el);
   ASSERT_EQ(profile.getOwnedStereotypes().size(), 1);
@@ -27,16 +27,16 @@ TEST_F(ProfileParserTest, stereotypeWithExtensionTest) {
   ASSERT_EQ(profile.getPackagedElements().get("ext").getElementType(), ElementType::EXTENSION);
   Extension& ext = dynamic_cast<Extension&>(profile.getPackagedElements().get("ext"));
   ASSERT_EQ(ext.getMetaClass(), ElementType::CLASS);
-  ASSERT_TRUE(ext.getOwnedEnd() != 0);
+  ASSERT_TRUE(ext.getOwnedEnd());
   ExtensionEnd& end = *ext.getOwnedEnd();
-  ASSERT_TRUE(end.getType() != 0);
+  ASSERT_TRUE(end.getType());
   ASSERT_EQ(end.getType()->getID(), s.getID());
 }
 
 TEST_F(ProfileParserTest, internalProfileapplication) {
   UmlManager m;
   Element* el;
-  ASSERT_NO_THROW(el = m.parse(ymlPath + "profileTests/internalProfileApplication.yml"));
+  ASSERT_NO_THROW(el = m.parse(ymlPath + "profileTests/internalProfileApplication.yml").ptr());
   ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
   Package& pckg = *dynamic_cast<Package*>(el);
   ASSERT_EQ(pckg.getPackagedElements().size(), 2);
@@ -53,7 +53,7 @@ TEST_F(ProfileParserTest, externalProfileApplicationTest) {
   // std::cout << "!!!!!!!!!!\nTODO uncomment me por favor\n!!!!!!!!!!!!" << std::endl;
   UmlManager m;
   Element* el;
-  ASSERT_NO_THROW(el = m.parse(ymlPath + "profileTests/externalProfileApplication.yml"));
+  ASSERT_NO_THROW(el = m.parse(ymlPath + "profileTests/externalProfileApplication.yml").ptr());
   ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
   Package& pckg = *dynamic_cast<Package*>(el);
   ASSERT_EQ(pckg.getProfileApplications().size(), 1);
@@ -64,10 +64,10 @@ TEST_F(ProfileParserTest, externalProfileApplicationTest) {
 
 TEST_F(ProfileParserTest, emitProfileTest) {
     UmlManager m;
-    Profile& profile = m.create<Profile>();
-    Stereotype& stereotype = m.create<Stereotype>();
-    Extension& extension = m.create<Extension>();
-    ExtensionEnd& end = m.create<ExtensionEnd>();
+    Profile& profile = *m.create<Profile>();
+    Stereotype& stereotype = *m.create<Stereotype>();
+    Extension& extension = *m.create<Extension>();
+    ExtensionEnd& end = *m.create<ExtensionEnd>();
     profile.setID("83lphS&gucqvJwW&KSzVmTSMMG1z");
     extension.setID("&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ");
     end.setID("t&ZWitKKpMcvG9Dzwh23wSbP1hr5");
@@ -99,10 +99,10 @@ TEST_F(ProfileParserTest, emitProfileTest) {
 
 TEST_F(ProfileParserTest, emitProfileApplication) {
     UmlManager m;
-    Package& root = m.create<Package>();
-    Package& applying = m.create<Package>();
-    Profile& profile = m.create<Profile>();
-    ProfileApplication& application  = m.create<ProfileApplication>();
+    Package& root = *m.create<Package>();
+    Package& applying = *m.create<Package>();
+    Profile& profile = *m.create<Profile>();
+    ProfileApplication& application = *m.create<ProfileApplication>();
     root.setID("BW5iaVf_WdBebuIH3yi9beXpG5Yi");
     applying.setID("BtO&7RDq4sOe2Cb3hl_bByknWtDU");
     application.setID("QbTzWJmjUCFjrufpPQc9qyeQdK3R");
@@ -131,7 +131,7 @@ TEST_F(ProfileParserTest, emitProfileApplication) {
 TEST_F(ProfileParserTest, parseAppliedStereotypeTest) {
     UmlManager m;
     Element* el;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "profileTests/appliedStereotype.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "profileTests/appliedStereotype.yml").ptr());
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& root = *dynamic_cast<Package*>(el);
     ASSERT_EQ(root.getPackagedElements().size(), 2);
@@ -139,7 +139,7 @@ TEST_F(ProfileParserTest, parseAppliedStereotypeTest) {
     Package& applying = dynamic_cast<Package&>(root.getPackagedElements().front());
     ASSERT_EQ(applying.getProfileApplications().size(), 1);
     ProfileApplication& application = applying.getProfileApplications().front();
-    ASSERT_TRUE(application.getAppliedProfile() != 0);
+    ASSERT_TRUE(application.getAppliedProfile());
     ASSERT_EQ(root.getPackagedElements().back().getElementType(), ElementType::PROFILE);
     Profile& profile = dynamic_cast<Profile&>(root.getPackagedElements().back());
     ASSERT_EQ(application.getAppliedProfile()->getID(), profile.getID());
@@ -158,15 +158,15 @@ TEST_F(ProfileParserTest, parseAppliedStereotypeTest) {
 
 TEST_F(ProfileParserTest, emitAppliedStereotypeTest) {
     UmlManager m;
-    Package& root = m.create<Package>();
-    Package& applying = m.create<Package>();
-    ProfileApplication& application = m.create<ProfileApplication>();
-    Package& stereotypedEl = m.create<Package>();
-    InstanceSpecification& stereotypeInst = m.create<InstanceSpecification>();
-    Profile& profile = m.create<Profile>();
-    Stereotype& stereotype = m.create<Stereotype>();
-    Extension& extension = m.create<Extension>();
-    ExtensionEnd& end = m.create<ExtensionEnd>();
+    Package& root = *m.create<Package>();
+    Package& applying = *m.create<Package>();
+    ProfileApplication& application = *m.create<ProfileApplication>();
+    Package& stereotypedEl = *m.create<Package>();
+    InstanceSpecification& stereotypeInst = *m.create<InstanceSpecification>();
+    Profile& profile = *m.create<Profile>();
+    Stereotype& stereotype = *m.create<Stereotype>();
+    Extension& extension = *m.create<Extension>();
+    ExtensionEnd& end = *m.create<ExtensionEnd>();
     root.setID("jswJELYwKd_wleha5klF&GJFcU_0");
     applying.setID("Lf963Dxo5MFIqi9ip7&Nj4l1f1yj");
     application.setID("MUiSKR6gArugHOb1RqZtF5_uhflV");
@@ -227,15 +227,15 @@ TEST_F(ProfileParserTest, emitAppliedStereotypeTest) {
 
 TEST_F(ProfileParserTest, mountProfileTest) {
   UmlManager m;
-  Profile& profile = m.create<Profile>();
-  Stereotype& stereotype = m.create<Stereotype>();
-  Extension& extension = m.create<Extension>();
-  ExtensionEnd& end = m.create<ExtensionEnd>();
-  Class& applying = m.create<Class>();
-  InstanceSpecification& stereotypeInst = m.create<InstanceSpecification>();
-  Package& root = m.create<Package>();
-  Package& pckg = m.create<Package>();
-  ProfileApplication& profileApplication = m.create<ProfileApplication>();
+  Profile& profile = *m.create<Profile>();
+  Stereotype& stereotype = *m.create<Stereotype>();
+  Extension& extension = *m.create<Extension>();
+  ExtensionEnd& end = *m.create<ExtensionEnd>();
+  Class& applying = *m.create<Class>();
+  InstanceSpecification& stereotypeInst = *m.create<InstanceSpecification>();
+  Package& root = *m.create<Package>();
+  Package& pckg = *m.create<Package>();
+  ProfileApplication& profileApplication = *m.create<ProfileApplication>();
   profile.getOwnedStereotypes().add(stereotype);
   profile.getPackagedElements().add(extension);
   extension.setOwnedEnd(end);
@@ -272,24 +272,24 @@ TEST_F(ProfileParserTest, mountProfileTest) {
   ASSERT_EQ(profile3.getPackagedElements().size(), 2);
   ASSERT_TRUE(profile3.getPackagedElements().contains(stereotypeID));
   Stereotype& stereotype2 = m.aquire(stereotypeID)->as<Stereotype>();
-  ASSERT_TRUE(stereotype2.hasProfile());
-  ASSERT_EQ(stereotype2.getProfileRef(), profile3);
-  ASSERT_TRUE(stereotype2.hasOwningPackage());
-  ASSERT_EQ(stereotype2.getOwningPackageRef(), profile3);
+  ASSERT_TRUE(stereotype2.getProfile());
+  ASSERT_EQ(*stereotype2.getProfile(), profile3);
+  ASSERT_TRUE(stereotype2.getOwningPackage());
+  ASSERT_EQ(*stereotype2.getOwningPackage(), profile3);
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(stereotype2, profile3));
 
   m.release(stereotype2, profile3);
   ASSERT_FALSE(m.loaded(profileID));
   ASSERT_FALSE(m.loaded(stereotypeID));
   Stereotype& stereotype3 = m.aquire(stereotypeID)->as<Stereotype>();
-  ASSERT_TRUE(stereotype3.hasProfile());
-  ASSERT_EQ(stereotype3.getProfileID(), profileID);
-  ASSERT_TRUE(stereotype3.hasOwningPackage());
-  ASSERT_EQ(stereotype3.getOwningPackageID(), profileID);
-  ASSERT_TRUE(stereotype3.hasNamespace());
-  ASSERT_EQ(stereotype3.getNamespaceID(), profileID);
-  ASSERT_TRUE(stereotype3.hasOwner());
-  ASSERT_EQ(stereotype3.getOwnerID(), profileID);
+  ASSERT_TRUE(stereotype3.getProfile());
+  ASSERT_EQ(stereotype3.getProfile().id(), profileID);
+  ASSERT_TRUE(stereotype3.getOwningPackage());
+  ASSERT_EQ(stereotype3.getOwningPackage().id(), profileID);
+  ASSERT_TRUE(stereotype3.getNamespace());
+  ASSERT_EQ(stereotype3.getNamespace().id(), profileID);
+  ASSERT_TRUE(stereotype3.getOwner());
+  ASSERT_EQ(stereotype3.getOwner().id(), profileID);
   Profile& profile4 = m.aquire(profileID)->as<Profile>();
   ASSERT_EQ(profile4.getOwnedStereotypes().size(), 1);
   ASSERT_EQ(profile4.getOwnedStereotypes().front(), stereotype3);
@@ -302,12 +302,12 @@ TEST_F(ProfileParserTest, mountProfileTest) {
   ASSERT_FALSE(m.loaded(extensionID));
   ASSERT_FALSE(m.loaded(profileID));
   Extension& extension2 = m.aquire(extensionID)->as<Extension>();
-  ASSERT_TRUE(extension2.hasOwningPackage());
-  ASSERT_EQ(extension2.getOwningPackageID(), profileID);
+  ASSERT_TRUE(extension2.getOwningPackage());
+  ASSERT_EQ(extension2.getOwningPackage().id(), profileID);
   Profile& profile5 = m.aquire(profileID)->as<Profile>();
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(extension2, profile5));
-  ASSERT_TRUE(extension2.hasOwnedEnd());
-  ASSERT_EQ(extension2.getOwnedEndRef(), end);
+  ASSERT_TRUE(extension2.getOwnedEnd());
+  ASSERT_EQ(*extension2.getOwnedEnd(), end);
   ASSERT_EQ(extension2.getOwnedEnds().size(), 1);
   ASSERT_EQ(extension2.getOwnedEnds().front(), end);
   ASSERT_EQ(extension2.getMemberEnds().size(), 1);
@@ -318,8 +318,8 @@ TEST_F(ProfileParserTest, mountProfileTest) {
   ASSERT_FALSE(m.loaded(endID));
   ASSERT_FALSE(m.loaded(extensionID));
   Extension& extension3 = m.aquire(extensionID)->as<Extension>();
-  ASSERT_TRUE(extension3.hasOwnedEnd());
-  ASSERT_EQ(extension3.getOwnedEndID(), endID);
+  ASSERT_TRUE(extension3.getOwnedEnd());
+  ASSERT_EQ(extension3.getOwnedEnd().id(), endID);
   ASSERT_EQ(extension3.getOwnedEnds().size(), 1);
   ASSERT_EQ(extension3.getOwnedEnds().ids().front(), endID);
   ASSERT_EQ(extension3.getMemberEnds().size(), 1);
@@ -333,34 +333,34 @@ TEST_F(ProfileParserTest, mountProfileTest) {
   ASSERT_EQ(extension3.getEndType().size(), 1);
   ASSERT_EQ(extension3.getEndType().ids().front(), stereotypeID);
   ExtensionEnd& end2 = m.aquire(endID)->as<ExtensionEnd>();
-  ASSERT_TRUE(end2.hasOwningAssociation());
-  ASSERT_EQ(end2.getOwningAssociationRef(), extension3);
-  ASSERT_TRUE(end2.hasAssociation());
-  ASSERT_EQ(end2.getAssociationRef(), extension3);
-  ASSERT_TRUE(end2.hasFeaturingClassifier());
-  ASSERT_EQ(end2.getFeaturingClassifierRef(), extension3);
-  ASSERT_TRUE(end2.hasNamespace());
-  ASSERT_EQ(end2.getNamespaceRef(), extension3);
-  ASSERT_TRUE(end2.hasOwner());
-  ASSERT_EQ(end2.getOwnerRef(), extension3);
+  ASSERT_TRUE(end2.getOwningAssociation());
+  ASSERT_EQ(*end2.getOwningAssociation(), extension3);
+  ASSERT_TRUE(end2.getAssociation());
+  ASSERT_EQ(*end2.getAssociation(), extension3);
+  ASSERT_TRUE(end2.getFeaturingClassifier());
+  ASSERT_EQ(*end2.getFeaturingClassifier(), extension3);
+  ASSERT_TRUE(end2.getNamespace());
+  ASSERT_EQ(*end2.getNamespace(), extension3);
+  ASSERT_TRUE(end2.getOwner());
+  ASSERT_EQ(*end2.getOwner(), extension3);
 
   m.release(end2, extension3);
   ASSERT_FALSE(m.loaded(endID));
   ASSERT_FALSE(m.loaded(extensionID));
   ExtensionEnd& end3 = m.aquire(endID)->as<ExtensionEnd>();
-  ASSERT_TRUE(end3.hasOwningAssociation());
-  ASSERT_EQ(end3.getOwningAssociationID(), extensionID);
-  ASSERT_TRUE(end3.hasAssociation());
-  ASSERT_EQ(end3.getAssociationID(), extensionID);
-  ASSERT_TRUE(end3.hasFeaturingClassifier());
-  ASSERT_EQ(end3.getFeaturingClassifierID(), extensionID);
-  ASSERT_TRUE(end3.hasNamespace());
-  ASSERT_EQ(end3.getNamespaceID(), extensionID);
-  ASSERT_TRUE(end3.hasOwner());
-  ASSERT_EQ(end3.getOwnerID(), extensionID);
+  ASSERT_TRUE(end3.getOwningAssociation());
+  ASSERT_EQ(end3.getOwningAssociation().id(), extensionID);
+  ASSERT_TRUE(end3.getAssociation());
+  ASSERT_EQ(end3.getAssociation().id(), extensionID);
+  ASSERT_TRUE(end3.getFeaturingClassifier());
+  ASSERT_EQ(end3.getFeaturingClassifier().id(), extensionID);
+  ASSERT_TRUE(end3.getNamespace());
+  ASSERT_EQ(end3.getNamespace().id(), extensionID);
+  ASSERT_TRUE(end3.getOwner());
+  ASSERT_EQ(end3.getOwner().id(), extensionID);
   Extension& extension4 = m.aquire(extensionID)->as<Extension>();
-  ASSERT_TRUE(extension4.hasOwnedEnd());
-  ASSERT_EQ(extension4.getOwnedEndRef(), end3);
+  ASSERT_TRUE(extension4.getOwnedEnd());
+  ASSERT_EQ(*extension4.getOwnedEnd(), end3);
   ASSERT_EQ(extension4.getOwnedEnds().size(), 1);
   ASSERT_EQ(extension4.getOwnedEnds().front(), end3);
   ASSERT_EQ(extension4.getMemberEnds().size(), 1);
@@ -373,11 +373,11 @@ TEST_F(ProfileParserTest, mountProfileTest) {
   ASSERT_EQ(*extension4.getOwnedElements().begin(), end3);
   ASSERT_EQ(extension4.getEndType().size(), 1);
   ASSERT_EQ(extension4.getEndType().front(), stereotype3);
-  ASSERT_EQ(end3.getOwningAssociationRef(), extension4);
-  ASSERT_EQ(end3.getAssociationRef(), extension4);
-  ASSERT_EQ(end3.getFeaturingClassifierRef(), extension4);
-  ASSERT_EQ(end3.getNamespaceRef(), extension4);
-  ASSERT_EQ(end3.getOwnerRef(), extension4);
+  ASSERT_EQ(*end3.getOwningAssociation(), extension4);
+  ASSERT_EQ(*end3.getAssociation(), extension4);
+  ASSERT_EQ(*end3.getFeaturingClassifier(), extension4);
+  ASSERT_EQ(*end3.getNamespace(), extension4);
+  ASSERT_EQ(*end3.getOwner(), extension4);
 
   ID stereotypeInstID = stereotypeInst.getID();
   ID applyingID = applying.getID();
@@ -391,20 +391,20 @@ TEST_F(ProfileParserTest, mountProfileTest) {
   ASSERT_EQ(applying2.getOwnedElements().ids().front(), stereotypeInstID);
   InstanceSpecification& stereotypeInst2 = m.aquire(stereotypeInstID)->as<InstanceSpecification>();
   ASSERT_EQ(applying2.getAppliedStereotypes().front(), stereotypeInst2);
-  ASSERT_TRUE(stereotypeInst2.hasOwner());
-  ASSERT_EQ(stereotypeInst2.getOwnerRef(), applying2);
+  ASSERT_TRUE(stereotypeInst2.getOwner());
+  ASSERT_EQ(*stereotypeInst2.getOwner(), applying2);
   ASSERT_EQ(applying2.getOwnedElements().front(), stereotypeInst2);
 
   m.release(stereotypeInst2, applying2);
   ASSERT_FALSE(m.loaded(stereotypeInstID));
   ASSERT_FALSE(m.loaded(applyingID));
   InstanceSpecification& stereotypeInst3 = m.aquire(stereotypeInstID)->as<InstanceSpecification>();
-  ASSERT_TRUE(stereotypeInst3.hasOwner());
-  ASSERT_EQ(stereotypeInst3.getOwnerID(), applyingID);
+  ASSERT_TRUE(stereotypeInst3.getOwner());
+  ASSERT_EQ(stereotypeInst3.getOwner().id(), applyingID);
   Class& applying3 = m.aquire(applyingID)->as<Class>();
   ASSERT_EQ(applying3.getAppliedStereotypes().size(), 1);
   ASSERT_EQ(applying3.getAppliedStereotypes().front(), stereotypeInst3);
   ASSERT_EQ(applying3.getOwnedElements().size(), 1);
   ASSERT_EQ(applying3.getOwnedElements().front(), stereotypeInst3);
-  ASSERT_EQ(stereotypeInst3.getOwnerRef(), applying3);
+  ASSERT_EQ(*stereotypeInst3.getOwner(), applying3);
 }

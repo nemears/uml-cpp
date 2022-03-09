@@ -29,6 +29,11 @@ void InstanceValue::referenceErased(ID id) {
     m_instance.eraseElement(id);
 }
 
+void InstanceValue::restoreReference(Element* el) {
+    ValueSpecification::restoreReference(el);
+    m_instance.restore(el);
+}
+
 Set<InstanceSpecification, InstanceValue>& InstanceValue::getInstanceSingleton() {
     return m_instance;
 }

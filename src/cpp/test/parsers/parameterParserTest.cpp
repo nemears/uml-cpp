@@ -17,18 +17,18 @@ class ParameterParserTest : public ::testing::Test {
 TEST_F(ParameterParserTest, properExceptions) {
     Element* el;
     UmlManager m;
-    ASSERT_THROW(el = m.parse(ymlPath + "parameterTests/invalidDirection.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "parameterTests/invalidDirection2.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "parameterTests/invalidDirection.yml").ptr(), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "parameterTests/invalidDirection2.yml").ptr(), Parsers::UmlParserException);
 }
 
 TEST_F(ParameterParserTest, emitParameterWMultiplicityTest) {
     UmlManager m;
-    OpaqueBehavior& b = m.create<OpaqueBehavior>();
-    Parameter& p = m.create<Parameter>();
+    OpaqueBehavior& b = *m.create<OpaqueBehavior>();
+    Parameter& p = *m.create<Parameter>();
     b.setID("SeJ_0hSPaIa4EYap3sXgRQm4LuSn");
     p.setID("QzBhVkqNSRAZMlkHU6cQ3d_Wm8FT");
-    LiteralInt& low = m.create<LiteralInt>();
-    LiteralInt& high = m.create<LiteralInt>();
+    LiteralInt& low = *m.create<LiteralInt>();
+    LiteralInt& high = *m.create<LiteralInt>();
     low.setID("K2_2cpL966uyziy9e2pGb60cCR5X");
     low.setValue(0);
     high.setID("sGGXJFNinAvKyKVSgc&JAlMWsbw5");

@@ -18,14 +18,14 @@ class OperationParserTest : public ::testing::Test {
 TEST_F(OperationParserTest, properExceptions) {
     Element* el;
     UmlManager m;
-    ASSERT_THROW(el = m.parse(ymlPath + "operationTests/invalidBehavior.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "operationTests/invalidMethodList.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "operationTests/invalidBehavior.yml").ptr(), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "operationTests/invalidMethodList.yml").ptr(), Parsers::UmlParserException);
 }
 
 TEST_F(OperationParserTest, basicParamTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "operationTests/basicParameter.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "operationTests/basicParameter.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
@@ -48,11 +48,11 @@ TEST_F(OperationParserTest, basicParamTest) {
 
 TEST_F(OperationParserTest, mountAndEditOperationTest) {
     UmlManager m;
-    Class& clazz = m.create<Class>();
-    OpaqueBehavior& bhv = m.create<OpaqueBehavior>();
-    Operation& op = m.create<Operation>();
-    Parameter& param = m.create<Parameter>();
-    Parameter& bhvParam = m.create<Parameter>();
+    Class& clazz = *m.create<Class>();
+    OpaqueBehavior& bhv = *m.create<OpaqueBehavior>();
+    Operation& op = *m.create<Operation>();
+    Parameter& param = *m.create<Parameter>();
+    Parameter& bhvParam = *m.create<Parameter>();
     op.getOwnedParameters().add(param);
     bhv.getOwnedParameters().add(bhvParam);
     op.getMethods().add(bhv);
@@ -65,18 +65,18 @@ TEST_F(OperationParserTest, mountAndEditOperationTest) {
     ID clazzID = clazz.getID();
     m.release(op);
     Operation& op2 = m.aquire(opID)->as<Operation>();
-    ASSERT_TRUE(op2.hasClass());
-    ASSERT_EQ(op2.getClassRef(), clazz);
-    ASSERT_TRUE(op2.hasFeaturingClassifier());
-    ASSERT_EQ(op2.getFeaturingClassifierRef(), clazz);
-    ASSERT_TRUE(op2.hasNamespace());
-    ASSERT_EQ(op2.getNamespaceRef(), clazz);
-    ASSERT_TRUE(op2.hasOwner());
-    ASSERT_EQ(op2.getOwnerRef(), clazz);
+    ASSERT_TRUE(op2.getClass());
+    ASSERT_EQ(*op2.getClass(), clazz);
+    ASSERT_TRUE(op2.getFeaturingClassifier());
+    ASSERT_EQ(*op2.getFeaturingClassifier(), clazz);
+    ASSERT_TRUE(op2.getNamespace());
+    ASSERT_EQ(*op2.getNamespace(), clazz);
+    ASSERT_TRUE(op2.getOwner());
+    ASSERT_EQ(*op2.getOwner(), clazz);
     ASSERT_EQ(op2.getMethods().size(), 1);
     ASSERT_EQ(op2.getMethods().front(), bhv);
-    ASSERT_TRUE(bhv.hasSpecification());
-    ASSERT_EQ(bhv.getSpecificationRef(), op2);
+    ASSERT_TRUE(bhv.getSpecification());
+    ASSERT_EQ(*bhv.getSpecification(), op2);
     ASSERT_EQ(op2.getOwnedParameters().size(), 1);
     ASSERT_EQ(op2.getOwnedParameters().front(), param);
     ASSERT_EQ(op2.getOwnedMembers().size(), 1);
@@ -89,8 +89,8 @@ TEST_F(OperationParserTest, mountAndEditOperationTest) {
     ID paramID = param.getID();
     m.release(param);
     Parameter& param2 = m.aquire(paramID)->as<Parameter>();
-    ASSERT_TRUE(param2.hasOperation());
-    ASSERT_EQ(param2.getOperationRef(), op2);
+    ASSERT_TRUE(param2.getOperation());
+    ASSERT_EQ(*param2.getOperation(), op2);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(param2, op2));
 
     m.release(param2, op2);
@@ -99,8 +99,8 @@ TEST_F(OperationParserTest, mountAndEditOperationTest) {
     Operation& op3 = m.aquire(opID)->as<Operation>();
     ASSERT_FALSE(m.loaded(paramID));
     Parameter& param3 = m.aquire(paramID)->as<Parameter>();
-    ASSERT_TRUE(param3.hasOperation());
-    ASSERT_EQ(param3.getOperationRef(), op3);
+    ASSERT_TRUE(param3.getOperation());
+    ASSERT_EQ(*param3.getOperation(), op3);
     ASSERT_EQ(op3.getOwnedParameters().size(), 1);
     ASSERT_TRUE(op3.getOwnedParameters().count(paramID));
     ASSERT_EQ(op3.getOwnedParameters().front(), param3);
@@ -109,8 +109,8 @@ TEST_F(OperationParserTest, mountAndEditOperationTest) {
     ID bhvID = bhv.getID();
     m.release(bhv);
     OpaqueBehavior& bhv2 = m.aquire(bhvID)->as<OpaqueBehavior>();
-    ASSERT_TRUE(bhv2.hasSpecification());
-    ASSERT_EQ(bhv2.getSpecificationRef(), op3);
+    ASSERT_TRUE(bhv2.getSpecification());
+    ASSERT_EQ(*bhv2.getSpecification(), op3);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(bhv2, clazz));
 
     m.release(bhv2, op3);
@@ -119,8 +119,8 @@ TEST_F(OperationParserTest, mountAndEditOperationTest) {
     OpaqueBehavior& bhv3 = m.aquire(bhvID)->as<OpaqueBehavior>();
     ASSERT_FALSE(m.loaded(opID));
     Operation& op4 = m.aquire(opID)->as<Operation>();
-    ASSERT_TRUE(bhv3.hasSpecification());
-    ASSERT_EQ(bhv3.getSpecificationRef(), op4);
+    ASSERT_TRUE(bhv3.getSpecification());
+    ASSERT_EQ(*bhv3.getSpecification(), op4);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(bhv3, clazz));
 
     ID bhvParamID = bhvParam.getID();

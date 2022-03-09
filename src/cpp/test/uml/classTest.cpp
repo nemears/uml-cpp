@@ -8,123 +8,123 @@ class ClassTest : public ::testing::Test {
    
 };
 
-// TEST_F(ClassTest, BasicOperationTest) {
-//     UmlManager m;
-//     Class& c = m.create<Class>();
-//     Operation& o = m.create<Operation>();
-//     OpaqueBehavior& oB = m.create<OpaqueBehavior>();
-//     LiteralString& val = m.create<LiteralString>();
-//     Parameter& p = m.create<Parameter>();
-//     ASSERT_NO_THROW(oB.getOwnedParameters().add(p));
-//     ASSERT_NO_THROW(val.setValue("return true"));
-//     ASSERT_NO_THROW(oB.getBodies().add(val));
-//     ASSERT_NO_THROW(o.getMethods().add(oB));
-//     ASSERT_NO_THROW(c.getOwnedOperations().add(o));
-// }
+TEST_F(ClassTest, BasicOperationTest) {
+    UmlManager m;
+    Class& c = *m.create<Class>();
+    Operation& o = *m.create<Operation>();
+    OpaqueBehavior& oB = *m.create<OpaqueBehavior>();
+    LiteralString& val = *m.create<LiteralString>();
+    Parameter& p = *m.create<Parameter>();
+    ASSERT_NO_THROW(oB.getOwnedParameters().add(p));
+    ASSERT_NO_THROW(val.setValue("return true"));
+    ASSERT_NO_THROW(oB.getBodies().add(val));
+    ASSERT_NO_THROW(o.getMethods().add(oB));
+    ASSERT_NO_THROW(c.getOwnedOperations().add(o));
+}
 
-// TEST_F(ClassTest, addOperationFunctorTest) {
-//     UmlManager m;
-//     Class& c = m.create<Class>();
-//     Operation& o = m.create<Operation>();
-//     c.getOwnedOperations().add(o);
-//     ASSERT_TRUE(c.getOwnedOperations().size() == 1);
-//     ASSERT_TRUE(&c.getOwnedOperations().front() == &o);
-//     ASSERT_TRUE(o.getClass() == &c);
-//     ASSERT_TRUE(c.getFeatures().size() == 1);
-//     ASSERT_TRUE(&c.getFeatures().front() == &o);
-//     ASSERT_TRUE(o.getFeaturingClassifier() == &c);
-//     ASSERT_TRUE(c.getMembers().size() == 1);
-//     ASSERT_TRUE(&c.getMembers().front() == &o);
-//     ASSERT_TRUE(o.getNamespace() == &c);
-//     ASSERT_TRUE(c.getOwnedElements().size() == 1);
-//     ASSERT_TRUE(&c.getOwnedElements().get(o.getID()) == &o);
-//     ASSERT_TRUE(o.getOwner() == &c);
-// }
+TEST_F(ClassTest, addOperationFunctorTest) {
+    UmlManager m;
+    Class& c = *m.create<Class>();
+    Operation& o = *m.create<Operation>();
+    c.getOwnedOperations().add(o);
+    ASSERT_TRUE(c.getOwnedOperations().size() == 1);
+    ASSERT_TRUE(&c.getOwnedOperations().front() == &o);
+    ASSERT_TRUE(o.getClass() == &c);
+    ASSERT_TRUE(c.getFeatures().size() == 1);
+    ASSERT_TRUE(&c.getFeatures().front() == &o);
+    ASSERT_TRUE(o.getFeaturingClassifier() == &c);
+    ASSERT_TRUE(c.getMembers().size() == 1);
+    ASSERT_TRUE(&c.getMembers().front() == &o);
+    ASSERT_TRUE(o.getNamespace() == &c);
+    ASSERT_TRUE(c.getOwnedElements().size() == 1);
+    ASSERT_TRUE(&c.getOwnedElements().get(o.getID()) == &o);
+    ASSERT_TRUE(o.getOwner() == &c);
+}
 
-// TEST_F(ClassTest, setClassTest) {
-//     UmlManager m;
-//     Class& c = m.create<Class>();
-//     Operation& o = m.create<Operation>();
-//     o.setClass(&c);
-//     ASSERT_TRUE(c.getOwnedOperations().size() == 1);
-//     ASSERT_TRUE(&c.getOwnedOperations().front() == &o);
-//     ASSERT_TRUE(o.getClass() == &c);
-//     ASSERT_TRUE(c.getFeatures().size() == 1);
-//     ASSERT_TRUE(&c.getFeatures().front() == &o);
-//     ASSERT_TRUE(o.getFeaturingClassifier() == &c);
-//     ASSERT_TRUE(c.getMembers().size() == 1);
-//     ASSERT_TRUE(&c.getMembers().front() == &o);
-//     ASSERT_TRUE(o.getNamespace() == &c);
-//     ASSERT_TRUE(c.getOwnedElements().size() == 1);
-//     ASSERT_TRUE(&c.getOwnedElements().get(o.getID()) == &o);
-//     ASSERT_TRUE(o.getOwner() == &c);
-// }
+TEST_F(ClassTest, setClassTest) {
+    UmlManager m;
+    Class& c = *m.create<Class>();
+    Operation& o = *m.create<Operation>();
+    o.setClass(c);
+    ASSERT_TRUE(c.getOwnedOperations().size() == 1);
+    ASSERT_TRUE(&c.getOwnedOperations().front() == &o);
+    ASSERT_TRUE(o.getClass() == &c);
+    ASSERT_TRUE(c.getFeatures().size() == 1);
+    ASSERT_TRUE(&c.getFeatures().front() == &o);
+    ASSERT_TRUE(o.getFeaturingClassifier() == &c);
+    ASSERT_TRUE(c.getMembers().size() == 1);
+    ASSERT_TRUE(&c.getMembers().front() == &o);
+    ASSERT_TRUE(o.getNamespace() == &c);
+    ASSERT_TRUE(c.getOwnedElements().size() == 1);
+    ASSERT_TRUE(&c.getOwnedElements().get(o.getID()) == &o);
+    ASSERT_TRUE(o.getOwner() == &c);
+}
 
-// TEST_F(ClassTest, overwriteClassTest) {
-//   UmlManager m;
-//   Class& p1 = m.create<Class>();
-//   Class& p2 = m.create<Class>();
-//   Operation& c = m.create<Operation>();
-//   p1.getOwnedOperations().add(c);
-//   c.setClass(&p2);
-//   ASSERT_TRUE(p2.getOwnedOperations().size() == 1);
-//   ASSERT_TRUE(&p2.getOwnedOperations().front() == &c);
-//   ASSERT_TRUE(c.getClass() == &p2);
-//   ASSERT_TRUE(p2.getFeatures().size() == 1);
-//   ASSERT_TRUE(&p2.getFeatures().front() == &c);
-//   ASSERT_TRUE(c.getFeaturingClassifier() == &p2);
-//   ASSERT_TRUE(p2.getMembers().size() == 1);
-//   ASSERT_TRUE(&p2.getMembers().front() == &c);
-//   ASSERT_TRUE(c.getNamespace() == &p2);
-//   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
-//   ASSERT_TRUE(&p2.getOwnedElements().get(c.getID()) == &c);
-//   ASSERT_TRUE(c.getOwner() == &p2);
-//   ASSERT_TRUE(p1.getOwnedOperations().size() == 0);
-//   ASSERT_TRUE(p1.getFeatures().size() == 0);
-//   ASSERT_TRUE(p1.getMembers().size() == 0);
-//   ASSERT_TRUE(p1.getOwnedElements().size() == 0);
-// }
+TEST_F(ClassTest, overwriteClassTest) {
+  UmlManager m;
+  Class& p1 = *m.create<Class>();
+  Class& p2 = *m.create<Class>();
+  Operation& c = *m.create<Operation>();
+  p1.getOwnedOperations().add(c);
+  c.setClass(&p2);
+  ASSERT_TRUE(p2.getOwnedOperations().size() == 1);
+  ASSERT_TRUE(&p2.getOwnedOperations().front() == &c);
+  ASSERT_TRUE(c.getClass() == &p2);
+  ASSERT_TRUE(p2.getFeatures().size() == 1);
+  ASSERT_TRUE(&p2.getFeatures().front() == &c);
+  ASSERT_TRUE(c.getFeaturingClassifier() == &p2);
+  ASSERT_TRUE(p2.getMembers().size() == 1);
+  ASSERT_TRUE(&p2.getMembers().front() == &c);
+  ASSERT_TRUE(c.getNamespace() == &p2);
+  ASSERT_TRUE(p2.getOwnedElements().size() == 1);
+  ASSERT_TRUE(&p2.getOwnedElements().get(c.getID()) == &c);
+  ASSERT_TRUE(c.getOwner() == &p2);
+  ASSERT_TRUE(p1.getOwnedOperations().size() == 0);
+  ASSERT_TRUE(p1.getFeatures().size() == 0);
+  ASSERT_TRUE(p1.getMembers().size() == 0);
+  ASSERT_TRUE(p1.getOwnedElements().size() == 0);
+}
 
-// TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
-//   UmlManager m;
-//   Class& p1 = m.create<Class>();
-//   Class& p2 = m.create<Class>();
-//   Operation& c = m.create<Operation>();
-//   p1.getOwnedOperations().add(c);
-//   p2.getOwnedOperations().add(c);
-//   ASSERT_TRUE(p2.getOwnedOperations().size() == 1);
-//   ASSERT_TRUE(&p2.getOwnedOperations().front() == &c);
-//   ASSERT_TRUE(c.getClass() == &p2);
-//   ASSERT_TRUE(p2.getFeatures().size() == 1);
-//   ASSERT_TRUE(&p2.getFeatures().front() == &c);
-//   ASSERT_TRUE(c.getFeaturingClassifier() == &p2);
-//   ASSERT_TRUE(p2.getMembers().size() == 1);
-//   ASSERT_TRUE(&p2.getMembers().front() == &c);
-//   ASSERT_TRUE(c.getNamespace() == &p2);
-//   ASSERT_TRUE(p2.getOwnedElements().size() == 1);
-//   ASSERT_TRUE(&p2.getOwnedElements().get(c.getID()) == &c);
-//   ASSERT_TRUE(c.getOwner() == &p2);
-//   ASSERT_TRUE(p1.getOwnedOperations().size() == 0);
-//   ASSERT_TRUE(p1.getFeatures().size() == 0);
-//   ASSERT_TRUE(p1.getMembers().size() == 0);
-//   ASSERT_TRUE(p1.getOwnedElements().size() == 0);
-// }
+TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
+  UmlManager m;
+  Class& p1 = *m.create<Class>();
+  Class& p2 = *m.create<Class>();
+  Operation& c = *m.create<Operation>();
+  p1.getOwnedOperations().add(c);
+  p2.getOwnedOperations().add(c);
+  ASSERT_TRUE(p2.getOwnedOperations().size() == 1);
+  ASSERT_TRUE(&p2.getOwnedOperations().front() == &c);
+  ASSERT_TRUE(c.getClass() == &p2);
+  ASSERT_TRUE(p2.getFeatures().size() == 1);
+  ASSERT_TRUE(&p2.getFeatures().front() == &c);
+  ASSERT_TRUE(c.getFeaturingClassifier() == &p2);
+  ASSERT_TRUE(p2.getMembers().size() == 1);
+  ASSERT_TRUE(&p2.getMembers().front() == &c);
+  ASSERT_TRUE(c.getNamespace() == &p2);
+  ASSERT_TRUE(p2.getOwnedElements().size() == 1);
+  ASSERT_TRUE(&p2.getOwnedElements().get(c.getID()) == &c);
+  ASSERT_TRUE(c.getOwner() == &p2);
+  ASSERT_TRUE(p1.getOwnedOperations().size() == 0);
+  ASSERT_TRUE(p1.getFeatures().size() == 0);
+  ASSERT_TRUE(p1.getMembers().size() == 0);
+  ASSERT_TRUE(p1.getOwnedElements().size() == 0);
+}
 
-// TEST_F(ClassTest, removeOperationFunctorTest) {
-//   UmlManager m;
-//     Class& c = m.create<Class>();
-//     Operation& o = m.create<Operation>();
-//   c.getOwnedOperations().add(o);
-//   ASSERT_NO_THROW(c.getOwnedOperations().remove(o));
-//   ASSERT_TRUE(c.getOwnedOperations().size() == 0);
-//   ASSERT_TRUE(c.getFeatures().size() == 0);
-//   ASSERT_TRUE(c.getMembers().size() == 0);
-//   ASSERT_TRUE(c.getOwnedElements().size() == 0);
-//   ASSERT_TRUE(!o.getClass());
-//   ASSERT_TRUE(!o.getFeaturingClassifier());
-//   ASSERT_TRUE(!o.getNamespace());
-//   ASSERT_TRUE(!o.getOwner());
-// }
+TEST_F(ClassTest, removeOperationFunctorTest) {
+  UmlManager m;
+    Class& c = *m.create<Class>();
+    Operation& o = *m.create<Operation>();
+  c.getOwnedOperations().add(o);
+  ASSERT_NO_THROW(c.getOwnedOperations().remove(o));
+  ASSERT_TRUE(c.getOwnedOperations().size() == 0);
+  ASSERT_TRUE(c.getFeatures().size() == 0);
+  ASSERT_TRUE(c.getMembers().size() == 0);
+  ASSERT_TRUE(c.getOwnedElements().size() == 0);
+  ASSERT_TRUE(!o.getClass());
+  ASSERT_TRUE(!o.getFeaturingClassifier());
+  ASSERT_TRUE(!o.getNamespace());
+  ASSERT_TRUE(!o.getOwner());
+}
 
 TEST_F(ClassTest, addOwnedAttributeTest) {
   UmlManager m;

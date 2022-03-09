@@ -22,6 +22,11 @@ void Relationship::referenceErased(ID id) {
     m_relatedElements.eraseElement(id);
 }
 
+void Relationship::restoreReference(Element* el) {
+    Element::restoreReference(el);
+    m_relatedElements.restore(el);
+}
+
 void Relationship::init() {
     m_relatedElements.m_readOnly = true;
     m_relatedElements.m_signature = &Relationship::getRelatedElements;

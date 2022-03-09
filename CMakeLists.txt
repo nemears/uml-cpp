@@ -17,6 +17,10 @@ IF(UNIX)
     find_package(Threads REQUIRED)
 ENDIF()
 
+IF(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    add_compile_options(-fsanitize=address)
+endif()
+
 # Headers
 include_directories(include)
 

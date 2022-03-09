@@ -36,7 +36,7 @@ class PackageParserTest : public ::testing::Test {
 TEST_F(PackageParserTest, parse3PackagesTest) {
     UmlManager m;
     Element* el;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "packageParserTests/3packages.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "packageParserTests/3packages.yml").ptr());
     ASSERT_TRUE(el);
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg1 = dynamic_cast<Package*>(el);
@@ -75,7 +75,7 @@ TEST_F(PackageParserTest, NamedElementFeaturesTest) {
     Element* el;
     UmlManager* m;
     ASSERT_NO_THROW(m = Parsers::parse(ymlPath + "packageParserTests/packageWithName.yml"));
-    el = & m->get<>(ID::fromString("8q2Rht9aAZlY0EnMGtEKlw5Odr_u"));
+    el = & m->get(ID::fromString("8q2Rht9aAZlY0EnMGtEKlw5Odr_u"));
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getName().compare("test") == 0);
@@ -85,7 +85,7 @@ TEST_F(PackageParserTest, NamedElementFeaturesTest) {
 TEST_F(PackageParserTest, ElementFeaturesTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "packageParserTests/packagewID.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "packageParserTests/packagewID.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     ASSERT_TRUE(el->getID() == ID::fromString("Hmq5HbrypUzqPYovV8oo3wnFE6Jl"));
 }
@@ -93,27 +93,27 @@ TEST_F(PackageParserTest, ElementFeaturesTest) {
 TEST_F(PackageParserTest, ElementParserExceptionTest) {
     Element* el;
     UmlManager m;
-    ASSERT_THROW(el = m.parse(ymlPath + "packageParserTests/improperID.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "packageParserTests/otherImproperID.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "packageParserTests/improperID.yml").ptr(), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "packageParserTests/otherImproperID.yml").ptr(), Parsers::UmlParserException);
 }
 
 TEST_F(PackageParserTest, NamedElementParserExceptionTest) {
     UmlManager m;
     Element* el;
-    ASSERT_THROW(el = m.parse(ymlPath + "packageParserTests/improperName.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "packageParserTests/improperName.yml").ptr(), Parsers::UmlParserException);
 }
 
 TEST_F(PackageParserTest, properExceptions) {
     Element* el;
     UmlManager m;
-    ASSERT_THROW(el = m.parse(ymlPath + "packageParserTests/improperPackagedElement.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "packageParserTests/invalidPackagedElements.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "packageParserTests/improperPackagedElement.yml").ptr(), Parsers::UmlParserException);
+    ASSERT_THROW(el = m.parse(ymlPath + "packageParserTests/invalidPackagedElements.yml").ptr(), Parsers::UmlParserException);
 }
 
 TEST_F(PackageParserTest, basicPackageMerge) {
     Element* el;
     UmlManager m2;
-    ASSERT_NO_THROW(el = m2.parse(ymlPath + "packageParserTests/basicPackageMerge.yml"));
+    ASSERT_NO_THROW(el = m2.parse(ymlPath + "packageParserTests/basicPackageMerge.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* bPckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(bPckg->getPackagedElements().size() == 2);
@@ -130,21 +130,21 @@ TEST_F(PackageParserTest, basicPackageMerge) {
 TEST_F(PackageParserTest, externalMergedPackageTest) {
     Element* el;
     UmlManager mm;
-    ASSERT_NO_THROW(el = mm.parse(ymlPath + "packageParserTests/mergedPackage.yml"));
+    ASSERT_NO_THROW(el = mm.parse(ymlPath + "packageParserTests/mergedPackage.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackageMerge().size() == 2);
     PackageMerge* m = &pckg->getPackageMerge().front();
     PackageMerge* m2 = &pckg->getPackageMerge().back();
-    ASSERT_TRUE(m->getMergedPackage() != 0);
-    Package* p2 = m->getMergedPackage();
+    ASSERT_TRUE(m->getMergedPackage());
+    PackagePtr p2 = m->getMergedPackage();
     ASSERT_TRUE(p2->getPackagedElements().size() == 2);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
     ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
-    Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
+    Class* c = &pckg->getPackagedElements().front().as<Class>();
     ASSERT_TRUE(c->getOwnedAttributes().size() == 1);
     Property* p = &c->getOwnedAttributes().front();
-    Package* primPack = m2->getMergedPackage();
+    PackagePtr primPack = m2->getMergedPackage();
     ASSERT_TRUE(primPack->getPackagedElements().front().getElementType() == ElementType::PRIMITIVE_TYPE);
     PrimitiveType* b = dynamic_cast<PrimitiveType*>(&primPack->getPackagedElements().front());
     ASSERT_TRUE(p->getType() == b);
@@ -152,7 +152,7 @@ TEST_F(PackageParserTest, externalMergedPackageTest) {
 
 TEST_F(PackageParserTest, emitVerySimplePackageTest) {
     UmlManager m;
-    Package p = m.create<Package>();
+    Package& p = *m.create<Package>();
     p.setID("_SljVdCSVuBAkmgXqFcopy8&D9oN");
     p.setName("package");
     p.setVisibility(VisibilityKind::PACKAGE);
@@ -168,7 +168,7 @@ TEST_F(PackageParserTest, emitVerySimplePackageTest) {
 TEST_F(PackageParserTest, parsePackagedElementInDifferentFileTest) {
     UmlManager m;
     Element* el;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "packageParserTests/subFolderTest.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "packageParserTests/subFolderTest.yml").ptr());
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& pckg = dynamic_cast<Package&>(*el);
     ASSERT_EQ(pckg.getPackagedElements().size(), 1);
@@ -178,10 +178,10 @@ TEST_F(PackageParserTest, parsePackagedElementInDifferentFileTest) {
 
 TEST_F(PackageParserTest, emitMergedPackageTest) {
     UmlManager m;
-    Package& pckg = m.create<Package>();
-    PackageMerge& merge = m.create<PackageMerge>();
-    Package& mergin = m.create<Package>();
-    Package& merged = m.create<Package>();
+    Package& pckg = *m.create<Package>();
+    PackageMerge& merge = *m.create<PackageMerge>();
+    Package& mergin = *m.create<Package>();
+    Package& merged = *m.create<Package>();
     pckg.setID("la_AO7XKQcEsH1P2LHcSk4ELzoEV");
     mergin.setID("SXE9QBb0rYOmBFbahGIQLhMxlYNq");
     merge.setID("I7c2Z27FF1w&WX4NHKdfIkbNuhDA");
@@ -219,102 +219,102 @@ void ASSERT_PROPER_DIRECTED_RELATIONSHIP_AQUIRE(DirectedRelationship& dr, Elemen
 
 TEST_F(PackageParserTest, mountAndEditPackageTest) {
     UmlManager m;
-    Package& root = m.create<Package>();
-    Package& c1 = m.create<Package>();
-    Package& merged = m.create<Package>();
-    Profile& profile = m.create<Profile>();
-    PackageMerge& merge = m.create<PackageMerge>();
-    ProfileApplication& profileApplication = m.create<ProfileApplication>();
-    Stereotype& stereotype = m.create<Stereotype>();
+    Package& root = *m.create<Package>();
+    Package& c1 = *m.create<Package>();
+    Package& merged = *m.create<Package>();
+    Profile& profile = *m.create<Profile>();
+    PackageMerge& merge = *m.create<PackageMerge>();
+    ProfileApplication& profileApplication = *m.create<ProfileApplication>();
+    Stereotype& stereotype = *m.create<Stereotype>();
     c1.getOwnedStereotypes().add(stereotype);
-    merge.setMergedPackage(&merged);
+    merge.setMergedPackage(merged);
     c1.getPackageMerge().add(merge);
-    profileApplication.setAppliedProfile(&profile);
+    profileApplication.setAppliedProfile(profile);
     c1.getProfileApplications().add(profileApplication);
     root.getPackagedElements().add(c1, merged, profile);
     m.setRoot(&root);
     m.mount(ymlPath + "packageParserTests");
     m.release(c1);
     Package& c2 = root.getPackagedElements().front().as<Package>();
-    ASSERT_TRUE(c2.getOwningPackage() != 0);
-    ASSERT_EQ(c2.getOwningPackage(), &root);
+    ASSERT_TRUE(c2.getOwningPackage());
+    ASSERT_EQ(*c2.getOwningPackage(), root);
     ASSERT_EQ(c2.getPackageMerge().size(), 1);
     ASSERT_EQ(&c2.getPackageMerge().front(), &merge);
     ASSERT_TRUE(c2.getOwnedElements().count(merge.getID()));
     ASSERT_EQ(c2.getOwnedElements().get(merge.getID()), merge);
-    ASSERT_TRUE(merge.hasReceivingPackage());
-    ASSERT_EQ(merge.getReceivingPackageRef(), c2);
-    ASSERT_TRUE(merge.hasOwner());
-    ASSERT_EQ(merge.getOwnerRef(), c2);
+    ASSERT_TRUE(merge.getReceivingPackage());
+    ASSERT_EQ(*merge.getReceivingPackage(), c2);
+    ASSERT_TRUE(merge.getOwner());
+    ASSERT_EQ(*merge.getOwner(), c2);
     ASSERT_EQ(merge.getSources().size(), 1);
     ASSERT_EQ(merge.getSources().front(), c2);
     ASSERT_EQ(c2.getProfileApplications().size(), 1);
     ASSERT_EQ(&c2.getProfileApplications().front(), &profileApplication);
     ASSERT_TRUE(c2.getOwnedElements().count(profileApplication.getID()));
     ASSERT_EQ(c2.getOwnedElements().get(profileApplication.getID()), profileApplication);
-    ASSERT_TRUE(profileApplication.hasApplyingPackage());
-    ASSERT_EQ(profileApplication.getApplyingPackageRef(), c2);
-    ASSERT_TRUE(profileApplication.hasOwner());
-    ASSERT_EQ(profileApplication.getOwnerRef(), c2);
+    ASSERT_TRUE(profileApplication.getApplyingPackage());
+    ASSERT_EQ(*profileApplication.getApplyingPackage(), c2);
+    ASSERT_TRUE(profileApplication.getOwner());
+    ASSERT_EQ(*profileApplication.getOwner(), c2);
     ASSERT_EQ(profileApplication.getSources().size(), 1);
     ASSERT_EQ(profileApplication.getSources().front(), c2);
     ASSERT_EQ(c2.getPackagedElements().size(), 1);
     ASSERT_EQ(&c2.getPackagedElements().front(), &stereotype);
     ASSERT_EQ(c2.getOwnedStereotypes().size(), 1);
     ASSERT_EQ(&c2.getOwnedStereotypes().front(), &stereotype);
-    ASSERT_TRUE(stereotype.hasOwningPackage());
-    ASSERT_EQ(stereotype.getOwningPackageRef(), c2);
+    ASSERT_TRUE(stereotype.getOwningPackage());
+    ASSERT_EQ(*stereotype.getOwningPackage(), c2);
     ASSERT_EQ(c2.getOwnedMembers().size(), 1);
     ASSERT_EQ(c2.getOwnedMembers().front(), stereotype);
     ASSERT_EQ(c2.getMembers().size(), 1);
     ASSERT_EQ(c2.getMembers().front(), stereotype);
     ASSERT_EQ(c2.getOwnedElements().size(), 3);
     ASSERT_EQ(c2.getOwnedElements().get(stereotype.getID()), stereotype);
-    ASSERT_TRUE(stereotype.hasNamespace());
-    ASSERT_EQ(stereotype.getNamespaceRef(), c2);
-    ASSERT_TRUE(stereotype.hasOwner());
-    ASSERT_EQ(stereotype.getOwnerRef(), c2);
+    ASSERT_TRUE(stereotype.getNamespace());
+    ASSERT_EQ(*stereotype.getNamespace(), c2);
+    ASSERT_TRUE(stereotype.getOwner());
+    ASSERT_EQ(*stereotype.getOwner(), c2);
 
     m.release(merge);
     ASSERT_EQ(c2.getPackageMerge().size(), 1);
     PackageMerge& merge2 = c2.getPackageMerge().front();
-    ASSERT_TRUE(merge2.getReceivingPackage() != 0);
-    ASSERT_EQ(merge2.getReceivingPackage(), &c2);
-    ASSERT_TRUE(merge2.getMergedPackage() != 0);
+    ASSERT_TRUE(merge2.getReceivingPackage());
+    ASSERT_EQ(*merge2.getReceivingPackage(), c2);
+    ASSERT_TRUE(merge2.getMergedPackage());
     ASSERT_EQ(merge2.getMergedPackage(), &merged);
     ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_DIRECTED_RELATIONSHIP_AQUIRE(merge2, c2, merged));
 
     m.release(profileApplication);
     ASSERT_EQ(c2.getProfileApplications().size(), 1);
     ProfileApplication& profileApplication2 = c2.getProfileApplications().front();
-    ASSERT_TRUE(profileApplication2.getApplyingPackage() != 0);
+    ASSERT_TRUE(profileApplication2.getApplyingPackage());
     ASSERT_EQ(profileApplication2.getApplyingPackage(), &c2);
-    ASSERT_TRUE(profileApplication2.getAppliedProfile() != 0);
+    ASSERT_TRUE(profileApplication2.getAppliedProfile());
     ASSERT_EQ(profileApplication2.getAppliedProfile(), &profile);
     ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_DIRECTED_RELATIONSHIP_AQUIRE(profileApplication2, c2, profile));
 
     m.release(stereotype);
     ASSERT_EQ(c2.getOwnedStereotypes().size(), 1);
     Stereotype& stereotype2 = c2.getOwnedStereotypes().front();
-    ASSERT_TRUE(stereotype2.getOwningPackage() != 0);
+    ASSERT_TRUE(stereotype2.getOwningPackage());
     ASSERT_EQ(stereotype2.getOwningPackage(), &c2);
-    ASSERT_TRUE(stereotype2.getNamespace() != 0);
+    ASSERT_TRUE(stereotype2.getNamespace());
     ASSERT_EQ(stereotype2.getNamespace(), &c2);
-    ASSERT_TRUE(stereotype2.getOwner() != 0);
+    ASSERT_TRUE(stereotype2.getOwner());
     ASSERT_EQ(stereotype2.getOwner(), &c2);
 
     m.release(merge2, c2);
-    ASSERT_EQ(profileApplication2.getApplyingPackageRef().getPackageMerge().front().getMergedPackageRef(), merged);
+    ASSERT_EQ(*profileApplication2.getApplyingPackage()->getPackageMerge().front().getMergedPackage(), merged);
 }
 
 TEST_F(PackageParserTest, parseStringTest) {
     UmlManager m;
-    Package& p = m.create<Package>();
+    Package& p = *m.create<Package>();
     std::string ps = Parsers::emit(p);
     ID pid = p.getID();
     m.erase(p);
     Parsers::ParserMetaData data(&m);
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-    Package& p2 = Parsers::parseString(ps, data).as<Package>();
+    Package& p2 = Parsers::parseString(ps, data)->as<Package>();
     ASSERT_EQ(p2.getID(), pid);
 }

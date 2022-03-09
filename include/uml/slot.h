@@ -23,13 +23,12 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
+            void restoreReference(Element* el) override;
             Set<StructuralFeature, Slot>& getDefiningFeatureSingleton();
             Set<InstanceSpecification, Slot>& getOwningInstanceSingleton();
             void init();
-            void copy(const Slot& rhs);
             Slot();
         public:
-            Slot(const Slot& rhs);
             virtual ~Slot();
             Set<ValueSpecification, Slot>& getValues();
             StructuralFeaturePtr getDefiningFeature() const;

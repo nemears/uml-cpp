@@ -1067,617 +1067,617 @@ TEST_F(SetTest, StructuredClassifierOwnedAttributesEmulationTest) {
     delete ownedElements;
 }
 
-// TEST_F(SetTest, redefineMoreComplexSet) {
-//     Set<>* ownedElements = new Set<>;
-//     Set<NamedElement>* members = new Set<NamedElement>;
-//     Set<NamedElement>* ownedMembers = new Set<NamedElement>;
-//     Set<PackageableElement>* packagedElements = new Set<PackageableElement>;
-//     Set<Stereotype>* ownedStereotypes = new Set<Stereotype>;
-//     Set<Stereotype>* redefinedStereotypes = new Set<Stereotype>;
+TEST_F(SetTest, redefineMoreComplexSet) {
+    Set<>* ownedElements = new Set<>;
+    Set<NamedElement>* members = new Set<NamedElement>;
+    Set<NamedElement>* ownedMembers = new Set<NamedElement>;
+    Set<PackageableElement>* packagedElements = new Set<PackageableElement>;
+    Set<Stereotype>* ownedStereotypes = new Set<Stereotype>;
+    Set<Stereotype>* redefinedStereotypes = new Set<Stereotype>;
 
-//     ownedMembers->subsets(*ownedElements);
-//     ownedMembers->subsets(*members);
-//     packagedElements->subsets(*ownedMembers);
-//     ownedStereotypes->subsets(*packagedElements);
-//     redefinedStereotypes->redefines(*ownedStereotypes);
+    ownedMembers->subsets(*ownedElements);
+    ownedMembers->subsets(*members);
+    packagedElements->subsets(*ownedMembers);
+    ownedStereotypes->subsets(*packagedElements);
+    redefinedStereotypes->redefines(*ownedStereotypes);
 
-//     UmlManager m;
-//     Stereotype& s = *m.create<Stereotype>();
-//     s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
-//     Package& p = *m.create<Package>();
-//     p.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
+    UmlManager m;
+    Stereotype& s = *m.create<Stereotype>();
+    s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
+    Package& p = *m.create<Package>();
+    p.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
 
-//     redefinedStereotypes->add(s);
+    redefinedStereotypes->add(s);
 
-//     ASSERT_EQ(ownedElements->size(), 1);
-//     ASSERT_EQ(members->size(), 1);
-//     ASSERT_EQ(ownedMembers->size(), 1);
-//     ASSERT_EQ(packagedElements->size(), 1);
-//     ASSERT_EQ(ownedStereotypes->size(), 1);
-//     ASSERT_EQ(redefinedStereotypes->size(), 1);
+    ASSERT_EQ(ownedElements->size(), 1);
+    ASSERT_EQ(members->size(), 1);
+    ASSERT_EQ(ownedMembers->size(), 1);
+    ASSERT_EQ(packagedElements->size(), 1);
+    ASSERT_EQ(ownedStereotypes->size(), 1);
+    ASSERT_EQ(redefinedStereotypes->size(), 1);
 
-//     ASSERT_TRUE(ownedElements->contains(s));
-//     ASSERT_TRUE(members->contains(s));
-//     ASSERT_TRUE(ownedMembers->contains(s));
-//     ASSERT_TRUE(packagedElements->contains(s));
-//     ASSERT_TRUE(ownedStereotypes->contains(s));
-//     ASSERT_TRUE(redefinedStereotypes->contains(s));
+    ASSERT_TRUE(ownedElements->contains(s));
+    ASSERT_TRUE(members->contains(s));
+    ASSERT_TRUE(ownedMembers->contains(s));
+    ASSERT_TRUE(packagedElements->contains(s));
+    ASSERT_TRUE(ownedStereotypes->contains(s));
+    ASSERT_TRUE(redefinedStereotypes->contains(s));
 
-//     packagedElements->add(p);
+    packagedElements->add(p);
 
-//     ASSERT_EQ(ownedElements->size(), 2);
-//     ASSERT_EQ(members->size(), 2);
-//     ASSERT_EQ(ownedMembers->size(), 2);
-//     ASSERT_EQ(packagedElements->size(), 2);
-//     ASSERT_EQ(ownedStereotypes->size(), 1);
-//     ASSERT_EQ(redefinedStereotypes->size(), 1);
+    ASSERT_EQ(ownedElements->size(), 2);
+    ASSERT_EQ(members->size(), 2);
+    ASSERT_EQ(ownedMembers->size(), 2);
+    ASSERT_EQ(packagedElements->size(), 2);
+    ASSERT_EQ(ownedStereotypes->size(), 1);
+    ASSERT_EQ(redefinedStereotypes->size(), 1);
 
-//     ASSERT_TRUE(ownedElements->contains(s));
-//     ASSERT_TRUE(members->contains(s));
-//     ASSERT_TRUE(ownedMembers->contains(s));
-//     ASSERT_TRUE(packagedElements->contains(s));
-//     ASSERT_TRUE(ownedStereotypes->contains(s));
-//     ASSERT_TRUE(redefinedStereotypes->contains(s));
+    ASSERT_TRUE(ownedElements->contains(s));
+    ASSERT_TRUE(members->contains(s));
+    ASSERT_TRUE(ownedMembers->contains(s));
+    ASSERT_TRUE(packagedElements->contains(s));
+    ASSERT_TRUE(ownedStereotypes->contains(s));
+    ASSERT_TRUE(redefinedStereotypes->contains(s));
 
-//     ASSERT_TRUE(ownedElements->contains(p));
-//     ASSERT_TRUE(members->contains(p));
-//     ASSERT_TRUE(ownedMembers->contains(p));
-//     ASSERT_TRUE(packagedElements->contains(p));
-//     ASSERT_FALSE(ownedStereotypes->contains(p.getID()));
-//     ASSERT_FALSE(redefinedStereotypes->contains(p.getID()));
+    ASSERT_TRUE(ownedElements->contains(p));
+    ASSERT_TRUE(members->contains(p));
+    ASSERT_TRUE(ownedMembers->contains(p));
+    ASSERT_TRUE(packagedElements->contains(p));
+    ASSERT_FALSE(ownedStereotypes->contains(p.getID()));
+    ASSERT_FALSE(redefinedStereotypes->contains(p.getID()));
 
-//     redefinedStereotypes->remove(s);
+    redefinedStereotypes->remove(s);
 
-//     ASSERT_EQ(ownedElements->size(), 1);
-//     ASSERT_EQ(members->size(), 1);
-//     ASSERT_EQ(ownedMembers->size(), 1);
-//     ASSERT_EQ(packagedElements->size(), 1);
-//     ASSERT_EQ(ownedStereotypes->size(), 0);
-//     ASSERT_EQ(redefinedStereotypes->size(), 0);
+    ASSERT_EQ(ownedElements->size(), 1);
+    ASSERT_EQ(members->size(), 1);
+    ASSERT_EQ(ownedMembers->size(), 1);
+    ASSERT_EQ(packagedElements->size(), 1);
+    ASSERT_EQ(ownedStereotypes->size(), 0);
+    ASSERT_EQ(redefinedStereotypes->size(), 0);
 
-//     ASSERT_FALSE(ownedElements->contains(s));
-//     ASSERT_FALSE(members->contains(s));
-//     ASSERT_FALSE(ownedMembers->contains(s));
-//     ASSERT_FALSE(packagedElements->contains(s));
-//     ASSERT_FALSE(ownedStereotypes->contains(s));
-//     ASSERT_FALSE(redefinedStereotypes->contains(s));
+    ASSERT_FALSE(ownedElements->contains(s));
+    ASSERT_FALSE(members->contains(s));
+    ASSERT_FALSE(ownedMembers->contains(s));
+    ASSERT_FALSE(packagedElements->contains(s));
+    ASSERT_FALSE(ownedStereotypes->contains(s));
+    ASSERT_FALSE(redefinedStereotypes->contains(s));
 
-//     ASSERT_TRUE(ownedElements->contains(p));
-//     ASSERT_TRUE(members->contains(p));
-//     ASSERT_TRUE(ownedMembers->contains(p));
-//     ASSERT_TRUE(packagedElements->contains(p));
-//     ASSERT_FALSE(ownedStereotypes->contains(p.getID()));
-//     ASSERT_FALSE(redefinedStereotypes->contains(p.getID()));
+    ASSERT_TRUE(ownedElements->contains(p));
+    ASSERT_TRUE(members->contains(p));
+    ASSERT_TRUE(ownedMembers->contains(p));
+    ASSERT_TRUE(packagedElements->contains(p));
+    ASSERT_FALSE(ownedStereotypes->contains(p.getID()));
+    ASSERT_FALSE(redefinedStereotypes->contains(p.getID()));
 
-//     delete redefinedStereotypes;
-//     delete ownedStereotypes;
-//     delete packagedElements;
-//     delete ownedMembers;
-//     delete members;
-//     delete ownedElements;
-// }
+    delete redefinedStereotypes;
+    delete ownedStereotypes;
+    delete packagedElements;
+    delete ownedMembers;
+    delete members;
+    delete ownedElements;
+}
 
-// TEST_F(SetTest, BehavioredClassifierEmulationTest) {
-//     Set<>* ownedElements = new Set<>;
-//     Set<NamedElement>* members = new Set<NamedElement>;
-//     Set<NamedElement>* ownedMembers = new Set<NamedElement>;
-//     Set<Feature>* features = new Set<Feature>;
-//     Set<Behavior>* ownedBehaviors = new Set<Behavior>;
-//     Set<Operation>* ownedOperations = new Set<Operation>;
+TEST_F(SetTest, BehavioredClassifierEmulationTest) {
+    Set<>* ownedElements = new Set<>;
+    Set<NamedElement>* members = new Set<NamedElement>;
+    Set<NamedElement>* ownedMembers = new Set<NamedElement>;
+    Set<Feature>* features = new Set<Feature>;
+    Set<Behavior>* ownedBehaviors = new Set<Behavior>;
+    Set<Operation>* ownedOperations = new Set<Operation>;
 
-//     ownedMembers->subsets(*ownedElements);
-//     ownedMembers->subsets(*members);
-//     features->subsets(*members);
-//     ownedBehaviors->subsets(*ownedMembers);
-//     ownedOperations->subsets(*features);
-//     ownedOperations->subsets(*ownedMembers);
+    ownedMembers->subsets(*ownedElements);
+    ownedMembers->subsets(*members);
+    features->subsets(*members);
+    ownedBehaviors->subsets(*ownedMembers);
+    ownedOperations->subsets(*features);
+    ownedOperations->subsets(*ownedMembers);
 
-//     UmlManager m;
-//     OpaqueBehavior& bhv = *m.create<OpaqueBehavior>();
-//     Operation& op = m.*create<Operation>();
+    UmlManager m;
+    OpaqueBehavior& bhv = *m.create<OpaqueBehavior>();
+    Operation& op = *m.create<Operation>();
 
-//     ownedBehaviors->add(bhv);
+    ownedBehaviors->add(bhv);
 
-//     ASSERT_EQ(ownedElements->size(), 1);
-//     ASSERT_EQ(members->size(), 1);
-//     ASSERT_EQ(ownedMembers->size(), 1);
-//     ASSERT_EQ(features->size(), 0);
-//     ASSERT_EQ(ownedBehaviors->size(), 1);
-//     ASSERT_EQ(ownedOperations->size(), 0);
+    ASSERT_EQ(ownedElements->size(), 1);
+    ASSERT_EQ(members->size(), 1);
+    ASSERT_EQ(ownedMembers->size(), 1);
+    ASSERT_EQ(features->size(), 0);
+    ASSERT_EQ(ownedBehaviors->size(), 1);
+    ASSERT_EQ(ownedOperations->size(), 0);
 
-//     ASSERT_TRUE(ownedElements->contains(bhv));
-//     ASSERT_TRUE(members->contains(bhv));
-//     ASSERT_TRUE(ownedMembers->contains(bhv));
-//     ASSERT_FALSE(features->contains(bhv.getID()));
-//     ASSERT_TRUE(ownedBehaviors->contains(bhv));
-//     ASSERT_FALSE(ownedOperations->contains(bhv.getID()));
+    ASSERT_TRUE(ownedElements->contains(bhv));
+    ASSERT_TRUE(members->contains(bhv));
+    ASSERT_TRUE(ownedMembers->contains(bhv));
+    ASSERT_FALSE(features->contains(bhv.getID()));
+    ASSERT_TRUE(ownedBehaviors->contains(bhv));
+    ASSERT_FALSE(ownedOperations->contains(bhv.getID()));
 
-//     ownedOperations->add(op);
+    ownedOperations->add(op);
 
-//     ASSERT_EQ(ownedElements->size(), 2);
-//     ASSERT_EQ(members->size(), 2);
-//     ASSERT_EQ(ownedMembers->size(), 2);
-//     ASSERT_EQ(features->size(), 1);
-//     ASSERT_EQ(ownedBehaviors->size(), 1);
-//     ASSERT_EQ(ownedOperations->size(), 1);
+    ASSERT_EQ(ownedElements->size(), 2);
+    ASSERT_EQ(members->size(), 2);
+    ASSERT_EQ(ownedMembers->size(), 2);
+    ASSERT_EQ(features->size(), 1);
+    ASSERT_EQ(ownedBehaviors->size(), 1);
+    ASSERT_EQ(ownedOperations->size(), 1);
 
-//     ASSERT_TRUE(ownedElements->contains(bhv));
-//     ASSERT_TRUE(members->contains(bhv));
-//     ASSERT_TRUE(ownedMembers->contains(bhv));
-//     ASSERT_FALSE(features->contains(bhv.getID()));
-//     ASSERT_TRUE(ownedBehaviors->contains(bhv));
-//     ASSERT_FALSE(ownedOperations->contains(bhv.getID()));
+    ASSERT_TRUE(ownedElements->contains(bhv));
+    ASSERT_TRUE(members->contains(bhv));
+    ASSERT_TRUE(ownedMembers->contains(bhv));
+    ASSERT_FALSE(features->contains(bhv.getID()));
+    ASSERT_TRUE(ownedBehaviors->contains(bhv));
+    ASSERT_FALSE(ownedOperations->contains(bhv.getID()));
 
-//     ASSERT_TRUE(ownedElements->contains(op));
-//     ASSERT_TRUE(members->contains(op));
-//     ASSERT_TRUE(ownedMembers->contains(op));
-//     ASSERT_TRUE(features->contains(op));
-//     ASSERT_FALSE(ownedBehaviors->contains(op.getID()));
-//     ASSERT_TRUE(ownedOperations->contains(op));
+    ASSERT_TRUE(ownedElements->contains(op));
+    ASSERT_TRUE(members->contains(op));
+    ASSERT_TRUE(ownedMembers->contains(op));
+    ASSERT_TRUE(features->contains(op));
+    ASSERT_FALSE(ownedBehaviors->contains(op.getID()));
+    ASSERT_TRUE(ownedOperations->contains(op));
 
-//     delete ownedOperations;
-//     delete ownedBehaviors;
-//     delete features;
-//     delete ownedMembers;
-//     delete members;
-//     delete ownedElements;
-// }
+    delete ownedOperations;
+    delete ownedBehaviors;
+    delete features;
+    delete ownedMembers;
+    delete members;
+    delete ownedElements;
+}
 
-// TEST_F(SetTest, ClassAttributeAndOperationEmulationTest) {
-//     Set<>* ownedElements = new Set<>;
-//     Set<NamedElement>* members = new Set<NamedElement>;
-//     Set<NamedElement>* ownedMembers = new Set<NamedElement>;
-//     Set<Feature>* features = new Set<Feature>;
-//     Set<Property>* attributes = new Set<Property>;
-//     Set<ConnectableElement>* roles =  new Set<ConnectableElement>;
-//     Set<Property>* ownedAttributes = new Set<Property>;
-//     Set<Operation>* ownedOperations = new Set<Operation>;
+TEST_F(SetTest, ClassAttributeAndOperationEmulationTest) {
+    Set<>* ownedElements = new Set<>;
+    Set<NamedElement>* members = new Set<NamedElement>;
+    Set<NamedElement>* ownedMembers = new Set<NamedElement>;
+    Set<Feature>* features = new Set<Feature>;
+    Set<Property>* attributes = new Set<Property>;
+    Set<ConnectableElement>* roles =  new Set<ConnectableElement>;
+    Set<Property>* ownedAttributes = new Set<Property>;
+    Set<Operation>* ownedOperations = new Set<Operation>;
 
-//     ownedMembers->subsets(*ownedElements);
-//     ownedMembers->subsets(*members);
-//     features->subsets(*members);
-//     attributes->subsets(*features);
-//     roles->subsets(*members);
-//     ownedAttributes->subsets(*attributes);
-//     ownedAttributes->subsets(*roles);
-//     ownedAttributes->subsets(*ownedMembers);
-//     ownedOperations->subsets(*ownedMembers);
-//     ownedOperations->subsets(*features);
+    ownedMembers->subsets(*ownedElements);
+    ownedMembers->subsets(*members);
+    features->subsets(*members);
+    attributes->subsets(*features);
+    roles->subsets(*members);
+    ownedAttributes->subsets(*attributes);
+    ownedAttributes->subsets(*roles);
+    ownedAttributes->subsets(*ownedMembers);
+    ownedOperations->subsets(*ownedMembers);
+    ownedOperations->subsets(*features);
 
-//     UmlManager m;
-//     Property& p = *m.create<Property>();
-//     Operation& o = *m.create<Operation>();
-//     ownedAttributes->add(p);
-//     ownedOperations->add(o);
+    UmlManager m;
+    Property& p = *m.create<Property>();
+    Operation& o = *m.create<Operation>();
+    ownedAttributes->add(p);
+    ownedOperations->add(o);
 
-//     ASSERT_EQ(ownedElements->size(), 2);
-//     ASSERT_EQ(members->size(), 2);
-//     ASSERT_EQ(ownedMembers->size(), 2);
-//     ASSERT_EQ(features->size(), 2);
-//     ASSERT_EQ(attributes->size(), 1);
-//     ASSERT_EQ(roles->size(), 1);
-//     ASSERT_EQ(ownedAttributes->size(), 1);
-//     ASSERT_EQ(ownedOperations->size(), 1);
+    ASSERT_EQ(ownedElements->size(), 2);
+    ASSERT_EQ(members->size(), 2);
+    ASSERT_EQ(ownedMembers->size(), 2);
+    ASSERT_EQ(features->size(), 2);
+    ASSERT_EQ(attributes->size(), 1);
+    ASSERT_EQ(roles->size(), 1);
+    ASSERT_EQ(ownedAttributes->size(), 1);
+    ASSERT_EQ(ownedOperations->size(), 1);
 
-//     ASSERT_TRUE(ownedElements->contains(p));
-//     ASSERT_TRUE(members->contains(p));
-//     ASSERT_TRUE(ownedMembers->contains(p));
-//     ASSERT_TRUE(features->contains(p));
-//     ASSERT_TRUE(attributes->contains(p));
-//     ASSERT_TRUE(roles->contains(p));
-//     ASSERT_TRUE(ownedAttributes->contains(p));
-//     ASSERT_FALSE(ownedOperations->contains(p.getID()));
+    ASSERT_TRUE(ownedElements->contains(p));
+    ASSERT_TRUE(members->contains(p));
+    ASSERT_TRUE(ownedMembers->contains(p));
+    ASSERT_TRUE(features->contains(p));
+    ASSERT_TRUE(attributes->contains(p));
+    ASSERT_TRUE(roles->contains(p));
+    ASSERT_TRUE(ownedAttributes->contains(p));
+    ASSERT_FALSE(ownedOperations->contains(p.getID()));
 
-//     ASSERT_TRUE(ownedElements->contains(o));
-//     ASSERT_TRUE(members->contains(o));
-//     ASSERT_TRUE(ownedMembers->contains(o));
-//     ASSERT_TRUE(features->contains(o));
-//     ASSERT_FALSE(attributes->contains(o.getID()));
-//     ASSERT_FALSE(roles->contains(o.getID()));
-//     ASSERT_FALSE(ownedAttributes->contains(o.getID()));
-//     ASSERT_TRUE(ownedOperations->contains(o));
+    ASSERT_TRUE(ownedElements->contains(o));
+    ASSERT_TRUE(members->contains(o));
+    ASSERT_TRUE(ownedMembers->contains(o));
+    ASSERT_TRUE(features->contains(o));
+    ASSERT_FALSE(attributes->contains(o.getID()));
+    ASSERT_FALSE(roles->contains(o.getID()));
+    ASSERT_FALSE(ownedAttributes->contains(o.getID()));
+    ASSERT_TRUE(ownedOperations->contains(o));
 
-//     delete ownedOperations;
-//     delete ownedAttributes;
-//     delete roles;
-//     delete attributes;
-//     delete features;
-//     delete ownedMembers;
-//     delete members;
-//     delete ownedElements;
-// }
+    delete ownedOperations;
+    delete ownedAttributes;
+    delete roles;
+    delete attributes;
+    delete features;
+    delete ownedMembers;
+    delete members;
+    delete ownedElements;
+}
 
-// TEST_F(SetTest, copyComplexTreeTest) {
-//     Set<>* ownedElements = new Set<>;
-//     Set<Comment>* ownedComments =  new Set<Comment>;
-//     Set<InstanceSpecification>* appliedStereotypes = new Set<InstanceSpecification>;
-//     Set<NamedElement>* members = new Set<NamedElement>;
-//     Set<NamedElement>* ownedMembers = new Set<NamedElement>;
+TEST_F(SetTest, copyComplexTreeTest) {
+    Set<>* ownedElements = new Set<>;
+    Set<Comment>* ownedComments =  new Set<Comment>;
+    Set<InstanceSpecification>* appliedStereotypes = new Set<InstanceSpecification>;
+    Set<NamedElement>* members = new Set<NamedElement>;
+    Set<NamedElement>* ownedMembers = new Set<NamedElement>;
     
-//     ownedComments->subsets(*ownedElements);
-//     appliedStereotypes->subsets(*ownedElements);
-//     ownedMembers->subsets(*ownedElements);
-//     ownedMembers->subsets(*members);
+    ownedComments->subsets(*ownedElements);
+    appliedStereotypes->subsets(*ownedElements);
+    ownedMembers->subsets(*ownedElements);
+    ownedMembers->subsets(*members);
 
-//     UmlManager m;
-//     InstanceSpecification& s = *m.create<InstanceSpecification>();
-//     Comment& c = *m.create<Comment>();
-//     Package& p = *m.create<Package>();
+    UmlManager m;
+    InstanceSpecification& s = *m.create<InstanceSpecification>();
+    Comment& c = *m.create<Comment>();
+    Package& p = *m.create<Package>();
 
-//     s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
-//     c.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
-//     p.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
+    s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
+    c.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
+    p.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
 
-//     ownedMembers->add(p);
-//     appliedStereotypes->add(s);
-//     ownedComments->add(c);
+    ownedMembers->add(p);
+    appliedStereotypes->add(s);
+    ownedComments->add(c);
 
-//     Set<> ownedElements2;
-//     Set<Comment> ownedComments2;
-//     Set<InstanceSpecification> appliedStereotypes2;
-//     Set<NamedElement> members2;
-//     Set<NamedElement> ownedMembers2;
+    Set<> ownedElements2;
+    Set<Comment> ownedComments2;
+    Set<InstanceSpecification> appliedStereotypes2;
+    Set<NamedElement> members2;
+    Set<NamedElement> ownedMembers2;
 
-//     ownedComments2.subsets(ownedElements2);
-//     appliedStereotypes2.subsets(ownedElements2);
-//     ownedMembers2.subsets(ownedElements2);
-//     ownedMembers2.subsets(members2);
+    ownedComments2.subsets(ownedElements2);
+    appliedStereotypes2.subsets(ownedElements2);
+    ownedMembers2.subsets(ownedElements2);
+    ownedMembers2.subsets(members2);
 
-//     ownedElements2 = *ownedElements;
-//     ownedComments2 = *ownedComments;
-//     appliedStereotypes2 = *appliedStereotypes;
-//     members2 = *members;
-//     ownedMembers2 = *ownedMembers;
+    ownedElements2 = *ownedElements;
+    ownedComments2 = *ownedComments;
+    appliedStereotypes2 = *appliedStereotypes;
+    members2 = *members;
+    ownedMembers2 = *ownedMembers;
 
-//     ASSERT_EQ(ownedElements2.size(), 3);
-//     ASSERT_EQ(ownedComments2.size(), 1);
-//     ASSERT_EQ(appliedStereotypes2.size(), 1);
-//     ASSERT_EQ(members2.size(), 1);
-//     ASSERT_EQ(ownedMembers2.size(), 1);
+    ASSERT_EQ(ownedElements2.size(), 3);
+    ASSERT_EQ(ownedComments2.size(), 1);
+    ASSERT_EQ(appliedStereotypes2.size(), 1);
+    ASSERT_EQ(members2.size(), 1);
+    ASSERT_EQ(ownedMembers2.size(), 1);
 
-//     ASSERT_TRUE(ownedElements2.contains(p));
-//     ASSERT_FALSE(ownedComments2.contains(p.getID()));
-//     ASSERT_FALSE(appliedStereotypes2.contains(p.getID()));
-//     ASSERT_FALSE(ownedComments2.contains(p.getID()));
-//     ASSERT_TRUE(members2.contains(p));
-//     ASSERT_TRUE(ownedMembers2.contains(p));
+    ASSERT_TRUE(ownedElements2.contains(p));
+    ASSERT_FALSE(ownedComments2.contains(p.getID()));
+    ASSERT_FALSE(appliedStereotypes2.contains(p.getID()));
+    ASSERT_FALSE(ownedComments2.contains(p.getID()));
+    ASSERT_TRUE(members2.contains(p));
+    ASSERT_TRUE(ownedMembers2.contains(p));
 
-//     ASSERT_TRUE(ownedElements2.contains(s));
-//     ASSERT_FALSE(ownedComments2.contains(s.getID()));
-//     ASSERT_TRUE(appliedStereotypes2.contains(s));
-//     ASSERT_FALSE(members2.contains(s.getID()));
-//     ASSERT_FALSE(ownedMembers2.contains(s.getID()));
+    ASSERT_TRUE(ownedElements2.contains(s));
+    ASSERT_FALSE(ownedComments2.contains(s.getID()));
+    ASSERT_TRUE(appliedStereotypes2.contains(s));
+    ASSERT_FALSE(members2.contains(s.getID()));
+    ASSERT_FALSE(ownedMembers2.contains(s.getID()));
 
-//     ASSERT_TRUE(ownedElements2.contains(c));
-//     ASSERT_TRUE(ownedComments2.contains(c));
-//     ASSERT_FALSE(appliedStereotypes2.contains(c.getID()));
-//     ASSERT_FALSE(members2.contains(c.getID()));
-//     ASSERT_FALSE(ownedMembers2.contains(c.getID()));
+    ASSERT_TRUE(ownedElements2.contains(c));
+    ASSERT_TRUE(ownedComments2.contains(c));
+    ASSERT_FALSE(appliedStereotypes2.contains(c.getID()));
+    ASSERT_FALSE(members2.contains(c.getID()));
+    ASSERT_FALSE(ownedMembers2.contains(c.getID()));
 
-//     delete ownedMembers;
-//     delete members;
-//     delete appliedStereotypes;
-//     delete ownedComments;
-//     delete ownedElements;
-// }
+    delete ownedMembers;
+    delete members;
+    delete appliedStereotypes;
+    delete ownedComments;
+    delete ownedElements;
+}
 
-// TEST_F(SetTest, EmulateFullArtifactTest) {
-//     Set<>* ownedElements = new Set<>;
-//     Set<Dependency>* clientDependencies = new Set<Dependency>;
-//     Set<NamedElement>* members = new Set<NamedElement>;
-//     Set<NamedElement>* ownedMembers = new Set<NamedElement>;
-//     Set<Feature>* features = new Set<Feature>;
-//     Set<Property>* attributes = new Set<Property>;
-//     Set<Artifact>* nestedArtifacts = new Set<Artifact>;
-//     OrderedSet<Property>* ownedAttributes = new OrderedSet<Property>;
-//     OrderedSet<Operation>* ownedOperations = new OrderedSet<Operation>;
-//     Set<Manifestation>* manifestations = new Set<Manifestation>;
+TEST_F(SetTest, EmulateFullArtifactTest) {
+    Set<>* ownedElements = new Set<>;
+    Set<Dependency>* clientDependencies = new Set<Dependency>;
+    Set<NamedElement>* members = new Set<NamedElement>;
+    Set<NamedElement>* ownedMembers = new Set<NamedElement>;
+    Set<Feature>* features = new Set<Feature>;
+    Set<Property>* attributes = new Set<Property>;
+    Set<Artifact>* nestedArtifacts = new Set<Artifact>;
+    OrderedSet<Property>* ownedAttributes = new OrderedSet<Property>;
+    OrderedSet<Operation>* ownedOperations = new OrderedSet<Operation>;
+    Set<Manifestation>* manifestations = new Set<Manifestation>;
 
-//     ownedMembers->subsets(*ownedElements);
-//     ownedMembers->subsets(*members);
-//     features->subsets(*members);
-//     attributes->subsets(*features);
-//     nestedArtifacts->subsets(*ownedMembers);
-//     ownedAttributes->subsets(*attributes);
-//     ownedAttributes->subsets(*ownedMembers);
-//     ownedOperations->subsets(*features);
-//     ownedOperations->subsets(*ownedMembers);
-//     manifestations->subsets(*ownedMembers);
-//     manifestations->subsets(*clientDependencies);
+    ownedMembers->subsets(*ownedElements);
+    ownedMembers->subsets(*members);
+    features->subsets(*members);
+    attributes->subsets(*features);
+    nestedArtifacts->subsets(*ownedMembers);
+    ownedAttributes->subsets(*attributes);
+    ownedAttributes->subsets(*ownedMembers);
+    ownedOperations->subsets(*features);
+    ownedOperations->subsets(*ownedMembers);
+    manifestations->subsets(*ownedMembers);
+    manifestations->subsets(*clientDependencies);
 
-//     UmlManager m;
-//     Property& attribute = *m.create<Property>();
-//     attribute.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAD"));
-//     Operation& operation = *m.create<Operation>();
-//     operation.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAC"));
-//     Artifact& nested = *m.create<Artifact>();
-//     nested.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAB"));
-//     Manifestation& manifestation = *m.create<Manifestation>();
+    UmlManager m;
+    Property& attribute = *m.create<Property>();
+    attribute.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAD"));
+    Operation& operation = *m.create<Operation>();
+    operation.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAC"));
+    Artifact& nested = *m.create<Artifact>();
+    nested.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAB"));
+    Manifestation& manifestation = *m.create<Manifestation>();
 
-//     ownedAttributes->add(attribute);
+    ownedAttributes->add(attribute);
 
-//     ASSERT_EQ(ownedAttributes->size(), 1);
-//     ASSERT_EQ(attributes->size(), 1);
-//     ASSERT_EQ(ownedOperations->size(), 0);
-//     ASSERT_EQ(features->size(), 1);
-//     ASSERT_EQ(nestedArtifacts->size(), 0);
-//     ASSERT_EQ(manifestations->size(), 0);
-//     ASSERT_EQ(ownedMembers->size(), 1);
-//     ASSERT_EQ(members->size(), 1);
-//     ASSERT_EQ(clientDependencies->size(), 0);
-//     ASSERT_EQ(ownedElements->size(), 1);
+    ASSERT_EQ(ownedAttributes->size(), 1);
+    ASSERT_EQ(attributes->size(), 1);
+    ASSERT_EQ(ownedOperations->size(), 0);
+    ASSERT_EQ(features->size(), 1);
+    ASSERT_EQ(nestedArtifacts->size(), 0);
+    ASSERT_EQ(manifestations->size(), 0);
+    ASSERT_EQ(ownedMembers->size(), 1);
+    ASSERT_EQ(members->size(), 1);
+    ASSERT_EQ(clientDependencies->size(), 0);
+    ASSERT_EQ(ownedElements->size(), 1);
 
-//     ASSERT_TRUE(ownedAttributes->contains(attribute));
-//     ASSERT_TRUE(attributes->contains(attribute));
-//     ASSERT_TRUE(features->contains(attribute));
-//     ASSERT_TRUE(ownedMembers->contains(attribute));
-//     ASSERT_TRUE(members->contains(attribute));
-//     ASSERT_TRUE(ownedElements->contains(attribute));
-//     ASSERT_FALSE(ownedOperations->contains(attribute.getID()));
-//     ASSERT_FALSE(nestedArtifacts->contains(attribute.getID()));
-//     ASSERT_FALSE(manifestations->contains(attribute.getID()));
-//     ASSERT_FALSE(clientDependencies->contains(attribute.getID()));
+    ASSERT_TRUE(ownedAttributes->contains(attribute));
+    ASSERT_TRUE(attributes->contains(attribute));
+    ASSERT_TRUE(features->contains(attribute));
+    ASSERT_TRUE(ownedMembers->contains(attribute));
+    ASSERT_TRUE(members->contains(attribute));
+    ASSERT_TRUE(ownedElements->contains(attribute));
+    ASSERT_FALSE(ownedOperations->contains(attribute.getID()));
+    ASSERT_FALSE(nestedArtifacts->contains(attribute.getID()));
+    ASSERT_FALSE(manifestations->contains(attribute.getID()));
+    ASSERT_FALSE(clientDependencies->contains(attribute.getID()));
 
-//     ownedOperations->add(operation);
+    ownedOperations->add(operation);
 
-//     ASSERT_EQ(ownedAttributes->size(), 1);
-//     ASSERT_EQ(attributes->size(), 1);
-//     ASSERT_EQ(ownedOperations->size(), 1);
-//     ASSERT_EQ(features->size(), 2);
-//     ASSERT_EQ(nestedArtifacts->size(), 0);
-//     ASSERT_EQ(manifestations->size(), 0);
-//     ASSERT_EQ(ownedMembers->size(), 2);
-//     ASSERT_EQ(members->size(), 2);
-//     ASSERT_EQ(clientDependencies->size(), 0);
-//     ASSERT_EQ(ownedElements->size(), 2);
+    ASSERT_EQ(ownedAttributes->size(), 1);
+    ASSERT_EQ(attributes->size(), 1);
+    ASSERT_EQ(ownedOperations->size(), 1);
+    ASSERT_EQ(features->size(), 2);
+    ASSERT_EQ(nestedArtifacts->size(), 0);
+    ASSERT_EQ(manifestations->size(), 0);
+    ASSERT_EQ(ownedMembers->size(), 2);
+    ASSERT_EQ(members->size(), 2);
+    ASSERT_EQ(clientDependencies->size(), 0);
+    ASSERT_EQ(ownedElements->size(), 2);
 
-//     ASSERT_TRUE(ownedOperations->contains(operation));
-//     ASSERT_TRUE(features->contains(operation));
-//     ASSERT_TRUE(ownedMembers->contains(operation));
-//     ASSERT_TRUE(members->contains(operation));
-//     ASSERT_TRUE(ownedElements->contains(operation));
-//     ASSERT_FALSE(ownedAttributes->contains(operation.getID()));
-//     ASSERT_FALSE(attributes->contains(operation.getID()));
-//     ASSERT_FALSE(nestedArtifacts->contains(operation.getID()));
-//     ASSERT_FALSE(manifestations->contains(operation.getID()));
-//     ASSERT_FALSE(clientDependencies->contains(operation.getID()));
+    ASSERT_TRUE(ownedOperations->contains(operation));
+    ASSERT_TRUE(features->contains(operation));
+    ASSERT_TRUE(ownedMembers->contains(operation));
+    ASSERT_TRUE(members->contains(operation));
+    ASSERT_TRUE(ownedElements->contains(operation));
+    ASSERT_FALSE(ownedAttributes->contains(operation.getID()));
+    ASSERT_FALSE(attributes->contains(operation.getID()));
+    ASSERT_FALSE(nestedArtifacts->contains(operation.getID()));
+    ASSERT_FALSE(manifestations->contains(operation.getID()));
+    ASSERT_FALSE(clientDependencies->contains(operation.getID()));
 
-//     nestedArtifacts->add(nested);
+    nestedArtifacts->add(nested);
 
-//     ASSERT_EQ(ownedAttributes->size(), 1);
-//     ASSERT_EQ(attributes->size(), 1);
-//     ASSERT_EQ(ownedOperations->size(), 1);
-//     ASSERT_EQ(features->size(), 2);
-//     ASSERT_EQ(nestedArtifacts->size(), 1);
-//     ASSERT_EQ(manifestations->size(), 0);
-//     ASSERT_EQ(ownedMembers->size(), 3);
-//     ASSERT_EQ(members->size(), 3);
-//     ASSERT_EQ(clientDependencies->size(), 0);
-//     ASSERT_EQ(ownedElements->size(), 3);
+    ASSERT_EQ(ownedAttributes->size(), 1);
+    ASSERT_EQ(attributes->size(), 1);
+    ASSERT_EQ(ownedOperations->size(), 1);
+    ASSERT_EQ(features->size(), 2);
+    ASSERT_EQ(nestedArtifacts->size(), 1);
+    ASSERT_EQ(manifestations->size(), 0);
+    ASSERT_EQ(ownedMembers->size(), 3);
+    ASSERT_EQ(members->size(), 3);
+    ASSERT_EQ(clientDependencies->size(), 0);
+    ASSERT_EQ(ownedElements->size(), 3);
     
-//     ASSERT_TRUE(nestedArtifacts->contains(nested));
-//     ASSERT_TRUE(ownedMembers->contains(nested));
-//     ASSERT_TRUE(members->contains(nested));
-//     ASSERT_TRUE(ownedElements->contains(nested));
-//     ASSERT_FALSE(ownedAttributes->contains(nested.getID()));
-//     ASSERT_FALSE(ownedOperations->contains(nested.getID()));
-//     ASSERT_FALSE(attributes->contains(nested.getID()));
-//     ASSERT_FALSE(features->contains(nested.getID()));
-//     ASSERT_FALSE(clientDependencies->contains(nested.getID()));
+    ASSERT_TRUE(nestedArtifacts->contains(nested));
+    ASSERT_TRUE(ownedMembers->contains(nested));
+    ASSERT_TRUE(members->contains(nested));
+    ASSERT_TRUE(ownedElements->contains(nested));
+    ASSERT_FALSE(ownedAttributes->contains(nested.getID()));
+    ASSERT_FALSE(ownedOperations->contains(nested.getID()));
+    ASSERT_FALSE(attributes->contains(nested.getID()));
+    ASSERT_FALSE(features->contains(nested.getID()));
+    ASSERT_FALSE(clientDependencies->contains(nested.getID()));
 
-//     manifestations->add(manifestation);
+    manifestations->add(manifestation);
 
-//     ASSERT_EQ(ownedAttributes->size(), 1);
-//     ASSERT_EQ(attributes->size(), 1);
-//     ASSERT_EQ(ownedOperations->size(), 1);
-//     ASSERT_EQ(features->size(), 2);
-//     ASSERT_EQ(nestedArtifacts->size(), 1);
-//     ASSERT_EQ(manifestations->size(), 1);
-//     ASSERT_EQ(ownedMembers->size(), 4);
-//     ASSERT_EQ(members->size(), 4);
-//     ASSERT_EQ(clientDependencies->size(), 1);
-//     ASSERT_EQ(ownedElements->size(), 4);
+    ASSERT_EQ(ownedAttributes->size(), 1);
+    ASSERT_EQ(attributes->size(), 1);
+    ASSERT_EQ(ownedOperations->size(), 1);
+    ASSERT_EQ(features->size(), 2);
+    ASSERT_EQ(nestedArtifacts->size(), 1);
+    ASSERT_EQ(manifestations->size(), 1);
+    ASSERT_EQ(ownedMembers->size(), 4);
+    ASSERT_EQ(members->size(), 4);
+    ASSERT_EQ(clientDependencies->size(), 1);
+    ASSERT_EQ(ownedElements->size(), 4);
 
-//     ASSERT_TRUE(manifestations->contains(manifestation));
-//     ASSERT_TRUE(ownedMembers->contains(manifestation));
-//     ASSERT_TRUE(members->contains(manifestation));
-//     ASSERT_TRUE(clientDependencies->contains(manifestation));
-//     ASSERT_TRUE(ownedElements->contains(manifestation));
-//     ASSERT_FALSE(ownedAttributes->contains(manifestation.getID()));
-//     ASSERT_FALSE(ownedOperations->contains(manifestation.getID()));
-//     ASSERT_FALSE(attributes->contains(manifestation.getID()));
-//     ASSERT_FALSE(features->contains(manifestation.getID()));
-//     ASSERT_FALSE(nestedArtifacts->contains(manifestation.getID()));
+    ASSERT_TRUE(manifestations->contains(manifestation));
+    ASSERT_TRUE(ownedMembers->contains(manifestation));
+    ASSERT_TRUE(members->contains(manifestation));
+    ASSERT_TRUE(clientDependencies->contains(manifestation));
+    ASSERT_TRUE(ownedElements->contains(manifestation));
+    ASSERT_FALSE(ownedAttributes->contains(manifestation.getID()));
+    ASSERT_FALSE(ownedOperations->contains(manifestation.getID()));
+    ASSERT_FALSE(attributes->contains(manifestation.getID()));
+    ASSERT_FALSE(features->contains(manifestation.getID()));
+    ASSERT_FALSE(nestedArtifacts->contains(manifestation.getID()));
 
-//     ASSERT_TRUE(ownedAttributes->contains(attribute));
-//     ASSERT_TRUE(attributes->contains(attribute));
-//     ASSERT_TRUE(features->contains(attribute));
-//     ASSERT_TRUE(ownedMembers->contains(attribute));
-//     ASSERT_TRUE(members->contains(attribute));
-//     ASSERT_TRUE(ownedElements->contains(attribute));
-//     ASSERT_FALSE(ownedOperations->contains(attribute.getID()));
-//     ASSERT_FALSE(nestedArtifacts->contains(attribute.getID()));
-//     ASSERT_FALSE(manifestations->contains(attribute.getID()));
-//     ASSERT_FALSE(clientDependencies->contains(attribute.getID()));
+    ASSERT_TRUE(ownedAttributes->contains(attribute));
+    ASSERT_TRUE(attributes->contains(attribute));
+    ASSERT_TRUE(features->contains(attribute));
+    ASSERT_TRUE(ownedMembers->contains(attribute));
+    ASSERT_TRUE(members->contains(attribute));
+    ASSERT_TRUE(ownedElements->contains(attribute));
+    ASSERT_FALSE(ownedOperations->contains(attribute.getID()));
+    ASSERT_FALSE(nestedArtifacts->contains(attribute.getID()));
+    ASSERT_FALSE(manifestations->contains(attribute.getID()));
+    ASSERT_FALSE(clientDependencies->contains(attribute.getID()));
 
-//     ASSERT_TRUE(ownedOperations->contains(operation));
-//     ASSERT_TRUE(features->contains(operation));
-//     ASSERT_TRUE(ownedMembers->contains(operation));
-//     ASSERT_TRUE(members->contains(operation));
-//     ASSERT_TRUE(ownedElements->contains(operation));
-//     ASSERT_FALSE(ownedAttributes->contains(operation.getID()));
-//     ASSERT_FALSE(attributes->contains(operation.getID()));
-//     ASSERT_FALSE(nestedArtifacts->contains(operation.getID()));
-//     ASSERT_FALSE(manifestations->contains(operation.getID()));
-//     ASSERT_FALSE(clientDependencies->contains(operation.getID()));
+    ASSERT_TRUE(ownedOperations->contains(operation));
+    ASSERT_TRUE(features->contains(operation));
+    ASSERT_TRUE(ownedMembers->contains(operation));
+    ASSERT_TRUE(members->contains(operation));
+    ASSERT_TRUE(ownedElements->contains(operation));
+    ASSERT_FALSE(ownedAttributes->contains(operation.getID()));
+    ASSERT_FALSE(attributes->contains(operation.getID()));
+    ASSERT_FALSE(nestedArtifacts->contains(operation.getID()));
+    ASSERT_FALSE(manifestations->contains(operation.getID()));
+    ASSERT_FALSE(clientDependencies->contains(operation.getID()));
 
-//     ASSERT_TRUE(nestedArtifacts->contains(nested));
-//     ASSERT_TRUE(ownedMembers->contains(nested));
-//     ASSERT_TRUE(members->contains(nested));
-//     ASSERT_TRUE(ownedElements->contains(nested));
-//     ASSERT_FALSE(ownedAttributes->contains(nested.getID()));
-//     ASSERT_FALSE(ownedOperations->contains(nested.getID()));
-//     ASSERT_FALSE(attributes->contains(nested.getID()));
-//     ASSERT_FALSE(features->contains(nested.getID()));
-//     ASSERT_FALSE(clientDependencies->contains(nested.getID()));
+    ASSERT_TRUE(nestedArtifacts->contains(nested));
+    ASSERT_TRUE(ownedMembers->contains(nested));
+    ASSERT_TRUE(members->contains(nested));
+    ASSERT_TRUE(ownedElements->contains(nested));
+    ASSERT_FALSE(ownedAttributes->contains(nested.getID()));
+    ASSERT_FALSE(ownedOperations->contains(nested.getID()));
+    ASSERT_FALSE(attributes->contains(nested.getID()));
+    ASSERT_FALSE(features->contains(nested.getID()));
+    ASSERT_FALSE(clientDependencies->contains(nested.getID()));
 
-//     delete manifestations;
-//     delete ownedOperations;
-//     delete ownedAttributes;
-//     delete nestedArtifacts;
-//     delete attributes;
-//     delete features;
-//     delete clientDependencies;
-//     delete ownedMembers;
-//     delete members;
-//     delete ownedElements;
-// }
+    delete manifestations;
+    delete ownedOperations;
+    delete ownedAttributes;
+    delete nestedArtifacts;
+    delete attributes;
+    delete features;
+    delete clientDependencies;
+    delete ownedMembers;
+    delete members;
+    delete ownedElements;
+}
 
-// TEST_F(SetTest, emulateClassWConnectorTest) {
-//     Set<>* ownedElements = new Set<>;
-//     Set<NamedElement>* members = new Set<NamedElement>;
-//     Set<NamedElement>* ownedMembers = new Set<NamedElement>;
-//     Set<Feature>* features = new Set<Feature>;
-//     Set<Property>* attributes = new Set<Property>;
-//     Set<ConnectableElement>* roles =  new Set<ConnectableElement>;
-//     Set<Property>* ownedAttributes = new Set<Property>;
-//     Set<Property>* parts = new Set<Property>;
-//     Set<Connector>* ownedConnectors = new Set<Connector>;
-//     Set<Property>* classOwnedAttributes = new Set<Property>;
+TEST_F(SetTest, emulateClassWConnectorTest) {
+    Set<>* ownedElements = new Set<>;
+    Set<NamedElement>* members = new Set<NamedElement>;
+    Set<NamedElement>* ownedMembers = new Set<NamedElement>;
+    Set<Feature>* features = new Set<Feature>;
+    Set<Property>* attributes = new Set<Property>;
+    Set<ConnectableElement>* roles =  new Set<ConnectableElement>;
+    Set<Property>* ownedAttributes = new Set<Property>;
+    Set<Property>* parts = new Set<Property>;
+    Set<Connector>* ownedConnectors = new Set<Connector>;
+    Set<Property>* classOwnedAttributes = new Set<Property>;
 
-//     ownedMembers->subsets(*ownedElements);
-//     ownedMembers->subsets(*members);
-//     features->subsets(*members);
-//     attributes->subsets(*features);
-//     roles->subsets(*members);
-//     ownedAttributes->subsets(*attributes);
-//     ownedAttributes->subsets(*roles);
-//     ownedAttributes->subsets(*ownedMembers);
-//     parts->subsets(*ownedAttributes);
-//     ownedConnectors->subsets(*ownedMembers);
-//     ownedConnectors->subsets(*features);
-//     classOwnedAttributes->redefines(*ownedAttributes);
+    ownedMembers->subsets(*ownedElements);
+    ownedMembers->subsets(*members);
+    features->subsets(*members);
+    attributes->subsets(*features);
+    roles->subsets(*members);
+    ownedAttributes->subsets(*attributes);
+    ownedAttributes->subsets(*roles);
+    ownedAttributes->subsets(*ownedMembers);
+    parts->subsets(*ownedAttributes);
+    ownedConnectors->subsets(*ownedMembers);
+    ownedConnectors->subsets(*features);
+    classOwnedAttributes->redefines(*ownedAttributes);
 
-//     UmlManager m;
-//     Property& prop1 = *m.create<Property>();
-//     Property& prop2 = *m.create<Property>();
-//     Connector& connector = *m.create<Connector>();
-//     classOwnedAttributes->add(prop1, prop2);
-//     parts->add(prop2);
-//     ownedConnectors->add(connector);
+    UmlManager m;
+    Property& prop1 = *m.create<Property>();
+    Property& prop2 = *m.create<Property>();
+    Connector& connector = *m.create<Connector>();
+    classOwnedAttributes->add(prop1, prop2);
+    parts->add(prop2);
+    ownedConnectors->add(connector);
 
-//     ASSERT_EQ(classOwnedAttributes->size(), 2);
-//     ASSERT_EQ(parts->size(), 1);
-//     ASSERT_EQ(ownedAttributes->size(), 2);
-//     ASSERT_EQ(attributes->size(), 2);
-//     ASSERT_EQ(roles->size(), 2);
-//     ASSERT_EQ(ownedConnectors->size(), 1);
-//     ASSERT_EQ(features->size(), 3);
-//     ASSERT_EQ(ownedMembers->size(), 3);
-//     ASSERT_EQ(members->size(), 3);
-//     ASSERT_EQ(ownedElements->size(), 3);
+    ASSERT_EQ(classOwnedAttributes->size(), 2);
+    ASSERT_EQ(parts->size(), 1);
+    ASSERT_EQ(ownedAttributes->size(), 2);
+    ASSERT_EQ(attributes->size(), 2);
+    ASSERT_EQ(roles->size(), 2);
+    ASSERT_EQ(ownedConnectors->size(), 1);
+    ASSERT_EQ(features->size(), 3);
+    ASSERT_EQ(ownedMembers->size(), 3);
+    ASSERT_EQ(members->size(), 3);
+    ASSERT_EQ(ownedElements->size(), 3);
 
-//     ASSERT_TRUE(classOwnedAttributes->contains(prop1));
-//     ASSERT_FALSE(parts->contains(prop1));
-//     ASSERT_TRUE(ownedAttributes->contains(prop1));
-//     ASSERT_TRUE(roles->contains(prop1));
-//     ASSERT_TRUE(attributes->contains(prop1));
-//     ASSERT_FALSE(ownedConnectors->contains(prop1.getID()));
-//     ASSERT_TRUE(features->contains(prop1));
-//     ASSERT_TRUE(ownedMembers->contains(prop1));
-//     ASSERT_TRUE(members->contains(prop1));
-//     ASSERT_TRUE(ownedElements->contains(prop1));
+    ASSERT_TRUE(classOwnedAttributes->contains(prop1));
+    ASSERT_FALSE(parts->contains(prop1));
+    ASSERT_TRUE(ownedAttributes->contains(prop1));
+    ASSERT_TRUE(roles->contains(prop1));
+    ASSERT_TRUE(attributes->contains(prop1));
+    ASSERT_FALSE(ownedConnectors->contains(prop1.getID()));
+    ASSERT_TRUE(features->contains(prop1));
+    ASSERT_TRUE(ownedMembers->contains(prop1));
+    ASSERT_TRUE(members->contains(prop1));
+    ASSERT_TRUE(ownedElements->contains(prop1));
 
-//     ASSERT_TRUE(classOwnedAttributes->contains(prop2));
-//     ASSERT_TRUE(parts->contains(prop2));
-//     ASSERT_TRUE(ownedAttributes->contains(prop2));
-//     ASSERT_TRUE(roles->contains(prop2));
-//     ASSERT_TRUE(attributes->contains(prop2));
-//     ASSERT_FALSE(ownedConnectors->contains(prop2.getID()));
-//     ASSERT_TRUE(features->contains(prop2));
-//     ASSERT_TRUE(ownedMembers->contains(prop2));
-//     ASSERT_TRUE(members->contains(prop2));
-//     ASSERT_TRUE(ownedElements->contains(prop2));
+    ASSERT_TRUE(classOwnedAttributes->contains(prop2));
+    ASSERT_TRUE(parts->contains(prop2));
+    ASSERT_TRUE(ownedAttributes->contains(prop2));
+    ASSERT_TRUE(roles->contains(prop2));
+    ASSERT_TRUE(attributes->contains(prop2));
+    ASSERT_FALSE(ownedConnectors->contains(prop2.getID()));
+    ASSERT_TRUE(features->contains(prop2));
+    ASSERT_TRUE(ownedMembers->contains(prop2));
+    ASSERT_TRUE(members->contains(prop2));
+    ASSERT_TRUE(ownedElements->contains(prop2));
 
-//     ASSERT_FALSE(classOwnedAttributes->contains(connector.getID()));
-//     ASSERT_FALSE(parts->contains(connector.getID()));
-//     ASSERT_FALSE(ownedAttributes->contains(connector.getID()));
-//     ASSERT_FALSE(roles->contains(connector.getID()));
-//     ASSERT_FALSE(attributes->contains(connector.getID()));
-//     ASSERT_TRUE(ownedConnectors->contains(connector));
-//     ASSERT_TRUE(features->contains(connector));
-//     ASSERT_TRUE(ownedMembers->contains(connector));
-//     ASSERT_TRUE(members->contains(connector));
-//     ASSERT_TRUE(ownedElements->contains(connector));
+    ASSERT_FALSE(classOwnedAttributes->contains(connector.getID()));
+    ASSERT_FALSE(parts->contains(connector.getID()));
+    ASSERT_FALSE(ownedAttributes->contains(connector.getID()));
+    ASSERT_FALSE(roles->contains(connector.getID()));
+    ASSERT_FALSE(attributes->contains(connector.getID()));
+    ASSERT_TRUE(ownedConnectors->contains(connector));
+    ASSERT_TRUE(features->contains(connector));
+    ASSERT_TRUE(ownedMembers->contains(connector));
+    ASSERT_TRUE(members->contains(connector));
+    ASSERT_TRUE(ownedElements->contains(connector));
 
-//     delete classOwnedAttributes;
-//     delete ownedConnectors;
-//     delete parts;
-//     delete ownedAttributes;
-//     delete roles;
-//     delete attributes;
-//     delete features;
-//     delete ownedMembers;
-//     delete members;
-//     delete ownedElements;
-// }
+    delete classOwnedAttributes;
+    delete ownedConnectors;
+    delete parts;
+    delete ownedAttributes;
+    delete roles;
+    delete attributes;
+    delete features;
+    delete ownedMembers;
+    delete members;
+    delete ownedElements;
+}
 
-// TEST_F(SetTest, emulateAssociationTest) {
-//     Set<>* ownedElements = new Set<>;
-//     Set<NamedElement>* members = new Set<NamedElement>;
-//     Set<NamedElement>* ownedMembers = new Set<NamedElement>;
-//     Set<Feature>* features = new Set<Feature>;
-//     Set<>* relatedElements = new Set<>;
-//     OrderedSet<Property>* memberEnds = new OrderedSet<Property>;
-//     OrderedSet<Property>* ownedEnds = new OrderedSet<Property>;
-//     Set<Property>* navigableOwnedEnds = new Set<Property>;
-//     Set<Type>* endTypes = new Set<Type>;
+TEST_F(SetTest, emulateAssociationTest) {
+    Set<>* ownedElements = new Set<>;
+    Set<NamedElement>* members = new Set<NamedElement>;
+    Set<NamedElement>* ownedMembers = new Set<NamedElement>;
+    Set<Feature>* features = new Set<Feature>;
+    Set<>* relatedElements = new Set<>;
+    OrderedSet<Property>* memberEnds = new OrderedSet<Property>;
+    OrderedSet<Property>* ownedEnds = new OrderedSet<Property>;
+    Set<Property>* navigableOwnedEnds = new Set<Property>;
+    Set<Type>* endTypes = new Set<Type>;
 
-//     ownedMembers->subsets(*ownedElements);
-//     ownedMembers->subsets(*members);
-//     features->subsets(*members);
-//     memberEnds->subsets(*members);
-//     ownedEnds->subsets(*memberEnds);
-//     ownedEnds->subsets(*ownedMembers);
-//     ownedEnds->subsets(*features);
-//     navigableOwnedEnds->subsets(*ownedEnds);
-//     endTypes->subsets(*relatedElements);
+    ownedMembers->subsets(*ownedElements);
+    ownedMembers->subsets(*members);
+    features->subsets(*members);
+    memberEnds->subsets(*members);
+    ownedEnds->subsets(*memberEnds);
+    ownedEnds->subsets(*ownedMembers);
+    ownedEnds->subsets(*features);
+    navigableOwnedEnds->subsets(*ownedEnds);
+    endTypes->subsets(*relatedElements);
 
-//     UmlManager m;
-//     Property& memberEnd = *m.create<Property>();
-//     Property& ownedEnd = *m.create<Property>();
-//     Class& endType1 = *m.create<Class>();
-//     Class& endType2 = *m.create<Class>();
+    UmlManager m;
+    Property& memberEnd = *m.create<Property>();
+    Property& ownedEnd = *m.create<Property>();
+    Class& endType1 = *m.create<Class>();
+    Class& endType2 = *m.create<Class>();
 
-//     memberEnd.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
-//     ownedEnd.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
-//     memberEnds->add(memberEnd);
-//     endTypes->add(endType1);
-//     navigableOwnedEnds->add(ownedEnd);
-//     endTypes->add(endType2);
+    memberEnd.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
+    ownedEnd.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
+    memberEnds->add(memberEnd);
+    endTypes->add(endType1);
+    navigableOwnedEnds->add(ownedEnd);
+    endTypes->add(endType2);
 
-//     // test loops
-//     ID id = ownedEnd.getID();
-//     size_t i = 0;
-//     for (auto& el : *ownedElements) {
-//         i++;
-//         ASSERT_TRUE(ownedElements->contains(el.getID()));
-//         ASSERT_TRUE(members->contains(el.getID()));
-//         ASSERT_TRUE(ownedMembers->contains(el.getID()));
-//         ASSERT_TRUE(memberEnds->contains(el.getID()));
-//         ASSERT_TRUE(ownedElements->contains(el.getID()));
-//         ASSERT_EQ(id, el.getID());
-//         ASSERT_EQ(i, 1);
-//     }
+    // test loops
+    ID id = ownedEnd.getID();
+    size_t i = 0;
+    for (auto& el : *ownedElements) {
+        i++;
+        ASSERT_TRUE(ownedElements->contains(el.getID()));
+        ASSERT_TRUE(members->contains(el.getID()));
+        ASSERT_TRUE(ownedMembers->contains(el.getID()));
+        ASSERT_TRUE(memberEnds->contains(el.getID()));
+        ASSERT_TRUE(ownedElements->contains(el.getID()));
+        ASSERT_EQ(id, el.getID());
+        ASSERT_EQ(i, 1);
+    }
 
 
-//     delete endTypes;
-//     delete navigableOwnedEnds;
-//     delete ownedEnds;
-//     delete memberEnds;
-//     delete relatedElements;
-//     delete features;
-//     delete ownedMembers;
-//     delete members;
-//     delete ownedElements;
-// }
+    delete endTypes;
+    delete navigableOwnedEnds;
+    delete ownedEnds;
+    delete memberEnds;
+    delete relatedElements;
+    delete features;
+    delete ownedMembers;
+    delete members;
+    delete ownedElements;
+}

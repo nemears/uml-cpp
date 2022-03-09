@@ -18,7 +18,7 @@ class InstanceSpecificationParserTest : public ::testing::Test {
 TEST_F(InstanceSpecificationParserTest, forwardClassifierTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/forwardClassifier.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/forwardClassifier.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -33,7 +33,7 @@ TEST_F(InstanceSpecificationParserTest, forwardClassifierTest) {
 TEST_F(InstanceSpecificationParserTest, backwardsClassifierTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/backwardsClassifier.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/backwardsClassifier.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
@@ -48,14 +48,14 @@ TEST_F(InstanceSpecificationParserTest, backwardsClassifierTest) {
 TEST_F(InstanceSpecificationParserTest, basicSlotTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/basicSlot.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/basicSlot.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
     ASSERT_TRUE(pckg->getPackagedElements().back().getElementType() == ElementType::INSTANCE_SPECIFICATION);
     ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
     Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
-    InstanceSpecification i = *dynamic_cast<InstanceSpecification*>(&pckg->getPackagedElements().back());
+    InstanceSpecification& i = *dynamic_cast<InstanceSpecification*>(&pckg->getPackagedElements().back());
     ASSERT_EQ(i.getClassifiers().size(), 1);
     ASSERT_EQ(i.getClassifiers().front(), *c);
     ASSERT_TRUE(i.getSlots().size() == 1);
@@ -63,20 +63,20 @@ TEST_F(InstanceSpecificationParserTest, basicSlotTest) {
     Slot* s = &i.getSlots().front();
     Property* p = &c->getOwnedAttributes().front();
     ASSERT_TRUE(s->getDefiningFeature() == p);
-    ASSERT_TRUE(s->getOwningInstance() == &pckg->getPackagedElements().back());
+    ASSERT_TRUE(*s->getOwningInstance() == pckg->getPackagedElements().back());
 }
 
 TEST_F(InstanceSpecificationParserTest, backwardsSlotTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/backwardsSlot.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/backwardsSlot.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
     ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::INSTANCE_SPECIFICATION);
     ASSERT_TRUE(pckg->getPackagedElements().back().getElementType() == ElementType::CLASS);
     Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().back());
-    InstanceSpecification i = *dynamic_cast<InstanceSpecification*>(&pckg->getPackagedElements().front());
+    InstanceSpecification& i = *dynamic_cast<InstanceSpecification*>(&pckg->getPackagedElements().front());
     ASSERT_EQ(i.getClassifiers().size(), 1);
     ASSERT_EQ(i.getClassifiers().front(), *c);
     ASSERT_TRUE(i.getSlots().size() == 1);
@@ -84,13 +84,13 @@ TEST_F(InstanceSpecificationParserTest, backwardsSlotTest) {
     Slot* s = &i.getSlots().front();
     Property* p = &c->getOwnedAttributes().front();
     ASSERT_TRUE(s->getDefiningFeature() == p);
-    ASSERT_TRUE(s->getOwningInstance() == &pckg->getPackagedElements().front());
+    ASSERT_TRUE(*s->getOwningInstance() == pckg->getPackagedElements().front());
 }
 
 TEST_F(InstanceSpecificationParserTest, instanceValueSlot) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/instanceSlot.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/instanceSlot.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 4);
@@ -122,7 +122,7 @@ TEST_F(InstanceSpecificationParserTest, instanceValueSlot) {
 
 TEST_F(InstanceSpecificationParserTest, simpleInstanceEmitTest) {
     UmlManager m;
-    InstanceSpecification& inst = m.create<InstanceSpecification>();
+    InstanceSpecification& inst = *m.create<InstanceSpecification>();
     inst.setID("3XvQFHIrqSmU7WAXA7fVzkw1v2U3");
     inst.setName("simple");
     inst.setVisibility(VisibilityKind::PROTECTED);
@@ -138,11 +138,11 @@ TEST_F(InstanceSpecificationParserTest, simpleInstanceEmitTest) {
 
 TEST_F(InstanceSpecificationParserTest, simpleSlotTest) {
     UmlManager m;
-    InstanceSpecification inst = m.create<InstanceSpecification>();
+    InstanceSpecification& inst = *m.create<InstanceSpecification>();
     inst.setID("yaogA9yjaFoD_RdGQzRrwe1826Aj");
     inst.setName("slot");
     inst.setVisibility(VisibilityKind::PROTECTED);
-    Slot s = m.create<Slot>();
+    Slot& s = *m.create<Slot>();
     s.setID("w6arMVW4Plw0aLOBWLE9_8Xo_UL&");
     inst.getSlots().add(s);
     string expectedEmit = R""""(instanceSpecification:
@@ -161,18 +161,18 @@ TEST_F(InstanceSpecificationParserTest, simpleSlotTest) {
 TEST_F(InstanceSpecificationParserTest, parseSpecificationTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/specification.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/specification.yml").ptr());
     ASSERT_EQ(el->getElementType(), ElementType::INSTANCE_SPECIFICATION);
     InstanceSpecification& inst = el->as<InstanceSpecification>();
-    ASSERT_TRUE(inst.getSpecification() != 0);
+    ASSERT_TRUE(inst.getSpecification());
     ASSERT_EQ(inst.getSpecification()->getElementType(), ElementType::LITERAL_STRING);
     ASSERT_EQ(inst.getSpecification()->as<LiteralString>().getValue(), "booga");
 }
 
 TEST_F(InstanceSpecificationParserTest, emitSpecificationTest) {
     UmlManager m;
-    InstanceSpecification& inst = m.create<InstanceSpecification>();
-    LiteralString& str = m.create<LiteralString>();
+    InstanceSpecification& inst = *m.create<InstanceSpecification>();
+    LiteralString& str = *m.create<LiteralString>();
     inst.setID("fsU5Fw&5REaNv4NCvC0d4qZnXg4C");
     str.setID("nVzJ8mHx1yrRlct0ot34p7uBaVvC");
     str.setValue("ooga");
@@ -198,15 +198,15 @@ void ASSERT_RESTORE_SLOT_CORRECTLY(InstanceSpecification& inst, Slot& slot, size
 
 TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     UmlManager m;
-    Package& root = m.create<Package>();
-    Class& classifier = m.create<Class>();
-    Property& attribute = m.create<Property>();
-    InstanceSpecification& inst = m.create<InstanceSpecification>();
-    Slot& slot = m.create<Slot>();
-    PrimitiveType& type = m.create<PrimitiveType>();
-    InstanceSpecification& typeInst = m.create<InstanceSpecification>();
-    LiteralString& typeSpecification = m.create<LiteralString>();
-    InstanceValue& slotVal = m.create<InstanceValue>();
+    Package& root = *m.create<Package>();
+    Class& classifier = *m.create<Class>();
+    Property& attribute = *m.create<Property>();
+    InstanceSpecification& inst = *m.create<InstanceSpecification>();
+    Slot& slot = *m.create<Slot>();
+    PrimitiveType& type = *m.create<PrimitiveType>();
+    InstanceSpecification& typeInst = *m.create<InstanceSpecification>();
+    LiteralString& typeSpecification = *m.create<LiteralString>();
+    InstanceValue& slotVal = *m.create<InstanceValue>();
     attribute.setType(type);
     classifier.getOwnedAttributes().add(attribute);
     slot.setDefiningFeature(attribute);
@@ -223,7 +223,7 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
 
     ID instID = inst.getID();
     m.release(inst);
-    InstanceSpecification& inst2 = slot.getOwningInstanceRef();
+    InstanceSpecification& inst2 = *slot.getOwningInstance();
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(inst2, root));
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_SLOT_CORRECTLY(inst2, slot, 0));
     ASSERT_FALSE(inst2.getClassifiers().empty());
@@ -236,7 +236,7 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
 
     ID classifierID = classifier2.getID();
     m.release(inst2, classifier2);
-    InstanceSpecification inst3 = m.aquire(instID)->as<InstanceSpecification>();
+    InstanceSpecification& inst3 = m.aquire(instID)->as<InstanceSpecification>();
     ASSERT_FALSE(inst3.getClassifiers().empty());
     ASSERT_FALSE(m.loaded(classifierID));
     Class& classifier3 = m.aquire(classifierID)->as<Class>();
@@ -248,24 +248,24 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     ID slotID = slot.getID();
     m.release(slot);
     Slot& slot2 = m.aquire(slotID)->as<Slot>();
-    ASSERT_TRUE(slot2.hasOwningInstance());
-    ASSERT_EQ(slot2.getOwningInstanceRef(), inst3);
-    ASSERT_TRUE(slot2.hasOwner());
-    ASSERT_EQ(slot2.getOwnerRef(), inst3);
+    ASSERT_TRUE(slot2.getOwningInstance());
+    ASSERT_EQ(*slot2.getOwningInstance(), inst3);
+    ASSERT_TRUE(slot2.getOwner());
+    ASSERT_EQ(*slot2.getOwner(), inst3);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_SLOT_CORRECTLY(inst3, slot2, 0));
-    ASSERT_TRUE(slot2.hasDefiningFeature());
-    ASSERT_EQ(slot2.getDefiningFeatureRef(), attribute);
+    ASSERT_TRUE(slot2.getDefiningFeature());
+    ASSERT_EQ(*slot2.getDefiningFeature(), attribute);
 
     m.release(slot2, inst3);
     Slot& slot3 = m.aquire(slotID)->as<Slot>();
-    ASSERT_TRUE(slot3.hasOwningInstance());
+    ASSERT_TRUE(slot3.getOwningInstance());
     InstanceSpecification& inst4 = m.aquire(instID)->as<InstanceSpecification>();
-    ASSERT_EQ(slot3.getOwningInstanceRef(), inst4);
-    ASSERT_TRUE(slot3.hasOwner());
-    ASSERT_EQ(slot3.getOwnerRef(), inst4);
+    ASSERT_EQ(*slot3.getOwningInstance(), inst4);
+    ASSERT_TRUE(slot3.getOwner());
+    ASSERT_EQ(*slot3.getOwner(), inst4);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_SLOT_CORRECTLY(inst4, slot3, 0));
-    ASSERT_TRUE(slot3.hasDefiningFeature());
-    ASSERT_EQ(slot3.getDefiningFeatureRef(), attribute);
+    ASSERT_TRUE(slot3.getDefiningFeature());
+    ASSERT_EQ(*slot3.getDefiningFeature(), attribute);
     ASSERT_EQ(slot3.getValues().size(), 1);
     ASSERT_EQ(slot3.getValues().front(), slotVal);
     ASSERT_EQ(slot3.getOwnedElements().size(), 1);
@@ -274,12 +274,12 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     m.release(slot3, inst4);
     InstanceSpecification& inst5 = m.aquire(instID)->as<InstanceSpecification>();
     Slot& slot4 = m.aquire(slotID)->as<Slot>();
-    ASSERT_EQ(slot4.getOwningInstanceRef(), inst5);
-    ASSERT_TRUE(slot4.hasOwner());
-    ASSERT_EQ(slot4.getOwnerRef(), inst5);
+    ASSERT_EQ(*slot4.getOwningInstance(), inst5);
+    ASSERT_TRUE(slot4.getOwner());
+    ASSERT_EQ(*slot4.getOwner(), inst5);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_SLOT_CORRECTLY(inst5, slot4, 0));
-    ASSERT_TRUE(slot4.hasDefiningFeature());
-    ASSERT_EQ(slot4.getDefiningFeatureRef(), attribute);
+    ASSERT_TRUE(slot4.getDefiningFeature());
+    ASSERT_EQ(*slot4.getDefiningFeature(), attribute);
     ASSERT_EQ(slot4.getOwnedElements().size(), 1);
     ASSERT_EQ(*slot4.getOwnedElements().begin(), slotVal);
 
@@ -287,9 +287,9 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     m.release(slot4, attribute);
     Slot& slot5 = m.aquire(slotID)->as<Slot>();
     ASSERT_FALSE(m.loaded(propID));
-    Property attribute2 = m.aquire(propID)->as<Property>();
-    ASSERT_TRUE(slot5.hasDefiningFeature());
-    ASSERT_EQ(slot5.getDefiningFeatureRef(), attribute2);
+    Property& attribute2 = m.aquire(propID)->as<Property>();
+    ASSERT_TRUE(slot5.getDefiningFeature());
+    ASSERT_EQ(*slot5.getDefiningFeature(), attribute2);
     ASSERT_EQ(slot5.getOwnedElements().size(), 1);
     ASSERT_EQ(*slot5.getOwnedElements().begin(), slotVal);
 
@@ -300,23 +300,23 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     InstanceValue& slotVal2 = m.aquire(valID)->as<InstanceValue>();
     ASSERT_EQ(slot6.getOwnedElements().size(), 1);
     ASSERT_EQ(*slot6.getOwnedElements().begin(), slotVal2);
-    ASSERT_TRUE(slotVal2.hasOwner());
-    ASSERT_EQ(slotVal2.getOwnerRef(), slot6);
-    ASSERT_TRUE(slotVal2.hasInstance());
-    ASSERT_EQ(slotVal2.getInstanceRef(), typeInst);
+    ASSERT_TRUE(slotVal2.getOwner());
+    ASSERT_EQ(*slotVal2.getOwner(), slot6);
+    ASSERT_TRUE(slotVal2.getInstance());
+    ASSERT_EQ(*slotVal2.getInstance(), typeInst);
 
     ID typeInstID = typeInst.getID();
     m.release(slotVal2, typeInst);
     InstanceValue& slotVal3 = m.aquire(valID)->as<InstanceValue>();
     ASSERT_FALSE(m.loaded(typeInstID));
     InstanceSpecification& typeInst2 = m.aquire(typeInstID)->as<InstanceSpecification>();
-    ASSERT_TRUE(slotVal3.hasInstance());
-    ASSERT_EQ(slotVal3.getInstanceRef(), typeInst2);
+    ASSERT_TRUE(slotVal3.getInstance());
+    ASSERT_EQ(*slotVal3.getInstance(), typeInst2);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(typeInst2, root));
     ASSERT_FALSE(typeInst2.getClassifiers().empty());
     ASSERT_EQ(typeInst2.getClassifiers().front(), type);
-    ASSERT_TRUE(typeInst2.hasSpecification());
-    ASSERT_EQ(typeInst2.getSpecificationRef(), typeSpecification);
+    ASSERT_TRUE(typeInst2.getSpecification());
+    ASSERT_EQ(*typeInst2.getSpecification(), typeSpecification);
     ASSERT_EQ(typeInst2.getOwnedElements().size(), 1);
     ASSERT_EQ(*typeInst2.getOwnedElements().begin(), typeSpecification);
 
@@ -325,13 +325,13 @@ TEST_F(InstanceSpecificationParserTest, mountAndEditInstanceTest) {
     InstanceSpecification& typeInst3 = m.aquire(typeInstID)->as<InstanceSpecification>();
     ASSERT_FALSE(m.loaded(specID));
     LiteralString& typeSpecification2 = m.aquire(specID)->as<LiteralString>();
-    ASSERT_TRUE(typeSpecification2.hasOwner());
-    ASSERT_EQ(typeSpecification2.getOwnerRef(), typeInst3);
-    ASSERT_TRUE(typeInst3.hasSpecification());
+    ASSERT_TRUE(typeSpecification2.getOwner());
+    ASSERT_EQ(*typeSpecification2.getOwner(), typeInst3);
+    ASSERT_TRUE(typeInst3.getSpecification());
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(typeInst3, root));
     ASSERT_FALSE(typeInst3.getClassifiers().empty());
     ASSERT_EQ(typeInst3.getClassifiers().front(), type);
-    ASSERT_EQ(typeInst3.getSpecificationRef(), typeSpecification2);
+    ASSERT_EQ(*typeInst3.getSpecification(), typeSpecification2);
     ASSERT_EQ(typeInst3.getOwnedElements().size(), 1);
     ASSERT_EQ(*typeInst3.getOwnedElements().begin(), typeSpecification2);
 }

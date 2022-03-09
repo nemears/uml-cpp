@@ -32,28 +32,28 @@ TEST_F(InstanceSpecificationTest, setStringValueSlots) {
     ASSERT_TRUE(i.getSlots().front().getValues().front().getID() == ls.getID());
 }
 
-// TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
-//     UmlManager m;
-//     Class& c = *m.create<Class>();
-//     c.setName("typeA");
-//     Class& b = *m.create<Class>();
-//     b.setName("typeB");
-//     Property& bProp = *m.create<Property>();
-//     bProp.setName("b");
-//     bProp.setType(b);
-//     c.getOwnedAttributes().add(bProp);
-//     InstanceSpecification& bInst = *m.create<InstanceSpecification>();
-//     bInst.getClassifiers().add(b);
-//     InstanceSpecification& aInst = *m.create<InstanceSpecification>();
-//     aInst.getClassifiers().add(c);
-//     InstanceValue& bVal = *m.create<InstanceValue>();
-//     bVal.setInstance(&bInst);
-//     Slot& aSlot = m.create<Slot>();
-//     aSlot.setDefiningFeature(&bProp);
-//     aSlot.getValues().add(bVal);
-//     aInst.getSlots().add(aSlot);
-//     ASSERT_TRUE(aInst.getSlots().front().getDefiningFeature()->getID() == bProp.getID());
-// }
+TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
+    UmlManager m;
+    Class& c = *m.create<Class>();
+    c.setName("typeA");
+    Class& b = *m.create<Class>();
+    b.setName("typeB");
+    Property& bProp = *m.create<Property>();
+    bProp.setName("b");
+    bProp.setType(b);
+    c.getOwnedAttributes().add(bProp);
+    InstanceSpecification& bInst = *m.create<InstanceSpecification>();
+    bInst.getClassifiers().add(b);
+    InstanceSpecification& aInst = *m.create<InstanceSpecification>();
+    aInst.getClassifiers().add(c);
+    InstanceValue& bVal = *m.create<InstanceValue>();
+    bVal.setInstance(&bInst);
+    Slot& aSlot = *m.create<Slot>();
+    aSlot.setDefiningFeature(&bProp);
+    aSlot.getValues().add(bVal);
+    aInst.getSlots().add(aSlot);
+    ASSERT_TRUE(aInst.getSlots().front().getDefiningFeature()->getID() == bProp.getID());
+}
 
 // // TODO add throw for pushing slots that don't correspond structural feature
 
@@ -138,8 +138,8 @@ TEST_F(InstanceSpecificationTest, setAndRemoveSpecificationTest) {
 //     ASSERT_FALSE(i.getClassifiers().empty());
 //     ASSERT_EQ(i.getClassifiers().size(), 1);
 //     ASSERT_EQ(c.getID(), i.getClassifiers().front().getID());
-//     // m.release(c);
-//     // ASSERT_TRUE(i.hasClassifier());
-//     // ASSERT_TRUE(i.getClassifier());
-//     // ASSERT_EQ(i.getClassifierRef().getID(), id);
+//     m.release(c);
+//     ASSERT_TRUE(i.hasClassifier());
+//     ASSERT_TRUE(i.getClassifier());
+//     ASSERT_EQ(i.getClassifierRef().getID(), id);
 // }

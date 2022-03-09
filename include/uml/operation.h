@@ -36,6 +36,7 @@ namespace UML {
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
+            void restoreReference(Element* el) override;
             Set<Type, Operation>& getTypeSingleton();
             Set<Class, Operation>& getClassSingleton();
             Set<DataType, Operation>& getDataTypeSingleton();

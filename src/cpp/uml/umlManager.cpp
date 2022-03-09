@@ -335,7 +335,7 @@ ElementPtr UmlManager::aquire(ID id) {
                 throw ID_doesNotExistException(id);
             }
         } else {
-            return &get(id);
+            return ElementPtr(&get(id));
         }
     } else {
         throw ManagerNotMountedException();

@@ -17,9 +17,9 @@ class StructuredClassifierParserTest : public ::testing::Test {
 TEST_F(StructuredClassifierParserTest, parseOwnedAttributeTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "structuredClassifierTests/ownedAttributeTest.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "structuredClassifierTests/ownedAttributeTest.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
-    Class c = *dynamic_cast<Class*>(el);
+    Class& c = *dynamic_cast<Class*>(el);
     ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
     Property* p = &c.getOwnedAttributes().front();
     ASSERT_TRUE(c.getAttributes().size() == 1);
@@ -39,8 +39,8 @@ TEST_F(StructuredClassifierParserTest, parseOwnedAttributeTest) {
 TEST_F(StructuredClassifierParserTest, partTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "structuredClassifierTests/partTest.yml"));
-    Class c = *dynamic_cast<Class*>(el);
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "structuredClassifierTests/partTest.yml").ptr());
+    Class& c = *dynamic_cast<Class*>(el);
     ASSERT_TRUE(c.getParts().size() == 1);
     ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
     Property* p = &c.getOwnedAttributes().front();
@@ -62,7 +62,7 @@ TEST_F(StructuredClassifierParserTest, partTest) {
 TEST_F(StructuredClassifierParserTest, parseConnectorTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "structuredClassifierTests/connector.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "structuredClassifierTests/connector.yml").ptr());
 
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& root = el->as<Package>();
@@ -78,19 +78,19 @@ TEST_F(StructuredClassifierParserTest, parseConnectorTest) {
     Property& prop1 = clazz.getOwnedAttributes().get("prop1");
     Property& prop2 = clazz.getOwnedAttributes().get("prop2");
     Connector& connector = clazz.getOwnedConnectors().front();
-    ASSERT_TRUE(connector.hasType());
-    ASSERT_EQ(connector.getTypeRef(), association);
+    ASSERT_TRUE(connector.getType());
+    ASSERT_EQ(*connector.getType(), association);
     ASSERT_EQ(connector.getContracts().size(), 1);
     ASSERT_TRUE(connector.getContracts().contains(contract));
     ASSERT_EQ(connector.getEnds().size(), 2);
     ConnectorEnd& end1 = connector.getEnds().get(ID::fromString("iluwBJEOrucpPYWRjAf2Wl0Y7xJb"));
     ConnectorEnd& end2 = connector.getEnds().get(ID::fromString("Xa_ufGeUWxU5cUPY3f8VfRdmsH1V"));
-    ASSERT_TRUE(end1.hasRole());
-    ASSERT_EQ(end1.getRoleRef(), prop1);
-    ASSERT_TRUE(end1.hasDefiningEnd());
-    ASSERT_EQ(end1.getDefiningEndRef(), assocEnd1);
-    ASSERT_TRUE(end2.hasRole());
-    ASSERT_EQ(end2.getRoleRef(), prop2);
-    ASSERT_TRUE(end2.hasDefiningEnd());
-    ASSERT_EQ(end2.getDefiningEndRef(), assocEnd2);
+    ASSERT_TRUE(end1.getRole());
+    ASSERT_EQ(*end1.getRole(), prop1);
+    ASSERT_TRUE(end1.getDefiningEnd());
+    ASSERT_EQ(*end1.getDefiningEnd(), assocEnd1);
+    ASSERT_TRUE(end2.getRole());
+    ASSERT_EQ(*end2.getRole(), prop2);
+    ASSERT_TRUE(end2.getDefiningEnd());
+    ASSERT_EQ(*end2.getDefiningEnd(), assocEnd2);
 }

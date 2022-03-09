@@ -31,6 +31,11 @@ void Operation::referenceErased(ID id) {
     ParameterableElement::referenceErased(id);
 }
 
+void Operation::restoreReference(Element* el) {
+    BehavioralFeature::restoreReference(el);
+    ParameterableElement::restoreReference(el);
+}
+
 Set<Type, Operation>& Operation::getTypeSingleton() {
     return m_type;
 }

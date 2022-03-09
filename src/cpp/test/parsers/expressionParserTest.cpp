@@ -17,7 +17,7 @@ class ExpressionParserTest : public ::testing::Test {
 TEST_F(ExpressionParserTest, expressionTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "expressionTests/expression.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "expressionTests/expression.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
@@ -43,9 +43,9 @@ TEST_F(ExpressionParserTest, expressionTest) {
     ASSERT_TRUE(c->getOwnedAttributes().size() == 1);
     Property* p = &c->getOwnedAttributes().front();
     ASSERT_TRUE(p->getType() == i);
-    ASSERT_TRUE(p->getDefaultValue() != 0);
+    ASSERT_TRUE(p->getDefaultValue());
     ASSERT_TRUE(p->getDefaultValue()->getElementType() == ElementType::EXPRESSION);
-    Expression* e2 = dynamic_cast<Expression*>(p->getDefaultValue());
+    Expression* e2 = dynamic_cast<Expression*>(p->getDefaultValue().ptr());
     ASSERT_TRUE(e2->getSymbol().compare("++") == 0);
     ASSERT_TRUE(e2->getOperands().size() == 1);
     ASSERT_TRUE(e2->getOperands().front().getElementType() == ElementType::LITERAL_INT);
@@ -55,9 +55,9 @@ TEST_F(ExpressionParserTest, expressionTest) {
 
 TEST_F(ExpressionParserTest, mountExpressionTest) {
     UmlManager m;
-    Expression& expression = m.create<Expression>();
-    LiteralReal& first = m.create<LiteralReal>();
-    LiteralInt& last = m.create<LiteralInt>();
+    Expression& expression = *m.create<Expression>();
+    LiteralReal& first = *m.create<LiteralReal>();
+    LiteralInt& last = *m.create<LiteralInt>();
     expression.setSymbol("+");
     expression.getOperands().add(first, last);
     m.setRoot(&expression);
@@ -75,8 +75,8 @@ TEST_F(ExpressionParserTest, mountExpressionTest) {
     ASSERT_EQ(expression2.getOwnedElements().size(), 2);
     ASSERT_EQ(*expression2.getOwnedElements().begin(), first);
     ASSERT_EQ(*(expression2.getOwnedElements().begin()++), last);
-    ASSERT_TRUE(first.hasOwner());
-    ASSERT_TRUE(last.hasOwner());
+    ASSERT_TRUE(first.getOwner());
+    ASSERT_TRUE(last.getOwner());
 
     m.release(first);
     ASSERT_FALSE(m.loaded(firstID));
@@ -88,8 +88,8 @@ TEST_F(ExpressionParserTest, mountExpressionTest) {
     ASSERT_EQ(expression2.getOwnedElements().size(), 2);
     ASSERT_EQ(*expression2.getOwnedElements().begin(), first2);
     ASSERT_EQ(*(expression2.getOwnedElements().begin()++), last);
-    ASSERT_TRUE(first2.hasOwner());
-    ASSERT_TRUE(last.hasOwner());
+    ASSERT_TRUE(first2.getOwner());
+    ASSERT_TRUE(last.getOwner());
 
     m.release(first2, expression2);
     ASSERT_FALSE(m.loaded(firstID));
@@ -102,6 +102,6 @@ TEST_F(ExpressionParserTest, mountExpressionTest) {
     ASSERT_EQ(expression3.getOwnedElements().size(), 2);
     ASSERT_EQ(*expression3.getOwnedElements().begin(), first3);
     ASSERT_EQ(*(expression3.getOwnedElements().begin()++), last);
-    ASSERT_TRUE(first3.hasOwner());
-    ASSERT_TRUE(last.hasOwner());
+    ASSERT_TRUE(first3.getOwner());
+    ASSERT_TRUE(last.getOwner());
 }

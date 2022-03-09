@@ -23,14 +23,15 @@ TEST_F(OperationTest, reIndexID_Test) {
     ASSERT_NO_THROW(c.getOwnedElements().get(o.getID()));
 }
 
-// TEST_F(OperationTest, reIndexNameTest) {
-//     Class c;
-//     Operation o;
-//     o.setClass(&c);
-//     o.setName("test");
-//     ASSERT_TRUE(c.getOperations().get("test") != NULL);
-//     ASSERT_TRUE(c.getOwnedElements().get("test") != NULL);
-// }
+TEST_F(OperationTest, reIndexNameTest) {
+    UmlManager m;
+    ClassPtr c = m.create<Class>();
+    OperationPtr o = m.create<Operation>();
+    o->setClass(*c);
+    o->setName("test");
+    ASSERT_EQ(c->getOwnedOperations().get("test"), *o);
+    ASSERT_EQ(c->getOwnedElements().get("test"), *o);
+}
 
 TEST_F(OperationTest, AddMethodFunctorTest) {
     UmlManager mm;

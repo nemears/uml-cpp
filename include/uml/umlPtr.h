@@ -48,8 +48,11 @@ namespace UML {
                 } else if (m_ptr) {
                     return *m_ptr;
                 } else {
-                    ElementPtr temp = m_manager->aquire(m_id);
+                    ElementPtr temp = &m_manager->get(m_id);
                     temp->m_node->m_ptrs.push_back((void*) this);
+                    if (!m_ptr) {
+                        const_cast<UmlPtr<T>*>(this)->m_ptr = dynamic_cast<T*>(temp.ptr());
+                    }
                     return  *dynamic_cast<T*>(temp.ptr());
                 }
             };
@@ -59,7 +62,7 @@ namespace UML {
                 } else if (m_ptr) {
                     return m_ptr;
                 } else {
-                    ElementPtr temp = m_manager->aquire(m_id);
+                    ElementPtr temp = &m_manager->get(m_id);
                     temp->m_node->m_ptrs.push_back((void*) this);
                     return  dynamic_cast<T*>(temp.ptr());
                 }
@@ -94,6 +97,9 @@ namespace UML {
                 return lhs.m_id != rhs.m_id;
             };
             void operator=(const T* el) {
+                if (m_ptr) {
+                    m_ptr->m_node->m_ptrs.remove((void*) this);
+                }
                 if (el) {
                     m_id = el->getID();
                     m_ptr = const_cast<T*>(el);
@@ -101,20 +107,37 @@ namespace UML {
                     el->m_node->m_ptrs.push_back((void*) this);
                 }
             };
-            UmlPtr(const UmlPtr& rhs) {
+            void operator=(const UmlPtr& rhs) {
+                if (m_ptr) {
+                    m_ptr->m_node->m_ptrs.remove((void*) this);
+                }
+                m_id = rhs.m_id;
+                m_manager = rhs.m_manager;
                 if (rhs.m_ptr) {
-                    m_id = rhs.m_id;
                     m_ptr = rhs.m_ptr;
-                    m_manager = rhs.m_manager;
+                    m_ptr->m_node->m_ptrs.push_back((void*) this);
+                }
+            };
+            UmlPtr(const UmlPtr& rhs) {
+                if (m_ptr) {
+                    m_ptr->m_node->m_ptrs.remove((void*) this);
+                }
+                m_id = rhs.m_id;
+                m_manager = rhs.m_manager;
+                if (rhs.m_ptr) {
+                    m_ptr = rhs.m_ptr;
                     m_ptr->m_node->m_ptrs.push_back((void*) this);
                 }
             };
             template <class U = Element>
             UmlPtr(const UmlPtr<U>& rhs) {
+                if (m_ptr) {
+                    m_ptr->m_node->m_ptrs.remove((void*) this);
+                }
+                m_id = rhs.m_id;
+                m_manager = rhs.m_manager;
                 if (rhs.m_ptr) {
                     m_ptr = const_cast<T*>(&rhs->template as<T>());
-                    m_id = rhs.m_id;
-                    m_manager = rhs.m_manager;
                     m_ptr->m_node->m_ptrs.push_back((void*) this);
                 }
             };

@@ -11,6 +11,7 @@ using namespace UML;
 
 void TemplateBinding::restoreReference(Element* el) {
     DirectedRelationship::restoreReference(el);
+    m_signature.restore(el);
     if (m_signature.get().id() == el->getID()) {
         el->setReference(this);
     }

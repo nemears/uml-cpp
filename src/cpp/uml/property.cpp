@@ -44,21 +44,25 @@ void Property::RemoveRedefinitionContextFunctor::operator()(Element& el) const {
 
 void Property::referencingReleased(ID id) {
     StructuralFeature::referencingReleased(id);
+    ConnectableElement::referencingReleased(id);
     m_association.release(id);
 }
 
 void Property::referenceReindexed(ID oldID, ID newID) {
     StructuralFeature::referenceReindexed(oldID, newID);
+    ConnectableElement::referenceReindexed(oldID, newID);
     m_association.reindex(oldID, newID);
 }
 
 void Property::reindexName(std::string oldName, std::string newName) {
     StructuralFeature::reindexName(oldName, newName);
+    ConnectableElement::reindexName(oldName, newName);
     m_association.reindexName(oldName, newName);
 }
 
 void Property::restoreReference(Element* el) {
     StructuralFeature::restoreReference(el);
+    ConnectableElement::restoreReference(el);
     if (m_redefinedProperties.contains(el->getID())) {
         el->setReference(this);
         if (m_featuringClassifier.get() && !m_redefinitionContext.contains(m_featuringClassifier.get().id())) {

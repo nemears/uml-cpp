@@ -28,6 +28,7 @@ void Generalization::RemoveGeneralFunctor::operator()(Element& el) const {
 
 void Generalization::restoreReference(Element* el) {
     DirectedRelationship::restoreReference(el);
+    m_general.restore(el);
     if (m_specific.get().id() == el->getID() && m_general.get() && !m_specific.get()->getGenerals().contains(m_general.get().id())) {
         m_specific.get()->getGenerals().add(*m_general.get());
     } else if (m_general.get().id() == el->getID()) {

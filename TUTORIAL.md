@@ -10,10 +10,10 @@ using namespace UML;
 UmlManager managerVal;
 UmlManager* managerPtr = new UmlManager;
 ```
-To create an element a manager has a template function called `create` that returns an empty reference to the element type specified as a template parameter. 
+To create an element a manager has a template function called `create` that returns an empty pointer to the element type specified as a template parameter. 
 ```
 UmlManager manager;
-Class& clazz = manager.create<Class>();
+Class& clazz = *manager.create<Class>();
 ```
 Once an element is created but goes out of scope it can be retreived again through the `get` method. The get method uses the elements ID member to retrieve it.
 ```
@@ -23,7 +23,7 @@ ID clazzID;
     Class& clazz = manager.create<Class>();
     clazzID = clazz.getID();
 }
-Class& sameClazz = manager.get<Class>(clazzID);
+Element& sameClazz = manager.get(clazzID);
 ```
 `get` is used a lot internally so you don't have to really use this method when working within the model.
 
@@ -49,14 +49,14 @@ If you want to free up memory from your program the manager can be mounted and t
 manager.mount("~/Desktop");
 manager.release(clazz);
 // clazz.getID(); // memory error
-Class& aquiredClazz = manager.aquire(clazzID)->as<Class>();
+Class& aquiredClazz = *manager.aquire(clazzID)->as<Class>();
 ```
 
 ## Elements and their Sets
 So to just dive right into how the data of uml-cpp is organized we are going to have to understand the `Set<T,U>` object a little bit. Everything in uml-cpp is a Set or a subtype of Set. To start off lets look at the most basic of uml elements, Element. Element has two major attributes to it besides its ID, its ownedElements and it's owner. It's ownedElements has a multiplicity of 0..*, meanwhile its owner has a multiplicity of 0..1. We've simplified the multiplicity and the other attribute properties of the specification into `Set`'s, `Singleton`'s and `OrderedSet`'s (as well as more to come). It is simple to assume that ownedElements are a set, meanwhile owner is a Singleton. When accessing attributes specified in the specification you will most likey be returned an object of this type or data relating to it.
 ```
 Element& root = *manager.getRoot();
-Element* owner = root.getOwner(); // will return null/0
+UmlPtr<Element> owner = root.getOwner();
 Set<Element,Element>& ownedElements = root.getOwnedElements();
 Element& ownedElement = ownedElements.front();
 ```
@@ -65,32 +65,40 @@ These containers have additional functionality other than just organizing the el
 Package& package = manager.create<Package>();
 Class& packagedElement = manager.create<Class>();
 package.getPackagedElements().add(packagedElement);
-ASSERT_EQ(packagedElement.getOwningPackageRef(), package);
+ASSERT_EQ(*packagedElement.getOwningPackage(), package);
 ASSERT_EQ(package.getOwnedElements().front(), packagedElement);
 ```
 Below I have a list of the relevant methods to access these data types
 |method|description|
 |------|-----------|
 |**Set<T,U>**|
-|`void Set<T,U>add(T&)`| adds an element to the set|
-|`void Set<T,U>remove(T&)`| removes an element from the set|
-|`T& Set<T,U>front()`| gets the "front" of the set (remember it is a set so order is based on id weight)|
-|`T& Set<T,U>get(int)`| gets the i'th element in the set (again order is based on id weight)|
-|`T& Set<T,U>get(ID)`| gets the element with the given id in the set|
-|`T& Set<T,U>get(std::string)`| gets the element with the specified name (only safe with sets that subset members)|
-|`T& Set<T,U>back()`| gets the last element in the set (same caveat on order)|
-|`SetIterator Set<T,U>begin()`| returns an iterator to the beginning of the set|
-|`SetIterator Set<T,U>end()`| returns an iterator to the end of the set|
-|`ID_Set Set<T,U>ids()`| returns a read only "set" to all of the ids within the set. Has similar methods to set itself|
+|`void Set<T,U>::add(T&)`| adds an element to the set|
+|`void Set<T,U>::remove(T&)`| removes an element from the set|
+|`T& Set<T,U>::front()`| gets the "front" of the set (remember it is a set so order is based on id weight)|
+|`T& Set<T,U>::get(int)`| gets the i'th element in the set (again order is based on id weight)|
+|`T& Set<T,U>::get(ID)`| gets the element with the given id in the set|
+|`T& Set<T,U>::get(std::string)`| gets the element with the specified name (only safe with sets that subset members)|
+|`T& Set<T,U>::back()`| gets the last element in the set (same caveat on order)|
+|`SetIterator Set<T,U>::begin()`| returns an iterator to the beginning of the set|
+|`SetIterator Set<T,U>::end()`| returns an iterator to the end of the set|
+|`ID_Set Set<T,U>::ids()`| returns a read only "set" to all of the ids within the set. Has similar methods to set itself|
 |**Element access to singleton**|
-|`T* U::get*specName*()`| retrieves a pointer to the element (can be null)|
-|`T& U::get*specName*Ref()`| retreives a reference to the element (if not there will throw an exception)|
-|`ID U::get*specName*ID() const`| retreives the ID of the element or `ID::nullID()` if not there|
-|`bool U::has*specName*() const`| check whether the singleton is set|
+|`UmlPtr<T> U::get*specName*()`| retrieves a smart UmlPtr\<T\>|
 |`void U::set*specName*(T*)`| sets the singleton value (can be null to unset)|
 |`void U::set*specName*(T&)`| sets the singleton value to the reference|
 
 All of the warnings about ordering for set can be discounted for OrderedSet.
+
+Notice how the singleton acessors return types of UmlPtr, this is to improve safety of the api. The methods relevant to UmlPtr are.
+|method|description|
+|------|-----------|
+|`T* UmlPtr<T>::ptr()`| access raw pointer|
+|`ID UmlPtr<T>::id() const`| access ID of pointer|
+|`bool UmlPtr<T>::has() const`| check whether a null pointer, also `operator bool()` can be used|
+|`bool UmlPtr<T>::release()`| release the element the pointer is referencing|
+|`bool UmlPtr<T>::aquire()`| aquire the element after it has been released|
+|`bool UmlPtr<T>::loaded() const`| tell whether ptr is released or aquired|
+
 
 ## UmlClient and UmlServer
 A more adaptable and modular way to use a UmlManager is to use the `UmlClient` object in addition to the `uml-server` executable. The Client communicates with the server through UNIX ports (eventual plan to incorporate winsocket). The purpose is to take away the slow writing and reading to files from your process and shift it over to the uml-server (which doesn't have to be on your system). It follows a basic restful api setup. Also feel free to use the UmlServer object within your code to specialize its strategy to release elements from memory. 

@@ -91,7 +91,7 @@ TEST_F(ElementTest, AcessReleasedPtrTest) {
     ASSERT_TRUE(m.loaded(pckg.id()));
 }
 
-TEST_F(ElementTest, reassignPtrTest) {
+TEST_F(ElementTest, reassignPtrTest) { // TODO recreate managermountstresstest error
     UmlManager m;
     PackagePtr pckg = m.create<Package>();
     PackagePtr ogPckg = pckg;
@@ -100,10 +100,18 @@ TEST_F(ElementTest, reassignPtrTest) {
         PackagePtr newPckg = m.create<Package>();
         pckg = newPckg;
     }
+    pckg->setOwningPackage(*pckg);
     ASSERT_NE(pckg.id(), ogID);
     ASSERT_NE(pckg.id(), ogPckg.id());
     ASSERT_EQ(pckg.id(), pckg->getID());
     ASSERT_EQ(ogPckg.id(), ogPckg->getID());
+    m.mount(".");
+    pckg.release();
+    ASSERT_FALSE(pckg.loaded());
+    ASSERT_TRUE(ogPckg.loaded());
+    ogPckg.release();
+    ASSERT_FALSE(pckg.loaded());
+    ASSERT_FALSE(ogPckg.loaded());
 }
 
 TEST_F(ElementTest, OverrideID_Test) {

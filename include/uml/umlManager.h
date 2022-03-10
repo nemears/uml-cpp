@@ -134,7 +134,7 @@ namespace UML {
             };
             void lossless(bool lossless);
             void lazy(bool lazy);
-            // Element& create(ElementType eType);
+            Element& create(ElementType eType);
             void reindex(ID oldID, ID newID);
             // Sets up composite directory of model for quick aquire and release
             void mount(std::string path);

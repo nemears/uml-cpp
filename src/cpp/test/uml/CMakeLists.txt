@@ -10,7 +10,7 @@ add_executable(umltest idTest.cpp elementTest.cpp namedElementTest.cpp namespace
                     #      activityTest.cpp )
 )
 if (UML_CLIENT_SERVER)
-    # target_sources(umltest PRIVATE restfulTest.cpp)
+    target_sources(umltest PRIVATE restfulTest.cpp)
 endif()
 target_link_libraries(umltest PUBLIC gtest gmock gtest_main uml)
 add_test(umltest umltest)

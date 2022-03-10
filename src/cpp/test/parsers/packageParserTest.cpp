@@ -318,3 +318,12 @@ TEST_F(PackageParserTest, parseStringTest) {
     Package& p2 = Parsers::parseString(ps, data)->as<Package>();
     ASSERT_EQ(p2.getID(), pid);
 }
+
+TEST_F(PackageParserTest, parseJsonTest) {
+    UmlManager m;
+    ElementPtr parsed = m.parse(ymlPath + "packageParserTests/jsonFileTest.json");
+    ASSERT_EQ(parsed->getElementType(), ElementType::PACKAGE);
+    PackagePtr root = parsed;
+    ASSERT_EQ(root->getPackagedElements().size(), 2);
+    ASSERT_EQ(root->getName(), "JSON_pckg");
+}

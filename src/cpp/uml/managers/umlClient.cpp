@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include "yaml-cpp/yaml.h"
 #include "uml/parsers/parser.h"
+#include "uml/uml-stable.h"
 #include <poll.h>
 
 #define UML_CLIENT_MSG_SIZE 200
@@ -141,7 +142,7 @@ Element& UmlClient::get(ID id) {
     }
     Parsers::ParserMetaData data(this);
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-    Element& ret = Parsers::parseString(buff, data);
+    Element& ret = *Parsers::parseString(buff, data);
     free(buff);
     return ret;
 }
@@ -169,7 +170,7 @@ Element& UmlClient::get(std::string qualifiedName) {
     }
     Parsers::ParserMetaData data(this);
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-    Element& ret = Parsers::parseString(buff, data);
+    Element& ret = *Parsers::parseString(buff, data);
     free(buff);
     return ret;
 }
@@ -216,14 +217,16 @@ void UmlClient::erase(Element& el) {
     sendEmitter(m_socketD, emitter);
 }
 
-Element* UmlClient::aquire(ID id) {
+ElementPtr UmlClient::aquire(ID id) {
     return &get(id);
 }
 
 void UmlClient::release(Element& el) {
     put(el);
     releaseNode(el);
+    ID elID = el.getID();
     delete &el;
+    m_graph.erase(elID);
 }
 
 void UmlClient::release(ID id) {

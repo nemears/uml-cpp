@@ -150,6 +150,12 @@ namespace UML {
             bool has() const {
                 return m_id != ID::nullID();
             };
+            bool loaded() const {
+                if (m_id != ID::nullID()) {
+                    return m_ptr != 0;
+                }
+                return false;
+            };
             void release() {
                 if (m_ptr) {
                     m_manager->release(*m_ptr);

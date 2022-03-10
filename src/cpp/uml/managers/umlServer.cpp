@@ -60,7 +60,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         log("aquired lock for element " + elID.string());
         m_msgV = true;
         m_msgCv.notify_one();
-        std::string msg = Parsers::emitIndividual(get<>(elID));
+        std::string msg = Parsers::emitIndividual(get(elID));
         int bytesSent = send(info.socket, msg.c_str(), msg.size() + 1, 0);
         if (bytesSent <= 0) {
             throw ManagerStateException();
@@ -97,7 +97,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         Parsers::ParserMetaData data(this);
         data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
         try {
-            Element& el = Parsers::parseYAML(node["PUT"]["element"], data);
+            Element& el = *Parsers::parseYAML(node["PUT"]["element"], data);
             if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
                 m_urls[el.as<NamedElement>().getQualifiedName()] = el.getID();
             }

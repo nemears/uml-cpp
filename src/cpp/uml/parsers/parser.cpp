@@ -666,9 +666,9 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
 
     if (node["class"]) {
         if (node["class"].IsMap()) {
-            Class& clazz = *data.m_manager->create<Class>();
-            parseClass(node["class"], clazz, data);
-            ret = &clazz;
+            ClassPtr clazz = data.m_manager->create<Class>();
+            parseClass(node["class"], *clazz, data);
+            ret = clazz;
         }
     }
 

@@ -385,7 +385,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_EQ(gen.getSources().size(), 1);
     ASSERT_EQ(&gen.getSources().front(), &spec2);
     ASSERT_EQ(gen.getRelatedElements().size(), 2);
-    ASSERT_EQ(&gen.getRelatedElements().back(), &spec2);
+    ASSERT_TRUE(gen.getRelatedElements().contains(spec2));
     ASSERT_TRUE(gen.getOwner());
     ASSERT_EQ(*gen.getOwner(), spec2);
 

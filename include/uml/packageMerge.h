@@ -1,5 +1,5 @@
-#ifndef PACKAGE_MERGE_H
-#define PACKAGE_MERGE_H
+#ifndef _UML_PACKAGE_MERGE_H_
+#define _UML_PACKAGE_MERGE_H_
 
 #include "directedRelationship.h"
 #include "singleton.h"
@@ -7,6 +7,8 @@
 namespace UML {
     
     class Package;
+
+    typedef UmlPtr<Package> PackagePtr;
 
     class PackageMerge : public DirectedRelationship {
 
@@ -29,22 +31,14 @@ namespace UML {
             Set<Package, PackageMerge>& getReceivingPackageSingleton();
             Set<Package, PackageMerge>& getMergedPackageSingleton();
             void init();
-            void copy(const PackageMerge& rhs);
             PackageMerge();
         public:
-            PackageMerge(const PackageMerge& rhs);
             virtual ~PackageMerge();
-            Package* getReceivingPackage();
-            Package& getReceivingPackageRef();
-            ID getReceivingPackageID() const;
-            bool hasReceivingPackage() const;
+            PackagePtr getReceivingPackage();
             void setReceivingPackage(Package& receive);
             void setReceivingPackage(Package* receive);
             void setReceivingPackage(ID id);
-            Package* getMergedPackage();
-            Package& getMergedPackageRef();
-            ID getMergedPackageID() const;
-            bool hasMergedPackage() const;
+            PackagePtr getMergedPackage();
             void setMergedPackage(Package& merge);
             void setMergedPackage(Package* merge);
             void setMergedPackage(ID id);

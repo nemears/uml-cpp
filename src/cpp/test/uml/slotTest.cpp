@@ -9,8 +9,8 @@ class SlotTest : public ::testing::Test {
 
 TEST_F(SlotTest, addValueFunctorTest) {
     UmlManager m;
-    Slot& s = m.create<Slot>();
-    LiteralString& l = m.create<LiteralString>();
+    Slot& s = *m.create<Slot>();
+    LiteralString& l = *m.create<LiteralString>();
     s.getValues().add(l);
     ASSERT_TRUE(s.getValues().size() == 1);
     ASSERT_TRUE(&s.getValues().front() == &l);
@@ -22,8 +22,8 @@ TEST_F(SlotTest, addValueFunctorTest) {
 
 TEST_F(SlotTest, addValueFunctorTestW_Manager) {
     UmlManager m;
-    Slot& s = m.create<Slot>();
-    LiteralString& l = m.create<LiteralString>();
+    Slot& s = *m.create<Slot>();
+    LiteralString& l = *m.create<LiteralString>();
     s.getValues().add(l);
     ASSERT_TRUE(s.getValues().size() == 1);
     ASSERT_TRUE(&s.getValues().front() == &l);
@@ -35,22 +35,20 @@ TEST_F(SlotTest, addValueFunctorTestW_Manager) {
 
 TEST_F(SlotTest, removeValueFunctorTest) {
     UmlManager m;
-    Slot& s = m.create<Slot>();
-    LiteralString& l = m.create<LiteralString>();
+    Slot& s = *m.create<Slot>();
+    LiteralString& l = *m.create<LiteralString>();
     s.getValues().add(l);
     ASSERT_NO_THROW(s.getValues().remove(l));
     ASSERT_TRUE(s.getValues().size() == 0);
     ASSERT_TRUE(s.getOwnedElements().size() == 0);
-    
-    // ASSERT_TRUE(l.getOwningSlot() == 0);
-    ASSERT_TRUE(l.getOwner() == 0);
+    ASSERT_FALSE(l.getOwner());
 }
 
 TEST_F(SlotTest, overrideOwningSlotW_OtherSlotTest) {
     UmlManager m;
-    Slot& s = m.create<Slot>();
-    LiteralString& l = m.create<LiteralString>();
-    Slot& s2 = m.create<Slot>();
+    Slot& s = *m.create<Slot>();
+    LiteralString& l = *m.create<LiteralString>();
+    Slot& s2 = *m.create<Slot>();
     s.getValues().add(l);
     ASSERT_NO_THROW(s2.getValues().add(l));
     ASSERT_TRUE(s.getValues().size() == 0);

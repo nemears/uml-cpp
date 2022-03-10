@@ -18,7 +18,7 @@ class EnumerationParserTest : public ::testing::Test {
 TEST_F(EnumerationParserTest, basicEnumerationTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "enumerationTests/basicEnumeration.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "enumerationTests/basicEnumeration.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::ENUMERATION);
     Enumeration* e = dynamic_cast<Enumeration*>(el);
     ASSERT_TRUE(e->getOwnedLiterals().size() == 2);
@@ -47,9 +47,9 @@ TEST_F(EnumerationParserTest, basicEnumerationTest) {
 
 TEST_F(EnumerationParserTest, emitEnumerationWLiterals) {
     UmlManager m;
-    Enumeration& e = m.create<Enumeration>();
-    EnumerationLiteral& l1 = m.create<EnumerationLiteral>();
-    EnumerationLiteral& l2 = m.create<EnumerationLiteral>();
+    Enumeration& e = *m.create<Enumeration>();
+    EnumerationLiteral& l1 = *m.create<EnumerationLiteral>();
+    EnumerationLiteral& l2 = *m.create<EnumerationLiteral>();
     e.setID("a6ds7Q7pgI80WPT5vd2LbJn4dN2g");
     e.setName("enum");
     l1.setID("ki59FSBz84bR3hyOjfeHEg9LLtCA");
@@ -76,8 +76,8 @@ TEST_F(EnumerationParserTest, emitEnumerationWLiterals) {
 
 TEST_F(EnumerationParserTest, mountEnumerationTest) {
     UmlManager m;
-    Enumeration& enumeration = m.create<Enumeration>();
-    EnumerationLiteral& enumerationLiteral = m.create<EnumerationLiteral>();
+    Enumeration& enumeration = *m.create<Enumeration>();
+    EnumerationLiteral& enumerationLiteral = *m.create<EnumerationLiteral>();
     enumeration.getOwnedLiterals().add(enumerationLiteral);
     m.setRoot(&enumeration);
     m.mount(ymlPath + "enumerationTests");
@@ -89,8 +89,8 @@ TEST_F(EnumerationParserTest, mountEnumerationTest) {
     Enumeration& enumeration2 = m.aquire(enumerationID)->as<Enumeration>();
     ASSERT_EQ(enumeration2.getOwnedLiterals().size(), 1);
     ASSERT_EQ(enumeration2.getOwnedLiterals().front(), enumerationLiteral);
-    ASSERT_TRUE(enumerationLiteral.hasEnumeration());
-    ASSERT_EQ(enumerationLiteral.getEnumerationRef(), enumeration2);
+    ASSERT_TRUE(enumerationLiteral.getEnumeration());
+    ASSERT_EQ(*enumerationLiteral.getEnumeration(), enumeration2);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(enumerationLiteral, enumeration2));
 
     m.release(enumerationLiteral, enumeration2);
@@ -102,8 +102,8 @@ TEST_F(EnumerationParserTest, mountEnumerationTest) {
     ASSERT_EQ(enumeration3.getOwnedMembers().size(), 1);
     EnumerationLiteral& enumerationLiteral2 = m.aquire(enumerationLiteralID)->as<EnumerationLiteral>();
     ASSERT_EQ(enumeration3.getOwnedLiterals().front(), enumerationLiteral2);
-    ASSERT_TRUE(enumerationLiteral2.hasEnumeration());
-    ASSERT_EQ(enumerationLiteral2.getEnumerationRef(), enumeration3);
+    ASSERT_TRUE(enumerationLiteral2.getEnumeration());
+    ASSERT_EQ(*enumerationLiteral2.getEnumeration(), enumeration3);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(enumerationLiteral2, enumeration3));
 
     m.release(enumerationLiteral2, enumeration3);

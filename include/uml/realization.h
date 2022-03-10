@@ -1,5 +1,5 @@
-#ifndef REALIZATION_H
-#define REALIZATION_H
+#ifndef _UML_REALIZATION_H_
+#define _UML_REALIZATION_H_
 
 #include "uml/abstraction.h"
 
@@ -15,7 +15,6 @@ namespace UML {
         protected:
             Realization();
         public:
-            Realization(const Realization& realization);
             virtual ~Realization();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

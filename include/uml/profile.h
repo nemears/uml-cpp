@@ -1,5 +1,5 @@
-#ifndef PROFILE_H
-#define PROFILE_H
+#ifndef _UML_PROFILE_H_
+#define _UML_PROFILE_H_
 
 #include "package.h"
 
@@ -12,10 +12,8 @@ namespace UML {
         protected:
             Set<Stereotype, Profile> m_profileOwnedStereotypes = Set<Stereotype, Profile>(this);
             void init();
-            void copy(const Profile& rhs);
             Profile();
         public:
-            Profile(const Profile& rhs);
             virtual ~Profile();
             Set<Stereotype, Profile>& getOwnedStereotypes();
             bool isSubClassOf(ElementType eType) const override;

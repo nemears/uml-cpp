@@ -1,18 +1,24 @@
 #include "uml/literalBool.h"
-#include "uml/uml-stable.h"
+#include "uml/package.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
-LiteralBool::LiteralBool() : Element(ElementType::LITERAL_BOOL) {}
+LiteralBool::LiteralBool() : Element(ElementType::LITERAL_BOOL) {
 
-LiteralBool::LiteralBool(const LiteralBool& rhs) : Element(rhs, ElementType::LITERAL_BOOL) {}
+}
 
 bool LiteralBool::getValue() {
-    return value;
+    return m_value;;
 }
 
 void LiteralBool::setValue(bool val) {
-    value = val;
+    m_value = val;
 }
 
 bool LiteralBool::isSubClassOf(ElementType eType) const {

@@ -2,6 +2,7 @@
 #define _UML_ENCAPSULATED_CLASSIFIER_H_
 
 #include "structuredClassifier.h"
+#include "port.h"
 
 namespace UML {
 
@@ -23,11 +24,9 @@ namespace UML {
                     RemoveOwnedAttributeFunctor(Element* el) : SetFunctor(el) {};
             };
             void init();
-            void copy(const EncapsulatedClassifier& rhs);
             EncapsulatedClassifier();
         public:
             virtual ~EncapsulatedClassifier();
-            EncapsulatedClassifier(const EncapsulatedClassifier& rhs);
             Set<Port, EncapsulatedClassifier>& getOwnedPorts();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

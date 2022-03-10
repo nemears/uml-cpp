@@ -1,6 +1,10 @@
 #include "uml/enumerationLiteral.h"
 #include "uml/enumeration.h"
-#include "uml/uml-stable.h"
+#include "uml/behavior.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -14,37 +18,16 @@ void EnumerationLiteral::init() {
     m_enumeration.m_signature = &EnumerationLiteral::getEnumerationSingleton;
 }
 
-void EnumerationLiteral::copy(const EnumerationLiteral& rhs) {
-    m_enumeration = rhs.m_enumeration;
-}
-
 EnumerationLiteral::EnumerationLiteral() : Element(ElementType::ENUMERATION_LITERAL) {
     init();
 }
 
-EnumerationLiteral::EnumerationLiteral(const EnumerationLiteral& rhs) : Element(rhs, ElementType::ENUMERATION_LITERAL) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    InstanceSpecification::copy(rhs);
-    copy(rhs);
+EnumerationLiteral::~EnumerationLiteral() {
+    mountAndRelease();
 }
 
-Enumeration* EnumerationLiteral::getEnumeration() {
+EnumerationPtr EnumerationLiteral::getEnumeration() const {
     return m_enumeration.get();
-}
-
-Enumeration& EnumerationLiteral::getEnumerationRef() {
-    return m_enumeration.getRef();
-}
-
-ID EnumerationLiteral::getEnumerationID() const {
-    return m_enumeration.id();
-}
-
-bool EnumerationLiteral::hasEnumeration() const {
-    return m_enumeration.has();
 }
 
 void EnumerationLiteral::setEnumeration(Enumeration* enumeration) {

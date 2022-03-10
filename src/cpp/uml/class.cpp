@@ -1,7 +1,14 @@
 #include "uml/class.h"
 #include "uml/operation.h"
 #include "uml/property.h"
-#include "uml/uml-stable.h"
+#include "uml/generalization.h"
+#include "uml/package.h"
+#include "uml/dataType.h"
+#include "uml/behavior.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -32,35 +39,12 @@ void Class::init() {
     m_ownedReceptions.m_signature = &Class::getOwnedReceptions;
 }
 
-void Class::copy(const Class& rhs) {
-    m_classOwnedAttrubutes = rhs.m_classOwnedAttrubutes;
-    m_ownedOperations = rhs.m_ownedOperations;
-    m_nestedClassifiers = rhs.m_nestedClassifiers;
-    m_ownedReceptions = rhs.m_ownedReceptions;
-}
-
 Class::Class() : Element(ElementType::CLASS) {
     init();
 }
 
 Class::~Class() {
-    
-}
-
-Class::Class(const Class& rhs) : Element(rhs, ElementType::CLASS) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    Namespace::copy(rhs);
-    ParameterableElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    TemplateableElement::copy(rhs);
-    RedefinableElement::copy(rhs);
-    Classifier::copy(rhs);
-    StructuredClassifier::copy(rhs);
-    EncapsulatedClassifier::copy(rhs);
-    BehavioredClassifier::copy(rhs);
-    copy(rhs);
+    mountAndRelease();
 }
 
 OrderedSet<Property, Class>& Class::getOwnedAttributes() {

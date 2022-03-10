@@ -1,13 +1,14 @@
-#ifndef TEMPLATEABLE_ELEMENT_H
-#define TEMPLATEABLE_ELEMENT_H
+#ifndef _UML_TEMPLATEABLE_ELEMENT_H_
+#define _UML_TEMPLATEABLE_ELEMENT_H_
 
 #include "element.h"
 #include "singleton.h"
+#include "templateBinding.h"
+#include "templateSignature.h"
 
 namespace UML {
 
-    class TemplateBinding;
-    class TemplateSignature;
+    typedef UmlPtr<TemplateSignature> TemplateSignaturePtr;
 
     class TemplateableElement : virtual public Element {
 
@@ -18,15 +19,10 @@ namespace UML {
             Set<TemplateBinding, TemplateableElement> m_templateBindings = Set<TemplateBinding, TemplateableElement>(this);
             Set<TemplateSignature, TemplateableElement>& getOwnedTemplateSignatureSingleton();
             void init();
-            void copy(const TemplateableElement& rhs);
             TemplateableElement();
         public:
-            TemplateableElement(const TemplateableElement& el);
             virtual ~TemplateableElement();
-            TemplateSignature* getOwnedTemplateSignature();
-            TemplateSignature& getOwnedTemplateSignatureRef();
-            ID getOwnedTemplateSignatureID() const;
-            bool hasOwnedTemplateSignature() const;
+            TemplateSignaturePtr getOwnedTemplateSignature() const;
             void setOwnedTemplateSignature(TemplateSignature& signature);
             void setOwnedTemplateSignature(TemplateSignature* signature);
             void setOwnedTemplateSignature(ID id);

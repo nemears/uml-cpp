@@ -1,5 +1,5 @@
-#ifndef SLOT_H
-#define SLOT_H
+#ifndef _UML_SLOT_H_
+#define _UML_SLOT_H_
 
 #include "uml/set.h"
 #include "uml/singleton.h"
@@ -9,6 +9,8 @@ namespace UML {
     class InstanceSpecification;
     class StructuralFeature;
     class ValueSpecification;
+    typedef UmlPtr<StructuralFeature> StructuralFeaturePtr;
+    typedef UmlPtr<InstanceSpecification> InstanceSpecificationPtr;
 
     class Slot : public Element {
         friend class UmlManager;
@@ -21,26 +23,19 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
+            void restoreReference(Element* el) override;
             Set<StructuralFeature, Slot>& getDefiningFeatureSingleton();
             Set<InstanceSpecification, Slot>& getOwningInstanceSingleton();
             void init();
-            void copy(const Slot& rhs);
             Slot();
         public:
-            Slot(const Slot& rhs);
             virtual ~Slot();
             Set<ValueSpecification, Slot>& getValues();
-            StructuralFeature* getDefiningFeature();
-            StructuralFeature& getDefiningFeatureRef();
-            ID getDefiningFeatureID() const;
-            bool hasDefiningFeature() const;
+            StructuralFeaturePtr getDefiningFeature() const;
             void setDefiningFeature(StructuralFeature& definingFeature);
             void setDefiningFeature(StructuralFeature* definingFeature);
             void setDefiningFeature(ID id);
-            InstanceSpecification* getOwningInstance();
-            InstanceSpecification& getOwningInstanceRef();
-            ID getOwningInstanceID() const;
-            bool hasOwningInstance() const;
+            InstanceSpecificationPtr getOwningInstance() const;
             void setOwningInstance(InstanceSpecification& inst);
             void setOwningInstance(InstanceSpecification* inst);
             void setOwningInstance(ID id);

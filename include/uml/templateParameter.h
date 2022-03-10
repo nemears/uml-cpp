@@ -1,5 +1,5 @@
-#ifndef TEMPLATE_PARAMETER_H
-#define TEMPLATE_PARAMETER_H
+#ifndef _UML_TEMPLATE_PARAMETER_H_
+#define _UML_TEMPLATE_PARAMETER_H_
 
 #include "element.h"
 #include "singleton.h"
@@ -9,6 +9,9 @@ namespace UML {
     class TemplateSignature;
     class ParameterableElement;
     class TemplateParameterSubstitution;
+
+    typedef UmlPtr<TemplateSignature> TemplateSignaturePtr;
+    typedef UmlPtr<ParameterableElement> ParameterableElementPtr;
 
     class TemplateParameter : public Element {
 
@@ -33,43 +36,26 @@ namespace UML {
             Set<ParameterableElement, TemplateParameter>& getDefaultSingleton();
             Set<ParameterableElement, TemplateParameter>& getOwnedDefaultSingleton();
             void init();
-            void copy(const TemplateParameter& rhs);
             TemplateParameter();
         public:
-            TemplateParameter(const TemplateParameter& el);
             virtual ~TemplateParameter();
-            TemplateSignature* getSignature();
-            TemplateSignature& getSignatureRef();
-            ID getSignatureID() const;
-            bool hasSignature() const;
+            TemplateSignaturePtr getSignature() const;
             void setSignature(TemplateSignature& signature);
             void setSignature(TemplateSignature* signature);
             void setSignature(ID id);
-            ParameterableElement* getOwnedParameteredElement();
-            ParameterableElement& getOwnedParameteredElementRef();
-            ID getOwnedParameteredElementID() const;
-            bool hasOwnedParameteredElement() const;
+            ParameterableElementPtr getOwnedParameteredElement() const;
             void setOwnedParameteredElement(ParameterableElement& el);
             void setOwnedParameteredElement(ParameterableElement* el);
             void setOwnedParameteredElement(ID id);
-            ParameterableElement* getParameteredElement();
-            ParameterableElement& getParameteredElementRef();
-            ID getParameteredElementID() const;
-            bool hasParameteredElement() const;
+            ParameterableElementPtr getParameteredElement() const;
             void setParameteredElement(ParameterableElement& el);
             void setParameteredElement(ParameterableElement* el);
             void setParameteredElement(ID id);
-            ParameterableElement* getDefault();
-            ParameterableElement& getDefaultRef();
-            ID getDefaultID() const;
-            bool hasDefault() const;
+            ParameterableElementPtr getDefault() const;
             void setDefault(ParameterableElement& el);
             void setDefault(ParameterableElement* el);
             void setDefault(ID id);
-            ParameterableElement* getOwnedDefault();
-            ParameterableElement& getOwnedDefaultRef();
-            ID getOwnedDefaultID() const;
-            bool hasOwnedDefault() const;
+            ParameterableElementPtr getOwnedDefault() const;
             void setOwnedDefault(ParameterableElement& el);
             void setOwnedDefault(ParameterableElement* el);
             void setOwnedDefault(ID id);

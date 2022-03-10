@@ -1,5 +1,5 @@
-#ifndef PROPERTYH
-#define PROPERTYH
+#ifndef _UML_PROPERTY_H_
+#define _UML_PROPERTY_H_
 
 #include "structuralFeature.h"
 #include "connectableElement.h"
@@ -12,6 +12,11 @@ namespace UML{
     class StructuredClassifier;
     class Association;
     class Class;
+
+    typedef UmlPtr<Class> ClassPtr;
+    typedef UmlPtr<DataType> DataTypePtr;
+    typedef UmlPtr<Association> AssociationPtr;
+    typedef UmlPtr<Interface> InterfacePtr;
 
     enum class AggregationKind {
         NONE,
@@ -77,10 +82,8 @@ namespace UML{
             Set<Association, Property>& getOwningAssociationSingleton();
             Set<Interface, Property>& getInterfaceSingleton();
             void init();
-            void copy(const Property& rhs);
             Property();
         public:
-            Property(const Property& prop);
             virtual ~Property();
             AggregationKind getAggregation();
             bool isComposite();
@@ -88,42 +91,24 @@ namespace UML{
             void setDefaultValue(ValueSpecification* val);
             void setDefaultValue(ValueSpecification& val);
             void setDefaultValue(ID id);
-            ValueSpecification* getDefaultValue();
-            ValueSpecification& getDefaultValueRef();
-            ID getDefaultValueID() const;
-            bool hasDefaultValue() const;
-            DataType* getDataType();
-            DataType& getDataTypeRef();
-            ID getDataTypeID() const;
-            bool hasDataType() const;
+            ValueSpecificationPtr getDefaultValue() const;
+            DataTypePtr getDataType();
             void setDataType(DataType* dataType);
             void setDataType(DataType& dataType);
             void setDataType(ID id);
-            Class* getClass();
-            Class& getClassRef();
-            ID getClassID() const;
-            bool hasClass() const;
+            ClassPtr getClass() const;
             void setClass(Class* clazz);
             void setClass(Class& clazz);
             void setClass(ID id);
-            Association* getAssociation();
-            Association& getAssociationRef();
-            ID getAssociationID() const;
-            bool hasAssociation() const;
+            AssociationPtr getAssociation() const;
             void setAssociation(Association* association);
             void setAssociation(Association& association);
             void setAssociation(ID id);
-            Association* getOwningAssociation();
-            Association& getOwningAssociationRef();
-            ID getOwningAssociationID() const;
-            bool hasOwningAssociation() const;
+            AssociationPtr getOwningAssociation() const;
             void setOwningAssociation(Association* association);
             void setOwningAssociation(Association& association);
             void setOwningAssociation(ID id);
-            Interface* getInterface();
-            Interface& getInterfaceRef();
-            bool hasInterface() const;
-            ID getInterfaceID() const;
+            InterfacePtr getInterface() const;
             void setInterface(Interface* interface);
             void setInterface(Interface& interface);
             void setInterface(ID id);

@@ -1,5 +1,5 @@
-#ifndef ELEMENTH
-#define ELEMENTH
+#ifndef _UML_ELEMENT_H_
+#define _UML_ELEMENT_H_
 
 #include <string>
 #include <list>
@@ -111,6 +111,7 @@ namespace UML {
     };
 
     class Element;
+    class AbstractUmlPtr;
 
     /**
      * A Note on manager node and keeping track of elements: Right now we are just using a raw pointer,
@@ -130,7 +131,7 @@ namespace UML {
         std::unordered_map<ID, ManagerNode*> m_references;
         std::unordered_map<ID, size_t> m_referenceCount;
         std::vector<ID> m_referenceOrder;
-        std::unordered_set<Element*> m_copies;
+        std::list<void*> m_ptrs; // list to UmlPtr*'s
     };
 
     // Helper function to assess possible ids
@@ -150,10 +151,7 @@ namespace UML {
             virtual const char* what() const throw() {
                 return m_msg;
             };
-    };
-
-    // TODO delete me
-    template <class T> class Sequence;
+    };  
 
     class ElementDoesntExistException;
     class Relationship;
@@ -187,6 +185,7 @@ namespace UML {
     template <class T, class U> class Singleton;
     template <class T, class U> class OrderedSet;
     template <class T, class U> struct OrderedSetIterator;
+    template <class T> class UmlPtr;
     class SetReferenceFunctor;
     class RemoveReferenceFunctor;
     namespace Parsers {
@@ -194,6 +193,8 @@ namespace UML {
         EmitterMetaData getData(Element& el);
         void setOwner(Element& el, ID id);
     }
+
+    typedef UmlPtr<Element> ElementPtr;
     /**
      * Element is the base class of all UML classes
      * It has three main attributes
@@ -202,9 +203,6 @@ namespace UML {
      * id - the elements unique id for quick comparison and indexing
      **/
     class Element {
-
-        // TODO delete
-        template <class T> friend class Sequence;
 
         friend class ElementDoesntExistException;
         friend class Slot;
@@ -234,13 +232,13 @@ namespace UML {
         template <class T> friend class SetIterator;
         template <class T, class U> friend class OrderedSet;
         template <class T, class U> friend struct OrderedSetIterator;
+        template <class T> friend class UmlPtr;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);
         friend void Parsers::setOwner(Element& el, ID id);
         friend class SetReferenceFunctor;
         friend class RemoveReferenceFunctor;
 
         private:
-            bool m_copiedElementFlag = false;
         protected:
             UmlManager* m_manager;
             ManagerNode* m_node;
@@ -267,27 +265,14 @@ namespace UML {
             virtual void restoreReferences();
             virtual void restoreReference(Element* el);
             virtual void referenceErased(ID id);
-            template <class T = Element, typename U> 
-            void updateCopiesScalar(U newVal, U T::*signature) {
-                if (m_node->m_managerElementMemory != this) {
-                    (dynamic_cast<T*>(m_node->m_managerElementMemory)->*signature) = newVal;
-                }
-                for (auto& copy : m_node->m_copies) {
-                    if (copy != this) {
-                        (dynamic_cast<T*>(copy)->*signature) = newVal;
-                    }
-                }
-            };
-            void copy(const Element& rhs);
+            void mountAndRelease();
             Element(ElementType elementType);
         public:
-            Element(const Element& rhs, ElementType elementType);
+            Element(const Element&) = delete;
+            Element& operator=(const Element&) = delete;
             virtual ~Element();
             ID getID() const;
-            Element* getOwner();
-            Element& getOwnerRef();
-            ID getOwnerID() const;
-            bool hasOwner() const;
+            ElementPtr getOwner() const;
             Set<Element, Element>& getOwnedElements();
             Set<Comment, Element>& getOwnedComments();
             /**
@@ -313,10 +298,10 @@ namespace UML {
             virtual bool isSubClassOf(ElementType eType) const;
             virtual std::string getElementTypeString() const;
 
-            friend bool operator==(const Element& lhs, const Element& rhs) {
+            inline friend bool operator==(const Element& lhs, const Element& rhs) {
                 return lhs.m_id == rhs.m_id;
             };
-            friend bool operator!=(const Element& lhs, const Element& rhs) {
+            inline friend bool operator!=(const Element& lhs, const Element& rhs) {
                 return lhs.m_id != rhs.m_id;
             };
     };

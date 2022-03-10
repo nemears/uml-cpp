@@ -1,6 +1,10 @@
 #include "uml/opaqueBehavior.h"
 #include "uml/literalString.h"
-#include "uml/uml-stable.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 namespace UML {
 
@@ -13,29 +17,12 @@ void OpaqueBehavior::init() {
     m_bodies.m_signature = &OpaqueBehavior::getBodiesSet;
 }
 
-void OpaqueBehavior::copy(const OpaqueBehavior& rhs) {
-    m_bodies = rhs.m_bodies;
-}
-
 OpaqueBehavior::OpaqueBehavior() : Element(ElementType::OPAQUE_BEHAVIOR) {
     init();
 }
 
-OpaqueBehavior::OpaqueBehavior(const OpaqueBehavior& rhs) : Element(rhs, ElementType::OPAQUE_BEHAVIOR) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    Namespace::copy(rhs);
-    PackageableElement::copy(rhs);
-    Classifier::copy(rhs);
-    StructuredClassifier::copy(rhs);
-    Class::copy(rhs);
-    Behavior::copy(rhs);
-    copy(rhs);
-}
-
 OpaqueBehavior::~OpaqueBehavior() {
-    
+    mountAndRelease();
 }
 
 OrderedSet<LiteralString, OpaqueBehavior>& OpaqueBehavior::getBodies() {

@@ -1,6 +1,15 @@
 #include "uml/structuredClassifier.h"
 #include "uml/property.h"
-#include "uml/uml-stable.h"
+#include "uml/type.h"
+#include "uml/connectableElement.h"
+#include "uml/package.h"
+#include "uml/generalization.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -36,19 +45,8 @@ void StructuredClassifier::init() {
     m_ownedConnectors.m_signature = &StructuredClassifier::getOwnedConnectors;
 }
 
-void StructuredClassifier::copy(const StructuredClassifier& rhs) {
-    m_roles = rhs.m_roles;
-    m_ownedAttributes = rhs.m_ownedAttributes;
-    m_parts = rhs.m_parts;
-    m_ownedConnectors = rhs.m_ownedConnectors;
-}
-
 StructuredClassifier::StructuredClassifier() : Element(ElementType::STRUCTURED_CLASSIFIER) {
     init();
-}
-
-StructuredClassifier::StructuredClassifier(const StructuredClassifier& clazz) : Element(clazz, ElementType::STRUCTURED_CLASSIFIER) {
-    // abstract
 }
 
 StructuredClassifier::~StructuredClassifier() {

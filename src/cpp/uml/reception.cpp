@@ -1,6 +1,14 @@
 #include "uml/reception.h"
-#include "uml/uml-stable.h"
+#include "uml/operation.h"
+#include "uml/manifestation.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/deployment.h"
+#include "uml/signal.h"
 #include "uml/setReferenceFunctor.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -30,42 +38,16 @@ void Reception::init() {
     m_signal.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
-void Reception::copy(const Reception& rhs) {
-    m_signal = rhs.m_signal;
-}
-
 Reception::Reception() : Element(ElementType::RECEPTION) {
     init();
 }
 
-Reception::Reception(const Reception& rhs) : Element(rhs, ElementType::RECEPTION) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    RedefinableElement::copy(rhs);
-    Feature::copy(rhs);
-    BehavioralFeature::copy(rhs);
-    copy(rhs);
-}
-
 Reception::~Reception() {
-
+    mountAndRelease();
 }
 
-Signal* Reception::getSignal() {
+SignalPtr Reception::getSignal() const {
     return m_signal.get();
-}
-
-Signal& Reception::getSignalRef() {
-    return m_signal.getRef();
-}
-
-bool Reception::hasSignal() const {
-    return m_signal.has();
-}
-
-ID Reception::getSignalID() const {
-    return m_signal.id();
 }
 
 void Reception::setSignal(Signal* signal) {

@@ -1,38 +1,45 @@
 #include "uml/classifier.h"
+#include "uml/package.h"
 #include "uml/property.h"
-#include "uml/generalizationSet.h"
-#include "uml/uml-stable.h"
+#include "uml/generalization.h"
+#include "uml/umlPtr.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
 void Classifier::AddGeneralizationFunctor::operator()(Element& el) const {
-    if (el.as<Generalization>().hasGeneral() && !m_el.as<Classifier>().m_generals.contains(el.as<Generalization>().getGeneralID())) {
-        m_el.as<Classifier>().m_generals.add(el.as<Generalization>().getGeneralRef());
+    if (el.as<Generalization>().getGeneral() && !m_el.as<Classifier>().m_generals.contains(el.as<Generalization>().getGeneral().id())) {
+        m_el.as<Classifier>().m_generals.add(*el.as<Generalization>().getGeneral());
     }
 }
 
 void Classifier::RemoveGeneralizationFunctor::operator()(Element& el) const {
-    if (el.as<Generalization>().hasGeneral() && m_el.as<Classifier>().m_generals.contains(el.as<Generalization>().getGeneralID())) {
-        m_el.as<Classifier>().m_generals.remove(el.as<Generalization>().getGeneralID());
+    if (el.as<Generalization>().getGeneral() && m_el.as<Classifier>().m_generals.contains(el.as<Generalization>().getGeneral().id())) {
+        m_el.as<Classifier>().m_generals.remove(el.as<Generalization>().getGeneral().id());
     }
 }
 
 void Classifier::AddGeneralFunctor::operator()(Element& el) const {
     bool createGeneralization = true;
     for (auto& generalization : m_el.as<Classifier>().m_generalizations) {
-        if (generalization.getGeneralID() == el.getID()) {
+        if (generalization.getGeneral().id() == el.getID()) {
             createGeneralization = false;
             break;
         }
     }
     if (createGeneralization) {
-        Generalization& newGeneralization = m_el.m_manager->create<Generalization>();
+        Generalization& newGeneralization = *m_el.m_manager->create<Generalization>();
         newGeneralization.setGeneral(el.as<Classifier>());
         m_el.as<Classifier>().getGeneralizations().add(newGeneralization);
     }
     for (auto& mem : el.as<Classifier>().m_members) {
         if (mem.getVisibility() != VisibilityKind::PRIVATE) {
-            m_el.as<Class>().m_inheritedMembers.nonOppositeAdd(mem);
+            m_el.as<Classifier>().m_inheritedMembers.nonOppositeAdd(mem);
         }
     }
     el.setReference(&m_el);
@@ -130,24 +137,12 @@ void Classifier::init() {
     m_powerTypeExtent.m_signature = &Classifier::getPowerTypeExtent;
 }
 
-void Classifier::copy(const Classifier& rhs) {
-    m_features = rhs.m_features;
-    m_attributes = rhs.m_attributes;
-    m_generalizations = rhs.m_generalizations;
-    m_inheritedMembers = rhs.m_inheritedMembers;
-    m_powerTypeExtent = rhs.m_powerTypeExtent;
-}
-
 Classifier::Classifier() : Element(ElementType::CLASSIFIER) {
     init();
 }
 
 Classifier::~Classifier() {
 
-}
-
-Classifier::Classifier(const Classifier& rhs) : Element(ElementType::CLASSIFIER) {
-    // abstract
 }
 
 std::string Classifier::getName() {

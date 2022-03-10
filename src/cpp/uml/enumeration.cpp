@@ -1,6 +1,9 @@
 #include "uml/enumeration.h"
 #include "uml/enumerationLiteral.h"
-#include "uml/uml-stable.h"
+#include "uml/behavior.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -14,23 +17,12 @@ void Enumeration::init() {
     m_ownedLiterals.m_signature = &Enumeration::getOwnedLiteralsSet;
 }
 
-void Enumeration::copy(const Enumeration& rhs) {
-    m_ownedLiterals = rhs.m_ownedLiterals;
-}
-
 Enumeration::Enumeration() : Element(ElementType::ENUMERATION) {
     init();
 }
 
-Enumeration::Enumeration(const Enumeration& rhs) : Element(rhs, ElementType::ENUMERATION) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    Namespace::copy(rhs);
-    PackageableElement::copy(rhs);
-    Classifier::copy(rhs);
-    DataType::copy(rhs);
-    copy(rhs);
+Enumeration::~Enumeration() {
+    mountAndRelease();
 }
 
 OrderedSet<EnumerationLiteral, Enumeration>& Enumeration::getOwnedLiterals() {

@@ -1,5 +1,5 @@
-#ifndef COMMENT_H
-#define COMMENT_H
+#ifndef _UML_COMMENT_H_
+#define _UML_COMMENT_H_
 
 #include "element.h"
 #include "set.h"
@@ -17,10 +17,9 @@ namespace UML {
             void referencingReleased(ID id) override;
             void referenceErased(ID id) override;
             void init();
-            void copy(const Comment& rhs);
             Comment();
         public:
-            Comment(const Comment& rhs);
+            virtual ~Comment();
             std::string getBody();
             void setBody(std::string body);
             Set<Element, Comment>& getAnnotatedElements();

@@ -1,5 +1,9 @@
 #include "uml/expression.h"
-#include "uml/uml-stable.h"
+#include "uml/behavior.h"
+#include "uml/association.h"
+#include "uml/dataType.h"
+#include "uml/stereotype.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -11,25 +15,12 @@ void Expression::init() {
     m_operands.subsets(*m_ownedElements);
 }
 
-void Expression::copy(const Expression& rhs) {
-    m_operands = rhs.m_operands;
-}
-
 Expression::Expression() : Element(ElementType::EXPRESSION) {
     init();
 }
 
-Expression::Expression(const Expression& rhs) : Element(rhs, ElementType::EXPRESSION) {
-    init();
-    Element::copy(rhs);
-    TypedElement::copy(rhs);
-    ParameterableElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    copy(rhs);
-}
-
 Expression::~Expression() {
-    
+    mountAndRelease();
 }
 
 OrderedSet<ValueSpecification, Expression>& Expression::getOperands() {

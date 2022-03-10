@@ -1,7 +1,13 @@
 #include "uml/manifestation.h"
-#include "uml/packageableElement.h"
+#include "uml/profile.h"
 #include "uml/artifact.h"
-#include "uml/uml-stable.h"
+#include "uml/operation.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -14,40 +20,16 @@ void Manifestation::init() {
     m_utilizedElement.m_signature = &Manifestation::getUtilizedElementSingleton;
 }
 
-void Manifestation::copy(const Manifestation& rhs) {
-    m_utilizedElement = rhs.m_utilizedElement;
-}
-
 Manifestation::Manifestation() : Element(ElementType::MANIFESTATION) {
     init();
 }
 
-Manifestation::Manifestation(const Manifestation& rhs) : Element(rhs, ElementType::MANIFESTATION) {
-    init();
-    Element::copy(rhs);
-    Relationship::copy(rhs);
-    DirectedRelationship::copy(rhs);
-    NamedElement::copy(rhs);
-    ParameterableElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    Dependency::copy(rhs);
-    copy(rhs);
-}
-
 Manifestation::~Manifestation() {
-
+    mountAndRelease();
 }
 
-PackageableElement* Manifestation::getUtilizedElement() {
+PackageableElementPtr Manifestation::getUtilizedElement() const {
     return m_utilizedElement.get();
-}
-
-PackageableElement& Manifestation::getUtilizedElementRef() {
-    return m_utilizedElement.getRef();
-}
-
-bool Manifestation::hasUtilizedElement() const {
-    return m_utilizedElement.has();
 }
 
 void Manifestation::setUtilizedElement(PackageableElement* utilizedElement) {

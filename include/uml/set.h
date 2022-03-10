@@ -644,16 +644,6 @@ namespace UML {
                     }
                 }
                 innerAdd(el);
-                if (m_el && m_el->m_node) {
-                    if (m_el->m_node->m_managerElementMemory != m_el) {
-                        (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().innerAdd(el);
-                    }
-                    for (auto& copy : m_el->m_node->m_copies) {
-                        if (copy != m_el) {
-                            (copy->as<U>().*m_signature)().innerAdd(el);
-                        }
-                    }
-                }
                 for (auto& func : m_addFunctors) {
                     (*func)(el);
                 }
@@ -916,14 +906,6 @@ namespace UML {
             void nonOppositeRemove(ID id) {
                 innerRemove(id);
                 if (m_el) {
-                    if (m_el->m_node->m_managerElementMemory != m_el) {
-                        (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().innerRemove(id);
-                    }
-                    for (auto& copy : m_el->m_node->m_copies) {
-                        if (copy != m_el) {
-                            (copy->as<U>().*m_signature)().innerRemove(id);
-                        }
-                    }
                     m_el->removeReference(id);
                 }
             };
@@ -1037,18 +1019,6 @@ namespace UML {
                     if (res) {
                         res->m_el = el;
                         setName(res);
-                        for (auto& copy : m_el->m_node->m_copies) {
-                            if (copy != m_el) {
-                                SetNode* copyRes = (copy->as<U>().*m_signature)().search(res->m_id, (copy->as<U>().*m_signature)().m_root);
-                                copyRes->m_el = el;
-                                (copy->as<U>().*m_signature)().setName(res);
-                            }
-                        }
-                        if (m_el->m_node->m_managerElementMemory != m_el) {
-                            SetNode* copyRes = (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().search(res->m_id, (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().m_root);
-                            copyRes->m_el = el;
-                            (el->m_node->m_managerElementMemory->as<U>().*m_signature)().setName(res);
-                        } 
                     }
                 }
             };
@@ -1175,20 +1145,10 @@ namespace UML {
                             }
                         }
                         node->m_id = newID;
-                        if (m_el) {
-                            if (m_el->m_node->m_managerElementMemory != m_el) {
-                                (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().innerReindex(oldID, newID);
-                            }
-                            for (auto& copy : m_el->m_node->m_copies) {
-                                if (copy != m_el) {
-                                    (copy->as<U>().*m_signature)().innerReindex(oldID, newID);
-                                }
-                            }
-                        }
                     }
                 }
             };
-            bool innerReindexName(std::string oldName, std::string newName) {
+            bool reindexName(std::string oldName, std::string newName) {
                 if (m_root) {
                     SetNode* match = search(oldName, m_root);
                     if (match) {
@@ -1199,18 +1159,6 @@ namespace UML {
                     }
                 }
                 return false;
-            }
-            void reindexName(std::string oldName, std::string newName) {
-                if (innerReindexName(oldName, newName)) {
-                    if (m_el !=  m_el->m_node->m_managerElementMemory) {
-                        (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().innerReindexName(oldName, newName);
-                    }
-                    for (auto& copy : m_el->m_node->m_copies) {
-                        if (copy != m_el) {
-                            (copy->as<U>().*m_signature)().innerReindexName(oldName, newName);
-                        }
-                    }
-                }
             };
             /**
              * the element is being erased from the model, we must remove it
@@ -1232,16 +1180,6 @@ namespace UML {
                 if (m_el && m_el->m_manager) {
                     m_el->setReference(id);
                 }
-                if (m_el) {
-                    if (m_el->m_node->m_managerElementMemory != m_el) {
-                        (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().add(id);
-                    }
-                    for (auto& copy : m_el->m_node->m_copies) {
-                        if (copy != m_el) {
-                            (copy->as<U>().*m_signature)().add(id);
-                        }
-                    }
-                }
             }
             /**
              * protected method to allow friends to remove from a readonly set
@@ -1251,18 +1189,10 @@ namespace UML {
                 if (m_root) {
                     innerRemove(id);
                     if (m_oppositeFunctor) {
-                        T& el = m_el->m_manager->get<T>(m_el, id)->template as<T>();
+                        T& el = m_el->m_manager->get(m_el, id)->template as<T>();
                         (*m_oppositeFunctor)(el, 1);
                     }
                     if (m_el) {
-                        if (m_el->m_node->m_managerElementMemory != m_el) {
-                            (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().innerRemove(id);
-                        }
-                        for (auto& copy : m_el->m_node->m_copies) {
-                            if (copy != m_el) {
-                                (copy->as<U>().*m_signature)().innerRemove(id);
-                            }
-                        }
                         m_el->removeReference(id);
                     }
                 } else {
@@ -1845,16 +1775,6 @@ namespace UML {
                 if (m_el && m_el->m_manager) {
                     m_el->setReference(id);
                 }
-                if (m_el) {
-                    if (m_el->m_node->m_managerElementMemory != m_el) {
-                        (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().add(id);
-                    }
-                    for (auto& copy : m_el->m_node->m_copies) {
-                        if (copy != m_el) {
-                            (copy->as<U>().*m_signature)().add(id);
-                        }
-                    }
-                }
             };
             /**
              * removes the supplied element from this set
@@ -1874,22 +1794,14 @@ namespace UML {
                 if (m_root) {
                     innerRemove(id);
                     if (m_oppositeFunctor) {
-                        T& el = m_el->m_manager->get<T>(m_el, id)->template as<T>();
+                        T& el = m_el->m_manager->get(m_el, id)->template as<T>();
                         (*m_oppositeFunctor)(el, 1);
                     }
                     for (auto& op : m_otherOpposites) {
-                        T& el = m_el->m_manager->get<T>(m_el, id)->template as<T>();
+                        T& el = m_el->m_manager->get(m_el, id)->template as<T>();
                         (*op)(el, 1);
                     }
                     if (m_el) {
-                        if (m_el->m_node->m_managerElementMemory != m_el) {
-                            (m_el->m_node->m_managerElementMemory->as<U>().*m_signature)().innerRemove(id);
-                        }
-                        for (auto& copy : m_el->m_node->m_copies) {
-                            if (copy != m_el) {
-                                (copy->as<U>().*m_signature)().innerRemove(id);
-                            }
-                        }
                         m_el->removeReference(id);
                     }
                 } else {

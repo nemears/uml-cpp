@@ -1,10 +1,13 @@
 #ifndef _UML_CLASSIFIER_H_
 #define _UML_CLASSIFIER_H_
 
+#include "namespace.h"
 #include "type.h"
 #include "redefinableElement.h"
-#include "namespace.h"
 #include "templateableElement.h"
+#include "property.h"
+#include "generalization.h"
+#include "generalizationSet.h"
 
 namespace UML {
 
@@ -73,11 +76,9 @@ namespace UML {
             void restoreReferences() override;
             void referenceErased(ID id) override;
             void init();
-            void copy(const Classifier& rhs);
             Classifier();
         public:
             virtual ~Classifier();
-            Classifier(const Classifier& rhs);
             std::string getName() override;
             void setName(const std::string& name) override;
             Set<Feature, Classifier>& getFeatures();

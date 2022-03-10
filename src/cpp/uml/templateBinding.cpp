@@ -2,15 +2,17 @@
 #include "uml/templateParameterSubstitution.h"
 #include "uml/templateableElement.h"
 #include "uml/templateSignature.h"
-#include "uml/namedElement.h"
-#include "uml/uml-stable.h"
+#include "uml/namespace.h"
+#include "uml/parameterableElement.h"
 #include "uml/setReferenceFunctor.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
 void TemplateBinding::restoreReference(Element* el) {
     DirectedRelationship::restoreReference(el);
-    if (m_signature.id() == el->getID()) {
+    m_signature.restore(el);
+    if (m_signature.get().id() == el->getID()) {
         el->setReference(this);
     }
 }
@@ -37,42 +39,16 @@ void TemplateBinding::init() {
     m_parameterSubstitution.m_signature = &TemplateBinding::getParameterSubstitution;
 }
 
-void TemplateBinding::copy(const TemplateBinding& rhs) {
-    m_boundElement = rhs.m_boundElement;
-    m_signature = rhs.m_signature;
-    m_parameterSubstitution = rhs.m_parameterSubstitution;
-}
-
 TemplateBinding::TemplateBinding() : Element(ElementType::TEMPLATE_BINDING) {
     init();
 }
 
-TemplateBinding::TemplateBinding(const TemplateBinding& rhs) : Element(rhs, ElementType::TEMPLATE_BINDING) {
-    init();
-    Element::copy(rhs);
-    Relationship::copy(rhs);
-    DirectedRelationship::copy(rhs);
-    copy(rhs);
-}
-
 TemplateBinding::~TemplateBinding() {
-
+    mountAndRelease();
 }
 
-TemplateableElement* TemplateBinding::getBoundElement() {
+TemplateableElementPtr TemplateBinding::getBoundElement() const {
     return m_boundElement.get();
-}
-
-TemplateableElement& TemplateBinding::getBoundElementRef() {
-    return m_boundElement.getRef();
-}
-
-ID TemplateBinding::getBoundElementID() const {
-    return m_boundElement.id();
-}
-
-bool TemplateBinding::hasBoundElement() const {
-    return m_boundElement.has();
 }
 
 void TemplateBinding::setBoundElement(TemplateableElement* el) {
@@ -87,20 +63,8 @@ void TemplateBinding::setBoundElement(ID id) {
     m_boundElement.set(id);
 }
 
-TemplateSignature* TemplateBinding::getSignature() {
+TemplateSignaturePtr TemplateBinding::getSignature() const {
     return m_signature.get();
-}
-
-TemplateSignature& TemplateBinding::getSignatureRef() {
-    return m_signature.getRef();
-}
-
-ID TemplateBinding::getSignatureID() const {
-    return m_signature.id();
-}
-
-bool TemplateBinding::hasSignature() const {
-    return m_signature.has();
 }
 
 void TemplateBinding::setSignature(TemplateSignature* signature) {

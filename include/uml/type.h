@@ -1,6 +1,8 @@
-#ifndef TYPEH
-#define TYPEH
+#ifndef _UML_TYPE_H_
+#define _UML_TYPE_H_
+
 #include "packageableElement.h"
+#include "package.h"
 
 namespace UML{
 
@@ -17,10 +19,7 @@ namespace UML{
         protected:
             Type();
         public:
-            Type(const Type& rhs);
-            Type& operator=(Type&&) {
-                return *this;
-            };
+            virtual ~Type();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::TYPE;

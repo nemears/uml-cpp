@@ -1,14 +1,21 @@
 #include "uml/interfaceRealization.h"
-#include "uml/uml-stable.h"
+#include "uml/operation.h"
+#include "uml/manifestation.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
 void InterfaceRealization::RemoveContractFunctor::operator()(Element& el) const {
-    if (m_el.as<InterfaceRealization>().hasImplementingClassifier()) {
-        for (auto& pair : m_el.as<InterfaceRealization>().m_implementingClassifier.getRef().m_node->m_references) {
+    if (m_el.as<InterfaceRealization>().getImplementingClassifier()) {
+        for (auto& pair : m_el.as<InterfaceRealization>().m_implementingClassifier.get()->m_node->m_references) {
             if (pair.second && 
                 pair.second->m_managerElementMemory->isSubClassOf(ElementType::PORT) && 
-                pair.second->m_managerElementMemory->as<Port>().getTypeID() == m_el.as<InterfaceRealization>().m_implementingClassifier.id()) {
+                pair.second->m_managerElementMemory->as<Port>().getType().id() == m_el.as<InterfaceRealization>().m_implementingClassifier.get().id()) {
                 if (pair.second->m_managerElementMemory->as<Port>().isConjugated()) {
                     if (pair.second->m_managerElementMemory->as<Port>().getRequired().contains(el.getID())) {
                         pair.second->m_managerElementMemory->as<Port>().getRequired().removeReadOnly(el.getID());
@@ -24,11 +31,11 @@ void InterfaceRealization::RemoveContractFunctor::operator()(Element& el) const 
 }
 
 void InterfaceRealization::SetContractFunctor::operator()(Element& el) const {
-    if (m_el.as<InterfaceRealization>().hasImplementingClassifier()) {
-        for (auto& pair : m_el.as<InterfaceRealization>().m_implementingClassifier.getRef().m_node->m_references) {
+    if (m_el.as<InterfaceRealization>().getImplementingClassifier()) {
+        for (auto& pair : m_el.as<InterfaceRealization>().m_implementingClassifier.get()->m_node->m_references) {
             if (pair.second && 
                 pair.second->m_managerElementMemory->isSubClassOf(ElementType::PORT) && 
-                pair.second->m_managerElementMemory->as<Port>().getTypeID() == m_el.as<InterfaceRealization>().m_implementingClassifier.id()) {
+                pair.second->m_managerElementMemory->as<Port>().getType().id() == m_el.as<InterfaceRealization>().m_implementingClassifier.get().id()) {
                 if (pair.second->m_managerElementMemory->as<Port>().isConjugated()) {
                     if (!pair.second->m_managerElementMemory->as<Port>().getRequired().contains(el.getID())) {
                         pair.second->m_managerElementMemory->as<Port>().getRequired().nonOppositeAdd(el.as<Interface>());
@@ -62,45 +69,16 @@ void InterfaceRealization::init() {
     m_implementingClassifier.m_signature = &InterfaceRealization::getImplementingClassifierSingleton;
 }
 
-void InterfaceRealization::copy(const InterfaceRealization& rhs) {
-    m_contract = rhs.m_contract;
-    m_implementingClassifier = rhs.m_implementingClassifier;
-}
-
 InterfaceRealization::InterfaceRealization() : Element(ElementType::INTERFACE_REALIZATION) {
     init();
 }
 
 InterfaceRealization::~InterfaceRealization() {
-    
+    mountAndRelease();
 }
 
-InterfaceRealization::InterfaceRealization(const InterfaceRealization& rhs) : Element(rhs, ElementType::INTERFACE_REALIZATION) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    ParameterableElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    Relationship::copy(rhs);
-    DirectedRelationship::copy(rhs);
-    Dependency::copy(rhs);
-    copy(rhs);
-}
-
-Interface* InterfaceRealization::getContract() {
+InterfacePtr InterfaceRealization::getContract() const {
     return m_contract.get();
-}
-
-Interface& InterfaceRealization::getContractRef() {
-    return m_contract.getRef();
-}
-
-bool InterfaceRealization::hasContract() const {
-    return m_contract.has();
-}
-
-ID InterfaceRealization::getContractID() const {
-    return m_contract.id();
 }
 
 void InterfaceRealization::setContract(Interface* contract) {
@@ -115,20 +93,8 @@ void InterfaceRealization::setContract(ID id) {
     m_contract.set(id);
 }
 
-BehavioredClassifier* InterfaceRealization::getImplementingClassifier() {
+BehavioredClassifierPtr InterfaceRealization::getImplementingClassifier() const {
     return m_implementingClassifier.get();
-}
-
-BehavioredClassifier& InterfaceRealization::getImplementingClassifierRef() {
-    return m_implementingClassifier.getRef();
-}
-
-bool InterfaceRealization::hasImplementingClassifier() const {
-    return m_implementingClassifier.has();
-}
-
-ID InterfaceRealization::getImplementingClassifierID() const {
-    return m_implementingClassifier.id();
 }
 
 void InterfaceRealization::setImplementingClassifier(BehavioredClassifier* implementingClassifier) {

@@ -22,21 +22,18 @@ void Relationship::referenceErased(ID id) {
     m_relatedElements.eraseElement(id);
 }
 
+void Relationship::restoreReference(Element* el) {
+    Element::restoreReference(el);
+    m_relatedElements.restore(el);
+}
+
 void Relationship::init() {
     m_relatedElements.m_readOnly = true;
     m_relatedElements.m_signature = &Relationship::getRelatedElements;
 }
 
-void Relationship::copy(const Relationship& rhs) {
-    m_relatedElements = rhs.m_relatedElements;
-}
-
 Relationship::Relationship() : Element(ElementType::RELATIONSHIP) {
     init();
-}
-
-Relationship::Relationship(const Relationship& relationship) : Element(ElementType::RELATIONSHIP) {
-    // abstract
 }
 
 Relationship::~Relationship() {

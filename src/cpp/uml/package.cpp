@@ -1,8 +1,11 @@
 #include "uml/package.h"
 #include "uml/stereotype.h"
-#include "uml/packageMerge.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
 #include "uml/profileApplication.h"
-#include "uml/uml-stable.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -40,29 +43,12 @@ void Package::init() {
     m_profileApplications.m_signature = &Package::getProfileApplications;
 }
 
-void Package::copy(const Package& rhs) {
-    m_packagedElements = rhs.m_packagedElements;
-    m_packageMerge = rhs.m_packageMerge;
-    m_ownedStereotypes = rhs.m_ownedStereotypes;
-}
-
 Package::Package() : Element(ElementType::PACKAGE) {
     init();
 }
 
 Package::~Package() {
-    
-}
-
-Package::Package(const Package& rhs) : Element(rhs, ElementType::PACKAGE) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    ParameterableElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    Namespace::copy(rhs);
-    TemplateableElement::copy(rhs);
-    copy(rhs);
+    mountAndRelease();
 }
 
 Set<PackageableElement, Package>& Package::getPackagedElements() {

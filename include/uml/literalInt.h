@@ -1,5 +1,5 @@
-#ifndef LITERALINTH
-#define LITERALINTH
+#ifndef _UML_LITERAL_INT_H_
+#define _UML_LITERAL_INT_H_
 
 #include "literalSpecification.h"
 
@@ -9,10 +9,9 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            int value = 0; // TODO change to long so we can hold any number?
+            int m_value = 0; // TODO change to long so we can hold any number?
             LiteralInt();
         public:
-            LiteralInt(const LiteralInt& rhs);
             int getValue();
             void setValue(int val);
             bool isSubClassOf(ElementType eType) const override;

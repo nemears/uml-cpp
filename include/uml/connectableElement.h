@@ -1,5 +1,5 @@
-#ifndef CONNECTABLE_ELEMENT_H
-#define CONNECTABLE_ELEMENT_H
+#ifndef _UML_CONNECTABLE_ELEMENT_H_
+#define _UML_CONNECTABLE_ELEMENT_H_
 
 #include "typedElement.h"
 #include "parameterableElement.h"
@@ -14,16 +14,11 @@ namespace UML {
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
             void init();
-            void copy(const ConnectableElement& rhs);
             ConnectableElement();
         public:
-            ConnectableElement(const ConnectableElement& rhs);
             virtual ~ConnectableElement();
             Set<ConnectorEnd, ConnectableElement>& getEnds();
             bool isSubClassOf(ElementType eType) const override;
-            ConnectableElement& operator=(ConnectableElement&&) {
-                return *this;
-            };
             static ElementType elementType() {
                 return ElementType::CONNECTABLE_ELEMENT;
             };

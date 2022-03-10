@@ -17,7 +17,7 @@ class LiteralsParserTest : public ::testing::Test {
 TEST_F(LiteralsParserTest, testParsingSomeLiterals) {
     UmlManager m;
     Element* el;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "literalsTests/someLiterals.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "literalsTests/someLiterals.yml").ptr());
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_EQ(pckg->getPackagedElements().size(), 3);
@@ -37,11 +37,11 @@ TEST_F(LiteralsParserTest, testParsingSomeLiterals) {
 
 TEST_F(LiteralsParserTest, testEmitLiteralUnlimitedNatural) {
     UmlManager m;
-    Package& p = m.create<Package>();
-    LiteralUnlimitedNatural& l1 = m.create<LiteralUnlimitedNatural>();
-    LiteralUnlimitedNatural& l2 = m.create<LiteralUnlimitedNatural>();
-    LiteralUnlimitedNatural& l3 = m.create<LiteralUnlimitedNatural>();
-    LiteralNull& ln = m.create<LiteralNull>();
+    Package& p = *m.create<Package>();
+    LiteralUnlimitedNatural& l1 = *m.create<LiteralUnlimitedNatural>();
+    LiteralUnlimitedNatural& l2 = *m.create<LiteralUnlimitedNatural>();
+    LiteralUnlimitedNatural& l3 = *m.create<LiteralUnlimitedNatural>();
+    LiteralNull& ln = *m.create<LiteralNull>();
     p.setID("e_ob7tgbN16Plhj_sTAOVD5ijLrL");
     l1.setID("7bYUY3yFUBrfPmzKKrV2NJmXuECA");
     l2.setID("puJaUTZsLPdGJkJSJtdX51MIA2ch");

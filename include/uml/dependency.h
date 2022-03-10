@@ -1,8 +1,9 @@
-#ifndef DEPENDENCY_H
-#define DEPENDENCY_H
+#ifndef _UML_DEPENDENCY_H_
+#define _UML_DEPENDENCY_H_
 
 #include "packageableElement.h"
 #include "directedRelationship.h"
+#include "package.h"
 
 namespace UML {
     class Dependency : public DirectedRelationship, public PackageableElement {
@@ -18,10 +19,8 @@ namespace UML {
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
             void init();
-            void copy(const Dependency& rhs);
             Dependency();
         public:
-            Dependency(const Dependency& rhs);
             virtual ~Dependency();
             Set<NamedElement, Dependency>& getClient();
             Set<NamedElement, Dependency>& getSupplier();

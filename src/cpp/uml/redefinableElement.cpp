@@ -1,5 +1,13 @@
 #include "uml/redefinableElement.h"
-#include "uml/uml-stable.h"
+#include "uml/behavior.h"
+#include "uml/package.h"
+#include "uml/property.h"
+#include "uml/generalization.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/deployment.h"
+#include "uml/interface.h"
 
 using namespace UML;
 
@@ -30,21 +38,12 @@ void RedefinableElement::init() {
     m_redefinitionContext.m_signature = &RedefinableElement::getRedefinitionContext;
 }
 
-void RedefinableElement::copy(const RedefinableElement& rhs) {
-    m_redefinedElement = rhs.m_redefinedElement;
-    m_redefinitionContext = rhs.m_redefinitionContext;
-}
-
 RedefinableElement::RedefinableElement() : Element(ElementType::REDEFINABLE_ELEMENT) {
     init();
 }
 
 RedefinableElement::~RedefinableElement() {
 
-}
-
-RedefinableElement::RedefinableElement(const RedefinableElement& el) : Element(el, ElementType::REDEFINABLE_ELEMENT) {
-    // abstract
 }
 
 Set<RedefinableElement, RedefinableElement>& RedefinableElement::getRedefinedElements() {

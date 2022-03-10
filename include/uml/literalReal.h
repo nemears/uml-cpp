@@ -1,5 +1,5 @@
-#ifndef LITERALREALH
-#define LITERALREALH
+#ifndef _UML_LITERAL_REAL_H_
+#define _UML_LITERAL_REAL_H_
 
 #include "literalSpecification.h"
 
@@ -9,10 +9,9 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            double value = 0;
+            double m_value = 0;
             LiteralReal();
         public:
-            LiteralReal(const LiteralReal& rhs);
             double getValue();
             void setValue(double val);
             bool isSubClassOf(ElementType eType) const override;

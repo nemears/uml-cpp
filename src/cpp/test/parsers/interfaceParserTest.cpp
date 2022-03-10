@@ -14,7 +14,7 @@ class InterfaceParserTest : public ::testing::Test {
 TEST_F(InterfaceParserTest, parseBasicInterfaceTest) {
     UmlManager m;
     Element* el;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "interfaceTests/basicInterface.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "interfaceTests/basicInterface.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package& pckg = el->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
@@ -32,27 +32,27 @@ TEST_F(InterfaceParserTest, parseBasicInterfaceTest) {
     ASSERT_EQ(nested.getName(), "nest");
     ASSERT_EQ(interface.getGeneralizations().size(), 1);
     Generalization& generalization = interface.getGeneralizations().front();
-    ASSERT_TRUE(generalization.hasGeneral());
-    ASSERT_EQ(generalization.getGeneralRef().getElementType(), ElementType::INTERFACE);
-    Interface& general = generalization.getGeneralRef().as<Interface>();
+    ASSERT_TRUE(generalization.getGeneral());
+    ASSERT_EQ(generalization.getGeneral()->getElementType(), ElementType::INTERFACE);
+    Interface& general = generalization.getGeneral()->as<Interface>();
     Class& clazz = pckg.getPackagedElements().get("implementingClazz").as<Class>();
     ASSERT_EQ(clazz.getInterfaceRealizations().size(), 1);
     InterfaceRealization& realization = clazz.getInterfaceRealizations().front();
-    ASSERT_TRUE(realization.hasContract());
-    ASSERT_EQ(realization.getContractRef(), interface);
+    ASSERT_TRUE(realization.getContract());
+    ASSERT_EQ(*realization.getContract(), interface);
 }
 
 TEST_F(InterfaceParserTest, emitInterfaceTest) {
     UmlManager m;
-    Package& root = m.create<Package>();
-    Interface& interface = m.create<Interface>();
-    Property& prop = m.create<Property>();
-    Operation& op = m.create<Operation>();
-    DataType& nest = m.create<DataType>();
-    Interface& general = m.create<Interface>();
-    Generalization& generalization = m.create<Generalization>();
-    Class& implementing = m.create<Class>();
-    InterfaceRealization& realization = m.create<InterfaceRealization>();
+    Package& root = *m.create<Package>();
+    Interface& interface = *m.create<Interface>();
+    Property& prop = *m.create<Property>();
+    Operation& op = *m.create<Operation>();
+    DataType& nest = *m.create<DataType>();
+    Interface& general = *m.create<Interface>();
+    Generalization& generalization = *m.create<Generalization>();
+    Class& implementing = *m.create<Class>();
+    InterfaceRealization& realization = *m.create<InterfaceRealization>();
     root.setID("efOYpQ48NuwY3f2xX0u9WkxcjfY6");
     interface.setID("fqag25FXykqQlo_bQWmS&cAB6338");
     prop.setID("Jp2IhMjC2qNN7cIYPXiFZU4vDdun");
@@ -105,7 +105,7 @@ TEST_F(InterfaceParserTest, emitInterfaceTest) {
 TEST_F(InterfaceParserTest, parsePortW_InterfaceTest) {
     UmlManager m;
     Element* el;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "interfaceTests/portW_Interface.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "interfaceTests/portW_Interface.yml").ptr());
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package& pckg = el->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
@@ -114,8 +114,8 @@ TEST_F(InterfaceParserTest, parsePortW_InterfaceTest) {
     Class& encapsulated = pckg.getPackagedElements().get("encapsulated").as<Class>();
     ASSERT_EQ(implementing.getInterfaceRealizations().size(), 1);
     InterfaceRealization& realization = implementing.getInterfaceRealizations().front();
-    ASSERT_TRUE(realization.hasContract());
-    ASSERT_EQ(realization.getContractRef(), interface);
+    ASSERT_TRUE(realization.getContract());
+    ASSERT_EQ(*realization.getContract(), interface);
     ASSERT_EQ(encapsulated.getOwnedPorts().size(), 1);
     Port& port = encapsulated.getOwnedPorts().front();
     ASSERT_TRUE(port.isConjugated());
@@ -125,12 +125,12 @@ TEST_F(InterfaceParserTest, parsePortW_InterfaceTest) {
 
 TEST_F(InterfaceParserTest, emitPortWInterfaceTest) {
     UmlManager m;
-    Package& root = m.create<Package>();
-    Class& implementing = m.create<Class>();
-    Interface& interface = m.create<Interface>();
-    Class& encapsulated = m.create<Class>();
-    InterfaceRealization& realization = m.create<InterfaceRealization>();
-    Port& port = m.create<Port>();
+    Package& root = *m.create<Package>();
+    Class& implementing = *m.create<Class>();
+    Interface& interface = *m.create<Interface>();
+    Class& encapsulated = *m.create<Class>();
+    InterfaceRealization& realization = *m.create<InterfaceRealization>();
+    Port& port = *m.create<Port>();
     root.setID("epLFcWN0KeMt8t5mAuF4TUCa75ns");
     implementing.setID("508FPtzv15GguudyAK6odJA7Rxoa");
     interface.setID("Ehn7ZlJH&ULe75R26WWVcYlMKXeY");
@@ -173,23 +173,23 @@ TEST_F(InterfaceParserTest, emitPortWInterfaceTest) {
 
 TEST_F(InterfaceParserTest, mountInterfaceTest) {
     UmlManager m;
-    Package& root = m.create<Package>();
-    Interface& interface = m.create<Interface>();
-    Property& prop = m.create<Property>();
-    Operation& op = m.create<Operation>();
-    DataType& nest = m.create<DataType>();
-    Class& implementing = m.create<Class>();
-    InterfaceRealization& realization = m.create<InterfaceRealization>();
-    Class& engine = m.create<Class>();
-    Class& propeller = m.create<Class>();
-    Port& pPort = m.create<Port>();
-    Port& ePort = m.create<Port>();
-    Property& pProp = m.create<Property>();
-    Property& eProp = m.create<Property>();
-    Class& boat = m.create<Class>();
-    Connector& connector = m.create<Connector>();
-    ConnectorEnd& pEnd = m.create<ConnectorEnd>();
-    ConnectorEnd& eEnd = m.create<ConnectorEnd>();
+    Package& root = *m.create<Package>();
+    Interface& interface = *m.create<Interface>();
+    Property& prop = *m.create<Property>();
+    Operation& op = *m.create<Operation>();
+    DataType& nest = *m.create<DataType>();
+    Class& implementing = *m.create<Class>();
+    InterfaceRealization& realization = *m.create<InterfaceRealization>();
+    Class& engine = *m.create<Class>();
+    Class& propeller = *m.create<Class>();
+    Port& pPort = *m.create<Port>();
+    Port& ePort = *m.create<Port>();
+    Property& pProp = *m.create<Property>();
+    Property& eProp = *m.create<Property>();
+    Class& boat = *m.create<Class>();
+    Connector& connector = *m.create<Connector>();
+    ConnectorEnd& pEnd = *m.create<ConnectorEnd>();
+    ConnectorEnd& eEnd = *m.create<ConnectorEnd>();
     interface.getOwnedAttributes().add(prop);
     interface.getOwnedOperations().add(op);
     interface.getNestedClassifiers().add(nest);
@@ -215,7 +215,7 @@ TEST_F(InterfaceParserTest, mountInterfaceTest) {
     m.release(interface);
     ASSERT_FALSE(m.loaded(interfaceID));
     Interface& interface2 = m.aquire(interfaceID)->as<Interface>();
-    ASSERT_EQ(interface2.getOwningPackageID(), root.getID());
+    ASSERT_EQ(interface2.getOwningPackage().id(), root.getID());
     ASSERT_EQ(interface2.getOwnedAttributes().size(), 1);
     ASSERT_EQ(interface2.getOwnedOperations().size(), 1);
     ASSERT_EQ(interface2.getNestedClassifiers().size(), 1);
@@ -235,41 +235,41 @@ TEST_F(InterfaceParserTest, mountInterfaceTest) {
     m.release(prop);
     ASSERT_FALSE(m.loaded(propertyID));
     Property& prop2 = m.aquire(propertyID)->as<Property>();
-    ASSERT_TRUE(prop2.hasInterface());
-    ASSERT_EQ(prop2.getInterfaceRef(), interface2);
+    ASSERT_TRUE(prop2.getInterface());
+    ASSERT_EQ(*prop2.getInterface(), interface2);
 
     ID operationID = op.getID();
     m.release(op);
     ASSERT_FALSE(m.loaded(operationID));
     Operation& op2 = m.aquire(operationID)->as<Operation>();
-    ASSERT_TRUE(op2.hasInterface());
-    ASSERT_EQ(op2.getInterfaceRef(), interface2);
+    ASSERT_TRUE(op2.getInterface());
+    ASSERT_EQ(*op2.getInterface(), interface2);
 
     ID nestID = nest.getID();
     m.release(nest);
     ASSERT_FALSE(m.loaded(nestID));
     DataType& nest2 = m.aquire(nestID)->as<DataType>();
-    ASSERT_TRUE(nest2.hasNamespace());
-    ASSERT_EQ(nest2.getNamespaceRef(), interface2);
+    ASSERT_TRUE(nest2.getNamespace());
+    ASSERT_EQ(*nest2.getNamespace(), interface2);
 
     ID realizationID = realization.getID();
     m.release(realization);
     ASSERT_FALSE(m.loaded(realizationID));
     InterfaceRealization& realization2 = m.aquire(realizationID)->as<InterfaceRealization>();
-    ASSERT_TRUE(realization2.hasImplementingClassifier());
-    ASSERT_EQ(realization2.getImplementingClassifierRef(), implementing);
+    ASSERT_TRUE(realization2.getImplementingClassifier());
+    ASSERT_EQ(*realization2.getImplementingClassifier(), implementing);
 
     ID pPortID = pPort.getID();
     m.release(pPort);
     ASSERT_FALSE(m.loaded(pPortID));
     Port& pPort2 = m.aquire(pPortID)->as<Port>();
-    ASSERT_TRUE(pPort2.hasClass());
-    ASSERT_EQ(pPort2.getClassRef(), propeller);
+    ASSERT_TRUE(pPort2.getClass());
+    ASSERT_EQ(*pPort2.getClass(), propeller);
 
     ID connectorID = connector.getID();
     m.release(connector);
     ASSERT_FALSE(m.loaded(connectorID));
     Connector& connector2 = m.aquire(connectorID)->as<Connector>();
-    ASSERT_TRUE(connector2.hasFeaturingClassifier());
-    ASSERT_EQ(connector2.getFeaturingClassifierRef(), boat);
+    ASSERT_TRUE(connector2.getFeaturingClassifier());
+    ASSERT_EQ(*connector2.getFeaturingClassifier(), boat);
 }

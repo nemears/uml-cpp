@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "uml/uml-stable.h"
+#include "uml/id.h"
 
 using namespace UML;
 

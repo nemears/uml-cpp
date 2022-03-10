@@ -1,18 +1,24 @@
 #include "uml/literalReal.h"
-#include "uml/uml-stable.h"
+#include "uml/package.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
-LiteralReal::LiteralReal() : Element(ElementType::LITERAL_REAL) {}
+LiteralReal::LiteralReal() : Element(ElementType::LITERAL_REAL) {
 
-LiteralReal::LiteralReal(const LiteralReal& rhs) : Element(rhs, ElementType::LITERAL_REAL) {}
+}
 
 double LiteralReal::getValue() {
-    return value;
+    return m_value;
 }
 
 void LiteralReal::setValue(double val) {
-    value = val;
+    m_value = val;
 }
 
 bool LiteralReal::isSubClassOf(ElementType eType) const {

@@ -1,13 +1,24 @@
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef _UML_PARSERS_PARSER_H_
+#define _UML_PARSERS_PARSER_H_
 
 #include <exception>
 #include "yaml-cpp/yaml.h"
 #include "uml/parsers/parserMetaData.h"
 #include "uml/parsers/emitterMetaData.h"
-#include "uml/uml-stable.h"
+#include "uml/umlManager.h"
+#include "uml/umlPtr.h"
+#include "uml/set.h"
+#include "uml/singleton.h"
 
 namespace UML {
+    
+    class ValueSpecification;
+    class PrimitiveType;
+    class LiteralBool;
+    class LiteralReal;
+    class LiteralInt;
+    class LiteralString;
+    class LiteralUnlimitedNatural;
 
     namespace Parsers {
 
@@ -29,10 +40,10 @@ namespace UML {
 
         UmlManager* parse(std::string path);
 
-        Element* parse(ParserMetaData& data);
+        ElementPtr parse(ParserMetaData& data);
 
-        Element& parseString(std::string body, ParserMetaData& data);
-        Element& parseYAML(YAML::Node node, ParserMetaData& data);
+        ElementPtr parseString(std::string body, ParserMetaData& data);
+        ElementPtr parseYAML(YAML::Node node, ParserMetaData& data);
 
         EmitterMetaData getData(Element& el);
         std::string emit(Element& el);
@@ -46,7 +57,7 @@ namespace UML {
         void emitToFile(Element& el, EmitterMetaData& data, std::string path, std::string fileName);
 
         namespace {
-            Element* parseExternalAddToManager(ParserMetaData& data, std::string path); 
+            ElementPtr parseExternalAddToManager(ParserMetaData& data, std::string path); 
         }
 
         ElementType elementTypeFromString(std::string eType);
@@ -54,7 +65,7 @@ namespace UML {
         // anonymous functions
         namespace {
 
-            Element* parseNode(YAML::Node node, ParserMetaData& data);
+            ElementPtr parseNode(YAML::Node node, ParserMetaData& data);
 
             void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);
             void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data);

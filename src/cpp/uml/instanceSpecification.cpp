@@ -1,8 +1,16 @@
 #include "uml/instanceSpecification.h"
 #include "uml/slot.h"
-#include "uml/classifier.h"
+#include "uml/behavior.h"
 #include "uml/valueSpecification.h"
-#include "uml/uml-stable.h"
+#include "uml/generalization.h"
+#include "uml/dataType.h"
+#include "uml/property.h"
+#include "uml/package.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -49,48 +57,20 @@ void InstanceSpecification::init() {
     m_slots.m_signature = &InstanceSpecification::getSlots;
 }
 
-void InstanceSpecification::copy(const InstanceSpecification& rhs) {
-    m_classifiers = rhs.m_classifiers;
-    m_specification = rhs.m_specification;
-    m_slots = rhs.m_slots;
-}
-
 InstanceSpecification::InstanceSpecification() : Element(ElementType::INSTANCE_SPECIFICATION) {
     init();
 }
 
-InstanceSpecification::InstanceSpecification(const InstanceSpecification& rhs) : Element(rhs, ElementType::INSTANCE_SPECIFICATION) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    DeploymentTarget::copy(rhs);
-    DeployedArtifact::copy(rhs);
-    copy(rhs);
-}
-
 InstanceSpecification::~InstanceSpecification() {
-    
+    mountAndRelease();
 }
 
 Set<Classifier, InstanceSpecification>& InstanceSpecification::getClassifiers() {
     return m_classifiers;
 }
 
-ValueSpecification* InstanceSpecification::getSpecification() {
+ValueSpecificationPtr InstanceSpecification::getSpecification() const {
     return m_specification.get();
-}
-
-ValueSpecification& InstanceSpecification::getSpecificationRef() {
-    return m_specification.getRef();
-}
-
-ID InstanceSpecification::getSpecificationID() const {
-    return m_specification.id();
-}
-
-bool InstanceSpecification::hasSpecification() const {
-    return m_specification.has();
 }
 
 void InstanceSpecification::setSpecification(ValueSpecification* specification) {

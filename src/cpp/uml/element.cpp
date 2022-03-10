@@ -1,22 +1,18 @@
 #include "uml/element.h"
 #include "uml/umlManager.h"
+#include "uml/umlPtr.h"
 #include "uml/comment.h"
 #include "uml/instanceSpecification.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/behavior.h"
+#include "uml/association.h"
+#include "uml/deployment.h"
+#include "uml/dataType.h"
 #include "uml/singleton.h"
-#include "uml/uml-stable.h"
 #include "uml/setReferenceFunctor.h"
 
 namespace UML {
-
-class AddToMountFunctor : public SetFunctor {
-    public:
-        AddToMountFunctor(Element* them) : SetFunctor(them) {};
-        void operator()(Element& el) const override {
-            if (!m_el.m_manager->m_mountBase.empty() && m_el.m_manager->count(el.getID())) {
-                m_el.m_manager->addToMount(m_el);
-            }
-        };
-};
 
 void Element::setReference(Element* referencing) {
     if (m_node->m_references.count(referencing->getID())) {
@@ -92,15 +88,17 @@ void Element::referenceErased(ID id) {
     m_appliedStereotype->eraseElement(id);
 }
 
-Set<Element, Element>& Element::getOwnerSingleton() {
-    return *m_owner;
+void Element::mountAndRelease() {
+    // if (!m_copiedElementFlag && !m_createVal) {
+    //     m_manager->mountEl(*this);
+    //     m_manager->releaseNode(*this);
+    //     m_manager->m_graph.erase(m_id);
+    //     m_createVal = true;
+    // }
 }
 
-void Element::copy(const Element& rhs) {
-    *m_owner = *rhs.m_owner;
-    *m_ownedElements = *rhs.m_ownedElements;
-    *m_ownedComments = *rhs.m_ownedComments;
-    *m_appliedStereotype = *rhs.m_appliedStereotype;
+Set<Element, Element>& Element::getOwnerSingleton() {
+    return *m_owner;
 }
 
 Element::Element(ElementType elementType) : m_elementType(elementType) {
@@ -112,7 +110,6 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_owner->opposite(&Element::getOwnedElements);
     m_owner->m_signature = &Element::getOwnerSingleton;
     m_owner->m_readOnly = true;
-    m_owner->m_addFunctors.insert(new AddToMountFunctor(this));
 
     m_ownedElements = new Set<Element, Element>(this);
     m_ownedElements->opposite(&Element::getOwnerSingleton);
@@ -133,23 +130,6 @@ Element::~Element() {
     delete m_ownedComments;
     delete m_owner;
     delete m_ownedElements;
-    if (m_copiedElementFlag) {
-        if (m_manager) {
-            if (m_node->m_copies.count(this)) {
-                m_node->m_copies.erase(this);
-            }
-        }
-    }
-}
-
-Element::Element(const Element& rhs, ElementType elementType) : Element(elementType) {
-    m_copiedElementFlag = true;
-    m_id = rhs.m_id;
-    m_manager = rhs.m_manager;
-    m_node = rhs.m_node;
-    if (m_manager) {
-        m_manager->m_graph[m_id].m_copies.insert(this);
-    }
 }
 
 void Element::setID(std::string id) {
@@ -165,16 +145,6 @@ void Element::setID(ID id) {
         m_manager->reindex(m_id, id);
     }
     m_id = id;
-    if (m_manager) {
-        for (auto& copy : m_node->m_copies) {
-            if (copy != this) {
-                copy->m_id = id;
-            }
-        }
-        if (m_node->m_managerElementMemory != this) {
-            m_node->m_managerElementMemory->m_id = id;
-        }
-    }
 }
 
 ElementType Element::getElementType() const {
@@ -480,20 +450,8 @@ ID Element::getID() const {
     return m_id;
 }
 
-Element* Element::getOwner() {
+ElementPtr Element::getOwner() const {
     return m_owner->get();
-}
-
-Element& Element::getOwnerRef() {
-    return m_owner->getRef();
-}
-
-ID Element::getOwnerID() const {
-    return m_owner->id();
-}
-
-bool Element::hasOwner() const {
-    return m_owner->has();
 }
 
 void Element::setOwner(Element* owner) {

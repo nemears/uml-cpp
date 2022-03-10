@@ -1,5 +1,5 @@
-#ifndef PARAMETERABLE_ELEMENT_H
-#define PARAMETERABLE_ELEMENT_H
+#ifndef _UML_PARAMETERABLE_ELEMENT_H_
+#define _UML_PARAMETERABLE_ELEMENT_H_
 
 #include "element.h"
 #include "singleton.h"
@@ -8,6 +8,8 @@ namespace UML {
 
     class TemplateParameter;
     class TemplateParameterSubstitution;
+
+    typedef UmlPtr<TemplateParameter> TemplateParameterPtr;
 
     class ParameterableElement : virtual public Element {
 
@@ -26,22 +28,14 @@ namespace UML {
             Set<TemplateParameter, ParameterableElement>& getOwningTemplateParameterSingleton();
             Set<TemplateParameter, ParameterableElement>& getTemplateParameterSingleton();
             void init();
-            void copy(const ParameterableElement& rhs);
             ParameterableElement();
         public:
-            ParameterableElement(const ParameterableElement& el);
             ~ParameterableElement();
-            TemplateParameter* getOwningTemplateParameter();
-            TemplateParameter& getOwningTemplateParameterRef();
-            ID getOwningTemplateParameterID() const;
-            bool hasOwningTemplateParameter()  const;
+            TemplateParameterPtr getOwningTemplateParameter() const;
             void setOwningTemplateParameter(TemplateParameter* parameter);
             void setOwningTemplateParameter(TemplateParameter& parameter);
             void setOwningTemplateParameter(ID id);
-            TemplateParameter* getTemplateParameter();
-            TemplateParameter& getTemplateParameterRef();
-            ID getTemplateParameterID() const;
-            bool hasTemplateParameter() const;
+            TemplateParameterPtr getTemplateParameter() const;
             void setTemplateParameter(TemplateParameter* parameter);
             void setTemplateParameter(TemplateParameter& parameter);
             void setTemplateParameter(ID id);

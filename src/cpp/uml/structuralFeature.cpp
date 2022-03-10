@@ -1,5 +1,14 @@
 #include "uml/structuralFeature.h"
-#include "uml/uml-stable.h"
+#include "uml/behavior.h"
+#include "uml/package.h"
+#include "uml/property.h"
+#include "uml/generalization.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/structuralFeature.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -23,11 +32,14 @@ void StructuralFeature::referenceErased(ID id) {
     Feature::referenceErased(id);
 }
 
+void StructuralFeature::restoreReference(Element* el) {
+    TypedElement::restoreReference(el);
+    Feature::restoreReference(el);
+}
+
 StructuralFeature::StructuralFeature() : Element(ElementType::STRUCTURAL_FEATURE) {
 
 }
-
-StructuralFeature::StructuralFeature(const StructuralFeature& feature) : Element(feature, ElementType::STRUCTURAL_FEATURE) {}
 
 bool StructuralFeature::isSubClassOf(ElementType eType) const {
     bool ret = TypedElement::isSubClassOf(eType);

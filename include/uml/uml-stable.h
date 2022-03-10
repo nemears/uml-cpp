@@ -55,6 +55,7 @@
 #include "uml/templateParameterSubstitution.h"
 #include "uml/templateSignature.h"
 #include "uml/umlManager.h"
+#include "uml/umlPtr.h"
 #include "uml/usage.h"
 
 #include "uml/managers/umlClient.h"

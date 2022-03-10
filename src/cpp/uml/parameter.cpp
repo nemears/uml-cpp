@@ -1,5 +1,13 @@
 #include "uml/parameter.h"
-#include "uml/uml-stable.h"
+#include "uml/package.h"
+#include "uml/dataType.h"
+#include "uml/behavior.h"
+#include "uml/operation.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -13,42 +21,17 @@ void Parameter::init() {
     m_operation.m_signature = &Parameter::getOperationSingleton;
 }
 
-void Parameter::copy(const Parameter& rhs) {
-    m_operation = rhs.m_operation;
-    m_direction = rhs.m_direction;
-}
-
 Parameter::Parameter() : Element(ElementType::PARAMETER) {
     init();
 }
 
-Parameter::Parameter(const Parameter& rhs) : Element(rhs, ElementType::PARAMETER) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    TypedElement::copy(rhs);
-    MultiplicityElement::copy(rhs);
-    copy(rhs);
-}
 
 Parameter::~Parameter() {
-
+    mountAndRelease();
 }
 
-Operation* Parameter::getOperation() {
+OperationPtr Parameter::getOperation() const {
     return m_operation.get();
-}
-
-Operation& Parameter::getOperationRef() {
-    return m_operation.getRef();
-}
-
-ID Parameter::getOperationID() const {
-    return m_operation.id();
-}
-
-bool Parameter::hasOperation() const {
-    return m_operation.has();
 }
 
 void Parameter::setOperation(Operation* operation) {
@@ -69,15 +52,14 @@ ParameterDirectionKind Parameter::getDirection() {
 
 void Parameter::setDirection(ParameterDirectionKind direction) {
     if (direction == ParameterDirectionKind::RETURN || direction == ParameterDirectionKind::OUT || direction == ParameterDirectionKind::INOUT) {
-        // if (m_operation.has()) {
-        //     if (m_operation.getRef().m_returnSpecified) {
-        //         throw ReturnParameterException(m_operation.getRef().getElementTypeString() + " " + m_operation.id().string());
-        //     }
-        //     m_operation.getRef().m_returnSpecified = true;
-        // }
+        if (m_operation.get()) {
+            if (m_operation.get()->m_returnSpecified) {
+                throw ReturnParameterException(m_operation.get()->getElementTypeString() + " " + m_operation.get().id().string());
+            }
+            m_operation.get()->m_returnSpecified = true;
+        }
     }
     m_direction = direction;
-    updateCopiesScalar(direction, &Parameter::m_direction);
 }
 
 std::string Parameter::getDirectionString() {

@@ -1,5 +1,5 @@
-#ifndef RELATIONSHIP_H
-#define RELATIONSHIP_H
+#ifndef _UML_RELATIONSHIP_H_
+#define _UML_RELATIONSHIP_H_
 
 #include "set.h"
 
@@ -11,11 +11,10 @@ namespace UML {
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
+            void restoreReference(Element* el) override;
             void init();
-            void copy(const Relationship& rhs);
             Relationship();
         public:
-            Relationship(const Relationship& relationship);
             virtual ~Relationship();
             Set<Element, Relationship>& getRelatedElements();
             bool isSubClassOf(ElementType eType) const override;

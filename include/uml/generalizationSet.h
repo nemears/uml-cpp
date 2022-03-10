@@ -1,5 +1,5 @@
-#ifndef UML_GENERALIZATION_SET_H
-#define UML_GENERALIZATION_SET_H
+#ifndef _UML_GENERALIZATION_SET_H_
+#define _UML_GENERALIZATION_SET_H_
 
 #include "uml/packageableElement.h"
 
@@ -7,6 +7,7 @@ namespace UML {
 
     class Classifier;
     class Generalization;
+    typedef UmlPtr<Classifier> ClassifierPtr;
 
     class GeneralizationSet : public PackageableElement {
 
@@ -24,18 +25,14 @@ namespace UML {
             void referenceErased(ID id) override;
             Set<Classifier, GeneralizationSet>& getPowerTypeSingleton();
             void init();
-            void copy(const GeneralizationSet& rhs);
             GeneralizationSet();
         public:
-            GeneralizationSet(const GeneralizationSet& rhs);
+            virtual ~GeneralizationSet();
             bool isCovering() const;
             bool isDisjoint() const;
             void setCovering(bool covering);
             void setDisjoint(bool disjoint);
-            Classifier* getPowerType();
-            Classifier& getPowerTypeRef();
-            ID getPowerTypeID() const;
-            bool hasPowerType() const;
+            ClassifierPtr getPowerType() const;
             void setPowerType(Classifier* powerType);
             void setPowerType(Classifier& powerType);
             void setPowerType(ID id);

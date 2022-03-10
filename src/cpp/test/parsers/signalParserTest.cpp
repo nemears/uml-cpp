@@ -17,7 +17,7 @@ class SignalParserTest : public ::testing::Test {
 TEST_F(SignalParserTest, parseSignalTest) {
     Element* el;
     UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "signalTests/basicSignal.yml"));
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "signalTests/basicSignal.yml").ptr());
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& pckg = el->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
@@ -26,16 +26,16 @@ TEST_F(SignalParserTest, parseSignalTest) {
     ASSERT_EQ(signal.getOwnedAttributes().size(), 1);
     ASSERT_EQ(clazz.getOwnedReceptions().size(), 1);
     Reception& reception = clazz.getOwnedReceptions().front();
-    ASSERT_EQ(reception.getSignalRef(), signal);
+    ASSERT_EQ(*reception.getSignal(), signal);
 }
 
 TEST_F(SignalParserTest, emitSignalTest) {
     UmlManager m;
-    Package& pckg = m.create<Package>();
-    Signal& signal = m.create<Signal>();
-    Property& attr = m.create<Property>();
-    Class& clazz = m.create<Class>();
-    Reception& reception = m.create<Reception>();
+    Package& pckg = *m.create<Package>();
+    Signal& signal = *m.create<Signal>();
+    Property& attr = *m.create<Property>();
+    Class& clazz = *m.create<Class>();
+    Reception& reception = *m.create<Reception>();
     pckg.setID("IJabcFrKrE9yxVT&qQUQ2&xzVxpd");
     signal.setID("_sgqzW88lsR9bBTk8GyBRjYujfB5");
     attr.setID("DSV8nQG_4VargpMXqb57S2dACThU");

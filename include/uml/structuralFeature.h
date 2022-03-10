@@ -1,5 +1,5 @@
-#ifndef STRUCTURALFEATUREH
-#define STRUCTURALFEATUREH
+#ifndef _UML_STRUCTURAL_FEATURE_H_
+#define _UML_STRUCTURAL_FEATURE_H_
 
 #include "typedElement.h"
 #include "multiplicityElement.h"
@@ -12,9 +12,9 @@ namespace UML {
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
+            void restoreReference(Element* el) override;
             StructuralFeature();
         public:
-            StructuralFeature(const StructuralFeature& feature);
             class InvalidValueException: public std::exception {
                 public:
                     virtual const char* what() const throw() {

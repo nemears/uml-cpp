@@ -1,6 +1,14 @@
 #include "uml/feature.h"
-#include "uml/classifier.h"
-#include "uml/uml-stable.h"
+#include "uml/behavior.h"
+#include "uml/package.h"
+#include "uml/property.h"
+#include "uml/generalization.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -27,6 +35,11 @@ void Feature::referenceErased(ID id) {
     m_featuringClassifier.eraseElement(id);
 }
 
+void Feature::restoreReference(Element* el) {
+    RedefinableElement::restoreReference(el);
+    m_featuringClassifier.restore(el);
+}
+
 Set<Classifier, Feature>& Feature::getFeaturingClassifierSingleton() {
     return m_featuringClassifier;
 }
@@ -36,33 +49,12 @@ void Feature::init() {
     m_featuringClassifier.m_signature = &Feature::getFeaturingClassifierSingleton;
 }
 
-void Feature::copy(const Feature& rhs) {
-    m_featuringClassifier = rhs.m_featuringClassifier;
-    m_static = rhs.m_static;
-}
-
 Feature::Feature() : Element(ElementType::FEATURE) {
     init();
 }
 
-Feature::Feature(const Feature& feature) : Element(ElementType::FEATURE) {
-    // abstract
-}
-
-Classifier* Feature::getFeaturingClassifier() {
+ClassifierPtr Feature::getFeaturingClassifier() const {
     return m_featuringClassifier.get();
-}
-
-Classifier& Feature::getFeaturingClassifierRef() {
-    return m_featuringClassifier.getRef();
-}
-
-ID Feature::getFeaturingClassifierID() const {
-    return m_featuringClassifier.id();
-}
-
-bool Feature::hasFeaturingClassifier() const {
-    return m_featuringClassifier.has();
 }
 
 void Feature::setFeaturingClassifier(Classifier* clazz) {
@@ -79,7 +71,6 @@ bool Feature::isStatic() {
 
 void Feature::setStatic(bool isStatic) {
     m_static = isStatic;
-    updateCopiesScalar(isStatic, &Feature::m_static);
 }
 
 bool Feature::isSubClassOf(ElementType eType) const {

@@ -1,7 +1,14 @@
 #include "uml/dataType.h"
 #include "uml/operation.h"
 #include "uml/property.h"
-#include "uml/uml-stable.h"
+#include "uml/generalization.h"
+#include "uml/package.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -24,30 +31,12 @@ void DataType::init() {
     m_ownedOperations.m_signature = &DataType::getOwnedOperationsSet;
 }
 
-void DataType::copy(const DataType& rhs) {
-    m_ownedAttributes = rhs.m_ownedAttributes;
-    m_ownedOperations = rhs.m_ownedOperations;
-}
-
 DataType::DataType() : Element(ElementType::DATA_TYPE) {
     init();
 }
 
 DataType::~DataType() {
-    
-}
-
-DataType::DataType(const DataType& rhs) : Element(rhs, ElementType::DATA_TYPE) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    Namespace::copy(rhs);
-    ParameterableElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    TemplateableElement::copy(rhs);
-    RedefinableElement::copy(rhs);
-    Classifier::copy(rhs);
-    copy(rhs);
+    mountAndRelease();
 }
 
 OrderedSet<Property, DataType>& DataType::getOwnedAttributes() {

@@ -1,6 +1,6 @@
 #include "uml/parameterableElement.h"
-#include "uml/templateParameter.h"
-#include "uml/uml-stable.h"
+#include "uml/templateableElement.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -17,11 +17,11 @@ void ParameterableElement::reindexName(std::string oldName, std::string newName)
 }
 
 void ParameterableElement::restoreReference(Element* el) {
-    if (el->isSubClassOf(ElementType::TEMPLATE_PARAMETER) && el->as<TemplateParameter>().m_ownedDefault.id() == m_id) {
+    m_templateParameter.restore(el);
+    if (el->isSubClassOf(ElementType::TEMPLATE_PARAMETER) && el->as<TemplateParameter>().m_ownedDefault.get().id() == m_id) {
         if (m_templateParameter.empty()) {
             m_templateParameter.set(el->getID());
         }
-        m_templateParameter.restore(el);
     }
 }
 
@@ -46,37 +46,17 @@ void ParameterableElement::init() {
     m_owningTemplateParameter.m_signature = &ParameterableElement::getOwningTemplateParameterSingleton;
 }
 
-void ParameterableElement::copy(const ParameterableElement& rhs) {
-    m_templateParameter = rhs.m_templateParameter;
-    m_owningTemplateParameter = rhs.m_owningTemplateParameter;
-}
 
 ParameterableElement::ParameterableElement() : Element(ElementType::PARAMETERABLE_ELEMENT) {
     init();
-}
-
-ParameterableElement::ParameterableElement(const ParameterableElement& el) : Element(el, ElementType::PARAMETERABLE_ELEMENT) {
-    // abstract
 }
 
 ParameterableElement::~ParameterableElement() {
 
 }
 
-TemplateParameter* ParameterableElement::getOwningTemplateParameter() {
+TemplateParameterPtr ParameterableElement::getOwningTemplateParameter() const {
     return m_owningTemplateParameter.get();
-}
-
-TemplateParameter& ParameterableElement::getOwningTemplateParameterRef() {
-    return m_owningTemplateParameter.getRef();
-}
-
-ID ParameterableElement::getOwningTemplateParameterID() const {
-    return m_owningTemplateParameter.id();
-}
-
-bool ParameterableElement::hasOwningTemplateParameter() const {
-    return m_owningTemplateParameter.has();
 }
 
 void ParameterableElement::setOwningTemplateParameter(TemplateParameter* parameter) {
@@ -91,20 +71,8 @@ void ParameterableElement::setOwningTemplateParameter(ID id) {
     m_owningTemplateParameter.set(id);
 }
 
-TemplateParameter* ParameterableElement::getTemplateParameter() {
+TemplateParameterPtr ParameterableElement::getTemplateParameter() const {
     return m_templateParameter.get();
-}
-
-TemplateParameter& ParameterableElement::getTemplateParameterRef() {
-    return m_templateParameter.getRef();
-}
-
-ID ParameterableElement::getTemplateParameterID() const {
-    return m_templateParameter.id();
-}
-
-bool ParameterableElement::hasTemplateParameter() const {
-    return m_templateParameter.has();
 }
 
 void ParameterableElement::setTemplateParameter(TemplateParameter* parameter) {

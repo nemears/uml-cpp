@@ -1,6 +1,8 @@
 #include "uml/templateableElement.h"
 #include "uml/templateSignature.h"
-#include "uml/uml-stable.h"
+#include "uml/templateBinding.h"
+#include "uml/parameterableElement.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -17,37 +19,16 @@ void TemplateableElement::init() {
     m_templateBindings.m_signature = &TemplateableElement::getTemplateBindings;
 }
 
-void TemplateableElement::copy(const TemplateableElement& rhs) {
-    m_ownedTemplateSignature = rhs.m_ownedTemplateSignature;
-    m_templateBindings = rhs.m_templateBindings;
-}
-
 TemplateableElement::TemplateableElement() : Element(ElementType::TEMPLATEABLE_ELEMENT) {
     init();
-}
-
-TemplateableElement::TemplateableElement(const TemplateableElement& el) : Element(el, ElementType::TEMPLATEABLE_ELEMENT) {
-    // anstract
 }
 
 TemplateableElement::~TemplateableElement() {
 
 }
 
-TemplateSignature* TemplateableElement::getOwnedTemplateSignature() {
+TemplateSignaturePtr TemplateableElement::getOwnedTemplateSignature() const {
     return m_ownedTemplateSignature.get();
-}
-
-TemplateSignature& TemplateableElement::getOwnedTemplateSignatureRef() {
-    return m_ownedTemplateSignature.getRef();
-}
-
-ID TemplateableElement::getOwnedTemplateSignatureID() const {
-    return m_ownedTemplateSignature.id();
-}
-
-bool TemplateableElement::hasOwnedTemplateSignature() const {
-    return m_ownedTemplateSignature.has();
 }
 
 void TemplateableElement::setOwnedTemplateSignature(TemplateSignature* signature) {

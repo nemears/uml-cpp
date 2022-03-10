@@ -7,18 +7,18 @@ class PortTest : public ::testing::Test {};
 
 TEST_F(PortTest, portWInterfaceType) {
     UmlManager m;
-    Interface& type = m.create<Interface>();
-    Class& encapsulatedClassifier = m.create<Class>();
-    Port& port = m.create<Port>();
+    Interface& type = *m.create<Interface>();
+    Class& encapsulatedClassifier = *m.create<Class>();
+    Port& port = *m.create<Port>();
     port.setType(type);
     encapsulatedClassifier.getOwnedAttributes().add(port);
 
     ASSERT_EQ(port.getProvided().size(), 1);
     ASSERT_EQ(port.getRequired().size(), 0);
-    ASSERT_TRUE(port.hasClass());
+    ASSERT_TRUE(port.getClass());
 
     ASSERT_EQ(port.getProvided().front(), type);
-    ASSERT_EQ(port.getClassRef(), encapsulatedClassifier);
+    ASSERT_EQ(*port.getClass(), encapsulatedClassifier);
     
     ASSERT_EQ(encapsulatedClassifier.getOwnedPorts().size(), 1);
     ASSERT_EQ(encapsulatedClassifier.getOwnedAttributes().size(), 1);
@@ -37,15 +37,15 @@ TEST_F(PortTest, portWInterfaceType) {
 
 TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
     UmlManager m;
-    Interface& realizedInterface = m.create<Interface>();
-    Interface& usedInterface = m.create<Interface>();
-    InterfaceRealization& realization = m.create<InterfaceRealization>();
-    Usage& usage = m.create<Usage>();
-    Class& specific = m.create<Class>();
-    Class& general = m.create<Class>();
-    Generalization& generalization = m.create<Generalization>();
-    Port& port = m.create<Port>();
-    Class& encapsulatedClassifier = m.create<Class>();
+    Interface& realizedInterface = *m.create<Interface>();
+    Interface& usedInterface = *m.create<Interface>();
+    InterfaceRealization& realization = *m.create<InterfaceRealization>();
+    Usage& usage = *m.create<Usage>();
+    Class& specific = *m.create<Class>();
+    Class& general = *m.create<Class>();
+    Generalization& generalization = *m.create<Generalization>();
+    Port& port = *m.create<Port>();
+    Class& encapsulatedClassifier = *m.create<Class>();
     realization.setContract(realizedInterface);
     specific.getInterfaceRealizations().add(realization);
     usage.getSupplier().add(usedInterface);

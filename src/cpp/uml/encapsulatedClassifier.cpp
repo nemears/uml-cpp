@@ -1,5 +1,13 @@
 #include "uml/encapsulatedClassifier.h"
-#include "uml/uml-stable.h"
+#include "uml/property.h"
+#include "uml/generalization.h"
+#include "uml/package.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -23,20 +31,12 @@ void EncapsulatedClassifier::init() {
     m_ownedAttributes.m_removeFunctors.insert(new RemoveOwnedAttributeFunctor(this));
 }
 
-void EncapsulatedClassifier::copy(const EncapsulatedClassifier& rhs) {
-    m_ownedPorts = rhs.m_ownedPorts;
-}
-
 EncapsulatedClassifier::EncapsulatedClassifier() : Element(ElementType::ENCAPSULATED_CLASSIFIER) {
     init();
 }
 
 EncapsulatedClassifier::~EncapsulatedClassifier() {
 
-}
-
-EncapsulatedClassifier::EncapsulatedClassifier(const EncapsulatedClassifier& rhs) : Element(rhs, ElementType::ENCAPSULATED_CLASSIFIER) {
-    // abstract
 }
 
 Set<Port, EncapsulatedClassifier>& EncapsulatedClassifier::getOwnedPorts() {

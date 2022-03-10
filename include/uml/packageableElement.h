@@ -1,13 +1,13 @@
-#ifndef PACKAGEABLE_ELEMENT_H
-#define PACKAGEABLE_ELEMENT_H
+#ifndef _UML_PACKAGEABLE_ELEMENT_H_
+#define _UML_PACKAGEABLE_ELEMENT_H_
 
 #include "namedElement.h"
 #include "parameterableElement.h"
-#include "singleton.h"
 
 namespace UML {
 
     class Package;
+    typedef UmlPtr<Package> PackagePtr;
 
     class PackageableElement : virtual public NamedElement , virtual public ParameterableElement {
 
@@ -22,15 +22,10 @@ namespace UML {
             void referenceErased(ID id) override;
             Set<Package, PackageableElement>& getOwningPackageSingleton();
             void init();
-            void copy(const PackageableElement& rhs);
             PackageableElement();
         public:
-            PackageableElement(const PackageableElement& el);
             virtual ~PackageableElement() {};
-            Package* getOwningPackage();
-            Package& getOwningPackageRef();
-            ID getOwningPackageID() const;
-            bool hasOwningPackage() const;
+            PackagePtr getOwningPackage() const;
             void setOwningPackage(Package& package);
             void setOwningPackage(Package* package);
             void setOwningPackage(ID id);

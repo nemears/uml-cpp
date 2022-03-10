@@ -1,5 +1,5 @@
-#ifndef GENERALIZATION_H
-#define GENERALIZATION_H
+#ifndef _UML_GENERALIZATION_H_
+#define _UML_GENERALIZATION_H_
 
 #include "directedRelationship.h"
 #include "singleton.h"
@@ -8,6 +8,7 @@ namespace UML {
 
     class Classifier;
     class GeneralizationSet;
+    typedef UmlPtr<Classifier> ClassifierPtr;
 
     class Generalization : public DirectedRelationship {
 
@@ -34,22 +35,14 @@ namespace UML {
             Set<Classifier, Generalization>& getGeneralSingleton();
             Set<Classifier, Generalization>& getSpecificSingleton();
             void init();
-            void copy(const Generalization& rhs);
             Generalization();
         public:
-            Generalization(const Generalization& rhs);
             virtual ~Generalization();
-            Classifier* getGeneral();
-            Classifier& getGeneralRef();
-            ID getGeneralID() const;
-            bool hasGeneral() const;
+            ClassifierPtr getGeneral() const;
             void setGeneral(Classifier* general);
             void setGeneral(Classifier& general);
             void setGeneral(ID id);
-            Classifier* getSpecific();
-            Classifier& getSpecificRef();
-            ID getSpecificID() const;
-            bool hasSpecific() const;
+            ClassifierPtr getSpecific() const;
             void setSpecific(Classifier& specific);
             void setSpecific(Classifier* specific);
             void setSpecific(ID id);

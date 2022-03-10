@@ -1,5 +1,9 @@
 #include "uml/abstraction.h"
-#include "uml/uml-stable.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -7,19 +11,8 @@ Abstraction::Abstraction() : Element(ElementType::ABSTRACTION) {
 
 }
 
-Abstraction::Abstraction(const Abstraction& rhs) : Element(rhs, ElementType::ABSTRACTION) {
-    init();
-    Element::copy(rhs);
-    Relationship::copy(rhs);
-    DirectedRelationship::copy(rhs);
-    NamedElement::copy(rhs);
-    ParameterableElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    Dependency::copy(rhs);
-}
-
 Abstraction::~Abstraction() {
-
+    mountAndRelease();
 }
 
 bool Abstraction::isSubClassOf(ElementType eType) const {

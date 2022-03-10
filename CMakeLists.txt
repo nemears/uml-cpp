@@ -17,6 +17,10 @@ IF(UNIX)
     find_package(Threads REQUIRED)
 ENDIF()
 
+IF(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    add_compile_options(-fsanitize=address)
+endif()
+
 # Headers
 include_directories(include)
 
@@ -45,7 +49,7 @@ if (UML_CLIENT_SERVER)
     target_link_libraries(uml-server PRIVATE Threads::Threads)
 endif()
 add_subdirectory(src/cpp/test)
-target_include_directories(umltest PRIVATE libs/yaml-cpp/include)
+# target_include_directories(umltest PRIVATE libs/yaml-cpp/include)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

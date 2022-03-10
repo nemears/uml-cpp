@@ -17,9 +17,8 @@ namespace UML {
     class TypedElement;
     class Property;
     class Feature;
+    class Package;
 
-    template <class T> class Sequence;
-    template <class T> struct SequenceIterator;
     template <class T, class U> class Singleton;
     class Model;
 
@@ -88,46 +87,26 @@ namespace UML {
         friend class PackageMerge;
         friend class Property;
         friend class Feature;
+        friend class Package;
         friend class AddToMountFunctor;
-        template<typename> friend class Sequence;
-        template <class T> friend struct SequenceIterator;
         template <class T, class U> friend class Singleton;
         template <class T, class U> friend class Set;
         template <class T> friend class SetIterator;
+        template <class T> friend class UmlPtr;
 
         protected:
+            bool m_lossless = true;
+            bool m_lazy = true;
             std::unordered_set<ID> m_elements;
             std::unordered_map<ID, ManagerNode> m_graph;
             std::filesystem::path m_path;
             std::filesystem::path m_mountBase;
-            Model* m_model;
-            Element* m_root;
+            // Model* m_model;
+            Element* m_root = 0;
             void clear();
             /** Using this get is faster than the get<T>(ID id) method (usually) because it will base it's
              *  search on a particular element, only for internal api use where trying to set and return a ptr**/
-            template <class T = Element> T* get(Element* me, ID theID) {
-                if (!theID.isNull()) {
-                    if (me->m_node) {
-                        if (me->m_node->m_references.count(theID)) {
-                            if (!me->m_node->m_references[theID]) {
-                                if (loaded(theID)) {
-                                    me->restoreReference(&get<T>(theID));
-                                } else {
-                                    Element* aquired = aquire(theID);
-                                    me->m_node->m_references[theID] = aquired->m_node;
-                                }
-                            }
-                            return dynamic_cast<T*>(me->m_node->m_references[theID]->m_managerElementMemory);
-                        } else {
-                            throw ManagerStateException();
-                        }
-                    } else {
-                        aquire(theID);
-                        return  dynamic_cast<T*>(me->m_node->m_references[theID]->m_managerElementMemory);
-                    }
-                }
-                return 0;
-            }
+            Element* get(Element* me, ID theID);
             void addToMount(Element& el);
             virtual void createNode(Element* el);
             void eraseNode(ManagerNode* node, ID id);
@@ -140,49 +119,33 @@ namespace UML {
               * @param id, the id of the element you wish to get from the manager
               * @return the element you wish to get from the manager
              **/
-            template <class T = Element> T& get(ID id) {
-                if (m_elements.count(id)) {
-                    if (!m_graph.count(id)) {
-                        aquire(id);
-                    }
-                    return m_graph[id].m_managerElementMemory->template as<T>();
-                } else {
-                    throw UnknownID_Exception(id);
-                }
-            };
             virtual Element& get(ID id);
             size_t count(ID id);
             virtual bool loaded(ID id);
-            template <class T = Element> T& create() {
-                T* ret = new T;
-                ret->m_manager = this;
-                m_elements.insert(ret->getID());
-                createNode(ret);
-                ret->m_node = &m_graph[ret->getID()];
-                return *ret;
-            };
-            Element& create(ElementType eType);
-            void reindex(ID oldID, ID newID);
-            /**
-             * This function doesn't deal with memory, just sets the m_manager so the Sequence Value
-             * can communicate to the manager for allocation.
-             * WARN: Sequences should always be values
-             **/
-            template <class T = Element> Sequence<T> createSequence() {
-                Sequence<T> ret(0);
-                ret.m_manager = this;
+            template <class T = Element>
+            UmlPtr<T> create() {
+                T* ptr = new T;
+                ptr->m_manager = this;
+                m_elements.insert(ptr->getID());
+                createNode(ptr);
+                ptr->m_node = &m_graph[ptr->getID()];
+                UmlPtr<T> ret(ptr);
                 return ret;
             };
-
+            void lossless(bool lossless);
+            void lazy(bool lazy);
+            Element& create(ElementType eType);
+            void reindex(ID oldID, ID newID);
             // Sets up composite directory of model for quick aquire and release
             void mount(std::string path);
+            void mountEl(Element& el);
             /**
              * aquire(id) will aquire an element from disc if it is not already loaded
              * and return a pointer to the element if it was succesfully aquired
              * @param id, the id of the element you wish to aquire
              * @return a pointer to the element you wish to aquire, will never be null
              **/
-            virtual Element* aquire(ID id);
+            virtual ElementPtr aquire(ID id);
             virtual void release(ID id);
             /**
              * release(el) will effectively delete the element object and write it's contents
@@ -192,7 +155,8 @@ namespace UML {
              * @param el, the element being released from memory
              **/
             virtual void release(Element& el);
-            template <class ... Elements> void release(Element& el, Elements&... els) {
+            template <class ... Elements> 
+            void release(Element& el, Elements&... els) {
                 release(el);
                 release(els...);
             };
@@ -231,13 +195,13 @@ namespace UML {
             /**
              * Parses the file into memory, but does not set root
              **/
-            Element* parse(std::string path);
+            ElementPtr parse(std::string path);
 
-            void setModel(Model* model);
+            // void setModel(Model* model);
             void setRoot(Element* el);
             void setRoot(Element& el);
-            Model* getModel();
-            Element* getRoot();
+            // Model* getModel();
+            ElementPtr getRoot();
             void setPath(ID elID, std::string path);
     };
 

@@ -1,7 +1,12 @@
 #include "uml/deployment.h"
 #include "uml/deployedArtifact.h"
 #include "uml/deploymentTarget.h"
-#include "uml/uml-stable.h"
+#include "uml/profile.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -18,48 +23,20 @@ void Deployment::init() {
     m_deployedArtifacts.m_signature = &Deployment::getDeployedArtifacts;
 }
 
-void Deployment::copy(const Deployment& rhs) {
-    m_location = rhs.m_location;
-    m_deployedArtifacts = rhs.m_deployedArtifacts;
-}
-
 Deployment::Deployment() : Element(ElementType::DEPLOYMENT) {
     init();
 }
 
-Deployment::Deployment(const Deployment& rhs) : Element(ElementType::DEPLOYMENT) {
-    init();
-    Relationship::copy(rhs);
-    DirectedRelationship::copy(rhs);
-    NamedElement::copy(rhs);
-    ParameterableElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    Dependency::copy(rhs);
-    copy(rhs);
-}
-
 Deployment::~Deployment() {
-
+    mountAndRelease();
 }
 
 Set<DeployedArtifact, Deployment>& Deployment::getDeployedArtifacts() {
     return m_deployedArtifacts;
 }
 
-DeploymentTarget* Deployment::getLocation() {
+DeploymentTargetPtr Deployment::getLocation() const {
     return m_location.get();
-}
-
-DeploymentTarget& Deployment::getLocationRef() {
-    return m_location.getRef();
-}
-
-ID Deployment::getLocationID() const {
-    return m_location.id();
-}
-
-bool Deployment::hasLocation() const {
-    return m_location.has();
 }
 
 void Deployment::setLocation(DeploymentTarget* location) {

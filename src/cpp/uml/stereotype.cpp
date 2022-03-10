@@ -1,6 +1,11 @@
 #include "uml/stereotype.h"
 #include "uml/profile.h"
-#include "uml/uml-stable.h"
+#include "uml/behavior.h"
+#include "uml/association.h"
+#include "uml/dataType.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -14,47 +19,16 @@ void Stereotype::init() {
     m_profile.m_signature = &Stereotype::getProfileSingleton;
 }
 
-void Stereotype::copy(const Stereotype& rhs) {
-    m_profile = rhs.m_profile;
-}
-
 Stereotype::Stereotype() : Element(ElementType::STEREOTYPE) {
     init();
 }
 
-Stereotype::Stereotype(const Stereotype& rhs) : Element(rhs, ElementType::STEREOTYPE) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    Namespace::copy(rhs);
-    ParameterableElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    TemplateableElement::copy(rhs);
-    RedefinableElement::copy(rhs);
-    StructuredClassifier::copy(rhs);
-    BehavioredClassifier::copy(rhs);
-    Classifier::copy(rhs);
-    copy(rhs);
-}
-
 Stereotype::~Stereotype() {
-
+    mountAndRelease();
 }
 
-Profile* Stereotype::getProfile() {
+ProfilePtr Stereotype::getProfile() const {
     return m_profile.get();
-}
-
-Profile& Stereotype::getProfileRef() {
-    return m_profile.getRef();
-}
-
-ID Stereotype::getProfileID() const {
-    return m_profile.id();
-}
-
-bool Stereotype::hasProfile() const {
-    return m_profile.has();
 }
 
 void Stereotype::setProfile(Profile* profile) {

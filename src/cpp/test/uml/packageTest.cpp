@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
-#include "test/umlTestUtil.h"
 
 using namespace UML;
 
@@ -10,28 +9,26 @@ class PackageTest : public ::testing::Test {
 
 TEST_F(PackageTest, addPackagedElementTest) {
     UmlManager m;
-    Package p = m.create<Package>();
-    Package e = m.create<Package>();
+    Package& p = *m.create<Package>();
+    Package& e = *m.create<Package>();
     ASSERT_NO_THROW(p.getPackagedElements().add(e));
     ASSERT_EQ(p.getPackagedElements().size(), 1);
     ASSERT_EQ(p.getPackagedElements().front(), e);
-    ASSERT_TRUE(e.hasOwningPackage());
     ASSERT_TRUE(e.getOwningPackage());
-    ASSERT_EQ(e.getOwningPackageRef(), p);
+    ASSERT_EQ(*e.getOwningPackage(), p);
     ASSERT_EQ(p.getMembers().size(), 1);
     ASSERT_EQ(p.getMembers().front(), e);
     ASSERT_EQ(p.getOwnedElements().size(), 1);
-    ASSERT_EQ(p.getOwnedElements().get(e.getID()), e);
-    ASSERT_TRUE(e.hasNamespace());
+    ASSERT_EQ(p.getOwnedElements().front(), e);
     ASSERT_TRUE(e.getNamespace());
-    ASSERT_EQ(e.getNamespaceRef(), p);
+    ASSERT_EQ(*e.getNamespace(), p);
     ASSERT_EQ(*e.getOwner(), p);
 }
 
 TEST_F(PackageTest, setOwningPackageTest) {
     UmlManager m;
-    Package& p = m.create<Package>();
-    PackageableElement& e = m.create<Package>();
+    Package& p = *m.create<Package>();
+    PackageableElement& e = *m.create<Package>();
     ASSERT_NO_THROW(e.setOwningPackage(&p));
     ASSERT_TRUE(p.getPackagedElements().size() == 1);
     ASSERT_TRUE(&p.getPackagedElements().front() == &e);
@@ -46,9 +43,9 @@ TEST_F(PackageTest, setOwningPackageTest) {
 
 TEST_F(PackageTest, overwriteOwningPackageTest) {
     UmlManager m;
-    Package& p1 = m.create<Package>();
-    Package& p2 = m.create<Package>();
-    PackageableElement& e = m.create<Package>();
+    Package& p1 = *m.create<Package>();
+    Package& p2 = *m.create<Package>();
+    PackageableElement& e = *m.create<Package>();
     p1.getPackagedElements().add(e);
     ASSERT_NO_THROW(e.setOwningPackage(&p2));
     ASSERT_TRUE(p2.getPackagedElements().size() == 1);
@@ -65,31 +62,11 @@ TEST_F(PackageTest, overwriteOwningPackageTest) {
     ASSERT_TRUE(p1.getOwnedElements().size() == 0);
 }
 
-TEST_F(PackageTest, overwritePackagedElementsTest) {
-    // TODO Error or overwrite when we do p2.getPackagedElements().add(e) instead of e.setowningPackage(&p2) in above test
-}
-
-TEST_F(PackageTest, copyPackageTest) {
-    UmlManager m;
-    Package& s = m.create<Package>();
-    Package& p = m.create<Package>();
-    s.getPackagedElements().add(p);
-    p.setName("test");
-    Package& c = m.create<Package>();
-    p.getPackagedElements().add(c);
-    Package p2 = p;
-    ASSERT_TRUE(p2.getID() == p.getID());
-    ASSERT_TRUE(p2.getName().compare("test") == 0);
-    ASSERT_TRUE(p2.getPackagedElements().size() == 1);
-    ASSERT_TRUE(&p2.getPackagedElements().front() == &c);
-    ASSERT_TRUE(p2.getOwningPackage() == &s);
-}
-
 TEST_F(PackageTest, packageMergeTest) {
     UmlManager mm;
-    Package& p = mm.create<Package>();
-    PackageMerge& m = mm.create<PackageMerge>();
-    Package& mp = mm.create<Package>();
+    Package& p = *mm.create<Package>();
+    PackageMerge& m = *mm.create<PackageMerge>();
+    Package& mp = *mm.create<Package>();
     m.setMergedPackage(&mp);
     p.getPackageMerge().add(m);
     ASSERT_EQ(p.getPackageMerge().size(), 1);
@@ -108,24 +85,22 @@ TEST_F(PackageTest, packageMergeTest) {
 
 TEST_F(PackageTest, removePackageMergeTest) {
     UmlManager mm;
-    Package p = mm.create<Package>();
-    PackageMerge m = mm.create<PackageMerge>();
+    Package& p = *mm.create<Package>();
+    PackageMerge& m = *mm.create<PackageMerge>();
     p.getPackageMerge().add(m);
     ASSERT_NO_THROW(p.getPackageMerge().remove(m));
     ASSERT_TRUE(p.getPackageMerge().size() == 0);
-    // ASSERT_TRUE(p.getDirectedRelationships().size() == 0);
     ASSERT_TRUE(p.getOwnedElements().size() == 0);
-    // ASSERT_TRUE(p.getRelationships().size() == 0);
-    ASSERT_TRUE(m.getReceivingPackage() == 0);
+    ASSERT_FALSE(m.getReceivingPackage());
     ASSERT_TRUE(m.getSources().size() == 0);
     ASSERT_TRUE(m.getRelatedElements().size() == 0);
 }
 
 TEST_F(PackageTest, addOwnedStereotype) {
     UmlManager m;
-    Profile& p = m.create<Profile>();
+    Profile& p = *m.create<Profile>();
     p.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
-    Stereotype& s = m.create<Stereotype>();
+    Stereotype& s = *m.create<Stereotype>();
     s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
     p.getOwnedStereotypes().add(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 1);
@@ -140,11 +115,11 @@ TEST_F(PackageTest, addOwnedStereotype) {
     ASSERT_TRUE(p.getOwnedElements().contains(s));
     
     // now with another element in packagedElements
-    Profile& p2 = m.create<Profile>();
-    Stereotype& s2 = m.create<Stereotype>();
+    Profile& p2 = *m.create<Profile>();
+    Stereotype& s2 = *m.create<Stereotype>();
     s2.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
-    Package& pp = m.create<Package>();
-    pp.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
+    Package& pp = *m.create<Package>();
+    pp.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAF");
     p2.getPackagedElements().add(pp);
     p2.getOwnedStereotypes().add(s2);
     ASSERT_EQ(p2.getOwnedStereotypes().size(), 1);
@@ -166,13 +141,13 @@ TEST_F(PackageTest, addOwnedStereotype) {
 
 TEST_F(PackageTest, removeOwnedStereotype) {
     UmlManager m;
-    Profile& p = m.create<Profile>();
-    Stereotype& s = m.create<Stereotype>();
+    Profile& p = *m.create<Profile>();
+    Stereotype& s = *m.create<Stereotype>();
     p.getOwnedStereotypes().add(s);
     p.getOwnedStereotypes().remove(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 0);
     ASSERT_EQ(p.getPackagedElements().size(), 0);
-    Package& pp = m.create<Package>();
+    Package& pp = *m.create<Package>();
     s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
     p.getPackagedElements().add(pp);
     p.getOwnedStereotypes().add(s);
@@ -193,9 +168,9 @@ TEST_F(PackageTest, removeOwnedStereotype) {
 
 TEST_F(PackageTest, inTreeRemoveOwnedStereotype) {
     UmlManager m;
-    Package& p = m.create<Package>();
-    Stereotype& s = m.create<Stereotype>();
-    PackageMerge& pm = m.create<PackageMerge>();
+    Package& p = *m.create<Package>();
+    Stereotype& s = *m.create<Stereotype>();
+    PackageMerge& pm = *m.create<PackageMerge>();
     p.getOwnedStereotypes().add(s);
     p.getPackageMerge().add(pm);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 1);
@@ -237,51 +212,10 @@ TEST_F(PackageTest, inTreeRemoveOwnedStereotype) {
     ASSERT_TRUE(p.getPackageMerge().contains(pm));
 }
 
-TEST_F(PackageTest, packageFullCopyAndEditTest) {
-    UmlManager m;
-    Package& root = m.create<Package>();
-    Package& c1 = m.create<Package>();
-    Package& merged = m.create<Package>();
-    Profile& profile = m.create<Profile>();
-    PackageMerge& merge = m.create<PackageMerge>();
-    ProfileApplication& profileApplication = m.create<ProfileApplication>();
-    Stereotype& stereotype = m.create<Stereotype>();
-    stereotype.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
-    profileApplication.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
-    merge.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
-    c1.getOwnedStereotypes().add(stereotype);
-    merge.setMergedPackage(&merged);
-    c1.getPackageMerge().add(merge);
-    profileApplication.setAppliedProfile(&profile);
-    c1.getProfileApplications().add(profileApplication);
-    root.getPackagedElements().add(c1, merged, profile);
-    Package& copy = c1;
-    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c1, copy, &Package::getPackagedElements, &Package::getPackageMerge, &Package::getProfileApplications, &Package::getOwnedStereotypes, &Namespace::getOwnedMembers, &Namespace::getMembers, &Element::getOwnedElements));
-    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c1, copy, &NamedElement::getNamespace, &Element::getOwner));
-    copy.getOwnedStereotypes().remove(stereotype);
-    copy.getPackageMerge().remove(merge);
-    copy.getProfileApplications().remove(profileApplication);
-    root.getPackagedElements().remove(copy);
-    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c1, copy, &Package::getPackagedElements, &Package::getPackageMerge, &Package::getProfileApplications, &Package::getOwnedStereotypes, &Namespace::getOwnedMembers, &Namespace::getMembers, &Element::getOwnedElements));
-    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c1, copy, &NamedElement::getNamespace, &Element::getOwner));
-    copy.getOwnedStereotypes().add(stereotype);
-    copy.getPackageMerge().add(merge);
-    copy.getProfileApplications().add(profileApplication);
-    root.getPackagedElements().add(copy);
-    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c1, copy, &Package::getPackagedElements, &Package::getPackageMerge, &Package::getProfileApplications, &Package::getOwnedStereotypes, &Namespace::getOwnedMembers, &Namespace::getMembers, &Element::getOwnedElements));
-    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c1, copy, &NamedElement::getNamespace, &Element::getOwner));
-    c1.getOwnedStereotypes().remove(stereotype);
-    c1.getPackageMerge().remove(merge);
-    c1.getProfileApplications().remove(profileApplication);
-    c1.setOwningPackage(0);
-    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SEQUENCE_CORRECTLY(c1, copy, &Package::getPackagedElements, &Package::getPackageMerge, &Package::getProfileApplications, &Package::getOwnedStereotypes, &Namespace::getOwnedMembers, &Namespace::getMembers, &Element::getOwnedElements));
-    ASSERT_NO_FATAL_FAILURE(ASSERT_COPY_SINGLETON_CORRECTLY(c1, copy, &NamedElement::getNamespace, &Element::getOwner));
-}
-
 TEST_F(PackageTest, erasePackagedElementTest) {
     UmlManager m;
-    Package& parent = m.create<Package>();
-    Package& child = m.create<Package>();
+    Package& parent = *m.create<Package>();
+    Package& child = *m.create<Package>();
     parent.getPackagedElements().add(child);
     m.erase(child);
     ASSERT_TRUE(parent.getPackagedElements().empty());

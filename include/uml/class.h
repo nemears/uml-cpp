@@ -3,9 +3,9 @@
 
 #include "encapsulatedClassifier.h"
 #include "operation.h"
-#include "parameter.h"
 #include "orderedSet.h"
 #include "behavioredClassifier.h"
+#include "reception.h"
 
 namespace UML{
 
@@ -27,11 +27,9 @@ namespace UML{
             Set<Operation, Class>& getOwnedOperationsSet();
             Set<Classifier, Class>& getNestedClassifiersSet();
             void init();
-            void copy(const Class& rhs);
             Class();
         public:
             virtual ~Class();
-            Class(const Class& clazz);
             OrderedSet<Property, Class>& getOwnedAttributes();
             OrderedSet<Operation, Class>& getOwnedOperations();
             OrderedSet<Classifier, Class>& getNestedClassifiers();

@@ -1,16 +1,23 @@
 #include "uml/port.h"
-#include "uml/uml-stable.h"
+#include "uml/operation.h"
+#include "uml/manifestation.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/deployment.h"
 #include "uml/setReferenceFunctor.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
 void Port::setPortInterfaces(BehavioredClassifier& clazz) {
     for (auto& realization : clazz.getInterfaceRealizations()) {
-        if (realization.hasContract()) {
+        if (realization.getContract()) {
             if (isConjugated()) {
-                m_required.addReadOnly(realization.getContractID());
+                m_required.addReadOnly(realization.getContract().id());
             } else {
-               m_provided.addReadOnly(realization.getContractID());
+               m_provided.addReadOnly(realization.getContract().id());
             }
         }
     }
@@ -48,11 +55,11 @@ void Port::SetTypeFunctor::operator()(Element& el) const {
 
 void Port::removePortInterfaces(BehavioredClassifier& clazz) {
     for (auto& realization : clazz.getInterfaceRealizations()) {
-        if (realization.hasContract()) {
+        if (realization.getContract()) {
             if (isConjugated()) {
-                m_required.removeReadOnly(realization.getContractID());
+                m_required.removeReadOnly(realization.getContract().id());
             } else {
-               m_provided.removeReadOnly(realization.getContractID());
+               m_provided.removeReadOnly(realization.getContract().id());
             }
         }
     }
@@ -135,31 +142,12 @@ void Port::init() {
     m_provided.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
-void Port::copy(const Port& rhs) {
-    m_isBehavior = rhs.m_isBehavior;
-    m_isConjugated = rhs.m_isConjugated;
-    m_isService = rhs.m_isService;
-}
-
 Port::Port() : Element(ElementType::PORT) {
     init();
 }
 
 Port::~Port() {
-
-}
-
-Port::Port(const Port& rhs) : Element(rhs, ElementType::PORT) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    TypedElement::copy(rhs);
-    MultiplicityElement::copy(rhs);
-    RedefinableElement::copy(rhs);
-    Feature::copy(rhs);
-    DeploymentTarget::copy(rhs);
-    Property::copy(rhs);
-    copy(rhs);
+    mountAndRelease();
 }
 
 bool Port::isBehavior() const {
@@ -168,7 +156,6 @@ bool Port::isBehavior() const {
 
 void Port::setIsBehavior(bool isBehavior) {
     m_isBehavior = isBehavior;
-    updateCopiesScalar(isBehavior, &Port::m_isBehavior);
 }
 
 bool Port::isConjugated() const {
@@ -195,7 +182,6 @@ void Port::setIsConjugated(bool isConjugated) {
         }
     }
     m_isConjugated = isConjugated;
-    updateCopiesScalar(isConjugated, &Port::m_isConjugated);
 }
 
 bool Port::isService() const {
@@ -204,7 +190,6 @@ bool Port::isService() const {
 
 void Port::setIsService(bool isService) {
     m_isService = isService;
-    updateCopiesScalar(isService, &Port::m_isService);
 }
 
 Set<Interface, Port>& Port::getRequired() {

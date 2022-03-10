@@ -2,10 +2,12 @@
 #define _UML_RECEPTION_H_
 
 #include "behavioralFeature.h"
+#include "signal.h"
 
 namespace UML {
 
     class Signal;
+    typedef UmlPtr<Signal> SignalPtr;
 
     class Reception : public BehavioralFeature {
 
@@ -19,15 +21,10 @@ namespace UML {
             void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
-            void copy(const Reception& rhs);
             Reception();
         public:
-            Reception(const Reception& rhs);
             virtual ~Reception();
-            Signal* getSignal();
-            Signal& getSignalRef();
-            bool hasSignal() const;
-            ID getSignalID() const;
+            SignalPtr getSignal() const;
             void setSignal(Signal* signal);
             void setSignal(Signal& signal);
             void setSignal(ID id);

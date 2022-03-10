@@ -1,5 +1,5 @@
-#ifndef ASSOCIATION_H
-#define ASSOCIATION_H
+#ifndef _UML_ASSOCIATION_H_
+#define _UML_ASSOCIATION_H_
 
 #include "classifier.h"
 #include "relationship.h"
@@ -37,10 +37,8 @@ namespace UML {
             Set<Property, Association>& getMemberEndsSet();
             Set<Property, Association>& getOwnedEndsSet();
             void init();
-            void copy(const Association& rhs);
             Association();
         public:
-            Association(const Association& rhs);
             virtual ~Association();
             OrderedSet<Property, Association>& getMemberEnds();
             OrderedSet<Property, Association>& getOwnedEnds();

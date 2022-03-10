@@ -5,6 +5,12 @@
 #include "uml/set.h"
 #include "uml/orderedSet.h"
 #include "test/yumlParsersTest.h"
+#include "uml/umlPtr.h"
+#include "uml/class.h"
+#include "uml/generalization.h"
+#include "uml/property.h"
+#include "uml/dataType.h"
+
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -18,14 +24,14 @@ TEST_F(SetTest, basicSetTest) {
     Set<Package> seq;
     ASSERT_TRUE(seq.empty());
     UmlManager m;
-    Package& pckg = m.create<Package>();
+    Package& pckg = *m.create<Package>();
     seq.add(pckg);
     ASSERT_FALSE(seq.empty());
     ASSERT_EQ(seq.get(pckg.getID()), pckg);
     std::vector<ID> ids(numPackages);
     ids[0] = pckg.getID();
     for (int i = 0; i < numPackages - 1; i++) {
-        Package& p = m.create<Package>();
+        Package& p = *m.create<Package>();
         ids[i+1] = p.getID();
         seq.add(p);
     }
@@ -42,7 +48,7 @@ TEST_F(SetTest, basicRemoveTest) {
     size_t numPackages = constNumPackages;
     std::vector<ID> packages;
     for (int i = 0; i < numPackages; i++) {
-        Package& temp = m.create<Package>();
+        Package& temp = *m.create<Package>();
         packages.push_back(temp.getID());
         seq.add(temp);
     }
@@ -67,7 +73,7 @@ TEST_F(SetTest, basicSubsetsTest) {
     Set<Package>* subSeq = new Set<Package>();
     subSeq->subsets(*rootSeq);
     UmlManager m;
-    Package& pckg = m.create<Package>();
+    Package& pckg = *m.create<Package>();
     subSeq->add(pckg);
     ASSERT_EQ(subSeq->size(), 1);
     ASSERT_TRUE(subSeq->contains(pckg.getID()));
@@ -75,7 +81,7 @@ TEST_F(SetTest, basicSubsetsTest) {
     ASSERT_EQ(rootSeq->size(), 1);
     ASSERT_TRUE(rootSeq->contains(pckg.getID()));
     ASSERT_EQ(rootSeq->get(pckg.getID()), pckg);
-    Package& clazz = m.create<Package>();
+    Package& clazz = *m.create<Package>();
     rootSeq->add(clazz);
     ASSERT_EQ(rootSeq->size(), 2);
     ASSERT_TRUE(rootSeq->contains(clazz.getID()));
@@ -94,7 +100,7 @@ TEST_F(SetTest, multiSubsetsTest) {
     subSeq.subsets(seq2);
     subSeq.subsets(seq1);
     UmlManager m;
-    Package& clazz = m.create<Package>();
+    Package& clazz = *m.create<Package>();
     seq1.add(clazz);
     ASSERT_FALSE(seq1.empty());
     ASSERT_EQ(seq1.size(), 1);
@@ -105,7 +111,7 @@ TEST_F(SetTest, multiSubsetsTest) {
     ASSERT_TRUE(subSeq.empty());
     ASSERT_EQ(subSeq.size(), 0);
     ASSERT_FALSE(subSeq.contains(clazz.getID()));
-    Package& inst = m.create<Package>();
+    Package& inst = *m.create<Package>();
     seq2.add(inst);
     ASSERT_FALSE(seq1.empty());
     ASSERT_EQ(seq1.size(), 1);
@@ -116,7 +122,7 @@ TEST_F(SetTest, multiSubsetsTest) {
     ASSERT_TRUE(subSeq.empty());
     ASSERT_EQ(subSeq.size(), 0);
     ASSERT_FALSE(subSeq.contains(inst.getID()));
-    Package& pckg = m.create<Package>();
+    Package& pckg = *m.create<Package>();
     subSeq.add(pckg);
     ASSERT_FALSE(seq1.empty());
     ASSERT_EQ(seq1.size(), 2);
@@ -136,7 +142,7 @@ TEST_F(SetTest, removeFromSubsettedSequenceTest) {
     rootSeq.subsets(rootRootSeq);
     subSeq.subsets(rootSeq);
     UmlManager m;
-    Package& pckg = m.create<Package>();
+    Package& pckg = *m.create<Package>();
     subSeq.add(pckg);
     subSeq.remove(pckg);
     ASSERT_EQ(subSeq.size(), 0);
@@ -160,7 +166,7 @@ TEST_F(SetTest, specialAutoForLoop) {
     int numPackages = 10;
     UmlManager m;
     for (int i = 0; i < numPackages; i++) {
-        Package& p = m.create<Package>(); 
+        Package& p = *m.create<Package>(); 
         seq.add(p);
         std::hash<ID> hasher;
         std::cout << p.getID().string() << ", hash: " << hasher(p.getID()) << std::endl;
@@ -182,8 +188,8 @@ TEST_F(SetTest, getFromSetByNameTest) {
     Set<Package> subSeq;
     subSeq.subsets(rootSeq);
     UmlManager m;
-    Package& one = m.create<Package>();
-    Package& two = m.create<Package>();
+    Package& one = *m.create<Package>();
+    Package& two = *m.create<Package>();
     one.setName("1");
     two.setName("2");
     subSeq.add(one);
@@ -201,25 +207,31 @@ TEST_F(SetTest, getFromSetByNameTest) {
 TEST_F(SetTest, addToSetTwice) {
     Set<Package> set;
     UmlManager m;
-    Package& p = m.create<Package>();
+    Package& p = *m.create<Package>();
     set.add(p);
     ASSERT_THROW(set.add(p), DuplicateElementInSetException);
 }
 
 class TestElement : public Element {
+
+    friend class UmlManager;
+
     private:
         Set<TestElement, TestElement> m_others = Set<TestElement, TestElement>(this);
     public:
         TestElement() : Element(ElementType::ELEMENT) {
             m_others.opposite(&TestElement::getOthers);
         };
+        virtual ~TestElement() {
+            mountAndRelease();
+        };
         Set<TestElement, TestElement>& getOthers() { return m_others; };
 };
 
 TEST_F(SetTest, oppositeTest) {
     UmlManager m;
-    TestElement t1;
-    TestElement t2;
+    TestElement& t1 = *m.create<TestElement>();
+    TestElement& t2 = *m.create<TestElement>();
     t1.getOthers().add(t2);
     ASSERT_EQ(t2.getOthers().size(), 1);
     ASSERT_TRUE(t2.getOthers().contains(t1.getID()));
@@ -231,7 +243,7 @@ TEST_F(SetTest, setRedefinesTest) {
     Set<Package>* reSet = new Set<Package>;
     reSet->redefines(*ogSet);
     UmlManager m;
-    Package& p = m.create<Package>();
+    Package& p = *m.create<Package>();
     reSet->add(p);
     ASSERT_FALSE(ogSet->empty());
     ASSERT_FALSE(reSet->empty());
@@ -242,7 +254,7 @@ TEST_F(SetTest, setRedefinesTest) {
     ASSERT_TRUE(reSet->empty());
     ASSERT_EQ(ogSet->size(), 0);
     ASSERT_EQ(reSet->size(), 0);
-    Package& p2 = m.create<Package>();
+    Package& p2 = *m.create<Package>();
     ogSet->add(p);
     ASSERT_FALSE(ogSet->empty());
     ASSERT_FALSE(reSet->empty());
@@ -259,7 +271,7 @@ TEST_F(SetTest, setRedefinesTest) {
     ASSERT_FALSE(reSet->empty());
     ASSERT_EQ(ogSet->size(), 2);
     ASSERT_EQ(reSet->size(), 2);
-    Package& p3 = m.create<Package>();
+    Package& p3 = *m.create<Package>();
     ogSet->add(p3);
     ASSERT_FALSE(ogSet->empty());
     ASSERT_FALSE(reSet->empty());
@@ -282,7 +294,7 @@ TEST_F(SetTest, setRedefinedWFunctors) {
     Set<Package>* oSet = new Set<Package>;
     Set<Package>* rSet = new Set<Package>;
     UmlManager m;
-    Package& g = m.create<Package>();
+    Package& g = *m.create<Package>();
     oSet->addFunctor(new gFunc(&g));
     rSet->redefines(*oSet);
     rSet->add(g);
@@ -293,17 +305,17 @@ TEST_F(SetTest, setRedefinedWFunctors) {
 TEST_F(SetTest, addToOrderedSetTest) {
     OrderedSet<Package> set;
     UmlManager m;
-    Package& p = m.create<Package>();
+    Package& p = *m.create<Package>();
     p.setName("1");
     set.add(p);
     ASSERT_EQ(set.front(), p);
     ASSERT_EQ(set.back(), p);
-    Package& p2 = m.create<Package>();
+    Package& p2 = *m.create<Package>();
     p2.setName("2");
     set.add(p2);
     ASSERT_EQ(set.front(), p);
     ASSERT_EQ(set.back(), p2);
-    Package& p3 = m.create<Package>();
+    Package& p3 = *m.create<Package>();
     p3.setName("3");
     set.add(p3);
     ASSERT_EQ(set.front(), p);
@@ -336,13 +348,13 @@ TEST_F(SetTest, subsetOrderedSets) {
     OrderedSet<Package> subSet;
     subSet.subsets(rootSet);
     UmlManager m;
-    Package& p = m.create<Package>();
+    Package& p = *m.create<Package>();
     subSet.add(p);
     ASSERT_EQ(subSet.front(), p);
     ASSERT_FALSE(rootSet.empty());
     ASSERT_EQ(rootSet.size(), 1);
     ASSERT_EQ(rootSet.front(), p);
-    Package& c = m.create<Package>();
+    Package& c = *m.create<Package>();
     rootSet.add(c);
     ASSERT_FALSE(subSet.contains(c.getID()));
     ASSERT_TRUE(rootSet.contains(c.getID()));
@@ -364,13 +376,13 @@ TEST_F(SetTest, orderedSetSubSetsSet) {
     OrderedSet<Package> subSet;
     subSet.subsets(rootSet);
     UmlManager m;
-    Package& p = m.create<Package>();
+    Package& p = *m.create<Package>();
     subSet.add(p);
     ASSERT_EQ(subSet.front(), p);
     ASSERT_FALSE(rootSet.empty());
     ASSERT_EQ(rootSet.size(), 1);
     ASSERT_EQ(rootSet.get(p.getID()), p);
-    Package& c = m.create<Package>();
+    Package& c = *m.create<Package>();
     rootSet.add(c);
     ASSERT_FALSE(subSet.contains(c.getID()));
     ASSERT_TRUE(rootSet.contains(c.getID()));
@@ -393,7 +405,7 @@ TEST_F(SetTest, testIdsMethodLoop) {
     int numPackages = 10;
     std::unordered_set<ID> ids;
     for (int i = 0; i < numPackages; i++) {
-        Package& p = m.create<Package>();
+        Package& p = *m.create<Package>();
         set.add(p);
         ids.insert(p.getID());
     }
@@ -409,28 +421,27 @@ TEST_F(SetTest, singletonTest) {
     singleton.subsets(rootSet);
     ASSERT_TRUE(singleton.empty());
     ASSERT_EQ(singleton.size(), 0);
-    Package& p = m.create<Package>();
+    Package& p = *m.create<Package>();
     singleton.set(p);
     ASSERT_EQ(singleton.size(), 1);
     ASSERT_FALSE(singleton.empty());
-    ASSERT_TRUE(singleton.has());
-    ASSERT_EQ(singleton.getRef(), p);
+    ASSERT_TRUE(singleton.get());
+    ASSERT_EQ(*singleton.get(), p);
     ASSERT_EQ(rootSet.size(), 1);
     ASSERT_FALSE(rootSet.empty());
     ASSERT_EQ(rootSet.get(p.getID()), p);
-    Package& c = m.create<Package>();
+    Package& c = *m.create<Package>();
     rootSet.add(c);
     ASSERT_EQ(singleton.size(), 1);
     ASSERT_FALSE(singleton.empty());
-    ASSERT_TRUE(singleton.has());
-    ASSERT_EQ(singleton.getRef(), p);
+    ASSERT_TRUE(singleton.get());
+    ASSERT_EQ(*singleton.get(), p);
     ASSERT_EQ(rootSet.size(), 2);
     ASSERT_TRUE(rootSet.contains(p.getID()));
     ASSERT_TRUE(rootSet.contains(c.getID()));
     ASSERT_EQ(rootSet.get(p.getID()), p);
     ASSERT_EQ(rootSet.get(c.getID()), c);
     singleton.set(0);
-    ASSERT_FALSE(singleton.has());
     ASSERT_FALSE(singleton.get());
     ASSERT_EQ(rootSet.size(), 1);
     ASSERT_TRUE(rootSet.contains(c.getID()));
@@ -444,8 +455,8 @@ TEST_F(SetTest, sharedSubsetEvenTreeTest) {
     set1.subsets(superSet);
     set2.subsets(superSet);
     UmlManager m;
-    Package& p1 = m.create<Package>();
-    Package& p2 = m.create<Package>();
+    Package& p1 = *m.create<Package>();
+    Package& p2 = *m.create<Package>();
     set1.add(p1);
     set2.add(p2);
     ASSERT_FALSE(set1.contains(p2.getID()));
@@ -486,8 +497,8 @@ TEST_F(SetTest, multiRootWithinRootTest) {
     UmlManager m;
     subSet->subsets(*r1);
     subSet->subsets(*r2);
-    Class& c = m.create<Class>();
-    Package& p = m.create<Package>();
+    Class& c = *m.create<Class>();
+    Package& p = *m.create<Package>();
     r1->add(c);
     subSet->add(p);
     ASSERT_EQ(r1->size(), 2);
@@ -511,7 +522,7 @@ TEST_F(SetTest, multiSubsetsOneElement) {
     UmlManager m;
     subSet->subsets(*r1);
     subSet->subsets(*r2);
-    Package& p = m.create<Package>();
+    Package& p = *m.create<Package>();
     subSet->add(p);
     ASSERT_EQ(subSet->size(), 1);
     ASSERT_EQ(r2->size(), 1);
@@ -535,8 +546,8 @@ TEST_F(SetTest, twoWayMultiSetSplitTest) {
     rightSet2->subsets(*rightSet1);
     leftSet2->subsets(*leftSet1);
     UmlManager m;
-    Package& rightP = m.create<Package>();
-    Package& leftP = m.create<Package>();
+    Package& rightP = *m.create<Package>();
+    Package& leftP = *m.create<Package>();
     rightSet2->add(rightP);
     leftSet2->add(leftP);
     ASSERT_EQ(rightSet2->size(), 1);
@@ -551,8 +562,8 @@ TEST_F(SetTest, twoWayMultiSetSplitTest) {
     ASSERT_TRUE(leftSet2->contains(leftP.getID()));
     ASSERT_TRUE(rootSet->contains(leftP.getID()));
 
-    Package& rightP2 = m.create<Package>();
-    Package& leftP2 = m.create<Package>();
+    Package& rightP2 = *m.create<Package>();
+    Package& leftP2 = *m.create<Package>();
     rightSet1->add(rightP2);
     leftSet1->add(leftP2);
     ASSERT_EQ(rootSet->size(), 4);
@@ -625,7 +636,7 @@ TEST_F(SetTest, AddElementThatIsInSuperSet) {
     Set<Package> set;
     set.subsets(superSet);
     UmlManager m;
-    Package& p = m.create<Package>();
+    Package& p = *m.create<Package>();
     superSet.add(p);
     ASSERT_FALSE(superSet.empty());
     ASSERT_TRUE(set.empty());
@@ -696,7 +707,7 @@ TEST_F(SetTest, subsetAddsFromRootSet) {
 TEST_F(SetTest, removeFirstElementFromOrderedSetTest) {
     OrderedSet<Package> set;
     UmlManager m;
-    Package& p = m.create<Package>();
+    Package& p = *m.create<Package>();
     set.add(p);
     set.remove(p);
     ASSERT_TRUE(set.empty());
@@ -707,9 +718,9 @@ TEST_F(SetTest, removeFirstElementFromOrderedSetTest) {
 TEST_F(SetTest, removeLastElementFromOrderedSetTest) {
     OrderedSet<Package> set;
     UmlManager m;
-    Package& p = m.create<Package>();
+    Package& p = *m.create<Package>();
     set.add(p);
-    Package& p2 = m.create<Package>();
+    Package& p2 = *m.create<Package>();
     set.add(p2);
     set.remove(p2);
     ASSERT_EQ(set.back(), p);
@@ -720,11 +731,11 @@ TEST_F(SetTest, removeLastElementFromOrderedSetTest) {
 TEST_F(SetTest, removeMiddleElementFromOrderedSetTest) {
     OrderedSet<Package> set;
     UmlManager m;
-    Package& p = m.create<Package>();
+    Package& p = *m.create<Package>();
     set.add(p);
-    Package& p2 = m.create<Package>();
+    Package& p2 = *m.create<Package>();
     set.add(p2);
-    Package& p3 = m.create<Package>();
+    Package& p3 = *m.create<Package>();
     set.add(p3);
     set.remove(p2);
     OrderedSetIterator it = set.begin();
@@ -737,7 +748,7 @@ TEST_F(SetTest, removeFromSuperSetTest) {
     Set<Package>* subSet = new Set<Package>;
     subSet->subsets(*set);
     UmlManager m;
-    Package& pckg = m.create<Package>();
+    Package& pckg = *m.create<Package>();
     subSet->add(pckg);
     subSet->removeFromJustThisSet(pckg.getID());
     ASSERT_FALSE(set->empty());
@@ -823,9 +834,9 @@ TEST_F(SetTest, tripleRemovePlacholder) {
     set2->subsets(*root);
     set3->subsets(*root);
     UmlManager m;
-    Package& pckg1 = m.create<Package>();
-    Package& pckg2 = m.create<Package>();
-    Package& pckg3 = m.create<Package>();
+    Package& pckg1 = *m.create<Package>();
+    Package& pckg2 = *m.create<Package>();
+    Package& pckg3 = *m.create<Package>();
     pckg1.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
     pckg2.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
     pckg3.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
@@ -950,9 +961,9 @@ TEST_F(SetTest, StructuredClassifierOwnedAttributesEmulationTest) {
 
     UmlManager m;
     
-    Property& member = m.create<Property>();
-    Property& property = m.create<Property>();
-    Generalization& generalization = m.create<Generalization>();
+    Property& member = *m.create<Property>();
+    Property& property = *m.create<Property>();
+    Generalization& generalization = *m.create<Generalization>();
 
     generalizations->add(generalization);
 
@@ -1071,9 +1082,9 @@ TEST_F(SetTest, redefineMoreComplexSet) {
     redefinedStereotypes->redefines(*ownedStereotypes);
 
     UmlManager m;
-    Stereotype& s = m.create<Stereotype>();
+    Stereotype& s = *m.create<Stereotype>();
     s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
-    Package& p = m.create<Package>();
+    Package& p = *m.create<Package>();
     p.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
 
     redefinedStereotypes->add(s);
@@ -1162,8 +1173,8 @@ TEST_F(SetTest, BehavioredClassifierEmulationTest) {
     ownedOperations->subsets(*ownedMembers);
 
     UmlManager m;
-    Behavior& bhv = m.create<Behavior>();
-    Operation& op = m.create<Operation>();
+    OpaqueBehavior& bhv = *m.create<OpaqueBehavior>();
+    Operation& op = *m.create<Operation>();
 
     ownedBehaviors->add(bhv);
 
@@ -1234,8 +1245,8 @@ TEST_F(SetTest, ClassAttributeAndOperationEmulationTest) {
     ownedOperations->subsets(*features);
 
     UmlManager m;
-    Property& p = m.create<Property>();
-    Operation& o = m.create<Operation>();
+    Property& p = *m.create<Property>();
+    Operation& o = *m.create<Operation>();
     ownedAttributes->add(p);
     ownedOperations->add(o);
 
@@ -1289,9 +1300,9 @@ TEST_F(SetTest, copyComplexTreeTest) {
     ownedMembers->subsets(*members);
 
     UmlManager m;
-    InstanceSpecification& s = m.create<InstanceSpecification>();
-    Comment& c = m.create<Comment>();
-    Package& p = m.create<Package>();
+    InstanceSpecification& s = *m.create<InstanceSpecification>();
+    Comment& c = *m.create<Comment>();
+    Package& p = *m.create<Package>();
 
     s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
     c.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
@@ -1375,13 +1386,13 @@ TEST_F(SetTest, EmulateFullArtifactTest) {
     manifestations->subsets(*clientDependencies);
 
     UmlManager m;
-    Property& attribute = m.create<Property>();
+    Property& attribute = *m.create<Property>();
     attribute.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAD"));
-    Operation& operation = m.create<Operation>();
+    Operation& operation = *m.create<Operation>();
     operation.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAC"));
-    Artifact& nested = m.create<Artifact>();
+    Artifact& nested = *m.create<Artifact>();
     nested.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAB"));
-    Manifestation& manifestation = m.create<Manifestation>();
+    Manifestation& manifestation = *m.create<Manifestation>();
 
     ownedAttributes->add(attribute);
 
@@ -1548,9 +1559,9 @@ TEST_F(SetTest, emulateClassWConnectorTest) {
     classOwnedAttributes->redefines(*ownedAttributes);
 
     UmlManager m;
-    Property& prop1 = m.create<Property>();
-    Property& prop2 = m.create<Property>();
-    Connector& connector = m.create<Connector>();
+    Property& prop1 = *m.create<Property>();
+    Property& prop2 = *m.create<Property>();
+    Connector& connector = *m.create<Connector>();
     classOwnedAttributes->add(prop1, prop2);
     parts->add(prop2);
     ownedConnectors->add(connector);
@@ -1633,10 +1644,10 @@ TEST_F(SetTest, emulateAssociationTest) {
     endTypes->subsets(*relatedElements);
 
     UmlManager m;
-    Property& memberEnd = m.create<Property>();
-    Property& ownedEnd = m.create<Property>();
-    Class& endType1 = m.create<Class>();
-    Class& endType2 = m.create<Class>();
+    Property& memberEnd = *m.create<Property>();
+    Property& ownedEnd = *m.create<Property>();
+    Class& endType1 = *m.create<Class>();
+    Class& endType2 = *m.create<Class>();
 
     memberEnd.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
     ownedEnd.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");

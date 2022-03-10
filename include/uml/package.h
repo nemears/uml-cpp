@@ -1,9 +1,11 @@
-#ifndef PACKAGE_H
-#define PACKAGE_H
+#ifndef _UML_PACKAGE_H_
+#define _UML_PACKAGE_H_
 
 #include "packageableElement.h"
 #include "namespace.h"
+#include "packageMerge.h"
 #include "templateableElement.h"
+#include "profileApplication.h"
 
 namespace UML {
 
@@ -25,11 +27,9 @@ namespace UML {
             void reindexName(std::string oldName, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
-            void copy(const Package& rhs);
             Package();
         public:
             virtual ~Package();
-            Package(const Package& rhs);
             Set<PackageableElement, Package>& getPackagedElements();
             Set<PackageMerge, Package>& getPackageMerge();
             Set<ProfileApplication, Package>& getProfileApplications();

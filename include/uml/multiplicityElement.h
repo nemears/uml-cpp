@@ -1,12 +1,14 @@
-#ifndef MULTIPLICITYELEMENT_H
-#define MULTIPLICITYELEMENT_H
+#ifndef _UML_MULTIPLICITY_ELEMENT_H_
+#define _UML_MULTIPLICITY_ELEMENT_H_
 
 #include "element.h"
 #include "singleton.h"
+#include "valueSpecification.h"
 
 namespace UML {
 
     class ValueSpecification;
+    typedef UmlPtr<ValueSpecification> ValueSpecificationPtr;
 
     class MultiplicityElement : virtual public Element {
         protected:
@@ -37,27 +39,21 @@ namespace UML {
             Set<ValueSpecification, MultiplicityElement>& getLowerValueSingleton();
             Set<ValueSpecification, MultiplicityElement>& getUpperValueSingleton();
             void init();
-            void copy(const MultiplicityElement& rhs);
             MultiplicityElement();
         private:
             bool m_multiplicityIsSpecified = false;
             bool m_lowSpecified = false;
             bool m_upSpecified = false;
         public:
-            MultiplicityElement(const MultiplicityElement& rhs);
             virtual ~MultiplicityElement();
             int getLower();
             void setLower(const int low);
-            ValueSpecification* getLowerValue();
-            ValueSpecification& getLowerValueRef();
-            bool hasLowerValue() const;
+            ValueSpecificationPtr getLowerValue() const;
             void setLowerValue(ValueSpecification* val);
             void setLowerValue(ValueSpecification& val);
             int getUpper();
             void setUpper(const int up);
-            ValueSpecification* getUpperValue();
-            ValueSpecification& getUpperValueRef();
-            bool hasUpperValue() const;
+            ValueSpecificationPtr getUpperValue() const;
             void setUpperValue(ValueSpecification* val);
             void setUpperValue(ValueSpecification& val);
             class MultiplicityNotSpecifiedException: public std::exception {

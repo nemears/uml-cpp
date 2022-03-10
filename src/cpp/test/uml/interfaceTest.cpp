@@ -7,15 +7,15 @@ class InterfaceTest : public ::testing::Test {};
 
 TEST_F(InterfaceTest, basicInterfaceTest) {
     UmlManager m;
-    Interface& interface = m.create<Interface>();
-    Property& property1 = m.create<Property>();
-    Property& property2 = m.create<Property>();
-    Operation& operation1 = m.create<Operation>();
-    Operation& operation2 = m.create<Operation>();
-    DataType& nested1 = m.create<DataType>();
-    Class& nested2 = m.create<Class>();
-    InterfaceRealization& realization = m.create<InterfaceRealization>();
-    Class& implementingClassifier = m.create<Class>();
+    Interface& interface = *m.create<Interface>();
+    Property& property1 = *m.create<Property>();
+    Property& property2 = *m.create<Property>();
+    Operation& operation1 = *m.create<Operation>();
+    Operation& operation2 = *m.create<Operation>();
+    DataType& nested1 = *m.create<DataType>();
+    Class& nested2 = *m.create<Class>();
+    InterfaceRealization& realization = *m.create<InterfaceRealization>();
+    Class& implementingClassifier = *m.create<Class>();
 
     
     interface.getOwnedAttributes().add(property1);
@@ -96,11 +96,11 @@ TEST_F(InterfaceTest, basicInterfaceTest) {
     ASSERT_TRUE(implementingClassifier.getInterfaceRealizations().contains(realization));
     ASSERT_TRUE(implementingClassifier.getOwnedElements().contains(realization));
 
-    ASSERT_TRUE(realization.hasContract());
-    ASSERT_TRUE(realization.hasOwner());
-    ASSERT_TRUE(realization.hasImplementingClassifier());
+    ASSERT_TRUE(realization.getContract());
+    ASSERT_TRUE(realization.getOwner());
+    ASSERT_TRUE(realization.getImplementingClassifier());
 
-    ASSERT_EQ(realization.getContractRef(), interface);
-    ASSERT_EQ(realization.getImplementingClassifierRef(), implementingClassifier);
-    ASSERT_EQ(realization.getOwnerRef(), implementingClassifier);
+    ASSERT_EQ(*realization.getContract(), interface);
+    ASSERT_EQ(*realization.getImplementingClassifier(), implementingClassifier);
+    ASSERT_EQ(*realization.getOwner(), implementingClassifier);
 }

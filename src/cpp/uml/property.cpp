@@ -1,64 +1,72 @@
 #include "uml/property.h"
-#include "uml/class.h"
+#include "uml/package.h"
+#include "uml/behavior.h"
 #include "uml/dataType.h"
 #include "uml/association.h"
-#include "uml/uml-stable.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
 void Property::AddEndTypeFunctor::operator()(Element& el) const {
-    if (m_el.as<Property>().hasAssociation()) {
-        m_el.as<Property>().getAssociationRef().getEndType().add(el.as<Type>());
-        el.setReference(m_el.as<Property>().getAssociation());
+    if (m_el.as<Property>().getAssociation()) {
+        m_el.as<Property>().getAssociation()->getEndType().add(el.as<Type>());
+        el.setReference(m_el.as<Property>().getAssociation().ptr());
     }
 }
 
 void Property::RemoveEndTypeFunctor::operator()(Element& el) const {
-    if (m_el.as<Property>().hasAssociation()) {
-        if (m_el.as<Property>().getAssociationRef().getEndType().contains(el.getID())) {
-            m_el.as<Property>().getAssociationRef().getEndType().remove(el.getID());
-            el.removeReference(m_el.as<Property>().getAssociationID());
+    if (m_el.as<Property>().getAssociation()) {
+        if (m_el.as<Property>().getAssociation()->getEndType().contains(el.getID())) {
+            m_el.as<Property>().getAssociation()->getEndType().remove(el.getID());
+            el.removeReference(m_el.as<Property>().getAssociation().id());
         }
     }
 }
 
 void Property::AddRedefinitionContextFunctor::operator()(Element& el) const {
     Property& me = m_el.as<Property>();
-    if (me.hasFeaturingClassifier() && !me.m_redefinitionContext.contains(me.getFeaturingClassifierID())) {
-        me.m_redefinitionContext.nonOppositeAdd(me.getFeaturingClassifierRef());
+    if (me.getFeaturingClassifier() && !me.m_redefinitionContext.contains(me.getFeaturingClassifier().id())) {
+        me.m_redefinitionContext.nonOppositeAdd(*me.getFeaturingClassifier());
     }
     el.setReference(&m_el);
 }
 
 void Property::RemoveRedefinitionContextFunctor::operator()(Element& el) const {
     Property& me = m_el.as<Property>();
-    if (me.m_redefinedElement.empty() && me.hasFeaturingClassifier() && !me.m_redefinitionContext.empty()) {
-        me.m_redefinitionContext.nonOppositeRemove(me.getFeaturingClassifierID());
+    if (me.m_redefinedElement.empty() && me.getFeaturingClassifier() && !me.m_redefinitionContext.empty()) {
+        me.m_redefinitionContext.nonOppositeRemove(me.getFeaturingClassifier().id());
     }
     el.removeReference(m_el.getID());
 }
 
 void Property::referencingReleased(ID id) {
     StructuralFeature::referencingReleased(id);
+    ConnectableElement::referencingReleased(id);
     m_association.release(id);
 }
 
 void Property::referenceReindexed(ID oldID, ID newID) {
     StructuralFeature::referenceReindexed(oldID, newID);
+    ConnectableElement::referenceReindexed(oldID, newID);
     m_association.reindex(oldID, newID);
 }
 
 void Property::reindexName(std::string oldName, std::string newName) {
     StructuralFeature::reindexName(oldName, newName);
+    ConnectableElement::reindexName(oldName, newName);
     m_association.reindexName(oldName, newName);
 }
 
 void Property::restoreReference(Element* el) {
     StructuralFeature::restoreReference(el);
+    ConnectableElement::restoreReference(el);
     if (m_redefinedProperties.contains(el->getID())) {
         el->setReference(this);
-        if (m_featuringClassifier.has() && !m_redefinitionContext.contains(m_featuringClassifier.id())) {
-            m_redefinitionContext.addReadOnly(m_featuringClassifier.id());
+        if (m_featuringClassifier.get() && !m_redefinitionContext.contains(m_featuringClassifier.get().id())) {
+            m_redefinitionContext.addReadOnly(m_featuringClassifier.get().id());
         }
     }
 }
@@ -123,33 +131,12 @@ void Property::init() {
     m_redefinedProperties.m_removeFunctors.insert(new RemoveRedefinitionContextFunctor(this));
 }
 
-void Property::copy(const Property& rhs) {
-    m_defaultValue = rhs.m_defaultValue;
-    m_class = rhs.m_class;
-    m_dataType =  rhs.m_dataType;
-    m_composite = rhs.m_composite;
-    m_aggregation = rhs.m_aggregation;
-    m_redefinedProperties = rhs.m_redefinedProperties;
-}
-
 Property::Property() : Element(ElementType::PROPERTY) {
     init();
 }
 
-Property::Property(const Property& rhs) : Element(rhs, ElementType::PROPERTY) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    TypedElement::copy(rhs);
-    MultiplicityElement::copy(rhs);
-    RedefinableElement::copy(rhs);
-    Feature::copy(rhs);
-    DeploymentTarget::copy(rhs);
-    copy(rhs);
-}
-
 Property::~Property() {
-
+    mountAndRelease();
 }
 
 AggregationKind Property::getAggregation() {
@@ -162,17 +149,16 @@ bool Property::isComposite() {
 
 void Property::setComposite(bool composite) {
     if (!composite && m_composite) {
-        if (m_featuringClassifier.has() && m_featuringClassifier.getRef().isSubClassOf(ElementType::STRUCTURED_CLASSIFIER)) {
-            m_featuringClassifier.getRef().as<StructuredClassifier>().m_parts.removeFromJustThisSet(m_id);
+        if (m_featuringClassifier.get() && m_featuringClassifier.get()->isSubClassOf(ElementType::STRUCTURED_CLASSIFIER)) {
+            m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.removeFromJustThisSet(m_id);
         }
     }
     m_composite = composite;
     if (m_composite) {
-        if (m_featuringClassifier.has() && m_featuringClassifier.getRef().isSubClassOf(ElementType::STRUCTURED_CLASSIFIER)) {
-            m_featuringClassifier.getRef().as<StructuredClassifier>().m_parts.nonOppositeAdd(*this);
+        if (m_featuringClassifier.get() && m_featuringClassifier.get()->isSubClassOf(ElementType::STRUCTURED_CLASSIFIER)) {
+            m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.nonOppositeAdd(*this);
         }
     }
-    updateCopiesScalar(composite, &Property::m_composite);
 }
 
 void Property::setAggregation(AggregationKind aggregation) {
@@ -187,23 +173,10 @@ void Property::setAggregation(AggregationKind aggregation) {
             setComposite(true);
         }
     }
-    updateCopiesScalar(aggregation, &Property::m_aggregation);
 }
 
-ValueSpecification* Property::getDefaultValue() {
+ValueSpecificationPtr Property::getDefaultValue() const {
     return m_defaultValue.get();
-}
-
-ValueSpecification& Property::getDefaultValueRef() {
-    return m_defaultValue.getRef();
-}
-
-ID Property::getDefaultValueID() const {
-    return m_defaultValue.id();
-}
-
-bool Property::hasDefaultValue() const {
-    return m_defaultValue.has();
 }
 
 void Property::setDefaultValue(ValueSpecification* val) {
@@ -218,20 +191,8 @@ void Property::setDefaultValue(ID id) {
     m_defaultValue.set(id);
 }
 
-DataType* Property::getDataType() {
+DataTypePtr Property::getDataType() {
     return m_dataType.get();
-}
-
-DataType& Property::getDataTypeRef() {
-    return m_dataType.getRef();
-}
-
-ID Property::getDataTypeID() const {
-    return m_dataType.id();
-}
-
-bool Property::hasDataType() const {
-    return m_dataType.has();
 }
 
 void Property::setDataType(DataType* dataType) {
@@ -246,20 +207,8 @@ void Property::setDataType(ID id) {
     m_dataType.set(id);
 }
 
-Class* Property::getClass() {
+ClassPtr Property::getClass() const {
     return m_class.get();
-}
-
-Class& Property::getClassRef() {
-    return m_class.getRef();
-}
-
-ID Property::getClassID() const {
-    return m_class.id();
-}
-
-bool Property::hasClass() const {
-    return m_class.has();
 }
 
 void Property::setClass(Class* clazz) {
@@ -274,20 +223,8 @@ void Property::setClass(ID id) {
     m_class.set(id);
 }
 
-Association* Property::getAssociation() {
+AssociationPtr Property::getAssociation() const {
     return m_association.get();
-}
-
-Association& Property::getAssociationRef() {
-    return m_association.getRef();
-}
-
-ID Property::getAssociationID() const {
-    return m_association.id();
-}
-
-bool Property::hasAssociation() const {
-    return m_association.has();
 }
 
 void Property::setAssociation(Association* association) {
@@ -302,20 +239,8 @@ void Property::setAssociation(ID id) {
     m_association.set(id);
 }
 
-Association* Property::getOwningAssociation() {
+AssociationPtr Property::getOwningAssociation() const {
     return m_owningAssociation.get();
-}
-
-Association& Property::getOwningAssociationRef() {
-    return m_owningAssociation.getRef();
-}
-
-ID Property::getOwningAssociationID() const {
-    return m_owningAssociation.id();
-}
-
-bool Property::hasOwningAssociation() const {
-    return m_owningAssociation.has();
 }
 
 void Property::setOwningAssociation(Association* association) {
@@ -330,20 +255,8 @@ void Property::setOwningAssociation(ID id) {
     m_owningAssociation.set(id);
 }
 
-Interface* Property::getInterface() {
+InterfacePtr Property::getInterface() const {
     return m_interface.get();
-}
-
-Interface& Property::getInterfaceRef() {
-    return m_interface.getRef();
-}
-
-bool Property::hasInterface() const {
-    return m_interface.has();
-}
-
-ID Property::getInterfaceID() const {
-    return m_interface.id();
 }
 
 void Property::setInterface(Interface* interface) {

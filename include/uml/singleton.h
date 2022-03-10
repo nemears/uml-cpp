@@ -1,5 +1,5 @@
-#ifndef UML_SINGLETON_2
-#define UML_SINGLETON_2
+#ifndef _UML_SINGLETON_H_
+#define _UML_SINGLETON_H_
 
 #include "set.h"
 
@@ -25,36 +25,19 @@ namespace UML {
             Singleton<T,U>(const Singleton<T,U>& rhs) : Set<T, U>(rhs) {
                 this->m_upper = 1;
             };
-            T* get() {
+            UmlPtr<T> get() const {
+                UmlPtr<T> ret(0);
                 if (this->m_root) {
-                    if (this->m_root->m_el == 0) { // TODO make this faster
-                        this->m_root->m_el = &this->m_el->m_manager->template get<T>(this->m_root->m_id);
+                    ret.m_id = this->m_root->m_id;
+                    ret.m_ptr = this->m_root ? dynamic_cast<T*>(this->m_root->m_el) : 0;
+                    if (ret.m_ptr) {
+                        ret.m_ptr->m_node->m_ptrs.push_back((void*) &ret);
                     }
-                    return dynamic_cast<T*>(this->m_root->m_el);
-                } else {
-                    return 0;
-                }
-            };
-            T& getRef() {
-                if (this->m_root) {
-                    if (this->m_root->m_el == 0) {
-                        this->m_root->m_el = &this->m_el->m_manager->get(this->m_root->m_id);
+                    if (this->m_el) {
+                        ret.m_manager = this->m_el->m_manager;
                     }
-                    return *dynamic_cast<T*>(this->m_root->m_el);
-                } else {
-                    // TODO throw exception
-                    throw UML::NullReferenceException();
                 }
-            };
-            ID id() const {
-                if (this->m_root) {
-                    return this->m_root->m_id;
-                } else {
-                    return ID::nullID();
-                }
-            };
-            bool has() const {
-                return this->m_root != 0;
+                return ret;
             };
             void set(T* el) {
                 if (el) {

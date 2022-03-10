@@ -1,7 +1,8 @@
-#ifndef STRUCTURED_CLASSIFIER_H
-#define STRUCTURED_CLASSIFIER_H
+#ifndef _UML_STRUCTURED_CLASSIFIER_H_
+#define _UML_STRUCTURED_CLASSIFIER_H_
 
 #include "classifier.h"
+#include "uml/connector.h"
 
 namespace UML {
 
@@ -25,10 +26,8 @@ namespace UML {
             };
             void restoreReferences() override;
             void init();
-            void copy(const StructuredClassifier& rhs);
             StructuredClassifier();
         public:
-            StructuredClassifier(const StructuredClassifier& clazz);
             virtual ~StructuredClassifier();
             Set<Property, StructuredClassifier>& getOwnedAttributes();
             Set<ConnectableElement, StructuredClassifier>& getRoles();

@@ -1,6 +1,12 @@
 #include "uml/connectableElement.h"
-#include "uml/uml-stable.h"
 #include "uml/setReferenceFunctor.h"
+#include "uml/behavior.h"
+#include "uml/package.h"
+#include "uml/stereotype.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -42,20 +48,12 @@ void ConnectableElement::init() {
     m_ends.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
-void ConnectableElement::copy(const ConnectableElement& rhs) {
-    m_ends = rhs.m_ends;
-}
-
 ConnectableElement::ConnectableElement() : Element(ElementType::CONNECTABLE_ELEMENT) {
     init();
 }
 
 ConnectableElement::~ConnectableElement() {
     
-}
-
-ConnectableElement::ConnectableElement(const ConnectableElement& rhs) : Element(ElementType::CONNECTABLE_ELEMENT) {
-    // abstract
 }
 
 Set<ConnectorEnd, ConnectableElement>& ConnectableElement::getEnds() {

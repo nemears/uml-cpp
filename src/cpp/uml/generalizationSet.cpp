@@ -1,7 +1,14 @@
 #include "uml/generalizationSet.h"
-#include "uml/classifier.h"
-#include "uml/generalization.h"
-#include "uml/uml-stable.h"
+#include "uml/profile.h"
+#include "uml/artifact.h"
+#include "uml/operation.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/deployment.h"
+#include "uml/manifestation.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
@@ -40,22 +47,12 @@ void GeneralizationSet::init() {
     m_powerType.m_signature = &GeneralizationSet::getPowerTypeSingleton;
 }
 
-void GeneralizationSet::copy(const GeneralizationSet& rhs) {
-    m_generalizations = rhs.m_generalizations;
-    m_powerType = rhs.m_powerType;
-    m_covering = rhs.m_covering;
-    m_disjoint = rhs.m_disjoint;
-}
-
 GeneralizationSet::GeneralizationSet() : Element(ElementType::GENERALIZATION_SET) {
     init();
 }
-GeneralizationSet::GeneralizationSet(const GeneralizationSet& rhs) : Element(rhs, ElementType::GENERALIZATION_SET) {
-    init();
-    Element::copy(rhs);
-    NamedElement::copy(rhs);
-    PackageableElement::copy(rhs);
-    copy(rhs);
+
+GeneralizationSet::~GeneralizationSet() {
+    mountAndRelease();
 }
 
 bool GeneralizationSet::isCovering() const {
@@ -68,28 +65,14 @@ bool GeneralizationSet::isDisjoint() const {
 
 void GeneralizationSet::setCovering(bool covering) {
     m_covering = covering;
-    updateCopiesScalar(covering, &GeneralizationSet::m_covering);
 }
 
 void GeneralizationSet::setDisjoint(bool disjoint) {
     m_disjoint = disjoint;
-    updateCopiesScalar(disjoint, &GeneralizationSet::m_disjoint);
 }
 
-Classifier* GeneralizationSet::getPowerType() {
+ClassifierPtr GeneralizationSet::getPowerType() const {
     return m_powerType.get();
-}
-
-Classifier& GeneralizationSet::getPowerTypeRef() {
-    return m_powerType.getRef();
-}
-
-ID GeneralizationSet::getPowerTypeID() const {
-    return m_powerType.id();
-}
-
-bool GeneralizationSet::hasPowerType() const {
-    return m_powerType.has();
 }
 
 void GeneralizationSet::setPowerType(Classifier* powerType) {

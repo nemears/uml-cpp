@@ -1,6 +1,6 @@
 #include "uml/parsers/parser.h"
 #include <fstream>
-#include "uml/activity.h" // the only "not stable" thing with a presence in this class
+#include "uml/uml-stable.h"
 
 using namespace std;
 
@@ -26,7 +26,7 @@ bool parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string 
                 ID id = ID::fromString(node[key].as<std::string>());
                 if (data.m_manager->UmlManager::loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
                     try {
-                        (el.*elSignature)(data.m_manager->get<T>(id));
+                        (el.*elSignature)(data.m_manager->get(id).as<T>());
                     } catch (DuplicateElementInSetException& e) {
                         // nothing let (that part) fail
                     }
@@ -39,7 +39,7 @@ bool parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string 
                 return true;
             } else {
                 // Path
-                Element* parsed = parseExternalAddToManager(data, node[key].as<std::string>());
+                ElementPtr parsed = parseExternalAddToManager(data, node[key].as<std::string>());
                 if (parsed) {
                     (el.*elSignature)(parsed->as<T>());
                 } else {
@@ -65,7 +65,7 @@ void parseSetReferences(YAML::Node node, ParserMetaData& data, std::string key, 
                         ID id = ID::fromString(node[key][i].as<std::string>());
                         if (data.m_manager->UmlManager::loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
                             try {
-                                (owner.*signature)().add(data.m_manager->get<T>(id));
+                                (owner.*signature)().add(data.m_manager->get(id).as<T>());
                             } catch (DuplicateElementInSetException e) {
                                 // nothing
                             } catch (std::exception e) {
@@ -97,11 +97,11 @@ void parseSetReferences(YAML::Node node, ParserMetaData& data, std::string key, 
 template <class T = Element, class U = Element, class S = Set<T,U>>
 void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, S& (U::* signature)()) {
     if (data.m_strategy == ParserStrategy::WHOLE) {
-        Element* packagedEl = parseExternalAddToManager(data, node.as<std::string>());
-        if (packagedEl == 0) {
+        ElementPtr packagedEl = parseExternalAddToManager(data, node.as<std::string>());
+        if (!packagedEl) {
             throw UmlParserException("Could not identify YAML node for packaged elements", data.m_path.string(), node);
         }
-        (el.*signature)().add(*dynamic_cast<T*>(packagedEl));
+        (el.*signature)().add(dynamic_cast<T&>(*packagedEl));
     } else {
         std::string path = node.as<std::string>();
         std::string idStr = path.substr(path.find_last_of("/") + 1, path.find_last_of("/") + 29);
@@ -164,7 +164,7 @@ void parseSequenceDefinitions(YAML::Node node, ParserMetaData& data, string key,
 template <class T = Element> 
 T& parseDefinition(YAML::Node node, ParserMetaData& data, string key, void (*parser)(YAML::Node, T&, ParserMetaData&)) {
     if (node[key].IsMap()) {
-        T& ret = data.m_manager->create<T>();
+        T& ret = *data.m_manager->create<T>();
         parser(node[key], ret, data);
         return ret;
     } else {
@@ -185,31 +185,31 @@ void parseSingletonDefinition(YAML::Node node, ParserMetaData& data, std::string
 
 UmlManager* parse(string path) {
     UmlManager* ret = new UmlManager;
-    Element* root = ret->parse(path);
-    ret->setRoot(root);
+    ElementPtr root = ret->parse(path);
+    ret->setRoot(*root);
     return ret;
 }
 
-Element* parse(ParserMetaData& data) {
+ElementPtr parse(ParserMetaData& data) {
     YAML::Node node = YAML::LoadFile(data.m_path.string());
-    Element* ret = parseNode(node, data);
+    ElementPtr ret = parseNode(node, data);
     return ret;
 }
 
-Element& parseString(string body, ParserMetaData& data) {
+ElementPtr parseString(string body, ParserMetaData& data) {
     YAML::Node node = YAML::Load(body);
-    Element* ret = parseNode(node, data);
+    ElementPtr ret = parseNode(node, data);
     if (ret) {
-        return *ret;
+        return ret;
     } else {
         throw UmlParserException("could not parse string representing an element!", "", node);
     }
 }
 
-Element& parseYAML(YAML::Node node, ParserMetaData& data) {
-    Element* ret = parseNode(node, data);
+ElementPtr parseYAML(YAML::Node node, ParserMetaData& data) {
+    ElementPtr ret = parseNode(node, data);
     if (ret) {
-        return *ret;
+        return ret;
     } else {
         throw UmlParserException("could not parse string representing an element!", "", node);
     }
@@ -621,16 +621,16 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
             }
         }
     }
-    // if (ret->isSubClassOf(ElementType::BEHAVIOR)) {
-    //     if (node["namespace"]) {
-    //         if (node["namespace"].IsScalar()) {
-    //             if (isValidID(node["owner"].as<std::string>())) {
-    //                 setNamespace(ret->as<NamedElement>(), ID::fromString(node["namespace"].as<std::string>()));
-    //                 return;
-    //             }
-    //         }
-    //     }
-    // }
+    if (ret->isSubClassOf(ElementType::BEHAVIOR)) {
+        if (node["namespace"]) {
+            if (node["namespace"].IsScalar()) {
+                if (isValidID(node["owner"].as<std::string>())) {
+                    setNamespace(ret->as<NamedElement>(), ID::fromString(node["namespace"].as<std::string>()));
+                    return;
+                }
+            }
+        }
+    }
     if (ret->isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
         if (parseSingletonReference(node, data, "owningTemplateParameter", ret->as<ParameterableElement>(), &ParameterableElement::setOwningTemplateParameter, &ParameterableElement::setOwningTemplateParameter)) {
             return;
@@ -647,18 +647,18 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
     }
 };
 
-Element* parseNode(YAML::Node node, ParserMetaData& data) {
-    Element* ret = 0;
+ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
+    ElementPtr ret(0);
 
     if (node["association"]) {
-        Association& association = data.m_manager->create<Association>();
+        Association& association = *data.m_manager->create<Association>();
         parseAssociation(node["association"], association, data);
         ret = &association;
     }
 
     if (node["artifact"]) {
         if (node["artifact"].IsMap()) {
-            Artifact& artifact = data.m_manager->create<Artifact>();
+            Artifact& artifact = *data.m_manager->create<Artifact>();
             parseArtifact(node["artifact"], artifact, data);
             ret = &artifact;
         }
@@ -666,15 +666,15 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
 
     if (node["class"]) {
         if (node["class"].IsMap()) {
-            Class& clazz = data.m_manager->create<Class>();
-            parseClass(node["class"], clazz, data);
-            ret = &clazz;
+            ClassPtr clazz = data.m_manager->create<Class>();
+            parseClass(node["class"], *clazz, data);
+            ret = clazz;
         }
     }
 
     if (node["comment"]) {
         if (node["comment"].IsMap()) {
-            Comment& comment = data.m_manager->create<Comment>();
+            Comment& comment = *data.m_manager->create<Comment>();
             parseComment(node["comment"], comment, data);
             ret = &comment;
         }
@@ -690,41 +690,41 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
 
     if (node["dataType"]) {
         if (node["dataType"].IsMap()) {
-            DataType& dataType = data.m_manager->create<DataType>();
+            DataType& dataType = *data.m_manager->create<DataType>();
             parseDataType(node["dataType"], dataType, data);
             ret = &dataType;
         }
     }
 
     if (node["dependency"]) {
-        Dependency& dependency = data.m_manager->create<Dependency>();
+        Dependency& dependency = *data.m_manager->create<Dependency>();
         parseDependency(node["dependency"], dependency, data);
         ret = &dependency;
     }
 
     if (node["deployment"]) {
-        Deployment& deployment = data.m_manager->create<Deployment>();
+        Deployment& deployment = *data.m_manager->create<Deployment>();
         parseDeployment(node["deployment"], deployment, data);
         ret = &deployment;
     }
 
     if (node["enumeration"]) {
         if (node["enumeration"].IsMap()) {
-            Enumeration& enumeration = data.m_manager->create<Enumeration>();
+            Enumeration& enumeration = *data.m_manager->create<Enumeration>();
             parseEnumeration(node["enumeration"], enumeration, data);
             ret = &enumeration;
         }
     }
 
     if (node["enumerationLiteral"]) {
-        EnumerationLiteral& enumerationLiteral = data.m_manager->create<EnumerationLiteral>();
+        EnumerationLiteral& enumerationLiteral = *data.m_manager->create<EnumerationLiteral>();
         parseEnumerationLiteral(node["enumerationLiteral"], enumerationLiteral, data);
         ret = &enumerationLiteral;
     }
 
     if (node["expression"]) {
         if (node["expression"].IsMap()) {
-            Expression& exp = data.m_manager->create<Expression>();
+            Expression& exp = *data.m_manager->create<Expression>();
             parseExpression(node["expression"], exp, data);
             ret = &exp;
         }
@@ -732,38 +732,38 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
 
     if (node["extension"]) {
         if (node["extension"].IsMap()) {
-            Extension& extension = data.m_manager->create<Extension>();
+            Extension& extension = *data.m_manager->create<Extension>();
             parseExtension(node["extension"], extension, data);
             ret = &extension;
         }
     }
 
     if (node["extensionEnd"]) {
-        ExtensionEnd& extensionEnd = data.m_manager->create<ExtensionEnd>();
+        ExtensionEnd& extensionEnd = *data.m_manager->create<ExtensionEnd>();
         parseProperty(node["extensionEnd"], extensionEnd, data);
         ret = &extensionEnd;
     }
 
     if (node["generalization"]) {
-        Generalization& generalization = data.m_manager->create<Generalization>();
+        Generalization& generalization = *data.m_manager->create<Generalization>();
         parseGeneralization(node["generalization"], generalization, data);
         ret = &generalization;
     }
 
     if (node["generalizationSet"]) {
-        GeneralizationSet& generalizationSet = data.m_manager->create<GeneralizationSet>();
+        GeneralizationSet& generalizationSet = *data.m_manager->create<GeneralizationSet>();
         parseGeneralizationSet(node["generalizationSet"], generalizationSet, data);
         ret = &generalizationSet;
     }
 
     if (node["instanceSpecification"]) {
-        InstanceSpecification& inst = data.m_manager->create<InstanceSpecification>();
+        InstanceSpecification& inst = *data.m_manager->create<InstanceSpecification>();
         parseInstanceSpecification(node["instanceSpecification"], inst, data);
         ret = &inst;
     }
 
     if (node["instanceValue"]) {
-        InstanceValue& instVal = data.m_manager->create<InstanceValue>();
+        InstanceValue& instVal = *data.m_manager->create<InstanceValue>();
         parseInstanceValue(node["instanceValue"], instVal, data);
         ret = &instVal;
     }
@@ -779,81 +779,81 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["literalBool"]) {
-        LiteralBool& lb = data.m_manager->create<LiteralBool>();
+        LiteralBool& lb = *data.m_manager->create<LiteralBool>();
         parseLiteralBool(node["literalBool"], lb, data);
         ret = &lb;
     }
 
     if (node["literalInt"]) {
-        LiteralInt& li = data.m_manager->create<LiteralInt>();
+        LiteralInt& li = *data.m_manager->create<LiteralInt>();
         parseLiteralInt(node["literalInt"], li, data);
         ret = &li;
     }
 
     if (node["literalNull"]) {
-        LiteralNull& ln = data.m_manager->create<LiteralNull>();
+        LiteralNull& ln = *data.m_manager->create<LiteralNull>();
         parseTypedElement(node["literalNull"], ln, data);
         ret = &ln;
     }
 
     if (node["literalReal"]) {
-        LiteralReal& lr = data.m_manager->create<LiteralReal>();
+        LiteralReal& lr = *data.m_manager->create<LiteralReal>();
         parseLiteralReal(node["literalReal"], lr, data);
         ret = &lr;
     }
 
     if (node["literalString"]) {
-        LiteralString& ls = data.m_manager->create<LiteralString>();
+        LiteralString& ls = *data.m_manager->create<LiteralString>();
         parseLiteralString(node["literalString"], ls, data);
         ret = &ls;
     }
 
     if (node["literalUnlimitedNatural"]) {
-        LiteralUnlimitedNatural& ln = data.m_manager->create<LiteralUnlimitedNatural>();
+        LiteralUnlimitedNatural& ln = *data.m_manager->create<LiteralUnlimitedNatural>();
         parseLiteralUnlimitedNatural(node["literalUnlimitedNatural"], ln, data);
         ret = &ln;
     }
 
     if (node["manifestation"]) {
-        Manifestation& manifestation = data.m_manager->create<Manifestation>();
+        Manifestation& manifestation = *data.m_manager->create<Manifestation>();
         parseManifestation(node["manifestation"], manifestation, data);
         ret = &manifestation;
     }
 
     if (node["model"]) {
-        Model& model = data.m_manager->create<Model>();
+        Model& model = *data.m_manager->create<Model>();
         parsePackage(node["model"], model, data);
         ret = &model;
     }
 
     if (node["opaqueBehavior"]) {
-        OpaqueBehavior& bhv = data.m_manager->create<OpaqueBehavior>();
+        OpaqueBehavior& bhv = *data.m_manager->create<OpaqueBehavior>();
         parseOpaqueBehavior(node["opaqueBehavior"], bhv, data);
         ret = &bhv;
     }
 
     if (node["operation"]) {
         if (node["operation"].IsMap()) {
-            Operation& op = data.m_manager->create<Operation>();
+            Operation& op = *data.m_manager->create<Operation>();
             parseOperation(node["operation"], op, data);
             ret = &op;
         }
     }
 
     if (node["package"]) {
-        Package& pckg = data.m_manager->create<Package>();
-        parsePackage(node["package"], pckg, data);
-        ret = &pckg;
+        PackagePtr pckg = data.m_manager->create<Package>();
+        parsePackage(node["package"], *pckg, data);
+        ret = pckg.ptr();
     }
 
     if (node["packageMerge"]) {
-        PackageMerge& packageMerge = data.m_manager->create<PackageMerge>();
+        PackageMerge& packageMerge = *data.m_manager->create<PackageMerge>();
         parsePackageMerge(node["packageMerge"], packageMerge, data);
         ret = &packageMerge;
     }
 
     if (node["parameter"]) {
-        Parameter& param = data.m_manager->create<Parameter>();
+        Parameter& param = *data.m_manager->create<Parameter>();
         parseParameter(node["parameter"], param, data);
         ret = &param;
     }
@@ -863,97 +863,97 @@ Element* parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["primitiveType"]) {
-        PrimitiveType& type = data.m_manager->create<PrimitiveType>();
+        PrimitiveType& type = *data.m_manager->create<PrimitiveType>();
         parsePrimitiveType(node["primitiveType"], type, data);
         ret = &type;
     }
 
     if (node["profile"] && node["profile"].IsMap()) {
-        Profile& profile = data.m_manager->create<Profile>();
+        Profile& profile = *data.m_manager->create<Profile>();
         parsePackage(node["profile"], profile, data);
         ret = &profile;
     }
 
     if (node["profileApplication"]) {
-        ProfileApplication& profileApplication = data.m_manager->create<ProfileApplication>();
+        ProfileApplication& profileApplication = *data.m_manager->create<ProfileApplication>();
         parseProfileApplication(node["profileApplication"], profileApplication, data);
         ret = &profileApplication;
     }
 
     if (node["property"]) {
-        Property& prop = data.m_manager->create<Property>();
+        Property& prop = *data.m_manager->create<Property>();
         parseProperty(node["property"], prop, data);
         ret = &prop;
     }
 
     if (node["realization"]) {
-        Realization& realization = data.m_manager->create<Realization>();
+        Realization& realization = *data.m_manager->create<Realization>();
         parseDependency(node["realization"], realization, data);
         ret = &realization;
     }
 
     if (node["signal"]) {
-        Signal& signal = data.m_manager->create<Signal>();
+        Signal& signal = *data.m_manager->create<Signal>();
         parseSignal(node["signal"], signal, data);
         ret = &signal;
     }
 
     if (node["slot"]) {
-        Slot& slot = data.m_manager->create<Slot>();
+        Slot& slot = *data.m_manager->create<Slot>();
         parseSlot(node["slot"], slot, data);
         ret = &slot;
     }
 
     if (node["stereotype"]) {
-        Stereotype& stereotype = data.m_manager->create<Stereotype>();
+        Stereotype& stereotype = *data.m_manager->create<Stereotype>();
         parseClass(node["stereotype"], stereotype, data);
         ret = &stereotype;
     }
 
     if (node["templateBinding"]) {
         if (node["templateBinding"].IsMap()) {
-            TemplateBinding& binding = data.m_manager->create<TemplateBinding>();
+            TemplateBinding& binding = *data.m_manager->create<TemplateBinding>();
             parseTemplateBinding(node["templateBinding"], binding, data);
             ret = &binding;
         }
     }
 
     if (node["templateParameter"]) {
-        TemplateParameter& parameter = data.m_manager->create<TemplateParameter>();
+        TemplateParameter& parameter = *data.m_manager->create<TemplateParameter>();
         parseTemplateParameter(node["templateParameter"], parameter, data);
         ret = &parameter;
     }
 
     if (node["templateParameterSubstitution"]) {
-        TemplateParameterSubstitution& templateParameterSubstitution = data.m_manager->create<TemplateParameterSubstitution>();
+        TemplateParameterSubstitution& templateParameterSubstitution = *data.m_manager->create<TemplateParameterSubstitution>();
         parseTemplateParameterSubstitution(node["templateParameterSubstitution"], templateParameterSubstitution, data);
         ret = &templateParameterSubstitution;
     }
 
     if (node["templateSignature"]) {
-        TemplateSignature& templateSignature = data.m_manager->create<TemplateSignature>();
+        TemplateSignature& templateSignature = *data.m_manager->create<TemplateSignature>();
         parseTemplateSignature(node["templateSignature"], templateSignature, data);
         ret = &templateSignature;
     }
 
     if (node["usage"]) {
-        Usage& usage = data.m_manager->create<Usage>();
+        Usage& usage = *data.m_manager->create<Usage>();
         parseDependency(node["usage"], usage, data);
         ret = &usage;
     }
 
     if (ret && data.m_strategy == ParserStrategy::INDIVIDUAL) {
-        parseScope(node, data, ret);
+        parseScope(node, data, &*ret);
     }
 
     return ret;
 }
 
-Element* parseExternalAddToManager(ParserMetaData& data, string path) {
+ElementPtr parseExternalAddToManager(ParserMetaData& data, string path) {
     if (filesystem::exists(data.m_path.parent_path() / path)) {
         filesystem::path cPath = data.m_path;
         data.m_path = cPath.parent_path() / path;
-        Element* ret = parse(data);
+        ElementPtr ret = parse(data);
         data.m_manager->setPath(ret->getID(), data.m_path.string());
         data.m_path = cPath;
         return ret;
@@ -1218,127 +1218,127 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
 void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     if (data.m_strategy == EmitterStrategy::INDIVIDUAL) {
         if (el.isSubClassOf(ElementType::STEREOTYPE)) {
-            if (el.as<Stereotype>().hasProfile()) {
-                emitter << YAML::Key << "profile" << el.as<Stereotype>().getProfileID().string();
+            if (el.as<Stereotype>().getProfile()) {
+                emitter << YAML::Key << "profile" << el.as<Stereotype>().getProfile().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::PACKAGEABLE_ELEMENT)) {
-            if (el.as<PackageableElement>().hasOwningPackage()) {
-                emitter << YAML::Key << "owningPackage" << el.as<PackageableElement>().getOwningPackageID().string();
+            if (el.as<PackageableElement>().getOwningPackage()) {
+                emitter << YAML::Key << "owningPackage" << el.as<PackageableElement>().getOwningPackage().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::PROFILE_APPLICATION)) {
-            if (el.as<ProfileApplication>().hasApplyingPackage()) {
-                emitter << YAML::Key << "applyingPackage" << YAML::Value << el.as<ProfileApplication>().getApplyingPackageID().string();
+            if (el.as<ProfileApplication>().getApplyingPackage()) {
+                emitter << YAML::Key << "applyingPackage" << YAML::Value << el.as<ProfileApplication>().getApplyingPackage().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::PACKAGE_MERGE)) {
-            if (el.as<PackageMerge>().hasReceivingPackage()) {
-                emitter << YAML::Key << "receivingPackage" << el.as<PackageMerge>().getReceivingPackageID().string();
+            if (el.as<PackageMerge>().getReceivingPackage()) {
+                emitter << YAML::Key << "receivingPackage" << el.as<PackageMerge>().getReceivingPackage().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::PROPERTY)) {
-            if (el.as<Property>().hasClass()) {
-                emitter << YAML::Key << "class" << el.as<Property>().getClassID().string();
+            if (el.as<Property>().getClass()) {
+                emitter << YAML::Key << "class" << el.as<Property>().getClass().id().string();
                 return;
             }
-            if (el.as<Property>().hasDataType()) {
-                emitter << YAML::Key << "dataType" << YAML::Value << el.as<Property>().getDataTypeID().string();
+            if (el.as<Property>().getDataType()) {
+                emitter << YAML::Key << "dataType" << YAML::Value << el.as<Property>().getDataType().id().string();
                 return;
             }
-            if (el.as<Property>().hasOwningAssociation()) {
-                emitter << YAML::Key << "owningAssociation" << YAML::Value << el.as<Property>().getOwningAssociationID().string();
+            if (el.as<Property>().getOwningAssociation()) {
+                emitter << YAML::Key << "owningAssociation" << YAML::Value << el.as<Property>().getOwningAssociation().id().string();
                 return;
             }
-            if (el.as<Property>().hasInterface()) {
-                emitter << YAML::Key << "interface" << YAML::Value << el.as<Property>().getInterfaceID().string();
+            if (el.as<Property>().getInterface()) {
+                emitter << YAML::Key << "interface" << YAML::Value << el.as<Property>().getInterface().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::OPERATION)) {
-            if (el.as<Operation>().hasClass()) {
-                emitter << YAML::Key << "class" << YAML::Value << el.as<Operation>().getClassID().string();
+            if (el.as<Operation>().getClass()) {
+                emitter << YAML::Key << "class" << YAML::Value << el.as<Operation>().getClass().id().string();
                 return;
             }
-            if (el.as<Operation>().hasDataType()) {
-                emitter << YAML::Key << "dataType" << YAML::Value << el.as<Operation>().getDataTypeID().string();
+            if (el.as<Operation>().getDataType()) {
+                emitter << YAML::Key << "dataType" << YAML::Value << el.as<Operation>().getDataType().id().string();
                 return;
             }
-            if (el.as<Operation>().hasInterface()) {
-                emitter << YAML::Key << "interface" << YAML::Value << el.as<Operation>().getInterfaceID().string();
+            if (el.as<Operation>().getInterface()) {
+                emitter << YAML::Key << "interface" << YAML::Value << el.as<Operation>().getInterface().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::FEATURE)) {
-            if (el.as<Feature>().hasFeaturingClassifier()) {
-                emitter << YAML::Key << "featuringClassifier" << YAML::Value << el.as<Feature>().getFeaturingClassifierID().string();
+            if (el.as<Feature>().getFeaturingClassifier()) {
+                emitter << YAML::Key << "featuringClassifier" << YAML::Value << el.as<Feature>().getFeaturingClassifier().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::GENERALIZATION)) {
-            if (el.as<Generalization>().hasSpecific()) {
-                emitter << YAML::Key << "specific" << YAML::Value << el.as<Generalization>().getSpecificID().string();
+            if (el.as<Generalization>().getSpecific()) {
+                emitter << YAML::Key << "specific" << YAML::Value << el.as<Generalization>().getSpecific().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::CLASSIFIER)) {
-            if (el.as<Classifier>().hasNamespace()) {
-                emitter << YAML::Key << "namespace" << YAML::Value << el.as<Classifier>().getNamespaceID().string();
+            if (el.as<Classifier>().getNamespace()) {
+                emitter << YAML::Key << "namespace" << YAML::Value << el.as<Classifier>().getNamespace().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::SLOT)) {
-            if (el.as<Slot>().hasOwningInstance()) {
-                emitter << YAML::Key << "owningInstance" << YAML::Value << el.as<Slot>().getOwningInstanceID().string();
+            if (el.as<Slot>().getOwningInstance()) {
+                emitter << YAML::Key << "owningInstance" << YAML::Value << el.as<Slot>().getOwningInstance().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::PARAMETER)) {
-            if (el.as<Parameter>().hasOperation()) {
-                emitter << YAML::Key << "operation" << YAML::Value << el.as<Parameter>().getOperationID().string();
+            if (el.as<Parameter>().getOperation()) {
+                emitter << YAML::Key << "operation" << YAML::Value << el.as<Parameter>().getOperation().id().string();
                 return;
-            } else if (el.as<NamedElement>().hasNamespace()) {
-                emitter << YAML::Key << "namespace" << YAML::Value << el.as<NamedElement>().getNamespaceID().string();
+            } else if (el.as<NamedElement>().getNamespace()) {
+                emitter << YAML::Key << "namespace" << YAML::Value << el.as<NamedElement>().getNamespace().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::ENUMERATION_LITERAL)) {
-            if (el.as<EnumerationLiteral>().hasEnumeration()) {
-                emitter << YAML::Key << "enumeration" << YAML::Value << el.as<EnumerationLiteral>().getEnumerationID().string();
+            if (el.as<EnumerationLiteral>().getEnumeration()) {
+                emitter << YAML::Key << "enumeration" << YAML::Value << el.as<EnumerationLiteral>().getEnumeration().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::TEMPLATE_SIGNATURE)) {
-            if (el.as<TemplateSignature>().hasTemplate()) {
-                emitter << YAML::Key << "template" << YAML::Value << el.as<TemplateSignature>().getTemplateID().string();
+            if (el.as<TemplateSignature>().getTemplate()) {
+                emitter << YAML::Key << "template" << YAML::Value << el.as<TemplateSignature>().getTemplate().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER)) {
-            if (el.as<TemplateParameter>().hasSignature()) {
-                emitter << YAML::Key << "signature" << YAML::Value << el.as<TemplateParameter>().getSignatureID().string();
+            if (el.as<TemplateParameter>().getSignature()) {
+                emitter << YAML::Key << "signature" << YAML::Value << el.as<TemplateParameter>().getSignature().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::TEMPLATE_BINDING)) {
-            if (el.as<TemplateBinding>().hasBoundElement()) {
-                emitter << YAML::Key << "boundElement" << YAML::Value << el.as<TemplateBinding>().getBoundElementID().string();
+            if (el.as<TemplateBinding>().getBoundElement()) {
+                emitter << YAML::Key << "boundElement" << YAML::Value << el.as<TemplateBinding>().getBoundElement().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::TEMPLATE_PARAMETER_SUBSTITUTION)) {
-            if (el.as<TemplateParameterSubstitution>().hasTemplateBinding()) {
-                emitter << YAML::Key << "templateBinding" << YAML::Value << el.as<TemplateParameterSubstitution>().getTemplateBindingID().string();
+            if (el.as<TemplateParameterSubstitution>().getTemplateBinding()) {
+                emitter << YAML::Key << "templateBinding" << YAML::Value << el.as<TemplateParameterSubstitution>().getTemplateBinding().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::DEPLOYMENT)) {
-            if (el.as<Deployment>().hasLocation()) {
-                emitter << YAML::Key << "location" << YAML::Value << el.as<Deployment>().getLocationID().string();
+            if (el.as<Deployment>().getLocation()) {
+                emitter << YAML::Key << "location" << YAML::Value << el.as<Deployment>().getLocation().id().string();
                 return;
             }
         }
@@ -1349,24 +1349,24 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             }
         }
         if (el.isSubClassOf(ElementType::INTERFACE_REALIZATION)) {
-            if (el.as<InterfaceRealization>().hasImplementingClassifier()) {
-                emitter << YAML::Key << "implementingClassifier" << el.as<InterfaceRealization>().getImplementingClassifierID().string();
+            if (el.as<InterfaceRealization>().getImplementingClassifier()) {
+                emitter << YAML::Key << "implementingClassifier" << el.as<InterfaceRealization>().getImplementingClassifier().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::COMMENT)) {
-            if (el.hasOwner()) {
-                emitter << YAML::Key << "owner" << YAML::Value << el.getOwnerID().string();
+            if (el.getOwner()) {
+                emitter << YAML::Key << "owner" << YAML::Value << el.getOwner().id().string();
                 return;
             }
         }
         if (el.isSubClassOf(ElementType::PARAMETERABLE_ELEMENT)) {
-            if (el.as<ParameterableElement>().hasOwningTemplateParameter()) {
-                emitter << YAML::Key << "owningTemplateParameter" << YAML::Value << el.as<ParameterableElement>().getOwningTemplateParameterID().string();
+            if (el.as<ParameterableElement>().getOwningTemplateParameter()) {
+                emitter << YAML::Key << "owningTemplateParameter" << YAML::Value << el.as<ParameterableElement>().getOwningTemplateParameter().id().string();
                 return;
             }
-            else if (el.hasOwner()) { // special case
-                emitter << YAML::Key << "owner" << YAML::Value << el.getOwnerID().string();
+            else if (el.getOwner()) { // special case
+                emitter << YAML::Key << "owner" << YAML::Value << el.getOwner().id().string();
                 return;
             }
         }
@@ -1411,7 +1411,7 @@ void emitModel(YAML::Emitter& emitter, Model& model, EmitterMetaData& data) {
 
 Comment& determineAndParseOwnedComment(YAML::Node node, ParserMetaData& data) {
     if (node["comment"]) {
-        Comment& comment = data.m_manager->create<Comment>();
+        Comment& comment = *data.m_manager->create<Comment>();
         parseComment(node["comment"], comment, data);
         return comment;
     }
@@ -1422,7 +1422,7 @@ Comment& determineAndParseOwnedComment(YAML::Node node, ParserMetaData& data) {
 
 InstanceSpecification& determinAndParseAppliedStereotype(YAML::Node node, ParserMetaData& data) {
     if (node["instanceSpecification"]) {
-        InstanceSpecification& instance = data.m_manager->create<InstanceSpecification>();
+        InstanceSpecification& instance = *data.m_manager->create<InstanceSpecification>();
         parseInstanceSpecification(node["instanceSpecification"], instance, data);
         return instance;
     } else {
@@ -1485,15 +1485,15 @@ void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) 
     //         for (size_t i = 0; i < node["clientDependencies"].size(); i++) {
     //             if (node["clientDependencies"][i].IsScalar()) {
     //                 ID clientDependencyID = ID::fromString(node["clientDependencies"][i].as<string>());
-    //                 if (data.m_strategy == ParserStrategy::WHOLE) {
-    //                     applyFunctor(data, clientDependencyID, new AddClientDepencyFunctor(&el, node["clientDependencies"][i]));
-    //                 } else {
+    //                 // if (data.m_strategy == ParserStrategy::WHOLE) {
+    //                 //     applyFunctor(data, clientDependencyID, new AddClientDepencyFunctor(&el, node["clientDependencies"][i]));
+    //                 // } else {
     //                     if (data.m_manager->loaded(clientDependencyID)) {
-    //                         el.getClientDependencies().add(data.m_manager->get<Dependency>(clientDependencyID));
+    //                         el.getClientDependencies().add(data.m_manager->get(clientDependencyID).as<Dependency>());
     //                     } else {
     //                         el.getClientDependencies().add(clientDependencyID);
     //                     }
-    //                 }
+    //                 // }
     //             } else {
     //                 throw UmlParserException("Invalid yaml node type for NamedElement clientDependencies entry, must be a scalar!", data.m_path.string(), node["clientDependencies"][i]);
     //             }
@@ -1566,14 +1566,14 @@ void emitNamedElement(YAML::Emitter& emitter, NamedElement& el, EmitterMetaData&
 void emitTypedElement(YAML::Emitter& emitter, TypedElement& el, EmitterMetaData& data) {
     emitNamedElement(emitter, el, data);
 
-    if (el.hasType()) {
-        emitter << YAML::Key << "type" << YAML::Value << el.getTypeID().string();
+    if (el.getType()) {
+        emitter << YAML::Key << "type" << YAML::Value << el.getType().id().string();
     }
 }
 
 Generalization& determineAndParseGeneralization(YAML::Node node, ParserMetaData& data) {
     if (node["generalization"]) {
-        Generalization& gen = data.m_manager->create<Generalization>();
+        Generalization& gen = *data.m_manager->create<Generalization>();
         parseGeneralization(node["generalization"], gen, data);
         return gen;
     } else {
@@ -1600,8 +1600,8 @@ void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization, 
 
     emitElement(emitter, generalization, data);
 
-    if (generalization.hasGeneral()) {
-        emitter << YAML::Key << "general" << YAML::Value << generalization.getGeneralID().string();
+    if (generalization.getGeneral()) {
+        emitter << YAML::Key << "general" << YAML::Value << generalization.getGeneral().id().string();
     }
     
     if (!generalization.getGeneralizationSets().empty()) {
@@ -1618,7 +1618,7 @@ void emitGeneralization(YAML::Emitter& emitter, Generalization& generalization, 
 Property& determineAndParseOwnedAttribute(YAML::Node node, ParserMetaData& data) {
     if (node["property"]) {
         if (node["property"].IsMap()) {
-            Property& prop = data.m_manager->create<Property>();
+            Property& prop = *data.m_manager->create<Property>();
             parseProperty(node["property"], prop, data);
             return prop;
         } else {
@@ -1626,7 +1626,7 @@ Property& determineAndParseOwnedAttribute(YAML::Node node, ParserMetaData& data)
         }
     } else if (node["port"]) {
         if (node["port"].IsMap()) {
-            Port& port = data.m_manager->create<Port>();
+            Port& port = *data.m_manager->create<Port>();
             parsePort(node["port"], port, data);
             return port;
         } else {
@@ -1639,7 +1639,7 @@ Property& determineAndParseOwnedAttribute(YAML::Node node, ParserMetaData& data)
 
 Operation& determineAndParseOwnedOperation(YAML::Node node, ParserMetaData& data) {
     if (node["operation"]) {
-        Operation& op = data.m_manager->create<Operation>();
+        Operation& op = *data.m_manager->create<Operation>();
         parseOperation(node["operation"], op, data);
         return op;
     } else {
@@ -1698,7 +1698,7 @@ Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
         return activity;
     } else **/if (node["artifact"]) {
         if (node["artifact"].IsMap()) {
-            Artifact& artifact = data.m_manager->create<Artifact>();
+            Artifact& artifact = *data.m_manager->create<Artifact>();
             parseArtifact(node["artifact"], artifact, data);
             return artifact;
         }  else {
@@ -1706,7 +1706,7 @@ Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
         }
     } else if (node["association"]) { // is this valid IG, seems weird
         if (node["association"].IsMap()) {
-            Association& association = data.m_manager->create<Association>();
+            Association& association = *data.m_manager->create<Association>();
             parseAssociation(node["association"], association, data);
             return association;
         } else {
@@ -1714,7 +1714,7 @@ Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
         }
     } else if (node["class"]) {
         if (node["class"].IsMap()) {
-            Class& nestedClazz = data.m_manager->create<Class>();
+            Class& nestedClazz = *data.m_manager->create<Class>();
             parseClass(node["class"], nestedClazz, data);
             return nestedClazz;
         } else {
@@ -1722,7 +1722,7 @@ Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
         }
     } else if (node["dataType"]) {
         if (node["dataType"].IsMap()) {
-            DataType& dataType = data.m_manager->create<DataType>();
+            DataType& dataType = *data.m_manager->create<DataType>();
             parseDataType(node["dataType"], dataType, data);
             return dataType;
         }  else {
@@ -1730,7 +1730,7 @@ Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
         }
     } else if (node["enumeration"]) {
         if (node["enumeration"].IsMap()) {
-            Enumeration& enumeration = data.m_manager->create<Enumeration>();
+            Enumeration& enumeration = *data.m_manager->create<Enumeration>();
             parseEnumeration(node["enumeration"], enumeration, data);
             return enumeration;
         } else {
@@ -1738,7 +1738,7 @@ Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
         }
     } else if (node["extension"]) {
         if (node["extension"].IsMap()) {
-            Extension& extension = data.m_manager->create<Extension>();
+            Extension& extension = *data.m_manager->create<Extension>();
             parseExtension(node["extension"], extension, data);
             return extension;
         } else {
@@ -1748,7 +1748,7 @@ Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
         return parseDefinition(node, data, "interface", parseInterface);
     } else if (node["opaqueBehavior"]) {
         if (node["opaqueBehavior"].IsMap()) {
-            OpaqueBehavior& opaqueBehavior = data.m_manager->create<OpaqueBehavior>();
+            OpaqueBehavior& opaqueBehavior = *data.m_manager->create<OpaqueBehavior>();
             parseOpaqueBehavior(node["opaqueBehavior"], opaqueBehavior, data);
             return opaqueBehavior;
         } else {
@@ -1756,7 +1756,7 @@ Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
         }
     } else if (node["primitiveType"]) {
         if (node["primitiveType"].IsMap()) {
-            PrimitiveType& primitiveType = data.m_manager->create<PrimitiveType>();
+            PrimitiveType& primitiveType = *data.m_manager->create<PrimitiveType>();
             parsePrimitiveType(node["primitiveType"], primitiveType, data);
             return primitiveType;
         } else {
@@ -1764,7 +1764,7 @@ Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
         }
     } else if (node["signal"]) {
         if (node["signal"].IsMap()) {
-            Signal& signal = data.m_manager->create<Signal>();
+            Signal& signal = *data.m_manager->create<Signal>();
             parseSignal(node["signal"], signal, data);
             return signal;
         } else {
@@ -1778,7 +1778,7 @@ Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
 Reception& determineAndParseOwnedReception(YAML::Node node, ParserMetaData& data) {
     if (node["reception"]) {
         if (node["reception"].IsMap()) {
-            Reception& reception = data.m_manager->create<Reception>();
+            Reception& reception = *data.m_manager->create<Reception>();
             parseReception(node["reception"], reception, data);
             return reception;
         } else {
@@ -1810,7 +1810,7 @@ void emitClass(YAML::Emitter& emitter, Class& clazz, EmitterMetaData& data) {
 Parameter& determineAndParseParameter(YAML::Node node, ParserMetaData& data) {
     if (node["parameter"]) {
         if (node["parameter"].IsMap()) {
-            Parameter& param = data.m_manager->create<Parameter>();
+            Parameter& param = *data.m_manager->create<Parameter>();
             parseParameter(node["parameter"], param, data);
             return param;
         } else {
@@ -1830,8 +1830,8 @@ void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data) {
 void emitBehavior(YAML::Emitter& emitter, Behavior& bhv, EmitterMetaData& data) {
     emitClass(emitter, bhv, data);
     emitSequence(emitter, "parameters", data, bhv, &Behavior::getOwnedParameters);
-    if (bhv.hasSpecification()) {
-        emitter << YAML::Key << "specification" << YAML::Value << bhv.getSpecificationID().string();
+    if (bhv.getSpecification()) {
+        emitter << YAML::Key << "specification" << YAML::Value << bhv.getSpecification().id().string();
     }
 }
 
@@ -1854,7 +1854,7 @@ void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& d
                         // TODO
                     } else {
                         // make literal string with value
-                        LiteralString& bodyUML = data.m_manager->create<LiteralString>();
+                        LiteralString& bodyUML = *data.m_manager->create<LiteralString>();
                         bodyUML.setValue(body);
                         bhv.getBodies().add(bodyUML);
                     }
@@ -1878,7 +1878,7 @@ void emitOpaqueBehavior(YAML::Emitter& emitter, OpaqueBehavior& bhv, EmitterMeta
 ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserMetaData& data) {
     if (node["expression"]) {
         if (node["expression"].IsMap()) {
-            Expression& newExp = data.m_manager->create<Expression>();
+            Expression& newExp = *data.m_manager->create<Expression>();
             parseExpression(node["expression"], newExp, data);
             return newExp;
         } else {
@@ -1886,7 +1886,7 @@ ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserM
         }
     } else if (node["literalBool"]) {
         if (node["literalBool"].IsMap()) {
-            LiteralBool& lb = data.m_manager->create<LiteralBool>();
+            LiteralBool& lb = *data.m_manager->create<LiteralBool>();
             parseLiteralBool(node["literalBool"], lb, data);
             return lb;
         } else {
@@ -1894,7 +1894,7 @@ ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserM
         }
     } else if (node["literalInt"]) {
         if (node["literalInt"].IsMap()) {
-            LiteralInt& li = data.m_manager->create<LiteralInt>();
+            LiteralInt& li = *data.m_manager->create<LiteralInt>();
             parseLiteralInt(node["literalInt"], li, data);
             return li;
         } else {
@@ -1902,7 +1902,7 @@ ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserM
         }
     } else if (node["literalNull"]) {
         if (node["literalNull"].IsMap()) {
-            LiteralNull& ln = data.m_manager->create<LiteralNull>();
+            LiteralNull& ln = *data.m_manager->create<LiteralNull>();
             parseTypedElement(node["literalNull"], ln, data);
             return ln;
         } else {
@@ -1910,7 +1910,7 @@ ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserM
         }
     } else if (node["literalReal"]) {
         if (node["literalReal"].IsMap()) {
-            LiteralReal& lr = data.m_manager->create<LiteralReal>();
+            LiteralReal& lr = *data.m_manager->create<LiteralReal>();
             parseLiteralReal(node["literalReal"], lr, data);
             return lr;
         } else {
@@ -1918,7 +1918,7 @@ ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserM
         }
     } else if (node["literalString"]) {
         if (node["literalString"].IsMap()) {
-            LiteralString& ls = data.m_manager->create<LiteralString>();
+            LiteralString& ls = *data.m_manager->create<LiteralString>();
             parseLiteralString(node["literalString"], ls, data);
             return ls;
         } else {
@@ -1926,7 +1926,7 @@ ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserM
         }
     } else if (node["literalUnlimtedNatural"]) {
         if (node["literalUnlimitedNatural"]) {
-            LiteralUnlimitedNatural& ln = data.m_manager->create<LiteralUnlimitedNatural>();
+            LiteralUnlimitedNatural& ln = *data.m_manager->create<LiteralUnlimitedNatural>();
             parseLiteralUnlimitedNatural(node["literalUnlimitedNatural"], ln, data);
             return ln;
         } else {
@@ -1934,7 +1934,7 @@ ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserM
         }
     } else if (node["instanceValue"]) {
         if (node["instanceValue"].IsMap()) {
-            InstanceValue& iv = data.m_manager->create<InstanceValue>();
+            InstanceValue& iv = *data.m_manager->create<InstanceValue>();
             parseInstanceValue(node["instanceValue"], iv, data);
             return iv;
         } else {
@@ -1943,7 +1943,7 @@ ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserM
     } else {
         throw UmlParserException("Unknown Value Specification, ", data.m_path.string(), node);
     }
-    ValueSpecification& dumb = data.m_manager->create<LiteralBool>();
+    ValueSpecification& dumb = *data.m_manager->create<LiteralBool>();
     dumb.setID(ID::nullID());
     return dumb;
 }
@@ -1984,8 +1984,8 @@ void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data)
         emitter << YAML::EndSeq;
     }
 
-    if (prop.hasAssociation()) {
-        emitter << YAML::Key << "association" << YAML::Value << prop.getAssociationID().string();
+    if (prop.getAssociation()) {
+        emitter << YAML::Key << "association" << YAML::Value << prop.getAssociation().id().string();
     }
 
     emitElementDefenitionEnd(emitter, ElementType::PROPERTY, prop);
@@ -2061,7 +2061,7 @@ void emitOperation(YAML::Emitter& emitter, Operation& op, EmitterMetaData& data)
 PackageMerge& determineAndParsePackageMerge(YAML::Node node, ParserMetaData& data) {
     if (node["packageMerge"]) {
         if (node["packageMerge"].IsMap()) {
-            PackageMerge& merge = data.m_manager->create<PackageMerge>();
+            PackageMerge& merge = *data.m_manager->create<PackageMerge>();
             parsePackageMerge(node["packageMerge"], merge, data);
             return merge;
         } else {
@@ -2075,7 +2075,7 @@ PackageMerge& determineAndParsePackageMerge(YAML::Node node, ParserMetaData& dat
 ProfileApplication& determineAndParseProfileApplication(YAML::Node node, ParserMetaData& data) {
     if (node["profileApplication"]) {
         if (node["profileApplication"].IsMap()) {
-            ProfileApplication& profileApplication = data.m_manager->create<ProfileApplication>();
+            ProfileApplication& profileApplication = *data.m_manager->create<ProfileApplication>();
             parseProfileApplication(node["profileApplication"], profileApplication, data);
             return profileApplication;
         }
@@ -2090,7 +2090,7 @@ ProfileApplication& determineAndParseProfileApplication(YAML::Node node, ParserM
 PackageableElement& determineAndParsePackageableElement(YAML::Node node, ParserMetaData& data) {
     if (node["abstraction"]) {
         if (node["abstraction"].IsMap()) {
-            Abstraction& abstraction = data.m_manager->create<Abstraction>();
+            Abstraction& abstraction = *data.m_manager->create<Abstraction>();
             /** TODO: make own function and actually do opaqueExpressions**/
             parseDependency(node["abstraction"], abstraction, data);
             return abstraction;
@@ -2133,7 +2133,7 @@ PackageableElement& determineAndParsePackageableElement(YAML::Node node, ParserM
         return parseDefinition(node, data, "literalInt", parseLiteralInt);
     } else if (node["literalNull"]) {
         // special handling
-        LiteralNull& ln = data.m_manager->create<LiteralNull>();
+        LiteralNull& ln = *data.m_manager->create<LiteralNull>();
         parseTypedElement(node["literalNull"], ln, data);
         return ln;
     } else if (node["literalReal"]) {
@@ -2152,7 +2152,7 @@ PackageableElement& determineAndParsePackageableElement(YAML::Node node, ParserM
         return parseDefinition(node, data, "primitiveType", parsePrimitiveType);
     } else if (node["profile"]) {
         if (node["profile"].IsMap()) {
-            Profile& profile = data.m_manager->create<Profile>();
+            Profile& profile = *data.m_manager->create<Profile>();
             parsePackage(node["profile"], profile, data);
             return profile;
         } else {
@@ -2160,7 +2160,7 @@ PackageableElement& determineAndParsePackageableElement(YAML::Node node, ParserM
         }
     } else if (node["realization"]) {
         if (node["realization"].IsMap()) {
-            Realization& realization = data.m_manager->create<Realization>();
+            Realization& realization = *data.m_manager->create<Realization>();
             /** TODO: switch to parseAbstraction when implemented**/
             parseDependency(node["realization"], realization, data);
             return realization;
@@ -2171,7 +2171,7 @@ PackageableElement& determineAndParsePackageableElement(YAML::Node node, ParserM
         return parseDefinition(node, data, "signal", parseSignal);
     } else if (node["usage"]) {
         if (node["usage"].IsMap()) {
-            Usage& usage = data.m_manager->create<Usage>();
+            Usage& usage = *data.m_manager->create<Usage>();
             parseDependency(node["usage"], usage, data);
             return usage;
         } else {
@@ -2185,7 +2185,7 @@ PackageableElement& determineAndParsePackageableElement(YAML::Node node, ParserM
 Stereotype& determineAndParseStereotype(YAML::Node node, ParserMetaData& data) {
     if (node["stereotype"]) {
         if (node["stereotype"].IsMap()) {
-            Stereotype& stereotype = data.m_manager->create<Stereotype>();
+            Stereotype& stereotype = *data.m_manager->create<Stereotype>();
             parseClass(node["stereotype"], stereotype, data);
             return stereotype;
         } else {
@@ -2214,7 +2214,7 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
     emitSequence(emitter, "packageMerge", data, pckg, &Package::getPackageMerge);
     emitSequence(emitter, "profileApplications", data, pckg, &Package::getProfileApplications);
 
-    // special handling
+    //special handling
     if (pckg.getPackagedElements().size() > pckg.getOwnedStereotypes().size()) {
         emitter << YAML::Key << "packagedElements" << YAML::Value << YAML::BeginSeq;
         if (data.m_strategy == EmitterStrategy::WHOLE) {
@@ -2246,6 +2246,7 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
         }
         emitter << YAML::EndSeq;
     }
+    // emitSequence(emitter, "packagedElements", data, pckg, &Package::getPackagedElements);
 
     emitElementDefenitionEnd(emitter, ElementType::PACKAGE, pckg);
 }
@@ -2253,7 +2254,7 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
 void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data) {
     if (node["lower"]) {
         if (node["lower"].IsScalar()) {
-            LiteralInt& lower = data.m_manager->create<LiteralInt>();
+            LiteralInt& lower = *data.m_manager->create<LiteralInt>();
             lower.setValue(node["lower"].as<int>());
             el.setLowerValue(&lower);
         } else if (node["lower"].IsMap()) {
@@ -2270,11 +2271,11 @@ void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMe
     if (node["upper"]) {
         if (node["upper"].IsScalar()) {
             if (node["upper"].as<string>().compare("*") == 0) {
-                LiteralUnlimitedNatural& upper = data.m_manager->create<LiteralUnlimitedNatural>();
+                LiteralUnlimitedNatural& upper = *data.m_manager->create<LiteralUnlimitedNatural>();
                 upper.setInfinite();
                 el.setUpperValue(&upper);
             } else {
-                LiteralInt& upper = data.m_manager->create<LiteralInt>();
+                LiteralInt& upper = *data.m_manager->create<LiteralInt>();
                 upper.setValue(node["upper"].as<int>());
                 el.setUpperValue(&upper);
             }
@@ -2385,7 +2386,7 @@ void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge, EmitterMetaDa
 
     emitElement(emitter, merge, data);
 
-    if (merge.getMergedPackage() != 0) {
+    if (merge.getMergedPackage()) {
         filesystem::path path = data.getPath(merge.getMergedPackage()->getID());
         if (path.empty() || path == data.m_path / data.m_fileName) {
             emitter << YAML::Key << "mergedPackage" << YAML::Value << merge.getMergedPackage()->getID().string();
@@ -2572,12 +2573,12 @@ TemplateSignature& determineAndParseTemplateSignature(YAML::Node node, ParserMet
 }
 
 void emitTemplateableElement(YAML::Emitter& emitter, TemplateableElement& el, EmitterMetaData& data) {
-    if (el.hasOwnedTemplateSignature()) {
+    if (el.getOwnedTemplateSignature()) {
         emitter << YAML::Key << "templateSignature" << YAML::Value;
         if (data.m_strategy == EmitterStrategy::WHOLE) {
-            emit(emitter, el.getOwnedTemplateSignatureRef(), data);
+            emit(emitter, *el.getOwnedTemplateSignature(), data);
         } else {
-            emitter << el.getOwnedTemplateSignatureID().string() + ".yml";
+            emitter << el.getOwnedTemplateSignature().id().string() + ".yml";
         }
     }
     emitSequence(emitter, "templateBindings", data, el, &TemplateableElement::getTemplateBindings);
@@ -2624,7 +2625,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         // TODO
     } else if (node["class"]) {
         if (node["class"].IsMap()) {
-            Class& clazz = data.m_manager->create<Class>();
+            Class& clazz = *data.m_manager->create<Class>();
             parseClass(node["class"], clazz, data);
             return clazz;
         } else {
@@ -2632,7 +2633,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["dataType"]) {
         if (node["dataType"].IsMap()) {
-            DataType& dataType = data.m_manager->create<DataType>();
+            DataType& dataType = *data.m_manager->create<DataType>();
             parseDataType(node["dataType"], dataType, data);
             return dataType;
         } else {
@@ -2640,7 +2641,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["enumeration"]) {
         if (node["enumeration"].IsMap()) {
-            Enumeration& enumeration = data.m_manager->create<Enumeration>();
+            Enumeration& enumeration = *data.m_manager->create<Enumeration>();
             parseEnumeration(node["enumeration"], enumeration, data);
             return enumeration;
         } else {
@@ -2648,7 +2649,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["enumerationLiteral"]) {
         if (node["enumerationLiteral"].IsMap()) {
-            EnumerationLiteral& literal = data.m_manager->create<EnumerationLiteral>();
+            EnumerationLiteral& literal = *data.m_manager->create<EnumerationLiteral>();
             parseEnumerationLiteral(node["enumerationLiteral"], literal, data);
             return literal;
         } else {
@@ -2656,7 +2657,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["instanceSpecification"]) {
         if (node["instanceSpecification"].IsMap()) {
-            InstanceSpecification& inst = data.m_manager->create<InstanceSpecification>();
+            InstanceSpecification& inst = *data.m_manager->create<InstanceSpecification>();
             parseInstanceSpecification(node["instanceSpecification"], inst, data);
             return inst;
         } else {
@@ -2664,7 +2665,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["instanceValue"]) {
         if (node["instanceValue"].IsMap()) {
-            InstanceValue& inst = data.m_manager->create<InstanceValue>();
+            InstanceValue& inst = *data.m_manager->create<InstanceValue>();
             parseInstanceValue(node["instanceValue"], inst, data);
             return inst;
         } else {
@@ -2672,7 +2673,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["literalBool"]) {
         if (node["literalBool"].IsMap()) {
-            LiteralBool& lb = data.m_manager->create<LiteralBool>();
+            LiteralBool& lb = *data.m_manager->create<LiteralBool>();
             parseLiteralBool(node["literalBool"], lb, data);
             return lb;
         } else {
@@ -2680,7 +2681,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["literalInt"]) {
         if (node["literalInt"].IsMap()) {
-            LiteralInt& li = data.m_manager->create<LiteralInt>();
+            LiteralInt& li = *data.m_manager->create<LiteralInt>();
             parseLiteralInt(node["literalInt"], li, data);
             return li;
         } else {
@@ -2688,7 +2689,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["literalNull"]) {
         if (node["literalNull"].IsMap()) {
-            LiteralNull& ln = data.m_manager->create<LiteralNull>();
+            LiteralNull& ln = *data.m_manager->create<LiteralNull>();
             parseTypedElement(node["literalNull"], ln, data);
             return ln;
         } else {
@@ -2696,7 +2697,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["literalString"]) {
         if (node["literalString"].IsMap()) {
-            LiteralString& ls = data.m_manager->create<LiteralString>();
+            LiteralString& ls = *data.m_manager->create<LiteralString>();
             parseLiteralString(node["literalString"], ls, data);
             return ls;
         } else {
@@ -2704,7 +2705,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["literalUnlimitedNatural"]) {
         if (node["literalUnlimitedNatural"].IsMap()) {
-            LiteralUnlimitedNatural& lu = data.m_manager->create<LiteralUnlimitedNatural>();
+            LiteralUnlimitedNatural& lu = *data.m_manager->create<LiteralUnlimitedNatural>();
             parseLiteralUnlimitedNatural(node["literalUnlimitedNatural"], lu, data);
             return lu;
         } else {
@@ -2712,7 +2713,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["model"]) {
         if (node["model"].IsMap()) {
-            Model& m = data.m_manager->create<Model>();
+            Model& m = *data.m_manager->create<Model>();
             parsePackage(node["model"], m, data);
             return m;
         } else {
@@ -2720,7 +2721,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["opaqueBehavior"]) {
         if (node["opaqueBehavior"].IsMap()) {
-            OpaqueBehavior& ob = data.m_manager->create<OpaqueBehavior>();
+            OpaqueBehavior& ob = *data.m_manager->create<OpaqueBehavior>();
             parseOpaqueBehavior(node["opaqueBehavior"], ob, data);
             return ob;
         } else {
@@ -2728,7 +2729,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["operation"]) {
         if (node["operation"].IsMap()) {
-            Operation& op = data.m_manager->create<Operation>();
+            Operation& op = *data.m_manager->create<Operation>();
             parseOperation(node["operation"], op, data);
             return op;
         } else {
@@ -2736,7 +2737,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["package"]) {
         if (node["package"].IsMap()) {
-            Package& pckg = data.m_manager->create<Package>();
+            Package& pckg = *data.m_manager->create<Package>();
             parsePackage(node["package"], pckg, data);
             return pckg;
         } else {
@@ -2744,7 +2745,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["parameter"]) {
         if (node["parameter"].IsMap()) {
-            Parameter& param = data.m_manager->create<Parameter>();
+            Parameter& param = *data.m_manager->create<Parameter>();
             parseParameter(node["parameter"], param, data);
             return param;
         } else {
@@ -2752,7 +2753,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["primitiveType"]) {
         if (node["primitiveType"].IsMap()) {
-            PrimitiveType& prim = data.m_manager->create<PrimitiveType>();
+            PrimitiveType& prim = *data.m_manager->create<PrimitiveType>();
             parsePrimitiveType(node["primitiveType"], prim, data);
             return prim;
         } else {
@@ -2760,7 +2761,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         }
     } else if (node["property"]) {
         if (node["property"].IsMap()) {
-            Property& prop = data.m_manager->create<Property>();
+            Property& prop = *data.m_manager->create<Property>();
             parseProperty(node["property"], prop, data);
             return prop;
         } else {
@@ -2770,7 +2771,7 @@ ParameterableElement& determinAndParseParameterableElement(YAML::Node node, Pars
         throw UmlParserException("not a parametered element! ", data.m_path.string(), node);
     }
 
-    ParameterableElement& dumb = data.m_manager->create<ParameterableElement>();
+    ParameterableElement& dumb = *data.m_manager->create<ParameterableElement>();
     dumb.setID(ID::nullID());
     return dumb;
 }
@@ -2780,30 +2781,30 @@ void emitTemplateParameter(YAML::Emitter& emitter, TemplateParameter& parameter,
 
     emitElement(emitter, parameter, data);
 
-    if (parameter.hasOwnedDefault()) {
+    if (parameter.getOwnedDefault()) {
         emitter << YAML::Key << "ownedDefault" << YAML::Value;
         if (data.m_strategy == EmitterStrategy::WHOLE) {
             emit(emitter, *parameter.getOwnedDefault(), data);
         } else {
-            emitter << parameter.getOwnedDefaultID().string();
+            emitter << parameter.getOwnedDefault().id().string();
         }
     }
 
-    if (parameter.hasDefault() && !parameter.hasOwnedDefault()) {
-        emitter << YAML::Key << "default" << YAML::Value << parameter.getDefaultID().string();
+    if (parameter.getDefault() && !parameter.getOwnedDefault()) {
+        emitter << YAML::Key << "default" << YAML::Value << parameter.getDefault().id().string();
     }
 
-    if (parameter.hasOwnedParameteredElement() != 0) {
+    if (parameter.getOwnedParameteredElement()) {
         emitter << YAML::Key << "ownedParameteredElement" << YAML::Value;
         if (data.m_strategy == EmitterStrategy::WHOLE) {
             emit(emitter, parameter, data);
         } else {
-            emitter << parameter.getOwnedParameteredElementID().string() + ".yml";
+            emitter << parameter.getOwnedParameteredElement().id().string() + ".yml";
         }
     }
 
-    if (parameter.hasParameteredElement() && !parameter.hasOwnedParameteredElement()) {
-        emitter << YAML::Key << "parameteredElement" << YAML::Value << parameter.getParameteredElement()->getID().string();
+    if (parameter.getParameteredElement() && !parameter.getOwnedParameteredElement()) {
+        emitter << YAML::Key << "parameteredElement" << YAML::Value << parameter.getParameteredElement().id().string();
     }
 
     emitElementDefenitionEnd(emitter, ElementType::TEMPLATE_PARAMETER, parameter);
@@ -2824,7 +2825,7 @@ void emitTemplateBinding(YAML::Emitter& emitter, TemplateBinding& binding, Emitt
     }
 
     emitElement(emitter, binding, data);
-    if (binding.getSignature() != 0) {
+    if (binding.getSignature()) {
         emitter << YAML::Key << "signature" << YAML::Value << binding.getSignature()->getID().string();
     }
     emitSequence(emitter, "parameterSubstitution", data, binding, &TemplateBinding::getParameterSubstitution);
@@ -2839,21 +2840,21 @@ void emitTemplateParameterSubstitution(YAML::Emitter& emitter, TemplateParameter
 
     emitElement(emitter, sub, data);
 
-    if (sub.hasFormal()) {
-        emitter << YAML::Key << "formal" << YAML::Value << sub.getFormalID().string();
+    if (sub.getFormal()) {
+        emitter << YAML::Key << "formal" << YAML::Value << sub.getFormal().id().string();
     }
 
-    if (sub.hasOwnedActual() != 0) {
+    if (sub.getOwnedActual()) {
         emitter << YAML::Key << "ownedActual" << YAML::Value;
         if (data.m_strategy == EmitterStrategy::WHOLE) {
             emit(emitter, *sub.getOwnedActual(), data);
         } else {
-            emitter << sub.getOwnedActualID().string();
+            emitter << sub.getOwnedActual().id().string();
         }
     }
 
-    if (sub.hasActual() && !sub.hasOwnedActual()) {
-        emitter << YAML::Key << "actual" << YAML::Value << sub.getActualID().string();
+    if (sub.getActual() && !sub.getOwnedActual()) {
+        emitter << YAML::Key << "actual" << YAML::Value << sub.getActual().id().string();
     }
 
     emitElementDefenitionEnd(emitter, ElementType::TEMPLATE_PARAMETER_SUBSTITUTION, sub);
@@ -2905,7 +2906,7 @@ void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMe
 
 ExtensionEnd& determineAndParseOwnedEnd(YAML::Node node, ParserMetaData& data) {
     if (node["extensionEnd"]) {
-        ExtensionEnd& extensionEnd = data.m_manager->create<ExtensionEnd>();
+        ExtensionEnd& extensionEnd = *data.m_manager->create<ExtensionEnd>();
         parseProperty(node["extensionEnd"], extensionEnd, data);
         return extensionEnd;
     } else {
@@ -2920,12 +2921,12 @@ void emitExtension(YAML::Emitter& emitter, Extension& extension, EmitterMetaData
 
     emitter << YAML::Key << "metaClass" << YAML::Value << Element::elementTypeToString(extension.getMetaClass());
 
-    if (extension.hasOwnedEnd()) {
+    if (extension.getOwnedEnd()) {
         emitter << YAML::Key << "ownedEnd" << YAML::Value;
         if (data.m_strategy == EmitterStrategy::WHOLE) {
             emit(emitter, *extension.getOwnedEnd(), data);
         } else {
-            emitter << extension.getOwnedEndID().string();
+            emitter << extension.getOwnedEnd().id().string();
         }
     }
 
@@ -2937,10 +2938,10 @@ void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& applicat
 
     emitElement(emitter, application, data);
 
-    if (application.getAppliedProfile() != 0) {
-        filesystem::path path = data.getPath(application.getAppliedProfile()->getID());
+    if (application.getAppliedProfile()) {
+        filesystem::path path = data.getPath(application.getAppliedProfile().id());
         if (path.empty() || path == data.m_path / data.m_fileName) {
-            emitter << YAML::Key << "appliedProfile" << YAML::Value << application.getAppliedProfile()->getID().string();
+            emitter << YAML::Key << "appliedProfile" << YAML::Value << application.getAppliedProfile().id().string();
         } else {
             //emit(emitter, *application.getAppliedProfile(), data);
             if (data.m_path == path.parent_path()) {
@@ -3087,8 +3088,8 @@ Behavior& determineAndParseBehavior(YAML::Node node, ParserMetaData& data) {
 
 void emitBehavioredClassifier(YAML::Emitter& emitter, BehavioredClassifier& classifier, EmitterMetaData& data) {
     emitSequence(emitter, "ownedBehaviors", data, classifier, &BehavioredClassifier::getOwnedBehaviors);
-    if (classifier.hasClassifierBehavior()) {
-        emitter << YAML::Key << "classifierBehavior" << YAML::Value << classifier.getClassifierBehaviorID().string();
+    if (classifier.getClassifierBehavior()) {
+        emitter << YAML::Key << "classifierBehavior" << YAML::Value << classifier.getClassifierBehavior().id().string();
     }
     emitSequence(emitter, "interfaceRealizations", data, classifier, &BehavioredClassifier::getInterfaceRealizations);
 }
@@ -3098,7 +3099,7 @@ void emitManifestation(YAML::Emitter& emitter, Manifestation& manifestation, Emi
 
     emitNamedElement(emitter, manifestation, data);
 
-    if (manifestation.getUtilizedElement() != 0) {
+    if (manifestation.getUtilizedElement()) {
         emitter << YAML::Key << "utilizedElement" << YAML::Value << manifestation.getUtilizedElement()->getID().string();
     }
 
@@ -3110,8 +3111,8 @@ void parseParameterableElement(YAML::Node node, ParameterableElement& el, Parser
 }
 
 void emitParameterableElement(YAML::Emitter& emitter, ParameterableElement& el, EmitterMetaData& data) {
-    if (el.hasTemplateParameter()) {
-        emitter << YAML::Key << "templateParameter" << YAML::Value << el.getTemplateParameterID().string();
+    if (el.getTemplateParameter()) {
+        emitter << YAML::Key << "templateParameter" << YAML::Value << el.getTemplateParameter().id().string();
     }
 }
 
@@ -3121,8 +3122,8 @@ void emitGeneralizationSet(YAML::Emitter& emitter, GeneralizationSet& generaliza
     emitParameterableElement(emitter, generalizationSet, data);
     emitter << YAML::Key << "covering" << YAML::Value << generalizationSet.isCovering();
     emitter << YAML::Key << "disjoint" << YAML::Value << generalizationSet.isDisjoint();
-    if (generalizationSet.hasPowerType()) {
-        emitter << YAML::Key << "powerType" << YAML::Value << generalizationSet.getPowerTypeID().string();
+    if (generalizationSet.getPowerType()) {
+        emitter << YAML::Key << "powerType" << YAML::Value << generalizationSet.getPowerType().id().string();
     }
     if (!generalizationSet.getGeneralizations().empty()) {
         emitter << YAML::Key << "generalizations" << YAML::Value << YAML::BeginSeq;
@@ -3310,8 +3311,8 @@ void emitConnector(YAML::Emitter& emitter, Connector& connector, EmitterMetaData
     emitElementDefenition(emitter, ElementType::CONNECTOR, "connector", connector, data);
     emitNamedElement(emitter, connector, data);
     emitSequence(emitter, "ends", data, connector, &Connector::getEnds);
-    if (connector.hasType()) {
-        emitter << YAML::Key << "type" << YAML::Value << connector.getTypeID().string();
+    if (connector.getType()) {
+        emitter << YAML::Key << "type" << YAML::Value << connector.getType().id().string();
     }
     if (!connector.getContracts().empty()) {
         emitter << YAML::Key << "contracts" << YAML::Value << YAML::BeginSeq;
@@ -3333,8 +3334,8 @@ void emitConnectorEnd(YAML::Emitter& emitter, ConnectorEnd& end, EmitterMetaData
     emitElementDefenition(emitter, ElementType::CONNECTOR_END, "connectorEnd", end, data);
     emitElement(emitter, end, data);
     emitMultiplicityElement(emitter, end, data);
-    if (end.hasRole()) {
-        emitter << YAML::Key << "role" << YAML::Value << end.getRoleID().string();
+    if (end.getRole()) {
+        emitter << YAML::Key << "role" << YAML::Value << end.getRole().id().string();
     }
     emitElementDefenitionEnd(emitter, ElementType::CONNECTOR_END, end);
 }
@@ -3404,8 +3405,8 @@ void parseInterfaceRealization(YAML::Node node, InterfaceRealization& realizatio
 void emitInterfaceRealization(YAML::Emitter& emitter, InterfaceRealization& realization, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::INTERFACE_REALIZATION, "interfaceRealization", realization, data);
     emitNamedElement(emitter, realization, data);
-    if (realization.hasContract()) {
-        emitter << YAML::Key << "contract" << YAML::Value << realization.getContractID().string();
+    if (realization.getContract()) {
+        emitter << YAML::Key << "contract" << YAML::Value << realization.getContract().id().string();
     }
     emitElementDefenitionEnd(emitter, ElementType::INTERFACE_REALIZATION, realization);
 }
@@ -3448,8 +3449,8 @@ void parseReception(YAML::Node node, Reception& reception, ParserMetaData& data)
 void emitReception(YAML::Emitter& emitter, Reception& reception, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::RECEPTION, "reception", reception, data);
     emitBehavioralFeature(emitter, reception, data);
-    if (reception.hasSignal()) {
-        emitter << YAML::Key << "signal" << YAML::Value << reception.getSignalID().string();
+    if (reception.getSignal()) {
+        emitter << YAML::Key << "signal" << YAML::Value << reception.getSignal().id().string();
     }
     emitElementDefenitionEnd(emitter, ElementType::RECEPTION, reception);
 }

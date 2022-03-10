@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -9,11 +10,11 @@ class ClassTest : public ::testing::Test {
 
 TEST_F(ClassTest, BasicOperationTest) {
     UmlManager m;
-    Class& c = m.create<Class>();
-    Operation& o = m.create<Operation>();
-    OpaqueBehavior& oB = m.create<OpaqueBehavior>();
-    LiteralString& val = m.create<LiteralString>();
-    Parameter& p = m.create<Parameter>();
+    Class& c = *m.create<Class>();
+    Operation& o = *m.create<Operation>();
+    OpaqueBehavior& oB = *m.create<OpaqueBehavior>();
+    LiteralString& val = *m.create<LiteralString>();
+    Parameter& p = *m.create<Parameter>();
     ASSERT_NO_THROW(oB.getOwnedParameters().add(p));
     ASSERT_NO_THROW(val.setValue("return true"));
     ASSERT_NO_THROW(oB.getBodies().add(val));
@@ -23,8 +24,8 @@ TEST_F(ClassTest, BasicOperationTest) {
 
 TEST_F(ClassTest, addOperationFunctorTest) {
     UmlManager m;
-    Class& c = m.create<Class>();
-    Operation& o = m.create<Operation>();
+    Class& c = *m.create<Class>();
+    Operation& o = *m.create<Operation>();
     c.getOwnedOperations().add(o);
     ASSERT_TRUE(c.getOwnedOperations().size() == 1);
     ASSERT_TRUE(&c.getOwnedOperations().front() == &o);
@@ -42,9 +43,9 @@ TEST_F(ClassTest, addOperationFunctorTest) {
 
 TEST_F(ClassTest, setClassTest) {
     UmlManager m;
-    Class& c = m.create<Class>();
-    Operation& o = m.create<Operation>();
-    o.setClass(&c);
+    Class& c = *m.create<Class>();
+    Operation& o = *m.create<Operation>();
+    o.setClass(c);
     ASSERT_TRUE(c.getOwnedOperations().size() == 1);
     ASSERT_TRUE(&c.getOwnedOperations().front() == &o);
     ASSERT_TRUE(o.getClass() == &c);
@@ -61,9 +62,9 @@ TEST_F(ClassTest, setClassTest) {
 
 TEST_F(ClassTest, overwriteClassTest) {
   UmlManager m;
-  Class& p1 = m.create<Class>();
-  Class& p2 = m.create<Class>();
-  Operation& c = m.create<Operation>();
+  Class& p1 = *m.create<Class>();
+  Class& p2 = *m.create<Class>();
+  Operation& c = *m.create<Operation>();
   p1.getOwnedOperations().add(c);
   c.setClass(&p2);
   ASSERT_TRUE(p2.getOwnedOperations().size() == 1);
@@ -86,9 +87,9 @@ TEST_F(ClassTest, overwriteClassTest) {
 
 TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
   UmlManager m;
-  Class& p1 = m.create<Class>();
-  Class& p2 = m.create<Class>();
-  Operation& c = m.create<Operation>();
+  Class& p1 = *m.create<Class>();
+  Class& p2 = *m.create<Class>();
+  Operation& c = *m.create<Operation>();
   p1.getOwnedOperations().add(c);
   p2.getOwnedOperations().add(c);
   ASSERT_TRUE(p2.getOwnedOperations().size() == 1);
@@ -111,8 +112,8 @@ TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
 
 TEST_F(ClassTest, removeOperationFunctorTest) {
   UmlManager m;
-    Class& c = m.create<Class>();
-    Operation& o = m.create<Operation>();
+    Class& c = *m.create<Class>();
+    Operation& o = *m.create<Operation>();
   c.getOwnedOperations().add(o);
   ASSERT_NO_THROW(c.getOwnedOperations().remove(o));
   ASSERT_TRUE(c.getOwnedOperations().size() == 0);
@@ -127,8 +128,8 @@ TEST_F(ClassTest, removeOperationFunctorTest) {
 
 TEST_F(ClassTest, addOwnedAttributeTest) {
   UmlManager m;
-  Class& c = m.create<Class>();
-  Property& p = m.create<Property>();
+  Class& c = *m.create<Class>();
+  Property& p = *m.create<Property>();
   ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
   ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
   ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
@@ -145,8 +146,8 @@ TEST_F(ClassTest, addOwnedAttributeTest) {
   ASSERT_TRUE(c.getOwnedElements().size() == 1);
   ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
 
-  ASSERT_TRUE(p.hasClass());
-  ASSERT_EQ(p.getClassRef(), c);
+  ASSERT_TRUE(p.getClass());
+  ASSERT_EQ(*p.getClass(), c);
   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
   ASSERT_TRUE(p.getNamespace() == &c);
   ASSERT_TRUE(p.getOwner() == &c);
@@ -154,8 +155,8 @@ TEST_F(ClassTest, addOwnedAttributeTest) {
 
 TEST_F(ClassTest, addOwnedAttributeAsStructuredClassifierTest) {
   UmlManager m;
-  Class& c = m.create<Class>();
-  Property& p = m.create<Property>();
+  Class& c = *m.create<Class>();
+  Property& p = *m.create<Property>();
   c.as<StructuredClassifier>().getOwnedAttributes().add(p);
   ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
   ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
@@ -172,8 +173,8 @@ TEST_F(ClassTest, addOwnedAttributeAsStructuredClassifierTest) {
   ASSERT_TRUE(c.getOwnedElements().size() == 1);
   ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
 
-  ASSERT_TRUE(p.hasClass());
-  ASSERT_EQ(p.getClassRef(), c);
+  ASSERT_TRUE(p.getClass());
+  ASSERT_EQ(*p.getClass(), c);
   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
   ASSERT_TRUE(p.getNamespace() == &c);
   ASSERT_TRUE(p.getOwner() == &c);
@@ -181,8 +182,8 @@ TEST_F(ClassTest, addOwnedAttributeAsStructuredClassifierTest) {
 
 TEST_F(ClassTest, setStructuredClassifierTest) {
   UmlManager m;
-  Class& c = m.create<Class>();
-  Property& p = m.create<Property>();
+  Class& c = *m.create<Class>();
+  Property& p = *m.create<Property>();
   ASSERT_NO_THROW(p.setClass(&c));
   ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
   ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
@@ -199,15 +200,15 @@ TEST_F(ClassTest, setStructuredClassifierTest) {
   ASSERT_TRUE(c.getOwnedElements().size() == 1);
   ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
 
-  ASSERT_TRUE(p.getFeaturingClassifier() == &c);
-  ASSERT_TRUE(p.getNamespace() == &c);
-  ASSERT_TRUE(p.getOwner() == &c);
+  ASSERT_TRUE(*p.getFeaturingClassifier() == c);
+  ASSERT_TRUE(*p.getNamespace() == c);
+  ASSERT_TRUE(*p.getOwner() == c);
 }
 
 TEST_F(ClassTest, removeOwnedAttributeFunctorTest) {
   UmlManager m;
-  Class& c = m.create<Class>();
-  Property& p = m.create<Property>();
+  Class& c = *m.create<Class>();
+  Property& p = *m.create<Property>();
   c.getOwnedAttributes().add(p);
   ASSERT_NO_THROW(c.getOwnedAttributes().remove(p));
   ASSERT_TRUE(c.getOwnedAttributes().size() == 0);
@@ -217,15 +218,15 @@ TEST_F(ClassTest, removeOwnedAttributeFunctorTest) {
   ASSERT_TRUE(c.getOwnedMembers().size() == 0);
   ASSERT_TRUE(c.getMembers().size() == 0);
   ASSERT_TRUE(c.getOwnedElements().size() == 0);
-  ASSERT_TRUE(p.getFeaturingClassifier() == 0);
-  ASSERT_TRUE(p.getNamespace() == 0);
-  ASSERT_TRUE(p.getOwner() == 0);
+  ASSERT_FALSE(p.getFeaturingClassifier());
+  ASSERT_FALSE(p.getNamespace());
+  ASSERT_FALSE(p.getOwner());
 }
 
 TEST_F(ClassTest, setFeaturingClassifierNullTest) {
   UmlManager m;
-  Class& c = m.create<Class>();
-  Property& p = m.create<Property>();
+  Class& c = *m.create<Class>();
+  Property& p = *m.create<Property>();
   c.getOwnedAttributes().add(p);
   ASSERT_NO_THROW(p.setClass(0));
   ASSERT_TRUE(c.getOwnedAttributes().size() == 0);
@@ -236,17 +237,17 @@ TEST_F(ClassTest, setFeaturingClassifierNullTest) {
   ASSERT_TRUE(c.getMembers().size() == 0);
   ASSERT_TRUE(c.getOwnedElements().size() == 0);
 
-  ASSERT_TRUE(p.getFeaturingClassifier() == 0);
-  ASSERT_TRUE(p.getNamespace() == 0);
-  ASSERT_TRUE(p.getOwner() == 0);
+  ASSERT_FALSE(p.getFeaturingClassifier());
+  ASSERT_FALSE(p.getNamespace());
+  ASSERT_FALSE(p.getOwner());
 }
 
 TEST_F(ClassTest, addCompositePropertyTest) {
   UmlManager m;
-  Class& c = m.create<Class>();
-  Property& p = m.create<Property>();
+  Class& c = *m.create<Class>();
+  Property& p = *m.create<Property>();
   p.setAggregation(AggregationKind::COMPOSITE);
-  ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
+  c.getOwnedAttributes().add(p);
   ASSERT_TRUE(c.getParts().size() == 1);
   ASSERT_TRUE(&c.getParts().front() == &p);
   ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
@@ -272,8 +273,8 @@ TEST_F(ClassTest, addCompositePropertyTest) {
 
 TEST_F(ClassTest, backwardsAddCompositePropertyTest) {
   UmlManager m;
-  Class& c = m.create<Class>();
-  Property& p = m.create<Property>();
+  Class& c = *m.create<Class>();
+  Property& p = *m.create<Property>();
   ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
   ASSERT_NO_THROW(p.setAggregation(AggregationKind::COMPOSITE));
   ASSERT_TRUE(c.getParts().size() == 1);
@@ -301,8 +302,8 @@ TEST_F(ClassTest, backwardsAddCompositePropertyTest) {
 
 TEST_F(ClassTest, removePropertyFromParts) {
   UmlManager m;
-  Class& c = m.create<Class>();
-  Property& p = m.create<Property>();
+  Class& c = *m.create<Class>();
+  Property& p = *m.create<Property>();
   p.setAggregation(AggregationKind::COMPOSITE);
   c.getOwnedAttributes().add(p);
   ASSERT_NO_THROW(p.setAggregation(AggregationKind::NONE));
@@ -329,49 +330,10 @@ TEST_F(ClassTest, removePropertyFromParts) {
   ASSERT_TRUE(p.getOwner() == &c);
 }
 
-TEST_F(ClassTest, CopyClassTest) {
-    UmlManager m;
-    Class& c = m.create<Class>();
-    Property& p = m.create<Property>();
-    Operation& o = m.create<Operation>();
-    Package& pk = m.create<Package>();
-    p.setAggregation(AggregationKind::COMPOSITE);
-    c.setName("class_test");
-    c.getOwnedAttributes().add(p);
-    c.getOwnedOperations().add(o);
-    pk.getPackagedElements().add(c);
-    Class c2 = c;
-    ASSERT_TRUE(c2.getOwningPackage() == &pk);
-    ASSERT_TRUE(c2.getNamespace() == &pk);
-    ASSERT_TRUE(c2.getOwner() == &pk);
-    ASSERT_TRUE(c2.getParts().size() == 1);
-    ASSERT_TRUE(&c2.getParts().front() == &p);
-    ASSERT_TRUE(c2.getOwnedAttributes().size() == 1);
-    ASSERT_EQ(c2.getOwnedAttributes().front(), p);
-    ASSERT_TRUE(c2.getAttributes().size() == 1);
-    ASSERT_TRUE(&c2.getAttributes().front() == &p);
-    ASSERT_TRUE(c2.getRoles().size() == 1);
-    ASSERT_TRUE(&c2.getRoles().front() == &p);
-    ASSERT_TRUE(c2.getOwnedOperations().size() == 1);
-    ASSERT_TRUE(&c2.getOwnedOperations().front() == &o);
-    ASSERT_EQ(c2.getFeatures().size(), 2);
-    ASSERT_TRUE(c2.getFeatures().contains(p.getID()));
-    ASSERT_TRUE(c2.getFeatures().contains(o.getID()));
-    ASSERT_TRUE(c2.getOwnedMembers().size() == 2);
-    ASSERT_TRUE(c2.getOwnedMembers().contains(p.getID()));
-    ASSERT_TRUE(c2.getOwnedMembers().contains(o.getID()));
-    ASSERT_TRUE(c2.getMembers().size() == 2);
-    ASSERT_TRUE(c2.getMembers().contains(p.getID()));
-    ASSERT_TRUE(c2.getMembers().contains(o.getID()));
-    ASSERT_TRUE(c2.getOwnedElements().size() == 2);
-    ASSERT_TRUE(&c2.getOwnedElements().get(p.getID()) == &p);
-    ASSERT_TRUE(&c2.getOwnedElements().get(o.getID()) == &o);
-}
-
 TEST_F(ClassTest, addAndRemoveNestedClassifierTest) {
   UmlManager m;
-  Class& c = m.create<Class>();
-  DataType& d = m.create<DataType>();
+  Class& c = *m.create<Class>();
+  DataType& d = *m.create<DataType>();
   c.getNestedClassifiers().add(d);
   ASSERT_EQ(c.getNestedClassifiers().size(), 1);
   ASSERT_EQ(c.getNestedClassifiers().front().getID(), d.getID());

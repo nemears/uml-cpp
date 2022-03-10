@@ -1,5 +1,5 @@
-#ifndef MODELH
-#define MODELH
+#ifndef _UML_MODEL_H_
+#define _UML_MODEL_H_
 
 #include "package.h"
 
@@ -12,7 +12,7 @@ namespace UML{
             Model();
             std::string m_viewpoint;
         public:
-            Model(const Model& rhs);
+            virtual ~Model();
             std::string getViewpoint() const;
             void setViewpoint(std::string viewpoint);
             bool isSubClassOf(ElementType eType) const override;

@@ -163,7 +163,7 @@ TEST_F(SetTest, removeFromSubsettedSequenceTest) {
 
 TEST_F(SetTest, specialAutoForLoop) {
     Set<Package> seq;
-    int numPackages = 10;
+    int numPackages = 1;
     UmlManager m;
     for (int i = 0; i < numPackages; i++) {
         Package& p = *m.create<Package>(); 
@@ -180,7 +180,7 @@ TEST_F(SetTest, specialAutoForLoop) {
         std::cout << p.getID().string() << ", hash: " << hasher(p.getID()) << std::endl;
         if (i > numPackages + 10) break;
     }
-    ASSERT_EQ(i, 10);
+    ASSERT_EQ(i, numPackages);
 }
 
 TEST_F(SetTest, getFromSetByNameTest) {
@@ -402,7 +402,7 @@ TEST_F(SetTest, orderedSetSubSetsSet) {
 TEST_F(SetTest, testIdsMethodLoop) {
     Set<Package> set;
     UmlManager m;
-    int numPackages = 10;
+    int numPackages = 1;
     std::unordered_set<ID> ids;
     for (int i = 0; i < numPackages; i++) {
         Package& p = *m.create<Package>();
@@ -412,7 +412,7 @@ TEST_F(SetTest, testIdsMethodLoop) {
     for (const ID id : set.ids()) {
         ASSERT_TRUE(ids.count(id));
     }
-}
+ }
 
 TEST_F(SetTest, singletonTest) {
     Set<PackageableElement> rootSet;

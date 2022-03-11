@@ -209,13 +209,22 @@ namespace UML {
 
         private:
             Element* m_el = 0;
-            NodeType* m_node;
+            NodeType* m_node = 0;
             NodeType m_endNode;
             int m_guard;
         public:
             OrderedSetIterator() {};
+            OrderedSetIterator(const OrderedSetIterator& rhs) {
+                m_el = rhs.m_el;
+                if (rhs.m_node != &rhs.m_endNode) {
+                    m_node = rhs.m_node;
+                } else {
+                    m_node = &m_endNode;
+                }
+                m_guard = rhs.m_guard;
+            };
             T& operator*() {
-                if (!m_node->m_el) {
+                if (!m_node->m_el && m_node->m_id != ID::nullID()) {
                     m_node->m_el = &m_el->m_manager->get(m_node->m_id);
                 }
                 return dynamic_cast<T&>(*m_node->m_el);

@@ -1857,7 +1857,7 @@ namespace UML {
              * @return the element at the index supplied
              **/
             T& get(int i) {
-                int size = m_size;
+                size_t size = m_size;
                 SetNode* node = m_root;  //this wont work
                 while (i < size) {
                     // check size and determine which side to go down
@@ -2045,15 +2045,29 @@ namespace UML {
 
         template <class V, class W> friend class Set;
         friend class AbstractSet;
-        template < class V> friend class ID_Set;
+        template <class V> friend struct ID_Set;
 
         protected:
-            Element* m_el;
-            AbstractSet::SetNode* m_node;
-            AbstractSet::SetNode* m_root;
+            Element* m_el = 0;
+            AbstractSet::SetNode* m_node = 0;
+            AbstractSet::SetNode* m_root = 0;
             AbstractSet::SetNode m_endNode;
             size_t m_guard = 0;
         public:
+
+            SetIterator(const SetIterator& rhs) {
+                m_el = rhs.m_el;
+                if (rhs.m_node != &rhs.m_endNode) {
+                    m_node = rhs.m_node;
+                } else {
+                    m_node = &m_endNode;
+                }
+                m_root = rhs.m_root;
+                m_guard = rhs.m_guard;
+            };
+
+            SetIterator() {};
+
             T& operator*() {
                 if (!m_node->m_el) {
                     m_node->m_el = m_el->m_manager->get(m_el, m_node->m_id);
@@ -2155,8 +2169,8 @@ namespace UML {
                 SetIterator ret = *this;
                 return ret;
             };
-            friend bool operator== (const SetIterator& a, const SetIterator& b) { return a.m_node->m_id == b.m_node->m_id; };
-            friend bool operator!= (const SetIterator& a, const SetIterator& b) { return a.m_node->m_id != b.m_node->m_id; };
+            inline friend bool operator== (const SetIterator& a, const SetIterator& b) { return a.m_node->m_id == b.m_node->m_id; };
+            inline friend bool operator!= (const SetIterator& a, const SetIterator& b) { return a.m_node->m_id != b.m_node->m_id; };
     };
 
     template <class T = Element> struct SetID_Iterator : public SetIterator<T> {

@@ -91,7 +91,7 @@ namespace UML {
         friend class AddToMountFunctor;
         template <class T, class U> friend class Singleton;
         template <class T, class U> friend class Set;
-        template <class T> friend class SetIterator;
+        template <class T> friend struct SetIterator;
         template <class T> friend class UmlPtr;
 
         protected:

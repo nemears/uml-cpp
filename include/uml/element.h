@@ -180,7 +180,7 @@ namespace UML {
     class InterfaceRealization;
     class Usage;
     template <class T, class U> class Set;
-    template <class T> class SetIterator;
+    template <class T> struct SetIterator;
     template <class V, class W> class OppositeFunctor;
     template <class T, class U> class Singleton;
     template <class T, class U> class OrderedSet;
@@ -229,7 +229,7 @@ namespace UML {
         template <class T, class U> friend class Singleton;
         template <class T, class U> friend class Set;
         template <class V, class W> friend class OppositeFunctor;
-        template <class T> friend class SetIterator;
+        template <class T> friend struct SetIterator;
         template <class T, class U> friend class OrderedSet;
         template <class T, class U> friend struct OrderedSetIterator;
         template <class T> friend class UmlPtr;

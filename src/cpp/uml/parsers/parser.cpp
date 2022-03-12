@@ -229,9 +229,7 @@ string emit(Element& el) {
 }
 
 void emit(Element& el, YAML::Emitter& emitter) {
-    UmlManager m;
-    EmitterMetaData data;
-    data.m_manager = &m;
+    EmitterMetaData data = getData(el);
     data.m_strategy = EmitterStrategy::WHOLE;
     emit(emitter, el, data);
 }

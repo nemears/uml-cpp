@@ -21,10 +21,10 @@ TEST_F(ExpressionParserTest, expressionTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
-    PrimitiveType* b = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().front());
-    PrimitiveType* i = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(1));
-    PrimitiveType* r = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(2));
-    PrimitiveType* s = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(3));
+    PrimitiveTypePtr b = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("bool_bzkcabSy3CiFd&HmJOtnVRK")));
+    PrimitiveTypePtr i = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("int_r9nNbBukx47IomXrT2raqtc4")));
+    PrimitiveTypePtr r = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("real_aZG&w6yl61bXVWutgeyScN9")));
+    PrimitiveTypePtr s = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT")));
 
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
     ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::EXPRESSION);
@@ -33,10 +33,10 @@ TEST_F(ExpressionParserTest, expressionTest) {
     ASSERT_TRUE(exp->getType() == b);
     ASSERT_TRUE(exp->getOperands().size() == 2);
     ASSERT_TRUE(exp->getOperands().front().getElementType() == ElementType::LITERAL_INT);
-    LiteralInt* a = dynamic_cast<LiteralInt*>(&exp->getOperands().front());
+    LiteralInt* a = dynamic_cast<LiteralInt*>(&exp->getOperands().get("a"));
     ASSERT_TRUE(a->getValue() == 1);
     ASSERT_TRUE(exp->getOperands().back().getElementType() == ElementType::LITERAL_INT);
-    LiteralInt* ib = dynamic_cast<LiteralInt*>(&exp->getOperands().back());
+    LiteralInt* ib = dynamic_cast<LiteralInt*>(&exp->getOperands().get("b"));
     ASSERT_TRUE(ib->getValue() == 2);
     ASSERT_TRUE(pckg->getPackagedElements().back().getElementType() == ElementType::CLASS);
     Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().back());

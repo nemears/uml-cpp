@@ -89,10 +89,32 @@ TEST_F(DataTypeParserTest, emitDataTypeW_GeneralAndAttribute) {
           - generalization:
               id: k&CQ7BNYYbkhtw_g7NaNY8wUHXYs
               general: FqaulNq6bCe_8J5M0Ff2oCCaQD05)"""";
+    string expectedEmit2 = R""""(package:
+  id: zN&UM2AHrXX07rAiNxTmmMwLYI1O
+  name: owningPackage
+  packagedElements:
+    - dataType:
+        id: mGbq9i_gGHuMFYg0y3tMzcmHx1B3
+        name: type
+    - dataType:
+        id: FZeUbleSO7P_Zqwn2&r8HKnEbSU5
+        name: specific
+        generalizations:
+          - generalization:
+              id: k&CQ7BNYYbkhtw_g7NaNY8wUHXYs
+              general: FqaulNq6bCe_8J5M0Ff2oCCaQD05
+    - dataType:
+        id: FqaulNq6bCe_8J5M0Ff2oCCaQD05
+        name: general
+        ownedAttribute:
+          - property:
+              id: m8K65o0wEqtIznmEPmuXaTph2JJu
+              name: generalProp
+              type: mGbq9i_gGHuMFYg0y3tMzcmHx1B3)"""";
     string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
     cout << generatedEmit << '\n';
-    ASSERT_EQ(expectedEmit, generatedEmit);
+    ASSERT_TRUE(expectedEmit == generatedEmit || expectedEmit2 == generatedEmit);
 }
 
 TEST_F(DataTypeParserTest, mountAndEditDataType) {

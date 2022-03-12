@@ -157,10 +157,42 @@ TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {
           - zMVDkDbSoENGrPr&JLyOGzYo&_D0
         supplier:
           - uONNU0sKPVjLALJuw2pHcNqljgkg)"""";
+    string expectedEmit2 = R""""(package:
+  id: oT59r8w9_ZlGzo2NFpN&vJgH_4YJ
+  packagedElements:
+    - abstraction:
+        id: tAps&UBn21dKnQ5z7qaAzKBZqR7S
+        name: test
+        client:
+          - zMVDkDbSoENGrPr&JLyOGzYo&_D0
+        supplier:
+          - uONNU0sKPVjLALJuw2pHcNqljgkg
+    - usage:
+        id: ouZEty1jCLeAk_tZzWBKblwwBdGm
+        name: u
+        client:
+          - zMVDkDbSoENGrPr&JLyOGzYo&_D0
+        supplier:
+          - uONNU0sKPVjLALJuw2pHcNqljgkg
+    - realization:
+        id: V5lXdO3DLF2UCpqipGloE976L6QN
+        name: r
+        client:
+          - zMVDkDbSoENGrPr&JLyOGzYo&_D0
+        supplier:
+          - uONNU0sKPVjLALJuw2pHcNqljgkg
+    - package:
+        id: uONNU0sKPVjLALJuw2pHcNqljgkg
+    - package:
+        id: zMVDkDbSoENGrPr&JLyOGzYo&_D0
+        clientDependencies:
+          - tAps&UBn21dKnQ5z7qaAzKBZqR7S
+          - ouZEty1jCLeAk_tZzWBKblwwBdGm
+          - V5lXdO3DLF2UCpqipGloE976L6QN)"""";
     string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
     cout << generatedEmit << '\n';
-    ASSERT_EQ(expectedEmit, generatedEmit);
+    ASSERT_TRUE(expectedEmit == generatedEmit || expectedEmit2 == generatedEmit);
 }
 
 void ASSERT_RESTORE_DEPENDENCY(Dependency& dependency, NamedElement& client, NamedElement& supplier) {

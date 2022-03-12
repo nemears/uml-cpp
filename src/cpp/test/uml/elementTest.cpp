@@ -4,7 +4,7 @@
 
 
 // #include "test/umlTestUtil.h"
-// #include "test/yumlParsersTest.h"
+// #include "test/uml-cpp-paths.h"
 
 using namespace UML;
 

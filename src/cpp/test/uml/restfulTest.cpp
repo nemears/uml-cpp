@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "uml/managers/umlServer.h"
 #include "uml/managers/umlClient.h"
-#include "test/yumlParsersTest.h"
+#include "test/uml-cpp-paths.h"
 #include "uml/uml-stable.h"
 #include <stdlib.h>
 #include <thread>

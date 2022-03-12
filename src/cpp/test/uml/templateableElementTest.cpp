@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
-#include "test/yumlParsersTest.h"
+#include "test/uml-cpp-paths.h"
 
 using namespace UML;
 

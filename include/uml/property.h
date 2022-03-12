@@ -109,8 +109,8 @@ namespace UML{
             void setOwningAssociation(Association& association);
             void setOwningAssociation(ID id);
             InterfacePtr getInterface() const;
-            void setInterface(Interface* interface);
-            void setInterface(Interface& interface);
+            void setInterface(Interface* interface_uml);
+            void setInterface(Interface& interface_uml);
             void setInterface(ID id);
             Set<Property, Property>& getRedefinedProperties();
             bool isSubClassOf(ElementType eType) const override;

@@ -259,12 +259,12 @@ InterfacePtr Property::getInterface() const {
     return m_interface.get();
 }
 
-void Property::setInterface(Interface* interface) {
-    m_interface.set(interface);
+void Property::setInterface(Interface* interface_uml) {
+    m_interface.set(interface_uml);
 }
 
-void Property::setInterface(Interface& interface) {
-    m_interface.set(interface);
+void Property::setInterface(Interface& interface_uml) {
+    m_interface.set(interface_uml);
 }
 
 void Property::setInterface(ID id) {

@@ -51,7 +51,7 @@ ParameterDirectionKind Parameter::getDirection() {
 }
 
 void Parameter::setDirection(ParameterDirectionKind direction) {
-    if (direction == ParameterDirectionKind::RETURN || direction == ParameterDirectionKind::OUT || direction == ParameterDirectionKind::INOUT) {
+    if (direction == ParameterDirectionKind::RETURN || direction == ParameterDirectionKind::OUT_UML || direction == ParameterDirectionKind::INOUT) {
         if (m_operation.get()) {
             if (m_operation.get()->m_returnSpecified) {
                 throw ReturnParameterException(m_operation.get()->getElementTypeString() + " " + m_operation.get().id().string());
@@ -64,9 +64,9 @@ void Parameter::setDirection(ParameterDirectionKind direction) {
 
 std::string Parameter::getDirectionString() {
     switch(m_direction) {
-        case ParameterDirectionKind::IN : {
+        case ParameterDirectionKind::IN_UML : {
             return "IN";
-        } case ParameterDirectionKind::OUT : {
+        } case ParameterDirectionKind::OUT_UML : {
             return "OUT";
         } case ParameterDirectionKind::INOUT : {
             return "INOUT";
@@ -80,11 +80,11 @@ std::string Parameter::getDirectionString() {
 
 void Parameter::setDirectionString(std::string& directionString) {
     if (directionString.compare("IN") == 0) {
-        setDirection(ParameterDirectionKind::IN);
+        setDirection(ParameterDirectionKind::IN_UML);
     } else if (directionString.compare("INOUT") == 0) {
         setDirection(ParameterDirectionKind::INOUT);
     } else if (directionString.compare("OUT") == 0) {
-        setDirection(ParameterDirectionKind::OUT);
+        setDirection(ParameterDirectionKind::OUT_UML);
     } else if (directionString.compare("RETURN") == 0) {
         setDirection(ParameterDirectionKind::RETURN);
     } else if (directionString.compare("NONE") == 0) {

@@ -350,8 +350,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::INSTANCE_SPECIFICATION;
     } else if (eType.compare("INSTANCE_VALUE") == 0) {
         return ElementType::INSTANCE_VALUE;
-    } else if (eType.compare("INTERFACE") == 0) {
-        return ElementType::INTERFACE;
+    } else if (eType.compare("INTERFACE_UML") == 0) {
+        return ElementType::INTERFACE_UML;
     } else if (eType.compare("INTERFACE_REALIZATION") == 0) {
         return ElementType::INTERFACE_REALIZATION;
     } else if (eType.compare("JOIN_NODE") == 0) {
@@ -1069,7 +1069,7 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitInstanceValue(emitter, instanceValue, data);
             break;
         }
-        case ElementType::INTERFACE : {
+        case ElementType::INTERFACE_UML : {
             emitInterface(emitter, el.as<Interface>(), data);
             break;
         }
@@ -1995,12 +1995,12 @@ void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data) {
 
     if (node["direction"]) {
         if (node["direction"].IsScalar()) {
-            if (node["direction"].as<string>().compare("IN") == 0) {
-                el.setDirection(ParameterDirectionKind::IN);
+            if (node["direction"].as<string>().compare("IN_UML") == 0) {
+                el.setDirection(ParameterDirectionKind::IN_UML);
             } else if (node["direction"].as<string>().compare("INOUT") == 0) {
                 el.setDirection(ParameterDirectionKind::INOUT);
-            } else if (node["direction"].as<string>().compare("OUT") == 0) {
-                el.setDirection(ParameterDirectionKind::OUT);
+            } else if (node["direction"].as<string>().compare("OUT_UML") == 0) {
+                el.setDirection(ParameterDirectionKind::OUT_UML);
             } else if (node["direction"].as<string>().compare("RETURN") == 0) {
                 el.setDirection(ParameterDirectionKind::RETURN);
             } else {
@@ -2021,16 +2021,16 @@ void emitParameter(YAML::Emitter& emitter, Parameter& el, EmitterMetaData& data)
     if (el.getDirection() != ParameterDirectionKind::NONE) {
         string direction;
         switch(el.getDirection()) {
-            case ParameterDirectionKind::IN : {
-                direction = "IN";
+            case ParameterDirectionKind::IN_UML : {
+                direction = "IN_UML";
                 break;
             }
             case ParameterDirectionKind::INOUT : {
                 direction = "INOUT";
                 break;
             }
-            case ParameterDirectionKind::OUT : {
-                direction = "OUT";
+            case ParameterDirectionKind::OUT_UML : {
+                direction = "OUT_UML";
                 break;
             }
             case ParameterDirectionKind::RETURN : {
@@ -3378,20 +3378,20 @@ void emitPort(YAML::Emitter& emitter, Port& port, EmitterMetaData& data) {
     emitElementDefenitionEnd(emitter, ElementType::PORT, port);
 }
 
-void parseInterface(YAML::Node node, Interface& interface, ParserMetaData& data) {
-    parseClassifier(node, interface, data);
-    parseSequenceDefinitions(node, data, "ownedAttributes", interface, &Interface::getOwnedAttributes, determineAndParseOwnedAttribute);
-    parseSequenceDefinitions(node, data, "ownedOperations", interface, &Interface::getOwnedOperations, determineAndParseOwnedOperation);
-    parseSequenceDefinitions(node, data, "nestedClassifiers", interface, &Interface::getNestedClassifiers, determineAndParseClassifier);
+void parseInterface(YAML::Node node, Interface& interface_uml, ParserMetaData& data) {
+    parseClassifier(node, interface_uml, data);
+    parseSequenceDefinitions(node, data, "ownedAttributes", interface_uml, &Interface::getOwnedAttributes, determineAndParseOwnedAttribute);
+    parseSequenceDefinitions(node, data, "ownedOperations", interface_uml, &Interface::getOwnedOperations, determineAndParseOwnedOperation);
+    parseSequenceDefinitions(node, data, "nestedClassifiers", interface_uml, &Interface::getNestedClassifiers, determineAndParseClassifier);
 }
 
-void emitInterface(YAML::Emitter& emitter, Interface& interface, EmitterMetaData& data) {
-    emitElementDefenition(emitter, ElementType::INTERFACE, "interface", interface, data);
-    emitClassifier(emitter, interface, data);
-    emitSequence(emitter, "ownedAttributes", data, interface, &Interface::getOwnedAttributes);
-    emitSequence(emitter, "ownedOperations", data, interface, &Interface::getOwnedOperations);
-    emitSequence(emitter, "nestedClassifiers", data, interface, &Interface::getNestedClassifiers);
-    emitElementDefenitionEnd(emitter, ElementType::INTERFACE, interface);
+void emitInterface(YAML::Emitter& emitter, Interface& interface_uml, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::INTERFACE_UML, "interface", interface_uml, data);
+    emitClassifier(emitter, interface_uml, data);
+    emitSequence(emitter, "ownedAttributes", data, interface_uml, &Interface::getOwnedAttributes);
+    emitSequence(emitter, "ownedOperations", data, interface_uml, &Interface::getOwnedOperations);
+    emitSequence(emitter, "nestedClassifiers", data, interface_uml, &Interface::getNestedClassifiers);
+    emitElementDefenitionEnd(emitter, ElementType::INTERFACE_UML, interface_uml);
 }
 
 void parseInterfaceRealization(YAML::Node node, InterfaceRealization& realization, ParserMetaData& data) {

@@ -2,13 +2,23 @@
 #define UML_UML_CLIENT_H
 
 #include "uml/umlManager.h"
+#ifdef WIN32
+#include "winsock2.h"
+#include <ws2tcpip.h>
+#include <stdio.h>
+#endif
 
 namespace UML {
     class UmlClient : public UmlManager {
         private:
             std::string m_address;
             int m_port;
+            #ifndef WIN32
             int m_socketD = 0;
+            #else
+            SOCKET m_socketD = INVALID_SOCKET;
+            WSADATA m_wsaData;
+            #endif
             void init();
         public:
             const ID id;

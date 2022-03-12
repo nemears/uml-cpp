@@ -1,11 +1,16 @@
 #include "uml/managers/umlServer.h"
+#ifndef WIN32
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netdb.h>
-#include <thread>
 #include <iostream>
 #include <unistd.h>
 #include <poll.h>
+#else
+#include <ws2tcpip.h>
+#include <stdio.h>
+#endif
+#include <thread>
 #include <yaml-cpp/yaml.h>
 #include "uml/parsers/parser.h"
 #include "uml/uml-stable.h"
@@ -13,6 +18,10 @@
 #include <ctime>
 #include <errno.h>
 #include <string.h>
+
+#ifdef WIN32
+typedef size_t ssize_t;
+#endif
 
 using namespace UML;
 
@@ -24,7 +33,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         m_msgV = true;
         m_msgCv.notify_one();
         info.handlerCv.notify_one();
-        shutdown();
+        shutdownServer();
         return;
     }
     
@@ -119,11 +128,15 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
     while (me->m_running) {
         int numEvents;
         struct pollfd pfds[1] = {{info.socket, POLLIN}};
+        #ifndef WIN32
         if ((numEvents = poll(pfds, 1, 1000))) {
+        #else
+        if ((numEvents = WSAPoll(pfds, 1, 1000))) {
+        #endif
             // data to read
             // first bytes are size of message
             uint32_t size;
-            ssize_t bytesRead = recv(info.socket, &size, sizeof(uint32_t), 0);
+            ssize_t bytesRead = recv(info.socket, (char*)&size, sizeof(uint32_t), 0);
             size = ntohl(size);
             size_t sizeSize = sizeof(uint32_t);
             if (bytesRead == 0) {
@@ -189,10 +202,19 @@ void UmlServer::acceptNewClients(UmlServer* me) {
     {
         std::lock_guard<std::mutex> rLck(me->m_runMtx);
         while (me->m_running) {
-            int newSocketD = -1;
+            socketType newSocketD = 
+            #ifndef WIN32
+            0;
+            #else
+            INVALID_SOCKET;
+            #endif
             struct addrinfo* clientAddress;
             socklen_t addr_size = sizeof clientAddress;
+            #ifndef WIN32
             if (!poll(pfds, 1, 1000)) {
+            #else
+            if (!WSAPoll(pfds, 1,1000)) {
+            #endif
                 continue;
             }
             if (!me->m_running) {
@@ -200,6 +222,7 @@ void UmlServer::acceptNewClients(UmlServer* me) {
             }
             std::lock_guard<std::mutex> aLck(me->m_acceptMtx);
             me->log("server aquired acceptance lock");
+            #ifndef WIN32
             newSocketD = accept(me->m_socketD, (struct sockaddr *)&clientAddress, &addr_size);
             if (newSocketD == -1) {
                 if (me->m_running) {
@@ -209,16 +232,40 @@ void UmlServer::acceptNewClients(UmlServer* me) {
                     continue;
                 }
             }
+            #else
+            newSocketD = accept(me->m_socketD, 0, 0);
+            if (newSocketD == INVALID_SOCKET) {
+                if (me->m_running) {
+                    closesocket(newSocketD);
+                    WSACleanup();
+                    me->log("bad socket accepted, error: " + std::string(strerror(errno)));
+                    throw ManagerStateException("bad socket accepted");
+                } else {
+                    closesocket(newSocketD);
+                    WSACleanup();
+                    continue;
+                }
+            }
+            #endif
             
             // request ID
             const char* idMsg = "id";
             int bytesSent = send(newSocketD, idMsg, 3, 0);
             if (bytesSent != 3) {
+                me->log("wcould not send id request to new client! error:" + std::string(strerror(errno)));
+                #ifdef WIN32
+                closesocket(newSocketD);
+                WSACleanup();
+                #endif
                 throw ManagerStateException("could not send id request to new client!");
             }
             char buff[29];
             int bytesReceived = recv(newSocketD, buff, 29, 0);
             if (bytesReceived <= 0) {
+                #ifdef WIN32
+                closesocket(newSocketD);
+                WSACleanup();
+                #endif
                 throw ManagerStateException("Did not get proper id from client");
             }
             if (ID::fromString(buff) == me->m_shutdownID) {
@@ -230,6 +277,10 @@ void UmlServer::acceptNewClients(UmlServer* me) {
             info.thread = new std::thread(receiveFromClient, me, ID::fromString(buff));;
             info.handler = new std::thread(clientSubThreadHandler, me, ID::fromString(buff));;
             if (!send(newSocketD, buff, 29, 0)) { // send ID back to say that the server has a thread ready for the client's messages
+                #ifdef WIN32
+                closesocket(newSocketD);
+                WSACleanup();
+                #endif
                 throw ManagerStateException("Was not able to send response back to client!");
             }
             me->log("sent id back to client: " + std::string(buff));
@@ -284,6 +335,7 @@ void UmlServer::log(std::string msg) {
 UmlServer::UmlServer(int port) {
     m_port = port;
     int status;
+    #ifndef WIN32
     struct addrinfo hints;
     struct addrinfo* m_address;
     memset(&hints, 0, sizeof hints);
@@ -310,11 +362,48 @@ UmlServer::UmlServer(int port) {
     if ((status = listen(m_socketD, 10)) == -1) {
         throw ManagerStateException("Server could not listen to socker, error:" + std::string(strerror(errno)));
     }
+    freeaddrinfo(m_address);
+    #else
+    status = WSAStartup(MAKEWORD(2,2), &m_wsaData);
+    if (status != 0) {
+        throw ManagerStateException("TOSO Winsock, WSAStartup");
+    }
+    struct addrinfo *result = 0, *ptr = 0, hints;
+    ZeroMemory(&hints, sizeof (hints));
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
+    hints.ai_flags = AI_PASSIVE;
+    status = getaddrinfo(0, std::to_string(port).c_str(), &hints, &result);
+    if (status != 0) {
+        WSACleanup();
+        throw ManagerStateException("TODO winsock getaddrinfo");
+    }
+    m_socketD = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+    if (m_socketD == INVALID_SOCKET) {
+        freeaddrinfo(result);
+        WSACleanup();
+        throw ManagerStateException("TOSO winsock socket");
+    }
+    status = bind(m_socketD, result->ai_addr, (int) result->ai_addrlen);
+    freeaddrinfo(result);
+    if (status == SOCKET_ERROR) {
+        closesocket(m_socketD);
+        WSACleanup();
+        throw ManagerStateException("TODO winsock bind");
+    }
+    status = listen(m_socketD, SOMAXCONN);
+    if (status == SOCKET_ERROR) {
+        closesocket(m_socketD);
+        WSACleanup();
+        throw ManagerStateException("TODO winsock listen");
+    }
+    #endif
+
     m_running = true;
     m_acceptThread = new std::thread(acceptNewClients, this);
     m_garbageCollectionThread = new std::thread(garbageCollector, this);
     log("server set up thread to accept new clients");
-    freeaddrinfo(m_address);
 }
 
 UmlServer::UmlServer() : UmlServer(UML_PORT) {
@@ -323,7 +412,7 @@ UmlServer::UmlServer() : UmlServer(UML_PORT) {
 
 UmlServer::~UmlServer() {
     if (m_running) {
-        shutdown();
+        shutdownServer();
     }
 }
 
@@ -346,7 +435,7 @@ void UmlServer::reset() {
     clear();
 }
 
-void UmlServer::shutdown() {
+void UmlServer::shutdownServer() {
     log("server shutting down");
 
     // wait for processing message traffic to end
@@ -369,7 +458,7 @@ void UmlServer::shutdown() {
         std::cerr << stderr << std::endl;
         fail = true;
     }
-    int tempSocket;
+    socketType tempSocket;
     if (!fail) {
         tempSocket = socket(myAddress->ai_family, myAddress->ai_socktype, myAddress->ai_protocol);
         if (tempSocket == -1) {
@@ -394,7 +483,15 @@ void UmlServer::shutdown() {
         idMsg[28] = '\0';
         send(tempSocket, idMsg, 29, 0);
         freeaddrinfo(myAddress);
+        #ifndef WIN32
         close(tempSocket);
+        #else
+        int result = shutdown(tempSocket, SD_SEND);
+        if (result == SOCKET_ERROR) {
+            closesocket(tempSocket);
+            WSACleanup();
+        }
+        #endif
         delete[] idMsg;
 
         // wait for thread to stop
@@ -404,10 +501,26 @@ void UmlServer::shutdown() {
     }
 
     // close everything
+    #ifndef WIN32
     close(m_socketD);
+    #else
+    int result = shutdown(m_socketD, SD_SEND);
+    if (result == SOCKET_ERROR) {
+        closesocket(m_socketD);
+        WSACleanup();
+    }
+    #endif
     for (auto& client : m_clients) {
         client.second.thread->join();
+        #ifndef WIN32
         close(client.second.socket);
+        #else
+        int result = shutdown(client.second.socket, SD_SEND);
+        if (result == SOCKET_ERROR) {
+            closesocket(client.second.socket);
+            WSACleanup();
+        }
+        #endif
         delete client.second.thread;
         client.second.threadQueue.push_back("");
         client.second.handlerCv.notify_all();

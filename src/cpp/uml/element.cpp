@@ -283,7 +283,7 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::INSTANCE_VALUE : {
             return "INSTANCE_VALUE";
         }
-        case ElementType::INTERFACE : {
+        case ElementType::INTERFACE_UML : {
             return "INTERFACE";
         }
         case ElementType::INTERFACE_REALIZATION : {

@@ -57,7 +57,7 @@ namespace UML {
         INPUT_PIN,
         INSTANCE_SPECIFICATION,
         INSTANCE_VALUE,
-        INTERFACE,
+        INTERFACE_UML, // why microsoft
         INTERFACE_REALIZATION,
         JOIN_NODE,
         LITERAL_BOOL,

@@ -10,7 +10,7 @@ using namespace UML;
 
 void Usage::RemoveClientFunctor::operator()(Element& el) const {
     for (auto& supplier : m_el.as<Usage>().m_supplier) {
-        if (supplier.isSubClassOf(ElementType::INTERFACE) && el.isSubClassOf(ElementType::CLASSIFIER)) {
+        if (supplier.isSubClassOf(ElementType::INTERFACE_UML) && el.isSubClassOf(ElementType::CLASSIFIER)) {
             for (auto& pair : el.m_node->m_references) {
                 std::list<Classifier*> queue = {&el.as<Classifier>()};
                 while (!queue.empty()) {
@@ -44,7 +44,7 @@ void Usage::RemoveClientFunctor::operator()(Element& el) const {
 void Usage::SetClientFunctor::operator()(Element& el) const {
     if (el.isSubClassOf(ElementType::CLASSIFIER)) {
         for (auto& supplier : m_el.as<Usage>().getSupplier()) {
-            if (supplier.isSubClassOf(ElementType::INTERFACE)) {
+            if (supplier.isSubClassOf(ElementType::INTERFACE_UML)) {
                 std::list<Classifier*> queue = {&el.as<Classifier>()};
                 while(!queue.empty()) {
                     Classifier* front = queue.front();

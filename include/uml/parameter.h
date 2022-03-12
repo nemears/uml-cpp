@@ -14,11 +14,12 @@ namespace UML {
     }
 
     enum class ParameterDirectionKind {
-        IN, 
+        IN_UML, 
         INOUT, 
-        OUT, 
+        OUT_UML, 
         RETURN,
-        NONE};
+        NONE
+    };
 
     class Parameter : public ConnectableElement , public MultiplicityElement {
 

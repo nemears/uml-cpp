@@ -27,7 +27,7 @@ namespace UML {
             OrderedSet<Classifier, Interface>& getNestedClassifiers();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
-                return ElementType::INTERFACE;
+                return ElementType::INTERFACE_UML;
             }
     };
 }

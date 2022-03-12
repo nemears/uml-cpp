@@ -6,6 +6,14 @@
 #include <iostream>
 #include <mutex>
 #include <condition_variable>
+#ifdef WIN32
+#include "winsock2.h"
+#include <ws2tcpip.h>
+#include <stdio.h>
+typedef SOCKET socketType;
+#else
+typedef int socketType;
+#endif
 
 #define UML_PORT 8652
 #define UML_SERVER_MSG_SIZE 200
@@ -20,7 +28,7 @@ namespace UML {
     class UmlServer : public UmlManager {
         private:
             struct ClientInfo {
-                int socket;
+                socketType socket;
                 std::thread* thread;
                 std::thread* handler;
                 std::mutex handlerMtx;
@@ -32,7 +40,13 @@ namespace UML {
 
             //data
             const ID m_shutdownID = ID::randomID();
-            int m_socketD = 0;
+            socketType m_socketD = 
+            #ifndef WIN32
+            0;
+            #else
+            INVALID_SOCKET;
+            WSADATA m_wsaData;
+            #endif
             std::unordered_map<ID, ClientInfo> m_clients;
             std::unordered_map<std::string, ID> m_urls;
             std::list<ID> m_releaseQueue;
@@ -72,7 +86,7 @@ namespace UML {
             void log(std::string msg);
             bool loaded(ID id) override;
             void reset();
-            void shutdown();
+            void shutdownServer();
             void setMaxEls(int maxEls);
             int getMaxEls();
             int getNumElsInMemory();

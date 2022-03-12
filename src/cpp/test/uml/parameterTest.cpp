@@ -8,8 +8,8 @@ class ParameterTest : public ::testing::Test {};
 TEST_F(ParameterTest, TestSetDirection) {
     UmlManager m;
     Parameter& p = *m.create<Parameter>();
-    p.setDirection(ParameterDirectionKind::IN);
-    ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::IN);
+    p.setDirection(ParameterDirectionKind::IN_UML);
+    ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::IN_UML);
 }
 
 TEST_F(ParameterTest, TestGetNotSetDirection) {

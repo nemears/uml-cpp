@@ -103,7 +103,7 @@ Element& UmlManager::create(ElementType eType) {
         case ElementType::INSTANCE_VALUE : {
             return static_cast<Element&>(*create<InstanceValue>());
         }
-        case ElementType::INTERFACE : {
+        case ElementType::INTERFACE_UML : {
             return static_cast<Element&>(*create<Interface>());
         }
         case ElementType::INTERFACE_REALIZATION : {

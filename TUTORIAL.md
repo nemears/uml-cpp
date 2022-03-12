@@ -101,7 +101,7 @@ Notice how the singleton acessors return types of UmlPtr, this is to improve saf
 
 
 ## UmlClient and UmlServer
-A more adaptable and modular way to use a UmlManager is to use the `UmlClient` object in addition to the `uml-server` executable. The Client communicates with the server through UNIX ports (eventual plan to incorporate winsocket). The purpose is to take away the slow writing and reading to files from your process and shift it over to the uml-server (which doesn't have to be on your system). It follows a basic restful api setup. Also feel free to use the UmlServer object within your code to specialize its strategy to release elements from memory. 
+A more adaptable and modular way to use a UmlManager is to use the `UmlClient` object in addition to the `uml-server` executable. The Client communicates with the server through UNIX or windows ports to acheive a decoupled memory management with a larger model. The purpose is to take away the slow writing and reading to files from your processes and shift it over to the uml-server (which doesn't have to be on your system). It follows a basic restful api setup. Also feel free to use the UmlServer object within your code to specialize its strategy to release elements from memory. 
 
 If you want to use the `uml-server` executable it has some commandline args listed below
 |commandline arg | description |

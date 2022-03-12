@@ -1,6 +1,12 @@
 #include "uml/managers/umlServer.h"
 #include <iostream>
+#ifndef WIN32
 #include <unistd.h>
+#else
+#include "winsock2.h"
+#include <ws2tcpip.h>
+#include <stdio.h>
+#endif
 
 /**
  * This is the main file for the executable uml-server. by running the executable it will start a server
@@ -117,7 +123,7 @@ int main(int argc, char* argv[]) {
             server.save(location);
         }
         server.log("server has " + std::to_string(server.getNumElsInMemory()) + " of " + std::to_string(server.getMaxEls()) + " elements in memory before shutdown");
-        server.shutdown();
+        server.shutdownServer();
         exit(0);
     } catch (std::exception& e) {
         std::cout << e.what() << std::endl;

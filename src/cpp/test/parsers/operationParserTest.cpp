@@ -43,7 +43,7 @@ TEST_F(OperationParserTest, basicParamTest) {
     Parameter* p = &o->getOwnedParameters().front();
     ASSERT_TRUE(p->getName().compare("testInt") == 0);
     ASSERT_TRUE(p->getType() == i);
-    ASSERT_TRUE(p->getDirection() == ParameterDirectionKind::IN);
+    ASSERT_TRUE(p->getDirection() == ParameterDirectionKind::IN_UML);
 }
 
 TEST_F(OperationParserTest, mountAndEditOperationTest) {

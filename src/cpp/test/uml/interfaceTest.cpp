@@ -7,7 +7,7 @@ class InterfaceTest : public ::testing::Test {};
 
 TEST_F(InterfaceTest, basicInterfaceTest) {
     UmlManager m;
-    Interface& interface = *m.create<Interface>();
+    Interface& interface_uml = *m.create<Interface>();
     Property& property1 = *m.create<Property>();
     Property& property2 = *m.create<Property>();
     Operation& operation1 = *m.create<Operation>();
@@ -18,77 +18,77 @@ TEST_F(InterfaceTest, basicInterfaceTest) {
     Class& implementingClassifier = *m.create<Class>();
 
     
-    interface.getOwnedAttributes().add(property1);
-    interface.getOwnedOperations().add(operation1);
-    interface.getNestedClassifiers().add(nested1);
-    interface.getOwnedAttributes().add(property2);
-    interface.getOwnedOperations().add(operation2);
-    interface.getNestedClassifiers().add(nested2);
-    realization.setContract(interface);
+    interface_uml.getOwnedAttributes().add(property1);
+    interface_uml.getOwnedOperations().add(operation1);
+    interface_uml.getNestedClassifiers().add(nested1);
+    interface_uml.getOwnedAttributes().add(property2);
+    interface_uml.getOwnedOperations().add(operation2);
+    interface_uml.getNestedClassifiers().add(nested2);
+    realization.setContract(interface_uml);
     implementingClassifier.getInterfaceRealizations().add(realization);
 
-    ASSERT_EQ(interface.getOwnedAttributes().size(), 2);
-    ASSERT_EQ(interface.getOwnedOperations().size(), 2);
-    ASSERT_EQ(interface.getNestedClassifiers().size(), 2);
-    ASSERT_EQ(interface.getAttributes().size(), 2);
-    ASSERT_EQ(interface.getFeatures().size(), 4);
-    ASSERT_EQ(interface.getOwnedMembers().size(), 6);
-    ASSERT_EQ(interface.getMembers().size(), 6);
-    ASSERT_EQ(interface.getOwnedElements().size(), 6);
+    ASSERT_EQ(interface_uml.getOwnedAttributes().size(), 2);
+    ASSERT_EQ(interface_uml.getOwnedOperations().size(), 2);
+    ASSERT_EQ(interface_uml.getNestedClassifiers().size(), 2);
+    ASSERT_EQ(interface_uml.getAttributes().size(), 2);
+    ASSERT_EQ(interface_uml.getFeatures().size(), 4);
+    ASSERT_EQ(interface_uml.getOwnedMembers().size(), 6);
+    ASSERT_EQ(interface_uml.getMembers().size(), 6);
+    ASSERT_EQ(interface_uml.getOwnedElements().size(), 6);
 
-    ASSERT_TRUE(interface.getOwnedAttributes().contains(property1));
-    ASSERT_FALSE(interface.getOwnedOperations().contains(property1.getID()));
-    ASSERT_TRUE(interface.getAttributes().contains(property1));
-    ASSERT_TRUE(interface.getFeatures().contains(property1));
-    ASSERT_FALSE(interface.getNestedClassifiers().contains(property1.getID()));
-    ASSERT_TRUE(interface.getOwnedMembers().contains(property1));
-    ASSERT_TRUE(interface.getMembers().contains(property1));
-    ASSERT_TRUE(interface.getOwnedElements().contains(property1));
+    ASSERT_TRUE(interface_uml.getOwnedAttributes().contains(property1));
+    ASSERT_FALSE(interface_uml.getOwnedOperations().contains(property1.getID()));
+    ASSERT_TRUE(interface_uml.getAttributes().contains(property1));
+    ASSERT_TRUE(interface_uml.getFeatures().contains(property1));
+    ASSERT_FALSE(interface_uml.getNestedClassifiers().contains(property1.getID()));
+    ASSERT_TRUE(interface_uml.getOwnedMembers().contains(property1));
+    ASSERT_TRUE(interface_uml.getMembers().contains(property1));
+    ASSERT_TRUE(interface_uml.getOwnedElements().contains(property1));
 
-    ASSERT_TRUE(interface.getOwnedAttributes().contains(property2));
-    ASSERT_FALSE(interface.getOwnedOperations().contains(property2.getID()));
-    ASSERT_TRUE(interface.getAttributes().contains(property2));
-    ASSERT_TRUE(interface.getFeatures().contains(property2));
-    ASSERT_FALSE(interface.getNestedClassifiers().contains(property2.getID()));
-    ASSERT_TRUE(interface.getOwnedMembers().contains(property2));
-    ASSERT_TRUE(interface.getMembers().contains(property2));
-    ASSERT_TRUE(interface.getOwnedElements().contains(property2));
+    ASSERT_TRUE(interface_uml.getOwnedAttributes().contains(property2));
+    ASSERT_FALSE(interface_uml.getOwnedOperations().contains(property2.getID()));
+    ASSERT_TRUE(interface_uml.getAttributes().contains(property2));
+    ASSERT_TRUE(interface_uml.getFeatures().contains(property2));
+    ASSERT_FALSE(interface_uml.getNestedClassifiers().contains(property2.getID()));
+    ASSERT_TRUE(interface_uml.getOwnedMembers().contains(property2));
+    ASSERT_TRUE(interface_uml.getMembers().contains(property2));
+    ASSERT_TRUE(interface_uml.getOwnedElements().contains(property2));
 
-    ASSERT_FALSE(interface.getOwnedAttributes().contains(operation1.getID()));
-    ASSERT_TRUE(interface.getOwnedOperations().contains(operation1));
-    ASSERT_FALSE(interface.getAttributes().contains(operation1.getID()));
-    ASSERT_TRUE(interface.getFeatures().contains(operation1));
-    ASSERT_FALSE(interface.getNestedClassifiers().contains(operation1.getID()));
-    ASSERT_TRUE(interface.getOwnedMembers().contains(operation1));
-    ASSERT_TRUE(interface.getMembers().contains(operation1));
-    ASSERT_TRUE(interface.getOwnedElements().contains(operation1));
+    ASSERT_FALSE(interface_uml.getOwnedAttributes().contains(operation1.getID()));
+    ASSERT_TRUE(interface_uml.getOwnedOperations().contains(operation1));
+    ASSERT_FALSE(interface_uml.getAttributes().contains(operation1.getID()));
+    ASSERT_TRUE(interface_uml.getFeatures().contains(operation1));
+    ASSERT_FALSE(interface_uml.getNestedClassifiers().contains(operation1.getID()));
+    ASSERT_TRUE(interface_uml.getOwnedMembers().contains(operation1));
+    ASSERT_TRUE(interface_uml.getMembers().contains(operation1));
+    ASSERT_TRUE(interface_uml.getOwnedElements().contains(operation1));
 
-    ASSERT_FALSE(interface.getOwnedAttributes().contains(operation2.getID()));
-    ASSERT_TRUE(interface.getOwnedOperations().contains(operation2));
-    ASSERT_FALSE(interface.getAttributes().contains(operation2.getID()));
-    ASSERT_TRUE(interface.getFeatures().contains(operation2));
-    ASSERT_FALSE(interface.getNestedClassifiers().contains(operation2.getID()));
-    ASSERT_TRUE(interface.getOwnedMembers().contains(operation2));
-    ASSERT_TRUE(interface.getMembers().contains(operation2));
-    ASSERT_TRUE(interface.getOwnedElements().contains(operation2));
+    ASSERT_FALSE(interface_uml.getOwnedAttributes().contains(operation2.getID()));
+    ASSERT_TRUE(interface_uml.getOwnedOperations().contains(operation2));
+    ASSERT_FALSE(interface_uml.getAttributes().contains(operation2.getID()));
+    ASSERT_TRUE(interface_uml.getFeatures().contains(operation2));
+    ASSERT_FALSE(interface_uml.getNestedClassifiers().contains(operation2.getID()));
+    ASSERT_TRUE(interface_uml.getOwnedMembers().contains(operation2));
+    ASSERT_TRUE(interface_uml.getMembers().contains(operation2));
+    ASSERT_TRUE(interface_uml.getOwnedElements().contains(operation2));
 
-    ASSERT_FALSE(interface.getOwnedAttributes().contains(nested1.getID()));
-    ASSERT_FALSE(interface.getOwnedOperations().contains(nested1.getID()));
-    ASSERT_FALSE(interface.getAttributes().contains(nested1.getID()));
-    ASSERT_FALSE(interface.getFeatures().contains(nested1.getID()));
-    ASSERT_TRUE(interface.getNestedClassifiers().contains(nested1));
-    ASSERT_TRUE(interface.getOwnedMembers().contains(nested1));
-    ASSERT_TRUE(interface.getMembers().contains(nested1));
-    ASSERT_TRUE(interface.getOwnedElements().contains(nested1));
+    ASSERT_FALSE(interface_uml.getOwnedAttributes().contains(nested1.getID()));
+    ASSERT_FALSE(interface_uml.getOwnedOperations().contains(nested1.getID()));
+    ASSERT_FALSE(interface_uml.getAttributes().contains(nested1.getID()));
+    ASSERT_FALSE(interface_uml.getFeatures().contains(nested1.getID()));
+    ASSERT_TRUE(interface_uml.getNestedClassifiers().contains(nested1));
+    ASSERT_TRUE(interface_uml.getOwnedMembers().contains(nested1));
+    ASSERT_TRUE(interface_uml.getMembers().contains(nested1));
+    ASSERT_TRUE(interface_uml.getOwnedElements().contains(nested1));
 
-    ASSERT_FALSE(interface.getOwnedAttributes().contains(nested2.getID()));
-    ASSERT_FALSE(interface.getOwnedOperations().contains(nested2.getID()));
-    ASSERT_FALSE(interface.getAttributes().contains(nested2.getID()));
-    ASSERT_FALSE(interface.getFeatures().contains(nested2.getID()));
-    ASSERT_TRUE(interface.getNestedClassifiers().contains(nested2));
-    ASSERT_TRUE(interface.getOwnedMembers().contains(nested2));
-    ASSERT_TRUE(interface.getMembers().contains(nested2));
-    ASSERT_TRUE(interface.getOwnedElements().contains(nested2));
+    ASSERT_FALSE(interface_uml.getOwnedAttributes().contains(nested2.getID()));
+    ASSERT_FALSE(interface_uml.getOwnedOperations().contains(nested2.getID()));
+    ASSERT_FALSE(interface_uml.getAttributes().contains(nested2.getID()));
+    ASSERT_FALSE(interface_uml.getFeatures().contains(nested2.getID()));
+    ASSERT_TRUE(interface_uml.getNestedClassifiers().contains(nested2));
+    ASSERT_TRUE(interface_uml.getOwnedMembers().contains(nested2));
+    ASSERT_TRUE(interface_uml.getMembers().contains(nested2));
+    ASSERT_TRUE(interface_uml.getOwnedElements().contains(nested2));
 
     ASSERT_EQ(implementingClassifier.getInterfaceRealizations().size(), 1);
     ASSERT_EQ(implementingClassifier.getOwnedElements().size(), 1);
@@ -100,7 +100,7 @@ TEST_F(InterfaceTest, basicInterfaceTest) {
     ASSERT_TRUE(realization.getOwner());
     ASSERT_TRUE(realization.getImplementingClassifier());
 
-    ASSERT_EQ(*realization.getContract(), interface);
+    ASSERT_EQ(*realization.getContract(), interface_uml);
     ASSERT_EQ(*realization.getImplementingClassifier(), implementingClassifier);
     ASSERT_EQ(*realization.getOwner(), implementingClassifier);
 }

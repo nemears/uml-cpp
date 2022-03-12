@@ -24,7 +24,7 @@ void Port::setPortInterfaces(BehavioredClassifier& clazz) {
     for (auto& dependency : clazz.getClientDependencies()) {
         if (dependency.isSubClassOf(ElementType::USAGE)) {
             for (auto& supplier : dependency.getSupplier()) {
-                if (supplier.isSubClassOf(ElementType::INTERFACE)) {
+                if (supplier.isSubClassOf(ElementType::INTERFACE_UML)) {
                     if (isConjugated()) {
                        m_provided.nonOppositeAdd(supplier.as<Interface>());
                     } else {
@@ -44,7 +44,7 @@ void Port::setPortInterfaces(BehavioredClassifier& clazz) {
 void Port::SetTypeFunctor::operator()(Element& el) const {
     if (el.isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
         m_el.as<Port>().setPortInterfaces(el.as<BehavioredClassifier>());
-    } else if (el.isSubClassOf(ElementType::INTERFACE)) {
+    } else if (el.isSubClassOf(ElementType::INTERFACE_UML)) {
         if (m_el.as<Port>().isConjugated()) {
             m_el.as<Port>().m_required.nonOppositeAdd(el.as<Interface>());
         } else {
@@ -66,7 +66,7 @@ void Port::removePortInterfaces(BehavioredClassifier& clazz) {
     for (auto& dependency : clazz.getClientDependencies()) {
         if (dependency.isSubClassOf(ElementType::USAGE)) {
             for (auto& supplier : dependency.getSupplier()) {
-                if (supplier.isSubClassOf(ElementType::INTERFACE)) {
+                if (supplier.isSubClassOf(ElementType::INTERFACE_UML)) {
                     if (isConjugated()) {
                        m_provided.removeReadOnly(supplier.getID());
                     } else {
@@ -86,7 +86,7 @@ void Port::removePortInterfaces(BehavioredClassifier& clazz) {
 void Port::RemoveTypeFunctor::operator()(Element& el) const {
     if (el.isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
         m_el.as<Port>().removePortInterfaces(el.as<BehavioredClassifier>());
-    } else if (el.isSubClassOf(ElementType::INTERFACE)) {
+    } else if (el.isSubClassOf(ElementType::INTERFACE_UML)) {
         if (m_el.as<Port>().isComposite()) {
             m_el.as<Port>().m_required.removeReadOnly(el.getID());
         } else {

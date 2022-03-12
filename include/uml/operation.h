@@ -59,8 +59,8 @@ namespace UML {
             void setDataType(DataType* dataType);
             void setDataType(ID id);
             InterfacePtr getInterface() const;
-            void setInterface(Interface* interface);
-            void setInterface(Interface& interface);
+            void setInterface(Interface* interface_uml);
+            void setInterface(Interface& interface_uml);
             void setInterface(ID id);
             OrderedSet<Parameter, Operation>& getOwnedParameters();
             bool isSubClassOf(ElementType eType) const override;

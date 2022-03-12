@@ -134,12 +134,12 @@ InterfacePtr Operation::getInterface() const {
     return m_interface.get();
 }
 
-void Operation::setInterface(Interface* interface) {
-    m_interface.set(interface);
+void Operation::setInterface(Interface* interface_uml) {
+    m_interface.set(interface_uml);
 }
 
-void Operation::setInterface(Interface& interface) {
-    m_interface.set(interface);
+void Operation::setInterface(Interface& interface_uml) {
+    m_interface.set(interface_uml);
 }
 
 void Operation::setInterface(ID id) {

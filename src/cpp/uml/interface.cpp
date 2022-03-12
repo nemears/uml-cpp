@@ -34,7 +34,7 @@ void Interface::init() {
     m_nestedClassifiers.m_signature = &Interface::getNestedClassifiersSet;
 }
 
-Interface::Interface() : Element(ElementType::INTERFACE) {
+Interface::Interface() : Element(ElementType::INTERFACE_UML) {
     init();
 }
 
@@ -58,7 +58,7 @@ bool Interface::isSubClassOf(ElementType eType) const {
     bool ret = Classifier::isSubClassOf(eType);
     
     if (!ret) {
-        ret = eType == ElementType::INTERFACE;
+        ret = eType == ElementType::INTERFACE_UML;
     }
 
     return ret;

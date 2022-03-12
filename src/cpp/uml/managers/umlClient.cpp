@@ -1,20 +1,29 @@
 #include "uml/managers/umlClient.h"
+#ifndef WIN32
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netdb.h>
+#include <poll.h>
+#include <unistd.h>
+#else
+#endif
 #include "uml/managers/umlServer.h"
 #include <iostream>
-#include <unistd.h>
 #include "yaml-cpp/yaml.h"
 #include "uml/parsers/parser.h"
 #include "uml/uml-stable.h"
-#include <poll.h>
 
 #define UML_CLIENT_MSG_SIZE 200
 
 using namespace UML;
 
-void sendEmitter(int socket, YAML::Emitter& emitter) {
+#ifndef WIN32
+typedef int socketType;
+#else
+typedef SOCKET socketType;
+#endif
+
+void sendEmitter(socketType socket, YAML::Emitter& emitter) {
     int totalBytesSent = 0;
     int bytesSent = 0;
     int packetSize = sizeof(uint32_t) + sizeof(char) * (emitter.size() + 1);
@@ -33,6 +42,7 @@ void sendEmitter(int socket, YAML::Emitter& emitter) {
 }
 
 void UmlClient::init() {
+    #ifndef WIN32
     struct addrinfo hints;
     struct addrinfo* myAddress;
     memset(&hints, 0, sizeof hints);
@@ -55,7 +65,37 @@ void UmlClient::init() {
         throw ManagerStateException("client could not connect to server! " + std::string(strerror(errno)));
     }
     freeaddrinfo(myAddress);
-
+    #else
+    int status = WSAStartup(MAKEWORD(2,2), &m_wsaData);
+    if (status != 0) {
+        throw ManagerStateException("TOSO Winsock, WSAStartup");
+    }
+    struct addrinfo *result = 0,
+                hints;
+    ZeroMemory( &hints, sizeof(hints) );
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
+    status = getaddrinfo(m_address.empty() ? 0 : m_address.c_str(), std::to_string(m_port).c_str(), &hints, &result);
+    if (status != 0) {
+        WSACleanup();
+        throw ManagerStateException("TODO winsock 1");
+    }
+    m_socketD = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+    if (m_socketD == INVALID_SOCKET) {
+        freeaddrinfo(result);
+        WSACleanup();
+        throw ManagerStateException("TODO winsock could not bind to socket");
+    }
+    status = connect(m_socketD, result->ai_addr, (int) result->ai_addrlen);
+    freeaddrinfo(result);
+    if (status == SOCKET_ERROR) {
+        closesocket(m_socketD);
+        m_socketD = INVALID_SOCKET;
+        WSACleanup();
+        throw ManagerStateException("TODO winsock could not connect to server!");
+    }
+    #endif
     char buff[3];
     int bytesReceived = recv(m_socketD, buff, sizeof buff, 0);
     if (bytesReceived <= 0) {
@@ -116,7 +156,15 @@ UmlClient::UmlClient(std::string adress) : id(ID::randomID()) {
 }
 
 UmlClient::~UmlClient() {
+    #ifndef WIN32
     close(m_socketD);
+    #else
+    int result = shutdown(m_socketD, SD_SEND);
+    if (result == SOCKET_ERROR) {
+        closesocket(m_socketD);
+        WSACleanup();
+    }
+    #endif
 }
 
 Element& UmlClient::get(ID id) {

@@ -1995,11 +1995,11 @@ void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data) {
 
     if (node["direction"]) {
         if (node["direction"].IsScalar()) {
-            if (node["direction"].as<string>().compare("IN_UML") == 0) {
+            if (node["direction"].as<string>().compare("IN") == 0) {
                 el.setDirection(ParameterDirectionKind::IN_UML);
             } else if (node["direction"].as<string>().compare("INOUT") == 0) {
                 el.setDirection(ParameterDirectionKind::INOUT);
-            } else if (node["direction"].as<string>().compare("OUT_UML") == 0) {
+            } else if (node["direction"].as<string>().compare("OUT") == 0) {
                 el.setDirection(ParameterDirectionKind::OUT_UML);
             } else if (node["direction"].as<string>().compare("RETURN") == 0) {
                 el.setDirection(ParameterDirectionKind::RETURN);
@@ -2022,7 +2022,7 @@ void emitParameter(YAML::Emitter& emitter, Parameter& el, EmitterMetaData& data)
         string direction;
         switch(el.getDirection()) {
             case ParameterDirectionKind::IN_UML : {
-                direction = "IN_UML";
+                direction = "IN";
                 break;
             }
             case ParameterDirectionKind::INOUT : {
@@ -2030,7 +2030,7 @@ void emitParameter(YAML::Emitter& emitter, Parameter& el, EmitterMetaData& data)
                 break;
             }
             case ParameterDirectionKind::OUT_UML : {
-                direction = "OUT_UML";
+                direction = "OUT";
                 break;
             }
             case ParameterDirectionKind::RETURN : {

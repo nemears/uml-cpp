@@ -165,10 +165,30 @@ TEST_F(InterfaceParserTest, emitPortWInterfaceTest) {
               isBehavior: true
               isConjugated: true
               isService: false)"""";
+    std::string expectedEmit2 = R""""(package:
+  id: epLFcWN0KeMt8t5mAuF4TUCa75ns
+  packagedElements:
+    - class:
+        id: 508FPtzv15GguudyAK6odJA7Rxoa
+        interfaceRealizations:
+          - interfaceRealization:
+              id: 65&HAREuzThGM38K2m82T1NWR28N
+              contract: Ehn7ZlJH&ULe75R26WWVcYlMKXeY
+    - class:
+        id: R3dx7zjpK3&3NGLh0DVLt9Yolka8
+        ownedAttributes:
+          - port:
+              id: loA63PcT8hpUsfQkDvU1p0YT4vRj
+              type: 508FPtzv15GguudyAK6odJA7Rxoa
+              isBehavior: true
+              isConjugated: true
+              isService: false
+    - interface:
+        id: Ehn7ZlJH&ULe75R26WWVcYlMKXeY)"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(root));
     std::cout << generatedEmit << '\n';
-    ASSERT_EQ(expectedEmit, generatedEmit);
+    ASSERT_TRUE(expectedEmit == generatedEmit || expectedEmit2 == generatedEmit);
 }
 
 TEST_F(InterfaceParserTest, mountInterfaceTest) {

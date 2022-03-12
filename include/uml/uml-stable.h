@@ -60,4 +60,8 @@
 
 #include "uml/managers/umlClient.h"
 
+namespace UML {
+    typedef UmlPtr<PrimitiveType> PrimitiveTypePtr;
+}
+
 #endif

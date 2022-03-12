@@ -77,10 +77,32 @@ TEST_F(GeneralizationSetParserTest, emitGeneralizationSetTest) {
         powerType: mmUnLGAGcUocJQlNkF2BxGUzadjY
         generalizations:
           - vGAiKV8tZmvkxePhhEns36Z654xF)"""";
+    std::string expectedEmit2 = R""""(package:
+  id: UpJ207YoGcD0zWHbmtYZhLAYEhRP
+  packagedElements:
+    - class:
+        id: mmUnLGAGcUocJQlNkF2BxGUzadjY
+        powerTypeExtent:
+          - uLHn5GsNBUhrk9cgTO&qLw5LO068
+    - generalizationSet:
+        id: uLHn5GsNBUhrk9cgTO&qLw5LO068
+        covering: false
+        disjoint: false
+        powerType: mmUnLGAGcUocJQlNkF2BxGUzadjY
+        generalizations:
+          - vGAiKV8tZmvkxePhhEns36Z654xF
+    - class:
+        id: wJ7Y3K6BmTpN3D2pEtbbBt5aMhuo
+        generalizations:
+          - generalization:
+              id: vGAiKV8tZmvkxePhhEns36Z654xF
+              general: mmUnLGAGcUocJQlNkF2BxGUzadjY
+              generalizationSets:
+                - uLHn5GsNBUhrk9cgTO&qLw5LO068)"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(root));
     std::cout << generatedEmit << '\n';
-    ASSERT_EQ(expectedEmit, generatedEmit);
+    ASSERT_TRUE(expectedEmit == generatedEmit || expectedEmit2 == generatedEmit);
 }
 
 TEST_F(GeneralizationSetParserTest, mountGeneralizationSet) {

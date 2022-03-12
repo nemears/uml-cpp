@@ -277,10 +277,50 @@ TEST_F(TemplateableElementParserTest, emitBigTemplateExampleTest) {
                     id: puJaUTZsLPdGJkJSJtdX51MIA2ch
                     formal: Km4WF5rf3ohUeLTr99POiW7VMb_4
                     actual: 4gA4RgL9vKTRYd61D99y1d_Yggj6)"""";
+    string expectedEmit2 = R""""(package:
+  id: b4EasFCBjochdruOQfxBubQw3VlD
+  packagedElements:
+    - primitiveType:
+        id: a2arTP9Z2LteDWsjTS0ziALCWlXU
+        templateParameter: Km4WF5rf3ohUeLTr99POiW7VMb_4
+    - class:
+        id: NYok8HRGpv_rOfAmfrRB94uwOZrb
+        templateSignature:
+          templateSignature:
+            id: nOh5namt9s4oOvimAXQpR8nJHfTF
+            ownedParameters:
+              - templateParameter:
+                  id: OLULeTlF1Rzf4U5IpNQVW1nYd29c
+                  ownedDefault:
+                    primitiveType:
+                      id: GZaiGksTjm4GeM2GdJ5BXuajWnGU
+                      templateParameter: OLULeTlF1Rzf4U5IpNQVW1nYd29c
+              - templateParameter:
+                  id: Km4WF5rf3ohUeLTr99POiW7VMb_4
+                  default: a2arTP9Z2LteDWsjTS0ziALCWlXU
+    - primitiveType:
+        id: 4gA4RgL9vKTRYd61D99y1d_Yggj6
+    - class:
+        id: fMWs7G1YTFU1VQEAgNcZqt4lp6dB
+        templateBindings:
+          - templateBinding:
+              id: e_ob7tgbN16Plhj_sTAOVD5ijLrL
+              signature: nOh5namt9s4oOvimAXQpR8nJHfTF
+              parameterSubstitution:
+                - templateParameterSubstitution:
+                    id: 7bYUY3yFUBrfPmzKKrV2NJmXuECA
+                    formal: OLULeTlF1Rzf4U5IpNQVW1nYd29c
+                    ownedActual:
+                      primitiveType:
+                        id: 8&K_0aLhvQDM12ZeYg9nPiSrexHo
+                - templateParameterSubstitution:
+                    id: puJaUTZsLPdGJkJSJtdX51MIA2ch
+                    formal: Km4WF5rf3ohUeLTr99POiW7VMb_4
+                    actual: 4gA4RgL9vKTRYd61D99y1d_Yggj6)"""";
     string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
     cout << generatedEmit << '\n';
-    ASSERT_EQ(expectedEmit, generatedEmit);
+    ASSERT_TRUE(expectedEmit == generatedEmit || expectedEmit2 == generatedEmit);
 }
 
 TEST_F(TemplateableElementParserTest, mountClassWithTemplateSignature) {

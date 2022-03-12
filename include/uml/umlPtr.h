@@ -31,7 +31,7 @@ namespace UML {
         template <class U> friend class UmlPtr;
 
         private:
-            UmlManager* m_manager;
+            UmlManager* m_manager = 0;
             T* m_ptr = 0;
         protected:
             void reindex(ID newID, Element* el) override {
@@ -179,7 +179,7 @@ namespace UML {
                     if (m_ptr) {
                         m_ptr->m_node->m_ptrs.remove(this);
                         if (m_ptr->m_node->m_ptrs.empty()) {
-                            if ((!m_manager->m_lossless || !m_manager->m_mountBase.empty()) && !m_manager->m_lazy) {
+                            if (m_manager && (!m_manager->m_lossless || !m_manager->m_mountBase.empty()) && !m_manager->m_lazy) {
                                 m_manager->mountEl(*m_ptr);
                                 m_manager->releaseNode(*m_ptr);
                                 m_manager->m_graph.erase(m_id);

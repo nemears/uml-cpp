@@ -1,5 +1,5 @@
-#ifndef UML_UML_CLIENT_H
-#define UML_UML_CLIENT_H
+#ifndef _UML_UML_CLIENT_H_
+#define _UML_UML_CLIENT_H_
 
 #include "uml/umlManager.h"
 #ifdef WIN32

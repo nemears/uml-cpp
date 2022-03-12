@@ -4,7 +4,7 @@
 #include "uml/package.h"
 #include "uml/set.h"
 #include "uml/orderedSet.h"
-#include "test/yumlParsersTest.h"
+#include "test/uml-cpp-paths.h"
 #include "uml/umlPtr.h"
 #include "uml/class.h"
 #include "uml/generalization.h"

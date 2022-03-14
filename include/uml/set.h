@@ -324,6 +324,9 @@ namespace UML {
     class Usage;
     class Signal;
     class Reception;
+    class Activity;
+    class ActivityEdge;
+    class ActivityNode;
 
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
@@ -399,6 +402,9 @@ namespace UML {
         friend class Usage;
         friend class Signal;
         friend class Reception;
+        friend class Activity;
+        friend class ActivityEdge;
+        friend class ActivityNode;
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
         friend void Parsers::setOwner(Element& el, ID id);

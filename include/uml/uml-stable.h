@@ -6,6 +6,9 @@
  **/
 
 #include "uml/abstraction.h"
+#include "uml/activity.h"
+#include "uml/activityEdge.h"
+#include "uml/activityNode.h"
 #include "uml/behavior.h"
 #include "uml/class.h"
 #include "uml/comment.h"

@@ -1,106 +1,40 @@
 #include "uml/activity.h"
 #include "uml/activityEdge.h"
 #include "uml/activityNode.h"
+#include "uml/behavioralFeature.h"
+#include "uml/dataType.h"
+#include "uml/operation.h"
+#include "uml/parameter.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
-void Activity::AddNodeFunctor::operator()(ActivityNode& el) const {
-    if (el.getActivity() != m_el) {
-        el.setActivity(m_el);
-    }
-
-    // if owner not already specified make it the activity (don't overwrite pins ownership)
-    if (!el.getOwner()) {
-        if (!m_el->getOwnedElements().contains(el.getID())) {
-            m_el->getOwnedElements().add(el);
-        }
-    }
-
-    updateCopiedSequenceAddedTo(el, &Activity::getNodes);
-}
-
-void Activity::RemoveNodeFunctor::operator()(ActivityNode& el) const {
-    if (el.getActivity() == m_el) {
-        el.setActivity(0);
-    }
-
-    if (m_el->getOwnedElements().contains(el.getID())) {
-        m_el->getOwnedElements().remove(el);
-    }
-    updateCopiedSequenceRemovedFrom(el, &Activity::getNodes);
-}
-
-void Activity::AddEdgeFunctor::operator()(ActivityEdge& el) const {
-    if (el.getActivity() != m_el) {
-        el.setActivity(m_el);
-    }
-
-    if (!m_el->getOwnedElements().contains(el.getID())) {
-        m_el->getOwnedElements().add(el);
-    }
-    updateCopiedSequenceAddedTo(el, &Activity::getEdges);
-}
-
-void Activity::RemoveEdgeFunctor::operator()(ActivityEdge& el) const {
-    if (el.getActivity() == m_el) {
-        el.setActivity(m_el);
-    }
-    //subsetsRemove(el, &Element::getOwnedElements);
-    updateCopiedSequenceRemovedFrom(el, &Activity::getEdges);
-}
-
-void Activity::referencingReleased(ID id) {
-    Behavior::referencingReleased(id);
-    m_nodes.elementReleased(id, &Activity::getNodes);
-    m_edges.elementReleased(id, &Activity::getEdges);
-}
-
-void Activity::referenceReindexed(ID oldID, ID newID) {
-    Behavior::referenceReindexed(oldID, newID);
-    if (m_nodes.count(oldID)) {
-        m_nodes.reindex(oldID, newID, &Activity::getNodes);
-    }
-    if (m_edges.count(oldID)) {
-        m_edges.reindex(oldID, newID, &Activity::getEdges);
-    }
+void Activity::init() {
+    m_nodes.subsets(*m_ownedElements);
+    m_nodes.opposite(&ActivityNode::getActivitySingleton);
+    m_nodes.m_signature = &Activity::getNodes;
+    m_edges.subsets(*m_ownedElements);
+    m_edges.opposite(&ActivityEdge::getActivitySingleton);
+    m_edges.m_signature = &Activity::getEdges;
 }
 
 Activity::Activity() : Element(ElementType::ACTIVITY) {
-    m_nodes.addProcedures.push_back(new AddNodeFunctor(this));
-    m_nodes.removeProcedures.push_back(new RemoveNodeFunctor(this));
-    m_edges.addProcedures.push_back(new AddEdgeFunctor(this));
-    m_edges.removeProcedures.push_back(new RemoveEdgeFunctor(this));
-}
-
-Activity::Activity(const Activity& rhs) : 
-Behavior(rhs), 
-Classifier(rhs), 
-PackageableElement(rhs), 
-NamedElement(rhs), 
-Element(rhs, ElementType::ACTIVITY) {
-    m_nodes = rhs.m_nodes;
-    m_nodes.m_el = this;
-    m_nodes.removeProcedures.clear();
-    m_nodes.addProcedures.clear();
-    m_edges = rhs.m_edges;
-    m_edges.m_el = this;
-    m_edges.addProcedures.clear();
-    m_edges.removeProcedures.clear();
-    m_nodes.addProcedures.push_back(new AddNodeFunctor(this));
-    m_nodes.removeProcedures.push_back(new RemoveNodeFunctor(this));
-    m_edges.addProcedures.push_back(new AddEdgeFunctor(this));
-    m_edges.removeProcedures.push_back(new RemoveEdgeFunctor(this));
+    init();
 }
 
 Activity::~Activity() {
     
 }
 
-Sequence<ActivityNode>& Activity::getNodes() {
+Set<ActivityNode, Activity>& Activity::getNodes() {
     return m_nodes;
 }
 
-Sequence<ActivityEdge>& Activity::getEdges() {
+Set<ActivityEdge, Activity>& Activity::getEdges() {
     return m_edges;
 }
 

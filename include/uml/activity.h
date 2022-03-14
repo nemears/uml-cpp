@@ -1,5 +1,5 @@
-#ifndef ACTIVITY_H
-#define ACTIVITY_H
+#ifndef _UML_ACTIVITY_H_
+#define _UML_ACTIVITY_H_
 
 #include "behavior.h"
 
@@ -13,16 +13,14 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            // Set<ActivityNode, Activity> m_nodes = Set<ActivityNode, Activity>(this);
-            // Set<ActivityEdge, Activity> m_edges = Set<ActivityEdge, Activity>(this);
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
+            Set<ActivityNode, Activity> m_nodes = Set<ActivityNode, Activity>(this);
+            Set<ActivityEdge, Activity> m_edges = Set<ActivityEdge, Activity>(this);
+            void init();
         public:
             Activity();
-            Activity(const Activity& rhs);
             virtual ~Activity();
             Set<ActivityNode, Activity>& getNodes();
-            Set<ActivityNode, Activity>& getEdges();
+            Set<ActivityEdge, Activity>& getEdges();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ACTIVITY;

@@ -21,9 +21,9 @@ void RedefinableElement::referenceReindexed(ID oldID, ID newID) {
     m_redefinitionContext.reindex(oldID, newID);
 }
 
-void RedefinableElement::reindexName(std::string oldName, std::string newName) {
-    m_redefinedElement.reindexName(oldName, newName);
-    m_redefinitionContext.reindexName(oldName, newName);
+void RedefinableElement::reindexName(ID id, std::string newName) {
+    m_redefinedElement.reindexName(id, newName);
+    m_redefinitionContext.reindexName(id, newName);
 }
 
 void RedefinableElement::referenceErased(ID id) {

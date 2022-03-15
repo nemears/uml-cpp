@@ -9,7 +9,7 @@ namespace UML {
             Set<Element, Relationship> m_relatedElements = Set<Element, Relationship>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(std::string oldName, std::string newName) override;
+            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
             void init();

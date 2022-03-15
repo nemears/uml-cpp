@@ -26,9 +26,9 @@ void NamedElement::referenceReindexed(ID oldID, ID newID) {
     m_clientDependencies->reindex(oldID, newID);
 }
 
-void NamedElement::reindexName(std::string oldName, std::string newName) {
-    Element::reindexName(oldName, newName);
-    m_clientDependencies->reindexName(oldName, newName);
+void NamedElement::reindexName(ID id, std::string newName) {
+    Element::reindexName(id, newName);
+    m_clientDependencies->reindexName(id, newName);
 }
 
 void NamedElement::referencingReleased(ID id) {
@@ -71,7 +71,7 @@ void NamedElement::setName(const std::string &name) {
             m_manager->get(pair.first);
         }
         if (pair.second) {  // TODO: don't really like this if statement
-            pair.second->m_managerElementMemory->reindexName(m_name, name); 
+            pair.second->m_managerElementMemory->reindexName(m_id, name); 
         }
     }
     m_name = name;

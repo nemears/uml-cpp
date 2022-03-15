@@ -65,10 +65,10 @@ void Connector::referenceReindexed(ID oldID, ID newID) {
     m_contracts.reindex(oldID, newID);
 }
 
-void Connector::reindexName(std::string oldName, std::string newName) {
-    Feature::reindexName(oldName, newName);
-    m_type.reindexName(oldName, newName);
-    m_contracts.reindexName(oldName, newName);
+void Connector::reindexName(ID id, std::string newName) {
+    Feature::reindexName(id, newName);
+    m_type.reindexName(id, newName);
+    m_contracts.reindexName(id, newName);
 }
 
 void Connector::restoreReference(Element* el) {

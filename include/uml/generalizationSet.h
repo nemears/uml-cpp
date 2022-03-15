@@ -20,7 +20,7 @@ namespace UML {
             Singleton<Classifier, GeneralizationSet> m_powerType = Singleton<Classifier, GeneralizationSet>(this);
             Set<Generalization, GeneralizationSet> m_generalizations = Set<Generalization, GeneralizationSet>(this);
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(std::string oldName, std::string newName) override;
+            void reindexName(ID id, std::string newName) override;
             void referencingReleased(ID id) override;
             void referenceErased(ID id) override;
             Set<Classifier, GeneralizationSet>& getPowerTypeSingleton();

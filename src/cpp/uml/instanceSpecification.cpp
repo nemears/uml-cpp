@@ -27,9 +27,9 @@ void InstanceSpecification::referenceReindexed(ID oldID, ID newID) {
     m_classifiers.reindex(oldID, newID);
 }
 
-void InstanceSpecification::reindexName(std::string oldName, std::string newName) {
-    PackageableElement::reindexName(oldName, newName);
-    m_classifiers.reindexName(oldName, newName);
+void InstanceSpecification::reindexName(ID id, std::string newName) {
+    PackageableElement::reindexName(id, newName);
+    m_classifiers.reindexName(id, newName);
 }
 
 void InstanceSpecification::referencingReleased(ID id) {

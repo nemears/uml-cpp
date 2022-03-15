@@ -19,9 +19,9 @@ void InstanceValue::referenceReindexed(ID oldID, ID newID) {
     m_instance.reindex(oldID, newID);
 }
 
-void InstanceValue::reindexName(std::string oldName, std::string newName) {
-    ValueSpecification::reindexName(oldName, newName);
-    m_instance.reindexName(oldName, newName);
+void InstanceValue::reindexName(ID id, std::string newName) {
+    ValueSpecification::reindexName(id, newName);
+    m_instance.reindexName(id, newName);
 }
 
 void InstanceValue::referenceErased(ID id) {

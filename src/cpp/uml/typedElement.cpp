@@ -21,9 +21,9 @@ void TypedElement::referenceReindexed(ID oldID, ID newID) {
     m_type.reindex(oldID, newID);
 }
 
-void TypedElement::reindexName(std::string oldName, std::string newName) {
-    NamedElement::reindexName(oldName, newName);
-    m_type.reindexName(oldName, newName);
+void TypedElement::reindexName(ID id, std::string newName) {
+    NamedElement::reindexName(id, newName);
+    m_type.reindexName(id, newName);
 }
 
 void TypedElement::restoreReference(Element* el) {

@@ -22,10 +22,10 @@ void TemplateParameterSubstitution::referenceReindexed(ID oldID, ID newID) {
     m_actual.reindex(oldID, newID);
 }
 
-void TemplateParameterSubstitution::reindexName(std::string oldName, std::string newName) {
-    Element::reindexName(oldName, newName);
-    m_formal.reindexName(oldName, newName);
-    m_actual.reindexName(oldName, newName);
+void TemplateParameterSubstitution::reindexName(ID id, std::string newName) {
+    Element::reindexName(id, newName);
+    m_formal.reindexName(id, newName);
+    m_actual.reindexName(id, newName);
 }
 
 void TemplateParameterSubstitution::restoreReference(Element* el) {

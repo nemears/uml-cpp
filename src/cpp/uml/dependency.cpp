@@ -19,9 +19,9 @@ void Dependency::referenceReindexed(ID oldID, ID newID) {
     Relationship::referenceReindexed(oldID, newID);
 }
 
-void Dependency::reindexName(std::string oldName, std::string newName) {
-    PackageableElement::reindexName(oldName, newName);
-    Relationship::reindexName(oldName, newName);
+void Dependency::reindexName(ID id, std::string newName) {
+    PackageableElement::reindexName(id, newName);
+    Relationship::reindexName(id, newName);
 }
 
 void Dependency::restoreReference(Element* el) {

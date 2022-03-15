@@ -22,7 +22,7 @@ namespace UML {
             Set<Activity, ActivityNode>& getActivitySingleton();
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(std::string oldName, std::string newName) override;
+            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
         public:

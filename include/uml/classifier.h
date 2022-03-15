@@ -71,7 +71,7 @@ namespace UML {
                     RemoveOwnedMemberFunctor(Element* el) : SetFunctor(el) {};
             };
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(std::string oldName, std::string newName) override;
+            void reindexName(ID id, std::string newName) override;
             void referencingReleased(ID id) override;
             void restoreReferences() override;
             void referenceErased(ID id) override;

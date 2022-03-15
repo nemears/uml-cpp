@@ -54,10 +54,10 @@ void Property::referenceReindexed(ID oldID, ID newID) {
     m_association.reindex(oldID, newID);
 }
 
-void Property::reindexName(std::string oldName, std::string newName) {
-    StructuralFeature::reindexName(oldName, newName);
-    ConnectableElement::reindexName(oldName, newName);
-    m_association.reindexName(oldName, newName);
+void Property::reindexName(ID id, std::string newName) {
+    StructuralFeature::reindexName(id, newName);
+    ConnectableElement::reindexName(id, newName);
+    m_association.reindexName(id, newName);
 }
 
 void Property::restoreReference(Element* el) {

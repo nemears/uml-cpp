@@ -22,10 +22,10 @@ void ConnectableElement::referenceReindexed(ID oldID, ID newID) {
     m_ends.reindex(oldID, newID);
 }
 
-void ConnectableElement::reindexName(std::string oldName, std::string newName) {
-    TypedElement::reindexName(oldName, newName);
-    ParameterableElement::reindexName(oldName, newName);
-    m_ends.reindexName(oldName, newName);
+void ConnectableElement::reindexName(ID id, std::string newName) {
+    TypedElement::reindexName(id, newName);
+    ParameterableElement::reindexName(id, newName);
+    m_ends.reindexName(id, newName);
 }
 
 void ConnectableElement::restoreReference(Element* el) {

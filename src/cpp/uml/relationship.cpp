@@ -12,9 +12,9 @@ void Relationship::referenceReindexed(ID oldID, ID newID) {
     m_relatedElements.reindex(oldID, newID);
 }
 
-void Relationship::reindexName(std::string oldName, std::string newName) {
-    Element::reindexName(oldName, newName);
-    m_relatedElements.reindexName(oldName, newName);
+void Relationship::reindexName(ID id, std::string newName) {
+    Element::reindexName(id, newName);
+    m_relatedElements.reindexName(id, newName);
 }
 
 void Relationship::referenceErased(ID id) {

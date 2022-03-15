@@ -38,11 +38,11 @@ void ActivityNode::referenceErased(ID id) {
     m_outgoing.eraseElement(id);
 }
 
-void ActivityNode::reindexName(std::string oldName, std::string newName) {
-    NamedElement::reindexName(oldName, newName);
-    RedefinableElement::reindexName(oldName, newName);
-    m_incoming.reindexName(oldName, newName);
-    m_outgoing.reindexName(oldName, newName);
+void ActivityNode::reindexName(ID id, std::string newName) {
+    NamedElement::reindexName(id, newName);
+    RedefinableElement::reindexName(id, newName);
+    m_incoming.reindexName(id, newName);
+    m_outgoing.reindexName(id, newName);
 }
 
 void ActivityNode::init() {

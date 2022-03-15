@@ -17,7 +17,7 @@ namespace UML {
             Set<Parameter, Behavior> m_ownedParameters = Set<Parameter, Behavior>(this);
             Singleton<BehavioralFeature, Behavior> m_specification = Singleton<BehavioralFeature, Behavior>(this);
             void referencingReleased(ID id) override;
-            void reindexName(std::string oldName, std::string newName) override;
+            void reindexName(ID id, std::string newName) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
             Set<BehavioralFeature, Behavior>& getSpecificationSingleton();

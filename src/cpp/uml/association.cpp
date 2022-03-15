@@ -37,9 +37,9 @@ void Association::referenceReindexed(ID oldID, ID newID) {
     Relationship::referenceReindexed(oldID, newID);
 }
 
-void Association::reindexName(std::string oldName, std::string newName) {
-    Classifier::reindexName(oldName, newName);
-    Relationship::reindexName(oldName, newName);
+void Association::reindexName(ID id, std::string newName) {
+    Classifier::reindexName(id, newName);
+    Relationship::reindexName(id, newName);
 }
 
 void Association::restoreReferences() {

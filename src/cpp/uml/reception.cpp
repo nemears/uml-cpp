@@ -24,8 +24,8 @@ void Reception::referenceReindexed(ID oldID, ID newID) {
     m_signal.reindex(oldID, newID);
 }
 
-void Reception::reindexName(std::string oldName, std::string newName) {
-    m_signal.reindexName(oldName, newName);
+void Reception::reindexName(ID id, std::string newName) {
+    m_signal.reindexName(id, newName);
 }
 
 void Reception::referenceErased(ID id) {

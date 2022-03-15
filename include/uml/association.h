@@ -30,7 +30,7 @@ namespace UML {
             Set<Type, Association> m_endType = Set<Type, Association>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(std::string oldName, std::string newName) override;
+            void reindexName(ID id, std::string newName) override;
             void restoreReferences() override;
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;

@@ -18,10 +18,10 @@ void GeneralizationSet::referenceReindexed(ID oldID, ID newID) {
     m_generalizations.reindex(oldID, newID);
 }
 
-void GeneralizationSet::reindexName(std::string oldName, std::string newName) {
-    PackageableElement::reindexName(oldName, newName);
-    m_powerType.reindexName(oldName, newName);
-    m_generalizations.reindexName(oldName, newName);
+void GeneralizationSet::reindexName(ID id, std::string newName) {
+    PackageableElement::reindexName(id, newName);
+    m_powerType.reindexName(id, newName);
+    m_generalizations.reindexName(id, newName);
 }
 
 void GeneralizationSet::referencingReleased(ID id) {

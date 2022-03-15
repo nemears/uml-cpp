@@ -21,10 +21,10 @@ void BehavioralFeature::referenceReindexed(ID oldID, ID newID) {
     m_methods.reindex(oldID, newID);
 }
 
-void BehavioralFeature::reindexName(std::string oldName, std::string newName) {
-    Feature::reindexName(oldName, newName);
-    Namespace::reindexName(oldName, newName);
-    m_methods.reindexName(oldName, newName);
+void BehavioralFeature::reindexName(ID id, std::string newName) {
+    Feature::reindexName(id, newName);
+    Namespace::reindexName(id, newName);
+    m_methods.reindexName(id, newName);
 }
 
 void BehavioralFeature::referenceErased(ID id) {

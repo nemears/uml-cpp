@@ -117,10 +117,10 @@ void Port::referenceReindexed(ID oldID, ID newID) {
     m_provided.reindex(oldID, newID);
 }
 
-void Port::reindexName(std::string oldName, std::string newName) {
-    Property::reindexName(oldName, newName);
-    m_required.reindexName(oldName, newName);
-    m_provided.reindexName(oldName, newName);
+void Port::reindexName(ID id, std::string newName) {
+    Property::reindexName(id, newName);
+    m_required.reindexName(id, newName);
+    m_provided.reindexName(id, newName);
 }
 
 void Port::referenceErased(ID id) {

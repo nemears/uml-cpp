@@ -12,9 +12,9 @@ void TemplateSignature::referencingReleased(ID id) {
     m_parameters.release(id);
 }
 
-void TemplateSignature::reindexName(std::string oldName, std::string newName) {
-    Element::reindexName(oldName, newName);
-    m_parameters.reindexName(oldName, newName);
+void TemplateSignature::reindexName(ID id, std::string newName) {
+    Element::reindexName(id, newName);
+    m_parameters.reindexName(id, newName);
 }
 
 void TemplateSignature::referenceReindexed(ID oldID, ID newID) {

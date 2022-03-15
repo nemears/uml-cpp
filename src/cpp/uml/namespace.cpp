@@ -8,9 +8,9 @@ void Namespace::referenceReindexed(ID oldID, ID newID) {
     m_members.reindex(oldID, newID);
 }
 
-void Namespace::reindexName(std::string oldName, std::string newName) {
-    NamedElement::reindexName(oldName, newName);
-    m_members.reindexName(oldName, newName);
+void Namespace::reindexName(ID id, std::string newName) {
+    NamedElement::reindexName(id, newName);
+    m_members.reindexName(id, newName);
 }
 
 void Namespace::referencingReleased(ID id) {

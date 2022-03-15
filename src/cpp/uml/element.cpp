@@ -54,9 +54,9 @@ void Element::referenceReindexed(ID oldID, ID newID) {
     m_appliedStereotype->reindex(oldID, newID);
 }
 
-void Element::reindexName(std::string oldName, std::string newName) {
-    m_ownedElements->reindexName(oldName, newName);
-    m_owner->reindexName(oldName, newName);
+void Element::reindexName(ID id, std::string newName) {
+    m_ownedElements->reindexName(id, newName);
+    m_owner->reindexName(id, newName);
 }
 
 void Element::referencingReleased(ID id) {

@@ -20,9 +20,9 @@ void ValueSpecification::referenceReindexed(ID oldID, ID newID) {
     // TODO type
 }
 
-void ValueSpecification::reindexName(std::string oldName, std::string newName) {
-    PackageableElement::reindexName(oldName, newName);
-    TypedElement::reindexName(oldName, newName);
+void ValueSpecification::reindexName(ID id, std::string newName) {
+    PackageableElement::reindexName(id, newName);
+    TypedElement::reindexName(id, newName);
 }
 
 void ValueSpecification::restoreReference(Element* el) {

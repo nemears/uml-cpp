@@ -12,8 +12,8 @@ void ParameterableElement::referenceReindexed(ID oldID, ID newID) {
     m_templateParameter.reindex(oldID, newID);
 }
 
-void ParameterableElement::reindexName(std::string oldName, std::string newName) {
-    m_templateParameter.reindexName(oldName, newName);
+void ParameterableElement::reindexName(ID id, std::string newName) {
+    m_templateParameter.reindexName(id, newName);
 }
 
 void ParameterableElement::restoreReference(Element* el) {

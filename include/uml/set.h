@@ -1154,9 +1154,9 @@ namespace UML {
                     }
                 }
             };
-            bool reindexName(std::string oldName, std::string newName) {
+            bool reindexName(ID id, std::string newName) {
                 if (m_root) {
-                    SetNode* match = search(oldName, m_root);
+                    SetNode* match = search(id, m_root);
                     if (match) {
                         match->m_name = newName;
                         return true;

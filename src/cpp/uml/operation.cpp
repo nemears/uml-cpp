@@ -16,9 +16,9 @@ void Operation::referencingReleased(ID id) {
     ParameterableElement::referencingReleased(id);
 }
 
-void Operation::reindexName(std::string oldName, std::string newName) {
-    BehavioralFeature::reindexName(oldName, newName);
-    ParameterableElement::reindexName(oldName, newName);
+void Operation::reindexName(ID id, std::string newName) {
+    BehavioralFeature::reindexName(id, newName);
+    ParameterableElement::reindexName(id, newName);
 }
 
 void Operation::referenceReindexed(ID oldID, ID newID) {

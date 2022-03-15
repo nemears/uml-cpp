@@ -88,11 +88,11 @@ void Classifier::referenceReindexed(ID oldID, ID newID) {
     m_powerTypeExtent.reindex(oldID, newID);
 }
 
-void Classifier::reindexName(std::string oldName, std::string newName) {
-    Namespace::reindexName(oldName, newName);
-    PackageableElement::reindexName(oldName, newName);
-    m_generals.reindexName(oldName, newName);
-    m_powerTypeExtent.reindexName(oldName, newName);
+void Classifier::reindexName(ID id, std::string newName) {
+    Namespace::reindexName(id, newName);
+    PackageableElement::reindexName(id, newName);
+    m_generals.reindexName(id, newName);
+    m_powerTypeExtent.reindexName(id, newName);
 }
 
 void Classifier::restoreReferences() {

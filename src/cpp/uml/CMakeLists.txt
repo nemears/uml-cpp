@@ -11,6 +11,7 @@ set(umlSources  element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp names
                 profileApplication.cpp extension.cpp extensionEnd.cpp deployment.cpp deployedArtifact.cpp deploymentTarget.cpp
                 artifact.cpp manifestation.cpp generalizationSet.cpp connector.cpp connectorEnd.cpp port.cpp
                 interface.cpp interfaceRealization.cpp signal.cpp reception.cpp activity.cpp activityNode.cpp activityEdge.cpp
+                objectNode.cpp pin.cpp action.cpp inputPin.cpp outputPin.cpp controlFlow.cpp objectFlow.cpp
                 
                 # #parsers
                 parsers/parser.cpp parsers/emitterMetaData.cpp
@@ -18,8 +19,8 @@ set(umlSources  element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp names
                 #CMAKE option for set
                 PARENT_SCOPE)
 # add_library(Uml   
-#                 a objectNode.cpp  pin.cpp
-#                 action.cpp inputPin.cpp outputPin.cpp controlFlow.cpp objectFlow.cpp initialNode.cpp finalNode.cpp decisionNode.cpp
+#                 
+#                 initialNode.cpp finalNode.cpp decisionNode.cpp
 #                 joinNode.cpp forkNode.cpp mergeNode.cpp parameterNode.cpp callBehaviorAction.cpp  createObjectAction.cpp)
 if (UML_CLIENT_SERVER)
     

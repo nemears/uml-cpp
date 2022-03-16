@@ -1,22 +1,25 @@
 #include "uml/outputPin.h"
-#include "uml/sequence.h"
+#include "uml/activity.h"
+#include "uml/activityEdge.h"
+#include "uml/package.h"
+#include "uml/property.h"
+#include "uml/generalization.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
-using namespace std;
 using namespace UML;
 
-// void OutputPin::reindexName(string oldName, string newName) {
-//     if (!m_ownerID.isNull()) {
-//         if (getOwner()->isSubClassOf(ElementType::ACTION)) {
-//             dynamic_cast<Action*>(getOwner())->getOutputs().reindex(m_id, oldName, newName);
-//         }
-//     }
+OutputPin::OutputPin() : Element(ElementType::OUTPUT_PIN) {
 
-//     ActivityNode::reindexName(oldName, newName);
-// }
+}
 
-OutputPin::OutputPin() : Element(ElementType::OUTPUT_PIN) {}
+OutputPin::~OutputPin() {
 
-OutputPin::OutputPin(const OutputPin& rhs) : Element(rhs, ElementType::OUTPUT_PIN) {}
+}
 
 bool OutputPin::isSubClassOf(ElementType eType) const {
     bool ret = Pin::isSubClassOf(eType);

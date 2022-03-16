@@ -1,86 +1,38 @@
 #include "uml/action.h"
-#include "uml/inputPin.h"
-#include "uml/outputPin.h"
+#include "uml/activity.h"
+#include "uml/activityEdge.h"
+#include "uml/package.h"
+#include "uml/property.h"
+#include "uml/generalization.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
 
-void Action::AddInputFunctor::operator()(InputPin& el) const {
-    if (el.getOwner() != m_el) {
-        m_el->getOwnedElements().add(el);
-    }
-    updateCopiedSequenceAddedTo(el, &Action::getInputs);
-}
-
-void Action::RemoveInputFunctor::operator()(InputPin& el) const {
-    if (el.getOwner() == m_el) {
-        m_el->getOwnedElements().remove(el);
-    }
-    updateCopiedSequenceRemovedFrom(el, &Action::getInputs);
-}
-
-void Action::AddOutputFunctor::operator()(OutputPin& el) const {
-    if (el.getOwner() != m_el) {
-        m_el->getOwnedElements().add(el);
-    }
-    updateCopiedSequenceAddedTo(el, &Action::getOutputs);
-}
-
-void Action::RemoveOutputFunctor::operator()(OutputPin& el) const {
-    if (*el.getOwner() == *m_el) {
-        m_el->getOwnedElements().remove(el);
-    }
-    updateCopiedSequenceRemovedFrom(el, &Action::getOutputs);
-}
-
-void Action::referencingReleased(ID id) {
-    ActivityNode::referencingReleased(id);
-    m_inputs.elementReleased(id, &Action::getInputs);
-    m_outputs.elementReleased(id, &Action::getOutputs);
-}
-
-void Action::referenceReindexed(ID oldID, ID newID) {
-    ActivityNode::referenceReindexed(oldID, newID);
-    if (m_inputs.count(oldID)) {
-        m_inputs.reindex(oldID, newID, &Action::getInputs);
-    }
-    if (m_outputs.count(oldID)) {
-        m_outputs.reindex(oldID, newID, &Action::getOutputs);
-    }
+void Action::init() {
+    m_inputs.subsets(*m_ownedElements);
+    m_inputs.m_signature = &Action::getInputs;
+    m_outputs.subsets(*m_ownedElements);
+    m_outputs.m_signature = &Action::getOutputs;
 }
 
 Action::Action() : Element(ElementType::ACTION) {
-    m_inputs.addProcedures.push_back(new AddInputFunctor(this));
-    m_inputs.removeProcedures.push_back(new RemoveInputFunctor(this));
-    m_outputs.addProcedures.push_back(new AddOutputFunctor(this));
-    m_outputs.removeProcedures.push_back(new RemoveOutputFunctor(this));
-}
-
-Action::Action(const Action& rhs) : 
-ActivityNode(rhs),
-RedefinableElement(rhs),
-NamedElement(rhs),
-Element(rhs, ElementType::ACTION) {
-    m_inputs = rhs.m_inputs;
-    m_outputs = rhs.m_outputs;
-    m_inputs.removeProcedures.clear();
-    m_inputs.addProcedures.clear();
-    m_outputs.addProcedures.clear();
-    m_outputs.removeProcedures.clear();
-    m_inputs.addProcedures.push_back(new AddInputFunctor(this));
-    m_inputs.removeProcedures.push_back(new RemoveInputFunctor(this));
-    m_outputs.addProcedures.push_back(new AddOutputFunctor(this));
-    m_outputs.removeProcedures.push_back(new RemoveOutputFunctor(this));
+    init();
 }
 
 Action::~Action() {
     
 }
 
-Sequence<InputPin>& Action::getInputs() {
+Set<InputPin, Action>& Action::getInputs() {
     return m_inputs;
 }
 
-Sequence<OutputPin>& Action::getOutputs() {
+Set<OutputPin, Action>& Action::getOutputs() {
     return m_outputs;
 }
 

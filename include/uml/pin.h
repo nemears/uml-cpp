@@ -1,5 +1,5 @@
-#ifndef PIN_H
-#define PIN_H
+#ifndef _UML_PIN_H_
+#define _UML_PIN_H_
 
 #include "objectNode.h"
 #include "multiplicityElement.h"
@@ -10,13 +10,9 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
-            void restoreReferences() override {}; // TODO
-            void referenceErased(ID id) override {}; // TODO
             Pin();
         public:
-            Pin(const Pin& rhs);
+            virtual ~Pin();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PIN;

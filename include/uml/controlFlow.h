@@ -1,5 +1,5 @@
-#ifndef CONTROLFLOW_H
-#define CONTROLFLOW_H
+#ifndef _UML_CONTROL_FLOW_H_
+#define _UML_CONTROL_FLOW_H_
 
 #include "activityEdge.h"
 
@@ -11,7 +11,7 @@ namespace UML {
         protected:
             ControlFlow();
         public:
-            ControlFlow(const ControlFlow& rhs);
+            virtual ~ControlFlow();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CONTROL_FLOW;

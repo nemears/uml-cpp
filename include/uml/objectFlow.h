@@ -1,5 +1,5 @@
-#ifndef OBJECTFLOW_H
-#define OBJECTFLOW_H
+#ifndef _UML_OBJECT_FLOW_H_
+#define _UML_OBJECT_FLOW_H_
 
 #include "activityEdge.h"
 
@@ -11,7 +11,7 @@ namespace UML {
         protected:
             ObjectFlow();
         public:
-            ObjectFlow(const ObjectFlow& rhs);
+            virtual ~ObjectFlow();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::OBJECT_FLOW;

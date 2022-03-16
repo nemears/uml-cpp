@@ -6,6 +6,7 @@
  **/
 
 #include "uml/abstraction.h"
+#include "uml/action.h"
 #include "uml/activity.h"
 #include "uml/activityEdge.h"
 #include "uml/activityNode.h"
@@ -65,6 +66,7 @@
 
 namespace UML {
     typedef UmlPtr<PrimitiveType> PrimitiveTypePtr;
+    typedef UmlPtr<LiteralBool> LiteralBoolPtr;
 }
 
 #endif

@@ -1,6 +1,21 @@
 #include "uml/objectNode.h"
+#include "uml/activity.h"
+#include "uml/activityEdge.h"
+#include "uml/package.h"
+#include "uml/property.h"
+#include "uml/generalization.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/stereotype.h"
+#include "uml/interface.h"
+#include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
+
+Set<ValueSpecification, ObjectNode>& ObjectNode::getUpperBoundSingleton() {
+    return m_upperBound;
+}
 
 void ObjectNode::referencingReleased(ID id) {
     ActivityNode::referencingReleased(id);
@@ -12,22 +27,38 @@ void ObjectNode::referenceReindexed(ID oldID, ID newID) {
     TypedElement::referenceReindexed(oldID, newID);
 }
 
-ObjectNode::ObjectNode() : Element(ElementType::OBJECT_NODE) {
-    upperBound = 0;
+void ObjectNode::reindexName(ID id, std::string newName) {
+    ActivityNode::reindexName(id, newName);
+    TypedElement::reindexName(id, newName);
 }
 
-ObjectNode::ObjectNode(const ObjectNode& rhs) : Element(rhs, ElementType::OBJECT_NODE) {}
+void ObjectNode::init() {
+    m_upperBound.subsets(*m_ownedElements);
+    m_upperBound.m_signature = &ObjectNode::getUpperBoundSingleton;
+}
 
-ValueSpecification* ObjectNode::getUpperBound() {
-    return upperBound;
+ObjectNode::ObjectNode() : Element(ElementType::OBJECT_NODE) {
+    init();
+}
+
+ObjectNode::~ObjectNode() {
+    
+}
+
+ValueSpecificationPtr ObjectNode::getUpperBound() const {
+    return m_upperBound.get();
 }
 
 void ObjectNode::setUpperBound(ValueSpecification* upperBound) {
-    this->upperBound = upperBound;
+    m_upperBound.set(upperBound);
 }
 
-bool ObjectNode::isObjectNode() {
-    return true;
+void ObjectNode::setUpperBound(ValueSpecification& upperBound) {
+    m_upperBound.set(upperBound);
+}
+
+void ObjectNode::setUpperBound(ID id) {
+    m_upperBound.set(id);
 }
 
 bool ObjectNode::isSubClassOf(ElementType eType) const {

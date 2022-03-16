@@ -1,7 +1,9 @@
-#ifndef ACTION_H
-#define ACTION_H
+#ifndef _UML_ACTION_H_
+#define _UML_ACTION_H_
 
 #include "activityNode.h"
+#include "inputPin.h"
+#include "outputPin.h"
 
 namespace UML {
 
@@ -13,36 +15,14 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            Sequence<InputPin> m_inputs = Sequence<InputPin>(this);
-            Sequence<OutputPin> m_outputs = Sequence<OutputPin>(this);
-            class AddInputFunctor : public TemplateAbstractSequenceFunctor<InputPin,Action> {
-                public:
-                    AddInputFunctor(Action* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(InputPin& el) const override;
-            };
-            class RemoveInputFunctor : public TemplateAbstractSequenceFunctor<InputPin, Action> {
-                public:
-                    RemoveInputFunctor(Action* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(InputPin& el) const override;
-            };
-            class AddOutputFunctor : public TemplateAbstractSequenceFunctor<OutputPin,Action> {
-                public:
-                    AddOutputFunctor(Action* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(OutputPin& el) const override;
-            };
-            class RemoveOutputFunctor : public TemplateAbstractSequenceFunctor<OutputPin, Action> {
-                public:
-                    RemoveOutputFunctor(Action* me) : TemplateAbstractSequenceFunctor(me) {};
-                    void operator()(OutputPin& el) const override;
-            };
-            void referencingReleased(ID id) override;
-            void referenceReindexed(ID oldID, ID newID) override;
+            Set<InputPin, Action> m_inputs = Set<InputPin, Action>(this);
+            Set<OutputPin, Action> m_outputs = Set<OutputPin, Action>(this);
+            void init();
             Action();
         public:
-            Action(const Action& rhs);
             virtual ~Action();
-            Sequence<InputPin>& getInputs();
-            Sequence<OutputPin>& getOutputs();
+            Set<InputPin, Action>& getInputs();
+            Set<OutputPin, Action>& getOutputs();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ACTION;

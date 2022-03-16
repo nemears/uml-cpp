@@ -1,5 +1,5 @@
-#ifndef OUTPUTPIN_H
-#define OUTPUTPIN_H
+#ifndef _UML_OUTPUT_PIN_H_
+#define _UML_OUTPUT_PIN_H_
 
 #include "pin.h"
 #include "action.h"
@@ -10,10 +10,9 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            // void reindexName(std::string oldName, std::string newName) override;
             OutputPin();
         public:
-            OutputPin(const OutputPin& rhs);
+            virtual ~OutputPin();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::OUTPUT_PIN;

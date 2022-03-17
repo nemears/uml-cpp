@@ -1,17 +1,17 @@
-#ifndef FINALNODE_H
-#define FINALNODE_H
+#ifndef _UML_FINAL_NODE_H_
+#define _UML_FINAL_NODE_H_
 
-#include "activityNode.h"
+#include "controlNode.h"
 
 namespace UML {
-    class FinalNode : public ActivityNode {
+    class FinalNode : public ControlNode {
         
         friend class UmlManager;
 
         protected:
             FinalNode();
         public:
-            FinalNode(const FinalNode& rhs);
+            ~FinalNode();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::FINAL_NODE;

@@ -1,17 +1,17 @@
-#ifndef INITIALNODE_H
-#define INITIALNODE_H
+#ifndef _UML_INITIAL_NODE_H_
+#define _UML_INITIAL_NODE_H_
 
-#include "activityNode.h"
+#include "controlNode.h"
 
 namespace UML {
-    class InitialNode : public ActivityNode {
+    class InitialNode : public ControlNode {
 
         friend class UmlManager;
 
         protected:
             InitialNode();
         public:
-            InitialNode(const InitialNode& rhs);
+            ~InitialNode();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::INITIAL_NODE;

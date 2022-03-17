@@ -33,6 +33,7 @@ namespace UML {
         CONNECTOR,
         CONNECTOR_END,
         CONTROL_FLOW,
+        CONTROL_NODE,
         CREATE_OBJECT_ACTION,
         DATA_TYPE,
         DECISION_NODE,

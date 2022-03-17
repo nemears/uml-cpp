@@ -1,17 +1,17 @@
-#ifndef MERGENODE_H
-#define MERGENODE_H
+#ifndef _UML_MERGE_NODE_H_
+#define _UML_MERGE_NODE_H_
 
-#include "activityNode.h"
+#include "controlNode.h"
 
 namespace UML {
-    class MergeNode : public ActivityNode {
+    class MergeNode : public ControlNode {
 
         friend class UmlManager;
 
         protected:
             MergeNode();
         public:
-            MergeNode(const MergeNode& rhs);
+            ~MergeNode();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::MERGE_NODE;

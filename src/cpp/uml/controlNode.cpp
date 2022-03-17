@@ -1,4 +1,4 @@
-#include "uml/initialNode.h"
+#include "uml/controlNode.h"
 #include "uml/activity.h"
 #include "uml/activityEdge.h"
 #include "uml/package.h"
@@ -13,19 +13,19 @@
 
 using namespace UML;
 
-InitialNode::InitialNode() : Element(ElementType::INITIAL_NODE) {
+ControlNode::ControlNode() : Element(ElementType::CONTROL_NODE) {
 
 }
 
-InitialNode::~InitialNode() {
+ControlNode::~ControlNode() {
 
 }
 
-bool InitialNode::isSubClassOf(ElementType eType) const {
-    bool ret = ControlNode::isSubClassOf(eType);
+bool ControlNode::isSubClassOf(ElementType eType) const {
+    bool ret = ActivityNode::isSubClassOf(eType);
 
     if (!ret) {
-        ret = eType == ElementType::INITIAL_NODE;
+        ret = eType == ElementType::CONTROL_NODE;
     }
 
     return ret;

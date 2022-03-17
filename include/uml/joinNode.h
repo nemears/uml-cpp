@@ -1,17 +1,28 @@
-#ifndef JOINNODE_H
-#define JOINNODE_H
+#ifndef _UML_JOIN_NODE_H_
+#define _UML_JOIN_NODE_H_
 
-#include "activityNode.h"
+#include "controlNode.h"
 
 namespace UML {
-    class JoinNode : public ActivityNode {
+
+    class ValueSpecification;
+    typedef UmlPtr<ValueSpecification> ValueSpecificationPtr;
+
+    class JoinNode : public ControlNode {
 
         friend class UmlManager;
 
         protected:
+            Singleton<ValueSpecification, JoinNode> m_joinSpec = Singleton<ValueSpecification, JoinNode>(this);
+            Set<ValueSpecification, JoinNode>& getJoinSpecSingleton();
+            void init();
             JoinNode();
         public:
-            JoinNode(const JoinNode& rhs);
+            ~JoinNode();
+            ValueSpecificationPtr getJoinSpec() const;
+            void setJoinSpec(ValueSpecification* joinSpec);
+            void setJoinSpec(ValueSpecification& joinSpec);
+            void setJoinSpec(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::JOIN_NODE;

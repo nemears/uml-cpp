@@ -211,6 +211,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::CONTROL_FLOW : {
             return "CONTROL_FLOW";
         }
+        case ElementType::CONTROL_NODE : {
+            return "CONTROL_NODE";
+        }
         case ElementType::CREATE_OBJECT_ACTION : {
             return "CREATE_OBJECT_ACTION";
         }

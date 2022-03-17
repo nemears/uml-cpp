@@ -29,6 +29,10 @@ Set<ValueSpecification, ActivityEdge>& ActivityEdge::getGuardSingleton() {
     return m_guard;
 }
 
+Set<ValueSpecification, ActivityEdge>& ActivityEdge::getWeightSingleton() {
+    return m_weight;
+}
+
 void ActivityEdge::referencingReleased(ID id) {
     NamedElement::referencingReleased(id);
     RedefinableElement::referencingReleased(id);
@@ -64,6 +68,8 @@ void ActivityEdge::init() {
     m_target.m_signature = &ActivityEdge::getTargetSingleton;
     m_guard.subsets(*m_ownedElements);
     m_guard.m_signature = &ActivityEdge::getGuardSingleton;
+    m_weight.subsets(*m_ownedElements);
+    m_weight.m_signature = &ActivityEdge::getWeightSingleton;
 }
 
 ActivityEdge::ActivityEdge() : Element(ElementType::ACTIVITY_EDGE) {
@@ -86,6 +92,14 @@ void ActivityEdge::setActivity(Activity& activity) {
     m_activity.set(activity);
 }
 
+void ActivityEdge::setActivity(ActivityPtr activity) {
+    m_activity.set(activity);
+}
+
+void ActivityEdge::setActivity(ID id) {
+    m_activity.set(id);
+}
+
 ActivityNodePtr ActivityEdge::getSource() const {
     return m_source.get();
 }
@@ -97,6 +111,15 @@ void ActivityEdge::setSource(ActivityNode* source) {
 void ActivityEdge::setSource(ActivityNode& source) {
     m_source.set(source);
 }
+
+void ActivityEdge::setSource(ActivityNodePtr source) {
+    m_source.set(source);
+}
+
+void ActivityEdge::setSource(ID id) {
+    m_source.set(id);
+}
+
 
 ActivityNodePtr ActivityEdge::getTarget() const {
     return m_target.get();
@@ -110,7 +133,15 @@ void ActivityEdge::setTarget(ActivityNode& target) {
     m_target.set(target);
 }
 
-ValueSpecificationPtr ActivityEdge::getGuard() {
+void ActivityEdge::setTarget(ActivityNodePtr target) {
+    m_target.set(target);
+}
+
+void ActivityEdge::setTarget(ID id) {
+    m_target.set(id);
+}
+
+ValueSpecificationPtr ActivityEdge::getGuard() const {
     return m_guard.get();
 }
 
@@ -120,6 +151,34 @@ void ActivityEdge::setGuard(ValueSpecification* guard) {
 
 void ActivityEdge::setGuard(ValueSpecification& guard) {
     m_guard.set(guard);
+}
+
+void ActivityEdge::setGuard(ValueSpecificationPtr guard) {
+    m_guard.set(guard);
+}
+
+void ActivityEdge::setGuard(ID id) {
+    m_guard.set(id);
+}
+
+ValueSpecificationPtr ActivityEdge::getWeight() const {
+    return m_weight.get();
+}
+
+void ActivityEdge::setWeight(ValueSpecification* weight) {
+    m_weight.set(weight);
+}
+
+void ActivityEdge::setWeight(ValueSpecification& weight) {
+    m_weight.set(weight);
+}
+
+void ActivityEdge::setWeight(ValueSpecificationPtr weight) {
+    m_weight.set(weight);
+}
+
+void ActivityEdge::setWeight(ID id) {
+    m_weight.set(id);
 }
 
 bool ActivityEdge::isSubClassOf(ElementType eType) const {

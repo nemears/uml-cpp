@@ -1,5 +1,5 @@
-#ifndef UML_UML_STABLE_H
-#define UML_UML_STABLE_H
+#ifndef _UML_UML_STABLE_H_
+#define _UML_UML_STABLE_H_
 
 /**
  * Comprehensive include of all stable non-abstract parts of the api
@@ -9,14 +9,18 @@
 #include "uml/action.h"
 #include "uml/activity.h"
 #include "uml/activityEdge.h"
+#include "uml/activityFinalNode.h"
 #include "uml/activityNode.h"
+#include "uml/activityParameterNode.h"
 #include "uml/behavior.h"
+#include "uml/centralBufferNode.h"
 #include "uml/class.h"
 #include "uml/comment.h"
 #include "uml/artifact.h"
 #include "uml/association.h"
 #include "uml/connector.h"
 #include "uml/connectorEnd.h"
+#include "uml/dataStoreNode.h"
 #include "uml/dataType.h"
 #include "uml/dependency.h"
 #include "uml/deployment.h"
@@ -24,6 +28,7 @@
 #include "uml/enumerationLiteral.h"
 #include "uml/expression.h"
 #include "uml/extension.h"
+#include "uml/flowFinalNode.h"
 #include "uml/extensionEnd.h"
 #include "uml/generalization.h"
 #include "uml/generalizationSet.h"

@@ -169,8 +169,14 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::ACTIVITY_EDGE : {
             return "ACTIVITY_EDGE";
         }
+        case ElementType::ACTIVITY_FINAL_NODE : {
+            return "ACTIVITY_FINAL_NODE";
+        }
         case ElementType::ACTIVITY_NODE : {
             return "ACTIVITY_NODE";
+        }
+        case ElementType::ACTIVITY_PARAMETER_NODE : {
+            return "ACTIVITY_PARAMETER_NODE";
         }
         case ElementType::ARTIFACT : {
             return "ARTIFACT";
@@ -189,6 +195,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         }
         case ElementType::CALL_BEHAVIOR_ACTION : {
             return "CALL_BEHAVIOR_ACTION";
+        }
+        case ElementType::CENTRAL_BUFFER_NODE : {
+            return "CENTRAL_BUFFER_NODE";
         }
         case ElementType::CLASS : {
             return "CLASS";
@@ -216,6 +225,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         }
         case ElementType::CREATE_OBJECT_ACTION : {
             return "CREATE_OBJECT_ACTION";
+        }
+        case ElementType::DATA_STORE_NODE : {
+            return "DATA_STORE_NODE";
         }
         case ElementType::DATA_TYPE : {
             return "DATA_TYPE";
@@ -264,6 +276,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         }
         case ElementType::FINAL_NODE : {
             return "FINAL_NODE";
+        }
+        case ElementType::FLOW_FINAL_NODE : {
+            return "FLOW_FINAL_NODE";
         }
         case ElementType::FORK_NODE : {
             return "FORK_NODE";
@@ -363,9 +378,6 @@ std::string Element::elementTypeToString(ElementType eType) {
         }
         case ElementType::PARAMETERABLE_ELEMENT : {
             return "PARAMETERABLE_ELEMENT";
-        }
-        case ElementType::PARAMETER_NODE : {
-            return "PARAMETER_NODE";
         }
         case ElementType::PIN : {
             return "PIN";

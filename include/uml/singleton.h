@@ -62,6 +62,15 @@ namespace UML {
                 }
                 this->Set<T,U>::add(id);
             };
+            void set(UmlPtr<T> ptr) {
+                if (ptr) {
+                    if (ptr.loaded()) {
+                        set(*ptr);
+                    } else {
+                        set(ptr.id());
+                    }
+                }
+            };
     };
 }
 

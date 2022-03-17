@@ -33,6 +33,8 @@ namespace UML {
             ActivityPtr getActivity() const;
             void setActivity(Activity* activity);
             void setActivity(Activity& activity);
+            void setActivity(ActivityPtr activity);
+            void setActivity(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ACTIVITY_NODE;

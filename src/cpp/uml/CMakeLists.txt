@@ -12,7 +12,8 @@ set(umlSources  element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp names
                 artifact.cpp manifestation.cpp generalizationSet.cpp connector.cpp connectorEnd.cpp port.cpp
                 interface.cpp interfaceRealization.cpp signal.cpp reception.cpp activity.cpp activityNode.cpp activityEdge.cpp
                 objectNode.cpp pin.cpp action.cpp inputPin.cpp outputPin.cpp controlFlow.cpp objectFlow.cpp controlNode.cpp
-                initialNode.cpp finalNode.cpp decisionNode.cpp joinNode.cpp forkNode.cpp mergeNode.cpp
+                initialNode.cpp finalNode.cpp decisionNode.cpp joinNode.cpp forkNode.cpp mergeNode.cpp activityFinalNode.cpp
+                flowFinalNode.cpp activityParameterNode.cpp centralBufferNode.cpp dataStoreNode.cpp
 
                 #parsers
                 parsers/parser.cpp parsers/emitterMetaData.cpp
@@ -22,7 +23,7 @@ set(umlSources  element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp names
 # add_library(Uml   
 #                 
 #                 
-#                  parameterNode.cpp callBehaviorAction.cpp  createObjectAction.cpp)
+#                  callBehaviorAction.cpp  createObjectAction.cpp)
 if (UML_CLIENT_SERVER)
     
 endif()

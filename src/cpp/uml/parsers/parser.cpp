@@ -278,6 +278,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::ACTIVITY_EDGE;
     } else if (eType.compare("ACTIVITY_NODE") == 0) {
         return ElementType::ACTIVITY_NODE;
+    } else if (eType.compare("ACTIVITY_PARAMETER_NODE") == 0) {
+        return ElementType::ACTIVITY_PARAMETER_NODE;
     } else if (eType.compare("ARTIFACT") == 0) {
         return ElementType::ARTIFACT;
     } else if (eType.compare("ASSOCIATION") == 0) {
@@ -306,6 +308,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::CONTROL_FLOW;
     } else if (eType.compare("CREATE_OBJECT_ACTION") == 0) {
         return ElementType::CREATE_OBJECT_ACTION;
+    } else if (eType.compare("DATA_STORE_NODE") == 0) {
+        return ElementType::DATA_STORE_NODE;
     } else if (eType.compare("DATA_TYPE") == 0) {
         return ElementType::DATA_TYPE;
     } else if (eType.compare("DECISION_NODE") == 0) {
@@ -402,8 +406,6 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::PARAMETER;
     } else if (eType.compare("PARAMETERABLE_ELEMENT") == 0) {
         return ElementType::PARAMETERABLE_ELEMENT;
-    } else if (eType.compare("PARAMETER_NODE") == 0) {
-        return ElementType::PARAMETER_NODE;
     } else if (eType.compare("PIN") == 0) {
         return ElementType::PIN;
     } else if (eType.compare("PORT") == 0) {

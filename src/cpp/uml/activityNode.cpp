@@ -83,6 +83,14 @@ void ActivityNode::setActivity(Activity& activity) {
     m_activity.set(activity);
 }
 
+void ActivityNode::setActivity(ActivityPtr activity) {
+    m_activity.set(activity);
+}
+
+void ActivityNode::setActivity(ID id) {
+    m_activity.set(id);
+}
+
 bool ActivityNode::isSubClassOf(ElementType eType) const {
     bool ret = RedefinableElement::isSubClassOf(eType);
 

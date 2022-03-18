@@ -26,6 +26,8 @@
 #include "uml/deployment.h"
 #include "uml/enumeration.h"
 #include "uml/enumerationLiteral.h"
+#include "uml/exceptionHandler.h"
+#include "uml/executableNode.h"
 #include "uml/expression.h"
 #include "uml/extension.h"
 #include "uml/flowFinalNode.h"

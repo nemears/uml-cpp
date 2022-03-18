@@ -333,6 +333,8 @@ namespace UML {
     class JoinNode;
     class ObjectFlow;
     class ActivityParameterNode;
+    class ExceptionHandler;
+    class ExecutableNode;
 
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
@@ -417,6 +419,8 @@ namespace UML {
         friend class JoinNode;
         friend class ObjectFlow;
         friend class ActivityParameterNode;
+        friend class ExceptionHandler;
+        friend class ExecutableNode;
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
         friend void Parsers::setOwner(Element& el, ID id);

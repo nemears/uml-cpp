@@ -262,6 +262,12 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::ENUMERATION_LITERAL : {
             return "ENUMERATION_LITERAL";
         }
+        case ElementType::EXCEPTION_HANDLER : {
+            return "EXCEPTION_HANDLER";
+        }
+        case ElementType::EXECUTABLE_NODE : {
+            return "EXECUTABLE_NODE";
+        }
         case ElementType::EXPRESSION : {
             return "EXPRESSION";
         }

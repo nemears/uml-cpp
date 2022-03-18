@@ -330,6 +330,10 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::ENUMERATION;
     } else if (eType.compare("ENUMERATION_LITERAL") == 0) {
         return ElementType::ENUMERATION_LITERAL;
+    } else if (eType.compare("EXCEPTION_HANDLER") == 0) {
+        return ElementType::EXCEPTION_HANDLER;
+    } else if (eType.compare("EXECUTABLE_NODE") == 0) {
+        return ElementType::EXECUTABLE_NODE;
     } else if (eType.compare("EXPRESSION") == 0) {
         return ElementType::EXPRESSION;
     } else if (eType.compare("EXTENSION") == 0) {

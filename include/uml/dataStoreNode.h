@@ -5,6 +5,9 @@
 
 namespace UML {
     class DataStoreNode : public CentralBufferNode {
+
+        friend class UmlManager;
+
         protected:
             DataStoreNode();
         public:

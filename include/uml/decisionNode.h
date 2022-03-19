@@ -11,6 +11,9 @@ namespace UML {
     typedef UmlPtr<Behavior> BehaviorPtr;
 
     class DecisionNode : public ControlNode {
+
+        friend class UmlManager;
+
         protected:
             Singleton<ObjectFlow, DecisionNode> m_decisionInputFlow = Singleton<ObjectFlow, DecisionNode>(this);
             Singleton<Behavior, DecisionNode> m_decisionInput = Singleton<Behavior, DecisionNode>(this);

@@ -161,8 +161,8 @@ void parseSequenceDefinitions(YAML::Node node, ParserMetaData& data, string key,
     }
 }
 
-template <class T = Element> 
-T& parseDefinition(YAML::Node node, ParserMetaData& data, string key, void (*parser)(YAML::Node, T&, ParserMetaData&)) {
+template <class T = Element, class V = T> 
+T& parseDefinition(YAML::Node node, ParserMetaData& data, string key, void (*parser)(YAML::Node, V&, ParserMetaData&)) {
     if (node[key].IsMap()) {
         T& ret = *data.m_manager->create<T>();
         parser(node[key], ret, data);
@@ -654,6 +654,18 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
 ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
     ElementPtr ret(0);
 
+    if (node["activity"]) {
+        ret = &parseDefinition<Activity>(node, data, "activity", parseActivity);
+    }
+
+    if (node["activityFinalNode"]) {
+        ret = &parseDefinition<ActivityFinalNode>(node, data, "activityFinalNode", parseActivityNode);
+    }
+
+    if (node["activityParameterNode"]) {
+        ret = &parseDefinition<ActivityParameterNode>(node, data, "activityParameterNode", parseActivityParameterNode);
+    }
+
     if (node["association"]) {
         Association& association = *data.m_manager->create<Association>();
         parseAssociation(node["association"], association, data);
@@ -666,6 +678,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
             parseArtifact(node["artifact"], artifact, data);
             ret = &artifact;
         }
+    }
+
+    if (node["centralBufferNode"]) {
+        ret = &parseDefinition<CentralBufferNode>(node, data, "centralBufferNode", parseObjectNode);
     }
 
     if (node["class"]) {
@@ -685,11 +701,19 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["connector"]) {
-        ret = &parseDefinition(node, data, "connector", parseConnector);
+        ret = &parseDefinition<Connector>(node, data, "connector", parseConnector);
     }
 
     if (node["connectorEnd"]) {
-        ret = &parseDefinition(node, data, "connectorEnd", parseConnectorEnd);
+        ret = &parseDefinition<ConnectorEnd>(node, data, "connectorEnd", parseConnectorEnd);
+    }
+
+    if (node["controlFlow"]) {
+        ret = &parseDefinition<ControlFlow>(node, data, "controlFlow", parseActivityEdge);
+    }
+
+    if (node["dataStoreNode"]) {
+        ret = &parseDefinition<DataStoreNode>(node, data, "dataStoreNode", parseObjectNode);
     }
 
     if (node["dataType"]) {
@@ -698,6 +722,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
             parseDataType(node["dataType"], dataType, data);
             ret = &dataType;
         }
+    }
+
+    if (node["decisionNode"]) {
+        ret = &parseDefinition<DecisionNode>(node, data, "decisionNode", parseDecisionNode);
     }
 
     if (node["dependency"]) {
@@ -726,6 +754,14 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &enumerationLiteral;
     }
 
+    if (node["exceptionHandler"]) {
+        ret = &parseDefinition<ExceptionHandler>(node, data, "exceptionHandler", parseExceptionHandler);
+    }
+    
+    if (node["executableNode"]) {
+        ret = &parseDefinition<ExecutableNode>(node, data, "executableNode", parseExecutableNode);
+    }
+
     if (node["expression"]) {
         if (node["expression"].IsMap()) {
             Expression& exp = *data.m_manager->create<Expression>();
@@ -748,6 +784,14 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &extensionEnd;
     }
 
+    if (node["flowFinalNode"]) {
+        ret = &parseDefinition<FlowFinalNode>(node, data, "flowFinalNode", parseActivityNode);
+    }
+
+    if (node["forkNode"]) {
+        ret = &parseDefinition<ForkNode>(node, data, "forkNode", parseActivityNode);
+    }
+
     if (node["generalization"]) {
         Generalization& generalization = *data.m_manager->create<Generalization>();
         parseGeneralization(node["generalization"], generalization, data);
@@ -758,6 +802,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
         GeneralizationSet& generalizationSet = *data.m_manager->create<GeneralizationSet>();
         parseGeneralizationSet(node["generalizationSet"], generalizationSet, data);
         ret = &generalizationSet;
+    }
+
+    if (node["initialNode"]) {
+        ret = &parseDefinition<InitialNode>(node, data, "initialNode", parseActivityNode);
     }
 
     if (node["instanceSpecification"]) {
@@ -774,12 +822,16 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
 
     if (node["interface"]) {
         if (node["interface"].IsMap()) {
-            ret = &parseDefinition(node, data, "interface", parseInterface);
+            ret = &parseDefinition<Interface>(node, data, "interface", parseInterface);
         }
     }
 
     if (node["interfaceRealization"]) {
-        ret = &parseDefinition(node, data, "interfaceRealization", parseInterfaceRealization);
+        ret = &parseDefinition<InterfaceRealization>(node, data, "interfaceRealization", parseInterfaceRealization);
+    }
+
+    if (node["joinNode"]) {
+        ret = &parseDefinition<JoinNode>(node, data, "joinNode", parseJoinNode);
     }
 
     if (node["literalBool"]) {
@@ -824,10 +876,18 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &manifestation;
     }
 
+    if (node["mergeNode"]) {
+        ret = &parseDefinition<MergeNode>(node, data, "mergeNode", parseActivityNode);
+    }
+
     if (node["model"]) {
         Model& model = *data.m_manager->create<Model>();
         parsePackage(node["model"], model, data);
         ret = &model;
+    }
+
+    if (node["objectFlow"]) {
+        ret = &parseDefinition<ObjectFlow>(node, data, "objectFlow", parseObjectFlow);
     }
 
     if (node["opaqueBehavior"]) {
@@ -863,7 +923,7 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["port"]) {
-        ret = & parseDefinition(node, data, "port", parsePort);
+        ret = & parseDefinition<Port>(node, data, "port", parsePort);
     }
 
     if (node["primitiveType"]) {
@@ -988,6 +1048,17 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     }
 }
 
+template <class T = Element, class V = T>
+void emitDefinition(YAML::Emitter& emitter, EmitterMetaData& data, std::string name, V& el, void (*emitSig)(YAML::Emitter&, T&, EmitterMetaData&)) {
+    if (V::elementType() != T::elementType()) {
+        emitElementDefenition(emitter, V::elementType(), name, el, data);
+        (*emitSig)(emitter, el, data);
+        emitElementDefinitionEnd(emitter, V::elementType(), el);
+    } else {
+        (*emitSig)(emitter, el data);
+    }
+}
+
 void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     emitter << YAML::BeginMap;
     emitScope(emitter, el, data);
@@ -998,12 +1069,31 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitElementDefenitionEnd(emitter, ElementType::ABSTRACTION, el);
             break;
         }
+        case ElementType::ACTIVITY : {
+            emitActivity(emitter, el.as<Activity>(), data);
+            break;
+        }
+        case ElementType::ACTIVITY_FINAL_NODE : {
+            emitElementDefenition(emitter, ElementType::ACTIVITY_FINAL_NODE, "activityFinalNode", el, data);
+            emitActivityNode(emitter, el.as<ActivityNode>(), data);
+            break;
+        }
+        case ElementType::ACTIVITY_PARAMETER_NODE : {
+            emitActivityParameterNode(emitter, el.as<ActivityParameterNode>(), data);
+            break;
+        }
         case ElementType::ARTIFACT : {
             emitArtifact(emitter, el.as<Artifact>(), data);
             break;
         }
         case ElementType::ASSOCIATION : {
             emitAssociation(emitter, dynamic_cast<Association&>(el), data);
+            break;
+        }
+        case ElementType::CENTRAL_BUFFER_NODE : {
+            emitElementDefenition(emitter, ElementType::CENTRAL_BUFFER_NODE, "centralBufferNode", el.as<CentralBufferNode>(), data);
+            emitObjectNode(emitter, el.as<CentralBufferNode>(), data);
+            emitElementDefenitionEnd(emitter, ElementType::CENTRAL_BUFFER_NODE, el.as<CentralBufferNode>());
             break;
         }
         case ElementType::CLASS : {
@@ -1023,8 +1113,24 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitConnectorEnd(emitter, el.as<ConnectorEnd>(), data);
             break;
         }
+        case ElementType::CONTROL_FLOW : {
+            emitElementDefenition(emitter, ElementType::CONTROL_FLOW, "controlFlow", el, data);
+            emitActivityEdge(emitter, el.as<ControlFlow>(), data);
+            emitElementDefenitionEnd(emitter, ElementType::CONTROL_FLOW, el);
+            break;
+        }
+        case ElementType::DATA_STORE_NODE : {
+            emitElementDefenition(emitter, ElementType::DATA_STORE_NODE, "dataStoreNode", el, data);
+            emitObjectNode(emitter, el.as<ObjectNode>(), data);
+            emitElementDefenitionEnd(emitter, ElementType::DATA_STORE_NODE, el);
+            break;
+        }
         case ElementType::DATA_TYPE : {
             emitDataType(emitter, dynamic_cast<DataType&>(el), data);
+            break;
+        }
+        case ElementType::DECISION_NODE : {
+            emitDecisionNode(emitter, el.as<DecisionNode>(), data);
             break;
         }
         case ElementType::DEPENDENCY : {
@@ -1043,6 +1149,14 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitEnumerationLiteral(emitter, el.as<EnumerationLiteral>(), data);
             break;
         }
+        case ElementType::EXCEPTION_HANDLER : {
+            emitExceptionHandler(emitter, el.as<ExceptionHandler>(), data);
+            break;
+        }
+        case ElementType::EXECUTABLE_NODE : {
+            emitExecutableNode(emitter, el.as<ExecutableNode>(), data);
+            break;
+        }
         case ElementType::EXPRESSION : {
             emitExpression(emitter, dynamic_cast<Expression&>(el), data);
             break;
@@ -1057,12 +1171,30 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitElementDefenitionEnd(emitter, ElementType::EXTENSION_END, el);
             break;
         }
+        case ElementType::FLOW_FINAL_NODE : {
+            emitElementDefenition(emitter, ElementType::FLOW_FINAL_NODE, "flowFinalNode", el, data);
+            emitActivityNode(emitter, el.as<ActivityNode>(), data);
+            emitElementDefenitionEnd(emitter, ElementType::FLOW_FINAL_NODE, el);
+            break;
+        }
+        case ElementType::FORK_NODE : {
+            emitElementDefenition(emitter, ElementType::FORK_NODE, "forkNode", el, data);
+            emitActivityNode(emitter, el.as<ActivityNode>(), data);
+            emitElementDefenitionEnd(emitter, ElementType::FORK_NODE, el);
+            break;
+        }
         case ElementType::GENERALIZATION : {
             emitGeneralization(emitter, el.as<Generalization>(), data);
             break;
         }
         case ElementType::GENERALIZATION_SET : {
             emitGeneralizationSet(emitter, el.as<GeneralizationSet>(), data);
+            break;
+        }
+        case ElementType::INITIAL_NODE : {
+            emitElementDefenition(emitter, ElementType::INITIAL_NODE, "initialNode", el, data);
+            emitActivityNode(emitter, el.as<ActivityNode>(), data);
+            emitElementDefenitionEnd(emitter, ElementType::INITIAL_NODE, el);
             break;
         }
         case ElementType::INSTANCE_SPECIFICATION : {
@@ -1081,6 +1213,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         }
         case ElementType::INTERFACE_REALIZATION : {
             emitInterfaceRealization(emitter, el.as<InterfaceRealization>(), data);
+            break;
+        }
+        case ElementType::JOIN_NODE : {
+            emitJoinNode(emitter, el.as<JoinNode>(), data);
             break;
         }
         case ElementType::LITERAL_BOOL : {
@@ -1113,8 +1249,18 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitManifestation(emitter, el.as<Manifestation>(), data);
             break;
         }
+        case ElementType::MERGE_NODE : {
+            emitElementDefenition(emitter, ElementType::MERGE_NODE, "mergeNode", el, data);
+            emitActivityNode(emitter, el.as<ActivityNode>(), data);
+            emitElementDefenitionEnd(emitter, ElementType::MERGE_NODE, el);
+            break;
+        }
         case ElementType::MODEL : {
             emitModel(emitter, dynamic_cast<Model&>(el), data);
+            break;
+        }
+        case ElementType::OBJECT_FLOW : {
+            emitObjectFlow(emitter, el.as<ObjectFlow>(), data);
             break;
         }
         case ElementType::OPAQUE_BEHAVIOR : {
@@ -1377,7 +1523,8 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     }
 }
 
-template <class T = Element, class U = Element, class S = Set<T,U>> void emitSequence(YAML::Emitter& emitter, string sequenceName, EmitterMetaData& data, U& el, S& (U::* sequenceMethod)()) {
+template <class T = Element, class U = Element, class S = Set<T,U>> 
+void emitSequence(YAML::Emitter& emitter, string sequenceName, EmitterMetaData& data, U& el, S& (U::* sequenceMethod)()) {
     if (!(el.*sequenceMethod)().empty()) {
         emitter << YAML::Key << sequenceName << YAML::Value << YAML::BeginSeq;
         if (data.m_strategy == EmitterStrategy::WHOLE) {
@@ -1390,6 +1537,29 @@ template <class T = Element, class U = Element, class S = Set<T,U>> void emitSeq
             }
         }
         emitter << YAML::EndSeq;
+    }
+}
+
+template<class T = Element, class U =  Element, class S = Set<T,U>>
+void emitSequenceReferences(YAML::Emitter& emitter, std::string sequenceName, EmitterMetaData& data, U& el, S& (U::* sequenceMethod)()) {
+    if (!(el.*sequenceMethod)().empty()) {
+        emitter << YAML::Key << sequenceName << YAML::Value << YAML::BeginSeq;
+        for (ID id : (el.*sequenceMethod)().ids()) {
+            emitter << YAML::Value << id.string();
+        }
+        emitter << YAML::EndSeq;
+    }
+}
+
+template<class T = Element, class U = Element>
+void emitSingletonDefinition(YAML::Emitter& emitter, std::string singletonName, EmitterMetaData& data, U& el, UmlPtr<T> (U::* accessor)() const) {
+    if ((el.*accessor)()) {
+        emitter << YAML::Key << singletonName << YAML::Value;
+        if (data.m_strategy == EmitterStrategy::WHOLE) {
+            emit(emitter, *(el.*accessor)(), data);
+        } else {
+            emitter << (el.*accessor)().id().string() + ".yml";
+        }
     }
 }
 
@@ -1677,7 +1847,7 @@ void emitPrimitiveType(YAML::Emitter& emitter, PrimitiveType& type, EmitterMetaD
 
 Connector& determineAndParseConnector(YAML::Node node, ParserMetaData& data) {
     if (node["connector"]) {
-        return parseDefinition(node, data, "connector", &parseConnector);
+        return parseDefinition<Connector>(node, data, "connector", &parseConnector);
     } else {
         throw UmlParserException("Invalid key for connector entry!", data.m_path.string(), node);
     }
@@ -1696,11 +1866,9 @@ void emitStructuredClassifier(YAML::Emitter& emitter, StructuredClassifier& claz
 }
 
 Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
-    /**if (node["activity"]) {
-        Activity& activity = data.m_manager->create<Activity>();
-        // TODO
-        return activity;
-    } else **/if (node["artifact"]) {
+    if (node["activity"]) {
+        return parseDefinition<Activity>(node, data, "activity", parseActivity);
+    } else if (node["artifact"]) {
         if (node["artifact"].IsMap()) {
             Artifact& artifact = *data.m_manager->create<Artifact>();
             parseArtifact(node["artifact"], artifact, data);
@@ -1749,7 +1917,7 @@ Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
             throw UmlParserException("Invalide yaml node type for extension definition, must be a map!", data.m_path.string(), node["extension"]);
         }
     } else if (node["interface"]) {
-        return parseDefinition(node, data, "interface", parseInterface);
+        return parseDefinition<Interface>(node, data, "interface", parseInterface);
     } else if (node["opaqueBehavior"]) {
         if (node["opaqueBehavior"].IsMap()) {
             OpaqueBehavior& opaqueBehavior = *data.m_manager->create<OpaqueBehavior>();
@@ -2101,86 +2269,64 @@ PackageableElement& determineAndParsePackageableElement(YAML::Node node, ParserM
         } else {
             throw UmlParserException("Invalid yaml node type for abstraction definition, must be a map!", data.m_path.string(), node["abstraction"]);
         }
-    // } else if (node["activity"]) {
-    //     return data.m_manager->create<Activity>(); // TODO;
+    } else if (node["activity"]) {
+        return parseDefinition<Activity>(node, data, "activity", parseActivity);
     } else if (node["artifact"]) {
-        return parseDefinition(node, data, "artifact", parseArtifact);
+        return parseDefinition<Artifact>(node, data, "artifact", parseArtifact);
     } else if (node["association"]) {
-        return parseDefinition(node, data, "association", parseAssociation);
+        return parseDefinition<Association>(node, data, "association", parseAssociation);
     } else if (node["class"]) {
-        return parseDefinition(node, data, "class", parseClass);
+        return parseDefinition<Class>(node, data, "class", parseClass);
     }  else if (node["dataType"]) {
-        return parseDefinition(node, data, "dataType", parseDataType);
+        return parseDefinition<DataType>(node, data, "dataType", parseDataType);
     } else if (node["deployment"]) {
-        return parseDefinition(node, data, "deployment", parseDeployment);
+        return parseDefinition<Deployment>(node, data, "deployment", parseDeployment);
     } else if (node["dependency"]) {
-        return parseDefinition(node, data, "dependency", parseDependency);
+        return parseDefinition<Dependency>(node, data, "dependency", parseDependency);
     } else if (node["enumeration"]) {
-        return parseDefinition(node, data, "enumeration", parseEnumeration);
+        return parseDefinition<Enumeration>(node, data, "enumeration", parseEnumeration);
     } else if (node["enumerationLiteral"]) {
-        return parseDefinition(node, data, "enumerationLiteral", parseEnumerationLiteral);
+        return parseDefinition<EnumerationLiteral>(node, data, "enumerationLiteral", parseEnumerationLiteral);
     } else if (node["expression"]) {
-        return parseDefinition(node, data, "expression", parseExpression);
+        return parseDefinition<Expression>(node, data, "expression", parseExpression);
     } else if (node["extension"]) {
-        return parseDefinition(node, data, "extension", parseExtension);
+        return parseDefinition<Extension>(node, data, "extension", parseExtension);
     } else if (node["generalizationSet"]) {
-        return parseDefinition(node, data, "generalizationSet", parseGeneralizationSet);
+        return parseDefinition<GeneralizationSet>(node, data, "generalizationSet", parseGeneralizationSet);
     } else if (node["instanceSpecification"]) {
-        return parseDefinition(node, data, "instanceSpecification", parseInstanceSpecification);
+        return parseDefinition<InstanceSpecification>(node, data, "instanceSpecification", parseInstanceSpecification);
     } else if (node["instanceValue"]) {
-        return parseDefinition(node, data, "instanceValue", parseInstanceValue);
+        return parseDefinition<InstanceValue>(node, data, "instanceValue", parseInstanceValue);
     } else if (node["interface"]) {
-        return parseDefinition(node, data, "interface", parseInterface);
+        return parseDefinition<Interface>(node, data, "interface", parseInterface);
     } else if (node["literalBool"]) {
-        return parseDefinition(node, data, "literalBool", parseLiteralBool);
+        return parseDefinition<LiteralBool>(node, data, "literalBool", parseLiteralBool);
     } else if (node["literalInt"]) {
-        return parseDefinition(node, data, "literalInt", parseLiteralInt);
+        return parseDefinition<LiteralInt>(node, data, "literalInt", parseLiteralInt);
     } else if (node["literalNull"]) {
-        // special handling
-        LiteralNull& ln = *data.m_manager->create<LiteralNull>();
-        parseTypedElement(node["literalNull"], ln, data);
-        return ln;
+        return parseDefinition<LiteralNull>(node, data, "literalNull", parseTypedElement);
     } else if (node["literalReal"]) {
-        return parseDefinition(node, data, "literalReal", parseLiteralReal);
+        return parseDefinition<LiteralReal>(node, data, "literalReal", parseLiteralReal);
     } else if (node["literalString"]) {
-        return parseDefinition(node, data, "literalString", parseLiteralString);
+        return parseDefinition<LiteralString>(node, data, "literalString", parseLiteralString);
     } else if (node["literalUnlimitedNatural"]) {
-        return parseDefinition(node, data, "literalUnlimitedNatural", parseLiteralUnlimitedNatural);
+        return parseDefinition<LiteralUnlimitedNatural>(node, data, "literalUnlimitedNatural", parseLiteralUnlimitedNatural);
     } else if (node["manifestation"]) {
-        return parseDefinition(node, data, "manifestation", parseManifestation);
+        return parseDefinition<Manifestation>(node, data, "manifestation", parseManifestation);
     } else if (node["opaqueBehavior"]) {
-        return parseDefinition(node, data, "opaqueBehavior", parseOpaqueBehavior);
+        return parseDefinition<OpaqueBehavior>(node, data, "opaqueBehavior", parseOpaqueBehavior);
     } else if (node["package"]) {
-        return parseDefinition(node, data, "package", parsePackage);
+        return parseDefinition<Package>(node, data, "package", parsePackage);
     } else if (node["primitiveType"]) {
-        return parseDefinition(node, data, "primitiveType", parsePrimitiveType);
+        return parseDefinition<PrimitiveType>(node, data, "primitiveType", parseDataType);
     } else if (node["profile"]) {
-        if (node["profile"].IsMap()) {
-            Profile& profile = *data.m_manager->create<Profile>();
-            parsePackage(node["profile"], profile, data);
-            return profile;
-        } else {
-            throw UmlParserException("Invalid yaml node type for profile definition, must be a map!", data.m_path.string(), node["profile"]);
-        }
+        return parseDefinition<Profile>(node, data, "profile", parsePackage);
     } else if (node["realization"]) {
-        if (node["realization"].IsMap()) {
-            Realization& realization = *data.m_manager->create<Realization>();
-            /** TODO: switch to parseAbstraction when implemented**/
-            parseDependency(node["realization"], realization, data);
-            return realization;
-        } else {
-            throw UmlParserException("Invalid yaml node type for realization definition, must be a map!", data.m_path.string(), node["realization"]);
-        }
+        return parseDefinition<Realization>(node, data, "realization", parseDependency);
     } else if (node["signal"]) {
-        return parseDefinition(node, data, "signal", parseSignal);
+        return parseDefinition<Signal>(node, data, "signal", parseSignal);
     } else if (node["usage"]) {
-        if (node["usage"].IsMap()) {
-            Usage& usage = *data.m_manager->create<Usage>();
-            parseDependency(node["usage"], usage, data);
-            return usage;
-        } else {
-            throw UmlParserException("Invalid yaml node type for usage definition, must be a map!", data.m_path.string(), node["usage"]);
-        }
+        return parseDefinition<Usage>(node, data, "usage", parseDependency);
     } else {
         throw UmlParserException("Invalid identifier for packagedElements, ", data.m_path.string(), node);
     }
@@ -2309,7 +2455,7 @@ void emitMultiplicityElement(YAML::Emitter& emitter, MultiplicityElement& el, Em
 
 Slot& determineAndParseSlot(YAML::Node node, ParserMetaData& data) {
     if (node["slot"]) {
-        return parseDefinition(node, data, "slot", parseSlot);
+        return parseDefinition<Slot>(node, data, "slot", parseSlot);
     } else {
         throw UmlParserException("Invalid element identifier for slot definition, it may only be a slot!", data.m_path.string(), node);
     }
@@ -2348,7 +2494,7 @@ void emitSlot(YAML::Emitter& emitter, Slot& slot, EmitterMetaData& data) {
 
 EnumerationLiteral& determineAndParseEnumerationLiteral(YAML::Node node, ParserMetaData& data) {
     if (node["enumerationLiteral"]) {
-        return parseDefinition(node, data, "enumerationLiteral", parseEnumerationLiteral);
+        return parseDefinition<EnumerationLiteral>(node, data, "enumerationLiteral", parseEnumerationLiteral);
     } else {
         throw UmlParserException("Invalid element identifier for enumerationLiteral definition, it may only be an enumerationLiteral!", data.m_path.string(), node);
     }
@@ -2562,7 +2708,7 @@ void emitExpression(YAML::Emitter& emitter, Expression& exp, EmitterMetaData& da
 
 TemplateBinding& determineAndParseTemplateBinding(YAML::Node node, ParserMetaData& data) {
     if (node["templateBinding"]) {
-        return parseDefinition(node, data, "templateBinding", parseTemplateBinding);
+        return parseDefinition<TemplateBinding>(node, data, "templateBinding", parseTemplateBinding);
     } else {
         throw UmlParserException("Invalid element identifier, can only be a templateBinding!", data.m_path.string(), node);
     }
@@ -2570,7 +2716,7 @@ TemplateBinding& determineAndParseTemplateBinding(YAML::Node node, ParserMetaDat
 
 TemplateSignature& determineAndParseTemplateSignature(YAML::Node node, ParserMetaData& data) {
     if (node["templateSignature"]) {
-        return parseDefinition(node, data, "templateSignature", parseTemplateSignature);
+        return parseDefinition<TemplateSignature>(node, data, "templateSignature", parseTemplateSignature);
     } else {
         throw UmlParserException("Invalid element identifier, can only be a templateSignature!", data.m_path.string(), node);
     }
@@ -2590,7 +2736,7 @@ void emitTemplateableElement(YAML::Emitter& emitter, TemplateableElement& el, Em
 
 TemplateParameter& determineAndParseTemplateParameter(YAML::Node node, ParserMetaData& data) {
     if (node["templateParameter"]) {
-        return parseDefinition(node, data, "templateParameter", parseTemplateParameter);
+        return parseDefinition<TemplateParameter>(node, data, "templateParameter", parseTemplateParameter);
     } else {
         throw UmlParserException("Invalid element identifier for templateParameter definition, it can only be a templateParameter!", data.m_path.string(), node);
     }
@@ -2816,7 +2962,7 @@ void emitTemplateParameter(YAML::Emitter& emitter, TemplateParameter& parameter,
 
 TemplateParameterSubstitution& determineAndParseTemplateParameterSubstitution(YAML::Node node, ParserMetaData& data) {
     if (node["templateParameterSubstitution"]) {
-        return parseDefinition(node, data, "templateParameterSubstitution", parseTemplateParameterSubstitution);
+        return parseDefinition<TemplateParameterSubstitution>(node, data, "templateParameterSubstitution", parseTemplateParameterSubstitution);
     } else {
         throw UmlParserException("Invalid element identifier for templateParameterSubstitution definition, it can only be a templateParameterSubstitution!", data.m_path.string(), node);
     }
@@ -3034,7 +3180,7 @@ void emitDeployment(YAML::Emitter& emitter, Deployment& deployment, EmitterMetaD
 
 Artifact& determineAndParseArtifact(YAML::Node node, ParserMetaData& data) {
     if (node["artifact"]) {
-        return parseDefinition(node, data, "artifact", parseArtifact);
+        return parseDefinition<Artifact>(node, data, "artifact", parseArtifact);
     } else {
         throw UmlParserException("Invalid element identifier for artifact definition, it can only be an artifact!", data.m_path.string(), node);
     }
@@ -3042,7 +3188,7 @@ Artifact& determineAndParseArtifact(YAML::Node node, ParserMetaData& data) {
 
 Manifestation& determineAndParseManifestation(YAML::Node node, ParserMetaData& data) {
     if (node["manifestation"]) {
-        return parseDefinition(node, data, "manifestation", parseManifestation);
+        return parseDefinition<Manifestation>(node, data, "manifestation", parseManifestation);
     } else {
         throw UmlParserException("Invalid element identifier for manifestation definition, it can only be a manifestation!", data.m_path.string(), node);
     }
@@ -3068,7 +3214,7 @@ void emitArtifact(YAML::Emitter& emitter, Artifact& artifact, EmitterMetaData& d
 
 Deployment& determineAndParseDeployment(YAML::Node node, ParserMetaData& data) {
     if (node["deployment"]) {
-        return parseDefinition(node, data, "deployment", parseDeployment);
+        return parseDefinition<Deployment>(node, data, "deployment", parseDeployment);
     } else {
         throw UmlParserException("Invalid element identifier for deployment, it can only be a deployment!", data.m_path.string(), node);
     }
@@ -3083,8 +3229,10 @@ void emitDeploymentTarget(YAML::Emitter& emitter, DeploymentTarget& target, Emit
 }
 
 Behavior& determineAndParseBehavior(YAML::Node node, ParserMetaData& data) {
-    if (node["opaqueBehavior"]) {
-        return parseDefinition(node, data, "opaqueBehavior", parseOpaqueBehavior);
+    if (node["activity"]) {
+        return parseDefinition<Activity>(node, data, "activity", parseActivity);
+    } else if (node["opaqueBehavior"]) {
+        return parseDefinition<OpaqueBehavior>(node, data, "opaqueBehavior", parseOpaqueBehavior);
     } else {
         throw UmlParserException("Invalid element identifier for opaqueBehavior definition, must be an opaqueBehavior", data.m_path.string(), node); // TODO expand
     }
@@ -3259,7 +3407,7 @@ void parseManifestation(YAML::Node node, Manifestation& manifestation, ParserMet
 
 InterfaceRealization& determineAndParseInterfaceRealization(YAML::Node node, ParserMetaData& data) {
     if (node["interfaceRealization"]) {
-        return parseDefinition(node, data, "interfaceRealization", parseInterfaceRealization);
+        return parseDefinition<InterfaceRealization>(node, data, "interfaceRealization", parseInterfaceRealization);
     } else {
         throw UmlParserException("Invalid key for interfaceRealization", data.m_path.string(), node);
     }
@@ -3297,7 +3445,7 @@ void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSe
 
 ConnectorEnd& determineAndParseConnectorEnd(YAML::Node node, ParserMetaData& data) {
     if (node["connectorEnd"]) {
-        return parseDefinition(node, data, "connectorEnd", parseConnectorEnd);
+        return parseDefinition<ConnectorEnd>(node, data, "connectorEnd", parseConnectorEnd);
     } else {
         throw UmlParserException("Invalide definition for connectorEnd!", data.m_path.string(), node);
     }
@@ -3459,6 +3607,251 @@ void emitReception(YAML::Emitter& emitter, Reception& reception, EmitterMetaData
     emitElementDefenitionEnd(emitter, ElementType::RECEPTION, reception);
 }
 
+ActivityNode& determineAndParseActivityNode(YAML::Node node, ParserMetaData& data) {
+    if (node["activityFinalNode"]) {
+        return parseDefinition<ActivityFinalNode>(node, data, "activityFinalNode", parseActivityNode);
+    } else if (node["activityParameterNode"]) {
+        return parseDefinition<ActivityParameterNode>(node, data, "activityParameterNode", parseActivityParameterNode);
+    } else if (node["centralBufferNode"]) {
+        return parseDefinition<CentralBufferNode>(node, data, "centralBufferNode", parseObjectNode);
+    } else if (node["dataStoreNode"]) {
+        return parseDefinition<DataStoreNode>(node, data, "dataStoreNode", parseObjectNode);
+    } else if (node["decisionNode"]) {
+        return parseDefinition<DecisionNode>(node, data, "decisionNode", parseDecisionNode);
+    } else if (node["executableNode"]) {
+        return parseDefinition<ExecutableNode>(node, data, "executableNode", parseExecutableNode);
+    } else if (node["flowFinalNode"]) {
+        return parseDefinition<FlowFinalNode>(node, data, "flowFinalNode", parseActivityNode);
+    } else if (node["forkNode"]) {
+        return parseDefinition<ForkNode>(node, data, "forkNode", parseActivityNode);
+    } else if (node["initialNode"]) {
+        return parseDefinition<InitialNode>(node, data, "initialNode", parseActivityNode);
+    } else if (node["inputPin"]) {
+        throw UmlParserException("TODO inputPin", data.m_path.string(), node["inputPin"]);
+    } else if (node["joinNode"]) {
+        return parseDefinition<JoinNode>(node, data, "joinNode", parseJoinNode);
+    } else if (node["mergeNode"]) {
+        return parseDefinition<MergeNode>(node, data, "mergeNode", parseActivityNode);
+    } else if (node["outputPin"]) {
+        throw UmlParserException("TODO outputPin", data.m_path.string(), node["outputPin"]);
+    } else {
+        throw UmlParserException("Could not identify activity node", data.m_path.string(), node);
+    }
+}
+
+ActivityEdge& determineAndParseActivityEdge(YAML::Node node, ParserMetaData& data) {
+    if (node["controlFlow"]) {
+        return parseDefinition<ControlFlow>(node, data, "controlFlow", parseActivityEdge);
+    } else if (node["objectFlow"]) {
+        return parseDefinition<ObjectFlow>(node, data, "objectFlow", parseObjectFlow);
+    } else {
+        throw UmlParserException("Invalid key for activity edge", data.m_path.string(), node);
+    }
+}
+
+void parseActivity(YAML::Node node, Activity& activity, ParserMetaData& data) {
+    parseBehavior(node, activity, data);
+    parseSequenceDefinitions(node, data, "nodes", activity, &Activity::getNodes, determineAndParseActivityNode);
+    parseSequenceDefinitions(node, data, "edges", activity, &Activity::getEdges, determineAndParseActivityEdge);
+}
+
+void emitActivity(YAML::Emitter& emitter, Activity& activity, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::ACTIVITY, "activity", activity, data);
+    emitBehavior(emitter, activity, data);
+    emitSequence(emitter, "nodes", data, activity, &Activity::getNodes);
+    emitSequence(emitter, "edges", data, activity, &Activity::getEdges);
+    emitElementDefenitionEnd(emitter, ElementType::ACTIVITY, activity);
+}
+
+void parseActivityNode(YAML::Node node, ActivityNode& activityNode, ParserMetaData& data) {
+    parseNamedElement(node, activityNode, data);
+    parseSetReferences<ActivityEdge, ActivityNode>(node, data, "incoming", activityNode, &ActivityNode::getIncoming);
+    parseSetReferences<ActivityEdge, ActivityNode>(node, data, "outgoing", activityNode, &ActivityNode::getOutgoing);
+}
+
+void emitActivityNode(YAML::Emitter& emitter, ActivityNode& activityNode, EmitterMetaData& data) {
+    emitNamedElement(emitter, activityNode, data);
+    emitSequenceReferences(emitter, "incoming", data, activityNode, &ActivityNode::getIncoming);
+    emitSequenceReferences(emitter, "outgoing", data, activityNode, &ActivityNode::getOutgoing);
+}
+
+void parseActivityEdge(YAML::Node node, ActivityEdge& edge, ParserMetaData& data) {
+    parseNamedElement(node, edge, data);
+    parseSingletonReference(node, data, "target", edge, &ActivityEdge::setTarget, &ActivityEdge::setTarget);
+    parseSingletonReference(node, data, "source", edge, &ActivityEdge::setSource, &ActivityEdge::setSource);
+    parseSingletonDefinition(node, data, "guard", edge, determineAndParseValueSpecification, &ActivityEdge::setGuard, &ActivityEdge::setGuard);
+    parseSingletonDefinition(node, data, "weight", edge, determineAndParseValueSpecification, &ActivityEdge::setWeight, &ActivityEdge::setWeight);
+}
+
+void emitActivityEdge(YAML::Emitter& emitter, ActivityEdge& edge, EmitterMetaData& data) {
+    emitNamedElement(emitter, edge, data);
+    if (edge.getTarget()) {
+        emitter << YAML::Key << "target" << YAML::Value << edge.getTarget().id().string();
+    }
+    if (edge.getSource()) {
+        emitter << YAML::Key << "source" << YAML::Value << edge.getSource().id().string();
+    }
+}
+
+void parseObjectFlow(YAML::Node node, ObjectFlow& flow, ParserMetaData& data) {
+    parseActivityEdge(node, flow, data);
+    parseSingletonDefinition<Behavior, ObjectFlow>(node, data, "transformation", flow, determineAndParseBehavior, &ObjectFlow::setTransformation, &ObjectFlow::setTransformation);
+    parseSingletonDefinition<Behavior, ObjectFlow>(node, data, "selection", flow, determineAndParseBehavior, &ObjectFlow::setSelection, &ObjectFlow::setSelection);
+}
+
+void emitObjectFlow(YAML::Emitter& emitter, ObjectFlow& flow, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::OBJECT_FLOW, "objectFlow", flow, data);
+    emitActivityEdge(emitter, flow, data);
+    emitSingletonDefinition<Behavior, ObjectFlow>(emitter, "transformation", data, flow, &ObjectFlow::getTransformation);
+    emitSingletonDefinition<Behavior, ObjectFlow>(emitter, "selection", data, flow, &ObjectFlow::getSelection);
+    emitElementDefenitionEnd(emitter, ElementType::OBJECT_FLOW, flow);
+}
+
+void parseObjectNode(YAML::Node node, ObjectNode& objectNode, ParserMetaData& data) {
+    parseTypedElement(node, objectNode, data);
+    parseSetReferences<ActivityEdge, ActivityNode>(node, data, "incoming", objectNode, &ActivityNode::getIncoming);
+    parseSetReferences<ActivityEdge, ActivityNode>(node, data, "outgoing", objectNode, &ActivityNode::getOutgoing);
+    if (node["isControlType"]) {
+        if (node["isControlType"].IsScalar()) {
+            objectNode.setControlType(node["isControlType"].as<bool>());
+        }
+    }
+    if (node["ordering"]) {
+        if (node["ordering"].IsScalar()) {
+            std::string ordering = node["ordering"].as<std::string>();
+            if (ordering.compare("unordered") == 0) {
+                objectNode.setOrdering(ObjectNodeOrderingKind::UNORDERED);
+            } else if (ordering.compare("ordered") == 0) {
+                objectNode.setOrdering(ObjectNodeOrderingKind::ORDERED);
+            } else if (ordering.compare("FIFO") == 0) {
+                objectNode.setOrdering(ObjectNodeOrderingKind::FIFO);
+            } else if (ordering.compare("LIFO") == 0) {
+                objectNode.setOrdering(ObjectNodeOrderingKind::LIFO);
+            } else {
+                throw UmlParserException("Invalid object node ordering", data.m_path.string(), node["ordering"]);
+            }
+        }
+    }
+    parseSingletonDefinition<ValueSpecification, ObjectNode>(node, data, "upperBound", objectNode, determineAndParseValueSpecification, &ObjectNode::setUpperBound, &ObjectNode::setUpperBound);
+    parseSingletonReference(node, data, "selection", objectNode, &ObjectNode::setSelection, &ObjectNode::setSelection);
+}
+
+void emitObjectNode(YAML::Emitter& emitter, ObjectNode& objectNode, EmitterMetaData& data) {
+    emitTypedElement(emitter, objectNode, data);
+    emitSequenceReferences<ActivityEdge, ActivityNode>(emitter, "incoming", data, objectNode, &ActivityNode::getIncoming);
+    emitSequenceReferences<ActivityEdge, ActivityNode>(emitter, "outgoing", data, objectNode, &ActivityNode::getOutgoing);
+    emitter << YAML::Key << "controlType" << YAML::Value;
+    if (objectNode.isControlType()) {
+        emitter << true;
+    } else {
+        emitter << false;
+    }
+    emitter << YAML::Key << "ordering" << YAML::Value;
+    switch(objectNode.getOrdering()) {
+        case ObjectNodeOrderingKind::UNORDERED : {
+            emitter << "unordered";
+            break;
+        }
+        case ObjectNodeOrderingKind::ORDERED : {
+            emitter << "ordered";
+            break;
+        }
+        case ObjectNodeOrderingKind::FIFO : {
+            emitter << "FIFO";
+            break;
+        }
+        case ObjectNodeOrderingKind::LIFO : {
+            emitter << "LIFO";
+            break;
+        }
+    }
+    emitSingletonDefinition<ValueSpecification, ObjectNode>(emitter, "upperBound", data, objectNode, &ObjectNode::getUpperBound);
+    if (objectNode.getSelection()) {
+        emitter << YAML::Key << "selection" << YAML::Value << objectNode.getSelection().id().string();
+    }
+}
+
+void parseActivityParameterNode(YAML::Node node, ActivityParameterNode& parameterNode, ParserMetaData& data) {
+    parseObjectNode(node, parameterNode, data);
+    parseSingletonReference(node, data, "parameter", parameterNode, &ActivityParameterNode::setParameter, &ActivityParameterNode::setParameter);
+}
+
+void emitActivityParameterNode(YAML::Emitter& emitter, ActivityParameterNode& parameterNode, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::ACTIVITY_PARAMETER_NODE, "activityParameterNode", parameterNode, data);
+    emitObjectNode(emitter, parameterNode, data);
+    if (parameterNode.getParameter()) {
+        emitter << YAML::Key << "parameter" << YAML::Value << parameterNode.getParameter().id().string();
+    }
+    emitElementDefenitionEnd(emitter, ElementType::ACTIVITY_PARAMETER_NODE, parameterNode);
+}
+
+void parseDecisionNode(YAML::Node node, DecisionNode& decisionNode, ParserMetaData& data) {
+    parseActivityNode(node, decisionNode, data);
+    parseSingletonReference(node, data, "decisionInputFlow", decisionNode, &DecisionNode::setDecisionInputFlow, &DecisionNode::setDecisionInputFlow);
+    parseSingletonReference(node, data, "decisionInput", decisionNode, &DecisionNode::setDecisionInput, &DecisionNode::setDecisionInput);
+}
+
+void emitDecisionNode(YAML::Emitter& emitter, DecisionNode& decisionNode, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::DECISION_NODE, "decisionNode", decisionNode, data);
+    if (decisionNode.getDecisionInputFlow()) {
+        emitter << YAML::Key << "decisionInputFlow" << YAML::Value << decisionNode.getDecisionInputFlow().id().string();
+    }
+    if (decisionNode.getDecisionInput()) {
+        emitter << YAML::Key << "decisionInput" << YAML::Value << decisionNode.getDecisionInput().id().string();
+    }
+    emitElementDefenitionEnd(emitter, ElementType::DECISION_NODE, decisionNode);
+}
+
+void parseJoinNode(YAML::Node node, JoinNode& joinNode, ParserMetaData& data) {
+    parseActivityNode(node, joinNode, data);
+    parseSingletonDefinition(node, data, "joinSpec", joinNode, determineAndParseValueSpecification, &JoinNode::setJoinSpec, &JoinNode::setJoinSpec);
+}
+
+void emitJoinNode(YAML::Emitter& emitter, JoinNode& joinNode, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::JOIN_NODE, "joinNode", joinNode, data);
+    emitActivityNode(emitter, joinNode, data);
+    emitSingletonDefinition(emitter, "joinSpec", data, joinNode, &JoinNode::getJoinSpec);
+    emitElementDefenitionEnd(emitter, ElementType::JOIN_NODE, joinNode);
+}
+
+ExceptionHandler& determineAndParseExceptionHandler(YAML::Node node, ParserMetaData& data) {
+    if (node["exceptionHandler"]) {
+        return parseDefinition<ExceptionHandler>(node, data, "exceptionHandler", parseExceptionHandler);
+    } else {
+        throw UmlParserException("could not identify exception handler", data.m_path.string(), node);
+    }
+}
+
+void parseExecutableNode(YAML::Node node, ExecutableNode& executableNode, ParserMetaData& data) {
+    parseActivityNode(node, executableNode, data);
+    parseSequenceDefinitions(node, data, "handlers", executableNode, &ExecutableNode::getHandlers, determineAndParseExceptionHandler);
+}
+
+void emitExecutableNode(YAML::Emitter& emitter, ExecutableNode& executableNode, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::EXECUTABLE_NODE, "executableNode", executableNode, data);
+    emitActivityNode(emitter, executableNode, data);
+    emitSequence(emitter, "handlers", data, executableNode, &ExecutableNode::getHandlers);
+}
+
+void parseExceptionHandler(YAML::Node node, ExceptionHandler& handler, ParserMetaData& data) {
+    parseElement(node, handler, data);
+    parseSingletonReference(node, data, "handlerBody", handler, &ExceptionHandler::setHandlerBody, &ExceptionHandler::setHandlerBody);
+    parseSingletonReference(node, data, "exceptionInput", handler, &ExceptionHandler::setExceptionInput, &ExceptionHandler::setExceptionInput);
+    parseSetReferences<Classifier, ExceptionHandler>(node, data, "exceptionTypes", handler, &ExceptionHandler::getExceptionTypes);
+}
+
+void emitExceptionHandler(YAML::Emitter& emitter, ExceptionHandler& handler, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::EXCEPTION_HANDLER, "exceptionHandler", handler, data);
+    if (handler.getHandlerBody()) {
+        emitter << YAML::Key << "handlerBody" << YAML::Value << handler.getHandlerBody().id().string();
+    }
+    if (handler.getExceptionInput()) {
+        emitter << YAML::Key << "exceptionInput" << YAML::Value << handler.getExceptionInput().id().string();
+    }
+    emitSequenceReferences(emitter, "exceptionTypes", data, handler, &ExceptionHandler::getExceptionTypes);
+    emitElementDefenitionEnd(emitter, ElementType::EXCEPTION_HANDLER, handler);
+}
+    
 }
 }
 }

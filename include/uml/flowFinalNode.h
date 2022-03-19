@@ -5,6 +5,9 @@
 
 namespace UML {
     class FlowFinalNode : public FinalNode {
+
+        friend class UmlManager;
+
         protected:
             FlowFinalNode();
         public:

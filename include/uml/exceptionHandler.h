@@ -14,6 +14,9 @@ namespace UML {
     typedef UmlPtr<ObjectNode> ObjectNodePtr;
 
     class ExceptionHandler : public Element {
+
+        friend class UmlManager;
+
         protected:
             Singleton<ExecutableNode, ExceptionHandler> m_protectedNode = Singleton<ExecutableNode, ExceptionHandler>(this);
             Singleton<ExecutableNode, ExceptionHandler> m_handlerBody = Singleton<ExecutableNode, ExceptionHandler>(this);

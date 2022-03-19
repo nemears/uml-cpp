@@ -65,6 +65,14 @@ void ExceptionHandler::init() {
     m_exceptionTypes.m_signature = &ExceptionHandler::getExceptionTypes;
 }
 
+ExceptionHandler::ExceptionHandler() : Element(ElementType::EXCEPTION_HANDLER) {
+    init();
+}
+
+ExceptionHandler::~ExceptionHandler() {
+    
+}
+
 ExecutableNodePtr ExceptionHandler::getProtectedNode() const {
     return m_protectedNode.get();
 }

@@ -9,6 +9,7 @@
 #include "uml/stereotype.h"
 #include "uml/interface.h"
 #include "uml/deployment.h"
+#include "uml/interruptibleActivityRegion.h"
 #include "uml/umlPtr.h"
 
 using namespace UML;
@@ -33,11 +34,16 @@ Set<ValueSpecification, ActivityEdge>& ActivityEdge::getWeightSingleton() {
     return m_weight;
 }
 
+Set<InterruptibleActivityRegion, ActivityEdge>& ActivityEdge::getInterruptsSingleton() {
+    return m_interrupts;
+}
+
 void ActivityEdge::referencingReleased(ID id) {
     NamedElement::referencingReleased(id);
     RedefinableElement::referencingReleased(id);
     m_source.release(id);
     m_target.release(id);
+    m_inGroups.release(id);
 }
 
 void ActivityEdge::referenceReindexed(ID oldID, ID newID) {
@@ -45,6 +51,7 @@ void ActivityEdge::referenceReindexed(ID oldID, ID newID) {
     RedefinableElement::referenceReindexed(oldID, newID);
     m_source.reindex(oldID, newID);
     m_target.reindex(oldID, newID);
+    m_inGroups.reindex(oldID, newID);
 }
 
 void ActivityEdge::referenceErased(ID id) {
@@ -52,6 +59,7 @@ void ActivityEdge::referenceErased(ID id) {
     RedefinableElement::referenceErased(id);
     m_source.eraseElement(id);
     m_target.eraseElement(id);
+    m_inGroups.eraseElement(id);
 }
 
 void ActivityEdge::restoreReference(Element* el) {
@@ -70,6 +78,15 @@ void ActivityEdge::init() {
     m_guard.m_signature = &ActivityEdge::getGuardSingleton;
     m_weight.subsets(*m_ownedElements);
     m_weight.m_signature = &ActivityEdge::getWeightSingleton;
+    m_inGroups.opposite(&ActivityGroup::getContainedEdges);
+    m_inGroups.m_signature = &ActivityEdge::getInGroups;
+    m_inGroups.m_readOnly = true;
+    m_inPartitions.subsets(m_inGroups);
+    m_inPartitions.opposite(&ActivityPartition::getEdges);
+    m_inPartitions.m_signature = &ActivityEdge::getInPartitions;
+    m_interrupts.subsets(m_inGroups);
+    m_interrupts.opposite(&InterruptibleActivityRegion::getInterruptingEdges);
+    m_interrupts.m_signature = &ActivityEdge::getInterruptsSingleton;
 }
 
 ActivityEdge::ActivityEdge() : Element(ElementType::ACTIVITY_EDGE) {
@@ -179,6 +196,34 @@ void ActivityEdge::setWeight(ValueSpecificationPtr weight) {
 
 void ActivityEdge::setWeight(ID id) {
     m_weight.set(id);
+}
+
+Set<ActivityGroup, ActivityEdge>& ActivityEdge::getInGroups() {
+    return m_inGroups;
+}
+
+Set<ActivityPartition, ActivityEdge>& ActivityEdge::getInPartitions() {
+    return m_inPartitions;
+}
+
+InterruptibleActivityRegionPtr ActivityEdge::getInterrupts() const {
+    return m_interrupts.get();
+}
+
+void ActivityEdge::setInterrupts(InterruptibleActivityRegion* interrupts) {
+    m_interrupts.set(interrupts);
+}
+
+void ActivityEdge::setInterrupts(InterruptibleActivityRegion& interrupts) {
+    m_interrupts.set(interrupts);
+}
+
+void ActivityEdge::setInterrupts(InterruptibleActivityRegionPtr interrupts) {
+    m_interrupts.set(interrupts);
+}
+
+void ActivityEdge::setInterrupts(ID id) {
+    m_interrupts.set(id);
 }
 
 bool ActivityEdge::isSubClassOf(ElementType eType) const {

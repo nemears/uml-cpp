@@ -19,6 +19,9 @@ namespace UML {
             Singleton<Activity, ActivityNode> m_activity = Singleton<Activity, ActivityNode>(this);
             Set<ActivityEdge, ActivityNode> m_incoming = Set<ActivityEdge, ActivityNode>(this);
             Set<ActivityEdge, ActivityNode> m_outgoing = Set<ActivityEdge, ActivityNode>(this);
+            Set<ActivityGroup, ActivityNode> m_inGroups = Set<ActivityGroup, ActivityNode>(this);
+            Set<ActivityPartition, ActivityNode> m_inPartitions = Set<ActivityPartition, ActivityNode>(this);
+            Set<InterruptibleActivityRegion, ActivityNode> m_interruptibleRegions = Set<InterruptibleActivityRegion, ActivityNode>(this);
             Set<Activity, ActivityNode>& getActivitySingleton();
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
@@ -35,6 +38,9 @@ namespace UML {
             void setActivity(Activity& activity);
             void setActivity(ActivityPtr activity);
             void setActivity(ID id);
+            Set<ActivityGroup, ActivityNode>& getInGroups();
+            Set<ActivityPartition, ActivityNode>& getInPartitions();
+            Set<InterruptibleActivityRegion, ActivityNode>& getInterruptibleRegions();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ACTIVITY_NODE;

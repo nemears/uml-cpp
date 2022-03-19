@@ -172,11 +172,17 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::ACTIVITY_FINAL_NODE : {
             return "ACTIVITY_FINAL_NODE";
         }
+        case ElementType::ACTIVITY_GROUP : {
+            return "ACTIVITY_GROUP";
+        }
         case ElementType::ACTIVITY_NODE : {
             return "ACTIVITY_NODE";
         }
         case ElementType::ACTIVITY_PARAMETER_NODE : {
             return "ACTIVITY_PARAMETER_NODE";
+        }
+        case ElementType::ACTIVITY_PARTITION : {
+            return "ACTIVITY_PARTITION";
         }
         case ElementType::ARTIFACT : {
             return "ARTIFACT";
@@ -312,6 +318,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         }
         case ElementType::INTERFACE_REALIZATION : {
             return "INTERFACE_REALIZATION";
+        }
+        case ElementType::INTERRUPTIBLE_ACTIVITY_REGION : {
+            return "INTERRUPTIBLE_ACTIVITY_REGION";
         }
         case ElementType::JOIN_NODE : {
             return "JOIN_NODE";

@@ -1,0 +1,45 @@
+---
+  activity:
+    name: activity
+    nodes:
+      - dataStoreNode:
+          id: tSDZtKfEVAB0wujpKcvGPxOyT2nm
+          name: objectNode
+          incoming:
+            - HoLoL64Y9tktAGAkFkyj5Du59jXg
+          outgoing:
+            - o8YfevYG8s0FXhwxucyigJVwH9pe
+          controlType: false
+          ordering: FIFO
+      - initialNode:
+          id: gXNiLpjTwmfjz66xGvctzn8c5s9v
+          name: initialNode
+          outgoing: 
+            - HoLoL64Y9tktAGAkFkyj5Du59jXg
+      - centralBufferNode:
+          id: zeZ4zqzYWZ5PLdnKiInJ7wNfgj4T
+          name: objectNode2
+          incoming:
+            - o8YfevYG8s0FXhwxucyigJVwH9pe
+          controlType: true
+          ordering: unordered
+      - centralBufferNode:
+          id: C9jmD9wo0AmvGqSLkxr38k_smYu0
+          name: three
+          controlType: false
+          ordering: ordered
+      - centralBufferNode:
+          id: UWgwEDY2Gj5ibg2KjpxrSxrhpF5b
+          name: 4
+          controlType: true
+          ordering: LIFO
+    edges:
+      - controlFlow:
+          id: HoLoL64Y9tktAGAkFkyj5Du59jXg
+          source: gXNiLpjTwmfjz66xGvctzn8c5s9v
+          target: tSDZtKfEVAB0wujpKcvGPxOyT2nm
+      - controlFlow:
+          id: o8YfevYG8s0FXhwxucyigJVwH9pe
+          source: tSDZtKfEVAB0wujpKcvGPxOyT2nm
+          target: zeZ4zqzYWZ5PLdnKiInJ7wNfgj4T
+...

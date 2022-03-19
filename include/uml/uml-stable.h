@@ -81,6 +81,7 @@
 namespace UML {
     typedef UmlPtr<PrimitiveType> PrimitiveTypePtr;
     typedef UmlPtr<LiteralBool> LiteralBoolPtr;
+    typedef UmlPtr<ExceptionHandler> ExceptionHandlerPtr;
 }
 
 #endif

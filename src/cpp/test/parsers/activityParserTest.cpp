@@ -77,3 +77,20 @@ TEST_F(ActivityParserTest, emitActivityTest) {
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(ActivityParserTest, mountActivityTest) {
+    UmlManager m;
+    ActivityPtr activity = m.create<Activity>();
+    m.setRoot(*activity);
+    ExecutableNodePtr executablNode = m.create<ExecutableNode>();
+    ExceptionHandlerPtr exceptionHandler = m.create<ExceptionHandler>();
+    activity->getNodes().add(*executablNode);
+    executablNode->getHandlers().add(*exceptionHandler);
+    m.mount(".");
+    executablNode.release();
+    ASSERT_FALSE(executablNode.loaded());
+    ASSERT_EQ(executablNode.id(), exceptionHandler->getOwner().id());
+    ASSERT_FALSE(executablNode.loaded());
+    ASSERT_EQ(executablNode->getActivity(), activity);
+    ASSERT_TRUE(executablNode.loaded());
+}

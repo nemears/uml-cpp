@@ -5,6 +5,9 @@
 
 namespace UML {
     class ActivityFinalNode : public FinalNode {
+
+        friend class UmlManager;
+
         protected:
             ActivityFinalNode();
         public:

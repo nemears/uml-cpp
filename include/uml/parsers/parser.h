@@ -182,6 +182,26 @@ namespace UML {
             void emitBehavioralFeature(YAML::Emitter& emitter, BehavioralFeature& feature, EmitterMetaData& data);
             void parseReception(YAML::Node node, Reception& reception, ParserMetaData& data);
             void emitReception(YAML::Emitter& emitter, Reception& reception, EmitterMetaData& data);
+            void parseActivity(YAML::Node node, Activity& activity, ParserMetaData& data);
+            void emitActivity(YAML::Emitter& emitter, Activity& activity, EmitterMetaData& data);
+            void parseActivityNode(YAML::Node node, ActivityNode& activityNode, ParserMetaData& data);
+            void emitActivityNode(YAML::Emitter& emitter, ActivityNode& activityNode, EmitterMetaData& data);
+            void parseActivityEdge(YAML::Node node, ActivityEdge& edge, ParserMetaData& data);
+            void emitActivityEdge(YAML::Emitter& emitter, ActivityEdge& edge, EmitterMetaData& data);
+            void parseObjectFlow(YAML::Node node, ObjectFlow& flow, ParserMetaData& data);
+            void emitObjectFlow(YAML::Emitter& emitter, ObjectFlow& flow, EmitterMetaData& data);
+            void parseObjectNode(YAML::Node node, ObjectNode& objectNode, ParserMetaData& data);
+            void emitObjectNode(YAML::Emitter& emitter, ObjectNode& objectNode, EmitterMetaData& data);
+            void parseActivityParameterNode(YAML::Node node, ActivityParameterNode& parameterNode, ParserMetaData& data);
+            void emitActivityParameterNode(YAML::Emitter& emitter, ActivityParameterNode& parameterNode, EmitterMetaData& data);
+            void parseDecisionNode(YAML::Node node, DecisionNode& decisionNode, ParserMetaData& data);
+            void emitDecisionNode(YAML::Emitter& emitter, DecisionNode& decisionNode, EmitterMetaData& data);
+            void parseJoinNode(YAML::Node node, JoinNode& joinNode, ParserMetaData& data);
+            void emitJoinNode(YAML::Emitter& node, JoinNode& joinNode, EmitterMetaData& data);
+            void parseExecutableNode(YAML::Node node, ExecutableNode& executableNode, ParserMetaData& data);
+            void emitExecutableNode(YAML::Emitter& emitter, ExecutableNode& executableNode, EmitterMetaData& data);
+            void parseExceptionHandler(YAML::Node node, ExceptionHandler& exception, ParserMetaData& data);
+            void emitExceptionHandler(YAML::Emitter& emitter, ExceptionHandler& exception, EmitterMetaData& data);
         }
     }
 }

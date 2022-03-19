@@ -33,7 +33,7 @@ Set<ExceptionHandler, ExecutableNode>& ExecutableNode::getHandlers() {
 }
 
 bool ExecutableNode::isSubClassOf(ElementType eType) const {
-    bool ret = Element::isSubClassOf(eType);
+    bool ret = ActivityNode::isSubClassOf(eType);
 
     if (!ret) {
         ret = eType == ElementType::EXECUTABLE_NODE;

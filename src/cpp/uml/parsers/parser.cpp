@@ -615,6 +615,16 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
             return;
         }
     }
+    if (ret->isSubClassOf(ElementType::ACTIVITY_NODE)) {
+        if (parseSingletonReference(node, data, "activity", ret->as<ActivityNode>(), &ActivityNode::setActivity, &ActivityNode::setActivity)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::ACTIVITY_EDGE)) {
+        if (parseSingletonReference(node, data, "activity", ret->as<ActivityEdge>(), &ActivityEdge::setActivity, &ActivityEdge::setActivity)) {
+            return;
+        }
+    }
     if (ret->isSubClassOf(ElementType::COMMENT)) {
         if (node["owner"]) {
             if (node["owner"].IsScalar()) {
@@ -654,7 +664,7 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
 ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
     ElementPtr ret(0);
 
-    if (node["activity"]) {
+    if (node["activity"] && node["activity"].IsMap()) {
         ret = &parseDefinition<Activity>(node, data, "activity", parseActivity);
     }
 
@@ -1501,6 +1511,18 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::INTERFACE_REALIZATION)) {
             if (el.as<InterfaceRealization>().getImplementingClassifier()) {
                 emitter << YAML::Key << "implementingClassifier" << el.as<InterfaceRealization>().getImplementingClassifier().id().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::ACTIVITY_EDGE)) {
+            if (el.as<ActivityEdge>().getActivity()) {
+                emitter << YAML::Key << "activity" << el.as<ActivityEdge>().getActivity().id().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::ACTIVITY_NODE)) {
+            if (el.as<ActivityNode>().getActivity()) {
+                emitter << YAML::Key << "activity" << el.as<ActivityNode>().getActivity().id().string();
                 return;
             }
         }

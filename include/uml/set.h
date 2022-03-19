@@ -335,6 +335,9 @@ namespace UML {
     class ActivityParameterNode;
     class ExceptionHandler;
     class ExecutableNode;
+    class ActivityGroup;
+    class ActivityPartition;
+    class InterruptibleActivityRegion;
 
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
@@ -421,6 +424,9 @@ namespace UML {
         friend class ActivityParameterNode;
         friend class ExceptionHandler;
         friend class ExecutableNode;
+        friend class ActivityGroup;
+        friend class ActivityPartition;
+        friend class InterruptibleActivityRegion;
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
         friend void Parsers::setOwner(Element& el, ID id);

@@ -9,6 +9,7 @@
 #include "uml/stereotype.h"
 #include "uml/interface.h"
 #include "uml/deployment.h"
+#include "uml/interruptibleActivityRegion.h"
 #include "uml/umlPtr.h"
 
 using namespace UML;
@@ -22,6 +23,7 @@ void ActivityNode::referencingReleased(ID id) {
     RedefinableElement::referencingReleased(id);
     m_incoming.release(id);
     m_outgoing.release(id);
+    m_inGroups.release(id);
 }
 
 void ActivityNode::referenceReindexed(ID oldID, ID newID) {
@@ -29,6 +31,7 @@ void ActivityNode::referenceReindexed(ID oldID, ID newID) {
     RedefinableElement::referenceReindexed(oldID, newID);
     m_incoming.reindex(oldID, newID);
     m_outgoing.reindex(oldID, newID);
+    m_inGroups.reindex(oldID, newID);
 }
 
 void ActivityNode::referenceErased(ID id) {
@@ -36,6 +39,7 @@ void ActivityNode::referenceErased(ID id) {
     RedefinableElement::referenceErased(id);
     m_incoming.eraseElement(id);
     m_outgoing.eraseElement(id);
+    m_inGroups.eraseElement(id);
 }
 
 void ActivityNode::reindexName(ID id, std::string newName) {
@@ -43,6 +47,7 @@ void ActivityNode::reindexName(ID id, std::string newName) {
     RedefinableElement::reindexName(id, newName);
     m_incoming.reindexName(id, newName);
     m_outgoing.reindexName(id, newName);
+    m_inGroups.reindexName(id, newName);
 }
 
 void ActivityNode::init() {
@@ -53,6 +58,15 @@ void ActivityNode::init() {
     m_incoming.m_signature = &ActivityNode::getIncoming;
     m_outgoing.opposite(&ActivityEdge::getSourceSingleton);
     m_outgoing.m_signature = &ActivityNode::getOutgoing;
+    m_inGroups.opposite(&ActivityGroup::getContainedNodes);
+    m_inGroups.m_signature = &ActivityNode::getInGroups;
+    m_inGroups.m_readOnly = true;
+    m_inPartitions.subsets(m_inGroups);
+    m_inPartitions.opposite(&ActivityPartition::getNodes);
+    m_inPartitions.m_signature = &ActivityNode::getInPartitions;
+    m_interruptibleRegions.subsets(m_inGroups);
+    m_interruptibleRegions.opposite(&InterruptibleActivityRegion::getNodes);
+    m_interruptibleRegions.m_signature = &ActivityNode::getInterruptibleRegions;
 }
 
 ActivityNode::ActivityNode() : Element(ElementType::ACTIVITY_NODE) {
@@ -89,6 +103,18 @@ void ActivityNode::setActivity(ActivityPtr activity) {
 
 void ActivityNode::setActivity(ID id) {
     m_activity.set(id);
+}
+
+Set<ActivityGroup, ActivityNode>& ActivityNode::getInGroups() {
+    return m_inGroups;
+}
+
+Set<ActivityPartition, ActivityNode>& ActivityNode::getInPartitions() {
+    return m_inPartitions;
+}
+
+Set<InterruptibleActivityRegion, ActivityNode>& ActivityNode::getInterruptibleRegions() {
+    return m_interruptibleRegions;
 }
 
 bool ActivityNode::isSubClassOf(ElementType eType) const {

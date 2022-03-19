@@ -5,6 +5,7 @@
 #include "uml/package.h"
 #include "uml/property.h"
 #include "uml/generalization.h"
+#include "uml/interruptibleActivityRegion.h"
 #include "uml/dataType.h"
 #include "uml/association.h"
 #include "uml/stereotype.h"

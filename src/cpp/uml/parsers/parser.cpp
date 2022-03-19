@@ -276,10 +276,16 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::ACTIVITY;
     } else if (eType.compare("ACTIVITY_EDGE") == 0) {
         return ElementType::ACTIVITY_EDGE;
+    } else if (eType.compare("ACTIVITY_FINAL_NODE") == 0) {
+        return ElementType::ACTIVITY_FINAL_NODE;
+    } else if (eType.compare("ACTIVITY_GROUP") == 0) {
+        return ElementType::ACTIVITY_GROUP;
     } else if (eType.compare("ACTIVITY_NODE") == 0) {
         return ElementType::ACTIVITY_NODE;
     } else if (eType.compare("ACTIVITY_PARAMETER_NODE") == 0) {
         return ElementType::ACTIVITY_PARAMETER_NODE;
+    } else if (eType.compare("ACTIVITY_PARTITION") == 0) {
+        return ElementType::ACTIVITY_PARTITION;
     } else if (eType.compare("ARTIFACT") == 0) {
         return ElementType::ARTIFACT;
     } else if (eType.compare("ASSOCIATION") == 0) {
@@ -362,6 +368,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::INTERFACE_UML;
     } else if (eType.compare("INTERFACE_REALIZATION") == 0) {
         return ElementType::INTERFACE_REALIZATION;
+    } else if (eType.compare("INTERRUPTIBLE_ACTIVITY_REGION") == 0) {
+        return ElementType::INTERRUPTIBLE_ACTIVITY_REGION;
     } else if (eType.compare("JOIN_NODE") == 0) {
         return ElementType::JOIN_NODE;
     } else if (eType.compare("LITERAL_BOOL") == 0) {
@@ -1065,7 +1073,7 @@ void emitDefinition(YAML::Emitter& emitter, EmitterMetaData& data, std::string n
         (*emitSig)(emitter, el, data);
         emitElementDefinitionEnd(emitter, V::elementType(), el);
     } else {
-        (*emitSig)(emitter, el data);
+        (*emitSig)(emitter, el, data);
     }
 }
 

@@ -20,8 +20,10 @@ namespace UML {
         ACTIVITY,
         ACTIVITY_EDGE,
         ACTIVITY_FINAL_NODE,
+        ACTIVITY_GROUP,
         ACTIVITY_NODE,
         ACTIVITY_PARAMETER_NODE,
+        ACTIVITY_PARTITION,
         ARTIFACT,
         ASSOCIATION,
         BEHAVIOR,
@@ -67,6 +69,7 @@ namespace UML {
         INSTANCE_VALUE,
         INTERFACE_UML, // why microsoft
         INTERFACE_REALIZATION,
+        INTERRUPTIBLE_ACTIVITY_REGION,
         JOIN_NODE,
         LITERAL_BOOL,
         LITERAL_INT,

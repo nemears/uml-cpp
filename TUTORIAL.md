@@ -20,7 +20,7 @@ Once an element is created but goes out of scope it can be retreived again throu
 UmlManager manager;
 ID clazzID;
 {
-    Class& clazz = manager.create<Class>();
+    Class& clazz = *manager.create<Class>();
     clazzID = clazz.getID();
 }
 Element& sameClazz = manager.get(clazzID);
@@ -62,8 +62,8 @@ Element& ownedElement = ownedElements.front();
 ```
 These containers have additional functionality other than just organizing the elements, they also enforce the needed parts of uml. For example below is how package and packageable elements enforce the opposite and subsets behavior in the specification (excuse the googletest macro).
 ```
-Package& package = manager.create<Package>();
-Class& packagedElement = manager.create<Class>();
+Package& package = *manager.create<Package>();
+Class& packagedElement = *manager.create<Class>();
 package.getPackagedElements().add(packagedElement);
 ASSERT_EQ(*packagedElement.getOwningPackage(), package);
 ASSERT_EQ(package.getOwnedElements().front(), packagedElement);

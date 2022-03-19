@@ -7,6 +7,7 @@
 #include "uml/dataType.h"
 #include "uml/association.h"
 #include "uml/stereotype.h"
+#include "uml/interruptibleActivityRegion.h"
 #include "uml/interface.h"
 #include "uml/deployment.h"
 #include "uml/umlPtr.h"

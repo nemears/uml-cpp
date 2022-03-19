@@ -13,6 +13,7 @@
 #include "uml/association.h"
 #include "uml/stereotype.h"
 #include "uml/interface.h"
+#include "uml/interruptibleActivityRegion.h"
 #include "uml/deployment.h"
 
 using namespace UML;

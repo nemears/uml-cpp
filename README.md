@@ -2,7 +2,7 @@
 
 ![example branch parameter](https://github.com/nemears/uml-cpp/actions/workflows/cmake.yml/badge.svg?branch=master)
 
-Lightweight UML based MBSE application built on yaml syntax UML config files    
+Lightweight UML based MBSE api built on yaml syntax UML config files    
 This is a work in progress but has basic functionality working.
 
 All behavior of this api is based off of the uml-2.5 specification. If you have general questions about the api the PDF on the [OMG website](https://www.omg.org/spec/UML/2.5) is a good place to start and it is written by the creators of UML.

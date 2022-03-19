@@ -12,11 +12,13 @@ namespace UML {
     typedef UmlPtr<Activity> ActivityPtr;
     typedef UmlPtr<ActivityNode> ActivityNodePtr;
     typedef UmlPtr<ValueSpecification> ValueSpecificationPtr;
+    typedef UmlPtr<InterruptibleActivityRegion> InterruptibleActivityRegionPtr;
 
     class ActivityEdge : public RedefinableElement {
 
         friend class Activity;
         friend class ActivityNode;
+        friend class InterruptibleActivityRegion;
 
         protected:
 
@@ -27,11 +29,15 @@ namespace UML {
             Singleton<ActivityNode, ActivityEdge> m_target = Singleton<ActivityNode, ActivityEdge>(this);
             Singleton<ValueSpecification, ActivityEdge> m_guard = Singleton<ValueSpecification, ActivityEdge>(this);
             Singleton<ValueSpecification, ActivityEdge> m_weight = Singleton<ValueSpecification, ActivityEdge>(this);
+            Set<ActivityGroup, ActivityEdge> m_inGroups = Set<ActivityGroup, ActivityEdge>(this);
+            Set<ActivityPartition, ActivityEdge> m_inPartitions = Set<ActivityPartition, ActivityEdge>(this);
+            Singleton<InterruptibleActivityRegion, ActivityEdge> m_interrupts = Singleton<InterruptibleActivityRegion, ActivityEdge>(this);
             Set<Activity, ActivityEdge>& getActivitySingleton();
             Set<ActivityNode, ActivityEdge>& getSourceSingleton();
             Set<ActivityNode, ActivityEdge>& getTargetSingleton();
             Set<ValueSpecification, ActivityEdge>& getGuardSingleton();
             Set<ValueSpecification, ActivityEdge>& getWeightSingleton();
+            Set<InterruptibleActivityRegion, ActivityEdge>& getInterruptsSingleton();
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
@@ -65,6 +71,13 @@ namespace UML {
             void setWeight(ValueSpecification& weight);
             void setWeight(ValueSpecificationPtr weight);
             void setWeight(ID id);
+            Set<ActivityGroup, ActivityEdge>& getInGroups();
+            Set<ActivityPartition, ActivityEdge>& getInPartitions();
+            InterruptibleActivityRegionPtr getInterrupts() const;
+            void setInterrupts(InterruptibleActivityRegion* interrupts);
+            void setInterrupts(InterruptibleActivityRegion& interrupts);
+            void setInterrupts(InterruptibleActivityRegionPtr interrupts);
+            void setInterrupts(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ACTIVITY_EDGE;

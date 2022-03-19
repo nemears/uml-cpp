@@ -3711,9 +3711,9 @@ void parseObjectNode(YAML::Node node, ObjectNode& objectNode, ParserMetaData& da
     parseTypedElement(node, objectNode, data);
     parseSetReferences<ActivityEdge, ActivityNode>(node, data, "incoming", objectNode, &ActivityNode::getIncoming);
     parseSetReferences<ActivityEdge, ActivityNode>(node, data, "outgoing", objectNode, &ActivityNode::getOutgoing);
-    if (node["isControlType"]) {
-        if (node["isControlType"].IsScalar()) {
-            objectNode.setControlType(node["isControlType"].as<bool>());
+    if (node["controlType"]) {
+        if (node["controlType"].IsScalar()) {
+            objectNode.setControlType(node["controlType"].as<bool>());
         }
     }
     if (node["ordering"]) {

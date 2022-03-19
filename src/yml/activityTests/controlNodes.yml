@@ -1,0 +1,58 @@
+---
+  activity:
+    name: activity
+    nodes:
+      - initialNode:
+          id: xEJA6ePYRh_mvOJl4RkslAak0ZYw
+          name: initialNode
+          outgoing: 
+            - vouMFtZaa68pLeGnb6xKJ4Q_pgzX
+      - forkNode:
+          id: 6ofCcGAhMbs7XoEd2nALFx0OPk1M
+          name: forkNode
+          incoming:
+            - vouMFtZaa68pLeGnb6xKJ4Q_pgzX
+          outgoing:
+            - EIQYuKIqAERcdTHPFe&MHY75rn4t
+            - 2xCjDr3YxUt72I1dTMIokgVX8aPl
+            - E6sFuO9lqn2IRaOhnXcyV5tHHejC
+      - joinNode:
+          id: DybCFIZ1C75VzLoDZq2vu1nNli7c
+          name: joinNode
+          incoming: 
+            - EIQYuKIqAERcdTHPFe&MHY75rn4t
+            - 2xCjDr3YxUt72I1dTMIokgVX8aPl
+          outgoing:
+            - gOUi9NuBfRc_bmm_eVXWF_fenH8G
+      - flowFinalNode:
+          id: usVWvgHugUPy5itFVtSx1Y&3rmkx
+          name: flowFinalNode
+          incoming:
+            - E6sFuO9lqn2IRaOhnXcyV5tHHejC
+      - activityFinalNode:
+          id: _I8kQp2IvEtdXMG&3va9wPEQLeil
+          name: activityFinalNode
+          incoming:
+            - gOUi9NuBfRc_bmm_eVXWF_fenH8G
+    edges:
+      - controlFlow:
+          id: vouMFtZaa68pLeGnb6xKJ4Q_pgzX
+          source: xEJA6ePYRh_mvOJl4RkslAak0ZYw
+          target: 6ofCcGAhMbs7XoEd2nALFx0OPk1M
+      - controlFlow:
+          id: EIQYuKIqAERcdTHPFe&MHY75rn4t
+          source: 6ofCcGAhMbs7XoEd2nALFx0OPk1M
+          target: DybCFIZ1C75VzLoDZq2vu1nNli7c
+      - controlFlow:
+          id: 2xCjDr3YxUt72I1dTMIokgVX8aPl
+          source: 6ofCcGAhMbs7XoEd2nALFx0OPk1M
+          target: DybCFIZ1C75VzLoDZq2vu1nNli7c
+      - controlFlow:
+          id: E6sFuO9lqn2IRaOhnXcyV5tHHejC
+          source: 6ofCcGAhMbs7XoEd2nALFx0OPk1M
+          target: usVWvgHugUPy5itFVtSx1Y&3rmkx
+      - controlFlow:
+          id: gOUi9NuBfRc_bmm_eVXWF_fenH8G
+          source: DybCFIZ1C75VzLoDZq2vu1nNli7c
+          target: _I8kQp2IvEtdXMG&3va9wPEQLeil
+...

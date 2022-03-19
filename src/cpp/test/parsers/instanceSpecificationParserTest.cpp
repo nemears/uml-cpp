@@ -19,7 +19,7 @@ TEST_F(InstanceSpecificationParserTest, forwardClassifierTest) {
     Element* el;
     UmlManager m;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "instanceSpecificationTests/forwardClassifier.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
+    ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
     ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);

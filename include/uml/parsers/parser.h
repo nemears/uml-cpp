@@ -202,6 +202,10 @@ namespace UML {
             void emitExecutableNode(YAML::Emitter& emitter, ExecutableNode& executableNode, EmitterMetaData& data);
             void parseExceptionHandler(YAML::Node node, ExceptionHandler& exception, ParserMetaData& data);
             void emitExceptionHandler(YAML::Emitter& emitter, ExceptionHandler& exception, EmitterMetaData& data);
+            void parseActivityPartition(YAML::Node node, ActivityPartition& partition, ParserMetaData& data);
+            void emitActivityPartition(YAML::Emitter& emitter, ActivityPartition& partition, EmitterMetaData& data);
+            void parseInterruptibleActivityRegion(YAML::Node node, InterruptibleActivityRegion& region, ParserMetaData& data);
+            void emitInterruptibleActivityRegion(YAML::Emitter& emitter, InterruptibleActivityRegion& region, EmitterMetaData& data);
         }
     }
 }

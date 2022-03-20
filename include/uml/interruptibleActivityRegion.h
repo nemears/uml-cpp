@@ -5,9 +5,16 @@
 
 namespace UML {
     class InterruptibleActivityRegion : public ActivityGroup {
+
+        friend class UmlManager;
+
         protected:
             Set<ActivityNode, InterruptibleActivityRegion> m_nodes = Set<ActivityNode, InterruptibleActivityRegion>(this);
             Set<ActivityEdge, InterruptibleActivityRegion> m_interruptingEdges = Set<ActivityEdge, InterruptibleActivityRegion>(this);
+            void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID) override;
+            void reindexName(ID id, std::string newName) override;
+            void referenceErased(ID id) override;
             void init();
             InterruptibleActivityRegion();
         public:

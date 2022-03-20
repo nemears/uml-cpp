@@ -633,6 +633,11 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
             return;
         }
     }
+    if (ret->isSubClassOf(ElementType::ACTIVITY_PARTITION)) {
+        if (parseSingletonReference(node, data, "activity", ret->as<ActivityPartition>(), &ActivityPartition::setActivity, &ActivityPartition::setActivity)) {
+            return;
+        }
+    }
     if (ret->isSubClassOf(ElementType::COMMENT)) {
         if (node["owner"]) {
             if (node["owner"].IsScalar()) {
@@ -682,6 +687,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
 
     if (node["activityParameterNode"]) {
         ret = &parseDefinition<ActivityParameterNode>(node, data, "activityParameterNode", parseActivityParameterNode);
+    }
+
+    if (node["activityPartition"]) {
+        ret = &parseDefinition<ActivityPartition>(node, data, "activityPartition", parseActivityPartition);
     }
 
     if (node["association"]) {
@@ -846,6 +855,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
 
     if (node["interfaceRealization"]) {
         ret = &parseDefinition<InterfaceRealization>(node, data, "interfaceRealization", parseInterfaceRealization);
+    }
+
+    if (node["interruptibleActivityRegion"]) {
+        ret = &parseDefinition<InterruptibleActivityRegion>(node, data, "interruptibleActivityRegion", parseInterruptibleActivityRegion);
     }
 
     if (node["joinNode"]) {
@@ -1100,6 +1113,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitActivityParameterNode(emitter, el.as<ActivityParameterNode>(), data);
             break;
         }
+        case ElementType::ACTIVITY_PARTITION : {
+            emitActivityPartition(emitter, el.as<ActivityPartition>(), data);
+            break;
+        }
         case ElementType::ARTIFACT : {
             emitArtifact(emitter, el.as<Artifact>(), data);
             break;
@@ -1231,6 +1248,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         }
         case ElementType::INTERFACE_REALIZATION : {
             emitInterfaceRealization(emitter, el.as<InterfaceRealization>(), data);
+            break;
+        }
+        case ElementType::INTERRUPTIBLE_ACTIVITY_REGION : {
+            emitInterruptibleActivityRegion(emitter, el.as<InterruptibleActivityRegion>(), data);
             break;
         }
         case ElementType::JOIN_NODE : {
@@ -1531,6 +1552,12 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::ACTIVITY_NODE)) {
             if (el.as<ActivityNode>().getActivity()) {
                 emitter << YAML::Key << "activity" << el.as<ActivityNode>().getActivity().id().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::ACTIVITY_PARTITION)) {
+            if (el.as<ActivityPartition>().getActivity()) {
+                emitter << YAML::Key << "acitivity" << el.as<ActivityPartition>().getActivity().id().string();
                 return;
             }
         }
@@ -3679,10 +3706,16 @@ ActivityEdge& determineAndParseActivityEdge(YAML::Node node, ParserMetaData& dat
     }
 }
 
+ActivityPartition& determineAndParseActivityPartition(YAML::Node node, ParserMetaData& data) {
+    return parseDefinition<ActivityPartition>(node, data, "activityPartition", parseActivityPartition);
+}
+
 void parseActivity(YAML::Node node, Activity& activity, ParserMetaData& data) {
     parseBehavior(node, activity, data);
     parseSequenceDefinitions(node, data, "nodes", activity, &Activity::getNodes, determineAndParseActivityNode);
     parseSequenceDefinitions(node, data, "edges", activity, &Activity::getEdges, determineAndParseActivityEdge);
+    parseSequenceDefinitions(node, data, "partitions", activity, &Activity::getPartitions, determineAndParseActivityPartition);
+    // TODO groups, interruptibleActivityRegions
 }
 
 void emitActivity(YAML::Emitter& emitter, Activity& activity, EmitterMetaData& data) {
@@ -3690,6 +3723,7 @@ void emitActivity(YAML::Emitter& emitter, Activity& activity, EmitterMetaData& d
     emitBehavior(emitter, activity, data);
     emitSequence(emitter, "nodes", data, activity, &Activity::getNodes);
     emitSequence(emitter, "edges", data, activity, &Activity::getEdges);
+    emitSequence(emitter, "partitions", data, activity, &Activity::getPartitions);
     emitElementDefenitionEnd(emitter, ElementType::ACTIVITY, activity);
 }
 
@@ -3697,12 +3731,14 @@ void parseActivityNode(YAML::Node node, ActivityNode& activityNode, ParserMetaDa
     parseNamedElement(node, activityNode, data);
     parseSetReferences<ActivityEdge, ActivityNode>(node, data, "incoming", activityNode, &ActivityNode::getIncoming);
     parseSetReferences<ActivityEdge, ActivityNode>(node, data, "outgoing", activityNode, &ActivityNode::getOutgoing);
+    parseSetReferences<ActivityPartition, ActivityNode>(node, data, "inPartitions", activityNode, &ActivityNode::getInPartitions);
 }
 
 void emitActivityNode(YAML::Emitter& emitter, ActivityNode& activityNode, EmitterMetaData& data) {
     emitNamedElement(emitter, activityNode, data);
     emitSequenceReferences(emitter, "incoming", data, activityNode, &ActivityNode::getIncoming);
     emitSequenceReferences(emitter, "outgoing", data, activityNode, &ActivityNode::getOutgoing);
+    emitSequenceReferences(emitter, "inPartitions", data, activityNode, &ActivityNode::getInPartitions);
 }
 
 void parseActivityEdge(YAML::Node node, ActivityEdge& edge, ParserMetaData& data) {
@@ -3711,6 +3747,7 @@ void parseActivityEdge(YAML::Node node, ActivityEdge& edge, ParserMetaData& data
     parseSingletonReference(node, data, "source", edge, &ActivityEdge::setSource, &ActivityEdge::setSource);
     parseSingletonDefinition(node, data, "guard", edge, determineAndParseValueSpecification, &ActivityEdge::setGuard, &ActivityEdge::setGuard);
     parseSingletonDefinition(node, data, "weight", edge, determineAndParseValueSpecification, &ActivityEdge::setWeight, &ActivityEdge::setWeight);
+    parseSetReferences<ActivityPartition, ActivityEdge>(node, data, "inPartitions", edge, &ActivityEdge::getInPartitions);
 }
 
 void emitActivityEdge(YAML::Emitter& emitter, ActivityEdge& edge, EmitterMetaData& data) {
@@ -3721,6 +3758,9 @@ void emitActivityEdge(YAML::Emitter& emitter, ActivityEdge& edge, EmitterMetaDat
     if (edge.getSource()) {
         emitter << YAML::Key << "source" << YAML::Value << edge.getSource().id().string();
     }
+    emitSingletonDefinition(emitter, "guard", data, edge, &ActivityEdge::getGuard);
+    emitSingletonDefinition(emitter, "weight", data, edge, &ActivityEdge::getWeight);
+    emitSequenceReferences(emitter, "inPartitions", data, edge, &ActivityEdge::getInPartitions);
 }
 
 void parseObjectFlow(YAML::Node node, ObjectFlow& flow, ParserMetaData& data) {
@@ -3880,6 +3920,43 @@ void emitExceptionHandler(YAML::Emitter& emitter, ExceptionHandler& handler, Emi
     }
     emitSequenceReferences(emitter, "exceptionTypes", data, handler, &ExceptionHandler::getExceptionTypes);
     emitElementDefenitionEnd(emitter, ElementType::EXCEPTION_HANDLER, handler);
+}
+
+void parseActivityPartition(YAML::Node node, ActivityPartition& partition, ParserMetaData& data) {
+    parseNamedElement(node, partition, data);
+    parseSingletonReference(node, data, "represents", partition, &ActivityPartition::setRepresents, &ActivityPartition::setRepresents);
+    parseSequenceDefinitions(node, data, "subPartitions", partition, &ActivityPartition::getSubPartitions, determineAndParseActivityPartition);
+    parseSetReferences<ActivityNode, ActivityPartition>(node, data, "nodes", partition, &ActivityPartition::getNodes);
+    parseSetReferences<ActivityEdge, ActivityPartition>(node, data, "edges", partition, &ActivityPartition::getEdges);
+}
+
+void emitActivityPartition(YAML::Emitter& emitter, ActivityPartition& partition, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::ACTIVITY_PARTITION, "activityPartition", partition, data);
+    emitNamedElement(emitter, partition, data);
+    if (partition.getRepresents()) {
+        emitter << YAML::Key << "represents" << YAML::Value << partition.getRepresents().id().string();
+    }
+    emitSequence(emitter, "subPartitions", data, partition, &ActivityPartition::getSubPartitions);
+    emitSequenceReferences(emitter, "nodes", data, partition, &ActivityPartition::getNodes);
+    emitSequenceReferences(emitter, "edges", data, partition, &ActivityPartition::getEdges);
+    emitElementDefenitionEnd(emitter, ElementType::ACTIVITY_PARTITION, partition);
+}
+
+void parseInterruptibleActivityRegion(YAML::Node node, InterruptibleActivityRegion& region, ParserMetaData& data) {
+    parseNamedElement(node, region, data);
+    parseSetReferences<ActivityNode, InterruptibleActivityRegion>(node, data, "nodes", region, &InterruptibleActivityRegion::getNodes);
+    parseSetReferences<ActivityEdge, ActivityGroup>(node, data, "containedEdges", region, &ActivityGroup::getContainedEdges);
+    parseSetReferences<ActivityEdge, InterruptibleActivityRegion>(node, data, "interruptingEdges", region, &InterruptibleActivityRegion::getInterruptingEdges);
+    // TODO subgroups
+}
+
+void emitInterruptibleActivityRegion(YAML::Emitter& emitter, InterruptibleActivityRegion& region, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::INTERRUPTIBLE_ACTIVITY_REGION, "interruptibleActivityRegion", region, data);
+    emitNamedElement(emitter, region, data);
+    emitSequenceReferences(emitter, "nodes", data, region, &InterruptibleActivityRegion::getNodes);
+    emitSequenceReferences<ActivityEdge, ActivityGroup>(emitter, "containedEdges", data, region, &ActivityGroup::getContainedEdges);
+    emitSequenceReferences(emitter, "interruptingEdges", data, region, &InterruptibleActivityRegion::getInterruptingEdges);
+    emitElementDefenitionEnd(emitter, ElementType::INTERRUPTIBLE_ACTIVITY_REGION, region);
 }
     
 }

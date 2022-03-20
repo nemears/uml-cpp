@@ -24,11 +24,15 @@
             - 2xCjDr3YxUt72I1dTMIokgVX8aPl
           outgoing:
             - gOUi9NuBfRc_bmm_eVXWF_fenH8G
+          inPartitions:
+            - 6Fy7ykTXOzCLDlUKBCt33Rc9RuGb
       - flowFinalNode:
           id: usVWvgHugUPy5itFVtSx1Y&3rmkx
           name: flowFinalNode
           incoming:
             - E6sFuO9lqn2IRaOhnXcyV5tHHejC
+          inPartitions:
+            - 6Fy7ykTXOzCLDlUKBCt33Rc9RuGb
       - activityFinalNode:
           id: _I8kQp2IvEtdXMG&3va9wPEQLeil
           name: activityFinalNode
@@ -51,8 +55,19 @@
           id: E6sFuO9lqn2IRaOhnXcyV5tHHejC
           source: 6ofCcGAhMbs7XoEd2nALFx0OPk1M
           target: usVWvgHugUPy5itFVtSx1Y&3rmkx
+          inPartitions:
+            - 6Fy7ykTXOzCLDlUKBCt33Rc9RuGb
       - controlFlow:
           id: gOUi9NuBfRc_bmm_eVXWF_fenH8G
           source: DybCFIZ1C75VzLoDZq2vu1nNli7c
           target: _I8kQp2IvEtdXMG&3va9wPEQLeil
+    partitions:
+      - activityPartition:
+          id: 6Fy7ykTXOzCLDlUKBCt33Rc9RuGb
+          name: partition
+          nodes:
+            - DybCFIZ1C75VzLoDZq2vu1nNli7c
+            - usVWvgHugUPy5itFVtSx1Y&3rmkx
+          edges:
+            - E6sFuO9lqn2IRaOhnXcyV5tHHejC
 ...

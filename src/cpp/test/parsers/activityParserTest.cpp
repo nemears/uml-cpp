@@ -21,11 +21,13 @@ TEST_F(ActivityParserTest, parseControlNodes) {
     Activity& activity = parsed->as<Activity>();
     ASSERT_EQ(activity.getNodes().size(), 5);
     ASSERT_EQ(activity.getEdges().size(), 5);
+    ASSERT_EQ(activity.getPartitions().size(), 1);
     InitialNode& initialNode = activity.getNodes().get("initialNode").as<InitialNode>();
     ForkNode& forkNode = activity.getNodes().get("forkNode").as<ForkNode>();
     FlowFinalNode& flowFinalNode = activity.getNodes().get("flowFinalNode").as<FlowFinalNode>();
     JoinNode& joinNode = activity.getNodes().get("joinNode").as<JoinNode>();
     ActivityFinalNode& activityFinalNode = activity.getNodes().get("activityFinalNode").as<ActivityFinalNode>();
+    ActivityPartition& partition = activity.getPartitions().front();
     ASSERT_EQ(*initialNode.getOutgoing().front().getTarget(), forkNode);
     ASSERT_EQ(*forkNode.getIncoming().front().getSource(), initialNode);
     ASSERT_TRUE(forkNode.getOutgoing().contains(joinNode.getIncoming().front()));
@@ -33,6 +35,11 @@ TEST_F(ActivityParserTest, parseControlNodes) {
     ASSERT_TRUE(forkNode.getOutgoing().contains(flowFinalNode.getIncoming().front()));
     ASSERT_EQ(*activityFinalNode.getIncoming().front().getSource(), joinNode);
     ASSERT_EQ(*joinNode.getOutgoing().front().getTarget(), activityFinalNode);
+    ASSERT_TRUE(partition.getNodes().contains(joinNode));
+    ASSERT_TRUE(partition.getNodes().contains(flowFinalNode));
+    ASSERT_TRUE(partition.getEdges().contains(flowFinalNode.getIncoming().front()));
+    ASSERT_EQ(joinNode.getInPartitions().front(), partition);
+    ASSERT_EQ(flowFinalNode.getInPartitions().front(), partition);
 }
 
 TEST_F(ActivityParserTest, objectNodeTest) {

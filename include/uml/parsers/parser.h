@@ -19,6 +19,7 @@ namespace UML {
     class LiteralInt;
     class LiteralString;
     class LiteralUnlimitedNatural;
+    class Pin;
 
     namespace Parsers {
 
@@ -210,6 +211,12 @@ namespace UML {
             void emitConstraint(YAML::Emitter& emitter, Constraint& constraint, EmitterMetaData& data);
             void parseNamespace(YAML::Node node, Namespace& nmspc, ParserMetaData& data);
             void emitNamespace(YAML::Emitter& emitter, Namespace& nmspc, EmitterMetaData& data);
+            void parseAction(YAML::Node node, Action& action, ParserMetaData& data);
+            void emitAction(YAML::Emitter& emitter, Action& action, EmitterMetaData& data);
+            void parsePin(YAML::Node node, Pin& pin, ParserMetaData& data);
+            void emitPin(YAML::Emitter& emitter, Pin& pin, EmitterMetaData& data);
+            void parseOpaqueAction(YAML::Node node, OpaqueAction& action, ParserMetaData& data);
+            void emitOpaqueAction(YAML::Emitter& emitter, OpaqueAction& action, EmitterMetaData& data);
         }
     }
 }

@@ -89,15 +89,15 @@ TEST_F(ActivityParserTest, mountActivityTest) {
     UmlManager m;
     ActivityPtr activity = m.create<Activity>();
     m.setRoot(*activity);
-    ExecutableNodePtr executablNode = m.create<ExecutableNode>();
+    OpaqueActionPtr action = m.create<OpaqueAction>();
     ExceptionHandlerPtr exceptionHandler = m.create<ExceptionHandler>();
-    activity->getNodes().add(*executablNode);
-    executablNode->getHandlers().add(*exceptionHandler);
+    activity->getNodes().add(*action);
+    action->getHandlers().add(*exceptionHandler);
     m.mount(".");
-    executablNode.release();
-    ASSERT_FALSE(executablNode.loaded());
-    ASSERT_EQ(executablNode.id(), exceptionHandler->getOwner().id());
-    ASSERT_FALSE(executablNode.loaded());
-    ASSERT_EQ(executablNode->getActivity(), activity);
-    ASSERT_TRUE(executablNode.loaded());
+    action.release();
+    ASSERT_FALSE(action.loaded());
+    ASSERT_EQ(action.id(), exceptionHandler->getOwner().id());
+    ASSERT_FALSE(action.loaded());
+    ASSERT_EQ(action->getActivity(), activity);
+    ASSERT_TRUE(action.loaded());
 }

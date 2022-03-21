@@ -55,6 +55,7 @@
 #include "uml/mergeNode.h"
 #include "uml/model.h"
 #include "uml/objectFlow.h"
+#include "uml/opaqueAction.h"
 #include "uml/opaqueBehavior.h"
 #include "uml/operation.h"
 #include "uml/package.h"
@@ -84,6 +85,7 @@ namespace UML {
     typedef UmlPtr<PrimitiveType> PrimitiveTypePtr;
     typedef UmlPtr<LiteralBool> LiteralBoolPtr;
     typedef UmlPtr<ExceptionHandler> ExceptionHandlerPtr;
+    typedef UmlPtr<OpaqueAction> OpaqueActionPtr;
 }
 
 #endif

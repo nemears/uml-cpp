@@ -793,10 +793,6 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
     if (node["exceptionHandler"]) {
         ret = &parseDefinition<ExceptionHandler>(node, data, "exceptionHandler", parseExceptionHandler);
     }
-    
-    if (node["executableNode"]) {
-        ret = &parseDefinition<ExecutableNode>(node, data, "executableNode", parseExecutableNode);
-    }
 
     if (node["expression"]) {
         if (node["expression"].IsMap()) {
@@ -842,6 +838,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
 
     if (node["initialNode"]) {
         ret = &parseDefinition<InitialNode>(node, data, "initialNode", parseActivityNode);
+    }
+
+    if (node["inputPin"]) {
+        ret = &parseDefinition<InputPin>(node, data, "inputPin", parsePin);
     }
 
     if (node["instanceSpecification"]) {
@@ -930,6 +930,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &parseDefinition<ObjectFlow>(node, data, "objectFlow", parseObjectFlow);
     }
 
+    if (node["opaqueAction"]) {
+        ret = &parseDefinition<OpaqueAction>(node, data, "opaqueAction", parseOpaqueAction);
+    }
+
     if (node["opaqueBehavior"]) {
         OpaqueBehavior& bhv = *data.m_manager->create<OpaqueBehavior>();
         parseOpaqueBehavior(node["opaqueBehavior"], bhv, data);
@@ -942,6 +946,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
             parseOperation(node["operation"], op, data);
             ret = &op;
         }
+    }
+
+    if (node["outputPin"]) {
+        ret = &parseDefinition<OutputPin>(node, data, "outputPin", parsePin);
     }
 
     if (node["package"]) {
@@ -1201,10 +1209,6 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitExceptionHandler(emitter, el.as<ExceptionHandler>(), data);
             break;
         }
-        case ElementType::EXECUTABLE_NODE : {
-            emitExecutableNode(emitter, el.as<ExecutableNode>(), data);
-            break;
-        }
         case ElementType::EXPRESSION : {
             emitExpression(emitter, dynamic_cast<Expression&>(el), data);
             break;
@@ -1243,6 +1247,12 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitElementDefenition(emitter, ElementType::INITIAL_NODE, "initialNode", el, data);
             emitActivityNode(emitter, el.as<ActivityNode>(), data);
             emitElementDefenitionEnd(emitter, ElementType::INITIAL_NODE, el);
+            break;
+        }
+        case ElementType::INPUT_PIN : {
+            emitElementDefenition(emitter, ElementType::INPUT_PIN, "inputPin", el, data);
+            emitPin(emitter, el.as<InputPin>(), data);
+            emitElementDefenitionEnd(emitter, ElementType::INPUT_PIN, el);
             break;
         }
         case ElementType::INSTANCE_SPECIFICATION : {
@@ -1315,12 +1325,22 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitObjectFlow(emitter, el.as<ObjectFlow>(), data);
             break;
         }
+        case ElementType::OPAQUE_ACTION : {
+            emitOpaqueAction(emitter, el.as<OpaqueAction>(), data);
+            break;
+        }
         case ElementType::OPAQUE_BEHAVIOR : {
             emitOpaqueBehavior(emitter, dynamic_cast<OpaqueBehavior&>(el), data);
             break;
         }
         case ElementType::OPERATION : {
             emitOperation(emitter, el.as<Operation>(), data);
+            break;
+        }
+        case ElementType::OUTPUT_PIN : {
+            emitElementDefenition(emitter, ElementType::OUTPUT_PIN, "outputPin", el, data);
+            emitPin(emitter, el.as<Pin>(), data);
+            emitElementDefenitionEnd(emitter, ElementType::OUTPUT_PIN, el);
             break;
         }
         case ElementType::PACKAGE : {
@@ -3694,8 +3714,6 @@ ActivityNode& determineAndParseActivityNode(YAML::Node node, ParserMetaData& dat
         return parseDefinition<DataStoreNode>(node, data, "dataStoreNode", parseObjectNode);
     } else if (node["decisionNode"]) {
         return parseDefinition<DecisionNode>(node, data, "decisionNode", parseDecisionNode);
-    } else if (node["executableNode"]) {
-        return parseDefinition<ExecutableNode>(node, data, "executableNode", parseExecutableNode);
     } else if (node["flowFinalNode"]) {
         return parseDefinition<FlowFinalNode>(node, data, "flowFinalNode", parseActivityNode);
     } else if (node["forkNode"]) {
@@ -3703,13 +3721,15 @@ ActivityNode& determineAndParseActivityNode(YAML::Node node, ParserMetaData& dat
     } else if (node["initialNode"]) {
         return parseDefinition<InitialNode>(node, data, "initialNode", parseActivityNode);
     } else if (node["inputPin"]) {
-        throw UmlParserException("TODO inputPin", data.m_path.string(), node["inputPin"]);
+        return parseDefinition<InputPin>(node, data, "inputPin", parsePin);
     } else if (node["joinNode"]) {
         return parseDefinition<JoinNode>(node, data, "joinNode", parseJoinNode);
     } else if (node["mergeNode"]) {
         return parseDefinition<MergeNode>(node, data, "mergeNode", parseActivityNode);
+    } else if (node["opaqueAction"]) {
+        return parseDefinition<OpaqueAction>(node, data, "opaqueAction", parseOpaqueAction);
     } else if (node["outputPin"]) {
-        throw UmlParserException("TODO outputPin", data.m_path.string(), node["outputPin"]);
+        return parseDefinition<OutputPin>(node, data, "inputPin", parsePin);
     } else {
         throw UmlParserException("Could not identify activity node", data.m_path.string(), node);
     }
@@ -3931,6 +3951,7 @@ void parseExceptionHandler(YAML::Node node, ExceptionHandler& handler, ParserMet
 
 void emitExceptionHandler(YAML::Emitter& emitter, ExceptionHandler& handler, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::EXCEPTION_HANDLER, "exceptionHandler", handler, data);
+    emitElement(emitter, handler, data);
     if (handler.getHandlerBody()) {
         emitter << YAML::Key << "handlerBody" << YAML::Value << handler.getHandlerBody().id().string();
     }
@@ -4008,6 +4029,76 @@ void parseNamespace(YAML::Node node, Namespace& nmspc, ParserMetaData& data) {
 void emitNamespace(YAML::Emitter& emitter, Namespace& nmspc, EmitterMetaData& data) {
     emitNamedElement(emitter, nmspc, data);
     emitSequence(emitter, "ownedRules", data, nmspc, &Namespace::getOwnedRules);
+}
+
+void parseAction(YAML::Node node, Action& action, ParserMetaData& data) {
+    parseExecutableNode(node, action, data);
+    if (node["isLocallyReentrant"]) {
+        action.setIsLocallyReentrant(node["isLocallyReentrant"].as<bool>());
+    }
+    parseSequenceDefinitions(node, data, "localPreconditions", action, &Action::getLocalPreconditions, determineAndParseConstraint);
+    parseSequenceDefinitions(node, data, "localPostconditions", action, &Action::getLocalPostconditions, determineAndParseConstraint);
+}
+
+void emitAction(YAML::Emitter& emitter, Action& action, EmitterMetaData& data) {
+    emitExecutableNode(emitter, action, data);
+    emitter << YAML::Key << "isLocallyReentrant" << YAML::Value << action.isLocallyReentrant();
+    emitSequence(emitter, "localPreconditions", data, action, &Action::getLocalPreconditions);
+    emitSequence(emitter, "localPostcondtitions", data, action, &Action::getLocalPostconditions);
+}
+
+void parsePin(YAML::Node node, Pin& pin, ParserMetaData& data) {
+    parseObjectNode(node, pin, data);
+    parseMultiplicityElement(node, pin, data);
+    if (node["isControl"]) {
+        pin.setIsControl(node["isControl"].as<bool>());
+    }
+}
+
+void emitPin(YAML::Emitter& emitter, Pin& pin, EmitterMetaData& data) {
+    emitObjectNode(emitter, pin, data);
+    emitMultiplicityElement(emitter, pin, data);
+    emitter << YAML::Key << "isControl" << YAML::Value << pin.isControl();
+}
+
+InputPin& determineAndParseInputPin(YAML::Node node, ParserMetaData& data) {
+    if (node["inputPin"]) {
+        return parseDefinition<InputPin>(node, data, "inputPin", parsePin);
+    } else {
+        throw UmlParserException("TODO, determine and parse other input pins!", data.m_path.string(), node);
+    }
+}
+
+OutputPin& determineAndParseOutputPin(YAML::Node node, ParserMetaData& data) {
+    if (node["outputPin"]) {
+        return parseDefinition<OutputPin>(node, data, "outputPin", parsePin);
+    } else {
+        throw UmlParserException("TODO, determine and parse other output pins!", data.m_path.string(), node);
+    }
+}
+
+LiteralString& determineAndParseLiteralString(YAML::Node node, ParserMetaData& data) {
+    if (node["literalString"]) {
+        return parseDefinition<LiteralString>(node, data, "literalString", parseLiteralString);
+    } else {
+        throw UmlParserException("TODO literalString parsing", data.m_path.string(), node);
+    }
+}
+
+void parseOpaqueAction(YAML::Node node, OpaqueAction& action, ParserMetaData& data) {
+    parseAction(node, action, data);
+    parseSequenceDefinitions(node, data, "inputValues", action, &OpaqueAction::getInputValues, determineAndParseInputPin);
+    parseSequenceDefinitions(node, data, "outputValues", action, &OpaqueAction::getOutputValues, determineAndParseOutputPin);
+    parseSequenceDefinitions(node, data, "bodies", action, &OpaqueAction::getBodies, determineAndParseLiteralString);
+}
+
+void emitOpaqueAction(YAML::Emitter& emitter, OpaqueAction& action, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::OPAQUE_ACTION, "opaqueAction", action, data);
+    emitAction(emitter, action, data);
+    emitSequence(emitter, "inputValues", data, action, &OpaqueAction::getInputValues);
+    emitSequence(emitter, "outputValues", data, action, &OpaqueAction::getOutputValues);
+    emitSequence(emitter, "bodies", data, action, &OpaqueAction::getOutputValues);
+    emitElementDefenitionEnd(emitter, ElementType::OPAQUE_ACTION, action);
 }
 
 }

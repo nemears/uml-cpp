@@ -22,6 +22,14 @@ Pin::~Pin() {
     
 }
 
+bool Pin::isControl() const {
+    return m_isControl;
+}
+
+void Pin::setIsControl(bool val) {
+    m_isControl = val;
+}
+
 bool Pin::isSubClassOf(ElementType eType) const {
     bool ret = ObjectNode::isSubClassOf(eType);
 

@@ -87,6 +87,7 @@ namespace UML {
         NAMESPACE,
         OBJECT_FLOW,
         OBJECT_NODE,
+        OPAQUE_ACTION,
         OPAQUE_BEHAVIOR,
         OPERATION,
         OUTPUT_PIN,

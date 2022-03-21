@@ -10,9 +10,12 @@ namespace UML {
         friend class UmlManager;
 
         protected:
+            bool m_isControl = false;
             Pin();
         public:
             virtual ~Pin();
+            bool isControl() const;
+            void setIsControl(bool val);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PIN;

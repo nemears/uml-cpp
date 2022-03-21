@@ -8,9 +8,6 @@ namespace UML {
     class ExceptionHandler;
 
     class ExecutableNode : public ActivityNode {
-
-        friend class UmlManager;
-
         protected:
             Set<ExceptionHandler, ExecutableNode> m_handlers = Set<ExceptionHandler, ExecutableNode>(this);
             void init();

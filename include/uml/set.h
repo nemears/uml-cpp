@@ -339,6 +339,7 @@ namespace UML {
     class ActivityPartition;
     class InterruptibleActivityRegion;
     class Constraint;
+    class OpaqueAction;
 
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
@@ -429,6 +430,7 @@ namespace UML {
         friend class ActivityPartition;
         friend class InterruptibleActivityRegion;
         friend class Constraint;
+        friend class OpaqueAction;
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
         friend void Parsers::setOwner(Element& el, ID id);

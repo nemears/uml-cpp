@@ -3,8 +3,12 @@
 
 #include <iostream>
 #include "namedElement.h"
+#include "constraint.h"
 
 namespace UML{
+
+    class Constraint;
+
     /**
      * A Namespace is an Element in a model that contains a set of NamedElements that can be identified by name
      **/
@@ -13,6 +17,7 @@ namespace UML{
         protected:
             Set<NamedElement, Namespace> m_members = Set<NamedElement, Namespace>(this);
             Set<NamedElement, Namespace> m_ownedMembers = Set<NamedElement, Namespace>(this);
+            Set<Constraint, Namespace> m_ownedRules = Set<Constraint, Namespace>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(ID id, std::string newName) override;
@@ -24,6 +29,7 @@ namespace UML{
             void setName(const std::string& name) override;
             Set<NamedElement, Namespace>& getMembers();
             Set<NamedElement, Namespace>& getOwnedMembers();
+            Set<Constraint, Namespace>& getOwnedRules();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::NAMESPACE;

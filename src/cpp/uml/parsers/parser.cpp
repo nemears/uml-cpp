@@ -638,6 +638,11 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
             return;
         }
     }
+    if (ret->isSubClassOf(ElementType::CONSTRAINT)) {
+        if (parseSingletonReference(node, data, "context", ret->as<Constraint>(), &Constraint::setContext, &Constraint::setContext)) {
+            return;
+        }
+    }
     if (ret->isSubClassOf(ElementType::COMMENT)) {
         if (node["owner"]) {
             if (node["owner"].IsScalar()) {
@@ -733,6 +738,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
 
     if (node["connectorEnd"]) {
         ret = &parseDefinition<ConnectorEnd>(node, data, "connectorEnd", parseConnectorEnd);
+    }
+
+    if (node["constraint"]) {
+        ret = &parseDefinition<Constraint>(node, data, "constraint", parseConstraint);
     }
 
     if (node["controlFlow"]) {
@@ -1148,6 +1157,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitConnectorEnd(emitter, el.as<ConnectorEnd>(), data);
             break;
         }
+        case ElementType::CONSTRAINT : {
+            emitConstraint(emitter, el.as<Constraint>(), data);
+            break;
+        }
         case ElementType::CONTROL_FLOW : {
             emitElementDefenition(emitter, ElementType::CONTROL_FLOW, "controlFlow", el, data);
             emitActivityEdge(emitter, el.as<ControlFlow>(), data);
@@ -1561,6 +1574,12 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
                 return;
             }
         }
+        if (el.isSubClassOf(ElementType::CONSTRAINT)) {
+            if (el.as<Constraint>().getContext()) {
+                emitter << YAML::Key << "context" << el.as<Constraint>().getContext().id().string();
+                return;
+            }
+        }
         if (el.isSubClassOf(ElementType::COMMENT)) {
             if (el.getOwner()) {
                 emitter << YAML::Key << "owner" << YAML::Value << el.getOwner().id().string();
@@ -1813,7 +1832,7 @@ Generalization& determineAndParseGeneralization(YAML::Node node, ParserMetaData&
 }
 
 void emitClassifier(YAML::Emitter& emitter, Classifier& clazz, EmitterMetaData& data) {
-    emitNamedElement(emitter, clazz, data);
+    emitNamespace(emitter, clazz, data);
     emitTemplateableElement(emitter, clazz, data);
     emitParameterableElement(emitter, clazz, data);
     emitSequence(emitter, "generalizations", data, clazz, &Classifier::getGeneralizations);
@@ -2404,7 +2423,7 @@ Stereotype& determineAndParseStereotype(YAML::Node node, ParserMetaData& data) {
 }
 
 void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
-    parseNamedElement(node, pckg, data);
+    parseNamespace(node, pckg, data);
     parseTemplateableElement(node, pckg, data);
     parseParameterableElement(node, pckg, data);
     parseSequenceDefinitions(node, data, "packageMerge", pckg, &Package::getPackageMerge, determineAndParsePackageMerge);
@@ -2415,7 +2434,7 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
 
 void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::PACKAGE, "package", pckg, data);
-    emitNamedElement(emitter, pckg, data);
+    emitNamespace(emitter, pckg, data);
     emitTemplateableElement(emitter, pckg, data);
     emitParameterableElement(emitter, pckg, data);
     emitSequence(emitter, "packageMerge", data, pckg, &Package::getPackageMerge);
@@ -3350,7 +3369,7 @@ void parseTypedElement(YAML::Node node, TypedElement& el, ParserMetaData& data) 
 }
 
 void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
-    parseNamedElement(node, clazz, data);
+    parseNamespace(node, clazz, data);
     parseTemplateableElement(node, clazz, data);
     parseParameterableElement(node, clazz, data);
     parseSequenceDefinitions(node, data, "generalizations", clazz, &Classifier::getGeneralizations, determineAndParseGeneralization);
@@ -3958,7 +3977,39 @@ void emitInterruptibleActivityRegion(YAML::Emitter& emitter, InterruptibleActivi
     emitSequenceReferences(emitter, "interruptingEdges", data, region, &InterruptibleActivityRegion::getInterruptingEdges);
     emitElementDefenitionEnd(emitter, ElementType::INTERRUPTIBLE_ACTIVITY_REGION, region);
 }
+
+void parseConstraint(YAML::Node node, Constraint& constraint, ParserMetaData& data) {
+    parseNamedElement(node, constraint, data);
+    parseSetReferences<Element, Constraint>(node, data, "constrainedElements", constraint, &Constraint::getConstrainedElements);
+    parseSequenceDefinitions(node, data, "specifications", constraint, &Constraint::getSpecifications, determineAndParseValueSpecification);
+}
     
+void emitConstraint(YAML::Emitter& emitter, Constraint& constraint, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::CONSTRAINT, "constraint", constraint, data);
+    emitNamedElement(emitter, constraint, data);
+    emitSequenceReferences(emitter, "constrainedElements", data, constraint, &Constraint::getConstrainedElements);
+    emitSequence(emitter, "specifications", data, constraint, &Constraint::getSpecifications);
+    emitElementDefenitionEnd(emitter, ElementType::CONSTRAINT, constraint);
+}
+
+Constraint& determineAndParseConstraint(YAML::Node node, ParserMetaData& data) {
+    if (node["constraint"]) {
+        return parseDefinition<Constraint>(node, data, "constraint", parseConstraint);
+    }  else {
+        throw UmlParserException("Invalid identifer for owned rule, must be a constraint!", data.m_path.string(), node);
+    }
+}
+
+void parseNamespace(YAML::Node node, Namespace& nmspc, ParserMetaData& data) {
+    parseNamedElement(node, nmspc, data);
+    parseSequenceDefinitions(node, data, "ownedRules", nmspc, &Namespace::getOwnedRules, determineAndParseConstraint);
+}
+
+void emitNamespace(YAML::Emitter& emitter, Namespace& nmspc, EmitterMetaData& data) {
+    emitNamedElement(emitter, nmspc, data);
+    emitSequence(emitter, "ownedRules", data, nmspc, &Namespace::getOwnedRules);
+}
+
 }
 }
 }

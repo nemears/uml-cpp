@@ -206,6 +206,10 @@ namespace UML {
             void emitActivityPartition(YAML::Emitter& emitter, ActivityPartition& partition, EmitterMetaData& data);
             void parseInterruptibleActivityRegion(YAML::Node node, InterruptibleActivityRegion& region, ParserMetaData& data);
             void emitInterruptibleActivityRegion(YAML::Emitter& emitter, InterruptibleActivityRegion& region, EmitterMetaData& data);
+            void parseConstraint(YAML::Node node, Constraint& constraint, ParserMetaData& data);
+            void emitConstraint(YAML::Emitter& emitter, Constraint& constraint, EmitterMetaData& data);
+            void parseNamespace(YAML::Node node, Namespace& nmspc, ParserMetaData& data);
+            void emitNamespace(YAML::Emitter& emitter, Namespace& nmspc, EmitterMetaData& data);
         }
     }
 }

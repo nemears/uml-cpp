@@ -1,5 +1,10 @@
 #include "uml/namespace.h"
 #include "uml/setReferenceFunctor.h"
+#include "uml/stereotype.h"
+#include "uml/behavior.h"
+#include "uml/dataType.h"
+#include "uml/association.h"
+#include "uml/deployment.h"
 
 using namespace UML;
 
@@ -33,6 +38,8 @@ void Namespace::init() {
     m_ownedMembers.opposite(&NamedElement::getNamespaceSingleton);
     m_ownedMembers.m_signature = &Namespace::getOwnedMembers;
     m_ownedMembers.m_readOnly = true;
+    m_ownedRules.subsets(m_ownedMembers);
+    m_ownedRules.opposite(&Constraint::getContextSingleton);
 }
 
 Namespace::Namespace() : Element(ElementType::NAMESPACE) {
@@ -56,6 +63,10 @@ Set<NamedElement, Namespace>& Namespace::getMembers() {
 
 Set<NamedElement, Namespace>& Namespace::getOwnedMembers() {
     return m_ownedMembers;
+}
+
+Set<Constraint, Namespace>& Namespace::getOwnedRules() {
+    return m_ownedRules;
 }
 
 bool Namespace::isSubClassOf(ElementType eType) const {

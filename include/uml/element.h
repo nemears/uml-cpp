@@ -37,6 +37,7 @@ namespace UML {
         CONNECTABLE_ELEMENT,
         CONNECTOR,
         CONNECTOR_END,
+        CONSTRAINT,
         CONTROL_FLOW,
         CONTROL_NODE,
         CREATE_OBJECT_ACTION,

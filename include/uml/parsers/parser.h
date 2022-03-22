@@ -221,6 +221,12 @@ namespace UML {
             void emitValuePin(YAML::Emitter& emitter, ValuePin& pin, EmitterMetaData& data);
             void parseActionInputPin(YAML::Node node, ActionInputPin& pin, ParserMetaData& data);
             void emitActionInputPin(YAML::Emitter& emitter, ActionInputPin& pin, EmitterMetaData& data);
+            void parseInvocationAction(YAML::Node node, InvocationAction& action, ParserMetaData& data);
+            void emitInvocationAction(YAML::Emitter& emitter, InvocationAction& action, EmitterMetaData& data);
+            void parseCallAction(YAML::Node node, CallAction& action, ParserMetaData& data);
+            void emitCallAction(YAML::Emitter& emitter, CallAction& action, EmitterMetaData& data);
+            void parseCallBehaviorAction(YAML::Node node, CallBehaviorAction& action, ParserMetaData& data);
+            void emitCallBehaviorAction(YAML::Emitter& emitter, CallBehaviorAction& action, EmitterMetaData& data);
         }
     }
 }

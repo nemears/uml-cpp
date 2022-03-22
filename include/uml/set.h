@@ -342,6 +342,9 @@ namespace UML {
     class OpaqueAction;
     class ValuePin;
     class ActionInputPin;
+    class InvocationAction;
+    class CallAction;
+    class CallBehaviorAction;
 
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
@@ -435,6 +438,9 @@ namespace UML {
         friend class OpaqueAction;
         friend class ValuePin;
         friend class ActionInputPin;
+        friend class InvocationAction;
+        friend class CallAction;
+        friend class CallBehaviorAction;
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
         friend void Parsers::setOwner(Element& el, ID id);

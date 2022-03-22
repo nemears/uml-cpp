@@ -202,6 +202,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::BEHAVIORED_CLASSIFIER : {
             return "BEHAVIORED_CLASSIFIER";
         }
+        case ElementType::CALL_ACTION : {
+            return "CALL ACTION";
+        }
         case ElementType::CALL_BEHAVIOR_ACTION : {
             return "CALL_BEHAVIOR_ACTION";
         }
@@ -324,6 +327,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         }
         case ElementType::INTERRUPTIBLE_ACTIVITY_REGION : {
             return "INTERRUPTIBLE_ACTIVITY_REGION";
+        }
+        case ElementType::INVOCATION_ACTION : {
+            return "INVOCATION_ACTION";
         }
         case ElementType::JOIN_NODE : {
             return "JOIN_NODE";

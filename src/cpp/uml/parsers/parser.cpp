@@ -298,6 +298,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::BEHAVIORAL_FEATURE;
     } else if (eType.compare("BEHAVIORED_CLASSIFIER") == 0 ) {
         return ElementType::BEHAVIORED_CLASSIFIER;
+    } else if (eType.compare("CALL_ACTION") == 0) {
+        return ElementType::CALL_ACTION;
     } else if (eType.compare("CALL_BEHAVIOR_ACTION") == 0) {
         return ElementType::CALL_BEHAVIOR_ACTION;
     } else if (eType.compare("CLASS") == 0) {
@@ -372,6 +374,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::INTERFACE_REALIZATION;
     } else if (eType.compare("INTERRUPTIBLE_ACTIVITY_REGION") == 0) {
         return ElementType::INTERRUPTIBLE_ACTIVITY_REGION;
+    } else if (eType.compare("INVOCATION_ACTION") == 0) {
+        return ElementType::INVOCATION_ACTION;
     } else if (eType.compare("JOIN_NODE") == 0) {
         return ElementType::JOIN_NODE;
     } else if (eType.compare("LITERAL_BOOL") == 0) {
@@ -724,6 +728,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
             parseArtifact(node["artifact"], artifact, data);
             ret = &artifact;
         }
+    }
+
+    if (node["callBehaviorAction"]) {
+        ret = &parseDefinition<CallBehaviorAction>(node, data, "callBehaviorAction", parseCallBehaviorAction);
     }
 
     if (node["centralBufferNode"]) {
@@ -1162,6 +1170,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         }
         case ElementType::ASSOCIATION : {
             emitAssociation(emitter, dynamic_cast<Association&>(el), data);
+            break;
+        }
+        case ElementType::CALL_BEHAVIOR_ACTION : {
+            emitCallBehaviorAction(emitter, el.as<CallBehaviorAction>(), data);
             break;
         }
         case ElementType::CENTRAL_BUFFER_NODE : {
@@ -3736,6 +3748,8 @@ ActivityNode& determineAndParseActivityNode(YAML::Node node, ParserMetaData& dat
         return parseDefinition<ActivityFinalNode>(node, data, "activityFinalNode", parseActivityNode);
     } else if (node["activityParameterNode"]) {
         return parseDefinition<ActivityParameterNode>(node, data, "activityParameterNode", parseActivityParameterNode);
+    } else if (node["callBehaviorAction"]) {
+        return parseDefinition<CallBehaviorAction>(node, data, "callBehaviorAction", parseCallBehaviorAction);
     } else if (node["centralBufferNode"]) {
         return parseDefinition<CentralBufferNode>(node, data, "centralBufferNode", parseObjectNode);
     } else if (node["dataStoreNode"]) {
@@ -4072,7 +4086,9 @@ void parseAction(YAML::Node node, Action& action, ParserMetaData& data) {
 
 void emitAction(YAML::Emitter& emitter, Action& action, EmitterMetaData& data) {
     emitExecutableNode(emitter, action, data);
-    emitter << YAML::Key << "isLocallyReentrant" << YAML::Value << action.isLocallyReentrant();
+    if (action.isLocallyReentrant()) {
+        emitter << YAML::Key << "isLocallyReentrant" << YAML::Value << action.isLocallyReentrant();
+    }
     emitSequence(emitter, "localPreconditions", data, action, &Action::getLocalPreconditions);
     emitSequence(emitter, "localPostcondtitions", data, action, &Action::getLocalPostconditions);
 }
@@ -4088,7 +4104,9 @@ void parsePin(YAML::Node node, Pin& pin, ParserMetaData& data) {
 void emitPin(YAML::Emitter& emitter, Pin& pin, EmitterMetaData& data) {
     emitObjectNode(emitter, pin, data);
     emitMultiplicityElement(emitter, pin, data);
-    emitter << YAML::Key << "isControl" << YAML::Value << pin.isControl();
+    if (pin.isControl()) {
+        emitter << YAML::Key << "isControl" << YAML::Value << pin.isControl();
+    }
 }
 
 InputPin& determineAndParseInputPin(YAML::Node node, ParserMetaData& data) {
@@ -4150,6 +4168,8 @@ void emitValuePin(YAML::Emitter& emitter, ValuePin& pin, EmitterMetaData& data) 
 Action& determineAndParseAction(YAML::Node node, ParserMetaData& data) {
     if (node["opaqueAction"]) {
         return parseDefinition<OpaqueAction>(node, data, "opaqueAction", parseOpaqueAction);
+    } else if (node["callBehaviorAction"]) {
+        return parseDefinition<CallBehaviorAction>(node, data, "callBehaviorAction", parseCallBehaviorAction);
     } else {
         throw UmlParserException("could not identify action type", data.m_path.string(), node);
     }
@@ -4165,6 +4185,50 @@ void emitActionInputPin(YAML::Emitter& emitter, ActionInputPin& pin, EmitterMeta
     emitPin(emitter, pin, data);
     emitSingletonDefinition(emitter, "fromAction", data, pin, &ActionInputPin::getFromAction);
     emitElementDefenitionEnd(emitter, ElementType::ACTION_INPUT_PIN, pin);
+}
+
+void parseInvocationAction(YAML::Node node, InvocationAction& action, ParserMetaData& data){
+    parseAction(node, action, data);
+    parseSequenceDefinitions(node, data, "arguments", action, &InvocationAction::getArguments, determineAndParseInputPin);
+    parseSingletonReference(node, data, "onPort", action, &InvocationAction::setOnPort, &InvocationAction::setOnPort);
+}
+
+void emitInvocationAction(YAML::Emitter& emitter, InvocationAction& action, EmitterMetaData& data) {
+    emitAction(emitter, action, data);
+    emitSequence(emitter, "arguments", data, action, &InvocationAction::getArguments);
+    if (action.getOnPort()) {
+        emitter << YAML::Key << "onPort" << YAML::Value << action.getOnPort().id().string();
+    }
+}
+
+void parseCallAction(YAML::Node node, CallAction& action, ParserMetaData& data) {
+    parseInvocationAction(node, action, data);
+    parseSequenceDefinitions(node, data, "results", action, &CallAction::getResults, determineAndParseOutputPin);
+    if (node["isSynchronous"]) {
+        action.setIsSynchronous(node["isSynchronous"].as<bool>());
+    }
+}
+
+void emitCallAction(YAML::Emitter& emitter, CallAction& action, EmitterMetaData& data) {
+    emitInvocationAction(emitter, action, data);
+    emitSequence(emitter, "results", data, action, &CallAction::getResults);
+    if (!action.isSynchronous()) {
+        emitter << YAML::Key << "isSynchronous" << YAML::Value << action.isSynchronous();
+    }
+}
+
+void parseCallBehaviorAction(YAML::Node node, CallBehaviorAction& action, ParserMetaData& data) {
+    parseCallAction(node, action, data);
+    parseSingletonReference(node, data, "behavior", action, &CallBehaviorAction::setBehavior, &CallBehaviorAction::setBehavior);
+}
+
+void emitCallBehaviorAction(YAML::Emitter& emitter, CallBehaviorAction& action, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::CALL_BEHAVIOR_ACTION, "callBehaviorAction", action, data);
+    emitCallAction(emitter, action, data);
+    if (action.getBehavior()) {
+        emitter << YAML::Key << "behavior" << YAML::Value << action.getBehavior().id().string();
+    }
+    emitElementDefenitionEnd(emitter, ElementType::CALL_BEHAVIOR_ACTION, action);
 }
 
 }

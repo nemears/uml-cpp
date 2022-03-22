@@ -30,6 +30,7 @@ namespace UML {
         BEHAVIOR,
         BEHAVIORAL_FEATURE,
         BEHAVIORED_CLASSIFIER,
+        CALL_ACTION,
         CALL_BEHAVIOR_ACTION,
         CENTRAL_BUFFER_NODE,
         CLASS,
@@ -72,6 +73,7 @@ namespace UML {
         INTERFACE_UML, // why microsoft
         INTERFACE_REALIZATION,
         INTERRUPTIBLE_ACTIVITY_REGION,
+        INVOCATION_ACTION,
         JOIN_NODE,
         LITERAL_BOOL,
         LITERAL_INT,

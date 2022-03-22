@@ -217,6 +217,10 @@ namespace UML {
             void emitPin(YAML::Emitter& emitter, Pin& pin, EmitterMetaData& data);
             void parseOpaqueAction(YAML::Node node, OpaqueAction& action, ParserMetaData& data);
             void emitOpaqueAction(YAML::Emitter& emitter, OpaqueAction& action, EmitterMetaData& data);
+            void parseValuePin(YAML::Node node, ValuePin& pin, ParserMetaData& data);
+            void emitValuePin(YAML::Emitter& emitter, ValuePin& pin, EmitterMetaData& data);
+            void parseActionInputPin(YAML::Node node, ActionInputPin& pin, ParserMetaData& data);
+            void emitActionInputPin(YAML::Emitter& emitter, ActionInputPin& pin, EmitterMetaData& data);
         }
     }
 }

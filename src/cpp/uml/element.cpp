@@ -163,6 +163,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::ACTION : {
             return "ACTION";
         }
+        case ElementType::ACTION_INPUT_PIN : {
+            return "ACTION_INPUT_PIN";
+        }
         case ElementType::ACTIVITY : {
             return "ACTIVITY";
         }
@@ -462,6 +465,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         }
         case ElementType::USAGE : {
             return "USAGE";
+        }
+        case ElementType::VALUE_PIN : {
+            return "VALUE_PIN";
         }
         case ElementType::VALUE_SPECIFICATION : {
             return "VALUE_SPECIFICATION";

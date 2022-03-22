@@ -17,6 +17,7 @@ namespace UML {
     enum class ElementType {
         ABSTRACTION,
         ACTION,
+        ACTION_INPUT_PIN,
         ACTIVITY,
         ACTIVITY_EDGE,
         ACTIVITY_FINAL_NODE,
@@ -119,6 +120,7 @@ namespace UML {
         TYPE,
         TYPED_ELEMENT,
         USAGE,
+        VALUE_PIN,
         VALUE_SPECIFICATION
     };
 

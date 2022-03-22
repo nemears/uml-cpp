@@ -340,6 +340,8 @@ namespace UML {
     class InterruptibleActivityRegion;
     class Constraint;
     class OpaqueAction;
+    class ValuePin;
+    class ActionInputPin;
 
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
@@ -431,6 +433,8 @@ namespace UML {
         friend class InterruptibleActivityRegion;
         friend class Constraint;
         friend class OpaqueAction;
+        friend class ValuePin;
+        friend class ActionInputPin;
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
         friend void Parsers::setOwner(Element& el, ID id);

@@ -7,6 +7,7 @@
 
 #include "uml/abstraction.h"
 #include "uml/action.h"
+#include "uml/actionInputPin.h"
 #include "uml/activity.h"
 #include "uml/activityEdge.h"
 #include "uml/activityFinalNode.h"
@@ -78,6 +79,7 @@
 #include "uml/umlManager.h"
 #include "uml/umlPtr.h"
 #include "uml/usage.h"
+#include "uml/valuePin.h"
 
 #include "uml/managers/umlClient.h"
 

@@ -272,6 +272,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::ABSTRACTION;
     } else if (eType.compare("ACTION") == 0) {
         return ElementType::ACTION;
+    } else if (eType.compare("ACTION_INPUT_PIN") == 0) {
+        return ElementType::ACTION_INPUT_PIN;
     } else if (eType.compare("ACTIVITY") == 0) {
         return ElementType::ACTIVITY;
     } else if (eType.compare("ACTIVITY_EDGE") == 0) {
@@ -402,6 +404,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::OBJECT_FLOW;
     } else if (eType.compare("OBJECT_NODE") == 0) {
         return ElementType::OBJECT_NODE;
+    } else if (eType.compare("OPAQUE_ACTION") == 0) {
+        return ElementType::OPAQUE_ACTION;
     } else if (eType.compare("OPAQUE_BEHAVIOR") == 0) {
         return ElementType::OPAQUE_BEHAVIOR;
     } else if (eType.compare("OPERATION") == 0) {
@@ -460,9 +464,11 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::TYPED_ELEMENT;
     } else if (eType.compare("USAGE") == 0) {
         return ElementType::USAGE;
+    } else if (eType.compare("VALUE_PIN") == 0) {
+        return ElementType::VALUE_PIN;
     } else if (eType.compare("VALUE_SPECIFICATION") == 0) {
         return ElementType::VALUE_SPECIFICATION;
-    } 
+    }
     throw UmlParserException("Could not identify element type by keyword: " + eType + '!', "");
 }
 
@@ -681,6 +687,14 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
 
 ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
     ElementPtr ret(0);
+
+    if (node["abstraction"]) {
+        ret = &parseDefinition<Abstraction>(node, data, "abstraction", parseDependency);
+    }
+
+    if (node["actionInputPin"]) {
+        ret = &parseDefinition<ActionInputPin>(node, data, "actionInputPin", parseActionInputPin);
+    }
 
     if (node["activity"] && node["activity"].IsMap()) {
         ret = &parseDefinition<Activity>(node, data, "activity", parseActivity);
@@ -1054,6 +1068,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &usage;
     }
 
+    if (node["valuePin"]) {
+        ret = &parseDefinition<ValuePin>(node, data, "valuePin", parseValuePin);
+    }
+
     if (ret && data.m_strategy == ParserStrategy::INDIVIDUAL) {
         parseScope(node, data, &*ret);
     }
@@ -1115,6 +1133,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitElementDefenition(emitter, ElementType::ABSTRACTION, "abstraction", el, data);
             emitDependency(emitter, el.as<Abstraction>(), data);
             emitElementDefenitionEnd(emitter, ElementType::ABSTRACTION, el);
+            break;
+        }
+        case ElementType::ACTION_INPUT_PIN : {
+            emitActionInputPin(emitter, el.as<ActionInputPin>(), data);
             break;
         }
         case ElementType::ACTIVITY : {
@@ -1427,6 +1449,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitElementDefenition(emitter, ElementType::USAGE, "usage", el, data);
             emitDependency(emitter, el.as<Usage>(), data);
             emitElementDefenitionEnd(emitter, ElementType::USAGE, el);
+            break;
+        }
+        case ElementType::VALUE_PIN : {
+            emitValuePin(emitter, el.as<ValuePin>(), data);
             break;
         }
         default: {
@@ -3704,7 +3730,9 @@ void emitReception(YAML::Emitter& emitter, Reception& reception, EmitterMetaData
 }
 
 ActivityNode& determineAndParseActivityNode(YAML::Node node, ParserMetaData& data) {
-    if (node["activityFinalNode"]) {
+    if (node["actionInputPin"]) {
+        return parseDefinition<ActionInputPin>(node, data, "actionInputPin", parseActionInputPin);
+    } else if (node["activityFinalNode"]) {
         return parseDefinition<ActivityFinalNode>(node, data, "activityFinalNode", parseActivityNode);
     } else if (node["activityParameterNode"]) {
         return parseDefinition<ActivityParameterNode>(node, data, "activityParameterNode", parseActivityParameterNode);
@@ -3730,6 +3758,8 @@ ActivityNode& determineAndParseActivityNode(YAML::Node node, ParserMetaData& dat
         return parseDefinition<OpaqueAction>(node, data, "opaqueAction", parseOpaqueAction);
     } else if (node["outputPin"]) {
         return parseDefinition<OutputPin>(node, data, "inputPin", parsePin);
+    } else if (node["actionInputPin"]) {
+        return parseDefinition<ValuePin>(node, data, "valuePin", parseValuePin);
     } else {
         throw UmlParserException("Could not identify activity node", data.m_path.string(), node);
     }
@@ -4062,8 +4092,12 @@ void emitPin(YAML::Emitter& emitter, Pin& pin, EmitterMetaData& data) {
 }
 
 InputPin& determineAndParseInputPin(YAML::Node node, ParserMetaData& data) {
-    if (node["inputPin"]) {
+    if (node["actionInputPin"]) {
+        return parseDefinition<ActionInputPin>(node, data, "actionInputPin", parseActionInputPin);
+    } else if (node["inputPin"]) {
         return parseDefinition<InputPin>(node, data, "inputPin", parsePin);
+    } else if (node["valuePin"]) {
+        return parseDefinition<ValuePin>(node, data, "valuePin", parseValuePin);
     } else {
         throw UmlParserException("TODO, determine and parse other input pins!", data.m_path.string(), node);
     }
@@ -4099,6 +4133,38 @@ void emitOpaqueAction(YAML::Emitter& emitter, OpaqueAction& action, EmitterMetaD
     emitSequence(emitter, "outputValues", data, action, &OpaqueAction::getOutputValues);
     emitSequence(emitter, "bodies", data, action, &OpaqueAction::getOutputValues);
     emitElementDefenitionEnd(emitter, ElementType::OPAQUE_ACTION, action);
+}
+
+void parseValuePin(YAML::Node node, ValuePin& pin, ParserMetaData& data) {
+    parsePin(node, pin, data);
+    parseSingletonDefinition(node, data, "value", pin, determineAndParseValueSpecification, &ValuePin::setValue, &ValuePin::setValue);
+}
+
+void emitValuePin(YAML::Emitter& emitter, ValuePin& pin, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::VALUE_PIN, "valuePin", pin, data);
+    emitPin(emitter, pin, data);
+    emitSingletonDefinition(emitter, "value", data, pin, &ValuePin::getValue);
+    emitElementDefenitionEnd(emitter, ElementType::VALUE_PIN, pin);
+}
+
+Action& determineAndParseAction(YAML::Node node, ParserMetaData& data) {
+    if (node["opaqueAction"]) {
+        return parseDefinition<OpaqueAction>(node, data, "opaqueAction", parseOpaqueAction);
+    } else {
+        throw UmlParserException("could not identify action type", data.m_path.string(), node);
+    }
+}
+
+void parseActionInputPin(YAML::Node node, ActionInputPin& pin, ParserMetaData& data) {
+    parsePin(node, pin, data);
+    parseSingletonDefinition(node, data, "fromAction", pin, determineAndParseAction, &ActionInputPin::setFromAction, &ActionInputPin::setFromAction);
+}
+
+void emitActionInputPin(YAML::Emitter& emitter, ActionInputPin& pin, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::ACTION_INPUT_PIN, "actionInputPin", pin, data);
+    emitPin(emitter, pin, data);
+    emitSingletonDefinition(emitter, "fromAction", data, pin, &ActionInputPin::getFromAction);
+    emitElementDefenitionEnd(emitter, ElementType::ACTION_INPUT_PIN, pin);
 }
 
 }

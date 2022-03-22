@@ -15,7 +15,7 @@ set(umlSources  element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp names
                 initialNode.cpp finalNode.cpp decisionNode.cpp joinNode.cpp forkNode.cpp mergeNode.cpp activityFinalNode.cpp
                 flowFinalNode.cpp activityParameterNode.cpp centralBufferNode.cpp dataStoreNode.cpp executableNode.cpp
                 exceptionHandler.cpp activityGroup.cpp activityPartition.cpp interruptibleActivityRegion.cpp constraint.cpp
-                opaqueAction.cpp
+                opaqueAction.cpp valuePin.cpp actionInputPin.cpp
 
                 #parsers
                 parsers/parser.cpp parsers/emitterMetaData.cpp

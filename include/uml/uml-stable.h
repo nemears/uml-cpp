@@ -15,6 +15,7 @@
 #include "uml/activityParameterNode.h"
 #include "uml/activityPartition.h"
 #include "uml/behavior.h"
+#include "uml/callBehaviorAction.h"
 #include "uml/centralBufferNode.h"
 #include "uml/class.h"
 #include "uml/comment.h"

@@ -49,6 +49,13 @@ namespace UML {
             }
     };
 
+    class FixedSetException : public std::exception {
+        public:
+            virtual const char* what() const throw() {
+                return "Tried to configure fixed set, this set Is fixed by the API!";
+            }
+    };
+
     class AbstractOppositeFunctor {
         public:
             virtual void operator()(Element& el) const = 0;
@@ -1614,6 +1621,9 @@ namespace UML {
              * @param subsetOf the set that we are a subset of
              **/
             template <class V = Element, class W = Element> void subsets(Set<V, W>& subsetOf) {
+                if (m_signature) {
+                    throw FixedSetException();
+                }
                 if (std::find(m_superSets.begin(), m_superSets.end(), &subsetOf) == m_superSets.end()) {
                     m_superSets.push_back(&subsetOf);
                     std::vector<AbstractSet*>* allSuperSets = getAllSuperSets();
@@ -1674,6 +1684,9 @@ namespace UML {
              * @param op the signature for the set that this set is opposite of
              **/
             void opposite(Set<U, T>& (T::*op)()) {
+                if (m_signature) {
+                    throw FixedSetException();
+                }
                 /** TODO: static_assert that we have m_el for this instance **/
                 if (m_el) {
                     OppositeFunctor<T,U>* opFunc = new OppositeFunctor<T,U>(dynamic_cast<U*>(m_el));
@@ -1699,6 +1712,9 @@ namespace UML {
              * @param redefined, the set that this set is redefining
              **/
             template <class V = Element, class W = Element> void redefines(Set<V, W>& redefined) {
+                if (m_signature) {
+                    throw FixedSetException();
+                }
                 if (m_root) {
                     throw ManagerStateException("WARNING redefines set after set was used, must make sure redefining is done during configuration, before use!");
                     return;

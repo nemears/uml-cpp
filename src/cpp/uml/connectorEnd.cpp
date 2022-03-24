@@ -20,8 +20,8 @@ Set<Property, ConnectorEnd>& ConnectorEnd::getDefiningEndSingleton() {
 }
 
 void ConnectorEnd::init() {
-    m_role.m_signature = &ConnectorEnd::getRoleSingleton;
     m_role.opposite(&ConnectableElement::getEnds);
+    m_role.m_signature = &ConnectorEnd::getRoleSingleton;
     m_definingEnd.m_readOnly = true;
     m_definingEnd.m_signature = &ConnectorEnd::getDefiningEndSingleton;
 }

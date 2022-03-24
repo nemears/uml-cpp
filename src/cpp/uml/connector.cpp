@@ -87,18 +87,18 @@ void Connector::referenceErased(ID id) {
 }
 
 void Connector::init() {
-    m_type.m_signature = &Connector::getTypeSingleton;
     m_type.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_type.m_addFunctors.insert(new SetTypeFunctor(this));
     m_type.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_type.m_removeFunctors.insert(new RemoveTypeFunctor(this));
-    m_contracts.m_signature = &Connector::getContracts;
+    m_type.m_signature = &Connector::getTypeSingleton;
     m_contracts.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_contracts.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
+    m_contracts.m_signature = &Connector::getContracts;
     m_ends.subsets(*m_ownedElements);
-    m_ends.m_signature = &Connector::getEndsSet;
     m_ends.m_addFunctors.insert(new AddEndFunctor(this));
     m_ends.m_removeFunctors.insert(new RemoveEndFunctor(this));
+    m_ends.m_signature = &Connector::getEndsSet;
 }
 
 Connector::Connector() : Element(ElementType::CONNECTOR) {

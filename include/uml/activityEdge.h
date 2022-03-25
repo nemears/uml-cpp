@@ -21,9 +21,6 @@ namespace UML {
         friend class InterruptibleActivityRegion;
 
         protected:
-
-            friend class UmlManager;
-
             Singleton<Activity, ActivityEdge> m_activity = Singleton<Activity, ActivityEdge>(this);
             Singleton<ActivityNode, ActivityEdge> m_source = Singleton<ActivityNode, ActivityEdge>(this);
             Singleton<ActivityNode, ActivityEdge> m_target = Singleton<ActivityNode, ActivityEdge>(this);

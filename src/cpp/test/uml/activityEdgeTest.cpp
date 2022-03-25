@@ -1,7 +1,10 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SET_INTEGRATION_TEST(Activity, &Activity::getNodes);
 
 class ActivityEdgeTest : public ::testing::Test {
    

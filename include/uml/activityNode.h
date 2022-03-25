@@ -12,7 +12,6 @@ namespace UML {
 
     class ActivityNode : virtual public RedefinableElement {
 
-        friend class UmlManager;
         friend class Activity;
 
         protected:

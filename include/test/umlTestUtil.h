@@ -74,5 +74,84 @@ namespace UML {
         ASSERT_TRUE(pckg.getPackagedElements().count(el.getID()));
         ASSERT_RESTORED_NAMESPACE(el, pckg);
     }
+
+//     template <class T = Element, class U = Element>
+//     struct SingletonWrapper {
+//         UmlPtr<T> (U::*m_getter)() const;
+//         void (U::*m_setter)(T&);
+//     };
+
+//     template <class T, class U, typename F>
+//     struct setAndGetIntegrationTest {
+//         setAndGetIntegrationTest(F f);
+//         void operator()() const;
+//     };
+
+//     template <class T, class U>
+//     struct setAndGetIntegrationTest<T, U, Set<T,U>& (U::*)()> {
+//         Set<T,U>& (U::*f)();
+//         setAndGetIntegrationTest(Set<T,U>& (U::*ff)()) : f(ff) {};
+//         void operator()() const {
+//             UmlManager m;
+//             UmlPtr<U> u = m.create<U>();
+//             UmlPtr<T> t = m.create<T>();
+//             ASSERT_NO_THROW((u->*f)().add(*t));
+//             ASSERT_EQ((u->*f)().size(), 1);
+//             ASSERT_EQ((u->*f)().front(), *t);
+//         };
+//     };
+
+//     template <class T, class U>
+//     struct setAndGetIntegrationTest<T, U, SingletonWrapper<T,U>> {
+//         UmlPtr<T> (U::*m_getter)();
+//         void (U::*m_setter)(T&);
+//         setAndGetIntegrationTest(SingletonWrapper<T,U> wrapper) : m_getter(wrapper.m_getter) , m_setter(wrapper.m_setter) {};
+//         void operator()() const {
+//             UmlManager m;
+//             UmlPtr<U> u = m.create<U>();
+//             UmlPtr<T> t = m.create<T>();
+//             ASSERT_NO_THROW((u->*m_setter)(*t));
+//             ASSERT_EQ((u->*m_getter)(), t);
+//         };
+//     };
+
+//    #define UML_INTEGRATION_TEST( ELEMENT_NAME, T, U, signature) \
+//     class ELEMENT_NAME ## _integrationTest : public ::testing::Test {}; \
+//     TEST_F( ELEMENT_NAME ## _integrationTest , setAndGetTest) { \
+//         setAndGetIntegrationTest<T, U> testFunctor(signature); \
+//         ASSERT_NO_FATAL_FAILURE(testFunctor()); \
+//     }
+
+    template <class T = Element, class U = Element>
+    void setIntegrationTest(Set<T,U>& (U::*acessor)()) {
+        UmlManager m;
+        UmlPtr<U> u = m.create<U>();
+        UmlPtr<S> t = m.create<S>();
+        ASSERT_NO_THROW(((*u).*acessor)().add(*t));
+        ASSERT_EQ(((*u).*acessor)().size(), 1);
+        ASSERT_EQ(((*u).*acessor)().front(), *t);
+        if (t->isSubClassOf(ElementType::NAMED_ELEMENT)) {
+            t->setName("name");
+            ASSERT_NO_THROW(((*u).*acessor)().get("name"));
+            ASSERT_EQ(((*u).*acessor)().get("name"), *t);
+        }
+        ID id = ID::randomID();
+        t->setID(id);
+        ASSERT_NO_THROW(((*u).*acessor)().get(id));
+        ASSERT_EQ(((*u).*acessor)().get(id), *t);
+        m.setRoot(*u);
+        m.mount(".");
+        u.release();
+        ASSERT_EQ(((*u).*acessor)().front(), *t);
+        t.release();
+        ASSERT_EQ(((*u).*acessor)().front(), *t);
+    };
+
+    #define UML_SET_INTEGRATION_TEST(TEST_NAME, signature) \
+    class TEST_NAME ## _integrationTest : public ::testing::Test {}; \
+    TEST_F( TEST_NAME ## _integrationTest, setAndGetTest) { \
+        ASSERT_NO_FATAL_FAILURE(setIntegrationTest(signature));\
+    }
+    
 }
 #endif

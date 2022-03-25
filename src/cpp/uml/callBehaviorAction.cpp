@@ -49,7 +49,7 @@ CallBehaviorAction::CallBehaviorAction() : Element(ElementType::CALL_BEHAVIOR_AC
 }
 
 CallBehaviorAction::~CallBehaviorAction() {
-    
+
 }
 
 BehaviorPtr CallBehaviorAction::getBehavior() const {
@@ -73,7 +73,7 @@ void CallBehaviorAction::setBehavior(ID id) {
 }
 
 bool CallBehaviorAction::isSubClassOf(ElementType eType) const {
-    bool ret = Action::isSubClassOf(eType);
+    bool ret = CallAction::isSubClassOf(eType);
 
     if (!ret) {
         ret = eType == ElementType::CALL_BEHAVIOR_ACTION;

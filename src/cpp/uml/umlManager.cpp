@@ -256,6 +256,9 @@ void UmlManager::reindex(ID oldID, ID newID) {
             }
             ref.second->m_managerElementMemory->referenceReindexed(oldID, newID);
         }
+        for (auto& ptr : newDisc->m_ptrs) {
+            static_cast<AbstractUmlPtr*>(ptr)->reindex(newID, newDisc->m_managerElementMemory);
+        }
         newDisc->m_managerElementMemory->m_node = newDisc;
         m_graph.erase(oldID);
         if (!m_mountBase.empty()) {

@@ -1,7 +1,15 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SINGLETON_INTEGRATION_TEST(ActivityNodeActivity, Activity, OpaqueAction, &ActivityNode::getActivity, &ActivityNode::setActivity);
+UML_SET_INTEGRATION_TEST(ActivityNodeIncoming, ControlFlow, OpaqueAction, &ActivityNode::getIncoming);
+UML_SET_INTEGRATION_TEST(ActivityNodeOutgoing, ControlFlow, OpaqueAction, &ActivityNode::getOutgoing);
+UML_SINGLETON_INTEGRATION_TEST(DecisionNodeDescisionInput, Activity, DecisionNode, &DecisionNode::getDecisionInput, &DecisionNode::setDecisionInput);
+UML_SINGLETON_INTEGRATION_TEST(DecisionNodeDecisionInputFlow, ObjectFlow, DecisionNode, &DecisionNode::getDecisionInputFlow, &DecisionNode::setDecisionInputFlow);
+UML_SINGLETON_INTEGRATION_TEST(JoinNodeJoinSpec, LiteralInt, JoinNode, &JoinNode::getJoinSpec, &JoinNode::setJoinSpec);
 
 class ActivityNodeTest : public ::testing::Test {
    

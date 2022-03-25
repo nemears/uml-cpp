@@ -4,7 +4,12 @@
 
 using namespace UML;
 
-UML_SET_INTEGRATION_TEST(Activity, &Activity::getNodes);
+UML_SINGLETON_INTEGRATION_TEST(ActivityEdgeTarget, OpaqueAction, ControlFlow, &ActivityEdge::getTarget, &ActivityEdge::setTarget);
+UML_SINGLETON_INTEGRATION_TEST(ActivityEdgeSource, OpaqueAction, ControlFlow, &ActivityEdge::getSource, &ActivityEdge::setSource);
+UML_SINGLETON_INTEGRATION_TEST(ActivityEdgeGuard, LiteralBool, ControlFlow, &ActivityEdge::getGuard, &ActivityEdge::setGuard);
+UML_SINGLETON_INTEGRATION_TEST(ActivityEdgeWeight, LiteralBool, ControlFlow, &ActivityEdge::getWeight, &ActivityEdge::setWeight);
+UML_SINGLETON_INTEGRATION_TEST(ObjectFlowTransformation, OpaqueBehavior, ObjectFlow, &ObjectFlow::getTransformation, &ObjectFlow::setTransformation);
+UML_SINGLETON_INTEGRATION_TEST(ObjectFlowSelection, Activity, ObjectFlow, &ObjectFlow::getSelection, &ObjectFlow::setSelection);
 
 class ActivityEdgeTest : public ::testing::Test {
    

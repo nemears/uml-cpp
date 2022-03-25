@@ -1628,7 +1628,7 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         }
         if (el.isSubClassOf(ElementType::ACTIVITY_PARTITION)) {
             if (el.as<ActivityPartition>().getActivity()) {
-                emitter << YAML::Key << "acitivity" << el.as<ActivityPartition>().getActivity().id().string();
+                emitter << YAML::Key << "activity" << el.as<ActivityPartition>().getActivity().id().string();
                 return;
             }
         }

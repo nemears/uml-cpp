@@ -15,6 +15,7 @@ namespace UML {
 
     class ExceptionHandler : public Element {
 
+        friend class ExecutableNode;
         friend class UmlManager;
 
         protected:

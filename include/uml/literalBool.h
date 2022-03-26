@@ -9,7 +9,7 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            bool m_value;
+            bool m_value = false;
             LiteralBool();
         public:
             bool getValue();

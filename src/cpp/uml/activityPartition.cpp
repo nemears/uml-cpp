@@ -54,8 +54,10 @@ void ActivityPartition::init() {
     m_superPartition.opposite(&ActivityPartition::getSubPartitions);
     m_superPartition.m_signature = &ActivityPartition::getSuperPartitionSingleton;
     m_nodes.subsets(m_containedNodes);
+    m_nodes.opposite(&ActivityNode::getInPartitions);
     m_nodes.m_signature = &ActivityPartition::getNodes;
     m_edges.subsets(m_containedEdges);
+    m_edges.opposite(&ActivityEdge::getInPartitions);
     m_edges.m_signature = &ActivityPartition::getEdges;
     m_subPartitions.subsets(m_subGroups);
     m_subPartitions.opposite(&ActivityPartition::getSuperPartitionSingleton);

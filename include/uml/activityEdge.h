@@ -37,8 +37,8 @@ namespace UML {
             Set<InterruptibleActivityRegion, ActivityEdge>& getInterruptsSingleton();
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
-            void restoreReference(Element* el) override;
             void init();
         public:
             ActivityEdge();

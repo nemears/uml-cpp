@@ -53,8 +53,10 @@ void ActivityGroup::init() {
     m_superGroup.opposite(&ActivityGroup::getSubGroups);
     m_superGroup.m_signature = &ActivityGroup::getSuperGroupSingleton;
     m_superGroup.m_readOnly = true;
+    m_containedNodes.opposite(&ActivityNode::getInGroups);
     m_containedNodes.m_signature = &ActivityGroup::getContainedNodes;
     m_containedNodes.m_readOnly = true;
+    m_containedEdges.opposite(&ActivityEdge::getInGroups);
     m_containedEdges.m_signature = &ActivityGroup::getContainedEdges;
     m_containedEdges.m_readOnly = true;
     m_subGroups.subsets(*m_ownedElements);

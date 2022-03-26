@@ -329,8 +329,6 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     m.setRoot(&pckg);
     string mountPath = ymlPath + "classTests";
     ASSERT_NO_THROW(m.mount(mountPath));
-    ASSERT_NO_FATAL_FAILURE(ASSERT_PROPER_MOUNT(pckg, ymlPath + "classTests"));
-
     ASSERT_NO_THROW(m.release(base.getID()));
     ASSERT_TRUE(prop.getOwner());
     Class& base2 = prop.getOwner()->as<Class>();

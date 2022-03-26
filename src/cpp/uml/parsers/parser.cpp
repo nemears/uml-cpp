@@ -646,6 +646,13 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
     if (ret->isSubClassOf(ElementType::ACTIVITY_PARTITION)) {
         if (parseSingletonReference(node, data, "activity", ret->as<ActivityPartition>(), &ActivityPartition::setActivity, &ActivityPartition::setActivity)) {
             return;
+        } else if (parseSingletonReference(node, data, "superPartition", ret->as<ActivityPartition>(), &ActivityPartition::setSuperPartition, &ActivityPartition::setSuperPartition)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::EXCEPTION_HANDLER)) {
+        if (parseSingletonReference(node, data, "protectedNode", ret->as<ExceptionHandler>(), &ExceptionHandler::setProtectedNode, &ExceptionHandler::setProtectedNode)) {
+            return;
         }
     }
     if (ret->isSubClassOf(ElementType::CONSTRAINT)) {
@@ -668,6 +675,26 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
             if (node["namespace"].IsScalar()) {
                 if (isValidID(node["owner"].as<std::string>())) {
                     setNamespace(ret->as<NamedElement>(), ID::fromString(node["namespace"].as<std::string>()));
+                    return;
+                }
+            }
+        }
+    }
+    if (ret->isSubClassOf(ElementType::PIN)) { // special case for now
+        if (node["owner"]) {
+            if (node["owner"].IsScalar()) {
+                if (isValidID(node["owner"].as<std::string>())) {
+                    setOwner(*ret, ID::fromString(node["owner"].as<std::string>()));
+                    return;
+                }
+            }
+        }
+    }
+    if (ret->isSubClassOf(ElementType::ACTION)) { // special case for now
+        if (node["owner"]) {
+            if (node["owner"].IsScalar()) {
+                if (isValidID(node["owner"].as<std::string>())) {
+                    setOwner(*ret, ID::fromString(node["owner"].as<std::string>()));
                     return;
                 }
             }
@@ -1628,7 +1655,16 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         }
         if (el.isSubClassOf(ElementType::ACTIVITY_PARTITION)) {
             if (el.as<ActivityPartition>().getActivity()) {
-                emitter << YAML::Key << "acitivity" << el.as<ActivityPartition>().getActivity().id().string();
+                emitter << YAML::Key << "activity" << el.as<ActivityPartition>().getActivity().id().string();
+                return;
+            } else if (el.as<ActivityPartition>().getSuperPartition()) {
+                emitter << YAML::Key << "superPartition" << YAML::Value << el.as<ActivityPartition>().getSuperPartition().id().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::EXCEPTION_HANDLER)) {
+            if (el.as<ExceptionHandler>().getProtectedNode()) {
+                emitter << YAML::Key << "protectedNode" << el.as<ExceptionHandler>().getProtectedNode().id().string();
                 return;
             }
         }
@@ -1639,6 +1675,18 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             }
         }
         if (el.isSubClassOf(ElementType::COMMENT)) {
+            if (el.getOwner()) {
+                emitter << YAML::Key << "owner" << YAML::Value << el.getOwner().id().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::PIN)) {
+            if (el.getOwner()) {
+                emitter << YAML::Key << "owner" << YAML::Value << el.getOwner().id().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::ACTION)) {
             if (el.getOwner()) {
                 emitter << YAML::Key << "owner" << YAML::Value << el.getOwner().id().string();
                 return;
@@ -3946,6 +3994,7 @@ void parseDecisionNode(YAML::Node node, DecisionNode& decisionNode, ParserMetaDa
 
 void emitDecisionNode(YAML::Emitter& emitter, DecisionNode& decisionNode, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::DECISION_NODE, "decisionNode", decisionNode, data);
+    emitActivityNode(emitter, decisionNode, data);
     if (decisionNode.getDecisionInputFlow()) {
         emitter << YAML::Key << "decisionInputFlow" << YAML::Value << decisionNode.getDecisionInputFlow().id().string();
     }
@@ -4149,7 +4198,7 @@ void emitOpaqueAction(YAML::Emitter& emitter, OpaqueAction& action, EmitterMetaD
     emitAction(emitter, action, data);
     emitSequence(emitter, "inputValues", data, action, &OpaqueAction::getInputValues);
     emitSequence(emitter, "outputValues", data, action, &OpaqueAction::getOutputValues);
-    emitSequence(emitter, "bodies", data, action, &OpaqueAction::getOutputValues);
+    emitSequence(emitter, "bodies", data, action, &OpaqueAction::getBodies);
     emitElementDefenitionEnd(emitter, ElementType::OPAQUE_ACTION, action);
 }
 

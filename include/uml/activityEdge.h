@@ -21,9 +21,6 @@ namespace UML {
         friend class InterruptibleActivityRegion;
 
         protected:
-
-            friend class UmlManager;
-
             Singleton<Activity, ActivityEdge> m_activity = Singleton<Activity, ActivityEdge>(this);
             Singleton<ActivityNode, ActivityEdge> m_source = Singleton<ActivityNode, ActivityEdge>(this);
             Singleton<ActivityNode, ActivityEdge> m_target = Singleton<ActivityNode, ActivityEdge>(this);
@@ -40,8 +37,8 @@ namespace UML {
             Set<InterruptibleActivityRegion, ActivityEdge>& getInterruptsSingleton();
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
+            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
-            void restoreReference(Element* el) override;
             void init();
         public:
             ActivityEdge();

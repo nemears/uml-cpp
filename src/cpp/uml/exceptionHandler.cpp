@@ -15,6 +15,7 @@
 #include "uml/interface.h"
 #include "uml/interruptibleActivityRegion.h"
 #include "uml/deployment.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
@@ -60,9 +61,12 @@ void  ExceptionHandler::reindexName(ID id, std::string newName) {
 
 void ExceptionHandler::init() {
     m_protectedNode.subsets(*m_ownedElements);
+    m_protectedNode.opposite(&ExecutableNode::getHandlers);
     m_protectedNode.m_signature = &ExceptionHandler::getProtectedNodeSingleton;
     m_handlerBody.m_signature = &ExceptionHandler::getHandlerBodySingleton;
     m_exceptionInput.m_signature = &ExceptionHandler::getExceptionInputSingleton;
+    m_exceptionTypes.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_exceptionTypes.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_exceptionTypes.m_signature = &ExceptionHandler::getExceptionTypes;
 }
 

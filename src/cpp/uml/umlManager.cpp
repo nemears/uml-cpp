@@ -256,6 +256,9 @@ void UmlManager::reindex(ID oldID, ID newID) {
             }
             ref.second->m_managerElementMemory->referenceReindexed(oldID, newID);
         }
+        for (auto& ptr : newDisc->m_ptrs) {
+            static_cast<AbstractUmlPtr*>(ptr)->reindex(newID, newDisc->m_managerElementMemory);
+        }
         newDisc->m_managerElementMemory->m_node = newDisc;
         m_graph.erase(oldID);
         if (!m_mountBase.empty()) {
@@ -288,8 +291,11 @@ void UmlManager::mountEl(Element& el) {
 void UmlManager::mount(std::string path) {
     m_mountBase = path;
     std::filesystem::create_directories(path / std::filesystem::path("mount"));
-    if (m_root) {
-        addToMount(*m_root);
+    // if (m_root) {
+    //     addToMount(*m_root);
+    // }
+    for (auto& pair : m_graph) {
+        mountEl(*pair.second.m_managerElementMemory);
     }
 }
 

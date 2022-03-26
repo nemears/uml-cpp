@@ -60,7 +60,7 @@ void  ExceptionHandler::reindexName(ID id, std::string newName) {
 }
 
 void ExceptionHandler::init() {
-    m_protectedNode.subsets(*m_ownedElements);
+    m_protectedNode.subsets(*m_owner);
     m_protectedNode.opposite(&ExecutableNode::getHandlers);
     m_protectedNode.m_signature = &ExceptionHandler::getProtectedNodeSingleton;
     m_handlerBody.m_signature = &ExceptionHandler::getHandlerBodySingleton;

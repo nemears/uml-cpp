@@ -1760,6 +1760,15 @@ namespace UML {
             void removeFunctor(SetFunctor* func) {
                 m_removeFunctors.insert(func);
             };
+
+            // TODO expand
+            typedef Set<U,T>& (T::*oppositeSignature)();
+            oppositeSignature getOpposite() const {
+                if (m_oppositeFunctor) {
+                    return dynamic_cast<OppositeFunctor<T,U>*>(m_oppositeFunctor)->m_signature;
+                }
+                return 0;
+            };
             /**
              * removes an element with the supplied id from this set but keeps it within its supersets, not its subsets
              * @param id the id of the node we want to remove from just this set

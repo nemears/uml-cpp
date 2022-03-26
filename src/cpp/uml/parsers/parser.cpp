@@ -64,12 +64,11 @@ void parseSetReferences(YAML::Node node, ParserMetaData& data, std::string key, 
                     if (isValidID(node[key][i].as<std::string>())) {
                         ID id = ID::fromString(node[key][i].as<std::string>());
                         if (data.m_manager->UmlManager::loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
-                            try {
-                                (owner.*signature)().add(data.m_manager->get(id).as<T>());
-                            } catch (DuplicateElementInSetException e) {
-                                // nothing
-                            } catch (std::exception e) {
-                                throw UmlParserException("Unexpected Uml error: " + std::string(e.what()), data.m_path.string(), node[key][i]);
+                            T& t = data.m_manager->get(id).as<T>();
+                            if ((owner.*signature)().getOpposite() && (t.*(owner.*signature)().getOpposite())().contains(owner)) {
+                                (owner.*signature)().add(id);
+                            } else {
+                                (owner.*signature)().add(t);
                             }
                         } else {
                             (owner.*signature)().add(id);

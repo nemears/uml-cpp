@@ -54,16 +54,20 @@ void ActivityEdge::referenceReindexed(ID oldID, ID newID) {
     m_inGroups.reindex(oldID, newID);
 }
 
+void ActivityEdge::reindexName(ID id, std::string newName) {
+    NamedElement::reindexName(id, newName);
+    RedefinableElement::reindexName(id, newName);
+    m_source.reindexName(id, newName);
+    m_target.reindexName(id, newName);
+    m_inGroups.reindexName(id, newName);
+}
+
 void ActivityEdge::referenceErased(ID id) {
     NamedElement::referenceErased(id);
     RedefinableElement::referenceErased(id);
     m_source.eraseElement(id);
     m_target.eraseElement(id);
     m_inGroups.eraseElement(id);
-}
-
-void ActivityEdge::restoreReference(Element* el) {
-    NamedElement::restoreReference(el);
 }
 
 void ActivityEdge::init() {

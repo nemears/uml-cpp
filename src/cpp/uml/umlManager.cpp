@@ -291,8 +291,11 @@ void UmlManager::mountEl(Element& el) {
 void UmlManager::mount(std::string path) {
     m_mountBase = path;
     std::filesystem::create_directories(path / std::filesystem::path("mount"));
-    if (m_root) {
-        addToMount(*m_root);
+    // if (m_root) {
+    //     addToMount(*m_root);
+    // }
+    for (auto& pair : m_graph) {
+        mountEl(*pair.second.m_managerElementMemory);
     }
 }
 

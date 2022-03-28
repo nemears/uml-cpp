@@ -4138,7 +4138,7 @@ void emitAction(YAML::Emitter& emitter, Action& action, EmitterMetaData& data) {
         emitter << YAML::Key << "isLocallyReentrant" << YAML::Value << action.isLocallyReentrant();
     }
     emitSequence(emitter, "localPreconditions", data, action, &Action::getLocalPreconditions);
-    emitSequence(emitter, "localPostcondtitions", data, action, &Action::getLocalPostconditions);
+    emitSequence(emitter, "localPostconditions", data, action, &Action::getLocalPostconditions);
 }
 
 void parsePin(YAML::Node node, Pin& pin, ParserMetaData& data) {

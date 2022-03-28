@@ -36,11 +36,11 @@ namespace UML {
             void put(Element& el);
             void putAll();
             Element& post(ElementType eType);
-            template<class T = Element> T& post() {
-                return post(T::elementType()).template as<T>();
+            template<class T = Element> UmlPtr<T> post() {
+                return UmlPtr<T>(&post(T::elementType()).template as<T>());
             };
-            template<class T = Element> T& create() {
-                return post(T::elementType()).template as<T>();
+            template<class T = Element> UmlPtr<T> create() {
+                return UmlPtr<T>(&post(T::elementType()).template as<T>());
             };
             void erase(Element& el) override;
             ElementPtr aquire(ID id) override;

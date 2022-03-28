@@ -20,7 +20,7 @@ TEST_F(RestfulTest, clientsConnectToServerTest) {
 
 TEST_F(RestfulTest, postAndGetTest) {
     UmlClient client;
-    Class& clazz = client.post<Class>();
+    Class& clazz = *client.post<Class>();
     ID clazzID = clazz.getID();
     clazz.setName("clazz");
     ASSERT_TRUE(client.count(clazz.getID()));
@@ -31,7 +31,7 @@ TEST_F(RestfulTest, postAndGetTest) {
 
 TEST_F(RestfulTest, basicEraseTest) {
     UmlClient client;
-    Class& clazz = client.post<Class>();
+    Class& clazz = *client.post<Class>();
     ID clazzID = clazz.getID();
     client.erase(clazz);
     ASSERT_FALSE(client.loaded(clazzID));
@@ -39,8 +39,8 @@ TEST_F(RestfulTest, basicEraseTest) {
 
 TEST_F(RestfulTest, basicGetByQualifiedName) {
     UmlClient client;
-    Class& clazz = client.post<Class>();
-    Package& root = client.post<Package>();
+    Class& clazz = *client.post<Class>();
+    Package& root = *client.post<Package>();
     root.setName("A");
     clazz.setName("B");
     root.getPackagedElements().add(clazz);
@@ -53,9 +53,9 @@ TEST_F(RestfulTest, basicGetByQualifiedName) {
 TEST_F(RestfulTest, bigMessageTest) {
     int numChildren = 25;
     UmlClient client;
-    Package& root = client.post<Package>();
+    Package& root = *client.post<Package>();
     for (int i = 0; i < numChildren; i++) {
-        root.getPackagedElements().add(client.post<Package>());
+        root.getPackagedElements().add(*client.post<Package>());
     }
     ID id = root.getID();
     root.setName("foo");

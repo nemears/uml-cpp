@@ -19,6 +19,8 @@ namespace UML {
     template <class T, class U> class OrderedSet;
     template <class T> struct SetIterator;
     template <class T> struct ID_Set;
+    // class AbstractSet;
+    // void recursiveSetContains(ID id, AbstractSet* set);
 
     class ID_doesNotExistException : public std::exception {
         private:
@@ -95,6 +97,7 @@ namespace UML {
         template <class T, class U> friend class OrderedSet;
         template <class T> friend struct SetIterator;
         template <class T> friend struct ID_Set;
+        friend void recursiveSetContains(ID id, AbstractSet* set);
         protected:
             size_t m_size = 0;
             int m_upper = 0; // this effectively lets us determine the type of the set (1 = singleton, 0 = set, -1 = orderedSet)
@@ -268,6 +271,20 @@ namespace UML {
             void setName(SetNode* node);
             void instantiateSetNode(SetNode* node);
             virtual void superSetRemove(ID id) = 0;
+        public:
+            /**
+             * returns a bool on whether the id supplied is in the set
+             * @param id the id of the element to be determined is in the set
+             * @return true means the id supplied is in the set, false means the id supplied is not in the set
+             **/
+            bool contains(ID id) {
+                bool ret = false;
+                if (m_root) {
+                    SetNode* t = search(id, m_root);
+                    ret = t != 0;
+                } 
+                return ret;
+            };
     };
 
     template <class T> struct SetIterator;
@@ -1215,7 +1232,7 @@ namespace UML {
              **/
             void eraseElement(ID id) {
                 // this will always need to search tree (don't know any quicker way)
-                if (contains(id)) {
+                if (AbstractSet::contains(id)) {
                     innerRemove(id);
                 }
             };
@@ -1986,18 +2003,8 @@ namespace UML {
                 }
                 throw ManagerStateException("TODO back empty");
             };
-            /**
-             * returns a bool on whether the id supplied is in the set
-             * @param id the id of the element to be determined is in the set
-             * @return true means the id supplied is in the set, false means the id supplied is not in the set
-             **/
             bool contains(ID id) {
-                bool ret = false;
-                if (m_root) {
-                    SetNode* t = search(id, m_root);
-                    ret = t != 0;
-                } 
-                return ret;
+                return AbstractSet::contains(id);
             };
             /**
              * return a bool on whether the element supplied is in the set
@@ -2005,7 +2012,7 @@ namespace UML {
              * @return true means the element supplied is in the set, false means the element supplied is not in the set
              **/
             bool contains(T& el) {
-                return contains(el.getID());
+                return AbstractSet::contains(el.getID());
             };
             /**
              * returns the number of times the id supplied is in the set

@@ -49,11 +49,32 @@ Element& UmlManager::create(ElementType eType) {
         case ElementType::ABSTRACTION : {
             return static_cast<Element&>(*create<Abstraction>());
         }
+        case ElementType::ACTION_INPUT_PIN : {
+            return static_cast<Element&>(*create<ActionInputPin>());
+        }
+        case ElementType::ACTIVITY : {
+            return static_cast<Element&>(*create<Activity>());
+        }
+        case ElementType::ACTIVITY_FINAL_NODE : {
+            return static_cast<Element&>(*create<ActivityFinalNode>());
+        }
+        case ElementType::ACTIVITY_PARAMETER_NODE : {
+            return static_cast<Element&>(*create<ActivityFinalNode>());
+        }
+        case ElementType::ACTIVITY_PARTITION : {
+            return static_cast<Element&>(*create<ActivityPartition>());
+        }
         case ElementType::ARTIFACT : {
             return static_cast<Element&>(*create<Artifact>());
         }
         case ElementType::ASSOCIATION : {
             return static_cast<Element&>(*create<Association>());
+        }
+        case ElementType::CALL_BEHAVIOR_ACTION : {
+            return static_cast<Element&>(*create<CallBehaviorAction>());
+        }
+        case ElementType::CENTRAL_BUFFER_NODE : {
+            return static_cast<Element&>(*create<CentralBufferNode>());
         }
         case ElementType::CLASS : {
             return static_cast<Element&>(*create<Class>());
@@ -67,8 +88,20 @@ Element& UmlManager::create(ElementType eType) {
         case ElementType::CONNECTOR_END : {
             return static_cast<Element&>(*create<ConnectorEnd>());
         }
+        case ElementType::CONSTRAINT : {
+            return static_cast<Element&>(*create<Constraint>());
+        }
+        case ElementType::CONTROL_FLOW : {
+            return static_cast<Element&>(*create<ControlFlow>());
+        }
+        case ElementType::DATA_STORE_NODE : {
+            return static_cast<Element&>(*create<DataStoreNode>());
+        }
         case ElementType::DATA_TYPE : {
             return static_cast<Element&>(*create<DataType>());
+        }
+        case ElementType::DECISION_NODE : {
+            return static_cast<Element&>(*create<DecisionNode>());
         }
         case ElementType::DEPENDENCY : {
             return static_cast<Element&>(*create<Dependency>());
@@ -82,6 +115,9 @@ Element& UmlManager::create(ElementType eType) {
         case ElementType::ENUMERATION_LITERAL : {
             return static_cast<Element&>(*create<EnumerationLiteral>());
         }
+        case ElementType::EXCEPTION_HANDLER : {
+            return static_cast<Element&>(*create<ExceptionHandler>());
+        }
         case ElementType::EXPRESSION : {
             return static_cast<Element&>(*create<Expression>());
         }
@@ -90,6 +126,12 @@ Element& UmlManager::create(ElementType eType) {
         }
         case ElementType::EXTENSION_END : {
             return static_cast<Element&>(*create<ExtensionEnd>());
+        }
+        case ElementType::FLOW_FINAL_NODE : {
+            return static_cast<Element&>(*create<FlowFinalNode>());
+        }
+        case ElementType::FORK_NODE : {
+            return static_cast<Element&>(*create<ForkNode>());
         }
         case ElementType::GENERALIZATION : {
             return static_cast<Element&>(*create<Generalization>());
@@ -100,14 +142,26 @@ Element& UmlManager::create(ElementType eType) {
         case ElementType::INSTANCE_SPECIFICATION : {
             return static_cast<Element&>(*create<InstanceSpecification>());
         }
+        case ElementType::INITIAL_NODE : {
+            return static_cast<Element&>(*create<InitialNode>());
+        }
+        case ElementType::INPUT_PIN : {
+            return static_cast<Element&>(*create<InputPin>());
+        }
         case ElementType::INSTANCE_VALUE : {
             return static_cast<Element&>(*create<InstanceValue>());
         }
         case ElementType::INTERFACE_UML : {
             return static_cast<Element&>(*create<Interface>());
         }
+        case ElementType::INTERRUPTIBLE_ACTIVITY_REGION : {
+            return static_cast<Element&>(*create<InterruptibleActivityRegion>());
+        }
         case ElementType::INTERFACE_REALIZATION : {
             return static_cast<Element&>(*create<InterfaceRealization>());
+        }
+        case ElementType::JOIN_NODE : {
+            return static_cast<Element&>(*create<JoinNode>());
         }
         case ElementType::LITERAL_BOOL : {
             return static_cast<Element&>(*create<LiteralBool>());
@@ -130,14 +184,26 @@ Element& UmlManager::create(ElementType eType) {
         case ElementType::MANIFESTATION : {
             return static_cast<Element&>(*create<Manifestation>());
         }
+        case ElementType::MERGE_NODE : {
+            return static_cast<Element&>(*create<MergeNode>());
+        }
         case ElementType::MODEL : {
             return static_cast<Element&>(*create<Model>());
+        }
+        case ElementType::OBJECT_FLOW : {
+            return static_cast<Element&>(*create<ObjectFlow>());
+        }
+        case ElementType::OPAQUE_ACTION : {
+            return static_cast<OpaqueAction&>(*create<OpaqueAction>());
         }
         case ElementType::OPAQUE_BEHAVIOR : {
             return static_cast<Element&>(*create<OpaqueBehavior>());
         }
         case ElementType::OPERATION : {
             return static_cast<Element&>(*create<Operation>());
+        }
+        case ElementType::OUTPUT_PIN : {
+            return static_cast<Element&>(*create<OutputPin>());
         }
         case ElementType::PACKAGE : {
             return static_cast<Element&>(*create<Package>());
@@ -194,7 +260,7 @@ Element& UmlManager::create(ElementType eType) {
             return static_cast<Element&>(*create<Usage>());
         }
         default : {
-            throw ManagerStateException("Could not POST element with unmapped element type: " + Element::elementTypeToString(eType));
+            throw ManagerStateException("Could not create element with unmapped element type: " + Element::elementTypeToString(eType));
         }
     }
 }

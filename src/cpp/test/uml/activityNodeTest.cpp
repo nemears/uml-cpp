@@ -18,6 +18,8 @@ UML_SINGLETON_INTEGRATION_TEST(ExceptionHandlerProtectedNode, OpaqueAction, Exce
 UML_SINGLETON_INTEGRATION_TEST(ExceptionHandlerHandlerBody, OpaqueAction, ExceptionHandler, &ExceptionHandler::getHandlerBody, &ExceptionHandler::setHandlerBody);
 UML_SINGLETON_INTEGRATION_TEST(ExceptionHandlerExceptionInput, DataStoreNode, ExceptionHandler, &ExceptionHandler::getExceptionInput, &ExceptionHandler::setExceptionInput);
 UML_SET_INTEGRATION_TEST(ExceptionHandlerExceptionTypes, Activity, ExceptionHandler, &ExceptionHandler::getExceptionTypes);
+UML_SET_INTEGRATION_TEST(ActionLocalPreConditions, Constraint, OpaqueAction, &Action::getLocalPreconditions);
+UML_SET_INTEGRATION_TEST(ActionLocalPostConditions, Constraint, OpaqueAction, &Action::getLocalPostconditions);
 UML_SET_INTEGRATION_TEST(OpaqueActionInputValues, InputPin, OpaqueAction, &OpaqueAction::getInputValues);
 UML_SET_INTEGRATION_TEST(OpaqueActionOutputValues, OutputPin, OpaqueAction, &OpaqueAction::getOutputValues);
 UML_SET_INTEGRATION_TEST(OpaqueActionBodies, LiteralString, OpaqueAction, &OpaqueAction::getBodies);

@@ -38,11 +38,11 @@ namespace UML {
     class UnknownID_Exception : public std::exception {
         private:
             std::string m_msg;
+        public:
+            UnknownID_Exception(ID id) : m_msg("unknown ID given when trying to get an element from the manager, ID: "  + id.string()) {};
             const char* what() const throw() override {
                 return m_msg.c_str();
             };
-        public:
-            UnknownID_Exception(ID id) : m_msg("unknown ID given when trying to get an element from the manager, ID: "  + id.string()) {};
     };
 
     /**

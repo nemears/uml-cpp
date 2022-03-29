@@ -69,12 +69,18 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         log("aquired lock for element " + elID.string());
         m_msgV = true;
         m_msgCv.notify_one();
-        std::string msg = Parsers::emitIndividual(get(elID));
-        int bytesSent = send(info.socket, msg.c_str(), msg.size() + 1, 0);
-        if (bytesSent <= 0) {
-            throw ManagerStateException();
+        try {
+            std::string msg = Parsers::emitIndividual(get(elID));
+            int bytesSent = send(info.socket, msg.c_str(), msg.size() + 1, 0);
+            if (bytesSent <= 0) {
+                throw ManagerStateException();
+            }
+            log("server got element " +  elID.string() + " for client " + id.string() + ":\n" + msg);
+        } catch (std::exception e) {
+            log(e.what());
+            const char* msg = "ERROR";
+            int bytesSent = send(info.socket, msg, 6, 0);
         }
-        log("server got element " +  elID.string() + " for client " + id.string() + ":\n" + msg);
     }
     if (node["POST"]) {
         m_msgV = true;

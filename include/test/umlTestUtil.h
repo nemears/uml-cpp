@@ -101,8 +101,11 @@ namespace UML {
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
         UmlPtr<V> t2 = m.create<V>();
+        ASSERT_NO_THROW(m.get(u.id()));
+        ASSERT_NO_THROW(m.get(t.id()));
         ASSERT_NO_THROW(((*u).*acessor)().add(*t));
-        m.put(*u);
+        u.release();
+        // m.put(*u);
         // ASSERT_FALSE(u.loaded());
         ASSERT_EQ(((*u).*acessor)().front(), *t);
         ASSERT_EQ(&((*u).*acessor)().front(), t.ptr());
@@ -130,7 +133,12 @@ namespace UML {
     };
 
     #define UML_SET_INTEGRATION_TEST(TEST_NAME, T, U, signature) \
-    class TEST_NAME ## Method : public ::testing::Test {}; \
+    class TEST_NAME ## Method : public ::testing::Test { \
+        void SetUp() override { \
+            std::hash<std::string> hasher; \
+            srand(static_cast<unsigned int>(time(0)) ^ hasher(std::string(#TEST_NAME))); \
+        }; \
+    }; \
     TEST_F( TEST_NAME ## Method , basicIntegrationTest ) { \
         ASSERT_NO_FATAL_FAILURE((setIntegrationTestBasic<T , U>(signature)));\
     } \

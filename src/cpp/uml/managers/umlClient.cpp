@@ -189,6 +189,10 @@ Element& UmlClient::get(ID id) {
         i++;
     }
     Parsers::ParserMetaData data(this);
+    if (std::string("ERROR").compare(buff) == 0) {
+        free(buff);
+        throw ManagerStateException("ERROR from server!");
+    }
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
     Element& ret = *Parsers::parseString(buff, data);
     free(buff);

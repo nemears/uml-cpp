@@ -379,6 +379,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::OBJECT_NODE : {
             return "OBJECT_NODE";
         }
+        case ElementType::OPAQUE_ACTION : {
+            return "OPAQUE_ACTION";
+        }
         case ElementType::OPAQUE_BEHAVIOR : {
             return "OPAQUE_BEHAVIOR";
         }

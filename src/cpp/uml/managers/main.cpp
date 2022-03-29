@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
     std::string location;
     int duration = -1;
     int numEls = UML_SERVER_NUM_ELS;
-    srand(time(0));
+    srand(static_cast<unsigned int>(time(0)));
     while (i < argc) {
         if (strcmp(argv[i], "-p") == 0) {
             port = atoi(argv[i+1]);

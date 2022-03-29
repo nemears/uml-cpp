@@ -281,55 +281,57 @@ void UmlManager::lossless(bool lossless) {
 }
 
 void UmlManager::reindex(ID oldID, ID newID) {
-    if (m_elements.count(newID)) {
-        // Element with this ID already exists, overwrite it with new one
-        // This logic should only be called when it is loading from disk
-        // and will overwrite the existing element in memory with one from disk
-        // during a UmlManager::open() or UmlManager::aquire(id) invoke
-        
-        ManagerNode* m_node = &m_graph[newID];
-        delete m_node->m_managerElementMemory;
-        m_node->m_managerElementMemory = m_graph[oldID].m_managerElementMemory;
-        m_node->m_managerElementMemory->m_node = m_node;
-        for (auto& countPair : m_node->m_referenceCount) {
-            countPair.second = 0;
-        }
-        for (auto& ptr : m_graph[oldID].m_ptrs) {
-            static_cast<AbstractUmlPtr*>(ptr)->reindex(newID, m_node->m_managerElementMemory);
-            m_node->m_ptrs.push_back(ptr);
-        }
-        m_elements.erase(oldID);
-        m_graph.erase(oldID);
-    } else  {
-        // reindex
-        m_elements.erase(oldID);
-        m_elements.insert(newID);
-        ManagerNode& discRef = m_graph[oldID];
-        m_graph[newID] = discRef;
-        ManagerNode* newDisc = &m_graph[newID];
-        newDisc->m_managerElementMemory = discRef.m_managerElementMemory;
-        for (auto& ref : newDisc->m_references) {
-            if (ref.second->m_references.count(oldID)) {
-                ref.second->m_references.erase(oldID);
-                ref.second->m_references[newID] = newDisc;
-                (*find(ref.second->m_referenceOrder.begin(), ref.second->m_referenceOrder.end(), oldID)) = newID;
-                size_t count = ref.second->m_referenceCount[oldID];
-                ref.second->m_referenceCount[newID] = count;
-                ref.second->m_referenceCount.erase(oldID);
+    if (oldID != newID) {
+        if (m_elements.count(newID)) {
+            // Element with this ID already exists, overwrite it with new one
+            // This logic should only be called when it is loading from disk
+            // and will overwrite the existing element in memory with one from disk
+            // during a UmlManager::open() or UmlManager::aquire(id) invoke
+            
+            ManagerNode* m_node = &m_graph[newID];
+            delete m_node->m_managerElementMemory;
+            m_node->m_managerElementMemory = m_graph[oldID].m_managerElementMemory;
+            m_node->m_managerElementMemory->m_node = m_node;
+            for (auto& countPair : m_node->m_referenceCount) {
+                countPair.second = 0;
             }
-            if (!ref.second->m_managerElementMemory) {
-                aquire(ref.first);
+            for (auto& ptr : m_graph[oldID].m_ptrs) {
+                static_cast<AbstractUmlPtr*>(ptr)->reindex(newID, m_node->m_managerElementMemory);
+                m_node->m_ptrs.push_back(ptr);
             }
-            ref.second->m_managerElementMemory->referenceReindexed(oldID, newID);
-        }
-        for (auto& ptr : newDisc->m_ptrs) {
-            static_cast<AbstractUmlPtr*>(ptr)->reindex(newID, newDisc->m_managerElementMemory);
-        }
-        newDisc->m_managerElementMemory->m_node = newDisc;
-        m_graph.erase(oldID);
-        if (!m_mountBase.empty()) {
-            std::filesystem::remove(m_mountBase / "mount" / (oldID.string() + ".yml"));
-            /** Should we write to new file now?**/
+            m_elements.erase(oldID);
+            m_graph.erase(oldID);
+        } else  {
+            // reindex
+            m_elements.erase(oldID);
+            m_elements.insert(newID);
+            ManagerNode& discRef = m_graph[oldID];
+            m_graph[newID] = discRef;
+            ManagerNode* newDisc = &m_graph[newID];
+            newDisc->m_managerElementMemory = discRef.m_managerElementMemory;
+            for (auto& ref : newDisc->m_references) {
+                if (ref.second->m_references.count(oldID)) {
+                    ref.second->m_references.erase(oldID);
+                    ref.second->m_references[newID] = newDisc;
+                    (*find(ref.second->m_referenceOrder.begin(), ref.second->m_referenceOrder.end(), oldID)) = newID;
+                    size_t count = ref.second->m_referenceCount[oldID];
+                    ref.second->m_referenceCount[newID] = count;
+                    ref.second->m_referenceCount.erase(oldID);
+                }
+                if (!ref.second->m_managerElementMemory) {
+                    aquire(ref.first);
+                }
+                ref.second->m_managerElementMemory->referenceReindexed(oldID, newID);
+            }
+            for (auto& ptr : newDisc->m_ptrs) {
+                static_cast<AbstractUmlPtr*>(ptr)->reindex(newID, newDisc->m_managerElementMemory);
+            }
+            newDisc->m_managerElementMemory->m_node = newDisc;
+            m_graph.erase(oldID);
+            if (!m_mountBase.empty()) {
+                std::filesystem::remove(m_mountBase / "mount" / (oldID.string() + ".yml"));
+                /** Should we write to new file now?**/
+            }
         }
     }
 }

@@ -301,6 +301,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::CALL_ACTION;
     } else if (eType.compare("CALL_BEHAVIOR_ACTION") == 0) {
         return ElementType::CALL_BEHAVIOR_ACTION;
+    } else if (eType.compare("CENTRAL_BUFFER_NODE") == 0) {
+        return ElementType::CENTRAL_BUFFER_NODE;
     } else if (eType.compare("CLASS") == 0) {
         return ElementType::CLASS;
     } else if (eType.compare("CLASSIFIER") == 0) {
@@ -1182,6 +1184,7 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         case ElementType::ACTIVITY_FINAL_NODE : {
             emitElementDefenition(emitter, ElementType::ACTIVITY_FINAL_NODE, "activityFinalNode", el, data);
             emitActivityNode(emitter, el.as<ActivityNode>(), data);
+            emitElementDefenitionEnd(emitter, ElementType::ACTIVITY_FINAL_NODE, el);
             break;
         }
         case ElementType::ACTIVITY_PARAMETER_NODE : {

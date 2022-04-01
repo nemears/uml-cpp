@@ -64,7 +64,11 @@ void ExceptionHandler::init() {
     m_protectedNode.opposite(&ExecutableNode::getHandlers);
     m_protectedNode.m_signature = &ExceptionHandler::getProtectedNodeSingleton;
     m_handlerBody.m_signature = &ExceptionHandler::getHandlerBodySingleton;
+    m_handlerBody.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_handlerBody.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_exceptionInput.m_signature = &ExceptionHandler::getExceptionInputSingleton;
+    m_exceptionInput.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_exceptionInput.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_exceptionTypes.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_exceptionTypes.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_exceptionTypes.m_signature = &ExceptionHandler::getExceptionTypes;

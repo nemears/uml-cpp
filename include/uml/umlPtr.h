@@ -21,6 +21,7 @@ namespace UML {
             ID m_id = ID::nullID();
             virtual void reindex(ID newID, Element* el) = 0;
             virtual void releasePtr() = 0;
+            virtual void erasePtr() = 0;
     };
 
     template <class T = Element>
@@ -39,6 +40,10 @@ namespace UML {
                 m_ptr = dynamic_cast<T*>(el);
             };
             void releasePtr() override {
+                m_ptr = 0;
+            };
+            void erasePtr() override {
+                m_id = ID::nullID();
                 m_ptr = 0;
             };
         public:

@@ -11,6 +11,7 @@
 #include "uml/interface.h"
 #include "uml/deployment.h"
 #include "uml/umlPtr.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
@@ -40,6 +41,8 @@ void ActivityParameterNode::referenceErased(ID id) {
 
 void ActivityParameterNode::init() {
     m_parameter.m_signature = &ActivityParameterNode::getParameterSingleton;
+    m_parameter.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_parameter.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
 ActivityParameterNode::ActivityParameterNode() : Element(ElementType::ACTIVITY_PARAMETER_NODE) {

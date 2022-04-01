@@ -13,6 +13,7 @@
 #include "uml/deployment.h"
 #include "uml/objectNode.h"
 #include "uml/umlPtr.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
@@ -42,6 +43,8 @@ void CallBehaviorAction::referenceErased(ID id) {
 
 void CallBehaviorAction::init() {
     m_behavior.m_signature = &CallBehaviorAction::getBehaviorSingleton;
+    m_behavior.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_behavior.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
 CallBehaviorAction::CallBehaviorAction() : Element(ElementType::CALL_BEHAVIOR_ACTION) {

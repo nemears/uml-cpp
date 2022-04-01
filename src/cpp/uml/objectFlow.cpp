@@ -10,6 +10,7 @@
 #include "uml/interface.h"
 #include "uml/deployment.h"
 #include "uml/umlPtr.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
@@ -45,11 +46,15 @@ void ObjectFlow::restoreReference(Element* el) {
 
 void ObjectFlow::init() {
     m_transformation.m_signature = &ObjectFlow::getTransformationSingleton;
+    m_transformation.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_transformation.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_selection.m_signature = &ObjectFlow::getSelectionSingleton;
+    m_selection.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_selection.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
 ObjectFlow::ObjectFlow() : Element(ElementType::OBJECT_FLOW) {
-
+    init();
 }
 
 ObjectFlow::~ObjectFlow() {

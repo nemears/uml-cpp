@@ -313,6 +313,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::CONNECTOR_END;
     } else if (eType.compare("CONNECTABLE_ELEMENT") == 0) {
         return ElementType::CONNECTABLE_ELEMENT;
+    } else if (eType.compare("CONSTRAINT") == 0) {
+        return ElementType::CONSTRAINT;
     } else if (eType.compare("CONTROL_FLOW") == 0) {
         return ElementType::CONTROL_FLOW;
     } else if (eType.compare("CREATE_OBJECT_ACTION") == 0) {

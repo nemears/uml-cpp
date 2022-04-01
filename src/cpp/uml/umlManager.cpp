@@ -292,12 +292,17 @@ void UmlManager::reindex(ID oldID, ID newID) {
             delete m_node->m_managerElementMemory;
             m_node->m_managerElementMemory = m_graph[oldID].m_managerElementMemory;
             m_node->m_managerElementMemory->m_node = m_node;
-            for (auto& countPair : m_node->m_referenceCount) {
-                countPair.second = 0;
+            for (auto& pair : m_node->m_references) {
+                if (!pair.second) {
+                    pair.second = UmlManager::get(pair.first).m_node;
+                }
+                pair.second->m_references[newID] = 0;
             }
-            for (auto& ptr : m_graph[oldID].m_ptrs) {
+            // for (auto& countPair : m_node->m_referenceCount) {
+            //     countPair.second = 0;
+            // }
+            for (auto& ptr : m_node->m_ptrs) {
                 static_cast<AbstractUmlPtr*>(ptr)->reindex(newID, m_node->m_managerElementMemory);
-                m_node->m_ptrs.push_back(ptr);
             }
             m_elements.erase(oldID);
             m_graph.erase(oldID);
@@ -551,7 +556,7 @@ Element* UmlManager::get(Element* me, ID theID) {
             if (me->m_node->m_references.count(theID)) {
                 if (!me->m_node->m_references[theID]) {
                     if (loaded(theID)) {
-                        me->restoreReference(&get(theID));
+                        me->restoreReference(&UmlManager::get(theID));
                     } else {
                         ElementPtr aquired = aquire(theID);
                         me->m_node->m_references[theID] = aquired->m_node;

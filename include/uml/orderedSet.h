@@ -153,7 +153,7 @@ namespace UML {
             T& front() {
                 if (this->m_first) {
                     if (!m_first->m_el) {
-                        m_first->m_el = &this->m_el->m_manager->get(m_first->m_id);
+                        m_first->m_el = &this->m_el->m_manager->UmlManager::get(m_first->m_id);
                     }
                     return *dynamic_cast<T*>(this->m_first->m_el);
                 } else {

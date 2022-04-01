@@ -274,9 +274,9 @@ ElementPtr UmlClient::aquire(ID id) {
 }
 
 void UmlClient::release(Element& el) {
+    ID elID = el.getID();
     put(el);
     releaseNode(el);
-    ID elID = el.getID();
     delete &el;
     m_graph.erase(elID);
 }

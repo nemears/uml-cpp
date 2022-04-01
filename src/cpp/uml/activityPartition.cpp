@@ -10,6 +10,7 @@
 #include "uml/deployment.h"
 #include "uml/interruptibleActivityRegion.h"
 #include "uml/umlPtr.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
@@ -47,6 +48,8 @@ void ActivityPartition::reindexName(ID id, std::string newName) {
 
 void ActivityPartition::init() {
     m_represents.m_signature = &ActivityPartition::getRepresentsSingleton;
+    m_represents.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_represents.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_activity.subsets(m_inActivity);
     m_activity.opposite(&Activity::getPartitions);
     m_activity.m_signature = &ActivityPartition::getActivitySingleton;

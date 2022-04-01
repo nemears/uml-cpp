@@ -59,7 +59,7 @@ Element& UmlManager::create(ElementType eType) {
             return static_cast<Element&>(*create<ActivityFinalNode>());
         }
         case ElementType::ACTIVITY_PARAMETER_NODE : {
-            return static_cast<Element&>(*create<ActivityFinalNode>());
+            return static_cast<Element&>(*create<ActivityParameterNode>());
         }
         case ElementType::ACTIVITY_PARTITION : {
             return static_cast<Element&>(*create<ActivityPartition>());
@@ -258,6 +258,9 @@ Element& UmlManager::create(ElementType eType) {
         }
         case ElementType::USAGE : {
             return static_cast<Element&>(*create<Usage>());
+        }
+        case ElementType::VALUE_PIN : {
+            return static_cast<Element&>(*create<ValuePin>());
         }
         default : {
             throw ManagerStateException("Could not create element with unmapped element type: " + Element::elementTypeToString(eType));
@@ -459,6 +462,9 @@ void UmlManager::eraseNode(ManagerNode* node, ID id) {
             aquire(node->m_referenceOrder[i]);
         }
         node->m_references[node->m_referenceOrder[i]]->m_managerElementMemory->referenceErased(id);
+    }
+    for (auto& ptr : node->m_ptrs) {
+        static_cast<AbstractUmlPtr*>(ptr)->erasePtr();
     }
     delete node->m_managerElementMemory;
     m_graph.erase(id);

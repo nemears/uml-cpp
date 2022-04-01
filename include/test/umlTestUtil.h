@@ -105,12 +105,11 @@ namespace UML {
         ASSERT_NO_THROW(m.get(t.id()));
         ASSERT_NO_THROW(((*u).*acessor)().add(*t));
         u.release();
-        // m.put(*u);
-        // ASSERT_FALSE(u.loaded());
+        ASSERT_FALSE(u.loaded());
         ASSERT_EQ(((*u).*acessor)().front(), *t);
         ASSERT_EQ(&((*u).*acessor)().front(), t.ptr());
-        m.put(*t);
-        // ASSERT_FALSE(t.loaded());
+        t.release();
+        ASSERT_FALSE(t.loaded());
         ASSERT_EQ(((*u).*acessor)().front(), *t);
         ASSERT_NO_THROW(((*u).*acessor)().remove(*t));
         ASSERT_NO_THROW(((*u).*acessor)().add(*t2));
@@ -139,43 +138,110 @@ namespace UML {
             srand(static_cast<unsigned int>(time(0)) ^ hasher(std::string(#TEST_NAME))); \
         }; \
     }; \
-    TEST_F( TEST_NAME ## Method , basicIntegrationTest ) { \
+    TEST_F( TEST_NAME ## Method , basicSetIntegrationTest ) { \
         ASSERT_NO_FATAL_FAILURE((setIntegrationTestBasic<T , U>(signature)));\
     } \
-    TEST_F( TEST_NAME ## Method , reindexIntegrationTest ) { \
+    TEST_F( TEST_NAME ## Method , reindexSetIntegrationTest ) { \
         ASSERT_NO_FATAL_FAILURE((setIntegrationTestReindex<T , U>(signature)));\
     } \
-    TEST_F( TEST_NAME ## Method , mountAndReleaseIntegrationTest ) { \
+    TEST_F( TEST_NAME ## Method , mountSetAndReleaseIntegrationTest ) { \
         ASSERT_NO_FATAL_FAILURE((setIntegrationTestMount<T , U>(signature)));\
     } \
-    TEST_F( TEST_NAME ## Method , clientServerIntegrationTest ) { \
+    TEST_F( TEST_NAME ## Method , clientServerSetIntegrationTest ) { \
         ASSERT_NO_FATAL_FAILURE((setIntegrationTestClientServer<T , U>(signature)));\
-    } //\
-    // TEST_F( TEST_NAME ## Method , eraseIntegrationTest ) { \
-    //     ASSERT_NO_FATAL_FAILURE((setIntegrationTestErase<T , U>(signature)));\
-    // }
+    } \
+    TEST_F( TEST_NAME ## Method , eraseSetIntegrationTest ) { \
+        ASSERT_NO_FATAL_FAILURE((setIntegrationTestErase<T , U>(signature)));\
+    }
 
     template <class V, class W, class T = Element, class U = Element>
-    void singletonIntegrationTest(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(T*)) {
+    void singletonIntegrationTestBasic(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(T*)) {
+        UmlManager m;
+        UmlPtr<W> u = m.create<W>();
+        UmlPtr<V> t = m.create<V>();
+        UmlPtr<V> t2 = m.create<V>();
+        ASSERT_NO_THROW(((*u).*mutator)(t.ptr()));
+        ASSERT_EQ(((*u).*acessor)(), t);
+        ASSERT_NO_THROW(((*u).*mutator)(0));
+        ASSERT_FALSE(((*u).*acessor)());
+        ((*u).*mutator)(t.ptr());
+        ASSERT_NO_THROW(((*u).*mutator)(t2.ptr()));
+        ASSERT_EQ(*((*u).*acessor)(), *t2);
+    }
+
+    template <class V, class W, class T = Element, class U = Element>
+    void singletonIntegrationTestReindex(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(T*)) {
+        UmlManager m;
+        UmlPtr<W> u = m.create<W>();
+        UmlPtr<V> t = m.create<V>();
+        ((*u).*mutator)(t.ptr());
+        ID newID = ID::randomID();
+        t->setID(newID);
+        ASSERT_EQ(((*u).*acessor)().id(), newID);
+        // TODO name?
+    }
+
+    template <class V, class W, class T = Element, class U = Element>
+    void singletonIntegrationTestMount(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(T*)) {
+        UmlManager m;
+        UmlPtr<W> u = m.create<W>();
+        UmlPtr<V> t = m.create<V>();
+        m.setRoot(*u);
+        m.mount(".");
+        ASSERT_NO_THROW(((*u).*mutator)(t.ptr()));
+        ASSERT_EQ(((*u).*acessor)(), t);
+        u.release();
+        ASSERT_EQ(((*u).*acessor)(), t);
+        t.release();
+        ASSERT_EQ(((*u).*acessor)(), t);
+    }
+
+    template <class V, class W, class T = Element, class U = Element>
+    void singletonIntegrationTestClientServer(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(T*)) {
+        UmlClient m;
+        UmlPtr<W> u = m.create<W>();
+        UmlPtr<V> t = m.create<V>();
+        ASSERT_NO_THROW(m.get(u.id()));
+        ASSERT_NO_THROW(m.get(t.id()));
+        ASSERT_NO_THROW(((*u).*mutator)(t.ptr()));
+        ASSERT_EQ(((*u).*acessor)(), t);
+        u.release();
+        ASSERT_EQ(((*u).*acessor)(), t);
+        t.release();
+        ASSERT_EQ(((*u).*acessor)(), t);
+    }
+
+    template <class V, class W, class T = Element, class U = Element>
+    void singletonIntegrationTestErase(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(T*)) {
         UmlManager m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
         ASSERT_NO_THROW(((*u).*mutator)(t.ptr()));
-        ASSERT_EQ(((*u).*acessor)(), t);
-        m.setRoot(*u);
-        m.mount(".");
-        u.release();
-        ASSERT_EQ(((*u).*acessor)(), t);
-        t.release();
-        ASSERT_EQ(*((*u).*acessor)(), *t);
-        ASSERT_NO_THROW(((*u).*mutator)(0));
+        ASSERT_NO_THROW(m.erase(*t));
         ASSERT_FALSE(((*u).*acessor)());
     }
 
     #define UML_SINGLETON_INTEGRATION_TEST(TEST_NAME, T, U, acessor, mutator) \
-    class TEST_NAME ## Method : public ::testing::Test {}; \
-    TEST_F(TEST_NAME ## Method , integrationTest) { \
-        ASSERT_NO_FATAL_FAILURE((singletonIntegrationTest<T,U>(acessor, mutator))); \
+    class TEST_NAME ## Method : public ::testing::Test { \
+        void SetUp() override { \
+            std::hash<std::string> hasher; \
+            srand(static_cast<unsigned int>(time(0)) ^ hasher(std::string(#TEST_NAME))); \
+        }; \
+    }; \
+    TEST_F(TEST_NAME ## Method , basicSingletonIntegrationTest) { \
+        ASSERT_NO_FATAL_FAILURE((singletonIntegrationTestBasic<T,U>(acessor, mutator))); \
+    } \
+    TEST_F(TEST_NAME ## Method, reindexSingletonIntegrationTest) { \
+        ASSERT_NO_FATAL_FAILURE((singletonIntegrationTestReindex<T,U>(acessor, mutator))); \
+    } \
+    TEST_F(TEST_NAME ## Method, mountSingletonIntegrationTest) { \
+        ASSERT_NO_FATAL_FAILURE((singletonIntegrationTestMount<T,U>(acessor, mutator))); \
+    } \
+    TEST_F(TEST_NAME ## Method, clientServerSingletonIntegrationTest) { \
+        ASSERT_NO_FATAL_FAILURE((singletonIntegrationTestClientServer<T,U>(acessor, mutator))); \
+    } \
+    TEST_F(TEST_NAME ## Method, eraseSingletonIntegrationTest) { \
+        ASSERT_NO_FATAL_FAILURE((singletonIntegrationTestErase<T,U>(acessor, mutator))); \
     }
     
 }

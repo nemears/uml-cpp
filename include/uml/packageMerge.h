@@ -34,11 +34,11 @@ namespace UML {
             PackageMerge();
         public:
             virtual ~PackageMerge();
-            PackagePtr getReceivingPackage();
+            PackagePtr getReceivingPackage() const;
             void setReceivingPackage(Package& receive);
             void setReceivingPackage(Package* receive);
             void setReceivingPackage(ID id);
-            PackagePtr getMergedPackage();
+            PackagePtr getMergedPackage() const;
             void setMergedPackage(Package& merge);
             void setMergedPackage(Package* merge);
             void setMergedPackage(ID id);

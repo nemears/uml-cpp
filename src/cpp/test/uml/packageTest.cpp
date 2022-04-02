@@ -1,11 +1,19 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
 
 class PackageTest : public ::testing::Test {
    
 };
+
+UML_SET_INTEGRATION_TEST(PackagePackagedElements, Package, Package, &Package::getPackagedElements);
+UML_SINGLETON_INTEGRATION_TEST(PackageableElementOwningPackage, Package, Package, &PackageableElement::getOwningPackage, &PackageableElement::setOwningPackage);
+UML_SET_INTEGRATION_TEST(PackagePackageMerges, PackageMerge, Package, &Package::getPackageMerge);
+UML_SINGLETON_INTEGRATION_TEST(PackageMergeReceivingPackage, Package, PackageMerge, &PackageMerge::getReceivingPackage, &PackageMerge::setReceivingPackage);
+UML_SINGLETON_INTEGRATION_TEST(PackageMergeMergedPackage, Package, PackageMerge, &PackageMerge::getMergedPackage, &PackageMerge::setMergedPackage);
+UML_SET_INTEGRATION_TEST(PackagemOwnedStereotypes, Stereotype, Package, &Package::getOwnedStereotypes);
 
 TEST_F(PackageTest, addPackagedElementTest) {
     UmlManager m;

@@ -12,6 +12,7 @@
 #include "uml/interface.h"
 #include "uml/deployment.h"
 #include "uml/umlPtr.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
@@ -45,6 +46,8 @@ Set<InstanceSpecification, Slot>& Slot::getOwningInstanceSingleton() {
 
 void Slot::init() {
     m_definingFeature.m_signature = &Slot::getDefiningFeatureSingleton;
+    m_definingFeature.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_definingFeature.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_owningInstance.subsets(*m_owner);
     m_owningInstance.opposite(&InstanceSpecification::getSlots);
     m_owningInstance.m_signature = &Slot::getOwningInstanceSingleton;

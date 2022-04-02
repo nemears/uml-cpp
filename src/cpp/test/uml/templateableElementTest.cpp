@@ -1,8 +1,26 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
 #include "test/uml-cpp-paths.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SINGLETON_INTEGRATION_TEST(TemplateableElementOwnedTemplateSignature, TemplateSignature, Class, &TemplateableElement::getOwnedTemplateSignature, &TemplateableElement::setOwnedTemplateSignature);
+UML_SET_INTEGRATION_TEST(TemplateSignatureOwnedParameters, TemplateParameter, TemplateSignature, &TemplateSignature::getOwnedParameters);
+UML_SET_INTEGRATION_TEST(TemplateSignatureParameters, TemplateParameter, TemplateSignature, &TemplateSignature::getParameters);
+UML_SINGLETON_INTEGRATION_TEST(TemplateParameterOwnedParameteredElement, Package, TemplateParameter, &TemplateParameter::getOwnedParameteredElement, &TemplateParameter::setOwnedParameteredElement);
+UML_SINGLETON_INTEGRATION_TEST(ParameterableElementOwningtemplateParameter, TemplateParameter, Package, &ParameterableElement::getOwningTemplateParameter, &ParameterableElement::setOwningTemplateParameter);
+UML_SINGLETON_INTEGRATION_TEST(ParameterableElementTemplateParameter, TemplateParameter, Package, &ParameterableElement::getTemplateParameter, &ParameterableElement::setTemplateParameter);
+UML_SINGLETON_INTEGRATION_TEST(TemplateParameterOwnedDefault, Package, TemplateParameter, &TemplateParameter::getOwnedDefault, &TemplateParameter::setOwnedDefault);
+UML_SINGLETON_INTEGRATION_TEST(TemplateParameterDefault, Package, TemplateParameter, &TemplateParameter::getDefault, &TemplateParameter::setDefault);
+UML_SINGLETON_INTEGRATION_TEST(TemplateParameterSubstitutionFormal, TemplateParameter, TemplateParameterSubstitution, &TemplateParameterSubstitution::getFormal, &TemplateParameterSubstitution::setFormal);
+UML_SINGLETON_INTEGRATION_TEST(TemplateParameterSubstitutionActual, Package, TemplateParameterSubstitution, &TemplateParameterSubstitution::getActual, &TemplateParameterSubstitution::setActual);
+UML_SINGLETON_INTEGRATION_TEST(TemplateParameterSubstitutionOwnedActual, Package, TemplateParameterSubstitution, &TemplateParameterSubstitution::getOwnedActual, &TemplateParameterSubstitution::setOwnedActual);
+UML_SINGLETON_INTEGRATION_TEST(TemplateParameterSubstitutionTemplateBinding, TemplateBinding, TemplateParameterSubstitution, &TemplateParameterSubstitution::getTemplateBinding, &TemplateParameterSubstitution::setTemplateBinding);
+UML_SET_INTEGRATION_TEST(TemplateBindingParameterSubstitution, TemplateParameterSubstitution, TemplateBinding, &TemplateBinding::getParameterSubstitution);
+UML_SINGLETON_INTEGRATION_TEST(TemplateBindingBoundElement, Operation, TemplateBinding, &TemplateBinding::getBoundElement, &TemplateBinding::setBoundElement);
+UML_SET_INTEGRATION_TEST(TemplateableElementTemplateBindings, TemplateBinding, Package, &TemplateableElement::getTemplateBindings);
+UML_SINGLETON_INTEGRATION_TEST(TemplateBindingSignature, TemplateSignature, TemplateBinding, &TemplateBinding::getSignature, &TemplateBinding::setSignature);
 
 class TemplateableElementTest : public ::testing::Test {
     public:

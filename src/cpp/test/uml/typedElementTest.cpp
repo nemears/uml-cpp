@@ -1,12 +1,6 @@
 #include "gtest/gtest.h"
-#include "uml/property.h"
-#include "uml/class.h"
-#include "uml/dataType.h"
-#include "uml/package.h"
-#include "uml/umlPtr.h"
-#include "test/uml-cpp-paths.h"
-
 #include "uml/uml-stable.h"
+#include "test/uml-cpp-paths.h"
 
 using namespace UML;
 

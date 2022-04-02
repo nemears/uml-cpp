@@ -19,6 +19,30 @@ Set<Property, ConnectorEnd>& ConnectorEnd::getDefiningEndSingleton() {
     return m_definingEnd;
 }
 
+void ConnectorEnd::referencingReleased(ID id) {
+    MultiplicityElement::referencingReleased(id);
+    m_role.release(id);
+    m_definingEnd.release(id);
+}
+
+void ConnectorEnd::referenceReindexed(ID oldID, ID newID) {
+    MultiplicityElement::referenceReindexed(oldID, newID);
+    m_role.reindex(oldID, newID);
+    m_role.reindex(oldID, newID);
+}
+
+void ConnectorEnd::reindexName(ID id, std::string newName) {
+    MultiplicityElement::reindexName(id, newName);
+    m_role.reindexName(id, newName);
+    m_role.reindexName(id, newName);
+}
+
+void ConnectorEnd::referenceErased(ID id) {
+    MultiplicityElement::referenceErased(id);
+    m_role.eraseElement(id);
+    m_definingEnd.eraseElement(id);
+}
+
 void ConnectorEnd::init() {
     m_role.opposite(&ConnectableElement::getEnds);
     m_role.m_signature = &ConnectorEnd::getRoleSingleton;

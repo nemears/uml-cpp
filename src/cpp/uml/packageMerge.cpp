@@ -45,7 +45,7 @@ PackageMerge::~PackageMerge() {
     mountAndRelease();
 }
 
-PackagePtr PackageMerge::getReceivingPackage() {
+PackagePtr PackageMerge::getReceivingPackage() const {
     return m_receivingPackage.get();
 }
 
@@ -61,7 +61,7 @@ void PackageMerge::setReceivingPackage(ID id) {
     m_receivingPackage.set(id);
 }
 
-PackagePtr PackageMerge::getMergedPackage() {
+PackagePtr PackageMerge::getMergedPackage() const {
     return m_mergedPackage.get();
 }
 

@@ -6,6 +6,7 @@
 #include "uml/association.h"
 #include "uml/deployment.h"
 #include "uml/umlPtr.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
@@ -19,6 +20,8 @@ Set<Package, ProfileApplication>& ProfileApplication::getApplyingPackageSingleto
 
 void ProfileApplication::init() {
     m_appliedProfile.subsets(m_targets);
+    m_appliedProfile.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_appliedProfile.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_appliedProfile.m_signature = &ProfileApplication::getAppliedProfileSingleton;
     m_applyingPackage.subsets(*m_owner);
     m_applyingPackage.subsets(m_sources);
@@ -50,7 +53,7 @@ void ProfileApplication::setAppliedProfile(ID id) {
     m_appliedProfile.set(id);
 }
 
-PackagePtr ProfileApplication::getApplyingPackage() {
+PackagePtr ProfileApplication::getApplyingPackage() const {
     return m_applyingPackage.get();
 }
 

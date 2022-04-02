@@ -1,9 +1,12 @@
 #include "gtest/gtest.h"
-#include "uml/profileApplication.h"
-#include "uml/profile.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SET_INTEGRATION_TEST(PackageProfileApplication, ProfileApplication, Package, &Package::getProfileApplications);
+UML_SINGLETON_INTEGRATION_TEST(ProfileApplicationAppliedProfile, Profile, ProfileApplication, &ProfileApplication::getAppliedProfile, &ProfileApplication::setAppliedProfile);
+UML_SINGLETON_INTEGRATION_TEST(ProfileApplicationApplyingPackage, Package, ProfileApplication, &ProfileApplication::getApplyingPackage, &ProfileApplication::setApplyingPackage);
 
 class ProfileApplicationTest : public ::testing::Test {};
 

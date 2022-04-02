@@ -191,7 +191,7 @@ void Property::setDefaultValue(ID id) {
     m_defaultValue.set(id);
 }
 
-DataTypePtr Property::getDataType() {
+DataTypePtr Property::getDataType() const {
     return m_dataType.get();
 }
 

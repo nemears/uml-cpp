@@ -1,7 +1,12 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SINGLETON_INTEGRATION_TEST(GeneralizationSetPowerType, Class, GeneralizationSet, &GeneralizationSet::getPowerType, &GeneralizationSet::setPowerType);
+UML_SET_INTEGRATION_TEST(GeneralizationSetGeneralizations, Generalization, GeneralizationSet, &GeneralizationSet::getGeneralizations);
+UML_SET_INTEGRATION_TEST(GeneralizationGeneralizationSets, GeneralizationSet, Generalization, &Generalization::getGeneralizationSets);
 
 class GeneralizationSetTest : public ::testing::Test {
    

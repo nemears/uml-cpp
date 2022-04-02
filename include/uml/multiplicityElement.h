@@ -51,11 +51,15 @@ namespace UML {
             ValueSpecificationPtr getLowerValue() const;
             void setLowerValue(ValueSpecification* val);
             void setLowerValue(ValueSpecification& val);
+            void setLowerValue(ValueSpecificationPtr val);
+            void setLowerValue(ID id);
             int getUpper();
             void setUpper(const int up);
             ValueSpecificationPtr getUpperValue() const;
             void setUpperValue(ValueSpecification* val);
             void setUpperValue(ValueSpecification& val);
+            void setUpperValue(ValueSpecificationPtr val);
+            void setUpperValue(ID id);
             class MultiplicityNotSpecifiedException: public std::exception {
                 public:
                     virtual const char* what() const throw() {

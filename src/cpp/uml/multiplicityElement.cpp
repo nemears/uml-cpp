@@ -130,6 +130,14 @@ void MultiplicityElement::setLowerValue(ValueSpecification& val) {
     m_lowVal.set(val);
 }
 
+void MultiplicityElement::setLowerValue(ValueSpecificationPtr val) {
+    m_lowVal.set(val);
+}
+
+void MultiplicityElement::setLowerValue(ID id) {
+    m_lowVal.set(id);
+}
+
 ValueSpecificationPtr MultiplicityElement::getUpperValue() const {
     return m_upVal.get();
 }
@@ -140,6 +148,14 @@ void MultiplicityElement::setUpperValue(ValueSpecification* val) {
 
 void MultiplicityElement::setUpperValue(ValueSpecification& val) {
     m_upVal.set(val);
+}
+
+void MultiplicityElement::setUpperValue(ValueSpecificationPtr val) {
+    m_upVal.set(val);
+}
+
+void MultiplicityElement::setUpperValue(ID id) {
+    m_upVal.set(id);
 }
 
 bool MultiplicityElement::isSubClassOf(ElementType eType) const {

@@ -53,7 +53,7 @@ void NamedElement::init() {
     m_namespace.m_addFunctors.insert(new UpdateQualifiedNameFunctor(this));
     m_namespace.m_removeFunctors.insert(new RemoveQualifiedNameFunctor(this));
     m_clientDependencies = new Set<Dependency, NamedElement>(this);
-    m_clientDependencies->opposite(&Dependency::getClient);
+    m_clientDependencies->opposite(&Dependency::getClients);
     m_clientDependencies->m_signature = &NamedElement::getClientDependencies;
 }
 

@@ -22,20 +22,20 @@ TEST_F(DeploymentTest, basicDeploymentTest) {
     deployment.getDeployedArtifacts().add(artifact);
     ASSERT_TRUE(deployment.getLocation());
     ASSERT_EQ(deployment.getLocation()->getID(), location.getID());
-    ASSERT_EQ(deployment.getClient().size(), 1);
-    ASSERT_EQ(deployment.getClient().front().getID(), location.getID());
+    ASSERT_EQ(deployment.getClients().size(), 1);
+    ASSERT_EQ(deployment.getClients().front().getID(), location.getID());
     ASSERT_TRUE(deployment.getOwner());
     ASSERT_EQ(deployment.getOwner()->getID(), location.getID());
     ASSERT_EQ(deployment.getDeployedArtifacts().size(), 1);
     ASSERT_EQ(deployment.getDeployedArtifacts().front().getID(), artifact.getID());
-    ASSERT_EQ(deployment.getSupplier().size(), 1);
-    ASSERT_EQ(deployment.getSupplier().front().getID(), artifact.getID());
+    ASSERT_EQ(deployment.getSuppliers().size(), 1);
+    ASSERT_EQ(deployment.getSuppliers().front().getID(), artifact.getID());
     deployment.setLocation(0);
     deployment.getDeployedArtifacts().remove(artifact);
     ASSERT_FALSE(deployment.getLocation());
-    ASSERT_EQ(deployment.getClient().size(), 0);
+    ASSERT_EQ(deployment.getClients().size(), 0);
     ASSERT_EQ(deployment.getDeployedArtifacts().size(), 0);
-    ASSERT_EQ(deployment.getSupplier().size(), 0);
+    ASSERT_EQ(deployment.getSuppliers().size(), 0);
     ASSERT_FALSE(deployment.getOwner());
 }
 

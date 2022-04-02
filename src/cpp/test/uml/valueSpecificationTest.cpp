@@ -1,20 +1,11 @@
 #include "gtest/gtest.h"
-#include "uml/primitiveType.h"
-#include "uml/property.h"
-#include "uml/literalInt.h"
-#include "uml/literalString.h"
-#include "uml/literalBool.h"
-#include "uml/literalReal.h"
-#include "uml/literalUnlimitedNatural.h"
-#include "uml/slot.h"
-#include "uml/instanceSpecification.h"
-#include "uml/class.h"
-#include "uml/umlPtr.h"
-
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace std;
 using namespace UML;
+
+UML_SET_INTEGRATION_TEST(ExpressionOperands, Expression, Expression, &Expression::getOperands);
 
 class ValueSpecificationTest : public ::testing::Test {};
 

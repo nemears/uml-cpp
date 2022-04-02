@@ -48,8 +48,8 @@ TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
     Class& encapsulatedClassifier = *m.create<Class>();
     realization.setContract(realizedInterface);
     specific.getInterfaceRealizations().add(realization);
-    usage.getSupplier().add(usedInterface);
-    usage.getClient().add(general);
+    usage.getSuppliers().add(usedInterface);
+    usage.getClients().add(general);
     generalization.setGeneral(general);
     specific.getGeneralizations().add(generalization);
     encapsulatedClassifier.getOwnedAttributes().add(port);
@@ -106,12 +106,12 @@ TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
     ASSERT_EQ(port.getRequired().front(), realizedInterface);
     ASSERT_EQ(port.getProvided().front(), usedInterface);
 
-    usage.getClient().remove(general);
+    usage.getClients().remove(general);
 
     ASSERT_EQ(port.getRequired().size(), 1);
     ASSERT_EQ(port.getProvided().size(), 0);
 
-    usage.getClient().add(general);
+    usage.getClients().add(general);
 
     ASSERT_EQ(port.getRequired().size(), 1);
     ASSERT_EQ(port.getProvided().size(), 1);
@@ -119,7 +119,7 @@ TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
     ASSERT_EQ(port.getProvided().front(), usedInterface);
 
     specific.getInterfaceRealizations().remove(realization);
-    usage.getClient().remove(general);
+    usage.getClients().remove(general);
 
     ASSERT_EQ(port.getRequired().size(), 0);
     ASSERT_EQ(port.getProvided().size(), 0);
@@ -129,7 +129,7 @@ TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
     ASSERT_EQ(port.getRequired().size(), 1);
     ASSERT_EQ(port.getProvided().size(), 0);
 
-    usage.getClient().add(specific);
+    usage.getClients().add(specific);
 
     ASSERT_EQ(port.getRequired().size(), 1);
     ASSERT_EQ(port.getProvided().size(), 1);
@@ -143,12 +143,12 @@ TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
 
     general.getInterfaceRealizations().add(realization);
 
-    usage.getClient().remove(specific);
+    usage.getClients().remove(specific);
 
     ASSERT_EQ(port.getRequired().size(), 1);
     ASSERT_EQ(port.getProvided().size(), 0);
 
-    usage.getClient().add(specific);
+    usage.getClients().add(specific);
 
     ASSERT_EQ(port.getRequired().size(), 1);
     ASSERT_EQ(port.getProvided().size(), 1);

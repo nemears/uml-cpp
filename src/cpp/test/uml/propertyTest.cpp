@@ -1,16 +1,12 @@
 #include "gtest/gtest.h"
-#include "uml/primitiveType.h"
-#include "uml/property.h"
-#include "uml/literalString.h"
-#include "uml/class.h"
-#include "uml/dataType.h"
-#include "uml/generalization.h"
-#include "uml/umlPtr.h"
 #include "test/uml-cpp-paths.h"
-
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SINGLETON_INTEGRATION_TEST(PropertyDefaultValue, Expression, Property, &Property::getDefaultValue, &Property::setDefaultValue);
+UML_SET_INTEGRATION_TEST(PropertyRedefinedProperties, Property, Property, &Property::getRedefinedProperties);
 
 class PropertyTest : public ::testing::Test {
     public:

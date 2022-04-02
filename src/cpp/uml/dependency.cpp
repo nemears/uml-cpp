@@ -27,7 +27,7 @@ void Dependency::reindexName(ID id, std::string newName) {
 void Dependency::restoreReference(Element* el) {
     PackageableElement::restoreReference(el);
     Relationship::restoreReference(el);
-    if (m_supplier.contains(el->getID())) {
+    if (m_suppliers.contains(el->getID())) {
         el->setReference(this); // need this logic for all setReference top level calls
     }
 }
@@ -38,13 +38,13 @@ void Dependency::referenceErased(ID id) {
 }
 
 void Dependency::init() {
-    m_client.subsets(m_sources);
-    m_client.opposite(&NamedElement::getClientDependencies);
-    m_client.m_signature = &Dependency::getClient;
-    m_supplier.subsets(m_targets);
-    m_supplier.m_signature = &Dependency::getSupplier;
-    m_supplier.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_supplier.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
+    m_clients.subsets(m_sources);
+    m_clients.opposite(&NamedElement::getClientDependencies);
+    m_clients.m_signature = &Dependency::getClients;
+    m_suppliers.subsets(m_targets);
+    m_suppliers.m_signature = &Dependency::getSuppliers;
+    m_suppliers.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_suppliers.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
 Dependency::Dependency() : Element(ElementType::DEPENDENCY) {
@@ -55,12 +55,12 @@ Dependency::~Dependency() {
     mountAndRelease();
 }
 
-Set<NamedElement, Dependency>& Dependency::getClient() {
-    return m_client;
+Set<NamedElement, Dependency>& Dependency::getClients() {
+    return m_clients;
 }
 
-Set<NamedElement, Dependency>& Dependency::getSupplier() {
-    return m_supplier;
+Set<NamedElement, Dependency>& Dependency::getSuppliers() {
+    return m_suppliers;
 }
 
 bool Dependency::isSubClassOf(ElementType eType) const {

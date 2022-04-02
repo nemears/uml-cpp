@@ -41,11 +41,11 @@ TEST_F(ParameterParserTest, emitParameterWMultiplicityTest) {
   parameters:
     - parameter:
         id: QzBhVkqNSRAZMlkHU6cQ3d_Wm8FT
-        lower:
+        lowerValue:
           literalInt:
             id: K2_2cpL966uyziy9e2pGb60cCR5X
             value: 0
-        upper:
+        upperValue:
           literalInt:
             id: sGGXJFNinAvKyKVSgc&JAlMWsbw5
             value: 5)"""";

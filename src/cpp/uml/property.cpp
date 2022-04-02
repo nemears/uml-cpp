@@ -12,15 +12,15 @@ using namespace UML;
 
 void Property::AddEndTypeFunctor::operator()(Element& el) const {
     if (m_el.as<Property>().getAssociation()) {
-        m_el.as<Property>().getAssociation()->getEndType().add(el.as<Type>());
+        m_el.as<Property>().getAssociation()->getEndTypes().add(el.as<Type>());
         el.setReference(m_el.as<Property>().getAssociation().ptr());
     }
 }
 
 void Property::RemoveEndTypeFunctor::operator()(Element& el) const {
     if (m_el.as<Property>().getAssociation()) {
-        if (m_el.as<Property>().getAssociation()->getEndType().contains(el.getID())) {
-            m_el.as<Property>().getAssociation()->getEndType().remove(el.getID());
+        if (m_el.as<Property>().getAssociation()->getEndTypes().contains(el.getID())) {
+            m_el.as<Property>().getAssociation()->getEndTypes().remove(el.getID());
             el.removeReference(m_el.as<Property>().getAssociation().id());
         }
     }

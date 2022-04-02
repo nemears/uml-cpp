@@ -67,6 +67,9 @@ void Classifier::AddOwnedMemberFunctor::operator()(Element& el) const {
 void Classifier::RemoveOwnedMemberFunctor::operator()(Element& el) const {
     if (el.as<NamedElement>().getVisibility() != VisibilityKind::PRIVATE) {
         for (auto& pair : m_el.m_node->m_references) {
+            if (!pair.second && m_el.m_manager->loaded(pair.first)) {
+                pair.second = m_el.m_manager->UmlManager::get(pair.first).m_node;
+            }
             if (pair.second->m_managerElementMemory && pair.second->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && pair.second->m_managerElementMemory->as<Classifier>().m_generals.contains(m_el.getID())) {
                 pair.second->m_managerElementMemory->as<Classifier>().m_inheritedMembers.nonOppositeRemove(el.getID());
             }

@@ -1,7 +1,12 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SINGLETON_INTEGRATION_TEST(BehaviorSpecification, Operation, Activity, &Behavior::getSpecification, &Behavior::setSpecification);
+UML_SET_INTEGRATION_TEST(BehavioralFeatureMethods, Activity, Operation, &BehavioralFeature::getMethods);
+UML_SET_INTEGRATION_TEST(BehaviorParameters, Parameter, OpaqueBehavior, &Behavior::getOwnedParameters);
 
 class BehaviorTest : public ::testing::Test {
    

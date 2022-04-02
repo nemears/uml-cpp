@@ -330,8 +330,8 @@ TEST_F(ProfileParserTest, mountProfileTest) {
   ASSERT_EQ(extension3.getMembers().ids().front(), endID);
   ASSERT_EQ(extension3.getOwnedElements().size(), 1);
   ASSERT_EQ(extension3.getOwnedElements().ids().front(), endID);
-  ASSERT_EQ(extension3.getEndType().size(), 1);
-  ASSERT_EQ(extension3.getEndType().ids().front(), stereotypeID);
+  ASSERT_EQ(extension3.getEndTypes().size(), 1);
+  ASSERT_EQ(extension3.getEndTypes().ids().front(), stereotypeID);
   ExtensionEnd& end2 = m.aquire(endID)->as<ExtensionEnd>();
   ASSERT_TRUE(end2.getOwningAssociation());
   ASSERT_EQ(*end2.getOwningAssociation(), extension3);
@@ -371,8 +371,8 @@ TEST_F(ProfileParserTest, mountProfileTest) {
   ASSERT_EQ(extension4.getMembers().front(), end3);
   ASSERT_EQ(extension4.getOwnedElements().size(), 1);
   ASSERT_EQ(*extension4.getOwnedElements().begin(), end3);
-  ASSERT_EQ(extension4.getEndType().size(), 1);
-  ASSERT_EQ(extension4.getEndType().front(), stereotype3);
+  ASSERT_EQ(extension4.getEndTypes().size(), 1);
+  ASSERT_EQ(extension4.getEndTypes().front(), stereotype3);
   ASSERT_EQ(*end3.getOwningAssociation(), extension4);
   ASSERT_EQ(*end3.getAssociation(), extension4);
   ASSERT_EQ(*end3.getFeaturingClassifier(), extension4);

@@ -63,8 +63,8 @@ TEST_F(ExtensionTest, setEndTypeTest) {
     ASSERT_EQ(end.getOwningAssociation()->getID(), ext.getID());
     ASSERT_TRUE(end.getType());
     ASSERT_EQ(end.getType()->getID(), t.getID());
-    ASSERT_EQ(ext.getEndType().size(), 1);
-    ASSERT_EQ(ext.getEndType().front().getID(), t.getID());
+    ASSERT_EQ(ext.getEndTypes().size(), 1);
+    ASSERT_EQ(ext.getEndTypes().front().getID(), t.getID());
 }
 
 TEST_F(ExtensionTest, setEndTypeNullTest) {
@@ -82,5 +82,5 @@ TEST_F(ExtensionTest, setEndTypeNullTest) {
     ASSERT_TRUE(end.getOwningAssociation());
     ASSERT_EQ(end.getOwningAssociation()->getID(), ext.getID());
     ASSERT_FALSE(end.getType());
-    ASSERT_EQ(ext.getEndType().size(), 0);
+    ASSERT_EQ(ext.getEndTypes().size(), 0);
 }

@@ -196,6 +196,7 @@ Element& UmlClient::get(ID id) {
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
     Element& ret = *Parsers::parseString(buff, data);
     free(buff);
+    restoreNode(ret);
     return ret;
 }
 

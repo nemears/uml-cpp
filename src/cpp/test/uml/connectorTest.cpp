@@ -172,7 +172,7 @@ TEST_F(ConnectorTest, typedConnectorTest) {
     ASSERT_EQ(wheelAssociation.getOwnedEnds().size(), 1);
     ASSERT_EQ(wheelAssociation.getMemberEnds().size(), 2);
     ASSERT_EQ(wheelAssociation.getMembers().size(), 2);
-    ASSERT_EQ(wheelAssociation.getEndType().size(), 2);
+    ASSERT_EQ(wheelAssociation.getEndTypes().size(), 2);
     ASSERT_EQ(wheelAssociation.getOwnedMembers().size(), 1);
     ASSERT_EQ(wheelAssociation.getOwnedElements().size(), 1);
 
@@ -181,21 +181,21 @@ TEST_F(ConnectorTest, typedConnectorTest) {
     ASSERT_TRUE(wheelAssociation.getMembers().contains(wheelAssociationEnd));
     ASSERT_TRUE(wheelAssociation.getOwnedMembers().contains(wheelAssociationEnd));
     ASSERT_TRUE(wheelAssociation.getOwnedElements().contains(wheelAssociationEnd));
-    ASSERT_TRUE(wheelAssociation.getEndType().contains(car));
+    ASSERT_TRUE(wheelAssociation.getEndTypes().contains(car));
 
     ASSERT_FALSE(wheelAssociation.getOwnedEnds().contains(rear));
     ASSERT_TRUE(wheelAssociation.getMemberEnds().contains(rear));
     ASSERT_TRUE(wheelAssociation.getMembers().contains(rear));
     ASSERT_FALSE(wheelAssociation.getOwnedMembers().contains(rear));
     ASSERT_FALSE(wheelAssociation.getOwnedElements().contains(rear));
-    ASSERT_TRUE(wheelAssociation.getEndType().contains(wheel));
+    ASSERT_TRUE(wheelAssociation.getEndTypes().contains(wheel));
 
     // e association
     ASSERT_EQ(engineAssociation.getNavigableOwnedEnds().size(), 0);
     ASSERT_EQ(engineAssociation.getOwnedEnds().size(), 0);
     ASSERT_EQ(engineAssociation.getMemberEnds().size(), 2);
     ASSERT_EQ(engineAssociation.getMembers().size(), 2);
-    ASSERT_EQ(engineAssociation.getEndType().size(), 2);
+    ASSERT_EQ(engineAssociation.getEndTypes().size(), 2);
     ASSERT_EQ(engineAssociation.getOwnedMembers().size(), 0);
     ASSERT_EQ(engineAssociation.getOwnedElements().size(), 0);
 
@@ -204,21 +204,21 @@ TEST_F(ConnectorTest, typedConnectorTest) {
     ASSERT_TRUE(engineAssociation.getMembers().contains(e));
     ASSERT_FALSE(engineAssociation.getOwnedMembers().contains(e));
     ASSERT_FALSE(engineAssociation.getOwnedElements().contains(e));
-    ASSERT_TRUE(engineAssociation.getEndType().contains(engine));
+    ASSERT_TRUE(engineAssociation.getEndTypes().contains(engine));
 
     ASSERT_FALSE(engineAssociation.getOwnedEnds().contains(engineCarProp));
     ASSERT_TRUE(engineAssociation.getMemberEnds().contains(engineCarProp));
     ASSERT_TRUE(engineAssociation.getMembers().contains(engineCarProp));
     ASSERT_FALSE(engineAssociation.getOwnedMembers().contains(engineCarProp));
     ASSERT_FALSE(engineAssociation.getOwnedElements().contains(engineCarProp));
-    ASSERT_TRUE(engineAssociation.getEndType().contains(car));
+    ASSERT_TRUE(engineAssociation.getEndTypes().contains(car));
 
     // car engine association
     ASSERT_EQ(axle.getNavigableOwnedEnds().size(), 0);
     ASSERT_EQ(axle.getOwnedEnds().size(), 2);
     ASSERT_EQ(axle.getMemberEnds().size(), 2);
     ASSERT_EQ(axle.getMembers().size(), 2);
-    ASSERT_EQ(axle.getEndType().size(), 2);
+    ASSERT_EQ(axle.getEndTypes().size(), 2);
     ASSERT_EQ(axle.getOwnedMembers().size(), 2);
     ASSERT_EQ(axle.getOwnedElements().size(), 2);
 
@@ -227,14 +227,14 @@ TEST_F(ConnectorTest, typedConnectorTest) {
     ASSERT_TRUE(axle.getMembers().contains(axleWheelEnd));
     ASSERT_TRUE(axle.getOwnedMembers().contains(axleWheelEnd));
     ASSERT_TRUE(axle.getOwnedElements().contains(axleWheelEnd));
-    ASSERT_TRUE(axle.getEndType().contains(wheel));
+    ASSERT_TRUE(axle.getEndTypes().contains(wheel));
 
     ASSERT_TRUE(axle.getOwnedEnds().contains(axleEngineEnd));
     ASSERT_TRUE(axle.getMemberEnds().contains(axleEngineEnd));
     ASSERT_TRUE(axle.getMembers().contains(axleEngineEnd));
     ASSERT_TRUE(axle.getOwnedMembers().contains(axleEngineEnd));
     ASSERT_TRUE(axle.getOwnedElements().contains(axleEngineEnd));
-    ASSERT_TRUE(axle.getEndType().contains(engine));
+    ASSERT_TRUE(axle.getEndTypes().contains(engine));
 
     // connector a
     ASSERT_EQ(a.getEnds().size(), 2);

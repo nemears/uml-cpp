@@ -301,9 +301,6 @@ void UmlManager::reindex(ID oldID, ID newID) {
                 }
                 pair.second->m_references[newID] = 0;
             }
-            // for (auto& countPair : m_node->m_referenceCount) {
-            //     countPair.second = 0;
-            // }
             for (auto& ptr : m_node->m_ptrs) {
                 static_cast<AbstractUmlPtr*>(ptr)->reindex(newID, m_node->m_managerElementMemory);
             }
@@ -367,12 +364,37 @@ void UmlManager::mountEl(Element& el) {
 void UmlManager::mount(std::string path) {
     m_mountBase = path;
     std::filesystem::create_directories(path / std::filesystem::path("mount"));
-    // if (m_root) {
-    //     addToMount(*m_root);
-    // }
     for (auto& pair : m_graph) {
         mountEl(*pair.second.m_managerElementMemory);
     }
+}
+
+void UmlManager::restoreNode(Element& ret) {
+    ret.m_node->m_managerElementMemory = &ret;
+    size_t numEls = ret.m_node->m_referenceOrder.size();
+    for (size_t i = 0; i < numEls; i++) {
+        ID refID = ret.m_node->m_referenceOrder[i];
+        ManagerNode* node = ret.m_node->m_references.at(refID);
+        Element* el = 0;
+        if (!node && loaded(refID)) {
+            try {
+                el = &UmlManager::get(refID); // TODO make this faster somehow this line is a real limiter of speed
+                ret.m_node->m_references[refID] = el->m_node;
+            } catch (std::exception e) {
+                // nothing
+            }
+        } else if (node && loaded(refID)) {
+            el =  node->m_managerElementMemory;
+        }
+        if (el) {
+            el->restoreReference(&ret);
+            ret.restoreReference(el);
+        }
+    }
+    for (auto& ptr : ret.m_node->m_ptrs) {
+        static_cast<AbstractUmlPtr*>(ptr)->reindex(ret.getID(), &ret);
+    }
+    ret.restoreReferences();
 }
 
 ElementPtr UmlManager::aquire(ID id) {
@@ -384,31 +406,7 @@ ElementPtr UmlManager::aquire(ID id) {
                 data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
                 ElementPtr ret = Parsers::parse(data);
                 if (ret) {
-                    ret->m_node->m_managerElementMemory = &*ret;
-                    size_t numEls = ret->m_node->m_referenceOrder.size();
-                    for (size_t i = 0; i < numEls; i++) {
-                        ID refID = ret->m_node->m_referenceOrder[i];
-                        ManagerNode* node = ret->m_node->m_references.at(refID);
-                        Element* el = 0;
-                        if (!node && loaded(refID)) {
-                            try {
-                                el = &get(refID); // TODO make this faster somehow this line is a real limiter of speed
-                                ret->m_node->m_references[refID] = el->m_node;
-                            } catch (std::exception e) {
-                                // nothing
-                            }
-                        } else if (node && loaded(refID)) {
-                            el =  node->m_managerElementMemory;
-                        }
-                        if (el) {
-                            el->restoreReference(ret.ptr());
-                            ret->restoreReference(el);
-                        }
-                    }
-                    for (auto& ptr : ret->m_node->m_ptrs) {
-                        static_cast<AbstractUmlPtr*>(ptr)->reindex(id, ret.ptr());
-                    }
-                    ret->restoreReferences();
+                    restoreNode(*ret);
                 } else {
                     throw ManagerStateException();
                 }
@@ -570,7 +568,7 @@ Element* UmlManager::get(Element* me, ID theID) {
                 }
                 return me->m_node->m_references[theID]->m_managerElementMemory;
             } else {
-                throw ManagerStateException();
+                throw ManagerStateException("could not find reference " + theID.string());
             }
         } else {
             aquire(theID);

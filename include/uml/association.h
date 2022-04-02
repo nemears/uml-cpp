@@ -27,7 +27,7 @@ namespace UML {
             };
             OrderedSet<Property, Association> m_ownedEnds = OrderedSet<Property, Association>(this);
             Set<Property, Association> m_navigableOwnedEnds = Set<Property, Association>(this);
-            Set<Type, Association> m_endType = Set<Type, Association>(this);
+            Set<Type, Association> m_endTypes = Set<Type, Association>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(ID id, std::string newName) override;
@@ -46,7 +46,7 @@ namespace UML {
             /**
              * endType is derived from the types of the member ends.
              **/
-            Set<Type, Association>& getEndType();
+            Set<Type, Association>& getEndTypes();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ASSOCIATION;

@@ -111,6 +111,7 @@ namespace UML {
             virtual void createNode(Element* el);
             void eraseNode(ManagerNode* node, ID id);
             void releaseNode(Element& el);
+            void restoreNode(Element& el);
         public:
             UmlManager();
             virtual ~UmlManager();

@@ -157,7 +157,7 @@ namespace UML {
                     }
                     return *dynamic_cast<T*>(this->m_first->m_el);
                 } else {
-                    throw ManagerStateException("TODO, OrderedSet");
+                    throw ManagerStateException("Invalid call to front(), OrderedSet is empty");
                 }
             };
             T& back() {
@@ -167,7 +167,7 @@ namespace UML {
                     }
                     return *dynamic_cast<T*>(m_last->m_el);
                 } else {
-                    throw ManagerStateException("TODO, OrderedSet");
+                    throw ManagerStateException("Invalid call to back(), OrderedSet is empty");
                 }
             };
             T& get(int index) {
@@ -225,7 +225,7 @@ namespace UML {
             };
             T& operator*() {
                 if (!m_node->m_el && m_node->m_id != ID::nullID()) {
-                    m_node->m_el = &m_el->m_manager->get(m_node->m_id);
+                    m_node->m_el = &m_el->m_manager->UmlManager::get(m_node->m_id);
                 }
                 return dynamic_cast<T&>(*m_node->m_el);
             };

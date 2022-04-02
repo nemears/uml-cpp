@@ -12,7 +12,7 @@ using namespace UML;
 void Association::AddEndTypeFunctor::operator()(Element& el) const {
     if (el.as<Property>().getType()) {
         if (el.as<Property>().m_type.loaded(el.as<Property>().m_type.ids().front())) {
-            m_el.as<Association>().getEndType().add(*el.as<Property>().getType());
+            m_el.as<Association>().getEndTypes().add(*el.as<Property>().getType());
             el.as<Property>().getType()->setReference(&m_el);
         }
     }
@@ -20,8 +20,8 @@ void Association::AddEndTypeFunctor::operator()(Element& el) const {
 
 void Association::RemoveEndTypeFunctor::operator()(Element& el) const {
     if (el.as<Property>().getType()) {
-        if (m_el.as<Association>().getEndType().contains(el.as<Property>().getType().id())) {
-            m_el.as<Association>().getEndType().remove(el.as<Property>().getType().id());
+        if (m_el.as<Association>().getEndTypes().contains(el.as<Property>().getType().id())) {
+            m_el.as<Association>().getEndTypes().remove(el.as<Property>().getType().id());
             el.as<Property>().getType()->removeReference(m_el.getID());
         }
     }
@@ -47,14 +47,14 @@ void Association::restoreReferences() {
     Relationship::restoreReferences();
     for (auto& prop : m_memberEnds) {
         if (prop.getType()) {
-            m_endType.add(prop.getType().id());
+            m_endTypes.add(prop.getType().id());
         }
     }
 }
 
 void Association::restoreReference(Element* el) {
     Element::restoreReference(el);
-    if (m_endType.count(el->getID())) {
+    if (m_endTypes.count(el->getID())) {
         el->setReference(this);
     }
 }
@@ -85,8 +85,8 @@ void Association::init() {
     m_ownedEnds.m_signature = &Association::getOwnedEndsSet;
     m_navigableOwnedEnds.subsets(m_ownedEnds);
     m_navigableOwnedEnds.m_signature = &Association::getNavigableOwnedEnds;
-    m_endType.subsets(m_relatedElements);
-    m_endType.m_signature = &Association::getEndType;
+    m_endTypes.subsets(m_relatedElements);
+    m_endTypes.m_signature = &Association::getEndTypes;
 }
 
 Association::Association() : Element(ElementType::ASSOCIATION) {
@@ -109,8 +109,8 @@ Set<Property, Association>& Association::getNavigableOwnedEnds() {
     return m_navigableOwnedEnds;
 }
 
-Set<Type, Association>& Association::getEndType() {
-    return m_endType;
+Set<Type, Association>& Association::getEndTypes() {
+    return m_endTypes;
 }
 
 bool Association::isSubClassOf(ElementType eType) const {

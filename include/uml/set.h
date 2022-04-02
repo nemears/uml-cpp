@@ -1246,7 +1246,18 @@ namespace UML {
                 if (m_el && m_el->m_manager) {
                     m_el->setReference(id);
                 }
-            }
+            };
+             /**
+             * protected method to allow friends to add to a readonly set
+             * @param el the element we are adding
+             **/
+            void addReadOnly(T& el) {
+                SetNode* node = createNode(el);
+                add(node);
+                if (m_el && m_el->m_manager) {
+                    m_el->setReference(&el);
+                }
+            };
             /**
              * protected method to allow friends to remove from a readonly set
              * @param id the id of the node we are removing
@@ -2070,7 +2081,9 @@ namespace UML {
              * return the number of elements in the set
              * @return the number of elements in the set
              **/
-            size_t size() const { return m_size; };
+            size_t size() const { 
+                return m_size; 
+            };
             /**
              * returns an iterator to the beginning of the set
              * @return the iterator

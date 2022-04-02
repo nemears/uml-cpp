@@ -1,7 +1,14 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SET_INTEGRATION_TEST(AssociationOwnedEnd, Property, Association, &Association::getOwnedEnds);
+UML_SINGLETON_INTEGRATION_TEST(PropertyOwningAssociation, Association, Property, &Property::getOwningAssociation, &Property::setOwningAssociation);
+UML_SET_INTEGRATION_TEST(AssociationNavigableOwnedEnd, Property, Association, &Association::getNavigableOwnedEnds);
+UML_SET_INTEGRATION_TEST(AssociationMemberEnd, Property, Association, &Association::getMemberEnds);
+UML_SINGLETON_INTEGRATION_TEST(PropertyAssociation, Association, Property, &Property::getAssociation, &Property::setAssociation);
 
 class AssociationTest : public ::testing::Test {
    
@@ -18,8 +25,8 @@ TEST_F(AssociationTest, addMemberEndFunctorTest) {
     ASSERT_TRUE(&a.getMemberEnds().front() == &p);
     ASSERT_TRUE(a.getMembers().size() == 1);
     ASSERT_TRUE(&a.getMembers().front() == &p);
-    ASSERT_TRUE(a.getEndType().size() == 1);
-    ASSERT_TRUE(&a.getEndType().front() == &c);
+    ASSERT_TRUE(a.getEndTypes().size() == 1);
+    ASSERT_TRUE(&a.getEndTypes().front() == &c);
 
     ASSERT_TRUE(p.getAssociation() == &a);
 }
@@ -307,8 +314,8 @@ TEST_F(AssociationTest, reindexTypeTest) {
     ASSERT_TRUE(&a.getMemberEnds().front() == &p);
     ASSERT_TRUE(a.getMembers().size() == 1);
     ASSERT_TRUE(&a.getMembers().front() == &p);
-    ASSERT_TRUE(a.getEndType().size() == 1);
-    ASSERT_TRUE(&a.getEndType().front() == &c);
+    ASSERT_TRUE(a.getEndTypes().size() == 1);
+    ASSERT_TRUE(&a.getEndTypes().front() == &c);
 
     ASSERT_EQ(*p.getAssociation(), a);
 }
@@ -322,5 +329,5 @@ TEST_F(AssociationTest, reindexTypeIDTest) {
     p.setType(t);
     ID id = ID::fromString("owzDT1hXGJ8SkEjbqXMNqU&MxmEn");
     t.setID(id);
-    ASSERT_NO_THROW(a.getEndType().get(id));
+    ASSERT_NO_THROW(a.getEndTypes().get(id));
 }

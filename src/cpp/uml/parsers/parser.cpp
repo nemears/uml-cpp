@@ -480,11 +480,19 @@ ElementType elementTypeFromString(string eType) {
 }
 
 void setNamespace(NamedElement& el, ID id) {
-    el.m_namespace.addReadOnly(id);
+    if (el.m_manager->loaded(id)) {
+        el.m_namespace.addReadOnly(el.m_manager->get(id).as<Namespace>());
+    } else {
+        el.m_namespace.addReadOnly(id);
+    }
 }
 
 void setOwner(Element& el, ID id) {
-    el.m_owner->addReadOnly(id);
+    if (el.m_manager->loaded(id)) {
+        el.m_owner->addReadOnly(el.m_manager->get(id));
+    } else {
+        el.m_owner->addReadOnly(id);
+    }
 }
 
 namespace {
@@ -3209,7 +3217,7 @@ void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMe
     emitClassifier(emitter, association, data);
     emitSequence(emitter, "navigableOwnedEnds", data, association, &Association::getNavigableOwnedEnds);
     // special handling
-    if (!association.getOwnedEnds().size() > association.getNavigableOwnedEnds().size() && !association.getOwnedEnds().empty()) {
+    if (association.getOwnedEnds().size() > association.getNavigableOwnedEnds().size() && !association.getOwnedEnds().empty()) {
         emitter << YAML::Key << "ownedEnds" << YAML::Value << YAML::BeginSeq;
         if (data.m_strategy == EmitterStrategy::WHOLE) {
             for (auto& end : association.getOwnedEnds()) {

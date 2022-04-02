@@ -1,7 +1,12 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SINGLETON_INTEGRATION_TEST(SlotDefiningFeature, Property, Slot, &Slot::getDefiningFeature, &Slot::setDefiningFeature);
+UML_SET_INTEGRATION_TEST(SlotValues, LiteralBool, Slot, &Slot::getValues);
+UML_SINGLETON_INTEGRATION_TEST(SlotOwningInstance, InstanceSpecification, Slot, &Slot::getOwningInstance, &Slot::setOwningInstance);
 
 class SlotTest : public ::testing::Test {
    

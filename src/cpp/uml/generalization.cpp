@@ -9,6 +9,7 @@
 #include "uml/generalizationSet.h"
 #include "uml/interface.h"
 #include "uml/deployment.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
@@ -24,6 +25,27 @@ void Generalization::RemoveGeneralFunctor::operator()(Element& el) const {
         m_el.as<Generalization>().getSpecific()->getGenerals().remove(el.as<Classifier>());
     }
     el.removeReference(m_el.getID());
+}
+
+
+void Generalization::referencingReleased(ID id) {
+    DirectedRelationship::referencingReleased(id);
+    m_generalizationSets.release(id);
+}
+
+void Generalization::referenceReindexed(ID oldID, ID newID) {
+    DirectedRelationship::referenceReindexed(oldID, newID);
+    m_generalizationSets.reindex(oldID, newID);
+}
+
+void Generalization::reindexName(ID id, std::string newName) {
+    DirectedRelationship::reindexName(id, newName);
+    m_generalizationSets.reindexName(id, newName);
+}
+
+void Generalization::referenceErased(ID id) {
+    DirectedRelationship::referenceErased(id);
+    m_generalizationSets.eraseElement(id);
 }
 
 void Generalization::restoreReference(Element* el) {
@@ -54,6 +76,8 @@ void Generalization::init() {
     m_specific.opposite(&Classifier::getGeneralizations);
     m_specific.m_signature = &Generalization::getSpecificSingleton;
     m_generalizationSets.opposite(&GeneralizationSet::getGeneralizations);
+    m_generalizationSets.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_generalizationSets.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_generalizationSets.m_signature = &Generalization::getGeneralizationSets;
 }
 

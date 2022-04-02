@@ -23,7 +23,7 @@ void Port::setPortInterfaces(BehavioredClassifier& clazz) {
     }
     for (auto& dependency : clazz.getClientDependencies()) {
         if (dependency.isSubClassOf(ElementType::USAGE)) {
-            for (auto& supplier : dependency.getSupplier()) {
+            for (auto& supplier : dependency.getSuppliers()) {
                 if (supplier.isSubClassOf(ElementType::INTERFACE_UML)) {
                     if (isConjugated()) {
                        m_provided.nonOppositeAdd(supplier.as<Interface>());
@@ -65,7 +65,7 @@ void Port::removePortInterfaces(BehavioredClassifier& clazz) {
     }
     for (auto& dependency : clazz.getClientDependencies()) {
         if (dependency.isSubClassOf(ElementType::USAGE)) {
-            for (auto& supplier : dependency.getSupplier()) {
+            for (auto& supplier : dependency.getSuppliers()) {
                 if (supplier.isSubClassOf(ElementType::INTERFACE_UML)) {
                     if (isConjugated()) {
                        m_provided.removeReadOnly(supplier.getID());

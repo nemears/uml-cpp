@@ -1,7 +1,11 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SET_INTEGRATION_TEST(NamespaceOwnedRules, Constraint, Package, &Namespace::getOwnedRules);
+UML_SINGLETON_INTEGRATION_TEST(ConstraintContext, Package, Constraint, &Constraint::getContext, &Constraint::setContext);
 
 class NamespaceTest : public ::testing::Test {};
 

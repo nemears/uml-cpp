@@ -1,7 +1,11 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SET_INTEGRATION_TEST(SignalOwnedAttributes, Property, Signal, &Signal::getOwnedAttributes);
+UML_SINGLETON_INTEGRATION_TEST(ReceptionSignal, Signal, Reception, &Reception::getSignal, &Reception::setSignal);
 
 class SignalTest : public ::testing::Test {};
 

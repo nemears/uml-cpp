@@ -92,7 +92,7 @@ namespace UML{
             void setDefaultValue(ValueSpecification& val);
             void setDefaultValue(ID id);
             ValueSpecificationPtr getDefaultValue() const;
-            DataTypePtr getDataType();
+            DataTypePtr getDataType() const;
             void setDataType(DataType* dataType);
             void setDataType(DataType& dataType);
             void setDataType(ID id);

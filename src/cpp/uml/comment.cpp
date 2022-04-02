@@ -1,4 +1,5 @@
 #include "uml/comment.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
@@ -24,10 +25,12 @@ void Comment::referenceErased(ID id) {
 
 void Comment::init() {
     m_annotatedElements.m_signature = &Comment::getAnnotatedElements;
+    m_annotatedElements.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_annotatedElements.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
 Comment::Comment() : Element(ElementType::COMMENT) {
-    
+    init();
 }
 
 Comment::~Comment() {

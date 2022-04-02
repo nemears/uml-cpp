@@ -15,11 +15,11 @@ Set<DeploymentTarget, Deployment>& Deployment::getLocationSingleton() {
 }
 
 void Deployment::init() {
-    m_location.subsets(m_client);
+    m_location.subsets(m_clients);
     m_location.subsets(*m_owner);
     m_location.opposite(&DeploymentTarget::getDeployments);
     m_location.m_signature = &Deployment::getLocationSingleton;
-    m_deployedArtifacts.subsets(m_supplier);
+    m_deployedArtifacts.subsets(m_suppliers);
     m_deployedArtifacts.m_signature = &Deployment::getDeployedArtifacts;
 }
 

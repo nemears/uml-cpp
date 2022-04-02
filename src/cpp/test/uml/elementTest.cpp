@@ -1,12 +1,11 @@
 #include "gtest/gtest.h"
 
 #include "uml/uml-stable.h"
-
-
-// #include "test/umlTestUtil.h"
-// #include "test/uml-cpp-paths.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SET_INTEGRATION_TEST(ElementAppliedStereotypes, InstanceSpecification, EnumerationLiteral, &Element::getAppliedStereotypes);
 
 class ElementTest : public ::testing::Test {};
 

@@ -1,10 +1,11 @@
 #include "gtest/gtest.h"
-#include "uml/enumeration.h"
-#include "uml/package.h"
-#include "uml/enumerationLiteral.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SET_INTEGRATION_TEST(EnumerationOwnedLiteral, EnumerationLiteral, Enumeration, &Enumeration::getOwnedLiterals);
+UML_SINGLETON_INTEGRATION_TEST(EnumerationLiteralEnumeration, Enumeration, EnumerationLiteral, &EnumerationLiteral::getEnumeration, &EnumerationLiteral::setEnumeration);
 
 class EnumerationTest : public ::testing::Test {};
 

@@ -1,5 +1,5 @@
-#ifndef _UML_CONNECTOR_END_H
-#define _UML_CONNECTOR_END_H
+#ifndef _UML_CONNECTOR_END_H_
+#define _UML_CONNECTOR_END_H_
 
 #include "multiplicityElement.h"
 
@@ -21,6 +21,10 @@ namespace UML {
             Singleton<Property, ConnectorEnd> m_definingEnd = Singleton<Property, ConnectorEnd>(this);
             Set<ConnectableElement, ConnectorEnd>& getRoleSingleton();
             Set<Property, ConnectorEnd>& getDefiningEndSingleton();
+            void referenceReindexed(ID oldID, ID newID) override;
+            void reindexName(ID id, std::string newName) override;
+            void referencingReleased(ID id) override;
+            void referenceErased(ID id) override;
             void init();
             ConnectorEnd();
         public:

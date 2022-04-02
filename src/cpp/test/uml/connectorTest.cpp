@@ -1,7 +1,13 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SET_INTEGRATION_TEST(ConnectorConnectorEnds, ConnectorEnd, Connector, &Connector::getEnds);
+UML_SINGLETON_INTEGRATION_TEST(ConnectorType, Association, Connector, &Connector::getType, &Connector::setType);
+UML_SET_INTEGRATION_TEST(ConnectorContracts, Activity, Connector, &Connector::getContracts);
+UML_SINGLETON_INTEGRATION_TEST(ConnectorEndRole, Port, ConnectorEnd, &ConnectorEnd::getRole, &ConnectorEnd::setRole);
 
 class ConnectorTest : public ::testing::Test {};
 

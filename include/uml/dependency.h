@@ -11,8 +11,8 @@ namespace UML {
         friend class UmlManager;
 
         protected:
-            Set<NamedElement, Dependency> m_client = Set<NamedElement, Dependency>(this);
-            Set<NamedElement, Dependency> m_supplier = Set<NamedElement, Dependency>(this);
+            Set<NamedElement, Dependency> m_clients = Set<NamedElement, Dependency>(this);
+            Set<NamedElement, Dependency> m_suppliers = Set<NamedElement, Dependency>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(ID id, std::string newName) override;
@@ -22,8 +22,8 @@ namespace UML {
             Dependency();
         public:
             virtual ~Dependency();
-            Set<NamedElement, Dependency>& getClient();
-            Set<NamedElement, Dependency>& getSupplier();
+            Set<NamedElement, Dependency>& getClients();
+            Set<NamedElement, Dependency>& getSuppliers();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::DEPENDENCY;

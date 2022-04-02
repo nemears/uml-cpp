@@ -26,4 +26,4 @@ jobs:
 
     - name: Test
       working-directory: ${{github.workspace}}/build
-      run: ./uml-server -d 5000 & ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
+      run: ./uml-server -d 100000 & ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure

@@ -4,6 +4,7 @@
 #include "uml/templateParameter.h"
 #include "uml/parameterableElement.h"
 #include "uml/umlPtr.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
@@ -44,6 +45,8 @@ void TemplateSignature::init() {
     m_template.opposite(&TemplateableElement::getOwnedTemplateSignatureSingleton);
     m_template.m_signature = &TemplateSignature::getTemplateSingleton;
     m_parameters.m_signature = &TemplateSignature::getParametersSet;
+    m_parameters.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_parameters.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_ownedParameters.subsets(m_parameters);
     m_ownedParameters.subsets(*m_ownedElements);
     m_ownedParameters.opposite(&TemplateParameter::getSignatureSingleton);

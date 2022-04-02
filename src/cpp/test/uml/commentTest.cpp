@@ -1,7 +1,11 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SET_INTEGRATION_TEST(ElementOwnedComment, Comment, DataStoreNode, &Element::getOwnedComments);
+UML_SET_INTEGRATION_TEST(CommentAnnotatedElement, Abstraction, Comment, &Comment::getAnnotatedElements);
 
 class CommentTest : public ::testing::Test {};
 

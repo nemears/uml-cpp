@@ -16,7 +16,7 @@ Set<PackageableElement, Manifestation>& Manifestation::getUtilizedElementSinglet
 }
 
 void Manifestation::init() {
-    m_utilizedElement.subsets(m_supplier);
+    m_utilizedElement.subsets(m_suppliers);
     m_utilizedElement.m_signature = &Manifestation::getUtilizedElementSingleton;
 }
 

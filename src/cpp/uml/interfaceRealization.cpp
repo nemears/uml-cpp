@@ -59,11 +59,11 @@ Set<BehavioredClassifier, InterfaceRealization>& InterfaceRealization::getImplem
 }
 
 void InterfaceRealization::init() {
-    m_contract.subsets(m_supplier);
+    m_contract.subsets(m_suppliers);
     m_contract.m_signature = &InterfaceRealization::getContractSingleton;
     m_contract.m_addFunctors.insert(new SetContractFunctor(this));
     m_contract.m_removeFunctors.insert(new RemoveContractFunctor(this));
-    m_implementingClassifier.subsets(m_client);
+    m_implementingClassifier.subsets(m_clients);
     m_implementingClassifier.subsets(*m_owner);
     m_implementingClassifier.opposite(&BehavioredClassifier::getInterfaceRealizations);
     m_implementingClassifier.m_signature = &InterfaceRealization::getImplementingClassifierSingleton;

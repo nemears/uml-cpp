@@ -31,6 +31,10 @@ namespace UML {
                 public:
                     RemoveGeneralFunctor(Element* el) : SetFunctor(el) {};
             };
+            void referenceReindexed(ID oldID, ID newID) override;
+            void reindexName(ID id, std::string newName) override;
+            void referencingReleased(ID id) override;
+            void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
             Set<Classifier, Generalization>& getGeneralSingleton();
             Set<Classifier, Generalization>& getSpecificSingleton();

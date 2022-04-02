@@ -371,7 +371,7 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::INSTANCE_SPECIFICATION;
     } else if (eType.compare("INSTANCE_VALUE") == 0) {
         return ElementType::INSTANCE_VALUE;
-    } else if (eType.compare("INTERFACE_UML") == 0) {
+    } else if (eType.compare("INTERFACE") == 0) {
         return ElementType::INTERFACE_UML;
     } else if (eType.compare("INTERFACE_REALIZATION") == 0) {
         return ElementType::INTERFACE_REALIZATION;
@@ -443,10 +443,14 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::PROPERTY;
     } else if (eType.compare("REALIZATION") == 0) {
         return ElementType::REALIZATION;
+    } else if (eType.compare("RECEPTION") == 0) {
+        return ElementType::RECEPTION;
     } else if (eType.compare("REDEFINABLE_ELEMENT") == 0) {
         return ElementType::REDEFINABLE_ELEMENT;
     } else if (eType.compare("RELATIONSHIP") == 0) {
         return ElementType::RELATIONSHIP;
+    } else if (eType.compare("SIGNAL") == 0) {
+        return ElementType::SIGNAL;
     } else if (eType.compare("SLOT") == 0) {
         return ElementType::SLOT;
     } else if (eType.compare("STEREOTYPE") == 0) {
@@ -622,7 +626,7 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
             if (node["client"].IsScalar()) {
                 if (isValidID(node["client"].as<std::string>())) {
                     ID id = ID::fromString(node["client"].as<std::string>());
-                    ret->as<Manifestation>().getClient().add(id);
+                    ret->as<Manifestation>().getClients().add(id);
                     setOwner(*ret, id);
                     return;
                 }
@@ -669,6 +673,16 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
     if (ret->isSubClassOf(ElementType::CONSTRAINT)) {
         if (parseSingletonReference(node, data, "context", ret->as<Constraint>(), &Constraint::setContext, &Constraint::setContext)) {
             return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::CONNECTOR_END)) {
+        if (node["owner"]) {
+            if (node["owner"].IsScalar()) {
+                if (isValidID(node["owner"].as<std::string>())) {
+                    setOwner(*ret, ID::fromString(node["owner"].as<std::string>()));
+                    return;
+                }
+            }
         }
     }
     if (ret->isSubClassOf(ElementType::COMMENT)) {
@@ -1062,6 +1076,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
         Realization& realization = *data.m_manager->create<Realization>();
         parseDependency(node["realization"], realization, data);
         ret = &realization;
+    }
+
+    if (node["reception"]) {
+        ret = &parseDefinition<Reception>(node, data, "reception", parseReception);
     }
 
     if (node["signal"]) {
@@ -1642,8 +1660,8 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             }
         }
         if (el.isSubClassOf(ElementType::MANIFESTATION)) {
-            if (!el.as<Manifestation>().getClient().empty()) {
-                emitter << YAML::Key << "client" << YAML::Value << el.as<Manifestation>().getClient().ids().front().string();
+            if (!el.as<Manifestation>().getClients().empty()) {
+                emitter << YAML::Key << "client" << YAML::Value << el.as<Manifestation>().getClients().ids().front().string();
                 return;
             }
         }
@@ -1699,6 +1717,12 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             }
         }
         if (el.isSubClassOf(ElementType::ACTION)) {
+            if (el.getOwner()) {
+                emitter << YAML::Key << "owner" << YAML::Value << el.getOwner().id().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::CONNECTOR_END)) {
             if (el.getOwner()) {
                 emitter << YAML::Key << "owner" << YAML::Value << el.getOwner().id().string();
                 return;
@@ -1848,28 +1872,7 @@ void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) 
         }
     }
 
-    // if (node["clientDependencies"]) {
-    //     if (node["clientDependencies"].IsSequence()) {
-    //         for (size_t i = 0; i < node["clientDependencies"].size(); i++) {
-    //             if (node["clientDependencies"][i].IsScalar()) {
-    //                 ID clientDependencyID = ID::fromString(node["clientDependencies"][i].as<string>());
-    //                 // if (data.m_strategy == ParserStrategy::WHOLE) {
-    //                 //     applyFunctor(data, clientDependencyID, new AddClientDepencyFunctor(&el, node["clientDependencies"][i]));
-    //                 // } else {
-    //                     if (data.m_manager->loaded(clientDependencyID)) {
-    //                         el.getClientDependencies().add(data.m_manager->get(clientDependencyID).as<Dependency>());
-    //                     } else {
-    //                         el.getClientDependencies().add(clientDependencyID);
-    //                     }
-    //                 // }
-    //             } else {
-    //                 throw UmlParserException("Invalid yaml node type for NamedElement clientDependencies entry, must be a scalar!", data.m_path.string(), node["clientDependencies"][i]);
-    //             }
-    //         }
-    //     } else {
-    //         throw UmlParserException("Improper yaml node type for NamedElement field clientDependencies, must be a sequence!", data.m_path.string(), node["clientDependencies"]);
-    //     }
-    // }
+    parseSetReferences<Dependency, NamedElement>(node, data, "clientDependencies", el, &NamedElement::getClientDependencies);
 }
 
 void emitNamedElement(YAML::Emitter& emitter, NamedElement& el, EmitterMetaData& data) {
@@ -1912,21 +1915,7 @@ void emitNamedElement(YAML::Emitter& emitter, NamedElement& el, EmitterMetaData&
             }
         }
         if (emitClientDependenciesFlag) {
-            emitter << YAML::Key << "clientDependencies" << YAML::Value << YAML::BeginSeq;
-            for (const ID id : el.getClientDependencies().ids()) {
-                if (elIsDeploymentTargetFlag) {
-                    if (el.as<DeploymentTarget>().getDeployments().count(id)) {
-                        continue;
-                    }
-                }
-                if (elIsArtifactFlag) {
-                    if (el.as<Artifact>().getManifestations().count(id)) {
-                        continue;
-                    }
-                }
-                emitter << YAML::Value << id.string();
-            }
-            emitter << YAML::EndSeq;
+            emitSequenceReferences<Dependency, NamedElement>(emitter, "clientDependencies", data, el, &NamedElement::getClientDependencies);
         }
     }
 }
@@ -2601,12 +2590,6 @@ void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMe
             LiteralInt& lower = *data.m_manager->create<LiteralInt>();
             lower.setValue(node["lower"].as<int>());
             el.setLowerValue(&lower);
-        } else if (node["lower"].IsMap()) {
-            if (node["lower"]["literalInt"]) {
-                // TODO parse literal int
-            } else if (node["lower"]["expression"]) {
-                // TODO parse and evaluate expression
-            }
         } else {
             throw UmlParserException("Invalid YAML node type for field lower, must be scalar or map, ", data.m_path.string(), node["lower"]);
         }
@@ -2623,26 +2606,23 @@ void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMe
                 upper.setValue(node["upper"].as<int>());
                 el.setUpperValue(&upper);
             }
-        } else if (node["upper"].IsMap()) {
-            if (node["upper"]["literalInt"]) {
-                // TODO parse literal int
-            } else if (node["upper"]["expression"]) {
-                // TODO parse and evaluate expression
-            }
         } else {
             throw UmlParserException("Invalid YAML node type for field upper, must be scalar or map, ", data.m_path.string(), node["upper"]);
         }
     }
+
+    parseSingletonDefinition(node, data, "lowerValue", el, determineAndParseValueSpecification, &MultiplicityElement::setLowerValue, &MultiplicityElement::setLowerValue);
+    parseSingletonDefinition(node, data, "upperValue", el, determineAndParseValueSpecification, &MultiplicityElement::setUpperValue, &MultiplicityElement::setUpperValue);
 }
 
 void emitMultiplicityElement(YAML::Emitter& emitter, MultiplicityElement& el, EmitterMetaData& data) {
     if (el.getLowerValue()) {
-        emitter << YAML::Key << "lower" << YAML::Value;
+        emitter << YAML::Key << "lowerValue" << YAML::Value;
         emit(emitter, *el.getLowerValue(), data);
     }
 
     if (el.getUpperValue()) {
-        emitter << YAML::Key << "upper" << YAML::Value;
+        emitter << YAML::Key << "upperValue" << YAML::Value;
         emit(emitter, *el.getUpperValue(), data);
     }
 }
@@ -3307,6 +3287,7 @@ void parseComment(YAML::Node node, Comment& comment, ParserMetaData& data) {
             throw UmlParserException("Invalid yaml node type for comment body, must be scalar!", data.m_path.string(), node["body"]);
         }
     }
+    parseSetReferences<Element, Comment>(node, data, "annotatedElements", comment, &Comment::getAnnotatedElements);
 }
 
 void emitComment(YAML::Emitter& emitter, Comment& comment, EmitterMetaData& data) {
@@ -3317,14 +3298,15 @@ void emitComment(YAML::Emitter& emitter, Comment& comment, EmitterMetaData& data
     if (!comment.getBody().empty()) {
         emitter << YAML::Key << "body" << YAML::Value << comment.getBody();
     }
+    emitSequenceReferences(emitter, "annotatedElements", data, comment, &Comment::getAnnotatedElements);
 
     emitElementDefenitionEnd(emitter, ElementType::COMMENT, comment);
 }
 
 void parseDependency(YAML::Node node, Dependency& dependency, ParserMetaData& data) {
     parseNamedElement(node, dependency, data);
-    parseSetReferences<NamedElement, Dependency>(node, data, "client", dependency, &Dependency::getClient);
-    parseSetReferences<NamedElement, Dependency>(node, data, "supplier", dependency, &Dependency::getSupplier);
+    parseSetReferences<NamedElement, Dependency>(node, data, "client", dependency, &Dependency::getClients);
+    parseSetReferences<NamedElement, Dependency>(node, data, "supplier", dependency, &Dependency::getSuppliers);
 }
 
 void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaData& data) {
@@ -3332,17 +3314,17 @@ void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaD
 
     emitNamedElement(emitter, dependency, data);
 
-    if (!dependency.getClient().empty()) {
+    if (!dependency.getClients().empty()) {
         emitter << YAML::Key << "client" << YAML::Value << YAML::BeginSeq;
-        for (const ID id : dependency.getClient().ids()) {
+        for (const ID id : dependency.getClients().ids()) {
             emitter << id.string();
         }
         emitter << YAML::EndSeq;
     }
 
-    if (!dependency.getSupplier().empty()) {
+    if (!dependency.getSuppliers().empty()) {
         emitter << YAML::Key << "supplier" << YAML::Value << YAML::BeginSeq;
-        for (const ID id : dependency.getSupplier().ids()) {
+        for (const ID id : dependency.getSuppliers().ids()) {
             emitter << id.string();
         }
         emitter << YAML::EndSeq;

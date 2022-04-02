@@ -6,6 +6,7 @@
 #include "uml/dataType.h"
 #include "uml/stereotype.h"
 #include "uml/deployment.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
@@ -40,6 +41,8 @@ Set<InstanceSpecification, InstanceValue>& InstanceValue::getInstanceSingleton()
 
 void InstanceValue::init() {
     m_instance.m_signature = &InstanceValue::getInstanceSingleton;
+    m_instance.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_instance.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
 InstanceValue::InstanceValue() : Element(ElementType::INSTANCE_VALUE) {

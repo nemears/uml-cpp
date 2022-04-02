@@ -1,9 +1,10 @@
 #include "gtest/gtest.h"
-#include "uml/stereotype.h"
-#include "uml/profile.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SINGLETON_INTEGRATION_TEST(StereotypeProfile, Profile, Stereotype, &Stereotype::getProfile, &Stereotype::setProfile);
 
 class StereotypeTest : public ::testing::Test {};
 

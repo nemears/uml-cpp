@@ -9,7 +9,7 @@
 using namespace UML;
 
 void Usage::RemoveClientFunctor::operator()(Element& el) const {
-    for (auto& supplier : m_el.as<Usage>().m_supplier) {
+    for (auto& supplier : m_el.as<Usage>().m_suppliers) {
         if (supplier.isSubClassOf(ElementType::INTERFACE_UML) && el.isSubClassOf(ElementType::CLASSIFIER)) {
             for (auto& pair : el.m_node->m_references) {
                 std::list<Classifier*> queue = {&el.as<Classifier>()};
@@ -43,7 +43,7 @@ void Usage::RemoveClientFunctor::operator()(Element& el) const {
 
 void Usage::SetClientFunctor::operator()(Element& el) const {
     if (el.isSubClassOf(ElementType::CLASSIFIER)) {
-        for (auto& supplier : m_el.as<Usage>().getSupplier()) {
+        for (auto& supplier : m_el.as<Usage>().getSuppliers()) {
             if (supplier.isSubClassOf(ElementType::INTERFACE_UML)) {
                 std::list<Classifier*> queue = {&el.as<Classifier>()};
                 while(!queue.empty()) {
@@ -75,8 +75,8 @@ void Usage::SetClientFunctor::operator()(Element& el) const {
 }
 
 void Usage::init() {
-    m_client.m_addFunctors.insert(new SetClientFunctor(this));
-    m_client.m_removeFunctors.insert(new RemoveClientFunctor(this));
+    m_clients.m_addFunctors.insert(new SetClientFunctor(this));
+    m_clients.m_removeFunctors.insert(new RemoveClientFunctor(this));
 }
 
 Usage::Usage() : Element(ElementType::USAGE) {

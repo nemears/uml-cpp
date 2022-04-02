@@ -1,9 +1,11 @@
 #include "gtest/gtest.h"
-#include "uml/extension.h"
-#include "uml/extensionEnd.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
+
+UML_SINGLETON_INTEGRATION_TEST(ExtensionOwnedEnd, ExtensionEnd, Extension, &Extension::getOwnedEnd, &Extension::setOwnedEnd);
+// UML_SINGLETON_INTEGRATION_TEST(ExtensionEndType, Stereotype, ExtensionEnd, &ExtensionEnd::getType, &ExtensionEnd::setType);
 
 class ExtensionTest : public ::testing::Test {};
 

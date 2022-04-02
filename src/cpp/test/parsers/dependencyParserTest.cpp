@@ -24,10 +24,10 @@ TEST_F(DependencyParserTest, basicDependencyTest) {
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
     ASSERT_EQ(pckg.getPackagedElements().get("dependency").getElementType(), ElementType::DEPENDENCY);
     Dependency& dep = pckg.getPackagedElements().get("dependency").as<Dependency>();
-    ASSERT_EQ(dep.getClient().size(), 1);
-    ASSERT_EQ(dep.getClient().front().getID(), pckg.getPackagedElements().get("client").getID());
-    ASSERT_EQ(dep.getSupplier().size(), 1);
-    ASSERT_EQ(dep.getSupplier().front().getID(), pckg.getPackagedElements().get("supplier").getID());
+    ASSERT_EQ(dep.getClients().size(), 1);
+    ASSERT_EQ(dep.getClients().front().getID(), pckg.getPackagedElements().get("client").getID());
+    ASSERT_EQ(dep.getSuppliers().size(), 1);
+    ASSERT_EQ(dep.getSuppliers().front().getID(), pckg.getPackagedElements().get("supplier").getID());
 }
 
 TEST_F(DependencyParserTest, basicDependencyEmitTest) {
@@ -44,8 +44,8 @@ TEST_F(DependencyParserTest, basicDependencyEmitTest) {
     pckg.getPackagedElements().add(client);
     pckg.getPackagedElements().add(supplier);
     dependency.setName("test");
-    dependency.getClient().add(client);
-    dependency.getSupplier().add(supplier);
+    dependency.getClients().add(client);
+    dependency.getSuppliers().add(supplier);
     string expectedEmit = R""""(package:
   id: oT59r8w9_ZlGzo2NFpN&vJgH_4YJ
   packagedElements:
@@ -77,24 +77,24 @@ TEST_F(DependencyParserTest, parseAllTheSubclassesTest) {
     ASSERT_EQ(pckg.getPackagedElements().size(), 5);
     ASSERT_EQ(pckg.getPackagedElements().get("abstraction").getElementType(), ElementType::ABSTRACTION);
     Abstraction& abs = pckg.getPackagedElements().get("abstraction").as<Abstraction>();
-    ASSERT_EQ(abs.getClient().size(), 1);
-    ASSERT_EQ(abs.getClient().front().getID(), pckg.getPackagedElements().get("client").getID());
-    ASSERT_EQ(abs.getSupplier().size(), 1);
-    ASSERT_EQ(abs.getSupplier().front().getID(), pckg.getPackagedElements().get("supplier").getID());
+    ASSERT_EQ(abs.getClients().size(), 1);
+    ASSERT_EQ(abs.getClients().front().getID(), pckg.getPackagedElements().get("client").getID());
+    ASSERT_EQ(abs.getSuppliers().size(), 1);
+    ASSERT_EQ(abs.getSuppliers().front().getID(), pckg.getPackagedElements().get("supplier").getID());
 
     ASSERT_EQ(pckg.getPackagedElements().get("realization").getElementType(), ElementType::REALIZATION);
     Realization& real = pckg.getPackagedElements().get("realization").as<Realization>();
-    ASSERT_EQ(real.getClient().size(), 1);
-    ASSERT_EQ(real.getClient().front().getID(), pckg.getPackagedElements().get("client").getID());
-    ASSERT_EQ(real.getSupplier().size(), 1);
-    ASSERT_EQ(real.getSupplier().front().getID(), pckg.getPackagedElements().get("supplier").getID());
+    ASSERT_EQ(real.getClients().size(), 1);
+    ASSERT_EQ(real.getClients().front().getID(), pckg.getPackagedElements().get("client").getID());
+    ASSERT_EQ(real.getSuppliers().size(), 1);
+    ASSERT_EQ(real.getSuppliers().front().getID(), pckg.getPackagedElements().get("supplier").getID());
 
     ASSERT_EQ(pckg.getPackagedElements().get("usage").getElementType(), ElementType::USAGE);
     Usage& usage = pckg.getPackagedElements().get("usage").as<Usage>();
-    ASSERT_EQ(usage.getClient().size(), 1);
-    ASSERT_EQ(usage.getClient().front().getID(), pckg.getPackagedElements().get("client").getID());
-    ASSERT_EQ(usage.getSupplier().size(), 1);
-    ASSERT_EQ(usage.getSupplier().front().getID(), pckg.getPackagedElements().get("supplier").getID());
+    ASSERT_EQ(usage.getClients().size(), 1);
+    ASSERT_EQ(usage.getClients().front().getID(), pckg.getPackagedElements().get("client").getID());
+    ASSERT_EQ(usage.getSuppliers().size(), 1);
+    ASSERT_EQ(usage.getSuppliers().front().getID(), pckg.getPackagedElements().get("supplier").getID());
 }
 
 TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {
@@ -117,14 +117,14 @@ TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {
     pckg.getPackagedElements().add(client);
     pckg.getPackagedElements().add(supplier);
     abstraction.setName("test");
-    abstraction.getClient().add(client);
-    abstraction.getSupplier().add(supplier);
+    abstraction.getClients().add(client);
+    abstraction.getSuppliers().add(supplier);
     realization.setName("r");
-    realization.getClient().add(client);
-    realization.getSupplier().add(supplier);
+    realization.getClients().add(client);
+    realization.getSuppliers().add(supplier);
     usage.setName("u");
-    usage.getClient().add(client);
-    usage.getSupplier().add(supplier);
+    usage.getClients().add(client);
+    usage.getSuppliers().add(supplier);
     string expectedEmit = R""""(package:
   id: oT59r8w9_ZlGzo2NFpN&vJgH_4YJ
   packagedElements:
@@ -196,13 +196,13 @@ TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {
 }
 
 void ASSERT_RESTORE_DEPENDENCY(Dependency& dependency, NamedElement& client, NamedElement& supplier) {
-    ASSERT_EQ(dependency.getClient().size(), 1);
-    ASSERT_EQ(dependency.getClient().front(), client);
+    ASSERT_EQ(dependency.getClients().size(), 1);
+    ASSERT_EQ(dependency.getClients().front(), client);
     ASSERT_EQ(dependency.getSources().size(), 1);
     ASSERT_EQ(dependency.getSources().front(), client);
     ASSERT_TRUE(dependency.getRelatedElements().count(client.getID()));
-    ASSERT_EQ(dependency.getSupplier().size(), 1);
-    ASSERT_EQ(dependency.getSupplier().front(), supplier);
+    ASSERT_EQ(dependency.getSuppliers().size(), 1);
+    ASSERT_EQ(dependency.getSuppliers().front(), supplier);
     ASSERT_EQ(dependency.getTargets().size(), 1);
     ASSERT_EQ(dependency.getTargets().front(), supplier);
     ASSERT_TRUE(dependency.getRelatedElements().count(supplier.getID()));
@@ -214,8 +214,8 @@ TEST_F(DependencyParserTest, mountAndEditDependencyTest) {
   Package& supplier = *m.create<Package>();
   Package& client = *m.create<Package>();
   Dependency& dependency = *m.create<Dependency>();
-  dependency.getClient().add(client);
-  dependency.getSupplier().add(supplier);
+  dependency.getClients().add(client);
+  dependency.getSuppliers().add(supplier);
   root.getPackagedElements().add(dependency, client, supplier);
   m.setRoot(&root);
   m.mount(ymlPath + "dependencyTests");

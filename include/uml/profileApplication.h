@@ -28,7 +28,7 @@ namespace UML {
             void setAppliedProfile(Profile& profile);
             void setAppliedProfile(Profile* profile);
             void setAppliedProfile(ID id);
-            PackagePtr getApplyingPackage();
+            PackagePtr getApplyingPackage() const;
             void setApplyingPackage(Package* pckg);
             void setApplyingPackage(Package& pckg);
             void setApplyingPackage(ID id);

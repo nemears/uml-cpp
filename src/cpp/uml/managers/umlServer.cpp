@@ -346,7 +346,7 @@ void UmlServer::garbageCollector(UmlServer* me) {
 void UmlServer::closeClientConnections(ClientInfo& client) {
     client.thread->join();
     #ifndef WIN32
-    close(client.second.socket);
+    close(client.socket);
     #else
     int result = shutdown(client.socket, SD_SEND);
     if (result == SOCKET_ERROR) {

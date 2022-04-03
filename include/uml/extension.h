@@ -18,7 +18,7 @@ namespace UML {
              * NOTE: keeping it simple for now, uml suggests dealing with metaclasses as actual Classes stored within
              * every model, but obviously it will be more efficient to just keep track of it by enum right now.
              **/
-            ElementType m_metaClass;
+            ElementType m_metaClass = ElementType::NOT_SET;
             Singleton<ExtensionEnd, Extension> m_ownedEnd = Singleton<ExtensionEnd, Extension>(this);
             bool m_setFlag = false;
             Set<ExtensionEnd, Extension>& getOwnedEndSingleton();

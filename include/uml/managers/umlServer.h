@@ -58,9 +58,11 @@ namespace UML {
             static void receiveFromClient(UmlServer* me, ID id);
             static void clientSubThreadHandler(UmlServer* me, ID id);
             static void garbageCollector(UmlServer* me);
+            static void zombieKiller(UmlServer* me);
             void handleMessage(ID id, std::string buff);
-            std::thread* m_acceptThread;
-            std::thread* m_garbageCollectionThread;
+            std::thread* m_acceptThread = 0;
+            std::thread* m_garbageCollectionThread = 0;
+            std::thread* m_zombieKillerThread = 0;
             std::unordered_map<ID, std::mutex> m_locks;
             std::atomic<bool> m_running = false;
             std::mutex m_runMtx;
@@ -75,9 +77,13 @@ namespace UML {
             bool m_shutdownV = false;
             std::mutex m_garbageMtx;
             std::condition_variable m_garbageCv;
+            std::list<ID> m_zombies;
+            std::mutex m_zombieMtx;
+            std::condition_variable m_zombieCv;
 
             // helper methods
             void createNode(Element* el) override;
+            void closeClientConnections(ClientInfo& client);
         public:
             UmlServer();
             UmlServer(int port);

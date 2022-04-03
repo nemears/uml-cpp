@@ -2331,13 +2331,7 @@ void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data)
         emit(emitter, *prop.getDefaultValue(), data);
     }
 
-    if (!prop.getRedefinedProperties().empty()) {
-        emitter << YAML::Key << "redefinedProperties" << YAML::Value << YAML::BeginSeq;
-        for (auto& redefined: prop.getRedefinedProperties()) {
-            emitter << YAML::Value << redefined.getID().string();
-        }
-        emitter << YAML::EndSeq;
-    }
+    emitSequenceReferences(emitter, "redefinedProperties", data, prop, &Property::getRedefinedProperties);
 
     if (prop.getAssociation()) {
         emitter << YAML::Key << "association" << YAML::Value << prop.getAssociation().id().string();
@@ -2931,9 +2925,9 @@ void emitTemplateSignature(YAML::Emitter& emitter, TemplateSignature& signature,
     // special handling
     if (signature.getParameters().size() > signature.getOwnedParameters().size()) {
         emitter << YAML::Key << "parameters" << YAML::Value << YAML::BeginSeq;
-        for (auto& param: signature.getParameters()) {
-            if (!signature.getOwnedParameters().count(param.getID())) {
-                emitter << param.getID().string();
+        for (ID id: signature.getParameters().ids()) {
+            if (!signature.getOwnedParameters().count(id)) {
+                emitter << id.string();
             }
         }
         emitter << YAML::EndSeq;
@@ -3243,7 +3237,9 @@ void emitExtension(YAML::Emitter& emitter, Extension& extension, EmitterMetaData
 
     emitClassifier(emitter, extension, data);
 
-    emitter << YAML::Key << "metaClass" << YAML::Value << Element::elementTypeToString(extension.getMetaClass());
+    if (extension.getMetaClass() != ElementType::NOT_SET) {
+        emitter << YAML::Key << "metaClass" << YAML::Value << Element::elementTypeToString(extension.getMetaClass());
+    }
 
     if (extension.getOwnedEnd()) {
         emitter << YAML::Key << "ownedEnd" << YAML::Value;

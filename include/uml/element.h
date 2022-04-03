@@ -123,7 +123,9 @@ namespace UML {
         TYPED_ELEMENT,
         USAGE,
         VALUE_PIN,
-        VALUE_SPECIFICATION
+        VALUE_SPECIFICATION,
+
+        NOT_SET
     };
 
     class Element;

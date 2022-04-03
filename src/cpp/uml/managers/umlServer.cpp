@@ -37,8 +37,22 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         return;
     }
     
-    YAML::Node node = YAML::Load(buff);
+    YAML::Node node;
+    try {
+        node = YAML::Load(buff);
+    } catch (std::exception& e) {
+        log(e.what());
+        const char* msg = "ERROR";
+        int bytesSent = send(info.socket, msg, 6, 0);
+        return;
+    }
     
+    if (!node.IsMap()) {
+        log("ERROR receiving message from client, invalid format!\nMessage:\n" + buff);
+        const char* msg = "ERROR";
+        int bytesSent = send(info.socket, msg, 6, 0);
+        return;
+    }
     if (node["DELETE"]) {
         ID elID = ID::fromString(node["DELETE"].as<std::string>());
         try {
@@ -57,8 +71,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         } catch (std::exception& e) {
             log("exception encountered when trying to delete element: " + std::string(e.what()));
         }
-    }
-    if (node["GET"]) {
+    } else if (node["GET"]) {
         ID elID;
         if (isValidID(node["GET"].as<std::string>())) {
             elID = ID::fromString(node["GET"].as<std::string>());
@@ -81,8 +94,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             const char* msg = "ERROR";
             int bytesSent = send(info.socket, msg, 6, 0);
         }
-    }
-    if (node["POST"]) {
+    } else if (node["POST"]) {
         m_msgV = true;
         m_msgCv.notify_one();
         log("server handling post request from client " + id.string());
@@ -99,8 +111,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         } catch (std::exception& e) {
             log("server could not create new element for client " + id.string() + ", exception with request: " + std::string(e.what()));
         }
-    }
-    if (node["PUT"]) {
+    } else if (node["PUT"]) {
         ID elID = ID::fromString(node["PUT"]["id"].as<std::string>());
         std::lock_guard<std::mutex> elLck(m_locks[elID]);
         log("aquired lock for element " + elID.string());
@@ -120,6 +131,10 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         } catch (std::exception& e) {
             log("Error parsing PUT request: " + std::string(e.what()));
         }
+    } else {
+        log("ERROR receiving message from client, invalid format!\nMessage:\n" + buff);
+        const char* msg = "ERROR";
+        int bytesSent = send(info.socket, msg, 6, 0);
     }
 }
 
@@ -148,6 +163,9 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
             if (bytesRead == 0) {
                 // client shutdown
                 me->log("error receiving message, lost connection to client");
+                std::lock_guard<std::mutex> zombieLck(me->m_zombieMtx);
+                me->m_zombies.push_back(id);
+                me->m_zombieCv.notify_one();
                 return;
             }
             if (bytesRead < 0) {
@@ -298,7 +316,7 @@ void UmlServer::acceptNewClients(UmlServer* me) {
 
 void UmlServer::clientSubThreadHandler(UmlServer* me, ID id) {
     ClientInfo& info = me->m_clients[id];
-    while (me->m_running) {
+    while (me->m_running && info.thread) {
         std::unique_lock<std::mutex> lck(info.handlerMtx);
         info.handlerCv.wait(lck, [&info] { return !info.threadQueue.empty(); });
         for (std::string buff : info.threadQueue) {
@@ -322,6 +340,38 @@ void UmlServer::garbageCollector(UmlServer* me) {
         } else {
             me->m_numEls++;
         }
+    }
+}
+
+void UmlServer::closeClientConnections(ClientInfo& client) {
+    client.thread->join();
+    #ifndef WIN32
+    close(client.second.socket);
+    #else
+    int result = shutdown(client.socket, SD_SEND);
+    if (result == SOCKET_ERROR) {
+        closesocket(client.socket);
+        WSACleanup();
+    }
+    #endif
+    delete client.thread;
+    client.thread = 0;
+    client.threadQueue.push_back("");
+    client.handlerCv.notify_all();
+    client.handler->join();
+    delete client.handler;
+}
+
+void UmlServer::zombieKiller(UmlServer* me) {
+    while(me->m_running) {
+        std::unique_lock<std::mutex> zombieLck(me->m_zombieMtx);
+        me->m_zombieCv.wait(zombieLck, [me] { return !me->m_zombies.empty(); });
+        for (const ID id : me->m_zombies) {
+            ClientInfo& client = me->m_clients[id];
+            me->closeClientConnections(client);
+            me->m_clients.erase(id);
+        }
+        me->m_zombies.clear();
     }
 }
 
@@ -409,6 +459,7 @@ UmlServer::UmlServer(int port) {
     m_running = true;
     m_acceptThread = new std::thread(acceptNewClients, this);
     m_garbageCollectionThread = new std::thread(garbageCollector, this);
+    m_zombieKillerThread = new std::thread(zombieKiller, this);
     log("server set up thread to accept new clients");
 }
 
@@ -517,21 +568,7 @@ void UmlServer::shutdownServer() {
     }
     #endif
     for (auto& client : m_clients) {
-        client.second.thread->join();
-        #ifndef WIN32
-        close(client.second.socket);
-        #else
-        int result = shutdown(client.second.socket, SD_SEND);
-        if (result == SOCKET_ERROR) {
-            closesocket(client.second.socket);
-            WSACleanup();
-        }
-        #endif
-        delete client.second.thread;
-        client.second.threadQueue.push_back("");
-        client.second.handlerCv.notify_all();
-        client.second.handler->join();
-        delete client.second.handler;
+        closeClientConnections(client.second);
     }
     delete m_acceptThread;
 
@@ -540,6 +577,10 @@ void UmlServer::shutdownServer() {
     m_garbageCv.notify_one();
     m_garbageCollectionThread->join();
     delete m_garbageCollectionThread;
+
+    m_zombieCv.notify_one();
+    m_zombieKillerThread->join();
+    delete m_zombieKillerThread;
 
     m_shutdownV = true;
     m_shutdownCv.notify_all();

@@ -1,21 +1,365 @@
 #include "gtest/gtest.h"
-#include "uml/parsers/parser.h"
-#include "test/uml-cpp-paths.h"
 #include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
+#include "test/uml-cpp-paths.h"
 
-using namespace std;
 using namespace UML;
 
-class ClassParserTest : public ::testing::Test {
+UML_SET_INTEGRATION_TEST(StructuredClassifierOwnedAttributes, Property, Class, &StructuredClassifier::getOwnedAttributes);
+UML_SET_INTEGRATION_TEST(ClassOwnedAttributes, Property, Class, &Class::getOwnedAttributes);
+UML_SET_INTEGRATION_TEST(StructuredClassifierOwnedConnectors, Connector, Class, &StructuredClassifier::getOwnedConnectors);
+UML_SET_INTEGRATION_TEST(ClassNestingClassifiers, DataType, Class, &Class::getNestedClassifiers);
+UML_SET_INTEGRATION_TEST(ClassOwnedOperations, Operation, Class, &Class::getOwnedOperations);
+UML_SET_INTEGRATION_TEST(ClassOwnedReceptions, Reception, Class, &Class::getOwnedReceptions);
+
+class ClassTest : public ::testing::Test {
     public:
-        string ymlPath;
+        std::string ymlPath;
     void SetUp() override {
         ymlPath = YML_FILES_PATH;
     };
 };
 
-TEST_F(ClassParserTest, parseID_andName) {
+TEST_F(ClassTest, BasicOperationTest) {
+    UmlManager m;
+    Class& c = *m.create<Class>();
+    Operation& o = *m.create<Operation>();
+    OpaqueBehavior& oB = *m.create<OpaqueBehavior>();
+    LiteralString& val = *m.create<LiteralString>();
+    Parameter& p = *m.create<Parameter>();
+    ASSERT_NO_THROW(oB.getOwnedParameters().add(p));
+    ASSERT_NO_THROW(val.setValue("return true"));
+    ASSERT_NO_THROW(oB.getBodies().add(val));
+    ASSERT_NO_THROW(o.getMethods().add(oB));
+    ASSERT_NO_THROW(c.getOwnedOperations().add(o));
+}
+
+TEST_F(ClassTest, addOperationFunctorTest) {
+    UmlManager m;
+    Class& c = *m.create<Class>();
+    Operation& o = *m.create<Operation>();
+    c.getOwnedOperations().add(o);
+    ASSERT_TRUE(c.getOwnedOperations().size() == 1);
+    ASSERT_TRUE(&c.getOwnedOperations().front() == &o);
+    ASSERT_TRUE(o.getClass() == &c);
+    ASSERT_TRUE(c.getFeatures().size() == 1);
+    ASSERT_TRUE(&c.getFeatures().front() == &o);
+    ASSERT_TRUE(o.getFeaturingClassifier() == &c);
+    ASSERT_TRUE(c.getMembers().size() == 1);
+    ASSERT_TRUE(&c.getMembers().front() == &o);
+    ASSERT_TRUE(o.getNamespace() == &c);
+    ASSERT_TRUE(c.getOwnedElements().size() == 1);
+    ASSERT_TRUE(&c.getOwnedElements().get(o.getID()) == &o);
+    ASSERT_TRUE(o.getOwner() == &c);
+}
+
+TEST_F(ClassTest, setClassTest) {
+    UmlManager m;
+    Class& c = *m.create<Class>();
+    Operation& o = *m.create<Operation>();
+    o.setClass(c);
+    ASSERT_TRUE(c.getOwnedOperations().size() == 1);
+    ASSERT_TRUE(&c.getOwnedOperations().front() == &o);
+    ASSERT_TRUE(o.getClass() == &c);
+    ASSERT_TRUE(c.getFeatures().size() == 1);
+    ASSERT_TRUE(&c.getFeatures().front() == &o);
+    ASSERT_TRUE(o.getFeaturingClassifier() == &c);
+    ASSERT_TRUE(c.getMembers().size() == 1);
+    ASSERT_TRUE(&c.getMembers().front() == &o);
+    ASSERT_TRUE(o.getNamespace() == &c);
+    ASSERT_TRUE(c.getOwnedElements().size() == 1);
+    ASSERT_TRUE(&c.getOwnedElements().get(o.getID()) == &o);
+    ASSERT_TRUE(o.getOwner() == &c);
+}
+
+TEST_F(ClassTest, overwriteClassTest) {
+  UmlManager m;
+  Class& p1 = *m.create<Class>();
+  Class& p2 = *m.create<Class>();
+  Operation& c = *m.create<Operation>();
+  p1.getOwnedOperations().add(c);
+  c.setClass(&p2);
+  ASSERT_TRUE(p2.getOwnedOperations().size() == 1);
+  ASSERT_TRUE(&p2.getOwnedOperations().front() == &c);
+  ASSERT_TRUE(c.getClass() == &p2);
+  ASSERT_TRUE(p2.getFeatures().size() == 1);
+  ASSERT_TRUE(&p2.getFeatures().front() == &c);
+  ASSERT_TRUE(c.getFeaturingClassifier() == &p2);
+  ASSERT_TRUE(p2.getMembers().size() == 1);
+  ASSERT_TRUE(&p2.getMembers().front() == &c);
+  ASSERT_TRUE(c.getNamespace() == &p2);
+  ASSERT_TRUE(p2.getOwnedElements().size() == 1);
+  ASSERT_TRUE(&p2.getOwnedElements().get(c.getID()) == &c);
+  ASSERT_TRUE(c.getOwner() == &p2);
+  ASSERT_TRUE(p1.getOwnedOperations().size() == 0);
+  ASSERT_TRUE(p1.getFeatures().size() == 0);
+  ASSERT_TRUE(p1.getMembers().size() == 0);
+  ASSERT_TRUE(p1.getOwnedElements().size() == 0);
+}
+
+TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
+  UmlManager m;
+  Class& p1 = *m.create<Class>();
+  Class& p2 = *m.create<Class>();
+  Operation& c = *m.create<Operation>();
+  p1.getOwnedOperations().add(c);
+  p2.getOwnedOperations().add(c);
+  ASSERT_TRUE(p2.getOwnedOperations().size() == 1);
+  ASSERT_TRUE(&p2.getOwnedOperations().front() == &c);
+  ASSERT_TRUE(c.getClass() == &p2);
+  ASSERT_TRUE(p2.getFeatures().size() == 1);
+  ASSERT_TRUE(&p2.getFeatures().front() == &c);
+  ASSERT_TRUE(c.getFeaturingClassifier() == &p2);
+  ASSERT_TRUE(p2.getMembers().size() == 1);
+  ASSERT_TRUE(&p2.getMembers().front() == &c);
+  ASSERT_TRUE(c.getNamespace() == &p2);
+  ASSERT_TRUE(p2.getOwnedElements().size() == 1);
+  ASSERT_TRUE(&p2.getOwnedElements().get(c.getID()) == &c);
+  ASSERT_TRUE(c.getOwner() == &p2);
+  ASSERT_TRUE(p1.getOwnedOperations().size() == 0);
+  ASSERT_TRUE(p1.getFeatures().size() == 0);
+  ASSERT_TRUE(p1.getMembers().size() == 0);
+  ASSERT_TRUE(p1.getOwnedElements().size() == 0);
+}
+
+TEST_F(ClassTest, removeOperationFunctorTest) {
+  UmlManager m;
+    Class& c = *m.create<Class>();
+    Operation& o = *m.create<Operation>();
+  c.getOwnedOperations().add(o);
+  ASSERT_NO_THROW(c.getOwnedOperations().remove(o));
+  ASSERT_TRUE(c.getOwnedOperations().size() == 0);
+  ASSERT_TRUE(c.getFeatures().size() == 0);
+  ASSERT_TRUE(c.getMembers().size() == 0);
+  ASSERT_TRUE(c.getOwnedElements().size() == 0);
+  ASSERT_TRUE(!o.getClass());
+  ASSERT_TRUE(!o.getFeaturingClassifier());
+  ASSERT_TRUE(!o.getNamespace());
+  ASSERT_TRUE(!o.getOwner());
+}
+
+TEST_F(ClassTest, addOwnedAttributeTest) {
+  UmlManager m;
+  Class& c = *m.create<Class>();
+  Property& p = *m.create<Property>();
+  ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
+  ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
+  ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
+  ASSERT_TRUE(c.getRoles().size() == 1);
+  ASSERT_TRUE(&c.getRoles().front() == &p);
+  ASSERT_TRUE(c.getOwnedMembers().size() == 1);
+  ASSERT_TRUE(&c.getOwnedMembers().front() == &p);
+  ASSERT_TRUE(c.getFeatures().size() == 1);
+  ASSERT_TRUE(&c.getFeatures().front() == &p);
+  ASSERT_TRUE(c.getAttributes().size() == 1);
+  ASSERT_TRUE(&c.getAttributes().front() == &p);
+  ASSERT_TRUE(c.getMembers().size() == 1);
+  ASSERT_TRUE(&c.getMembers().front() == &p);
+  ASSERT_TRUE(c.getOwnedElements().size() == 1);
+  ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
+
+  ASSERT_TRUE(p.getClass());
+  ASSERT_EQ(*p.getClass(), c);
+  ASSERT_TRUE(p.getFeaturingClassifier() == &c);
+  ASSERT_TRUE(p.getNamespace() == &c);
+  ASSERT_TRUE(p.getOwner() == &c);
+}
+
+TEST_F(ClassTest, addOwnedAttributeAsStructuredClassifierTest) {
+  UmlManager m;
+  Class& c = *m.create<Class>();
+  Property& p = *m.create<Property>();
+  c.as<StructuredClassifier>().getOwnedAttributes().add(p);
+  ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
+  ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
+  ASSERT_TRUE(c.getRoles().size() == 1);
+  ASSERT_TRUE(&c.getRoles().front() == &p);
+  ASSERT_TRUE(c.getOwnedMembers().size() == 1);
+  ASSERT_TRUE(&c.getOwnedMembers().front() == &p);
+  ASSERT_TRUE(c.getFeatures().size() == 1);
+  ASSERT_TRUE(&c.getFeatures().front() == &p);
+  ASSERT_TRUE(c.getAttributes().size() == 1);
+  ASSERT_TRUE(&c.getAttributes().front() == &p);
+  ASSERT_TRUE(c.getMembers().size() == 1);
+  ASSERT_TRUE(&c.getMembers().front() == &p);
+  ASSERT_TRUE(c.getOwnedElements().size() == 1);
+  ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
+
+  ASSERT_TRUE(p.getClass());
+  ASSERT_EQ(*p.getClass(), c);
+  ASSERT_TRUE(p.getFeaturingClassifier() == &c);
+  ASSERT_TRUE(p.getNamespace() == &c);
+  ASSERT_TRUE(p.getOwner() == &c);
+}
+
+TEST_F(ClassTest, setStructuredClassifierTest) {
+  UmlManager m;
+  Class& c = *m.create<Class>();
+  Property& p = *m.create<Property>();
+  ASSERT_NO_THROW(p.setClass(&c));
+  ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
+  ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
+  // ASSERT_TRUE(c.getRole().size() == 1);
+  // ASSERT_TRUE(&c.getRole().front() == &p);
+  ASSERT_TRUE(c.getOwnedMembers().size() == 1);
+  ASSERT_TRUE(&c.getOwnedMembers().front() == &p);
+  ASSERT_TRUE(c.getFeatures().size() == 1);
+  ASSERT_TRUE(&c.getFeatures().front() == &p);
+  ASSERT_TRUE(c.getAttributes().size() == 1);
+  ASSERT_TRUE(&c.getAttributes().front() == &p);
+  ASSERT_TRUE(c.getMembers().size() == 1);
+  ASSERT_TRUE(&c.getMembers().front() == &p);
+  ASSERT_TRUE(c.getOwnedElements().size() == 1);
+  ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
+
+  ASSERT_TRUE(*p.getFeaturingClassifier() == c);
+  ASSERT_TRUE(*p.getNamespace() == c);
+  ASSERT_TRUE(*p.getOwner() == c);
+}
+
+TEST_F(ClassTest, removeOwnedAttributeFunctorTest) {
+  UmlManager m;
+  Class& c = *m.create<Class>();
+  Property& p = *m.create<Property>();
+  c.getOwnedAttributes().add(p);
+  ASSERT_NO_THROW(c.getOwnedAttributes().remove(p));
+  ASSERT_TRUE(c.getOwnedAttributes().size() == 0);
+  ASSERT_TRUE(c.getAttributes().size() == 0);
+  // ASSERT_TRUE(c.getRole().size() == 0);
+  ASSERT_TRUE(c.getFeatures().size() == 0);
+  ASSERT_TRUE(c.getOwnedMembers().size() == 0);
+  ASSERT_TRUE(c.getMembers().size() == 0);
+  ASSERT_TRUE(c.getOwnedElements().size() == 0);
+  ASSERT_FALSE(p.getFeaturingClassifier());
+  ASSERT_FALSE(p.getNamespace());
+  ASSERT_FALSE(p.getOwner());
+}
+
+TEST_F(ClassTest, setFeaturingClassifierNullTest) {
+  UmlManager m;
+  Class& c = *m.create<Class>();
+  Property& p = *m.create<Property>();
+  c.getOwnedAttributes().add(p);
+  ASSERT_NO_THROW(p.setClass(0));
+  ASSERT_TRUE(c.getOwnedAttributes().size() == 0);
+  ASSERT_TRUE(c.getAttributes().size() == 0);
+  // ASSERT_TRUE(c.getRole().size() == 0);
+  ASSERT_TRUE(c.getFeatures().size() == 0);
+  ASSERT_TRUE(c.getOwnedMembers().size() == 0);
+  ASSERT_TRUE(c.getMembers().size() == 0);
+  ASSERT_TRUE(c.getOwnedElements().size() == 0);
+
+  ASSERT_FALSE(p.getFeaturingClassifier());
+  ASSERT_FALSE(p.getNamespace());
+  ASSERT_FALSE(p.getOwner());
+}
+
+TEST_F(ClassTest, addCompositePropertyTest) {
+  UmlManager m;
+  Class& c = *m.create<Class>();
+  Property& p = *m.create<Property>();
+  p.setAggregation(AggregationKind::COMPOSITE);
+  c.getOwnedAttributes().add(p);
+  ASSERT_TRUE(c.getParts().size() == 1);
+  ASSERT_TRUE(&c.getParts().front() == &p);
+  ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
+  ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
+  ASSERT_TRUE(c.getAttributes().size() == 1);
+  ASSERT_TRUE(&c.getAttributes().front() == &p);
+  ASSERT_TRUE(c.getRoles().size() == 1);
+  ASSERT_TRUE(&c.getRoles().front() == &p);
+  ASSERT_TRUE(c.getFeatures().size() == 1);
+  ASSERT_TRUE(&c.getFeatures().front() == &p);
+  ASSERT_TRUE(c.getOwnedMembers().size() == 1);
+  ASSERT_TRUE(&c.getOwnedMembers().front() == &p);
+  ASSERT_TRUE(c.getMembers().size() == 1);
+  ASSERT_TRUE(&c.getMembers().front() == &p);
+  ASSERT_TRUE(c.getOwnedElements().size() == 1);
+  ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
+
+  ASSERT_TRUE(p.isComposite());
+  ASSERT_TRUE(p.getFeaturingClassifier() == &c);
+  ASSERT_TRUE(p.getNamespace() == &c);
+  ASSERT_TRUE(p.getOwner() == &c);
+}
+
+TEST_F(ClassTest, backwardsAddCompositePropertyTest) {
+  UmlManager m;
+  Class& c = *m.create<Class>();
+  Property& p = *m.create<Property>();
+  ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
+  ASSERT_NO_THROW(p.setAggregation(AggregationKind::COMPOSITE));
+  ASSERT_TRUE(c.getParts().size() == 1);
+  ASSERT_TRUE(&c.getParts().front() == &p);
+  ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
+  ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
+  ASSERT_TRUE(c.getAttributes().size() == 1);
+  ASSERT_TRUE(&c.getAttributes().front() == &p);
+  ASSERT_TRUE(c.getRoles().size() == 1);
+  ASSERT_TRUE(&c.getRoles().front() == &p);
+  ASSERT_TRUE(c.getFeatures().size() == 1);
+  ASSERT_TRUE(&c.getFeatures().front() == &p);
+  ASSERT_TRUE(c.getOwnedMembers().size() == 1);
+  ASSERT_TRUE(&c.getOwnedMembers().front() == &p);
+  ASSERT_TRUE(c.getMembers().size() == 1);
+  ASSERT_TRUE(&c.getMembers().front() == &p);
+  ASSERT_TRUE(c.getOwnedElements().size() == 1);
+  ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
+
+  ASSERT_TRUE(p.isComposite());
+  ASSERT_TRUE(p.getFeaturingClassifier() == &c);
+  ASSERT_TRUE(p.getNamespace() == &c);
+  ASSERT_TRUE(p.getOwner() == &c);
+}
+
+TEST_F(ClassTest, removePropertyFromParts) {
+  UmlManager m;
+  Class& c = *m.create<Class>();
+  Property& p = *m.create<Property>();
+  p.setAggregation(AggregationKind::COMPOSITE);
+  c.getOwnedAttributes().add(p);
+  ASSERT_NO_THROW(p.setAggregation(AggregationKind::NONE));
+
+  ASSERT_TRUE(c.getParts().size() == 0);
+  ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
+  ASSERT_TRUE(&c.getOwnedAttributes().front() == &p);
+  ASSERT_TRUE(c.getAttributes().size() == 1);
+  ASSERT_TRUE(&c.getAttributes().front() == &p);
+  ASSERT_TRUE(c.getRoles().size() == 1);
+  ASSERT_TRUE(&c.getRoles().front() == &p);
+  ASSERT_TRUE(c.getFeatures().size() == 1);
+  ASSERT_TRUE(&c.getFeatures().front() == &p);
+  ASSERT_TRUE(c.getOwnedMembers().size() == 1);
+  ASSERT_TRUE(&c.getOwnedMembers().front() == &p);
+  ASSERT_TRUE(c.getMembers().size() == 1);
+  ASSERT_TRUE(&c.getMembers().front() == &p);
+  ASSERT_TRUE(c.getOwnedElements().size() == 1);
+  ASSERT_TRUE(&c.getOwnedElements().get(p.getID()) == &p);
+
+  ASSERT_TRUE(!p.isComposite());
+  ASSERT_TRUE(p.getFeaturingClassifier() == &c);
+  ASSERT_TRUE(p.getNamespace() == &c);
+  ASSERT_TRUE(p.getOwner() == &c);
+}
+
+TEST_F(ClassTest, addAndRemoveNestedClassifierTest) {
+  UmlManager m;
+  Class& c = *m.create<Class>();
+  DataType& d = *m.create<DataType>();
+  c.getNestedClassifiers().add(d);
+  ASSERT_EQ(c.getNestedClassifiers().size(), 1);
+  ASSERT_EQ(c.getNestedClassifiers().front().getID(), d.getID());
+  ASSERT_EQ(c.getOwnedMembers().size(), 1);
+  ASSERT_EQ(c.getOwnedMembers().front().getID(), d.getID());
+  // ASSERT_EQ(c.getRedefinedElements().size(), 1);
+  // ASSERT_EQ(c.getRedefinedElements().front().getID(), d.getID());
+  c.getNestedClassifiers().remove(d);
+  ASSERT_EQ(c.getNestedClassifiers().size(), 0);
+  ASSERT_EQ(c.getOwnedMembers().size(), 0);
+  ASSERT_EQ(c.getNestedClassifiers().size(), 0);
+}
+
+TEST_F(ClassTest, parseID_andName) {
     Element* el;
     UmlManager m;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/class_w_id_and_name.yml").ptr());
@@ -25,7 +369,7 @@ TEST_F(ClassParserTest, parseID_andName) {
     ASSERT_TRUE(clazz->getName().compare("test") == 0);
 }
 
-TEST_F(ClassParserTest, parseBasicProperty) {
+TEST_F(ClassTest, parseBasicProperty) {
     Element* el;
     UmlManager m;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/classWithAttributes.yml").ptr());
@@ -46,7 +390,7 @@ TEST_F(ClassParserTest, parseBasicProperty) {
     // ASSERT_TRUE(clazz->getOwnedElements().back() == prop2);
 }
 
-TEST_F(ClassParserTest, parseOperation) {
+TEST_F(ClassTest, parseOperation) {
     Element* el;
     UmlManager m;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/operation.yml").ptr());
@@ -63,14 +407,14 @@ TEST_F(ClassParserTest, parseOperation) {
     ASSERT_EQ(bhv->getOwnedParameters().size(), 1);
 }
 
-TEST_F(ClassParserTest, properErrors) {
+TEST_F(ClassTest, properErrors) {
     Element* el;
     UmlManager m;
     ASSERT_THROW(el = m.parse(ymlPath + "classTests/improperOperationIdentifier.yml").ptr(), Parsers::UmlParserException);
     ASSERT_THROW(el = m.parse(ymlPath + "classTests/operationsNotSequence.yml").ptr(), Parsers::UmlParserException);
 }
 
-TEST_F(ClassParserTest, basicGeneralizationTest) {
+TEST_F(ClassTest, basicGeneralizationTest) {
     Element* el;
     UmlManager m;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/basicGeneralization.yml").ptr());
@@ -91,7 +435,7 @@ TEST_F(ClassParserTest, basicGeneralizationTest) {
     ASSERT_TRUE(g->getSpecific() == specific);
 }
 
-TEST_F(ClassParserTest, inheritedMembersTest) {
+TEST_F(ClassTest, inheritedMembersTest) {
     Element* el;
     UmlManager m;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/inheritedMembers.yml").ptr());
@@ -124,7 +468,7 @@ TEST_F(ClassParserTest, inheritedMembersTest) {
     ASSERT_TRUE(privateSpecific->getInheritedMembers().size() == 0);
 }
 
-TEST_F(ClassParserTest, emitClassWAttribute) {
+TEST_F(ClassTest, emitClassWAttribute) {
     UmlManager m;
     Class& c = *m.create<Class>();
     Property& p = *m.create<Property>();
@@ -134,7 +478,7 @@ TEST_F(ClassParserTest, emitClassWAttribute) {
     p.setName("prop");
     p.setVisibility(VisibilityKind::PRIVATE);
     c.getOwnedAttributes().add(p);
-    string expectedEmit = R""""(class:
+    std::string expectedEmit = R""""(class:
   id: hWVMp5upOkVsWnkrfl0I6O5bQsbO
   name: Class
   ownedAttributes:
@@ -142,13 +486,13 @@ TEST_F(ClassParserTest, emitClassWAttribute) {
         id: 61255etITfg0LgPLZaU1PEByTjo3
         name: prop
         visibility: PRIVATE)"""";
-    string generatedEmit;
+    std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(c));
-    cout << generatedEmit << '\n';
+    std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
-TEST_F(ClassParserTest, emitClassWAttributeNOperation) {
+TEST_F(ClassTest, emitClassWAttributeNOperation) {
     UmlManager m;
     Class& c = *m.create<Class>();
     Property& p = *m.create<Property>();
@@ -163,7 +507,7 @@ TEST_F(ClassParserTest, emitClassWAttributeNOperation) {
     o.setVisibility(VisibilityKind::PROTECTED);
     c.getOwnedAttributes().add(p);
     c.getOwnedOperations().add(o);
-    string expectedEmit = R""""(class:
+    std::string expectedEmit = R""""(class:
   id: b0XPjtodVDLoVu2YCMwBWYqglsoX
   name: Class
   ownedAttributes:
@@ -176,13 +520,13 @@ TEST_F(ClassParserTest, emitClassWAttributeNOperation) {
         id: ESKTcd5FmF2q4O&WI_Oiu5FrXHeN
         name: op
         visibility: PROTECTED)"""";
-    string generatedEmit;
+    std::string generatedEmit;
     generatedEmit = Parsers::emit(c);
-    cout << generatedEmit << '\n';
+    std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
-TEST_F(ClassParserTest, emitFilledInOperation) {
+TEST_F(ClassTest, emitFilledInOperation) {
     UmlManager m;
     Class& c = *m.create<Class>();
     Operation& o = *m.create<Operation>();
@@ -205,7 +549,7 @@ TEST_F(ClassParserTest, emitFilledInOperation) {
     c.getOwnedBehaviors().add(b);
     o.getMethods().add(b);
     c.getOwnedOperations().add(o);
-    string expectedEmit = R""""(class:
+    std::string expectedEmit = R""""(class:
   id: 6cCDjqUmkrXZ46z7CcNaTDso4SfQ
   name: Class
   ownedBehaviors:
@@ -228,13 +572,13 @@ TEST_F(ClassParserTest, emitFilledInOperation) {
           - parameter:
               id: s2q_fjRnyV_Gst&gAQ4JTr3crFNU
               name: pee)"""";
-    string generatedEmit;
+    std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(c));
-    cout << generatedEmit << '\n';
+    std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
-TEST_F(ClassParserTest, nestedClassifierParsingTest) {
+TEST_F(ClassTest, nestedClassifierParsingTest) {
     Element* el;
     UmlManager m;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/nestedClassifiers.yml").ptr());
@@ -257,7 +601,7 @@ TEST_F(ClassParserTest, nestedClassifierParsingTest) {
     ASSERT_EQ(clazz.getNestedClassifiers().get(6).getName(), "pp");
 }
 
-TEST_F(ClassParserTest, nestedClassifierEmitTest) {
+TEST_F(ClassTest, nestedClassifierEmitTest) {
     UmlManager m;
     Class& clazz = *m.create<Class>();
     Artifact& artifact = *m.create<Artifact>();
@@ -282,7 +626,7 @@ TEST_F(ClassParserTest, nestedClassifierEmitTest) {
     clazz.getNestedClassifiers().add(enumeration);
     clazz.getNestedClassifiers().add(opaqueBehavior);
     clazz.getNestedClassifiers().add(primitiveType);
-    string expectedEmit = R""""(class:
+    std::string expectedEmit = R""""(class:
   id: 5mOWzor&UjeUs13VT9&HYj5DKh&Y
   nestedClassifiers:
     - artifact:
@@ -299,14 +643,13 @@ TEST_F(ClassParserTest, nestedClassifierEmitTest) {
         id: j82g9_8Al4Vcp1PQ0wsS4ia9_MR4
     - primitiveType:
         id: FTjeJqMozlqjetKextwOJiSIeZA7)"""";
-    string generatedEmit;
+    std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(clazz));
-    cout << generatedEmit << '\n';
+    std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
-TEST_F(ClassParserTest, mountFullClassTest) {
-    // std::cout << "!!!!!!!!!!\nTODO uncomment me por favor\n!!!!!!!!!!!!" << std::endl;
+TEST_F(ClassTest, mountFullClassTest) {
     UmlManager m;
     Package& pckg = *m.create<Package>();
     Class& base = *m.create<Class>();
@@ -327,7 +670,7 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     pckg.getPackagedElements().add(base);
     pckg.getPackagedElements().add(spec);
     m.setRoot(&pckg);
-    string mountPath = ymlPath + "classTests";
+    std::string mountPath = ymlPath + "classTests";
     ASSERT_NO_THROW(m.mount(mountPath));
     ASSERT_NO_THROW(m.release(base.getID()));
     ASSERT_TRUE(prop.getOwner());
@@ -563,4 +906,85 @@ TEST_F(ClassParserTest, mountFullClassTest) {
     ASSERT_TRUE(spec5.getMembers().contains(nestSpec3));
     ASSERT_TRUE(spec5.getMembers().contains(prop3));
     ASSERT_TRUE(spec5.getMembers().contains(op3));
+}
+
+TEST_F(ClassTest, parseOwnedAttributeTest) {
+    Element* el;
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "structuredClassifierTests/ownedAttributeTest.yml").ptr());
+    ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
+    Class& c = *dynamic_cast<Class*>(el);
+    ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
+    Property* p = &c.getOwnedAttributes().front();
+    ASSERT_TRUE(c.getAttributes().size() == 1);
+    ASSERT_TRUE(&c.getAttributes().front() == p);
+    ASSERT_TRUE(c.getRoles().size() == 1);
+    ASSERT_TRUE(&c.getRoles().front() == p);
+    ASSERT_TRUE(c.getFeatures().size() == 1);
+    ASSERT_TRUE(&c.getFeatures().front() == p);
+    ASSERT_TRUE(c.getOwnedMembers().size() == 1);
+    ASSERT_TRUE(&c.getOwnedMembers().front() == p);
+    ASSERT_TRUE(c.getMembers().size() == 1);
+    ASSERT_TRUE(&c.getMembers().front() == p);
+
+    ASSERT_TRUE(p->getName().compare("test") == 0);
+}
+
+TEST_F(ClassTest, partTest) {
+    Element* el;
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "structuredClassifierTests/partTest.yml").ptr());
+    Class& c = *dynamic_cast<Class*>(el);
+    ASSERT_TRUE(c.getParts().size() == 1);
+    ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
+    Property* p = &c.getOwnedAttributes().front();
+    ASSERT_TRUE(&c.getParts().front() == p);
+    ASSERT_TRUE(c.getAttributes().size() == 1);
+    ASSERT_TRUE(&c.getAttributes().front() == p);
+    ASSERT_TRUE(c.getRoles().size() == 1);
+    ASSERT_TRUE(&c.getRoles().front() == p);
+    ASSERT_TRUE(c.getFeatures().size() == 1);
+    ASSERT_TRUE(&c.getFeatures().front() == p);
+    ASSERT_TRUE(c.getOwnedMembers().size() == 1);
+    ASSERT_TRUE(&c.getOwnedMembers().front() == p);
+    ASSERT_TRUE(c.getMembers().size() == 1);
+    ASSERT_TRUE(&c.getMembers().front() == p);
+
+    ASSERT_TRUE(p->getAggregation() == AggregationKind::COMPOSITE);
+}
+
+TEST_F(ClassTest, parseConnectorTest) {
+    Element* el;
+    UmlManager m;
+    ASSERT_NO_THROW(el = m.parse(ymlPath + "structuredClassifierTests/connector.yml").ptr());
+
+    ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
+    Package& root = el->as<Package>();
+    OpaqueBehavior& contract = root.getPackagedElements().get("contract").as<OpaqueBehavior>();
+    Association& association = root.getPackagedElements().get("association").as<Association>();
+    Property& assocEnd1 = association.getOwnedEnds().get("end1");
+    Property& assocEnd2 = association.getOwnedEnds().get("end2");
+    DataType& type1 = root.getPackagedElements().get("type1").as<DataType>();
+    DataType& type2 = root.getPackagedElements().get("type2").as<DataType>();
+    Class& clazz = root.getPackagedElements().get("clazz").as<Class>();
+    ASSERT_EQ(association.getMemberEnds().size(), 2);
+    ASSERT_EQ(clazz.getOwnedAttributes().size(), 2);
+    Property& prop1 = clazz.getOwnedAttributes().get("prop1");
+    Property& prop2 = clazz.getOwnedAttributes().get("prop2");
+    Connector& connector = clazz.getOwnedConnectors().front();
+    ASSERT_TRUE(connector.getType());
+    ASSERT_EQ(*connector.getType(), association);
+    ASSERT_EQ(connector.getContracts().size(), 1);
+    ASSERT_TRUE(connector.getContracts().contains(contract));
+    ASSERT_EQ(connector.getEnds().size(), 2);
+    ConnectorEnd& end1 = connector.getEnds().get(ID::fromString("iluwBJEOrucpPYWRjAf2Wl0Y7xJb"));
+    ConnectorEnd& end2 = connector.getEnds().get(ID::fromString("Xa_ufGeUWxU5cUPY3f8VfRdmsH1V"));
+    ASSERT_TRUE(end1.getRole());
+    ASSERT_EQ(*end1.getRole(), prop1);
+    ASSERT_TRUE(end1.getDefiningEnd());
+    ASSERT_EQ(*end1.getDefiningEnd(), assocEnd1);
+    ASSERT_TRUE(end2.getRole());
+    ASSERT_EQ(*end2.getRole(), prop2);
+    ASSERT_TRUE(end2.getDefiningEnd());
+    ASSERT_EQ(*end2.getDefiningEnd(), assocEnd2);
 }

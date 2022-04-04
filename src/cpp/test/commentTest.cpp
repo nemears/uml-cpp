@@ -1,20 +1,39 @@
 #include "gtest/gtest.h"
-#include "uml/parsers/parser.h"
-#include "test/uml-cpp-paths.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
+#include "test/uml-cpp-paths.h"
 
-using namespace std;
 using namespace UML;
 
-class CommentParserTest : public ::testing::Test {
+UML_SET_INTEGRATION_TEST(ElementOwnedComment, Comment, DataStoreNode, &Element::getOwnedComments);
+UML_SET_INTEGRATION_TEST(CommentAnnotatedElement, Abstraction, Comment, &Comment::getAnnotatedElements);
+
+class CommentTest : public ::testing::Test {
     public:
-        string ymlPath;
+        std::string ymlPath;
     void SetUp() override {
         ymlPath = YML_FILES_PATH;
     };
 };
 
-TEST_F(CommentParserTest, testBasicComment) {
+TEST_F(CommentTest, annotatedElementTest) {
+    UmlManager m;
+    Package& pckg = *m.create<Package>();
+    Package& annotated = *m.create<Package>();
+    Comment& comment = *m.create<Comment>();
+    comment.setBody("I am a comment!");
+    comment.getAnnotatedElements().add(annotated);
+    pckg.getPackagedElements().add(annotated);
+    pckg.getOwnedComments().add(comment);
+    ASSERT_EQ(pckg.getOwnedComments().size(), 1);
+    ASSERT_EQ(pckg.getOwnedComments().front(), comment);
+    ASSERT_EQ(pckg.getOwnedElements().size(), 2);
+    ASSERT_TRUE(comment.getOwner());
+    ASSERT_EQ(*comment.getOwner(), pckg);
+    ASSERT_EQ(comment.getBody(), "I am a comment!");
+}
+
+TEST_F(CommentTest, testBasicComment) {
     UmlManager m;
     Element* el;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "commentTests/comment.yml").ptr());
@@ -25,25 +44,25 @@ TEST_F(CommentParserTest, testBasicComment) {
     ASSERT_EQ(comment.getBody(), "i am a comment!");
 }
 
-TEST_F(CommentParserTest, commentEmitTest) {
+TEST_F(CommentTest, commentEmitTest) {
     UmlManager m;
     Package& pckg = *m.create<Package>();
     Comment& comment = *m.create<Comment>();
     pckg.setID("zN&UM2AHrXX07rAiNxTmmMwLYI1O");
     comment.setID("FqaulNq6bCe_8J5M0Ff2oCCaQD05");
     pckg.getOwnedComments().add(comment);
-    string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(package:
   id: zN&UM2AHrXX07rAiNxTmmMwLYI1O
   ownedComments:
     - comment:
         id: FqaulNq6bCe_8J5M0Ff2oCCaQD05)"""";
-    string generatedEmit;
+    std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
-    cout << generatedEmit << '\n';
+    std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
-TEST_F(CommentParserTest, mountAndEditCommentTest) {
+TEST_F(CommentTest, mountAndEditCommentTest) {
     UmlManager m;
     Package& root = *m.create<Package>();
     Comment& comment = *m.create<Comment>();

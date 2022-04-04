@@ -1,17 +1,53 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
-#include "test/uml-cpp-paths.h"
-#include "uml/parsers/parser.h"
 #include "test/umlTestUtil.h"
+#include "test/uml-cpp-paths.h"
 
 using namespace UML;
 
-class GeneralizationSetParserTest : public ::testing::Test {
+UML_SINGLETON_INTEGRATION_TEST(GeneralizationSetPowerType, Class, GeneralizationSet, &GeneralizationSet::getPowerType, &GeneralizationSet::setPowerType);
+UML_SET_INTEGRATION_TEST(GeneralizationSetGeneralizations, Generalization, GeneralizationSet, &GeneralizationSet::getGeneralizations);
+UML_SET_INTEGRATION_TEST(GeneralizationGeneralizationSets, GeneralizationSet, Generalization, &Generalization::getGeneralizationSets);
+
+class GeneralizationSetTest : public ::testing::Test {
    public:
-    std::string ymlPath = YML_FILES_PATH;
+        std::string ymlPath;
+    void SetUp() override {
+        ymlPath = YML_FILES_PATH;
+    };
 };
 
-TEST_F(GeneralizationSetParserTest, parseBasicGeneralizationSetTest) {
+TEST_F(GeneralizationSetTest, testGetElementType) {
+    UmlManager m;
+    GeneralizationSet& set = *m.create<GeneralizationSet>();
+    ASSERT_EQ(set.getElementType(), ElementType::GENERALIZATION_SET);
+}
+
+TEST_F(GeneralizationSetTest, AddAndRemoveTosequencesTest) {
+    UmlManager m;
+    GeneralizationSet& set = *m.create<GeneralizationSet>();
+    Generalization& generalization = *m.create<Generalization>();
+    Class& general = *m.create<Class>();
+    set.getGeneralizations().add(generalization);
+    ASSERT_EQ(generalization.getGeneralizationSets().size(), 1);
+    ASSERT_EQ(generalization.getGeneralizationSets().front(), set);
+    generalization.getGeneralizationSets().remove(set);
+    ASSERT_EQ(set.getGeneralizations().size(), 0);
+    generalization.getGeneralizationSets().add(set);
+    ASSERT_EQ(set.getGeneralizations().size(), 1);
+    ASSERT_EQ(set.getGeneralizations().front(), generalization);
+
+    set.setPowerType(general);
+    ASSERT_EQ(general.getPowerTypeExtent().size(), 1);
+    ASSERT_EQ(general.getPowerTypeExtent().front(), set);
+    Class& general2 = *m.create<Class>();
+    set.setPowerType(general2);
+    ASSERT_EQ(general.getPowerTypeExtent().size(), 0);
+    general2.getPowerTypeExtent().remove(set);
+    ASSERT_FALSE(set.getPowerType());
+}
+
+TEST_F(GeneralizationSetTest, parseBasicGeneralizationSetTest) {
   UmlManager m;
   Element* el;
   ASSERT_NO_THROW(el = m.parse(ymlPath + "generalizationSetTests/basicGeneralizationSet.yml").ptr());
@@ -38,7 +74,7 @@ TEST_F(GeneralizationSetParserTest, parseBasicGeneralizationSetTest) {
   ASSERT_TRUE(set.isDisjoint());
 }
 
-TEST_F(GeneralizationSetParserTest, emitGeneralizationSetTest) {
+TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
     UmlManager m;
     Package& root = *m.create<Package>();
     Class& general = *m.create<Class>();
@@ -105,7 +141,7 @@ TEST_F(GeneralizationSetParserTest, emitGeneralizationSetTest) {
     ASSERT_TRUE(expectedEmit == generatedEmit || expectedEmit2 == generatedEmit);
 }
 
-TEST_F(GeneralizationSetParserTest, mountGeneralizationSet) {
+TEST_F(GeneralizationSetTest, mountGeneralizationSet) {
   UmlManager m;
   Package& root = *m.create<Package>();
   Class& general = *m.create<Class>();

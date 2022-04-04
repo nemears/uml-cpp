@@ -19,11 +19,11 @@ jobs:
         submodules: recursive
 
     - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DUML_CLIENT_SERVER=NO
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: Test
       working-directory: ${{github.workspace}}/build
-      run: ./uml-server -d 300000 & ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
+      run: ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure

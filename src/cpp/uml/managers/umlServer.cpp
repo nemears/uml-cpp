@@ -181,6 +181,12 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
 
             // get rest of message
             char* messageBuffer = (char*) malloc(2 * size);
+
+            if (messageBuffer == 0) {
+                me->log("error receiving message, could not allocate memory for message of size " + std::to_string(size));
+                continue;
+            }
+
             bytesRead = recv(info.socket, messageBuffer, 2 * size, 0);
 
             // store message data

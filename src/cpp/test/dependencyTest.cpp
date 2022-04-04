@@ -1,21 +1,85 @@
 #include "gtest/gtest.h"
-#include "uml/parsers/parser.h"
-#include "test/uml-cpp-paths.h"
 #include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
+#include "test/uml-cpp-paths.h"
 
-using namespace std;
 using namespace UML;
 
-class DependencyParserTest : public ::testing::Test {
+UML_SET_INTEGRATION_TEST(DependencySuppliers, Package, Dependency, &Dependency::getSuppliers);
+UML_SET_INTEGRATION_TEST(DependencyClients, Package, Dependency, &Dependency::getClients);
+UML_SET_INTEGRATION_TEST(NamedElementClientDependencies, Dependency, Package, &NamedElement::getClientDependencies);
+
+class DependencyTest : public ::testing::Test {
     public:
-        string ymlPath;
+        std::string ymlPath;
     void SetUp() override {
         ymlPath = YML_FILES_PATH;
     };
 };
 
-TEST_F(DependencyParserTest, basicDependencyTest) {
+TEST_F(DependencyTest, addClientAndSupplierTest) {
+    UmlManager m;
+    Package& client = *m.create<Package>();
+    Package& supplier = *m.create<Package>();
+    Dependency& dep = *m.create<Dependency>();
+    dep.getClients().add(client);
+    dep.getSuppliers().add(supplier);
+    ASSERT_EQ(dep.getClients().size(), 1);
+    ASSERT_EQ(dep.getClients().front().getID(), client.getID());
+    ASSERT_EQ(dep.getSources().size(), 1);
+    ASSERT_EQ(dep.getSources().front().getID(), client.getID());
+    ASSERT_EQ(dep.getSuppliers().size(), 1);
+    ASSERT_EQ(dep.getSuppliers().front().getID(), supplier.getID());
+    ASSERT_EQ(dep.getTargets().size(), 1);
+    ASSERT_EQ(dep.getTargets().front().getID(), supplier.getID());
+    ASSERT_EQ(client.getClientDependencies().size(), 1);
+    ASSERT_EQ(client.getClientDependencies().front(), dep);
+}
+
+TEST_F(DependencyTest, removeClientAndSupplierTest) {
+    UmlManager m;
+    Package& client = *m.create<Package>();
+    Package& supplier = *m.create<Package>();
+    Dependency& dep = *m.create<Dependency>();
+    dep.getClients().add(client);
+    dep.getSuppliers().add(supplier);
+    ASSERT_EQ(dep.getClients().size(), 1);
+    ASSERT_EQ(dep.getClients().front().getID(), client.getID());
+    ASSERT_EQ(dep.getSources().size(), 1);
+    ASSERT_EQ(dep.getSources().front().getID(), client.getID());
+    ASSERT_EQ(dep.getSuppliers().size(), 1);
+    ASSERT_EQ(dep.getSuppliers().front().getID(), supplier.getID());
+    ASSERT_EQ(dep.getTargets().size(), 1);
+    ASSERT_EQ(dep.getTargets().front().getID(), supplier.getID());
+    dep.getClients().remove(client);
+    dep.getSuppliers().remove(supplier);
+    ASSERT_EQ(dep.getClients().size(), 0);
+    ASSERT_EQ(dep.getSources().size(), 0);
+    ASSERT_EQ(dep.getSuppliers().size(), 0);
+    ASSERT_EQ(dep.getTargets().size(), 0);
+    ASSERT_EQ(client.getClientDependencies().size(), 0);
+}
+
+TEST_F(DependencyTest, setAndRemoveFromClientTest) {
+    UmlManager m;
+    Package& client = *m.create<Package>();
+    Dependency& dependency = *m.create<Dependency>();
+    client.getClientDependencies().add(dependency);
+    ASSERT_EQ(client.getClientDependencies().size(), 1);
+    ASSERT_EQ(client.getClientDependencies().front(), dependency);
+    ASSERT_EQ(dependency.getClients().size(), 1);
+    ASSERT_EQ(dependency.getClients().front().getID(), client.getID());
+    ASSERT_EQ(dependency.getSources().size(), 1);
+    ASSERT_EQ(dependency.getSources().front().getID(), client.getID());
+    ASSERT_EQ(dependency.getRelatedElements().size(), 1);
+    ASSERT_EQ(dependency.getRelatedElements().front(), client);
+    client.getClientDependencies().remove(dependency);
+    ASSERT_EQ(client.getClientDependencies().size(), 0);
+    ASSERT_EQ(dependency.getClients().size(), 0);
+    ASSERT_EQ(dependency.getSources().size(), 0);
+    ASSERT_EQ(dependency.getRelatedElements().size(), 0);
+}
+TEST_F(DependencyTest, basicDependencyTest) {
     Element* el;
     UmlManager m;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "dependencyTests/basicDependency.yml").ptr());
@@ -30,7 +94,7 @@ TEST_F(DependencyParserTest, basicDependencyTest) {
     ASSERT_EQ(dep.getSuppliers().front().getID(), pckg.getPackagedElements().get("supplier").getID());
 }
 
-TEST_F(DependencyParserTest, basicDependencyEmitTest) {
+TEST_F(DependencyTest, basicDependencyEmitTest) {
     UmlManager m;
     Package& pckg = *m.create<Package>();
     Dependency& dependency = *m.create<Dependency>();
@@ -46,7 +110,7 @@ TEST_F(DependencyParserTest, basicDependencyEmitTest) {
     dependency.setName("test");
     dependency.getClients().add(client);
     dependency.getSuppliers().add(supplier);
-    string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(package:
   id: oT59r8w9_ZlGzo2NFpN&vJgH_4YJ
   packagedElements:
     - dependency:
@@ -62,13 +126,13 @@ TEST_F(DependencyParserTest, basicDependencyEmitTest) {
         id: zMVDkDbSoENGrPr&JLyOGzYo&_D0
         clientDependencies:
           - tAps&UBn21dKnQ5z7qaAzKBZqR7S)"""";
-    string generatedEmit;
+    std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
-    cout << generatedEmit << '\n';
+    std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
-TEST_F(DependencyParserTest, parseAllTheSubclassesTest) {
+TEST_F(DependencyTest, parseAllTheSubclassesTest) {
     Element* el;
     UmlManager m;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "dependencyTests/allSubClasses.yml").ptr());
@@ -97,7 +161,7 @@ TEST_F(DependencyParserTest, parseAllTheSubclassesTest) {
     ASSERT_EQ(usage.getSuppliers().front().getID(), pckg.getPackagedElements().get("supplier").getID());
 }
 
-TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {
+TEST_F(DependencyTest, emitAllDependencySubClassesTest) {
     UmlManager m;
     Package& pckg = *m.create<Package>();
     Abstraction& abstraction = *m.create<Abstraction>();
@@ -125,7 +189,7 @@ TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {
     usage.setName("u");
     usage.getClients().add(client);
     usage.getSuppliers().add(supplier);
-    string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(package:
   id: oT59r8w9_ZlGzo2NFpN&vJgH_4YJ
   packagedElements:
     - abstraction:
@@ -157,7 +221,7 @@ TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {
           - zMVDkDbSoENGrPr&JLyOGzYo&_D0
         supplier:
           - uONNU0sKPVjLALJuw2pHcNqljgkg)"""";
-    string expectedEmit2 = R""""(package:
+    std::string expectedEmit2 = R""""(package:
   id: oT59r8w9_ZlGzo2NFpN&vJgH_4YJ
   packagedElements:
     - abstraction:
@@ -189,9 +253,9 @@ TEST_F(DependencyParserTest, emitAllDependencySubClassesTest) {
           - tAps&UBn21dKnQ5z7qaAzKBZqR7S
           - ouZEty1jCLeAk_tZzWBKblwwBdGm
           - V5lXdO3DLF2UCpqipGloE976L6QN)"""";
-    string generatedEmit;
+    std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
-    cout << generatedEmit << '\n';
+    std::cout << generatedEmit << '\n';
     ASSERT_TRUE(expectedEmit == generatedEmit || expectedEmit2 == generatedEmit);
 }
 
@@ -208,7 +272,7 @@ void ASSERT_RESTORE_DEPENDENCY(Dependency& dependency, NamedElement& client, Nam
     ASSERT_TRUE(dependency.getRelatedElements().count(supplier.getID()));
 }
 
-TEST_F(DependencyParserTest, mountAndEditDependencyTest) {
+TEST_F(DependencyTest, mountAndEditDependencyTest) {
   UmlManager m;
   Package& root = *m.create<Package>();
   Package& supplier = *m.create<Package>();

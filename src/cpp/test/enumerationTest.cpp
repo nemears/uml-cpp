@@ -1,21 +1,92 @@
 #include "gtest/gtest.h"
-#include "uml/parsers/parser.h"
-#include "test/uml-cpp-paths.h"
 #include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
+#include "test/uml-cpp-paths.h"
 
-using namespace std;
 using namespace UML;
 
-class EnumerationParserTest : public ::testing::Test {
+UML_SET_INTEGRATION_TEST(EnumerationOwnedLiteral, EnumerationLiteral, Enumeration, &Enumeration::getOwnedLiterals);
+UML_SINGLETON_INTEGRATION_TEST(EnumerationLiteralEnumeration, Enumeration, EnumerationLiteral, &EnumerationLiteral::getEnumeration, &EnumerationLiteral::setEnumeration);
+
+class EnumerationTest : public ::testing::Test {
     public:
-        string ymlPath;
+        std::string ymlPath;
     void SetUp() override {
         ymlPath = YML_FILES_PATH;
     };
 };
 
-TEST_F(EnumerationParserTest, basicEnumerationTest) {
+TEST_F(EnumerationTest, addOwnedLiteralTest) {
+    UmlManager m;
+    Enumeration& e = *m.create<Enumeration>();
+    EnumerationLiteral& l = *m.create<EnumerationLiteral>();
+    ASSERT_NO_THROW(e.getOwnedLiterals().add(l));
+    ASSERT_TRUE(e.getOwnedLiterals().size() == 1);
+    ASSERT_TRUE(&e.getOwnedLiterals().front() == &l);
+    ASSERT_TRUE(e.getOwnedMembers().size() == 1);
+    ASSERT_TRUE(&e.getOwnedMembers().front() == &l);
+    ASSERT_TRUE(e.getMembers().size() == 1);
+    ASSERT_TRUE(&e.getMembers().front() == &l);
+    ASSERT_TRUE(e.getOwnedElements().size() == 1);
+    ASSERT_TRUE(*e.getOwnedElements().begin() == l);
+
+    ASSERT_EQ(*l.getEnumeration(), e);
+    ASSERT_EQ(*l.getNamespace(), e);
+    ASSERT_EQ(*l.getOwner(), e);
+}
+
+TEST_F(EnumerationTest, setEnumerationTest) {
+    UmlManager m;
+    Enumeration& e = *m.create<Enumeration>();
+    EnumerationLiteral& l = *m.create<EnumerationLiteral>();
+    ASSERT_NO_THROW(l.setEnumeration(&e));
+    ASSERT_TRUE(e.getOwnedLiterals().size() == 1);
+    ASSERT_TRUE(&e.getOwnedLiterals().front() == &l);
+    ASSERT_TRUE(e.getOwnedMembers().size() == 1);
+    ASSERT_TRUE(&e.getOwnedMembers().front() == &l);
+    ASSERT_TRUE(e.getMembers().size() == 1);
+    ASSERT_TRUE(&e.getMembers().front() == &l);
+    ASSERT_TRUE(e.getOwnedElements().size() == 1);
+    ASSERT_TRUE(*e.getOwnedElements().begin() == l);
+
+    ASSERT_EQ(*l.getEnumeration(), e);
+    ASSERT_EQ(*l.getNamespace(), e);
+    ASSERT_EQ(*l.getOwner(), e);
+}
+
+TEST_F(EnumerationTest, removeOwnedLiteralTest) {
+    UmlManager m;
+    Enumeration& e = *m.create<Enumeration>();
+    EnumerationLiteral& l = *m.create<EnumerationLiteral>();
+    e.getOwnedLiterals().add(l);
+    ASSERT_NO_THROW(e.getOwnedLiterals().remove(l));
+    ASSERT_TRUE(e.getOwnedLiterals().size() == 0);
+    ASSERT_TRUE(e.getOwnedMembers().size() == 0);
+    ASSERT_TRUE(e.getMembers().size() == 0);
+    ASSERT_TRUE(e.getOwnedElements().size() == 0);
+    
+    ASSERT_FALSE(l.getEnumeration());
+    ASSERT_FALSE(l.getNamespace());
+    ASSERT_FALSE(l.getOwner());
+}
+
+TEST_F(EnumerationTest, setNullEnumeration) {
+    UmlManager m;
+    Enumeration& e = *m.create<Enumeration>();
+    EnumerationLiteral& l = *m.create<EnumerationLiteral>();
+    e.getOwnedLiterals().add(l);
+    ASSERT_NO_THROW(l.setEnumeration(0));
+    ASSERT_TRUE(e.getOwnedLiterals().size() == 0);
+    ASSERT_TRUE(e.getOwnedMembers().size() == 0);
+    ASSERT_TRUE(e.getMembers().size() == 0);
+    ASSERT_TRUE(e.getOwnedElements().size() == 0);
+    
+    ASSERT_FALSE(l.getEnumeration());
+    ASSERT_FALSE(l.getNamespace());
+    ASSERT_FALSE(l.getOwner());
+}
+
+TEST_F(EnumerationTest, basicEnumerationTest) {
     Element* el;
     UmlManager m;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "enumerationTests/basicEnumeration.yml").ptr());
@@ -45,7 +116,7 @@ TEST_F(EnumerationParserTest, basicEnumerationTest) {
     ASSERT_TRUE(l2->getOwner() == e);
 }
 
-TEST_F(EnumerationParserTest, emitEnumerationWLiterals) {
+TEST_F(EnumerationTest, emitEnumerationWLiterals) {
     UmlManager m;
     Enumeration& e = *m.create<Enumeration>();
     EnumerationLiteral& l1 = *m.create<EnumerationLiteral>();
@@ -58,7 +129,7 @@ TEST_F(EnumerationParserTest, emitEnumerationWLiterals) {
     l2.setName("two");
     e.getOwnedLiterals().add(l1);
     e.getOwnedLiterals().add(l2);
-    string expectedEmit = R""""(enumeration:
+    std::string expectedEmit = R""""(enumeration:
   id: a6ds7Q7pgI80WPT5vd2LbJn4dN2g
   name: enum
   ownedLiteral:
@@ -68,13 +139,13 @@ TEST_F(EnumerationParserTest, emitEnumerationWLiterals) {
     - enumerationLiteral:
         id: IFMeIYNqJzfzBIOMdbuxl&rBBLwR
         name: two)"""";
-    string generatedEmit;
+    std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(e));
-    cout << generatedEmit << '\n';
+    std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
-TEST_F(EnumerationParserTest, mountEnumerationTest) {
+TEST_F(EnumerationTest, mountEnumerationTest) {
     UmlManager m;
     Enumeration& enumeration = *m.create<Enumeration>();
     EnumerationLiteral& enumerationLiteral = *m.create<EnumerationLiteral>();

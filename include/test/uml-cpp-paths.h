@@ -4,7 +4,7 @@
 #ifdef WIN32
     #define YML_FILES_PATH "../../../../../../src/yml/"
 #else
-    #define YML_FILES_PATH "../../../../../src/yml/"
+    #define YML_FILES_PATH "../src/yml/"
 #endif
 
 #endif

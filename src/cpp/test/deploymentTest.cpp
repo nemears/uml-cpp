@@ -1,20 +1,106 @@
 #include "gtest/gtest.h"
-#include "uml/parsers/parser.h"
-#include "test/uml-cpp-paths.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
+#include "test/uml-cpp-paths.h"
 
-using namespace std;
 using namespace UML;
 
-class DeploymentParserTest : public ::testing::Test {
+UML_SET_INTEGRATION_TEST(DeploymentTargetDeployment, Deployment, InstanceSpecification, &DeploymentTarget::getDeployments);
+UML_SINGLETON_INTEGRATION_TEST(DeploymentLocation, Property, Deployment, &Deployment::getLocation, &Deployment::setLocation);
+UML_SET_INTEGRATION_TEST(DeploymentDeployedArtifacts, Artifact, Deployment, &Deployment::getDeployedArtifacts);
+
+class DeploymentTest : public ::testing::Test {
     public:
-        string ymlPath;
+        std::string ymlPath;
     void SetUp() override {
         ymlPath = YML_FILES_PATH;
     };
 };
 
-TEST_F(DeploymentParserTest, basicDeploymentTest) {
+TEST_F(DeploymentTest, basicDeploymentTest) {
+    UmlManager m;
+    Deployment& deployment = *m.create<Deployment>();
+    DeploymentTarget& location = *m.create<DeploymentTarget>();
+    DeployedArtifact& artifact = *m.create<DeployedArtifact>();
+    deployment.setLocation(&location);
+    deployment.getDeployedArtifacts().add(artifact);
+    ASSERT_TRUE(deployment.getLocation());
+    ASSERT_EQ(deployment.getLocation()->getID(), location.getID());
+    ASSERT_EQ(deployment.getClients().size(), 1);
+    ASSERT_EQ(deployment.getClients().front().getID(), location.getID());
+    ASSERT_TRUE(deployment.getOwner());
+    ASSERT_EQ(deployment.getOwner()->getID(), location.getID());
+    ASSERT_EQ(deployment.getDeployedArtifacts().size(), 1);
+    ASSERT_EQ(deployment.getDeployedArtifacts().front().getID(), artifact.getID());
+    ASSERT_EQ(deployment.getSuppliers().size(), 1);
+    ASSERT_EQ(deployment.getSuppliers().front().getID(), artifact.getID());
+    deployment.setLocation(0);
+    deployment.getDeployedArtifacts().remove(artifact);
+    ASSERT_FALSE(deployment.getLocation());
+    ASSERT_EQ(deployment.getClients().size(), 0);
+    ASSERT_EQ(deployment.getDeployedArtifacts().size(), 0);
+    ASSERT_EQ(deployment.getSuppliers().size(), 0);
+    ASSERT_FALSE(deployment.getOwner());
+}
+
+TEST_F(DeploymentTest, artifactOperationAndAttributeTest) {
+    UmlManager m;
+    Artifact& artifact = *m.create<Artifact>();
+    Property& prop = *m.create<Property>();
+    Operation& op = *m.create<Operation>();
+    artifact.getOwnedAttributes().add(prop);
+    artifact.getOwnedOperations().add(op);
+    ASSERT_EQ(artifact.getOwnedAttributes().size(), 1);
+    ASSERT_EQ(artifact.getAttributes().size(), 1);
+    ASSERT_EQ(prop.getFeaturingClassifier()->getID(), artifact.getID());
+    ASSERT_EQ(artifact.getOwnedOperations().size(), 1);
+    ASSERT_EQ(artifact.getOwnedOperations().size(), 1);
+    artifact.getOwnedAttributes().remove(prop);
+    artifact.getOwnedOperations().remove(op);
+    ASSERT_EQ(artifact.getOwnedAttributes().size(), 0);
+    ASSERT_EQ(artifact.getAttributes().size(), 0);
+    ASSERT_EQ(artifact.getOwnedOperations().size(), 0);
+}
+
+TEST_F(DeploymentTest, artifactWithAttributeOperationAndNestedArtifact) {
+    UmlManager m;
+    Artifact& artifact = *m.create<Artifact>();
+    Property& property = *m.create<Property>();
+    Operation& operation = *m.create<Operation>();
+    Artifact& nestedArtifact = *m.create<Artifact>();
+
+    operation.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
+    property.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
+
+    artifact.getOwnedAttributes().add(property);
+    artifact.getOwnedOperations().add(operation);
+    artifact.getNestedArtifacts().add(nestedArtifact);
+    ASSERT_EQ(artifact.getOwnedAttributes().size(), 1);
+    ASSERT_TRUE(artifact.getOwnedAttributes().contains(property));
+    ASSERT_EQ(artifact.getOwnedOperations().size(), 1);
+    ASSERT_TRUE(artifact.getOwnedOperations().contains(operation));
+    ASSERT_EQ(artifact.getNestedArtifacts().size(), 1);
+    ASSERT_TRUE(artifact.getNestedArtifacts().contains(nestedArtifact));
+    ASSERT_EQ(artifact.getAttributes().size(), 1);
+    ASSERT_TRUE(artifact.getAttributes().contains(property));
+    ASSERT_EQ(artifact.getFeatures().size(), 2);
+    ASSERT_TRUE(artifact.getFeatures().contains(property));
+    ASSERT_TRUE(artifact.getFeatures().contains(operation));
+    ASSERT_EQ(artifact.getOwnedMembers().size(), 3);
+    ASSERT_TRUE(artifact.getOwnedMembers().contains(property));
+    ASSERT_TRUE(artifact.getOwnedMembers().contains(operation));
+    ASSERT_TRUE(artifact.getOwnedMembers().contains(nestedArtifact));
+    ASSERT_EQ(artifact.getMembers().size(), 3);
+    ASSERT_TRUE(artifact.getMembers().contains(property));
+    ASSERT_TRUE(artifact.getMembers().contains(operation));
+    ASSERT_TRUE(artifact.getMembers().contains(nestedArtifact));
+    ASSERT_EQ(artifact.getOwnedElements().size(), 3);
+    ASSERT_TRUE(artifact.getOwnedElements().contains(property));
+    ASSERT_TRUE(artifact.getOwnedElements().contains(operation));
+    ASSERT_TRUE(artifact.getOwnedElements().contains(nestedArtifact));
+}
+
+TEST_F(DeploymentTest, parseBasicDeploymentTest) {
     Element* el;
     UmlManager m;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "deploymentTests/deployment.yml").ptr());
@@ -33,7 +119,7 @@ TEST_F(DeploymentParserTest, basicDeploymentTest) {
     ASSERT_EQ(deployment.getDeployedArtifacts().front().getID(), artifact.getID());
 }
 
-TEST_F(DeploymentParserTest, basicArtifactTest) {
+TEST_F(DeploymentTest, basicArtifactTest) {
     Element* el;
     UmlManager m;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "deploymentTests/artifact.yml").ptr());
@@ -58,7 +144,7 @@ TEST_F(DeploymentParserTest, basicArtifactTest) {
     ASSERT_EQ(op.getName(), "op");
 }
 
-TEST_F(DeploymentParserTest, nestedArtifactTest) {
+TEST_F(DeploymentTest, nestedArtifactTest) {
     Element* el;
     UmlManager m;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "deploymentTests/nestedArtifact.yml").ptr());
@@ -69,42 +155,42 @@ TEST_F(DeploymentParserTest, nestedArtifactTest) {
     ASSERT_EQ(nest.getName(), "nest");
 }
 
-TEST_F(DeploymentParserTest, emitDeploymentTest) {
+TEST_F(DeploymentTest, emitDeploymentTest) {
     UmlManager m;
     Deployment& d = *m.create<Deployment>();
     Artifact& a = *m.create<Artifact>();
     d.setID("RP9VhYnGYcgWOqXxLt4_Xb3RAAM8");
     a.setID("bkwzmF3K0ddPG7CPwXVBZyyp8glc");
     d.getDeployedArtifacts().add(a);
-    string expectedEmit = R""""(deployment:
+    std::string expectedEmit = R""""(deployment:
   id: RP9VhYnGYcgWOqXxLt4_Xb3RAAM8
   deployedArtifacts:
     - bkwzmF3K0ddPG7CPwXVBZyyp8glc)"""";
-    string generatedEmit;
+    std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(d));
-    cout << generatedEmit << '\n';
+    std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
-TEST_F(DeploymentParserTest, emitDeploymentTargetTest) {
+TEST_F(DeploymentTest, emitDeploymentTargetTest) {
     UmlManager m;
     Deployment& d = *m.create<Deployment>();
     Property& prop = *m.create<Property>();
     d.setID("hZ6hYVt147nLvdm70bATtgmwlQqN");
     prop.setID("0gLOuagM6UjFYi2401zvnoCpMn0M");
     prop.getDeployments().add(d);
-    string expectedEmit = R""""(property:
+    std::string expectedEmit = R""""(property:
   id: 0gLOuagM6UjFYi2401zvnoCpMn0M
   deployments:
     - deployment:
         id: hZ6hYVt147nLvdm70bATtgmwlQqN)"""";
-    string generatedEmit;
+    std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(prop));
-    cout << generatedEmit << '\n';
+    std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
-TEST_F(DeploymentParserTest, emitArtifactTest) {
+TEST_F(DeploymentTest, emitArtifactTest) {
     UmlManager m;
     Artifact& a = *m.create<Artifact>();
     Property& p = *m.create<Property>();
@@ -117,7 +203,7 @@ TEST_F(DeploymentParserTest, emitArtifactTest) {
     a.getOwnedAttributes().add(p);
     a.getOwnedOperations().add(o);
     a.getNestedArtifacts().add(n);
-    string expectedEmit = R""""(artifact:
+    std::string expectedEmit = R""""(artifact:
   id: dzpr85AOkv_Z2mLs8cKLbHnR5DBq
   ownedAttributes:
     - property:
@@ -128,13 +214,13 @@ TEST_F(DeploymentParserTest, emitArtifactTest) {
   nestedArtifacts:
     - artifact:
         id: KWkfV0HFADssmGEBNUj1AwPB4SeC)"""";
-    string generatedEmit;
+    std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(a));
-    cout << generatedEmit << '\n';
+    std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
-TEST_F(DeploymentParserTest, parseManifestationsTest) {
+TEST_F(DeploymentTest, parseManifestationsTest) {
     Element* el;
     UmlManager m;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "deploymentTests/manifestations.yml").ptr());
@@ -155,7 +241,7 @@ TEST_F(DeploymentParserTest, parseManifestationsTest) {
     ASSERT_EQ(m1.getUtilizedElement()->getID(), pckg.getPackagedElements().get("utilizedEl2").getID());
 }
 
-TEST_F(DeploymentParserTest, emitManifestationTest) {
+TEST_F(DeploymentTest, emitManifestationTest) {
     UmlManager m;
     Package& pckg = *m.create<Package>();
     Manifestation& man = *m.create<Manifestation>();
@@ -169,7 +255,7 @@ TEST_F(DeploymentParserTest, emitManifestationTest) {
     pckg.getPackagedElements().add(a);
     a.getManifestations().add(man);
     man.setUtilizedElement(&c);
-    string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(package:
   id: O4FknRxSbpxEJlw6HhHP&Wpq0AjD
   packagedElements:
     - class:
@@ -180,13 +266,13 @@ TEST_F(DeploymentParserTest, emitManifestationTest) {
           - manifestation:
               id: UfyRMRUyPnad&lJcpSBOD17VSHtn
               utilizedElement: 9mp2RmgjnYQrPtXIoOw9is1UUEyu)"""";
-    string generatedEmit;
+    std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
-    cout << generatedEmit << '\n';
+    std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
-TEST_F(DeploymentParserTest, mountAndEditArtifactTest) {
+TEST_F(DeploymentTest, mountAndEditArtifactTest) {
     UmlManager m;
     Package& root = *m.create<Package>();
     Artifact& artifact = *m.create<Artifact>();
@@ -362,7 +448,7 @@ TEST_F(DeploymentParserTest, mountAndEditArtifactTest) {
     ASSERT_TRUE(artifact7.getOwnedElements().count(mid));
 }
 
-TEST_F(DeploymentParserTest, mountDeploymentTest) {
+TEST_F(DeploymentTest, mountDeploymentTest) {
     UmlManager m;
     InstanceSpecification& deploymentTarget = *m.create<InstanceSpecification>();
     Deployment& deployment = *m.create<Deployment>();

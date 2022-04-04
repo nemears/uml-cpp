@@ -22,10 +22,3 @@ set(umlSources  element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp names
 
                 #CMAKE option for set
                 PARENT_SCOPE)
-# add_library(Uml   
-#                 
-#                 
-#                   createObjectAction.cpp)
-if (UML_CLIENT_SERVER)
-    
-endif()

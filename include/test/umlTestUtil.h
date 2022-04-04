@@ -97,6 +97,7 @@ namespace UML {
 
     template <class V, class W, class T = Element, class U = Element, class S = Set<T,U>>
     void setIntegrationTestClientServer(S& (U::*acessor)()) { // TODO test this one a lil more thouroghly
+        #ifndef NO_UML_CLIENT_SERVER
         UmlClient m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
@@ -118,6 +119,9 @@ namespace UML {
         ASSERT_TRUE(((*u).*acessor)().contains(*t2));
         ASSERT_TRUE(((*u).*acessor)().contains(*t));
         ASSERT_EQ(((*u).*acessor)().size(), 2);
+        #else
+        std::cout << "skipping" << std::endl;
+        #endif
     };
 
     template <class V, class W, class T = Element, class U = Element, class S = Set<T,U>>
@@ -198,6 +202,7 @@ namespace UML {
 
     template <class V, class W, class T = Element, class U = Element>
     void singletonIntegrationTestClientServer(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(T*)) {
+        #ifndef NO_UML_CLIENT_SERVER
         UmlClient m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
@@ -209,6 +214,9 @@ namespace UML {
         ASSERT_EQ(((*u).*acessor)(), t);
         t.release();
         ASSERT_EQ(((*u).*acessor)(), t);
+        #else
+        std::cout << "skipping" << std::endl;
+        #endif
     }
 
     template <class V, class W, class T = Element, class U = Element>

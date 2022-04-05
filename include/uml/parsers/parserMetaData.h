@@ -1,5 +1,5 @@
-#ifndef PARSER_METADATA_H
-#define PARSER_METADATA_H
+#ifndef _UML_PARSERS_PARSER_METADATA_H_
+#define _UML_PARSERS_PARSER_METADATA_H_
 
 #include "yaml-cpp/yaml.h"
 #include "uml/id.h"

@@ -1,5 +1,5 @@
-#ifndef EMITTER_META_DATA_H
-#define EMITTER_META_DATA_H
+#ifndef _UML_PARSERS_EMITTER_META_DATA_H_
+#define _UML_PARSERS_EMITTER_META_DATA_H_
 
 #include <filesystem>
 #include "uml/id.h"

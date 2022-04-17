@@ -3,21 +3,21 @@
     packagedElements:
       - abstraction:
           name: abstraction
-          client:
+          clients:
             - 3AlQZepi4lbsE_4C1rxiaIcW09_Z
-          supplier:
+          suppliers:
             - 5MfGIWYTXAlxnDP4wk5uUZ0Hg0Ea
       - realization:
           name: realization
-          client:
+          clients:
             - 3AlQZepi4lbsE_4C1rxiaIcW09_Z
-          supplier:
+          suppliers:
             - 5MfGIWYTXAlxnDP4wk5uUZ0Hg0Ea
       - usage:
           name: usage
-          client:
+          clients:
             - 3AlQZepi4lbsE_4C1rxiaIcW09_Z
-          supplier:
+          suppliers:
             - 5MfGIWYTXAlxnDP4wk5uUZ0Hg0Ea
       - package:
           name: client

@@ -132,7 +132,7 @@ TEST_F(EnumerationTest, emitEnumerationWLiterals) {
     std::string expectedEmit = R""""(enumeration:
   id: a6ds7Q7pgI80WPT5vd2LbJn4dN2g
   name: enum
-  ownedLiteral:
+  ownedLiterals:
     - enumerationLiteral:
         id: ki59FSBz84bR3hyOjfeHEg9LLtCA
         name: one

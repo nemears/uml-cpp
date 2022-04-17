@@ -1,18 +1,18 @@
 ---
   package:
-    packageMerge:
+    packageMerges:
       - packageMerge:
           mergedPackage: ../uml/primitiveTypes.yml
     packagedElements:
       - class:
-          templateSignature:
+          ownedTemplateSignature:
             templateSignature:
               id: fwxRqHbsLGJ5FwcCaFBAGIP1Kp3x
       - class:
           templateBindings:
             - templateBinding:
                 signature: fwxRqHbsLGJ5FwcCaFBAGIP1Kp3x
-                parameterSubstitution:
+                parameterSubstitutions:
                   - templateParameterSubstitution:
                       actual: bool_bzkcabSy3CiFd&HmJOtnVRK
 ...

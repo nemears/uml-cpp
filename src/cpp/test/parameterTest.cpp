@@ -113,7 +113,7 @@ TEST_F(ParameterTest, emitParameterWMultiplicityTest) {
     b.getOwnedParameters().add(p);
     std::string expectedEmit = R""""(opaqueBehavior:
   id: SeJ_0hSPaIa4EYap3sXgRQm4LuSn
-  parameters:
+  ownedParameters:
     - parameter:
         id: QzBhVkqNSRAZMlkHU6cQ3d_Wm8FT
         lowerValue:

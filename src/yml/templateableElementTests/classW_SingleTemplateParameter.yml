@@ -1,6 +1,6 @@
 ---
   class:
-    templateSignature:
+    ownedTemplateSignature:
       templateSignature:
         ownedParameters:
           - templateParameter:

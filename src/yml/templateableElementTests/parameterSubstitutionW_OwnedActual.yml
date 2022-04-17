@@ -2,14 +2,14 @@
   package:
     packagedElements:
       - class:
-          templateSignature:
+          ownedTemplateSignature:
             templateSignature:
               id: BXOJoKsvBCVhMIwUbxRV5ibHYMDf
       - class:
           templateBindings:
             - templateBinding:
                 signature: BXOJoKsvBCVhMIwUbxRV5ibHYMDf
-                parameterSubstitution:
+                parameterSubstitutions:
                   - templateParameterSubstitution:
                       ownedActual:
                         primitiveType:

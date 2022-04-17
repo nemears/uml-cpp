@@ -23,7 +23,7 @@ There are two experimental classes in `uml/managers` called `UmlServer` and `Uml
 A basic tutorial on how to use the uml-cpp api can be found here at the [TUTORIAL.md](TUTORIAL.md)
     
 ### future development
-I plan to continue developing this library until all of uml 2.5 is included within the api. Also I am interested in developing other libraries that may be useful with this one, such as : clang cpp parsing (round-tripping), MagicDraw plugin to function as UmlServer for client, stereotypes to extend api (SysML object) etc...
+I plan to continue developing this library until all of uml 2.5 is included within the api. Also I am interested in developing other libraries that may be useful with this one, such as : clang cpp parsing (round-tripping), Eclipse Uml2 server/interface over sockets [uml-java](https://github.com/nemears/uml-java), MagicDraw plugin to function as UmlServer for client, stereotypes to extend api (SysML object) etc...
 
 ## Contributing
 Please feel free to contribute to uml-cpp, just take a look at the [CONTRIBUTING.md](CONTRIBUTING.md) before you make a pull request.

@@ -67,7 +67,7 @@ void TemplateParameterSubstitution::init() {
     m_formal.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_formal.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_templateBinding.subsets(*m_owner);
-    m_templateBinding.opposite(&TemplateBinding::getParameterSubstitution);
+    m_templateBinding.opposite(&TemplateBinding::getParameterSubstitutions);
     m_templateBinding.m_signature = &TemplateParameterSubstitution::getTemplateBindingSingleton;
     m_actual.m_signature = &TemplateParameterSubstitution::getActualSingleton;
     m_actual.m_addFunctors.insert(new SetReferenceFunctor(this));

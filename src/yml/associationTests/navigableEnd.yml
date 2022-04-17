@@ -1,6 +1,6 @@
 ---
   package:
-    packageMerge:
+    packageMerges:
       - packageMerge:
           mergedPackage: ../uml/primitiveTypes.yml
     packagedElements:

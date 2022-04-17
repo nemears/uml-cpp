@@ -5,7 +5,7 @@
           id: B2dyPF44MATTZ02XsQwgcbeBsq&d
     ownedOperations:
       - operation:
-          templateSignature:
+          ownedTemplateSignature:
             templateSignature:
               ownedParameters:
                 - templateParameter:

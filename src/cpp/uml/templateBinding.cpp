@@ -39,9 +39,9 @@ void TemplateBinding::init() {
     m_signature.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_signature.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_signature.m_signature = &TemplateBinding::getSignatureSingleton;
-    m_parameterSubstitution.subsets(*m_ownedElements);
-    m_parameterSubstitution.opposite(&TemplateParameterSubstitution::getTemplateBindingSingleton);
-    m_parameterSubstitution.m_signature = &TemplateBinding::getParameterSubstitution;
+    m_parameterSubstitutions.subsets(*m_ownedElements);
+    m_parameterSubstitutions.opposite(&TemplateParameterSubstitution::getTemplateBindingSingleton);
+    m_parameterSubstitutions.m_signature = &TemplateBinding::getParameterSubstitutions;
 }
 
 TemplateBinding::TemplateBinding() : Element(ElementType::TEMPLATE_BINDING) {
@@ -84,8 +84,8 @@ void TemplateBinding::setSignature(ID id) {
     m_signature.set(id);
 }
 
-Set<TemplateParameterSubstitution, TemplateBinding>& TemplateBinding::getParameterSubstitution() {
-    return m_parameterSubstitution;
+Set<TemplateParameterSubstitution, TemplateBinding>& TemplateBinding::getParameterSubstitutions() {
+    return m_parameterSubstitutions;
 }
 
 bool TemplateBinding::isSubClassOf(ElementType eType) const {

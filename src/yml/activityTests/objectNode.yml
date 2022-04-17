@@ -9,7 +9,7 @@
             - HoLoL64Y9tktAGAkFkyj5Du59jXg
           outgoing:
             - o8YfevYG8s0FXhwxucyigJVwH9pe
-          controlType: false
+          isControlType: false
           ordering: FIFO
       - initialNode:
           id: gXNiLpjTwmfjz66xGvctzn8c5s9v
@@ -21,17 +21,17 @@
           name: objectNode2
           incoming:
             - o8YfevYG8s0FXhwxucyigJVwH9pe
-          controlType: true
+          isControlType: true
           ordering: unordered
       - centralBufferNode:
           id: C9jmD9wo0AmvGqSLkxr38k_smYu0
           name: three
-          controlType: false
+          isControlType: false
           ordering: ordered
       - centralBufferNode:
           id: UWgwEDY2Gj5ibg2KjpxrSxrhpF5b
           name: 4
-          controlType: true
+          isControlType: true
           ordering: LIFO
     edges:
       - controlFlow:

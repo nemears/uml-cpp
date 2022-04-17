@@ -396,7 +396,7 @@ TEST_F(PackageTest, emitMergedPackageTest) {
   packagedElements:
     - package:
         id: SXE9QBb0rYOmBFbahGIQLhMxlYNq
-        packageMerge:
+        packageMerges:
           - packageMerge:
               id: I7c2Z27FF1w&WX4NHKdfIkbNuhDA
               mergedPackage: orUaM2sY9dz&YP83TqfGaHO5SBY4

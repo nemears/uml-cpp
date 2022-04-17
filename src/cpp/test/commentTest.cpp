@@ -5,7 +5,7 @@
 
 using namespace UML;
 
-UML_SET_INTEGRATION_TEST(ElementOwnedComment, Comment, DataStoreNode, &Element::getOwnedComments);
+UML_SET_INTEGRATION_TEST(ElementOwnedComment, Comment, Class, &Element::getOwnedComments);
 UML_SET_INTEGRATION_TEST(CommentAnnotatedElement, Abstraction, Comment, &Comment::getAnnotatedElements);
 
 class CommentTest : public ::testing::Test {

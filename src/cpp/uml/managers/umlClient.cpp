@@ -97,9 +97,11 @@ void UmlClient::init() {
     }
     #endif
     char buff[3];
-    int bytesReceived = recv(m_socketD, buff, sizeof buff, 0);
-    if (bytesReceived <= 0) {
-        throw ManagerStateException();
+    int bytesReceived = 0;
+    while ((bytesReceived += recv(m_socketD, buff + bytesReceived, 3 - bytesReceived, 0)) < 3) {
+        if (bytesReceived <= 0) {
+            throw ManagerStateException();
+        }
     }
     if (buff[2] != '\0') {
         char buff2[4] = {buff[0], buff[1], buff[2], '\0'};
@@ -118,12 +120,13 @@ void UmlClient::init() {
     }
     delete[] idMsg;
     char acceptBuff[29];
-    if ((bytesReceived = recv(m_socketD, acceptBuff, 29, 0)) <= 0) {
-        if (bytesReceived == 0) {
-            throw ManagerStateException("did not get accept message!");
-        } else {
-            throw ManagerStateException("Error reciving acceptance message: " + std::string(strerror(errno)));
-        }
+    bytesReceived = 0;
+    while ((bytesReceived += recv(m_socketD, acceptBuff + bytesReceived, 29 - bytesReceived, 0)) < 29) {
+            // if (bytesReceived == 0) {
+            //     throw ManagerStateException("did not get accept message!");
+            // } else {
+            //     throw ManagerStateException("Error reciving acceptance message: " + std::string(strerror(errno)));
+            // }
     }
     if (id.string().compare(acceptBuff) != 0) {
         throw ManagerStateException("did not get proper accept message!");

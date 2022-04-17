@@ -5,7 +5,7 @@
 
 using namespace UML;
 
-UML_SINGLETON_INTEGRATION_TEST(TemplateableElementOwnedTemplateSignature, TemplateSignature, Class, &TemplateableElement::getOwnedTemplateSignature, &TemplateableElement::setOwnedTemplateSignature);
+UML_SINGLETON_INTEGRATION_TEST(TemplateableElementOwnedTemplateSignature, TemplateSignature, Package, &TemplateableElement::getOwnedTemplateSignature, &TemplateableElement::setOwnedTemplateSignature);
 UML_SET_INTEGRATION_TEST(TemplateSignatureOwnedParameters, TemplateParameter, TemplateSignature, &TemplateSignature::getOwnedParameters);
 UML_SET_INTEGRATION_TEST(TemplateSignatureParameters, TemplateParameter, TemplateSignature, &TemplateSignature::getParameters);
 UML_SINGLETON_INTEGRATION_TEST(TemplateParameterOwnedParameteredElement, Package, TemplateParameter, &TemplateParameter::getOwnedParameteredElement, &TemplateParameter::setOwnedParameteredElement);
@@ -17,7 +17,7 @@ UML_SINGLETON_INTEGRATION_TEST(TemplateParameterSubstitutionFormal, TemplatePara
 UML_SINGLETON_INTEGRATION_TEST(TemplateParameterSubstitutionActual, Package, TemplateParameterSubstitution, &TemplateParameterSubstitution::getActual, &TemplateParameterSubstitution::setActual);
 UML_SINGLETON_INTEGRATION_TEST(TemplateParameterSubstitutionOwnedActual, Package, TemplateParameterSubstitution, &TemplateParameterSubstitution::getOwnedActual, &TemplateParameterSubstitution::setOwnedActual);
 UML_SINGLETON_INTEGRATION_TEST(TemplateParameterSubstitutionTemplateBinding, TemplateBinding, TemplateParameterSubstitution, &TemplateParameterSubstitution::getTemplateBinding, &TemplateParameterSubstitution::setTemplateBinding);
-UML_SET_INTEGRATION_TEST(TemplateBindingParameterSubstitution, TemplateParameterSubstitution, TemplateBinding, &TemplateBinding::getParameterSubstitution);
+UML_SET_INTEGRATION_TEST(TemplateBindingParameterSubstitution, TemplateParameterSubstitution, TemplateBinding, &TemplateBinding::getParameterSubstitutions);
 UML_SINGLETON_INTEGRATION_TEST(TemplateBindingBoundElement, Operation, TemplateBinding, &TemplateBinding::getBoundElement, &TemplateBinding::setBoundElement);
 UML_SET_INTEGRATION_TEST(TemplateableElementTemplateBindings, TemplateBinding, Package, &TemplateableElement::getTemplateBindings);
 UML_SINGLETON_INTEGRATION_TEST(TemplateBindingSignature, TemplateSignature, TemplateBinding, &TemplateBinding::getSignature, &TemplateBinding::setSignature);
@@ -305,15 +305,15 @@ TEST_F(TemplateableElementTest, setFormalParameterTest) {
     s.getOwnedParameters().add(p);
     b.setBoundElement(&bc);
     b.setSignature(&s);
-    b.getParameterSubstitution().add(ps);
+    b.getParameterSubstitutions().add(ps);
     pp.setOwnedParameteredElement(&t);
     ps.setFormal(&pp);
     ASSERT_TRUE(ps.getFormal());
     ASSERT_EQ(ps.getFormal()->getID(), pp.getID());
     ASSERT_TRUE(ps.getTemplateBinding());
     ASSERT_EQ(ps.getTemplateBinding()->getID(), b.getID());
-    ASSERT_EQ(b.getParameterSubstitution().size(), 1);
-    ASSERT_EQ(b.getParameterSubstitution().front().getID(), ps.getID());
+    ASSERT_EQ(b.getParameterSubstitutions().size(), 1);
+    ASSERT_EQ(b.getParameterSubstitutions().front().getID(), ps.getID());
 }
 
 TEST_F(TemplateableElementTest, overrideFormalTest) {
@@ -331,7 +331,7 @@ TEST_F(TemplateableElementTest, overrideFormalTest) {
     s.getOwnedParameters().add(p);
     b.setBoundElement(bc);
     b.setSignature(s);
-    b.getParameterSubstitution().add(ps);
+    b.getParameterSubstitutions().add(ps);
     pp.setOwnedParameteredElement(&t);
     ps.setFormal(pp);
     ps.setFormal(pp2);
@@ -339,8 +339,8 @@ TEST_F(TemplateableElementTest, overrideFormalTest) {
     ASSERT_EQ(ps.getFormal()->getID(), pp2.getID());
     ASSERT_TRUE(ps.getTemplateBinding());
     ASSERT_EQ(ps.getTemplateBinding()->getID(), b.getID());
-    ASSERT_EQ(b.getParameterSubstitution().size(), 1);
-    ASSERT_EQ(b.getParameterSubstitution().front().getID(), ps.getID());
+    ASSERT_EQ(b.getParameterSubstitutions().size(), 1);
+    ASSERT_EQ(b.getParameterSubstitutions().front().getID(), ps.getID());
 }
 
 TEST_F(TemplateableElementTest, setActualTest) {
@@ -540,8 +540,8 @@ TEST_F(TemplateableElementTest, parameterSubstitutionW_formalTest) {
     TemplateBinding& b = c2.getTemplateBindings().front();
     ASSERT_TRUE(b.getSignature());
     ASSERT_EQ(b.getSignature()->getID(), s.getID());
-    ASSERT_EQ(b.getParameterSubstitution().size(), 1);
-    TemplateParameterSubstitution& ps = b.getParameterSubstitution().front();
+    ASSERT_EQ(b.getParameterSubstitutions().size(), 1);
+    TemplateParameterSubstitution& ps = b.getParameterSubstitutions().front();
     ASSERT_TRUE(ps.getFormal());
     ASSERT_EQ(ps.getFormal()->getID(), t.getID());
 }
@@ -561,8 +561,8 @@ TEST_F(TemplateableElementTest, parameterSubstitutionW_OwnedActualTest) {
     Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().back());
     ASSERT_EQ(c2.getTemplateBindings().size(), 1);
     TemplateBinding& b = c2.getTemplateBindings().front();
-    ASSERT_EQ(b.getParameterSubstitution().size(), 1);
-    TemplateParameterSubstitution& p = b.getParameterSubstitution().front();
+    ASSERT_EQ(b.getParameterSubstitutions().size(), 1);
+    TemplateParameterSubstitution& p = b.getParameterSubstitutions().front();
     ASSERT_TRUE(p.getOwnedActual());
     ASSERT_EQ(p.getOwnedActual()->getElementType(), ElementType::PRIMITIVE_TYPE);
     PrimitiveType& t = dynamic_cast<PrimitiveType&>(*p.getOwnedActual());
@@ -583,8 +583,8 @@ TEST_F(TemplateableElementTest, parameterSubstitutionW_Actual) {
     Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().back());
     ASSERT_EQ(c2.getTemplateBindings().size(), 1);
     TemplateBinding& b = c2.getTemplateBindings().front();
-    ASSERT_EQ(b.getParameterSubstitution().size(), 1);
-    TemplateParameterSubstitution& p = b.getParameterSubstitution().front();
+    ASSERT_EQ(b.getParameterSubstitutions().size(), 1);
+    TemplateParameterSubstitution& p = b.getParameterSubstitutions().front();
     ASSERT_TRUE(p.getActual());
     ASSERT_EQ(p.getActual()->getElementType(), ElementType::PRIMITIVE_TYPE);
     ASSERT_EQ(p.getActual()->getID(), ID::fromString("bool_bzkcabSy3CiFd&HmJOtnVRK"));
@@ -625,8 +625,8 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
     p2.setDefault(&d2);
     c2.getTemplateBindings().add(b);
     b.setSignature(&sig);
-    b.getParameterSubstitution().add(ps1);
-    b.getParameterSubstitution().add(ps2);
+    b.getParameterSubstitutions().add(ps1);
+    b.getParameterSubstitutions().add(ps2);
     ps1.setFormal(&p1);
     ps2.setFormal(&p2);
     ps1.setOwnedActual(&st1);
@@ -646,7 +646,7 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
         id: 4gA4RgL9vKTRYd61D99y1d_Yggj6
     - class:
         id: NYok8HRGpv_rOfAmfrRB94uwOZrb
-        templateSignature:
+        ownedTemplateSignature:
           templateSignature:
             id: nOh5namt9s4oOvimAXQpR8nJHfTF
             ownedParameters:
@@ -665,7 +665,7 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
           - templateBinding:
               id: e_ob7tgbN16Plhj_sTAOVD5ijLrL
               signature: nOh5namt9s4oOvimAXQpR8nJHfTF
-              parameterSubstitution:
+              parameterSubstitutions:
                 - templateParameterSubstitution:
                     id: 7bYUY3yFUBrfPmzKKrV2NJmXuECA
                     formal: OLULeTlF1Rzf4U5IpNQVW1nYd29c
@@ -684,7 +684,7 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
         templateParameter: Km4WF5rf3ohUeLTr99POiW7VMb_4
     - class:
         id: NYok8HRGpv_rOfAmfrRB94uwOZrb
-        templateSignature:
+        ownedTemplateSignature:
           templateSignature:
             id: nOh5namt9s4oOvimAXQpR8nJHfTF
             ownedParameters:
@@ -705,7 +705,7 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
           - templateBinding:
               id: e_ob7tgbN16Plhj_sTAOVD5ijLrL
               signature: nOh5namt9s4oOvimAXQpR8nJHfTF
-              parameterSubstitution:
+              parameterSubstitutions:
                 - templateParameterSubstitution:
                     id: 7bYUY3yFUBrfPmzKKrV2NJmXuECA
                     formal: OLULeTlF1Rzf4U5IpNQVW1nYd29c
@@ -760,8 +760,8 @@ TEST_F(TemplateableElementTest, mountClassWithTemplateSignature) {
     subW_Actual.setActual(actual);
     subW_OwnedActual.setFormal(ownedParameter);
     subW_OwnedActual.setOwnedActual(ownedActual);
-    binding.getParameterSubstitution().add(subW_OwnedActual);
-    otherBinding.getParameterSubstitution().add(subW_Actual);
+    binding.getParameterSubstitutions().add(subW_OwnedActual);
+    otherBinding.getParameterSubstitutions().add(subW_Actual);
     root.getPackagedElements().add(clazz, otherClazz, boundEl, actual);
 
     // TODO more
@@ -1092,8 +1092,8 @@ TEST_F(TemplateableElementTest, mountClassWithTemplateSignature) {
     ASSERT_FALSE(m.loaded(subW_OwnedActualID));
     ASSERT_FALSE(m.loaded(bindingID));
     TemplateBinding& binding5 = m.aquire(bindingID)->as<TemplateBinding>();
-    ASSERT_EQ(binding5.getParameterSubstitution().size(), 1);
-    ASSERT_TRUE(binding5.getParameterSubstitution().contains(subW_OwnedActualID));
+    ASSERT_EQ(binding5.getParameterSubstitutions().size(), 1);
+    ASSERT_TRUE(binding5.getParameterSubstitutions().contains(subW_OwnedActualID));
     ASSERT_EQ(binding5.getOwnedElements().size(), 1);
     ASSERT_TRUE(binding5.getOwnedElements().contains(subW_OwnedActualID));
     TemplateParameterSubstitution& subW_OwnedActual3 = m.aquire(subW_OwnedActualID)->as<TemplateParameterSubstitution>();

@@ -1,6 +1,6 @@
 ---
   opaqueBehavior:
-    parameters:
+    ownedParameters:
       - parameter:
           name: test
           direction: IN

@@ -21,7 +21,7 @@ namespace UML {
         private:
             Singleton<TemplateableElement, TemplateBinding> m_boundElement = Singleton<TemplateableElement, TemplateBinding>(this);
             Singleton<TemplateSignature, TemplateBinding> m_signature = Singleton<TemplateSignature, TemplateBinding>(this);
-            Set<TemplateParameterSubstitution, TemplateBinding> m_parameterSubstitution = Set<TemplateParameterSubstitution, TemplateBinding>(this);
+            Set<TemplateParameterSubstitution, TemplateBinding> m_parameterSubstitutions = Set<TemplateParameterSubstitution, TemplateBinding>(this);
             void restoreReference(Element* el) override;
             Set<TemplateableElement, TemplateBinding>& getBoundElementSingleton();
             Set<TemplateSignature, TemplateBinding>& getSignatureSingleton();
@@ -37,7 +37,7 @@ namespace UML {
             void setSignature(TemplateSignature& signature);
             void setSignature(TemplateSignature* signature);
             void setSignature(ID id);
-            Set<TemplateParameterSubstitution, TemplateBinding>& getParameterSubstitution();
+            Set<TemplateParameterSubstitution, TemplateBinding>& getParameterSubstitutions();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::TEMPLATE_BINDING;

@@ -2,7 +2,7 @@
   package:
     packagedElements:
       - class:
-          templateSignature:
+          ownedTemplateSignature:
             templateSignature:
               id: t9DEpJVxrlACAQsPLxoHMRPPpDUq
               ownedParameters:
@@ -12,7 +12,7 @@
           templateBindings:
             - templateBinding:
                 signature: t9DEpJVxrlACAQsPLxoHMRPPpDUq
-                parameterSubstitution:
+                parameterSubstitutions:
                   - templateParameterSubstitution:
                       formal: Yw0uEQ8ZDsgZx4bogVkuxvBL9CGR
   ...

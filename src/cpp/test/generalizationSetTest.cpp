@@ -96,7 +96,7 @@ TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
   packagedElements:
     - class:
         id: mmUnLGAGcUocJQlNkF2BxGUzadjY
-        powerTypeExtent:
+        powertypeExtents:
           - uLHn5GsNBUhrk9cgTO&qLw5LO068
     - class:
         id: wJ7Y3K6BmTpN3D2pEtbbBt5aMhuo
@@ -110,7 +110,7 @@ TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
         id: uLHn5GsNBUhrk9cgTO&qLw5LO068
         covering: false
         disjoint: false
-        powerType: mmUnLGAGcUocJQlNkF2BxGUzadjY
+        powertype: mmUnLGAGcUocJQlNkF2BxGUzadjY
         generalizations:
           - vGAiKV8tZmvkxePhhEns36Z654xF)"""";
     std::string expectedEmit2 = R""""(package:
@@ -118,13 +118,13 @@ TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
   packagedElements:
     - class:
         id: mmUnLGAGcUocJQlNkF2BxGUzadjY
-        powerTypeExtent:
+        powerTypeExtents:
           - uLHn5GsNBUhrk9cgTO&qLw5LO068
     - generalizationSet:
         id: uLHn5GsNBUhrk9cgTO&qLw5LO068
         covering: false
         disjoint: false
-        powerType: mmUnLGAGcUocJQlNkF2BxGUzadjY
+        powertype: mmUnLGAGcUocJQlNkF2BxGUzadjY
         generalizations:
           - vGAiKV8tZmvkxePhhEns36Z654xF
     - class:

@@ -2,7 +2,7 @@
   package:
     packagedElements:
       - class:
-          templateSignature:
+          ownedTemplateSignature:
             templateSignature:
               id: LZNsKPxKJ7fB3775xyVUNLKn9SZ4
       - class:

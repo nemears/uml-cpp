@@ -1,10 +1,10 @@
 ---
   primitiveType:
     name: int
-    ownedAttribute:
+    ownedAttributes:
       - property:
           name: val
-    ownedOperation:
+    ownedOperations:
       - operation:
           name: +
 ...

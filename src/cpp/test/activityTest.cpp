@@ -8,7 +8,7 @@ using namespace UML;
 UML_SET_INTEGRATION_TEST(ActivityNodes, OpaqueAction, Activity, &Activity::getNodes);
 UML_SET_INTEGRATION_TEST(ActivityEdges, ControlFlow, Activity, &Activity::getEdges);
 UML_SET_INTEGRATION_TEST(ActivityPartitions, ActivityPartition, Activity, &Activity::getPartitions);
-UML_SINGLETON_INTEGRATION_TEST(ActivityPartitionActivity, Activity, ActivityPartition, &ActivityPartition::getActivity, &ActivityPartition::setActivity);
+UML_SINGLETON_INTEGRATION_TEST(ActivityGroupInActivity, Activity, ActivityPartition, &ActivityGroup::getInActivity, &ActivityGroup::setInActivity);
 UML_SET_INTEGRATION_TEST(ActivityPartitionSubPartitions, ActivityPartition, ActivityPartition, &ActivityPartition::getSubPartitions);
 UML_SINGLETON_INTEGRATION_TEST(ActivityPartitionSuperPartition, ActivityPartition, ActivityPartition, &ActivityPartition::getSuperPartition, &ActivityPartition::setSuperPartition);
 UML_SET_INTEGRATION_TEST(ActivityPartitionNodes, OpaqueAction, ActivityPartition, &ActivityPartition::getNodes);
@@ -145,7 +145,7 @@ TEST_F(ActivityTest, emitActivityTest) {
   nodes:
     - centralBufferNode:
         id: objectNode__________________
-        controlType: false
+        isControlType: false
         ordering: unordered)"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(activity));

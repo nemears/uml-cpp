@@ -4,7 +4,7 @@
       - package:
           id: CLZW&6KK6mcu4qLEXNULDidsDpkX
       - package:
-          packageMerge:
+          packageMerges:
             - packageMerge:
                 mergedPackage: CLZW&6KK6mcu4qLEXNULDidsDpkX
 ...

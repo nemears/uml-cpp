@@ -3,13 +3,13 @@
     name: two_templates
     ownedOperations:
       - operation:
-          templateSignature:
+          ownedTemplateSignature:
             templateSignature:
               ownedParameters:
                 - templateParameter:
                     id: fGtHlUWITxbIKyNFeKCXI4d_3EAc
       - operation:
-          templateSignature:
+          ownedTemplateSignature:
             templateSignature:
               parameters:
                 - fGtHlUWITxbIKyNFeKCXI4d_3EAc

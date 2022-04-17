@@ -4,7 +4,7 @@
       - class:
           id: Y9ZCX7pp5W2D_OwPCFgTz&gcTRSc
           name: general
-          powerTypeExtent:
+          powertypeExtents:
             - iav6FFkHBjBCffo8xBUsjyq1mtQe
       - class:
           name: specific
@@ -18,7 +18,7 @@
           name: set
           covering: true
           disjoint: true
-          powerType: Y9ZCX7pp5W2D_OwPCFgTz&gcTRSc
+          powertype: Y9ZCX7pp5W2D_OwPCFgTz&gcTRSc
           generalizations:
             - SoPUNRxlXkN3lwefnzrpowEcjka6
 ...

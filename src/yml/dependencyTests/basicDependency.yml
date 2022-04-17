@@ -3,9 +3,9 @@
     packagedElements:
       - dependency:
           name: dependency
-          client:
+          clients:
             - 2ktf9NejSgq72oOAGlRBzxyDEV33
-          supplier:
+          suppliers:
             - Yf7WfzUB0ugvec5jGUWNeq_A3ArD
       - package:
           name: supplier

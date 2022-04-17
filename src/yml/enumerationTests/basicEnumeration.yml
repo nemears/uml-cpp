@@ -1,6 +1,6 @@
 ---
   enumeration:
-    ownedLiteral:
+    ownedLiterals:
       - enumerationLiteral:
           name: one
       - enumerationLiteral:

@@ -6,6 +6,8 @@ using namespace UML;
 
 UML_SET_INTEGRATION_TEST(NamespaceOwnedRules, Constraint, Package, &Namespace::getOwnedRules);
 UML_SINGLETON_INTEGRATION_TEST(ConstraintContext, Package, Constraint, &Constraint::getContext, &Constraint::setContext);
+// UML_SET_INTEGRATION_TEST(ConstraintConstrainedElements, Slot, Constraint, &Constraint::getConstrainedElements);
+// TODO fix constraint
 
 class NamespaceTest : public ::testing::Test {};
 

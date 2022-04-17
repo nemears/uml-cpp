@@ -11,6 +11,8 @@ UML_SET_INTEGRATION_TEST(StructuredClassifierOwnedConnectors, Connector, Class, 
 UML_SET_INTEGRATION_TEST(ClassNestingClassifiers, DataType, Class, &Class::getNestedClassifiers);
 UML_SET_INTEGRATION_TEST(ClassOwnedOperations, Operation, Class, &Class::getOwnedOperations);
 UML_SET_INTEGRATION_TEST(ClassOwnedReceptions, Reception, Class, &Class::getOwnedReceptions);
+UML_SINGLETON_INTEGRATION_TEST(PropertyClass, Class, Property, &Property::getClass, &Property::setClass);
+UML_SINGLETON_INTEGRATION_TEST(OperationClass, Class, Operation, &Operation::getClass, &Operation::setClass);
 
 class ClassTest : public ::testing::Test {
     public:
@@ -556,7 +558,7 @@ TEST_F(ClassTest, emitFilledInOperation) {
     - opaqueBehavior:
         id: "&_DLItAl_5ASwPNvNVqXaIwEiLOx"
         name: opaque
-        parameters:
+        ownedParameters:
           - parameter:
               id: C7lT8BaQxmMi7cnZLIjjWCVD3k_9
               name: opaquePee

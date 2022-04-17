@@ -1,5 +1,5 @@
 ---
   opaqueBehavior:
-    parameters:
+    ownedParameters:
       parameter:
         name: lol?

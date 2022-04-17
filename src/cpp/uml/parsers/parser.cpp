@@ -659,7 +659,7 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
         }
     }
     if (ret->isSubClassOf(ElementType::ACTIVITY_PARTITION)) {
-        if (parseSingletonReference(node, data, "activity", ret->as<ActivityPartition>(), &ActivityPartition::setActivity, &ActivityPartition::setActivity)) {
+        if (parseSingletonReference(node, data, "inActivity", ret->as<ActivityGroup>(), &ActivityGroup::setInActivity, &ActivityGroup::setInActivity)) {
             return;
         } else if (parseSingletonReference(node, data, "superPartition", ret->as<ActivityPartition>(), &ActivityPartition::setSuperPartition, &ActivityPartition::setSuperPartition)) {
             return;
@@ -1684,8 +1684,8 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
             }
         }
         if (el.isSubClassOf(ElementType::ACTIVITY_PARTITION)) {
-            if (el.as<ActivityPartition>().getActivity()) {
-                emitter << YAML::Key << "activity" << el.as<ActivityPartition>().getActivity().id().string();
+            if (el.as<ActivityPartition>().getInActivity()) {
+                emitter << YAML::Key << "inActivity" << el.as<ActivityPartition>().getInActivity().id().string();
                 return;
             } else if (el.as<ActivityPartition>().getSuperPartition()) {
                 emitter << YAML::Key << "superPartition" << YAML::Value << el.as<ActivityPartition>().getSuperPartition().id().string();
@@ -1944,7 +1944,7 @@ void emitClassifier(YAML::Emitter& emitter, Classifier& clazz, EmitterMetaData& 
     emitParameterableElement(emitter, clazz, data);
     emitSequence(emitter, "generalizations", data, clazz, &Classifier::getGeneralizations);
     if (!clazz.getPowerTypeExtent().empty()) {
-        emitter << YAML::Key << "powerTypeExtent" << YAML::Value << YAML::BeginSeq;
+        emitter << YAML::Key << "powertypeExtents" << YAML::Value << YAML::BeginSeq;
         for (const ID id : clazz.getPowerTypeExtent().ids()) {
             emitter << YAML::Value << id.string();
         }
@@ -2006,15 +2006,15 @@ Operation& determineAndParseOwnedOperation(YAML::Node node, ParserMetaData& data
 
 void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
     parseClassifier(node, dataType, data);
-    parseSequenceDefinitions(node, data, "ownedAttribute", dataType, &DataType::getOwnedAttributes, determineAndParseOwnedAttribute);
-    parseSequenceDefinitions(node, data, "ownedOperation", dataType, &DataType::getOwnedOperations, determineAndParseOwnedOperation);
+    parseSequenceDefinitions(node, data, "ownedAttributes", dataType, &DataType::getOwnedAttributes, determineAndParseOwnedAttribute);
+    parseSequenceDefinitions(node, data, "ownedOperations", dataType, &DataType::getOwnedOperations, determineAndParseOwnedOperation);
 }
 
 void emitDataType(YAML::Emitter& emitter, DataType& dataType, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::DATA_TYPE, "dataType", dataType, data);
     emitClassifier(emitter, dataType, data);
-    emitSequence(emitter, "ownedAttribute", data, dataType, &DataType::getOwnedAttributes);
-    emitSequence(emitter, "ownedOperation", data, dataType, &DataType::getOwnedOperations);
+    emitSequence(emitter, "ownedAttributes", data, dataType, &DataType::getOwnedAttributes);
+    emitSequence(emitter, "ownedOperations", data, dataType, &DataType::getOwnedOperations);
     emitElementDefenitionEnd(emitter, ElementType::DATA_TYPE, dataType);
 }
 
@@ -2178,13 +2178,13 @@ Parameter& determineAndParseParameter(YAML::Node node, ParserMetaData& data) {
 
 void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data) {
     parseClass(node, bhv, data);
-    parseSequenceDefinitions(node, data, "parameters", bhv, &Behavior::getOwnedParameters, determineAndParseParameter);
+    parseSequenceDefinitions(node, data, "ownedParameters", bhv, &Behavior::getOwnedParameters, determineAndParseParameter);
     parseSingletonReference(node, data, "specification", bhv, &Behavior::setSpecification, &Behavior::setSpecification);
 }
 
 void emitBehavior(YAML::Emitter& emitter, Behavior& bhv, EmitterMetaData& data) {
     emitClass(emitter, bhv, data);
-    emitSequence(emitter, "parameters", data, bhv, &Behavior::getOwnedParameters);
+    emitSequence(emitter, "ownedParameters", data, bhv, &Behavior::getOwnedParameters);
     if (bhv.getSpecification()) {
         emitter << YAML::Key << "specification" << YAML::Value << bhv.getSpecification().id().string();
     }
@@ -2527,7 +2527,7 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
     parseNamespace(node, pckg, data);
     parseTemplateableElement(node, pckg, data);
     parseParameterableElement(node, pckg, data);
-    parseSequenceDefinitions(node, data, "packageMerge", pckg, &Package::getPackageMerge, determineAndParsePackageMerge);
+    parseSequenceDefinitions(node, data, "packageMerges", pckg, &Package::getPackageMerge, determineAndParsePackageMerge);
     parseSequenceDefinitions(node, data, "profileApplications", pckg, &Package::getProfileApplications, determineAndParseProfileApplication);
     parseSequenceDefinitions(node, data, "packagedElements", pckg, &Package::getPackagedElements, determineAndParsePackageableElement);
     parseSequenceDefinitions(node, data, "ownedStereotypes", pckg, &Package::getOwnedStereotypes, determineAndParseStereotype);
@@ -2538,7 +2538,7 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
     emitNamespace(emitter, pckg, data);
     emitTemplateableElement(emitter, pckg, data);
     emitParameterableElement(emitter, pckg, data);
-    emitSequence(emitter, "packageMerge", data, pckg, &Package::getPackageMerge);
+    emitSequence(emitter, "packageMerges", data, pckg, &Package::getPackageMerge);
     emitSequence(emitter, "profileApplications", data, pckg, &Package::getProfileApplications);
 
     //special handling
@@ -2670,13 +2670,13 @@ EnumerationLiteral& determineAndParseEnumerationLiteral(YAML::Node node, ParserM
 
 void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData& data) {
     parseDataType(node, enumeration, data);
-    parseSequenceDefinitions(node, data, "ownedLiteral", enumeration, &Enumeration::getOwnedLiterals, determineAndParseEnumerationLiteral);
+    parseSequenceDefinitions(node, data, "ownedLiterals", enumeration, &Enumeration::getOwnedLiterals, determineAndParseEnumerationLiteral);
 }
 
 void emitEnumeration(YAML::Emitter& emitter, Enumeration& enumeration, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::ENUMERATION, "enumeration", enumeration, data);
     emitDataType(emitter, enumeration, data);
-    emitSequence(emitter, "ownedLiteral", data, enumeration, &Enumeration::getOwnedLiterals);
+    emitSequence(emitter, "ownedLiterals", data, enumeration, &Enumeration::getOwnedLiterals);
     emitElementDefenitionEnd(emitter, ElementType::ENUMERATION, enumeration);
 }
 
@@ -2892,7 +2892,7 @@ TemplateSignature& determineAndParseTemplateSignature(YAML::Node node, ParserMet
 
 void emitTemplateableElement(YAML::Emitter& emitter, TemplateableElement& el, EmitterMetaData& data) {
     if (el.getOwnedTemplateSignature()) {
-        emitter << YAML::Key << "templateSignature" << YAML::Value;
+        emitter << YAML::Key << "ownedTemplateSignature" << YAML::Value;
         if (data.m_strategy == EmitterStrategy::WHOLE) {
             emit(emitter, *el.getOwnedTemplateSignature(), data);
         } else {
@@ -3146,7 +3146,7 @@ void emitTemplateBinding(YAML::Emitter& emitter, TemplateBinding& binding, Emitt
     if (binding.getSignature()) {
         emitter << YAML::Key << "signature" << YAML::Value << binding.getSignature()->getID().string();
     }
-    emitSequence(emitter, "parameterSubstitution", data, binding, &TemplateBinding::getParameterSubstitution);
+    emitSequence(emitter, "parameterSubstitutions", data, binding, &TemplateBinding::getParameterSubstitutions);
 
     if (binding.getElementType() == ElementType::TEMPLATE_BINDING) {
         emitter << YAML::EndMap;// << YAML::EndMap;
@@ -3301,8 +3301,8 @@ void emitComment(YAML::Emitter& emitter, Comment& comment, EmitterMetaData& data
 
 void parseDependency(YAML::Node node, Dependency& dependency, ParserMetaData& data) {
     parseNamedElement(node, dependency, data);
-    parseSetReferences<NamedElement, Dependency>(node, data, "client", dependency, &Dependency::getClients);
-    parseSetReferences<NamedElement, Dependency>(node, data, "supplier", dependency, &Dependency::getSuppliers);
+    parseSetReferences<NamedElement, Dependency>(node, data, "clients", dependency, &Dependency::getClients);
+    parseSetReferences<NamedElement, Dependency>(node, data, "suppliers", dependency, &Dependency::getSuppliers);
 }
 
 void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaData& data) {
@@ -3311,7 +3311,7 @@ void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaD
     emitNamedElement(emitter, dependency, data);
 
     if (!dependency.getClients().empty()) {
-        emitter << YAML::Key << "client" << YAML::Value << YAML::BeginSeq;
+        emitter << YAML::Key << "clients" << YAML::Value << YAML::BeginSeq;
         for (const ID id : dependency.getClients().ids()) {
             emitter << id.string();
         }
@@ -3319,7 +3319,7 @@ void emitDependency(YAML::Emitter& emitter, Dependency& dependency, EmitterMetaD
     }
 
     if (!dependency.getSuppliers().empty()) {
-        emitter << YAML::Key << "supplier" << YAML::Value << YAML::BeginSeq;
+        emitter << YAML::Key << "suppliers" << YAML::Value << YAML::BeginSeq;
         for (const ID id : dependency.getSuppliers().ids()) {
             emitter << id.string();
         }
@@ -3447,7 +3447,7 @@ void emitGeneralizationSet(YAML::Emitter& emitter, GeneralizationSet& generaliza
     emitter << YAML::Key << "covering" << YAML::Value << generalizationSet.isCovering();
     emitter << YAML::Key << "disjoint" << YAML::Value << generalizationSet.isDisjoint();
     if (generalizationSet.getPowerType()) {
-        emitter << YAML::Key << "powerType" << YAML::Value << generalizationSet.getPowerType().id().string();
+        emitter << YAML::Key << "powertype" << YAML::Value << generalizationSet.getPowerType().id().string();
     }
     if (!generalizationSet.getGeneralizations().empty()) {
         emitter << YAML::Key << "generalizations" << YAML::Value << YAML::BeginSeq;
@@ -3469,7 +3469,7 @@ void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
     parseTemplateableElement(node, clazz, data);
     parseParameterableElement(node, clazz, data);
     parseSequenceDefinitions(node, data, "generalizations", clazz, &Classifier::getGeneralizations, determineAndParseGeneralization);
-    parseSetReferences<GeneralizationSet, Classifier>(node, data, "powerTypeExtent", clazz, &Classifier::getPowerTypeExtent);
+    parseSetReferences<GeneralizationSet, Classifier>(node, data, "powertypeExtents", clazz, &Classifier::getPowerTypeExtent);
 }
 
 void parseGeneralization(YAML::Node node, Generalization& general, ParserMetaData& data) {
@@ -3530,7 +3530,7 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
 }
 
 void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data) {
-    parseSingletonDefinition(node, data, "templateSignature", el, determineAndParseTemplateSignature, &TemplateableElement::setOwnedTemplateSignature, &TemplateableElement::setOwnedTemplateSignature);
+    parseSingletonDefinition(node, data, "ownedTemplateSignature", el, determineAndParseTemplateSignature, &TemplateableElement::setOwnedTemplateSignature, &TemplateableElement::setOwnedTemplateSignature);
     parseSequenceDefinitions(node, data, "templateBindings", el, &TemplateableElement::getTemplateBindings, determineAndParseTemplateBinding);
 }
 
@@ -3545,7 +3545,7 @@ void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, Parse
 void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaData& data) {
     parseElement(node, binding, data);
     parseSingletonReference(node, data, "signature", binding, &TemplateBinding::setSignature, &TemplateBinding::setSignature);
-    parseSequenceDefinitions(node, data, "parameterSubstitution", binding, &TemplateBinding::getParameterSubstitution, determineAndParseTemplateParameterSubstitution);
+    parseSequenceDefinitions(node, data, "parameterSubstitutions", binding, &TemplateBinding::getParameterSubstitutions, determineAndParseTemplateParameterSubstitution);
 }
 
 void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data) {
@@ -3611,7 +3611,7 @@ void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSe
         }
     }
 
-    parseSingletonReference(node, data, "powerType", generalizationSet, &GeneralizationSet::setPowerType, &GeneralizationSet::setPowerType);
+    parseSingletonReference(node, data, "powertype", generalizationSet, &GeneralizationSet::setPowerType, &GeneralizationSet::setPowerType);
     parseSetReferences<Generalization, GeneralizationSet>(node, data, "generalizations", generalizationSet, &GeneralizationSet::getGeneralizations);
 }
 
@@ -3902,9 +3902,9 @@ void parseObjectNode(YAML::Node node, ObjectNode& objectNode, ParserMetaData& da
     parseTypedElement(node, objectNode, data);
     parseSetReferences<ActivityEdge, ActivityNode>(node, data, "incoming", objectNode, &ActivityNode::getIncoming);
     parseSetReferences<ActivityEdge, ActivityNode>(node, data, "outgoing", objectNode, &ActivityNode::getOutgoing);
-    if (node["controlType"]) {
-        if (node["controlType"].IsScalar()) {
-            objectNode.setControlType(node["controlType"].as<bool>());
+    if (node["isControlType"]) {
+        if (node["isControlType"].IsScalar()) {
+            objectNode.setControlType(node["isControlType"].as<bool>());
         }
     }
     if (node["ordering"]) {
@@ -3931,7 +3931,7 @@ void emitObjectNode(YAML::Emitter& emitter, ObjectNode& objectNode, EmitterMetaD
     emitTypedElement(emitter, objectNode, data);
     emitSequenceReferences<ActivityEdge, ActivityNode>(emitter, "incoming", data, objectNode, &ActivityNode::getIncoming);
     emitSequenceReferences<ActivityEdge, ActivityNode>(emitter, "outgoing", data, objectNode, &ActivityNode::getOutgoing);
-    emitter << YAML::Key << "controlType" << YAML::Value;
+    emitter << YAML::Key << "isControlType" << YAML::Value;
     if (objectNode.isControlType()) {
         emitter << true;
     } else {

@@ -14,7 +14,7 @@
           name : isValid
           bodies : 
             - "return true"
-          parameters :
+          ownedParameters :
             - parameter :
                 name : "debug"
             #     type : BOOL

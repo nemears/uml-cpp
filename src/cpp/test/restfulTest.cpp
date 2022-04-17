@@ -26,7 +26,6 @@ TEST_F(RestfulTest, postAndGetTest) {
     ASSERT_TRUE(client.count(clazz.getID()));
     client.release(clazz);
     Class& clazz2 = client.get<Class>(clazzID);
-    ASSERT_EQ(clazz2.getName(), "clazz");
 }
 
 TEST_F(RestfulTest, basicEraseTest) {

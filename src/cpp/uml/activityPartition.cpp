@@ -18,8 +18,8 @@ Set<Element, ActivityPartition>& ActivityPartition::getRepresentsSingleton() {
     return m_represents;
 }
 
-Set<Activity, ActivityPartition>& ActivityPartition::getActivitySingleton() {
-    return m_activity;
+Set<Activity, ActivityPartition>& ActivityPartition::getInActivitySingleton() {
+    return m_partitionInActivity;
 }
 
 Set<ActivityPartition, ActivityPartition>& ActivityPartition::getSuperPartitionSingleton() {
@@ -50,9 +50,9 @@ void ActivityPartition::init() {
     m_represents.m_signature = &ActivityPartition::getRepresentsSingleton;
     m_represents.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_represents.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-    m_activity.subsets(m_inActivity);
-    m_activity.opposite(&Activity::getPartitions);
-    m_activity.m_signature = &ActivityPartition::getActivitySingleton;
+    m_partitionInActivity.redefines(m_inActivity);
+    m_partitionInActivity.opposite(&Activity::getPartitions);
+    m_partitionInActivity.m_signature = &ActivityPartition::getInActivitySingleton;
     m_superPartition.subsets(m_superGroup);
     m_superPartition.opposite(&ActivityPartition::getSubPartitions);
     m_superPartition.m_signature = &ActivityPartition::getSuperPartitionSingleton;
@@ -73,26 +73,6 @@ ActivityPartition::ActivityPartition() : Element(ElementType::ACTIVITY_PARTITION
 
 ActivityPartition::~ActivityPartition() {
 
-}
-
-ActivityPtr ActivityPartition::getActivity() const {
-    return m_activity.get();
-}
-
-void ActivityPartition::setActivity(Activity* activity) {
-    m_activity.set(activity);
-}
-
-void ActivityPartition::setActivity(Activity& activity) {
-    m_activity.set(activity);
-}
-
-void ActivityPartition::setActivity(ActivityPtr activity) {
-    m_activity.set(activity);
-}
-
-void ActivityPartition::setActivity(ID id) {
-    m_activity.set(id);
 }
 
 ActivityPartitionPtr ActivityPartition::getSuperPartition() const {

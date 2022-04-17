@@ -443,7 +443,7 @@ TEST_F(DataTypeTest, emitDataTypeW_GeneralAndAttribute) {
     - dataType:
         id: FqaulNq6bCe_8J5M0Ff2oCCaQD05
         name: general
-        ownedAttribute:
+        ownedAttributes:
           - property:
               id: m8K65o0wEqtIznmEPmuXaTph2JJu
               name: generalProp
@@ -472,7 +472,7 @@ TEST_F(DataTypeTest, emitDataTypeW_GeneralAndAttribute) {
     - dataType:
         id: FqaulNq6bCe_8J5M0Ff2oCCaQD05
         name: general
-        ownedAttribute:
+        ownedAttributes:
           - property:
               id: m8K65o0wEqtIznmEPmuXaTph2JJu
               name: generalProp
@@ -650,7 +650,7 @@ TEST_F(DataTypeTest, emitPrimWGeneralAndAttribute) {
     - primitiveType:
         id: bD3tGZ_XwovlDpB4NPqiaMl19DUV
         name: general
-        ownedAttribute:
+        ownedAttributes:
           - property:
               id: yShg7h43ZHm9I2Dqw2RoSXV&Y0PQ
               name: generalProp

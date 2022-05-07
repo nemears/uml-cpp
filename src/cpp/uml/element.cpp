@@ -268,6 +268,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::ELEMENT : {
             return "ELEMENT";
         }
+        case ElementType::ELEMENT_IMPORT : {
+            return "ELEMENT_IMPORT";
+        }
         case ElementType::ENCAPSULATED_CLASSIFIER : {
             return "ENCAPSULATED_CLASSIFIER";
         }

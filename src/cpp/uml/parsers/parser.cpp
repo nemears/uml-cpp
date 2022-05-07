@@ -339,6 +339,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::DIRECTED_RELATIONSHIP;
     } else if (eType.compare("ELEMENT") == 0) {
         return ElementType::ELEMENT;
+    } else if (eType.compare("ELEMENT_IMPORT") == 0) {
+        return ElementType::ELEMENT_IMPORT;
     } else if (eType.compare("ENUMERATION") == 0) {
         return ElementType::ENUMERATION;
     } else if (eType.compare("ENUMERATION_LITERAL") == 0) {
@@ -675,6 +677,11 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
             return;
         }
     }
+    if (ret->isSubClassOf(ElementType::ELEMENT_IMPORT)) {
+        if (parseSingletonReference(node, data, "importingNamespace", ret->as<ElementImport>(), &ElementImport::setImportingNamespace, &ElementImport::setImportingNamespace)) {
+            return;
+        }
+    }
     if (ret->isSubClassOf(ElementType::CONNECTOR_END)) {
         if (node["owner"]) {
             if (node["owner"].IsScalar()) {
@@ -848,6 +855,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
         Deployment& deployment = *data.m_manager->create<Deployment>();
         parseDeployment(node["deployment"], deployment, data);
         ret = &deployment;
+    }
+
+    if (node["elementImport"]) {
+        ret = &parseDefinition<ElementImport>(node, data, "elementImport", parseElementImport);
     }
 
     if (node["enumeration"]) {
@@ -1288,6 +1299,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitDeployment(emitter, el.as<Deployment>(), data);
             break;
         }
+        case ElementType::ELEMENT_IMPORT : {
+            emitElementImport(emitter, el.as<ElementImport>(), data);
+            break;
+        }
         case ElementType::ENUMERATION : {
             emitEnumeration(emitter, dynamic_cast<Enumeration&>(el), data);
             break;
@@ -1719,6 +1734,12 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::ACTION)) {
             if (el.getOwner()) {
                 emitter << YAML::Key << "owner" << YAML::Value << el.getOwner().id().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::ELEMENT_IMPORT)) {
+            if (el.as<ElementImport>().getImportingNamespace()) {
+                emitter << YAML::Key << "importingNamespace" << YAML::Value << el.as<ElementImport>().getImportingNamespace().id().string();
                 return;
             }
         }
@@ -4104,14 +4125,24 @@ Constraint& determineAndParseConstraint(YAML::Node node, ParserMetaData& data) {
     }
 }
 
+ElementImport& determineElementImport(YAML::Node node, ParserMetaData& data) {
+    if (node["elementImport"]) {
+        return parseDefinition<ElementImport>(node, data, "elementImport", parseElementImport);
+    } else {
+        throw UmlParserException("Invalid identifer for element import, must be an element import", data.m_path.string(), node);
+    }
+}
+
 void parseNamespace(YAML::Node node, Namespace& nmspc, ParserMetaData& data) {
     parseNamedElement(node, nmspc, data);
     parseSequenceDefinitions(node, data, "ownedRules", nmspc, &Namespace::getOwnedRules, determineAndParseConstraint);
+    parseSequenceDefinitions(node, data, "elementImports", nmspc, &Namespace::getElementImports, determineElementImport);
 }
 
 void emitNamespace(YAML::Emitter& emitter, Namespace& nmspc, EmitterMetaData& data) {
     emitNamedElement(emitter, nmspc, data);
     emitSequence(emitter, "ownedRules", data, nmspc, &Namespace::getOwnedRules);
+    emitSequence(emitter, "elementImports", data, nmspc, &Namespace::getElementImports);
 }
 
 void parseAction(YAML::Node node, Action& action, ParserMetaData& data) {
@@ -4268,6 +4299,20 @@ void emitCallBehaviorAction(YAML::Emitter& emitter, CallBehaviorAction& action, 
         emitter << YAML::Key << "behavior" << YAML::Value << action.getBehavior().id().string();
     }
     emitElementDefenitionEnd(emitter, ElementType::CALL_BEHAVIOR_ACTION, action);
+}
+
+void parseElementImport(YAML::Node node, ElementImport& import, ParserMetaData& data) {
+    parseElement(node, import, data);
+    parseSingletonReference(node, data, "importedElement", import, &ElementImport::setImportedElement, &ElementImport::setImportedElement);
+}
+
+void emitElementImport(YAML::Emitter& emitter, ElementImport& import, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::ELEMENT_IMPORT, "elementImport", import, data);
+    emitElement(emitter, import, data);
+    if (import.getImportedElement()) {
+        emitter << YAML::Key << "importedElement" << YAML::Value << import.getImportedElement().id().string();
+    }
+    emitElementDefenitionEnd(emitter, ElementType::ELEMENT_IMPORT, import);
 }
 
 }

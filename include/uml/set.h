@@ -369,6 +369,7 @@ namespace UML {
     class InvocationAction;
     class CallAction;
     class CallBehaviorAction;
+    class ElementImport;
 
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
@@ -465,6 +466,7 @@ namespace UML {
         friend class InvocationAction;
         friend class CallAction;
         friend class CallBehaviorAction;
+        friend class ElementImport;
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
         friend void Parsers::setOwner(Element& el, ID id);

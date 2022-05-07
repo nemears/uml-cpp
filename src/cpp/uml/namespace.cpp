@@ -40,6 +40,9 @@ void Namespace::init() {
     m_ownedMembers.m_readOnly = true;
     m_ownedRules.subsets(m_ownedMembers);
     m_ownedRules.opposite(&Constraint::getContextSingleton);
+    m_elementImports.subsets(*m_ownedElements);
+    m_elementImports.opposite(&ElementImport::getImportingNamespaceSingleton);
+    m_elementImports.m_signature = &Namespace::getElementImports;
 }
 
 Namespace::Namespace() : Element(ElementType::NAMESPACE) {
@@ -67,6 +70,10 @@ Set<NamedElement, Namespace>& Namespace::getOwnedMembers() {
 
 Set<Constraint, Namespace>& Namespace::getOwnedRules() {
     return m_ownedRules;
+}
+
+Set<ElementImport, Namespace>& Namespace::getElementImports() {
+    return m_elementImports;
 }
 
 bool Namespace::isSubClassOf(ElementType eType) const {

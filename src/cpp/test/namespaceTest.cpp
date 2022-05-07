@@ -8,6 +8,9 @@ UML_SET_INTEGRATION_TEST(NamespaceOwnedRules, Constraint, Package, &Namespace::g
 UML_SINGLETON_INTEGRATION_TEST(ConstraintContext, Package, Constraint, &Constraint::getContext, &Constraint::setContext);
 // UML_SET_INTEGRATION_TEST(ConstraintConstrainedElements, Slot, Constraint, &Constraint::getConstrainedElements);
 // TODO fix constraint
+UML_SET_INTEGRATION_TEST(NamespaceElementImports, ElementImport, Class, &Namespace::getElementImports);
+UML_SINGLETON_INTEGRATION_TEST(ElementImportImportingNamespace, Package, ElementImport, &ElementImport::getImportingNamespace, &ElementImport::setImportingNamespace);
+UML_SINGLETON_INTEGRATION_TEST(ElementImportImportedElement, DataType, ElementImport, &ElementImport::getImportedElement, &ElementImport::setImportedElement);
 
 class NamespaceTest : public ::testing::Test {};
 

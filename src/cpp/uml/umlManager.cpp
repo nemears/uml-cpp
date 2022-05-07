@@ -109,6 +109,9 @@ Element& UmlManager::create(ElementType eType) {
         case ElementType::DEPLOYMENT : {
             return static_cast<Element&>(*create<Deployment>());
         }
+        case ElementType::ELEMENT_IMPORT : {
+            return static_cast<ElementImport&>(*create<ElementImport>());
+        }
         case ElementType::ENUMERATION : {
             return static_cast<Element&>(*create<Enumeration>());
         }

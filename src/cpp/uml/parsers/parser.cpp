@@ -425,6 +425,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::PACKAGE;
     } else if (eType.compare("PACKAGEABLE_ELEMENT") == 0) {
         return ElementType::PACKAGEABLE_ELEMENT;
+    } else if (eType.compare("PACKAGE_IMPORT") == 0) {
+        return ElementType::PACKAGE_IMPORT;
     } else if (eType.compare("PACKAGE_MERGE") == 0) {
         return ElementType::PACKAGE_MERGE;
     } else if (eType.compare("PARAMETER") == 0) {
@@ -679,6 +681,11 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
     }
     if (ret->isSubClassOf(ElementType::ELEMENT_IMPORT)) {
         if (parseSingletonReference(node, data, "importingNamespace", ret->as<ElementImport>(), &ElementImport::setImportingNamespace, &ElementImport::setImportingNamespace)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::PACKAGE_IMPORT)) {
+        if (parseSingletonReference(node, data, "importingNamespace", ret->as<PackageImport>(), &PackageImport::setImportingNamespace, &PackageImport::setImportingNamespace)) {
             return;
         }
     }
@@ -1041,6 +1048,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
         PackagePtr pckg = data.m_manager->create<Package>();
         parsePackage(node["package"], *pckg, data);
         ret = pckg.ptr();
+    }
+
+    if (node["packageImport"]) {
+        ret = &parseDefinition<PackageImport>(node, data, "packageImport", parsePackageImport);
     }
 
     if (node["packageMerge"]) {
@@ -1454,6 +1465,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitPackage(emitter, pckg, data);
             break;
         }
+        case ElementType::PACKAGE_IMPORT : {
+            emitPackageImport(emitter, el.as<PackageImport>(), data);
+            break;
+        }
         case ElementType::PACKAGE_MERGE : {
             PackageMerge& pckgMerge = el.as<PackageMerge>();
             emitPackageMerge(emitter, pckgMerge, data);
@@ -1740,6 +1755,12 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::ELEMENT_IMPORT)) {
             if (el.as<ElementImport>().getImportingNamespace()) {
                 emitter << YAML::Key << "importingNamespace" << YAML::Value << el.as<ElementImport>().getImportingNamespace().id().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::PACKAGE_IMPORT)) {
+            if (el.as<PackageImport>().getImportingNamespace()) {
+                emitter << YAML::Key << "importingNamespace" << YAML::Value << el.as<PackageImport>().getImportingNamespace().id().string();
                 return;
             }
         }
@@ -4133,16 +4154,26 @@ ElementImport& determineElementImport(YAML::Node node, ParserMetaData& data) {
     }
 }
 
+PackageImport& determinePackageImport(YAML::Node node, ParserMetaData& data) {
+    if (node["packageImport"]) {
+        return parseDefinition<PackageImport>(node, data, "packageImport", parsePackageImport);
+    } else {
+        throw UmlParserException("Invalid identifier found for package import, must be a package import!", data.m_path.string(), node);
+    }
+}
+
 void parseNamespace(YAML::Node node, Namespace& nmspc, ParserMetaData& data) {
     parseNamedElement(node, nmspc, data);
     parseSequenceDefinitions(node, data, "ownedRules", nmspc, &Namespace::getOwnedRules, determineAndParseConstraint);
     parseSequenceDefinitions(node, data, "elementImports", nmspc, &Namespace::getElementImports, determineElementImport);
+    parseSequenceDefinitions(node, data, "packageImports", nmspc, &Namespace::getPackageImports, determinePackageImport);
 }
 
 void emitNamespace(YAML::Emitter& emitter, Namespace& nmspc, EmitterMetaData& data) {
     emitNamedElement(emitter, nmspc, data);
     emitSequence(emitter, "ownedRules", data, nmspc, &Namespace::getOwnedRules);
     emitSequence(emitter, "elementImports", data, nmspc, &Namespace::getElementImports);
+    emitSequence(emitter, "packageImports", data, nmspc, &Namespace::getPackageImports);
 }
 
 void parseAction(YAML::Node node, Action& action, ParserMetaData& data) {
@@ -4313,6 +4344,20 @@ void emitElementImport(YAML::Emitter& emitter, ElementImport& import, EmitterMet
         emitter << YAML::Key << "importedElement" << YAML::Value << import.getImportedElement().id().string();
     }
     emitElementDefenitionEnd(emitter, ElementType::ELEMENT_IMPORT, import);
+}
+
+void parsePackageImport(YAML::Node node, PackageImport& import, ParserMetaData& data) {
+    parseElement(node, import, data);
+    parseSingletonReference(node, data, "importedPackage", import, &PackageImport::setImportedPackage, &PackageImport::setImportedPackage);
+}
+
+void emitPackageImport(YAML::Emitter& emitter, PackageImport& import, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::PACKAGE_IMPORT, "packageImport", import, data);
+    emitElement(emitter, import, data);
+    if (import.getImportedPackage()) {
+        emitter << YAML::Key << "importedPackage" << YAML::Value << import.getImportedPackage().id().string();
+    }
+    emitElementDefenitionEnd(emitter, ElementType::PACKAGE_IMPORT, import);
 }
 
 }

@@ -211,6 +211,9 @@ Element& UmlManager::create(ElementType eType) {
         case ElementType::PACKAGE : {
             return static_cast<Element&>(*create<Package>());
         }
+        case ElementType::PACKAGE_IMPORT : {
+            return static_cast<Element&>(*create<PackageImport>());
+        }
         case ElementType::PACKAGE_MERGE : {
             return static_cast<Element&>(*create<PackageMerge>());
         }

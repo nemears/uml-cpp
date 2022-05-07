@@ -97,6 +97,7 @@ namespace UML {
         OUTPUT_PIN,
         PACKAGE,
         PACKAGEABLE_ELEMENT,
+        PACKAGE_IMPORT,
         PACKAGE_MERGE,
         PARAMETER,
         PARAMETERABLE_ELEMENT,

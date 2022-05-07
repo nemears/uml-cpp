@@ -21,6 +21,26 @@ void Namespace::RemoveElementImportFunctor::operator()(Element& el) const {
     }
 }
 
+void Namespace::AddPackageImportFunctor::operator()(Element& el) const {
+    if (el.as<PackageImport>().getImportedPackage()) {
+        for (auto& pckgMember : el.as<PackageImport>().getImportedPackage()->getPackagedElements()) {
+            if (!m_el.as<Namespace>().getImportedMembers().contains(pckgMember)) {
+                m_el.as<Namespace>().getImportedMembers().addReadOnly(pckgMember);
+            }
+        }
+    }
+}
+
+void Namespace::RemovePackageImportFunctor::operator()(Element& el) const {
+    if (el.as<PackageImport>().getImportedPackage()) {
+        for (auto& pckgMember : el.as<PackageImport>().getImportedPackage()->getPackagedElements()) {
+            if (m_el.as<Namespace>().getImportedMembers().contains(pckgMember)) {
+                m_el.as<Namespace>().getImportedMembers().removeReadOnly(pckgMember.getID());
+            }
+        }
+    }
+}
+
 void Namespace::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
     m_members.reindex(oldID, newID);
@@ -61,6 +81,11 @@ void Namespace::init() {
     m_elementImports.m_addFunctors.insert(new AddElementImportFunctor(this));
     m_elementImports.m_removeFunctors.insert(new RemoveElementImportFunctor(this));
     m_elementImports.m_signature = &Namespace::getElementImports;
+    m_packageImports.subsets(*m_ownedElements);
+    m_packageImports.opposite(&PackageImport::getImportingNamespaceSingleton);
+    m_packageImports.m_addFunctors.insert(new AddPackageImportFunctor(this));
+    m_packageImports.m_removeFunctors.insert(new RemovePackageImportFunctor(this));
+    m_packageImports.m_signature = &Namespace::getPackageImports;
 }
 
 Namespace::Namespace() : Element(ElementType::NAMESPACE) {
@@ -96,6 +121,10 @@ Set<PackageableElement, Namespace>& Namespace::getImportedMembers() {
 
 Set<ElementImport, Namespace>& Namespace::getElementImports() {
     return m_elementImports;
+}
+
+Set<PackageImport, Namespace>& Namespace::getPackageImports() {
+    return m_packageImports;
 }
 
 bool Namespace::isSubClassOf(ElementType eType) const {

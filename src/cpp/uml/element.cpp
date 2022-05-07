@@ -403,6 +403,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::PACKAGEABLE_ELEMENT : {
             return "PACKAGEABLE_ELEMENT";
         }
+        case ElementType::PACKAGE_IMPORT : {
+            return "PACKAGE_IMPORT";
+        }
         case ElementType::PACKAGE_MERGE : {
             return "PACKAGE_MERGE";
         }

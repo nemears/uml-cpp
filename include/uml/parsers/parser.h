@@ -229,6 +229,8 @@ namespace UML {
             void emitCallBehaviorAction(YAML::Emitter& emitter, CallBehaviorAction& action, EmitterMetaData& data);
             void parseElementImport(YAML::Node node, ElementImport& import, ParserMetaData& data);
             void emitElementImport(YAML::Emitter& emitter, ElementImport& import, EmitterMetaData& data);
+            void parsePackageImport(YAML::Node node, PackageImport& import, ParserMetaData& data);
+            void emitPackageImport(YAML::Emitter& emitter, PackageImport& import, EmitterMetaData& data);
         }
     }
 }

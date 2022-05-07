@@ -62,6 +62,7 @@
 #include "uml/opaqueBehavior.h"
 #include "uml/operation.h"
 #include "uml/package.h"
+#include "uml/packageImport.h"
 #include "uml/packageMerge.h"
 #include "uml/parameter.h"
 #include "uml/port.h"
@@ -92,6 +93,7 @@ namespace UML {
     typedef UmlPtr<ExceptionHandler> ExceptionHandlerPtr;
     typedef UmlPtr<OpaqueAction> OpaqueActionPtr;
     typedef UmlPtr<ElementImport> ElementImportPtr;
+    typedef UmlPtr<PackageImport> PackageImportPtr;
 }
 
 #endif

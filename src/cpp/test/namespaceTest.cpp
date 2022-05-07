@@ -11,6 +11,9 @@ UML_SINGLETON_INTEGRATION_TEST(ConstraintContext, Package, Constraint, &Constrai
 UML_SET_INTEGRATION_TEST(NamespaceElementImports, ElementImport, Class, &Namespace::getElementImports);
 UML_SINGLETON_INTEGRATION_TEST(ElementImportImportingNamespace, Package, ElementImport, &ElementImport::getImportingNamespace, &ElementImport::setImportingNamespace);
 UML_SINGLETON_INTEGRATION_TEST(ElementImportImportedElement, DataType, ElementImport, &ElementImport::getImportedElement, &ElementImport::setImportedElement);
+UML_SET_INTEGRATION_TEST(NamespacePackageImports, PackageImport, Class, &Namespace::getPackageImports);
+UML_SINGLETON_INTEGRATION_TEST(PackageImportImportedPackage, Package, PackageImport, &PackageImport::getImportedPackage, &PackageImport::setImportedPackage);
+UML_SINGLETON_INTEGRATION_TEST(PackageImportImportingNamespace, Activity, PackageImport, &PackageImport::getImportingNamespace, &PackageImport::setImportingNamespace);
 
 class NamespaceTest : public ::testing::Test {};
 
@@ -91,4 +94,33 @@ TEST_F(NamespaceTest, addElementImportWithImportedElement) {
     ASSERT_EQ(p->getImportedMembers().front(), *e);
     i->setImportedElement(0);
     ASSERT_EQ(p->getImportedMembers().size(), 0);
+}
+
+TEST_F(NamespaceTest, addAndRemovePackageImportManyWays) {
+    UmlManager m;
+    PackagePtr importedPackage = m.create<Package>();
+    DataTypePtr nmspc = m.create<DataType>();
+    PackageImportPtr import = m.create<PackageImport>();
+    import->setImportedPackage(importedPackage);
+    nmspc->getPackageImports().add(*import);
+    ASSERT_EQ(nmspc->getImportedMembers().size(), 0);
+    nmspc->getPackageImports().remove(*import);
+    LiteralBoolPtr packagedEl = m.create<LiteralBool>();
+    importedPackage->getPackagedElements().add(*packagedEl);
+    nmspc->getPackageImports().add(*import);
+    ASSERT_EQ(nmspc->getImportedMembers().size(), 1);
+    ASSERT_EQ(nmspc->getImportedMembers().front(), *packagedEl);
+    nmspc->getPackageImports().remove(*import);
+    ASSERT_EQ(nmspc->getImportedMembers().size(), 0);
+    import->setImportedPackage(0);
+    nmspc->getPackageImports().add(*import);
+    ASSERT_EQ(nmspc->getImportedMembers().size(), 0);
+    import->setImportedPackage(*importedPackage);
+    ASSERT_EQ(nmspc->getImportedMembers().size(), 1);
+    ASSERT_EQ(nmspc->getImportedMembers().front(), *packagedEl);
+    importedPackage->getPackagedElements().remove(*packagedEl);
+    ASSERT_EQ(nmspc->getImportedMembers().size(), 0);
+    importedPackage->getPackagedElements().add(*packagedEl);
+    ASSERT_EQ(nmspc->getImportedMembers().size(), 1);
+    ASSERT_EQ(nmspc->getImportedMembers().front(), *packagedEl);
 }

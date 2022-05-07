@@ -1,10 +1,10 @@
 #ifndef _UML_NAMESPACE_H_
 #define _UML_NAMESPACE_H_
 
-#include <iostream>
 #include "namedElement.h"
 #include "constraint.h"
 #include "elementImport.h"
+#include "packageImport.h"
 
 namespace UML{
 
@@ -20,6 +20,7 @@ namespace UML{
             Set<NamedElement, Namespace> m_ownedMembers = Set<NamedElement, Namespace>(this);
             Set<Constraint, Namespace> m_ownedRules = Set<Constraint, Namespace>(this);
             Set<ElementImport, Namespace> m_elementImports = Set<ElementImport, Namespace>(this);
+            Set<PackageImport, Namespace> m_packageImports = Set<PackageImport, Namespace>(this);
             Set<PackageableElement, Namespace> m_importedMembers = Set<PackageableElement, Namespace>(this);
             class AddElementImportFunctor : public SetFunctor {
                 private:
@@ -32,6 +33,18 @@ namespace UML{
                     void operator()(Element& el) const override;
                 public:
                     RemoveElementImportFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class AddPackageImportFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    AddPackageImportFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class RemovePackageImportFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    RemovePackageImportFunctor(Element* el) : SetFunctor(el) {};
             };
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
@@ -47,6 +60,7 @@ namespace UML{
             Set<Constraint, Namespace>& getOwnedRules();
             Set<PackageableElement, Namespace>& getImportedMembers();
             Set<ElementImport, Namespace>& getElementImports();
+            Set<PackageImport, Namespace>& getPackageImports();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::NAMESPACE;

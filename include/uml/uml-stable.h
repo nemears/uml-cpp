@@ -91,6 +91,7 @@ namespace UML {
     typedef UmlPtr<LiteralBool> LiteralBoolPtr;
     typedef UmlPtr<ExceptionHandler> ExceptionHandlerPtr;
     typedef UmlPtr<OpaqueAction> OpaqueActionPtr;
+    typedef UmlPtr<ElementImport> ElementImportPtr;
 }
 
 #endif

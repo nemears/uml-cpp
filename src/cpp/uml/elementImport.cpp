@@ -14,6 +14,18 @@
 
 using namespace UML;
 
+void ElementImport::AddImportedElementFunctor::operator()(Element& el) const {
+    if (m_el.as<ElementImport>().getImportingNamespace()) {
+        m_el.as<ElementImport>().getImportingNamespace()->getImportedMembers().addReadOnly(el.as<PackageableElement>());
+    }
+}
+
+void ElementImport::RemoveImportedElementFunctor::operator()(Element& el) const {
+    if (m_el.as<ElementImport>().getImportingNamespace()) {
+        m_el.as<ElementImport>().getImportingNamespace()->getImportedMembers().removeReadOnly(el.getID());
+    }
+}
+
 Set<PackageableElement, ElementImport>& ElementImport::getImportedElementSingleton() {
     return m_importedElement;
 }
@@ -26,6 +38,8 @@ void ElementImport::init() {
     m_importedElement.subsets(m_targets);
     m_importedElement.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_importedElement.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
+    m_importedElement.m_addFunctors.insert(new AddImportedElementFunctor(this));
+    m_importedElement.m_removeFunctors.insert(new RemoveImportedElementFunctor(this));
     m_importedElement.m_signature = &ElementImport::getImportedElementSingleton;
     m_importingNamespace.subsets(*m_owner);
     m_importingNamespace.opposite(&Namespace::getElementImports);

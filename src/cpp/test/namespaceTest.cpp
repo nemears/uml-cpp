@@ -72,3 +72,23 @@ TEST_F(NamespaceTest, removeMemeberFunctorTest) {
     ASSERT_EQ(n.getOwnedElements().size(), 0);
     ASSERT_FALSE(m.getNamespace());
 }
+
+TEST_F(NamespaceTest, addElementImportWithImportedElement) {
+    UmlManager m;
+    PackagePtr p = m.create<Package>();
+    PackagePtr e = m.create<Package>();
+    ElementImportPtr i = m.create<ElementImport>();
+    i->setImportedElement(e);
+    p->getElementImports().add(*i);
+    ASSERT_EQ(p->getImportedMembers().size(), 1);
+    ASSERT_EQ(p->getImportedMembers().front(), *e);
+    p->getElementImports().remove(*i);
+    ASSERT_EQ(p->getImportedMembers().size(), 0);
+    i->setImportedElement(0);
+    p->getElementImports().add(*i);
+    i->setImportedElement(e);
+    ASSERT_EQ(p->getImportedMembers().size(), 1);
+    ASSERT_EQ(p->getImportedMembers().front(), *e);
+    i->setImportedElement(0);
+    ASSERT_EQ(p->getImportedMembers().size(), 0);
+}

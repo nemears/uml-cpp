@@ -19,6 +19,18 @@ namespace UML {
             Singleton<Namespace, ElementImport> m_importingNamespace = Singleton<Namespace, ElementImport>(this);
             Set<PackageableElement, ElementImport>& getImportedElementSingleton();
             Set<Namespace, ElementImport>& getImportingNamespaceSingleton();
+            class AddImportedElementFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    AddImportedElementFunctor(Element* el) : SetFunctor(el) {};
+            };
+            class RemoveImportedElementFunctor : public SetFunctor {
+                private:
+                    void operator()(Element& el) const override;
+                public:
+                    RemoveImportedElementFunctor(Element* el) : SetFunctor(el) {};
+            };
             void init();
             ElementImport();
         public:

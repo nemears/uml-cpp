@@ -5,8 +5,21 @@
 #include "uml/dataType.h"
 #include "uml/association.h"
 #include "uml/deployment.h"
+#include "uml/umlPtr.h"
 
 using namespace UML;
+
+void Namespace::AddElementImportFunctor::operator()(Element& el) const {
+    if (el.as<ElementImport>().getImportedElement() && !m_el.as<Namespace>().getImportedMembers().contains(el.as<ElementImport>().getImportedElement().id())) {
+        m_el.as<Namespace>().getImportedMembers().addReadOnly(*el.as<ElementImport>().getImportedElement());
+    }
+}
+
+void Namespace::RemoveElementImportFunctor::operator()(Element& el) const {
+    if (el.as<ElementImport>().getImportedElement() && m_el.as<Namespace>().getImportedMembers().contains(el.as<ElementImport>().getImportedElement().id())) {
+        m_el.as<Namespace>().getImportedMembers().removeReadOnly(el.as<ElementImport>().getImportedElement().id());
+    }
+}
 
 void Namespace::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
@@ -40,8 +53,13 @@ void Namespace::init() {
     m_ownedMembers.m_readOnly = true;
     m_ownedRules.subsets(m_ownedMembers);
     m_ownedRules.opposite(&Constraint::getContextSingleton);
+    m_importedMembers.subsets(m_members);
+    m_importedMembers.m_readOnly = true;
+    m_importedMembers.m_signature = &Namespace::getImportedMembers;
     m_elementImports.subsets(*m_ownedElements);
     m_elementImports.opposite(&ElementImport::getImportingNamespaceSingleton);
+    m_elementImports.m_addFunctors.insert(new AddElementImportFunctor(this));
+    m_elementImports.m_removeFunctors.insert(new RemoveElementImportFunctor(this));
     m_elementImports.m_signature = &Namespace::getElementImports;
 }
 
@@ -70,6 +88,10 @@ Set<NamedElement, Namespace>& Namespace::getOwnedMembers() {
 
 Set<Constraint, Namespace>& Namespace::getOwnedRules() {
     return m_ownedRules;
+}
+
+Set<PackageableElement, Namespace>& Namespace::getImportedMembers() {
+    return m_importedMembers;
 }
 
 Set<ElementImport, Namespace>& Namespace::getElementImports() {

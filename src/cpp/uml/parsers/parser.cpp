@@ -2621,6 +2621,14 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
 }
 
 void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMetaData& data) {
+    if (node["isOrdered"]) {
+        el.setIsOrdered(node["isOrdered"].as<bool>());
+    }
+
+    if (node["isUnique"]) {
+        el.setIsUnique(node["isUnique"].as<bool>());
+    }
+
     if (node["lower"]) {
         if (node["lower"].IsScalar()) {
             LiteralInt& lower = *data.m_manager->create<LiteralInt>();
@@ -2660,6 +2668,14 @@ void emitMultiplicityElement(YAML::Emitter& emitter, MultiplicityElement& el, Em
     if (el.getUpperValue()) {
         emitter << YAML::Key << "upperValue" << YAML::Value;
         emit(emitter, *el.getUpperValue(), data);
+    }
+
+    if (el.isOrdered()) {
+        emitter << YAML::Key << "isOrdered" << YAML::Value << true;
+    }
+
+    if (!el.isUnique()) {
+        emitter << YAML::Key << "isUnique" << YAML::Value << false;
     }
 }
 

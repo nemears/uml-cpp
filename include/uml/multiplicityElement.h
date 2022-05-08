@@ -12,6 +12,8 @@ namespace UML {
 
     class MultiplicityElement : virtual public Element {
         protected:
+            bool m_isOrdered = false;
+            bool m_isUnique = true;
             int m_lower = -1;
             int m_upper = -1;
             Singleton<ValueSpecification, MultiplicityElement> m_lowVal = Singleton<ValueSpecification, MultiplicityElement>(this);
@@ -67,6 +69,10 @@ namespace UML {
                     }
             } multiplicityNotSpecifiedException;
             bool multiplicitySpecified();
+            bool isOrdered() const;
+            void setIsOrdered(bool isOrdered);
+            bool isUnique() const;
+            void setIsUnique(bool isUnique);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::MULTIPLICITY_ELEMENT;

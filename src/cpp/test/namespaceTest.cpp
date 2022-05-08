@@ -123,4 +123,17 @@ TEST_F(NamespaceTest, addAndRemovePackageImportManyWays) {
     importedPackage->getPackagedElements().add(*packagedEl);
     ASSERT_EQ(nmspc->getImportedMembers().size(), 1);
     ASSERT_EQ(nmspc->getImportedMembers().front(), *packagedEl);
+    DataTypePtr nmspc2 = m.create<DataType>();
+    PackageImportPtr import2 = m.create<PackageImport>();
+    import2->setImportedPackage(importedPackage);
+    nmspc2->getPackageImports().add(*import2);
+    ASSERT_EQ(nmspc2->getImportedMembers().size(), 1);
+    ASSERT_EQ(nmspc2->getImportedMembers().front(), *packagedEl);
+    nmspc2->getPackageImports().remove(*import2);
+    ASSERT_EQ(nmspc2->getImportedMembers().size(), 0);
+    LiteralBoolPtr packagedEl2 = m.create<LiteralBool>();
+    importedPackage->getPackagedElements().add(*packagedEl2);
+    ASSERT_EQ(nmspc->getImportedMembers().size(), 2);
+    ASSERT_TRUE(nmspc->getImportedMembers().contains(*packagedEl));
+    ASSERT_EQ(nmspc2->getImportedMembers().size(), 0);
 }

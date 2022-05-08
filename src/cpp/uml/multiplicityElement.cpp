@@ -158,6 +158,22 @@ void MultiplicityElement::setUpperValue(ID id) {
     m_upVal.set(id);
 }
 
+bool MultiplicityElement::isOrdered() const {
+    return m_isOrdered;
+}
+
+void MultiplicityElement::setIsOrdered(bool isOrdered) {
+    m_isOrdered = isOrdered;
+}
+
+bool MultiplicityElement::isUnique() const {
+    return m_isUnique;
+}
+
+void MultiplicityElement::setIsUnique(bool isUnique) {
+    m_isUnique = isUnique;
+}
+
 bool MultiplicityElement::isSubClassOf(ElementType eType) const {
     bool ret = Element::isSubClassOf(eType);
 

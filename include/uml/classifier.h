@@ -8,14 +8,13 @@
 #include "property.h"
 #include "generalization.h"
 #include "generalizationSet.h"
+#include "redefinableTemplateSignature.h"
 
 namespace UML {
 
-    class Generalization;
-    class Property;
-    class Feature;
     class InstanceSpecification;
-    class GeneralizationSet;
+
+    typedef UmlPtr<RedefinableTemplateSignature> RedefinableTemplateSignaturePtr;
 
     /**
      * A Classifier represents a classification of instances according to their Features
@@ -26,6 +25,7 @@ namespace UML {
         friend class InstanceSpecification;
         friend class Generalization;
         friend class NamedElement;
+        friend class RedefinableTemplateSignature;
 
         protected:
             Set<Feature, Classifier> m_features = Set<Feature, Classifier>(this);
@@ -34,6 +34,7 @@ namespace UML {
             Set<Classifier, Classifier> m_generals = Set<Classifier, Classifier>(this);
             Set<NamedElement, Classifier> m_inheritedMembers = Set<NamedElement, Classifier>(this);
             Set<GeneralizationSet, Classifier> m_powerTypeExtent = Set<GeneralizationSet, Classifier>(this);
+            Singleton<RedefinableTemplateSignature, Classifier> m_classifierOwnedTemplateSignature = Singleton<RedefinableTemplateSignature, Classifier>(this);
             class AddGeneralizationFunctor : public SetFunctor {
                 private:
                     void operator()(Element& el) const override;
@@ -70,6 +71,7 @@ namespace UML {
                 public:
                     RemoveOwnedMemberFunctor(Element* el) : SetFunctor(el) {};
             };
+            Set<RedefinableTemplateSignature, Classifier>& getOwnedTemplateSignatureSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(ID id, std::string newName) override;
             void referencingReleased(ID id) override;
@@ -87,6 +89,11 @@ namespace UML {
             Set<Classifier, Classifier>& getGenerals();
             Set<NamedElement, Classifier>& getInheritedMembers();
             Set<GeneralizationSet, Classifier>& getPowerTypeExtent();
+            RedefinableTemplateSignaturePtr getOwnedTemplateSignature() const;
+            void setOwnedTemplateSignature(RedefinableTemplateSignature* signature);
+            void setOwnedTemplateSignature(RedefinableTemplateSignature& signature);
+            void setOwnedTemplateSignature(RedefinableTemplateSignaturePtr signature);
+            void setOwnedTemplateSignature(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CLASSIFIER;

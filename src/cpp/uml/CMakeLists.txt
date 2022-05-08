@@ -16,7 +16,7 @@ set(umlSources  element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp names
                 flowFinalNode.cpp activityParameterNode.cpp centralBufferNode.cpp dataStoreNode.cpp executableNode.cpp
                 exceptionHandler.cpp activityGroup.cpp activityPartition.cpp interruptibleActivityRegion.cpp constraint.cpp
                 opaqueAction.cpp valuePin.cpp actionInputPin.cpp invocationAction.cpp callAction.cpp callBehaviorAction.cpp 
-                elementImport.cpp packageImport.cpp
+                elementImport.cpp packageImport.cpp redefinableTemplateSignature.cpp
 
                 #parsers
                 parsers/parser.cpp parsers/emitterMetaData.cpp

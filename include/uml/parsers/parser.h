@@ -231,6 +231,8 @@ namespace UML {
             void emitElementImport(YAML::Emitter& emitter, ElementImport& import, EmitterMetaData& data);
             void parsePackageImport(YAML::Node node, PackageImport& import, ParserMetaData& data);
             void emitPackageImport(YAML::Emitter& emitter, PackageImport& import, EmitterMetaData& data);
+            void parseRedefinableTemplateSignature(YAML::Node node, RedefinableTemplateSignature& signature, ParserMetaData& data);
+            void emitRedefinableTemplateSignature(YAML::Emitter& emitter, RedefinableTemplateSignature& signature, EmitterMetaData& data);
         }
     }
 }

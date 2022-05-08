@@ -13,13 +13,13 @@ namespace UML {
 
     typedef UmlPtr<TemplateableElement> TemplateableElementPtr;
 
-    class TemplateSignature : public Element {
+    class TemplateSignature : virtual public Element {
 
         friend class UmlManager;
         friend class TemplateParameter;
         friend class TemplateableElement;
 
-        private:
+        protected:
             Singleton<TemplateableElement, TemplateSignature> m_template = Singleton<TemplateableElement, TemplateSignature>(this);
             OrderedSet<TemplateParameter, TemplateSignature> m_parameters = OrderedSet<TemplateParameter, TemplateSignature>(this);
             OrderedSet<TemplateParameter, TemplateSignature> m_ownedParameters =  OrderedSet<TemplateParameter, TemplateSignature>(this);

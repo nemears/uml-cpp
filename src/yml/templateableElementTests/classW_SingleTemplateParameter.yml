@@ -1,7 +1,7 @@
 ---
   class:
     ownedTemplateSignature:
-      templateSignature:
+      redefinableTemplateSignature:
         ownedParameters:
           - templateParameter:
               id: t9FFOy3xNADeUDNvWJOc&7USIfsf

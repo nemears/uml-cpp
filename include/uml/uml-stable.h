@@ -72,6 +72,7 @@
 #include "uml/property.h"
 #include "uml/realization.h"
 #include "uml/reception.h"
+#include "uml/redefinableTemplateSignature.h"
 #include "uml/signal.h"
 #include "uml/slot.h"
 #include "uml/stereotype.h"

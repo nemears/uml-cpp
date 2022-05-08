@@ -3,7 +3,7 @@
     packagedElements:
       - class:
           ownedTemplateSignature:
-            templateSignature:
+            redefinableTemplateSignature:
               id: LZNsKPxKJ7fB3775xyVUNLKn9SZ4
       - class:
           templateBindings:

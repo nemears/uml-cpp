@@ -451,6 +451,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::RECEPTION;
     } else if (eType.compare("REDEFINABLE_ELEMENT") == 0) {
         return ElementType::REDEFINABLE_ELEMENT;
+    } else if (eType.compare("REDEFINABLE_TEMPLATE_SIGNATURE") == 0) {
+        return ElementType::REDEFINABLE_TEMPLATE_SIGNATURE;
     } else if (eType.compare("RELATIONSHIP") == 0) {
         return ElementType::RELATIONSHIP;
     } else if (eType.compare("SIGNAL") == 0) {
@@ -602,6 +604,11 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
     }
     if (ret->isSubClassOf(ElementType::ENUMERATION_LITERAL)) {
         if (parseSingletonReference(node, data, "enumeration", ret->as<EnumerationLiteral>(), &EnumerationLiteral::setEnumeration, &EnumerationLiteral::setEnumeration)) {
+            return;
+        }
+    }
+    if (ret->isSubClassOf(ElementType::REDEFINABLE_TEMPLATE_SIGNATURE)) {
+        if (parseSingletonReference(node, data, "classifier", ret->as<RedefinableTemplateSignature>(), &RedefinableTemplateSignature::setClassifier, &RedefinableTemplateSignature::setClassifier)) {
             return;
         }
     }
@@ -1104,6 +1111,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &parseDefinition<Reception>(node, data, "reception", parseReception);
     }
 
+    if (node["redefinableTemplateSignature"]) {
+        ret = &parseDefinition<RedefinableTemplateSignature>(node, data, "redefinableTemplateSignature", parseRedefinableTemplateSignature);
+    }
+
     if (node["signal"]) {
         Signal& signal = *data.m_manager->create<Signal>();
         parseSignal(node["signal"], signal, data);
@@ -1513,6 +1524,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitReception(emitter, el.as<Reception>(), data);
             break;
         }
+        case ElementType::REDEFINABLE_TEMPLATE_SIGNATURE : {
+            emitRedefinableTemplateSignature(emitter, el.as<RedefinableTemplateSignature>(), data);
+            break;
+        }
         case ElementType::SIGNAL : {
             emitSignal(emitter, el.as<Signal>(), data);
             break;
@@ -1656,6 +1671,12 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         if (el.isSubClassOf(ElementType::ENUMERATION_LITERAL)) {
             if (el.as<EnumerationLiteral>().getEnumeration()) {
                 emitter << YAML::Key << "enumeration" << YAML::Value << el.as<EnumerationLiteral>().getEnumeration().id().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::REDEFINABLE_TEMPLATE_SIGNATURE)) {
+            if (el.as<RedefinableTemplateSignature>().getClassifier()) {
+                emitter << YAML::Key << "classifier" << YAML::Value << el.as<RedefinableTemplateSignature>().getClassifier().id().string();
                 return;
             }
         }
@@ -2943,6 +2964,8 @@ TemplateBinding& determineAndParseTemplateBinding(YAML::Node node, ParserMetaDat
 TemplateSignature& determineAndParseTemplateSignature(YAML::Node node, ParserMetaData& data) {
     if (node["templateSignature"]) {
         return parseDefinition<TemplateSignature>(node, data, "templateSignature", parseTemplateSignature);
+    } else if (node["redefinableTemplateSignature"]) {
+        return parseDefinition<RedefinableTemplateSignature>(node, data, "redefinableTemplateSignature", parseRedefinableTemplateSignature);
     } else {
         throw UmlParserException("Invalid element identifier, can only be a templateSignature!", data.m_path.string(), node);
     }
@@ -4374,6 +4397,16 @@ void emitPackageImport(YAML::Emitter& emitter, PackageImport& import, EmitterMet
         emitter << YAML::Key << "importedPackage" << YAML::Value << import.getImportedPackage().id().string();
     }
     emitElementDefenitionEnd(emitter, ElementType::PACKAGE_IMPORT, import);
+}
+
+void parseRedefinableTemplateSignature(YAML::Node node, RedefinableTemplateSignature& signature, ParserMetaData& data) {
+    parseTemplateSignature(node, signature, data);
+}
+
+void emitRedefinableTemplateSignature(YAML::Emitter& emitter, RedefinableTemplateSignature& signature, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::REDEFINABLE_TEMPLATE_SIGNATURE, "redefinableTemplateSignature", signature, data);
+    emitTemplateSignature(emitter, signature, data);
+    emitElementDefenitionEnd(emitter, ElementType::REDEFINABLE_TEMPLATE_SIGNATURE, signature);
 }
 
 }

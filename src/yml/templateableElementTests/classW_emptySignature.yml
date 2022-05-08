@@ -1,6 +1,6 @@
 ---
   class:
     ownedTemplateSignature:
-      templateSignature:
+      redefinableTemplateSignature:
         id: b4EasFCBjochdruOQfxBubQw3VlD
 ...

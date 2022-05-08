@@ -442,6 +442,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::REDEFINABLE_ELEMENT : {
             return "REDEFINABLE_ELEMENT";
         }
+        case ElementType::REDEFINABLE_TEMPLATE_SIGNATURE : {
+            return "REDEFINABLE_TEMPLATE_SIGNATURE";
+        }
         case ElementType::RELATIONSHIP : {
             return "RELATIONSHIP";
         }

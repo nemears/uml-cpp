@@ -6,7 +6,7 @@
     packagedElements:
       - class:
           ownedTemplateSignature:
-            templateSignature:
+            redefinableTemplateSignature:
               id: fwxRqHbsLGJ5FwcCaFBAGIP1Kp3x
       - class:
           templateBindings:

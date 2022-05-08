@@ -241,6 +241,9 @@ Element& UmlManager::create(ElementType eType) {
         case ElementType::RECEPTION : {
             return static_cast<Element&>(*create<Reception>());
         }
+        case ElementType::REDEFINABLE_TEMPLATE_SIGNATURE : {
+            return static_cast<Element&>(*create<RedefinableTemplateSignature>());
+        }
         case ElementType::SIGNAL : {
             return static_cast<Element&>(*create<Signal>());
         }

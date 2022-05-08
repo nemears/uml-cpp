@@ -110,6 +110,7 @@ namespace UML {
         REALIZATION,
         RECEPTION,
         REDEFINABLE_ELEMENT,
+        REDEFINABLE_TEMPLATE_SIGNATURE,
         RELATIONSHIP,
         SIGNAL,
         SLOT,

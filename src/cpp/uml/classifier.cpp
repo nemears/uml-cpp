@@ -77,6 +77,10 @@ void Classifier::RemoveOwnedMemberFunctor::operator()(Element& el) const {
     }
 }
 
+Set<RedefinableTemplateSignature, Classifier>& Classifier::getOwnedTemplateSignatureSingleton() {
+    return m_classifierOwnedTemplateSignature;
+}
+
 void Classifier::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     PackageableElement::referencingReleased(id);
@@ -138,6 +142,8 @@ void Classifier::init() {
     m_inheritedMembers.m_readOnly = true;
     m_powerTypeExtent.opposite(&GeneralizationSet::getPowerTypeSingleton);
     m_powerTypeExtent.m_signature = &Classifier::getPowerTypeExtent;
+    m_classifierOwnedTemplateSignature.redefines(m_ownedTemplateSignature);
+    m_classifierOwnedTemplateSignature.opposite(&RedefinableTemplateSignature::getClassifierSingleton);
 }
 
 Classifier::Classifier() : Element(ElementType::CLASSIFIER) {
@@ -178,6 +184,26 @@ Set<NamedElement, Classifier>& Classifier::getInheritedMembers() {
 
 Set<GeneralizationSet, Classifier>& Classifier::getPowerTypeExtent() {
     return m_powerTypeExtent;
+}
+
+RedefinableTemplateSignaturePtr Classifier::getOwnedTemplateSignature() const {
+    return m_classifierOwnedTemplateSignature.get();
+}
+
+void Classifier::setOwnedTemplateSignature(RedefinableTemplateSignature* signature) {
+    m_classifierOwnedTemplateSignature.set(signature);
+}
+
+void Classifier::setOwnedTemplateSignature(RedefinableTemplateSignature& signature) {
+    m_classifierOwnedTemplateSignature.set(signature);
+}
+
+void Classifier::setOwnedTemplateSignature(RedefinableTemplateSignaturePtr signature) {
+    m_classifierOwnedTemplateSignature.set(signature);
+}
+
+void Classifier::setOwnedTemplateSignature(ID id) {
+    m_classifierOwnedTemplateSignature.set(id);
 }
 
 bool Classifier::isSubClassOf(ElementType eType) const {

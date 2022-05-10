@@ -4417,11 +4417,13 @@ void emitPackageImport(YAML::Emitter& emitter, PackageImport& import, EmitterMet
 
 void parseRedefinableTemplateSignature(YAML::Node node, RedefinableTemplateSignature& signature, ParserMetaData& data) {
     parseTemplateSignature(node, signature, data);
+    parseSetReferences<RedefinableTemplateSignature, RedefinableTemplateSignature>(node, data, "extendedSignatures", signature, &RedefinableTemplateSignature::getExtendedSignatures);
 }
 
 void emitRedefinableTemplateSignature(YAML::Emitter& emitter, RedefinableTemplateSignature& signature, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::REDEFINABLE_TEMPLATE_SIGNATURE, "redefinableTemplateSignature", signature, data);
     emitTemplateSignature(emitter, signature, data);
+    emitSequenceReferences(emitter, "extendedSignatures", data, signature, &RedefinableTemplateSignature::getExtendedSignatures);
     emitElementDefenitionEnd(emitter, ElementType::REDEFINABLE_TEMPLATE_SIGNATURE, signature);
 }
 

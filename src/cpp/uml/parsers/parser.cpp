@@ -94,7 +94,7 @@ void parseSetReferences(YAML::Node node, ParserMetaData& data, std::string key, 
  * @param signature, the signature of the sequence to add the parsed element to
  **/
 template <class T = Element, class U = Element, class S = Set<T,U>>
-void parseAndAddToSequence(YAML::Node node, ParserMetaData& data, U& el, S& (U::* signature)()) {
+void parseAndAddToSet(YAML::Node node, ParserMetaData& data, U& el, S& (U::* signature)()) {
     if (data.m_strategy == ParserStrategy::WHOLE) {
         ElementPtr packagedEl = parseExternalAddToManager(data, node.as<std::string>());
         if (!packagedEl) {
@@ -139,7 +139,7 @@ void parseAndSetSingleton(YAML::Node node, ParserMetaData& data, U& el, void (U:
  * @param parserSignature, the signature of the function we are using to parse it's children in WHOLE parser strategy mode
  **/
 template <class T = Element, class U = Element, class S = Set<T,U>>
-void parseSequenceDefinitions(YAML::Node node, ParserMetaData& data, string key, U& owner, S& (U::*sequenceSignature)(), T& (*parserSignature)(YAML::Node, ParserMetaData&)) {
+void parseSetDefinitions(YAML::Node node, ParserMetaData& data, string key, U& owner, S& (U::*sequenceSignature)(), T& (*parserSignature)(YAML::Node, ParserMetaData&)) {
     if (node[key]) {
         if (node[key].IsSequence()) {
             for (size_t i = 0; i < node[key].size(); i++) {
@@ -147,7 +147,7 @@ void parseSequenceDefinitions(YAML::Node node, ParserMetaData& data, string key,
                     (owner.*sequenceSignature)().add((*parserSignature)(node[key][i], data));
                 }
                 else if (node[key][i].IsScalar()) {
-                    parseAndAddToSequence<T,U,S>(node[key][i], data, owner, sequenceSignature);
+                    parseAndAddToSet<T,U,S>(node[key][i], data, owner, sequenceSignature);
                 }
                 else {
                     throw UmlParserException("Invalid yaml node type for " + key + " entry, must be a scalar or map!", data.m_path.string(), node[key][i]);
@@ -1817,7 +1817,7 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
 }
 
 template <class T = Element, class U = Element, class S = Set<T,U>> 
-void emitSequence(YAML::Emitter& emitter, string sequenceName, EmitterMetaData& data, U& el, S& (U::* sequenceMethod)()) {
+void emitSetDefinitions(YAML::Emitter& emitter, string sequenceName, EmitterMetaData& data, U& el, S& (U::* sequenceMethod)()) {
     if (!(el.*sequenceMethod)().empty()) {
         emitter << YAML::Key << sequenceName << YAML::Value << YAML::BeginSeq;
         if (data.m_strategy == EmitterStrategy::WHOLE) {
@@ -1834,7 +1834,7 @@ void emitSequence(YAML::Emitter& emitter, string sequenceName, EmitterMetaData& 
 }
 
 template<class T = Element, class U =  Element, class S = Set<T,U>>
-void emitSequenceReferences(YAML::Emitter& emitter, std::string sequenceName, EmitterMetaData& data, U& el, S& (U::* sequenceMethod)()) {
+void emitSetReferences(YAML::Emitter& emitter, std::string sequenceName, EmitterMetaData& data, U& el, S& (U::* sequenceMethod)()) {
     if (!(el.*sequenceMethod)().empty()) {
         emitter << YAML::Key << sequenceName << YAML::Value << YAML::BeginSeq;
         for (ID id : (el.*sequenceMethod)().ids()) {
@@ -1910,14 +1910,14 @@ void parseElement(YAML::Node node, Element& el, ParserMetaData& data) {
             throw UmlParserException("Improper YAML node type for id field, must be scalar, " , data.m_path.string(), node["id"]);
         }
     }
-    parseSequenceDefinitions<Comment, Element, Set<Comment,Element>>(node, data, "ownedComments", el, &Element::getOwnedComments, determineAndParseOwnedComment);
-    parseSequenceDefinitions(node, data, "appliedStereotypes", el, &Element::getAppliedStereotypes, determinAndParseAppliedStereotype);
+    parseSetDefinitions<Comment, Element, Set<Comment,Element>>(node, data, "ownedComments", el, &Element::getOwnedComments, determineAndParseOwnedComment);
+    parseSetDefinitions(node, data, "appliedStereotypes", el, &Element::getAppliedStereotypes, determinAndParseAppliedStereotype);
 }
 
 void emitElement(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     emitter << YAML::Key << "id" << YAML::Value << el.getID().string();
-    emitSequence(emitter, "ownedComments", data, el, &Element::getOwnedComments);
-    emitSequence(emitter, "appliedStereotypes", data, el, &Element::getAppliedStereotypes);
+    emitSetDefinitions(emitter, "ownedComments", data, el, &Element::getOwnedComments);
+    emitSetDefinitions(emitter, "appliedStereotypes", data, el, &Element::getAppliedStereotypes);
 }
 
 void parseNamedElement(YAML::Node node, NamedElement& el, ParserMetaData& data) {
@@ -1990,7 +1990,7 @@ void emitNamedElement(YAML::Emitter& emitter, NamedElement& el, EmitterMetaData&
             }
         }
         if (emitClientDependenciesFlag) {
-            emitSequenceReferences<Dependency, NamedElement>(emitter, "clientDependencies", data, el, &NamedElement::getClientDependencies);
+            emitSetReferences<Dependency, NamedElement>(emitter, "clientDependencies", data, el, &NamedElement::getClientDependencies);
         }
     }
 }
@@ -2017,7 +2017,7 @@ void emitClassifier(YAML::Emitter& emitter, Classifier& clazz, EmitterMetaData& 
     emitNamespace(emitter, clazz, data);
     emitTemplateableElement(emitter, clazz, data);
     emitParameterableElement(emitter, clazz, data);
-    emitSequence(emitter, "generalizations", data, clazz, &Classifier::getGeneralizations);
+    emitSetDefinitions(emitter, "generalizations", data, clazz, &Classifier::getGeneralizations);
     if (!clazz.getPowerTypeExtent().empty()) {
         emitter << YAML::Key << "powertypeExtents" << YAML::Value << YAML::BeginSeq;
         for (const ID id : clazz.getPowerTypeExtent().ids()) {
@@ -2081,15 +2081,15 @@ Operation& determineAndParseOwnedOperation(YAML::Node node, ParserMetaData& data
 
 void parseDataType(YAML::Node node, DataType& dataType, ParserMetaData& data) {
     parseClassifier(node, dataType, data);
-    parseSequenceDefinitions(node, data, "ownedAttributes", dataType, &DataType::getOwnedAttributes, determineAndParseOwnedAttribute);
-    parseSequenceDefinitions(node, data, "ownedOperations", dataType, &DataType::getOwnedOperations, determineAndParseOwnedOperation);
+    parseSetDefinitions(node, data, "ownedAttributes", dataType, &DataType::getOwnedAttributes, determineAndParseOwnedAttribute);
+    parseSetDefinitions(node, data, "ownedOperations", dataType, &DataType::getOwnedOperations, determineAndParseOwnedOperation);
 }
 
 void emitDataType(YAML::Emitter& emitter, DataType& dataType, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::DATA_TYPE, "dataType", dataType, data);
     emitClassifier(emitter, dataType, data);
-    emitSequence(emitter, "ownedAttributes", data, dataType, &DataType::getOwnedAttributes);
-    emitSequence(emitter, "ownedOperations", data, dataType, &DataType::getOwnedOperations);
+    emitSetDefinitions(emitter, "ownedAttributes", data, dataType, &DataType::getOwnedAttributes);
+    emitSetDefinitions(emitter, "ownedOperations", data, dataType, &DataType::getOwnedOperations);
     emitElementDefenitionEnd(emitter, ElementType::DATA_TYPE, dataType);
 }
 
@@ -2113,14 +2113,14 @@ Connector& determineAndParseConnector(YAML::Node node, ParserMetaData& data) {
 
 void parseStructuredClassifier(YAML::Node node, StructuredClassifier& clazz, ParserMetaData& data) {
     parseClassifier(node, clazz, data);
-    parseSequenceDefinitions(node, data, "ownedAttributes", clazz, &StructuredClassifier::getOwnedAttributes, determineAndParseOwnedAttribute);
-    parseSequenceDefinitions(node, data, "ownedConnectors", clazz, &StructuredClassifier::getOwnedConnectors, determineAndParseConnector);
+    parseSetDefinitions(node, data, "ownedAttributes", clazz, &StructuredClassifier::getOwnedAttributes, determineAndParseOwnedAttribute);
+    parseSetDefinitions(node, data, "ownedConnectors", clazz, &StructuredClassifier::getOwnedConnectors, determineAndParseConnector);
 }
 
 void emitStructuredClassifier(YAML::Emitter& emitter, StructuredClassifier& clazz, EmitterMetaData& data) {
     emitClassifier(emitter, clazz, data);
-    emitSequence(emitter, "ownedAttributes", data, clazz, &StructuredClassifier::getOwnedAttributes);
-    emitSequence(emitter, "ownedConnectors", data, clazz, &StructuredClassifier::getOwnedConnectors);
+    emitSetDefinitions(emitter, "ownedAttributes", data, clazz, &StructuredClassifier::getOwnedAttributes);
+    emitSetDefinitions(emitter, "ownedConnectors", data, clazz, &StructuredClassifier::getOwnedConnectors);
 }
 
 Classifier& determineAndParseClassifier(YAML::Node node, ParserMetaData& data) {
@@ -2222,18 +2222,18 @@ Reception& determineAndParseOwnedReception(YAML::Node node, ParserMetaData& data
 void parseClass(YAML::Node node, Class& clazz, ParserMetaData& data) {
     parseStructuredClassifier(node, clazz, data);
     parseBehavioredClassifier(node, clazz, data);
-    parseSequenceDefinitions(node, data, "ownedOperations", clazz, &Class::getOwnedOperations, determineAndParseOwnedOperation);
-    parseSequenceDefinitions(node, data, "nestedClassifiers", clazz, &Class::getNestedClassifiers, determineAndParseClassifier);
-    parseSequenceDefinitions(node, data, "ownedReceptions", clazz, &Class::getOwnedReceptions, determineAndParseOwnedReception);
+    parseSetDefinitions(node, data, "ownedOperations", clazz, &Class::getOwnedOperations, determineAndParseOwnedOperation);
+    parseSetDefinitions(node, data, "nestedClassifiers", clazz, &Class::getNestedClassifiers, determineAndParseClassifier);
+    parseSetDefinitions(node, data, "ownedReceptions", clazz, &Class::getOwnedReceptions, determineAndParseOwnedReception);
 }
 
 void emitClass(YAML::Emitter& emitter, Class& clazz, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::CLASS, "class", clazz, data);
     emitStructuredClassifier(emitter, clazz, data);
     emitBehavioredClassifier(emitter, clazz, data);
-    emitSequence(emitter, "ownedOperations", data, clazz, &Class::getOwnedOperations);
-    emitSequence(emitter, "nestedClassifiers", data, clazz, &Class::getNestedClassifiers);
-    emitSequence(emitter, "ownedReceptions", data, clazz, &Class::getOwnedReceptions);
+    emitSetDefinitions(emitter, "ownedOperations", data, clazz, &Class::getOwnedOperations);
+    emitSetDefinitions(emitter, "nestedClassifiers", data, clazz, &Class::getNestedClassifiers);
+    emitSetDefinitions(emitter, "ownedReceptions", data, clazz, &Class::getOwnedReceptions);
     emitElementDefenitionEnd(emitter, ElementType::CLASS, clazz);
 }
 
@@ -2253,13 +2253,13 @@ Parameter& determineAndParseParameter(YAML::Node node, ParserMetaData& data) {
 
 void parseBehavior(YAML::Node node, Behavior& bhv, ParserMetaData& data) {
     parseClass(node, bhv, data);
-    parseSequenceDefinitions(node, data, "ownedParameters", bhv, &Behavior::getOwnedParameters, determineAndParseParameter);
+    parseSetDefinitions(node, data, "ownedParameters", bhv, &Behavior::getOwnedParameters, determineAndParseParameter);
     parseSingletonReference(node, data, "specification", bhv, &Behavior::setSpecification, &Behavior::setSpecification);
 }
 
 void emitBehavior(YAML::Emitter& emitter, Behavior& bhv, EmitterMetaData& data) {
     emitClass(emitter, bhv, data);
-    emitSequence(emitter, "ownedParameters", data, bhv, &Behavior::getOwnedParameters);
+    emitSetDefinitions(emitter, "ownedParameters", data, bhv, &Behavior::getOwnedParameters);
     if (bhv.getSpecification()) {
         emitter << YAML::Key << "specification" << YAML::Value << bhv.getSpecification().id().string();
     }
@@ -2301,7 +2301,7 @@ void parseOpaqueBehavior(YAML::Node node, OpaqueBehavior& bhv, ParserMetaData& d
 void emitOpaqueBehavior(YAML::Emitter& emitter, OpaqueBehavior& bhv, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::OPAQUE_BEHAVIOR, "opaqueBehavior", bhv, data);
     emitBehavior(emitter, bhv, data);
-    emitSequence(emitter, "bodies", data, bhv, &OpaqueBehavior::getBodies);
+    emitSetDefinitions(emitter, "bodies", data, bhv, &OpaqueBehavior::getBodies);
     emitElementDefenitionEnd(emitter, ElementType::OPAQUE_BEHAVIOR, bhv);
 }
 
@@ -2410,7 +2410,7 @@ void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data)
         emit(emitter, *prop.getDefaultValue(), data);
     }
 
-    emitSequenceReferences(emitter, "redefinedProperties", data, prop, &Property::getRedefinedProperties);
+    emitSetReferences(emitter, "redefinedProperties", data, prop, &Property::getRedefinedProperties);
 
     if (prop.getAssociation()) {
         emitter << YAML::Key << "association" << YAML::Value << prop.getAssociation().id().string();
@@ -2439,6 +2439,28 @@ void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data) {
         } else {
             throw UmlParserException("Improper YAML node type for direction, must be scalar, ", data.m_path.string(), node["direction"]);
         }
+    }
+    parseSingletonDefinition(node, data, "defaultValue", el, determineAndParseValueSpecification, &Parameter::setDefaultValue, &Parameter::setDefaultValue);
+    if (node["effect"]) {
+        if (node["effect"].as<std::string>().compare("NONE") == 0) {
+            el.setEffect(ParameterEffectKind::NONE);
+        } else if (node["effect"].as<std::string>().compare("CREATE") == 0) {
+            el.setEffect(ParameterEffectKind::CREATE);
+        } else if (node["effect"].as<std::string>().compare("READ") == 0) {
+            el.setEffect(ParameterEffectKind::READ);
+        } else if (node["effect"].as<std::string>().compare("UPDATE") == 0) {
+            el.setEffect(ParameterEffectKind::UPDATE);
+        } else if (node["effect"].as<std::string>().compare("DELETE") == 0) {
+            el.setEffect(ParameterEffectKind::DELETE);
+        } else {
+            throw UmlParserException("unknown effect kind!", data.m_path.string(), node["effect"]);
+        }
+    }
+    if (node["isException"]) {
+        el.setIsException(node["isException"].as<bool>());
+    }
+    if (node["isStream"]) {
+        el.setIsStream(node["isStream"].as<bool>());
     }
 }
 
@@ -2470,7 +2492,35 @@ void emitParameter(YAML::Emitter& emitter, Parameter& el, EmitterMetaData& data)
         }
         emitter << YAML::Key << "direction" << YAML::Value << direction;
     }
-
+    emitSingletonDefinition(emitter, "defaultValue", data, el, &Parameter::getDefaultValue);
+    if (el.getEffect() != ParameterEffectKind::NONE) {
+        std::string effect;
+        switch (el.getEffect()) {
+            case ParameterEffectKind::CREATE : {
+                effect = "CREATE";
+                break;
+            }
+            case ParameterEffectKind::READ : {
+                effect = "READ";
+                break;
+            }
+            case ParameterEffectKind::UPDATE : {
+                effect = "UPDATE";
+                break;
+            }
+            case ParameterEffectKind::DELETE : {
+                effect = "DELETE";
+                break;
+            }
+        }
+        emitter << YAML::Key << "effect" << YAML::Value << effect;
+    }
+    if (el.isException()) {
+        emitter << YAML::Key << "isException" << YAML::Value << true;
+    }
+    if (el.isStream()) {
+        emitter << YAML::Key << "isStream" << YAML::Value << true;
+    }
     emitElementDefenitionEnd(emitter, ElementType::PARAMETER, el);
 }
 
@@ -2606,10 +2656,10 @@ void parsePackage(YAML::Node node, Package& pckg, ParserMetaData& data) {
     parseNamespace(node, pckg, data);
     parseTemplateableElement(node, pckg, data);
     parseParameterableElement(node, pckg, data);
-    parseSequenceDefinitions(node, data, "packageMerges", pckg, &Package::getPackageMerge, determineAndParsePackageMerge);
-    parseSequenceDefinitions(node, data, "profileApplications", pckg, &Package::getProfileApplications, determineAndParseProfileApplication);
-    parseSequenceDefinitions(node, data, "packagedElements", pckg, &Package::getPackagedElements, determineAndParsePackageableElement);
-    parseSequenceDefinitions(node, data, "ownedStereotypes", pckg, &Package::getOwnedStereotypes, determineAndParseStereotype);
+    parseSetDefinitions(node, data, "packageMerges", pckg, &Package::getPackageMerge, determineAndParsePackageMerge);
+    parseSetDefinitions(node, data, "profileApplications", pckg, &Package::getProfileApplications, determineAndParseProfileApplication);
+    parseSetDefinitions(node, data, "packagedElements", pckg, &Package::getPackagedElements, determineAndParsePackageableElement);
+    parseSetDefinitions(node, data, "ownedStereotypes", pckg, &Package::getOwnedStereotypes, determineAndParseStereotype);
 }
 
 void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
@@ -2617,8 +2667,8 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
     emitNamespace(emitter, pckg, data);
     emitTemplateableElement(emitter, pckg, data);
     emitParameterableElement(emitter, pckg, data);
-    emitSequence(emitter, "packageMerges", data, pckg, &Package::getPackageMerge);
-    emitSequence(emitter, "profileApplications", data, pckg, &Package::getProfileApplications);
+    emitSetDefinitions(emitter, "packageMerges", data, pckg, &Package::getPackageMerge);
+    emitSetDefinitions(emitter, "profileApplications", data, pckg, &Package::getProfileApplications);
 
     //special handling
     if (pckg.getPackagedElements().size() > pckg.getOwnedStereotypes().size()) {
@@ -2652,7 +2702,7 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
         }
         emitter << YAML::EndSeq;
     }
-    // emitSequence(emitter, "packagedElements", data, pckg, &Package::getPackagedElements);
+    // emitSetDefinitions(emitter, "packagedElements", data, pckg, &Package::getPackagedElements);
 
     emitElementDefenitionEnd(emitter, ElementType::PACKAGE, pckg);
 }
@@ -2737,7 +2787,7 @@ void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& in
         emitter << YAML::EndSeq;
     }
     
-    emitSequence(emitter, "slots", data, inst, &InstanceSpecification::getSlots);
+    emitSetDefinitions(emitter, "slots", data, inst, &InstanceSpecification::getSlots);
     if (inst.getSpecification()) {
         emitter << YAML::Key << "specification" << YAML::Value;
         emit(emitter, *inst.getSpecification(), data);
@@ -2751,7 +2801,7 @@ void emitSlot(YAML::Emitter& emitter, Slot& slot, EmitterMetaData& data) {
     if (slot.getDefiningFeature()) {
         emitter << YAML::Key << "definingFeature" << YAML::Value << slot.getDefiningFeature()->getID().string();
     }
-    emitSequence(emitter, "values", data, slot, &Slot::getValues);
+    emitSetDefinitions(emitter, "values", data, slot, &Slot::getValues);
     emitElementDefenitionEnd(emitter, ElementType::SLOT, slot);
 }
 
@@ -2765,13 +2815,13 @@ EnumerationLiteral& determineAndParseEnumerationLiteral(YAML::Node node, ParserM
 
 void parseEnumeration(YAML::Node node, Enumeration& enumeration, ParserMetaData& data) {
     parseDataType(node, enumeration, data);
-    parseSequenceDefinitions(node, data, "ownedLiterals", enumeration, &Enumeration::getOwnedLiterals, determineAndParseEnumerationLiteral);
+    parseSetDefinitions(node, data, "ownedLiterals", enumeration, &Enumeration::getOwnedLiterals, determineAndParseEnumerationLiteral);
 }
 
 void emitEnumeration(YAML::Emitter& emitter, Enumeration& enumeration, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::ENUMERATION, "enumeration", enumeration, data);
     emitDataType(emitter, enumeration, data);
-    emitSequence(emitter, "ownedLiterals", data, enumeration, &Enumeration::getOwnedLiterals);
+    emitSetDefinitions(emitter, "ownedLiterals", data, enumeration, &Enumeration::getOwnedLiterals);
     emitElementDefenitionEnd(emitter, ElementType::ENUMERATION, enumeration);
 }
 
@@ -2954,7 +3004,7 @@ void parseExpression(YAML::Node node, Expression& exp, ParserMetaData& data) {
             throw UmlParserException("Invalid YAML node type for Expression field symbol, must be scalar, ", data.m_path.string(), node["symbol"]);
         }
     }
-    parseSequenceDefinitions(node, data, "operands", exp, &Expression::getOperands, &determineAndParseValueSpecification);
+    parseSetDefinitions(node, data, "operands", exp, &Expression::getOperands, &determineAndParseValueSpecification);
 }
 
 void emitExpression(YAML::Emitter& emitter, Expression& exp, EmitterMetaData& data) {
@@ -2964,7 +3014,7 @@ void emitExpression(YAML::Emitter& emitter, Expression& exp, EmitterMetaData& da
     if (!exp.getSymbol().empty()) {
         emitter << YAML::Key << "symbol" << YAML::Value << exp.getSymbol();
     }
-    emitSequence(emitter, "operands", data, exp, &Expression::getOperands);
+    emitSetDefinitions(emitter, "operands", data, exp, &Expression::getOperands);
 
     emitElementDefenitionEnd(emitter, ElementType::EXPRESSION, exp);
 }
@@ -2996,7 +3046,7 @@ void emitTemplateableElement(YAML::Emitter& emitter, TemplateableElement& el, Em
             emitter << el.getOwnedTemplateSignature().id().string() + ".yml";
         }
     }
-    emitSequence(emitter, "templateBindings", data, el, &TemplateableElement::getTemplateBindings);
+    emitSetDefinitions(emitter, "templateBindings", data, el, &TemplateableElement::getTemplateBindings);
 }
 
 TemplateParameter& determineAndParseTemplateParameter(YAML::Node node, ParserMetaData& data) {
@@ -3011,7 +3061,7 @@ TemplateParameter& determineAndParseTemplateParameter(YAML::Node node, ParserMet
 
 void parseTemplateSignature(YAML::Node node, TemplateSignature& signature, ParserMetaData& data) {
     parseElement(node, signature, data);
-    parseSequenceDefinitions(node, data, "ownedParameters", signature, &TemplateSignature::getOwnedParameters, determineAndParseTemplateParameter);
+    parseSetDefinitions(node, data, "ownedParameters", signature, &TemplateSignature::getOwnedParameters, determineAndParseTemplateParameter);
     parseSetReferences<TemplateParameter, TemplateSignature>(node, data, "parameters", signature, &TemplateSignature::getParameters);
 }
 
@@ -3020,7 +3070,7 @@ void emitTemplateSignature(YAML::Emitter& emitter, TemplateSignature& signature,
     emitElementDefenition(emitter, ElementType::TEMPLATE_SIGNATURE, "templateSignature", signature, data);
 
     emitElement(emitter, signature, data);
-    emitSequence(emitter, "ownedParameters", data, signature, &TemplateSignature::getOwnedParameters);
+    emitSetDefinitions(emitter, "ownedParameters", data, signature, &TemplateSignature::getOwnedParameters);
     // special handling
     if (signature.getParameters().size() > signature.getOwnedParameters().size()) {
         emitter << YAML::Key << "parameters" << YAML::Value << YAML::BeginSeq;
@@ -3245,7 +3295,7 @@ void emitTemplateBinding(YAML::Emitter& emitter, TemplateBinding& binding, Emitt
     if (binding.getSignature()) {
         emitter << YAML::Key << "signature" << YAML::Value << binding.getSignature()->getID().string();
     }
-    emitSequence(emitter, "parameterSubstitutions", data, binding, &TemplateBinding::getParameterSubstitutions);
+    emitSetDefinitions(emitter, "parameterSubstitutions", data, binding, &TemplateBinding::getParameterSubstitutions);
 
     if (binding.getElementType() == ElementType::TEMPLATE_BINDING) {
         emitter << YAML::EndMap;// << YAML::EndMap;
@@ -3279,8 +3329,8 @@ void emitTemplateParameterSubstitution(YAML::Emitter& emitter, TemplateParameter
 
 void parseAssociation(YAML::Node node, Association& association, ParserMetaData& data) {
     parseClassifier(node, association, data);
-    parseSequenceDefinitions(node, data, "navigableOwnedEnds", association, &Association::getNavigableOwnedEnds, determineAndParseOwnedAttribute);
-    parseSequenceDefinitions(node, data, "ownedEnds", association, &Association::getOwnedEnds, determineAndParseOwnedAttribute);
+    parseSetDefinitions(node, data, "navigableOwnedEnds", association, &Association::getNavigableOwnedEnds, determineAndParseOwnedAttribute);
+    parseSetDefinitions(node, data, "ownedEnds", association, &Association::getOwnedEnds, determineAndParseOwnedAttribute);
     parseSetReferences<Property, Association>(node, data, "memberEnds", association, &Association::getMemberEnds);
 }
 
@@ -3288,7 +3338,7 @@ void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMe
     emitElementDefenition(emitter, ElementType::ASSOCIATION, "association", association, data);
 
     emitClassifier(emitter, association, data);
-    emitSequence(emitter, "navigableOwnedEnds", data, association, &Association::getNavigableOwnedEnds);
+    emitSetDefinitions(emitter, "navigableOwnedEnds", data, association, &Association::getNavigableOwnedEnds);
     // special handling
     if (association.getOwnedEnds().size() > association.getNavigableOwnedEnds().size() && !association.getOwnedEnds().empty()) {
         emitter << YAML::Key << "ownedEnds" << YAML::Value << YAML::BeginSeq;
@@ -3393,7 +3443,7 @@ void emitComment(YAML::Emitter& emitter, Comment& comment, EmitterMetaData& data
     if (!comment.getBody().empty()) {
         emitter << YAML::Key << "body" << YAML::Value << comment.getBody();
     }
-    emitSequenceReferences(emitter, "annotatedElements", data, comment, &Comment::getAnnotatedElements);
+    emitSetReferences(emitter, "annotatedElements", data, comment, &Comment::getAnnotatedElements);
 
     emitElementDefenitionEnd(emitter, ElementType::COMMENT, comment);
 }
@@ -3467,19 +3517,19 @@ Manifestation& determineAndParseManifestation(YAML::Node node, ParserMetaData& d
 
 void parseArtifact(YAML::Node node, Artifact& artifact, ParserMetaData& data) {
     parseClassifier(node, artifact, data);
-    parseSequenceDefinitions(node, data, "ownedAttributes", artifact, &Artifact::getOwnedAttributes, determineAndParseOwnedAttribute);
-    parseSequenceDefinitions(node, data, "ownedOperations", artifact, &Artifact::getOwnedOperations, determineAndParseOwnedOperation);
-    parseSequenceDefinitions(node, data, "nestedArtifacts", artifact, &Artifact::getNestedArtifacts, determineAndParseArtifact);
-    parseSequenceDefinitions(node, data, "manifestations", artifact, &Artifact::getManifestations, determineAndParseManifestation);
+    parseSetDefinitions(node, data, "ownedAttributes", artifact, &Artifact::getOwnedAttributes, determineAndParseOwnedAttribute);
+    parseSetDefinitions(node, data, "ownedOperations", artifact, &Artifact::getOwnedOperations, determineAndParseOwnedOperation);
+    parseSetDefinitions(node, data, "nestedArtifacts", artifact, &Artifact::getNestedArtifacts, determineAndParseArtifact);
+    parseSetDefinitions(node, data, "manifestations", artifact, &Artifact::getManifestations, determineAndParseManifestation);
 }
 
 void emitArtifact(YAML::Emitter& emitter, Artifact& artifact, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::ARTIFACT, "artifact", artifact, data);
     emitClassifier(emitter, artifact, data);
-    emitSequence(emitter, "ownedAttributes", data, artifact, &Artifact::getOwnedAttributes);
-    emitSequence(emitter, "ownedOperations", data, artifact, &Artifact::getOwnedOperations);
-    emitSequence(emitter, "nestedArtifacts", data, artifact, &Artifact::getNestedArtifacts);
-    emitSequence(emitter, "manifestations", data, artifact, &Artifact::getManifestations);
+    emitSetDefinitions(emitter, "ownedAttributes", data, artifact, &Artifact::getOwnedAttributes);
+    emitSetDefinitions(emitter, "ownedOperations", data, artifact, &Artifact::getOwnedOperations);
+    emitSetDefinitions(emitter, "nestedArtifacts", data, artifact, &Artifact::getNestedArtifacts);
+    emitSetDefinitions(emitter, "manifestations", data, artifact, &Artifact::getManifestations);
     emitElementDefenitionEnd(emitter, ElementType::ARTIFACT, artifact);
 }
 
@@ -3492,11 +3542,11 @@ Deployment& determineAndParseDeployment(YAML::Node node, ParserMetaData& data) {
 }
 
 void parseDeploymentTarget(YAML::Node node, DeploymentTarget& target, ParserMetaData& data) {
-    parseSequenceDefinitions(node, data, "deployments", target, &DeploymentTarget::getDeployments, determineAndParseDeployment);
+    parseSetDefinitions(node, data, "deployments", target, &DeploymentTarget::getDeployments, determineAndParseDeployment);
  }
 
 void emitDeploymentTarget(YAML::Emitter& emitter, DeploymentTarget& target, EmitterMetaData& data) {
-    emitSequence(emitter, "deployments", data, target, &DeploymentTarget::getDeployments);
+    emitSetDefinitions(emitter, "deployments", data, target, &DeploymentTarget::getDeployments);
 }
 
 Behavior& determineAndParseBehavior(YAML::Node node, ParserMetaData& data) {
@@ -3510,11 +3560,11 @@ Behavior& determineAndParseBehavior(YAML::Node node, ParserMetaData& data) {
 }
 
 void emitBehavioredClassifier(YAML::Emitter& emitter, BehavioredClassifier& classifier, EmitterMetaData& data) {
-    emitSequence(emitter, "ownedBehaviors", data, classifier, &BehavioredClassifier::getOwnedBehaviors);
+    emitSetDefinitions(emitter, "ownedBehaviors", data, classifier, &BehavioredClassifier::getOwnedBehaviors);
     if (classifier.getClassifierBehavior()) {
         emitter << YAML::Key << "classifierBehavior" << YAML::Value << classifier.getClassifierBehavior().id().string();
     }
-    emitSequence(emitter, "interfaceRealizations", data, classifier, &BehavioredClassifier::getInterfaceRealizations);
+    emitSetDefinitions(emitter, "interfaceRealizations", data, classifier, &BehavioredClassifier::getInterfaceRealizations);
 }
 
 void emitManifestation(YAML::Emitter& emitter, Manifestation& manifestation, EmitterMetaData& data) {
@@ -3567,7 +3617,7 @@ void parseClassifier(YAML::Node node, Classifier& clazz, ParserMetaData& data) {
     parseNamespace(node, clazz, data);
     parseTemplateableElement(node, clazz, data);
     parseParameterableElement(node, clazz, data);
-    parseSequenceDefinitions(node, data, "generalizations", clazz, &Classifier::getGeneralizations, determineAndParseGeneralization);
+    parseSetDefinitions(node, data, "generalizations", clazz, &Classifier::getGeneralizations, determineAndParseGeneralization);
     parseSetReferences<GeneralizationSet, Classifier>(node, data, "powertypeExtents", clazz, &Classifier::getPowerTypeExtent);
 }
 
@@ -3585,7 +3635,7 @@ void parsePackageMerge(YAML::Node node, PackageMerge& merge, ParserMetaData& dat
 void parseSlot(YAML::Node node, Slot& slot, ParserMetaData& data) {
     parseElement(node, slot, data);
     parseSingletonReference(node, data, "definingFeature", slot, &Slot::setDefiningFeature, &Slot::setDefiningFeature);
-    parseSequenceDefinitions(node, data, "values", slot, &Slot::getValues, &determineAndParseValueSpecification);
+    parseSetDefinitions(node, data, "values", slot, &Slot::getValues, &determineAndParseValueSpecification);
 }
 
 void parseInstanceValue(YAML::Node node, InstanceValue& val, ParserMetaData& data) {
@@ -3598,7 +3648,7 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
     parseDeploymentTarget(node, inst, data);
     parseParameterableElement(node, inst, data);
     parseSetReferences<Classifier, InstanceSpecification>(node, data, "classifiers", inst, &InstanceSpecification::getClassifiers);
-    parseSequenceDefinitions(node, data, "slots", inst, &InstanceSpecification::getSlots, determineAndParseSlot);
+    parseSetDefinitions(node, data, "slots", inst, &InstanceSpecification::getSlots, determineAndParseSlot);
     parseSingletonDefinition<ValueSpecification, InstanceSpecification>(node, data, "specification", inst, determineAndParseValueSpecification, &InstanceSpecification::setSpecification, &InstanceSpecification::setSpecification);
 }
 
@@ -3632,7 +3682,7 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
 
 void parseTemplateableElement(YAML::Node node, TemplateableElement& el, ParserMetaData& data) {
     parseSingletonDefinition(node, data, "ownedTemplateSignature", el, determineAndParseTemplateSignature, &TemplateableElement::setOwnedTemplateSignature, &TemplateableElement::setOwnedTemplateSignature);
-    parseSequenceDefinitions(node, data, "templateBindings", el, &TemplateableElement::getTemplateBindings, determineAndParseTemplateBinding);
+    parseSetDefinitions(node, data, "templateBindings", el, &TemplateableElement::getTemplateBindings, determineAndParseTemplateBinding);
 }
 
 void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, ParserMetaData& data) {
@@ -3648,7 +3698,7 @@ void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, Parse
 void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaData& data) {
     parseElement(node, binding, data);
     parseSingletonReference(node, data, "signature", binding, &TemplateBinding::setSignature, &TemplateBinding::setSignature);
-    parseSequenceDefinitions(node, data, "parameterSubstitutions", binding, &TemplateBinding::getParameterSubstitutions, determineAndParseTemplateParameterSubstitution);
+    parseSetDefinitions(node, data, "parameterSubstitutions", binding, &TemplateBinding::getParameterSubstitutions, determineAndParseTemplateParameterSubstitution);
 }
 
 void parseTemplateParameterSubstitution(YAML::Node node, TemplateParameterSubstitution& sub, ParserMetaData& data) {
@@ -3689,9 +3739,9 @@ InterfaceRealization& determineAndParseInterfaceRealization(YAML::Node node, Par
 }
 
 void parseBehavioredClassifier(YAML::Node node, BehavioredClassifier& classifier, ParserMetaData& data) {
-    parseSequenceDefinitions(node, data, "ownedBehaviors", classifier, &BehavioredClassifier::getOwnedBehaviors, determineAndParseBehavior);
+    parseSetDefinitions(node, data, "ownedBehaviors", classifier, &BehavioredClassifier::getOwnedBehaviors, determineAndParseBehavior);
     parseSingletonReference(node, data, "classifierBehavior", classifier, &BehavioredClassifier::setClassifierBehavior, &BehavioredClassifier::setClassifierBehavior);
-    parseSequenceDefinitions(node, data, "interfaceRealizations", classifier, &BehavioredClassifier::getInterfaceRealizations, determineAndParseInterfaceRealization);
+    parseSetDefinitions(node, data, "interfaceRealizations", classifier, &BehavioredClassifier::getInterfaceRealizations, determineAndParseInterfaceRealization);
 }
 
 void parseGeneralizationSet(YAML::Node node, GeneralizationSet& generalizationSet, ParserMetaData& data) {
@@ -3728,7 +3778,7 @@ ConnectorEnd& determineAndParseConnectorEnd(YAML::Node node, ParserMetaData& dat
 
 void parseConnector(YAML::Node node, Connector& connector, ParserMetaData& data) {
     parseNamedElement(node, connector, data);
-    parseSequenceDefinitions(node, data, "ends", connector, &Connector::getEnds, &determineAndParseConnectorEnd);
+    parseSetDefinitions(node, data, "ends", connector, &Connector::getEnds, &determineAndParseConnectorEnd);
     parseSingletonReference(node, data, "type", connector, &Connector::setType, &Connector::setType);
     parseSetReferences<Behavior, Connector>(node, data, "contracts", connector, &Connector::getContracts);
     // todo kind
@@ -3737,7 +3787,7 @@ void parseConnector(YAML::Node node, Connector& connector, ParserMetaData& data)
 void emitConnector(YAML::Emitter& emitter, Connector& connector, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::CONNECTOR, "connector", connector, data);
     emitNamedElement(emitter, connector, data);
-    emitSequence(emitter, "ends", data, connector, &Connector::getEnds);
+    emitSetDefinitions(emitter, "ends", data, connector, &Connector::getEnds);
     if (connector.getType()) {
         emitter << YAML::Key << "type" << YAML::Value << connector.getType().id().string();
     }
@@ -3809,17 +3859,17 @@ void emitPort(YAML::Emitter& emitter, Port& port, EmitterMetaData& data) {
 
 void parseInterface(YAML::Node node, Interface& interface_uml, ParserMetaData& data) {
     parseClassifier(node, interface_uml, data);
-    parseSequenceDefinitions(node, data, "ownedAttributes", interface_uml, &Interface::getOwnedAttributes, determineAndParseOwnedAttribute);
-    parseSequenceDefinitions(node, data, "ownedOperations", interface_uml, &Interface::getOwnedOperations, determineAndParseOwnedOperation);
-    parseSequenceDefinitions(node, data, "nestedClassifiers", interface_uml, &Interface::getNestedClassifiers, determineAndParseClassifier);
+    parseSetDefinitions(node, data, "ownedAttributes", interface_uml, &Interface::getOwnedAttributes, determineAndParseOwnedAttribute);
+    parseSetDefinitions(node, data, "ownedOperations", interface_uml, &Interface::getOwnedOperations, determineAndParseOwnedOperation);
+    parseSetDefinitions(node, data, "nestedClassifiers", interface_uml, &Interface::getNestedClassifiers, determineAndParseClassifier);
 }
 
 void emitInterface(YAML::Emitter& emitter, Interface& interface_uml, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::INTERFACE_UML, "interface", interface_uml, data);
     emitClassifier(emitter, interface_uml, data);
-    emitSequence(emitter, "ownedAttributes", data, interface_uml, &Interface::getOwnedAttributes);
-    emitSequence(emitter, "ownedOperations", data, interface_uml, &Interface::getOwnedOperations);
-    emitSequence(emitter, "nestedClassifiers", data, interface_uml, &Interface::getNestedClassifiers);
+    emitSetDefinitions(emitter, "ownedAttributes", data, interface_uml, &Interface::getOwnedAttributes);
+    emitSetDefinitions(emitter, "ownedOperations", data, interface_uml, &Interface::getOwnedOperations);
+    emitSetDefinitions(emitter, "nestedClassifiers", data, interface_uml, &Interface::getNestedClassifiers);
     emitElementDefenitionEnd(emitter, ElementType::INTERFACE_UML, interface_uml);
 }
 
@@ -3840,13 +3890,13 @@ void emitInterfaceRealization(YAML::Emitter& emitter, InterfaceRealization& real
 
 void parseSignal(YAML::Node node, Signal& signal, ParserMetaData& data) {
     parseClassifier(node, signal, data);
-    parseSequenceDefinitions(node, data, "ownedAttributes", signal, &Signal::getOwnedAttributes, determineAndParseOwnedAttribute);
+    parseSetDefinitions(node, data, "ownedAttributes", signal, &Signal::getOwnedAttributes, determineAndParseOwnedAttribute);
 }
 
 void emitSignal(YAML::Emitter& emitter, Signal& signal, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::SIGNAL, "signal", signal, data);
     emitClassifier(emitter, signal, data);
-    emitSequence(emitter, "ownedAttributes", data, signal, &Signal::getOwnedAttributes);
+    emitSetDefinitions(emitter, "ownedAttributes", data, signal, &Signal::getOwnedAttributes);
     emitElementDefenitionEnd(emitter, ElementType::SIGNAL, signal);
 }
 
@@ -3864,7 +3914,7 @@ void parseBehavioralFeature(YAML::Node node, BehavioralFeature& feature, ParserM
         }
     }
     parseSetReferences<Behavior, BehavioralFeature>(node, data, "methods", feature, &BehavioralFeature::getMethods);
-    parseSequenceDefinitions(node, data, "ownedParameters", feature, &BehavioralFeature::getOwnedParameters, determineAndParseParameter);
+    parseSetDefinitions(node, data, "ownedParameters", feature, &BehavioralFeature::getOwnedParameters, determineAndParseParameter);
     parseSetReferences<Type, BehavioralFeature>(node, data, "raisedExceptions", feature, &BehavioralFeature::getRaisedExceptions);
 }
 
@@ -3887,8 +3937,8 @@ void emitBehavioralFeature(YAML::Emitter& emitter, BehavioralFeature& feature, E
         }
         emitter << YAML::EndSeq;
     }
-    emitSequence(emitter, "ownedParameters", data, feature, &BehavioralFeature::getOwnedParameters);
-    emitSequenceReferences(emitter, "raisedExceptions", data, feature, &BehavioralFeature::getRaisedExceptions);
+    emitSetDefinitions(emitter, "ownedParameters", data, feature, &BehavioralFeature::getOwnedParameters);
+    emitSetReferences(emitter, "raisedExceptions", data, feature, &BehavioralFeature::getRaisedExceptions);
 }
 
 void parseReception(YAML::Node node, Reception& reception, ParserMetaData& data) {
@@ -3959,18 +4009,18 @@ ActivityPartition& determineAndParseActivityPartition(YAML::Node node, ParserMet
 
 void parseActivity(YAML::Node node, Activity& activity, ParserMetaData& data) {
     parseBehavior(node, activity, data);
-    parseSequenceDefinitions(node, data, "nodes", activity, &Activity::getNodes, determineAndParseActivityNode);
-    parseSequenceDefinitions(node, data, "edges", activity, &Activity::getEdges, determineAndParseActivityEdge);
-    parseSequenceDefinitions(node, data, "partitions", activity, &Activity::getPartitions, determineAndParseActivityPartition);
+    parseSetDefinitions(node, data, "nodes", activity, &Activity::getNodes, determineAndParseActivityNode);
+    parseSetDefinitions(node, data, "edges", activity, &Activity::getEdges, determineAndParseActivityEdge);
+    parseSetDefinitions(node, data, "partitions", activity, &Activity::getPartitions, determineAndParseActivityPartition);
     // TODO groups, interruptibleActivityRegions
 }
 
 void emitActivity(YAML::Emitter& emitter, Activity& activity, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::ACTIVITY, "activity", activity, data);
     emitBehavior(emitter, activity, data);
-    emitSequence(emitter, "nodes", data, activity, &Activity::getNodes);
-    emitSequence(emitter, "edges", data, activity, &Activity::getEdges);
-    emitSequence(emitter, "partitions", data, activity, &Activity::getPartitions);
+    emitSetDefinitions(emitter, "nodes", data, activity, &Activity::getNodes);
+    emitSetDefinitions(emitter, "edges", data, activity, &Activity::getEdges);
+    emitSetDefinitions(emitter, "partitions", data, activity, &Activity::getPartitions);
     emitElementDefenitionEnd(emitter, ElementType::ACTIVITY, activity);
 }
 
@@ -3983,9 +4033,9 @@ void parseActivityNode(YAML::Node node, ActivityNode& activityNode, ParserMetaDa
 
 void emitActivityNode(YAML::Emitter& emitter, ActivityNode& activityNode, EmitterMetaData& data) {
     emitNamedElement(emitter, activityNode, data);
-    emitSequenceReferences(emitter, "incoming", data, activityNode, &ActivityNode::getIncoming);
-    emitSequenceReferences(emitter, "outgoing", data, activityNode, &ActivityNode::getOutgoing);
-    emitSequenceReferences(emitter, "inPartitions", data, activityNode, &ActivityNode::getInPartitions);
+    emitSetReferences(emitter, "incoming", data, activityNode, &ActivityNode::getIncoming);
+    emitSetReferences(emitter, "outgoing", data, activityNode, &ActivityNode::getOutgoing);
+    emitSetReferences(emitter, "inPartitions", data, activityNode, &ActivityNode::getInPartitions);
 }
 
 void parseActivityEdge(YAML::Node node, ActivityEdge& edge, ParserMetaData& data) {
@@ -4007,7 +4057,7 @@ void emitActivityEdge(YAML::Emitter& emitter, ActivityEdge& edge, EmitterMetaDat
     }
     emitSingletonDefinition(emitter, "guard", data, edge, &ActivityEdge::getGuard);
     emitSingletonDefinition(emitter, "weight", data, edge, &ActivityEdge::getWeight);
-    emitSequenceReferences(emitter, "inPartitions", data, edge, &ActivityEdge::getInPartitions);
+    emitSetReferences(emitter, "inPartitions", data, edge, &ActivityEdge::getInPartitions);
 }
 
 void parseObjectFlow(YAML::Node node, ObjectFlow& flow, ParserMetaData& data) {
@@ -4055,8 +4105,8 @@ void parseObjectNode(YAML::Node node, ObjectNode& objectNode, ParserMetaData& da
 
 void emitObjectNode(YAML::Emitter& emitter, ObjectNode& objectNode, EmitterMetaData& data) {
     emitTypedElement(emitter, objectNode, data);
-    emitSequenceReferences<ActivityEdge, ActivityNode>(emitter, "incoming", data, objectNode, &ActivityNode::getIncoming);
-    emitSequenceReferences<ActivityEdge, ActivityNode>(emitter, "outgoing", data, objectNode, &ActivityNode::getOutgoing);
+    emitSetReferences<ActivityEdge, ActivityNode>(emitter, "incoming", data, objectNode, &ActivityNode::getIncoming);
+    emitSetReferences<ActivityEdge, ActivityNode>(emitter, "outgoing", data, objectNode, &ActivityNode::getOutgoing);
     emitter << YAML::Key << "isControlType" << YAML::Value;
     if (objectNode.isControlType()) {
         emitter << true;
@@ -4142,13 +4192,13 @@ ExceptionHandler& determineAndParseExceptionHandler(YAML::Node node, ParserMetaD
 
 void parseExecutableNode(YAML::Node node, ExecutableNode& executableNode, ParserMetaData& data) {
     parseActivityNode(node, executableNode, data);
-    parseSequenceDefinitions(node, data, "handlers", executableNode, &ExecutableNode::getHandlers, determineAndParseExceptionHandler);
+    parseSetDefinitions(node, data, "handlers", executableNode, &ExecutableNode::getHandlers, determineAndParseExceptionHandler);
 }
 
 void emitExecutableNode(YAML::Emitter& emitter, ExecutableNode& executableNode, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::EXECUTABLE_NODE, "executableNode", executableNode, data);
     emitActivityNode(emitter, executableNode, data);
-    emitSequence(emitter, "handlers", data, executableNode, &ExecutableNode::getHandlers);
+    emitSetDefinitions(emitter, "handlers", data, executableNode, &ExecutableNode::getHandlers);
 }
 
 void parseExceptionHandler(YAML::Node node, ExceptionHandler& handler, ParserMetaData& data) {
@@ -4167,14 +4217,14 @@ void emitExceptionHandler(YAML::Emitter& emitter, ExceptionHandler& handler, Emi
     if (handler.getExceptionInput()) {
         emitter << YAML::Key << "exceptionInput" << YAML::Value << handler.getExceptionInput().id().string();
     }
-    emitSequenceReferences(emitter, "exceptionTypes", data, handler, &ExceptionHandler::getExceptionTypes);
+    emitSetReferences(emitter, "exceptionTypes", data, handler, &ExceptionHandler::getExceptionTypes);
     emitElementDefenitionEnd(emitter, ElementType::EXCEPTION_HANDLER, handler);
 }
 
 void parseActivityPartition(YAML::Node node, ActivityPartition& partition, ParserMetaData& data) {
     parseNamedElement(node, partition, data);
     parseSingletonReference(node, data, "represents", partition, &ActivityPartition::setRepresents, &ActivityPartition::setRepresents);
-    parseSequenceDefinitions(node, data, "subPartitions", partition, &ActivityPartition::getSubPartitions, determineAndParseActivityPartition);
+    parseSetDefinitions(node, data, "subPartitions", partition, &ActivityPartition::getSubPartitions, determineAndParseActivityPartition);
     parseSetReferences<ActivityNode, ActivityPartition>(node, data, "nodes", partition, &ActivityPartition::getNodes);
     parseSetReferences<ActivityEdge, ActivityPartition>(node, data, "edges", partition, &ActivityPartition::getEdges);
 }
@@ -4185,9 +4235,9 @@ void emitActivityPartition(YAML::Emitter& emitter, ActivityPartition& partition,
     if (partition.getRepresents()) {
         emitter << YAML::Key << "represents" << YAML::Value << partition.getRepresents().id().string();
     }
-    emitSequence(emitter, "subPartitions", data, partition, &ActivityPartition::getSubPartitions);
-    emitSequenceReferences(emitter, "nodes", data, partition, &ActivityPartition::getNodes);
-    emitSequenceReferences(emitter, "edges", data, partition, &ActivityPartition::getEdges);
+    emitSetDefinitions(emitter, "subPartitions", data, partition, &ActivityPartition::getSubPartitions);
+    emitSetReferences(emitter, "nodes", data, partition, &ActivityPartition::getNodes);
+    emitSetReferences(emitter, "edges", data, partition, &ActivityPartition::getEdges);
     emitElementDefenitionEnd(emitter, ElementType::ACTIVITY_PARTITION, partition);
 }
 
@@ -4202,23 +4252,23 @@ void parseInterruptibleActivityRegion(YAML::Node node, InterruptibleActivityRegi
 void emitInterruptibleActivityRegion(YAML::Emitter& emitter, InterruptibleActivityRegion& region, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::INTERRUPTIBLE_ACTIVITY_REGION, "interruptibleActivityRegion", region, data);
     emitNamedElement(emitter, region, data);
-    emitSequenceReferences(emitter, "nodes", data, region, &InterruptibleActivityRegion::getNodes);
-    emitSequenceReferences<ActivityEdge, ActivityGroup>(emitter, "containedEdges", data, region, &ActivityGroup::getContainedEdges);
-    emitSequenceReferences(emitter, "interruptingEdges", data, region, &InterruptibleActivityRegion::getInterruptingEdges);
+    emitSetReferences(emitter, "nodes", data, region, &InterruptibleActivityRegion::getNodes);
+    emitSetReferences<ActivityEdge, ActivityGroup>(emitter, "containedEdges", data, region, &ActivityGroup::getContainedEdges);
+    emitSetReferences(emitter, "interruptingEdges", data, region, &InterruptibleActivityRegion::getInterruptingEdges);
     emitElementDefenitionEnd(emitter, ElementType::INTERRUPTIBLE_ACTIVITY_REGION, region);
 }
 
 void parseConstraint(YAML::Node node, Constraint& constraint, ParserMetaData& data) {
     parseNamedElement(node, constraint, data);
     parseSetReferences<Element, Constraint>(node, data, "constrainedElements", constraint, &Constraint::getConstrainedElements);
-    parseSequenceDefinitions(node, data, "specifications", constraint, &Constraint::getSpecifications, determineAndParseValueSpecification);
+    parseSetDefinitions(node, data, "specifications", constraint, &Constraint::getSpecifications, determineAndParseValueSpecification);
 }
     
 void emitConstraint(YAML::Emitter& emitter, Constraint& constraint, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::CONSTRAINT, "constraint", constraint, data);
     emitNamedElement(emitter, constraint, data);
-    emitSequenceReferences(emitter, "constrainedElements", data, constraint, &Constraint::getConstrainedElements);
-    emitSequence(emitter, "specifications", data, constraint, &Constraint::getSpecifications);
+    emitSetReferences(emitter, "constrainedElements", data, constraint, &Constraint::getConstrainedElements);
+    emitSetDefinitions(emitter, "specifications", data, constraint, &Constraint::getSpecifications);
     emitElementDefenitionEnd(emitter, ElementType::CONSTRAINT, constraint);
 }
 
@@ -4248,16 +4298,16 @@ PackageImport& determinePackageImport(YAML::Node node, ParserMetaData& data) {
 
 void parseNamespace(YAML::Node node, Namespace& nmspc, ParserMetaData& data) {
     parseNamedElement(node, nmspc, data);
-    parseSequenceDefinitions(node, data, "ownedRules", nmspc, &Namespace::getOwnedRules, determineAndParseConstraint);
-    parseSequenceDefinitions(node, data, "elementImports", nmspc, &Namespace::getElementImports, determineElementImport);
-    parseSequenceDefinitions(node, data, "packageImports", nmspc, &Namespace::getPackageImports, determinePackageImport);
+    parseSetDefinitions(node, data, "ownedRules", nmspc, &Namespace::getOwnedRules, determineAndParseConstraint);
+    parseSetDefinitions(node, data, "elementImports", nmspc, &Namespace::getElementImports, determineElementImport);
+    parseSetDefinitions(node, data, "packageImports", nmspc, &Namespace::getPackageImports, determinePackageImport);
 }
 
 void emitNamespace(YAML::Emitter& emitter, Namespace& nmspc, EmitterMetaData& data) {
     emitNamedElement(emitter, nmspc, data);
-    emitSequence(emitter, "ownedRules", data, nmspc, &Namespace::getOwnedRules);
-    emitSequence(emitter, "elementImports", data, nmspc, &Namespace::getElementImports);
-    emitSequence(emitter, "packageImports", data, nmspc, &Namespace::getPackageImports);
+    emitSetDefinitions(emitter, "ownedRules", data, nmspc, &Namespace::getOwnedRules);
+    emitSetDefinitions(emitter, "elementImports", data, nmspc, &Namespace::getElementImports);
+    emitSetDefinitions(emitter, "packageImports", data, nmspc, &Namespace::getPackageImports);
 }
 
 void parseAction(YAML::Node node, Action& action, ParserMetaData& data) {
@@ -4265,8 +4315,8 @@ void parseAction(YAML::Node node, Action& action, ParserMetaData& data) {
     if (node["isLocallyReentrant"]) {
         action.setIsLocallyReentrant(node["isLocallyReentrant"].as<bool>());
     }
-    parseSequenceDefinitions(node, data, "localPreconditions", action, &Action::getLocalPreconditions, determineAndParseConstraint);
-    parseSequenceDefinitions(node, data, "localPostconditions", action, &Action::getLocalPostconditions, determineAndParseConstraint);
+    parseSetDefinitions(node, data, "localPreconditions", action, &Action::getLocalPreconditions, determineAndParseConstraint);
+    parseSetDefinitions(node, data, "localPostconditions", action, &Action::getLocalPostconditions, determineAndParseConstraint);
 }
 
 void emitAction(YAML::Emitter& emitter, Action& action, EmitterMetaData& data) {
@@ -4274,8 +4324,8 @@ void emitAction(YAML::Emitter& emitter, Action& action, EmitterMetaData& data) {
     if (action.isLocallyReentrant()) {
         emitter << YAML::Key << "isLocallyReentrant" << YAML::Value << action.isLocallyReentrant();
     }
-    emitSequence(emitter, "localPreconditions", data, action, &Action::getLocalPreconditions);
-    emitSequence(emitter, "localPostconditions", data, action, &Action::getLocalPostconditions);
+    emitSetDefinitions(emitter, "localPreconditions", data, action, &Action::getLocalPreconditions);
+    emitSetDefinitions(emitter, "localPostconditions", data, action, &Action::getLocalPostconditions);
 }
 
 void parsePin(YAML::Node node, Pin& pin, ParserMetaData& data) {
@@ -4324,17 +4374,17 @@ LiteralString& determineAndParseLiteralString(YAML::Node node, ParserMetaData& d
 
 void parseOpaqueAction(YAML::Node node, OpaqueAction& action, ParserMetaData& data) {
     parseAction(node, action, data);
-    parseSequenceDefinitions(node, data, "inputValues", action, &OpaqueAction::getInputValues, determineAndParseInputPin);
-    parseSequenceDefinitions(node, data, "outputValues", action, &OpaqueAction::getOutputValues, determineAndParseOutputPin);
-    parseSequenceDefinitions(node, data, "bodies", action, &OpaqueAction::getBodies, determineAndParseLiteralString);
+    parseSetDefinitions(node, data, "inputValues", action, &OpaqueAction::getInputValues, determineAndParseInputPin);
+    parseSetDefinitions(node, data, "outputValues", action, &OpaqueAction::getOutputValues, determineAndParseOutputPin);
+    parseSetDefinitions(node, data, "bodies", action, &OpaqueAction::getBodies, determineAndParseLiteralString);
 }
 
 void emitOpaqueAction(YAML::Emitter& emitter, OpaqueAction& action, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::OPAQUE_ACTION, "opaqueAction", action, data);
     emitAction(emitter, action, data);
-    emitSequence(emitter, "inputValues", data, action, &OpaqueAction::getInputValues);
-    emitSequence(emitter, "outputValues", data, action, &OpaqueAction::getOutputValues);
-    emitSequence(emitter, "bodies", data, action, &OpaqueAction::getBodies);
+    emitSetDefinitions(emitter, "inputValues", data, action, &OpaqueAction::getInputValues);
+    emitSetDefinitions(emitter, "outputValues", data, action, &OpaqueAction::getOutputValues);
+    emitSetDefinitions(emitter, "bodies", data, action, &OpaqueAction::getBodies);
     emitElementDefenitionEnd(emitter, ElementType::OPAQUE_ACTION, action);
 }
 
@@ -4374,13 +4424,13 @@ void emitActionInputPin(YAML::Emitter& emitter, ActionInputPin& pin, EmitterMeta
 
 void parseInvocationAction(YAML::Node node, InvocationAction& action, ParserMetaData& data){
     parseAction(node, action, data);
-    parseSequenceDefinitions(node, data, "arguments", action, &InvocationAction::getArguments, determineAndParseInputPin);
+    parseSetDefinitions(node, data, "arguments", action, &InvocationAction::getArguments, determineAndParseInputPin);
     parseSingletonReference(node, data, "onPort", action, &InvocationAction::setOnPort, &InvocationAction::setOnPort);
 }
 
 void emitInvocationAction(YAML::Emitter& emitter, InvocationAction& action, EmitterMetaData& data) {
     emitAction(emitter, action, data);
-    emitSequence(emitter, "arguments", data, action, &InvocationAction::getArguments);
+    emitSetDefinitions(emitter, "arguments", data, action, &InvocationAction::getArguments);
     if (action.getOnPort()) {
         emitter << YAML::Key << "onPort" << YAML::Value << action.getOnPort().id().string();
     }
@@ -4388,7 +4438,7 @@ void emitInvocationAction(YAML::Emitter& emitter, InvocationAction& action, Emit
 
 void parseCallAction(YAML::Node node, CallAction& action, ParserMetaData& data) {
     parseInvocationAction(node, action, data);
-    parseSequenceDefinitions(node, data, "results", action, &CallAction::getResults, determineAndParseOutputPin);
+    parseSetDefinitions(node, data, "results", action, &CallAction::getResults, determineAndParseOutputPin);
     if (node["isSynchronous"]) {
         action.setIsSynchronous(node["isSynchronous"].as<bool>());
     }
@@ -4396,7 +4446,7 @@ void parseCallAction(YAML::Node node, CallAction& action, ParserMetaData& data) 
 
 void emitCallAction(YAML::Emitter& emitter, CallAction& action, EmitterMetaData& data) {
     emitInvocationAction(emitter, action, data);
-    emitSequence(emitter, "results", data, action, &CallAction::getResults);
+    emitSetDefinitions(emitter, "results", data, action, &CallAction::getResults);
     if (!action.isSynchronous()) {
         emitter << YAML::Key << "isSynchronous" << YAML::Value << action.isSynchronous();
     }
@@ -4452,7 +4502,7 @@ void parseRedefinableTemplateSignature(YAML::Node node, RedefinableTemplateSigna
 void emitRedefinableTemplateSignature(YAML::Emitter& emitter, RedefinableTemplateSignature& signature, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::REDEFINABLE_TEMPLATE_SIGNATURE, "redefinableTemplateSignature", signature, data);
     emitTemplateSignature(emitter, signature, data);
-    emitSequenceReferences(emitter, "extendedSignatures", data, signature, &RedefinableTemplateSignature::getExtendedSignatures);
+    emitSetReferences(emitter, "extendedSignatures", data, signature, &RedefinableTemplateSignature::getExtendedSignatures);
     emitElementDefenitionEnd(emitter, ElementType::REDEFINABLE_TEMPLATE_SIGNATURE, signature);
 }
 
@@ -4471,7 +4521,7 @@ void emitClassifierTemplateParameter(YAML::Emitter& emitter, ClassifierTemplateP
     if (!templateParameter.isAllowSubstitutable()) {
         emitter << YAML::Key << "allowSubstitutable" << YAML::Value << false;
     }
-    emitSequenceReferences(emitter, "constrainingClassifiers", data, templateParameter, &ClassifierTemplateParameter::getConstrainingClassifiers);
+    emitSetReferences(emitter, "constrainingClassifiers", data, templateParameter, &ClassifierTemplateParameter::getConstrainingClassifiers);
     emitElementDefenitionEnd(emitter, ElementType::CLASSIFIER_TEMPLATE_PARAMETER, templateParameter);
 }
 

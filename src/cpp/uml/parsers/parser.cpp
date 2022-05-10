@@ -2386,6 +2386,10 @@ void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data)
     emitDeploymentTarget(emitter, prop, data);
     emitParameterableElement(emitter, prop, data);
 
+    if (prop.isReadOnly()) {
+        emitter << YAML::Key << "isReadOnly" << YAML::Value << true;
+    }
+
     if (prop.getAggregation() != AggregationKind::NONE) {
         string aggregationString;
         switch(prop.getAggregation()) {
@@ -3603,7 +3607,9 @@ void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
     parseMultiplicityElement(node, prop, data);
     parseDeploymentTarget(node, prop, data);
     parseParameterableElement(node, prop, data);
-
+    if (node["readOnly"]) {
+        prop.setReadOnly(node["readOnly"].as<bool>());
+    }
     if (node["aggregation"]) {
         if (node["aggregation"].IsScalar()) {
             string aggregation = node["aggregation"].as<string>();
@@ -3846,12 +3852,34 @@ void emitSignal(YAML::Emitter& emitter, Signal& signal, EmitterMetaData& data) {
 
 void parseBehavioralFeature(YAML::Node node, BehavioralFeature& feature, ParserMetaData& data) {
     parseNamedElement(node, feature, data);
+    if (node["concurrency"]) {
+        if (node["concurrency"].as<std::string>().compare("Sequential") == 0) {
+            feature.setConcurrency(CallConcurrencyKind::Sequential);
+        } else if (node["concurrency"].as<std::string>().compare("Guarded") == 0) {
+            feature.setConcurrency(CallConcurrencyKind::Guarded);
+        } else if (node["concurrency"].as<std::string>().compare("Concurrent") == 0) {
+            feature.setConcurrency(CallConcurrencyKind::Concurrent);
+        } else {
+            throw UmlParserException("Invalid concurency specified", data.m_path.string(), node["concurrency"]);
+        }
+    }
     parseSetReferences<Behavior, BehavioralFeature>(node, data, "methods", feature, &BehavioralFeature::getMethods);
     parseSequenceDefinitions(node, data, "ownedParameters", feature, &BehavioralFeature::getOwnedParameters, determineAndParseParameter);
+    parseSetReferences<Type, BehavioralFeature>(node, data, "raisedExceptions", feature, &BehavioralFeature::getRaisedExceptions);
 }
 
 void emitBehavioralFeature(YAML::Emitter& emitter, BehavioralFeature& feature, EmitterMetaData& data) {
     emitNamedElement(emitter, feature, data);
+    switch (feature.getConcurrency()) {
+        case CallConcurrencyKind::Guarded : {
+            emitter << YAML::Key << "concurrency" << YAML::Value << "Guarded";
+            break;
+        }
+        case CallConcurrencyKind::Concurrent : {
+            emitter << YAML::Key << "concurrency" << YAML::Value << "Concurrent";
+            break;
+        }
+    }
     if (!feature.getMethods().empty()) {
         emitter << YAML::Key << "methods" << YAML::Value << YAML::BeginSeq;
         for (const ID id : feature.getMethods().ids()) {
@@ -3860,6 +3888,7 @@ void emitBehavioralFeature(YAML::Emitter& emitter, BehavioralFeature& feature, E
         emitter << YAML::EndSeq;
     }
     emitSequence(emitter, "ownedParameters", data, feature, &BehavioralFeature::getOwnedParameters);
+    emitSequenceReferences(emitter, "raisedExceptions", data, feature, &BehavioralFeature::getRaisedExceptions);
 }
 
 void parseReception(YAML::Node node, Reception& reception, ParserMetaData& data) {

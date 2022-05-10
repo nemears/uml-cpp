@@ -13,14 +13,14 @@ namespace UML {
     typedef UmlPtr<TemplateSignature> TemplateSignaturePtr;
     typedef UmlPtr<ParameterableElement> ParameterableElementPtr;
 
-    class TemplateParameter : public Element {
+    class TemplateParameter : virtual public Element {
 
         friend class UmlManager;
         friend class TemplateParameterSubstitution;
         friend class TemplateSignature;
         friend class ParameterableElement;
         
-        private:
+        protected:
             Singleton<TemplateSignature, TemplateParameter> m_signature = Singleton<TemplateSignature, TemplateParameter>(this);
             Singleton<ParameterableElement, TemplateParameter> m_parameteredElement = Singleton<ParameterableElement, TemplateParameter>(this);
             Singleton<ParameterableElement, TemplateParameter> m_ownedParameteredElement = Singleton<ParameterableElement, TemplateParameter>(this);

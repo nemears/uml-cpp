@@ -18,6 +18,7 @@
 #include "uml/callBehaviorAction.h"
 #include "uml/centralBufferNode.h"
 #include "uml/class.h"
+#include "uml/classifierTemplateParameter.h"
 #include "uml/comment.h"
 #include "uml/controlFlow.h"
 #include "uml/artifact.h"

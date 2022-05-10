@@ -9,12 +9,14 @@
 #include "generalization.h"
 #include "generalizationSet.h"
 #include "redefinableTemplateSignature.h"
+#include "classifierTemplateParameter.h"
 
 namespace UML {
 
     class InstanceSpecification;
 
     typedef UmlPtr<RedefinableTemplateSignature> RedefinableTemplateSignaturePtr;
+    typedef UmlPtr<ClassifierTemplateParameter> ClassifierTemplateParameterPtr;
 
     /**
      * A Classifier represents a classification of instances according to their Features
@@ -26,6 +28,7 @@ namespace UML {
         friend class Generalization;
         friend class NamedElement;
         friend class RedefinableTemplateSignature;
+        friend class ClassifierTemplateParameter;
 
         protected:
             Set<Feature, Classifier> m_features = Set<Feature, Classifier>(this);
@@ -35,6 +38,7 @@ namespace UML {
             Set<NamedElement, Classifier> m_inheritedMembers = Set<NamedElement, Classifier>(this);
             Set<GeneralizationSet, Classifier> m_powerTypeExtent = Set<GeneralizationSet, Classifier>(this);
             Singleton<RedefinableTemplateSignature, Classifier> m_classifierOwnedTemplateSignature = Singleton<RedefinableTemplateSignature, Classifier>(this);
+            Singleton<ClassifierTemplateParameter, Classifier> m_classifierTemplateParameter = Singleton<ClassifierTemplateParameter, Classifier>(this);
             class AddGeneralizationFunctor : public SetFunctor {
                 private:
                     void operator()(Element& el) const override;
@@ -72,6 +76,7 @@ namespace UML {
                     RemoveOwnedMemberFunctor(Element* el) : SetFunctor(el) {};
             };
             Set<RedefinableTemplateSignature, Classifier>& getOwnedTemplateSignatureSingleton();
+            Set<ClassifierTemplateParameter, Classifier>& getTemplateParameterSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(ID id, std::string newName) override;
             void referencingReleased(ID id) override;
@@ -94,6 +99,11 @@ namespace UML {
             void setOwnedTemplateSignature(RedefinableTemplateSignature& signature);
             void setOwnedTemplateSignature(RedefinableTemplateSignaturePtr signature);
             void setOwnedTemplateSignature(ID id);
+            ClassifierTemplateParameterPtr getTemplateParameter() const;
+            void setTemplateParameter(ClassifierTemplateParameter* templateParameter);
+            void setTemplateParameter(ClassifierTemplateParameter& templateParameter);
+            void setTemplateParameter(ClassifierTemplateParameterPtr templateParameter);
+            void setTemplateParameter(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CLASSIFIER;

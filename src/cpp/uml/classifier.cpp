@@ -81,6 +81,10 @@ Set<RedefinableTemplateSignature, Classifier>& Classifier::getOwnedTemplateSigna
     return m_classifierOwnedTemplateSignature;
 }
 
+Set<ClassifierTemplateParameter, Classifier>& Classifier::getTemplateParameterSingleton() {
+    return m_classifierTemplateParameter;
+}
+
 void Classifier::referencingReleased(ID id) {
     Namespace::referencingReleased(id);
     PackageableElement::referencingReleased(id);
@@ -144,6 +148,8 @@ void Classifier::init() {
     m_powerTypeExtent.m_signature = &Classifier::getPowerTypeExtent;
     m_classifierOwnedTemplateSignature.redefines(m_ownedTemplateSignature);
     m_classifierOwnedTemplateSignature.opposite(&RedefinableTemplateSignature::getClassifierSingleton);
+    m_classifierTemplateParameter.redefines(m_templateParameter);
+    m_classifierTemplateParameter.opposite(&ClassifierTemplateParameter::getParameteredElementSingleton);
 }
 
 Classifier::Classifier() : Element(ElementType::CLASSIFIER) {
@@ -204,6 +210,26 @@ void Classifier::setOwnedTemplateSignature(RedefinableTemplateSignaturePtr signa
 
 void Classifier::setOwnedTemplateSignature(ID id) {
     m_classifierOwnedTemplateSignature.set(id);
+}
+
+ClassifierTemplateParameterPtr Classifier::getTemplateParameter() const {
+    return m_classifierTemplateParameter.get();
+}
+
+void Classifier::setTemplateParameter(ClassifierTemplateParameter* templateParameter) {
+    m_classifierTemplateParameter.set(templateParameter);
+}
+
+void Classifier::setTemplateParameter(ClassifierTemplateParameter& templateParameter) {
+    m_classifierTemplateParameter.set(templateParameter);
+}
+
+void Classifier::setTemplateParameter(ClassifierTemplateParameterPtr templateParameter) {
+    m_classifierTemplateParameter.set(templateParameter);
+}
+
+void Classifier::setTemplateParameter(ID id) {
+    m_classifierTemplateParameter.set(id);
 }
 
 bool Classifier::isSubClassOf(ElementType eType) const {

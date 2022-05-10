@@ -35,6 +35,7 @@ namespace UML {
         CENTRAL_BUFFER_NODE,
         CLASS,
         CLASSIFIER,
+        CLASSIFIER_TEMPLATE_PARAMETER,
         COMMENT,
         CONNECTABLE_ELEMENT,
         CONNECTOR,

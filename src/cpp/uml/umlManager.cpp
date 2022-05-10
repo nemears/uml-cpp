@@ -79,6 +79,9 @@ Element& UmlManager::create(ElementType eType) {
         case ElementType::CLASS : {
             return static_cast<Element&>(*create<Class>());
         }
+        case ElementType::CLASSIFIER_TEMPLATE_PARAMETER : {
+            return static_cast<Element&>(*create<ClassifierTemplateParameter>());
+        }
         case ElementType::COMMENT : {
             return static_cast<Element&>(*create<Comment>());
         }

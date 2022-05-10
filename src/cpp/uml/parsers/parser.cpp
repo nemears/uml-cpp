@@ -309,6 +309,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::CLASSIFIER;
     } else if (eType.compare("COMMENT") == 0) {
         return ElementType::COMMENT;
+    } else if (eType.compare("CLASSIFIER_TEMPLATE_PARAMETER") == 0) {
+        return ElementType::CLASSIFIER_TEMPLATE_PARAMETER;
     } else if (eType.compare("CONNECTOR") == 0) {
         return ElementType::CONNECTOR;
     } else if (eType.compare("CONNECTOR_END") == 0) {
@@ -819,6 +821,12 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
         }
     }
 
+    if (node["classifierTemplateParameter"]) {
+        if (node["classifierTemplateParameter"].IsMap()) {
+            ret = &parseDefinition<ClassifierTemplateParameter>(node, data, "classifierTemplateParameter", parseClassifierTemplateParameter);
+        }
+    }
+
     if (node["comment"]) {
         if (node["comment"].IsMap()) {
             Comment& comment = *data.m_manager->create<Comment>();
@@ -1275,6 +1283,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
         case ElementType::CLASS : {
             Class& clazz = el.as<Class>();
             emitClass(emitter, clazz, data);
+            break;
+        }
+        case ElementType::CLASSIFIER_TEMPLATE_PARAMETER : {
+            emitClassifierTemplateParameter(emitter, el.as<ClassifierTemplateParameter>(), data);
             break;
         }
         case ElementType::COMMENT : {
@@ -2986,6 +2998,8 @@ void emitTemplateableElement(YAML::Emitter& emitter, TemplateableElement& el, Em
 TemplateParameter& determineAndParseTemplateParameter(YAML::Node node, ParserMetaData& data) {
     if (node["templateParameter"]) {
         return parseDefinition<TemplateParameter>(node, data, "templateParameter", parseTemplateParameter);
+    } else if (node["classifierTemplateParameter"]) {
+        return parseDefinition<ClassifierTemplateParameter>(node, data, "classifierTemplateParameter", parseClassifierTemplateParameter);
     } else {
         throw UmlParserException("Invalid element identifier for templateParameter definition, it can only be a templateParameter!", data.m_path.string(), node);
     }
@@ -3620,7 +3634,9 @@ void parseTemplateParameter(YAML::Node node, TemplateParameter& parameter, Parse
     parseSingletonDefinition(node, data, "ownedDefault", parameter, determinAndParseParameterableElement, &TemplateParameter::setOwnedDefault, &TemplateParameter::setOwnedDefault);
     parseSingletonReference(node, data, "default", parameter, &TemplateParameter::setDefault, &TemplateParameter::setDefault);
     parseSingletonDefinition(node, data, "ownedParameteredElement", parameter, determinAndParseParameterableElement, &TemplateParameter::setOwnedParameteredElement, &TemplateParameter::setOwnedParameteredElement);
-    parseSingletonReference(node, data, "parameteredElement", parameter, &TemplateParameter::setParameteredElement, &TemplateParameter::setParameteredElement);
+    if (parameter.getElementType() == ElementType::TEMPLATE_PARAMETER) {
+        parseSingletonReference(node, data, "parameteredElement", parameter, &TemplateParameter::setParameteredElement, &TemplateParameter::setParameteredElement);
+    }
 }
 
 void parseTemplateBinding(YAML::Node node, TemplateBinding& binding, ParserMetaData& data) {
@@ -4407,6 +4423,25 @@ void emitRedefinableTemplateSignature(YAML::Emitter& emitter, RedefinableTemplat
     emitElementDefenition(emitter, ElementType::REDEFINABLE_TEMPLATE_SIGNATURE, "redefinableTemplateSignature", signature, data);
     emitTemplateSignature(emitter, signature, data);
     emitElementDefenitionEnd(emitter, ElementType::REDEFINABLE_TEMPLATE_SIGNATURE, signature);
+}
+
+void parseClassifierTemplateParameter(YAML::Node node, ClassifierTemplateParameter& templateParameter, ParserMetaData& data) {
+    parseTemplateParameter(node, templateParameter, data);
+    if (node["allowSubstitutable"]) {
+        templateParameter.setAllowSubstitutable(node["allowSubstitutable"].as<bool>());
+    }
+    parseSetReferences<Classifier, ClassifierTemplateParameter>(node, data, "constrainingClassifiers", templateParameter, &ClassifierTemplateParameter::getConstrainingClassifiers);
+    parseSingletonReference(node, data, "parameteredElement", templateParameter, &ClassifierTemplateParameter::setParameteredElement, &ClassifierTemplateParameter::setParameteredElement);
+}
+
+void emitClassifierTemplateParameter(YAML::Emitter& emitter, ClassifierTemplateParameter& templateParameter, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::CLASSIFIER_TEMPLATE_PARAMETER, "classifierTemplateParameter", templateParameter, data);
+    emitTemplateParameter(emitter, templateParameter, data);
+    if (!templateParameter.isAllowSubstitutable()) {
+        emitter << YAML::Key << "allowSubstitutable" << YAML::Value << false;
+    }
+    emitSequenceReferences(emitter, "constrainingClassifiers", data, templateParameter, &ClassifierTemplateParameter::getConstrainingClassifiers);
+    emitElementDefenitionEnd(emitter, ElementType::CLASSIFIER_TEMPLATE_PARAMETER, templateParameter);
 }
 
 }

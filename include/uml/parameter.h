@@ -3,6 +3,7 @@
 
 #include "multiplicityElement.h"
 #include "connectableElement.h"
+#include "valueSpecification.h"
 
 namespace UML {
 
@@ -21,6 +22,14 @@ namespace UML {
         NONE
     };
 
+    enum class ParameterEffectKind {
+        NONE,
+        CREATE,
+        READ,
+        UPDATE,
+        DELETE
+    };
+
     class Parameter : public ConnectableElement , public MultiplicityElement {
 
         friend class UmlManager;
@@ -29,7 +38,12 @@ namespace UML {
         protected:
             ParameterDirectionKind m_direction = ParameterDirectionKind::NONE;
             Singleton<Operation, Parameter> m_operation = Singleton<Operation, Parameter>(this);
+            Singleton<ValueSpecification, Parameter> m_defaultValue = Singleton<ValueSpecification, Parameter>(this);
+            bool m_isException = false;
+            bool m_isStream = false;
+            ParameterEffectKind m_effect = ParameterEffectKind::NONE;
             Set<Operation, Parameter>& getOperationSingleton();
+            Set<ValueSpecification, Parameter>& getDefaultValueSingleton();
             void init();
             Parameter();
         public:
@@ -40,14 +54,17 @@ namespace UML {
             void setOperation(ID id);
             ParameterDirectionKind getDirection();
             void setDirection(ParameterDirectionKind direction);
-            std::string getDirectionString();
-            void setDirectionString(std::string& directionString);
-            class InvalidDirectionException : public std::exception {
-                public:
-                    virtual const char* what() const throw() {
-                        return "Invalid direction given, options are IN, INOUT, OUT or RETURN";
-                    }
-            }invalidDirectionException;
+            ValueSpecificationPtr getDefaultValue() const;
+            void setDefaultValue(ValueSpecification* defaultValue);
+            void setDefaultValue(ValueSpecification& defaultValue);
+            void setDefaultValue(ValueSpecificationPtr defaultValue);
+            void setDefaultValue(ID id);
+            ParameterEffectKind getEffect() const;
+            void setEffect(ParameterEffectKind kind);
+            bool isException() const;
+            void setIsException(bool isException);
+            bool isStream() const;
+            void setIsStream(bool isStream);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PARAMETER;

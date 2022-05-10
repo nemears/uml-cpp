@@ -15,10 +15,16 @@ Set<Operation, Parameter>& Parameter::getOperationSingleton() {
     return m_operation;
 }
 
+Set<ValueSpecification, Parameter>& Parameter::getDefaultValueSingleton() {
+    return m_defaultValue;
+}
+
 void Parameter::init() {
     m_operation.subsets(m_namespace);
     m_operation.opposite(&Operation::getOwnedParametersSet);
     m_operation.m_signature = &Parameter::getOperationSingleton;
+    m_defaultValue.subsets(*m_ownedElements);
+    m_defaultValue.m_signature = &Parameter::getDefaultValueSingleton;
 }
 
 Parameter::Parameter() : Element(ElementType::PARAMETER) {
@@ -62,36 +68,48 @@ void Parameter::setDirection(ParameterDirectionKind direction) {
     m_direction = direction;
 }
 
-std::string Parameter::getDirectionString() {
-    switch(m_direction) {
-        case ParameterDirectionKind::IN_UML : {
-            return "IN";
-        } case ParameterDirectionKind::OUT_UML : {
-            return "OUT";
-        } case ParameterDirectionKind::INOUT : {
-            return "INOUT";
-        } case ParameterDirectionKind::RETURN : {
-            return "RETURN";
-        } default : {
-            return "NONE";
-        }
-    }
+ValueSpecificationPtr Parameter::getDefaultValue() const {
+    return m_defaultValue.get();
 }
 
-void Parameter::setDirectionString(std::string& directionString) {
-    if (directionString.compare("IN") == 0) {
-        setDirection(ParameterDirectionKind::IN_UML);
-    } else if (directionString.compare("INOUT") == 0) {
-        setDirection(ParameterDirectionKind::INOUT);
-    } else if (directionString.compare("OUT") == 0) {
-        setDirection(ParameterDirectionKind::OUT_UML);
-    } else if (directionString.compare("RETURN") == 0) {
-        setDirection(ParameterDirectionKind::RETURN);
-    } else if (directionString.compare("NONE") == 0) {
-        setDirection(ParameterDirectionKind::NONE);
-    } else {
-        throw invalidDirectionException;
-    }
+void Parameter::setDefaultValue(ValueSpecification* defaultValue) {
+    m_defaultValue.set(defaultValue);
+}
+
+void Parameter::setDefaultValue(ValueSpecification& defaultValue) {
+    m_defaultValue.set(defaultValue);
+}
+
+void Parameter::setDefaultValue(ValueSpecificationPtr defaultValue) {
+    m_defaultValue.set(defaultValue);
+}
+
+void Parameter::setDefaultValue(ID id) {
+    m_defaultValue.set(id);
+}
+
+ParameterEffectKind Parameter::getEffect() const {
+    return m_effect;
+}
+
+void Parameter::setEffect(ParameterEffectKind effect) {
+    m_effect = effect;
+}
+
+bool Parameter::isException() const {
+    return m_isException;
+}
+
+void Parameter::setIsException(bool isException) {
+    m_isException = isException;
+}
+
+bool Parameter::isStream() const {
+    return m_isStream;
+}
+
+void Parameter::setIsStream(bool isStream) {
+    m_isStream = isStream;
 }
 
 bool Parameter::isSubClassOf(ElementType eType) const {

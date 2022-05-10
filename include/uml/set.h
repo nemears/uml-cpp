@@ -372,6 +372,7 @@ namespace UML {
     class ElementImport;
     class PackageImport;
     class RedefinableTemplateSignature;
+    class ClassifierTemplateParameter;
 
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
@@ -471,6 +472,7 @@ namespace UML {
         friend class ElementImport;
         friend class PackageImport;
         friend class RedefinableTemplateSignature;
+        friend class ClassifierTemplateParameter;
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
         friend void Parsers::setOwner(Element& el, ID id);

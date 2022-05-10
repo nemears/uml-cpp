@@ -8,6 +8,9 @@ UML_SET_INTEGRATION_TEST(ClassifierGeneralization, Generalization, Class, &Class
 UML_SET_INTEGRATION_TEST(ClassifierPowerTypeExtent, GeneralizationSet, Class, &Classifier::getPowerTypeExtent);
 UML_SINGLETON_INTEGRATION_TEST(ClassifierOwnedTemplateSignature, RedefinableTemplateSignature, Activity, &Classifier::getOwnedTemplateSignature, &Classifier::setOwnedTemplateSignature);
 UML_SINGLETON_INTEGRATION_TEST(RedefinableTemplateSignatureClassifier, PrimitiveType, RedefinableTemplateSignature, &RedefinableTemplateSignature::getClassifier, &RedefinableTemplateSignature::setClassifier);
+UML_SINGLETON_INTEGRATION_TEST(ClassifierTemplateParameter_, ClassifierTemplateParameter, Class, &Classifier::getTemplateParameter, &Classifier::setTemplateParameter);
+UML_SINGLETON_INTEGRATION_TEST(ClassifierTemplateParameterParameteredElement, OpaqueBehavior, ClassifierTemplateParameter, &ClassifierTemplateParameter::getParameteredElement, &ClassifierTemplateParameter::setParameteredElement);
+UML_SET_INTEGRATION_TEST(ClassifierTemplateParameterConstrainingClassifiers, Enumeration, ClassifierTemplateParameter, &ClassifierTemplateParameter::getConstrainingClassifiers);
 
 class ClassifierTest : public ::testing::Test {};
 

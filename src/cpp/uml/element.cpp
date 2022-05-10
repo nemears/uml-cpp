@@ -217,6 +217,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::CLASSIFIER : {
             return "CLASSIFIER";
         }
+        case ElementType::CLASSIFIER_TEMPLATE_PARAMETER : {
+            return "CLASSIFIER_TEMPLATE_PARAMETER";
+        }
         case ElementType::COMMENT : {
             return "COMMENT";
         }

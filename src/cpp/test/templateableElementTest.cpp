@@ -362,7 +362,7 @@ TEST_F(TemplateableElementTest, mountClassWithTemplateSignature) {
     Class& otherClazz = *m.create<Class>();
     RedefinableTemplateSignature& signature = *m.create<RedefinableTemplateSignature>();
     RedefinableTemplateSignature& otherSignature = *m.create<RedefinableTemplateSignature>();
-    TemplateParameter& ownedParameter = *m.create<TemplateParameter>();
+    ClassifierTemplateParameter& ownedParameter = *m.create<ClassifierTemplateParameter>();
     PrimitiveType& ownedParameterableElement = *m.create<PrimitiveType>();
     TemplateParameter& otherParameter = *m.create<TemplateParameter>();
     Property& parameteredElement = *m.create<Property>();
@@ -464,7 +464,7 @@ TEST_F(TemplateableElementTest, mountClassWithTemplateSignature) {
     m.release(ownedParameter, signature3);
     ASSERT_FALSE(m.loaded(signatureID));
     ASSERT_FALSE(m.loaded(ownedParameterID));
-    TemplateParameter& ownedParameter2 = m.aquire(ownedParameterID)->as<TemplateParameter>();
+    ClassifierTemplateParameter& ownedParameter2 = m.aquire(ownedParameterID)->as<ClassifierTemplateParameter>();
     ASSERT_TRUE(ownedParameter2.getSignature());
     ASSERT_EQ(ownedParameter2.getSignature().id(), signatureID);
     ASSERT_TRUE(ownedParameter2.getOwner());
@@ -488,7 +488,7 @@ TEST_F(TemplateableElementTest, mountClassWithTemplateSignature) {
     ASSERT_EQ(*signature5.getOwnedParameters().ids().begin(), ownedParameterID);
     ASSERT_EQ(signature5.getOwnedElements().size(), 1);
     ASSERT_EQ(*signature5.getOwnedElements().ids().begin(), ownedParameterID);
-    TemplateParameter& ownedParameter3 = m.aquire(ownedParameterID)->as<TemplateParameter>();
+    ClassifierTemplateParameter& ownedParameter3 = m.aquire(ownedParameterID)->as<ClassifierTemplateParameter>();
     ASSERT_TRUE(ownedParameter3.getSignature());
     ASSERT_EQ(*ownedParameter3.getSignature(), signature5);
     ASSERT_TRUE(ownedParameter3.getOwner());
@@ -741,7 +741,7 @@ TEST_F(TemplateableElementTest, mountClassWithTemplateSignature) {
     TemplateParameterSubstitution& subW_OwnedActual4 = m.aquire(subW_OwnedActualID)->as<TemplateParameterSubstitution>();
     ASSERT_TRUE(subW_OwnedActual4.getFormal());
     ASSERT_EQ(subW_OwnedActual4.getFormal().id(), ownedParameterID);
-    TemplateParameter& ownedParameter8 = m.aquire(ownedParameterID)->as<TemplateParameter>();
+    ClassifierTemplateParameter& ownedParameter8 = m.aquire(ownedParameterID)->as<ClassifierTemplateParameter>();
     ASSERT_EQ(*subW_OwnedActual4.getFormal(), ownedParameter8);
 
     ID ownedActualID = ownedActual.getID();

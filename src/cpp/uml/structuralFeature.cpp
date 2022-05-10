@@ -41,6 +41,14 @@ StructuralFeature::StructuralFeature() : Element(ElementType::STRUCTURAL_FEATURE
 
 }
 
+bool StructuralFeature::isReadOnly() const {
+    return m_readOnly;
+}
+
+void StructuralFeature::setReadOnly(bool readOnly) {
+    m_readOnly = readOnly;
+}
+
 bool StructuralFeature::isSubClassOf(ElementType eType) const {
     bool ret = TypedElement::isSubClassOf(eType);
     

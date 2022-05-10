@@ -5,6 +5,13 @@
 #include "namespace.h"
 
 namespace UML {
+
+    enum class CallConcurrencyKind {
+        Sequential,
+        Guarded,
+        Concurrent
+    };
+
     class BehavioralFeature : public Feature , public Namespace {
 
         friend class UmlManager;
@@ -12,7 +19,9 @@ namespace UML {
         protected:
             Set<Behavior, BehavioralFeature> m_methods = Set<Behavior, BehavioralFeature>(this);
             Set<Parameter, BehavioralFeature> m_ownedParameters = Set<Parameter, BehavioralFeature>(this);
+            Set<Type, BehavioralFeature> m_raisedExceptions = Set<Type, BehavioralFeature>(this);
             bool m_returnSpecified = false;
+            CallConcurrencyKind m_concurrency = CallConcurrencyKind::Sequential;
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(ID id, std::string newName) override;
@@ -23,7 +32,10 @@ namespace UML {
             virtual ~BehavioralFeature();
             Set<Behavior, BehavioralFeature>& getMethods();
             Set<Parameter, BehavioralFeature>& getOwnedParameters();
+            Set<Type, BehavioralFeature>& getRaisedExceptions();
             bool isAbstract();
+            CallConcurrencyKind getConcurrency() const;
+            void setConcurrency(CallConcurrencyKind concurrency);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::BEHAVIORAL_FEATURE;

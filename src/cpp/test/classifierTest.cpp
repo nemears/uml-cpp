@@ -11,6 +11,7 @@ UML_SINGLETON_INTEGRATION_TEST(RedefinableTemplateSignatureClassifier, Primitive
 UML_SINGLETON_INTEGRATION_TEST(ClassifierTemplateParameter_, ClassifierTemplateParameter, Class, &Classifier::getTemplateParameter, &Classifier::setTemplateParameter);
 UML_SINGLETON_INTEGRATION_TEST(ClassifierTemplateParameterParameteredElement, OpaqueBehavior, ClassifierTemplateParameter, &ClassifierTemplateParameter::getParameteredElement, &ClassifierTemplateParameter::setParameteredElement);
 UML_SET_INTEGRATION_TEST(ClassifierTemplateParameterConstrainingClassifiers, Enumeration, ClassifierTemplateParameter, &ClassifierTemplateParameter::getConstrainingClassifiers);
+UML_SET_INTEGRATION_TEST(RedefinableTemplateSignatureExtendedSignature, RedefinableTemplateSignature, RedefinableTemplateSignature, &RedefinableTemplateSignature::getExtendedSignatures);
 
 class ClassifierTest : public ::testing::Test {};
 
@@ -185,4 +186,45 @@ TEST_F(ClassifierTest, reindexClassifierID_test) {
 	ASSERT_NO_THROW(ASSERT_EQ(root.getMembers().get(id), reindexed));
 	ASSERT_NO_THROW(ASSERT_EQ(root.getOwnedElements().get(id), reindexed));
 	ASSERT_NO_THROW(ASSERT_EQ(instance.getClassifiers().front(), reindexed));
+}
+
+TEST_F(ClassifierTest, redefinableTemplateSignatureAddAndRemoveParametersWhenExtendedTest) {
+  UmlManager m;
+  RedefinableTemplateSignaturePtr extendedSig = m.create<RedefinableTemplateSignature>();
+  RedefinableTemplateSignaturePtr sigExtending = m.create<RedefinableTemplateSignature>();
+  TemplateParameterPtr parameter = m.create<TemplateParameter>();
+  extendedSig->getParameters().add(*parameter);
+  sigExtending->getExtendedSignatures().add(*extendedSig);
+  ASSERT_EQ(sigExtending->getInheritedParameters().size(), 1);
+  ASSERT_EQ(sigExtending->getInheritedParameters().front(), *parameter);
+  sigExtending->getExtendedSignatures().remove(*extendedSig);
+  ASSERT_EQ(sigExtending->getInheritedParameters().size(), 0);
+  RedefinableTemplateSignaturePtr otherSig = m.create<RedefinableTemplateSignature>();
+  otherSig->getParameters().add(*parameter);
+  sigExtending->getExtendedSignatures().add(*extendedSig);
+  sigExtending->getExtendedSignatures().add(*otherSig);
+  ASSERT_EQ(sigExtending->getInheritedParameters().size(), 1);
+  ASSERT_EQ(sigExtending->getInheritedParameters().front(), *parameter);
+  sigExtending->getExtendedSignatures().remove(*extendedSig);
+  ASSERT_EQ(sigExtending->getInheritedParameters().size(), 1);
+  ASSERT_EQ(sigExtending->getInheritedParameters().front(), *parameter);
+  sigExtending->getExtendedSignatures().remove(*otherSig);
+  ASSERT_EQ(sigExtending->getInheritedParameters().size(), 0);
+  extendedSig->getParameters().remove(*parameter);
+  sigExtending->getExtendedSignatures().add(*extendedSig);
+  ASSERT_EQ(sigExtending->getInheritedParameters().size(), 0);
+  extendedSig->getParameters().add(*parameter);
+  ASSERT_EQ(sigExtending->getInheritedParameters().size(), 1);
+  ASSERT_EQ(sigExtending->getInheritedParameters().front(), *parameter);
+  extendedSig->getParameters().remove(*parameter);
+  ASSERT_EQ(sigExtending->getInheritedParameters().size(), 0);
+  sigExtending->getExtendedSignatures().add(*otherSig);
+  ASSERT_EQ(sigExtending->getInheritedParameters().size(), 1);
+  ASSERT_EQ(sigExtending->getInheritedParameters().front(), *parameter);
+  extendedSig->getParameters().add(*parameter);
+  ASSERT_EQ(sigExtending->getInheritedParameters().size(), 1);
+  ASSERT_EQ(sigExtending->getInheritedParameters().front(), *parameter);
+  extendedSig->getParameters().remove(*parameter);
+  ASSERT_EQ(sigExtending->getInheritedParameters().size(), 1);
+  ASSERT_EQ(sigExtending->getInheritedParameters().front(), *parameter);
 }

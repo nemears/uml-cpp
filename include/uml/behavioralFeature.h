@@ -20,6 +20,7 @@ namespace UML {
             Set<Behavior, BehavioralFeature> m_methods = Set<Behavior, BehavioralFeature>(this);
             Set<Parameter, BehavioralFeature> m_ownedParameters = Set<Parameter, BehavioralFeature>(this);
             Set<Type, BehavioralFeature> m_raisedExceptions = Set<Type, BehavioralFeature>(this);
+            Set<ParameterSet, BehavioralFeature> m_ownedParameterSets = Set<ParameterSet, BehavioralFeature>(this);
             bool m_returnSpecified = false;
             CallConcurrencyKind m_concurrency = CallConcurrencyKind::Sequential;
             void referencingReleased(ID id) override;
@@ -33,6 +34,7 @@ namespace UML {
             Set<Behavior, BehavioralFeature>& getMethods();
             Set<Parameter, BehavioralFeature>& getOwnedParameters();
             Set<Type, BehavioralFeature>& getRaisedExceptions();
+            Set<ParameterSet, BehavioralFeature>& getOwnedParameterSets();
             bool isAbstract();
             CallConcurrencyKind getConcurrency() const;
             void setConcurrency(CallConcurrencyKind concurrency);

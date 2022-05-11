@@ -4,6 +4,7 @@
 #include "multiplicityElement.h"
 #include "connectableElement.h"
 #include "valueSpecification.h"
+#include "uml/parameterSet.h"
 
 namespace UML {
 
@@ -39,11 +40,16 @@ namespace UML {
             ParameterDirectionKind m_direction = ParameterDirectionKind::NONE;
             Singleton<Operation, Parameter> m_operation = Singleton<Operation, Parameter>(this);
             Singleton<ValueSpecification, Parameter> m_defaultValue = Singleton<ValueSpecification, Parameter>(this);
+            Set<ParameterSet, Parameter> m_parameterSets = Set<ParameterSet, Parameter>(this);
             bool m_isException = false;
             bool m_isStream = false;
             ParameterEffectKind m_effect = ParameterEffectKind::NONE;
             Set<Operation, Parameter>& getOperationSingleton();
             Set<ValueSpecification, Parameter>& getDefaultValueSingleton();
+            void referencingReleased(ID id) override;
+            void referenceReindexed(ID oldID, ID newID) override;
+            void reindexName(ID id, std::string newName) override;
+            void referenceErased(ID id) override;
             void init();
             Parameter();
         public:
@@ -65,6 +71,7 @@ namespace UML {
             void setIsException(bool isException);
             bool isStream() const;
             void setIsStream(bool isStream);
+            Set<ParameterSet, Parameter>& getParameterSets();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PARAMETER;

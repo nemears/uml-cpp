@@ -46,6 +46,8 @@ void BehavioralFeature::init() {
     m_raisedExceptions.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_raisedExceptions.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_raisedExceptions.m_signature = &BehavioralFeature::getRaisedExceptions;
+    m_ownedParameterSets.subsets(*m_ownedElements);
+    m_ownedParameterSets.m_signature = &BehavioralFeature::getOwnedParameterSets;
 }
 
 BehavioralFeature::BehavioralFeature() : Element(ElementType::BEHAVIORAL_FEATURE) {
@@ -66,6 +68,10 @@ Set<Parameter, BehavioralFeature>& BehavioralFeature::getOwnedParameters() {
 
 Set<Type, BehavioralFeature>& BehavioralFeature::getRaisedExceptions() {
     return m_raisedExceptions;
+}
+
+Set<ParameterSet, BehavioralFeature>& BehavioralFeature::getOwnedParameterSets() {
+    return m_ownedParameterSets;
 }
 
 bool BehavioralFeature::isAbstract() {

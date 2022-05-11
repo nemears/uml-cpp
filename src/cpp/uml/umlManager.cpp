@@ -223,6 +223,9 @@ Element& UmlManager::create(ElementType eType) {
         case ElementType::PARAMETER : {
             return static_cast<Element&>(*create<Parameter>());
         }
+        case ElementType::PARAMETER_SET : {
+            return static_cast<Element&>(*create<ParameterSet>());
+        }
         case ElementType::PORT : {
             return static_cast<Element&>(*create<Port>());
         }

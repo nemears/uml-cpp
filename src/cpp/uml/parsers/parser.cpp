@@ -435,6 +435,8 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::PARAMETER;
     } else if (eType.compare("PARAMETERABLE_ELEMENT") == 0) {
         return ElementType::PARAMETERABLE_ELEMENT;
+    } else if (eType.compare("PARAMETER_SET") == 0) {
+        return ElementType::PARAMETER_SET;
     } else if (eType.compare("PIN") == 0) {
         return ElementType::PIN;
     } else if (eType.compare("PORT") == 0) {
@@ -762,6 +764,14 @@ void parseScope(YAML::Node node, ParserMetaData& data, Element* ret) {
             }
         }
     }
+    if (ret->isSubClassOf(ElementType::PARAMETER_SET)) {
+        if (node["owner"]) {
+            if (node["owner"].IsScalar()) {
+                setOwner(*ret, ID::fromString(node["owner"].as<std::string>()));
+                return;
+            }
+        }
+    }
 };
 
 ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
@@ -1079,6 +1089,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
         Parameter& param = *data.m_manager->create<Parameter>();
         parseParameter(node["parameter"], param, data);
         ret = &param;
+    }
+
+    if (node["parameterSet"]) {
+        ret = &parseDefinition<ParameterSet>(node, data, "parameterSet", parseParameterSet);
     }
 
     if (node["port"]) {
@@ -1501,6 +1515,10 @@ void determineTypeAndEmit(YAML::Emitter& emitter, Element& el, EmitterMetaData& 
             emitParameter(emitter, el.as<Parameter>(), data);
             break;
         }
+        case ElementType::PARAMETER_SET : {
+            emitParameterSet(emitter, el.as<ParameterSet>(), data);
+            break;
+        }
         case ElementType::PORT : {
             emitPort(emitter, el.as<Port>(), data);
             break;
@@ -1809,6 +1827,12 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
                 return;
             }
             else if (el.getOwner()) { // special case
+                emitter << YAML::Key << "owner" << YAML::Value << el.getOwner().id().string();
+                return;
+            }
+        }
+        if (el.isSubClassOf(ElementType::PARAMETER_SET)) {
+            if (el.getOwner()) {
                 emitter << YAML::Key << "owner" << YAML::Value << el.getOwner().id().string();
                 return;
             }
@@ -2462,6 +2486,7 @@ void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data) {
     if (node["isStream"]) {
         el.setIsStream(node["isStream"].as<bool>());
     }
+    parseSetReferences<ParameterSet, Parameter>(node, data, "parameterSets", el, &Parameter::getParameterSets);
 }
 
 void emitParameter(YAML::Emitter& emitter, Parameter& el, EmitterMetaData& data) {
@@ -2521,6 +2546,7 @@ void emitParameter(YAML::Emitter& emitter, Parameter& el, EmitterMetaData& data)
     if (el.isStream()) {
         emitter << YAML::Key << "isStream" << YAML::Value << true;
     }
+    emitSetReferences(emitter, "parameterSets", data, el, &Parameter::getParameterSets);
     emitElementDefenitionEnd(emitter, ElementType::PARAMETER, el);
 }
 
@@ -3900,6 +3926,14 @@ void emitSignal(YAML::Emitter& emitter, Signal& signal, EmitterMetaData& data) {
     emitElementDefenitionEnd(emitter, ElementType::SIGNAL, signal);
 }
 
+ParameterSet& determineAndParseParameterSet(YAML::Node node, ParserMetaData& data) {
+    if (node["parameterSet"]) {
+        return parseDefinition<ParameterSet>(node, data, "parameterSet", parseParameterSet);
+    } else {
+        throw UmlParserException("could not determine a parameter set to parse", data.m_path.string(), node);
+    }
+}
+
 void parseBehavioralFeature(YAML::Node node, BehavioralFeature& feature, ParserMetaData& data) {
     parseNamedElement(node, feature, data);
     if (node["concurrency"]) {
@@ -3916,6 +3950,7 @@ void parseBehavioralFeature(YAML::Node node, BehavioralFeature& feature, ParserM
     parseSetReferences<Behavior, BehavioralFeature>(node, data, "methods", feature, &BehavioralFeature::getMethods);
     parseSetDefinitions(node, data, "ownedParameters", feature, &BehavioralFeature::getOwnedParameters, determineAndParseParameter);
     parseSetReferences<Type, BehavioralFeature>(node, data, "raisedExceptions", feature, &BehavioralFeature::getRaisedExceptions);
+    parseSetDefinitions(node, data, "ownedParameterSets", feature, &BehavioralFeature::getOwnedParameterSets, determineAndParseParameterSet);
 }
 
 void emitBehavioralFeature(YAML::Emitter& emitter, BehavioralFeature& feature, EmitterMetaData& data) {
@@ -3939,6 +3974,7 @@ void emitBehavioralFeature(YAML::Emitter& emitter, BehavioralFeature& feature, E
     }
     emitSetDefinitions(emitter, "ownedParameters", data, feature, &BehavioralFeature::getOwnedParameters);
     emitSetReferences(emitter, "raisedExceptions", data, feature, &BehavioralFeature::getRaisedExceptions);
+    emitSetDefinitions(emitter, "ownedParameterSets", data, feature, &BehavioralFeature::getOwnedParameterSets);
 }
 
 void parseReception(YAML::Node node, Reception& reception, ParserMetaData& data) {
@@ -4523,6 +4559,20 @@ void emitClassifierTemplateParameter(YAML::Emitter& emitter, ClassifierTemplateP
     }
     emitSetReferences(emitter, "constrainingClassifiers", data, templateParameter, &ClassifierTemplateParameter::getConstrainingClassifiers);
     emitElementDefenitionEnd(emitter, ElementType::CLASSIFIER_TEMPLATE_PARAMETER, templateParameter);
+}
+
+void parseParameterSet(YAML::Node node, ParameterSet& parameterSet, ParserMetaData& data) {
+    parseNamedElement(node, parameterSet, data);
+    parseSetDefinitions(node, data, "conditions", parameterSet, &ParameterSet::getConditions, determineAndParseConstraint);
+    parseSetReferences<Parameter, ParameterSet>(node, data, "parameters", parameterSet, &ParameterSet::getParameters);
+}
+
+void emitParameterSet(YAML::Emitter& emitter, ParameterSet& parameterSet, EmitterMetaData& data) {
+    emitElementDefenition(emitter, ElementType::PARAMETER_SET, "parameterSet", parameterSet, data);
+    emitNamedElement(emitter, parameterSet, data);
+    emitSetDefinitions(emitter, "conditions", data, parameterSet, &ParameterSet::getConditions);
+    emitSetReferences(emitter, "parameters", data, parameterSet, &ParameterSet::getParameters);
+    emitElementDefenitionEnd(emitter, ElementType::PARAMETER_SET, parameterSet);
 }
 
 }

@@ -19,12 +19,34 @@ Set<ValueSpecification, Parameter>& Parameter::getDefaultValueSingleton() {
     return m_defaultValue;
 }
 
+void Parameter::referencingReleased(ID id) {
+    ConnectableElement::referencingReleased(id);
+    m_parameterSets.release(id);
+}
+
+void Parameter::referenceReindexed(ID oldID, ID newID) {
+    ConnectableElement::referenceReindexed(oldID, newID);
+    m_parameterSets.reindex(oldID, newID);
+}
+
+void Parameter::reindexName(ID id, std::string newName) {
+    ConnectableElement::reindexName(id, newName);
+    m_parameterSets.reindexName(id, newName);
+}
+
+void Parameter::referenceErased(ID id) {
+    ConnectableElement::referenceErased(id);
+    m_parameterSets.eraseElement(id);
+}
+
 void Parameter::init() {
     m_operation.subsets(m_namespace);
     m_operation.opposite(&Operation::getOwnedParametersSet);
     m_operation.m_signature = &Parameter::getOperationSingleton;
     m_defaultValue.subsets(*m_ownedElements);
     m_defaultValue.m_signature = &Parameter::getDefaultValueSingleton;
+    m_parameterSets.opposite(&ParameterSet::getParameters);
+    m_parameterSets.m_signature = &Parameter::getParameterSets;
 }
 
 Parameter::Parameter() : Element(ElementType::PARAMETER) {
@@ -110,6 +132,10 @@ bool Parameter::isStream() const {
 
 void Parameter::setIsStream(bool isStream) {
     m_isStream = isStream;
+}
+
+Set<ParameterSet, Parameter>& Parameter::getParameterSets() {
+    return m_parameterSets;
 }
 
 bool Parameter::isSubClassOf(ElementType eType) const {

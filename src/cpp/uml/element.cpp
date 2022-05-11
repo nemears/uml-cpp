@@ -418,6 +418,9 @@ std::string Element::elementTypeToString(ElementType eType) {
         case ElementType::PARAMETERABLE_ELEMENT : {
             return "PARAMETERABLE_ELEMENT";
         }
+        case ElementType::PARAMETER_SET : {
+            return "PARAMETER_SET";
+        }
         case ElementType::PIN : {
             return "PIN";
         }

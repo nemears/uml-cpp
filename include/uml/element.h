@@ -102,6 +102,7 @@ namespace UML {
         PACKAGE_MERGE,
         PARAMETER,
         PARAMETERABLE_ELEMENT,
+        PARAMETER_SET,
         PIN,
         PORT,
         PRIMITIVE_TYPE,

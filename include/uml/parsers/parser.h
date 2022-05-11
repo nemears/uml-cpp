@@ -235,6 +235,8 @@ namespace UML {
             void emitRedefinableTemplateSignature(YAML::Emitter& emitter, RedefinableTemplateSignature& signature, EmitterMetaData& data);
             void parseClassifierTemplateParameter(YAML::Node node, ClassifierTemplateParameter& templateParameter, ParserMetaData& data);
             void emitClassifierTemplateParameter(YAML::Emitter& emitter, ClassifierTemplateParameter& templateParameter, EmitterMetaData& data);
+            void parseParameterSet(YAML::Node node, ParameterSet& parameterSet, ParserMetaData& data);
+            void emitParameterSet(YAML::Emitter& emitter, ParameterSet& parameterSet, EmitterMetaData& data);
         }
     }
 }

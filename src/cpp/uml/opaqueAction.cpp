@@ -22,11 +22,8 @@ Set<LiteralString, OpaqueAction>& OpaqueAction::getBodiesSet() {
 
 void OpaqueAction::init() {
     m_inputValues.subsets(m_inputs);
-    m_inputValues.m_signature = &OpaqueAction::getInputValues;
     m_outputValues.subsets(m_outputs);
-    m_outputValues.m_signature = &OpaqueAction::getOutputValues;
     m_bodies.subsets(*m_ownedElements);
-    m_bodies.m_signature = &OpaqueAction::getBodiesSet;
 }
 
 OpaqueAction::OpaqueAction() : Element(ElementType::OPAQUE_ACTION) {

@@ -37,9 +37,7 @@ Set<BehavioralFeature, Behavior>& Behavior::getSpecificationSingleton() {
 
 void Behavior::init() {
     m_ownedParameters.subsets(m_ownedMembers);
-    m_ownedParameters.m_signature = &Behavior::getOwnedParameters;
     m_specification.opposite(&BehavioralFeature::getMethods);
-    m_specification.m_signature = &Behavior::getSpecificationSingleton;
 }
 
 Behavior::Behavior() : Element(ElementType::BEHAVIOR) {

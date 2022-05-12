@@ -137,12 +137,6 @@ namespace UML {
     class AbstractUmlPtr;
 
     /**
-     * A Note on manager node and keeping track of elements: Right now we are just using a raw pointer,
-     * it may be simpler and simplify some umlmanager methods if it was implemented with a unique_pointer
-     * or something similar, but this is how its implemented currently.
-     **/
-
-    /**
      * The ManagerNode struct is used as nodes in the internal graphs of the element's manager
      * It is also stored as a pointer from within the element so each element can quickly access
      * its place in the reference graph

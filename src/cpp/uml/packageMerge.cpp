@@ -30,11 +30,9 @@ Set<Package, PackageMerge>& PackageMerge::getMergedPackageSingleton() {
 void PackageMerge::init() {
     m_receivingPackage.subsets(*m_owner);
     m_receivingPackage.subsets(m_sources);
-    m_receivingPackage.m_signature = &PackageMerge::getReceivingPackageSingleton;
     m_mergedPackage.m_addFunctors.insert(new MergedPackageReferenceFunctor(this));
     m_mergedPackage.m_removeFunctors.insert(new RemoveMergedPackageReferenceFunctor(this));
     m_mergedPackage.subsets(m_targets);
-    m_mergedPackage.m_signature = &PackageMerge::getMergedPackageSingleton;
 }
 
 PackageMerge::PackageMerge() : Element(ElementType::PACKAGE_MERGE) {

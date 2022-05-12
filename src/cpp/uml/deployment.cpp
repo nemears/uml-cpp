@@ -18,9 +18,7 @@ void Deployment::init() {
     m_location.subsets(m_clients);
     m_location.subsets(*m_owner);
     m_location.opposite(&DeploymentTarget::getDeployments);
-    m_location.m_signature = &Deployment::getLocationSingleton;
     m_deployedArtifacts.subsets(m_suppliers);
-    m_deployedArtifacts.m_signature = &Deployment::getDeployedArtifacts;
 }
 
 Deployment::Deployment() : Element(ElementType::DEPLOYMENT) {

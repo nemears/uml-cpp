@@ -98,6 +98,7 @@ namespace UML {
         template <class T> friend struct SetIterator;
         template <class T> friend struct ID_Set;
         friend void recursiveSetContains(ID id, AbstractSet* set);
+        friend class Element;
         protected:
             size_t m_size = 0;
             int m_upper = 0; // this effectively lets us determine the type of the set (1 = singleton, 0 = set, -1 = orderedSet)
@@ -143,7 +144,7 @@ namespace UML {
                 if (parent->m_left) {
                     // prefer placement to left
                     if (parent->m_right) {
-                        // both children are populated, determine where to place
+                        // both children are populated, determine where to placenewID
                         if (node->m_id > parent->m_right->m_id && parent->m_left->m_guard <= m_guard) {
                             // place to left if greater than right
                             place(node, parent->m_left);
@@ -270,7 +271,6 @@ namespace UML {
             };
             void setName(SetNode* node);
             void instantiateSetNode(SetNode* node);
-            virtual void superSetRemove(ID id) = 0;
         public:
             /**
              * returns a bool on whether the id supplied is in the set
@@ -290,91 +290,6 @@ namespace UML {
     template <class T> struct SetIterator;
     template <class T> struct ID_Set;
 
-    class Namespace;
-    class NamedElement;
-    class Package;
-    class PackageableElement;
-    class Relationship;
-    class DirectedRelationship;
-    class PackageMerge;
-    class Dependency;
-    class Classifier;
-    class TypedElement;
-    class Feature;
-    class Property;
-    class StructuredClassifier;
-    class Generalization;
-    class Class;
-    class DataType;
-    class InstanceSpecification;
-    class Slot;
-    class BehavioralFeature;
-    class Behavior;
-    class MultiplicityElement;
-    class Operation;
-    class OpaqueBehavior;
-    class Parameter;
-    class BehavioredClassifier;
-    class Association;
-    class Enumeration;
-    class EnumerationLiteral;
-    class Comment;
-    class InstanceValue;
-    class Expression;
-    class TemplateableElement;
-    class TemplateSignature;
-    class ParameterableElement;
-    class TemplateParameter;
-    class TemplateBinding;
-    class TemplateParameterSubstitution;
-    class RedefinableElement;
-    class Stereotype;
-    class Profile;
-    class ProfileApplication;
-    class Extension;
-    class ExtensionEnd;
-    class DeploymentTarget;
-    class Deployment;
-    class Artifact;
-    class Manifestation;
-    class GeneralizationSet;
-    class Connector;
-    class ConnectorEnd;
-    class ConnectableElement;
-    class EncapsulatedClassifier;
-    class Interface;
-    class InterfaceRealization;
-    class Port;
-    class Usage;
-    class Signal;
-    class Reception;
-    class Activity;
-    class ActivityEdge;
-    class ActivityNode;
-    class ObjectNode;
-    class Action;
-    class DecisionNode;
-    class JoinNode;
-    class ObjectFlow;
-    class ActivityParameterNode;
-    class ExceptionHandler;
-    class ExecutableNode;
-    class ActivityGroup;
-    class ActivityPartition;
-    class InterruptibleActivityRegion;
-    class Constraint;
-    class OpaqueAction;
-    class ValuePin;
-    class ActionInputPin;
-    class InvocationAction;
-    class CallAction;
-    class CallBehaviorAction;
-    class ElementImport;
-    class PackageImport;
-    class RedefinableTemplateSignature;
-    class ClassifierTemplateParameter;
-    class ParameterSet;
-
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
         void setOwner(Element& el, ID id);
@@ -390,91 +305,64 @@ namespace UML {
         friend class Set<U>;
         friend struct SetIterator<U>;
         friend struct ID_Set<T>;
+
         friend class Element;
-        friend class Namespace;
-        friend class NamedElement;
-        friend class Package;
-        friend class PackageableElement;
-        friend class Relationship;
-        friend class DirectedRelationship;
-        friend class PackageMerge;
-        friend class Dependency;
-        friend class Classifier;
-        friend class TypedElement;
-        friend class Feature;
-        friend class Property;
-        friend class StructuredClassifier;
-        friend class Generalization;
-        friend class Class;
-        friend class DataType;
-        friend class InstanceSpecification;
-        friend class Slot;
-        friend class BehavioralFeature;
-        friend class Behavior;
-        friend class MultiplicityElement;
-        friend class Operation;
-        friend class OpaqueBehavior;
-        friend class Parameter;
-        friend class BehavioredClassifier;
+        friend class ActivityEdge;
+        friend class ActivityGroup;
+        friend class ActivityNode;
+        friend class ActivityParameterNode;
+        friend class ActivityPartition;
         friend class Association;
-        friend class Enumeration;
-        friend class EnumerationLiteral;
+        friend class Behavior;
+        friend class BehavioredClassifier;
+        friend class BehavioralFeature;
+        friend class CallBehaviorAction;
+        friend class ClassifierTemplateParameter;
+        friend class Classifier;
         friend class Comment;
-        friend class InstanceValue;
-        friend class Expression;
-        friend class TemplateableElement;
-        friend class TemplateSignature;
-        friend class ParameterableElement;
-        friend class TemplateParameter;
-        friend class TemplateBinding;
-        friend class TemplateParameterSubstitution;
-        friend class RedefinableElement;
-        friend class Stereotype;
-        friend class Profile;
-        friend class ProfileApplication;
-        friend class Extension;
-        friend class ExtensionEnd;
-        friend class DeploymentTarget;
-        friend class Deployment;
-        friend class Artifact;
-        friend class Manifestation;
-        friend class GeneralizationSet;
+        friend class ConnectableElement;
         friend class Connector;
         friend class ConnectorEnd;
-        friend class ConnectableElement;
-        friend class EncapsulatedClassifier;
-        friend class Interface;
-        friend class InterfaceRealization;
-        friend class Port;
-        friend class Usage;
-        friend class Signal;
-        friend class Reception;
-        friend class Activity;
-        friend class ActivityEdge;
-        friend class ActivityNode;
-        friend class ObjectNode;
-        friend class Action;
-        friend class DecisionNode;
-        friend class JoinNode;
-        friend class ObjectFlow;
-        friend class ActivityParameterNode;
-        friend class ExceptionHandler;
-        friend class ExecutableNode;
-        friend class ActivityGroup;
-        friend class ActivityPartition;
-        friend class InterruptibleActivityRegion;
         friend class Constraint;
-        friend class OpaqueAction;
-        friend class ValuePin;
-        friend class ActionInputPin;
-        friend class InvocationAction;
-        friend class CallAction;
-        friend class CallBehaviorAction;
+        friend class DecisionNode;
+        friend class Dependency;
+        friend class DirectedRelationship;
         friend class ElementImport;
+        friend class EncapsulatedClassifier;
+        friend class ExceptionHandler;
+        friend class Feature;
+        friend class Generalization;
+        friend class GeneralizationSet;
+        friend class InstanceSpecification;
+        friend class InstanceValue;
+        friend class InterfaceRealization;
+        friend class InterruptibleActivityRegion;
+        friend class InvocationAction;
+        friend class MultiplicityElement;
+        friend class NamedElement;
+        friend class Namespace;
+        friend class ObjectFlow;
+        friend class ObjectNode;
         friend class PackageImport;
-        friend class RedefinableTemplateSignature;
-        friend class ClassifierTemplateParameter;
+        friend class PackageMerge;
+        friend class ParameterableElement;
+        friend class Parameter;
         friend class ParameterSet;
+        friend class Port;
+        friend class ProfileApplication;
+        friend class Property;
+        friend class Reception;
+        friend class RedefinableElement;
+        friend class RedefinableTemplateSignature;
+        friend class Relationship;
+        friend class Slot;
+        friend class StructuredClassifier;
+        friend class TypedElement;
+        friend class TemplateBinding;
+        friend class TemplateParameter;
+        friend class TemplateParameterSubstitution;
+        friend class TemplateSignature;
+        friend class Usage;
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
         friend void Parsers::setOwner(Element& el, ID id);
@@ -485,7 +373,6 @@ namespace UML {
             bool m_ownsOppositeFunctor = false;
             std::vector<AbstractOppositeFunctor*> m_otherOpposites;
             Element* m_el = 0;
-            Set<T,U>& (U::*m_signature)() = 0;
             bool m_readOnly = false;
             AbstractSet* m_setToInstantiate = 0;
 
@@ -730,19 +617,6 @@ namespace UML {
              **/
             virtual void deleteNode(SetNode* node) {
                 delete node;
-            };
-            /**
-             * makes removed node satisfy condition of supersets specifically the size and if the root was removed
-             * @param id the id of the node being removed
-             **/
-            void superSetRemove(ID id) override {
-                if (m_root && m_root->m_id == id) {
-                    m_root = m_root->m_left;
-                    for (auto& subsetOf : m_superSets) {
-                        subsetOf->superSetRemove(id);
-                        subsetOf->m_size--;
-                    }
-                }
             };
             /**
              * checks if the parent of the node being removed is a placeholder and if it needs to be deleted
@@ -1659,9 +1533,6 @@ namespace UML {
              * @param subsetOf the set that we are a subset of
              **/
             template <class V = Element, class W = Element> void subsets(Set<V, W>& subsetOf) {
-                if (m_signature) {
-                    throw FixedSetException();
-                }
                 if (std::find(m_superSets.begin(), m_superSets.end(), &subsetOf) == m_superSets.end()) {
                     m_superSets.push_back(&subsetOf);
                     std::vector<AbstractSet*>* allSuperSets = getAllSuperSets();
@@ -1722,9 +1593,6 @@ namespace UML {
              * @param op the signature for the set that this set is opposite of
              **/
             void opposite(Set<U, T>& (T::*op)()) {
-                if (m_signature) {
-                    throw FixedSetException();
-                }
                 /** TODO: static_assert that we have m_el for this instance **/
                 if (m_el) {
                     OppositeFunctor<T,U>* opFunc = new OppositeFunctor<T,U>(dynamic_cast<U*>(m_el));
@@ -1750,9 +1618,6 @@ namespace UML {
              * @param redefined, the set that this set is redefining
              **/
             template <class V = Element, class W = Element> void redefines(Set<V, W>& redefined) {
-                if (m_signature) {
-                    throw FixedSetException();
-                }
                 if (m_root) {
                     throw ManagerStateException("WARNING redefines set after set was used, must make sure redefining is done during configuration, before use!");
                     return;
@@ -1792,12 +1657,18 @@ namespace UML {
                 }
                 m_guard = redefined.m_guard;
             };
+
             void addFunctor(SetFunctor* func) {
                 m_addFunctors.insert(func);
             };
+
             void removeFunctor(SetFunctor* func) {
                 m_removeFunctors.insert(func);
             };
+
+            void setReadOnly(bool readOnly) {
+                m_readOnly = readOnly;
+            }
 
             // TODO expand
             typedef Set<U,T>& (T::*oppositeSignature)();

@@ -103,30 +103,23 @@ Set<Interface, Property>& Property::getInterfaceSingleton() {
 
 void Property::init() {
     m_defaultValue.subsets(*m_ownedElements);
-    m_defaultValue.m_signature = &Property::getDefaultValueSingleton;
     m_class.subsets(m_namespace);
     m_class.subsets(m_featuringClassifier);
     m_class.opposite(&Class::getOwnedAttributesSet);
-    m_class.m_signature = &Property::getClassSingleton;
     m_dataType.subsets(m_namespace);
     m_dataType.subsets(m_featuringClassifier);
     m_dataType.opposite(&DataType::getOwnedAttributesSet);
-    m_dataType.m_signature = &Property::getDataTypeSingleton;
     m_association.opposite(&Association::getMemberEndsSet);
-    m_association.m_signature = &Property::getAssociationSingleton;
     m_owningAssociation.subsets(m_namespace);
     m_owningAssociation.subsets(m_featuringClassifier);
     m_owningAssociation.subsets(m_association);
     m_owningAssociation.opposite(&Association::getOwnedEndsSet);
-    m_owningAssociation.m_signature = &Property::getOwningAssociationSingleton;
     m_interface.subsets(m_namespace);
     m_interface.subsets(m_featuringClassifier);
     m_interface.opposite(&Interface::getOwnedAttributesSet);
-    m_interface.m_signature = &Property::getInterfaceSingleton;
     m_type.m_addFunctors.insert(new AddEndTypeFunctor(this));
     m_type.m_removeFunctors.insert(new RemoveEndTypeFunctor(this));
     m_redefinedProperties.subsets(m_redefinedElement);
-    m_redefinedProperties.m_signature = &Property::getRedefinedProperties;
     m_redefinedProperties.m_addFunctors.insert(new AddRedefinitionContextFunctor(this));
     m_redefinedProperties.m_removeFunctors.insert(new RemoveRedefinitionContextFunctor(this));
 }

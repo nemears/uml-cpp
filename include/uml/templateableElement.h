@@ -8,6 +8,8 @@
 
 namespace UML {
 
+    class TemplateSignature;
+
     typedef UmlPtr<TemplateSignature> TemplateSignaturePtr;
 
     class TemplateableElement : virtual public Element {

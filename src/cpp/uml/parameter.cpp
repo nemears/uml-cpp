@@ -42,11 +42,8 @@ void Parameter::referenceErased(ID id) {
 void Parameter::init() {
     m_operation.subsets(m_namespace);
     m_operation.opposite(&Operation::getOwnedParametersSet);
-    m_operation.m_signature = &Parameter::getOperationSingleton;
     m_defaultValue.subsets(*m_ownedElements);
-    m_defaultValue.m_signature = &Parameter::getDefaultValueSingleton;
     m_parameterSets.opposite(&ParameterSet::getParameters);
-    m_parameterSets.m_signature = &Parameter::getParameterSets;
 }
 
 Parameter::Parameter() : Element(ElementType::PARAMETER) {

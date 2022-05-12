@@ -45,14 +45,11 @@ Set<InstanceSpecification, Slot>& Slot::getOwningInstanceSingleton() {
 }
 
 void Slot::init() {
-    m_definingFeature.m_signature = &Slot::getDefiningFeatureSingleton;
     m_definingFeature.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_definingFeature.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_owningInstance.subsets(*m_owner);
     m_owningInstance.opposite(&InstanceSpecification::getSlots);
-    m_owningInstance.m_signature = &Slot::getOwningInstanceSingleton;
     m_values.subsets(*m_ownedElements);
-    m_values.m_signature = &Slot::getValues;
 }
 
 Slot::Slot() : Element(ElementType::SLOT) {

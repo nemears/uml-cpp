@@ -15,7 +15,6 @@ Set<Enumeration, EnumerationLiteral>& EnumerationLiteral::getEnumerationSingleto
 void EnumerationLiteral::init() {
     m_enumeration.subsets(m_namespace);
     m_enumeration.opposite(&Enumeration::getOwnedLiteralsSet);
-    m_enumeration.m_signature = &EnumerationLiteral::getEnumerationSingleton;
 }
 
 EnumerationLiteral::EnumerationLiteral() : Element(ElementType::ENUMERATION_LITERAL) {

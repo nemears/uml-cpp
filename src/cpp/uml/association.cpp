@@ -75,18 +75,14 @@ Set<Property, Association>& Association::getOwnedEndsSet() {
 void Association::init() {
     m_memberEnds.subsets(m_members);
     m_memberEnds.opposite(&Property::getAssociationSingleton);
-    m_memberEnds.m_signature = &Association::getMemberEndsSet;
     m_memberEnds.m_addFunctors.insert(new AddEndTypeFunctor(this));
     m_memberEnds.m_removeFunctors.insert(new RemoveEndTypeFunctor(this));
     m_ownedEnds.subsets(m_memberEnds);
     m_ownedEnds.subsets(m_ownedMembers);
     m_ownedEnds.subsets(m_features);
     m_ownedEnds.opposite(&Property::getOwningAssociationSingleton);
-    m_ownedEnds.m_signature = &Association::getOwnedEndsSet;
     m_navigableOwnedEnds.subsets(m_ownedEnds);
-    m_navigableOwnedEnds.m_signature = &Association::getNavigableOwnedEnds;
     m_endTypes.subsets(m_relatedElements);
-    m_endTypes.m_signature = &Association::getEndTypes;
 }
 
 Association::Association() : Element(ElementType::ASSOCIATION) {

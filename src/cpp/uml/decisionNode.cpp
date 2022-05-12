@@ -48,10 +48,8 @@ void DecisionNode::referenceErased(ID id) {
 }
 
 void DecisionNode::init() {
-    m_decisionInputFlow.m_signature = &DecisionNode::getDecisionInputFlowSingleton;
     m_decisionInputFlow.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_decisionInputFlow.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-    m_decisionInput.m_signature = &DecisionNode::getDecisionInputSingleton;
     m_decisionInput.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_decisionInput.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }

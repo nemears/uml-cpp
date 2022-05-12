@@ -22,7 +22,6 @@ Set<OutputPin, CallAction>& CallAction::getResultsSet() {
 
 void CallAction::init() {
     m_results.subsets(m_outputs);
-    m_results.m_signature = &CallAction::getResultsSet;
 }
 
 CallAction::CallAction() : Element(ElementType::CALL_ACTION) {

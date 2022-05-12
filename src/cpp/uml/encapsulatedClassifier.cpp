@@ -26,7 +26,6 @@ void EncapsulatedClassifier::RemoveOwnedAttributeFunctor::operator()(Element& el
 void EncapsulatedClassifier::init() {
     m_ownedPorts.subsets(m_ownedAttributes);
     m_ownedPorts.m_readOnly = true;
-    m_ownedPorts.m_signature = &EncapsulatedClassifier::getOwnedPorts;
     m_ownedAttributes.m_addFunctors.insert(new AddOwnedAttributeFunctor(this));
     m_ownedAttributes.m_removeFunctors.insert(new RemoveOwnedAttributeFunctor(this));
 }

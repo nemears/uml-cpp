@@ -8,6 +8,9 @@ namespace UML {
 
     class ActivityNode;
     class Activity;
+    class InterruptibleActivityRegion;
+    class ActivityGroup;
+    class ActivityPartition;
 
     typedef UmlPtr<Activity> ActivityPtr;
     typedef UmlPtr<ActivityNode> ActivityNodePtr;

@@ -18,16 +18,12 @@ using namespace UML;
 void Activity::init() {
     m_nodes.subsets(*m_ownedElements);
     m_nodes.opposite(&ActivityNode::getActivitySingleton);
-    m_nodes.m_signature = &Activity::getNodes;
     m_edges.subsets(*m_ownedElements);
     m_edges.opposite(&ActivityEdge::getActivitySingleton);
-    m_edges.m_signature = &Activity::getEdges;
     m_groups.subsets(*m_ownedElements);
     m_groups.opposite(&ActivityGroup::getInActivitySingleton);
-    m_groups.m_signature = &Activity::getGroups;
     m_partitions.subsets(m_groups);
     m_partitions.opposite(&ActivityPartition::getInActivitySingleton);
-    m_partitions.m_signature = &Activity::getPartitions;
 }
 
 Activity::Activity() : Element(ElementType::ACTIVITY) {

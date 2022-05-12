@@ -28,13 +28,13 @@ void ConnectorEnd::referencingReleased(ID id) {
 void ConnectorEnd::referenceReindexed(ID oldID, ID newID) {
     MultiplicityElement::referenceReindexed(oldID, newID);
     m_role.reindex(oldID, newID);
-    m_role.reindex(oldID, newID);
+    m_definingEnd.reindex(oldID, newID);
 }
 
 void ConnectorEnd::reindexName(ID id, std::string newName) {
     MultiplicityElement::reindexName(id, newName);
     m_role.reindexName(id, newName);
-    m_role.reindexName(id, newName);
+    m_definingEnd.reindexName(id, newName);
 }
 
 void ConnectorEnd::referenceErased(ID id) {
@@ -45,9 +45,7 @@ void ConnectorEnd::referenceErased(ID id) {
 
 void ConnectorEnd::init() {
     m_role.opposite(&ConnectableElement::getEnds);
-    m_role.m_signature = &ConnectorEnd::getRoleSingleton;
     m_definingEnd.m_readOnly = true;
-    m_definingEnd.m_signature = &ConnectorEnd::getDefiningEndSingleton;
 }
 
 ConnectorEnd::ConnectorEnd() : Element(ElementType::CONNECTOR_END) {

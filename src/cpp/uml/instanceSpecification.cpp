@@ -47,14 +47,11 @@ Set<ValueSpecification, InstanceSpecification>& InstanceSpecification::getSpecif
 }
 
 void InstanceSpecification::init() {
-    m_classifiers.m_signature = &InstanceSpecification::getClassifiers;
     m_classifiers.m_addFunctors.insert(new AddClassifierFunctor(this));
     m_classifiers.m_removeFunctors.insert(new RemoveClassifierFunctor(this));
     m_specification.subsets(*m_ownedElements);
-    m_specification.m_signature = &InstanceSpecification::getSpecificationSingleton;
     m_slots.subsets(*m_ownedElements);
     m_slots.opposite(&Slot::getOwningInstanceSingleton);
-    m_slots.m_signature = &InstanceSpecification::getSlots;
 }
 
 InstanceSpecification::InstanceSpecification() : Element(ElementType::INSTANCE_SPECIFICATION) {

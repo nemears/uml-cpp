@@ -19,7 +19,6 @@ using namespace UML;
 void ExecutableNode::init() {
     m_handlers.subsets(*m_ownedElements);
     m_handlers.opposite(&ExceptionHandler::getProtectedNodeSingleton);
-    m_handlers.m_signature = &ExecutableNode::getHandlers;
 }
 
 ExecutableNode::ExecutableNode() : Element(ElementType::EXECUTABLE_NODE) {

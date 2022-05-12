@@ -68,17 +68,14 @@ Set<Classifier, Generalization>& Generalization::getSpecificSingleton() {
 
 void Generalization::init() {
     m_general.subsets(m_targets);
-    m_general.m_signature = &Generalization::getGeneralSingleton;
     m_general.m_addFunctors.insert(new AddGeneralFunctor(this));
     m_general.m_removeFunctors.insert(new RemoveGeneralFunctor(this));
     m_specific.subsets(*m_owner);
     m_specific.subsets(m_sources);
     m_specific.opposite(&Classifier::getGeneralizations);
-    m_specific.m_signature = &Generalization::getSpecificSingleton;
     m_generalizationSets.opposite(&GeneralizationSet::getGeneralizations);
     m_generalizationSets.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_generalizationSets.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-    m_generalizationSets.m_signature = &Generalization::getGeneralizationSets;
 }
 
 Generalization::Generalization() : Element(ElementType::GENERALIZATION) {

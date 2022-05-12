@@ -33,9 +33,7 @@ void ParameterSet::referenceErased(ID id) {
 
 void ParameterSet::init() {
     m_conditions.subsets(*m_ownedElements);
-    m_conditions.m_signature = &ParameterSet::getConditions;
     m_parameters.opposite(&Parameter::getParameterSets);
-    m_parameters.m_signature = &ParameterSet::getParameters;
 }
 
 ParameterSet::ParameterSet() : Element(ElementType::PARAMETER_SET) {

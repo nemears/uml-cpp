@@ -4,6 +4,9 @@
 #include "property.h"
 
 namespace UML {
+
+    class Interface;
+
     class Port : public Property {
 
         friend class UmlManager;

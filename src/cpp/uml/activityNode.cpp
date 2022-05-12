@@ -53,20 +53,14 @@ void ActivityNode::reindexName(ID id, std::string newName) {
 void ActivityNode::init() {
     m_activity.subsets(*m_owner);
     m_activity.opposite(&Activity::getNodes);
-    m_activity.m_signature = &ActivityNode::getActivitySingleton;
     m_incoming.opposite(&ActivityEdge::getTargetSingleton);
-    m_incoming.m_signature = &ActivityNode::getIncoming;
     m_outgoing.opposite(&ActivityEdge::getSourceSingleton);
-    m_outgoing.m_signature = &ActivityNode::getOutgoing;
     m_inGroups.opposite(&ActivityGroup::getContainedNodes);
-    m_inGroups.m_signature = &ActivityNode::getInGroups;
     m_inGroups.m_readOnly = true;
     m_inPartitions.subsets(m_inGroups);
     m_inPartitions.opposite(&ActivityPartition::getNodes);
-    m_inPartitions.m_signature = &ActivityNode::getInPartitions;
     m_interruptibleRegions.subsets(m_inGroups);
     m_interruptibleRegions.opposite(&InterruptibleActivityRegion::getNodes);
-    m_interruptibleRegions.m_signature = &ActivityNode::getInterruptibleRegions;
 }
 
 ActivityNode::ActivityNode() : Element(ElementType::ACTIVITY_NODE) {

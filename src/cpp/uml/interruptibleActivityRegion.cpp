@@ -35,9 +35,7 @@ void InterruptibleActivityRegion::reindexName(ID id, std::string newName) {
 void InterruptibleActivityRegion::init() {
     m_nodes.subsets(m_containedNodes);
     m_nodes.opposite(&ActivityNode::getInterruptibleRegions);
-    m_nodes.m_signature = &InterruptibleActivityRegion::getNodes;
     m_interruptingEdges.opposite(&ActivityEdge::getInterruptsSingleton);
-    m_interruptingEdges.m_signature = &InterruptibleActivityRegion::getInterruptingEdges;
 }
 
 InterruptibleActivityRegion::InterruptibleActivityRegion() : Element(ElementType::INTERRUPTIBLE_ACTIVITY_REGION) {

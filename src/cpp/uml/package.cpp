@@ -32,15 +32,11 @@ void Package::referenceErased(ID id) {
 void Package::init() {
     m_packagedElements.subsets(m_ownedMembers);
     m_packagedElements.opposite(&PackageableElement::getOwningPackageSingleton);
-    m_packagedElements.m_signature = &Package::getPackagedElements;
     m_packageMerge.subsets(*m_ownedElements);
     m_packageMerge.opposite(&PackageMerge::getReceivingPackageSingleton);
-    m_packageMerge.m_signature = &Package::getPackageMerge;
     m_ownedStereotypes.subsets(m_packagedElements);
-    m_ownedStereotypes.m_signature = &Package::getOwnedStereotypes;
     m_profileApplications.subsets(*m_ownedElements);
     m_profileApplications.opposite(&ProfileApplication::getApplyingPackageSingleton);
-    m_profileApplications.m_signature = &Package::getProfileApplications;
 }
 
 Package::Package() : Element(ElementType::PACKAGE) {

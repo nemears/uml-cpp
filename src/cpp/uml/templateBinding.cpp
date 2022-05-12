@@ -34,14 +34,11 @@ void TemplateBinding::init() {
     m_boundElement.subsets(m_sources);
     m_boundElement.subsets(*m_owner);
     m_boundElement.opposite(&TemplateableElement::getTemplateBindings);
-    m_boundElement.m_signature = &TemplateBinding::getBoundElementSingleton;
     m_signature.subsets(m_targets);
     m_signature.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_signature.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-    m_signature.m_signature = &TemplateBinding::getSignatureSingleton;
     m_parameterSubstitutions.subsets(*m_ownedElements);
     m_parameterSubstitutions.opposite(&TemplateParameterSubstitution::getTemplateBindingSingleton);
-    m_parameterSubstitutions.m_signature = &TemplateBinding::getParameterSubstitutions;
 }
 
 TemplateBinding::TemplateBinding() : Element(ElementType::TEMPLATE_BINDING) {

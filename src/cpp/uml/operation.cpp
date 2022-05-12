@@ -60,18 +60,14 @@ void Operation::init() {
     m_class.subsets(m_featuringClassifier);
     m_class.subsets(m_namespace);
     m_class.opposite(&Class::getOwnedOperationsSet);
-    m_class.m_signature = &Operation::getClassSingleton;
     m_dataType.subsets(m_featuringClassifier);
     m_dataType.subsets(m_namespace);
     m_dataType.opposite(&DataType::getOwnedOperationsSet);
-    m_dataType.m_signature = &Operation::getDataTypeSingleton;
     m_interface.subsets(m_namespace);
     m_interface.subsets(m_featuringClassifier);
     m_interface.opposite(&Interface::getOwnedOperationsSet);
-    m_interface.m_signature = &Operation::getInterfaceSingleton;
     m_operationOwnedParameters.redefines(m_ownedParameters);
     m_operationOwnedParameters.opposite(&Parameter::getOperationSingleton);
-    m_operationOwnedParameters.m_signature = &Operation::getOwnedParametersSet;
 }
 
 Operation::Operation() : Element(ElementType::OPERATION) {

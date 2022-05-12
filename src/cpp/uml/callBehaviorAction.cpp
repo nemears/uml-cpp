@@ -42,7 +42,6 @@ void CallBehaviorAction::referenceErased(ID id) {
 }
 
 void CallBehaviorAction::init() {
-    m_behavior.m_signature = &CallBehaviorAction::getBehaviorSingleton;
     m_behavior.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_behavior.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }

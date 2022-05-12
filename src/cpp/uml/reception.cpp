@@ -33,7 +33,6 @@ void Reception::referenceErased(ID id) {
 }
 
 void Reception::init() {
-    m_signal.m_signature = &Reception::getSignalSingleton;
     m_signal.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_signal.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }

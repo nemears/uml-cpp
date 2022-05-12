@@ -38,10 +38,7 @@ void Constraint::referenceErased(ID id) {
 void Constraint::init() {
     m_context.subsets(m_namespace);
     m_context.opposite(&Namespace::getOwnedRules);
-    m_context.m_signature = &Constraint::getContextSingleton;
-    m_constrainedElements.m_signature = &Constraint::getConstrainedElements;
     m_specifications.subsets(*m_ownedElements);
-    m_specifications.m_signature = &Constraint::getSpecifications;
 }
 
 Constraint::Constraint() : Element(ElementType::CONSTRAINT) {

@@ -12,7 +12,6 @@ void DeploymentTarget::init() {
     m_deployments.subsets(*m_clientDependencies);
     m_deployments.subsets(*m_ownedElements);
     m_deployments.opposite(&Deployment::getLocationSingleton);
-    m_deployments.m_signature = &DeploymentTarget::getDeployments;
 }
 
 DeploymentTarget::DeploymentTarget() : Element(ElementType::DEPLOYMENT_TARGET) {

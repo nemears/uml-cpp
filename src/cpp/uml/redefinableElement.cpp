@@ -33,9 +33,7 @@ void RedefinableElement::referenceErased(ID id) {
 
 void RedefinableElement::init() {
     m_redefinedElement.m_readOnly = true;
-    m_redefinedElement.m_signature = &RedefinableElement::getRedefinedElements;
     m_redefinitionContext.m_readOnly = true;
-    m_redefinitionContext.m_signature = &RedefinableElement::getRedefinitionContext;
 }
 
 RedefinableElement::RedefinableElement() : Element(ElementType::REDEFINABLE_ELEMENT) {

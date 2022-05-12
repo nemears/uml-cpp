@@ -22,7 +22,6 @@ Set<Action, ActionInputPin>& ActionInputPin::getFromActionSingleton() {
 
 void ActionInputPin::init() {
     m_fromAction.subsets(*m_ownedElements);
-    m_fromAction.m_signature = &ActionInputPin::getFromActionSingleton;
 }
 
 ActionInputPin::ActionInputPin() : Element(ElementType::ACTION_INPUT_PIN) {

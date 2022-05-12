@@ -73,24 +73,16 @@ void ActivityEdge::referenceErased(ID id) {
 void ActivityEdge::init() {
     m_activity.subsets(*m_owner);
     m_activity.opposite(&Activity::getEdges);
-    m_activity.m_signature = &ActivityEdge::getActivitySingleton;
     m_source.opposite(&ActivityNode::getOutgoing);
-    m_source.m_signature = &ActivityEdge::getSourceSingleton;
     m_target.opposite(&ActivityNode::getIncoming);
-    m_target.m_signature = &ActivityEdge::getTargetSingleton;
     m_guard.subsets(*m_ownedElements);
-    m_guard.m_signature = &ActivityEdge::getGuardSingleton;
     m_weight.subsets(*m_ownedElements);
-    m_weight.m_signature = &ActivityEdge::getWeightSingleton;
     m_inGroups.opposite(&ActivityGroup::getContainedEdges);
-    m_inGroups.m_signature = &ActivityEdge::getInGroups;
     m_inGroups.m_readOnly = true;
     m_inPartitions.subsets(m_inGroups);
     m_inPartitions.opposite(&ActivityPartition::getEdges);
-    m_inPartitions.m_signature = &ActivityEdge::getInPartitions;
     m_interrupts.subsets(m_inGroups);
     m_interrupts.opposite(&InterruptibleActivityRegion::getInterruptingEdges);
-    m_interrupts.m_signature = &ActivityEdge::getInterruptsSingleton;
 }
 
 ActivityEdge::ActivityEdge() : Element(ElementType::ACTIVITY_EDGE) {

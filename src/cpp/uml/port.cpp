@@ -133,11 +133,9 @@ void Port::init() {
     m_type.m_addFunctors.insert(new SetTypeFunctor(this));
     m_type.m_removeFunctors.insert(new RemoveTypeFunctor(this));
     m_required.m_readOnly = true;
-    m_required.m_signature = &Port::getRequired;
     m_required.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_required.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_provided.m_readOnly = true;
-    m_provided.m_signature = &Port::getProvided;
     m_provided.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_provided.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }

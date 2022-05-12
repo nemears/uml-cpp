@@ -7,6 +7,8 @@
 
 namespace UML {
 
+    class Behavior;
+
     typedef UmlPtr<ValueSpecification> ValueSpecificationPtr;
     typedef UmlPtr<Behavior> BehaviorPtr;
 

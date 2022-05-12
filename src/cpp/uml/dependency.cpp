@@ -40,9 +40,7 @@ void Dependency::referenceErased(ID id) {
 void Dependency::init() {
     m_clients.subsets(m_sources);
     m_clients.opposite(&NamedElement::getClientDependencies);
-    m_clients.m_signature = &Dependency::getClients;
     m_suppliers.subsets(m_targets);
-    m_suppliers.m_signature = &Dependency::getSuppliers;
     m_suppliers.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_suppliers.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }

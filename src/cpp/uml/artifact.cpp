@@ -20,16 +20,12 @@ Set<Operation, Artifact>& Artifact::getOwnedOperationsSet() {
 
 void Artifact::init() {
     m_nestedArtifacts.subsets(m_ownedMembers);
-    m_nestedArtifacts.m_signature = &Artifact::getNestedArtifacts;
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.subsets(m_ownedMembers);
-    m_ownedAttributes.m_signature = &Artifact::getOwnedAttributesSet;
     m_ownedOperations.subsets(m_features);
     m_ownedOperations.subsets(m_ownedMembers);
-    m_ownedOperations.m_signature = &Artifact::getOwnedOperationsSet;
     m_manifestations.subsets(m_ownedMembers);
     m_manifestations.subsets(*m_clientDependencies);
-    m_manifestations.m_signature = &Artifact::getManifestations;
 }
 
 Artifact::Artifact() : Element(ElementType::ARTIFACT) {

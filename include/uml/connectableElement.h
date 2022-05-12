@@ -5,6 +5,9 @@
 #include "parameterableElement.h"
 
 namespace UML {
+
+    class ConnectorEnd;
+
     class ConnectableElement : virtual public TypedElement, virtual public ParameterableElement {
         protected:
             Set<ConnectorEnd, ConnectableElement> m_ends = Set<ConnectorEnd, ConnectableElement>(this);

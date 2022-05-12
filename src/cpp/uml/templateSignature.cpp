@@ -43,14 +43,11 @@ Set<TemplateParameter, TemplateSignature>& TemplateSignature::getOwnedParameters
 void TemplateSignature::init() {
     m_template.subsets(*m_owner);
     m_template.opposite(&TemplateableElement::getOwnedTemplateSignatureSingleton);
-    m_template.m_signature = &TemplateSignature::getTemplateSingleton;
-    m_parameters.m_signature = &TemplateSignature::getParametersSet;
     m_parameters.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_parameters.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_ownedParameters.subsets(m_parameters);
     m_ownedParameters.subsets(*m_ownedElements);
     m_ownedParameters.opposite(&TemplateParameter::getSignatureSingleton);
-    m_ownedParameters.m_signature = &TemplateSignature::getOwnedParametersSet;
 }
 
 TemplateSignature::TemplateSignature() : Element(ElementType::TEMPLATE_SIGNATURE) {

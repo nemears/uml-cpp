@@ -6,6 +6,8 @@
 
 namespace UML {
 
+    class Parameter;
+
     class ParameterSet : public NamedElement {
 
         friend class UmlManager;

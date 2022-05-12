@@ -22,11 +22,9 @@ void ProfileApplication::init() {
     m_appliedProfile.subsets(m_targets);
     m_appliedProfile.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_appliedProfile.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-    m_appliedProfile.m_signature = &ProfileApplication::getAppliedProfileSingleton;
     m_applyingPackage.subsets(*m_owner);
     m_applyingPackage.subsets(m_sources);
     m_applyingPackage.opposite(&Package::getProfileApplications);
-    m_applyingPackage.m_signature = &ProfileApplication::getApplyingPackageSingleton;
 }
 
 ProfileApplication::ProfileApplication() : Element(ElementType::PROFILE_APPLICATION) {

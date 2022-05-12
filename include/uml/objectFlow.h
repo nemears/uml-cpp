@@ -5,6 +5,8 @@
 
 namespace UML {
 
+    class Behavior;
+
     typedef UmlPtr<Behavior> BehaviorPtr;
 
     class ObjectFlow : public ActivityEdge {

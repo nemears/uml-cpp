@@ -42,9 +42,7 @@ Set<Classifier, GeneralizationSet>& GeneralizationSet::getPowerTypeSingleton() {
 
 void GeneralizationSet::init() {
     m_generalizations.opposite(&Generalization::getGeneralizationSets);
-    m_generalizations.m_signature = &GeneralizationSet::getGeneralizations;
     m_powerType.opposite(&Classifier::getPowerTypeExtent);
-    m_powerType.m_signature = &GeneralizationSet::getPowerTypeSingleton;
 }
 
 GeneralizationSet::GeneralizationSet() : Element(ElementType::GENERALIZATION_SET) {

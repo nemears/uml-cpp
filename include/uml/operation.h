@@ -12,6 +12,7 @@ namespace UML {
     class Class;
     class DataType;
     class Type;
+    class Interface;
 
     typedef UmlPtr<Type> TypePtr;
     typedef UmlPtr<Class> ClassPtr;

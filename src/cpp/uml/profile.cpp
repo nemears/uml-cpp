@@ -10,7 +10,6 @@ using namespace UML;
 void Profile::init() {
     m_profileOwnedStereotypes.redefines(m_ownedStereotypes);
     m_profileOwnedStereotypes.opposite(&Stereotype::getProfileSingleton);
-    m_profileOwnedStereotypes.m_signature = &Profile::getOwnedStereotypes;
 }
 
 Profile::Profile() : Element(ElementType::PROFILE) {

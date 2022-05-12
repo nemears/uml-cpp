@@ -43,7 +43,6 @@ void ConnectableElement::referenceErased(ID id) {
 
 void ConnectableElement::init() {
     m_ends.m_readOnly = true;
-    m_ends.m_signature = &ConnectableElement::getEnds;
     m_ends.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_ends.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }

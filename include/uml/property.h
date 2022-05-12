@@ -12,6 +12,7 @@ namespace UML{
     class StructuredClassifier;
     class Association;
     class Class;
+    class Interface;
 
     typedef UmlPtr<Class> ClassPtr;
     typedef UmlPtr<DataType> DataTypePtr;

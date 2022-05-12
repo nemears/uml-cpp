@@ -53,19 +53,14 @@ Set<ParameterableElement, TemplateParameter>& TemplateParameter::getOwnedDefault
 void TemplateParameter::init() {
     m_signature.subsets(*m_owner);
     m_signature.opposite(&TemplateSignature::getOwnedParametersSet);
-    m_signature.m_signature = &TemplateParameter::getSignatureSingleton;
     m_parameteredElement.opposite(&ParameterableElement::getTemplateParameterSingleton);
-    m_parameteredElement.m_signature = &TemplateParameter::getParameteredElementSingleton;
     m_ownedParameteredElement.subsets(m_parameteredElement);
     m_ownedParameteredElement.subsets(*m_ownedElements);
     m_ownedParameteredElement.opposite(&ParameterableElement::getOwningTemplateParameterSingleton);
-    m_ownedParameteredElement.m_signature = &TemplateParameter::getOwnedParameteredElementSingleton;
     m_default.opposite(&ParameterableElement::getTemplateParameterSingleton);
-    m_default.m_signature = &TemplateParameter::getDefaultSingleton;
     m_ownedDefault.subsets(m_default);
     m_ownedDefault.subsets(*m_ownedElements);
     m_ownedDefault.opposite(&ParameterableElement::getOwningTemplateParameterSingleton);
-    m_ownedDefault.m_signature = &TemplateParameter::getOwnedDefaultSingleton;
 }
 
 TemplateParameter::TemplateParameter() : Element(ElementType::TEMPLATE_PARAMETER) {

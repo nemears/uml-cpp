@@ -17,7 +17,6 @@ Set<Property, Signal>& Signal::getOwnedAttributesSet() {
 void Signal::init() {
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.subsets(m_ownedMembers);
-    m_ownedAttributes.m_signature = &Signal::getOwnedAttributesSet;
 }
 
 Signal::Signal() : Element(ElementType::SIGNAL) {

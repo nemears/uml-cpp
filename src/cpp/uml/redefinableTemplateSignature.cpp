@@ -108,16 +108,13 @@ void RedefinableTemplateSignature::referenceErased(ID id) {
 void RedefinableTemplateSignature::init() {
     m_classifier.redefines(m_template);
     m_classifier.opposite(&Classifier::getOwnedTemplateSignatureSingleton);
-    m_classifier.m_signature = &RedefinableTemplateSignature::getClassifierSingleton;
     m_extendedSignatures.subsets(m_redefinedElement);
     m_extendedSignatures.m_addFunctors.insert(new AddExtendedSignatureFunctor(this));
     m_extendedSignatures.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_extendedSignatures.m_removeFunctors.insert(new RemoveExtendedSignatureFunctor(this));
     m_extendedSignatures.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-    m_extendedSignatures.m_signature = &RedefinableTemplateSignature::getExtendedSignatures;
     m_inheritedParameters.subsets(m_parameters);
     m_inheritedParameters.m_readOnly = true;
-    m_inheritedParameters.m_signature = &RedefinableTemplateSignature::getInheritedParameters;
 }
 
 RedefinableTemplateSignature::RedefinableTemplateSignature() : Element(ElementType::REDEFINABLE_TEMPLATE_SIGNATURE) {

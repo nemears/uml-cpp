@@ -45,7 +45,6 @@ Set<Type, TypedElement>& TypedElement::getTypeSingleton() {
 void TypedElement::init() {
     m_type.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_type.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-    m_type.m_signature = &TypedElement::getTypeSingleton;
 }
 
 TypedElement::TypedElement() : Element(ElementType::TYPED_ELEMENT) {

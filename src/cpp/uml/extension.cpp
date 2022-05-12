@@ -15,7 +15,6 @@ Set<ExtensionEnd, Extension>& Extension::getOwnedEndSingleton() {
 
 void Extension::init() {
     m_ownedEnd.redefines(m_ownedEnds);
-    m_ownedEnd.m_signature = &Extension::getOwnedEndSingleton;
 }
 
 Extension::Extension() : Element(ElementType::EXTENSION) {

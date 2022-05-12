@@ -29,7 +29,6 @@ void Relationship::restoreReference(Element* el) {
 
 void Relationship::init() {
     m_relatedElements.m_readOnly = true;
-    m_relatedElements.m_signature = &Relationship::getRelatedElements;
 }
 
 Relationship::Relationship() : Element(ElementType::RELATIONSHIP) {

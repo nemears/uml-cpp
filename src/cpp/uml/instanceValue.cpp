@@ -40,7 +40,6 @@ Set<InstanceSpecification, InstanceValue>& InstanceValue::getInstanceSingleton()
 }
 
 void InstanceValue::init() {
-    m_instance.m_signature = &InstanceValue::getInstanceSingleton;
     m_instance.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_instance.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }

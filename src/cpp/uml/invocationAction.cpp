@@ -46,8 +46,6 @@ void InvocationAction::referenceErased(ID id) {
 
 void InvocationAction::init() {
     m_arguments.subsets(m_inputs);
-    m_arguments.m_signature = &InvocationAction::getArgumentsSet;
-    m_onPort.m_signature = &InvocationAction::getOnPortSingleton;
 }
 
 InvocationAction::InvocationAction() : Element(ElementType::INVOCATION_ACTION) {

@@ -48,8 +48,6 @@ void ObjectNode::referenceErased(ID id) {
 
 void ObjectNode::init() {
     m_upperBound.subsets(*m_ownedElements);
-    m_upperBound.m_signature = &ObjectNode::getUpperBoundSingleton;
-    m_selection.m_signature = &ObjectNode::getSelectionSingleton;
     m_selection.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_selection.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }

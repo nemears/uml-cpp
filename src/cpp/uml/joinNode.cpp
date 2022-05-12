@@ -31,7 +31,6 @@ Set<ValueSpecification, JoinNode>& JoinNode::getJoinSpecSingleton() {
 
 void JoinNode::init() {
     m_joinSpec.subsets(*m_ownedElements);
-    m_joinSpec.m_signature = &JoinNode::getJoinSpecSingleton;
 }
 
 JoinNode::JoinNode() : Element(ElementType::JOIN_NODE) {

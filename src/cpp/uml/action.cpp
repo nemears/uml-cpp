@@ -18,15 +18,11 @@ using namespace UML;
 
 void Action::init() {
     m_inputs.subsets(*m_ownedElements);
-    m_inputs.m_signature = &Action::getInputs;
-    m_inputs.m_readOnly = true;
+    m_inputs.setReadOnly(true);
     m_outputs.subsets(*m_ownedElements);
-    m_outputs.m_signature = &Action::getOutputs;
-    m_outputs.m_readOnly = true;
+    m_outputs.setReadOnly(true);
     m_localPreconditions.subsets(*m_ownedElements);
-    m_localPreconditions.m_signature = &Action::getLocalPreconditions;
     m_localPostconditions.subsets(*m_ownedElements);
-    m_localPostconditions.m_signature = &Action::getLocalPostconditions;
 }
 
 Action::Action() : Element(ElementType::ACTION) {

@@ -9,18 +9,9 @@
 #include "uml/umlPtr.h"
 #include "uml/set.h"
 #include "uml/singleton.h"
+#include "uml/forwardDeclarations.h"
 
 namespace UML {
-    
-    class ValueSpecification;
-    class PrimitiveType;
-    class LiteralBool;
-    class LiteralReal;
-    class LiteralInt;
-    class LiteralString;
-    class LiteralUnlimitedNatural;
-    class Pin;
-
     namespace Parsers {
 
         class UmlParserException : public std::exception {

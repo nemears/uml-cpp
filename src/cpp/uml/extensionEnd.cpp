@@ -15,7 +15,6 @@ Set<Stereotype, ExtensionEnd>& ExtensionEnd::getTypeSingleton() {
 
 void ExtensionEnd::init() {
     m_extensionType.redefines(m_type);
-    m_extensionType.m_signature = &ExtensionEnd::getTypeSingleton;
 }
 
 ExtensionEnd::ExtensionEnd() : Element(ElementType::EXTENSION_END) {

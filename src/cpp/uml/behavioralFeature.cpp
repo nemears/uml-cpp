@@ -40,14 +40,10 @@ void BehavioralFeature::referenceErased(ID id) {
 
 void BehavioralFeature::init() {
     m_methods.opposite(&Behavior::getSpecificationSingleton);
-    m_methods.m_signature = &BehavioralFeature::getMethods;
     m_ownedParameters.subsets(m_ownedMembers);
-    m_ownedParameters.m_signature = &BehavioralFeature::getOwnedParameters;
-    m_raisedExceptions.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_raisedExceptions.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-    m_raisedExceptions.m_signature = &BehavioralFeature::getRaisedExceptions;
+    m_raisedExceptions.addFunctor(new SetReferenceFunctor(this));
+    m_raisedExceptions.removeFunctor(new RemoveReferenceFunctor(this));
     m_ownedParameterSets.subsets(*m_ownedElements);
-    m_ownedParameterSets.m_signature = &BehavioralFeature::getOwnedParameterSets;
 }
 
 BehavioralFeature::BehavioralFeature() : Element(ElementType::BEHAVIORAL_FEATURE) {

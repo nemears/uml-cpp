@@ -16,7 +16,6 @@ Set<Profile, Stereotype>& Stereotype::getProfileSingleton() {
 void Stereotype::init() {
     m_profile.subsets(m_owningPackage);
     m_profile.opposite(&Profile::getOwnedStereotypes);
-    m_profile.m_signature = &Stereotype::getProfileSingleton;
 }
 
 Stereotype::Stereotype() : Element(ElementType::STEREOTYPE) {

@@ -62,30 +62,25 @@ void Namespace::referenceErased(ID id) {
 }
 
 void Namespace::init() {
-    m_members.m_signature = &Namespace::getMembers;
     m_members.m_readOnly = true;
     m_members.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_members.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_ownedMembers.subsets(*m_ownedElements);
     m_ownedMembers.subsets(m_members);
     m_ownedMembers.opposite(&NamedElement::getNamespaceSingleton);
-    m_ownedMembers.m_signature = &Namespace::getOwnedMembers;
     m_ownedMembers.m_readOnly = true;
     m_ownedRules.subsets(m_ownedMembers);
     m_ownedRules.opposite(&Constraint::getContextSingleton);
     m_importedMembers.subsets(m_members);
     m_importedMembers.m_readOnly = true;
-    m_importedMembers.m_signature = &Namespace::getImportedMembers;
     m_elementImports.subsets(*m_ownedElements);
     m_elementImports.opposite(&ElementImport::getImportingNamespaceSingleton);
     m_elementImports.m_addFunctors.insert(new AddElementImportFunctor(this));
     m_elementImports.m_removeFunctors.insert(new RemoveElementImportFunctor(this));
-    m_elementImports.m_signature = &Namespace::getElementImports;
     m_packageImports.subsets(*m_ownedElements);
     m_packageImports.opposite(&PackageImport::getImportingNamespaceSingleton);
     m_packageImports.m_addFunctors.insert(new AddPackageImportFunctor(this));
     m_packageImports.m_removeFunctors.insert(new RemovePackageImportFunctor(this));
-    m_packageImports.m_signature = &Namespace::getPackageImports;
 }
 
 Namespace::Namespace() : Element(ElementType::NAMESPACE) {

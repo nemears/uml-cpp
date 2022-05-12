@@ -7,6 +7,8 @@
 
 namespace UML {
 
+    class Behavior;
+
     typedef UmlPtr<Association> AssociationPtr;
 
     class Connector : public Feature {

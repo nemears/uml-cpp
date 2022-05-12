@@ -40,7 +40,6 @@ void ActivityParameterNode::referenceErased(ID id) {
 }
 
 void ActivityParameterNode::init() {
-    m_parameter.m_signature = &ActivityParameterNode::getParameterSingleton;
     m_parameter.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_parameter.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }

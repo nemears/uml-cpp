@@ -47,24 +47,18 @@ void ActivityPartition::reindexName(ID id, std::string newName) {
 }
 
 void ActivityPartition::init() {
-    m_represents.m_signature = &ActivityPartition::getRepresentsSingleton;
     m_represents.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_represents.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_partitionInActivity.redefines(m_inActivity);
     m_partitionInActivity.opposite(&Activity::getPartitions);
-    m_partitionInActivity.m_signature = &ActivityPartition::getInActivitySingleton;
     m_superPartition.subsets(m_superGroup);
     m_superPartition.opposite(&ActivityPartition::getSubPartitions);
-    m_superPartition.m_signature = &ActivityPartition::getSuperPartitionSingleton;
     m_nodes.subsets(m_containedNodes);
     m_nodes.opposite(&ActivityNode::getInPartitions);
-    m_nodes.m_signature = &ActivityPartition::getNodes;
     m_edges.subsets(m_containedEdges);
     m_edges.opposite(&ActivityEdge::getInPartitions);
-    m_edges.m_signature = &ActivityPartition::getEdges;
     m_subPartitions.subsets(m_subGroups);
     m_subPartitions.opposite(&ActivityPartition::getSuperPartitionSingleton);
-    m_subPartitions.m_signature = &ActivityPartition::getSubPartitions;
 }
 
 ActivityPartition::ActivityPartition() : Element(ElementType::ACTIVITY_PARTITION) {

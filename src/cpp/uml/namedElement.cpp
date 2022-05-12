@@ -48,13 +48,11 @@ Set<Namespace, NamedElement>& NamedElement::getNamespaceSingleton() {
 void NamedElement::init() {
     m_namespace.subsets(*m_owner);
     m_namespace.opposite(&Namespace::getOwnedMembers);
-    m_namespace.m_signature = &NamedElement::getNamespaceSingleton;
     m_namespace.m_readOnly = true;
     m_namespace.m_addFunctors.insert(new UpdateQualifiedNameFunctor(this));
     m_namespace.m_removeFunctors.insert(new RemoveQualifiedNameFunctor(this));
     m_clientDependencies = new Set<Dependency, NamedElement>(this);
     m_clientDependencies->opposite(&Dependency::getClients);
-    m_clientDependencies->m_signature = &NamedElement::getClientDependencies;
 }
 
 NamedElement::NamedElement() : Element(ElementType::NAMED_ELEMENT) {

@@ -6,6 +6,10 @@
 
 namespace UML {
 
+    class Behavior;
+    class Parameter;
+    class ParameterSet;
+
     enum class CallConcurrencyKind {
         Sequential,
         Guarded,

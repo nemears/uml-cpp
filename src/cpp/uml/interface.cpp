@@ -25,13 +25,10 @@ void Interface::init() {
     m_ownedAttributes.subsets(m_ownedMembers);
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.opposite(&Property::getInterfaceSingleton);
-    m_ownedAttributes.m_signature = &Interface::getOwnedAttributesSet;
     m_ownedOperations.subsets(m_features);
     m_ownedOperations.subsets(m_ownedMembers);
     m_ownedOperations.opposite(&Operation::getInterfaceSingleton);
-    m_ownedOperations.m_signature = &Interface::getOwnedOperationsSet;
     m_nestedClassifiers.subsets(m_ownedMembers);
-    m_nestedClassifiers.m_signature = &Interface::getNestedClassifiersSet;
 }
 
 Interface::Interface() : Element(ElementType::INTERFACE_UML) {

@@ -108,21 +108,17 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
 
     m_owner = new Singleton<Element, Element>(this);
     m_owner->opposite(&Element::getOwnedElements);
-    m_owner->m_signature = &Element::getOwnerSingleton;
     m_owner->m_readOnly = true;
 
     m_ownedElements = new Set<Element, Element>(this);
     m_ownedElements->opposite(&Element::getOwnerSingleton);
-    m_ownedElements->m_signature = &Element::getOwnedElements;
     m_ownedElements->m_readOnly = true;
 
     m_ownedComments = new Set<Comment, Element>(this);
     m_ownedComments->subsets(*m_ownedElements);
-    m_ownedComments->m_signature = &Element::getOwnedComments;
 
     m_appliedStereotype = new Set<InstanceSpecification, Element>(this);
     m_appliedStereotype->subsets(*m_ownedElements);
-    m_appliedStereotype->m_signature = &Element::getAppliedStereotypes;
 }
 
 Element::~Element() {

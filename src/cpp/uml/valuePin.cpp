@@ -22,7 +22,6 @@ Set<ValueSpecification, ValuePin>& ValuePin::getValueSingleton() {
 
 void ValuePin::init() {
     m_value.subsets(*m_ownedElements);
-    m_value.m_signature = &ValuePin::getValueSingleton;
 }
 
 ValuePin::ValuePin() : Element(ElementType::VALUE_PIN) {

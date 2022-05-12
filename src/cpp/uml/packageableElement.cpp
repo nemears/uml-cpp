@@ -42,7 +42,6 @@ Set<Package, PackageableElement>& PackageableElement::getOwningPackageSingleton(
 void PackageableElement::init() {
     m_owningPackage.subsets(m_namespace);
     m_owningPackage.opposite(&Package::getPackagedElements);
-    m_owningPackage.m_signature = &PackageableElement::getOwningPackageSingleton;
 }
 
 PackageableElement::PackageableElement() : Element(ElementType::PACKAGEABLE_ELEMENT) {

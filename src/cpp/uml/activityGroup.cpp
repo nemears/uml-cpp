@@ -48,20 +48,15 @@ void ActivityGroup::reindexName(ID id, std::string newName) {
 void ActivityGroup::init() {
     m_inActivity.subsets(*m_owner);
     m_inActivity.opposite(&Activity::getGroups);
-    m_inActivity.m_signature = &ActivityGroup::getInActivitySingleton;
     m_superGroup.subsets(*m_owner);
     m_superGroup.opposite(&ActivityGroup::getSubGroups);
-    m_superGroup.m_signature = &ActivityGroup::getSuperGroupSingleton;
     m_superGroup.m_readOnly = true;
     m_containedNodes.opposite(&ActivityNode::getInGroups);
-    m_containedNodes.m_signature = &ActivityGroup::getContainedNodes;
     m_containedNodes.m_readOnly = true;
     m_containedEdges.opposite(&ActivityEdge::getInGroups);
-    m_containedEdges.m_signature = &ActivityGroup::getContainedEdges;
     m_containedEdges.m_readOnly = true;
     m_subGroups.subsets(*m_ownedElements);
     m_subGroups.opposite(&ActivityGroup::getSuperGroupSingleton);
-    m_subGroups.m_signature = &ActivityGroup::getSubGroups;
     m_subGroups.m_readOnly = true;
 }
 

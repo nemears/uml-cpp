@@ -9,6 +9,7 @@ namespace UML {
 
     class TemplateParameterSubstitution;
     class TemplateableElement;
+    class TemplateSignature;
 
     typedef UmlPtr<TemplateableElement> TemplateableElementPtr;
     typedef UmlPtr<TemplateSignature> TemplateSignaturePtr;

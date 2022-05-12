@@ -88,11 +88,9 @@ void PackageImport::init() {
     m_importedPackage.m_addFunctors.insert(new AddImportedPackageFunctor(this));
     m_importedPackage.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_importedPackage.m_removeFunctors.insert(new RemoveImportedPackageFunctor(this));
-    m_importedPackage.m_signature = &PackageImport::getImportedPackageSingleton;
     m_importingNamespace.subsets(*m_owner);
     m_importingNamespace.subsets(m_sources);
     m_importingNamespace.opposite(&Namespace::getPackageImports);
-    m_importingNamespace.m_signature = &PackageImport::getImportingNamespaceSingleton;
 }
 
 PackageImport::PackageImport() : Element(ElementType::PACKAGE_IMPORT) {

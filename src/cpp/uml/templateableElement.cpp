@@ -13,10 +13,8 @@ Set<TemplateSignature, TemplateableElement>& TemplateableElement::getOwnedTempla
 void TemplateableElement::init() {
     m_ownedTemplateSignature.subsets(*m_ownedElements);
     m_ownedTemplateSignature.opposite(&TemplateSignature::getTemplateSingleton);
-    m_ownedTemplateSignature.m_signature = &TemplateableElement::getOwnedTemplateSignatureSingleton;
     m_templateBindings.subsets(*m_ownedElements);
     m_templateBindings.opposite(&TemplateBinding::getBoundElementSingleton);
-    m_templateBindings.m_signature = &TemplateableElement::getTemplateBindings;
 }
 
 TemplateableElement::TemplateableElement() : Element(ElementType::TEMPLATEABLE_ELEMENT) {

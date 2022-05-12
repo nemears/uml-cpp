@@ -24,11 +24,9 @@ void DataType::init() {
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.subsets(m_ownedMembers);
     m_ownedAttributes.opposite(&Property::getDataTypeSingleton);
-    m_ownedAttributes.m_signature = &DataType::getOwnedAttributesSet;
     m_ownedOperations.subsets(m_features);
     m_ownedOperations.subsets(m_ownedMembers);
     m_ownedOperations.opposite(&Operation::getDataTypeSingleton);
-    m_ownedOperations.m_signature = &DataType::getOwnedOperationsSet;
 }
 
 DataType::DataType() : Element(ElementType::DATA_TYPE) {

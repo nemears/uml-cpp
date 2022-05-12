@@ -45,10 +45,8 @@ void ObjectFlow::restoreReference(Element* el) {
 }
 
 void ObjectFlow::init() {
-    m_transformation.m_signature = &ObjectFlow::getTransformationSingleton;
     m_transformation.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_transformation.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-    m_selection.m_signature = &ObjectFlow::getSelectionSingleton;
     m_selection.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_selection.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }

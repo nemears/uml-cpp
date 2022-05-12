@@ -14,7 +14,6 @@ Set<LiteralString, OpaqueBehavior>& OpaqueBehavior::getBodiesSet() {
 
 void OpaqueBehavior::init() {
     m_bodies.subsets(*m_ownedElements);
-    m_bodies.m_signature = &OpaqueBehavior::getBodiesSet;
 }
 
 OpaqueBehavior::OpaqueBehavior() : Element(ElementType::OPAQUE_BEHAVIOR) {

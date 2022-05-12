@@ -43,10 +43,8 @@ void ClassifierTemplateParameter::referenceErased(ID id) {
 void ClassifierTemplateParameter::init() {
     m_classifierParameteredElement.redefines(m_parameteredElement);
     m_classifierParameteredElement.opposite(&Classifier::getTemplateParameterSingleton);
-    m_classifierParameteredElement.m_signature = &ClassifierTemplateParameter::getParameteredElementSingleton;
     m_constrainingClassifiers.m_addFunctors.insert(new SetReferenceFunctor(this));
     m_constrainingClassifiers.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-    m_constrainingClassifiers.m_signature = &ClassifierTemplateParameter::getConstrainingClassifiers;
 }
 
 ClassifierTemplateParameter::ClassifierTemplateParameter() : Element(ElementType::CLASSIFIER_TEMPLATE_PARAMETER) {

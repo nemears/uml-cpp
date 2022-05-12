@@ -46,7 +46,6 @@ Set<Classifier, Feature>& Feature::getFeaturingClassifierSingleton() {
 
 void Feature::init() {
     m_featuringClassifier.opposite(&Classifier::getFeatures);
-    m_featuringClassifier.m_signature = &Feature::getFeaturingClassifierSingleton;
 }
 
 Feature::Feature() : Element(ElementType::FEATURE) {

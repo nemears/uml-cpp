@@ -61,11 +61,9 @@ Set<ValueSpecification, MultiplicityElement>& MultiplicityElement::getUpperValue
 
 void MultiplicityElement::init() {
     m_lowVal.subsets(*m_ownedElements);
-    m_lowVal.m_signature = &MultiplicityElement::getLowerValueSingleton;
     m_lowVal.m_addFunctors.insert(new AddLowerFunctor(this));
     m_lowVal.m_removeFunctors.insert(new RemoveLowerFunctor(this));
     m_upVal.subsets(*m_ownedElements);
-    m_upVal.m_signature = &MultiplicityElement::getUpperValueSingleton;
     m_upVal.m_addFunctors.insert(new AddUpperFunctor(this));
     m_upVal.m_removeFunctors.insert(new RemoveUpperFunctor(this));
 }

@@ -685,7 +685,6 @@ namespace UML {
                             if (temp->m_right) {
                                 temp->m_right->m_parent = temp->m_parent;   
                             }
-                            // removePlaceholder(temp);
                         } else {
                             if (temp->m_left) {
                                 if (temp->m_parent->m_right->m_id > temp->m_left->m_id) {

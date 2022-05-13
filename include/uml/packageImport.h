@@ -3,6 +3,7 @@
 
 #include "directedRelationship.h"
 #include "singleton.h"
+#include "uml/macros.h"
 
 namespace UML {
 
@@ -15,8 +16,8 @@ namespace UML {
         friend class Namespace;
 
         protected:
-            Singleton<Package, PackageImport> m_importedPackage = Singleton<Package, PackageImport>(this);
-            Singleton<Namespace, PackageImport> m_importingNamespace = Singleton<Namespace, PackageImport>(this);
+            DEFINE_SINGLETON(ImportedPackage, m_importedPackage, Package, PackageImport);
+            DEFINE_SINGLETON(ImportingNamespace, m_importingNamespace, Namespace, PackageImport);
             class AddImportedPackageFunctor : public SetFunctor {
                 private:
                     void operator()(Element& el) const override;
@@ -43,22 +44,10 @@ namespace UML {
                     PackageImport* m_import = 0;
                     PackageRemovePackageableElementFunctor(Element* el) : SetFunctor(el) {};
             };
-            Set<Package, PackageImport>& getImportedPackageSingleton();
-            Set<Namespace, PackageImport>& getImportingNamespaceSingleton();
             void init();
             PackageImport();
         public:
             virtual ~PackageImport();
-            PackagePtr getImportedPackage() const;
-            void setImportedPackage(Package* pckg);
-            void setImportedPackage(Package& pckg);
-            void setImportedPackage(PackagePtr pckg);
-            void setImportedPackage(ID id);
-            NamespacePtr getImportingNamespace() const;
-            void setImportingNamespace(Namespace* nmspc);
-            void setImportingNamespace(Namespace& nmspc);
-            void setImportingNamespace(NamespacePtr nmspc);
-            void setImportingNamespace(ID id);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PACKAGE_IMPORT;

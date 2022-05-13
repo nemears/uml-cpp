@@ -74,14 +74,6 @@ void PackageImport::PackageRemovePackageableElementFunctor::operator()(Element& 
     }
 }
 
-Set<Package, PackageImport>& PackageImport::getImportedPackageSingleton() {
-    return m_importedPackage;
-}
-
-Set<Namespace, PackageImport>& PackageImport::getImportingNamespaceSingleton() {
-    return m_importingNamespace;
-}
-
 void PackageImport::init() {
     m_importedPackage.subsets(m_targets);
     m_importedPackage.m_addFunctors.insert(new SetReferenceFunctor(this));
@@ -101,45 +93,8 @@ PackageImport::~PackageImport() {
 
 }
 
-PackagePtr PackageImport::getImportedPackage() const {
-    return m_importedPackage.get();
-}
-
-void PackageImport::setImportedPackage(Package* pckg) {
-    m_importedPackage.set(pckg);
-}
-
-void PackageImport::setImportedPackage(Package& pckg) {
-    m_importedPackage.set(pckg);
-}
-
-void PackageImport::setImportedPackage(PackagePtr pckg) {
-    m_importedPackage.set(pckg);
-}
-
-void PackageImport::setImportedPackage(ID id) {
-    m_importedPackage.set(id);
-}
-
-NamespacePtr PackageImport::getImportingNamespace() const {
-    return m_importingNamespace.get();
-}
-
-void PackageImport::setImportingNamespace(Namespace* nmspc) {
-    m_importingNamespace.set(nmspc);
-}
-
-void PackageImport::setImportingNamespace(Namespace& nmspc) {
-    m_importingNamespace.set(nmspc);
-}
-
-void PackageImport::setImportingNamespace(NamespacePtr nmspc) {
-    m_importingNamespace.set(nmspc);
-}
-
-void PackageImport::setImportingNamespace(ID id) {
-    m_importingNamespace.set(id);
-}
+IMPLEMENT_SINGLETON(ImportedPackage, m_importedPackage, Package, PackageImport);
+IMPLEMENT_SINGLETON(ImportingNamespace, m_importingNamespace, Namespace, PackageImport);
 
 bool PackageImport::isSubClassOf(ElementType eType) const {
     bool ret = DirectedRelationship::isSubClassOf(eType);

@@ -52,7 +52,7 @@ TEST_F(CommentTest, commentEmitTest) {
     comment.setID("FqaulNq6bCe_8J5M0Ff2oCCaQD05");
     pckg.getOwnedComments().add(comment);
     std::string expectedEmit = R""""(package:
-  id: zN&UM2AHrXX07rAiNxTmmMwLYI1O
+  id: "zN&UM2AHrXX07rAiNxTmmMwLYI1O"
   ownedComments:
     - comment:
         id: FqaulNq6bCe_8J5M0Ff2oCCaQD05)"""";

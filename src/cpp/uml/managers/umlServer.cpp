@@ -83,7 +83,10 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         m_msgV = true;
         m_msgCv.notify_one();
         try {
-            std::string msg = Parsers::emitIndividual(get(elID));
+            Element& el = get(elID);
+            Parsers::EmitterMetaData data = Parsers::getData(el);
+            data.m_isJSON = true;
+            std::string msg = Parsers::emitString(data, el);
             int bytesSent = send(info.socket, msg.c_str(), msg.size() + 1, 0);
             if (bytesSent <= 0) {
                 throw ManagerStateException();

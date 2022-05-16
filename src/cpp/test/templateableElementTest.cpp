@@ -304,7 +304,7 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
                     formal: OLULeTlF1Rzf4U5IpNQVW1nYd29c
                     ownedActual:
                       primitiveType:
-                        id: 8&K_0aLhvQDM12ZeYg9nPiSrexHo
+                        id: "8&K_0aLhvQDM12ZeYg9nPiSrexHo"
                 - templateParameterSubstitution:
                     id: puJaUTZsLPdGJkJSJtdX51MIA2ch
                     formal: Km4WF5rf3ohUeLTr99POiW7VMb_4
@@ -344,7 +344,7 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
                     formal: OLULeTlF1Rzf4U5IpNQVW1nYd29c
                     ownedActual:
                       primitiveType:
-                        id: 8&K_0aLhvQDM12ZeYg9nPiSrexHo
+                        id: "8&K_0aLhvQDM12ZeYg9nPiSrexHo"
                 - templateParameterSubstitution:
                     id: puJaUTZsLPdGJkJSJtdX51MIA2ch
                     formal: Km4WF5rf3ohUeLTr99POiW7VMb_4

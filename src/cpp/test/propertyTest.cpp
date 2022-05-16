@@ -377,7 +377,7 @@ TEST_F(PropertyTest, emitRedefinedPropertyTest) {
           - property:
               id: 9m50Dir0MgpEaLu8ghn7cSlZ5Yzh
     - class:
-        id: Y8UtleiQO3UuN4GEqSzai0G8&GqC
+        id: "Y8UtleiQO3UuN4GEqSzai0G8&GqC"
         generalizations:
           - generalization:
               id: RL5_MDmj_CskU1njfiL74QSxP7Bw

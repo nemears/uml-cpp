@@ -42,7 +42,7 @@ namespace UML {
         void emit(Element& el, YAML::Emitter& emitter);
         std::string emitIndividual(Element& el);
         void emitIndividual(Element& el, YAML::Emitter& emitter);
-
+        std::string emitString(EmitterMetaData& data, Element& el);
         void emit(EmitterMetaData& data);
 
         // sets up yaml emitter for emitting to a new file and emits

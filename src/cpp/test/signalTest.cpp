@@ -94,7 +94,7 @@ TEST_F(SignalTest, emitSignalTest) {
     clazz.getOwnedReceptions().add(reception);
     reception.setSignal(signal);
     std::string expectedEmit = R""""(package:
-  id: IJabcFrKrE9yxVT&qQUQ2&xzVxpd
+  id: "IJabcFrKrE9yxVT&qQUQ2&xzVxpd"
   packagedElements:
     - signal:
         id: _sgqzW88lsR9bBTk8GyBRjYujfB5

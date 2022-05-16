@@ -434,7 +434,7 @@ TEST_F(DataTypeTest, emitDataTypeW_GeneralAndAttribute) {
     pckg.getPackagedElements().add(g);
     pckg.getPackagedElements().add(s);
     std::string expectedEmit = R""""(package:
-  id: zN&UM2AHrXX07rAiNxTmmMwLYI1O
+  id: "zN&UM2AHrXX07rAiNxTmmMwLYI1O"
   name: owningPackage
   packagedElements:
     - dataType:
@@ -449,25 +449,25 @@ TEST_F(DataTypeTest, emitDataTypeW_GeneralAndAttribute) {
               name: generalProp
               type: mGbq9i_gGHuMFYg0y3tMzcmHx1B3
     - dataType:
-        id: FZeUbleSO7P_Zqwn2&r8HKnEbSU5
+        id: "FZeUbleSO7P_Zqwn2&r8HKnEbSU5"
         name: specific
         generalizations:
           - generalization:
-              id: k&CQ7BNYYbkhtw_g7NaNY8wUHXYs
+              id: "k&CQ7BNYYbkhtw_g7NaNY8wUHXYs"
               general: FqaulNq6bCe_8J5M0Ff2oCCaQD05)"""";
     std::string expectedEmit2 = R""""(package:
-  id: zN&UM2AHrXX07rAiNxTmmMwLYI1O
+  id: "zN&UM2AHrXX07rAiNxTmmMwLYI1O"
   name: owningPackage
   packagedElements:
     - dataType:
         id: mGbq9i_gGHuMFYg0y3tMzcmHx1B3
         name: type
     - dataType:
-        id: FZeUbleSO7P_Zqwn2&r8HKnEbSU5
+        id: "FZeUbleSO7P_Zqwn2&r8HKnEbSU5"
         name: specific
         generalizations:
           - generalization:
-              id: k&CQ7BNYYbkhtw_g7NaNY8wUHXYs
+              id: "k&CQ7BNYYbkhtw_g7NaNY8wUHXYs"
               general: FqaulNq6bCe_8J5M0Ff2oCCaQD05
     - dataType:
         id: FqaulNq6bCe_8J5M0Ff2oCCaQD05
@@ -641,26 +641,26 @@ TEST_F(DataTypeTest, emitPrimWGeneralAndAttribute) {
     pckg.getPackagedElements().add(g);
     pckg.getPackagedElements().add(s);
     std::string expectedEmit = R""""(package:
-  id: ScxedgF1Ej1JJubABfwVAK1X&_28
+  id: "ScxedgF1Ej1JJubABfwVAK1X&_28"
   name: owningPackage
   packagedElements:
     - primitiveType:
-        id: ufsWC1O42Rz36lNEixxF&gH6SKdj
+        id: "ufsWC1O42Rz36lNEixxF&gH6SKdj"
         name: type
     - primitiveType:
         id: bD3tGZ_XwovlDpB4NPqiaMl19DUV
         name: general
         ownedAttributes:
           - property:
-              id: yShg7h43ZHm9I2Dqw2RoSXV&Y0PQ
+              id: "yShg7h43ZHm9I2Dqw2RoSXV&Y0PQ"
               name: generalProp
-              type: ufsWC1O42Rz36lNEixxF&gH6SKdj
+              type: "ufsWC1O42Rz36lNEixxF&gH6SKdj"
     - primitiveType:
-        id: 3di2YkXSv7_2E8yUAdNElvDPCP4&
+        id: "3di2YkXSv7_2E8yUAdNElvDPCP4&"
         name: specific
         generalizations:
           - generalization:
-              id: Fpn&_P3zERcsyDCu8kN837WxY_90
+              id: "Fpn&_P3zERcsyDCu8kN837WxY_90"
               general: bD3tGZ_XwovlDpB4NPqiaMl19DUV)"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));

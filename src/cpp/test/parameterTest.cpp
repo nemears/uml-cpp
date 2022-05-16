@@ -73,7 +73,7 @@ TEST_F(ParameterTest, emitParameterWMultiplicityTest) {
             value: 0
         upperValue:
           literalInt:
-            id: sGGXJFNinAvKyKVSgc&JAlMWsbw5
+            id: "sGGXJFNinAvKyKVSgc&JAlMWsbw5"
             value: 5)"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(b));

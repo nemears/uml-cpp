@@ -519,7 +519,7 @@ TEST_F(ClassTest, emitClassWAttributeNOperation) {
         visibility: PRIVATE
   ownedOperations:
     - operation:
-        id: ESKTcd5FmF2q4O&WI_Oiu5FrXHeN
+        id: "ESKTcd5FmF2q4O&WI_Oiu5FrXHeN"
         name: op
         visibility: PROTECTED)"""";
     std::string generatedEmit;
@@ -572,7 +572,7 @@ TEST_F(ClassTest, emitFilledInOperation) {
           - "&_DLItAl_5ASwPNvNVqXaIwEiLOx"
         ownedParameters:
           - parameter:
-              id: s2q_fjRnyV_Gst&gAQ4JTr3crFNU
+              id: "s2q_fjRnyV_Gst&gAQ4JTr3crFNU"
               name: pee)"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(c));
@@ -629,16 +629,16 @@ TEST_F(ClassTest, nestedClassifierEmitTest) {
     clazz.getNestedClassifiers().add(opaqueBehavior);
     clazz.getNestedClassifiers().add(primitiveType);
     std::string expectedEmit = R""""(class:
-  id: 5mOWzor&UjeUs13VT9&HYj5DKh&Y
+  id: "5mOWzor&UjeUs13VT9&HYj5DKh&Y"
   nestedClassifiers:
     - artifact:
         id: F_exblp0xsz5k1lmTLDtjBrFWqS6
     - association:
         id: oOgal3or1U2zY9ktKohwQS6ChLw7
     - class:
-        id: 4Q6XfIWChz&mfIB_6Vc71mnxHDpU
+        id: "4Q6XfIWChz&mfIB_6Vc71mnxHDpU"
     - dataType:
-        id: Nw3c30z1PCo3GNs6QFh&wt9fVVzf
+        id: "Nw3c30z1PCo3GNs6QFh&wt9fVVzf"
     - enumeration:
         id: lItnoDw_Ka4bfYaRnzrdFZnwqY3X
     - opaqueBehavior:

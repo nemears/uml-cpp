@@ -256,7 +256,7 @@ TEST_F(DeploymentTest, emitManifestationTest) {
     a.getManifestations().add(man);
     man.setUtilizedElement(&c);
     std::string expectedEmit = R""""(package:
-  id: O4FknRxSbpxEJlw6HhHP&Wpq0AjD
+  id: "O4FknRxSbpxEJlw6HhHP&Wpq0AjD"
   packagedElements:
     - class:
         id: 9mp2RmgjnYQrPtXIoOw9is1UUEyu
@@ -264,7 +264,7 @@ TEST_F(DeploymentTest, emitManifestationTest) {
         id: Ihue7RPPRluLEpIUbTV8Xqb68ofQ
         manifestations:
           - manifestation:
-              id: UfyRMRUyPnad&lJcpSBOD17VSHtn
+              id: "UfyRMRUyPnad&lJcpSBOD17VSHtn"
               utilizedElement: 9mp2RmgjnYQrPtXIoOw9is1UUEyu)"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));

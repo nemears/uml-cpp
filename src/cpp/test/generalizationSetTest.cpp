@@ -97,7 +97,7 @@ TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
     - class:
         id: mmUnLGAGcUocJQlNkF2BxGUzadjY
         powertypeExtents:
-          - uLHn5GsNBUhrk9cgTO&qLw5LO068
+          - "uLHn5GsNBUhrk9cgTO&qLw5LO068"
     - class:
         id: wJ7Y3K6BmTpN3D2pEtbbBt5aMhuo
         generalizations:
@@ -105,9 +105,9 @@ TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
               id: vGAiKV8tZmvkxePhhEns36Z654xF
               general: mmUnLGAGcUocJQlNkF2BxGUzadjY
               generalizationSets:
-                - uLHn5GsNBUhrk9cgTO&qLw5LO068
+                - "uLHn5GsNBUhrk9cgTO&qLw5LO068"
     - generalizationSet:
-        id: uLHn5GsNBUhrk9cgTO&qLw5LO068
+        id: "uLHn5GsNBUhrk9cgTO&qLw5LO068"
         covering: false
         disjoint: false
         powertype: mmUnLGAGcUocJQlNkF2BxGUzadjY

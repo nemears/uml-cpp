@@ -111,21 +111,21 @@ TEST_F(DependencyTest, basicDependencyEmitTest) {
     dependency.getClients().add(client);
     dependency.getSuppliers().add(supplier);
     std::string expectedEmit = R""""(package:
-  id: oT59r8w9_ZlGzo2NFpN&vJgH_4YJ
+  id: "oT59r8w9_ZlGzo2NFpN&vJgH_4YJ"
   packagedElements:
     - dependency:
-        id: tAps&UBn21dKnQ5z7qaAzKBZqR7S
+        id: "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
         name: test
         clients:
-          - zMVDkDbSoENGrPr&JLyOGzYo&_D0
+          - "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
         suppliers:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
     - package:
         id: uONNU0sKPVjLALJuw2pHcNqljgkg
     - package:
-        id: zMVDkDbSoENGrPr&JLyOGzYo&_D0
+        id: "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
         clientDependencies:
-          - tAps&UBn21dKnQ5z7qaAzKBZqR7S)"""";
+          - "tAps&UBn21dKnQ5z7qaAzKBZqR7S")"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
     std::cout << generatedEmit << '\n';
@@ -190,67 +190,67 @@ TEST_F(DependencyTest, emitAllDependencySubClassesTest) {
     usage.getClients().add(client);
     usage.getSuppliers().add(supplier);
     std::string expectedEmit = R""""(package:
-  id: oT59r8w9_ZlGzo2NFpN&vJgH_4YJ
+  id: "oT59r8w9_ZlGzo2NFpN&vJgH_4YJ"
   packagedElements:
     - abstraction:
-        id: tAps&UBn21dKnQ5z7qaAzKBZqR7S
+        id: "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
         name: test
         clients:
-          - zMVDkDbSoENGrPr&JLyOGzYo&_D0
+          - "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
         suppliers:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
     - usage:
         id: ouZEty1jCLeAk_tZzWBKblwwBdGm
         name: u
         clients:
-          - zMVDkDbSoENGrPr&JLyOGzYo&_D0
+          - "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
         suppliers:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
     - package:
         id: uONNU0sKPVjLALJuw2pHcNqljgkg
     - package:
-        id: zMVDkDbSoENGrPr&JLyOGzYo&_D0
+        id: "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
         clientDependencies:
-          - tAps&UBn21dKnQ5z7qaAzKBZqR7S
+          - "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
           - ouZEty1jCLeAk_tZzWBKblwwBdGm
           - V5lXdO3DLF2UCpqipGloE976L6QN
     - realization:
         id: V5lXdO3DLF2UCpqipGloE976L6QN
         name: r
         clients:
-          - zMVDkDbSoENGrPr&JLyOGzYo&_D0
+          - "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
         suppliers:
           - uONNU0sKPVjLALJuw2pHcNqljgkg)"""";
     std::string expectedEmit2 = R""""(package:
-  id: oT59r8w9_ZlGzo2NFpN&vJgH_4YJ
+  id: "oT59r8w9_ZlGzo2NFpN&vJgH_4YJ"
   packagedElements:
     - abstraction:
-        id: tAps&UBn21dKnQ5z7qaAzKBZqR7S
+        id: "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
         name: test
         clients:
-          - zMVDkDbSoENGrPr&JLyOGzYo&_D0
+          - "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
         suppliers:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
     - usage:
         id: ouZEty1jCLeAk_tZzWBKblwwBdGm
         name: u
         clients:
-          - zMVDkDbSoENGrPr&JLyOGzYo&_D0
+          - "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
         suppliers:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
     - realization:
         id: V5lXdO3DLF2UCpqipGloE976L6QN
         name: r
         clients:
-          - zMVDkDbSoENGrPr&JLyOGzYo&_D0
+          - "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
         suppliers:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
     - package:
         id: uONNU0sKPVjLALJuw2pHcNqljgkg
     - package:
-        id: zMVDkDbSoENGrPr&JLyOGzYo&_D0
+        id: "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
         clientDependencies:
-          - tAps&UBn21dKnQ5z7qaAzKBZqR7S
+          - "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
           - ouZEty1jCLeAk_tZzWBKblwwBdGm
           - V5lXdO3DLF2UCpqipGloE976L6QN)"""";
     std::string generatedEmit;

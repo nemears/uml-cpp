@@ -137,7 +137,7 @@ TEST_F(EnumerationTest, emitEnumerationWLiterals) {
         id: ki59FSBz84bR3hyOjfeHEg9LLtCA
         name: one
     - enumerationLiteral:
-        id: IFMeIYNqJzfzBIOMdbuxl&rBBLwR
+        id: "IFMeIYNqJzfzBIOMdbuxl&rBBLwR"
         name: two)"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(e));

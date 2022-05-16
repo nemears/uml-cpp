@@ -245,12 +245,24 @@ void emitIndividual(Element& el, YAML::Emitter& emitter) {
     determineTypeAndEmit(emitter, el, data);
 }
 
+std::string emitString(EmitterMetaData& data, Element& el) {
+    YAML::Emitter emitter;
+    if (data.m_isJSON) {
+        emitter << YAML::DoubleQuoted << YAML::Flow;
+    }
+    determineTypeAndEmit(emitter, el, data);
+    return emitter.c_str();
+}
+
 void emit(EmitterMetaData& data) {
     emitToFile(*data.m_manager->getRoot(), data, data.m_path.string(), data.m_fileName);
 }
 
 void emitToFile(Element& el, EmitterMetaData& data, string path, string fileName) {
     YAML::Emitter newEmitter;
+    if (data.m_isJSON) {
+        newEmitter << YAML::DoubleQuoted << YAML::Flow;
+    }
     filesystem::path cPath = data.m_path;
     string cFile = data.m_fileName;
     data.m_path = path;

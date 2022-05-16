@@ -358,7 +358,7 @@ TEST_F(PackageTest, emitVerySimplePackageTest) {
     p.setName("package");
     p.setVisibility(VisibilityKind::PACKAGE);
     std::string expectedEmit = R""""(package:
-  id: _SljVdCSVuBAkmgXqFcopy8&D9oN
+  id: "_SljVdCSVuBAkmgXqFcopy8&D9oN"
   name: package
   visibility: PACKAGE)"""";
     std::string generatedEmit = Parsers::emit(p);
@@ -398,10 +398,10 @@ TEST_F(PackageTest, emitMergedPackageTest) {
         id: SXE9QBb0rYOmBFbahGIQLhMxlYNq
         packageMerges:
           - packageMerge:
-              id: I7c2Z27FF1w&WX4NHKdfIkbNuhDA
-              mergedPackage: orUaM2sY9dz&YP83TqfGaHO5SBY4
+              id: "I7c2Z27FF1w&WX4NHKdfIkbNuhDA"
+              mergedPackage: "orUaM2sY9dz&YP83TqfGaHO5SBY4"
     - package:
-        id: orUaM2sY9dz&YP83TqfGaHO5SBY4)"""";
+        id: "orUaM2sY9dz&YP83TqfGaHO5SBY4")"""";
     std::string generatedEmit = Parsers::emit(pckg);
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
@@ -591,14 +591,14 @@ TEST_F(PackageTest, emitProfileTest) {
     profile.getOwnedStereotypes().add(stereotype);
     profile.getPackagedElements().add(extension);
     std::string expectedEmit = R""""(profile:
-  id: 83lphS&gucqvJwW&KSzVmTSMMG1z
+  id: "83lphS&gucqvJwW&KSzVmTSMMG1z"
   packagedElements:
     - extension:
         id: "&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ"
         metaClass: OPERATION
         ownedEnd:
           extensionEnd:
-            id: t&ZWitKKpMcvG9Dzwh23wSbP1hr5
+            id: "t&ZWitKKpMcvG9Dzwh23wSbP1hr5"
             type: 7PJxQhyjuuWylik9y2fgpNDXmMdv
             association: "&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ"
   ownedStereotypes:
@@ -628,7 +628,7 @@ TEST_F(PackageTest, emitProfileApplication) {
   id: BW5iaVf_WdBebuIH3yi9beXpG5Yi
   packagedElements:
     - package:
-        id: BtO&7RDq4sOe2Cb3hl_bByknWtDU
+        id: "BtO&7RDq4sOe2Cb3hl_bByknWtDU"
         profileApplications:
           - profileApplication:
               id: QbTzWJmjUCFjrufpPQc9qyeQdK3R
@@ -702,33 +702,33 @@ TEST_F(PackageTest, emitAppliedStereotypeTest) {
     root.getPackagedElements().add(applying);
     root.getPackagedElements().add(profile);
     std::string expectedEmit = R""""(package:
-  id: jswJELYwKd_wleha5klF&GJFcU_0
+  id: "jswJELYwKd_wleha5klF&GJFcU_0"
   packagedElements:
     - package:
-        id: Lf963Dxo5MFIqi9ip7&Nj4l1f1yj
+        id: "Lf963Dxo5MFIqi9ip7&Nj4l1f1yj"
         profileApplications:
           - profileApplication:
               id: MUiSKR6gArugHOb1RqZtF5_uhflV
-              appliedProfile: I3QrZblFek6tdX&j70kCP8u4QNAh
+              appliedProfile: "I3QrZblFek6tdX&j70kCP8u4QNAh"
         packagedElements:
           - package:
-              id: wX&KNwgtwFYOQ0B4eIweaaRz&QC1
+              id: "wX&KNwgtwFYOQ0B4eIweaaRz&QC1"
               appliedStereotypes:
                 - instanceSpecification:
-                    id: l3q&INpC6kqcdavsgIMSrSNNpGEt
+                    id: "l3q&INpC6kqcdavsgIMSrSNNpGEt"
                     classifiers:
                       - x5r8XggyW2DI5c3RyAS8r_arWh79
     - profile:
-        id: I3QrZblFek6tdX&j70kCP8u4QNAh
+        id: "I3QrZblFek6tdX&j70kCP8u4QNAh"
         packagedElements:
           - extension:
-              id: jjf&mHlwFSAjJXsBqng4IlxfYIJh
+              id: "jjf&mHlwFSAjJXsBqng4IlxfYIJh"
               metaClass: PACKAGE
               ownedEnd:
                 extensionEnd:
-                  id: FK1SGxJ2lV&5RtbRhiGU9jR0zAsw
+                  id: "FK1SGxJ2lV&5RtbRhiGU9jR0zAsw"
                   type: x5r8XggyW2DI5c3RyAS8r_arWh79
-                  association: jjf&mHlwFSAjJXsBqng4IlxfYIJh
+                  association: "jjf&mHlwFSAjJXsBqng4IlxfYIJh"
         ownedStereotypes:
           - stereotype:
               id: x5r8XggyW2DI5c3RyAS8r_arWh79)"""";

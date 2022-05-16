@@ -21,6 +21,7 @@ namespace UML {
                 EmitterStrategy m_strategy;
                 std::string m_fileName;
                 UmlManager* m_manager;
+                bool m_isJSON = false;
                 std::filesystem::path getMountPath(ID id);
                 std::filesystem::path getPath(ID id);
         };

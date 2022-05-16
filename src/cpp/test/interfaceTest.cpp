@@ -183,7 +183,7 @@ TEST_F(InterfaceTest, emitInterfaceTest) {
   id: efOYpQ48NuwY3f2xX0u9WkxcjfY6
   packagedElements:
     - interface:
-        id: fqag25FXykqQlo_bQWmS&cAB6338
+        id: "fqag25FXykqQlo_bQWmS&cAB6338"
         generalizations:
           - generalization:
               id: 9mSwZjJaig2cKZA98jZku3nU74eH
@@ -196,13 +196,13 @@ TEST_F(InterfaceTest, emitInterfaceTest) {
               id: kbreSzh_ys_8SepvJR6Q58tzWdFI
         nestedClassifiers:
           - dataType:
-              id: TeIMyndF4nm_NOTbFZ&vZDLXxvtC
+              id: "TeIMyndF4nm_NOTbFZ&vZDLXxvtC"
     - class:
         id: GqrX5Ta8KQDdFfaHrau08OS7Et3n
         interfaceRealizations:
           - interfaceRealization:
               id: IFDK1OePanvL7GwUxLspBo4p2JjA
-              contract: fqag25FXykqQlo_bQWmS&cAB6338
+              contract: "fqag25FXykqQlo_bQWmS&cAB6338"
     - interface:
         id: msHdxlZxjCCYwm2GLlDyaIq3KX4o)"""";
     std::string generatedEmit;
@@ -261,12 +261,12 @@ TEST_F(InterfaceTest, emitPortWInterfaceTest) {
         id: 508FPtzv15GguudyAK6odJA7Rxoa
         interfaceRealizations:
           - interfaceRealization:
-              id: 65&HAREuzThGM38K2m82T1NWR28N
-              contract: Ehn7ZlJH&ULe75R26WWVcYlMKXeY
+              id: "65&HAREuzThGM38K2m82T1NWR28N"
+              contract: "Ehn7ZlJH&ULe75R26WWVcYlMKXeY"
     - interface:
-        id: Ehn7ZlJH&ULe75R26WWVcYlMKXeY
+        id: "Ehn7ZlJH&ULe75R26WWVcYlMKXeY"
     - class:
-        id: R3dx7zjpK3&3NGLh0DVLt9Yolka8
+        id: "R3dx7zjpK3&3NGLh0DVLt9Yolka8"
         ownedAttributes:
           - port:
               id: loA63PcT8hpUsfQkDvU1p0YT4vRj
@@ -281,10 +281,10 @@ TEST_F(InterfaceTest, emitPortWInterfaceTest) {
         id: 508FPtzv15GguudyAK6odJA7Rxoa
         interfaceRealizations:
           - interfaceRealization:
-              id: 65&HAREuzThGM38K2m82T1NWR28N
-              contract: Ehn7ZlJH&ULe75R26WWVcYlMKXeY
+              id: "65&HAREuzThGM38K2m82T1NWR28N"
+              contract: "Ehn7ZlJH&ULe75R26WWVcYlMKXeY"
     - class:
-        id: R3dx7zjpK3&3NGLh0DVLt9Yolka8
+        id: "R3dx7zjpK3&3NGLh0DVLt9Yolka8"
         ownedAttributes:
           - port:
               id: loA63PcT8hpUsfQkDvU1p0YT4vRj
@@ -293,7 +293,7 @@ TEST_F(InterfaceTest, emitPortWInterfaceTest) {
               isConjugated: true
               isService: false
     - interface:
-        id: Ehn7ZlJH&ULe75R26WWVcYlMKXeY)"""";
+        id: "Ehn7ZlJH&ULe75R26WWVcYlMKXeY")"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(root));
     std::cout << generatedEmit << '\n';

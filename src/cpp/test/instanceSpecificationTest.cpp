@@ -293,7 +293,7 @@ TEST_F(InstanceSpecificationTest, simpleSlotTest) {
   visibility: PROTECTED
   slots:
     - slot:
-        id: w6arMVW4Plw0aLOBWLE9_8Xo_UL&)"""";
+        id: "w6arMVW4Plw0aLOBWLE9_8Xo_UL&")"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(inst));
     std::cout << generatedEmit << '\n';
@@ -320,7 +320,7 @@ TEST_F(InstanceSpecificationTest, emitSpecificationTest) {
     str.setValue("ooga");
     inst.setSpecification(&str);
     std::string expectedEmit = R""""(instanceSpecification:
-  id: fsU5Fw&5REaNv4NCvC0d4qZnXg4C
+  id: "fsU5Fw&5REaNv4NCvC0d4qZnXg4C"
   specification:
     literalString:
       id: nVzJ8mHx1yrRlct0ot34p7uBaVvC

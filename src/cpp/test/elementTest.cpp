@@ -305,3 +305,19 @@ TEST_F(ElementTest, asFuncTest) {
   Class& clazz = classifier->as<Class>();
   ASSERT_EQ(classifier->getID(), clazz.getID());
 }
+
+TEST_F(ElementTest, emitJSON_test) {
+    UmlManager m;
+    PackagePtr p = m.create<Package>();
+    PackagePtr c = m.create<Package>();
+    p->getPackagedElements().add(*c);
+    p->setID(ID::fromString("Wmhz0dIdjUbcWmTn7EL4Zz261oy6"));
+    c->setID(ID::fromString("GcJO3kDBnbRcT4f&Kwf9arl6YOmS"));
+    Parsers::EmitterMetaData data = Parsers::getData(*p);
+    data.m_isJSON = true;
+    data.m_strategy = Parsers::EmitterStrategy::WHOLE;
+    std::string generatedEmit = Parsers::emitString(data, *p);
+    std::cout << generatedEmit << std::endl;
+    std::string expectedEmit = "{\"package\": {\"id\": \"Wmhz0dIdjUbcWmTn7EL4Zz261oy6\", \"packagedElements\": [{\"package\": {\"id\": \"GcJO3kDBnbRcT4f&Kwf9arl6YOmS\"}}]}}";
+    ASSERT_EQ(generatedEmit, expectedEmit);
+}

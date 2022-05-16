@@ -5,6 +5,7 @@
 #include <netdb.h>
 #include <poll.h>
 #include <unistd.h>
+#include <cstring>
 #else
 #endif
 #include "uml/managers/umlServer.h"
@@ -172,7 +173,7 @@ UmlClient::~UmlClient() {
 
 Element& UmlClient::get(ID id) {
     YAML::Emitter emitter;
-    emitter << YAML::BeginMap << 
+    emitter << YAML::DoubleQuoted  << YAML::Flow << YAML::BeginMap << 
         YAML::Key << "GET" << YAML::Value << id.string() << 
     YAML::EndMap;
     sendEmitter(m_socketD, emitter);
@@ -205,7 +206,7 @@ Element& UmlClient::get(ID id) {
 
 Element& UmlClient::get(std::string qualifiedName) {
     YAML::Emitter emitter;
-    emitter << YAML::BeginMap << 
+    emitter << YAML::DoubleQuoted  << YAML::Flow << YAML::BeginMap << 
         YAML::Key << "GET" << YAML::Value << qualifiedName << 
     YAML::EndMap;
     sendEmitter(m_socketD, emitter);
@@ -234,7 +235,7 @@ Element& UmlClient::get(std::string qualifiedName) {
 Element& UmlClient::post(ElementType eType) {
     YAML::Emitter emitter;
     Element& ret = UmlManager::create(eType);
-    emitter << YAML::BeginMap << 
+    emitter << YAML::DoubleQuoted  << YAML::Flow << YAML::BeginMap << 
         YAML::Key << "POST" << YAML::Value << Element::elementTypeToString(eType) << 
         YAML::Key << "id" << YAML::Value << ret.getID().string() <<
     YAML::EndMap;
@@ -244,7 +245,7 @@ Element& UmlClient::post(ElementType eType) {
 
 void UmlClient::put(Element& el) {
     YAML::Emitter emitter;
-    emitter << YAML::BeginMap << 
+    emitter << YAML::DoubleQuoted  << YAML::Flow << YAML::BeginMap << 
         YAML::Key << "PUT" << YAML::Value << YAML::BeginMap 
         << YAML::Key << "id" << YAML::Value << el.getID().string();
         if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
@@ -266,7 +267,7 @@ void UmlClient::putAll() {
 
 void UmlClient::erase(Element& el) {
     YAML::Emitter emitter;
-    emitter << YAML::BeginMap << 
+    emitter << YAML::DoubleQuoted  << YAML::Flow << YAML::BeginMap << 
         YAML::Key << "DELETE" << YAML::Value << el.getID().string() << 
     YAML::EndMap;
     UmlManager::erase(el);

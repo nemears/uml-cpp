@@ -263,7 +263,7 @@ TEST_F(ValueSpecificationTest, testEmitLiteralUnlimitedNatural) {
     - literalNull:
         id: 4gA4RgL9vKTRYd61D99y1d_Yggj6
     - literalUnlimitedNatural:
-        id: 8&K_0aLhvQDM12ZeYg9nPiSrexHo
+        id: "8&K_0aLhvQDM12ZeYg9nPiSrexHo"
         value: 9999)"""";
     string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(p));

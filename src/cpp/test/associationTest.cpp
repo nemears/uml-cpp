@@ -418,7 +418,7 @@ TEST_F(AssociationTest, emitAssociationTest) {
     pckg.getPackagedElements().add(type);
     pckg.getPackagedElements().add(associtaion);
     std::string expectedEmit = R""""(package:
-  id: zN&UM2AHrXX07rAiNxTmmMwLYI1O
+  id: "zN&UM2AHrXX07rAiNxTmmMwLYI1O"
   packagedElements:
     - class:
         id: mGbq9i_gGHuMFYg0y3tMzcmHx1B3
@@ -426,16 +426,16 @@ TEST_F(AssociationTest, emitAssociationTest) {
           - property:
               id: FqaulNq6bCe_8J5M0Ff2oCCaQD05
               type: m8K65o0wEqtIznmEPmuXaTph2JJu
-              association: FZeUbleSO7P_Zqwn2&r8HKnEbSU5
+              association: "FZeUbleSO7P_Zqwn2&r8HKnEbSU5"
     - primitiveType:
         id: m8K65o0wEqtIznmEPmuXaTph2JJu
     - association:
-        id: FZeUbleSO7P_Zqwn2&r8HKnEbSU5
+        id: "FZeUbleSO7P_Zqwn2&r8HKnEbSU5"
         navigableOwnedEnds:
           - property:
-              id: k&CQ7BNYYbkhtw_g7NaNY8wUHXYs
+              id: "k&CQ7BNYYbkhtw_g7NaNY8wUHXYs"
               type: mGbq9i_gGHuMFYg0y3tMzcmHx1B3
-              association: FZeUbleSO7P_Zqwn2&r8HKnEbSU5
+              association: "FZeUbleSO7P_Zqwn2&r8HKnEbSU5"
         memberEnds:
           - FqaulNq6bCe_8J5M0Ff2oCCaQD05)"""";
     std::string generatedEmit;

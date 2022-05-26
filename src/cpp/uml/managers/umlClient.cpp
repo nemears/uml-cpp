@@ -290,6 +290,29 @@ void UmlClient::release(ID id) {
     release(*m_graph[id].m_managerElementMemory);
 }
 
+void UmlClient::setRoot(Element* el) {
+    if (el) {
+        YAML::Emitter emitter;
+        emitter << YAML::DoubleQuoted  << YAML::Flow << YAML::BeginMap << 
+            YAML::Key << "PUT" << YAML::Value << YAML::BeginMap 
+            << YAML::Key << "id" << YAML::Value << el->getID().string();
+            if (el->isSubClassOf(ElementType::NAMED_ELEMENT)) {
+                emitter << YAML::Key << "qualifiedName" << YAML::Value << "";
+            }
+            emitter << YAML::Key << "element" << YAML::Value ;
+            Parsers::emitIndividual(*el, emitter);
+        emitter << YAML::EndMap << YAML::EndMap;
+        sendEmitter(m_socketD, emitter);
+        m_root = el;
+    } else {
+        erase(*getRoot());
+    }
+}
+
+void UmlClient::setRoot(Element& el) {
+    setRoot(&el);
+}
+
 void UmlClient::shutdownServer() {
     const char* msg = "KILL";
     int bytesSent;

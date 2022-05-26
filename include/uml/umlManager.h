@@ -199,7 +199,7 @@ namespace UML {
             ElementPtr parse(std::string path);
 
             // void setModel(Model* model);
-            void setRoot(Element* el);
+            virtual void setRoot(Element* el);
             void setRoot(Element& el);
             // Model* getModel();
             ElementPtr getRoot();

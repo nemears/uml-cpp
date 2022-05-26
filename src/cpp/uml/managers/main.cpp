@@ -2,6 +2,7 @@
 #include <iostream>
 #ifndef WIN32
 #include <unistd.h>
+#include <cstring>
 #else
 #include "winsock2.h"
 #include <ws2tcpip.h>

@@ -53,8 +53,8 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         int bytesSent = send(info.socket, msg, 6, 0);
         return;
     }
-    if (node["DELETE"]) {
-        ID elID = ID::fromString(node["DELETE"].as<std::string>());
+    if (node["DELETE"] || node["delete"]) {
+        ID elID = ID::fromString((node["DELETE"] ? node["DELETE"] : node["delete"]).as<std::string>());
         try {
             {
                 std::lock_guard<std::mutex> elLck(m_locks[elID]);
@@ -71,12 +71,19 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         } catch (std::exception& e) {
             log("exception encountered when trying to delete element: " + std::string(e.what()));
         }
-    } else if (node["GET"]) {
+    } else if (node["GET"] || node["get"]) {
         ID elID;
-        if (isValidID(node["GET"].as<std::string>())) {
-            elID = ID::fromString(node["GET"].as<std::string>());
+        YAML::Node getNode = (node["GET"] ? node["GET"] : node["get"]);
+        if (isValidID(getNode.as<std::string>())) {
+            elID = ID::fromString(getNode.as<std::string>());
         } else {
-            elID = m_urls.at(node["GET"].as<std::string>());
+            try {
+                elID = m_urls.at(getNode.as<std::string>());
+            } catch (std::exception e) {
+                log(e.what());
+                const char* msg = "ERROR";
+                int bytesSent = send(info.socket, msg, 6, 0);
+            }            
         }
         std::lock_guard<std::mutex> elLck(m_locks[elID]);
         log("aquired lock for element " + elID.string());
@@ -97,12 +104,12 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             const char* msg = "ERROR";
             int bytesSent = send(info.socket, msg, 6, 0);
         }
-    } else if (node["POST"]) {
+    } else if (node["POST"] || node["post"]) {
         m_msgV = true;
         m_msgCv.notify_one();
         log("server handling post request from client " + id.string());
         try {
-            ElementType type = Parsers::elementTypeFromString(node["POST"].as<std::string>());
+            ElementType type = Parsers::elementTypeFromString((node["POST"] ? node["POST"] : node["post"]).as<std::string>());
             ID id = ID::fromString(node["id"].as<std::string>());
             Element* ret = 0;
             ret = &create(type);
@@ -114,21 +121,26 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         } catch (std::exception& e) {
             log("server could not create new element for client " + id.string() + ", exception with request: " + std::string(e.what()));
         }
-    } else if (node["PUT"]) {
-        ID elID = ID::fromString(node["PUT"]["id"].as<std::string>());
+    } else if (node["PUT"] || node["put"]) {
+        YAML::Node putNode = (node["PUT"] ? node["PUT"] : node["put"]);
+        ID elID = ID::fromString(putNode["id"].as<std::string>());
         std::lock_guard<std::mutex> elLck(m_locks[elID]);
         log("aquired lock for element " + elID.string());
         m_msgV = true;
         m_msgCv.notify_one();
-        if (node["PUT"]["qualifiedName"]) {
-            m_urls[node["PUT"]["qualifiedName"].as<std::string>()] = elID;
+        bool isRoot = false;
+        if (putNode["qualifiedName"]) {
+            if (putNode["qualifiedName"].as<std::string>().compare("") == 0) {
+                isRoot = true;
+            }
+            m_urls[putNode["qualifiedName"].as<std::string>()] = elID;
         }
         Parsers::ParserMetaData data(this);
         data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
         try {
-            Element& el = *Parsers::parseYAML(node["PUT"]["element"], data);
-            if (el.isSubClassOf(ElementType::NAMED_ELEMENT)) {
-                m_urls[el.as<NamedElement>().getQualifiedName()] = el.getID();
+            Element& el = *Parsers::parseYAML(putNode["element"], data);
+            if (isRoot) {
+                setRoot(el);
             }
             log("server put element " + elID.string() + " successfully for client " + id.string());
         } catch (std::exception& e) {

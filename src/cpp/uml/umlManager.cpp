@@ -471,6 +471,9 @@ void UmlManager::release(Element& el) {
 
 void UmlManager::eraseNode(ManagerNode* node, ID id) {
     for (size_t i = 0; i < node->m_referenceOrder.size(); i++) {
+        if (!node->m_references[node->m_referenceOrder[i]]) {
+            node->m_references[node->m_referenceOrder[i]] = &m_graph[node->m_referenceOrder[i]];
+        }
         if (!node->m_references[node->m_referenceOrder[i]]->m_managerElementMemory) {
             aquire(node->m_referenceOrder[i]);
         }

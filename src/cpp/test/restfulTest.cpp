@@ -63,3 +63,16 @@ TEST_F(RestfulTest, bigMessageTest) {
     client.release(id);
     ASSERT_EQ(client.get<Package>("foo").getPackagedElements().size(), numChildren);
 }
+
+TEST_F(RestfulTest, headTest) {
+    UmlClient client;
+    PackagePtr root = client.create<Package>();
+    PackagePtr child = client.create<Package>();
+    root->setName("root");
+    child->setName("test");
+    root->getPackagedElements().add(*child);
+    client.put(*child);
+    client.setRoot(*root);
+    ASSERT_EQ(*root, client.get(""));
+    // ASSERT_EQ(client.getRoot(), root); TODO
+}

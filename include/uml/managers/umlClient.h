@@ -50,6 +50,8 @@ namespace UML {
                 release(els...);
             };
             void release(ID id) override;
+            void setRoot(Element* root) override;
+            void setRoot(Element& el);
             void shutdownServer(); // maybe we need to pass a key or something
     };
 }

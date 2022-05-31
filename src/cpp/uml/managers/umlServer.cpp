@@ -453,25 +453,27 @@ UmlServer::UmlServer(int port) {
     #else
     status = WSAStartup(MAKEWORD(2,2), &m_wsaData);
     if (status != 0) {
-        throw ManagerStateException("TOSO Winsock, WSAStartup");
+        throw ManagerStateException("TODO Winsock, WSAStartup");
     }
     struct addrinfo *result = 0, *ptr = 0, hints;
     ZeroMemory(&hints, sizeof (hints));
-    hints.ai_family = AF_UNSPEC;
+    hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;
     hints.ai_flags = AI_PASSIVE;
-    status = getaddrinfo(0, std::to_string(port).c_str(), &hints, &result);
+    status = getaddrinfo(0, std::to_string(m_port).c_str(), &hints, &result);
     if (status != 0) {
         WSACleanup();
         throw ManagerStateException("TODO winsock getaddrinfo");
     }
+
     m_socketD = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
     if (m_socketD == INVALID_SOCKET) {
         freeaddrinfo(result);
         WSACleanup();
-        throw ManagerStateException("TOSO winsock socket");
+        throw ManagerStateException("TODO winsock socket");
     }
+    
     status = bind(m_socketD, result->ai_addr, (int) result->ai_addrlen);
     freeaddrinfo(result);
     if (status == SOCKET_ERROR) {

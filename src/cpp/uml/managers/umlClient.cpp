@@ -74,7 +74,7 @@ void UmlClient::init() {
     struct addrinfo *result = 0,
                 hints;
     ZeroMemory( &hints, sizeof(hints) );
-    hints.ai_family = AF_UNSPEC;
+    hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;
     status = getaddrinfo(m_address.empty() ? 0 : m_address.c_str(), std::to_string(m_port).c_str(), &hints, &result);

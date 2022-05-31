@@ -14,7 +14,12 @@ set (CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Threads REQUIRED)
 
 IF(UNIX)
+    option(UML_DEBUG "builds without optimizations" OFF)
     set(THREADS_PREFER_PTHREAD_FLAG ON)
+    add_compile_options(-Wall -Wextra -pedantic)
+    IF(NOT UML_DEBUG) 
+        add_compile_options(-O3)
+    ENDIF()
 ENDIF()
 
 # Headers

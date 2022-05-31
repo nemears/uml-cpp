@@ -74,6 +74,11 @@ void UmlServer::handleMessage(ID id, std::string buff) {
     } else if (node["GET"] || node["get"]) {
         ID elID;
         YAML::Node getNode = (node["GET"] ? node["GET"] : node["get"]);
+        if (!getNode.IsScalar()) {
+            const char* msg = "ERROR";
+            int bytesSent = send(info.socket, msg, 6, 0);
+            return;
+        }
         if (isValidID(getNode.as<std::string>())) {
             elID = ID::fromString(getNode.as<std::string>());
         } else {
@@ -210,25 +215,30 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
 
             // check for additional data
             while (bytesRead > size) { // TODO test
-                me->log("received additional data...");
+
+                // get second size
                 uint32_t secondSize;
                 memcpy(&secondSize, &messageBuffer[size], sizeof(uint32_t));
                 secondSize = ntohl(secondSize);
-                if (secondSize > bytesRead - size - sizeSize) {
-                    me->log("need to receive more");
-                    char* tempBuffer = (char*) malloc(bytesRead - size - sizeSize);
-                    memcpy(tempBuffer, messageBuffer + size + sizeSize, bytesRead - size - sizeSize);
-                    free(messageBuffer);
-                    messageBuffer = (char*) malloc(2 * secondSize);
-                    memcpy(messageBuffer, tempBuffer, bytesRead - size - sizeSize);
-                    free(tempBuffer);
-                    bytesRead = size - sizeSize + recv(info.socket, 
-                                                       messageBuffer + bytesRead - size - sizeSize, 
-                                                       (secondSize * 2) - (bytesRead - size - sizeSize), 
-                                                       0);
-                } else {
-                    messageBuffer = messageBuffer + size + sizeSize;
-                    bytesRead = 0;
+
+                me->log("received additional data, next msg size: " + std::to_string(secondSize) + ", old size: " + 
+                        std::to_string(size) + " bytes read: " + std::to_string(bytesRead));
+
+                // move message buffer up
+                bytesRead -= (size + sizeSize);
+                char* tempBuffer = (char*) malloc(bytesRead);
+                memcpy(tempBuffer, messageBuffer + size + sizeSize, bytesRead);
+                free(messageBuffer);
+                messageBuffer = (char*) malloc(2 * secondSize);
+                memcpy(messageBuffer, tempBuffer, bytesRead);
+                free(tempBuffer);
+
+                // process rest of this message
+                if (secondSize > bytesRead) {
+                    bytesRead += recv(info.socket, 
+                                        messageBuffer + bytesRead, 
+                                        (secondSize * 2) - bytesRead, 
+                                        0);
                 }
 
                 // store message data

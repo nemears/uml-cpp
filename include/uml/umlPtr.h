@@ -93,11 +93,11 @@ namespace UML {
             template <class U = Element>
             inline friend bool operator==(const UmlPtr& lhs, const UmlPtr<U>& rhs) {
                 return lhs.id() == rhs.id();
-            };
+            }
             template <class U = Element>
             inline friend bool operator!=(const UmlPtr& lhs, const UmlPtr<U>& rhs) {
                 return lhs.id() != rhs.id();
-            };
+            }
             inline friend bool operator==(const Element& lhs, const UmlPtr& rhs) {
                 return lhs.m_id == rhs.m_id;
             };
@@ -148,7 +148,7 @@ namespace UML {
                     m_ptr = const_cast<T*>(&rhs->template as<T>());
                     m_ptr->m_node->m_ptrs.push_back((void*) this);
                 }
-            };
+            }
             T* ptr() {
                 return m_ptr;
             };

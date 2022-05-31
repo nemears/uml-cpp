@@ -132,7 +132,7 @@ namespace UML {
                 ptr->m_node = &m_graph[ptr->getID()];
                 UmlPtr<T> ret(ptr);
                 return ret;
-            };
+            }
             void lossless(bool lossless);
             void lazy(bool lazy);
             Element& create(ElementType eType);
@@ -160,7 +160,7 @@ namespace UML {
             void release(Element& el, Elements&... els) {
                 release(el);
                 release(els...);
-            };
+            }
             void erase(ID id);
             /**
              * erase(el) effectively deletes the element object from memory, as well as removes all

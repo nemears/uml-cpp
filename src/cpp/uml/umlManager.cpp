@@ -395,7 +395,7 @@ void UmlManager::restoreNode(Element& ret) {
             try {
                 el = &UmlManager::get(refID); // TODO make this faster somehow this line is a real limiter of speed
                 ret.m_node->m_references[refID] = el->m_node;
-            } catch (std::exception e) {
+            } catch (std::exception& e) {
                 // nothing
             }
         } else if (node && loaded(refID)) {

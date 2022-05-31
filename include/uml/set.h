@@ -1585,7 +1585,7 @@ namespace UML {
                         m_setToInstantiate = &subsetOf;
                     }
                 }
-            };
+            }
             /**
              * creates a relationship between two sets by signature that if an element is added the set
              * the other set referenced by the signature supplied will have this sets owning element within it
@@ -1655,7 +1655,7 @@ namespace UML {
                     redefined.m_setToInstantiate = this;
                 }
                 m_guard = redefined.m_guard;
-            };
+            }
 
             void addFunctor(SetFunctor* func) {
                 m_addFunctors.insert(func);
@@ -1736,7 +1736,7 @@ namespace UML {
             template <class ... Ts> void add(T& el, Ts&... els) {
                 add(el);
                 add(els...);
-            };
+            }
             /**
              * Adds an element to the set just using its id
              * @param id the id of the element we want to add to the set

@@ -2487,7 +2487,7 @@ void parseParameter(YAML::Node node, Parameter& el, ParserMetaData& data) {
         } else if (node["effect"].as<std::string>().compare("UPDATE") == 0) {
             el.setEffect(ParameterEffectKind::UPDATE);
         } else if (node["effect"].as<std::string>().compare("DELETE") == 0) {
-            el.setEffect(ParameterEffectKind::DELETE);
+            el.setEffect(ParameterEffectKind::DELETE_UML);
         } else {
             throw UmlParserException("unknown effect kind!", data.m_path.string(), node["effect"]);
         }
@@ -2545,7 +2545,7 @@ void emitParameter(YAML::Emitter& emitter, Parameter& el, EmitterMetaData& data)
                 effect = "UPDATE";
                 break;
             }
-            case ParameterEffectKind::DELETE : {
+            case ParameterEffectKind::DELETE_UML : {
                 effect = "DELETE";
                 break;
             }

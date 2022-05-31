@@ -28,7 +28,7 @@ namespace UML {
         CREATE,
         READ,
         UPDATE,
-        DELETE
+        DELETE_UML
     };
 
     class Parameter : public ConnectableElement , public MultiplicityElement {

@@ -16,8 +16,8 @@ namespace UML {
         friend class Namespace;
 
         protected:
-            DEFINE_SINGLETON(ImportedPackage, m_importedPackage, Package, PackageImport);
-            DEFINE_SINGLETON(ImportingNamespace, m_importingNamespace, Namespace, PackageImport);
+            DEFINE_SINGLETON(ImportedPackage, m_importedPackage, Package, PackageImport)
+            DEFINE_SINGLETON(ImportingNamespace, m_importingNamespace, Namespace, PackageImport)
             class AddImportedPackageFunctor : public SetFunctor {
                 private:
                     void operator()(Element& el) const override;

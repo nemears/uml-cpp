@@ -28,27 +28,27 @@ namespace UML {
             Element& get(ID id) override;
             template <class T = Element> T& get(ID id) {
                 return get(id).as<T>();
-            };
+            }
             Element& get(std::string qualifiedName);
             template <class T = Element> T& get(std::string qualifiedName) {
                 return get(qualifiedName).as<T>();
-            };
+            }
             void put(Element& el);
             void putAll();
             Element& post(ElementType eType);
             template<class T = Element> UmlPtr<T> post() {
                 return UmlPtr<T>(&post(T::elementType()).template as<T>());
-            };
+            }
             template<class T = Element> UmlPtr<T> create() {
                 return UmlPtr<T>(&post(T::elementType()).template as<T>());
-            };
+            }
             void erase(Element& el) override;
             ElementPtr aquire(ID id) override;
             void release(Element& el) override;
             template <class ... Elements> void release(Element& el, Elements&... els) {
                 release(el);
                 release(els...);
-            };
+            }
             void release(ID id) override;
             void setRoot(Element* root) override;
             void setRoot(Element& el);

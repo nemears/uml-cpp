@@ -109,7 +109,7 @@ void Classifier::reindexName(ID id, std::string newName) {
 void Classifier::restoreReferences() {
     Namespace::restoreReferences();
     PackageableElement::restoreReferences();
-    for (auto& generalization : m_generalizations) {
+    for (auto& _generalization : m_generalizations) {
         // load through loop
     }
 }

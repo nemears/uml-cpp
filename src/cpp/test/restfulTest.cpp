@@ -26,6 +26,7 @@ TEST_F(RestfulTest, postAndGetTest) {
     ASSERT_TRUE(client.count(clazz.getID()));
     client.release(clazz);
     Class& clazz2 = client.get<Class>(clazzID);
+    ASSERT_EQ(clazz2.getName(), "clazz");
 }
 
 TEST_F(RestfulTest, basicEraseTest) {
@@ -75,4 +76,16 @@ TEST_F(RestfulTest, headTest) {
     client.setRoot(*root);
     ASSERT_EQ(*root, client.get(""));
     // ASSERT_EQ(client.getRoot(), root); TODO
+}
+
+TEST_F(RestfulTest, saveTest) {
+    UmlClient client;
+    PackagePtr newRoot = client.create<Package>();
+    ClassPtr clazz = client.create<Class>();
+    newRoot->getPackagedElements().add(*clazz);
+    client.setRoot(*newRoot);
+    client.put(*clazz);
+    clazz->setName("clzz");
+    client.put(*clazz);
+    client.save();
 }

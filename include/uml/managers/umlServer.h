@@ -87,7 +87,10 @@ namespace UML {
         public:
             UmlServer();
             UmlServer(int port);
+            UmlServer(int port, bool deferStart);
+            UmlServer(bool deferStart);
             virtual ~UmlServer();
+            void start();
             int numClients();
             void log(std::string msg);
             bool loaded(ID id) override;
@@ -99,6 +102,8 @@ namespace UML {
             int waitTillShutDown(int ms);
             int waitTillShutDown();
             int waitForProcessing();
+            void setRoot(Element* el) override;
+            void setRoot(Element& el);
     };
 }
 

@@ -303,8 +303,9 @@ void UmlClient::setRoot(Element* el) {
             Parsers::emitIndividual(*el, emitter);
         emitter << YAML::EndMap << YAML::EndMap;
         sendEmitter(m_socketD, emitter);
-        m_root = el;
+        m_root = el->getID();
     } else {
+        m_root = ID::nullID();
         erase(*getRoot());
     }
 }
@@ -319,4 +320,20 @@ void UmlClient::shutdownServer() {
     while ((bytesSent = send(m_socketD, msg, 5, 0)) <= 0) {
         send(m_socketD, msg, 5, 0);
     }
+}
+
+void UmlClient::save() {
+    YAML::Emitter emitter;
+    emitter << YAML::DoubleQuoted  << YAML::Flow << YAML::BeginMap;
+        emitter << YAML::Key << "SAVE" << YAML::Value << ".";
+    emitter << YAML::EndMap;
+    sendEmitter(m_socketD, emitter);
+}
+
+void UmlClient::save(std::string path) {
+    YAML::Emitter emitter;
+    emitter << YAML::DoubleQuoted  << YAML::Flow << YAML::BeginMap;
+        emitter << YAML::Key << "SAVE" << YAML::Value << path;
+    emitter << YAML::EndMap;
+    sendEmitter(m_socketD, emitter);
 }

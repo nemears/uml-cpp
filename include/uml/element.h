@@ -305,14 +305,14 @@ namespace UML {
             static ElementType elementType() {
                 return ElementType::ELEMENT;
             };
+            virtual bool isSubClassOf(ElementType eType) const;
             template <class T = Element> T& as() {
-                if (isSubClassOf(T::elementType())) {
+                if (this->isSubClassOf(T::elementType())) {
                     return dynamic_cast<T&>(*this);
                 }
                 throw InvalidElementCastException(getElementTypeString().c_str() , elementTypeToString(T::elementType()).c_str());
             }
             ElementType getElementType() const;
-            virtual bool isSubClassOf(ElementType eType) const;
             virtual std::string getElementTypeString() const;
 
             inline friend bool operator==(const Element& lhs, const Element& rhs) {

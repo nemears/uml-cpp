@@ -314,6 +314,7 @@ void UmlManager::reindex(ID oldID, ID newID) {
                 if (!pair.second) {
                     pair.second = UmlManager::get(pair.first).m_node;
                 }
+                pair.second->m_managerElementMemory->referencingReleased(newID);
                 pair.second->m_references[newID] = 0;
             }
             for (auto& ptr : m_node->m_ptrs) {
@@ -499,7 +500,7 @@ void UmlManager::erase(Element& el) {
 }
 
 void UmlManager::save() {
-    if (m_path.empty() || !m_root) {
+    if (m_path.empty() || m_root.isNull()) {
         // TODO throw error
         return;
     }
@@ -523,7 +524,7 @@ void UmlManager::open() {
     }
     clear();
     Parsers::ParserMetaData data(this);
-    m_root = &*Parsers::parse(data);
+    setRoot(&*Parsers::parse(data));
     // if (m_root->isSubClassOf(ElementType::MODEL)) {
     //     m_model = dynamic_cast<Model*>(m_root);
     // }
@@ -554,18 +555,18 @@ ElementPtr UmlManager::parse(std::string path) {
 // }
 
 void UmlManager::setRoot(Element* el) {
-    m_root = el;
-    if (m_root->isSubClassOf(ElementType::MODEL)) {
-        // m_model = dynamic_cast<Model*>(el);
-    }
+    m_root = el ? el->getID() : ID::nullID();
 }
 
 void UmlManager::setRoot(Element& el) {
     setRoot(&el);
 }
 
-ElementPtr UmlManager::getRoot() {
-    return m_root;
+ElementPtr UmlManager::getRoot() {\
+    if (m_root.isNull()) {
+        return ElementPtr(0);
+    }
+    return ElementPtr(&get(m_root));
 }
 
 void UmlManager::setPath(ID elID, std::string path) {

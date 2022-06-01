@@ -151,6 +151,15 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         } catch (std::exception& e) {
             log("Error parsing PUT request: " + std::string(e.what()));
         }
+    } else if (node["SAVE"] || node["save"]) {
+        YAML::Node saveNode = (node["SAVE"] ? node["SAVE"] : node["save"]);
+        std::string path = saveNode.as<std::string>();
+        if (path.compare(".") == 0) {
+            save();
+        } else {
+            save(path);
+        }
+        log("saved element to " + path);
     } else {
         log("ERROR receiving message from client, invalid format!\nMessage:\n" + buff);
         const char* msg = "ERROR";
@@ -221,6 +230,10 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 memcpy(&secondSize, &messageBuffer[size], sizeof(uint32_t));
                 secondSize = ntohl(secondSize);
 
+                if (secondSize == 0) { // edge case
+                    break;
+                }
+
                 me->log("received additional data, next msg size: " + std::to_string(secondSize) + ", old size: " + 
                         std::to_string(size) + " bytes read: " + std::to_string(bytesRead));
 
@@ -229,7 +242,7 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 char* tempBuffer = (char*) malloc(bytesRead);
                 memcpy(tempBuffer, messageBuffer + size + sizeSize, bytesRead);
                 free(messageBuffer);
-                messageBuffer = (char*) malloc(2 * secondSize);
+                messageBuffer = (char*) malloc(secondSize > bytesRead ? 2 * secondSize : bytesRead);
                 memcpy(messageBuffer, tempBuffer, bytesRead);
                 free(tempBuffer);
 
@@ -419,8 +432,32 @@ void UmlServer::log(std::string msg) {
     std::cout << "[" + nowStr.substr(0, nowStr.size() - 1) + "]:" + msg << std::endl;
 }
 
-UmlServer::UmlServer(int port) {
+UmlServer::UmlServer(int port, bool deferStart) {
     m_port = port;
+    if (!deferStart) {
+        start();
+    }
+}
+
+UmlServer::UmlServer(int port) : UmlServer(port, false) {
+
+}
+
+UmlServer::UmlServer(bool deferStart) : UmlServer(UML_PORT, deferStart) {
+
+}
+
+UmlServer::UmlServer() : UmlServer(UML_PORT, false) {
+    
+}
+
+UmlServer::~UmlServer() {
+    if (m_running) {
+        shutdownServer();
+    }
+}
+
+void UmlServer::start() {
     int status;
     #ifndef WIN32
     struct addrinfo hints;
@@ -429,7 +466,8 @@ UmlServer::UmlServer(int port) {
     hints.ai_family = AF_UNSPEC;     // don't care IPv4 or IPv6
     hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
     hints.ai_flags = AI_PASSIVE; // fill in my IP for me
-    if ((status = getaddrinfo(NULL, std::to_string(m_port).c_str(), &hints, &m_address)) != 0) {
+    const char* portStr = std::to_string(m_port).c_str();
+    if ((status = getaddrinfo(NULL, portStr, &hints, &m_address)) != 0) {
         throw ManagerStateException("Server could not get address info! error: " + std::string(strerror(errno)));
     }
 
@@ -494,16 +532,6 @@ UmlServer::UmlServer(int port) {
     m_garbageCollectionThread = new std::thread(garbageCollector, this);
     m_zombieKillerThread = new std::thread(zombieKiller, this);
     log("server set up thread to accept new clients");
-}
-
-UmlServer::UmlServer() : UmlServer(UML_PORT) {
-    
-}
-
-UmlServer::~UmlServer() {
-    if (m_running) {
-        shutdownServer();
-    }
 }
 
 int UmlServer::numClients() {
@@ -652,4 +680,16 @@ int UmlServer::waitForProcessing() {
     std::unique_lock<std::mutex> pLck(m_msgMtx);
     m_msgCv.wait(pLck, [this] { return !m_msgV; });
     return 1;
+}
+
+void UmlServer::setRoot(Element* el) {
+    UmlManager::setRoot(el);
+    if (!el) {
+        return;
+    }
+    m_urls[""] = el->getID();
+}
+
+void UmlServer::setRoot(Element& el) {
+    setRoot(&el);
 }

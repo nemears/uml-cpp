@@ -108,12 +108,17 @@ int main(int argc, char* argv[]) {
         i++;
     }
     try {
-        UML::UmlServer server(port);
+        UML::UmlServer server(port, true);
         if (!location.empty()) {
-            server.open(location);
+            try {
+                server.open(location);
+            } catch (std::exception& e) {
+                server.log(e.what());
+            }
         }
         server.setMaxEls(numEls);
         server.mount(path);
+        server.start();
         std::cout << "server running" << std::endl;
         if (duration < 0) {
             server.waitTillShutDown();

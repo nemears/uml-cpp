@@ -21,6 +21,7 @@ namespace UML {
                 OrderedNode() {};
                 OrderedNode* m_prev = 0;
                 OrderedNode* m_next = 0;
+                virtual ~OrderedNode() {};
             };
             OrderedNode* m_last = 0;
             OrderedNode* m_first = 0;

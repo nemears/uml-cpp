@@ -53,6 +53,8 @@ namespace UML {
             void setRoot(Element* root) override;
             void setRoot(Element& el);
             void shutdownServer(); // maybe we need to pass a key or something
+            void save() override;
+            void save(std::string path) override;
     };
 }
 

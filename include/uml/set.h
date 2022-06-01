@@ -107,6 +107,7 @@ namespace UML {
                     m_id = el->getID();
                 };
                 SetNode(){};
+                virtual ~SetNode() {};
                 ID m_id;
                 Element* m_el = 0;
                 std::string m_name;

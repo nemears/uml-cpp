@@ -1,0 +1,29 @@
+---
+package:
+  id: Standard_Profile_IlesiZnrVGR
+  name: Standard Profile
+  ownedStereotypes:
+    stereotype:
+      id: Diagram_nuc1IC2Cavgoa4zMBlVq
+      ownedAttributes:
+        - property:
+            id: s1uJq8oidNVLz52qsZCsdcecIoZs
+            name: presentationElements
+            lowVal:
+              literalInt:
+                id: 9GmQy57Bx9NnzJe4LjPdOseR_pB0
+                value: 0
+            upper: *
+            type: fppmrPcasKJDUBoKnMA3rNU22SFk
+  packagedElements:
+    - class:
+        id: fppmrPcasKJDUBoKnMA3rNU22SFk
+        name: presentationElement
+    - extension:
+        id: CLUbrvbx1qIuFyoG1O&ULzByyPAP
+        ownedEnd:
+          extensionEnd:
+            id: "&sSE4laBvC8nVkvXWrGa3wrsD3dB"
+            type: Diagram_nuc1IC2Cavgoa4zMBlVq
+          metaClass: CLASS
+...

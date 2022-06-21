@@ -34,7 +34,7 @@
           ownedEnd:
             extensionEnd:
               type: Cpp_CONST_ARRAY_Nw3c30z1PCo3
-            metaClass: INSTANCE_SPECIFICATION
+          metaClass: INSTANCE_SPECIFICATION
       - extension:
           ownedEnd:
             extensionEnd:

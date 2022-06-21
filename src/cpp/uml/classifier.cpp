@@ -14,7 +14,11 @@ using namespace UML;
 
 void Classifier::AddGeneralizationFunctor::operator()(Element& el) const {
     if (el.as<Generalization>().getGeneral() && !m_el.as<Classifier>().m_generals.contains(el.as<Generalization>().getGeneral().id())) {
-        m_el.as<Classifier>().m_generals.add(*el.as<Generalization>().getGeneral());
+        if (el.as<Generalization>().getGeneral().loaded()) {
+            m_el.as<Classifier>().m_generals.add(*el.as<Generalization>().getGeneral());
+        } else {
+            m_el.as<Classifier>().m_generals.add(el.as<Generalization>().getGeneral().id());
+        }
     }
 }
 

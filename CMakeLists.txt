@@ -49,7 +49,7 @@ target_link_libraries(uml PUBLIC yaml-cpp)
 if (UML_CLIENT_SERVER)
     add_executable(uml-server src/cpp/uml/managers/main.cpp)
     target_link_libraries(uml-server PUBLIC uml)
-    target_link_libraries(uml-server PRIVATE Threads::Threads -fsanitize=address)
+    target_link_libraries(uml-server PRIVATE Threads::Threads) #  -fsanitize=address
     if(WIN32)
         target_link_libraries(uml-server PRIVATE wsock32 ws2_32)
         target_link_libraries(uml PRIVATE wsock32 ws2_32)

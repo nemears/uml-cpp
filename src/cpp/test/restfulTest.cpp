@@ -51,7 +51,7 @@ TEST_F(RestfulTest, basicGetByQualifiedName) {
 }
 
 TEST_F(RestfulTest, bigMessageTest) {
-    int numChildren = 25;
+    int numChildren = 125;
     UmlClient client;
     Package& root = *client.post<Package>();
     for (int i = 0; i < numChildren; i++) {

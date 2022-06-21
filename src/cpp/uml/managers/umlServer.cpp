@@ -188,7 +188,7 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
             uint32_t size;
             ssize_t bytesRead = recv(info.socket, (char*)&size, sizeof(uint32_t), 0);
             size = ntohl(size);
-            size_t sizeSize = sizeof(uint32_t);
+            ssize_t sizeSize = sizeof(uint32_t);
             if (bytesRead == 0) {
                 // client shutdown
                 me->log("error receiving message, lost connection to client");
@@ -230,28 +230,46 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 memcpy(&secondSize, &messageBuffer[size], sizeof(uint32_t));
                 secondSize = ntohl(secondSize);
 
-                if (secondSize == 0) { // edge case
+                if (secondSize == 0) { // edge case end of message chain no further size
                     break;
                 }
 
                 me->log("received additional data, next msg size: " + std::to_string(secondSize) + ", old size: " + 
                         std::to_string(size) + " bytes read: " + std::to_string(bytesRead));
 
+                if (bytesRead <= size + sizeSize) {
+                    throw ManagerStateException("Bad state receiving multiple messages from client");
+                }
+
                 // move message buffer up
                 bytesRead -= (size + sizeSize);
                 char* tempBuffer = (char*) malloc(bytesRead);
                 memcpy(tempBuffer, messageBuffer + size + sizeSize, bytesRead);
                 free(messageBuffer);
-                messageBuffer = (char*) malloc(secondSize > bytesRead ? 2 * secondSize : bytesRead);
+                ssize_t newMessageBufferSize = bytesRead;
+                if (secondSize > bytesRead) {
+                    // there is more of the message to receive
+                    newMessageBufferSize = 2 * secondSize + sizeSize;
+                }
+                messageBuffer = (char*) malloc(newMessageBufferSize);
                 memcpy(messageBuffer, tempBuffer, bytesRead);
                 free(tempBuffer);
 
-                // process rest of this message
+                // receive rest of this message
                 if (secondSize > bytesRead) {
-                    bytesRead += recv(info.socket, 
+                    ssize_t recvRet = recv(info.socket, 
                                         messageBuffer + bytesRead, 
-                                        (secondSize * 2) - bytesRead, 
+                                        newMessageBufferSize - bytesRead, 
                                         0);
+                    if (recvRet < 0) {
+                        // error
+                        me->log("error receiving message, " + std::string(strerror(errno)));
+                        break;
+                    } 
+                    else if (bytesRead + recvRet <= secondSize + sizeSize && bytesRead + recvRet > secondSize) {
+                        me->log("DEBUGDEBUG: received before error");
+                    }
+                    bytesRead += recvRet;
                 }
 
                 // store message data

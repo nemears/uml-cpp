@@ -117,7 +117,7 @@ TEST_F(ActivityTest, objectNodeTest) {
     Activity& activity = parsed->as<Activity>();
     ASSERT_EQ(activity.getNodes().size(), 5);
     ASSERT_EQ(activity.getEdges().size(), 2);
-    InitialNode& initialNode = activity.getNodes().get("initialNode").as<InitialNode>();
+    // InitialNode& initialNode = activity.getNodes().get("initialNode").as<InitialNode>();
     DataStoreNode& objectNode = activity.getNodes().get("objectNode").as<DataStoreNode>();
     CentralBufferNode& objectNode2 = activity.getNodes().get("objectNode2").as<CentralBufferNode>();
     CentralBufferNode& objectNode3 = activity.getNodes().get("three").as<CentralBufferNode>();

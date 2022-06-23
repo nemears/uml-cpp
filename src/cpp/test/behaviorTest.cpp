@@ -78,12 +78,11 @@ TEST_F(BehaviorTest, parseParameter) {
 }
 
 TEST_F(BehaviorTest, properParameters) {
-    Element* el;
     UmlManager m;
-    ASSERT_THROW(el = m.parse(ymlPath + "opaqueBehaviorTests/improperParameters.yml").ptr(), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "opaqueBehaviorTests/bodyNotLiteralString.yml").ptr(), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "opaqueBehaviorTests/bodiesEntryIsSequence.yml").ptr(), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "opaqueBehaviorTests/bodiesNotSequence.yml").ptr(), Parsers::UmlParserException);
+    ASSERT_THROW(m.parse(ymlPath + "opaqueBehaviorTests/improperParameters.yml").ptr(), Parsers::UmlParserException);
+    ASSERT_THROW(m.parse(ymlPath + "opaqueBehaviorTests/bodyNotLiteralString.yml").ptr(), Parsers::UmlParserException);
+    ASSERT_THROW(m.parse(ymlPath + "opaqueBehaviorTests/bodiesEntryIsSequence.yml").ptr(), Parsers::UmlParserException);
+    ASSERT_THROW(m.parse(ymlPath + "opaqueBehaviorTests/bodiesNotSequence.yml").ptr(), Parsers::UmlParserException);
 }
 
 TEST_F(BehaviorTest, emitBasicOpaqueBehavior) {

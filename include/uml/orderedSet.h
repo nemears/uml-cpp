@@ -233,7 +233,6 @@ namespace UML {
             T* operator->() { return dynamic_cast<T*>(m_node->m_el); };
             OrderedSetIterator operator++() {
                 if (m_node->m_next) {
-                    NodeType* temp = m_node;
                     do {
                         if (m_node->m_next) {
                             m_node = m_node->m_next;

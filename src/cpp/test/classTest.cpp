@@ -410,10 +410,9 @@ TEST_F(ClassTest, parseOperation) {
 }
 
 TEST_F(ClassTest, properErrors) {
-    Element* el;
     UmlManager m;
-    ASSERT_THROW(el = m.parse(ymlPath + "classTests/improperOperationIdentifier.yml").ptr(), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "classTests/operationsNotSequence.yml").ptr(), Parsers::UmlParserException);
+    ASSERT_THROW(m.parse(ymlPath + "classTests/improperOperationIdentifier.yml").ptr(), Parsers::UmlParserException);
+    ASSERT_THROW(m.parse(ymlPath + "classTests/operationsNotSequence.yml").ptr(), Parsers::UmlParserException);
 }
 
 TEST_F(ClassTest, basicGeneralizationTest) {
@@ -966,8 +965,8 @@ TEST_F(ClassTest, parseConnectorTest) {
     Association& association = root.getPackagedElements().get("association").as<Association>();
     Property& assocEnd1 = association.getOwnedEnds().get("end1");
     Property& assocEnd2 = association.getOwnedEnds().get("end2");
-    DataType& type1 = root.getPackagedElements().get("type1").as<DataType>();
-    DataType& type2 = root.getPackagedElements().get("type2").as<DataType>();
+    // DataType& type1 = root.getPackagedElements().get("type1").as<DataType>();
+    // DataType& type2 = root.getPackagedElements().get("type2").as<DataType>();
     Class& clazz = root.getPackagedElements().get("clazz").as<Class>();
     ASSERT_EQ(association.getMemberEnds().size(), 2);
     ASSERT_EQ(clazz.getOwnedAttributes().size(), 2);

@@ -42,15 +42,15 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         node = YAML::Load(buff);
     } catch (std::exception& e) {
         log(e.what());
-        const char* msg = "ERROR";
-        int bytesSent = send(info.socket, msg, 6, 0);
+        std::string msg = std::string("{ERROR: ") + std::string(e.what()) + std::string("}");
+        send(info.socket, msg.c_str(), msg.length() , 0);
         return;
-    }
+    }   
     
     if (!node.IsMap()) {
         log("ERROR receiving message from client, invalid format!\nMessage:\n" + buff);
-        const char* msg = "ERROR";
-        int bytesSent = send(info.socket, msg, 6, 0);
+        std::string msg = std::string("{ERROR: ") + std::string("ERROR receiving message from client, invalid format!\nMessage:\n" + buff) + std::string("}");
+        send(info.socket, msg.c_str(), msg.length() , 0);
         return;
     }
     if (node["DELETE"] || node["delete"]) {
@@ -76,7 +76,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         YAML::Node getNode = (node["GET"] ? node["GET"] : node["get"]);
         if (!getNode.IsScalar()) {
             const char* msg = "ERROR";
-            int bytesSent = send(info.socket, msg, 6, 0);
+            send(info.socket, msg, 6, 0);
             return;
         }
         if (isValidID(getNode.as<std::string>())) {
@@ -84,10 +84,10 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         } else {
             try {
                 elID = m_urls.at(getNode.as<std::string>());
-            } catch (std::exception e) {
+            } catch (std::exception& e) {
                 log(e.what());
-                const char* msg = "ERROR";
-                int bytesSent = send(info.socket, msg, 6, 0);
+                std::string msg = std::string("{ERROR: ") + std::string(e.what()) + std::string("}");
+                send(info.socket, msg.c_str(), msg.length() , 0);
             }            
         }
         std::lock_guard<std::mutex> elLck(m_locks[elID]);
@@ -104,10 +104,10 @@ void UmlServer::handleMessage(ID id, std::string buff) {
                 throw ManagerStateException();
             }
             log("server got element " +  elID.string() + " for client " + id.string() + ":\n" + msg);
-        } catch (std::exception e) {
+        } catch (std::exception& e) {
             log(e.what());
-            const char* msg = "ERROR";
-            int bytesSent = send(info.socket, msg, 6, 0);
+            std::string msg = std::string("{ERROR: ") + std::string(e.what()) + std::string("}");
+            send(info.socket, msg.c_str(), msg.length() , 0);
         }
     } else if (node["POST"] || node["post"]) {
         m_msgV = true;
@@ -162,8 +162,8 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         log("saved element to " + path);
     } else {
         log("ERROR receiving message from client, invalid format!\nMessage:\n" + buff);
-        const char* msg = "ERROR";
-        int bytesSent = send(info.socket, msg, 6, 0);
+        std::string msg = std::string("{ERROR: ") + std::string("ERROR receiving message from client, invalid format!\nMessage:\n" + buff) + std::string("}");
+        send(info.socket, msg.c_str(), msg.length() , 0);
     }
 }
 
@@ -230,17 +230,6 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 memcpy(&secondSize, &messageBuffer[size], sizeof(uint32_t));
                 secondSize = ntohl(secondSize);
 
-                if (secondSize == 0) { // edge case end of message chain no further size
-                    break;
-                }
-
-                me->log("received additional data, next msg size: " + std::to_string(secondSize) + ", old size: " + 
-                        std::to_string(size) + " bytes read: " + std::to_string(bytesRead));
-
-                if (bytesRead <= size + sizeSize) {
-                    throw ManagerStateException("Bad state receiving multiple messages from client");
-                }
-
                 // move message buffer up
                 bytesRead -= (size + sizeSize);
                 char* tempBuffer = (char*) malloc(bytesRead);
@@ -248,15 +237,16 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                 free(messageBuffer);
                 ssize_t newMessageBufferSize = bytesRead;
                 if (secondSize > bytesRead) {
-                    // there is more of the message to receive
-                    newMessageBufferSize = 2 * secondSize + sizeSize;
+                    newMessageBufferSize = 2 * secondSize;
+                } else if (secondSize != bytesRead && secondSize + sizeSize > bytesRead) {
+                    newMessageBufferSize = secondSize + sizeSize;
                 }
                 messageBuffer = (char*) malloc(newMessageBufferSize);
                 memcpy(messageBuffer, tempBuffer, bytesRead);
                 free(tempBuffer);
 
                 // receive rest of this message
-                if (secondSize > bytesRead) {
+                if (secondSize > bytesRead || (secondSize != bytesRead && secondSize + sizeSize > bytesRead)) {
                     ssize_t recvRet = recv(info.socket, 
                                         messageBuffer + bytesRead, 
                                         newMessageBufferSize - bytesRead, 
@@ -265,9 +255,6 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
                         // error
                         me->log("error receiving message, " + std::string(strerror(errno)));
                         break;
-                    } 
-                    else if (bytesRead + recvRet <= secondSize + sizeSize && bytesRead + recvRet > secondSize) {
-                        me->log("DEBUGDEBUG: received before error");
                     }
                     bytesRead += recvRet;
                 }

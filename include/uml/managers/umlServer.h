@@ -50,8 +50,8 @@ namespace UML {
             std::unordered_map<ID, ClientInfo> m_clients;
             std::unordered_map<std::string, ID> m_urls;
             std::list<ID> m_releaseQueue;
-            int m_numEls = 0;
-            int m_maxEls = UML_SERVER_NUM_ELS;
+            long unsigned int m_numEls = 0;
+            long unsigned int m_maxEls = UML_SERVER_NUM_ELS;
 
             // threading
             static void acceptNewClients(UmlServer* me);

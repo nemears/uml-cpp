@@ -344,7 +344,7 @@ TEST_F(AssociationTest, parseNavigableOwnedEndAndMemberEndTest) {
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& pckg = el->as<Package>();
     ASSERT_EQ(pckg.getPackageMerge().size(), 1);
-    PackageMerge& merge = pckg.getPackageMerge().front();
+    // PackageMerge& merge = pckg.getPackageMerge().front();
     // TODO?
 
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
@@ -373,7 +373,7 @@ TEST_F(AssociationTest, parseOwnedEndAndMemberEndTest) {
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.get(el->getID()).as<Package>();
     ASSERT_EQ(pckg.getPackageMerge().size(), 1);
-    PackageMerge& merge = pckg.getPackageMerge().front();
+    // PackageMerge& merge = pckg.getPackageMerge().front();
     // TODO?
 
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);

@@ -61,14 +61,7 @@ namespace UML {
      *     b) Once mounted Elements that have been created or parsed in may be written to disc 
      *        with the UmlManager::release(ID id) method, and brought back into memory with the
      *        UmlManager::aquire(ID id) method.
-     *  4) Copying Elements is fine, they are automatically tracked upon copying, infact it is
-     *     encouraged to copy from the Manager just for the scope you need, e.g:
-     *          Package copiedJustForMyScope = manager.create<Package>();
-     *      instead of:
-     *          Package& referenceToManagerMemory = manager.create<Package>();
-     *      The main benefit is because a client using a manager can easily enforce not releasing
-     *      an element that has copies not yet deleted
-     *  5) The Manager can be used as a top level filter of all of the model elements through the
+     *  4) The Manager can be used as a top level filter of all of the model elements through the
      *         get<T>(ID id) function
      **/
 

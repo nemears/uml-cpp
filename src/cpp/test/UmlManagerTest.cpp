@@ -220,3 +220,17 @@ TEST_F(UmlManagerTest, basicEraseFunctionalityTest) {
     ASSERT_TRUE(package.getOwnedElements().empty());
     ASSERT_FALSE(m.loaded(childID));
 }
+
+TEST_F(UmlManagerTest, eraseReferenceWhileReleasedTest) {
+    UmlManager m;
+    ClassPtr c = m.create<Class>();
+    InstanceSpecificationPtr i = m.create<InstanceSpecification>();
+    i->getClassifiers().add(*c);
+    m.mount(".");
+    c.release();
+    i.release();
+    c.aquire();
+    m.erase(*c);
+    i.aquire();
+    ASSERT_EQ(i->getClassifiers().size(), 0);
+}

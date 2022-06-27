@@ -3,4 +3,4 @@
     profileApplications:
       - profileApplication:
           appliedProfile: testProfile.yml
-,,,
+...

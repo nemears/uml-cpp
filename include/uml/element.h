@@ -203,15 +203,17 @@ namespace UML {
     template <class T, class U> class OrderedSet;
     template <class T, class U> struct OrderedSetIterator;
     template <class T> class UmlPtr;
+    typedef UmlPtr<Element> ElementPtr;
     class SetReferenceFunctor;
     class RemoveReferenceFunctor;
     namespace Parsers {
         struct EmitterMetaData;
+        struct ParserMetaData;
         EmitterMetaData getData(Element& el);
         void setOwner(Element& el, ID id);
+        void emitToFile(Element& el, EmitterMetaData& data, std::string path, std::string fileName);
+        ElementPtr parse(ParserMetaData& data);
     }
-
-    typedef UmlPtr<Element> ElementPtr;
     /**
      * Element is the base class of all UML classes
      * It has three main attributes
@@ -252,6 +254,8 @@ namespace UML {
         template <class T> friend class UmlPtr;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);
         friend void Parsers::setOwner(Element& el, ID id);
+        friend void Parsers::emitToFile(Element& el, EmitterMetaData& data, std::string path, std::string fileName);
+        friend ElementPtr Parsers::parse(ParserMetaData& data);
         friend class SetReferenceFunctor;
         friend class RemoveReferenceFunctor;
 

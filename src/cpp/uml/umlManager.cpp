@@ -37,11 +37,12 @@ size_t UmlManager::count(ID id) {
 }
 
 bool UmlManager::loaded(ID id) {
-    if (m_graph.count(id)) {
-        return true;
-    } else {
-        return false;
-    }
+    return m_graph.count(id) && m_graph[id].m_managerElementMemory;
+    // if (m_graph.count(id)) {
+    //     return true;
+    // } else {
+    //     return false;
+    // }
 }
 
 Element& UmlManager::create(ElementType eType) {

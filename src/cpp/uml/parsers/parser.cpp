@@ -367,8 +367,16 @@ UmlManager* parse(string path) {
 }
 
 ElementPtr parse(ParserMetaData& data) {
-    YAML::Node node = YAML::LoadFile(data.m_path.string());
-    ElementPtr ret = parseNode(node, data);
+    std::vector<YAML::Node> nodes = YAML::LoadAllFromFile(data.m_path.string());
+    ElementPtr ret = parseNode(nodes[0], data);
+    if (nodes.size() > 1 && data.m_strategy == ParserStrategy::INDIVIDUAL) {
+        if (!nodes[1].IsSequence()) {
+            throw new UmlParserException("bad format for reference list", data.m_path.string(), nodes[1]);
+        }
+        for (size_t i = 0; i < nodes[1].size(); i++) {
+            ret->setReference(ID::fromString(nodes[1][i].as<std::string>()));
+        }
+    }
     return ret;
 }
 
@@ -447,6 +455,15 @@ void emitToFile(Element& el, EmitterMetaData& data, string path, string fileName
     newEmitter << YAML::BeginDoc;
     emit(newEmitter, el, data);
     newEmitter << YAML::EndDoc;
+    if (data.m_strategy == EmitterStrategy::INDIVIDUAL) {
+        newEmitter << YAML::BeginDoc;
+        newEmitter << YAML::BeginSeq;
+        for (auto& referenceID : el.m_node->m_referenceOrder) {
+            newEmitter << referenceID.string();
+        }
+        newEmitter << YAML::EndSeq;
+        newEmitter << YAML::EndDoc;
+    }
     ofstream file;
     file.open(path + '/' + fileName);
     file << newEmitter.c_str();

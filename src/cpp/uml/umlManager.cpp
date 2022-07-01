@@ -479,6 +479,7 @@ void UmlManager::eraseNode(ManagerNode* node, ID id) {
         if (!node->m_references[node->m_referenceOrder[i]]->m_managerElementMemory) {
             aquire(node->m_referenceOrder[i]);
         }
+        node->m_references[node->m_referenceOrder[i]]->m_managerElementMemory->removeReference(id);
         node->m_references[node->m_referenceOrder[i]]->m_managerElementMemory->referenceErased(id);
     }
     for (auto& ptr : node->m_ptrs) {

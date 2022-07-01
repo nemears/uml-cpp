@@ -1118,6 +1118,11 @@ namespace UML {
                 // this will always need to search tree (don't know any quicker way)
                 if (AbstractSet::contains(id)) {
                     innerRemove(id);
+                    if (m_el) 
+                    {
+                        m_el->m_manager->get(id).removeReference(m_el->getID());
+                        m_el->removeReference(id);
+                    }
                 }
             };
             /**

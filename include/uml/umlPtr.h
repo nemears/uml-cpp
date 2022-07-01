@@ -54,7 +54,7 @@ namespace UML {
                     return *m_ptr;
                 } else {
                     ElementPtr temp = &m_manager->get(m_id);
-                    temp->m_node->m_ptrs.push_back((void*) this);
+                    temp->m_node->m_ptrs.push_back((void*)this);
                     if (!m_ptr) {
                         const_cast<UmlPtr<T>*>(this)->m_ptr = dynamic_cast<T*>(temp.ptr());
                     }

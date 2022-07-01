@@ -198,6 +198,17 @@ namespace UML {
         ASSERT_EQ(((*u).*acessor)(), t);
         t.release();
         ASSERT_EQ(((*u).*acessor)(), t);
+        u.release();
+        t.release();
+        m.erase(*t);
+        ASSERT_FALSE(((*u).*acessor)());
+        UmlPtr<V> t2 = m.create<V>();
+        ASSERT_NO_THROW(((*u).*mutator)(t2.ptr()));
+        u.release();
+        t2.release();
+        m.erase(*u);
+        ASSERT_NO_THROW(t2.aquire());
+        ASSERT_NO_THROW(t2.release());
     }
 
     template <class V, class W, class T = Element, class U = Element>

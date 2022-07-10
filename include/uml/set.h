@@ -665,11 +665,8 @@ namespace UML {
                     node->m_parent = 0;
                 }
             };
-            /**
-             * removes a node from the tree with the supplied id without invoking the opposite, copies, or functors
-             * @param id the id of the node being removed
-             **/
-            void innerRemove(ID id) {
+
+            SetNode* innerInnerRemove(ID id) {
                 SetNode* temp = search(id, m_root);
                 if (temp->m_parent) {
                     // has parent
@@ -840,6 +837,25 @@ namespace UML {
                 for (auto& redefined : m_redefines) {
                     redefined->m_size--;
                 }
+                return temp;
+            }
+
+            /**
+             * DANGEROUS, does an inner remove without invoking the functors
+             * @param id the id of the node being removed
+             **/
+            void forceRemove(ID id) {
+                SetNode* temp = innerInnerRemove(id);
+                deleteNode(temp);
+                m_size--;
+            }
+
+            /**
+             * removes a node from the tree with the supplied id without invoking the opposite, copies, or functors
+             * @param id the id of the node being removed
+             **/
+            void innerRemove(ID id) {
+                SetNode* temp = innerInnerRemove(id);
                 for (auto& func : m_removeFunctors) {
                     if (!temp->m_el) {
                         temp->m_el = m_el->m_manager->get(m_el, temp->m_id);
@@ -2166,6 +2182,10 @@ namespace UML {
                 it.m_node = m_root;
                 it.m_root = m_root;
                 it.m_guard = m_guard;
+                if (!it.m_node) {
+                    it.m_node = &it.m_endNode;
+                    return it;
+                }
                 if (it.m_node->m_id == placeholderID) {
                     it++;
                 }

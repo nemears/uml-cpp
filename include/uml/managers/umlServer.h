@@ -26,6 +26,7 @@ namespace std {
 namespace UML {
 
     class UmlServer : public UmlManager {
+
         private:
             struct ClientInfo {
                 socketType socket;
@@ -84,6 +85,7 @@ namespace UML {
             // helper methods
             void createNode(Element* el) override;
             void closeClientConnections(ClientInfo& client);
+            std::vector<std::unique_lock<std::mutex>> lockReferences(Element& el);
         public:
             UmlServer();
             UmlServer(int port);

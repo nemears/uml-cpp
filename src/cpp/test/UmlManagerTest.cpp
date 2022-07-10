@@ -171,18 +171,18 @@ TEST_F(UmlManagerTest, addToManagerAfterMountedTest) {
 }
 
 TEST_F(UmlManagerTest, ManagerMountStressTest) {
-    const size_t numElements = 5;
+    const size_t numElements = 2;
     UmlManager m;
     Package& root = *m.create<Package>();
     ID rootID = root.getID();
     m.setRoot(&root);
     ASSERT_NO_THROW(m.mount(ymlPath + "umlManagerTests"));
-    ID ids[numElements];
+    std::vector<ID> ids(numElements);
     PackagePtr pckg(&root);
     for (size_t i = 0; i < numElements; i++) {
         PackagePtr child = m.create<Package>();
         pckg->getPackagedElements().add(*child);
-        ids[i] = pckg->getID();
+        ids.push_back(pckg->getID());
         m.release(pckg->getID()); // release or segfault
         pckg = child;
     }
@@ -190,8 +190,7 @@ TEST_F(UmlManagerTest, ManagerMountStressTest) {
     for (size_t i = 0; i < numElements; i++) {
         EXPECT_FALSE(m.loaded(ids[i])) << "at index" << i;
     }
-    Package& root2 = m.get(rootID).as<Package>(); // try to only aquire root
-    pckg = &root2;
+    pckg = &m.get(rootID).as<Package>(); // try to only aquire root
     for (size_t i = 0; i < numElements; i++) {
         EXPECT_FALSE(m.loaded(*pckg->getPackagedElements().ids().begin())) << "at index " << i;
         ASSERT_EQ(pckg->getPackagedElements().size(), 1) << "at index " << i;

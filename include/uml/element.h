@@ -11,6 +11,12 @@
 #include "id.h"
 #include <mutex>
 
+namespace std {
+    // template <typename T> class vector;
+    template <typename T> class lock_guard;
+    class mutex;
+}
+
 namespace UML {
 
     // Element Type enum to get the type of object on runtime
@@ -145,10 +151,15 @@ namespace UML {
         Element* m_managerElementMemory = 0;
         std::string m_path;
         bool m_mountedFlag = false;
-        std::unordered_map<ID, ManagerNode*> m_references;
-        std::unordered_map<ID, size_t> m_referenceCount;
-        std::vector<ID> m_referenceOrder;
-        std::list<void*> m_ptrs; // list to UmlPtr*'s
+        struct NodeReference {
+            ManagerNode* node = 0;
+            size_t numRefs = 0;
+        };
+        std::unordered_map<ID, NodeReference> m_references;
+        // std::unordered_map<ID, ManagerNode*> m_references;
+        // std::unordered_map<ID, size_t> m_referenceCount;
+        // std::vector<ID> m_referenceOrder;
+        std::list<AbstractUmlPtr*> m_ptrs; // list to UmlPtr*'s
     };
 
     // Helper function to assess possible ids
@@ -179,6 +190,7 @@ namespace UML {
     class Property;
     class Association;
     class UmlManager;
+    class UmlServer;
     struct ManagerNode;
     class AddToMountFunctor;
     class PackageMerge;
@@ -208,7 +220,7 @@ namespace UML {
     class RemoveReferenceFunctor;
     namespace Parsers {
         struct EmitterMetaData;
-        struct ParserMetaData;
+        class ParserMetaData;
         EmitterMetaData getData(Element& el);
         void setOwner(Element& el, ID id);
         void emitToFile(Element& el, EmitterMetaData& data, std::string path, std::string fileName);
@@ -223,11 +235,13 @@ namespace UML {
      **/
     class Element {
 
+        friend class UmlManager;
+        friend class UmlClient;
+        friend class UmlServer;
         friend class ElementDoesntExistException;
         friend class Slot;
         friend class Property;
         friend class Association;
-        friend class UmlManager;
         friend class AddToMountFunctor;
         friend class PackageMerge;
         friend class Classifier;
@@ -254,8 +268,8 @@ namespace UML {
         template <class T> friend class UmlPtr;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);
         friend void Parsers::setOwner(Element& el, ID id);
-        friend void Parsers::emitToFile(Element& el, EmitterMetaData& data, std::string path, std::string fileName);
-        friend ElementPtr Parsers::parse(ParserMetaData& data);
+        friend void Parsers::emitToFile(Element& el, Parsers::EmitterMetaData& data, std::string path, std::string fileName);
+        friend ElementPtr Parsers::parse(Parsers::ParserMetaData& data);
         friend class SetReferenceFunctor;
         friend class RemoveReferenceFunctor;
 

@@ -286,17 +286,17 @@ Element& UmlManager::create(ElementType eType) {
 
 Element& UmlManager::get(ID id) {
     if (m_elements.count(id)) {
-        if (!m_graph.count(id)) {
+        std::unordered_map<ID, ManagerNode>::iterator it = m_graph.find(id);
+        if (it == m_graph.end() || !(*it).second.m_managerElementMemory) {
             aquire(id);
         }
+        // if (!m_graph.count(id)) {
+            
+        // }
         return *m_graph[id].m_managerElementMemory;
     } else {
         throw UnknownID_Exception(id);
     }
-}
-
-void UmlManager::lossless(bool lossless) {
-    m_lossless = lossless;
 }
 
 void UmlManager::reindex(ID oldID, ID newID) {
@@ -309,17 +309,28 @@ void UmlManager::reindex(ID oldID, ID newID) {
             
             ManagerNode* m_node = &m_graph[newID];
             delete m_node->m_managerElementMemory;
-            m_node->m_managerElementMemory = m_graph[oldID].m_managerElementMemory;
+            ManagerNode& oldNode = m_graph[oldID];
+            m_node->m_managerElementMemory = oldNode.m_managerElementMemory;
             m_node->m_managerElementMemory->m_node = m_node;
             for (auto& pair : m_node->m_references) {
-                if (!pair.second) {
-                    pair.second = UmlManager::get(pair.first).m_node;
+                if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
+                    continue;
                 }
-                pair.second->m_managerElementMemory->referencingReleased(newID);
-                pair.second->m_references[newID] = 0;
+
+                // Not sure why I am doing these two lines below here TODO investigate
+                pair.second.node->m_managerElementMemory->referencingReleased(newID);
+                pair.second.node->m_references[newID].node = 0;
             }
             for (auto& ptr : m_node->m_ptrs) {
-                static_cast<AbstractUmlPtr*>(ptr)->reindex(newID, m_node->m_managerElementMemory);
+                ptr->reindex(newID, m_node->m_managerElementMemory);
+            }
+            for (auto& ptr : oldNode.m_ptrs) {
+                ptr->reindex(newID, m_node->m_managerElementMemory);
+                ptr->m_ptrId = 0;
+                if (m_node->m_ptrs.size() > 0) {
+                    ptr->m_ptrId = m_node->m_ptrs.back()->m_ptrId + 1;
+                }
+                m_node->m_ptrs.push_back(ptr);
             }
             m_elements.erase(oldID);
             m_graph.erase(oldID);
@@ -332,23 +343,23 @@ void UmlManager::reindex(ID oldID, ID newID) {
             ManagerNode* newDisc = &m_graph[newID];
             newDisc->m_managerElementMemory = discRef.m_managerElementMemory;
             for (auto& ref : newDisc->m_references) {
-                if (ref.second->m_references.count(oldID)) {
-                    ref.second->m_references.erase(oldID);
-                    ref.second->m_references[newID] = newDisc;
-                    (*find(ref.second->m_referenceOrder.begin(), ref.second->m_referenceOrder.end(), oldID)) = newID;
-                    size_t count = ref.second->m_referenceCount[oldID];
-                    ref.second->m_referenceCount[newID] = count;
-                    ref.second->m_referenceCount.erase(oldID);
+                if (!ref.second.node) {
+                    // reference is relased currently with no ptrs
+                    throw ManagerStateException("Bad state in reindex, reference released! TODO maybe aquire released el");
+                } else if (ref.second.node->m_references.count(oldID)) {
+                    size_t numRefs = ref.second.node->m_references[oldID].numRefs;
+                    ref.second.node->m_references.erase(oldID);
+                    ref.second.node->m_references[newID] = ManagerNode::NodeReference{newDisc, numRefs};
                 }
-                if (!ref.second->m_managerElementMemory) {
+                if (!ref.second.node->m_managerElementMemory) {
                     aquire(ref.first);
                 }
-                ref.second->m_managerElementMemory->referenceReindexed(oldID, newID);
-            }
-            for (auto& ptr : newDisc->m_ptrs) {
-                static_cast<AbstractUmlPtr*>(ptr)->reindex(newID, newDisc->m_managerElementMemory);
+                ref.second.node->m_managerElementMemory->referenceReindexed(oldID, newID);
             }
             newDisc->m_managerElementMemory->m_node = newDisc;
+            for (auto& ptr : newDisc->m_ptrs) {
+                ptr->reindex(newID, newDisc->m_managerElementMemory);
+            }
             m_graph.erase(oldID);
             if (!m_mountBase.empty()) {
                 std::filesystem::remove(m_mountBase / "mount" / (oldID.string() + ".yml"));
@@ -388,54 +399,41 @@ void UmlManager::mount(std::string path) {
 
 void UmlManager::restoreNode(Element& ret) {
     ret.m_node->m_managerElementMemory = &ret;
-    size_t numEls = ret.m_node->m_referenceOrder.size();
-    for (size_t i = 0; i < numEls; i++) {
-        ID refID = ret.m_node->m_referenceOrder[i];
-        ManagerNode* node = ret.m_node->m_references.at(refID);
-        Element* el = 0;
-        if (!node && loaded(refID)) {
-            try {
-                el = &UmlManager::get(refID); // TODO make this faster somehow this line is a real limiter of speed
-                ret.m_node->m_references[refID] = el->m_node;
-            } catch (std::exception& e) {
-                // nothing
-            }
-        } else if (node && loaded(refID)) {
-            el =  node->m_managerElementMemory;
+    for (auto& pair : ret.m_node->m_references) {
+        ManagerNode* node = pair.second.node;
+        if (!node || !node->m_managerElementMemory) {
+            // element has been released, possibly there are no pointers
+            continue;
         }
-        if (el) {
-            el->restoreReference(&ret);
-            ret.restoreReference(el);
-        }
+        node->m_managerElementMemory->restoreReference(&ret);
+        ret.restoreReference(node->m_managerElementMemory);
     }
     for (auto& ptr : ret.m_node->m_ptrs) {
-        static_cast<AbstractUmlPtr*>(ptr)->reindex(ret.getID(), &ret);
+        ptr->reindex(ret.getID(), &ret);
     }
     ret.restoreReferences();
 }
 
 ElementPtr UmlManager::aquire(ID id) {
-    if (!m_mountBase.empty()) {
-        if (!loaded(id)) {
-            if (std::filesystem::exists(m_mountBase / "mount" / (id.string() + ".yml"))) {
-                Parsers::ParserMetaData data(this);
-                data.m_path = m_mountBase / "mount" / (id.string() + ".yml");
-                data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-                ElementPtr ret = Parsers::parse(data);
-                if (ret) {
-                    restoreNode(*ret);
-                } else {
-                    throw ManagerStateException();
-                }
-                return ret;
-            } else {
-                throw ID_doesNotExistException(id);
-            }
-        } else {
-            return ElementPtr(&get(id));
-        }
-    } else {
+    if (m_mountBase.empty()) {
         throw ManagerNotMountedException();
+    }
+    if (loaded(id)) {
+        return ElementPtr(&get(id));
+    }
+    if (std::filesystem::exists(m_mountBase / "mount" / (id.string() + ".yml"))) {
+        Parsers::ParserMetaData data(this);
+        data.m_path = m_mountBase / "mount" / (id.string() + ".yml");
+        data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
+        ElementPtr ret = Parsers::parse(data);
+        if (ret) {
+            restoreNode(*ret);
+        } else {
+            throw ManagerStateException();
+        }
+        return ret;
+    } else {
+        throw ID_doesNotExistException(id);
     }
 }
 
@@ -447,15 +445,16 @@ void UmlManager::releaseNode(Element& el) {
     ManagerNode* node = el.m_node;
     ID id = el.getID();
     for (auto& e : node->m_references) {
-        if (!e.second && loaded(e.first)) {
-            e.second = &m_graph[e.first]; // slow :(
+        if (!e.second.node) {
+            // el has been released there are no pointers
+            continue;
         }
-        if (e.second) {
-            e.second->m_managerElementMemory->referencingReleased(id);
+        if (e.second.node->m_managerElementMemory) {
+            e.second.node->m_managerElementMemory->referencingReleased(id);
         }
     }
     for (auto& ptr : node->m_ptrs) {
-        static_cast<AbstractUmlPtr*>(ptr)->releasePtr();
+        ptr->releasePtr();
     }
 }
 
@@ -464,26 +463,38 @@ void UmlManager::release(Element& el) {
         ID elID = el.getID();
         mountEl(el);
         releaseNode(el);
+        ManagerNode* node = el.m_node;
+        node->m_managerElementMemory = 0;
         delete &el;
-        m_graph.erase(elID);
+        if (node->m_ptrs.empty()) {
+            m_graph.erase(elID);
+        }
     } else {
         throw ManagerNotMountedException();
     }
 }
 
 void UmlManager::eraseNode(ManagerNode* node, ID id) {
-    for (size_t i = 0; i < node->m_referenceOrder.size(); i++) {
-        if (!node->m_references[node->m_referenceOrder[i]]) {
-            node->m_references[node->m_referenceOrder[i]] = &m_graph[node->m_referenceOrder[i]];
+    std::vector<ManagerNode*> idsToErase(node->m_references.size());
+    size_t i = 0;
+    for (auto& pair : node->m_references) {
+        if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
+            // element has been released, aquire
+            idsToErase[i] = aquire(pair.first)->m_node;
+        } else {
+            idsToErase[i] = pair.second.node;
         }
-        if (!node->m_references[node->m_referenceOrder[i]]->m_managerElementMemory) {
-            aquire(node->m_referenceOrder[i]);
+        i++;
+    }
+    for (auto& refNode : idsToErase) {
+        refNode->m_managerElementMemory->removeReference(id);
+        refNode->m_managerElementMemory->referenceErased(id);
+        if (refNode->m_references.count(id)) {
+            refNode->m_references.erase(id);
         }
-        node->m_references[node->m_referenceOrder[i]]->m_managerElementMemory->removeReference(id);
-        node->m_references[node->m_referenceOrder[i]]->m_managerElementMemory->referenceErased(id);
     }
     for (auto& ptr : node->m_ptrs) {
-        static_cast<AbstractUmlPtr*>(ptr)->erasePtr();
+        ptr->erasePtr();
     }
     delete node->m_managerElementMemory;
     m_graph.erase(id);
@@ -527,9 +538,6 @@ void UmlManager::open() {
     clear();
     Parsers::ParserMetaData data(this);
     setRoot(&*Parsers::parse(data));
-    // if (m_root->isSubClassOf(ElementType::MODEL)) {
-    //     m_model = dynamic_cast<Model*>(m_root);
-    // }
 }
 
 void UmlManager::open(std::string path) {
@@ -546,15 +554,6 @@ ElementPtr UmlManager::parse(std::string path) {
     }
     return el;
 }
-
-// void UmlManager::setModel(Model* model) {
-//     m_model = model;
-//     // m_root = model;
-// }
-
-// Model* UmlManager::getModel() {
-//     return m_model;
-// }
 
 void UmlManager::setRoot(Element* el) {
     m_root = el ? el->getID() : ID::nullID();
@@ -579,21 +578,17 @@ Element* UmlManager::get(Element* me, ID theID) {
     if (!theID.isNull()) {
         if (me->m_node) {
             if (me->m_node->m_references.count(theID)) {
-                if (!me->m_node->m_references[theID]) {
-                    if (loaded(theID)) {
-                        me->restoreReference(&UmlManager::get(theID));
-                    } else {
-                        ElementPtr aquired = aquire(theID);
-                        me->m_node->m_references[theID] = aquired->m_node;
-                    }
+                if (!me->m_node->m_references[theID].node || !me->m_node->m_references[theID].node->m_managerElementMemory) {
+                    ElementPtr aquired = aquire(theID);
+                    me->m_node->m_references[theID].node = aquired->m_node;
                 }
-                return me->m_node->m_references[theID]->m_managerElementMemory;
+                return me->m_node->m_references[theID].node->m_managerElementMemory;
             } else {
                 throw ManagerStateException("could not find reference " + theID.string());
             }
         } else {
             aquire(theID);
-            return  me->m_node->m_references[theID]->m_managerElementMemory;
+            return  me->m_node->m_references[theID].node->m_managerElementMemory;
         }
     }
     return 0;

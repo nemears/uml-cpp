@@ -13,18 +13,22 @@ using namespace UML;
 void InterfaceRealization::RemoveContractFunctor::operator()(Element& el) const {
     if (m_el.as<InterfaceRealization>().getImplementingClassifier()) {
         for (auto& pair : m_el.as<InterfaceRealization>().m_implementingClassifier.get()->m_node->m_references) {
-            if (pair.second && 
-                pair.second->m_managerElementMemory->isSubClassOf(ElementType::PORT) && 
-                pair.second->m_managerElementMemory->as<Port>().getType().id() == m_el.as<InterfaceRealization>().m_implementingClassifier.get().id()) {
-                if (pair.second->m_managerElementMemory->as<Port>().isConjugated()) {
-                    if (pair.second->m_managerElementMemory->as<Port>().getRequired().contains(el.getID())) {
-                        pair.second->m_managerElementMemory->as<Port>().getRequired().removeReadOnly(el.getID());
+            if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
+                // TODO aquire to not have loss, get rid of continue
+                continue;
+            }
+            if (pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::PORT) && 
+                pair.second.node->m_managerElementMemory->as<Port>().getType().id() == m_el.as<InterfaceRealization>().m_implementingClassifier.get().id()) {
+                    Port& port = pair.second.node->m_managerElementMemory->as<Port>();
+                    if (port.isConjugated()) {
+                        if (port.getRequired().contains(el.getID())) {
+                            port.getRequired().removeReadOnly(el.getID());
+                        }
+                    } else {
+                        if (port.getProvided().contains(el.getID())) {
+                            port.getProvided().removeReadOnly(el.getID());
+                        }
                     }
-                } else {
-                    if (pair.second->m_managerElementMemory->as<Port>().getProvided().contains(el.getID())) {
-                        pair.second->m_managerElementMemory->as<Port>().getProvided().removeReadOnly(el.getID());
-                    }
-                }
             }
         }
     }
@@ -33,18 +37,22 @@ void InterfaceRealization::RemoveContractFunctor::operator()(Element& el) const 
 void InterfaceRealization::SetContractFunctor::operator()(Element& el) const {
     if (m_el.as<InterfaceRealization>().getImplementingClassifier()) {
         for (auto& pair : m_el.as<InterfaceRealization>().m_implementingClassifier.get()->m_node->m_references) {
-            if (pair.second && 
-                pair.second->m_managerElementMemory->isSubClassOf(ElementType::PORT) && 
-                pair.second->m_managerElementMemory->as<Port>().getType().id() == m_el.as<InterfaceRealization>().m_implementingClassifier.get().id()) {
-                if (pair.second->m_managerElementMemory->as<Port>().isConjugated()) {
-                    if (!pair.second->m_managerElementMemory->as<Port>().getRequired().contains(el.getID())) {
-                        pair.second->m_managerElementMemory->as<Port>().getRequired().nonOppositeAdd(el.as<Interface>());
+            if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
+                // TODO aquire to not have loss, get rid of continue
+                continue;
+            }
+            if (pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::PORT) && 
+                pair.second.node->m_managerElementMemory->as<Port>().getType().id() == m_el.as<InterfaceRealization>().m_implementingClassifier.get().id()) {
+                    Port& port = pair.second.node->m_managerElementMemory->as<Port>();
+                    if (port.isConjugated()) {
+                        if (!port.getRequired().contains(el.getID())) {
+                            port.getRequired().nonOppositeAdd(el.as<Interface>());
+                        }
+                    } else {
+                        if (!port.getProvided().contains(el.getID())) {
+                            port.getProvided().nonOppositeAdd(el.as<Interface>());
+                        }
                     }
-                } else {
-                    if (!pair.second->m_managerElementMemory->as<Port>().getProvided().contains(el.getID())) {
-                        pair.second->m_managerElementMemory->as<Port>().getProvided().nonOppositeAdd(el.as<Interface>());
-                    }
-                }
             }
         }
     }

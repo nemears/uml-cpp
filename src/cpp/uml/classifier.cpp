@@ -61,8 +61,11 @@ void Classifier::RemoveGeneralFunctor::operator()(Element& el) const {
 void Classifier::AddOwnedMemberFunctor::operator()(Element& el) const {
     if (el.as<NamedElement>().getVisibility() != VisibilityKind::PRIVATE) {
         for (auto& pair : m_el.m_node->m_references) {
-            if (pair.second && pair.second->m_managerElementMemory && pair.second->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && pair.second->m_managerElementMemory->as<Classifier>().m_generals.contains(m_el.getID())) {
-                pair.second->m_managerElementMemory->as<Classifier>().getInheritedMembers().nonOppositeAdd(el.as<NamedElement>());
+            if (pair.second.node && 
+                pair.second.node->m_managerElementMemory && 
+                pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && 
+                pair.second.node->m_managerElementMemory->as<Classifier>().m_generals.contains(m_el.getID())) {
+                    pair.second.node->m_managerElementMemory->as<Classifier>().getInheritedMembers().nonOppositeAdd(el.as<NamedElement>());
             }
         }
     }
@@ -71,11 +74,13 @@ void Classifier::AddOwnedMemberFunctor::operator()(Element& el) const {
 void Classifier::RemoveOwnedMemberFunctor::operator()(Element& el) const {
     if (el.as<NamedElement>().getVisibility() != VisibilityKind::PRIVATE) {
         for (auto& pair : m_el.m_node->m_references) {
-            if (!pair.second && m_el.m_manager->loaded(pair.first)) {
-                pair.second = m_el.m_manager->UmlManager::get(pair.first).m_node;
+            if (!pair.second.node && m_el.m_manager->loaded(pair.first)) {
+                pair.second.node = m_el.m_manager->UmlManager::get(pair.first).m_node;
             }
-            if (pair.second->m_managerElementMemory && pair.second->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && pair.second->m_managerElementMemory->as<Classifier>().m_generals.contains(m_el.getID())) {
-                pair.second->m_managerElementMemory->as<Classifier>().m_inheritedMembers.nonOppositeRemove(el.getID());
+            if (pair.second.node->m_managerElementMemory && 
+                pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && 
+                pair.second.node->m_managerElementMemory->as<Classifier>().m_generals.contains(m_el.getID())) {
+                    pair.second.node->m_managerElementMemory->as<Classifier>().m_inheritedMembers.nonOppositeRemove(el.getID());
             }
         }
     }

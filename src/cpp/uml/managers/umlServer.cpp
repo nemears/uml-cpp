@@ -58,6 +58,9 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         try {
             {
                 std::lock_guard<std::mutex> elLck(m_locks[elID]);
+                // TODO aquire lock for all of it's references too
+                Element& elToErase = get(elID);
+                std::vector<std::unique_lock<std::mutex>> refLcks = lockReferences(elToErase);
                 log("aquired lock for element " + elID.string());
                 m_msgV = true;
                 m_msgCv.notify_one();
@@ -427,6 +430,15 @@ void UmlServer::zombieKiller(UmlServer* me) {
 void UmlServer::createNode(Element* el) {
     UmlManager::createNode(el);
     m_locks[el->getID()];
+}
+
+std::vector<std::unique_lock<std::mutex>> UmlServer::lockReferences(Element& el) {
+    std::vector<std::unique_lock<std::mutex>> ret;
+    ret.reserve(el.m_node->m_references.size());
+    for (auto& referencePair : el.m_node->m_references) {
+        ret.push_back(std::unique_lock<std::mutex>(m_locks[referencePair.first]));
+    }
+    return ret;
 }
 
 void UmlServer::log(std::string msg) {

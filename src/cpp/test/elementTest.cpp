@@ -42,7 +42,8 @@ TEST_F(ElementTest, UmlPtrComparisonTest) {
 
 TEST_F(ElementTest, UmlPtrScopeTest) {
     UmlManager m;
-    m.lossless(false);
+    m.mount(".");
+    // m.lossless(false);
     m.lazy(false);
     ID pckgID;
     {
@@ -51,7 +52,7 @@ TEST_F(ElementTest, UmlPtrScopeTest) {
         ASSERT_TRUE(m.loaded(pckgID));
     }
     ASSERT_FALSE(m.loaded(pckgID));
-    m.lossless(true);
+    // m.lossless(true);
     m.lazy(true);
     {
         PackagePtr pckg = m.create<Package>();
@@ -99,7 +100,7 @@ TEST_F(ElementTest, reassignPtrTest) { // TODO recreate managermountstresstest e
         PackagePtr newPckg = m.create<Package>();
         pckg = newPckg;
     }
-    pckg->setOwningPackage(*pckg);
+    pckg->setOwningPackage(*ogPckg);
     ASSERT_NE(pckg.id(), ogID);
     ASSERT_NE(pckg.id(), ogPckg.id());
     ASSERT_EQ(pckg.id(), pckg->getID());

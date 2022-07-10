@@ -6,9 +6,9 @@
 #include "element.h"
 
 namespace UML {
+
     namespace Parsers {
-        class ParserMetaData;
-        struct EmitterMetaData;
+        ElementPtr parse(ParserMetaData& data);
     }
 
     class InstanceSpecification;
@@ -69,6 +69,7 @@ namespace UML {
 
         friend class Parsers::ParserMetaData;
         friend struct Parsers::EmitterMetaData;
+        friend ElementPtr Parsers::parse(Parsers::ParserMetaData&);
         friend class Element;
         friend class InstanceSpecification;
         friend class PackageableElement;
@@ -88,7 +89,6 @@ namespace UML {
         template <class T> friend class UmlPtr;
 
         protected:
-            bool m_lossless = true;
             bool m_lazy = true;
             std::unordered_set<ID> m_elements;
             std::unordered_map<ID, ManagerNode> m_graph;
@@ -126,7 +126,6 @@ namespace UML {
                 UmlPtr<T> ret(ptr);
                 return ret;
             }
-            void lossless(bool lossless);
             void lazy(bool lazy);
             Element& create(ElementType eType);
             void reindex(ID oldID, ID newID);

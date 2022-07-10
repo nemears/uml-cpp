@@ -16,34 +16,26 @@ namespace UML {
 
 void Element::setReference(Element* referencing) {
     if (m_node->m_references.count(referencing->getID())) {
-        m_node->m_referenceCount[referencing->getID()]++;
+        m_node->m_references[referencing->getID()].numRefs++;
     } else {
-        m_node->m_references[referencing->getID()] = referencing->m_node;
-        m_node->m_referenceCount[referencing->getID()] = 1;
-        m_node->m_referenceOrder.push_back(referencing->getID());
+        m_node->m_references[referencing->getID()] = ManagerNode::NodeReference{referencing->m_node, 1};
     }
 }
 
 void Element::setReference(ID id) {
     if (m_node->m_references.count(id)) {
-        m_node->m_referenceCount[id]++;
+        m_node->m_references[id].numRefs++;
     } else {
-        m_node->m_references[id] = 0;
-        m_node->m_referenceCount[id] = 1;
-        m_node->m_referenceOrder.push_back(id);
+        // TODO maybe check if loaded? cause this can be called when the element of the id is not released
+        m_node->m_references[id] = ManagerNode::NodeReference{0, 1};
     }
 }
 
 void Element::removeReference(ID referencing) {
-    if (m_node->m_referenceCount[referencing] > 1) {
-        m_node->m_referenceCount[referencing]--;
+    if (m_node->m_references[referencing].numRefs > 1) {
+        m_node->m_references[referencing].numRefs--;
     } else {
         m_node->m_references.erase(referencing);
-        m_node->m_referenceCount.erase(referencing);
-        m_node->m_referenceOrder.erase(std::remove(
-            m_node->m_referenceOrder.begin(),
-            m_node->m_referenceOrder.end(),
-            referencing), m_node->m_referenceOrder.end());
     }
 }
 
@@ -61,7 +53,9 @@ void Element::reindexName(ID id, std::string newName) {
 
 void Element::referencingReleased(ID id) {
     if (m_node->m_references.count(id)) {
-        m_node->m_references[id] = 0;
+        m_node->m_references[id].node = 0;
+    } else {
+        throw ManagerStateException("Releasing reference that we dont have a reference of ?!");
     }
     m_owner->release(id);
     m_ownedElements->release(id);
@@ -75,7 +69,9 @@ void Element::restoreReferences() {
 
 void Element::restoreReference(Element* el) {
     if (m_node->m_references.count(el->getID())) {
-        m_node->m_references[el->getID()] = el->m_node;
+        m_node->m_references[el->getID()].node = el->m_node;
+    } else {
+        // throw ManagerStateException("Bad state, should have reference if we are restoring a reference");
     }
     m_ownedElements->restore(el);
     m_owner->restore(el);

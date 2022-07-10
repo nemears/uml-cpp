@@ -65,12 +65,13 @@ NamedElement::~NamedElement() {
 
 void NamedElement::setName(const std::string &name) {
     for (auto& pair : m_node->m_references) {
-        if (!pair.second) {
+        if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
             m_manager->get(pair.first);
         }
-        if (pair.second) {  // TODO: don't really like this if statement
-            pair.second->m_managerElementMemory->reindexName(m_id, name); 
+        if (!pair.second.node) {
+            continue;
         }
+        pair.second.node->m_managerElementMemory->reindexName(m_id, name); 
     }
     m_name = name;
 }
@@ -105,9 +106,9 @@ void NamedElement::setVisibility(VisibilityKind visibility) {
             std::vector<Classifier*> clazzs;
             for (auto& pair : m_node->m_references) {
                 // find use as inherited member through references and remove
-                if (pair.second->m_managerElementMemory && pair.second->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER)) {
-                    if (pair.second->m_managerElementMemory->as<Classifier>().m_inheritedMembers.contains(m_id)) {
-                        clazzs.push_back(&pair.second->m_managerElementMemory->as<Classifier>());
+                if (pair.second.node->m_managerElementMemory && pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER)) {
+                    if (pair.second.node->m_managerElementMemory->as<Classifier>().m_inheritedMembers.contains(m_id)) {
+                        clazzs.push_back(&pair.second.node->m_managerElementMemory->as<Classifier>());
                     }
                 }
             }

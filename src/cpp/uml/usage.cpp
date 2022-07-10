@@ -11,32 +11,36 @@ using namespace UML;
 void Usage::RemoveClientFunctor::operator()(Element& el) const {
     for (auto& supplier : m_el.as<Usage>().m_suppliers) {
         if (supplier.isSubClassOf(ElementType::INTERFACE_UML) && el.isSubClassOf(ElementType::CLASSIFIER)) {
-            for (auto& pair : el.m_node->m_references) {
+            // for (auto& pair : el.m_node->m_references) {
                 std::list<Classifier*> queue = {&el.as<Classifier>()};
                 while (!queue.empty()) {
                     Classifier* front = queue.front();
                     queue.pop_front();
                     for (auto& pair : front->m_node->m_references) {
-                        if (pair.second) {
-                            if (pair.second->m_managerElementMemory->isSubClassOf(ElementType::PORT)) {
-                                if (pair.second->m_managerElementMemory->as<Port>().isConjugated()) {
-                                    if (pair.second->m_managerElementMemory->as<Port>().getProvided().contains(supplier.getID())) {
-                                        pair.second->m_managerElementMemory->as<Port>().getProvided().removeReadOnly(supplier.getID());
-                                    }
-                                } else {
-                                    if (pair.second->m_managerElementMemory->as<Port>().getRequired().contains(supplier.getID())) {
-                                        pair.second->m_managerElementMemory->as<Port>().getRequired().removeReadOnly(supplier.getID());
-                                    }
+                        if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
+                            // TODO maybe aquire so not lossy
+                            continue;
+                        }
+                        
+                        if (pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::PORT)) {
+                            Port& port = pair.second.node->m_managerElementMemory->as<Port>();
+                            if (port.isConjugated()) {
+                                if (port.getProvided().contains(supplier.getID())) {
+                                    port.getProvided().removeReadOnly(supplier.getID());
                                 }
-                            } else if (pair.second->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER)) {
-                                if (pair.second->m_managerElementMemory->as<Classifier>().getGenerals().contains(*front)) {
-                                    queue.push_back(&pair.second->m_managerElementMemory->as<Classifier>());
+                            } else {
+                                if (port.getRequired().contains(supplier.getID())) {
+                                    port.getRequired().removeReadOnly(supplier.getID());
                                 }
+                            }
+                        } else if (pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER)) {
+                            if (pair.second.node->m_managerElementMemory->as<Classifier>().getGenerals().contains(*front)) {
+                                queue.push_back(&pair.second.node->m_managerElementMemory->as<Classifier>());
                             }
                         }
                     }
                 }
-            }
+            // }
         }
     }
 }
@@ -50,19 +54,23 @@ void Usage::SetClientFunctor::operator()(Element& el) const {
                     Classifier* front = queue.front();
                     queue.pop_front();
                     for (auto& pair : front->m_node->m_references) {
-                        if (pair.second) {
-                            if (pair.second->m_managerElementMemory->isSubClassOf(ElementType::PORT)) {
-                                if (pair.second->m_managerElementMemory->as<Port>().getType().id() == front->getID()) {
-                                    if (pair.second->m_managerElementMemory->as<Port>().isConjugated()) {
-                                        pair.second->m_managerElementMemory->as<Port>().getProvided().nonOppositeAdd(supplier.as<Interface>());
-                                    } else {
-                                        pair.second->m_managerElementMemory->as<Port>().getRequired().nonOppositeAdd(supplier.as<Interface>());
-                                    }
+                        if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
+                            // TODO maybe aquire so not lossy
+                            continue;
+                        }
+
+                        if (pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::PORT)) {
+                            Port& port = pair.second.node->m_managerElementMemory->as<Port>();
+                            if (port.getType().id() == front->getID()) {
+                                if (port.isConjugated()) {
+                                    port.getProvided().nonOppositeAdd(supplier.as<Interface>());
+                                } else {
+                                    port.getRequired().nonOppositeAdd(supplier.as<Interface>());
                                 }
-                            } else if (pair.second->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER)) {
-                                if (pair.second->m_managerElementMemory->as<Classifier>().getGenerals().contains(*front)) {
-                                    queue.push_back(&pair.second->m_managerElementMemory->as<Classifier>());
-                                }
+                            }
+                        } else if (pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER)) {
+                            if (pair.second.node->m_managerElementMemory->as<Classifier>().getGenerals().contains(*front)) {
+                                queue.push_back(&pair.second.node->m_managerElementMemory->as<Classifier>());
                             }
                         }
                     }

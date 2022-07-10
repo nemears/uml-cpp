@@ -12,13 +12,17 @@ namespace UML {
     };
 
     template <class T, class U> class Singleton;
+    template <class T> class UmlPtr;
 
     class AbstractUmlPtr {
 
+        template <class T, class U> friend class Singleton;
         friend class UmlManager;
+        template <class T> friend class UmlPtr;
 
         protected:
             ID m_id = ID::nullID();
+            long int m_ptrId = 0;
             virtual void reindex(ID newID, Element* el) = 0;
             virtual void releasePtr() = 0;
             virtual void erasePtr() = 0;
@@ -34,10 +38,12 @@ namespace UML {
         private:
             UmlManager* m_manager = 0;
             T* m_ptr = 0;
+            ManagerNode* m_node = 0;
         protected:
             void reindex(ID newID, Element* el) override {
                 m_id = newID;
                 m_ptr = dynamic_cast<T*>(el);
+                m_node = m_ptr->m_node;
             };
             void releasePtr() override {
                 m_ptr = 0;
@@ -45,6 +51,37 @@ namespace UML {
             void erasePtr() override {
                 m_id = ID::nullID();
                 m_ptr = 0;
+                m_node = 0;
+            };
+            void removeFromGraph() {
+                if (m_node) {
+                    // m_node->m_ptrs.remove(const_cast<UmlPtr<T>*>(this));
+                    m_node->m_ptrs.remove_if([this](const AbstractUmlPtr* ptr) {
+                        return ptr->m_ptrId == m_ptrId;
+                    });
+                    if (m_node->m_ptrs.empty() && !m_node->m_managerElementMemory) {
+                        m_manager->m_graph.erase(m_id);
+                    }
+                }
+            };
+            template <class U = Element>
+            void reassignPtr(const UmlPtr<U>& rhs) {
+                removeFromGraph();
+                m_id = rhs.m_id;
+                m_manager = rhs.m_manager;
+                m_ptr = 0;
+                m_ptrId = 0;
+                m_node = rhs.m_node;
+                if (m_node) {
+                    m_ptr = dynamic_cast<T*>(rhs.m_ptr);
+                    if (m_node->m_ptrs.size() > 0) {
+                        m_ptrId = m_node->m_ptrs.back()->m_ptrId + 1;
+                    }
+                    m_node->m_ptrs.push_back(const_cast<UmlPtr<T>*>(this));
+                    // m_node->m_ptrs.remove_if([&rhs](const AbstractUmlPtr* ptr) {
+                    //     return ptr->m_ptrId == rhs.m_ptrId;
+                    // });
+                }
             };
         public:
             T& operator*() const {
@@ -54,10 +91,11 @@ namespace UML {
                     return *m_ptr;
                 } else {
                     ElementPtr temp = &m_manager->get(m_id);
-                    temp->m_node->m_ptrs.push_back((void*)this);
+                    // temp->m_node->m_ptrs.push_back(const_cast<UmlPtr<T>*>(this));
                     if (!m_ptr) {
                         const_cast<UmlPtr<T>*>(this)->m_ptr = dynamic_cast<T*>(temp.ptr());
                     }
+                    const_cast<UmlPtr<T>*>(this)->m_node = m_ptr->m_node;
                     return  *dynamic_cast<T*>(temp.ptr());
                 }
             };
@@ -68,10 +106,11 @@ namespace UML {
                     return m_ptr;
                 } else {
                     ElementPtr temp = &m_manager->get(m_id);
-                    temp->m_node->m_ptrs.push_back((void*) this);
+                    // temp->m_node->m_ptrs.push_back(const_cast<UmlPtr<T>*>(this));
                     if (!m_ptr) {
                         const_cast<UmlPtr<T>*>(this)->m_ptr = dynamic_cast<T*>(temp.ptr());
                     }
+                    const_cast<UmlPtr<T>*>(this)->m_node = m_ptr->m_node;
                     return  dynamic_cast<T*>(temp.ptr());
                 }
             };
@@ -105,50 +144,29 @@ namespace UML {
                 return lhs.m_id != rhs.m_id;
             };
             void operator=(const T* el) {
-                if (m_ptr) {
-                    m_ptr->m_node->m_ptrs.remove((void*) this);
-                }
+                removeFromGraph();
                 if (el) {
                     m_id = el->getID();
                     m_ptr = const_cast<T*>(el);
+                    m_node = m_ptr->m_node;
                     m_manager = el->m_manager;
-                    el->m_node->m_ptrs.push_back((void*) this);
+                    m_ptrId = 0;
+                    if (el->m_node->m_ptrs.size() > 0) {
+                        m_ptrId = el->m_node->m_ptrs.back()->m_ptrId + 1;
+                    }
+                    el->m_node->m_ptrs.push_back(const_cast<UmlPtr<T>*>(this));
                 }
             };
             void operator=(const UmlPtr& rhs) {
-                if (m_ptr) {
-                    m_ptr->m_node->m_ptrs.remove((void*) this);
-                }
-                m_id = rhs.m_id;
-                m_manager = rhs.m_manager;
-                if (rhs.m_ptr) {
-                    m_ptr = rhs.m_ptr;
-                    m_ptr->m_node->m_ptrs.push_back((void*) this);
-                }
+                reassignPtr(rhs);
             };
             UmlPtr(const UmlPtr& rhs) {
-                if (m_ptr) {
-                    m_ptr->m_node->m_ptrs.remove((void*) this);
-                }
-                m_id = rhs.m_id;
-                m_manager = rhs.m_manager;
-                if (rhs.m_ptr) {
-                    m_ptr = rhs.m_ptr;
-                    m_ptr->m_node->m_ptrs.push_back((void*) this);
-                }
+                reassignPtr(rhs);
             };
             template <class U = Element>
             UmlPtr(const UmlPtr<U>& rhs) {
-                if (m_ptr) {
-                    m_ptr->m_node->m_ptrs.remove((void*) this);
-                }
-                m_id = rhs.m_id;
-                m_manager = rhs.m_manager;
-                if (rhs.m_ptr) {
-                    m_ptr = const_cast<T*>(&rhs->template as<T>());
-                    m_ptr->m_node->m_ptrs.push_back((void*) this);
-                }
-            }
+                reassignPtr(rhs);
+            };
             T* ptr() {
                 return m_ptr;
             };
@@ -172,26 +190,39 @@ namespace UML {
             void aquire() {
                 UmlPtr<> temp = m_manager->aquire(m_id);
                 m_ptr = dynamic_cast<T*>(temp.ptr());
-                temp->m_node->m_ptrs.push_back((void*) this);
+                // temp->m_node->m_ptrs.push_back(const_cast<UmlPtr<T>*>(this));
+                m_node = m_ptr->m_node;
+                m_node->m_ptrs.push_back(const_cast<UmlPtr<T>*>(this));
             };
             UmlPtr(T* el) {
                 if (el) {
                     m_id = el->getID();
                     m_ptr = el;
                     m_manager = el->m_manager;
-                    el->m_node->m_ptrs.push_back((void*) this);
+                    if (el->m_node->m_ptrs.size() > 0) {
+                        m_ptrId = el->m_node->m_ptrs.back()->m_ptrId + 1;
+                    }
+                    el->m_node->m_ptrs.push_back(const_cast<UmlPtr<T>*>(this));
+                    m_node = m_ptr->m_node;
                 }
             };
             virtual ~UmlPtr() {
                 if (m_id != ID::nullID()) {
                     if (m_ptr) {
-                        m_ptr->m_node->m_ptrs.remove(this);
+                        removeFromGraph();
                         if (m_ptr->m_node->m_ptrs.empty()) {
-                            if (m_manager && (!m_manager->m_lossless || !m_manager->m_mountBase.empty()) && !m_manager->m_lazy) {
+                            if (m_manager && !m_manager->m_mountBase.empty() && !m_manager->m_lazy) {
                                 m_manager->mountEl(*m_ptr);
                                 m_manager->releaseNode(*m_ptr);
                                 m_manager->m_graph.erase(m_id);
                                 delete m_ptr;
+                            }
+                        }
+                    } else {
+                        if (m_node) {
+                            removeFromGraph();
+                            if (m_node->m_ptrs.empty()) {
+                                m_manager->m_graph.erase(m_id);
                             }
                         }
                     }

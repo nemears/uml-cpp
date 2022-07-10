@@ -18,16 +18,6 @@ namespace UML {
         protected:
             Singleton<Package, PackageMerge> m_receivingPackage = Singleton<Package, PackageMerge>(this);
             Singleton<Package, PackageMerge> m_mergedPackage = Singleton<Package, PackageMerge>(this);
-            class MergedPackageReferenceFunctor : public SetFunctor {
-                public:
-                    MergedPackageReferenceFunctor(Element* them) : SetFunctor(them) {};
-                    void operator()(Element& el) const override;
-            };
-            class RemoveMergedPackageReferenceFunctor : public SetFunctor {
-                public:
-                    RemoveMergedPackageReferenceFunctor(Element* them) : SetFunctor(them) {};
-                    void operator()(Element& el) const override;
-            };
             Set<Package, PackageMerge>& getReceivingPackageSingleton();
             Set<Package, PackageMerge>& getMergedPackageSingleton();
             void init();

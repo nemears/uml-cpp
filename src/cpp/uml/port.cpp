@@ -15,10 +15,11 @@ void Port::setPortInterfaces(BehavioredClassifier& clazz) {
     for (auto& realization : clazz.getInterfaceRealizations()) {
         if (realization.getContract()) {
             if (isConjugated()) {
-                m_required.addReadOnly(realization.getContract().id());
+                m_required.addReadOnly(*realization.getContract());
             } else {
-               m_provided.addReadOnly(realization.getContract().id());
+               m_provided.addReadOnly(*realization.getContract());
             }
+            realization.getContract()->setReference(this);
         }
     }
     for (auto& dependency : clazz.getClientDependencies()) {
@@ -61,6 +62,7 @@ void Port::removePortInterfaces(BehavioredClassifier& clazz) {
             } else {
                m_provided.removeReadOnly(realization.getContract().id());
             }
+            realization.getContract()->removeReference(m_id);
         }
     }
     for (auto& dependency : clazz.getClientDependencies()) {
@@ -162,21 +164,33 @@ bool Port::isConjugated() const {
 
 void Port::setIsConjugated(bool isConjugated) {
     if (isConjugated != m_isConjugated) {
-        std::vector<Interface*> oldRequired;
-        std::vector<Interface*> oldProvided;
-        for (auto& required : m_required) {
-            oldRequired.push_back(&required);
+        std::vector<ID> oldRequired;
+        std::vector<ID> oldProvided;
+        for (const ID required : m_required.ids()) {
+            oldRequired.push_back(required);
         }
-        for (auto& provided : m_provided) {
-            oldProvided.push_back(&provided);
+        for (const ID provided : m_provided.ids()) {
+            oldProvided.push_back(provided);
         }
-        for (auto& newProvided : oldRequired) {
-            m_required.removeReadOnly(newProvided->getID());
-            m_provided.nonOppositeAdd(*newProvided);
+        for (auto& newProvidedID : oldRequired) {
+            if (m_required.loaded(newProvidedID)) {
+                Interface& newProvided = m_required.get(newProvidedID);
+                m_required.removeReadOnly(newProvidedID);
+                m_provided.nonOppositeAdd(newProvided);
+            } else {
+                m_required.forceRemove(newProvidedID);
+                m_provided.addReadOnly(newProvidedID);
+            }
         }
-        for (auto& newRequired : oldProvided) {
-            m_provided.removeReadOnly(newRequired->getID());
-            m_required.nonOppositeAdd(*newRequired);
+        for (auto& newRequiredID : oldProvided) {
+            if (m_provided.loaded(newRequiredID)) {
+                Interface& newRequired = m_provided.get(newRequiredID);
+                m_provided.removeReadOnly(newRequiredID);
+                m_required.nonOppositeAdd(newRequired);
+            } else {
+                m_provided.forceRemove(newRequiredID);
+                m_required.addReadOnly(newRequiredID);
+            }            
         }
     }
     m_isConjugated = isConjugated;

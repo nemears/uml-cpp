@@ -74,8 +74,8 @@ TEST_F(RestfulTest, headTest) {
     root->getPackagedElements().add(*child);
     client.put(*child);
     client.setRoot(*root);
-    ASSERT_EQ(*root, client.get(""));
-    // ASSERT_EQ(client.getRoot(), root); TODO
+    // ASSERT_EQ(*root, client.get(""));
+    ASSERT_EQ(client.get(""), *root);
 }
 
 TEST_F(RestfulTest, saveTest) {

@@ -374,7 +374,27 @@ ElementPtr parse(ParserMetaData& data) {
             throw new UmlParserException("bad format for reference list", data.m_path.string(), nodes[1]);
         }
         for (size_t i = 0; i < nodes[1].size(); i++) {
-            ret->setReference(ID::fromString(nodes[1][i].as<std::string>()));
+            ID id = ID::fromString(nodes[1][i].as<std::string>());
+            if (data.m_manager->loaded(id)) {
+                Element& el = data.m_manager->get(id);
+                if (ret->m_node->m_references.count(id) == 0) {
+                    // reference not set while parsing
+                    ret->setReference(&el);
+                } else {
+                    // reference set while parsing, just restore it
+                    ret->restoreReference(&el);
+                }
+                el.restoreReference(ret.ptr());
+            }
+        }
+    } else {
+        // we want to restore all of the references of what we loaded
+        for (const ID id : data.m_manager->m_elements) {
+            ElementPtr el = &data.m_manager->get(id);
+            for (auto& refPair : el->m_node->m_references) {
+                ElementPtr reference = &data.m_manager->get(refPair.first);
+                el->restoreReference(reference.ptr());
+            }
         }
     }
     return ret;
@@ -458,8 +478,8 @@ void emitToFile(Element& el, EmitterMetaData& data, string path, string fileName
     if (data.m_strategy == EmitterStrategy::INDIVIDUAL) {
         newEmitter << YAML::BeginDoc;
         newEmitter << YAML::BeginSeq;
-        for (auto& referenceID : el.m_node->m_referenceOrder) {
-            newEmitter << referenceID.string();
+        for (auto& referencePair : el.m_node->m_references) {
+            newEmitter << referencePair.first.string();
         }
         newEmitter << YAML::EndSeq;
         newEmitter << YAML::EndDoc;
@@ -701,7 +721,7 @@ ElementType elementTypeFromString(string eType) {
 
 void setNamespace(NamedElement& el, ID id) {
     if (el.m_manager->loaded(id)) {
-        el.m_namespace.addReadOnly(el.m_manager->get(id).as<Namespace>());
+        el.m_namespace.addReadOnly(el.m_manager->UmlManager::get(id).as<Namespace>());
     } else {
         el.m_namespace.addReadOnly(id);
     }
@@ -709,7 +729,7 @@ void setNamespace(NamedElement& el, ID id) {
 
 void setOwner(Element& el, ID id) {
     if (el.m_manager->loaded(id)) {
-        el.m_owner->addReadOnly(el.m_manager->get(id));
+        el.m_owner->addReadOnly(el.m_manager->UmlManager::get(id));
     } else {
         el.m_owner->addReadOnly(id);
     }
@@ -2641,10 +2661,7 @@ void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data)
         emitter << YAML::Key << "aggregation" << YAML::Value << aggregationString;
     }
 
-    if (prop.getDefaultValue()) {
-        emitter << YAML::Key << "defaultValue" << YAML::Value;
-        emit(emitter, *prop.getDefaultValue(), data);
-    }
+    emitSingletonDefinition(emitter, "defaultValue", data, prop, &Property::getDefaultValue);
 
     emitSetReferences(emitter, "redefinedProperties", prop, &Property::getRedefinedProperties);
 
@@ -2991,15 +3008,8 @@ void parseMultiplicityElement(YAML::Node node, MultiplicityElement& el, ParserMe
 }
 
 void emitMultiplicityElement(YAML::Emitter& emitter, MultiplicityElement& el, EmitterMetaData& data) {
-    if (el.getLowerValue()) {
-        emitter << YAML::Key << "lowerValue" << YAML::Value;
-        emit(emitter, *el.getLowerValue(), data);
-    }
-
-    if (el.getUpperValue()) {
-        emitter << YAML::Key << "upperValue" << YAML::Value;
-        emit(emitter, *el.getUpperValue(), data);
-    }
+    emitSingletonDefinition(emitter, "lowerValue", data, el, &MultiplicityElement::getLowerValue);
+    emitSingletonDefinition(emitter, "upperValue", data, el, &MultiplicityElement::getUpperValue);
 
     if (el.isOrdered()) {
         emitter << YAML::Key << "isOrdered" << YAML::Value << true;
@@ -3032,10 +3042,7 @@ void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& in
     }
     
     emitSetDefinitions(emitter, "slots", data, inst, &InstanceSpecification::getSlots);
-    if (inst.getSpecification()) {
-        emitter << YAML::Key << "specification" << YAML::Value;
-        emit(emitter, *inst.getSpecification(), data);
-    }
+    emitSingletonDefinition(emitter, "specification", data, inst, &InstanceSpecification::getSpecification);
     emitElementDefenitionEnd(emitter, ElementType::INSTANCE_SPECIFICATION, inst);
 }
 
@@ -3043,7 +3050,7 @@ void emitSlot(YAML::Emitter& emitter, Slot& slot, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::SLOT, "slot", slot);
     emitElement(emitter, slot, data);
     if (slot.getDefiningFeature()) {
-        emitter << YAML::Key << "definingFeature" << YAML::Value << slot.getDefiningFeature()->getID().string();
+        emitter << YAML::Key << "definingFeature" << YAML::Value << slot.getDefiningFeature().id().string();
     }
     emitSetDefinitions(emitter, "values", data, slot, &Slot::getValues);
     emitElementDefenitionEnd(emitter, ElementType::SLOT, slot);
@@ -3083,7 +3090,7 @@ void emitInstanceValue(YAML::Emitter& emitter, InstanceValue& val, EmitterMetaDa
     emitElementDefenition(emitter, ElementType::INSTANCE_VALUE, "instanceValue", val);
     emitTypedElement(emitter, val, data);
     if (val.getInstance()) {
-        emitter << YAML::Key << "instance" << YAML::Value << val.getInstance()->getID().string();
+        emitter << YAML::Key << "instance" << YAML::Value << val.getInstance().id().string();
     }
     emitElementDefenitionEnd(emitter, ElementType::INSTANCE_VALUE, val);
 }
@@ -3094,9 +3101,9 @@ void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge, EmitterMetaDa
     emitElement(emitter, merge, data);
 
     if (merge.getMergedPackage()) {
-        filesystem::path path = data.getPath(merge.getMergedPackage()->getID());
+        filesystem::path path = data.getPath(merge.getMergedPackage().id());
         if (path.empty() || path == data.m_path / data.m_fileName) {
-            emitter << YAML::Key << "mergedPackage" << YAML::Value << merge.getMergedPackage()->getID().string();
+            emitter << YAML::Key << "mergedPackage" << YAML::Value << merge.getMergedPackage().id().string();
         } else {
             emitToFile(*merge.getMergedPackage(), data, path.parent_path().string(), path.filename().string());
             if (data.m_path == path.parent_path()) {
@@ -3537,7 +3544,7 @@ void emitTemplateBinding(YAML::Emitter& emitter, TemplateBinding& binding, Emitt
 
     emitElement(emitter, binding, data);
     if (binding.getSignature()) {
-        emitter << YAML::Key << "signature" << YAML::Value << binding.getSignature()->getID().string();
+        emitter << YAML::Key << "signature" << YAML::Value << binding.getSignature().id().string();
     }
     emitSetDefinitions(emitter, "parameterSubstitutions", data, binding, &TemplateBinding::getParameterSubstitutions);
 
@@ -3817,7 +3824,7 @@ void emitManifestation(YAML::Emitter& emitter, Manifestation& manifestation, Emi
     emitNamedElement(emitter, manifestation, data);
 
     if (manifestation.getUtilizedElement()) {
-        emitter << YAML::Key << "utilizedElement" << YAML::Value << manifestation.getUtilizedElement()->getID().string();
+        emitter << YAML::Key << "utilizedElement" << YAML::Value << manifestation.getUtilizedElement().id().string();
     }
 
     emitElementDefenitionEnd(emitter, ElementType::MANIFESTATION, manifestation);

@@ -8,16 +8,9 @@
 #include "uml/interface.h"
 #include "uml/deployment.h"
 #include "uml/umlPtr.h"
+#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
-
-void PackageMerge::MergedPackageReferenceFunctor::operator()(Element& el) const {
-    el.setReference(&m_el);
-}
-
-void PackageMerge::RemoveMergedPackageReferenceFunctor::operator()(Element& el) const {
-    el.removeReference(m_el.getID());
-}
 
 Set<Package, PackageMerge>& PackageMerge::getReceivingPackageSingleton() {
     return m_receivingPackage;
@@ -30,8 +23,8 @@ Set<Package, PackageMerge>& PackageMerge::getMergedPackageSingleton() {
 void PackageMerge::init() {
     m_receivingPackage.subsets(*m_owner);
     m_receivingPackage.subsets(m_sources);
-    m_mergedPackage.m_addFunctors.insert(new MergedPackageReferenceFunctor(this));
-    m_mergedPackage.m_removeFunctors.insert(new RemoveMergedPackageReferenceFunctor(this));
+    m_mergedPackage.m_addFunctors.insert(new SetReferenceFunctor(this));
+    m_mergedPackage.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_mergedPackage.subsets(m_targets);
 }
 

@@ -282,8 +282,12 @@ void UmlClient::release(Element& el) {
     ID elID = el.getID();
     put(el);
     releaseNode(el);
+    ManagerNode* node = el.m_node;
+    node->m_managerElementMemory = 0;
     delete &el;
-    m_graph.erase(elID);
+    if (node->m_ptrs.empty()) {
+        m_graph.erase(elID);
+    }
 }
 
 void UmlClient::release(ID id) {

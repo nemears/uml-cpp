@@ -418,7 +418,7 @@ ElementPtr UmlManager::aquire(ID id) {
     if (m_mountBase.empty()) {
         throw ManagerNotMountedException();
     }
-    if (loaded(id)) {
+    if (UmlManager::loaded(id)) {
         return ElementPtr(&get(id));
     }
     if (std::filesystem::exists(m_mountBase / "mount" / (id.string() + ".yml"))) {
@@ -480,13 +480,20 @@ void UmlManager::eraseNode(ManagerNode* node, ID id) {
     for (auto& pair : node->m_references) {
         if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
             // element has been released, aquire
-            idsToErase[i] = aquire(pair.first)->m_node;
+            try {
+                idsToErase[i] = aquire(pair.first)->m_node;
+            } catch (ID_doesNotExistException& idException) {
+                idsToErase[i] = 0;
+            }
         } else {
             idsToErase[i] = pair.second.node;
         }
         i++;
     }
     for (auto& refNode : idsToErase) {
+        if (!refNode) {
+            continue;
+        }
         refNode->m_managerElementMemory->removeReference(id);
         refNode->m_managerElementMemory->referenceErased(id);
         if (refNode->m_references.count(id)) {

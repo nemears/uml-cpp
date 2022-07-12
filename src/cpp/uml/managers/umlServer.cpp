@@ -56,15 +56,23 @@ void UmlServer::handleMessage(ID id, std::string buff) {
     if (node["DELETE"] || node["delete"]) {
         ID elID = ID::fromString((node["DELETE"] ? node["DELETE"] : node["delete"]).as<std::string>());
         try {
+            std::vector<ID> idsOfReferences;
             {
                 std::lock_guard<std::mutex> elLck(m_locks[elID]);
-                // TODO aquire lock for all of it's references too
+                log("aquired lock for element " + elID.string());
                 Element& elToErase = get(elID);
                 std::vector<std::unique_lock<std::mutex>> refLcks = lockReferences(elToErase);
-                log("aquired lock for element " + elID.string());
+                for (auto& refPair : elToErase.m_node->m_references) {
+                    log("aquired lock for element " + refPair.first.string());
+                    idsOfReferences.push_back(refPair.first);
+                }
                 m_msgV = true;
                 m_msgCv.notify_one();
                 erase(elID);
+            }
+            log("released lock for element " + elID.string());
+            for (const ID refID : idsOfReferences) {
+                log("released lock for element " + id.string());
             }
             m_locks.erase(elID);
             log("erased element " + elID.string());
@@ -93,11 +101,11 @@ void UmlServer::handleMessage(ID id, std::string buff) {
                 send(info.socket, msg.c_str(), msg.length() , 0);
             }            
         }
-        std::lock_guard<std::mutex> elLck(m_locks[elID]);
-        log("aquired lock for element " + elID.string());
-        m_msgV = true;
-        m_msgCv.notify_one();
         try {
+            std::lock_guard<std::mutex> elLck(m_locks[elID]);
+            log("aquired lock for element " + elID.string());
+            m_msgV = true;
+            m_msgCv.notify_one();
             Element& el = get(elID);
             Parsers::EmitterMetaData data = Parsers::getData(el);
             data.m_isJSON = true;
@@ -108,10 +116,12 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             }
             log("server got element " +  elID.string() + " for client " + id.string() + ":\n" + msg);
         } catch (std::exception& e) {
+            log("released lock for element " + elID.string());
             log(e.what());
             std::string msg = std::string("{ERROR: ") + std::string(e.what()) + std::string("}");
             send(info.socket, msg.c_str(), msg.length() , 0);
         }
+        log("released lock for element " + elID.string());
     } else if (node["POST"] || node["post"]) {
         m_msgV = true;
         m_msgCv.notify_one();
@@ -153,7 +163,9 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             log("server put element " + elID.string() + " successfully for client " + id.string());
         } catch (std::exception& e) {
             log("Error parsing PUT request: " + std::string(e.what()));
+            log("released lock for element " + elID.string());
         }
+        log("released lock for element " + elID.string());
     } else if (node["SAVE"] || node["save"]) {
         YAML::Node saveNode = (node["SAVE"] ? node["SAVE"] : node["save"]);
         std::string path = saveNode.as<std::string>();
@@ -344,8 +356,13 @@ void UmlServer::acceptNewClients(UmlServer* me) {
                 #endif
                 throw ManagerStateException("Did not get proper id from client");
             }
-            if (ID::fromString(buff) == me->m_shutdownID) {
-                break;
+            try {
+                if (ID::fromString(buff) == me->m_shutdownID) {
+                    break;
+                }
+            } catch (std::exception& e) {
+                me->log("ERRROR: " + std::string(e.what()));
+                continue;
             }
             me->log("got id from client: " + std::string(buff));
             ClientInfo& info = me->m_clients[ID::fromString(buff)];

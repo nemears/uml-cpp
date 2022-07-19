@@ -65,11 +65,11 @@ NamedElement::~NamedElement() {
 
 void NamedElement::setName(const std::string &name) {
     for (auto& pair : m_node->m_references) {
-        if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
-            m_manager->get(pair.first);
-        }
         if (!pair.second.node) {
             continue;
+        }
+        if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
+            m_manager->get(pair.first);
         }
         pair.second.node->m_managerElementMemory->reindexName(m_id, name); 
     }

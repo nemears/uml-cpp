@@ -272,7 +272,7 @@ namespace UML {
         template <class T, class U> friend struct OrderedSetIterator;
         template <class T> friend class UmlPtr;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);
-        friend ElementPtr Parsers::parseYAML(YAML::Node node, ParserMetaData& data);
+        friend ElementPtr Parsers::parseYAML(YAML::Node node, Parsers::ParserMetaData& data);
         friend void Parsers::setOwner(Element& el, ID id);
         friend void Parsers::emitToFile(Element& el, Parsers::EmitterMetaData& data, std::string path, std::string fileName);
         friend ElementPtr Parsers::parse(Parsers::ParserMetaData& data);

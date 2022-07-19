@@ -384,7 +384,11 @@ ElementPtr parse(ParserMetaData& data) {
                     // reference set while parsing, just restore it
                     ret->restoreReference(&el);
                 }
-                el.restoreReference(ret.ptr());
+                if (!el.m_node->m_references.count(ret.id())) {
+                    el.setReference(ret.ptr());
+                } else {
+                    el.restoreReference(ret.ptr());
+                }
             }
         }
     } else {
@@ -420,15 +424,17 @@ ElementPtr parseYAML(YAML::Node node, ParserMetaData& data) {
             }
             if (refPair.second.node && refPair.second.node->m_managerElementMemory) {
                 ret->restoreReference(refPair.second.node->m_managerElementMemory);
-                if (refPair.second.node->m_references.count(ret.id())) {
-                    refPair.second.node->m_managerElementMemory->restoreReference(ret.ptr());
+                if (!refPair.second.node->m_references.count(ret.id())) {
+                    refPair.second.node->m_managerElementMemory->setReference(ret.ptr());
                 }
+                refPair.second.node->m_managerElementMemory->restoreReference(ret.ptr());
             } else {
                 Element& ref = data.m_manager->get(refPair.first);
                 ret->restoreReference(&ref);
-                if (ref.m_node->m_references.count(ret.id())) {
-                    ref.restoreReference(ret.ptr());
+                if (!ref.m_node->m_references.count(ret.id())) {
+                    ref.m_node->m_managerElementMemory->setReference(ret.ptr());
                 }
+                ref.restoreReference(ret.ptr());
             }
         }
         return ret;

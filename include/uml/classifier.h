@@ -81,6 +81,7 @@ namespace UML {
             void reindexName(ID id, std::string newName) override;
             void referencingReleased(ID id) override;
             void restoreReferences() override;
+            void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
             void init();
             Classifier();

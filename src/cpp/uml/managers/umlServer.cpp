@@ -386,7 +386,9 @@ void UmlServer::garbageCollector(UmlServer* me) {
         me->m_garbageCv.wait(garbageLck, [me] { return me->m_releaseQueue.size() != me->m_numEls; });
         if (me->m_numEls == me->m_maxEls) {
             ID releasedID = me->m_releaseQueue.back();
-            me->release(releasedID);
+            Element& elToErase = me->get(releasedID);
+            std::vector<std::unique_lock<std::mutex>> refLcks = me->lockReferences(elToErase);
+            me->release(elToErase);
             me->m_releaseQueue.pop_back();
             me->m_locks.erase(releasedID);
         } else {

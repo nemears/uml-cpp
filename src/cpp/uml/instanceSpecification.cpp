@@ -12,6 +12,8 @@
 #include "uml/deployment.h"
 #include "uml/umlPtr.h"
 
+#include <iostream>
+
 using namespace UML;
 
 void InstanceSpecification::AddClassifierFunctor::operator()(Element& el) const {
@@ -42,6 +44,10 @@ void InstanceSpecification::referenceErased(ID id) {
     m_classifiers.eraseElement(id);
 }
 
+void InstanceSpecification::restoreReference(Element* el) {
+    PackageableElement::restoreReference(el);
+}
+
 Set<ValueSpecification, InstanceSpecification>& InstanceSpecification::getSpecificationSingleton() {
     return m_specification;
 }
@@ -56,6 +62,7 @@ void InstanceSpecification::init() {
 
 InstanceSpecification::InstanceSpecification() : Element(ElementType::INSTANCE_SPECIFICATION) {
     init();
+    std::cout << "";
 }
 
 InstanceSpecification::~InstanceSpecification() {

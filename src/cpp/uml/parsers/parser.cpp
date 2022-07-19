@@ -413,6 +413,24 @@ ElementPtr parseString(string body, ParserMetaData& data) {
 ElementPtr parseYAML(YAML::Node node, ParserMetaData& data) {
     ElementPtr ret = parseNode(node, data);
     if (ret) {
+        // restore references
+        for (auto refPair : (*ret).m_node->m_references) {
+            if (!data.m_manager->loaded(refPair.first)) {
+                continue;
+            }
+            if (refPair.second.node && refPair.second.node->m_managerElementMemory) {
+                ret->restoreReference(refPair.second.node->m_managerElementMemory);
+                if (refPair.second.node->m_references.count(ret.id())) {
+                    refPair.second.node->m_managerElementMemory->restoreReference(ret.ptr());
+                }
+            } else {
+                Element& ref = data.m_manager->get(refPair.first);
+                ret->restoreReference(&ref);
+                if (ref.m_node->m_references.count(ret.id())) {
+                    ref.restoreReference(ret.ptr());
+                }
+            }
+        }
         return ret;
     } else {
         throw UmlParserException("could not parse string representing an element!", "", node);

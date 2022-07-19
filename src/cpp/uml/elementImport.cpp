@@ -41,6 +41,7 @@ void ElementImport::init() {
     m_importedElement.m_addFunctors.insert(new AddImportedElementFunctor(this));
     m_importedElement.m_removeFunctors.insert(new RemoveImportedElementFunctor(this));
     m_importingNamespace.subsets(*m_owner);
+    m_importingNamespace.subsets(m_sources);
     m_importingNamespace.opposite(&Namespace::getElementImports);
 }
 

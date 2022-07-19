@@ -17,6 +17,10 @@ namespace std {
     class mutex;
 }
 
+namespace YAML {
+    class Node;
+}
+
 namespace UML {
 
     // Element Type enum to get the type of object on runtime
@@ -225,6 +229,7 @@ namespace UML {
         void setOwner(Element& el, ID id);
         void emitToFile(Element& el, EmitterMetaData& data, std::string path, std::string fileName);
         ElementPtr parse(ParserMetaData& data);
+        ElementPtr parseYAML(YAML::Node node, ParserMetaData& data);
     }
     /**
      * Element is the base class of all UML classes
@@ -267,6 +272,7 @@ namespace UML {
         template <class T, class U> friend struct OrderedSetIterator;
         template <class T> friend class UmlPtr;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);
+        friend ElementPtr Parsers::parseYAML(YAML::Node node, ParserMetaData& data);
         friend void Parsers::setOwner(Element& el, ID id);
         friend void Parsers::emitToFile(Element& el, Parsers::EmitterMetaData& data, std::string path, std::string fileName);
         friend ElementPtr Parsers::parse(Parsers::ParserMetaData& data);

@@ -41,6 +41,7 @@ namespace UML{
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
+            void restoreReference(Element* el) override;
             Set<ValueSpecification, InstanceSpecification>& getSpecificationSingleton();
             void init();
             InstanceSpecification();

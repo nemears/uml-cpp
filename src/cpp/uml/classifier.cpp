@@ -116,11 +116,15 @@ void Classifier::reindexName(ID id, std::string newName) {
 }
 
 void Classifier::restoreReferences() {
-    Namespace::restoreReferences();
-    PackageableElement::restoreReferences();
+    // Namespace::restoreReferences();
+    // PackageableElement::restoreReferences();
     for (auto& _generalization : m_generalizations) {
         // load through loop
     }
+}
+
+void Classifier::restoreReference(Element* el) {
+    Type::restoreReference(el);
 }
 
 void Classifier::referenceErased(ID id) {

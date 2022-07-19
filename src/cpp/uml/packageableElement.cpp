@@ -26,7 +26,7 @@ void PackageableElement::referencingReleased(ID id) {
 }
 
 void PackageableElement::restoreReference(Element* el) {
-    NamedElement::restoreReference(el);
+    Element::restoreReference(el);
     ParameterableElement::restoreReference(el);
 }
 

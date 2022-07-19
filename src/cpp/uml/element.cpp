@@ -71,7 +71,7 @@ void Element::restoreReference(Element* el) {
     if (m_node->m_references.count(el->getID())) {
         m_node->m_references[el->getID()].node = el->m_node;
     } else {
-        // throw ManagerStateException("Bad state, should have reference if we are restoring a reference");
+        throw ManagerStateException("Bad state, should have reference if we are restoring a reference");
     }
     m_ownedElements->restore(el);
     m_owner->restore(el);

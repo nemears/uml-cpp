@@ -398,6 +398,11 @@ ElementPtr parse(ParserMetaData& data) {
             for (auto& refPair : el->m_node->m_references) {
                 ElementPtr reference = &data.m_manager->get(refPair.first);
                 el->restoreReference(reference.ptr());
+                if (!reference->m_node->m_references.count(el.id())) {
+                    reference->setReference(el.id());
+                } else {
+                    reference->restoreReference(el.ptr());
+                }
             }
         }
     }
@@ -2631,7 +2636,7 @@ ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserM
         } else {
             throw UmlParserException("Improper YAML node type, ", data.m_path.string(), node["literalString"]);
         }
-    } else if (node["literalUnlimtedNatural"]) {
+    } else if (node["literalUnlimitedNatural"]) {
         if (node["literalUnlimitedNatural"]) {
             LiteralUnlimitedNatural& ln = *data.m_manager->create<LiteralUnlimitedNatural>();
             parseLiteralUnlimitedNatural(node["literalUnlimitedNatural"], ln, data);

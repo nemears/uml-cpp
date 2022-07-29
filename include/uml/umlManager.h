@@ -1,5 +1,5 @@
-#ifndef UML_MANAGER_H
-#define UML_MANAGER_H
+#ifndef _UML_MANAGER_H_
+#define _UML_MANAGER_H_
 
 #include <filesystem>
 #include "id.h"
@@ -190,10 +190,8 @@ namespace UML {
              **/
             ElementPtr parse(std::string path);
 
-            // void setModel(Model* model);
             virtual void setRoot(Element* el);
             void setRoot(Element& el);
-            // Model* getModel();
             ElementPtr getRoot();
             void setPath(ID elID, std::string path);
     };

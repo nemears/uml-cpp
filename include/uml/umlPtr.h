@@ -55,7 +55,7 @@ namespace UML {
             };
             void removeFromGraph() {
                 if (m_node) {
-                    // m_node->m_ptrs.remove(const_cast<UmlPtr<T>*>(this));
+                    // TODO lock this node during this scope when multithreading
                     m_node->m_ptrs.remove_if([this](const AbstractUmlPtr* ptr) {
                         return ptr->m_ptrId == m_ptrId;
                     });
@@ -78,9 +78,6 @@ namespace UML {
                         m_ptrId = m_node->m_ptrs.back()->m_ptrId + 1;
                     }
                     m_node->m_ptrs.push_back(const_cast<UmlPtr<T>*>(this));
-                    // m_node->m_ptrs.remove_if([&rhs](const AbstractUmlPtr* ptr) {
-                    //     return ptr->m_ptrId == rhs.m_ptrId;
-                    // });
                 }
             };
         public:
@@ -91,7 +88,6 @@ namespace UML {
                     return *m_ptr;
                 } else {
                     ElementPtr temp = &m_manager->get(m_id);
-                    // temp->m_node->m_ptrs.push_back(const_cast<UmlPtr<T>*>(this));
                     if (!m_ptr) {
                         const_cast<UmlPtr<T>*>(this)->m_ptr = dynamic_cast<T*>(temp.ptr());
                     }
@@ -106,7 +102,6 @@ namespace UML {
                     return m_ptr;
                 } else {
                     ElementPtr temp = &m_manager->get(m_id);
-                    // temp->m_node->m_ptrs.push_back(const_cast<UmlPtr<T>*>(this));
                     if (!m_ptr) {
                         const_cast<UmlPtr<T>*>(this)->m_ptr = dynamic_cast<T*>(temp.ptr());
                     }
@@ -190,7 +185,6 @@ namespace UML {
             void aquire() {
                 UmlPtr<> temp = m_manager->aquire(m_id);
                 m_ptr = dynamic_cast<T*>(temp.ptr());
-                // temp->m_node->m_ptrs.push_back(const_cast<UmlPtr<T>*>(this));
                 m_node = m_ptr->m_node;
                 m_node->m_ptrs.push_back(const_cast<UmlPtr<T>*>(this));
             };
@@ -207,23 +201,24 @@ namespace UML {
                 }
             };
             virtual ~UmlPtr() {
-                if (m_id != ID::nullID()) {
-                    if (m_ptr) {
-                        removeFromGraph();
-                        if (m_ptr->m_node->m_ptrs.empty()) {
-                            if (m_manager && !m_manager->m_mountBase.empty() && !m_manager->m_lazy) {
-                                m_manager->mountEl(*m_ptr);
-                                m_manager->releaseNode(*m_ptr);
-                                m_manager->m_graph.erase(m_id);
-                                delete m_ptr;
-                            }
+                if (m_id == ID::nullID()) {
+                    return;
+                }
+                if (m_ptr) {
+                    removeFromGraph();
+                    if (m_ptr->m_node->m_ptrs.empty()) {
+                        if (m_manager && !m_manager->m_mountBase.empty() && !m_manager->m_lazy) {
+                            m_manager->mountEl(*m_ptr);
+                            m_manager->releaseNode(*m_ptr);
+                            m_manager->m_graph.erase(m_id);
+                            delete m_ptr;
                         }
-                    } else {
-                        if (m_node) {
-                            removeFromGraph();
-                            if (m_node->m_ptrs.empty()) {
-                                m_manager->m_graph.erase(m_id);
-                            }
+                    }
+                } else {
+                    if (m_node) {
+                        removeFromGraph();
+                        if (m_node->m_ptrs.empty()) {
+                            m_manager->m_graph.erase(m_id);
                         }
                     }
                 }

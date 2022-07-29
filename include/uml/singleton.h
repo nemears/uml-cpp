@@ -31,6 +31,7 @@ namespace UML {
                     ret.m_id = this->m_root->m_id;
                     ret.m_ptr = this->m_root ? dynamic_cast<T*>(this->m_root->m_el) : 0;
                     if (ret.m_ptr) {
+                        // TODO lock this node during this scope when multithreading
                         ret.m_node = ret.m_ptr->m_node;
                         if (ret.m_node->m_ptrs.size() > 0) {
                             ret.m_ptrId = ret.m_node->m_ptrs.back()->m_ptrId + 1;

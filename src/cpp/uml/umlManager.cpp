@@ -37,12 +37,8 @@ size_t UmlManager::count(ID id) {
 }
 
 bool UmlManager::loaded(ID id) {
-    return m_graph.count(id) && m_graph[id].m_managerElementMemory;
-    // if (m_graph.count(id)) {
-    //     return true;
-    // } else {
-    //     return false;
-    // }
+    std::unordered_map<ID, ManagerNode>::const_iterator result = m_graph.find(id);
+    return result != m_graph.end() && (*result).second.m_managerElementMemory;
 }
 
 Element& UmlManager::create(ElementType eType) {
@@ -290,9 +286,6 @@ Element& UmlManager::get(ID id) {
         if (it == m_graph.end() || !(*it).second.m_managerElementMemory) {
             aquire(id);
         }
-        // if (!m_graph.count(id)) {
-            
-        // }
         return *m_graph[id].m_managerElementMemory;
     } else {
         throw UnknownID_Exception(id);
@@ -339,9 +332,9 @@ void UmlManager::reindex(ID oldID, ID newID) {
             m_elements.erase(oldID);
             m_elements.insert(newID);
             ManagerNode& discRef = m_graph[oldID];
-            m_graph[newID] = discRef;
+            m_graph[newID] = std::move(discRef);
             ManagerNode* newDisc = &m_graph[newID];
-            newDisc->m_managerElementMemory = discRef.m_managerElementMemory;
+            // newDisc->m_managerElementMemory = discRef.m_managerElementMemory;
             for (auto& ref : newDisc->m_references) {
                 if (!ref.second.node) {
                     // reference is relased currently with no ptrs

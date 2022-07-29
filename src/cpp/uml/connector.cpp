@@ -25,7 +25,7 @@ void Connector::SetTypeFunctor::operator()(Element& el) const {
 }
 
 void Connector::RemoveTypeFunctor::operator()(Element& el) const {
-
+    // TODO
 }
 
 void Connector::AddEndFunctor::operator()(Element& el) const {
@@ -42,7 +42,7 @@ void Connector::AddEndFunctor::operator()(Element& el) const {
 }
 
 void Connector::RemoveEndFunctor::operator()(Element& el) const {
-
+    // TODO
 }
 
 Set<Association, Connector>& Connector::getTypeSingleton() {

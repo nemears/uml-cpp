@@ -11,12 +11,6 @@
 #include "id.h"
 #include <mutex>
 
-namespace std {
-    // template <typename T> class vector;
-    template <typename T> class lock_guard;
-    class mutex;
-}
-
 namespace YAML {
     class Node;
 }
@@ -160,9 +154,6 @@ namespace UML {
             size_t numRefs = 0;
         };
         std::unordered_map<ID, NodeReference> m_references;
-        // std::unordered_map<ID, ManagerNode*> m_references;
-        // std::unordered_map<ID, size_t> m_referenceCount;
-        // std::vector<ID> m_referenceOrder;
         std::list<AbstractUmlPtr*> m_ptrs; // list to UmlPtr*'s
     };
 
